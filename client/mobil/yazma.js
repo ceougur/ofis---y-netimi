@@ -64,7 +64,8 @@ export function decorateDetail(kind, id, data) {
     const plans = (Array.isArray(data?.plans) ? data.plans : []).filter(plan => plan.status === "active" && Number(plan.totals?.remaining) > 0);
     if (rights().tahsilat || (rights().taksit && plans.length)) buttons.push(["tahsilat", "Tahsilat Gir", "primary"]);
     if (rights().odeme) buttons.push(["odeme", "Ödeme Gir", ""]);
-    bar.prepend(...buttons.map(([action, label, cls]) => button(label, cls, () => openForm(action, { id, name, plans }))));
+    const balance = Number(typeof obj.balance === "number" ? obj.balance : obj.totals?.balance) || 0;
+    bar.prepend(...buttons.map(([action, label, cls]) => button(label, cls, () => openForm(action, { id, name, plans, balance }))));
   } else if (kind === "stock" && rights().stok && obj.kind !== "service") {
     bar.prepend(button("Stok Girişi", "primary", () => openForm("stok", { id, name, unit: obj.unit || "" })));
   }
@@ -91,6 +92,22 @@ async function choices() {
 }
 const optionsOf = (list, ids) => (ids || []).map(id => list.find(item => item.id === id)).filter(Boolean);
 
+// 2.4.7 gezinti D7 (kullanıcı kararı 29.10.2026 "Boş gelsin, seçtirsin"): carinin açık taksit kartı varsa Tahsilat Yeri boş gelir; kullanıcı
+// "Taksit Kartı …" ya da "Cari Hesabına (En Eski Borç)" seçmeden kaydedilmez. Taksit kartı yoksa seçici yoktur (tahsilat carinin hesabına).
+const TARGET_NONE = "";
+const TARGET_ACCOUNT = "cari";
+// 2.4.7 gezinti D3: bilgi notu seçilen işleme ve Tahsilat Yeri'ne uyar (masaüstü hof-accounts.js FIFO notu ve hof-plans.js taksit formu): en eski açık
+// borcu kapatma notu yalnız o tarafta açık borç varken — Tahsilat carinin borcunu (bakiye borçlu), Ödeme bizim borcumuzu (bakiye alacaklı) kapatır.
+export function bilgiNotu({ stock, pay, target, balance, avans }) {
+  const day = " Kayıt bugünün tarihiyle (ofis sunucusunun günü) yazılır.";
+  if (stock) return "Mobilde yalnız stok girişi yapılır; çıkış ve satış masaüstünden girilir." + day;
+  if (pay) return (Number(balance) < -0.005 ? "Ödeme carinin en eski açık borcunu kapatır; fatura seçilmez." : "Ödeme carinin hesabına Borç olarak yazılır; fatura seçilmez.") + day;
+  if (target === TARGET_NONE) return "Tahsilat Yeri'ni seçin: taksit kartına mı, carinin hesabına mı yazılacak?" + day;
+  if (target !== TARGET_ACCOUNT)
+    return `Tutar seçilen taksit kartının en eski açık taksidinden başlayarak düşer; kalanı aşan tutar ${avans ? "için “Fazlasını Avans Yaz” sorulur" : "kaydedilmez (yönetici avans yazabilir)"}.` + day;
+  return (Number(balance) > 0.005 ? "Tahsilat carinin en eski açık borcunu kapatır; fatura seçilmez." : "Tahsilat carinin hesabına Alacak olarak yazılır; fatura seçilmez.") + day;
+}
+
 async function openForm(action, target) {
   const { safe, money } = ctx;
   const requestId = makeRequestId();
@@ -104,20 +121,26 @@ async function openForm(action, target) {
   sheet.className = "yz-backdrop";
   sheet.innerHTML = `<form class="yz-sheet" novalidate aria-label="${safe(title)}">
     <div class="yz-head"><div><span class="eyebrow">${safe(target.name)}</span><h2>${safe(title)}</h2></div><button type="button" class="icon-button" data-yz="close" aria-label="Kapat">×</button></div>
-    ${!stock && !pay && (plans.length || !rights().tahsilat) ? `<label class="yz-field">Tahsilat Yeri<select name="target">${rights().tahsilat ? `<option value="">Cari Hesabına (En Eski Borç)</option>` : ""}${plans.map(plan => `<option value="${safe(plan.id)}">Taksit Kartı · ${safe(plan.name)} · Kalan ${safe(money(Number(plan.totals?.remaining)))}</option>`).join("")}</select></label>` : ""}
+    ${!stock && !pay && (plans.length || !rights().tahsilat) ? `<label class="yz-field">Tahsilat Yeri<select name="target"><option value="${TARGET_NONE}" disabled selected>— Seçin —</option>${rights().tahsilat ? `<option value="${TARGET_ACCOUNT}">Cari Hesabına (En Eski Borç)</option>` : ""}${plans.map(plan => `<option value="${safe(plan.id)}">Taksit Kartı · ${safe(plan.name)} · Kalan ${safe(money(Number(plan.totals?.remaining)))}</option>`).join("")}</select></label>` : ""}
     <label class="yz-field">${stock ? `Miktar${target.unit ? ` (${safe(target.unit)})` : ""}` : "Tutar (TL)"}<input name="${stock ? "qty" : "amount"}" inputmode="decimal" autocomplete="off" required placeholder="${stock ? "Ör. 5" : "Ör. 1250,50"}"></label>
     ${stock ? "" : `<label class="yz-field">Ödeme Yolu<select name="method"><option value="cash">Nakit</option><option value="bank">Havale / EFT</option><option value="card">${pay ? "Kredi Kartı" : "POS"}</option></select></label>
     <label class="yz-field hidden" data-yz-pick="bank">Banka Hesabı<select name="bankAccountId"></select></label>
     <label class="yz-field hidden" data-yz-pick="card">Kredi Kartı<select name="cardAccountId"></select></label>
     <label class="yz-field hidden" data-yz-pick="pos">POS<select name="posId"></select></label>`}
     <label class="yz-field">Açıklama<input name="note" maxlength="300" autocomplete="off"></label>
-    <div class="notice" data-yz-note>${stock ? "Mobilde yalnız stok girişi yapılır; çıkış ve satış masaüstünden girilir." : pay ? "Ödeme carinin en eski açık borcunu kapatır; fatura seçilmez." : "Tahsilat carinin en eski açık borcunu kapatır; fatura seçilmez."} Kayıt bugünün tarihiyle (ofis sunucusunun günü) yazılır.</div>
+    <div class="notice" data-yz-note></div>
     <div class="yz-message hidden" role="alert" data-yz-message></div>
     <div class="yz-foot"><button type="button" class="btn" data-yz="close">Vazgeç</button><button type="submit" class="btn primary" data-yz="submit">Kaydet</button></div>
   </form>`;
   document.body.append(sheet);
   const form = sheet.querySelector("form");
   const close = () => sheet.remove();
+  const targetValue = () => (form.elements.target ? form.elements.target.value : TARGET_ACCOUNT);
+  const syncNote = () => {
+    form.querySelector("[data-yz-note]").textContent = bilgiNotu({ stock, pay, target: targetValue(), balance: target.balance, avans: rights().avans });
+  };
+  syncNote();
+  form.elements.target?.addEventListener("change", syncNote);
   sheet.querySelectorAll('[data-yz="close"]').forEach(el => el.addEventListener("click", close));
   form.querySelector("input")?.focus();
   // Hesap / POS seçicileri: masaüstü formlarının seçicisi (tek hesapta sunucu kendisi seçer; seçiciyi göremeyen kullanıcıda da sunucu seçer ya da sorar).
@@ -165,7 +188,12 @@ async function openForm(action, target) {
     }
     const note = String(form.elements.note.value || "").trim();
     if (note) body.note = note;
-    const planId = form.elements.target?.value || "";
+    const where = targetValue();
+    if (!stock && !pay && where === TARGET_NONE) {
+      form.elements.target.focus();
+      return show("Tahsilat Yeri'ni seçin: taksit kartına ya da Cari Hesabına (En Eski Borç).");
+    }
+    const planId = !stock && !pay && where !== TARGET_ACCOUNT ? where : "";
     const url = stock ? `/stock/${encodeURIComponent(target.id)}/giris` : planId ? `/plans/${encodeURIComponent(planId)}/tahsilat` : `/accounts/${encodeURIComponent(target.id)}/${pay ? "odeme" : "tahsilat"}`;
     const record = { requestId, formAt, company, url, body: { ...body, ...flags }, label: `${title} · ${target.name} · ${stock ? value : value + " TL"}`, noun: stock ? "Stok girişi" : pay ? "Ödeme" : "Tahsilat", accountId: target.id, kind: stock ? "stock" : "accounts" };
     submitButton.disabled = true;

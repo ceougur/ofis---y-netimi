@@ -1,0 +1,43 @@
+{
+  "ad": "gez-d-247/eski-0b92160a-senaryo-ekstre-ayrinti-247",
+  "komut": "npm run test:senaryo-ekstre-ayrinti-247",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T15:37:30.953Z",
+  "sure_sn": 14.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 34,
+    "gecen": 32,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ayşe Demir 1366 px: yatay taşma yok, son Bakiye hücresi kutuda (tablo 958 px, kutu 953 px, sağ kenar farkı 4 px)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Milyon Yapı 1366 px: yatay taşma yok, son Bakiye hücresi kutuda (tablo 1028 px, kutu 953 px, sağ kenar farkı 74 px)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ae469cbf60beec4ae/docs/kanit/2026-10-29/gez-d-247/eski-0b92160a-senaryo-ekstre-ayrinti-247.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gez-d-247-eski-0b92160a",
+  "ham_cikti_sha256": "ead8b2c1e2dd0ec23c5fa02f24a09630450db559ad937e6e457c78aad74c450f",
+  "ham_cikti_bayt": 3002
+}

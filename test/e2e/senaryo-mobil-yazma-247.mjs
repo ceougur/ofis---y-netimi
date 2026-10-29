@@ -225,6 +225,9 @@ await step("Y3 Ödeme Gir: Kasa yetmez → soru → Yine de Kaydet → tek kayı
   await openForm("Ödeme Gir");
   const methods = await page.$$eval('.yz-sheet [name="method"] option', items => items.map(item => item.textContent.trim()));
   ok(methods.join(",") === "Nakit,Havale / EFT,Kredi Kartı", `ödeme yolları ${methods.join(", ")}`);
+  // 2.4.7 gezinti D3: bakiyesi kapalı (0) caride Ödeme bir borcu kapatmaz — not "en eski açık borcunu kapatır" demez, carinin hesabına Borç yazıldığını söyler.
+  const payNote = await text(".yz-sheet [data-yz-note]");
+  ok(/hesabına Borç olarak yazılır/.test(payNote) && !/en eski açık borcunu kapatır/.test(payNote), `D3 Ödeme notu işleme uyar: ${payNote}`);
   await fill("amount", "5000");
   await submit();
   await page.waitForSelector("[data-yz-confirm]", { timeout: 8000 });
@@ -246,9 +249,25 @@ await step("Y4 taksit kartına tahsilat: 100 → kalan 200; 250 → soru → Faz
   await openDetail("accounts", mehmet.id);
   await openForm("Tahsilat Gir");
   const targets = await page.$$eval('.yz-sheet [name="target"] option', items => items.map(item => item.textContent.trim()));
-  ok(targets.length === 2 && /Taksit Kartı/.test(targets[1]), `Tahsilat Yeri: ${targets.join(" | ")}`);
-  await page.selectOption('.yz-sheet [name="target"]', plan.id);
+  ok(targets.length === 3 && targets[0] === "— Seçin —" && targets[1] === "Cari Hesabına (En Eski Borç)" && /Taksit Kartı/.test(targets[2]), `Tahsilat Yeri: ${targets.join(" | ")}`);
+  // 2.4.7 gezinti D7 (kullanıcı kararı 29.10.2026 "Boş gelsin, seçtirsin"): açık taksit kartı varken Tahsilat Yeri boş gelir; seçmeden Kaydet kayıt açmaz.
+  ok((await page.$eval('.yz-sheet [name="target"]', el => el.value)) === "", "D7 Tahsilat Yeri boş (seçilmemiş) gelir");
+  ok(/Tahsilat Yeri'ni seçin/.test(await text(".yz-sheet [data-yz-note]")), "D3 not: önce Tahsilat Yeri seçilir");
+  const beforeD7 = { account: entries(mehmet.id).length, plan: store().get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", plan.id).n };
   await fill("amount", "100");
+  await submit();
+  await page.waitForSelector(".yz-sheet [data-yz-message]:not(.hidden)", { timeout: 8000 });
+  const d7Message = await text(".yz-sheet [data-yz-message]");
+  ok(/Tahsilat Yeri'ni seçin/.test(d7Message), `D7 seçmeden Kaydet → uyarı: ${d7Message}`);
+  await page.waitForTimeout(300);
+  ok(entries(mehmet.id).length === beforeD7.account && store().get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", plan.id).n === beforeD7.plan && (await page.$(".yz-sheet")), "D7 seçmeden kayıt açılmadı, form açık");
+  await page.selectOption('.yz-sheet [name="target"]', "cari");
+  const accountNote = await text(".yz-sheet [data-yz-note]");
+  ok(/carinin en eski açık borcunu kapatır/.test(accountNote), `D3 Cari Hesabına seçilince not: ${accountNote}`);
+  await page.selectOption('.yz-sheet [name="target"]', plan.id);
+  const planNote = await text(".yz-sheet [data-yz-note]");
+  ok(/taksit kartının en eski açık taksidinden/.test(planNote) && !/carinin en eski açık borcunu/.test(planNote), `D3 Taksit Kartı seçilince not: ${planNote}`);
+  await shot("04b-taksit-karti-notu");
   await submit();
   ok(/Tahsilat kaydedildi/.test(await toastText()), "kart tahsilatı kaydedildi");
   await clearToasts();
@@ -278,18 +297,33 @@ await step("Y4 taksit kartına tahsilat: 100 → kalan 200; 250 → soru → Faz
 });
 
 await step("Y4b kayıt modülü ilk açılışta yüklenemezse (sunucu kapalıyken açılan sayfa) sonraki kayıt açılışında düğmeler gelir — yeniden yükleme gerekmez", async () => {
+  // Ön koşul düzeltmesi (gez-d-247): sayfa yeniden açılınca sw.js yeniden kaydolup sayfayı hemen sahipleniyordu (skipWaiting + clients.claim); yazma.js
+  // isteği service worker'ın kendi fetch'inden gidince page.route onu görmüyor, modül yükleniyordu → ön koşul oluşmuyordu (yeni kodda 73/74). Bu adımda
+  // service worker kaydı kapatılır; sayfa service worker'sız açılır, yazma.js'in yüklenemediği durum gerçekten oluşur (ders 20/38: ön koşul ayrıca okunur).
+  // sw.js isteği tarayıcının service worker güncelleyicisinden gider (page.route görmez): kaydı sayfa açılmadan önce bu sekmede devre dışı bırakılır.
+  await page.addInitScript(() => {
+    try {
+      if (sessionStorage.getItem("test-sw-yok") === "1" && navigator.serviceWorker) navigator.serviceWorker.register = () => Promise.reject(new Error("test: service worker bu adımda kapalı"));
+    } catch {}
+  });
   await page.evaluate(async () => {
+    sessionStorage.setItem("test-sw-yok", "1");
     for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister();
   });
   await page.route(/\/mobil\/yazma\.js(\?|$)/, route => route.abort());
-  await page.reload();
+  // Kaydı silinen service worker, açık sayfası (istemcisi) kaldıkça yeniden yüklenen sayfayı da denetler; boş sayfaya geçip dönülür (istemci kalmaz).
+  const mobileUrl = page.url().replace(/#.*$/, "");
+  await page.goto("about:blank");
+  await page.goto(mobileUrl);
   await page.waitForSelector("#app:not(.hidden)", { timeout: 10000 });
   await tapNav("accounts");
   await page.click(`#content [data-detail="accounts:${mehmet.id}"]`);
   await page.waitForSelector("[data-detail-balance]");
   await page.waitForTimeout(500);
-  ok((await page.$$("[data-yazma]")).length === 0, "ön koşul: modül yüklenemedi, düğme yok");
+  const controlled = await page.evaluate(() => Boolean(navigator.serviceWorker?.controller));
+  ok((await page.$$("[data-yazma]")).length === 0 && !controlled, `ön koşul: modül yüklenemedi, düğme yok (service worker denetiminde: ${controlled})`);
   await page.unroute(/\/mobil\/yazma\.js(\?|$)/);
+  await page.evaluate(() => sessionStorage.removeItem("test-sw-yok"));
   await page.click(".page-back");
   await page.click(`#content [data-detail="accounts:${mehmet.id}"]`);
   await page.waitForSelector("[data-yazma]", { timeout: 8000 }).catch(() => null);

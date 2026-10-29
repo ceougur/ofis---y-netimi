@@ -208,6 +208,9 @@ await step("Z3 yeni cari → program KAPANIR → telefonda dokunuş: son özet (
   await ali.click('.bottom-nav [data-nav="home"]');
   await ali.waitForSelector("#content .summary-grid");
   ok(/şifreli son özet görünür/.test(await ali.textContent("#content")), "Genel Bakış notu sunucu kapalıyken son özeti anlatır");
+  // 2.4.7 gezinti D4: M5 sonrası not — kayıt girişi masaüstüne gönderilmez; sunucu açıkken telefondan yapılır, kapalıyken salt okunur.
+  const homeNote = (await ali.$$eval("#content .notice", items => items.map(item => item.textContent.trim()).join(" "))).trim();
+  ok(/Sunucu kapalıyken bilgiler salt okunurdur/.test(homeNote) && /sunucusu açıkken cari ve stok kartından yapılır/.test(homeNote) && !/masaüstü programdan girilir/.test(homeNote), `D4 çevrimdışı Genel Bakış notu: ${homeNote || "(yok)"}`);
   await shot("04-cevrimdisi-genel", ali);
 }, ali);
 
@@ -279,6 +282,19 @@ await step("Z8 P9: lisans servisine 1 saattir ulaşılamıyor → ↻ → Lisans
   const direct = await rawRequest(kapi.base, "GET", "/api/mobil/session", { headers: { host: A.host } });
   ok(direct.status !== 200, "canlı kapı da kapalı");
   await shot("08-p9", ali);
+}, ali);
+
+await step("Z9 (gezinti D9) lisans kapısı kapalıyken sayfa yeniden açılır → giriş ekranında lisans iletisi (boş giriş ekranı değil)", async () => {
+  // Ön koşul telefonun kendi çerezleriyle (eşli cihaz) okunur: kapıcı cihazdan sonra lisansı denetler.
+  const pre = await ali.evaluate(() => fetch("/api/mobil/session", { credentials: "same-origin", headers: { "x-requested-with": "DestekOfisMobile" }, cache: "no-store" }).then(async r => ({ status: r.status, code: (await r.json().catch(() => ({}))).code || "" })));
+  ok(pre.code === "kapi-lisans-dogrulanamadi", `ön koşul: kapıcı lisans kapısı kapalı (${pre.status} ${pre.code})`);
+  await ali.reload();
+  await ali.waitForSelector("#login-form:not(.hidden)", { timeout: 15000 });
+  await ali.waitForSelector("#login-error:not(.hidden)", { timeout: 8000 }).catch(() => null);
+  const shown = ((await ali.textContent("#login-error").catch(() => "")) || "").trim();
+  const visible = await ali.isVisible("#login-error");
+  ok(visible && /Lisans bir saattir doğrulanamadı/.test(shown), `giriş ekranında lisans iletisi: ${visible ? shown : "(gizli)"}`);
+  await shot("09-lisans-yeniden-acilis", ali);
 }, ali);
 
 ok(pageErrors.length === 0, `sayfa hatası yok${pageErrors.length ? `: ${pageErrors.join(" | ")}` : ""}`);

@@ -41,6 +41,18 @@ const cari = await must("cari", api.post("/api/workspace/accounts", { name: "Cam
 const urun = await must("ürün", api.post("/api/workspace/stock", { name: "Köşe Kabin 90", code: "KK-90", unit: "Adet", unitPrice: "1000", salePrice: "2500", vatRate: "20", note: "STOKNOTU247 müşteriye gösterilmez", openingQty: "10", openingDate: "2026-01-02" }));
 const fis = await must("satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: cari.id, issueDate: "2026-11-10", lines: [{ itemId: urun.id, goods: true, name: "Köşe Kabin 90", code: "KK-90", qty: 2, unitPrice: 2500, vatRate: 20, description: ACIKLAMA }, { name: "Montaj", qty: 1, unitPrice: 500, vatRate: 20 }], payment: { cash: [{ amount: 600, method: "cash" }], rest: "open" } }));
 await must("tahsilat", api.post(`/api/workspace/accounts/${cari.id}/entries`, { kind: "in", amount: "1000", method: "cash", date: "2026-11-20", note: "Elden" }));
+// 2.4.7 gezinti D1 (docs/kanit/2026-10-29/247-gezinti/NOT.md adım 22): 1366 × 768'de 16 kolon — faturalı satış + "Taksit Planı (mevcut borç)" + taksit
+// tahsilatları (gezintinin verisi, 13.200) ve aynı düzende milyonluk tutar. Eski kodda tablo 956 / 985 px, kutu 953 px (Bakiye'nin "B"si kesik).
+const genis = [];
+for (const [ad, fiyat] of [["Ayşe Demir", 5000], ["Milyon Yapı", 500000]]) {
+  const kisi = await must(`cari ${ad}`, api.post("/api/workspace/accounts", { name: ad, type: "customer", registeredOn: "2026-01-01" }));
+  await must(`fatura ${ad}`, api.post("/api/workspace/invoices", { kind: "sale", accountId: kisi.id, issueDate: "2026-11-10", dueDate: "2026-12-10", lines: [{ itemId: urun.id, goods: true, name: "Köşe Kabin 90", code: "KK-90", qty: 2, unitPrice: fiyat, vatRate: 20, description: "Banyo kapısı 90x190, şeffaf temperli cam, krom profil" }, { name: "Montaj", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } }));
+  const kart = await must(`taksit ${ad}`, api.post("/api/workspace/plans", { name: ad, registeredOn: "2026-11-10", total: String(fiyat * 2.4 + 1200), accountId: kisi.id, mode: "auto", count: "3", firstDue: "2026-12-10", coversBalance: true }));
+  await must(`taksit tahsilatı ${ad}`, api.post(`/api/workspace/plans/${kart.id}/entries`, { kind: "in", amount: "2000", method: "cash", date: "2026-11-12" }));
+  await must(`taksit tahsilatı 2 ${ad}`, api.post(`/api/workspace/plans/${kart.id}/entries`, { kind: "in", amount: "1500", method: "cash", date: "2026-11-13" }));
+  await must(`tahsilat ${ad}`, api.post(`/api/workspace/accounts/${kisi.id}/entries`, { kind: "in", amount: "500", method: "cash", date: "2026-11-14" }));
+  genis.push({ ad, id: kisi.id });
+}
 await must("muhasebe", api.post("/api/admin/users", { username: "muhasebe247", name: "Muhasebe Kişisi", role: "muhasebe", password: "Muhasebe-2026!", mustChangePassword: false }));
 
 const browser = await chromium.launch();
@@ -80,8 +92,8 @@ const newContext = async () => {
   return context;
 };
 // Cari kartı → "Ayrıntılı Ekstre" (gerçek tıklama); tablo hazır olana kadar bekler.
-async function openDetail(page) {
-  await page.evaluate(id => window.HOF.accounts.open(id), cari.id);
+async function openDetail(page, accountId = cari.id) {
+  await page.evaluate(id => window.HOF.accounts.open(id), accountId);
   await page.waitForSelector(`${TOP} [data-act="detailStatement"]`, { state: "visible" });
   await page.click(`${TOP} [data-act="detailStatement"]`);
   await page.waitForSelector(`${MAIN}[aria-busy="false"] .hof-rc-table tbody tr.is-item`, { timeout: 20000 });
@@ -142,6 +154,26 @@ try {
     }, MAIN);
     await page.screenshot({ path: path.join(SHOTS, "01b-1366-16-kolon.png") });
     ok(fit.scroll <= fit.client + 1, `1366 px: yatay kaydırma yok (tablo ${fit.scroll} px, kutu ${fit.client} px)`);
+    for (let index = 0; index < 6 && (await page.$(MODAL)); index += 1) await escClose(page, { step: "1366 kapat" });
+    for (const kisi of genis) {
+      await openDetail(page, kisi.id);
+      await page.waitForTimeout(300);
+      const wide = await page.evaluate(sel => {
+        const box = document.querySelector(`${sel} .hof-rc-table`);
+        const heads = [...box.querySelectorAll("thead th")].map(th => th.textContent.trim());
+        const rows = [...box.querySelectorAll("tbody tr")].map(tr => [...tr.children].map(td => td.textContent.trim()));
+        const last = [...box.querySelectorAll("tbody tr:not(.is-item) td:last-child")].at(-1);
+        const edge = last ? Math.round(last.getBoundingClientRect().right - box.getBoundingClientRect().right) : null;
+        return { scroll: box.scrollWidth, client: box.clientWidth, heads, rows, edge };
+      }, MAIN);
+      await page.screenshot({ path: path.join(SHOTS, `01c-1366-${kisi.ad.replace(/\s+/g, "-")}.png`) });
+      const at = name => wide.heads.indexOf(name);
+      ok(wide.heads.length === 16 && wide.rows.some(row => row[at("İşlem")] === "Taksit Planı (mevcut borç)") && wide.rows.filter(row => row[at("İşlem")] === "Taksit Tahsilatı").length === 2, `${kisi.ad}: gezinti verisi (16 kolon, taksit planı + 2 taksit tahsilatı)`);
+      ok(wide.scroll <= wide.client + 1 && wide.edge !== null && wide.edge <= 1, `${kisi.ad} 1366 px: yatay taşma yok, son Bakiye hücresi kutuda (tablo ${wide.scroll} px, kutu ${wide.client} px, sağ kenar farkı ${wide.edge} px)`);
+      ok(wide.rows.some(row => /^FIS\d{13}$/.test(row[at("Belge No")])) && wide.rows.some(row => /^Satış FIS\d{13}$/.test(row[at("Açıklama / Ürün - Hizmet")])), `${kisi.ad}: Belge No ve açıklama metni değişmedi (bölme yalnız görünümde)`);
+      for (let index = 0; index < 6 && (await page.$(MODAL)); index += 1) await escClose(page, { step: "1366 kapat" });
+    }
+    await openDetail(page);
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.waitForTimeout(200);
   }

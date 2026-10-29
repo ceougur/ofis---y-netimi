@@ -209,12 +209,27 @@ await step("E3b P14 Eşleme Bağlantısı: Kopyala → uzak bilgisayarın taray�
 });
 
 await step("E4 sınır 3/3: karekod düğmeleri pasif, neden ve uyarı görünür", async () => {
-  for (const username of ["mobil-ayse"]) {
-    await adminApi.put(`/api/admin/mobile/access/${ids[username]}`, { remote: true });
-    const code = await adminApi.post("/api/admin/mobile/codes", { userId: ids[username] });
-    const other = createPhone(remoteBase, { name: `${username} tableti`, kind: "tablet" });
-    const pair = await other.pair(code.data.data.code);
-    if (pair.status !== 200) throw new Error(`eşleme: ${pair.text}`);
+  // 2.4.7 gezinti D6: üçüncü cihaz TABLET ekrandan eşlenir — gezintideki gibi telefon imzalı tarayıcı (iPhone UA) ama 820 × 1180 dokunmatik ekran.
+  // Yönetim → Mobil Cihazlar'da tür "Tablet" görünmeli (eski kod UA'ya bakıp "Telefon" yazıyordu).
+  await adminApi.put(`/api/admin/mobile/access/${ids["mobil-ayse"]}`, { remote: true });
+  const code = await adminApi.post("/api/admin/mobile/codes", { userId: ids["mobil-ayse"] });
+  const tabletContext = await browser.newContext({ viewport: { width: 820, height: 1180 }, userAgent: IPHONE, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+  const tablet = await tabletContext.newPage();
+  tablet.on("pageerror", error => pageErrors.push(`tablet: ${error.message}`));
+  tablet.setDefaultTimeout(15000);
+  await tablet.goto(code.data.data.url);
+  await tablet.waitForSelector("#pair-form:not(.hidden)");
+  ok((await tablet.inputValue("#device-name")) === "Tablet", `D6 tablet cihaz adı önerisi: ${await tablet.inputValue("#device-name")}`);
+  await tablet.click("#pair-submit");
+  await tablet.waitForSelector("#login-form:not(.hidden)");
+  await tabletContext.close();
+  {
+    const state = await view();
+    const device = state.devices.find(item => item.username === "mobil-ayse");
+    ok(device?.kind === "tablet" && device?.kindLabel === "Tablet", `D6 tablet kaydı: ${device?.kind} / ${device?.kindLabel}`);
+    await reloadCard();
+    const deviceRow = device ? await desk.textContent(`[data-mobile-device="${device.id}"]`) : "";
+    ok(/Tablet/.test(deviceRow) && !/Telefon/.test(deviceRow), `D6 Yönetim satırı: ${deviceRow.replace(/\s+/g, " ").trim()}`);
   }
   await reloadCard();
   ok(/3 \/ 3/.test(await desk.textContent("[data-mobile-count]")), "sayaç 3 / 3");

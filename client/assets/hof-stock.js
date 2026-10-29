@@ -260,6 +260,9 @@
             const dateField = field("openingDate").closest(".hof-field");
             const sync = () => {
               const service = field("kind").value === "service";
+              // 2.4.7 gezinti D2: hizmet kalemi açılırken düğme "Hizmeti Aç" (Yazım düzeni: ad kalemin türünü söyler).
+              const submit = dialog.querySelector('form button[type="submit"]');
+              if (submit) submit.textContent = service ? "Hizmeti Aç" : "Ürünü Aç";
               const unit = field("unit")?.value && field("unit").value !== HOF.OTHER_CHOICE ? field("unit").value : "";
               const qty = parseNumber(field("openingQty").value) || 0;
               const price = parseNumber(field("unitPrice").value) || 0;
@@ -297,7 +300,8 @@
         }
         const result = item ? await HOF.api(`/api/workspace/stock/${encodeURIComponent(item.id)}`, { method: "PUT", body: data }) : await HOF.api("/api/workspace/stock", { method: "POST", body: data });
         if (!item && data.openingPay === "cash") HOF.emit("cash-changed");
-        HOF.toast(item ? "Ürün güncellendi." : data.openingQty ? `Ürün açıldı: ${qtyText(result.qty)} ${result.unit} stokta${data.openingPay === "cash" ? "; Kasa’ya stok ödemesi yazıldı" : ""}.` : "Ürün açıldı.", { type: "success" });
+        const noun = (data.kind || item?.kind) === "service" ? "Hizmet" : "Ürün";
+        HOF.toast(item ? `${noun} güncellendi.` : data.openingQty ? `Ürün açıldı: ${qtyText(result.qty)} ${result.unit} stokta${data.openingPay === "cash" ? "; Kasa’ya stok ödemesi yazıldı" : ""}.` : `${noun} açıldı.`, { type: "success" });
         if (!modal) open(result.id);
         view.id = result.id;
         view.mode = "card";

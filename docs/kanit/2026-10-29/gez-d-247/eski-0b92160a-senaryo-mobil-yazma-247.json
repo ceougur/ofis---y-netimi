@@ -1,0 +1,53 @@
+{
+  "ad": "gez-d-247/eski-0b92160a-senaryo-mobil-yazma-247",
+  "komut": "npm run test:senaryo-mobil-yazma-247",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T15:42:07.967Z",
+  "sure_sn": 26.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 61,
+    "gecen": 57,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D3 Ödeme notu işleme uyar: Ödeme carinin en eski açık borcunu kapatır; fatura seçilmez. Kayıt bugünün tarihiyle (ofis sunucusunun günü) yazılır.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tahsilat Yeri: Cari Hesabına (En Eski Borç) | Taksit Kartı · Mehmet Taksit · Kalan ₺300,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D3 not: önce Tahsilat Yeri seçilir",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ae469cbf60beec4ae/docs/kanit/2026-10-29/gez-d-247/eski-0b92160a-senaryo-mobil-yazma-247.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gez-d-247-eski-0b92160a",
+  "ham_cikti_sha256": "d722cc6b64113e586c6dc582ac237e60d0a6240c33847540fc26dc7037f370a0",
+  "ham_cikti_bayt": 4964
+}

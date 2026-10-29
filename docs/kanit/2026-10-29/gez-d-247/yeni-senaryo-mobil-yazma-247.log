@@ -1,0 +1,104 @@
+
+> destekofis@2.4.6 test:senaryo-mobil-yazma-247
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-mobil-yazma-247.mjs
+
+
+■ Y1 karekod bağlantısıyla eşleme + giriş (uzak dinleyici) → Genel Bakış; kayıt girişi açık
+  ✓ telefon uzak adreste (http://127.0.0.1:37679)
+  ✓ Genel Bakış: kayıt girişi açık notu
+
+■ Y2 Tahsilat Gir (nakit 1.200): en eski fatura kapanır, bakiye 300, Kasa +1.200; tarih sunucunun günü
+  ✓ başlangıç bakiyesi ₺1.500,00
+  ✓ bilgi notu: fatura seçilmez (FIFO)
+  ✓ formda fatura ve tarih alanı yok (S1, S6)
+  ✓ ödeme yolları Nakit, Havale / EFT, POS (çek / senet yok — S2)
+  ✓ Tahsilat formu: yatay taşma yok (390 ≤ 390)
+  ✓ bildirim: Cihaz eşlendi. Kullanıcı adınız ve parolanızla girin. | Tahsilat kaydedildi (Makbuz No 1).
+  ✓ ekranda bakiye ₺300,00
+  ✓ veri tabanı: [{"kind":"in","amount":1200,"date":"2026-10-31","method":"cash","invoiceId":"","createdBy":"user-f0754271-891a-4c4b-9c53-763cc2e15ad9"}]
+  ✓ FIFO: F1 açık 0, F2 açık 300
+  ✓ Kasa 200 → 1400
+
+■ Y2b Havale / EFT (iki banka hesabı): seçici görünür, İkinci TL Hesabı seçilir → yalnız o hesap +250; Kasa değişmez; bakiye 50
+  ✓ Nakit seçiliyken banka seçicisi gizli
+  ✓ Havale / EFT seçilince Banka Hesabı seçicisi görünür
+  ✓ seçicide iki hesap (2)
+  ✓ Havale formu: yatay taşma yok (390 ≤ 390)
+  ✓ bildirim: Tahsilat kaydedildi (Makbuz No 2).
+  ✓ ekranda bakiye ₺50,00
+  ✓ veri tabanı: {"kind":"in","amount":250,"date":"2026-10-31","method":"bank","invoiceId":"","createdBy":"user-f0754271-891a-4c4b-9c53-763cc2e15ad9"}
+  ✓ yalnız seçilen hesap +250 (İkinci 1000 → 1250, Ana 1000 → 1000)
+  ✓ Kasa değişmedi (1400 → 1400)
+  ✓ FIFO: F2 açık 50
+
+■ Y3 Ödeme Gir: Kasa yetmez → soru → Yine de Kaydet → tek kayıt (aynı istek kimliği)
+  ✓ ödeme yolları Nakit, Havale / EFT, Kredi Kartı
+  ✓ D3 Ödeme notu işleme uyar: Ödeme carinin hesabına Borç olarak yazılır; fatura seçilmez. Kayıt bugünün tarihiyle (ofis sunucusunun günü) yazılır.
+  ✓ soru: Nakit kasada 1.400,00 TL var; 5.000,00 TL çıkış bakiyeyi -3.600,00 TL eksiye düşürür.Yine 
+  ✓ soru sırasında kayıt yok
+  ✓ Yine de Kaydet → kaydedildi
+  ✓ veri tabanı: [{"kind":"out","amount":5000,"date":"2026-10-31","method":"cash","invoiceId":"","createdBy":"user-f0754271-891a-4c4b-9c53-763cc2e15ad9"}]
+  ✓ tek istek kimliği (soru + onay aynı istek)
+  ✓ Kasa 1400 → -3600
+
+■ Y4 taksit kartına tahsilat: 100 → kalan 200; 250 → soru → Fazlasını Avans Yaz → kalan 0, fazla 50; cari −50
+  ✓ Tahsilat Yeri: — Seçin — | Cari Hesabına (En Eski Borç) | Taksit Kartı · Mehmet Taksit · Kalan ₺300,00
+  ✓ D7 Tahsilat Yeri boş (seçilmemiş) gelir
+  ✓ D3 not: önce Tahsilat Yeri seçilir
+  ✓ D7 seçmeden Kaydet → uyarı: Tahsilat Yeri'ni seçin: taksit kartına ya da Cari Hesabına (En Eski Borç).
+  ✓ D7 seçmeden kayıt açılmadı, form açık
+  ✓ D3 Cari Hesabına seçilince not: Tahsilat carinin en eski açık borcunu kapatır; fatura seçilmez. Kayıt bugünün tarihiyle (ofis sunucusunun günü) yazılır.
+  ✓ D3 Taksit Kartı seçilince not: Tutar seçilen taksit kartının en eski açık taksidinden başlayarak düşer; kalanı aşan tutar için “Fazlasını Avans Yaz” sorulur. Kayıt bugünün tarihiyle (ofis sunucusunun günü) yazılır.
+  ✓ kart tahsilatı kaydedildi
+  ✓ kart: ödenen 100, kalan 200
+  ✓ soru: Fazlasını Avans Yaz
+  ✓ avansla kaydedildi
+  ✓ kart: kalan 0, fazla 50
+  ✓ cari bakiye -50 (fazlası avans)
+  ✓ son hareketler 4 satır = ekstre 4
+  ✓ taksit tahsilatı ₺100,00 telefonda görünür
+  ✓ taksit tahsilatı ₺250,00 telefonda görünür
+  ✓ ham tür/ISO tarih yok: Taksit Tahsilatı31.10.2026Alacak ₺250,00 | Taksit Tahsilatı31.10.2026Alacak ₺100,00 | Taksit Planı (mevcut borç) · Mehmet Taksit · 3 taksit · 300,00 TL borç taksitlendirildi01.10.2026Borç ₺0,00 | Borç · Açılış bakiyesi01.10.2026Borç ₺300,00
+
+■ Y4b kayıt modülü ilk açılışta yüklenemezse (sunucu kapalıyken açılan sayfa) sonraki kayıt açılışında düğmeler gelir — yeniden yükleme gerekmez
+  ✓ ön koşul: modül yüklenemedi, düğme yok (service worker denetiminde: false)
+  ✓ sunucu dönünce (modül yüklenebilir) Tahsilat Gir / Ödeme Gir yeniden yüklemesiz gelir
+
+■ Y5 Stok Girişi 5 → miktar 15; parasız (Kasa değişmez)
+  ✓ not: yalnız giriş (S8)
+  ✓ stok girişi kaydedildi
+  ✓ ekranda miktar 15 Adet
+  ✓ veri tabanı: {"kind":"in","qty":5,"pay":"none","amount":0}
+  ✓ Kasa değişmedi
+
+■ Y6a bağlantı sunucuya ulaşmadan kopar → Sonucu Belirsiz → Yeniden Gönder → tek kayıt
+  ✓ formda: bağlantı koptu
+  ✓ istek ulaşmadı: kayıt yok
+  ✓ Sonucu Belirsiz İşlemler'de Yeniden Gönder
+  ✓ yeniden gönderim kaydedildi
+  ✓ tek kayıt (1)
+  ✓ belirsiz liste boşaldı
+
+■ Y6b sunucu yazar, yanıt kaybolur → Yeniden Gönder → 'zaten kaydedilmişti'; yine tek kayıt
+  ✓ sunucu yazdı (2. kayıt)
+  ✓ yeniden gönderim: zaten kaydedilmişti
+  ✓ ikinci kayıt açılmadı (2)
+
+■ Y7 gece yarısı: 23:5x'te ulaşmayan istek 00:01'de yeniden gönderilir → kayıt 01.11.2026 tarihli (sunucunun günü)
+  ✓ kaydedildi
+  ✓ kayıt {"kind":"in","amount":25,"date":"2026-11-01","method":"cash","invoiceId":"","createdBy":"user-f0754271-891a-4c4b-9c53-763cc2e15ad9"}
+
+■ Y8 24 saat: belirsiz istek 25 saat sonra yeniden gönderilmez; Listeden Kaldır
+  ✓ Yeniden Gönder düğmesi yok
+  ✓ neden yazılı: Sonucu Belirsiz İşlemler (1)Tahsilat Gir · Veli Kesinti · 15 TL24 saati geçti; yeniden gönderilmez. Cari hareketlerinden
+  ✓ listeden kaldırıldı
+  ✓ kayıt açılmadı
+
+■ Y9 personel telefonu: yalnız Tahsilat Gir (Ödeme Gir yok); kayıt personelin adına
+  ✓ personel düğmeleri: Tahsilat Gir
+  ✓ personel tahsilatı kaydedildi
+  ✓ kaydı giren personel (true)
+  ✓ Personel cari kartı: yatay taşma yok (390 ≤ 390)
+  ✓ sayfa hatası yok (—)
+
+74 geçti, 0 kaldı

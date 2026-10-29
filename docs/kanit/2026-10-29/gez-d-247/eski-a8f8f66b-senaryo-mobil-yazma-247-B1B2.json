@@ -1,0 +1,83 @@
+{
+  "ad": "gez-d-247/eski-a8f8f66b-senaryo-mobil-yazma-247-B1B2",
+  "komut": "npm run test:senaryo-mobil-yazma-247",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T15:42:58.095Z",
+  "sure_sn": 64.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 52,
+    "gecen": 42,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "son hareketler 1 satır = ekstre 4",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "taksit tahsilatı ₺100,00 telefonda görünür",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "taksit tahsilatı ₺250,00 telefonda görünür",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ham tür/ISO tarih yok: Açılış bakiyesi2026-10-01₺300,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "sunucu dönünce (modül yüklenebilir) Tahsilat Gir / Ödeme Gir yeniden yüklemesiz gelir",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ae469cbf60beec4ae/docs/kanit/2026-10-29/gez-d-247/eski-a8f8f66b-senaryo-mobil-yazma-247-B1B2.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gez-d-247-eski-a8f8f66b",
+  "ham_cikti_sha256": "92eb049b5dae650b7c944ecfe324e21a4c6368db7c808c033fd5703a08c8623a",
+  "ham_cikti_bayt": 4524
+}
