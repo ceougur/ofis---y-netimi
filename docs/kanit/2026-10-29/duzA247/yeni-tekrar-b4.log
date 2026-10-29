@@ -1,0 +1,32 @@
+TAP version 13
+# saldırgan ofis sayfası: 200 set-cookie: undefined
+# Subtest: B4 alt alanlar arası çerez
+    # Subtest: kapıcı başka ofisin kökeninden gelen Domain=<ana alan> çerezini olduğu gibi geçirir
+    ok 1 - kapıcı başka ofisin kökeninden gelen Domain=<ana alan> çerezini olduğu gibi geçirir
+      ---
+      duration_ms: 19.822204
+      type: 'test'
+      ...
+# atılan çerez sonda → 200 {"ok":true,"data":{"user":{"id":"user-b838e840-6aab-48e0-a81f-0c14088a32c6","username":"admin","name":"Ofis yöneticisi",
+# atılan çerez başta → 200 {"ok":true,"data":{"user":{"id":"user-b838e840-6aab-48e0-a81f-0c14088a32c6","username":"admin","name":"Ofis yöneticisi",
+    # Subtest: kurbanın isteğinde ikinci hof_device çerezi → kurbanın kendi ofisine erişimi kesiliyor
+    ok 2 - kurbanın isteğinde ikinci hof_device çerezi → kurbanın kendi ofisine erişimi kesiliyor
+      ---
+      duration_ms: 272.280957
+      type: 'test'
+      ...
+    1..2
+ok 1 - B4 alt alanlar arası çerez
+  ---
+  duration_ms: 789.013202
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1235.478853

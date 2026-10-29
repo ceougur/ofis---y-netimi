@@ -1,0 +1,323 @@
+TAP version 13
+# Subtest: B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+    # Subtest: aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin kaydı/yüklemesi/canlı isteği 410
+    not ok 1 - aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin kaydı/yüklemesi/canlı isteği 410
+      ---
+      duration_ms: 85.542595
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:184:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tek lisans/makineyle kapıcıdan aynı anda 12 cihaz geçiyor (sınır 3)
+        
+        12 !== 3
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 3
+      actual: 12
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:194:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: her yeni ofis eskisinin tünelini + DNS kaydını siler: 5 kurulumdan sonra etkin tünel 1, DNS kaydı 1; eski ofisin tünel başvurusu 410
+    not ok 2 - her yeni ofis eskisinin tünelini + DNS kaydını siler: 5 kurulumdan sonra etkin tünel 1, DNS kaydı 1; eski ofisin tünel başvurusu 410
+      ---
+      duration_ms: 42.320945
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:204:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tek lisans/makine 5 tünel + 5 DNS kaydı tutuyor (beklenen 1 + 1)
+        + actual - expected
+        
+          [
+        +   5,
+        +   5
+        -   1,
+        -   1
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 1
+        1: 1
+      actual:
+        0: 5
+        1: 5
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:218:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Cloudflare silmesi başarısızsa eski ofis yine kapanır, temizlik bekler; sonraki kayıtta tünel + DNS silinir
+    not ok 3 - Cloudflare silmesi başarısızsa eski ofis yine kapanır, temizlik bekler; sonraki kayıtta tünel + DNS silinir
+      ---
+      duration_ms: 19.687852
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:225:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski ofisin cihazı hemen düşer
+        + actual - expected
+        
+        + 'kapi-ozet-yok'
+        - 'kapi-cihaz'
+                ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'kapi-cihaz'
+      actual: 'kapi-ozet-yok'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:233:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ofis başka makineye taşınırsa (lisans yeni makineye aktarıldı) çalışmayı sürdürür; eski makinede açılan yeni ofis onun tüneline/DNS'ine dokunmaz
+    ok 4 - ofis başka makineye taşınırsa (lisans yeni makineye aktarıldı) çalışmayı sürdürür; eski makinede açılan yeni ofis onun tüneline/DNS'ine dokunmaz
+      ---
+      duration_ms: 28.357207
+      type: 'test'
+      ...
+    # Subtest: DENEME belirteci aynı kurallarla: aynı makinenin ikinci deneme ofisi birincisini kapatır
+    not ok 5 - DENEME belirteci aynı kurallarla: aynı makinenin ikinci deneme ofisi birincisini kapatır
+      ---
+      duration_ms: 32.019105
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:256:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        deneme belirteciyle de aynı anda en çok 3 cihaz
+        
+        6 !== 3
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 3
+      actual: 6
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:262:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: eşzamanlı iki yeni ofis kaydı (aynı makine, 6 tur): her turda kapıdan geçen cihaz en çok 3
+    not ok 6 - eşzamanlı iki yeni ofis kaydı (aynı makine, 6 tur): her turda kapıdan geçen cihaz en çok 3
+      ---
+      duration_ms: 24.768099
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:265:3'
+      failureType: 'testCodeFailure'
+      error: 'tur 0: aynı makinede 6 cihaz geçiyor (sınır 3); kayıtlar ["ok","ok"]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:273:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan
+    not ok 7 - ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan
+      ---
+      duration_ms: 11.359849
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:295:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul: iki kayıt da makine nesnesini yazmadan önce 'yok' okudu
+        
+        0 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        zorlaYaris (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:288:12)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:296:35)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (b): kaybeden (kapatılmamış) ofisin yeniden kaydı makineyi geri ALAMAZ (410); kazanan sürer
+    not ok 8 - ZORLA ilk yazım yarışı (b): kaybeden (kapatılmamış) ofisin yeniden kaydı makineyi geri ALAMAZ (410); kazanan sürer
+      ---
+      duration_ms: 10.122098
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:302:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul: iki kayıt da makine nesnesini yazmadan önce 'yok' okudu
+        
+        0 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        zorlaYaris (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:288:12)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:303:41)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)
+    not ok 9 - ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)
+      ---
+      duration_ms: 13.306213
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:309:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul: iki kayıt da makine nesnesini yazmadan önce 'yok' okudu
+        
+        0 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        zorlaYaris (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:288:12)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:310:38)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: makine başına günde 10 ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır
+    not ok 10 - makine başına günde 10 ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır
+      ---
+      duration_ms: 48.547973
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:316:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        11. ofis değişimi reddedilmeli: {"ok":true,"data":{"ofis":"onbvevwsva45olpfg","cihaz":1,"sinir":3},"status":200}
+        + actual - expected
+        
+          [
+        +   200,
+        +   undefined
+        -   429,
+        -   'kapi-hiz'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 429
+        1: 'kapi-hiz'
+      actual:
+        0: 200
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:325:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kapıcı genelinde günde 50 yeni ofis; 51. (başka makine) 429 kapi-hiz; kayıtlı ofisin yeniden kaydı etkilenmez; ertesi gün açılır
+    not ok 11 - kapıcı genelinde günde 50 yeni ofis; 51. (başka makine) 429 kapi-hiz; kayıtlı ofisin yeniden kaydı etkilenmez; ertesi gün açılır
+      ---
+      duration_ms: 183.323669
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:332:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        günün 51. yeni ofisi reddedilmeli: {"ok":true,"data":{"ofis":"oird5wb6jxccko6wc","cihaz":0,"sinir":3},"status":200}
+        + actual - expected
+        
+          [
+        +   200,
+        +   undefined
+        -   429,
+        -   'kapi-hiz'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 429
+        1: 'kapi-hiz'
+      actual:
+        0: 200
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:341:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: makine başına saatte 240 kayıt; sonraki 429 kapi-hiz; saat dönümünde açılır
+    not ok 12 - makine başına saatte 240 kayıt; sonraki 429 kapi-hiz; saat dönümünde açılır
+      ---
+      duration_ms: 1018.518437
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:347:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        saatte 240 kayıt kabul; gelen 241
+        
+        241 !== 240
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 240
+      actual: 241
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:359:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: makine başına saatte 30 tünel başvurusu; sonraki 429 kapi-hiz; saat dönümünde açılır
+    not ok 13 - makine başına saatte 30 tünel başvurusu; sonraki 429 kapi-hiz; saat dönümünde açılır
+      ---
+      duration_ms: 102.054362
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:366:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        saatte 30 tünel başvurusu kabul; gelen 31
+        
+        31 !== 30
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 30
+      actual: 31
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:377:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..13
+not ok 1 - B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+  ---
+  duration_ms: 1623.412363
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs:179:1'
+  failureType: 'subtestsFailed'
+  error: '12 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 13
+# suites 1
+# pass 1
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1746.409139

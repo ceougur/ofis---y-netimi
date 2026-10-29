@@ -1,0 +1,63 @@
+TAP version 13
+# kayıtlar: [{"ofis":"ordp6vdwrqky432dw","ok":true,"code":""},{"ofis":"oktjds5cly5xeu5nj","ok":true,"code":""},{"ofis":"o77ddyfrmaifoof2b","ok":true,"code":""},{"ofis":"onuf2ecpic4owts5d","ok":true,"code":""}]
+# aynı lisans/makine için kapıcıdan AYNI ANDA geçen cihaz: 12 (lisans sınırı 3)
+# Subtest: B3 (uyarlanmış ölçü) tek lisans (tek makine) → birden çok ofis kimliği — W=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860
+    # Subtest: aynı lisans belirteciyle 4 ofis × 3 cihaz: AYNI ANDA kapıcıdan geçen cihaz ≤ 3
+    not ok 1 - aynı lisans belirteciyle 4 ofis × 3 cihaz: AYNI ANDA kapıcıdan geçen cihaz ≤ 3
+      ---
+      duration_ms: 135.836257
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-uyarlanmis.test.mjs:30:3'
+      failureType: 'testCodeFailure'
+      error: 'tek lisansla kapıcıdan aynı anda 12 cihaz geçiyor (sınır 3)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-uyarlanmis.test.mjs:49:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+# tek lisansla SONDA duran tünel: 5 | DNS kaydı: 5 | başvuru durumları: 200,200,200,200,200
+    # Subtest: her ofis kimliği ayrı tünel + DNS kaydı alıyor mu (sahte Cloudflare; sonda duranlar)
+    not ok 2 - her ofis kimliği ayrı tünel + DNS kaydı alıyor mu (sahte Cloudflare; sonda duranlar)
+      ---
+      duration_ms: 61.496576
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-uyarlanmis.test.mjs:52:3'
+      failureType: 'testCodeFailure'
+      error: 'tek lisans/makine 5 tünel + 5 DNS kaydı tutuyor'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-uyarlanmis.test.mjs:89:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - B3 (uyarlanmış ölçü) tek lisans (tek makine) → birden çok ofis kimliği — W=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860
+  ---
+  duration_ms: 209.910225
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-uyarlanmis.test.mjs:19:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 313.547702

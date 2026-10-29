@@ -1,0 +1,93 @@
+{
+  "ad": "duzA247/eski-e73e9860-gg247-b3",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860/test/kapi-gg247-b3.test.mjs",
+  "commit": "c6e95112dab840eb4264172f25053691889d8d59",
+  "dal": "worktree-agent-a4ce03c386642542b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T13:21:23.780Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 1,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin kaydı/yüklemesi/canlı isteği 410",
+      "konum": "test/kapi-gg247-b3.test.mjs:184:3",
+      "hata": "tek lisans/makineyle kapıcıdan aynı anda 12 cihaz geçiyor (sınır 3) · 12 !== 3 (beklenen 3, gelen 12)"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › her yeni ofis eskisinin tünelini + DNS kaydını siler: 5 kurulumdan sonra etkin tünel 1, DNS kaydı 1; eski ofisin tünel başvurusu 410",
+      "konum": "test/kapi-gg247-b3.test.mjs:204:3",
+      "hata": "tek lisans/makine 5 tünel + 5 DNS kaydı tutuyor (beklenen 1 + 1) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › Cloudflare silmesi başarısızsa eski ofis yine kapanır, temizlik bekler; sonraki kayıtta tünel + DNS silinir",
+      "konum": "test/kapi-gg247-b3.test.mjs:225:3",
+      "hata": "eski ofisin cihazı hemen düşer · + actual - expected · + 'kapi-ozet-yok' (beklenen kapi-cihaz, gelen kapi-ozet-yok)"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › DENEME belirteci aynı kurallarla: aynı makinenin ikinci deneme ofisi birincisini kapatır",
+      "konum": "test/kapi-gg247-b3.test.mjs:256:3",
+      "hata": "deneme belirteciyle de aynı anda en çok 3 cihaz · 6 !== 3 (beklenen 3, gelen 6)"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › eşzamanlı iki yeni ofis kaydı (aynı makine, 6 tur): her turda kapıdan geçen cihaz en çok 3",
+      "konum": "test/kapi-gg247-b3.test.mjs:265:3",
+      "hata": "tur 0: aynı makinede 6 cihaz geçiyor (sınır 3); kayıtlar [\"ok\",\"ok\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan",
+      "konum": "test/kapi-gg247-b3.test.mjs:295:3",
+      "hata": "ön koşul: iki kayıt da makine nesnesini yazmadan önce 'yok' okudu · 0 !== 2 (beklenen 2, gelen 0)"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › ZORLA ilk yazım yarışı (b): kaybeden (kapatılmamış) ofisin yeniden kaydı makineyi geri ALAMAZ (410); kazanan sürer",
+      "konum": "test/kapi-gg247-b3.test.mjs:302:3",
+      "hata": "ön koşul: iki kayıt da makine nesnesini yazmadan önce 'yok' okudu · 0 !== 2 (beklenen 2, gelen 0)"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)",
+      "konum": "test/kapi-gg247-b3.test.mjs:309:3",
+      "hata": "ön koşul: iki kayıt da makine nesnesini yazmadan önce 'yok' okudu · 0 !== 2 (beklenen 2, gelen 0)"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › makine başına günde 10 ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır",
+      "konum": "test/kapi-gg247-b3.test.mjs:316:3",
+      "hata": "11. ofis değişimi reddedilmeli: {\"ok\":true,\"data\":{\"ofis\":\"onbvevwsva45olpfg\",\"cihaz\":1,\"sinir\":3},\"status\":200} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › kapıcı genelinde günde 50 yeni ofis; 51. (başka makine) 429 kapi-hiz; kayıtlı ofisin yeniden kaydı etkilenmez; ertesi gün açılır",
+      "konum": "test/kapi-gg247-b3.test.mjs:332:3",
+      "hata": "günün 51. yeni ofisi reddedilmeli: {\"ok\":true,\"data\":{\"ofis\":\"oird5wb6jxccko6wc\",\"cihaz\":0,\"sinir\":3},\"status\":200} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › makine başına saatte 240 kayıt; sonraki 429 kapi-hiz; saat dönümünde açılır",
+      "konum": "test/kapi-gg247-b3.test.mjs:347:3",
+      "hata": "saatte 240 kayıt kabul; gelen 241 · 241 !== 240 (beklenen 240, gelen 241)"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › makine başına saatte 30 tünel başvurusu; sonraki 429 kapi-hiz; saat dönümünde açılır",
+      "konum": "test/kapi-gg247-b3.test.mjs:366:3",
+      "hata": "saatte 30 tünel başvurusu kabul; gelen 31 · 31 !== 30 (beklenen 30, gelen 31)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/duzA247/eski-e73e9860-gg247-b3.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4ce03c386642542b",
+  "ham_cikti_sha256": "9e23cac6da135315065fae60735d2191b5272d889857829325424ce04ed541fb",
+  "ham_cikti_bayt": 15388
+}
