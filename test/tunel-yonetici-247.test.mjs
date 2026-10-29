@@ -78,6 +78,21 @@ describe("M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte clo
   });
   after(async () => {
     await server?.close();
+    // Kapanışta bağlayıcı kalmışsa (hata ya da gerileme) test süreci asılı kalmasın: kalan süreç(ler) burada öldürülür; test 9 zaten kırmızıdır.
+    for (const rec of lines(log)) {
+      for (const pid of [rec.pid, rec.torun]) {
+        if (!isAlive(pid)) continue;
+        try {
+          process.kill(process.platform === "win32" ? pid : -pid, "SIGKILL");
+        } catch {
+          try {
+            process.kill(pid, "SIGKILL");
+          } catch {
+            // kapanmış
+          }
+        }
+      }
+    }
     rmSync(root, { recursive: true, force: true });
   });
 

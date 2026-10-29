@@ -269,7 +269,9 @@ export function createTunnelManager({
       clearTimeout(first);
       clearInterval(timer);
       timer = null;
-      while (busy) await new Promise(resolve => setTimeout(resolve, 25));
+      // Süren tur (indirme, kapıcı) en çok 3 sn beklenir; tur `stopped` görünce süreci başlatmadan döner (kapanış takılmaz).
+      const until = Date.now() + 3_000;
+      while (busy && Date.now() < until) await new Promise(resolve => setTimeout(resolve, 25));
       await stopProcess();
       set("off", TUNNEL_REASONS.disabled, { connections: 0 });
     },
