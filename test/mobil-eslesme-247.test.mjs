@@ -13,6 +13,7 @@ import * as http from "../server/lib/http.mjs";
 import { isLocalAddress } from "../server/lib/auth.mjs";
 import { ADMIN_PASSWORD, createUser, loginAdmin, startTestServer } from "./helpers.mjs";
 import { createPhone, rawRequest, remoteBase } from "./mobil-uzak-ortak.mjs";
+import { DEVICE_COOKIE, REMOTE_SESSION_COOKIE } from "../server/lib/mobile-remote.mjs";
 
 const PASSWORD = "Personel-2026!";
 const T0 = "2026-11-30T23:58:00+03:00"; // ay sonu + gece yarısına 2 dk (karekod süresi gün ve ay dönümünü geçer)
@@ -128,7 +129,7 @@ describe("M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklid
     const veliId = await ctx.user("veli-bag");
     await ctx.allow(veliId);
     const veli = await ctx.paired(veliId, "veli-bag");
-    const mixed = await rawRequest(ctx.base, "GET", "/api/mobil/session", { headers: { cookie: `hof_device=${phone.jar.get("hof_device")}; hof_mobil=${veli.jar.get("hof_mobil")}` } });
+    const mixed = await rawRequest(ctx.base, "GET", "/api/mobil/session", { headers: { cookie: `${DEVICE_COOKIE}=${phone.jar.get(DEVICE_COOKIE)}; ${REMOTE_SESSION_COOKIE}=${veli.jar.get(REMOTE_SESSION_COOKIE)}` } });
     assert.equal(mixed.status, 401, "başka cihazın oturumu bu cihazda geçmemeli");
     assert.equal(mixed.code, "remote-session");
     assert.equal((await veli.get("/api/mobil/session")).status, 200, "oturum kendi cihazında sürer");
@@ -137,14 +138,14 @@ describe("M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklid
   });
 
   it("uzak oturum çerezi ofis ağı dinleyicisinde, ofisin hof_session çerezi uzak dinleyicide geçmez", async () => {
-    const mobileCookie = phone.jar.get("hof_mobil");
-    assert.ok(mobileCookie, "uzak girişte hof_mobil çerezi verilmeli");
-    const onLan = await rawRequest(ctx.server.base, "GET", "/api/auth/me", { headers: { cookie: `hof_session=${mobileCookie}; hof_mobil=${mobileCookie}` } });
+    const mobileCookie = phone.jar.get(REMOTE_SESSION_COOKIE);
+    assert.ok(mobileCookie, "uzak girişte uzak oturum çerezi verilmeli");
+    const onLan = await rawRequest(ctx.server.base, "GET", "/api/auth/me", { headers: { cookie: `hof_session=${mobileCookie}; ${REMOTE_SESSION_COOKIE}=${mobileCookie}` } });
     assert.equal(onLan.status, 401, "uzak oturum belirteci ofis ağında oturum açmamalı");
     const lanCookie = ctx.admin.cookie;
     const stranger = ctx.phone();
-    stranger.jar.set("hof_device", phone.jar.get("hof_device"));
-    const withLan = await stranger.get("/api/mobil/session", { headers: { cookie: `hof_device=${phone.jar.get("hof_device")}; ${lanCookie}` } });
+    stranger.jar.set(DEVICE_COOKIE, phone.jar.get(DEVICE_COOKIE));
+    const withLan = await stranger.get("/api/mobil/session", { headers: { cookie: `${DEVICE_COOKIE}=${phone.jar.get(DEVICE_COOKIE)}; ${lanCookie}` } });
     assert.equal(withLan.status, 401, "ofisin yerel oturumu uzaktan geçmemeli");
     assert.equal(withLan.code, "remote-session");
   });
@@ -366,7 +367,7 @@ describe("M2 silme, izin, kullanıcı: erişim HEMEN kesilir", () => {
     const after1 = await phone.get("/api/mobil/session");
     assert.equal(after1.status, 401, "silinen cihazın oturumu sürmemeli");
     assert.equal(after1.code, "remote-device");
-    const page = await phone.get("/mobil/index.html", { headers: { cookie: `hof_device=${phone.jar.get("hof_device") || "x"}` } });
+    const page = await phone.get("/mobil/index.html", { headers: { cookie: `${DEVICE_COOKIE}=${phone.jar.get(DEVICE_COOKIE) || "x"}` } });
     assert.equal(ctx.server.app.store.get("SELECT COUNT(*) AS n FROM mobile_sessions WHERE user_id = ?", aliId).n, 0, "oturum satırı silinmeli");
     assert.ok([200, 401].includes(page.status));
   });

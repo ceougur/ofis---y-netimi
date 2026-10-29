@@ -24,6 +24,7 @@ import { signToken } from "../../../server/lib/license-token.mjs";
 import { isGrantable, permissionsFor } from "../../../server/lib/permissions.mjs";
 import { ADMIN_PASSWORD, createClient, startTestServer } from "../../helpers.mjs";
 import { createPhone, rawRequest } from "../../mobil-uzak-ortak.mjs";
+import { DEVICE_COOKIE, REMOTE_SESSION_COOKIE } from "../../../server/lib/mobile-remote.mjs"; // B4: __Host- adlar
 import { M3_SINIFLAR, m3Kur } from "./m3-surucu.mjs"; // 2.4.7 M3: kapıcı (uzak istek önce kapıcıdan) + şifreli özet olayları
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -280,14 +281,14 @@ async function runScenario(sen, root) {
       const target = phones.get(e.cihaz).office === e.ofis ? phone : createPhone(office.remoteBase);
       target.base = office.remoteBase;
       const response = await target.login(e.kullanici, e.parola === "dogru" ? PASSWORD : WRONG, { headers: extraHeaders(e) });
-      if (response.status === 200) sessions.set(e.oturum, target.jar.get("hof_mobil"));
+      if (response.status === 200) sessions.set(e.oturum, target.jar.get(REMOTE_SESSION_COOKIE));
       return record(classify(response));
     }
     if (e.olay === "istek") {
       const entry = phones.get(e.cihaz);
-      const device = entry && entry.office === e.ofis ? entry.phone.jar.get("hof_device") : "";
+      const device = entry && entry.office === e.ofis ? entry.phone.jar.get(DEVICE_COOKIE) : "";
       const session = e.oturum ? sessions.get(e.oturum) : "";
-      const cookie = [device ? `hof_device=${device}` : "", session ? `hof_mobil=${session}` : ""].filter(Boolean).join("; ");
+      const cookie = [device ? `${DEVICE_COOKIE}=${device}` : "", session ? `${REMOTE_SESSION_COOKIE}=${session}` : ""].filter(Boolean).join("; ");
       let target = e.yol;
       const company = e.sirket ? office.companyIds[e.sirket] || `sirket-${e.sirket}-yok` : "";
       if (e.yetki && oracleAllowed(e.yol)) target = `${ENDPOINT_OF[e.yetki] || `/api/mobil/reports/kahin-${e.yetki.replace(/[^a-z0-9-]/gi, "-")}`}${company ? `?company=${encodeURIComponent(company)}` : ""}`;

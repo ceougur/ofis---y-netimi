@@ -7,6 +7,7 @@ import { describe, it } from "node:test";
 import { createKapi } from "../bulut/kapi/kapi.mjs";
 import { KAPI_KURALLARI, mesaj, sha256Hex, ecdsaImzala } from "../server/lib/kapi-protokol.mjs";
 import { isaretDogrula, kapiIstemcisi, ozetPaketle } from "../server/lib/mobile-ozet.mjs";
+import { CIHAZ_CEREZI } from "../server/lib/mobil-cerez.mjs";
 import { sahteOnbellek, sahteR2 } from "./kapi-yerel.mjs";
 import { cihaz, lisansAnahtari, ofisAnahtari, rastgeleOfis } from "./kapi-ortak.mjs";
 
@@ -340,7 +341,7 @@ describe("M3 kapıcı — canlı bağlantı kapısı (ofisin telefon adresi → 
     const c = await ortam();
     const tel = await cihaz();
     const { ofis } = await c.ofisKur({ cihazlar: [tel] });
-    return { c, tel, ofis, cerez: `hof_device=${tel.id}.${"s".repeat(43)}` };
+    return { c, tel, ofis, cerez: `${CIHAZ_CEREZI}=${tel.id}.${"s".repeat(43)}` };
   }
   it("cihazsız yalnız sayfa dosyası ve eşleme geçer; mobil uç cihazsız kapi-cihaz", async () => {
     const { c, ofis } = await hazir();
@@ -352,7 +353,7 @@ describe("M3 kapıcı — canlı bağlantı kapısı (ofisin telefon adresi → 
 
   it("listede olmayan cihaz çerezi → kapi-cihaz (iletilmez); eşli cihaz → iletilir, işaret programın doğrulayacağı biçimde, istemcinin işaret taklidi ezilir", async () => {
     const { c, tel, ofis, cerez } = await hazir();
-    const yok = await c.cihazIstegi(ofis.id, "GET", "/api/mobil/cash", { cookie: `hof_device=dev-${"0".repeat(8)}-0000-0000-0000-${"0".repeat(12)}.${"s".repeat(43)}` });
+    const yok = await c.cihazIstegi(ofis.id, "GET", "/api/mobil/cash", { cookie: `${CIHAZ_CEREZI}=dev-${"0".repeat(8)}-0000-0000-0000-${"0".repeat(12)}.${"s".repeat(43)}` });
     assert.equal(yok.code, "kapi-cihaz");
     assert.equal(c.iletilen.length, 0, "bilinmeyen cihaz tünele ulaşmamalı");
     const r = await c.cihazIstegi(ofis.id, "GET", "/api/mobil/cash?company=x", { cookie: cerez, "x-do-kapi": "1.dev-x.taklit" });

@@ -15,6 +15,7 @@ import { after, before, describe, test } from "node:test";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 import { ADMIN_PASSWORD, createClient } from "./helpers.mjs";
 import { createPhone, rawRequest } from "./mobil-uzak-ortak.mjs";
+import { CIHAZ_CEREZI as DEVICE_COOKIE } from "../server/lib/mobil-cerez.mjs";
 
 // Süreç yaşıyor mu (programın modülünden bağımsız; eski kodda da yüklenir — kırmızı kanıtın nedeni okunur, ders 38).
 const isAlive = pid => {
@@ -145,7 +146,7 @@ describe("M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte clo
     const via = `http://127.0.0.1:${rec.port}`;
     const page = await rawRequest(via, "GET", "/mobil/");
     assert.equal(page.status, 200, "telefon sayfası");
-    const companies = await rawRequest(via, "GET", "/api/companies", { headers: { cookie: "hof_device=x" } });
+    const companies = await rawRequest(via, "GET", "/api/companies", { headers: { cookie: `${DEVICE_COOKIE}=x` } });
     assert.equal(companies.status, 401, `tünelden ana uç: ${companies.status} ${companies.text.slice(0, 120)}`);
     const phone = createPhone(via);
     const paired = await phone.pair(code);

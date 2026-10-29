@@ -330,8 +330,15 @@ describe("M3 + M4 uçtan uca — gerçek program, gerçek createKapi (tünel kan
     assert.equal(st.state, "off", `tünel kapanmalı (durum ${st.state} — ${st.reason})`);
     assert.equal(tunnel.pid(), null);
     await until(() => !isAlive(pid), 10_000, "cloudflared süreci sonlandı");
+    // Bağımsız gözden geçirme B1 (BAŞ MİMAR KARARI): silinen cihazın çerezi veri uçlarında 401 kapi-cihaz + çerez silinir; sayfa yolunda "cihazsız" sayılır
+    // (yeni karekodla yeniden eşlenebilsin) — burada tünelde bağlayıcı olmadığından 503, çerez yine silinir. (Önceki beklenti sayfa yolunda da 401'di = B1.)
+    const silindi = response => [].concat(response.headers["set-cookie"] || []).some(line => /^__Host-hof_device=;.*Max-Age=0/i.test(line));
+    const staleApi = await createPhone(kapi.base, { host }).get("/api/mobil/session", { headers: { cookie: [...phone.jar].map(([k, v]) => `${k}=${v}`).join("; ") } });
+    assert.deepEqual([staleApi.status, staleApi.code], [401, "kapi-cihaz"], "silinen cihaz veri ucunda kapıcıda reddedilir");
+    assert.ok(silindi(staleApi), `silinen cihazın çerezi yanıtta silinir: ${staleApi.headers["set-cookie"]}`);
     const stale = await phone.get("/mobil/");
-    assert.deepEqual([stale.status, stale.code], [401, "kapi-cihaz"], "silinen cihaz kapıcıda reddedilir");
+    assert.deepEqual([stale.status, stale.code], [503, "kapi-ofis-kapali"], "silinen cihaz sayfa yolunda cihazsız sayılır (B1); bağlayıcı yok: ofis kapalı");
+    assert.ok(silindi(stale), `sayfa yolunda da çerez silinir: ${stale.headers["set-cookie"]}`);
     const fresh = await createPhone(kapi.base, { host }).get("/mobil/");
     assert.deepEqual([fresh.status, fresh.code], [503, "kapi-ofis-kapali"], "tünelde bağlayıcı yok: ofis kapalı");
   });

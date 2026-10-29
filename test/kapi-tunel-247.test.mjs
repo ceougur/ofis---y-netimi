@@ -12,6 +12,7 @@ import { KAPI_KURALLARI, ecdsaImzala, lisansDogrula, lisansGecerli, mesaj, sha25
 import { signToken } from "../server/lib/license-token.mjs";
 import { ofisKaydi } from "../server/lib/mobile-ozet.mjs";
 import { createGateClient } from "../server/lib/tunnel/gate-client.mjs";
+import { sahteR2 } from "./kapi-yerel.mjs";
 
 const pair = generateKeyPairSync("ed25519");
 const PRIV = pair.privateKey.export({ type: "pkcs8", format: "pem" });
@@ -75,24 +76,21 @@ function fakeCloudflare({ failCreateOnce = false } = {}) {
   };
   return { state, fetchImpl };
 }
-// Sahte R2 (yalnız get; M3 meta.json biçimi).
-const fakeR2 = () => {
-  const map = new Map();
-  return { map, get: async key => (map.has(key) ? { json: async () => JSON.parse(map.get(key)), etag: "e1" } : null) };
-};
 const memoryStore = () => {
   const settings = new Map();
   return { setting: (key, fallback = null) => (settings.has(key) ? settings.get(key) : fallback), setSetting: (key, value) => void settings.set(key, value) };
 };
-// M3 kayit ucunun yazdığı ofis kaydı (bulut/kapi/kapi.mjs kayit → meta).
-async function register(r2, store, lisans = envelope()) {
+// M3 kayit ucunun yazdığı ofis kaydı (bulut/kapi/kapi.mjs kayit → meta) ve bağımsız gözden geçirme B3'ten beri makine → ofis eşlemesi (bulut/kapi/makine.mjs).
+// Her ofis ayrı kurulum = ayrı makine (aynı makinenin ikinci ofisi birincisini kapatır; o durum test/kapi-gg247-b3.test.mjs'te).
+async function register(r2, store, lisans = envelope(), makine = MACHINE) {
   const ofis = await ofisKaydi(store);
-  r2.map.set(`ofis/${ofis.id}/meta.json`, JSON.stringify({ v: 1, ofis: ofis.id, anahtar: ofis.acik, makine: MACHINE, lisansKimligi: "LIS-TEST-1", lisans, cihazlar: [], sir: ofis.sir, sonKayit: NOW - 1000, sira: 0 }));
+  await r2.put(`ofis/${ofis.id}/meta.json`, JSON.stringify({ v: 1, ofis: ofis.id, anahtar: ofis.acik, makine, lisansKimligi: "LIS-TEST-1", lisans, cihazlar: [], sir: ofis.sir, sonKayit: NOW - 1000, sira: 0 }));
+  await r2.put(`makine/${makine}.json`, JSON.stringify({ v: 1, makine, ofis: ofis.id, bekleyen: [] }));
   return ofis;
 }
 function harness({ cfOptions } = {}) {
   const cf = fakeCloudflare(cfOptions);
-  const r2 = fakeR2();
+  const r2 = sahteR2();
   const env = { ...ENV_BASE, OZET: r2 };
   const cloudflare = createCloudflareTunnels({ accountId: "acc1", zoneId: "zon1", apiToken: CF_TOKEN, fetchImpl: cf.fetchImpl });
   const gateFetch = async (url, init) => {
@@ -131,7 +129,7 @@ describe("M4 kapıcı tünel bölümü — M3 ofis kaydıyla, sahte Cloudflare A
     const storeA = memoryStore();
     const a = await register(h.r2, storeA);
     const storeB = memoryStore();
-    const b = await register(h.r2, storeB);
+    const b = await register(h.r2, storeB, envelope({ machine: "b".repeat(32) }), "b".repeat(32));
     // B, A'nın yolunu B'nin anahtarıyla imzalar.
     const yol = `/v1/ofis/${a.id}/tunel`;
     const govde = JSON.stringify({ v: 1, ofis: a.id });
