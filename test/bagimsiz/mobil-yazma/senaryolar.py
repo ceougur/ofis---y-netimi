@@ -147,7 +147,7 @@ def KB(k, s="001", cari=None, fatura=None, acilis=None, kartlar=None, kasa=0, ka
     for ad, (od, fz, kl, sy, tk) in (kartlar or {}).items():
         o[p + "kart:%s:odenen" % ad] = K(od)
         o[p + "kart:%s:fazla" % ad] = K(fz)
-        o[p + "kart:%s:kalan" % ad] = K(kl)
+        o[p + "kart:%s:kalan" % ad] = [K(x) for x in kl] if isinstance(kl, list) else K(kl)   # liste = biri (K8-AVANS: avanslı kartın Kalan'ı)
         o[p + "kart:%s:tahsilatSayisi" % ad] = sy
         for j, v in enumerate(tk):
             o[p + "kart:%s:taksit%d:odenen" % (ad, j + 1)] = K(v)
@@ -283,14 +283,15 @@ _E05_YC = birles(AD("t1", "ret", "4xx"), AD("t2", "ret", "4xx"), AD("t3", "ret",
                  KB("k1", cari={"K": (1200, 0)}, kartlar={"KT1": (0, 0, 1200, 0, [0, 0, 0])}, kasa=0), SIL("k1:001:kasaGun:%s" % D1),
                  KB("k2", cari={"K": (1200, 0)}, kartlar={"KT1": (0, 0, 1200, 0, [0, 0, 0])}, kasa=0), SIL("k2:001:kasaGun:%s" % D1))
 elle("E05-es-taksit", "K: açılış 1.200, Mevcut Borcu Taksitlendir kartı 1.200 / 3. Kart tahsilatı 500 → taksit 400 / 100 / 0, kalan 700. 800 → 409 plan-overpay; 800 "
-     "Fazlasını Avans Yaz (yönetici) → ödenen 1.200 + fazla 100, cari −100; 100 → 409 plan-paid.",
-     ["PLAN §3.10/3 K8", "S3 PARAMETRE", "S4 PARAMETRE (Fazlasını Avans Yaz)"],
+     "Fazlasını Avans Yaz (yönetici) → taksitler 400 / 400 / 400, fazla (avans) 100, kartın Ödenen'i 1.300 (avans DAHİL — KARAR K8-AVANS), Kalan 0 ya da −100 "
+     "(karar yazmıyor; ikisi de kabul), cari −100; onaysız 100 → 409 plan-paid.",
+     ["PLAN §3.10/3 K8", "KULLANICI KARAR K8-AVANS 29.10.2026 (Ödenen avansı da içerir)", "S3 PARAMETRE", "S4 PARAMETRE (Fazlasını Avans Yaz)"],
      bas(), lambda kn: [cari("c1", "K", acilis="1200"), kart("ka", "KT1", "K", "1200", 3), tah("t1", "K", "500", ch(kn), kart="KT1"), kon("k1"),
                         tah("t2", "K", "800", ch(kn), kart="KT1"), tah("t3", "K", "800", ch(kn), kart="KT1", fazlaAvans=True),
                         tah("t4", "K", "100", ch(kn), kart="KT1"), kon("k2")],
      birles(AD("t1", "ok"), AD("t2", "ret", 409, "plan-overpay"), AD("t3", "ok"), AD("t4", "ret", 409, "plan-paid"),
             KB("k1", cari={"K": (700, 0)}, kartlar={"KT1": (500, 0, 700, 1, [400, 100, 0])}, kasa=500, kasaGun={D1: 500}),
-            KB("k2", cari={"K": (-100, 0)}, kartlar={"KT1": (1200, 100, 0, 2, [400, 400, 400])}, kasa=1300, kasaGun={D1: 1300})),
+            KB("k2", cari={"K": (-100, 0)}, kartlar={"KT1": (1300, 100, [0, -100], 2, [400, 400, 400])}, kasa=1300, kasaGun={D1: 1300})),
      pg={"taksit=yalniz_cari": _E05_YC,
          "onay=gecemez": birles(AD("t3", "ret", 409, "plan-overpay"), AD("t4", "ok"),
                                 KB("k2", cari={"K": (600, 0)}, kartlar={"KT1": (600, 0, 600, 2, [400, 200, 0])}, kasa=600, kasaGun={D1: 600})),
@@ -670,6 +671,41 @@ elle("E40-es-iade-geri-odeme", "M: F1 500 tamamen iade edildi (F1 0, bakiye 0); 
             KB("k1", cari={"M": (500, 1), "N": (300, 1)}, fatura={"F1": 500, "I1": 0, "F2": 300, "I2": 0}, kasa=-800, kasaGun={D1: -800})),
      pg={"kapatilacak=yalniz_fifo": birles(AD("o2", "ret", "4xx"),
                                            KB("k1", cari={"M": (500, 1), "N": (0, 0)}, fatura={"F1": 500, "I1": 0, "F2": 0, "I2": 0}, kasa=-500, kasaGun={D1: -500}))},
+     cift=True)
+
+# E41 — eşdeğerlik: KARAR K8-AVANS (kullanıcı 29.10.2026 "A ÖNERİN UYGUN") — ödenmiş (kalan 0) taksit kartına yeni tahsilat. Beklenenler karar metninden ELLE:
+# onaylı (Fazlasını Avans Yaz) + plans.manage → yazılır, tutarın TAMAMI cariye avans (cari alacak), Kasa / banka girişi normal; onaysız ya da yetkisiz → ret.
+# Kart: Ödenen avansı DA içerir; taksitlere düşen kısım taksit tutarlarını aşmaz (fazla = avans). Kalan kararda yazılı değil → 0 ya da toplam − Ödenen (liste).
+# Yetkisizin ret kodu kararda yazılı değil → 403 plan-overpay-permission ya da 409 plan-paid (liste). Mobil = masaüstü (karar: "Masaüstü ve mobil aynı").
+_E41_K0_YC = KB("k0", cari={"K": (1000, 0)}, kartlar={"KT": (0, 0, 1000, 0, [0, 0])}, kasa=0, hesaplar={"BNK1": ("banka", 0)})
+_E41_YC = birles(AD("t1", "ret", "4xx"), AD("t2", "ret", "4xx"), AD("t3", "ret", "4xx"), AD("t4", "ret", "4xx"), AD("t5", "ret", "4xx"), AD("t6", "ret", "4xx"),
+                 _E41_K0_YC, KB("k1", cari={"K": (1000, 0)}, kartlar={"KT": (0, 0, 1000, 0, [0, 0])}, kasa=0, hesaplar={"BNK1": ("banka", 0)}),
+                 SIL("k0:001:kasaGun:%s" % D1, "k1:001:kasaGun:%s" % D1))
+elle("E41-es-odenmis-kart-avans", "K: açılış 1.000, Mevcut Borcu Taksitlendir kartı 1.000 / 2 (500 + 500). Nakit 1.000 → kart ödenmiş (Kalan 0). Yönetici onaysız 200 → "
+     "409 plan-paid. Yönetici Fazlasını Avans Yaz: nakit 200 → yazılır, tamamı avans (Kasa +200); havale 300 (BNK1) → yazılır, avans (banka +300). Personel onaysız 100 "
+     "→ 409 plan-paid; personel Fazlasını Avans Yaz 100 → ret (yetkisiz; kod kararda yok: 403 plan-overpay-permission ya da 409 plan-paid). Sonuç: cari −500 (alacak), "
+     "kartın Ödenen'i 1.500 (avans dahil), fazla 500, Kalan 0 ya da −500, taksitler 500 / 500, Kasa 1.200, BNK1 300. Mobil = masaüstü.",
+     ["KULLANICI KARAR K8-AVANS 29.10.2026 (docs/2.4.7-IS-LISTESI.md 'KARAR — K8-AVANS')", "PLAN §3.10/3 Fazlasını Avans Yaz yalnız plans.manage",
+      "KULLANICI kalıcı karar: Kasa yalnız nakit", "S3 PARAMETRE", "S4 PARAMETRE (Fazlasını Avans Yaz)"],
+     bas(kullanicilar={"P": {"rol": "personel", "uzak": True}}, cihazlar={"DY": "Y", "DP": "P"}),
+     lambda kn: [hesap("h1", "BNK1", "banka"), cari("c1", "K", acilis="1000"), kart("ka", "KT", "K", "1000", 2),
+                 tah("t1", "K", "1000", ch(kn), kart="KT"), kon("k0"),
+                 tah("t2", "K", "200", ch(kn), kart="KT"),
+                 tah("t3", "K", "200", ch(kn), kart="KT", fazlaAvans=True),
+                 tah("t4", "K", "300", ch(kn), yol="havale", hesap="BNK1", kart="KT", fazlaAvans=True),
+                 tah("t5", "K", "100", ch(kn, "DP", "P"), kart="KT"),
+                 tah("t6", "K", "100", ch(kn, "DP", "P"), kart="KT", fazlaAvans=True), kon("k1")],
+     birles(AD("t1", "ok"), AD("t2", "ret", 409, "plan-paid"), AD("t3", "ok"), AD("t4", "ok"), AD("t5", "ret", 409, "plan-paid"),
+            AD("t6", "ret", [403, 409], ["plan-overpay-permission", "plan-paid"]),
+            KB("k0", cari={"K": (0, 0)}, kartlar={"KT": (1000, 0, 0, 1, [500, 500])}, kasa=1000, kasaGun={D1: 1000}, hesaplar={"BNK1": ("banka", 0)}),
+            KB("k1", cari={"K": (-500, 0)}, kartlar={"KT": (1500, 500, [0, -500], 3, [500, 500])}, kasa=1200, kasaGun={D1: 1200},
+               hesaplar={"BNK1": ("banka", 300)})),
+     pg={"taksit=yalniz_cari": _E41_YC,
+         # telefon onay bayrağını göndermez → ödenmiş karta her yeni tahsilat 409 plan-paid (yetkisizinki de)
+         "onay=gecemez": birles(AD("t3", "ret", 409, "plan-paid"), AD("t4", "ret", 409, "plan-paid"), AD("t6", "ret", 409, "plan-paid"),
+                                KB("k1", cari={"K": (0, 0)}, kartlar={"KT": (1000, 0, 0, 1, [500, 500])}, kasa=1000, kasaGun={D1: 1000},
+                                   hesaplar={"BNK1": ("banka", 0)})),
+         "taksit=yalniz_cari&onay=gecemez": _E41_YC},
      cift=True)
 
 
@@ -1354,8 +1390,13 @@ class Akis:
                     return ret(404)
                 kalan = K["top"] - sum(x for _, x in K["od"])
                 if kalan <= 0:
-                    return ret(409, "plan-paid")
-                if m > kalan:
+                    # KARAR K8-AVANS (kullanıcı 29.10.2026): ödenmiş karta yeni tahsilat yalnız Fazlasını Avans Yaz onayı + plans.manage ile (tamamı avans);
+                    # onaysız → 409 plan-paid; yetkisiz → ret, kodu kararda yok (403 plan-overpay-permission / 409 plan-paid)
+                    if not fazla:
+                        return ret(409, "plan-paid")
+                    if rol == "personel":
+                        return ret([403, 409], ["plan-overpay-permission", "plan-paid"])
+                elif m > kalan:
                     if not fazla:
                         return ret(409, "plan-overpay")
                     if rol == "personel":
@@ -1448,10 +1489,10 @@ class Akis:
             for kad in sorted(S["kart"]):
                 K = S["kart"][kad]
                 ham = sum(x for _, x in K["od"])
-                od = min(ham, K["top"])
-                self.out[p + "kart:%s:odenen" % kad] = od
+                od = min(ham, K["top"])                              # taksitlere düşen
+                self.out[p + "kart:%s:odenen" % kad] = ham           # K8-AVANS: Ödenen avansı da içerir
                 self.out[p + "kart:%s:fazla" % kad] = ham - od
-                self.out[p + "kart:%s:kalan" % kad] = K["top"] - od
+                self.out[p + "kart:%s:kalan" % kad] = [0, K["top"] - ham] if ham > K["top"] else K["top"] - ham   # karar Kalan'ı yazmıyor: ikisi de
                 self.out[p + "kart:%s:tahsilatSayisi" % kad] = len(K["od"])
                 kal = od
                 for j, t in enumerate(K["tk"]):
@@ -1566,7 +1607,8 @@ def kabul_uret(olay=RASTGELE_OLAY, yaz=True, gunluk=print):
         "aciklama": "DestekOfis 2.4.7 M5 mobil yazma (tahsilat / ödeme / stok) bağımsız kâhininin kabul kümesi. Programın kodu görülmeden karar metninden üretildi; "
                     "para anlamı cari kâhinine (test/bagimsiz/cari/model.py, kural 2.4.6) devredilir. Kurallar, açık sorular, eşleme: README.md.",
         "kaynak": ["CLAUDE.md Açık iş: MOBİL kararları (26.10.2026), Kalıcı ürün kararları, dersler 5/7/10/13/17/22/31/32/40/43",
-                   "docs/erp/OTURUM-DEVIR-TESLIM-2.4.7.md §3.1", "docs/2.4.7-IS-LISTESI.md Nasıl bozulur?", "docs/PRO-UZAKTAN-GORUNTULEME.md (eşleme / izin / lisans)",
+                   "docs/erp/OTURUM-DEVIR-TESLIM-2.4.7.md §3.1", "docs/2.4.7-IS-LISTESI.md Nasıl bozulur?",
+                   "docs/2.4.7-IS-LISTESI.md 'KARAR — K8-AVANS' (kullanıcı, 29.10.2026 \"A ÖNERİN UYGUN\"): ödenmiş karta onaylı Fazlasını Avans Yaz (plans.manage) → avans; Ödenen avansı da içerir", "docs/PRO-UZAKTAN-GORUNTULEME.md (eşleme / izin / lisans)",
                    "docs/BANKA-MODULU-PLAN.md §2.5, §3.5, §3.9, §3.10, §9", "test/bagimsiz/SENARYO-DILI.md §5", "test/bagimsiz/cari/ (model.py, KARARLAR.md)",
                    "MEVCUT ÜRÜN (ana oturum koddan doğruladı): şirket yetkisi kullanıcı × şirket; yönetici hepsi; işaretsiz yalnız 001; roller her şirkette aynı"],
         "uretim": "python3 -I test/bagimsiz/mobil-yazma/senaryolar.py (rastgele tohum %s, %d olay)" % ("–".join(map(str, (RASTGELE_TOHUM[0], RASTGELE_TOHUM[-1]))), olay),
@@ -1574,7 +1616,7 @@ def kabul_uret(olay=RASTGELE_OLAY, yaz=True, gunluk=print):
         "parametreler": {k: list(v) for k, v in P.items()}, "oneri": kahin.ONERI, "taban_birlesim": ILK, "esdeger_birlesim": ESDEGER,
         "birlesim_bicimi": "kapatilacak=…;yollar=…;taksit=…;onay=…;eksi_stok=…;tarih=…;gec_yeniden=…;stok_yonu=… (bu sırayla)",
         "secilen_birlesim": "kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris",
-        "secim_notu": "Kullanıcı kararı S1–S8 (docs/2.4.7-IS-LISTESI.md 'KARARLAR — M5 mobil yazma', 29.10.2026; 5 dk yetkisiyle uygulandı): öneri birleşimi seçildi. Beklentiler değişmedi; yalnız seçim alanı.",
+        "secim_notu": "Kullanıcı kararı S1–S8 (docs/2.4.7-IS-LISTESI.md 'KARARLAR — M5 mobil yazma', 29.10.2026; 5 dk yetkisiyle uygulandı): öneri birleşimi seçildi. Beklentiler değişmedi; yalnız seçim alanı. KARAR K8-AVANS (kullanıcı, 29.10.2026 'A ÖNERİN UYGUN'; ders 40/43) beklentileri değiştirdi: ödenmiş karta onaylı Fazlasını Avans Yaz yazılır (tamamı avans), kartın Ödenen'i avansı da içerir (E05, E41, R1–R3).",
         "senaryolar": kayitlar,
         "goreli_ciftler": [{"ad": g["ad"], "aciklama": g["aciklama"], "kosul": g["kosul"], "masaustu": g["masaustu"], "mobil": g["mobil"]} for g in GORELI],
     }
