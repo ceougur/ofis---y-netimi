@@ -1,0 +1,72 @@
+{
+ "adim": "c-durum",
+ "baslik": "Durum Sorgula: bütün gönderilen belgeler son duruma kadar",
+ "durum": "kaldı",
+ "denetimler": [
+  {
+   "gecti": false,
+   "denetim": "G1 e-SMM TES2026167099697: EDM son durum processing (PACKAGE - PROCESSING)"
+  },
+  {
+   "gecti": false,
+   "denetim": "G2 e-SMM TES2026167099698: EDM son durum processing (PACKAGE - PROCESSING)"
+  },
+  {
+   "gecti": false,
+   "denetim": "G3 e-Arşiv TEA2026180220674: EDM son durum processing (PACKAGE - PROCESSING)"
+  },
+  {
+   "gecti": false,
+   "denetim": "G4 e-Arşiv TEA2026180220675: EDM son durum processing (PACKAGE - PROCESSING)"
+  },
+  {
+   "gecti": false,
+   "denetim": "G5 e-SMM TES2026167099699: EDM son durum processing (PACKAGE - PROCESSING)"
+  },
+  {
+   "gecti": false,
+   "denetim": "B1 e-SMM TES2026167099700: EDM son durum processing (PACKAGE - PROCESSING)"
+  },
+  {
+   "gecti": false,
+   "denetim": "B2 e-SMM TES2026167099701: EDM son durum processing (PACKAGE - PROCESSING)"
+  }
+ ],
+ "kayit": {
+  "G1": {
+   "eStatus": "processing",
+   "raw": "PACKAGE - PROCESSING",
+   "message": "EDM'de paketleniyor. PROCESSING"
+  },
+  "G2": {
+   "eStatus": "processing",
+   "raw": "PACKAGE - PROCESSING",
+   "message": "EDM'de paketleniyor. PROCESSING"
+  },
+  "G3": {
+   "eStatus": "processing",
+   "raw": "PACKAGE - PROCESSING",
+   "message": "EDM'de paketleniyor. PROCESSING"
+  },
+  "G4": {
+   "eStatus": "processing",
+   "raw": "PACKAGE - PROCESSING",
+   "message": "EDM'de paketleniyor. PROCESSING"
+  },
+  "G5": {
+   "eStatus": "processing",
+   "raw": "PACKAGE - PROCESSING",
+   "message": "EDM'de paketleniyor. PROCESSING"
+  },
+  "B1": {
+   "eStatus": "processing",
+   "raw": "PACKAGE - PROCESSING",
+   "message": "EDM'de paketleniyor. PROCESSING"
+  },
+  "B2": {
+   "eStatus": "processing",
+   "raw": "PACKAGE - PROCESSING",
+   "message": "EDM'de paketleniyor. PROCESSING"
+  }
+ }
+}
