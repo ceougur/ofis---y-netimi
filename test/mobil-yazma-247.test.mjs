@@ -307,6 +307,12 @@ describe("M5 uzaktan (eşli cihaz): M2 kapısı her yazmada", () => {
 
   it("silinen cihaz ve uzak izni kaldırılan kullanıcı yazamaz (401), kayıt yok", async () => {
     const acc = await ctx.account("Silinen");
+    // Ön koşul (pozitif denetim): silinmeden önce iki cihaz da yazar — ret yalnız silme / izin kaldırma yüzünden.
+    for (const [phone, n] of [[phoneY, 0], [phoneP, 1]]) {
+      const before_ = await send(phone, `/accounts/${acc}/tahsilat`, { amount: "1" }, rid(`sil-on-${n}`));
+      assert.equal(before_.status, 200, `silmeden önce cihaz yazabilmeli: ${before_.text}`);
+    }
+    const written = ctx.entries(acc).length;
     const devices = unwrap(await ctx.admin.get("/api/admin/mobile/devices")).devices;
     const own = devices.find(d => d.id === phoneY.deviceId);
     assert.equal((await ctx.admin.del(`/api/admin/mobile/devices/${own.id}`)).status, 200);
@@ -315,7 +321,7 @@ describe("M5 uzaktan (eşli cihaz): M2 kapısı her yazmada", () => {
     assert.equal((await ctx.admin.put(`/api/admin/mobile/access/${staffId}`, { remote: false })).status, 200);
     const revoked = await send(phoneP, `/accounts/${acc}/tahsilat`, { amount: "10" }, rid("sil-2"));
     assert.equal(revoked.status, 401, revoked.text);
-    assert.equal(ctx.entries(acc).length, 0);
+    assert.equal(ctx.entries(acc).length, written, "silme / izin kaldırmadan sonra yeni kayıt yok");
   });
 });
 
