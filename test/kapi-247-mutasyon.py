@@ -36,15 +36,17 @@ MUTS = [
     ("MK25 B3 makine başına saatlik tünel sınırı yok", KM, '      if (n >= KAPI_HIZ.tunelSaatlik) at("kapi-hiz", { sinir: "tunel-saatlik" });\n', ''),
     # B1 (silinen cihazın tarayıcısı yeniden eşlenir)
     ("MK26 B1 eşleme/sayfa yolunda listede olmayan cihaz çerezi reddedilir (eski davranış)", K, 'if (!eslesme && !sayfa) at("kapi-cihaz", {}, sil.length ? { "set-cookie": sil } : {});', 'at("kapi-cihaz", {}, sil.length ? { "set-cookie": sil } : {});'),
-    ("MK27 B1 silinmiş cihazın çerezi silinmez", K, '        if (!CIHAZ_KIMLIGI.test(id) || silinenler.includes(id) || meta?.devreDisi) sil = cerezSilSatirlari();\n', ''),
+    ("MK27 B1 silinmiş cihazın çerezi silinmez", K, '        if (!CIHAZ_KIMLIGI.test(id) || silinenler.includes(id)) sil = cerezSilSatirlari();\n', ''),
     ("MK28 B1 cihazsız sayılan istekte eski çerez programa iletilir", K, '      if (cihazsiz) {', '      if (false) {'),
     # B4 (alt alanlar arası çerez)
     ("MK29 B4 kökenin Domain'li Set-Cookie'si geçer", K, 'const kalan = cerezler.filter(satir => !setCookieAlanli(satir));', 'const kalan = cerezler;'),
     ("MK30 B4 kapıcı çakışan çerezi reddetmez", K, '    if (cerezCakisiyor(cerezBasligi)) at("kapi-cerez");\n', ''),
     ("MK31 B4 program çakışan çerezi reddetmez", 'server/lib/mobile-remote.mjs', '    if (cerezCakisiyor(req.headers.cookie)) return reject(req, res, fail(400, "remote-cookie"));\n', ''),
     ("MK32 B4 çerez adı öneksiz", 'server/lib/mobil-cerez.mjs', 'export const CIHAZ_CEREZI = "__Host-hof_device";', 'export const CIHAZ_CEREZI = "hof_device";'),
+    # Dar kontrol K1 (dönen ofis)
+    ("MK33 K1 devre dışı kalan ofisin cihazları silinmiş sayılır (dönüşte telefon eşli değil)", KM, "cihazlar: [], devreDisi: { ms: simdi,", "cihazlar: [], silinen: silinenBirlestir(cihazlar.map(c => c.id), meta.veri.silinen), devreDisi: { ms: simdi,"),
 ]
-TESTS = ['test/kapi-247.test.mjs', 'test/mobil-ozet-247.test.mjs', 'test/kapi-gg247-b1.test.mjs', 'test/kapi-gg247-b3.test.mjs', 'test/kapi-gg247-b4.test.mjs', 'test/kapi-tunel-247.test.mjs', 'test/kapi-tunel-uctan-uca-247.test.mjs']
+TESTS = ['test/kapi-247.test.mjs', 'test/mobil-ozet-247.test.mjs', 'test/kapi-gg247-b1.test.mjs', 'test/kapi-gg247-b3.test.mjs', 'test/kapi-gg247-b4.test.mjs', 'test/kapi-tunel-247.test.mjs', 'test/kapi-tunel-uctan-uca-247.test.mjs', 'test/kapi-donen-ofis-247.test.mjs']
 SEC = re.compile(os.environ.get('M3_MUT_SEC') or '.')
 results = []
 for i, (name, rel, old, new) in enumerate(MUTS, 1):

@@ -134,7 +134,9 @@ export async function ofisiKapat(env, ofis, makine, yerine, simdi) {
     if (m?.ofis === ofis) return "atla";
     if (!meta.veri.devreDisi) {
       const cihazlar = Array.isArray(meta.veri.cihazlar) ? meta.veri.cihazlar : [];
-      const yeni = { ...meta.veri, cihazlar: [], silinen: silinenBirlestir(cihazlar.map(c => c.id), meta.veri.silinen), devreDisi: { ms: simdi, yerine: yerine || m?.ofis || null } };
+      // Cihazlar SİLİNMİŞ sayılmaz (dar kontrol K1, bulgu 1–2): ofis dönerse (son kaydolan kazanır) aynı telefonlar yeniden eşlemesiz döner ve P5 gereği
+      // "mevcut" sayılır; kapıcı devre dışı dönemde gelen çerezi reddeder ama silmez. Kimlikler devreDisi.cihazlar'da durur.
+      const yeni = { ...meta.veri, cihazlar: [], devreDisi: { ms: simdi, yerine: yerine || m?.ofis || null, cihazlar: [...new Set([...(meta.veri.devreDisi?.cihazlar || []), ...cihazlar.map(c => c.id)])] } };
       if (!(await yaz(env, metaAnahtari(ofis), yeni, meta))) continue;
     }
     await env.OZET.delete(ozetAnahtari(ofis));

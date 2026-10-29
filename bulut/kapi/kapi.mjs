@@ -286,7 +286,8 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     const gorunum = await lisansGorunumu(env, meta);
     // K13: kapıcı sınırı programdan bağımsız. Eklenen cihaz varsa toplam sınırı aşamaz; P5: sayı düşünce mevcutlar sürer (ekleme yoksa kabul).
     const sinir = gorunum.iddia?.mobileDevices ?? 3;
-    const eskiKimlikler = new Set((eski?.cihazlar || []).map(c => c.id));
+    // Devre dışı kalıp dönen ofisin o dönemdeki cihazları da "mevcut" (dar kontrol K1 bulgu 2: sınır düşmüşse P5 gereği sürer).
+    const eskiKimlikler = new Set([...(eski?.cihazlar || []).map(c => c.id), ...(eski?.devreDisi?.cihazlar || [])]);
     const eklenen = temiz.filter(c => !eskiKimlikler.has(c.id));
     let cihazHatasi = null;
     if (gorunum.durum === "dogrulanamadi") cihazHatasi = "kapi-lisans-dogrulanamadi";
@@ -407,10 +408,11 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     const yolSorgu = `${url.pathname}${url.search}`;
     const cerezBasligi = request.headers.get("cookie") || "";
     if (cerezCakisiyor(cerezBasligi)) at("kapi-cerez");
-    // B3: makinesinin güncel ofisi değilse (devre dışı) cihazları düşmüş sayılır (çerezleri silinir); cihazsız istek 410.
+    // B3: makinesinin güncel ofisi değilse (devre dışı) hiçbir cihaz geçmez; çerez YALNIZ programın sildiği cihazda silinir (dar kontrol K1 bulgu 1: ofis
+    // dönerse aynı telefon yeniden eşlemesiz döner); cihazsız istek 410.
     const guncel = await guncelMi(env, meta, now());
     const etkinCihazlar = guncel ? meta.cihazlar || [] : [];
-    const silinenler = [...(meta?.silinen || []), ...(guncel ? [] : (meta?.cihazlar || []).map(c => c.id))];
+    const silinenler = meta?.silinen || [];
     // Cihazsız yalnız eşleme (karekod) ve sayfa dosyaları (eşleme ekranı; veri içermez — M2 BAŞ MİMAR KARARI 9).
     const eslesme = yontem === "POST" && url.pathname === "/api/mobil/eslesme";
     const sayfa = yontem === "GET" && url.pathname.startsWith("/mobil/");
@@ -422,7 +424,7 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
       const id = ham.split(".")[0];
       if (CIHAZ_KIMLIGI.test(id) && etkinCihazlar.some(c => c.id === id)) cihaz = id;
       else {
-        if (!CIHAZ_KIMLIGI.test(id) || silinenler.includes(id) || meta?.devreDisi) sil = cerezSilSatirlari();
+        if (!CIHAZ_KIMLIGI.test(id) || silinenler.includes(id)) sil = cerezSilSatirlari();
         if (!eslesme && !sayfa) at("kapi-cihaz", {}, sil.length ? { "set-cookie": sil } : {});
         cihazsiz = true;
       }
