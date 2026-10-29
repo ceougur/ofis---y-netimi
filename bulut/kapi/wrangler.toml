@@ -20,6 +20,10 @@ bucket_name = "destekofis-ozet"
 
 [vars]
 OFIS_ALANI = "destekofis.net"
+# 2.4.7 M4 (docs/mobil/M4-TASARIM.md §8): tünel ve DNS kaydını açan Cloudflare hesabı + destekofis.net bölgesi (kimlik, gizli değil). Belirteç gizli: CF_API_TOKEN
+# (Account → Cloudflare Tunnel: Edit; Zone destekofis.net → DNS: Edit) panelden ya da `wrangler secret put CF_API_TOKEN` ile.
+CF_ACCOUNT_ID = "671317dfe7772cf20920c6b09b04de83"
+CF_ZONE_ID = "a4521bf58a43349c69a0fdafb985bc83"
 LISANS_URL = "https://destek-ofis.vercel.app/api/lisans"
 # server/lib/license-keys.mjs TRUSTED_LICENSE_KEYS ile aynı (test/kapi-247.test.mjs denetler).
 LISANS_ANAHTARLARI = '{"destekofis-lisans-2026-1":"MCowBQYDK2VwAyEAZRdIMB11WVitpkoOEgCZDF/ULwhcsQ2mUuv9fl8Td7c="}'
