@@ -1,0 +1,58 @@
+{
+  "ad": "ana-kahin-yazma-k8",
+  "komut": "npm run test:kahin-mobil-yazma",
+  "commit": "35ee4992cb7398a00e1569043302b7e98fe1b660",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T09:24:00.486Z",
+  "sure_sn": 233.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 54,
+    "gecen": 49,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "E02-es-havale-pos-mobil",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "E02-es-havale-pos-masaustu",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "R1-rastgele-tohum1",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "R2-rastgele-tohum2",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "R3-rastgele-tohum3",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-kahin-yazma-k8.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "baa6b88a7e4208b2afec4ec9c88811a62df26eaf6cb351f1f8c9b7912faa0e5a",
+  "ham_cikti_bayt": 6207
+}
