@@ -15,8 +15,17 @@ import { after, before, describe, test } from "node:test";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 import { ADMIN_PASSWORD, createClient } from "./helpers.mjs";
 import { createPhone, rawRequest } from "./mobil-uzak-ortak.mjs";
-import { isAlive } from "../server/lib/tunnel/process.mjs";
 
+// Süreç yaşıyor mu (programın modülünden bağımsız; eski kodda da yüklenir — kırmızı kanıtın nedeni okunur, ders 38).
+const isAlive = pid => {
+  if (!Number.isInteger(pid) || pid <= 0) return false;
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return error.code === "EPERM";
+  }
+};
 const FAKE = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures", "sahte-cloudflared.mjs");
 const HOST = "ofis-0123456789abcdef.destekofis.net";
 const TUNNEL_ID = "12345678-1234-4234-8234-123456789abc";
@@ -48,7 +57,11 @@ describe("M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte clo
   let server;
   let admin;
   let userId;
-  const status = async () => (await admin.get("/api/admin/mobile/tunnel")).data.data;
+  const status = async () => {
+    const res = await admin.get("/api/admin/mobile/tunnel");
+    assert.equal(res.status, 200, `tünel durum ucu yanıtı (HTTP ${res.status}) — tünel yöneticisi yok mu?`);
+    return res.data.data;
+  };
 
   before(async () => {
     server = await bootVersion(CURRENT, {
