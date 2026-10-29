@@ -86,7 +86,8 @@ evrensel sertifikası `*.destekofis.net`'i kapsar (ek ücret yok). `m.` kalır: 
   ve `/mobil/` sayfa dosyaları geçer (M2 BAŞ MİMAR KARARI 9).
 - **BAŞ MİMAR KARARI 5 — kapıcı durumu R2'de, lisans önbelleği Cache API'de.** Ofis başına iki nesne: `ofis/<ofis>/meta.json` (anahtar, cihazlar, sır, son
   kayıt, sıra; yalnız kayıtta yazılır) ve `ofis/<ofis>/ozet.json` (tek özet; sayaçlar nesnenin kendi üst verisinde). Lisans yenilemesi R2'ye yazmaz
-  (Cache API ücretsiz) — aylık R2 yazımı ≈ ofis × yükleme. Eşzamanlı yazım R2 koşullu yazımıyla (etag) korunur.
+  (Cache API ücretsiz) — aylık R2 yazımı ≈ ofis × yükleme. (Bağımsız gözden geçirme B3'ten sonra kayıt ve tünel uçları ayrıca `makine/<makine>.json`'a
+  makine → ofis eşlemesini ve hız sayaçlarını, `sayac/yeni-ofis/<gün>.json`'a günlük yeni ofis sayısını yazar — `bulut/kapi/makine.mjs`.) Eşzamanlı yazım R2 koşullu yazımıyla (etag) korunur.
 - Hız sınırı: Cloudflare Rate Limiting bağlaması (`HIZ`) varsa o; yoksa isolate içi sayaç (canlı 300/dk, özet 30/dk, cihaz başına).
 
 ## 6. Telefon (client/mobil — M1 arayüzünün AYNISI)
