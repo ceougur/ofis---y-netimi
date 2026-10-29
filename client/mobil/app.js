@@ -1,6 +1,8 @@
 // DestekOfis Mobil (2.4.7 M1): kullanıcının DestekOfis Mobil v0.3 ekranları, programın içinde (aynı kurulum ve güncelleme).
 // Telefon yalnız /api/mobil/… uçlarını çağırır (server/lib/mobile.mjs): yetki, şirket erişimi ve oturum programın kendi uçlarında denetlenir.
 // SALT OKUNUR: kayıt girişi (tahsilat, ödeme, stok hareketi) bu sürümde yok; sunucu da /api/mobil/ altında yazma isteğini reddeder.
+// 2.4.7 M2 (docs/mobil/M2-TASARIM.md): uzaktan bağlantıda cihaz karekodla eşlenir — tarayıcı dışa aktarılamaz ECDSA P-256 anahtarı üretir (IndexedDB), girişte
+// sunucunun tek kullanımlık meydan okumasını imzalar. Ofis ağında (yerel adres) olağan giriş sürer.
 const $=id=>document.getElementById(id);
 const API='/api/mobil';
 const state={user:null,companies:[],company:'',page:'home',selected:null,list:[],listTotal:0,stock:[],stockTotal:0,listQuery:'',reportCatalog:[],reportSelected:null,reportQuery:null,reportResult:null,reportAccounts:[],reportChosenAccount:null,requestGeneration:0,searchTimer:0};
@@ -20,13 +22,14 @@ async function api(path,body){
   catch{serverState(false);throw Error('Ofis sunucusuyla bağlantı kurulamadı. Sunucunun açık olduğunu denetleyin.')}
   serverState(true);
   let data;try{data=await resp.json()}catch{throw Error('Sunucudan beklenmeyen yanıt geldi.')}
+  if(resp.status===401&&data.code==='remote-device'){loggedOut();showUnpaired(data.error);throw new SessionEnded(data.error||'Bu cihaz eşli değil.')}
   if(resp.status===401&&state.user&&!path.startsWith('/session')){loggedOut();throw new SessionEnded(data.error||'Oturum sona erdi.')}
-  if(!resp.ok||data.ok===false)throw Object.assign(Error(data.error||'İşlem başarısız.'),{status:resp.status});
+  if(!resp.ok||data.ok===false)throw Object.assign(Error(data.error||'İşlem başarısız.'),{status:resp.status,code:data.code});
   return data.data;
 }
 const path=(p)=>p+(p.includes('?')?'&':'?')+'company='+encodeURIComponent(state.company);
 function setAuth(auth){state.user=auth.user;state.companies=auth.companies||[];state.company=state.companies.some(c=>c.id===state.company)?state.company:(auth.company||state.companies[0]?.id||'');$('login').classList.add('hidden');$('app').classList.remove('hidden');$('company').innerHTML=state.companies.map(c=>`<option value="${safe(c.id)}">${safe(c.name||c.code||c.id)}</option>`).join('');$('company').value=state.company;const name=field(state.user,'name','username')||'Kullanıcı';$('side-username').textContent=name;$('side-avatar').textContent=String(name).slice(0,1).toLocaleUpperCase('tr-TR');$('side-role').textContent=field(state.user,'roleLabel')||'Kullanıcı'}
-function loggedOut(){state.user=null;state.requestGeneration++;state.selected=null;state.list=[];state.stock=[];state.reportCatalog=[];state.reportSelected=null;state.reportResult=null;state.reportChosenAccount=null;$('content').innerHTML='';$('app').classList.add('hidden');$('login').classList.remove('hidden')}
+function loggedOut(){showPanel('login-form');state.user=null;state.requestGeneration++;state.selected=null;state.list=[];state.stock=[];state.reportCatalog=[];state.reportSelected=null;state.reportResult=null;state.reportChosenAccount=null;$('content').innerHTML='';$('app').classList.add('hidden');$('login').classList.remove('hidden')}
 function heading(title,desc,actions=''){return `<div class="section-heading"><div><span class="eyebrow">DESTEKOFİS MOBİL</span><h1>${safe(title)}</h1><p>${safe(desc)}</p></div>${actions}</div>`}
 function blank(msg){return `<div class="card empty"><span class="empty-icon">◎</span>${safe(msg)}</div>`}
 function err(e){if(e instanceof SessionEnded)return;$('content').innerHTML=`<div class="error-box">${safe(e.message)}</div>`;toast(e.message,true)}
@@ -197,11 +200,37 @@ async function downloadAccountStatement(id){
   try{await reportDownloadFetch(path(`/accounts/${encodeURIComponent(id)}/statement.pdf`),'pdf','Cari-Ekstre')}catch(e){toast(e.message,true)}
 }
 async function startSession(){const auth=await api('/session');setAuth(auth);setPage('home')}
+// ---------- 2.4.7 M2: cihaz anahtarı, eşleme ve imzalı giriş ----------
+const KEY_DB='destekofis-mobil',KEY_STORE='cihaz';
+function keyDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open(KEY_DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(KEY_STORE);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function keyOp(mode,fn){const db=await keyDb();return new Promise((resolve,reject)=>{const tx=db.transaction(KEY_STORE,mode);const req=fn(tx.objectStore(KEY_STORE));tx.oncomplete=()=>{db.close();resolve(req.result)};tx.onerror=()=>{db.close();reject(tx.error)}})}
+const b64url=buf=>btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const secure=()=>window.isSecureContext&&!!window.crypto?.subtle&&!!window.indexedDB;
+function deviceKind(){const ua=navigator.userAgent||'';if(/iPad|Tablet|Android(?!.*Mobile)/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1))return 'tablet';if(/iPhone|iPod|Android.*Mobile|Windows Phone/i.test(ua))return 'telefon';return 'tarayici'}
+function deviceNameGuess(){const ua=navigator.userAgent||'';if(/iPhone/.test(ua))return 'iPhone';if(/iPad/.test(ua))return 'iPad';const kind=deviceKind();return kind==='telefon'?'Android Telefon':kind==='tablet'?'Tablet':'Uzak Tarayıcı'}
+function showPanel(id){for(const p of ['login-form','pair-form','unpaired'])$(p).classList.toggle('hidden',p!==id);$('login').classList.remove('hidden');$('app').classList.add('hidden')}
+function showUnpaired(message){state.user=null;if(message)$('unpaired-text').textContent=message;showPanel('unpaired')}
+const pairing={code:''};
+function showPair(code){pairing.code=code;$('device-name').value=deviceNameGuess();showPanel('pair-form')}
+// Uzak bağlantıda girişin cihaz kanıtı: meydan okuma + cihaz anahtarıyla imza. Ofis ağında uç yoktur (404) → olağan giriş.
+async function loginProof(){let ch;try{ch=await api('/session/challenge')}catch(e){if(e.status===404)return null;throw e}
+  if(!secure())throw Error('Bu bağlantı güvenli değil (https gerekli); cihaz doğrulanamadı.');
+  const stored=await keyOp('readonly',s=>s.get('anahtar'));if(!stored?.privateKey)throw Error('Bu tarayıcıda cihaz anahtarı yok; karekodu yeniden okutun.');
+  const signature=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},stored.privateKey,new TextEncoder().encode(`DestekOfis-mobil-giris\n${ch.device}\n${ch.nonce}`));
+  return {nonce:ch.nonce,signature:b64url(signature)}}
+$('pair-form').addEventListener('submit',async e=>{e.preventDefault();const button=$('pair-submit');button.disabled=true;$('pair-error').classList.add('hidden');try{
+  if(!secure())throw Error('Eşleme için güvenli bağlantı (https) gerekir; karekoddaki adresi açın.');
+  const keys=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},false,['sign','verify']);const publicJwk=await crypto.subtle.exportKey('jwk',keys.publicKey);
+  await api('/eslesme',{kod:pairing.code,ad:$('device-name').value,tur:deviceKind(),anahtar:{kty:publicJwk.kty,crv:publicJwk.crv,x:publicJwk.x,y:publicJwk.y}});
+  await keyOp('readwrite',s=>s.put({privateKey:keys.privateKey,publicJwk},'anahtar'));
+  pairing.code='';toast('Cihaz eşlendi. Kullanıcı adınız ve parolanızla girin.');showPanel('login-form')
+}catch(err){if(err instanceof SessionEnded)return;$('pair-error').textContent=err.message;$('pair-error').classList.remove('hidden')}finally{button.disabled=false}});
 
-$('login-form').addEventListener('submit',async e=>{e.preventDefault();const button=$('login-submit');button.disabled=true;$('login-error').classList.add('hidden');try{await api('/session/login',{username:$('username').value,password:$('password').value});$('password').value='';await startSession()}catch(err){$('login-error').textContent=err.message;$('login-error').classList.remove('hidden')}finally{button.disabled=false}});
+$('login-form').addEventListener('submit',async e=>{e.preventDefault();const button=$('login-submit');button.disabled=true;$('login-error').classList.add('hidden');try{const proof=await loginProof();await api('/session/login',{username:$('username').value,password:$('password').value,...(proof||{})});$('password').value='';await startSession()}catch(err){$('login-error').textContent=err.message;$('login-error').classList.remove('hidden')}finally{button.disabled=false}});
 $('company').addEventListener('change',e=>{state.company=e.target.value;state.reportSelected=null;state.reportQuery=null;state.reportResult=null;state.reportChosenAccount=null;state.reportCatalog=[];setPage('home')});
 document.addEventListener('click',async e=>{const reportPick=e.target.closest('[data-report-pick]');if(reportPick){selectReport(reportPick.dataset.reportPick);return}const reportBack=e.target.closest('[data-report-back]');if(reportBack){renderReportCatalog();return}const reportSearch=e.target.closest('[data-report-search]');if(reportSearch){searchReportAccounts();return}const reportDownload=e.target.closest('[data-report-download]');if(reportDownload){downloadReport(reportDownload.dataset.reportDownload);return}const reportStatement=e.target.closest('[data-account-statement]');if(reportStatement){downloadAccountStatement(reportStatement.dataset.accountStatement);return}const nav=e.target.closest('[data-nav]');if(nav){setPage(nav.dataset.nav);return}const row=e.target.closest('[data-detail]');if(row){const [kind,id]=row.dataset.detail.split(':');if(id)detail(kind,id);return}const act=e.target.closest('[data-action]')?.dataset.action;if(!act)return;if(act==='refresh')state.selected?detail(state.selected.kind,state.selected.id):load();if(act==='back')setPage(state.page);if(act==='logout'){try{await api('/session/logout',{})}catch{}loggedOut()}});
 $('content').addEventListener('input',e=>{if(e.target.id==='list-search')listSearch(e.target.value,e.target.selectionStart)});
 $('content').addEventListener('submit',e=>{if(e.target.id==='report-filter-form'){e.preventDefault();submitReportFilters(e.target)}});
-(async()=>{try{await startSession()}catch{loggedOut()}})();
+// Karekoddan açılış: #eslesme=<kod> (kod sunucuya adres satırıyla gitmez); adres çubuğundan hemen silinir.
+(async()=>{const m=/^#eslesme=([A-Za-z0-9_-]{8,64})$/.exec(location.hash);if(m){history.replaceState(null,'',location.pathname+location.search);showPair(m[1]);return}try{await startSession()}catch(e){if(!(e instanceof SessionEnded))loggedOut()}})();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});

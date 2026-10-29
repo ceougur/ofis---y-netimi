@@ -25,6 +25,8 @@ import { resolveMachineId } from "./machine.mjs";
 export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+905367715055", email: "destek@destekofis.net" });
 const CONTACT_TEXT = `${SUPPORT_CONTACT.name}: ${SUPPORT_CONTACT.phone} · ${SUPPORT_CONTACT.email}`;
 export const GRACE_DAYS = 7;
+// 2.4.7 M2 (kullanıcı kararı 26.10.2026): program başına en çok 3 eşli uzaktan cihaz; lisans belirtecindeki mobileDevices alanı değiştirir.
+export const DEFAULT_MOBILE_DEVICES = 3;
 export const TRANSITION_DAYS = 30;
 export const WARN_DAYS = 7;
 export const CLOCK_TOLERANCE_MS = 24 * 3_600_000;
@@ -705,5 +707,8 @@ export function createLicenseService({
     throw new HttpError(403, `${current.title}. Program salt okunur çalışıyor; bu işlem yapılamaz.`, { code: "LICENSE_READ_ONLY", license: summaryFor(null) });
   }
 
-  return { init, start, stop, status, writable, summary: summaryFor, permissionsFor, assertWritable, check, startTrial, activateKey, applyCode, submitContact, usageSummary: usageBody, machine: () => ({ ...machine, installCode: formatInstallCode(machine.id) }) };
+  // 2.4.7 M2: lisanstaki mobil cihaz sınırı (belirteçte yoksa 3; docs/mobil/M2-TASARIM.md §3).
+  const mobileDeviceLimit = () => (Number.isInteger(token?.mobileDevices) ? token.mobileDevices : DEFAULT_MOBILE_DEVICES);
+
+  return { init, start, stop, status, writable, mobileDeviceLimit, summary: summaryFor, permissionsFor, assertWritable, check, startTrial, activateKey, applyCode, submitContact, usageSummary: usageBody, machine: () => ({ ...machine, installCode: formatInstallCode(machine.id) }) };
 }

@@ -1003,3 +1003,11 @@ td.adm-row-actions > .hof-button + .hof-button {
 .adm-network-warn {
   color: var(--hof-danger, #b91c1c);
 }
+
+/* 2.4.7 M2: Yönetim → Mobil Cihazlar */
+.adm-mobile-count { margin: 0; }
+.adm-mobile-warn { margin: 6px 0 0; color: var(--hof-danger, #b42318); font-weight: 600; }
+.adm-mobile-why { display: block; margin-top: 4px; color: var(--hof-muted, #5f6b76); font-size: 12px; }
+.adm-mobile-remote { display: inline-flex; align-items: center; gap: 6px; }
+.adm-mobile-qr { display: flex; justify-content: center; margin: 8px 0 12px; }
+.adm-mobile-qr svg { width: min(260px, 70vw); height: auto; }

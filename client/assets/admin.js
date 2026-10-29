@@ -18,6 +18,14 @@
     "user.renamed": "Kullanıcının adını düzeltti",
     "user.deleted": "Kullanıcıyı sildi",
     "user.restored": "Silinen kullanıcıyı geri aldı",
+    // 2.4.7 M2: mobil cihaz eşleme.
+    "mobile.access.granted": "Uzaktan bağlanma izni verdi",
+    "mobile.access.revoked": "Uzaktan bağlanma iznini kaldırdı",
+    "mobile.code.created": "Mobil eşleme karekodu oluşturdu",
+    "mobile.device.paired": "Mobil cihaz eşledi",
+    "mobile.device.revoked": "Mobil cihazı sildi",
+    "mobile.login": "Mobil cihazdan giriş yaptı",
+    "mobile.login_failed": "Mobil cihazdan hatalı giriş denemesi",
     "role.created": "Rol oluşturdu",
     "role.updated": "Rolü düzenledi",
     "role.deleted": "Rolü sildi",
@@ -1666,7 +1674,8 @@
     }
   });
 
-  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, trash: loadTrash, companies: loadCompanies, system: loadSystem, license: loadLicense };
+  // 2.4.7 M2: Mobil Cihazlar (hof-mobile-devices.js).
+  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, trash: loadTrash, companies: loadCompanies, system: loadSystem, license: loadLicense, mobile: () => HOF.mobileDevices?.load() };
   function selectTab(name) {
     document.querySelectorAll(".adm-tabs [data-tab]").forEach(button => button.setAttribute("aria-selected", String(button.dataset.tab === name)));
     document.querySelectorAll(".adm-panel").forEach(panel => {

@@ -1,6 +1,6 @@
 // Oturum yönetimi, giriş deneme sınırı ve yetki denetimi.
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import { HttpError, clientIp, parseCookies } from "./http.mjs";
+import { HttpError, REMOTE_SESSION, clientIp, isRemoteRequest, parseCookies } from "./http.mjs";
 import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
 import { DUMMY_HASH, hashPassword, passwordProblem, verifyPassword } from "./passwords.mjs";
 import { canUser, grantsOf, permissionsForUser } from "./permissions.mjs";
@@ -86,11 +86,24 @@ export function createAuth({ store, config, audit, access = null }) {
     return user;
   };
   const limiter = createRateLimiter();
+  // 2.4.7 M2: parola değişince / kurtarılınca kişinin uzak (mobil) oturumları da kapanır (tablo göç v38'de; eski şemada yoksa atlanır).
+  const closeRemoteSessions = userId => {
+    if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'mobile_sessions'")) store.run("DELETE FROM mobile_sessions WHERE user_id = ?", userId);
+  };
   const cookie = (token, maxAge) => `${SESSION_COOKIE}=${token ? encodeURIComponent(token) : ""}; Max-Age=${maxAge}; Path=/; HttpOnly; SameSite=Lax`;
 
   const sessionToken = req => parseCookies(req.headers.cookie || "")[SESSION_COOKIE] || "";
 
   function currentUser(req) {
+    // 2.4.7 M2: uzak istek (ayrı dinleyici) yerel oturum çerezini (hof_session) KULLANMAZ; yalnız kapının (lib/mobile-remote.mjs) doğruladığı cihaza bağlı
+    // uzak oturum. Yerel dinleyicide uzak oturum hiç okunmaz (ayrı tablo).
+    if (isRemoteRequest(req)) {
+      const remote = req[REMOTE_SESSION];
+      if (!remote?.userId) return null;
+      const row = store.get(`SELECT ${USER_COLUMNS} FROM users u WHERE u.id = ?`, remote.userId);
+      if (!row || !row.active || row.deleted_at) return null;
+      return resolve(row);
+    }
     const token = sessionToken(req);
     if (!token) return null;
     const row = store.get(
@@ -111,6 +124,8 @@ export function createAuth({ store, config, audit, access = null }) {
   }
 
   function login(req, res, usernameInput, passwordInput) {
+    // Uzak dinleyiciden yerel giriş yok (yol beyaz listesi zaten kapatır; savunma derinliği): uzak giriş cihaza bağlıdır (lib/mobile-remote.mjs).
+    if (isRemoteRequest(req)) throw new HttpError(404, "Bu adres uzaktan erişime açık değil.", { code: "remote-path" });
     const username = String(usernameInput || "").trim();
     const password = String(passwordInput || "");
     const ip = clientIp(req, config.trustProxy);
@@ -167,6 +182,7 @@ export function createAuth({ store, config, audit, access = null }) {
     store.tx(() => {
       store.run("UPDATE users SET password_hash = ?, must_change_password = 0, password_changed_at = ?, updated_at = ? WHERE id = ?", hashPassword(newPassword), timestamp, timestamp, user.id);
       store.run("DELETE FROM sessions WHERE user_id = ?", user.id);
+      closeRemoteSessions(user.id);
     });
     limiter.success(ip, key);
     limiter.clearUser(user.username);
@@ -194,6 +210,7 @@ export function createAuth({ store, config, audit, access = null }) {
       store.run("UPDATE users SET password_hash = ?, must_change_password = 0, password_changed_at = ?, updated_at = ? WHERE id = ?", hashPassword(newPassword), timestamp, timestamp, user.id);
       // Diğer cihazlardaki oturumlar kapatılır; mevcut oturum açık kalır.
       store.run("DELETE FROM sessions WHERE user_id = ? AND token_hash <> ?", user.id, hashToken(sessionToken(req)));
+      closeRemoteSessions(user.id);
     });
     audit(user, "profile.password_changed", user.id);
   }

@@ -31,6 +31,22 @@
         <div id="login-error" class="form-error hidden" role="alert"></div>
         <div class="safe-note"><span class="safe-icon">♢</span> Bilgiler ofisinizdeki DestekOfis sunucusundan okunur ve buluta kopyalanmaz. Sunucunun açık olması gerekir.</div>
       </form>
+      <form id="pair-form" class="login-form hidden" autocomplete="off">
+        <div class="mobile-brand"><div class="brand-mark">D<span>O</span></div><strong>DestekOfis</strong></div>
+        <span class="eyebrow">DESTEKOFİS MOBİL</span>
+        <h2>Cihazı Eşleştir</h2>
+        <p>Bu cihaz, yöneticinizin oluşturduğu karekodla ofisinizdeki DestekOfis'e bir kez eşlenir. Sonra DestekOfis kullanıcı adınız ve parolanızla girersiniz.</p>
+        <label for="device-name">Cihaz Adı</label><input id="device-name" name="device-name" required maxlength="60" placeholder="Ör. Ahmet'in Telefonu" />
+        <button class="btn primary full" type="submit" id="pair-submit">Eşleştir <span aria-hidden="true">→</span></button>
+        <div id="pair-error" class="form-error hidden" role="alert"></div>
+        <div class="safe-note"><span class="safe-icon">♢</span> Cihazın güvenlik anahtarı bu tarayıcıda üretilir ve dışarı çıkarılamaz. Karekod 5 dakika geçerli ve tek kullanımlıktır.</div>
+      </form>
+      <div id="unpaired" class="login-form hidden" role="status">
+        <div class="mobile-brand"><div class="brand-mark">D<span>O</span></div><strong>DestekOfis</strong></div>
+        <span class="eyebrow">DESTEKOFİS MOBİL</span>
+        <h2>Cihaz Eşli Değil</h2>
+        <p id="unpaired-text">Yöneticiniz Yönetim → Mobil Cihazlar'dan sizin için karekod oluşturmalı; karekodu bu cihazın kamerasıyla okutun.</p>
+      </div>
     </div>
   </div>
   <div id="app" class="shell hidden">

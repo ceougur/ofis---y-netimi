@@ -5,7 +5,7 @@
 //   { "schema": 1, "payload": "<base64(JSON iddialar)>", "signatures": [{ "keyId": "...", "sig": "<base64>" }] }
 // İmza payload'un ham baytları üzerinedir. İddialar (claims):
 //   { schema, product, type: "license-token", kind: "trial"|"license", status: "active"|"blocked",
-//     licenseId, customer, machine (32 hex), issuedAt, startsAt, expiresAt (null = süresiz), offline, message }
+//     licenseId, customer, machine (32 hex), issuedAt, startsAt, expiresAt (null = süresiz), offline, message, mobileDevices? (2.4.7 M2) }
 // "issuedAt" servisin saatidir: uygulama saat geri alma denetiminde ve 7 günlük internetsiz toleransta buna güvenir.
 // İnternetsiz etkinleştirme kodu aynı zarfın tek satırlık hâlidir: "DOLIS1." + base64url(JSON zarf).
 import { createPrivateKey, createPublicKey, sign, verify } from "node:crypto";
@@ -74,6 +74,9 @@ export function normalizeClaims(value) {
     expiresAt,
     offline: value.offline === true,
     message: typeof value.message === "string" ? value.message.trim().slice(0, 300) : "",
+    // 2.4.7 M2: program başına en çok eşli uzaktan cihaz (telefon, tablet, uzak tarayıcı; iki şirket birlikte). İsteğe bağlı; yoksa program 3 sayar
+    // (lib/license.mjs mobileDeviceLimit). Yalnız geçerli tam sayıda iddiaya girer (eski belirteçlerin biçimi değişmez).
+    ...(Number.isInteger(value.mobileDevices) && value.mobileDevices >= 0 && value.mobileDevices <= 100 ? { mobileDevices: value.mobileDevices } : {}),
   };
 }
 

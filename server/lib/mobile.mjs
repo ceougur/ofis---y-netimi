@@ -93,7 +93,13 @@ const ROUTES = [
   { method: "GET", path: /^\/api\/mobil\/bank\/accounts$/, target: () => "/api/workspace/bank/accounts" },
   { method: "GET", path: /^\/api\/mobil\/stock$/, target: (_, query) => ["/api/workspace/stock", listQuery(query, { q: 120, limit: 4, offset: 12, category: 60 })] },
   { method: "GET", path: /^\/api\/mobil\/stock\/([^/]+)$/, target: ([item]) => `/api/workspace/stock/${id(item)}` },
+  // 2.4.7 M2 (docs/mobil/M2-TASARIM.md §6.10): Eylül özetinin iki bölümü için salt okunur uç — taksit özeti (Taksit Kartlarını Görme) ve ANLIK DURUM (yalnız
+  // yönetici, overview.card). Yetki o uçların kendisinde.
+  { method: "GET", path: /^\/api\/mobil\/plans$/, target: () => ["/api/workspace/plans", new URLSearchParams({ count: "1" })] },
+  { method: "GET", path: /^\/api\/mobil\/overview$/, target: () => "/api/workspace/overview" },
 ];
+// Yalnız uzaktan erişim dinleyicisinde (lib/mobile-remote.mjs) anlamlı uçlar: ofis ağında cihaz eşlenmez, giriş cihaza bağlanmaz (olağan oturum).
+const REMOTE_ONLY = new Set(["/api/mobil/eslesme", "/api/mobil/session/challenge"]);
 export const MOBILE_PREFIX = "/api/mobil/";
 // Sözleşme matrisinin makinece okunur hâli (test ve belge için): mobil yol kalıbı → programın ucu.
 export const MOBILE_CONTRACT = Object.freeze(ROUTES.map(route => ({ method: route.method, path: route.path.source })));
@@ -104,6 +110,7 @@ export const MOBILE_CONTRACT = Object.freeze(ROUTES.map(route => ({ method: rout
  */
 export function resolveMobile(method, pathname, query) {
   const verb = method === "HEAD" ? "GET" : method;
+  if (REMOTE_ONLY.has(pathname)) throw new HttpError(404, "Cihaz eşleme ve cihazlı giriş yalnız uzaktan bağlantı adresinden yapılır; ofis ağında olağan girişi kullanın.", { code: "mobile-remote-only" });
   let matchedPath = false;
   for (const route of ROUTES) {
     const found = route.path.exec(pathname);

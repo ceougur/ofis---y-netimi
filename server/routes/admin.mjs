@@ -160,6 +160,8 @@ export function registerAdminRoutes(router, context) {
         role, roleKey, active, name || null, username || null, grants ? grantsJson(grants) : null, now(), target.id,
       );
       if (!active) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
+      // 2.4.7 M2: pasifleşen kişinin uzak (mobil) oturumları da kapanır; cihazı yer tutar ama giremez (docs/mobil/M2-TASARIM.md §6.8).
+      if (!active) context.mobileRemote?.closeUserSessions(target.id);
       bankGrants();
     });
     if (!active) dropLive(target.id);
@@ -207,6 +209,8 @@ export function registerAdminRoutes(router, context) {
         stamp, admin.id, `${target.username}#silindi-${suffix}`, `${target.display_name} (silindi)`, stamp, target.id,
       );
       store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
+      // 2.4.7 M2: silinen kişinin eşli cihazları silinir (yer açılır), uzak oturumları ve bekleyen karekodları düşer.
+      context.mobileRemote?.onUserDeleted(target.id, admin);
     });
     dropLive(target.id);
     auth.clearLoginLocks(target.username);
@@ -290,6 +294,7 @@ export function registerAdminRoutes(router, context) {
     store.tx(() => {
       store.run("UPDATE users SET password_hash = ?, must_change_password = ?, password_changed_at = ?, updated_at = ? WHERE id = ?", hashPassword(body.password), mustChange, now(), now(), target.id);
       if (target.id !== admin.id) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
+      if (target.id !== admin.id) context.mobileRemote?.closeUserSessions(target.id);
     });
     if (target.id !== admin.id) dropLive(target.id);
     // Hatalı denemelerle kilitlenmiş kullanıcı, yeni parolasıyla beklemeden girebilsin.
@@ -300,7 +305,7 @@ export function registerAdminRoutes(router, context) {
 
   router.post("/api/admin/users/:id/logout-all", async ({ req, res, params }) => {
     const admin = auth.requirePermission(req, "users.manage");
-    const removed = store.run("DELETE FROM sessions WHERE user_id = ?", params.id).changes;
+    const removed = store.run("DELETE FROM sessions WHERE user_id = ?", params.id).changes + (context.mobileRemote?.closeUserSessions(params.id) || 0);
     dropLive(params.id);
     audit(admin, "user.sessions_revoked", params.id, { removed });
     ok(res, { removed });
