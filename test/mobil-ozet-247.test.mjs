@@ -277,9 +277,10 @@ describe("M3 program: yükleme tetikleri (Eylül: 15 dk / 10 dk hareketsizlik / 
         await tur();
         if (sira() > once) sayim.set(gun(), (sayim.get(gun()) || 0) + 1);
       }
-      assert.equal(sayim.get("2026-12-01"), OZET_KURALLARI.gunlukVeri, `1 Aralık (tam gün, 53 fırsat): tam 20 veri yüklemesi (${JSON.stringify([...sayim])})`);
+      assert.equal(OZET_KURALLARI.gunlukVeri, 40, "günlük veri yükleme sınırı 40 (KARARLAR — M3 Q3, 29.10.2026)");
+      assert.equal(sayim.get("2026-12-01"), OZET_KURALLARI.gunlukVeri, `1 Aralık (tam gün, 53 fırsat): tam 40 veri yüklemesi (${JSON.stringify([...sayim])})`);
       assert.ok((sayim.get("2026-12-02") || 0) > 0 && sayim.get("2026-12-02") <= OZET_KURALLARI.gunlukVeri, "İstanbul gün dönümünde sayaç sıfırlanır");
-      assert.ok((sayim.get("2026-11-30") || 0) + 2 <= OZET_KURALLARI.gunlukVeri, "30 Kasım: en çok 20");
+      assert.ok((sayim.get("2026-11-30") || 0) + 2 <= OZET_KURALLARI.gunlukVeri, "30 Kasım: en çok 40");
     } finally {
       await ctx.close();
     }

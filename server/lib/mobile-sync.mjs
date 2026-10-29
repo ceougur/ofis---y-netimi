@@ -6,7 +6,7 @@
 // açabileceği özete hiç girmez). Bölümler (Eylül listesi + M1 ekranları): oturum (görebildiği şirketler), Nakit Kasa, Banka, Cari Hesaplar (liste + ilk
 // carilerin ayrıntısı), Stok (liste + ayrıntı), Taksit özeti, Anlık Durum (yalnız yönetici). Raporlar (parametreli) ve PDF/Excel çevrimdışı yok.
 //
-// YÜKLEME TETİKLERİ (Eylül planı): veri değişince en geç 15 dakikada bir, 10 dakika hareketsizlikte bir kez daha; değişiklik yoksa hiç; günde en çok 20 veri
+// YÜKLEME TETİKLERİ (Eylül planı): veri değişince en geç 15 dakikada bir, 10 dakika hareketsizlikte bir kez daha; değişiklik yoksa hiç; günde en çok 40 veri
 // yüklemesi. GÜVENLİK değişiklikleri (eşleme, cihaz silme, uzak izin, kullanıcı/rol/şirket erişimi, lisans) HEMEN yüklenir (sınır beklemez; silinen cihaz
 // ve daralan yetki hemen yansır). Program kapanırken bekleyen değişiklik varsa son hâl yüklenir ("sunucu kapalıyken son hâl").
 // Lisans yazılabilir değilse yüklenmez (K14); kapıcıya yalnız lisansın son hâli bildirilir.
@@ -20,7 +20,7 @@ import { KAPI_KURALLARI, trGunu } from "./kapi-protokol.mjs";
 export const OZET_KURALLARI = Object.freeze({
   veriAraligiMs: 15 * 60_000, // en çok 15 dakikada bir veri yüklemesi
   hareketsizMs: 10 * 60_000, // 10 dakika hareketsizlikte
-  gunlukVeri: 20, // günde en çok 20 veri yüklemesi (güvenlik yüklemeleri sayılmaz; kapıcının kendi sınırı günde 200)
+  gunlukVeri: 40, // günde en çok 40 veri yüklemesi (29.10.2026 Q3, 5 dk yetkisiyle: Eylül planındaki 20 yoğun ofiste öğleden sonra doluyordu; güvenlik yüklemeleri sayılmaz; kapıcının kendi sınırı günde 200)
   carSatir: 500, // cari listesinde en çok
   cariAyrinti: 50, // ayrıntısı özete giren ilk cariler
   stokSatir: 500,

@@ -60,7 +60,7 @@ evrensel sertifikası `*.destekofis.net`'i kapsar (ek ücret yok). `m.` kalır: 
 ## 4. Yükleme tetikleri ve sınırlar (Eylül planı)
 
 - Veri değişikliği (her başarılı yazma isteği): en çok 15 dakikada bir; 10 dakika hareketsizlikte; değişiklik yoksa hiç (gece/hafta sonu sıfır); günde en
-  çok 20 veri yüklemesi (İstanbul günü).
+  çok 40 veri yüklemesi (İstanbul günü; 29.10.2026 Q3 — Eylül planında 20).
 - Güvenlik değişikliği (eşleme, cihaz silme, Uzaktan Bağlanabilir, kullanıcı/rol, şirket erişimi, lisans): HEMEN (veri sınırını beklemez).
 - Program kapanırken bekleyen değişiklik varsa son hâl yüklenir (en çok 5 sn).
 - Açılışta ve lisans belirteci yenilenince kapıcıya yalnız KAYIT (ofis anahtarı, lisans belirteci, cihaz listesi, işaret sırrı).
