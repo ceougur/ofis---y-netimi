@@ -1,0 +1,32 @@
+{
+  "ad": "ekstre-247-rapor-testleri",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-altin.test.mjs test/banka-210-arayuz.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-fis.test.mjs test/banka-210-gg2-gosterge.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-kabul-mizan.test.mjs test/banka-210-kapi.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-rapor-bulgu.test.mjs test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/banka-210-rapor-is-parcacigi.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-220-pos-iz3.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-230-supheli-ekran.test.mjs test/banka-alt-hesap-aciklama.test.mjs test/banka-bakiye-ileri-tarihli.test.mjs test/banka-rapor-243.test.mjs test/bulgu-223.test.mjs test/cari-243.test.mjs test/cari-vade-245.test.mjs test/cheques-overview.test.mjs test/defter-213.test.mjs test/defter-243-raporlar.test.mjs test/defter-243-stok-acilis.test.mjs test/defter-243-ux24-toplam.test.mjs test/defter-243-vergi.test.mjs test/disa-aktarim-dugmeleri.test.mjs test/eksi-stok-217.test.mjs test/ekstre-ayrinti-245.test.mjs test/ekstre-ayrinti-247.test.mjs test/ertelenen-224.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-kapama-k1.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/is-akisi.test.mjs test/iz1-excel-sirket.test.mjs test/kalan-metin-246.test.mjs test/kanit-araci.test.mjs test/kapama-ks7-245.test.mjs test/kapama-rastgele-223.test.mjs test/kapi-para-245.test.mjs test/kayit-tahsilat-244.test.mjs test/kullanici-yetki-210.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/mobil-247.test.mjs test/mutabakat-213.test.mjs test/personel-ozluk-244.test.mjs test/plan-transfer.test.mjs test/platform-tasinabilirlik.test.mjs test/rapor-220.test.mjs test/rapor-230-iz5.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/supheli-230-karar.test.mjs test/tabela-adi-245.test.mjs test/tablo-raporlari-u3-244.test.mjs test/ux18-cek-fatura-244.test.mjs test/yazim-duzeni.test.mjs test/yetki-243-muhasebe-finans.test.mjs test/yetki-gorunurluk.test.mjs test/yevmiye-sira-244.test.mjs",
+  "commit": "c13d57e9e893e35c2a39706f9246702fd0010703",
+  "dal": "is/ekstre-247",
+  "kirli": 8,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T03:29:59.516Z",
+  "sure_sn": 299.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 973,
+    "gecen": 973,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ekstre-247-rapor-testleri.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/ekstre247-repo",
+  "ham_cikti_sha256": "f8ca61d7b3527cb55574fe1284dd7c52c07ddc5c4bb58a4631b1cfdc4783fc0b",
+  "ham_cikti_bayt": 347811
+}

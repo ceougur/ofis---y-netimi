@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-senaryo-217",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-217.mjs",
+  "commit": "c13d57e9e893e35c2a39706f9246702fd0010703",
+  "dal": "is/ekstre-247",
+  "kirli": 11,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T03:42:48.901Z",
+  "sure_sn": 74,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 65,
+    "gecen": 65,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/e2e-senaryo-217.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/ekstre247-repo",
+  "ham_cikti_sha256": "137f6e1282aac028f610f024b26f429a52a12e3804ce771700d569962c231c07",
+  "ham_cikti_bayt": 6714
+}

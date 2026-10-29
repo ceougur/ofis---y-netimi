@@ -1,0 +1,20 @@
+1) Cari kartı → Ayrıntılı Ekstre: alt başlık, İşlem, açıklama, Kalem Açıklaması (5, 6b)
+  ✗ alt başlık yalnız Cari No + aralık: “Cari No 1 · 01.01.2026 – 31.12.2026 · Fatura kalemleriyle · B: borçlu · A: alacaklı”
+  ✗ İşlem: Satış Faturası
+  ✗ açıklama: Satış Faturası FIS2026000000001
+  ✗ ekranda 'Faturası' yok
+  ✗ Kalem Açıklaması kolonu (Tarih | Belge No | İşlem | Yol | Açıklama / Ürün - Hizmet | Miktar | Birim | Birim Fiyat | İsk. % | KDV'siz Tutar | KDV % | Toplam | Borç | Alacak | Bakiye)
+  ✗ açıklamalı kalemde metin, açıklamasızda boş
+  ✓ stok kartı notu ekranda yok
+  ✗ kalem adı girintili (undefinedpx, undefined)
+  ✗ Sütunlar: , 0 kolon hepsi işaretli
+1b) 1366 × 768: 16 kolon (Kalem Açıklaması dahil) yatay kaydırmasız
+  ✓ 1366 px: yatay kaydırma yok (tablo 953 px, kutu 953 px)
+2) Sütunlar → Yol ve Kalem Açıklaması işaretini kaldır (gerçek tıklama); liste açık kalır
+  ✗ HATA: page.click: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible) [data-rc-main] [data-rc-cols] > summary')[22m
+
+  ✓ sayfa hatası yok
+
+3 geçti, 9 kaldı

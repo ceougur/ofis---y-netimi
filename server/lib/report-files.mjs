@@ -34,6 +34,9 @@ export function reportPdf(data, { now, companyLabel = "", userName = "", brand =
     // 2.4.4 U3: sayfaya sığmazsa bırakılabilir kolonlar (tablo raporlarının özel alan kolonları) ve alt başlıktaki notu.
     optional: data.optional || null,
     optionalNote: data.optionalNote,
+    // 2.4.7: sözcüklü kolonlar başlığın iki satırlık genişliğine kadar daralabilir (yalnız isteyen rapor; Ayrıntılı Cari Ekstre 16 kolon).
+    ...(data.pdfWrapHeads === true ? { wrapHeads: true } : {}),
+    ...(Number.isInteger(data.pdfCellLines) ? { cellLines: data.pdfCellLines } : {}),
     summary: data.summary || [],
     officeName: companyLabel,
     userName,

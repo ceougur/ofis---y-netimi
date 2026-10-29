@@ -13,8 +13,12 @@
 //   TOPLAM satırları  : "DÖNEM TOPLAMI" (dönem borç ve alacağı) ve "GENEL TOPLAM" (devir dahil borç, alacak ve dönem sonu bakiyesi).
 // Kalem satırlarının Toplam'ı TOPLAM satırında toplanmaz (satış ve iade kalemleri karışık; para kolonları Borç / Alacak'tır).
 
-export const DETAIL_HEADERS = Object.freeze(["Tarih", "Belge No", "İşlem", "Yol", "Açıklama / Ürün - Hizmet", "Miktar", "Birim", "Birim Fiyat", "İsk. %", "KDV'siz Tutar", "KDV %", "Toplam", "Borç", "Alacak", "Bakiye"]);
-export const DETAIL_TYPES = Object.freeze(["", "", "", "", "", "number", "", "money", "", "money", "", "money", "money", "money", "money"]);
+// 2.4.7 (müşteri isteği 6b): "Kalem Açıklaması" — fatura satırının kendi açıklaması (invoice_lines.description; faturada kalemin yanındaki düğmeyle
+// yazılan, o faturaya özel metin). Yalnız kalem satırında; boşsa boş. Stok kartının notu (stock_items.note) GELMEZ (kullanıcı kararı 28.10.2026).
+export const DETAIL_HEADERS = Object.freeze(["Tarih", "Belge No", "İşlem", "Yol", "Açıklama / Ürün - Hizmet", "Kalem Açıklaması", "Miktar", "Birim", "Birim Fiyat", "İsk. %", "KDV'siz Tutar", "KDV %", "Toplam", "Borç", "Alacak", "Bakiye"]);
+export const DETAIL_TYPES = Object.freeze(["", "", "", "", "", "", "number", "", "money", "", "money", "", "money", "money", "money", "money"]);
+// TOPLAM satırlarının adının yazıldığı kolon (gizlenirse projectColumns adı ilk boş metin kolonuna taşır).
+const LABEL_COLUMN = "Açıklama / Ürün - Hizmet";
 const COL = Object.freeze(Object.fromEntries(DETAIL_HEADERS.map((header, index) => [header, index])));
 const ITEM = "› ";
 const EPS = 0.005;
@@ -24,6 +28,15 @@ const RATE = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 2 });
 // Birim fiyat en çok dört ondalık (fatura kalemi böyle saklanır); iki ondalıktan az yazılmaz.
 const PRICE = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 4 });
 const percent = value => `%${RATE.format(Number(value) || 0)}`;
+
+// 2.4.7 (müşteri isteği 5): faturanın cari satırının açıklaması kayıtta "<tür adı> <numara>" diye SAKLI (routes/invoices.mjs: what = `${meta.label} ${number}`;
+// faturanın borç / alacak satırı ve peşin tahsilat / ödeme satırı "… · peşin tahsilat"). Saklanan veri değişmez; yalnız bu raporda baştaki tam tür adı kısa
+// adla yazılır ("Satış Faturası FIS2026…" → "Satış FIS2026…"). Yalnız faturanın kendi satırlarında (origin "invoice") ve yalnız BAŞTAKİ tür adı.
+function shortNote(note, head) {
+  const text = String(note ?? "");
+  if (!head?.kindShort || !head.kindLabel || head.kindShort === head.kindLabel) return text;
+  return text === head.kindLabel || text.startsWith(`${head.kindLabel} `) ? `${head.kindShort}${text.slice(head.kindLabel.length)}` : text;
+}
 
 const blank = () => DETAIL_HEADERS.map(() => "");
 const put = (row, values) => {
@@ -35,7 +48,7 @@ const put = (row, values) => {
  * @param {{
  *   opening: number, openingDay: string,
  *   lines: Array<{ id, date, label, note, debit, credit, balance, origin, kind, sourceId?, receiptNo? }>,  // statement() satırları (dönem içi, yürüyen bakiyeli)
- *   invoices: Map<string, { number, kindLabel, currency, pricesIncludeVat, discountRate, stoppageRate, stoppage, lines: Array<{ name, code, qty, unit, unitPrice, discountRate, net, vatRate, gross, withheld }> }>,
+ *   invoices: Map<string, { number, kindLabel, kindShort?, currency, pricesIncludeVat, discountRate, stoppageRate, stoppage, lines: Array<{ name, code, description?, qty, unit, unitPrice, discountRate, net, vatRate, gross, withheld }> }>,
  *   extras: Map<string, { docNo?: string, way?: string }>,  // defter satırı kimliği → belge no, ödeme yolu
  *   dayText: (iso: string) => string, money: (value: number) => string, mark: (balance: number) => string,
  * }} input
@@ -58,13 +71,16 @@ export function detailedStatement({ opening = 0, openingDay = "", lines = [], in
     credit += Number(line.credit) || 0;
     const extra = extras.get(line.id) || {};
     // Faturanın kendi satırı (borç / alacak; peşin tahsilatı ayrı satırdır): işlem adı belge türü, kalemler altında.
-    const invoice = line.origin === "invoice" && (line.kind === "debt" || line.kind === "credit") ? invoices.get(line.sourceId) : null;
-    const note = [line.note, invoice?.pricesIncludeVat ? "fiyatlar KDV dahil" : ""].filter(Boolean).join(" · ");
+    const head = line.origin === "invoice" ? invoices.get(line.sourceId) : null;
+    const invoice = head && (line.kind === "debt" || line.kind === "credit") ? head : null;
+    const note = [shortNote(line.note, head), invoice?.pricesIncludeVat ? "fiyatlar KDV dahil" : ""].filter(Boolean).join(" · ");
     push(
       put(blank(), {
         Tarih: dayText(line.date),
         "Belge No": extra.docNo || "",
-        İşlem: invoice?.kindLabel || line.label,
+        // 2.4.7 (müşteri isteği 5): tür KISA adı ("Satış", "Alış", "Satıştan İade", "Alıştan İade") — fatura kesilmemiş Müşteri Fişi (FIS) de bu
+        // raporda "… Faturası" diye görünmesin.
+        İşlem: invoice ? invoice.kindShort || invoice.kindLabel : line.label,
         Yol: extra.way || "",
         "Açıklama / Ürün - Hizmet": note,
         Borç: line.debit ? money(line.debit) : "",
@@ -82,6 +98,7 @@ export function detailedStatement({ opening = 0, openingDay = "", lines = [], in
       push(
         put(blank(), {
           "Açıklama / Ürün - Hizmet": `${ITEM}${item.name}${item.code ? ` (${item.code})` : ""}`,
+          "Kalem Açıklaması": String(item.description ?? "").trim(),
           Miktar: QTY.format(Number(item.qty) || 0),
           Birim: item.unit || "",
           "Birim Fiyat": price(item.unitPrice),
@@ -106,4 +123,27 @@ export function detailedStatement({ opening = 0, openingDay = "", lines = [], in
     put(blank(), { "Açıklama / Ürün - Hizmet": "GENEL TOPLAM", Borç: money(round(openingDebit + debit)), Alacak: money(round(openingCredit + credit)), Bakiye: mark(closing) }),
   ];
   return { headers: [...DETAIL_HEADERS], types: [...DETAIL_TYPES], rows, marks, footers, totals: { openingDebit, openingCredit, debit, credit, closing } };
+}
+
+/**
+ * 2.4.7 (müşteri isteği 6a): kullanıcının gizlediği kolonlar çıkarılır — ekran, PDF ve Excel aynı modelden (aynı kolonlar). En az bir kolon kalır
+ * (hepsi gizliyse model değişmez). Gizlenen kolonun TOPLAM hücresi de gider; kalan toplamlar aynı sayıdır (yeniden hesaplanmaz, yalnız seçilir).
+ * BAŞ MİMAR KARARI: TOPLAM satırının adı ("DÖNEM TOPLAMI" / "GENEL TOPLAM") "Açıklama / Ürün - Hizmet" kolonundadır; o kolon gizlenirse ad, TOPLAM
+ * satırlarında boş olan ilk görünen metin kolonuna yazılır (yoksa — yalnız tutar kolonları açıksa — adsız kalır).
+ * @param {{ headers: string[], types: string[], rows: string[][], footers: string[][] }} model
+ * @param {string[]} hidden  gizlenecek kolon adları (bilinmeyen ad yok sayılır)
+ * @returns {object} aynı model, kolonları seçilmiş; hidden = gerçekten gizlenen adlar
+ */
+export function projectColumns(model, hidden = []) {
+  const drop = new Set((Array.isArray(hidden) ? hidden : []).filter(name => model.headers.includes(name)));
+  const keep = model.headers.map((header, index) => (drop.has(header) ? -1 : index)).filter(index => index >= 0);
+  if (!drop.size || !keep.length) return { ...model, hidden: [] };
+  let footers = model.footers.map(line => line.slice());
+  const labelAt = model.headers.indexOf(LABEL_COLUMN);
+  if (labelAt >= 0 && drop.has(LABEL_COLUMN)) {
+    const target = keep.find(index => model.types[index] !== "money" && model.types[index] !== "number" && footers.every(line => !line[index]));
+    if (target !== undefined) footers = footers.map(line => Object.assign(line, { [target]: line[labelAt] }));
+  }
+  const pick = row => keep.map(index => row[index]);
+  return { ...model, headers: pick(model.headers), types: pick(model.types), rows: model.rows.map(pick), footers: footers.map(pick), hidden: model.headers.filter(header => drop.has(header)) };
 }
