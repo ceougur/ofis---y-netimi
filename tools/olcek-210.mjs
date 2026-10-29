@@ -84,6 +84,9 @@ function baseOptions(dataDir, extra = {}) {
     startLicenseTimers: false,
     moneyStrict: false,
     gateVerify: false,
+    // 2.4.4'te kalkan kayıt tahsilatı / tablodan aktarma motorun eski veri yollarıdır; testlerdeki gibi açık (test/helpers.mjs, guvenilirlik/surumler.mjs).
+    legacyCasePayments: true,
+    legacyTableTransfer: true,
     ...extra,
   };
 }
