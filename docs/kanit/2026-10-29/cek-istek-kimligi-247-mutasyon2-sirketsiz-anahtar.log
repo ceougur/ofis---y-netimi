@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: 2.4.7 çek / senet girişinde istek kimliği (tek sunucu)
+    # Subtest: aynı kimlik + aynı gövde (yanıt kayboldu, yeniden gönderildi) → tek evrak, tek cari etkisi, 101 bir kez; ikinci yanıt ilk evrak (replayed)
+    ok 1 - aynı kimlik + aynı gövde (yanıt kayboldu, yeniden gönderildi) → tek evrak, tek cari etkisi, 101 bir kez; ikinci yanıt ilk evrak (replayed)
+      ---
+      duration_ms: 145.738536
+      type: 'test'
+      ...
+    # Subtest: aynı kimlik + farklı gövde → 409 request-id-reused; yeni evrak yok (öbür uçlarla aynı)
+    ok 2 - aynı kimlik + farklı gövde → 409 request-id-reused; yeni evrak yok (öbür uçlarla aynı)
+      ---
+      duration_ms: 43.250548
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki istek (aynı kimlik, Promise.all) → tek evrak; ikisi de aynı evrakı döndürür
+    ok 3 - aynı anda iki istek (aynı kimlik, Promise.all) → tek evrak; ikisi de aynı evrakı döndürür
+      ---
+      duration_ms: 40.77284
+      type: 'test'
+      ...
+    # Subtest: kimliksiz istek eskisi gibi serbest (geriye uyum): aynı gövdeyle iki istek iki evrak (no'suz evrakta gerçekten iki evrak olabilir)
+    ok 4 - kimliksiz istek eskisi gibi serbest (geriye uyum): aynı gövdeyle iki istek iki evrak (no'suz evrakta gerçekten iki evrak olabilir)
+      ---
+      duration_ms: 89.244216
+      type: 'test'
+      ...
+    # Subtest: biçimsiz kimlik → 400 (öbür uçlarla aynı); evrak yazılmaz
+    ok 5 - biçimsiz kimlik → 400 (öbür uçlarla aynı); evrak yazılmaz
+      ---
+      duration_ms: 19.898925
+      type: 'test'
+      ...
+    # Subtest: taksite sayılan evrak: aynı kimlikle ikinci gönderim taksiti ikinci kez ödemez (tek plan satırı, kalan bir kez düşer)
+    ok 6 - taksite sayılan evrak: aynı kimlikle ikinci gönderim taksiti ikinci kez ödemez (tek plan satırı, kalan bir kez düşer)
+      ---
+      duration_ms: 54.99907
+      type: 'test'
+      ...
+    # Subtest: seri no'lu evrak: yanıt kaybolunca yeniden gönderim 'zaten kayıtlı' sorusuna düşmez, ilk evrak döner; allowDuplicate yolu da tek evrak
+    ok 7 - seri no'lu evrak: yanıt kaybolunca yeniden gönderim 'zaten kayıtlı' sorusuna düşmez, ilk evrak döner; allowDuplicate yolu da tek evrak
+      ---
+      duration_ms: 46.018884
+      type: 'test'
+      ...
+    # Subtest: reddedilen istek (ileri tarih) kimlik bırakmaz; düzeltilip aynı kimlikle gönderilince kaydedilir
+    ok 8 - reddedilen istek (ileri tarih) kimlik bırakmaz; düzeltilip aynı kimlikle gönderilince kaydedilir
+      ---
+      duration_ms: 36.993219
+      type: 'test'
+      ...
+    # Subtest: evrak silindikten sonra aynı kimlikle yeniden gönderim yeni evrak açmaz (silinen evrak geri gelmez, ikinci evrak doğmaz)
+    ok 9 - evrak silindikten sonra aynı kimlikle yeniden gönderim yeni evrak açmaz (silinen evrak geri gelmez, ikinci evrak doğmaz)
+      ---
+      duration_ms: 52.814022
+      type: 'test'
+      ...
+    # Subtest: başka kullanıcının aynı kimliği ayrı anahtardır (sonuç sızmaz); aynı kullanıcının yeniden gönderimi tek evrak
+    ok 10 - başka kullanıcının aynı kimliği ayrı anahtardır (sonuç sızmaz); aynı kullanıcının yeniden gönderimi tek evrak
+      ---
+      duration_ms: 208.159464
+      type: 'test'
+      ...
+    1..10
+ok 1 - 2.4.7 çek / senet girişinde istek kimliği (tek sunucu)
+  ---
+  duration_ms: 1180.608266
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 çek / senet istek kimliği: yeniden başlatma, şirketler, yedekten geri yükleme
+    # Subtest: sunucu yeniden başlasa da aynı kimlik + aynı gövde → ilk evrak; farklı gövde → 409
+    ok 1 - sunucu yeniden başlasa da aynı kimlik + aynı gövde → ilk evrak; farklı gövde → 409
+      ---
+      duration_ms: 119.142781
+      type: 'test'
+      ...
+    # Subtest: şirketler ayrı: 001'deki kimlik 002'de yeni evrak; her şirkette yeniden gönderim tek evrak; yedekten geri yükleme request_keys'i de geri getirir
+    not ok 2 - şirketler ayrı: 001'deki kimlik 002'de yeni evrak; her şirkette yeniden gönderim tek evrak; yedekten geri yükleme request_keys'i de geri getirir
+      ---
+      duration_ms: 215.315527
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-mut2-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:241:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002: 404 {"ok":false,"error":"Çek/senet bulunamadı. Silinmiş olabilir."} Çek/senet bulunamadı. Silinmiş olabilir.
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-mut2-6f4e31c6/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-mut2-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:253:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.4.7 çek / senet istek kimliği: yeniden başlatma, şirketler, yedekten geri yükleme
+  ---
+  duration_ms: 668.581478
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-mut2-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:212:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 12
+# suites 2
+# pass 11
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2354.873346

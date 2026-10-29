@@ -247,6 +247,9 @@
     const bondWanted = edit ? cheque.closesInvoice?.id || "" : preset?.invoiceId || "";
     const bondAccount = edit ? cheque.accountId || "" : preset?.account?.id || "";
     const bondState = { shown: false, account: bondAccount };
+    // 2.4.7: yeni evrakın istek kimliği form açılışında (öbür para formlarıyla aynı; plan §3.10/1): yanıt kaybolup yeniden Kaydet'e basılırsa sunucu
+    // ikinci evrak açmaz, ilk evrakı döndürür (replayed). Düzenleme (PUT) kimlik almaz; bayatlık updatedAt ile denetlenir.
+    const requestId = edit ? "" : HOF.requestId();
     const fields = [
       { name: "instrument", label: "Evrak", type: "select", value: cheque?.instrument || "cheque", options: [{ value: "cheque", label: "Çek" }, { value: "note", label: "Senet" }] },
       { name: "amount", label: "Tutar (₺)", required: true, autofocus: !edit, value: cheque ? String(cheque.amount).replace(".", ",") : preset?.amount ? String(preset.amount) : "", inputmode: "decimal", placeholder: "ör. 12.500,00" },
@@ -352,13 +355,14 @@
         const url = edit ? `/api/workspace/cheques/${encodeURIComponent(cheque.id)}` : "/api/workspace/cheques";
         let saved;
         try {
-          saved = await HOF.api(url, { method: edit ? "PUT" : "POST", body: payload });
+          saved = await HOF.api(url, { method: edit ? "PUT" : "POST", body: payload, requestId });
         } catch (error) {
           if (error.data?.code === "cheque-duplicate" && (await HOF.confirm({ title: "Aynı numaralı evrak var", message: `${error.message} Yine de ikinci kez kaydedilsin mi?`, confirmLabel: "Yine de Kaydet" }))) {
-            saved = await HOF.api(url, { method: edit ? "PUT" : "POST", body: { ...payload, allowDuplicate: true } });
+            saved = await HOF.api(url, { method: edit ? "PUT" : "POST", body: { ...payload, allowDuplicate: true }, requestId });
           } else throw error;
         }
-        HOF.toast(edit ? "Evrak güncellendi." : direction === "in" ? "Evrak portföye alındı." : "Verilen evrak kaydedildi.", { type: "success" });
+        if (saved?.replayed) HOF.toast("Bu evrak zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
+        else HOF.toast(edit ? "Evrak güncellendi." : direction === "in" ? "Evrak portföye alındı." : "Verilen evrak kaydedildi.", { type: "success" });
         HOF.emit("accounts-changed");
         if (!modal) {
           HOF.emit("cheques-changed", saved);
