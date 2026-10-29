@@ -59,6 +59,32 @@ Tam `npm test`'in tek kırmızısı üzerine kâhin CI'ye girdi (ci.yml e2e işi
 kararı bekleyen K8-AVANS (R1–R3) ve İNCELE farklı E02/E05 çiftleri `--haric` ile adıyla dışarıda; çıktıda her biri "HARİÇ" satırıyla yazılır, bilinmeyen ad hatadır.
 Karar / düzeltme gelince listeden çıkarılır (o zaman R1–R3 de CI'de koşar). E27 CI'de v2.4.6'nın gerçek koduyla (etiketten AYRI geçici klasöre `git archive`, sonra silinir).
 
+## K8 sonrası (taban 35ee4992 → dal m5-k8-247): R1–R3 farklarının kök nedenleri
+
+Kullanıcı K8-AVANS'ta (a)'yı seçti; kâhin bakımcısı kâhini güncelledi (143/143). Ana oturumun koşusu 49/54 (E05 ve yeni E41 eşleşti). Kalan adım farkları tek tek
+yeniden üretildi (kâhinin adım tanımı + programın yanıtı + aynı cari/şirketteki önceki adımlar; ders 6), her biri bir kök nedene bağlandı. Kontrol farklarının HEPSİ
+(R1 C2_05, R2 C2_01, R3 C1_04: bakiye / Kasa / POS / fatura açığı 1.235 kuruş + 1 hareket) 3 ondalık adımının zinciridir; bağlanamayan kontrol farkı yok.
+
+| Adım(lar) | Ne | Kök neden | Sınıf | Kanıt |
+|---|---|---|---|---|
+| R2 d2182, R3 d197 (masaüstü evrak, aynı istek kimliği) | program ikinci evrakı açtı, kâhin 409 | `POST /api/workspace/cheques` istek kimliği almıyordu (plan §3.10/1 "bütün kapsamlar"); masaüstü formu da göndermiyordu — yanıtı kaybolan Kaydet ikinci evrak, carinin borcu iki kez düşer | **PROGRAM HATASI — DÜZELTİLDİ** (5f371c36, c499809c) | birim 5/5 (eski 1/5: "İKİNCİ EVRAK AÇTI (2 evrak; cari bakiye 3000)"), e2e 12/12 (eski 5/12; istemci mutasyonu da 5/12), mutasyon 23–25 3/3; kâhinde ikisi eşleşti |
+| R1 t1048, R2 t1405, R3 t1425 (masaüstü cari tahsilatı "12,345") | program yuvarlayıp kaydetti, kâhin 400 | Plan §5.1 "Girdi: **Banka uçlarında** `parseMinor`; 2'den çok ondalık 400"; 2.1.0 yargıç düzeltmesi (`docs/GECMIS-KARARLAR.md` 1058: "§5.1'in … kuralı yalnız BANKA uçları içindir; modül uçları (cari, fatura, taksit…) plana göre 'bugünkü gibi' 1,005 → 1,01 yuvarlar") | **KÂHİN OKUMA HATASI** (§9.2/9 cari ucuna uygulanmış) — program değişmedi | mobil yol 3 ondalığı reddeder (400 mobile-amount, BAŞ MİMAR KARARI 3) |
+| R1 t539, R2 t159 / t2303 / t79 (masaüstü evrak, gövdede başka şirketin carisi) | program 400, kâhin [403, 404] | Gövdedeki kimlik alanı programda 400 (taksit, stok, evrak, fatura uçlarında aynı düzen: "Seçilen cari bulunamadı"); yoldaki cari 404 (E16 eşleşir). Plan §9.2/11 "başka şirketin hesap kimliği 404" banka HESABI içindir | **KÂHİN ÇIKARIMI** (SENARYO-DILI §5.6 grup 4 genellemesi) — program değişmedi | kayıt açılmaz; para etkisi yok |
+| R2 t191 (mobil), t554 (masaüstü) havale: başka şirket carisi + seçilmemiş banka hesabı | program 404 (cari), kâhin 400 bank-account-required | İki ihlal tek adımda. SENARYO-DILI §5.6 sıralamayı ÇIKARIM sayar ve "senaryo tek ihlal kurar; kurarsa karşılaştırıcı o adımda yalnız durum sınıfını (4xx) karşılaştırır [BELİRSİZ-17]" der; kâhin tam kodu karşılaştırıyor | **KÂHİN OKUMA HATASI** — program değişmedi | iki taraf da 4xx, kayıt yok |
+| E02 çifti t4 (havale yoluna POS kimliği) | program 404 bank-account-missing, kâhin 400 bank-account-invalid | Kâhin POS'u "hesap" sayar; programda POS banka hesabı değil (ayrı tablo) → hesap bulunamadı | **KÂHİN MODEL FARKI** (bilinen, İNCELE) — program değişmedi | iki kanal aynı, kayıt yok |
+
+Sonuç (5f371c36): tam kâhin 49/54 (`m5k8-kahin-mobil-yazma-tam`; farklar yukarıdaki üç kâhin sınıfı + E02; ana oturumun koşusundaki d2182/d197 eşleşti); CI kipi
+(`--haric E02×2,R1–R3`) 49/49 (`m5k8-kahin-mobil-yazma-ci`); cari kâhini 7408/7408 (`m5k8-kahin-cari`). Kâhin çıktısı `kahin-cikti-k8/`.
+
+Mutasyon (`m5k8-mutasyon`, 25 mutasyon): 24/25 — #24 ("Yine de Kaydet" onayı içerik sayılır) kaçtı: test yalnız bayraklı tekrarı deniyordu. Test güçlendirildi
+(onaylı kaydın bayraksız yeniden gönderimi = formun Kaydet'i), hedefli tarama 23–25 3/3 (`m5k8-mutasyon-evrak-23-25`). İstemci mutasyonu (form kimlik
+göndermez) e2e'de kırmızı: `kirmizi/m5k8-istemci-kimlik-mutasyonu-e2e.log` (5/12).
+
+e2e (c499809c, `m5k8-e2e-*`): senaryo-cek-istek-kimligi-247 12/12 (yeni), senaryo-mobil-yazma-247 61/61, senaryo-mobil-247 77/77, senaryo-mobil-eslesme-247 35/35;
+komşu evrak yolları (ders 9, 10 — Çek / Senet formunu açan / kullanan senaryolar): senaryo-banka-220 76/76, senaryo-224 63/63, senaryo-226 22/22,
+senaryo-form-izolasyon-243 183/183, senaryo-211 59/59.
+Tam `npm test` (bir kez, 2548c867, temiz ağaç): 3838/3838, çıkış 0 (`m5k8-tam-npm-test`).
+
 ## Yeniden koşmak
 
 ```

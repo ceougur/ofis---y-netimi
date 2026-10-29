@@ -52,17 +52,24 @@ taksit sonucunu verir (kâhin K1 eşdeğerlik; 9 eşdeğerlik çifti + 4 göreli
 9. Oturum özetinde `writesEnabled` + `writes` (tahsilat / ödeme / taksit / avans / stok) yetki listesinden; salt okunur lisansta yetki listesi yazma yetkisi
    taşımadığı için yazma kapalı görünür. **M3 için:** şifreli özet (sunucu kapalı) sayfası `writesEnabled: false` vermeli — yazma ekranı yalnız canlı oturumda.
 10. Sunucunun "bugün"ü kurulu bilgisayarın yerel günüdür (Türkiye) — masaüstüyle aynı kaynak; ayrıca sabit UTC+3 hesaplanmaz.
-11. Kâhin CI'de koşar (ci.yml, kapı listesinde `kahin-mobil-yazma`); kullanıcı kararı bekleyen K8-AVANS (R1–R3) ve İNCELE farklı E02 / E05 çiftleri `--haric` ile adıyla
-    dışarıda, karar gelince listeden çıkar. Gerekçe: bilinen ve kök nedeni yazılmış farklar kapıyı sürekli kırmızı tutmasın, kalan 45 senaryonun gerilemesi görülsün.
+11. Kâhin CI'de koşar (ci.yml, kapı listesinde `kahin-mobil-yazma`); kâhinin bakımcısına iletilen okuma / model farklı R1–R3 ve E02 çifti `--haric` ile adıyla
+    dışarıda (K8-AVANS kararından sonra E05 çıktı), kâhin güncellenince listeden çıkar. Gerekçe: kök nedeni yazılmış farklar kapıyı sürekli kırmızı tutmasın, kalan
+    49 senaryonun gerilemesi görülsün.
 
 ## 4. Kâhin karşılaştırması ve açık konular
 
 Ayrıntı ve sayılar: `docs/kanit/2026-10-29/m5-247/OKU-BENI.md`. Kâhinin beklentilerine dokunulmadı; yalnız `secilen_birlesim` (S1–S8) yazıldı.
 
-- **Kullanıcıya soru (ders 43, para kuralı — karar verilmedi):** ödenmiş taksit kartına (kalan 0) gelen tahsilat. Program (masaüstü 2.3.0'dan beri, mobil aynı)
-  `plans.manage` yetkilisine "Fazlasını Avans Yaz" izni verir; kâhin 409 `plan-paid` (her zaman ret) bekler. (a) program gibi kalsın (öneri: masaüstü ile aynı, cari
-  bakiye ve Kasa iki yolda da aynı, avans kartta görünür); (b) ödenmiş kart her zaman reddetsin, avans cari tahsilatıyla girilsin (masaüstü K8 değişir).
-- **Masaüstü bulguları (M5 dışı, mobil yolda yok):** masaüstü API 3 ondalıklı tutarı yuvarlayarak kabul eder (plan §9.2/9); çek / senet girişinde istek kimliği yok
-  (aynı istek iki evrak; plan §3.10/1).
-- **İNCELE (para sonucu aynı):** kart "Ödenen"inin avansı içermesi (tanım), POS kimliğiyle havale ret kodu (404 / 400), başka şirketin carisiyle evrak ret kodu, silinmiş
-  cari + hesapsız havalede ret sırası.
+- **K8-AVANS — KARAR (kullanıcı, 29.10.2026: "A ÖNERİN UYGUN"; docs/2.4.7-IS-LISTESI.md "KARAR — K8-AVANS"):** ödenmiş karta onaylı "Fazlasını Avans Yaz"
+  `plans.manage` yetkilisine açık kalır (masaüstü 2.3.0'dan beri, mobil aynı); kart "Ödenen"i avansı içerir. Program değişmedi; kâhin bakımcısı kâhini karara göre
+  güncelledi (E05 ve yeni E41 çifti eşleşiyor).
+- **Düzeltilen program hatası (masaüstü, para yolu):** çek / senet girişinde kalıcı istek kimliği yoktu (plan §3.10/1 "bütün kapsamlar") — yanıtı kaybolan "Kaydet"in
+  yeniden gönderimi ikinci evrak açıyor, carinin borcu iki kez düşüyordu. `server/routes/cheques.mjs` (kapsam `cheque.create`; "Yine de Kaydet" içerik sayılmaz) +
+  `client/assets/hof-cheques.js` (form açılışında kimlik). Kâhin R2 d2182 / R3 d197 eşleşir.
+- **Kâhinin okuma / model farkları (program değişmedi; bakımcıya iletilir):** (1) masaüstü cari / taksit tutarında 3 ondalık — plan §5.1 "Banka uçlarında `parseMinor`;
+  2'den çok ondalık 400" yalnız BANKA uçları; 2.1.0 yargıç düzeltmesi (`docs/GECMIS-KARARLAR.md` "§5.1'in … kuralı yalnız BANKA uçları içindir; modül uçları (cari,
+  fatura, taksit…) … 1,005 → 1,01 yuvarlar") — program doğru, kâhin 400 bekliyor; (2) gövdedeki (evrak formu) başka şirket carisi: program 400 (gövdedeki kimlik
+  alanı — taksit, stok, evrak, fatura uçlarıyla aynı düzen), kâhin [403, 404] (plan §9.2/11 "başka şirketin hesap kimliği 404" banka hesabı içindir; yoldaki cari
+  için program 404 verir, E16 eşleşir); (3) iki ihlalli adımda ret sırası (başka şirket carisi + seçilmemiş banka hesabı): SENARYO-DILI §5.6 sırayı ÇIKARIM sayar ve
+  "senaryo tek ihlal kurar; kurarsa yalnız durum sınıfı (4xx) karşılaştırılır" der — kâhin tam kodu karşılaştırıyor; (4) E02: POS kimliğiyle havale — kâhin POS'u
+  "hesap" sayıp 400 `bank-account-invalid`, programda POS banka hesabı değil → 404 `bank-account-missing`; kayıt yok.

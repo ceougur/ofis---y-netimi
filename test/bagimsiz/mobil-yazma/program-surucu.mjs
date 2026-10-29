@@ -284,7 +284,9 @@ async function runScenario(sen, root) {
       return { mobile, rid, company, url: `/api/mobil/accounts/${accountOf(step.cari)}/${tahsilat ? "tahsilat" : "odeme"}?${companyParam}`, body };
     }
     if (evrak) {
-      const body = { direction: tahsilat ? "in" : "out", instrument: step.yol === "senet" ? "note" : "cheque", accountId: accountOf(step.cari), amount, issueDate: desktopDate, dueDate: desktopDate, serialNo: `M5-${step.id}`, bank: "Ziraat", ...(step.fatura ? { invoiceId: ids.fatura[step.fatura] || `fatura-yok-${step.fatura}` } : {}), ...flags };
+      // Evrak No: aynı form (aynı kullanıcı + istek kimliği) aynı numarayı taşır — yanıtı kaybolan formun yeniden gönderimi aynı evraktır; farklı formlar farklı numara
+      // (programın "aynı numaralı evrak" sorusu senaryoya karışmasın). Önceden adım kimliğinden türüyordu: aynı formun yinelemesi bile "farklı içerik" sayılırdı.
+      const body = { direction: tahsilat ? "in" : "out", instrument: step.yol === "senet" ? "note" : "cheque", accountId: accountOf(step.cari), amount, issueDate: desktopDate, dueDate: desktopDate, serialNo: `M5-${step.kullanici || "Y"}-${step.istekKimligi || step.id}`, bank: "Ziraat", ...(step.fatura ? { invoiceId: ids.fatura[step.fatura] || `fatura-yok-${step.fatura}` } : {}), ...flags };
       return { mobile, rid, company, url: withCompany("/api/workspace/cheques", company), body };
     }
     if (step.kart) return { mobile, rid, company, url: withCompany(`/api/workspace/plans/${ids.kart[step.kart] || `kart-yok-${step.kart}`}/entries`, company), body: { kind: "in", amount, date: desktopDate, method: way, ...account, ...flags } };
