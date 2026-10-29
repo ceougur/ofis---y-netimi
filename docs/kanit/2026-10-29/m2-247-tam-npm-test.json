@@ -1,0 +1,32 @@
+{
+  "ad": "m2-247-tam-npm-test",
+  "komut": "npm test",
+  "commit": "357ca8ed0f0519193d9e2704bbfb5c8b923b6d0b",
+  "dal": "worktree-agent-a099dc3b7dda9f4d1",
+  "kirli": 0,
+  "izlenmeyen": 17,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T05:33:45.338Z",
+  "sure_sn": 1571.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3739,
+    "gecen": 3739,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/m2-247-tam-npm-test.log.gz",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a099dc3b7dda9f4d1",
+  "ham_cikti_sha256": "ab4108b131a40068f512265e03d14b08897309cfcb1e2e26541f028c50986aec",
+  "ham_cikti_bayt": 1350298
+}

@@ -1,0 +1,24 @@
+U02: 8 olay, 1 sn
+U03: 6 olay, 1 sn
+U05: 4 olay, 1 sn
+U17: 23 olay, 2 sn
+U24: 56 olay, 1 sn
+TAP version 13
+not ok 1 - U02 (6/8; 2 fark)
+  # BULGU {"no":7,"olay":"esle","program":"ret:kod_gecersiz","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":8,"olay":"esle","program":"ret:kod_gecersiz","kahin":["ret:kod_gecersiz"],"ipucu":[]}
+not ok 2 - U03 (5/6; 1 fark)
+  # BULGU {"no":4,"olay":"esle","program":"ret:kod_gecersiz","kahin":["kabul"],"ipucu":[]}
+not ok 3 - U05 (2/4; 2 fark)
+  # BULGU {"no":3,"olay":"esle","program":"ret:kod_gecersiz","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":4,"olay":"esle","program":"kabul","kahin":["kabul"],"ipucu":[]}
+not ok 4 - U17 (21/23; 2 fark)
+  # BULGU {"no":12,"olay":"giris","program":"ret:deneme_siniri","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":23,"olay":"giris","program":"ret:deneme_siniri","kahin":["kabul"],"ipucu":[]}
+ok 5 - U24 (56/56)
+# birlesim kod_sure=10;yeni_kod_eskiyi=etmez;sinir_dolunca=reddet;uretimde_sinir=denetler;sinir_dusunce=mevcutlar_kalir;cihaz_kullanici=yalniz_eslenen;oturum_bosta=30;oturum_mutlak=12;lisans_onbellek=1;ozet_yas_siniri=yok;deneme_siniri=10;deneme_anahtari=kullanici;kilit_dk=15
+# olay eşleşen 90/97 (programda üretilebilen 90/97) · BULGU 7 · İNCELE 0 · M3_KAPICI 0 · DENENMEYEN 0
+# çıktı /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m2-247-kahin-dis
+# tests 5
+# pass 1
+# fail 4
