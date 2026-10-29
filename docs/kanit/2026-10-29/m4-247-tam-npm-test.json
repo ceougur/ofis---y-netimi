@@ -1,0 +1,38 @@
+{
+  "ad": "m4-247-tam-npm-test",
+  "komut": "npm test",
+  "commit": "6562c9247dff3966df1d5a30cc1cb597ac1ad861",
+  "dal": "worktree-agent-a6890bef3afee1413",
+  "kirli": 0,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:20:18.922Z",
+  "sure_sn": 1868.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3779,
+    "gecen": 3778,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Üretim girişi: e-Belge açık, test ve canlı ortam açık › server/server.mjs e-Belgeyi, canlı ortamı (kullanıcı 16.10.2026: \"hem testi hem canlıyı aç\") ve e-SMM'yi (2.4.4 iş listesi 24) açar; config bunları ortam değişkeniyle açmaz",
+      "konum": "test/edoc-uretim.test.mjs:24:3",
+      "hata": "üretim girişi edocEnabled, edocLive ve esmmEnabled verir (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/m4-247-tam-npm-test.log.gz",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6890bef3afee1413",
+  "ham_cikti_sha256": "fc1059aceab162a3d9fdab388542033d1eff398c33eca16527e124a9bd847c1e",
+  "ham_cikti_bayt": 1367785
+}
