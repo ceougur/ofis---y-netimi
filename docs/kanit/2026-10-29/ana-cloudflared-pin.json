@@ -1,0 +1,32 @@
+{
+  "ad": "ana-cloudflared-pin",
+  "komut": "node --test test/tunel-indirici-247.test.mjs test/tunel-surec-247.test.mjs test/tunel-yapilandirma-247.test.mjs test/tunel-yonetici-247.test.mjs test/kapi-tunel-247.test.mjs",
+  "commit": "efa17eddf2406ae4d1017fa7321a91e4a7574a38",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T09:36:19.079Z",
+  "sure_sn": 9.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-cloudflared-pin.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "c96bb4807cf92c9af09e96dd7d96d9a3a153abd6e1f7f3714471e47d530fc07c",
+  "ham_cikti_bayt": 13338
+}

@@ -153,3 +153,17 @@ describe("M4 sabit sürüm tanımı (release.mjs)", () => {
     assert.equal(assetFor({ platform: "linux", arch: "x64", assets: pinned, version: "2099.1.1" }).asset.version, "2099.1.1");
   });
 });
+
+// 29.10.2026: ürünün GERÇEK sabitleri — yayın 2026.10.5'in kendi SHA-256 listesi (kullanıcının ekran görüntüsü) ile kullanıcının yüklediği dosyaların sha256sum'u
+// ana oturumca karakter karakter karşılaştırıldı. Özet boşken tünel hiç açılmazdı (unpinned); bu test boş ya da başka sürüme kaymış sabiti yakalar.
+describe("2.4.7 M4: cloudflared sabitleri (yayın 2026.10.5)", () => {
+  test("Windows ve Linux amd64 özetleri sabit, adresler aynı sürümden", async () => {
+    const { CLOUDFLARED_ASSETS: A, CLOUDFLARED_VERSION: V, assetFor: f } = await import("../server/lib/tunnel/release.mjs");
+    assert.equal(V, "2026.10.5");
+    assert.equal(A["win32-x64"].sha256, "db4e4c413612a0916f3e1679d3caaf376f94911952d163028fb726fb2e0516a9");
+    assert.equal(A["linux-x64"].sha256, "e1bc0cf084fd9e590554fe769a86b1db46701c3f847a43d902f7b974a4e16298");
+    assert.equal(A["win32-x64"].url, "https://github.com/cloudflare/cloudflared/releases/download/2026.10.5/cloudflared-windows-amd64.exe");
+    assert.equal(A["linux-x64"].url, "https://github.com/cloudflare/cloudflared/releases/download/2026.10.5/cloudflared-linux-amd64");
+    for (const [platform, arch] of [["win32", "x64"], ["linux", "x64"]]) assert.equal(f({ platform, arch }).reason, null, `${platform}-${arch} özetli, tünel açılabilir`);
+  });
+});

@@ -1,0 +1,122 @@
+TAP version 13
+# Subtest: M4 indirici: yalnız özeti kodda sabit dosya çalıştırılabilir yerde durur
+    # Subtest: doğru özet → indirilir, bayt bayt aynı; ikinci çağrı indirmez (özet yeniden denetlenir)
+    ok 1 - doğru özet → indirilir, bayt bayt aynı; ikinci çağrı indirmez (özet yeniden denetlenir)
+      ---
+      duration_ms: 37.246903
+      type: 'test'
+      ...
+    # Subtest: yanlış özet → dosya silinir, TunnelError(hash), çalıştırılabilir dosya YOK
+    ok 2 - yanlış özet → dosya silinir, TunnelError(hash), çalıştırılabilir dosya YOK
+      ---
+      duration_ms: 9.175278
+      type: 'test'
+      ...
+    # Subtest: yarım indirme (bağlantı koptu) → TunnelError(network), .part silinir; sonraki deneme baştan, başarılı
+    ok 3 - yarım indirme (bağlantı koptu) → TunnelError(network), .part silinir; sonraki deneme baştan, başarılı
+      ---
+      duration_ms: 40.082185
+      type: 'test'
+      ...
+    # Subtest: ağ yok / HTTP 500 → TunnelError(network); dosya yok
+    ok 4 - ağ yok / HTTP 500 → TunnelError(network); dosya yok
+      ---
+      duration_ms: 3.121895
+      type: 'test'
+      ...
+    # Subtest: diskte değiştirilmiş dosya çalıştırılmaz: özet tutmaz → silinir, yeniden indirilir
+    ok 5 - diskte değiştirilmiş dosya çalıştırılmaz: özet tutmaz → silinir, yeniden indirilir
+      ---
+      duration_ms: 18.686573
+      type: 'test'
+      ...
+    # Subtest: boyut sınırı: beklenenden büyük yanıt indirilmez (TunnelError size)
+    ok 6 - boyut sınırı: beklenenden büyük yanıt indirilmez (TunnelError size)
+      ---
+      duration_ms: 2.956279
+      type: 'test'
+      ...
+    # Subtest: eski sürüm klasörü (yalnız yıl.ay.yama adlı) temizlenir; başka dosyaya dokunulmaz
+    ok 7 - eski sürüm klasörü (yalnız yıl.ay.yama adlı) temizlenir; başka dosyaya dokunulmaz
+      ---
+      duration_ms: 11.104644
+      type: 'test'
+      ...
+    # Subtest: özet sabitlenmemiş tanım indirilmez bile (TunnelError unpinned; ağ kullanılmaz)
+    ok 8 - özet sabitlenmemiş tanım indirilmez bile (TunnelError unpinned; ağ kullanılmaz)
+      ---
+      duration_ms: 0.517129
+      type: 'test'
+      ...
+    1..8
+ok 1 - M4 indirici: yalnız özeti kodda sabit dosya çalıştırılabilir yerde durur
+  ---
+  duration_ms: 130.311915
+  type: 'suite'
+  ...
+# Subtest: M4 sabit sürüm tanımı (release.mjs)
+    # Subtest: Windows amd64 ve Linux amd64 tanımlı; adres Cloudflare'in kendi yayını ve sürüm sabit; özet ya boş ya 64 onaltılık
+    ok 1 - Windows amd64 ve Linux amd64 tanımlı; adres Cloudflare'in kendi yayını ve sürüm sabit; özet ya boş ya 64 onaltılık
+      ---
+      duration_ms: 0.491433
+      type: 'test'
+      ...
+    # Subtest: assetFor: desteklenmeyen platform → platform; özetsiz → unpinned; özetli → tanım
+    ok 2 - assetFor: desteklenmeyen platform → platform; özetsiz → unpinned; özetli → tanım
+      ---
+      duration_ms: 0.21736
+      type: 'test'
+      ...
+    1..2
+ok 2 - M4 sabit sürüm tanımı (release.mjs)
+  ---
+  duration_ms: 0.97157
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 M4: cloudflared sabitleri (yayın 2026.10.5)
+    # Subtest: Windows ve Linux amd64 özetleri sabit, adresler aynı sürümden
+    not ok 1 - Windows ve Linux amd64 özetleri sabit, adresler aynı sürümden
+      ---
+      duration_ms: 1.102964
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/pin-eski/test/tunel-indirici-247.test.mjs:160:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + '2025.8.1'
+        - '2026.10.5'
+              ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2026.10.5'
+      actual: '2025.8.1'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/pin-eski/test/tunel-indirici-247.test.mjs:162:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - 2.4.7 M4: cloudflared sabitleri (yayın 2026.10.5)
+  ---
+  duration_ms: 1.226667
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/pin-eski/test/tunel-indirici-247.test.mjs:159:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 11
+# suites 3
+# pass 10
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 312.929385

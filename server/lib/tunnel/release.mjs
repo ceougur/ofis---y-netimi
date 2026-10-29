@@ -7,12 +7,14 @@
 //
 // ÖZETLER DOLDURULMADAN TÜNEL AÇILMAZ (bilinçli: yanlış/uydurma özet yazılmaz). Doldurma: yayının kendi sayfasındaki SHA-256 listesi + indirilen dosyanın
 // `sha256sum` çıktısı İKİSİ aynı olunca buraya yazılır (adımlar docs/mobil/M4-TASARIM.md §8). Boş özet = "Bağlantı bileşeni bu sürümde tanımlı değil".
-export const CLOUDFLARED_VERSION = "2025.8.1";
+// DOLDURULDU 29.10.2026: 2026.10.5 (yayın 27.10.2026). Kullanıcı yayın sayfasındaki SHA-256 listesinin ekran görüntüsünü ve iki dosyayı yükledi; ana oturum
+// dosyaların sha256sum çıktısını listeyle karakter karakter karşılaştırdı (ikisi aynı); Windows dosyası "Cloudflare, Inc." Authenticode imzalı, içerik özeti imzayla aynı.
+export const CLOUDFLARED_VERSION = "2026.10.5";
 const BASE = `https://github.com/cloudflare/cloudflared/releases/download/${CLOUDFLARED_VERSION}`;
 
 export const CLOUDFLARED_ASSETS = Object.freeze({
-  "win32-x64": Object.freeze({ file: "cloudflared.exe", url: `${BASE}/cloudflared-windows-amd64.exe`, sha256: "", maxBytes: 150 * 1024 * 1024 }),
-  "linux-x64": Object.freeze({ file: "cloudflared", url: `${BASE}/cloudflared-linux-amd64`, sha256: "", maxBytes: 150 * 1024 * 1024 }),
+  "win32-x64": Object.freeze({ file: "cloudflared.exe", url: `${BASE}/cloudflared-windows-amd64.exe`, sha256: "db4e4c413612a0916f3e1679d3caaf376f94911952d163028fb726fb2e0516a9", maxBytes: 150 * 1024 * 1024 }),
+  "linux-x64": Object.freeze({ file: "cloudflared", url: `${BASE}/cloudflared-linux-amd64`, sha256: "e1bc0cf084fd9e590554fe769a86b1db46701c3f847a43d902f7b974a4e16298", maxBytes: 150 * 1024 * 1024 }),
 });
 
 export const SHA256_HEX = /^[0-9a-f]{64}$/;
