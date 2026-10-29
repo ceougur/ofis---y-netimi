@@ -1,0 +1,33 @@
+E02-es-havale-pos-masaustu: fark eski 2 · yeni 2 · değişen anahtar 0 · bunlarda kâhinle fark eski 0 · yeni 0
+   eski ve yeni ortak fark 2; yalnız eskide 0; yalnız yenide 0
+E05-es-taksit-masaustu: fark eski 1 · yeni 1 · değişen anahtar 0 · bunlarda kâhinle fark eski 0 · yeni 0
+   eski ve yeni ortak fark 1; yalnız eskide 0; yalnız yenide 0
+E31-es-evrak-mobil: fark eski 0 · yeni 0 · değişen anahtar 0 · bunlarda kâhinle fark eski 0 · yeni 0
+   eski ve yeni ortak fark 0; yalnız eskide 0; yalnız yenide 0
+E31-es-evrak-masaustu: fark eski 0 · yeni 0 · değişen anahtar 0 · bunlarda kâhinle fark eski 0 · yeni 0
+   eski ve yeni ortak fark 0; yalnız eskide 0; yalnız yenide 0
+R1-rastgele-tohum1: fark eski 41 · yeni 41 · değişen anahtar 0 · bunlarda kâhinle fark eski 0 · yeni 0
+   eski ve yeni ortak fark 41; yalnız eskide 0; yalnız yenide 0
+R2-rastgele-tohum2: fark eski 67 · yeni 60 · değişen anahtar 9 · bunlarda kâhinle fark eski 7 · yeni 0
+   eski: adim:d2182:durum: program "ok" · beklenen "ret"
+   eski: adim:d2182:http: program okunamadı/eksik (beklenen 409)
+   eski: k2563:001:cari:C1_05:bakiye: program 296938 · beklenen 534838
+   eski: k2563:001:evrakSayisi: program 8 · beklenen 7
+   eski: k2563:001:fatura:F1_46:acik: program 0 · beklenen 187738
+   eski: k2563:001:fatura:F1_56:acik: program 157938 · beklenen 208100
+   eski: k2563:001:portfoy: program 1229779 · beklenen 991879
+   eski ve yeni ortak fark 60; yalnız eskide 7; yalnız yenide 0
+R3-rastgele-tohum3: fark eski 57 · yeni 45 · değişen anahtar 14 · bunlarda kâhinle fark eski 12 · yeni 0
+   eski: adim:d197:durum: program "ok" · beklenen "ret"
+   eski: adim:d197:http: program okunamadı/eksik (beklenen 409)
+   eski: k1732:002:cari:C2_11:bakiye: program -111356 · beklenen -10547
+   eski: k1732:002:evrakSayisi: program 6 · beklenen 5
+   eski: k1732:002:portfoy: program 804079 · beklenen 703270
+   eski: k2589:002:cari:C2_11:bakiye: program -17780 · beklenen 83029
+   eski: k2589:002:evrakSayisi: program 9 · beklenen 8
+   eski: k2589:002:fatura:F2_77:acik: program 0 · beklenen 83029
+   eski: k2589:002:portfoy: program 1317079 · beklenen 1216270
+   eski: k900:002:cari:C2_11:bakiye: program -483695 · beklenen -382886
+   eski: k900:002:evrakSayisi: program 4 · beklenen 3
+   eski: k900:002:portfoy: program 441918 · beklenen 341109
+   eski ve yeni ortak fark 45; yalnız eskide 12; yalnız yenide 0

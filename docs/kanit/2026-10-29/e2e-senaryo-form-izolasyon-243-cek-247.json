@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-senaryo-form-izolasyon-243-cek-247",
+  "komut": "npm run test:senaryo-form-izolasyon-243",
+  "commit": "a1f848f4617fb65730df5d33abb4e1075fa98c44",
+  "dal": "worktree-agent-a028a8454cd71fb77",
+  "kirli": 0,
+  "izlenmeyen": 19,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T09:39:17.467Z",
+  "sure_sn": 237.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 183,
+    "gecen": 183,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/e2e-senaryo-form-izolasyon-243-cek-247.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a028a8454cd71fb77",
+  "ham_cikti_sha256": "c5122ba51b0a9518ff6654f8c36e61af8c9080ca585e2142125bdf62dc813b07",
+  "ham_cikti_bayt": 29042
+}
