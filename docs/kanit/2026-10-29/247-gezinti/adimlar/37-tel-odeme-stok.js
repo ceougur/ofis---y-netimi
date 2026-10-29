@@ -1,0 +1,40 @@
+// Telefon: (a) Ayşe Demir → Ödeme Gir 100 Nakit (Kasa'dan çıkış) ; (b) Stok → Köşe Kabin 90 → Stok Girişi 5 (8 → 13; parasız).
+// Masaüstü sayıları: Kasa 2.500 − 100 = 2.400; cari 8.700 + 100 = 8.800; stok 13.
+const p = phones.telefon1;
+await p.click('.bottom-nav [data-nav="accounts"]');
+await bekle(700);
+await p.click('#content .list-item:has-text("Ayşe Demir")');
+await p.waitForSelector("[data-yazma]", { timeout: 10000 });
+await p.click("[data-yazma=\"Ödeme Gir\"]");
+await p.waitForSelector(".yz-sheet", { state: "visible" });
+yaz("ödeme formu", await p.$eval(".yz-sheet", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 300)));
+await p.click('.yz-sheet [name="amount"]');
+await typeSlow(p, "100", 45);
+await p.keyboard.press("Tab");
+await p.click('.yz-sheet [data-yz="submit"]');
+await p.waitForSelector(".toast, [data-yz-confirm]", { timeout: 10000 });
+if (await p.$("[data-yz-confirm]")) { yaz("SORU (ders 34)", await p.$eval(".yz-sheet", e => e.innerText.replace(/\s+/g, " ").trim().slice(-250))); }
+yaz("bildirim (a)", await p.$$eval(".toast", t => t.map(x => x.textContent.trim()).join(" | ")));
+await bekle(1000);
+yaz("(a) Kasa", (await api("/api/workspace/cash")).data.data.totals.balance, "cari", (await api("/api/workspace/accounts")).data.data.accounts.map(a => `${a.name} ${a.balance}`), "DB out", sql("SELECT kind, amount, method FROM account_entries WHERE kind='out'"));
+await p.evaluate(() => document.querySelectorAll(".toast").forEach(t => t.remove()));
+await p.click('.bottom-nav [data-nav="stock"]');
+await bekle(700);
+await p.click('#content .list-item:has-text("Köşe Kabin 90")');
+await p.waitForSelector("[data-detail-balance]");
+await p.waitForSelector("[data-yazma]", { timeout: 10000 });
+yaz("stok kartı düğmeleri", await p.$$eval("[data-yazma]", n => n.map(x => x.dataset.yazma)), "miktar", (await p.textContent("[data-detail-balance]")).trim());
+await p.click("[data-yazma]");
+await p.waitForSelector(".yz-sheet", { state: "visible" });
+yaz("stok formu", await p.$eval(".yz-sheet", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 300)));
+await p.click('.yz-sheet [name="qty"]');
+await typeSlow(p, "5", 45);
+await p.keyboard.press("Tab");
+await p.screenshot({ path: root + "/ekran/37a-tel-stok-girisi.png", fullPage: true });
+await p.click('.yz-sheet [data-yz="submit"]');
+await p.waitForSelector(".toast", { timeout: 10000 });
+yaz("bildirim (b)", await p.$$eval(".toast", t => t.map(x => x.textContent.trim()).join(" | ")));
+await bekle(1000);
+yaz("(b) telefon miktar", (await p.textContent("[data-detail-balance]")).trim());
+const st = (await api("/api/workspace/stock")).data.data;
+yaz("(b) masaüstü stok", JSON.stringify((st.items || st).map?.(i => `${i.name} ${i.qty}`) || st).slice(0, 200), "Kasa değişmedi", (await api("/api/workspace/cash")).data.data.totals.balance);
