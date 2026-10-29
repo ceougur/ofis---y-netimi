@@ -1,0 +1,38 @@
+{
+  "ad": "kahin-mobil-yazma",
+  "komut": "python3 -I test/bagimsiz/mobil-yazma/kahin_test.py",
+  "commit": "2f7cb3147ebf7cc40b0dd4d8abec489565313843",
+  "dal": "is/kahin-mobil-yazma-247",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T04:03:50.042Z",
+  "sure_sn": 239.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 136,
+    "gecen": 135,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "H2 mevcut cari kâhini model tek başına: kendi mutasyon taraması (model.py --mutasyon-tara, elle senaryoları) — yakalanmayan mutant 0",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "test/bagimsiz/mobil-yazma/kanit/2026-10-29/kahin-mobil-yazma.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobilyazma247-depo",
+  "ham_cikti_sha256": "97d3185cc9d418247c3c2286ea346cbe0c3e8cd0f60e9e7b4eb33c69dfcf84cd",
+  "ham_cikti_bayt": 24617
+}

@@ -597,8 +597,9 @@ def _h2():
             yol = os.path.join(klasor, ad)
             with open(yol, encoding="utf-8") as f:
                 s = json.load(f)
-            # KARARLAR.md C0/C10: 2.4.5 kararıyla geçersizler 2.4.4 kipinde, öbür /1 /2 iki kipte, /3 varsayılan kipte
-            kipler = ["2.4.4"] if cm.gecersiz_245(s) else ([cm.VARSAYILAN_KURAL, "2.4.4"] if s["dil"] != cm.DIL else [cm.VARSAYILAN_KURAL])
+            # KARARLAR.md C0/C10/C10b: 2.4.5 kararıyla geçersizler 2.4.4 kipinde, öbür /1 /2 iki kipte, /3 HER iki kural setiyle (2.4.6 + 2.4.5; mutant 99
+            # yalnız 2.4.5 kipinde anlamlı)
+            kipler = ["2.4.4"] if cm.gecersiz_245(s) else ([cm.VARSAYILAN_KURAL, "2.4.4"] if s["dil"] != cm.DIL else [cm.VARSAYILAN_KURAL, "2.4.5"])
             liste.append({"dosya": yol, "kipler": kipler})
     with tempfile.TemporaryDirectory() as d:
         yl = os.path.join(d, "liste.json")
