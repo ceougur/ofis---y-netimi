@@ -247,6 +247,8 @@ Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üretici
 - 18 hatalı girdi reddedilir, geçerli temel kabul edilir; komut satırı `hesapla` / `karsilastir` (eksik senaryo FARK — ders 4).
 - 48/48 mutasyon modelden bağımsız beklentilerce (elle; gerekirse akış) yakalandı. Cari kâhininin 47 elle senaryosu içe aktarılan modelle koşar ve o kâhinin
   kendi mutasyon taraması (model tek başına, KARARLAR C10b kipleri) 141/141 yakalar (H2); cari kâhini klasörü değişmedi (A2 + H).
+- Mevcut cari kâhininin program karşılaştırması (`npm run test:kahin-cari`) bu dalda: 7.408/7.408 denetim, 0 fark, 7 bilinen sınır, 0 yakalanmayan mutasyon
+  (`kanit/2026-10-29/kahin-cari-mevcut`).
 - Kanıt (`tools/kanit.mjs kos`): `kanit/2026-10-29/kahin-mobil-yazma-teslim.{json,log}` 136/136, çıkış 0; bilerek kırmızı (ayrı kopyada POS → Kasa)
   `kanit/kirmizi/2026-10-29/` 128/136, çıkış 1 — kırmızılar beklenen nedenle (Kasa / POS farkı; A1, E02 çifti, E28, rastgeleler). İlk kanıt koşusundaki tek
   kırmızı testin kendi hatasıydı (H2 kip listesi; kök neden `kanit/2026-10-29/OKU-BENI.md`).

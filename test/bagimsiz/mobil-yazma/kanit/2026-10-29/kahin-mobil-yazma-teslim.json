@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-mobil-yazma-teslim",
+  "komut": "python3 -I test/bagimsiz/mobil-yazma/kahin_test.py",
+  "commit": "cf0f0411bf9c9ba1e887c5b00c0bbee67cd8c8ab",
+  "dal": "is/kahin-mobil-yazma-247",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T04:15:35.039Z",
+  "sure_sn": 244.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 136,
+    "gecen": 136,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "test/bagimsiz/mobil-yazma/kanit/2026-10-29/kahin-mobil-yazma-teslim.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobilyazma247-depo",
+  "ham_cikti_sha256": "0e1ef7115b1d2fbd49fc041b8fb6b5e589b5bf44dd47f784afa5ec14413c4f31",
+  "ham_cikti_bayt": 24571
+}
