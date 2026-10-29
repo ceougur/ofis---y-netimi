@@ -1,0 +1,31 @@
+taban: birim 19 geçti / 0 kaldı (çıkış 0); kâhin satırı 22
+ok 1 - yön: mobil tahsilat ödeme olarak yazılır · birim YAKALADI (9 kırmızı: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da | S1 FIFO: bağsız mobil tahsilat en eski açık faturayı kapatır; masaüstüyle aynı (eşdeğerlik çifti)) · kâhin YAKALADI
+ok 2 - yön: mobil ödeme tahsilat olarak yazılır · birim YAKALADI (3 kırmızı: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da | S4 Kasa eksi (Uyar): soru 409 cash-negative, kayıt yok; 'Yine de Kaydet' aynı kimlikle → tek kayıt) · kâhin YAKALADI
+ok 3 - yön: mobil stok girişi çıkış olarak yazılır · birim YAKALADI (2 kırmızı: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da | S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok) · kâhin YAKALADI
+ok 4 - tutar: virgül düşer (1250,50 → 125050) · birim YAKALADI (2 kırmızı: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da | tutar (banka planı §9.2/9): en çok 2 ondalık, binlik ayırıcısız; biçim dışı tutar YUVARLANMAZ (400 mobile-amount)) · kâhin kaçırdı
+ok 5 - tutar: 3 ondalık kabul edilir (yuvarlanır) · birim YAKALADI (1 kırmızı: tutar (banka planı §9.2/9): en çok 2 ondalık, binlik ayırıcısız; biçim dışı tutar YUVARLANMAZ (400 mobile-amount)) · kâhin YAKALADI
+ok 6 - hesap: seçilen banka hesabı iletilmez · birim YAKALADI (1 kırmızı: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da) · kâhin YAKALADI
+ok 7 - hesap: POS / Kredi Kartı yolu nakde (Kasa'ya) çevrilir · birim kaçırdı · kâhin YAKALADI
+ok 8 - S1/FIFO: mobilde Kapatılacak Fatura kabul edilir · birim YAKALADI (1 kırmızı: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da) · kâhin YAKALADI
+ok 9 - S1: kapalı alan sessizce düşürülür (ret yok) · birim YAKALADI (3 kırmızı: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da | S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok) · kâhin YAKALADI
+ok 10 - istek kimliği programın ucuna iletilmez · birim YAKALADI (3 kırmızı: istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında | S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir) · kâhin YAKALADI
+ok 11 - istek kimliği her gönderimde değişir (yeniden gönderim ikinci kayıt) · birim YAKALADI (3 kırmızı: istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında | S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir) · kâhin YAKALADI
+ok 12 - istek kimliği zorunlu değil · birim YAKALADI (1 kırmızı: istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında) · kâhin kaçırdı
+ok 13 - şirket yok sayılır (kullanıcının seçili şirketine yazılır) · birim YAKALADI (1 kırmızı: şirket yetkisi: personel 002'ye yazamaz (403); başka şirketin cari kimliği isteğin şirketinde çözülmez (404), hiçbir şirkete yazılmaz) · kâhin YAKALADI
+ok 14 - S6: telefonun tarihi kabul edilir · birim YAKALADI (2 kırmızı: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da | S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir) · kâhin kaçırdı
+ok 15 - S4: Kasa eksi sorusu sorulmadan geçilir (Yine de Kaydet hep açık) · birim YAKALADI (1 kırmızı: S4 Kasa eksi (Uyar): soru 409 cash-negative, kayıt yok; 'Yine de Kaydet' aynı kimlikle → tek kayıt) · kâhin YAKALADI
+ok 16 - S4: Benzer İşlem sorulmadan geçilir · birim YAKALADI (1 kırmızı: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da) · kâhin YAKALADI
+ok 17 - S4/K8: Fazlasını Avans Yaz sorulmadan uygulanır · birim YAKALADI (1 kırmızı: S3/K8: taksit kartına mobil tahsilat; kalanı aşan 409 plan-overpay, Fazlasını Avans Yaz (yönetici) yazar, ödenmiş kart 409 plan-paid) · kâhin YAKALADI
+ok 18 - S8: mobilde stok çıkışı kabul edilir · birim YAKALADI (2 kırmızı: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da | S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok) · kâhin YAKALADI
+ok 19 - yetki (ekran): ödeme hakkı herkese görünür · birim YAKALADI (1 kırmızı: oturum özetinin yazma hakları yetkiden: personel tahsilat girer, ödeme / avans göremez; salt okunurda hiçbiri) · kâhin kaçırdı
+ok 20 - yetki (çekirdek): ödeme personelde de yazılır · birim YAKALADI (1 kırmızı: rol yetkisi mobilde de aynı: personel ödeme 403, kayıt yok) · kâhin kaçırdı
+ok 21 - FIFO (çekirdek): bağsız ödeme en YENİ borçtan dağılır · birim YAKALADI (1 kırmızı: S1 FIFO: bağsız mobil tahsilat en eski açık faturayı kapatır; masaüstüyle aynı (eşdeğerlik çifti)) · kâhin YAKALADI
+ok 22 - yanıt: yineleme 'yeni kayıt' gibi bildirilir · birim YAKALADI (2 kırmızı: istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında | S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir) · kâhin YAKALADI
+1..22
+# tests 22
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+22/22 mutasyon yakalandı

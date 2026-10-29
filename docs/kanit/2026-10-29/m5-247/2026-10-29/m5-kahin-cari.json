@@ -1,0 +1,32 @@
+{
+  "ad": "m5-kahin-cari",
+  "komut": "npm run test:kahin-cari",
+  "commit": "c2bf065706021cbe622ef2ac9882e737e32a9e83",
+  "dal": "worktree-agent-ac5df26589a6fb9c9",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:30:39.389Z",
+  "sure_sn": 103.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7408,
+    "gecen": 7408,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/m5-247/2026-10-29/m5-kahin-cari.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac5df26589a6fb9c9",
+  "ham_cikti_sha256": "17fc0bba1f1f268adfc457cc3c1cdf295d1a75c6f3fb21915624bfef3be249fe",
+  "ham_cikti_bayt": 29868
+}

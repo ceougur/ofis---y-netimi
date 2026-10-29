@@ -63,7 +63,9 @@ describe("mobil görünüm: beyaz liste (lib/mobile.mjs)", () => {
     status(() => resolveMobile("PUT", "/api/mobil/accounts/acc-1", q("")), 405);
     status(() => resolveMobile("DELETE", "/api/mobil/stock/st-1", q("")), 405);
     status(() => resolveMobile("GET", "/api/mobil/session/login", q("")), 405);
-    status(() => resolveMobile("GET", "/api/mobil/bank/choices", q("")), 404);
+    // 2.4.7 M5: yazma formlarının hesap / POS seçicisi (masaüstü formunun ucu, kendi yetki denetimiyle) beyaz listede; başka banka ucu yok.
+    assert.equal(resolveMobile("GET", "/api/mobil/bank/choices", q("")).url, "/api/workspace/bank/choices");
+    status(() => resolveMobile("GET", "/api/mobil/bank/vouchers", q("")), 404);
     status(() => resolveMobile("GET", "/api/mobil/admin/users", q("")), 404);
     status(() => resolveMobile("GET", "/api/mobil/invoices", q("")), 404);
     status(() => resolveMobile("GET", "/api/mobil/ledger", q("")), 404);
@@ -153,10 +155,10 @@ describe("mobil görünüm: programın içinde, gerçek sunucu", () => {
     assert.equal(res.status, 403);
     assert.equal(res.headers.get("set-cookie"), null);
   });
-  it("oturum özeti: kullanıcı, şirketler, seçili şirket; mobil yazma kapalı", async () => {
+  it("oturum özeti: kullanıcı, şirketler, seçili şirket; mobil yazma hakları (2.4.7 M5: yönetici tahsilat / ödeme / stok girişi)", async () => {
     const session = await must("oturum", admin.get("/api/mobil/session"));
     assert.equal(session.user.username, "admin");
-    assert.equal(session.writesEnabled, false);
+    assert.equal(session.writesEnabled, true, "M5: yöneticinin mobil yazma hakkı var (yetkiden; asıl denetim programın ucunda)");
     assert.equal(session.companies.length, 1);
     assert.equal(session.company, session.companies[0].id);
     assert.equal(session.user.permissions, undefined, "mobil özet yetki listesini taşımaz");

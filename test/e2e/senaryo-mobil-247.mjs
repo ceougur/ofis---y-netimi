@@ -5,7 +5,7 @@
 //   T3 Cari: liste ve bakiyeler = API; arama; cari kartı (bakiye, hareket sayısı); Cari Ekstre PDF iner (%PDF).
 //   T4 Finans: Nakit Kasa, Banka ve hesap satırı = API.  T5 Stok: miktar (Adet) = API; stok kartı hareketleri.
 //   T6 Raporlar: yalnız izinli 10 rapor; Cari Listesi ve Bakiyeler satırları = API; PDF (%PDF) ve Excel (PK) iner; Cari Ekstre cari seçerek.
-//   T7 SALT OKUNUR: yazma düğmesi / formu yok; demo / "test onayı" metni yok.
+//   T7 eski yazma yolları kapalı (v0.3 kayıt formu yok; 2.4.7 M5 yazma ekranları senaryo-mobil-yazma-247'de); demo / "test onayı" metni yok.
 //   T8 iki şirket: 002 boş başlar (₺0,00, 0 cari, "Kayıt bulunamadı."); veri girilince Yenile ile görünür; 001'e dönünce 001'in sayıları.
 //   T9 çıkış (telefonda üst çubuk) → giriş ekranı; oturum kapandı (API 401).
 //   T10 yetkisiz kullanıcı (Personel): Kasa ve Banka "Yetki Yok", Finans hata kutusu, Raporlar yetki iletisi, şirket seçicide yalnız 001.
@@ -274,15 +274,18 @@ await step("T6 Raporlar: izinli 10 rapor; Cari Listesi = API; PDF ve Excel; Cari
   await shot("09-rapor-cari-ekstre");
 });
 
-await step("T7 salt okunur: yazma düğmesi / formu yok; demo metni yok", async () => {
+// 2.4.7 M5: yazma ekranları geldi (yeni e2e senaryo-mobil-yazma-247); burada v0.3'ün eski kayıt formu ve eski yazma yolları KAPALI kalır.
+await step("T7 eski yazma yolları kapalı: v0.3 kayıt formu yok, yazma düğmeleri yalnız M5 formu; demo metni yok", async () => {
   const body = await page.evaluate(() => document.body.innerText);
   ok(!/demo|test onay|test aşama/i.test(body), "demo / test onayı metni yok");
   await tapNav("accounts");
   await page.click(`#content [data-detail="accounts:${ali.id}"]`);
   await page.waitForSelector("[data-detail-balance]");
+  await page.waitForSelector("[data-yazma]", { timeout: 5000 }).catch(() => null);
   const buttons = await page.$$eval("button", items => items.map(item => item.textContent.trim()));
-  ok(!buttons.some(label => /Tahsilat|Ödeme|Kaydet|Stok Giriş/.test(label)), `yazma düğmesi yok (${buttons.filter(b => /Tahsilat|Ödeme|Kaydet/.test(b)).join(", ") || "—"})`);
-  ok(!(await page.$("form#entry-form, #modal, [data-action^='new-']")), "kayıt formu yok");
+  const writes = buttons.filter(label => /Tahsilat|Ödeme|Kaydet|Stok Giriş/.test(label));
+  ok(writes.join(",") === "Tahsilat Gir,Ödeme Gir", `yazma düğmeleri yalnız M5 formu (${writes.join(", ") || "—"})`);
+  ok(!(await page.$("form#entry-form, #modal, [data-action^='new-']")), "v0.3 kayıt formu yok");
   const write = await page.evaluate(async id => (await fetch(`/api/mobil/accounts/${id}/entries`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ kind: "in", amount: "10" }) })).status, ali.id);
   ok(write === 405, `tarayıcıdan yazma isteği 405 (${write})`);
   const after = await must("cari kartı", api.get(`/api/workspace/accounts/${ali.id}`));

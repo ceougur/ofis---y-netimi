@@ -118,6 +118,7 @@ export function enter(veri) {
   offline.veri = veri;
   offline.uretim = veri.uretim || "";
   d.setAuth(veri.oturum);
+  d.state.writesEnabled = false; // 2.4.7 M5 birleşimi: sunucu kapalıyken kayıt girilmez — oturumdan kalan yazma hakkı çevrimdışı görünümde düğme göstermesin
   const when = fmtTime(offline.uretim);
   el("offline-banner").textContent = `Ofis sunucusuna ulaşılamıyor. Son güncelleme: ${when} — bilgiler salt okunurdur; yenilemek için ↻.`;
   el("offline-banner").classList.remove("hidden");

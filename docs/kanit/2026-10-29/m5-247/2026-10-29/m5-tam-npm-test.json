@@ -1,0 +1,38 @@
+{
+  "ad": "m5-tam-npm-test",
+  "komut": "npm test",
+  "commit": "f9c9e4bbc2bacbf3ed444c411a7a0eeb775ee086",
+  "dal": "worktree-agent-ac5df26589a6fb9c9",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:45:59.214Z",
+  "sure_sn": 1929.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3758,
+    "gecen": 3757,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Bağımsız kâhinler iş akışında koşar › her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde",
+      "konum": "test/ci-kapi-listesi.test.mjs:62:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/m5-247/2026-10-29/m5-tam-npm-test.log.gz",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac5df26589a6fb9c9",
+  "ham_cikti_sha256": "2c19f4ceea49acb9e87a35af4226cbc4e5c634f1eb2f670073c6464cbe0300bb",
+  "ham_cikti_bayt": 1359015
+}

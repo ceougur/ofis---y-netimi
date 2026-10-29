@@ -1,0 +1,570 @@
+TAP version 13
+# Subtest: M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim)
+    # Subtest: yalnız dört yazma ucu tanınır (tahsilat, ödeme, taksit kartına tahsilat, stok girişi); eski el yapımı yollar tanınmaz
+    not ok 1 - yalnız dört yazma ucu tanınır (tahsilat, ödeme, taksit kartına tahsilat, stok girişi); eski el yapımı yollar tanınmaz
+      ---
+      duration_ms: 2.216937
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:63:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        M5 modülü / işlevi yok (matchMobileWrite): Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/server/lib/mobile-write.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:21:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:64:19)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+      ...
+    # Subtest: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da
+    not ok 2 - S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da
+      ---
+      duration_ms: 0.72096
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:69:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        M5 modülü / işlevi yok (mobileWriteBody): Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/server/lib/mobile-write.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:21:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:70:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: tutar (banka planı §9.2/9): en çok 2 ondalık, binlik ayırıcısız; biçim dışı tutar YUVARLANMAZ (400 mobile-amount)
+    not ok 3 - tutar (banka planı §9.2/9): en çok 2 ondalık, binlik ayırıcısız; biçim dışı tutar YUVARLANMAZ (400 mobile-amount)
+      ---
+      duration_ms: 0.409459
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:89:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        M5 modülü / işlevi yok (mobileWriteBody): Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/server/lib/mobile-write.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:21:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:90:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: oturum özetinin yazma hakları yetkiden: personel tahsilat girer, ödeme / avans göremez; salt okunurda hiçbiri
+    not ok 4 - oturum özetinin yazma hakları yetkiden: personel tahsilat girer, ödeme / avans göremez; salt okunurda hiçbiri
+      ---
+      duration_ms: 0.289994
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:96:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        M5 modülü / işlevi yok (mobileWriteRights): Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/server/lib/mobile-write.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:21:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:97:20)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S7 telefon kuralı: sonucu belirsiz istek formun açılışından 24 saat içinde aynı kimlikle yeniden gönderilir, sonra GÖNDERİLMEZ
+    not ok 5 - S7 telefon kuralı: sonucu belirsiz istek formun açılışından 24 saat içinde aynı kimlikle yeniden gönderilir, sonra GÖNDERİLMEZ
+      ---
+      duration_ms: 0.356045
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        M5 modülü / işlevi yok (yenidenGonderilebilir): Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/client/mobil/yazma-bekleyen.js' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:21:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:102:17)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim)
+  ---
+  duration_ms: 5.498797
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:62:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç
+    # Subtest: S1 FIFO: bağsız mobil tahsilat en eski açık faturayı kapatır; masaüstüyle aynı (eşdeğerlik çifti)
+    not ok 1 - S1 FIFO: bağsız mobil tahsilat en eski açık faturayı kapatır; masaüstüyle aynı (eşdeğerlik çifti)
+      ---
+      duration_ms: 132.456756
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        mobil: 405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.
+        
+        405 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:132:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında
+    not ok 2 - istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında
+      ---
+      duration_ms: 17.36794
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:139:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.
+        
+        405 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:142:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S4 Kasa eksi (Uyar): soru 409 cash-negative, kayıt yok; 'Yine de Kaydet' aynı kimlikle → tek kayıt
+    not ok 3 - S4 Kasa eksi (Uyar): soru 409 cash-negative, kayıt yok; 'Yine de Kaydet' aynı kimlikle → tek kayıt
+      ---
+      duration_ms: 19.175597
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:159:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.
+        
+        405 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:163:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S3/K8: taksit kartına mobil tahsilat; kalanı aşan 409 plan-overpay, Fazlasını Avans Yaz (yönetici) yazar, ödenmiş kart 409 plan-paid
+    not ok 4 - S3/K8: taksit kartına mobil tahsilat; kalanı aşan 409 plan-overpay, Fazlasını Avans Yaz (yönetici) yazar, ödenmiş kart 409 plan-paid
+      ---
+      duration_ms: 29.751508
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:172:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.
+        
+        405 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:177:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok
+    not ok 5 - S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok
+      ---
+      duration_ms: 14.956298
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.
+        
+        405 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:196:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir
+    not ok 6 - S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir
+      ---
+      duration_ms: 18.928201
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:207:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. | 405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. | 405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. | 405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.
+        + actual - expected
+        
+          [
+        +   405,
+        +   405,
+        +   405,
+        +   405
+        -   200,
+        -   200,
+        -   200,
+        -   400
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 200
+        1: 200
+        2: 200
+        3: 400
+      actual:
+        0: 405
+        1: 405
+        2: 405
+        3: 405
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:217:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yazma formunun hesap / POS seçicisi mobil beyaz listede (masaüstü formunun ucu)
+    not ok 7 - yazma formunun hesap / POS seçicisi mobil beyaz listede (masaüstü formunun ucu)
+      ---
+      duration_ms: 2.258641
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:222:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        404 mobile-unknown Bu işlem mobil görünümde yok.
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:224:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: oturum özetinde yazma açık (writesEnabled + haklar)
+    not ok 8 - oturum özetinde yazma açık (writesEnabled + haklar)
+      ---
+      duration_ms: 3.177785
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:228:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:230:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 2 - M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç
+  ---
+  duration_ms: 647.819013
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:116:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: M5 uzaktan (eşli cihaz): M2 kapısı her yazmada
+    # Subtest: eşli cihazdan tahsilat yazılır; kaydı eşlendiği kullanıcı girer (uzak oturum)
+    not ok 1 - eşli cihazdan tahsilat yazılır; kaydı eşlendiği kullanıcı girer (uzak oturum)
+      ---
+      duration_ms: 22.340905
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:265:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.","code":"mobile-read-only"}
+        
+        405 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:268:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: rol yetkisi mobilde de aynı: personel ödeme 403, kayıt yok
+    not ok 2 - rol yetkisi mobilde de aynı: personel ödeme 403, kayıt yok
+      ---
+      duration_ms: 14.628355
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:274:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.","code":"mobile-read-only"}
+        
+        405 !== 403
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 403
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:277:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: şirket yetkisi: personel 002'ye yazamaz (403); başka şirketin cari kimliği isteğin şirketinde çözülmez (404), hiçbir şirkete yazılmaz
+    not ok 3 - şirket yetkisi: personel 002'ye yazamaz (403); başka şirketin cari kimliği isteğin şirketinde çözülmez (404), hiçbir şirkete yazılmaz
+      ---
+      duration_ms: 15.249792
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:281:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.","code":"mobile-read-only"}
+        
+        405 !== 403
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 403
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:284:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: aynı anda: iki cihaz + masaüstü aynı cariye ayrı kimlikle — üç kayıt; aynı cihazdan çift dokunuş (aynı kimlik aynı anda) — tek kayıt
+    not ok 4 - aynı anda: iki cihaz + masaüstü aynı cariye ayrı kimlikle — üç kayıt; aynı cihazdan çift dokunuş (aynı kimlik aynı anda) — tek kayıt
+      ---
+      duration_ms: 46.166389
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:294:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.","code":"mobile-read-only"} | {"ok":false,"error":"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.","code":"mobile-read-only"} | {"ok":true,"data":{"id":"account-8de7225d-1b32-46a5-a0bb-841cec4bd1b7","refNo":"3","type":"customer","name":"Yarış","phone":"","email":"","address":"","registeredOn":"2026-10-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":"","postalCode":"","country":"","website":"","iban":"","dueDays":0,"eInvoice":0,"eAlias":"","eProfile":"","createdBy":"user-00491cb4-0919-40dd-8a81-1ae0ef100da1","createdAt":"2026-10-20T07:00:00.000Z","updatedAt":"2026-10-20T07:00:00.000Z","actorName":"Ofis yöneticisi","groupName":"","subgroupName":"","fields":[],"typeLabel":"Müşteri","entries":[{"id":"aentry-dd4d6648-d530-4799-a328-b22d46e28a32","kind":"in","amount":30,"date":"2026-10-20","note":"","method":"cash","receiptNo":1,"source":"","sourceId":"","invoiceId":"","finRef":"","createdBy":"user-00491cb4-0919-40dd-8a81-1ae0ef100da1","createdAt":"2026-10-20T07:00:00.000Z","updatedAt":null,"doubtfulSkip":false,"dueDate":"","expectedDate":"","refundOf":"","actorName":"Ofis yöneticisi","stockReason":"","doubtfulNormal":false,"editable":true}],"plans":[],"ledger":[{"id":"aentry-dd4d6648-d530-4799-a328-b22d46e28a32","origin":"account","kind":"in","date":"2026-10-20","at":"2026-10-20T07:00:00.000Z","label":"Tahsilat","sourceId":"","invoiceId":"","doubtfulSkip":false,"doubtfulNormal":false,"method":"cash","note":"","receiptNo":1,"debit":0,"credit":30,"balance":-30}],"totals":{"debit":0,"credit":30,"balance":-30,"collected":30,"planTotal":0,"planRemaining":0,"overdue":0,"overdueCount":0},"side":"creditor","canManage":true,"canCollect":true,"doubtful":{"count":0,"openCount":0,"openMinor":0,"provisionMinor":0,"collectedMinor":0,"writtenOffMinor":0,"releasedMinor":0},"canDoubtful":true,"deleteBlock":"","openingEntryId":"","refundables":[],"entryId":"aentry-dd4d6648-d530-4799-a328-b22d46e28a32"}} | {"ok":false,"error":"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.","code":"mobile-read-only"} | {"ok":false,"error":"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.","code":"mobile-read-only"}
+        + actual - expected
+        
+          [
+        +   405,
+        +   405,
+            200,
+        +   405,
+        +   405
+        -   200,
+        -   200,
+        -   200,
+        -   200
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 200
+        1: 200
+        2: 200
+        3: 200
+        4: 200
+      actual:
+        0: 405
+        1: 405
+        2: 200
+        3: 405
+        4: 405
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:303:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: silinen cihaz ve uzak izni kaldırılan kullanıcı yazamaz (401), kayıt yok
+    not ok 5 - silinen cihaz ve uzak izni kaldırılan kullanıcı yazamaz (401), kayıt yok
+      ---
+      duration_ms: 13.457986
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:308:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        silmeden önce cihaz yazabilmeli: {"ok":false,"error":"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.","code":"mobile-read-only"}
+        
+        405 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:313:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 3 - M5 uzaktan (eşli cihaz): M2 kapısı her yazmada
+  ---
+  duration_ms: 895.250224
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:235:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: M5 lisans: lisans geçersizken mobil yazma kapalı, yenilenince açılır
+    # Subtest: salt okunur lisansta uzak yazma 403 remote-license; lisans geçerli olunca aynı cihaz yazar
+    not ok 1 - salt okunur lisansta uzak yazma 403 remote-license; lisans geçerli olunca aynı cihaz yazar
+      ---
+      duration_ms: 436.245435
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:329:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.","code":"mobile-read-only"}
+        
+        405 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:361:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - M5 lisans: lisans geçersizken mobil yazma kapalı, yenilenince açılır
+  ---
+  duration_ms: 436.601427
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs:328:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..4
+# tests 19
+# suites 4
+# pass 0
+# fail 19
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2381.538135

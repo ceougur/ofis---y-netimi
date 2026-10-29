@@ -1,0 +1,128 @@
+{
+  "ad": "m5-eski-53192737-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/mobil-yazma-247.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:27:19.120Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 0,
+    "basarisiz": 19,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 19 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim) › yalnız dört yazma ucu tanınır (tahsilat, ödeme, taksit kartına tahsilat, stok girişi); eski el yapımı yollar tanınmaz",
+      "konum": "test/mobil-yazma-247.test.mjs:63:3",
+      "hata": "M5 modülü / işlevi yok (matchMobileWrite): Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/server/lib/mobile-write.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim) › S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da",
+      "konum": "test/mobil-yazma-247.test.mjs:69:3",
+      "hata": "M5 modülü / işlevi yok (mobileWriteBody): Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/server/lib/mobile-write.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim) › tutar (banka planı §9.2/9): en çok 2 ondalık, binlik ayırıcısız; biçim dışı tutar YUVARLANMAZ (400 mobile-amount)",
+      "konum": "test/mobil-yazma-247.test.mjs:89:3",
+      "hata": "M5 modülü / işlevi yok (mobileWriteBody): Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/server/lib/mobile-write.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim) › oturum özetinin yazma hakları yetkiden: personel tahsilat girer, ödeme / avans göremez; salt okunurda hiçbiri",
+      "konum": "test/mobil-yazma-247.test.mjs:96:3",
+      "hata": "M5 modülü / işlevi yok (mobileWriteRights): Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/server/lib/mobile-write.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim) › S7 telefon kuralı: sonucu belirsiz istek formun açılışından 24 saat içinde aynı kimlikle yeniden gönderilir, sonra GÖNDERİLMEZ",
+      "konum": "test/mobil-yazma-247.test.mjs:101:3",
+      "hata": "M5 modülü / işlevi yok (yenidenGonderilebilir): Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/client/mobil/yazma-bekleyen.js' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737/test/mobil-yazma-247.test.mjs · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç › S1 FIFO: bağsız mobil tahsilat en eski açık faturayı kapatır; masaüstüyle aynı (eşdeğerlik çifti)",
+      "konum": "test/mobil-yazma-247.test.mjs:123:3",
+      "hata": "mobil: 405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. · 405 !== 200 (beklenen 200, gelen 405)"
+    },
+    {
+      "ad": "M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç › istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında",
+      "konum": "test/mobil-yazma-247.test.mjs:139:3",
+      "hata": "405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. · 405 !== 400 (beklenen 400, gelen 405)"
+    },
+    {
+      "ad": "M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç › S4 Kasa eksi (Uyar): soru 409 cash-negative, kayıt yok; 'Yine de Kaydet' aynı kimlikle → tek kayıt",
+      "konum": "test/mobil-yazma-247.test.mjs:159:3",
+      "hata": "405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. · 405 !== 409 (beklenen 409, gelen 405)"
+    },
+    {
+      "ad": "M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç › S3/K8: taksit kartına mobil tahsilat; kalanı aşan 409 plan-overpay, Fazlasını Avans Yaz (yönetici) yazar, ödenmiş kart 409 plan-paid",
+      "konum": "test/mobil-yazma-247.test.mjs:172:3",
+      "hata": "405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. · 405 !== 200 (beklenen 200, gelen 405)"
+    },
+    {
+      "ad": "M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç › S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok",
+      "konum": "test/mobil-yazma-247.test.mjs:192:3",
+      "hata": "405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. · 405 !== 200 (beklenen 200, gelen 405)"
+    },
+    {
+      "ad": "M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç › S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir",
+      "konum": "test/mobil-yazma-247.test.mjs:207:3",
+      "hata": "405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. | 405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. | 405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. | 405 mobile-read-only Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır. · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç › yazma formunun hesap / POS seçicisi mobil beyaz listede (masaüstü formunun ucu)",
+      "konum": "test/mobil-yazma-247.test.mjs:222:3",
+      "hata": "404 mobile-unknown Bu işlem mobil görünümde yok. · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç › oturum özetinde yazma açık (writesEnabled + haklar)",
+      "konum": "test/mobil-yazma-247.test.mjs:228:3",
+      "hata": "Expected values to be strictly equal: · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "M5 uzaktan (eşli cihaz): M2 kapısı her yazmada › eşli cihazdan tahsilat yazılır; kaydı eşlendiği kullanıcı girer (uzak oturum)",
+      "konum": "test/mobil-yazma-247.test.mjs:265:3",
+      "hata": "{\"ok\":false,\"error\":\"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.\",\"code\":\"mobile-read-only\"} · 405 !== 200 (beklenen 200, gelen 405)"
+    },
+    {
+      "ad": "M5 uzaktan (eşli cihaz): M2 kapısı her yazmada › rol yetkisi mobilde de aynı: personel ödeme 403, kayıt yok",
+      "konum": "test/mobil-yazma-247.test.mjs:274:3",
+      "hata": "{\"ok\":false,\"error\":\"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.\",\"code\":\"mobile-read-only\"} · 405 !== 403 (beklenen 403, gelen 405)"
+    },
+    {
+      "ad": "M5 uzaktan (eşli cihaz): M2 kapısı her yazmada › şirket yetkisi: personel 002'ye yazamaz (403); başka şirketin cari kimliği isteğin şirketinde çözülmez (404), hiçbir şirkete yazılmaz",
+      "konum": "test/mobil-yazma-247.test.mjs:281:3",
+      "hata": "{\"ok\":false,\"error\":\"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.\",\"code\":\"mobile-read-only\"} · 405 !== 403 (beklenen 403, gelen 405)"
+    },
+    {
+      "ad": "M5 uzaktan (eşli cihaz): M2 kapısı her yazmada › aynı anda: iki cihaz + masaüstü aynı cariye ayrı kimlikle — üç kayıt; aynı cihazdan çift dokunuş (aynı kimlik aynı anda) — tek kayıt",
+      "konum": "test/mobil-yazma-247.test.mjs:294:3",
+      "hata": "{\"ok\":false,\"error\":\"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.\",\"code\":\"mobile-read-only\"} | {\"ok\":false,\"error\":\"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.\",\"code\":\"mobile-read-only\"} | {\"ok\":true,\"data\":{\"id\":\"account-8de7225d-1b32-46a5-a0bb-841cec4bd1b7\",\"refNo\":\"3\",\"type\":\"customer\",\"name\":\"Yarış\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\",\"postalCode\":\"\",\"country\":\"\",\"website\":\"\",\"iban\":\"\",\"dueDays\":0,\"eInvoice\":0,\"eAlias\":\"\",\"eProfile\":\"\",\"createdBy\":\"user-00491cb4-0919-40dd-8a81-1ae0ef100da1\",\"createdAt\":\"2026-10-20T07:00:00.000Z\",\"updatedAt\":\"2026-10-20T07:00:00.000Z\",\"actorName\":\"Ofis yöneticisi\",\"groupName\":\"\",\"subgroupName\":\"\",\"fields\":[],\"typeLabel\":\"Müşteri\",\"entries\":[{\"id\":\"aentry-dd4d6648-d530-4799-a328-b22d46e28a32\",\"kind\":\"in\",\"amount\":30,\"date\":\"2026-10-20\",\"note\":\"\",\"method\":\"cash\",\"receiptNo\":1,\"source\":\"\",\"sourceId\":\"\",\"invoiceId\":\"\",\"finRef\":\"\",\"createdBy\":\"user-00491cb4-0919-40dd-8a81-1ae0ef100da1\",\"createdAt\":\"2026-10-20T07:00:00.000Z\",\"updatedAt\":null,\"doubtfulSkip\":false,\"dueDate\":\"\",\"expectedDate\":\"\",\"refundOf\":\"\",\"actorName\":\"Ofis yöneticisi\",\"stockReason\":\"\",\"doubtfulNormal\":false,\"editable\":true}],\"plans\":[],\"ledger\":[{\"id\":\"aentry-dd4d6648-d530-4799-a328-b22d46e28a32\",\"origin\":\"account\",\"kind\":\"in\",\"date\":\"2026-10-20\",\"at\":\"2026-10-20T07:00:00.000Z\",\"label\":\"Tahsilat\",\"sourceId\":\"\",\"invoiceId\":\"\",\"doubtfulSkip\":false,\"doubtfulNormal\":false,\"method\":\"cash\",\"note\":\"\",\"receiptNo\":1,\"debit\":0,\"credit\":30,\"balance\":-30}],\"totals\":{\"debit\":0,\"credit\":30,\"balance\":-30,\"collected\":30,\"planTotal\":0,\"planRemaining\":0,\"overdue\":0,\"overdueCount\":0},\"side\":\"creditor\",\"canManage\":true,\"canCollect\":true,\"doubtful\":{\"count\":0,\"openCount\":0,\"openMinor\":0,\"provisionMinor\":0,\"collectedMinor\":0,\"writtenOffMinor\":0,\"releasedMinor\":0},\"canDoubtful\":true,\"deleteBlock\":\"\",\"openingEntryId\":\"\",\"refundables\":[],\"entryId\":\"aentry-dd4d6648-d530-4799-a328-b22d46e28a32\"}} | {\"ok\":false,\"error\":\"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.\",\"code\":\"mobile-read-only\"} | {\"ok\":false,\"error\":\"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.\",\"code\":\"mobile-read-only\"} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "M5 uzaktan (eşli cihaz): M2 kapısı her yazmada › silinen cihaz ve uzak izni kaldırılan kullanıcı yazamaz (401), kayıt yok",
+      "konum": "test/mobil-yazma-247.test.mjs:308:3",
+      "hata": "silmeden önce cihaz yazabilmeli: {\"ok\":false,\"error\":\"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.\",\"code\":\"mobile-read-only\"} · 405 !== 200 (beklenen 200, gelen 405)"
+    },
+    {
+      "ad": "M5 lisans: lisans geçersizken mobil yazma kapalı, yenilenince açılır › salt okunur lisansta uzak yazma 403 remote-license; lisans geçerli olunca aynı cihaz yazar",
+      "konum": "test/mobil-yazma-247.test.mjs:329:3",
+      "hata": "{\"ok\":false,\"error\":\"Mobil görünüm salt okunurdur; kayıt girişi masaüstü programdan yapılır.\",\"code\":\"mobile-read-only\"} · 405 !== 200 (beklenen 200, gelen 405)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ac5df26589a6fb9c9/docs/kanit/2026-10-29/m5-247/kirmizi/2026-10-29/m5-eski-53192737-birim.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-eski-53192737",
+  "ham_cikti_sha256": "34d6077e07fd0f8109cba13e0fed996c077b58e798885eb0d6782e5632c232fc",
+  "ham_cikti_bayt": 31769
+}

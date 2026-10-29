@@ -1,0 +1,81 @@
+not ok 1 - E01-es-nakit-fifo-mobil
+  # adim:t1:durum: program "ret" · beklenen "ok"
+  # adim:t2:durum: program "ret" · beklenen "ok"
+  # k1:001:cari:A:bakiye: program 220000 · beklenen 100000
+  # k1:001:cari:A:hareketSayisi: program 0 · beklenen 1
+  # k1:001:fatura:F1:acik: program 100000 · beklenen 0
+  # k1:001:fatura:F2:acik: program 50000 · beklenen 30000
+  # k1:001:kasa: program 0 · beklenen 120000
+  # k1:001:kasaGun:2026-10-20: program okunamadı/eksik (beklenen 120000)
+  # k2:001:cari:A:bakiye: program 220000 · beklenen -50000
+  # k2:001:cari:A:hareketSayisi: program 0 · beklenen 2
+  # k2:001:fatura:F1:acik: program 100000 · beklenen 0
+  # k2:001:fatura:F2:acik: program 50000 · beklenen 0
+  # k2:001:fatura:F3:acik: program 70000 · beklenen 0
+  # k2:001:kasa: program 0 · beklenen 270000
+  # k2:001:kasaGun:2026-10-20: program okunamadı/eksik (beklenen 270000)
+  # k3:001:cari:A:bakiye: program 250000 · beklenen -20000
+  # k3:001:cari:A:hareketSayisi: program 0 · beklenen 2
+  # k3:001:fatura:F1:acik: program 100000 · beklenen 0
+  # k3:001:fatura:F2:acik: program 50000 · beklenen 0
+  # k3:001:fatura:F3:acik: program 70000 · beklenen 0
+ok 2 - E01-es-nakit-fifo-masaustu
+not ok 3 - E05-es-taksit-mobil
+  # adim:t1:durum: program "ret" · beklenen "ok"
+  # adim:t2:http: program 405 · beklenen 409
+  # adim:t2:kod: program "mobile-read-only" · beklenen "plan-overpay"
+  # adim:t3:durum: program "ret" · beklenen "ok"
+  # adim:t4:http: program 405 · beklenen 409
+  # adim:t4:kod: program "mobile-read-only" · beklenen "plan-paid"
+  # k1:001:cari:K:bakiye: program 120000 · beklenen 70000
+  # k1:001:kart:KT1:kalan: program 120000 · beklenen 70000
+  # k1:001:kart:KT1:odenen: program 0 · beklenen 50000
+  # k1:001:kart:KT1:tahsilatSayisi: program 0 · beklenen 1
+  # k1:001:kart:KT1:taksit1:odenen: program 0 · beklenen 40000
+  # k1:001:kart:KT1:taksit2:odenen: program 0 · beklenen 10000
+  # k1:001:kasa: program 0 · beklenen 50000
+  # k1:001:kasaGun:2026-10-20: program okunamadı/eksik (beklenen 50000)
+  # k2:001:cari:K:bakiye: program 120000 · beklenen -10000
+  # k2:001:kart:KT1:fazla: program 0 · beklenen 10000
+  # k2:001:kart:KT1:kalan: program 120000 · beklenen 0
+  # k2:001:kart:KT1:odenen: program 0 · beklenen 120000
+  # k2:001:kart:KT1:tahsilatSayisi: program 0 · beklenen 2
+  # k2:001:kart:KT1:taksit1:odenen: program 0 · beklenen 40000
+not ok 4 - E07-kesinti-sonra
+  # adim:t1:sunucu: program "ret" · beklenen "ok"
+  # adim:t2:durum: program "ret" · beklenen "ok"
+  # adim:y1:durum: program "ret" · beklenen "yineleme"
+  # k1:001:cari:A:bakiye: program 100000 · beklenen 70000
+  # k1:001:cari:A:hareketSayisi: program 0 · beklenen 1
+  # k1:001:fatura:F1:acik: program 100000 · beklenen 70000
+  # k1:001:kasa: program 0 · beklenen 30000
+  # k1:001:kasaGun:2026-10-20: program okunamadı/eksik (beklenen 30000)
+  # k2:001:cari:A:bakiye: program 100000 · beklenen 40000
+  # k2:001:cari:A:hareketSayisi: program 0 · beklenen 2
+  # k2:001:fatura:F1:acik: program 100000 · beklenen 40000
+  # k2:001:kasa: program 0 · beklenen 60000
+  # k2:001:kasaGun:2026-10-20: program okunamadı/eksik (beklenen 60000)
+not ok 5 - E19-es-stok-mobil
+  # adim:s4:durum: program "ret" · beklenen "ok"
+  # k1:001:stok:U1:hareketSayisi: program 1 · beklenen 2
+  # k1:001:stok:U1:miktar: program 5 · beklenen 15
+not ok 6 - E30-es-kasa-eksi-mobil
+  # adim:o1:http: program 405 · beklenen 409
+  # adim:o1:kod: program "mobile-read-only" · beklenen "cash-negative"
+  # adim:o2:durum: program "ret" · beklenen "ok"
+  # adim:o3:http: program 405 · beklenen 409
+  # adim:o3:kod: program "mobile-read-only" · beklenen "cash-blocked"
+  # k1:001:cari:T:bakiye: program -100000 · beklenen -70000
+  # k1:001:cari:T:hareketSayisi: program 0 · beklenen 1
+  # k1:001:fatura:AF1:acik: program 100000 · beklenen 70000
+  # k1:001:kasa: program 10000 · beklenen -20000
+  # k1:001:kasaGun:2026-10-20: program okunamadı/eksik (beklenen -30000)
+1..6
+# tests 6
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# göreli çift: 0 aynı, 0 fark, 0 uygulanmaz
+# birleşim: kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris
