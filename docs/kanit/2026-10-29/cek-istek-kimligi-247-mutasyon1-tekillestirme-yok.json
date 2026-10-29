@@ -1,0 +1,83 @@
+{
+  "ad": "cek-istek-kimligi-247-mutasyon1-tekillestirme-yok",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/cek-istek-kimligi-247.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T09:07:05.326Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 2,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.7 çek / senet girişinde istek kimliği (tek sunucu) › aynı kimlik + aynı gövde (yanıt kayboldu, yeniden gönderildi) → tek evrak, tek cari etkisi, 101 bir kez; ikinci yanıt ilk evrak (replayed)",
+      "konum": "test/cek-istek-kimligi-247.test.mjs:58:3",
+      "hata": "aynı istek ikinci evrak açtı: 2 evrak · 2 !== 1 (beklenen 1, gelen 2)"
+    },
+    {
+      "ad": "2.4.7 çek / senet girişinde istek kimliği (tek sunucu) › aynı kimlik + farklı gövde → 409 request-id-reused; yeni evrak yok (öbür uçlarla aynı)",
+      "konum": "test/cek-istek-kimligi-247.test.mjs:88:3",
+      "hata": "farklı tutarla aynı kimlik: 200 {\"id\":\"cheque-0188b16d-3d48-471f-9e23-2e3829eaf5a0\",\"direction\":\"in\",\"instrument\":\"cheque\",\"serialNo\":\"\",\"bank\":\"Ziraat\",\"drawer\":\"\",\"accountId\":\"account-a7cbbb1c-828d-466d-a629-99558f783ce0\",\"planId\":\"\",\"amount\":1500,\"issueDate\":\"2026-10-05\",\"dueDate\":\"2026-12-31\",\"status\":\"portfolio\",\"statusDate\":\"2026-10-05\",\"endorseAccountId\":\"\",\"note\":\"\",\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"bankAccountId\":\"\",\"b · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.7 çek / senet girişinde istek kimliği (tek sunucu) › aynı anda iki istek (aynı kimlik, Promise.all) → tek evrak; ikisi de aynı evrakı döndürür",
+      "konum": "test/cek-istek-kimligi-247.test.mjs:100:3",
+      "hata": "aynı anda iki istek 2 evrak açtı · 2 !== 1 (beklenen 1, gelen 2)"
+    },
+    {
+      "ad": "2.4.7 çek / senet girişinde istek kimliği (tek sunucu) › biçimsiz kimlik → 400 (öbür uçlarla aynı); evrak yazılmaz",
+      "konum": "test/cek-istek-kimligi-247.test.mjs:128:3",
+      "hata": "16 karakterden kısa: 200 {\"id\":\"cheque-281ba1fa-6c76-4bf9-bdea-637b351b782d\",\"direction\":\"in\",\"instrument\":\"cheque\",\"serialNo\":\"\",\"bank\":\"Ziraat\",\"drawer\":\"\",\"accountId\":\"account-386d2ab5-71a6-425a-bad2-47231a961e59\",\"planId\":\"\",\"amount\":1000,\"issueDate\":\"2026-10-05\",\"dueDate\":\"2026-12-31\",\"status\":\"portfolio\",\"statusDate\":\"2026-10-05\",\"endorseAccountId\":\"\",\"note\":\"\",\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"bankAccountId\":\"\",\"b · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.4.7 çek / senet girişinde istek kimliği (tek sunucu) › taksite sayılan evrak: aynı kimlikle ikinci gönderim taksiti ikinci kez ödemez (tek plan satırı, kalan bir kez düşer)",
+      "konum": "test/cek-istek-kimligi-247.test.mjs:135:3",
+      "hata": "taksit bir kez ödenmeli (ödenen 2000) · 2000 !== 1000 (beklenen 1000, gelen 2000)"
+    },
+    {
+      "ad": "2.4.7 çek / senet girişinde istek kimliği (tek sunucu) › seri no'lu evrak: yanıt kaybolunca yeniden gönderim 'zaten kayıtlı' sorusuna düşmez, ilk evrak döner; allowDuplicate yolu da tek evrak",
+      "konum": "test/cek-istek-kimligi-247.test.mjs:152:3",
+      "hata": "yeniden gönderim (önceden 409 cheque-duplicate → 'Yine de Kaydet' ikinci evrakı açıyordu): 409 {\"ok\":false,\"error\":\"Çek No SN-247-1 (Ziraat) zaten kayıtlı.\",\"code\":\"cheque-duplicate\",\"id\":\"cheque-aade2f57-1db9-49c9-bf23-a8b16aa342a5\"} Çek No SN-247-1 (Ziraat) zaten kayıtlı. · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.4.7 çek / senet girişinde istek kimliği (tek sunucu) › evrak silindikten sonra aynı kimlikle yeniden gönderim yeni evrak açmaz (silinen evrak geri gelmez, ikinci evrak doğmaz)",
+      "konum": "test/cek-istek-kimligi-247.test.mjs:184:3",
+      "hata": "silinmiş evrakın kimliği yeni evrak açmamalı (200 ) (beklenen 200, gelen 200)"
+    },
+    {
+      "ad": "2.4.7 çek / senet girişinde istek kimliği (tek sunucu) › başka kullanıcının aynı kimliği ayrı anahtardır (sonuç sızmaz); aynı kullanıcının yeniden gönderimi tek evrak",
+      "konum": "test/cek-istek-kimligi-247.test.mjs:197:3",
+      "hata": "iki kullanıcı → iki evrak; aynı kullanıcının yinelemesi evrak açmadı · 3 !== 2 (beklenen 2, gelen 3)"
+    },
+    {
+      "ad": "2.4.7 çek / senet istek kimliği: yeniden başlatma, şirketler, yedekten geri yükleme › sunucu yeniden başlasa da aynı kimlik + aynı gövde → ilk evrak; farklı gövde → 409",
+      "konum": "test/cek-istek-kimligi-247.test.mjs:227:3",
+      "hata": "aynı evrak · + actual - expected · + 'cheque-6977ebac-b11d-4778-8236-0af85161be71' (beklenen cheque-35f2f200-1dcf-46d0-b5f6-47b5f54c4be6, gelen cheque-6977ebac-b11d-4778-8236-0af85161be71)"
+    },
+    {
+      "ad": "2.4.7 çek / senet istek kimliği: yeniden başlatma, şirketler, yedekten geri yükleme › şirketler ayrı: 001'deki kimlik 002'de yeni evrak; her şirkette yeniden gönderim tek evrak; yedekten geri yükleme request_keys'i de geri getirir",
+      "konum": "test/cek-istek-kimligi-247.test.mjs:241:3",
+      "hata": "001'de tek evrak · 2 !== 1 (beklenen 1, gelen 2)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a028a8454cd71fb77/docs/kanit/2026-10-29/cek-istek-kimligi-247-mutasyon1-tekillestirme-yok.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-mut1-6f4e31c6",
+  "ham_cikti_sha256": "c92c5a6806409c159d5feb601e2aaae7ddf1abacd0fd0222a4eaa632577d74f3",
+  "ham_cikti_bayt": 15441
+}

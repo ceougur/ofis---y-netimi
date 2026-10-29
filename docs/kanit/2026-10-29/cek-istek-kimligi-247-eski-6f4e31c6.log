@@ -1,0 +1,279 @@
+TAP version 13
+# Subtest: 2.4.7 çek / senet girişinde istek kimliği (tek sunucu)
+    # Subtest: aynı kimlik + aynı gövde (yanıt kayboldu, yeniden gönderildi) → tek evrak, tek cari etkisi, 101 bir kez; ikinci yanıt ilk evrak (replayed)
+    not ok 1 - aynı kimlik + aynı gövde (yanıt kayboldu, yeniden gönderildi) → tek evrak, tek cari etkisi, 101 bir kez; ikinci yanıt ilk evrak (replayed)
+      ---
+      duration_ms: 123.610412
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:58:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı istek ikinci evrak açtı: 2 evrak
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:68:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: aynı kimlik + farklı gövde → 409 request-id-reused; yeni evrak yok (öbür uçlarla aynı)
+    not ok 2 - aynı kimlik + farklı gövde → 409 request-id-reused; yeni evrak yok (öbür uçlarla aynı)
+      ---
+      duration_ms: 73.602421
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        farklı tutarla aynı kimlik: 200 {"id":"cheque-0addc0ea-6a0d-4515-a26a-c8d6688708c8","direction":"in","instrument":"cheque","serialNo":"","bank":"Ziraat","drawer":"","accountId":"account-783187c5-4d50-4940-abe6-00f161bd0edb","planId":"","amount":1500,"issueDate":"2026-10-05","dueDate":"2026-12-31","status":"portfolio","statusDate":"2026-10-05","endorseAccountId":"","note":"","invoiceId":"","invoiceNumber":"","bankAccountId":"","b 
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:93:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: aynı anda iki istek (aynı kimlik, Promise.all) → tek evrak; ikisi de aynı evrakı döndürür
+    not ok 3 - aynı anda iki istek (aynı kimlik, Promise.all) → tek evrak; ikisi de aynı evrakı döndürür
+      ---
+      duration_ms: 75.518518
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı anda iki istek 2 evrak açtı
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:108:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kimliksiz istek eskisi gibi serbest (geriye uyum): aynı gövdeyle iki istek iki evrak (no'suz evrakta gerçekten iki evrak olabilir)
+    ok 4 - kimliksiz istek eskisi gibi serbest (geriye uyum): aynı gövdeyle iki istek iki evrak (no'suz evrakta gerçekten iki evrak olabilir)
+      ---
+      duration_ms: 106.123146
+      type: 'test'
+      ...
+    # Subtest: biçimsiz kimlik → 400 (öbür uçlarla aynı); evrak yazılmaz
+    not ok 5 - biçimsiz kimlik → 400 (öbür uçlarla aynı); evrak yazılmaz
+      ---
+      duration_ms: 32.77405
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        16 karakterden kısa: 200 {"id":"cheque-f88acc29-3b5c-428c-bad7-5567a0273b5c","direction":"in","instrument":"cheque","serialNo":"","bank":"Ziraat","drawer":"","accountId":"account-b9813c37-68bd-4c0d-b7b6-28f1d02a802b","planId":"","amount":1000,"issueDate":"2026-10-05","dueDate":"2026-12-31","status":"portfolio","statusDate":"2026-10-05","endorseAccountId":"","note":"","invoiceId":"","invoiceNumber":"","bankAccountId":"","b 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:130:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taksite sayılan evrak: aynı kimlikle ikinci gönderim taksiti ikinci kez ödemez (tek plan satırı, kalan bir kez düşer)
+    not ok 6 - taksite sayılan evrak: aynı kimlikle ikinci gönderim taksiti ikinci kez ödemez (tek plan satırı, kalan bir kez düşer)
+      ---
+      duration_ms: 82.977794
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:135:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit bir kez ödenmeli (ödenen 2000)
+        
+        2000 !== 1000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1000
+      actual: 2000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:144:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: seri no'lu evrak: yanıt kaybolunca yeniden gönderim 'zaten kayıtlı' sorusuna düşmez, ilk evrak döner; allowDuplicate yolu da tek evrak
+    not ok 7 - seri no'lu evrak: yanıt kaybolunca yeniden gönderim 'zaten kayıtlı' sorusuna düşmez, ilk evrak döner; allowDuplicate yolu da tek evrak
+      ---
+      duration_ms: 35.837587
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:152:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeniden gönderim (önceden 409 cheque-duplicate → 'Yine de Kaydet' ikinci evrakı açıyordu): 409 {"ok":false,"error":"Çek No SN-247-1 (Ziraat) zaten kayıtlı.","code":"cheque-duplicate","id":"cheque-3057d622-1dd3-4caf-bd4c-c817bb8e28fe"} Çek No SN-247-1 (Ziraat) zaten kayıtlı.
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:158:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: reddedilen istek (ileri tarih) kimlik bırakmaz; düzeltilip aynı kimlikle gönderilince kaydedilir
+    ok 8 - reddedilen istek (ileri tarih) kimlik bırakmaz; düzeltilip aynı kimlikle gönderilince kaydedilir
+      ---
+      duration_ms: 44.57236
+      type: 'test'
+      ...
+    # Subtest: evrak silindikten sonra aynı kimlikle yeniden gönderim yeni evrak açmaz (silinen evrak geri gelmez, ikinci evrak doğmaz)
+    not ok 9 - evrak silindikten sonra aynı kimlikle yeniden gönderim yeni evrak açmaz (silinen evrak geri gelmez, ikinci evrak doğmaz)
+      ---
+      duration_ms: 73.436293
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:184:3'
+      failureType: 'testCodeFailure'
+      error: 'silinmiş evrakın kimliği yeni evrak açmamalı (200 )'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 200
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:190:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: başka kullanıcının aynı kimliği ayrı anahtardır (sonuç sızmaz); aynı kullanıcının yeniden gönderimi tek evrak
+    not ok 10 - başka kullanıcının aynı kimliği ayrı anahtardır (sonuç sızmaz); aynı kullanıcının yeniden gönderimi tek evrak
+      ---
+      duration_ms: 206.143498
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:197:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iki kullanıcı → iki evrak; aynı kullanıcının yinelemesi evrak açmadı
+        
+        3 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:208:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..10
+not ok 1 - 2.4.7 çek / senet girişinde istek kimliği (tek sunucu)
+  ---
+  duration_ms: 1374.033236
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:46:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.7 çek / senet istek kimliği: yeniden başlatma, şirketler, yedekten geri yükleme
+    # Subtest: sunucu yeniden başlasa da aynı kimlik + aynı gövde → ilk evrak; farklı gövde → 409
+    not ok 1 - sunucu yeniden başlasa da aynı kimlik + aynı gövde → ilk evrak; farklı gövde → 409
+      ---
+      duration_ms: 165.984577
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:227:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı evrak
+        + actual - expected
+        
+        + 'cheque-782e35b7-d196-4d19-832a-bc15d20f5f99'
+        - 'cheque-175b40d0-40a1-4dab-8df1-493a2941187f'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'cheque-175b40d0-40a1-4dab-8df1-493a2941187f'
+      actual: 'cheque-782e35b7-d196-4d19-832a-bc15d20f5f99'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:235:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: şirketler ayrı: 001'deki kimlik 002'de yeni evrak; her şirkette yeniden gönderim tek evrak; yedekten geri yükleme request_keys'i de geri getirir
+    not ok 2 - şirketler ayrı: 001'deki kimlik 002'de yeni evrak; her şirkette yeniden gönderim tek evrak; yedekten geri yükleme request_keys'i de geri getirir
+      ---
+      duration_ms: 270.579449
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:241:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        001'de tek evrak
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:248:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.4.7 çek / senet istek kimliği: yeniden başlatma, şirketler, yedekten geri yükleme
+  ---
+  duration_ms: 812.207119
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cek-idem-247-eski-6f4e31c6/test/cek-istek-kimligi-247.test.mjs:212:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 12
+# suites 2
+# pass 2
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2598.489744

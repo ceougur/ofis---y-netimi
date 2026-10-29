@@ -487,10 +487,15 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   }
 
   // ---------- Yazma ----------
+  const banking = bankForm(bankModule);
+  // 2.4.7 (M5 kâhininin yan bulgusu; plan §3.10/1 "bütün kapsamlar buraya"): evrak girişi de kalıcı istek kimliği alır (x-hof-request ya da gövdede
+  // requestId; öbür para uçlarıyla aynı bank.post düzeni, kapsam "cheque.create"). Aynı kimlik + aynı içerik → ikinci evrak açılmaz, ilk evrakın kartı
+  // döner (replayed); farklı içerik → 409 request-id-reused; yalnız başarılı sonuç saklanır (cheque-duplicate sorusundan sonra allowDuplicate'li yeniden
+  // gönderim kaydedilir); kimliksiz istek eskisi gibi serbest. Önceden bağlantı kopunca yeniden denenen istek ikinci evrakı (ve ikinci cari etkisini) açıyordu.
   router.post("/api/workspace/cheques", async ({ req, res }) => {
     const user = auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req);
-    const created = bank.post({ user, module: "cheque", op: "create", write: () => {
+    const created = bank.post({ user, module: "cheque", op: "create", requestId: banking.requestId(req, body), scope: "cheque.create", body, write: () => {
       const input = chequeAccountOf(coreInput(body, null, { dated: true }), body);
       const bond = invoiceBond(input, body.invoiceId);
       if (body.allowDuplicate !== true) assertUnique(input);
@@ -498,6 +503,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       audit(user, "cheque.created", result.id, { direction: input.direction, instrument: input.instrument, serialNo: input.serialNo, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, planId: input.planId, ...(input.bankAccountId ? { bankAccountId: input.bankAccountId } : {}), ...(bond ? { invoiceId: bond } : {}) });
       return result;
     } });
+    if (created?.replayed) return ok(res, { ...detail(created.refId, user), replayed: true });
     changed(user, { chequeId: created.id, ...touchedBy(created.effects) });
     ok(res, detail(created.id, user));
   });
@@ -566,7 +572,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   // kendiliğinden, birden çokta seçim zorunlu), istek kimliği, K7 (ödemede ve geri almada hesaptan para çıkar), ödeme bank.move ister.
   // v2.2.0 (plan §3.14, §7): Bankaya Tahsile Ver ("bank-deposit") ve Bankadan Geri Al ("bank-withdraw") aynı uçta; cheque_events'e satır yazmaz
   // (lib/bank/collections.mjs). Tahsildeki evrakta Tahsil Edildi'nin yolu bank ve hesabı tahsil kaydının hesabı; Karşılıksız kaydı kapatır.
-  const banking = bankForm(bankModule);
+  // banking (bankForm) yukarıda, Yazma bölümünün başında.
   router.post("/api/workspace/cheques/:id/actions", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req);
