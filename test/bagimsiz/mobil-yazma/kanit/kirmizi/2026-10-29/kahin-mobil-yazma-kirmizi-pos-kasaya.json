@@ -1,0 +1,73 @@
+{
+  "ad": "kahin-mobil-yazma-kirmizi-pos-kasaya",
+  "komut": "python3 -I /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobilyazma247-kirmizi/test/bagimsiz/mobil-yazma/kahin_test.py",
+  "commit": "2ecad44c132b80a5282885af4c14f365e5874de1",
+  "dal": "is/kahin-mobil-yazma-247",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T04:09:15.887Z",
+  "sure_sn": 233.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 136,
+    "gecen": 128,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "A1 kabul.json güncel: yeniden üretilen kabul kümesi dosyayla bayt bayt aynı (model ≠ elle / akış olsaydı üretilmezdi)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B E02-es-havale-pos-mobil: elle beklenen = model",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B E02-es-havale-pos-masaustu: elle beklenen = model",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B E28-rol-yetkisi: elle beklenen = model",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C rastgele tohum 1: akış beklentisi = model (10 birleşim)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C rastgele tohum 2: akış beklentisi = model (10 birleşim)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C rastgele tohum 3: akış beklentisi = model (10 birleşim)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C4 büyük hacim: tohum 4, 5.000 olay (dosyaya yazılmaz) — akış beklentisi = model (öneri + hepsi ters)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "test/bagimsiz/mobil-yazma/kanit/kirmizi/2026-10-29/kahin-mobil-yazma-kirmizi-pos-kasaya.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobilyazma247-depo",
+  "ham_cikti_sha256": "0ea20a713836e849e6bbe1dfd8c0b5774fd726d18e5b929041e18c4c92407795",
+  "ham_cikti_bayt": 49351
+}

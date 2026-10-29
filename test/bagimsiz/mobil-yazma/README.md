@@ -245,7 +245,11 @@ Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üretici
 - Değişmezler: belirlenimcilik; reddedilen / ulaşılamayan / atılan adım silinince sayılar aynı (ders 3); şirket yalıtımı; istek kimliği başına ≤ 1 kayıt; aynı
   tarihli sıranın sonuca etkisizliği (ders 31); Kasa = Σ gün; kayıt sayısı azalmaz; göreli çiftlerin biçimi.
 - 18 hatalı girdi reddedilir, geçerli temel kabul edilir; komut satırı `hesapla` / `karsilastir` (eksik senaryo FARK — ders 4).
-- 48 mutasyon (teslimdeki sayı kanıt dosyasında); cari kâhininin 47 elle senaryosu içe aktarılan modelle koşar; cari kâhini klasörü değişmedi.
+- 48/48 mutasyon modelden bağımsız beklentilerce (elle; gerekirse akış) yakalandı. Cari kâhininin 47 elle senaryosu içe aktarılan modelle koşar ve o kâhinin
+  kendi mutasyon taraması (model tek başına, KARARLAR C10b kipleri) 141/141 yakalar (H2); cari kâhini klasörü değişmedi (A2 + H).
+- Kanıt (`tools/kanit.mjs kos`): `kanit/2026-10-29/kahin-mobil-yazma-teslim.{json,log}` 136/136, çıkış 0; bilerek kırmızı (ayrı kopyada POS → Kasa)
+  `kanit/kirmizi/2026-10-29/` 128/136, çıkış 1 — kırmızılar beklenen nedenle (Kasa / POS farkı; A1, E02 çifti, E28, rastgeleler). İlk kanıt koşusundaki tek
+  kırmızı testin kendi hatasıydı (H2 kip listesi; kök neden `kanit/2026-10-29/OKU-BENI.md`).
 - Dersler: 3/4 (D3, G2), 5 (temiz oda, akış modeli ayrı), 7 (mutasyon + `kanit/…/kirmizi`), 10 (eşdeğerlik çiftleri: değişen ortak yolun komşuları), 13/22 (sahte saat,
   gece yarısı, ay sonu, yıl dönümü; sistem saati okunmaz), 17 (rastgele sıra, eski sürüm verisi senaryosu), 31 (D6, E32), 40/43 (S1–S8 parametre; karar yok).
 

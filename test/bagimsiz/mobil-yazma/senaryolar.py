@@ -712,17 +712,18 @@ def _sirala_alt(alt):
 def esit(model, bek):
     """model ve beklenen {beklenen, alternatifler} aynı mı; değilse fark satırları."""
     farklar = []
+    e = bek.get("etiket", "elle")   # beklenenin kaynağı: "elle" (uç senaryo) ya da "akış" (üreticinin akış modeli)
     mb, bb = model["beklenen"], bek["beklenen"]
     for k in sorted(set(mb) | set(bb)):
         if k not in mb:
-            farklar.append("%s: model yazmadı, elle %s" % (k, bb[k]))
+            farklar.append("%s: model yazmadı, %s %s" % (k, e, bb[k]))
         elif k not in bb:
-            farklar.append("%s: elle yazılmadı, model %s" % (k, mb[k]))
+            farklar.append("%s: %s yazmadı, model %s" % (k, e, mb[k]))
         elif mb[k] != bb[k]:
-            farklar.append("%s: model %s · elle %s" % (k, json.dumps(mb[k], ensure_ascii=False), json.dumps(bb[k], ensure_ascii=False)))
+            farklar.append("%s: model %s · %s %s" % (k, json.dumps(mb[k], ensure_ascii=False), e, json.dumps(bb[k], ensure_ascii=False)))
     if _sirala_alt(model["alternatifler"]) != _sirala_alt(bek["alternatifler"]):
-        farklar.append("alternatifler: model %s · elle %s" % (json.dumps(_sirala_alt(model["alternatifler"]), ensure_ascii=False)[:400],
-                                                           json.dumps(_sirala_alt(bek["alternatifler"]), ensure_ascii=False)[:400]))
+        farklar.append("alternatifler: model %s · %s %s" % (json.dumps(_sirala_alt(model["alternatifler"]), ensure_ascii=False)[:400], e,
+                                                         json.dumps(_sirala_alt(bek["alternatifler"]), ensure_ascii=False)[:400]))
     return farklar
 
 
@@ -1489,7 +1490,7 @@ def rastgele(tohum, olay=1500):
 
 
 def akis_beklenen(senaryo, p):
-    return {"beklenen": Akis(senaryo, p).kos(), "alternatifler": []}
+    return {"beklenen": Akis(senaryo, p).kos(), "alternatifler": [], "etiket": "akış"}
 
 
 # ═════════════════════════════════════════════════ kabul kümesi
