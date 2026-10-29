@@ -14,6 +14,8 @@ Bölümler:
   F  MUTASYON: modele bilerek hata; modelden BAĞIMSIZ beklentiler (elle + akış) yakalamalı — yakalanmayan = eksik senaryo
   G  komut satırı (hesapla, karsilastir)
   H  mevcut cari kâhini değişmedi (yalnız içe aktarıldı)
+  I  BAKIM 29.10.2026 kuralları (README "BAKIM 29.10.2026"): masaüstü modül ucunda ondalık yuvarlama, gövdedeki / yoldaki cari kimliği, birden çok ihlal →
+     yalnız durum sınıfı — satır içi küçük senaryolar, beklenenler ELLE (karar metninden)
 """
 import copy
 import importlib.util
@@ -47,9 +49,12 @@ def test(ad):
     return sar
 
 
-def kos():
+def kos(bolumler=None):
+    """bolumler: yalnız bu öneklerle başlayan testler (ör. ["I"] — bakım kurallarının kırmızı kanıtı eski kâhin kopyasında); None = hepsi."""
     gecen = kalan = 0
-    for i, (ad, f) in enumerate(SONUCLAR, 1):
+    secili = [(ad, f) for ad, f in SONUCLAR if not bolumler or any(ad.startswith(b + " ") or ad.startswith(b) and ad[len(b):len(b) + 1].isdigit()
+                                                                     for b in bolumler)]
+    for i, (ad, f) in enumerate(secili, 1):
         try:
             satirlar = f() or []
         except Exception:  # testin kendisi düşerse başarısız (yarıda kalan test geçmiş sayılmaz)
@@ -485,6 +490,70 @@ def _f_ozet():
     return out
 
 
+# ═════════════════════════════════════════ I — BAKIM 29.10.2026 kuralları (beklenenler ELLE, karar metninden; modelden kopyalanmadı)
+def _i_senaryo(ad, baslangic, adimlar):
+    return {"dil": kahin.DIL, "ad": ad, "baslangic": baslangic, "adimlar": adimlar}
+
+
+def _i_karsilastir(sen, p, beklenen):
+    return S.esit(S.model_kos(sen, p), {"beklenen": beklenen, "alternatifler": []})
+
+
+@test("I1 masaüstü MODÜL ucu 2'den çok ondalığı yarım yukarı yuvarlar (2.1.0 yargıç düzeltmesi '1,005 → 1,01'); mobil yuvarlamaz → 400 (M5 BAŞ MİMAR 3)")
+def _i1():
+    # Kaynak: docs/GECMIS-KARARLAR.md 2.1.0 yargıç düzeltmesi; SENARYO-DILI §6.2 ("1,005" → 1,01; rh = yarım birim sıfırdan uzağa). "0,004" → 0 → 400 (ÇIKARIM).
+    sen = _i_senaryo("I1-masaustu-uc-ondalik", S.bas(),
+                     [S.cari("c1", "A"), S.fat("f1", "F1", "A", "1000", "2026-10-01"), S.cari("c2", "K", acilis="300"), S.kart("ka", "KT", "K", "300", 1),
+                      S.tah("t1", "A", "12,345", S.ch("masaustu")), S.tah("t2", "A", "1,005", S.ch("masaustu")), S.tah("t3", "A", "0,004", S.ch("masaustu")),
+                      S.tah("t4", "A", "100,994", S.ch("masaustu")), S.tah("t5", "A", "12,345", S.ch("mobil")),
+                      S.tah("t6", "A", "50,125", S.ch("masaustu"), yol="senet"), S.tah("t7", "K", "100,005", S.ch("masaustu"), kart="KT"), S.kon("k1")])
+    # A: 1.000 − 12,35 − 1,01 − 100,99 − 50,13 (senet, FIFO) = 835,52; Kasa 12,35 + 1,01 + 100,99 + 100,01 (taksit nakit) = 214,36; portföy 50,13
+    bek = S.birles(S.AD("t1", "ok"), S.AD("t2", "ok"), S.AD("t3", "ret", 400), S.AD("t4", "ok"), S.AD("t5", "ret", 400), S.AD("t6", "ok"), S.AD("t7", "ok"),
+                   S.KB("k1", cari={"A": (835.52, 3), "K": (199.99, 0)}, fatura={"F1": 835.52}, kartlar={"KT": (100.01, 0, 199.99, 1, [100.01])},
+                        kasa=214.36, kasaGun={S.D1: 214.36}, portfoy=50.13, evrak=1))
+    out = []
+    for p in (dict(kahin.ONERI), S.ESDEGER):
+        out += ["[%s] %s" % (kahin.birlesim_adi(p), f) for f in _i_karsilastir(sen, p, {k: v for k, v in bek.items() if v != S.YOK})]
+    return out[:12]
+
+
+@test("I2 BAŞ MİMAR KARARI 29.10.2026: gövdedeki (evrak girişi formu) başka şirketin cari kimliği 400; yoldaki (cari tahsilatı) 404 — iki kanalda")
+def _i2():
+    sen = _i_senaryo("I2-govde-yol-cari", S.bas(sirketler={"001": {}, "002": {}}),
+                     [S.cari("c1", "A1"), S.cari("c2", "B1", sirket="002"),
+                      S.tah("t1", "B1", "100", S.ch("masaustu"), yol="cek"), S.tah("t2", "B1", "100", S.ch("masaustu"), yol="senet"),
+                      S.tah("t3", "B1", "100", S.ch("masaustu")), S.tah("t4", "B1", "100", S.ch("mobil")), S.tah("t5", "B1", "100", S.ch("mobil"), yol="cek"),
+                      S.kon("k1")])
+    kontrol = S.birles(S.KB("k1", "001", cari={"A1": (0, 0)}, kasa=0), S.KB("k1", "002", cari={"B1": (0, 0)}, kasa=0))
+    out = []
+    # evrak_dahil: mobil çek de evrak girişi → gövde → 400; öneri (nakit_havale_pos): mobil çek alanı reddi + gövdedeki cari → İKİ ihlal → yalnız "4xx" (I3 kuralı)
+    for p, t5 in ((dict(kahin.ONERI, yollar="evrak_dahil"), S.AD("t5", "ret", 400)), (dict(kahin.ONERI), S.AD("t5", "ret", "4xx"))):
+        bek = S.birles(S.AD("t1", "ret", 400), S.AD("t2", "ret", 400), S.AD("t3", "ret", 404), S.AD("t4", "ret", 404), t5, kontrol)
+        out += ["[%s] %s" % (kahin.birlesim_adi(p), f) for f in _i_karsilastir(sen, p, {k: v for k, v in bek.items() if v != S.YOK})]
+    return out[:12]
+
+
+@test("I3 iki ve daha çok ihlalli adımda yalnız durum sınıfı ('4xx', kod yok), tek ihlalde tam kod (SENARYO-DILI §5.6 [BELİRSİZ-17]); kayıt yok")
+def _i3():
+    sen = _i_senaryo("I3-coklu-ihlal", S.bas(sirketler={"001": {}, "002": {}}),
+                     [S.hesap("h1", "BNK1", "banka"), S.hesap("h2", "BNK2", "banka"), S.cari("c1", "A1"), S.cari("c2", "B1", sirket="002"),
+                      S.tah("t1", "A1", "100", S.ch("masaustu"), yol="havale"),                      # tek: hesap seçilmedi
+                      S.tah("t2", "B1", "100", S.ch("masaustu"), yol="havale"),                      # hesap seçilmedi + yoldaki başka şirket carisi
+                      S.tah("t3", "B1", "100", S.ch("masaustu"), tarih="2026-10-21"),                # ileri tarih + yoldaki başka şirket carisi
+                      S.tah("t4", "A1", "1.234,56", S.ch("masaustu"), yol="havale"),                 # tutar biçimi + hesap seçilmedi
+                      S.tah("t5", "B1", "1.234,56", S.ch("mobil")),                                  # mobilde tutar biçimi + başka şirket carisi
+                      S.tah("t6", "B1", "100", S.ch("mobil")),                                       # tek: yoldaki başka şirket carisi
+                      S.kon("k1")])
+    bek = S.birles(S.AD("t1", "ret", 400, "bank-account-required"), S.AD("t2", "ret", "4xx"), S.AD("t3", "ret", "4xx"), S.AD("t4", "ret", "4xx"),
+                   S.AD("t5", "ret", "4xx"), S.AD("t6", "ret", 404),
+                   S.KB("k1", "001", cari={"A1": (0, 0)}, kasa=0, hesaplar={"BNK1": ("banka", 0), "BNK2": ("banka", 0)}),
+                   S.KB("k1", "002", cari={"B1": (0, 0)}, kasa=0))
+    out = []
+    for p in (dict(kahin.ONERI), S.ESDEGER):
+        out += ["[%s] %s" % (kahin.birlesim_adi(p), f) for f in _i_karsilastir(sen, p, {k: v for k, v in bek.items() if v != S.YOK})]
+    return out[:12]
+
+
 # ═════════════════════════════════════════ G
 def _cli(*args):
     return subprocess.run([sys.executable, "-I", os.path.join(_BURASI, "kahin.py")] + list(args), capture_output=True, text=True, timeout=600)
@@ -618,4 +687,4 @@ def _h2():
 
 
 if __name__ == "__main__":
-    sys.exit(kos())
+    sys.exit(kos(sys.argv[sys.argv.index("--bolum") + 1].split(",") if "--bolum" in sys.argv else None))

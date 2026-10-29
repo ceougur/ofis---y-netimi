@@ -21,8 +21,10 @@ import itertools
 import json
 import os
 import random
+import re
 import sys
 from datetime import date, datetime, timedelta
+from decimal import ROUND_HALF_UP, Decimal
 
 sys.dont_write_bytecode = True
 _BURASI = os.path.dirname(os.path.abspath(__file__))
@@ -385,14 +387,17 @@ elle("E15-sirket-yetkisi", "P (işaretsiz → yalnız 001), M (yalnız 002), Y (
      birles(AD("t1", "ok"), AD("t2", "ret", "4xx"), AD("t3", "ok"), AD("t4", "ret", "4xx"), AD("t5", "ok"), AD("t6", "ok"), AD("t7", "ok"), AD("t8", "ret", "4xx"),
             KB("k1", "001", cari={"A1": (-200, 2)}, kasa=200, kasaGun={D1: 200}), KB("k1", "002", cari={"B1": (-300, 3)}, kasa=300, kasaGun={D1: 300})))
 
-# E16 — başka şirketin cari / hesap kimliği
-elle("E16-baska-sirket-kimligi", "001 isteğinde 002'nin carisi (ya da tersi) ve 002'nin banka hesabı: hiçbir şirkete yazılmaz (403/404). Masaüstünde de aynı.",
-     ["KULLANICI 'Şirket = ayrı veri dosyası'", "YAYGIN: kimlik isteğin şirketinde çözülür"],
+# E16 — başka şirketin cari / hesap kimliği. Bakım 29.10.2026: t1, t2, t4 (cari tahsilatı — cari kimliği YOLDA, plan §7 accounts/:id/entries) [403, 404] →
+# 404: BAŞ MİMAR KARARI 29.10.2026 "YOLDA gelen kaynak kimliği 404" (gövdedeki cari 400 — evrak girişi; R1–R3'te). t3 (banka hesabı) değişmedi.
+elle("E16-baska-sirket-kimligi", "001 isteğinde 002'nin carisi (ya da tersi) ve 002'nin banka hesabı: hiçbir şirkete yazılmaz (cari yolda → 404; hesap 400/404). "
+     "Masaüstünde de aynı.",
+     ["KULLANICI 'Şirket = ayrı veri dosyası'", "YAYGIN: kimlik isteğin şirketinde çözülür",
+      "BAŞ MİMAR KARARI 29.10.2026: gövdedeki cari 400, yoldaki 404 (plan §9.2/11 'başka şirketin hesap kimliği 404' banka hesabı için)"],
      bas(sirketler={"001": {}, "002": {}}),
      [cari("c1", "A1"), cari("c2", "B1", sirket="002"), hesap("h1", "BNK1", "banka"), hesap("h2", "BNK2", "banka", sirket="002"),
       tah("t1", "B1", "100", ch("mobil")), tah("t2", "A1", "100", ch("mobil"), sirket="002"), tah("t3", "A1", "100", ch("mobil"), yol="havale", hesap="BNK2"),
       tah("t4", "B1", "100", ch("masaustu")), tah("t5", "A1", "100", ch("mobil"), yol="havale"), kon("k1")],
-     birles(AD("t1", "ret", [403, 404]), AD("t2", "ret", [403, 404]), AD("t3", "ret", [400, 404]), AD("t4", "ret", [403, 404]), AD("t5", "ok"),
+     birles(AD("t1", "ret", 404), AD("t2", "ret", 404), AD("t3", "ret", [400, 404]), AD("t4", "ret", 404), AD("t5", "ok"),
             KB("k1", "001", cari={"A1": (-100, 1)}, kasa=0, hesaplar={"BNK1": ("banka", 100)}),
             KB("k1", "002", cari={"B1": (0, 0)}, kasa=0, hesaplar={"BNK2": ("banka", 0)})))
 
@@ -1189,6 +1194,15 @@ class Uretici:
                 "adimlar": self.adimlar}
 
 
+def _modul_kurus(metin):
+    """Akış modelinin masaüstü MODÜL ucu tutarı — kahin.kurus_modul'den AYRI yazıldı (Decimal ROUND_HALF_UP): virgüllü, binlik ayırıcısız, işaretsiz;
+    2'den çok ondalık yarım yukarı kuruşa (docs/GECMIS-KARARLAR.md 2.1.0 yargıç düzeltmesi "modül uçları … 1,005 → 1,01 yuvarlar"); 0 < tutar ≤ 1e12 TL."""
+    if not isinstance(metin, str) or not re.fullmatch(r"\d{1,13}(,\d+)?", metin):
+        return None
+    k = int((Decimal(metin.replace(",", ".")) * 100).quantize(Decimal(1), rounding=ROUND_HALF_UP))
+    return k if 0 < k <= 10 ** 14 else None
+
+
 class Akis:
     """Üreticinin BAĞIMSIZ akış beklentisi: kahin.py'yi ve cari kâhinini KULLANMAZ. Kapıları (sunucu, kesinti, lisans, cihaz, uzak izni, şirket, rol,
     girdi, mobil kısıt, istek kimliği, hedef, kilit, K8, Benzer İşlem, Kasa eksi, eksi stok) ve para sonucunu (Kasa / banka / POS / kart hesabı, cari bakiye,
@@ -1324,18 +1338,25 @@ class Akis:
             return ret("4xx")
         S = self.sir[s]
         islem, yol = a["islem"], a.get("yol")
+        # Bakım 29.10.2026 (README "BAKIM 29.10.2026"): programa ulaşan denetimlerin hepsi toplanır; bir ihlal → onun kodu, birden çok → yalnız "4xx"
+        # (SENARYO-DILI §5.6 [BELİRSİZ-17]: "Senaryo bir adımda tek ihlal kurar; kurarsa karşılaştırıcı o adımda yalnız durum sınıfını (4xx) karşılaştırır")
+        hata = []
         if islem == "odeme" and yol in ("havale", "kart") and rol == "personel":
-            return ret(403)
+            hata.append((403, None))
         if islem == "stok":
             m = a["miktar"]
         else:
-            m = kahin.kurus(a["tutar"])
+            # masaüstü MODÜL ucu 2'den çok ondalığı yarım yukarı yuvarlar (docs/GECMIS-KARARLAR.md 2.1.0 yargıç düzeltmesi "1,005 → 1,01"); mobil yuvarlamaz
+            # (M5 BAŞ MİMAR 3 "YUVARLANMAZ"). Masaüstü yolu kahin.kurus_modul'u KULLANMAZ: Decimal ROUND_HALF_UP ile ayrı hesap.
+            m = kahin.kurus(a["tutar"]) if mob else _modul_kurus(a["tutar"])
             if m is None:
-                return ret(400)
+                hata.append((400, None))
         p = self.p
-        if mob and ((a.get("fatura") and p["kapatilacak"] == "yalniz_fifo") or (yol in ("cek", "senet") and p["yollar"] == "nakit_havale_pos")
-                    or (a.get("kart") and p["taksit"] == "yalniz_cari") or (islem == "stok" and a["yon"] == "cikis" and p["stok_yonu"] == "yalniz_giris")):
-            return ret("4xx")
+        if mob:
+            for kisit in ((a.get("fatura") and p["kapatilacak"] == "yalniz_fifo"), (yol in ("cek", "senet") and p["yollar"] == "nakit_havale_pos"),
+                          (a.get("kart") and p["taksit"] == "yalniz_cari"), (islem == "stok" and a["yon"] == "cikis" and p["stok_yonu"] == "yalniz_giris")):
+                if kisit:
+                    hata.append(("4xx", None))
         sert = mob and p["onay"] == "gecemez"
         yine, bon, fazla = (a.get("yineDeKaydet") and not sert), (a.get("benzerOnay") and not sert), (a.get("fazlaAvans") and not sert)
         eksi_on = a.get("eksiOnay") and not (mob and p["eksi_stok"] == "gecemez")
@@ -1345,21 +1366,23 @@ class Akis:
             gonder = a.get("tarih") or form.date().isoformat()
             tarih = gonder
         if tarih > self.gun():
-            return ret(400)
+            hata.append((400, None))
         hesap = None
         if yol in ("havale", "pos", "kart"):
             tur = {"havale": "banka", "pos": "pos", "kart": "kart"}[yol]
             if a.get("hesap"):
                 if a["hesap"] not in S["hes"]:
-                    return ret([400, 404])
-                if S["hes"][a["hesap"]] != tur:
-                    return ret(400, "bank-account-invalid")
-                hesap = a["hesap"]
+                    hata.append(([400, 404], None))
+                elif S["hes"][a["hesap"]] != tur:
+                    hata.append((400, "bank-account-invalid"))
+                else:
+                    hesap = a["hesap"]
             else:
                 uy = [h for h, t in S["hes"].items() if t == tur]
                 if len(uy) > 1:
-                    return ret(400, "bank-account-required")
-                hesap = uy[0] if uy else None
+                    hata.append((400, "bank-account-required"))
+                else:
+                    hesap = uy[0] if uy else None
         anahtar = (s, u, islem + (":kart" if a.get("kart") else ""), a["istekKimligi"])
         govde = json.dumps([a.get("cari"), a.get("tutar"), a.get("miktar"), yol, a.get("hesap"), a.get("fatura"), a.get("kart"), bool(fazla), a.get("urun"),
                             a.get("yon"), gonder, s], ensure_ascii=False)
@@ -1367,55 +1390,60 @@ class Akis:
             g, z = self.ist[anahtar]
             if self.simdi - z > timedelta(days=30):
                 raise RuntimeError("üretici 30 günü aşan yeniden gönderim kurmamalı")
-            if g == govde:
+            if g != govde:
+                hata.append((409, None))
+            elif not hata:
                 if gizli:
                     self.sonuc(i, "belirsiz", sunucu="yineleme")
                 else:
                     self.sonuc(i, "yineleme")
                 return
-            return ret(409)
         if islem != "stok":
             c = a["cari"]
             if c not in S["cari"]:
-                return ret([403, 404] if any(c in x["cari"] for x in self.sir.values()) else 404)
+                # BAŞ MİMAR KARARI 29.10.2026: gövdedeki (evrak girişi formu) cari 400, yoldaki (cari / taksit kartı ucu) 404
+                hata.append((400 if yol in ("cek", "senet") else 404, None))
             if a.get("fatura"):
                 F = S["fat"].get(a["fatura"])
                 if F is None or F["cari"] != c:
-                    return ret(404)
-                if F["tur"] != ("satis" if islem == "tahsilat" else "alis"):
-                    return ret(409)
+                    hata.append((404, None))
+                elif F["tur"] != ("satis" if islem == "tahsilat" else "alis"):
+                    hata.append((409, None))
             if a.get("kart"):
                 K = S["kart"].get(a["kart"])
                 if K is None or K["cari"] != c:
-                    return ret(404)
-                kalan = K["top"] - sum(x for _, x in K["od"])
-                if kalan <= 0:
-                    # KARAR K8-AVANS (kullanıcı 29.10.2026): ödenmiş karta yeni tahsilat yalnız Fazlasını Avans Yaz onayı + plans.manage ile (tamamı avans);
-                    # onaysız → 409 plan-paid; yetkisiz → ret, kodu kararda yok (403 plan-overpay-permission / 409 plan-paid)
-                    if not fazla:
-                        return ret(409, "plan-paid")
-                    if rol == "personel":
-                        return ret([403, 409], ["plan-overpay-permission", "plan-paid"])
-                elif m > kalan:
-                    if not fazla:
-                        return ret(409, "plan-overpay")
-                    if rol == "personel":
-                        return ret(403, "plan-overpay-permission")
+                    hata.append((404, None))
+                elif m is not None:
+                    kalan = K["top"] - sum(x for _, x in K["od"])
+                    if kalan <= 0:
+                        # KARAR K8-AVANS (kullanıcı 29.10.2026): ödenmiş karta yeni tahsilat yalnız Fazlasını Avans Yaz onayı + plans.manage ile (tamamı avans);
+                        # onaysız → 409 plan-paid; yetkisiz → ret, kodu kararda yok (403 plan-overpay-permission / 409 plan-paid)
+                        if not fazla:
+                            hata.append((409, "plan-paid"))
+                        elif rol == "personel":
+                            hata.append(([403, 409], ["plan-overpay-permission", "plan-paid"]))
+                    elif m > kalan:
+                        if not fazla:
+                            hata.append((409, "plan-overpay"))
+                        elif rol == "personel":
+                            hata.append((403, "plan-overpay-permission"))
         bk = None
-        if islem != "stok" and hesap is not None:
+        if islem != "stok" and hesap is not None and m is not None:
             bk = (islem, yol, hesap, a["cari"], m, tarih, a.get("fatura") or (("kart:" + a["kart"]) if a.get("kart") else ""))
             if bk in S["benzer"] and not bon:
-                return ret(409, "bank-similar")
-        if islem == "odeme" and yol == "nakit":
+                hata.append((409, "bank-similar"))
+        if islem == "odeme" and yol == "nakit" and m is not None:
             sat = S["kasa"] + [(tarih, -m)]
             if min(sum(x for t, x in sat if t <= tarih), sum(x for _, x in sat)) < 0:
                 if S["eksi"] == "engelle":
-                    return ret(409, "cash-blocked")
-                if S["eksi"] == "uyar" and not yine:
-                    return ret(409, "cash-negative")
+                    hata.append((409, "cash-blocked"))
+                elif S["eksi"] == "uyar" and not yine:
+                    hata.append((409, "cash-negative"))
+        if islem == "stok" and a["yon"] == "cikis" and sum(S["urun"][a["urun"]]) - m < 0 and not eksi_on:
+            hata.append(("4xx", None))
+        if hata:
+            return ret(*hata[0]) if len(hata) == 1 else ret("4xx")
         if islem == "stok":
-            if a["yon"] == "cikis" and sum(S["urun"][a["urun"]]) - m < 0 and not eksi_on:
-                return ret("4xx")
             S["urun"][a["urun"]].append(m if a["yon"] == "giris" else -m)
         else:
             yon = 1 if islem == "tahsilat" else -1
@@ -1609,7 +1637,10 @@ def kabul_uret(olay=RASTGELE_OLAY, yaz=True, gunluk=print):
         "kaynak": ["CLAUDE.md Açık iş: MOBİL kararları (26.10.2026), Kalıcı ürün kararları, dersler 5/7/10/13/17/22/31/32/40/43",
                    "docs/erp/OTURUM-DEVIR-TESLIM-2.4.7.md §3.1", "docs/2.4.7-IS-LISTESI.md Nasıl bozulur?",
                    "docs/2.4.7-IS-LISTESI.md 'KARAR — K8-AVANS' (kullanıcı, 29.10.2026 \"A ÖNERİN UYGUN\"): ödenmiş karta onaylı Fazlasını Avans Yaz (plans.manage) → avans; Ödenen avansı da içerir", "docs/PRO-UZAKTAN-GORUNTULEME.md (eşleme / izin / lisans)",
-                   "docs/BANKA-MODULU-PLAN.md §2.5, §3.5, §3.9, §3.10, §9", "test/bagimsiz/SENARYO-DILI.md §5", "test/bagimsiz/cari/ (model.py, KARARLAR.md)",
+                   "docs/BANKA-MODULU-PLAN.md §2.5, §3.5, §3.9, §3.10, §7, §9", "test/bagimsiz/SENARYO-DILI.md §5, §6.1, §6.2", "test/bagimsiz/cari/ (model.py, KARARLAR.md)",
+                   "BAKIM 29.10.2026 (README 'BAKIM 29.10.2026'): masaüstü modül ucu 2'den çok ondalığı yarım yukarı yuvarlar (docs/GECMIS-KARARLAR.md 2.1.0 yargıç "
+                   "düzeltmesi '1,005 → 1,01'; mobil yuvarlamaz); BAŞ MİMAR KARARI 29.10.2026 gövdedeki cari 400 / yoldaki 404; birden çok ihlalde yalnız durum "
+                   "sınıfı (SENARYO-DILI §5.6 [BELİRSİZ-17])",
                    "MEVCUT ÜRÜN (ana oturum koddan doğruladı): şirket yetkisi kullanıcı × şirket; yönetici hepsi; işaretsiz yalnız 001; roller her şirkette aynı"],
         "uretim": "python3 -I test/bagimsiz/mobil-yazma/senaryolar.py (rastgele tohum %s, %d olay)" % ("–".join(map(str, (RASTGELE_TOHUM[0], RASTGELE_TOHUM[-1]))), olay),
         "cari_model_sha256": _sha256(kahin._CARI_YOL),
