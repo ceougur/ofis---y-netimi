@@ -11,7 +11,7 @@ import { accountLedger } from "../lib/accounts.mjs";
 import { DIRECTIONS, EVENT_LABELS, INSTRUMENTS, STATUSES } from "../lib/cheques.mjs";
 import { isAllTimeStart, presetRange, statement } from "../lib/finance-report.mjs";
 import { methodLabel } from "../lib/pay-method.mjs";
-import { HttpError, limited, ok, sendBuffer, text } from "../lib/http.mjs";
+import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, isoDay } from "../lib/plans.mjs";
@@ -26,7 +26,7 @@ import { TRANSFER_CHANNELS } from "../lib/bank/vouchers.mjs";
 import { TAX_LABELS, taxChoiceOf } from "../lib/bank/pos-math.mjs";
 import { CHART, stockOpeningValue } from "../lib/general-ledger.mjs";
 import { INVOICE_KINDS } from "../lib/invoice-math.mjs";
-import { detailedStatement } from "../lib/statement-detail.mjs";
+import { DETAIL_HEADERS, detailedStatement, projectColumns } from "../lib/statement-detail.mjs";
 import { reconcileReceivables } from "../lib/receivable-aging.mjs";
 import { DOUBTFUL_REASONS, DOUBTFUL_STATUS_LABELS } from "../lib/doubtful-gl.mjs";
 
@@ -183,8 +183,34 @@ export function footerRows({ headers = [], types = [], rows = [], footer, footer
   return out;
 }
 
-export function registerReportCenter(router, { store, auth, audit, dataset, tax = () => null, company = () => null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, doubtful = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null }) {
+export function registerReportCenter(router, { store, auth, audit, dataset, tax = () => null, company = () => null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, doubtful = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock, offload = null, sharedStore = null }) {
   const today = () => isoDay(clock());
+  // 2.4.7 (müşteri isteği 6a; kullanıcı 28.10.2026 "hatırlansın"): Ayrıntılı Cari Ekstre'de gizlenen kolonlar KİŞİ BAŞINA, sunucuda hatırlanır — aynı kullanıcı
+  // başka bilgisayarda / oturumda / öbür şirkette aynı kolonları görür, başka kullanıcı etkilenmez. Yeni tablo yok: ortak katmanın (001 = kullanıcılar, app.mjs
+  // hub.store) ayarlar tablosunda "auth.prefs.<kullanıcı>.…" anahtarı. "auth." öneki bilerek: ortak katman ayarı olarak şirket verisi sıfırlamada ve yedek geri
+  // yüklemede KORUNUR (app.mjs KEEP_SETTINGS, company-backups.mjs COMMON_SETTINGS) — kişinin görünüm tercihi şirket verisiyle geri dönmez.
+  const prefsStore = sharedStore || store;
+  const detailColumns = {
+    key: user => `auth.prefs.${user?.id || ""}.report.cari-ekstre-ayrintili.hidden`,
+    hidden(user) {
+      if (!user?.id) return [];
+      try {
+        const list = JSON.parse(prefsStore.setting(this.key(user), "[]") || "[]");
+        return Array.isArray(list) ? list.filter(name => DETAIL_HEADERS.includes(name)) : [];
+      } catch {
+        return [];
+      }
+    },
+    save(user, hidden) {
+      if (!Array.isArray(hidden) || hidden.some(name => typeof name !== "string")) throw new HttpError(400, "Gizlenecek sütunlar liste olmalı.");
+      const unknown = hidden.filter(name => !DETAIL_HEADERS.includes(name));
+      if (unknown.length) throw new HttpError(400, `Bu raporda olmayan sütun: ${unknown.slice(0, 3).join(", ")}.`);
+      const list = DETAIL_HEADERS.filter(name => hidden.includes(name));
+      if (list.length >= DETAIL_HEADERS.length) throw new HttpError(400, "En az bir sütun görünür kalmalı.", { code: "columns-empty" });
+      prefsStore.setSetting(this.key(user), JSON.stringify(list), user.id);
+      return list;
+    },
+  };
   const office = () => store.setting("office.name", "");
   // Rapor başlığındaki şirket (2.2.0 İz 1.1; 2.0.17 m2 kararı "rapor/PDF/Excel başlığında 001 · Unvan"): bu örneğin şirketinin kodu (kayıt defteri)
   // ve unvanı (office.name; PDF'in başlığında da bu yazıyordu; boşsa şirketin adı). İstek pencerenin şirketine gider (?hofCompany=, app.mjs
@@ -1715,7 +1741,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         const account = accounts().detail(query.account, user);
         const result = statement(account.ledger, range);
         const mark = value => `${tl(Math.abs(value))}${value > 0.005 ? " B" : value < -0.005 ? " A" : ""}`;
-        if (query.items === "1") return detailedEkstre(account, range, result, mark);
+        if (query.items === "1") return detailedEkstre(account, range, result, mark, user);
         return {
           title: `Cari Ekstre · ${account.name}`,
           subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", rangeText(range), "B: borçlu · A: alacaklı"].filter(Boolean).join(" · "),
@@ -2722,7 +2748,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
   // ekstreyle AYNI defterden (statement); her satıra Belge No ve ödeme yolu, faturanın satırının altına kalemleri (lib/statement-detail.mjs). Kalemler
   // faturanın kendi kayıtlı satırlarıdır (invoice_lines; Düzenle'den sonra güncel); iptal edilen ve taslak faturanın defter satırı olmadığından kalemi de
   // görünmez (seçenek kapalı ekstreyle aynı).
-  function detailedEkstre(account, range, result, mark) {
+  function detailedEkstre(account, range, result, mark, user) {
     const chunks = (ids, size = 400) => {
       const list = [...new Set(ids.filter(Boolean))];
       const out = [];
@@ -2735,12 +2761,15 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     const items = new Map();
     for (const chunk of chunks(invoiceIds)) {
       for (const row of store.all(`SELECT id, kind, number, currency, prices_include_vat AS pricesIncludeVat, discount_rate AS discountRate, stoppage_rate AS stoppageRate, stoppage_total AS stoppage FROM invoices WHERE id IN (${marks(chunk)})`, ...chunk)) heads.set(row.id, row);
-      for (const line of store.all(`SELECT invoice_id AS invoiceId, name, code, qty, unit, unit_price AS unitPrice, discount_rate AS discountRate, net, vat_rate AS vatRate, gross, withheld FROM invoice_lines WHERE invoice_id IN (${marks(chunk)}) ORDER BY invoice_id, seq`, ...chunk)) {
+      for (const line of store.all(`SELECT invoice_id AS invoiceId, name, code, description, qty, unit, unit_price AS unitPrice, discount_rate AS discountRate, net, vat_rate AS vatRate, gross, withheld FROM invoice_lines WHERE invoice_id IN (${marks(chunk)}) ORDER BY invoice_id, seq`, ...chunk)) {
         if (!items.has(line.invoiceId)) items.set(line.invoiceId, []);
         items.get(line.invoiceId).push(line);
       }
     }
-    const invoices = new Map([...heads.values()].map(row => [row.id, { number: row.number || "", kindLabel: INVOICE_KINDS[row.kind]?.label || "Fatura", currency: row.currency || "TRY", pricesIncludeVat: Number(row.pricesIncludeVat) === 1, discountRate: Number(row.discountRate) || 0, stoppageRate: Number(row.stoppageRate) || 0, stoppage: Number(row.stoppage) || 0, lines: items.get(row.id) || [] }]));
+    // kindShort (2.4.7, müşteri isteği 5): İşlem kolonunda ve açıklamanın başında türün kısa adı ("Satış"; Müşteri Fişi de "… Faturası" görünmesin).
+    // BAŞ MİMAR KARARI: Serbest Meslek Makbuzu tam adıyla kalır (adında "Fatura" yok; kısa adı "SMM" müşterinin müşterisine açık değil).
+    const shortOf = kind => (kind === "smm" ? INVOICE_KINDS.smm.label : INVOICE_KINDS[kind]?.short || INVOICE_KINDS[kind]?.label || "Fatura");
+    const invoices = new Map([...heads.values()].map(row => [row.id, { number: row.number || "", kindLabel: INVOICE_KINDS[row.kind]?.label || "Fatura", kindShort: shortOf(row.kind), currency: row.currency || "TRY", pricesIncludeVat: Number(row.pricesIncludeVat) === 1, discountRate: Number(row.discountRate) || 0, stoppageRate: Number(row.stoppageRate) || 0, stoppage: Number(row.stoppage) || 0, lines: items.get(row.id) || [] }]));
     // Taksit tahsilatının yolu ve evrakı (defter satırı "plan-entry:<kimlik>"); çek / senet satırının evrakı (kaynak kimliği = evrak).
     const planEntryIds = result.lines.filter(line => String(line.id).startsWith("plan-entry:")).map(line => String(line.id).slice("plan-entry:".length));
     const planEntries = new Map();
@@ -2763,15 +2792,30 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         extras.set(line.id, { docNo: receipt(line) || cheque?.serialNo || "", way: entry?.chequeId ? instrument(cheque) : entry ? methodLabel(entry.method || "cash", line.kind === "plan-in" ? "in" : "out") : "" });
       } else extras.set(line.id, { docNo: receipt(line), way: cash ? methodLabel(line.method, line.kind) : "" });
     }
-    const model = detailedStatement({ opening: result.opening, openingDay: openingDay(range.from), lines: result.lines, invoices, extras, dayText, money, mark });
+    // 2.4.7 (müşteri isteği 6a): kullanıcının gizlediği kolonlar (kişi başına hatırlanır; detailColumns) — ekran, PDF ve Excel aynı.
+    // BAŞ MİMAR KARARI: dönemde açıklamalı kalem yoksa "Kalem Açıklaması" kolonu boştur ve çıkmaz (16 kolonlu yatay PDF'te boş kolon fatura numarasını ve
+    // tutarları ikiye bölüyordu — 2.4.6 B4). Açıklamalı kalem varsa kolon görünür (kullanıcı gizlemediyse).
+    const described = [...items.values()].some(list => list.some(line => String(line.description ?? "").trim()));
+    const own = detailColumns.hidden(user);
+    const empty = described ? [] : ["Kalem Açıklaması"];
+    const merged = [...new Set([...own, ...empty])];
+    const model = projectColumns(detailedStatement({ opening: result.opening, openingDay: openingDay(range.from), lines: result.lines, invoices, extras, dayText, money, mark }), merged.length < DETAIL_HEADERS.length ? merged : own);
     return {
       title: `Ayrıntılı Cari Ekstre · ${account.name}`,
-      subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", rangeText(range), "Fatura kalemleriyle", "B: borçlu · A: alacaklı"].filter(Boolean).join(" · "),
+      // 2.4.7 (müşteri isteği 5; kullanıcı 28.10.2026: "sadece cari no ve tarihler kalacak o satırda"): "Fatura kalemleriyle" ve "B: borçlu · A: alacaklı" kalktı
+      // (fatura kesilmemiş Müşteri Fişi'nde müşteri yanlış anlıyordu). Seçenek kapalı Cari Ekstre değişmez.
+      subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", rangeText(range)].filter(Boolean).join(" · "),
       headers: model.headers,
       types: model.types,
       rows: model.rows,
       rowMarks: model.marks,
       footers: model.footers,
+      // Sütunlar seçicisi (ekran): bütün kolonlar, bu kullanıcının gizledikleri (kendi seçimi; boş kolon buraya yazılmaz) ve bu dönemde boş olan kolon.
+      columns: { all: [...DETAIL_HEADERS], hidden: own, empty },
+      // PDF (2.4.7): Kalem Açıklaması açıkken 16 kolon yatay A4'e sığsın diye sözcüklü kolonlar başlığın iki satırlık genişliğine kadar daralır (tutarlar
+      // bölünmez; çok büyük tutarlarda dar Belge No'da numara bölünebilir — 15 kolonda da öyle); 15 ve daha az kolonda PDF bugünkü gibi.
+      // Kalem açıklaması (en çok 300 karakter) dar kolonda kesilmeden sarılır: hücre 4 yerine en çok 40 satır.
+      ...(model.headers.includes("Kalem Açıklaması") ? { pdfWrapHeads: true, pdfCellLines: 40 } : {}),
       summary: [["Devir", money(result.opening)], ["Dönem Borç", money(result.debit)], ["Dönem Alacak", money(result.credit)], ["Genel Toplam (Bakiye)", `${tl(Math.abs(result.closing))} ${sideText(result.closing)}`]],
     };
   }
@@ -2873,7 +2917,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     const footers = Array.isArray(result.footers) ? (rows.length ? result.footers : []) : footerRows({ headers: result.headers, types: result.types || [], rows, footer: result.footer, footerUniform: result.footerUniform, footerGroups: result.footerGroups });
     const footer = footers.length === 1 ? footers[0] : null;
     // rowMarks (2.4.5 madde 6d): satır türü ("item" = fatura kalemi; ekranda girintili). Yalnız veren raporda döner.
-    return { id: report.id, group: report.group, title: result.title || report.title, subtitle: result.subtitle || "", headers: result.headers, types: result.types || [], rows, total: result.rows.length, footer, footers, summary: result.summary || [], tabs: result.tabs || null, query, ...(Array.isArray(result.rowMarks) ? { rowMarks: result.rowMarks.slice(0, MAX_ROWS) } : {}) };
+    return { id: report.id, group: report.group, title: result.title || report.title, subtitle: result.subtitle || "", headers: result.headers, types: result.types || [], rows, total: result.rows.length, footer, footers, summary: result.summary || [], tabs: result.tabs || null, query, ...(Array.isArray(result.rowMarks) ? { rowMarks: result.rowMarks.slice(0, MAX_ROWS) } : {}), ...(result.columns ? { columns: result.columns } : {}), ...(result.pdfWrapHeads ? { pdfWrapHeads: true } : {}), ...(result.pdfCellLines ? { pdfCellLines: result.pdfCellLines } : {}) };
   }
   router.get("/api/workspace/report-center", async ({ req, res }) => {
     const user = enter(req);
@@ -2911,6 +2955,16 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     const user = enter(req);
     const data = await run(user, params.id, url.searchParams, { limit: PREVIEW_ROWS });
     ok(res, { ...data, rows: data.rows.slice(0, PREVIEW_ROWS), ...(data.rowMarks ? { rowMarks: data.rowMarks.slice(0, PREVIEW_ROWS) } : {}), total: data.total });
+  });
+  // 2.4.7 (müşteri isteği 6a): Ayrıntılı Cari Ekstre'nin Sütunlar seçimi — bu kullanıcının gizlediği kolonlar (yalnız raporu görebilen; en az bir kolon kalır).
+  // Ekran, PDF ve Excel seçimi sunucudan okur (adreste kolon yok): üçü her zaman aynı kolonlar.
+  router.put("/api/workspace/report-center/cari-ekstre/columns", async ({ req, res }) => {
+    const user = enter(req);
+    if (!allowed(user, REGISTRY.get("cari-ekstre"))) throw new HttpError(403, "Bu rapor için yetkiniz yok.");
+    const body = await readJson(req);
+    const hidden = detailColumns.save(user, body?.hidden);
+    audit(user, "report.columns", "cari-ekstre", { hidden });
+    ok(res, { all: [...DETAIL_HEADERS], hidden });
   });
   // PDF ve Excel üretimi tek yerden (lib/report-files.mjs; 2.3.0 İz 5.1): Banka → Hareketler'in PDF / Excel düğmeleri de aynı üreticiyi kullanır.
   const fileCtx = user => ({ now: clock(), companyLabel: companyLabel(), userName: user.display_name || user.username || "", brand: office() || "DestekOfis", header });

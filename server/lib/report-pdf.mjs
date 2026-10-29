@@ -26,7 +26,7 @@ const layoutOf = count => {
 // Kolon ölçüleri: başlık ve hücre ölçümlerinin p90'ı, en az 40 ve en çok W/3. 2.4.4 U3: tutar ve sayı kolonunda p90 değil EN GENİŞ hücre (bütün
 // satırların en uzun metni ve kalın TOPLAM hücreleri dahil) — en büyük tutarlar ve TOPLAM satır ortasından bölünmesin ("36.00 / 0,00").
 // rigid: bölünmez kolon (tutar, sayı, boşluksuz değer: tarih, telefon, numara); floor: sözcüklü kolonun en dar hâli (başlığı sığar).
-function columnMeasures(doc, { headers, rows, types, totals, fontSize, W }) {
+function columnMeasures(doc, { headers, rows, types, totals, fontSize, W, wrapHeads = false }) {
   const sample = rows.slice(0, 400);
   const numeric = index => types[index] === "money" || types[index] === "number";
   const widths = headers.map((header, index) => {
@@ -44,7 +44,18 @@ function columnMeasures(doc, { headers, rows, types, totals, fontSize, W }) {
     return Math.min(W / 3, Math.max(40, Math.max(doc.measure(header, "bold", fontSize) + 6, content) + CELL_PAD * 2));
   });
   const rigid = index => numeric(index) || sample.every(row => !/\s/.test(String(row[index] ?? "").trim()));
-  const floor = index => Math.max(48, Math.min(widths[index], doc.measure(headers[index], "bold", fontSize) + 6 + CELL_PAD * 2));
+  // wrapHeads (2.4.7, yalnız isteyen rapor — Ayrıntılı Cari Ekstre): sözcüklü kolonun en dar hâli başlığın İKİ SATIRA bölünmüş genişliğidir (başlık çizimde zaten
+  // en çok iki satıra iner); verilmezse bugünkü gibi tek satır başlık genişliği.
+  const headWidth = index => {
+    const text = String(headers[index] ?? "");
+    const full = doc.measure(text, "bold", fontSize);
+    if (!wrapHeads) return full;
+    const words = text.split(/\s+/).filter(Boolean);
+    let best = full;
+    for (let cut = 1; cut < words.length; cut += 1) best = Math.min(best, Math.max(doc.measure(words.slice(0, cut).join(" "), "bold", fontSize), doc.measure(words.slice(cut).join(" "), "bold", fontSize)));
+    return best;
+  };
+  const floor = index => Math.max(48, Math.min(widths[index], headWidth(index) + 6 + CELL_PAD * 2));
   // 2.4.6 (2.4.5 gezinti B4): sözcüklü kolonun en dar hâli en uzun SÖZCÜĞÜ de taşır — "Makbuz 1" yüzünden sözcüklü sayılan Belge No kolonu
   // "FIS2026000000001"i "FIS20260000 / 00001" diye bölüyordu. Yalnız sayfaya sığarsa kullanılır (drawTablePdf); sığmazsa eski en dar hâl.
   const wordFloors = new Map();
@@ -101,8 +112,10 @@ export function tablePdf(input) {
   return drawTablePdf({ ...pick(keep), subtitle: [input.subtitle, note].filter(Boolean).join(" · ") });
 }
 
-function drawTablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], footer = null, footers = null, officeName = "", officeLines = null, userName = "", brand = "DestekOfis", now = new Date() }) {
+function drawTablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], footer = null, footers = null, officeName = "", officeLines = null, userName = "", brand = "DestekOfis", now = new Date(), wrapHeads = false, cellLines: maxCellLines = 4 }) {
   const M = MARGIN;
+  // cellLines (2.4.7): hücre en çok kaç satıra sarılır (sonrası "…"); varsayılan 4 (bugünkü). Ayrıntılı Cari Ekstre kalem açıklaması kesilmesin diye 40 verir.
+  const cellLines = Number.isInteger(maxCellLines) && maxCellLines >= 1 ? maxCellLines : 4;
   const { size, W, fontSize } = layoutOf(headers.length);
   const doc = new PdfDocument({ fonts: loadFonts(), size, title, author: officeName || "DestekOfis", subject: title });
   const bottomLimit = size.height - 48;
@@ -110,9 +123,8 @@ function drawTablePdf({ title, subtitle = "", headers, rows, types = [], summary
   const ink = "#111827";
   const cellPad = CELL_PAD;
 
-  const measures = columnMeasures(doc, { headers, rows, types, totals: totalsOf({ footer, footers }), fontSize, W });
-  const { widths, rigid } = measures;
-  // Sayfaya sığmayınca (v2.0.6) yalnız sözcüklü metin kolonları (ad, grup, not) daralıp satır içinde sarılır; tutar, tarih,
+  const measures = columnMeasures(doc, { headers, rows, types, totals: totalsOf({ footer, footers }), fontSize, W, wrapHeads: wrapHeads === true });
+  const { widths, rigid } = measures;  // Sayfaya sığmayınca (v2.0.6) yalnız sözcüklü metin kolonları (ad, grup, not) daralıp satır içinde sarılır; tutar, tarih,
   // telefon gibi bölünmez değerler kendi genişliğinde kalır ("03.09.202 / 6" diye kırılmasın). Yetmezse hepsi orantılanır.
   const sum = list => list.reduce((total, value) => total + value, 0);
   let cols = widths.slice();
@@ -243,7 +255,7 @@ function drawTablePdf({ title, subtitle = "", headers, rows, types = [], summary
   rows.forEach((row, rowIndex) => {
     const wrapped = row.map((value, index) => {
       const lines = doc.wrap(String(value ?? ""), cols[index] - cellPad * 2, "regular", fontSize);
-      return lines.length > 4 ? [...lines.slice(0, 3), doc.fit(`${lines[3]}…`, cols[index] - cellPad * 2, "regular", fontSize)] : lines.length ? lines : [""];
+      return lines.length > cellLines ? [...lines.slice(0, cellLines - 1), doc.fit(`${lines[cellLines - 1]}…`, cols[index] - cellPad * 2, "regular", fontSize)] : lines.length ? lines : [""];
     });
     const height = 6 + Math.max(...wrapped.map(lines => lines.length)) * (fontSize + 3);
     if (top + height > bottomLimit) newPage(false);

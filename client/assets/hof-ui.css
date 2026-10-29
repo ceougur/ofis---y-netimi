@@ -8541,8 +8541,40 @@ button.hof-source-card:focus-visible {
   font-size: 0.94em;
   border-top-color: transparent;
 }
-.hof-rc-table tbody tr.is-item td:nth-child(5) {
+/* 2.4.7: girinti kolon sırasına değil ada bağlı (Sütunlar ile kolon gizlenince "Açıklama / Ürün - Hizmet" 5. kolon olmayabilir). */
+.hof-rc-table tbody tr.is-item td.is-indent {
   padding-left: 22px;
+}
+/* 2.4.7 (müşteri isteği 6a): Ayrıntılı Cari Ekstre → Sütunlar seçici (açılır liste; işaret kaldırılan kolon ekranda, PDF'te ve Excel'de yok). */
+.hof-rc-cols {
+  position: relative;
+}
+.hof-rc-cols > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.hof-rc-cols > summary::-webkit-details-marker {
+  display: none;
+}
+.hof-rc-cols-list {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 4px);
+  left: 0;
+  display: grid;
+  gap: 0;
+  min-width: 220px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 6px 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 10px;
+  background: var(--do-surface);
+  box-shadow: var(--do-shadow);
+}
+.hof-rc-cols-list .hof-rc-check-row {
+  height: 28px;
+  white-space: nowrap;
 }
 .hof-rc-table tbody tr.is-invoice td {
   font-weight: 600;
@@ -8561,8 +8593,20 @@ button.hof-source-card:focus-visible {
   letter-spacing: 0.02em;
   vertical-align: bottom;
 }
-.hof-rc-table table.is-dense td:nth-child(5) {
+.hof-rc-table table.is-dense td.is-indent {
   min-width: 120px;
+}
+/* 2.4.7 (müşteri isteği 6b): Kalem Açıklaması açıkken 16 kolon — 1366 px'te yatay kaydırma olmasın: yazı bir kademe küçük, açıklama kolonunda uzun
+   numara ("Satış FIS2026…") gerekirse bölünür, kalem açıklaması sarılır. */
+.hof-rc-table table.is-dense.is-wide {
+  font-size: 10.5px;
+}
+.hof-rc-table table.is-dense.is-wide td.is-indent {
+  min-width: 96px;
+  overflow-wrap: anywhere;
+}
+.hof-rc-table table.is-dense td.is-note {
+  min-width: 72px;
 }
 .hof-rc-account .hof-field {
   margin: 0;
