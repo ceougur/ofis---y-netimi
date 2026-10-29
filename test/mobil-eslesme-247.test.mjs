@@ -228,6 +228,51 @@ describe("M2 eşleme: karekod (P1 5 dk, tek kullanım, P2), yalnız yönetici, u
   });
 });
 
+describe("P14 eşleme bağlantısı (karekod okuyamayan uzak bilgisayar): aynı tek kullanımlık kod, aynı kurallar", () => {
+  it("bağlantı = uzak adres/mobil/#eslesme=<kod>; tarayıcıda açılan sayfa çerezsiz gelir, kod # kısmında (istek satırında yok); uzak bilgisayar eşlenir; tek kullanım, P2, P4", async () => {
+    const ctx = await setup();
+    try {
+      ctx.server.app.mobileRemote.setPublicUrl(ctx.base);
+      const veliId = await ctx.user("veli");
+      await ctx.allow(veliId);
+      const first = await ctx.code(veliId);
+      assert.equal(first.status, 200);
+      const link = new URL(first.data.data.url);
+      assert.equal(`${link.origin}${link.pathname}`, `${ctx.base}/mobil/`, "bağlantı uzak adresin /mobil/ sayfası");
+      assert.match(link.hash, /^#eslesme=[A-Za-z0-9_-]{16,}$/, "kod adresin # kısmında");
+      assert.equal(link.search, "", "kod sorgu dizgesinde değil (sunucu günlüğü, Referer)");
+      // Tarayıcının sunucuya gönderdiği istek satırı # kısmını taşımaz: sayfa çerezsiz açılır.
+      const pc = ctx.phone({ name: "Ofis Dışı Bilgisayar", kind: "tarayici" });
+      const page = await pc.get(link.pathname);
+      assert.equal(page.status, 200, "eşleme sayfası açılır");
+      // P2: aynı kişiye yeni kod üretilince eski bağlantı geçersiz.
+      const second = await ctx.code(veliId);
+      const code2 = new URL(second.data.data.url).hash.slice("#eslesme=".length);
+      assert.equal(code2, second.data.data.code, "bağlantıdaki kod karekoddakiyle aynı");
+      assert.equal((await pc.pair(link.hash.slice("#eslesme=".length))).code, "remote-code", "eski bağlantı geçersiz (P2)");
+      const paired = await pc.pair(code2);
+      assert.equal(paired.status, 200, paired.text);
+      assert.equal((await pc.login("veli", PASSWORD)).status, 200);
+      assert.equal((await pc.get("/api/mobil/session")).status, 200);
+      const device = (await ctx.devices()).devices.find(item => item.userId === veliId);
+      assert.equal(device.kind, "tarayici");
+      assert.equal(device.kindLabel, "Uzak Tarayıcı");
+      assert.equal((await ctx.phone().pair(code2)).code, "remote-code", "bağlantı tek kullanımlık");
+      // P4: sınır doluyken bağlantı da üretilmez (aynı uç).
+      for (const name of ["ali", "ayse"]) {
+        const id = await ctx.user(name);
+        await ctx.allow(id);
+        await ctx.paired(id, name);
+      }
+      const full = await ctx.code(veliId);
+      assert.equal(full.status, 409);
+      assert.equal(full.data.code, "remote-limit");
+    } finally {
+      await ctx.server.close();
+    }
+  });
+});
+
 describe("M2 sınır: program başına 3 eşli cihaz, iki şirket birlikte (P3, P4, P5); silince yer açılır", () => {
   let ctx;
   const ids = {};

@@ -1,5 +1,7 @@
 /* DestekOfis — Yönetim → Mobil Cihazlar (2.4.7 M2; sunucu routes/mobile-admin.mjs, lib/mobile-remote.mjs). Kullanıcıya "Uzaktan Bağlanabilir" izni, tek kullanımlık
-   karekod (5 dk) ve eşli cihaz listesi (program başına sınır, iki şirket birlikte). Sınır doluyken karekod düğmesi pasif ve nedeni görünür yazılır. */
+   karekod (5 dk) ve eşli cihaz listesi (program başına sınır, iki şirket birlikte). Sınır doluyken karekod düğmesi pasif ve nedeni görünür yazılır.
+   P14 (kullanıcı kararı 29.10.2026): karekodun altında AYNI tek kullanımlık kodu taşıyan "Eşleme Bağlantısı" + "Kopyala" — karekod okuyamayan uzak bilgisayar
+   için; kurallar karekodla aynı. Kod adresin # kısmında (sunucu günlüğüne, Referer'a düşmez). */
 (() => {
   "use strict";
   const HOF = window.HOF;
@@ -57,12 +59,44 @@
   function showCode(result) {
     const until = HOF.formatDateTime(result.expiresAt);
     const body = result.url
-      ? `<div class="adm-mobile-qr" data-mobile-qr>${result.qr}</div><p class="hof-modal-text">${esc(result.user.name)} bu karekodu telefonunun kamerasıyla okutsun; açılan sayfada “Eşleştir”e bassın. Karekod ${result.minutes} dakika (${esc(until)}'e kadar) geçerlidir ve tek kullanımlıktır; yenisi oluşturulunca bu kod geçersiz olur.</p>`
+      ? `<div class="adm-mobile-qr" data-mobile-qr>${result.qr}</div><p class="hof-modal-text">${esc(result.user.name)} bu karekodu telefonunun kamerasıyla okutsun; açılan sayfada “Eşleştir”e bassın. Karekod ${result.minutes} dakika (${esc(until)}'e kadar) geçerlidir ve tek kullanımlıktır; yenisi oluşturulunca bu kod geçersiz olur.</p>
+        <div class="adm-mobile-link"><label class="hof-field"><span>Eşleme Bağlantısı</span><input type="text" readonly data-mobile-link value="${esc(result.url)}" aria-label="Eşleme Bağlantısı"></label><button type="button" class="hof-button hof-button-small" data-mobile-copy>Kopyala</button></div>
+        <p class="hof-modal-text adm-muted">Karekod okuyamayan uzak bilgisayarda bu bağlantıyı tarayıcıda açın; o bilgisayar eşlenir. Kurallar karekodla aynıdır: ${result.minutes} dakika geçerli, tek kullanımlık; bağlantıyı yalnız ${esc(result.user.name)} ile paylaşın.</p>`
       : `<p class="hof-modal-text" data-mobile-no-url>Karekod oluşturuldu (${esc(until)}'e kadar geçerli), ancak uzaktan bağlantı adresi henüz hazır değil. Uzaktan bağlantı açılınca karekod burada görünür.</p>`;
     HOF.modal({ title: "Karekodu Telefonla Okutun", eyebrow: "MOBİL CİHAZ EŞLEME", body, onClose: () => load() });
   }
 
+  // Bağlantıyı panoya kopyala (güvenli olmayan adreste — ofis ağı http — pano erişimi yoksa seçip execCommand ile).
+  async function copyLink(button) {
+    const input = button.closest(".adm-mobile-link")?.querySelector("[data-mobile-link]");
+    if (!input) return;
+    let copied = false;
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(input.value);
+        copied = true;
+      }
+    } catch {
+      copied = false;
+    }
+    if (!copied) {
+      input.focus();
+      input.select();
+      try {
+        copied = document.execCommand("copy");
+      } catch {
+        copied = false;
+      }
+    }
+    HOF.toast(copied ? "Eşleme bağlantısı kopyalandı." : "Kopyalanamadı; bağlantıyı seçip elle kopyalayın.", { type: copied ? "success" : "warn" });
+  }
+
   document.addEventListener("click", async event => {
+    const copyButton = event.target.closest("[data-mobile-copy]");
+    if (copyButton) {
+      await copyLink(copyButton);
+      return;
+    }
     const codeButton = event.target.closest("[data-mobile-code]");
     const deleteButton = event.target.closest("[data-mobile-delete]");
     if (codeButton) {

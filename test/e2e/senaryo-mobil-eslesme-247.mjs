@@ -6,6 +6,8 @@
 //   E2 kutuyu işaretle (tıklama) → izin kaydedilir; Karekod Oluştur → pencerede karekod; karekodun içeriği uzak adres + #eslesme=<kod>.
 //   E3 telefon karekodun adresini açar → "Cihazı Eşleştir" (ad önerili) → Eşleştir → giriş ekranı; kullanıcı adı + Tab + parola → Genel Bakış.
 //      Adres çubuğunda kod kalmaz. Masaüstünde cihaz satırı (ad, kullanıcı, eşleme tarihi, son erişim) ve 1 / 3.
+//   E3b P14 Eşleme Bağlantısı: karekodun altındaki bağlantı = karekodun içeriği; Kopyala panoya yazar; bağlantı uzak bilgisayarın (geniş ekran) tarayıcısında
+//      açılır → eşleşir → giriş → Genel Bakış; masaüstünde "Uzak Tarayıcı" satırı, 2 / 3.
 //   E4 sınır: 3/3 olunca bütün "Karekod Oluştur" düğmeleri pasif, "Cihaz sınırı dolu." ve uyarı yazısı görünür.
 //   E5 Sil (onay penceresi) → satır gider, 2 / 3; telefonda sonraki dokunuş "Cihaz Eşli Değil" (oturum hemen düştü). Telefondan yasak yol (/api/companies) 404.
 //   E6 izni kaldır (onaylı) → kişinin cihazları düşer.
@@ -97,6 +99,7 @@ const readQr = async () => {
 
 const browser = await chromium.launch();
 const deskContext = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+await deskContext.grantPermissions(["clipboard-read", "clipboard-write"], { origin: server.base });
 const phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 }, userAgent: IPHONE, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
 desk = await deskContext.newPage();
 phone = await phoneContext.newPage();
@@ -163,8 +166,50 @@ await step("E3 telefon karekodu açar → Eşleştir → giriş → Genel Bakı�
   await shot("05-cihaz-listesi", desk);
 });
 
+await step("E3b P14 Eşleme Bağlantısı: Kopyala → uzak bilgisayarın tarayıcısında açılır → eşleşir", async () => {
+  await desk.click(`${row("mobil-veli")} [data-mobile-remote]`);
+  await desk.waitForFunction(selector => !document.querySelector(selector)?.disabled, `${row("mobil-veli")} [data-mobile-code]`);
+  await desk.click(`${row("mobil-veli")} [data-mobile-code]`);
+  await desk.waitForSelector(".hof-modal-backdrop.is-visible [data-mobile-link]");
+  const link = await desk.inputValue(".hof-modal-backdrop.is-visible [data-mobile-link]");
+  const fromQr = await readQr();
+  ok(link === fromQr && link.startsWith(`${remoteBase}/mobil/#eslesme=`), "bağlantı karekodun içeriğiyle aynı (kod # kısmında)");
+  ok((await desk.textContent(".hof-modal-backdrop.is-visible .adm-mobile-link")).includes("Eşleme Bağlantısı"), "alan adı Eşleme Bağlantısı");
+  await desk.click(".hof-modal-backdrop.is-visible [data-mobile-copy]");
+  await desk.waitForTimeout(300);
+  const clip = await desk.evaluate(() => navigator.clipboard.readText());
+  ok(clip === link, "Kopyala bağlantıyı panoya yazdı");
+  await shot("05b-baglanti", desk);
+  await desk.keyboard.press("Escape");
+  // Uzak bilgisayar: ayrı tarayıcı (masaüstü imzası, geniş ekran), bağlantı adres çubuğuna yapıştırılmış gibi açılır.
+  const pcContext = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+  const pc = await pcContext.newPage();
+  pc.on("pageerror", error => pageErrors.push(`uzak bilgisayar: ${error.message}`));
+  pc.setDefaultTimeout(15000);
+  await pc.goto(clip);
+  await pc.waitForSelector("#pair-form:not(.hidden)");
+  ok((await pc.inputValue("#device-name")) === "Uzak Tarayıcı", `cihaz adı önerisi: ${await pc.inputValue("#device-name")}`);
+  await pc.click("#pair-submit");
+  await pc.waitForSelector("#login-form:not(.hidden)");
+  await pc.click("#username");
+  await typeSlow(pc, "mobil-veli");
+  await pc.keyboard.press("Tab");
+  await typeSlow(pc, "Veli-Mobil-2026!");
+  await pc.click("#login-submit");
+  await pc.waitForSelector("#app:not(.hidden) #content .summary-grid");
+  ok(await pc.isVisible("#app"), "uzak bilgisayarda Genel Bakış (geniş ekran)");
+  await shot("05c-uzak-bilgisayar", pc);
+  const state = await view();
+  const device = state.devices.find(item => item.username === "mobil-veli");
+  ok(state.used === 2 && device?.kind === "tarayici", `uzak tarayıcı eşlendi (${state.used} / ${state.limit}, ${device?.kindLabel})`);
+  // Aynı bağlantı ikinci kez kullanılamaz (tek kullanım).
+  const again = await createPhone(remoteBase).pair(new URL(clip).hash.slice("#eslesme=".length));
+  ok(again.code === "remote-code", `bağlantı tek kullanımlık (${again.code})`);
+  await pcContext.close();
+});
+
 await step("E4 sınır 3/3: karekod düğmeleri pasif, neden ve uyarı görünür", async () => {
-  for (const username of ["mobil-veli", "mobil-ayse"]) {
+  for (const username of ["mobil-ayse"]) {
     await adminApi.put(`/api/admin/mobile/access/${ids[username]}`, { remote: true });
     const code = await adminApi.post("/api/admin/mobile/codes", { userId: ids[username] });
     const other = createPhone(remoteBase, { name: `${username} tableti`, kind: "tablet" });

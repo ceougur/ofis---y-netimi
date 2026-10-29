@@ -12,6 +12,10 @@ göç v38, `client/assets/hof-mobile-devices.js` (Yönetim → Mobil Cihazlar), 
    nedeni görünür yazıyla ("3 cihazın hepsi eşli; önce birini silin").
 2. **Karekod** (P1 5 dk, P2 kişinin önceki kodu iptal): 128 bit rastgele kod; veri tabanında yalnız SHA-256 karması. Karekodun içeriği
    `<uzak adres>/mobil/#eslesme=<kod>` — kod adresin **#** kısmında: tarayıcı onu sunucuya, vekile, günlüğe göndermez.
+   **P14 (kullanıcı kararı 29.10.2026):** karekodun altında AYNI kodu taşıyan **Eşleme Bağlantısı** + **Kopyala** — karekod okuyamayan uzak bilgisayar
+   için; bağlantı o bilgisayarın tarayıcısında açılınca cihaz anahtarı orada üretilir, o bilgisayar "Uzak Tarayıcı" olarak eşlenir (sonra mobil arayüzün
+   geniş ekran düzeni). Kurallar karekodla birebir aynı (P1–P4: tek kod, tek uç). BAŞ MİMAR KARARI: kod bağlantıda da `#` kısmında (sunucu günlüğüne,
+   vekile, Referer'a düşmez); bağlantı yalnız o kişiyle paylaşılmalı (5 dk; ele geçse de parolasız giriş olmaz).
 3. **Telefon** karekodu okur, sayfa açılır; WebCrypto ile **dışa aktarılamaz** ECDSA P-256 anahtar çifti üretir (IndexedDB'de saklanır),
    `POST /api/mobil/eslesme` { kod, cihaz adı, tür, açık anahtar (JWK) }. Sunucu tek işlemde (SQLite, eşzamanlı son yer tek kazanır):
    lisans → kod (var, etkin, süresi dolmamış) → kullanıcının uzak izni → sınır (P3 doluysa REDDET, kod harcanmaz) → cihaz kaydı + kodu
