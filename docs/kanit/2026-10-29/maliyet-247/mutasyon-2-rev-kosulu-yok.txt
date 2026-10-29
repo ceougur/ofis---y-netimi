@@ -1,0 +1,151 @@
+TAP version 13
+# Subtest: 2.4.7 Maliyet Hesap Kartı: şablon — oranlar boş, etiketlerde sayı yok, Toplam
+    # Subtest: Cam kartları: KDV ve Maliyet kutuları boş, etiketler "KDV" / "Maliyet", toplama "Toplam"; bölenler değişmedi
+    ok 1 - Cam kartları: KDV ve Maliyet kutuları boş, etiketler "KDV" / "Maliyet", toplama "Toplam"; bölenler değişmedi
+      ---
+      duration_ms: 1.480561
+      type: 'test'
+      ...
+    # Subtest: Mika kartları: Masraf% ve Maliyet kutuları boş, etiketlerde sayı yok; toplama "Toplam" (yan panel "Genel"); bölenler değişmedi
+    ok 2 - Mika kartları: Masraf% ve Maliyet kutuları boş, etiketlerde sayı yok; toplama "Toplam" (yan panel "Genel"); bölenler değişmedi
+      ---
+      duration_ms: 0.66061
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.4.7 Maliyet Hesap Kartı: şablon — oranlar boş, etiketlerde sayı yok, Toplam
+  ---
+  duration_ms: 2.96691
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 Maliyet Hesap Kartı: API
+    # Subtest: yeni kart: oran kutuları boş, boşken oran 0 sayılır (NaN / hata yok); oran yazılınca zincir kuralı
+    ok 1 - yeni kart: oran kutuları boş, boşken oran 0 sayılır (NaN / hata yok); oran yazılınca zincir kuralı
+      ---
+      duration_ms: 24.569541
+      type: 'test'
+      ...
+    # Subtest: güncelleme: 2.4.6'da kurulmuş HİÇ kaydedilmemiş kart yeni ilk hâle döner; kullanıcının kaydettiği kart (18 / 20) değişmez; rev artmaz; ikinci açılış bir şey yapmaz
+    not ok 2 - güncelleme: 2.4.6'da kurulmuş HİÇ kaydedilmemiş kart yeni ilk hâle döner; kullanıcının kaydettiği kart (18 / 20) değişmez; rev artmaz; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 12.907495
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/maliyet247-mutasyon/test/maliyet-247.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kullanıcının kaydettiği kart AYNEN (18 / 20, eski etiketler)
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            [
+              'ara',
+              'Ara',
+              null
+        ...
+              'yuzde',
+        +     'KDV',
+        +     null
+        -     'KDV/18',
+        -     18
+            ],
+            [
+              'toplama',
+        +     'Toplam',
+        -     '',
+              null
+            ],
+            [
+              'yuzde_ekle',
+        +     'Maliyet',
+        +     null
+        -     '%20 Maliyet',
+        -     20
+            ],
+            [
+              'bolme',
+              'Köşe Kabin CM Maliyeti',
+              200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'ara'
+          1: 'Ara'
+          2: ~
+        1:
+          0: 'yuzde'
+          1: 'KDV/18'
+          2: 18
+        2:
+          0: 'toplama'
+          1: ''
+          2: ~
+        3:
+          0: 'yuzde_ekle'
+          1: '%20 Maliyet'
+          2: 20
+        4:
+          0: 'bolme'
+          1: 'Köşe Kabin CM Maliyeti'
+          2: 200
+      actual:
+        0:
+          0: 'ara'
+          1: 'Ara'
+          2: ~
+        1:
+          0: 'yuzde'
+          1: 'KDV'
+          2: ~
+        2:
+          0: 'toplama'
+          1: 'Toplam'
+          2: ~
+        3:
+          0: 'yuzde_ekle'
+          1: 'Maliyet'
+          2: ~
+        4:
+          0: 'bolme'
+          1: 'Köşe Kabin CM Maliyeti'
+          2: 200
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/maliyet247-mutasyon/test/maliyet-247.test.mjs:116:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: PDF: dört sekme; başlık sekmenin adı, kart adları ve ekrandaki (kaydedilmemiş) değer; hiçbir şey yazılmaz
+    ok 3 - PDF: dört sekme; başlık sekmenin adı, kart adları ve ekrandaki (kaydedilmemiş) değer; hiçbir şey yazılmaz
+      ---
+      duration_ms: 112.572175
+      type: 'test'
+      ...
+    # Subtest: PDF yetkisi: maliyet.view yoksa 403; görüntüleme yetkisi yeter (düzenleme gerekmez); sektör dışında 403
+    ok 4 - PDF yetkisi: maliyet.view yoksa 403; görüntüleme yetkisi yeter (düzenleme gerekmez); sektör dışında 403
+      ---
+      duration_ms: 133.514865
+      type: 'test'
+      ...
+    1..4
+not ok 2 - 2.4.7 Maliyet Hesap Kartı: API
+  ---
+  duration_ms: 614.991535
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/maliyet247-mutasyon/test/maliyet-247.test.mjs:52:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 5
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 923.669607

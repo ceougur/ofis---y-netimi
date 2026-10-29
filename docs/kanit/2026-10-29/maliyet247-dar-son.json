@@ -1,0 +1,32 @@
+{
+  "ad": "maliyet247-dar-son",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/maliyet-247.test.mjs test/maliyet-bagsizlik.test.mjs test/maliyet-cekirdek-246.test.mjs test/yazim-duzeni.test.mjs test/banka-210-arayuz.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/disa-aktarim-dugmeleri.test.mjs test/kapi-para-245.test.mjs test/personel-ozluk-244.test.mjs test/tablo-hucre-bicim.test.mjs test/yetki-gorunurluk.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs",
+  "commit": "c13d57e9e893e35c2a39706f9246702fd0010703",
+  "dal": "is/maliyet-247",
+  "kirli": 9,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T03:33:54.586Z",
+  "sure_sn": 14.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 156,
+    "gecen": 156,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/maliyet247-dar-son.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/maliyet247-calisma",
+  "ham_cikti_sha256": "5a3ef3af0ecc55fb083718d8a577d8fdc5495ffd5ba6e2c690e9f4de5e08bc53",
+  "ham_cikti_bayt": 52609
+}

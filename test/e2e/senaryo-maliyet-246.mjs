@@ -11,8 +11,11 @@
 //   M12 yetkisiz (Personel; maliyet.view yok) → giriş yok, API 403; görüntüleme verilince salt okunur (girdi, ✎, Kaydet yok).
 //   M13 dar pencere (1366 px) + büyük tutar → kart taşmaz.
 //   M14 başka sektöre geç → giriş kaybolur, veri durur (veri tabanı); Duşakabin'e dönünce aynen.
+// 2.4.7 müşteri istekleri (28.10.2026): M3b oran kutuları boş, etiketler "KDV" / "Toplam" / "Maliyet" (Mika "Masraf%"), kutu önünde yalnız "%"; M4 oranları
+//   kullanıcı yazar (18 / 20); M15 Enter → odak sağdaki kutuya / alt satırın ilkine / kartın sonunda yerinde, her Enter tek düzenleme; M16 dört sekmede "PDF"
+//   (ekrandaki kaydedilmemiş değer PDF'te, veri tabanına yazılmaz).
 // Pencere seçicisi ders 39; soru yanıtları ders 34 (escClose günlüğü ESC_KAPAT_GUNLUK, varsayılan ekran klasöründe). Çıkış: "N geçti, M kaldı" (kaldıysa 1).
-import { appendFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,6 +23,7 @@ import { chromium } from "playwright";
 import { CURRENT, bootVersion } from "../guvenilirlik/surumler.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
 import { escClose } from "./esc-kapat.mjs";
+import { pdfText } from "../pdf-metin.mjs";
 
 const root = mkdtempSync(path.join(tmpdir(), "senaryo-maliyet-246-"));
 const shots = process.env.EKRAN_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-maliyet-246");
@@ -207,6 +211,33 @@ try {
     await shot("m3-cam");
   });
 
+  // 2.4.7 (müşteri isteği 28.10.2026): oran kutuları BOŞ gelir, etiketlerde sayı yok; toplama adımı "Toplam" (Cam ve Mika).
+  await step("M3b 2.4.7 yeni kart: iki oran kutusu boş, etiketler KDV / Toplam / Maliyet (Mika Masraf% / Toplam / Maliyet), kutu önünde yalnız %", async () => {
+    const oku = async kart => page.$eval(`${ROOT} [data-kart="${kart}"]`, node => {
+      const adim = kod => node.querySelector(`[data-adim="${kod}"]`);
+      const etiket = kod => JSON.parse(adim(kod)?.querySelector('[data-alan="etiket"]')?.dataset.deger ?? "null");
+      const kutu = kod => adim(kod)?.querySelector('input[data-alan="oran"]');
+      const param = kod => adim(kod)?.querySelector(".hof-maliyet-param")?.textContent.trim();
+      return { etiket: ["yuzde", "toplama", "yuzde_ekle"].map(etiket), kutu: ["yuzde", "yuzde_ekle"].map(kod => [kutu(kod)?.value, JSON.parse(kutu(kod)?.dataset.deger ?? '"yok"')]), param: ["yuzde", "yuzde_ekle"].map(param), toplamaYazi: adim("toplama")?.querySelector(".hof-maliyet-adim-ad")?.textContent.replace(/✎/g, "").trim(), sonuc: JSON.parse(node.dataset.sonuc) };
+    });
+    const cam = await oku("cam/170-2s2c-h182");
+    ok(JSON.stringify(cam.etiket) === JSON.stringify(["KDV", "Toplam", "Maliyet"]) && cam.toplamaYazi === "Toplam", `Cam etiketleri ${JSON.stringify(cam.etiket)} (ekranda “${cam.toplamaYazi}”, “—” yok)`);
+    ok(JSON.stringify(cam.kutu) === JSON.stringify([["", null], ["", null]]), `Cam iki oran kutusu boş ${JSON.stringify(cam.kutu)}`);
+    ok(JSON.stringify(cam.param) === JSON.stringify(["%", "%"]) && cam.sonuc === 0, `kutunun önünde yalnız “%” ${JSON.stringify(cam.param)}; boş kartta sonuç 0`);
+    await page.click(`${ROOT} [data-sekme="mika"]`);
+    await page.waitForSelector(`${ROOT} [data-kart="mika/170-2s2c-h182"]`);
+    await page.waitForTimeout(200);
+    const mika = await oku("mika/170-2s2c-h182");
+    ok(JSON.stringify(mika.etiket) === JSON.stringify(["Masraf%", "Toplam", "Maliyet"]) && JSON.stringify(mika.kutu) === JSON.stringify([["", null], ["", null]]) && JSON.stringify(mika.param) === JSON.stringify(["%", "%"]), `Mika: ${JSON.stringify(mika)}`);
+    const sayili = await page.$$eval(`${ROOT} [data-adim="yuzde"] [data-alan="etiket"], ${ROOT} [data-adim="yuzde_ekle"] [data-alan="etiket"], ${ROOT} [data-adim="toplama"] [data-alan="etiket"]`, nodes => nodes.map(node => node.textContent.trim()).filter(text => /\d|^—$/.test(text)));
+    ok(sayili.length === 0, `Mika'da hiçbir oran / toplama etiketinde sayı ya da “—” yok${sayili.length ? `: ${sayili.join(", ")}` : ""}`);
+    await shot("m3b-mika-oranlar-bos");
+    await page.click(`${ROOT} [data-sekme="cam"]`);
+    await page.waitForSelector(CARD);
+    await page.waitForTimeout(200);
+    await shot("m3b-cam-oranlar-bos");
+  });
+
   // Kâhin (Excel kalıbı, formül tablosu §2): tutar = miktar × fiyat; ARA = Σ; yüzde = (ARA × p) / 100; toplama = ARA + yüzde; yüzde ekle = ((T × q) / 100) + T; bölme = Y / k.
   const zincir = (satirlar, p, q, k) => {
     const ara = satirlar.reduce((sum, [m, f]) => sum + m * f, 0);
@@ -222,14 +253,18 @@ try {
     await typeField(`${row("s2")} input[data-alan="miktar"]`, "3");
     await typeSlow("100");
     await page.keyboard.press("Tab");
+    // 2.4.7: oranlar boş gelir; kullanıcı Excel'deki oranları kendisi yazar (girdi; beklenen hesap aynı).
+    await typeField(`${CARD} [data-adim="yuzde"] input[data-alan="oran"]`, "18");
+    await typeField(`${CARD} [data-adim="yuzde_ekle"] input[data-alan="oran"]`, "20");
     await settle();
+    ok((await deger(`${CARD} [data-adim="yuzde"] [data-alan="oran"]`)) === 18 && (await deger(`${CARD} [data-adim="yuzde_ekle"] [data-alan="oran"]`)) === 20 && (await deger(`${CARD} [data-adim="yuzde"] [data-alan="etiket"]`)) === "KDV", "oranlar yazıldı (18 / 20); etiket değişmedi");
     ok((await deger(`${row("s1")} [data-alan="miktar"]`)) === 2.5 && (await deger(`${row("s1")} [data-alan="fiyat"]`)) === 1250.75, "“2,5” → 2,5 ve “1.250,75” → 1250,75 (Türkçe sayı, binlik)");
     const want = zincir([[2.5, 1250.75], [3, 100]], 18, 20, 200);
     const got = { tutar: await deger(`${row("s1")} [data-alan="tutar"]`), ara: await deger(`${CARD} [data-adim="ara"] [data-alan="deger"]`), yuzde: await deger(`${CARD} [data-adim="yuzde"] [data-alan="deger"]`), toplama: await deger(`${CARD} [data-adim="toplama"] [data-alan="deger"]`), ekle: await deger(`${CARD} [data-adim="yuzde_ekle"] [data-alan="deger"]`), bolme: await deger(`${CARD} [data-adim="bolme"] [data-alan="deger"]`) };
     ok(near(got.tutar, 2.5 * 1250.75) && near(got.ara, want.ara) && near(got.yuzde, want.yuzde) && near(got.toplama, want.toplama) && near(got.ekle, want.ekle) && near(got.bolme, want.bolme), `canlı hesap Excel kalıbıyla aynı: ${JSON.stringify(got)} (beklenen bölme ${want.bolme})`);
     ok((await text(`${row("s1")} [data-alan="tutar"]`)) === "3.126,88" && (await text(`${CARD} [data-adim="bolme"] [data-alan="deger"]`)) === "24,26", `gösterim kuruşla, binlik ayırıcılı (${await text(`${row("s1")} [data-alan="tutar"]`)} · ${await text(`${CARD} [data-adim="bolme"] [data-alan="deger"]`)})`);
     ok((await page.$eval(`${row("s1")} input[data-alan="fiyat"]`, node => node.value)) === "1.250,75", "fiyat alanı binlik ayırıcıyla gösterilir");
-    ok(rows(OVAL)[0].miktar === null && cardRow(OVAL).rev === 1, "Kaydet'ten önce veri tabanı değişmedi (miktar boş, rev 1)");
+    ok(rows(OVAL)[0].miktar === null && cardRow(OVAL).rev === 1 && stepRow(OVAL, "yuzde").deger === null, "Kaydet'ten önce veri tabanı değişmedi (miktar ve oran boş, rev 1)");
     await shot("m4-canli-hesap");
   });
 
@@ -289,6 +324,7 @@ try {
     const added = saved.find(item => item.id === newId);
     ok(added && added.ad === "Silikon" && added.birim === "Tüp" && added.miktar === 4 && added.fiyat === 25, "eklenen satır veri tabanında");
     ok(!saved.some(item => item.id === "s7"), "silinen satır veri tabanında yok");
+    ok(stepRow(OVAL, "yuzde").deger === 18 && stepRow(OVAL, "yuzde_ekle").deger === 20 && stepRow(OVAL, "yuzde").etiket === "KDV", "yazılan oranlar veri tabanında (18 / 20), etiket KDV");
     ok(db.get("SELECT COUNT(*) AS n FROM maliyet_satirlar WHERE kart = 'cam/100x100-kose-kabin' AND miktar IS NOT NULL").n === 0, "öbür kart değişmedi (yalıtım)");
     ok((await page.$(`${WIN} [data-maliyet][data-kirli="0"]`)) !== null, "kaydedildikten sonra pencere temiz");
   });
@@ -448,6 +484,79 @@ try {
     ok(JSON.stringify(after.kartlar) === JSON.stringify(before.kartlar), "Duşakabin'e dönünce bütün kartlar aynen");
     await openStock();
     ok(await entryVisible(), "giriş yeniden VAR");
+  });
+
+  // 2.4.7 (müşteri isteği 28.10.2026: "Entera basınca sağa atlarsa iyi olur"): Enter alanı kaydeder ve odak aynı kartta sonraki kutuya geçer; satır
+  // sonunda alt satırın ilk kutusu; kartın son kutusunda odak yerinde (BAŞ MİMAR KARARI). Gerçek klavye, insan hızı (ders 12); her Enter TEK düzenleme.
+  const C2 = `${ROOT} [data-kart="cam/170-2s2c-h182"]`;
+  const odak = () => page.evaluate(() => {
+    const el = document.activeElement;
+    return { kart: el?.closest("[data-kart]")?.dataset.kart || "", satir: el?.closest("[data-satir]")?.dataset.satir || "", adim: el?.closest("[data-adim]")?.dataset.adim || "", alan: el?.dataset?.alan || "", tag: el?.tagName || "" };
+  });
+  const duzenlemeSayisi = () => page.$eval(ROOT, node => Number(node.dataset.duzenleme || 0));
+  const enter = async (yazi, beklenen, neden) => {
+    if (yazi !== null) await typeSlow(yazi);
+    const once = await duzenlemeSayisi();
+    await page.keyboard.press("Enter");
+    await settle();
+    await page.waitForTimeout(150);
+    await settle();
+    const now = await odak();
+    const sayi = (await duzenlemeSayisi()) - once;
+    ok(Object.entries(beklenen).every(([key, value]) => now[key] === value) && sayi === 1, `${neden}: odak ${JSON.stringify(now)}; düzenleme ${sayi}`);
+  };
+  await step("M15 Enter: alanı kaydeder, odak sağdaki kutuya; satır sonunda alt satırın ilk kutusu; kartın son kutusunda yerinde", async () => {
+    await closeAll();
+    await openCard();
+    await page.click(`${C2} tbody tr[data-satir="s1"] input[data-alan="miktar"]`);
+    await page.keyboard.press("Control+A");
+    await page.keyboard.press("Backspace");
+    await enter("2", { kart: "cam/170-2s2c-h182", satir: "s1", alan: "fiyat" }, "Miktar'da Enter → aynı satırın Birim Fiyat'ı");
+    ok((await deger(`${C2} tbody tr[data-satir="s1"] [data-alan="miktar"]`)) === 2, "Enter yazılanı kaydetti (miktar 2)");
+    await enter("10", { kart: "cam/170-2s2c-h182", satir: "s2", alan: "birim" }, "satırın son kutusunda Enter → alt satırın ilk kutusu (Birim)");
+    ok((await deger(`${C2} tbody tr[data-satir="s1"] [data-alan="tutar"]`)) === 20, "s1 tutar 2 × 10 = 20 (canlı hesap)");
+    await enter(null, { kart: "cam/170-2s2c-h182", satir: "s2", alan: "miktar" }, "değişmemiş kutuda Enter → sağdaki (Miktar)");
+    await page.click(`${C2} tbody tr[data-satir="s7"] input[data-alan="fiyat"]`);
+    await enter("1", { kart: "cam/170-2s2c-h182", adim: "yuzde", alan: "oran" }, "son malzeme satırının son kutusunda Enter → KDV oranı");
+    await enter("18", { kart: "cam/170-2s2c-h182", adim: "yuzde_ekle", alan: "oran" }, "KDV oranında Enter → Maliyet oranı");
+    await enter("20", { kart: "cam/170-2s2c-h182", adim: "bolme", alan: "bolen" }, "Maliyet oranında Enter → Bölen");
+    await enter(null, { kart: "cam/170-2s2c-h182", adim: "bolme", alan: "bolen" }, "kartın son kutusunda Enter → odak yerinde");
+    const ara = 2 * 10;
+    const toplama = ara + (ara * 18) / 100;
+    ok(near(await deger(`${C2} [data-adim="bolme"] [data-alan="deger"]`), ((toplama * 20) / 100 + toplama) / 170), "oranlar Enter ile girildi, CM maliyeti Excel kalıbıyla");
+    ok(db.get("SELECT COUNT(*) AS n FROM maliyet_satirlar WHERE kart = 'cam/170-2s2c-h182' AND miktar IS NOT NULL").n === 0, "Enter kaydetmez (yalnız taslak; veri tabanı boş)");
+    await shot("m15-enter");
+    await escClose(page, { expect: "soru-var", step: "M15 Enter ile girilen taslak" });
+    await page.waitForFunction(sel => !document.querySelector(sel), ROOT);
+  });
+
+  // 2.4.7 (müşteri isteği 28.10.2026: "4 menüye de yazdır butonu isteriz PDF'ye aktarım yani"): her sekmede "PDF"; ekrandaki değerlerle (kaydedilmemiş dahil).
+  await step("M16 dört sekmede PDF: başlık sekmenin adı, ekrandaki (kaydedilmemiş) değer; hiçbir şey yazılmaz", async () => {
+    await openCard();
+    await typeField(`${row("s2")} input[data-alan="fiyat"]`, "4.321,5");
+    await settle();
+    const dbOnce = JSON.stringify(rows(OVAL));
+    const server = await must("maliyet", api.get("/api/maliyet"));
+    const ad = Object.fromEntries(server.sekmeler.map(sekme => [sekme.kod, sekme.ad]));
+    const beklenen = { cam: ["Oval Kabin Özel", "4.321,5", "KDV", "Toplam", "Maliyet"], "liste-1": ["Seri 2 Sabit 2 Açılır", "Katlanır Kapı Siyah Alüminyüm"], mika: ["Profil Ağırlıkları Net", "Masraf%", "80'lik Yan Panel"], "liste-2": ["Seri Yan Panel", "Montaj Satırları"] };
+    for (const kod of ["cam", "liste-1", "mika", "liste-2"]) {
+      await page.click(`${ROOT} [data-sekme="${kod}"]`);
+      await page.waitForSelector(`${ROOT} [data-sekme-kartlar="${kod}"]`);
+      await page.waitForTimeout(200);
+      const dugme = await page.$eval(`${ROOT} [data-maliyet-pdf]`, node => ({ text: node.textContent.trim(), title: node.title, aria: node.getAttribute("aria-label"), ortak: node.matches(".hof-rep-out.is-pdf"), kod: node.dataset.maliyetPdf }));
+      ok(dugme.text === "PDF" && dugme.ortak && dugme.kod === kod && dugme.aria === `${ad[kod]} - PDF` && dugme.title.startsWith(`${ad[kod]} sekmesini PDF olarak indir`), `${ad[kod]}: düğme “${dugme.text}” (ortak PDF düğmesi ${dugme.ortak}), erişilebilir ad “${dugme.aria}”, ipucu “${dugme.title}”`);
+      const [download] = await Promise.all([page.waitForEvent("download", { timeout: 20000 }), page.click(`${ROOT} [data-maliyet-pdf]`)]);
+      const buffer = readFileSync(await download.path());
+      const metin = pdfText(buffer);
+      const eksik = [ad[kod], ...beklenen[kod]].filter(parca => !metin.includes(parca));
+      ok(buffer.subarray(0, 5).toString("latin1") === "%PDF-" && eksik.length === 0 && download.suggestedFilename().startsWith(ad[kod]), `${ad[kod]} PDF (${download.suggestedFilename()}, ${buffer.length} bayt)${eksik.length ? ` — eksik: ${eksik.join(", ")}` : ""}`);
+    }
+    ok(JSON.stringify(rows(OVAL)) === dbOnce && rows(OVAL)[1].fiyat === 100, "PDF hiçbir şey yazmadı (taslaktaki 4.321,5 veri tabanında yok)");
+    await page.click(`${ROOT} [data-sekme="cam"]`);
+    await page.waitForSelector(CARD);
+    await shot("m16-pdf");
+    await escClose(page, { expect: "soru-var", step: "M16 PDF'ten sonra kaydedilmemiş taslak" });
+    await page.waitForFunction(sel => !document.querySelector(sel), ROOT);
   });
 
   ok(!errors.length, `sayfa hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);

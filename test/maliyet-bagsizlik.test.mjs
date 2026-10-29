@@ -66,7 +66,8 @@ describe("2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)", () => 
   });
 
   it("maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)", () => {
-    const allowed = new Set(["../http.mjs", "./sablon.mjs", "./hesap.mjs", "./girdi.mjs", "../lib/http.mjs", "../lib/insight/sectors.mjs", "../lib/maliyet/depo.mjs", "../lib/clock.mjs"]);
+    // 2.4.7: sekme PDF'i programın PDF yazıcısıyla (../pdf-write.mjs) ve rapor başlığıyla (Tabela Adı / firma adı; ../lib/report-header.mjs) — para modülü değil.
+    const allowed = new Set(["../http.mjs", "./sablon.mjs", "./hesap.mjs", "./girdi.mjs", "../lib/http.mjs", "../lib/insight/sectors.mjs", "../lib/maliyet/depo.mjs", "../lib/clock.mjs", "../pdf-write.mjs", "../lib/maliyet/pdf.mjs", "../lib/report-header.mjs"]);
     const found = [];
     for (const file of moduleFiles()) {
       const src = code(read(file));

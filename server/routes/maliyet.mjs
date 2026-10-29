@@ -10,11 +10,14 @@
 //   GET  /api/maliyet/durum   → { acik, sektor: { id, ad }, canManage }                         (sektörden bağımsız; ekran düğmeyi buna göre gösterir)
 //   GET  /api/maliyet         → { sekmeler: [{ kod, ad, rev, kartlar: [kod] }], kartlar: { kod: görünüm }, canManage }   (ilk açılışta şablon kurulur)
 //   POST /api/maliyet/onizle  → { kartlar: { kod: görünüm } }        gövde Kaydet'inkiyle aynı; hiçbir şey yazılmaz (canlı hesap)
+//   POST /api/maliyet/pdf     → PDF (2.4.7)   gövde { sekme, kartlar?, sekmeler? } (ekrandaki taslak); bir sekmenin kartları ekrandaki değerlerle; yazılmaz
 //   PUT  /api/maliyet         → { degisen: { kartlar, sekmeler }, sekmeler, kartlar }   gövde { sekmeler?: [{ kod, rev, ad }], kartlar: [{ kod, rev, …değişiklik }] }
 // Hatalar: 400 maliyet-invalid / maliyet-bolen ("Bölen 0 olamaz."), 403 maliyet-sector, 404 maliyet-missing, 409 maliyet-stale.
-import { HttpError, ok, readJson } from "../lib/http.mjs";
+import { HttpError, ok, readJson, sendBuffer } from "../lib/http.mjs";
 import { sectorById } from "../lib/insight/sectors.mjs";
 import { createMaliyetDepo } from "../lib/maliyet/depo.mjs";
+import { maliyetPdf } from "../lib/maliyet/pdf.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
 import { systemClock } from "../lib/clock.mjs";
 
 const BASE = "/api/maliyet";
@@ -22,6 +25,8 @@ export const MALIYET_SEKTOR = "dusakabin";
 
 export function registerMaliyetRoutes(router, { auth, store, audit, events, access, profile, now = systemClock }) {
   const depo = createMaliyetDepo({ store, now: () => (typeof now === "function" ? now() : new Date()) });
+  // PDF başlığı rapor PDF'leri gibi Tabela Adı ayarından (2.4.5 madde 6c); yalnız firma adı okunur.
+  const header = createReportHeader({ store });
   const sektor = () => {
     const current = profile.profile().sector;
     return { id: current.id, ad: current.name, acik: Boolean(sectorById(current.id)?.modules?.maliyet) };
@@ -60,6 +65,18 @@ export function registerMaliyetRoutes(router, { auth, store, audit, events, acce
     viewer(req);
     const body = await readJson(req, { limit: 2_000_000 });
     ok(res, depo.onizle(body));
+  });
+
+  router.post(`${BASE}/pdf`, async ({ req, res }) => {
+    const user = viewer(req);
+    const body = await readJson(req, { limit: 2_000_000 });
+    const { ad, kartlar } = depo.pdfVerisi(body, body?.sekme);
+    const at = typeof now === "function" ? now() : new Date();
+    const pdf = maliyetPdf({ sekme: ad, kartlar, userName: user.display_name || user.username || "", now: at, ...header.pdf({ brand: store.setting("office.name", "") }) });
+    // Değer yazılmaz (müşterinin maliyet / fiyat bilgisi işlem geçmişine çıkmaz); yalnız hangi sekme.
+    audit(user, "maliyet.pdf", "maliyet", { sekme: String(body?.sekme || "").slice(0, 40) });
+    const pad = value => String(value).padStart(2, "0");
+    sendBuffer(res, pdf, { type: "application/pdf", name: `${ad} ${pad(at.getDate())}.${pad(at.getMonth() + 1)}.${at.getFullYear()}.pdf` });
   });
 
   router.put(BASE, async ({ req, res }) => {
