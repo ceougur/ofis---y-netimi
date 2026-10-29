@@ -14,7 +14,7 @@ import { Readable } from "node:stream";
 import { HttpError, REMOTE_REQUEST, REMOTE_SESSION, parseCookies } from "./http.mjs";
 import { DEVICE_COOKIE, REMOTE_ERRORS, publicKeyOf } from "./mobile-remote.mjs";
 import { captureResponse } from "./mobile.mjs";
-import { isaretDogrula, kapiIstemcisi, kayitZamani, ofisKaydi, ozetPaketle, sonrakiSira } from "./mobile-ozet.mjs";
+import { isaretDogrula, kapiIstemcisi, kayitKabul, kayitZamani, ofisKaydi, ozetPaketle, sonrakiSira } from "./mobile-ozet.mjs";
 import { KAPI_KURALLARI, trGunu } from "./kapi-protokol.mjs";
 
 export const OZET_KURALLARI = Object.freeze({
@@ -35,6 +35,10 @@ export function yazmaTuru(method, pathname) {
   if (method === "GET" || method === "HEAD" || !pathname.startsWith("/api/")) return null;
   // Karekod üretmek görünen veriyi ve cihaz listesini değiştirmez (eşleme ayrıca tetikler) → yüklemez.
   if (/^\/api\/(auth|public|health)(\/|$)/.test(pathname) || /^\/api\/mobil\/session(\/|$)/.test(pathname) || /^\/api\/admin\/mobile\/codes(\/|$)/.test(pathname)) return null;
+  // B5 (2.4.7 bağımsız gözden geçirme): masaüstünde şirket SEÇMEK (kişinin görünümü; veri/yetki değişmez), elle lisans denetimi ve deneme iletişim bilgisi
+  // özeti değiştirmez → yüklemez (her biri tam yükleme doğurup kapıcının günlük sınırını dolduruyordu). Lisans belirteci yenilendiyse zamanlayıcı turu yalnız
+  // kapıcı kaydını gönderir (turAt). Şirket ERİŞİMİ, şirket oluşturma/silme/sıfırlama/ayırma ve lisans etkinleştirme güvenlik olarak kalır.
+  if (pathname === "/api/companies/select" || /^\/api\/license\/(check|contact)$/.test(pathname)) return null;
   if (/^\/api\/(admin\/(users|roles|mobile)|companies|license)(\/|$)/.test(pathname) || pathname === "/api/mobil/eslesme") return "guvenlik";
   return "veri";
 }
@@ -51,7 +55,28 @@ export function yazmaTuru(method, pathname) {
 export function createMobileSync({ store, license, mobileRemote, dispatch, clock, kapi = {}, fetchImpl = (...a) => globalThis.fetch(...a), log = console, otomatik = true }) {
   const url = String(kapi.url || "");
   const enabled = Boolean(url);
-  const istemci = enabled ? kapiIstemcisi({ url, fetchImpl, simdi: () => clock.ms(), kayitSimdi: () => kayitZamani(store, clock.ms()) }) : null;
+  // B2b: kapıcı yanıtlarının HTTP Date başlığından ölçülen saat farkı (kapıcı − bu bilgisayar). Program kapıcıya giden imza zamanlarını ve kapıcının işaretini
+  // (x-do-kapi) doğrularken bu farkla düzeltilmiş saati kullanır; Yönetim → Mobil Cihazlar farkı gösterir. Başlık 1 sn çözünürlüklüdür: |fark| < 2 sn ölçüm
+  // payıdır (düzeltme yok). Başlık hiç gelmezse fark 0 kalır (düzeltme yok).
+  const saat = { farkMs: 0, olcumMs: null };
+  const kapiSaati = () => clock.ms() + saat.farkMs;
+  const saatOlc = tarihMs => {
+    const ham = clock.ms();
+    saat.farkMs = Math.abs(tarihMs - ham) < 2_000 ? 0 : tarihMs + 500 - ham;
+    saat.olcumMs = ham;
+  };
+  // B2: kayıt zamanı yalnız kapıcı kabul edince kalıcı yazılır; bellekte son verilen (eşzamanlı iki kayıt aynı zamanı almasın; ileri değer kırpılır).
+  let sonVerilenKayit = 0;
+  const istemci = enabled
+    ? kapiIstemcisi({
+        url,
+        fetchImpl,
+        simdi: kapiSaati,
+        kayitSimdi: () => (sonVerilenKayit = kayitZamani(store, kapiSaati(), sonVerilenKayit)),
+        kayitKabul: ms => kayitKabul(store, ms),
+        saatOlc,
+      })
+    : null;
   let ofis = null;
   let hazir = null;
   const durum = { son: null, kayit: null, kirliIlk: null, kirliSon: null, veriGun: "", veriSayisi: 0, sonVeri: 0, sonKayitImzasi: "", bekleyenGuvenlik: false };
@@ -151,8 +176,10 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     const liste = [...cihazlar().map(d => ({ id: d.id, anahtar: d.publicKey })), ...ekCihazlar];
     const imza = JSON.stringify([lisans.payload, liste.map(d => d.id)]);
     if (!zorla && imza === durum.sonKayitImzasi) return { ok: true, data: durum.kayit, onceden: true };
+    const farkOnce = saat.farkMs;
     let sonuc = await istemci.kayit(ofis, { lisans, cihazlar: liste });
-    // Kapıcının saati farklıysa (ağ gecikmesi değil, saat kayması) bir kez yinelenmez: program saati gerçek saattir; hata durumda kalır.
+    // B2b: kapıcı "saat uyuşmuyor" dediyse ve yanıtının Date başlığı yeni bir fark gösterdiyse düzeltilmiş saatle bir kez yinelenir.
+    if (sonuc.code === "kapi-zaman" && saat.farkMs !== farkOnce) sonuc = await istemci.kayit(ofis, { lisans, cihazlar: liste });
     if (sonuc.code === "kapi-yaris" || sonuc.code === "kapi-sira") sonuc = await istemci.kayit(ofis, { lisans, cihazlar: liste });
     if (sonuc.ok) {
       durum.sonKayitImzasi = imza;
@@ -298,7 +325,7 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
       delete req.headers["x-do-kapi"];
       if (!enabled) return false;
       if (!ofis) return true;
-      const checked = isaretDogrula(header, { yontem: req.method === "HEAD" ? "GET" : req.method, yolSorgu: String(req.url || "/"), sir: ofis.sir, simdi: clock.ms() });
+      const checked = isaretDogrula(header, { yontem: req.method === "HEAD" ? "GET" : req.method, yolSorgu: String(req.url || "/"), sir: ofis.sir, simdi: kapiSaati() });
       const cookieId = (parseCookies(req.headers.cookie || "")[DEVICE_COOKIE] || "").split(".")[0] || "-";
       return !checked.ok || checked.cihaz !== cookieId;
     },
@@ -329,7 +356,15 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     idle: () => kuyruk,
     tick: turAt,
     veriZamani,
-    status: () => ({ enabled, ofis: ofis?.id || "", publicUrl: mobileRemote.publicUrl(), son: durum.son, bekleyen: durum.kirliIlk !== null }),
+    // saat: kapıcıyla ölçülen saat farkı (B2b; ölçülmediyse null). Yönetim → Mobil Cihazlar ≥ 2 dk'da uyarır.
+    status: () => ({
+      enabled,
+      ofis: ofis?.id || "",
+      publicUrl: mobileRemote.publicUrl(),
+      son: durum.son,
+      bekleyen: durum.kirliIlk !== null,
+      saat: saat.olcumMs === null ? null : { farkMs: saat.farkMs, olcum: new Date(saat.olcumMs).toISOString() },
+    }),
     start: baslat,
     // Kapanışta: bekleyen veri değişikliği varsa son hâl yüklenir (en çok kapanisMs beklenir).
     async flush() {
