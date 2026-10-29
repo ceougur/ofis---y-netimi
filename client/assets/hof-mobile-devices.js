@@ -16,8 +16,13 @@
     return count + full + ozetHtml(data.ozet);
   };
   // 2.4.7 M3: sunucu kapalıyken telefonda görünen şifreli özetin son yüklemesi (kapıcı açıksa).
-  const ozetHtml = ozet => {
-    if (!ozet?.enabled) return "";
+  // B2b: kapıcıyla ölçülen saat farkı 2 dakika ya da daha çoksa (program farkı düzeltir, ama başka şeyler de saate bağlı) kullanıcı uyarılır.
+  const saatHtml = saat => {
+    const fark = Math.abs(Number(saat?.farkMs) || 0);
+    return fark >= 2 * 60_000 ? `<p class="adm-mobile-warn" data-mobile-saat>Bu bilgisayarın saati ${Math.round(fark / 60_000)} dakika farklı; Windows saat ayarını eşitleyin.</p>` : "";
+  };
+  const ozetHtml = ozet => (ozet?.enabled ? saatHtml(ozet.saat) + sonYuklemeHtml(ozet) : "");
+  const sonYuklemeHtml = ozet => {
     const son = ozet.son;
     if (!son) return `<p class="adm-mobile-count" data-mobile-ozet>Bulut Özeti: henüz yüklenmedi (ilk eşli cihazla yüklenir).</p>`;
     const zaman = new Date(son.zaman).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" });

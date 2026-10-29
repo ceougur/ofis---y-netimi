@@ -165,6 +165,8 @@ export async function startKapi({ now = () => Date.now(), lisansFetch = null, al
     for (const [ad, deger] of yanit.headers) if (ad !== "set-cookie") cikis[ad] = deger;
     const cerezler = yanit.headers.getSetCookie?.() || [];
     if (cerezler.length) cikis["set-cookie"] = cerezler;
+    // Cloudflare kenarı her yanıta kendi saatiyle Date koyar; yerel kapıcıda bu saat sahte saattir (program B2b'de farkı bu başlıktan ölçer).
+    cikis.date ??= new Date(now()).toUTCString();
     const veri = Buffer.from(await yanit.arrayBuffer());
     res.writeHead(yanit.status, cikis);
     res.end(veri);

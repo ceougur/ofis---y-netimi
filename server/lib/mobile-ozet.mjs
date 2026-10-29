@@ -136,17 +136,34 @@ export function isaretDogrula(baslik, { yontem, yolSorgu, sir, simdi }) {
   return { ok: true, cihaz };
 }
 
-/** Kayıt zamanı kesin artar (kapıcı eşit ya da eski zamanlı kaydı yeniden oynatma sayar): aynı milisaniyedeki ikinci kayıt bir sonrakine kayar. Kalıcı. */
-export function kayitZamani(store, simdi) {
+/**
+ * Kayıt zamanı kesin artar (kapıcı eşit ya da eski zamanlı kaydı yeniden oynatma sayar): aynı milisaniyedeki ikinci kayıt bir sonrakine kayar. SAF — yazmaz
+ * (2.4.7 B2): kalıcı değer (sonKayitMs) yalnız kapıcı kaydı KABUL edince kayitKabul ile yazılır; reddedilen kaydın zamanı saklanmaz. Saklı ya da bellekteki
+ * (enAz) değer şimdiki zaman + kapıcı payından (KAPI_KURALLARI.zamanPayiMs) ilerideyse — saat bir ara ileri kaymış, eski sürüm reddedilen zamanı yazmış — yok
+ * sayılır (şimdiye kırpılır): saat düzelince kilit kalkar. Kapıcının kabul ettiği her zaman en çok pay kadar ileridedir, kırpma onu geri almaz.
+ */
+export function kayitZamani(store, simdi, enAz = 0) {
+  const kirp = value => {
+    const n = Number(value || 0);
+    return Number.isFinite(n) && n <= simdi + KAPI_KURALLARI.zamanPayiMs ? n : 0;
+  };
   const kayit = JSON.parse(store.setting(OFIS_AYARI, "{}"));
-  const ms = Math.max(simdi, Number(kayit.sonKayitMs || 0) + 1);
+  return Math.max(simdi, kirp(kayit.sonKayitMs) + 1, kirp(enAz) + 1);
+}
+/** Kapıcı ms zamanlı kaydı kabul etti (onun son kaydı artık ms): kalıcı yazılır. Saklı değer ms + paydan ilerideyse (kırpılmış eski değer) ms ile değişir. */
+export function kayitKabul(store, ms) {
+  const kayit = JSON.parse(store.setting(OFIS_AYARI, "{}"));
+  const once = Number(kayit.sonKayitMs || 0);
+  if (Number.isFinite(once) && once >= ms && once <= ms + KAPI_KURALLARI.zamanPayiMs) return;
   kayit.sonKayitMs = ms;
   store.setSetting(OFIS_AYARI, JSON.stringify(kayit));
-  return ms;
 }
 
-/** Kapıcı istemcisi (program → kapi.<alan>): her istek ofis anahtarıyla imzalı (yöntem, yol, zaman, gövde özeti). */
-export function kapiIstemcisi({ url, fetchImpl, simdi, kayitSimdi = simdi }) {
+/**
+ * Kapıcı istemcisi (program → kapi.<alan>): her istek ofis anahtarıyla imzalı (yöntem, yol, zaman, gövde özeti).
+ * kayitKabul(ms): kapıcı kaydı kabul edince (B2). saatOlc(tarihMs): her yanıtın HTTP Date başlığı (B2b; başlık yoksa çağrılmaz).
+ */
+export function kapiIstemcisi({ url, fetchImpl, simdi, kayitSimdi = simdi, kayitKabul = () => {}, saatOlc = () => {} }) {
   const taban = String(url || "").replace(/\/+$/, "");
   async function istek(ofis, yontem, yol, govdeMetni = "", ms = simdi()) {
     const imza = await ecdsaImzala(ofis.imzaAnahtari, mesaj.ofis(yontem, yol, ms, await sha256Hex(govdeMetni)));
@@ -161,6 +178,8 @@ export function kapiIstemcisi({ url, fetchImpl, simdi, kayitSimdi = simdi }) {
     } catch (error) {
       return { ok: false, code: "kapi-ag", error: `Kapıcıya ulaşılamadı (${error?.cause?.code || error?.name || "ağ"}).` };
     }
+    const tarih = Date.parse(yanit.headers?.get?.("date") || "");
+    if (Number.isFinite(tarih)) saatOlc(tarih);
     let veri = null;
     try {
       veri = await yanit.json();
@@ -172,9 +191,11 @@ export function kapiIstemcisi({ url, fetchImpl, simdi, kayitSimdi = simdi }) {
   }
   return {
     // Kayıtta zaman gövdede de (imzalı) ve imzanınkiyle AYNI; kapıcı daha eski kaydı yeniden oynatma sayar (silinmiş cihaz geri gelmez).
-    kayit: (ofis, { lisans, cihazlar }) => {
+    kayit: async (ofis, { lisans, cihazlar }) => {
       const ms = kayitSimdi();
-      return istek(ofis, "POST", `/v1/ofis/${ofis.id}/kayit`, JSON.stringify({ v: 1, ofis: ofis.id, anahtar: ofis.acik, lisans, cihazlar, sir: ofis.sir, zaman: ms }), ms);
+      const sonuc = await istek(ofis, "POST", `/v1/ofis/${ofis.id}/kayit`, JSON.stringify({ v: 1, ofis: ofis.id, anahtar: ofis.acik, lisans, cihazlar, sir: ofis.sir, zaman: ms }), ms);
+      if (sonuc.ok) kayitKabul(ms);
+      return sonuc;
     },
     ozetYukle: (ofis, zarfMetni) => istek(ofis, "PUT", `/v1/ofis/${ofis.id}/ozet`, zarfMetni),
     ozetSil: (ofis, sira) => istek(ofis, "DELETE", `/v1/ofis/${ofis.id}/ozet?sira=${sira}`),

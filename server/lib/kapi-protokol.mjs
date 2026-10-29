@@ -17,8 +17,9 @@ export const KAPI_KURALLARI = Object.freeze({
   lisansYenileMs: 30 * 60_000,
   // İmzalı isteğin zaman damgası payı (cihaz saati / sunucu saati farkı). Dışındaysa kapıcı kendi saatini döner, telefon bir kez düzeltip yineler.
   zamanPayiMs: 5 * 60_000,
-  // Kapıcı → program işareti (x-do-kapi) payı: iki uç da gerçek saatte (NTP); işaret yalnız o istekte kullanılır.
-  vekilPayiMs: 2 * 60_000,
+  // Kapıcı → program işareti (x-do-kapi) payı: işaret yalnız o istekte kullanılır. 2.4.7 B2b: 2 → 5 dk (ofis saati birkaç dakika kayınca canlı bağlantı
+  // tümden kapanıyordu); program ayrıca kapıcı yanıtının Date başlığıyla saat farkını ölçüp düzeltir (lib/mobile-sync.mjs).
+  vekilPayiMs: 5 * 60_000,
   // Özet nesnesi en çok (bayt). Program 6 MB'ı aşarsa ayrıntıları kırpar (lib/mobile-sync.mjs).
   ozetAzamiBayt: 8 * 1024 * 1024,
   // Kayıt gövdesi en çok (bayt).
