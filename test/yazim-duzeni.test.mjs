@@ -207,7 +207,7 @@ describe("yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük", () 
   // dizgiler kullanır (seçenek çiftleri ['customer','Müşteri'], hızlı erişim kutuları, TITLES / reportGroups, stat / heading / reportField çağrıları);
   // genel denetim çift tırnağa baktığından bu kalıplar ayrıca okunur. Okunamayan dosya boş sayılmaz (en az bir ad bulunmalı).
   it("mobil görünümde (client/mobil) kurala uymayan ad yok", () => {
-    const files = ["client/mobil/index.html", "client/mobil/app.js"];
+    const files = ["client/mobil/index.html", "client/mobil/app.js", "client/mobil/yazma.js"]; // 2.4.7 M5: kayıt girişi formları
     const found = files.flatMap(file => violations(file));
     const src = read("client/mobil/app.js");
     const texts = [

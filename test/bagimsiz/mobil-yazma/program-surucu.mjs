@@ -364,6 +364,9 @@ async function runScenario(sen, root) {
         const d = await get(`/api/workspace/plans/${kid}`, `kart ${kad}`);
         P[`${p}kart:${kad}:odenen`] = kurus(d.totals?.paid);
         P[`${p}kart:${kad}:fazla`] = kurus(d.totals?.extra);
+        // Tanı (karşılaştırmaya girmez): programın "Ödenen"i karta yapılan bütün tahsilattır (Fazlasını Avans Yaz dahil); kâhinin "odenen"i kart tutarına
+        // sayılan kısımdır (V10). Fark yalnız tanımdansa bu değer kâhinin odenen'ine eşittir.
+        P[`tani:${p}kart:${kad}:odenenAvansHaric`] = kurus(d.totals?.paid) - kurus(d.totals?.extra);
         P[`${p}kart:${kad}:kalan`] = kurus(d.totals?.remaining);
         P[`${p}kart:${kad}:tahsilatSayisi`] = (d.entries || []).filter(e => e.kind === "in").length;
         (d.items || []).forEach((it, i) => (P[`${p}kart:${kad}:taksit${i + 1}:odenen`] = kurus(it.paid)));

@@ -75,6 +75,7 @@ jobs:
       - run: npm run test:senaryo-maliyet-246
       - run: npm run test:senaryo-mobil-247
       - run: npm run test:senaryo-mobil-eslesme-247
+      - run: npm run test:senaryo-mobil-yazma-247
       - run: npm run test:senaryo-kayit-bag-31e
       - run: npm run test:senaryo-pil-karti-245
       - run: npm run test:senaryo-serit-sira-245

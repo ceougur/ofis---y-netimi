@@ -1,0 +1,20 @@
+/* DestekOfis Mobil — kayıt girişi (2.4.7 M5; yazma.js). styles.css'in renk değişkenlerini kullanır; telefonda alttan açılan sayfa, geniş ekranda ortada pencere. */
+.yz-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(16, 42, 54, .45); display: flex; align-items: flex-end; justify-content: center; }
+.yz-sheet { background: var(--card, #fff); color: var(--ink, #18323c); width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; border-radius: 18px 18px 0 0; padding: 18px 16px calc(18px + env(safe-area-inset-bottom)); box-shadow: 0 -8px 32px rgba(19, 43, 52, .18); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box; }
+@media (min-width: 760px) { .yz-backdrop { align-items: center; } .yz-sheet { border-radius: 18px; } }
+.yz-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.yz-head h2 { margin: 2px 0 0; font-size: 20px; }
+.yz-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted, #778790); }
+.yz-field input, .yz-field select { font-size: 16px; padding: 12px; border: 1px solid var(--line, #e3e9e9); border-radius: 12px; background: #fff; color: var(--ink, #18323c); min-height: 46px; width: 100%; box-sizing: border-box; }
+.yz-field.hidden, .yz-message.hidden { display: none; }
+.yz-message { border-radius: 12px; padding: 12px; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
+.yz-message.error { background: #fbecea; color: var(--red, #be4d47); }
+.yz-message.warn { background: #fdf4e7; color: #7a4d14; }
+.yz-question { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+.yz-foot { display: flex; gap: 10px; justify-content: flex-end; }
+.yz-foot .btn { min-height: 46px; flex: 1; }
+.yz-pending { position: fixed; left: 12px; right: 12px; bottom: calc(72px + env(safe-area-inset-bottom)); z-index: 55; background: #fdf4e7; color: #7a4d14; border: 1px solid #f0d9b5; border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; box-shadow: var(--shadow); max-height: 40vh; overflow-y: auto; }
+.yz-pending-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.yz-pending-row span { flex: 1 1 100%; overflow-wrap: anywhere; }
+.yz-pending-row small { flex: 1 1 100%; }
+@media (min-width: 900px) { .yz-pending { left: auto; width: 420px; bottom: 16px; } }
