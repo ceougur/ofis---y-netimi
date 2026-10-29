@@ -1,0 +1,24 @@
+[001] motor: 2000 işlem, 6 doğrulama, 534 beklenen ret, 24 sn; uyuşmazlık 0
+  [002] ✗ işlem 181 fatura-hatasi: fatura-hatasi/kronoloji: reddedilmesi gerekirken kaydedildi (chronology)
+  [002] ✗ işlem 250 fatura-alis:
+  Cari Müşteri 7 T2102 (7): program 1028.85 · model 0,00
+  Stok Ürün 10 T2102: program 42.415 · model 46,719
+  Fatura FIS2025000000010 (sale, issued): programda var, modelde yok (yetim kayıt)
+  Ana defter cari hesapları ≠ model: 120 -39521.05/-40549.9, 320 -211307.83/-211307.83, 336 -24666.81/-24666.81
+[002] motor: 250 işlem, 1 doğrulama, 51 beklenen ret, 2 sn; uyuşmazlık 2
+file:///home/user/ofis---y-netimi/tools/olcek-210.mjs:302
+      if (report.mismatches.length) throw new Error(`[${code}] motor uyuşmazlığı (veri reddedildi): ${JSON.stringify(report.mismatches.slice(0, 3)).slice(0, 1500)}`);
+                                          ^
+
+Error: [002] motor uyuşmazlığı (veri reddedildi): [{"at":"işlem 181 (fatura-hatasi, 2026-01-03)","problems":["fatura-hatasi/kronoloji: reddedilmesi gerekirken kaydedildi (chronology)"]},{"at":"işlem 250 (fatura-alis, 2026-01-28)","problems":["Cari Müşteri 7 T2102 (7): program 1028.85 · model 0,00","Stok Ürün 10 T2102: program 42.415 · model 46,719","Fatura FIS2025000000010 (sale, issued): programda var, modelde yok (yetim kayıt)","Ana defter cari hesapları ≠ model: 120 -39521.05/-40549.9, 320 -211307.83/-211307.83, 336 -24666.81/-24666.81"]}]
+    at run (file:///home/user/ofis---y-netimi/tools/olcek-210.mjs:302:43)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async buildData (file:///home/user/ofis---y-netimi/tools/olcek-210.mjs:309:29)
+    at async main (file:///home/user/ofis---y-netimi/tools/olcek-210.mjs:348:12)
+    at async file:///home/user/ofis---y-netimi/tools/olcek-210.mjs:149:3
+
+Node.js v22.22.0
+
+real	0m27.151s
+user	0m28.372s
+sys	0m1.539s

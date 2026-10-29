@@ -1,0 +1,15 @@
+
+> destekofis@2.4.7 build:windows
+> node tools/build-windows.mjs
+
+DestekOfis 2.4.7 — Windows paketi
+• Uygulama dosyaları hazırlanıyor
+• Çalışma zamanı: Node.js ve nssm
+  node.exe 24.21.0 (nodejs.org (SHA-256 doğrulandı), sha256 ba4e6d110e8c1592…)
+• İstemci başlatıcısı derleniyor (Go, windows/amd64)
+  DestekOfis.exe 6.1 MB
+• Kurulum dosyası derleniyor (Inno Setup)
+wine: created the configuration directory '/root/.wine-iscc'
+wine: configuration in L"/root/.wine-iscc" has been updated.
+
+✓ dist/DestekOfis-Kurulum-2.4.7.exe · 35.6 MB · sha256 fdcc2946384d9b9aced825948ab0fc33952b8db66f0fa73842ac7e6cb2b11319

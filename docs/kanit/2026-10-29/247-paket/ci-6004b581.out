@@ -1,0 +1,13 @@
+cikis=0
+CI #920 (push) completed/success  https://github.com/ceougur/ofis---y-netimi/actions/runs/40952660591
+  YEŞİL                  Uçtan uca (Chromium)
+  YEŞİL                  Test (ubuntu-latest, Node 24)
+  YEŞİL                  Test (ubuntu-latest, Node 22)
+  YEŞİL                  Test (windows-latest, Node 24)
+  YEŞİL                  Test (windows-latest, Node 22)
+  YEŞİL                  Doğrulama Kapısı
+  YEŞİL                  Dağıtım paketi
+
+6004b58: CI YEŞİL (yalnız belge değişti; hüküm 03e0f55 koşusundan)
+
+[exited with code 0]
