@@ -86,12 +86,20 @@ after(() => {
   globalThis.fetch = gercekFetch;
 });
 
-// Zorla yarış (ders 20): verilen anahtarın İLK `adet` okuması birbirini bekler — hepsi aynı (önceki) durumu okur, sonra yazar.
+// Zorla yarış (ders 20): verilen anahtarın İLK `adet` okuması birbirini bekler — hepsi aynı (önceki) durumu okur. Ayrıca o anahtara İKİNCİ yazım `serbest()`
+// çağrılana dek bekletilir: ilk kayıt (kendi sonrası denetimi dahil) bitmişken ikincisi eşlemeyi üstüne yazar — "kayıt sonrası denetim" bu yarışı göremez.
 function bariyerliR2(r2, anahtar, adet = 2) {
   const bekleyen = [];
   let acik = false;
+  let yazim = 0;
+  let serbest = () => {};
+  const kapi = new Promise(resolve => {
+    serbest = resolve;
+  });
   return {
     ...r2,
+    serbest: () => serbest(),
+    okuma: () => bekleyen.length,
     async get(key) {
       const sonuc = await r2.get(key);
       if (acik || key !== anahtar) return sonuc;
@@ -103,6 +111,10 @@ function bariyerliR2(r2, anahtar, adet = 2) {
         }
       });
       return sonuc;
+    },
+    async put(key, value, secenek) {
+      if (key === anahtar && (yazim += 1) === 2) await kapi;
+      return r2.put(key, value, secenek);
     },
   };
 }
@@ -262,21 +274,43 @@ describe("B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis", () => {
     }
   });
 
-  it("ZORLA yarış: makine nesnesinin ilk yazımını iki yeni ofis aynı anda yapar (ikisi de 'yok' okur, sonuncu üstüne yazar) → yine YALNIZ bir ofisin 3 cihazı geçer", async () => {
-    const M = makine(200);
-    let bariyer = 0;
-    const c = ortam({
-      r2Sar: r2 => {
-        const sarili = bariyerliR2(r2, `makine/${M}.json`);
-        return { ...sarili, get: async key => (key === `makine/${M}.json` && (bariyer += 1), sarili.get(key)) };
-      },
-    });
+  // Zorla ilk yazım yarışı: iki yeni ofis aynı makineyi aynı anda kaydeder; ikisi de makine nesnesini "yok" okur; ilk bitene kadar öbürünün eşleme yazımı
+  // bekletilir, sonra üstüne yazar → iki ofis kaydı da etkin görünür, kayıt sonrası denetim yarışı göremez (kaybeden kapatılmamış durumda kalır). Hangisinin
+  // önce okuduğu WebCrypto zamanlamasına bağlı: önce biten "kaybeden" (eşlemesi ezildi), sonra biten "kazanan".
+  async function zorlaYaris(no) {
+    const M = makine(no);
+    let sarili = null;
+    const c = ortam({ r2Sar: r2 => (sarili = bariyerliR2(r2, `makine/${M}.json`)) });
     const hazir = [];
     for (let i = 0; i < 2; i += 1) hazir.push({ ofis: await ofisAnahtari(), tels: [await cihaz(), await cihaz(), await cihaz()] });
-    const sonuc = await Promise.all(hazir.map(o => c.kayit(o.ofis, M, o.tels)));
-    assert.ok(bariyer >= 2, "ön koşul: iki kayıt da makine nesnesini yazmadan önce okudu");
+    const sozler = hazir.map(o => c.kayit(o.ofis, M, o.tels));
+    const ilk = await Promise.race(sozler.map((s, i) => s.then(() => i)));
+    assert.equal(sarili.okuma(), 2, "ön koşul: iki kayıt da makine nesnesini yazmadan önce 'yok' okudu");
+    sarili.serbest();
+    const sonuc = await Promise.all(sozler);
+    assert.deepEqual(sonuc.map(r => r.ok), [true, true], `ön koşul: iki kayıt da kabul edildi (yarış kayıt sonrası denetimden kaçtı): ${JSON.stringify(sonuc)}`);
+    return { c, M, kaybeden: hazir[ilk], kazanan: hazir[1 - ilk], hazir };
+  }
+
+  it("ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan", async () => {
+    const { c, kazanan, hazir } = await zorlaYaris(200);
     const gecen = await c.gecenCihaz(hazir);
-    assert.equal(gecen, 3, `ilk yazım yarışında ${gecen} cihaz geçiyor (beklenen tek ofis = 3); kayıtlar ${JSON.stringify(sonuc.map(r => r.code || "ok"))}`);
+    assert.equal(gecen, 3, `ilk yazım yarışında ${gecen} cihaz geçiyor (beklenen tek ofis = 3)`);
+    assert.equal((await c.okuma(kazanan.ofis, kazanan.tels[0])).code, "kapi-ozet-yok", "eşlemeyi son yazan ofis geçer");
+  });
+
+  it("ZORLA ilk yazım yarışı (b): kaybeden (kapatılmamış) ofisin yeniden kaydı makineyi geri ALAMAZ (410); kazanan sürer", async () => {
+    const { c, M, kaybeden, kazanan } = await zorlaYaris(201);
+    const r = await c.kayit(kaybeden.ofis, M, kaybeden.tels);
+    assert.deepEqual([r.status, r.code], [410, "kapi-ofis-degisti"], `kaybedenin yeniden kaydı: ${JSON.stringify(r)}`);
+    assert.equal((await c.okuma(kazanan.ofis, kazanan.tels[0])).code, "kapi-ozet-yok", "kazanan bozulmaz");
+  });
+
+  it("ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)", async () => {
+    const { c, kaybeden, kazanan } = await zorlaYaris(202);
+    const t = await c.tunel(kaybeden.ofis);
+    assert.deepEqual([t.status, t.code], [410, "kapi-ofis-degisti"], `kaybedenin tünel başvurusu: ${JSON.stringify(t)}`);
+    assert.equal((await c.tunel(kazanan.ofis)).status, 200, "kazanan tünel alır");
   });
 
   it(`makine başına günde ${HIZ.ofisDegisimGunluk} ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır`, async () => {
