@@ -190,12 +190,21 @@ export async function refresh(startSession) {
     await startSession();
   } catch (e) {
     if (e instanceof d.SessionEnded) return;
-    const veri = await loadSummary().catch(() => null);
+    let veri = null;
+    let hata = e;
+    try {
+      veri = await loadSummary();
+    } catch (e2) {
+      if (e2 instanceof d.SessionEnded) return;
+      hata = e2;
+    }
     if (veri) {
       enter(veri);
       d.setPage(d.state.page);
     } else {
       d.loggedOut();
+      el("login-error").textContent = hata?.message || "Son özet alınamadı.";
+      el("login-error").classList.remove("hidden");
       offer();
     }
   }

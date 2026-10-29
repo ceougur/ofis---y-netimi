@@ -121,7 +121,7 @@ function tunelIlet(kokenler) {
  * @param {() => number} o.now kapıcının saati (programla aynı sahte saat)
  * @param {(url: string, init: object) => Promise<Response>} [o.lisansFetch] lisans servisinin kapıcı ucu (/v1/kapi/durum); verilmezse servis yok
  * @param {string} [o.alan] ofis alanı (varsayılan destekofis.test)
- * @param {boolean} [o.tls] https (Chromium için; kendinden imzalı)
+ * @param {boolean} [o.tls] ayrıca https dinleyicisi (Chromium için; kendinden imzalı)
  * @param {object} [o.trustedKeys] lisans açık anahtarları (varsayılan programınkiler)
  */
 export async function startKapi({ now = () => Date.now(), lisansFetch = null, alan = "destekofis.test", tls = false, trustedKeys = TRUSTED_LICENSE_KEYS } = {}) {
@@ -138,7 +138,7 @@ export async function startKapi({ now = () => Date.now(), lisansFetch = null, al
     }),
     onbellek,
   });
-  const isle = async (req, res) => {
+  const isle = tlsMi => async (req, res) => {
     const parcalar = [];
     for await (const parca of req) parcalar.push(parca);
     const govde = Buffer.concat(parcalar);
@@ -147,7 +147,7 @@ export async function startKapi({ now = () => Date.now(), lisansFetch = null, al
     for (const [ad, deger] of Object.entries(req.headers)) for (const tek of [].concat(deger)) basliklar.append(ad, String(tek));
     // Cloudflare'in istemci adresi başlığı (kapıcı hız sınırında kullanır); istemcinin gönderdiği eşdeğer başlıklar kapıcıya ulaşmaz.
     basliklar.set("cf-connecting-ip", req.socket.remoteAddress || "?");
-    const request = new Request(`${tls ? "https" : "http"}://${host}${req.url}`, { method: req.method, headers: basliklar, body: req.method === "GET" || req.method === "HEAD" ? undefined : govde, duplex: "half" });
+    const request = new Request(`${tlsMi ? "https" : "http"}://${host}${req.url}`, { method: req.method, headers: basliklar, body: req.method === "GET" || req.method === "HEAD" ? undefined : govde, duplex: "half" });
     let yanit;
     try {
       yanit = await kapi.fetch(request, env, { waitUntil() {} });
@@ -163,13 +163,20 @@ export async function startKapi({ now = () => Date.now(), lisansFetch = null, al
     res.writeHead(yanit.status, cikis);
     res.end(veri);
   };
-  const sertifika = tls ? selfSignedCert(`*.${alan}`) : null;
-  const sunucu = tls ? https.createServer({ cert: sertifika.cert, key: sertifika.key }, (req, res) => isle(req, res).catch(() => res.end())) : http.createServer((req, res) => isle(req, res).catch(() => res.end()));
+  // http her zaman (program ve Node istemcileri); tls: true ise ayrıca https (Chromium: güvenli bağlam, Secure çerez, service worker).
+  const sunucu = http.createServer((req, res) => isle(false)(req, res).catch(() => res.end()));
   await new Promise(resolve => sunucu.listen(0, "127.0.0.1", resolve));
   const port = sunucu.address().port;
+  let tlsSunucu = null;
+  if (tls) {
+    const sertifika = selfSignedCert(`*.${alan}`);
+    tlsSunucu = https.createServer({ cert: sertifika.cert, key: sertifika.key }, (req, res) => isle(true)(req, res).catch(() => res.end()));
+    await new Promise(resolve => tlsSunucu.listen(0, "127.0.0.1", resolve));
+  }
   return {
-    base: `${tls ? "https" : "http"}://127.0.0.1:${port}`,
+    base: `http://127.0.0.1:${port}`,
     port,
+    tlsPort: tlsSunucu ? tlsSunucu.address().port : null,
     alan,
     r2,
     onbellek,
@@ -183,6 +190,13 @@ export async function startKapi({ now = () => Date.now(), lisansFetch = null, al
       const kayit = r2.nesneler.get(`ofis/${ofis}/meta.json`);
       return kayit ? JSON.parse(new TextDecoder().decode(kayit.veri)) : null;
     },
-    close: () => new Promise(resolve => sunucu.close(() => resolve())),
+    close: async () => {
+      sunucu.closeAllConnections?.();
+      await new Promise(resolve => sunucu.close(() => resolve()));
+      if (tlsSunucu) {
+        tlsSunucu.closeAllConnections?.();
+        await new Promise(resolve => tlsSunucu.close(() => resolve()));
+      }
+    },
   };
 }

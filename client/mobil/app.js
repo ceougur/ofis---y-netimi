@@ -25,7 +25,7 @@ async function api(path,body){
   serverState(true);
   let data;try{data=await resp.json()}catch{throw Error('Sunucudan beklenmeyen yanıt geldi.')}
   if(resp.status===503&&data.code==='kapi-ofis-kapali'){serverState(false);const o=await ozet.tryOffline(path,body);if(o!==ozet.NO_OFFLINE)return o;throw Object.assign(Error(data.error||'Ofis sunucusuna ulaşılamıyor.'),{status:503,code:data.code,unreachable:true})}
-  if(resp.status===401&&data.code==='remote-device'){loggedOut();showUnpaired(data.error);throw new SessionEnded(data.error||'Bu cihaz eşli değil.')}
+  if(resp.status===401&&(data.code==='remote-device'||data.code==='kapi-cihaz')){loggedOut();showUnpaired(data.error);throw new SessionEnded(data.error||'Bu cihaz eşli değil.')}
   if(resp.status===401&&state.user&&!path.startsWith('/session')){loggedOut();throw new SessionEnded(data.error||'Oturum sona erdi.')}
   if(!resp.ok||data.ok===false)throw Object.assign(Error(data.error||'İşlem başarısız.'),{status:resp.status,code:data.code});
   return data.data;
