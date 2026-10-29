@@ -179,14 +179,14 @@ await step("Z2 saha ve veli eşlenir; veli'nin cihazı silinir (güvenlik yükle
 }, saha);
 
 await step("Z3 yeni cari → program KAPANIR → telefonda dokunuş: son özet (şerit, yeni cari, Raporlar kapalı)", async () => {
-  // M5 birleşimi: canlıdayken cari kartında yazma düğmesi var, çevrimdışı özette yok.
+  ok((await adminApi.post(`/api/workspace/accounts?hofCompany=${company["001"]}`, { name: "Kapalıda Görünen Cari", type: "customer" })).status === 200, "masaüstünde cari girildi");
+  // M5 birleşimi: canlıdayken cari kartında yazma düğmesi var, çevrimdışı özette yok (ön koşul + diş).
   await ali.click('.bottom-nav [data-nav="accounts"]');
-  await ali.waitForSelector("#content .list-item");
-  await ali.click("#content .list-item");
-  await ali.waitForSelector("#content .split-detail .card");
+  await ali.waitForSelector('#content .list-item:has-text("Kapalıda Görünen Cari")');
+  await ali.click('#content .list-item:has-text("Kapalıda Görünen Cari")');
+  await ali.waitForSelector("[data-detail-balance]");
   await ali.waitForSelector("#content [data-yazma]", { timeout: 10_000 }).catch(() => {});
   ok((await ali.$$("#content [data-yazma]")).length > 0, "canlıda cari kartında yazma düğmesi var (ön koşul)");
-  ok((await adminApi.post(`/api/workspace/accounts?hofCompany=${company["001"]}`, { name: "Kapalıda Görünen Cari", type: "customer" })).status === 200, "masaüstünde cari girildi");
   await A.server.close();
   ok(A.server.app.mobileSync.status().son?.neden === "kapanis", "kapanışta son hâl yüklendi");
   await ali.click('.bottom-nav [data-nav="accounts"]');
@@ -196,8 +196,8 @@ await step("Z3 yeni cari → program KAPANIR → telefonda dokunuş: son özet (
   ok(/Son Güncelleme/.test(await ali.textContent("#top-server-status")), "üst çubukta Son Güncelleme");
   await ali.waitForSelector("#content .list-item");
   ok((await ali.textContent("#content")).includes("Kapalıda Görünen Cari"), "kapanmadan önce girilen cari özette görünür");
-  await ali.click("#content .list-item");
-  await ali.waitForSelector("#content .split-detail .card");
+  await ali.click('#content .list-item:has-text("Kapalıda Görünen Cari")');
+  await ali.waitForSelector("[data-detail-balance]");
   ok((await ali.$$("#content [data-yazma]")).length === 0, "çevrimdışı özette cari kartında yazma düğmesi YOK (sunucu kapalıyken kayıt girilmez)");
   await ali.click('.bottom-nav [data-nav="accounts"]');
   await ali.waitForSelector("#content .list-item");
