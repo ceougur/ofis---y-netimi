@@ -1,0 +1,32 @@
+{
+  "ad": "ana-maliyet247-birim",
+  "komut": "node --test test/maliyet-247.test.mjs test/maliyet-cekirdek-246.test.mjs test/maliyet-bagsizlik.test.mjs test/disa-aktarim-dugmeleri.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "e41d958c7b5bd29c41e46676d76c45f4e8f65e00",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T03:38:37.520Z",
+  "sure_sn": 4.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 35,
+    "gecen": 35,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-maliyet247-birim.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "f2fed5dbb60bc35c946e271ab42acc5771f8f83c11149e2bfc9a3e57d020b995",
+  "ham_cikti_bayt": 12928
+}
