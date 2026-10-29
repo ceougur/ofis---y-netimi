@@ -32,8 +32,8 @@ Program ── POST kapi.destekofis.net/v1/ofis/<ofis>/tunel (M3 ofis imzası) �
    Lisans belirteci (Ed25519) ve ofis anahtarının ilk kayıtta bağlanması (TOFU) M3 kayıt ucunda.
 3. Cloudflare (yalnız Worker gizlisindeki hesap belirteciyle): tünel adı `destekofis-<ofis>` yoksa oluşturulur (`config_src: "local"`), varsa yeniden
    kullanılır (eşzamanlı ilk başvuruda "ad var" → yeniden aranır); DNS `<ofis>.destekofis.net` CNAME → `<tünel>.cfargotunnel.com` (proxied) yoksa eklenir,
-   farklıysa düzeltilir; tünel çalıştırma belirteci alınır. Kapıcı tünel kimliğini SAKLAMAZ (ad ofis kimliğinden türer; R2'ye yazmaz — M3'ün meta.json
-   koşullu yazımıyla yarış yok).
+   farklıysa düzeltilir; tünel çalıştırma belirteci alınır. Kapıcı tünel kimliğini SAKLAMAZ (ad ofis kimliğinden türer). Bağımsız gözden geçirme B3'ten sonra tünel ucu R2'ye
+   yazar: `makine/<makine>.json` (saatlik başvuru sayacı) ve devre dışı kalan eski ofisin meta.json'u; yazımlar etag'li koşullu — `bulut/kapi/makine.mjs`.
 4. Yanıt `{ ok, data: { tunnelId, hostname, publicUrl, token } }`. Hesap belirteci yanıta girmez. Çalıştırma belirteci programda YALNIZ bellekte (diske,
    yapılandırma dosyasına, komut satırına yazılmaz; cloudflared'e ortam değişkeni `TUNNEL_TOKEN` ile).
 

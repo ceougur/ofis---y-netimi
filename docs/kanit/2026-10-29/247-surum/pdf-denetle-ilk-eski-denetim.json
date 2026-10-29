@@ -1,0 +1,38 @@
+{
+  "ad": "247-surum/pdf-denetle",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "b46225bf851a1be8c013839fb72a2dcfe5a1b242",
+  "dal": "is/surum-247",
+  "kirli": 7,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T18:32:39.936Z",
+  "sure_sn": 11.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 38,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "PDF metninde YOK: “Kasa ve Banka”",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/247-surum/pdf-denetle.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a79b4af509cb039c0",
+  "ham_cikti_sha256": "b928d22d91ec2ac63d9d14bd39f4ccf1156a72cddb3c85d857d02cbb8bc29699",
+  "ham_cikti_bayt": 2210
+}

@@ -29,7 +29,9 @@ const pdfImages = execFileSync("pdfimages", ["-list", DOC], { encoding: "utf8" }
 check(pdfImages >= new Set(imgs).size, `PDF'teki resim sayısı ${pdfImages} ≥ kılavuzdaki farklı ekran ${new Set(imgs).size}`);
 for (const phrase of ["8. Banka", "Kurulum Sihirbazı", "Hesabı Atanmamış Eski Hareketler", "Tarihi Gelince Atanabilir", "Seçilenleri Bu Hesaba Ata", "+ Kredi Kartı Ekle", "Kredi Kartı Kullan", "Çek Hesabı", "İşlemden Sonra", "Kalanın Tamamını Öde", "Kart ve Kredi Borcu", "+ Kart Borcu Ödemesi", "Bankalar Arası Transfer", "Ters Kaydet", "Gerçek Banka", "Bugünkü Nakit ve Banka", "Banka Bakiye Raporu", "Alt Hesap Mizanı", "Banka ve POS", "Yine de Kaydet", "Hesapsız (Açılıştan Önce)", "Kurulum Geçmişi", "Kart Borcuna Aktar", "Bankaya Geçmiş Say"]) check(text.includes(phrase), `PDF metninde: “${phrase}”`);
 // 2.3.0: "Kasa ve Banka Transfer Raporu" (plan §8.10) meşru; eski "Kasa ve Banka" başlığı yine yasak.
-const scrubbed = text.replace(/Kasa ve Banka Transfer/g, "");
+// 2.4.7: telefondaki ekranın adı "Kasa ve Banka" (client/mobil/app.js TITLES.money; 18. Telefondan Kullanım ekran listesi) meşru; masaüstündeki eski
+// "Kasa ve Banka" başlığı yine yasak — yalnız mobil ekran listesindeki sıra ("Cari Hesaplar, Kasa ve Banka, Stok Yönetimi") ayıklanır.
+const scrubbed = text.replace(/Kasa ve Banka Transfer/g, "").replace(/Cari Hesaplar,\s+Kasa ve Banka,\s+Stok Yönetimi/g, "");
 for (const phrase of ["Drive", "OneDrive", "Kasa ve Banka", "bugünkü kasadan", "Banka / POS", "Kurumsal Kart", "Kurumsal Kredi", "Tamamı Peşin"]) check(!scrubbed.includes(phrase), `PDF metninde YOK: “${phrase}”`);
 // Kapak ve dip nottaki sürüm = programın sürümü (13.10.2026: yayımlanan 2.2.0 kılavuzunun kapağında "Sürüm 2.1.0" kalmıştı).
 const { version } = JSON.parse(readFileSync(path.join(R, "package.json"), "utf8"));
