@@ -1,0 +1,32 @@
+{
+  "ad": "ana-ofis-kaydi-yeni",
+  "komut": "node --test --test-concurrency=1 test/mobil-ofis-kaydi-247.test.mjs test/kapi-tunel-uctan-uca-247.test.mjs test/mobil-ozet-247.test.mjs test/kapi-247.test.mjs test/kapi-tunel-247.test.mjs test/tunel-yonetici-247.test.mjs test/mobil-eslesme-247.test.mjs",
+  "commit": "7d66130a3c52ce6cc04211de990f4b86e5eef54f",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 1,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T09:59:55.773Z",
+  "sure_sn": 33.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 91,
+    "gecen": 91,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-ofis-kaydi-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "f9df6f637c6980d7db9da0c0517ff2e082fe70d31c5191921a66e191eff38883",
+  "ham_cikti_bayt": 37071
+}

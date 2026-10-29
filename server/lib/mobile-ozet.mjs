@@ -38,20 +38,31 @@ function base32(bytes) {
  * Dönüş: { id, acik (imza açık anahtarı JWK), imzaAnahtari (CryptoKey), sir (kapıcı işaret sırrı, base64url) }.
  */
 export async function ofisKaydi(store) {
+  let kayit = gecerliOfisKaydi(store);
+  if (!kayit) {
+    const cift = await subtle().generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, ["sign", "verify"]);
+    const acik = acikAnahtar(await subtle().exportKey("jwk", cift.publicKey));
+    const yeni = { v: 1, id: `o${base32(randomBytes(10))}`, acik, gizli: b64url(await subtle().exportKey("pkcs8", cift.privateKey)), sir: randomBytes(32).toString("base64url"), sira: 0 };
+    // Son await'ten sonra yeniden okunur: eşzamanlı başka çağrı (özet eşitlemesi ↔ tünel başvurusu) kaydı yazdıysa o kullanılır; okuma ile yazma
+    // arasında await yok, tek kimlik kalır (yoksa bellekte biri, ayarda öbürü kalır, yeniden açılışta telefon adresi değişir).
+    kayit = gecerliOfisKaydi(store);
+    if (!kayit) {
+      kayit = yeni;
+      store.setSetting(OFIS_AYARI, JSON.stringify(kayit));
+    }
+  }
+  const imzaAnahtari = await subtle().importKey("pkcs8", b64urlCoz(kayit.gizli), { name: "ECDSA", namedCurve: "P-256" }, false, ["sign"]);
+  return { id: kayit.id, acik: kayit.acik, imzaAnahtari, sir: kayit.sir };
+}
+function gecerliOfisKaydi(store) {
   let kayit = null;
   try {
     kayit = JSON.parse(store.setting(OFIS_AYARI, "") || "null");
   } catch {
-    kayit = null;
+    return null;
   }
-  if (!kayit || !OFIS_KIMLIGI.test(kayit.id || "") || !kayit.gizli || !acikAnahtar(kayit.acik) || !/^[A-Za-z0-9_-]{43}$/.test(kayit.sir || "")) {
-    const cift = await subtle().generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, ["sign", "verify"]);
-    const acik = acikAnahtar(await subtle().exportKey("jwk", cift.publicKey));
-    kayit = { v: 1, id: `o${base32(randomBytes(10))}`, acik, gizli: b64url(await subtle().exportKey("pkcs8", cift.privateKey)), sir: randomBytes(32).toString("base64url"), sira: 0 };
-    store.setSetting(OFIS_AYARI, JSON.stringify(kayit));
-  }
-  const imzaAnahtari = await subtle().importKey("pkcs8", b64urlCoz(kayit.gizli), { name: "ECDSA", namedCurve: "P-256" }, false, ["sign"]);
-  return { id: kayit.id, acik: kayit.acik, imzaAnahtari, sir: kayit.sir };
+  if (!kayit || !OFIS_KIMLIGI.test(kayit.id || "") || !kayit.gizli || !acikAnahtar(kayit.acik) || !/^[A-Za-z0-9_-]{43}$/.test(kayit.sir || "")) return null;
+  return kayit;
 }
 /** Bir sonraki özet sırası (kalıcı, kesin artan; yeniden oynatma koruması kapıcıda bu sıraya bakar). */
 export function sonrakiSira(store, enAz = 0) {
