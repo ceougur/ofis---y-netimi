@@ -1,0 +1,47 @@
+
+> destekofis@2.4.6 test:senaryo-ekstre-ayrinti-247
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-ekstre-ayrinti-247.mjs
+
+1) Cari kartı → Ayrıntılı Ekstre: alt başlık, İşlem, açıklama, Kalem Açıklaması (5, 6b)
+  ✓ alt başlık yalnız Cari No + aralık: “Cari No 1 · 01.01.2026 – 31.12.2026”
+  ✓ İşlem: Satış
+  ✓ açıklama: Satış FIS2026000000001
+  ✓ ekranda 'Faturası' yok
+  ✓ Kalem Açıklaması kolonu (Tarih | Belge No | İşlem | Yol | Açıklama / Ürün - Hizmet | Kalem Açıklaması | Miktar | Birim | Birim Fiyat | İsk. % | KDV'siz Tutar | KDV % | Toplam | Borç | Alacak | Bakiye)
+  ✓ açıklamalı kalemde metin, açıklamasızda boş
+  ✓ stok kartı notu ekranda yok
+  ✓ kalem adı girintili (22px, › Köşe Kabin 90 (KK-90))
+  ✓ Sütunlar: Sütunlar, 16 kolon hepsi işaretli
+1b) 1366 × 768: 16 kolon (Kalem Açıklaması dahil) yatay kaydırmasız
+  ✓ 1366 px: yatay kaydırma yok (tablo 953 px, kutu 953 px)
+  ✓ Ayşe Demir: gezinti verisi (16 kolon, taksit planı + 2 taksit tahsilatı)
+  ✗ Ayşe Demir 1366 px: yatay taşma yok, son Bakiye hücresi kutuda (tablo 958 px, kutu 953 px, sağ kenar farkı 4 px)
+  ✓ Ayşe Demir: Belge No ve açıklama metni değişmedi (bölme yalnız görünümde)
+  ✓ Milyon Yapı: gezinti verisi (16 kolon, taksit planı + 2 taksit tahsilatı)
+  ✗ Milyon Yapı 1366 px: yatay taşma yok, son Bakiye hücresi kutuda (tablo 1028 px, kutu 953 px, sağ kenar farkı 74 px)
+  ✓ Milyon Yapı: Belge No ve açıklama metni değişmedi (bölme yalnız görünümde)
+2) Sütunlar → Yol ve Kalem Açıklaması işaretini kaldır (gerçek tıklama); liste açık kalır
+  ✓ Yol gizlendi (PUT 200)
+  ✓ Sütunlar listesi yenilenen ön izlemede açık kaldı
+  ✓ Kalem Açıklaması gizlendi (PUT 200)
+  ✓ ekran kolonları: Tarih | Belge No | İşlem | Açıklama / Ürün - Hizmet | Miktar | Birim | Birim Fiyat | İsk. % | KDV'siz Tutar | KDV % | Toplam | Borç | Alacak | Bakiye
+  ✓ düğme: Sütunlar (14/16)
+  ✓ Genel Toplam = satırlar (Borç, Alacak)
+  ✓ kolon gizliyken de girinti kalem adında
+3) Ekrandaki PDF ve Excel bağlantıları: gizli kolonlar dosyalarda da yok
+  ✓ Excel başlıkları = ekran (14)
+  ✓ Excel satırı = ekran + TOPLAM
+  ✓ Excel'de gizli Kalem Açıklaması yok
+  ✓ PDF'te Yol / Nakit / kalem açıklaması yok
+  ✓ PDF'te açıklama 'Satış FIS…'
+4) Son kolonun işareti kaldırılamaz
+  ✓ yalnız Bakiye kaldı (Bakiye)
+  ✓ uyarı çıktı (true), Bakiye işaretli kaldı (true), sunucuya istek gitmedi (0)
+  ✓ seçim: Tarih | İşlem | Açıklama / Ürün - Hizmet | Borç | Alacak | Bakiye
+5) Sayfa yeniden açılınca seçim kalır (sunucuda, kişi başına)
+  ✓ yeniden açılışta: Tarih | İşlem | Açıklama / Ürün - Hizmet | Borç | Alacak | Bakiye · Sütunlar (6/16)
+6) Başka kullanıcı (muhasebe): bütün kolonlar
+  ✓ muhasebenin ekranı 16 kolon
+  ✓ sayfa hatası yok
+
+32 geçti, 2 kaldı
