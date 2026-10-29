@@ -123,6 +123,9 @@ describe("mobil görünüm: programın içinde, gerçek sunucu", () => {
       assert.equal(res.status, 200, file);
       assert.match(res.headers.get("content-type"), type, file);
     }
+    // 2.4.7 gezinti B1: kayıt girişi modülleri kabuk önbelleğinde (sunucu kapalıyken açılan sayfa, sunucu dönünce düğmeleri gösterir).
+    const sw = await (await fetchRaw("/mobil/sw.js")).text();
+    for (const file of ["yazma.js", "yazma.css", "yazma-bekleyen.js"]) assert.match(sw, new RegExp(`"${file.replace(".", "\\.")}"`), `sw.js önbellek listesinde ${file}`);
     const manifest = await (await fetchRaw("/mobil/manifest.webmanifest")).json();
     assert.equal(manifest.start_url, "/mobil/");
     assert.equal(manifest.scope, "/mobil/");

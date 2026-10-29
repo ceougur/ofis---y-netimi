@@ -268,6 +268,32 @@ await step("Y4 taksit kartına tahsilat: 100 → kalan 200; 250 → soru → Faz
   const balance = unwrap(await api.get(`/api/workspace/accounts/${mehmet.id}`)).totals.balance;
   ok(balance === -50, `cari bakiye ${balance} (fazlası avans)`);
   await clearToasts();
+  // 2.4.7 gezinti B2: telefonun "Son Hareketler"i masaüstü ekstresiyle aynı satırlar (taksit kartına tahsilatlar dahil; Borç / Alacak; gg.aa.yyyy).
+  const ledger = unwrap(await api.get(`/api/workspace/accounts/${mehmet.id}`)).ledger;
+  await openDetail("accounts", mehmet.id);
+  const rows = await page.$$eval(".entry-row", items => items.map(item => item.textContent.replace(/\s+/g, " ").trim()));
+  ok(rows.length === Math.min(30, ledger.length), `son hareketler ${rows.length} satır = ekstre ${ledger.length}`);
+  for (const line of ledger.filter(l => l.credit > 0)) ok(rows.some(r => r.includes("Alacak") && r.includes(tl(line.credit))), `taksit tahsilatı ${tl(line.credit)} telefonda görünür`);
+  ok(rows.every(r => !/\d{4}-\d{2}-\d{2}/.test(r) && !/\b(in|out)\b/.test(r)), `ham tür/ISO tarih yok: ${rows.join(" | ")}`);
+});
+
+await step("Y4b kayıt modülü ilk açılışta yüklenemezse (sunucu kapalıyken açılan sayfa) sonraki kayıt açılışında düğmeler gelir — yeniden yükleme gerekmez", async () => {
+  await page.evaluate(async () => {
+    for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister();
+  });
+  await page.route(/\/mobil\/yazma\.js(\?|$)/, route => route.abort());
+  await page.reload();
+  await page.waitForSelector("#app:not(.hidden)", { timeout: 10000 });
+  await tapNav("accounts");
+  await page.click(`#content [data-detail="accounts:${mehmet.id}"]`);
+  await page.waitForSelector("[data-detail-balance]");
+  await page.waitForTimeout(500);
+  ok((await page.$$("[data-yazma]")).length === 0, "ön koşul: modül yüklenemedi, düğme yok");
+  await page.unroute(/\/mobil\/yazma\.js(\?|$)/);
+  await page.click(".page-back");
+  await page.click(`#content [data-detail="accounts:${mehmet.id}"]`);
+  await page.waitForSelector("[data-yazma]", { timeout: 8000 }).catch(() => null);
+  ok((await page.$$("[data-yazma]")).length > 0, "sunucu dönünce (modül yüklenebilir) Tahsilat Gir / Ödeme Gir yeniden yüklemesiz gelir");
 });
 
 await step("Y5 Stok Girişi 5 → miktar 15; parasız (Kasa değişmez)", async () => {
