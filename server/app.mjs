@@ -80,6 +80,7 @@ import { USAGE_BACKUP_TABLE } from "./lib/backup.mjs";
 import { isoDay } from "./lib/plans.mjs";
 import { MOBILE_PREFIX, captureResponse, isPhone, resolveMobile, transformMobile } from "./lib/mobile.mjs";
 import { createMobileRemote } from "./lib/mobile-remote.mjs";
+import { mobileSyncFromConfig } from "./lib/mobile-sync.mjs";
 import { registerMobileAdminRoutes } from "./routes/mobile-admin.mjs";
 
 function ensureInitialAdmin(store, config, log) {
@@ -547,7 +548,7 @@ export function createApp(overrides = {}) {
         scheduleBackups: false,
         // Şirketler aynı iş saatini paylaşır (sahte saatte de: hub'ın saati ilerleyince 002'nin de ilerler).
         now: config.now,
-        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events, closeLive, usageLedger, mobileRemote: context.mobileRemote },
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events, closeLive, usageLedger, mobileRemote: context.mobileRemote, mobileSync: context.mobileSync },
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
@@ -607,6 +608,8 @@ export function createApp(overrides = {}) {
     if (!hub && String(req.url || "").startsWith(MOBILE_PREFIX)) return dispatchMobile(req, res);
     return dispatchApp(req, res);
   };
+  // 2.4.7 M3 (lib/mobile-sync.mjs; docs/mobil/M3-TASARIM.md): şifreli özet üreticisi + kapıcıya yükleyici (ortak katmanda tek örnek; kapıcı adresi yoksa dış istek yok).
+  context.mobileSync = hub ? hub.mobileSync : mobileSyncFromConfig({ store, license, mobileRemote: context.mobileRemote, dispatch, config, log });
   const dispatchApp = (req, res) => {
     if (hub) return scoped(req, res);
     const pathname = (req.url || "/").split("?")[0];
@@ -668,6 +671,7 @@ export function createApp(overrides = {}) {
     return true;
   }
   const server = createServer((req, res) => {
+    context.mobileSync?.izle(req, res); // 2.4.7 M3: başarılı yazma → özet tetiği
     dispatch(req, res).catch(error => {
       log.error("Beklenmeyen hata", error);
       if (!res.headersSent) send(res, 500, { ok: false, error: "Sunucu işlemi tamamlayamadı." }, SECURITY_HEADERS);
@@ -679,6 +683,7 @@ export function createApp(overrides = {}) {
   // 2.4.7 M2: uzaktan erişim dinleyicisi (yalnız ortak katmanda; app.listenRemote ile açılır — M4'te tünel yalnız buraya bağlanır). Gelen her istek UZAKTIR:
   // cihaz → lisans → yol → uzak oturum kapısından (lib/mobile-remote.mjs) sonra olağan dağıtıcıya gider.
   const remoteServer = hub ? null : createServer((req, res) => {
+    context.mobileSync.izle(req, res); // 2.4.7 M3
     context.mobileRemote.handle(req, res, dispatch).catch(error => {
       log.error("Beklenmeyen uzak istek hatası", error);
       if (!res.headersSent) send(res, 500, { ok: false, error: "Sunucu işlemi tamamlayamadı." }, SECURITY_HEADERS);
@@ -891,6 +896,7 @@ export function createApp(overrides = {}) {
       return () => infoListeners.delete(listener);
     },
     mobileRemote: context.mobileRemote,
+    mobileSync: context.mobileSync, // 2.4.7 M3
     // Uzaktan erişim dinleyicisi (2.4.7 M2): yalnız yerel döngü adresinde (tünel istemcisi aynı bilgisayardan bağlanır); ofis ağına açılmaz.
     listenRemote(port = 0, host = "127.0.0.1") {
       if (!remoteServer) return Promise.reject(new Error("Uzaktan erişim dinleyicisi yalnız ortak katmanda açılır."));
@@ -908,6 +914,7 @@ export function createApp(overrides = {}) {
         server.once("error", reject);
         server.listen(port, host, () => {
           server.off("error", reject);
+          if (!hub) context.mobileSync.start(); // 2.4.7 M3: özet zamanlayıcısı + kapıcıya açılış kaydı
           if (!hub && overrides.posQueue !== false) {
             posQueue.start();
             setImmediate(posDueCompanies);
@@ -921,6 +928,7 @@ export function createApp(overrides = {}) {
     async close({ reason = "shutdown" } = {}) {
       if (closed) return;
       closed = true;
+      if (!hub) await context.mobileSync.flush().catch(error => log.warn?.(`Mobil özet kapanışta yüklenemedi: ${error?.message || error}`)); // 2.4.7 M3: son hâl
       posQueue.stop();
       clearInterval(posHubTimer);
       stopBackups();

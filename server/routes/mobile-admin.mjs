@@ -12,7 +12,8 @@ export function registerMobileAdminRoutes(router, context) {
   // Kart: sınır, kullanılan, kullanıcılar (Uzaktan Bağlanabilir) ve eşli cihazlar (ad, kullanıcı, eşleme tarihi, son erişim).
   router.get("/api/admin/mobile/devices", async ({ req, res }) => {
     auth.requirePermission(req, "users.manage");
-    ok(res, mobile().adminView());
+    // 2.4.7 M3: şifreli özetin durumu (son yükleme; kapıcı kapalıysa enabled: false).
+    ok(res, { ...mobile().adminView(), ozet: context.mobileSync?.status?.() || { enabled: false } });
   });
   // "Uzaktan Bağlanabilir" izni; kaldırılınca kullanıcının bütün cihazları, uzak oturumları ve bekleyen karekodları düşer.
   router.put("/api/admin/mobile/access/:userId", async ({ req, res, params }) => {

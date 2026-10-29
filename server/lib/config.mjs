@@ -6,6 +6,10 @@ import { fileURLToPath } from "node:url";
 import { createClock } from "./clock.mjs";
 import { resolveDbPath } from "./db-path.mjs";
 import { DEFAULT_LICENSE_SERVICES } from "./license.mjs";
+
+// 2.4.7 M3: kapıcı (program uçları) ve ofisin telefon adresi ({ofis} = ofis kimliği; Cloudflare evrensel sertifikası *.destekofis.net'i kapsar).
+export const DEFAULT_KAPI_URL = "https://kapi.destekofis.net";
+export const DEFAULT_OFFICE_URL = "https://{ofis}.destekofis.net";
 import { cachedResolver, createProxyFetch, describeNetwork } from "./net-proxy.mjs";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -116,6 +120,16 @@ export function loadConfig(overrides = {}) {
     // 2.4.7 M2: uzaktan erişimin güvenlik süreleri (karekod 5 dk, uzak oturum boşta 15 dk / en çok 12 saat, uzak giriş kilidi 15 dk; lib/mobile-remote.mjs)
     // bu saatle ölçülür. Altyapı saati: üretimde HER ZAMAN gerçek saat (iş saati sahte olsa da); yalnız programdan (kâhin sürücüsü, testler) verilir.
     remoteNow: createClock(overrides.remoteNow),
+    // 2.4.7 M3 (docs/mobil/M3-TASARIM.md): şifreli özetin yüklendiği kapıcı (Cloudflare Worker) ve ofisin telefon adresi kalıbı. YALNIZ üretim girişi
+    // (server/server.mjs mobileKapi: true) açar; lisans servisi ortam değişkeniyle değiştirilmişse (testler: HUKUK_LICENSE_URL ölü adres) kapıcı da
+    // ancak HUKUK_KAPI_URL açıkça verilirse açılır (ders 30: test gerçek kapıcıya ulaşmaz). Programın içinden (testler) mobileKapiUrl ile.
+    mobileKapiUrl: String(
+      overrides.mobileKapiUrl ??
+        (overrides.mobileKapi === true ? env.HUKUK_KAPI_URL ?? (overrides.licenseServices === undefined && env.HUKUK_LICENSE_URL === undefined ? DEFAULT_KAPI_URL : "") : ""),
+    ).replace(/\/+$/, ""),
+    mobileOfficeUrl: String(overrides.mobileOfficeUrl ?? env.HUKUK_KAPI_OFIS_URL ?? DEFAULT_OFFICE_URL),
+    mobileKapiFetch: typeof overrides.mobileKapiFetch === "function" ? overrides.mobileKapiFetch : null,
+    mobileSyncAuto: overrides.mobileSyncAuto !== false,
     // Para yazımı denetimi (K6; lib/bank/post.mjs) test kipi: ihlal hata verir ve işlemi geri alır. Üretimde (varsayılan) iş durmaz,
     // sunucu günlüğüne ve meta.bank.integrity'ye yazılır. Yalnız programdan (testler) açılır.
     moneyStrict: overrides.moneyStrict === true,

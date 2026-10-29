@@ -710,5 +710,16 @@ export function createLicenseService({
   // 2.4.7 M2: lisanstaki mobil cihaz sınırı (belirteçte yoksa 3; docs/mobil/M2-TASARIM.md §3).
   const mobileDeviceLimit = () => (Number.isInteger(token?.mobileDevices) ? token.mobileDevices : DEFAULT_MOBILE_DEVICES);
 
-  return { init, start, stop, status, writable, mobileDeviceLimit, summary: summaryFor, permissionsFor, assertWritable, check, startTrial, activateKey, applyCode, submitContact, usageSummary: usageBody, machine: () => ({ ...machine, installCode: formatInstallCode(machine.id) }) };
+  // 2.4.7 M3: kapıcının ofisin yazma yetkisini doğruladığı belgenin kendisi — lisans servisinin imzaladığı zarf (biçim lib/license-token.mjs). Gizli değildir
+  // (imzalı iddialar); kapıcı imzayı lisans açık anahtarıyla doğrular. Belirteç yoksa null.
+  const tokenEnvelope = () => {
+    if (!token) return null;
+    try {
+      return JSON.parse(store.setting(S.token, "") || "null");
+    } catch {
+      return null;
+    }
+  };
+
+  return { init, start, stop, status, writable, mobileDeviceLimit, tokenEnvelope, summary: summaryFor, permissionsFor, assertWritable, check, startTrial, activateKey, applyCode, submitContact, usageSummary: usageBody, machine: () => ({ ...machine, installCode: formatInstallCode(machine.id) }) };
 }

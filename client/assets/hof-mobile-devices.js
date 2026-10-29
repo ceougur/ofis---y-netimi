@@ -13,7 +13,17 @@
     if (!data.licenseOk) return `<p class="adm-mobile-warn" data-mobile-license>Lisans geçerli değil; uzaktan erişim kapalı ve karekod oluşturulamaz. Eşli cihazlar silinmez, lisans yenilenince yeniden bağlanır.</p>`;
     const count = `<p class="adm-mobile-count" data-mobile-count><b>${data.used} / ${data.limit}</b> eşli cihaz (iki şirket birlikte; telefon, tablet ve uzak tarayıcı sayılır).</p>`;
     const full = data.full ? `<p class="adm-mobile-warn" data-mobile-full-note>${data.limit} cihazın hepsi eşli; yeni cihaz için önce aşağıdan birini silin.</p>` : "";
-    return count + full;
+    return count + full + ozetHtml(data.ozet);
+  };
+  // 2.4.7 M3: sunucu kapalıyken telefonda görünen şifreli özetin son yüklemesi (kapıcı açıksa).
+  const ozetHtml = ozet => {
+    if (!ozet?.enabled) return "";
+    const son = ozet.son;
+    if (!son) return `<p class="adm-mobile-count" data-mobile-ozet>Bulut Özeti: henüz yüklenmedi (ilk eşli cihazla yüklenir).</p>`;
+    const zaman = new Date(son.zaman).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" });
+    return son.ok
+      ? `<p class="adm-mobile-count" data-mobile-ozet>Bulut Özeti: son yükleme ${esc(zaman)} (sunucu kapalıyken telefonda bu hâl görünür).</p>`
+      : `<p class="adm-mobile-warn" data-mobile-ozet>Bulut Özeti yüklenemedi (${esc(zaman)}): ${esc(son.mesaj || son.kod)}</p>`;
   };
   const codeBlocked = (data, user) => {
     if (!data.licenseOk) return "Lisans geçerli değil.";
