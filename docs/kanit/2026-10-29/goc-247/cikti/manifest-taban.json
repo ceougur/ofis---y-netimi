@@ -1,0 +1,251 @@
+{
+ "version": "v2.4.6",
+ "commit": "d31b486842d4de215ca0ba1d566af417a38ee936",
+ "seed": 7,
+ "hacim": "buyuk",
+ "startDay": "2025-09-29",
+ "endDay": "2026-10-29",
+ "companies": {
+  "A": {
+   "id": "sirket-001",
+   "code": "001",
+   "name": "Merkez Ticaret ve Danışmanlık A.Ş.",
+   "edocFrom": "2026-04-29",
+   "lockedUntil": "2026-04-29",
+   "lastDeleted": "SMM2026000000074",
+   "invoices": 1199
+  },
+  "B": {
+   "id": "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120",
+   "code": "002",
+   "name": "Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti.",
+   "edocFrom": "2026-04-29",
+   "lastDeleted": "SMM2026000000118",
+   "invoices": 631
+  }
+ },
+ "counts": {
+  "banka-hesabi": 4,
+  "pos": 2,
+  "cari-excel": 3800,
+  "cari-elle": 146,
+  "stok-karti": 80,
+  "tablo-satiri": 12020,
+  "tablo-kaydi": 12020,
+  "cari-kayda-bagli": 48,
+  "kayit-tahsilati-bank": 63,
+  "evrak-alindi-cheque": 198,
+  "cari-tahsilat-card": 74,
+  "cari-tahsilat-cash": 194,
+  "fatura-kagit": 589,
+  "fatura-taksitli": 134,
+  "stok-giris": 66,
+  "cari-tahsilat-bank": 100,
+  "kayit-tahsilati-cash": 138,
+  "fatura-silindi": 33,
+  "evrak-verildi-cheque": 66,
+  "fatura-kendi-evraki": 248,
+  "fatura-alis": 395,
+  "smm-kagit": 257,
+  "stok-satis-cash": 38,
+  "banka-fisi": 26,
+  "banka-transfer": 26,
+  "kdv-mahsup": 26,
+  "vergi-odemesi-kdv": 26,
+  "vergi-odemesi-muhtasar": 26,
+  "cari-odeme-bank": 122,
+  "cari-tahsilat-cash-kapatilacak": 87,
+  "taksit-karti": 50,
+  "cari-odeme-cash": 81,
+  "kasa-cikis": 85,
+  "taksit-tahsilat-bank": 38,
+  "taksit-tahsilat-card": 35,
+  "fatura-silinenlerden-geri-yuklendi": 17,
+  "cari-tahsilat-bank-kapatilacak": 41,
+  "taksit-tahsilat-cash": 37,
+  "cari-borc": 31,
+  "stok-satis-card": 38,
+  "fatura-kagit-iptal": 10,
+  "evrak-alindi-note": 68,
+  "evrak-faturayla-ciro": 58,
+  "kasa-giris": 64,
+  "evrak-tahsile-ver": 175,
+  "fatura-satistan-iade": 47,
+  "kasa-banka-to-bank": 36,
+  "evrak-nakit-tahsil": 92,
+  "evrak-bankadan-tahsil": 152,
+  "evrak-karsiliksiz-bagsiz": 32,
+  "evrak-verildi-note": 26,
+  "kasa-banka-to-cash": 21,
+  "evrak-verilen-odendi": 88,
+  "evrak-karsiliksiz-fatura": 21,
+  "evrak-ciro": 84,
+  "cari-tahsilat-card-kapatilacak": 36,
+  "evrak-karsiliksiz-cirodan-bagsiz": 15,
+  "fatura-alistan-iade": 11,
+  "evrak-portfoyde-degil-atlandi": 8,
+  "evrak-karsiliksiz-tahsilde-fatura": 9,
+  "yedek": 10,
+  "evrak-karsiliksiz-tahsilde-bagsiz": 14,
+  "evrak-karsiliksiz-cirodan-fatura": 9,
+  "edoc-acildi": 2,
+  "fatura-earsiv": 434,
+  "ebelge-birakildi": 79,
+  "ebelge-sonra-gonderildi": 139,
+  "ebelge-birakilan-gonderildi": 32,
+  "ebelge-tumunu-gonder": 39,
+  "ebelge-tumunu-gonder-belge": 176,
+  "fatura-efatura": 113,
+  "ebelge-iptal": 15,
+  "kayit-tahsilati-aktarim-oncesi": 75,
+  "tablodan-aktar-kart": 142,
+  "tablodan-aktar-tasinan-tahsilat": 40,
+  "fatura-silme-reddedildi-409": 1,
+  "fatura-geri-yukleme-reddedildi-409": 1,
+  "fatura-silindi-son": 2
+ },
+ "refusals": {},
+ "backups": [
+  {
+   "company": "A",
+   "companyId": "sirket-001",
+   "day": "2025-12-01",
+   "name": "destekofis-001-2026-10-29T12-20-12-851Z-manuel.sqlite",
+   "path": "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-20-12-851Z-manuel.sqlite"
+  },
+  {
+   "company": "B",
+   "companyId": "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120",
+   "day": "2025-12-01",
+   "name": "destekofis-002-2026-10-29T12-20-12-988Z-manuel.sqlite",
+   "path": "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-20-12-988Z-manuel.sqlite"
+  },
+  {
+   "company": "A",
+   "companyId": "sirket-001",
+   "day": "2026-03-02",
+   "name": "destekofis-001-2026-10-29T12-20-39-355Z-manuel.sqlite",
+   "path": "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-20-39-355Z-manuel.sqlite"
+  },
+  {
+   "company": "B",
+   "companyId": "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120",
+   "day": "2026-03-02",
+   "name": "destekofis-002-2026-10-29T12-20-39-471Z-manuel.sqlite",
+   "path": "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-20-39-471Z-manuel.sqlite"
+  },
+  {
+   "company": "A",
+   "companyId": "sirket-001",
+   "day": "2026-06-01",
+   "name": "destekofis-001-2026-10-29T12-21-13-367Z-manuel.sqlite",
+   "path": "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-21-13-367Z-manuel.sqlite"
+  },
+  {
+   "company": "B",
+   "companyId": "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120",
+   "day": "2026-06-01",
+   "name": "destekofis-002-2026-10-29T12-21-13-464Z-manuel.sqlite",
+   "path": "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-21-13-464Z-manuel.sqlite"
+  },
+  {
+   "company": "A",
+   "companyId": "sirket-001",
+   "day": "2026-09-01",
+   "name": "destekofis-001-2026-10-29T12-22-08-836Z-manuel.sqlite",
+   "path": "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-22-08-836Z-manuel.sqlite"
+  },
+  {
+   "company": "B",
+   "companyId": "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120",
+   "day": "2026-09-01",
+   "name": "destekofis-002-2026-10-29T12-22-09-005Z-manuel.sqlite",
+   "path": "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-22-09-005Z-manuel.sqlite"
+  },
+  {
+   "company": "A",
+   "companyId": "sirket-001",
+   "day": "2026-10-29",
+   "name": "destekofis-001-2026-10-29T12-22-52-145Z-manuel.sqlite",
+   "path": "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-22-52-145Z-manuel.sqlite"
+  },
+  {
+   "company": "B",
+   "companyId": "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120",
+   "day": "2026-10-29",
+   "name": "destekofis-002-2026-10-29T12-22-52-508Z-manuel.sqlite",
+   "path": "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-22-52-508Z-manuel.sqlite"
+  }
+ ],
+ "users": [
+  {
+   "username": "ayse",
+   "name": "Ayşe Fatura",
+   "role": "personel",
+   "grants": {
+    "add": [
+     "invoices.view",
+     "invoices.manage"
+    ],
+    "remove": []
+   }
+  },
+  {
+   "username": "mehmet",
+   "name": "Mehmet Muhasebe",
+   "role": "muhasebe",
+   "grants": {
+    "add": [],
+    "remove": [
+     "cash.view"
+    ]
+   }
+  },
+  {
+   "username": "zeynep",
+   "name": "Zeynep Tahsilat",
+   "role": "role-10faf2e3-ac4a-4e3a-9142-d0527fabfa97",
+   "grants": {
+    "add": [],
+    "remove": []
+   }
+  }
+ ],
+ "timings": {
+  "acilis": 4850,
+  "toplam": 180353
+ },
+ "requests": 6194,
+ "deleteRefusals": [
+  {
+   "company": "001",
+   "day": "2026-09-10",
+   "what": "fatura-silme",
+   "status": 409,
+   "message": "Belge 29.04.2026 tarihli; 29.04.2026 ve öncesi kilitli dönem. Silmek için dönem kilidi açılmalı."
+  },
+  {
+   "company": "001",
+   "day": "2026-10-22",
+   "what": "fatura-geri-yukleme",
+   "status": 409,
+   "message": "Bu satış faturası 07.04.2026 tarihli; 29.04.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı."
+  }
+ ],
+ "edm": {
+  "sent": 495,
+  "cancelled": 11,
+  "violations": []
+ },
+ "ms": 181343,
+ "vade": {
+  "puts": 112,
+  "sirket-001:kilitliRet": 383,
+  "sirket-001:vade": 8,
+  "sirket-001:vadeBeklenen": 3,
+  "sirket-001:elleBorc": 798,
+  "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120:vade": 73,
+  "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120:vadeBeklenen": 28,
+  "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120:elleBorc": 207
+ }
+}

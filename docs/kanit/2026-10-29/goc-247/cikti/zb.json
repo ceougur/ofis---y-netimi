@@ -1,0 +1,63 @@
+{
+ "source": "zb-taban",
+ "pathVersions": [
+  "v2.4.4",
+  "v2.4.6"
+ ],
+ "checks": [
+  {
+   "name": "001 yol bağımsızlığı: zb-taban → v2.4.4 → v2.4.6 → aday = zb-taban → aday (doğrudan) (fark yok)",
+   "ok": true,
+   "detail": {
+    "diff": "[]"
+   }
+  },
+  {
+   "name": "001 şema 39 (adım adım 39, doğrudan 39), bütünlük ok/ok",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "001 veri dosyası: tablolar aynı; satır sayıları aynı (farklı: audit_events,sessions — oturum/denetim izi hariç)",
+   "ok": true,
+   "detail": {
+    "tablesSame": false,
+    "diffCounts": {
+     "audit_events": [
+      1326,
+      1324
+     ],
+     "sessions": [
+      4,
+      2
+     ]
+    }
+   }
+  },
+  {
+   "name": "002 yol bağımsızlığı: zb-taban → v2.4.4 → v2.4.6 → aday = zb-taban → aday (doğrudan) (fark yok)",
+   "ok": true,
+   "detail": {
+    "diff": "[]"
+   }
+  },
+  {
+   "name": "002 şema 39 (adım adım 39, doğrudan 39), bütünlük ok/ok",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "002 veri dosyası: tablolar aynı; satır sayıları aynı (farklı: yok — oturum/denetim izi hariç)",
+   "ok": true,
+   "detail": {
+    "tablesSame": true,
+    "diffCounts": {}
+   }
+  }
+ ],
+ "farkSiniflari": {
+  "EŞİT": 82,
+  "BELGELİ": 6,
+  "BULGU": 4
+ }
+}

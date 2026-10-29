@@ -1,0 +1,46 @@
+{
+ "checks": [
+  {
+   "name": "001 göçten sonra v2.4.6 açınca gösterdiği = göçten önce gösterdiği (fark yok)",
+   "ok": true,
+   "detail": {
+    "d1": "[]"
+   }
+  },
+  {
+   "name": "001 v2.4.6 açılışı şemayı geri almaz (39 kalır; 39), mobil tablolar duruyor",
+   "ok": true,
+   "detail": {
+    "version": 39
+   }
+  },
+  {
+   "name": "001 v2.4.6'dan sonra yeniden aday: gösterdiği = göç ölçüsü (fark yok)",
+   "ok": true,
+   "detail": {
+    "d2": "[]"
+   }
+  },
+  {
+   "name": "002 göçten sonra v2.4.6 açınca gösterdiği = göçten önce gösterdiği (fark yok)",
+   "ok": true,
+   "detail": {
+    "d1": "[]"
+   }
+  },
+  {
+   "name": "002 v2.4.6 açılışı şemayı geri almaz (39 kalır; 39), mobil tablolar duruyor",
+   "ok": true,
+   "detail": {
+    "version": 39
+   }
+  },
+  {
+   "name": "002 v2.4.6'dan sonra yeniden aday: gösterdiği = göç ölçüsü (fark yok)",
+   "ok": true,
+   "detail": {
+    "d2": "[]"
+   }
+  }
+ ]
+}

@@ -1,0 +1,23 @@
+  ✓ 001 aday yedeği destekofis-001-2026-10-29T12-32-57-745Z-manuel.sqlite alındı; ara çalışma yazıldı (Kasa 200, cari 200; değişen bölümler accounts,trial,trialTotals,reconciliation,cash,reports)
+  ✓ 001 aday yedeği geri yüklendi: olgular yedek anıyla aynı (0 bölüm farklı)
+  ✓ 001 geri yüklemeden sonra yeniden çalışma 200 (200); Mutabakat Testi sapma 0 (yedek anında 0)
+  ✓ 001 aday yedeğinin geri yüklenmesinden sonra eşli telefon oturumu sürer (200)
+  ✓ 002 aday yedeği destekofis-002-2026-10-29T12-34-19-014Z-manuel.sqlite alındı; ara çalışma yazıldı (Kasa 200, cari 200; değişen bölümler accounts,trial,trialTotals,reconciliation,cash,reports)
+  ✓ 002 aday yedeği geri yüklendi: olgular yedek anıyla aynı (0 bölüm farklı)
+  ✓ 002 geri yüklemeden sonra yeniden çalışma 200 (200); Mutabakat Testi sapma 0 (yedek anında 0)
+  ✓ 002 aday yedeğinin geri yüklenmesinden sonra eşli telefon oturumu sürer (200)
+  ✓ aday: eşleme (200) + uzak giriş (200) geri yüklemeden önce
+  ✓ 001 geri yüklenen eski yedek (destekofis-001-2026-10-29T12-22-52-145Z-manuel.sqlite) adayda şema 39 (eski sürümde 36), bütünlük ok
+[12:34:49] 001 eski yedek: v2.4.6'nın geri yüklediği ↔ adayın geri yüklediği: 0 bölüm farklı []
+  ✓ 001 aynı eski yedek: v2.4.6'nın gösterdiği = adayın gösterdiği (para, cari, mizan, Kasa, banka, çek, fatura, taksit, stok, raporlar; farklı bölüm: yok)
+  ✓ 002 geri yüklenen eski yedek (destekofis-002-2026-10-29T12-22-52-508Z-manuel.sqlite) adayda şema 39 (eski sürümde 36), bütünlük ok
+[12:34:49] 002 eski yedek: v2.4.6'nın geri yüklediği ↔ adayın geri yüklediği: 0 bölüm farklı []
+  ✓ 002 aynı eski yedek: v2.4.6'nın gösterdiği = adayın gösterdiği (para, cari, mizan, Kasa, banka, çek, fatura, taksit, stok, raporlar; farklı bölüm: yok)
+  ✓ 001'in eski (v2.4.6) yedeği geri yüklendikten sonra eşli cihaz ortak katmanda kalır (1 cihaz) ve telefon oturumu sürer (200)
+# yedek: eski sürüm yedeği eski ↔ aday, aday yedek tatbikatı, ortak katman
+# tests 14
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

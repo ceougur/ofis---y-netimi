@@ -1,0 +1,84 @@
+{
+ "limit": 3,
+ "used": 3,
+ "full": true,
+ "licenseOk": true,
+ "remoteUrl": "",
+ "codeMinutes": 5,
+ "users": [
+  {
+   "id": "user-8f52fb2a-5c3c-48fb-8c24-2d4ee4b984d0",
+   "username": "ayse",
+   "name": "Ayşe Fatura",
+   "role": "personel",
+   "active": true,
+   "remote": true
+  },
+  {
+   "id": "user-b07e3b4e-82fc-4a80-a7ae-629c14d00720",
+   "username": "mehmet",
+   "name": "Mehmet Muhasebe",
+   "role": "muhasebe",
+   "active": true,
+   "remote": true
+  },
+  {
+   "id": "user-8244b2d6-f75b-4d4e-abac-fa451c508d52",
+   "username": "admin",
+   "name": "Ofis yöneticisi",
+   "role": "admin",
+   "active": true,
+   "remote": true
+  },
+  {
+   "id": "user-b1193de5-ef20-40c3-9dfc-a5839041c4e5",
+   "username": "zeynep",
+   "name": "Zeynep Tahsilat",
+   "role": "personel",
+   "active": true,
+   "remote": true
+  }
+ ],
+ "devices": [
+  {
+   "id": "dev-8f8e63ba-daab-4f45-8bc0-fd533058407f",
+   "name": "Göç Telefonu 1",
+   "kind": "telefon",
+   "userId": "user-8244b2d6-f75b-4d4e-abac-fa451c508d52",
+   "userName": "Ofis yöneticisi",
+   "username": "admin",
+   "createdAt": "2026-10-29T12:31:32.081Z",
+   "lastSeenAt": "2026-10-29T12:31:32.498Z",
+   "kindLabel": "Telefon"
+  },
+  {
+   "id": "dev-d17b7c1d-1b8c-4ced-b0b7-cd513887f95f",
+   "name": "Göç Tableti",
+   "kind": "telefon",
+   "userId": "user-b07e3b4e-82fc-4a80-a7ae-629c14d00720",
+   "userName": "Mehmet Muhasebe",
+   "username": "mehmet",
+   "createdAt": "2026-10-29T12:31:32.524Z",
+   "lastSeenAt": "2026-10-29T12:31:32.583Z",
+   "kindLabel": "Telefon"
+  },
+  {
+   "id": "dev-40c38bb6-a813-4233-b811-22c19122a843",
+   "name": "Göç Telefonu 3",
+   "kind": "telefon",
+   "userId": "user-b1193de5-ef20-40c3-9dfc-a5839041c4e5",
+   "userName": "Zeynep Tahsilat",
+   "username": "zeynep",
+   "createdAt": "2026-10-29T12:31:32.598Z",
+   "lastSeenAt": "2026-10-29T12:31:32.646Z",
+   "kindLabel": "Telefon"
+  }
+ ],
+ "ozet": {
+  "enabled": false,
+  "ofis": "",
+  "publicUrl": "",
+  "son": null,
+  "bekleyen": false
+ }
+}

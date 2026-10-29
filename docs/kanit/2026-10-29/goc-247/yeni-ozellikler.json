@@ -1,0 +1,43 @@
+{
+  "ad": "goc-247/yeni-ozellikler",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/goc247-20261029T1215/arac/goc247.mjs yeni --repo /home/user/ofis---y-netimi/.claude/worktrees/agent-a033e243fc1fdff5b --kok /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/goc247-20261029T1215/kok",
+  "commit": "d5e70c3b6a3a27a8ec5859031c3df8691781908d",
+  "dal": "worktree-agent-a033e243fc1fdff5b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T12:27:16.047Z",
+  "sure_sn": 2.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 11,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "001 göçten sonra Kes ve Gönder e-Arşiv (200, ) → sayaç 2026-10 e-Arşiv 1, e-Fatura 0, e-SMM 0 — {\"status\":200,\"data\":\"{\\\"id\\\":\\\"invoice-5f57f14c-14be-4795-a007-49615912f4c9\\\",\\\"kind\\\":\\\"sale\\\",\\\"kindLabel\\\":\\\"Satış Faturası\\\",\\\"scenario\\\":\\\"service_sale\\\",\\\"scenarioLabel\\\":\\\"Hizmet Satışı\\\",\\\"status",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "telefondan oturum (200) iki şirketi görür — {\"data\":\"{\\\"ok\\\":true,\\\"data\\\":{\\\"user\\\":{\\\"id\\\":\\\"user-8244b2d6-f75b-4d4e-abac-fa451c508d52\\\",\\\"username\\\":\\\"admin\\\",\\\"name\\\":\\\"Ofis yöneticisi\\\",\\\"roleLabel\\\":\\\"\\\",\\\"mustChangePassword\\\":false},\\\"office\\\":{\\\"name\\\":\\\"Merkez Ticaret ve Danışmanlık A.Ş.\\\"}",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/goc-247/yeni-ozellikler.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a033e243fc1fdff5b",
+  "ham_cikti_sha256": "8b539759a335fdd3d7273a6cf1bbad0b20ed454459ceb5cc6399a9a18981675b",
+  "ham_cikti_bayt": 2561
+}

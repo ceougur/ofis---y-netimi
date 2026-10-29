@@ -1,0 +1,32 @@
+{
+  "ad": "goc-247/fark-v246-aday",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/goc247-20261029T1215/arac/goc247.mjs fark --repo /home/user/ofis---y-netimi/.claude/worktrees/agent-a033e243fc1fdff5b --kok /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/goc247-20261029T1215/kok",
+  "commit": "d5e70c3b6a3a27a8ec5859031c3df8691781908d",
+  "dal": "worktree-agent-a033e243fc1fdff5b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T12:26:43.096Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 2,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 92,
+    "gecen": 86,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 2; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/goc-247/fark-v246-aday.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a033e243fc1fdff5b",
+  "ham_cikti_sha256": "1efa8c8ee209b133ee9708401cc2209ae0c0f9c30a7b5f714f718f3ef4207c8d",
+  "ham_cikti_bayt": 4731
+}
