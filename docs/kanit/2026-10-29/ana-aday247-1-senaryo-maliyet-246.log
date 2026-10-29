@@ -1,0 +1,132 @@
+
+> destekofis@2.4.6 test:senaryo-maliyet-246
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-maliyet-246.mjs
+
+
+■ M1 sektör Genel: Stok penceresinde Maliyet Hesap Kartı girişi yok
+  ✓ API durum acik=false (sektör genel)
+  ✓ Stok penceresinde giriş YOK
+  ✓ API 403 (maliyet-sector)
+
+■ M2 Ayarlar → Sektörü Değiştir → Duşakabin Üretimi → giriş var
+  ✓ veri tabanında sektör dusakabin
+  ✓ Stok penceresinde “Maliyet Hesap Kartı” girişi VAR
+
+■ M3 kart açılır: 4 sekme (sunucu sırası), kartlar, ipucu satırı yok, yazım düzeni
+  ✓ üstte 4 sekme: Cam Maliyet · Bayi Fiyat Listesi 1 · Mika Maliyet · Bayi Fiyat Listesi 2
+  ✓ Cam Maliyet sekmesinde 5 kart (her bölüm ayrı kart)
+  ✓ kartın içinde ipucu / yardım satırı yok (0)
+  ✓ başlık ve düğmeler yazım düzeninde
+  ✓ pencere başlığı “Maliyet Hesap Kartı”
+  ✓ fiyat listesi matris tablo (244 hücre, 30 taban); ölçü satırı ekle YOK (K3)
+
+■ M3b 2.4.7 yeni kart: iki oran kutusu boş, etiketler KDV / Toplam / Maliyet (Mika Masraf% / Toplam / Maliyet), kutu önünde yalnız %
+  ✓ Cam etiketleri ["KDV","Toplam","Maliyet"] (ekranda “Toplam”, “—” yok)
+  ✓ Cam iki oran kutusu boş [["",null],["",null]]
+  ✓ kutunun önünde yalnız “%” ["%","%"]; boş kartta sonuç 0
+  ✓ Mika: {"etiket":["Masraf%","Toplam","Maliyet"],"kutu":[["",null],["",null]],"param":["%","%"],"toplamaYazi":"Toplam","sonuc":0}
+  ✓ Mika'da hiçbir oran / toplama etiketinde sayı ya da “—” yok
+
+■ M4 miktar / fiyat insan hızında + Tab → canlı hesap; veri tabanına yazılmadı
+  ✓ oranlar yazıldı (18 / 20); etiket değişmedi
+  ✓ “2,5” → 2,5 ve “1.250,75” → 1250,75 (Türkçe sayı, binlik)
+  ✓ canlı hesap Excel kalıbıyla aynı: {"tutar":3126.875,"ara":3426.875,"yuzde":616.8375,"toplama":4043.7125,"ekle":4852.455,"bolme":24.262275} (beklenen bölme 24.262275)
+  ✓ gösterim kuruşla, binlik ayırıcılı (3.126,88 · 24,26)
+  ✓ fiyat alanı binlik ayırıcıyla gösterilir
+  ✓ Kaydet'ten önce veri tabanı değişmedi (miktar ve oran boş, rev 1)
+
+■ M5 ✎ kart adı ve ✎ malzeme adı
+  ✓ kart adı ekranda değişti
+  ✓ malzeme adı ekranda değişti
+  ✓ ad değişince sayılar aynı (V8)
+  ✓ veri tabanında ad henüz değişmedi
+
+■ M6 satır ekle (ad, birim, miktar, fiyat) ve satır sil
+  ✓ yeni satır eklendi (y-22087786)
+  ✓ eklenen satır: 4 × 25 = 100
+  ✓ eklenen satır ARA'ya girer, silinen çıkar (ARA 3526.875)
+
+■ M7 Kaydet → veri tabanında aynı değerler
+  ✓ kart adı ve sürüm (rev 2)
+  ✓ şablon satırları (7 satır)
+  ✓ eklenen satır veri tabanında
+  ✓ silinen satır veri tabanında yok
+  ✓ yazılan oranlar veri tabanında (18 / 20), etiket KDV
+  ✓ öbür kart değişmedi (yalıtım)
+  ✓ kaydedildikten sonra pencere temiz
+
+■ M8 değişiklik yokken Esc → soru YOK; kapat / aç → değerler aynı
+  ✓ Esc sorusuz kapattı
+  ✓ yeniden açınca kayıtlı değerler aynı
+  ✓ değişiklik yokken Çık → soru YOK
+
+■ M9 değiştir + Çık → soru → Kaydetmeden Kapat / Kaydet; geri alınca soru yok
+  ✓ değişiklik var → Çık “Kaydedilmemiş Değişiklik” sorar
+  ✓ Kaydetmeden Kapat → veri tabanı eski (3)
+  ✓ yeniden açınca eski değer
+  ✓ yeniden değiştir → Çık yine sorar
+  ✓ soruda Kaydet → veri tabanı yeni (7), pencere kapandı
+  ✓ değeri geri alınca pencere temiz (ön izleme degisti=false)
+  ✓ geri alınan değişiklikte Esc sorusuz
+  ✓ kaydedilmeyen ✎ ad geri döner (V17)
+
+■ M10 bölen 0 → ileti, alan eski değere döner, yazılmaz
+  ✓ ileti: ““Oval Kabin Özel”: Bölen 0 olamaz.”
+  ✓ bölen alanı 200'e döndü
+  ✓ taslak ve veri tabanı değişmedi (bölen 200)
+
+■ M11 iki kişi aynı anda → 409; ileti kartın adını söyler; taslak durur; Güncel Hâli Yükle
+  ✓ ileti kartın adını söyler: ““Oval Kabin Özel”: siz açtıktan sonra başka biri kaydetti; değişiklikleriniz kaydedilmedi. Değişiklikleriniz ekranda duruyor.”
+  ✓ kullanıcının yazdığı değer ekranda duruyor (kaybolmadı)
+  ✓ veri tabanında başkasının değeri; benim değişikliğim yazılmadı
+  ✓ Güncel Hâli Yükle → başkasının kaydı ekranda
+
+■ M12 yetkisiz (Personel) → giriş yok, API 403; görüntüleme verilince salt okunur
+  ✓ Personel: API 403 (maliyet.view yok)
+  ✓ Personel: Stok penceresinde giriş YOK
+  ✓ yönetici kişiye “Maliyet Hesap Kartı Görüntüleme” verdi (200)
+  ✓ salt okunur: girdi 0, ✎ 0, Kaydet 0, satır ekle/sil 0; Çık var
+  ✓ salt okunur görünümde kayıtlı değerler
+  ✓ Personel Kaydet API 403 (maliyet.manage yok)
+
+■ M13 dar pencere (1366 px) + büyük tutar → kart taşmaz
+  ✓ 1366 px'te büyük tutarla hiçbir kart taşmıyor
+  ✓ pencere ekranda (23–1343), yatay sayfa kaydırması yok
+  ✓ büyük tutar ham değer
+
+■ M14 başka sektöre geç → giriş kaybolur, veri durur; geri dönünce aynen
+  ✓ sektör Üretim ve fabrika → giriş YOK
+  ✓ API 403
+  ✓ veri tabanında veri duruyor
+  ✓ Duşakabin'e dönünce bütün kartlar aynen
+  ✓ giriş yeniden VAR
+
+■ M15 Enter: alanı kaydeder, odak sağdaki kutuya; satır sonunda alt satırın ilk kutusu; kartın son kutusunda yerinde
+  ✓ Miktar'da Enter → aynı satırın Birim Fiyat'ı: odak {"kart":"cam/170-2s2c-h182","satir":"s1","adim":"","alan":"fiyat","tag":"INPUT"}; düzenleme 1
+  ✓ Enter yazılanı kaydetti (miktar 2)
+  ✓ satırın son kutusunda Enter → alt satırın ilk kutusu (Birim): odak {"kart":"cam/170-2s2c-h182","satir":"s2","adim":"","alan":"birim","tag":"INPUT"}; düzenleme 1
+  ✓ s1 tutar 2 × 10 = 20 (canlı hesap)
+  ✓ değişmemiş kutuda Enter → sağdaki (Miktar): odak {"kart":"cam/170-2s2c-h182","satir":"s2","adim":"","alan":"miktar","tag":"INPUT"}; düzenleme 1
+  ✓ son malzeme satırının son kutusunda Enter → KDV oranı: odak {"kart":"cam/170-2s2c-h182","satir":"","adim":"yuzde","alan":"oran","tag":"INPUT"}; düzenleme 1
+  ✓ KDV oranında Enter → Maliyet oranı: odak {"kart":"cam/170-2s2c-h182","satir":"","adim":"yuzde_ekle","alan":"oran","tag":"INPUT"}; düzenleme 1
+  ✓ Maliyet oranında Enter → Bölen: odak {"kart":"cam/170-2s2c-h182","satir":"","adim":"bolme","alan":"bolen","tag":"INPUT"}; düzenleme 1
+  ✓ kartın son kutusunda Enter → odak yerinde: odak {"kart":"cam/170-2s2c-h182","satir":"","adim":"bolme","alan":"bolen","tag":"INPUT"}; düzenleme 1
+  ✓ oranlar Enter ile girildi, CM maliyeti Excel kalıbıyla
+  ✓ Enter kaydetmez (yalnız taslak; veri tabanı boş)
+
+■ M16 dört sekmede PDF: başlık sekmenin adı, ekrandaki (kaydedilmemiş) değer; hiçbir şey yazılmaz
+  ✓ Cam Maliyet: düğme “PDF” (ortak PDF düğmesi true), erişilebilir ad “Cam Maliyet - PDF”, ipucu “Cam Maliyet sekmesini PDF olarak indir (ekrandaki değerlerle)”
+  ✓ Cam Maliyet PDF (Cam Maliyet 29.10.2026.pdf, 37190 bayt)
+  ✓ Bayi Fiyat Listesi 1: düğme “PDF” (ortak PDF düğmesi true), erişilebilir ad “Bayi Fiyat Listesi 1 - PDF”, ipucu “Bayi Fiyat Listesi 1 sekmesini PDF olarak indir (ekrandaki değerlerle)”
+  ✓ Bayi Fiyat Listesi 1 PDF (Bayi Fiyat Listesi 1 29.10.2026.pdf, 36853 bayt)
+  ✓ Mika Maliyet: düğme “PDF” (ortak PDF düğmesi true), erişilebilir ad “Mika Maliyet - PDF”, ipucu “Mika Maliyet sekmesini PDF olarak indir (ekrandaki değerlerle)”
+  ✓ Mika Maliyet PDF (Mika Maliyet 29.10.2026.pdf, 39947 bayt)
+  ✓ Bayi Fiyat Listesi 2: düğme “PDF” (ortak PDF düğmesi true), erişilebilir ad “Bayi Fiyat Listesi 2 - PDF”, ipucu “Bayi Fiyat Listesi 2 sekmesini PDF olarak indir (ekrandaki değerlerle)”
+  ✓ Bayi Fiyat Listesi 2 PDF (Bayi Fiyat Listesi 2 29.10.2026.pdf, 37762 bayt)
+  ✓ PDF hiçbir şey yazmadı (taslaktaki 4.321,5 veri tabanında yok)
+  ✓ sayfa hatası yok
+
+Ekran görüntüleri: /home/user/ofis---y-netimi/test/e2e/artifacts/senaryo-maliyet-246
+Soru günlüğü: /home/user/ofis---y-netimi/test/e2e/artifacts/senaryo-maliyet-246/esc-kapat-gunluk.jsonl
+
+89 geçti, 0 kaldı
