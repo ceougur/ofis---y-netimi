@@ -14,7 +14,7 @@ const TUNNEL_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 
 /**
  * @param {object} o
- * @param {string} o.hostname kapıcının atadığı ofis adı (ör. ofis-1a2b….destekofis.net)
+ * @param {string} o.hostname kapıcının atadığı ofis adı (M3 düzeni <ofis>.destekofis.net, ofis = "o" + 16 base32)
  * @param {string} o.tunnelId
  * @param {number} o.remotePort uzak dinleyicinin portu (listenRemote adresi)
  * @param {number[]} o.forbiddenPorts ofis ağı portları (ana dinleyici, servis yöneticisi kapısı)

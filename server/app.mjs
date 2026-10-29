@@ -958,7 +958,7 @@ export function createApp(overrides = {}) {
       db.close();
     },
   };
-  // 2.4.7 M4: canlı bağlantı (tünel) — yalnız ortak katmanda ve `tunnel` seçeneğiyle (server.mjs); lib/tunnel/attach.mjs.
-  context.tunnel = hub ? null : attachTunnel({ option: overrides.tunnel, config, store, license, mobileRemote: context.mobileRemote, listenRemote: () => (remoteServer.listening ? Promise.resolve(remoteServer.address()) : app.listenRemote(0, "127.0.0.1")), forbiddenPorts: () => [config.port, config.publicPort, server.address()?.port].filter(Number.isInteger), log });
+  // 2.4.7 M4: canlı bağlantı (tünel) — yalnız ortak katmanda; M3 kapıcı adresi (config.mobileKapiUrl) varken ya da testte `tunnel` seçeneğiyle; lib/tunnel/attach.mjs.
+  context.tunnel = hub ? null : attachTunnel({ option: overrides.tunnel, config, store, license, mobileRemote: context.mobileRemote, mobileSync: () => context.mobileSync, listenRemote: () => (remoteServer.listening ? Promise.resolve(remoteServer.address()) : app.listenRemote(0, "127.0.0.1")), forbiddenPorts: () => [config.port, config.publicPort, server.address()?.port].filter(Number.isInteger), log });
   return app;
 }

@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { assertSafeIngress, buildIngress, cloudflaredArgs, ingressYaml } from "../server/lib/tunnel/config.mjs";
 
-const HOST = "ofis-0123456789abcdef.destekofis.net";
+const HOST = "oabcdefghijklmnop.destekofis.net";
 const ID = "12345678-1234-4234-8234-123456789abc";
 
 describe("M4 tünel yapılandırması", () => {

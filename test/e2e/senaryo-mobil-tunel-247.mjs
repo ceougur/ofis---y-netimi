@@ -2,8 +2,8 @@
 // Sahte kapıcı (bellekte) + sahte cloudflared (test/fixtures/sahte-cloudflared.mjs); gerçek Cloudflare'e/kapıcıya/lisans servisine çağrı yok (ders 30).
 // Gerçek tıklama ve insan hızında akış (ders 12); satır kendiliğinden yenilenir (sayfa yenilenmeden).
 //   T1 kimse uzaktan bağlanamazken: "Uzaktan Bağlantı" kartı, "Kapalı — Eşli cihaz yok; …"; ofis adresi yok.
-//   T2 Uzaktan Bağlanabilir işaretlenir → adres hazırlanır ("Ofis adresi: https://ofis-….destekofis.net"), durum yine Kapalı (süreç yok).
-//   T3 Karekod Oluştur → karekodun içeriği tünel adresi (https://ofis-…/mobil/#eslesme=); pencere kapanınca satır "Bağlı" (yenilemeden).
+//   T2 Uzaktan Bağlanabilir işaretlenir → adres hazırlanır ("Ofis adresi: https://<ofis>.destekofis.net"), durum yine Kapalı (süreç yok).
+//   T3 Karekod Oluştur → karekodun içeriği tünel adresi (https://<ofis>.destekofis.net/mobil/#eslesme=); pencere kapanınca satır "Bağlı" (yenilemeden).
 //   T4 lisans salt okunur → satır "Kapalı — Lisans geçerli değil…"; lisans dönünce yeniden "Bağlı".
 // Çıkış: "N geçti, M kaldı" (kaldıysa 1). Ekran görüntüleri EKRAN_DIR (varsayılan test/e2e/artifacts/senaryo-mobil-tunel-247).
 import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
@@ -20,7 +20,7 @@ const FAKE = path.join(here, "..", "fixtures", "sahte-cloudflared.mjs");
 const root = mkdtempSync(path.join(tmpdir(), "senaryo-mobil-tunel-247-"));
 const shots = process.env.EKRAN_DIR || path.join(here, "artifacts", "senaryo-mobil-tunel-247");
 mkdirSync(shots, { recursive: true });
-const HOST = "ofis-0123456789abcdef.destekofis.net";
+const HOST = "oabcdefghijklmnop.destekofis.net";
 let gateCalls = 0;
 const gate = { provision: async () => {
   gateCalls += 1;

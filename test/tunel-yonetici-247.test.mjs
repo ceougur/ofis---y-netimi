@@ -27,7 +27,7 @@ const isAlive = pid => {
   }
 };
 const FAKE = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures", "sahte-cloudflared.mjs");
-const HOST = "ofis-0123456789abcdef.destekofis.net";
+const HOST = "oabcdefghijklmnop.destekofis.net";
 const TUNNEL_ID = "12345678-1234-4234-8234-123456789abc";
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function until(fn, ms = 15_000, what = "koşul") {
