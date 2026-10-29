@@ -46,6 +46,7 @@
   <li>Raporlar</li>
   <li>Belgeler ve Mesajlar</li>
   <li>Yönetici İçin</li>
+  <li>Telefondan Kullanım</li>
   <li>Bir Sorun mu Var?</li>
 </ol>
 
@@ -63,18 +64,18 @@
 <h2>2. Verinizi Yükleyin</h2>
 <ol class="steps">
   <li>Excel dosyanızı açılış ekranındaki kutuya <b>sürükleyin</b> (ya da <b>Excel Dosyası Seçin</b>) veya Google Sheets bağlantısını yapıştırıp <b>Bağla</b>'ya basın.</li>
-  <li>Açılan ön izlemede program her kolonu ne saydığını yazar. <b>Sarı</b> olan varsa bakın, gerekirse açılır listeden doğru türü seçin (ör. <i>Son Tarih / Vade</i>), sonra <b>Yükle</b>.</li>
-  <li>Program sektörünüzü önerir: doğruysa <b>Evet, Uygula</b>; değilse <b>Başka Sektör Seç</b>. Listede yoksa <b>Kendi Sektörünüzü Oluşturun</b>: kayıtlarınıza ne dediğinizi (öğrenci, tekne, hasta…) yazın, <b>Kaydet ve Uygula</b>.</li>
+  <li>Ön izlemede <b>sarı</b> kolon varsa açılır listeden doğru türü seçin, sonra <b>Yükle</b>.</li>
+  <li>Önerilen sektör doğruysa <b>Evet, Uygula</b>; değilse <b>Başka Sektör Seç</b> ya da <b>Kendi Sektörünüzü Oluşturun</b> → <b>Kaydet ve Uygula</b>.</li>
 </ol>
 <div class="pair">
 <figure><img src="ekran/k03-analiz.jpg" alt="Veri analizi ve sektör önerisi"><figcaption>Program ne bulduğunu ve neden o sektörü önerdiğini gösterir; siz onaylamadan hiçbir şey değişmez.</figcaption></figure>
 <figure><img src="ekran/k09-kendi-sektorun.jpg" alt="Kendi sektörünü oluşturma"><figcaption>Kendi sektörünüz: alttaki ön izleme ekranların nasıl görüneceğini gösterir.</figcaption></figure>
 </div>
-<p><b>Exceliniz yok mu?</b> Açılış ekranındaki <b>Taslak Excel'i İndir</b>'e basın, sektörünüzü seçin. Sektörünüze uygun başlıklarla boş bir Excel iner; doldurup aynı ekrandan yükleyin.</p>
+<p><b>Exceliniz yok mu?</b> <b>Taslak Excel'i İndir</b> ile sektörünüze uygun boş Excel'i indirin, doldurup yükleyin.</p>
 <figure class="w80"><img src="ekran/k15-taslak-excel.jpg" alt="Açılış ekranı"><figcaption>Açılış ekranı: Excel'i yükleyin ya da Google Sheets bağlantısını yapıştırın; yoksa taslağı indirip doldurun.</figcaption></figure>
-<div class="box"><b class="t">Excel'deki Her Şey Gelir</b>Tüm sayfalar sekme olur; formüller programda da hesaplanır; açılır listeler programda da açılır liste olur. Google Sheets bağlıysa değişiklikler kendiliğinden gelir. Okunamayan satırlar sizi durdurmaz: <b>İşaretlenen hatalar</b> sekmesine gider, düzeltip <b>Sorun Yok</b> dersiniz.</div>
-<div class="box tip"><b class="t">Borç Sütunu Nasıl Tanınır</b>Tablo raporları borcu tablonuzun tutar sütunundan okur: önce <b>Kalan Borç</b>; o satırda Kalan boşsa <b>Toplam Borç</b>, <b>Genel Toplam</b> ya da <b>Tutar</b>. Kalan Borç sütunu yoksa toplamdan ödenen düşülür. Telefon, T.C. Kimlik No, Vergi No, gün ve adet sütunları tutar sayılmaz. Ödeme sözü sütunları (<i>Söz Tutarı</i>, <i>Taahhüt Tutarı</i>, <i>Söz Miktarı</i>) borç değil, beklenen tahsilattır. Raporda “borç sütunu seçilemedi” ya da “borç sütunu yok” notu görürseniz Excel'de borç sütununun başlığını <b>Kalan Borç</b>, <b>Toplam Borç</b>, <b>Genel Toplam</b> ya da <b>Tutar</b> yapın (ör. “Taahhüt Bakiyesi” yerine “Kalan Borç”) ve tabloyu yeniden yükleyin; Google Sheets bağlıysa değişiklik eşitlemeyle gelir.</div>
-<div class="box"><b class="t">Aynı Tabloyu Yeniden Yüklemek</b>Veri varken yeni dosya yüklerseniz program sorar: <b>Devamı Olarak Ekle</b> yeni satırları ekler (aynı satırda kişisi değişen satır mevcut kaydın yerine geçmez, yeni kayıt olur); <b>Yerine Koy</b> tabloyu yeni dosyayla değiştirir (aynı dosyanın güncel hâli için; yeni dosyada olmayan kayıtlar tablodan kalkar, program sayısını önceden söyler). Kayıtlara eklediğiniz not, tahsilat, düzeltme ve cari bağı silinmez: kayıt yeni dosyada da varsa (aynı dosya numarası ya da aynı kişi tek satırda) ona taşınır. Eşleşmeyen kayıt olursa ön izleme adını yazar ve onay ister; onaylarsanız bağ eski kayıtta kalır ama yeni satırlarda görünmez. Google Sheets eşitlemesi bağları yeni satırlara bağlayamazsa otomatik eşitleme durur; <b>Ayarlar → Veri</b>'deki uyarıdan inceleyip karar verin. <b>Veriyi Kaldır</b>, <b>Sayfayı Sil</b> ve Sheet'te artık olmayan kayıtlar için <b>Listeyi Gör</b> → <b>Seçilenleri Kaldır</b> bağlı kayıtları kaldırmadan önce adlarıyla sorar. İşlemden önce yedek alınır.</div>
+<div class="box"><b class="t">Excel'deki Her Şey Gelir</b>Bütün sayfalar sekme olur; Google Sheets bağlıysa değişiklikler kendiliğinden gelir. Okunamayan satırlar <b>İşaretlenen hatalar</b> sekmesine düşer; düzeltip <b>Sorun Yok</b> deyin.</div>
+<div class="box tip"><b class="t">Borç Sütunu Nasıl Tanınır</b>Tablo raporları borcu önce <b>Kalan Borç</b> sütunundan, yoksa <b>Toplam Borç</b>, <b>Genel Toplam</b> ya da <b>Tutar</b> sütunundan okur. Raporda “borç sütunu seçilemedi” notu görürseniz Excel'de başlığı bunlardan biri yapıp tabloyu yeniden yükleyin.</div>
+<div class="box"><b class="t">Aynı Tabloyu Yeniden Yüklemek</b>Program sorar: <b>Devamı Olarak Ekle</b> yeni satırları ekler; <b>Yerine Koy</b> tabloyu dosyanın güncel hâliyle değiştirir (yeni dosyada olmayan kayıtlar kalkar, sayısı önceden söylenir). Kayıtlara eklediğiniz not, tahsilat ve cari bağı silinmez; taşınamayan bağ için program adıyla onay ister. İşlemden önce yedek alınır.</div>
 
 <h2>3. Ana Ekran</h2>
 <figure><img src="ekran/k04-ana-ekran.jpg" alt="Ana ekran"></figure>
@@ -86,7 +87,7 @@
   <li><b>Üstte zil:</b> bekleyen tahsilatlar, son günü yaklaşan işler ve görevleriniz.</li>
   <li><b>ANLIK DURUM</b> (yalnız yönetici) ve <b>özet kartları:</b> toplam kayıt, tutar toplamı, Veri Sağlığı. Karta tıklayınca ilgili liste açılır.</li>
   <li><b>Tahsilat Takvimi şeridi:</b> vadesi gelen taksit, fatura, çek / senet ve cari borçları; bir pile tıklayınca kalemin kartı açılır, <b>Tahsilat Gir</b> o kalemin formunu açar (6. bölüm).</li>
-  <li><b>Sayfalar şeridi (ortada):</b> her Excel / Google Sheets ayrı bir <b>sayfa</b>dır (eski adıyla oturum); ikinci dosya ikinci sayfa olur, veriler karışmaz. Pile tıklayınca o sayfa açılır; kalemle adını değiştirin, çöp kutusuyla <b>Sayfayı Sil</b> (ilk sayfa silinmez; silmeden önce tam yedek alınır, geri getirmek için Yedekler). <b>+ Sayfa</b>: <b>Excel'den Aktar</b> ve <b>Google Sheets'ten Aktar</b> (ön izleme ve kolon eşlemeyle veri sayfası; tarih kolonları tanınır, takvim ve uyarılar çalışır) ya da <b>Boş Sayfa</b> (elle doldurulan serbest sayfa). Bütün sayfaların yaklaşan tarihleri zilde ve Tahsilat Takvimi'nde sayfa adıyla görünür; <b>Kayda Git</b> o sayfaya geçer ve kaydı açar. Başka sayfanın uyarısını "Gerçekleştirildi" olarak işaretlemek için önce Kayda Git ile o sayfaya geçin.</li>
+  <li><b>Sayfalar şeridi (ortada):</b> her Excel / Google Sheets ayrı bir <b>sayfa</b>dır; veriler karışmaz. Pile tıklayınca o sayfa açılır; kalemle adını değiştirin, çöp kutusuyla <b>Sayfayı Sil</b> (ilk sayfa silinmez; önce tam yedek alınır). <b>+ Sayfa</b>: <b>Excel'den Aktar</b>, <b>Google Sheets'ten Aktar</b> ya da <b>Boş Sayfa</b>. Bütün sayfaların yaklaşan tarihleri zilde sayfa adıyla görünür; <b>Kayda Git</b> o sayfaya geçer.</li>
   <li><b>Sekmeler:</b> açık sayfanın Excel sayfaları. <b>✎</b> ile adını değiştirin ya da silin. Serbest sayfanın menüsünde <b>Veri Sekmesine Dönüştür</b>: başlık ve değerler veri sekmesi olur (tarih uyarıları, detay kartı ve raporlar kapsar).</li>
   <li><b>Tablo:</b> üstünde <b>Dışa Aktar</b> (Excel/CSV), yenile ve sık görünüm; altında arama kutusu (kutunun her yerine tıklayıp yazabilirsiniz, Enter ilk sonuca gider; kısayolu <b>Ctrl+Shift+F</b>). Kolon genişliğini başlığın sağ kenarından sürükleyin; çift tık eski haline döndürür.</li>
   <li><b>Sağda detay kartı:</b> seçtiğiniz kaydın bütün bilgileri ve işlemleri.</li>
@@ -103,12 +104,11 @@
 </div>
 
 <h2>4. Veri Sağlığı</h2>
-<p>Ana ekrandaki <b>Veri Sağlığı</b> kartı tablonuzdaki eksik ve hatalı hücreleri sayar (kimliği boş kayıt, geçersiz telefon, okunamayan tarih…). Karta tıklayın:</p>
+<p>Ana ekrandaki <b>Veri Sağlığı</b> kartı tablodaki eksik ve hatalı hücreleri sayar. Karta tıklayın:</p>
 <ul>
-  <li>Kayda tıklayınca tabloda o satıra gidersiniz; düzeltmeyi tablodan yaparsınız.</li>
-  <li>Bilerek böyle olan bir uyarıyı <b>Yok Say</b> ile kapatın: tek kayıt için satırın yanındaki, hepsi için başlıktaki <b>Yok Say (N)</b>. Puan buna göre yükselir (%100'e kadar); karar ofisteki herkes için geçerlidir ve yeni yüklemede de korunur. Yeni hatalı kayıt gelirse yalnız o uyarır.</li>
-  <li>Fikrinizi değiştirirseniz pencerenin altındaki <b>Yok Sayılanlar</b>'dan <b>Geri Al</b>.</li>
-  <li><b>Toplu Düzeltmeler</b> aynı türden farklı yazılmış telefon, tarih ve durumları tek tıkla tek yazıma çevirir.</li>
+  <li>Kayda tıklayınca tabloda o satıra gidersiniz; düzeltmeyi orada yapın.</li>
+  <li>Bilerek böyle olan uyarıyı <b>Yok Say</b> ile kapatın (başlıktaki <b>Yok Say (N)</b> hepsini kapatır); karar ofisteki herkes için geçerlidir. Geri almak için <b>Yok Sayılanlar</b> → <b>Geri Al</b>.</li>
+  <li><b>Toplu Düzeltmeler</b> farklı yazılmış telefon, tarih ve durumları tek yazıma çevirir.</li>
 </ul>
 <figure class="w80"><img src="ekran/k23-veri-sagligi.jpg" alt="Veri Sağlığı penceresi"><figcaption>Veri Sağlığı: kayıt başına ya da toptan <b>Yok Say</b>.</figcaption></figure>
 
@@ -417,7 +417,24 @@
 <figure><img src="ekran/k18-parolami-unuttum.jpg" alt="Giriş ekranı: Parolamı Unuttum"><figcaption>Parolamı Unuttum: anahtar ya da sunucu kodu ve yeni parola.</figcaption></figure>
 </div>
 
-<h2>18. Bir Sorun mu Var?</h2>
+<h2>18. Telefondan Kullanım</h2>
+<p>Telefon, tablet ya da ofis dışındaki bir bilgisayarın tarayıcısı bir kez eşlenir; sonra DestekOfis kullanıcı adınız ve parolanızla girersiniz. İnternet bağlantısı gerekir.</p>
+<ol class="steps">
+  <li><b>Eşleme (yönetici):</b> <b>Yönetim → Mobil Cihazlar</b>'da kişinin satırında <b>Uzaktan Bağlanabilir</b>'i işaretleyin, <b>Karekod Oluştur</b>'a basın. Karekod 5 dakika geçerli ve tek kullanımlıktır.</li>
+  <li><b>Telefonda:</b> karekodu kamerayla okutun, <b>Cihaz Adı</b>'nı yazıp <b>Eşleştir</b>'e basın. Sonra <b>Kullanıcı Adı</b> ve <b>Parola</b> → <b>Giriş Yap</b>. Karekod okuyamayan bilgisayarda karekodun altındaki <b>Eşleme Bağlantısı</b>'nı <b>Kopyala</b> ile alıp o bilgisayarın tarayıcısında açın.</li>
+  <li><b>Ana ekrana ekleyin:</b> iPhone'da Safari'de Paylaş → <b>Ana Ekrana Ekle</b>; Android'de Chrome menüsünden <b>Ana ekrana ekle</b>. DestekOfis bir uygulama gibi açılır.</li>
+</ol>
+<ul>
+  <li><b>Neler görünür:</b> <b>Genel Bakış</b>, <b>Cari Hesaplar</b>, <b>Kasa ve Banka</b>, <b>Stok Yönetimi</b> ve <b>Müşteri Raporları</b> (PDF ve Excel dahil). Yalnız yetkiniz olan bilgiler görünür.</li>
+  <li><b>Kayıt girmek:</b> cari kartında <b>Tahsilat Gir</b> ve <b>Ödeme Gir</b>; açık taksit kartı varsa <b>Tahsilat Yeri</b>'nden taksit kartını seçin. Stok kartında <b>Stok Girişi</b> (yalnız giriş; çıkış ve satış masaüstünden). Tahsilat ve ödeme carinin en eski açık borcunu kapatır, bugünün tarihiyle yazılır. Kim ne girebilir masaüstündeki yetkilerle aynıdır: <i>Cariden Tahsilat Girme</i>, <i>Taksit Tahsilatı Girme</i>, <i>Cari Yönetimi</i> (ödeme), <i>Stok Hareketi Girme</i>.</li>
+  <li><b>Bağlantı koparsa:</b> kaydın sonucu belirsizse ekranda <b>Sonucu Belirsiz İşlemler</b> çıkar; <b>Yeniden Gönder</b> aynı kaydı bir kez yazar, çift kayıt açmaz.</li>
+  <li><b>Ofisteki bilgisayar kapalıyken:</b> giriş ekranında <b>Son Özeti Göster</b>'e basın; son güncellemedeki bakiyeler ve hareketler salt okunur görünür. Bu sırada kayıt girilemez, rapor, PDF ve Excel alınamaz.</li>
+  <li><b>En çok 3 cihaz:</b> telefon, tablet ve uzak bilgisayar tarayıcısı sayılır; iki şirket birlikte. Yeni cihaz için önce birini silin.</li>
+  <li><b>Telefon kaybolursa:</b> <b>Yönetim → Mobil Cihazlar → Eşli Cihazlar</b>'da cihazın satırında <b>Sil</b>: o cihazın oturumu hemen kapanır. Kişinin bütün cihazlarını kapatmak için <b>Uzaktan Bağlanabilir</b> işaretini kaldırın.</li>
+  <li><b>Oturum:</b> 15 dakika işlem yapılmazsa ya da 12 saat sonra yeniden parola istenir.</li>
+</ul>
+
+<h2>19. Bir Sorun mu Var?</h2>
 <table>
   <thead><tr><th>Durum</th><th>Ne Yapmalı?</th></tr></thead>
   <tbody>
