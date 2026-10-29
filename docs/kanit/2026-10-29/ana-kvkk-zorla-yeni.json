@@ -1,0 +1,32 @@
+{
+  "ad": "ana-kvkk-zorla-yeni",
+  "komut": "node --import ./test/personel-ozluk-244-zorla.mjs --test test/personel-ozluk-244.test.mjs",
+  "commit": "abbfce0ecca5ab1dcf702aedfa84df1a264fb79a",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T06:11:55.346Z",
+  "sure_sn": 3.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-kvkk-zorla-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "f4606189a62358ce9719a00c7f357e3c71a5a124079bc1bd96de42953894949a",
+  "ham_cikti_bayt": 7570
+}
