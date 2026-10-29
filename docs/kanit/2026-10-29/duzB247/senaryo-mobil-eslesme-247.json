@@ -1,0 +1,32 @@
+{
+  "ad": "duzB247/senaryo-mobil-eslesme-247",
+  "komut": "npm run test:senaryo-mobil-eslesme-247",
+  "commit": "18206bae06e1ab77ffe2a9af8cf22cf4e434859d",
+  "dal": "worktree-agent-a74f8e8361c3a0fbb",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T12:44:01.069Z",
+  "sure_sn": 13.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 35,
+    "gecen": 35,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/duzB247/senaryo-mobil-eslesme-247.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a74f8e8361c3a0fbb",
+  "ham_cikti_sha256": "ef897b732ac965cc5b48f1220c58b5144cedfdd8d27aa509521da8e09ae4e153",
+  "ham_cikti_bayt": 2641
+}

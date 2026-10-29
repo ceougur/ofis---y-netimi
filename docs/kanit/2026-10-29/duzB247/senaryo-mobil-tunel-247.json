@@ -1,0 +1,32 @@
+{
+  "ad": "duzB247/senaryo-mobil-tunel-247",
+  "komut": "npm run test:senaryo-mobil-tunel-247",
+  "commit": "18206bae06e1ab77ffe2a9af8cf22cf4e434859d",
+  "dal": "worktree-agent-a74f8e8361c3a0fbb",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T12:44:48.409Z",
+  "sure_sn": 15.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/duzB247/senaryo-mobil-tunel-247.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a74f8e8361c3a0fbb",
+  "ham_cikti_sha256": "875477d917911e91840f89e5c57aee2b86de7b7b6345fb41b36c8d665d641c63",
+  "ham_cikti_bayt": 1312
+}
