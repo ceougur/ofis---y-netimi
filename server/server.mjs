@@ -11,7 +11,9 @@ import { createApp } from "./app.mjs";
 // (…/EFaturaEDM.svc → …/ESmmEDM.svc); canlıda müşteri EDM'den ayrıca e-SMM siparişi verir.
 // Testler bu dosyayı çalıştırmaz; kendi bayraklarını verir (test/helpers.mjs, varsayılan canlı kilitli, e-SMM kapalı). Denetim: test/edoc-uretim.test.mjs;
 // gerçek EDM düzeneği (tools/edm-gercek.mjs) bayrakları bu satırdan okur.
-const app = createApp({ edocEnabled: true, edocLive: true, esmmEnabled: true });
+// 2.4.7 M4: canlı bağlantı (tünel) üretimde açık; kapıcı ve cloudflared lib/tunnel/attach.mjs (test kurulumunda — yerel lisans adresi — kapalı).
+const TUNNEL = { production: true };
+const app = createApp({ edocEnabled: true, edocLive: true, esmmEnabled: true, tunnel: TUNNEL });
 const address = await app.listen().catch(error => {
   app.log.error(error.code === "EADDRINUSE" ? `Port ${app.config.port} kullanımda. Başka bir DestekOfis sunucusu çalışıyor olabilir.` : "Sunucu başlatılamadı", error);
   process.exit(1);

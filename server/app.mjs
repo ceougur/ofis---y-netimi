@@ -81,6 +81,8 @@ import { isoDay } from "./lib/plans.mjs";
 import { MOBILE_PREFIX, captureResponse, isPhone, resolveMobile, transformMobile } from "./lib/mobile.mjs";
 import { createMobileRemote } from "./lib/mobile-remote.mjs";
 import { registerMobileAdminRoutes } from "./routes/mobile-admin.mjs";
+import { registerMobileTunnelRoutes } from "./routes/mobile-tunnel.mjs";
+import { attachTunnel } from "./lib/tunnel/attach.mjs";
 
 function ensureInitialAdmin(store, config, log) {
   if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", config.adminUsername)) return;
@@ -358,6 +360,7 @@ export function createApp(overrides = {}) {
   registerAuthRoutes(router, context);
   registerAdminRoutes(router, context);
   registerMobileAdminRoutes(router, context);
+  registerMobileTunnelRoutes(router, context);
   if (!hub) registerCompanyRoutes(router, { ...context, appFor: company => appFor(company), resetData: (company, ...args) => appFor(company).resetData(...args), closeCompany: id => closeCompany(id) });
   // Hareket tarihi ve dönem kilidi (v2.0.13): Kasa, Cari, Stok ve Taksit aynı kuralla. v2.0.26 (A1): kayıt tahsilatı da
   // (çalışma alanı rotaları) aynı kurala bağlı; bu yüzden onlardan önce kurulur.
@@ -921,6 +924,7 @@ export function createApp(overrides = {}) {
     async close({ reason = "shutdown" } = {}) {
       if (closed) return;
       closed = true;
+      await context.tunnel?.stop();
       posQueue.stop();
       clearInterval(posHubTimer);
       stopBackups();
@@ -954,5 +958,7 @@ export function createApp(overrides = {}) {
       db.close();
     },
   };
+  // 2.4.7 M4: canlı bağlantı (tünel) — yalnız ortak katmanda ve `tunnel` seçeneğiyle (server.mjs); lib/tunnel/attach.mjs.
+  context.tunnel = hub ? null : attachTunnel({ option: overrides.tunnel, config, store, license, mobileRemote: context.mobileRemote, listenRemote: () => (remoteServer.listening ? Promise.resolve(remoteServer.address()) : app.listenRemote(0, "127.0.0.1")), forbiddenPorts: () => [config.port, config.publicPort, server.address()?.port].filter(Number.isInteger), log });
   return app;
 }
