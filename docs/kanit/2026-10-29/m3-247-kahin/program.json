@@ -1,0 +1,9544 @@
+{
+ "U01": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:02:00.000Z"
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul"
+  },
+  "7": {
+   "sonuc": "kabul"
+  },
+  "8": {
+   "sonuc": "kabul"
+  },
+  "9": {
+   "sonuc": "ret:yazma_yasak"
+  }
+ },
+ "U02": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul"
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "6": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "7": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 2
+   }
+  },
+  "8": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 2
+   }
+  }
+ },
+ "U03": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul"
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 2
+   }
+  },
+  "5": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "6": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  }
+ },
+ "U04": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 1
+   }
+  },
+  "4": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 1
+   }
+  }
+ },
+ "U05": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul"
+  },
+  "3": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 0
+   }
+  },
+  "4": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  }
+ },
+ "U06": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 3
+   }
+  },
+  "7": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "8": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 3
+   }
+  },
+  "9": {
+   "sonuc": "kabul"
+  },
+  "10": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:04:00.000Z"
+  },
+  "11": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "12": {
+   "sonuc": "kabul"
+  },
+  "13": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 3
+   }
+  },
+  "14": {
+   "sonuc": "ret:cihaz_yok"
+  }
+ },
+ "U07": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 3
+   }
+  },
+  "7": {
+   "sonuc": "kabul"
+  },
+  "8": {
+   "sonuc": "kabul",
+   "esli": {
+    "B": 1
+   }
+  },
+  "9": {
+   "sonuc": "kabul"
+  },
+  "10": {
+   "sonuc": "kabul",
+   "esli": {
+    "B": 2
+   }
+  },
+  "11": {
+   "sonuc": "kabul"
+  },
+  "12": {
+   "sonuc": "kabul",
+   "esli": {
+    "B": 3
+   }
+  },
+  "13": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "14": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 3
+   }
+  },
+  "15": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "16": {
+   "sonuc": "kabul"
+  },
+  "17": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 3
+   }
+  }
+ },
+ "U08": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 0
+   }
+  },
+  "7": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "8": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "9": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "10": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "11": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "A": 0
+   }
+  },
+  "12": {
+   "sonuc": "kabul"
+  },
+  "13": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "14": {
+   "sonuc": "kabul"
+  },
+  "15": {
+   "sonuc": "kabul"
+  },
+  "16": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "17": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:05:30.000Z"
+  }
+ },
+ "U09": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "B": 0
+   }
+  },
+  "3": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "7": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "8": {
+   "sonuc": "kabul"
+  },
+  "9": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "10": {
+   "sonuc": "kabul"
+  },
+  "11": {
+   "sonuc": "kabul",
+   "esli": {
+    "B": 1
+   }
+  },
+  "12": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:04:30.000Z"
+  },
+  "13": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "14": {
+   "sonuc": "ret:cihaz_yok"
+  }
+ },
+ "U10": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:01:00.000Z"
+  },
+  "6": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "7": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "8": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "9": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "10": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "11": {
+   "sonuc": "ret:lisans_gecersiz",
+   "esli": {
+    "A": 1
+   }
+  },
+  "13": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:01:00.000Z"
+  },
+  "14": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:01:00.000Z"
+  },
+  "15": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:01:00.000Z"
+  },
+  "16": {
+   "sonuc": "kabul"
+  },
+  "17": {
+   "sonuc": "kabul"
+  },
+  "18": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "19": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 1
+   }
+  }
+ },
+ "U11": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "6": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "7": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "9": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:01:00.000Z"
+  }
+ },
+ "U12": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "ret:lisans_dogrulanamadi",
+   "esli": {
+    "A": 1
+   }
+  },
+  "7": {
+   "sonuc": "ret:lisans_dogrulanamadi"
+  },
+  "8": {
+   "sonuc": "ret:lisans_dogrulanamadi"
+  },
+  "9": {
+   "sonuc": "ret:lisans_dogrulanamadi"
+  },
+  "10": {
+   "sonuc": "ret:lisans_dogrulanamadi"
+  },
+  "12": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:01:00.000Z"
+  }
+ },
+ "U13": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul"
+  },
+  "8": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:02:00.000Z"
+  },
+  "9": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "11": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "12": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "13": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "14": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "15": {
+   "sonuc": "ret:yazma_yasak"
+  },
+  "16": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "18": {
+   "sonuc": "kabul"
+  },
+  "19": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 1
+   }
+  },
+  "20": {
+   "sonuc": "kabul"
+  },
+  "21": {
+   "sonuc": "kabul"
+  }
+ },
+ "U14": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-15T06:01:00.000Z"
+  },
+  "6": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-15T06:01:00.000Z"
+  },
+  "7": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-15T06:01:00.000Z"
+  },
+  "8": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "10": {
+   "sonuc": "kabul"
+  },
+  "11": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-31T06:01:00.000Z"
+  }
+ },
+ "U15": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "5": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "6": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "7": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "8": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "9": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "10": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "11": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "12": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "13": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "14": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "15": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "16": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "17": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "18": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "19": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "20": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "21": {
+   "sonuc": "kabul"
+  },
+  "22": {
+   "sonuc": "kabul"
+  },
+  "23": {
+   "sonuc": "kabul"
+  },
+  "24": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "25": {
+   "sonuc": "kabul"
+  },
+  "26": {
+   "sonuc": "ret:cihaz_yok"
+  }
+ },
+ "U16": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "4": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "5": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "6": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "7": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "8": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "9": {
+   "sonuc": "kabul"
+  },
+  "10": {
+   "sonuc": "kabul"
+  },
+  "11": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "12": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "13": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "14": {
+   "sonuc": "kabul"
+  }
+ },
+ "U17": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 3
+   }
+  },
+  "7": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "8": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "9": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "10": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "11": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "12": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "13": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "14": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "15": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "16": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "17": {
+   "sonuc": "kabul"
+  },
+  "18": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "19": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "20": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "21": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "22": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "23": {
+   "sonuc": "ret:deneme_siniri"
+  }
+ },
+ "U18": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 3
+   }
+  },
+  "7": {
+   "sonuc": "kabul"
+  },
+  "8": {
+   "sonuc": "kabul"
+  },
+  "9": {
+   "sonuc": "kabul"
+  },
+  "10": {
+   "sonuc": "kabul"
+  },
+  "11": {
+   "sonuc": "kabul"
+  },
+  "12": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "13": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "14": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "15": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "16": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "17": {
+   "sonuc": "kabul"
+  },
+  "18": {
+   "sonuc": "kabul"
+  },
+  "19": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "20": {
+   "sonuc": "kabul"
+  },
+  "22": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "23": {
+   "sonuc": "kabul"
+  },
+  "24": {
+   "sonuc": "kabul"
+  },
+  "25": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "26": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:02:00.000Z"
+  },
+  "27": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:02:00.000Z"
+  },
+  "28": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:02:00.000Z"
+  },
+  "29": {
+   "sonuc": "kabul"
+  },
+  "30": {
+   "sonuc": "kabul"
+  },
+  "31": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "cari",
+     "kasa"
+    ],
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:06:40.000Z"
+  },
+  "32": {
+   "sonuc": "kabul"
+  },
+  "33": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "34": {
+   "sonuc": "kabul"
+  },
+  "35": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:08:20.000Z"
+  },
+  "36": {
+   "sonuc": "kabul"
+  },
+  "37": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "38": {
+   "sonuc": "kabul"
+  },
+  "39": {
+   "sonuc": "kabul"
+  },
+  "40": {
+   "sonuc": "kabul"
+  },
+  "41": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "42": {
+   "sonuc": "kabul"
+  },
+  "43": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:13:20.000Z"
+  }
+ },
+ "U19": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul"
+  },
+  "8": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "9": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:01:00.000Z"
+  },
+  "10": {
+   "sonuc": "kabul"
+  },
+  "11": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "12": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "13": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "14": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "15": {
+   "sonuc": "ret:yetki_yok",
+   "esli": {
+    "A": 1
+   }
+  },
+  "16": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": []
+   },
+   "ozet_zamani": "2026-11-02T07:03:20.000Z"
+  },
+  "17": {
+   "sonuc": "kabul"
+  },
+  "18": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "19": {
+   "sonuc": "kabul"
+  },
+  "20": {
+   "sonuc": "kabul"
+  },
+  "21": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "22": {
+   "sonuc": "kabul"
+  },
+  "24": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:05:40.000Z"
+  }
+ },
+ "U20": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "6": {
+   "sonuc": "kabul"
+  },
+  "7": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "8": {
+   "sonuc": "kabul"
+  },
+  "9": {
+   "sonuc": "kabul"
+  }
+ },
+ "U21": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-31T19:01:00.000Z"
+  },
+  "5": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "6": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "8": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-31T19:01:00.000Z"
+  }
+ },
+ "U22": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul"
+  },
+  "7": {
+   "sonuc": "kabul"
+  },
+  "8": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 3
+   }
+  },
+  "9": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "A": 3
+   }
+  },
+  "10": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:03:20.000Z"
+  }
+ },
+ "U23": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "ret:cihaz_yok"
+  }
+ },
+ "U24": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul"
+  },
+  "7": {
+   "sonuc": "kabul"
+  },
+  "8": {
+   "sonuc": "kabul"
+  },
+  "9": {
+   "sonuc": "kabul"
+  },
+  "10": {
+   "sonuc": "kabul"
+  },
+  "11": {
+   "sonuc": "kabul"
+  },
+  "12": {
+   "sonuc": "kabul"
+  },
+  "13": {
+   "sonuc": "kabul"
+  },
+  "14": {
+   "sonuc": "kabul"
+  },
+  "15": {
+   "sonuc": "kabul"
+  },
+  "16": {
+   "sonuc": "kabul"
+  },
+  "17": {
+   "sonuc": "kabul"
+  },
+  "18": {
+   "sonuc": "kabul"
+  },
+  "19": {
+   "sonuc": "kabul"
+  },
+  "20": {
+   "sonuc": "kabul"
+  },
+  "21": {
+   "sonuc": "kabul"
+  },
+  "22": {
+   "sonuc": "kabul"
+  },
+  "23": {
+   "sonuc": "kabul"
+  },
+  "24": {
+   "sonuc": "kabul"
+  },
+  "25": {
+   "sonuc": "kabul"
+  },
+  "26": {
+   "sonuc": "kabul"
+  },
+  "27": {
+   "sonuc": "kabul"
+  },
+  "28": {
+   "sonuc": "kabul"
+  },
+  "29": {
+   "sonuc": "kabul"
+  },
+  "30": {
+   "sonuc": "kabul"
+  },
+  "31": {
+   "sonuc": "kabul"
+  },
+  "32": {
+   "sonuc": "kabul"
+  },
+  "33": {
+   "sonuc": "kabul"
+  },
+  "34": {
+   "sonuc": "kabul"
+  },
+  "35": {
+   "sonuc": "kabul"
+  },
+  "36": {
+   "sonuc": "kabul"
+  },
+  "37": {
+   "sonuc": "kabul"
+  },
+  "38": {
+   "sonuc": "kabul"
+  },
+  "39": {
+   "sonuc": "kabul"
+  },
+  "40": {
+   "sonuc": "kabul"
+  },
+  "41": {
+   "sonuc": "kabul"
+  },
+  "42": {
+   "sonuc": "kabul"
+  },
+  "43": {
+   "sonuc": "kabul"
+  },
+  "44": {
+   "sonuc": "kabul"
+  },
+  "45": {
+   "sonuc": "kabul"
+  },
+  "46": {
+   "sonuc": "kabul"
+  },
+  "47": {
+   "sonuc": "kabul"
+  },
+  "48": {
+   "sonuc": "kabul"
+  },
+  "49": {
+   "sonuc": "kabul"
+  },
+  "50": {
+   "sonuc": "kabul"
+  },
+  "51": {
+   "sonuc": "kabul"
+  },
+  "52": {
+   "sonuc": "kabul"
+  },
+  "53": {
+   "sonuc": "kabul"
+  },
+  "54": {
+   "sonuc": "kabul"
+  },
+  "55": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "56": {
+   "sonuc": "ret:oturum_gecersiz"
+  }
+ },
+ "U25": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "5": {
+   "sonuc": "ret:cihaz_baska_kullanici"
+  },
+  "6": {
+   "sonuc": "ret:cihaz_baska_kullanici"
+  },
+  "7": {
+   "sonuc": "kabul"
+  },
+  "8": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "9": {
+   "sonuc": "kabul"
+  },
+  "10": {
+   "sonuc": "ret:oturum_gecersiz"
+  }
+ },
+ "U26": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "7": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 0
+   }
+  },
+  "8": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "9": {
+   "sonuc": "kabul"
+  },
+  "10": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "11": {
+   "sonuc": "kabul"
+  },
+  "12": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  }
+ },
+ "U27": {
+  "1": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "2": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "5": {
+   "sonuc": "ret:yetki_yok",
+   "esli": {
+    "A": 1
+   }
+  },
+  "6": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "7": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 1
+   }
+  },
+  "8": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 1
+   }
+  }
+ },
+ "U28": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "5": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 3
+   }
+  },
+  "6": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "A": 3
+   }
+  },
+  "7": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "8": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 3
+   }
+  }
+ },
+ "U29": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 2
+   }
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 3
+   }
+  },
+  "7": {
+   "sonuc": "kabul"
+  },
+  "10": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:03:20.000Z"
+  },
+  "11": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:03:20.000Z"
+  },
+  "12": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:03:20.000Z"
+  },
+  "13": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "14": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "A": 3
+   }
+  },
+  "15": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:03:20.000Z"
+  },
+  "18": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:03:20.000Z"
+  }
+ },
+ "U30": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:00:30.000Z"
+  },
+  "4": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-02T07:02:00.000Z"
+  }
+ },
+ "U31": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "3": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "5": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  }
+ },
+ "U32": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul"
+  },
+  "6": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "7": {
+   "sonuc": "kabul"
+  }
+ },
+ "U33": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "5": {
+   "sonuc": "kabul",
+   "esli": {
+    "A": 0
+   }
+  }
+ },
+ "R1": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "3": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T18:19:20.000Z"
+  },
+  "6": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "7": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "8": {
+   "sonuc": "kabul"
+  },
+  "9": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "10": {
+   "sonuc": "kabul"
+  },
+  "11": {
+   "sonuc": "kabul"
+  },
+  "12": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "13": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "14": {
+   "sonuc": "kabul"
+  },
+  "15": {
+   "sonuc": "kabul"
+  },
+  "16": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "17": {
+   "sonuc": "kabul"
+  },
+  "18": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 2
+   }
+  },
+  "19": {
+   "sonuc": "kabul"
+  },
+  "20": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 3
+   }
+  },
+  "21": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O1": 3
+   }
+  },
+  "22": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 2
+   }
+  },
+  "23": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "24": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "25": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "26": {
+   "sonuc": "kabul"
+  },
+  "27": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "28": {
+   "sonuc": "kabul"
+  },
+  "31": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "32": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "33": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "36": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T00:27:00.000Z"
+  },
+  "37": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T00:27:00.000Z"
+  },
+  "38": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T00:27:00.000Z"
+  },
+  "39": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "40": {
+   "sonuc": "kabul"
+  },
+  "41": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "42": {
+   "sonuc": "kabul"
+  },
+  "43": {
+   "sonuc": "kabul"
+  },
+  "44": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-01T05:29:50.000Z"
+  },
+  "45": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "46": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "47": {
+   "sonuc": "kabul"
+  },
+  "48": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "49": {
+   "sonuc": "kabul"
+  },
+  "50": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "51": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "52": {
+   "sonuc": "kabul"
+  },
+  "53": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "54": {
+   "sonuc": "kabul"
+  },
+  "55": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 2
+   }
+  },
+  "56": {
+   "sonuc": "kabul"
+  },
+  "57": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 3
+   }
+  },
+  "58": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O1": 3
+   }
+  },
+  "59": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 2
+   }
+  },
+  "60": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "61": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "62": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "63": {
+   "sonuc": "kabul"
+  },
+  "64": {
+   "sonuc": "kabul"
+  },
+  "65": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "66": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "67": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "68": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "69": {
+   "sonuc": "kabul"
+  },
+  "70": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "71": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "72": {
+   "sonuc": "kabul"
+  },
+  "73": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-01T07:40:00.000Z"
+  },
+  "74": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "75": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "76": {
+   "sonuc": "kabul"
+  },
+  "77": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "78": {
+   "sonuc": "kabul"
+  },
+  "81": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "82": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "83": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "86": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-01T08:41:40.000Z"
+  },
+  "87": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-01T08:41:40.000Z"
+  },
+  "88": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-01T08:41:40.000Z"
+  },
+  "89": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "90": {
+   "sonuc": "kabul"
+  },
+  "91": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "92": {
+   "sonuc": "kabul"
+  },
+  "93": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "94": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "95": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "97": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "98": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "99": {
+   "sonuc": "kabul"
+  },
+  "100": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "101": {
+   "sonuc": "kabul"
+  },
+  "102": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "103": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "104": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "105": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "106": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "107": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "108": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "109": {
+   "sonuc": "kabul"
+  },
+  "110": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "111": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "112": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "113": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "114": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "115": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "116": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "117": {
+   "sonuc": "kabul"
+  },
+  "118": {
+   "sonuc": "kabul"
+  },
+  "119": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "120": {
+   "sonuc": "kabul"
+  },
+  "121": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "122": {
+   "sonuc": "kabul"
+  },
+  "123": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "124": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "125": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "127": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "128": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "129": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "130": {
+   "sonuc": "kabul"
+  },
+  "131": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "132": {
+   "sonuc": "kabul"
+  },
+  "133": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "134": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "135": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "136": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "137": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "138": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "139": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "140": {
+   "sonuc": "kabul"
+  },
+  "141": {
+   "sonuc": "kabul"
+  },
+  "142": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "143": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "144": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "145": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "146": {
+   "sonuc": "kabul"
+  },
+  "147": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "148": {
+   "sonuc": "kabul"
+  },
+  "149": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "150": {
+   "sonuc": "kabul"
+  },
+  "151": {
+   "sonuc": "kabul"
+  },
+  "152": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "153": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "154": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "155": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "156": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "157": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "158": {
+   "sonuc": "kabul"
+  },
+  "159": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "160": {
+   "sonuc": "kabul"
+  },
+  "161": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "162": {
+   "sonuc": "kabul"
+  },
+  "163": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "164": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "165": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "166": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "167": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "168": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "169": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "170": {
+   "sonuc": "kabul"
+  },
+  "171": {
+   "sonuc": "kabul"
+  },
+  "172": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "173": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "174": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "175": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "176": {
+   "sonuc": "kabul"
+  },
+  "177": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "178": {
+   "sonuc": "kabul"
+  },
+  "179": {
+   "sonuc": "kabul"
+  },
+  "181": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-03T08:57:00.000Z"
+  },
+  "182": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "184": {
+   "sonuc": "ret:yazma_yasak"
+  },
+  "185": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "187": {
+   "sonuc": "kabul"
+  },
+  "188": {
+   "sonuc": "kabul"
+  },
+  "189": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "190": {
+   "sonuc": "kabul"
+  },
+  "191": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "192": {
+   "sonuc": "kabul"
+  },
+  "193": {
+   "sonuc": "kabul"
+  },
+  "194": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "195": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "196": {
+   "sonuc": "kabul"
+  },
+  "197": {
+   "sonuc": "kabul"
+  },
+  "198": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "199": {
+   "sonuc": "kabul"
+  },
+  "200": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "201": {
+   "sonuc": "kabul"
+  },
+  "202": {
+   "sonuc": "kabul"
+  },
+  "203": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "204": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "205": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "206": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "207": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "208": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "209": {
+   "sonuc": "kabul"
+  },
+  "210": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "211": {
+   "sonuc": "kabul"
+  },
+  "212": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "213": {
+   "sonuc": "kabul"
+  },
+  "214": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "215": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "216": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "217": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "218": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "219": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "220": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "221": {
+   "sonuc": "kabul"
+  },
+  "222": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "223": {
+   "sonuc": "kabul"
+  },
+  "224": {
+   "sonuc": "kabul"
+  },
+  "225": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "226": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "227": {
+   "sonuc": "kabul"
+  },
+  "228": {
+   "sonuc": "kabul"
+  },
+  "229": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "230": {
+   "sonuc": "kabul"
+  },
+  "231": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "232": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "233": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "234": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "235": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "236": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "237": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "238": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "239": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "240": {
+   "sonuc": "kabul"
+  },
+  "241": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "242": {
+   "sonuc": "kabul"
+  },
+  "245": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "246": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "247": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "250": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T04:48:01.000Z"
+  },
+  "251": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T04:48:01.000Z"
+  },
+  "252": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T04:48:01.000Z"
+  },
+  "253": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "254": {
+   "sonuc": "kabul"
+  },
+  "255": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "256": {
+   "sonuc": "kabul"
+  },
+  "257": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "258": {
+   "sonuc": "kabul"
+  },
+  "259": {
+   "sonuc": "kabul"
+  },
+  "260": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "261": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "262": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "263": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "264": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "265": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "266": {
+   "sonuc": "kabul"
+  },
+  "267": {
+   "sonuc": "kabul"
+  },
+  "268": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "269": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "270": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "271": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "272": {
+   "sonuc": "kabul"
+  },
+  "273": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "274": {
+   "sonuc": "kabul"
+  },
+  "275": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "276": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "277": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "278": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "279": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "280": {
+   "sonuc": "kabul"
+  },
+  "281": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "282": {
+   "sonuc": "kabul"
+  },
+  "283": {
+   "sonuc": "kabul"
+  },
+  "285": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-03T20:28:41.000Z"
+  },
+  "286": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "288": {
+   "sonuc": "ret:yazma_yasak"
+  },
+  "289": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "291": {
+   "sonuc": "kabul"
+  },
+  "292": {
+   "sonuc": "kabul"
+  },
+  "293": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "294": {
+   "sonuc": "kabul"
+  },
+  "295": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "296": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "297": {
+   "sonuc": "kabul"
+  },
+  "298": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "299": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "300": {
+   "sonuc": "kabul"
+  },
+  "301": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "302": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "303": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "304": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "305": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "306": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "307": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "308": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "309": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "310": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "311": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "312": {
+   "sonuc": "kabul"
+  },
+  "313": {
+   "sonuc": "kabul"
+  },
+  "314": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "315": {
+   "sonuc": "kabul"
+  },
+  "316": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "317": {
+   "sonuc": "kabul"
+  },
+  "318": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "319": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "320": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "321": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "322": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "323": {
+   "sonuc": "kabul"
+  },
+  "324": {
+   "sonuc": "kabul"
+  },
+  "325": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "326": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "327": {
+   "sonuc": "kabul"
+  },
+  "328": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "329": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "330": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "331": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "332": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "333": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "334": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "335": {
+   "sonuc": "kabul"
+  },
+  "336": {
+   "sonuc": "kabul"
+  },
+  "337": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "338": {
+   "sonuc": "kabul"
+  },
+  "339": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "340": {
+   "sonuc": "kabul"
+  },
+  "341": {
+   "sonuc": "kabul"
+  },
+  "342": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T19:19:35.000Z"
+  },
+  "343": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "344": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "346": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "347": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "348": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "349": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "350": {
+   "sonuc": "kabul"
+  },
+  "351": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "352": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "353": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "354": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "355": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "356": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "357": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "358": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "359": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "360": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "361": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "362": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "363": {
+   "sonuc": "kabul"
+  },
+  "364": {
+   "sonuc": "kabul"
+  },
+  "365": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "366": {
+   "sonuc": "kabul"
+  },
+  "367": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "368": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "369": {
+   "sonuc": "kabul"
+  },
+  "370": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "371": {
+   "sonuc": "kabul"
+  },
+  "372": {
+   "sonuc": "kabul"
+  },
+  "374": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T23:09:55.000Z"
+  },
+  "375": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "377": {
+   "sonuc": "ret:yazma_yasak"
+  },
+  "378": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "380": {
+   "sonuc": "kabul"
+  },
+  "381": {
+   "sonuc": "kabul"
+  },
+  "382": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "383": {
+   "sonuc": "kabul"
+  },
+  "384": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "385": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "386": {
+   "sonuc": "kabul"
+  },
+  "387": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "388": {
+   "sonuc": "kabul"
+  },
+  "389": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "390": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "391": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "392": {
+   "sonuc": "kabul"
+  },
+  "393": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "394": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "395": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "396": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "397": {
+   "sonuc": "kabul"
+  },
+  "398": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "399": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "400": {
+   "sonuc": "kabul"
+  },
+  "401": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "402": {
+   "sonuc": "kabul"
+  },
+  "405": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "406": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "407": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "410": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2027-01-01T03:24:35.000Z"
+  },
+  "411": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2027-01-01T03:24:35.000Z"
+  },
+  "412": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2027-01-01T03:24:35.000Z"
+  },
+  "413": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "414": {
+   "sonuc": "kabul"
+  },
+  "415": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "416": {
+   "sonuc": "kabul"
+  },
+  "417": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "418": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "419": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "420": {
+   "sonuc": "kabul"
+  },
+  "421": {
+   "sonuc": "kabul"
+  },
+  "422": {
+   "sonuc": "kabul"
+  },
+  "423": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "424": {
+   "sonuc": "kabul"
+  },
+  "425": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "426": {
+   "sonuc": "kabul"
+  },
+  "427": {
+   "sonuc": "kabul"
+  },
+  "429": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T23:57:35.000Z"
+  },
+  "430": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "432": {
+   "sonuc": "ret:yazma_yasak"
+  },
+  "433": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "435": {
+   "sonuc": "kabul"
+  },
+  "436": {
+   "sonuc": "kabul"
+  },
+  "437": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "438": {
+   "sonuc": "kabul"
+  },
+  "439": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "440": {
+   "sonuc": "kabul"
+  },
+  "441": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 2
+   }
+  },
+  "442": {
+   "sonuc": "kabul"
+  },
+  "443": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 3
+   }
+  },
+  "444": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O5": 3
+   }
+  },
+  "445": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 2
+   }
+  },
+  "446": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "447": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "448": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "449": {
+   "sonuc": "kabul"
+  },
+  "450": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "451": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "452": {
+   "sonuc": "kabul"
+  },
+  "453": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-02T07:04:35.000Z"
+  },
+  "454": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "455": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "456": {
+   "sonuc": "kabul"
+  },
+  "457": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "458": {
+   "sonuc": "kabul"
+  },
+  "459": {
+   "sonuc": "kabul"
+  },
+  "461": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-03T09:06:15.000Z"
+  },
+  "462": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "464": {
+   "sonuc": "ret:yazma_yasak"
+  },
+  "465": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "467": {
+   "sonuc": "kabul"
+  },
+  "468": {
+   "sonuc": "kabul"
+  },
+  "469": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "470": {
+   "sonuc": "kabul"
+  },
+  "471": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "472": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "473": {
+   "sonuc": "kabul"
+  },
+  "474": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "475": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "476": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "477": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "478": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "479": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "480": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "481": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "482": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "483": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "484": {
+   "sonuc": "kabul"
+  },
+  "485": {
+   "sonuc": "kabul"
+  },
+  "486": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "487": {
+   "sonuc": "kabul"
+  },
+  "488": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "489": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "490": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "491": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "492": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "493": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "494": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "495": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "496": {
+   "sonuc": "kabul"
+  },
+  "497": {
+   "sonuc": "kabul"
+  },
+  "498": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "499": {
+   "sonuc": "kabul"
+  },
+  "500": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "501": {
+   "sonuc": "kabul"
+  },
+  "502": {
+   "sonuc": "kabul"
+  },
+  "503": {
+   "sonuc": "kabul"
+  },
+  "504": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "505": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "506": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "507": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "508": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "509": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "510": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "511": {
+   "sonuc": "kabul"
+  },
+  "512": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "513": {
+   "sonuc": "kabul"
+  },
+  "514": {
+   "sonuc": "kabul"
+  },
+  "515": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2027-01-04T14:57:05.000Z"
+  },
+  "516": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "517": {
+   "sonuc": "kabul"
+  },
+  "518": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "519": {
+   "sonuc": "kabul"
+  },
+  "520": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "521": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "522": {
+   "sonuc": "kabul"
+  },
+  "523": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "524": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "525": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "526": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "527": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "528": {
+   "sonuc": "kabul"
+  },
+  "529": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "530": {
+   "sonuc": "kabul"
+  },
+  "531": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "532": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "533": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "534": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "535": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "536": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "537": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "538": {
+   "sonuc": "kabul"
+  },
+  "539": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "540": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "541": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "542": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "543": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "544": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "545": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "546": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "547": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "548": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "549": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "550": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "551": {
+   "sonuc": "kabul"
+  },
+  "552": {
+   "sonuc": "kabul"
+  },
+  "553": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "554": {
+   "sonuc": "kabul"
+  },
+  "555": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "556": {
+   "sonuc": "kabul"
+  },
+  "557": {
+   "sonuc": "kabul"
+  },
+  "558": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T21:58:53.000Z"
+  },
+  "559": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "560": {
+   "sonuc": "kabul"
+  },
+  "561": {
+   "sonuc": "kabul"
+  },
+  "563": {
+   "sonuc": "kabul"
+  },
+  "564": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "565": {
+   "sonuc": "kabul"
+  },
+  "566": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "567": {
+   "sonuc": "kabul"
+  },
+  "568": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "569": {
+   "sonuc": "kabul"
+  },
+  "570": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "571": {
+   "sonuc": "kabul"
+  },
+  "572": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 2
+   }
+  },
+  "573": {
+   "sonuc": "kabul"
+  },
+  "574": {
+   "sonuc": "kabul"
+  },
+  "575": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 3
+   }
+  },
+  "576": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O6": 3
+   }
+  },
+  "577": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 2
+   }
+  },
+  "578": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "579": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "580": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "581": {
+   "sonuc": "kabul"
+  },
+  "582": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "583": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "584": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "585": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "586": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "587": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "588": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "589": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "590": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "591": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "592": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "593": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "594": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "595": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "596": {
+   "sonuc": "kabul"
+  },
+  "597": {
+   "sonuc": "kabul"
+  },
+  "598": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "599": {
+   "sonuc": "kabul"
+  },
+  "600": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "601": {
+   "sonuc": "kabul"
+  },
+  "602": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "603": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "604": {
+   "sonuc": "kabul"
+  },
+  "605": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "606": {
+   "sonuc": "kabul"
+  },
+  "607": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "608": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "609": {
+   "sonuc": "kabul"
+  },
+  "610": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "611": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "612": {
+   "sonuc": "kabul"
+  },
+  "613": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-02T08:56:43.000Z"
+  },
+  "614": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "615": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "616": {
+   "sonuc": "kabul"
+  },
+  "617": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "618": {
+   "sonuc": "kabul"
+  },
+  "619": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 2
+   }
+  },
+  "620": {
+   "sonuc": "kabul"
+  },
+  "621": {
+   "sonuc": "kabul"
+  },
+  "622": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 3
+   }
+  },
+  "623": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O6": 3
+   }
+  },
+  "624": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 2
+   }
+  },
+  "625": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "626": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "627": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O6": 0
+   }
+  }
+ },
+ "R2": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "3": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "4": {
+   "sonuc": "kabul"
+  },
+  "5": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T19:58:50.000Z"
+  },
+  "6": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "7": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "8": {
+   "sonuc": "kabul"
+  },
+  "9": {
+   "sonuc": "kabul"
+  },
+  "10": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "11": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "12": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "13": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "14": {
+   "sonuc": "kabul"
+  },
+  "15": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "16": {
+   "sonuc": "kabul"
+  },
+  "17": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 2
+   }
+  },
+  "18": {
+   "sonuc": "kabul"
+  },
+  "19": {
+   "sonuc": "kabul"
+  },
+  "20": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 3
+   }
+  },
+  "21": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O1": 3
+   }
+  },
+  "22": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 2
+   }
+  },
+  "23": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "24": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "25": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "26": {
+   "sonuc": "kabul"
+  },
+  "27": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "28": {
+   "sonuc": "kabul"
+  },
+  "29": {
+   "sonuc": "kabul"
+  },
+  "31": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T03:04:50.000Z"
+  },
+  "32": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "34": {
+   "sonuc": "ret:yazma_yasak"
+  },
+  "35": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "37": {
+   "sonuc": "kabul"
+  },
+  "38": {
+   "sonuc": "kabul"
+  },
+  "39": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "40": {
+   "sonuc": "kabul"
+  },
+  "41": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "42": {
+   "sonuc": "kabul"
+  },
+  "43": {
+   "sonuc": "kabul"
+  },
+  "45": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "46": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "47": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "48": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "49": {
+   "sonuc": "kabul"
+  },
+  "50": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "51": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "52": {
+   "sonuc": "kabul"
+  },
+  "53": {
+   "sonuc": "kabul"
+  },
+  "54": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "55": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "56": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "57": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "58": {
+   "sonuc": "kabul"
+  },
+  "59": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "60": {
+   "sonuc": "kabul"
+  },
+  "61": {
+   "sonuc": "kabul"
+  },
+  "62": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2027-01-09T08:26:40.000Z"
+  },
+  "63": {
+   "sonuc": "kabul"
+  },
+  "64": {
+   "sonuc": "kabul"
+  },
+  "65": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "66": {
+   "sonuc": "kabul"
+  },
+  "68": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "69": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "70": {
+   "sonuc": "kabul"
+  },
+  "71": {
+   "sonuc": "kabul"
+  },
+  "72": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "73": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "74": {
+   "sonuc": "kabul"
+  },
+  "75": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "76": {
+   "sonuc": "kabul"
+  },
+  "79": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "80": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "81": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "84": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T18:48:53.000Z"
+  },
+  "85": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T18:48:53.000Z"
+  },
+  "86": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T18:48:53.000Z"
+  },
+  "87": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "88": {
+   "sonuc": "kabul"
+  },
+  "89": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "90": {
+   "sonuc": "kabul"
+  },
+  "91": {
+   "sonuc": "kabul"
+  },
+  "92": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "93": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "94": {
+   "sonuc": "kabul"
+  },
+  "95": {
+   "sonuc": "kabul"
+  },
+  "96": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "97": {
+   "sonuc": "kabul"
+  },
+  "100": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "101": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "102": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "105": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-12-01T05:52:33.000Z"
+  },
+  "106": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-12-01T05:52:33.000Z"
+  },
+  "107": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-12-01T05:52:33.000Z"
+  },
+  "108": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "109": {
+   "sonuc": "kabul"
+  },
+  "110": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "111": {
+   "sonuc": "kabul"
+  },
+  "112": {
+   "sonuc": "kabul"
+  },
+  "113": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "114": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "115": {
+   "sonuc": "kabul"
+  },
+  "116": {
+   "sonuc": "kabul"
+  },
+  "117": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "118": {
+   "sonuc": "kabul"
+  },
+  "119": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "120": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "121": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "122": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "123": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "124": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "125": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "126": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "127": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "128": {
+   "sonuc": "kabul"
+  },
+  "129": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "130": {
+   "sonuc": "kabul"
+  },
+  "131": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "132": {
+   "sonuc": "kabul"
+  },
+  "133": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "134": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "135": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "136": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "137": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "138": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "139": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "140": {
+   "sonuc": "kabul"
+  },
+  "141": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "142": {
+   "sonuc": "kabul"
+  },
+  "143": {
+   "sonuc": "kabul"
+  },
+  "145": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-04T17:46:53.000Z"
+  },
+  "146": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "148": {
+   "sonuc": "ret:yazma_yasak"
+  },
+  "149": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "151": {
+   "sonuc": "kabul"
+  },
+  "152": {
+   "sonuc": "kabul"
+  },
+  "153": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "154": {
+   "sonuc": "kabul"
+  },
+  "155": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "156": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "157": {
+   "sonuc": "kabul"
+  },
+  "158": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "159": {
+   "sonuc": "kabul"
+  },
+  "160": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "161": {
+   "sonuc": "kabul"
+  },
+  "162": {
+   "sonuc": "kabul"
+  },
+  "163": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "164": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "165": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "166": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "167": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "168": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "169": {
+   "sonuc": "kabul"
+  },
+  "170": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "171": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "172": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "173": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "174": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "175": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "176": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "177": {
+   "sonuc": "kabul"
+  },
+  "178": {
+   "sonuc": "kabul"
+  },
+  "179": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "180": {
+   "sonuc": "kabul"
+  },
+  "181": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "182": {
+   "sonuc": "kabul"
+  },
+  "183": {
+   "sonuc": "kabul"
+  },
+  "184": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-05T00:45:13.000Z"
+  },
+  "185": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "186": {
+   "sonuc": "kabul"
+  },
+  "187": {
+   "sonuc": "kabul"
+  },
+  "188": {
+   "sonuc": "kabul"
+  },
+  "189": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "191": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "192": {
+   "sonuc": "kabul"
+  },
+  "193": {
+   "sonuc": "kabul"
+  },
+  "194": {
+   "sonuc": "kabul"
+  },
+  "195": {
+   "sonuc": "kabul"
+  },
+  "196": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "197": {
+   "sonuc": "kabul"
+  },
+  "198": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "199": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "200": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "201": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "202": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "203": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "204": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "205": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "206": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "207": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "208": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "209": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "210": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "211": {
+   "sonuc": "kabul"
+  },
+  "212": {
+   "sonuc": "kabul"
+  },
+  "213": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "214": {
+   "sonuc": "kabul"
+  },
+  "215": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "216": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "217": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "218": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "219": {
+   "sonuc": "kabul"
+  },
+  "220": {
+   "sonuc": "kabul"
+  },
+  "221": {
+   "sonuc": "kabul"
+  },
+  "222": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "223": {
+   "sonuc": "kabul"
+  },
+  "224": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "225": {
+   "sonuc": "kabul"
+  },
+  "226": {
+   "sonuc": "kabul"
+  },
+  "228": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T19:22:22.000Z"
+  },
+  "229": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "231": {
+   "sonuc": "ret:yazma_yasak"
+  },
+  "232": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "234": {
+   "sonuc": "kabul"
+  },
+  "235": {
+   "sonuc": "kabul"
+  },
+  "236": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "237": {
+   "sonuc": "kabul"
+  },
+  "238": {
+   "sonuc": "kabul"
+  },
+  "239": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "240": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "241": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "242": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "243": {
+   "sonuc": "kabul"
+  },
+  "244": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "245": {
+   "sonuc": "kabul"
+  },
+  "246": {
+   "sonuc": "kabul"
+  },
+  "247": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "248": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "249": {
+   "sonuc": "kabul"
+  },
+  "250": {
+   "sonuc": "kabul"
+  },
+  "251": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "252": {
+   "sonuc": "kabul"
+  },
+  "255": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "256": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "257": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "260": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T21:49:42.000Z"
+  },
+  "261": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T21:49:42.000Z"
+  },
+  "262": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T21:49:42.000Z"
+  },
+  "263": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "264": {
+   "sonuc": "kabul"
+  },
+  "265": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "266": {
+   "sonuc": "kabul"
+  },
+  "269": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "270": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "271": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "274": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-02T03:01:42.000Z"
+  },
+  "275": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-02T03:01:42.000Z"
+  },
+  "276": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-02T03:01:42.000Z"
+  },
+  "277": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "278": {
+   "sonuc": "kabul"
+  },
+  "279": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "280": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "281": {
+   "sonuc": "kabul"
+  },
+  "282": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-04T09:03:42.000Z"
+  },
+  "283": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "284": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "285": {
+   "sonuc": "kabul"
+  },
+  "286": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "287": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "288": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "289": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "290": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "291": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "292": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "293": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "294": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "295": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "296": {
+   "sonuc": "kabul"
+  },
+  "297": {
+   "sonuc": "kabul"
+  },
+  "298": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "299": {
+   "sonuc": "kabul"
+  },
+  "300": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "301": {
+   "sonuc": "kabul"
+  },
+  "302": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "303": {
+   "sonuc": "kabul"
+  },
+  "304": {
+   "sonuc": "kabul"
+  },
+  "305": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "306": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "307": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "308": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "309": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "310": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "311": {
+   "sonuc": "kabul"
+  },
+  "312": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "313": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "314": {
+   "sonuc": "kabul"
+  },
+  "315": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-04T15:09:42.000Z"
+  },
+  "316": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "317": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "318": {
+   "sonuc": "kabul"
+  },
+  "319": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "320": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "321": {
+   "sonuc": "kabul"
+  },
+  "322": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T18:33:53.000Z"
+  },
+  "323": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "324": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "325": {
+   "sonuc": "kabul"
+  },
+  "326": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "327": {
+   "sonuc": "kabul"
+  },
+  "328": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 2
+   }
+  },
+  "329": {
+   "sonuc": "kabul"
+  },
+  "330": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 3
+   }
+  },
+  "331": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "332": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O4": 3
+   }
+  },
+  "333": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 2
+   }
+  },
+  "334": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "335": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "336": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "337": {
+   "sonuc": "kabul"
+  },
+  "338": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "339": {
+   "sonuc": "kabul"
+  },
+  "340": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 2
+   }
+  },
+  "341": {
+   "sonuc": "kabul"
+  },
+  "342": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 3
+   }
+  },
+  "343": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O4": 3
+   }
+  },
+  "344": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 2
+   }
+  },
+  "345": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "346": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "347": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "348": {
+   "sonuc": "kabul"
+  },
+  "349": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "350": {
+   "sonuc": "kabul"
+  },
+  "351": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "352": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "353": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "354": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "355": {
+   "sonuc": "kabul"
+  },
+  "356": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "357": {
+   "sonuc": "kabul"
+  },
+  "358": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 2
+   }
+  },
+  "359": {
+   "sonuc": "kabul"
+  },
+  "360": {
+   "sonuc": "kabul"
+  },
+  "361": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 3
+   }
+  },
+  "362": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O4": 3
+   }
+  },
+  "363": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 2
+   }
+  },
+  "364": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "365": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "366": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "367": {
+   "sonuc": "kabul"
+  },
+  "368": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "369": {
+   "sonuc": "kabul"
+  },
+  "370": {
+   "sonuc": "kabul"
+  },
+  "371": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "372": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "373": {
+   "sonuc": "kabul"
+  },
+  "374": {
+   "sonuc": "kabul"
+  },
+  "375": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "376": {
+   "sonuc": "kabul"
+  },
+  "377": {
+   "sonuc": "kabul"
+  },
+  "378": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "379": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "380": {
+   "sonuc": "kabul"
+  },
+  "381": {
+   "sonuc": "kabul"
+  },
+  "382": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "383": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "384": {
+   "sonuc": "kabul"
+  },
+  "385": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-30T14:15:13.000Z"
+  },
+  "386": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "387": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "388": {
+   "sonuc": "kabul"
+  },
+  "389": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "390": {
+   "sonuc": "kabul"
+  },
+  "391": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 2
+   }
+  },
+  "392": {
+   "sonuc": "kabul"
+  },
+  "393": {
+   "sonuc": "kabul"
+  },
+  "394": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 3
+   }
+  },
+  "395": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O5": 3
+   }
+  },
+  "396": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 2
+   }
+  },
+  "397": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "398": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "399": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "400": {
+   "sonuc": "kabul"
+  },
+  "401": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "402": {
+   "sonuc": "kabul"
+  },
+  "403": {
+   "sonuc": "kabul"
+  },
+  "404": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T20:07:27.000Z"
+  },
+  "405": {
+   "sonuc": "kabul"
+  },
+  "406": {
+   "sonuc": "kabul"
+  },
+  "407": {
+   "sonuc": "kabul"
+  },
+  "408": {
+   "sonuc": "kabul"
+  },
+  "409": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "411": {
+   "sonuc": "kabul"
+  },
+  "412": {
+   "sonuc": "kabul"
+  },
+  "413": {
+   "sonuc": "kabul"
+  },
+  "414": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "415": {
+   "sonuc": "kabul"
+  },
+  "416": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "417": {
+   "sonuc": "kabul"
+  },
+  "418": {
+   "sonuc": "kabul"
+  },
+  "419": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T21:13:37.000Z"
+  },
+  "420": {
+   "sonuc": "kabul"
+  },
+  "421": {
+   "sonuc": "kabul"
+  },
+  "423": {
+   "sonuc": "kabul"
+  },
+  "424": {
+   "sonuc": "kabul"
+  },
+  "425": {
+   "sonuc": "kabul"
+  },
+  "426": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "428": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "429": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "430": {
+   "sonuc": "kabul"
+  },
+  "431": {
+   "sonuc": "kabul"
+  },
+  "432": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "433": {
+   "sonuc": "kabul"
+  },
+  "434": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "435": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "436": {
+   "sonuc": "kabul"
+  },
+  "437": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "002": [
+     "cari",
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-11-30T02:21:27.000Z"
+  },
+  "438": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "439": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "440": {
+   "sonuc": "kabul"
+  },
+  "441": {
+   "sonuc": "kabul"
+  },
+  "442": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "443": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "444": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "445": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "446": {
+   "sonuc": "kabul"
+  },
+  "447": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "448": {
+   "sonuc": "kabul"
+  },
+  "449": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 2
+   }
+  },
+  "450": {
+   "sonuc": "kabul"
+  },
+  "451": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 3
+   }
+  },
+  "452": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "453": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O5": 3
+   }
+  },
+  "454": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 2
+   }
+  },
+  "455": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "456": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "457": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "458": {
+   "sonuc": "kabul"
+  },
+  "459": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "460": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "461": {
+   "sonuc": "kabul"
+  },
+  "462": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-30T12:28:27.000Z"
+  },
+  "463": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "464": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "465": {
+   "sonuc": "kabul"
+  },
+  "466": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "467": {
+   "sonuc": "kabul"
+  },
+  "468": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 2
+   }
+  },
+  "469": {
+   "sonuc": "kabul"
+  },
+  "470": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 3
+   }
+  },
+  "471": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "472": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O5": 3
+   }
+  },
+  "473": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 2
+   }
+  },
+  "474": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "475": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "476": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "477": {
+   "sonuc": "kabul"
+  },
+  "478": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "479": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "480": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "481": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "482": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "483": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "484": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "485": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "486": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "487": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "488": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "489": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "490": {
+   "sonuc": "kabul"
+  },
+  "491": {
+   "sonuc": "kabul"
+  },
+  "492": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "493": {
+   "sonuc": "kabul"
+  },
+  "494": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "495": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "496": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "497": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "498": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "499": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "500": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "501": {
+   "sonuc": "kabul"
+  },
+  "502": {
+   "sonuc": "kabul"
+  },
+  "503": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "504": {
+   "sonuc": "kabul"
+  },
+  "505": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "506": {
+   "sonuc": "kabul"
+  },
+  "507": {
+   "sonuc": "kabul"
+  },
+  "508": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "509": {
+   "sonuc": "kabul"
+  },
+  "510": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "511": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "512": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "513": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "514": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "515": {
+   "sonuc": "kabul"
+  },
+  "516": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "517": {
+   "sonuc": "kabul"
+  },
+  "518": {
+   "sonuc": "kabul"
+  },
+  "519": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T19:11:12.000Z"
+  },
+  "520": {
+   "sonuc": "kabul"
+  },
+  "521": {
+   "sonuc": "kabul"
+  },
+  "522": {
+   "sonuc": "kabul"
+  },
+  "524": {
+   "sonuc": "kabul"
+  },
+  "525": {
+   "sonuc": "kabul"
+  },
+  "526": {
+   "sonuc": "kabul"
+  },
+  "527": {
+   "sonuc": "kabul"
+  },
+  "529": {
+   "sonuc": "kabul"
+  },
+  "530": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "531": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "532": {
+   "sonuc": "kabul"
+  },
+  "533": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "534": {
+   "sonuc": "kabul"
+  },
+  "537": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "538": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "539": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "542": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T00:18:32.000Z"
+  },
+  "543": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T00:18:32.000Z"
+  },
+  "544": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T00:18:32.000Z"
+  },
+  "545": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "546": {
+   "sonuc": "kabul"
+  },
+  "547": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "548": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "549": {
+   "sonuc": "kabul"
+  },
+  "550": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "551": {
+   "sonuc": "kabul"
+  },
+  "552": {
+   "sonuc": "kabul"
+  },
+  "553": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "554": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "555": {
+   "sonuc": "kabul"
+  },
+  "556": {
+   "sonuc": "kabul"
+  },
+  "557": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "558": {
+   "sonuc": "kabul"
+  },
+  "559": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 2
+   }
+  },
+  "560": {
+   "sonuc": "kabul"
+  },
+  "561": {
+   "sonuc": "kabul"
+  },
+  "562": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 3
+   }
+  },
+  "563": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O6": 3
+   }
+  },
+  "564": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 2
+   }
+  },
+  "565": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "566": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "567": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "568": {
+   "sonuc": "kabul"
+  },
+  "569": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "570": {
+   "sonuc": "kabul"
+  },
+  "571": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "572": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "573": {
+   "sonuc": "kabul"
+  },
+  "574": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "575": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "576": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "577": {
+   "sonuc": "kabul"
+  },
+  "578": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "579": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "580": {
+   "sonuc": "kabul"
+  },
+  "581": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "582": {
+   "sonuc": "kabul"
+  },
+  "583": {
+   "sonuc": "kabul"
+  },
+  "584": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "585": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "586": {
+   "sonuc": "kabul"
+  },
+  "587": {
+   "sonuc": "kabul"
+  },
+  "588": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "589": {
+   "sonuc": "kabul"
+  },
+  "590": {
+   "sonuc": "kabul"
+  },
+  "591": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "592": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "593": {
+   "sonuc": "kabul"
+  }
+ },
+ "R3": {
+  "1": {
+   "sonuc": "kabul"
+  },
+  "2": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "3": {
+   "sonuc": "kabul"
+  },
+  "4": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "5": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "6": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "7": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "8": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "9": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "10": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "11": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "12": {
+   "sonuc": "kabul"
+  },
+  "13": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "14": {
+   "sonuc": "kabul"
+  },
+  "15": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 2
+   }
+  },
+  "16": {
+   "sonuc": "kabul"
+  },
+  "17": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 3
+   }
+  },
+  "18": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "19": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O1": 3
+   }
+  },
+  "20": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 2
+   }
+  },
+  "21": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "22": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "23": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "24": {
+   "sonuc": "kabul"
+  },
+  "25": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "26": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "27": {
+   "sonuc": "kabul"
+  },
+  "28": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "29": {
+   "sonuc": "kabul"
+  },
+  "30": {
+   "sonuc": "kabul"
+  },
+  "31": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "32": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "33": {
+   "sonuc": "kabul"
+  },
+  "34": {
+   "sonuc": "kabul"
+  },
+  "35": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "36": {
+   "sonuc": "kabul"
+  },
+  "39": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "40": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "41": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "44": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-30T05:42:19.000Z"
+  },
+  "45": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-30T05:42:19.000Z"
+  },
+  "46": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-30T05:42:19.000Z"
+  },
+  "47": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "48": {
+   "sonuc": "kabul"
+  },
+  "49": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "50": {
+   "sonuc": "kabul"
+  },
+  "51": {
+   "sonuc": "kabul"
+  },
+  "52": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "53": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "54": {
+   "sonuc": "kabul"
+  },
+  "55": {
+   "sonuc": "kabul"
+  },
+  "56": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "57": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "58": {
+   "sonuc": "kabul"
+  },
+  "59": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "60": {
+   "sonuc": "kabul"
+  },
+  "61": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 2
+   }
+  },
+  "62": {
+   "sonuc": "kabul"
+  },
+  "63": {
+   "sonuc": "kabul"
+  },
+  "64": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 3
+   }
+  },
+  "65": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O1": 3
+   }
+  },
+  "66": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 2
+   }
+  },
+  "67": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "68": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "69": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "70": {
+   "sonuc": "kabul"
+  },
+  "71": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "72": {
+   "sonuc": "kabul"
+  },
+  "73": {
+   "sonuc": "kabul"
+  },
+  "74": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-04T15:12:49.000Z"
+  },
+  "75": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "76": {
+   "sonuc": "kabul"
+  },
+  "77": {
+   "sonuc": "kabul"
+  },
+  "78": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "79": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "80": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "81": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "82": {
+   "sonuc": "kabul"
+  },
+  "83": {
+   "sonuc": "kabul"
+  },
+  "84": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "85": {
+   "sonuc": "kabul"
+  },
+  "86": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "87": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "88": {
+   "sonuc": "kabul"
+  },
+  "89": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-04T20:19:09.000Z"
+  },
+  "90": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "91": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "92": {
+   "sonuc": "kabul"
+  },
+  "93": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "94": {
+   "sonuc": "kabul"
+  },
+  "95": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "96": {
+   "sonuc": "kabul"
+  },
+  "97": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "98": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "99": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "100": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "101": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "102": {
+   "sonuc": "kabul"
+  },
+  "103": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 1
+   }
+  },
+  "104": {
+   "sonuc": "kabul",
+   "esli": {
+    "O1": 0
+   }
+  },
+  "105": {
+   "sonuc": "kabul"
+  },
+  "106": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "107": {
+   "sonuc": "kabul"
+  },
+  "108": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "109": {
+   "sonuc": "kabul"
+  },
+  "110": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "111": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "112": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "113": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "114": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "115": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "116": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "117": {
+   "sonuc": "kabul"
+  },
+  "118": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "119": {
+   "sonuc": "kabul"
+  },
+  "120": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "121": {
+   "sonuc": "kabul"
+  },
+  "122": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "123": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "124": {
+   "sonuc": "kabul"
+  },
+  "125": {
+   "sonuc": "kabul"
+  },
+  "126": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "127": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "128": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "129": {
+   "sonuc": "kabul"
+  },
+  "130": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "131": {
+   "sonuc": "kabul"
+  },
+  "132": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "133": {
+   "sonuc": "kabul"
+  },
+  "134": {
+   "sonuc": "kabul"
+  },
+  "135": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "136": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "137": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "138": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "139": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "140": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "141": {
+   "sonuc": "kabul"
+  },
+  "142": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "143": {
+   "sonuc": "kabul"
+  },
+  "144": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "145": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "146": {
+   "sonuc": "kabul"
+  },
+  "147": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "148": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "149": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "150": {
+   "sonuc": "kabul"
+  },
+  "151": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "152": {
+   "sonuc": "kabul"
+  },
+  "153": {
+   "sonuc": "kabul"
+  },
+  "154": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "taksit"
+    ],
+    "002": [
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T21:39:17.000Z"
+  },
+  "155": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "156": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "157": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "158": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "160": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "161": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "162": {
+   "sonuc": "kabul"
+  },
+  "163": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "164": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "165": {
+   "sonuc": "kabul"
+  },
+  "166": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "167": {
+   "sonuc": "kabul"
+  },
+  "168": {
+   "sonuc": "kabul"
+  },
+  "169": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "stok"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T21:55:27.000Z"
+  },
+  "170": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "171": {
+   "sonuc": "kabul"
+  },
+  "172": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "173": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "174": {
+   "sonuc": "kabul"
+  },
+  "175": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "176": {
+   "sonuc": "ret:sirket_yok"
+  },
+  "177": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "178": {
+   "sonuc": "ret:yetki_yok"
+  },
+  "179": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "180": {
+   "sonuc": "kabul"
+  },
+  "181": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "182": {
+   "sonuc": "kabul"
+  },
+  "183": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "184": {
+   "sonuc": "kabul"
+  },
+  "185": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "186": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O2": 3
+   }
+  },
+  "187": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 2
+   }
+  },
+  "188": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "189": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "190": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "191": {
+   "sonuc": "kabul"
+  },
+  "192": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 1
+   }
+  },
+  "193": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "194": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "195": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "196": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "197": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "198": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "199": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "200": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "201": {
+   "sonuc": "kabul"
+  },
+  "202": {
+   "sonuc": "kabul"
+  },
+  "203": {
+   "sonuc": "kabul",
+   "esli": {
+    "O2": 0
+   }
+  },
+  "204": {
+   "sonuc": "kabul"
+  },
+  "205": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "206": {
+   "sonuc": "kabul"
+  },
+  "207": {
+   "sonuc": "kabul"
+  },
+  "209": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-28T19:04:26.000Z"
+  },
+  "210": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "212": {
+   "sonuc": "ret:yazma_yasak"
+  },
+  "213": {
+   "sonuc": "ret:sunucu_kapali"
+  },
+  "215": {
+   "sonuc": "kabul"
+  },
+  "216": {
+   "sonuc": "kabul"
+  },
+  "217": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "218": {
+   "sonuc": "kabul"
+  },
+  "219": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "220": {
+   "sonuc": "kabul"
+  },
+  "221": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "222": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "223": {
+   "sonuc": "kabul"
+  },
+  "224": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "225": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "226": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "227": {
+   "sonuc": "kabul"
+  },
+  "228": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "229": {
+   "sonuc": "kabul"
+  },
+  "232": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "233": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "234": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "237": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-30T21:11:56.000Z"
+  },
+  "238": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-30T21:11:56.000Z"
+  },
+  "239": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-12-30T21:11:56.000Z"
+  },
+  "240": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "241": {
+   "sonuc": "kabul"
+  },
+  "242": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "243": {
+   "sonuc": "kabul"
+  },
+  "244": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "245": {
+   "sonuc": "kabul"
+  },
+  "246": {
+   "sonuc": "kabul"
+  },
+  "247": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "248": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "249": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "250": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "251": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "252": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "253": {
+   "sonuc": "kabul"
+  },
+  "254": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "255": {
+   "sonuc": "kabul"
+  },
+  "256": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "257": {
+   "sonuc": "kabul"
+  },
+  "258": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "259": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "260": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "261": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "262": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "263": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "264": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "265": {
+   "sonuc": "kabul"
+  },
+  "266": {
+   "sonuc": "kabul"
+  },
+  "267": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "268": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "269": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "270": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "271": {
+   "sonuc": "kabul"
+  },
+  "272": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "273": {
+   "sonuc": "kabul"
+  },
+  "274": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "275": {
+   "sonuc": "kabul"
+  },
+  "276": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "277": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "278": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "279": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "280": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "281": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "282": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "283": {
+   "sonuc": "kabul"
+  },
+  "284": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "285": {
+   "sonuc": "kabul"
+  },
+  "286": {
+   "sonuc": "kabul"
+  },
+  "287": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "288": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "289": {
+   "sonuc": "kabul"
+  },
+  "290": {
+   "sonuc": "kabul"
+  },
+  "291": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "292": {
+   "sonuc": "kabul"
+  },
+  "293": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "294": {
+   "sonuc": "kabul"
+  },
+  "295": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "296": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O3": 3
+   }
+  },
+  "297": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 2
+   }
+  },
+  "298": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "299": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "300": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O3": 0
+   }
+  },
+  "301": {
+   "sonuc": "kabul"
+  },
+  "302": {
+   "sonuc": "kabul",
+   "esli": {
+    "O3": 1
+   }
+  },
+  "303": {
+   "sonuc": "kabul"
+  },
+  "304": {
+   "sonuc": "kabul"
+  },
+  "305": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "306": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "307": {
+   "sonuc": "kabul"
+  },
+  "308": {
+   "sonuc": "kabul"
+  },
+  "309": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "310": {
+   "sonuc": "kabul"
+  },
+  "311": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 2
+   }
+  },
+  "312": {
+   "sonuc": "kabul"
+  },
+  "313": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 3
+   }
+  },
+  "314": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O4": 3
+   }
+  },
+  "315": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 2
+   }
+  },
+  "316": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "317": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "318": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "319": {
+   "sonuc": "kabul"
+  },
+  "320": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "321": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "322": {
+   "sonuc": "kabul"
+  },
+  "323": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "324": {
+   "sonuc": "kabul"
+  },
+  "325": {
+   "sonuc": "kabul"
+  },
+  "326": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "327": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "328": {
+   "sonuc": "kabul"
+  },
+  "329": {
+   "sonuc": "kabul"
+  },
+  "330": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "331": {
+   "sonuc": "kabul"
+  },
+  "332": {
+   "sonuc": "kabul"
+  },
+  "333": {
+   "sonuc": "kabul"
+  },
+  "334": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "335": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "337": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "338": {
+   "sonuc": "kabul"
+  },
+  "339": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "340": {
+   "sonuc": "kabul"
+  },
+  "341": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "342": {
+   "sonuc": "kabul"
+  },
+  "343": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "344": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "345": {
+   "sonuc": "kabul"
+  },
+  "346": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "347": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "348": {
+   "sonuc": "kabul"
+  },
+  "349": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "350": {
+   "sonuc": "kabul"
+  },
+  "351": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "352": {
+   "sonuc": "kabul"
+  },
+  "353": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "354": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "355": {
+   "sonuc": "kabul"
+  },
+  "356": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "357": {
+   "sonuc": "kabul"
+  },
+  "358": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "359": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "360": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "361": {
+   "sonuc": "kabul"
+  },
+  "362": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "363": {
+   "sonuc": "kabul"
+  },
+  "364": {
+   "sonuc": "kabul"
+  },
+  "365": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "366": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "367": {
+   "sonuc": "kabul"
+  },
+  "368": {
+   "sonuc": "kabul"
+  },
+  "369": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "370": {
+   "sonuc": "kabul"
+  },
+  "371": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "372": {
+   "sonuc": "kabul"
+  },
+  "373": {
+   "sonuc": "kabul"
+  },
+  "374": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "375": {
+   "sonuc": "kabul"
+  },
+  "376": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "377": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "378": {
+   "sonuc": "kabul"
+  },
+  "379": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "380": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "381": {
+   "sonuc": "kabul"
+  },
+  "382": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-01T02:15:49.000Z"
+  },
+  "383": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "384": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "385": {
+   "sonuc": "kabul"
+  },
+  "386": {
+   "sonuc": "kabul"
+  },
+  "387": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "388": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "389": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O4": 1
+   }
+  },
+  "390": {
+   "sonuc": "kabul",
+   "esli": {
+    "O4": 0
+   }
+  },
+  "391": {
+   "sonuc": "kabul"
+  },
+  "392": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "393": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "394": {
+   "sonuc": "kabul"
+  },
+  "395": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "396": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "397": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "398": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "399": {
+   "sonuc": "kabul"
+  },
+  "400": {
+   "sonuc": "kabul"
+  },
+  "401": {
+   "sonuc": "kabul"
+  },
+  "402": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "403": {
+   "sonuc": "kabul"
+  },
+  "404": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "405": {
+   "sonuc": "kabul"
+  },
+  "406": {
+   "sonuc": "kabul"
+  },
+  "407": {
+   "sonuc": "kabul"
+  },
+  "408": {
+   "sonuc": "kabul"
+  },
+  "409": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "410": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "411": {
+   "sonuc": "kabul"
+  },
+  "412": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "413": {
+   "sonuc": "kabul"
+  },
+  "414": {
+   "sonuc": "kabul"
+  },
+  "415": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "416": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "417": {
+   "sonuc": "kabul"
+  },
+  "418": {
+   "sonuc": "kabul"
+  },
+  "419": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "420": {
+   "sonuc": "kabul"
+  },
+  "421": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 2
+   }
+  },
+  "422": {
+   "sonuc": "kabul"
+  },
+  "423": {
+   "sonuc": "kabul"
+  },
+  "424": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 3
+   }
+  },
+  "425": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O5": 3
+   }
+  },
+  "426": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 2
+   }
+  },
+  "427": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "428": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "429": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "430": {
+   "sonuc": "kabul"
+  },
+  "431": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "432": {
+   "sonuc": "kabul"
+  },
+  "433": {
+   "sonuc": "kabul"
+  },
+  "434": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "435": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "436": {
+   "sonuc": "kabul"
+  },
+  "437": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "438": {
+   "sonuc": "kabul"
+  },
+  "439": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "440": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "441": {
+   "sonuc": "kabul"
+  },
+  "442": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "443": {
+   "sonuc": "kabul"
+  },
+  "446": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "447": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "448": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "451": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-30T10:50:23.000Z"
+  },
+  "452": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-30T10:50:23.000Z"
+  },
+  "453": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-30T10:50:23.000Z"
+  },
+  "454": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 0
+   }
+  },
+  "455": {
+   "sonuc": "kabul"
+  },
+  "456": {
+   "sonuc": "kabul",
+   "esli": {
+    "O5": 1
+   }
+  },
+  "457": {
+   "sonuc": "kabul"
+  },
+  "458": {
+   "sonuc": "kabul"
+  },
+  "459": {
+   "sonuc": "ret:cihaz_yok"
+  },
+  "460": {
+   "sonuc": "ret:uzaktan_izni_yok"
+  },
+  "461": {
+   "sonuc": "kabul"
+  },
+  "462": {
+   "sonuc": "kabul"
+  },
+  "463": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "464": {
+   "sonuc": "kabul"
+  },
+  "465": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 2
+   }
+  },
+  "466": {
+   "sonuc": "kabul"
+  },
+  "467": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 3
+   }
+  },
+  "468": {
+   "sonuc": "ret:sinir_dolu",
+   "esli": {
+    "O6": 3
+   }
+  },
+  "469": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 2
+   }
+  },
+  "470": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "471": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "472": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "473": {
+   "sonuc": "kabul"
+  },
+  "474": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "475": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "476": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "477": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "478": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "479": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "480": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "481": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "482": {
+   "sonuc": "ret:deneme_siniri"
+  },
+  "483": {
+   "sonuc": "kabul"
+  },
+  "484": {
+   "sonuc": "kabul"
+  },
+  "485": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "486": {
+   "sonuc": "kabul"
+  },
+  "487": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "488": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "489": {
+   "sonuc": "kabul"
+  },
+  "490": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "491": {
+   "sonuc": "kabul"
+  },
+  "492": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 2
+   }
+  },
+  "493": {
+   "sonuc": "kabul"
+  },
+  "494": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 3
+   }
+  },
+  "495": {
+   "sonuc": "ret:sinir_dolu"
+  },
+  "496": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O6": 3
+   }
+  },
+  "497": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 2
+   }
+  },
+  "498": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "499": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "500": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "501": {
+   "sonuc": "kabul"
+  },
+  "502": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "503": {
+   "sonuc": "kabul"
+  },
+  "506": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "507": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "508": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "511": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T11:18:56.000Z"
+  },
+  "512": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T11:18:56.000Z"
+  },
+  "513": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ],
+    "002": [
+     "anlik_durum",
+     "cari",
+     "kasa",
+     "stok",
+     "taksit"
+    ]
+   },
+   "ozet_zamani": "2026-11-29T11:18:56.000Z"
+  },
+  "514": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "515": {
+   "sonuc": "kabul"
+  },
+  "516": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "517": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "518": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "519": {
+   "sonuc": "ret:parola_yanlis"
+  },
+  "520": {
+   "sonuc": "kabul"
+  },
+  "521": {
+   "sonuc": "kabul"
+  },
+  "522": {
+   "sonuc": "kabul"
+  },
+  "523": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "524": {
+   "sonuc": "kabul"
+  },
+  "525": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "526": {
+   "sonuc": "kabul"
+  },
+  "527": {
+   "sonuc": "ret:oturum_gecersiz"
+  },
+  "528": {
+   "sonuc": "kabul"
+  },
+  "529": {
+   "sonuc": "kabul"
+  },
+  "530": {
+   "sonuc": "kabul"
+  },
+  "531": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "532": {
+   "sonuc": "kabul"
+  },
+  "533": {
+   "sonuc": "ret:yol_yasak"
+  },
+  "534": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "535": {
+   "sonuc": "kabul"
+  },
+  "536": {
+   "sonuc": "kabul"
+  },
+  "537": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "538": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "539": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "540": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "541": {
+   "sonuc": "kabul"
+  },
+  "542": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "543": {
+   "sonuc": "kabul"
+  },
+  "546": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "547": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "548": {
+   "sonuc": "ret:lisans_gecersiz"
+  },
+  "551": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-03T01:02:26.000Z"
+  },
+  "552": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-03T01:02:26.000Z"
+  },
+  "553": {
+   "sonuc": "kabul",
+   "gorunur": {
+    "001": [
+     "kasa"
+    ]
+   },
+   "ozet_zamani": "2026-12-03T01:02:26.000Z"
+  },
+  "554": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "555": {
+   "sonuc": "kabul"
+  },
+  "556": {
+   "sonuc": "kabul"
+  },
+  "557": {
+   "sonuc": "ret:kod_gecersiz",
+   "esli": {
+    "O6": 0
+   }
+  },
+  "558": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "559": {
+   "sonuc": "ret:cihaz_yok",
+   "esli": {
+    "O6": 1
+   }
+  },
+  "560": {
+   "sonuc": "kabul",
+   "esli": {
+    "O6": 0
+   }
+  }
+ }
+}
