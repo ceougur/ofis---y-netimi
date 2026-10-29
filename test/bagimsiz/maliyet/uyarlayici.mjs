@@ -680,6 +680,26 @@ const okBody = response => {
   return response.data.data;
 };
 
+// 2.4.7 (müşteri isteği 28.10.2026): programın şablonunda oranlar BOŞ gelir (kullanıcı yazar). Kâhinin şablonu Excel'in oranlarını (README §2 tablosu)
+// taşır; kâhin DEĞİŞTİRİLMEDİ (ders 40). Bu yüzden her senaryonun temiz şirketinde, senaryodan ÖNCE, kullanıcının Excel'deki oranları yazıp kaydettiği
+// hâl kurulur — yalnız GİRDİ (programın kendi Kaydet ucu; beklenen değer hesaplanmaz). Bedeli: `sablon` senaryosunun oran karşılaştırması artık şablonun
+// boş varsayılanını değil bu girdiyi okur; boş varsayılanın kendisi test/maliyet-247.test.mjs'te denetlenir.
+const EXCEL_ORANLARI = {
+  "cam/100x100-oval-kabin": [18, 20], "cam/100x100-kose-kabin": [18, 20], "cam/170-2s2c-h182": [18, 20], "cam/130-1s1c-h182-kabin": [18, 20], "cam/130-1s2c-h182-kabin": [18, 20],
+  "mika/100x100-oval-kabin": [11, 15], "mika/100x100-kose-kabin": [11, 15], "mika/170-2s2c-h182": [13, 15], "mika/150-1s1c-h182-kabin": [17, 15], "mika/120-1s2c-h182-kabin": [16, 15],
+  "mika/80-lik-yan-panel": [15, 15],
+};
+async function oranlariYaz(program) {
+  const state = (await program.request("GET", "/api/maliyet")).data?.data;
+  if (!state?.kartlar) throw new Error("oran girdisi: kartlar okunamadı");
+  const kartlar = Object.entries(EXCEL_ORANLARI).map(([kod, [yuzde, ekle]]) => {
+    if (!state.kartlar[kod]) throw new Error(`oran girdisi: ${kod} yok`);
+    return { kod, rev: state.kartlar[kod].rev, adimlar: [{ kod: "yuzde", oran: yuzde }, { kod: "yuzde_ekle", oran: ekle }] };
+  });
+  const saved = await program.request("PUT", "/api/maliyet", { kartlar });
+  if (saved.status !== 200) throw new Error(`oran girdisi kaydedilemedi: ${saved.status} ${JSON.stringify(saved.data).slice(0, 200)}`);
+}
+
 async function runScenario(scenario) {
   const dataRoot = mkdtempSync(path.join(tmpdir(), "maliyet-uyarlayici-"));
   let program = null;
@@ -705,6 +725,7 @@ async function runScenario(scenario) {
     const sector = await program.request("POST", "/api/workspace/insight/sector", { sectorId: "dusakabin", source: "manual" });
     if (sector.status !== 200) throw new Error(`sektör seçilemedi: ${sector.status}`);
     await program.request("POST", "/api/workspace/bank/setup/dismiss", {});
+    await oranlariYaz(program);
     ctx.window = createWindow(program);
     if (ekran) {
       screen = createScreen(program, scenario.kimlik);

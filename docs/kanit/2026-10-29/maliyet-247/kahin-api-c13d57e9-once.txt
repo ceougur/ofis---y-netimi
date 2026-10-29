@@ -1,0 +1,4 @@
+uyarlayıcı (uyarlayici.mjs): node /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/maliyet247-calisma/test/bagimsiz/maliyet/uyarlayici.mjs
+kabul: /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/maliyet247-calisma/test/bagimsiz/maliyet/kabul.json — 366 senaryo gönderiliyor (katman api; 25 senaryo seçilmedi)
+program: destekofis-api-ekran sürüm 2.4.6 commit c13d57e9e893e35c2a39706f9246702fd0010703
+41306/41306 denetim geçti

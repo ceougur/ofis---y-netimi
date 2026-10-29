@@ -12,7 +12,7 @@
 // Excel'deki 25 tutarsızlık AYNEN gelir (formül tablosu §6), ör.: 130'luk ve 150'lik 1S1Ç kartında bölen 120 (1, 2); MASRAF oranı kart başına farklı (3);
 // Cam 130 1S2Ç kartının CM maliyeti elle girdi, zincirin sonucu %20 Maliyet'te kalır (4); Mika 120 1S2Ç kartının CM satırında etiket yok (5); profil
 // tablosunun ilk satırında Giden Kğ elle (6); 2019 listesinde elle yazılmış hücreler TABAN olarak gelir (7–9); yan panelde "%20 Maliyet" etiketi ile
-// %15 oranı (11); tesettür sütunu parlak sütunundan, yan panel parlak farkı ayrı (12–14); fark / montaj satırları hiçbir hesaba bağlı değil (15).
+// %15 oranı (11; 2.4.7'de oranlar boş gelince etiket "Maliyet" oldu); tesettür sütunu parlak sütunundan, yan panel parlak farkı ayrı (12–14); fark / montaj satırları hiçbir hesaba bağlı değil (15).
 
 /** Sekme kodları ve ilk adları (Excel sırası). */
 export const MALIYET_SEKMELER = Object.freeze([
@@ -34,12 +34,14 @@ const mikaSatirlari = (tekerlek = "Tekerlek") => [["Aliminyum", "Kgr"], ["Mika",
  * Zincir kartı: satır tutarı = miktar × birim fiyat; ARA = satırların toplamı; sonra sabit sırayla yüzde → toplama → yüzde ekle → böl.
  * bolen: null → bölme adımı yok; cmElle: CM maliyeti elle girdi (bölme yerine; zincire girmez).
  */
-function zincir(kod, ad, satirlar, { yuzde, yuzdeEkle, bolme = null, cmElle = null, ara = "Ara", toplama = "" }) {
+function zincir(kod, ad, satirlar, { yuzde, yuzdeEkle, bolme = null, cmElle = null, ara = "Ara", toplama = "Toplam", onceki }) {
+  // 2.4.7 (müşteri isteği 28.10.2026): oranlar BOŞ gelir (boş oran hesapta 0), etiketlerde sayı yok; toplama adımının boş etiketi "Toplam".
+  // onceki: 2.4.6 şablonunun aynı adımdaki ilk hâli — yalnız hiç kaydedilmemiş kartı yeni ilk hâle çevirmek için (depo.mjs sablonYukselt).
   const adimlar = [
     { kod: "ara", etiket: ara },
-    { kod: "yuzde", etiket: yuzde[0], oran: yuzde[1] },
-    { kod: "toplama", etiket: toplama },
-    { kod: "yuzde_ekle", etiket: yuzdeEkle[0], oran: yuzdeEkle[1] },
+    { kod: "yuzde", etiket: yuzde[0], oran: yuzde[1], onceki: { etiket: onceki.yuzde[0], oran: onceki.yuzde[1] } },
+    { kod: "toplama", etiket: toplama, onceki: { etiket: onceki.toplama ?? "" } },
+    { kod: "yuzde_ekle", etiket: yuzdeEkle[0], oran: yuzdeEkle[1], onceki: { etiket: onceki.yuzdeEkle[0], oran: onceki.yuzdeEkle[1] } },
   ];
   if (bolme) adimlar.push({ kod: "bolme", etiket: bolme[0], bolen: bolme[1] });
   if (cmElle !== null) adimlar.push({ kod: "cm_elle", etiket: cmElle });
@@ -54,26 +56,30 @@ function zincir(kod, ad, satirlar, { yuzde, yuzdeEkle, bolme = null, cmElle = nu
   };
 }
 
+// 2.4.6'da "KDV/18" %18 ve "%20 Maliyet" %20 hazır gelirdi; 2.4.7'de iki kutu boş, etiket "KDV" ve "Maliyet" (müşteri: "kullanıcı girsin").
+const CAM_ORAN = { yuzde: ["KDV", null], yuzdeEkle: ["Maliyet", null], onceki: { yuzde: ["KDV/18", 18], yuzdeEkle: ["%20 Maliyet", 20] } };
+
 const CAM = [
-  zincir("cam/100x100-oval-kabin", "100X100 Oval Kabin", camSatirlari(), { yuzde: ["KDV/18", 18], yuzdeEkle: ["%20 Maliyet", 20], bolme: ["Oval Kabin CM Maliyeti", 200] }),
-  zincir("cam/100x100-kose-kabin", "100X100 Köşe Kabin", camSatirlari(), { yuzde: ["KDV/18", 18], yuzdeEkle: ["%20 Maliyet", 20], bolme: ["Köşe Kabin CM Maliyeti", 200] }),
-  zincir("cam/170-2s2c-h182", "170 2S2Ç H:182", camSatirlari(), { yuzde: ["KDV/18", 18], yuzdeEkle: ["%20 Maliyet", 20], bolme: ["2S2Ç Kabin CM Maliyeti", 170] }),
+  zincir("cam/100x100-oval-kabin", "100X100 Oval Kabin", camSatirlari(), { ...CAM_ORAN, bolme: ["Oval Kabin CM Maliyeti", 200] }),
+  zincir("cam/100x100-kose-kabin", "100X100 Köşe Kabin", camSatirlari(), { ...CAM_ORAN, bolme: ["Köşe Kabin CM Maliyeti", 200] }),
+  zincir("cam/170-2s2c-h182", "170 2S2Ç H:182", camSatirlari(), { ...CAM_ORAN, bolme: ["2S2Ç Kabin CM Maliyeti", 170] }),
   // Tutarsızlık 1: 130'luk kartta bölen 120 (Excel'deki gibi).
-  zincir("cam/130-1s1c-h182-kabin", "130 1S1Ç H:182 Kabin", camSatirlari(), { yuzde: ["KDV/18", 18], yuzdeEkle: ["%20 Maliyet", 20], bolme: ["1S1Ç Kabin CM Maliyeti", 120] }),
+  zincir("cam/130-1s1c-h182-kabin", "130 1S1Ç H:182 Kabin", camSatirlari(), { ...CAM_ORAN, bolme: ["1S1Ç Kabin CM Maliyeti", 120] }),
   // Tutarsızlık 4: CM maliyeti elle (formül yok); zincirin sonucu %20 Maliyet.
-  zincir("cam/130-1s2c-h182-kabin", "130 1S2Ç H:182 Kabin", camSatirlari(), { yuzde: ["KDV/18", 18], yuzdeEkle: ["%20 Maliyet", 20], cmElle: "1S2Ç Kabin CM Maliyeti" }),
+  zincir("cam/130-1s2c-h182-kabin", "130 1S2Ç H:182 Kabin", camSatirlari(), { ...CAM_ORAN, cmElle: "1S2Ç Kabin CM Maliyeti" }),
 ];
 
+// 2.4.7: Mika kartlarında da iki oran boş (Masraf% 11–17 ve %15 Maliyet hazır gelmez); "Masraf%" etiketinde sayı yok, aynen kalır; "%15 Maliyet" → "Maliyet".
 const MIKA = [
-  zincir("mika/100x100-oval-kabin", "100X100 Oval Kabin", mikaSatirlari(), { yuzde: ["Masraf%", 11], yuzdeEkle: ["%15 Maliyet", 15], bolme: ["Oval Kabin CM Maliyeti", 200] }),
-  zincir("mika/100x100-kose-kabin", "100X100 Köşe Kabin", mikaSatirlari("Tekerlek Köşe"), { yuzde: ["Masraf%", 11], yuzdeEkle: ["%15 Maliyet", 15], bolme: ["Köşe Kabin CM Maliyeti", 200] }),
-  zincir("mika/170-2s2c-h182", "170 2S2Ç H:182", mikaSatirlari(), { yuzde: ["Masraf%", 13], yuzdeEkle: ["%15 Maliyet", 15], bolme: ["2S2Ç Kabin CM Maliyeti", 170] }),
+  zincir("mika/100x100-oval-kabin", "100X100 Oval Kabin", mikaSatirlari(), { yuzde: ["Masraf%", null], yuzdeEkle: ["Maliyet", null], onceki: { yuzde: ["Masraf%", 11], yuzdeEkle: ["%15 Maliyet", 15] }, bolme: ["Oval Kabin CM Maliyeti", 200] }),
+  zincir("mika/100x100-kose-kabin", "100X100 Köşe Kabin", mikaSatirlari("Tekerlek Köşe"), { yuzde: ["Masraf%", null], yuzdeEkle: ["Maliyet", null], onceki: { yuzde: ["Masraf%", 11], yuzdeEkle: ["%15 Maliyet", 15] }, bolme: ["Köşe Kabin CM Maliyeti", 200] }),
+  zincir("mika/170-2s2c-h182", "170 2S2Ç H:182", mikaSatirlari(), { yuzde: ["Masraf%", null], yuzdeEkle: ["Maliyet", null], onceki: { yuzde: ["Masraf%", 13], yuzdeEkle: ["%15 Maliyet", 15] }, bolme: ["2S2Ç Kabin CM Maliyeti", 170] }),
   // Tutarsızlık 2: 150'lik kartta bölen 120.
-  zincir("mika/150-1s1c-h182-kabin", "150 1S1Ç H:182 Kabin", mikaSatirlari(), { yuzde: ["Masraf%", 17], yuzdeEkle: ["%15 Maliyet", 15], bolme: ["1S1Ç Kabin CM Maliyeti", 120] }),
+  zincir("mika/150-1s1c-h182-kabin", "150 1S1Ç H:182 Kabin", mikaSatirlari(), { yuzde: ["Masraf%", null], yuzdeEkle: ["Maliyet", null], onceki: { yuzde: ["Masraf%", 17], yuzdeEkle: ["%15 Maliyet", 15] }, bolme: ["1S1Ç Kabin CM Maliyeti", 120] }),
   // Tutarsızlık 5: CM satırında etiket yok (Excel'de etiket yerinde bir sayı duruyordu); 25: "Masraf %" boşluklu.
-  zincir("mika/120-1s2c-h182-kabin", "120 1S2Ç H:182 Kabin", mikaSatirlari(), { yuzde: ["Masraf %", 16], yuzdeEkle: ["%15 Maliyet", 15], bolme: ["", 120] }),
-  // Yan panel: bölme yok; etiketler başka; tutarsızlık 11: "%20 Maliyet" etiketi, oran 15.
-  zincir("mika/80-lik-yan-panel", "80'lik Yan Panel", [["Alüminyum", "Kğ"], ["Mıka", "Kğ"], ["Plastık ve Vıda", "Ad"], ["Fitil", "Kğ"]], { yuzde: ["Masraf", 15], toplama: "Genel", yuzdeEkle: ["%20 Maliyet", 15] }),
+  zincir("mika/120-1s2c-h182-kabin", "120 1S2Ç H:182 Kabin", mikaSatirlari(), { yuzde: ["Masraf %", null], yuzdeEkle: ["Maliyet", null], onceki: { yuzde: ["Masraf %", 16], yuzdeEkle: ["%15 Maliyet", 15] }, bolme: ["", 120] }),
+  // Yan panel: bölme yok; etiketler başka. 2.4.6'da tutarsızlık 11 ("%20 Maliyet" etiketi, oran 15) vardı; 2.4.7'de etiket "Maliyet", oran boş.
+  zincir("mika/80-lik-yan-panel", "80'lik Yan Panel", [["Alüminyum", "Kğ"], ["Mıka", "Kğ"], ["Plastık ve Vıda", "Ad"], ["Fitil", "Kğ"]], { yuzde: ["Masraf", null], toplama: "Genel", yuzdeEkle: ["Maliyet", null], onceki: { yuzde: ["Masraf", 15], toplama: "Genel", yuzdeEkle: ["%20 Maliyet", 15] } }),
 ];
 
 // ---------- Profil gramaj tablosu ----------

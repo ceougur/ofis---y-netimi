@@ -1,0 +1,26 @@
+■ (1) v2.4.6 gerçek kodu: şablon kurulur, iki kart kaydedilir
+  ✓ v2.4.6 şablonu: KDV/18 18, %20 Maliyet 20
+  ✓ v2.4.6: iki kart kaydedildi (rev 2; Mika 170 Masraf% 14)
+
+■ (2) bu dalın kodu aynı veri klasörüyle
+  ✓ hiç kaydedilmemiş cam/100x100-oval-kabin: oranlar boş, [["yuzde","KDV",null],["toplama","Toplam",null],["yuzde_ekle","Maliyet",null]]
+  ✓ hiç kaydedilmemiş cam/170-2s2c-h182: oranlar boş, [["yuzde","KDV",null],["toplama","Toplam",null],["yuzde_ekle","Maliyet",null]]
+  ✓ hiç kaydedilmemiş cam/130-1s1c-h182-kabin: oranlar boş, [["yuzde","KDV",null],["toplama","Toplam",null],["yuzde_ekle","Maliyet",null]]
+  ✓ hiç kaydedilmemiş cam/130-1s2c-h182-kabin: oranlar boş, [["yuzde","KDV",null],["toplama","Toplam",null],["yuzde_ekle","Maliyet",null]]
+  ✓ hiç kaydedilmemiş mika/100x100-oval-kabin: oranlar boş, [["yuzde","Masraf%",null],["toplama","Toplam",null],["yuzde_ekle","Maliyet",null]]
+  ✓ hiç kaydedilmemiş mika/100x100-kose-kabin: oranlar boş, [["yuzde","Masraf%",null],["toplama","Toplam",null],["yuzde_ekle","Maliyet",null]]
+  ✓ hiç kaydedilmemiş mika/150-1s1c-h182-kabin: oranlar boş, [["yuzde","Masraf%",null],["toplama","Toplam",null],["yuzde_ekle","Maliyet",null]]
+  ✓ hiç kaydedilmemiş mika/120-1s2c-h182-kabin: oranlar boş, [["yuzde","Masraf %",null],["toplama","Toplam",null],["yuzde_ekle","Maliyet",null]]
+  ✓ hiç kaydedilmemiş mika/80-lik-yan-panel: oranlar boş, [["yuzde","Masraf",null],["toplama","Genel",null],["yuzde_ekle","Maliyet",null]]
+  ✓ kaydedilmiş Köşe Kabin AYNEN (18 / 20, eski etiketler)
+  ✓ Köşe Kabin fiyatları aynen
+  ✓ Köşe Kabin sonucu aynen
+  ✓ kaydedilmiş Mika 170 AYNEN (14 / 15)
+  ✓ rev'ler değişmedi
+  ✓ ikinci açılış aynı (yükseltme bir kez)
+
+■ (3) v2.4.6'e dönüş: aynı dosya
+  ✓ v2.4.6 boş oranlı kartı açar (oran boş, sonuç 0)
+  ✓ v2.4.6: kaydedilmiş kart aynen
+
+19 denetim geçti
