@@ -1,0 +1,32 @@
+{
+  "ad": "k1-son-kaydolan-yeni",
+  "komut": "node --test test/kapi-gg247-b3.test.mjs test/kapi-gg247-b1.test.mjs test/kapi-gg247-b4.test.mjs test/kapi-247.test.mjs test/kapi-tunel-247.test.mjs test/kapi-tunel-uctan-uca-247.test.mjs test/tunel-saat-247.test.mjs test/mobil-ozet-247.test.mjs",
+  "commit": "d659d8189cd4719284bcbcf37c37814dae731eed",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 4,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T13:57:39.739Z",
+  "sure_sn": 9.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 78,
+    "gecen": 78,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/k1-son-kaydolan-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "25468f183bba63fed70c98bb485ed79d1fba3cd9bbf6477d978873c310b7cb86",
+  "ham_cikti_bayt": 32300
+}

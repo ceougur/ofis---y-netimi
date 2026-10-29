@@ -6,8 +6,8 @@
 //   * Aynı makine YENİ bir ofis kimliğiyle kaydolursa yeni ofis kabul edilir, eskisi DEVRE DIŞI kalır: cihaz listesi boşalır (okumalar hemen kapanır),
 //     özeti silinir, tüneli ve DNS kaydı Cloudflare API'den silinir (bulut/kapi/tunel.mjs ofisTuneliniSil). Silme olmazsa (Cloudflare yanıt vermedi)
 //     `bekleyen`de kalır; makinenin sonraki kaydında / tünel başvurusunda yeniden denenir.
-//   * Makineyi yalnız YENİ ofis kimliği devralır; yerini bırakmış ofisin kaydı (iki kurulum aynı makinede) ve devre dışı ofis geri gelmez (410
-//     kapi-ofis-degisti; gidip gelme yok) — yalnız eşleme o ofisi gösteriyorsa (yarışta yanlışlıkla kapanmışsa) onarılır (kontrol bulut/kapi/kapi.mjs kayit).
+//   * Son kaydolan kazanır: makineyi geçerli imzalı kaydı olan her ofis devralır (yeni ofis kimliği de, yerini bırakmış / devre dışı ofis de — yeniden
+//     kurulumdan sonra eski veri geri yüklenince asıl kurulum döner); her devralma günlük ofis değişimi sınırına sayılır (kontrol bulut/kapi/kapi.mjs kayit).
 //   * Tünel ucu yalnız makinenin GÜNCEL ofisine tünel verir.
 //   * Hız sınırları (adlı sabit KAPI_HIZ; kapi-protokol KAPI_KURALLARI'ndan ayrı): makine başına saatte kayıt ve tünel başvurusu, günde ofis değişimi;
 //     kapıcı genelinde günde YENİ ofis. Aşılınca 429 kapi-hiz. Deneme belirteci (kind "trial") AYNI kurallarla.

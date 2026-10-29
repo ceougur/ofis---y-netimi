@@ -1,0 +1,137 @@
+TAP version 13
+# Subtest: B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+    # Subtest: aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin canlı isteği 410
+    ok 1 - aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin canlı isteği 410
+      ---
+      duration_ms: 108.634505
+      type: 'test'
+      ...
+    # Subtest: son kaydolan kazanır (dar kontrol K1): yeniden kurulumdan sonra eski veri geri yüklenince devre dışı ofis makineyi geri alır; önceki kapanır, yine 3 cihaz
+    not ok 2 - son kaydolan kazanır (dar kontrol K1): yeniden kurulumdan sonra eski veri geri yüklenince devre dışı ofis makineyi geri alır; önceki kapanır, yine 3 cihaz
+      ---
+      duration_ms: 13.307992
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/k1-eski-d659d818/test/kapi-gg247-b3.test.mjs:201:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        devre dışı kalan asıl kurulum makineyi geri almalı (yoksa mobili kalıcı kapanır): {"ok":false,"status":410,"code":"kapi-ofis-degisti","error":"Bu ofis kimliği kapandı: aynı lisans yeni bir kurulumla kaydoldu. Yöneticinizden yeni karekod isteyin."}
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/k1-eski-d659d818/test/kapi-gg247-b3.test.mjs:211:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: her yeni ofis eskisinin tünelini + DNS kaydını siler: 5 kurulumdan sonra etkin tünel 1, DNS kaydı 1; eski ofisin tünel başvurusu 410
+    ok 3 - her yeni ofis eskisinin tünelini + DNS kaydını siler: 5 kurulumdan sonra etkin tünel 1, DNS kaydı 1; eski ofisin tünel başvurusu 410
+      ---
+      duration_ms: 48.721256
+      type: 'test'
+      ...
+    # Subtest: Cloudflare silmesi başarısızsa eski ofis yine kapanır, temizlik bekler; sonraki kayıtta tünel + DNS silinir
+    ok 4 - Cloudflare silmesi başarısızsa eski ofis yine kapanır, temizlik bekler; sonraki kayıtta tünel + DNS silinir
+      ---
+      duration_ms: 20.599368
+      type: 'test'
+      ...
+    # Subtest: ofis başka makineye taşınırsa (lisans yeni makineye aktarıldı) çalışmayı sürdürür; eski makinede açılan yeni ofis onun tüneline/DNS'ine dokunmaz
+    ok 5 - ofis başka makineye taşınırsa (lisans yeni makineye aktarıldı) çalışmayı sürdürür; eski makinede açılan yeni ofis onun tüneline/DNS'ine dokunmaz
+      ---
+      duration_ms: 28.086048
+      type: 'test'
+      ...
+    # Subtest: DENEME belirteci aynı kurallarla: aynı makinenin ikinci deneme ofisi birincisini kapatır
+    ok 6 - DENEME belirteci aynı kurallarla: aynı makinenin ikinci deneme ofisi birincisini kapatır
+      ---
+      duration_ms: 16.891203
+      type: 'test'
+      ...
+    # Subtest: eşzamanlı iki yeni ofis kaydı (aynı makine, 6 tur): her turda kapıdan geçen cihaz en çok 3
+    ok 7 - eşzamanlı iki yeni ofis kaydı (aynı makine, 6 tur): her turda kapıdan geçen cihaz en çok 3
+      ---
+      duration_ms: 113.764023
+      type: 'test'
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan
+    ok 8 - ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan
+      ---
+      duration_ms: 25.781846
+      type: 'test'
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (b): kaybeden ofisin yeniden kaydı makineyi devralır (son kaydolan kazanır); aynı anda yine YALNIZ bir ofisin 3 cihazı
+    not ok 9 - ZORLA ilk yazım yarışı (b): kaybeden ofisin yeniden kaydı makineyi devralır (son kaydolan kazanır); aynı anda yine YALNIZ bir ofisin 3 cihazı
+      ---
+      duration_ms: 13.505541
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/k1-eski-d659d818/test/kapi-gg247-b3.test.mjs:318:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kaybedenin yeniden kaydı: {"ok":false,"status":410,"code":"kapi-ofis-degisti","error":"Bu ofis kimliği kapandı: aynı lisans yeni bir kurulumla kaydoldu. Yöneticinizden yeni karekod isteyin."}
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/k1-eski-d659d818/test/kapi-gg247-b3.test.mjs:322:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)
+    ok 10 - ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)
+      ---
+      duration_ms: 16.03904
+      type: 'test'
+      ...
+    # Subtest: makine başına günde 10 ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır
+    ok 11 - makine başına günde 10 ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır
+      ---
+      duration_ms: 50.866568
+      type: 'test'
+      ...
+    # Subtest: kapıcı genelinde günde 50 yeni ofis; 51. (başka makine) 429 kapi-hiz; kayıtlı ofisin yeniden kaydı etkilenmez; ertesi gün açılır
+    ok 12 - kapıcı genelinde günde 50 yeni ofis; 51. (başka makine) 429 kapi-hiz; kayıtlı ofisin yeniden kaydı etkilenmez; ertesi gün açılır
+      ---
+      duration_ms: 213.210175
+      type: 'test'
+      ...
+    # Subtest: makine başına saatte 240 kayıt; sonraki 429 kapi-hiz; saat dönümünde açılır
+    ok 13 - makine başına saatte 240 kayıt; sonraki 429 kapi-hiz; saat dönümünde açılır
+      ---
+      duration_ms: 1186.458781
+      type: 'test'
+      ...
+    # Subtest: makine başına saatte 30 tünel başvurusu; sonraki 429 kapi-hiz; saat dönümünde açılır
+    ok 14 - makine başına saatte 30 tünel başvurusu; sonraki 429 kapi-hiz; saat dönümünde açılır
+      ---
+      duration_ms: 94.838372
+      type: 'test'
+      ...
+    1..14
+not ok 1 - B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+  ---
+  duration_ms: 1953.1027
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/k1-eski-d659d818/test/kapi-gg247-b3.test.mjs:179:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 14
+# suites 1
+# pass 12
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2063.35396

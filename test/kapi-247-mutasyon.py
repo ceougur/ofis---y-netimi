@@ -27,7 +27,7 @@ MUTS = [
     ("MK17 işaret yola bağlı değil", 'server/lib/mobile-ozet.mjs', 'update(mesaj.vekil(yontem, yolSorgu, cihaz, ms))', 'update(mesaj.vekil(yontem, "/", cihaz, ms))'),
     # Bağımsız gözden geçirme B3 (makine → ofis tek eşleme, hız sınırları)
     ("MK18 B3 canlı kapı/özet makine eşlemesine bakmaz (yalnız devre dışı işareti)", KM, '  if (m && m.ofis !== meta.ofis) {\n', '  if (false) {\n'),
-    ("MK19 B3 yerini bırakmış ofisin kaydı makineyi geri alır (gidip gelme)", K, 'if (esleme && !onarim && mevcut.veri.makine === iddia.machine) {', 'if (false) {'),
+    ("MK19 B3 devre dışı ofis makineyi geri alamaz (dar kontrol K1: asıl kurulum kalıcı kapanır)", K, '    const cihazlar = Array.isArray(govde.cihazlar) ? govde.cihazlar : at("kapi-istek");\n', '    if (mevcut?.veri.devreDisi) at("kapi-ofis-degisti");\n    const cihazlar = Array.isArray(govde.cihazlar) ? govde.cihazlar : at("kapi-istek");\n'),
     ("MK20 B3 tünel ucu güncel ofisi denetlemez", KM, '      if (m.ofis !== ofis) at("kapi-ofis-degisti");\n', ''),
     ("MK21 B3 kayıt sonrası bekleyen eski ofisler işlenmez (tünel/DNS silinmez)", KM, '  await bekleyenleriIsle(env, makine, { simdi, temizle });\n', ''),
     ("MK22 B3 makine başına günlük ofis değişimi sınırı yok", KM, '    if (degisim && degisimN >= KAPI_HIZ.ofisDegisimGunluk) at("kapi-hiz", { sinir: "ofis-degisim-gunluk" });\n', ''),

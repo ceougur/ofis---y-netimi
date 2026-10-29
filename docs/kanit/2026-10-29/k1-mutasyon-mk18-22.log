@@ -1,0 +1,9 @@
+YAKALANDI MK18 B3 canlı kapı/özet makine eşlemesine bakmaz (yalnız devre dışı işareti) 73 / 74 · not ok 8 - ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan | not ok 10 - B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+YAKALANDI MK19 B3 devre dışı ofis makineyi geri alamaz (dar kontrol K1: asıl kurulum kalıcı kapanır) 73 / 74 · not ok 2 - son kaydolan kazanır (dar kontrol K1): yeniden kurulumdan sonra eski veri geri yüklenince devre dışı ofis makineyi geri alır; önceki kapanır, yine 3 cihaz | not ok 10 - B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+YAKALANDI MK20 B3 tünel ucu güncel ofisi denetlemez 73 / 74 · not ok 10 - ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410) | not ok 10 - B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+YAKALANDI MK21 B3 kayıt sonrası bekleyen eski ofisler işlenmez (tünel/DNS silinmez) 73 / 74 · not ok 4 - Cloudflare silmesi başarısızsa eski ofis yine kapanır, temizlik bekler; sonraki kayıtta tünel + DNS silinir | not ok 10 - B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+YAKALANDI MK22 B3 makine başına günlük ofis değişimi sınırı yok 73 / 74 · not ok 11 - makine başına günde 10 ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır | not ok 10 - B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+# mutasyon yakalanan 5/5
+# tests 5
+# pass 5
+# fail 0

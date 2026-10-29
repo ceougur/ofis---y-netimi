@@ -181,7 +181,7 @@ describe("B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis", () => {
     cf.silmeBozuk = false;
   });
 
-  it("aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin kaydı/yüklemesi/canlı isteği 410", async () => {
+  it("aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin canlı isteği 410", async () => {
     const c = ortam();
     const M = makine(1);
     const ofisler = [];
@@ -194,11 +194,27 @@ describe("B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis", () => {
     assert.equal(gecen, 3, `tek lisans/makineyle kapıcıdan aynı anda ${gecen} cihaz geçiyor (sınır 3)`);
     for (const tel of ofisler[3].tels) assert.equal((await c.okuma(ofisler[3].ofis, tel)).code, "kapi-ozet-yok", "son ofisin cihazları kapıdan geçer (özet henüz yok)");
     const eski = ofisler[0];
-    const yeniden = await c.kayit(eski.ofis, M, eski.tels);
-    assert.equal(yeniden.code, "kapi-ofis-degisti", `yerini bırakmış ofisin kaydı reddedilmeli (gidip gelme yok): ${JSON.stringify(yeniden)}`);
-    assert.equal(yeniden.status, 410);
     assert.equal((await c.canli(eski.ofis)).code, "kapi-ofis-degisti", "eski ofisin adresi (cihazsız sayfa yolu) kapalı");
-    assert.equal(await c.gecenCihaz(ofisler), 3, "eski ofisin kayıt denemesi güncel ofisi bozmaz");
+    assert.equal(await c.gecenCihaz(ofisler), 3, "aynı anda yine tek ofis");
+  });
+
+  it("son kaydolan kazanır (dar kontrol K1): yeniden kurulumdan sonra eski veri geri yüklenince devre dışı ofis makineyi geri alır; önceki kapanır, yine 3 cihaz", async () => {
+    const c = ortam();
+    const M = makine(71);
+    const asil = await c.yeniOfis(M, 3);
+    assert.equal(asil.kayit.ok, true, "ön koşul: asıl kurulum kayıtlı");
+    const gecici = await c.yeniOfis(M, 2); // yeniden kurulum: yeni ofis kimliği, makineyi devraldı
+    assert.equal(gecici.kayit.ok, true, "ön koşul: yeni kurulum kabul");
+    assert.equal((await c.okuma(asil.ofis, asil.tels[0])).code, "kapi-cihaz", "ön koşul: asıl ofis devre dışı");
+    c.ilerle(1_000);
+    const geri = await c.kayit(asil.ofis, M, asil.tels); // eski veri klasörü geri yüklendi: asıl kurulum açılışta yeniden kaydolur
+    assert.equal(geri.ok, true, `devre dışı kalan asıl kurulum makineyi geri almalı (yoksa mobili kalıcı kapanır): ${JSON.stringify(geri)}`);
+    for (const tel of asil.tels) assert.equal((await c.okuma(asil.ofis, tel)).code, "kapi-ozet-yok", "asıl kurulumun eşli telefonları yeniden eşlemesiz döner");
+    assert.equal((await c.okuma(gecici.ofis, gecici.tels[0])).code, "kapi-cihaz", "geçici kurulum kapanır");
+    assert.equal((await c.canli(gecici.ofis)).code, "kapi-ofis-degisti");
+    assert.equal(await c.gecenCihaz([asil, gecici]), 3, "aynı anda yine tek ofisin cihazları");
+    assert.equal((await c.tunel(asil.ofis)).status, 200, "asıl kurulum tünel alır");
+    assert.deepEqual([(await c.tunel(gecici.ofis)).status], [410], "geçici kurulum tünel alamaz");
   });
 
   it("her yeni ofis eskisinin tünelini + DNS kaydını siler: 5 kurulumdan sonra etkin tünel 1, DNS kaydı 1; eski ofisin tünel başvurusu 410", async () => {
@@ -299,11 +315,14 @@ describe("B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis", () => {
     assert.equal((await c.okuma(kazanan.ofis, kazanan.tels[0])).code, "kapi-ozet-yok", "eşlemeyi son yazan ofis geçer");
   });
 
-  it("ZORLA ilk yazım yarışı (b): kaybeden (kapatılmamış) ofisin yeniden kaydı makineyi geri ALAMAZ (410); kazanan sürer", async () => {
-    const { c, M, kaybeden, kazanan } = await zorlaYaris(201);
+  it("ZORLA ilk yazım yarışı (b): kaybeden ofisin yeniden kaydı makineyi devralır (son kaydolan kazanır); aynı anda yine YALNIZ bir ofisin 3 cihazı", async () => {
+    const { c, M, kaybeden, kazanan, hazir } = await zorlaYaris(201);
+    c.ilerle(1_000);
     const r = await c.kayit(kaybeden.ofis, M, kaybeden.tels);
-    assert.deepEqual([r.status, r.code], [410, "kapi-ofis-degisti"], `kaybedenin yeniden kaydı: ${JSON.stringify(r)}`);
-    assert.equal((await c.okuma(kazanan.ofis, kazanan.tels[0])).code, "kapi-ozet-yok", "kazanan bozulmaz");
+    assert.equal(r.ok, true, `kaybedenin yeniden kaydı: ${JSON.stringify(r)}`);
+    assert.equal((await c.okuma(kaybeden.ofis, kaybeden.tels[0])).code, "kapi-ozet-yok", "yeniden kaydolan geçer");
+    assert.equal((await c.okuma(kazanan.ofis, kazanan.tels[0])).code, "kapi-cihaz", "önceki kapanır");
+    assert.equal(await c.gecenCihaz(hazir), 3);
   });
 
   it("ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)", async () => {

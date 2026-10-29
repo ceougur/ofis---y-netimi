@@ -36,7 +36,7 @@ import {
   yolSorunu,
 } from "../../server/lib/kapi-protokol.mjs";
 import { CIHAZ_CEREZI, MOBIL_CEREZLERI, OTURUM_CEREZI, cerezCakisiyor, cerezCikar, cerezOku, cerezSilSatirlari, setCookieAdi, setCookieAlanli } from "../../server/lib/mobil-cerez.mjs";
-import { KAPI_HIZ, MakineHatasi, guncelMi, kayitSonrasi, makineKaydi, makineOku, metaAnahtari, ofisiKapat, ozetAnahtari, silinenBirlestir, yeniOfisDenetle, yeniOfisSay } from "./makine.mjs";
+import { KAPI_HIZ, MakineHatasi, guncelMi, kayitSonrasi, makineKaydi, metaAnahtari, ozetAnahtari, silinenBirlestir, yeniOfisDenetle, yeniOfisSay } from "./makine.mjs";
 import { TUNEL_YOLU, cloudflareVarsa, ofisTuneliniSil, tunelIstegi } from "./tunel.mjs"; // 2.4.7 M4: ofis tüneli (ayrı dosya)
 
 export { KAPI_HIZ };
@@ -261,18 +261,10 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     if (!/^[A-Za-z0-9_-]{43}$/.test(String(govde.sir || ""))) at("kapi-istek");
     const iddia = await lisansDogrula(govde.lisans, guvenilen(env));
     if (!iddia) at("kapi-lisans");
-    // B3: makineyi yalnız YENİ ofis kimliği devralır. Kaydı olan ofis, bu makinenin eşlemesi başka ofisi gösteriyorsa yerini bırakmıştır → 410 (kapatılır);
-    // devre dışı ofis geri gelmez — yalnız eşleme hâlâ bu ofisi gösteriyorsa (yarışta kapanmışsa) onarılır. Ofis başka makineye taşınıyorsa (kayıttaki makine
-    // farklı) o makineyi devralır.
-    if (mevcut) {
-      const esleme = await makineOku(env, iddia.machine);
-      const onarim = esleme?.ofis === ofis;
-      if (mevcut.veri.devreDisi && !onarim) at("kapi-ofis-degisti");
-      if (esleme && !onarim && mevcut.veri.makine === iddia.machine) {
-        await ofisiKapat(env, ofis, iddia.machine, esleme.ofis, now()).catch(() => false);
-        at("kapi-ofis-degisti");
-      }
-    }
+    // B3 + dar kontrol K1 (BAŞ MİMAR KARARI "son kaydolan kazanır", yaygın tek kullanımlık lisans düzeni): makineyi geçerli imzalı kaydı olan HER ofis
+    // devralabilir — yeni ofis kimliği de, yerini bırakmış ya da devre dışı kalmış ofis de (yeniden kurulumdan sonra eski veri klasörü geri yüklendi, fazla
+    // kurulum kaldırıldı; aksi hâlde asıl kurulumun mobili kalıcı kapanırdı ve programda çaresi yoktu). Her devralma makinenin günlük ofis değişimi
+    // sınırına sayılır (makineKaydi); önceki ofis kayıttan sonra kapatılır (kayitSonrasi); aynı anda yine tek ofis geçer (guncelMi).
     const cihazlar = Array.isArray(govde.cihazlar) ? govde.cihazlar : at("kapi-istek");
     if (cihazlar.length > 100) at("kapi-istek");
     const temiz = [];
