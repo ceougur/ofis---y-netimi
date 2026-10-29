@@ -1,0 +1,16 @@
+
+> destekofis@2.4.6 test:sirket-canli-yetki-244
+> node --disable-warning=ExperimentalWarning test/e2e/sirket-canli-yetki-244.mjs
+
+
+■ 002 penceresi açık; yönetici Kasa yetkisini kaldırır, sonra geri verir
+  ✓ pencere 002'yi gösteriyor (sirket-fc902292-8a7a-4b13-96fe-81c36a78efb6)
+  ✓ Kasa düğmesi görünür (yetki var)
+  ✓ canlı bağlantı kuruldu
+  ✓ yetki kaldırılınca 002 ekranında Kasa düğmesi kendiliğinden kalktı
+  ✓ “Yöneticiniz yetkilerinizi güncelledi” bildirimi göründü
+  ✓ sayfa yeniden yüklenmedi (canlı güncelleme)
+  ✓ yetki geri verilince Kasa düğmesi geri geldi (önce kalkmış olmalı)
+  ✓ sayfa hatası yok
+
+✓ sirket-canli-yetki-244: 8 geçti, 0 kaldı

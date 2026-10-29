@@ -1,0 +1,94 @@
+// 2.4.7 son aday tam kapı (ders 2, 8, 15, 24, 30, 37): tam npm test + ci.yml'nin BÜTÜN e2e ve kâhin satırları + CI dışı senaryolar + CI dışı kâhinler.
+// Her koşu `tools/kanit.mjs kos 247-tamkapi/<ad>` ile, `flock <not defteri>/kos.lock` altında TEK TEK. GEÇTİ kaydı olanı atlar (devam edilebilir).
+// Kırmızı olan bir kez "<ad>-tekrar" adıyla yeniden koşulur (ders 20: kırmızının nedeni ayrıca iletiden okunur, ders 38).
+// Kullanım: node kapi-247.mjs <worktree> <bölüm…>   bölümler: npmtest ci-kahin ci-e2e cidisi kahin-dis
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import path from "node:path";
+
+const [W, ...bolumler] = process.argv.slice(2);
+const S = "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/tamkapi247-a1cd";
+const L = path.join(S, "kos.lock");
+const D = path.join(W, "docs/kanit/2026-10-29/247-tamkapi");
+mkdirSync(D, { recursive: true });
+const PW = "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/maliyet247-pw";
+const env = {
+  ...process.env,
+  HUKUK_LICENSE_URL: "http://127.0.0.1:9",
+  PLAYWRIGHT_BROWSERS_PATH: existsSync(path.join(PW, "chromium-1194")) ? PW : "/opt/pw-browsers",
+};
+const now = () => new Date().toISOString().slice(11, 19);
+const log = msg => { console.log(msg); appendFileSync(path.join(S, "kapi.log"), msg + "\n"); };
+const hukum = ad => {
+  const f = path.join(D, ad + ".json");
+  if (!existsSync(f)) return null;
+  try { return JSON.parse(readFileSync(f, "utf8")).hukum; } catch { return "OKUNAMADI"; }
+};
+const diskMB = () => {
+  const r = spawnSync("df", ["--output=avail", "-BM", "/"], { encoding: "utf8" });
+  return Number((r.stdout.trim().split("\n").pop() || "").replace(/\D/g, ""));
+};
+let n = 0;
+const sonuc = [];
+function tek(ad, cmd) {
+  const bos = diskMB();
+  log(`${now()} disk ${bos} MB boş — başlıyor ${ad}`);
+  if (!(bos >= 4500)) { log(`DUR: disk ${bos} MB (ders 24)`); process.exit(3); }
+  const r = spawnSync("flock", [L, "node", "tools/kanit.mjs", "kos", "247-tamkapi/" + ad, "--", ...cmd], { cwd: W, env, encoding: "utf8", maxBuffer: 1 << 28 });
+  const out = (r.stdout || "") + (r.stderr || "");
+  writeFileSync(path.join(S, "son.out"), out);
+  const son = out.trim().split("\n").slice(-1)[0] || "";
+  log(`${now()} ${ad} cikis=${r.status} hüküm=${hukum(ad)} ${son.slice(0, 220)}`);
+  return r.status === 0 && hukum(ad) === "GEÇTİ";
+}
+function kos(ad, cmd) {
+  n++;
+  if (hukum(ad) === "GEÇTİ") { log(`ATLA ${ad} (GEÇTİ)`); sonuc.push([ad, "GEÇTİ"]); return; }
+  if (tek(ad, cmd)) { sonuc.push([ad, "GEÇTİ"]); return; }
+  if (hukum(ad + "-tekrar") === "GEÇTİ") { sonuc.push([ad, "1.kırmızı, 2.yeşil"]); return; }
+  if (tek(ad + "-tekrar", cmd)) { sonuc.push([ad, "1.kırmızı, 2.yeşil"]); return; }
+  sonuc.push([ad, "2× kırmızı"]);
+}
+const npm = s => ["npm", "run", s];
+for (const b of bolumler) {
+  if (b === "npmtest") kos("npm-test", ["npm", "test"]);
+  if (b === "ci-kahin") {
+    kos("ci-kahin-defter", npm("test:kahin-defter"));
+    kos("ci-kahin-cari", npm("test:kahin-cari"));
+    kos("ci-kahin-tutar", npm("test:kahin-tutar"));
+    kos("ci-kahin-ebelge-model", ["python3", "test/bagimsiz/ebelge/test_model.py"]);
+    kos("ci-kahin-ebelge-mutasyon", ["python3", "test/bagimsiz/ebelge/mutasyon.py"]);
+    kos("ci-kahin-ebelge-senaryo", [...npm("test:kahin-ebelge"), "--", "--senaryo", "test/bagimsiz/ebelge/senaryolar", "--ux15", "acik"]);
+    kos("ci-kahin-maliyet", npm("test:kahin-maliyet"));
+    kos("ci-kahin-mobil-yazma", [...npm("test:kahin-mobil-yazma"), "--", "--haric", "E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu"]);
+  }
+  if (b === "ci-e2e") {
+    const ci = readFileSync(path.join(W, ".github/workflows/ci.yml"), "utf8");
+    const satirlar = [...ci.matchAll(/kanit\.mjs kos (e2e-[A-Za-z0-9_-]+) npm run ([A-Za-z0-9:_-]+)\s*$/gm)];
+    log(`ci.yml e2e satırı: ${satirlar.length}`);
+    for (const m of satirlar) kos("ci-" + m[1], npm(m[2]));
+  }
+  if (b === "cidisi") {
+    for (const s of ["210", "211", "212", "213", "214", "215", "216", "217", "218", "rapor", "taslak", "whatsapp"]) kos("cidisi-senaryo-" + s, npm("test:senaryo-" + s));
+    kos("cidisi-senaryo", npm("test:senaryo"));
+    kos("cidisi-ui-ux-217", ["node", "--disable-warning=ExperimentalWarning", "test/e2e/ui-ux-217.mjs"]);
+  }
+  if (b === "kahin-dis") {
+    mkdirSync(path.join(S, "erisim"), { recursive: true });
+    mkdirSync(path.join(S, "sayac"), { recursive: true });
+    kos("dis-kahin-maliyet-tam", ["python3", "-I", "test/bagimsiz/maliyet/kos.py"]);
+    kos("dis-kahin-mobil-erisim", ["node", "test/bagimsiz/mobil-erisim/program-surucu.mjs", "--cikti", path.join(S, "erisim")]);
+    kos("dis-kahin-mobil-yazma-tam", npm("test:kahin-mobil-yazma"));
+    kos("dis-kahin-sayac-surucu", ["env", "TZ=Europe/Istanbul", "node", "test/bagimsiz/edm-sayac/program-surucu.mjs", "test/bagimsiz/edm-sayac/kabul.json",
+      path.join(S, "sayac/program.json"), path.join(S, "sayac/uretilemeyen.json")]);
+    kos("dis-kahin-sayac-karsilastir", ["python3", "-I", "test/bagimsiz/edm-sayac/kahin.py", "karsilastir", "test/bagimsiz/edm-sayac/kabul.json", path.join(S, "sayac/program.json"),
+      "--birlesim", "ay=gonderim;anahtar=sirket_ettn_ortam;e11048=kesinlestirir;pencere=icinde_dahil;geri_yukleme=etkilemez"]);
+    kos("dis-kahin-sayac-kendi", ["python3", "-I", "test/bagimsiz/edm-sayac/kahin_test.py"]);
+    kos("dis-kahin-erisim-kendi", ["python3", "-I", "test/bagimsiz/mobil-erisim/kahin_test.py"]);
+    kos("dis-kahin-yazma-kendi", ["python3", "-I", "test/bagimsiz/mobil-yazma/kahin_test.py"]);
+    kos("dis-kahin-maliyet-kendi", ["python3", "-I", "test/bagimsiz/maliyet/test_kahin.py"]);
+  }
+}
+log(`BİTTİ (${bolumler.join(",")}): ${n} koşu`);
+for (const [ad, h] of sonuc) if (h !== "GEÇTİ") log(`  KIRMIZI GÖRÜLDÜ: ${ad} → ${h}`);
+process.exit(sonuc.some(([, h]) => h === "2× kırmızı") ? 1 : 0);

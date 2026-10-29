@@ -1,0 +1,26 @@
+
+> destekofis@2.4.6 test:gg243-tumunu-gonder
+> node --disable-warning=ExperimentalWarning test/e2e/gg243-tumunu-gonder.mjs
+
+A) 40 bekleyen, her gönderim 900 ms — Tümünü Gönder ekrandan
+  ✓ düğme 40 belge (Tümünü Gönder (40))
+  (süre 37 sn; görülen ilerleme: Gönderiliyor: 0 / 40 · Gönderiliyor: 11 / 40 · Gönderiliyor: 22 / 40 · Gönderiliyor: 33 / 40 · Gönderiliyor: 40 / 40)
+  ✓ "Sunucu zamanında yanıt vermedi" bildirimi yok (hof-toast hof-toast-success is-visible|40 belge gönderildi.)
+  ✓ bitiş bildirimi "40 belge gönderildi." (hof-toast hof-toast-success is-visible|40 belge gönderildi.)
+  ✓ düğmede ilerleme göründü (Gönderiliyor: X / 40)
+  ✓ ilerleme birden çok adımda arttı (5 farklı)
+  ✓ gönderim sürerken düğme basılamaz
+  ✓ aynı anda en çok bir istek (görülen 1; toplam 4 istek)
+  ✓ istek parçalara bölündü (4 istek)
+  ✓ EDM'ye 40 gönderim (40)
+  ✓ hepsi numaralı ve gönderilmiş
+  ✓ numara sırası = tarih sırası
+  ✓ her belge EDM'ye bir kez
+B) istemci zaman aşımı (3 sn) — hata değil, 'sunucuda sürüyor olabilir'
+  ✓ bilgi bildirimi (hof-toast hof-toast-info is-visible|gönderim sunucuda sürüyor olabilir. Liste yenilendi; bir süre sonra Gönderilecekler'e bakın, kalan belge olursa Tümünü Gönder'e yeniden basın.)
+  ✓ kırmızı hata bildirimi yok (hof-toast hof-toast-success is-visible|40 belge gönderildi. ‖ hof-toast hof-toast-info is-visible|gönderim sunucuda sürüyor olabilir. Liste yenilendi; bir süre sonra Gönderilecekler'e bakın, kalan belge olursa Tümünü Gönder'e yeniden basın.)
+  ✓ düğme yeniden basılabilir (Tümünü Gönder (8))
+  ✓ sunucu arkada sürdürdü (11 gönderim)
+  ✓ sayfa hatası yok
+
+✓ gg243-tumunu-gonder: 17 geçti, 0 kaldı

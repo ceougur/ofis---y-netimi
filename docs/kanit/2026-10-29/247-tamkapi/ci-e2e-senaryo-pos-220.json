@@ -1,0 +1,32 @@
+{
+  "ad": "247-tamkapi/ci-e2e-senaryo-pos-220",
+  "komut": "npm run test:senaryo-pos-220",
+  "commit": "fbeb81345d0de8e917ea92c6f0cfc4ee276d69e9",
+  "dal": "worktree-agent-a1cdf987dc77a4bba",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T16:59:01.669Z",
+  "sure_sn": 110.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 113,
+    "gecen": 113,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/247-tamkapi/ci-e2e-senaryo-pos-220.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1cdf987dc77a4bba",
+  "ham_cikti_sha256": "4ad58f22c628944b3216ffd1ac3862a4dc5055f93de52bc6a57b98c862e03dec",
+  "ham_cikti_bayt": 10349
+}
