@@ -167,7 +167,16 @@ export function parseCookies(header = "") {
   return result;
 }
 
+// 2.4.7 M2 (docs/mobil/M2-TASARIM.md §2): uzaktan erişim dinleyicisine (app.listenRemote; M4'te tünel yalnız oraya bağlanır) gelen istek bu işaretle
+// tanınır. Uzak istek 127.0.0.1'den gelse de YEREL sayılmaz: clientIp "uzak" döner → isLocalAddress hiçbir yerde doğru çıkmaz (yerel kurtarma kodu, ilk
+// kurulum girişi), giriş deneme sınırı yerel kullanıcılarla karışmaz. Başlık (X-Forwarded-For …) bu kararı değiştirmez.
+export const REMOTE_REQUEST = Symbol.for("destekofis.remote-request");
+export const isRemoteRequest = req => Boolean(req && req[REMOTE_REQUEST]);
+// Uzak isteğin doğrulanmış uzak oturumu ({ userId, deviceId }; lib/mobile-remote.mjs kapısı koyar). auth.currentUser uzak istekte YALNIZ buna bakar.
+export const REMOTE_SESSION = Symbol.for("destekofis.remote-session");
+
 export function clientIp(req, trustProxy = false) {
+  if (isRemoteRequest(req)) return "uzak";
   if (trustProxy) {
     const forwarded = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
     if (forwarded) return forwarded;

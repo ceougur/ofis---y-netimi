@@ -1,6 +1,6 @@
 // DestekOfis Mobil: yalnız uygulama kabuğu (sayfa, stil, betik, simge) önbelleğe alınır; mali API yanıtları ASLA saklanmaz, yeniden oynatılmaz,
 // sıraya alınmaz. Kapsam /mobil/ (dosyanın kendi klasörü); masaüstü programın sayfalarına karışmaz.
-const CACHE = "destekofis-mobil-kabuk-v1";
+const CACHE = "destekofis-mobil-kabuk-v2";
 const BASE = new URL("./", self.location).pathname;
 const ASSETS = ["", "index.html", "styles.css", "app.js", "manifest.webmanifest", "icons/app.svg"].map(name => BASE + name);
 self.addEventListener("install", e => {

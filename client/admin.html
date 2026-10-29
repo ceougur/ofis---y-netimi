@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="/assets/admin.css">
   <script defer src="/assets/hof-core.js"></script>
   <script defer src="/assets/hof-auth.js"></script>
+  <script defer src="/assets/hof-mobile-devices.js"></script>
   <script defer src="/assets/admin.js"></script>
 </head>
 <body class="adm-body">
@@ -35,6 +36,7 @@
       <button type="button" role="tab" data-tab="companies" data-requires="system.manage" aria-selected="false">Şirketler</button>
       <button type="button" role="tab" data-tab="system" data-requires="system.manage" aria-selected="false">Sistem</button>
       <button type="button" role="tab" data-tab="license" data-requires="license.manage" aria-selected="false">Lisans</button>
+      <button type="button" role="tab" data-tab="mobile" data-requires="users.manage" aria-selected="false">Mobil Cihazlar</button>
     </nav>
 
     <section class="adm-panel" data-panel="users" role="tabpanel">
@@ -187,6 +189,20 @@
         <p class="adm-muted" id="adm-network-result" aria-live="polite"></p>
       </form>
       <div class="adm-grid" id="adm-system"></div>
+    </section>
+
+    <section class="adm-panel" data-panel="mobile" role="tabpanel" hidden>
+      <div class="adm-panel-head"><div><h1>Mobil Cihazlar</h1><p>Telefon, tablet ya da ofis dışındaki bir bilgisayarın tarayıcısı karekodla bir kez eşlenir; eşli cihazdan DestekOfis kullanıcı adı ve parolasıyla girilir. Sınır program başınadır (iki şirket birlikte); cihaz silinince yer açılır.</p></div></div>
+      <section class="adm-card adm-mobile-status" id="adm-mobile-status" aria-live="polite"><p class="adm-muted">Yükleniyor…</p></section>
+      <section class="adm-card">
+        <h2>Kullanıcılar</h2>
+        <p class="adm-muted">Karekod yalnız Uzaktan Bağlanabilir işaretli kullanıcıya oluşturulur; 5 dakika geçerli ve tek kullanımlıktır. İşaret kaldırılınca kişinin bütün cihazları hemen düşer.</p>
+        <div class="adm-table-wrap"><table class="hof-table adm-table"><thead><tr><th>Ad</th><th>Kullanıcı Adı</th><th>Uzaktan Bağlanabilir</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-mobile-users"><tr><td colspan="4" class="adm-muted">Yükleniyor…</td></tr></tbody></table></div>
+      </section>
+      <section class="adm-card">
+        <h2>Eşli Cihazlar</h2>
+        <div class="adm-table-wrap"><table class="hof-table adm-table"><thead><tr><th>Cihaz</th><th>Kullanıcı</th><th>Eşleme Tarihi</th><th>Son Erişim</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-mobile-devices"><tr><td colspan="5" class="adm-muted">Yükleniyor…</td></tr></tbody></table></div>
+      </section>
     </section>
 
     <section class="adm-panel" data-panel="license" role="tabpanel" hidden>

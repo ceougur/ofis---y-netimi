@@ -1,0 +1,19 @@
+YAKALANDI MU1 sınır denetimi yok (eşleme) 24 / 26
+YAKALANDI MU2 karekod süresi denetlenmez 25 / 26
+YAKALANDI MU3 karekod tek kullanımlık değil 23 / 26
+YAKALANDI MU4 silinen cihaz da geçer 23 / 26
+YAKALANDI MU5 yol beyaz listesi çözülmeden (ham önek) 24 / 26
+YAKALANDI MU6 oturum boşta süresi yok 25 / 26
+YAKALANDI MU7 oturum cihaza bağlı değil 25 / 26
+YAKALANDI MU8 P6 yok (başka kullanıcı girer) 25 / 26
+YAKALANDI MU9 kilitliyken doğru parola geçer 25 / 26
+YAKALANDI MU10 imza denetlenmez 25 / 26
+YAKALANDI MU11 izin kalkınca cihaz düşmez 24 / 26
+YAKALANDI MU12 geri yükleme ortak katmanı mobil tabloları taşımaz 25 / 26
+YAKALANDI MU13 lisans denetlenmez 25 / 26
+YAKALANDI MU14 uzak istek yerel sayılır (clientIp) 25 / 26
+YAKALANDI MU15 şirket denetimi mobil katmanda yok 25 / 26
+# mutasyon yakalanan 15/15
+# tests 15
+# pass 15
+# fail 0

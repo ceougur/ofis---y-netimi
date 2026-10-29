@@ -1411,6 +1411,39 @@ export const MIGRATIONS = [
       store.run("INSERT OR IGNORE INTO edoc_usage_meta (key, value) VALUES ('since', ?)", (typeof now === "function" ? now() : new Date()).toISOString());
     },
   },
+  {
+    version: 38,
+    name: "v2.4.7 mobil cihaz eşleme ve uzak oturumlar (ortak katman; para dışı)",
+    up(store) {
+      // 2.4.7 M2 (docs/mobil/M2-TASARIM.md; lib/mobile-remote.mjs; kullanıcı kararları 26.10.2026 + P1–P13 29.10.2026). Program başına (iki şirket birlikte)
+      // sayılan eşli uzaktan cihazlar ORTAK KATMANDA (001'in veri tabanı; kullanıcılar ve oturumların yanında) kullanılır; şirket dosyalarında tablolar boş
+      // kalır. Yedekten Geri Yükle'de canlı hâl kalır (company-backups.mjs COMMON_TABLES: silinmiş cihaz eski yedekle geri gelmez); Şirket Verisini Sıfırla
+      // dokunmaz. YALNIZ EKLEYİCİ: yeni tablolar; mevcut tablo ve satır değişmez, eski sürüm (2.4.6) tabloları görmez. Kod/sır/oturum belirteci düz
+      // metin olarak YAZILMAZ (SHA-256 karması). Zamanlar ISO metni (uzaktan erişim saati, config.remoteNow).
+      // mobile_access: "Uzaktan Bağlanabilir" izni (kullanıcı başına; satır yoksa izin yok). mobile_codes: tek kullanımlık eşleme karekodları.
+      // mobile_devices: eşli cihazlar (revoked_at dolu = silinmiş; sayılmaz, giremez). mobile_sessions: cihaza bağlı uzak oturumlar (yerel sessions'tan ayrı).
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS mobile_access (
+          user_id TEXT PRIMARY KEY, remote INTEGER NOT NULL DEFAULT 0 CHECK (remote IN (0, 1)), updated_at TEXT NOT NULL, updated_by TEXT NOT NULL DEFAULT ''
+        ) STRICT;
+        CREATE TABLE IF NOT EXISTS mobile_codes (
+          code_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, created_by TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL, expires_at TEXT NOT NULL,
+          state TEXT NOT NULL DEFAULT 'active' CHECK (state IN ('active', 'used', 'revoked')), used_at TEXT, device_id TEXT
+        ) STRICT;
+        CREATE INDEX IF NOT EXISTS idx_mobile_codes_user ON mobile_codes(user_id, state);
+        CREATE TABLE IF NOT EXISTS mobile_devices (
+          id TEXT PRIMARY KEY, user_id TEXT NOT NULL, name TEXT NOT NULL, kind TEXT NOT NULL, secret_hash TEXT NOT NULL, public_key TEXT NOT NULL,
+          created_at TEXT NOT NULL, created_by TEXT NOT NULL DEFAULT '', last_seen_at TEXT, revoked_at TEXT, revoked_by TEXT, revoke_reason TEXT
+        ) STRICT;
+        CREATE INDEX IF NOT EXISTS idx_mobile_devices_user ON mobile_devices(user_id, revoked_at);
+        CREATE TABLE IF NOT EXISTS mobile_sessions (
+          token_hash TEXT PRIMARY KEY, device_id TEXT NOT NULL, user_id TEXT NOT NULL, created_at TEXT NOT NULL, last_seen_at TEXT NOT NULL, expires_at TEXT NOT NULL
+        ) STRICT;
+        CREATE INDEX IF NOT EXISTS idx_mobile_sessions_device ON mobile_sessions(device_id);
+        CREATE INDEX IF NOT EXISTS idx_mobile_sessions_user ON mobile_sessions(user_id);
+      `);
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";

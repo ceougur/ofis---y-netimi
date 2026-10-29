@@ -113,6 +113,9 @@ export function loadConfig(overrides = {}) {
     // Sunucunun iş saati (v2.1.0; lib/clock.mjs): "bugün" ve iş kayıtlarının zaman damgaları tek kaynaktan. Üretimde gerçek
     // saat; sahte saat yalnız programdan (testler, kabul senaryoları) verilir — ortam değişkeni yok. Şirketler aynı saati paylaşır.
     now: createClock(overrides.now),
+    // 2.4.7 M2: uzaktan erişimin güvenlik süreleri (karekod 5 dk, uzak oturum boşta 15 dk / en çok 12 saat, uzak giriş kilidi 15 dk; lib/mobile-remote.mjs)
+    // bu saatle ölçülür. Altyapı saati: üretimde HER ZAMAN gerçek saat (iş saati sahte olsa da); yalnız programdan (kâhin sürücüsü, testler) verilir.
+    remoteNow: createClock(overrides.remoteNow),
     // Para yazımı denetimi (K6; lib/bank/post.mjs) test kipi: ihlal hata verir ve işlemi geri alır. Üretimde (varsayılan) iş durmaz,
     // sunucu günlüğüne ve meta.bank.integrity'ye yazılır. Yalnız programdan (testler) açılır.
     moneyStrict: overrides.moneyStrict === true,

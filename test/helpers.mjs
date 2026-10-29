@@ -50,6 +50,9 @@ export async function startTestServer(options = {}) {
     // Sahte saat (v2.1.0): sunucunun "bugün"ü ve iş zaman damgaları (config.now). Zaman (Date/sayı/ISO metni; akar) ya da
     // { time, fixed: true } (durur). server.clock.set/advance ile ilerletilir; tarayıcıyla eşleme: installPageClock/moveClock.
     ...(options.now !== undefined ? { now: options.now } : {}),
+    // 2.4.7 M2: uzaktan erişimin güvenlik saati (karekod, uzak oturum, uzak giriş kilidi; config.remoteNow) ve karekodun uzak adresi.
+    ...(options.remoteNow !== undefined ? { remoteNow: options.remoteNow } : {}),
+    ...(options.mobileRemoteUrl ? { mobileRemoteUrl: options.mobileRemoteUrl } : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.
     moneyStrict: options.moneyStrict ?? true,

@@ -30,7 +30,8 @@ const RESTORE_STAGE_DIR = "geri-yukleme";
 const UPDATE_LABEL = /^(?:guncelleme-oncesi|basarisiz-guncelleme)(?:-|$)/;
 const HOLD_UPDATE_MS = 7 * 86_400_000;
 // Ortak katman: geri yüklemede dosyadaki değil, o anki hâli kalır.
-const COMMON_TABLES = ["users", "roles", "sessions"];
+// 2.4.7 M2: mobil cihaz eşleme tabloları da ortak katmandır (program başına sayılır; silinmiş cihaz ya da kaldırılmış uzak izin eski yedekle geri gelmez).
+const COMMON_TABLES = ["users", "roles", "sessions", "mobile_access", "mobile_codes", "mobile_devices", "mobile_sessions"];
 // v2.1.0 (gözden geçirme B3/B4): "meta.bank.%" (eski satır işareti, açılış onarımı raporu, K6 günlüğü, İşlem No sayacı) ve "meta.schema.%"
 // (göç damgaları) geri yüklenen dosyanın KENDİ verisinin parçasıdır: canlıdan aktarılmaz. Önceden sıfırlanmış canlı dosyanın işareti geri
 // yüklenen dosyaya yazılıyor, güncelleme öncesi satırlar "eski sürümün yeni yazdığı olaysız para satırı" sayılıyordu.
