@@ -97,6 +97,9 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
 
   // ---------- İç istek: kullanıcının uzak oturumuyla (yetki programın uçlarında) ----------
   async function icIstek(userId, path) {
+    // Her iç istekten önce olay döngüsüne sıra verilir: özet kullanıcı başına ~90 iç istekten oluşur ve aralarında G/Ç yoktur; sıra verilmezse
+    // masaüstü istekleri özet bitene dek (büyük ofiste 3 kullanıcıda ~10 sn) bekliyordu (2.4.7 mobil özet ölçümü M-H2).
+    await new Promise(resolve => setImmediate(resolve));
     const req = Readable.from([]);
     Object.assign(req, { method: "GET", url: path, headers: { host: "ozet.ic", accept: "application/json", "x-requested-with": "DestekOfisMobile" }, socket: { remoteAddress: "127.0.0.1" } });
     req[REMOTE_REQUEST] = true;

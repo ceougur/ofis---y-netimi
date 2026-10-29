@@ -89,7 +89,7 @@ const ROUTES = [
   { method: "GET", path: /^\/api\/mobil\/accounts\/([^/]+)\/statement\.pdf$/, target: ([account]) => `/api/workspace/accounts/${id(account)}/ekstre.pdf` },
   { method: "GET", path: /^\/api\/mobil\/accounts\/([^/]+)\/entries\/([^/]+)\/receipt\.pdf$/, target: ([account, entry]) => `/api/workspace/accounts/${id(account)}/entries/${id(entry)}/makbuz.pdf` },
   { method: "GET", path: /^\/api\/mobil\/accounts\/([^/]+)$/, target: ([account]) => `/api/workspace/accounts/${id(account)}` },
-  { method: "GET", path: /^\/api\/mobil\/cash$/, target: () => "/api/workspace/cash" },
+  { method: "GET", path: /^\/api\/mobil\/cash$/, target: () => "/api/workspace/cash", transform: "cash" },
   { method: "GET", path: /^\/api\/mobil\/bank$/, target: () => "/api/workspace/bank/summary" },
   { method: "GET", path: /^\/api\/mobil\/bank\/accounts$/, target: () => "/api/workspace/bank/accounts" },
   { method: "GET", path: /^\/api\/mobil\/stock$/, target: (_, query) => ["/api/workspace/stock", listQuery(query, { q: 120, limit: 4, offset: 12, category: 60 })] },
@@ -136,6 +136,8 @@ export function resolveMobile(method, pathname, query) {
 
 // Yanıtın mobil biçimi. session: oturum özeti (kullanıcı, görebildiği şirketler, seçili şirket; mobil yazma kapalı).
 // reports: Raporlar sekmesinin kataloğu — kullanıcının programda görebildiği raporlardan yalnız MOBILE_REPORT_IDS.
+// cash: Kasa bakiyesi ve toplamlar; hareket listesi (entries) GİTMEZ — mobil ekran yalnız bakiyeyi gösterir, liste büyük ofiste 13 MB'ı buluyordu (özet
+// 3 kullanıcıda kapıcının 8 MB sınırını aşıyor, 413; telefon her açılışta tümünü indiriyordu — 2.4.7 mobil özet ölçümü M-H1).
 export function transformMobile(kind, data) {
   if (kind === "session") {
     const companies = (Array.isArray(data?.companies) ? data.companies : []).filter(item => ID.test(String(item?.id || ""))).map(item => ({ id: item.id, code: item.code || "", name: item.name || "", current: item.current === true }));
@@ -154,6 +156,10 @@ export function transformMobile(kind, data) {
       reports: list.filter(report => REPORT_IDS.has(report.id)).map(({ id: reportId, group, title, description, params, preset, accountRequired }) => ({ id: reportId, group, title, description: description || "", params: params || [], preset: preset || "", accountRequired: accountRequired === true })),
       today: data?.today || "",
     };
+  }
+  if (kind === "cash") {
+    const { entries: _entries, ...rest } = data || {};
+    return rest;
   }
   return data;
 }
