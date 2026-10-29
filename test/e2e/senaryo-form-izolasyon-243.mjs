@@ -725,6 +725,28 @@ try {
     covered.push("Stok Kartı / Yeni Ürün (hof-stock editItem)");
 
   });
+  await part("D10b", async () => {
+    // 2.4.7 gezinti D2: Kalem Türü "Hizmet" seçilince düğme "Hizmeti Aç", kayıttan sonra bildirim "Hizmet açıldı." (Yazım düzeni; önceden "Ürünü Aç" / "Ürün açıldı.").
+    await page.evaluate(() => window.HOF.stock.open());
+    await page.waitForSelector(`${TOP} [data-act="new"]`);
+    await page.click(`${TOP} [data-act="new"]`);
+    await page.waitForSelector(`${TOP} input[name="name"]`);
+    d = topDialog(page);
+    const submitText = async () => ((await d.locator('form button[type="submit"]').textContent()) || "").trim();
+    ok((await submitText()) === "Ürünü Aç", `D10b ürün türünde düğme: ${await submitText()}`);
+    await d.locator('select[name="kind"]').selectOption("service");
+    ok((await submitText()) === "Hizmeti Aç", `D10b hizmet türünde düğme: ${await submitText()}`);
+    await typeInto(page, d.locator('input[name="name"]'), "İzolasyon Montajı");
+    await page.evaluate(() => document.querySelectorAll(".hof-toasts > *").forEach(item => item.remove()));
+    await submit(page);
+    const toast = await page.waitForFunction(() => /açıldı/.test(document.querySelector(".hof-toasts")?.textContent || ""), null, { timeout: 8000 }).then(() => page.textContent(".hof-toasts")).catch(() => "");
+    ok(/Hizmet açıldı\./.test(toast) && !/Ürün açıldı/.test(toast), `D10b bildirim: ${String(toast).trim()}`);
+    const serviceHit = server.app.store.get("SELECT kind FROM stock_items WHERE name = 'İzolasyon Montajı'");
+    ok(serviceHit?.kind === "service", `D10b hizmet kaydedildi (${JSON.stringify(serviceHit)})`);
+    await closeClean(page);
+    covered.push("Stok Kartı / Yeni Hizmet (hof-stock editItem, D2)");
+
+  });
   await part("D11", async () => {
     // D11 Kasa: Tahsilat formu
     await page.evaluate(() => window.HOF.workspace.openCash());

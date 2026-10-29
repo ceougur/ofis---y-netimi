@@ -354,6 +354,15 @@
     // Ayrıntılı Cari Ekstre: kalem satırında girintili kolon (kolon gizlenince sırası değişir; ada göre bulunur).
     const indentAt = preview ? preview.headers.indexOf("Açıklama / Ürün - Hizmet") : -1;
     const noteAt = preview ? preview.headers.indexOf("Kalem Açıklaması") : -1;
+    // 2.4.7 gezinti D1: Ayrıntılı Cari Ekstre 1366 px'te 16 kolonla 3–9 px taşıyordu — bölünemeyen "FIS2026000000001" Belge No kolonunu ~105 px'e
+    // sabitliyordu. Yalnız ekranda belge numarasının seri / yıl / sıra arasına bölme fırsatı (<wbr>) konur (Belge No ve açıklamadaki "Satış FIS…"):
+    // metin (kopyala, PDF, Excel) aynı kalır, sığarsa tek satır.
+    const docAt = preview?.rowMarks ? preview.headers.indexOf("Belge No") : -1;
+    const DOC_NO = /(^|\s)([A-Za-zÇĞİÖŞÜçğıöşü]{1,8})(\d{4})(\d{4,})(?=$|\s)/g;
+    const cellHtml = (cell, index) => {
+      const html = esc(shown(cell, index));
+      return index === docAt || (preview?.rowMarks && index === indentAt) ? html.replace(DOC_NO, "$1$2<wbr>$3<wbr>$4") : html;
+    };
     // 2.4.3 UX24: TOPLAM satırları (yönü karışık raporda "TOPLAM Satış", "TOPLAM Alış", "Net"); eski yanıtta tek footer.
     const totals = preview ? (Array.isArray(preview.footers) && preview.footers.length ? preview.footers : preview.footer ? [preview.footer] : []) : [];
     // 2.4.3 (C4): yer tutucu (rapor değişti) önceki sonucun yüksekliğini korur — pencere çöküp açılmaz (düzen kayması yok).
@@ -362,7 +371,7 @@
       ? `<div class="hof-rc-summary">${(preview.summary || []).map(([label, value]) => `<span><small>${esc(label)}</small><b>${esc(screenMoney(value))}</b></span>`).join("")}</div>
         <div class="hof-rep-table hof-rc-table"><table class="hof-table${preview.rowMarks ? " is-dense" : ""}${preview.rowMarks && preview.headers.length >= 16 ? " is-wide" : ""}"><thead><tr>${preview.headers.map((header, index) => `<th class="${isNum(index) ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
           preview.rows.length
-            ? preview.rows.map((row, rowIndex) => `<tr${preview.rowMarks?.[rowIndex] ? ` class="is-${esc(preview.rowMarks[rowIndex])}"` : ""}>${row.map((cell, index) => `<td class="${cellClass(preview, index)}${index === indentAt ? " is-indent" : ""}${index === noteAt ? " is-note" : ""}">${esc(shown(cell, index))}</td>`).join("")}</tr>`).join("")
+            ? preview.rows.map((row, rowIndex) => `<tr${preview.rowMarks?.[rowIndex] ? ` class="is-${esc(preview.rowMarks[rowIndex])}"` : ""}>${row.map((cell, index) => `<td class="${cellClass(preview, index)}${index === indentAt ? " is-indent" : ""}${index === noteAt ? " is-note" : ""}">${cellHtml(cell, index)}</td>`).join("")}</tr>`).join("")
             : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`
         }</tbody>${
           totals.length && preview.rows.length

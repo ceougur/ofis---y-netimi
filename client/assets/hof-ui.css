@@ -8602,8 +8602,18 @@ button.hof-source-card:focus-visible {
   font-size: 10.5px;
 }
 .hof-rc-table table.is-dense.is-wide td.is-indent {
-  min-width: 96px;
+  min-width: 84px;
   overflow-wrap: anywhere;
+}
+/* 2.4.7 gezinti D1: 16 kolonda 1366 px'te 3–9 px (milyonluk tutarlarda ~30 px) taşma, Bakiye'nin "B"si kesik — hücre boşluğu ve açıklama
+   kolonlarının alt sınırı bir kademe dar (tutarlar yine tek satır; Belge No ekranda seri / yıl / sıra arasında bölünebilir, hof-report-center.js). */
+.hof-rc-table table.is-dense.is-wide th,
+.hof-rc-table table.is-dense.is-wide td {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+.hof-rc-table table.is-dense.is-wide td.is-note {
+  min-width: 64px;
 }
 .hof-rc-table table.is-dense td.is-note {
   min-width: 72px;
