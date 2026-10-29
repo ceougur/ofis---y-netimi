@@ -4,6 +4,7 @@
 // Saat sahte ve sabit: sunucu ve tarayıcı aynı an (ders 13, 22); ay sonu gece yarısı ve 24 saat kuralı saat ilerletilerek.
 //   Y1 eşleme + giriş (bağlantı) → Genel Bakış.
 //   Y2 Tahsilat Gir (nakit 1.200): fatura seçilmez → en eski fatura kapanır (F1 0, F2 300); bakiye 300; Kasa +1.200; kayıt tarihi sunucunun günü.
+//   Y2b Havale / EFT: iki banka hesabı → seçici görünür → İkinci TL Hesabı seçilir → yalnız o hesap +250; Kasa değişmez.
 //   Y3 Ödeme Gir (Kasa yetmez): soru "Kasa eksiye düşer" → Yine de Kaydet → TEK kayıt (aynı istek kimliği).
 //   Y4 taksit kartına tahsilat: Tahsilat Yeri = kart; 100 → kalan 200; 250 → soru → Fazlasını Avans Yaz → kalan 0, fazla 50; cari −50.
 //   Y5 Stok Girişi 5 → miktar 15; parasız (Kasa değişmez).
@@ -119,6 +120,9 @@ await createUser(server, api, { username: STAFF.username, role: "personel", pass
 const staffId = Object.fromEntries(unwrap(await api.get("/api/admin/users")).map(u => [u.username, u.id]))[STAFF.username];
 for (const id of [users.admin, staffId]) await must("uzak izin", api.put(`/api/admin/mobile/access/${id}`, { remote: true }));
 const cashNow = async () => unwrap(await api.get("/api/workspace/cash")).totals.balance;
+const bankA = await must("banka hesabı 1", api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "1.000", confirmed: true } }));
+const bankB = await must("banka hesabı 2", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "İkinci TL Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "1.000", confirmed: true } }));
+const bankNow = async acc => ((await must("hesap", api.get(`/api/workspace/bank/accounts/${acc.id}`))).balanceMinor || 0) / 100;
 
 const browser = await chromium.launch();
 const phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, userAgent: IPHONE, locale: "tr-TR" });
@@ -183,6 +187,35 @@ await step("Y2 Tahsilat Gir (nakit 1.200): en eski fatura kapanır, bakiye 300, 
   ok(open1 === 0 && open2 === 300, `FIFO: F1 açık ${open1}, F2 açık ${open2}`);
   ok((await cashNow()) === cash0 + 1200, `Kasa ${cash0} → ${await cashNow()}`);
   await shot("03-tahsilat-sonrasi");
+  await clearToasts();
+});
+
+await step("Y2b Havale / EFT (iki banka hesabı): seçici görünür, İkinci TL Hesabı seçilir → yalnız o hesap +250; Kasa değişmez; bakiye 50", async () => {
+  const before = { cash: await cashNow(), a: await bankNow(bankA), b: await bankNow(bankB), rows: entries(ayse.id).length };
+  await page.waitForSelector("[data-yazma]", { timeout: 8000 });
+  await openForm("Tahsilat Gir");
+  await page.waitForSelector('.yz-sheet [data-yz-pick="bank"][data-count="2"]', { state: "attached", timeout: 8000 });
+  ok(await page.$eval('.yz-sheet [data-yz-pick="bank"]', el => el.classList.contains("hidden")), "Nakit seçiliyken banka seçicisi gizli");
+  await page.selectOption('.yz-sheet [name="method"]', "bank");
+  ok(!(await page.$eval('.yz-sheet [data-yz-pick="bank"]', el => el.classList.contains("hidden"))), "Havale / EFT seçilince Banka Hesabı seçicisi görünür");
+  const banks = await page.$$eval('.yz-sheet [name="bankAccountId"] option', items => items.map(item => item.value));
+  ok(banks.length === 2 && banks.includes(bankA.id) && banks.includes(bankB.id), `seçicide iki hesap (${banks.length})`);
+  await page.selectOption('.yz-sheet [name="bankAccountId"]', bankB.id);
+  await fill("amount", "250");
+  await noOverflow("Havale formu");
+  await shot("03b-havale-formu");
+  await submit();
+  const toast = await toastText();
+  ok(/Tahsilat kaydedildi/.test(toast), `bildirim: ${toast}`);
+  await page.waitForSelector(".yz-sheet", { state: "detached" });
+  await page.waitForFunction(expected => document.querySelector("[data-detail-balance]")?.textContent.trim() === expected, tl(50), { timeout: 8000 }).catch(() => null);
+  ok((await detailBalance()) === tl(50), `ekranda bakiye ${await detailBalance()}`);
+  const rows = entries(ayse.id);
+  ok(rows.length === before.rows + 1 && rows.at(-1).amount === 250 && rows.at(-1).method === "bank", `veri tabanı: ${JSON.stringify(rows.at(-1))}`);
+  ok((await bankNow(bankB)) === before.b + 250 && (await bankNow(bankA)) === before.a, `yalnız seçilen hesap +250 (İkinci ${before.b} → ${await bankNow(bankB)}, Ana ${before.a} → ${await bankNow(bankA)})`);
+  ok((await cashNow()) === before.cash, `Kasa değişmedi (${before.cash} → ${await cashNow()})`);
+  const open2 = unwrap(await api.get(`/api/workspace/invoices/${f2.id}`)).open;
+  ok(open2 === 50, `FIFO: F2 açık ${open2}`);
   await clearToasts();
 });
 

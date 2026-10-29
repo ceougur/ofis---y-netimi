@@ -134,11 +134,11 @@ async function openForm(action, target) {
       fill("pos", optionsOf(ch.pos || [], ch.forms?.pos?.ids));
     }
     const sync = () => {
-      const method = form.method.value;
+      const method = form.elements.method.value;
       const want = method === "bank" ? "bank" : method === "card" ? (pay ? "card" : "pos") : "";
       for (const box of form.querySelectorAll("[data-yz-pick]")) box.classList.toggle("hidden", box.dataset.yzPick !== want || Number(box.dataset.count || 0) < 2);
     };
-    form.method.addEventListener("change", sync);
+    form.elements.method.addEventListener("change", sync);
     sync();
   }
   const show = (text, kind = "error") => {
@@ -152,9 +152,9 @@ async function openForm(action, target) {
     const amountField = form.elements[stock ? "qty" : "amount"];
     const value = stock ? String(amountField.value || "").trim().replace(",", ".") : tutarMetni(amountField.value);
     if (!value || (stock && !(Number(value) > 0))) return show(stock ? "Miktarı yazın (ör. 5)." : "Tutarı en çok iki ondalıkla yazın (ör. 1250,50).");
-    const body = stock ? { qty: value } : { amount: value, method: form.method.value };
+    const body = stock ? { qty: value } : { amount: value, method: form.elements.method.value };
     if (!stock) {
-      const method = form.method.value;
+      const method = form.elements.method.value;
       const pick = method === "bank" ? "bank" : method === "card" ? (pay ? "card" : "pos") : "";
       const box = pick ? form.querySelector(`[data-yz-pick="${pick}"]`) : null;
       if (box && Number(box.dataset.count || 0) >= 2) {
@@ -163,9 +163,9 @@ async function openForm(action, target) {
         else body.bankAccountId = selected;
       }
     }
-    const note = String(form.note.value || "").trim();
+    const note = String(form.elements.note.value || "").trim();
     if (note) body.note = note;
-    const planId = form.target?.value || "";
+    const planId = form.elements.target?.value || "";
     const url = stock ? `/stock/${encodeURIComponent(target.id)}/giris` : planId ? `/plans/${encodeURIComponent(planId)}/tahsilat` : `/accounts/${encodeURIComponent(target.id)}/${pay ? "odeme" : "tahsilat"}`;
     const record = { requestId, formAt, company, url, body: { ...body, ...flags }, label: `${title} · ${target.name} · ${stock ? value : value + " TL"}`, noun: stock ? "Stok girişi" : pay ? "Ödeme" : "Tahsilat", accountId: target.id, kind: stock ? "stock" : "accounts" };
     submitButton.disabled = true;
