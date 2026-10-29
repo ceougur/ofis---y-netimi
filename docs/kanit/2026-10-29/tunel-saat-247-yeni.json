@@ -1,0 +1,32 @@
+{
+  "ad": "tunel-saat-247-yeni",
+  "komut": "node --test test/tunel-saat-247.test.mjs",
+  "commit": "db4a61a8f16c3dbfef5c3b3bf81960aa67cecbf7",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 2,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T13:39:59.866Z",
+  "sure_sn": 1.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/tunel-saat-247-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "dca31809b29caaa62be42202ad2fa5f27af66eba482d4a22b1dbf812a4f9d1bb",
+  "ham_cikti_bayt": 1833
+}

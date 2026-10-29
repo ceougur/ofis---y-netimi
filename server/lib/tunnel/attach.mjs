@@ -8,6 +8,29 @@ import { createGateClient } from "./gate-client.mjs";
 import { createTunnelManager } from "./manager.mjs";
 
 /**
+ * Kapıcıya tünel başvurusu. İmza zamanı M3 yükleyicisinin kapıcı saatiyle (B2b: kapıcı yanıtının Date başlığından ölçülen fark) düzeltilir; ölçüm yoksa
+ * uzaktan erişim saati. Ofis kapıcıda henüz kayıtlı değilse (ilk açılış, "kapi-ofis-yok") ya da saat payın dışındaysa ("kapi-zaman") M3'ün kaydı bir kez
+ * tetiklenir (kayıt farkı ölçer) ve başvuru bir kez yinelenir.
+ * @returns {{ provision: () => Promise<object> }}
+ */
+export function kapiBasvurusu({ client = null, gateUrl = "", config = {}, store, mobileSync = () => null }) {
+  const saat = () => mobileSync()?.kapiSaati?.() ?? config.remoteNow?.ms?.() ?? Date.now();
+  const istemci = client || createGateClient({ gateUrl, fetchImpl: config.mobileKapiFetch || config.fetchImpl, store, now: saat });
+  return {
+    async provision() {
+      try {
+        return await istemci.provision();
+      } catch (error) {
+        const sync = mobileSync();
+        if (!["kapi-ofis-yok", "kapi-zaman"].includes(error?.gateCode) || !sync?.kayitGonder) throw error;
+        await sync.kayitGonder().catch(() => null);
+        return istemci.provision();
+      }
+    },
+  };
+}
+
+/**
  * @returns {object|null} tünel yöneticisi (başlatılmış) ya da null
  */
 export function attachTunnel({ option, config, store, license, mobileRemote, mobileSync = () => null, listenRemote, forbiddenPorts, log, env = process.env }) {
@@ -15,20 +38,7 @@ export function attachTunnel({ option, config, store, license, mobileRemote, mob
   const gateUrl = opts.gateUrl || config.mobileKapiUrl || "";
   const enabled = env.HUKUK_TUNNEL !== "0" && opts.enabled !== false && Boolean(opts.gate || gateUrl);
   if (!option && !gateUrl) return null;
-  const client = opts.gate || createGateClient({ gateUrl, fetchImpl: config.mobileKapiFetch || config.fetchImpl, store, now: () => config.remoteNow?.ms?.() ?? Date.now() });
-  // Ofis kapıcıda henüz kayıtlı değilse (ilk açılış) M3'ün kaydı bir kez tetiklenir, başvuru yinelenir.
-  const gate = {
-    async provision() {
-      try {
-        return await client.provision();
-      } catch (error) {
-        const sync = mobileSync();
-        if (error?.gateCode !== "kapi-ofis-yok" || !sync?.kayitGonder) throw error;
-        await sync.kayitGonder().catch(() => null);
-        return client.provision();
-      }
-    },
-  };
+  const gate = opts.gate ? kapiBasvurusu({ client: opts.gate, mobileSync }) : kapiBasvurusu({ gateUrl, config, store, mobileSync });
   const manager = createTunnelManager({
     store,
     license,

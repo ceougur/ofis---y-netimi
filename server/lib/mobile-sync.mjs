@@ -356,6 +356,8 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     idle: () => kuyruk,
     tick: turAt,
     veriZamani,
+    // Kapıcının saati (bu bilgisayarın saati + ölçülen fark); tünel başvurusu (lib/tunnel/attach.mjs) imza zamanını bununla verir (B2b).
+    kapiSaati,
     // saat: kapıcıyla ölçülen saat farkı (B2b; ölçülmediyse null). Yönetim → Mobil Cihazlar ≥ 2 dk'da uyarır.
     status: () => ({
       enabled,
