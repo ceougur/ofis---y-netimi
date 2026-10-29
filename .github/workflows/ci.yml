@@ -84,10 +84,11 @@ jobs:
       # Bağımsız maliyet kâhini (2.4.6 madde 0c / 6; kodu görmeden FORMÜL TABLOSU'ndan yazıldı): Maliyet Hesap Kartı API katmanı, 366 senaryo
       # (kabul.json tohum 1–3); yerelde ~140 sn, tarayıcı kullanmaz. Arayüz katmanının 25 senaryosu bu adımda koşmaz (aday kapısında elle).
       - run: node tools/kanit.mjs kos kahin-maliyet npm run test:kahin-maliyet
-      # 2.4.7 M5: bağımsız mobil yazma kâhini (kodu görmeden yazıldı; S1–S8 + K8-AVANS kararı; E27 v2.4.6'nın gerçek koduyla — etiketler yukarıda). --haric: kâhinin
-      # bakımcısına iletilen okuma / model farkları (R1–R3: masaüstü cari tutarında 3 ondalık, gövdedeki başka şirket carisinin ret kodu, iki ihlalli adımda ret sırası;
-      # E02: POS kimliğiyle havale ret kodu) — docs/kanit/2026-10-29/m5-247/OKU-BENI.md "K8 sonrası"; kâhin güncellenince listeden çıkar.
-      - run: node tools/kanit.mjs kos kahin-mobil-yazma npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu,R1-rastgele-tohum1,R2-rastgele-tohum2,R3-rastgele-tohum3
+      # 2.4.7 M5: bağımsız mobil yazma kâhini (kodu görmeden yazıldı; S1–S8 + K8-AVANS kararı; E27 v2.4.6'nın gerçek koduyla — etiketler yukarıda). R1–R3 kâhin
+      # bakımıyla eşleşti, listeden çıktı (29.10.2026: masaüstü modül ucunda ondalık yuvarlama, gövdedeki / yoldaki cari, çok ihlal → 4xx — kâhin README "BAKIM
+      # 29.10.2026"; kanıt docs/kanit/2026-10-29/kahin-bakim-r123). --haric: E02 çifti — BİLİNEN KÂHİN FARKI (havale yoluna POS kimliği: plan sonucu adıyla yazmıyor;
+      # ürün sahibi / baş mimar kararı bekler); karar verilince listeden çıkar.
+      - run: node tools/kanit.mjs kos kahin-mobil-yazma npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu
       - run: npx playwright install --with-deps chromium
       - run: node tools/kanit.mjs kos e2e-e2e npm run test:e2e
       - run: node tools/kanit.mjs kos e2e-senaryo-219 npm run test:senaryo-219

@@ -1,0 +1,48 @@
+{
+  "ad": "kahin-bakim-r123/kirmizi-eski-kahin-412ea60-bolum-I",
+  "komut": "python3 -I /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kahin-bakim-r123-eski-412ea60/test/bagimsiz/mobil-yazma/kahin_test.py --bolum I",
+  "commit": "6753ee71e0e7588c214e06822dcf17ebd02f5a20",
+  "dal": "worktree-agent-a072c64594dcab28a",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T11:31:20.508Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 0,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "I1 masaüstü MODÜL ucu 2'den çok ondalığı yarım yukarı yuvarlar (2.1.0 yargıç düzeltmesi '1,005 → 1,01'); mobil yuvarlamaz → 400 (M5 BAŞ MİMAR 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "I2 BAŞ MİMAR KARARI 29.10.2026: gövdedeki (evrak girişi formu) başka şirketin cari kimliği 400; yoldaki (cari tahsilatı) 404 — iki kanalda",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "I3 iki ve daha çok ihlalli adımda yalnız durum sınıfı ('4xx', kod yok), tek ihlalde tam kod (SENARYO-DILI §5.6 [BELİRSİZ-17]); kayıt yok",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/kahin-bakim-r123/kirmizi-eski-kahin-412ea60-bolum-I.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a072c64594dcab28a",
+  "ham_cikti_sha256": "3a6cca68ba8b5a59407434085d0475d780ede2ab483a30ec3499703b92fa82fa",
+  "ham_cikti_bayt": 7339
+}
