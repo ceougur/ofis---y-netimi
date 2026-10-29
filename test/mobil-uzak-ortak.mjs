@@ -4,6 +4,8 @@
 // kırmızı kanıt (ders 7/38) bu düzende "uzak istek yerel sayıldı / yasak yol açık" iletisini verir.
 import { generateKeyPairSync, sign } from "node:crypto";
 import http from "node:http";
+import { mesaj } from "../server/lib/kapi-protokol.mjs";
+import { ozetCoz } from "../server/lib/mobile-ozet.mjs";
 
 const PROOF = (deviceId, nonce) => `DestekOfis-mobil-giris\n${deviceId}\n${nonce}`;
 
@@ -38,9 +40,14 @@ export function rawRequest(base, method, path, { headers = {}, body } = {}) {
   });
 }
 
-/** Bir telefon/tablet/uzak tarayıcı: anahtar çifti + çerez kavanozu. */
-export function createPhone(base, { name = "Test Telefonu", kind = "telefon" } = {}) {
+/**
+ * Bir telefon/tablet/uzak tarayıcı: anahtar çifti + çerez kavanozu. 2.4.7 M3: host (kapıcının ofis adresi, ör. <ofis>.destekofis.test — istek kapıcıya Host
+ * başlığıyla gider), şifreleme anahtarı (ECDH P-256, eşlemede gönderilir; gizli kısmı dışa aktarılamaz) ve özet okuma (imzalı istek + çözme).
+ */
+export function createPhone(base, { name = "Test Telefonu", kind = "telefon", host = "" } = {}) {
   const keys = generateKeyPairSync("ec", { namedCurve: "P-256" });
+  let encKeys = null;
+  const encPair = async () => (encKeys ||= await globalThis.crypto.subtle.generateKey({ name: "ECDH", namedCurve: "P-256" }, false, ["deriveBits"]));
   const jar = new Map();
   const cookieHeader = () => [...jar].map(([k, v]) => `${k}=${v}`).join("; ");
   const absorb = headers => {
@@ -59,9 +66,11 @@ export function createPhone(base, { name = "Test Telefonu", kind = "telefon" } =
     kind,
     jar,
     deviceId: "",
+    host,
+    office: null,
     async request(method, path, { body, headers = {} } = {}) {
       const cookie = cookieHeader();
-      const response = await rawRequest(phone.base, method, path, { body, headers: { ...(cookie ? { cookie } : {}), ...headers } });
+      const response = await rawRequest(phone.base, method, path, { body, headers: { ...(phone.host ? { host: phone.host } : {}), ...(cookie ? { cookie } : {}), ...headers } });
       absorb(response.headers);
       return response;
     },
@@ -71,10 +80,23 @@ export function createPhone(base, { name = "Test Telefonu", kind = "telefon" } =
       const jwk = keys.publicKey.export({ format: "jwk" });
       return { kty: jwk.kty, crv: jwk.crv, x: jwk.x, y: jwk.y };
     },
-    async pair(code) {
-      const response = await phone.post("/api/mobil/eslesme", { kod: code, ad: name, tur: kind, anahtar: phone.publicJwk() });
-      if (response.status === 200) phone.deviceId = response.data.data.device.id;
+    async pair(code, { sifre = true } = {}) {
+      const enc = sifre ? await globalThis.crypto.subtle.exportKey("jwk", (await encPair()).publicKey) : null;
+      const response = await phone.post("/api/mobil/eslesme", { kod: code, ad: name, tur: kind, anahtar: phone.publicJwk(), ...(enc ? { sifre: { kty: enc.kty, crv: enc.crv, x: enc.x, y: enc.y } } : {}) });
+      if (response.status === 200) {
+        phone.deviceId = response.data.data.device.id;
+        phone.office = response.data.data.ofis || null;
+      }
       return response;
+    },
+    // Kapıcıdan özet: cihaz anahtarıyla imzalı istek (mesaj.cihaz); 200'de ofis imzası doğrulanıp bu cihazın anahtarıyla çözülür.
+    async readSummary({ method = "GET", deviceId = phone.deviceId, skewMs = 0, now = Date.now(), office = phone.office, headers = {} } = {}) {
+      const ms = now + skewMs;
+      const signature = sign("sha256", Buffer.from(mesaj.cihaz(method, "/kapi/ozet", deviceId, ms)), { key: keys.privateKey, dsaEncoding: "ieee-p1363" }).toString("base64url");
+      const response = await phone.request(method, "/kapi/ozet", { headers: { ...headers, "x-do-cihaz": deviceId, "x-do-zaman": String(ms), "x-do-imza": signature } });
+      if (response.status !== 200 || method !== "GET") return response;
+      const opened = await ozetCoz(response.text, { ofisAnahtari: office?.anahtar, cihaz: deviceId, sifreGizli: (await encPair()).privateKey });
+      return { ...response, summary: opened.govde, veri: opened.veri };
     },
     async login(username, password, { proof = true, headers = {} } = {}) {
       let extra = {};

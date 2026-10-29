@@ -1,0 +1,10 @@
+file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/e2e/senaryo-mobil-ozet-247.mjs:89
+  const ofis = await server.app.mobileSync.ofis();
+                                           ^
+
+TypeError: Cannot read properties of undefined (reading 'ofis')
+    at ofisAc (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/e2e/senaryo-mobil-ozet-247.mjs:89:44)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/e2e/senaryo-mobil-ozet-247.mjs:95:11
+
+Node.js v22.22.0

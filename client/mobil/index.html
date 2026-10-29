@@ -10,6 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/svg+xml" href="icons/app.svg" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="ozet.css" />
   <title>DestekOfis Mobil</title>
 </head>
 <body>
@@ -29,7 +30,8 @@
         <label for="password">Parola</label><input id="password" name="password" type="password" autocomplete="current-password" required placeholder="Parolanız" maxlength="256" />
         <button class="btn primary full" type="submit" id="login-submit">Giriş Yap <span aria-hidden="true">→</span></button>
         <div id="login-error" class="form-error hidden" role="alert"></div>
-        <div class="safe-note"><span class="safe-icon">♢</span> Bilgiler ofisinizdeki DestekOfis sunucusundan okunur ve buluta kopyalanmaz. Sunucunun açık olması gerekir.</div>
+        <div class="safe-note"><span class="safe-icon">♢</span> Bilgiler ofisinizdeki DestekOfis sunucusundan okunur. Sunucu kapalıyken yalnız bu cihazda açılabilen şifreli son özet görünür.</div>
+        <div id="offline-note" class="safe-note hidden" role="status"><span>Ofis sunucusuna ulaşılamıyor. Bu cihazda son özet açılabilir (salt okunur).</span><button class="btn full" type="button" id="offline-open">Son Özeti Göster</button></div>
       </form>
       <form id="pair-form" class="login-form hidden" autocomplete="off">
         <div class="mobile-brand"><div class="brand-mark">D<span>O</span></div><strong>DestekOfis</strong></div>
@@ -70,6 +72,7 @@
         <div class="crumb" id="crumb">Genel Bakış</div>
         <div class="top-actions"><span class="top-status"><span class="status-dot"></span><span id="top-server-status">Sunucu Bağlı</span></span><select id="company" class="company-select" aria-label="Şirket seçimi"></select><button data-action="refresh" class="icon-button" title="Yenile" aria-label="Yenile">↻</button><button data-action="logout" class="icon-button mobile-logout" title="Çıkış Yap" aria-label="Çıkış yap">⇥</button></div>
       </header>
+      <div id="offline-banner" class="offline-banner hidden" role="status"></div>
       <main id="content" class="content" tabindex="-1"></main>
     </div>
     <nav class="bottom-nav" aria-label="Mobil menü">

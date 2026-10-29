@@ -53,6 +53,11 @@ export async function startTestServer(options = {}) {
     // 2.4.7 M2: uzaktan erişimin güvenlik saati (karekod, uzak oturum, uzak giriş kilidi; config.remoteNow) ve karekodun uzak adresi.
     ...(options.remoteNow !== undefined ? { remoteNow: options.remoteNow } : {}),
     ...(options.mobileRemoteUrl ? { mobileRemoteUrl: options.mobileRemoteUrl } : {}),
+    // 2.4.7 M3: şifreli özetin kapıcısı (yalnız YEREL sahte kapıcı — test/kapi-yerel.mjs; ders 30) ve ofisin telefon adresi kalıbı. Kapıcı istekleri vekil
+    // sunucusuz doğrudan (yerel adres). mobileSyncAuto: false → zamanlayıcı yok, yüklemeyi test tetikler.
+    ...(options.mobileKapiUrl
+      ? { mobileKapiUrl: options.mobileKapiUrl, mobileOfficeUrl: options.mobileOfficeUrl || "http://{ofis}.destekofis.test", mobileKapiFetch: options.mobileKapiFetch || ((...args) => globalThis.fetch(...args)), mobileSyncAuto: options.mobileSyncAuto ?? false }
+      : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.
     moneyStrict: options.moneyStrict ?? true,

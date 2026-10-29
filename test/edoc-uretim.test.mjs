@@ -23,7 +23,7 @@ const year = () => new Date().getFullYear();
 describe("Üretim girişi: e-Belge açık, test ve canlı ortam açık", () => {
   test("server/server.mjs e-Belgeyi, canlı ortamı (kullanıcı 16.10.2026: \"hem testi hem canlıyı aç\") ve e-SMM'yi (2.4.4 iş listesi 24) açar; config bunları ortam değişkeniyle açmaz", () => {
     const entry = strip(readFileSync(new URL("../server/server.mjs", import.meta.url), "utf8"));
-    assert.match(entry, /createApp\(\{\s*edocEnabled:\s*true,\s*edocLive:\s*true,\s*esmmEnabled:\s*true\s*\}\)/, "üretim girişi edocEnabled, edocLive ve esmmEnabled verir");
+    assert.match(entry, /createApp\(\{\s*edocEnabled:\s*true,\s*edocLive:\s*true,\s*esmmEnabled:\s*true,\s*mobileKapi:\s*true\s*\}\)/, "üretim girişi edocEnabled, edocLive, esmmEnabled ve (2.4.7 M3) mobileKapi verir");
     assert.equal((entry.match(/createApp\(/g) || []).length, 1, "üretim girişinde tek createApp çağrısı");
     const config = strip(readFileSync(new URL("../server/lib/config.mjs", import.meta.url), "utf8"));
     assert.match(config, /edocLive:\s*overrides\.edocLive === true,/, "canlı yalnız program içinden (ortam değişkeni yok)");

@@ -1,0 +1,437 @@
+TAP version 13
+# Subtest: M3 kapıcı — program uçları: ofis anahtarı, yeniden oynatma, lisans imzası
+    # Subtest: ilk kayıt ofis anahtarını bağlar; aynı kimlik BAŞKA anahtarla reddedilir (kapi-ofis-anahtari)
+    ok 1 - ilk kayıt ofis anahtarını bağlar; aynı kimlik BAŞKA anahtarla reddedilir (kapi-ofis-anahtari)
+      ---
+      duration_ms: 22.864298
+      type: 'test'
+      ...
+    # Subtest: imza bozuk → kapi-imza; zaman ±5 dk dışında → kapi-zaman ve kapıcının saati döner
+    ok 2 - imza bozuk → kapi-imza; zaman ±5 dk dışında → kapi-zaman ve kapıcının saati döner
+      ---
+      duration_ms: 10.14722
+      type: 'test'
+      ...
+    # Subtest: eski kaydın yeniden oynatılması silinmiş cihazı GERİ GETİREMEZ (kapi-sira)
+    ok 3 - eski kaydın yeniden oynatılması silinmiş cihazı GERİ GETİREMEZ (kapi-sira)
+      ---
+      duration_ms: 13.555424
+      type: 'test'
+      ...
+    # Subtest: başka anahtarla imzalanmış lisans belirteci kabul edilmez (kapi-lisans)
+    ok 4 - başka anahtarla imzalanmış lisans belirteci kabul edilmez (kapi-lisans)
+      ---
+      duration_ms: 4.643214
+      type: 'test'
+      ...
+    1..4
+ok 1 - M3 kapıcı — program uçları: ofis anahtarı, yeniden oynatma, lisans imzası
+  ---
+  duration_ms: 52.370606
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — eşli cihaz sınırı kapıcıda da (K13), P5 ve silme
+    # Subtest: 3 cihaz varken 4. ekleme kapıcıda reddedilir; lisans 2'ye düşünce mevcut 3 sürer (P5), yeni ekleme reddedilir, silme her durumda geçer
+    ok 1 - 3 cihaz varken 4. ekleme kapıcıda reddedilir; lisans 2'ye düşünce mevcut 3 sürer (P5), yeni ekleme reddedilir, silme her durumda geçer
+      ---
+      duration_ms: 23.907392
+      type: 'test'
+      ...
+    # Subtest: engelli lisansla kayıt: belirteç saklanır (okumalar hemen kapanır), kapi-lisans döner, cihaz EKLENMEZ
+    ok 2 - engelli lisansla kayıt: belirteç saklanır (okumalar hemen kapanır), kapi-lisans döner, cihaz EKLENMEZ
+      ---
+      duration_ms: 27.400033
+      type: 'test'
+      ...
+    1..2
+ok 2 - M3 kapıcı — eşli cihaz sınırı kapıcıda da (K13), P5 ve silme
+  ---
+  duration_ms: 51.657765
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — özet yükleme: sıra, boyut, sınırlar
+    # Subtest: sıra kesin artar; aynı ya da eski sıra (yeniden oynatma) reddedilir; silindikten sonra eski yükleme geri getirilemez
+    ok 1 - sıra kesin artar; aynı ya da eski sıra (yeniden oynatma) reddedilir; silindikten sonra eski yükleme geri getirilemez
+      ---
+      duration_ms: 36.358292
+      type: 'test'
+      ...
+    # Subtest: başka ofisin gövdesi, iç imzası bozuk özet ve 8 MB üstü reddedilir
+    ok 2 - başka ofisin gövdesi, iç imzası bozuk özet ve 8 MB üstü reddedilir
+      ---
+      duration_ms: 102.531716
+      type: 'test'
+      ...
+    # Subtest: günlük yükleme sınırı (ofis başına 200) ve İstanbul gün dönümünde sıfırlanır; dakikada 30'dan fazlası reddedilir
+    ok 3 - günlük yükleme sınırı (ofis başına 200) ve İstanbul gün dönümünde sıfırlanır; dakikada 30'dan fazlası reddedilir
+      ---
+      duration_ms: 1006.232826
+      type: 'test'
+      ...
+    1..3
+ok 3 - M3 kapıcı — özet yükleme: sıra, boyut, sınırlar
+  ---
+  duration_ms: 1145.861841
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — cihazın özet okuması (imza, cihaz listesi, P9, K14)
+    # Subtest: eşli cihaz imzalı istekle özeti alır (gövde değişmeden); etag ile 304; cihaz listede yoksa / başka ofisinse kapi-cihaz
+    ok 1 - eşli cihaz imzalı istekle özeti alır (gövde değişmeden); etag ile 304; cihaz listede yoksa / başka ofisinse kapi-cihaz
+      ---
+      duration_ms: 12.821682
+      type: 'test'
+      ...
+    # Subtest: imza başka cihazın anahtarıyla → kapi-imza; saat kayması → kapi-zaman (kapıcı saatini döner)
+    ok 2 - imza başka cihazın anahtarıyla → kapi-imza; saat kayması → kapi-zaman (kapıcı saatini döner)
+      ---
+      duration_ms: 8.859227
+      type: 'test'
+      ...
+    # Subtest: P9: lisans servisine ulaşılamazken belirteç 59:59 dk → okunur; 60:00 dk → kapi-lisans-dogrulanamadi (fail-closed); servis dönünce açılır
+    ok 3 - P9: lisans servisine ulaşılamazken belirteç 59:59 dk → okunur; 60:00 dk → kapi-lisans-dogrulanamadi (fail-closed); servis dönünce açılır
+      ---
+      duration_ms: 10.964992
+      type: 'test'
+      ...
+    # Subtest: belirteç 30 dk'dan eskiyse ve servis erişilebilirse kapıcı yeniler; engellenen lisans 1 saat dolmadan yansır
+    ok 4 - belirteç 30 dk'dan eskiyse ve servis erişilebilirse kapıcı yeniler; engellenen lisans 1 saat dolmadan yansır
+      ---
+      duration_ms: 10.601891
+      type: 'test'
+      ...
+    # Subtest: süresi biten lisans bitiş ANINDA kapanır; özet yoksa kapi-ozet-yok
+    ok 5 - süresi biten lisans bitiş ANINDA kapanır; özet yoksa kapi-ozet-yok
+      ---
+      duration_ms: 10.799147
+      type: 'test'
+      ...
+    # Subtest: cihaz özete YAZAMAZ: cihaz + lisans geçince kapi-yazma (K22); cihaz yoksa önce kapi-cihaz
+    ok 6 - cihaz özete YAZAMAZ: cihaz + lisans geçince kapi-yazma (K22); cihaz yoksa önce kapi-cihaz
+      ---
+      duration_ms: 11.170744
+      type: 'test'
+      ...
+    1..6
+ok 4 - M3 kapıcı — cihazın özet okuması (imza, cihaz listesi, P9, K14)
+  ---
+  duration_ms: 65.648621
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — canlı bağlantı kapısı (ofisin telefon adresi → tünel)
+    # Subtest: cihazsız yalnız sayfa dosyası ve eşleme geçer; mobil uç cihazsız kapi-cihaz
+    ok 1 - cihazsız yalnız sayfa dosyası ve eşleme geçer; mobil uç cihazsız kapi-cihaz
+      ---
+      duration_ms: 8.402153
+      type: 'test'
+      ...
+    # Subtest: listede olmayan cihaz çerezi → kapi-cihaz (iletilmez); eşli cihaz → iletilir, işaret programın doğrulayacağı biçimde, istemcinin işaret taklidi ezilir
+    ok 2 - listede olmayan cihaz çerezi → kapi-cihaz (iletilmez); eşli cihaz → iletilir, işaret programın doğrulayacağı biçimde, istemcinin işaret taklidi ezilir
+      ---
+      duration_ms: 6.567266
+      type: 'test'
+      ...
+    # Subtest: yasak yollar tünele GİTMEZ (kapi-yol): program API'si, kodlanmış/çift kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi
+    ok 3 - yasak yollar tünele GİTMEZ (kapi-yol): program API'si, kodlanmış/çift kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi
+      ---
+      duration_ms: 28.140476
+      type: 'test'
+      ...
+    # Subtest: tünel kapalıyken kapi-ofis-kapali (503); lisans 1 saattir doğrulanamıyorsa iletilmez
+    ok 4 - tünel kapalıyken kapi-ofis-kapali (503); lisans 1 saattir doğrulanamıyorsa iletilmez
+      ---
+      duration_ms: 8.236923
+      type: 'test'
+      ...
+    # Subtest: m. ve tanınmayan alt ad karşılama sayfası verir; programın yükleme ucu ofis adresinde de imzasız geçmez
+    ok 5 - m. ve tanınmayan alt ad karşılama sayfası verir; programın yükleme ucu ofis adresinde de imzasız geçmez
+      ---
+      duration_ms: 4.045844
+      type: 'test'
+      ...
+    1..5
+ok 5 - M3 kapıcı — canlı bağlantı kapısı (ofisin telefon adresi → tünel)
+  ---
+  duration_ms: 55.812981
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — lisans servisi izolasyonu (ders 30)
+    # Subtest: LISANS_URL yoksa kapıcı hiçbir lisans isteği yapmaz; varsa yalnız verilen işleve (gerçek servise değil)
+    ok 1 - LISANS_URL yoksa kapıcı hiçbir lisans isteği yapmaz; varsa yalnız verilen işleve (gerçek servise değil)
+      ---
+      duration_ms: 4.650244
+      type: 'test'
+      ...
+    1..1
+ok 6 - M3 kapıcı — lisans servisi izolasyonu (ders 30)
+  ---
+  duration_ms: 4.776191
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — yol kuralı programla aynı (M2 lib/mobile-remote.mjs remotePathProblem ↔ kapi-protokol yolSorunu)
+    # Subtest: iki uygulama aynı sonucu verir (kâhinin bütün istek yolları + ek kalıplar)
+    ok 1 - iki uygulama aynı sonucu verir (kâhinin bütün istek yolları + ek kalıplar)
+      ---
+      duration_ms: 73.025573
+      type: 'test'
+      ...
+    1..1
+ok 7 - M3 kapıcı — yol kuralı programla aynı (M2 lib/mobile-remote.mjs remotePathProblem ↔ kapi-protokol yolSorunu)
+  ---
+  duration_ms: 73.155586
+  type: 'suite'
+  ...
+# Subtest: M3 program: ofis kimliği, eşlemede şifreleme anahtarı, telefon adresi
+    # Subtest: ofis kimliği DNS etiketi; açılışta kapıcıya kayıt; karekod ofisin telefon adresini taşır; kimlik geri yüklemede canlıdan kalan ayarda
+    not ok 1 - ofis kimliği DNS etiketi; açılışta kapıcıya kayıt; karekod ofisin telefon adresini taşır; kimlik geri yüklemede canlıdan kalan ayarda
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:117:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: eşleme şifreleme anahtarını (ECDH) saklar ve yanıtta ofisin imza anahtarını verir; gizli bileşenli anahtar reddedilir
+    not ok 2 - eşleme şifreleme anahtarını (ECDH) saklar ve yanıtta ofisin imza anahtarını verir; gizli bileşenli anahtar reddedilir
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:132:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..2
+not ok 8 - M3 program: ofis kimliği, eşlemede şifreleme anahtarı, telefon adresi
+  ---
+  duration_ms: 275.930598
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:110:1'
+  failureType: 'hookFailed'
+  error: 'programda mobil özet yükleyicisi (app.mobileSync) yok'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    kurulum (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:60:11)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async SuiteContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:113:11)
+    async TestHook.run (node:internal/test_runner/test:1054:7)
+    async Suite.runHook (node:internal/test_runner/test:965:9)
+    async Suite.run (node:internal/test_runner/test:1436:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: M3 program: özet kullanıcıya göre süzülür (K23), şifreli, cihaz silinince açılamaz
+    # Subtest: yönetici: iki şirket, Anlık Durum dahil; saha personeli: yalnız 001'in Cari bölümü — 002 ve yetkisiz bölümler özete HİÇ girmez
+    not ok 1 - yönetici: iki şirket, Anlık Durum dahil; saha personeli: yalnız 001'in Cari bölümü — 002 ve yetkisiz bölümler özete HİÇ girmez
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:174:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: buluttaki nesne şifreli: cari adı, şirket adı, tutar düz metin olarak yok; sahanın cihazı yöneticinin bölümünü açamaz
+    not ok 2 - buluttaki nesne şifreli: cari adı, şirket adı, tutar düz metin olarak yok; sahanın cihazı yöneticinin bölümünü açamaz
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:189:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: yetki değişikliği HEMEN yansır: 002 erişimi verilince özette 002 görünür, kaldırılınca bir sonraki (otomatik) özette yok
+    not ok 3 - yetki değişikliği HEMEN yansır: 002 erişimi verilince özette 002 görünür, kaldırılınca bir sonraki (otomatik) özette yok
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:198:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: silinen cihaz: kapıcı reddeder; elde kalan eski erişimle yeni özet indirilse bile çözülemez (anahtar yenilendi)
+    not ok 4 - silinen cihaz: kapıcı reddeder; elde kalan eski erişimle yeni özet indirilse bile çözülemez (anahtar yenilendi)
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:210:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..4
+not ok 9 - M3 program: özet kullanıcıya göre süzülür (K23), şifreli, cihaz silinince açılamaz
+  ---
+  duration_ms: 258.633018
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:148:1'
+  failureType: 'hookFailed'
+  error: 'programda mobil özet yükleyicisi (app.mobileSync) yok'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    kurulum (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:60:11)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async SuiteContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:155:11)
+    async TestHook.run (node:internal/test_runner/test:1054:7)
+    async Suite.runHook (node:internal/test_runner/test:965:9)
+    async Suite.run (node:internal/test_runner/test:1436:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: M3 program: yükleme tetikleri (Eylül: 15 dk / 10 dk hareketsizlik / günde 20; güvenlik hemen; kapanışta son hâl)
+    # Subtest: yazma türleri: GET, giriş/çıkış ve karekod üretimi tetiklemez; kullanıcı/rol/şirket erişimi/mobil/lisans/eşleme güvenlik; öbürü veri
+    ok 1 - yazma türleri: GET, giriş/çıkış ve karekod üretimi tetiklemez; kullanıcı/rol/şirket erişimi/mobil/lisans/eşleme güvenlik; öbürü veri
+      ---
+      duration_ms: 0.835053
+      type: 'test'
+      ...
+    # Subtest: veri: 10 dk hareketsizlikte yüklenir; sürekli değişiklikte en geç 15 dk; iki veri yüklemesi arası ≥ 15 dk; günde en çok 20, İstanbul gün dönümünde sıfırlanır
+    not ok 2 - veri: 10 dk hareketsizlikte yüklenir; sürekli değişiklikte en geç 15 dk; iki veri yüklemesi arası ≥ 15 dk; günde en çok 20, İstanbul gün dönümünde sıfırlanır
+      ---
+      duration_ms: 197.130694
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:237:3'
+      failureType: 'testCodeFailure'
+      error: 'programda mobil özet yükleyicisi (app.mobileSync) yok'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        kurulum (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:60:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:238:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: güvenlik değişikliği 20 sınırını beklemez; program kapanırken bekleyen değişiklik son hâl olarak yüklenir; sonra telefon canlıda 'ofis kapalı', özette son hâl
+    not ok 3 - güvenlik değişikliği 20 sınırını beklemez; program kapanırken bekleyen değişiklik son hâl olarak yüklenir; sonra telefon canlıda 'ofis kapalı', özette son hâl
+      ---
+      duration_ms: 208.519111
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:288:3'
+      failureType: 'testCodeFailure'
+      error: 'programda mobil özet yükleyicisi (app.mobileSync) yok'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        kurulum (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:60:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:289:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 10 - M3 program: yükleme tetikleri (Eylül: 15 dk / 10 dk hareketsizlik / günde 20; güvenlik hemen; kapanışta son hâl)
+  ---
+  duration_ms: 407.134068
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:227:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: M3 program: kapıcı açıkken uzak istek kapıcının işaretini taşımalı; lisans geçersizse yüklenmez
+    # Subtest: tünele kapıcıyı atlatıp doğrudan gelen (işaretsiz ya da başka cihazın işaretli) istek reddedilir (remote-kapi)
+    not ok 1 - tünele kapıcıyı atlatıp doğrudan gelen (işaretsiz ya da başka cihazın işaretli) istek reddedilir (remote-kapi)
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:318:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: lisans engellenince program özet yüklemez; kapıcıya engelli belirteç bildirilir ve telefonun okuması hemen kapanır (K14)
+    not ok 2 - lisans engellenince program özet yüklemez; kapıcıya engelli belirteç bildirilir ve telefonun okuması hemen kapanır (K14)
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:328:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..2
+not ok 11 - M3 program: kapıcı açıkken uzak istek kapıcının işaretini taşımalı; lisans geçersizse yüklenmez
+  ---
+  duration_ms: 199.434255
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:309:1'
+  failureType: 'hookFailed'
+  error: 'programda mobil özet yükleyicisi (app.mobileSync) yok'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    kurulum (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:60:11)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async SuiteContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:313:11)
+    async TestHook.run (node:internal/test_runner/test:1054:7)
+    async Suite.runHook (node:internal/test_runner/test:965:9)
+    async Suite.run (node:internal/test_runner/test:1436:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: M3: yapılandırma ve kaynak uyumu
+    # Subtest: kapıcı yalnız üretim girişiyle (mobileKapi) açılır; lisans servisi ortam değişkeniyle değiştirilmişse kapalı kalır (ders 30)
+    not ok 1 - kapıcı yalnız üretim girişiyle (mobileKapi) açılır; lisans servisi ortam değişkeniyle değiştirilmişse kapalı kalır (ders 30)
+      ---
+      duration_ms: 1.625846
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:340:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        createApp varsayılanı kapalı
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:342:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: telefon (client/mobil/ozet.js) imza ve şifreleme bağlam metinlerini protokolle aynı kurar
+    not ok 2 - telefon (client/mobil/ozet.js) imza ve şifreleme bağlam metinlerini protokolle aynı kurar
+      ---
+      duration_ms: 0.289521
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:349:3'
+      failureType: 'testCodeFailure'
+      error: "ENOENT: no such file or directory, open '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/client/mobil/ozet.js'"
+      code: 'ENOENT'
+      stack: |-
+        readFileSync (node:fs:440:20)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:350:17)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+      ...
+    1..2
+not ok 12 - M3: yapılandırma ve kaynak uyumu
+  ---
+  duration_ms: 2.153982
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m3-247-eski-1ad159e2/test/mobil-ozet-247.test.mjs:339:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..12
+# tests 35
+# suites 12
+# pass 23
+# fail 4
+# cancelled 8
+# skipped 0
+# todo 0
+# duration_ms 3047.349608

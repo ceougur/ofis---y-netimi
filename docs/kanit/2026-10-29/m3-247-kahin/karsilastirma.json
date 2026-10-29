@@ -1,0 +1,364 @@
+{
+ "birlesim": "kod_sure=5;yeni_kod_eskiyi=iptal_eder;sinir_dolunca=reddet;uretimde_sinir=denetler;sinir_dusunce=mevcutlar_kalir;cihaz_kullanici=yalniz_eslenen;oturum_bosta=15;oturum_mutlak=12;lisans_onbellek=1;ozet_yas_siniri=yok;deneme_siniri=5;deneme_anahtari=kullanici;kilit_dk=15",
+ "senaryolar": {
+  "U01": {
+   "olay": 9,
+   "eslesen": 9,
+   "farklar": []
+  },
+  "U02": {
+   "olay": 8,
+   "eslesen": 8,
+   "farklar": []
+  },
+  "U03": {
+   "olay": 6,
+   "eslesen": 6,
+   "farklar": []
+  },
+  "U04": {
+   "olay": 4,
+   "eslesen": 4,
+   "farklar": []
+  },
+  "U05": {
+   "olay": 4,
+   "eslesen": 4,
+   "farklar": []
+  },
+  "U06": {
+   "olay": 14,
+   "eslesen": 14,
+   "farklar": []
+  },
+  "U07": {
+   "olay": 17,
+   "eslesen": 17,
+   "farklar": []
+  },
+  "U08": {
+   "olay": 17,
+   "eslesen": 17,
+   "farklar": []
+  },
+  "U09": {
+   "olay": 14,
+   "eslesen": 14,
+   "farklar": []
+  },
+  "U10": {
+   "olay": 18,
+   "eslesen": 18,
+   "farklar": []
+  },
+  "U11": {
+   "olay": 7,
+   "eslesen": 7,
+   "farklar": []
+  },
+  "U12": {
+   "olay": 10,
+   "eslesen": 10,
+   "farklar": []
+  },
+  "U13": {
+   "olay": 19,
+   "eslesen": 18,
+   "farklar": [
+    {
+     "no": 10,
+     "neden": "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405) (program: ret:sunucu_kapali)",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U14": {
+   "olay": 9,
+   "eslesen": 9,
+   "farklar": []
+  },
+  "U15": {
+   "olay": 26,
+   "eslesen": 26,
+   "farklar": []
+  },
+  "U16": {
+   "olay": 14,
+   "eslesen": 14,
+   "farklar": []
+  },
+  "U17": {
+   "olay": 23,
+   "eslesen": 23,
+   "farklar": []
+  },
+  "U18": {
+   "olay": 43,
+   "eslesen": 42,
+   "farklar": [
+    {
+     "no": 21,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U19": {
+   "olay": 24,
+   "eslesen": 22,
+   "farklar": [
+    {
+     "no": 7,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 23,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U20": {
+   "olay": 9,
+   "eslesen": 9,
+   "farklar": []
+  },
+  "U21": {
+   "olay": 7,
+   "eslesen": 7,
+   "farklar": []
+  },
+  "U22": {
+   "olay": 10,
+   "eslesen": 10,
+   "farklar": []
+  },
+  "U23": {
+   "olay": 5,
+   "eslesen": 5,
+   "farklar": []
+  },
+  "U24": {
+   "olay": 56,
+   "eslesen": 56,
+   "farklar": []
+  },
+  "U25": {
+   "olay": 10,
+   "eslesen": 10,
+   "farklar": []
+  },
+  "U26": {
+   "olay": 12,
+   "eslesen": 12,
+   "farklar": []
+  },
+  "U27": {
+   "olay": 8,
+   "eslesen": 8,
+   "farklar": []
+  },
+  "U28": {
+   "olay": 8,
+   "eslesen": 7,
+   "farklar": [
+    {
+     "no": 7,
+     "olay": "cihaz_sil",
+     "program": {
+      "sonuc": "kabul",
+      "esli": {
+       "A": 1
+      }
+     },
+     "kahin": {
+      "sonuc": [
+       "kabul"
+      ],
+      "esli": [
+       {
+        "A": 2
+       }
+      ]
+     },
+     "sinif": "M3_KAPICI",
+     "ayrinti": "BULGU (eşli / görünür / özet zamanı ya da önceki olaylarla tutarsız yol)",
+     "ipucu": [
+      "kapıcıya doğrudan kayıt (M3, DENENMEYEN) sonrası zincir: kâhinin dünyasında programda olmayan cihaz var"
+     ]
+    }
+   ]
+  },
+  "U29": {
+   "olay": 14,
+   "eslesen": 14,
+   "farklar": []
+  },
+  "U30": {
+   "olay": 6,
+   "eslesen": 6,
+   "farklar": []
+  },
+  "U31": {
+   "olay": 3,
+   "eslesen": 3,
+   "farklar": []
+  },
+  "U32": {
+   "olay": 7,
+   "eslesen": 7,
+   "farklar": []
+  },
+  "U33": {
+   "olay": 5,
+   "eslesen": 5,
+   "farklar": []
+  },
+  "R1": {
+   "olay": 601,
+   "eslesen": 592,
+   "farklar": [
+    {
+     "no": 345,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 126,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:oturum_gecersiz)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 562,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 431,
+     "neden": "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405) (program: ret:sunucu_kapali)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 96,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:oturum_gecersiz)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 376,
+     "neden": "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405) (program: ret:sunucu_kapali)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 183,
+     "neden": "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405) (program: ret:sunucu_kapali)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 463,
+     "neden": "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405) (program: ret:sunucu_kapali)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 287,
+     "neden": "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405) (program: ret:sunucu_kapali)",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "R2": {
+   "olay": 567,
+   "eslesen": 556,
+   "farklar": [
+    {
+     "no": 523,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 528,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 230,
+     "neden": "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405) (program: ret:sunucu_kapali)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 410,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 422,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 427,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 147,
+     "neden": "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405) (program: ret:sunucu_kapali)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 190,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 33,
+     "neden": "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405) (program: ret:sunucu_kapali)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 44,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:oturum_gecersiz)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 67,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "R3": {
+   "olay": 538,
+   "eslesen": 535,
+   "farklar": [
+    {
+     "no": 336,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:oturum_gecersiz)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 159,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 211,
+     "neden": "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405) (program: ret:sunucu_kapali)",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  }
+ },
+ "toplam": {
+  "olay": 2152,
+  "eslesen": 2124,
+  "DENENMEYEN": 27,
+  "M3_KAPICI": 1,
+  "BULGU": 0,
+  "İNCELE": 0,
+  "denenmeyen_nedenleri": {
+   "DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405)": 10,
+   "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS)": 17
+  }
+ }
+}

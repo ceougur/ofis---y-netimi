@@ -24,6 +24,7 @@ import { signToken } from "../../../server/lib/license-token.mjs";
 import { isGrantable, permissionsFor } from "../../../server/lib/permissions.mjs";
 import { ADMIN_PASSWORD, createClient, startTestServer } from "../../helpers.mjs";
 import { createPhone, rawRequest } from "../../mobil-uzak-ortak.mjs";
+import { M3_SINIFLAR, m3Kur } from "./m3-surucu.mjs"; // 2.4.7 M3: kapıcı (uzak istek önce kapıcıdan) + şifreli özet olayları
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PASSWORD = "Uzak-Parola-2026!";
@@ -43,6 +44,7 @@ const CLASS_OF_CODE = {
   "remote-limit": "sinir_dolu", "remote-permission": "uzaktan_izni_yok", "remote-password-change": "uzaktan_izni_yok", "remote-password": "parola_yanlis",
   "remote-locked": "deneme_siniri", "remote-device-user": "cihaz_baska_kullanici", "remote-device-missing": "cihaz_yok", "mobile-read-only": "yazma_yasak",
 };
+Object.assign(CLASS_OF_CODE, M3_SINIFLAR); // 2.4.7 M3
 const classify = response => {
   if (response.status >= 200 && response.status < 300) return "kabul";
   const cls = CLASS_OF_CODE[response.code];
@@ -104,16 +106,18 @@ async function runScenario(sen, root) {
     void init;
     return { status: 200, json: async () => ({ ok: true, token }) };
   };
+  const m3 = await m3Kur({ clock, offices, fetchFor, trustedKeys: TRUSTED }); // 2.4.7 M3
 
   async function boot(office) {
     office.server = await startTestServer({
-      dataDir: office.dataDir, backupDir: office.backupDir, now: clock, remoteNow: clock,
+      dataDir: office.dataDir, backupDir: office.backupDir, now: clock, remoteNow: clock, ...m3.sunucu(),
       license: { enforce: true, trustedKeys: TRUSTED, services: ["https://lisans.kahin.test/api/lisans"], fetchImpl: fetchFor(office), machineId: office.machine, now: () => clock.ms(), firstCheckDelayMs: 3_600_000, autoTrial: false },
     });
     const address = await office.server.app.listenRemote(0, "127.0.0.1");
     office.remoteBase = `http://127.0.0.1:${address.port}`;
     office.clients = new Map();
     office.up = true;
+    await m3.acildi(office); // 2.4.7 M3: telefonlar kapıcıya bağlanır (remoteBase = kapıcı)
     for (const { office: name, phone } of phones.values()) if (name === office.name) phone.base = office.remoteBase;
   }
   async function clientOf(office, username) {
@@ -176,19 +180,22 @@ async function runScenario(sen, root) {
     }
     office.record = licenseRecord(spec.lisans);
     await checkLicense(office);
+    await m3.kayit(office); // 2.4.7 M3: açılış kaydı (üretimde zamanlayıcı yapar)
     office.forceOnline = false;
     if ((spec.sunucu || "acik") === "kapali") {
       await office.server.close();
       office.up = false;
+      m3.kapandi(office);
     }
   }
 
   const esliOf = async office => (office.up ? { [office.name]: (await (await clientOf(office, "admin")).get("/api/admin/mobile/devices")).data.data.used } : null);
   const phoneOf = (label, officeName) => {
-    if (!phones.has(label)) phones.set(label, { office: officeName, phone: createPhone(offices[officeName].remoteBase || "http://127.0.0.1:9") });
+    if (!phones.has(label)) phones.set(label, { office: officeName, phone: createPhone(offices[officeName].remoteBase || "http://127.0.0.1:9", m3.host(officeName)) });
     return phones.get(label);
   };
-  const extraHeaders = e => ({ ...(e.gorunen_adres ? { "x-forwarded-for": e.gorunen_adres } : {}), ...Object.fromEntries(Object.entries(e.basliklar || {}).map(([k, v]) => [k.toLowerCase(), String(v)])) });
+  // 2.4.7 M3: ofis adresi (Host) EN SONDA — Cloudflare kenarı yönlendirmeyi Host'a göre yapar; istemcinin Host taklidi ofisin kapıcısına ulaşamaz (m3-surucu.mjs).
+  const extraHeaders = e => ({ ...(e.gorunen_adres ? { "x-forwarded-for": e.gorunen_adres } : {}), ...Object.fromEntries(Object.entries(e.basliklar || {}).map(([k, v]) => [k.toLowerCase(), String(v)])), ...m3.host(e.ofis) });
 
   async function run(e) {
     const office = offices[e.ofis];
@@ -213,6 +220,7 @@ async function runScenario(sen, root) {
         if (e.durum === "kapali" && office.up) {
           await office.server.close();
           office.up = false;
+          m3.kapandi(office);
         } else if (e.durum === "acik" && !office.up) {
           await boot(office);
           await checkLicense(office);
@@ -220,11 +228,12 @@ async function runScenario(sen, root) {
         return;
       default:
     }
+    if (m3.olaylar.has(e.olay)) return m3.olay(e, { office, record, phones, phoneOf }); // 2.4.7 M3
     if (NOT_IN_PROGRAM[e.olay]) {
       notes[String(e.no)] = NOT_IN_PROGRAM[e.olay];
       return;
     }
-    if (!office.up) return record(DOWN);
+    if (!office.up && !m3.kapidan(e)) return record(DOWN);
     if (e.olay === "karekod_uret") {
       const client = await clientOf(office, e.yapan);
       const response = await client.post("/api/admin/mobile/codes", { userId: office.ids[e.kullanici] });
@@ -304,9 +313,11 @@ async function runScenario(sen, root) {
       for (const x of group) done.add(x.no);
       clock.set(ms(e.t));
       await Promise.all(group.map(x => run(x)));
+      await m3.bekle(); // 2.4.7 M3: güvenlik yüklemeleri (eşleme, silme, yetki) bir sonraki olaydan önce biter
     }
   } finally {
     for (const office of Object.values(offices)) if (office.up) await office.server.close().catch(() => {});
+    await m3.kapat();
   }
   return { out, notes };
 }
@@ -331,8 +342,8 @@ function hint(sen, no, fark) {
   const before = sen.olaylar.filter(x => ms(x.t) <= ms(e.t) && x.no !== no);
   const hints = [];
   if (before.some(x => x.olay === "kapici_dogrudan_kayit" && x.ofis === e.ofis)) hints.push("kapıcıya doğrudan kayıt (M3, DENENMEYEN) sonrası zincir: kâhinin dünyasında programda olmayan cihaz var");
-  if (fark.kahin?.sonuc?.includes("ret:lisans_dogrulanamadi")) hints.push("kapıcının lisans önbelleği P9 (M3 kapıcı kuralı; program kendi 7 günlük internetsiz toleransını uygular)");
-  if (fark.program?.sonuc === DOWN && !fark.kahin?.sonuc?.includes(DOWN)) hints.push("sunucu kapalıyken kapıcı (M3/M4) önce yanıtlar; programın tek yanıtı 'sunucu kapalı'");
+  if (false && fark.kahin?.sonuc?.includes("ret:lisans_dogrulanamadi")) hints.push("kapıcının lisans önbelleği P9 (M3 kapıcı kuralı; program kendi 7 günlük internetsiz toleransını uygular)");
+  if (false && fark.program?.sonuc === DOWN && !fark.kahin?.sonuc?.includes(DOWN)) hints.push("sunucu kapalıyken kapıcı (M3/M4) önce yanıtlar; programın tek yanıtı 'sunucu kapalı'");
   return hints;
 }
 

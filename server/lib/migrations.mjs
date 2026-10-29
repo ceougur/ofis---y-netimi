@@ -1444,6 +1444,15 @@ export const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 39,
+    name: "v2.4.7 mobil şifreli özet: cihazın şifreleme anahtarı (ortak katman; para dışı)",
+    up(store) {
+      // 2.4.7 M3 (docs/mobil/M3-TASARIM.md; lib/mobile-ozet.mjs): eşlemede telefonun ürettiği, dışa aktarılamaz ECDH P-256 şifreleme anahtarının AÇIK kısmı
+      // (JWK). Şifreli özetin veri anahtarı bu anahtara sarılır. YALNIZ EKLEYİCİ: tek sütun; M2 ile eşlenmiş (anahtarsız) cihaz özeti açamaz, yeniden eşlenir.
+      addColumn(store, "mobile_devices", "enc_key", "TEXT");
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";

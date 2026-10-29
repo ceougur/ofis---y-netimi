@@ -54,6 +54,7 @@ export const REMOTE_ERRORS = Object.freeze({
   "remote-password": "Kullanıcı adı veya parola hatalı.",
   "remote-password-change": "Parolanızı önce ofisteki bilgisayardan değiştirin; sonra uzaktan girebilirsiniz.",
   "remote-key": "Cihaz anahtarı tanınmadı. Tarayıcınızı güncelleyip karekodu yeniden okutun.",
+  "remote-kapi": "Uzak bağlantı kapıcı üzerinden gelmedi; istek reddedildi.",
 });
 const fail = (status, code) => error(status, code, REMOTE_ERRORS[code]);
 
@@ -121,6 +122,7 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
   const nowMs = () => clock.ms();
   const nowIso = () => new Date(nowMs()).toISOString();
   let remoteUrl = String(publicUrl || "").replace(/\/+$/, "");
+  let gatekeeper = null; // 2.4.7 M3: lib/mobile-sync.mjs (kapıcı işareti, eşlemede şifreleme anahtarı ve ofis anahtarı)
   const challenges = new Map(); // cihaz kimliği → { nonce, expires }
   const attempts = new Map(); // kullanıcı kimliği → { fails, lockedUntil } (P12: kullanıcı başına; yerel giriş sayacından AYRI)
 
@@ -289,6 +291,7 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
     const kind = Object.hasOwn(DEVICE_KINDS, body.tur ?? body.kind) ? body.tur ?? body.kind : "telefon";
     const name = cleanName(body.ad ?? body.name, kind);
     const key = publicKeyOf(body.anahtar ?? body.publicKey);
+    const encKey = gatekeeper?.encKeyOf?.(body) ?? null; // 2.4.7 M3
     const t = nowMs();
     const deviceId = `dev-${randomUUID()}`;
     const secret = token(32);
@@ -315,8 +318,9 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
       store.run("UPDATE mobile_codes SET state = 'used', used_at = ?, device_id = ? WHERE code_hash = ?", at, deviceId, row.code_hash);
     });
     audit({ id: user.id, display_name: user.display_name }, "mobile.device.paired", deviceId, { name, kind, user: user.display_name });
+    const extra = gatekeeper?.paired?.(deviceId, encKey) || {}; // 2.4.7 M3: { ofis } (şifreleme anahtarı kaydı mobile-sync'te)
     // Cihaz çerezi kalıcı (eşleme bir kez yapılır; yönetici silene ya da izin kalkana dek).
-    send(res, 200, { ok: true, data: { device: { id: deviceId, name, kind }, user: { name: user.display_name, username: user.username } } }, {
+    send(res, 200, { ok: true, data: { device: { id: deviceId, name, kind }, user: { name: user.display_name, username: user.username }, ...extra } }, {
       "set-cookie": [setCookie(req, DEVICE_COOKIE, `${deviceId}.${secret}`, 400 * 86_400), setCookie(req, REMOTE_SESSION_COOKIE, "", 0)],
     });
   }
@@ -421,6 +425,7 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
   async function handle(req, res, dispatch) {
     req[REMOTE_REQUEST] = true;
     for (const name of FORWARD_HEADERS) delete req.headers[name];
+    if (gatekeeper?.rejects?.(req)) return reject(req, res, fail(401, "remote-kapi")); // 2.4.7 M3: kapıcı işareti (lib/mobile-sync.mjs)
     // Yerel oturum çerezi uzak dinleyicide yok sayılır (uzak oturum ayrı tabloda; auth.currentUser uzak istekte yalnız REMOTE_SESSION'a bakar).
     if (req.headers.cookie) req.headers.cookie = String(req.headers.cookie).split(";").filter(part => part.split("=")[0].trim() !== "hof_session").join(";");
     const raw = String(req.url || "/");
@@ -469,6 +474,9 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
     deviceFromRequest,
     purge,
     isRemoteRequest,
+    setGatekeeper: hook => {
+      gatekeeper = hook || null;
+    },
     setPublicUrl: url => {
       remoteUrl = String(url || "").replace(/\/+$/, "");
     },

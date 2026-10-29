@@ -132,7 +132,8 @@ describe("D4/D6: maskeleme ve üretim bayrakları", () => {
   });
   test("düzenek bayrakları server/server.mjs'ten okur: e-Belge, canlı ve e-SMM açık (yorum satırlarındaki örnekler sayılmaz)", () => {
     const flags = uretimBayraklari(readFileSync(path.join(ROOT, "server", "server.mjs"), "utf8"));
-    assert.deepEqual(flags, { edocEnabled: true, edocLive: true, esmmEnabled: true });
+    // 2.4.7 M3: üretim girişi kapıcıyı da açar (mobileKapi); düzenekte lisans servisi ölü adres (HUKUK_LICENSE_URL) olduğundan kapıcı kapalı kalır (config.mjs).
+    assert.deepEqual(flags, { edocEnabled: true, edocLive: true, esmmEnabled: true, mobileKapi: true });
     // Kaynak tarayan lisans denetimi (lisans-servisi-izolasyonu) bu örneği gerçek çağrı sanmasın: çağrı adı parçalı yazılır.
     const call = ["create", "App("].join("");
     assert.deepEqual(uretimBayraklari(`// ${call}{ esmmEnabled: true })\nconst app = ${call}{ edocEnabled: true, edocLive: true });`), { edocEnabled: true, edocLive: true });
