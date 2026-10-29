@@ -1,0 +1,43 @@
+{
+  "ad": "kahin-bakim-r123/program-sonra",
+  "komut": "npm run test:kahin-mobil-yazma",
+  "commit": "6753ee71e0e7588c214e06822dcf17ebd02f5a20",
+  "dal": "worktree-agent-a072c64594dcab28a",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T11:31:08.465Z",
+  "sure_sn": 216.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 54,
+    "gecen": 52,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "E02-es-havale-pos-mobil",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "E02-es-havale-pos-masaustu",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/kahin-bakim-r123/program-sonra.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a072c64594dcab28a",
+  "ham_cikti_sha256": "528b39b57f2f710dc1e68298a93a3d593b6d977316cd04dd0b731fb0c7df6776",
+  "ham_cikti_bayt": 3099
+}

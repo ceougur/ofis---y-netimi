@@ -1,0 +1,43 @@
+not ok 1 - I1 masaüstü MODÜL ucu 2'den çok ondalığı yarım yukarı yuvarlar (2.1.0 yargıç düzeltmesi '1,005 → 1,01'); mobil yuvarlamaz → 400 (M5 BAŞ MİMAR 3)
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t1:durum: model "ret" · elle "ok"
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t1:http: elle yazmadı, model 400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t2:durum: model "ret" · elle "ok"
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t2:http: elle yazmadı, model 400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t4:durum: model "ret" · elle "ok"
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t4:http: elle yazmadı, model 400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t6:durum: model "ret" · elle "ok"
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t6:http: elle yazmadı, model 400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t7:durum: model "ret" · elle "ok"
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t7:http: elle yazmadı, model 400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] k1:001:cari:A:bakiye: model 100000 · elle 83552
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] k1:001:cari:A:hareketSayisi: model 0 · elle 3
+not ok 2 - I2 BAŞ MİMAR KARARI 29.10.2026: gövdedeki (evrak girişi formu) başka şirketin cari kimliği 400; yoldaki (cari tahsilatı) 404 — iki kanalda
+  # [kapatilacak=yalniz_fifo;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t1:http: model [403, 404] · elle 400
+  # [kapatilacak=yalniz_fifo;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t2:http: model [403, 404] · elle 400
+  # [kapatilacak=yalniz_fifo;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t3:http: model [403, 404] · elle 404
+  # [kapatilacak=yalniz_fifo;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t4:http: model [403, 404] · elle 404
+  # [kapatilacak=yalniz_fifo;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t5:http: model [403, 404] · elle 400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t1:http: model [403, 404] · elle 400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t2:http: model [403, 404] · elle 400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t3:http: model [403, 404] · elle 404
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t4:http: model [403, 404] · elle 404
+not ok 3 - I3 iki ve daha çok ihlalli adımda yalnız durum sınıfı ('4xx', kod yok), tek ihlalde tam kod (SENARYO-DILI §5.6 [BELİRSİZ-17]); kayıt yok
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t2:http: model 400 · elle "4xx"
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t2:kod: elle yazmadı, model bank-account-required
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t3:http: model 400 · elle "4xx"
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t4:http: model 400 · elle "4xx"
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t5:http: model 400 · elle "4xx"
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] adim:t6:http: model [403, 404] · elle 404
+  # [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] adim:t2:http: model 400 · elle "4xx"
+  # [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] adim:t2:kod: elle yazmadı, model bank-account-required
+  # [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] adim:t3:http: model 400 · elle "4xx"
+  # [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] adim:t4:http: model 400 · elle "4xx"
+  # [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] adim:t5:http: model 400 · elle "4xx"
+  # [kapatilacak=secilir;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] adim:t6:http: model [403, 404] · elle 404
+1..3
+# tests 3
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0

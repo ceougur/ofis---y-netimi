@@ -30,10 +30,15 @@ yarısı, ay sonu, yıl dönümü, dönem kilidi), eşzamanlılık.
   `kahin_test.py` (yalnız klasör ve test düzeni için).
 - **MEVCUT ÜRÜN** (ana oturum programın kodundan doğrulayıp veri olarak verdi): şirket görüntüleme yetkisi kullanıcı × şirket; yönetici her şirketi
   görür; hiç işaretsiz kullanıcı yalnız 001; roller / yetkiler her şirkette aynı.
+- **Bakım 29.10.2026** (aşağıda "BAKIM 29.10.2026"): `docs/GECMIS-KARARLAR.md` 2.1.0 yargıç düzeltmesi (modül uçlarında ondalık yuvarlama);
+  `docs/mobil/M5-TASARIM.md` yalnız KARAR metinleri (§2 S1–S8, §3 BAŞ MİMAR KARARLARI 3 "YUVARLANMAZ"; içindeki program dosya / satır anlatımları
+  kâhini bağlamaz); ürün sahibine gösterilmiş **BAŞ MİMAR KARARI (29.10.2026)** gövdedeki / yoldaki cari kimliği; `docs/BANKA-MODULU-PLAN.md` §3.5, §7;
+  `test/bagimsiz/SENARYO-DILI.md` §5.2, §5.6 [BELİRSİZ-17], §6.1, §6.2.
 
 **Okunmayanlar:** `server/`, `client/`, `packaging/`, `tools/` (yalnız `tools/kanit.mjs` ÇALIŞTIRILDI, kodu okunmadı), `test/` altındaki program
 testleri ve program sürücüleri (`test/bagimsiz/surucu.mjs`, `test/bagimsiz/cari/kos.mjs`, `test/bagimsiz/edm-sayac/program-surucu.mjs`,
-`fark-analiz.mjs`), git geçmişi / farkları, `docs/kanit/**`.
+`fark-analiz.mjs`, bu klasörün `program-surucu.mjs`'i ve programın çıktı dosyaları `program.json*`), git geçmişi / farkları, `docs/kanit/**`. Bakımda
+yalnız `npm run test:kahin-mobil-yazma`'nın KARŞILAŞTIRMA çıktısı (TAP, fark satırları) okundu — programın değerlerinden beklenen türetilmedi (ders 5, 40).
 
 **Karar vermedim** (ders 40, 43): metnin sustuğu her para / kapama / tekilleştirme kuralı bir **parametre** oldu (aşağıda S1–S8). Kâhin her
 birleşimin (2⁸ = 256) beklenenini hesaplar; kullanıcı seçene dek program **önerilen** birleşimle karşılaştırılır ve fark **İNCELE** sayılır.
@@ -45,7 +50,7 @@ birleşimin (2⁸ = 256) beklenenini hesaplar; kullanıcı seçene dek program *
 | `kahin.py` | Model (yalnız standart kütüphane; cari kâhinini içe aktarır) + komut satırı (`hesapla`, `karsilastir`, `--mutasyonlar`) |
 | `senaryolar.py` | 51 elle uç senaryo (beklenenler ELLE; 20'si 10 masaüstü/mobil eşdeğerlik çifti) + 4 göreli çift + tohum 1–3 rastgele üretici ve onun BAĞIMSIZ akış modeli (`Akis`); `kabul.json`'u yazar |
 | `kabul.json` | 54 senaryo (51 elle, 3 rastgele), 8.160 adım; elle senaryolarda ilgili parametrelerin her birleşimi, rastgelelerde 10 birleşim (öneri tam, öbürleri fark olarak); göreli çiftler |
-| `kahin_test.py` | Kâhinin kendi testi (A–E, G, H) + 53 mutasyon (F); TAP + `# tests/pass/fail` |
+| `kahin_test.py` | Kâhinin kendi testi (A–E, G, H, I) + 59 mutasyon (F); TAP + `# tests/pass/fail` |
 | `kanit/<gün>/` | `tools/kanit.mjs kos` kayıtları (çıkış kodu, sayılar, ham çıktı, commit) ve `kirmizi/` bilerek kırmızı kanıt |
 
 ## Nasıl koşulur
@@ -83,19 +88,20 @@ Python 3.11+ (geliştirmede 3.13), hep `-I`. Modüller açık yolla yüklenir; `
 | K4 | İstek kimliği kalıcı; anahtar kullanıcı \| kapsam \| kimlik; aynı kimlik + aynı içerik → "zaten kaydedildi" (yazmaz), farklı içerik → 409; yeniden başlatmadan sonra da hatırlanır; reddedilen isteğin kimliği hatırlanmaz | PLAN §3.10/1, Aşama 2; SENARYO-DILI §5.4 (ÇIKARIM) |
 | K5 | "30 günden eskiler budanır": 30 gün içinde kesin hatırlanır; sonrası budama ANI yazılı olmadığı için ÇATAL (zaten kaydedildi / yeni kayıt) | PLAN §3.10/1 + ÇATAL |
 | K6 | Benzer İşlem yalnız hesaba bağlı (havale / POS / kart, hesabı atanmış) satırda; anahtar yön, yol, hesap, cari, tutar, gün, hedef; kanal anahtara girmez (masaüstü + mobil aynı) | PLAN §3.10/2 |
-| K7 | Hesap seçimi: verilen hesap uygun değil → 400 `bank-account-invalid`; birden çok uygun hesap + hesap yok → 400 `bank-account-required`; tek uygun → kendiliğinden; hiç yok → 102.00 / 108.00 | PLAN §3.5 |
+| K7 | Hesap seçimi: verilen hesap uygun değil → 400 `bank-account-invalid`; birden çok uygun hesap + hesap yok → 400 `bank-account-required`; tek uygun → kendiliğinden; hiç yok → 102.00 / 108.00 (havale yolunda POS kimliği: BİLİNEN KÂHİN FARKI — "BAKIM 29.10.2026" (4)) | PLAN §3.5 |
 | K8 | Kasa eksi (nakit ödeme): min(B(gün), B(tüm)) < 0 → Uyar 409 `cash-negative` ("Yine de Kaydet" geçer), Engelle 409 `cash-blocked` | PLAN §3.9; SENARYO-DILI §5.3 |
 | K9 | Taksit kartı: kalanı aşan → 409 `plan-overpay`; Fazlasını Avans Yaz yalnız `plans.manage` (personel 403 `plan-overpay-permission`); **ödenmiş (kalan 0) karta yeni tahsilat: onaysız → 409 `plan-paid`; `plans.manage` yetkilisi "Fazlasını Avans Yaz" onaylarsa yazılır, tutarın tamamı cariye avans (cari alacak), Kasa / banka girişi normal; yetkisiz → ret** (kod: "KARAR K8-AVANS"); kartın **Ödenen'i avansı da içerir**; masaüstü ve mobil aynı; kalan BEGIN IMMEDIATE içinde okunur (eşzamanlıda biri reddedilir) | PLAN §3.10/3, §9.2/12; **KULLANICI KARAR K8-AVANS** (29.10.2026) |
 | K10 | Rol yetkisi mobilde de aynı: tahsilat (nakit, havale, POS) ve taksit tahsilatı herkese; havale / kart ödemesi personelde 403; planın yazmadığı hücreler (muhasebe nakit ödeme, personel stok, muhasebe çek, muhasebe Fazlasını Avans) kâhin hesaplamaz → **göreli çift**: program iki kanalda AYNI sonucu vermeli (mobil yetki atlatma yolu değildir) | PLAN §2.5, §9; SENARYO-DILI §5.5 |
 | K11 | Şirket yetkisi kullanıcı × şirket; yönetici hepsi; işaretsiz yalnız 001; değişiklik mobilde HEMEN uygulanır | MEVCUT ÜRÜN |
-| K12 | Başka şirketin cari / hesap kimliği isteğin şirketinde çözülemez → hiçbir şirkete yazılmaz (403/404) | KULLANICI "Şirket = ayrı veri dosyası" + YAYGIN |
+| K12 | Başka şirketin (ya da bulunamayan) cari / hesap kimliği isteğin şirketinde çözülemez → hiçbir şirkete yazılmaz. Cari kimliği **yolda** (cari tahsilatı / ödemesi `accounts/:id/entries`, taksit kartı `plans/:id/entries`; mobil de "mevcut API üzerinden") → **404**; **gövdede** (yeni evrak girişi: çek / senet tahsilatının carisi form alanı) → **400**; banka hesabı kimliği [400, 404] (değişmedi) | KULLANICI "Şirket = ayrı veri dosyası" + YAYGIN; **BAŞ MİMAR KARARI 29.10.2026** (gövde 400 / yol 404); yer: PLAN §7 "Genişleyen mevcut uçlar" (evrak girişinin yeri ÇIKARIM) |
 | K13 | Eşli olmayan / silinmiş cihaz yazamaz; aynı kullanıcının öbür cihazı ve yeni eşlenen cihaz yazar | KULLANICI (3 cihaz, "cihaz silinince yer açılır"); iş listesi M2 "cihaz silme → erişim kesilir" |
 | K14 | Uzaktan Bağlanabilir izni kaldırılınca kullanıcının cihazları düşer; izin geri verilince eski cihaz yine yazamaz (yeniden eşleme gerekir) | PLAN (PRO-UZAKTAN "Yeniden eşleme gereken durumlar: … yönetici cihazı ya da izni kaldırır") |
 | K15 | Lisans bitince mobil yazamaz; yenilenince eşleme geri gelir | PLAN (PRO-UZAKTAN "Lisans süresi biter …", "yenilenince eşlemeler geri gelecek") |
 | K16 | Eksi stok: çıkış stoğu eksiye düşürüyorsa program sorar; "izin ver" → eksiye düşer | KULLANICI kalıcı karar 02.10.2026 |
 | K17 | Tarih: ileri tarihli hareket 400; dönem kilidi ≤ kilit → 409 `period-locked`; gün TR (UTC+3) takvim günüdür | PLAN §2.5, §4.3; V1 |
-| K18 | Ret önceliği: kapıcı (sunucu, kesinti, lisans, cihaz, izin) → şirket → 403 rol → 400 girdi (tutar, tarih, hesap, mobil alan kısıtı) → istek kimliği → 404/409 hedef (cari, fatura, kart, kilit, K8) → Benzer İşlem → eksi | SENARYO-DILI §5.6 (ÇIKARIM) + kapıcı önce (YAYGIN: istek programa ulaşmaz) |
+| K18 | Ret: kapıcı (sunucu, kesinti, lisans, cihaz, izin) → şirket erişimi önce ve erken döner ("4xx"). Programa ulaşan denetimlerin (403 rol → 400 girdi: tutar, tarih, hesap, mobil alan kısıtı → istek kimliği → 404/409 hedef: cari, fatura, kart, kilit, K8 → Benzer İşlem → eksi) **hepsi** değerlendirilir: **tek ihlalde** o ihlalin durum kodu ve kodu; **birden çok ihlalde yalnız durum sınıfı `"4xx"`** (kod yazılmaz); her iki durumda kayıt yok. Aynı gövdeli yineleme ("zaten kaydedildi") yalnız istek kimliğinden önceki denetimlerde ihlal yokken | SENARYO-DILI §5.6 (sıra ÇIKARIM; "Senaryo bir adımda tek ihlal kurar; kurarsa karşılaştırıcı o adımda yalnız durum sınıfını (4xx) karşılaştırır" [BELİRSİZ-17]) + kapıcı önce (YAYGIN: istek programa ulaşmaz) |
 | K19 | Eşzamanlı istekler sıralanabilir: program sonucu sıralamalardan birine eşit | PLAN §9.2/12; SENARYO-DILI §5.8 |
+| K20 | Tutar: **mobil** en çok 2 ondalık, 2'den çok ondalık 400 (yuvarlanmaz); **masaüstü modül ucu** (cari tahsilat / ödeme, taksit kartı, evrak girişi) 2'den çok ondalığı yarım yukarı (sıfırdan uzağa) kuruşa yuvarlar: "1,005" → 1,01, "12,345" → 12,35; biçim (virgül, binlik ayırıcısız, işaretsiz) ve aralık (0 < tutar ≤ 1e12 TL) iki kanalda aynı; yuvarlanınca 0 olan tutar 400 (ÇIKARIM) | Mobil: PLAN §9.2/9 + M5 BAŞ MİMAR KARARI 3 ("YUVARLANMAZ"); masaüstü: **`docs/GECMIS-KARARLAR.md` 2.1.0 yargıç düzeltmesi** ("modül uçları … 1,005 → 1,01 yuvarlar") + SENARYO-DILI §6.2, §6.1 |
 
 ## Varsayımlar (V…; metnin açıkça söylemediği, kâhinin seçtiği okuma — program ayrışırsa İNCELE)
 
@@ -164,6 +170,29 @@ kullanıcının (Fazlasını Avans Yaz bayrağıyla) ödenmiş karta tahsilatın
 modeli (`Akis`) aynı kurala getirildi (üretici DEĞİŞMEDİ, adımlar aynı; öneri birleşiminde R1 3, R2 5, R3 3 istek ödenmiş karta avans olarak yazılır — 2'si
 kesintiden sonra "belirsiz / sunucu ok", 2 yeniden gönderim "zaten kaydedildi", 1 yeniden gönderim yazar; R1'de 1 yetkisiz deneme reddedilir). **Mutasyonlar** 49–53.
 
+## BAKIM 29.10.2026 — R1–R3 farkları ve E02 (ders 5, 40, 43)
+
+Kâhin–program karşılaştırmasında (49/54) kalan farklar için kâhinin beklentisi YALNIZ önceden yazılmış karar metinlerinden ve ürün sahibine gösterilmiş baş
+mimar kararından güncellendi; programın kodu ve çıktı dosyaları okunmadı, programın değerlerinden beklenen türetilmedi. **Para / kapama sırasını belirleyen
+hiçbir kural değişmedi** (FIFO, Kapatılacak Fatura, K8, K8-AVANS, Kasa / banka yolları, eksi bakiye aynen; ders 43).
+
+| # | Fark (kâhin ← program) | Kaynak (karar metni) | Kâhinde değişen | Sonuç |
+|---|---|---|---|---|
+| 1 | Masaüstü cari / taksit tutarında 3 ondalık: kâhin 400, program yazıyor (R1 t1048, R2 t1405, R3 t1425 "12,345") | `docs/GECMIS-KARARLAR.md` 2.1.0 yargıç düzeltmesi: "§5.1'in '2'den çok ondalık 400' kuralı yalnız BANKA uçları içindir; modül uçları (cari, fatura, taksit…) plana göre 'bugünkü gibi' 1,005 → 1,01 yuvarlar (kullanıcıya düzeltildi)"; SENARYO-DILI §6.2 "Modül uçları …: 3 ondalık rh ile kuruşa yuvarlanır" (rh §6.1 yarım birim sıfırdan uzağa) | `kahin.py` `kurus_modul()` (yeni) + `istek()` adım 7: masaüstü `kurus_modul`, mobil `kurus` (değişmedi — M5 BAŞ MİMAR 3 "YUVARLANMAZ"); akış modeli `senaryolar.py` `_modul_kurus()` (ayrı yazıldı: `Decimal` ROUND_HALF_UP); K20 | "12,345" → 12,35 yazılır (cari, fatura açığı, Kasa / POS 1.235 kuruş) |
+| 2 | Gövdedeki (evrak girişi) başka şirket carisi: kâhin [403, 404], program 400 (R1 t539, R2 t79 / t159 / t2303) | **BAŞ MİMAR KARARI (29.10.2026; ürün sahibine gösterildi):** "isteğin GÖVDESİNDE (form alanında) gelen bulunamayan ya da başka şirketin cari kimliği 400 (doğrulama hatası) alır; YOLDA gelen kaynak kimliği 404. Plan §9.2/11 'başka şirketin hesap kimliği 404' banka hesabı içindir." Kimliğin yeri: PLAN §7 "Genişleyen mevcut uçlar" (`accounts/:id/entries`, `plans/:id/entries`, `cheques/:id/actions`); yeni evrak girişinde evrak henüz yok → cari form alanı (ÇIKARIM) | `kahin.py` `_cari_govdede()` (yeni) + `istek()` adım 9: çek / senet → 400, öbürleri → 404 (eski [403, 404] karar "YOLDA … 404" ile 404'e indi — E16 t1 / t2 / t4 ve R1–R3'teki yoldaki cariler); akış modeli aynı kural; K12 | Kayıt açılmaz, para değişmez (aynen) |
+| 3 | İki ihlalli adımda ret sırası: kâhin ilk ihlalin tam kodu (400 `bank-account-required`), program 404 (R2 t191, t554: başka şirket carisi + seçilmemiş banka hesabı) | SENARYO-DILI §5.6: sıra "[ÇIKARIM §3.3 sırası]"; "Senaryo bir adımda tek ihlal kurar; kurarsa karşılaştırıcı o adımda yalnız durum sınıfını (4xx) karşılaştırır [BELİRSİZ-17]" | `kahin.py` `istek()`: ihlaller TOPLANIR (`ihlal` listesi); tek ihlal → o kod, birden çok → `"4xx"` + kod yok — GENEL kural (adım kimliğine özel değil); akış modeli aynı; K18 | Kayıt yok (aynen); kod karşılaştırılmaz |
+| 4 | E02 t4: havale yoluna POS kimliği — kâhin 400 `bank-account-invalid`, program 404 `bank-account-missing` | Plan metni bu durumu **açıkça belirlemiyor**: §3.5 hesap türleri tablosunda POS yok (POS ayrı varlık, §7 `/bank/pos`, alan `posId` ≠ `bankAccountId`) — bu programın "hesap bulunamadı" okumasını destekler; ama plan ne durum kodunu ne kodu söyler (`bank-account-missing` §7 "Yeni hata kodları" listesinde YOK; §9.2/11 yalnız "başka şirketin hesap kimliği 404"). Kâhinin 400 `bank-account-invalid`'i SENARYO-DILI §5.2/4 ÇIKARIM'ıdır ("havalede kart hesabı" → 400) | **DEĞİŞMEDİ** (görev: "plan açıkça belirliyorsa değiştir; belirlemiyorsa dokunma") | **BİLİNEN KÂHİN FARKI** (aşağıda); kayıt yok, para etkisi yok; iki kanal aynı (eşdeğerlik bozulmuyor) |
+
+**Değişmeyenler:** mobil tutar kuralı (400, yuvarlanmaz — E09); banka hesabı kimliği [400, 404]; kapıcı / şirket erişimi "4xx"; K8 / K8-AVANS, FIFO, Kapatılacak Fatura,
+Kasa / banka / POS yolları; senaryoların ADIMLARI (kabul.json'da yalnız beklenenler ve E16'nın açıklaması değişti; üretici aynı adımları üretir).
+
+**BİLİNEN KÂHİN FARKI — E02 t4 (`E02-es-havale-pos-mobil`, `E02-es-havale-pos-masaustu`):** program 404 `bank-account-missing`, kâhin 400 `bank-account-invalid`.
+Neden kâhin değiştirilmedi: karar metni (plan §3.5, §7, §9.2/11) POS kimliğinin havale yolunda verilmesinin sonucunu ADIYLA söylemiyor; kâhinin değeri çıkarım
+(SENARYO-DILI §5.2/4), programınki de bir okuma — programın değeri görülerek kâhini ona çekmek ders 40'ın yasakladığı "programa uydurma" olurdu. Para / kayıt
+etkisi yok (iki tarafta da ret, kayıt yok, iki kanal aynı). Karar ürün sahibinde / baş mimarda: (a) programın okuması ("POS banka hesabı değil → hesap
+bulunamadı, 404") karar olarak yazılırsa kâhin 404 `bank-account-missing`'e, (b) "türü uymayan hesap → 400 `bank-account-invalid`" yazılırsa program düzeltilir;
+o zamana dek `ci.yml` `--haric` listesinde E02 çifti adıyla kalır.
+
 ## Senaryo dili `destekofis-mobil-yazma/1`
 
 ```json
@@ -228,7 +257,7 @@ Elle (beklenenler elle; 256 birleşimde model = elle):
   ödemesi (KS8.1; bağlı ödeme K-d) — mobilin açtığı para yolunun cari çekirdekteki komşusu (ders 10).
 - Mobil özgü: **E06** kesinti önce · **E07** kesinti sonra + yeni form · **E08** aynı kimlik farklı gövde · **E09** reddedilen kimlik + tutar biçimi · **E10** sunucu
   kapalı, kuyruk yok · **E11** yeniden başlatma sonrası kimlik · **E12** silinen cihaz · **E13** uzak izni · **E14** lisans · **E15** şirket yetkisi + değişikliği ·
-  **E16** başka şirketin cari / hesap kimliği · **E17** aynı anda aynı cari (mobil + masaüstü; iki cihaz Benzer İşlem yarışı) · **E18** K8 yarışı · **E20** stok yarışı ·
+  **E16** başka şirketin cari / hesap kimliği (yoldaki cari 404 — bakım 29.10.2026) · **E17** aynı anda aynı cari (mobil + masaüstü; iki cihaz Benzer İşlem yarışı) · **E18** K8 yarışı · **E20** stok yarışı ·
   **E21** gece yarısı, UTC tuzağı, form tarihi, ileri tarih (S6) · **E22** gece yarısını geçen yeniden gönderim · **E23** yıl dönümü + dönem kilidi · **E24** kimlik
   ömrü 29 / 45 gün, 24 saat (K5 çatalı, S7) · **E25** yedekten geri yükleme + yeniden gönderim (V12) · **E26** aynı adlı üç cari, iki şirket · **E27** 2.4.6 verisi
   üzerine mobil · **E28** rol yetkisi (personel) · **E29** Benzer İşlem (mobil + masaüstü) · **E32a/b** aynı gün yazım sırası (ders 31) · **E34** aynı kimlik iki
@@ -261,12 +290,14 @@ aynı kimlik / farklı gövde, Benzer İşlem, Kasa eksi (001 Uyar, 002 Engelle)
 | Kimlik ömrü / geç yeniden gönderim | E24; mutant 33, 34 |
 | Sil + aynı adla aç; aynı adlı iki kişi | E38, E26 |
 | Rastgele sıra, binlerce olay, 2 şirket (ders 17) | R1–R3, C4; D1, D3–D7 |
+| (Bakım 29.10.2026) Masaüstü modül ucunda 3 ondalık reddedilir ya da aşağı kesilir; mobilde yuvarlanır; gövdedeki cari 404 / yoldaki 400; iki ihlalde ilk ihlalin kodu dayatılır | R1–R3 (akış), E09, E16, I1–I3; mutant 54–59 |
 
-## Mutasyonlar (53; `kahin_test.py` F, `kahin.py --mutasyonlar`)
+## Mutasyonlar (59; `kahin_test.py` F, `kahin.py --mutasyonlar`)
 
 Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üreticinin akış beklentisi) yakalanmalıdır; yakalanmayan = eksik senaryo. Liste
 `kahin.py --mutasyonlar`: istek kimliği (1–6, 33, 34, 35, 48), sunucu / cihaz / izin / lisans / şirket (7–12, 39, 41, 42), para yolu (13–17, 36–38, 43), K8 (18–20,
-31, 44, 47, K8-AVANS 49–53), stok (21, 22, 29, 30, 46), Kasa / Benzer İşlem (23, 40), tarih (24–27, 45), rol (28), yedek (32).
+31, 44, 47, K8-AVANS 49–53), stok (21, 22, 29, 30, 46), Kasa / Benzer İşlem (23, 40), tarih (24–27, 45), rol (28), yedek (32), bakım 29.10.2026 (54 masaüstü 3 ondalık
+400, 55 aşağı kesme, 56 gövdedeki cari 404, 57 yoldaki cari 400, 58 iki ihlalde ilk kod, 59 mobilde yuvarlama).
 
 ## DENENEN
 
@@ -284,6 +315,13 @@ Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üretici
   OKU-BENI'de); karardan önceki teslim `kanit/2026-10-29/kahin-mobil-yazma-teslim.{json,log}` 136/136, çıkış 0; bilerek kırmızı (ayrı kopyada POS → Kasa)
   `kanit/kirmizi/2026-10-29/` 128/136, çıkış 1 — kırmızılar beklenen nedenle (Kasa / POS farkı; A1, E02 çifti, E28, rastgeleler). İlk kanıt koşusundaki tek
   kırmızı testin kendi hatasıydı (H2 kip listesi; kök neden `kanit/2026-10-29/OKU-BENI.md`).
+- **Bakım 29.10.2026** (kanıt `docs/kanit/2026-10-29/kahin-bakim-r123/`, `tools/kanit.mjs kos`): kendi testi önce 143/143 (412ea60), sonra **152/152**, çıkış 0
+  (6753ee7; I1–I3 + mutant 54–59 eklendi; **59/59 mutasyon** yakalandı — 54, 55, 56, 58 R1 akış beklentisince, 57 E16 elle, 59 E09 elle); I1–I3 ESKİ kâhin
+  kopyasında (`git archive 412ea607`, ayrı not defteri klasörü — ders 23) **0/3, çıkış 1**, kırmızı nedenleri beklenen: eski kâhin "12,345"'i 400 reddediyor,
+  gövdedeki / yoldaki cariye [403, 404] veriyor, iki ihlalde ilk kodu (400 `bank-account-required`) yazıyor (ders 7, 38). Program karşılaştırması (`HUKUK_LICENSE_URL=
+  http://127.0.0.1:9 npm run test:kahin-mobil-yazma`, tam, `--haric`'siz): önce **49/54** (E02 çifti + R1–R3), sonra **52/54** (yalnız E02 çifti — BİLİNEN
+  KÂHİN FARKI); R1–R3'ün 3 ondalıklı adımlarında (R1 t1048, R2 t1405, R3 t1425) cari, fatura açığı, Kasa / POS sayıları programla bire bir. Akış modeli yeni üç
+  kuralı ayrı yazımla taşır (`_modul_kurus` Decimal; toplanan `hata` listesi): elle 51 × 256 = model, R1–R3 × 10 birleşim ve tohum 4 (6.819 adım) akış = model.
 - Dersler: 3/4 (D3, G2), 5 (temiz oda, akış modeli ayrı), 7 (mutasyon + `kanit/…/kirmizi`), 10 (eşdeğerlik çiftleri: değişen ortak yolun komşuları), 13/22 (sahte saat,
   gece yarısı, ay sonu, yıl dönümü; sistem saati okunmaz), 17 (rastgele sıra, eski sürüm verisi senaryosu), 31 (D6, E32), 40/43 (S1–S8 parametre; K8-AVANS yalnız ürün sahibinin kararıyla
   netleşti — programın davranışına bakılmadı; kararın susduğu Kalan ve yetkisiz ret kodu seçilmedi, ikisi de kabul).
@@ -295,6 +333,10 @@ Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üretici
 - Mobil cariye bağlı stok hareketi (stok satışı / alış) — S8 ve kapsam; iade, elle borç / alacak, evrak sonraki işlemleri (karşılıksız, ciro) mobilde.
 - Ondalık stok miktarı; döviz; e-Belge'li fatura.
 - Yetkisi planda yazılı olmayan rol × işlem hücrelerinin MUTLAK sonucu (yalnız göreli: mobil = masaüstü).
+- (Bakım 29.10.2026) Masaüstü 3 ondalık yuvarlamanın elle (sabit) kabul senaryosu programa karşı YOK — program karşılaştırmasında yalnız R1–R3'ün "12,345"
+  adımları (nakit ve POS) kapsar; "1,005", 4+ ondalık, taksit kartı ve evrak girişinde ondalık yalnız kâhinin kendi testinde (I1). Gövdedeki cari için "bulunamayan"
+  (hiçbir şirkette olmayan) kimlik ve mobil evrak (yalnız `yollar=evrak_dahil`, seçilmedi) programa karşı denenmedi. Kabul kümesine yeni senaryo eklenmedi
+  (kapsam kararı "işi büyütme"; 54 senaryo).
 
 ## BİLİNEN SINIRLAR
 
@@ -307,3 +349,10 @@ Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üretici
 - Türkiye saat dilimi sabit UTC+3.
 - KARAR K8-AVANS'ın susduğu iki değer liste (ikisi de kabul): avanslı kartın `kalan`'ı (0 ya da toplam − Ödenen) ve yetkisiz Fazlasını Avans Yaz'ın ret kodu
   (403 `plan-overpay-permission` ya da 409 `plan-paid`). Bu iki değerde iki seçenek arasındaki sapma yakalanmaz (para etkisi yok); kullanıcı seçerse tek değere iner.
+- (Bakım 29.10.2026) Birden çok ihlalli adımda yalnız durum sınıfı karşılaştırılır: öneri birleşiminde R1–R3'te 9 adımın beklentisi tam koddan `"4xx"`'e gevşedi (R1 t684;
+  R2 t191, t554, t687, t2184; R3 t1493, t2257, y1285, d2555) — bu adımlarda programın HANGİ ihlali önce söylediği denetlenmez (SENARYO-DILI §5.6 bunu açıkça
+  böyle ister). Kayıt yokluğu ve sonraki bütün sayılar yine denetlenir.
+- (Bakım 29.10.2026) Cari kimliğinin yolda mı gövdede mi taşındığı plan §7'nin uç biçiminden çıkarıldı; yeni evrak girişinin "gövde" sayılması ÇIKARIM'dır (plan evrak
+  oluşturma ucunu yazmıyor). Yuvarlanınca 0 olan masaüstü tutarı ("0,004") 400 sayılır (ÇIKARIM; karşılaştırmada böyle bir adım yok).
+- **BİLİNEN KÂHİN FARKI — E02 t4** (havale yoluna POS kimliği): kâhin 400 `bank-account-invalid`, program 404 `bank-account-missing`; plan açıkça belirlemiyor (gerekçe
+  "BAKIM 29.10.2026" (4)); kayıt / para etkisi yok; CI'de `--haric` ile adıyla dışarıda, karar bekler.

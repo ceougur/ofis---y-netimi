@@ -108,6 +108,13 @@ MUTASYONLAR = {
     51: "K8-AVANS: kartın Ödenen tutarı avansı dışlar (Ödenen en çok kart toplamı)",
     52: "K8-AVANS: ödenmiş karttaki avans cariye yazılmaz (cari alacak oluşmaz; yalnız Kasa / banka)",
     53: "K8-AVANS: ödenmiş karttaki avans Kasa / banka'ya girmez (yalnız cari)",
+    # BAKIM 29.10.2026 (README "BAKIM 29.10.2026 — R1–R3 farkları"): üç kural, kaynakları kurus_modul(), _cari_govdede() ve istek() yorumlarında
+    54: "Masaüstü modül ucunda 2'den çok ondalık 400 alır (yuvarlanmaz — banka ucu kuralı modül ucuna uygulanır)",
+    55: "Masaüstü modül ucunda 2'den çok ondalık aşağı kesilir (yarım yukarı yerine; 12,345 → 12,34)",
+    56: "Gövdedeki (evrak formu) bulunamayan / başka şirketin cari kimliği 404 alır (400 yerine)",
+    57: "Yoldaki cari kimliği de 400 alır (gövde kuralı her uca uygulanır)",
+    58: "İki ya da daha çok ihlalli adımda ilk ihlalin tam kodu yazılır (yalnız durum sınıfı değil)",
+    59: "Mobil uçta da 2'den çok ondalık yuvarlanır (mobil kuralı 'YUVARLANMAZ' delinir)",
 }
 
 PARA_ISLEM = ("tahsilat", "odeme", "stok")
@@ -121,6 +128,7 @@ ROLLER = ("yonetici", "muhasebe", "personel")
 KIMLIK_OMRU = timedelta(days=30)        # PLAN §3.10/1 "30 günden eskiler budanır"
 TELEFON_OMRU = timedelta(hours=24)      # S7 seçeneği "telefon_24s"
 TUTAR_RE = re.compile(r"^[0-9]{1,13}(,[0-9]{1,2})?$")
+TUTAR_MODUL_RE = re.compile(r"^[0-9]{1,13}(,[0-9]+)?$")   # masaüstü modül ucu: ondalık hane sayısı sınırsız, yuvarlanır (kurus_modul)
 TAKMA_RE = re.compile(r"^[A-Z][A-Z0-9_]{0,15}$")
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,40}$")
 
@@ -184,6 +192,29 @@ def kurus(metin):
         return None
     tam, _, ond = metin.partition(",")
     k = int(tam) * 100 + (int((ond + "00")[:2]) if ond else 0)
+    if k <= 0 or k > 1_000_000_000_000 * 100:
+        return None
+    return k
+
+
+def kurus_modul(metin, mut=0):
+    """MASAÜSTÜ MODÜL uçlarının tutarı (cari tahsilat / ödeme, taksit kartı tahsilatı, evrak girişi): 2'den çok ondalık YUVARLANIR, yarım birim
+    sıfırdan uzağa (yarım yukarı); biçim (virgül, binlik ayırıcısız, işaretsiz) ve aralık (0 < tutar ≤ 1e12 TL) kurus() ile aynı. Geçersiz → None (400).
+    KAYNAK (bakım 29.10.2026, madde 1):
+      - docs/GECMIS-KARARLAR.md, 2.1.0 yargıç düzeltmesi: "§5.1'in '2'den çok ondalık 400' kuralı yalnız BANKA uçları içindir; modül uçları (cari, fatura,
+        taksit…) plana göre 'bugünkü gibi' 1,005 → 1,01 yuvarlar (kullanıcıya düzeltildi)."
+      - test/bagimsiz/SENARYO-DILI.md §6.2: "Modül uçları (cari_tahsilat, cari_odeme, fatura kalem fiyatı): 3 ondalık rh ile kuruşa yuvarlanır ('1,005' →
+        1,01); sıfır, eksi ya da 1e12 TL üstü → 400"; §6.1 rh(a, b) = (2a + b) // (2b) "yarım birim sıfırdan uzağa".
+      - "Modül ucu" = plan §7 "Genişleyen mevcut uçlar" (accounts/:id/entries, plans/:id/entries, cheques …); banka uçları yalnız /api/workspace/bank/*.
+    MOBİL bu kuralı ALMAZ: docs/mobil/M5-TASARIM.md BAŞ MİMAR KARARI 3 "biçim dışı tutar 400 mobile-amount, YUVARLANMAZ (banka planı §9.2/9)" → mobil kurus().
+    ÇIKARIM: yuvarlanınca 0 olan tutar (ör. "0,004") "sıfır → 400" kuralına girer."""
+    if not isinstance(metin, str) or not TUTAR_MODUL_RE.match(metin):
+        return None
+    tam, _, ond = metin.partition(",")
+    if len(ond) <= 2:
+        return kurus(metin)
+    n, b = int(tam + ond), 10 ** len(ond)            # tutar = n / b TL
+    k = (n * 100) // b if mut == 55 else (2 * n * 100 + b) // (2 * b)   # rh(n·100, b) — SENARYO-DILI §6.1
     if k <= 0 or k > 1_000_000_000_000 * 100:
         return None
     return k
@@ -377,6 +408,21 @@ class Kahin:
             return 200 if rol == "yonetici" else "B"
         raise SenaryoHatasi("rol yetkisi: islem %s" % islem)
 
+    @staticmethod
+    def _cari_govdede(yol, mut=0):
+        """Cari kimliği isteğin GÖVDESİNDE mi (form alanı) yoksa YOLUNDA mı?
+        BAŞ MİMAR KARARI (29.10.2026; ürün sahibine gösterildi — bakım madde 2): "isteğin GÖVDESİNDE (form alanında) gelen bulunamayan ya da başka şirketin
+        cari kimliği 400 (doğrulama hatası) alır; YOLDA gelen kaynak kimliği 404. Plan §9.2/11 'başka şirketin hesap kimliği 404' banka hesabı içindir."
+        Kimliğin yeri: docs/BANKA-MODULU-PLAN.md §7 "Genişleyen mevcut uçlar" — cari tahsilat / ödeme `accounts/:id/entries` (cari YOLDA; mobil de "mevcut API
+        üzerinden", KULLANICI 26.10 MOBİL + devir §3.1), taksit kartı `plans/:id/entries` (kart YOLDA), var olan evrak `cheques/:id/actions` (evrak YOLDA). Yeni
+        evrak girişi (çek / senet tahsilatı) evrak henüz yokken yol kimliği taşıyamaz → carisi evrak formunun alanıdır → GÖVDE (ÇIKARIM: plan §7 yol biçimi +
+        kararın "form alanında" sözü)."""
+        if mut == 57:
+            return True
+        if mut == 56:
+            return False
+        return yol in ("cek", "senet")
+
     # ─── çıktı
     def _sonuc(self, w, adim_id, durum, http=None, kod=None, sunucu=None):
         o = w["out"]
@@ -537,8 +583,9 @@ class Kahin:
 
     def istek(self, w, a, ctx, kayit_id=None, sessiz=False):
         """Tek isteği uygular. ctx: kanal, cihaz, kullanici, zaman (gönderim), form (formun açıldığı an), kesinti, yeniden (bool), budama (None/True/False).
-        Ret önceliği SENARYO-DILI §5.6 (403 → 400 → istek kimliği → 404/409 hedef → Benzer İşlem → eksi); mobil kapılar (sunucu, kesinti, lisans, cihaz,
-        uzak izni) programa ULAŞMADAN önce (kapıcı / telefon)."""
+        Ret: SENARYO-DILI §5.6 denetimleri (403 → 400 → istek kimliği → 404/409 hedef → Benzer İşlem → eksi) HEPSİ değerlendirilir; tek ihlalde o ihlalin
+        durum kodu ve kodu, birden çok ihlalde yalnız "4xx" (§5.6 [BELİRSİZ-17]; bakım 29.10.2026 madde 3). Mobil kapılar (sunucu, kesinti, lisans, cihaz,
+        uzak izni) ve şirket erişimi programa / şirket verisine ULAŞMADAN önce (kapıcı / telefon) erken döner."""
         mut = self.mut
         P = self.P
         kanal = ctx["kanal"]
@@ -591,6 +638,25 @@ class Kahin:
         S = w["sirketler"][sirket]
         yol = a.get("yol", "nakit") if islem != "stok" else None
         kart = a.get("kart")
+        fatura = a.get("fatura")
+        # dil dışı birleşimler (senaryo hatası; durumdan bağımsız — ihlal toplamadan önce)
+        if islem == "odeme" and kart:
+            raise SenaryoHatasi("ödemede taksit kartı yok")
+        if kart and yol in ("cek", "senet"):
+            raise SenaryoHatasi("taksit kartına çek/senet bu dilde yok")
+        if kart and fatura:
+            raise SenaryoHatasi("taksit kartı + fatura birlikte yok")
+        # İHLAL TOPLAMA (bakım 29.10.2026, madde 3). KAYNAK: test/bagimsiz/SENARYO-DILI.md §5.6 — ret önceliği "[ÇIKARIM §3.3 sırası]"; "Plan sıralamayı yalnız
+        # bankanın iç adımları için verir …; öncelik bu yüzden ÇIKARIM'dır. Senaryo bir adımda tek ihlal kurar; kurarsa karşılaştırıcı o adımda yalnız durum
+        # sınıfını (4xx) karşılaştırır [BELİRSİZ-17]." → programa ulaşan denetimlerin HEPSİ değerlendirilir (aşağıdaki sıra yalnız okunurluk içindir): TEK
+        # ihlalde o ihlalin durum kodu ve kodu; İKİ ya da daha çok ihlalde yalnız "4xx" (kod yazılmaz). Her iki durumda da kayıt yok (para değişmez). Kapıcı
+        # (sunucu, kesinti, lisans, cihaz, izin) ve şirket erişimi isteği programın şirket verisine ulaşmadan durdurduğu için yukarıda erken döner (zaten "4xx").
+        # Bir denetimin girdisi ihlalliyse (tutar, tarih, hesap, hedef) ona bağlı denetim değerlendirilemez ve sayılmaz.
+        ihlal = []
+
+        def ihlal_ekle(http, kod=None):
+            ihlal.append((http, kod))
+
         # 6. rol yetkisi [PLAN §5.5]
         if islem in ("tahsilat", "odeme"):
             y = self._rol_yetkisi(rol, islem, yol, kart)
@@ -599,36 +665,33 @@ class Kahin:
         if y == "B":
             raise SenaryoHatasi("%s: rol %s için %s/%s planda yazılı değil (B — senaryo kurmaz; göreli çiftle denenir)" % (a["id"], rol, islem, yol))
         if y == 403 and not (mobil and mut == 28):
-            return self._ret(w, a, sessiz, 403, sunucu_gizli=gizli)
+            ihlal_ekle(403)
         # 7. girdi (400)
         if islem == "stok":
             tutar = miktar_coz(a.get("miktar"))
             if a.get("yon") not in ("giris", "cikis"):
                 raise SenaryoHatasi("%s: stok yonu giris/cikis" % a["id"])
         else:
-            tutar = kurus(a.get("tutar"))
+            # tutar: mobil PLAN §9.2/9 + M5 BAŞ MİMAR 3 (en çok 2 ondalık, YUVARLANMAZ → 400); masaüstü MODÜL ucu 2.1.0 yargıç düzeltmesi (yuvarlar — kurus_modul)
+            if (mobil and mut != 59) or (not mobil and mut == 54):
+                tutar = kurus(a.get("tutar"))
+            else:
+                tutar = kurus_modul(a.get("tutar"), mut)
             if (islem == "tahsilat" and yol not in TAHSILAT_YOLLARI) or (islem == "odeme" and yol not in ODEME_YOLLARI):
-                return self._ret(w, a, sessiz, 400, sunucu_gizli=gizli)
+                ihlal_ekle(400)
         if tutar is None:
-            return self._ret(w, a, sessiz, 400, sunucu_gizli=gizli)
-        fatura = a.get("fatura")
+            ihlal_ekle(400)
         # mobilin VERİ alanı kısıtları (S1, S2, S3, S8): telefon alanı göstermez; alanlı istek (eski form / el yapımı) beyaz listede reddedilir — sessizce
         # FIFO'ya / başka yola çevrilmez (V8: para verisi sessizce değişmez)
         if mobil:
             if fatura and P["kapatilacak"] == "yalniz_fifo" and mut != 17:
-                return self._ret(w, a, sessiz, "4xx", sunucu_gizli=gizli)
+                ihlal_ekle("4xx")
             if yol in ("cek", "senet") and P["yollar"] == "nakit_havale_pos" and mut != 38:
-                return self._ret(w, a, sessiz, "4xx", sunucu_gizli=gizli)
+                ihlal_ekle("4xx")
             if kart and P["taksit"] == "yalniz_cari" and mut != 47:
-                return self._ret(w, a, sessiz, "4xx", sunucu_gizli=gizli)
+                ihlal_ekle("4xx")
             if islem == "stok" and a.get("yon") == "cikis" and P["stok_yonu"] == "yalniz_giris" and mut != 46:
-                return self._ret(w, a, sessiz, "4xx", sunucu_gizli=gizli)
-        if islem == "odeme" and kart:
-            raise SenaryoHatasi("ödemede taksit kartı yok")
-        if kart and yol in ("cek", "senet"):
-            raise SenaryoHatasi("taksit kartına çek/senet bu dilde yok")
-        if kart and fatura:
-            raise SenaryoHatasi("taksit kartı + fatura birlikte yok")
+                ihlal_ekle("4xx")
         # onay bayrakları (S4, S5): "geçemez" = telefon bayrağı göndermez (uyarı varsa yazılmaz, yoksa iş yürür)
         yine = bool(a.get("yineDeKaydet"))
         benzer_onay = bool(a.get("benzerOnay"))
@@ -647,10 +710,11 @@ class Kahin:
             tarih = gun(simdi, utc=(mut == 24))
             if mut == 25 and ctx.get("yeniden"):
                 tarih = gun(ctx["form"])
-        if not tarih_gecerli(tarih):
-            return self._ret(w, a, sessiz, 400, sunucu_gizli=gizli)
-        if tarih > gun(simdi) and not (mobil and mut == 27):
-            return self._ret(w, a, sessiz, 400, sunucu_gizli=gizli)   # PLAN §2.5 "İleri tarihli hareket girilmez"
+        tarih_ok = tarih_gecerli(tarih)
+        if not tarih_ok:
+            ihlal_ekle(400)
+        elif tarih > gun(simdi) and not (mobil and mut == 27):
+            ihlal_ekle(400)   # PLAN §2.5 "İleri tarihli hareket girilmez"
         # hesap seçimi [PLAN §3.5] — havale → banka, POS → POS, kart (ödeme) → kurumsal kart
         hesap = None
         if islem != "stok" and yol in ("havale", "pos", "kart"):
@@ -658,16 +722,17 @@ class Kahin:
             uygun = sorted(h for h, x in S["hesaplar"].items() if x["tur"] == istenen)
             if a.get("hesap"):
                 if a["hesap"] not in S["hesaplar"]:
-                    return self._ret(w, a, sessiz, [400, 404], sunucu_gizli=gizli)   # başka şirketin / olmayan hesap
-                if S["hesaplar"][a["hesap"]]["tur"] != istenen:
-                    return self._ret(w, a, sessiz, 400, kod="bank-account-invalid", sunucu_gizli=gizli)
-                hesap = a["hesap"]
+                    ihlal_ekle([400, 404])   # başka şirketin / olmayan hesap
+                elif S["hesaplar"][a["hesap"]]["tur"] != istenen:
+                    ihlal_ekle(400, "bank-account-invalid")   # E02 t4: BİLİNEN KÂHİN FARKI (README) — plan POS kimliğinin bu yolda kodunu yazmıyor
+                else:
+                    hesap = a["hesap"]
             elif mobil and mut == 43:
                 hesap = None
             elif len(uygun) == 1:
                 hesap = uygun[0]
             elif len(uygun) > 1:
-                return self._ret(w, a, sessiz, 400, kod="bank-account-required", sunucu_gizli=gizli)
+                ihlal_ekle(400, "bank-account-required")
         # 8. istek kimliği [PLAN §3.10/1: kalıcı; anahtar kullanıcı|kapsam|kimlik; aynı kimlik + farklı içerik → 409; 30 günden eskiler budanır]
         kapsam = islem + (":kart" if kart else "")
         govde = {"islem": islem, "kapsam": kapsam, "cari": a.get("cari"), "tutar": a.get("tutar") if islem != "stok" else None,
@@ -689,15 +754,17 @@ class Kahin:
                     onceki = None
         if onceki is not None and not (mut == 1 and ctx.get("yeniden")):
             if onceki["govde"] == govde or mut == 2:
-                if not sessiz:
-                    if gizli:
-                        self._sonuc(w, a["id"], "belirsiz", sunucu="yineleme")
-                    else:
-                        self._sonuc(w, a["id"], "yineleme")
-                return "yineleme"
-            if mut != 3:
-                return self._ret(w, a, sessiz, 409, sunucu_gizli=gizli)
+                if not ihlal:   # yerleşik sıra (§5.6): 403 / 400 istek kimliğinden önce — onlar varsa "zaten kaydedildi" denmez
+                    if not sessiz:
+                        if gizli:
+                            self._sonuc(w, a["id"], "belirsiz", sunucu="yineleme")
+                        else:
+                            self._sonuc(w, a["id"], "yineleme")
+                    return "yineleme"
+            elif mut != 3:
+                ihlal_ekle(409)
         # 9. hedef [PLAN §5.6 grup 4]
+        kart_ok = False
         if islem in ("tahsilat", "odeme"):
             cari = a.get("cari")
             c = S["cariler"].get(cari)
@@ -708,25 +775,29 @@ class Kahin:
                     S = w["sirketler"][sirket]
                     c = S["cariler"][cari]
                 else:
-                    return self._ret(w, a, sessiz, [403, 404] if baska else 404, sunucu_gizli=gizli)
+                    # BAŞ MİMAR KARARI 29.10.2026 (bakım madde 2; _cari_govdede): gövdedeki (evrak formu) bulunamayan / başka şirketin cari kimliği 400;
+                    # yoldaki (accounts/:id, plans/:id) 404 — eski kâhinin [403, 404]'ü kararla 404'e indi (karar "YOLDA gelen kaynak kimliği 404")
+                    ihlal_ekle(400 if self._cari_govdede(yol, mut) else 404)
             if fatura:
                 F = S["faturalar"].get(fatura)
                 if F is None or F["cari"] != cari:
-                    return self._ret(w, a, sessiz, 404, sunucu_gizli=gizli)   # başka carinin / şirketin faturası [KULLANICI B2.4 + YAYGIN]
-                if F["tur"] not in (("satis",) if islem == "tahsilat" else ("alis", "iade")):
+                    ihlal_ekle(404)   # başka carinin / şirketin faturası [KULLANICI B2.4 + YAYGIN]
+                elif F["tur"] not in (("satis",) if islem == "tahsilat" else ("alis", "iade")):
                     # ters yön [KULLANICI B2.4, kalıcı karar "fatura kapama yöne göre"]; ödemede Kapatılacak Fatura = iade belgesi KABUL [KULLANICI K-d, cari KARARLAR §10]
-                    return self._ret(w, a, sessiz, 409, sunucu_gizli=gizli)
+                    ihlal_ekle(409)
             if kart:
                 K = S["kartlar"].get(kart)
                 if K is None or K["cari"] != cari:
-                    return self._ret(w, a, sessiz, 404, sunucu_gizli=gizli)
+                    ihlal_ekle(404)
+                else:
+                    kart_ok = True
         else:
             if a.get("urun") not in S["urunler"]:
-                return self._ret(w, a, sessiz, 404, sunucu_gizli=gizli)
-        if S["kilit"] and tarih <= S["kilit"] and not (mobil and mut == 26):
-            return self._ret(w, a, sessiz, 409, kod="period-locked", sunucu_gizli=gizli)
+                ihlal_ekle(404)
+        if tarih_ok and S["kilit"] and tarih <= S["kilit"] and not (mobil and mut == 26):
+            ihlal_ekle(409, "period-locked")
         odenmis_avans = False   # KARAR K8-AVANS: ödenmiş (kalan 0) karta onaylı yeni tahsilatın tamamı avans
-        if kart:
+        if kart and kart_ok and tutar is not None:
             K = S["kartlar"][kart]
             odemeler = K["odemeler"]
             if mut == 31 and self._grup_on is not None and (sirket, kart) in self._grup_on:
@@ -736,44 +807,51 @@ class Kahin:
                 # KARAR K8-AVANS (kullanıcı 29.10.2026): ödenmiş karta yeni tahsilat → `plans.manage` yetkilisine "Fazlasını Avans Yaz"; onaylanırsa tutarın
                 # tamamı cariye avans (cari alacak; Kasa / banka girişi normal); masaüstü ve mobil aynı. Onay vermeyen → ret (ödenmiş kart, 409 plan-paid).
                 if not fazla or mut == 49:
-                    return self._ret(w, a, sessiz, 409, kod="plan-paid", sunucu_gizli=gizli)
-                if rol == "personel" and mut != 50:
+                    ihlal_ekle(409, "plan-paid")
+                elif rol == "personel" and mut != 50:
                     # yetkisiz → ret; kod kararda yazılı değil: ödenmiş kart (409 plan-paid) ya da avans yetkisi (403 plan-overpay-permission) — İKİSİ DE
                     # kabul (kâhin seçmez; README "K8-AVANS kararın kapsamadığı")
-                    return self._ret(w, a, sessiz, [403, 409], kod=["plan-overpay-permission", "plan-paid"], sunucu_gizli=gizli)
-                if rol == "muhasebe":
+                    ihlal_ekle([403, 409], ["plan-overpay-permission", "plan-paid"])
+                elif rol == "muhasebe":
                     raise SenaryoHatasi("%s: muhasebenin plans.manage yetkisi planda yok (B)" % a["id"])
-                odenmis_avans = True
+                else:
+                    odenmis_avans = True
             elif tutar > kalan and mut != 18:
                 if fazla:
                     if rol == "personel" and mut != 20:
-                        return self._ret(w, a, sessiz, 403, kod="plan-overpay-permission", sunucu_gizli=gizli)
-                    if rol == "muhasebe":
+                        ihlal_ekle(403, "plan-overpay-permission")
+                    elif rol == "muhasebe":
                         raise SenaryoHatasi("%s: muhasebenin plans.manage yetkisi planda yok (B)" % a["id"])
                 else:
-                    return self._ret(w, a, sessiz, 409, kod="plan-overpay", sunucu_gizli=gizli)
+                    ihlal_ekle(409, "plan-overpay")
         # 10. Benzer İşlem [PLAN §3.10/2 — yalnız hesaba bağlı (fin_ref dolu) satır; aynı iş günü; hedefli]
         bkey = None
-        if islem != "stok" and hesap is not None and yol in ("havale", "pos", "kart"):
+        if islem != "stok" and hesap is not None and yol in ("havale", "pos", "kart") and tutar is not None and tarih_ok:
             hedef = fatura or (("kart:" + kart) if kart else "")
             bkey = json.dumps([islem, yol, hesap, a.get("cari"), tutar, tarih, hedef])
             if S["benzerAcik"] and bkey in S["benzer"].values() and not benzer_onay and not (mobil and mut == 40):
-                return self._ret(w, a, sessiz, 409, kod="bank-similar", sunucu_gizli=gizli)
+                ihlal_ekle(409, "bank-similar")
         # 11. eksi bakiye (Kasa, nakit ödeme) [PLAN §3.9 / SENARYO-DILI §5.3] ve eksi stok [kalıcı karar 02.10.2026 "program sorar"]
-        if islem == "odeme" and yol == "nakit" and not (mobil and mut == 23):
+        if islem == "odeme" and yol == "nakit" and tutar is not None and tarih_ok and not (mobil and mut == 23):
             satir = list(S["kasa"].values()) + [(tarih, -tutar)]
             b_d = sum(x for t, x in satir if t <= tarih)
             b_t = sum(x for _, x in satir)
             if min(b_d, b_t) < 0:
                 if S["kasaEksi"] == "engelle":
-                    return self._ret(w, a, sessiz, 409, kod="cash-blocked", sunucu_gizli=gizli)
-                if S["kasaEksi"] == "uyar" and not yine:
-                    return self._ret(w, a, sessiz, 409, kod="cash-negative", sunucu_gizli=gizli)
-        if islem == "stok":
+                    ihlal_ekle(409, "cash-blocked")
+                elif S["kasaEksi"] == "uyar" and not yine:
+                    ihlal_ekle(409, "cash-negative")
+        if islem == "stok" and tutar is not None and a.get("urun") in S["urunler"]:
             mevcut = sum(S["urunler"][a["urun"]]["hareketler"].values())
             cikis = a["yon"] == "cikis" and not (mobil and mut == 30)
             if cikis and mevcut - tutar < 0 and not eksi_onay and not (mobil and mut == 21):
-                return self._ret(w, a, sessiz, "4xx", sunucu_gizli=gizli)
+                ihlal_ekle("4xx")
+        if ihlal:
+            if len(ihlal) == 1 or mut == 58:
+                http, kod = ihlal[0]
+            else:
+                http, kod = "4xx", None   # iki ve daha çok ihlal: yalnız durum sınıfı (SENARYO-DILI §5.6 [BELİRSİZ-17])
+            return self._ret(w, a, sessiz, http, kod=kod, sunucu_gizli=gizli)
         # ─── yazım
         kayit = {"id": rid, "islem": islem, "kanal": kanal, "kullanici": kullanici, "tarih": tarih, "zaman": simdi.isoformat()}
         if islem == "stok":
