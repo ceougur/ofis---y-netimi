@@ -237,7 +237,7 @@ function handle(result, record, ui) {
     return;
   }
   if (result.kind === "uncertain") {
-    if (!ui.show) return toast("Bağlantı koptu; işlem sonucu belirsiz. Bekleyen İşlemler'den aynı kimlikle yeniden gönderin.", true);
+    if (!ui.show) return toast("Bağlantı koptu; işlem sonucu belirsiz. Sonucu Belirsiz İşlemler'den yeniden gönderin.", true);
     ui.show(`Bağlantı koptu; işlem kaydedilmiş olabilir. <strong>Yeniden Gönder</strong> aynı işlemi aynı kimlikle gönderir — ikinci kayıt açılmaz.`, "warn");
     return;
   }
