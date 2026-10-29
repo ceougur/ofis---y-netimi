@@ -1,0 +1,32 @@
+{
+  "ad": "247-tamkapi/ci-e2e-uiux-b-243",
+  "komut": "npm run test:uiux-b-243",
+  "commit": "fbeb81345d0de8e917ea92c6f0cfc4ee276d69e9",
+  "dal": "worktree-agent-a1cdf987dc77a4bba",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T17:36:33.329Z",
+  "sure_sn": 47.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 58,
+    "gecen": 58,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/247-tamkapi/ci-e2e-uiux-b-243.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1cdf987dc77a4bba",
+  "ham_cikti_sha256": "be0729d2d4a4dba734914012efbbce42fd7682a83947e1eceb79c5362ced33ae",
+  "ham_cikti_bayt": 6429
+}

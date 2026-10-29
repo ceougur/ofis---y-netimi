@@ -1,0 +1,87 @@
+
+> destekofis@2.4.6 test:senaryo-supheli-230
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-supheli-230.mjs
+
+
+■ 1 Cari kartı: Borç Yaz 10.000 → Şüpheli Alacağa Al 4.000 → Karşılık 2.500 → Tahsilat 3.000 → Değersiz 1.000 (kabul §2 adım 0–4)
+  ✓ boş kartta “Şüpheli alacak yok” yazısı
+  ✓ yöneticide “Şüpheli Alacağa Al” düğmesi
+  ✓ adım 0: bakiye 10.000 (10000)
+  ✓ form: “Şüpheli Alacağa Al”, önerilen tutar borç bakiyesi (10.000,00)
+  ✓ neden listesi: Karşılıksız Çek, Protestolu Senet, Dava, İcra, Diğer
+  ✓ adım 1: Şüpheli Alacak bilgisi {"taken":"4000.00","provision":"0.00","collected":"0.00","writtenOff":"0.00","released":"0.00","open":"4000.00"} (beklenen {"taken":4000,"provision":0,"collected":0,"writtenOff":0,"open":4000})
+  ✓ adım 1: cari bakiyesi DEĞİŞMEZ (10.000)
+  ✓ kart başlığında “Şüpheli” rozeti
+  ✓ kayıt satırı: 29.10.2026BNK-2026-000001DavaDava açıldı₺4.000,00₺0,00₺0,00₺0,00₺4.000,00Şüpheli AlacaktaKarşılık AyırDeğersiz Alacak Ya
+  ✓ Karşılık Ayır formu
+  ✓ adım 2: Şüpheli Alacak bilgisi {"taken":"4000.00","provision":"2500.00","collected":"0.00","writtenOff":"0.00","released":"0.00","open":"4000.00"} (beklenen {"taken":4000,"provision":2500,"collected":0,"open":4000})
+  ✓ adım 2 mizan: 654 2500, 129 -2500, 128 4000
+  ✓ adım 3 (tahsilat önce şüpheliden; karşılık kalana iner, 644 kuralı): Şüpheli Alacak bilgisi {"taken":"4000.00","provision":"1000.00","collected":"3000.00","writtenOff":"0.00","released":"0.00","open":"1000.00"} (beklenen {"taken":4000,"provision":1000,"collected":3000,"writtenOff":0,"open":1000})
+  ✓ adım 3: bakiye 7.000 (7000)
+  ✓ adım 3 mizan: 128 1000, 129 -1000, 644 -1500, 100 3000, 120 6000
+  ✓ Değersiz Alacak Yaz formu; önerilen kalan (1.000,00)
+  ✓ onay metni: "1.000,00 ₺ değersiz alacak yazılacak: Şüpheli Ekran Müşterisi carisinin bakiyesi o tutar kadar kapanır, tutar gider olar"
+  ✓ Vazgeç → formda: "Kaydedilmedi: değersiz alacak yazımı onaylanmadı."
+  ✓ Vazgeç: değişmedi: Şüpheli Alacak bilgisi {"taken":"4000.00","provision":"1000.00","collected":"3000.00","writtenOff":"0.00","released":"0.00","open":"1000.00"} (beklenen {"writtenOff":0,"open":1000})
+  ✓ adım 4: Şüpheli Alacak bilgisi {"taken":"4000.00","provision":"0.00","collected":"3000.00","writtenOff":"1000.00","released":"0.00","open":"0.00"} (beklenen {"taken":4000,"provision":0,"collected":3000,"writtenOff":1000,"open":0})
+  ✓ adım 4: bakiye 6.000 (6000)
+  ✓ kayıt durumu: Değersiz Yazıldı
+  ✓ Hareketler'de “Değersiz Alacak” alacak satırı
+  ✓ adım 4 mizan: 128 0, 129 0, 644 -1500, 654 2500, 659 0, 120 6000, Kasa 3000
+  ✓ kapanınca başlık rozeti kalkar
+  ✓ Mutabakat Testi tamam
+  ✓ 7.000 > 6.000: form kapanmadan hata: "Şüpheliye alınacak tutar (7.000,00 TL) carinin borç bakiyesini aşıyor: bakiye 6.000,00 TL → en çok 6"
+
+■ 2 Liste rozeti, ANLIK DURUM, Vade Takip, Rapor Merkezi (Şüpheli Alacaklar, Alacak Yaşlandırma, Hesap Planı Mizanı)
+  ✓ listede rozet: “Şüpheli”
+  ✓ kapanan kayıtlı caride rozet yok
+  ✓ ANLIK DURUM: “Şüpheli Alacak ₺2.000”
+  ✓ Vade Takip kutusu: “Şüpheli Alacak₺2.000,001 cari · vade takibinin dışında”
+  ✓ ilk açılış Açık: 1 satır (İcralık Müşteri)
+  ✓ kolonlar: Cari No, Cari, Neden, Tarih, Tutar, Karşılık, Tahsil Edilen, Değersiz, Kalan, Durum
+  ✓ TOPLAM Kalan 2.000 (₺2.000,00)
+  ✓ Tümü: 2 satır, TOPLAM = satırlar (Tutar ₺6.000,00, Kalan ₺2.000,00)
+  ✓ Kapanan: Şüpheli Ekran Müşterisi · Değersiz Yazıldı
+  ✓ Neden: İcra → 1 satır
+  ✓ Neden: Dava → 1 satır
+  ✓ Neden: Karşılıksız Çek → boş, ipucu yazısı
+  ✓ Geçen Ay: boş dönemde ipucu + “Tüm Zamanları Göster”
+  ✓ Alacak Yaşlandırma: Şüpheli Alacak (dilimlere dahil) 2.000, Faturasız 2.000, Toplam 2.000, Vade Gecikme boş (İcralık Müşteri |  | ₺2.000,00 | ₺0,00 | ₺0,00 | ₺0,00 | ₺0,00 | ₺2.000,00 | ₺2.000,00 | ₺0,00 | ₺2.000,00)
+  ✓ Hesap Planı Mizanı 128: 128 | Şüpheli Ticari Alacaklar | ₺0,00 | ₺6.000,00 | ₺4.000,00 | ₺2.000,00 | Borç
+  ✓ 129 satırı (Şüpheli Ticari Alacaklar Karşılığı (−)) ve 654 ₺2.500,00
+
+■ 3 Karşılıksız çek kartından kısayol: neden ve tutar evraktan
+  ✓ karşılıksız çek kartında “Şüpheli Alacağa Al” düğmesi
+  ✓ form evraktan: neden cheque, tutar 1.500,00
+  ✓ şüpheliye alındı: 150000 kuruş, Karşılıksız Çek, evrak EK-1
+
+■ 4 Kaydı sil → Silinenler'den geri yükle
+  ✓ silindi: kayıt yok, bakiye 2.000 değişmedi
+  ✓ silince 128 yalnız çekli cari: 1500
+  ✓ Silinenler türü: Şüpheli Alacak
+  ✓ geri yüklendi: şüphelide 2.000, 128 = 3500
+
+■ 5 Personel: düğme yok, bilgi görünür; çek kartında kısayol yok
+  ✓ ön koşul: accounts.manage false, accounts.doubtful false
+  ✓ personelde Şüpheli Alacak bilgisi görünür
+  ✓ personelde Şüpheli Alacağa Al / Karşılık Ayır / Değersiz / Çıkar / Sil düğmeleri YOK
+  ✓ avukat ön koşul: accounts.manage true, accounts.doubtful false, cheques.view true
+  ✓ avukat: Borç Yaz var, şüpheli düğmeleri yok, bilgi görünür
+  ✓ avukat: karşılıksız çek kartında “Şüpheli Alacağa Al” yok
+
+■ 6 Tahsilatta seçim (karar 15.10.2026): varsayılan şüpheliden düşer; “Normal Cari Hesaba İşle” kutusu → satır 120'de kalır
+  ✓ açık şüpheli kaydı olan müşteride “Normal Cari Hesaba İşle” kutusu var
+  ✓ Hareketler'de etiket: “Normal Cariye İşlendi”
+  ✓ normal cariye: şüphelide 2.000 kaldı, 128 = 3500, bakiye 2200 (2.500 − 300)
+  ✓ kutusuz tahsilat 100 şüpheliden düştü: şüphelide 1.900, 128 = 3400
+  ✓ Mutabakat Testi tamam (iki yükleyici aynı kuralı okur)
+  ✓ açık şüpheli kaydı olmayan (kapanmış) caride kutu yok
+
+■ 7 K4 (16.10.2026): şüpheli caride faturaya bağlı tahsilat — İptal penceresi önceden söyler, iptalden sonra bildirim; tahsilat şüpheliden düşer
+  ✓ İptal penceresi önceden söyler: “aba işli (cari şüpheli alacakta). Fatura iptal edilince bağı kalkar ve tahsilat şüpheli alacaktan düşer. Normal cari hesapta kalmasını isterseniz iptalden sonra cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretleyin.”
+  ✓ iptalden sonra bildirim: “Bu faturaya bağlı 250,00 TL tahsilat artık şüpheli alacaktan düşüyor (faturayla bağı kalktı). Normal cari hesapta kalmasını isterseniz cari kartında tahsilatı açıp "Normal Cari Hesaba İşle"yi işaretle”
+  ✓ şüphelide kalan 1900 → 1650 (bağı kalkan 250 şüpheliden düştü)
+  ✓ Mutabakat Testi tamam (K4 iptalinden sonra)
+  ✓ sayfa hatası yok
+
+✓ senaryo-supheli-230: 67 geçti, 0 kaldı

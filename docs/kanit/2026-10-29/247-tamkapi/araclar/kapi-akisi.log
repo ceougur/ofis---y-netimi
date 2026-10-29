@@ -1,0 +1,231 @@
+15:52:52 disk 5209 MB boş — başlıyor npm-test
+16:26:19 npm-test cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/npm-test: GEÇTİ · çıkış 0 · 3906/3906 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:26:19 disk 5182 MB boş — başlıyor ci-kahin-defter
+16:26:23 ci-kahin-defter cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-kahin-defter: GEÇTİ · çıkış 0 · 176/176 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:26:23 disk 5183 MB boş — başlıyor ci-kahin-cari
+16:28:00 ci-kahin-cari cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-kahin-cari: GEÇTİ · çıkış 0 · 7408/7408 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:28:00 disk 5175 MB boş — başlıyor ci-kahin-tutar
+16:28:07 ci-kahin-tutar cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-kahin-tutar: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:28:07 disk 5175 MB boş — başlıyor ci-kahin-ebelge-model
+16:28:10 ci-kahin-ebelge-model cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-kahin-ebelge-model: GEÇTİ · çıkış 0 · 114/114 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:28:10 disk 5174 MB boş — başlıyor ci-kahin-ebelge-mutasyon
+16:29:42 ci-kahin-ebelge-mutasyon cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-kahin-ebelge-mutasyon: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:29:42 disk 5174 MB boş — başlıyor ci-kahin-ebelge-senaryo
+16:30:23 ci-kahin-ebelge-senaryo cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-kahin-ebelge-senaryo: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:30:23 disk 5173 MB boş — başlıyor ci-kahin-maliyet
+16:32:37 ci-kahin-maliyet cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:32:37 disk 5173 MB boş — başlıyor ci-kahin-mobil-yazma
+16:35:49 ci-kahin-mobil-yazma cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-kahin-mobil-yazma: GEÇTİ · çıkış 0 · 52/52 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+BİTTİ (npmtest,ci-kahin): 9 koşu
+ci.yml e2e satırı: 77
+16:36:02 disk 5172 MB boş — başlıyor ci-e2e-e2e
+16:38:45 ci-e2e-e2e cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-e2e: GEÇTİ · çıkış 0 · 50/50 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:38:45 disk 5161 MB boş — başlıyor ci-e2e-senaryo-219
+16:39:45 ci-e2e-senaryo-219 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-219: GEÇTİ · çıkış 0 · 42/42 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:39:45 disk 5143 MB boş — başlıyor ci-e2e-senaryo-220
+16:41:00 ci-e2e-senaryo-220 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-220: GEÇTİ · çıkış 0 · 25/25 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:41:00 disk 5158 MB boş — başlıyor ci-e2e-senaryo-220-yedek
+16:41:12 ci-e2e-senaryo-220-yedek cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-220-yedek: GEÇTİ · çıkış 0 · 37/37 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:41:12 disk 5156 MB boş — başlıyor ci-e2e-senaryo-221
+16:41:19 ci-e2e-senaryo-221 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-221: GEÇTİ · çıkış 0 · 28/28 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:41:19 disk 5155 MB boş — başlıyor ci-e2e-senaryo-222
+16:43:21 ci-e2e-senaryo-222 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-222: GEÇTİ · çıkış 0 · 60/60 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:43:21 disk 5153 MB boş — başlıyor ci-e2e-senaryo-223
+16:44:45 ci-e2e-senaryo-223 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-223: GEÇTİ · çıkış 0 · 29/29 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:44:45 disk 5149 MB boş — başlıyor ci-e2e-senaryo-224
+16:45:59 ci-e2e-senaryo-224 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-224: GEÇTİ · çıkış 0 · 69/69 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:45:59 disk 5141 MB boş — başlıyor ci-e2e-senaryo-225
+16:46:30 ci-e2e-senaryo-225 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-225: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:46:30 disk 5139 MB boş — başlıyor ci-e2e-senaryo-225-uyari
+16:48:45 ci-e2e-senaryo-225-uyari cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-225-uyari: GEÇTİ · çıkış 0 · 36/36 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:48:45 disk 5137 MB boş — başlıyor ci-e2e-senaryo-226
+16:48:58 ci-e2e-senaryo-226 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-226: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:48:58 disk 5134 MB boş — başlıyor ci-e2e-senaryo-iz1-sayfa
+16:49:20 ci-e2e-senaryo-iz1-sayfa cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-iz1-sayfa: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:49:20 disk 5125 MB boş — başlıyor ci-e2e-senaryo-iz1-kasa-acilis
+16:49:38 ci-e2e-senaryo-iz1-kasa-acilis cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-iz1-kasa-acilis: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:49:38 disk 5131 MB boş — başlıyor ci-e2e-senaryo-banka-210
+16:54:36 ci-e2e-senaryo-banka-210 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-banka-210: GEÇTİ · çıkış 0 · 424/424 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:54:36 disk 5104 MB boş — başlıyor ci-e2e-senaryo-banka-210b
+16:56:11 ci-e2e-senaryo-banka-210b cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-banka-210b: GEÇTİ · çıkış 0 · 90/90 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:56:11 disk 5099 MB boş — başlıyor ci-e2e-senaryo-banka-210-temel
+16:57:16 ci-e2e-senaryo-banka-210-temel cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-banka-210-temel: GEÇTİ · çıkış 0 · 80/80 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:57:16 disk 5094 MB boş — başlıyor ci-e2e-senaryo-banka-210-eski-satir
+16:57:42 ci-e2e-senaryo-banka-210-eski-satir cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-banka-210-eski-satir: GEÇTİ · çıkış 0 · 29/29 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:57:42 disk 5092 MB boş — başlıyor ci-e2e-senaryo-banka-220
+16:59:01 ci-e2e-senaryo-banka-220 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-banka-220: GEÇTİ · çıkış 0 · 76/76 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+16:59:01 disk 5086 MB boş — başlıyor ci-e2e-senaryo-pos-220
+17:00:52 ci-e2e-senaryo-pos-220 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-pos-220: GEÇTİ · çıkış 0 · 113/113 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:00:52 disk 5081 MB boş — başlıyor ci-e2e-senaryo-tahsile-ver-220
+17:02:12 ci-e2e-senaryo-tahsile-ver-220 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-tahsile-ver-220: GEÇTİ · çıkış 0 · 140/140 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:02:12 disk 5078 MB boş — başlıyor ci-e2e-senaryo-k8-230
+17:02:25 ci-e2e-senaryo-k8-230 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-k8-230: GEÇTİ · çıkış 0 · 17/17 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:02:25 disk 5078 MB boş — başlıyor ci-e2e-senaryo-iz32-230
+17:02:57 ci-e2e-senaryo-iz32-230 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-iz32-230: GEÇTİ · çıkış 0 · 41/41 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:02:57 disk 5077 MB boş — başlıyor ci-e2e-senaryo-supheli-230
+17:03:37 ci-e2e-senaryo-supheli-230 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-supheli-230: GEÇTİ · çıkış 0 · 67/67 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:03:37 disk 5077 MB boş — başlıyor ci-e2e-senaryo-iz5-230
+17:04:14 ci-e2e-senaryo-iz5-230 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-iz5-230: GEÇTİ · çıkış 0 · 44/44 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:04:14 disk 5075 MB boş — başlıyor ci-e2e-senaryo-entegrator-240
+17:05:30 ci-e2e-senaryo-entegrator-240 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-entegrator-240: GEÇTİ · çıkış 0 · 81/81 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:05:30 disk 5075 MB boş — başlıyor ci-e2e-senaryo-ebelge-242
+17:06:19 ci-e2e-senaryo-ebelge-242 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-ebelge-242: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:06:19 disk 5074 MB boş — başlıyor ci-e2e-senaryo-ebelge-243
+17:06:39 ci-e2e-senaryo-ebelge-243 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-ebelge-243: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:06:39 disk 5074 MB boş — başlıyor ci-e2e-senaryo-form-izolasyon-243
+17:10:32 ci-e2e-senaryo-form-izolasyon-243 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-form-izolasyon-243: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:10:32 disk 5070 MB boş — başlıyor ci-e2e-senaryo-fatura-243
+17:11:40 ci-e2e-senaryo-fatura-243 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-fatura-243: GEÇTİ · çıkış 0 · 61/61 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:11:40 disk 5045 MB boş — başlıyor ci-e2e-senaryo-cari-243
+17:12:35 ci-e2e-senaryo-cari-243 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-cari-243: GEÇTİ · çıkış 0 · 53/53 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:12:36 disk 5069 MB boş — başlıyor ci-e2e-senaryo-personel-244
+17:13:21 ci-e2e-senaryo-personel-244 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-personel-244: GEÇTİ · çıkış 0 · 84/84 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:13:21 disk 5059 MB boş — başlıyor ci-e2e-senaryo-portal-244
+17:13:35 ci-e2e-senaryo-portal-244 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-portal-244: GEÇTİ · çıkış 0 · 32/32 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:13:35 disk 5061 MB boş — başlıyor ci-e2e-senaryo-kayit-tahsilat-244
+17:13:56 ci-e2e-senaryo-kayit-tahsilat-244 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-kayit-tahsilat-244: GEÇTİ · çıkış 0 · 47/47 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:13:56 disk 5061 MB boş — başlıyor ci-e2e-senaryo-cari-vade-245
+17:14:24 ci-e2e-senaryo-cari-vade-245 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-cari-vade-245: GEÇTİ · çıkış 0 · 39/39 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:14:24 disk 5061 MB boş — başlıyor ci-e2e-senaryo-maliyet-246
+17:15:27 ci-e2e-senaryo-maliyet-246 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-maliyet-246: GEÇTİ · çıkış 0 · 89/89 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:15:27 disk 5058 MB boş — başlıyor ci-e2e-senaryo-mobil-247
+17:15:45 ci-e2e-senaryo-mobil-247 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-mobil-247: GEÇTİ · çıkış 0 · 77/77 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:15:45 disk 5056 MB boş — başlıyor ci-e2e-senaryo-mobil-eslesme-247
+17:15:59 ci-e2e-senaryo-mobil-eslesme-247 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-mobil-eslesme-247: GEÇTİ · çıkış 0 · 38/38 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:15:59 disk 5054 MB boş — başlıyor ci-e2e-senaryo-mobil-ozet-247
+17:16:14 ci-e2e-senaryo-mobil-ozet-247 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-mobil-ozet-247: GEÇTİ · çıkış 0 · 34/34 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:16:14 disk 5053 MB boş — başlıyor ci-e2e-senaryo-mobil-yazma-247
+17:16:34 ci-e2e-senaryo-mobil-yazma-247 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-mobil-yazma-247: GEÇTİ · çıkış 0 · 74/74 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:16:34 disk 5052 MB boş — başlıyor ci-e2e-senaryo-mobil-tunel-247
+17:16:54 ci-e2e-senaryo-mobil-tunel-247 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-mobil-tunel-247: GEÇTİ · çıkış 0 · 15/15 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:16:54 disk 5051 MB boş — başlıyor ci-e2e-senaryo-kayit-bag-31e
+17:17:48 ci-e2e-senaryo-kayit-bag-31e cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-kayit-bag-31e: GEÇTİ · çıkış 0 · 43/43 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:17:48 disk 5048 MB boş — başlıyor ci-e2e-senaryo-pil-karti-245
+17:18:26 ci-e2e-senaryo-pil-karti-245 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-pil-karti-245: GEÇTİ · çıkış 0 · 85/85 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:18:26 disk 5048 MB boş — başlıyor ci-e2e-senaryo-serit-sira-245
+17:18:32 ci-e2e-senaryo-serit-sira-245 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-serit-sira-245: GEÇTİ · çıkış 0 · 7/7 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:18:32 disk 5048 MB boş — başlıyor ci-e2e-senaryo-ekstre-ayrinti-245
+17:18:43 ci-e2e-senaryo-ekstre-ayrinti-245 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-ekstre-ayrinti-245: GEÇTİ · çıkış 0 · 37/37 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:18:43 disk 5047 MB boş — başlıyor ci-e2e-senaryo-ekstre-ayrinti-247
+17:18:57 ci-e2e-senaryo-ekstre-ayrinti-247 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-ekstre-ayrinti-247: GEÇTİ · çıkış 0 · 34/34 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:18:57 disk 5045 MB boş — başlıyor ci-e2e-senaryo-iade-246
+17:19:09 ci-e2e-senaryo-iade-246 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-iade-246: GEÇTİ · çıkış 0 · 26/26 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:19:09 disk 5045 MB boş — başlıyor ci-e2e-senaryo-netten-brute-244
+17:19:44 ci-e2e-senaryo-netten-brute-244 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-netten-brute-244: GEÇTİ · çıkış 0 · 43/43 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:19:44 disk 5045 MB boş — başlıyor ci-e2e-senaryo-ux18-244
+17:20:00 ci-e2e-senaryo-ux18-244 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-ux18-244: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:20:00 disk 5044 MB boş — başlıyor ci-e2e-senaryo-banka-rapor-243
+17:20:45 ci-e2e-senaryo-banka-rapor-243 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-banka-rapor-243: GEÇTİ · çıkış 0 · 38/38 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:20:45 disk 5042 MB boş — başlıyor ci-e2e-senaryo-defter-243
+17:21:11 ci-e2e-senaryo-defter-243 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-senaryo-defter-243: GEÇTİ · çıkış 0 · 24/24 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:21:11 disk 5039 MB boş — başlıyor ci-e2e-banka-210-saat
+17:21:17 ci-e2e-banka-210-saat cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-banka-210-saat: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:21:17 disk 5038 MB boş — başlıyor ci-e2e-banka-210-kart-onbellek
+17:22:33 ci-e2e-banka-210-kart-onbellek cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-banka-210-kart-onbellek: GEÇTİ · çıkış 0 · 49/49 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:22:33 disk 5038 MB boş — başlıyor ci-e2e-banka-210-daha-fazla
+17:23:51 ci-e2e-banka-210-daha-fazla cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-banka-210-daha-fazla: GEÇTİ · çıkış 0 · 31/31 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:23:51 disk 5038 MB boş — başlıyor ci-e2e-banka-230-hareket-yaris
+17:24:27 ci-e2e-banka-230-hareket-yaris cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-banka-230-hareket-yaris: GEÇTİ · çıkış 0 · 37/37 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:24:27 disk 5038 MB boş — başlıyor ci-e2e-acilis-yanit-yaris
+17:25:20 ci-e2e-acilis-yanit-yaris cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-acilis-yanit-yaris: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:25:20 disk 5038 MB boş — başlıyor ci-e2e-banka-210-ekran-aciklama
+17:25:31 ci-e2e-banka-210-ekran-aciklama cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-banka-210-ekran-aciklama: GEÇTİ · çıkış 0 · 11/11 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:25:31 disk 5038 MB boş — başlıyor ci-e2e-guncelleme-gercek
+17:29:32 ci-e2e-guncelleme-gercek cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-guncelleme-gercek: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:29:32 disk 5038 MB boş — başlıyor ci-e2e-hiz-243-arka-plan
+17:29:46 ci-e2e-hiz-243-arka-plan cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-hiz-243-arka-plan: GEÇTİ · çıkış 0 · 13/13 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:29:46 disk 5038 MB boş — başlıyor ci-e2e-fatura-243-daha-fazla-yaris
+17:30:37 ci-e2e-fatura-243-daha-fazla-yaris cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-fatura-243-daha-fazla-yaris: GEÇTİ · çıkış 0 · 9/9 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:30:37 disk 5038 MB boş — başlıyor ci-e2e-fatura-243-duzen-kaymasi
+17:30:51 ci-e2e-fatura-243-duzen-kaymasi cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-fatura-243-duzen-kaymasi: GEÇTİ · çıkış 0 · 7/7 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:30:51 disk 5038 MB boş — başlıyor ci-e2e-gg243-arka-plan-yazma
+17:31:21 ci-e2e-gg243-arka-plan-yazma cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg243-arka-plan-yazma: GEÇTİ · çıkış 0 · 13/13 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:31:21 disk 5038 MB boş — başlıyor ci-e2e-gg243-odak-dugme
+17:31:29 ci-e2e-gg243-odak-dugme cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg243-odak-dugme: GEÇTİ · çıkış 0 · 11/11 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:31:29 disk 5038 MB boş — başlıyor ci-e2e-gg243-kopyala
+17:31:36 ci-e2e-gg243-kopyala cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg243-kopyala: GEÇTİ · çıkış 0 · 28/28 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:31:36 disk 5038 MB boş — başlıyor ci-e2e-gg243-odak-kalem-sil
+17:31:43 ci-e2e-gg243-odak-kalem-sil cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg243-odak-kalem-sil: GEÇTİ · çıkış 0 · 16/16 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:31:43 disk 5038 MB boş — başlıyor ci-e2e-gg243-tumunu-gonder
+17:32:39 ci-e2e-gg243-tumunu-gonder cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg243-tumunu-gonder: GEÇTİ · çıkış 0 · 17/17 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:32:39 disk 5038 MB boş — başlıyor ci-e2e-gg244-secilenleri-gonder
+17:32:58 ci-e2e-gg244-secilenleri-gonder cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg244-secilenleri-gonder: GEÇTİ · çıkış 0 · 45/45 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:32:58 disk 5038 MB boş — başlıyor ci-e2e-gg244-esmm-gonder
+17:34:12 ci-e2e-gg244-esmm-gonder cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg244-esmm-gonder: GEÇTİ · çıkış 0 · 66/66 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:34:12 disk 5038 MB boş — başlıyor ci-e2e-gg244-numara-tarih-onay
+17:35:06 ci-e2e-gg244-numara-tarih-onay cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg244-numara-tarih-onay: GEÇTİ · çıkış 0 · 40/40 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:35:06 disk 5038 MB boş — başlıyor ci-e2e-gg243-odak-silme-diger
+17:35:36 ci-e2e-gg243-odak-silme-diger cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg243-odak-silme-diger: GEÇTİ · çıkış 0 · 61/61 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:35:36 disk 5038 MB boş — başlıyor ci-e2e-gg243-banka-kart-aciklama
+17:35:42 ci-e2e-gg243-banka-kart-aciklama cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg243-banka-kart-aciklama: GEÇTİ · çıkış 0 · 11/11 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:35:42 disk 5038 MB boş — başlıyor ci-e2e-gg243-dar2-ekran
+17:35:52 ci-e2e-gg243-dar2-ekran cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-gg243-dar2-ekran: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:35:52 disk 5038 MB boş — başlıyor ci-e2e-uiux-a-243
+17:36:33 ci-e2e-uiux-a-243 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-uiux-a-243: GEÇTİ · çıkış 0 · 51/51 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:36:33 disk 5038 MB boş — başlıyor ci-e2e-uiux-b-243
+17:37:20 ci-e2e-uiux-b-243 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-uiux-b-243: GEÇTİ · çıkış 0 · 58/58 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:37:20 disk 5038 MB boş — başlıyor ci-e2e-uiux-244-ux9-ux10
+17:38:28 ci-e2e-uiux-244-ux9-ux10 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-uiux-244-ux9-ux10: GEÇTİ · çıkış 0 · 74/74 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:38:28 disk 5038 MB boş — başlıyor ci-e2e-uiux-ui11-244
+17:38:40 ci-e2e-uiux-ui11-244 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-uiux-ui11-244: GEÇTİ · çıkış 0 · 153/153 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:38:40 disk 5036 MB boş — başlıyor ci-e2e-sirket-canli-yetki-244
+17:38:43 ci-e2e-sirket-canli-yetki-244 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-sirket-canli-yetki-244: GEÇTİ · çıkış 0 · 8/8 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:38:43 disk 5036 MB boş — başlıyor ci-e2e-baslarken-244
+17:39:08 ci-e2e-baslarken-244 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/ci-e2e-baslarken-244: GEÇTİ · çıkış 0 · 60/60 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+BİTTİ (ci-e2e): 77 koşu
+17:39:23 disk 5036 MB boş — başlıyor cidisi-senaryo-210
+17:40:04 cidisi-senaryo-210 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-210: GEÇTİ · çıkış 0 · 57/57 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:40:04 disk 4948 MB boş — başlıyor cidisi-senaryo-211
+17:41:46 cidisi-senaryo-211 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-211: GEÇTİ · çıkış 0 · 59/59 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:41:46 disk 5024 MB boş — başlıyor cidisi-senaryo-212
+17:42:18 cidisi-senaryo-212 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-212: GEÇTİ · çıkış 0 · 24/24 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:42:18 disk 5027 MB boş — başlıyor cidisi-senaryo-213
+17:43:18 cidisi-senaryo-213 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-213: GEÇTİ · çıkış 0 · 64/64 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:43:18 disk 5023 MB boş — başlıyor cidisi-senaryo-214
+17:44:19 cidisi-senaryo-214 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-214: GEÇTİ · çıkış 0 · 48/48 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:44:19 disk 5021 MB boş — başlıyor cidisi-senaryo-215
+17:45:52 cidisi-senaryo-215 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-215: GEÇTİ · çıkış 0 · 73/73 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:45:52 disk 5014 MB boş — başlıyor cidisi-senaryo-216
+17:47:26 cidisi-senaryo-216 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-216: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:47:26 disk 5012 MB boş — başlıyor cidisi-senaryo-217
+17:48:46 cidisi-senaryo-217 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-217: GEÇTİ · çıkış 0 · 65/65 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:48:46 disk 5005 MB boş — başlıyor cidisi-senaryo-218
+17:50:29 cidisi-senaryo-218 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-218: GEÇTİ · çıkış 0 · 50/50 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:50:29 disk 4979 MB boş — başlıyor cidisi-senaryo-rapor
+17:51:08 cidisi-senaryo-rapor cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-rapor: GEÇTİ · çıkış 0 · 87/87 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:51:08 disk 5002 MB boş — başlıyor cidisi-senaryo-taslak
+17:51:24 cidisi-senaryo-taslak cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-taslak: GEÇTİ · çıkış 0 · 31/31 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:51:24 disk 5000 MB boş — başlıyor cidisi-senaryo-whatsapp
+17:54:27 cidisi-senaryo-whatsapp cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo-whatsapp: GEÇTİ · çıkış 0 · 45/45 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:54:27 disk 4994 MB boş — başlıyor cidisi-senaryo
+17:54:55 cidisi-senaryo cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-senaryo: GEÇTİ · çıkış 0 · 30/30 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:54:55 disk 4995 MB boş — başlıyor cidisi-ui-ux-217
+17:58:20 cidisi-ui-ux-217 cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/cidisi-ui-ux-217: GEÇTİ · çıkış 0 · 407/407 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+17:58:20 disk 4980 MB boş — başlıyor dis-kahin-maliyet-tam
+18:06:17 dis-kahin-maliyet-tam cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/dis-kahin-maliyet-tam: GEÇTİ · çıkış 0 · 43758/43758 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+18:06:17 disk 4980 MB boş — başlıyor dis-kahin-mobil-erisim
+18:07:58 dis-kahin-mobil-erisim cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/dis-kahin-mobil-erisim: GEÇTİ · çıkış 0 · 36/36 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+18:07:58 disk 4980 MB boş — başlıyor dis-kahin-mobil-yazma-tam
+18:11:30 dis-kahin-mobil-yazma-tam cikis=1 hüküm=BAŞARISIZ [kanit] 247-tamkapi/dis-kahin-mobil-yazma-tam: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 52/54 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+18:11:30 disk 4979 MB boş — başlıyor dis-kahin-mobil-yazma-tam-tekrar
+18:15:12 dis-kahin-mobil-yazma-tam-tekrar cikis=1 hüküm=BAŞARISIZ [kanit] 247-tamkapi/dis-kahin-mobil-yazma-tam-tekrar: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 52/54 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v
+18:15:12 disk 4978 MB boş — başlıyor dis-kahin-sayac-surucu
+18:15:12 dis-kahin-sayac-surucu cikis=1 hüküm=BELİRSİZ [kanit] 247-tamkapi/dis-kahin-sayac-surucu: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+18:15:12 disk 4978 MB boş — başlıyor dis-kahin-sayac-surucu-tekrar
+18:15:12 dis-kahin-sayac-surucu-tekrar cikis=1 hüküm=BELİRSİZ [kanit] 247-tamkapi/dis-kahin-sayac-surucu-tekrar: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+18:15:12 disk 4978 MB boş — başlıyor dis-kahin-sayac-karsilastir
+18:15:12 dis-kahin-sayac-karsilastir cikis=1 hüküm=BAŞARISIZ [kanit] 247-tamkapi/dis-kahin-sayac-karsilastir: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 47/50 geçti, 3 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22
+18:15:12 disk 4978 MB boş — başlıyor dis-kahin-sayac-karsilastir-tekrar
+18:15:13 dis-kahin-sayac-karsilastir-tekrar cikis=1 hüküm=BAŞARISIZ [kanit] 247-tamkapi/dis-kahin-sayac-karsilastir-tekrar: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 47/50 geçti, 3 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node
+18:15:13 disk 4978 MB boş — başlıyor dis-kahin-sayac-kendi
+18:16:08 dis-kahin-sayac-kendi cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/dis-kahin-sayac-kendi: GEÇTİ · çıkış 0 · 136/136 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+18:16:08 disk 4977 MB boş — başlıyor dis-kahin-erisim-kendi
+18:17:48 dis-kahin-erisim-kendi cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/dis-kahin-erisim-kendi: GEÇTİ · çıkış 0 · 123/123 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+18:17:48 disk 4977 MB boş — başlıyor dis-kahin-yazma-kendi
+18:23:42 dis-kahin-yazma-kendi cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/dis-kahin-yazma-kendi: GEÇTİ · çıkış 0 · 152/152 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+18:23:42 disk 4977 MB boş — başlıyor dis-kahin-maliyet-kendi
+18:24:36 dis-kahin-maliyet-kendi cikis=0 hüküm=GEÇTİ [kanit] 247-tamkapi/dis-kahin-maliyet-kendi: GEÇTİ · çıkış 0 · 119/119 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fbeb813 +1 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
+BİTTİ (cidisi,kahin-dis): 23 koşu
+  KIRMIZI GÖRÜLDÜ: dis-kahin-mobil-yazma-tam → 2× kırmızı
+  KIRMIZI GÖRÜLDÜ: dis-kahin-sayac-surucu → 2× kırmızı
+  KIRMIZI GÖRÜLDÜ: dis-kahin-sayac-karsilastir → 2× kırmızı
