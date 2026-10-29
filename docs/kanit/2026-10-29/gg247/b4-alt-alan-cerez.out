@@ -1,0 +1,70 @@
+TAP version 13
+# (node:31060) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# saldırgan ofis sayfası: 200 set-cookie: ["hof_device=dev-00000000-0000-0000-0000-000000000000.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA; Domain=destekofis.test; Path=/api/mobil/; Max-Age=34560000; Secure; SameSite=None"]
+# Subtest: B4 alt alanlar arası çerez
+    # Subtest: kapıcı başka ofisin kökeninden gelen Domain=<ana alan> çerezini olduğu gibi geçirir
+    not ok 1 - kapıcı başka ofisin kökeninden gelen Domain=<ana alan> çerezini olduğu gibi geçirir
+      ---
+      duration_ms: 20.914646
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gg247-ana-tekrar/b4-alt-alan-cerez.test.mjs:36:3'
+      failureType: 'testCodeFailure'
+      error: 'kapıcı Domain= öznitelikli çerezi geçirmemeli'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gg247-ana-tekrar/b4-alt-alan-cerez.test.mjs:39:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+# atılan çerez sonda → 401 {"ok":false,"error":"Uzak bağlantı kapıcı üzerinden gelmedi; istek reddedildi.","code":"remote-kapi"}
+# atılan çerez başta → 401 {"ok":false,"code":"kapi-cihaz","error":"Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil C
+    # Subtest: kurbanın isteğinde ikinci hof_device çerezi → kurbanın kendi ofisine erişimi kesiliyor
+    not ok 2 - kurbanın isteğinde ikinci hof_device çerezi → kurbanın kendi ofisine erişimi kesiliyor
+      ---
+      duration_ms: 194.719972
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gg247-ana-tekrar/b4-alt-alan-cerez.test.mjs:42:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kurbanın kendi oturumu bozuldu (sonda): {"ok":false,"error":"Uzak bağlantı kapıcı üzerinden gelmedi; istek reddedildi.","code":"remote-kapi"}
+        
+        401 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 401
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gg247-ana-tekrar/b4-alt-alan-cerez.test.mjs:53:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - B4 alt alanlar arası çerez
+  ---
+  duration_ms: 722.448286
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gg247-ana-tekrar/b4-alt-alan-cerez.test.mjs:14:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1140.167761
