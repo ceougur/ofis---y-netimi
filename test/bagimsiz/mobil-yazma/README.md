@@ -20,7 +20,8 @@ yarısı, ay sonu, yıl dönümü, dönem kilidi), eşzamanlılık.
 - `CLAUDE.md`: anayasa, KANIT KURALI, dersler 5, 7, 10, 13, 17, 22, 31, 32, 40, 43; Kalıcı ürün kararları (Kasa yalnız nakit; tahsilatta POS,
   ödemede Kredi Kartı; eksi stok "program sorar"; fatura kapama yöne göre, Kapatılacak Fatura; çek/senet); Açık iş MOBİL kararları
   (26.10.2026 ×3), FIFO kararı (24.10.2026 (b)).
-- `docs/erp/OTURUM-DEVIR-TESLIM-2.4.7.md` §3.1; `docs/2.4.7-IS-LISTESI.md` ("Nasıl bozulur?", "Mobil dalga 2 riskleri").
+- `docs/erp/OTURUM-DEVIR-TESLIM-2.4.7.md` §3.1; `docs/2.4.7-IS-LISTESI.md` ("Nasıl bozulur?", "Mobil dalga 2 riskleri", "KARAR — K8-AVANS" — kullanıcı,
+  29.10.2026 "A ÖNERİN UYGUN"; aşağıda "KARAR K8-AVANS").
 - `docs/PRO-UZAKTAN-GORUNTULEME.md` (mimari, "Yetki ve cihaz eşleme", "Yeniden eşleme gereken durumlar", lisans; Pro kilidi kısmı 26.10 kararıyla
   geçersiz — mimari geçerli).
 - `docs/BANKA-MODULU-PLAN.md` §2.5, §3.3, §3.5, §3.9, §3.10 (istek kimliği, Benzer İşlem, K8), §9; `test/bagimsiz/SENARYO-DILI.md` §3–§5
@@ -42,9 +43,9 @@ birleşimin (2⁸ = 256) beklenenini hesaplar; kullanıcı seçene dek program *
 | Dosya | İçerik |
 |---|---|
 | `kahin.py` | Model (yalnız standart kütüphane; cari kâhinini içe aktarır) + komut satırı (`hesapla`, `karsilastir`, `--mutasyonlar`) |
-| `senaryolar.py` | 49 elle uç senaryo (beklenenler ELLE; 18'i 9 masaüstü/mobil eşdeğerlik çifti) + 4 göreli çift + tohum 1–3 rastgele üretici ve onun BAĞIMSIZ akış modeli (`Akis`); `kabul.json`'u yazar |
-| `kabul.json` | 52 senaryo (49 elle, 3 rastgele), 8.138 adım; elle senaryolarda ilgili parametrelerin her birleşimi, rastgelelerde 10 birleşim (öneri tam, öbürleri fark olarak); göreli çiftler |
-| `kahin_test.py` | Kâhinin kendi testi (A–E, G, H) + 48 mutasyon (F); TAP + `# tests/pass/fail` |
+| `senaryolar.py` | 51 elle uç senaryo (beklenenler ELLE; 20'si 10 masaüstü/mobil eşdeğerlik çifti) + 4 göreli çift + tohum 1–3 rastgele üretici ve onun BAĞIMSIZ akış modeli (`Akis`); `kabul.json`'u yazar |
+| `kabul.json` | 54 senaryo (51 elle, 3 rastgele), 8.160 adım; elle senaryolarda ilgili parametrelerin her birleşimi, rastgelelerde 10 birleşim (öneri tam, öbürleri fark olarak); göreli çiftler |
+| `kahin_test.py` | Kâhinin kendi testi (A–E, G, H) + 53 mutasyon (F); TAP + `# tests/pass/fail` |
 | `kanit/<gün>/` | `tools/kanit.mjs kos` kayıtları (çıkış kodu, sayılar, ham çıktı, commit) ve `kirmizi/` bilerek kırmızı kanıt |
 
 ## Nasıl koşulur
@@ -84,7 +85,7 @@ Python 3.11+ (geliştirmede 3.13), hep `-I`. Modüller açık yolla yüklenir; `
 | K6 | Benzer İşlem yalnız hesaba bağlı (havale / POS / kart, hesabı atanmış) satırda; anahtar yön, yol, hesap, cari, tutar, gün, hedef; kanal anahtara girmez (masaüstü + mobil aynı) | PLAN §3.10/2 |
 | K7 | Hesap seçimi: verilen hesap uygun değil → 400 `bank-account-invalid`; birden çok uygun hesap + hesap yok → 400 `bank-account-required`; tek uygun → kendiliğinden; hiç yok → 102.00 / 108.00 | PLAN §3.5 |
 | K8 | Kasa eksi (nakit ödeme): min(B(gün), B(tüm)) < 0 → Uyar 409 `cash-negative` ("Yine de Kaydet" geçer), Engelle 409 `cash-blocked` | PLAN §3.9; SENARYO-DILI §5.3 |
-| K9 | Taksit kartı: kalan 0 → 409 `plan-paid`; kalanı aşan → 409 `plan-overpay`; Fazlasını Avans Yaz yalnız `plans.manage` (personel 403 `plan-overpay-permission`); kalan BEGIN IMMEDIATE içinde okunur (eşzamanlıda biri reddedilir) | PLAN §3.10/3, §9.2/12 |
+| K9 | Taksit kartı: kalanı aşan → 409 `plan-overpay`; Fazlasını Avans Yaz yalnız `plans.manage` (personel 403 `plan-overpay-permission`); **ödenmiş (kalan 0) karta yeni tahsilat: onaysız → 409 `plan-paid`; `plans.manage` yetkilisi "Fazlasını Avans Yaz" onaylarsa yazılır, tutarın tamamı cariye avans (cari alacak), Kasa / banka girişi normal; yetkisiz → ret** (kod: "KARAR K8-AVANS"); kartın **Ödenen'i avansı da içerir**; masaüstü ve mobil aynı; kalan BEGIN IMMEDIATE içinde okunur (eşzamanlıda biri reddedilir) | PLAN §3.10/3, §9.2/12; **KULLANICI KARAR K8-AVANS** (29.10.2026) |
 | K10 | Rol yetkisi mobilde de aynı: tahsilat (nakit, havale, POS) ve taksit tahsilatı herkese; havale / kart ödemesi personelde 403; planın yazmadığı hücreler (muhasebe nakit ödeme, personel stok, muhasebe çek, muhasebe Fazlasını Avans) kâhin hesaplamaz → **göreli çift**: program iki kanalda AYNI sonucu vermeli (mobil yetki atlatma yolu değildir) | PLAN §2.5, §9; SENARYO-DILI §5.5 |
 | K11 | Şirket yetkisi kullanıcı × şirket; yönetici hepsi; işaretsiz yalnız 001; değişiklik mobilde HEMEN uygulanır | MEVCUT ÜRÜN |
 | K12 | Başka şirketin cari / hesap kimliği isteğin şirketinde çözülemez → hiçbir şirkete yazılmaz (403/404) | KULLANICI "Şirket = ayrı veri dosyası" + YAYGIN |
@@ -112,8 +113,9 @@ Python 3.11+ (geliştirmede 3.13), hep `-I`. Modüller açık yolla yüklenir; `
   tarihi" kipinde formun günü.
 - **V9** Stok miktarı tamsayı (Adet); ondalık miktar bu dil sürümünde yok. Eksi stok denetimi son duruma (bütün hareketler) göredir; geçmiş tarihli stok
   hareketinin o güne göre eksisi denetlenmez.
-- **V10** Kart ödemesinin fazlası (Fazlasını Avans Yaz) kartta `fazla`, ödenen kart tutarında kalır; carinin bakiyesi tahsilatın tamamı kadar düşer (PLAN §3.10/3
-  "fazlası kartta extra, caride alacak").
+- **V10** Kart ödemesinin fazlası (Fazlasını Avans Yaz) kartta `fazla` (avans); carinin bakiyesi tahsilatın tamamı kadar düşer (PLAN §3.10/3 "fazlası kartta extra,
+  caride alacak"). Kartın `odenen`'i avansı DA içerir (KARAR K8-AVANS — eski "ödenen kart tutarında kalır" okumasının yerine); taksit başına `taksit<i>:odenen` taksit
+  tutarını aşmaz (fazla hiçbir taksite yazılmaz — eski okuma, karar söylemiyor; program ayrışırsa İNCELE).
 - **V11** POS hesabı komisyonsuz ve valörsüz kurulur (sürücü öyle kurar): `pos:<hesap>` = POS tahsilatlarının brüt toplamı.
 - **V12** Yedekten geri yükleme şirket verisini istek kimlikleriyle **aynı anlık görüntüye** döndürür: yedekten sonra yazılmış (yanıtı kaybolmuş) istek geri
   yüklemeyle kaybolur ve aynı kimlikle yeniden gönderilince YENİDEN yazılır (E25). "Zaten kaydedildi" deyip kayıt olmaması para kaybıdır (mutant 32). YAYGIN.
@@ -135,6 +137,32 @@ Python 3.11+ (geliştirmede 3.13), hep `-I`. Modüller açık yolla yüklenir; `
 
 Kâhinin karar vermediği ama çatallanan nokta (soru değil, ÇATAL): **K5** — 30 günden eski kimlik budanmış mıdır (budama zamanı planda yok)? Kâhin iki dünyayı
 da kabul eder (E24); S7 = `telefon_24s` seçilirse bu durum oluşmaz.
+
+## KARAR K8-AVANS (ürün sahibi kararı; ders 40, 43 — kâhin–program farkından SONRA kullanıcıya soruldu, kullanıcı karar verdi)
+
+**Kaynak:** `docs/2.4.7-IS-LISTESI.md` "KARAR — K8-AVANS (ders 43; kullanıcı, 29.10.2026: 'A ÖNERİN UYGUN')": "Ödenmiş (kalan 0) taksit kartına yeni tahsilat gelince
+program BUGÜNKÜ GİBİ: `plans.manage` yetkilisine 'Fazlasını Avans Yaz' seçeneği; fazla cariye avans. Masaüstü ve mobil aynı. Kart tutarları (Ödenen avansı da içerir)
+bugünkü gibi kalır." Kâhin bu karara göre KÂHİN TARAFINDA güncellendi (kodu görmeyen ajan; programın davranışına bakılmadı, yalnız karar metni).
+
+**Değişen okuma:** önceki kâhin (a) ödenmiş karta her yeni tahsilatı — Fazlasını Avans Yaz onaylı olsa da — 409 `plan-paid` ile reddediyordu (PLAN §3.10/3 "Kalan 0 ise
+409 plan-paid" harfiyen), (b) kartın `odenen`'ini kart toplamıyla sınırlıyordu (avansı içermez). İkisi de bu kararla değişti:
+
+| Durum (ödenmiş, kalan 0 kart) | Beklenen | Etiket |
+|---|---|---|
+| Fazlasını Avans Yaz yok (onay vermeyen; telefon "geçemez" kipinde bayrağı göndermeyen) | 409 `plan-paid`, kayıt yok | KULLANICI (K8-AVANS) + PLAN §3.10/3 |
+| Fazlasını Avans Yaz + `plans.manage` (yönetici) | yazılır; tutarın tamamı avans: cari bakiye tutar kadar düşer (alacak), Kasa (nakit) / banka (havale) / POS normal, kart `fazla` artar | KULLANICI (K8-AVANS) |
+| Fazlasını Avans Yaz + yetkisiz (personel) | ret, kayıt yok; kod **403 `plan-overpay-permission` ya da 409 `plan-paid`** (liste — ikisi de kabul) | KULLANICI (ret) + kod KARARDA YOK |
+| Fazlasını Avans Yaz + muhasebe | planda yazılı değil (B) — kâhin hesaplamaz (G4 göreli çiftiyle aynı sınıf) | PLAN susuyor |
+| Kart değerleri (avanslı her kart — ödenmiş karttaki avans da, kalanı aşan tahsilatın fazlası da) | `odenen` = bütün kart tahsilatları (avans DAHİL); `fazla` = avans; `kalan` **0 ya da toplam − Ödenen (eksi)** (liste) | KULLANICI (Ödenen) + Kalan KARARDA YOK |
+
+**Kararın kapsamadığı (kâhin SEÇMEDİ, ikisini de kabul eder; kullanıcıya raporlanır):** (1) avanslı kartın **Kalan**'ı — karar yalnız "Ödenen avansı da içerir" der;
+Kalan 0'da mı durur (kalan eksiye inmez) yoksa toplam − Ödenen (eksi) mi gösterilir yazılı değil; para etkisi yok (cari bakiye, Kasa, banka, avans aynı). (2) Yetkisiz
+kullanıcının (Fazlasını Avans Yaz bayrağıyla) ödenmiş karta tahsilatının **ret kodu** — karar "ret" der, kodu söylemez; kayıt açılmadığı sürece iki kod da kabul.
+(3) Taksit başına dağılım (`taksit<i>:odenen`) — eski okuma sürer (taksit tutarını aşmaz); karar söylemiyor, program ayrışırsa İNCELE.
+
+**Senaryolar:** E05 (beklenen değişti: Ödenen 1.200 → 1.300, Kalan 0 → [0, −100]); **E41** (yeni eşdeğerlik çifti, beklenenler karar metninden elle); R1–R3 akış
+modeli (`Akis`) aynı kurala getirildi (üretici DEĞİŞMEDİ, adımlar aynı; öneri birleşiminde R1 3, R2 5, R3 3 istek ödenmiş karta avans olarak yazılır — 2'si
+kesintiden sonra "belirsiz / sunucu ok", 2 yeniden gönderim "zaten kaydedildi", 1 yeniden gönderim yazar; R1'de 1 yetkisiz deneme reddedilir). **Mutasyonlar** 49–53.
 
 ## Senaryo dili `destekofis-mobil-yazma/1`
 
@@ -162,11 +190,11 @@ saat ISO (ofsetsiz → TR). Her adımın `id`'si tekil; takma adlar (`cari`, `fa
 ## Çıktı (iki taraf için ortak)
 
 Adım: `adim:<id>:durum` = `ok` · `yineleme` (zaten kaydedildi) · `ret` · `belirsiz` (telefon sonucu görmedi) · `ulasilamadi` (sunucu kapalı) · `atildi`
-(telefon göndermedi, S7); `adim:<id>:http` (ret; sayı, `"4xx"` = 400–499, liste = biri), `adim:<id>:kod` (planın adını verdiği kodlar), `adim:<id>:sunucu`
+(telefon göndermedi, S7); `adim:<id>:http` (ret; sayı, `"4xx"` = 400–499, liste = biri), `adim:<id>:kod` (planın adını verdiği kodlar; liste = biri), `adim:<id>:sunucu`
 (belirsizde sunucunun gerçek sonucu: `yok` / `ok` / `yineleme` / `ret`).
 
 Kontrol `<k>:<şirket>:…`: `cari:<ad>:bakiye` (kuruş; + = cari borçlu), `cari:<ad>:hareketSayisi` (tahsilat/ödeme kaydı; çek/senet ve kart tahsilatı hariç),
-`fatura:<ad>:acik` (satış ve alış), `acilis:<cari>:kalan`, `kart:<ad>:{odenen, fazla, kalan, tahsilatSayisi, taksit<i>:odenen}`, `kasa`, `kasaGun:<gün>` (sıfır
+`fatura:<ad>:acik` (satış ve alış), `acilis:<cari>:kalan`, `kart:<ad>:{odenen (avans dahil — K8-AVANS), fazla (avans), kalan (avanslı kartta liste = biri), tahsilatSayisi, taksit<i>:odenen}`, `kasa`, `kasaGun:<gün>` (sıfır
 olmayan günler), `banka|pos|kartHesap:<hesap>` (işaretli defter bakiyesi: kurumsal kart ödemesi eksi), `hesapsiz:102.00|108.00`, `portfoy`, `evrakSayisi`,
 `stok:<ürün>:{miktar, hareketSayisi}`. Taksit kartlı caride fatura / açılış kalanı yazılmaz (cari kâhini: tanımsız).
 
@@ -193,7 +221,8 @@ Eşzamanlı (`ayniAnda`) adımlar ve K5 çatalı için `alternatifler`: değişe
 ## Senaryolar (kabul.json)
 
 Elle (beklenenler elle; 256 birleşimde model = elle):
-- Eşdeğerlik çiftleri (`-mobil` / `-masaustu`): **E01** nakit FIFO + avans + avansın yeni faturayı kapatması · **E02** havale / POS / hesap seçimi (400 kodları) ·
+- Eşdeğerlik çiftleri (`-mobil` / `-masaustu`): **E41** ödenmiş karta Fazlasını Avans Yaz (KARAR K8-AVANS: yönetici avans — nakit / havale, onaysız ve
+  personel ret) · **E01** nakit FIFO + avans + avansın yeni faturayı kapatması · **E02** havale / POS / hesap seçimi (400 kodları) ·
   **E03** Kapatılacak Fatura, başka carinin / ters yön faturası (S1) · **E04** tedarikçiye nakit / havale / Kredi Kartı + Kapatılacak · **E05** taksit kartı K8, Fazlasını
   Avans (S3, S4) · **E19** stok + eksi stok sorusu (S5, S8) · **E30** Kasa Uyar / Engelle (S4) · **E31** çek / senet (S2) · **E40** müşteriye ödeme = iade geri
   ödemesi (KS8.1; bağlı ödeme K-d) — mobilin açtığı para yolunun cari çekirdekteki komşusu (ders 10).
@@ -225,6 +254,7 @@ aynı kimlik / farklı gövde, Benzer İşlem, Kasa eksi (001 Uyar, 002 Engelle)
 | Başka şirketin cari / hesap kimliği; şirket yok sayılır | E16, E34; D4; mutant 12, 39 |
 | Mobilde para anlamı sapar (FIFO yerine en yeni, Kapatılacak yok sayılır, ödeme yönü ters, iade geri ödemesi, POS / havale / çek Kasa'ya) | E01–E05, E31, E40; D2; mutant 13–17, 36–38 |
 | Eksi stok / Kasa / Benzer İşlem / K8 mobilde atlanır ya da 'geçemez' delinir | E05, E19, E29, E30; mutant 18–23, 40 |
+| Ödenmiş karta avans (KARAR K8-AVANS): onaylı avans reddedilir, yetkisiz avans yazar, avans cariye / Kasa'ya yazılmaz, Ödenen avansı dışlar; mobil ≠ masaüstü | E05, E41, R1–R3; mutant 49–53 |
 | Gece yarısı / ay sonu / yıl dönümü; UTC günü; form tarihi; ileri tarih; dönem kilidi | E21–E23; mutant 24–27, 45 |
 | Eski sürüm verisi (2.4.6) | E27 |
 | Yedekten geri yükleme ve istek kimliği | E25; mutant 32 |
@@ -232,28 +262,31 @@ aynı kimlik / farklı gövde, Benzer İşlem, Kasa eksi (001 Uyar, 002 Engelle)
 | Sil + aynı adla aç; aynı adlı iki kişi | E38, E26 |
 | Rastgele sıra, binlerce olay, 2 şirket (ders 17) | R1–R3, C4; D1, D3–D7 |
 
-## Mutasyonlar (48; `kahin_test.py` F, `kahin.py --mutasyonlar`)
+## Mutasyonlar (53; `kahin_test.py` F, `kahin.py --mutasyonlar`)
 
 Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üreticinin akış beklentisi) yakalanmalıdır; yakalanmayan = eksik senaryo. Liste
 `kahin.py --mutasyonlar`: istek kimliği (1–6, 33, 34, 35, 48), sunucu / cihaz / izin / lisans / şirket (7–12, 39, 41, 42), para yolu (13–17, 36–38, 43), K8 (18–20,
-31, 44, 47), stok (21, 22, 29, 30, 46), Kasa / Benzer İşlem (23, 40), tarih (24–27, 45), rol (28), yedek (32).
+31, 44, 47, K8-AVANS 49–53), stok (21, 22, 29, 30, 46), Kasa / Benzer İşlem (23, 40), tarih (24–27, 45), rol (28), yedek (32).
 
 ## DENENEN
 
-- 49 elle uç senaryoda elle yazılmış beklenen = model, 256 birleşimin HEPSİNDE; 9 eşdeğerlik çiftinde masaüstü (her birleşim) = mobil (masaüstü eşdeğeri birleşim).
+- 51 elle uç senaryoda elle yazılmış beklenen = model, 256 birleşimin HEPSİNDE; 10 eşdeğerlik çiftinde masaüstü (her birleşim) = mobil (masaüstü eşdeğeri birleşim).
 - 3 rastgele senaryoda (≈7.700 adım) ve 5.000 olaylık ek koşuda üreticinin bağımsız akış beklentisi = model (10 / 2 birleşim). İki ayrı FIFO (cari kâhini ↔ `Akis`).
 - Değişmezler: belirlenimcilik; reddedilen / ulaşılamayan / atılan adım silinince sayılar aynı (ders 3); şirket yalıtımı; istek kimliği başına ≤ 1 kayıt; aynı
   tarihli sıranın sonuca etkisizliği (ders 31); Kasa = Σ gün; kayıt sayısı azalmaz; göreli çiftlerin biçimi.
 - 18 hatalı girdi reddedilir, geçerli temel kabul edilir; komut satırı `hesapla` / `karsilastir` (eksik senaryo FARK — ders 4).
-- 48/48 mutasyon modelden bağımsız beklentilerce (elle; gerekirse akış) yakalandı. Cari kâhininin 47 elle senaryosu içe aktarılan modelle koşar ve o kâhinin
+- 53/53 mutasyon modelden bağımsız beklentilerce (elle; gerekirse akış) yakalandı. KARAR K8-AVANS mutasyonları 49–53 elle senaryolarca (E41, E05) yakalanır;
+  ayrıca 49, 51, 52, 53 R1–R3'ün üçünde, 50 R1'de akış beklentisinden de ayrışır (iki ayrı beklenti). Cari kâhininin 47 elle senaryosu içe aktarılan modelle koşar ve o kâhinin
   kendi mutasyon taraması (model tek başına, KARARLAR C10b kipleri) 141/141 yakalar (H2); cari kâhini klasörü değişmedi (A2 + H).
 - Mevcut cari kâhininin program karşılaştırması (`npm run test:kahin-cari`) bu dalda: 7.408/7.408 denetim, 0 fark, 7 bilinen sınır, 0 yakalanmayan mutasyon
   (`kanit/2026-10-29/kahin-cari-mevcut`).
-- Kanıt (`tools/kanit.mjs kos`): `kanit/2026-10-29/kahin-mobil-yazma-teslim.{json,log}` 136/136, çıkış 0; bilerek kırmızı (ayrı kopyada POS → Kasa)
+- Kanıt (`tools/kanit.mjs kos`): KARAR K8-AVANS işlendikten sonra `kanit/2026-10-29/kahin-mobil-yazma-k8-avans.{json,log}` 143/143, çıkış 0 (kayıt
+  OKU-BENI'de); karardan önceki teslim `kanit/2026-10-29/kahin-mobil-yazma-teslim.{json,log}` 136/136, çıkış 0; bilerek kırmızı (ayrı kopyada POS → Kasa)
   `kanit/kirmizi/2026-10-29/` 128/136, çıkış 1 — kırmızılar beklenen nedenle (Kasa / POS farkı; A1, E02 çifti, E28, rastgeleler). İlk kanıt koşusundaki tek
   kırmızı testin kendi hatasıydı (H2 kip listesi; kök neden `kanit/2026-10-29/OKU-BENI.md`).
 - Dersler: 3/4 (D3, G2), 5 (temiz oda, akış modeli ayrı), 7 (mutasyon + `kanit/…/kirmizi`), 10 (eşdeğerlik çiftleri: değişen ortak yolun komşuları), 13/22 (sahte saat,
-  gece yarısı, ay sonu, yıl dönümü; sistem saati okunmaz), 17 (rastgele sıra, eski sürüm verisi senaryosu), 31 (D6, E32), 40/43 (S1–S8 parametre; karar yok).
+  gece yarısı, ay sonu, yıl dönümü; sistem saati okunmaz), 17 (rastgele sıra, eski sürüm verisi senaryosu), 31 (D6, E32), 40/43 (S1–S8 parametre; K8-AVANS yalnız ürün sahibinin kararıyla
+  netleşti — programın davranışına bakılmadı; kararın susduğu Kalan ve yetkisiz ret kodu seçilmedi, ikisi de kabul).
 
 ## DENENMEYEN
 
@@ -272,3 +305,5 @@ Her mutasyon modelden BAĞIMSIZ beklentilerce (elle beklenen, gerekirse üretici
   sürücünün işidir; eşleme yanlışsa kâhin ile program aynı yanlış girdiyle ayrışmadan geçebilir.
 - HTTP kodlarında planın adını vermediği yerler `"4xx"` ya da liste (ör. şirket yetkisizliği, cihaz / lisans reddi, eksi stok sorusu); kodun kendisi denetlenmez.
 - Türkiye saat dilimi sabit UTC+3.
+- KARAR K8-AVANS'ın susduğu iki değer liste (ikisi de kabul): avanslı kartın `kalan`'ı (0 ya da toplam − Ödenen) ve yetkisiz Fazlasını Avans Yaz'ın ret kodu
+  (403 `plan-overpay-permission` ya da 409 `plan-paid`). Bu iki değerde iki seçenek arasındaki sapma yakalanmaz (para etkisi yok); kullanıcı seçerse tek değere iner.

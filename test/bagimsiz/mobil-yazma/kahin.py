@@ -72,7 +72,7 @@ MUTASYONLAR = {
     16: "Mobilde Kapatılacak Fatura yok sayılır (FIFO'ya döner)",
     17: "Yalnız FIFO kipinde mobil fatura alanı kabul edilir",
     18: "K8: kalanı aşan taksit tahsilatı karta yazılır (plan-overpay yok)",
-    19: "K8: kapanmış karta tahsilat kabul edilir (plan-paid yok)",
+    19: "K8: kapanmış karta onaysız (Fazlasını Avans Yaz'sız) tahsilat kabul edilir (plan-paid yok)",
     20: "Fazlasını Avans Yaz yetkisiz kullanıcıda geçer",
     21: "Mobil stok çıkışı soru sormadan eksiye düşer",
     22: "Eksi stok 'geçemez' kipinde mobil onay yine geçer",
@@ -102,6 +102,12 @@ MUTASYONLAR = {
     46: "Yalnız giriş kipinde mobil stok çıkışı kabul edilir",
     47: "Yalnız cari kipinde mobil taksit kartı tahsilatı kabul edilir",
     48: "Kesinti 'sonra' (yazılmış) istek yazılmamış sayılır (kayıt düşer)",
+    # KARAR K8-AVANS (kullanıcı, 29.10.2026 "A ÖNERİN UYGUN"; docs/2.4.7-IS-LISTESI.md "KARAR — K8-AVANS")
+    49: "K8-AVANS: ödenmiş karta onaylı Fazlasını Avans Yaz tahsilatı yine 409 plan-paid alır (avans hiç yazılmıyor)",
+    50: "K8-AVANS: ödenmiş kartta Fazlasını Avans Yaz yetkisi denetlenmez (plans.manage olmayan avans yazar)",
+    51: "K8-AVANS: kartın Ödenen tutarı avansı dışlar (Ödenen en çok kart toplamı)",
+    52: "K8-AVANS: ödenmiş karttaki avans cariye yazılmaz (cari alacak oluşmaz; yalnız Kasa / banka)",
+    53: "K8-AVANS: ödenmiş karttaki avans Kasa / banka'ya girmez (yalnız cari)",
 }
 
 PARA_ISLEM = ("tahsilat", "odeme", "stok")
@@ -719,6 +725,7 @@ class Kahin:
                 return self._ret(w, a, sessiz, 404, sunucu_gizli=gizli)
         if S["kilit"] and tarih <= S["kilit"] and not (mobil and mut == 26):
             return self._ret(w, a, sessiz, 409, kod="period-locked", sunucu_gizli=gizli)
+        odenmis_avans = False   # KARAR K8-AVANS: ödenmiş (kalan 0) karta onaylı yeni tahsilatın tamamı avans
         if kart:
             K = S["kartlar"][kart]
             odemeler = K["odemeler"]
@@ -726,8 +733,18 @@ class Kahin:
                 odemeler = self._grup_on[(sirket, kart)]   # kilitsiz yarış: kalan grubun başındaki durumdan okunur
             kalan = K["toplam"] - sum(odemeler.values())
             if kalan <= 0 and mut != 19:
-                return self._ret(w, a, sessiz, 409, kod="plan-paid", sunucu_gizli=gizli)
-            if tutar > kalan and mut != 18:
+                # KARAR K8-AVANS (kullanıcı 29.10.2026): ödenmiş karta yeni tahsilat → `plans.manage` yetkilisine "Fazlasını Avans Yaz"; onaylanırsa tutarın
+                # tamamı cariye avans (cari alacak; Kasa / banka girişi normal); masaüstü ve mobil aynı. Onay vermeyen → ret (ödenmiş kart, 409 plan-paid).
+                if not fazla or mut == 49:
+                    return self._ret(w, a, sessiz, 409, kod="plan-paid", sunucu_gizli=gizli)
+                if rol == "personel" and mut != 50:
+                    # yetkisiz → ret; kod kararda yazılı değil: ödenmiş kart (409 plan-paid) ya da avans yetkisi (403 plan-overpay-permission) — İKİSİ DE
+                    # kabul (kâhin seçmez; README "K8-AVANS kararın kapsamadığı")
+                    return self._ret(w, a, sessiz, [403, 409], kod=["plan-overpay-permission", "plan-paid"], sunucu_gizli=gizli)
+                if rol == "muhasebe":
+                    raise SenaryoHatasi("%s: muhasebenin plans.manage yetkisi planda yok (B)" % a["id"])
+                odenmis_avans = True
+            elif tutar > kalan and mut != 18:
                 if fazla:
                     if rol == "personel" and mut != 20:
                         return self._ret(w, a, sessiz, 403, kod="plan-overpay-permission", sunucu_gizli=gizli)
@@ -769,7 +786,9 @@ class Kahin:
             cari = a["cari"]
             kayit.update(cari=cari, tutar=tutar, yol=yol, hesap=hesap, fatura=fatura, kart=kart)
             yon = 1 if islem == "tahsilat" else -1
-            if yol == "nakit" or (yol == "pos" and mut == 13) or (yol == "havale" and mut == 14) or (yol in ("cek", "senet") and mut == 37):
+            if odenmis_avans and mut == 53:
+                pass
+            elif yol == "nakit" or (yol == "pos" and mut == 13) or (yol == "havale" and mut == 14) or (yol in ("cek", "senet") and mut == 37):
                 S["kasa"][rid] = (tarih, yon * tutar)
             elif yol in ("cek", "senet"):
                 S["portfoy"] += tutar
@@ -802,7 +821,8 @@ class Kahin:
                 ca.update(islem="odeme", cari=cari)
                 if f_cari:
                     ca["fatura"] = f_cari
-            self._cari_adim(S, cari, ca)
+            if not (odenmis_avans and mut == 52):
+                self._cari_adim(S, cari, ca)   # KARAR K8-AVANS: avans da cari kâhininin kart tahsilatı (carinin bakiyesi tutarın tamamı kadar düşer)
             if bkey is not None:
                 S["benzer"][rid] = bkey
         S["kayitlar"][rid] = kayit
@@ -893,12 +913,14 @@ class Kahin:
             for kad in sorted(S["kartlar"]):
                 K = S["kartlar"][kad]
                 odenen_ham = sum(K["odemeler"].values())
-                odenen = min(odenen_ham, K["toplam"])
-                o[p + "kart:%s:odenen" % kad] = odenen
-                o[p + "kart:%s:fazla" % kad] = odenen_ham - odenen
-                o[p + "kart:%s:kalan" % kad] = K["toplam"] - odenen
+                kapanan = min(odenen_ham, K["toplam"])   # taksitlere düşen kısım; fazlası avans
+                # KARAR K8-AVANS (kullanıcı 29.10.2026): "Kart tutarları (Ödenen avansı da içerir) bugünkü gibi kalır" → Ödenen = bütün tahsilatlar (avans dahil)
+                o[p + "kart:%s:odenen" % kad] = kapanan if self.mut == 51 else odenen_ham
+                o[p + "kart:%s:fazla" % kad] = odenen_ham - kapanan
+                # Kalan: karar YAZMIYOR (yalnız Ödenen'i söyler) → avanslı kartta 0 da (kalan eksiye inmez) toplam − Ödenen (eksi) de kabul; kâhin SEÇMEZ (README K8-AVANS)
+                o[p + "kart:%s:kalan" % kad] = [0, K["toplam"] - odenen_ham] if odenen_ham > K["toplam"] else K["toplam"] - odenen_ham
                 o[p + "kart:%s:tahsilatSayisi" % kad] = len(K["odemeler"])
-                kalan = odenen
+                kalan = kapanan
                 sira = list(range(len(K["taksitler"])))
                 if self.mut == 44:
                     sira.reverse()

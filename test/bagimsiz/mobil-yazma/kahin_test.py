@@ -514,7 +514,8 @@ def _g2():
         c = dict(g["beklenen"])
         if g["alternatifler"]:
             c.update({k: v for k, v in g["alternatifler"][0].items() if v != "__yok__"})
-        c = {k: (404 if v == [403, 404] or v == [400, 404] else 409 if v == "4xx" else v) for k, v in c.items()}
+        # liste = biri: programın tek değeri listeden biri (K8-AVANS: avanslı kartın Kalan'ı, yetkisizin ret kodu)
+        c = {k: (404 if v == [403, 404] or v == [400, 404] else 409 if v == "4xx" else v[0] if isinstance(v, list) else v) for k, v in c.items()}
         program[s["ad"]] = c
     out = []
     with tempfile.TemporaryDirectory() as d:
