@@ -11,7 +11,7 @@
 // Türkiye (kâhin V1: sabit UTC+3; kurulum Türkiye saatinde çalışır). Lisans servisi sahte ve yereldir (fetchImpl; ders 30 — gerçek servise istek gitmez).
 //
 // Kullanım:
-//   node test/bagimsiz/mobil-yazma/program-surucu.mjs [--senaryo E01-es-nakit-fifo-mobil,E14-lisans] [--cikti <klasör>] [--birlesim "k=v;…"]
+//   node test/bagimsiz/mobil-yazma/program-surucu.mjs [--senaryo E01-es-nakit-fifo-mobil,E14-lisans] [--haric R1-rastgele-tohum1,…] [--cikti <klasör>] [--birlesim "k=v;…"]
 //   KANIT_DIR=… node tools/kanit.mjs kos m5-kahin -- node test/bagimsiz/mobil-yazma/program-surucu.mjs --cikti <klasör>
 // Çıktı: <klasör>/program.json (senaryo → anahtar → değer), <klasör>/notlar.json (okunamayan / üretilemeyen değerlerin nedeni), ekrana kâhinin karşılaştırması (TAP,
 // "# tests/pass/fail") + göreli çiftler. Çıkış 0 yalnız bütün senaryolar ve göreli çiftler eşleşince.
@@ -28,8 +28,23 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..", "..");
 // Sınanan program: varsayılan bu depo; KAHIN_PROGRAM_KOKU=<klasör> ile başka bir kopya (eski kod — ders 23: ayrı kopyada).
 const PROGRAM = process.env.KAHIN_PROGRAM_KOKU ? path.resolve(process.env.KAHIN_PROGRAM_KOKU) : ROOT;
-// E27 (kaynakSurum): eski sürümün GERÇEK kodu (git archive v2.4.6) — KAHIN_ESKI_SURUM_KOKU; verilmezse senaryo DENENMEYEN.
-const ESKI = process.env.KAHIN_ESKI_SURUM_KOKU ? path.resolve(process.env.KAHIN_ESKI_SURUM_KOKU) : "";
+// E27 (kaynakSurum): eski sürümün GERÇEK kodu (git archive v2.4.6) — KAHIN_ESKI_SURUM_KOKU; verilmezse etiketin kodu bu deponun git'inden AYRI geçici
+// klasöre çıkarılır (ders 23; CI'de etiketler var — ci.yml fetch-tags) ve koşu sonunda silinir; etiket de yoksa senaryo DENENMEYEN (karşılaştırmada kırmızı).
+let ESKI = process.env.KAHIN_ESKI_SURUM_KOKU ? path.resolve(process.env.KAHIN_ESKI_SURUM_KOKU) : "";
+let ESKI_GECICI = "";
+function eskiKod(surum) {
+  try {
+    const dir = mkdtempSync(path.join(tmpdir(), `kahin-m5-eski-v${surum}-`));
+    const tar = path.join(dir, "kod.tar");
+    execFileSync("git", ["-C", ROOT, "archive", "--format=tar", "-o", tar, `v${surum}`, "server", "client", "tools", "package.json", "test/helpers.mjs"], { stdio: ["ignore", "pipe", "pipe"] });
+    execFileSync("tar", ["-xf", tar, "-C", dir]);
+    rmSync(tar, { force: true });
+    ESKI_GECICI = dir;
+    return dir;
+  } catch {
+    return "";
+  }
+}
 const imp = (root, rel) => import(pathToFileURL(path.join(root, rel)).href);
 const { ADMIN_PASSWORD, createClient, startTestServer } = await imp(PROGRAM, "test/helpers.mjs");
 const { createClock } = await imp(PROGRAM, "server/lib/clock.mjs");
@@ -48,6 +63,10 @@ const kabul = JSON.parse(readFileSync(KABUL_YOLU, "utf8"));
 const BIRLESIM = opt("--birlesim") || kabul.secilen_birlesim || Object.entries(kabul.oneri).map(([k, v]) => `${k}=${v}`).join(";");
 const SECIM = Object.fromEntries(BIRLESIM.split(";").filter(Boolean).map(x => x.split("=")));
 const FILTRE = opt("--senaryo") ? new Set(opt("--senaryo").split(",")) : null;
+// --haric: koşulmayacak senaryolar (CI: kullanıcı kararı bekleyen ya da İNCELE sınıfı bilinen farklar — docs/kanit/2026-10-29/m5-247/OKU-BENI.md). Çıktıda adıyla
+// "HARİÇ" yazılır; bilinmeyen ad hatadır (yazım yanlışı sessizce kapsam daraltmasın).
+const HARIC = new Set((opt("--haric") || "").split(",").filter(Boolean));
+for (const ad of HARIC) if (![...kabul.senaryolar, ...(kabul.goreli_ciftler || [])].some(s => s.ad === ad)) throw new Error(`--haric: kâhinde böyle senaryo yok: ${ad}`);
 
 // ---------- Eşleme tablosu (karşılaştırmadan ÖNCE) ----------
 const ROLE = { yonetici: "admin", muhasebe: "muhasebe", personel: "personel" };
@@ -592,9 +611,10 @@ const root = mkdtempSync(path.join(tmpdir(), "kahin-m5-veri-"));
 const program = {};
 const notlar = {};
 const hatalar = [];
-const senaryolar = kabul.senaryolar.filter(s => !FILTRE || FILTRE.has(s.ad));
+const senaryolar = kabul.senaryolar.filter(s => (!FILTRE || FILTRE.has(s.ad)) && !HARIC.has(s.ad));
 for (const kayit of senaryolar) {
   const sen = kayit.senaryo;
+  if (sen.baslangic.kaynakSurum && !ESKI) ESKI = eskiKod(sen.baslangic.kaynakSurum);
   if (sen.baslangic.kaynakSurum && !ESKI) {
     notlar[sen.ad] = `DENENMEYEN: eski sürüm (${sen.baslangic.kaynakSurum}) kodu verilmedi — KAHIN_ESKI_SURUM_KOKU=<git archive v${sen.baslangic.kaynakSurum} kopyası>`;
     continue;
@@ -610,7 +630,7 @@ for (const kayit of senaryolar) {
 // Göreli çiftler (kâhin K10: planın yazmadığı rol × işlem hücreleri): iki yan ayrı boş kurulumda; bütün anahtarlar iki kanalda AYNI olmalı.
 const goreli = [];
 for (const cift of kabul.goreli_ciftler || []) {
-  if (FILTRE && !FILTRE.has(cift.ad)) continue;
+  if ((FILTRE && !FILTRE.has(cift.ad)) || HARIC.has(cift.ad)) continue;
   const uygun = Object.entries(cift.kosul || {}).every(([k, v]) => SECIM[k] === v);
   try {
     const m = (await runScenario(cift.mobil, root)).P;
@@ -624,10 +644,11 @@ for (const cift of kabul.goreli_ciftler || []) {
   }
 }
 rmSync(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+if (ESKI_GECICI) rmSync(ESKI_GECICI, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
 writeFileSync(path.join(OUT, "program.json"), `${JSON.stringify(program, null, 1)}\n`);
 writeFileSync(path.join(OUT, "notlar.json"), `${JSON.stringify({ birlesim: BIRLESIM, notlar, hatalar, goreli }, null, 1)}\n`);
 // Kâhinin kendi karşılaştırması (yalnız koşulan senaryolar).
-const altKabul = { ...kabul, senaryolar: kabul.senaryolar.filter(s => program[s.ad] || (FILTRE ? FILTRE.has(s.ad) : true)) };
+const altKabul = { ...kabul, senaryolar: kabul.senaryolar.filter(s => !HARIC.has(s.ad) && (program[s.ad] || (FILTRE ? FILTRE.has(s.ad) : true))) };
 const altYol = path.join(OUT, "kabul-kosulan.json");
 writeFileSync(altYol, JSON.stringify(altKabul));
 let tap = "";
@@ -643,6 +664,7 @@ writeFileSync(path.join(OUT, "karsilastirma.tap"), tap);
 process.stdout.write(tap);
 for (const g of goreli) process.stdout.write(`# göreli ${g.ad}: ${g.sonuc}${g.farklar?.length ? `\n#   ${g.farklar.slice(0, 10).join("\n#   ")}` : ""}${g.neden ? ` (${g.neden})` : ""}\n`);
 for (const [ad, n] of Object.entries(notlar)) process.stdout.write(`# not ${ad}: ${Array.isArray(n) ? n.join(" · ") : n}\n`);
+for (const ad of HARIC) process.stdout.write(`# HARİÇ ${ad}: --haric ile koşulmadı (bekleyen karar / İNCELE; docs/kanit/2026-10-29/m5-247/OKU-BENI.md)\n`);
 for (const h of hatalar) process.stdout.write(`# SÜRÜCÜ HATASI ${h.split("\n").slice(0, 3).join(" | ")}\n`);
 const goreliFark = goreli.filter(g => g.sonuc === "FARK").length;
 process.stdout.write(`# göreli çift: ${goreli.filter(g => g.sonuc === "aynı").length} aynı, ${goreliFark} fark, ${goreli.filter(g => g.sonuc.startsWith("uygulanmaz")).length} uygulanmaz\n# birleşim: ${BIRLESIM}\n`);

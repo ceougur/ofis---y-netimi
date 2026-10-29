@@ -1,0 +1,32 @@
+{
+  "ad": "m5-kahin-mobil-yazma-ci",
+  "komut": "npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu,E05-es-taksit-mobil,E05-es-taksit-masaustu,R1-rastgele-tohum1,R2-rastgele-tohum2,R3-rastgele-tohum3",
+  "commit": "f9c9e4bbc2bacbf3ed444c411a7a0eeb775ee086",
+  "dal": "worktree-agent-ac5df26589a6fb9c9",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T08:22:23.957Z",
+  "sure_sn": 34.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 45,
+    "gecen": 45,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/m5-247/2026-10-29/m5-kahin-mobil-yazma-ci.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac5df26589a6fb9c9",
+  "ham_cikti_sha256": "9d55775d37dffc5bc192921c8392821032b2c2238d5c9f1b7d25ffbe61d66007",
+  "ham_cikti_bayt": 3581
+}

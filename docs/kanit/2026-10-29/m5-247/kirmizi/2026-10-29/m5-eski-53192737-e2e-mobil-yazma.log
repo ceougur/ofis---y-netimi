@@ -1,0 +1,34 @@
+
+■ Y1 karekod bağlantısıyla eşleme + giriş (uzak dinleyici) → Genel Bakış; kayıt girişi açık
+  ✓ telefon uzak adreste (http://127.0.0.1:36305)
+  ✗ Genel Bakış: kayıt girişi açık notu
+
+■ Y2 Tahsilat Gir (nakit 1.200): en eski fatura kapanır, bakiye 300, Kasa +1.200; tarih sunucunun günü
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+
+■ Y3 Ödeme Gir: Kasa yetmez → soru → Yine de Kaydet → tek kayıt (aynı istek kimliği)
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+
+■ Y4 taksit kartına tahsilat: 100 → kalan 200; 250 → soru → Fazlasını Avans Yaz → kalan 0, fazla 50; cari −50
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+
+■ Y5 Stok Girişi 5 → miktar 15; parasız (Kasa değişmez)
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+
+■ Y6a bağlantı sunucuya ulaşmadan kopar → Sonucu Belirsiz → Yeniden Gönder → tek kayıt
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+
+■ Y6b sunucu yazar, yanıt kaybolur → Yeniden Gönder → 'zaten kaydedilmişti'; yine tek kayıt
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+
+■ Y7 gece yarısı: 23:5x'te ulaşmayan istek 00:01'de yeniden gönderilir → kayıt 01.11.2026 tarihli (sunucunun günü)
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+
+■ Y8 24 saat: belirsiz istek 25 saat sonra yeniden gönderilmez; Listeden Kaldır
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+
+■ Y9 personel telefonu: yalnız Tahsilat Gir (Ödeme Gir yok); kayıt personelin adına
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 8000ms exceeded.
+  ✓ sayfa hatası yok (—)
+
+2 geçti, 10 kaldı

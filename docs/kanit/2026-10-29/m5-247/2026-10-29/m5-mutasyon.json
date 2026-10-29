@@ -1,0 +1,32 @@
+{
+  "ad": "m5-mutasyon",
+  "komut": "node --disable-warning=ExperimentalWarning test/mobil-yazma-247-mutasyon.mjs --kopya /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247-mutasyon-kopya",
+  "commit": "c2bf065706021cbe622ef2ac9882e737e32a9e83",
+  "dal": "worktree-agent-ac5df26589a6fb9c9",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:30:32.109Z",
+  "sure_sn": 363.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 22,
+    "gecen": 22,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/m5-247/2026-10-29/m5-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac5df26589a6fb9c9",
+  "ham_cikti_sha256": "3e1d40f0be87dd7456d6a59c1c17443a47c73cd4a206ce43bc05072230475a24",
+  "ham_cikti_bayt": 6169
+}
