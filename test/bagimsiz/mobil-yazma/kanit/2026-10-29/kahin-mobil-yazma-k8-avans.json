@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-mobil-yazma-k8-avans",
+  "komut": "python3 -I test/bagimsiz/mobil-yazma/kahin_test.py",
+  "commit": "e86f46235f5a6c737a83bb168d8b656a4f584a44",
+  "dal": "worktree-agent-adc275d1ccd0c1ed2",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T09:10:44.722Z",
+  "sure_sn": 327.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 143,
+    "gecen": 143,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "test/bagimsiz/mobil-yazma/kanit/2026-10-29/kahin-mobil-yazma-k8-avans.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-adc275d1ccd0c1ed2",
+  "ham_cikti_sha256": "f9eb705092213b388d1030d6c3ab13f1df52915bc0f3f53e4b00f955dd8967ac",
+  "ham_cikti_bayt": 26467
+}
