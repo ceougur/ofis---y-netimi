@@ -1,0 +1,41 @@
+// Tanı: göçmüş veride "Kes ve Gönder" e-Arşiv neden Gönderilecek'te kaldı? Aynı istek eski sürümde (taban) ve adayda (goc), ayrı kopyalarda.
+import { cpSync, rmSync } from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const [REPO, root, version, src] = process.argv.slice(2);
+const imp = rel => import(pathToFileURL(path.join(REPO, rel)).href);
+const { startMockEdm, BUYER_VKN } = await imp("test/einvoice-mock.mjs");
+const { resetEdmCaches } = await imp("server/lib/einvoice/edm.mjs");
+const { bootVersion, CURRENT } = await imp("test/guvenilirlik/surumler.mjs");
+const { createClock } = await imp("server/lib/clock.mjs");
+const { scoped, sendAll } = await imp("test/guvenilirlik/m30-uretici.mjs");
+const day = "2026-10-29";
+const dir = path.join(root, `tani-${version}`);
+rmSync(dir, { recursive: true, force: true });
+cpSync(path.join(root, src), dir, { recursive: true });
+resetEdmCaches();
+const edm = await startMockEdm();
+const v = version === "aday" ? CURRENT : version;
+const server = await bootVersion(v, { dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: createClock({ time: new Date(2026, 9, 29, 18, 0, 0), fixed: false }), logLevel: "silent", edocEnabled: true, edocLive: true, esmmEnabled: true, legacyCasePayments: false, legacyTableTransfer: false, legacyTableDues: false, edocStatusPollMs: [10, 10] });
+try {
+  const api = await server.login();
+  const s = scoped(api, "sirket-001");
+  const put = await s.put("/api/workspace/invoices/settings", { esmm: true, integrator: { env: "test", baseUrl: edm.url, username: "edmkullanici", password: "Gizli-Parola-1", senderAlias: "urn:mail:defaultgb@merkez.com.tr" } });
+  console.log("ayar", put.status);
+  const pending = await s.get("/api/workspace/invoices?tab=pending&limit=1000");
+  const list = pending.data.invoices || [];
+  console.log("Gönderilecekler önce", list.length, JSON.stringify(list.slice(0, 3).map(d => [d.issueDate, d.number, d.displayNo, d.profile, d.eStatus, d.eMessage])));
+  const accs = (await s.get("/api/workspace/accounts?status=all&limit=5000")).data.accounts;
+  const person = accs.find(a => a.partyKind === "person" && String(a.taxNo || "").length === 11 && a.taxNo !== BUYER_VKN);
+  const sale = await s.post("/api/workspace/invoices", { scenario: "service_sale", accountId: person.id, issueDate: day, lines: [{ name: "Göç sonrası hizmet", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" }, eSend: "now" });
+  const d = sale.data;
+  console.log("satış", sale.status, JSON.stringify({ number: d.number, displayNo: d.displayNo, profile: d.profile, eStatus: d.eStatus, eMessage: d.eMessage, sendResult: d.sendResult, queued: d.queued, eSendBlocked: d.eSendBlocked, warnings: d.warnings }).slice(0, 1500));
+  console.log("EDM'ye giden", edm.state.sent.length);
+  const usage = await s.get("/api/workspace/invoices-usage?months=1");
+  console.log("sayaç", usage.status, JSON.stringify(usage.data).slice(0, 400));
+} finally {
+  await server.close();
+  await edm.close();
+  rmSync(dir, { recursive: true, force: true });
+}

@@ -1,0 +1,946 @@
+{
+ "checks": [
+  {
+   "name": "001 EDM sayacı boş başlar: pencere toplamı 0, iz 0, eşitlenen 0 (eski veride e-Belge kartı 1199, gönderilmiş görünen 343)",
+   "ok": true,
+   "detail": {
+    "u": {
+     "from": "2024-11",
+     "months": [],
+     "window": [
+      {
+       "month": "2024-11",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2024-11",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2024-12",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2024-12",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-01",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-01",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-02",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-02",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-03",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-03",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-04",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-04",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-05",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-05",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-06",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-06",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-07",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-07",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-08",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-08",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-09",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-09",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-10",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-10",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-11",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-11",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-12",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-12",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-01",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-01",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-02",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-02",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-03",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-03",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-04",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-04",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-05",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-05",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-06",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-06",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-07",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-07",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-08",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-08",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-09",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-09",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-10",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-10",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      }
+     ],
+     "journal": [],
+     "synced": 0
+    }
+   }
+  },
+  {
+   "name": "002 EDM sayacı boş başlar: pencere toplamı 0, iz 0, eşitlenen 0 (eski veride e-Belge kartı 631, gönderilmiş görünen 141)",
+   "ok": true,
+   "detail": {
+    "u": {
+     "from": "2024-11",
+     "months": [],
+     "window": [
+      {
+       "month": "2024-11",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2024-11",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2024-12",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2024-12",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-01",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-01",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-02",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-02",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-03",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-03",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-04",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-04",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-05",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-05",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-06",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-06",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-07",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-07",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-08",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-08",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-09",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-09",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-10",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-10",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-11",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-11",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-12",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2025-12",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-01",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-01",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-02",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-02",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-03",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-03",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-04",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-04",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-05",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-05",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-06",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-06",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-07",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-07",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-08",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-08",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-09",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-09",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-10",
+       "env": "live",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      },
+      {
+       "month": "2026-10",
+       "env": "test",
+       "efatura": 0,
+       "earsiv": 0,
+       "esmm": 0
+      }
+     ],
+     "journal": [],
+     "synced": 0
+    }
+   }
+  },
+  {
+   "name": "001 göçten sonra: yeni e-Arşiv (200) + bekleyen 5 → Tümünü Gönder 6 sonuç, kalan 0; EDM'nin kabul ettiği 6 (benzersiz 6) = sayaç 2026-10 test toplamı 6 (e-Arşiv 5, e-Fatura 1, e-SMM 0); önceki aylar 0, canlı 0",
+   "ok": true,
+   "detail": {
+    "results": [
+     {
+      "id": "invoice-e69d8135-ba21-48c5-aa8a-aaf06719e342",
+      "ok": true,
+      "number": "TEA2026560262210",
+      "status": "sent"
+     },
+     {
+      "id": "invoice-2db0bfce-83a9-4930-b1e5-59139519c6ff",
+      "ok": true,
+      "number": "TEF2026119917507",
+      "status": "sent"
+     },
+     {
+      "id": "invoice-3730f72c-22cc-41c4-8de8-7cc90475e6f7",
+      "ok": true,
+      "number": "TEA2026560262211",
+      "status": "sent"
+     },
+     {
+      "id": "invoice-9289591f-f300-4c57-b297-6df6aaaeb704",
+      "ok": true,
+      "number": "TEA2026560262212",
+      "status": "sent"
+     },
+     {
+      "id": "invoice-17efd97d-84a9-4176-9489-f3437d86e90f",
+      "ok": true,
+      "number": "TEA2026560262213",
+      "status": "sent"
+     },
+     {
+      "id": "invoice-41833f6e-e825-41e8-a3d9-c0d1fc7931bc",
+      "ok": true,
+      "number": "TEA2026560262214",
+      "status": "sent"
+     }
+    ],
+    "window": [
+     {
+      "month": "2026-08",
+      "env": "live",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-08",
+      "env": "test",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-09",
+      "env": "live",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-09",
+      "env": "test",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-10",
+      "env": "live",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-10",
+      "env": "test",
+      "efatura": 1,
+      "earsiv": 5,
+      "esmm": 0
+     }
+    ],
+    "edmSent": [
+     "TEA2026560262210",
+     "TEF2026119917507",
+     "TEA2026560262211",
+     "TEA2026560262212",
+     "TEA2026560262213",
+     "TEA2026560262214"
+    ]
+   }
+  },
+  {
+   "name": "uzaktan erişim dinleyicisi açıldı (http://127.0.0.1:40573)",
+   "ok": true,
+   "detail": {
+    "base": "http://127.0.0.1:40573",
+    "legacy": false
+   }
+  },
+  {
+   "name": "göçmüş veride eşli cihaz yok (kullanılan 0 / sınır 3, lisans true)",
+   "ok": true,
+   "detail": {
+    "devices0": {
+     "limit": 3,
+     "used": 0,
+     "full": false,
+     "licenseOk": true,
+     "remoteUrl": "",
+     "codeMinutes": 5,
+     "users": [
+      {
+       "id": "user-8f52fb2a-5c3c-48fb-8c24-2d4ee4b984d0",
+       "username": "ayse",
+       "name": "Ayşe Fatura",
+       "role": "personel",
+       "active": true,
+       "remote": false
+      },
+      {
+       "id": "user-b07e3b4e-82fc-4a80-a7ae-629c14d00720",
+       "username": "mehmet",
+       "name": "Mehmet Muhasebe",
+       "role": "muhasebe",
+       "active": true,
+       "remote": false
+      },
+      {
+       "id": "user-8244b2d6-f75b-4d4e-abac-fa451c508d52",
+       "username": "admin",
+       "name": "Ofis yöneticisi",
+       "role": "admin",
+       "active": true,
+       "remote": false
+      },
+      {
+       "id": "user-b1193de5-ef20-40c3-9dfc-a5839041c4e5",
+       "username": "zeynep",
+       "name": "Zeynep Tahsilat",
+       "role": "personel",
+       "active": true,
+       "remote": false
+      }
+     ],
+     "devices": [],
+     "ozet": {
+      "enabled": false,
+      "ofis": "",
+      "publicUrl": "",
+      "son": null,
+      "bekleyen": false
+     }
+    }
+   }
+  },
+  {
+   "name": "admin: Uzaktan Bağlanabilir 200, karekod 200, eşleme 200, uzak giriş 200",
+   "ok": true,
+   "detail": {
+    "code": {
+     "code": "LLnEkQkA9eJ5MAzL0Psg8Q",
+     "url": "",
+     "expiresAt": "2026-10-29T12:36:32.071Z",
+     "minutes": 5,
+     "user": {
+      "id": "user-8244b2d6-f75b-4d4e-abac-fa451c508d52",
+      "name": "Ofis yöneticisi"
+     },
+     "qr": ""
+    },
+    "pair": "{\"ok\":true,\"data\":{\"device\":{\"id\":\"dev-8f8e63ba-daab-4f45-8bc0-fd533058407f\",\"name\":\"Göç Telefonu 1\",\"kind\":\"telefon\"},\"user\":{\"name\":\"Ofis yöneticisi\",\"username\":\"admin\"}}}",
+    "login": "{\"ok\":true,\"data\":{\"user\":{\"name\":\"Ofis yöneticisi\",\"username\":\"admin\"},\"device\":{\"id\":\"dev-8f8e63ba-daab-4f45-8bc0-fd533058407f\",\"name\":\"Göç Telefonu 1\"}}}"
+   }
+  },
+  {
+   "name": "telefondan oturum (200) iki şirketi görür (001, 002)",
+   "ok": true,
+   "detail": {
+    "data": "{\"ok\":true,\"data\":{\"user\":{\"id\":\"user-8244b2d6-f75b-4d4e-abac-fa451c508d52\",\"username\":\"admin\",\"name\":\"Ofis yöneticisi\",\"roleLabel\":\"\",\"mustChangePassword\":false},\"office\":{\"name\":\"Merkez Ticaret ve Danışmanlık A.Ş.\"},\"companies\":[{\"id\":\"sirket-001\",\"code\":\"001\",\"name\":\"Merkez Ticaret ve Danışmanlık A.Ş.\",\"current\":true},{\"id\":\"sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120\",\"code\":\"002\",\"name\":\"Yıld"
+   }
+  },
+  {
+   "name": "001 telefondaki Kasa = masaüstü Kasa (göçmüş veri; 200)",
+   "ok": true,
+   "detail": {
+    "far": 200,
+    "code": ""
+   }
+  },
+  {
+   "name": "001 telefondaki cari kartı = masaüstü (Mehmet Işık, bakiye 3600)",
+   "ok": true,
+   "detail": {
+    "far": 200,
+    "code": ""
+   }
+  },
+  {
+   "name": "002 telefondaki Kasa = masaüstü Kasa (göçmüş veri; 200)",
+   "ok": true,
+   "detail": {
+    "far": 200,
+    "code": ""
+   }
+  },
+  {
+   "name": "002 telefondaki cari kartı = masaüstü (Mehmet Uğurlu, bakiye 21234.8)",
+   "ok": true,
+   "detail": {
+    "far": 200,
+    "code": ""
+   }
+  },
+  {
+   "name": "3 cihaz sınırı (program başına): 2. ve 3. eşleme 200 (200, 200); 4. karekod/eşleme reddedilir (409/0)",
+   "ok": true,
+   "detail": {
+    "p4code": "{\"ok\":false,\"error\":\"Eşli cihaz sınırı dolu. Yeni cihaz için Yönetim → Mobil Cihazlar'dan önce birini silin.\",\"code\":\"remote-limit\"}",
+    "p4pair": "kod yok"
+   }
+  },
+  {
+   "name": "cihazlar ortak katmanda: 001 3, 002 0 (002'nin tablosu boş kalır)",
+   "ok": true,
+   "detail": {
+    "files": [
+     [
+      "sirket-001",
+      3
+     ],
+     [
+      "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120",
+      0
+     ]
+    ]
+   }
+  }
+ ]
+}

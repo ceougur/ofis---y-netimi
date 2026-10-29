@@ -1,0 +1,671 @@
+{
+ "version": "v2.3.0",
+ "commit": "ec1ef3f1a041a801a06b643a087df9b8ee80f8d4",
+ "seed": 11,
+ "hacim": "kucuk",
+ "startDay": "2025-09-29",
+ "endDay": "2026-10-29",
+ "companies": {
+  "A": {
+   "id": "sirket-001",
+   "code": "001",
+   "name": "Merkez Ticaret ve Danışmanlık A.Ş.",
+   "lockedUntil": "2026-04-29",
+   "lastDeleted": "SMM2026000000033",
+   "invoices": 378
+  },
+  "B": {
+   "id": "sirket-11abc77a-6955-4ef3-9e30-bd37bb0a8682",
+   "code": "002",
+   "name": "Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti.",
+   "lastDeleted": "SMM2026000000051",
+   "invoices": 318
+  }
+ },
+ "counts": {
+  "banka-hesabi": 4,
+  "pos": 2,
+  "cari-excel": 420,
+  "cari-elle": 146,
+  "stok-karti": 24,
+  "tablo-satiri": 940,
+  "tablo-kaydi": 940,
+  "cari-kayda-bagli": 48,
+  "fatura-kagit": 438,
+  "fatura-taksitli": 48,
+  "fatura-silindi": 25,
+  "fatura-kendi-evraki": 98,
+  "cari-tahsilat-cash": 82,
+  "evrak-verildi-note": 10,
+  "stok-giris": 26,
+  "fatura-satistan-iade": 31,
+  "banka-fisi": 26,
+  "banka-transfer": 26,
+  "kasa-cikis": 38,
+  "smm-kagit": 108,
+  "cari-borc": 8,
+  "taksit-karti": 26,
+  "evrak-faturayla-ciro": 17,
+  "fatura-alis": 123,
+  "evrak-alindi-note": 17,
+  "cari-tahsilat-bank": 35,
+  "stok-satis-cash": 16,
+  "cari-odeme-bank": 48,
+  "kasa-giris": 24,
+  "cari-tahsilat-cash-kapatilacak": 31,
+  "kayit-tahsilati-cash": 57,
+  "cari-odeme-cash": 33,
+  "fatura-alistan-iade": 6,
+  "cari-tahsilat-card": 27,
+  "kasa-banka-to-bank": 10,
+  "evrak-tahsile-ver": 56,
+  "taksit-tahsilat-card": 18,
+  "fatura-silinenlerden-geri-yuklendi": 15,
+  "taksit-tahsilat-bank": 15,
+  "evrak-bankadan-tahsil": 52,
+  "cari-tahsilat-card-kapatilacak": 16,
+  "evrak-alindi-cheque": 81,
+  "evrak-nakit-tahsil": 34,
+  "cari-tahsilat-bank-kapatilacak": 17,
+  "evrak-verildi-cheque": 16,
+  "kayit-tahsilati-bank": 21,
+  "fatura-kagit-iptal": 6,
+  "evrak-verilen-odendi": 24,
+  "taksit-tahsilat-cash": 16,
+  "evrak-karsiliksiz-bagsiz": 13,
+  "evrak-ciro": 41,
+  "yedek": 10,
+  "kasa-banka-to-cash": 6,
+  "evrak-portfoyde-degil-atlandi": 2,
+  "stok-satis-card": 8,
+  "evrak-karsiliksiz-cirodan-bagsiz": 7,
+  "evrak-karsiliksiz-fatura": 13,
+  "evrak-karsiliksiz-tahsilde-bagsiz": 3,
+  "evrak-karsiliksiz-cirodan-fatura": 2,
+  "kayit-tahsilati-aktarim-oncesi": 11,
+  "tablodan-aktar-kart": 20,
+  "tablodan-aktar-tasinan-tahsilat": 7,
+  "evrak-karsiliksiz-tahsilde-fatura": 1,
+  "tahsilat-reddedildi-ledger-integrity": 7,
+  "ledger-integrity-reddi": 5,
+  "fatura-silindi-son": 2
+ },
+ "refusals": {},
+ "backups": [
+  {
+   "company": "A",
+   "companyId": "sirket-001",
+   "day": "2025-12-01",
+   "name": "destekofis-001-2026-10-29T12-20-15-095Z-manuel.sqlite",
+   "path": "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-20-15-095Z-manuel.sqlite"
+  },
+  {
+   "company": "B",
+   "companyId": "sirket-11abc77a-6955-4ef3-9e30-bd37bb0a8682",
+   "day": "2025-12-01",
+   "name": "destekofis-002-2026-10-29T12-20-15-158Z-manuel.sqlite",
+   "path": "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-20-15-158Z-manuel.sqlite"
+  },
+  {
+   "company": "A",
+   "companyId": "sirket-001",
+   "day": "2026-03-02",
+   "name": "destekofis-001-2026-10-29T12-20-22-336Z-manuel.sqlite",
+   "path": "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-20-22-336Z-manuel.sqlite"
+  },
+  {
+   "company": "B",
+   "companyId": "sirket-11abc77a-6955-4ef3-9e30-bd37bb0a8682",
+   "day": "2026-03-02",
+   "name": "destekofis-002-2026-10-29T12-20-22-382Z-manuel.sqlite",
+   "path": "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-20-22-382Z-manuel.sqlite"
+  },
+  {
+   "company": "A",
+   "companyId": "sirket-001",
+   "day": "2026-06-01",
+   "name": "destekofis-001-2026-10-29T12-20-29-606Z-manuel.sqlite",
+   "path": "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-20-29-606Z-manuel.sqlite"
+  },
+  {
+   "company": "B",
+   "companyId": "sirket-11abc77a-6955-4ef3-9e30-bd37bb0a8682",
+   "day": "2026-06-01",
+   "name": "destekofis-002-2026-10-29T12-20-29-646Z-manuel.sqlite",
+   "path": "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-20-29-646Z-manuel.sqlite"
+  },
+  {
+   "company": "A",
+   "companyId": "sirket-001",
+   "day": "2026-09-01",
+   "name": "destekofis-001-2026-10-29T12-20-36-410Z-manuel.sqlite",
+   "path": "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-20-36-410Z-manuel.sqlite"
+  },
+  {
+   "company": "B",
+   "companyId": "sirket-11abc77a-6955-4ef3-9e30-bd37bb0a8682",
+   "day": "2026-09-01",
+   "name": "destekofis-002-2026-10-29T12-20-36-453Z-manuel.sqlite",
+   "path": "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-20-36-453Z-manuel.sqlite"
+  },
+  {
+   "company": "A",
+   "companyId": "sirket-001",
+   "day": "2026-10-29",
+   "name": "destekofis-001-2026-10-29T12-20-50-027Z-manuel.sqlite",
+   "path": "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-20-50-027Z-manuel.sqlite"
+  },
+  {
+   "company": "B",
+   "companyId": "sirket-11abc77a-6955-4ef3-9e30-bd37bb0a8682",
+   "day": "2026-10-29",
+   "name": "destekofis-002-2026-10-29T12-20-50-181Z-manuel.sqlite",
+   "path": "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-20-50-181Z-manuel.sqlite"
+  }
+ ],
+ "users": [
+  {
+   "username": "ayse",
+   "name": "Ayşe Fatura",
+   "role": "personel",
+   "grants": {
+    "add": [
+     "invoices.view",
+     "invoices.manage"
+    ],
+    "remove": []
+   }
+  },
+  {
+   "username": "mehmet",
+   "name": "Mehmet Muhasebe",
+   "role": "muhasebe",
+   "grants": {
+    "add": [],
+    "remove": [
+     "cash.view"
+    ]
+   }
+  },
+  {
+   "username": "zeynep",
+   "name": "Zeynep Tahsilat",
+   "role": "role-e1c3fc00-ecc0-4840-b9be-5d0ba34ec091",
+   "grants": {
+    "add": [],
+    "remove": []
+   }
+  }
+ ],
+ "timings": {
+  "acilis": 2587,
+  "toplam": 42652
+ },
+ "requests": 2659,
+ "integrityRefusals": [
+  {
+   "what": "tahsilat",
+   "company": "001",
+   "day": "2026-09-15",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/accounts/account-c0600eb6-736d-4671-840c-68c991263d37/entries",
+    "body": {
+     "kind": "in",
+     "amount": "4019,9",
+     "date": "2026-09-15",
+     "method": "card",
+     "note": "Tahsilat",
+     "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8",
+     "similarOk": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "fin_events",
+      "account_entries",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "satış 2026-09-17",
+   "day": "2026-09-17T09:00:00.106Z",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/invoices",
+    "body": {
+     "scenario": "goods_sale",
+     "accountId": "account-2b77c4cd-17f3-47ea-b32f-574c48ef1588",
+     "issueDate": "2026-09-17",
+     "lines": [
+      {
+       "itemId": "stock-81050def-2dff-4ff6-86e0-899ef79ef228",
+       "qty": 6,
+       "unitPrice": 945,
+       "vatRate": 20
+      },
+      {
+       "itemId": "stock-5b4cd8ea-14b7-4bb1-9dbe-382aa14e8193",
+       "qty": 5,
+       "unitPrice": 360,
+       "vatRate": 20
+      }
+     ],
+     "payment": {
+      "cash": [
+       {
+        "amount": 8964,
+        "method": "card",
+        "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8"
+       }
+      ],
+      "rest": "open"
+     },
+     "force": true,
+     "cashForce": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "stock_moves",
+      "account_entries",
+      "fin_events",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "stok satışı",
+   "day": "2026-09-21T09:00:00.094Z",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/stock/stock-7ee072b6-6185-4111-af46-0d4ece8340f3/moves",
+    "body": {
+     "kind": "out",
+     "qty": "1",
+     "unitPrice": "1590",
+     "pay": "cash",
+     "method": "card",
+     "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8",
+     "date": "2026-09-21",
+     "force": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "fin_events",
+      "stock_moves",
+      "account_entries",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "tahsilat",
+   "company": "001",
+   "day": "2026-09-21",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/accounts/account-0a789932-a2ac-4905-ad5b-a052a4ca9462/entries",
+    "body": {
+     "kind": "in",
+     "amount": "2552,64",
+     "date": "2026-09-21",
+     "method": "card",
+     "note": "Tahsilat",
+     "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8",
+     "similarOk": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "fin_events",
+      "account_entries",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "tahsilat",
+   "company": "001",
+   "day": "2026-10-02",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/accounts/account-9785bcfa-b386-4c48-97b6-b4b2094c9e3f/entries",
+    "body": {
+     "kind": "in",
+     "amount": "2815,31",
+     "date": "2026-10-02",
+     "method": "card",
+     "note": "Tahsilat",
+     "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8",
+     "similarOk": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "fin_events",
+      "account_entries",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "tahsilat",
+   "company": "001",
+   "day": "2026-10-15",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/accounts/account-c5e3cbf9-a4ff-483d-8ebe-5d7e6b8cfada/entries",
+    "body": {
+     "kind": "in",
+     "amount": "1673,66",
+     "date": "2026-10-15",
+     "method": "card",
+     "note": "Tahsilat",
+     "invoiceId": "invoice-24df3009-9f90-4edd-a7ee-7bf70e15bbc5",
+     "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8",
+     "similarOk": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "fin_events",
+      "account_entries",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "stok satışı",
+   "day": "2026-10-20T09:00:00.074Z",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/stock/stock-5bd0573e-25ac-43e1-90d4-68c487ebc9dc/moves",
+    "body": {
+     "kind": "out",
+     "qty": "3",
+     "unitPrice": "375",
+     "pay": "cash",
+     "method": "card",
+     "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8",
+     "date": "2026-10-20",
+     "force": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "fin_events",
+      "stock_moves",
+      "account_entries",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "satış 2026-10-21",
+   "day": "2026-10-21T09:00:00.119Z",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/invoices",
+    "body": {
+     "scenario": "service_sale",
+     "accountId": "account-01b229f1-5623-472e-b777-7232af6f3ef9",
+     "issueDate": "2026-10-21",
+     "lines": [
+      {
+       "name": "Yazılım Lisansı",
+       "qty": 3,
+       "unitPrice": 6980,
+       "vatRate": 1
+      },
+      {
+       "name": "Danışmanlık Hizmeti",
+       "qty": 3,
+       "unitPrice": 5090,
+       "vatRate": 20
+      }
+     ],
+     "payment": {
+      "cash": [
+       {
+        "amount": 22499.83,
+        "method": "card",
+        "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8"
+       }
+      ],
+      "rest": "open"
+     },
+     "force": true,
+     "cashForce": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "account_entries",
+      "fin_events",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "satış 2026-10-23",
+   "day": "2026-10-23T09:00:00.114Z",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/invoices",
+    "body": {
+     "scenario": "service_sale",
+     "accountId": "account-a6eb2f28-b92d-418e-ae26-2dd154997404",
+     "issueDate": "2026-10-23",
+     "lines": [
+      {
+       "name": "Muhasebe Hizmeti",
+       "qty": 2,
+       "unitPrice": 2230,
+       "vatRate": 10
+      }
+     ],
+     "payment": {
+      "cash": [
+       {
+        "amount": 2747.36,
+        "method": "card",
+        "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8"
+       }
+      ],
+      "rest": "open"
+     },
+     "force": true,
+     "cashForce": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "account_entries",
+      "fin_events",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "tahsilat",
+   "company": "001",
+   "day": "2026-10-26",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/accounts/account-ef949142-b656-4593-8e89-d8618d0380d5/entries",
+    "body": {
+     "kind": "in",
+     "amount": "916,43",
+     "date": "2026-10-26",
+     "method": "card",
+     "note": "Tahsilat",
+     "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8",
+     "similarOk": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "fin_events",
+      "account_entries",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "tahsilat",
+   "company": "001",
+   "day": "2026-10-26",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/accounts/account-177a9a8f-5ff0-4dea-8d44-3bbb5ce4175d/entries",
+    "body": {
+     "kind": "in",
+     "amount": "3005,68",
+     "date": "2026-10-26",
+     "method": "card",
+     "note": "Tahsilat",
+     "invoiceId": "invoice-987788f9-7d27-41a2-ae8e-afb08f7ed22a",
+     "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8",
+     "similarOk": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "fin_events",
+      "account_entries",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  },
+  {
+   "what": "tahsilat",
+   "company": "001",
+   "day": "2026-10-26",
+   "request": {
+    "company": "001",
+    "url": "/api/workspace/accounts/account-0c91cdec-ba35-4f52-adaf-28a72f652859/entries",
+    "body": {
+     "kind": "in",
+     "amount": "3844,34",
+     "date": "2026-10-26",
+     "method": "card",
+     "note": "Tahsilat",
+     "posId": "pos-07e17101-185c-4e15-b308-4285be3a77c8",
+     "similarOk": true
+    }
+   },
+   "failures": [
+    {
+     "code": "period-lock",
+     "name": "Kapanmış dönem (2026-04-29 ve öncesi) değişemez",
+     "ok": false,
+     "count": 1,
+     "tables": [
+      "fin_events",
+      "account_entries",
+      "pos_sales",
+      "pos_items"
+     ]
+    }
+   ],
+   "error": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Kapanmış dönem (2026-04-29 ve öncesi) değişemez). Hiçbir değişiklik yazılmadı; yöneticinize bildirin."
+  }
+ ],
+ "edm": {
+  "sent": 0,
+  "cancelled": 0,
+  "violations": []
+ },
+ "ms": 43705
+}

@@ -1,0 +1,170 @@
+{
+ "checks": [
+  {
+   "name": "001 şema 36 → 39",
+   "ok": true,
+   "detail": {
+    "version": 39
+   }
+  },
+  {
+   "name": "001 bütünlük ok",
+   "ok": true,
+   "detail": {
+    "integrity": "ok"
+   }
+  },
+  {
+   "name": "001 göç öncesi yedek pre-migration-v39",
+   "ok": true,
+   "detail": {
+    "newBackups": [
+     "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-24-45-324Z-pre-migration-v39.sqlite",
+     "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-25-17-071Z-pre-migration-v39.sqlite"
+    ]
+   }
+  },
+  {
+   "name": "001 yeni tablolar yalnız v37/v38 (edoc_usage, edoc_usage_meta, mobile_access, mobile_codes, mobile_devices, mobile_sessions); eski tablo düşmedi",
+   "ok": true,
+   "detail": {
+    "added": [
+     "edoc_usage",
+     "edoc_usage_meta",
+     "mobile_access",
+     "mobile_codes",
+     "mobile_devices",
+     "mobile_sessions"
+    ],
+    "dropped": []
+   }
+  },
+  {
+   "name": "001 mobil tabloları boş (göç cihaz/izin yaratmaz)",
+   "ok": true,
+   "detail": {
+    "mobile_access": 0,
+    "mobile_codes": 0,
+    "mobile_devices": 0,
+    "mobile_sessions": 0
+   }
+  },
+  {
+   "name": "001 e-Belge sayacı izi boş (geriye dönük doldurma yok)",
+   "ok": true,
+   "detail": {
+    "edoc_usage": 0,
+    "meta": 1
+   }
+  },
+  {
+   "name": "001 eski tabloların satır sayıları aynı (değişenler: yok)",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "002 şema 36 → 39",
+   "ok": true,
+   "detail": {
+    "version": 39
+   }
+  },
+  {
+   "name": "002 bütünlük ok",
+   "ok": true,
+   "detail": {
+    "integrity": "ok"
+   }
+  },
+  {
+   "name": "002 göç öncesi yedek pre-migration-v39",
+   "ok": true,
+   "detail": {
+    "newBackups": [
+     "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-24-45-324Z-pre-migration-v39.sqlite",
+     "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-25-17-071Z-pre-migration-v39.sqlite"
+    ]
+   }
+  },
+  {
+   "name": "002 yeni tablolar yalnız v37/v38 (edoc_usage, edoc_usage_meta, mobile_access, mobile_codes, mobile_devices, mobile_sessions); eski tablo düşmedi",
+   "ok": true,
+   "detail": {
+    "added": [
+     "edoc_usage",
+     "edoc_usage_meta",
+     "mobile_access",
+     "mobile_codes",
+     "mobile_devices",
+     "mobile_sessions"
+    ],
+    "dropped": []
+   }
+  },
+  {
+   "name": "002 mobil tabloları boş (göç cihaz/izin yaratmaz)",
+   "ok": true,
+   "detail": {
+    "mobile_access": 0,
+    "mobile_codes": 0,
+    "mobile_devices": 0,
+    "mobile_sessions": 0
+   }
+  },
+  {
+   "name": "002 e-Belge sayacı izi boş (geriye dönük doldurma yok)",
+   "ok": true,
+   "detail": {
+    "edoc_usage": 0,
+    "meta": 1
+   }
+  },
+  {
+   "name": "002 eski tabloların satır sayıları aynı (değişenler: yok)",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "sirket-001 mobile_devices.enc_key kolonu (v39)",
+   "ok": true,
+   "detail": {
+    "cols": [
+     "id",
+     "user_id",
+     "name",
+     "kind",
+     "secret_hash",
+     "public_key",
+     "created_at",
+     "created_by",
+     "last_seen_at",
+     "revoked_at",
+     "revoked_by",
+     "revoke_reason",
+     "enc_key"
+    ]
+   }
+  },
+  {
+   "name": "sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120 mobile_devices.enc_key kolonu (v39)",
+   "ok": true,
+   "detail": {
+    "cols": [
+     "id",
+     "user_id",
+     "name",
+     "kind",
+     "secret_hash",
+     "public_key",
+     "created_at",
+     "created_by",
+     "last_seen_at",
+     "revoked_at",
+     "revoked_by",
+     "revoke_reason",
+     "enc_key"
+    ]
+   }
+  }
+ ]
+}

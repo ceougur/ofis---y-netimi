@@ -1,0 +1,13 @@
+  ✓ 001 göçten sonra v2.4.6 açınca gösterdiği = göçten önce gösterdiği (fark yok)
+  ✓ 001 v2.4.6 açılışı şemayı geri almaz (39 kalır; 39), mobil tablolar duruyor
+  ✓ 001 v2.4.6'dan sonra yeniden aday: gösterdiği = göç ölçüsü (fark yok)
+  ✓ 002 göçten sonra v2.4.6 açınca gösterdiği = göçten önce gösterdiği (fark yok)
+  ✓ 002 v2.4.6 açılışı şemayı geri almaz (39 kalır; 39), mobil tablolar duruyor
+  ✓ 002 v2.4.6'dan sonra yeniden aday: gösterdiği = göç ölçüsü (fark yok)
+# geri dönüş (aday → v2.4.6 → aday)
+# tests 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

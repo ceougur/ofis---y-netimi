@@ -1,0 +1,20 @@
+  ✓ 001 EDM sayacı boş başlar: pencere toplamı 0, iz 0, eşitlenen 0 (eski veride e-Belge kartı 1199, gönderilmiş görünen 343)
+  ✓ 002 EDM sayacı boş başlar: pencere toplamı 0, iz 0, eşitlenen 0 (eski veride e-Belge kartı 631, gönderilmiş görünen 141)
+  ✓ 001 göçten sonra: yeni e-Arşiv (200) + bekleyen 5 → Tümünü Gönder 6 sonuç, kalan 0; EDM'nin kabul ettiği 6 (benzersiz 6) = sayaç 2026-10 test toplamı 6 (e-Arşiv 5, e-Fatura 1, e-SMM 0); önceki aylar 0, canlı 0
+  ✓ uzaktan erişim dinleyicisi açıldı (http://127.0.0.1:40573)
+  ✓ göçmüş veride eşli cihaz yok (kullanılan 0 / sınır 3, lisans true)
+  ✓ admin: Uzaktan Bağlanabilir 200, karekod 200, eşleme 200, uzak giriş 200
+  ✓ telefondan oturum (200) iki şirketi görür (001, 002)
+  ✓ 001 telefondaki Kasa = masaüstü Kasa (göçmüş veri; 200)
+  ✓ 001 telefondaki cari kartı = masaüstü (Mehmet Işık, bakiye 3600)
+  ✓ 002 telefondaki Kasa = masaüstü Kasa (göçmüş veri; 200)
+  ✓ 002 telefondaki cari kartı = masaüstü (Mehmet Uğurlu, bakiye 21234.8)
+  ✓ 3 cihaz sınırı (program başına): 2. ve 3. eşleme 200 (200, 200); 4. karekod/eşleme reddedilir (409/0)
+  ✓ cihazlar ortak katmanda: 001 3, 002 0 (002'nin tablosu boş kalır)
+# yeni özellikler eski veride (EDM sayacı, mobil eşleme, 3 cihaz)
+# tests 13
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

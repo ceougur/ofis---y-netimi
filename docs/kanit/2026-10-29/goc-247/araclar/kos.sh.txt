@@ -1,0 +1,10 @@
+#!/bin/bash
+# kullanım: kos.sh <kanıt adı> <adım> [adım argümanları…]  — adayın çalışma ağacından, kanit.mjs kos ile
+S=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/goc247-20261029T1215
+R=/home/user/ofis---y-netimi/.claude/worktrees/agent-a033e243fc1fdff5b
+ad=$1; shift
+cd "$R" || exit 9
+TMPDIR=$S/tmp HUKUK_LICENSE_URL=http://127.0.0.1:9 node tools/kanit.mjs kos "goc-247/$ad" --sure 90 -- node --disable-warning=ExperimentalWarning "$S/arac/goc247.mjs" "$@" --repo "$R" --kok "$S/kok" > "$S/$ad.out" 2>&1
+code=$?
+echo "$ad cikis $code"
+exit $code
