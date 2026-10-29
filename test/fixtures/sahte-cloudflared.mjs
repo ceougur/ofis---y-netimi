@@ -4,8 +4,9 @@
 // Kullanım (argsPrefix): node sahte-cloudflared.mjs --sahte-log <dosya> --sahte-mod <bagli|coker|torun> [cloudflared argümanları …]
 //   bagli: "Registered tunnel connection" yazar, açık kalır;  coker: 150 ms sonra çıkış kodu 1 (bağlanmadan çöker);
 //   torun: bagli + uyuyan bir torun süreç açar (süreç AĞACI kapanıyor mu?).
-// Her açılışta günlüğe bir JSON satırı: { pid, mod, port, args, tokenPresent, torun }.
+// Her açılışta günlüğe bir JSON satırı: { pid, mod, port, args, tokenPresent, tokenSha256 (belirtecin özeti; belirteç yazılmaz), torun }.
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import { appendFileSync, readFileSync } from "node:fs";
 import http from "node:http";
 
@@ -17,7 +18,7 @@ const opt = name => {
 const logFile = opt("--sahte-log");
 const mode = opt("--sahte-mod") || "bagli";
 const configFile = opt("--config");
-const record = extra => logFile && appendFileSync(logFile, `${JSON.stringify({ pid: process.pid, mod: mode, args: argv, tokenPresent: Boolean(process.env.TUNNEL_TOKEN), tokenLength: String(process.env.TUNNEL_TOKEN || "").length, ...extra })}\n`);
+const record = extra => logFile && appendFileSync(logFile, `${JSON.stringify({ pid: process.pid, mod: mode, args: argv, tokenPresent: Boolean(process.env.TUNNEL_TOKEN), tokenLength: String(process.env.TUNNEL_TOKEN || "").length, tokenSha256: process.env.TUNNEL_TOKEN ? createHash("sha256").update(process.env.TUNNEL_TOKEN).digest("hex") : "", ...extra })}\n`);
 
 process.on("SIGTERM", () => process.exit(0));
 process.on("SIGINT", () => process.exit(0));
