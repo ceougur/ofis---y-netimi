@@ -1,0 +1,32 @@
+{
+  "ad": "248-g6-e2e-senaryo-211",
+  "komut": "npm run test:senaryo-211",
+  "commit": "998d467866ae9be0cb9d884473ae1494123d15f7",
+  "dal": "is/sablon-248",
+  "kirli": 0,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T14:11:42.569Z",
+  "sure_sn": 104.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 59,
+    "gecen": 59,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g6-e2e-senaryo-211.log",
+  "klasor": "/home/user/wt-sablon-248",
+  "ham_cikti_sha256": "c483ffe910d70c5d27a63f9a2f978993abb86741e5c014a2ab6853ce5fa922ff",
+  "ham_cikti_bayt": 5154
+}
