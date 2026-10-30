@@ -169,7 +169,7 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
       return Infinity;
     }
   };
-  async function kayitGonder({ ekCihazlar = [], zorla = false } = {}) {
+  async function kayitGonder({ ekCihazlar = [], zorla = false, ozetTetikle = true } = {}) {
     await hazirla();
     const ilk = license?.tokenEnvelope?.() || null;
     // 50 dk: kapıcının 1 saatlik sınırına 10 dk pay; etkin ofiste saatte en çok bir lisans sorgusu (lisans servisine yük bindirmez).
@@ -191,6 +191,14 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     if (sonuc.ok) {
       durum.sonKayitImzasi = imza;
       durum.kayit = sonuc.data;
+      // 2.4.8 K1 (b): kapıcıda bu ofisin özeti yoksa (makine devralındı: kapatılırken silinmişti) ve şifreli özeti alacak cihaz varsa özet HEMEN yüklenir —
+      // telefon sunucu kapalıyken boş kalmasın. Yüklemenin kendi kaydı bunu yeniden tetiklemez (ozetTetikle false).
+      if (ozetTetikle && sonuc.data?.ozet === false && !durum.ozetIstendi && cihazlar().some(d => d.encKey)) {
+        durum.ozetIstendi = true;
+        sirala("devralma").finally(() => {
+          durum.ozetIstendi = false;
+        });
+      }
     } else durum.sonKayitImzasi = "";
     return sonuc;
   }
@@ -217,7 +225,7 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
       if (!sonuc.ok) log.warn?.(`Mobil özet yüklenemedi (${neden}): ${sonuc.code} ${sonuc.error || ""}`);
       return sonuc;
     };
-    const kayitSonucu = await kayitGonder({ zorla: neden === "guvenlik" || neden === "elle" });
+    const kayitSonucu = await kayitGonder({ zorla: neden === "guvenlik" || neden === "elle", ozetTetikle: false });
     if (!kayitSonucu.ok) return sonucYaz(kayitSonucu);
     let writable = false;
     try {

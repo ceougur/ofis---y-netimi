@@ -71,7 +71,8 @@ export async function ofisiSil(env, kayit, { neden, simdi, cloudflare = null, al
   }
   if (!(await ayniMi(env, ofis, isaretli.etag))) return false;
   // Cloudflare ayarı yoksa bu kapıcı tünel / DNS açmamıştır (tünel ucu ayarsız 500 verir): yalnız R2 kaydı silinir.
-  if (cloudflare) await ofisTuneliniSil(cloudflare, ofis, alan);
+  // K1 (a) ilkesi: her Cloudflare silmesinden hemen önce kayıt yeniden okunur (program yenilenen lisansla kaydolduysa durulur).
+  if (cloudflare && !(await ofisTuneliniSil(cloudflare, ofis, alan, () => ayniMi(env, ofis, isaretli.etag)))) return false;
   // Cloudflare yanıtı beklenirken program yeniden kaydolduysa özet ve kayıt kalır (tünel yöneticisi bağlanamayınca kapıcıdan yeni tünel ister).
   if (!(await ayniMi(env, ofis, isaretli.etag))) return false;
   await env.OZET.delete(ozetAnahtari(ofis));

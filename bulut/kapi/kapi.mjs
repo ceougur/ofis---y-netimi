@@ -44,7 +44,7 @@ import {
   yolSorunu,
 } from "../../server/lib/kapi-protokol.mjs";
 import { CIHAZ_CEREZI, MOBIL_CEREZLERI, OTURUM_CEREZI, cerezCakisiyor, cerezCikar, cerezOku, cerezSilSatirlari, setCookieAdi, setCookieAlanli } from "../../server/lib/mobil-cerez.mjs";
-import { KAPI_HIZ, MakineHatasi, guncelMi, kayitSonrasi, makineKaydi, metaAnahtari, ozetAnahtari, silinenBirlestir, yeniOfisDenetle, yeniOfisSay } from "./makine.mjs";
+import { KAPI_HIZ, MakineHatasi, guncelMi, kayitSonrasi, makineKaydi, metaAnahtari, ozetAnahtari, silinenBirlestir } from "./makine.mjs";
 import { TUNEL_YOLU, cloudflareVarsa, ofisTuneliniSil, tunelIstegi } from "./tunel.mjs"; // 2.4.7 M4: ofis tüneli (ayrı dosya)
 import { mezarAnahtari, mezarOku, mobilTemizlik } from "./temizlik.mjs"; // 2.4.8 L1: mobil kaydın kendiliğinden silinmesi (zamanlanmış tur)
 
@@ -185,7 +185,7 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
   const temizleyici = env => {
     const cf = cloudflare || cloudflareVarsa(env);
     const alan = String(env.OFIS_ALANI || "destekofis.net").toLowerCase();
-    return cf ? eski => ofisTuneliniSil(cf, eski, alan) : null;
+    return cf ? (eski, devam) => ofisTuneliniSil(cf, eski, alan, devam) : null;
   };
 
   const guvenilen = env => {
@@ -388,11 +388,11 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     meta.silinen = silinenBirlestir([...eskiKimlikler, ...(silindi ? temiz.map(c => c.id) : [])].filter(id => !guncel.includes(id)), eski?.silinen, guncel);
     // 2.4.8 L1: engelin kapıcıca ilk görüldüğü an (kayıt silme süresi engelden 30 gün; temizlik.mjs). Engel kalkınca düşer.
     if (gorunum.iddia?.status === "blocked") meta.engel = eski?.engel?.ms ? eski.engel : { ms: now() };
-    // B3: makine → ofis tek eşleme (yeni ofis günlük tavanı, makine başına saatlik kayıt ve günlük ofis değişimi sınırı) ofis kaydından ÖNCE; değişimde
-    // önceki ofis kayıttan sonra kapatılır (kayitSonrasi).
-    if (!mevcut) await yeniOfisDenetle(env, now());
+    // B3: makine → ofis tek eşleme (makine başına saatlik kayıt ve günlük ofis değişimi sınırı) ofis kaydından ÖNCE; değişimde önceki ofis kayıttan sonra
+    // kapatılır (kayitSonrasi). 2.4.8 K1 (c): kapıcı genelindeki günlük yeni ofis tavanı kayıttan TÜNEL/DNS AÇILIŞINA taşındı (bulut/kapi/tunel.mjs) — her
+    // kurulum açılışta kaydolduğundan tavan "günlük yeni kurulum" sayıyor, imzalı deneme belirteçleriyle doldurulunca o günün kurulumlarının mobili kapanıyordu;
+    // korunan kaynak DNS kotası (ücretsiz alanda 200 kayıt) ve yalnız tünel açılışında harcanır.
     await makineKaydi(env, { makine: iddia.machine, ofis, simdi: now() });
-    if (!mevcut) await yeniOfisSay(env, now());
     const yazildi = await env.OZET.put(metaAnahtari(ofis), JSON.stringify(meta), {
       httpMetadata: { contentType: "application/json" },
       ...(mevcut ? { onlyIf: { etagMatches: mevcut.etag } } : {}),
@@ -402,7 +402,10 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     if (mezar) await env.OZET.delete(mezarAnahtari(ofis));
     await kayitSonrasi(env, { makine: iddia.machine, ofis, simdi: now(), temizle: temizleyici(env) });
     if (cihazHatasi) at(cihazHatasi, { cihaz: meta.cihazlar.length, sinir, ...(cihazHatasi === "kapi-lisans" ? lisansEki(gorunum) : {}), ...(silindi ? { silindi } : {}) });
-    return json(200, { ok: true, data: { ofis, cihaz: meta.cihazlar.length, sinir, ...(silindi ? { silindi } : {}) } });
+    // 2.4.8 K1 (b) (2.4.7 dar kontrol 2 KUŞKU): ofisin özeti kapıcıda var mı — makineyi geri alan (devralan) ofisin özeti kapatılırken silinmişti; program bunu
+    // görünce özeti HEMEN yükler (bir sonraki veri değişikliğini beklemez).
+    const ozetVar = Boolean(await env.OZET.head(ozetAnahtari(ofis)));
+    return json(200, { ok: true, data: { ofis, cihaz: meta.cihazlar.length, sinir, ozet: ozetVar, ...(silindi ? { silindi } : {}) } });
   }
 
   // B3: ofis devre dışıysa ya da makinesinin eşlemesi başka ofisi gösteriyorsa (yarışta kapanmamış eski ofis) 410; ikinci durumda ofis kapatılır.

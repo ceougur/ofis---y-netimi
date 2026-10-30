@@ -1,0 +1,32 @@
+{
+  "ad": "248-kapi-k1-dar",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-kapi-kapsam.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-tek-kaynak.test.mjs test/ci-kapi-listesi.test.mjs test/form-izolasyon.test.mjs test/gg243-cekirdek-kaynak.test.mjs test/kapi-247.test.mjs test/kapi-donen-ofis-247.test.mjs test/kapi-gg247-b1.test.mjs test/kapi-gg247-b3.test.mjs test/kapi-gg247-b4.test.mjs test/kapi-lisans-hosgoru-248.test.mjs test/kapi-para-245.test.mjs test/kapi-tunel-247.test.mjs test/kapi-tunel-uctan-uca-247.test.mjs test/kapi-uyari-245.test.mjs test/license.test.mjs test/lisans-nobetci.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/mobil-247.test.mjs test/mobil-deneme-bitis-247.test.mjs test/mobil-eslesme-247.test.mjs test/mobil-gg247-b2.test.mjs test/mobil-gg247-b2b.test.mjs test/mobil-gg247-b5.test.mjs test/mobil-karekod-248.test.mjs test/mobil-lisans-hosgoru-248.test.mjs test/mobil-ofis-kaydi-247.test.mjs test/mobil-ozet-247.test.mjs test/mobil-ozet-olcek-247.test.mjs test/mobil-yazma-247.test.mjs test/platform-tasinabilirlik.test.mjs test/takvim-pil-kaynak.test.mjs test/tunel-durum-248.test.mjs test/tunel-indirici-247.test.mjs test/tunel-saat-247.test.mjs test/tunel-surec-247.test.mjs test/tunel-yapilandirma-247.test.mjs test/tunel-yonetici-247.test.mjs test/vade-takip-kaynak-yetki-210.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/yazim-duzeni.test.mjs test/kapi-temizlik-yarisi-248.test.mjs",
+  "commit": "ac5ca55164225441b2fc0f20510f3ae8a0efe91f",
+  "dal": "is/kapi-248",
+  "kirli": 8,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:30:33.532Z",
+  "sure_sn": 115.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 412,
+    "gecen": 412,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-kapi-k1-dar.log",
+  "klasor": "/home/user/wt-kapi-248",
+  "ham_cikti_sha256": "11c03594f1a90bacec18f0a6670864030f166dba5ee2dd4be148ab5fa2a334c9",
+  "ham_cikti_bayt": 152134
+}

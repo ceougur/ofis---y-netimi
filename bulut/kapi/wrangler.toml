@@ -15,7 +15,7 @@ routes = [
 ]
 
 # Kovadaki anahtarlar: ofis/<ofis>/meta.json + ozet.json (M3), makine/<makine>.json (lisans makinesi → TEK ofis + hız sayaçları; bağımsız gözden geçirme B3,
-# bulut/kapi/makine.mjs), sayac/yeni-ofis/<gün>.json (günlük yeni ofis tavanı; günde bir küçük nesne — istenirse kovaya "sayac/" için 30 günlük silme kuralı).
+# bulut/kapi/makine.mjs), sayac/yeni-ofis/<gün>.json (2.4.8 K1 (c): günlük yeni TÜNEL + DNS tavanı; günde bir küçük nesne — istenirse kovaya "sayac/" için 30 günlük silme kuralı).
 [[r2_buckets]]
 binding = "OZET"
 bucket_name = "destekofis-ozet"

@@ -10,6 +10,7 @@ K = 'bulut/kapi/kapi.mjs'
 T = 'bulut/kapi/temizlik.mjs'
 L1 = ['test/kapi-lisans-hosgoru-248.test.mjs', 'test/mobil-lisans-hosgoru-248.test.mjs']
 TUN = ['test/tunel-yonetici-247.test.mjs']
+K1 = ['test/kapi-temizlik-yarisi-248.test.mjs', 'test/kapi-gg247-b3.test.mjs']
 MUTS = [
     # L1 — kural (kapi-protokol; program ve kapıcı aynı işlev)
     ("ML1 hoşgörü denemeye de verilir", P, 'if (tur === "license" && t < bitis + MOBIL_HAK.hosgoruMs) {', 'if (t < bitis + MOBIL_HAK.hosgoruMs) {', L1),
@@ -32,6 +33,13 @@ MUTS = [
     ("ML15 uzak dinleyici hoşgörüde kapanır", 'server/lib/mobile-remote.mjs', 'if (isPair ? !licenseOk() : !accessOk())', 'if (!licenseOk())', L1),
     ("ML16 program kapıcının 'silindi' bildirimini yok sayar", 'server/lib/mobile-sync.mjs', '    if (silindi) kapiKaydiSilindi(silindi);\n', '', L1),
     ("ML17 tünel hoşgörüde kapanır (yazılabilirlik)", 'server/lib/tunnel/manager.mjs', 'return Boolean(license?.status && mobileRightOf(license.status()).acik);', 'return Boolean(license?.status?.().writable);', TUN),
+    # K1 — kapıcı temizlik yarışı
+    ("MK1a temizlikte makine eşlemesi yeniden okunmaz", 'bulut/kapi/makine.mjs', 'const devam = async () => (await makineOku(env, makine))?.ofis !== x;', 'const devam = async () => true;', K1),
+    ("MK1b tünel silmesinden (bağlantılardan sonra) önce eşleme okunmaz", 'bulut/kapi/tunel.mjs', '      if (!(await devam())) return false;\n      await call("DELETE", `/accounts/${accountId}/cfd_tunnel/${id}`);', '      await call("DELETE", `/accounts/${accountId}/cfd_tunnel/${id}`);', K1),
+    ("MK1c DNS silmesinden önce eşleme okunmaz", 'bulut/kapi/tunel.mjs', '        if (!(await devam())) return false;\n        await call("DELETE", `/zones/${zoneId}/dns_records/${item.id}`);', '        await call("DELETE", `/zones/${zoneId}/dns_records/${item.id}`);', K1),
+    ("MK2a kapıcı özetin yokluğunu bildirmez", K, 'ozet: ozetVar,', 'ozet: true,', K1),
+    ("MK2b program devralmada özeti yüklemez", 'server/lib/mobile-sync.mjs', 'if (ozetTetikle && sonuc.data?.ozet === false && !durum.ozetIstendi', 'if (false && ozetTetikle && sonuc.data?.ozet === false && !durum.ozetIstendi', K1),
+    ("MK3 günlük yeni tünel tavanı denetlenmez", 'bulut/kapi/tunel.mjs', '      await yeniOfisDenetle(env, now());\n', '', K1),
 ]
 SEC = re.compile(os.environ.get('KAPI248_MUT_SEC') or '.')
 results = []
