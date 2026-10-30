@@ -264,7 +264,7 @@ describe("2.4.8 W7 taşınamaz bağlantı (B) — köken kuralı: sayfa, program
     assert.ok(satir, "kapıcı sayfasında yerelKoken kuralı yok (sır her kökenden kabul edilir)");
     const sayfaKurali = new Function(`${satir[0]}; return yerelKoken;`)();
     const ekranKaynagi = readFileSync(new URL("../client/assets/hof-whatsapp-ayar.js", import.meta.url), "utf8");
-    const parca = /\/\/ <yerel-koken>\n([\s\S]*?)\n\s*\/\/ <\/yerel-koken>/.exec(ekranKaynagi);
+    const parca = /\/\/ <yerel-koken>\r?\n([\s\S]*?)\r?\n\s*\/\/ <\/yerel-koken>/.exec(ekranKaynagi); // ders 27: Windows CRLF
     assert.ok(parca, "ekranda isLocalOrigin kuralı yok");
     const ekranKurali = new Function(`${parca[1]}; return isLocalOrigin;`)();
     assert.equal(typeof embedded.isLocalOrigin, "function", "programda isLocalOrigin yok");
