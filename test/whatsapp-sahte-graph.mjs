@@ -50,6 +50,10 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
     hideFromList: false,
     rejectDetailFields: false,
     created: 0,
+    // 2.4.8 T2-5 (aynı el — kâhin DEĞİL): şablonun teslim süresi (message_send_ttl_seconds) açarken ve düzenlerken (POST /<TEMPLATE_ID>) kaydedilir;
+    // ttlRange: [en az, en çok] verilirse dışındaki değer 100 ile reddedilir (D0-W5-8: izinli aralık belgede okunmadı). templateEdits: düzenleme istekleri.
+    ttlRange: null,
+    templateEdits: [],
   };
   // Çok parçalı gövdeden alanlar (ad → { value | filename, type, data }).
   const multipart = (raw, type) => {
@@ -150,8 +154,10 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
         if (footer && String(footer.text || "").length > 60) return reply(400, metaError(100, "Footer text too long"));
         const body = components.find(item => String(item.type).toUpperCase() === "BODY");
         if (!body || String(body.text || "").length > 1024) return reply(400, metaError(100, "Invalid parameter: body"));
+        const ttl = sent.message_send_ttl_seconds;
+        if (ttl !== undefined && (!Number.isInteger(ttl) || (state.ttlRange && (ttl < state.ttlRange[0] || ttl > state.ttlRange[1])))) return reply(400, metaError(100, "Invalid parameter: message_send_ttl_seconds"));
         state.created += 1;
-        const made = { name: sent.name, language: sent.language, status: state.createStatus, category: state.forceCategory || sent.category, id: `91000000000${String(state.created).padStart(4, "0")}`, components, quality_score: { score: "UNKNOWN", date: 1761800000 } };
+        const made = { name: sent.name, language: sent.language, status: state.createStatus, category: state.forceCategory || sent.category, id: `91000000000${String(state.created).padStart(4, "0")}`, components, quality_score: { score: "UNKNOWN", date: 1761800000 }, ...(ttl !== undefined ? { message_send_ttl_seconds: ttl } : {}) };
         state.templates.push(made);
         return reply(200, { id: made.id, status: made.status, category: made.category });
       }
@@ -163,6 +169,17 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
         if (parts[0] !== wabaId) return reply(400, metaError(100, `Unsupported get request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
         if (state.rejectDetailFields && /quality_score|rejected_reason|components/.test(entry.query.fields || "")) return reply(400, metaError(100, "(#100) Tried accessing nonexisting field (rejected_reason) on node type (WhatsAppBusinessHSM)"));
         return reply(200, { data: state.hideFromList ? [] : state.templates, paging: { cursors: { before: "QVFIUb", after: "QVFIUa" } } });
+      }
+      // 2.4.8 T2-5: mevcut şablonun düzenlenmesi (yalnız teslim süresi); APPROVED / REJECTED / PAUSED düzenlenebilir.
+      if (req.method === "POST" && parts.length === 1 && state.templates.some(item => item.id === parts[0])) {
+        const tpl = state.templates.find(item => item.id === parts[0]);
+        const sent = entry.body || {};
+        state.templateEdits.push({ id: parts[0], body: sent });
+        if (!["APPROVED", "REJECTED", "PAUSED"].includes(String(tpl.status).toUpperCase())) return reply(400, metaError(100, "Template cannot be edited in its current status"));
+        const ttl = sent.message_send_ttl_seconds;
+        if (!Number.isInteger(ttl) || (state.ttlRange && (ttl < state.ttlRange[0] || ttl > state.ttlRange[1]))) return reply(400, metaError(100, "Invalid parameter: message_send_ttl_seconds"));
+        tpl.message_send_ttl_seconds = ttl;
+        return reply(200, { success: true });
       }
       if (req.method === "GET" && parts.length === 1) {
         if (parts[0] !== phoneNumberId) return reply(400, metaError(100, `Unsupported get request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));

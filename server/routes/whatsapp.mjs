@@ -251,7 +251,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   });
 
   // ---------- 2.4.8 W5: bilgilendirme şablonları (routes/whatsapp-sablon.mjs) ----------
-  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection });
+  // T2-5: şablona yazılan teslim süresi gönderim ayarından (kuyruk aşağıda kurulur; istek anında okunur).
+  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection, ttlHours: () => queue?.settings?.().ttlHours });
 
   // ---------- 2.4.8 W4: gönderim ekranının durumu ----------
   router.get("/api/workspace/whatsapp/sending-status", async ({ req, res }) => {

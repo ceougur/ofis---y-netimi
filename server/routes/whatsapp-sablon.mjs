@@ -12,8 +12,8 @@ import { systemClock } from "../lib/clock.mjs";
 import { buildPrivacyNotice, privacyNoticePdf } from "../lib/whatsapp/aydinlatma-metni.mjs";
 import { createWhatsappTemplates } from "../lib/whatsapp/templates.mjs";
 
-export function registerWhatsappTemplateRoutes(router, { store, auth, audit, config = {}, license = null, now = systemClock, connection }) {
-  const templates = createWhatsappTemplates({ store, config, audit, connection, now });
+export function registerWhatsappTemplateRoutes(router, { store, auth, audit, config = {}, license = null, now = systemClock, connection, ttlHours }) {
+  const templates = createWhatsappTemplates({ store, config, audit, connection, now, ttlHours });
   const writable = () => !license || license.writable();
   router.get("/api/workspace/whatsapp/templates", async ({ req, res }) => {
     auth.requirePermission(req, "system.manage");

@@ -64,7 +64,7 @@ export const META_D0 = Object.freeze({
   ecosystemCode: 131049,
   // D0-11: İleti ömrü (TTL) ileti isteğinde değil ŞABLONDA tanımlanır (message_send_ttl_seconds; şablonları W5 açar). Program kendi "Süresi Doldu"
   // kararını iç kuralla verir (plan §7a madde 16): durum bildirimi yolu çalışıyorsa (son 7 günde en az bir bildirim geldi) teslim olmayan ileti TTL
-  // (S2 A: 3 gün) + 1 saatte "Süresi Doldu"; bildirim yolu yoksa "Meta Kabul Etti"de kalır.
+  // (S2 A: 3 gün) + 1 saatte "Süresi Doldu"; bildirim yolu yoksa "Meta Kabul Etti"de kalır. Şablona TTL'yi programın kendisi yazar (T2-5): D0-W5-8.
   defaultTtlHours: 72,
   // D0-12: Medya yükleme (POST /<PHONE_NUMBER_ID>/media, multipart: messaging_product, type, file) yanıtı { id }; silme (DELETE /<MEDIA_ID>) { success: true }.
   // Zaten silinmiş / süresi dolmuş medyanın silinmesi hata kodu 100 (ya da HTTP 404) döner varsayımı → program "silinmiş" sayar.
@@ -426,6 +426,14 @@ export const META_D0_W5 = Object.freeze({
   maxUploadBytes: 5_000_000,
   // Şablon adı kuralı (template-management: ^[a-z0-9_]+$, en çok 512).
   templateName: /^[a-z0-9_]{1,512}$/,
+  // D0-W5-8 (T2-5; S2 A "utility TTL 3 gün"): iletinin ömrü (TTL) ŞABLONDA `message_send_ttl_seconds` (saniye) alanıyla verilir — açarken (POST /<WABA>/message_templates)
+  // ve düzenlerken (POST /<TEMPLATE_ID>; template-management "yalnız kategori, components ya da time-to-live düzenlenebilir", düzenlenebilen durumlar APPROVED /
+  // REJECTED / PAUSED; onaylı şablonda 24 saatte 1, 30 günde 10 düzenleme; düzenlemeden sonra Meta yeniden onaylar). Alan adı send-messages "Customizing TTL for
+  // templates" bağlantısından (time-to-live sayfası yerelde yok); utility şablonda İZİNLİ ARALIK OKUNMADI. Program ayardaki teslim süresini (varsayılan 72 saat)
+  // gönderir; Meta alanı ya da değeri reddederse (100) şablon BİR KEZ TTL'siz açılır (Meta varsayılanı 30 gün) ve kartta uyarı çıkar — gönderim kapanmaz.
+  // Şablon listesi bu alanı istemez (tanınmayan alan bütün ayrıntılı listeyi temel alanlara düşürür — D0-W5-5): uygulanan değer programın kaydında tutulur.
+  ttlField: "message_send_ttl_seconds",
+  ttlEditable: Object.freeze(["APPROVED", "REJECTED", "PAUSED"]),
 });
 
 // Program YALNIZ bilgilendirme şablonu açar (ürün kararı: kampanya / pazarlama şablonu yok). Kategori bu istemcide de kilitlidir: çağıran yanlışlıkla
@@ -433,7 +441,7 @@ export const META_D0_W5 = Object.freeze({
 export const PROGRAM_TEMPLATE_CATEGORY = "UTILITY";
 
 /**
- * createMetaTemplates({ baseUrl, fetchImpl, openToken, timeoutMs }) → { details, createTemplate, resumableUpload }.
+ * createMetaTemplates({ baseUrl, fetchImpl, openToken, timeoutMs }) → { details, createTemplate, editTemplateTtl, resumableUpload }.
  * Seçenekler createMetaGraph ile aynıdır; belirteç yine yalnız istek anında açılır.
  */
 export function createMetaTemplates(options = {}) {
@@ -472,12 +480,23 @@ export function createMetaTemplates(options = {}) {
   }
 
   // Şablon açma (template-management "Create templates"): yalnız UTILITY ve geçerli ad; yoksa istek yapılmaz.
-  async function createTemplate(wabaId, { name, language, category, components } = {}) {
+  // ttlSeconds (T2-5, D0-W5-8): verilirse istekte message_send_ttl_seconds.
+  async function createTemplate(wabaId, { name, language, category, components, ttlSeconds = null } = {}) {
     if (category !== PROGRAM_TEMPLATE_CATEGORY) throw refuse("Program yalnız bilgilendirme (Utility) şablonu açar; pazarlama ya da başka türde şablon açılmaz.");
     if (!META_D0_W5.templateName.test(String(name || ""))) throw refuse("Şablon adı geçersiz (yalnız küçük harf, rakam ve alt çizgi).");
     if (!Array.isArray(components) || !components.length) throw refuse("Şablonun içeriği boş.");
-    const json = await graph.request("POST", [wabaId, "message_templates"], { body: { name, language, category, components } });
+    const body = { name, language, category, components };
+    if (Number.isInteger(ttlSeconds) && ttlSeconds > 0) body[META_D0_W5.ttlField] = ttlSeconds;
+    const json = await graph.request("POST", [wabaId, "message_templates"], { body });
     return { id: String(json.id || ""), status: String(json.status || ""), category: String(json.category || "") };
+  }
+
+  // Mevcut şablonun teslim süresini günceller (T2-5, D0-W5-8): yalnız TTL alanı gönderilir (components / kategori DEĞİŞMEZ).
+  async function editTemplateTtl(templateId, ttlSeconds) {
+    if (!META_D0.idPattern.test(String(templateId || ""))) throw refuse("Şablon kimliği geçersiz.");
+    if (!Number.isInteger(ttlSeconds) || ttlSeconds <= 0) throw refuse("Teslim süresi geçersiz.");
+    const json = await graph.request("POST", [String(templateId)], { body: { [META_D0_W5.ttlField]: ttlSeconds } });
+    return json.success === true || json.success === "true";
   }
 
   // Resumable Upload (D0-W5-2…4): dosya baytları → şablon örneği tanıtıcısı (header_handle).
@@ -555,5 +574,5 @@ export function createMetaTemplates(options = {}) {
     return json;
   }
 
-  return { details, createTemplate, resumableUpload };
+  return { details, createTemplate, editTemplateTtl, resumableUpload };
 }
