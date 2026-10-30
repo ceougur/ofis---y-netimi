@@ -1,0 +1,32 @@
+{
+  "ad": "248-g5-ana-birlesim",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/whatsapp-213.test.mjs test/whatsapp-meta-graph.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/whatsapp-w1-baglanti.test.mjs test/whatsapp-w2-cekirdek-248.test.mjs test/whatsapp-w2-surec-olumu-248.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-w3-ekstre-248.test.mjs test/whatsapp-w5-sablon.test.mjs test/whatsapp-w6-aydinlatma.test.mjs test/whatsapp-w9-kanca-248.test.mjs test/kapi-247.test.mjs test/tunel-durum-248.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/bagimsiz/whatsapp-248/sahte-meta/sunucu.test.mjs test/mutabakat-yil-donumu.test.mjs",
+  "commit": "25307e9e8d19564dea9c88feb8dc30b4ee01a3ce",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T17:21:49.956Z",
+  "sure_sn": 53.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 226,
+    "gecen": 226,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-ana-birlesim.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "4f1b58bc744cc3c7d27e67d8af6e402150e4b10abc1edea0a866ca77b4ae4559",
+  "ham_cikti_bayt": 83032
+}
