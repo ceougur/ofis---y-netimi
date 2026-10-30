@@ -14,7 +14,7 @@
 //   Playwright yönlendirmesi, gerçek Meta'ya istek YOK; dış istek sayılır ve 0 beklenir):
 //   A7 WhatsApp'ı Bağla → pencere → program sırrı postMessage ile verir → sayfa "Bağlanacak Program: <firma>" (HTML yorumlanmaz) → Facebook ile Devam Et →
 //      kapıcı kodu değiştirir → program "Bağlı" (WhatsApp'ı Bağla yolu); sır hiçbir adreste yok; Yönetim sayfası COOP same-origin-allow-popups; kapıcı sayfası çerçeveye
-//      alınamaz (frame-ancestors 'none', X-Frame-Options DENY).
+//      alınamaz (frame-ancestors 'none', X-Frame-Options DENY). App ID kapıcıdan gelir: Ekstre şablonunun örnek PDF'i /<App ID>/uploads ile yüklenir.
 //   A8 TAŞINAN BAĞLANTI (pencereyi açan yok — bağlantı e-postayla gelmiş): "Bu bağlantı yalnız DestekOfis programından açılır…"; SDK yüklenmez, kapıcıya istek gitmez.
 //   A9 SALDIRGANIN SAYFASI (genel köken) pencereyi açar ve DOĞRU sırrı postMessage ile verir: yok sayılır; aynı ileti; SDK yok, kapıcıya istek yok.
 //   A10 program yerel olmayan adla açılmış (uzak.ofis.example): WhatsApp'ı Bağla pasif + "ofisteki bilgisayardan yapılır" yazısı; Elle Bağla etkin; API 409.
@@ -363,6 +363,15 @@ await step("A7 WhatsApp'ı Bağla uçtan uca: pencere → sır postMessage ile �
   await page2.bringToFront();
   ok((await page2.waitForFunction(() => document.querySelector("[data-wa-state]")?.textContent.trim() === "Bağlı", null, { timeout: 30000 }).then(() => true)), "program Bağlı");
   ok((await page2.textContent('[data-wa-fact="mode"] dd'))?.trim() === "WhatsApp'ı Bağla", "Bağlantı Yolu: WhatsApp'ı Bağla");
+  // App ID kapıcıdan gelir (bulgu ORTA: embedded kipte boştu → Ekstre şablonu açılamıyor, ileti olmayan "Bilgileri Değiştir"e gönderiyordu). Program bağlanınca
+  // şablonları kendisi açar: örnek PDF /<App ID>/uploads ile yüklenir, Ekstre Meta'ya gönderilir.
+  ok((await page2.textContent('[data-wa-fact="appId"] dd').catch(() => ""))?.trim() === W7.app, "Uygulama Kimliği kapıcıdan geldi");
+  const ekstreSent = () => fake2.requests.some(item => item.method === "POST" && item.path.endsWith("/message_templates") && item.body?.name === "destekofis_ekstre");
+  for (let i = 0; i < 60 && !ekstreSent(); i += 1) await page2.waitForTimeout(250);
+  ok(fake2.requests.some(item => item.method === "POST" && item.path === `/${W7.app}/uploads`) && fake2.state.uploads.length === 1, `örnek PDF App ID ile yüklendi (${fake2.state.uploads.length})`);
+  ok(ekstreSent(), "Ekstre şablonu Meta'ya gönderildi");
+  await page2.waitForFunction(() => !/şablonları denetleniyor/i.test(document.body.textContent), null, { timeout: 15000 }).catch(() => null);
+  ok(!(await page2.content()).includes("Bilgileri Değiştir ile Meta uygulama"), "Şablonlar kartı olmayan düğmeye yönlendirmiyor");
   const secret = secrets[0] || "-";
   ok(!requestUrls.some(item => item.includes(secret)) && !kapi.gunluk.some(item => item.adres.includes(secret)), `sır hiçbir istek adresinde yok (${requestUrls.length} istek)`);
   await page2.screenshot({ path: path.join(shots, "wa-248-08-bagla-bagli.png"), fullPage: true }).catch(() => null);

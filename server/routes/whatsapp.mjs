@@ -238,7 +238,7 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; WhatsApp bağlanamaz.", { code: "LICENSE_READ_ONLY" });
     const result = await embedded.poll({ session: params.session, companyId });
     if (result.state !== "ready") return ok(res, { state: result.state, ...(result.message ? { message: result.message } : {}) });
-    connection.saveEmbedded(user, { token: result.token, wabaId: result.wabaId, phoneNumberId: result.phoneNumberId, olay: result.event });
+    connection.saveEmbedded(user, { token: result.token, wabaId: result.wabaId, phoneNumberId: result.phoneNumberId, olay: result.event, appId: result.appId });
     // Meta adımları (birlikte kullanımda eşitleme / değilse numara kaydı) ve Bağlantıyı Sına: hata bağlantıyı bozmaz, sonuç kartta.
     for (const step of [() => connection.embeddedSteps(user), () => connection.test(user)]) {
       try {

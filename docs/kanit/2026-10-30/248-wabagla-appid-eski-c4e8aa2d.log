@@ -1,0 +1,66 @@
+TAP version 13
+# Subtest: 2.4.8 W7 — WhatsApp'ı Bağla: App ID kapıcıdan gelir, Ekstre şablonu açılır
+    # Subtest: bağlanınca App ID kaydedilir; Şablonları Denetle ve Oluştur: örnek PDF /<App ID>/uploads ile yüklenir, Ekstre ve Ödeme Hatırlatma Meta'ya gönderilir
+    not ok 1 - bağlanınca App ID kaydedilir; Şablonları Denetle ve Oluştur: örnek PDF /<App ID>/uploads ile yüklenir, Ekstre ve Ödeme Hatırlatma Meta'ya gönderilir
+      ---
+      duration_ms: 717.046167
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wabagla-appid-eski-c4e8aa2d-m3q8/test/whatsapp-w7-appid-248.test.mjs:80:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kapıcı belirteçle birlikte App ID vermedi: ["durum","sifreli","wabaId","phoneNumberId","olay"]
+        + actual - expected
+        
+        + undefined
+        - '1505264761663625'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '1505264761663625'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wabagla-appid-eski-c4e8aa2d-m3q8/test/whatsapp-w7-appid-248.test.mjs:84:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: kapıcı App ID vermezse (eski kapıcı / eksik ayar): Ekstre açılmaz, yükleme denenmez; neden bu kipe uygun — 'Bilgileri Değiştir'e (bu kipte yok) göndermez
+    not ok 2 - kapıcı App ID vermezse (eski kapıcı / eksik ayar): Ekstre açılmaz, yükleme denenmez; neden bu kipe uygun — 'Bilgileri Değiştir'e (bu kipte yok) göndermez
+      ---
+      duration_ms: 444.582042
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wabagla-appid-eski-c4e8aa2d-m3q8/test/whatsapp-w7-appid-248.test.mjs:102:3'
+      failureType: 'testCodeFailure'
+      error: "WhatsApp'ı Bağla kipinde olmayan düğmeye yönlendiriyor: Ekstre şablonunun örnek PDF'i Meta'ya yüklenirken Uygulama Kimliği (App ID) gerekir; Bilgileri Değiştir ile Meta uygulama panelindeki App ID'yi girin, sonra Şablonları Denetle ve Oluştur'a basın."
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "Ekstre şablonunun örnek PDF'i Meta'ya yüklenirken Uygulama Kimliği (App ID) gerekir; Bilgileri Değiştir ile Meta uygulama panelindeki App ID'yi girin, sonra Şablonları Denetle ve Oluştur'a basın."
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wabagla-appid-eski-c4e8aa2d-m3q8/test/whatsapp-w7-appid-248.test.mjs:111:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 W7 — WhatsApp'ı Bağla: App ID kapıcıdan gelir, Ekstre şablonu açılır
+  ---
+  duration_ms: 1163.30819
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wabagla-appid-eski-c4e8aa2d-m3q8/test/whatsapp-w7-appid-248.test.mjs:79:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1729.098795

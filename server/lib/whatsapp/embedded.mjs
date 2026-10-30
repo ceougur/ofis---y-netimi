@@ -85,7 +85,8 @@ export function createEmbeddedSignup({ mobileSync = () => null, now = () => Date
     return { session: id, url, seconds: Math.round(EMBEDDED_SESSION_MS / 1000), secret: sir };
   }
 
-  /** Dönüş: { state: "waiting" } | { state: "error", message } | { state: "ready", token, wabaId, phoneNumberId, event } (token yalnız çağıranın belleğinde). */
+  /** Dönüş: { state: "waiting" } | { state: "error", message } | { state: "ready", token, wabaId, phoneNumberId, event, appId } (token yalnız çağıranın belleğinde;
+   *  appId: belirtecin ait olduğu Meta uygulaması — kapıcı vermezse "", ekstre şablonu o zaman açılamaz ve neden bu kipe uygun yazılır). */
   async function poll({ session, companyId }) {
     purge();
     const item = SESSION.test(String(session || "")) ? sessions.get(session) : null;
@@ -107,7 +108,8 @@ export function createEmbeddedSignup({ mobileSync = () => null, now = () => Date
     } catch {
       fail(502, "Meta'dan gelen erişim belirteci açılamadı; WhatsApp'ı Bağla'yı yeniden deneyin.", "whatsapp-embedded-token");
     }
-    return { state: "ready", token, wabaId: String(data.wabaId || ""), phoneNumberId: String(data.phoneNumberId || ""), event: String(data.olay || "") };
+    const appId = /^[0-9]{5,30}$/.test(String(data.appId || "")) ? String(data.appId) : "";
+    return { state: "ready", token, wabaId: String(data.wabaId || ""), phoneNumberId: String(data.phoneNumberId || ""), event: String(data.olay || ""), appId };
   }
 
   return { start, poll, size: () => sessions.size };

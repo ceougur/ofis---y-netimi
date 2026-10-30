@@ -242,7 +242,9 @@ export function createWaBagla({ now, lisansGorunumu, gunceliIste, hizDenetle, wa
     if (o.durum === "bekliyor" || o.durum === "isleniyor") return json(200, { ok: true, data: { durum: "bekliyor" } });
     await env.OZET.delete(oturumAnahtari(id));
     if (o.durum === "hata") return json(200, { ok: true, data: { durum: "hata", ileti: o.ileti || WA_ONAY_ILETISI, ...(o.metaIleti ? { metaIleti: o.metaIleti } : {}) } });
-    return json(200, { ok: true, data: { durum: "hazir", sifreli: o.sifreli, wabaId: o.wabaId, phoneNumberId: o.phoneNumberId, olay: o.olay } });
+    // appId: belirtecin ait olduğu Meta uygulaması (DestekOfis'in, WA_UYGULAMA_KIMLIGI — gizli değil). Program ekstre şablonunun örnek PDF'ini Meta'ya bununla
+    // yükler (Resumable Upload /<App ID>/uploads); vermezsek "WhatsApp'ı Bağla" ile bağlanan şirkette Ekstre şablonu hiç açılamaz.
+    return json(200, { ok: true, data: { durum: "hazir", sifreli: o.sifreli, wabaId: o.wabaId, phoneNumberId: o.phoneNumberId, olay: o.olay, ...(META_KIMLIK.test(String(o.appId || "")) ? { appId: o.appId } : {}) } });
   }
 
   // 2. Bağlama sayfası (kapi.<alan>/wa/bagla). Oturum kimliği adresin # kısmında (sunucu günlüğüne, Referer'a düşmez); SIR adreste YOK (postMessage ile
@@ -343,7 +345,7 @@ export function createWaBagla({ now, lisansGorunumu, gunceliIste, hizDenetle, wa
       await hataYaz("Meta'ya ulaşılamadı.");
     }
     const sifreli = await waSifrele(o.anahtar, veri.access_token, waBaglam(o.ofis, id));
-    await env.OZET.put(oturumAnahtari(id), JSON.stringify({ ...o, durum: "hazir", sifreli, wabaId, phoneNumberId, olay }), JSON_TURU);
+    await env.OZET.put(oturumAnahtari(id), JSON.stringify({ ...o, durum: "hazir", sifreli, wabaId, phoneNumberId, olay, appId: String(env.WA_UYGULAMA_KIMLIGI) }), JSON_TURU);
     return json(200, { ok: true, data: { durum: "hazir" } });
   }
 
