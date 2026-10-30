@@ -194,6 +194,13 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     await connection.test(user);
     ok(res, view());
   });
+  // 2.4.8 W9: durum bildirimi (web kancası) adresini Meta'ya şimdi kaydet (bakım turu da kendiliğinden kaydeder; bu uç ekrandaki "Yeniden Kaydet" içindir).
+  router.post("/api/workspace/whatsapp/connection/hook", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; durum bildirimi adresi kaydedilemez.", { code: "LICENSE_READ_ONLY" });
+    await connection.registerHook(user, mobileRemote?.publicUrl?.() || "");
+    ok(res, view());
+  });
   router.post("/api/workspace/whatsapp/connection/self-test", async ({ req, res }) => {
     // Bağlantı ekranının denemesi: yalnız yönetici (system.manage yalnız yönetici rolündedir ve yönetici her yetkiye — whatsapp.send dahil — sahiptir).
     // whatsapp.send kişiye verilebilen toplu gönderim yetkisidir (W2/W4). Salt okunur lisansta gönderim başlamaz (plan §4): genel kapı + burada da.
@@ -224,6 +231,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     events,
     kick: () => whatsapp.scheduler?.kick(),
     fault: config.whatsappFault || null,
+    // W9: durum bildirimi adresinin tabanı = ofisin uzaktan (telefon) adresi (tünel açılınca hazır; lib/tunnel/manager.mjs).
+    hookUrl: () => mobileRemote?.publicUrl?.() || "",
   });
   const sendUser = req => auth.requirePermission(req, "whatsapp.send");
   router.get("/api/workspace/whatsapp/ack", async ({ req, res }) => {

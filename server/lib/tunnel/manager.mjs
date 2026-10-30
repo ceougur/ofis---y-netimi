@@ -4,8 +4,8 @@
 // ofisine ait tüneli ve ofis adını ister, cloudflared'i (ilk kullanımda indirilir, özeti doğrulanır) yalnız uzak dinleyiciye (app.listenRemote,
 // 127.0.0.1) bağlayarak çalıştırır, adresi karekoda verir (mobileRemote.setPublicUrl). Müşteri başına elle iş yok.
 //
-// Ne zaman açık (BAŞ MİMAR KARARI, §6): lisans yazılabilir VE (en az bir eşli cihaz VAR ya da süresi dolmamış bir karekod BEKLİYOR). Eşli cihaz ve bekleyen
-// karekod yoksa cloudflared çalışmaz (internete açık kapı yok). Adres önceden hazır olsun diye "Uzaktan Bağlanabilir" işaretli kullanıcı varsa kapıcıya
+// Ne zaman açık (BAŞ MİMAR KARARI, §6): lisans yazılabilir VE (en az bir eşli cihaz VAR ya da süresi dolmamış bir karekod BEKLİYOR ya da — 2.4.8 W9, plan §6 W9 /
+// §11 S1 A — WhatsApp Business API BAĞLI: Meta'nın durum bildirimi kapıcıdan tünel üzerinden gelir; extraDemand). Hiçbiri yoksa cloudflared çalışmaz (internete açık kapı yok). Adres önceden hazır olsun diye "Uzaktan Bağlanabilir" işaretli kullanıcı varsa kapıcıya
 // bir kez başvurulur (adres saklanır, süreç başlamaz). Durum Yönetim → Mobil Cihazlar kartında: Bağlı / Bağlanıyor / Kapalı + neden.
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -54,6 +54,7 @@ export const TUNNEL_REASONS = Object.freeze({
  * @param {Function} [o.fetchImpl] indirme için fetch
  * @param {object} [o.asset] testte sahte dosya tanımı (yoksa release.assetFor())
  * @param {object} [o.runner] testte { command, argsPrefix, identity } (sahte cloudflared; yoksa indirilen ikili)
+ * @param {() => boolean} [o.extraDemand] 2.4.8 W9: tüneli isteyen başka neden (WhatsApp bağlı)
  */
 export function createTunnelManager({
   store,
@@ -67,6 +68,7 @@ export function createTunnelManager({
   asset: assetOverride = null,
   ensureBinary = defaultEnsureBinary,
   runner = null,
+  extraDemand = () => false,
   enabled = true,
   tickMs = 5_000,
   firstTickMs = 3_000,
@@ -249,7 +251,13 @@ export function createTunnelManager({
         return set("off", TUNNEL_REASONS.license, { connections: 0 });
       }
       const d = demand();
-      const wanted = d.devices > 0 || d.codes > 0;
+      let extra = false;
+      try {
+        extra = Boolean(extraDemand());
+      } catch {
+        extra = false;
+      }
+      const wanted = d.devices > 0 || d.codes > 0 || extra;
       if (wanted) lastDemandAt = now();
       if (!wanted) {
         if (supervisor && now() - lastDemandAt < stopGraceMs) return;

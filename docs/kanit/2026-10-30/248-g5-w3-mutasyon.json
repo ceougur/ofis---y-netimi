@@ -1,0 +1,32 @@
+{
+  "ad": "248-g5-w3-mutasyon",
+  "komut": "node docs/kanit/2026-10-30/248-g5-betikler/mutasyon.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/w3-commit-agaci /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/mutasyon-w3 w3",
+  "commit": "86e6d66b93c4f041cbb33d195a32bf803aa22e4b",
+  "dal": "is/cekirdek-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T15:31:24.957Z",
+  "sure_sn": 26.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-w3-mutasyon.log",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "294d73775ac0c44f19212c2d41b47237dc70ce0ff4dd45b1bbdfaba9d6517308",
+  "ham_cikti_bayt": 1187
+}

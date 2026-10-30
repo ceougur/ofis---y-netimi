@@ -18,7 +18,14 @@
 //
 // env: OZET (R2 kovası), LISANS_ANAHTARLARI (JSON { keyId: SPKI base64 } — server/lib/license-keys.mjs ile aynı), OFIS_ALANI ("destekofis.net"),
 //      LISANS_URL (lisans servisi tabanı; isteğe bağlı), KAPI_LISANS_ANAHTARI (gizli; lisans servisinin kapıcı ucu için), HIZ (isteğe bağlı rate limit bağlaması).
-// Gizli değer hiçbir dosyaya yazılmaz: `wrangler secret put KAPI_LISANS_ANAHTARI`.
+//      2.4.8 W9: WA_UYGULAMA_SIRRI (gizli; DestekOfis Meta uygulamasının App Secret'ı — Yol 2 kanca imzası), WA_META_DOGRULAMA (gizli; uygulama düzeyindeki
+//      varsayılan kanca adresinin /wa/meta doğrulama belirteci). İkisi de yoksa kancalar imzasız ("wa0") geçer, /wa/meta reddeder.
+// Gizli değer hiçbir dosyaya yazılmaz: `wrangler secret put KAPI_LISANS_ANAHTARI` (W9: `wrangler secret put WA_UYGULAMA_SIRRI`, `… WA_META_DOGRULAMA`).
+//   8. (2.4.8 W9; plan §3 C, §6 W9, §11 S1 A) WhatsApp durum bildirimi: ofisin telefon adresinde YALNIZ GET|POST /wa/kanca/<43 karakter gizli yol> cihaz
+//      denetimi OLMADAN ofisin tüneline geçer — gövde ≤ 3 MB, çerez ve başlık geçmez (yalnız içerik türü), SAKLANMAZ; Meta imzası (X-Hub-Signature-256) DestekOfis
+//      uygulama sırrıyla doğrulanırsa işaretin cihazı "wa1", değilse "wa0" (program Yol 2'de imzasızı reddeder; Yol 1'de imza müşterinin sırrıyla atılır).
+//      Lisans burada sorulmaz (programda "kanca kabulü sürer"; salt okunur lisansta tünel zaten kapalı → 503). Tünel yoksa 503 (Meta 7 gün yeniden dener).
+//      kapi.<alan>/wa/meta: uygulamanın varsayılan kanca ucu (şablon / hesap kancaları; imza denetlenir, 200, saklanmaz).
 import {
   CIHAZ_KIMLIGI,
   KAPI_KURALLARI as K,
@@ -62,8 +69,12 @@ const HATA = Object.freeze({
   "kapi-gunluk": [429, "Bu ofisin bugünkü yükleme sınırı doldu."],
   "kapi-cerez": [400, "Tarayıcıda bu adres için çakışan oturum bilgisi var. Tarayıcının bu siteye ait kayıtlı verilerini silip karekodu yeniden okutun."],
   "kapi-ofis-degisti": [410, "Bu ofis kimliği kapandı: aynı lisans yeni bir kurulumla kaydoldu. Yöneticinizden yeni karekod isteyin."],
+  "kapi-kanca-dogrulama": [403, "Doğrulama belirteci geçersiz."],
 });
 const GUVENLIK = { "x-content-type-options": "nosniff", "cache-control": "no-store", "referrer-policy": "no-referrer" };
+// 2.4.8 W9: WhatsApp durum bildirimi geçişi (madde 8).
+const KANCA_YOLU = /^\/wa\/kanca\/[A-Za-z0-9_-]{43}$/;
+const KANCA = Object.freeze({ azamiBayt: 3 * 1024 * 1024, dakikada: 600 });
 
 // Başlık değeri dizi olabilir (birden çok Set-Cookie).
 function basliklarKur(nesne) {
@@ -446,6 +457,65 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     return new Response(request.method === "HEAD" ? null : nesne.body, { status: 200, headers: { "content-type": "application/json; charset=utf-8", ...GUVENLIK, ...basliklar } });
   }
 
+  // ---------- 2.4.8 W9: WhatsApp durum bildirimi (madde 8) ----------
+  async function govdeTampon(request, azami) {
+    const boy = Number(request.headers.get("content-length") || 0);
+    if (boy > azami) at("kapi-buyuk");
+    const tampon = new Uint8Array(await request.arrayBuffer());
+    if (tampon.byteLength > azami) at("kapi-buyuk");
+    return tampon;
+  }
+  /** X-Hub-Signature-256 ("sha256=<onaltılık HMAC-SHA256(gövde, uygulama sırrı)>"; D0-16) DestekOfis uygulama sırrıyla doğru mu. Sır yoksa false. */
+  async function metaImzasi(env, govde, baslik) {
+    const sir = String(env.WA_UYGULAMA_SIRRI || "");
+    const verilen = /^sha256=([0-9a-f]{64})$/i.exec(String(baslik || "").trim());
+    if (!sir || !verilen) return false;
+    const anahtar = await globalThis.crypto.subtle.importKey("raw", new TextEncoder().encode(sir), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+    const imza = new Uint8Array(await globalThis.crypto.subtle.sign("HMAC", anahtar, govde));
+    return esitMi([...imza].map(b => b.toString(16).padStart(2, "0")).join(""), verilen[1].toLowerCase());
+  }
+  async function waKanca(request, env, ofis, url) {
+    const yontem = request.method === "HEAD" ? "GET" : request.method;
+    if (!KANCA_YOLU.test(url.pathname) || (yontem !== "GET" && yontem !== "POST")) at("kapi-yol");
+    const mevcut = await metaOku(env, ofis);
+    const meta = mevcut?.veri || null;
+    if (!meta) at("kapi-ofis-yok");
+    if (!(await guncelMi(env, meta, now()))) at("kapi-ofis-degisti");
+    await hizDenetle(env, "kanca", ofis, KANCA.dakikada);
+    const govde = yontem === "POST" ? await govdeTampon(request, KANCA.azamiBayt) : null;
+    const cihaz = govde && (await metaImzasi(env, govde, request.headers.get("x-hub-signature-256"))) ? "wa1" : "wa0";
+    const yolSorgu = `${url.pathname}${url.search}`;
+    const ms = now();
+    // Meta'nın başlıkları (çerez, kimlik, imza) programa GEÇMEZ: yalnız içerik türü + kapıcı işareti.
+    const basliklar = new Headers({ "x-do-kapi": `${ms}.${cihaz}.${await hmac(meta.sir, mesaj.vekil(yontem, yolSorgu, cihaz, ms))}` });
+    if (govde) basliklar.set("content-type", request.headers.get("content-type") || "application/json");
+    const iletilen = new Request(url.toString(), { method: yontem, headers: basliklar, body: govde || undefined, redirect: "manual" });
+    let yanit;
+    try {
+      yanit = await fetchOrigin(iletilen, ofis);
+    } catch {
+      at("kapi-ofis-kapali");
+    }
+    const tur = String(yanit.headers.get("content-type") || "");
+    if (yanit.status === 530 || ((yanit.status === 502 || yanit.status === 504) && !tur.includes("application/json"))) at("kapi-ofis-kapali");
+    // Programın yanıtından yalnız durum ve gövde (çerez/başlık Meta'ya geçmez).
+    const metin = await yanit.arrayBuffer();
+    return new Response(yontem === "GET" && request.method === "HEAD" ? null : metin, { status: yanit.status, headers: basliklarKur({ "content-type": tur || "text/plain; charset=utf-8", ...GUVENLIK }) });
+  }
+  // Uygulamanın varsayılan kanca ucu (kapi.<alan>/wa/meta): doğrulama + imzalı olay 200 (saklanmaz; şablon/hesap olayları programın şablon okumasıyla da görülür).
+  async function waMeta(request, env, url) {
+    await hizDenetle(env, "wameta", request.headers.get("cf-connecting-ip") || "?", KANCA.dakikada);
+    if (request.method === "GET") {
+      const belirtec = String(env.WA_META_DOGRULAMA || "");
+      if (url.searchParams.get("hub.mode") !== "subscribe" || !belirtec || !esitMi(String(url.searchParams.get("hub.verify_token") || ""), belirtec)) at("kapi-kanca-dogrulama");
+      return new Response(String(url.searchParams.get("hub.challenge") || "").slice(0, 200), { status: 200, headers: basliklarKur({ "content-type": "text/plain; charset=utf-8", ...GUVENLIK }) });
+    }
+    if (request.method !== "POST") at("kapi-yol");
+    const govde = await govdeTampon(request, KANCA.azamiBayt);
+    if (!(await metaImzasi(env, govde, request.headers.get("x-hub-signature-256")))) at("kapi-imza");
+    return json(200, { ok: true });
+  }
+
   // Canlı bağlantı: ofisin tüneline (M4) kapıdan geçen istek. Cihaz kimliği programın HttpOnly cihaz çerezinin kimlik bölümünden (sırrı program doğrular).
   // Çerezler programla AYNI kuralla okunur (lib/mobil-cerez.mjs): aynı adlı iki cihaz/oturum çerezi → 400 kapi-cerez (B4; ilk ya da son seçilmez).
   // B1: listede olmayan cihaz çerezi eşleme ve sayfa yollarında "cihazsız" sayılır — iki mobil çerez iletilmez, işaret "-" ile; öbür yollarda 401 kapi-cihaz.
@@ -536,6 +606,9 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
       const alan = String(env.OFIS_ALANI || "destekofis.net").toLowerCase();
       const host = url.hostname.toLowerCase();
       const ofis = host.endsWith(`.${alan}`) ? host.slice(0, -alan.length - 1) : "";
+      // 2.4.8 W9: WhatsApp kancaları (madde 8).
+      if (url.pathname === "/wa/meta" && !OFIS_KIMLIGI.test(ofis)) return await waMeta(request, env, url);
+      if (url.pathname.startsWith("/wa/kanca/") && OFIS_KIMLIGI.test(ofis)) return await waKanca(request, env, ofis, url);
       if (!OFIS_KIMLIGI.test(ofis)) {
         return new Response(KARSILAMA, { status: 200, headers: { "content-type": "text/html; charset=utf-8", ...GUVENLIK, "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'" } });
       }

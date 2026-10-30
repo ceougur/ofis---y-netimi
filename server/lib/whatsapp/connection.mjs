@@ -48,6 +48,8 @@ const last4 = e164 => String(e164 || "").replace(/\D/g, "").slice(-4);
  * kuralı, web kancasının şirketi) güncellenir. summary gizli değer taşımaz (yalnız kanca yolunun ve doğrulama belirtecinin SHA-256 karması).
  */
 export const HOOK_PATH = /^[A-Za-z0-9_-]{43}$/;
+// Kanca kaydı düştüyse / yarım kaldıysa bakım turunun yeniden denemesi (Meta'ya saatte en çok bir abonelik isteği).
+export const HOOK_RETRY_MS = 3_600_000;
 /** Ayar satırından (whatsapp.meta, JSON) ortak katmanın özeti — açık olmayan şirketin dosyası salt okunur okunurken de (lib/whatsapp/hub.mjs). */
 export function summaryOf(value) {
   const raw = parse(value);
@@ -303,14 +305,16 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   // Adres: <ofisin telefon adresi>/wa/kanca/<32 baytlık gizli yol> (kapıcı yalnız bu yolu cihazsız ofisin tüneline geçirir; saklamaz). Doğrulama belirteci
   // (verify_token) Meta'nın GET doğrulamasında karşılaştırılır. İkisi de mühürlü saklanır, karşılaştırma SHA-256 karmasıyla. Kayıt önce "Bekliyor" yazılır
   // (Meta abonelik sırasında adresi doğrulayabilir), Meta kabul edince "Kayıtlı".
+  const hookBase = publicUrl => String(publicUrl || "").replace(/\/+$/, "");
+  const usableBase = base => /^https:\/\/[^\s/?#]+$/i.test(base) || /^http:\/\/[^\s/?#]+\.(test|localhost)(:\d+)?$/i.test(base);
   async function registerHook(user, publicUrl) {
     const record = required();
-    const base = String(publicUrl || "").replace(/\/+$/, "");
-    if (!/^https:\/\/[^\s/?#]+$/i.test(base) && !/^http:\/\/[^\s/?#]+\.(test|localhost)(:\d+)?$/i.test(base)) fail(409, "Ofisin uzaktan bağlantı adresi henüz hazır değil; Yönetim → Mobil Cihazlar'da uzaktan bağlantı açılınca yeniden deneyin.", "whatsapp-hook-url");
+    const base = hookBase(publicUrl);
+    if (!usableBase(base)) fail(409, "Ofisin uzaktan bağlantı adresi henüz hazır değil; Yönetim → Mobil Cihazlar'da uzaktan bağlantı açılınca yeniden deneyin.", "whatsapp-hook-url");
     const graph = graphFor(record);
     const secret = randomBytes(32).toString("base64url");
     const verify = randomBytes(32).toString("base64url");
-    const hook = { state: "pending", pathHash: sha256(secret), pathSealed: secrets().seal(secret), verifyHash: sha256(verify), verifySealed: secrets().seal(verify), requestedAt: iso(), registeredAt: null, error: "" };
+    const hook = { state: "pending", base, pathHash: sha256(secret), pathSealed: secrets().seal(secret), verifyHash: sha256(verify), verifySealed: secrets().seal(verify), requestedAt: iso(), registeredAt: null, error: "" };
     write({ v: 1, ...record, hook });
     announce();
     try {
@@ -329,6 +333,26 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     audit(user, "whatsapp.hook.registered", "whatsapp", { wabaId: record.wabaId });
     return view();
   }
+  /**
+   * Bakım turunda (lib/whatsapp/queue.mjs maintain; plan §3 C "program adresi kendisi kaydeder"): belirteçli bağlantı + ofisin uzaktan adresi hazır + kanca kaydı
+   * yok / başka adrese (ofis adresi değişti) / düşmüş ya da yarım kalmış (en çok saatte bir yeniden) → Meta'ya kaydedilir. Dönüş: ne yapıldığı (günlük ve test için).
+   */
+  async function ensureHook(publicUrl) {
+    const record = read();
+    if (!record?.tokenSealed || !config.whatsappGraphUrl) return { skipped: "no-connection" };
+    const base = hookBase(publicUrl);
+    if (!usableBase(base)) return { skipped: "no-url" };
+    const hook = record.hook;
+    if (hook && hook.base === base && hook.state === "active") return { skipped: "active" };
+    const last = Date.parse(hook?.requestedAt || "");
+    if (hook && hook.base === base && Number.isFinite(last) && now().getTime() - last < HOOK_RETRY_MS && now().getTime() >= last) return { skipped: "recent" };
+    try {
+      await registerHook(null, base);
+      return { registered: true };
+    } catch (error) {
+      return { failed: error.message };
+    }
+  }
   /** Gelen web kancası isteğinin gizli yolu / doğrulama belirteci bu şirketin mi (SHA-256 karmasıyla karşılaştırılır; gizli değer saklanmaz). */
   function hookMatches(secret) {
     const record = read();
@@ -339,5 +363,5 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     return Boolean(record?.hook && token && record.hook.verifyHash === sha256(token));
   }
 
-  return { read, view, save, remove, test, selfTest, client, summary, registerHook, hookMatches, verifyMatches };
+  return { read, view, save, remove, test, selfTest, client, summary, registerHook, ensureHook, hookMatches, verifyMatches };
 }

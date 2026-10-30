@@ -86,6 +86,7 @@ import { registerMobileAdminRoutes } from "./routes/mobile-admin.mjs";
 import { registerMobileTunnelRoutes } from "./routes/mobile-tunnel.mjs";
 import { attachTunnel } from "./lib/tunnel/attach.mjs";
 import { createWhatsappHub } from "./lib/whatsapp/hub.mjs";
+import { createWhatsappHook, isHookRequest } from "./lib/whatsapp/hook.mjs";
 
 function ensureInitialAdmin(store, config, log) {
   if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", config.adminUsername)) return;
@@ -712,7 +713,12 @@ export function createApp(overrides = {}) {
   server.requestTimeout = 5 * 60_000;
   // 2.4.7 M2: uzaktan erişim dinleyicisi (yalnız ortak katmanda; app.listenRemote ile açılır — M4'te tünel yalnız buraya bağlanır). Gelen her istek UZAKTIR:
   // cihaz → lisans → yol → uzak oturum kapısından (lib/mobile-remote.mjs) sonra olağan dağıtıcıya gider.
+  // 2.4.8 W9: WhatsApp durum bildirimi (kapıcının cihazsız geçirdiği /wa/kanca/<gizli yol>; lib/whatsapp/hook.mjs) mobil uzak oturum kapısından ÖNCE işlenir.
+  const whatsappHook = hub
+    ? null
+    : createWhatsappHook({ registry: whatsapp.registry, companyOf: id => companies.get(id), appFor: company => appFor(company), verifyMark: req => context.mobileSync.kancaIsareti(req), log });
   const remoteServer = hub ? null : createServer((req, res) => {
+    if (isHookRequest(req)) return void whatsappHook.handle(req, res);
     context.mobileSync.izle(req, res); // 2.4.7 M3
     context.mobileRemote.handle(req, res, dispatch).catch(error => {
       log.error("Beklenmeyen uzak istek hatası", error);
@@ -1040,6 +1046,7 @@ export function createApp(overrides = {}) {
     },
   };
   // 2.4.7 M4: canlı bağlantı (tünel) — yalnız ortak katmanda; M3 kapıcı adresi (config.mobileKapiUrl) varken ya da testte `tunnel` seçeneğiyle; lib/tunnel/attach.mjs.
-  context.tunnel = hub ? null : attachTunnel({ option: overrides.tunnel, config, store, license, mobileRemote: context.mobileRemote, mobileSync: () => context.mobileSync, listenRemote: () => (remoteServer.listening ? Promise.resolve(remoteServer.address()) : app.listenRemote(0, "127.0.0.1")), forbiddenPorts: () => [config.port, config.publicPort, server.address()?.port].filter(Number.isInteger), log });
+  // 2.4.8 W9 (plan §6 W9, S1 A): tünel WhatsApp bağlıyken de açık (durum bildirimi kapıcıdan tünel üzerinden gelir) — "Ne zaman açık" kuralının genişlemesi.
+  context.tunnel = hub ? null : attachTunnel({ option: overrides.tunnel, config, store, license, mobileRemote: context.mobileRemote, mobileSync: () => context.mobileSync, extraDemand: () => whatsapp.registry.anyConfigured(), listenRemote: () => (remoteServer.listening ? Promise.resolve(remoteServer.address()) : app.listenRemote(0, "127.0.0.1")), forbiddenPorts: () => [config.port, config.publicPort, server.address()?.port].filter(Number.isInteger), log });
   return app;
 }

@@ -19,6 +19,9 @@ const CORE = "test/whatsapp-w2-cekirdek-248.test.mjs";
 const DATA = "test/whatsapp-w2-veri-248.test.mjs";
 const DEATH = "test/whatsapp-w2-surec-olumu-248.test.mjs";
 const W3 = "test/whatsapp-w3-ekstre-248.test.mjs";
+const W9 = "test/whatsapp-w9-kanca-248.test.mjs";
+const K = "bulut/kapi/kapi.mjs";
+const H = "server/lib/whatsapp/hook.mjs";
 const Q = "server/lib/whatsapp/queue.mjs";
 const L = "server/lib/whatsapp/defter.mjs";
 const MUTATIONS = [
@@ -55,6 +58,18 @@ const MUTATIONS = [
   { group: "w3", id: "W3-M4 iletinin bakiyesi PDF'in dönem sonu yerine güncel bakiye (metin ≠ PDF)", file: Q, from: "periodText(range, account.ledger || []), balanceText(data.closing)];", to: "periodText(range, account.ledger || []), balanceText(account.totals.balance)];", tests: [W3] },
   { group: "w3", id: "W3-M5 medya hiç yeniden kullanılmaz (her denemede yeni yükleme)", file: Q, from: "      if (!mediaId || !job.media_at || nowMs() - Date.parse(job.media_at) > MEDIA_REUSE_MS || job.media_deleted_at) {", to: "      if (true) {", tests: [W3] },
   { group: "w3", id: "W3-M6 'Tüm Hareketler' bugünle sınırlanmaz (ileri tarihli hareket girer)", file: "server/lib/whatsapp/alici.mjs", from: "  if (preset === \"all\") return { from: \"\", to: today };", to: "  if (preset === \"all\") return { from: \"\", to: \"\" };", tests: [W3] },
+  // ---------- W9: durum bildirimi (kapıcı geçişi, imza, işaret, tünel kuralı) ----------
+  { group: "w9", id: "W9-M1 kapıcı Meta imzasını karşılaştırmaz (biçimi doğru her imza geçer)", file: K, from: "    return esitMi([...imza].map(b => b.toString(16).padStart(2, \"0\")).join(\"\"), verilen[1].toLowerCase());", to: "    void imza;\n    return true;", tests: [W9] },
+  { group: "w9", id: "W9-M2 program kapıcı işaretini denetlemez (tüneli atlatan istek geçer)", file: H, from: "    if (!mark?.ok) return failure(res, 401, \"whatsapp-hook-mark\", \"İstek kapıcıdan gelmedi.\");", to: "", tests: [W9] },
+  { group: "w9", id: "W9-M3 kanca işaretinin imzası doğrulanmaz (sahte 'wa1' geçer)", file: "server/lib/mobile-sync.mjs", from: "    if (!checked.ok || (checked.cihaz !== \"wa0\" && checked.cihaz !== \"wa1\")) return { ok: false };\n    return { ok: true, signed: checked.cihaz === \"wa1\" };", to: "    const sahte = String(header || \"\").split(\".\")[1];\n    return { ok: true, signed: checked.ok ? checked.cihaz === \"wa1\" : sahte === \"wa1\" };", tests: [W9] },
+  { group: "w9", id: "W9-M4 Yol 2 bağlantısında imzasız bildirim kabul edilir", file: H, from: "    if (record?.mode === \"embedded\" && !mark.signed) return failure(res, 401, \"whatsapp-hook-signature\", \"Meta imzası doğrulanmadı.\");", to: "", tests: [W9] },
+  { group: "w9", id: "W9-M5 Sonucu Belirsiz iş imzasız olayla çözülür (§7a 3)", file: Q, from: "      if (!job && signed) {", to: "      if (!job) {", tests: [W9] },
+  { group: "w9", id: "W9-M6 kapıcı Meta'nın başlıklarını (çerez, imza) programa geçirir", file: K, from: "    const basliklar = new Headers({ \"x-do-kapi\": `${ms}.${cihaz}.${await hmac(meta.sir, mesaj.vekil(yontem, yolSorgu, cihaz, ms))}` });", to: "    const basliklar = new Headers(request.headers);\n    basliklar.set(\"x-do-kapi\", `${ms}.${cihaz}.${await hmac(meta.sir, mesaj.vekil(yontem, yolSorgu, cihaz, ms))}`);", tests: [W9] },
+  { group: "w9", id: "W9-M7 tünel kuralı genişlemez (WhatsApp bağlıyken tünel açılmaz)", file: "server/lib/tunnel/manager.mjs", from: "      const wanted = d.devices > 0 || d.codes > 0 || extra;", to: "      const wanted = d.devices > 0 || d.codes > 0;", tests: [W9] },
+  { group: "w9", id: "W9-M8 etkin kanca kaydı her bakım turunda Meta'ya yeniden gider", file: "server/lib/whatsapp/connection.mjs", from: "    if (hook && hook.base === base && hook.state === \"active\") return { skipped: \"active\" };", to: "", tests: [W9] },
+  { group: "w9", id: "W9-M9 düşen kanca kaydı saat beklemeden her turda yeniden denenir", file: "server/lib/whatsapp/connection.mjs", from: "now().getTime() - last < HOOK_RETRY_MS && now().getTime() >= last) return { skipped: \"recent\" };", to: "false) return { skipped: \"recent\" };", tests: [W9] },
+  { group: "w9", id: "W9-M10 GET doğrulamasında belirteç karşılaştırılmaz", file: H, from: "      const ok = url.searchParams.get(\"hub.mode\") === \"subscribe\" && wa.connection.verifyMatches(url.searchParams.get(\"hub.verify_token\") || \"\");", to: "      const ok = url.searchParams.get(\"hub.mode\") === \"subscribe\";", tests: [W9] },
+  { group: "w9", id: "W9-M11 kapıcıda gövde sınırı yok (3 MB üstü programa gider)", file: K, from: "    const boy = Number(request.headers.get(\"content-length\") || 0);\n    if (boy > azami) at(\"kapi-buyuk\");\n    const tampon = new Uint8Array(await request.arrayBuffer());\n    if (tampon.byteLength > azami) at(\"kapi-buyuk\");", to: "    void azami;\n    const tampon = new Uint8Array(await request.arrayBuffer());", tests: [W9] },
 ];
 
 const run = tests => spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...tests], { cwd: work, encoding: "utf8", timeout: 900_000 });

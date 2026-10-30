@@ -129,7 +129,7 @@ function overdueOf(account, today) {
  * @param {Function} [o.header] () => rapor başlığı pdf() (lib/report-header.mjs)
  * @param {Function} [o.fault] testlerde kesinti: fault(nokta, iş) → true ise o noktada hata (ör. "db-accept": kabul yazımı düşer)
  */
-export function createWaQueue({ store, companyId, ledger, connection, accounts, now, audit = () => {}, log = console, license = null, header = () => ({}), events = null, kick = () => {}, fault = null }) {
+export function createWaQueue({ store, companyId, ledger, connection, accounts, now, audit = () => {}, log = console, license = null, header = () => ({}), events = null, kick = () => {}, fault = null, hookUrl = () => "" }) {
   const iso = (ms = now().getTime()) => new Date(ms).toISOString();
   const nowMs = () => now().getTime();
   const today = () => now.today?.() || iso().slice(0, 10);
@@ -983,6 +983,16 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const stuck = store.all("SELECT * FROM wa_jobs WHERE state = 'sending' AND sending_at < ?", iso(nowMs() - 5 * 60_000));
     if (stuck.length) out.repaired = settleSending(stuck);
     for (const row of store.all("SELECT id FROM wa_batches WHERE state = 'running'")) finishIfDone(row.id);
+    // W9 (plan §3 C): durum bildirimi adresi Meta'ya kayıtlı değilse / ofisin uzaktan adresi değiştiyse / kayıt düştüyse (saatte en çok bir kez) kaydedilir.
+    // Salt okunur lisansta kaydedilmez (tünel de kapalı).
+    if (writable()) {
+      try {
+        const hook = await connection.ensureHook?.(hookUrl());
+        if (hook && !hook.skipped) out.hook = hook;
+      } catch (error) {
+        log.warn?.(`WhatsApp durum bildirimi adresi kaydedilemedi: ${error.message}`);
+      }
+    }
     return out;
   }
 

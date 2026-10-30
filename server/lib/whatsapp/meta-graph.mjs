@@ -83,6 +83,11 @@ export const META_D0 = Object.freeze({
   // anahtar müşterinin uygulamasınındır (programda yok); kapıcı yalnız DestekOfis uygulamasının (Yol 2) imzasını denetleyebilir (plan §3 C).
   // D0-17: Abonelik (POST /<WABA_ID>/subscribed_apps { override_callback_uri, verify_token }) yanıtı { success: true }; adres doğrulaması GET
   // ?hub.mode=subscribe&hub.verify_token=…&hub.challenge=… ile gelir, yanıt challenge'ın kendisi (düz metin, 200).
+  // D0-18 (W9): Kanca gövdesinin zarfı { object: "whatsapp_business_account", entry: [{ id: <WABA>, changes: [{ field: "messages", value: { messaging_product,
+  // metadata: { display_phone_number, phone_number_id }, statuses[] | messages[] } }] }] } (webhooks/reference/messages); bir istekte birden çok entry/change
+  // olabilir; durum dışı olaylar (gelen ileti, şablon/hesap) aynı uca gelir ve 200 ile kabul edilir. Gövde boyutu için Meta sınırı belgede bulunmadı (programda
+  // ve kapıcıda 3 MB, plan §6 W9). 200 dışı yanıtta Meta 7 güne kadar yeniden dener (plan §3) — D0'da Dev moddaki uygulamayla denenir.
+  hookEnvelope: Object.freeze({ object: "whatsapp_business_account", field: "messages" }),
 });
 
 // ---------- Hata kodları (plan §2.7; Meta support/error-codes) ----------
