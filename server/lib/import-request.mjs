@@ -37,8 +37,8 @@ const SUMMARY = {
 };
 const ADVICE = {
   "account.import": "Cari listesini kontrol edin. Dosyayı yeniden yüklerseniz Cari No'suz ya da telefonsuz satırlar ikinci kez açılır; değişikliği cari kartlarında yapın.",
-  "cheque.import": "Çek / Senet listesini kontrol edin. Dosyayı yeniden yüklerseniz numarasız evrak ikinci kez açılır (“Cariye işle” seçiliyse cari etkisi de); değişikliği evrak kartlarında yapın.",
-  "stock.import": "Ürün listesini kontrol edin. Değişikliği ürün kartlarında yapın ya da dosyayı “Bilgilerini Güncelle” seçeneğiyle yeniden yükleyin (miktar eklenmez).",
+  "cheque.import": "Çek / Senet listesini kontrol edin. Dosyayı yeniden yüklerseniz numarasız evrak ikinci kez açılır (“Bağlanan carilere de işle” seçiliyse cari etkisi de); değişikliği evrak kartlarında yapın. Cariye işlenmeden açılan evrak sonradan cariye işlenmez; gerekiyorsa bu yüklemede açılan evrakı listeden silip dosyayı bu seçenek işaretli yeniden yükleyin.",
+  "stock.import": "Ürün listesini kontrol edin. Dosyayı yeniden yüklerseniz birim ya da ad eşlemesi değiştiyse ürünler ve açılış stoku ikinci kez yazılır; değişikliği ürün kartlarında yapın.",
   "plan.import": "Taksitler listesini kontrol edin. Dosyayı başka seçenekle yeniden yüklerseniz kartlar ikinci kez açılabilir; değişikliği kartlarda yapın ya da önce Son Aktarımlar’dan geri alın.",
 };
 const reusedError = (scope, refId) => {
