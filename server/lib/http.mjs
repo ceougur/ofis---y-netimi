@@ -18,6 +18,8 @@ export const SECURITY_HEADERS = Object.freeze({
 // 2.4.8 M4: mobil sayfa (client/mobil/index.html) iPhone simgesinde eşleme karekodunu KENDİ kamerasıyla okur → yalnız bu belgede kamera kendi kökenine açık;
 // öbür bütün sayfalar ve yanıtlarda kamera kapalı kalır.
 export const MOBILE_PERMISSIONS = "camera=(self), microphone=(), geolocation=(), payment=()";
+// 2.4.8 W7: yalnız Yönetim sayfası (admin.html) — WhatsApp'ı Bağla penceresiyle postMessage bağı gerekir (lib/static.mjs).
+export const ADMIN_OPENER_POLICY = "same-origin-allow-popups";
 
 // Arayüz yalnızca kendi dosyalarını yükler; satır içi betik yoktur.
 export const HTML_CSP = [

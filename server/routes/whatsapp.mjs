@@ -35,11 +35,11 @@
 //                                                           lisans, kişinin yetkisi, onay, süren gönderimler, bu ay sayısı. accounts.view (wa.me yolunun yetkisi) —
 //                                                           gizli değer YOK, Meta'ya istek YOK; yetkisiz kişi yalnız "yetkiniz yok" nedenini görür.
 // Onay ve salt okunur lisans SUNUCUDA da denetlenir (istemci atlatılsa da gönderim başlamaz).
-import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
+import { HttpError, isRemoteRequest, limited, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { createWhatsappConnection } from "../lib/whatsapp/connection.mjs";
-import { createEmbeddedSignup } from "../lib/whatsapp/embedded.mjs";
+import { createEmbeddedSignup, requestOrigin } from "../lib/whatsapp/embedded.mjs";
 import { createWaQueue } from "../lib/whatsapp/queue.mjs";
 import { createReportHeader } from "../lib/report-header.mjs";
 import { waNumber, waPresetRange as presetRange } from "../lib/whatsapp/alici.mjs";
@@ -230,7 +230,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   router.post("/api/workspace/whatsapp/connection/embedded", async ({ req, res }) => {
     auth.requirePermission(req, "system.manage");
     if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; WhatsApp bağlanamaz.", { code: "LICENSE_READ_ONLY" });
-    ok(res, await embedded.start({ companyId }));
+    // Yanıttaki tek kullanımlık sır yalnız bu ekrana (adrese yazılmaz, işlem geçmişine / günlüğe girmez); oturum yalnız programın yerel adresinden açılır.
+    ok(res, await embedded.start({ companyId, origin: requestOrigin(req, config.trustProxy), remote: isRemoteRequest(req), firma: store.setting("office.name", "") || "" }));
   });
   router.post("/api/workspace/whatsapp/connection/embedded/:session", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "system.manage");
