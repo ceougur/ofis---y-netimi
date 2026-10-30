@@ -1,0 +1,58 @@
+{
+  "ad": "248-g5-w3-kirmizi-eski-1752ffed",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs",
+  "commit": "1752ffedaeac666b0d31784e2f7c42d3fbc23dd2",
+  "dal": "is/cekirdek-248",
+  "kirli": 16,
+  "izlenmeyen": 27,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T15:11:40.539Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 0,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF) › wa.me 'Cari Ekstre - PDF' seçilen dönemi basar (Geçen Ay: devir 1.000, Ekim hareketleri, dönem sonu 850); metindeki güncel bakiyeyle aynı; ANLIK DURUM ekstresiyle BAYT BAYT aynı",
+      "konum": "test/whatsapp-w3-ekstre-248.test.mjs:33:3",
+      "hata": "dönem dışı hareket PDF'e girmez (beklenen , gelen |-)"
+    },
+    {
+      "ad": "2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF) › 'Tüm Hareketler' bugüne kadar: ileri tarihli hareket metne de PDF'e de girmez (§7a 22); Bu Ay ayın 1'inde tek gün",
+      "konum": "test/whatsapp-w3-ekstre-248.test.mjs:69:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF) › WhatsApp Business API'ye yüklenen PDF, wa.me yolunun aynı dönem PDF'iyle BAYT BAYT aynı; iletinin {{3}} ve {{4}}'ü PDF'le aynı",
+      "konum": "test/whatsapp-w3-ekstre-248.test.mjs:88:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15) › kesin durumdan sonra (Teslim Edildi / Okundu / Başarısız / Süresi Doldu) PDF Meta'dan silinir; Meta Kabul Etti / Sonucu Belirsiz / Meta Bekletti'de silinmez; zaten silinmişse silinmiş sayılır",
+      "konum": "test/whatsapp-w3-ekstre-248.test.mjs:108:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15) › yeniden denemede medya geçerliyse AYNISI kullanılır, 30 günü geçmişse yeniden yüklenir (§7a 15)",
+      "konum": "test/whatsapp-w3-ekstre-248.test.mjs:146:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-w3-kirmizi-eski-1752ffed.log",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "f50cb1de5f286abe356d08d0c0fe3e27b0327adadebeb759d102fa9a3eda65b0",
+  "ham_cikti_bayt": 8705
+}

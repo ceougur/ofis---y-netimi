@@ -8,7 +8,7 @@
 // Sonuç, tüm kaynakların parmak izi ve bugünün tarihiyle önbelleğe alınır; bir hareket girilince parmak izi değişir.
 // Para ya da stok değiştiren her olaydan sonra herkese (işlemi yapan dahil) tek "overview.changed" olayı gider; açık
 // kartlar kendini yeniler.
-import { dueList, groupFlows, isAllTimeStart, presetRange, projection, statement, trialBalance } from "../lib/finance-report.mjs";
+import { dueList, groupFlows, isAllTimeStart, presetRange, projection, trialBalance } from "../lib/finance-report.mjs";
 import { HttpError, limited, ok, sendBuffer, text } from "../lib/http.mjs";
 import { foldText } from "../lib/insight/validators.mjs";
 import { roundMoney } from "../lib/money.mjs";
@@ -16,6 +16,7 @@ import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { createReportHeader } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
+import { statementData, statementFileName, statementPdf } from "../lib/statement-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { reconcileReceivables } from "../lib/receivable-aging.mjs";
@@ -313,39 +314,23 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   });
 
   // ---------- A2. Cari ekstre (tarih aralıklı) ----------
+  // 2.4.8 W3: veri ve PDF üreticisi lib/statement-pdf.mjs'te (WhatsApp ekstresi aynı üreticiyle; davranış aynen — test/ekstre-pdf-fark-248.test.mjs).
   function ekstre(user, params) {
     const range = rangeOf(params, { preset: "thisYear" });
     const id = limited(params.get("account"), 120, "Cari");
     if (!id) throw new HttpError(400, "Ekstresi alınacak cariyi seçin.");
-    const account = accounts().detail(id, user);
-    const result = statement(account.ledger, range);
-    return { ...range, account: { id: account.id, refNo: account.refNo, name: account.name, type: account.type, phone: account.phone }, ...result };
+    return statementData(accounts().detail(id, user), range);
   }
   router.get("/api/workspace/overview/ekstre", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
     ok(res, ekstre(user, url.searchParams));
   });
-  const ekstreRows = data => [
-    [openingDay(data.from), "Devir", "Dönem başı bakiye", "", "", tl(Math.abs(data.opening)) + (data.opening > 0.005 ? " B" : data.opening < -0.005 ? " A" : "")],
-    ...data.lines.map(line => [dayText(line.date), line.label, [line.note, line.receiptNo ? `Makbuz ${line.receiptNo}` : ""].filter(Boolean).join(" · "), line.debit ? tl(line.debit) : "", line.credit ? tl(line.credit) : "", tl(Math.abs(line.balance)) + (line.balance > 0.005 ? " B" : line.balance < -0.005 ? " A" : "")]),
-  ];
   router.get("/api/workspace/overview/ekstre.pdf", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
     const data = ekstre(user, url.searchParams);
-    const pdf = tablePdf({
-      now: clock(),
-      title: `Cari Ekstre · ${data.account.name}`,
-      subtitle: [data.account.refNo ? `Cari No ${data.account.refNo}` : "", rangeText(data), "B: borçlu · A: alacaklı"].filter(Boolean).join(" · "),
-      headers: ["Tarih", "İşlem", "Açıklama", "Borç", "Alacak", "Bakiye"],
-      types: ["", "", "", "money", "money", "money"],
-      rows: ekstreRows(data),
-      summary: [["Devir", tl(data.opening)], ["Dönem Borç", tl(data.debit)], ["Dönem Alacak", tl(data.credit)], ["Dönem Sonu Bakiye", `${tl(Math.abs(data.closing))} ${sideText(data.closing)}`]],
-      footer: [dayText(data.to), "TOPLAM", "Dönem sonu", tl(data.debit), tl(data.credit), tl(Math.abs(data.closing)) + (data.closing > 0.005 ? " B" : data.closing < -0.005 ? " A" : "")],
-      userName: userName(user),
-      ...header.pdf({ brand: office() || "DestekOfis" }),
-    });
+    const pdf = statementPdf(data, { today: today(), now: clock(), userName: userName(user), header: header.pdf({ brand: office() || "DestekOfis" }) });
     audit(user, "overview.exported", "ekstre.pdf", { accountId: data.account.id, from: data.from, to: data.to });
-    sendBuffer(res, pdf, { type: "application/pdf", name: `Ekstre ${data.account.name} ${fileRange(data)}.pdf`, inline: url.searchParams.get("download") !== "1" });
+    sendBuffer(res, pdf, { type: "application/pdf", name: statementFileName(data, today()), inline: url.searchParams.get("download") !== "1" });
   });
   router.get("/api/workspace/overview/ekstre.xlsx", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");

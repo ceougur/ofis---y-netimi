@@ -17,6 +17,7 @@ import { receiptPdf } from "../lib/plan-report.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
 import { createReportHeader } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
+import { statementData, statementFileName, statementPdf } from "../lib/statement-pdf.mjs";
 import { readSheetMatrices } from "../lib/sheets.mjs";
 import { DUE_WINDOW } from "../lib/insight/dues.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
@@ -1077,6 +1078,19 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   router.get("/api/workspace/accounts/:id/ekstre.pdf", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const account = detail(params.id, user);
+    // 2.4.8 W3 (plan §6 W3, S5): WhatsApp penceresinin (wa.me yolu) "Cari Ekstre - PDF"i seçilen DÖNEMLE (?donem=1&from=&to=): ANLIK DURUM ekstresiyle aynı
+    // üretici (lib/statement-pdf.mjs) — devir + dönem hareketleri + dönem sonu bakiye, iletideki metinle aynı dönem ve aynı bakiye. Başlangıç boşsa "Tüm Hareketler"
+    // (bitiş gününe kadar). Parametresiz çağrı (cari kartı) eskisi gibi bütün hareketleri basar.
+    if (url.searchParams.has("donem")) {
+      const from = text(url.searchParams.get("from"));
+      const to = text(url.searchParams.get("to")) || today();
+      if ((from && !realDay(from)) || !realDay(to)) throw new HttpError(400, "Ekstre dönemi geçerli değil.");
+      if (from && from > to) throw new HttpError(400, "Başlangıç tarihi bitiş tarihinden sonra olamaz.");
+      const data = statementData(account, { from, to });
+      const pdf = statementPdf(data, { today: today(), now: clock(), userName: user.display_name || user.username || "", header: header.pdf({ brand: office() || "DestekOfis" }) });
+      audit(user, "account.statement.exported", account.id, { name: account.name, from, to });
+      return sendBuffer(res, pdf, { type: "application/pdf", name: statementFileName(data, today()), inline: url.searchParams.get("download") !== "1" });
+    }
     const t = account.totals;
     const pdf = tablePdf({
       now: clock(),
