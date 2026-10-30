@@ -1,0 +1,15 @@
+M0 bozulmamış kopya: YEŞİL (# tests 23 · # pass 23 · # fail 0)
+M1 görünüm mühürlü belirteci istemciye verir: YAKALANDI (# tests 13 · # pass 12 · # fail 1) — ilk kırmızı: Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+M2 belirteç arındırma (redact) etkisiz: YAKALANDI (# tests 19 · # pass 14 · # fail 5) — ilk kırmızı: Meta hata gövdesi: Türkçe başlık + kod + yeniden deneme sınıfı; Meta metni belirteci yankılasa da iletide yok
+M3 işlem geçmişine belirteç yazılır: YAKALANDI (# tests 13 · # pass 10 · # fail 3) — ilk kırmızı: Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+M4 belirteç adres sorgusuna da konur: YAKALANDI (# tests 19 · # pass 17 · # fail 2) — ilk kırmızı: istek: sürüm sabiti + belirteç yalnız başlıkta; adres sorgusunda ve gövdede yok; yönlendirme izlenmez (manual)
+M5 testlerde de varsayılan gerçek Meta adresi: YAKALANDI (# tests 4 · # pass 3 · # fail 1) — ilk kırmızı: yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+M6 deneme numarası '+' olmadan (işletme ülke kodu riski): YAKALANDI (# tests 13 · # pass 12 · # fail 1) — ilk kırmızı: Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+M7 deneme bekleme süresi yok (çift ileti): YAKALANDI (# tests 13 · # pass 12 · # fail 1) — ilk kırmızı: Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+M8 salt okunur genel kapı WhatsApp uçlarını serbest bırakır: YAKALANDI (# tests 13 · # pass 12 · # fail 1) — ilk kırmızı: salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+M9 bağlantı görünümü yönetici dışı role (accounts.view) açılır: YAKALANDI (# tests 13 · # pass 11 · # fail 2) — ilk kırmızı: bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+M10 test dosyası gerçek Meta adresine istek yazar (kaynak taraması): YAKALANDI (# tests 4 · # pass 3 · # fail 1) — ilk kırmızı: kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+M11 test sahte olmayan whatsappGraphUrl verir (kaynak taraması): YAKALANDI (# tests 4 · # pass 3 · # fail 1) — ilk kırmızı: kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+M12 gerçek Meta adresi ikinci bir sunucu dosyasına yazılır: YAKALANDI (# tests 4 · # pass 3 · # fail 1) — ilk kırmızı: yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+
+13 geçti, 0 kaldı

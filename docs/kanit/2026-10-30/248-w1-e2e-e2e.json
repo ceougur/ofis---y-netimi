@@ -1,0 +1,32 @@
+{
+  "ad": "248-w1-e2e-e2e",
+  "komut": "npm run test:e2e",
+  "commit": "e9602add7dea524a0c8348913ac125d5195fffc0",
+  "dal": "is/w1-248",
+  "kirli": 13,
+  "izlenmeyen": 27,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T13:12:10.761Z",
+  "sure_sn": 187.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-w1-e2e-e2e.log",
+  "klasor": "/home/user/wt-w1-248",
+  "ham_cikti_sha256": "f0cd843f155d2d5ee216f17858eeb60d5e3bd4f1a8c55a457be3beac9ce56517",
+  "ham_cikti_bayt": 5699
+}

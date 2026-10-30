@@ -1,0 +1,38 @@
+{
+  "ad": "248-w1-tam-npm-test",
+  "komut": "npm test",
+  "commit": "e9602add7dea524a0c8348913ac125d5195fffc0",
+  "dal": "is/w1-248",
+  "kirli": 13,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T13:03:32.838Z",
+  "sure_sn": 2113.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3932,
+    "gecen": 3931,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Üretim girişi: e-Belge açık, test ve canlı ortam açık › server/server.mjs e-Belgeyi, canlı ortamı (kullanıcı 16.10.2026: \"hem testi hem canlıyı aç\") ve e-SMM'yi (2.4.4 iş listesi 24) açar; config bunları ortam değişkeniyle açmaz",
+      "konum": "test/edoc-uretim.test.mjs:24:3",
+      "hata": "üretim girişi edocEnabled, edocLive, esmmEnabled ve (2.4.7 M3) mobileKapi verir (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-w1-tam-npm-test.log.gz",
+  "klasor": "/home/user/wt-w1-248",
+  "ham_cikti_sha256": "e79bbf18ac1346a850ca75f4702de5a6582481f8ddc46acd958371b1de7b2eb7",
+  "ham_cikti_bayt": 1428318
+}

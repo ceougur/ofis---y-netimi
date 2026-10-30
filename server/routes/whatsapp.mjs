@@ -8,9 +8,19 @@
 //   POST /api/workspace/whatsapp/targets  { ids | all + süzgeçler, kind: statement|message, preset }
 //   POST /api/workspace/whatsapp/log      { batchId, accountId, kind, body, status: sent|skipped }
 //   GET  /api/workspace/whatsapp/history?accountId=
+//
+// 2.4.8 W1 (docs/erp/WHATSAPP-API-PLANI-2.4.8.md §4, §6 W1): WhatsApp Business API (Meta Cloud API) bağlantısı — Yönetim → WhatsApp. Şirket başına;
+// yalnız yönetici (system.manage). Belirteç sunucuda şifreli (lib/whatsapp/connection.mjs); yanıtlarda yalnız "kayıtlı" işareti.
+//   GET    /api/workspace/whatsapp/connection             bağlantı görünümü (belirteç yok)
+//   PUT    /api/workspace/whatsapp/connection             Elle Bağla { phoneNumberId, wabaId, appId?, token? (boş = kayıtlı belirteç kalır) }
+//   DELETE /api/workspace/whatsapp/connection             Bağlantıyı Kaldır
+//   POST   /api/workspace/whatsapp/connection/test        Bağlantıyı Sına (numara, görünen ad, kalite, sınır basamağı, şablonlar)
+//   POST   /api/workspace/whatsapp/connection/self-test   Kendime Deneme Gönder { to } — yazılabilir lisans
+// Yazma uçları salt okunur lisansta app.mjs'teki genel kapıda (license.assertWritable) 403 LICENSE_READ_ONLY alır; deneme ayrıca burada denetlenir.
 import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { createWhatsappConnection } from "../lib/whatsapp/connection.mjs";
 
 const MAX_TARGETS = 5000;
 const pad = value => String(value).padStart(2, "0");
@@ -73,7 +83,7 @@ export function statementText({ office, account, lines, range, next, overdue }) 
   return out.join("\n");
 }
 
-export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, now: clock = systemClock }) {
+export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock }) {
   const today = () => {
     const d = clock();
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -165,5 +175,43 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
         accountId,
       ),
     );
+  });
+
+  // ---------- 2.4.8 W1: WhatsApp Business API bağlantısı ----------
+  const connection = createWhatsappConnection({ store, config, audit, now: clock });
+  const writable = () => !license || license.writable();
+  const view = () => connection.view({ writable: writable() });
+  router.get("/api/workspace/whatsapp/connection", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, view());
+  });
+  router.put("/api/workspace/whatsapp/connection", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    // Belirteç uzunluğuna sınır konmaz (Meta: değişken uzunluk); gövde bütünüyle 64 KB ile sınırlı.
+    const body = await readJson(req, { limit: 64 * 1024 });
+    connection.save(user, body);
+    ok(res, view());
+  });
+  router.delete("/api/workspace/whatsapp/connection", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    connection.remove(user);
+    ok(res, view());
+  });
+  router.post("/api/workspace/whatsapp/connection/test", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    await connection.test(user);
+    ok(res, view());
+  });
+  router.post("/api/workspace/whatsapp/connection/self-test", async ({ req, res }) => {
+    // Bağlantı ekranının denemesi: yalnız yönetici (system.manage yalnız yönetici rolündedir ve yönetici her yetkiye — whatsapp.send dahil — sahiptir).
+    // whatsapp.send kişiye verilebilen toplu gönderim yetkisidir (W2/W4). Salt okunur lisansta gönderim başlamaz (plan §4): genel kapı + burada da.
+    const user = auth.requirePermission(req, "system.manage");
+    if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; WhatsApp iletisi gönderilemez.", { code: "LICENSE_READ_ONLY" });
+    const body = await readJson(req, { limit: 4096 });
+    const phone = waNumber(limited(body.to, 40, "Cep Telefonu"));
+    if (!phone.valid) throw new HttpError(400, `Deneme numarası kullanılamaz: ${phone.reason}. Kendi cep telefonu numaranızı yazın (ör. 0532 123 45 67).`, { code: "whatsapp-invalid", field: "to" });
+    // Meta: numara "+" ve ülke koduyla verilmezse işletmenin ülke kodu eklenir (yanlış kişi riski) — her zaman "+" ile.
+    const result = await connection.selfTest(user, `+${phone.wa}`);
+    ok(res, { result: result.result, connection: view() });
   });
 }

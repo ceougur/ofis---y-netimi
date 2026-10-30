@@ -26,6 +26,13 @@
     "mobile.device.revoked": "Mobil cihazı sildi",
     "mobile.login": "Mobil cihazdan giriş yaptı",
     "mobile.login_failed": "Mobil cihazdan hatalı giriş denemesi",
+    // 2.4.8 W1: WhatsApp Business API bağlantısı (belirteç işlem geçmişine yazılmaz).
+    "whatsapp.connection.saved": "WhatsApp bağlantısını kaydetti",
+    "whatsapp.connection.removed": "WhatsApp bağlantısını kaldırdı",
+    "whatsapp.connection.tested": "WhatsApp bağlantısını sınadı",
+    "whatsapp.selftest.sent": "WhatsApp deneme iletisi gönderdi",
+    "whatsapp.selftest.failed": "WhatsApp deneme iletisi gönderilemedi",
+    "whatsapp.prepared": "WhatsApp gönderim listesi hazırladı",
     "role.created": "Rol oluşturdu",
     "role.updated": "Rolü düzenledi",
     "role.deleted": "Rolü sildi",
@@ -1675,7 +1682,8 @@
   });
 
   // 2.4.7 M2: Mobil Cihazlar (hof-mobile-devices.js).
-  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, trash: loadTrash, companies: loadCompanies, system: loadSystem, license: loadLicense, mobile: () => HOF.mobileDevices?.load() };
+  // 2.4.8 W1: WhatsApp (hof-whatsapp-ayar.js).
+  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, trash: loadTrash, companies: loadCompanies, system: loadSystem, license: loadLicense, mobile: () => HOF.mobileDevices?.load(), whatsapp: () => HOF.whatsappSettings?.load() };
   function selectTab(name) {
     document.querySelectorAll(".adm-tabs [data-tab]").forEach(button => button.setAttribute("aria-selected", String(button.dataset.tab === name)));
     document.querySelectorAll(".adm-panel").forEach(panel => {

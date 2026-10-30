@@ -12,7 +12,9 @@ import { createApp } from "./app.mjs";
 // Testler bu dosyayı çalıştırmaz; kendi bayraklarını verir (test/helpers.mjs, varsayılan canlı kilitli, e-SMM kapalı). Denetim: test/edoc-uretim.test.mjs;
 // gerçek EDM düzeneği (tools/edm-gercek.mjs) bayrakları bu satırdan okur.
 // 2.4.7 M3: mobileKapi — şifreli özet kapıcıya (kapi.destekofis.net) yüklenir (lib/mobile-sync.mjs; lisans servisi ortam değişkeniyle değiştirilmişse kapalı).
-const app = createApp({ edocEnabled: true, edocLive: true, esmmEnabled: true, mobileKapi: true });
+// 2.4.8 W1: whatsappGraph — WhatsApp Business API istekleri gerçek Meta adresine (graph.facebook.com) gider (config.mjs; lisans servisi ortam değişkeniyle
+// değiştirilmişse kapalı — ayrı süreçte açılan testler Meta'ya ulaşmaz).
+const app = createApp({ edocEnabled: true, edocLive: true, esmmEnabled: true, mobileKapi: true, whatsappGraph: true });
 const address = await app.listen().catch(error => {
   app.log.error(error.code === "EADDRINUSE" ? `Port ${app.config.port} kullanımda. Başka bir DestekOfis sunucusu çalışıyor olabilir.` : "Sunucu başlatılamadı", error);
   process.exit(1);
