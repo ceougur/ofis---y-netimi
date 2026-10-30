@@ -322,6 +322,11 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     return silindi ? "silindi" : null;
   }
 
+  // 2.4.8 L1 kâhin F3 (KARAR P17 = A, 30.10.2026 21:30 UTC, 5 dk yetkisiyle): kaydı silinmiş ofisin cihazına iletiyi kapıcı verir — silinen kaydın izinden
+  // (silinen/<ofis>.json: yalnız neden + an; kişisel veri yok). KARAR L1: "sonra 'Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin'".
+  const SONA_ERDI = () => ({ error: mobilHakIletisi({ durum: "bitti" }), mobilHak: "bitti" });
+  const silinmisMi = async (env, ofis, meta) => !meta && Boolean(await mezarOku(env, ofis));
+
   /** Dönüş: { durum: "gecerli" | "gecersiz" | "dogrulanamadi", iddia, tanimiyor? }. Adaylar: kayıttaki belirteç, önbellek, gerekirse servisten yeni. Tazelik: imzalı
    * issuedAt. tanimiyor: true → belirteç bayat ve servis bu lisansı açıkça tanımadı (S-L1a; temizlik.mjs 60 gün kuralı). yenilendi: true → bu çağrıda servisten
    * taze belirteç alındı. zorla: true → belirteç taze olsa da servise sorulur (GG D1: silme kararından hemen önce). */
@@ -551,11 +556,12 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
 
   async function ozetOku(request, env, ofis) {
     const mevcut = await metaOku(env, ofis);
+    if (await silinmisMi(env, ofis, mevcut)) at("kapi-cihaz", SONA_ERDI());
     // B3: makinesinin güncel ofisi değilse (devre dışı) cihaz listesi boş sayılır → kapi-cihaz (telefon "eşli değil" ekranına döner).
     const cihaz = await cihazIste(request, env, (await guncelMi(env, mevcut?.veri, now())) ? mevcut.veri : null, "/kapi/ozet");
     await hizDenetle(env, "ozet", `${ofis}|${cihaz.id}`, K.dakikadaOzet);
     const vade = await vadesiGecenSil(env, mevcut);
-    if (vade === "silindi") at("kapi-cihaz");
+    if (vade === "silindi") at("kapi-cihaz", SONA_ERDI());
     if (vade === "belirsiz") at("kapi-lisans-dogrulanamadi");
     const gorunum = await lisansIste(env, mevcut.veri);
     if (request.method !== "GET" && request.method !== "HEAD") at("kapi-yazma");
@@ -655,20 +661,22 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
       if (CIHAZ_KIMLIGI.test(id) && etkinCihazlar.some(c => c.id === id)) cihaz = id;
       else {
         if (!CIHAZ_KIMLIGI.test(id) || silinenler.includes(id)) sil = cerezSilSatirlari();
-        if (!eslesme && !sayfa) at("kapi-cihaz", {}, sil.length ? { "set-cookie": sil } : {});
+        if (!eslesme && !sayfa) at("kapi-cihaz", (await silinmisMi(env, ofis, meta)) ? SONA_ERDI() : {}, sil.length ? { "set-cookie": sil } : {});
         cihazsiz = true;
       }
     } else if (cerezOku(cerezBasligi, OTURUM_CEREZI).deger) {
       // Cihaz çerezi olmadan oturum çerezi anlamsızdır (oturum cihaza bağlı); iletilmez.
       cihazsiz = true;
-      if (!eslesme && !sayfa) at("kapi-cihaz");
-    } else if (!eslesme && !sayfa) at("kapi-cihaz");
+      if (!eslesme && !sayfa) at("kapi-cihaz", (await silinmisMi(env, ofis, meta)) ? SONA_ERDI() : {});
+    } else if (!eslesme && !sayfa) at("kapi-cihaz", (await silinmisMi(env, ofis, meta)) ? SONA_ERDI() : {});
     try {
+      // F3: silinmiş kayıtta yeni eşleme "hak sona erdi" ile reddedilir (lisans alınınca program yeniden kaydolur, karekodla eşlenir).
+      if (!meta && eslesme && (await silinmisMi(env, ofis, meta))) at("kapi-lisans", SONA_ERDI());
       if (!meta) at("kapi-ofis-yok");
       if (!guncel) at("kapi-ofis-degisti");
       // F2: silme anı geçtiyse kayıt bu istekte silinir (cihaz da düşer).
       const vade = await vadesiGecenSil(env, mevcut);
-      if (vade === "silindi") at("kapi-cihaz");
+      if (vade === "silindi") at("kapi-cihaz", cihaz !== "-" ? SONA_ERDI() : {});
       if (vade === "belirsiz") at("kapi-lisans-dogrulanamadi");
       await lisansIste(env, meta);
       if (yolSorunu(yolSorgu)) at("kapi-yol");

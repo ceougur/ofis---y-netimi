@@ -110,7 +110,7 @@ describe("2.4.8 L1 — program: ücretli lisans bitince mobil 30 gün salt okunu
       await c.saat(BITIS + 30 * GUN);
       const son = await c.oturum(tel);
       // 2.4.8 L1 kâhin F2: 30. günün sonundaki ilk istekte kapıcı kaydı HEMEN siler → telefon eşli değil (KARAR L1).
-      assert.deepEqual([son.status, son.code], [401, "kapi-cihaz"], `30. günün sonunda kapanır ve kayıt silinir: ${JSON.stringify(son)}`);
+      assert.deepEqual([son.status, son.code, son.error], [401, "kapi-cihaz", "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin."], `30. günün sonunda kapanır, kayıt silinir, ileti kapıcıdan (F3): ${JSON.stringify(son)}`);
       assert.equal((await c.yonetim()).mobileRight?.durum, "bitti");
       assert.equal(lisansModulu.mobileRightOf(c.server.app.license.status()).acik, false, "tünel kuralı da kapalı (aynı işlev)");
     } finally {

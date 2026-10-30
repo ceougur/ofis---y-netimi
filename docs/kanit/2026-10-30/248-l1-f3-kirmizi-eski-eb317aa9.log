@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: 2.4.8 L1 kâhin F3 — silinmiş kayıtta telefon 'Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin' iletisini kapıcıdan alır (P17 A)
+    # Subtest: ücretli: silme anındaki ilk istek ve sonraki özet / canlı istekleri bu iletiyi alır; yeni eşleme aynı iletiyle reddedilir
+    not ok 1 - ücretli: silme anındaki ilk istek ve sonraki özet / canlı istekleri bu iletiyi alır; yeni eşleme aynı iletiyle reddedilir
+      ---
+      duration_ms: 39.978032
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-f3-eski-eb317aa9-k5w1/test/kapi-l1-kahin-f3-248.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        silme anındaki istek: {"status":401,"code":"kapi-cihaz","error":"Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin.","acik":false}
+        + actual - expected
+        
+          [
+            401,
+            'kapi-cihaz',
+        +   "Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin."
+        -   'Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin.'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 401
+        1: 'kapi-cihaz'
+        2: 'Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin.'
+      actual:
+        0: 401
+        1: 'kapi-cihaz'
+        2: "Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin."
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-f3-eski-eb317aa9-k5w1/test/kapi-l1-kahin-f3-248.test.mjs:90:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: deneme: 30 gün + temizlikle silinen kayıtta da aynı ileti; kayıt yeniden açılınca (lisans alındı) eski telefon yine 'eşli değil' alır
+    not ok 2 - deneme: 30 gün + temizlikle silinen kayıtta da aynı ileti; kayıt yeniden açılınca (lisans alındı) eski telefon yine 'eşli değil' alır
+      ---
+      duration_ms: 19.419535
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-f3-eski-eb317aa9-k5w1/test/kapi-l1-kahin-f3-248.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        temizlikle silinen kayıtta: {"status":401,"code":"kapi-cihaz","error":"Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin.","acik":false}
+        + actual - expected
+        
+          [
+            'kapi-cihaz',
+        +   "Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin."
+        -   'Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin.'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'kapi-cihaz'
+        1: 'Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin.'
+      actual:
+        0: 'kapi-cihaz'
+        1: "Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin."
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-f3-eski-eb317aa9-k5w1/test/kapi-l1-kahin-f3-248.test.mjs:106:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 L1 kâhin F3 — silinmiş kayıtta telefon 'Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin' iletisini kapıcıdan alır (P17 A)
+  ---
+  duration_ms: 60.887024
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-f3-eski-eb317aa9-k5w1/test/kapi-l1-kahin-f3-248.test.mjs:83:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 180.512321

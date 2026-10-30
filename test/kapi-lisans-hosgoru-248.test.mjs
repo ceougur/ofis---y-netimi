@@ -243,7 +243,7 @@ describe("2.4.8 L1 — kapıcı: hoşgörüde son özet, canlı kapı ve tünel 
     c.saat(BITIS + 30 * GUN);
     const son = await c.ozet(ofis, tels[0]);
     // 2.4.8 L1 kâhin F2: 30. günün sonundaki İLK istekte kayıt HEMEN silinir (KARAR L1) → telefon artık eşli değil.
-    assert.deepEqual([son.status, son.code], [401, "kapi-cihaz"], `30. günün sonunda kapanır ve kayıt bu istekte silinir: ${JSON.stringify(son)}`);
+    assert.deepEqual([son.status, son.code, son.error], [401, "kapi-cihaz", "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin."], `30. günün sonunda kapanır, kayıt bu istekte silinir, ileti kapıcıdan (F3, P17 A): ${JSON.stringify(son)}`);
     assert.deepEqual(c.kayitVar(ofis), HIC, "ofis kaydı + özet + tünel + DNS ilk istekte silindi (sonraki temizliği beklemez)");
     const [canli, tunel] = [await c.canli(ofis, tels[0]), await c.tunel(ofis)];
     assert.ok(canli.status >= 400 && tunel.status >= 400, `canlı kapı ve tünel de kapalı: ${canli.status} ${tunel.status}`);
