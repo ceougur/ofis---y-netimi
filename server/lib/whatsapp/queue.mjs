@@ -349,9 +349,24 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
   // Başlatmayı engelleyen (bağlantı ve lisanstan sonraki) ilk neden: onay → firma adı. Önizleme bunu YANITTA söyler (2.4.8 W4: önizleme onaydan önce görülür,
   // "Gönder" onay işaretlenene dek pasif kalır); toplu iş açma reddeder.
+  // T2-8: aynı engel süren toplu işte de geçerlidir — Devam Et reddedilir, işçi her adımda ve ileti isteğinden hemen önce denetler (pauseCode / pauseReason).
   function startBlock() {
-    if (!ack()) return { code: "whatsapp-ack-required", message: `Gönderimden önce Yönetim → WhatsApp'ta "${ACK_TEXT}" onayını işaretleyin.` };
-    if (!String(store.setting("office.name", "") || "").trim()) return { code: "whatsapp-office-missing", message: "Firma adı yazılmamış (iletide firmanızın adı geçer); Yönetim → Ofis Bilgileri'nde firma adını yazın." };
+    if (!ack()) {
+      return {
+        code: "whatsapp-ack-required",
+        message: `Gönderimden önce Yönetim → WhatsApp'ta "${ACK_TEXT}" onayını işaretleyin.`,
+        pauseCode: "ack",
+        pauseReason: `Gönderim onayı kaldırıldı; onay olmadan ileti gönderilmez. Yönetim → WhatsApp'ta "${ACK_TEXT}" onayını yeniden işaretleyip Devam Et'e basın.`,
+      };
+    }
+    if (!String(store.setting("office.name", "") || "").trim()) {
+      return {
+        code: "whatsapp-office-missing",
+        message: "Firma adı yazılmamış (iletide firmanızın adı geçer); Yönetim → Ofis Bilgileri'nde firma adını yazın.",
+        pauseCode: "office",
+        pauseReason: "Firma adı silinmiş (iletide firmanızın adı geçer); Yönetim → Ofis Bilgileri'nde firma adını yazıp Devam Et'e basın.",
+      };
+    }
     return null;
   }
   function preconditions() {
@@ -485,6 +500,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const row = editable(id);
     if (row.state !== "paused") fail(409, "Yalnız duraklatılmış gönderim sürdürülür.", "whatsapp-batch-state");
     if (!writable()) fail(403, "Program salt okunur çalışıyor; WhatsApp gönderimi sürdürülemez.", "LICENSE_READ_ONLY");
+    // T2-8 (plan §1 + §7a 28): onay (ve firma adı) yokken Devam Et de reddedilir — başlatmayla aynı engel.
+    const block = startBlock();
+    if (block) fail(409, block.message, block.code);
     const state = ledger.batchState(row.id);
     if (!state.live) {
       stopBatch(row, "Bu toplu gönderim bu bilgisayarın gönderim defterinde açık değil (veri yedekten geri yüklenmiş ya da başka bilgisayardan taşınmış olabilir); yeniden başlatılmaz. Gerekirse yeni gönderim başlatın.", state.opened ? "restored" : "moved");
@@ -620,6 +638,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       pauseBatch(batch, "connection", "WhatsApp bağlantısı kaldırıldı ya da değişti; gönderim duraklatıldı.");
       return { did: true };
     }
+    // T2-8: Gönderim Onayı kaldırıldı / firma adı silindi → süren toplu iş duraklar (kendiliğinden SÜRMEZ; Devam Et).
+    const block = startBlock();
+    if (block) {
+      pauseBatch(batch, block.pauseCode, block.pauseReason);
+      return { did: true };
+    }
     let graph;
     try {
       ({ graph } = connection.client());
@@ -700,6 +724,13 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       return { did: true };
     }
     job = ready.job;
+    // T2-8: onay PDF yüklenirken kaldırılmış olabilir — ileti isteğinden hemen önce yeniden denetlenir; iş Bekliyor'a döner, toplu iş duraklar.
+    const lateBlock = startBlock();
+    if (lateBlock) {
+      updateJob(job.id, { state: "pending" });
+      pauseBatch(ready.batch, lateBlock.pauseCode, lateBlock.pauseReason);
+      return { did: true };
+    }
     if (prepareError) {
       updateJob(job.id, { state: "pending" });
       if (!(prepareError instanceof MetaGraphError)) throw prepareError;
