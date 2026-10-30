@@ -81,6 +81,7 @@ jobs:
       - run: npm run test:senaryo-whatsapp-ayar-248
       - run: npm run test:senaryo-whatsapp-donem-248
       - run: npm run test:senaryo-whatsapp-sablon-248
+      - run: npm run test:senaryo-whatsapp-gonder-248
       - run: npm run test:senaryo-kayit-bag-31e
       - run: npm run test:senaryo-pil-karti-245
       - run: npm run test:senaryo-serit-sira-245

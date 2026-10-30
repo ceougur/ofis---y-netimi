@@ -28,6 +28,10 @@
 //   POST /api/workspace/whatsapp/batches/:id/pause | resume | cancel | retry-failed
 //   POST /api/workspace/whatsapp/jobs/:id/send-anyway        Sonucu Belirsiz → "Yine de Gönder" { confirm: true }
 //   GET  /api/workspace/whatsapp/stats?month=YYYY-MM         "Bu Ay Gönderilen İleti Sayısı" (Meta Kabul Etti / Teslim Edilen (Ücretli) / yaklaşık ücret)
+// 2.4.8 W4 (gönderim ekranı, client/assets/hof-whatsapp-api.js):
+//   GET  /api/workspace/whatsapp/sending-status              cari ekranının WhatsApp penceresi hangi yolu açacak: bağlantı (sınanmış mı), şablonların son denetimi,
+//                                                           lisans, kişinin yetkisi, onay, süren gönderimler, bu ay sayısı. accounts.view (wa.me yolunun yetkisi) —
+//                                                           gizli değer YOK, Meta'ya istek YOK; yetkisiz kişi yalnız "yetkiniz yok" nedenini görür.
 // Onay ve salt okunur lisans SUNUCUDA da denetlenir (istemci atlatılsa da gönderim başlamaz).
 import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
@@ -37,6 +41,7 @@ import { createWaQueue } from "../lib/whatsapp/queue.mjs";
 import { createReportHeader } from "../lib/report-header.mjs";
 import { waNumber, waPresetRange as presetRange } from "../lib/whatsapp/alici.mjs";
 import { registerWhatsappTemplateRoutes } from "./whatsapp-sablon.mjs";
+import { canUser } from "../lib/permissions.mjs";
 
 const MAX_TARGETS = 5000;
 const pad = value => String(value).padStart(2, "0");
@@ -216,7 +221,43 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   });
 
   // ---------- 2.4.8 W5: bilgilendirme şablonları (routes/whatsapp-sablon.mjs) ----------
-  registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection });
+  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection });
+
+  // ---------- 2.4.8 W4: gönderim ekranının durumu ----------
+  router.get("/api/workspace/whatsapp/sending-status", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "accounts.view");
+    const record = connection.read();
+    const canSend = canUser(user, "whatsapp.send");
+    const base = { configured: Boolean(record), writable: writable(), canSend, canManage: canUser(user, "system.manage"), api: Boolean(queue) };
+    if (!record) return ok(res, base);
+    const conn = connection.view({ writable: writable() });
+    const stored = templates?.view?.() || null;
+    const items = Object.fromEntries((stored?.items || []).map(item => [item.kind, { name: item.name, usable: Boolean(item.usable), statusLabel: item.statusLabel || "" }]));
+    const tested = Boolean(conn.lastTest?.ok);
+    const linkBlock = !conn.graphAvailable
+      ? "Bu kurulumda WhatsApp Business API adresi tanımlı değil; Meta'ya bağlanılamaz."
+      : !conn.tokenUsable
+        ? "Kayıtlı erişim belirteci bu bilgisayarda açılamıyor; yönetici Yönetim → WhatsApp'ta belirteci yeniden girmeli."
+        : !conn.lastTest
+          ? "WhatsApp bağlantısı henüz sınanmadı; yönetici Yönetim → WhatsApp'ta Bağlantıyı Sına'ya basmalı."
+          : !tested
+            ? `WhatsApp bağlantısının son sınaması başarısız (${conn.lastTest.message || "neden bilinmiyor"}); yönetici Yönetim → WhatsApp'ta bilgileri düzeltip yeniden sınamalı.`
+            : "";
+    const out = {
+      ...base,
+      mode: conn.mode,
+      tested,
+      linkBlock,
+      phone: tested ? { display: conn.lastTest.phone?.display || "", verifiedName: conn.lastTest.phone?.verifiedName || "", tierLabel: conn.lastTest.phone?.tierLabel || "" } : null,
+      templates: { checkedAt: stored?.checkedAt || null, statement: items.statement || null, reminder: items.reminder || null },
+    };
+    if (queue && canSend) {
+      out.ack = queue.ackView();
+      out.active = queue.list({ limit: 20 }).filter(batch => ["running", "paused"].includes(batch.state)).map(batch => ({ id: batch.id, kindLabel: batch.kindLabel, stateLabel: batch.stateLabel, total: batch.total, createdAt: batch.createdAt }));
+      out.stats = queue.monthStats("");
+    }
+    ok(res, out);
+  });
 
   // ---------- 2.4.8 W2: gönderim çekirdeği ----------
   if (!whatsapp?.ledger) return { connection, queue: null };

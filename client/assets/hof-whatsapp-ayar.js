@@ -89,7 +89,59 @@
     }
     // 2.4.8 W5: Bilgilendirme Şablonları kartı (hof-whatsapp-sablon.js) bağlantıyla birlikte yenilenir.
     await HOF.whatsappTemplates?.load();
+    await loadSending();
   }
+
+  // ---------- 2.4.8 W4: Gönderim Onayı ve Bu Ay Gönderilen İleti Sayısı ----------
+  // Bir kez onay (plan §1, §7a 28): işaretlenmeden toplu/tekli otomatik gönderim BAŞLAMAZ (sunucu da reddeder). "Bu Ay": teslim edilen ileti (Teslim Edildi +
+  // Okundu), ay Türkiye saatiyle teslim zamanı, kapsam aynı WhatsApp hesabını kullanan bütün şirketler (§7a 19); Meta faturasıyla karşılaştırma notu.
+  const usd = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 4 }).format(Number(value) || 0);
+  async function loadSending() {
+    const box = $("#adm-wa-sending");
+    if (!box) return;
+    if (!view?.configured) {
+      box.hidden = true;
+      return;
+    }
+    let ack = null;
+    let stats = null;
+    try {
+      [ack, stats] = await Promise.all([HOF.api("/api/workspace/whatsapp/ack"), HOF.api("/api/workspace/whatsapp/stats")]);
+    } catch (error) {
+      box.hidden = false;
+      box.innerHTML = `<p class="adm-mobile-warn">${esc(error.message)}</p>`;
+      return;
+    }
+    const writable = view.writable !== false;
+    const month = stats?.month ? `${stats.month.slice(5, 7)}.${stats.month.slice(0, 4)}` : "";
+    box.hidden = false;
+    box.innerHTML = `
+      <div class="adm-wa-head"><h2>Gönderim Onayı</h2>
+        <p>Carilere WhatsApp ile otomatik gönderim, aşağıdaki onay bu şirket için bir kez işaretlenmeden başlamaz. Carilerinizi kişisel verileri hakkında bilgilendirmek için aşağıdaki Aydınlatma Metni Hazırla'yı kullanabilirsiniz.</p></div>
+      <label class="hof-check adm-wa-ack"><input type="checkbox" data-wa-ack data-nodirty ${ack.acknowledged ? "checked" : ""} ${writable ? "" : "disabled"}><span>${esc(ack.text)}</span></label>
+      <p class="adm-muted" data-wa-ack-state>${ack.acknowledged ? `Onaylandı: ${esc(when(ack.at))}${ack.byName ? ` · ${esc(ack.byName)}` : ""}` : "Onay verilmedi; otomatik gönderim başlatılamaz."}</p>
+      ${writable ? "" : '<p class="adm-wa-why" data-wa-ack-why>Lisans salt okunur: onay değiştirilemez.</p>'}
+      <div class="adm-wa-head adm-wa-month"><h2>Bu Ay Gönderilen İleti Sayısı${month ? ` (${esc(month)})` : ""}</h2></div>
+      <dl class="adm-license-facts" data-wa-month>
+        <div data-wa-month-fact="delivered"><dt>Teslim Edilen İleti</dt><dd>${esc(String(stats.delivered ?? 0))}</dd></div>
+        <div data-wa-month-fact="billable"><dt>Ücretli Teslim</dt><dd>${esc(String(stats.billable ?? 0))}</dd></div>
+        <div data-wa-month-fact="accepted"><dt>Meta Kabul Etti</dt><dd>${esc(String(stats.accepted ?? 0))}</dd></div>
+        <div data-wa-month-fact="usd"><dt>Yaklaşık Ücret</dt><dd>≈ ${esc(usd(stats.approxUsd))} USD (ücretli teslim × ${esc(usd(stats.unitUsd))} USD)</dd></div>
+      </dl>
+      <p class="adm-muted" data-wa-month-note>Sayı programın kaydıdır; Meta faturası esastır. Meta'daki Fatura ve Ödemeler sayfasıyla karşılaştırın: ay sınırı burada Türkiye saatine göredir, Meta hesabınızın saat dilimi farklıysa ayın ilk ve son günündeki iletiler farklı aya düşebilir. Aynı WhatsApp hesabını kullanan öbür şirketin iletileri de sayılır.</p>`;
+  }
+  document.addEventListener("change", async event => {
+    const box = event.target.closest?.("[data-wa-ack]");
+    if (!box) return;
+    box.disabled = true;
+    try {
+      await HOF.api("/api/workspace/whatsapp/ack", { method: "PUT", body: { ack: box.checked } });
+      HOF.toast(box.checked ? "Gönderim onayı kaydedildi." : "Gönderim onayı kaldırıldı; otomatik gönderim başlatılamaz.", { type: box.checked ? "success" : "info" });
+    } catch (error) {
+      HOF.toastError(error);
+    }
+    await loadSending();
+  });
 
   // Kayıttan sonra hemen sınanır; sınama başarısızsa bağlantı kayıtlı kalır, neden kartta ve bildirimde görünür.
   async function testNow({ afterSave = false } = {}) {

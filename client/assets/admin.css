@@ -1038,6 +1038,11 @@ td.adm-row-actions > .hof-button + .hof-button {
 
 /* 2.4.8 W6: Aydınlatma Metni Hazırla (hof-whatsapp-aydinlatma.js). */
 .adm-wa-notice { margin-top: 16px; }
+/* 2.4.8 W4: Gönderim Onayı ve Bu Ay Gönderilen İleti Sayısı */
+.adm-wa-sending { margin-top: 16px; }
+.adm-wa-sending .adm-wa-ack { margin: 12px 0 4px; }
+.adm-wa-sending .adm-wa-month { margin-top: 18px; }
+.adm-wa-sending .adm-wa-month h2 { font-size: 1.05rem; }
 .adm-wa-notice .adm-inline { margin-top: 12px; }
 .adm-wa-notice-text { max-height: 55vh; overflow: auto; margin-top: 12px; padding: 14px 16px; border: 1px solid var(--do-border, #e5e7eb); border-radius: 8px; background: var(--do-surface-soft, #f9fafb); font-size: 13px; line-height: 1.5; }
 .adm-wa-notice-text h2 { font-size: 15px; margin: 0 0 10px; }

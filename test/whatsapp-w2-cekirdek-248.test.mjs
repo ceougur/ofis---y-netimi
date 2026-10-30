@@ -46,7 +46,13 @@ describe("2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 2
       let res = await ctx.batch(body);
       assert.equal(res.status, 409);
       assert.equal(res.data.code, "whatsapp-ack-required", JSON.stringify(res.data));
-      assert.equal((await ctx.api.post(URLS.preview, body)).data.code, "whatsapp-ack-required");
+      // 2.4.8 W4 (BAŞ MİMAR KARARI): önizleme onaydan ÖNCE de görülür (ekran kaç kişiye gideceğini gösterir, "Gönder" pasif kalır); başlatma engeli yanıtta.
+      const early = await ctx.api.post(URLS.preview, body);
+      assert.equal(early.status, 200, JSON.stringify(early.data));
+      assert.equal(early.data.data.startBlock?.code, "whatsapp-ack-required");
+      assert.equal(early.data.data.ack.acknowledged, false);
+      assert.equal(early.data.data.sendable, 1, "onaysız önizleme kişiyi sayar");
+      assert.equal(ctx.store.get("SELECT COUNT(*) AS n FROM wa_batches").n, 0, "önizleme toplu iş açmaz");
       const ackView = (await ctx.api.get(URLS.ack)).data.data;
       assert.equal(ackView.acknowledged, false);
       assert.equal(ackView.text, "Aydınlatma metnimi okudum, carilerime ulaştıracağım.");

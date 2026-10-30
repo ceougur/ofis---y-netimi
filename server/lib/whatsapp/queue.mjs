@@ -365,17 +365,28 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (!record) fail(409, "WhatsApp Business API bağlantısı yok; önce Yönetim → WhatsApp'ta Elle Bağla ile bağlanın.", "whatsapp-not-configured");
     return record;
   }
+  // Başlatmayı engelleyen (bağlantı ve lisanstan sonraki) ilk neden: onay → firma adı. Önizleme bunu YANITTA söyler (2.4.8 W4: önizleme onaydan önce görülür,
+  // "Gönder" onay işaretlenene dek pasif kalır); toplu iş açma reddeder.
+  function startBlock() {
+    if (!ack()) return { code: "whatsapp-ack-required", message: `Gönderimden önce Yönetim → WhatsApp'ta "${ACK_TEXT}" onayını işaretleyin.` };
+    if (!String(store.setting("office.name", "") || "").trim()) return { code: "whatsapp-office-missing", message: "Firma adı yazılmamış (iletide firmanızın adı geçer); Yönetim → Ofis Bilgileri'nde firma adını yazın." };
+    return null;
+  }
   function preconditions() {
     const record = connected();
     if (!writable()) fail(403, "Program salt okunur çalışıyor; WhatsApp gönderimi başlatılamaz.", "LICENSE_READ_ONLY");
-    if (!ack()) fail(409, `Gönderimden önce Yönetim → WhatsApp'ta "${ACK_TEXT}" onayını işaretleyin.`, "whatsapp-ack-required");
-    if (!String(store.setting("office.name", "") || "").trim()) fail(409, "Firma adı yazılmamış (iletide firmanızın adı geçer); Yönetim → Ofis Bilgileri'nde firma adını yazın.", "whatsapp-office-missing");
+    const block = startBlock();
+    if (block) fail(409, block.message, block.code);
     return record;
   }
 
-  /** Önizleme: kişiler, eleme nedenleri, bugünkü sınırdan kalan, yarına kalacak (Meta'ya yalnız okuma istekleri). */
+  /**
+   * Önizleme: kişiler, eleme nedenleri, bugünkü sınırdan kalan, yarına kalacak (Meta'ya yalnız okuma istekleri). 2.4.8 W4: onay ve firma adı önizlemeyi
+   * ENGELLEMEZ (ekran önce kaç kişiye gideceğini gösterir); başlatma engeli `startBlock` ile yanıtta, toplu iş açma (createBatch) yine reddeder.
+   */
   async function preview(user, body) {
-    const record = preconditions();
+    const record = connected();
+    if (!writable()) fail(403, "Program salt okunur çalışıyor; WhatsApp gönderimi başlatılamaz.", "LICENSE_READ_ONLY");
     const kind = body.kind === "reminder" ? "reminder" : "statement";
     const { graph } = connection.client();
     let limitInfo;
@@ -387,7 +398,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (error instanceof MetaGraphError) throw metaHttp(error);
       throw error;
     }
-    return summarize(plan(user, body), record, limitInfo, template);
+    return { ...summarize(plan(user, body), record, limitInfo, template), startBlock: startBlock(), ack: ackView() };
   }
   function summarize(plotted, record, limitInfo, template) {
     const sendable = plotted.people.filter(person => !person.skip);
