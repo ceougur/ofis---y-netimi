@@ -223,6 +223,8 @@ webhook (WhatsApp API için belgelenmemiş). KALANLAR:
 6. Türkiye hizmet (utility) mesajı fiyatı (Meta + Verimor), paketler, aylık sabit ücret?
 7. İş ortaklığı: DestekOfis üzerinden açılan hesaplar için gelir paylaşımı; isteklerde iş ortağı kimliği (EDM'deki APPLICATION_NAME gibi) gönderilebilir mi?
 8. Coexistence'ta API'den giden mesajlar WhatsApp Business uygulamasında görünür mü?
+9. (Kullanıcı 30.10.2026 ~04:15 UTC: "şablonları verimor panelinde bir kez oluşturup metaya onaylatmak müşteri için imkansız görev") Şablon oluşturma API'si var mı/planlanıyor mu? Yoksa DestekOfis'ten gelen hesaplarda DestekOfis'in hazır şablonlarını (ekstre + ödeme hatırlatma) Verimor kurulumda KENDİLİĞİNDEN oluşturup onaya gönderebilir mi (iş ortağı şablon kütüphanesi)? Meta'nın hazır Şablon Kütüphanesi (anında onaylı hizmet şablonları) panelde kullanılabiliyor mu?
+   YEDEK YOL (Verimor hayır derse): şablon sayısı 4'ten 2'ye (ekstre + ödeme hatırlatma); programda adım adım rehber + her alan için Kopyala + ekran görüntülü kılavuz; isteyen müşteriye DestekOfis uzaktan kurulum desteği (~10 dk).
 
 ## 11. Kullanıcı kararları (öneriyle sorulan)
 
