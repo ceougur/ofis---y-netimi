@@ -11605,3 +11605,55 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-maliyet-alt { position: sticky; bottom: -1px; background: var(--do-surface); padding-top: 8px; margin-top: 0; z-index: 2; }
 .hof-tabs.hof-maliyet-sekmeler button.hof-maliyet-kalem { width: 22px; height: 22px; padding: 0; border-radius: 8px; background: #fff; color: var(--do-soft, #4c6158); font-size: 11px; }
 .hof-tabs.hof-maliyet-sekmeler button.hof-maliyet-kalem:hover { border-color: #9cc5ad; color: var(--do-accent); }
+
+/* 2.4.8 W4 — WhatsApp penceresi: yol seçimi (Otomatik Gönder / WhatsApp Web ile Gönder) ve otomatik gönderim paneli (hof-whatsapp-api.js). */
+.hof-wa-paths { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+.hof-wa-path { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; padding: 10px 12px; border: 1px solid var(--do-border); border-radius: 10px; background: transparent; color: inherit; cursor: pointer; font: inherit; }
+.hof-wa-path small { color: var(--do-muted); font-size: .78rem; line-height: 1.35; }
+.hof-wa-path.is-active { border-color: #25d366; box-shadow: inset 0 0 0 1px #25d366; background: rgba(37, 211, 102, .08); }
+.hof-wa-path:focus-visible { outline: 2px solid var(--do-accent, #1f6a50); outline-offset: 2px; }
+.hof-wa-api-bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; margin-bottom: 12px; }
+.hof-wa-api-bar .hof-field { margin: 0; min-width: 180px; }
+.hof-wa-api-bar > button:last-child { margin-left: auto; }
+.hof-wa-api-kind { display: flex; flex-wrap: wrap; gap: 4px 16px; border: 0; margin: 0; padding: 0; }
+.hof-wa-api-kind legend { font-size: .78rem; color: var(--do-muted); padding: 0; margin-bottom: 4px; width: 100%; }
+.hof-wa-api-title { margin: 0; flex: 1 1 280px; }
+.hof-wa-api-facts { margin: 0; display: grid; gap: 6px; font-size: .88rem; }
+.hof-wa-api-facts > div { display: grid; grid-template-columns: minmax(120px, 42%) 1fr; gap: 8px; }
+.hof-wa-api-facts dt { color: var(--do-muted); }
+.hof-wa-api-facts dd { margin: 0; overflow-wrap: anywhere; }
+.hof-wa-api-facts .is-warn dd { color: #b54708; }
+.hof-wa-api-skips { list-style: none; margin: 0 0 8px; padding: 0; font-size: .86rem; }
+.hof-wa-api-skips li { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; border-bottom: 1px dashed var(--do-border); }
+.hof-wa-api-note { font-size: .82rem; color: var(--do-muted); margin: 8px 0 0; }
+.hof-wa-api-why { font-size: .85rem; color: var(--do-muted); margin: 6px 0 0; text-align: right; }
+.hof-wa-api-empty, .hof-wa-api-error { padding: 12px 14px; border: 1px dashed var(--do-border); border-radius: 10px; margin: 0 0 12px; }
+.hof-wa-api-error p { margin: 0 0 8px; color: #b42318; }
+.hof-wa-api-ack, .hof-wa-api-again { margin: 14px 0 0; padding: 10px 12px; border: 1px solid var(--do-border); border-radius: 10px; }
+.hof-wa-api-ack.is-done { border-style: dashed; }
+.hof-wa-api-again { border-color: #f5b041; background: rgba(245, 176, 65, .08); }
+.hof-wa-api-again p { margin: 0 0 6px; }
+.hof-wa-api-active { margin: 0 0 10px; font-size: .88rem; }
+.hof-wa-api-tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .78rem; border: 1px solid var(--do-border); white-space: nowrap; }
+.hof-wa-api-tag.is-ok { color: #0f7b3f; border-color: rgba(15, 123, 63, .4); }
+.hof-wa-api-tag.is-info { color: #1d4ed8; border-color: rgba(29, 78, 216, .35); }
+.hof-wa-api-tag.is-warn { color: #b54708; border-color: rgba(181, 71, 8, .4); }
+.hof-wa-api-tag.is-error { color: #b42318; border-color: rgba(180, 35, 24, .45); }
+.hof-wa-api-tag.is-muted { color: var(--do-muted); }
+.hof-wa-api-tag + small, .hof-wa-list td small { display: block; }
+.hof-wa-api-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }
+.hof-wa-api-state { padding: 2px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; border: 1px solid var(--do-border); }
+.hof-wa-api-state.is-running { color: #0f7b3f; border-color: rgba(15, 123, 63, .45); }
+.hof-wa-api-state.is-paused, .hof-wa-api-state.is-offline { color: #b54708; border-color: rgba(181, 71, 8, .45); }
+.hof-wa-api-state.is-canceled, .hof-wa-api-state.is-stopped { color: var(--do-muted); }
+.hof-wa-api-wait { margin: 6px 0; padding: 8px 10px; border-left: 3px solid #f5b041; background: rgba(245, 176, 65, .08); font-size: .86rem; }
+.hof-wa-api-wait.is-warn { border-left-color: #b54708; }
+.hof-wa-api-jobs { max-height: 360px; }
+.hof-wa-api-reason { font-size: .82rem; color: var(--do-muted); max-width: 32ch; }
+.hof-wa-list tr[data-wa-api-open] { cursor: pointer; }
+@media (max-width: 760px) {
+  .hof-wa-paths { grid-template-columns: 1fr; }
+  .hof-wa-api-bar > button:last-child { margin-left: 0; }
+  .hof-wa-api-facts > div { grid-template-columns: 1fr; gap: 0; }
+  .hof-wa-api-why { text-align: left; }
+}

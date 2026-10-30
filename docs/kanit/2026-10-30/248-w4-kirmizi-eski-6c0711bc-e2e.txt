@@ -1,0 +1,47 @@
+(node:1421) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ Giriş
+  ✓ yönetici girdi
+
+■ G1 Cari listesi → hepsini seç → WhatsApp Ekstre: iki yol, Otomatik Gönder seçili; önizleme sayıları; onaysız Gönder pasif + neden
+  ✗ iki yol: Otomatik Gönder + WhatsApp Web ile Gönder
+  ✗ adım yarıda kaldı: page.getAttribute: Timeout 20000ms exceeded.
+
+■ G2 her seçenek: Ödeme Hatırlatma (gecikmiş borç yok → hepsi elenir, Gönder pasif + neden) ve Geçen Ay dönemi
+  ✗ adım yarıda kaldı: page.check: Timeout 20000ms exceeded.
+
+■ G3 onay Tab + Boşluk → Gönder (4 Kişi) → soru → toplu iş ekranı; veri tabanı 1 toplu iş, 7 iş
+  ✗ adım yarıda kaldı: page.focus: Timeout 20000ms exceeded.
+
+■ G4 Duraklat → Devam Et (veri tabanı); işçi → sahte Meta 4 ileti, ekranda Meta Kabul Etti 4
+  ✗ adım yarıda kaldı: page.click: Timeout 20000ms exceeded.
+
+■ G5 kanca (HTTP) → Teslim Edildi 2, Okundu 1, Başarısız 1 (neden); Bu Ay 3
+  ✓ kanca 200 (200 {"ok":true})
+  ✗ adım yarıda kaldı: page.waitForFunction: Timeout 20000ms exceeded.
+
+■ G6 yenile → Gönderimler listesinden aynı toplu iş; ikinci sekmede süren işte 'Zaten Kuyrukta'
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 20000ms exceeded.
+
+■ G7 R3: aynı dönem yeniden → 3 kişiye daha önce gönderildi; varsayılan Bunları Çıkar (1); Yine de Gönder (4); iki sekme → Zaten Kuyrukta
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 20000ms exceeded.
+
+■ G8 Bağlantı Bekleniyor (Meta'ya ulaşılamıyor) ve Sınır Nedeniyle Bekliyor ekranda açıkça
+  ✗ toplu iş açıldı (409)
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 20000ms exceeded.
+
+■ G9 WhatsApp Web ile Gönder (wa.me) bağlantı varken de çalışır
+  ✗ adım yarıda kaldı: page.click: Timeout 20000ms exceeded.
+
+■ G10 yetkisiz (Personel): Otomatik Gönder sekmesinde neden, Gönder pasif; API 403
+  ✗ adım yarıda kaldı: page.getAttribute: Timeout 30000ms exceeded.
+
+■ G11 dar pencere (760 px): yatay taşma yok
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 20000ms exceeded.
+
+■ G12 salt okunur lisans: Otomatik Gönder'de neden, Gönder pasif; yeni toplu iş yok
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 20000ms exceeded.
+  ✓ sayfa hatası yok
+
+3 geçti, 14 kaldı

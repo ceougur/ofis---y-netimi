@@ -19,3 +19,7 @@
    app.js fitAmounts yazı boyutunu küçültür (en az 12 px). Hesap adının uzunluğu tutarı itmez. */
 .metric-value,.big-balance,[data-detail-balance],.stat-line strong{white-space:nowrap;overflow:hidden;text-overflow:clip}
 .stat-line span{min-width:0;overflow-wrap:anywhere}
+/* 2.4.8 M4: iPhone eşleme — simgede Karekodu Okut (kamera) ve tarayıcı sekmesinde Ana Ekrana Ekle yönlendirmesi */
+#scan-open{margin-top:18px}.scan-frame{position:relative;width:100%;aspect-ratio:1/1;max-height:60vh;border-radius:14px;overflow:hidden;background:#102a36;margin:14px 0}
+.scan-frame video{width:100%;height:100%;object-fit:cover;display:block}.scan-frame::after{content:"";position:absolute;inset:16%;border:3px solid rgba(255,255,255,.85);border-radius:12px;pointer-events:none}
+.guide-steps{margin:16px 0 0;padding-left:22px;display:grid;gap:12px;font-size:15px;line-height:1.5;color:var(--ink)}.guide-steps b{font-weight:800}

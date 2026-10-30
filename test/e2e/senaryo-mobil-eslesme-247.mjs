@@ -20,7 +20,7 @@ import jsQR from "jsqr";
 import { chromium } from "playwright";
 import { CURRENT, bootVersion } from "../guvenilirlik/surumler.mjs";
 import { ADMIN_PASSWORD, createClient } from "../helpers.mjs";
-import { createPhone } from "../mobil-uzak-ortak.mjs";
+import { createPhone, iosSimge } from "../mobil-uzak-ortak.mjs";
 
 const root = mkdtempSync(path.join(tmpdir(), "senaryo-mobil-eslesme-247-"));
 const shots = process.env.EKRAN_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-mobil-eslesme-247");
@@ -101,6 +101,7 @@ const browser = await chromium.launch();
 const deskContext = await browser.newContext({ viewport: { width: 1366, height: 900 } });
 await deskContext.grantPermissions(["clipboard-read", "clipboard-write"], { origin: server.base });
 const phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 }, userAgent: IPHONE, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+await iosSimge(phoneContext); // 2.4.8 M4: iPhone eşlemesi ana ekran simgesinde (Safari sekmesi yönlendirir — senaryo-mobil-iphone-248)
 desk = await deskContext.newPage();
 phone = await phoneContext.newPage();
 for (const [label, target] of [["masaüstü", desk], ["telefon", phone]]) target.on("pageerror", error => pageErrors.push(`${label}: ${error.message}`));
@@ -214,6 +215,7 @@ await step("E4 sınır 3/3: karekod düğmeleri pasif, neden ve uyarı görünü
   await adminApi.put(`/api/admin/mobile/access/${ids["mobil-ayse"]}`, { remote: true });
   const code = await adminApi.post("/api/admin/mobile/codes", { userId: ids["mobil-ayse"] });
   const tabletContext = await browser.newContext({ viewport: { width: 820, height: 1180 }, userAgent: IPHONE, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+  await iosSimge(tabletContext); // 2.4.8 M4
   const tablet = await tabletContext.newPage();
   tablet.on("pageerror", error => pageErrors.push(`tablet: ${error.message}`));
   tablet.setDefaultTimeout(15000);
