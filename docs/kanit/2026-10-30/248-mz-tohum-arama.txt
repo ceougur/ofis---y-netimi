@@ -146,3 +146,6 @@ kısmı küçükken) tutar room'u aşar; "over" dalı seçilmediği için motor 
 248-mz-mutasyon-anahtar-yalniz-seri: bu commit'in kodu, motor satır 684 `const seriesKey = (series, day) => series;` (anahtar yeniden yalnız seri).
   tohum 39: aynı ileti ile KIRMIZI (mutasyon yakalandı); tohum 29: yeşil (Ret durumunda program ve mutasyonlu motor aynı ret).
 Kayıtlardaki "commit undefined": kopyalar git deposu değil; kod kaynağı yukarıda.
+
+== GÜNCELLEME (30.10.2026, koordinatör kararı): yan bulgu aynı dalda DÜZELTİLDİ (Math.min kırpması; rastgele sıra değişmez — 248-mz-supheli-iz-karsilastirma.txt).
+Kanıt: 248-mz-supheli-kirmizi-eski-motor-c943508e (işlem 1130, beklenen ileti), 248-mz-supheli-yesil-yeni-motor, 248-mz-supheli-komsu.

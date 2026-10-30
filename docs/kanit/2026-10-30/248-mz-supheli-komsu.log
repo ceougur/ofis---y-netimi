@@ -1,0 +1,128 @@
+TAP version 13
+# Subtest: mutabakat kapısı
+    # Subtest: günlük iş akışından sonra tüm denetimler tutarlı
+    ok 1 - günlük iş akışından sonra tüm denetimler tutarlı
+      ---
+      duration_ms: 14.247144
+      type: 'test'
+      ...
+    # Subtest: stok hareketi olmayan cari satırı (sızıntı) yazılamaz: işlem geri alınır, günlüğe düşer
+    ok 2 - stok hareketi olmayan cari satırı (sızıntı) yazılamaz: işlem geri alınır, günlüğe düşer
+      ---
+      duration_ms: 10.318253
+      type: 'test'
+      ...
+    # Subtest: kuruştan küçük küsurat: işlem dışı tek satır yazımı da kapıdan geçer ve geri alınır
+    ok 3 - kuruştan küçük küsurat: işlem dışı tek satır yazımı da kapıdan geçer ve geri alınır
+      ---
+      duration_ms: 8.329278
+      type: 'test'
+      ...
+    # Subtest: çok adımlı işlemde bir adım sapma yaratırsa önceki adımlar da yazılmaz
+    ok 4 - çok adımlı işlemde bir adım sapma yaratırsa önceki adımlar da yazılmaz
+      ---
+      duration_ms: 12.739408
+      type: 'test'
+      ...
+    # Subtest: eski sürümden kalan sapma ilgisiz işlemleri engellemez; ama büyütülemez
+    ok 5 - eski sürümden kalan sapma ilgisiz işlemleri engellemez; ama büyütülemez
+      ---
+      duration_ms: 50.642701
+      type: 'test'
+      ...
+    # Subtest: taksitlendirilmiş veresiye satıştan iade: taksit kartı iade kadar küçülür (kart borçtan büyük kalmaz)
+    ok 6 - taksitlendirilmiş veresiye satıştan iade: taksit kartı iade kadar küçülür (kart borçtan büyük kalmaz)
+      ---
+      duration_ms: 77.932023
+      type: 'test'
+      ...
+    # Subtest: Satış Yapma yetkisi: kasiyer ürün yönetimi olmadan nakit/kart satış ve iade girer; alım giremez
+    ok 7 - Satış Yapma yetkisi: kasiyer ürün yönetimi olmadan nakit/kart satış ve iade girer; alım giremez
+      ---
+      duration_ms: 303.003791
+      type: 'test'
+      ...
+    # Subtest: Raporlar: Defter Mutabakatı denetimleri ve Mutabakat Günlüğü
+    ok 8 - Raporlar: Defter Mutabakatı denetimleri ve Mutabakat Günlüğü
+      ---
+      duration_ms: 17.809533
+      type: 'test'
+      ...
+    1..8
+ok 1 - mutabakat kapısı
+  ---
+  duration_ms: 1159.039411
+  type: 'suite'
+  ...
+# Subtest: kuruş aritmetiği
+    # Subtest: roundMoney yarım kuruşu sıfırdan uzağa yuvarlar; kayan nokta artığı taşımaz; −0 üretmez
+    ok 1 - roundMoney yarım kuruşu sıfırdan uzağa yuvarlar; kayan nokta artığı taşımaz; −0 üretmez
+      ---
+      duration_ms: 1.684274
+      type: 'test'
+      ...
+    # Subtest: satır tutarı (miktar × birim fiyat) programda ve bağımsız tam sayı hesabında aynı
+    ok 2 - satır tutarı (miktar × birim fiyat) programda ve bağımsız tam sayı hesabında aynı
+      ---
+      duration_ms: 23.672847
+      type: 'test'
+      ...
+    1..2
+ok 2 - kuruş aritmetiği
+  ---
+  duration_ms: 26.362143
+  type: 'suite'
+  ...
+# Subtest: dört çekirdek mutabakatı (model tabanlı)
+    # Subtest: tohum 1: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+    ok 1 - tohum 1: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+      ---
+      duration_ms: 24511.345979
+      type: 'test'
+      ...
+    # Subtest: tohum 2: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+    ok 2 - tohum 2: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+      ---
+      duration_ms: 26426.864266
+      type: 'test'
+      ...
+    # Subtest: tohum 3: POS ekseni açık, 200 rastgele işlem (POS tahsilatı, iadesi, silme; çek/senet tahsile ver); her işlemden ve raporlardan sonra tutarlı
+    ok 3 - tohum 3: POS ekseni açık, 200 rastgele işlem (POS tahsilatı, iadesi, silme; çek/senet tahsile ver); her işlemden ve raporlardan sonra tutarlı
+      ---
+      duration_ms: 16180.561288
+      type: 'test'
+      ...
+    1..3
+ok 3 - dört çekirdek mutabakatı (model tabanlı)
+  ---
+  duration_ms: 67119.717759
+  type: 'suite'
+  ...
+# Subtest: mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027)
+    # Subtest: tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı
+    ok 1 - tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı
+      ---
+      duration_ms: 30299.960101
+      type: 'test'
+      ...
+    # Subtest: tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı
+    ok 2 - tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı
+      ---
+      duration_ms: 28163.140811
+      type: 'test'
+      ...
+    1..2
+ok 4 - mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027)
+  ---
+  duration_ms: 58464.998349
+  type: 'suite'
+  ...
+1..4
+# tests 15
+# suites 4
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 128148.483212

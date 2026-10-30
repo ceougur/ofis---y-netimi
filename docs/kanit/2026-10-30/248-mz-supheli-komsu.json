@@ -1,0 +1,32 @@
+{
+  "ad": "248-mz-supheli-komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/mutabakat-cekirdek.test.mjs test/mutabakat-213.test.mjs test/mutabakat-yil-donumu.test.mjs",
+  "commit": "c943508e8bf8d024f0bafa5080b2cc36dcc31aa8",
+  "dal": "is/mz-248",
+  "kirli": 1,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T13:02:59.163Z",
+  "sure_sn": 128.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-mz-supheli-komsu.log",
+  "klasor": "/home/user/wt-mz-248",
+  "ham_cikti_sha256": "247ad649e5f902490b7a64f62ed235df9dd286c40ffb734eb2892200f4637250",
+  "ham_cikti_bayt": 5628
+}

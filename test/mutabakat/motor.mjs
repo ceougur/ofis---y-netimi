@@ -2114,7 +2114,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (room <= 0) return;
         // %20: borç bakiyesini (− zaten şüphelideki) aşan tutar → 400 doubtful-exceeds-balance; hiçbir şey yazılmaz.
         const over = R.chance(0.2);
-        const amount = over ? room + moneyCents(1, 100) : R.chance(0.5) ? room : moneyCents(1, Math.max(1, Math.floor(room / 100)));
+        // 2.4.8 (MZ yan bulgu): moneyCents(1, b) en çok b·100 + 99 kuruş verir → kalan < 1 TL (ya da kuruş kısmı küçük) iken tutar kalanı aşıyordu;
+        // program doğru reddediyordu, motor başarı bekliyordu (tohum 12, işlem 1130). Kırpma rastgele çekimleri DEĞİŞTİRMEZ (moneyCents yine çağrılır).
+        const amount = over ? room + moneyCents(1, 100) : R.chance(0.5) ? room : Math.min(room, moneyCents(1, Math.max(1, Math.floor(room / 100))));
         const reason = R.pick(["lawsuit", "enforcement", "other"]);
         const r = await api("POST", `/api/workspace/accounts/${c.id}/doubtful`, { amount: tl(amount), date: day, reason, note: `Şüpheli ${reason}` });
         if (!open(day)) return expectReject(r, "period-locked", kind);
@@ -2132,7 +2134,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const s = dm.records.get(rec.id);
         const room = s.remaining - s.provision;
         const over = R.chance(0.2) || room <= 0;
-        const amount = over ? room + moneyCents(1, 100) : R.chance(0.5) ? room : moneyCents(1, Math.max(1, Math.floor(room / 100)));
+        // 2.4.8 (MZ yan bulgu): moneyCents(1, b) en çok b·100 + 99 kuruş verir → kalan < 1 TL (ya da kuruş kısmı küçük) iken tutar kalanı aşıyordu;
+        // program doğru reddediyordu, motor başarı bekliyordu (tohum 12, işlem 1130). Kırpma rastgele çekimleri DEĞİŞTİRMEZ (moneyCents yine çağrılır).
+        const amount = over ? room + moneyCents(1, 100) : R.chance(0.5) ? room : Math.min(room, moneyCents(1, Math.max(1, Math.floor(room / 100))));
         const r = await api("POST", `/api/workspace/accounts/${rec.party}/doubtful/${rec.id}/provision`, { amount: tl(amount), date: day, note: "Karşılık" });
         if (!open(day)) return expectReject(r, "period-locked", kind);
         if (over) return expectReject(r, "doubtful-provision-exceeds", `${kind}/aşım`);

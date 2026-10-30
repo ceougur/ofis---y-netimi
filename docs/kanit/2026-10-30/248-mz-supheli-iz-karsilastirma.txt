@@ -1,0 +1,22 @@
+2.4.8 MZ yan bulgu — Şüpheli Alacak tutar kırpması rastgele sırayı DEĞİŞTİRMEZ (30.10.2026)
+Düzeltme: test/mutabakat/motor.mjs supheli-al ve supheli-karsilik → amount = Math.min(room, moneyCents(1, max(1, floor(room/100)))). moneyCents yine
+çağrılır; Math.min çekim yapmaz → her işlemde rastgele çekim sayısı aynı. Ampirik denetim: iki motor kopyasına (eski = c943508e, yeni = bu düzeltme)
+aynı iz eklendi — rng next(): globalThis.__draws += 1; ana döngüde her işlemin SONUNDA (try/catch sonrası) "işlemNo:tür@toplamÇekim" — ve
+docs/kanit/2026-10-30/248-mz-supheli-kos.mjs ile MZ_IZ=<dosya> koşuldu (iz yalnız kanıt kopyasında; depodaki motorda iz YOK).
+
+== Tohum 12, saat 2027-01-22, span 38, 1500 işlem, her 10 (kırpma işlem 1130'da tetiklenir)
+eski: İZ 1500 işlem, sha256 96abf3c2ed5f1d587b76604cc52f52c4edaba9bcf77e6ca485a244b2abbe68d5 ·   ✗ UYUŞMAZLIK (1): işlem 1130 (supheli-karsilik, 2027-01-12): supheli-karsilik: beklenmeyen ret 400 {"ok":false,"error":"Karşılık (1,47 TL) kalan şüpheli tutar
+yeni: İZ 1500 işlem, sha256 a2a89dee5435fd2f7a0b104b309145bcf23886bb43833d10bb065f84781d2bf6 ·   ✓ Her işlemden sonra (her N işlemde) model ile program tutarlı; uyuşmazlık yok.
+aynı önek: 1216 işlem (işlem 1130 dahil: "1130:supheli-karsilik@13963" her ikisinde; sonraki "1131:fatura-alis@13995" de aynı)
+ilk ayrılış işlem 1217: eski "1217:supheli-karsilik@15066" ≠ yeni "1217:supheli-karsilik@15068" — neden: 1130'da yeni motorda karşılık KABUL edildi (program da kaydetti), eski motorda
+program reddetti; işlem 1131–1216 aynı çekimlerle sürdükten sonra farklı veri durumu (o kaydın kalan karşılık payı) işlem 1217'deki supheli-karsilik'te
+farklı dala/çekim sayısına götürür (olası: room ≤ 0 → aşım dalı; bu dal AYRICA doğrulanmadı). Kırpmanın kendisi çekim yapmaz (1130 sonu aynı). Ham izler: 248-mz-supheli-iz-eski-tohum12.txt, 248-mz-supheli-iz-yeni-tohum12.txt.
+
+== Kırpmanın hiç tetiklenmediği koşular: iz ve rapor özeti (işlem türleri, beklenen retler, model, seriler) BİREBİR aynı
+tohum 1, saat 2026-10-30, span 120, 300 işlem, her 1 (mutabakat-cekirdek boyutu):
+  eski İZ 300 işlem, sha256 c9acd9f692798c66b70f956db513ae4fb9599714d2d192412521346d350dc4e7
+  yeni İZ 300 işlem, sha256 c9acd9f692798c66b70f956db513ae4fb9599714d2d192412521346d350dc4e7
+tohum 39, saat 2027-01-22, span 38, 600 işlem, her 5 (yıl dönümü testi):
+  eski İZ 600 işlem, sha256 a1138af476a6519661ff83e200ae7dee7404dd40c4e713d6030fda24d4215dc7
+  yeni İZ 600 işlem, sha256 a1138af476a6519661ff83e200ae7dee7404dd40c4e713d6030fda24d4215dc7
+  özet karşılaştırması (zaman alanı dışında JSON eşitliği): tohum 1 aynı, tohum 39 aynı
