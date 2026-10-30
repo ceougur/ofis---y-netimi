@@ -1,0 +1,38 @@
+{
+  "ad": "248-i1-dk-eski-4982bf30",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1dk-eski-4982bf30/test/ice-aktarma-istek-kimligi-248.test.mjs",
+  "commit": "4982bf30d63c508128062c3155e512f6a10e564a",
+  "dal": "is/ithal-248",
+  "kirli": 8,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:24:13.554Z",
+  "sure_sn": 5.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 15,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › aynı kimlik + farklı içerik (seçenek ya da eşleme değişti) → 409 request-id-reused, hiçbir şey yazılmaz; ileti ilk yüklemenin sayılarını söyler, yeniden yüklemeye yönlendirmez",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:248:3",
+      "hata": "çek 409 iletisi: \"Bu yükleme penceresinden farklı içerikle (dosya, kolon eşlemesi ya da seçenek değişmiş) bir yükleme zaten kaydedildi; ikinci kez yazılmadı. Yeniden yüklemek için pencereyi kapatıp dosyayı yeniden seçin.\" · + actual - expected · + 'Bu yükleme penceresinden farklı içerikle (dosya, kolon eşlemesi ya da seçenek değişmiş) bir yükleme zaten kaydedildi; ikinci kez yazılmadı. Yeniden yüklemek için pencereyi kapatıp dosyayı yeniden seçin.' (beklenen İlk yükleme (önceki seçeneklerle) kaydedildi: 3 evrak portföye alındı, 2 cari hareketi yazıldı; ikinci kez yazılmadı. Çek / Senet listesini kontrol edin. Dosyayı yeniden yüklerseniz numarasız evrak ikinci kez açılır (“Cariye işle” seçiliyse cari etkisi de); değişikliği evrak kartlarında yapın., gelen Bu yükleme penceresinden farklı içerikle (dosya, kolon eşlemesi ya da seçenek değişmiş) bir yükleme zaten kaydedildi; ikinci kez yazılmadı. Yeniden yüklemek için pencereyi kapatıp dosyayı yeniden seçin.)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-i1-dk-eski-4982bf30.log",
+  "klasor": "/home/user/wt-ithal-248",
+  "ham_cikti_sha256": "d4313d656bc7008b74b3c96ab27ce0fc941fd4b5b12958ce829db4742f7c9771",
+  "ham_cikti_bayt": 9587
+}

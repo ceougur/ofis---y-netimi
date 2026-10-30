@@ -1,0 +1,156 @@
+TAP version 13
+# Subtest: 2.4.8 I1 içe aktarma istek kimliği (tek sunucu)
+    # Subtest: Cari: aynı kimlik + aynı dosya (yanıt kayboldu, yeniden basıldı) → 3 cari, açılış bakiyesi bir kez (cari + 120 + yevmiye); ikinci yanıt ilk rapor (replayed)
+    ok 1 - Cari: aynı kimlik + aynı dosya (yanıt kayboldu, yeniden basıldı) → 3 cari, açılış bakiyesi bir kez (cari + 120 + yevmiye); ikinci yanıt ilk rapor (replayed)
+      ---
+      duration_ms: 76.156346
+      type: 'test'
+      ...
+    # Subtest: Çek / Senet (Cariye işle): aynı kimlik + aynı dosya → 3 evrak, carinin borcu bir kez 1.500 düşer, 101 +1.750 bir kez; ikinci yanıt ilk rapor
+    ok 2 - Çek / Senet (Cariye işle): aynı kimlik + aynı dosya → 3 evrak, carinin borcu bir kez 1.500 düşer, 101 +1.750 bir kez; ikinci yanıt ilk rapor
+      ---
+      duration_ms: 73.739618
+      type: 'test'
+      ...
+    # Subtest: Stok: aynı kimlik + aynı dosya → 2 ürün, açılış stoku bir kez; ikinci yanıt ilk yüklemenin bildirimi (önceden '0 ürün açıldı, 2 satır atlandı')
+    ok 3 - Stok: aynı kimlik + aynı dosya → 2 ürün, açılış stoku bir kez; ikinci yanıt ilk yüklemenin bildirimi (önceden '0 ürün açıldı, 2 satır atlandı')
+      ---
+      duration_ms: 18.398216
+      type: 'test'
+      ...
+    # Subtest: Taksit: aynı kimlik + aynı dosya → 2 kart, tek aktarım kaydı (Geri Al aynı); ikinci yanıt ilk rapor (önceden '0 kart, 2 satır atlandı')
+    ok 4 - Taksit: aynı kimlik + aynı dosya → 2 kart, tek aktarım kaydı (Geri Al aynı); ikinci yanıt ilk rapor (önceden '0 kart, 2 satır atlandı')
+      ---
+      duration_ms: 50.760798
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki kopya (aynı kimlik, Promise.all) → cari ve çek bir kez; biri yeni, öbürü replayed
+    ok 5 - aynı anda iki kopya (aynı kimlik, Promise.all) → cari ve çek bir kez; biri yeni, öbürü replayed
+      ---
+      duration_ms: 53.5996
+      type: 'test'
+      ...
+    # Subtest: taksit: işlemden önceki bekleme (tablo dizini; bağlı Sheets'in ilk eşitlemesi) iki kopyayı iç içe geçirir → yine tek yükleme, biri replayed (denetim işlemin içinde)
+    ok 6 - taksit: işlemden önceki bekleme (tablo dizini; bağlı Sheets'in ilk eşitlemesi) iki kopyayı iç içe geçirir → yine tek yükleme, biri replayed (denetim işlemin içinde)
+      ---
+      duration_ms: 428.009345
+      type: 'test'
+      ...
+    # Subtest: aynı kimlik + farklı içerik (seçenek ya da eşleme değişti) → 409 request-id-reused, hiçbir şey yazılmaz; ileti ilk yüklemenin sayılarını söyler, yeniden yüklemeye yönlendirmez
+    not ok 7 - aynı kimlik + farklı içerik (seçenek ya da eşleme değişti) → 409 request-id-reused, hiçbir şey yazılmaz; ileti ilk yüklemenin sayılarını söyler, yeniden yüklemeye yönlendirmez
+      ---
+      duration_ms: 43.923616
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-dk3-eski-4994cc7/test/ice-aktarma-istek-kimligi-248.test.mjs:248:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        çek 409 iletisi: "İlk yükleme (önceki seçeneklerle) kaydedildi: 3 evrak portföye alındı, 2 cari hareketi yazıldı; ikinci kez yazılmadı. Çek / Senet listesini kontrol edin. Dosyayı yeniden yüklerseniz numarasız evrak ikinci kez açılır (“Cariye işle” seçiliyse cari etkisi de); değişikliği evrak kartlarında yapın."
+        + actual - expected
+        
+        + 'İlk yükleme (önceki seçeneklerle) kaydedildi: 3 evrak portföye alındı, 2 cari hareketi yazıldı; ikinci kez yazılmadı. Çek / Senet listesini kontrol edin. Dosyayı yeniden yüklerseniz numarasız evrak ikinci kez açılır (“Cariye işle” seçiliyse cari etkisi de); değişikliği evrak kartlarında yapın.'
+        - 'İlk yükleme (önceki seçeneklerle) kaydedildi: 3 evrak portföye alındı, 2 cari hareketi yazıldı; ikinci kez yazılmadı. Çek / Senet listesini kontrol edin. Dosyayı yeniden yüklerseniz numarasız evrak ikinci kez açılır (“Bağlanan carilere de işle” seçiliyse cari etkisi de); değişikliği evrak kartlarında yapın. Cariye işlenmeden açılan evrak sonradan cariye işlenmez; gerekiyorsa bu yüklemede açılan evrakı listeden silip dosyayı bu seçenek işaretli yeniden yükleyin.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'İlk yükleme (önceki seçeneklerle) kaydedildi: 3 evrak portföye alındı, 2 cari hareketi yazıldı; ikinci kez yazılmadı. Çek / Senet listesini kontrol edin. Dosyayı yeniden yüklerseniz numarasız evrak ikinci kez açılır (“Bağlanan carilere de işle” seçiliyse cari etkisi de); değişikliği evrak kartlarında yapın. Cariye işlenmeden açılan evrak sonradan cariye işlenmez; gerekiyorsa bu yüklemede açılan evrakı listeden silip dosyayı bu seçenek işaretli yeniden yükleyin.'
+      actual: 'İlk yükleme (önceki seçeneklerle) kaydedildi: 3 evrak portföye alındı, 2 cari hareketi yazıldı; ikinci kez yazılmadı. Çek / Senet listesini kontrol edin. Dosyayı yeniden yüklerseniz numarasız evrak ikinci kez açılır (“Cariye işle” seçiliyse cari etkisi de); değişikliği evrak kartlarında yapın.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-dk3-eski-4994cc7/test/ice-aktarma-istek-kimligi-248.test.mjs:254:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: çek 409 önerisi izlenir: cariye işlenmemiş yükleme silinip “Bağlanan carilere de işle” ile yeniden yüklenince 3 evrak, 2 cari hareketi (bir kez)
+    ok 8 - çek 409 önerisi izlenir: cariye işlenmemiş yükleme silinip “Bağlanan carilere de işle” ile yeniden yüklenince 3 evrak, 2 cari hareketi (bir kez)
+      ---
+      duration_ms: 100.604154
+      type: 'test'
+      ...
+    # Subtest: aynı kimlik başka içe aktarmada ayrı kapsamdır (cari yüklemesinin kimliği çek yüklemesini engellemez, sonucu sızmaz)
+    ok 9 - aynı kimlik başka içe aktarmada ayrı kapsamdır (cari yüklemesinin kimliği çek yüklemesini engellemez, sonucu sızmaz)
+      ---
+      duration_ms: 55.414289
+      type: 'test'
+      ...
+    # Subtest: kimliksiz istek (eski istemci) bugünkü gibi işlenir: aynı dosya iki kez → no'suz / telefonsuz satırlar yeniden açılır (koruma yalnız kimlikli istemcide)
+    ok 10 - kimliksiz istek (eski istemci) bugünkü gibi işlenir: aynı dosya iki kez → no'suz / telefonsuz satırlar yeniden açılır (koruma yalnız kimlikli istemcide)
+      ---
+      duration_ms: 107.101043
+      type: 'test'
+      ...
+    # Subtest: biçimsiz kimlik → 400 request-id-invalid, yazım yok; reddedilen istek (400 'Tutar kolonunu seçin') kimlik bırakmaz, düzeltilip aynı kimlikle kaydedilir
+    ok 11 - biçimsiz kimlik → 400 request-id-invalid, yazım yok; reddedilen istek (400 'Tutar kolonunu seçin') kimlik bırakmaz, düzeltilip aynı kimlikle kaydedilir
+      ---
+      duration_ms: 34.539989
+      type: 'test'
+      ...
+    # Subtest: kayıtlar silindikten sonra aynı kimlikle yeniden gönderim yeniden açmaz (ilk rapor döner; silinen geri gelmez)
+    ok 12 - kayıtlar silindikten sonra aynı kimlikle yeniden gönderim yeniden açmaz (ilk rapor döner; silinen geri gelmez)
+      ---
+      duration_ms: 71.775339
+      type: 'test'
+      ...
+    # Subtest: başka kullanıcının aynı kimliği ayrıdır (sonuç sızmaz)
+    ok 13 - başka kullanıcının aynı kimliği ayrıdır (sonuç sızmaz)
+      ---
+      duration_ms: 120.728163
+      type: 'test'
+      ...
+    1..13
+not ok 1 - 2.4.8 I1 içe aktarma istek kimliği (tek sunucu)
+  ---
+  duration_ms: 1670.462467
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-dk3-eski-4994cc7/test/ice-aktarma-istek-kimligi-248.test.mjs:100:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 I1 içe aktarma istek kimliği: yeniden başlatma ve şirketler
+    # Subtest: sunucu yeniden başlasa da aynı kimlik → ilk rapor, farklı içerik → 409; iki şirket ayrı (001'in kimliği 002'de yeni yükleme)
+    ok 1 - sunucu yeniden başlasa da aynı kimlik → ilk rapor, farklı içerik → 409; iki şirket ayrı (001'in kimliği 002'de yeni yükleme)
+      ---
+      duration_ms: 357.74478
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.8 I1 içe aktarma istek kimliği: yeniden başlatma ve şirketler
+  ---
+  duration_ms: 698.864253
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 I1 içe aktarma ortasında SIGKILL: satırlar, cari / yevmiye etkisi, işlem geçmişi ve kimlik kaydı ya birlikte ya hiç
+    # Subtest: çek yüklemesi (Cariye işle), üçüncü evrak yazılırken (ortada) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+    ok 1 - çek yüklemesi (Cariye işle), üçüncü evrak yazılırken (ortada) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+      ---
+      duration_ms: 1033.968149
+      type: 'test'
+      ...
+    # Subtest: çek yüklemesi (Cariye işle), kimlik kaydı yazılırken (en son yazım) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+    ok 2 - çek yüklemesi (Cariye işle), kimlik kaydı yazılırken (en son yazım) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+      ---
+      duration_ms: 977.675805
+      type: 'test'
+      ...
+    # Subtest: cari yüklemesi (açılış bakiyeli), kimlik kaydı yazılırken kesinti → cari, açılış, yevmiye, kimlik yok; aynı kimlikle yeniden deneme bir kez işler
+    ok 3 - cari yüklemesi (açılış bakiyeli), kimlik kaydı yazılırken kesinti → cari, açılış, yevmiye, kimlik yok; aynı kimlikle yeniden deneme bir kez işler
+      ---
+      duration_ms: 984.920459
+      type: 'test'
+      ...
+    1..3
+ok 3 - 2.4.8 I1 içe aktarma ortasında SIGKILL: satırlar, cari / yevmiye etkisi, işlem geçmişi ve kimlik kaydı ya birlikte ya hiç
+  ---
+  duration_ms: 3006.588587
+  type: 'suite'
+  ...
+1..3
+# tests 17
+# suites 3
+# pass 16
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5787.573977

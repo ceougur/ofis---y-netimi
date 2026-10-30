@@ -1,0 +1,103 @@
+{
+  "ad": "248-i1-eski-4bca574c",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-eski-4bca574c/test/ice-aktarma-istek-kimligi-248.test.mjs",
+  "commit": "4bca574c2865059c45ca4570efa261a1f9ffe5f1",
+  "dal": "is/ithal-248",
+  "kirli": 10,
+  "izlenmeyen": 24,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T17:58:44.709Z",
+  "sure_sn": 25.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 2,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › Cari: aynı kimlik + aynı dosya (yanıt kayboldu, yeniden basıldı) → 3 cari, açılış bakiyesi bir kez (cari + 120 + yevmiye); ikinci yanıt ilk rapor (replayed)",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:112:3",
+      "hata": "aynı istek ikinci yüklemede yeni cari açtı: 6 cari (beklenen 3) · 6 !== 3 (beklenen 3, gelen 6)"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › Çek / Senet (Cariye işle): aynı kimlik + aynı dosya → 3 evrak, carinin borcu bir kez 1.500 düşer, 101 +1.750 bir kez; ikinci yanıt ilk rapor",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:144:3",
+      "hata": "aynı istek ikinci yüklemede yeni evrak açtı: 6 evrak (beklenen 3) · 6 !== 3 (beklenen 3, gelen 6)"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › Stok: aynı kimlik + aynı dosya → 2 ürün, açılış stoku bir kez; ikinci yanıt ilk yüklemenin bildirimi (önceden '0 ürün açıldı, 2 satır atlandı')",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:167:3",
+      "hata": "ikinci yanıt ilk yüklemeyi göstermeli; gelen: \"0 ürün açıldı. 2 satır atlandı (Bu ürün zaten var).\" (created 0, atlanan 2) · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › Taksit: aynı kimlik + aynı dosya → 2 kart, tek aktarım kaydı (Geri Al aynı); ikinci yanıt ilk rapor (önceden '0 kart, 2 satır atlandı')",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:183:3",
+      "hata": "ikinci yanıt ilk yüklemeyi göstermeli; gelen: created 0, atlanan 2 (Aynı adla açık kart var) · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › aynı anda iki kopya (aynı kimlik, Promise.all) → cari ve çek bir kez; biri yeni, öbürü replayed",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:199:3",
+      "hata": "aynı anda iki kopya 6 cari açtı · 6 !== 3 (beklenen 3, gelen 6)"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › taksit: işlemden önceki bekleme (tablo dizini; bağlı Sheets'in ilk eşitlemesi) iki kopyayı iç içe geçirir → yine tek yükleme, biri replayed (denetim işlemin içinde)",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:215:3",
+      "hata": "biri yeni, öbürü replayed (created 2 / 0) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › aynı kimlik + farklı içerik (seçenek ya da eşleme değişti) → 409 request-id-reused, hiçbir şey yazılmaz, 409 ilk raporu sızdırmaz",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:245:3",
+      "hata": "Cariye işle kaldırılıp aynı kimlikle: 200 {\"created\":3,\"skipped\":[],\"skippedTotal\":0,\"linked\":2,\"posted\":0,\"closed\":0,\"truncated\":0} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › aynı kimlik başka içe aktarmada ayrı kapsamdır (cari yüklemesinin kimliği çek yüklemesini engellemez, sonucu sızmaz)",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:268:3",
+      "hata": "her içe aktarmanın kendi kapsamında kimlik kaydı · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › biçimsiz kimlik → 400 request-id-invalid, yazım yok; reddedilen istek (400 'Tutar kolonunu seçin') kimlik bırakmaz, düzeltilip aynı kimlikle kaydedilir",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:302:3",
+      "hata": "16 karakterden kısa: 200 {\"created\":3,\"updated\":0,\"skipped\":[],\"groups\":0,\"balances\":2,\"renumbered\":0,\"taxInvalid\":[],\"typeDefaulted\":[],\"typeDefaultedTotal\":0,\"truncated\":0} · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği (tek sunucu) › kayıtlar silindikten sonra aynı kimlikle yeniden gönderim yeniden açmaz (ilk rapor döner; silinen geri gelmez)",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:317:3",
+      "hata": "silinen yüklemenin kimliği yeniden işlendi: 3 evrak yeniden açıldı (3 etkin evrak) · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma istek kimliği: yeniden başlatma ve şirketler › sunucu yeniden başlasa da aynı kimlik → ilk rapor, farklı içerik → 409; iki şirket ayrı (001'in kimliği 002'de yeni yükleme)",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:355:3",
+      "hata": "yeniden başlatmadan sonra aynı istek yeniden işlendi: 3 cari açıldı (6 cari) · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma ortasında SIGKILL: satırlar, cari / yevmiye etkisi, işlem geçmişi ve kimlik kaydı ya birlikte ya hiç › çek yüklemesi (Cariye işle), üçüncü evrak yazılırken (ortada) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:435:5",
+      "hata": "yeniden denemenin tekrarı ikinci kez işlendi: 3 evrak daha (6 evrak) · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma ortasında SIGKILL: satırlar, cari / yevmiye etkisi, işlem geçmişi ve kimlik kaydı ya birlikte ya hiç › çek yüklemesi (Cariye işle), kimlik kaydı yazılırken (en son yazım) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:435:5",
+      "hata": "yükleme dondurma noktasına (request_keys: NEW.scope = 'cheque.import') ulaşmalı (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 I1 içe aktarma ortasında SIGKILL: satırlar, cari / yevmiye etkisi, işlem geçmişi ve kimlik kaydı ya birlikte ya hiç › cari yüklemesi (açılış bakiyeli), kimlik kaydı yazılırken kesinti → cari, açılış, yevmiye, kimlik yok; aynı kimlikle yeniden deneme bir kez işler",
+      "konum": "test/ice-aktarma-istek-kimligi-248.test.mjs:472:3",
+      "hata": "yükleme dondurma noktasına (request_keys: NEW.scope = 'account.import') ulaşmalı (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-i1-eski-4bca574c.log",
+  "klasor": "/home/user/wt-ithal-248",
+  "ham_cikti_sha256": "cf1b7bb2eb619bea61658d665598d0dd2a9767fda2b69b11e7a1f137f120fc8a",
+  "ham_cikti_bayt": 22027
+}

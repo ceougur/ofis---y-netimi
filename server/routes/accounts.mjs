@@ -24,6 +24,7 @@ import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from ".
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { ANONYMOUS_TCKN, RETAIL_NAME, classifyTaxId, isRetailName, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -1267,9 +1268,13 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     }
     return "";
   }
+  // 2.4.8 I1: kalıcı istek kimliği (lib/import-request.mjs; kapsam "account.import"): yanıt kaybolup yeniden "Carileri Oluştur"a basılınca Cari No'suz /
+  // telefonsuz cariler ve açılış bakiyeleri (cari + yevmiye) ikinci kez yazılmaz, ilk yüklemenin raporu döner (replayed). Denetim ve kayıt yüklemenin işleminde.
+  const imports = createImportRequests({ store, now: clock });
   router.post("/api/workspace/accounts/import", async ({ req, res }) => {
     const user = auth.requirePermission(req, "accounts.manage");
     const body = await readJson(req, { limit: 40_000_000 });
+    const ticket = imports.ticket(req, body, user, IMPORT_SCOPES.accounts);
     const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = Math.max(0, Math.trunc(Number(body.headerAt) || 0));
     const headers = (matrix[headerAt] || []).map(cell => String(cell ?? "").replace(/\s+/g, " ").trim());
@@ -1322,7 +1327,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     };
     const ensure = (name, parentId = null) => (name && plans()?.resolveGroups ? plans().resolveGroups(parentId ? { groupId: parentId, subgroupName: name } : { groupName: name }, user)[parentId ? "subgroupId" : "groupId"] : null);
     const before = store.get("SELECT COUNT(*) AS n FROM plan_groups").n;
-    store.tx(() => {
+    const replayed = store.tx(() => {
+      const prior = imports.replay(ticket);
+      if (prior) return prior;
       let autoRef = Number(nextRef()) - 1;
       rows.forEach((row, index) => {
         if (!Array.isArray(row) || !row.some(value => sanitizeCell(value))) return;
@@ -1398,7 +1405,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       });
       report.groups = store.get("SELECT COUNT(*) AS n FROM plan_groups").n - before;
       audit(user, "account.imported", "import", { created: report.created, updated: report.updated, skipped: report.skipped.length, groups: report.groups, file: limited(body.fileName, 200, "Dosya adı") });
+      imports.remember(ticket, report);
+      return null;
     });
+    if (replayed) return ok(res, replayed);
     changed(user, {});
     changed(user, { kind: "plans", groups: true });
     ok(res, report);
