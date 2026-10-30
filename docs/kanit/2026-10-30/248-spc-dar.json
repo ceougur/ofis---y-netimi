@@ -1,0 +1,32 @@
+{
+  "ad": "248-spc-dar",
+  "komut": "node --test test/yazim-duzeni.test.mjs test/whatsapp-213.test.mjs test/whatsapp-meta-graph.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/whatsapp-w1-baglanti.test.mjs test/whatsapp-w2-cekirdek-248.test.mjs test/whatsapp-w2-surec-olumu-248.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-w3-ekstre-248.test.mjs test/whatsapp-w4-gonderim-248.test.mjs test/whatsapp-w5-sablon.test.mjs test/whatsapp-w6-aydinlatma.test.mjs test/whatsapp-w7-appid-248.test.mjs test/whatsapp-w7-bagla-248.test.mjs test/whatsapp-w7-tasinma-248.test.mjs test/whatsapp-w9-kanca-248.test.mjs test/kapi-247.test.mjs test/kapi-donen-ofis-247.test.mjs test/kapi-gg247-b1.test.mjs test/kapi-gg247-b3.test.mjs test/kapi-gg247-b4.test.mjs test/kapi-l1-kahin-f2-248.test.mjs test/kapi-l1-kahin-f3-248.test.mjs test/kapi-l1a-tanimayan-248.test.mjs test/kapi-lisans-hosgoru-248.test.mjs test/kapi-para-245.test.mjs test/kapi-son-dar-d1-248.test.mjs test/kapi-son-dar-d4b-248.test.mjs test/kapi-temizlik-gg-248.test.mjs test/kapi-temizlik-yarisi-248.test.mjs test/kapi-tunel-247.test.mjs test/kapi-tunel-uctan-uca-247.test.mjs test/kapi-uyari-245.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "37444ada4c87adc4372ae61e4b24a488436ba9b4",
+  "dal": "is/t3-248",
+  "kirli": 3,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T23:32:46.562Z",
+  "sure_sn": 33.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 253,
+    "gecen": 253,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-spc-dar.log",
+  "klasor": "/home/user/wt-t3-248",
+  "ham_cikti_sha256": "fcc9b4800f07140c8b57137e4fd20010e4f7c299c26a8d09075f7ad25c96d9fb",
+  "ham_cikti_bayt": 111999
+}
