@@ -1014,3 +1014,10 @@ td.adm-row-actions > .hof-button + .hof-button {
 .adm-mobile-link { display: flex; align-items: flex-end; gap: 8px; margin: 4px 0 8px; }
 .adm-mobile-link .hof-field { flex: 1; margin: 0; }
 .adm-mobile-link input { width: 100%; font-family: ui-monospace, monospace; font-size: 12px; }
+
+/* 2.4.8 W1: Yönetim → WhatsApp (hof-whatsapp-ayar.js). Durum rozeti ve bilgi listesi Lisans kartının düzeninde. */
+.adm-wa-head h2 { margin: 8px 0 4px; }
+.adm-wa-head p { margin: 0; }
+.adm-wa-status.is-off .adm-license-badge { background: var(--do-surface-soft); color: var(--do-muted); }
+.adm-wa-status .adm-inline { margin-top: 16px; flex-wrap: wrap; }
+.adm-wa-why { margin: 8px 0 0; color: var(--hof-muted, #5f6b76); font-size: 13px; }

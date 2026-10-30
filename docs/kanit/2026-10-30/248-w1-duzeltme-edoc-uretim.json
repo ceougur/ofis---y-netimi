@@ -1,0 +1,32 @@
+{
+  "ad": "248-w1-duzeltme-edoc-uretim",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/edoc-uretim.test.mjs test/edm-gercek-duzenek.test.mjs test/mobil-ozet-247.test.mjs",
+  "commit": "e9602add7dea524a0c8348913ac125d5195fffc0",
+  "dal": "is/w1-248",
+  "kirli": 14,
+  "izlenmeyen": 31,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T13:38:56.357Z",
+  "sure_sn": 62,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 37,
+    "gecen": 37,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-w1-duzeltme-edoc-uretim.log",
+  "klasor": "/home/user/wt-w1-248",
+  "ham_cikti_sha256": "65be620a3e6148409319d77e9021df57778bb06d4f2effdb64957974439af076",
+  "ham_cikti_bayt": 16110
+}

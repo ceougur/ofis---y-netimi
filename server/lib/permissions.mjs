@@ -98,6 +98,10 @@ export const PERMISSIONS = Object.freeze({
   // yönetici kişiye ya da özel role verebilir. Düzenleme görüntülemeyle BİRLİKTE istenir (routes/maliyet.mjs ikisini de arar).
   "maliyet.view": ["admin"],
   "maliyet.manage": ["admin"],
+  // WhatsApp ile Otomatik Gönder (2.4.8 W1; docs/erp/WHATSAPP-API-PLANI-2.4.8.md §4): WhatsApp Business API (Meta) ile carilere ekstre ve ödeme hatırlatması.
+  // İleti Meta ücretine tabi (işletmenin Meta hesabından) → varsayılan YALNIZ yönetici; kişiye ya da özel role verilebilir. Göçle mevcut rollere VERİLMEZ
+  // (yerleşik matriste yalnız admin; özel rollerin kayıtlı listesinde yok). wa.me yolu ("Kendi WhatsApp'ımla") bugünkü gibi accounts.view.
+  "whatsapp.send": ["admin"],
   "sources.manage": ["admin"],
   // Sektör seçimi ve kalemle başlık değiştirme (v1.6.0).
   "profile.manage": ["admin"],
@@ -240,6 +244,13 @@ export const PERMISSION_GROUPS = Object.freeze([
     items: [
       ["maliyet.view", "Maliyet Hesap Kartı Görüntüleme", "Stok penceresindeki Maliyet Hesap Kartı: malzeme miktarları, fiyatlar, oranlar ve bayi fiyat listeleri (yalnız sektörü Duşakabin Üretimi olan şirkette)."],
       ["maliyet.manage", "Maliyet Hesap Kartı Düzenleme", "Kartlardaki ad, miktar, fiyat, oran ve bölenleri değiştirir, satır ekler / siler ve kaydeder (Maliyet Hesap Kartı Görüntüleme ile birlikte)."],
+    ],
+  },
+  {
+    id: "whatsapp",
+    label: "WhatsApp",
+    items: [
+      ["whatsapp.send", "WhatsApp ile Otomatik Gönder", "Carilere WhatsApp Business API (Meta) ile ekstre ve ödeme hatırlatması gönderir; ileti ücretini Meta işletmenin Meta hesabından çeker. Kendi WhatsApp'ıyla tek tek gönderim bu yetkiyi istemez."],
     ],
   },
   {

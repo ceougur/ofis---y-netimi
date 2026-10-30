@@ -61,6 +61,11 @@ export async function startTestServer(options = {}) {
     // 2.4.7 M4: tünel yöneticisinin test bağlantıları (sahte cloudflared runner, zamanlama, bileşen klasörü; lib/tunnel/attach.mjs). Gate verilmezse gerçek
     // kapıcı istemcisi mobileKapiUrl'e (yalnız YEREL sahte kapıcı) gider.
     ...(options.tunnel ? { tunnel: options.tunnel } : {}),
+    // 2.4.8 W1: Meta WhatsApp Cloud API adresi — yalnız YEREL sahte Graph sunucusu (test/whatsapp-sahte-graph.mjs; ders 30, test/whatsapp-meta-izolasyon.test.mjs).
+    // Verilmezse adres boştur, WhatsApp API'ye istek gitmez. whatsappTimeoutMs: Meta zaman aşımı (üretimde 15 sn). log: günlüğü yakalayan testler (belirteç izi).
+    ...(options.whatsappGraphUrl ? { whatsappGraphUrl: options.whatsappGraphUrl } : {}),
+    ...(options.whatsappTimeoutMs ? { whatsappTimeoutMs: options.whatsappTimeoutMs } : {}),
+    ...(options.log ? { log: options.log } : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.
     moneyStrict: options.moneyStrict ?? true,

@@ -1,0 +1,32 @@
+{
+  "ad": "248-w1-mutasyon",
+  "komut": "node docs/kanit/2026-10-30/248-w1-betikler/mutasyon.mjs /home/user/wt-w1-248 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-mutasyon-r8t2",
+  "commit": "e9602add7dea524a0c8348913ac125d5195fffc0",
+  "dal": "is/w1-248",
+  "kirli": 13,
+  "izlenmeyen": 25,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T13:11:03.512Z",
+  "sure_sn": 65.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-w1-mutasyon.log",
+  "klasor": "/home/user/wt-w1-248",
+  "ham_cikti_sha256": "bf6f701adb49ca5c437f99e4fd66b12f3458ab9c16be7c674922cc530e565320",
+  "ham_cikti_bayt": 3265
+}

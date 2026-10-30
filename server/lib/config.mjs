@@ -11,6 +11,7 @@ import { DEFAULT_LICENSE_SERVICES } from "./license.mjs";
 export const DEFAULT_KAPI_URL = "https://kapi.destekofis.net";
 export const DEFAULT_OFFICE_URL = "https://{ofis}.destekofis.net";
 import { cachedResolver, createProxyFetch, describeNetwork } from "./net-proxy.mjs";
+import { DEFAULT_GRAPH_URL } from "./whatsapp/meta-graph.mjs";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 export const DEFAULT_ADMIN_PASSWORD = "Ofis2026!";
@@ -129,6 +130,16 @@ export function loadConfig(overrides = {}) {
     ).replace(/\/+$/, ""),
     mobileOfficeUrl: String(overrides.mobileOfficeUrl ?? env.HUKUK_KAPI_OFIS_URL ?? DEFAULT_OFFICE_URL),
     mobileKapiFetch: typeof overrides.mobileKapiFetch === "function" ? overrides.mobileKapiFetch : null,
+    // 2.4.8 W1 (docs/erp/WHATSAPP-API-PLANI-2.4.8.md §4): Meta WhatsApp Cloud API (Graph) adresi — mobileKapiUrl düzeni (ders 30). YALNIZ üretim girişi
+    // (server/server.mjs whatsappGraph: true) gerçek adresi (graph.facebook.com) açar; lisans servisi ortam değişkeniyle değiştirilmişse (ayrı süreçte açılan
+    // testler: HUKUK_LICENSE_URL ölü adres) ancak HUKUK_WHATSAPP_GRAPH_URL açıkça verilirse. Programın içinden (testler) whatsappGraphUrl ile yalnız yerel
+    // sahte sunucu. Boşsa WhatsApp API'ye hiç istek gitmez ("Meta adresi tanımlı değil"); test gerçek Meta'ya ulaşamaz (test/whatsapp-meta-izolasyon.test.mjs).
+    whatsappGraphUrl: String(
+      overrides.whatsappGraphUrl ??
+        (overrides.whatsappGraph === true ? env.HUKUK_WHATSAPP_GRAPH_URL ?? (overrides.licenseServices === undefined && env.HUKUK_LICENSE_URL === undefined ? DEFAULT_GRAPH_URL : "") : ""),
+    ).replace(/\/+$/, ""),
+    // Meta isteklerinin zaman aşımı (üretimde 15 sn, lib/whatsapp/meta-graph.mjs); yalnız testler kısaltır, ortam değişkeni yok.
+    whatsappTimeoutMs: Number.isFinite(overrides.whatsappTimeoutMs) && overrides.whatsappTimeoutMs > 0 ? overrides.whatsappTimeoutMs : undefined,
     mobileSyncAuto: overrides.mobileSyncAuto !== false,
     // Para yazımı denetimi (K6; lib/bank/post.mjs) test kipi: ihlal hata verir ve işlemi geri alır. Üretimde (varsayılan) iş durmaz,
     // sunucu günlüğüne ve meta.bank.integrity'ye yazılır. Yalnız programdan (testler) açılır.

@@ -58,6 +58,8 @@ export const WRITE_PERMISSIONS = Object.freeze([
   "staff.manage",
   // 2.4.6 Maliyet Hesap Kartı: kaydetme.
   "maliyet.manage",
+  // 2.4.8 W1: WhatsApp ile Otomatik Gönder (salt okunurda gönderim başlamaz).
+  "whatsapp.send",
 ]);
 
 // Salt okunur modda da izin verilen değiştirici istekler: giriş/çıkış/parola, lisans işlemleri, yönetim (kullanıcılar,
