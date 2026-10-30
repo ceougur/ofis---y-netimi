@@ -156,7 +156,10 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
       }
       sirketler[company.id] = bolum;
     }
-    const veri = { v: 1, uretim, oturum: oturum.data, sirketler };
+    // 2.4.8 L1 kâhin F6: mobil hakkın İLETİSİ özete konmaz — yükleme anında donar (hoşgörüde / yenilemeden sonra "Lisansınız 3 gün sonra bitiyor." kalırdı).
+    // Telefon iletiyi OKUMA anında kapıcıdan alır (x-do-mobil-ileti; kapıcının elindeki en yeni lisansla mobilHakIletisi); özette yalnız yedek durum kalır.
+    const hak = oturum.data?.mobilHak;
+    const veri = { v: 1, uretim, oturum: { ...oturum.data, mobilHak: hak ? { durum: hak.durum, yuklemeAni: true } : null }, sirketler };
     // Boyut sınırı: önce ayrıntılar (cari/stok kartları) kırpılır; liste ve bakiyeler kalır.
     if (JSON.stringify(veri).length > OZET_KURALLARI.azamiBayt / 2) {
       for (const bolum of Object.values(sirketler)) for (const key of Object.keys(bolum)) if (/^\/(accounts|stock)\/./.test(key)) delete bolum[key];
