@@ -248,6 +248,13 @@ BİR KEZ kurulum desteği verir (Verimor hesabı + numara + şablon + API anahta
 yalnız SEÇER → GÖNDER: PDF'li ekstreler ya da mesajlar toplu, kendiliğinden gider; tek tek onay/Gönder YOK (yalnız başta bir "N kişiye gönderilsin mi?" onayı).
 Kabul ölçütü (elle kabul + e2e): seçim → tek tık → bütün kişiler kuyrukta, kullanıcıdan başka adım istenmez.
 
+KARAR (kullanıcı, 30.10.2026 ~04:30 UTC: "kopyala yapıştır falan olmayacak. şablonları verimora tanıttırırız mail atarak bir şekilde. müşteri toplu seçip
+gönder dediğinde gitmeli başka bir şeyle uğraşmadan"): programda şablon rehberi / Kopyala YOK (W5'in rehber kısmı ve §6.2'deki şablon adı alanları KALKAR). Şablonlar
+SABİT ADLA (`destekofis_ekstre` belge başlıklı + `destekofis_odeme_hatirlatma`; 2 şablon) DestekOfis'ten Verimor'a e-postayla tanıtılır; Verimor her DestekOfis
+müşterisinin hesabında bunları kurulumda açıp onaya gönderir (şablon Meta'da HESAP BAŞINA — bu Verimor'dan istenecek; e-posta metni kullanıcıya hazırlanır).
+Müşterinin programdaki tek işi API anahtarını yapıştırmak (+ Bağlantıyı Sına); sonra seç → Gönder. Şablon yoksa/onaysızsa program açık uyarı verir ("Verimor
+hesabınızda DestekOfis şablonları henüz hazır değil") ve gönderimi başlatmaz.
+
 ## 12. Süre ve sıra
 
 - D0 Verimor yanıtına ve müşteri hesabına bağlı; kod sahte Verimor'la ilerler, "bitti" için gerçek gönderim (elle kabul) gerekir.
