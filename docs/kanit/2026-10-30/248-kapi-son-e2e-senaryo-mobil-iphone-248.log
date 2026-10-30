@@ -1,0 +1,59 @@
+
+> destekofis@2.4.7 test:senaryo-mobil-iphone-248
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-mobil-iphone-248.mjs
+
+
+■ I1 iPhone Safari karekodu açar → yalnız yönlendirme; kod tüketilmez
+  ✓ yönlendirme sayfası görünür (Ana Ekrana Ekleyin)
+  ✓ Cihazı Eşleştir formu görünmez (eşleme yapılmaz)
+  ✓ üç adım:  DODestekOfis DESTEKOFİS MOBİL Ana Ekrana Ekleyin iPhone ve iPad'de DestekOfis ana ekrandaki simgeden kullanılır; eşleme de simgenin içinde yapılır. Paylaş düğmesine dokunun → Ana Ekrana Ekle. Ana ekrandaki DestekOfis simgesini açın. Karekodu Okut ile bilgisay
+  ✓ yönlendirmede seçenek / düğme yok
+  ✓ kod adres çubuğundan silindi
+  ✓ eşleme isteği gönderilmedi (0)
+  ✓ veri tabanı: kod active, cihaz 0 (beklenen active, 0)
+
+■ I2 simge (ayrı depo) → Karekodu Okut → kamera → Eşleştir → giriş → Genel Bakış; AYNI kod tüketilir
+  ✓ Cihaz Eşli Değil ekranında Karekodu Okut düğmesi
+  ✓ düğme adı Karekodu Okut
+  ✓ yeni karekod notu görünür
+  ✓ karekod okundu → Cihazı Eşleştir
+  ✓ cihaz adı önerisi: iPhone
+  ✓ okumadan sonra eşleme kendiliğinden gönderilmez (kullanıcı Eşleştir'e basar)
+  ✓ eşleme bu ofisin adresine bir kez gitti (http://127.0.0.1:46187/api/mobil/eslesme)
+  ✓ veri tabanı: kod used, cihaz [{"name":"Ali'nin iPhone'u","kind":"telefon"}]
+  ✓ simgede Genel Bakış açıldı
+
+■ I3 Safari sekmesi (ayrı depo) eşleme sonrası da yönlendirir; eşleme sunmaz
+  ✓ Safari'de eşli olmayan sayfa → Ana Ekrana Ekleyin yönlendirmesi
+  ✓ Safari'de Karekodu Okut / Eşleştir yok
+
+■ I4 kamera izni reddi → açık ileti
+  ✓ ileti: Kamera izni verilmedi. Karekodu okutmak için kameraya izin verin (iPhone: Ayarlar → Safari → Kamera → Sor ya da İzin Ver), sonra Karekodu Okut'a yeniden dokunun.
+  ✓ eşleme isteği yok
+
+■ I7 M5 (simge, eşli) ofis sunucusuna ulaşılamıyor → Son Özeti Göster formun üstünde + uyarı cümlesi; kendiliğinden açılmaz
+  ✓ M5 simgesi eşlendi
+  ✓ ofis kaydı yazıldı (tamam)
+  ✓ Son Özeti Göster kullanıcı adının ÜSTÜNDE (not y=135.21875–292.21875, alan y=463.40625)
+  ✓ düğme ilk ekranda, kaydırmadan görünür (alt 292.21875 ≤ 844)
+  ✓ uyarıda Son Özeti Göster cümlesi: Ofis sunucusuna ulaşılamıyor.Son Özeti Göster'e basarak son yüklenen bilgileri görebilirsiniz (salt okunur).Son Özeti Göster
+  ✓ son özet kendiliğinden açılmadı
+  ✓ giriş hatası cümleyi söyler: Ofis sunucusuyla bağlantı kurulamadı. Sunucunun açık olduğunu denetleyin. Son Özeti Göster'e basarak son yüklenen bilgileri görebilirsiniz.
+  ✓ M5 simgesi silindi (sınır için)
+
+■ I6 Android ve masaüstü tarayıcı: bugünkü akış (Cihazı Eşleştir)
+  ✓ Android: Cihazı Eşleştir (yönlendirme yok)
+  ✓ Android cihaz adı önerisi
+  ✓ Android eşlendi: kod used, cihaz 1
+  ✓ masaüstü tarayıcı: Cihazı Eşleştir (yönlendirme yok)
+  ✓ masaüstünde formu açmak kodu tüketmez
+
+■ I5 başka ofisin karekodu ve DestekOfis olmayan karekod → açık ileti, eşleme yok
+  ✓ baska-ofis: Bu karekod başka bir ofisin adresine ait; bu simge yalnız kendi ofisine eşlenir. Bu ofisin bilgisayarındaki karekodu okutun ya da yöneticinizden yeni karekod isteyin.
+  ✓ baska-ofis: eşleme isteği yok
+  ✓ destekofis-degil: Bu karekod bir DestekOfis eşleme karekodu değil. Bilgisayarda Yönetim → Mobil Cihazlar'da oluşturulan karekodu okutun.
+  ✓ destekofis-degil: eşleme isteği yok
+  ✓ veri tabanı: son kod active, cihaz 0
+  ✓ sayfa hatası yok (—)
+
+39 geçti, 0 kaldı

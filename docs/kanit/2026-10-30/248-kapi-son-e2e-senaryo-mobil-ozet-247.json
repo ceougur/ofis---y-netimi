@@ -1,0 +1,32 @@
+{
+  "ad": "248-kapi-son-e2e-senaryo-mobil-ozet-247",
+  "komut": "npm run test:senaryo-mobil-ozet-247",
+  "commit": "8cdbc17af959deebadf8d6dc358c4a0c46d91100",
+  "dal": "is/kapi-248",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T22:39:43.772Z",
+  "sure_sn": 15.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 34,
+    "gecen": 34,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-kapi-son-e2e-senaryo-mobil-ozet-247.log",
+  "klasor": "/home/user/wt-kapi-248",
+  "ham_cikti_sha256": "1ba814f5ff1cab23def365d38a23336ba80981c8eaeb246fb84903dc3e6a304f",
+  "ham_cikti_bayt": 3295
+}
