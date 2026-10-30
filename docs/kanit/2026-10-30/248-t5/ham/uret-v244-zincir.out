@@ -1,0 +1,11 @@
+[23:25:23] üretildi: {"banka-hesabi":4,"pos":2,"cari-excel":3800,"cari-elle":146,"stok-karti":80,"tablo-satiri":12020,"tablo-kaydi":12020,"cari-kayda-bagli":50,"evrak-verildi-cheque":51,"stok-giris":78,"evrak-alindi-cheque":164,"fatura-kagit":583,"fatura-kendi-evraki":240,"fatura-alis":372,"smm-kagit":259,"fatura-silindi":40,"banka-fisi":26,"banka-transfer":26,"kdv-mahsup":26,"vergi-odemesi-muhtasar":26,"kasa-cikis":96,"cari-tahsilat-cash":203,"vergi-odemesi-kdv":25,"stok-satis-card":30,"cari-odeme-bank":160,"fatura-taksitli":131,"cari-odeme-cash":92,"taksit-karti":61,"taksit-tahsilat-bank":45,"kayit-tahsilati-cash":122,"kasa-banka-to-bank":44,"cari-tahsilat-card":98,"cari-tahsilat-bank":93,"cari-tahsilat-cash-kapatilacak":87,"evrak-faturayla-ciro":49,"kayit-tahsilati-bank":59,"evrak-verildi-note":18,"fatura-satistan-iade":49,"kasa-giris":68,"taksit-tahsilat-card":38,"evrak-karsiliksiz-fatura":35,"fatura-kagit-iptal":11,"kasa-banka-to-cash":23,"cari-tahsilat-card-kapatilacak":41,"taksit-tahsilat-cash":33,"evrak-nakit-tahsil":62,"evrak-karsiliksiz-cirodan-fatura":10,"evrak-tahsile-ver":137,"evrak-alindi-note":43,"evrak-bankadan-tahsil":118,"stok-satis-cash":40,"fatura-silinenlerden-geri-yuklendi":11,"evrak-karsiliksiz-tahsilde-bagsiz":9,"cari-tahsilat-bank-kapatilacak":38,"cari-borc":31,"evrak-karsiliksiz-tahsilde-fatura":10,"evrak-verilen-odendi":66,"evrak-portfoyde-degil-atlandi":5,"evrak-karsiliksiz-bagsiz":30,"evrak-ciro":84,"yedek":10,"evrak-karsiliksiz-cirodan-bagsiz":8,"fatura-alistan-iade":5,"edoc-acildi":2,"fatura-earsiv":452,"fatura-efatura":110,"ebelge-sonra-gonderildi":124,"ebelge-birakildi":81,"ebelge-birakilan-gonderildi":32,"ebelge-tumunu-gonder":42,"ebelge-tumunu-gonder-belge":185,"ebelge-iptal":14,"kayit-tahsilati-aktarim-oncesi":75,"tablodan-aktar-kart":139,"tablodan-aktar-tasinan-tahsilat":35,"fatura-silme-reddedildi-409":1,"fatura-geri-yukleme-reddedildi-409":3,"fatura-silindi-son":2}
+[23:25:23] süre 293.2 sn; EDM gönderim 509, iptal 9, ihlal 0; yedek 10
+# v2.4.4: 6071 API isteği (6067 × 200, 4 × 409 beklenen ret); EDM ihlali 0
+# tests 6072
+# pass 6072
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+[kanit] 248-t5-uret-v244-zincir: GEÇTİ · çıkış 0 · 6072/6072 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 49395f7 +26 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0

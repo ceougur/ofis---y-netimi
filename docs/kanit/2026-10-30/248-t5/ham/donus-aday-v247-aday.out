@@ -1,0 +1,15 @@
+  ✓ 001 göçten sonra v2.4.7 açınca gösterdiği = göçten önce gösterdiği (fark yok)
+  ✓ 001 v2.4.7 açılışı şemayı geri almaz (40 kalır; 40), mobil tablolar duruyor
+  ✓ 001 v2.4.7'dan sonra yeniden aday: gösterdiği = göç ölçüsü (fark yok)
+  ✓ 002 göçten sonra v2.4.7 açınca gösterdiği = göçten önce gösterdiği (fark yok)
+  ✓ 002 v2.4.7 açılışı şemayı geri almaz (40 kalır; 40), mobil tablolar duruyor
+  ✓ 002 v2.4.7'dan sonra yeniden aday: gösterdiği = göç ölçüsü (fark yok)
+# geri dönüş (aday → v2.4.7 → aday)
+# tests 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+[kanit] 248-t5-donus-aday-v247-aday: GEÇTİ · çıkış 0 · 6/6 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 49395f7 +22 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0

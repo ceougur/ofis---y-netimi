@@ -1,0 +1,92 @@
+{
+ "limit": 3,
+ "used": 3,
+ "full": true,
+ "licenseOk": true,
+ "mobileRight": {
+  "durum": "gecerli",
+  "acik": true,
+  "kalanGun": null,
+  "ileti": ""
+ },
+ "kapiSilindi": null,
+ "remoteUrl": "",
+ "codeMinutes": 5,
+ "users": [
+  {
+   "id": "user-e8748bbf-564a-4bf4-a8af-3a7c42f170d7",
+   "username": "ayse",
+   "name": "Ayşe Fatura",
+   "role": "personel",
+   "active": true,
+   "remote": true
+  },
+  {
+   "id": "user-890c7bdd-784c-4f1b-8858-cdc2471e988d",
+   "username": "mehmet",
+   "name": "Mehmet Muhasebe",
+   "role": "muhasebe",
+   "active": true,
+   "remote": true
+  },
+  {
+   "id": "user-2a2b3b4b-3346-44b3-9af1-5daf1b27ebc6",
+   "username": "admin",
+   "name": "Ofis yöneticisi",
+   "role": "admin",
+   "active": true,
+   "remote": true
+  },
+  {
+   "id": "user-531ac53f-1bb0-4ad3-a1fa-505b3633cc6f",
+   "username": "zeynep",
+   "name": "Zeynep Tahsilat",
+   "role": "personel",
+   "active": true,
+   "remote": true
+  }
+ ],
+ "devices": [
+  {
+   "id": "dev-fd3ef79d-d121-4056-bb0a-a671042d5fd0",
+   "name": "Göç Telefonu 1",
+   "kind": "telefon",
+   "userId": "user-2a2b3b4b-3346-44b3-9af1-5daf1b27ebc6",
+   "userName": "Ofis yöneticisi",
+   "username": "admin",
+   "createdAt": "2026-10-30T23:20:19.744Z",
+   "lastSeenAt": "2026-10-30T23:20:20.057Z",
+   "kindLabel": "Telefon"
+  },
+  {
+   "id": "dev-90a55aed-5d6a-4055-9cc1-8826cecc58e2",
+   "name": "Göç Tableti",
+   "kind": "telefon",
+   "userId": "user-890c7bdd-784c-4f1b-8858-cdc2471e988d",
+   "userName": "Mehmet Muhasebe",
+   "username": "mehmet",
+   "createdAt": "2026-10-30T23:20:20.088Z",
+   "lastSeenAt": "2026-10-30T23:20:20.140Z",
+   "kindLabel": "Telefon"
+  },
+  {
+   "id": "dev-27e25903-1461-4723-a117-b55441f89b1a",
+   "name": "Göç Telefonu 3",
+   "kind": "telefon",
+   "userId": "user-531ac53f-1bb0-4ad3-a1fa-505b3633cc6f",
+   "userName": "Zeynep Tahsilat",
+   "username": "zeynep",
+   "createdAt": "2026-10-30T23:20:20.150Z",
+   "lastSeenAt": "2026-10-30T23:20:20.199Z",
+   "kindLabel": "Telefon"
+  }
+ ],
+ "ozet": {
+  "enabled": false,
+  "ofis": "",
+  "publicUrl": "",
+  "son": null,
+  "bekleyen": false,
+  "saat": null
+ }
+}

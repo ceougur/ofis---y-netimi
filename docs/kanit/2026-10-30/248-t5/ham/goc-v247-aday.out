@@ -1,0 +1,26 @@
+[23:09:42] göç + ölçü: önce şema {"sirket-001":39,"sirket-b96e3278-1a73-4a99-894a-0aef6e0cd8fa":39}; 001 açılışı (göç dahil) 569 ms; ilk erişim {"001":6,"002":190}; yeni yedek 001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-30T23-09-05-070Z-pre-migration-v40.sqlite, 002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-30T23-09-32-675Z-pre-migration-v40.sqlite
+  ✓ 001 şema 39 → 40
+  ✓ 001 bütünlük ok
+  ✓ 001 göç öncesi yedek pre-migration-v40
+  ✓ 001 yeni tablolar yalnız v40 (wa_batches, wa_jobs); eski tablo düşmedi
+  ✓ 001 WhatsApp tabloları boş (göç toplu gönderim/iş yaratmaz: wa_batches=0, wa_jobs=0)
+  ✓ 001 mobil tabloları ve e-Belge sayacı izi önce = sonra (mobile_access 0→0, mobile_codes 0→0, mobile_devices 0→0, mobile_sessions 0→0, edoc_usage 354→354, edoc_usage_meta 1→1)
+  ✓ 001 eski tabloların satır sayıları aynı (değişenler: yok)
+  ✓ 002 şema 39 → 40
+  ✓ 002 bütünlük ok
+  ✓ 002 göç öncesi yedek pre-migration-v40
+  ✓ 002 yeni tablolar yalnız v40 (wa_batches, wa_jobs); eski tablo düşmedi
+  ✓ 002 WhatsApp tabloları boş (göç toplu gönderim/iş yaratmaz: wa_batches=0, wa_jobs=0)
+  ✓ 002 mobil tabloları ve e-Belge sayacı izi önce = sonra (mobile_access 0→0, mobile_codes 0→0, mobile_devices 0→0, mobile_sessions 0→0, edoc_usage 137→137, edoc_usage_meta 1→1)
+  ✓ 002 eski tabloların satır sayıları aynı (değişenler: yok)
+  ✓ sirket-001 accounts.wa_opt_out kolonu (v40; INTEGER NOT NULL 1 DEFAULT 0); 3223 carinin "WhatsApp Mesajı İstemiyor" işaretli olanı 0
+  ✓ sirket-b96e3278-1a73-4a99-894a-0aef6e0cd8fa accounts.wa_opt_out kolonu (v40; INTEGER NOT NULL 1 DEFAULT 0); 935 carinin "WhatsApp Mesajı İstemiyor" işaretli olanı 0
+# göç: 2 şirket
+# tests 16
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+[kanit] 248-t5-goc-v247-aday: GEÇTİ · çıkış 0 · 16/16 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 49395f7 +10 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0

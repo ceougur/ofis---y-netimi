@@ -1,0 +1,43 @@
+{
+  "ad": "248-t5-yeni-aday",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t5-248-20261030T2301/arac/goc248.mjs yeni --repo /home/user/wt-t5-248 --kok /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t5-248-20261030T2301/kok",
+  "commit": "49395f775a91c8bc93572a43806895bdbdc7b515",
+  "dal": "is/t5-248",
+  "kirli": 0,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T23:15:44.262Z",
+  "sure_sn": 3.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 10,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "001 telefondaki Kasa = masaüstü Kasa (göçmüş veri; 200) — {\"far\":200,\"code\":\"\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "002 telefondaki Kasa = masaüstü Kasa (göçmüş veri; 200) — {\"far\":200,\"code\":\"\"}",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-t5-yeni-aday.log",
+  "klasor": "/home/user/wt-t5-248",
+  "ham_cikti_sha256": "7ce129703b88348d9e33c9439708803565d0d8e9cc7524809b261c0603eed163",
+  "ham_cikti_bayt": 1227
+}

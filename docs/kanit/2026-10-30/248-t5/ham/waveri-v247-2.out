@@ -1,0 +1,10 @@
+[23:08:15] WhatsApp cari verisi (v2.4.7 kendi API'si): {"001":10,"002":10}; 30 istek
+# 30 istek 200 (v2.4.7)
+# tests 30
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+[kanit] 248-t5-waveri-v247-2: GEÇTİ · çıkış 0 · 30/30 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 49395f7 +6 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0
