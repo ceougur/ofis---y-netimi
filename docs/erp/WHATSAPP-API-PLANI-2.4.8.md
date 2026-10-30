@@ -311,6 +311,11 @@ BAŞ MİMAR KARARLARI (en yaygın uygulama; ★ = kime / kaç kez gideceğini et
 31. Bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; ekranda nedenler listelenir.
 32. Başarılı olan işin hata kodu temizlenir (önceki deneme geçmişte kalır).
 
+REVİZYON ÖNERİSİ (baş mimar, 30.10.2026 ~14:55 UTC; kâhin K0'ın "ürün sahibine bildirilecek sonuçlar"ı üzerine, program karşılaştırmasından ÖNCE; kullanıcıya soruldu, 5 dk yetkisi):
+- R1 (§7a 11 + 15): Meta'ya HİÇ ulaşılamıyorsa (internet yok; istek gitmediği kesin) işler Başarısız SAYILMAZ: toplu iş "Bağlantı Bekleniyor" diye durur, bağlantı dönünce kendiliğinden sürer (iş deneme sayacı artmaz). 30 sn → 2 dk → 15 dk → Başarısız dizisi yalnız Meta'nın yanıt verdiği geçici hatalarda (5xx, 1, 2, 133004).
+- R2 (§7a 27): şablon kategorisi toplu iş sürerken saatte bir yerine HER 100 İLETİDE ve EN GEÇ 10 DAKİKADA bir okunur (Pazarlama ücretiyle giden ileti en çok ~100; ≈ 1 USD).
+- R3 (§7a 9, yeni W4 kuralı): aynı cariye aynı şablon + dönem DAHA ÖNCE gönderilmişse (Meta Kabul Etti ve sonrası) başlatmada "N kişiye bu dönem daha önce gönderildi (son tarih)" uyarısı + seçenek "Yine de Gönder" / "Bunları Çıkar"; varsayılan Bunları Çıkar.
+
 ## 8. Nasıl bozulur? (0b — son hâli; testler buradan çıkar)
 
 - ÇİFT: zaman aşımından sonra yeniden deneme; yanıt gelmeden program kapanır / elektrik gider ("Gönderiliyor" anında süreç öldürülür); iki kullanıcı aynı cariye aynı anda;
