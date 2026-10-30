@@ -306,18 +306,30 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
 
   // ---------- Tetikler ----------
   const etkin = () => enabled && !kapali && Boolean(license?.tokenEnvelope?.());
+  // 2.4.8 L1 kâhin F1: lisans durumu değişince (engel, bitiş, yenileme; lib/license.mjs "license.changed") kapıcıya HEMEN kayıt (zorla; özet yüklenmez —
+  // özetin zamanı veri değişikliğine bağlı kalır). Kapıcı engelin başlangıcını kaydın geldiği an yazar (temizlik.mjs: kayıt engelden 30 gün sonra silinir);
+  // önceden yalnız zamanlayıcı turu bildiriyordu ve tur yokken (ya da program engelden sonra kapandıysa) kapıcı engeli ancak temizlik turunda görüp 30 günü
+  // oradan sayıyordu. Kuyrukta (yüklemelerle sıralı; aynı anda iki kayıt kapi-sira doğurmasın).
+  function lisansDegisti() {
+    if (!etkin() || !cihazlar().length) return;
+    const is = kuyruk.then(() => kayitGonder({ zorla: true, ozetTetikle: false })).catch(error => log.warn?.(`Mobil kayıt (lisans değişti): ${error?.message || error}`));
+    kuyruk = is.then(() => {});
+  }
+  // Arka arkaya gelen güvenlik değişiklikleri tek yüklemede birleşir (kuyrukta bekleyen varsa yeni iş açılmaz).
+  function guvenlikYukle() {
+    if (durum.bekleyenGuvenlik) return;
+    durum.bekleyenGuvenlik = true;
+    kuyruk = kuyruk.then(() => {
+      durum.bekleyenGuvenlik = false;
+    });
+    sirala("guvenlik");
+  }
   function noteWrite(method, pathname) {
     if (!etkin()) return;
     const tur2 = yazmaTuru(method, pathname);
     if (!tur2) return;
     if (tur2 === "guvenlik") {
-      // Arka arkaya gelen güvenlik değişiklikleri tek yüklemede birleşir (kuyrukta bekleyen varsa yeni iş açılmaz).
-      if (durum.bekleyenGuvenlik) return;
-      durum.bekleyenGuvenlik = true;
-      kuyruk = kuyruk.then(() => {
-        durum.bekleyenGuvenlik = false;
-      });
-      sirala("guvenlik");
+      guvenlikYukle();
       return;
     }
     const t = clock.ms();
@@ -430,6 +442,7 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
       return { id: ofis.id, acik: ofis.acik, publicUrl: mobileRemote.publicUrl() };
     },
     noteWrite,
+    lisansDegisti,
     uploadNow: (neden = "elle") => (enabled ? sirala(neden) : Promise.resolve({ ok: false, code: "kapi-kapali", error: "Kapıcı adresi tanımlı değil." })),
     kayitGonder: secenek => (enabled ? kayitGonder(secenek) : Promise.resolve({ ok: false, code: "kapi-kapali" })),
     // 2.4.8 W7: "WhatsApp'ı Bağla" oturumu (lib/whatsapp/embedded.mjs) — ofisin imzalı kanalı. Kayıt önce yenilenir (kapıcı ofisi tanısın, lisans taze olsun).

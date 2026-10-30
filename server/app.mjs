@@ -641,6 +641,8 @@ export function createApp(overrides = {}) {
   };
   // 2.4.7 M3 (lib/mobile-sync.mjs; docs/mobil/M3-TASARIM.md): şifreli özet üreticisi + kapıcıya yükleyici (ortak katmanda tek örnek; kapıcı adresi yoksa dış istek yok).
   context.mobileSync = hub ? hub.mobileSync : mobileSyncFromConfig({ store, license, mobileRemote: context.mobileRemote, dispatch, config, log });
+  // 2.4.8 L1 kâhin F1: lisans durumu değişince kapıcıya hemen bildirilir (engelin başlangıcı kapıcıda o an; lib/mobile-sync.mjs lisansDegisti).
+  if (!hub) events.tap(event => event === "license.changed" && context.mobileSync?.lisansDegisti?.());
   const dispatchApp = (req, res) => {
     if (hub) return scoped(req, res);
     const pathname = (req.url || "/").split("?")[0];
