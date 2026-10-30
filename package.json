@@ -89,6 +89,7 @@
     "test:senaryo-whatsapp-ayar-248": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-ayar-248.mjs",
     "test:senaryo-whatsapp-donem-248": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-donem-248.mjs",
     "test:senaryo-whatsapp-sablon-248": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-sablon-248.mjs",
+    "test:senaryo-whatsapp-gonder-248": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-gonder-248.mjs",
     "test:guncelleme-gercek": "node --disable-warning=ExperimentalWarning test/e2e/guncelleme-gercek.mjs",
     "test:hiz-243-arka-plan": "node --disable-warning=ExperimentalWarning test/e2e/hiz-243-arka-plan.mjs",
     "test:fatura-243-daha-fazla-yaris": "node --disable-warning=ExperimentalWarning test/e2e/fatura-243-daha-fazla-yaris.mjs",

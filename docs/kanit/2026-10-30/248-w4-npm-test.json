@@ -1,0 +1,32 @@
+{
+  "ad": "248-w4-npm-test",
+  "komut": "npm test",
+  "commit": "22743a23972537bcffdbf89a90827ae1071ab8d3",
+  "dal": "is/w4-248",
+  "kirli": 0,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T17:55:02.624Z",
+  "sure_sn": 2097.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4039,
+    "gecen": 4039,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-w4-npm-test.log.gz",
+  "klasor": "/home/user/wt-w4-248",
+  "ham_cikti_sha256": "006ea4413f4a5750da75aa07238f315fe7e33c517fb82f3f48abe70665ef319d",
+  "ham_cikti_bayt": 1469539
+}

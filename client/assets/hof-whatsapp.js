@@ -80,12 +80,17 @@
     if (!HOF.can("accounts.view")) return HOF.toast("WhatsApp gönderimi için cari görme yetkisi gerekir.", { type: "error" });
     const state = { kind, preset: "thisMonth", templateId: TEMPLATES[0].id, template: TEMPLATES[0].text, onlyDebtors: false, data: null, picked: new Set(), preview: "", queue: [], at: 0, sent: 0, skipped: 0, auto: readPref("auto", true), pdf: kind === "statement" && readPref("pdf", true), armed: false, wa: null, batchId: `wa-${Date.now().toString(36)}` };
     let stopAuto = null;
+    let apiPanel = null;
     const modal = HOF.modal({
       title: kind === "statement" ? "WhatsApp ile Ekstre Gönder" : "WhatsApp ile Mesaj Gönder",
       eyebrow: title || "CARİ",
       size: "wide",
-      body: '<div class="hof-wa" data-wa><p class="hof-empty">Alıcılar hazırlanıyor…</p></div>',
-      onClose: () => stopAuto?.(),
+      // 2.4.8 W4: WhatsApp Business API bağlantısı kuruluysa üstte iki yol (hof-whatsapp-api.js); bağlantı yoksa pencere bugünkü gibi (yalnız [data-wa]).
+      body: '<div class="hof-wa-paths" data-wa-paths role="tablist" aria-label="Gönderim Yolu" hidden></div><div class="hof-wa-api" data-wa-api hidden></div><div class="hof-wa" data-wa><p class="hof-empty">Alıcılar hazırlanıyor…</p></div>',
+      onClose: () => {
+        stopAuto?.();
+        apiPanel?.stop();
+      },
     });
     const root = modal.dialog.querySelector("[data-wa]");
     const load = async () => {
@@ -289,7 +294,62 @@
         }
       }
     });
-    load();
+    // ---------- 2.4.8 W4: yol seçimi (Otomatik Gönder / WhatsApp Web ile Gönder) ----------
+    // Bugünkü wa.me yolu KALDIRILMAZ: bağlantı varken de ikinci sekmede aynen çalışır (Otomatik Sıra, kişi adıyla PDF, dönem). Otomatik yol öndedir ve
+    // kullanılabiliyorsa (yetki, lisans, sınanmış bağlantı, şablon son denetimde hazır) varsayılandır; kullanılamıyorsa sekmede nedeni görünür.
+    const paths = modal.dialog.querySelector("[data-wa-paths]");
+    const apiRoot = modal.dialog.querySelector("[data-wa-api]");
+    const titleNode = modal.dialog.querySelector(".hof-modal-title");
+    const baseTitle = titleNode?.textContent || "";
+    let manualLoaded = false;
+    const showPath = which => {
+      for (const tab of paths.querySelectorAll("[data-wa-path]")) {
+        const on = tab.dataset.waPath === which;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.classList.toggle("is-active", on);
+        tab.tabIndex = on ? 0 : -1;
+      }
+      apiRoot.hidden = which !== "api";
+      root.hidden = which !== "manual";
+      if (titleNode) titleNode.textContent = which === "api" ? "WhatsApp ile Otomatik Gönder" : baseTitle;
+      if (which === "api" && !apiPanel) apiPanel = HOF.whatsappApi.mount(apiRoot, { kind: kind === "statement" ? "statement" : "reminder", selection, info: apiInfo, onDone });
+      if (which === "manual" && !manualLoaded) {
+        manualLoaded = true;
+        load();
+      }
+    };
+    let apiInfo = null;
+    const begin = async () => {
+      apiInfo = HOF.whatsappApi ? await HOF.whatsappApi.status() : null;
+      if (!apiInfo?.configured) {
+        manualLoaded = true;
+        return load();
+      }
+      const apiKind = kind === "statement" ? "statement" : "reminder";
+      const block = HOF.whatsappApi.usageBlock(apiInfo);
+      paths.innerHTML = `<button type="button" role="tab" class="hof-wa-path" data-wa-path="api"><b>Otomatik Gönder</b><small>${block ? esc(block) : "WhatsApp Business API: seçin, Gönder'e basın; iletiler ve PDF kendiliğinden gider"}</small></button>
+        <button type="button" role="tab" class="hof-wa-path" data-wa-path="manual"><b>WhatsApp Web ile Gönder</b><small>Kendi WhatsApp'ınızla tek tek: her kişide Gönder'e siz basarsınız</small></button>`;
+      paths.hidden = false;
+      showPath(HOF.whatsappApi.ready(apiInfo, apiKind) ? "api" : "manual");
+    };
+    modal.dialog.addEventListener("click", event => {
+      const tab = event.target.closest("[data-wa-path]");
+      if (tab && paths.contains(tab)) showPath(tab.dataset.waPath);
+    });
+    paths.addEventListener("keydown", event => {
+      if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+      const tabs = [...paths.querySelectorAll("[data-wa-path]")];
+      const at = tabs.indexOf(document.activeElement);
+      if (at < 0) return;
+      event.preventDefault();
+      const next = tabs[(at + (event.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      next.focus();
+      showPath(next.dataset.waPath);
+    });
+    apiRoot.addEventListener("click", event => {
+      if (event.target.closest("[data-wa-api-close]")) modal.close();
+    });
+    begin();
   }
 
   // Tek cari: ekstre, mesaj ya da doğrudan sohbet.
@@ -307,7 +367,12 @@
       .then(rows => {
         const box = chooser.dialog.querySelector("[data-history]");
         if (!box || !rows?.length) return;
-        box.innerHTML = `<p class="hof-wa-label">Son Gönderimler</p><ul>${rows.slice(0, 5).map(row => `<li>${esc(HOF.formatDate(row.at))} · ${row.kind === "statement" ? "Ekstre" : "Mesaj"}${row.status === "skipped" ? " (atlandı)" : ""}${row.actorName ? ` · ${esc(row.actorName)}` : ""}</li>`).join("")}</ul>`;
+        // 2.4.8 W4 (plan §6 W4): yol (Otomatik / Elle), durum ve neden — otomatik satırlar sunucunun durum etiketiyle (wa_jobs).
+        const kindText = row => (row.kind === "statement" ? "Ekstre" : row.kind === "reminder" ? "Ödeme Hatırlatma" : "Mesaj");
+        const line = row => row.channel === "api"
+          ? `${esc(HOF.formatDate(row.at))} · ${kindText(row)} · Otomatik · ${esc(row.stateLabel || "")}${row.reason ? ` (${esc(row.reason)})` : ""}${row.actorName ? ` · ${esc(row.actorName)}` : ""}`
+          : `${esc(HOF.formatDate(row.at))} · ${kindText(row)} · Elle${row.status === "skipped" ? " (atlandı)" : ""}${row.actorName ? ` · ${esc(row.actorName)}` : ""}`;
+        box.innerHTML = `<p class="hof-wa-label">Son Gönderimler</p><ul>${rows.slice(0, 5).map(row => `<li data-wa-history="${esc(row.channel || "manual")}">${line(row)}</li>`).join("")}</ul>`;
       })
       .catch(() => {});
     chooser.dialog.addEventListener("click", event => {
