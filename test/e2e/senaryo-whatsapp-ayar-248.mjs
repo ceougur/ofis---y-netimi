@@ -131,7 +131,8 @@ await step("A2 Elle Bağla: Tab ile insan hızında yazım → Kaydet ve Sına �
   ok((await fact("tier")) === "24 saatte 250 farklı kişi", `sınır: ${await fact("tier")}`);
   ok((await fact("token")).startsWith("Kayıtlı"), `belirteç: ${await fact("token")}`);
   ok((await fact("testTemplate")).includes("hello_world: Onaylı"), `deneme şablonu: ${await fact("testTemplate")}`);
-  const auths = [...new Set(fake.requests.map(item => item.auth))];
+  // 2.4.8 W5: kayıttan sonra şablonlar kendiliğinden açılır; örnek PDF yüklemesinin ikinci adımı "OAuth" şemasıyla gider (meta-graph META_D0_W5).
+  const auths = [...new Set(fake.requests.map(item => item.auth.replace(/^OAuth /, "Bearer ")))];
   ok(auths.length === 1 && auths[0] === `Bearer ${TOKEN}`, "Meta'ya giden belirteç yazılanla birebir (karakter kaybı yok)");
   const row = JSON.parse(settingRow() || "{}");
   ok(row.phoneNumberId === PNID && row.wabaId === WABA && row.appId === APP, "veri tabanında kimlikler yazılanla aynı");

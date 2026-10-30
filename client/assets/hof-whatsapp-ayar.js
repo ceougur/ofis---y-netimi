@@ -87,12 +87,16 @@
     } catch (error) {
       $("#adm-wa-status").innerHTML = `<p class="adm-mobile-warn">${esc(error.message)}</p>`;
     }
+    // 2.4.8 W5: Bilgilendirme Şablonları kartı (hof-whatsapp-sablon.js) bağlantıyla birlikte yenilenir.
+    await HOF.whatsappTemplates?.load();
   }
 
   // Kayıttan sonra hemen sınanır; sınama başarısızsa bağlantı kayıtlı kalır, neden kartta ve bildirimde görünür.
   async function testNow({ afterSave = false } = {}) {
     try {
       view = await HOF.api(`${API}/test`, { method: "POST", body: {} });
+      // 2.4.8 W5: bağlantı kaydedilip sınanınca program iki bilgilendirme şablonunu (yoksa) Meta'da kendisi açar; sonuç Şablonlar kartında.
+      if (afterSave) await HOF.whatsappTemplates?.ensure({ quiet: true });
       HOF.toast(afterSave ? "Kaydedildi; bağlantı çalışıyor." : "Bağlantı çalışıyor.", { type: "success" });
     } catch (error) {
       HOF.toastError(error);
