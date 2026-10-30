@@ -2,7 +2,7 @@
 import { readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { brotliCompressSync, gzipSync, constants as zlib } from "node:zlib";
-import { HTML_CSP, SECURITY_HEADERS } from "./http.mjs";
+import { HTML_CSP, MOBILE_PERMISSIONS, SECURITY_HEADERS } from "./http.mjs";
 
 const TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -24,6 +24,7 @@ const HIDDEN = /(^|\/)(\.|__manus__)/;
 export function createStaticHandler(publicDir) {
   const root = path.resolve(publicDir);
   const cache = new Map();
+  const mobilePage = path.join(root, "mobil", "index.html");
 
   const resolve = pathname => {
     let decoded;
@@ -71,6 +72,7 @@ export function createStaticHandler(publicDir) {
       vary: "Accept-Encoding",
     };
     if (ext === ".html") headers["content-security-policy"] = HTML_CSP;
+    if (ext === ".html" && full === mobilePage) headers["permissions-policy"] = MOBILE_PERMISSIONS; // 2.4.8 M4: simgede Karekodu Okut
     if (ext !== ".html" && req.headers["if-none-match"] === etag) {
       res.writeHead(304, headers);
       res.end();

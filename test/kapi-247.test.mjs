@@ -480,6 +480,22 @@ describe("2.4.8 M3 kapıcı — tarayıcıya Türkçe hata sayfası, mobil istem
     }
   });
 
+  // 2.4.8 M4/M5 (KARAR M4/M5): iPhone'da eşleme ana ekran simgesinde "Karekodu Okut" ile; son özet giriş ekranındaki "Son Özeti Göster" ile açılır. Eski kod (e7c7338d)
+  // "ana ekrandaki DestekOfis simgesinden açtığınızda son yüklenen özeti görebilirsiniz" / "Eşlediğiniz cihazda ana ekrandaki DestekOfis simgesinden açın" der → kırmızı.
+  it("2.4.8 M4/M5: ofis kapalı sayfası Son Özeti Göster'i söyler; karşılama sayfası iPhone'u Ana Ekrana Ekle → Karekodu Okut'a yönlendirir", async () => {
+    const { c, ofis } = await hazirOfis();
+    c.tunel(false);
+    const r = await c.cihazIstegi(ofis.id, "GET", "/mobil/", GEZINTI);
+    htmlMi(r, 503, "Ofis Sunucusuna Ulaşılamıyor", "kapi-ofis-kapali");
+    assert.ok(r.text.includes("Son Özeti Göster&#39;e basarak son yüklenen bilgileri görün") || r.text.includes("Son Özeti Göster'e basarak son yüklenen bilgileri görün"), `ipucu "Son Özeti Göster" demeli: ${r.text.slice(0, 900)}`);
+    assert.ok(!r.text.includes("simgesinden açtığınızda"), "eski ipucu (simgeden açınca özet kendiliğinden) kalmamalı");
+    const k = await c.kapi.fetch(new Request(`https://kapi.${ALAN}/`, { headers: GEZINTI }), c.env);
+    const metin = await k.text();
+    assert.equal(k.status, 200);
+    assert.ok(metin.includes("Ana Ekrana Ekle") && metin.includes("Karekodu Okut"), `karşılama sayfası iPhone akışını anlatmalı: ${metin.slice(0, 700)}`);
+    assert.ok(!metin.includes("Eşlediğiniz cihazda ana ekrandaki DestekOfis simgesinden açın"), "eski karşılama cümlesi kalmamalı");
+  });
+
   it("Sec-Fetch başlığı göndermeyen eski tarayıcı (Accept text/html) da sayfa alır; HEAD gövdesiz", async () => {
     const { c, ofis } = await hazirOfis();
     c.tunel(false);

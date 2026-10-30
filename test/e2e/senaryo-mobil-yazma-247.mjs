@@ -23,6 +23,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createClock } from "../../server/lib/clock.mjs";
 import { ADMIN_PASSWORD, createUser, installPageClock, loginAdmin, moveClock, startTestServer } from "../helpers.mjs";
+import { iosSimge } from "../mobil-uzak-ortak.mjs";
 
 const root = mkdtempSync(path.join(tmpdir(), "senaryo-mobil-yazma-247-"));
 const shots = process.env.EKRAN_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-mobil-yazma-247");
@@ -126,6 +127,7 @@ const bankNow = async acc => ((await must("hesap", api.get(`/api/workspace/bank/
 
 const browser = await chromium.launch();
 const phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, userAgent: IPHONE, locale: "tr-TR" });
+await iosSimge(phoneContext); // 2.4.8 M4: iPhone eşlemesi ana ekran simgesinde
 page = await phoneContext.newPage();
 await installPageClock(page, clock);
 const pageErrors = [];
@@ -429,6 +431,7 @@ await step("Y8 24 saat: belirsiz istek 25 saat sonra yeniden gönderilmez; Liste
 
 await step("Y9 personel telefonu: yalnız Tahsilat Gir (Ödeme Gir yok); kayıt personelin adına", async () => {
   const staffContext = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, userAgent: IPHONE, locale: "tr-TR" });
+  await iosSimge(staffContext); // 2.4.8 M4
   const staffPage = await staffContext.newPage();
   await installPageClock(staffPage, clock);
   staffPage.on("pageerror", error => pageErrors.push(String(error?.message || error)));
