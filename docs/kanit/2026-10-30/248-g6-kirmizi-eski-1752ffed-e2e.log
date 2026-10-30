@@ -1,0 +1,28 @@
+
+■ B0 bağlantı yokken: şablon kartı görünür, düğme pasif ve nedeni yazılı
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ B1 App ID'siz bağlantı → Denetle: Ödeme Hatırlatma açılır, Ekstre için Uygulama Kimliği istenir
+  ✓ bağlantı kaydedildi (200)
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ B2 Bilgileri Değiştir: App ID Tab ile → Kaydet ve Sına → Ekstre kendiliğinden açılır (örnek PDF, KVKK alt satırı)
+  ✓ Tab: WABA ID → App ID
+  ✗ adım yarıda kaldı: page.waitForFunction: Timeout 15000ms exceeded.
+
+■ B3 Meta Ekstre'yi Pazarlama'ya aldı, Hatırlatma onaylandı → klavyeyle Denetle: açık uyarı, Ekstre gönderime hazır değil
+  ✗ adım yarıda kaldı: Cannot convert undefined or null to object
+
+■ B4 yetkisiz (Personel): şablon API'si 403
+  ✗ GET 403
+  ✗ POST 403
+  ✗ aydınlatma metni 403
+  ✗ aydınlatma PDF 403
+
+■ B5 Aydınlatma Metni Hazırla: firma bilgileri, eksik e-posta, Kopyala = API metni, PDF, Esc
+  ✓ firma bilgisi kaydedildi (e-posta yok)
+  ✗ adım yarıda kaldı: page.textContent: Timeout 15000ms exceeded.
+  ✓ API yanıtlarında belirteç yok (28 yanıt)
+  ✓ sayfa hatası yok (—)
+
+5 geçti, 9 kaldı

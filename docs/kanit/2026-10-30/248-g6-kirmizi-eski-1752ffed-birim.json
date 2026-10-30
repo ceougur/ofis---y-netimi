@@ -1,0 +1,103 @@
+{
+  "ad": "248-g6-kirmizi-eski-1752ffed-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g6-248-k3v9/g6-248-eski-1752ffed/test/whatsapp-w5-sablon.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g6-248-k3v9/g6-248-eski-1752ffed/test/whatsapp-w6-aydinlatma.test.mjs",
+  "commit": "998d467866ae9be0cb9d884473ae1494123d15f7",
+  "dal": "is/sablon-248",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T14:09:36.795Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 0,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 W5 — WhatsApp bilgilendirme şablonları › şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)",
+      "konum": "test/whatsapp-w5-sablon.test.mjs:73:3",
+      "hata": "GET /api/workspace/whatsapp/templates → 404 · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W5 — WhatsApp bilgilendirme şablonları › bağlantı yokken denetim 409, Meta'ya istek yok; yetkisiz kullanıcı GET / POST 403",
+      "konum": "test/whatsapp-w5-sablon.test.mjs:91:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 409 (beklenen 409, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W5 — WhatsApp bilgilendirme şablonları › App ID yokken: Ödeme Hatırlatma açılır (UTILITY, plandaki gövde, örnek değerler); Ekstre açılmaz, nedeni Uygulama Kimliği; yükleme yok",
+      "konum": "test/whatsapp-w5-sablon.test.mjs:102:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W5 — WhatsApp bilgilendirme şablonları › App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denetim yeni şablon açmaz",
+      "konum": "test/whatsapp-w5-sablon.test.mjs:125:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W5 — WhatsApp bilgilendirme şablonları › durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içeriği değiştirilmiş",
+      "konum": "test/whatsapp-w5-sablon.test.mjs:158:3",
+      "hata": "Cannot convert undefined or null to object"
+    },
+    {
+      "ad": "2.4.8 W5 — WhatsApp bilgilendirme şablonları › GET görünümü Meta'ya gitmez ve son denetimi gösterir; başka WABA'ya geçince eski sonuç bayat sayılır (Denetlenmedi)",
+      "konum": "test/whatsapp-w5-sablon.test.mjs:206:3",
+      "hata": "Cannot read properties of undefined (reading 'checkedAt')"
+    },
+    {
+      "ad": "2.4.8 W5 — WhatsApp bilgilendirme şablonları › Meta ayrıntı alanlarını tanımazsa (100) temel alanlarla bir kez yeniden okunur; listede görünmeyen şablon için 2388024 'zaten var' sayılır",
+      "konum": "test/whatsapp-w5-sablon.test.mjs:220:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W5 — WhatsApp bilgilendirme şablonları › Meta belirteci reddederse 502 + Türkçe neden, son hata kaydedilir; yanıtta / kayıtta / işlem geçmişinde / günlükte belirteç yok",
+      "konum": "test/whatsapp-w5-sablon.test.mjs:241:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 502 (beklenen 502, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W5 — WhatsApp bilgilendirme şablonları › Meta istemcisi kampanya / pazarlama şablonu açmaz: kategori UTILITY değilse istek gönderilmez",
+      "konum": "test/whatsapp-w5-sablon.test.mjs:260:3",
+      "hata": "meta-graph.mjs createMetaTemplates dışa açık · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "2.4.8 W5 — WhatsApp bilgilendirme şablonları › salt okunur lisans: görünüm okunur, denetim 403 LICENSE_READ_ONLY, Meta'ya istek yok",
+      "konum": "test/whatsapp-w5-sablon.test.mjs:272:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W6 — Aydınlatma Metni Hazırla › firma bilgisi eksikken: eksikler adıyla, metinde köşeli ayraçlı yer tutucu; 'undefined' / 'null' yok",
+      "konum": "test/whatsapp-w6-aydinlatma.test.mjs:27:3",
+      "hata": "GET /api/workspace/whatsapp/aydinlatma-metni → 404 · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W6 — Aydınlatma Metni Hazırla › firma bilgileriyle: KVKK md. 10 öğeleri, md. 11'in dokuz bendi, Meta + yurt dışı (md. 9), veri işleyen, 30 gün; eksik yok",
+      "konum": "test/whatsapp-w6-aydinlatma.test.mjs:40:3",
+      "hata": "Cannot read properties of undefined (reading 'missing')"
+    },
+    {
+      "ad": "2.4.8 W6 — Aydınlatma Metni Hazırla › PDF: indirme, application/pdf, dosya adı firma adıyla; metin PDF'te de aynı (başlık, firma, md. 9, ğ bendi, sayfa numarası)",
+      "konum": "test/whatsapp-w6-aydinlatma.test.mjs:82:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W6 — Aydınlatma Metni Hazırla › yetkisiz kullanıcı (Personel) metni ve PDF'i alamaz (403)",
+      "konum": "test/whatsapp-w6-aydinlatma.test.mjs:98:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 403 (beklenen 403, gelen 404)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g6-kirmizi-eski-1752ffed-birim.log",
+  "klasor": "/home/user/wt-sablon-248",
+  "ham_cikti_sha256": "4feaf7b80d67e0bc81a3598317f29966a46567246acab2f6a85b443077fdb94d",
+  "ham_cikti_bayt": 18208
+}

@@ -21,6 +21,7 @@ import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { createWhatsappConnection } from "../lib/whatsapp/connection.mjs";
+import { registerWhatsappTemplateRoutes } from "./whatsapp-sablon.mjs";
 
 const MAX_TARGETS = 5000;
 const pad = value => String(value).padStart(2, "0");
@@ -214,4 +215,7 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     const result = await connection.selfTest(user, `+${phone.wa}`);
     ok(res, { result: result.result, connection: view() });
   });
+
+  // ---------- 2.4.8 W5: bilgilendirme şablonları (routes/whatsapp-sablon.mjs) ----------
+  registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection });
 }

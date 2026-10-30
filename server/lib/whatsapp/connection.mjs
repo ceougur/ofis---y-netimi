@@ -264,5 +264,12 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     }
   }
 
-  return { read, view, save, remove, test, selfTest };
+  // 2.4.8 W5: başka WhatsApp modüllerinin (şablonlar; meta-graph createMetaTemplates) Meta seçenekleri — graphFor ile AYNI denetimler; belirteç yalnız
+  // istek anında openToken içinde açılır (mühürlü belirtece yalnız bu modül dokunur).
+  function metaOptions(record) {
+    graphFor(record);
+    return { baseUrl: config.whatsappGraphUrl, fetchImpl: config.fetchImpl, openToken: () => secrets().open(record.tokenSealed), timeoutMs: Number(config.whatsappTimeoutMs) > 0 ? Number(config.whatsappTimeoutMs) : undefined };
+  }
+
+  return { read, view, save, remove, test, selfTest, metaOptions };
 }
