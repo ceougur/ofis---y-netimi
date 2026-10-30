@@ -277,6 +277,33 @@ Bir mutasyon, elle senaryoların karar ağacında ya da rastgele senaryoların �
 71/71 yakalandı, 71/71'i öneri birleşiminde de yakalandı (2.4.8 L1 güncellemesi). Bazı mutasyonlar ayrıca girdi hatası verir (ör. M01'de belirsiz sınır) — sayılmaz,
 yalnız not edilir.
 
+## Karşılaştırma — 2.4.8 L1 (30.10.2026; kâhin a348f472'de sabitlendikten SONRA)
+
+Komut: `HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=test/bagimsiz/mobil-erisim/kanit node tools/kanit.mjs kos 248-l1-kahin -- node
+test/bagimsiz/mobil-erisim/program-surucu.mjs --cikti <klasör>` → 42 senaryodan 30 uyumlu, 12 farklı (`kanit/2026-10-30/248-l1-kahin.*`,
+fark listesi `248-l1-kahin-farklar.txt`, ham çıktı `*.json.gz`). Birleşim: P1–P13 seçili, P14–P17 öneri. Sürücüye 2.4.8 için yalnız API
+çağrıları, eşleme ve saat düzeni eklendi (dosya başındaki "2.4.8 L1" notu): deneme → belirteç `kind: "trial"`; uyarı gözlemi (giriş yanıtı +
+girişten sonra `/api/mobil/session`, özet, Mobil Cihazlar; ≤ 300 karakterlik metinlerde kalıp taraması); `kapici_temizlik` → yerel kapıcının
+temizlik işi; `masaustu_yazma` → yeni cari (`POST /api/workspace/accounts`; tanı için kullanıcı açma da denenir); sahte saat ≥ 1 saat ilerleyince
+programın lisans denetimi (üretimdeki düzenli denetimin yerine). Tanı koşusu D01 (L01 + kapanıştan 1 sa sonra temizlik + geçerli lisansta mobil
+yazma; beklenti kâhinin kendi modelinden) `248-l1-tani-D01-*`.
+
+Uyumlu: hoşgörüde okuma (giriş, canlı, özet) ve masaüstü salt okunur (yeni cari `salt_okunur`, "Lisans süresi doldu. Program salt okunur
+çalışıyor…"); hoşgörü iletisi metni ve N; P14 sınırları programda `sure` (L01: 9 Ara 23:59:59 açık, 10 Ara 00:00 kapalı; L02: 14 Oca 14:29:59 açık,
+14:30 kapalı); ücretli kapanış iletisi U3 (kayıt silinmeden önce); deneme ve engel hemen kapanır (hoşgörüdeki ücretli engellenince de);
+hoşgörüde yeni eşleme reddedilir (P15 öneri); deneme kaydı 30 gün + temizlikten sonra silinir, yenilemede karekodla yeniden eşleme.
+
+Farklar (kâhinin beklentisine dokunulmadı — ders 40; sınıflar sürücünün): F1 engel kaydı 30 gün + temizlikten sonra silinmiyor, engel kalkınca
+eski cihaz çalışıyor (L05) · F2 ücretli kayıt kapanış anında silinmiyor, sonraki temizliğe dek duruyor; arada yenilenirse eski cihaz dönüyor ve yer
+tutuyor (L01, L02, L06; R1–R3'teki sınır/eşli farklarının hepsi bu zincir; D01'de temizlikten sonra silindi) · F3 silindikten sonra telefon "Bu cihaz
+eşli değil…" alıyor, U3 değil (D01; P17) · F4 7 gün notu "Lisansınız X gün sonra bitiyor." (karar: "lisans X gün sonra bitiyor") · F5 deneme notu
+"Deneme süreniz X gün sonra bitiyor.", deneme kapanışı "Deneme süreniz bitti; mobil kullanım kapalı. Lisans alınca yeniden açılır.", engel
+"Lisansınız engellendi; mobil kullanım kapalı." (kâhin V23/P17 kümesi dışında; karar bu metinleri söylemiyor) · F6 özetteki uyarı yükleme anında
+donuk: hoşgörüde ve yenilemeden sonra "Lisansınız 3 gün sonra bitiyor." / "Deneme süreniz 1 gün sonra bitiyor." (L03, L05, L06, U10, U21, L04) ·
+F7 V28: silinen cihaz programın listesinde lisans denetiminden sonra da sayılıyor, özet yüklemede düşüyor (L04 olay 28) — kâhinin okuması.
+DENENMEYEN: mobil yazma (sürücünün yazma ucu lisans geçerliyken de "Mobil görünüm salt okunurdur…" döndürüyor — D01 olay 40; gerçek tahsilat ucu
+sürücüde yok), Kasa raporu (2.4.7'den).
+
 ## DENENEN
 
 - 33 elle senaryoda elle beklenen = model, karar ağacının 68 yaprağının hepsinde (parametreye bağlı elle kural okunduğu parametreyle yaprağı
