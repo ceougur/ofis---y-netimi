@@ -30,7 +30,8 @@ const freeze = value => {
   return value;
 };
 
-// Şablon tanımları (plan §6 W5'teki metinler AYNEN; dil tr, kategori UTILITY). example: Meta'nın değişkenli gövde için istediği örnek değerler.
+// Şablon tanımları (plan §6 W5'teki metinler AYNEN; ekstre gövdesi plan §7a madde 23 / K3: "Dönem sonu bakiyesi" — geçmiş dönemde "Güncel bakiye" yanlış
+// etiketti — ve gövde değişkenle bitmez, Meta 2388299; dil tr, kategori UTILITY). example: Meta'nın değişkenli gövde için istediği örnek değerler.
 export const TEMPLATE_DEFS = freeze([
   {
     kind: "statement",
@@ -39,7 +40,7 @@ export const TEMPLATE_DEFS = freeze([
     language: META_D0_W5.language,
     category: PROGRAM_TEMPLATE_CATEGORY,
     header: "DOCUMENT",
-    body: "Sayın {{1}}, {{2}} firmasındaki cari hesabınızın {{3}} dönemine ait ekstresi ektedir. Güncel bakiye: {{4}}.",
+    body: "Sayın {{1}}, {{2}} firmasındaki cari hesabınızın {{3}} dönemine ait ekstresi ektedir. Dönem sonu bakiyesi: {{4}}. İyi günler dileriz.",
     example: ["Ahmet Yılmaz", "Örnek Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL (borç)"],
     footer: KVKK_FOOTER,
   },

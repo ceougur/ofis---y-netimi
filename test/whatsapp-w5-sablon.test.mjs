@@ -20,10 +20,10 @@ const NOW = { time: "2026-11-03T09:00:00+03:00", fixed: true };
 const URL_CONN = "/api/workspace/whatsapp/connection";
 const URL_TPL = "/api/workspace/whatsapp/templates";
 
-// ---- PLANDAN (docs/erp/WHATSAPP-API-PLANI-2.4.8.md §6 W5 ve §1; elle yazıldı) ----
+// ---- PLANDAN (docs/erp/WHATSAPP-API-PLANI-2.4.8.md §6 W5, §1 ve §7a madde 23 / K3 — ekstre gövdesi; elle yazıldı) ----
 const PLAN = {
   destekofis_ekstre: {
-    body: "Sayın {{1}}, {{2}} firmasındaki cari hesabınızın {{3}} dönemine ait ekstresi ektedir. Güncel bakiye: {{4}}.",
+    body: "Sayın {{1}}, {{2}} firmasındaki cari hesabınızın {{3}} dönemine ait ekstresi ektedir. Dönem sonu bakiyesi: {{4}}. İyi günler dileriz.",
     footer: "KVKK aydınlatma metni için firmamıza başvurabilirsiniz.",
     header: "DOCUMENT",
     params: 4,
@@ -82,6 +82,7 @@ describe("2.4.8 W5 — WhatsApp bilgilendirme şablonları", () => {
       assert.equal(def.header || null, plan.header, `${def.name} başlığı`);
       assert.equal(def.category, "UTILITY", `${def.name} kategorisi UTILITY`);
       assert.equal(def.language, "tr");
+      assert.doesNotMatch(def.body, /\{\{\d+\}\}\s*[.!?]?\s*$/, `${def.name} gövdesi değişkenle bitmez (Meta 2388299; plan §7a madde 23)`);
     }
     assert.ok(PLAN.destekofis_ekstre.footer.length <= 60, "Meta alt satır sınırı 60");
     assert.equal(res.data.data.configured, false);

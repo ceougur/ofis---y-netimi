@@ -29,9 +29,9 @@ const APP = "1505264761663625";
 const STAFF = { username: "wa5-personel", password: "Personel-Wa5-2026!" };
 const MODAL = ".hof-modal-backdrop.is-visible";
 const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
-// PLANDAN (§1, §6 W5)
+// PLANDAN (§1, §6 W5; ekstre gövdesi §7a madde 23 / K3)
 const KVKK_FOOTER = "KVKK aydınlatma metni için firmamıza başvurabilirsiniz.";
-const EKSTRE_BODY = "Sayın {{1}}, {{2}} firmasındaki cari hesabınızın {{3}} dönemine ait ekstresi ektedir. Güncel bakiye: {{4}}.";
+const EKSTRE_BODY = "Sayın {{1}}, {{2}} firmasındaki cari hesabınızın {{3}} dönemine ait ekstresi ektedir. Dönem sonu bakiyesi: {{4}}. İyi günler dileriz.";
 
 const fake = await startFakeGraph({ token: TOKEN, phoneNumberId: PNID, wabaId: WABA, appId: APP, verifiedName: "Deneme Ticaret Ltd" });
 const server = await bootVersion(CURRENT, { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, whatsappGraphUrl: fake.url, now: "2026-11-03T09:00:00+03:00" });
