@@ -1,0 +1,350 @@
+TAP version 13
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 1.986512
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.489433
+      type: 'test'
+      ...
+    1..2
+ok 1 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 4.122494
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 1.305151
+      type: 'test'
+      ...
+    1..1
+ok 2 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 1.521757
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 3.368935
+      type: 'test'
+      ...
+    1..1
+ok 3 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 3.523738
+  type: 'suite'
+  ...
+# Subtest: Üretim girişi: e-Belge açık, test ve canlı ortam açık
+    # Subtest: server/server.mjs e-Belgeyi, canlı ortamı (kullanıcı 16.10.2026: "hem testi hem canlıyı aç") ve e-SMM'yi (2.4.4 iş listesi 24) açar; config bunları ortam değişkeniyle açmaz
+    ok 1 - server/server.mjs e-Belgeyi, canlı ortamı (kullanıcı 16.10.2026: "hem testi hem canlıyı aç") ve e-SMM'yi (2.4.4 iş listesi 24) açar; config bunları ortam değişkeniyle açmaz
+      ---
+      duration_ms: 2.157729
+      type: 'test'
+      ...
+    1..1
+ok 4 - Üretim girişi: e-Belge açık, test ve canlı ortam açık
+  ---
+  duration_ms: 3.676535
+  type: 'suite'
+  ...
+# Subtest: Test ortamı belgeleri (sahte EDM)
+    # Subtest: canlı ortam seçilemez (400); ayarlar test serisinin sıradaki numarasını gösterir, firmanın serisi 1'de kalır
+    ok 1 - canlı ortam seçilemez (400); ayarlar test serisinin sıradaki numarasını gösterir, firmanın serisi 1'de kalır
+      ---
+      duration_ms: 32.559706
+      type: 'test'
+      ...
+    # Subtest: test ortamında e-Fatura TEF, e-Arşiv TEA serisinden; belge 'Test' işaretli; firmanın serisi tüketilmez
+    ok 2 - test ortamında e-Fatura TEF, e-Arşiv TEA serisinden; belge 'Test' işaretli; firmanın serisi tüketilmez
+      ---
+      duration_ms: 237.220708
+      type: 'test'
+      ...
+    # Subtest: Gönderilecekler'deki belge numarasını gönderimde test serisinden alır
+    ok 3 - Gönderilecekler'deki belge numarasını gönderimde test serisinden alır
+      ---
+      duration_ms: 116.685539
+      type: 'test'
+      ...
+    # Subtest: test belgesinin PDF'i ve e-Belge görünümü TEST yazar; kâğıt belge yazmaz
+    ok 4 - test belgesinin PDF'i ve e-Belge görünümü TEST yazar; kâğıt belge yazmaz
+      ---
+      duration_ms: 2571.237083
+      type: 'test'
+      ...
+    # Subtest: firma kendi serisini TEF / TEA / TES yapamaz (400 series-reserved)
+    ok 5 - firma kendi serisini TEF / TEA / TES yapamaz (400 series-reserved)
+      ---
+      duration_ms: 14.468511
+      type: 'test'
+      ...
+    1..5
+ok 5 - Test ortamı belgeleri (sahte EDM)
+  ---
+  duration_ms: 3605.564378
+  type: 'suite'
+  ...
+# Subtest: Canlıya geçiş (canlı kilidi açılmış kurulum)
+    # Subtest: testte 2 belge (TEF 1–2) → canlıya geçince ilk belge EFT …001; test belgesi Test kalır, numarası değişmez
+    ok 1 - testte 2 belge (TEF 1–2) → canlıya geçince ilk belge EFT …001; test belgesi Test kalır, numarası değişmez
+      ---
+      duration_ms: 2238.504894
+      type: 'test'
+      ...
+    1..1
+ok 6 - Canlıya geçiş (canlı kilidi açılmış kurulum)
+  ---
+  duration_ms: 2678.102741
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 7 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 7.060943
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 8 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 190.508875
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 9 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 3.647157
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 10 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.851629
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 11 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 2.15096
+  type: 'test'
+  ...
+# Subtest: 2.4.8 W1 — Meta istemcisi
+    # Subtest: istek: sürüm sabiti + belirteç yalnız başlıkta; adres sorgusunda ve gövdede yok; yönlendirme izlenmez (manual)
+    ok 1 - istek: sürüm sabiti + belirteç yalnız başlıkta; adres sorgusunda ve gövdede yok; yönlendirme izlenmez (manual)
+      ---
+      duration_ms: 31.057415
+      type: 'test'
+      ...
+    # Subtest: belirteç açılamazsa (boş) ve kimlik adres karakteri taşırsa istek yapılmaz
+    ok 2 - belirteç açılamazsa (boş) ve kimlik adres karakteri taşırsa istek yapılmaz
+      ---
+      duration_ms: 1.165807
+      type: 'test'
+      ...
+    # Subtest: Meta hata gövdesi: Türkçe başlık + kod + yeniden deneme sınıfı; Meta metni belirteci yankılasa da iletide yok
+    ok 3 - Meta hata gövdesi: Türkçe başlık + kod + yeniden deneme sınıfı; Meta metni belirteci yankılasa da iletide yok
+      ---
+      duration_ms: 1.786586
+      type: 'test'
+      ...
+    # Subtest: ağ hatası, zaman aşımı, gövdesiz 5xx, 3xx yönlendirme → sonuç bilinmiyor (retry unknown)
+    ok 4 - ağ hatası, zaman aşımı, gövdesiz 5xx, 3xx yönlendirme → sonuç bilinmiyor (retry unknown)
+      ---
+      duration_ms: 85.641097
+      type: 'test'
+      ...
+    # Subtest: sayfalama: `after` imleciyle yapılandırılmış adrese; yanıttaki mutlak paging.next adresine gidilmez; en çok 3 sayfa
+    ok 5 - sayfalama: `after` imleciyle yapılandırılmış adrese; yanıttaki mutlak paging.next adresine gidilmez; en çok 3 sayfa
+      ---
+      duration_ms: 3.486313
+      type: 'test'
+      ...
+    # Subtest: hata sınıfları (plan §6 W2) ve sınır basamağı / kalite metinleri
+    ok 6 - hata sınıfları (plan §6 W2) ve sınır basamağı / kalite metinleri
+      ---
+      duration_ms: 29.487362
+      type: 'test'
+      ...
+    1..6
+ok 12 - 2.4.8 W1 — Meta istemcisi
+  ---
+  duration_ms: 154.442533
+  type: 'suite'
+  ...
+# Subtest: yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+ok 13 - yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+  ---
+  duration_ms: 142.047013
+  type: 'test'
+  ...
+# Subtest: Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz
+ok 14 - Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz
+  ---
+  duration_ms: 2.375646
+  type: 'test'
+  ...
+# Subtest: kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+ok 15 - kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+  ---
+  duration_ms: 239.811353
+  type: 'test'
+  ...
+# Subtest: ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez
+ok 16 - ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez
+  ---
+  duration_ms: 1216.889071
+  type: 'test'
+  ...
+# Subtest: 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+    # Subtest: bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+    ok 1 - bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+      ---
+      duration_ms: 565.726331
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+    ok 2 - Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+      ---
+      duration_ms: 41.722668
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+    ok 3 - Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+      ---
+      duration_ms: 14.77041
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+    ok 4 - Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+      ---
+      duration_ms: 24.611742
+      type: 'test'
+      ...
+    # Subtest: Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+    ok 5 - Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+      ---
+      duration_ms: 3399.022155
+      type: 'test'
+      ...
+    # Subtest: Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+    ok 6 - Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+      ---
+      duration_ms: 45.326549
+      type: 'test'
+      ...
+    # Subtest: gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+    ok 7 - gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+      ---
+      duration_ms: 144.10869
+      type: 'test'
+      ...
+    # Subtest: iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+    ok 8 - iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+      ---
+      duration_ms: 324.569304
+      type: 'test'
+      ...
+    # Subtest: yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+    ok 9 - yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+      ---
+      duration_ms: 56.237779
+      type: 'test'
+      ...
+    # Subtest: belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+    ok 10 - belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+      ---
+      duration_ms: 127.993778
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+    ok 11 - Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+      ---
+      duration_ms: 47.557412
+      type: 'test'
+      ...
+    1..11
+ok 17 - 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+  ---
+  duration_ms: 5306.689696
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+    # Subtest: salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+    ok 1 - salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+      ---
+      duration_ms: 543.136497
+      type: 'test'
+      ...
+    # Subtest: Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+    ok 2 - Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+      ---
+      duration_ms: 397.013945
+      type: 'test'
+      ...
+    1..2
+ok 18 - 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+  ---
+  duration_ms: 940.593499
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 118.109301
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 7.676744
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 3.15471
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 9.739117
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 7.949372
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 43.125038
+      type: 'test'
+      ...
+    1..6
+ok 19 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 191.244751
+  type: 'suite'
+  ...
+1..19
+# tests 45
+# suites 10
+# pass 45
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7279.543549
