@@ -320,6 +320,8 @@ WhatsApp gönderimi; SMS yedeği; yerel saklama bölgesi seçimi; `pricing_analy
 
 ## 11. Kullanıcıya sorular (öneriyle)
 
+> KARAR (30.10.2026 12:27 UTC, kullanıcı 5 dk içinde yanıt vermedi → 5 dk yetkisiyle uygulandı; kullanıcı dönünce değiştirebilir): S1 A (durum kancası kapıcıdan GEÇER, saklanmaz; tünel WhatsApp bağlıyken de açık), S2 A (utility TTL 3 gün; izinli aralık D0'da), S3 A (kesinleşince PDF Meta'dan silinir), S4 A (bağlama sayfası kapi.destekofis.net/wa/bagla; canlıya çıkış kullanıcı onayıyla).
+
 - **S1 Durum bilgisi (teslim / okundu / başarısız).** A) Kapıcıdan GEÇEN web kancası (§3 C): program adresi Meta'ya kendisi kaydeder; durumlar DestekOfis'te saklanmadan
   kapıcıdan geçer; tünel WhatsApp bağlıyken de açık kalır (mobil kuralı genişler). B) Kancasız: yalnız "Meta Kabul Etti"; WhatsApp kullanmayan numara ve teslim edilmeyen ileti
   görünmez. ÖNERİ A (D0'da Dev moddaki uygulamada durum kancası gelmezse Yol 1 B'ye düşer ve size söylenir).
