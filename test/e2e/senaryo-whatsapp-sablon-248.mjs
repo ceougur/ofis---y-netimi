@@ -6,9 +6,11 @@
 //   B1 bağlantı (App ID'siz) → Şablonları Denetle ve Oluştur: Ödeme Hatırlatma açılır (Onay Bekliyor), Ekstre açılmaz — neden Uygulama Kimliği.
 //   B2 Bilgileri Değiştir: App ID Tab ile → Kaydet ve Sına → Ekstre kendiliğinden açılır (örnek PDF yüklendi, KVKK alt satırı, UTILITY).
 //   B3 Meta Ekstre'yi Pazarlama'ya aldı, Hatırlatma onaylandı → klavyeyle Denetle: Hatırlatma "Onaylandı / Evet"; Ekstre "Hayır" + açık uyarı.
-//   B4 yetkisiz (Personel): şablon API'si 403.
+//   B4 yetkisiz (Personel): şablon ve aydınlatma metni API'si 403.
+//   B5 Aydınlatma Metni Hazırla (klavyeyle açılır): firma bilgileri metinde, eksik e-posta adıyla söylenir; Kopyala → panodaki metin = API metni;
+//      Aydınlatma Metni - PDF → %PDF, dosya adı firma adıyla, istek şirket parametreli; Esc ile kapanır (soru yok).
 // Çıkış: "N geçti, M kaldı" (kaldıysa 1). Ekran görüntüleri EKRAN_DIR (varsayılan test/e2e/artifacts/senaryo-whatsapp-sablon-248).
-import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -80,6 +82,7 @@ const noToken = async label => {
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1366, height: 900 }, acceptDownloads: true });
+await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: server.base });
 page = await context.newPage();
 page.on("pageerror", error => pageErrors.push(error.message));
 page.on("response", async response => {
@@ -171,6 +174,42 @@ await step("B4 yetkisiz (Personel): şablon API'si 403", async () => {
   await staff.login(STAFF.username, STAFF.password);
   ok((await staff.get("/api/workspace/whatsapp/templates")).status === 403, "GET 403");
   ok((await staff.post("/api/workspace/whatsapp/templates/ensure", {})).status === 403, "POST 403");
+  ok((await staff.get("/api/workspace/whatsapp/aydinlatma-metni")).status === 403, "aydınlatma metni 403");
+  ok((await staff.get("/api/workspace/whatsapp/aydinlatma-metni.pdf")).status === 403, "aydınlatma PDF 403");
+});
+
+await step("B5 Aydınlatma Metni Hazırla: firma bilgileri, eksik e-posta, Kopyala = API metni, PDF, Esc", async () => {
+  const seller = { name: "Mavi Muhasebe Ltd. Şti.", taxNo: "4840847211", taxOffice: "Kadıköy", address: "Caferağa Mah. Moda Cad. No: 12", district: "Kadıköy", city: "İstanbul", phone: "0216 555 01 02" };
+  ok((await adminApi.put("/api/workspace/invoices/settings", { seller })).status === 200, "firma bilgisi kaydedildi (e-posta yok)");
+  ok((await text("#adm-wa-notice h2")) === "KVKK Aydınlatma Metni", "kart başlığı");
+  await page.focus("[data-wa-notice-open]");
+  await page.keyboard.press("Enter");
+  const modal = await topModal();
+  ok((await text(`${modal} .hof-modal-title`)) === "Aydınlatma Metni", "pencere başlığı Aydınlatma Metni");
+  const shown = await text(`${modal} [data-wa-notice-text]`);
+  ok(shown.includes(seller.name) && shown.includes(seller.taxNo) && shown.includes(seller.address), "metinde unvan, VKN, adres");
+  ok(/Meta Platforms/.test(shown) && /9\. maddesinde/.test(shown) && /veri işleyen/.test(shown), "metinde Meta, md. 9, veri işleyen");
+  ok(/\[Firma e-posta adresi\]/.test(shown), "eksik e-posta yer tutucusu");
+  ok(/Eksik firma bilgisi: E-posta/.test(await text(`${modal} [data-wa-notice-missing]`)), "eksik bilgi adıyla söylendi");
+  await shot("05-aydinlatma");
+  const api = (await adminApi.get("/api/workspace/whatsapp/aydinlatma-metni")).data.data;
+  await page.click(`${modal} [data-wa-notice="copy"]`);
+  await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast, [role=status]")].some(node => /panoya kopyalandı/.test(node.textContent)));
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  ok(copied === api.text, `panodaki metin API metniyle aynı (${copied.length} karakter)`);
+  const [download] = await Promise.all([page.waitForEvent("download"), page.click(`${modal} [data-wa-notice="pdf"]`)]);
+  const file = path.join(root, "aydinlatma.pdf");
+  await download.saveAs(file);
+  ok(readFileSync(file).subarray(0, 5).toString("latin1") === "%PDF-", "inen dosya PDF");
+  // Dosya adı yanıt başlığından okunur: bu Chromium (Playwright) Türkçe karakterli filename* adında suggestedFilename olarak "download" verir
+  // (ASCII adlarda doğru; programın ortak contentDisposition'ı — 2.4.8 g6 gözlemi, scratchpad g6-248 cd.mjs).
+  const disposition = await page.evaluate(async url => (await fetch(url)).headers.get("content-disposition"), download.url());
+  ok(/KVKK Aydınlatma Metni \(WhatsApp\) Mavi Muhasebe Ltd\. Şti\.\.pdf/.test(decodeURIComponent(disposition || "")), `dosya adı (başlık): ${decodeURIComponent(disposition || "")}`);
+  ok(/[?&]hofCompany=/.test(download.url()), `PDF isteği şirket parametreli: ${download.url().replace(server.base, "")}`);
+  ok((await text(`${modal} [data-wa-notice="pdf"]`)) === "Aydınlatma Metni - PDF", "düğme adı Aydınlatma Metni - PDF");
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"));
+  ok((await page.locator(MODAL).count()) === 0, "Esc ile kapandı, soru sorulmadı");
 });
 
 ok(!apiBodies.some(body => body.includes(TOKEN) || body.includes(TOKEN.slice(-12))), `API yanıtlarında belirteç yok (${apiBodies.length} yanıt)`);
