@@ -1492,6 +1492,18 @@ export const MIGRATIONS = [
       addColumn(store, "accounts", "wa_opt_out", "INTEGER NOT NULL DEFAULT 0");
     },
   },
+  {
+    version: 41,
+    name: "v2.4.8 WhatsApp: iletinin dondurulmuş içeriği (para dışı)",
+    up(store) {
+      // 2.4.8 T2-6 (bağımsız gözden geçirme r3; plan §7a 1 "metin = PDF", §7a 14–15 "yeniden denemede aynı medya"): iş İLK HAZIRLANDIĞINDA değişkenler (params_json)
+      // ve ekstre PDF'i tek anlık görüntüden üretilip dondurulur; her yeniden deneme aynı metni ve aynı PDF'i kullanır, Meta'daki kopya silinmiş / süresi
+      // dolmuşsa aynı baytlardan yeniden yüklenir. prepared_at: dondurma anı. pdf_blob: PDF'in kendisi — YALNIZ iş açıkken (Bekliyor / Sınırda / Duraklatıldı …)
+      // tutulur; iş Meta'ya kabul edilince ya da kesinleşince bakım turu siler (plan §5: iletinin içeriği saklanmaz; yalnız değişkenler + PDF adı kalır).
+      addColumn(store, "wa_jobs", "prepared_at", "TEXT");
+      addColumn(store, "wa_jobs", "pdf_blob", "BLOB");
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";

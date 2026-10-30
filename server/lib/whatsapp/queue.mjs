@@ -789,31 +789,44 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return { did: true, sent: true };
   }
 
-  // Değişkenler ve PDF AYNI cari okumasından (metin = PDF; §7a 1). Medya geçerliyse (30 gün, silinmemiş) aynısı yeniden kullanılır (§7a 14–15).
+  // T2-6 (bağımsız gözden geçirme r3): değişkenler ve PDF İLK HAZIRLIKTA AYNI cari okumasından üretilir ve DONDURULUR (prepared_at, params_json, pdf_name,
+  // pdf_blob — göç v41); her yeniden deneme (131056, geçici hata, Bağlantı Bekleniyor, 131049, Duraklat → Devam Et) aynı metni ve aynı PDF'i gönderir (metin = PDF,
+  // §7a 1; aynı medya, §7a 14–15). Meta'daki kopya geçerliyse (29 gün, silinmemiş) aynısı, değilse dondurulmuş baytlar yeniden yüklenir. Uygunluk (İstemiyor, pasif,
+  // silinmiş, telefon; hatırlatmada gecikmiş borç) her denemede GÜNCEL okunur (§7a 2): içerik donar, gönderilip gönderilmeyeceği donmaz.
   async function prepare(batch, job, graph, record, account, user) {
-    const office = cleanParam(store.setting("office.name", "") || "");
-    const name = cleanParam(account.name);
-    let params;
+    if (batch.kind !== "statement" && !overdueOf(account, today())) return { skip: "Gecikmiş Borç Yok" };
+    let params = job.prepared_at ? parse(job.params_json, null) : null;
+    let pdf = job.prepared_at && job.pdf_blob ? Buffer.from(job.pdf_blob) : null;
+    let filename = job.pdf_name || "";
+    const frozen = Array.isArray(params) && params.length > 0 && (batch.kind !== "statement" || Boolean(pdf?.length && filename));
+    if (!frozen) {
+      const office = cleanParam(store.setting("office.name", "") || "");
+      const name = cleanParam(account.name);
+      if (batch.kind === "statement") {
+        const range = { from: batch.period_from, to: batch.period_to };
+        const data = statementData(account, range);
+        params = [name, office, periodText(range, account.ledger || []), balanceText(data.closing)];
+        // eslint-disable-next-line no-control-regex
+        filename = statementFileName(data, today()).replace(/[\\/:*?"<>|\u0000-\u001f]+/g, " ");
+        pdf = Buffer.from(statementPdf(data, { today: today(), now: now(), userName: user.display_name || user.username || "", header: header() }));
+      } else {
+        const overdue = overdueOf(account, today());
+        params = [name, office, dayText(overdue.dueDate), moneyText(overdue.amount), balanceText(account.totals.balance)];
+        filename = "";
+        pdf = null;
+      }
+      // Yeni anlık görüntü: önceki bir denemenin Meta'daki kopyası (varsa) bu içeriğe ait sayılmaz → yeniden yüklenir.
+      updateJob(job.id, { prepared_at: iso(), params_json: JSON.stringify(params), pdf_name: filename, pdf_blob: pdf, ...(job.media_id ? { media_id: null, media_at: null } : {}) });
+      job = jobRow(job.id);
+    }
     let document = null;
     if (batch.kind === "statement") {
-      const range = { from: batch.period_from, to: batch.period_to };
-      const data = statementData(account, range);
-      params = [name, office, periodText(range, account.ledger || []), balanceText(data.closing)];
-      // eslint-disable-next-line no-control-regex
-      const filename = statementFileName(data, today()).replace(/[\\/:*?"<>|\u0000-\u001f]+/g, " ");
       let mediaId = job.media_id;
       if (!mediaId || !job.media_at || nowMs() - Date.parse(job.media_at) > MEDIA_REUSE_MS || job.media_deleted_at) {
-        const pdf = statementPdf(data, { today: today(), now: now(), userName: user.display_name || user.username || "", header: header() });
         mediaId = await graph.uploadMedia(record.phoneNumberId, { data: pdf, filename, mime: "application/pdf" });
         updateJob(job.id, { media_id: mediaId, media_at: iso(), media_deleted_at: null, media_delete_tries: 0 });
       }
       document = { id: mediaId, filename };
-      updateJob(job.id, { params_json: JSON.stringify(params), pdf_name: filename });
-    } else {
-      const overdue = overdueOf(account, today());
-      if (!overdue) return { skip: "Gecikmiş Borç Yok" };
-      params = [name, office, dayText(overdue.dueDate), moneyText(overdue.amount), balanceText(account.totals.balance)];
-      updateJob(job.id, { params_json: JSON.stringify(params) });
     }
     const components = [];
     if (document) components.push({ type: "header", parameters: [{ type: "document", document }] });
@@ -1045,6 +1058,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         }
       }
     }
+    // T2-6 + plan §5: dondurulmuş PDF (pdf_blob) yalnız iş açıkken (yeniden denenebilirken) tutulur; kabul edilen / kesinleşen işte silinir (değişkenler ve PDF adı kalır).
+    store.run(`UPDATE wa_jobs SET pdf_blob = NULL WHERE pdf_blob IS NOT NULL AND state NOT IN (${OPEN_JOB.map(() => "?").join(",")})`, ...OPEN_JOB);
     // Kabul yazımı düşmüş (disk dolu) ve 5 dakikadır "Gönderiliyor"da kalan iş (tek işçi; istek 15 sn'de biter): açılıştaki kuralla defterden çözülür.
     const stuck = store.all("SELECT * FROM wa_jobs WHERE state = 'sending' AND sending_at < ?", iso(nowMs() - 5 * 60_000));
     if (stuck.length) out.repaired = settleSending(stuck);
