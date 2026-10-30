@@ -86,11 +86,13 @@ describe("2.4.8 — kapıcı 'kapi-lisans' dönerken program kaydı her turda yi
       // Deneme bitti: masaüstünde lisans sorgusu belirteci yeniler (durum süresi dolmuş deneme).
       const t0 = BITIS + 1000;
       c.clock.set(t0);
-      await c.server.app.license.check();
+      // 2.4.8 L1 kâhin F1: lisans durumu değişince (deneme bitti) program kapıcıya hemen kaydolur — o kayıt da pencereyi açar; tur yinelemez.
       const once = c.kayitSayisi();
+      await c.server.app.license.check();
+      await c.sync.idle();
       const ilk = await c.sync.tick();
       assert.equal(ilk?.code, "kapi-lisans", `ön koşul: kapıcı kaydı lisans nedeniyle reddeder: ${JSON.stringify(ilk)}`);
-      assert.equal(c.kayitSayisi() - once, 1, "ilk tur kapıcıya bir kayıt gönderir");
+      assert.equal(c.kayitSayisi() - once, 1, "bitişte kapıcıya bir kayıt gider (lisans değişikliği ya da ilk tur)");
 
       // 1 saatlik pencere: 30 sn'lik turlar (119 tur) kapıcıya gitmez, son ret yanıtı döner.
       const kodlar = new Set();
@@ -113,6 +115,7 @@ describe("2.4.8 — kapıcı 'kapi-lisans' dönerken program kaydı her turda yi
 
       // Belirteç değişti (lisans sorgusu yeni belirteç verdi): hemen kayıt.
       await c.server.app.license.check();
+      await c.sync.idle();
       await c.sync.tick();
       assert.equal(c.kayitSayisi() - once, 3, "belirteç değişince pencere beklenmez");
       c.clock.set(t0 + 91 * DK);
@@ -137,8 +140,9 @@ describe("2.4.8 — kapıcı 'kapi-lisans' dönerken program kaydı her turda yi
       const t0 = BITIS - 5 * 86_400_000;
       c.clock.set(t0);
       c.ag.kesik = true;
-      await c.server.app.license.check();
       const bas = c.ag.denemeler.length;
+      await c.server.app.license.check();
+      await c.sync.idle(); // F1: lisans değişikliği kaydı (zorla) da sayılır ve beklemeyi başlatır
       for (let t = t0; t < t0 + 60 * DK; t += TUR) {
         c.clock.set(t);
         await c.sync.tick();
@@ -165,6 +169,7 @@ describe("2.4.8 — kapıcı 'kapi-lisans' dönerken program kaydı her turda yi
       c.ag.kesik = true;
       c.clock.set(t0 + 61 * DK);
       await c.server.app.license.check(); // yeni belirteç (yeni saat) → kayıt gerekir
+      await c.sync.idle();
       await c.sync.tick();
       c.clock.set(t0 + 61 * DK + 30_000);
       await c.sync.tick();
