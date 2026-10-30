@@ -33,7 +33,7 @@ describe("2.4.8 W6 — Aydınlatma Metni Hazırla", () => {
     assert.match(notice.text, /\[Firma adresi\]/);
     assert.match(notice.text, /\[Firma e-posta adresi\]/);
     assert.doesNotMatch(notice.text, /undefined|null|NaN/);
-    assert.equal(notice.draft, true, "BAŞ MİMAR TASLAĞI işaretli");
+    assert.equal(notice.draft, false, "ürün sahibince onaylı metin (30.10.2026)");
     assert.ok(notice.version, "metin sürümü var");
   });
 

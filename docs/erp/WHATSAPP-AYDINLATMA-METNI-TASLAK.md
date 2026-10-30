@@ -1,6 +1,6 @@
-# WhatsApp Aydınlatma Metni — BAŞ MİMAR TASLAĞI (sürüm 2.4.8-taslak-1, 30.10.2026)
+# WhatsApp Aydınlatma Metni — ONAYLANDI (sürüm 2.4.8-1, 30.10.2026)
 
-> Programdaki "Aydınlatma Metni Hazırla" bu metni firma bilgileriyle (Fatura Ayarları → Firma Bilgisi) doldurur; köşeli parantezler eksik bilgidir. SON ONAY ÜRÜN SAHİBİNDE. Hukuki görüş değildir; md. 9 yurt dışı aktarım dayanağı (uygun güvence / standart sözleşme / istisna) hukukçuyla belirlenmeli. Bölüm 5'teki durum bilgisi paragrafı S1 A'ya, bölüm 6'daki PDF silme cümlesi S3 A'ya dayanır.
+> Ürün sahibi kararı (30.10.2026: "aydınlatma metnini en yaygın kullanımla yap"). Programdaki "Aydınlatma Metni Hazırla" bu metni firma bilgileriyle (Fatura Ayarları → Firma Bilgisi) doldurur; köşeli parantezler eksik bilgidir. md. 9 cümlesi 7499 sayılı Kanun sonrası yaygın genel ifadedir (yeterlilik kararı / uygun güvenceler / arızi aktarım). Hukuki görüş değildir (ekranda da söylenir). Kılavuza not (W8): standart sözleşmeye dayanan firma, KVKK gereği sözleşmeyi imzadan sonra 5 iş günü içinde Kurul'a bildirir.
 
 ```text
 
@@ -27,7 +27,7 @@ Kişisel verileriniz, aramızdaki ticari ilişki kapsamında sizin tarafınızda
 Bu veriler KVKK'nın 5. maddesinin ikinci fıkrasının (c) bendi (bir sözleşmenin kurulması veya ifasıyla doğrudan doğruya ilgili olması kaydıyla, sözleşmenin taraflarına ait kişisel verilerin işlenmesinin gerekli olması) ve (f) bendi (ilgili kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla, veri sorumlusunun meşru menfaatleri için veri işlenmesinin zorunlu olması) hukuki sebeplerine dayanılarak işlenir.
 
 5. Kişisel Verilerin Aktarılması
-İletiler, Meta Platforms, Inc. ve bağlı şirketlerinin sunduğu WhatsApp Business Platformu (Cloud API) üzerinden gönderilir. Bu nedenle adınız, telefon numaranız, iletideki bakiye ve vade bilgileri ile ekstre PDF dosyası, iletinin size ulaştırılması amacıyla bu hizmet sağlayıcısının yurt dışındaki sunucularına aktarılır. Bu aktarım, KVKK'nın 9. maddesinde yurt dışına aktarım için öngörülen şartlar çerçevesinde gerçekleştirilir.
+İletiler, Meta Platforms, Inc. ve bağlı şirketlerinin sunduğu WhatsApp Business Platformu (Cloud API) üzerinden gönderilir. Bu nedenle adınız, telefon numaranız, iletideki bakiye ve vade bilgileri ile ekstre PDF dosyası, iletinin size ulaştırılması amacıyla bu hizmet sağlayıcısının yurt dışındaki sunucularına aktarılır. Bu aktarım, KVKK'nın 9. maddesinde öngörülen yeterlilik kararı, uygun güvenceler (standart sözleşme dahil) ya da arızi aktarım şartlarından ilgili olanına dayanılarak gerçekleştirilir.
 İletilerin size ulaşıp ulaşmadığına ilişkin durum bilgisi (telefon numaranız, iletinin durumu ve varsa hata nedeni), Şirketimizin kullandığı DestekOfis programının sağlayıcısının bağlantı hizmeti (Cloudflare, Inc. altyapısı) üzerinden saklanmadan Şirketimizin programına iletilir; program sağlayıcısı bu işlemde veri işleyen sıfatıyla hareket eder.
 Kişisel verileriniz ayrıca, talep hâlinde ve mevzuatın gerektirdiği ölçüde yetkili kamu kurum ve kuruluşlarına aktarılabilir.
 

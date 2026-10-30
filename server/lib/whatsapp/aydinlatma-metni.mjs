@@ -4,14 +4,15 @@
 // Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ md. 5). Firma bilgileri şirketin kendi ayarından: Fatura Ayarları →
 // Firma Bilgisi (invoice.settings seller; unvan yoksa office.name). Eksik bilgi köşeli ayraçlı yer tutucuyla yazılır ve ekranda adıyla söylenir.
 //
-// BAŞ MİMAR TASLAĞI (sürüm NOTICE_VERSION): metin hukuki görüş değildir; son onay ürün sahibinde (hukukçu gözüyle). Metin değişirse NOTICE_VERSION değişir
+// Metin (sürüm NOTICE_VERSION) ürün sahibince onaylandı (30.10.2026: "aydınlatma metnini en yaygın kullanımla yap"; md. 9 cümlesi 7499 sayılı Kanun sonrası
+// yaygın genel ifade: yeterlilik kararı / uygun güvenceler / arızi aktarım). Hukuki görüş değildir (ekranda da söylenir). Metin değişirse NOTICE_VERSION değişir
 // (W4'teki bir kez onay hangi sürümün okunduğunu kaydeder). İçerik plan §5'e dayanır: veri sorumlusu müşteri; Meta'ya (yurt dışı) aktarım — md. 9; durum
 // bilgisi DestekOfis'in bağlantı hizmetinden saklanmadan geçer (veri işleyen); PDF Meta'da en çok 30 gün, kesinleşince silinmesi istenir (§11 S3).
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { A4, PdfDocument, loadFont } from "../pdf-write.mjs";
 
-export const NOTICE_VERSION = "2.4.8-taslak-1";
+export const NOTICE_VERSION = "2.4.8-1";
 export const NOTICE_TITLE = "WhatsApp ile Gönderilen Bilgilendirme İletileri Hakkında Aydınlatma Metni";
 const INVOICE_SETTINGS_KEY = "invoice.settings";
 
@@ -110,7 +111,7 @@ export function buildPrivacyNotice(store, { now = new Date() } = {}) {
     {
       heading: "5. Kişisel Verilerin Aktarılması",
       paragraphs: [
-        "İletiler, Meta Platforms, Inc. ve bağlı şirketlerinin sunduğu WhatsApp Business Platformu (Cloud API) üzerinden gönderilir. Bu nedenle adınız, telefon numaranız, iletideki bakiye ve vade bilgileri ile ekstre PDF dosyası, iletinin size ulaştırılması amacıyla bu hizmet sağlayıcısının yurt dışındaki sunucularına aktarılır. Bu aktarım, KVKK'nın 9. maddesinde yurt dışına aktarım için öngörülen şartlar çerçevesinde gerçekleştirilir.",
+        "İletiler, Meta Platforms, Inc. ve bağlı şirketlerinin sunduğu WhatsApp Business Platformu (Cloud API) üzerinden gönderilir. Bu nedenle adınız, telefon numaranız, iletideki bakiye ve vade bilgileri ile ekstre PDF dosyası, iletinin size ulaştırılması amacıyla bu hizmet sağlayıcısının yurt dışındaki sunucularına aktarılır. Bu aktarım, KVKK'nın 9. maddesinde öngörülen yeterlilik kararı, uygun güvenceler (standart sözleşme dahil) ya da arızi aktarım şartlarından ilgili olanına dayanılarak gerçekleştirilir.",
         "İletilerin size ulaşıp ulaşmadığına ilişkin durum bilgisi (telefon numaranız, iletinin durumu ve varsa hata nedeni), Şirketimizin kullandığı DestekOfis programının sağlayıcısının bağlantı hizmeti (Cloudflare, Inc. altyapısı) üzerinden saklanmadan Şirketimizin programına iletilir; program sağlayıcısı bu işlemde veri işleyen sıfatıyla hareket eder.",
         "Kişisel verileriniz ayrıca, talep hâlinde ve mevzuatın gerektirdiği ölçüde yetkili kamu kurum ve kuruluşlarına aktarılabilir.",
       ],
@@ -162,7 +163,7 @@ export function buildPrivacyNotice(store, { now = new Date() } = {}) {
     lines.push("");
   }
   lines.push(closing);
-  return { version: NOTICE_VERSION, draft: true, title: NOTICE_TITLE, firm, missing, sections, closing, date, text: lines.join("\n"), pdfName: noticePdfName(firm) };
+  return { version: NOTICE_VERSION, draft: false, title: NOTICE_TITLE, firm, missing, sections, closing, date, text: lines.join("\n"), pdfName: noticePdfName(firm) };
 }
 
 /** PDF dosya adı (sunucu Content-Disposition'ı ve istemcinin download özniteliği aynı adı kullanır). */
