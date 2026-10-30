@@ -34,7 +34,7 @@ async function api(path,body){
 }
 const path=(p)=>p+(p.includes('?')?'&':'?')+'company='+encodeURIComponent(state.company);
 function setAuth(auth){state.user=auth.user;state.companies=auth.companies||[];state.company=state.companies.some(c=>c.id===state.company)?state.company:(auth.company||state.companies[0]?.id||'');$('login').classList.add('hidden');$('app').classList.remove('hidden');$('company').innerHTML=state.companies.map(c=>`<option value="${safe(c.id)}">${safe(c.name||c.code||c.id)}</option>`).join('');$('company').value=state.company;const name=field(state.user,'name','username')||'Kullanıcı';$('side-username').textContent=name;$('side-avatar').textContent=String(name).slice(0,1).toLocaleUpperCase('tr-TR');$('side-role').textContent=field(state.user,'roleLabel')||'Kullanıcı'}
-function loggedOut(){ozet.leave();showPanel('login-form');state.user=null;state.requestGeneration++;state.selected=null;state.list=[];state.stock=[];state.reportCatalog=[];state.reportSelected=null;state.reportResult=null;state.reportChosenAccount=null;$('content').innerHTML='';$('app').classList.add('hidden');$('login').classList.remove('hidden')}
+function loggedOut(){hakNotu('');ozet.leave();showPanel('login-form');state.user=null;state.requestGeneration++;state.selected=null;state.list=[];state.stock=[];state.reportCatalog=[];state.reportSelected=null;state.reportResult=null;state.reportChosenAccount=null;$('content').innerHTML='';$('app').classList.add('hidden');$('login').classList.remove('hidden')}
 function heading(title,desc,actions=''){return `<div class="section-heading"><div><span class="eyebrow">DESTEKOFİS MOBİL</span><h1>${safe(title)}</h1><p>${safe(desc)}</p></div>${actions}</div>`}
 function blank(msg){return `<div class="card empty"><span class="empty-icon">◎</span>${safe(msg)}</div>`}
 function err(e){if(e instanceof SessionEnded)return;$('content').innerHTML=`<div class="error-box">${safe(e.message)}</div>`;toast(e.message,true)}
@@ -210,7 +210,9 @@ async function downloadReport(format){
 async function downloadAccountStatement(id){
   try{await reportDownloadFetch(path(`/accounts/${encodeURIComponent(id)}/statement.pdf`),'pdf','Cari-Ekstre')}catch(e){toast(e.message,true)}
 }
-async function startSession(){const auth=await api('/session');setAuth(auth);state.writesEnabled=auth.writesEnabled===true;state.writes=auth.writes||{};setPage('home')}
+// 2.4.8 L1: mobil kullanım hakkının uyarısı her girişte (bitişe 7 gün kala "Lisansınız N gün sonra bitiyor." / hoşgörüde "Lisansınız bitti; mobil kullanım hakkınız N gün sonra sona erecek.").
+function hakNotu(ileti){const el=$('license-banner');if(!el)return;el.textContent=ileti||'';el.classList.toggle('hidden',!ileti)}
+async function startSession(){const auth=await api('/session');setAuth(auth);hakNotu(auth.mobilHak?.ileti||'');state.writesEnabled=auth.writesEnabled===true;state.writes=auth.writes||{};setPage('home')}
 // ---------- 2.4.7 M2: cihaz anahtarı, eşleme ve imzalı giriş ----------
 const KEY_DB='destekofis-mobil',KEY_STORE='cihaz';
 function keyDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open(KEY_DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(KEY_STORE);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
@@ -259,7 +261,7 @@ document.addEventListener('click',async e=>{const reportPick=e.target.closest('[
 $('content').addEventListener('input',e=>{if(e.target.id==='list-search')listSearch(e.target.value,e.target.selectionStart)});
 $('content').addEventListener('submit',e=>{if(e.target.id==='report-filter-form'){e.preventDefault();submitReportFilters(e.target)}});
 // Karekoddan açılış: #eslesme=<kod> (kod sunucuya adres satırıyla gitmez); adres çubuğundan hemen silinir.
-ozet.bagla({keyOp,b64url,secure,setAuth,serverState,loggedOut,showUnpaired,setPage,state,SessionEnded}); // 2.4.7 M3
+ozet.bagla({keyOp,b64url,secure,setAuth,serverState,loggedOut,showUnpaired,setPage,state,SessionEnded,hakNotu}); // 2.4.7 M3 (2.4.8 L1: hakNotu)
 // 2.4.7 gezinti D9: sayfa açılırken lisans kapısı (programın remote-license'ı ya da kapıcının kapi-lisans / kapi-lisans-dogrulanamadi yanıtı) giriş ekranında
 // gerekçesiyle yazılır — önceden ileti yutuluyor, boş giriş ekranı geliyordu (açık oturumda ↻ iletiyi zaten gösteriyordu).
 const LICENSE_CODES=new Set(['remote-license','kapi-lisans','kapi-lisans-dogrulanamadi']);

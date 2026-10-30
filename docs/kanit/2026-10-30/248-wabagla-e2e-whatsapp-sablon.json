@@ -1,0 +1,38 @@
+{
+  "ad": "248-wabagla-e2e-whatsapp-sablon",
+  "komut": "npm run test:senaryo-whatsapp-sablon-248",
+  "commit": "c4e8aa2df839ea0bf4beb19950bbe54cc5eec46e",
+  "dal": "is/wa-bagla-248",
+  "kirli": 6,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T21:22:39.896Z",
+  "sure_sn": 22,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 41,
+    "gecen": 40,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "adım yarıda kaldı: page.waitForEvent: Timeout 15000ms exceeded while waiting for event \"download\"",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-wabagla-e2e-whatsapp-sablon.log",
+  "klasor": "/home/user/wt-wabagla-248",
+  "ham_cikti_sha256": "e20eec1a3241258b1182995a91c0196a7b0aa7a7dc38fb729827ad56a084a0f0",
+  "ham_cikti_bayt": 2444
+}

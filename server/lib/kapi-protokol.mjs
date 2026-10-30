@@ -176,6 +176,101 @@ export async function lisansDogrula(zarf, guvenilen) {
 // Lisans iddialarının t anındaki geçerliliği (kâhin K14: engel ve bitiş anı; bitiş anı geçersizdir).
 export const lisansGecerli = (iddia, t) => Boolean(iddia && iddia.status === "active" && (iddia.expiresAt === null || t < iddia.expiresAt));
 
+// ---------- 2.4.8 W7: "WhatsApp'ı Bağla" belirtecinin kapıcıdan programa taşınması ----------
+// Kapıcı Meta'nın Embedded Signup kodunu belirteçle değiştirir ve belirteci programın oturum başında verdiği GEÇİCİ açık anahtarla (ECDH P-256) şifreler:
+// ECDH-ES (kapıcının tek kullanımlık anahtarı) → HKDF-SHA-256 (tuz = bağlam) → AES-256-GCM (ek veri = bağlam). Kapıcı belirteci düz saklamaz; gizli anahtar
+// yalnız programın belleğinde. Bağlam "wa|<ofis>|<oturum>": şifreli belirteç başka ofise / oturuma taşınamaz.
+export const waBaglam = (ofis, oturum) => `wa|${ofis}|${oturum}`;
+const WA_BILGI = "DestekOfis-wa-belirtec-v1";
+async function waAnahtari(ortakBitler, baglam, kullanim) {
+  const hk = await subtle().importKey("raw", ortakBitler, "HKDF", false, ["deriveKey"]);
+  return subtle().deriveKey({ name: "HKDF", hash: "SHA-256", salt: utf8(baglam), info: utf8(WA_BILGI) }, hk, { name: "AES-GCM", length: 256 }, false, [kullanim]);
+}
+export async function waSifrele(aliciJwk, duzMetin, baglam) {
+  const temiz = acikAnahtar(aliciJwk);
+  if (!temiz) throw new Error("alıcı anahtarı geçersiz");
+  const alici = await subtle().importKey("jwk", temiz, { name: "ECDH", namedCurve: "P-256" }, false, []);
+  const gecici = await subtle().generateKey({ name: "ECDH", namedCurve: "P-256" }, true, ["deriveBits"]);
+  const anahtar = await waAnahtari(await subtle().deriveBits({ name: "ECDH", public: alici }, gecici.privateKey, 256), baglam, "encrypt");
+  const iv = globalThis.crypto.getRandomValues(new Uint8Array(12));
+  const ct = await subtle().encrypt({ name: "AES-GCM", iv, additionalData: utf8(baglam) }, anahtar, utf8(duzMetin));
+  const epk = await subtle().exportKey("jwk", gecici.publicKey);
+  return { v: 1, epk: { kty: "EC", crv: "P-256", x: epk.x, y: epk.y }, iv: b64url(iv), ct: b64url(ct) };
+}
+/** gizliAnahtar: programın oturum anahtarının gizli kısmı (CryptoKey, ECDH, deriveBits). Bağlam tutmazsa / zarf bozuksa hata atar. */
+export async function waCoz(gizliAnahtar, zarf, baglam) {
+  const epk = acikAnahtar(zarf?.epk);
+  if (!epk || zarf.v !== 1) throw new Error("şifreli belirteç okunamadı");
+  const gonderen = await subtle().importKey("jwk", epk, { name: "ECDH", namedCurve: "P-256" }, false, []);
+  const anahtar = await waAnahtari(await subtle().deriveBits({ name: "ECDH", public: gonderen }, gizliAnahtar, 256), baglam, "decrypt");
+  return metin(await subtle().decrypt({ name: "AES-GCM", iv: b64urlCoz(zarf.iv), additionalData: utf8(baglam) }, anahtar, b64urlCoz(zarf.ct)));
+}
+
+// ---------- 2.4.8 L1: MOBİL KULLANIM HAKKI (ürün sahibi kararı "KARAR L1", 30.10.2026; docs/2.4.8-IS-LISTESI.md) ----------
+// TEK KURAL: program (lib/license.mjs mobileRightOf → uzak dinleyici, tünel, Yönetim → Mobil Cihazlar, telefon), kapıcı (canlı kapı, son özet, tünel başvurusu,
+// kayıt) ve kapıcının zamanlanmış temizliği (bulut/kapi/temizlik.mjs) bu işlevleri çağırır.
+//   * Deneme (kind "trial") biter → mobil HEMEN kapanır.
+//   * Ücretli lisans (kind "license", status "active") biter → mobil 30 GÜN salt okunur sürer (canlı + son özet; yazma programın salt okunur kuralıyla
+//     kapalı, yeni cihaz eşlenmez); bitişten 30 gün sonra (30. günün sonunda) kapanır.
+//   * Engellenen lisans (status "blocked") → mobil hemen kapanır.
+//   * Kapıcıdaki mobil kayıt (ofis kaydı, eşli cihazlar, R2 özeti, tünel, DNS): deneme ve ücretli lisansta bitişten 30 gün sonra, engellenende engelin
+//     kapıcıca İLK görüldüğü andan 30 gün sonra kendiliğinden silinir (mobilSilmeAni). Silinmiş kayıt geri gelmez: lisans sonradan alınırsa telefon
+//     karekodla yeniden eşlenir.
+export const GUN_MS = 86_400_000;
+export const MOBIL_HAK = Object.freeze({ hosgoruMs: 30 * GUN_MS, silmeMs: 30 * GUN_MS, uyariGun: 7 });
+
+/**
+ * t anındaki mobil kullanım hakkı. iddia: { kind: "trial"|"license", status: "active"|"blocked", expiresAt: ms|null } (lisansDogrula biçimi).
+ * Dönüş { durum, acik, tur, kalanGun, sonMs, uyari }: durum "gecerli" (lisans sürüyor) | "hosgoru" (ücretli lisans bitti, 30 gün salt okunur) | "deneme-bitti" |
+ * "bitti" (hoşgörü de bitti) | "engelli" | "yok". kalanGun: gecerli'de bitişe, hosgoru'da hakkın sonuna kalan gün (yukarı yuvarlanır; son gün 1).
+ */
+export function mobilHakki(iddia, t) {
+  if (!iddia) return { durum: "yok", acik: false, tur: null, kalanGun: null, sonMs: null, uyari: false };
+  const tur = iddia.kind === "trial" ? "trial" : "license";
+  if (iddia.status === "blocked") return { durum: "engelli", acik: false, tur, kalanGun: null, sonMs: null, uyari: false };
+  const bitis = Number.isFinite(iddia.expiresAt) ? iddia.expiresAt : null;
+  if (bitis === null || t < bitis) {
+    const kalanGun = bitis === null ? null : Math.max(1, Math.ceil((bitis - t) / GUN_MS));
+    return { durum: "gecerli", acik: true, tur, kalanGun, sonMs: bitis, uyari: kalanGun !== null && kalanGun <= MOBIL_HAK.uyariGun };
+  }
+  if (tur === "license" && t < bitis + MOBIL_HAK.hosgoruMs) {
+    const sonMs = bitis + MOBIL_HAK.hosgoruMs;
+    return { durum: "hosgoru", acik: true, tur, kalanGun: Math.max(1, Math.ceil((sonMs - t) / GUN_MS)), sonMs, uyari: true };
+  }
+  return { durum: tur === "trial" ? "deneme-bitti" : "bitti", acik: false, tur, kalanGun: null, sonMs: null, uyari: true };
+}
+
+/** Kullanıcıya görünen ileti (cümle düzeni; telefon, Yönetim → Mobil Cihazlar ve ret yanıtları aynı metni kullanır). Uyarı yoksa "". */
+export function mobilHakIletisi(hak) {
+  switch (hak?.durum) {
+    case "gecerli":
+      if (!hak.uyari) return "";
+      return hak.tur === "trial" ? `Deneme süreniz ${hak.kalanGun} gün sonra bitiyor.` : `Lisansınız ${hak.kalanGun} gün sonra bitiyor.`;
+    case "hosgoru":
+      return `Lisansınız bitti; mobil kullanım hakkınız ${hak.kalanGun} gün sonra sona erecek.`;
+    case "bitti":
+      return "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin.";
+    case "deneme-bitti":
+      return "Deneme süreniz bitti; mobil kullanım kapalı. Lisans alınca yeniden açılır.";
+    case "engelli":
+      return "Lisansınız engellendi; mobil kullanım kapalı.";
+    default:
+      return "";
+  }
+}
+
+/**
+ * Kapıcıdaki mobil kaydın silinme anı (ms) ya da null (silinmez / henüz bilinmiyor). engelMs: kapıcının engeli İLK gördüğü an (engelli lisansta; yoksa null →
+ * önce kaydedilir). Bitişi olan lisansta bitiş + 30 gün; engelde engel + 30 gün; ikisi de varsa erken olanı. Silme yalnız hak KAPALIYKEN yapılır (temizlik.mjs).
+ */
+export function mobilSilmeAni(iddia, { engelMs = null } = {}) {
+  if (!iddia) return null;
+  const adaylar = [];
+  if (Number.isFinite(iddia.expiresAt)) adaylar.push(iddia.expiresAt + MOBIL_HAK.silmeMs);
+  if (iddia.status === "blocked" && Number.isFinite(engelMs)) adaylar.push(engelMs + MOBIL_HAK.silmeMs);
+  return adaylar.length ? Math.min(...adaylar) : null;
+}
+
 /**
  * Uzak isteğin yolu (M2 lib/mobile-remote.mjs ile TEK kaynak; kapıcı da aynı kuralla süzer): yalnız /mobil/ ve /api/mobil/ önekleri; "." / ".." bölümü
  * (kodlanmışı dahil), ters bölü, çift bölü, denetim karakteri ve ikinci kat kodlama reddedilir. Dönüş: null (izinli) ya da neden.

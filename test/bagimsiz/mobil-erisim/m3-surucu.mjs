@@ -36,7 +36,9 @@ const BOLUM = { "/cash": "kasa", "/accounts": "cari", "/stock": "stok", "/plans"
 const ALAN = "destekofis.test";
 
 /** Senaryo başına bir kapıcı. offices: sürücünün ofisleri (machine, record, server, companyIds). fetchFor: sürücünün sahte lisans servisi. */
-export async function m3Kur({ clock, offices, fetchFor, trustedKeys }) {
+export async function m3Kur({ clock, offices, fetchFor, trustedKeys, uyariOf = () => null, iletiOf = () => null }) {
+  const ctxUyari = r => uyariOf(r); // 2.4.8 L1: uyarı gözlemi (program-surucu.mjs'in kalıp taraması)
+  const ctxIleti = r => iletiOf(r); // 2.4.8 L1: tanı (karşılaştırılmaz)
   const kapi = await startKapi({
     now: () => clock.ms(),
     alan: ALAN,
@@ -59,12 +61,12 @@ export async function m3Kur({ clock, offices, fetchFor, trustedKeys }) {
     const entry = phones.get(e.cihaz) || phoneOf(e.cihaz, e.ofis);
     const phone = entry.phone;
     const r = await phone.readSummary({ method: e.olay === "ozet_yaz" ? "PUT" : "GET", now: clock.ms(), deviceId: phone.deviceId, headers: host(e.ofis) });
-    if (e.olay === "ozet_yaz" || r.status !== 200) return record(classify(r.status, r.code));
+    if (e.olay === "ozet_yaz" || r.status !== 200) return record(classify(r.status, r.code), e.olay === "ozet_oku" ? { uyari: ctxUyari(r), ileti: ctxIleti(r) } : {});
     const gorunur = {};
     for (const [companyId, bolumler] of Object.entries(r.veri?.sirketler || {})) {
       gorunur[codeOf(office, companyId)] = Object.keys(bolumler).map(k => BOLUM[k]).filter(Boolean).sort();
     }
-    return record("kabul", { gorunur, ozet_zamani: r.veri?.uretim ?? null });
+    return record("kabul", { gorunur, ozet_zamani: r.veri?.uretim ?? null, uyari: ctxUyari(r) });
   }
 
   return {

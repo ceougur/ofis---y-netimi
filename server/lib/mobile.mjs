@@ -148,6 +148,8 @@ export function transformMobile(kind, data) {
       companies,
       company: current?.id || "",
       ...mobileWriteRights(data?.permissions), // 2.4.7 M5: yazma hakları (ekran için; denetim programın ucunda)
+      // 2.4.8 L1: mobil kullanım hakkının uyarısı (bitişe 7 gün kala / hoşgörüde her girişte; lib/license.mjs mobileRightOf).
+      mobilHak: data?.license?.mobile ? { durum: String(data.license.mobile.durum || ""), kalanGun: data.license.mobile.kalanGun ?? null, ileti: String(data.license.mobile.ileti || "") } : null,
     };
   }
   if (kind === "reports") {

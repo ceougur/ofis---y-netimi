@@ -1,0 +1,50 @@
+TAP version 13
+# Subtest: 2.4.8 L1 kâhin F6 — özetteki lisans uyarısı yükleme anında donmaz; telefon okuma anının uyarısını alır
+    # Subtest: bitişe 3 gün kala yüklenen özet hoşgörüde okununca: başlıkta 'Lisansınız bitti; … sona erecek.', özetin içinde eski 'gün sonra bitiyor' metni yok
+    not ok 1 - bitişe 3 gün kala yüklenen özet hoşgörüde okununca: başlıkta 'Lisansınız bitti; … sona erecek.', özetin içinde eski 'gün sonra bitiyor' metni yok
+      ---
+      duration_ms: 677.318675
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-f-eski-fd33d747-n2q9/test/mobil-l1-kahin-f6-248.test.mjs:27:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        özetin içinde yükleme anında donmuş lisans uyarısı var (telefona eski metin gider): ["Lisansınız 3 gün sonra bitiyor."]
+        + actual - expected
+        
+        + [
+        +   'Lisansınız 3 gün sonra bitiyor.'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'Lisansınız 3 gün sonra bitiyor.'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-f-eski-fd33d747-n2q9/test/mobil-l1-kahin-f6-248.test.mjs:65:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.4.8 L1 kâhin F6 — özetteki lisans uyarısı yükleme anında donmaz; telefon okuma anının uyarısını alır
+  ---
+  duration_ms: 679.265013
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-f-eski-fd33d747-n2q9/test/mobil-l1-kahin-f6-248.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1078.609993

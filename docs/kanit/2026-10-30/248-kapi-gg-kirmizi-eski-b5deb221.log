@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: 2.4.8 GG — kapıcı temizliği: doğrulanamayanlar turu tıkamaz, tur bütçesi, zorunlu yenileme, servis zaman aşımı
+    # Subtest: ORTA-1: 45 doğrulanamayan ofis + 1 süresi geçmiş ofis → süresi geçen ilk turlarda silinir; doğrulanamayanlar 24 saatte bir sorulur
+    not ok 1 - ORTA-1: 45 doğrulanamayan ofis + 1 süresi geçmiş ofis → süresi geçen ilk turlarda silinir; doğrulanamayanlar 24 saatte bir sorulur
+      ---
+      duration_ms: 686.236359
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-gg-eski-b5deb221-h7p4/test/kapi-temizlik-gg-248.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: '45 doğrulanamayan ofis varken süresi geçmiş ofis 10 turda SİLİNMEDİ (tur tıkandı; doğrulanamayanlar her turun bütçesini tüketiyor)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-gg-eski-b5deb221-h7p4/test/kapi-temizlik-gg-248.test.mjs:142:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: D4: tur başına R2 + önbellek + lisans servisi + Cloudflare işlemi ≤ 45 (bağımsız sayaç); birkaç turda bütün süresi geçenler silinir, öbürleri kalır
+    not ok 2 - D4: tur başına R2 + önbellek + lisans servisi + Cloudflare işlemi ≤ 45 (bağımsız sayaç); birkaç turda bütün süresi geçenler silinir, öbürleri kalır
+      ---
+      duration_ms: 930.479043
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-gg-eski-b5deb221-h7p4/test/kapi-temizlik-gg-248.test.mjs:160:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tur işlemi 45'i aştı (R2 + önbellek + servis + Cloudflare): [217,189,185,123,94,94,94,94,94,94,94,94,94,94,94,94,94,94,94,94,94,94,94,94]
+        + actual - expected
+        
+        + [
+        +   217,
+        +   189,
+        +   185,
+        +   123,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94,
+        +   94
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 217
+        1: 189
+        2: 185
+        3: 123
+        4: 94
+        5: 94
+        6: 94
+        7: 94
+        8: 94
+        9: 94
+        10: 94
+        11: 94
+        12: 94
+        13: 94
+        14: 94
+        15: 94
+        16: 94
+        17: 94
+        18: 94
+        19: 94
+        20: 94
+        21: 94
+        22: 94
+        23: 94
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-gg-eski-b5deb221-h7p4/test/kapi-temizlik-gg-248.test.mjs:177:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D1: hoşgörünün son yarım saatinde lisans yenilendiyse (programın belirteci taze ama eski) silme kararından önce servise sorulur → SİLİNMEZ
+    not ok 3 - D1: hoşgörünün son yarım saatinde lisans yenilendiyse (programın belirteci taze ama eski) silme kararından önce servise sorulur → SİLİNMEZ
+      ---
+      duration_ms: 14.716916
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-gg-eski-b5deb221-h7p4/test/kapi-temizlik-gg-248.test.mjs:183:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        son yarım saatte yenilenen lisanslı ofis silindi (karar programın taze ama eski belirteciyle verildi): {"taranan":1,"denetlenen":1,"silinen":["ob4fdcjbmp6niv7sc"],"ertelenen":0,"hata":[],"imlec":null,"waOturum":0}
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-gg-eski-b5deb221-h7p4/test/kapi-temizlik-gg-248.test.mjs:194:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D5: yanıt vermeyen lisans servisi turu asmaz (zaman aşımı); ofis silinmez, doğrulanamadı olarak beklenir
+    not ok 4 - D5: yanıt vermeyen lisans servisi turu asmaz (zaman aşımı); ofis silinmez, doğrulanamadı olarak beklenir
+      ---
+      duration_ms: 3007.674344
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-gg-eski-b5deb221-h7p4/test/kapi-temizlik-gg-248.test.mjs:203:3'
+      failureType: 'testCodeFailure'
+      error: 'temizlik turu yanıt vermeyen lisans servisinde 3 sn içinde bitmedi (servis isteğinde zaman aşımı yok)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'ASILI'
+      actual: 'ASILI'
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-gg-eski-b5deb221-h7p4/test/kapi-temizlik-gg-248.test.mjs:211:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - 2.4.8 GG — kapıcı temizliği: doğrulanamayanlar turu tıkamaz, tur bütçesi, zorunlu yenileme, servis zaman aşımı
+  ---
+  duration_ms: 4640.703987
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-gg-eski-b5deb221-h7p4/test/kapi-temizlik-gg-248.test.mjs:127:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4747.724783

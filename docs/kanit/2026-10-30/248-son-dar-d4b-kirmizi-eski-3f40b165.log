@@ -1,0 +1,67 @@
+TAP version 13
+# Subtest: 2.4.8 son dar kontrol D4b — temizlikte bozuk ofis kaydı turu düşürmez
+    # Subtest: bozuk JSONlu kayıt + arkasında süresi geçmiş ofis: ofis silinir, bozuk kayıt durur ve raporda adıyla sayılır
+    not ok 1 - bozuk JSONlu kayıt + arkasında süresi geçmiş ofis: ofis silinir, bozuk kayıt durur ve raporda adıyla sayılır
+      ---
+      duration_ms: 38.518653
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-sondar-eski-3f40b165-r8t2/test/kapi-son-dar-d4b-248.test.mjs:78:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        bozuk kaydın arkasındaki süresi geçmiş ofis silinmedi (tur düştü: {"dustu":"Expected property name or '}' in JSON at position 1 (line 1 column 2)"})
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-sondar-eski-3f40b165-r8t2/test/kapi-son-dar-d4b-248.test.mjs:99:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: R2 okuma hatasılu kayıt + arkasında süresi geçmiş ofis: ofis silinir, bozuk kayıt durur ve raporda adıyla sayılır
+    not ok 2 - R2 okuma hatasılu kayıt + arkasında süresi geçmiş ofis: ofis silinir, bozuk kayıt durur ve raporda adıyla sayılır
+      ---
+      duration_ms: 15.496217
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-sondar-eski-3f40b165-r8t2/test/kapi-son-dar-d4b-248.test.mjs:78:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        bozuk kaydın arkasındaki süresi geçmiş ofis silinmedi (tur düştü: {"dustu":"R2 geçici hata (test)"})
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-sondar-eski-3f40b165-r8t2/test/kapi-son-dar-d4b-248.test.mjs:99:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 son dar kontrol D4b — temizlikte bozuk ofis kaydı turu düşürmez
+  ---
+  duration_ms: 55.342121
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-sondar-eski-3f40b165-r8t2/test/kapi-son-dar-d4b-248.test.mjs:76:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 161.209465

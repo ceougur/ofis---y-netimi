@@ -1,0 +1,53 @@
+{
+  "ad": "248-kapi-k1-eski-8ef48138",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/kapi-temizlik-yarisi-248.test.mjs test/kapi-gg247-b3-k1.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:29:22.157Z",
+  "sure_sn": 3.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 14,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis › kapıcı genelinde günde 50 yeni TÜNEL; 51. ofisin kaydı kabul, tüneli 429 kapi-hiz; var olan tünel yeniden verilir; ertesi gün açılır",
+      "konum": "test/kapi-gg247-b3-k1.test.mjs:352:3",
+      "hata": "kayıt artık tavana takılmaz: {\"ok\":false,\"status\":429,\"code\":\"kapi-hiz\",\"error\":\"Çok sık istek; biraz sonra yeniden deneyin.\"} · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 K1 (a) — temizlik sürerken dönen ofisin tüneli / DNS kaydı silinmez (her Cloudflare silmesinden önce eşleme yeniden okunur) › ZORLA: tünel bağlantı silmesi beklerken eski ofis geri dönüp tüneli alır → temizlik bitince ETKİN ofisin tüneli ve DNS kaydı durur",
+      "konum": "test/kapi-temizlik-yarisi-248.test.mjs:145:3",
+      "hata": "etkin ofisin tüneli temizlikte silinmemeli · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 K1 (a) — temizlik sürerken dönen ofisin tüneli / DNS kaydı silinmez (her Cloudflare silmesinden önce eşleme yeniden okunur) › ZORLA: tünel silindikten sonra DNS silmesi beklerken ofis geri dönüp yeni tünel alır → DNS kaydı silinmez (DNS silmesinden önce de yeniden okunur)",
+      "konum": "test/kapi-temizlik-yarisi-248.test.mjs:167:3",
+      "hata": "dönen ofisin DNS kaydı silinmemeli · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 K1 (b) — devralma kaydından sonra program özeti HEMEN yükler (gerçek program + yerel kapıcı) › başka kurulum makineyi devraldıktan sonra asıl kurulum geri dönünce telefon son özeti hemen alır (bir sonraki veri değişikliğini beklemez)",
+      "konum": "test/kapi-temizlik-yarisi-248.test.mjs:196:3",
+      "hata": "devralmadan sonra telefon son özeti hemen almalı; gelen 404 kapi-ozet-yok · 404 !== 200 (beklenen 200, gelen 404)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt-kapi-248/docs/kanit/2026-10-30/248-kapi-k1-eski-8ef48138.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138",
+  "ham_cikti_sha256": "402b0850cbd87820b3a7dc97b94d175d16fef5434256e8fc2a878050c3f383fa",
+  "ham_cikti_bayt": 11494
+}

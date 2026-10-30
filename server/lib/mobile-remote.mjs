@@ -13,10 +13,13 @@ import { HttpError, REMOTE_REQUEST, REMOTE_SESSION, assertSameOrigin, isRemoteRe
 import { CIHAZ_CEREZI, OTURUM_CEREZI, cerezCakisiyor, cerezOku, cerezSatiri } from "./mobil-cerez.mjs";
 import { DUMMY_HASH, verifyPassword } from "./passwords.mjs";
 import { qrSvg } from "./qr.mjs";
+import { mobileRightOf } from "./license.mjs";
 
 // P1 karekod 5 dk · P7 uzak oturum boşta 15 dk · P8 en çok 12 saat · P11 uzaktan 5 ardışık yanlış parola · P13 kilit 15 dk (kullanıcı kararları 29.10.2026).
 export const MOBILE_RULES = Object.freeze({ codeMinutes: 5, idleMinutes: 15, maxHours: 12, attempts: 5, lockMinutes: 15, challengeSeconds: 120 });
 export const DEFAULT_DEVICE_LIMIT = 3;
+// 2.4.8 L1: kapıcı bu ofisin mobil kaydını sildi (hak sona erdi); program eşlemeleri kaldırdı (lib/mobile-sync.mjs). Ortak katmanın ayarı.
+export const KAPI_SILINDI_SETTING = "mobile.kapi.silindi";
 // Çerez adları ve okuma kuralı kapıcıyla ORTAK (lib/mobil-cerez.mjs; bağımsız gözden geçirme B4): `__Host-` önekli, Secure, Path=/, Domain yok.
 export const DEVICE_COOKIE = CIHAZ_CEREZI;
 export const REMOTE_SESSION_COOKIE = OTURUM_CEREZI;
@@ -137,13 +140,28 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
       return DEFAULT_DEVICE_LIMIT;
     }
   };
-  // Lisans "yazılabilir" durumdayken (deneme, lisanslı, geçiş) uzak erişim açık; salt okunur her durumda kapalı (eşlemeler silinmez).
+  // Lisans "yazılabilir" durumdayken (deneme, lisanslı, geçiş): karekod ve eşleme açık. Salt okunurda yeni cihaz eşlenmez (eşlemeler silinmez).
   const licenseOk = () => {
     try {
       return Boolean(license ? license.status().writable : true);
     } catch {
       return false;
     }
+  };
+  // 2.4.8 L1: uzak ERİŞİM mobil kullanım hakkına göre (lib/license.mjs mobileRightOf — kapıcıyla aynı kural): ücretli lisans bitince 30 gün salt okunur sürer
+  // (yazma programın uçlarında salt okunur kuralıyla kapalı), deneme / engel / hak sonu → kapalı.
+  const mobileRight = () => {
+    try {
+      return license ? mobileRightOf(license.status()) : { durum: "gecerli", acik: true, yazilir: true, ileti: "" };
+    } catch {
+      return { durum: "kapali", acik: false, yazilir: false, ileti: "" };
+    }
+  };
+  const accessOk = () => mobileRight().acik;
+  // Ret iletisi hakkın durumuna göre (ör. "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin."); kod aynı kalır (telefon remote-license'ı tanır).
+  const licenseFail = () => {
+    const right = mobileRight();
+    return new HttpError(403, right.ileti || REMOTE_ERRORS["remote-license"], { code: "remote-license", mobilHak: right.durum });
   };
   const activeUser = id => store.get("SELECT id, username, display_name, role, active, deleted_at, must_change_password, password_hash FROM users WHERE id = ? AND deleted_at IS NULL", id);
   const remoteAllowed = userId => Boolean(store.get("SELECT 1 AS found FROM mobile_access WHERE user_id = ? AND remote = 1", userId));
@@ -178,7 +196,7 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
 
   // P4: sınır doluyken karekod üretilmez. P2: kişinin önceki etkin karekodu geçersiz olur. P1: 5 dk.
   function createCode(admin, userId) {
-    if (!licenseOk()) throw fail(403, "remote-license");
+    if (!licenseOk()) throw licenseFail();
     const user = activeUser(userId);
     if (!user) throw new HttpError(404, "Kullanıcı bulunamadı.");
     if (!user.active) throw new HttpError(400, "Pasif hesaba karekod oluşturulamaz.", { code: "remote-inactive" });
@@ -223,7 +241,26 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
       )
       .map(row => ({ ...row, kindLabel: DEVICE_KINDS[row.kind] || row.kind }));
     const max = limit();
-    return { limit: max, used: devices.length, full: devices.length >= max, licenseOk: licenseOk(), remoteUrl, codeMinutes: MOBILE_RULES.codeMinutes, users, devices };
+    // 2.4.8 L1: mobil kullanım hakkı (uyarı metni) + kapıcıdaki kaydın silindiği bilgisi (lib/mobile-sync.mjs yazar; yeni eşlemede kalkar).
+    const right = mobileRight();
+    let kapiSilindi = null;
+    try {
+      kapiSilindi = JSON.parse(store.setting(KAPI_SILINDI_SETTING, "") || "null");
+    } catch {
+      kapiSilindi = null;
+    }
+    return {
+      limit: max,
+      used: devices.length,
+      full: devices.length >= max,
+      licenseOk: licenseOk(),
+      mobileRight: { durum: right.durum, acik: right.acik, kalanGun: right.kalanGun ?? null, ileti: right.ileti || "" },
+      kapiSilindi: kapiSilindi?.ms ? { at: new Date(kapiSilindi.ms).toISOString(), neden: String(kapiSilindi.neden || "") } : null,
+      remoteUrl,
+      codeMinutes: MOBILE_RULES.codeMinutes,
+      users,
+      devices,
+    };
   }
 
   // Kullanıcı silinince cihazları silinir (yer açılır); pasifleşince, parola sıfırlanınca ya da "Oturumları Kapat"ta uzak oturumları kapanır.
@@ -440,7 +477,8 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
         if (present && !device) return reject(req, res, fail(401, "remote-device"), { clearDevice: true });
         if (!device && !isStatic) return reject(req, res, fail(401, "remote-device"));
       }
-      if (!licenseOk()) return reject(req, res, fail(403, "remote-license"));
+      // 2.4.8 L1: eşleme yazılabilir lisans ister; öbür istekler (sayfa, giriş, okuma) mobil kullanım hakkıyla (hoşgörüde de) geçer.
+      if (isPair ? !licenseOk() : !accessOk()) return reject(req, res, licenseFail());
       if (remotePathProblem(raw)) return reject(req, res, fail(404, "remote-path"));
       // Başka siteden gelen değiştiren istek (eşleme, giriş, çıkış dahil) reddedilir; çerezler ayrıca SameSite=Strict.
       if (method !== "GET") assertSameOrigin(req);
@@ -464,6 +502,8 @@ export function createMobileRemote({ store, license, clock, audit = () => {}, lo
     handle,
     limit,
     licenseOk,
+    accessOk,
+    mobileRight,
     usedCount,
     adminView,
     createCode,

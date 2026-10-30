@@ -1,0 +1,32 @@
+{
+  "ad": "248-wabagla-e2e-whatsapp-sablon-2",
+  "komut": "npm run test:senaryo-whatsapp-sablon-248",
+  "commit": "c4e8aa2df839ea0bf4beb19950bbe54cc5eec46e",
+  "dal": "is/wa-bagla-248",
+  "kirli": 6,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T21:26:51.832Z",
+  "sure_sn": 6.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 45,
+    "gecen": 45,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-wabagla-e2e-whatsapp-sablon-2.log",
+  "klasor": "/home/user/wt-wabagla-248",
+  "ham_cikti_sha256": "20d7139d5ca23462df4ff1b817e621b4c3bc5b3ee56dfa7141cc8e8bcefd7436",
+  "ham_cikti_bayt": 2737
+}

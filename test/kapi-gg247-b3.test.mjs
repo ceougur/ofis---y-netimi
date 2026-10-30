@@ -348,19 +348,26 @@ describe("B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis", () => {
     assert.equal((await c.kayit(fazla.ofis, M, fazla.tels)).ok, true, "ertesi gün yeni ofis kabul");
   });
 
-  it(`kapıcı genelinde günde ${HIZ.yeniOfisGunluk} yeni ofis; ${HIZ.yeniOfisGunluk + 1}. (başka makine) 429 kapi-hiz; kayıtlı ofisin yeniden kaydı etkilenmez; ertesi gün açılır`, async () => {
+  // 2.4.8 K1 (c) (2.4.7 dar kontrol 2): günlük tavan kayıttan TÜNEL/DNS açılışına taşındı — kayıt (her kurulumun açılış kaydı) tavana takılmaz; yeni tünel takılır.
+  it(`kapıcı genelinde günde ${HIZ.yeniOfisGunluk} yeni TÜNEL; ${HIZ.yeniOfisGunluk + 1}. ofisin kaydı kabul, tüneli 429 kapi-hiz; var olan tünel yeniden verilir; ertesi gün açılır`, async () => {
     const c = ortam();
     let ilk = null;
     for (let i = 0; i < HIZ.yeniOfisGunluk; i += 1) {
       const o = await c.yeniOfis(makine(1000 + i));
       assert.equal(o.kayit.ok, true, `${i + 1}. yeni ofis: ${JSON.stringify(o.kayit)}`);
+      assert.equal((await c.tunel(o.ofis)).status, 200, `${i + 1}. yeni tünel`);
       ilk ||= o;
     }
     const fazla = await c.yeniOfis(makine(1999));
-    assert.deepEqual([fazla.kayit.status, fazla.kayit.code], [429, "kapi-hiz"], `günün ${HIZ.yeniOfisGunluk + 1}. yeni ofisi reddedilmeli: ${JSON.stringify(fazla.kayit)}`);
-    assert.equal((await c.kayit(ilk.ofis, makine(1000))).ok, true, "kayıtlı ofisin yeniden kaydı tavana takılmaz");
+    assert.equal(fazla.kayit.ok, true, `kayıt artık tavana takılmaz: ${JSON.stringify(fazla.kayit)}`);
+    const t = await c.tunel(fazla.ofis);
+    assert.deepEqual([t.status, t.code], [429, "kapi-hiz"], `günün ${HIZ.yeniOfisGunluk + 1}. yeni tüneli reddedilmeli: ${JSON.stringify(t)}`);
+    assert.equal(cf.tunnels.some(x => x.name === `destekofis-${fazla.ofis.id}`), false, "reddedilen başvuruda tünel açılmadı");
+    assert.equal((await c.kayit(ilk.ofis, makine(1000))).ok, true, "kayıtlı ofisin yeniden kaydı etkilenmez");
+    assert.equal((await c.tunel(ilk.ofis)).status, 200, "var olan tünelin yeniden verilmesi tavana takılmaz");
     c.ilerle(14 * SAAT);
-    assert.equal((await c.kayit(fazla.ofis, makine(1999))).ok, true, "ertesi gün kabul");
+    assert.equal((await c.kayit(fazla.ofis, makine(1999))).ok, true, "ertesi gün açılış kaydı (taze lisans belirteci; P9)");
+    assert.equal((await c.tunel(fazla.ofis)).status, 200, "ertesi gün yeni tünel açılır");
   });
 
   it(`makine başına saatte ${HIZ.kayitSaatlik} kayıt; sonraki 429 kapi-hiz; saat dönümünde açılır`, async () => {

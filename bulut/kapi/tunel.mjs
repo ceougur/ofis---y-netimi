@@ -15,7 +15,7 @@
 //      başına saatlik başvuru sınırı (429 kapi-hiz); devre dışı kalan eski ofislerin tüneli ve DNS kaydı burada da silinir (ofisTuneliniSil).
 // Yalnız Web standartları (fetch, Request/Response, WebCrypto): Worker'da ve Node 22'de aynı kod; Cloudflare API soyut fetch ile (testte sahte).
 import { KAPI_KURALLARI as K, OFIS_KIMLIGI, ecdsaDogrula, mesaj, sha256Hex } from "../../server/lib/kapi-protokol.mjs";
-import { MakineHatasi, bekleyenleriIsle, metaAnahtari, tunelMakine } from "./makine.mjs";
+import { MakineHatasi, bekleyenleriIsle, metaAnahtari, tunelMakine, yeniOfisDenetle, yeniOfisSay } from "./makine.mjs";
 
 export const TUNEL_YOLU = /^\/v1\/ofis\/([^/]+)\/tunel$/;
 const CF_API = "https://api.cloudflare.com/client/v4";
@@ -86,17 +86,24 @@ export function createCloudflareTunnels({ accountId, zoneId, apiToken, fetchImpl
       return call("PATCH", `/zones/${zoneId}/dns_records/${found.id}`, { content: target, proxied: true });
     },
     // B3: devre dışı ofisin tüneli. Bağlı cloudflared varken Cloudflare tüneli silmez → önce bağlantıları temizlenir (başarısızsa da silme denenir).
-    async deleteTunnel(id) {
+    // 2.4.8 K1 (a): devam() her silme isteğinden HEMEN önce sorulur (silme sürerken ofis geri dönüp aynı tüneli aldıysa durulur); dönüş false = durduruldu.
+    async deleteTunnel(id, { devam = async () => true } = {}) {
+      if (!(await devam())) return false;
       try {
         await call("DELETE", `/accounts/${accountId}/cfd_tunnel/${id}/connections`);
       } catch {
         // bağlantı yoksa ya da temizlenemediyse silme yine denenir (asıl sonuç silmenin yanıtı)
       }
-      return call("DELETE", `/accounts/${accountId}/cfd_tunnel/${id}`);
+      if (!(await devam())) return false;
+      await call("DELETE", `/accounts/${accountId}/cfd_tunnel/${id}`);
+      return true;
     },
-    async deleteCname(hostname) {
+    async deleteCname(hostname, { devam = async () => true } = {}) {
       const list = await call("GET", `/zones/${zoneId}/dns_records?type=CNAME&name=${encodeURIComponent(hostname)}`);
-      for (const item of (Array.isArray(list) ? list : []).filter(record => record?.name === hostname)) await call("DELETE", `/zones/${zoneId}/dns_records/${item.id}`);
+      for (const item of (Array.isArray(list) ? list : []).filter(record => record?.name === hostname)) {
+        if (!(await devam())) return false;
+        await call("DELETE", `/zones/${zoneId}/dns_records/${item.id}`);
+      }
       return true;
     },
   };
@@ -106,12 +113,20 @@ export function createCloudflareTunnels({ accountId, zoneId, apiToken, fetchImpl
 export const cloudflareVarsa = env =>
   env.CF_API_TOKEN && env.CF_ACCOUNT_ID && env.CF_ZONE_ID ? createCloudflareTunnels({ accountId: env.CF_ACCOUNT_ID, zoneId: env.CF_ZONE_ID, apiToken: env.CF_API_TOKEN }) : null;
 
-/** B3: devre dışı ofisin tünelini (destekofis-<ofis>) ve DNS kaydını (<ofis>.<alan>) siler. Dönüş true (bulunamayan zaten silinmiş sayılır). */
-export async function ofisTuneliniSil(cf, ofis, alan) {
+/**
+ * B3: devre dışı ofisin tünelini (destekofis-<ofis>) ve DNS kaydını (<ofis>.<alan>) siler. Dönüş true (bulunamayan zaten silinmiş sayılır), false = durduruldu.
+ * 2.4.8 K1 (a) (2.4.7 dar kontrol 2): devam() HER Cloudflare silmesinden hemen önce sorulur — çağıran makine eşlemesini / ofis kaydını YENİDEN okur; silme
+ * sürerken ofis geri döndüyse (son kaydolan kazanır) ya da kaydı değiştiyse etkin ofisin tüneline / DNS kaydına dokunulmaz.
+ */
+export async function ofisTuneliniSil(cf, ofis, alan, devam = async () => true) {
+  if (!(await devam())) return false;
   const tunel = await cf.findTunnel(`destekofis-${ofis}`);
-  if (tunel) await cf.deleteTunnel(tunel.id);
-  await cf.deleteCname(`${ofis}.${String(alan || "destekofis.net").toLowerCase()}`);
-  return true;
+  if (tunel) {
+    if (!(await devam())) return false;
+    if ((await cf.deleteTunnel(tunel.id, { devam })) === false) return false;
+  }
+  if (!(await devam())) return false;
+  return (await cf.deleteCname(`${ofis}.${String(alan || "destekofis.net").toLowerCase()}`, { devam })) !== false;
 }
 
 const cloudflareOf = env => {
@@ -157,19 +172,23 @@ export async function tunelIstegi(request, env, { now = () => Date.now(), lisans
     if (typeof lisansGorunumu !== "function") at("kapi-tunel-ayar");
     const gorunum = await lisansGorunumu(env, meta);
     if (gorunum?.durum === "dogrulanamadi") at("kapi-lisans-dogrulanamadi");
-    if (gorunum?.durum !== "gecerli") at("kapi-lisans");
+    // 2.4.8 L1: ücretli lisansın 30 günlük hoşgörüsünde de tünel verilir (canlı bağlantı salt okunur; kapi-protokol mobilHakki — programla aynı kural).
+    if (gorunum?.durum !== "gecerli" && gorunum?.durum !== "hosgoru") at("kapi-lisans");
 
     const cf = cloudflare || cloudflareOf(env);
     const alan = String(env.OFIS_ALANI || "destekofis.net").toLowerCase();
     // B3: yalnız makinenin güncel ofisi + makine başına saatlik sınır; sonra makinenin devre dışı eski ofislerinin tüneli ve DNS kaydı silinir.
     await tunelMakine(env, { makine: meta.makine, ofis, simdi: now() });
-    await bekleyenleriIsle(env, meta.makine, { simdi: now(), temizle: eski => ofisTuneliniSil(cf, eski, alan) });
+    await bekleyenleriIsle(env, meta.makine, { simdi: now(), temizle: (eski, devam) => ofisTuneliniSil(cf, eski, alan, devam) });
     const ad = `destekofis-${ofis}`;
     const hostname = `${ofis}.${alan}`;
     let tunel = await cf.findTunnel(ad);
     if (!tunel) {
+      // 2.4.8 K1 (c): kapıcı genelinde günde en çok KAPI_HIZ.yeniOfisGunluk YENİ tünel + DNS kaydı (DNS kotası); var olan tünelin yeniden verilmesi sayılmaz.
+      await yeniOfisDenetle(env, now());
       try {
         tunel = await cf.createTunnel(ad);
+        await yeniOfisSay(env, now());
       } catch (error) {
         // Eşzamanlı iki başvuru: ikincisi "ad var" alır → yeniden ara.
         tunel = await cf.findTunnel(ad);

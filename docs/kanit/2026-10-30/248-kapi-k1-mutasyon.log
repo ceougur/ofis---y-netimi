@@ -1,0 +1,10 @@
+YAKALANDI MK1a temizlikte makine eşlemesi yeniden okunmaz 16 / 18 · not ok 1 - ZORLA: tünel bağlantı silmesi beklerken eski ofis geri dönüp tüneli alır → temizlik bitince ETKİN ofisin tüneli ve DNS kaydı durur | not ok 2 - ZORLA: tünel silindikten sonra DNS silmesi beklerken ofis geri dönüp yeni tünel alır → DNS kaydı silinmez (DNS silmesinden önce de yeniden okunur
+YAKALANDI MK1b tünel silmesinden (bağlantılardan sonra) önce eşleme okunmaz 17 / 18 · not ok 1 - ZORLA: tünel bağlantı silmesi beklerken eski ofis geri dönüp tüneli alır → temizlik bitince ETKİN ofisin tüneli ve DNS kaydı durur | not ok 2 - 2.4.8 K1 (a) — temizlik sürerken dönen ofisin tüneli / DNS kaydı silinmez (her Cloudflare silmesinden önce eşleme yeniden okunur)
+YAKALANDI MK1c DNS silmesinden önce eşleme okunmaz 17 / 18 · not ok 2 - ZORLA: tünel silindikten sonra DNS silmesi beklerken ofis geri dönüp yeni tünel alır → DNS kaydı silinmez (DNS silmesinden önce de yeniden okunur) | not ok 2 - 2.4.8 K1 (a) — temizlik sürerken dönen ofisin tüneli / DNS kaydı silinmez (her Cloudflare silmesinden önce eşleme yeniden okunur)
+YAKALANDI MK2a kapıcı özetin yokluğunu bildirmez 17 / 18 · not ok 1 - başka kurulum makineyi devraldıktan sonra asıl kurulum geri dönünce telefon son özeti hemen alır (bir sonraki veri değişikliğini beklemez) | not ok 3 - 2.4.8 K1 (b) — devralma kaydından sonra program özeti HEMEN yükler (gerçek program + yerel kapıcı)
+YAKALANDI MK2b program devralmada özeti yüklemez 17 / 18 · not ok 1 - başka kurulum makineyi devraldıktan sonra asıl kurulum geri dönünce telefon son özeti hemen alır (bir sonraki veri değişikliğini beklemez) | not ok 3 - 2.4.8 K1 (b) — devralma kaydından sonra program özeti HEMEN yükler (gerçek program + yerel kapıcı)
+YAKALANDI MK3 günlük yeni tünel tavanı denetlenmez 17 / 18 · not ok 12 - kapıcı genelinde günde 50 yeni TÜNEL; 51. ofisin kaydı kabul, tüneli 429 kapi-hiz; var olan tünel yeniden verilir; ertesi gün açılır | not ok 1 - B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+# mutasyon yakalanan 6/6
+# tests 6
+# pass 6
+# fail 0

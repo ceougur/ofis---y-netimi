@@ -1,0 +1,32 @@
+{
+  "ad": "248-kapi-son-e2e-senaryo-whatsapp-gonder-248",
+  "komut": "npm run test:senaryo-whatsapp-gonder-248",
+  "commit": "8cdbc17af959deebadf8d6dc358c4a0c46d91100",
+  "dal": "is/kapi-248",
+  "kirli": 0,
+  "izlenmeyen": 22,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T22:44:49.115Z",
+  "sure_sn": 44.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 87,
+    "gecen": 87,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-kapi-son-e2e-senaryo-whatsapp-gonder-248.log",
+  "klasor": "/home/user/wt-kapi-248",
+  "ham_cikti_sha256": "b2234425ba90f72778fa253762629abbfc8f667c2336dd718c332516249e0728",
+  "ham_cikti_bayt": 5859
+}

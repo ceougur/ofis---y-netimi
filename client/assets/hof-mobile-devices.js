@@ -9,11 +9,30 @@
   const $ = selector => document.querySelector(selector);
   let view = null;
 
+  // 2.4.8 L1 (ürün sahibi kararı "KARAR L1"): mobil kullanım hakkı. Bitişe 7 gün kala "Lisansınız N gün sonra bitiyor."; ücretli lisans bitince 30 gün salt okunur
+  // ("Lisansınız bitti; mobil kullanım hakkınız N gün sonra sona erecek."); sonunda "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin.". Kapıcı kaydı
+  // silindiyse (hak sona erdikten 30 gün sonra) telefonlar karekodla yeniden eşlenir.
+  const HAK_EK = Object.freeze({
+    hosgoru: "Bu sürede eşli cihazlar salt okunur bağlanır; yeni karekod oluşturulamaz.",
+    "deneme-bitti": "Mobil kaydınız deneme bitişinden 30 gün sonra silinir; o güne kadar lisans alınırsa eşli cihazlar yeniden bağlanır, sonra telefonlar karekodla yeniden eşlenir.",
+    bitti: "Mobil kaydınız silinir; lisans yenilenince telefonları karekodla yeniden eşlersiniz.",
+    engelli: "Eşli cihazlar silinmez; mobil kaydınız engelden 30 gün sonra silinir.",
+    kapali: "Eşli cihazlar silinmez, lisans yenilenince yeniden bağlanır.",
+  });
+  const hakHtml = data => {
+    const hak = data.mobileRight || {};
+    const silindi = data.kapiSilindi ? `<p class="adm-mobile-warn" data-mobile-kapi-silindi>Mobil kullanım hakkı sona erdiği için mobil kaydınız silindi; telefonları karekodla yeniden eşleyin.</p>` : "";
+    if (!data.licenseOk) {
+      const ileti = hak.ileti || "Lisans geçerli değil; uzaktan erişim kapalı ve karekod oluşturulamaz.";
+      return `<p class="adm-mobile-warn" data-mobile-license data-mobile-hak="${esc(hak.durum || "")}">${esc(ileti)} ${esc(HAK_EK[hak.durum] || HAK_EK.kapali)}</p>` + silindi;
+    }
+    return (hak.ileti ? `<p class="adm-mobile-warn" data-mobile-hak="${esc(hak.durum || "")}">${esc(hak.ileti)}</p>` : "") + silindi;
+  };
   const statusHtml = data => {
-    if (!data.licenseOk) return `<p class="adm-mobile-warn" data-mobile-license>Lisans geçerli değil; uzaktan erişim kapalı ve karekod oluşturulamaz. Eşli cihazlar silinmez, lisans yenilenince yeniden bağlanır.</p>`;
+    if (!data.licenseOk) return hakHtml(data) + (data.mobileRight?.acik ? ozetHtml(data.ozet) : "");
     const count = `<p class="adm-mobile-count" data-mobile-count><b>${data.used} / ${data.limit}</b> eşli cihaz (iki şirket birlikte; telefon, tablet ve uzak tarayıcı sayılır).</p>`;
     const full = data.full ? `<p class="adm-mobile-warn" data-mobile-full-note>${data.limit} cihazın hepsi eşli; yeni cihaz için önce aşağıdan birini silin.</p>` : "";
-    return count + full + ozetHtml(data.ozet);
+    return hakHtml(data) + count + full + ozetHtml(data.ozet);
   };
   // 2.4.7 M3: sunucu kapalıyken telefonda görünen şifreli özetin son yüklemesi (kapıcı açıksa).
   // B2b: kapıcıyla ölçülen saat farkı 2 dakika ya da daha çoksa (program farkı düzeltir, ama başka şeyler de saate bağlı) kullanıcı uyarılır.

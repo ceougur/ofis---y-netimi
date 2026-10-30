@@ -8,10 +8,10 @@
 // açılınca belirteç yeniden girilir). Belirteç istemciye (yalnız "Kayıtlı" işareti; son karakterleri de dönmez), günlüğe, işlem geçmişine
 // (audit), hata iletisine, yedeğe ve dışa aktarmaya ÇIKMAZ; açık hâli yalnız lib/whatsapp/meta-graph.mjs isteğinin içinde yaşar.
 // Kimlikler gizli değildir (Meta panelinde görünürler); ekranda gösterilir.
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, randomInt } from "node:crypto";
 import { HttpError } from "../http.mjs";
 import { createSecretBox } from "../secret-box.mjs";
-import { META_D0, MetaGraphError, createMetaGraph, qualityLabel, tierInfo } from "./meta-graph.mjs";
+import { META_D0, META_D0_W7, MetaGraphError, createMetaGraph, qualityLabel, tierInfo } from "./meta-graph.mjs";
 
 export const SETTING_KEY = "whatsapp.meta";
 // Deneme gönderiminden sonra aynı şirketten yeni deneme için bekleme (çift tık / iki sekme iki ileti göndermesin).
@@ -80,6 +80,9 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       lastSelfTest: raw.lastSelfTest && typeof raw.lastSelfTest === "object" ? raw.lastSelfTest : null,
       // 2.4.8 W9: durum bildirimi (web kancası) adresi — gizli yol ve doğrulama belirteci mühürlü + karması (karşılaştırma karmayla).
       hook: raw.hook && typeof raw.hook === "object" && raw.hook.pathHash ? raw.hook : null,
+      // 2.4.8 W7: "WhatsApp'ı Bağla" bilgisi (olay türü, birlikte kullanım, Meta adımlarının sonucu) ve kayıt PIN'i (mühürlü; ekrana çıkmaz).
+      embedded: raw.embedded && typeof raw.embedded === "object" ? raw.embedded : null,
+      pinSealed: typeof raw.pinSealed === "string" ? raw.pinSealed : "",
     };
   }
   const write = (record, userId = null) => store.setSetting(SETTING_KEY, JSON.stringify(record), userId);
@@ -106,6 +109,10 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       lastSelfTest: record.lastSelfTest,
       // 2.4.8 W9: durum bildirimi kaydı (gizli yol ve belirteç YOK; yalnız durum).
       ...(record.hook ? { hook: { state: record.hook.state, registeredAt: record.hook.registeredAt || null, error: record.hook.error || "" } } : {}),
+      // 2.4.8 W7: WhatsApp'ı Bağla — birlikte kullanım mı, Meta adımlarının sonucu (PIN ve belirteç YOK).
+      ...(record.mode === "embedded" && record.embedded
+        ? { embedded: { coex: Boolean(record.embedded.coex), event: String(record.embedded.olay || ""), at: record.embedded.at || null, steps: (Array.isArray(record.embedded.adimlar) ? record.embedded.adimlar : []).map(step => ({ name: String(step.ad || ""), ok: step.ok === true, message: String(step.ileti || ""), at: step.at || null })) } }
+        : {}),
     };
   }
   // Ortak katmanın kaydı (tünel kuralı, web kancasının şirketi): gizli değer YOK.
@@ -153,6 +160,74 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     // İşlem geçmişine belirteç YAZILMAZ; yalnız değişip değişmediği.
     audit(user, "whatsapp.connection.saved", "whatsapp", { mode: "manual", phoneNumberId, wabaId, appId, tokenChanged, first: !previous });
     announce();
+    return view();
+  }
+
+  // ---------- 2.4.8 W7: "WhatsApp'ı Bağla" (Embedded Signup; plan §6 W7) ----------
+  // Belirteç kapıcıdan programa ofisin imzalı kanalıyla, programın geçici anahtarına şifreli gelir (lib/whatsapp/embedded.mjs açar); burada Elle Bağla ile
+  // AYNI kuralla mühürlenir (işletme belirteci; Tech Provider'ın müşteriye özel Business Integration System User belirteci). Kipi "embedded": durum
+  // bildirimleri yalnız kapıcının Meta imzasını doğruladığı (wa1) yoldan kabul edilir (lib/whatsapp/hook.mjs).
+  function saveEmbedded(user, input = {}) {
+    const previous = read();
+    const phoneNumberId = idOf(input.phoneNumberId, "Telefon Numarası Kimliği (Phone Number ID)", "phoneNumberId");
+    const wabaId = idOf(input.wabaId, "WhatsApp Business Hesap Kimliği (WABA ID)", "wabaId");
+    const token = typeof input.token === "string" ? input.token.trim() : "";
+    if (!token || !META_D0.tokenPattern.test(token)) fail(502, "Meta'dan gelen erişim belirteci okunamadı; WhatsApp'ı Bağla'yı yeniden deneyin.", "whatsapp-embedded-token");
+    const coex = String(input.olay || "") === META_D0_W7.coexEvent;
+    // App ID: belirtecin ait olduğu Meta uygulaması (kapıcının verdiği DestekOfis uygulaması); ekstre şablonunun örnek PDF'i bununla yüklenir. Gelmezse boş
+    // (eski kapıcı / eksik ayar) — Şablonlar kartı bu kipe uygun nedeni yazar (lib/whatsapp/templates.mjs).
+    const appId = META_D0.idPattern.test(String(input.appId || "")) ? String(input.appId) : "";
+    const at = iso();
+    const record = {
+      v: 1,
+      mode: "embedded",
+      phoneNumberId,
+      wabaId,
+      appId,
+      tokenSealed: secrets().seal(token),
+      savedAt: at,
+      savedBy: user.id,
+      savedByName: user.display_name || user.name || "",
+      lastTest: null,
+      lastSelfTest: null,
+      hook: previous && previous.phoneNumberId === phoneNumberId && previous.wabaId === wabaId ? previous.hook : null,
+      embedded: { olay: String(input.olay || "FINISH"), coex, at, adimlar: [] },
+      pinSealed: "",
+    };
+    write(record, user.id);
+    audit(user, "whatsapp.connection.saved", "whatsapp", { mode: "embedded", phoneNumberId, wabaId, appId, coex, first: !previous });
+    announce();
+    return view();
+  }
+  /**
+   * Bağlamadan sonraki Meta adımları (plan §2.8; D0 — META_D0_W7): birlikte kullanımda kişi + geçmiş eşitlemesi (24 saat içinde başlatılmazsa Meta müşteriyi
+   * çıkarır; içerik saklanmaz), değilse numaranın kaydı (programca üretilen 6 haneli PIN, mühürlü). Hata bağlantıyı bozmaz; sonuç kartta görünür.
+   */
+  async function embeddedSteps(user) {
+    const record = required();
+    if (record.mode !== "embedded") return view();
+    const graph = graphFor(record);
+    const adimlar = [];
+    const step = async (ad, fn) => {
+      try {
+        await fn();
+        adimlar.push({ ad, ok: true, at: iso() });
+      } catch (error) {
+        if (!(error instanceof MetaGraphError)) throw error;
+        adimlar.push({ ad, ok: false, ileti: error.message, at: iso() });
+      }
+    };
+    let pinSealed = record.pinSealed || "";
+    if (record.embedded?.coex) for (const type of META_D0_W7.syncTypes) await step(type, () => graph.startSync(record.phoneNumberId, type));
+    else {
+      const pin = String(randomInt(0, 10 ** META_D0_W7.pinLength)).padStart(META_D0_W7.pinLength, "0");
+      await step("register", async () => {
+        await graph.registerPhone(record.phoneNumberId, pin);
+        pinSealed = secrets().seal(pin);
+      });
+    }
+    saveResult({ embedded: { ...(record.embedded || {}), adimlar }, pinSealed }, record);
+    audit(user, "whatsapp.embedded.steps", "whatsapp", { coex: Boolean(record.embedded?.coex), steps: adimlar.map(item => `${item.ad}:${item.ok ? "ok" : "hata"}`).join(",") });
     return view();
   }
 
@@ -370,5 +445,5 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     return { baseUrl: config.whatsappGraphUrl, fetchImpl: config.fetchImpl, openToken: () => secrets().open(record.tokenSealed), timeoutMs: Number(config.whatsappTimeoutMs) > 0 ? Number(config.whatsappTimeoutMs) : undefined };
   }
 
-  return { read, view, save, remove, test, selfTest, client, summary, registerHook, ensureHook, hookMatches, verifyMatches, metaOptions };
+  return { read, view, save, saveEmbedded, embeddedSteps, remove, test, selfTest, client, summary, registerHook, ensureHook, hookMatches, verifyMatches, metaOptions };
 }

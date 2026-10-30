@@ -1,0 +1,43 @@
+{
+  "ad": "248-kapi-w7-e2e-eski-8ef48138",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-ayar-248-w7.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:44:11.949Z",
+  "sure_sn": 31.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 39,
+    "gecen": 37,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "WhatsApp'ı Bağla düğmesi görünür",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.textContent: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt-kapi-248/docs/kanit/2026-10-30/248-kapi-w7-e2e-eski-8ef48138.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138",
+  "ham_cikti_sha256": "5972ab7cfd4c1f791631a87639e1e6d6a869748bb9ae3ffc7fa33ab7469230d3",
+  "ham_cikti_bayt": 2425
+}

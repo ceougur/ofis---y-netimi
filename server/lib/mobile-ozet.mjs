@@ -187,7 +187,7 @@ export function kapiIstemcisi({ url, fetchImpl, simdi, kayitSimdi = simdi, kayit
       veri = null;
     }
     if (yanit.ok && veri?.ok) return { ok: true, data: veri.data, status: yanit.status };
-    return { ok: false, status: yanit.status, code: veri?.code || `kapi-http-${yanit.status}`, error: veri?.error || `Kapıcı yanıtı ${yanit.status}`, ...(veri?.zaman ? { zaman: veri.zaman } : {}) };
+    return { ok: false, status: yanit.status, code: veri?.code || `kapi-http-${yanit.status}`, error: veri?.error || `Kapıcı yanıtı ${yanit.status}`, ...(veri?.zaman ? { zaman: veri.zaman } : {}), ...(veri?.silindi ? { silindi: veri.silindi } : {}) };
   }
   return {
     // Kayıtta zaman gövdede de (imzalı) ve imzanınkiyle AYNI; kapıcı daha eski kaydı yeniden oynatma sayar (silinmiş cihaz geri gelmez).
@@ -199,5 +199,9 @@ export function kapiIstemcisi({ url, fetchImpl, simdi, kayitSimdi = simdi, kayit
     },
     ozetYukle: (ofis, zarfMetni) => istek(ofis, "PUT", `/v1/ofis/${ofis.id}/ozet`, zarfMetni),
     ozetSil: (ofis, sira) => istek(ofis, "DELETE", `/v1/ofis/${ofis.id}/ozet?sira=${sira}`),
+    // 2.4.8 W7 "WhatsApp'ı Bağla" (bulut/kapi/wa-bagla.mjs): oturum aç (programın geçici açık anahtarı) / şifreli belirteci al (bir kez). İkisi de ofis imzalı.
+    // 2.4.8 W7: ek = { sirOzeti (tek kullanımlık sırrın SHA-256 özeti; sır kapıcıya gitmez), firma (bağlama sayfasında "Bağlanacak Program") }.
+    waOturum: (ofis, anahtar, ek = {}) => istek(ofis, "POST", `/v1/ofis/${ofis.id}/wa/oturum`, JSON.stringify({ v: 1, ofis: ofis.id, anahtar, sirOzeti: String(ek.sirOzeti || ""), firma: String(ek.firma || "") })),
+    waAl: (ofis, oturum) => istek(ofis, "POST", `/v1/ofis/${ofis.id}/wa/oturum/${oturum}/al`, JSON.stringify({ v: 1, ofis: ofis.id })),
   };
 }

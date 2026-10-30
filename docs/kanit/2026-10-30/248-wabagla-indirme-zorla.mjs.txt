@@ -1,0 +1,33 @@
+// Ders 20: Aydınlatma Metni PDF (target=_blank) indirmesi hangi sayfaya düşüyor — N deneme; COOP değerine göre karşılaştırma. Ek yük için eşzamanlı CPU döngüsü (isteğe bağlı).
+const kok = process.argv[2];
+const N = Number(process.argv[3] || 15);
+const { chromium } = await import(`${kok}/node_modules/playwright/index.mjs`);
+const { startTestServer, ADMIN_PASSWORD } = await import(`${kok}/test/helpers.mjs`);
+const server = await startTestServer({});
+const browser = await chromium.launch();
+const ctx = await browser.newContext({ acceptDownloads: true, permissions: ["clipboard-read", "clipboard-write"] });
+const page = await ctx.newPage();
+const sayac = { ana: 0, acilir: 0, hic: 0 };
+ctx.on("page", p => { if (p !== page) p.on("download", () => (sayac.acilir += 1)); });
+await page.goto(`${server.base}/`);
+await page.fill("#hof-auth input[name=username]", "admin");
+await page.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
+await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+const r = await page.goto(`${server.base}/admin.html#whatsapp`);
+const coop = r.headers()["cross-origin-opener-policy"];
+for (let i = 0; i < N; i += 1) {
+  await page.goto(`${server.base}/admin.html#whatsapp`);
+  await page.click('button:has-text("Aydınlatma Metni Hazırla")');
+  await page.waitForSelector('[data-wa-notice="pdf"]', { state: "visible" });
+  await page.click('[data-wa-notice="copy"]');
+  const ana = page.waitForEvent("download", { timeout: 8000 }).then(() => true, () => false);
+  const once = sayac.acilir;
+  await page.click('[data-wa-notice="pdf"]');
+  if (await ana) sayac.ana += 1;
+  else if (sayac.acilir > once) {} else sayac.hic += 1;
+  for (const p of ctx.pages()) if (p !== page) await p.close().catch(() => {});
+}
+console.log(`COOP ${coop} · ${N} deneme · ana sayfada ${sayac.ana} · açılır sayfada ${sayac.acilir} · hiç ${sayac.hic}`);
+await browser.close();
+await server.close();

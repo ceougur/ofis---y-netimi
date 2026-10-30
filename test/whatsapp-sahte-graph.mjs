@@ -190,6 +190,14 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
         state.subscriptions.push(entry.body || {});
         return reply(200, { success: true });
       }
+      // 2.4.8 W7 (aynı el — kâhin DEĞİL): WhatsApp'ı Bağla sonrası numara kaydı (6 haneli PIN) ve birlikte kullanım eşitlemesi.
+      if (req.method === "POST" && parts.length === 2 && (parts[1] === "register" || parts[1] === "smb_app_data")) {
+        if (parts[0] !== phoneNumberId) return reply(400, metaError(100, `Unsupported post request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
+        const body = entry.body || {};
+        if (parts[1] === "register" && !/^[0-9]{6}$/.test(String(body.pin || ""))) return reply(400, metaError(100, "(#100) Invalid parameter"));
+        (state.embeddedSteps ||= []).push({ path: parts[1], body });
+        return reply(200, { success: true });
+      }
       if (req.method === "POST" && parts.length === 2 && parts[1] === "messages") {
         if (parts[0] !== phoneNumberId) return reply(400, metaError(100, `Unsupported post request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
         const sent = entry.body || {};

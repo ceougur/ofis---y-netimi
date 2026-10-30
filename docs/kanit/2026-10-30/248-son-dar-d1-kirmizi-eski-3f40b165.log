@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: 2.4.8 son dar kontrol D1 — istek yolundaki F2 silmesi kimliksiz istek seli ve sürekli Cloudflare hatasında çağrı üretmez
+    # Subtest: silme anı geçmiş ofise 20 kimliksiz istek (eşleme / sayfa): silme denenmez (Cloudflare 0 ≤ 2), servis ≤ 1; 500 yok
+    not ok 1 - silme anı geçmiş ofise 20 kimliksiz istek (eşleme / sayfa): silme denenmez (Cloudflare 0 ≤ 2), servis ≤ 1; 500 yok
+      ---
+      duration_ms: 126.391559
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-sondar-eski-3f40b165-r8t2/test/kapi-son-dar-d1-248.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: '20 kimliksiz istekte Cloudflare çağrısı 20 (beklenen ≤ 2; her istek silme deniyorsa ~40)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-sondar-eski-3f40b165-r8t2/test/kapi-son-dar-d1-248.test.mjs:93:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: cihazı doğrulanmış 20 istek, Cloudflare sürekli hatalı: tek silme denemesi (Cloudflare ≤ 2), sonrakiler 'hak sona erdi' ile reddedilir; bekleme bitince yeniden denenir
+    not ok 2 - cihazı doğrulanmış 20 istek, Cloudflare sürekli hatalı: tek silme denemesi (Cloudflare ≤ 2), sonrakiler 'hak sona erdi' ile reddedilir; bekleme bitince yeniden denenir
+      ---
+      duration_ms: 116.432107
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-sondar-eski-3f40b165-r8t2/test/kapi-son-dar-d1-248.test.mjs:98:3'
+      failureType: 'testCodeFailure'
+      error: '20 istekte Cloudflare çağrısı 20 (beklenen ≤ 2: başarısız silme hatırlanmalı)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-sondar-eski-3f40b165-r8t2/test/kapi-son-dar-d1-248.test.mjs:104:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 son dar kontrol D1 — istek yolundaki F2 silmesi kimliksiz istek seli ve sürekli Cloudflare hatasında çağrı üretmez
+  ---
+  duration_ms: 244.444233
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-sondar-eski-3f40b165-r8t2/test/kapi-son-dar-d1-248.test.mjs:85:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 348.661528

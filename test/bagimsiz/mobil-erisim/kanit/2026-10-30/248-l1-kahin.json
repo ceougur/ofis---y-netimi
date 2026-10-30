@@ -1,0 +1,93 @@
+{
+  "ad": "248-l1-kahin",
+  "komut": "node test/bagimsiz/mobil-erisim/program-surucu.mjs --cikti /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kahin-l1-248-q2/tam",
+  "commit": "a348f4728599432056ba0d7c9e02de6606fcbe4a",
+  "dal": "is/kahin-l1-248",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T21:18:47.159Z",
+  "sure_sn": 126.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 30,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "U10 (10/18; 8 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "U11 (4/7; 3 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "U21 (3/7; 4 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "L01 (21/35; 14 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "L02 (13/19; 6 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "L03 (18/21; 2 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "L04 (17/28; 11 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "L05 (9/20; 11 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "L06 (10/13; 3 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "R1 (423/677; 201 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "R2 (490/612; 77 fark)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "R3 (567/637; 61 fark)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "test/bagimsiz/mobil-erisim/kanit/2026-10-30/248-l1-kahin.log",
+  "klasor": "/home/user/wt-kahin-l1-248",
+  "ham_cikti_sha256": "09763daef1197333f4df4a3fac5bdb62a25880a4bdf2ed68c8b67919dd4ec0e3",
+  "ham_cikti_bayt": 23824
+}

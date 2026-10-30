@@ -1,0 +1,67 @@
+TAP version 13
+# Subtest: 2.4.8 S-L1a — lisans servisinin tanımadığı ofisin kapıcı kaydı son görülmeden 60 gün sonra silinir
+    # Subtest: 59. gün silinmez, 60. gün silinir (iz dosyasıyla); servis ulaşılamazken 90. gün silinmez; geçerli lisanslı ofise dokunulmaz
+    not ok 1 - 59. gün silinmez, 60. gün silinir (iz dosyasıyla); servis ulaşılamazken 90. gün silinmez; geçerli lisanslı ofise dokunulmaz
+      ---
+      duration_ms: 68.432888
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-l1a-eski-009674a1-z3m8/test/kapi-l1a-tanimayan-248.test.mjs:73:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        60. gün: servisin tanımadığı ofisin kapıcı kaydı silinmedi (rapor: {"taranan":3,"denetlenen":3,"silinen":[],"ertelenen":0,"hata":[],"imlec":null,"waOturum":0})
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-l1a-eski-009674a1-z3m8/test/kapi-l1a-tanimayan-248.test.mjs:88:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: arada program kaydolursa sayaç sıfırlanır: son kayıttan 60 gün dolmadan silinmez, dolunca silinir
+    not ok 2 - arada program kaydolursa sayaç sıfırlanır: son kayıttan 60 gün dolmadan silinmez, dolunca silinir
+      ---
+      duration_ms: 22.362565
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-l1a-eski-009674a1-z3m8/test/kapi-l1a-tanimayan-248.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        son kayıttan 60 gün sonra silinir
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-l1a-eski-009674a1-z3m8/test/kapi-l1a-tanimayan-248.test.mjs:117:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 S-L1a — lisans servisinin tanımadığı ofisin kapıcı kaydı son görülmeden 60 gün sonra silinir
+  ---
+  duration_ms: 92.66706
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-l1a-eski-009674a1-z3m8/test/kapi-l1a-tanimayan-248.test.mjs:72:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 217.287751

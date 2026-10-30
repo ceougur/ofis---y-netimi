@@ -70,9 +70,9 @@ class S:
     def t(self, ofs):
         return K.iso(self.bas + int(ofs))
 
-    def e(self, ofs, olay, bek=None, esli=None, dusen=None, gorunur=None, zaman=None, t=None, **alan):
+    def e(self, ofs, olay, bek=None, esli=None, dusen=None, gorunur=None, zaman=None, t=None, uyari=None, **alan):
         self.no += 1
-        if "ofis" not in alan and olay not in ("lisans_servisi", "bekle"):
+        if "ofis" not in alan and olay not in ("lisans_servisi", "bekle", "kapici_temizlik"):
             alan["ofis"] = "A"
         ev = {"no": self.no, "t": t if t is not None else self.t(ofs), "olay": olay, **alan}
         self.olaylar.append(ev)
@@ -82,7 +82,8 @@ class S:
         if bek is None:
             raise ValueError(f"{self.ad} olay {self.no}: elle beklenti yazılmadı")
         spec["sonuc"] = bek
-        for ad_, deger in (("esli", esli), ("dusen", dusen), ("gorunur", gorunur), ("ozet_zamani", zaman)):
+        for ad_, deger in (("esli", esli), ("dusen", dusen), ("gorunur", gorunur), ("ozet_zamani", zaman),
+                           ("uyari", uyari)):
             if deger is not None:
                 spec[ad_] = deger
         self.bek[self.no] = spec
@@ -155,6 +156,10 @@ def _olay_fark(no, spec, c, P):
                 farklar.append(f"olay {no}: görünür elle={g} model={mg}")
         elif mg is None or mg["en_az"] != g or mg["en_cok"] != g:
             farklar.append(f"olay {no}: görünür elle={g} model={mg}")
+    if "uyari" in spec:
+        u = set(_coz(spec["uyari"], P))
+        if u != set(m.get("uyari", [])):
+            farklar.append(f"olay {no}: uyarı elle={sorted(u)} model={m.get('uyari')}")
     if "ozet_zamani" in spec and _coz(spec["ozet_zamani"], P) is not None:
         z = _coz(spec["ozet_zamani"], P)
         if sorted(K.zaman(x) for x in z) != sorted(K.zaman(x) for x in m.get("ozet_zamani", [])):
@@ -196,6 +201,60 @@ def beklenti_farklari(bek, grup_bek, yapraklar):
 def red_uretimde(p):
     """Üretimde sınır denetimi gerçekten uygulanıyor mu (yalnız 'reddet'te anlamlı, P4)."""
     return p["sinir_dolunca"] == "reddet" and p["uretimde_sinir"] == "denetler"
+
+
+# ---- 2.4.8 L1 elle kuralları (karar metninden; modelden bağımsız, gün numarası aritmetiğiyle yazıldı)
+YOK, HER = "(yok)", "(herhangi)"
+U0 = "Lisans geçerli değil; uzaktan erişim kapalı"               # 2.4.7 iletisi (önek)
+U3 = "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin"   # CLAUDE.md 29.10 UYARI
+
+
+def U1(x):
+    return f"lisans {x} gün sonra bitiyor"                         # CLAUDE.md 29.10 UYARI (7 gün kala)
+
+
+def U2(n):
+    return f"Lisansınız bitti; mobil kullanım hakkınız {n} gün sonra sona erecek"  # CLAUDE.md 29.10 UYARI (hoşgörüde)
+
+
+def gun_no(sn):
+    return (sn + 3 * SA) // GUN  # İstanbul (UTC+3) gün numarası
+
+
+def kapanis(B, yontem):
+    """P14: sure = B + 30 gün; gun_sonu = B'nin günü sayılmaz, 30. günün sonu; gun_sonu_dahil = B'nin günü 1. gün."""
+    if yontem == "sure":
+        return B + 30 * GUN
+    return (gun_no(B) + (31 if yontem == "gun_sonu" else 30)) * GUN - 3 * SA
+
+
+def sayilar(hedef, t):
+    f = hedef - t
+    return {f // GUN, -((-f) // GUN), gun_no(hedef) - gun_no(t)}  # V22: aşağı / yukarı / takvim
+
+
+def not7(B, t, zorunlu=True):
+    k = {U1(x) if x <= 7 else YOK for x in sayilar(B, t)}
+    return k if zorunlu else k | {YOK}
+
+
+def hos(B, t, zorunlu=True):
+    return lambda p: {U2(n) for n in sayilar(kapanis(B, p["otuz_gun"]), t)} | (set() if zorunlu else {YOK})
+
+
+def kapali_ileti(ucretli, silinmis=False):
+    return lambda p: ({HER} if p["kapanis_iletisi"] == "uygulamada"
+                      else ({U3} if ucretli else ({HER} if silinmis else {U0, U3})))
+
+
+def ucretli_durum(B, t, p):
+    if t < B:
+        return "tam"
+    return "hosgoru" if t < kapanis(B, p["otuz_gun"]) else "kapali"
+
+
+def doner(p):
+    return p["erken_yenileme"] == "esleme_doner"
 
 
 AYSE_G = {"002": ["cari", "kasa"]}
@@ -348,44 +407,56 @@ def u09():
 
 
 def u10():
-    s = S("U10", "Lisans biter → mobil durur; yenilenince eşleme geri gelir (yeniden eşleme yok); önbellek penceresi (P9)",
-          ofisler={"A": ofis(lisans={"bitis": "2026-11-02T12:00:00+03:00"})},
-          kaynak="PRO-UZAKTAN: 'Lisans süresi biter … Worker o ofisin dosyasını vermez'; 'yenilenince eşlemeler geri gelecek'")
+    s = S("U10", "Deneme biter → mobil HEMEN durur; 30 gün dolmadan lisans alınınca eşleme geri gelir mi (P16); önbellek "
+          "penceresi (P9)", ofisler={"A": ofis(lisans={"plan": "deneme", "bitis": "2026-11-02T12:00:00+03:00"})},
+          kaynak="KARAR L1: 'DENEME biter → mobil HEMEN kapanır; 30 gün içinde lisans alınmazsa … silinir'; 'Sonradan "
+                 "lisans alınır/yenilenirse telefon karekodla yeniden eşlenir' (P16)")
     s.eslenmis(0, "ayse", "tel1", "K1")
     s.e(60, "ozet_yukle", bek="kabul")
     s.giris(120, "tel1", "ayse", "o1")
     s.e(2 * SA - 60, "ozet_oku", bek="kabul", cihaz="tel1", zaman=[s.t(60)])
-    s.e(2 * SA + 60, "ozet_oku", bek="ret:lisans_gecersiz", cihaz="tel1")
+    s.e(2 * SA + 60, "ozet_oku", bek="ret:lisans_gecersiz", cihaz="tel1", uyari=kapali_ileti(False))
     s.istek(2 * SA + 120, "tel1", "o1", "ret:lisans_gecersiz", sirket="002", yetki="kasa")
-    s.giris(2 * SA + 180, "tel1", "ayse", "o2", bek="ret:lisans_gecersiz")
+    s.giris(2 * SA + 180, "tel1", "ayse", "o2", bek="ret:lisans_gecersiz", uyari=kapali_ileti(False))
     s.e(2 * SA + 240, "ozet_yukle", bek="ret:lisans_gecersiz")
-    s.kod(2 * SA + 300, "mehmet", "K2", bek="kabul|ret:lisans_gecersiz")
+    s.kod(2 * SA + 300, "mehmet", "K2", bek="kabul|ret:lisans_gecersiz|ret:salt_okunur")
     s.esle(2 * SA + 330, "K2", "tel2", bek="ret:lisans_gecersiz", esli={"A": 1})
     y = 2 * SA + 600
-    s.e(y, "lisans_degis", lisans={"bitis": "2027-11-02T12:00:00+03:00"})
-    s.e(y + 30 * DK, "ozet_oku", bek="kabul|ret:lisans_gecersiz", cihaz="tel1")
-    s.e(y + 2 * SA, "ozet_oku", cihaz="tel1",
-        bek=lambda p: "kabul" if p["lisans_onbellek"] == 1 else "kabul|ret:lisans_gecersiz")
-    s.e(y + 25 * SA, "ozet_oku", bek="kabul", cihaz="tel1", esli={"A": 1}, zaman=[s.t(60)], gorunur=AYSE_G)
-    s.giris(y + 25 * SA + 60, "tel1", "ayse", "o3")
-    s.istek(y + 25 * SA + 120, "tel1", "o3", "kabul", sirket="002", yetki="kasa")
-    s.istek(y + 25 * SA + 180, "tel1", "o1", "ret:oturum_gecersiz", sirket="002", yetki="kasa")
-    s.esle(y + 25 * SA + 240, "K2", "tel2b", bek="ret:kod_gecersiz", esli={"A": 1})
+    s.e(y, "lisans_degis", lisans={"plan": "standart", "bitis": "2027-11-02T12:00:00+03:00"})
+    s.e(y + 30 * DK, "ozet_oku", cihaz="tel1",
+        bek=lambda p: "kabul|ret:lisans_gecersiz" if doner(p) else "ret:cihaz_yok|ret:lisans_gecersiz")
+
+    def b2(p):
+        if doner(p):
+            return "kabul" if p["lisans_onbellek"] == 1 else "kabul|ret:lisans_gecersiz"
+        return "ret:cihaz_yok" if p["lisans_onbellek"] == 1 else "ret:cihaz_yok|ret:lisans_gecersiz"
+    s.e(y + 2 * SA, "ozet_oku", cihaz="tel1", bek=b2)
+    s.e(y + 25 * SA, "ozet_oku", cihaz="tel1", bek=lambda p: "kabul" if doner(p) else "ret:cihaz_yok",
+        esli=lambda p: {"A": 1 if doner(p) else 0}, zaman=lambda p: [s.t(60)] if doner(p) else None,
+        gorunur=lambda p: AYSE_G if doner(p) else None)
+    s.giris(y + 25 * SA + 60, "tel1", "ayse", "o3", bek=lambda p: "kabul" if doner(p) else "ret:cihaz_yok")
+    s.istek(y + 25 * SA + 120, "tel1", "o3", lambda p: "kabul" if doner(p) else "ret:cihaz_yok", sirket="002",
+            yetki="kasa")
+    s.istek(y + 25 * SA + 180, "tel1", "o1", lambda p: "ret:oturum_gecersiz" if doner(p) else "ret:cihaz_yok",
+            sirket="002", yetki="kasa")
+    s.esle(y + 25 * SA + 240, "K2", "tel2b", bek="ret:kod_gecersiz", esli=lambda p: {"A": 1 if doner(p) else 0})
     return s
 
 
 def u11():
-    s = S("U11", "Lisans engellenir: kapıcı önbelleği en çok P9 kadar eski kabul eder; engel kalkınca erişim döner",
-          kaynak="iş listesi 'Nasıl bozulur?': 'kapıcı lisansı eski önbellekten kabul eder'")
+    s = S("U11", "Lisans engellenir: kapıcı önbelleği en çok P9 kadar eski kabul eder; engel 30 günden önce kalkınca "
+          "eşleme döner mi (P16)", kaynak="iş listesi 'Nasıl bozulur?': 'kapıcı lisansı eski önbellekten kabul eder'; "
+                                         "KARAR L1 'ENGELLENEN lisans → mobil hemen kapanır, kayıt 30 günde silinir'")
     s.eslenmis(0, "ayse", "tel1", "K1")
     s.e(60, "ozet_yukle", bek="kabul")
     s.e(SA, "lisans_degis", lisans={"durum": "engelli"})
     s.e(SA + 30 * DK, "ozet_oku", bek="kabul|ret:lisans_gecersiz", cihaz="tel1")
     s.e(SA + 61 * DK, "ozet_oku", cihaz="tel1",
         bek=lambda p: "ret:lisans_gecersiz" if p["lisans_onbellek"] == 1 else "kabul|ret:lisans_gecersiz")
-    s.e(SA + 25 * SA, "ozet_oku", bek="ret:lisans_gecersiz", cihaz="tel1")
+    s.e(SA + 25 * SA, "ozet_oku", bek="ret:lisans_gecersiz", cihaz="tel1", uyari=kapali_ileti(False))
     s.e(27 * SA, "lisans_degis", lisans={"durum": "gecerli"})
-    s.e(27 * SA + 25 * SA, "ozet_oku", bek="kabul", cihaz="tel1", esli={"A": 1})
+    s.e(27 * SA + 25 * SA, "ozet_oku", cihaz="tel1", bek=lambda p: "kabul" if doner(p) else "ret:cihaz_yok",
+        esli=lambda p: {"A": 1 if doner(p) else 0})
     return s
 
 
@@ -617,15 +688,16 @@ def u20():
 
 
 def u21():
-    s = S("U21", "Yıl sonu lisans bitişi, UTC ve ofsetsiz yazım", bas="2026-12-31T22:00:00+03:00",
-          ofisler={"A": ofis(lisans={"bitis": "2026-12-31T21:00:00Z"})})
+    s = S("U21", "Yıl sonu deneme bitişi (hoşgörüsüz), UTC ve ofsetsiz yazım; yeni yılda lisans alınır (P16)",
+          bas="2026-12-31T22:00:00+03:00", ofisler={"A": ofis(lisans={"plan": "deneme", "bitis": "2026-12-31T21:00:00Z"})})
     s.eslenmis(0, "ayse", "tel1", "K1")
     s.e(60, "ozet_yukle", bek="kabul")
     s.e(0, "ozet_oku", bek="kabul", cihaz="tel1", t="2026-12-31T23:59:59+03:00")
     s.e(0, "ozet_oku", bek="ret:lisans_gecersiz", cihaz="tel1", t="2026-12-31T21:00:00Z")
     s.e(0, "ozet_oku", bek="ret:lisans_gecersiz", cihaz="tel1", t="2027-01-01T00:00:01")
-    s.e(0, "lisans_degis", t="2027-01-01T00:10:00+03:00", lisans={"bitis": "2027-12-31T21:00:00Z"})
-    s.e(0, "ozet_oku", bek="kabul", cihaz="tel1", t="2027-01-02T01:00:00+03:00")
+    s.e(0, "lisans_degis", t="2027-01-01T00:10:00+03:00", lisans={"plan": "standart", "bitis": "2027-12-31T21:00:00Z"})
+    s.e(0, "ozet_oku", cihaz="tel1", t="2027-01-02T01:00:00+03:00",
+        bek=lambda p: "kabul" if doner(p) else "ret:cihaz_yok")
     return s
 
 
@@ -803,8 +875,294 @@ def u33():
     return s
 
 
+# =============================================================================================================== 2.4.8 L1
+# Kaynak: docs/2.4.8-IS-LISTESI.md "| L1 |" + "KARAR L1 (kullanıcı, 30.10.2026 ~17:45 UTC"; CLAUDE.md "ERTELENDİ → SONRAKİ
+# SÜRÜM (… 29.10.2026 ~13:05 UTC" (UYARI metinleri, 7 gün) ve "SIKIŞTIRMA ÖNCESİ DURUM 7" KARAR L1 cümlesi.
+L1_KAYNAK = ("KARAR L1 30.10.2026: 'ÜCRETLİ lisans biter → mobil 30 gün salt okunur (uyarılar) → 30. gün sonunda mobil "
+             "KAPANIR ve kayıt HEMEN silinir (toplam 30 gün)'; CLAUDE.md 29.10 UYARI metinleri")
+
+
+def _l1_giris(s, t, cihaz, kullanici, oturum, B, **k):
+    """Ücretli lisansta t anında giriş: hoşgörüde kabul + U2; sonra kayıt silinmiş (cihaz_yok) + kapanış iletisi."""
+    return s.giris(t - s.bas, cihaz, kullanici, oturum,
+                   bek=lambda p: "kabul" if ucretli_durum(B, t, p) != "kapali" else "ret:cihaz_yok",
+                   uyari=lambda p: (not7(B, t) if ucretli_durum(B, t, p) == "tam" else
+                                    hos(B, t)(p) if ucretli_durum(B, t, p) == "hosgoru" else kapali_ileti(True)(p)), **k)
+
+
+def l01():
+    BA = "2026-11-10T00:00:00+03:00"
+    B = K.zaman(BA)
+    s = S("L01", "Ücretli lisans İstanbul gece yarısı biter: 8/7 gün kala notu, bitiş anı, hoşgörü (salt okunur) N gün, 29. gün, "
+          "30. günün son anı ve sonu (P14), 31. gün; kayıt hemen silinir, yenilenince karekodla yeniden eşleme",
+          bas="2026-11-01T10:00:00+03:00", ofisler={"A": ofis(lisans={"plan": "standart", "bitis": BA})}, kaynak=L1_KAYNAK)
+
+    def a(t):
+        return t - s.bas
+    s.eslenmis(0, "ayse", "tel1", "K1", esli={"A": 1})
+    s.e(60, "ozet_yukle", bek="kabul")
+    t = B - 8 * GUN
+    s.giris(a(t), "tel1", "ayse", "o1", uyari={YOK})
+    s.e(a(t) + 10, "mobil_cihazlar_oku", bek="kabul", yapan="yon", esli={"A": 1}, uyari=not7(B, t + 10))
+    t = B - 7 * GUN - SA
+    s.giris(a(t), "tel1", "ayse", "o2", uyari=not7(B, t))
+    t = B - 7 * GUN
+    s.giris(a(t), "tel1", "ayse", "o3", uyari=not7(B, t))
+    s.e(a(t), "mobil_cihazlar_oku", bek="kabul", yapan="yon", uyari=not7(B, t))
+    t = B - 3 * GUN - 12 * SA
+    s.giris(a(t), "tel1", "ayse", "o4", uyari=not7(B, t))
+    s.e(a(t) + 10, "ozet_oku", bek="kabul", cihaz="tel1", uyari=not7(B, t + 10, False), zaman=[s.t(60)])
+    s.istek(a(t) + 20, "tel1", "o4", "kabul", sirket="002", yetki="kasa", uyari=not7(B, t + 20, False))
+    t = B - 1
+    s.giris(a(t), "tel1", "ayse", "o5", uyari=not7(B, t))
+    t = B
+    s.giris(a(t), "tel1", "ayse", "o6", uyari=hos(B, t))
+    s.istek(a(t) + 10, "tel1", "o6", "kabul", sirket="002", yetki="kasa", uyari=hos(B, t + 10, False))
+    s.istek(a(t) + 15, "tel1", "o6", "ret:salt_okunur", yol="/api/mobil/tahsilat", sirket="002", yetki="cari", yazma=True)
+    s.e(a(t) + 20, "ozet_oku", bek="kabul", cihaz="tel1", zaman=[s.t(60)], gorunur=AYSE_G, uyari=hos(B, t + 20, False))
+    s.e(a(t) + 30, "mobil_cihazlar_oku", bek="kabul", yapan="yon", esli={"A": 1}, uyari=hos(B, t + 30, False))
+    _l1_giris(s, B + 29 * GUN, "tel1", "ayse", "o7", B)
+    for i, t in enumerate((B + 30 * GUN - 1, B + 30 * GUN, B + 31 * GUN - 1, B + 31 * GUN)):
+        _l1_giris(s, t, "tel1", "ayse", f"o8{i}", B)
+    t = B + 31 * GUN + 12 * SA
+    s.e(a(t), "program_lisans_denetle")
+    s.e(a(t) + 10, "mobil_cihazlar_oku", bek="kabul", yapan="yon", esli={"A": 0}, uyari={U0, U3, YOK})
+    s.e(a(t) + 20, "ozet_yukle", bek="ret:lisans_gecersiz")
+    s.e(a(t) + 30, "ozet_oku", bek="ret:cihaz_yok", cihaz="tel1", uyari=kapali_ileti(True))
+    s.kod(a(t) + 40, "zeynep", "K2", bek="kabul|ret:lisans_gecersiz|ret:salt_okunur")
+    s.esle(a(t) + 60, "K2", "tel2", bek="ret:lisans_gecersiz", esli={"A": 0})
+    t = B + 32 * GUN
+    s.e(a(t), "lisans_degis", lisans={"bitis": "2027-11-10T00:00:00+03:00"})
+    s.e(a(t), "program_lisans_denetle")
+    t2 = t + 25 * SA
+    s.e(a(t2), "ozet_oku", bek="ret:cihaz_yok", cihaz="tel1", uyari={HER})
+    s.giris(a(t2) + 10, "tel1", "ayse", "o9", bek="ret:cihaz_yok", uyari={HER})
+    s.e(a(t2) + 20, "ozet_yukle", bek="kabul")
+    s.eslenmis(a(t2) + 30, "ayse", "tel1b", "K3", esli={"A": 1})
+    s.giris(a(t2) + 90, "tel1b", "ayse", "o10", uyari={YOK})
+    s.istek(a(t2) + 100, "tel1b", "o10", "kabul", sirket="002", yetki="kasa", uyari={YOK})
+    s.e(a(t2) + 110, "ozet_oku", bek="kabul", cihaz="tel1b", gorunur=AYSE_G, uyari={YOK})
+    return s
+
+
+def l02():
+    BM = "2026-12-15T11:30:00Z"  # İstanbul 14:30
+    B = K.zaman(BM)
+    s = S("L02", "Pro lisans gün ortasında biter (UTC yazımı); hoşgörü gece yarısını ve yıl sonunu geçer (ofsetsiz yazım); "
+          "P14 sayımlarının sınırları (sure 14 Oca 14:30, gun_sonu 15 Oca 00:00, gun_sonu_dahil 14 Oca 00:00)",
+          bas="2026-12-01T09:00:00+03:00", ofisler={"A": ofis(lisans={"plan": "pro", "bitis": BM})}, kaynak=L1_KAYNAK)
+    s.eslenmis(0, "zeynep", "tel1", "K1")
+    s.e(60, "ozet_yukle", bek="kabul")
+    for i, t in enumerate((B - 8 * GUN, B - 7 * GUN - 1, B - 7 * GUN, B - 1)):
+        s.giris(t - s.bas, "tel1", "zeynep", f"a{i}", uyari=not7(B, t))
+    for i, yazim in enumerate(("2026-12-15T14:30:00+03:00", "2026-12-31T20:59:59Z", "2027-01-01T00:00:01")):
+        t = K.zaman(yazim)
+        s.giris(0, "tel1", "zeynep", f"b{i}", t=yazim, uyari=hos(B, t))
+    s.istek(0, "tel1", "b2", "kabul", t="2027-01-01T00:05:00", sirket="001", yetki="taksit",
+            uyari=hos(B, K.zaman("2027-01-01T00:05:00"), False))
+    for i, yazim in enumerate(("2027-01-13T14:30:00+03:00", "2027-01-13T23:59:59+03:00", "2027-01-14T00:00:00+03:00",
+                               "2027-01-14T14:29:59+03:00", "2027-01-14T14:30:00+03:00", "2027-01-14T23:59:59+03:00",
+                               "2027-01-15T00:00:00+03:00")):
+        _l1_giris(s, K.zaman(yazim), "tel1", "zeynep", f"c{i}", B)
+    s.e(0, "ozet_oku", t="2027-01-16T10:00:00+03:00", bek="ret:cihaz_yok", cihaz="tel1", uyari=kapali_ileti(True))
+    return s
+
+
+def l03():
+    BA = "2026-11-05T10:00:00+03:00"
+    B = K.zaman(BA)
+    s = S("L03", "Hoşgörüde: canlı ve özet okunur, yazma reddedilir; yeni karekod (V25) ve eşleme (P15); cihaz silinir (V8); "
+          "sunucu kapalıyken son özet; hoşgörüde yenilenince tam erişim, yeniden eşleme ve uyarı yok",
+          ofisler={"A": ofis(lisans={"bitis": BA})}, kaynak=L1_KAYNAK + "; 29.10: 'salt okunur görüntüleme (canlı + son "
+                                                                       "özet; yazma programın salt okunur kuralıyla kapalı)'")
+
+    def a(t):
+        return t - s.bas
+    reddet = (lambda p: p["hosgoruda_esleme"] == "reddet")
+    s.eslenmis(0, "ayse", "tel1", "K1")
+    s.eslenmis(60, "yon", "tel2", "K2", esli={"A": 2})
+    s.e(120, "ozet_yukle", bek="kabul")
+    t = B + GUN
+    s.giris(a(t), "tel2", "yon", "o1", uyari=hos(B, t))
+    s.istek(a(t) + 10, "tel2", "o1", "kabul", sirket="001", yetki="kasa", uyari=hos(B, t + 10, False))
+    s.istek(a(t) + 20, "tel2", "o1", "ret:salt_okunur", yol="/api/mobil/tahsilat", sirket="001", yetki="tahsilat",
+            yazma=True)
+    s.istek(a(t) + 30, "tel2", "o1", "kabul", sirket="002", yetki="anlik_durum", uyari=hos(B, t + 30, False))
+    s.e(a(t) + 40, "ozet_yaz", bek="ret:yazma_yasak", cihaz="tel2")
+    s.e(a(t) + 50, "ozet_yukle", bek="kabul|ret:lisans_gecersiz|ret:salt_okunur")
+    s.kod(a(t) + 60, "zeynep", "K3", bek="kabul|ret:lisans_gecersiz|ret:salt_okunur")
+    s.esle(a(t) + 90, "K3", "tel3",
+           bek=lambda p: "ret:lisans_gecersiz|ret:salt_okunur" if reddet(p) else "kabul|ret:kod_gecersiz",
+           esli=lambda p: [{"A": 2}] if reddet(p) else [{"A": 2}, {"A": 3}])
+    s.e(a(t) + 120, "cihaz_sil", bek="kabul", yapan="yon", cihaz="tel1",
+        esli=lambda p: [{"A": 1}] if reddet(p) else [{"A": 1}, {"A": 2}])
+    s.e(a(t) + 130, "ozet_oku", bek="ret:cihaz_yok", cihaz="tel1", uyari={HER})
+    s.e(a(t) + 200, "sunucu", durum="kapali")
+    s.e(a(t) + 210, "ozet_oku", bek="kabul", cihaz="tel2", uyari=hos(B, t + 210, False))
+    s.giris(a(t) + 220, "tel2", "yon", "o2", bek="ret:sunucu_kapali")
+    s.e(a(t) + 300, "sunucu", durum="acik")
+    t2 = B + 10 * GUN
+    s.e(a(t2), "lisans_degis", lisans={"bitis": "2027-11-05T10:00:00+03:00"})
+    s.e(a(t2), "program_lisans_denetle")
+    t3 = t2 + 25 * SA
+    s.giris(a(t3), "tel2", "yon", "o3", uyari={YOK})
+    s.istek(a(t3) + 10, "tel2", "o3", "kabul", sirket="001", yetki="kasa", uyari={YOK})
+    s.e(a(t3) + 20, "ozet_oku", bek="kabul", cihaz="tel2", uyari={YOK})
+    s.e(a(t3) + 30, "mobil_cihazlar_oku", bek="kabul", yapan="yon", uyari={YOK},
+        esli=lambda p: [{"A": 1}] if reddet(p) else [{"A": 1}, {"A": 2}])
+    return s
+
+
+def l04():
+    BA = "2026-11-09T00:00:00+03:00"
+    B = K.zaman(BA)
+    s = S("L04", "Deneme biter → mobil HEMEN kapanır (A ve B); A 30 gün dolmadan lisans alır (P16); B'de 30 gün dolar, kapıcı "
+          "temizliği (V27, P14: sure/dahil 9 Ara 00:00, gun_sonu 10 Ara 00:00) → silinir → lisansla karekodla yeniden eşleme",
+          bas="2026-11-02T10:00:00+03:00",
+          ofisler={"A": ofis(lisans={"plan": "deneme", "bitis": BA}), "B": ofis(lisans={"plan": "deneme", "bitis": BA})},
+          kaynak="KARAR L1: 'DENEME biter → mobil HEMEN kapanır; 30 gün içinde lisans alınmazsa kapıcıdaki mobil kaydı "
+                 "(ofis, cihazlar, R2 özet, tünel, DNS) silinir … Sonradan lisans alınır … karekodla yeniden eşlenir'")
+
+    def a(t):
+        return t - s.bas
+
+    def z(m):
+        return K.zaman(m) - s.bas
+    gs = (lambda p: p["otuz_gun"] == "gun_sonu")
+    uyg = (lambda p: p["kapanis_iletisi"] == "uygulamada")
+    s.eslenmis(0, "ayse", "tel1", "K1", esli={"A": 1, "B": 0})
+    s.kod(60, "mehmet", "KB1", ofis="B")
+    s.esle(90, "KB1", "telB", ofis="B", esli={"A": 1, "B": 1})
+    s.e(120, "ozet_yukle", bek="kabul")
+    s.e(121, "ozet_yukle", bek="kabul", ofis="B")
+    t = B - 6 * GUN
+    s.giris(a(t), "tel1", "ayse", "o1", uyari=not7(B, t, False))
+    s.e(a(t) + 10, "mobil_cihazlar_oku", bek="kabul", yapan="yon", uyari=not7(B, t + 10, False))
+    s.giris(a(B - 1), "tel1", "ayse", "o2", uyari=not7(B, B - 1, False))
+    s.e(a(B), "ozet_oku", bek="ret:lisans_gecersiz", cihaz="tel1", uyari=kapali_ileti(False))
+    s.istek(a(B) + 1, "tel1", "o2", "ret:lisans_gecersiz", sirket="002", yetki="kasa", uyari=kapali_ileti(False))
+    s.giris(a(B) + 2, "tel1", "ayse", "o3", bek="ret:lisans_gecersiz", uyari=kapali_ileti(False))
+    s.e(a(B) + 3, "ozet_oku", bek="ret:lisans_gecersiz", cihaz="telB", ofis="B", uyari=kapali_ileti(False))
+    s.e(a(B) + 10, "mobil_cihazlar_oku", bek="kabul", yapan="yon", esli={"A": 1, "B": 1}, uyari={U0, U3, YOK})
+    t = B + 10 * GUN
+    s.e(a(t), "lisans_degis", lisans={"plan": "standart", "bitis": "2027-11-09T00:00:00+03:00"})
+    s.e(a(t), "program_lisans_denetle")
+    t2 = t + 25 * SA
+    s.e(a(t2), "ozet_oku", cihaz="tel1", bek=lambda p: "kabul" if doner(p) else "ret:cihaz_yok",
+        uyari=lambda p: {YOK} if doner(p) else {HER})
+    s.giris(a(t2) + 10, "tel1", "ayse", "o4", bek=lambda p: "kabul" if doner(p) else "ret:cihaz_yok",
+            uyari=lambda p: {YOK} if doner(p) else {HER}, esli=lambda p: {"A": 1 if doner(p) else 0, "B": 1})
+    s.e(z("2026-12-08T23:00:00+03:00"), "kapici_temizlik")
+    s.e(z("2026-12-08T23:30:00+03:00"), "ozet_oku", ofis="B", cihaz="telB", bek="ret:lisans_gecersiz",
+        uyari=kapali_ileti(False))
+    s.e(z("2026-12-09T00:00:00+03:00"), "ozet_oku", ofis="B", cihaz="telB",
+        bek=lambda p: "ret:lisans_gecersiz" if gs(p) else "ret:cihaz_yok|ret:lisans_gecersiz",
+        uyari=lambda p: {HER} if uyg(p) else ({U0, U3} if gs(p) else {U0, U3, HER}))
+    s.e(z("2026-12-09T12:00:00+03:00"), "kapici_temizlik")
+    s.e(z("2026-12-09T13:00:00+03:00"), "ozet_oku", ofis="B", cihaz="telB",
+        bek=lambda p: "ret:lisans_gecersiz" if gs(p) else "ret:cihaz_yok",
+        uyari=lambda p: {U0, U3} if (gs(p) and not uyg(p)) else {HER})
+    s.e(z("2026-12-10T00:00:00+03:00"), "ozet_oku", ofis="B", cihaz="telB",
+        bek=lambda p: "ret:cihaz_yok|ret:lisans_gecersiz" if gs(p) else "ret:cihaz_yok",
+        uyari=lambda p: {U0, U3, HER} if (gs(p) and not uyg(p)) else {HER})
+    s.e(z("2026-12-10T13:00:00+03:00"), "kapici_temizlik")
+    s.e(z("2026-12-10T14:00:00+03:00"), "ozet_oku", ofis="B", cihaz="telB", bek="ret:cihaz_yok", uyari={HER})
+    s.e(z("2026-12-10T15:00:00+03:00"), "program_lisans_denetle", ofis="B")
+    s.e(z("2026-12-10T15:00:10+03:00"), "mobil_cihazlar_oku", ofis="B", bek="kabul", yapan="yon", esli={"B": 0},
+        uyari={U0, U3, YOK})
+    t = K.zaman("2026-12-11T10:00:00+03:00")
+    s.e(a(t), "lisans_degis", ofis="B", lisans={"plan": "standart", "bitis": "2027-12-11T10:00:00+03:00"})
+    s.e(a(t), "program_lisans_denetle", ofis="B")
+    t2 = t + 25 * SA
+    s.e(a(t2), "ozet_oku", ofis="B", cihaz="telB", bek="ret:cihaz_yok", uyari={HER})
+    s.e(a(t2) + 10, "ozet_yukle", ofis="B", bek="kabul")
+    s.kod(a(t2) + 20, "mehmet", "KB2", ofis="B")
+    s.esle(a(t2) + 50, "KB2", "telB2", ofis="B", esli=lambda p: {"A": 1 if doner(p) else 0, "B": 1})
+    s.giris(a(t2) + 60, "telB2", "mehmet", "oB", ofis="B", uyari={YOK})
+    s.e(a(t2) + 70, "ozet_oku", ofis="B", cihaz="telB2", bek="kabul", gorunur={"001": ["stok"]}, uyari={YOK})
+    return s
+
+
+def l05():
+    BB = "2026-11-04T10:00:00+03:00"
+    B = K.zaman(BB)
+    s = S("L05", "Engellenen lisans: hemen kapanır (hoşgörü yok), 29. gün kayıt durur, 30 gün + temizlik → silinir (P14), engel "
+          "kalkınca karekodla yeniden eşleme; ücretli hoşgörüdeyken engellenen ofis de hemen kapanır",
+          ofisler={"A": ofis(), "B": ofis(lisans={"bitis": BB})},
+          kaynak="KARAR L1: 'ENGELLENEN lisans → mobil hemen kapanır, kayıt 30 günde silinir'; 29.10: 'Engellenen lisans … "
+                 "hoşgörü ALMAZ'")
+
+    def z(m):
+        return K.zaman(m) - s.bas
+    gs = (lambda p: p["otuz_gun"] == "gun_sonu")
+    s.eslenmis(0, "ayse", "tel1", "K1")
+    s.kod(10, "zeynep", "KB", ofis="B")
+    s.esle(20, "KB", "telB", ofis="B", esli={"A": 0, "B": 1})
+    s.e(60, "ozet_yukle", bek="kabul")
+    s.e(61, "ozet_yukle", bek="kabul", ofis="B")
+    s.e(SA, "lisans_degis", lisans={"durum": "engelli"})
+    s.e(SA, "program_lisans_denetle")
+    s.e(26 * SA, "ozet_oku", cihaz="tel1", bek="ret:lisans_gecersiz", uyari=kapali_ileti(False))
+    s.giris(26 * SA + 10, "tel1", "ayse", "o1", bek="ret:lisans_gecersiz", uyari=kapali_ileti(False))
+    s.e(26 * SA + 20, "mobil_cihazlar_oku", bek="kabul", yapan="yon", esli={"A": 1}, uyari={U0, U3, YOK})
+    s.e(SA + 29 * GUN, "kapici_temizlik")
+    s.e(SA + 29 * GUN + 60, "ozet_oku", cihaz="tel1", bek="ret:lisans_gecersiz", uyari=kapali_ileti(False))
+    s.e(z("2026-12-02T12:00:00+03:00"), "kapici_temizlik")
+    s.e(z("2026-12-02T13:00:00+03:00"), "ozet_oku", cihaz="tel1",
+        bek=lambda p: "ret:lisans_gecersiz" if gs(p) else "ret:cihaz_yok",
+        uyari=lambda p: kapali_ileti(False)(p) if gs(p) else {HER})
+    s.e(z("2026-12-03T12:00:00+03:00"), "kapici_temizlik")
+    s.e(z("2026-12-03T13:00:00+03:00"), "ozet_oku", cihaz="tel1", bek="ret:cihaz_yok", uyari={HER})
+    s.e(z("2026-12-04T10:00:00+03:00"), "lisans_degis", lisans={"durum": "gecerli"})
+    s.e(z("2026-12-04T10:00:00+03:00"), "program_lisans_denetle")
+    s.e(z("2026-12-05T11:00:00+03:00"), "ozet_oku", cihaz="tel1", bek="ret:cihaz_yok", uyari={HER})
+    s.e(z("2026-12-05T11:00:05+03:00"), "mobil_cihazlar_oku", bek="kabul", yapan="yon", esli={"A": 0}, uyari={YOK})
+    s.eslenmis(z("2026-12-05T11:10:00+03:00"), "ayse", "tel1b", "K2", esli={"A": 1})
+    s.giris(z("2026-12-05T11:12:00+03:00"), "tel1b", "ayse", "o2", uyari={YOK})
+    t = B + GUN
+    s.e(t - s.bas, "ozet_oku", ofis="B", cihaz="telB", bek="kabul", uyari=hos(B, t, False))
+    s.e(B + 2 * GUN - s.bas, "lisans_degis", ofis="B", lisans={"durum": "engelli"})
+    s.e(B + 2 * GUN - s.bas, "program_lisans_denetle", ofis="B")
+    t = B + 2 * GUN + 25 * SA
+    s.e(t - s.bas, "ozet_oku", ofis="B", cihaz="telB", bek="ret:lisans_gecersiz", uyari=kapali_ileti(False))
+    s.giris(t - s.bas + 10, "telB", "zeynep", "oB", ofis="B", bek="ret:lisans_gecersiz", uyari=kapali_ileti(False))
+    return s
+
+
+def l06():
+    BA = "2026-11-12T00:00:00+03:00"
+    B = K.zaman(BA)
+    s = S("L06", "Masaüstü salt okunur ile mobilin ayrımı (ücretli): bitince masaüstü yazamaz, mobil 30 gün okur; sonra mobil "
+          "kapanır, masaüstü yine salt okunur; Yönetim → Mobil Cihazlar'da 5 gün kala notu",
+          ofisler={"A": ofis(lisans={"bitis": BA})},
+          kaynak="CLAUDE.md 29.10: 'ÜCRETLİ LİSANS … bitince masaüstü bugünkü gibi salt okunur; MOBİL 30 GÜN daha çalışır'; "
+                 "'bitişe 7 gün kala Yönetim → Mobil Cihazlar + telefonda'")
+
+    def a(t):
+        return t - s.bas
+    s.eslenmis(0, "ayse", "tel1", "K1")
+    s.e(60, "ozet_yukle", bek="kabul")
+    s.e(120, "masaustu_yazma", bek="kabul", yapan="yon")
+    t = B - 5 * GUN
+    s.e(a(t), "mobil_cihazlar_oku", bek="kabul", yapan="yon", uyari=not7(B, t))
+    s.e(a(t) + 10, "masaustu_yazma", bek="kabul", yapan="yon")
+    t = B + GUN
+    s.e(a(t), "masaustu_yazma", bek="ret:salt_okunur", yapan="yon")
+    s.e(a(t) + 10, "ozet_oku", bek="kabul", cihaz="tel1", uyari=hos(B, t + 10, False))
+    s.giris(a(t) + 20, "tel1", "ayse", "o1", uyari=hos(B, t + 20))
+    s.e(a(t) + 30, "mobil_cihazlar_oku", bek="kabul", yapan="yon", uyari=hos(B, t + 30, False))
+    t = B + 32 * GUN
+    s.e(a(t), "masaustu_yazma", bek="ret:salt_okunur", yapan="yon")
+    s.e(a(t) + 10, "ozet_oku", bek="ret:cihaz_yok", cihaz="tel1", uyari=kapali_ileti(True))
+    s.e(a(t) + 20, "mobil_cihazlar_oku", bek="kabul", yapan="yon", uyari={U0, U3, YOK})
+    return s
+
+
+L1_SENARYOLARI = [l01, l02, l03, l04, l05, l06]
+
+
 EL_SENARYOLARI = [u01, u02, u03, u04, u05, u06, u07, u08, u09, u10, u11, u12, u13, u14, u15, u16, u17, u18, u19,
-                  u20, u21, u22, u23, u24, u25, u26, u27, u28, u29, u30, u31, u32, u33]
+                  u20, u21, u22, u23, u24, u25, u26, u27, u28, u29, u30, u31, u32, u33] + L1_SENARYOLARI
 
 
 # ===============================================================================================================
@@ -1082,14 +1440,49 @@ class Uretici:
         T2 = T + 26 * SA
         self.e(o, T2, "lisans_degis", lisans={"durum": "gecerli"})
         self.e(o, T2, "program_lisans_denetle")
-        self.e(o, T2 + 30 * DK, "ozet_oku", bek="kabul|ret:lisans_gecersiz", cihaz=c)
-        self.e(o, T2 + 61 * DK, "ozet_oku", cihaz=c, bek=lambda p: "kabul" if bir(p) else "kabul|ret:lisans_gecersiz")
-        self.e(o, T2 + 25 * SA, "ozet_oku", bek="kabul", cihaz=c, zaman=[self.s.t(t + 60)], esli={o: 1})
-        self.sil(o, T2 + 25 * SA + 60, c, esli={o: 0})
+        # P16: engel 30 günden önce kalktı — eşleme döner mi, karekodla yeniden mi (KARAR L1 son cümlesi)
+        ret_ = (lambda p: "ret:lisans_gecersiz" if doner(p) else "ret:cihaz_yok|ret:lisans_gecersiz")
+        self.e(o, T2 + 30 * DK, "ozet_oku", cihaz=c,
+               bek=lambda p: "kabul|ret:lisans_gecersiz" if doner(p) else "ret:cihaz_yok|ret:lisans_gecersiz")
+        self.e(o, T2 + 61 * DK, "ozet_oku", cihaz=c,
+               bek=lambda p: ("kabul" if doner(p) else "ret:cihaz_yok") if bir(p)
+               else ("kabul|" + ret_(p) if doner(p) else ret_(p)))
+        self.e(o, T2 + 25 * SA, "ozet_oku", cihaz=c, bek=lambda p: "kabul" if doner(p) else "ret:cihaz_yok",
+               zaman=lambda p: [self.s.t(t + 60)] if doner(p) else None, esli=lambda p: {o: 1 if doner(p) else 0})
+        self.sil(o, T2 + 25 * SA + 60, c, bek=lambda p: "kabul" if doner(p) else "ret:cihaz_yok", esli={o: 0})
         return T2 + 25 * SA + 120
 
+    def f_hosgoru(self, o, t):
+        """2.4.8 L1: ücretli lisans biter → 30 gün salt okunur (okuma kabul, yazma ret) → kapanır ve kayıt HEMEN
+        silinir → yenilenince karekodla yeniden eşleme. Gözlem noktaları P14'ün her sayımında aynı sonucu verir."""
+        u = self.r.choice(UZAK)
+        c = self.eslenmis(o, t, u)
+        self.e(o, t + 40, "ozet_yukle", bek="kabul")
+        B = t + 2 * GUN + self.r.choice([0, 7 * SA, 13 * SA + 17 * DK])
+        self.e(o, t + 60, "lisans_degis", lisans={"bitis": self.s.t(B)})
+        self.e(o, t + 60, "program_lisans_denetle")
+        h = B + self.r.choice([1, 5 * SA, GUN, 15 * GUN, 28 * GUN + 23 * SA])
+        ot = self.ad(o + "o")
+        sk = g_etkin(u)[0]
+        self.e(o, h, "giris", bek="kabul", cihaz=c, kullanici=u, parola="dogru", oturum=ot)
+        self.e(o, h + 10, "istek", bek=g_istek(u, sk, None), cihaz=c, oturum=ot, yol="/api/mobil/rapor", sirket=sk)
+        self.e(o, h + 20, "istek", cihaz=c, oturum=ot, yol="/api/mobil/tahsilat", sirket=sk, yetki="tahsilat",
+               yazma=True, bek="ret:salt_okunur" if STD[u].get("rol") == "yonetici" else "ret:yetki_yok")
+        eski = (lambda p: (h + 30) - (t + 40) >= 30 * GUN and p["ozet_yas_siniri"] == 30)  # P10
+        self.e(o, h + 30, "ozet_oku", cihaz=c, bek=lambda p: "ret:ozet_eski" if eski(p) else "kabul",
+               zaman=lambda p: None if eski(p) else [self.s.t(t + 40)], gorunur=lambda p: None if eski(p) else g_gorunur(u))
+        z = B + 32 * GUN
+        self.e(o, z, "ozet_oku", bek="ret:cihaz_yok", cihaz=c)
+        self.e(o, z + 10, "giris", bek="ret:cihaz_yok", cihaz=c, kullanici=u, parola="dogru", oturum=self.ad(o + "o"))
+        self.e(o, z + 60, "lisans_degis", lisans={"bitis": None})
+        self.e(o, z + 60, "program_lisans_denetle")
+        c2 = self.eslenmis(o, z + 25 * SA, u)
+        self.e(o, z + 25 * SA + 40, "ozet_oku", bek="ret:cihaz_yok", cihaz=c)
+        self.sil(o, z + 25 * SA + 60, c2, esli={o: 0})
+        return z + 25 * SA + 100
+
     AKISLAR = ["f_sure", "f_tekrar", "f_yenikod", "f_dolu", "f_eszamanli", "f_yetki", "f_yol", "f_izin", "f_oturum",
-               "f_deneme", "f_sunucu", "f_lisans"]
+               "f_deneme", "f_sunucu", "f_lisans", "f_hosgoru"]
 
     def kur(self):
         for o in self.ofisler:
@@ -1160,6 +1553,11 @@ def denetle(senaryolar, mut=None, sabit=None, ayrinti=True):
     return sonuclar, toplam_fark
 
 
+SECILEN_247 = ("kod_sure=5;yeni_kod_eskiyi=iptal_eder;sinir_dolunca=reddet;uretimde_sinir=denetler;"
+               "sinir_dusunce=mevcutlar_kalir;cihaz_kullanici=yalniz_eslenen;oturum_bosta=15;oturum_mutlak=12;"
+               "lisans_onbellek=1;ozet_yas_siniri=yok;deneme_siniri=5;deneme_anahtari=kullanici;kilit_dk=15")
+
+
 def kabul_json(sonuclar):
     ilgili = {}
     senaryolar = []
@@ -1182,11 +1580,14 @@ def kabul_json(sonuclar):
         senaryolar.append(d)
     return {
         "dil": K.DIL,
-        "aciklama": "Mobil uzaktan erişim (2.4.7 M2 + M3/M4 erişim denetimi) temiz oda kâhini; README.md",
+        "aciklama": "Mobil uzaktan erişim (2.4.7 M2 + M3/M4 erişim denetimi; 2.4.8 L1 lisans hoşgörüsü, uyarılar, "
+                     "kapıcı kaydının silinmesi) temiz oda kâhini; README.md",
         "parametreler": K.PARAMETRELER,
         "oneri_birlesim": K.birlesim_metni(K.oneri_birlesimi()),
-        "secilen_birlesim": None,
-        "secilen_birlesim_notu": "AÇIK SORULAR kullanıcıya soruldu; yanıta kadar karşılaştırma öneri birleşimiyle yapılır",
+        # P1–P13 2.4.7'de seçildi (öneri birleşimi); P14–P17 (2.4.8 L1) kullanıcı kararı bekliyor → karşılaştırmada öneri
+        "secilen_birlesim": SECILEN_247,
+        "secilen_birlesim_notu": "P1–P13: 2.4.7'de seçildi. P14–P17 (2.4.8 L1, README 'AÇIK SORULAR'): kullanıcıya "
+                                 "sorulacak; yanıta kadar karşılaştırma öneri değeriyle yapılır",
         "senaryolar": senaryolar,
     }
 

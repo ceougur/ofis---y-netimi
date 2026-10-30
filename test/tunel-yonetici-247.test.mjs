@@ -189,6 +189,32 @@ describe("M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte clo
     await until(async () => (await status()).state === "connected", 15_000, "yeniden Bağlı");
   });
 
+  // 2.4.8 L1 (ürün sahibi kararı "KARAR L1"): ücretli lisans bitince mobil 30 gün salt okunur sürer — tünel AÇIK kalır (kapıcı ve uzak dinleyiciyle aynı kural,
+  // lib/license.mjs mobileRightOf); deneme bitince ve hoşgörü sonunda kapanır.
+  test("6b. ücretli lisansın 30 günlük hoşgörüsünde tünel açık kalır; hoşgörü bitince ve süresi dolmuş denemede kapanır", async () => {
+    const original = server.app.license.status;
+    const simdi = Date.now();
+    const bitmis = (kind, gun) => () => ({ ...original(), writable: false, state: "expired", kind, expiresAt: new Date(simdi - gun * 86_400_000).toISOString(), effectiveNow: new Date(simdi).toISOString() });
+    try {
+      server.app.license.status = bitmis("license", 1);
+      await wait(400);
+      for (let i = 0; i < 4; i += 1) {
+        await server.app.context.tunnel.tick();
+        assert.equal((await status()).state, "connected", `hoşgörüde (bitişten 1 gün sonra) tünel bağlı kalmalı: ${JSON.stringify(await status())}`);
+      }
+      server.app.license.status = bitmis("license", 31);
+      await until(async () => (await status()).state === "off", 10_000, "hoşgörü sonunda Kapalı (lisans)");
+      assert.match((await status()).reason, /Lisans geçerli değil/);
+      server.app.license.status = original;
+      await until(async () => (await status()).state === "connected", 15_000, "yeniden Bağlı");
+      server.app.license.status = bitmis("trial", 1);
+      await until(async () => (await status()).state === "off", 10_000, "deneme bitince Kapalı");
+    } finally {
+      server.app.license.status = original;
+    }
+    await until(async () => (await status()).state === "connected", 15_000, "yeniden Bağlı");
+  });
+
   test("7. bağlayıcı çökerse yeniden başlatılır (Bağlanıyor → Bağlı)", async () => {
     const pid = server.app.context.tunnel.pid();
     process.kill(pid, "SIGKILL");
