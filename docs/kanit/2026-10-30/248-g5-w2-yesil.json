@@ -1,0 +1,32 @@
+{
+  "ad": "248-g5-w2-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-w2-cekirdek-248.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-w2-surec-olumu-248.test.mjs test/whatsapp-w1-baglanti.test.mjs test/whatsapp-213.test.mjs test/whatsapp-meta-graph.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "1752ffedaeac666b0d31784e2f7c42d3fbc23dd2",
+  "dal": "is/cekirdek-248",
+  "kirli": 16,
+  "izlenmeyen": 31,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T15:27:59.747Z",
+  "sure_sn": 33,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 74,
+    "gecen": 74,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-w2-yesil.log",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "d266446b1c3bde5faae24bf1f15e60093f23206622a519dc77093c08571f990a",
+  "ham_cikti_bayt": 29889
+}

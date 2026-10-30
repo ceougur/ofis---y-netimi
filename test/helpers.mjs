@@ -65,6 +65,11 @@ export async function startTestServer(options = {}) {
     // Verilmezse adres boştur, WhatsApp API'ye istek gitmez. whatsappTimeoutMs: Meta zaman aşımı (üretimde 15 sn). log: günlüğü yakalayan testler (belirteç izi).
     ...(options.whatsappGraphUrl ? { whatsappGraphUrl: options.whatsappGraphUrl } : {}),
     ...(options.whatsappTimeoutMs ? { whatsappTimeoutMs: options.whatsappTimeoutMs } : {}),
+    // 2.4.8 W2: gönderim işçisi testlerde ELLE sürülür (zamanlayıcı yarışı yok — ders 20); kendi zamanlayıcısını sınayan test whatsappWorker: "auto" verir.
+    whatsappWorker: options.whatsappWorker ?? "manual",
+    ...(options.whatsappGapMs !== undefined ? { whatsappGapMs: options.whatsappGapMs } : {}),
+    ...(options.whatsappFault ? { whatsappFault: options.whatsappFault } : {}),
+    ...(options.whatsappLedgerFault ? { whatsappLedgerFault: options.whatsappLedgerFault } : {}),
     ...(options.log ? { log: options.log } : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.

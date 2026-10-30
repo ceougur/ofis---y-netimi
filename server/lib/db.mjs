@@ -38,7 +38,9 @@ export function createStore(db) {
   // listede olmayan kolon (type, status, deleted_at…) ya da çözülemeyen SET ifadesi yine finansal sayılır.
   const INFO_COLUMNS = {
     accounts: new Set(["ref_no", "name", "phone", "email", "address", "registered_on", "group_id", "subgroup_id", "note", "fields_json", "case_key", "case_source", "case_title", "updated_by", "updated_at",
-      "tax_no", "tax_office", "mersis_no", "trade_registry", "party_kind", "first_name", "family_name", "city", "district", "postal_code", "country", "website", "iban", "due_days", "e_invoice", "e_alias", "e_profile"]),
+      "tax_no", "tax_office", "mersis_no", "trade_registry", "party_kind", "first_name", "family_name", "city", "district", "postal_code", "country", "website", "iban", "due_days", "e_invoice", "e_alias", "e_profile",
+      // 2.4.8 W2: "WhatsApp Mesajı İstemiyor" (toplu WhatsApp gönderiminden çıkarır; defteri değiştirmez).
+      "wa_opt_out"]),
     // v2.1.0 (§5.5): işlem başlığının açıklaması ve karşı taraf metni; hesap ve POS kartlarının adı, banka bilgisi, sırası.
     fin_events: new Set(["description", "reference", "counter_name", "counter_iban", "channel", "updated_by", "updated_at"]),
     // v2.2.0 (İz 2): hesabın kullanım işaretleri, kartın bağlı bankası ve son 4 hanesi de bilgi alanıdır (yevmiyeyi değiştirmez).

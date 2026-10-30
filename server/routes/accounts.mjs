@@ -98,6 +98,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       a.note, a.fields_json AS fieldsJson, a.case_key AS caseKey, a.case_source AS caseSource, a.case_title AS caseTitle, a.status,
       a.tax_no AS taxNo, a.tax_office AS taxOffice, a.mersis_no AS mersisNo, a.trade_registry AS tradeRegistry, a.party_kind AS partyKind, a.first_name AS firstName, a.family_name AS familyName,
       a.city, a.district, a.postal_code AS postalCode, a.country, a.website, a.iban, a.due_days AS dueDays, a.e_invoice AS eInvoice, a.e_alias AS eAlias, a.e_profile AS eProfile,
+      a.wa_opt_out AS waOptOut,
       a.created_by AS createdBy, a.created_at AS createdAt, a.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
       COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName
     FROM accounts a LEFT JOIN users u ON u.id = a.created_by LEFT JOIN plan_groups g ON g.id = a.group_id LEFT JOIN plan_groups s ON s.id = a.subgroup_id`;
@@ -520,8 +521,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       input.caseKey || "", input.caseKey ? input.caseSource || currentSource() : "", input.caseKey ? input.caseTitle || "" : "", input.status || "active", user.id, now(), now(),
     );
     if (input.taxNo !== undefined) writeTax(id, input);
+    if (input.waOptOut) store.run("UPDATE accounts SET wa_opt_out = 1 WHERE id = ?", id);
     return id;
   }
+  // 2.4.8 W2: "WhatsApp Mesajı İstemiyor" (accounts.wa_opt_out; bilgi alanı — defteri ve mutabakatı değiştirmez, lib/db.mjs INFO_COLUMNS). Gövdede
+  // anahtar yoksa önceki değer kalır (Pasife Al gibi kısmi PUT'lar işareti silmez).
+  const optOutOf = (body, previous = 0) => (body && Object.hasOwn(body, "waOptOut") ? (body.waOptOut === true || body.waOptOut === 1 || body.waOptOut === "1" ? 1 : 0) : Number(previous) === 1 ? 1 : 0);
 
   // Açılış bakiyesinin yönü (v2.0.13). "auto": türe göre — müşteride artı tutar Borçlu (bize borçlu), tedarikçide artı tutar
   // Alacaklı (tedarikçiye borcumuz; tedarikçi listelerinde bakiye böyle yazılır). "debt"/"credit": kullanıcı seçer.
@@ -560,7 +565,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const user = auth.requirePermission(req, "accounts.manage");
     const body = await readJson(req);
     const result = store.tx(() => {
-      const input = accountInput(body, user);
+      const input = { ...accountInput(body, user), waOptOut: optOutOf(body) };
       if (input.refNo && !freeRef(input.refNo)) throw new HttpError(409, `${input.refNo} numarası başka bir caride kullanılıyor.`);
       // Açılış bakiyesi: ör. önceki programdan devreden borç (+) ya da alacak (−).
       const opening = parseAmount(body.openingBalance);
@@ -604,8 +609,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       );
       if (input.type !== previous.type || input.status !== previous.status) store.run("UPDATE accounts SET type = ?, status = ? WHERE id = ?", input.type, input.status, previous.id);
       writeTax(previous.id, input);
+      const waOptOut = optOutOf(body, previous.waOptOut);
+      if (waOptOut !== Number(previous.waOptOut || 0)) store.run("UPDATE accounts SET wa_opt_out = ?, updated_by = ?, updated_at = ? WHERE id = ?", waOptOut, user.id, now(), previous.id);
       plans()?.followAccount?.(previous.id, { name: previous.name, phone: previous.phone }, { name: input.name, phone: input.phone });
-      audit(user, "account.updated", previous.id, { previous: { name: previous.name, phone: previous.phone, status: previous.status }, name: input.name, phone: input.phone, status: input.status });
+      audit(user, "account.updated", previous.id, { previous: { name: previous.name, phone: previous.phone, status: previous.status, ...(waOptOut !== Number(previous.waOptOut || 0) ? { waOptOut: Number(previous.waOptOut || 0) } : {}) }, name: input.name, phone: input.phone, status: input.status, ...(waOptOut !== Number(previous.waOptOut || 0) ? { waOptOut } : {}) });
       dueChanged = setOpeningDue(user, previous.id, body);
       return detail(previous.id, user);
     });

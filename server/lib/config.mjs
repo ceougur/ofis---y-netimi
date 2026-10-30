@@ -140,6 +140,12 @@ export function loadConfig(overrides = {}) {
     ).replace(/\/+$/, ""),
     // Meta isteklerinin zaman aşımı (üretimde 15 sn, lib/whatsapp/meta-graph.mjs); yalnız testler kısaltır, ortam değişkeni yok.
     whatsappTimeoutMs: Number.isFinite(overrides.whatsappTimeoutMs) && overrides.whatsappTimeoutMs > 0 ? overrides.whatsappTimeoutMs : undefined,
+    // 2.4.8 W2 (lib/whatsapp/scheduler.mjs): iletiler arası bekleme (üretimde ~1 sn) ve işçinin kendi zamanlayıcısı. Yalnız programdan (testler: whatsappWorker
+    // "manual" → zamanlayıcı yok, test runOnce/drain ile sürer; whatsappGapMs kısaltır); ortam değişkeni yok. whatsappFault: testlerde kesinti noktası.
+    whatsappGapMs: Number.isFinite(overrides.whatsappGapMs) && overrides.whatsappGapMs >= 0 ? overrides.whatsappGapMs : 1000,
+    whatsappWorker: overrides.whatsappWorker === "manual" ? "manual" : "auto",
+    whatsappFault: typeof overrides.whatsappFault === "function" ? overrides.whatsappFault : null,
+    whatsappLedgerFault: typeof overrides.whatsappLedgerFault === "function" ? overrides.whatsappLedgerFault : null,
     mobileSyncAuto: overrides.mobileSyncAuto !== false,
     // Para yazımı denetimi (K6; lib/bank/post.mjs) test kipi: ihlal hata verir ve işlemi geri alır. Üretimde (varsayılan) iş durmaz,
     // sunucu günlüğüne ve meta.bank.integrity'ye yazılır. Yalnız programdan (testler) açılır.
