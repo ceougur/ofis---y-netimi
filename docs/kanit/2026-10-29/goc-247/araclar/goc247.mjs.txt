@@ -1,0 +1,604 @@
+// 2.4.7 son aday — ESKİ SÜRÜM VERİSİYLE GÖÇ (ders 10, 17, 23, 25, 30, 36; CLAUDE.md "TEST VERİSİ programın KENDİSİNİN ürettiği veridir").
+// 2.4.6 tam kapı aracının (docs/kanit/2026-10-25/246-tamkapi/araclar/goc246.mjs.txt) aynı düzeni; yalnız ölçüm aracı (ürün koduna dokunmaz).
+// Depo kütüphanelerini (m30-uretici generate, m30-olgular companyFacts, m30-fark diffFacts, m30-tatbikat stableDiff, surumler bootVersion) ADAY
+// çalışma kopyasından kullanır. Eski sürüm kodu surumler.mjs ile `git archive` kopyasında (TMPDIR = not defterinde benzersiz klasör; ders 23, 25).
+//   node goc247.mjs <adım> --repo <aday> --kok <klasör> [--eski v2.4.6]
+//   uret     : eski sürümün GERÇEK koduyla kendi API'sinden büyük veri (2 şirket, 13 ay) → kok/taban (--hedef, --surum, --hacim, --tohum)
+//   vade     : eski sürüm aynı klasörü açar, elle Borç satırlarının ~yarısına Vade (+%30 Beklenen) — eski sürümün kendi ucu
+//   olcu     : eski sürümle (üretim bayrakları) bütün olgular → cikti/<eski>-taban.json
+//   goc      : taban kopyası → kok/goc; aday aynı klasörde açılır (göç), olgular → cikti/guncel-goc.json; şema 39 + bütünlük + göç öncesi yedek + yeni tablolar boş
+//   fark     : diffFacts (profil 244-245) → cikti/fark-*.json; EŞİT dışı satırlar yazılır (sınıflama elle, 2.4.7 karar metinlerinden)
+//   ekstre   : Ayrıntılı Cari Ekstre (items=1) eski sürüm ↔ aday, aynı veri, en çok faturalı cariler; sütun seçimi (kaydet, kişi başına, yeniden açılışta hatırlanır)
+//   yeni     : göçmüş veride mobil cihaz eşleme (karekod → eşle → uzak giriş → mobil okuma = masaüstü), 3 cihaz sınırı, EDM sayacı boş başlar + yeni gönderim 1 sayılır
+//   yedek    : eski sürümün aldığı son yedek eski sürümde ve adayda Geri Yükle → olgular aynı; eşli cihaz ortak katmanda kalır; adayda yedek → çalış → geri yükle → yeniden çalış
+//   donus    : göçmüş verinin kopyasını eski sürüm açar (geri dönüş): gösterdiği = göçten önce; şema 39 kalır; sonra aday yeniden = göç ölçüsü
+//   zincir   : --kaynak <klasör> --yol v2.4.4,v2.4.6 : her ara sürüm kendi koduyla açar; son ara sürüm ↔ aday farkı + doğrudan (kaynak → aday) = adım adım
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { DatabaseSync } from "node:sqlite";
+
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const args = process.argv.slice(2);
+const step = args[0];
+const value = (name, fallback) => {
+  const at = args.indexOf(`--${name}`);
+  return at >= 0 && args[at + 1] && !args[at + 1].startsWith("--") ? args[at + 1] : fallback;
+};
+const REPO = path.resolve(value("repo", ""));
+const root = path.resolve(value("kok", ""));
+const out = path.join(root, "cikti");
+mkdirSync(out, { recursive: true });
+const imp = rel => import(pathToFileURL(path.join(REPO, rel)).href);
+const log = line => console.log(`[${new Date().toISOString().slice(11, 19)}] ${line}`);
+const writeJson = (name, data) => writeFileSync(path.join(out, `${name}.json`), `${JSON.stringify(data, null, 1)}\n`);
+const readJson = name => JSON.parse(readFileSync(path.join(out, `${name}.json`), "utf8"));
+const summary = (tests, fail, note = "") => {
+  if (note) console.log(`# ${note}`);
+  console.log(`# tests ${tests}\n# pass ${tests - fail}\n# fail ${fail}\n# cancelled 0\n# skipped 0\n# todo 0`);
+};
+const must = async (what, promise) => {
+  const res = await promise;
+  if (res.status !== 200) throw new Error(`${what}: ${res.status} ${JSON.stringify(res.data).slice(0, 400)}`);
+  return res.data;
+};
+const OLD = value("eski", "v2.4.6");
+const SCHEMA = 39;
+const MOBILE_TABLES = ["mobile_access", "mobile_codes", "mobile_devices", "mobile_sessions"];
+// Üretim bayrakları (2.4.6 ve aday server.mjs: e-Belge test + canlı, e-SMM açık; kayıt tahsilatı / Tablodan Aktar / tablo takvimi KAPALI).
+const PROD = { edocEnabled: true, edocLive: true, esmmEnabled: true, legacyCasePayments: false, legacyTableTransfer: false, legacyTableDues: false };
+const { startMockEdm } = await imp("test/einvoice-mock.mjs");
+const { resetEdmCaches } = await imp("server/lib/einvoice/edm.mjs");
+const { bootVersion, CURRENT } = await imp("test/guvenilirlik/surumler.mjs");
+const { createClock } = await imp("server/lib/clock.mjs");
+const { companyDbFile, readRegistry } = await imp("test/guvenilirlik/uretici.mjs");
+const { ADMIN_PASSWORD } = await imp("test/helpers.mjs");
+const dayOf = () => value("gun", null) || readJson("manifest-taban").endDay;
+const clockAt = (day, hour, fixed) => createClock({ time: new Date(Number(day.slice(0, 4)), Number(day.slice(5, 7)) - 1, Number(day.slice(8, 10)), hour, 0, 0), fixed });
+const dbFiles = dir => {
+  const data = path.join(dir, "data");
+  const reg = readRegistry(data) || [{ id: "sirket-001", dir: "" }];
+  return reg.map(e => ({ id: e.id, code: e.code, file: companyDbFile(data, e) }));
+};
+const readDb = (file, fn) => {
+  const db = new DatabaseSync(file, { readOnly: true });
+  try { return fn(db); } finally { db.close(); }
+};
+const boot = (version, dir, day, extra = {}) => bootVersion(version, { dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clockAt(day, 17, true), logLevel: "silent", ...PROD, ...extra });
+const checker = () => {
+  const checks = [];
+  const check = (name, ok, detail = {}) => {
+    checks.push({ name, ok: Boolean(ok), detail });
+    console.log(`  ${ok ? "✓" : "✗"} ${name}${ok ? "" : ` — ${JSON.stringify(detail).slice(0, 900)}`}`);
+    return Boolean(ok);
+  };
+  return { checks, check };
+};
+
+async function measure({ version, dir, day }) {
+  const { companyFacts, installFacts, fileFacts } = await imp("test/guvenilirlik/m30-olgular.mjs");
+  const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  resetEdmCaches();
+  const edm = await startMockEdm();
+  const started = performance.now();
+  let server;
+  try {
+    server = await boot(version, dir, day);
+  } catch (error) {
+    await edm.close();
+    throw error;
+  }
+  const result = { version: version === CURRENT ? "aday" : version, commit: server.commit, day, bootMs: Math.round(performance.now() - started), firstAccessMs: {}, companies: {}, files: {} };
+  try {
+    const api = await server.login();
+    result.install = await installFacts(api);
+    for (const company of result.install.companies) {
+      const t = performance.now();
+      const s = scoped(api, company.id);
+      await s.get("/api/workspace/ledger/lock");
+      result.firstAccessMs[company.code] = Math.round(performance.now() - t);
+      result.companies[company.code] = await companyFacts(s);
+    }
+  } finally {
+    await server.close();
+    await edm.close();
+  }
+  const reg = readRegistry(path.join(dir, "data")) || [{ id: "sirket-001", dir: "" }];
+  for (const company of result.install.companies) result.files[company.code] = fileFacts(companyDbFile(path.join(dir, "data"), reg.find(e => e.id === company.id) || { id: company.id, dir: "" }));
+  return result;
+}
+
+if (step === "uret") {
+  const { generate } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  const version = value("surum", OLD);
+  const target = value("hedef", "taban");
+  const base = path.join(root, target);
+  rmSync(base, { recursive: true, force: true });
+  mkdirSync(base, { recursive: true });
+  resetEdmCaches();
+  const edm = await startMockEdm();
+  try {
+    const started = performance.now();
+    // Eski kayıt tahsilatı / Tablodan Aktar verisi 2.4.4'ten göçen müşterilerde vardır; üretimde eski sürümün test anahtarlarıyla yazılır (surumler.mjs düzeni).
+    const { manifest } = await generate({ version, dataDir: path.join(base, "data"), backupDir: path.join(base, "backups"), edmUrl: edm.url, seed: Number(value("tohum", 7)), hacim: value("hacim", "buyuk"), log, appOptions: { esmmEnabled: true, legacyCasePayments: true, legacyTableTransfer: true } });
+    manifest.edm = { sent: edm.state.sent.length, cancelled: edm.state.cancelled.length, violations: edm.state.violations };
+    manifest.ms = Math.round(performance.now() - started);
+    writeJson(`manifest-${target}`, manifest);
+    log(`üretildi: ${JSON.stringify(manifest.counts)}`);
+    log(`süre ${(manifest.ms / 1000).toFixed(1)} sn; EDM gönderim ${manifest.edm.sent}, iptal ${manifest.edm.cancelled}, ihlal ${manifest.edm.violations.length}; yedek ${manifest.backups.length}`);
+    const refused = (manifest.deleteRefusals || []).length + (manifest.integrityRefusals || []).length;
+    summary(manifest.requests + 1, manifest.edm.violations.length ? 1 : 0, `${version}: ${manifest.requests} API isteği (${manifest.requests - refused} × 200, ${refused} × 409 beklenen ret); EDM ihlali ${manifest.edm.violations.length}`);
+  } finally {
+    await edm.close();
+  }
+} else if (step === "vade") {
+  const { rng } = await imp("test/mutabakat/motor.mjs");
+  const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  const manifest = readJson("manifest-taban");
+  const base = path.join(root, "taban");
+  const day = manifest.endDay;
+  const r = rng(manifest.seed + 1);
+  const addDays = (d, n) => { const x = new Date(Number(d.slice(0, 4)), Number(d.slice(5, 7)) - 1, Number(d.slice(8, 10)), 12); x.setDate(x.getDate() + n); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`; };
+  const rowsBy = dbFiles(base).map(f => ({ ...f, rows: readDb(f.file, db => db.prepare("SELECT id, account_id AS accountId, date FROM account_entries WHERE source = '' AND kind = 'debt' ORDER BY rowid").all()) }));
+  const server = await bootVersion(OLD, { dataDir: path.join(base, "data"), backupDir: path.join(base, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, now: clockAt(day, 12, true), logLevel: "silent", ...PROD });
+  let puts = 0;
+  const kinds = {};
+  try {
+    const api = await server.login();
+    for (const f of rowsBy) {
+      const s = scoped(api, f.id);
+      for (const row of f.rows) {
+        if (r.next() >= 0.5) continue;
+        const dueDate = addDays(row.date, r.int(0, 90));
+        const body = { dueDate };
+        if (r.next() < 0.3) body.expectedDate = addDays(dueDate, r.int(0, 20));
+        const res = await s.put(`/api/workspace/accounts/${row.accountId}/entries/${row.id}`, body);
+        if (res.status === 409 && res.data?.code === "period-locked") { kinds[`${f.id}:kilitliRet`] = (kinds[`${f.id}:kilitliRet`] || 0) + 1; continue; }
+        if (res.status !== 200) throw new Error(`vade: ${res.status} ${JSON.stringify(res.data).slice(0, 400)}`);
+        puts += 1;
+        const k = `${f.id}:${body.expectedDate ? "vadeBeklenen" : "vade"}`;
+        kinds[k] = (kinds[k] || 0) + 1;
+      }
+      kinds[`${f.id}:elleBorc`] = f.rows.length;
+    }
+  } finally {
+    await server.close();
+  }
+  manifest.vade = { puts, ...kinds };
+  writeJson("manifest-taban", manifest);
+  log(`vade verildi (${OLD} kendi ucu): ${JSON.stringify(manifest.vade)}`);
+  summary(puts, 0, `${puts} PUT (Vade / Beklenen) 200; kilitli dönem reddi ayrı sayıldı: ${JSON.stringify(Object.fromEntries(Object.entries(kinds).filter(([k]) => k.endsWith("kilitliRet"))))}`);
+} else if (step === "olcu") {
+  const copy = path.join(root, "olcu-kopya");
+  rmSync(copy, { recursive: true, force: true });
+  cpSync(path.join(root, "taban"), copy, { recursive: true });
+  try {
+    const facts = await measure({ version: OLD, dir: copy, day: dayOf() });
+    writeJson(`${OLD}-taban`, facts);
+    const unread = Object.entries(facts.companies).filter(([, f]) => !f.journal || f.journal.__status).map(([c]) => c);
+    for (const [c, f] of Object.entries(facts.files)) log(`  ${c}: şema ${f.version}, bütünlük ${f.integrity}`);
+    log(`ölçüldü ${OLD}: açılış ${facts.bootMs} ms; cari ${Object.entries(facts.companies).map(([c, f]) => `${c}=${Object.keys(f.accounts).length}`).join(" ")}`);
+    summary(Object.keys(facts.companies).length, unread.length, `ölçü: ${Object.keys(facts.companies).length} şirket; yevmiye okunamayan ${unread.join(",") || "yok"}`);
+  } finally {
+    rmSync(copy, { recursive: true, force: true });
+  }
+} else if (step === "goc") {
+  const target = path.join(root, "goc");
+  rmSync(target, { recursive: true, force: true });
+  cpSync(path.join(root, "taban"), target, { recursive: true });
+  const { treeHashes } = await imp("test/guvenilirlik/olgular.mjs");
+  const beforeFiles = Object.fromEntries(dbFiles(target).map(f => [f.id, readDb(f.file, db => db.prepare("PRAGMA user_version").get().user_version)]));
+  const before = treeHashes(path.join(target, "backups"));
+  const facts = await measure({ version: CURRENT, dir: target, day: dayOf() });
+  const after = treeHashes(path.join(target, "backups"));
+  facts.newBackups = Object.keys(after).filter(rel => !before[rel]);
+  writeJson("guncel-goc", facts);
+  log(`göç + ölçü: önce şema ${JSON.stringify(beforeFiles)}; 001 açılışı (göç dahil) ${facts.bootMs} ms; ilk erişim ${JSON.stringify(facts.firstAccessMs)}; yeni yedek ${facts.newBackups.join(", ")}`);
+  const { checks, check } = checker();
+  const taban = readJson(`${OLD}-taban`);
+  for (const code of Object.keys(facts.files)) {
+    const f = facts.files[code];
+    const old = taban.files[code];
+    check(`${code} şema ${old.version} → ${SCHEMA}`, f.version === SCHEMA, { version: f.version });
+    check(`${code} bütünlük ok`, f.integrity === "ok", { integrity: f.integrity });
+    check(`${code} göç öncesi yedek pre-migration-v${SCHEMA}`, facts.newBackups.some(rel => rel.startsWith(`${code} - `) && new RegExp(`pre-migration-v${SCHEMA}\\.sqlite$`).test(rel)), { newBackups: facts.newBackups });
+    const added = f.tables.filter(t => !old.tables.includes(t));
+    const dropped = old.tables.filter(t => !f.tables.includes(t));
+    check(`${code} yeni tablolar yalnız v37/v38 (${added.join(", ")}); eski tablo düşmedi`, !dropped.length && added.every(t => [...MOBILE_TABLES, "edoc_usage", "edoc_usage_meta"].includes(t)) && MOBILE_TABLES.every(t => f.tables.includes(t)), { added, dropped });
+    check(`${code} mobil tabloları boş (göç cihaz/izin yaratmaz)`, MOBILE_TABLES.every(t => f.counts[t] === 0), Object.fromEntries(MOBILE_TABLES.map(t => [t, f.counts[t]])));
+    check(`${code} e-Belge sayacı izi boş (geriye dönük doldurma yok)`, (f.counts.edoc_usage ?? 0) === 0, { edoc_usage: f.counts.edoc_usage, meta: f.counts.edoc_usage_meta });
+    const changed = old.tables.filter(t => f.counts[t] !== old.counts[t]);
+    check(`${code} eski tabloların satır sayıları aynı (değişenler: ${changed.join(", ") || "yok"})`, changed.every(t => ["sessions", "audit_events", "login_attempts"].includes(t)), Object.fromEntries(changed.map(t => [t, [old.counts[t], f.counts[t]]])));
+  }
+  const enc = dbFiles(target).map(fl => [fl.id, readDb(fl.file, db => db.prepare("PRAGMA table_info(mobile_devices)").all().map(r => r.name))]);
+  for (const [id, cols] of enc) check(`${id} mobile_devices.enc_key kolonu (v39)`, cols.includes("enc_key"), { cols });
+  writeJson("goc-denetim", { checks });
+  summary(checks.length, checks.filter(c => !c.ok).length, `göç: ${Object.keys(facts.files).length} şirket`);
+  process.exitCode = checks.some(c => !c.ok) ? 1 : 0;
+} else if (step === "fark") {
+  const { diffFacts, oldDataMap } = await imp("test/guvenilirlik/m30-fark.mjs");
+  const onceName = value("once", `${OLD}-taban`);
+  const sonraName = value("sonra", "guncel-goc");
+  const before = readJson(onceName);
+  const after = readJson(sonraName);
+  const files = dbFiles(path.join(root, value("eskiveri", "taban")));
+  const maps = Object.fromEntries(before.install.companies.map(c => [c.code, oldDataMap(files.find(f => f.id === c.id).file)]));
+  const report = diffFacts(before, after, { maps, profile: "244-245" });
+  writeJson(`fark-${onceName}-${sonraName}`, report);
+  log(`${report.rows.length} olgu; ${JSON.stringify(report.rows.reduce((m, r) => ({ ...m, [r.klass]: (m[r.klass] || 0) + 1 }), {}))}`);
+  for (const row of report.rows.filter(r => r.klass !== "EŞİT")) log(`  [${row.klass}] ${row.company} ${row.area} ${row.decision || ""} ${JSON.stringify(row.detail).slice(0, 1500)}`);
+  summary(report.rows.length, report.bulgu.length, "olgu (profil 244-245 sınıflayıcısı; 'BULGU' satırları elle 2.4.7 kararlarıyla sınıflanır)");
+  process.exitCode = report.bulgu.length ? 2 : 0;
+} else if (step === "ekstre") {
+  // Ayrıntılı Cari Ekstre: aynı veride eski sürüm (taban kopyası) ve aday (göç kopyası) — rakam kolonları satır satır aynı olmalı; metin farkları sayılır.
+  const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  const day = dayOf();
+  const per = Number(value("adet", 40));
+  const pick = dbFiles(path.join(root, "taban")).map(f => ({ id: f.id, accounts: readDb(f.file, db => db.prepare("SELECT account_id AS id, count(*) AS n FROM invoices WHERE account_id IS NOT NULL AND account_id <> '' GROUP BY account_id ORDER BY n DESC, account_id LIMIT ?").all(per)) }));
+  const read = async (version, src) => {
+    const dir = path.join(root, `ekstre-${version === CURRENT ? "aday" : "eski"}`);
+    rmSync(dir, { recursive: true, force: true });
+    cpSync(path.join(root, src), dir, { recursive: true });
+    resetEdmCaches();
+    const server = await boot(version, dir, day);
+    const res = {};
+    try {
+      const api = await server.login();
+      for (const c of pick) {
+        const s = scoped(api, c.id);
+        for (const a of c.accounts) {
+          const r = await must(`ekstre ${a.id}`, s.get(`/api/workspace/report-center/cari-ekstre?account=${a.id}&preset=all&from=1976-01-01&to=${day}&items=1`));
+          res[`${c.id}/${a.id}`] = { headers: r.headers, rows: r.rows, footers: r.footers, total: r.total, summary: r.summary, subtitle: r.subtitle, columns: r.columns || null };
+        }
+      }
+    } finally {
+      await server.close();
+      rmSync(dir, { recursive: true, force: true });
+    }
+    return res;
+  };
+  const old = await read(OLD, "taban");
+  const neu = await read(CURRENT, "goc");
+  const { checks, check } = checker();
+  const NUM = ["Miktar", "Birim Fiyat", "İsk. %", "KDV'siz Tutar", "KDV %", "Toplam", "Borç", "Alacak", "Bakiye"];
+  const textPairs = {};
+  let rowsCompared = 0;
+  const numDiffs = [];
+  const shapeDiffs = [];
+  for (const key of Object.keys(old)) {
+    const a = old[key];
+    const b = neu[key];
+    if (!b || a.rows.length !== b.rows.length || a.total !== b.total) { shapeDiffs.push({ key, old: [a.rows.length, a.total], new: [b?.rows.length, b?.total] }); continue; }
+    const ix = (h, name) => h.indexOf(name);
+    for (let i = 0; i < a.rows.length; i += 1) {
+      rowsCompared += 1;
+      for (const name of a.headers) {
+        const va = a.rows[i][ix(a.headers, name)];
+        const ib = ix(b.headers, name);
+        if (ib < 0) { textPairs[`kolon yok: ${name}`] = (textPairs[`kolon yok: ${name}`] || 0) + 1; continue; }
+        const vb = b.rows[i][ib];
+        if (JSON.stringify(va) === JSON.stringify(vb)) continue;
+        if (NUM.includes(name)) numDiffs.push({ key, row: i, name, old: va, new: vb });
+        else { const k = `${name}: ${String(va).replace(/[A-Z0-9]{3}\d{13}/g, "<no>").slice(0, 60)} → ${String(vb).replace(/[A-Z0-9]{3}\d{13}/g, "<no>").slice(0, 60)}`; textPairs[k] = (textPairs[k] || 0) + 1; }
+      }
+    }
+    if (JSON.stringify(a.summary) !== JSON.stringify(b.summary)) numDiffs.push({ key, name: "özet", old: a.summary, new: b.summary });
+    if (JSON.stringify((a.footers || []).map(r => r.filter((_, j) => NUM.includes(a.headers[j])))) !== JSON.stringify((b.footers || []).map(r => r.filter((_, j) => NUM.includes(b.headers[j]))))) numDiffs.push({ key, name: "TOPLAM", old: a.footers, new: b.footers });
+    const sk = `alt başlık: ${a.subtitle.replace(/Cari No \S+/, "Cari No <n>")} → ${b.subtitle.replace(/Cari No \S+/, "Cari No <n>")}`;
+    if (a.subtitle !== b.subtitle) textPairs[sk] = (textPairs[sk] || 0) + 1;
+    const hk = `kolonlar: ${a.headers.join("|")} → ${b.headers.join("|")}`;
+    if (a.headers.join("|") !== b.headers.join("|")) textPairs[hk] = (textPairs[hk] || 0) + 1;
+  }
+  log(`metin farkları (sayı): ${JSON.stringify(textPairs, null, 1)}`);
+  check(`${Object.keys(old).length} cari, ${rowsCompared} satır: satır sayısı / toplam aynı`, !shapeDiffs.length, { shapeDiffs: shapeDiffs.slice(0, 5) });
+  check(`rakam kolonları (${NUM.join(", ")}), TOPLAM satırı ve özet (Devir / Dönem Borç / Dönem Alacak / Genel Toplam) satır satır aynı`, !numDiffs.length, { count: numDiffs.length, first: numDiffs.slice(0, 5) });
+  const allowedText = k => /^İşlem: (Satış|Alış|Satıştan İade|Alıştan İade|Hizmet Satış|Hizmet Alış)[^→]*Faturası → /.test(k) || /^Açıklama \/ Ürün - Hizmet: .*Faturası .* → /.test(k) || k.startsWith("alt başlık: ") || k.startsWith("kolonlar: ");
+  check("metin farkları yalnız 2.4.7 müşteri isteği (5): 'Faturası' kısa adı, alt başlık; kolon farkı yalnız Kalem Açıklaması (6b)", Object.keys(textPairs).every(allowedText), { other: Object.keys(textPairs).filter(k => !allowedText(k)) });
+  // Sütun seçimi (6a): göçmüş veride kaydet, kişi başına, yeniden açılışta hatırlanır; PDF ve Excel 200.
+  const dir = path.join(root, "ekstre-sutun");
+  rmSync(dir, { recursive: true, force: true });
+  cpSync(path.join(root, "goc"), dir, { recursive: true });
+  const [c0] = pick;
+  const acc = c0.accounts[0].id;
+  const url = `/api/workspace/report-center/cari-ekstre?account=${acc}&preset=all&from=1976-01-01&to=${day}&items=1`;
+  const hide = ["Yol", "İsk. %"];
+  let server = await boot(CURRENT, dir, day);
+  try {
+    const api = await server.login();
+    const s = scoped(api, c0.id);
+    const first = await must("ekstre", s.get(url));
+    check(`göçmüş veride ilk açılış: gizli kolon yok (${JSON.stringify(first.columns?.hidden)}), ${first.headers.length} kolon`, Array.isArray(first.columns?.hidden) && first.columns.hidden.length === 0, { columns: first.columns });
+    const put = await s.put("/api/workspace/report-center/cari-ekstre/columns", { hidden: hide });
+    check(`sütun seçimi kaydedildi (200, hidden ${JSON.stringify(put.data?.hidden)})`, put.status === 200 && JSON.stringify(put.data?.hidden) === JSON.stringify(hide), { status: put.status, data: put.data });
+    const second = await must("ekstre 2", s.get(url));
+    check("ekranda gizlenen kolonlar yok, kalan kolonlar ve rakamlar aynı", hide.every(h => !second.headers.includes(h)) && second.headers.length === first.headers.length - hide.length && second.rows.length === first.rows.length && second.rows.every((row, i) => second.headers.every((h, j) => JSON.stringify(row[j]) === JSON.stringify(first.rows[i][first.headers.indexOf(h)]))), { headers: second.headers });
+    const pdf = await s.bin(`/api/workspace/report-center/cari-ekstre/pdf?account=${acc}&preset=all&from=1976-01-01&to=${day}&items=1`);
+    const xlsx = await s.bin(`/api/workspace/report-center/cari-ekstre/xlsx?account=${acc}&preset=all&from=1976-01-01&to=${day}&items=1`);
+    check(`PDF ${pdf.status} ve Excel ${xlsx.status} üretildi`, pdf.status === 200 && xlsx.status === 200, { pdf: [pdf.status, pdf.headers?.["content-type"]], xlsx: [xlsx.status, xlsx.headers?.["content-type"]] });
+    const other = scoped(await server.login("mehmet", "Personel-2026!"), c0.id);
+    const theirs = await other.get(url);
+    check(`başka kullanıcı (mehmet, muhasebe) kendi seçimini görür: gizli ${JSON.stringify(theirs.data?.columns?.hidden)} (kişi başına)`, theirs.status === 200 && theirs.data.columns.hidden.length === 0 && hide.every(h => theirs.data.headers.includes(h)), { status: theirs.status, columns: theirs.data?.columns });
+  } finally {
+    await server.close();
+  }
+  server = await boot(CURRENT, dir, day);
+  try {
+    const s = scoped(await server.login(), c0.id);
+    const again = await must("ekstre yeniden açılış", s.get(url));
+    check(`program yeniden açılınca seçim hatırlanır (${JSON.stringify(again.columns?.hidden)})`, JSON.stringify(again.columns?.hidden) === JSON.stringify(hide) && hide.every(h => !again.headers.includes(h)), { columns: again.columns });
+  } finally {
+    await server.close();
+    rmSync(dir, { recursive: true, force: true });
+  }
+  writeJson("ekstre", { accounts: Object.keys(old).length, rowsCompared, textPairs, numDiffs: numDiffs.slice(0, 50), shapeDiffs, checks });
+  summary(checks.length, checks.filter(c => !c.ok).length, "Ayrıntılı Cari Ekstre eski ↔ aday + sütun seçimi");
+  process.exitCode = checks.some(c => !c.ok) ? 1 : 0;
+} else if (step === "yeni") {
+  const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  const { createPhone, remoteBase } = await imp("test/mobil-uzak-ortak.mjs");
+  const { BUYER_VKN } = await imp("test/einvoice-mock.mjs");
+  const day = dayOf();
+  const dir = path.join(root, "yeni");
+  rmSync(dir, { recursive: true, force: true });
+  cpSync(path.join(root, "goc"), dir, { recursive: true });
+  const { checks, check } = checker();
+  resetEdmCaches();
+  const edm = await startMockEdm();
+  const server = await boot(CURRENT, dir, day, { now: clockAt(day, 18, false), edocStatusPollMs: [10, 10] });
+  const taban = readJson(`${OLD}-taban`);
+  try {
+    const api = await server.login();
+    const companies = (await api.get("/api/companies")).data.all;
+    // --- EDM sayacı: göçmüş veride boş (eski gönderimler sayılmaz — karar: geriye dönük doldurma YOK) ---
+    for (const c of companies) {
+      const s = scoped(api, c.id);
+      const u = await must(`sayaç ${c.code}`, s.get("/api/workspace/invoices-usage?months=24"));
+      const sum = rows => (rows || []).reduce((t, r) => t + (r.efatura || 0) + (r.earsiv || 0) + (r.esmm || 0), 0);
+      const sentOld = Object.values(taban.companies[c.code].edocCards || {}).filter(x => /sent|accepted|gönder/i.test(JSON.stringify(x))).length;
+      check(`${c.code} EDM sayacı boş başlar: pencere toplamı ${sum(u.window)}, iz ${sum(u.journal)}, eşitlenen ${u.synced} (eski veride e-Belge kartı ${Object.keys(taban.companies[c.code].edocCards || {}).length}, gönderilmiş görünen ${sentOld})`, sum(u.window) === 0 && sum(u.journal) === 0 && !u.synced, { u });
+    }
+    // Göçten sonra bir e-Arşiv: sayaç bu ayda 1 (test ortamı).
+    const c1 = companies.find(c => c.code === "001");
+    const s1 = scoped(api, c1.id);
+    await must("entegratör (yeni sahte EDM adresi)", s1.put("/api/workspace/invoices/settings", { esmm: true, integrator: { env: "test", baseUrl: edm.url, username: "edmkullanici", password: "Gizli-Parola-1", senderAlias: "urn:mail:defaultgb@merkez.com.tr" } }));
+    const list = await must("cariler", s1.get("/api/workspace/accounts?status=all&limit=5000"));
+    const person = list.accounts.find(a => a.partyKind === "person" && String(a.taxNo || "").length === 11 && a.taxNo !== BUYER_VKN);
+    // Eski veride Gönderilecekler'de bekleyen e-Belge'ler var (v2.4.6'nın ürettiği); GİB sıra kuralı yeni "Kes ve Gönder"i onların arkasında bekletir —
+    // v2.4.6'da da aynı (tani-gonder: iki sürümde de 5 bekleyen, yeni belge "Gönderilecek"). Kullanıcının yaptığı gibi: yeni belge, sonra Tümünü Gönder.
+    const { sendAll } = await imp("test/guvenilirlik/m30-uretici.mjs");
+    const pendingBefore = (await must("Gönderilecekler", s1.get("/api/workspace/invoices?tab=pending&limit=1000"))).invoices.length;
+    const sale = await s1.post("/api/workspace/invoices", { scenario: "service_sale", accountId: person.id, issueDate: day, lines: [{ name: "Göç sonrası hizmet", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" }, eSend: "now" });
+    const results = await sendAll(s1, must);
+    const pendingAfter = (await must("Gönderilecekler", s1.get("/api/workspace/invoices?tab=pending&limit=1000"))).invoices.length;
+    const usage = await must("sayaç sonrası", s1.get("/api/workspace/invoices-usage?months=3"));
+    const month = day.slice(0, 7);
+    const row = (usage.window || []).find(r => r.month === month && r.env === "test");
+    const live = (usage.window || []).filter(r => r.env === "live").reduce((t, r) => t + r.efatura + r.earsiv + r.esmm, 0);
+    const older = (usage.window || []).filter(r => r.month !== month).reduce((t, r) => t + r.efatura + r.earsiv + r.esmm, 0);
+    const sentIds = new Set(edm.state.sent.map(x => x.id));
+    check(`001 göçten sonra: yeni e-Arşiv (${sale.status}) + bekleyen ${pendingBefore} → Tümünü Gönder ${results.length} sonuç, kalan ${pendingAfter}; EDM'nin kabul ettiği ${edm.state.sent.length} (benzersiz ${sentIds.size}) = sayaç ${month} test toplamı ${row ? row.efatura + row.earsiv + row.esmm : "yok"} (e-Arşiv ${row?.earsiv}, e-Fatura ${row?.efatura}, e-SMM ${row?.esmm}); önceki aylar ${older}, canlı ${live}`, sale.status === 200 && pendingAfter === 0 && row && row.efatura + row.earsiv + row.esmm === sentIds.size && sentIds.size === pendingBefore + 1 && older === 0 && live === 0, { results: results.slice(0, 10), window: usage.window, edmSent: edm.state.sent.map(x => x.id) });
+    // --- Mobil eşleme (karekod → eşle → uzak giriş) göçmüş veride ---
+    const remote = await remoteBase(server);
+    check(`uzaktan erişim dinleyicisi açıldı (${remote.base})`, !remote.legacy, remote);
+    const users = Object.fromEntries((l => (Array.isArray(l) ? l : l.users || [])) (await must("kullanıcılar", api.get("/api/admin/users"))).map(u => [u.username, u.id]));
+    const devices0 = await must("cihazlar", api.get("/api/admin/mobile/devices"));
+    check(`göçmüş veride eşli cihaz yok (kullanılan ${devices0.used} / sınır ${devices0.limit}, lisans ${devices0.licenseOk})`, devices0.used === 0 && devices0.devices.length === 0 && devices0.limit === 3, { devices0 });
+    const pairUser = async (username, password, name) => {
+      const allow = await api.put(`/api/admin/mobile/access/${users[username]}`, { remote: true });
+      const code = await api.post("/api/admin/mobile/codes", { userId: users[username] });
+      const phone = createPhone(remote.base, { name });
+      const pair = code.status === 200 ? await phone.pair(code.data.code) : { status: 0, text: "kod yok" };
+      const login = pair.status === 200 ? await phone.login(username, password) : { status: 0 };
+      return { allow, code, phone, pair, login };
+    };
+    const p1 = await pairUser("admin", ADMIN_PASSWORD, "Göç Telefonu 1");
+    check(`admin: Uzaktan Bağlanabilir ${p1.allow.status}, karekod ${p1.code.status}, eşleme ${p1.pair.status}, uzak giriş ${p1.login.status}`, p1.allow.status === 200 && p1.code.status === 200 && p1.pair.status === 200 && p1.login.status === 200, { code: p1.code.data, pair: p1.pair.text?.slice(0, 300), login: p1.login.text?.slice(0, 300) });
+    const session = await p1.phone.get("/api/mobil/session");
+    check(`telefondan oturum (${session.status}) iki şirketi görür (${(session.data?.data?.companies || []).map(c => c.code).join(", ")})`, session.status === 200 && companies.every(c => (session.data?.data?.companies || []).some(x => x.id === c.id)), { data: JSON.stringify(session.data).slice(0, 400) });
+    for (const c of companies) {
+      const local = await must(`kasa ${c.code}`, scoped(api, c.id).get("/api/workspace/cash"));
+      const far = await p1.phone.get(`/api/mobil/cash?company=${c.id}`);
+      const localAcc = await must(`cariler ${c.code}`, scoped(api, c.id).get("/api/workspace/accounts?status=all&limit=5000"));
+      const farAcc = await p1.phone.get(`/api/mobil/accounts/${localAcc.accounts[0].id}?company=${c.id}`);
+      const localOne = await must("cari", scoped(api, c.id).get(`/api/workspace/accounts/${localAcc.accounts[0].id}`));
+      check(`${c.code} telefondaki Kasa = masaüstü Kasa (göçmüş veri; ${far.status})`, far.status === 200 && JSON.stringify(far.data?.data) === JSON.stringify(local), { far: far.status, code: far.code });
+      check(`${c.code} telefondaki cari kartı = masaüstü (${localAcc.accounts[0].name}, bakiye ${localAcc.accounts[0].balance})`, farAcc.status === 200 && JSON.stringify(farAcc.data?.data) === JSON.stringify(localOne), { far: farAcc.status, code: farAcc.code });
+    }
+    const p2 = await pairUser("mehmet", "Personel-2026!", "Göç Tableti");
+    const p3 = await pairUser("zeynep", "Personel-2026!", "Göç Telefonu 3");
+    const p4 = await pairUser("ayse", "Personel-2026!", "Göç Telefonu 4");
+    check(`3 cihaz sınırı (program başına): 2. ve 3. eşleme 200 (${p2.pair.status}, ${p3.pair.status}); 4. karekod/eşleme reddedilir (${p4.code.status}/${p4.pair.status})`, p2.pair.status === 200 && p3.pair.status === 200 && (p4.code.status !== 200 || p4.pair.status !== 200), { p4code: JSON.stringify(p4.code.data).slice(0, 200), p4pair: p4.pair.text?.slice(0, 200) });
+    const devices = await must("cihazlar", api.get("/api/admin/mobile/devices"));
+    writeJson("yeni-cihazlar", devices);
+  } finally {
+    await server.close();
+    await edm.close();
+  }
+  const files = dbFiles(dir).map(f => ({ ...f, n: readDb(f.file, db => db.prepare("SELECT count(*) AS n FROM mobile_devices WHERE revoked_at IS NULL").get().n) }));
+  check(`cihazlar ortak katmanda: 001 ${files[0].n}, 002 ${files[1]?.n} (002'nin tablosu boş kalır)`, files[0].n === 3 && (files[1]?.n ?? 0) === 0, { files: files.map(f => [f.id, f.n]) });
+  writeJson("yeni", { checks });
+  rmSync(dir, { recursive: true, force: true });
+  summary(checks.length, checks.filter(c => !c.ok).length, "yeni özellikler eski veride (EDM sayacı, mobil eşleme, 3 cihaz)");
+  process.exitCode = checks.some(c => !c.ok) ? 1 : 0;
+} else if (step === "yedek") {
+  const { companyFacts, fileFacts } = await imp("test/guvenilirlik/m30-olgular.mjs");
+  const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  const { stableDiff } = await imp("test/guvenilirlik/m30-tatbikat.mjs");
+  const { createPhone, remoteBase } = await imp("test/mobil-uzak-ortak.mjs");
+  const manifest = readJson("manifest-taban");
+  const day = dayOf();
+  const { checks, check } = checker();
+  const restoreLast = async (version, srcName, { phoneStep } = {}) => {
+    const dir = path.join(root, `yedek-${version === CURRENT ? "aday" : "eski"}`);
+    rmSync(dir, { recursive: true, force: true });
+    cpSync(path.join(root, srcName), dir, { recursive: true });
+    resetEdmCaches();
+    const edm = await startMockEdm();
+    const clock = clockAt(day, 17, true);
+    let server = await boot(version, dir, day, { now: clock });
+    let api = await server.login();
+    const companies = (await api.get("/api/companies")).data.all.map(c => ({ id: c.id, code: c.code }));
+    const result = { names: {}, facts: {}, files: {}, phone: null };
+    try {
+      let phone = null;
+      if (phoneStep) phone = await phoneStep(server, api);
+      // 002 önce (001'in geri yüklenmesi yeniden açılış ister — staged)
+      for (const company of [...companies].sort((x, y) => (x.code === "002" ? -1 : y.code === "002" ? 1 : 0))) {
+        const last = manifest.backups.filter(b => b.companyId === company.id).at(-1);
+        result.names[company.code] = last?.name;
+        const res = await must(`${version} ${company.code} eski yedeği geri yükle (${last?.name})`, api.post("/api/admin/backups/restore", { name: last.name, company: company.id, confirm: company.code, password: ADMIN_PASSWORD }));
+        if (res.staged) {
+          await server.close();
+          server = await boot(version, dir, day, { now: clock });
+          api = await server.login();
+          // Yeniden açılan program uzaktan erişim dinleyicisini yeni portta açar (gerçekte tünel yeniden bağlanır); telefonun çerezleri (cihaz + uzak oturum) aynı.
+          if (phone) phone.base = (await remoteBase(server)).base;
+        }
+      }
+      for (const company of companies) result.facts[company.code] = await companyFacts(scoped(api, company.id));
+      if (phone) result.phone = { session: (await phone.get("/api/mobil/session")).status, devices: await must("cihazlar", api.get("/api/admin/mobile/devices")) };
+      // Bundan sonrası yalnız adayda: adayda alınan yedek → çalış → geri yükle → sayılar → yeniden çalış.
+      if (version === CURRENT) {
+        for (const company of companies) {
+          const s = scoped(api, company.id);
+          const backup = await must(`aday yedek ${company.code}`, api.post("/api/admin/backups", { scope: "one", companyId: company.id }));
+          const moment = await companyFacts(s);
+          clock.resume?.();
+          const cash = await s.post("/api/workspace/cash", { kind: "in", amount: "1234.56", date: day, description: "Yedekten sonra çalışma" });
+          const acc = await s.post("/api/workspace/accounts", { name: `Göç Yedek Carisi ${company.code}`, type: "customer" });
+          const mid = await companyFacts(s);
+          const changed = stableDiff(moment, mid).map(d => d.section);
+          check(`${company.code} aday yedeği ${backup.name} alındı; ara çalışma yazıldı (Kasa ${cash.status}, cari ${acc.status}; değişen bölümler ${changed.join(",")})`, cash.status === 200 && acc.status === 200 && changed.includes("cash") && changed.includes("accounts"), { cash: cash.data, acc: acc.data });
+          const res = await must(`aday yedeğini geri yükle ${company.code}`, api.post("/api/admin/backups/restore", { name: backup.name, company: company.id, confirm: company.code, password: ADMIN_PASSWORD }));
+          if (res.staged) {
+            await server.close();
+            server = await boot(version, dir, day, { now: clock });
+            api = await server.login();
+            if (phone) phone.base = (await remoteBase(server)).base;
+          }
+          const back = await companyFacts(scoped(api, company.id));
+          const d = stableDiff(moment, back);
+          check(`${company.code} aday yedeği geri yüklendi: olgular yedek anıyla aynı (${d.length} bölüm farklı)`, !d.length, { d });
+          const again = await scoped(api, company.id).post("/api/workspace/cash", { kind: "in", amount: "10", date: day, description: "Geri yüklemeden sonra çalışma" });
+          const integ = await must("Mutabakat Testi", scoped(api, company.id).get("/api/workspace/ledger/integrity"));
+          check(`${company.code} geri yüklemeden sonra yeniden çalışma 200 (${again.status}); Mutabakat Testi sapma ${(integ.failures || []).length} (yedek anında ${(moment.integrity?.failures || []).length})`, again.status === 200 && (integ.failures || []).length === (moment.integrity?.failures || []).length, { again: again.data, failures: integ.failures });
+          if (phone) check(`${company.code} aday yedeğinin geri yüklenmesinden sonra eşli telefon oturumu sürer (${(await phone.get("/api/mobil/session")).status})`, (await phone.get("/api/mobil/session")).status === 200, {});
+        }
+      }
+    } finally {
+      await server.close();
+      await edm.close();
+    }
+    const reg = readRegistry(path.join(dir, "data"));
+    for (const company of companies) result.files[company.code] = fileFacts(companyDbFile(path.join(dir, "data"), reg.find(e => e.id === company.id) || { id: company.id, dir: "" }));
+    rmSync(dir, { recursive: true, force: true });
+    return result;
+  };
+  const old = await restoreLast(OLD, "taban");
+  let paired = null;
+  const neu = await restoreLast(CURRENT, "goc", {
+    phoneStep: async (server, api) => {
+      const remote = await remoteBase(server);
+      const users = Object.fromEntries((l => (Array.isArray(l) ? l : l.users || [])) (await must("kullanıcılar", api.get("/api/admin/users"))).map(u => [u.username, u.id]));
+      await must("izin", api.put(`/api/admin/mobile/access/${users.admin}`, { remote: true }));
+      const code = await must("karekod", api.post("/api/admin/mobile/codes", { userId: users.admin }));
+      const phone = createPhone(remote.base, { name: "Yedek Tatbikatı Telefonu" });
+      const pair = await phone.pair(code.code);
+      const login = await phone.login("admin", ADMIN_PASSWORD);
+      paired = { pair: pair.status, login: login.status };
+      return phone;
+    },
+  });
+  check(`aday: eşleme (${paired?.pair}) + uzak giriş (${paired?.login}) geri yüklemeden önce`, paired?.pair === 200 && paired?.login === 200, paired);
+  for (const code of Object.keys(old.facts)) {
+    check(`${code} geri yüklenen eski yedek (${old.names[code]}) adayda şema ${neu.files[code].version} (eski sürümde ${old.files[code].version}), bütünlük ${neu.files[code].integrity}`, neu.files[code].version === SCHEMA && neu.files[code].integrity === "ok", { neu: neu.files[code].version, old: old.files[code].version });
+    const d = stableDiff(old.facts[code], neu.facts[code]);
+    writeJson(`yedek-fark-${code}`, d);
+    log(`${code} eski yedek: ${OLD}'nın geri yüklediği ↔ adayın geri yüklediği: ${d.length} bölüm farklı ${JSON.stringify(d.map(x => x.section))}`);
+    check(`${code} aynı eski yedek: ${OLD}'nın gösterdiği = adayın gösterdiği (para, cari, mizan, Kasa, banka, çek, fatura, taksit, stok, raporlar; farklı bölüm: ${d.map(x => x.section).join(",") || "yok"})`, !d.length, { d: JSON.stringify(d).slice(0, 2000) });
+  }
+  const devs = neu.phone?.devices;
+  check(`001'in eski (v2.4.6) yedeği geri yüklendikten sonra eşli cihaz ortak katmanda kalır (${devs?.used} cihaz) ve telefon oturumu sürer (${neu.phone?.session})`, devs?.used === 1 && neu.phone?.session === 200, { devs: JSON.stringify(devs).slice(0, 400), session: neu.phone?.session });
+  writeJson("yedek", { names: old.names, checks });
+  summary(checks.length, checks.filter(c => !c.ok).length, "yedek: eski sürüm yedeği eski ↔ aday, aday yedek tatbikatı, ortak katman");
+  process.exitCode = checks.some(c => !c.ok) ? 1 : 0;
+} else if (step === "donus") {
+  const { stableDiff } = await imp("test/guvenilirlik/m30-tatbikat.mjs");
+  const dir = path.join(root, "donus");
+  rmSync(dir, { recursive: true, force: true });
+  cpSync(path.join(root, "goc"), dir, { recursive: true });
+  const day = dayOf();
+  const { checks, check } = checker();
+  const old = await measure({ version: OLD, dir, day });
+  const back = await measure({ version: CURRENT, dir, day });
+  const taban = readJson(`${OLD}-taban`);
+  const goc = readJson("guncel-goc");
+  for (const code of Object.keys(taban.companies)) {
+    const d1 = stableDiff(taban.companies[code], old.companies[code]);
+    check(`${code} göçten sonra ${OLD} açınca gösterdiği = göçten önce gösterdiği (${d1.map(x => x.section).join(",") || "fark yok"})`, !d1.length, { d1: JSON.stringify(d1).slice(0, 1500) });
+    check(`${code} ${OLD} açılışı şemayı geri almaz (${SCHEMA} kalır; ${old.files[code].version}), mobil tablolar duruyor`, old.files[code].version === SCHEMA && MOBILE_TABLES.every(t => old.files[code].tables.includes(t)), { version: old.files[code].version });
+    const d2 = stableDiff(goc.companies[code], back.companies[code]);
+    check(`${code} ${OLD}'dan sonra yeniden aday: gösterdiği = göç ölçüsü (${d2.map(x => x.section).join(",") || "fark yok"})`, !d2.length, { d2: JSON.stringify(d2).slice(0, 1500) });
+  }
+  writeJson("donus", { checks });
+  rmSync(dir, { recursive: true, force: true });
+  summary(checks.length, checks.filter(c => !c.ok).length, `geri dönüş (aday → ${OLD} → aday)`);
+  process.exitCode = checks.some(c => !c.ok) ? 1 : 0;
+} else if (step === "zincir") {
+  const { stableDiff } = await imp("test/guvenilirlik/m30-tatbikat.mjs");
+  const { diffFacts, oldDataMap } = await imp("test/guvenilirlik/m30-fark.mjs");
+  const { scoped } = await imp("test/guvenilirlik/m30-uretici.mjs");
+  const { fileFacts } = await imp("test/guvenilirlik/m30-olgular.mjs");
+  const name = value("ad", "zincir");
+  const source = path.resolve(root, value("kaynak", "zb-taban"));
+  const pathVersions = value("yol", "v2.4.4,v2.4.6").split(",");
+  const day = value("gun", readJson(`manifest-${path.basename(source)}`).endDay);
+  const { checks, check } = checker();
+  const stepDir = path.join(root, `${name}-adim`);
+  const directDir = path.join(root, `${name}-dogrudan`);
+  for (const d of [stepDir, directDir]) { rmSync(d, { recursive: true, force: true }); cpSync(source, d, { recursive: true }); }
+  const ver = dir => dbFiles(dir).map(f => `${f.id}: ${readDb(f.file, db => db.prepare("PRAGMA user_version").get().user_version)}`).join(", ");
+  log(`kaynak ${path.basename(source)}: şema ${ver(stepDir)}`);
+  for (const version of pathVersions) {
+    const started = performance.now();
+    resetEdmCaches();
+    const server = await boot(version, stepDir, day);
+    try {
+      const api = await server.login();
+      for (const company of (await api.get("/api/companies")).data.all) await must(`${version} ${company.code} açılış`, scoped(api, company.id).get("/api/workspace/ledger/lock"));
+    } finally {
+      await server.close();
+    }
+    log(`  ${version} kendi koduyla açtı: şema ${ver(stepDir)} (${Math.round(performance.now() - started)} ms)`);
+  }
+  const last = pathVersions.at(-1);
+  const lastCopy = path.join(root, `${name}-olcu`);
+  rmSync(lastCopy, { recursive: true, force: true });
+  cpSync(stepDir, lastCopy, { recursive: true });
+  const before = await measure({ version: last, dir: lastCopy, day });
+  rmSync(lastCopy, { recursive: true, force: true });
+  const maps = Object.fromEntries(before.install.companies.map(c => [c.code, oldDataMap(dbFiles(stepDir).find(f => f.id === c.id).file)]));
+  const after = await measure({ version: CURRENT, dir: stepDir, day });
+  const direct = await measure({ version: CURRENT, dir: directDir, day });
+  writeJson(`${name}-${last}`, before);
+  writeJson(`${name}-guncel`, after);
+  writeJson(`${name}-dogrudan`, direct);
+  const report = diffFacts(before, after, { maps, profile: "244-245" });
+  writeJson(`fark-${name}`, report);
+  log(`${last} → aday: ${report.rows.length} olgu; ${JSON.stringify(report.rows.reduce((m, r) => ({ ...m, [r.klass]: (m[r.klass] || 0) + 1 }), {}))}`);
+  for (const row of report.rows.filter(r => r.klass !== "EŞİT")) log(`  [${row.klass}] ${row.company} ${row.area} ${row.decision || ""} ${JSON.stringify(row.detail).slice(0, 1200)}`);
+  for (const code of Object.keys(after.companies)) {
+    const diff = direct.companies[code] ? stableDiff(after.companies[code], direct.companies[code]) : [{ section: "şirket yok" }];
+    check(`${code} yol bağımsızlığı: ${path.basename(source)} → ${pathVersions.join(" → ")} → aday = ${path.basename(source)} → aday (doğrudan) (${diff.map(x => x.section).join(",") || "fark yok"})`, !diff.length, { diff: JSON.stringify(diff).slice(0, 1500) });
+    check(`${code} şema ${SCHEMA} (adım adım ${after.files[code].version}, doğrudan ${direct.files[code]?.version}), bütünlük ${after.files[code].integrity}/${direct.files[code]?.integrity}`, after.files[code].version === SCHEMA && direct.files[code]?.version === SCHEMA && after.files[code].integrity === "ok" && direct.files[code]?.integrity === "ok", {});
+    const tablesSame = JSON.stringify(after.files[code].tables) === JSON.stringify(direct.files[code]?.tables) && JSON.stringify(after.files[code].counts) === JSON.stringify(direct.files[code]?.counts);
+    const diffCounts = Object.keys(after.files[code].counts).filter(t => after.files[code].counts[t] !== direct.files[code]?.counts?.[t]);
+    check(`${code} veri dosyası: tablolar aynı; satır sayıları aynı (farklı: ${diffCounts.join(",") || "yok"} — oturum/denetim izi hariç)`, JSON.stringify(after.files[code].tables) === JSON.stringify(direct.files[code]?.tables) && diffCounts.every(t => ["sessions", "audit_events", "login_attempts"].includes(t)), { tablesSame, diffCounts: Object.fromEntries(diffCounts.map(t => [t, [after.files[code].counts[t], direct.files[code]?.counts?.[t]]])) });
+  }
+  writeJson(name, { source: path.basename(source), pathVersions, checks, farkSiniflari: report.rows.reduce((m, r) => ({ ...m, [r.klass]: (m[r.klass] || 0) + 1 }), {}) });
+  for (const d of [stepDir, directDir]) rmSync(d, { recursive: true, force: true });
+  summary(checks.length, checks.filter(c => !c.ok).length, `zincir ${path.basename(source)} → ${pathVersions.join(" → ")} → aday; fark satırları (${report.bulgu.length} 'BULGU') elle sınıflanır`);
+  process.exitCode = checks.some(c => !c.ok) ? 1 : 0;
+} else {
+  throw new Error(`bilinmeyen adım ${step}`);
+}

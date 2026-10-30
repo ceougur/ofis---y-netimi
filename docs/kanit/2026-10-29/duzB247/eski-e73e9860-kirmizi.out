@@ -1,0 +1,474 @@
+# ESKİ KOD e73e9860 (ayrı kopya: arşivden açıldı, ders 23) + yeni testler test/mobil-gg247-ortak/b2/b2b/b5. Komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/mobil-gg247-b2.test.mjs test/mobil-gg247-b2b.test.mjs test/mobil-gg247-b5.test.mjs · çıkış 1 · 17 test: 2 geçti (B2 'saat doğruyken kayıt geçer', B5 komşu 'erişim değişikliği yükler' — ikisi eski kodda da geçmeli), 15 kırmızı · Node v22.22.0
+TAP version 13
+# Subtest: B2 ofis saati ileri kayıp geri gelince kapıcı kaydı (Date başlığı yok)
+    # Subtest: saat doğruyken kayıt geçer
+    ok 1 - saat doğruyken kayıt geçer
+      ---
+      duration_ms: 22.421418
+      type: 'test'
+      ...
+    # Subtest: saat 3 saat ileri (saat dilimi hatası): kayıt reddedilir, reddedilen zaman SAKLANMAZ
+    not ok 2 - saat 3 saat ileri (saat dilimi hatası): kayıt reddedilir, reddedilen zaman SAKLANMAZ
+      ---
+      duration_ms: 13.672385
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2.test.mjs:24:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        reddedilen kaydın zamanı sonKayitMs'e yazılmamalı
+        + actual - expected
+        
+        + 1794996000000
+        - 1794985200000
+               ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1794985200000
+      actual: 1794996000000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2.test.mjs:30:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: saat düzeltilince kayıt yeniden geçer; yeni eşlenen telefon kapıcıdan girer
+    not ok 3 - saat düzeltilince kayıt yeniden geçer; yeni eşlenen telefon kapıcıdan girer
+      ---
+      duration_ms: 7.264247
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2.test.mjs:33:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        saat düzeldikten sonra kayıt reddedildi: {"ok":false,"status":401,"code":"kapi-zaman","error":"Cihazın saati sunucunun saatiyle uyuşmuyor.","zaman":1794985260000}
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2.test.mjs:37:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: eski sürümün bıraktığı ileri sonKayitMs (şimdi + 3 sa) kırpılır: kayıt geçer, saklı değer kabul edilen zamana iner
+    not ok 4 - eski sürümün bıraktığı ileri sonKayitMs (şimdi + 3 sa) kırpılır: kayıt geçer, saklı değer kabul edilen zamana iner
+      ---
+      duration_ms: 6.89436
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2.test.mjs:44:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ileri saklı değer kayıt kilidi bıraktı: {"ok":false,"status":401,"code":"kapi-zaman","error":"Cihazın saati sunucunun saatiyle uyuşmuyor.","zaman":1794985261000}
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2.test.mjs:51:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: saat 4 dk ileri (pay içinde) kabul edilen kayıttan sonra saat geri gelince sıra korunur (kapıcının son kaydının gerisine düşmez)
+    not ok 5 - saat 4 dk ileri (pay içinde) kabul edilen kayıttan sonra saat geri gelince sıra korunur (kapıcının son kaydının gerisine düşmez)
+      ---
+      duration_ms: 7.820142
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2.test.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"status":401,"code":"kapi-zaman","error":"Cihazın saati sunucunun saatiyle uyuşmuyor.","zaman":1794985261000}
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2.test.mjs:62:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - B2 ofis saati ileri kayıp geri gelince kapıcı kaydı (Date başlığı yok)
+  ---
+  duration_ms: 549.424273
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2.test.mjs:12:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: B2b pay: Date başlığı programa ulaşmasa da ±3 dk farkta kayıt + eşleme + canlı giriş geçer
+    # Subtest: ofis saati 3 dk
+        # Subtest: kayıt, eşleme ve giriş 200; saat farkı ölçülmedi (telafi yok)
+        not ok 1 - kayıt, eşleme ve giriş 200; saat farkı ölçülmedi (telafi yok)
+          ---
+          duration_ms: 114.613305
+          type: 'test'
+          location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:33:7'
+          failureType: 'testCodeFailure'
+          error: |-
+            eşleme: {"ok":false,"error":"Uzak bağlantı kapıcı üzerinden gelmedi; istek reddedildi.","code":"remote-kapi"}
+            
+            401 !== 200
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 200
+          actual: 401
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:37:16)
+            process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+          ...
+        1..1
+    not ok 1 - ofis saati 3 dk
+      ---
+      duration_ms: 648.719273
+      type: 'suite'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:27:5'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        async Promise.all (index 0)
+      ...
+    # Subtest: ofis saati -3 dk
+        # Subtest: kayıt, eşleme ve giriş 200; saat farkı ölçülmedi (telafi yok)
+        not ok 1 - kayıt, eşleme ve giriş 200; saat farkı ölçülmedi (telafi yok)
+          ---
+          duration_ms: 65.797584
+          type: 'test'
+          location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:33:7'
+          failureType: 'testCodeFailure'
+          error: |-
+            eşleme: {"ok":false,"error":"Uzak bağlantı kapıcı üzerinden gelmedi; istek reddedildi.","code":"remote-kapi"}
+            
+            401 !== 200
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 200
+          actual: 401
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:37:16)
+            process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..1
+    not ok 2 - ofis saati -3 dk
+      ---
+      duration_ms: 421.839284
+      type: 'suite'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:27:5'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: pay sabiti 5 dk (kapıcının işareti ve programın doğrulaması aynı sabiti kullanır)
+    not ok 3 - pay sabiti 5 dk (kapıcının işareti ve programın doğrulaması aynı sabiti kullanır)
+      ---
+      duration_ms: 0.506395
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:43:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        120000 !== 300000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 300000
+      actual: 120000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:44:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Suite.postRun (node:internal/test_runner/test:1173:19)
+        Suite.run (node:internal/test_runner/test:1457:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - B2b pay: Date başlığı programa ulaşmasa da ±3 dk farkta kayıt + eşleme + canlı giriş geçer
+  ---
+  duration_ms: 1072.12297
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:25:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: B2b telafi: ofis saati payın dışında (±10 dk), kapıcı yanıtının Date başlığıyla düzeltilir ve Yönetim uyarır
+    # Subtest: ofis saati 10 dk
+        # Subtest: kayıt (ilk ret + ölçülen farkla bir kez yineleme) geçer; eşleme ve canlı giriş 200
+        not ok 1 - kayıt (ilk ret + ölçülen farkla bir kez yineleme) geçer; eşleme ve canlı giriş 200
+          ---
+          duration_ms: 8.229418
+          type: 'test'
+          location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:56:7'
+          failureType: 'testCodeFailure'
+          error: |-
+            {"ok":false,"status":401,"code":"kapi-zaman","error":"Cihazın saati sunucunun saatiyle uyuşmuyor.","zaman":1794985200000}
+            
+            false !== true
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: true
+          actual: false
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:58:16)
+            process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        # Subtest: Yönetim → Mobil Cihazlar: sunucu farkı döndürür, ekranda uyarı cümlesi görünür
+        not ok 2 - Yönetim → Mobil Cihazlar: sunucu farkı döndürür, ekranda uyarı cümlesi görünür
+          ---
+          duration_ms: 5.472505
+          type: 'test'
+          location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:71:7'
+          failureType: 'testCodeFailure'
+          error: "Cannot read properties of undefined (reading 'farkMs')"
+          code: 'ERR_TEST_FAILURE'
+          name: 'TypeError'
+          stack: |-
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:75:43)
+            process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..2
+    not ok 1 - ofis saati 10 dk
+      ---
+      duration_ms: 412.759461
+      type: 'suite'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:50:5'
+      failureType: 'subtestsFailed'
+      error: '2 subtests failed'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        async Promise.all (index 0)
+      ...
+    # Subtest: ofis saati -10 dk
+        # Subtest: kayıt (ilk ret + ölçülen farkla bir kez yineleme) geçer; eşleme ve canlı giriş 200
+        not ok 1 - kayıt (ilk ret + ölçülen farkla bir kez yineleme) geçer; eşleme ve canlı giriş 200
+          ---
+          duration_ms: 6.045934
+          type: 'test'
+          location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:56:7'
+          failureType: 'testCodeFailure'
+          error: |-
+            {"ok":false,"status":401,"code":"kapi-zaman","error":"Cihazın saati sunucunun saatiyle uyuşmuyor.","zaman":1794985200000}
+            
+            false !== true
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: true
+          actual: false
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:58:16)
+            process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        # Subtest: Yönetim → Mobil Cihazlar: sunucu farkı döndürür, ekranda uyarı cümlesi görünür
+        not ok 2 - Yönetim → Mobil Cihazlar: sunucu farkı döndürür, ekranda uyarı cümlesi görünür
+          ---
+          duration_ms: 2.525397
+          type: 'test'
+          location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:71:7'
+          failureType: 'testCodeFailure'
+          error: "Cannot read properties of undefined (reading 'farkMs')"
+          code: 'ERR_TEST_FAILURE'
+          name: 'TypeError'
+          stack: |-
+            TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:75:43)
+            process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..2
+    not ok 2 - ofis saati -10 dk
+      ---
+      duration_ms: 412.127059
+      type: 'suite'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:50:5'
+      failureType: 'subtestsFailed'
+      error: '2 subtests failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..2
+not ok 3 - B2b telafi: ofis saati payın dışında (±10 dk), kapıcı yanıtının Date başlığıyla düzeltilir ve Yönetim uyarır
+  ---
+  duration_ms: 825.851751
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:48:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: B2b uyarı eşiği: saat doğruyken (fark < 2 sn ölçüm payı) düzeltme yok, uyarı yok
+    # Subtest: fark 0 ölçülür; Yönetim'de saat uyarısı yok
+    not ok 1 - fark 0 ölçülür; Yönetim'de saat uyarısı yok
+      ---
+      duration_ms: 10.339835
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:89:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'farkMs')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:92:40)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: uyarı eşiği 2 dk: 1 dk 59 sn uyarmaz, 2 dk uyarır (ekran)
+    not ok 2 - uyarı eşiği 2 dk: 1 dk 59 sn uyarmaz, 2 dk uyarır (ekran)
+      ---
+      duration_ms: 8.416151
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:98:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /saati 2 dakika farklı/. Input:
+        
+        '<p class="adm-mobile-count" data-mobile-count><b>0 / 3</b> eşli cihaz (iki şirket birlikte; telefon, tablet ve uzak tarayıcı sayılır).</p><p class="adm-mobile-count" data-mobile-ozet>Bulut Özeti: henüz yüklenmedi (ilk eşli cihazla yüklenir).</p>'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: '<p class="adm-mobile-count" data-mobile-count><b>0 / 3</b> eşli cihaz (iki şirket birlikte; telefon, tablet ve uzak tarayıcı sayılır).</p><p class="adm-mobile-count" data-mobile-ozet>Bulut Özeti: henüz yüklenmedi (ilk eşli cihazla yüklenir).</p>'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:102:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 4 - B2b uyarı eşiği: saat doğruyken (fark < 2 sn ölçüm payı) düzeltme yok, uyarı yok
+  ---
+  duration_ms: 340.842219
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b2b.test.mjs:83:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: B5 şirket seçimi / lisans denetimi → özet yüklemesi
+    # Subtest: sınıflama: select / license check / license contact yüklemez; erişim, şirket yaşam döngüsü ve lisans etkinleştirme güvenlik
+    not ok 1 - sınıflama: select / license check / license contact yüklemez; erişim, şirket yaşam döngüsü ve lisans etkinleştirme güvenlik
+      ---
+      duration_ms: 1.7499
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b5.test.mjs:22:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        /api/companies/select
+        
+        'guvenlik' !== null
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      actual: 'guvenlik'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b5.test.mjs:23:101)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 10 şirket geçişi ve 3 elle lisans denetimi özet yüklemesi doğurmaz (istekler 200)
+    not ok 2 - 10 şirket geçişi ve 3 elle lisans denetimi özet yüklemesi doğurmaz (istekler 200)
+      ---
+      duration_ms: 689.620597
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b5.test.mjs:32:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        şirket seçimi / lisans denetimi 13 özet yüklemesi doğurdu
+        
+        13 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 13
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b5.test.mjs:50:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: komşu: şirket ERİŞİMİ değişikliği hemen bir özet yüklemesi doğurur (güvenlik olarak kalır)
+    ok 3 - komşu: şirket ERİŞİMİ değişikliği hemen bir özet yüklemesi doğurur (güvenlik olarak kalır)
+      ---
+      duration_ms: 132.002234
+      type: 'test'
+      ...
+    1..3
+not ok 5 - B5 şirket seçimi / lisans denetimi → özet yüklemesi
+  ---
+  duration_ms: 1560.160838
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzB247-20261029a/eski-e73e9860/test/mobil-gg247-b5.test.mjs:10:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 17
+# suites 9
+# pass 2
+# fail 15
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5646.630784

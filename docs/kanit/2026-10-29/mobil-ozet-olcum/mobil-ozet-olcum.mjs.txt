@@ -1,0 +1,193 @@
+// 2.4.7 mobil özet hız ölçümü (kullanıcı 29.10.2026 "hız testi falan yaptık mı?" → "önerini uygula"). Ürün kodu DEĞİŞMEZ; yalnız ölçüm.
+// Veri: tools/olcek-210.mjs --asama veri (programın kendi API'siyle; 2 şirket, ~3.000 cari, ~112.000 para satırı). Taze kopyada:
+//   A) özetsiz masaüstü istek süreleri (eşli cihaz yok)            B) 1 ve 3 kullanıcılı özet: hazırlama+yükleme süresi, boyut, olay döngüsü gecikmesi
+//   C) özet ART ARDA hazırlanırken (en kötü durum) aynı masaüstü istekleri    D) telefon: kapıcıdan özet okuma+çözme, canlı giriş + Özet/Cari ekranı
+// GERÇEK program + yerel kapıcı (gerçek createKapi) + sahte lisans servisi (ders 30: dış istek yok). Kullanım:
+//   node mobil-ozet-olcum.mjs <veri/data klasörü> <çalışma klasörü> <json çıktısı> [ölçüm sn = 60]
+import { cpSync, rmSync, writeFileSync } from "node:fs";
+import { monitorEventLoopDelay } from "node:perf_hooks";
+import { pathToFileURL } from "node:url";
+
+const ROOT = process.env.OLCUM_KOK || "/home/user/ofis---y-netimi";
+const imp = rel => import(pathToFileURL(`${ROOT}/${rel}`).href);
+const [VERI, IS, CIKTI, SN = "60"] = process.argv.slice(2);
+const SURE = Number(SN) * 1000;
+const PASS = "Olcek-210-Yonetici!";
+const STAFF_PASS = "Olcek-210-Personel!";
+const MACHINE = "0123456789abcdef0123456789abcdef";
+
+const { createClock } = await imp("server/lib/clock.mjs");
+const { startTestServer } = await imp("test/helpers.mjs");
+const { lisansAnahtari } = await imp("test/kapi-ortak.mjs");
+const { startKapi } = await imp("test/kapi-yerel.mjs");
+const { createPhone } = await imp("test/mobil-uzak-ortak.mjs");
+
+const pct = (l, p) => {
+  const s = l.slice().sort((a, b) => a - b);
+  return s.length ? Math.round(s[Math.min(s.length - 1, Math.ceil((p / 100) * s.length) - 1)]) : null;
+};
+const ozet = l => ({ n: l.length, p50: pct(l, 50), p95: pct(l, 95), enCok: l.length ? Math.round(Math.max(...l)) : null });
+const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
+
+rmSync(IS, { recursive: true, force: true });
+cpSync(VERI, `${IS}/data`, { recursive: true });
+
+const T = new Date().toISOString();
+const gercek = createClock({ time: T, fixed: true });
+const ofisSaati = createClock({ time: T, fixed: true });
+const lisans = lisansAnahtari();
+const belirtec = () => lisans.belirtec({ at: gercek.ms(), machine: MACHINE, licenseId: "LIS-OLCUM-247" });
+const kapi = await startKapi({ now: () => gercek.ms(), trustedKeys: lisans.trusted, lisansFetch: async () => ({ json: async () => ({ ok: true, token: belirtec() }) }) });
+const server = await startTestServer({
+  dataDir: `${IS}/data`,
+  backupDir: `${IS}/backups`,
+  adminPassword: PASS,
+  now: ofisSaati,
+  remoteNow: ofisSaati,
+  mobileKapiUrl: kapi.base,
+  license: { enforce: true, trustedKeys: lisans.trusted, services: ["https://lisans.olcum.test/api/lisans"], fetchImpl: async () => ({ status: 200, json: async () => ({ ok: true, token: belirtec() }) }), machineId: MACHINE, now: () => ofisSaati.ms(), firstCheckDelayMs: 3_600_000, autoTrial: false },
+});
+const sonuc = { tarih: T, commit: "", veri: VERI, olcumSn: SURE / 1000, node: process.version };
+try {
+  await server.app.license.activateKey("DO-ABCDE-FGHJK-MNPQR-STVWX");
+  const sync = server.app.mobileSync;
+  const ofis = await sync.ofis();
+  const remote = await server.app.listenRemote(0, "127.0.0.1");
+  kapi.tunel(ofis.id, `http://127.0.0.1:${remote.port}`);
+  const admin = server.client();
+  if ((await admin.login("admin", PASS)).status !== 200) throw new Error("admin girişi");
+  const sirketler = (await admin.get("/api/companies")).data.data.companies;
+  const s1 = sirketler.find(c => String(c.code) === "001")?.id || sirketler[0].id;
+  const at = u => `${u}${u.includes("?") ? "&" : "?"}hofCompany=${encodeURIComponent(s1)}`;
+  // Masaüstü personeli (Muhasebe rolü; ayrı oturum)
+  const masa = server.client();
+  if ((await masa.login("olcek10", STAFF_PASS)).status !== 200) throw new Error("olcek10 girişi");
+  const cariler = (await masa.get(at("/api/workspace/accounts?status=all&limit=500"))).data.data.accounts;
+  sonuc.cariListesi = cariler.length;
+  const islek = cariler.slice(0, 40).map(c => c.id);
+  const UCLAR = {
+    cariListesi: () => at("/api/workspace/accounts?status=all&limit=500"),
+    cariArama: () => at(`/api/workspace/accounts/search?q=${encodeURIComponent(cariler[Math.floor(Math.random() * cariler.length)].name.slice(0, 3))}`),
+    cariKarti: () => at(`/api/workspace/accounts/${islek[Math.floor(Math.random() * islek.length)]}`),
+    bankaHareketleri: () => at("/api/workspace/bank/movements?limit=50"),
+    stok: () => at("/api/workspace/stock?limit=200"),
+  };
+  const yokla = async (ms, etiket) => {
+    const sureler = Object.fromEntries(Object.keys(UCLAR).map(k => [k, []]));
+    const durumlar = {};
+    const bitis = performance.now() + ms;
+    const h = monitorEventLoopDelay({ resolution: 10 });
+    h.enable();
+    while (performance.now() < bitis) {
+      for (const [ad, yol] of Object.entries(UCLAR)) {
+        const t0 = performance.now();
+        const r = await masa.get(yol());
+        sureler[ad].push(performance.now() - t0);
+        durumlar[r.status] = (durumlar[r.status] || 0) + 1;
+      }
+    }
+    h.disable();
+    const sonucY = { durumlar, olayDongusu: { p99ms: Math.round(h.percentile(99) / 1e6), enCokMs: Math.round(h.max / 1e6) }, uclar: Object.fromEntries(Object.entries(sureler).map(([k, l]) => [k, ozet(l)])) };
+    log(etiket, JSON.stringify(sonucY));
+    return sonucY;
+  };
+  const yukleOlc = async (adet, etiket) => {
+    const liste = [];
+    for (let i = 0; i < adet; i += 1) {
+      const h = monitorEventLoopDelay({ resolution: 10 });
+      h.enable();
+      const t0 = performance.now();
+      const r = await sync.uploadNow("elle");
+      const ms = performance.now() - t0;
+      h.disable();
+      liste.push({ ok: r.ok, kod: r.code || "", ms: Math.round(ms), bayt: r.data?.bayt ?? null, kullanici: r.data?.kullanici ?? null, cihaz: r.data?.cihaz ?? null, olayDongusuEnCokMs: Math.round(h.max / 1e6) });
+    }
+    log(etiket, JSON.stringify(liste));
+    return liste;
+  };
+  const telefonlar = [];
+  const esle = async kullanici => {
+    const users = Object.fromEntries((await admin.get("/api/admin/users")).data.data.map(u => [u.username, u.id]));
+    const id = users[kullanici];
+    if ((await admin.put(`/api/admin/mobile/access/${id}`, { remote: true })).status !== 200) throw new Error(`uzak izin ${kullanici}`);
+    await sync.idle();
+    const code = await admin.post("/api/admin/mobile/codes", { userId: id });
+    if (code.status !== 200) throw new Error(`karekod ${kullanici}: ${JSON.stringify(code.data)}`);
+    const phone = createPhone(kapi.base, { host: kapi.ofisHost(ofis.id) });
+    const pair = await phone.pair(code.data.data.code);
+    if (pair.status !== 200) throw new Error(`eşleme ${kullanici}: ${pair.status} ${JSON.stringify(pair.data)}`);
+    await sync.idle();
+    telefonlar.push({ kullanici, phone, sifre: kullanici === "admin" ? PASS : STAFF_PASS });
+  };
+
+  log("A) özetsiz masaüstü");
+  sonuc.A_ozetsiz = await yokla(SURE, "A");
+  await esle("admin");
+  log("B1) 1 kullanıcı özet");
+  sonuc.B1_tekKullanici = await yukleOlc(3, "B1");
+  await esle("olcek01");
+  await esle("olcek02");
+  log("B3) 3 kullanıcı özet");
+  sonuc.B3_ucKullanici = await yukleOlc(3, "B3");
+  log("C) özet art arda hazırlanırken masaüstü (3 kullanıcı; en kötü durum)");
+  let dur = false;
+  let sayac = 0;
+  const arka = (async () => {
+    while (!dur) {
+      await sync.uploadNow("elle");
+      sayac += 1;
+    }
+  })();
+  sonuc.C_ozetSirasinda = await yokla(SURE, "C");
+  dur = true;
+  await arka;
+  sonuc.C_ozetSirasinda.ozetSayisi = sayac;
+  log("D) telefon");
+  const d = [];
+  for (const { kullanici, phone, sifre } of telefonlar) {
+    const t0 = performance.now();
+    const oku = await phone.readSummary({ now: gercek.ms() });
+    const okuMs = performance.now() - t0;
+    const t1 = performance.now();
+    const giris = await phone.login(kullanici, sifre);
+    const girisMs = performance.now() - t1;
+    if (giris.status !== 200) throw new Error(`canlı giriş ${kullanici}: ${giris.status} ${JSON.stringify(giris.data)}`);
+    const canli = {};
+    for (const p of ["/api/mobil/session", `/api/mobil/overview?company=${s1}`, `/api/mobil/cash?company=${s1}`, `/api/workspace/accounts?limit=500&hofCompany=${s1}`, `/api/mobil/accounts/${islek[0]}?company=${s1}`]) {
+      const t = performance.now();
+      const r = await phone.get(p, { headers: { accept: "application/json", "x-requested-with": "DestekOfisMobile" } });
+      canli[p.split("?")[0]] = { durum: r.status, ms: Math.round(performance.now() - t) };
+    }
+    d.push({ kullanici, ozetOkumaCozmeMs: Math.round(okuMs), ozetDurum: oku.status, ozetKod: oku.code || "", ozetBayt: (oku.text || "").length, ozetSirketSayisi: Object.keys(oku.summary?.sirketler || {}).length, kirpildi: Boolean(oku.summary?.kirpildi), canliGirisMs: Math.round(girisMs), canli });
+  }
+  sonuc.D_telefon = d;
+  log("E) özet bölümlerinin boyutu (admin, canlı; özetin iç istekleriyle aynı uçlar)");
+  const { phone } = telefonlar[0];
+  const E = {};
+  for (const c of sirketler) {
+    const q = `company=${encodeURIComponent(c.id)}`;
+    const hq = `hofCompany=${encodeURIComponent(c.id)}`;
+    const bolum = {};
+    const H = { headers: { accept: "application/json", "x-requested-with": "DestekOfisMobile" } };
+    for (const p of ["/api/mobil/cash", "/api/mobil/bank", "/api/mobil/bank/accounts", "/api/mobil/plans", "/api/mobil/overview"]) {
+      const t = performance.now(); const r = await phone.get(`${p}?${q}`, H);
+      bolum[p] = { durum: r.status, bayt: Buffer.byteLength(r.text || ""), ms: Math.round(performance.now() - t) };
+    }
+    for (const p of ["/api/workspace/accounts?limit=500", "/api/workspace/stock?limit=500"]) {
+      const t = performance.now(); const r = await phone.get(`${p}&${hq}`, H);
+      bolum[p] = { durum: r.status, bayt: Buffer.byteLength(r.text || ""), ms: Math.round(performance.now() - t) };
+    }
+    const ids = cariler.slice(0, 50).map(x => x.id);
+    let top = 0, enCok = 0, sure = 0;
+    for (const id of ids) { const t = performance.now(); const r = await phone.get(`/api/mobil/accounts/${id}?${q}`, H); sure += performance.now() - t; const b = Buffer.byteLength(r.text || ""); top += b; enCok = Math.max(enCok, b); }
+    bolum["/api/mobil/accounts/:id x50 (001 carileri)"] = { toplamBayt: top, enCokBayt: enCok, toplamMs: Math.round(sure) };
+    E[String(c.code)] = bolum;
+  }
+  sonuc.E_bolumler = E;
+  log("E", JSON.stringify(E));
+  log("D", JSON.stringify(d));
+} finally {
+  writeFileSync(CIKTI, JSON.stringify(sonuc, null, 2));
+  await server.close().catch(() => {});
+  await kapi.close();
+}

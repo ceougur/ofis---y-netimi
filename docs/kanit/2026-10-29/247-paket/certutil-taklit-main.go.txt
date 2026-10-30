@@ -1,0 +1,22 @@
+// YALNIZ Wine sınaması için: Wine'ın certutil.exe'si -hashfile'ı uygulamıyor (boş çıktı). Bu taklit gerçek certutil'in
+// çıktı biçimini (1. satır başlık, 2. satır özet, 3. satır sonuç) üretir; A paketine GİRMEZ.
+package main
+
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"io"
+	"os"
+	"strings"
+)
+
+func main() {
+	if len(os.Args) != 4 || !strings.EqualFold(os.Args[1], "-hashfile") || !strings.EqualFold(os.Args[3], "SHA256") {
+		fmt.Println("CertUtil: kullanım"); os.Exit(1)
+	}
+	f, err := os.Open(os.Args[2])
+	if err != nil { fmt.Println("CertUtil: -hashfile command FAILED"); os.Exit(1) }
+	h := sha256.New(); io.Copy(h, f)
+	fmt.Printf("SHA256 hash of %s:\r\n%s\r\nCertUtil: -hashfile command completed successfully.\r\n", os.Args[2], hex.EncodeToString(h.Sum(nil)))
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "m3-247-mutasyon",
+  "komut": "python3 -I test/kapi-247-mutasyon.py",
+  "commit": "25f54fadf3b7eefc8d038dc6213d3250dbf7ca5f",
+  "dal": "worktree-agent-ac46b04d7acbf9624",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:07:52.134Z",
+  "sure_sn": 105.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/m3-247-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac46b04d7acbf9624",
+  "ham_cikti_sha256": "71c016305f4b47be07b1141c2ac912303f6f6ec5fef792123f203b7727924ea4",
+  "ham_cikti_bayt": 5615
+}

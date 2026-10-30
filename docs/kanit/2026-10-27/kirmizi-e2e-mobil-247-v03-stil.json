@@ -1,0 +1,53 @@
+{
+  "ad": "kirmizi-e2e-mobil-247-v03-stil",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil247-v03css-3f13c71/test/e2e/senaryo-mobil-247.mjs",
+  "commit": "f2483e67d9b1e5b3d7bc426c090b8b4ac48ac90f",
+  "dal": "is/mobil-arayuz-247",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T06:48:24.403Z",
+  "sure_sn": 71.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 59,
+    "gecen": 55,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Özet tutarları kesilmeden görünür (₺25.000,00)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cari Ekstre raporu: yatay taşma yok (492 ≤ 390)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-27/kirmizi-e2e-mobil-247-v03-stil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9be28ceb72f07f49",
+  "ham_cikti_sha256": "b772eda62fa067406a91e19359deda7242cf0495787aac6805c81ad1adb75843",
+  "ham_cikti_bayt": 3281
+}

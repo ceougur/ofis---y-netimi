@@ -1,0 +1,93 @@
+TAP version 13
+# e-Belge kullanım özeti okunamadı: okunamadı
+# (node:10264) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tür eşlemesi: e-Arşiv / e-SMM / öbür e-Fatura profilleri; kâğıt ve boş sayılmaz
+ok 1 - tür eşlemesi: e-Arşiv / e-SMM / öbür e-Fatura profilleri; kâğıt ve boş sayılmaz
+  ---
+  duration_ms: 1.150423
+  type: 'test'
+  ...
+# Subtest: geçiş sınıfı: gönderim kabulü; belirsizin kesinleşmesi; durum yinelemesi, portal taslağının sonucu, ret ve taslak sayılmaz
+not ok 2 - geçiş sınıfı: gönderim kabulü; belirsizin kesinleşmesi; durum yinelemesi, portal taslağının sonucu, ret ve taslak sayılmaz
+  ---
+  duration_ms: 1.17585
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247u13-eski-3389b2ff/test/edoc-kullanim-birim-247.test.mjs:25:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Y2: EDM aldı, reddetti
+    
+    '' !== 'confirmed'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'confirmed'
+  actual: ''
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247u13-eski-3389b2ff/test/edoc-kullanim-birim-247.test.mjs:42:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: gönderim anı (S1): 'EDM'de değil' bilgisinden sonraki İLK gönderim izi; 11048'de yeniden gönderimin kendi izi sayılmaz, 'bulunamadı' kapatmaz
+ok 3 - gönderim anı (S1): 'EDM'de değil' bilgisinden sonraki İLK gönderim izi; 11048'de yeniden gönderimin kendi izi sayılmaz, 'bulunamadı' kapatmaz
+  ---
+  duration_ms: 0.386951
+  type: 'test'
+  ...
+# Subtest: karar: doğrudan kabul anında; kesinleşme gönderim izinin anında; izsiz (yetim) ve sayaçtan önceki iz sayılmaz
+ok 4 - karar: doğrudan kabul anında; kesinleşme gönderim izinin anında; izsiz (yetim) ve sayaçtan önceki iz sayılmaz
+  ---
+  duration_ms: 0.786192
+  type: 'test'
+  ...
+# Subtest: F2 (kullanıcı kararı): 'Hata'daki belgede sonradan görülen kabul sayılır; ay 'bulunamadı' ile kapanmamış ilk iz; F1 değişmez
+ok 5 - F2 (kullanıcı kararı): 'Hata'daki belgede sonradan görülen kabul sayılır; ay 'bulunamadı' ile kapanmamış ilk iz; F1 değişmez
+  ---
+  duration_ms: 0.293073
+  type: 'test'
+  ...
+# Subtest: pencere (S5): içinde bulunulan ay + önceki 2; yıl dönümü; toplayıcı ay × ortam satırı sıfırlarla
+ok 6 - pencere (S5): içinde bulunulan ay + önceki 2; yıl dönümü; toplayıcı ay × ortam satırı sıfırlarla
+  ---
+  duration_ms: 7.330837
+  type: 'test'
+  ...
+# Subtest: saf uçtan uca işlev (kâhin karşılaştırması): S2 şirket + ETTN + ortam ayrı; ilk yazım kazanır; belirsizin ayı gönderim izinden
+ok 7 - saf uçtan uca işlev (kâhin karşılaştırması): S2 şirket + ETTN + ortam ayrı; ilk yazım kazanır; belirsizin ayı gönderim izinden
+  ---
+  duration_ms: 0.746245
+  type: 'test'
+  ...
+# Subtest: v37 göçü: şirket izi boş kurulur, sayaç başlangıcı yazılır; aynı ETTN + ortam bir kez; UPDATE / DELETE reddedilir
+ok 8 - v37 göçü: şirket izi boş kurulur, sayaç başlangıcı yazılır; aynı ETTN + ortam bir kez; UPDATE / DELETE reddedilir
+  ---
+  duration_ms: 215.361939
+  type: 'test'
+  ...
+# Subtest: kullanım defteri (S4): şirket + ETTN + ortam bir kez; aktarma yinelense de çift sayım yok; kesinti satırı düşürür, sonraki aktarma tamamlar; yalnız eklenir
+ok 9 - kullanım defteri (S4): şirket + ETTN + ortam bir kez; aktarma yinelense de çift sayım yok; kesinti satırı düşürür, sonraki aktarma tamamlar; yalnız eklenir
+  ---
+  duration_ms: 13.346462
+  type: 'test'
+  ...
+# Subtest: lisans gövdesi: usage yalnız izin verilen alanlarla, ay × ortam satırı sıfırlar dahil (S5); ek alan / ETTN / VKN süzülür; sağlayıcı hata verirse alan eklenmez
+ok 10 - lisans gövdesi: usage yalnız izin verilen alanlarla, ay × ortam satırı sıfırlar dahil (S5); ek alan / ETTN / VKN süzülür; sağlayıcı hata verirse alan eklenmez
+  ---
+  duration_ms: 127.78907
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 9
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 673.855134

@@ -1,0 +1,43 @@
+{
+  "ad": "duzA247/yeni-tekrar-b3-ozgun",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-tek-lisans-cok-ofis.test.mjs",
+  "commit": "c41b58c71479eab03e0b9c1aff2456acd498cc6b",
+  "dal": "worktree-agent-a4ce03c386642542b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T13:16:08.008Z",
+  "sure_sn": 0.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B3 tek lisans (tek makine) → birden çok ofis kimliği › aynı lisans belirteciyle ikinci (üçüncü…) ofis kaydı ve her birine 3 cihaz",
+      "konum": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-tek-lisans-cok-ofis.test.mjs:27:3",
+      "hata": "tek lisansla kapıcıdan 12 cihaz kabul edildi (sınır 3) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "B3 tek lisans (tek makine) → birden çok ofis kimliği › her ofis kimliği ayrı tünel + DNS kaydı alıyor (sahte Cloudflare sayaçları)",
+      "konum": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-tek-lisans-cok-ofis.test.mjs:44:3",
+      "hata": "tek lisans/makine 5 tünel + 5 DNS kaydı aldı (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/duzA247/yeni-tekrar-b3-ozgun.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4ce03c386642542b",
+  "ham_cikti_sha256": "9e4c6e20056f78181c36c44521874c7c6ea0e26ea95a9d2a5db6f35ad9e4f0dc",
+  "ham_cikti_bayt": 3103
+}

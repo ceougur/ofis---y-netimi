@@ -1,0 +1,43 @@
+{
+  "ad": "duzA247/eski-e73e9860-tekrar-b3-uyarlanmis",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-uyarlanmis.test.mjs",
+  "commit": "c41b58c71479eab03e0b9c1aff2456acd498cc6b",
+  "dal": "worktree-agent-a4ce03c386642542b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T13:16:08.941Z",
+  "sure_sn": 0.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B3 (uyarlanmış ölçü) tek lisans (tek makine) → birden çok ofis kimliği — W=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860 › aynı lisans belirteciyle 4 ofis × 3 cihaz: AYNI ANDA kapıcıdan geçen cihaz ≤ 3",
+      "konum": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-uyarlanmis.test.mjs:30:3",
+      "hata": "tek lisansla kapıcıdan aynı anda 12 cihaz geçiyor (sınır 3) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "B3 (uyarlanmış ölçü) tek lisans (tek makine) → birden çok ofis kimliği — W=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/eski-e73e9860 › her ofis kimliği ayrı tünel + DNS kaydı alıyor mu (sahte Cloudflare; sonda duranlar)",
+      "konum": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/duzA247-1029a/tekrar-yeni/b3-uyarlanmis.test.mjs:52:3",
+      "hata": "tek lisans/makine 5 tünel + 5 DNS kaydı tutuyor (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/duzA247/eski-e73e9860-tekrar-b3-uyarlanmis.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4ce03c386642542b",
+  "ham_cikti_sha256": "599d45ec9a025b2f279ca86ae3b093e74212c1ab032d81dfec51b919102d2427",
+  "ham_cikti_bayt": 3344
+}

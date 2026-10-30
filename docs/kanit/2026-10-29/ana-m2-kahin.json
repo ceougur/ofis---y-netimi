@@ -1,0 +1,32 @@
+{
+  "ad": "ana-m2-kahin",
+  "komut": "node test/bagimsiz/mobil-erisim/program-surucu.mjs --cikti /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/ana-m2-kahin",
+  "commit": "1ad159e26efb914931c9542533ec2d7269683704",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T06:01:44.064Z",
+  "sure_sn": 65.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 36,
+    "gecen": 36,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-m2-kahin.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "0197803414fdc75418a1e0e89dfccb7e7ccdb0549bf90a713ddac8dc5761a066",
+  "ham_cikti_bayt": 3033
+}

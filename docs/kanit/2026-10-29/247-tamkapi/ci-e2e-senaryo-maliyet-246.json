@@ -1,0 +1,32 @@
+{
+  "ad": "247-tamkapi/ci-e2e-senaryo-maliyet-246",
+  "komut": "npm run test:senaryo-maliyet-246",
+  "commit": "fbeb81345d0de8e917ea92c6f0cfc4ee276d69e9",
+  "dal": "worktree-agent-a1cdf987dc77a4bba",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T17:14:24.183Z",
+  "sure_sn": 63.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 89,
+    "gecen": 89,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/247-tamkapi/ci-e2e-senaryo-maliyet-246.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1cdf987dc77a4bba",
+  "ham_cikti_sha256": "65d58e3fb12ae139c7ac3f393a48dd7d8477b2455a92d4a50ca2fd8502d7127d",
+  "ham_cikti_bayt": 8243
+}

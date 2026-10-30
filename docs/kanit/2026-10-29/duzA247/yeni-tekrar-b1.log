@@ -1,0 +1,37 @@
+TAP version 13
+# Subtest: B1 silinen cihaz → aynı tarayıcıdan yeni karekodla eşleme (kapıcı üzerinden)
+    # Subtest: kontrol: çerezsiz yeni tarayıcı yeni karekodla eşlenir
+    ok 1 - kontrol: çerezsiz yeni tarayıcı yeni karekodla eşlenir
+      ---
+      duration_ms: 240.131864
+      type: 'test'
+      ...
+# telefonun çerezleri: __Host-hof_device, __Host-hof_mobil
+# GET /mobil/ → 200 <!doctype html>
+# <html lang="tr">
+# <head>
+#   <meta charset="utf-8" />
+#   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+# POST /api/mobil/eslesme → 200 {"ok":true,"data":{"device":{"id":"dev-6dcd00e8-1648-4386-8b09-eb18ca52b584","name":"Test Telefonu","kind":"telefon"},"user":{"name":"Ofis yöneticisi","username":"admin"},"ofis":{"kimlik":"oo5h245qhajmaybof","anahtar":{"kty":"EC","crv":"P-256","x":"y31FtCFUPkyAfcBjbIvh0agssZ1jZO7ZDHbEucjFtEA","y":"zbxiCRWkdwxBwPT5V5PxWIHFpKWHc03tWaADGR3xzns"}}}}
+# telefonun çerezleri (sonra): __Host-hof_device
+    # Subtest: silinen cihazın tarayıcısı (eski hof_device çerezi duruyor) yeni karekodla eşlenebilmeli
+    ok 2 - silinen cihazın tarayıcısı (eski hof_device çerezi duruyor) yeni karekodla eşlenebilmeli
+      ---
+      duration_ms: 211.027034
+      type: 'test'
+      ...
+    1..2
+ok 1 - B1 silinen cihaz → aynı tarayıcıdan yeni karekodla eşleme (kapıcı üzerinden)
+  ---
+  duration_ms: 922.416046
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1328.933647

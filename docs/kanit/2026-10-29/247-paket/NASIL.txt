@@ -1,0 +1,23 @@
+DestekOfis 2.4.7 — imzalı paket ve teslim dosyaları kanıtı (29.10.2026, ana oturum)
+
+Paketlenen ağaç: 6004b581 (dal claude/compassionate-galileo-f9kghg; ürün kodu 03e0f55a — 6004b581 yalnız CLAUDE.md).
+CI: #920 03e0f55a YEŞİL 7/7 (ci-6004b581.out; 6004b581 yalnız belge → hüküm 03e0f55a). windows.yml #62 + #63 03e0f55a YEŞİL. Uzun Doğrulama #840 aynı commit'te.
+
+1) Kılavuz PDF (ders 42): client/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf sha256 36942a0d… (2.4.7; pdf-denetle 39/39 paket adımında 044028d0'da — PDF o günden beri
+   değişmedi); güncelleme zip'indeki kopyası da 36942a0d… (unzip -p | sha256sum).
+2) Güncelleme paketi: node tools/release.mjs --anahtar <oturuma yüklenen pem> (anahtar kopyalanmadı, içeriği hiçbir dosyada yok) → release-6004b581.log:
+   destekofis-guncelleme-2.4.7.zip 7.458.891 B, 304 dosya, sha256 776cc7b6…; bildirge destekofis-guncelleme.json sha256 1c57ceed….
+   İmza (imza-dogrulama-247.out): programın kendi verifyEnvelope + TRUSTED_UPDATE_KEYS → ok, anahtar destekofis-2026-1, sürüm 2.4.7; zip özeti/boyutu bildirgeyle aynı;
+   assessManifest 2.4.6/2.4.5/2.4.4/2.1.0 ok, 2.4.7 NOT_NEWER; payload tahrifi ve imza baytı bozulması reddedildi. Zip'te package.json 2.4.7 ve mobile.mjs Kasa dönüşümü var.
+3) Kurulum: npm run build:windows (6004b581) → dist/DestekOfis-Kurulum-2.4.7.exe 37.327.509 B sha256 fdcc2946…; windres var, "simgesiz" uyarısı yok (build-windows.log).
+   30 MB üstü → split -n 2: parca0 18.663.755 B + parca1 18.663.754 B; cat parca0 parca1 | sha256sum = fdcc2946… (A-SHA256SUMS.txt).
+   .sha256 biçimi 2.4.6 ile aynı ("<özet>  DestekOfis-Kurulum.exe\n"; 2.4.6 dosyasının özeti bu biçimle yeniden üretildi: a3674c39…).
+4) BIRLESTIR.bat: 2.4.6 dosyası, yalnız BEKLENEN özet ve sürüm satırı değişti (CRLF 67/67). Wine (32 bit önek) cmd /c, certutil taklidiyle (certutil-taklit-main.go.txt;
+   YALNIZ sınama, teslime girmez): (1) sağlam parçalar → "TAMAM: Özet eşleşti" Bulunan = Beklenen fdcc2946…; (2) parca1'de 1 bayt bozuk → "HATA: Özet TUTMUYOR"
+   (wine-birlestir-1-2.out). Wine konsolu Türkçe harfleri bozuk gösterir (2.4.6'da da; gerçek Windows'ta kullanıcıda çalıştı). Parça yok / yanlış .sha256 durumları
+   2.4.6'da sınandı, betiğin o dalları değişmedi.
+5) Güncelleyici (guncelleyici-247.out): eski sürümlerin GERÇEK updater.mjs'i (git worktree v2.4.6, v2.4.5) yerel sahte yayın sunucusuna karşı (GitHub API + API 403 iken
+   latest/download yedek yolu); HUKUK_LICENSE_URL=http://127.0.0.1:9; gerçek GitHub'a istek YOK. 2.4.6 ve 2.4.5 iki yolda da available 2.4.7, anahtar destekofis-2026-1,
+   paket indirildi + özet doğrulandı; 2.4.7 kendisi up-to-date. "SONUÇ: hepsi beklendiği gibi".
+DENENMEYEN: kurulumun Wine'da sessiz kurulumu/açılışı (x64 kurulum, kapsayıcıda yalnız wine32 — 2.4.5/2.4.6'da da yok); gerçek Windows kurulum/servis/güncelleme/kaldırma
+   windows.yml #62 + #63'te (yeşil) ve etiketten sonra release.yml'de.

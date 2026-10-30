@@ -1,0 +1,32 @@
+{
+  "ad": "uiuxa247-olc-dogal",
+  "komut": "node --disable-warning=ExperimentalWarning --import ./test/e2e/pencere-yaris-zorla.mjs test/e2e/uiux-a-243.mjs",
+  "commit": "f72b4e8bde7583175b3846749f2c581c60d327c9",
+  "dal": "is/uiuxa-247",
+  "kirli": 2,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T09:12:32.513Z",
+  "sure_sn": 40.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 51,
+    "gecen": 51,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-27/uiuxa247-olc-dogal.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad78983a6ed220d6c",
+  "ham_cikti_sha256": "28fe44c3d6a90c9de2ef80f3f5fcb302ad4e4442d1d54cb9b149a64a11be6bae",
+  "ham_cikti_bayt": 5398
+}

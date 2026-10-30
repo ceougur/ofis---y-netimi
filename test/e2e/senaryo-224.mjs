@@ -5,7 +5,8 @@
 //  3. Raporlar → Cari Mizanı → Bakiye "Geciken Taksiti Olan" → yalnız geciken taksiti olan cari listelenir.
 //  4. Raporlar → Ürün Satış Kârlılığı → özet "Brüt Kâr (Stoklu Ürünler)" = TOPLAM satırının Brüt Kâr'ı; hizmet satışı ayrı satır.
 //  2. Çek/Senet: ileri tarihli Tahsil Et reddedilir (ekranda neden, Kasa aynı); dönem kilidinden önce tahsil edilmiş çekte
-//     Geri Al reddedilir (durum aynı); kilit kaldırılınca Geri Al çalışır.
+//     Geri Al reddedilir (durum aynı); kilit kaldırılınca Geri Al çalışır. 2c (2.4.7): Çek / Senet Al'da yanıt kaybolup yeniden Portföye Al'a
+//     basılınca ikinci evrak açılmaz (istek kimliği).
 //  6. (2.1.0, K1 iade kapanışı) Açık satış 600'den ekrandan 4 adet (240) Satıştan İade + 240 nakit Müşteriye İade Ödemesi → asıl fatura
 //     ekranda Açık 600, "Bu Faturayı Kapatanlar"da iadeden gelen hayalet "Fatura 240" yok, iade kartı "İade" (kapandı); tamamı peşin satış
 //     600'den 240 iade (geri ödenmeden) → iade kartında "Mahsup edilmemiş iade (müşterinin alacağı): 240,00 TL", Açık Faturalar'da borç 240.
@@ -550,6 +551,63 @@ try {
     await shot("2-kilit-kalkinca-geri-al");
     const [c, cash3] = [await chequeApi(ch.id), await cashApi()];
     ok(/geri alındı/.test(toast) && c.status === "portfolio" && cash3 === cash0, `kilit kalkınca geri alındı: "${toast}", durum ${c.status}, Nakit Kasa ${tl(cash3)} (tahsil öncesi ${tl(cash0)})`);
+  });
+
+  // 2.4.7 (M5 kâhininin yan bulgusu; plan §3.10/1): Çek / Senet Al formu istek kimliğini form açılışında üretir. İlk "Portföye Al" sunucuya ulaşır ve
+  // yazılır, yanıtı tarayıcıya ulaşmaz (ağ kopması); form açık kalır, kullanıcı yeniden basar → ikinci evrak AÇILMAZ (önceden no'suz senette ikinci
+  // evrak açılıyor, carinin borcu iki kez düşüyordu). Bağımsız beklenen (elle): 1 senet, cari 650,00 Alacaklı, Kasa aynı.
+  await step("2c. Çek / Senet Al: yanıt kaybolur, yeniden Portföye Al → tek senet, iki gönderim aynı istek kimliğiyle, ekranda 'zaten kaydedildi'", async () => {
+    const acc = await accOf("Senet Kimlik Müşteri");
+    const cash0 = await cashApi();
+    await openCheques();
+    await page.click(`${modal} [data-act="new-in"]`);
+    await page.waitForSelector(`${top} form input[name="amount"]`);
+    await page.selectOption(`${top} form select[name="instrument"]`, "note");
+    await page.click(`${top} form [data-acc-query]`);
+    await page.keyboard.type(acc.name.slice(0, 8), { delay: 40 });
+    await page.waitForSelector(`${top} li[data-id="${acc.id}"]`, { timeout: 10000 });
+    await (await page.$(`${top} li[data-id="${acc.id}"]`)).dispatchEvent("mousedown");
+    await page.click(`${top} form input[name="amount"]`);
+    await page.keyboard.type("650", { delay: 40 });
+    await page.keyboard.press("Tab");
+    await page.fill(`${top} form input[name="dueDate"]`, day(40));
+    await page.fill(`${top} form input[name="issueDate"]`, TODAY);
+    const isCreate = url => new URL(url).pathname === "/api/workspace/cheques";
+    const headers = [];
+    let dropped = false;
+    await page.route(isCreate, async route => {
+      const request = route.request();
+      if (request.method() !== "POST") return route.continue();
+      headers.push(request.headers()["x-hof-request"] || "");
+      if (dropped) return route.continue();
+      dropped = true;
+      await route.fetch(); // istek sunucuya ulaşır ve yazılır; yanıt tarayıcıya ulaşmaz (ağ kopması)
+      return route.abort("connectionreset");
+    });
+    const senetler = async () => (unwrap(await api.get(`/api/workspace/cheques?status=all&account=${encodeURIComponent(acc.id)}&limit=50`)).cheques || []).length;
+    try {
+      await closeToasts();
+      await page.click(`${top} form button[type="submit"]`);
+      let firstError = "";
+      for (let i = 0; i < 20 && !firstError; i += 1) {
+        await page.waitForTimeout(300);
+        firstError = await page.$eval(`${top} form .hof-form-error`, n => n.textContent.trim()).catch(() => "");
+      }
+      ok((await senetler()) === 1 && Boolean(firstError), `ilk gönderim sunucuda yazıldı (${await senetler()} senet), yanıt kayboldu; form açık: "${firstError}"`);
+      await shot("2c-yanit-kayboldu");
+      await page.click(`${top} form button[type="submit"]`);
+      const toast = await lastToast(/zaten kaydedildi|portföye alındı/);
+      await page.waitForSelector(`${modal} .hof-chq-actions`, { timeout: 10000 });
+      await shot("2c-yeniden-gonderim");
+      ok(headers.length === 2 && /^[0-9a-f]{32}$/.test(headers[0]) && headers[0] === headers[1], `iki gönderim aynı istek kimliğiyle: ${headers.map(h => h || "(kimlik yok)").join(" · ")}`);
+      ok((await senetler()) === 1, `tek senet (${await senetler()} senet)`);
+      ok(toast === "Bu evrak zaten kaydedildi; ikinci kez yazılmadı.", `ekran bildirimi: "${toast}"`);
+    } finally {
+      await page.unroute(isCreate);
+    }
+    const bal = await accountBalanceOnScreen(acc);
+    ok(bal.amount === 650 && bal.side === "Alacaklı", `senedi veren cari ekranda "${bal.text}" (beklenen 650,00 Alacaklı; bir kez)`);
+    ok((await cashApi()) === cash0, "Nakit Kasa değişmedi (evrak girişi para değil)");
   });
 
   // ---------- 6. K1 iade kapanışı ----------

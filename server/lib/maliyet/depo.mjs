@@ -76,8 +76,29 @@ export function createMaliyetDepo({ store, now = () => new Date() }) {
         yaz(sablon, ilkDurum(sablon));
         added += 1;
       });
+      sablonYukselt();
     });
     return added;
+  }
+
+  /**
+   * 2.4.7: şablonun ilk hâli değişti (oranlar boş, etiketlerde sayı yok, toplama "Toplam"). 2.4.6'da kurulmuş ama HİÇ KAYDEDİLMEMİŞ kart
+   * (rev 1, updated_at boş — Kaydet yalnız değişen kartı yazar ve rev'i artırır) yeni ilk hâle çevrilir; adım yalnız değeri 2.4.6 şablonundakiyle
+   * AYNEN aynıysa değişir. Kullanıcının bir kez kaydettiği kart (rev > 1) değişmez: 18 / 20 ve etiketleri kalır. rev artmaz; ikinci çağrı bir şey yapmaz.
+   */
+  function sablonYukselt() {
+    for (const row of store.all("SELECT kod FROM maliyet_kartlar WHERE tur = 'zincir' AND rev = 1 AND updated_at IS NULL")) {
+      const sablon = sablonKart(row.kod);
+      if (!sablon) continue;
+      for (const adim of sablon.adimlar) {
+        if (!adim.onceki) continue;
+        if (adim.kod === "yuzde" || adim.kod === "yuzde_ekle") {
+          store.run("UPDATE maliyet_adimlar SET etiket = ?, deger = ? WHERE kart = ? AND kod = ? AND etiket = ? AND deger = ?", adim.etiket, adim.oran ?? null, row.kod, adim.kod, adim.onceki.etiket, adim.onceki.oran);
+        } else if (adim.etiket !== adim.onceki.etiket) {
+          store.run("UPDATE maliyet_adimlar SET etiket = ? WHERE kart = ? AND kod = ? AND etiket = ?", adim.etiket, row.kod, adim.kod, adim.onceki.etiket);
+        }
+      }
+    }
   }
 
   // ---------- Okuma ----------
@@ -227,6 +248,23 @@ export function createMaliyetDepo({ store, now = () => new Date() }) {
   }
 
   /**
+   * PDF (2.4.7): bir sekmenin kartları EKRANDAKİ hâliyle — gövdede gelen taslak kartlar taslaktan, öbürleri kayıtlı hâlden; sekme adı da taslaktaki.
+   * Hiçbir şey yazılmaz. Dönüş: { ad, kartlar: [görünüm] } (sekmenin kart sırasıyla).
+   */
+  function pdfVerisi(body, sekmeKod) {
+    const kod = String(sekmeKod || "");
+    const row = store.get("SELECT kod, ad FROM maliyet_sekmeler WHERE kod = ?", kod);
+    if (!row) throw new HttpError(404, "Maliyet sekmesi bulunamadı.", { code: "maliyet-missing", sekme: kod.slice(0, 40) });
+    const { kartIsleri, sekmeIsleri } = hazirla(body);
+    const taslak = new Map(kartIsleri.map(is => [is.kod, is]));
+    const ad = sekmeIsleri.find(is => is.kod === kod)?.ad || row.ad;
+    const kartlar = store.all("SELECT * FROM maliyet_kartlar WHERE sekme = ? ORDER BY sira, kod", kod)
+      .filter(kart => sablonKart(kart.kod))
+      .map(kart => (taslak.has(kart.kod) ? gorunum(taslak.get(kart.kod).sablon, kart, taslak.get(kart.kod).sonra) : gorunum(sablonKart(kart.kod), kart)));
+    return { ad, kartlar };
+  }
+
+  /**
    * Kaydet: değişen kartlar ve sekme adları tek işlemde yazılır; biri bayatsa (rev) HİÇBİRİ yazılmaz (409). Dönüş: { degisen: {kartlar, sekmeler}, ...hepsi() }.
    */
   function kaydet(body, user) {
@@ -251,5 +289,5 @@ export function createMaliyetDepo({ store, now = () => new Date() }) {
     return { degisen: result, ...hepsi() };
   }
 
-  return { kur, hepsi, onizle, kaydet, tableExists };
+  return { kur, hepsi, onizle, pdfVerisi, kaydet, tableExists };
 }

@@ -1,0 +1,217 @@
+TAP version 13
+# (node:24668) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 Personel Özlük: yetki kataloğu
+    # Subtest: staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda
+    ok 1 - staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda
+      ---
+      duration_ms: 2.653724
+      type: 'test'
+      ...
+    # Subtest: istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)
+    ok 2 - istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)
+      ---
+      duration_ms: 5.665307
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.4.4 Personel Özlük: yetki kataloğu
+  ---
+  duration_ms: 9.674907
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: API
+    # Subtest: boş veri: liste boş, kartların hepsi sıfır
+    ok 1 - boş veri: liste boş, kartların hepsi sıfır
+      ---
+      duration_ms: 10.217205
+      type: 'test'
+      ...
+    # Subtest: bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var
+    ok 2 - bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var
+      ---
+      duration_ms: 30.144467
+      type: 'test'
+      ...
+    # Subtest: doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz
+    ok 3 - doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz
+      ---
+      duration_ms: 49.005807
+      type: 'test'
+      ...
+    # Subtest: aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409
+    ok 4 - aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409
+      ---
+      duration_ms: 13.656458
+      type: 'test'
+      ...
+    # Subtest: İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla
+    ok 5 - İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla
+      ---
+      duration_ms: 22.992268
+      type: 'test'
+      ...
+    # Subtest: KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok
+    ok 6 - KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok
+      ---
+      duration_ms: 3.028972
+      type: 'test'
+      ...
+    # Subtest: maaş yalnız bilgi: Kasa, Banka, cari ve Ana Defter'de iz yok
+    ok 7 - maaş yalnız bilgi: Kasa, Banka, cari ve Ana Defter'de iz yok
+      ---
+      duration_ms: 3.899411
+      type: 'test'
+      ...
+    # Subtest: yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403
+    ok 8 - yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403
+      ---
+      duration_ms: 223.995
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez
+    ok 9 - 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez
+      ---
+      duration_ms: 208.958071
+      type: 'test'
+      ...
+    # Subtest: yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler
+    ok 10 - yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler
+      ---
+      duration_ms: 398.187236
+      type: 'test'
+      ...
+    1..10
+ok 2 - 2.4.4 Personel Özlük: API
+  ---
+  duration_ms: 1433.536015
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)
+    # Subtest: v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz
+    ok 1 - v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 86.105835
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)
+  ---
+  duration_ms: 86.250702
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak)
+    # Subtest: kural tek yerde: dün / bugün → Ayrılanlar; yarın / ileri tarih → Çalışanlar + Ayrılacak; tarih yok → Çalışanlar
+    ok 1 - kural tek yerde: dün / bugün → Ayrılanlar; yarın / ileri tarih → Çalışanlar + Ayrılacak; tarih yok → Çalışanlar
+      ---
+      duration_ms: 0.181713
+      type: 'test'
+      ...
+    # Subtest: API + sahte saat: yarın ayrılacak çalışan bugün sayılır, gün ilerleyince kendiliğinden Ayrılanlar'a geçer
+    ok 2 - API + sahte saat: yarın ayrılacak çalışan bugün sayılır, gün ilerleyince kendiliğinden Ayrılanlar'a geçer
+      ---
+      duration_ms: 307.670708
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak)
+  ---
+  duration_ms: 308.149306
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale)
+    # Subtest: donuk saatte: B (formu A'dan önce açtı) kaydedince 409 staff-stale; A'nın maaşı korunur; yeniden açınca B'nin kaydı geçer
+    ok 1 - donuk saatte: B (formu A'dan önce açtı) kaydedince 409 staff-stale; A'nın maaşı korunur; yeniden açınca B'nin kaydı geçer
+      ---
+      duration_ms: 27.224077
+      type: 'test'
+      ...
+    # Subtest: saat geri alınınca da sürüm ilerler: bayat kayıt yine 409
+    ok 2 - saat geri alınınca da sürüm ilerler: bayat kayıt yine 409
+      ---
+      duration_ms: 10.326395
+      type: 'test'
+      ...
+    # Subtest: gövde okunurken gelen yazım görülür: B'nin yavaş gövdesi A'nın kaydından sonra biterse 409
+    ok 3 - gövde okunurken gelen yazım görülür: B'nin yavaş gövdesi A'nın kaydından sonra biterse 409
+      ---
+      duration_ms: 164.951409
+      type: 'test'
+      ...
+    # Subtest: silinmiş karta yazım: 404 staff-missing, ileti ne olduğunu ve ne yapılacağını söyler, kart yeniden doğmaz
+    ok 4 - silinmiş karta yazım: 404 staff-missing, ileti ne olduğunu ve ne yapılacağını söyler, kart yeniden doğmaz
+      ---
+      duration_ms: 9.950763
+      type: 'test'
+      ...
+    # Subtest: 002 şirketinde aynı kural; sürüm göndermeyen kısmi çağrı yalnız gönderdiği alanı yazar
+    ok 5 - 002 şirketinde aynı kural; sürüm göndermeyen kısmi çağrı yalnız gönderdiği alanı yazar
+      ---
+      duration_ms: 178.211776
+      type: 'test'
+      ...
+    1..5
+ok 5 - 2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale)
+  ---
+  duration_ms: 756.319487
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.961616
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 176.750403
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 157.991658
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 163.875175
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 302.702721
+      type: 'test'
+      ...
+    1..5
+ok 6 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 803.89982
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 31.467177
+      type: 'test'
+      ...
+    1..1
+ok 7 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 31.605378
+  type: 'suite'
+  ...
+1..7
+# tests 26
+# suites 7
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3030.581255

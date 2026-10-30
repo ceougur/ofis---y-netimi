@@ -1,0 +1,32 @@
+{
+  "ad": "ana-cek-birlesim-dar",
+  "komut": "node --test --test-concurrency=1 test/cek-istek-kimligi-247.test.mjs test/mobil-yazma-247.test.mjs test/mobil-ofis-kaydi-247.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "05d1cbd41244a5ca423323f92a3e760893bc3390",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T10:17:44.484Z",
+  "sure_sn": 7.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 45,
+    "gecen": 45,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-cek-birlesim-dar.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "d4ddd4eb1004d6cafb6de3da987d636cd039e25c2b3eb49a79eeac025e03a7f4",
+  "ham_cikti_bayt": 15798
+}

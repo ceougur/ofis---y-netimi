@@ -1,0 +1,129 @@
+ok 1 - U01-tek-kabul
+ok 2 - U02-ay-sonu-23-59-ayin-1i-00-00
+ok 3 - U03-utc-ve-ofsetsiz-saat
+ok 4 - U04-yil-donumu
+ok 5 - U05-ayni-ettn-iki-sirkette
+ok 6 - U06-ayni-ettn-test-ve-canlida
+ok 7 - U07-11048-ilk-olay
+ok 8 - U08-iptal-sonrasi-yeniden-gonderim
+ok 9 - U09-red-sonrasi-ayni-ettn-kabul
+ok 10 - U10-sira-karisik
+ok 11 - U11-belirsiz-kesinlesti-ayni-ay
+ok 12 - U12-belirsiz-ay-sinirinda-kesinlesti
+ok 13 - U13-belirsiz-kesinlesti-red
+ok 14 - U14-belirsiz-sonucsuz
+not ok 15 - U15-belirsiz-sonra-11048
+  # sayilar 2026-10|live|efatura: beklenen 0, gelen 1
+  # sayilar 2026-11|live|efatura: beklenen 1, gelen 0
+ok 16 - U16-iki-belirsiz-sonra-kesinlesme
+ok 17 - U17-red-araya-girer
+ok 18 - U18-kabul-sonrasi-gurultu
+ok 19 - U19-iki-kullanici-ayni-saniye
+ok 20 - U20-yetim-kesinlesme-eski-surum
+ok 21 - U21-eski-surumde-kabul-edilmis
+ok 22 - U22-turler-ve-profiller
+ok 23 - U23-sirketler-toplanir
+ok 24 - U24-bos
+ok 25 - U25-kullanim-penceresi
+ok 26 - U27-kesinlesme-pencere-disi
+ok 27 - U28-yedekten-geri-yukleme
+ok 28 - U29-sirket-verisi-sifirlandi
+ok 29 - U30-belge-silindi-yeniden-acildi
+ok 30 - U31-ettn-buyuk-kucuk-harf
+ok 31 - U32-cok-gurultu
+ok 32 - U33-belirsiz-sonra-yeniden-deneme-kabul
+ok 33 - U34-ortam-degisti-kesinlesme
+ok 34 - U35-sirket-capraz-kesinlesme
+ok 35 - U36-yalniz-iptal
+ok 36 - U37-artik-yil-subat
+ok 37 - U38-11048-sonra-kesinlesme
+ok 38 - U39-tekrarlanan-red
+ok 39 - U40-belirsiz-red-sonra-kesinlesme
+ok 40 - U41-F1-bulunamadi-yeniden-belirsiz-kesinlesme
+not ok 41 - U42-F1-bulunamadi-yeniden-belirsiz-11048
+  # sayilar 2026-11|live|esmm: beklenen 0, gelen 1
+  # sayilar 2026-12|live|esmm: beklenen 1, gelen 0
+not ok 42 - U43-F2-belirsiz-red-belirsiz-kesinlesme
+  # sayilar 2026-09|live|efatura: beklenen 1, gelen 0
+  # sayilar 2026-10|live|efatura: beklenen 0, gelen 1
+not ok 43 - U44-bulunamadi-sonra-yeni-deneme-olmadan-kabul
+  # sayilar 2026-09|live|efatura: beklenen 1, gelen 0
+ok 44 - U45-bulunamadi-sonra-iptal
+ok 45 - U46-yedekten-defter-kazanimi
+not ok 46 - U47-yedek-defteri-iki-sirket
+  # usage 2026-10-09T12:00:00+03:00 aylik 2026-10|live|efatura: beklenen 1, gelen 2
+  # usage 2026-10-09T12:00:00+03:00 toplam live|efatura: beklenen 1, gelen 2
+  # usage 2026-10-09T12:00:00+03:00 toplam live|toplam: beklenen 1, gelen 2
+not ok 47 - U48-eski-yedekte-defter-kopyasi-yok
+  # sayilar 2026-09|live|efatura: beklenen 0, gelen 1
+  # sayilar 2026-10|live|efatura: beklenen 2, gelen 1
+not ok 48 - R1-rastgele-500-belge
+  # sayilar 2026-12|test|esmm: beklenen 1, gelen 2
+  # sayilar 2027-01|test|esmm: beklenen 2, gelen 1
+  # sayilar 2027-02|live|earsiv: beklenen 9, gelen 10
+  # sayilar 2027-03|live|earsiv: beklenen 10, gelen 9
+  # sayilar 2027-05|live|earsiv: beklenen 8, gelen 9
+  # sayilar 2027-05|test|efatura: beklenen 10, gelen 11
+  # sayilar 2027-06|live|earsiv: beklenen 13, gelen 12
+  # sayilar 2027-06|live|efatura: beklenen 10, gelen 11
+  # sayilar 2027-07|live|efatura: beklenen 14, gelen 13
+  # sayilar 2027-07|test|efatura: beklenen 7, gelen 6
+  # sayilar 2027-07|test|esmm: beklenen 1, gelen 2
+  # sayilar 2027-08|test|esmm: beklenen 1, gelen 0
+  # sayilar 2027-10|live|esmm: beklenen 2, gelen 3
+  # sayilar 2027-10|test|earsiv: beklenen 5, gelen 6
+  # sayilar 2027-11|live|efatura: beklenen 8, gelen 9
+  # sayilar 2027-11|test|earsiv: beklenen 3, gelen 2
+  # sayilar 2027-12|live|efatura: beklenen 1, gelen 0
+  # sayilar 2027-12|live|esmm: beklenen 1, gelen 0
+  # usage 2027-09-10T11:19:32+03:00 aylik 2027-07|live|efatura: beklenen 14, gelen 13
+  # usage 2027-09-10T11:19:32+03:00 aylik 2027-07|test|efatura: beklenen 7, gelen 6
+not ok 49 - R2-rastgele-500-belge
+  # sayilar 2026-11|live|earsiv: beklenen 10, gelen 11
+  # sayilar 2026-11|test|efatura: beklenen 5, gelen 7
+  # sayilar 2026-12|test|efatura: beklenen 4, gelen 2
+  # sayilar 2026-12|test|esmm: beklenen 1, gelen 2
+  # sayilar 2027-01|live|earsiv: beklenen 9, gelen 8
+  # sayilar 2027-01|live|efatura: beklenen 10, gelen 11
+  # sayilar 2027-01|test|earsiv: beklenen 4, gelen 5
+  # sayilar 2027-01|test|efatura: beklenen 2, gelen 3
+  # sayilar 2027-01|test|esmm: beklenen 1, gelen 0
+  # sayilar 2027-02|live|earsiv: beklenen 3, gelen 4
+  # sayilar 2027-02|live|efatura: beklenen 11, gelen 10
+  # sayilar 2027-02|live|esmm: beklenen 2, gelen 3
+  # sayilar 2027-02|test|efatura: beklenen 4, gelen 3
+  # sayilar 2027-03|live|earsiv: beklenen 11, gelen 10
+  # sayilar 2027-03|test|earsiv: beklenen 3, gelen 2
+  # sayilar 2027-04|live|esmm: beklenen 4, gelen 3
+  # sayilar 2027-05|live|earsiv: beklenen 10, gelen 11
+  # sayilar 2027-06|live|efatura: beklenen 5, gelen 6
+  # sayilar 2027-07|live|earsiv: beklenen 11, gelen 10
+  # sayilar 2027-07|live|efatura: beklenen 9, gelen 8
+not ok 50 - R3-rastgele-500-belge
+  # sayilar 2026-12|live|earsiv: beklenen 6, gelen 7
+  # sayilar 2026-12|live|efatura: beklenen 12, gelen 13
+  # sayilar 2027-01|live|earsiv: beklenen 8, gelen 7
+  # sayilar 2027-01|live|efatura: beklenen 14, gelen 13
+  # sayilar 2027-01|live|esmm: beklenen 2, gelen 3
+  # sayilar 2027-03|live|earsiv: beklenen 6, gelen 7
+  # sayilar 2027-03|live|esmm: beklenen 3, gelen 2
+  # sayilar 2027-06|live|earsiv: beklenen 13, gelen 12
+  # sayilar 2027-08|live|efatura: beklenen 7, gelen 8
+  # sayilar 2027-10|live|earsiv: beklenen 5, gelen 6
+  # sayilar 2027-10|live|efatura: beklenen 13, gelen 12
+  # sayilar 2027-11|live|earsiv: beklenen 13, gelen 12
+  # usage 2027-05-01T01:28:12+03:00 aylik 2027-03|live|esmm: beklenen 3, gelen 2
+  # usage 2027-05-01T01:28:12+03:00 toplam live|esmm: beklenen 4, gelen 3
+  # usage 2027-05-01T01:28:12+03:00 toplam live|toplam: beklenen 50, gelen 49
+  # usage 2027-11-12T19:39:51+03:00 aylik 2027-10|live|efatura: beklenen 13, gelen 12
+  # usage 2027-11-12T19:39:51+03:00 toplam live|efatura: beklenen 27, gelen 26
+  # usage 2027-11-12T19:39:51+03:00 toplam live|toplam: beklenen 52, gelen 51
+  # usage 2028-01-07T03:59:15+03:00 aylik 2027-11|live|earsiv: beklenen 13, gelen 12
+  # usage 2028-01-07T03:59:15+03:00 toplam live|earsiv: beklenen 16, gelen 15
+1..50
+# tests 50
+# pass 41
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0

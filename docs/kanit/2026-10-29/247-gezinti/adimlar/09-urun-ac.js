@@ -1,0 +1,32 @@
+// Yeni Ürün: Stok Kodu KK90, Ad "Köşe Kabin 90", Alış 3.000, Satış 5.000, KDV %20, Açılış Miktarı 10, Not (stok kartı notu — ekstreye GELMEMELİ). Ürünü Aç.
+// Sonra ikinci kart: Hizmet "Montaj" Satış 1.000.
+const TOP = ".hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible)";
+const field = async (name, value) => { await desk.click(`${TOP} [name=${name}]`); await typeSlow(desk, value); await desk.keyboard.press("Tab"); };
+await field("code", "KK90");
+await field("name", "Köşe Kabin 90");
+await field("unitPrice", "3.000");
+await field("salePrice", "5.000");
+yaz("KDV seçenekleri", await desk.$$eval(`${TOP} [name=vatRate] option`, os => os.map(o => `${o.value}:${o.textContent.trim()}`)));
+await desk.selectOption(`${TOP} [name=vatRate]`, "20");
+await field("openingQty", "10");
+yaz("openingCash işaretli mi", await desk.$eval(`${TOP} [name=openingCash]`, e => e.checked), await desk.$eval(`${TOP} [name=openingCash]`, e => e.closest("label")?.textContent.trim()));
+await desk.click(`${TOP} [name=note]`);
+await typeSlow(desk, "STOKNOTU247 depo raf B3", 20);
+await desk.screenshot({ path: root + "/ekran/09a-yeni-urun-form.png" });
+await desk.click(`${TOP} button:text-is("Ürünü Aç")`);
+await bekle(1500);
+await desk.click(`${TOP} button:has-text("+ Yeni Ürün")`);
+await bekle(700);
+await desk.selectOption(`${TOP} [name=kind]`, "service");
+await bekle(300);
+await field("code", "MNT");
+await field("name", "Montaj");
+await field("salePrice", "1.000");
+await desk.selectOption(`${TOP} [name=vatRate]`, "20").catch(() => null);
+const btn = await desk.$$eval(`${TOP} button:visible`, els => els.map(e => e.textContent.trim()).filter(Boolean));
+yaz("hizmet düğmeleri", btn);
+await desk.click(`${TOP} button:text-matches("^(Ürünü|Hizmeti|Kartı) Aç$")`);
+await bekle(1500);
+yaz("DB stok", sql("SELECT code, name, kind, unit, sale_price, unit_price, vat_rate, note FROM stock_items"));
+yaz("DB stok hareket", sql("SELECT item_id, kind, qty, amount FROM stock_moves").length ? sql("SELECT kind, qty FROM stock_moves") : "stock_moves tablosu boş");
+yaz("Kasa", (await api("/api/workspace/cash")).data?.data?.totals);

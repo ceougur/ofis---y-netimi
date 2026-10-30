@@ -1,0 +1,32 @@
+{
+  "ad": "ana-senaryo-mobil-eslesme-247",
+  "komut": "npm run test:senaryo-mobil-eslesme-247",
+  "commit": "1ad159e26efb914931c9542533ec2d7269683704",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T06:02:49.962Z",
+  "sure_sn": 12.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 35,
+    "gecen": 35,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-senaryo-mobil-eslesme-247.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "cdaa26db3584d3b81efb3fd020c98d57728276da7065b8a59de68bfdfc46cae7",
+  "ham_cikti_bayt": 2641
+}

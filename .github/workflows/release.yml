@@ -73,10 +73,16 @@ jobs:
       - run: npm run test:senaryo-kayit-tahsilat-244
       - run: npm run test:senaryo-cari-vade-245
       - run: npm run test:senaryo-maliyet-246
+      - run: npm run test:senaryo-mobil-247
+      - run: npm run test:senaryo-mobil-eslesme-247
+      - run: npm run test:senaryo-mobil-ozet-247
+      - run: npm run test:senaryo-mobil-yazma-247
+      - run: npm run test:senaryo-mobil-tunel-247
       - run: npm run test:senaryo-kayit-bag-31e
       - run: npm run test:senaryo-pil-karti-245
       - run: npm run test:senaryo-serit-sira-245
       - run: npm run test:senaryo-ekstre-ayrinti-245
+      - run: npm run test:senaryo-ekstre-ayrinti-247
       - run: npm run test:senaryo-iade-246
       - run: npm run test:senaryo-netten-brute-244
       - run: npm run test:senaryo-ux18-244

@@ -1,0 +1,32 @@
+{
+  "ad": "247-tamkapi/ci-e2e-hiz-243-arka-plan",
+  "komut": "npm run test:hiz-243-arka-plan",
+  "commit": "fbeb81345d0de8e917ea92c6f0cfc4ee276d69e9",
+  "dal": "worktree-agent-a1cdf987dc77a4bba",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T17:29:33.088Z",
+  "sure_sn": 13.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/247-tamkapi/ci-e2e-hiz-243-arka-plan.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1cdf987dc77a4bba",
+  "ham_cikti_sha256": "fb5b2ed73455605f101b74dc3f882bacc90d2e17619f1dca15184bc63bc9f087",
+  "ham_cikti_bayt": 1204
+}

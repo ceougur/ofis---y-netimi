@@ -188,7 +188,10 @@ describe("2.4.4 Personel Özlük: API", () => {
   it("KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok", async () => {
     const rows = server.app.store.all("SELECT type, entity_id, payload_json FROM audit_events WHERE type LIKE 'staff.%'");
     assert.ok(rows.some(row => row.type === "staff.created") && rows.some(row => row.type === "staff.updated") && rows.some(row => row.type === "staff.deleted"));
-    const all = rows.map(row => `${row.entity_id} ${row.payload_json}`).join("\n");
+    // Kayıt kimliği rastgele UUID'dir ("0532", "45000" gibi parçalar ara sıra içinde çıkar — CI #898 Windows Node 24, zorla: personel-ozluk-244-zorla.mjs);
+    // değer aranan metne katılmaz, biçimi ayrıca denetlenir (kimlikte kişisel veri yok).
+    assert.ok(rows.every(row => /^staff-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(row.entity_id)), "kayıt kimliği yalnız staff-<UUID>");
+    const all = rows.map(row => row.payload_json).join("\n");
     for (const secret of ["Ayşe", "Yılmaz", "Mehmet", "Kaya", TC_OK, "TR33", "0006100519786457841326", "4500050", "45000", "47500", "Atatürk", "Yeni Adres", "ornek.com", "0532", "Vergi Mevzuatı", "Ziraat", "/9j/"]) {
       assert.ok(!all.includes(secret), `işlem geçmişinde değer var: ${secret}`);
     }

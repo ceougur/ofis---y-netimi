@@ -1,0 +1,97 @@
+TAP version 13
+# (node:2388) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.7 kullanım defteri: yedeğe girer, geri yüklemede yalnız birleşir
+    # Subtest: yedek → yeni kurulum (boş defter) → geri yükle → sayılar geri gelir; aynı yedek iki kez → çift yok
+    ok 1 - yedek → yeni kurulum (boş defter) → geri yükle → sayılar geri gelir; aynı yedek iki kez → çift yok
+      ---
+      duration_ms: 1604.516286
+      type: 'test'
+      ...
+    # Subtest: geri yükleme sayacı azaltmaz: yedekten SONRA gönderilen belge, eski yedek geri yüklenince defterde kalır
+    ok 2 - geri yükleme sayacı azaltmaz: yedekten SONRA gönderilen belge, eski yedek geri yüklenince defterde kalır
+      ---
+      duration_ms: 879.315968
+      type: 'test'
+      ...
+    # Subtest: defterde olup şirket izinde OLMAYAN satır (eski yedek geri yüklendikten sonra) yeni yedeğe girer; yeni kurulum onu da geri kazanır
+    not ok 3 - defterde olup şirket izinde OLMAYAN satır (eski yedek geri yüklendikten sonra) yeni yedeğe girer; yeni kurulum onu da geri kazanır
+      ---
+      duration_ms: 657.642829
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247d-eski-4e659270/test/edoc-kullanim-yedek-247.test.mjs:135:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        şirket izi yedekteki gibi; defter yedekteki defter kopyasından
+        
+        3 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247d-eski-4e659270/test/edoc-kullanim-yedek-247.test.mjs:156:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: V15: 001'in yedeği defterin TAMAMINI taşır (002'nin satırları dahil); yeni kurulumda 001'i geri yüklemek 002'nin satırını da birleştirir
+    not ok 4 - V15: 001'in yedeği defterin TAMAMINI taşır (002'nin satırları dahil); yeni kurulumda 001'i geri yüklemek 002'nin satırını da birleştirir
+      ---
+      duration_ms: 1063.307344
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247d-eski-4e659270/test/edoc-kullanim-yedek-247.test.mjs:162:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002'nin iki satırı yeni kurulumun defterinde
+        + actual - expected
+        
+        + []
+        - [
+        -   [
+        -     'sirket-14bbde97-2d12-4397-a363-ed33f871a27b',
+        -     2
+        -   ]
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'sirket-14bbde97-2d12-4397-a363-ed33f871a27b'
+          1: 2
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247d-eski-4e659270/test/edoc-kullanim-yedek-247.test.mjs:186:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: v2.4.6'nın GERÇEK koduyla üretilmiş yedek (iz tablosu yok) geri yüklenir; defter değişmez
+    ok 5 - v2.4.6'nın GERÇEK koduyla üretilmiş yedek (iz tablosu yok) geri yüklenir; defter değişmez # SKIP v2.4.6 etiketi yok (git fetch --tags)
+      ---
+      duration_ms: 0.424144
+      type: 'test'
+      ...
+    1..5
+not ok 1 - 2.4.7 kullanım defteri: yedeğe girer, geri yüklemede yalnız birleşir
+  ---
+  duration_ms: 4255.625342
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247d-eski-4e659270/test/edoc-kullanim-yedek-247.test.mjs:25:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 4587.453212

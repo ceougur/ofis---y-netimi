@@ -1,0 +1,14 @@
+YAKALANDI M1 ana port denetimi kalktı — çıkış 1 ['# fail 1']
+YAKALANDI M2 özet karşılaştırması kalktı — çıkış 1 ['# fail 1']
+YAKALANDI M3 süreç grubu yok (detached false) — çıkış 1 ['# fail 1']
+YAKALANDI M4 ilk kullanımda güven (anahtar bağı) kalktı — çıkış 1 ['# fail 1']
+YAKALANDI M5 bilgisayar kimliği eşitliği kalktı — çıkış 1 ['# fail 1']
+YAKALANDI M6 lisans yaşı denetimi kalktı — çıkış 1 ['# fail 1']
+YAKALANDI M7 eşli cihaz yokken de tünel açık — çıkış 1 ['# fail 3']
+YAKALANDI M8 lisans denetimi kalktı — çıkış 1 ['# fail 1']
+YAKALANDI M9 Host başlığı (httpHostHeader) kalktı — çıkış 1 ['# fail 3']
+YAKALANDI M10 yetim denetimi kimlik sormuyor — çıkış 1 ['# fail 1']
+YAKALANDI M11 kapanışta tünel durmuyor — çıkış 1 ['# fail 1']
+YAKALANDI M12 belirteç komut satırına — çıkış 1 ['# fail 1']
+
+12/12 mutasyon yakalandı

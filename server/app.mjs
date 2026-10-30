@@ -74,6 +74,17 @@ import { createBackup } from "./lib/backup.mjs";
 import { applyStagedRestore, createCompanyBackups } from "./lib/company-backups.mjs";
 import { resolveDbPath } from "./lib/db-path.mjs";
 import { createReportRunner } from "./lib/report-runner.mjs";
+import { USAGE_MONTHS, journalRowsOf, summarizeUsage, windowMonths } from "./lib/einvoice/kullanim.mjs";
+import { openUsageLedger } from "./lib/einvoice/kullanim-defteri.mjs";
+import { USAGE_BACKUP_TABLE } from "./lib/backup.mjs";
+import { isoDay } from "./lib/plans.mjs";
+import { MOBILE_PREFIX, captureResponse, isPhone, resolveMobile, transformMobile } from "./lib/mobile.mjs";
+import { dispatchMobileWrite, matchMobileWrite } from "./lib/mobile-write.mjs";
+import { createMobileRemote } from "./lib/mobile-remote.mjs";
+import { mobileSyncFromConfig } from "./lib/mobile-sync.mjs";
+import { registerMobileAdminRoutes } from "./routes/mobile-admin.mjs";
+import { registerMobileTunnelRoutes } from "./routes/mobile-tunnel.mjs";
+import { attachTunnel } from "./lib/tunnel/attach.mjs";
 
 function ensureInitialAdmin(store, config, log) {
   if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", config.adminUsername)) return;
@@ -117,7 +128,8 @@ export function createApp(overrides = {}) {
     return { id: company.id, code: company.code, name: company.name };
   };
   const backupDirNow = () => companies.dirsOf(selfCompany()).backupDir;
-  const takeBackup = (label, keep = config.backupKeep) => createBackup(db, backupDirNow(), { label, keep, company: companyIdentity() });
+  // 2.4.7 E4: yedeğe şirketin kullanım defteri satırları da girer (geri yüklemede yalnız birleştirilir).
+  const takeBackup = (label, keep = config.backupKeep) => createBackup(db, backupDirNow(), { label, keep, company: companyIdentity(), usageRows: usageRowsOfSelf() });
   // Bir şirketin veri tabanıyla iş: açık örneğinki, açık değilse kısa süreli salt okunur bağlantı (açıp kapatır; örnek
   // açılmaz, bağlantı sızmaz). Otomatik yedek, Yönetim → Şirketler sayıları ve geri yükleme öncesi yedek bunu kullanır.
   function withCompanyDb(company, fn) {
@@ -134,9 +146,52 @@ export function createApp(overrides = {}) {
       temp.close();
     }
   }
+  // 2.4.7 E4/E5 (S4): e-Belge kullanım defteri kurulum düzeyinde, ana veri klasöründe (şirket dosyalarının dışında; lib/einvoice/kullanim-defteri.mjs).
+  // Çocuk şirket örnekleri hub'ın defterini kullanır. Bir şirketin izi deftere aktarılır (birincil anahtar çift sayımı önler); okunamayan şirket atlanır.
+  const usageLedger = hub ? hub.usageLedger : openUsageLedger({ dir: config.dataDir, log, fault: overrides.edocUsageFault || null });
+  function usageRowsOfSelf() {
+    try {
+      return usageLedger.allRows();
+    } catch {
+      return null;
+    }
+  }
+  const backupLedgerRowsOf = db => {
+    try {
+      return db.prepare(`SELECT company_id, company_code, ettn, env, kind, month, invoice_id, source, created_at FROM ${USAGE_BACKUP_TABLE}`).all();
+    } catch {
+      return [];
+    }
+  };
+  function syncUsageOf(company) {
+    try {
+      const [rows, copy] = withCompanyDb(company, db => [journalRowsOf(db), backupLedgerRowsOf(db)]) || [[], []];
+      // V15: geri yüklenen yedekteki defter kopyası (bütün şirketler) yalnız birleştirilir; sonra şirketin kendi izi.
+      return usageLedger.mergeAll(copy) + usageLedger.syncFrom(company.id, company.code, rows);
+    } catch (error) {
+      log.warn?.(`e-Belge kullanım defteri: ${company?.code || company?.id} aktarılamadı (${error.message})`);
+      return 0;
+    }
+  }
+  function syncUsageAll() {
+    const seen = new Set();
+    let added = 0;
+    for (const company of companies.list()) {
+      if (!company?.id || seen.has(company.id)) continue;
+      seen.add(company.id);
+      added += syncUsageOf(company);
+    }
+    return added;
+  }
+  // Lisans doğrulamasına giden özet (S5): içinde bulunulan ay + önceki 2 ay, ay × ortam başına satır (sıfırlar dahil), bütün şirketlerin toplamı.
+  function edocUsageSummary() {
+    syncUsageAll();
+    const months = windowMonths(context.period?.today?.() || isoDay(new Date()), USAGE_MONTHS);
+    return { edoc: summarizeUsage(usageLedger.counts({ from: months[0] }), { months }) };
+  }
   // Geri yüklenen ya da silinen şirket o sırada açılmaz; istek 503 ile "birkaç saniye sonra" der.
   const busyCompanies = hub ? hub.busyCompanies : new Map();
-  const backups = hub ? hub.backups : createCompanyBackups({ registry: companies, dataDir: config.dataDir, keep: config.backupKeep, log, withDb: withCompanyDb, busy: busyCompanies, closeCompany: id => closeCompany(id) });
+  const backups = hub ? hub.backups : createCompanyBackups({ registry: companies, dataDir: config.dataDir, keep: config.backupKeep, log, withDb: withCompanyDb, busy: busyCompanies, closeCompany: id => closeCompany(id), usageRowsFor: () => usageLedger.allRows(), onRestored: company => syncUsageOf(company) });
   if (!hub) {
     try {
       backups.migrate();
@@ -145,6 +200,8 @@ export function createApp(overrides = {}) {
     }
   }
   const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity(), now: config.now });
+  // 2.4.7 E4 (S4): açılışta bütün şirketlerin izi kullanım defterine aktarılır (önceki çalışmada deftere eklenemeyen satır tamamlanır).
+  if (!hub) syncUsageAll();
   // 2.0.21 öncesinden gelen şirketler (gözden geçirme bulgusu): veri dosyası olan her şirket "açılmış" sayılır; dosyası
   // sonradan kaybolursa sessizce boş veri tabanı açılmaz (2.0.21'deki ilk açılışını beklemeden).
   if (!hub) {
@@ -235,6 +292,9 @@ export function createApp(overrides = {}) {
       services: config.licenseServices,
       fetchImpl: config.fetchImpl,
       usedBefore: () => profile.usedBefore(),
+      // 2.4.7 E5 (EDM iş ortaklığı): bütün şirketlerin e-Belge kullanım sayacı, son 3 ay toplamı (lib/einvoice/kullanim.mjs). Açık olmayan şirketin
+      // dosyası kısa süreli salt okunur açılır (withCompanyDb); okunamayan şirket atlanır (lisans doğrulamasını bozmaz).
+      usage: () => edocUsageSummary(),
       ...licenseOptions,
     });
     license.init();
@@ -268,6 +328,19 @@ export function createApp(overrides = {}) {
     money: createMoneyLines(store, { verify: config.gateVerify }),
     // Şirket yedekleri (v2.0.20): bütün şirketler, kendi klasörlerinde.
     backups, backupDir: backupDirNow, withCompanyDb, closeCompany: id => closeCompany(id), busyCompanies, requestRestart,
+    // 2.4.7 E4 (S4): bu şirketin kullanım defteri görünümü (routes/invoices.mjs setE ve invoices-usage ucu).
+    edocUsage: {
+      add: row => usageLedger.add(companyId, selfCompany().code, row),
+      sync: rows => {
+        try {
+          return usageLedger.syncFrom(companyId, selfCompany().code, rows);
+        } catch (error) {
+          log.warn?.(`e-Belge kullanım defteri: ${selfCompany().code} aktarılamadı (${error.message})`);
+          return 0;
+        }
+      },
+      counts: ({ from = "" } = {}) => usageLedger.counts({ from, companyId }),
+    },
   };
   if (stagedRestore) {
     const actor = stagedRestore.by ? { id: stagedRestore.by, display_name: stagedRestore.byName } : null;
@@ -281,10 +354,15 @@ export function createApp(overrides = {}) {
     }
   }
 
+  // 2.4.7 M2 (lib/mobile-remote.mjs; docs/mobil/M2-TASARIM.md): karekodlu cihaz eşleme, eşli cihaz sınırı ve uzak isteğin kapısı — ortak katmanda tek örnek
+  // (cihazlar program başına sayılır). Uzak istek yalnız ayrı yerel dinleyiciye gelir (app.listenRemote).
+  context.mobileRemote = hub ? hub.mobileRemote : createMobileRemote({ store, license, clock: config.remoteNow, audit, log, publicUrl: overrides.mobileRemoteUrl || "" });
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
   registerAuthRoutes(router, context);
   registerAdminRoutes(router, context);
+  registerMobileAdminRoutes(router, context);
+  registerMobileTunnelRoutes(router, context);
   if (!hub) registerCompanyRoutes(router, { ...context, appFor: company => appFor(company), resetData: (company, ...args) => appFor(company).resetData(...args), closeCompany: id => closeCompany(id) });
   // Hareket tarihi ve dönem kilidi (v2.0.13): Kasa, Cari, Stok ve Taksit aynı kuralla. v2.0.26 (A1): kayıt tahsilatı da
   // (çalışma alanı rotaları) aynı kurala bağlı; bu yüzden onlardan önce kurulur.
@@ -357,7 +435,8 @@ export function createApp(overrides = {}) {
   // görüntüsünden (lib/report-runner.mjs; aynı kod, aynı çıktı). Bellek içi veri tabanında (dosyası yok) ve kapalıyken yerinde hazırlanır.
   const reportRunner = config.reportWorker && config.dbPath && config.dbPath !== ":memory:" ? createReportRunner(config.reportWorkerEntry ? { entry: config.reportWorkerEntry } : {}) : null;
   context.reportRunner = reportRunner;
-  context.reportCenter = registerReportCenter(router, { ...context, tax: () => context.tax, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity, doubtful: () => context.doubtful, offload: reportRunner ? job => reportRunner.run({ ...job, dbPath: config.dbPath, fx: config.fxEnabled === true, later: config.bankLater === true }) : null });
+  // sharedStore (2.4.7, müşteri isteği 6a): kişi başına rapor tercihleri ortak katmanda (kullanıcılar orada; 002'de de aynı kişi aynı tercihi görür).
+  context.reportCenter = registerReportCenter(router, { ...context, sharedStore: hub ? hub.store : store, tax: () => context.tax, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity, doubtful: () => context.doubtful, offload: reportRunner ? job => reportRunner.run({ ...job, dbPath: config.dbPath, fx: config.fxEnabled === true, later: config.bankLater === true }) : null });
   registerDueRoutes(router, { ...context, calendar: () => context.tableReports?.calendar });
   const documents = registerDocumentRoutes(router, context);
   registerTrashRoutes(router, { ...context, documents, invoices: context.invoices, bankModule: () => context.bankAccounts?.module, doubtful: () => context.doubtful });
@@ -377,6 +456,10 @@ export function createApp(overrides = {}) {
   registerGettingStartedRoutes(router, context);
   registerTrpcRoutes(router, context);
 
+  const redirect = (res, location) => {
+    res.writeHead(302, { ...SECURITY_HEADERS, location, "cache-control": "no-store", "content-length": 0 });
+    res.end();
+  };
   async function handle(req, res) {
     const url = new URL(req.url || "/", "http://localhost");
     const pathname = url.pathname;
@@ -393,6 +476,11 @@ export function createApp(overrides = {}) {
         return;
       }
       if (req.method !== "GET" && req.method !== "HEAD") throw new HttpError(405, "Bu yöntem desteklenmiyor.");
+      // Mobil görünüm (2.4.7 M1): /mobil → /mobil/ (sayfanın göreli adresleri); telefon tarayıcısı ana adreste mobil görünüme gider
+      // (?masaustu=1 ile masaüstü). Mobil dosyalar client/mobil/ altında, olağan statik dosya yoluyla.
+      if (pathname === "/mobil") return redirect(res, "/mobil/");
+      if ((pathname === "/" || pathname === "/index.html") && !url.searchParams.has("masaustu") && isPhone(req.headers["user-agent"])) return redirect(res, "/mobil/");
+      if (pathname === "/mobil/" && serveStatic(req, res, "/mobil/index.html")) return;
       if (serveStatic(req, res, pathname)) return;
       if (String(req.headers.accept || "").includes("text/html")) return notFoundPage(res);
       send(res, 404, { ok: false, error: "Sayfa bulunamadı." });
@@ -427,7 +515,8 @@ export function createApp(overrides = {}) {
   // veri tabanı ve servis kümesi). Şirket değişince istemci sayfayı yeniler; açık pencereler, olay akışı ve önbellek
   // o şirketin örneğinden gelir.
   // v2.0.20: Yedekler (admin/backups) de ortak katmanda: bütün şirketlerin yedeği tek yerden alınır, listelenir, indirilir.
-  const HUB_ONLY = /^\/api\/(auth|public|license|companies|health|admin\/(users|roles|recovery|update|backups))(\/|$)/;
+  // 2.4.7 M2: admin/mobile (Mobil Cihazlar) da ortak katmanda: cihazlar program başına.
+  const HUB_ONLY = /^\/api\/(auth|public|license|companies|health|admin\/(users|roles|recovery|update|backups|mobile))(\/|$)/;
   function appFor(company) {
     if (!company || company.id === ROOT_COMPANY_ID) return app;
     if (hub) return hub.appFor(company);
@@ -463,7 +552,7 @@ export function createApp(overrides = {}) {
         scheduleBackups: false,
         // Şirketler aynı iş saatini paylaşır (sahte saatte de: hub'ın saati ilerleyince 002'nin de ilerler).
         now: config.now,
-        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events, closeLive },
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events, closeLive, usageLedger, mobileRemote: context.mobileRemote, mobileSync: context.mobileSync },
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
@@ -478,7 +567,56 @@ export function createApp(overrides = {}) {
     }
     return child;
   }
+  // Mobil görünüm (2.4.7 M1; lib/mobile.mjs): /api/mobil/… isteği beyaz listeden programın kendi ucuna çevrilir ve SONRA olağan yoldan
+  // (şirket seçimi, oturum, yetki, istek kaynağı, lisans) geçer; yetki burada tekrar edilmez. Oturum özeti ve rapor kataloğu mobil biçime çevrilir.
+  const dispatchMobile = async (req, res) => {
+    // 2.4.7 M5 (lib/mobile-write.mjs): mobil yazma beyaz listesi → programın mevcut tahsilat / ödeme / taksit / stok girişi ucu (uzak kapı ÖNCE geçti).
+    if (matchMobileWrite(req.method, req.url)) return dispatchMobileWrite(req, res, dispatchApp);
+    let resolved;
+    try {
+      const url = new URL(req.url || "/", "http://x");
+      resolved = resolveMobile(req.method, url.pathname, url.searchParams);
+    } catch (error) {
+      if (error instanceof HttpError) return send(res, error.status, { ok: false, error: error.message, ...error.extra });
+      throw error;
+    }
+    // 2.4.7 M2: telefonun istediği şirket (company=) her mobil uçta aynı kuralla denetlenir — ortak katman uçlarında da (oturum özeti): olmayan şirket 409,
+    // görme yetkisi olmayan şirket 403 (companies.canAccess: yönetici hepsi, işaretsiz kullanıcı yalnız 001). Oturumsuz istek hedef uçta 401 alır.
+    const wanted = new URL(req.url || "/", "http://x").searchParams.get("company");
+    if (wanted) {
+      const target = companies.get(wanted);
+      if (!target) return send(res, 409, { ok: false, error: "Bu pencerenin şirketi artık yok (silinmiş olabilir); sayfayı yenileyin.", code: "company-missing" });
+      let viewer = null;
+      try {
+        viewer = auth.currentUser(req) || null;
+      } catch {
+        viewer = null;
+      }
+      if (viewer && !companies.canAccess(viewer, target.id)) return send(res, 403, { ok: false, error: "Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.", code: "company-forbidden" });
+    }
+    req.url = resolved.url;
+    if (!resolved.transform) return dispatchApp(req, res);
+    const captured = captureResponse();
+    await dispatchApp(req, captured.res);
+    const raw = captured.body().toString("utf8");
+    let payload = null;
+    try {
+      payload = JSON.parse(raw);
+    } catch {
+      payload = null;
+    }
+    const passHeaders = Object.fromEntries(Object.entries(captured.headers).filter(([name]) => !["content-length", "content-type", "content-encoding"].includes(name)));
+    if (!payload) return send(res, captured.res.statusCode === 200 ? 502 : captured.res.statusCode, { ok: false, error: "Sunucu yanıtı okunamadı." }, passHeaders);
+    if (captured.res.statusCode !== 200 || payload.ok !== true) return send(res, captured.res.statusCode, payload, passHeaders);
+    return send(res, 200, { ok: true, data: transformMobile(resolved.transform, payload.data) }, passHeaders);
+  };
   const dispatch = (req, res) => {
+    if (!hub && String(req.url || "").startsWith(MOBILE_PREFIX)) return dispatchMobile(req, res);
+    return dispatchApp(req, res);
+  };
+  // 2.4.7 M3 (lib/mobile-sync.mjs; docs/mobil/M3-TASARIM.md): şifreli özet üreticisi + kapıcıya yükleyici (ortak katmanda tek örnek; kapıcı adresi yoksa dış istek yok).
+  context.mobileSync = hub ? hub.mobileSync : mobileSyncFromConfig({ store, license, mobileRemote: context.mobileRemote, dispatch, config, log });
+  const dispatchApp = (req, res) => {
     if (hub) return scoped(req, res);
     const pathname = (req.url || "/").split("?")[0];
     if (!pathname.startsWith("/api/") || HUB_ONLY.test(pathname)) return scoped(req, res);
@@ -539,6 +677,7 @@ export function createApp(overrides = {}) {
     return true;
   }
   const server = createServer((req, res) => {
+    context.mobileSync?.izle(req, res); // 2.4.7 M3: başarılı yazma → özet tetiği
     dispatch(req, res).catch(error => {
       log.error("Beklenmeyen hata", error);
       if (!res.headersSent) send(res, 500, { ok: false, error: "Sunucu işlemi tamamlayamadı." }, SECURITY_HEADERS);
@@ -547,6 +686,20 @@ export function createApp(overrides = {}) {
   server.keepAliveTimeout = 65_000;
   server.headersTimeout = 70_000;
   server.requestTimeout = 5 * 60_000;
+  // 2.4.7 M2: uzaktan erişim dinleyicisi (yalnız ortak katmanda; app.listenRemote ile açılır — M4'te tünel yalnız buraya bağlanır). Gelen her istek UZAKTIR:
+  // cihaz → lisans → yol → uzak oturum kapısından (lib/mobile-remote.mjs) sonra olağan dağıtıcıya gider.
+  const remoteServer = hub ? null : createServer((req, res) => {
+    context.mobileSync.izle(req, res); // 2.4.7 M3
+    context.mobileRemote.handle(req, res, dispatch).catch(error => {
+      log.error("Beklenmeyen uzak istek hatası", error);
+      if (!res.headersSent) send(res, 500, { ok: false, error: "Sunucu işlemi tamamlayamadı." }, SECURITY_HEADERS);
+    });
+  });
+  if (remoteServer) {
+    remoteServer.keepAliveTimeout = 65_000;
+    remoteServer.headersTimeout = 70_000;
+    remoteServer.requestTimeout = 5 * 60_000;
+  }
 
   // POS (2.2.0, plan §4.4/2 d): bu süreçte açılmamış şirketlerde vadesi gelmiş POS kalemi var mı (veri dosyası kısa süreliğine salt okunur
   // açılır, yedek zamanlayıcısının kalıbı); varsa şirket açılır — şirket örneği açılınca kendi kuyruğunu çalıştırır.
@@ -588,7 +741,16 @@ export function createApp(overrides = {}) {
   const alertScheduler = createAlertScheduler({ events, log, clock: config.now });
   if (overrides.alertScheduler !== false) alertScheduler.start();
   auth.purgeExpiredSessions();
-  const sessionTimer = setInterval(() => auth.purgeExpiredSessions(), 3_600_000);
+  const sessionTimer = setInterval(() => {
+    auth.purgeExpiredSessions();
+    if (!hub) {
+      try {
+        context.mobileRemote.purge();
+      } catch (error) {
+        log.warn?.(`Uzak oturum temizliği yapılamadı: ${error.message}`);
+      }
+    }
+  }, 3_600_000);
   sessionTimer.unref();
   // Sohbet arşivi: açılıştan kısa süre sonra ve 6 saatte bir (v2.0.2).
   const archiveChat = () => {
@@ -739,11 +901,26 @@ export function createApp(overrides = {}) {
       infoListeners.add(listener);
       return () => infoListeners.delete(listener);
     },
+    mobileRemote: context.mobileRemote,
+    mobileSync: context.mobileSync, // 2.4.7 M3
+    // Uzaktan erişim dinleyicisi (2.4.7 M2): yalnız yerel döngü adresinde (tünel istemcisi aynı bilgisayardan bağlanır); ofis ağına açılmaz.
+    listenRemote(port = 0, host = "127.0.0.1") {
+      if (!remoteServer) return Promise.reject(new Error("Uzaktan erişim dinleyicisi yalnız ortak katmanda açılır."));
+      if (!["127.0.0.1", "::1"].includes(host)) return Promise.reject(new Error("Uzaktan erişim dinleyicisi yalnız 127.0.0.1 / ::1 adresinde açılır."));
+      return new Promise((resolve, reject) => {
+        remoteServer.once("error", reject);
+        remoteServer.listen(port, host, () => {
+          remoteServer.off("error", reject);
+          resolve(remoteServer.address());
+        });
+      });
+    },
     listen(port = config.port, host = config.host) {
       return new Promise((resolve, reject) => {
         server.once("error", reject);
         server.listen(port, host, () => {
           server.off("error", reject);
+          if (!hub) context.mobileSync.start(); // 2.4.7 M3: özet zamanlayıcısı + kapıcıya açılış kaydı
           if (!hub && overrides.posQueue !== false) {
             posQueue.start();
             setImmediate(posDueCompanies);
@@ -757,6 +934,8 @@ export function createApp(overrides = {}) {
     async close({ reason = "shutdown" } = {}) {
       if (closed) return;
       closed = true;
+      if (!hub) await context.mobileSync.flush().catch(error => log.warn?.(`Mobil özet kapanışta yüklenemedi: ${error?.message || error}`)); // 2.4.7 M3: son hâl
+      await context.tunnel?.stop();
       posQueue.stop();
       clearInterval(posHubTimer);
       stopBackups();
@@ -777,11 +956,20 @@ export function createApp(overrides = {}) {
         server.close(() => resolve());
         server.closeAllConnections?.();
       });
+      if (remoteServer?.listening) {
+        await new Promise(resolve => {
+          remoteServer.close(() => resolve());
+          remoteServer.closeAllConnections?.();
+        });
+      }
       await analysisRunner.close();
       await reportRunner?.close({ reason });
       for (const child of children.values()) await child.close();
+      if (!hub) usageLedger.close();
       db.close();
     },
   };
+  // 2.4.7 M4: canlı bağlantı (tünel) — yalnız ortak katmanda; M3 kapıcı adresi (config.mobileKapiUrl) varken ya da testte `tunnel` seçeneğiyle; lib/tunnel/attach.mjs.
+  context.tunnel = hub ? null : attachTunnel({ option: overrides.tunnel, config, store, license, mobileRemote: context.mobileRemote, mobileSync: () => context.mobileSync, listenRemote: () => (remoteServer.listening ? Promise.resolve(remoteServer.address()) : app.listenRemote(0, "127.0.0.1")), forbiddenPorts: () => [config.port, config.publicPort, server.address()?.port].filter(Number.isInteger), log });
   return app;
 }

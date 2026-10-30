@@ -1,0 +1,32 @@
+{
+  "ad": "kilavuz-mobil-247",
+  "komut": "node --test test/kilavuz-surum.test.mjs test/kilavuz-pdf-surum.test.mjs test/gorunen-adres-247.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/yazim-duzeni.test.mjs test/kanit-araci.test.mjs",
+  "commit": "94524ae93809b9a65fd08cd5991a5201641721ae",
+  "dal": "worktree-agent-aa53d87d8e014019a",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T12:17:52.780Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 66,
+    "gecen": 66,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/kilavuz-mobil-247.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa53d87d8e014019a",
+  "ham_cikti_sha256": "6069fc300e7da7748e58ba9f13018c75da237c1ee953756df0685d37e84acb9a",
+  "ham_cikti_bayt": 19507
+}

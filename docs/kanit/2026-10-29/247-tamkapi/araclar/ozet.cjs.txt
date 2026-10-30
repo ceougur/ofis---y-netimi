@@ -1,0 +1,24 @@
+// 247-tamkapi kayıtlarının bölüm bölüm özeti: koşu sayısı, denetim toplamı, kırmızılar, e2e ad=sayı listesi.
+const fs = require("fs"), path = require("path");
+const D = process.argv[2];
+const kayit = fs.readdirSync(D).filter(f => f.endsWith(".json") && !f.startsWith("sayac-") && !f.startsWith("erisim-"))
+  .map(f => JSON.parse(fs.readFileSync(path.join(D, f), "utf8")));
+const bolum = ad => ad.replace(/^247-tamkapi\//, "").match(/^(npm-test|ci-kahin|ci-e2e|cidisi|dis-kahin)/)[1];
+const g = {};
+for (const k of kayit) {
+  const ad = k.ad.replace(/^247-tamkapi\//, "");
+  const b = bolum(ad);
+  (g[b] ||= { kos: 0, gecti: 0, toplam: 0, gecen: 0, kirmizi: [], liste: [], sure: 0 });
+  const o = k.ozet || {};
+  g[b].kos++; g[b].sure += k.sure_sn || 0;
+  if (k.hukum === "GEÇTİ") g[b].gecti++; else g[b].kirmizi.push(`${ad}: ${k.hukum} ${o.gecen ?? "-"}/${o.toplam ?? "-"}`);
+  g[b].toplam += o.toplam || 0; g[b].gecen += o.gecen || 0;
+  g[b].liste.push(`${ad.replace(/^(ci-e2e-|cidisi-|ci-|dis-)/, "")} ${o.gecen ?? "-"}/${o.toplam ?? "-"}`);
+  if (k.commit !== kayit[0].commit) console.log("FARKLI COMMIT", ad, k.commit);
+}
+for (const [b, v] of Object.entries(g)) {
+  console.log(`== ${b}: ${v.kos} koşu, GEÇTİ ${v.gecti}, denetim ${v.gecen}/${v.toplam}, süre ${Math.round(v.sure)} sn`);
+  if (v.kirmizi.length) console.log("  kırmızı: " + v.kirmizi.join(" | "));
+  console.log("  " + v.liste.sort().join(", "));
+}
+console.log("commit", kayit[0].commit);

@@ -1,0 +1,97 @@
+TAP version 13
+# Subtest: M4 indirici: yalnız özeti kodda sabit dosya çalıştırılabilir yerde durur
+    # Subtest: doğru özet → indirilir, bayt bayt aynı; ikinci çağrı indirmez (özet yeniden denetlenir)
+    ok 1 - doğru özet → indirilir, bayt bayt aynı; ikinci çağrı indirmez (özet yeniden denetlenir)
+      ---
+      duration_ms: 52.727659
+      type: 'test'
+      ...
+    # Subtest: yanlış özet → dosya silinir, TunnelError(hash), çalıştırılabilir dosya YOK
+    ok 2 - yanlış özet → dosya silinir, TunnelError(hash), çalıştırılabilir dosya YOK
+      ---
+      duration_ms: 14.811014
+      type: 'test'
+      ...
+    # Subtest: yarım indirme (bağlantı koptu) → TunnelError(network), .part silinir; sonraki deneme baştan, başarılı
+    ok 3 - yarım indirme (bağlantı koptu) → TunnelError(network), .part silinir; sonraki deneme baştan, başarılı
+      ---
+      duration_ms: 48.554609
+      type: 'test'
+      ...
+    # Subtest: ağ yok / HTTP 500 → TunnelError(network); dosya yok
+    ok 4 - ağ yok / HTTP 500 → TunnelError(network); dosya yok
+      ---
+      duration_ms: 4.657009
+      type: 'test'
+      ...
+    # Subtest: diskte değiştirilmiş dosya çalıştırılmaz: özet tutmaz → silinir, yeniden indirilir
+    ok 5 - diskte değiştirilmiş dosya çalıştırılmaz: özet tutmaz → silinir, yeniden indirilir
+      ---
+      duration_ms: 15.72016
+      type: 'test'
+      ...
+    # Subtest: boyut sınırı: beklenenden büyük yanıt indirilmez (TunnelError size)
+    ok 6 - boyut sınırı: beklenenden büyük yanıt indirilmez (TunnelError size)
+      ---
+      duration_ms: 3.001322
+      type: 'test'
+      ...
+    # Subtest: eski sürüm klasörü (yalnız yıl.ay.yama adlı) temizlenir; başka dosyaya dokunulmaz
+    ok 7 - eski sürüm klasörü (yalnız yıl.ay.yama adlı) temizlenir; başka dosyaya dokunulmaz
+      ---
+      duration_ms: 21.752046
+      type: 'test'
+      ...
+    # Subtest: özet sabitlenmemiş tanım indirilmez bile (TunnelError unpinned; ağ kullanılmaz)
+    ok 8 - özet sabitlenmemiş tanım indirilmez bile (TunnelError unpinned; ağ kullanılmaz)
+      ---
+      duration_ms: 0.783238
+      type: 'test'
+      ...
+    1..8
+ok 1 - M4 indirici: yalnız özeti kodda sabit dosya çalıştırılabilir yerde durur
+  ---
+  duration_ms: 171.839977
+  type: 'suite'
+  ...
+# Subtest: M4 sabit sürüm tanımı (release.mjs)
+    # Subtest: Windows amd64 ve Linux amd64 tanımlı; adres Cloudflare'in kendi yayını ve sürüm sabit; özet ya boş ya 64 onaltılık
+    ok 1 - Windows amd64 ve Linux amd64 tanımlı; adres Cloudflare'in kendi yayını ve sürüm sabit; özet ya boş ya 64 onaltılık
+      ---
+      duration_ms: 0.538115
+      type: 'test'
+      ...
+    # Subtest: assetFor: desteklenmeyen platform → platform; özetsiz → unpinned; özetli → tanım
+    ok 2 - assetFor: desteklenmeyen platform → platform; özetsiz → unpinned; özetli → tanım
+      ---
+      duration_ms: 0.369724
+      type: 'test'
+      ...
+    1..2
+ok 2 - M4 sabit sürüm tanımı (release.mjs)
+  ---
+  duration_ms: 1.174704
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 M4: cloudflared sabitleri (yayın 2026.10.5)
+    # Subtest: Windows ve Linux amd64 özetleri sabit, adresler aynı sürümden
+    ok 1 - Windows ve Linux amd64 özetleri sabit, adresler aynı sürümden
+      ---
+      duration_ms: 0.413579
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.4.7 M4: cloudflared sabitleri (yayın 2026.10.5)
+  ---
+  duration_ms: 0.530966
+  type: 'suite'
+  ...
+1..3
+# tests 11
+# suites 3
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 338.340709

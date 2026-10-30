@@ -109,6 +109,10 @@
       }
     });
     host.addEventListener("change", onChange);
+    // Sütunlar seçici yenilenen ön izlemede açık kalsın (kullanıcı art arda birkaç kolon kaldırır).
+    host.addEventListener("toggle", event => {
+      if (event.target.matches?.("[data-rc-cols]") && center === state) center.colsOpen = event.target.open;
+    }, true);
     try {
       const catalog = await HOF.api("/api/workspace/report-center");
       if (center !== state) return;
@@ -307,6 +311,37 @@
       : report.params.includes("range") && center.params.preset !== "all"
       ? `Bu dönemde kayıt yok. <button type="button" class="hof-button hof-button-small hof-button-ghost" data-preset="all">Tüm Zamanları Göster</button>`
       : "Bu süzgeçte kayıt yok.";
+  // 2.4.7 (müşteri isteği 6a): Sütunlar seçici — yalnız sunucunun kolon listesi verdiği raporda (Ayrıntılı Cari Ekstre). İşaret kaldırılan kolon ekranda,
+  // PDF'te ve Excel'de görünmez; seçim sunucuda kişi başına saklanır (başka bilgisayarda ve öbür şirkette de aynı). En az bir kolon işaretli kalır.
+  const columnsHtml = preview => {
+    const spec = preview?.columns;
+    if (!spec || !Array.isArray(spec.all) || !spec.all.length) return "";
+    const hidden = new Set(spec.hidden || []);
+    // Bu dönemde boş kolon (açıklamalı kalem yok): rapora girmez; işareti kişinin seçimidir, dolu dönemde görünür.
+    const empty = new Set(spec.empty || []);
+    const visible = spec.all.length - hidden.size;
+    return `<details class="hof-rc-cols" data-rc-cols${center.colsOpen ? " open" : ""}><summary class="hof-button hof-button-small hof-button-ghost" title="Raporda görünecek sütunları seçin (ekran, PDF ve Excel; sizin için hatırlanır)">Sütunlar${hidden.size ? ` (${visible}/${spec.all.length})` : ""}</summary>
+      <div class="hof-rc-cols-list" role="group" aria-label="Görünecek Sütunlar">${spec.all.map(name => `<label class="hof-rc-check-row"><input type="checkbox" data-col="${esc(name)}" ${hidden.has(name) ? "" : "checked"}> ${esc(name)}${empty.has(name) ? ' <small class="hof-muted">(bu dönemde boş)</small>' : ""}</label>`).join("")}</div></details>`;
+  };
+  async function saveColumns(box) {
+    const report = current();
+    const inputs = [...box.querySelectorAll("input[data-col]")];
+    if (!inputs.some(input => input.checked)) {
+      HOF.toast("En az bir sütun görünür kalmalı.", { type: "error" });
+      inputs.forEach(input => (input.checked = !(center.preview?.columns?.hidden || []).includes(input.dataset.col)));
+      return;
+    }
+    const hidden = inputs.filter(input => !input.checked).map(input => input.dataset.col);
+    inputs.forEach(input => (input.disabled = true));
+    try {
+      await HOF.api(`/api/workspace/report-center/${encodeURIComponent(report.id)}/columns`, { method: "PUT", body: { hidden } });
+    } catch (error) {
+      HOF.toastError(error);
+      inputs.forEach(input => (input.disabled = false));
+      return;
+    }
+    return run();
+  }
   function renderMain() {
     const main = root()?.querySelector("[data-rc-main]");
     const report = current();
@@ -316,15 +351,27 @@
     const preview = center.preview;
     const isNum = index => preview.types[index] === "money" || preview.types[index] === "number";
     const shown = (cell, index) => (preview.types[index] === "money" ? screenMoney(cell) : cell);
+    // Ayrıntılı Cari Ekstre: kalem satırında girintili kolon (kolon gizlenince sırası değişir; ada göre bulunur).
+    const indentAt = preview ? preview.headers.indexOf("Açıklama / Ürün - Hizmet") : -1;
+    const noteAt = preview ? preview.headers.indexOf("Kalem Açıklaması") : -1;
+    // 2.4.7 gezinti D1: Ayrıntılı Cari Ekstre 1366 px'te 16 kolonla 3–9 px taşıyordu — bölünemeyen "FIS2026000000001" Belge No kolonunu ~105 px'e
+    // sabitliyordu. Yalnız ekranda belge numarasının seri / yıl / sıra arasına bölme fırsatı (<wbr>) konur (Belge No ve açıklamadaki "Satış FIS…"):
+    // metin (kopyala, PDF, Excel) aynı kalır, sığarsa tek satır.
+    const docAt = preview?.rowMarks ? preview.headers.indexOf("Belge No") : -1;
+    const DOC_NO = /(^|\s)([A-Za-zÇĞİÖŞÜçğıöşü]{1,8})(\d{4})(\d{4,})(?=$|\s)/g;
+    const cellHtml = (cell, index) => {
+      const html = esc(shown(cell, index));
+      return index === docAt || (preview?.rowMarks && index === indentAt) ? html.replace(DOC_NO, "$1$2<wbr>$3<wbr>$4") : html;
+    };
     // 2.4.3 UX24: TOPLAM satırları (yönü karışık raporda "TOPLAM Satış", "TOPLAM Alış", "Net"); eski yanıtta tek footer.
     const totals = preview ? (Array.isArray(preview.footers) && preview.footers.length ? preview.footers : preview.footer ? [preview.footer] : []) : [];
     // 2.4.3 (C4): yer tutucu (rapor değişti) önceki sonucun yüksekliğini korur — pencere çöküp açılmaz (düzen kayması yok).
     const hold = !preview && ready && center.holdHeight ? ` style="min-height:${Math.round(center.holdHeight)}px"` : "";
     const table = preview
       ? `<div class="hof-rc-summary">${(preview.summary || []).map(([label, value]) => `<span><small>${esc(label)}</small><b>${esc(screenMoney(value))}</b></span>`).join("")}</div>
-        <div class="hof-rep-table hof-rc-table"><table class="hof-table${preview.rowMarks ? " is-dense" : ""}"><thead><tr>${preview.headers.map((header, index) => `<th class="${isNum(index) ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
+        <div class="hof-rep-table hof-rc-table"><table class="hof-table${preview.rowMarks ? " is-dense" : ""}${preview.rowMarks && preview.headers.length >= 16 ? " is-wide" : ""}"><thead><tr>${preview.headers.map((header, index) => `<th class="${isNum(index) ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
           preview.rows.length
-            ? preview.rows.map((row, rowIndex) => `<tr${preview.rowMarks?.[rowIndex] ? ` class="is-${esc(preview.rowMarks[rowIndex])}"` : ""}>${row.map((cell, index) => `<td class="${cellClass(preview, index)}">${esc(shown(cell, index))}</td>`).join("")}</tr>`).join("")
+            ? preview.rows.map((row, rowIndex) => `<tr${preview.rowMarks?.[rowIndex] ? ` class="is-${esc(preview.rowMarks[rowIndex])}"` : ""}>${row.map((cell, index) => `<td class="${cellClass(preview, index)}${index === indentAt ? " is-indent" : ""}${index === noteAt ? " is-note" : ""}">${cellHtml(cell, index)}</td>`).join("")}</tr>`).join("")
             : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`
         }</tbody>${
           totals.length && preview.rows.length
@@ -341,7 +388,7 @@
           ${HOF.outputButton({ kind: "xlsx", href: ready ? `/api/workspace/report-center/${encodeURIComponent(report.id)}/xlsx?${qs}` : "#", what: preview?.title || report.title, attrs: `download${ready ? "" : ' aria-disabled="true" tabindex="-1"'}` })}
           ${(report.actions || []).map(action => `<button type="button" class="hof-button hof-button-small" data-rc-action="${esc(action.id)}">${esc(action.label)}</button>`).join("")}
         </span></header>
-      ${report.params.length ? `<div class="hof-rc-params">${paramsHtml(report)}<button type="button" class="hof-button hof-button-small" data-rc-run>Ön İzle</button><span class="hof-rc-busy" data-rc-busy role="status" hidden>Güncelleniyor…</span></div>` : ""}
+      ${report.params.length ? `<div class="hof-rc-params">${paramsHtml(report)}${columnsHtml(preview)}<button type="button" class="hof-button hof-button-small" data-rc-run>Ön İzle</button><span class="hof-rc-busy" data-rc-busy role="status" hidden>Güncelleniyor…</span></div>` : ""}
       <div class="hof-rc-result" data-rc-result>${table}</div>`;
     // Sonuç gelene kadar meşgul (aria-busy): ekran okuyucu ve testler eski sonucu yeni sanmaz.
     setBusy(Boolean(ready && !preview));
@@ -456,6 +503,8 @@
     }
   }
   function onChange(event) {
+    const box = event.target.closest?.("[data-rc-cols]");
+    if (box && event.target.matches("input[data-col]") && center) return saveColumns(box);
     const name = event.target.dataset.param;
     if (!name || !center) return;
     if (name === "from" || name === "to") return; // tarih "Ön izle" ile uygulanır (yazarken rapor tekrar tekrar hazırlanmasın)

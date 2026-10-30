@@ -1,0 +1,50 @@
+TAP version 13
+# (node:21896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tünel başvurusu, ofis saati 10 dk
+    # Subtest: ön koşul: ham ofis saatiyle imzalanan başvuru kapıcıda kapi-zaman (pay dışında)
+    ok 1 - ön koşul: ham ofis saatiyle imzalanan başvuru kapıcıda kapi-zaman (pay dışında)
+      ---
+      duration_ms: 9.832775
+      type: 'test'
+      ...
+    # Subtest: fark ölçülmüşken başvuru imzası kapıcı saatinde: kapi-zaman değil, imzadan sonraki adıma (kapi-tunel-ayar) ulaşır
+    ok 2 - fark ölçülmüşken başvuru imzası kapıcı saatinde: kapi-zaman değil, imzadan sonraki adıma (kapi-tunel-ayar) ulaşır
+      ---
+      duration_ms: 12.19087
+      type: 'test'
+      ...
+    1..2
+ok 1 - tünel başvurusu, ofis saati 10 dk
+  ---
+  duration_ms: 476.063514
+  type: 'suite'
+  ...
+# Subtest: tünel başvurusu, ofis saati -10 dk
+    # Subtest: ön koşul: ham ofis saatiyle imzalanan başvuru kapıcıda kapi-zaman (pay dışında)
+    ok 1 - ön koşul: ham ofis saatiyle imzalanan başvuru kapıcıda kapi-zaman (pay dışında)
+      ---
+      duration_ms: 7.400104
+      type: 'test'
+      ...
+    # Subtest: fark ölçülmüşken başvuru imzası kapıcı saatinde: kapi-zaman değil, imzadan sonraki adıma (kapi-tunel-ayar) ulaşır
+    ok 2 - fark ölçülmüşken başvuru imzası kapıcı saatinde: kapi-zaman değil, imzadan sonraki adıma (kapi-tunel-ayar) ulaşır
+      ---
+      duration_ms: 9.216584
+      type: 'test'
+      ...
+    1..2
+ok 2 - tünel başvurusu, ofis saati -10 dk
+  ---
+  duration_ms: 415.389961
+  type: 'suite'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1304.387015

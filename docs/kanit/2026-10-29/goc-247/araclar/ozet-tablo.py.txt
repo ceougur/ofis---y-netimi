@@ -1,0 +1,38 @@
+# Önce (v2.4.6 ölçüsü) / sonra (aday göç ölçüsü) temel sayılar tablosu — m30-olgular companyFacts çıktısından (tutarlar kuruş → TL).
+import json, sys
+cikti = sys.argv[1]
+A = json.load(open(f"{cikti}/v2.4.6-taban.json"))
+B = json.load(open(f"{cikti}/guncel-goc.json"))
+tl = lambda m: f"{m / 100:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+def row(f):
+    acc, inv, ch, st = f["accounts"], f["invoices"], f["cheques"], f["stock"]
+    pt = f["planTotals"]
+    portf = [c for c in ch.values() if c["status"] == "portfolio"]
+    return {
+        "Cari sayısı": len(acc),
+        "Σ cari bakiye (TL)": tl(sum(a["balance"] for a in acc.values())),
+        "Mizan Σ borç = Σ alacak (TL), fark": f"{tl(f['trialTotals']['debit'])} = {tl(f['trialTotals']['credit'])}, {f['trialTotals']['difference']}",
+        "Mutabakat Testi sapma": len(f["integrity"]["failures"]),
+        "Kasa giriş / çıkış / bakiye (TL)": f"{f['cash']['totals']['in']:,.2f} / {f['cash']['totals']['out']:,.2f} / {f['cash']['totals']['balance']:,.2f}",
+        "Banka (TL)": tl(f["bank"]["totals"]["realBankMinor"]),
+        "Fatura sayısı": len(inv),
+        "Fatura Σ tutar / ödenen / açık (TL)": f"{tl(sum(i['payable'] for i in inv.values()))} / {tl(sum(i['paid'] for i in inv.values()))} / {tl(sum(i['open'] for i in inv.values()))}",
+        "Gönderilecekler (bekleyen e-Belge)": len(f["pending"]),
+        "Çek/senet (portföyde) / Σ portföy (TL)": f"{len(ch)} ({len(portf)}) / {tl(sum(c['amount'] for c in portf))}",
+        "Taksit kartı / Σ kalan (TL) / gecikmiş taksit": f"{pt['count']} / {tl(pt['remaining'])} / {pt['overdueCount']}",
+        "Stok kartı / Σ miktar": f"{len(st)} / {sum(s['qty'] for s in st.values())}",
+        "KDV mahsup fişi": len(f["vatOffsets"]),
+        "Silinenler": f["trash"]["count"],
+        "Dönem kilidi": f["lockedUntil"],
+    }
+
+print("| Olgu | Şirket | v2.4.6 (göçten önce) | aday (göçten sonra) | Sonuç |")
+print("|---|---|---|---|---|")
+for code in A["companies"]:
+    a, b = row(A["companies"][code]), row(B["companies"][code])
+    for k in a:
+        print(f"| {k} | {code} | {a[k]} | {b[k]} | {'aynı' if a[k] == b[k] else 'FARK'} |")
+users = lambda X: {u: (v["role"], len(v["permissions"])) for u, v in X["install"]["users"].items()}
+print(f"| Kullanıcı (rol, etkin yetki sayısı) | ortak | {users(A)} | {users(B)} | {'aynı' if users(A) == users(B) else 'FARK'} |")
+print(f"| Roller | ortak | {len(A['install']['roles'])} | {len(B['install']['roles'])} | {'aynı' if A['install']['roles'] == B['install']['roles'] else 'FARK'} |")

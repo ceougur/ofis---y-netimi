@@ -1,0 +1,5 @@
+ayar 200
+Gönderilecekler önce 5 [["2026-10-29","","Gönderilecek","EARSIVFATURA","waiting",null],["2026-10-29","","Gönderilecek","EARSIVFATURA","waiting",null],["2026-10-29","","Gönderilecek","EARSIVFATURA","waiting",null]]
+satış 200 {"number":"","displayNo":"Gönderilecek","profile":"EARSIVFATURA","eStatus":"waiting","eMessage":""}
+EDM'ye giden 0
+sayaç 200 {"from":"2026-10","months":[],"window":[{"month":"2026-10","env":"live","efatura":0,"earsiv":0,"esmm":0},{"month":"2026-10","env":"test","efatura":0,"earsiv":0,"esmm":0}],"journal":[],"synced":0}

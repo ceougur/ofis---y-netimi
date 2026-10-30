@@ -231,7 +231,11 @@
     const bayat = st.bayat
       ? `<div class="hof-maliyet-bayat" role="alert" data-bayat="${json(st.bayat.kartlar.map(item => item.kod))}"><p>${esc(st.bayat.ileti)}</p><div class="hof-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-bayat-yukle>Güncel Hâli Yükle</button><button type="button" class="hof-button hof-button-small" data-bayat-ustune>Benimkiyle Değiştir</button></div></div>`
       : "";
-    root.innerHTML = `<div class="hof-tabs hof-maliyet-sekmeler" role="group" aria-label="Sekmeler">${tabs}</div>${bayat}<div class="hof-maliyet-kartlar" data-sekme-kartlar="${esc(st.sekme)}">${(sekme?.kartlar || []).map(kartHtml).join("")}</div><div class="hof-actions hof-maliyet-alt"><button type="button" class="hof-button hof-button-ghost" data-cik>Çık</button>${duzenleyebilir() ? '<button type="button" class="hof-button" data-kaydet>Kaydet</button>' : ""}</div>`;
+    // 2.4.7 (müşteri isteği 28.10.2026): her sekmede "PDF" — o sekmenin kartları ekrandaki değerlerle (kaydedilmemiş değişiklik dahil); görüntüleme yetkisi yeter.
+    const pdfAd = sekme ? sekmeAdi(sekme) : "";
+    // Ortak dışa aktarım düğmesi (UI11: ad "PDF", ne indirdiği erişilebilir adda ve ipucunda).
+    const pdf = sekme ? `<span class="hof-maliyet-pdf">${HOF.outputButton({ kind: "pdf", what: pdfAd, tip: `${pdfAd} sekmesini PDF olarak indir (ekrandaki değerlerle)`, attrs: `data-maliyet-pdf="${esc(sekme.kod)}"` })}</span>` : "";
+    root.innerHTML = `<div class="hof-maliyet-ust"><div class="hof-tabs hof-maliyet-sekmeler" role="group" aria-label="Sekmeler">${tabs}</div>${pdf}</div>${bayat}<div class="hof-maliyet-kartlar" data-sekme-kartlar="${esc(st.sekme)}">${(sekme?.kartlar || []).map(kartHtml).join("")}</div><div class="hof-actions hof-maliyet-alt"><button type="button" class="hof-button hof-button-ghost" data-cik>Çık</button>${duzenleyebilir() ? '<button type="button" class="hof-button" data-kaydet>Kaydet</button>' : ""}</div>`;
     isaretle();
   }
   function kartCiz(kod) {
@@ -542,6 +546,51 @@
       if (again) again.disabled = false;
     }
   }
+  // ---------- PDF (2.4.7) ----------
+  // Sekmenin kartları ekrandaki değerlerle: odaktaki yazı önce gönderilir, taslak gövdesi (Kaydet'inkiyle aynı) sunucuya gider; hiçbir şey yazılmaz.
+  async function pdfIndir(sekmeKod, button) {
+    await hepsiniGonder();
+    if (!st) return;
+    const root = kok();
+    const bitir = (sonuc, neden = "") => {
+      if (!root) return;
+      root.dataset.pdf = String(Number(root.dataset.pdf || 0) + 1);
+      root.dataset.pdfSonuc = sonuc;
+      root.dataset.pdfNeden = neden;
+    };
+    if (button) button.disabled = true;
+    try {
+      const response = await HOF.nativeFetch(HOF.apiUrl(`${API}/pdf`), { method: "POST", credentials: "same-origin", cache: "no-store", headers: { "content-type": "application/json", accept: "application/pdf, application/json" }, body: JSON.stringify({ sekme: sekmeKod, ...govde() }) });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error || "PDF hazırlanamadı.");
+      }
+      const blob = await response.blob();
+      const header = response.headers.get("content-disposition") || "";
+      const star = /filename\*=UTF-8''([^;]+)/i.exec(header);
+      let name = "Maliyet Hesap Kartı.pdf";
+      try {
+        name = star ? decodeURIComponent(star[1]) : /filename="([^"]+)"/i.exec(header)?.[1] || name;
+      } catch {
+        // ASCII ada düşülür.
+      }
+      const url = URL.createObjectURL(blob);
+      const link = HOF.el("a", { href: url, download: name, hidden: true });
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
+      HOF.toast(`PDF indirildi: ${name}.`, { type: "success" });
+      bitir("tamam");
+    } catch (error) {
+      HOF.toastError(error);
+      bitir("ret", error?.message || "");
+    } finally {
+      const again = kok()?.querySelector(`[data-maliyet-pdf="${CSS.escape(sekmeKod)}"]`);
+      if (again) again.disabled = false;
+    }
+  }
+
   // 409 çözümü: güncel hâli yükle (bayat kartlardaki taslak bırakılır) ya da kendi taslağını güncel sürümün üstüne yaz (onaylı).
   async function bayatCoz(ustune) {
     if (!st?.bayat) return;
@@ -643,15 +692,31 @@
       const input = event.target.closest?.("[data-maliyet] input[data-alan]");
       if (input && st === oturum) canliOnizle(input);
     });
+    // Enter ile gönderilen alanın yazısı: odak sağa geçince tarayıcının bıraktığı "change" aynı değeri ikinci kez göndermesin.
+    const enterGonderilen = new WeakMap();
     modal.dialog.addEventListener("change", event => {
       const input = event.target.closest?.("[data-maliyet] input[data-alan]");
-      if (input && st === oturum) alanGonder(input);
+      if (!input || st !== oturum) return;
+      if (enterGonderilen.get(input) === input.value) {
+        enterGonderilen.delete(input);
+        return;
+      }
+      alanGonder(input);
     });
     modal.dialog.addEventListener("keydown", event => {
       const input = event.target.closest?.("[data-maliyet] input[data-alan]");
-      if (input && event.key === "Enter") {
+      if (input && event.key === "Enter" && !event.isComposing) {
+        // 2.4.7 (müşteri isteği 28.10.2026: "Entera basınca sağa atlarsa iyi olur"): Enter alanı kaydeder ve odak AYNI KARTTA bir sonraki giriş kutusuna
+        // geçer (satırda sağdaki; satır sonunda alt satırın ilki — kartın kutuları ekrandaki okuma sırasıyla). Kartın son kutusunda odak yerinde kalır.
         event.preventDefault();
+        enterGonderilen.set(input, input.value);
         alanGonder(input);
+        const kutular = [...(input.closest("[data-kart]")?.querySelectorAll("input[data-alan]") || [])];
+        const sonraki = kutular[kutular.indexOf(input) + 1];
+        if (sonraki) {
+          sonraki.focus();
+          sonraki.select?.();
+        } else enterGonderilen.delete(input);
       }
     });
     try {
@@ -678,6 +743,7 @@
       kok()?.querySelector(`[data-sekme="${CSS.escape(st.sekme)}"]`)?.focus({ preventScroll: true });
       return;
     }
+    if (button.dataset.maliyetPdf) return pdfIndir(button.dataset.maliyetPdf, button);
     if ("cik" in button.dataset) return st.modal.dismiss();
     if ("kaydet" in button.dataset) return kaydet();
     if (button.dataset.adDegistir) return adDegistir(button);

@@ -48,7 +48,7 @@ describe("2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri", ()
     }
   });
 
-  it("Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz, yan panel %20 etiketi / %15 oran", () => {
+  it("Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz; 2.4.7: oranlar boş, etiketlerde sayı yok", () => {
     assert.equal(sablonKart("cam/130-1s1c-h182-kabin").adimlar.find(item => item.kod === "bolme").bolen, 120);
     assert.equal(sablonKart("mika/150-1s1c-h182-kabin").adimlar.find(item => item.kod === "bolme").bolen, 120);
     const cam5 = sablonKart("cam/130-1s2c-h182-kabin");
@@ -56,14 +56,15 @@ describe("2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri", ()
     assert.equal(cam5.sonuc, "yuzde_ekle");
     assert.equal(sablonKart("mika/120-1s2c-h182-kabin").adimlar.find(item => item.kod === "bolme").etiket, "");
     const yan = sablonKart("mika/80-lik-yan-panel");
-    assert.deepEqual(yan.adimlar.map(item => [item.kod, item.etiket, item.oran ?? null]), [["ara", "Ara", null], ["yuzde", "Masraf", 15], ["toplama", "Genel", null], ["yuzde_ekle", "%20 Maliyet", 15]]);
-    assert.deepEqual(["mika/100x100-oval-kabin", "mika/100x100-kose-kabin", "mika/170-2s2c-h182", "mika/150-1s1c-h182-kabin", "mika/120-1s2c-h182-kabin"].map(kod => sablonKart(kod).adimlar[1].oran), [11, 11, 13, 17, 16]);
+    assert.deepEqual(yan.adimlar.map(item => [item.kod, item.etiket, item.oran ?? null]), [["ara", "Ara", null], ["yuzde", "Masraf", null], ["toplama", "Genel", null], ["yuzde_ekle", "Maliyet", null]]);
+    assert.deepEqual(["mika/100x100-oval-kabin", "mika/100x100-kose-kabin", "mika/170-2s2c-h182", "mika/150-1s1c-h182-kabin", "mika/120-1s2c-h182-kabin"].map(kod => sablonKart(kod).adimlar[1].oran), [null, null, null, null, null], "2.4.7 (müşteri isteği 28.10.2026): Masraf% oranı boş gelir");
   });
 
   it("zincir: tutar = miktar × fiyat → ARA → %18 → toplama → %20 ekle → ÷200; ara değer yuvarlanmaz; boş girdi 0 sayılır", () => {
     const sablon = sablonKart("cam/100x100-oval-kabin");
     const values = [[2.5, 141.3], [1.25, 610.4], [null, 33], [0.3, 87.77], [12, 1.15], [4, 9.9], [24, 0.37]];
-    const durum = { ad: sablon.ad, satirlar: sablon.satirlar.map((satir, index) => ({ ...satir, miktar: values[index][0], fiyat: values[index][1] })), adimlar: {} };
+    // 2.4.7: şablonda oranlar boş; zincir kuralı oranlar açıkça 18 / 20 verilerek denenir (girdi).
+    const durum = { ad: sablon.ad, satirlar: sablon.satirlar.map((satir, index) => ({ ...satir, miktar: values[index][0], fiyat: values[index][1] })), adimlar: { yuzde: { deger: 18 }, yuzde_ekle: { deger: 20 } } };
     const view = kartHesap(sablon, durum);
     let ara = 0;
     for (const [miktar, fiyat] of values) ara += (miktar ?? 0) * fiyat;
@@ -121,7 +122,16 @@ describe("2.4.6 Maliyet Hesap Kartı: göç v34 (yalnız ekleyici)", () => {
     const result = runMigrations(store, {});
     assert.ok(result.applied.includes(34));
     assert.ok(LATEST_VERSION >= 34);
-    const added = store.all("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name").map(row => row.name).filter(name => !tables.includes(name));
+    // v34'TEN SONRAKİ göçlerin eklediği tablolar (2.4.7 v37 edoc_usage …) bu testin konusu değil: ayrı bir dosyada v34'e kadar ve en son sürüme kadar
+    // göçün tablo farkı çıkarılır; v34'ün eklediği yine YALNIZ maliyet_* olmalıdır.
+    const tablesAt = upTo => {
+      const probe = createStore(new DatabaseSync(":memory:"));
+      for (const migration of MIGRATIONS.filter(item => item.version <= upTo)) probe.tx(() => migration.up(probe, { company: null, now: () => new Date("2026-10-25T07:00:00Z") }));
+      return probe.all("SELECT name FROM sqlite_master WHERE type = 'table'").map(row => row.name);
+    };
+    const at34 = new Set(tablesAt(34));
+    const later = new Set(tablesAt(LATEST_VERSION).filter(name => !at34.has(name)));
+    const added = store.all("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name").map(row => row.name).filter(name => !tables.includes(name) && !later.has(name));
     assert.deepEqual(added, ["maliyet_adimlar", "maliyet_basliklar", "maliyet_hucreler", "maliyet_kartlar", "maliyet_satirlar", "maliyet_sekmeler"]);
     for (const name of added) {
       assert.equal(db.prepare("SELECT strict FROM pragma_table_list WHERE name = ?").get(name)?.strict, 1, `${name} STRICT`);
@@ -164,7 +174,7 @@ describe("2.4.6 Maliyet Hesap Kartı: API", () => {
       if (kart.tur === "matris") assert.ok(Object.values(kart.hucreler).every(hucre => (hucre.taban ?? hucre.fark ?? null) === null), `${kart.kod}: taban / fark boş`);
     }
     const oval = state.kartlar["cam/100x100-oval-kabin"];
-    assert.deepEqual(oval.adimlar.map(item => [item.kod, item.etiket, item.oran ?? item.bolen ?? null]), [["ara", "Ara", null], ["yuzde", "KDV/18", 18], ["toplama", "", null], ["yuzde_ekle", "%20 Maliyet", 20], ["bolme", "Oval Kabin CM Maliyeti", 200]]);
+    assert.deepEqual(oval.adimlar.map(item => [item.kod, item.etiket, item.oran ?? item.bolen ?? null]), [["ara", "Ara", null], ["yuzde", "KDV", null], ["toplama", "Toplam", null], ["yuzde_ekle", "Maliyet", null], ["bolme", "Oval Kabin CM Maliyeti", 200]]);
     assert.equal(oval.sonuc, 0);
     assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM maliyet_kartlar").n, MALIYET_KARTLAR.length);
     data(await admin.get(BASE));
@@ -190,12 +200,13 @@ describe("2.4.6 Maliyet Hesap Kartı: API", () => {
     let ara = 0;
     for (const satir of satirlar) ara += Number(satir.miktar) * Number(String(satir.fiyat).replace(",", "."));
     assert.equal(adim(after, "ara").deger, ara, "eklenen satır ARA'ya girdi, silinen çıktı");
-    assert.equal(adim(after, "yuzde").etiket, "KDV/18", "oran değişti, etiket değişmedi");
+    assert.equal(adim(after, "yuzde").etiket, "KDV", "oran değişti, etiket değişmedi");
     assert.equal(adim(after, "yuzde").oran, 20);
-    assert.equal(adim(after, "yuzde_ekle").oran, 20, "etiket değişti, oran değişmedi");
+    assert.equal(adim(after, "yuzde_ekle").oran, null, "etiket değişti, oran değişmedi (2.4.7: boş gelir, boş kaldı)");
     assert.equal(adim(after, "yuzde_ekle").etiket, "%25 Maliyet");
     const toplama = ara + (ara * 20) / 100;
-    assert.equal(after.sonuc, ((toplama * 20) / 100 + toplama) / 190);
+    assert.equal(adim(after, "yuzde_ekle").deger, toplama, "boş oran 0 sayılır");
+    assert.equal(after.sonuc, toplama / 190);
     // Yeniden aç: aynı değerler (veri tabanından).
     const reopened = data(await admin.get(BASE)).kartlar[kart.kod];
     assert.deepEqual(reopened, after);

@@ -1,0 +1,108 @@
+{
+  "ad": "kirmizi-mobil-247-api-eski-d31b486-yalniz-lib",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil247-eski-d31b486/test/mobil-247.test.mjs",
+  "commit": "3f13c71694e31f2c12cc0e70beae0033d8f3d04b",
+  "dal": "is/mobil-arayuz-247",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T06:38:55.944Z",
+  "sure_sn": 0.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 13,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 0 başarısız, 13 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › /mobil/ sayfası ve dosyaları programın sunucusundan; /mobil → /mobil/",
+      "konum": "test/mobil-247.test.mjs:107:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › telefon ana adreste mobil görünüme yönlenir; bilgisayar, tablet ve ?masaustu=1 masaüstünü görür",
+      "konum": "test/mobil-247.test.mjs:128:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › oturumsuz istek 401 (veri dönmez)",
+      "konum": "test/mobil-247.test.mjs:140:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › başka siteden giriş isteği reddedilir (programın istek kaynağı denetimi mobil yolda da)",
+      "konum": "test/mobil-247.test.mjs:151:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › oturum özeti: kullanıcı, şirketler, seçili şirket; mobil yazma kapalı",
+      "konum": "test/mobil-247.test.mjs:156:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › sayılar masaüstü ucunun döndürdüğüyle aynı (Kasa, banka, cari bakiyesi, stok miktarı)",
+      "konum": "test/mobil-247.test.mjs:164:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › Raporlar: katalogda yalnız izinli raporlar; ön izleme, PDF ve Excel programın rapor motorundan",
+      "konum": "test/mobil-247.test.mjs:193:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › salt okunur: mobil yoldan yazma 405, veri tabanı değişmez",
+      "konum": "test/mobil-247.test.mjs:217:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › yetki ve şirket › Personel: cari ve stok görür; Kasa, banka ve raporlar 403",
+      "konum": "test/mobil-247.test.mjs:249:5",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › yetki ve şirket › Finans Raporları kaldırılmış Muhasebe: Kasa görür, raporlar 403",
+      "konum": "test/mobil-247.test.mjs:258:5",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › yetki ve şirket › yetkisi olmadığı şirketin kimliği 403, olmayan şirket 409; oturum özetinde yalnız kendi şirketleri",
+      "konum": "test/mobil-247.test.mjs:264:5",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › yetki ve şirket › iki şirket: ikinci şirket boş başlar, verisi birinciye karışmaz; şirket geçişi istek başına",
+      "konum": "test/mobil-247.test.mjs:274:5",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › yetki ve şirket › çıkıştan sonra oturum kapanır",
+      "konum": "test/mobil-247.test.mjs:288:5",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu › yetki ve şirket",
+      "konum": "test/mobil-247.test.mjs:235:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "mobil görünüm: programın içinde, gerçek sunucu",
+      "konum": "test/mobil-247.test.mjs:80:1",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-27/kirmizi-mobil-247-api-eski-d31b486-yalniz-lib.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9be28ceb72f07f49",
+  "ham_cikti_sha256": "83364ea819ff1aeea4431792326d266d372abfda0950d1172b6c64d99642d3be",
+  "ham_cikti_bayt": 9917
+}

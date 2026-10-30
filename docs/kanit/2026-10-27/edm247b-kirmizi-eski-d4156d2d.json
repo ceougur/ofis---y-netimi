@@ -1,0 +1,58 @@
+{
+  "ad": "edm247b-kirmizi-eski-d4156d2d",
+  "komut": "node --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247b-eski-d4156d2d/test/edoc-kullanim-247.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247b-eski-d4156d2d/test/edoc-kullanim-kesinti-247.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247b-eski-d4156d2d/test/edoc-kullanim-birim-247.test.mjs",
+  "commit": "4140ca1063aa9b82dfb510b6ca80de3f6b95e207",
+  "dal": "is/edm-247-b",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T07:13:53.765Z",
+  "sure_sn": 3.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 9,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › ikinci şirket kendi sayacını tutar; lisans doğrulaması (/v1/check) iki şirketin TOPLAMINI gönderir; gövdede ETTN / VKN / belge no yok",
+      "konum": "test/edoc-kullanim-247.test.mjs:221:3",
+      "hata": "{\"edoc\":[{\"month\":\"2026-06\",\"env\":\"test\",\"efatura\":1,\"earsiv\":2,\"esmm\":0},{\"month\":\"2026-07\",\"env\":\"live\",\"efatura\":0,\"earsiv\":1,\"esmm\":0},{\"month\":\"2026-07\",\"env\":\"test\",\"efatura\":0,\"earsiv\":4,\"esmm\":1}]} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › S4 kesinti: kullanım defterine yazım düşer (durum ve şirket izi yazıldı) → okumada izden bir kez tamamlanır; çift sayım yok",
+      "konum": "test/edoc-kullanim-247.test.mjs:284:3",
+      "hata": "eksik satır okumada izden tamamlandı · undefined !== 1"
+    },
+    {
+      "ad": "2.4.7 e-Belge kullanım sayacı (EDM'nin kabul ettiği gönderimler) › S4 yedek tatbikatı (002): gönder → yedek → gönder → geri yükle → sayaç değişmedi; sıfırla → sayaç değişmedi; şirket izi geri gider, defter gitmez",
+      "konum": "test/edoc-kullanim-247.test.mjs:304:3",
+      "hata": "geri yükleme defteri geri almaz · 2 !== 3 (beklenen 3, gelen 2)"
+    },
+    {
+      "ad": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247b-eski-d4156d2d/test/edoc-kullanim-birim-247.test.mjs",
+      "konum": "test/edoc-kullanim-birim-247.test.mjs:1:1",
+      "hata": "test failed"
+    },
+    {
+      "ad": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247b-eski-d4156d2d/test/edoc-kullanim-kesinti-247.test.mjs",
+      "konum": "test/edoc-kullanim-kesinti-247.test.mjs:1:1",
+      "hata": "test failed"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-27/edm247b-kirmizi-eski-d4156d2d.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea",
+  "ham_cikti_sha256": "0dc7567aad11f33afccfb7293d41a89eb213d1189a94b9545bfbe2e7bb6a0b5f",
+  "ham_cikti_bayt": 12474
+}

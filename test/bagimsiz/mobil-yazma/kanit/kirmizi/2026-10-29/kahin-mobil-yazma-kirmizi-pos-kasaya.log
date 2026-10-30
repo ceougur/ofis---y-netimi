@@ -1,0 +1,335 @@
+not ok 1 - A1 kabul.json güncel: yeniden üretilen kabul kümesi dosyayla bayt bayt aynı (model ≠ elle / akış olsaydı üretilmezdi)
+  # ELLE E02-es-havale-pos-mobil: 256 birleşimde model ≠ elle; ilk: [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+  # ELLE E02-es-havale-pos-masaustu: 256 birleşimde model ≠ elle; ilk: [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+  # ELLE E28-rol-yetkisi: 256 birleşimde model ≠ elle; ilk: [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] k1:001:kasa: model 30000 · elle 20000 | k1:001:kasaGun:2026-10-20: model 30000 · elle 20000 | k1:001:pos:POS1: model 0 · elle 10000
+  # RASTGELE tohum 1 [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: model ≠ akış beklentisi (139); ilk: k1729:001:kasa: model 8484543 · elle 5813248 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400 | k1729:001:kasaGun:2026-10-16: model 407236 · elle 157900
+  # RASTGELE tohum 1 [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: model ≠ akış beklentisi (142); ilk: k1729:001:kasa: model 9557593 · elle 6673598 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400 | k1729:001:kasaGun:2026-10-16: model 407236 · elle 157900
+  # RASTGELE tohum 1 [kapatilacak=yalniz_fifo;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: model ≠ akış beklentisi (139); ilk: k1729:001:kasa: model 8484543 · elle 5813248 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400 | k1729:001:kasaGun:2026-10-16: model 407236 · elle 157900
+  # RASTGELE tohum 1 [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=yalniz_cari;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: model ≠ akış beklentisi (139); ilk: k1729:001:kasa: model 8206971 · elle 5527457 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 404700 · elle 363300 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400 | k1729:001:kasaGun:2026-10-16: model 407236 · elle 157900
+  # RASTGELE tohum 1 [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=gecemez;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: model ≠ akış beklentisi (139); ilk: k1729:001:kasa: model 8424446 · elle 5753151 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400 | k1729:001:kasaGun:2026-10-16: model 407236 · elle 157900
+  # RASTGELE tohum 1 [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=gecemez;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: model ≠ akış beklentisi (139); ilk: k1729:001:kasa: model 8484543 · elle 5813248 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400 | k1729:001:kasaGun:2026-10-16: model 407236 · elle 157900
+  # RASTGELE tohum 1 [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=form_tarihi;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: model ≠ akış beklentisi (139); ilk: k1729:001:kasa: model 8446643 · elle 5775348 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400 | k1729:001:kasaGun:2026-10-16: model 407236 · elle 157900
+  # RASTGELE tohum 1 [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=yalniz_giris]: model ≠ akış beklentisi (139); ilk: k1729:001:kasa: model 8377443 · elle 5706148 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400 | k1729:001:kasaGun:2026-10-16: model 407236 · elle 157900
+  # RASTGELE tohum 1 [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=giris_cikis]: model ≠ akış beklentisi (139); ilk: k1729:001:kasa: model 8484543 · elle 5813248 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400 | k1729:001:kasaGun:2026-10-16: model 407236 · elle 157900
+  # RASTGELE tohum 1 [kapatilacak=secilir;yollar=evrak_dahil;taksit=yalniz_cari;onay=gecemez;eksi_stok=gecemez;tarih=form_tarihi;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]: model ≠ akış beklentisi (142); ilk: k1729:001:kasa: model 9172921 · elle 6280707 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 404700 · elle 363300 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400 | k1729:001:kasaGun:2026-10-16: model 407236 · elle 157900
+  # RASTGELE tohum 2 [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: model ≠ akış beklentisi (118); ilk: k1715:001:kasa: model 11593755 · elle 9224541 | k1715:001:kasaGun:2026-10-01: model 1148591 · elle 1049191 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000 | k1715:001:kasaGun:2026-10-07: elle yazılmadı, model 246300
+  # RASTGELE tohum 2 [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris]: model ≠ akış beklentisi (126); ilk: k1715:001:kasa: model 11886783 · elle 9501869 | k1715:001:kasaGun:2026-10-01: model 1148591 · elle 1049191 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000 | k1715:001:kasaGun:2026-10-07: elle yazılmadı, model 246300
+  # … 18 satır daha
+  # bilgi: 52 senaryo (49 elle, 3 rastgele), 8138 olay; 4 göreli çift; 8 parametre (256 birleşim)
+ok 2 - A2 cari kâhini (test/bagimsiz/cari/model.py) kabul üretildiğindeki dosyayla aynı (sha256)
+ok 3 - B E01-es-nakit-fifo-mobil: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 4 - B E01-es-nakit-fifo-masaustu: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+not ok 5 - B E02-es-havale-pos-mobil: elle beklenen = model
+  # 256 birleşimde model ≠ elle
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=yalniz_giris] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=giris_cikis] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=form_tarihi;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+not ok 6 - B E02-es-havale-pos-masaustu: elle beklenen = model
+  # 256 birleşimde model ≠ elle
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=yalniz_giris] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=giris_cikis] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=form_tarihi;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] k1:001:kasa: model 35000 · elle 5000 | k1:001:kasaGun:2026-10-20: model 35000 · elle 5000 | k1:001:pos:POS1: model 0 · elle 30000
+ok 7 - B E03-es-kapatilacak-mobil: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: kapatilacak
+ok 8 - B E03-es-kapatilacak-masaustu: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 9 - B E04-es-odeme-mobil: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: kapatilacak
+ok 10 - B E04-es-odeme-masaustu: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 11 - B E05-es-taksit-mobil: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: taksit, onay
+ok 12 - B E05-es-taksit-masaustu: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 13 - B E06-kesinti-once: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 14 - B E07-kesinti-sonra: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 15 - B E08-ayni-kimlik-farkli-govde: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 16 - B E09-reddedilen-kimlik: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 17 - B E10-sunucu-kapali: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 18 - B E11-sunucu-yeniden-kimlik: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 19 - B E12-cihaz-silindi: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 20 - B E13-uzak-izin: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 21 - B E14-lisans: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 22 - B E15-sirket-yetkisi: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 23 - B E16-baska-sirket-kimligi: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 24 - B E17-ayni-anda-ayni-cari: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 25 - B E18-k8-yaris: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: taksit
+ok 26 - B E19-es-stok-mobil: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: eksi_stok, stok_yonu
+ok 27 - B E19-es-stok-masaustu: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 28 - B E20-stok-yaris: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: stok_yonu
+ok 29 - B E21-gece-yarisi: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: tarih
+ok 30 - B E22-gece-yarisi-yeniden: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: tarih
+ok 31 - B E23-yil-donumu-kilit: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: tarih
+ok 32 - B E24-kimlik-omru: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: tarih, gec_yeniden
+ok 33 - B E25-yedek-geri-yukle: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 34 - B E26-ayni-adli-cariler: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 35 - B E27-eski-surum-verisi: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+not ok 36 - B E28-rol-yetkisi: elle beklenen = model
+  # 256 birleşimde model ≠ elle
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] k1:001:kasa: model 30000 · elle 20000 | k1:001:kasaGun:2026-10-20: model 30000 · elle 20000 | k1:001:pos:POS1: model 0 · elle 10000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=yalniz_giris] k1:001:kasa: model 30000 · elle 20000 | k1:001:kasaGun:2026-10-20: model 30000 · elle 20000 | k1:001:pos:POS1: model 0 · elle 10000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=giris_cikis] k1:001:kasa: model 30000 · elle 20000 | k1:001:kasaGun:2026-10-20: model 30000 · elle 20000 | k1:001:pos:POS1: model 0 · elle 10000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] k1:001:kasa: model 30000 · elle 20000 | k1:001:kasaGun:2026-10-20: model 30000 · elle 20000 | k1:001:pos:POS1: model 0 · elle 10000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=form_tarihi;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] k1:001:kasa: model 30000 · elle 20000 | k1:001:kasaGun:2026-10-20: model 30000 · elle 20000 | k1:001:pos:POS1: model 0 · elle 10000
+ok 37 - B E29-benzer-islem: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: onay
+ok 38 - B E30-es-kasa-eksi-mobil: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: onay
+ok 39 - B E30-es-kasa-eksi-masaustu: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 40 - B E31-es-evrak-mobil: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yollar
+ok 41 - B E31-es-evrak-masaustu: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 42 - B E32a-ayni-gun-sira: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 43 - B E32b-ayni-gun-sira: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 44 - B E34-iki-sirket-ayni-kimlik: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 45 - B E35-iki-kullanici-ayni-kimlik: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 46 - B E36-cihaz-sil-yarida: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 47 - B E37-sunucu-kapali-yarida: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 48 - B E38-sil-ayni-adla-ac: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 49 - B E39-cift-dokunus-ayni-anda: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+ok 50 - B E40-es-iade-geri-odeme-mobil: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: kapatilacak
+ok 51 - B E40-es-iade-geri-odeme-masaustu: elle beklenen = model
+  # bilgi: 256/256 birleşim; ilgili parametreler: yok
+not ok 52 - C rastgele tohum 1: akış beklentisi = model (10 birleşim)
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 139 fark: k1729:001:kasa: model 8484543 · elle 5813248 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 142 fark: k1729:001:kasa: model 9557593 · elle 6673598 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400
+  # [kapatilacak=yalniz_fifo;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 139 fark: k1729:001:kasa: model 8484543 · elle 5813248 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=yalniz_cari;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 139 fark: k1729:001:kasa: model 8206971 · elle 5527457 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 404700 · elle 363300 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=gecemez;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 139 fark: k1729:001:kasa: model 8424446 · elle 5753151 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=gecemez;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 139 fark: k1729:001:kasa: model 8484543 · elle 5813248 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=form_tarihi;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 139 fark: k1729:001:kasa: model 8446643 · elle 5775348 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=yalniz_giris] 139 fark: k1729:001:kasa: model 8377443 · elle 5706148 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=giris_cikis] 139 fark: k1729:001:kasa: model 8484543 · elle 5813248 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 431500 · elle 390100 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400
+  # [kapatilacak=secilir;yollar=evrak_dahil;taksit=yalniz_cari;onay=gecemez;eksi_stok=gecemez;tarih=form_tarihi;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 142 fark: k1729:001:kasa: model 9172921 · elle 6280707 | k1729:001:kasaGun:2026-10-02: model 148700 · elle 73500 | k1729:001:kasaGun:2026-10-09: model 404700 · elle 363300 | k1729:001:kasaGun:2026-10-10: model 103961 · elle 47400
+  # bilgi: 2570 adım; öneri birleşiminde durumlar {"atildi": 4, "belirsiz": 49, "ok": 634, "ret": 294, "ulasilamadi": 18, "yineleme": 25}; açık (> 0) fatura denetimi 86
+not ok 53 - C rastgele tohum 2: akış beklentisi = model (10 birleşim)
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 118 fark: k1715:001:kasa: model 11593755 · elle 9224541 | k1715:001:kasaGun:2026-10-01: model 1148591 · elle 1049191 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 126 fark: k1715:001:kasa: model 11886783 · elle 9501869 | k1715:001:kasaGun:2026-10-01: model 1148591 · elle 1049191 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000
+  # [kapatilacak=yalniz_fifo;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 118 fark: k1715:001:kasa: model 11593755 · elle 9224541 | k1715:001:kasaGun:2026-10-01: model 1148591 · elle 1049191 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=yalniz_cari;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 116 fark: k1715:001:kasa: model 11017118 · elle 8745519 | k1715:001:kasaGun:2026-10-01: model 1107300 · elle 1007900 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=gecemez;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 120 fark: k1715:001:kasa: model 11567055 · elle 9181741 | k1715:001:kasaGun:2026-10-01: model 1148591 · elle 1049191 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=gecemez;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 118 fark: k1715:001:kasa: model 11593755 · elle 9224541 | k1715:001:kasaGun:2026-10-01: model 1148591 · elle 1049191 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=form_tarihi;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 115 fark: k1715:001:kasa: model 11580355 · elle 9354041 | k1715:001:kasaGun:2026-10-01: model 1148591 · elle 1049191 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=yalniz_giris] 118 fark: k1715:001:kasa: model 11593755 · elle 9224541 | k1715:001:kasaGun:2026-10-01: model 1148591 · elle 1049191 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=giris_cikis] 118 fark: k1715:001:kasa: model 11593755 · elle 9224541 | k1715:001:kasaGun:2026-10-01: model 1148591 · elle 1049191 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000
+  # [kapatilacak=secilir;yollar=evrak_dahil;taksit=yalniz_cari;onay=gecemez;eksi_stok=gecemez;tarih=form_tarihi;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 121 fark: k1715:001:kasa: model 11296746 · elle 9152347 | k1715:001:kasaGun:2026-10-01: model 1107300 · elle 1007900 | k1715:001:kasaGun:2026-10-02: model -25700 · elle -168500 | k1715:001:kasaGun:2026-10-05: model 167900 · elle 90000
+  # bilgi: 2563 adım; öneri birleşiminde durumlar {"atildi": 4, "belirsiz": 47, "ok": 564, "ret": 332, "ulasilamadi": 62, "yineleme": 26}; açık (> 0) fatura denetimi 127
+not ok 54 - C rastgele tohum 3: akış beklentisi = model (10 birleşim)
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 128 fark: k1732:001:kasa: model 11114425 · elle 8071719 | k1732:001:kasaGun:2026-10-01: model 1215408 · elle 964908 | k1732:001:kasaGun:2026-10-04: model -261100 · elle -330800 | k1732:001:kasaGun:2026-10-06: elle yazılmadı, model 245100
+  # [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 132 fark: k1732:001:kasa: model 10964273 · elle 7777919 | k1732:001:kasaGun:2026-10-01: model 1215408 · elle 964908 | k1732:001:kasaGun:2026-10-04: model -261100 · elle -330800 | k1732:001:kasaGun:2026-10-06: model 369200 · elle 124100
+  # [kapatilacak=yalniz_fifo;yollar=evrak_dahil;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 128 fark: k1732:001:kasa: model 11114425 · elle 8071719 | k1732:001:kasaGun:2026-10-01: model 1215408 · elle 964908 | k1732:001:kasaGun:2026-10-04: model -261100 · elle -330800 | k1732:001:kasaGun:2026-10-06: elle yazılmadı, model 245100
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=yalniz_cari;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 128 fark: k1732:001:kasa: model 10589491 · elle 7546785 | k1732:001:kasaGun:2026-10-01: model 1215408 · elle 964908 | k1732:001:kasaGun:2026-10-04: model -261100 · elle -330800 | k1732:001:kasaGun:2026-10-06: elle yazılmadı, model 245100
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=gecemez;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 127 fark: k1732:001:kasa: model 11047925 · elle 8005219 | k1732:001:kasaGun:2026-10-01: model 1215408 · elle 964908 | k1732:001:kasaGun:2026-10-04: model -261100 · elle -330800 | k1732:001:kasaGun:2026-10-06: elle yazılmadı, model 245100
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=gecemez;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 128 fark: k1732:001:kasa: model 11114425 · elle 8071719 | k1732:001:kasaGun:2026-10-01: model 1215408 · elle 964908 | k1732:001:kasaGun:2026-10-04: model -261100 · elle -330800 | k1732:001:kasaGun:2026-10-06: elle yazılmadı, model 245100
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=form_tarihi;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 120 fark: k1732:001:kasa: model 11073125 · elle 8030419 | k1732:001:kasaGun:2026-10-01: model 1215408 · elle 964908 | k1732:001:kasaGun:2026-10-03: model 322714 · elle 253014 | k1732:001:kasaGun:2026-10-06: elle yazılmadı, model 245100
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=yalniz_giris] 128 fark: k1732:001:kasa: model 11131705 · elle 8088999 | k1732:001:kasaGun:2026-10-01: model 1215408 · elle 964908 | k1732:001:kasaGun:2026-10-04: model -261100 · elle -330800 | k1732:001:kasaGun:2026-10-06: elle yazılmadı, model 245100
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=giris_cikis] 128 fark: k1732:001:kasa: model 11114425 · elle 8071719 | k1732:001:kasaGun:2026-10-01: model 1215408 · elle 964908 | k1732:001:kasaGun:2026-10-04: model -261100 · elle -330800 | k1732:001:kasaGun:2026-10-06: elle yazılmadı, model 245100
+  # [kapatilacak=secilir;yollar=evrak_dahil;taksit=yalniz_cari;onay=gecemez;eksi_stok=gecemez;tarih=form_tarihi;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 124 fark: k1732:001:kasa: model 10398039 · elle 7211685 | k1732:001:kasaGun:2026-10-01: model 1215408 · elle 964908 | k1732:001:kasaGun:2026-10-03: model 291714 · elle 222014 | k1732:001:kasaGun:2026-10-06: model 369200 · elle 124100
+  # bilgi: 2589 adım; öneri birleşiminde durumlar {"atildi": 4, "belirsiz": 63, "ok": 590, "ret": 382, "ulasilamadi": 10, "yineleme": 25}; açık (> 0) fatura denetimi 95
+not ok 55 - C4 büyük hacim: tohum 4, 5.000 olay (dosyaya yazılmaz) — akış beklentisi = model (öneri + hepsi ters)
+  # [kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris] 235 fark: k3311:001:kasa: model 17440799 · elle 11684346 | k3311:001:kasaGun:2026-10-04: model 263400 · elle 87000 | k3311:001:kasaGun:2026-10-07: model 38476 · elle 33176 | k3311:001:kasaGun:2026-10-08: model 109000 · elle 58200
+  # [kapatilacak=secilir;yollar=evrak_dahil;taksit=yalniz_cari;onay=gecemez;eksi_stok=gecemez;tarih=form_tarihi;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis] 238 fark: k3311:001:kasa: model 19057355 · elle 12783702 | k3311:001:kasaGun:2026-10-04: model 263400 · elle 87000 | k3311:001:kasaGun:2026-10-07: model 38476 · elle 33176 | k3311:001:kasaGun:2026-10-20: model -237200 · elle -376900
+  # bilgi: 6819 adım
+ok 56 - D1 belirlenimcilik: aynı senaryo iki kez → bayt bayt aynı çıktı (bütün elle senaryolar + R1)
+ok 57 - D2 eşdeğerlik: aynı iş masaüstünden ve mobilden → aynı sonuç (masaüstü her birleşimde = mobil ESDEGER birleşiminde)
+  # bilgi: 9 çift × 256 birleşim
+ok 58 - D3 reddedilen / ulaşılamayan / atılan istek hiçbir şeyi değiştirmez: o adımlar silinince bütün kontrol sayıları aynı (ders 3)
+  # bilgi: 417 yazmamış adım silinerek denendi
+ok 59 - D4 şirket yalıtımı: 002'nin bütün adımları çıkarılınca 001'in bütün kontrol sayıları aynı (elle iki şirketli + R1–R3)
+  # bilgi: 14 koşu
+ok 60 - D5 istek kimliği başına en çok bir kayıt (kullanıcı × şirket × kapsam × kimlik) — elle + R1–R3, iki birleşim
+ok 61 - D6 aynı tarihli kayıtların sırası (ders 31): E32a ve E32b aynı; R1'de ardışık değişmeli adım çiftleri yer değiştirince kontrol sayıları aynı
+  # bilgi: R1'de 17 çift yer değiştirdi
+ok 62 - D7 Kasa = Σ Kasa gün toplamları; kayıt (hareket) sayısı yedekten geri yükleme olmadan hiç azalmaz
+ok 63 - D8 göreli çiftler (plan yetkiyi yazmıyor — B): iki yan yalnız kanalda ayrışır ve kâhin hesaplamaz (program iki kanalda AYNI vermeli)
+  # bilgi: 4 göreli çift: G1-muhasebe-nakit-odeme, G2-personel-stok, G3-muhasebe-cek, G4-muhasebe-fazla-avans
+ok 64 - E dil yanlış → SenaryoHatasi
+  # bilgi: reddedildi — dil destekofis-mobil-yazma/1 değil
+ok 65 - E bilinmeyen islem → SenaryoHatasi
+  # bilgi: reddedildi — bilinmeyen islem: 'tahsilat_sil'
+ok 66 - E tekrar eden adım id → SenaryoHatasi
+  # bilgi: reddedildi — adım id geçersiz ya da tekrar: 'k1'
+ok 67 - E mobil adımda kullanici → SenaryoHatasi
+  # bilgi: reddedildi — t1: mobil adımda kullanıcı cihazdan gelir (kullanici yazılmaz)
+ok 68 - E mobil adımda cihaz yok → SenaryoHatasi
+  # bilgi: reddedildi — t1: mobil adımda cihaz yok
+ok 69 - E istekKimligi yok → SenaryoHatasi
+  # bilgi: reddedildi — t1: istekKimligi yok (PLAN §3.10/1 form açılışında üretilir)
+ok 70 - E kesinti geçersiz → SenaryoHatasi
+  # bilgi: reddedildi — t1: kesinti once/sonra
+ok 71 - E yeniden_gonder ileri/olmayan adımı anar → SenaryoHatasi
+  # bilgi: reddedildi — y0: yeniden_gonder önceki bir adımı anmalı
+ok 72 - E ayniAnda tek adım → SenaryoHatasi
+  # bilgi: reddedildi — ayniAnda grubu 2–4 adım
+ok 73 - E B hücresi: muhasebe nakit ödeme → SenaryoHatasi
+  # bilgi: reddedildi — o1: rol muhasebe için odeme/nakit planda yazılı değil (B — senaryo kurmaz; göreli çiftle denenir)
+ok 74 - E 4. eşli cihaz (M2 konusu) → SenaryoHatasi
+  # bilgi: reddedildi — 4. eşli cihaz (3 cihaz sınırı M2 kâhininin konusu; bu senaryo kurmaz)
+ok 75 - E saat geri → SenaryoHatasi
+  # bilgi: reddedildi — saat geri alınamaz
+ok 76 - E formAcilis gönderimden sonra → SenaryoHatasi
+  # bilgi: reddedildi — t1: formAcilis gönderimden sonra olamaz
+ok 77 - E sunucu kapalıyken masaüstü işlemi → SenaryoHatasi
+  # bilgi: reddedildi — t1: sunucu kapalıyken masaüstü işlemi kurulmaz
+ok 78 - E eski sürüm (kaynakSurum) adımı mobil → SenaryoHatasi
+  # bilgi: reddedildi — t1: eski sürüm (kaynakSurum) adımı mobil olamaz
+ok 79 - E şirket kodu 003 → SenaryoHatasi
+  # bilgi: reddedildi — şirket kodu 001/002 olmalı (en çok 2 şirket): 003
+ok 80 - E takma ad biçimi → SenaryoHatasi
+  # bilgi: reddedildi — takma ad geçersiz ya da tekrar: 'a-1'
+ok 81 - E cari_sil hareketli cari → SenaryoHatasi
+  # bilgi: reddedildi — cari_sil yalnız hareketsiz cari (senaryo kurmaz)
+ok 82 - E geçerli temel senaryo kabul edilir
+ok 83 - F M01
+  # bilgi: Kesintiden sonra yeniden gönderim istek kimliğiyle tanınmaz (ikinci kayıt); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 84 - F M02
+  # bilgi: Aynı kimlik + farklı gövde 409 yerine 'zaten kaydedildi' sayılır; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 85 - F M03
+  # bilgi: Aynı kimlik + farklı gövde yeni kayıt açar; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 86 - F M04
+  # bilgi: İstek kimliği anahtarında kullanıcı yok (iki kullanıcının aynı kimliği tek kayıt); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 87 - F M05
+  # bilgi: İstek kimliği anahtarında şirket yok (iki şirketin aynı kimliği tek kayıt); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 88 - F M06
+  # bilgi: Reddedilen isteğin kimliği hatırlanır (düzeltilip yeniden gönderilen istek yazılmaz); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 89 - F M07
+  # bilgi: Sunucu kapalıyken girilen mobil istek kuyruğa alınır, sunucu açılınca yazılır; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 90 - F M08
+  # bilgi: Silinmiş cihaz yazabilir; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 91 - F M09
+  # bilgi: Uzaktan Bağlanabilir izni kaldırılınca cihazlar düşmez ve izin denetlenmez (cihaz yazmayı sürdürür); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 92 - F M10
+  # bilgi: Lisans bitince mobil yazma sürer; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 93 - F M11
+  # bilgi: Mobilde şirket yetkisi denetlenmez; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 94 - F M12
+  # bilgi: Başka şirketin cari kimliği o carinin şirketine yazılır; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 95 - F M13
+  # bilgi: POS tahsilatı Kasa'ya girer; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 96 - F M14
+  # bilgi: Havale Kasa'ya girer; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 97 - F M15
+  # bilgi: Mobil bağsız tahsilat en YENİ faturaya bağlanır (FIFO değil); yakalayan: E01-es-nakit-fifo-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 98 - F M16
+  # bilgi: Mobilde Kapatılacak Fatura yok sayılır (FIFO'ya döner); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 99 - F M17
+  # bilgi: Yalnız FIFO kipinde mobil fatura alanı kabul edilir; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 100 - F M18
+  # bilgi: K8: kalanı aşan taksit tahsilatı karta yazılır (plan-overpay yok); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 101 - F M19
+  # bilgi: K8: kapanmış karta tahsilat kabul edilir (plan-paid yok); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 102 - F M20
+  # bilgi: Fazlasını Avans Yaz yetkisiz kullanıcıda geçer; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 103 - F M21
+  # bilgi: Mobil stok çıkışı soru sormadan eksiye düşer; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 104 - F M22
+  # bilgi: Eksi stok 'geçemez' kipinde mobil onay yine geçer; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 105 - F M23
+  # bilgi: Mobil nakit ödemede Kasa eksi bakiye denetimi yok; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 106 - F M24
+  # bilgi: Mobil işlemin günü UTC'den alınır; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 107 - F M25
+  # bilgi: Kesinti 'önce' yeniden gönderiminde gün ilk denemenin günüdür (sunucu günü kipinde); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 108 - F M26
+  # bilgi: Mobilde dönem kilidi denetlenmez; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 109 - F M27
+  # bilgi: Mobilde ileri tarih denetlenmez; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 110 - F M28
+  # bilgi: Mobilde rol yetkisi denetlenmez; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 111 - F M29
+  # bilgi: Mobil stok girişi iki kez yazılır; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 112 - F M30
+  # bilgi: Mobil stok çıkışı giriş gibi yazılır; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 113 - F M31
+  # bilgi: Aynı anda gelen iki taksit tahsilatı aynı eski kalanla denetlenir (kilitsiz yarış); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 114 - F M32
+  # bilgi: Yedekten geri yüklemede istek kimlikleri geri yüklenmez (yeniden gönderim 'zaten kaydedildi' der, kayıt yok); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 115 - F M33
+  # bilgi: İstek kimliği 1 günde budanır (30 gün yerine); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 116 - F M34
+  # bilgi: 'Telefon 24 saat' kipinde eski belirsiz istek yine gönderilir; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 117 - F M35
+  # bilgi: Kesinti 'önce' (sunucuya ulaşmayan) istek yazılmış sayılır; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 118 - F M36
+  # bilgi: Mobil ödeme tahsilat yönünde işlenir; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 119 - F M37
+  # bilgi: Çek/senet tahsilatı Kasa'ya girer; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 120 - F M38
+  # bilgi: Evrak kapalı kipte mobil çek/senet kabul edilir; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 121 - F M39
+  # bilgi: Mobil isteğin şirketi yok sayılır (hep 001); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 122 - F M40
+  # bilgi: Mobilde Benzer İşlem denetimi yok; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 123 - F M41
+  # bilgi: Silinen cihazın yerine eşlenen yeni cihaz da yazamaz; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 124 - F M42
+  # bilgi: Şirket yetkisi değişikliği mobilde uygulanmaz (eşleme anındaki yetki sürer); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 125 - F M43
+  # bilgi: Mobil havale/POS hesap seçimi kuralı yok (hep hesapsız 102.00/108.00); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 126 - F M44
+  # bilgi: Taksit kartında ödeme en YENİ taksitten sayılır; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 127 - F M45
+  # bilgi: Sunucu günü kipinde telefonun form tarihi kullanılır; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 128 - F M46
+  # bilgi: Yalnız giriş kipinde mobil stok çıkışı kabul edilir; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 129 - F M47
+  # bilgi: Yalnız cari kipinde mobil taksit kartı tahsilatı kabul edilir; yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 130 - F M48
+  # bilgi: Kesinti 'sonra' (yazılmış) istek yazılmamış sayılır (kayıt düşer); yakalayan: E02-es-havale-pos-mobil [kapatilacak=secilir;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=sunucu_karar;stok_yonu=giris_cikis]
+ok 131 - F özet: her mutasyon modelden BAĞIMSIZ beklentilerce (elle + akış) yakalandı (en az 30)
+  # bilgi: 48/48 mutasyon yakalandı
+ok 132 - G1 'hesapla' komutu modelle aynı çıktıyı verir (E21, --param tarih=form_tarihi)
+ok 133 - G2 'karsilastir': kabul.json'un kendisiyle çıkış 0; bir sayı bozulunca, alternatif dışı değerde ve eksik senaryoda çıkış 1 (ders 4)
+ok 134 - G3 rastgele kayıtta öneri dışı birleşim farktan yeniden kurulur ve akış beklentisine eşittir (R2, 'hepsi ters')
+ok 135 - H mevcut cari kâhini bu işte DEĞİŞMEDİ (git: test/bagimsiz/cari/ çalışma ağacı = HEAD) ve kendi elle senaryoları koşar
+  # bilgi: git okunamadı (fatal: not a git repository (or any of the parent directories): .git) — sha256 denetimi A2'de
+  # bilgi: cari kâhininin 47 elle senaryosu içe aktarılan modelle koştu
+ok 136 - H2 mevcut cari kâhini model tek başına: kendi mutasyon taraması (model.py --mutasyon-tara, elle senaryoları) — yakalanmayan mutant 0
+  # bilgi: cari kâhini 141/141 mutant elle senaryolarıyla yakalandı (47 senaryo)
+1..136
+# tests 136
+# pass 128
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0

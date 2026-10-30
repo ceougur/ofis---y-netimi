@@ -1,0 +1,133 @@
+{
+ "birlesim": "kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris",
+ "notlar": {},
+ "hatalar": [],
+ "goreli": [
+  {
+   "ad": "G1-muhasebe-nakit-odeme",
+   "sonuc": "aynı",
+   "farklar": [],
+   "mobil": {
+    "tani:acilis1": "program:uzak-dinleyici-var",
+    "adim:o1:durum": "ok",
+    "k1:001:cari:T:bakiye": -30000,
+    "k1:001:cari:T:hareketSayisi": 1,
+    "k1:001:fatura:AF1:acik": 30000,
+    "k1:001:kasa": 80000,
+    "k1:001:kasaGun:2026-10-01": 100000,
+    "k1:001:kasaGun:2026-10-20": -20000,
+    "k1:001:evrakSayisi": 0,
+    "k1:001:portfoy": 0
+   },
+   "masaustu": {
+    "tani:acilis1": "program:uzak-dinleyici-var",
+    "adim:o1:durum": "ok",
+    "k1:001:cari:T:bakiye": -30000,
+    "k1:001:cari:T:hareketSayisi": 1,
+    "k1:001:fatura:AF1:acik": 30000,
+    "k1:001:kasa": 80000,
+    "k1:001:kasaGun:2026-10-01": 100000,
+    "k1:001:kasaGun:2026-10-20": -20000,
+    "k1:001:evrakSayisi": 0,
+    "k1:001:portfoy": 0
+   }
+  },
+  {
+   "ad": "G2-personel-stok",
+   "sonuc": "uygulanmaz (koşul {\"stok_yonu\":\"giris_cikis\"}; bilgi: aynı)",
+   "farklar": [],
+   "mobil": {
+    "tani:acilis1": "program:uzak-dinleyici-var",
+    "adim:s1:durum": "ok",
+    "k1:001:kasa": 0,
+    "k1:001:evrakSayisi": 0,
+    "k1:001:portfoy": 0,
+    "k1:001:stok:U1:miktar": 5,
+    "k1:001:stok:U1:hareketSayisi": 1
+   },
+   "masaustu": {
+    "tani:acilis1": "program:uzak-dinleyici-var",
+    "adim:s1:durum": "ok",
+    "k1:001:kasa": 0,
+    "k1:001:evrakSayisi": 0,
+    "k1:001:portfoy": 0,
+    "k1:001:stok:U1:miktar": 5,
+    "k1:001:stok:U1:hareketSayisi": 1
+   }
+  },
+  {
+   "ad": "G3-muhasebe-cek",
+   "sonuc": "uygulanmaz (koşul {\"yollar\":\"evrak_dahil\"}; bilgi: fark)",
+   "farklar": [
+    "adim:t1:durum: mobil \"ret\" · masaüstü \"ok\"",
+    "adim:t1:http: mobil 400 · masaüstü undefined",
+    "adim:t1:kod: mobil \"mobile-field\" · masaüstü undefined",
+    "k1:001:cari:A:bakiye: mobil 100000 · masaüstü 70000",
+    "k1:001:evrakSayisi: mobil 0 · masaüstü 1",
+    "k1:001:fatura:F1:acik: mobil 100000 · masaüstü 70000",
+    "k1:001:portfoy: mobil 0 · masaüstü 30000",
+    "tani:t1:ileti: mobil \"Mobilde ödeme yolu Nakit, Havale / EFT ya da POS / Kredi Kartı olabilir; çek / senet masaüstünden girilir.\" · masaüstü undefined"
+   ],
+   "mobil": {
+    "tani:acilis1": "program:uzak-dinleyici-var",
+    "adim:t1:durum": "ret",
+    "adim:t1:http": 400,
+    "adim:t1:kod": "mobile-field",
+    "tani:t1:ileti": "Mobilde ödeme yolu Nakit, Havale / EFT ya da POS / Kredi Kartı olabilir; çek / senet masaüstünden girilir.",
+    "k1:001:cari:A:bakiye": 100000,
+    "k1:001:cari:A:hareketSayisi": 0,
+    "k1:001:fatura:F1:acik": 100000,
+    "k1:001:kasa": 0,
+    "k1:001:evrakSayisi": 0,
+    "k1:001:portfoy": 0
+   },
+   "masaustu": {
+    "tani:acilis1": "program:uzak-dinleyici-var",
+    "adim:t1:durum": "ok",
+    "k1:001:cari:A:bakiye": 70000,
+    "k1:001:cari:A:hareketSayisi": 0,
+    "k1:001:fatura:F1:acik": 70000,
+    "k1:001:kasa": 0,
+    "k1:001:evrakSayisi": 1,
+    "k1:001:portfoy": 30000
+   }
+  },
+  {
+   "ad": "G4-muhasebe-fazla-avans",
+   "sonuc": "aynı",
+   "farklar": [],
+   "mobil": {
+    "tani:acilis1": "program:uzak-dinleyici-var",
+    "adim:t1:durum": "ok",
+    "k1:001:cari:K:bakiye": -10000,
+    "k1:001:cari:K:hareketSayisi": 0,
+    "k1:001:kart:KT:odenen": 40000,
+    "k1:001:kart:KT:fazla": 10000,
+    "tani:k1:001:kart:KT:odenenAvansHaric": 30000,
+    "k1:001:kart:KT:kalan": 0,
+    "k1:001:kart:KT:tahsilatSayisi": 1,
+    "k1:001:kart:KT:taksit1:odenen": 30000,
+    "k1:001:kasa": 40000,
+    "k1:001:kasaGun:2026-10-20": 40000,
+    "k1:001:evrakSayisi": 0,
+    "k1:001:portfoy": 0
+   },
+   "masaustu": {
+    "tani:acilis1": "program:uzak-dinleyici-var",
+    "adim:t1:durum": "ok",
+    "k1:001:cari:K:bakiye": -10000,
+    "k1:001:cari:K:hareketSayisi": 0,
+    "k1:001:kart:KT:odenen": 40000,
+    "k1:001:kart:KT:fazla": 10000,
+    "tani:k1:001:kart:KT:odenenAvansHaric": 30000,
+    "k1:001:kart:KT:kalan": 0,
+    "k1:001:kart:KT:tahsilatSayisi": 1,
+    "k1:001:kart:KT:taksit1:odenen": 30000,
+    "k1:001:kasa": 40000,
+    "k1:001:kasaGun:2026-10-20": 40000,
+    "k1:001:evrakSayisi": 0,
+    "k1:001:portfoy": 0
+   }
+  }
+ ]
+}

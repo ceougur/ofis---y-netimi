@@ -1,0 +1,43 @@
+{
+  "ad": "ana-ofis-kaydi-eski",
+  "komut": "node --test test/mobil-ofis-kaydi-247.test.mjs",
+  "commit": "7d66130a3c52ce6cc04211de990f4b86e5eef54f",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T09:59:34.390Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 1,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.7 ofis kaydı: eşzamanlı ilk kullanım tek kimlik üretir › aynı anda iki çağrı → aynı kimlik ve anahtar; ayardaki kayıt da o",
+      "konum": "test/mobil-ofis-kaydi-247.test.mjs:18:3",
+      "hata": "iki çağrı aynı ofis kimliğini almalı · + actual - expected · + 'ob3dmu4q2piqnd64p' (beklenen o5nkhhhnluoc6nv7f, gelen ob3dmu4q2piqnd64p)"
+    },
+    {
+      "ad": "2.4.7 ofis kaydı: eşzamanlı ilk kullanım tek kimlik üretir › beş eşzamanlı çağrı → tek kimlik; kayıt ayara bir kez yazılır",
+      "konum": "test/mobil-ofis-kaydi-247.test.mjs:28:3",
+      "hata": "tek ofis kimliği · 5 !== 1 (beklenen 1, gelen 5)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-ofis-kaydi-eski.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "ee21cb3acb8446dd1d2c34ca174118bbdb1851fd452570e4570ed3185f75b37c",
+  "ham_cikti_bayt": 2614
+}

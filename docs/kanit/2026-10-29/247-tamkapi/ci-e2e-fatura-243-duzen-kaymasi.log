@@ -1,0 +1,13 @@
+
+> destekofis@2.4.6 test:fatura-243-duzen-kaymasi
+> node --disable-warning=ExperimentalWarning test/e2e/fatura-243-duzen-kaymasi.mjs
+
+  ✓ liste: pencere yerinde (40,18 1280×864; listede 40,18 1280×864)
+  ✓ senaryo seçimi: pencere yerinde (40,18 1280×864; listede 40,18 1280×864)
+  ✓ form: pencere yerinde (40,18 1280×864; listede 40,18 1280×864)
+  ✓ liste (dönüş): pencere yerinde (40,18 1280×864; listede 40,18 1280×864)
+  ✓ kart: pencere yerinde (40,18 1280×864; listede 40,18 1280×864)
+  ✓ pencerenin kendisinden kaynaklanan düzen kayması yok (0.000)
+  ✓ sayfa hatası yok
+
+✓ fatura-243-duzen-kaymasi: 7 geçti, 0 kaldı

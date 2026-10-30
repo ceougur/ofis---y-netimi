@@ -1,0 +1,32 @@
+{
+  "ad": "ana-kvkk-normal",
+  "komut": "node --test test/personel-ozluk-244.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "abbfce0ecca5ab1dcf702aedfa84df1a264fb79a",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T06:11:58.655Z",
+  "sure_sn": 3.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 26,
+    "gecen": 26,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-kvkk-normal.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "b8c7700a0d34c9b059a2281a1a5496e0769d29e8a0f69b2deb99b4709a3ba6a2",
+  "ham_cikti_bayt": 9388
+}

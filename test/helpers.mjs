@@ -9,7 +9,7 @@ export const ADMIN_PASSWORD = "Test-Admin-2026!";
 export async function startTestServer(options = {}) {
   const root = mkdtempSync(path.join(tmpdir(), "destekofis-test-"));
   const dataDir = options.dataDir || path.join(root, "data");
-  const backupDir = path.join(root, "backups");
+  const backupDir = options.backupDir || path.join(root, "backups");
   if (options.prepare) options.prepare({ dataDir, backupDir });
   const app = createApp({
     dataDir,
@@ -45,9 +45,22 @@ export async function startTestServer(options = {}) {
     ...(options.outboundTls ? { outboundTls: options.outboundTls } : {}),
     // Şirket sınırı (en fazla 2): 2'den çok şirketi olan eski kurulumu canlandıran testler sınırı yükseltir.
     ...(options.maxCompanies ? { maxCompanies: options.maxCompanies } : {}),
+    // 2.4.7 E4: kullanım defterine yazım kesintisi (row → true: ekleme düşer); yalnız testlerde.
+    ...(options.edocUsageFault ? { edocUsageFault: options.edocUsageFault } : {}),
     // Sahte saat (v2.1.0): sunucunun "bugün"ü ve iş zaman damgaları (config.now). Zaman (Date/sayı/ISO metni; akar) ya da
     // { time, fixed: true } (durur). server.clock.set/advance ile ilerletilir; tarayıcıyla eşleme: installPageClock/moveClock.
     ...(options.now !== undefined ? { now: options.now } : {}),
+    // 2.4.7 M2: uzaktan erişimin güvenlik saati (karekod, uzak oturum, uzak giriş kilidi; config.remoteNow) ve karekodun uzak adresi.
+    ...(options.remoteNow !== undefined ? { remoteNow: options.remoteNow } : {}),
+    ...(options.mobileRemoteUrl ? { mobileRemoteUrl: options.mobileRemoteUrl } : {}),
+    // 2.4.7 M3: şifreli özetin kapıcısı (yalnız YEREL sahte kapıcı — test/kapi-yerel.mjs; ders 30) ve ofisin telefon adresi kalıbı. Kapıcı istekleri vekil
+    // sunucusuz doğrudan (yerel adres). mobileSyncAuto: false → zamanlayıcı yok, yüklemeyi test tetikler.
+    ...(options.mobileKapiUrl
+      ? { mobileKapiUrl: options.mobileKapiUrl, mobileOfficeUrl: options.mobileOfficeUrl || "http://{ofis}.destekofis.test", mobileKapiFetch: options.mobileKapiFetch || ((...args) => globalThis.fetch(...args)), mobileSyncAuto: options.mobileSyncAuto ?? false }
+      : {}),
+    // 2.4.7 M4: tünel yöneticisinin test bağlantıları (sahte cloudflared runner, zamanlama, bileşen klasörü; lib/tunnel/attach.mjs). Gate verilmezse gerçek
+    // kapıcı istemcisi mobileKapiUrl'e (yalnız YEREL sahte kapıcı) gider.
+    ...(options.tunnel ? { tunnel: options.tunnel } : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.
     moneyStrict: options.moneyStrict ?? true,

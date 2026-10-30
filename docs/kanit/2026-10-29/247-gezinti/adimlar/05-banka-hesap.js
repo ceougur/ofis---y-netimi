@@ -1,0 +1,23 @@
+// Kurulum Sihirbazı: Banka Adı (yaz + seç), Tab, Hesap Adı, Açılış Bakiyesi 10.000 (insan hızında), Bakiye Doğrulandı, Kaydet ve İlerle.
+const M = ".hof-modal-backdrop.is-visible:last-of-type";
+await desk.click(`text=Banka Adı >> xpath=.. >> input`).catch(async () => desk.click('input[placeholder="ör. Ziraat Bankası"]'));
+await typeSlow(desk, "Ziraat");
+await bekle(500);
+await desk.screenshot({ path: root + "/ekran/05a-banka-adi-liste.png" });
+await desk.keyboard.press("Enter");
+await bekle(300);
+await desk.click('input[placeholder="ör. Ana TL Hesabı"]');
+await typeSlow(desk, "Ana TL Hesabı");
+await desk.click('input[placeholder^="ör. 100.000,00"]');
+await typeSlow(desk, "10.000");
+await desk.keyboard.press("Tab");
+await desk.click("text=Bu tutar bankadaki gerçek bakiyedir");
+await desk.screenshot({ path: root + "/ekran/05b-banka-form.png" });
+const save = desk.waitForResponse(r => /\/api\/workspace\/bank\//.test(r.url()) && r.request().method() === "POST", { timeout: 15000 });
+await desk.getByRole("button", { name: "Kaydet ve İlerle", exact: true }).click();
+const r = await save;
+yaz("POST", r.url().replace(base(), ""), r.status());
+await bekle(1200);
+yaz("DB banka hesapları", sql("SELECT bank_name, name, kind FROM bank_accounts"));
+const acc = await api("/api/workspace/bank/accounts");
+yaz("API hesaplar", acc.status, JSON.stringify(acc.data).slice(0, 300));

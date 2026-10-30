@@ -1,0 +1,32 @@
+{
+  "ad": "ana-aday247-1-senaryo-maliyet-246",
+  "komut": "npm run test:senaryo-maliyet-246",
+  "commit": "6db6608f1479ff365cb36edab6415659b5aaead1",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T04:22:39.066Z",
+  "sure_sn": 56.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 89,
+    "gecen": 89,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-aday247-1-senaryo-maliyet-246.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "a24fe13de133c7782b9499a0f6f7bd9f55657acf51253006aeaf97737675e0bf",
+  "ham_cikti_bayt": 8159
+}

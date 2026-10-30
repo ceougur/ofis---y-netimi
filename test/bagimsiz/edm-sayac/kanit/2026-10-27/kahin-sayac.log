@@ -1,0 +1,181 @@
+ok 1 - A1 kabul.json yeniden üretilen kümeyle aynı ve üretimde model ↔ elle/üretici beklentisi farkı yok
+  # bilgi: 42 senaryo (39 uç + 3 rastgele), 3323 olay, 32 birleşim
+ok 2 - A2 her birleşim her senaryoda tam bir beklenen grubunda
+ok 3 - B U01-tek-kabul: elle yazılmış beklenen = model (32 birleşim)
+ok 4 - B U02-ay-sonu-23-59-ayin-1i-00-00: elle yazılmış beklenen = model (32 birleşim)
+ok 5 - B U03-utc-ve-ofsetsiz-saat: elle yazılmış beklenen = model (32 birleşim)
+ok 6 - B U04-yil-donumu: elle yazılmış beklenen = model (32 birleşim)
+ok 7 - B U05-ayni-ettn-iki-sirkette: elle yazılmış beklenen = model (32 birleşim)
+ok 8 - B U06-ayni-ettn-test-ve-canlida: elle yazılmış beklenen = model (32 birleşim)
+ok 9 - B U07-11048-ilk-olay: elle yazılmış beklenen = model (32 birleşim)
+ok 10 - B U08-iptal-sonrasi-yeniden-gonderim: elle yazılmış beklenen = model (32 birleşim)
+ok 11 - B U09-red-sonrasi-ayni-ettn-kabul: elle yazılmış beklenen = model (32 birleşim)
+ok 12 - B U10-sira-karisik: elle yazılmış beklenen = model (32 birleşim)
+ok 13 - B U11-belirsiz-kesinlesti-ayni-ay: elle yazılmış beklenen = model (32 birleşim)
+ok 14 - B U12-belirsiz-ay-sinirinda-kesinlesti: elle yazılmış beklenen = model (32 birleşim)
+ok 15 - B U13-belirsiz-kesinlesti-red: elle yazılmış beklenen = model (32 birleşim)
+ok 16 - B U14-belirsiz-sonucsuz: elle yazılmış beklenen = model (32 birleşim)
+ok 17 - B U15-belirsiz-sonra-11048: elle yazılmış beklenen = model (32 birleşim)
+ok 18 - B U16-iki-belirsiz-sonra-kesinlesme: elle yazılmış beklenen = model (32 birleşim)
+ok 19 - B U17-red-araya-girer: elle yazılmış beklenen = model (32 birleşim)
+ok 20 - B U18-kabul-sonrasi-gurultu: elle yazılmış beklenen = model (32 birleşim)
+ok 21 - B U19-iki-kullanici-ayni-saniye: elle yazılmış beklenen = model (32 birleşim)
+ok 22 - B U20-yetim-kesinlesme-eski-surum: elle yazılmış beklenen = model (32 birleşim)
+ok 23 - B U21-eski-surumde-kabul-edilmis: elle yazılmış beklenen = model (32 birleşim)
+ok 24 - B U22-turler-ve-profiller: elle yazılmış beklenen = model (32 birleşim)
+ok 25 - B U23-sirketler-toplanir: elle yazılmış beklenen = model (32 birleşim)
+ok 26 - B U24-bos: elle yazılmış beklenen = model (32 birleşim)
+ok 27 - B U25-kullanim-penceresi: elle yazılmış beklenen = model (32 birleşim)
+ok 28 - B U27-kesinlesme-pencere-disi: elle yazılmış beklenen = model (32 birleşim)
+ok 29 - B U28-yedekten-geri-yukleme: elle yazılmış beklenen = model (32 birleşim)
+ok 30 - B U29-sirket-verisi-sifirlandi: elle yazılmış beklenen = model (32 birleşim)
+ok 31 - B U30-belge-silindi-yeniden-acildi: elle yazılmış beklenen = model (32 birleşim)
+ok 32 - B U31-ettn-buyuk-kucuk-harf: elle yazılmış beklenen = model (32 birleşim)
+ok 33 - B U32-cok-gurultu: elle yazılmış beklenen = model (32 birleşim)
+ok 34 - B U33-belirsiz-sonra-yeniden-deneme-kabul: elle yazılmış beklenen = model (32 birleşim)
+ok 35 - B U34-ortam-degisti-kesinlesme: elle yazılmış beklenen = model (32 birleşim)
+ok 36 - B U35-sirket-capraz-kesinlesme: elle yazılmış beklenen = model (32 birleşim)
+ok 37 - B U36-yalniz-iptal: elle yazılmış beklenen = model (32 birleşim)
+ok 38 - B U37-artik-yil-subat: elle yazılmış beklenen = model (32 birleşim)
+ok 39 - B U38-11048-sonra-kesinlesme: elle yazılmış beklenen = model (32 birleşim)
+ok 40 - B U39-tekrarlanan-red: elle yazılmış beklenen = model (32 birleşim)
+ok 41 - B U40-belirsiz-red-sonra-kesinlesme: elle yazılmış beklenen = model (32 birleşim)
+ok 42 - C R1-rastgele-500-belge: üreticinin akış beklentisi = model (32 birleşim, 1056 olay)
+ok 43 - C R2-rastgele-500-belge: üreticinin akış beklentisi = model (32 birleşim, 1075 olay)
+ok 44 - C R3-rastgele-500-belge: üreticinin akış beklentisi = model (32 birleşim, 1017 olay)
+ok 45 - C4 büyük hacim: tohum 4, 5.000 belge (dosyaya yazılmaz) — üretici = model (32 birleşim, yalnız sayılar)
+  # bilgi: 10276 olay, varsayılan birleşimde 3933 sayılan gönderim
+ok 46 - D1 sıra bağımsızlığı: olay listesi karıştırılınca / ters çevrilince sonuç aynı (rastgele + uç, 32 birleşim)
+ok 47 - D2 monotonluk: referans ilerledikçe hiçbir (ay, ortam, tür) sayısı azalmaz (geri yükleme olmayan senaryolar)
+ok 48 - D3 ortam ayrımı: canlı sayılar yalnız canlı olaylardan, test sayıları yalnız test olaylarından aynen çıkar
+ok 49 - D4 şirket toplamı: şirketli anahtarda şirket başına sayılar toplamı = genel; şirketsiz anahtarda genel ≤ toplam
+ok 50 - D5 gürültü: kabul edilmiş belgelere durum sorgusu, iptal, silme, 11048 ve yeniden deneme kabulü eklemek sonucu değiştirmez
+ok 51 - D6 usage tutarlılığı: son referansta aylık = sayılar ∩ pencere, 3 ardışık ay, toplam = aylıkların toplamı
+ok 52 - D7 bakım olayı yoksa geri_yukleme seçeneği sonucu değiştirmez; geri yükleme sayıyı ancak azaltır
+ok 53 - D8 sayılan ≤ kabul türü olayı olan farklı belge sayısı; sayılan ≥ doğrudan kabul edilmiş farklı belge sayısı
+ok 54 - E bilinmeyen olay türü
+  # bilgi: reddedildi — olay 0: bilinmeyen olay türü 'gonder_onay'
+ok 55 - E ETTN eksik
+  # bilgi: reddedildi — olay 0: ettn eksik ya da boş
+ok 56 - E ETTN boş
+  # bilgi: reddedildi — olay 0: ettn eksik ya da boş
+ok 57 - E geçersiz ortam ('canli')
+  # bilgi: reddedildi — olay 0: geçersiz ortam 'canli'
+ok 58 - E geçersiz tür ('efatura_temel')
+  # bilgi: reddedildi — olay 0: geçersiz tür 'efatura_temel'
+ok 59 - E profil e-Arşiv'de
+  # bilgi: reddedildi — olay 0: profil yalnız e-Fatura için TEMEL ya da TICARI olabilir
+ok 60 - E profil geçersiz ('IHRACAT')
+  # bilgi: reddedildi — olay 0: profil yalnız e-Fatura için TEMEL ya da TICARI olabilir
+ok 61 - E zaman ISO değil ('05.10.2026 10:00')
+  # bilgi: reddedildi — zaman ISO 8601 değil: '05.10.2026 10:00'
+ok 62 - E zaman 2017'den eski
+  # bilgi: reddedildi — zaman 2017'den eski: '2016-03-01T10:00:00+02:00' (TR'nin sabit UTC+3 olmadığı dönem)
+ok 63 - E bilinmeyen alan ('tür' yazımı)
+  # bilgi: reddedildi — olay 0: bilinmeyen alan(lar) ['tür']
+ok 64 - E aynı ETTN iki farklı türle
+  # bilgi: reddedildi — olay 1: aynı ETTN (00000000-0000-4000-8000-000000000001, live) iki farklı türle: efatura / earsiv
+ok 65 - E geri yükleme yedek_zamani eksik
+  # bilgi: reddedildi — olay 0: yedek_zamani eksik ya da boş
+ok 66 - E yedek_zamani geri yüklemeden sonra
+  # bilgi: reddedildi — olay 0: yedek_zamani geri yükleme anından sonra
+ok 67 - E olay listesi dizi değil
+  # bilgi: reddedildi — olay listesi bir JSON dizisi olmalı
+ok 68 - E geçersiz parametre değeri
+  # bilgi: reddedildi — ay için geçersiz değer: 'fatura_tarihi' (seçenekler: kesinlesme, gonderim)
+ok 69 - E geçerli girdinin bütün alanları kabul edilir (profil, not, Z ve ofsetsiz saat)
+ok 70 - F M01-11048-sayilir
+  # bilgi: 11048 her zaman kabul sayılır (ilk olay olsa da); yakalandı 32/32 birleşim (ilk yakalayan: U07-11048-ilk-olay×32); bağımsız beklentiler 32/32
+ok 71 - F M02-iptal-sayilir
+  # bilgi: iptal bir kabul gibi sayılır; yakalandı 32/32 birleşim (ilk yakalayan: U21-eski-surumde-kabul-edilmis×32); bağımsız beklentiler 32/32
+ok 72 - F M03-iptal-dusurur
+  # bilgi: iptal sayılmış belgeyi sayaçtan düşürür (append-only bozulur); yakalandı 32/32 birleşim (ilk yakalayan: U08-iptal-sonrasi-yeniden-gonderim×32); bağımsız beklentiler 32/32
+ok 73 - F M04-durum-sorgusu-sayilir
+  # bilgi: durum sorgusu kabul sayılır; yakalandı 32/32 birleşim (ilk yakalayan: U07-11048-ilk-olay×32); bağımsız beklentiler 32/32
+ok 74 - F M05-red-sayilir
+  # bilgi: EDM'nin reddettiği gönderim sayılır; yakalandı 32/32 birleşim (ilk yakalayan: U09-red-sonrasi-ayni-ettn-kabul×32); bağımsız beklentiler 32/32
+ok 75 - F M06-belirsiz-hemen-sayilir
+  # bilgi: sonucu belirsiz gönderim kesinleşmeden sayılır; yakalandı 32/32 birleşim (ilk yakalayan: U10-sira-karisik×16, U12-belirsiz-ay-sinirinda-kesinlesti×16); bağımsız beklentiler 32/32
+ok 76 - F M07-kesinlesen-red-sayilir
+  # bilgi: belirsiz → kesinleşti red sayılır; yakalandı 32/32 birleşim (ilk yakalayan: U13-belirsiz-kesinlesti-red×32); bağımsız beklentiler 32/32
+ok 77 - F M08-kesinlesen-kabul-sayilmaz
+  # bilgi: belirsiz → kesinleşti kabul hiç sayılmaz; yakalandı 32/32 birleşim (ilk yakalayan: U10-sira-karisik×32); bağımsız beklentiler 32/32
+ok 78 - F M09-tekilleme-yok
+  # bilgi: aynı ETTN + ortam her kabulde yeniden sayılır; yakalandı 32/32 birleşim (ilk yakalayan: U05-ayni-ettn-iki-sirkette×16, U08-iptal-sonrasi-yeniden-gonderim×16); bağımsız beklentiler 32/32
+ok 79 - F M10-yeniden-deneme-ayrica-sayilir
+  # bilgi: kabul edilen yeniden deneme her zaman ayrıca sayılır; yakalandı 32/32 birleşim (ilk yakalayan: U18-kabul-sonrasi-gurultu×32); bağımsız beklentiler 32/32
+ok 80 - F M11-ortam-anahtarda-yok
+  # bilgi: tekilleme ortamı görmez (test ve canlı aynı ETTN tek sayılır); yakalandı 32/32 birleşim (ilk yakalayan: U06-ayni-ettn-test-ve-canlida×32); bağımsız beklentiler 32/32
+ok 81 - F M12-ortam-ciktida-karisik
+  # bilgi: test gönderimleri canlı sütununa yazılır; yakalandı 32/32 birleşim (ilk yakalayan: U06-ayni-ettn-test-ve-canlida×32); bağımsız beklentiler 32/32
+ok 82 - F M13-anahtar-sirket-ters
+  # bilgi: şirket anahtara (şirketsiz ↔ şirketli) ters girer; yakalandı 32/32 birleşim (ilk yakalayan: U05-ayni-ettn-iki-sirkette×32); bağımsız beklentiler 32/32
+ok 83 - F M14-ay-utc
+  # bilgi: ay UTC saatine göre alınır; yakalandı 32/32 birleşim (ilk yakalayan: U02-ay-sonu-23-59-ayin-1i-00-00×32); bağımsız beklentiler 32/32
+ok 84 - F M15-gece-yarisi-onceki-aya
+  # bilgi: ayın 1'i 00:00:00 önceki aya yazılır (≤ sınır hatası); yakalandı 32/32 birleşim (ilk yakalayan: U02-ay-sonu-23-59-ayin-1i-00-00×32); bağımsız beklentiler 32/32
+ok 85 - F M16-yil-bir-kez-okunur
+  # bilgi: yıl ilk olaydan bir kez okunur (yıl dönümünde ay aynı yıla yazılır); yakalandı 32/32 birleşim (ilk yakalayan: U04-yil-donumu×32); bağımsız beklentiler 32/32
+ok 86 - F M17-sira-girdi-sirasi
+  # bilgi: olaylar zamana göre değil geliş sırasıyla işlenir; yakalandı 32/32 birleşim (ilk yakalayan: U10-sira-karisik×32); bağımsız beklentiler 32/32
+ok 87 - F M18-yetim-kesinlesme-sayilir
+  # bilgi: eski sürümde belirsiz kalan belgenin kesinleşmesi sayılır (geriye dönük); yakalandı 32/32 birleşim (ilk yakalayan: U20-yetim-kesinlesme-eski-surum×16, U07-11048-ilk-olay×16); bağımsız beklentiler 32/32
+ok 88 - F M19-ay-secimi-ters
+  # bilgi: kesinleşme ayı ↔ gönderim ayı ters; yakalandı 32/32 birleşim (ilk yakalayan: U10-sira-karisik×32); bağımsız beklentiler 32/32
+ok 89 - F M20-gonderim-ani-red-sifirlamaz
+  # bilgi: gönderim anı araya giren red'i görmez (ilk belirsiz alınır); yakalandı 16/16 birleşim (ilk yakalayan: U17-red-araya-girer×16); bağımsız beklentiler 16/16
+ok 90 - F M21-11048-secimi-ters
+  # bilgi: 11048 kesinleştirir ↔ saymaz ters; yakalandı 32/32 birleşim (ilk yakalayan: U15-belirsiz-sonra-11048×32); bağımsız beklentiler 32/32
+ok 91 - F M22-ticari-sayilmaz
+  # bilgi: e-Fatura TİCARİ profili sayılmaz; yakalandı 32/32 birleşim (ilk yakalayan: U09-red-sonrasi-ayni-ettn-kabul×32); bağımsız beklentiler 32/32
+ok 92 - F M23-earsiv-efatura-karisir
+  # bilgi: e-Arşiv e-Fatura sütununa yazılır; yakalandı 32/32 birleşim (ilk yakalayan: U02-ay-sonu-23-59-ayin-1i-00-00×32); bağımsız beklentiler 32/32
+ok 93 - F M24-sirketler-toplanmaz
+  # bilgi: yalnız 001 şirketi sayılır; yakalandı 32/32 birleşim (ilk yakalayan: U23-sirketler-toplanir×16, U05-ayni-ettn-iki-sirkette×16); bağımsız beklentiler 32/32
+ok 94 - F M25-pencere-2-ay
+  # bilgi: usage son 3 yerine son 2 ay; yakalandı 32/32 birleşim (ilk yakalayan: U01-tek-kabul×32); bağımsız beklentiler 32/32
+ok 95 - F M26-pencere-secimi-ters
+  # bilgi: içinde bulunulan ay dahil ↔ tamamlanan 3 ay ters; yakalandı 32/32 birleşim (ilk yakalayan: U01-tek-kabul×32); bağımsız beklentiler 32/32
+ok 96 - F M27-usage-delta
+  # bilgi: usage önceki referanstan bu yana artışı (delta) gönderir, TOPLAM değil; yakalandı 32/32 birleşim (ilk yakalayan: U02-ay-sonu-23-59-ayin-1i-00-00×16, U25-kullanim-penceresi×16); bağımsız beklentiler 32/32
+ok 97 - F M28-referans-sonrasi-dahil
+  # bilgi: usage referans anından sonraki olayları da sayar; yakalandı 28/28 birleşim (ilk yakalayan: U01-tek-kabul×16, U12-belirsiz-ay-sinirinda-kesinlesti×8, U28-yedekten-geri-yukleme×4); bağımsız beklentiler 28/28
+ok 98 - F M29-referans-ani-haric
+  # bilgi: referans anındaki olay dahil edilmez (< yerine ≤ hatası); yakalandı 28/28 birleşim (ilk yakalayan: U01-tek-kabul×16, U27-kesinlesme-pencere-disi×8, U28-yedekten-geri-yukleme×4); bağımsız beklentiler 28/28
+ok 99 - F M30-kayan-90-gun
+  # bilgi: usage takvim ayı yerine son 90 gün; yakalandı 32/32 birleşim (ilk yakalayan: U25-kullanim-penceresi×32); bağımsız beklentiler 32/32
+ok 100 - F M31-geri-yukleme-secimi-ters
+  # bilgi: geri yükleme sayacı etkilemez ↔ geri alır ters; yakalandı 32/32 birleşim (ilk yakalayan: U28-yedekten-geri-yukleme×32); bağımsız beklentiler 32/32
+ok 101 - F M32-geri-yukleme-butun-sirketler
+  # bilgi: bir şirketin geri yüklemesi bütün şirketlerin sayacını geri alır; yakalandı 16/16 birleşim (ilk yakalayan: U28-yedekten-geri-yukleme×16); bağımsız beklentiler 16/16
+ok 102 - F M33-silme-dusurur
+  # bilgi: belge silinince sayaçtan düşer; yakalandı 32/32 birleşim (ilk yakalayan: U30-belge-silindi-yeniden-acildi×32); bağımsız beklentiler 32/32
+ok 103 - F M34-ettn-harf-duyarli
+  # bilgi: ETTN büyük/küçük harf duyarlı karşılaştırılır (V7); yakalandı 32/32 birleşim (ilk yakalayan: U31-ettn-buyuk-kucuk-harf×32); bağımsız beklentiler 32/32
+ok 104 - F M35-geriye-donuk-doldurma
+  # bilgi: 2.4.7 öncesi kabul edilmiş belgeler sayaca doldurulur; yakalandı 32/32 birleşim (ilk yakalayan: U07-11048-ilk-olay×32); bağımsız beklentiler 32/32
+ok 105 - F M36-ay-ilk-olaydan
+  # bilgi: ay, kabul anından değil belgenin ilk olayından (ör. red) alınır; yakalandı 32/32 birleşim (ilk yakalayan: U09-red-sonrasi-ayni-ettn-kabul×32); bağımsız beklentiler 32/32
+ok 106 - F M37-toplam-yalniz-son-ay
+  # bilgi: usage toplamı yalnız son ayı toplar; yakalandı 32/32 birleşim (ilk yakalayan: U02-ay-sonu-23-59-ayin-1i-00-00×16, U25-kullanim-penceresi×16); bağımsız beklentiler 32/32
+ok 107 - F M38-gonderim-ani-son-belirsiz
+  # bilgi: gönderim anı ilk değil son belirsiz deneme; yakalandı 16/16 birleşim (ilk yakalayan: U16-iki-belirsiz-sonra-kesinlesme×16); bağımsız beklentiler 16/16
+ok 108 - F M39-test-ortami-sayilmaz
+  # bilgi: test ortamı gönderimleri hiç sayılmaz; yakalandı 32/32 birleşim (ilk yakalayan: U06-ayni-ettn-test-ve-canlida×32); bağımsız beklentiler 32/32
+ok 109 - F M40-esmm-sayilmaz
+  # bilgi: e-SMM sayılmaz; yakalandı 32/32 birleşim (ilk yakalayan: U03-utc-ve-ofsetsiz-saat×32); bağımsız beklentiler 32/32
+ok 110 - F M41-kesinlesme-onkosulu-ortamsiz
+  # bilgi: kesinleşmenin belirsiz ön koşulu başka ortamın belirsizini de kabul eder; yakalandı 32/32 birleşim (ilk yakalayan: U34-ortam-degisti-kesinlesme×32); bağımsız beklentiler 32/32
+ok 111 - F M42-11048-kesinlesmesi-belirsizsiz
+  # bilgi: 'kesinlestirir' seçeneğinde 11048 belirsiz deneme olmadan da kesinleştirir; yakalandı 16/16 birleşim (ilk yakalayan: U07-11048-ilk-olay×16); bağımsız beklentiler 16/16
+ok 112 - F özet: her mutasyonu modelden bağımsız beklentiler (elle + üretici) de yakalıyor
+  # bilgi: 42/42 mutasyon uygulanabildiği her birleşimde bağımsız beklentilerce de yakalandı
+ok 113 - G1 'hesapla' komutu modelle aynı çıktıyı verir (U25, --param ile)
+ok 114 - G2 'karsilastir' komutu: kabul.json'un kendisi ile çıkış 0; bir sayı bozulunca ve bir senaryo eksikken çıkış 1
+1..114
+# tests 114
+# pass 114
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

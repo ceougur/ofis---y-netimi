@@ -127,7 +127,7 @@ export function readBackupIdentity(file) {
  * Yedek alır. `company` ({ id, code, name }) verilirse adda şirket kodu olur ve kimlik dosyanın içine yazılır (v2.0.20).
  * `stamp` aynı turda alınan bütün şirket yedeklerine aynı zamanı verir.
  */
-export function createBackup(db, backupDir, { label = "", keep = 30, company = null, stamp: fixedStamp = "" } = {}) {
+export function createBackup(db, backupDir, { label = "", keep = 30, company = null, stamp: fixedStamp = "", usageRows = null } = {}) {
   mkdirSync(backupDir, { recursive: true });
   const safeLabel = String(label).toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
   const code = company && CODE.test(String(company.code ?? "")) ? `${company.code}-` : "";
@@ -150,6 +150,9 @@ export function createBackup(db, backupDir, { label = "", keep = 30, company = n
   let identity = false;
   try {
     db.exec(`VACUUM INTO '${partial.replace(/'/g, "''")}'`);
+    // 2.4.7 E4 (kullanıcı kararı 27.10.2026 + BAŞ MİMAR KARARI V15): e-Belge kullanım defterinin TAMAMI (bütün şirketlerin satırları, şirket kimliğiyle) yedeğin
+    // edoc_usage_defter tablosuna — taşınan kurulum defteri yedekten geri kazanır. Yazılamazsa yedek yine geçerlidir (defter asıl kayıt).
+    if (Array.isArray(usageRows) && usageRows.length) copyUsageRows(partial, usageRows);
     if (code) {
       try {
         writeBackupIdentity(partial, company, { label: safeLabel });
@@ -173,6 +176,24 @@ export function createBackup(db, backupDir, { label = "", keep = 30, company = n
   }
   pruneBackups(backupDir, keep);
   return { name, path: target, size: statSync(target).size, folder: path.basename(backupDir), company: company ? { id: company.id, code: company.code, name: company.name } : null, identity };
+}
+
+// Yedekteki defter kopyası (geri yüklemede app.mjs syncUsageOf yalnız BİRLEŞTİRİR: INSERT OR IGNORE). Şirketin canlı dosyasında bu tablo yalnız geri yüklenen yedekten gelir.
+// Tablo adı SQL metinlerinde açık yazılır (kaynak tarayan K6 statik denetimi şablon tablo adını tanımaz). USAGE_BACKUP_TABLE okuma tarafı için.
+export const USAGE_BACKUP_TABLE = "edoc_usage_defter";
+function copyUsageRows(file, rows) {
+  const copy = new DatabaseSync(file);
+  try {
+    copy.exec("CREATE TABLE IF NOT EXISTS edoc_usage_defter (company_id TEXT NOT NULL, company_code TEXT NOT NULL DEFAULT '', ettn TEXT NOT NULL, env TEXT NOT NULL, kind TEXT NOT NULL, month TEXT NOT NULL, invoice_id TEXT NOT NULL DEFAULT '', source TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT '', PRIMARY KEY (company_id, ettn, env))");
+    const insert = copy.prepare("INSERT OR IGNORE INTO edoc_usage_defter (company_id, company_code, ettn, env, kind, month, invoice_id, source, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    copy.exec("BEGIN");
+    for (const row of rows) insert.run(String(row.company_id), String(row.company_code || ""), String(row.ettn), row.env, row.kind, row.month, String(row.invoice_id || ""), String(row.source || ""), String(row.created_at || ""));
+    copy.exec("COMMIT");
+  } catch {
+    // kopya yazılamadı: yedek defter satırları olmadan geçerli (geri yüklemede birleştirilecek satır az olur; defter etkilenmez)
+  } finally {
+    copy.close();
+  }
 }
 
 /**

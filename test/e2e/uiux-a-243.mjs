@@ -67,7 +67,9 @@ const ok = (cond, what) => {
   return Boolean(cond);
 };
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-const TOP = ".hof-modal-backdrop.is-visible:last-of-type";
+const MODAL = ".hof-modal-backdrop.is-visible";
+// En üstteki görünür pencere (ders 39): `:last-of-type` pencereden sonra body'ye eklenen bir div (bildirim kabı, Hızlı Arama) ile boşa düşer.
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
 const focused = page => page.evaluate(() => {
   const a = document.activeElement;
   if (!a || a === document.body) return "BODY";
@@ -95,10 +97,23 @@ async function login(context, username, password) {
   await page.waitForFunction(() => window.HOF?.accounts?.open && window.HOF?.invoices?.newFor);
   return page;
 }
+// CI #887 (I bölümü, ders 20/39): pencere body'ye eklenir, "is-visible" bir kare sonra gelir (sayfa saati page.clock ile kurulu: kare sahte saatin
+// ≤ 16 ms'lik zamanlayıcısı); içerik (stok satırları) bundan ÖNCE hazır olabilir. Yalnız içeriği bekleyip "is-visible" pencere arayan closeAll açık
+// Stok penceresini görmeyip kapatmıyordu; sonraki kenar çubuğu tıklamasını o pencere kesti (15 sn). Önce body'deki her pencere ya görünür olur
+// ya da kapanıp kalkar (kapanan pencere 160 ms sonra silinir), sonra kapatılır. Zorla üretme: HOF_ZORLA=gorunur HOF_ZORLA_HEDEF=".hof-stock".
+const settleModals = page =>
+  page
+    .waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop")].every(node => node.classList.contains("is-visible")), null, { timeout: 5000 })
+    .catch(async () => {
+      const pending = await page.$$eval(".hof-modal-backdrop:not(.is-visible) .hof-modal-title", nodes => nodes.map(node => node.textContent.trim())).catch(() => []);
+      throw new Error(`pencere 5 sn'de görünür olmadı ya da kapanmadı (${pending.join(" | ") || "başlıksız"})`);
+    });
 const closeAll = async page => {
+  await settleModals(page);
   for (let index = 0; index < 6 && (await page.$(".hof-modal-backdrop.is-visible")); index += 1) {
     await escClose(page, { step: "pencereleri kapat" });
     await sleep(250);
+    await settleModals(page);
   }
 };
 const contrastOf = (page, selector) =>
@@ -158,7 +173,12 @@ try {
       await run();
     } catch (error) {
       failed += 1;
-      console.log(`  ✗ ${name} bölümü yarıda kaldı: ${String(error.message || error).split("\n")[0].slice(0, 200)}`);
+      // eslint-disable-next-line no-control-regex
+      const lines = String(error.message || error).replace(/\x1b\[[0-9;]*m/g, "").split(/\r?\n/);
+      console.log(`  ✗ ${name} bölümü yarıda kaldı: ${lines[0].slice(0, 200)}`);
+      // CI #887: kısa günlükte yalnız ilk satır vardı, tıklamayı kimin kestiği okunamadı. Playwright çağrı günlüğünden hedef ve kesen öğe yazılır.
+      const why = [...new Set(lines.filter(line => /waiting for locator|intercepts pointer events|not visible|not stable|not enabled/.test(line)).map(line => line.trim()))].slice(-3);
+      for (const line of why) console.log(`      ${line.slice(0, 300)}`);
     }
     await closeAll(page).catch(() => null);
   };
@@ -193,7 +213,7 @@ try {
     await iban.scrollIntoViewIfNeeded();
     await typeHuman(page, iban, "TR000000");
     await page.locator(`${TOP} button[type="submit"]`).click();
-    await page.waitForFunction(() => /IBAN/.test(document.querySelector(".hof-modal-backdrop.is-visible:last-of-type .hof-form-error")?.textContent || ""), null, { timeout: 8000 }).catch(() => null);
+    await page.waitForFunction(() => /IBAN/.test(document.querySelector(".hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible) .hof-form-error")?.textContent || ""), null, { timeout: 8000 }).catch(() => null);
     await sleep(300);
     const afterError = await focused(page);
     ok(afterError.startsWith("INPUT[iban]"), `hata sonrası odak hatalı alanda (${afterError})`);
@@ -364,7 +384,7 @@ try {
     ok(eyebrow.length && eyebrow.every(item => item.ratio >= 4.5), `pencere üst yazısı ≥ 4,5:1 (${JSON.stringify(eyebrow)})`);
     await closeAll(page);
     await page.click('#hof-sidecard [data-action="stock"]');
-    await page.waitForSelector(".hof-stock-table tbody tr");
+    await page.waitForSelector(`${MODAL} .hof-stock-table tbody tr`);
     const stock = await page.evaluate(() => {
       const cells = [...document.querySelectorAll(".hof-stock-table tbody td.hof-plan-no")].map(td => ({ text: td.textContent, lines: Math.round(td.getBoundingClientRect().height / parseFloat(getComputedStyle(td).lineHeight || "16")), wraps: td.scrollHeight > 0 && getComputedStyle(td).whiteSpace }));
       const head = document.querySelector(".hof-stock-table thead th.hof-plan-no");
@@ -382,12 +402,12 @@ try {
     ok(stock.kpiTops.length === 5 && new Set(stock.kpiTops).size === 1, `5 özet kartı tek sırada (üst: ${stock.kpiTops.join(", ")})`);
     await closeAll(page);
     await page.click('#hof-sidecard [data-action="cheques"]');
-    await page.waitForSelector(".hof-cheques-modal .hof-plan-title small");
+    await page.waitForSelector(`${MODAL} .hof-cheques-modal .hof-plan-title small`);
     const chequeTitles = await page.$$eval(".hof-cheques-modal h2, .hof-cheques-modal h3", nodes => nodes.filter(node => node.getClientRects().length && node.textContent.trim() === "Çek / Senet").length);
     ok(chequeTitles === 1, `Çek / Senet başlığı bir kez (${chequeTitles})`);
     await closeAll(page);
     await page.evaluate(() => window.HOF.reportCenter.open());
-    await page.waitForSelector(".hof-rc-hero");
+    await page.waitForSelector(`${MODAL} .hof-rc-hero`);
     const hero = await contrastOf(page, ".hof-rc-hero, .hof-rc-hero small");
     ok(hero.length >= 2 && hero.every(item => item.ratio >= 4.5), `Rapor Merkezi kartı ≥ 4,5:1 (${JSON.stringify(hero)})`);
     await closeAll(page);
@@ -450,11 +470,11 @@ try {
     ok(db("SELECT phone FROM accounts WHERE id = ?", zeynep.id).phone === "05551234567", "ön koşul: yöneticinin telefonu kaydedildi");
     await typeHuman(ayse, ayse.locator(`${TOP} input[name="email"]`), "zeynep@ornek.com");
     await ayse.locator(`${TOP} button[type="submit"]`).click();
-    await ayse.waitForFunction(() => /başka biri tarafından değiştirildi/.test(document.querySelector(".hof-modal-backdrop.is-visible:last-of-type .hof-form-error")?.textContent || ""), null, { timeout: 8000 }).catch(() => null);
+    await ayse.waitForFunction(() => /başka biri tarafından değiştirildi/.test(document.querySelector(".hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible) .hof-form-error")?.textContent || ""), null, { timeout: 8000 }).catch(() => null);
     const staleError = await ayse.$eval(`${TOP} .hof-form-error`, node => node.textContent).catch(() => "");
     ok(/başka biri tarafından değiştirildi/.test(staleError), `muhasebeye açık ileti (${staleError.slice(0, 110)})`);
     ok(db("SELECT phone FROM accounts WHERE id = ?", zeynep.id).phone === "05551234567", "yöneticinin telefonu silinmedi (veri tabanı)");
-    const formNow = await ayse.evaluate(() => ({ email: document.querySelector('.hof-modal-backdrop.is-visible:last-of-type input[name="email"]')?.value, phone: document.querySelector('.hof-modal-backdrop.is-visible:last-of-type input[name="phone"]')?.value }));
+    const formNow = await ayse.evaluate(() => ({ email: document.querySelector('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible) input[name="email"]')?.value, phone: document.querySelector('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible) input[name="phone"]')?.value }));
     ok(formNow.email === "zeynep@ornek.com" && formNow.phone === "05551234567", `muhasebenin yazdığı e-posta duruyor, telefon güncel hâliyle geldi (${JSON.stringify(formNow)})`);
     await ayse.locator(`${TOP} button[type="submit"]`).click();
     await ayse.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible input[name="email"]'), null, { timeout: 8000 }).catch(() => null);

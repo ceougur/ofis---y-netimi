@@ -1,0 +1,32 @@
+{
+  "ad": "ana-deneme-bitis-mobil",
+  "komut": "node --test test/mobil-deneme-bitis-247.test.mjs",
+  "commit": "0a66219074bc48db71b245e7a82a86957007bc5e",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T12:45:35.670Z",
+  "sure_sn": 1.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-deneme-bitis-mobil.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "2e9d84241dccdc132131c24adc172e8447510dff9a9d65fcfd2bbfa152752770",
+  "ham_cikti_bayt": 900
+}

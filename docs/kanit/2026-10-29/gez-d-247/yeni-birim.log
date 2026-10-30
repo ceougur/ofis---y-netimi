@@ -1,0 +1,593 @@
+TAP version 13
+# (node:28785) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mobil görünüm: beyaz liste (lib/mobile.mjs)
+    # Subtest: her mobil yol programın mevcut ucuna, şirket hofCompany ile gider
+    ok 1 - her mobil yol programın mevcut ucuna, şirket hofCompany ile gider
+      ---
+      duration_ms: 4.093538
+      type: 'test'
+      ...
+    # Subtest: Raporlar: yalnız izinli 10 rapor ve raporun izinli süzgeçleri; değerler doğrulanır
+    ok 2 - Raporlar: yalnız izinli 10 rapor ve raporun izinli süzgeçleri; değerler doğrulanır
+      ---
+      duration_ms: 2.295913
+      type: 'test'
+      ...
+    # Subtest: salt okunur: giriş/çıkış dışındaki her yazma isteği 405, listede olmayan yol 404
+    ok 3 - salt okunur: giriş/çıkış dışındaki her yazma isteği 405, listede olmayan yol 404
+      ---
+      duration_ms: 0.926977
+      type: 'test'
+      ...
+    # Subtest: telefon imzası: iPhone ve Android telefon evet; Android tablet ve bilgisayar hayır
+    ok 4 - telefon imzası: iPhone ve Android telefon evet; Android tablet ve bilgisayar hayır
+      ---
+      duration_ms: 1.227229
+      type: 'test'
+      ...
+    1..4
+ok 1 - mobil görünüm: beyaz liste (lib/mobile.mjs)
+  ---
+  duration_ms: 9.966869
+  type: 'suite'
+  ...
+# Subtest: mobil görünüm: programın içinde, gerçek sunucu
+    # Subtest: /mobil/ sayfası ve dosyaları programın sunucusundan; /mobil → /mobil/
+    ok 1 - /mobil/ sayfası ve dosyaları programın sunucusundan; /mobil → /mobil/
+      ---
+      duration_ms: 29.824088
+      type: 'test'
+      ...
+    # Subtest: telefon ana adreste mobil görünüme yönlenir; bilgisayar, tablet ve ?masaustu=1 masaüstünü görür
+    ok 2 - telefon ana adreste mobil görünüme yönlenir; bilgisayar, tablet ve ?masaustu=1 masaüstünü görür
+      ---
+      duration_ms: 21.180375
+      type: 'test'
+      ...
+    # Subtest: oturumsuz istek 401 (veri dönmez)
+    ok 3 - oturumsuz istek 401 (veri dönmez)
+      ---
+      duration_ms: 70.273538
+      type: 'test'
+      ...
+    # Subtest: başka siteden giriş isteği reddedilir (programın istek kaynağı denetimi mobil yolda da)
+    ok 4 - başka siteden giriş isteği reddedilir (programın istek kaynağı denetimi mobil yolda da)
+      ---
+      duration_ms: 2.729666
+      type: 'test'
+      ...
+    # Subtest: oturum özeti: kullanıcı, şirketler, seçili şirket; mobil yazma hakları (2.4.7 M5: yönetici tahsilat / ödeme / stok girişi)
+    ok 5 - oturum özeti: kullanıcı, şirketler, seçili şirket; mobil yazma hakları (2.4.7 M5: yönetici tahsilat / ödeme / stok girişi)
+      ---
+      duration_ms: 3.80436
+      type: 'test'
+      ...
+    # Subtest: sayılar masaüstü ucunun döndürdüğüyle aynı (Kasa, banka, cari bakiyesi, stok miktarı)
+    ok 6 - sayılar masaüstü ucunun döndürdüğüyle aynı (Kasa, banka, cari bakiyesi, stok miktarı)
+      ---
+      duration_ms: 44.613662
+      type: 'test'
+      ...
+    # Subtest: Raporlar: katalogda yalnız izinli raporlar; ön izleme, PDF ve Excel programın rapor motorundan
+    ok 7 - Raporlar: katalogda yalnız izinli raporlar; ön izleme, PDF ve Excel programın rapor motorundan
+      ---
+      duration_ms: 59.668634
+      type: 'test'
+      ...
+    # Subtest: salt okunur: mobil yoldan yazma 405, veri tabanı değişmez
+    ok 8 - salt okunur: mobil yoldan yazma 405, veri tabanı değişmez
+      ---
+      duration_ms: 8.745255
+      type: 'test'
+      ...
+    # Subtest: yetki ve şirket
+        # Subtest: Personel: cari ve stok görür; Kasa, banka ve raporlar 403
+        ok 1 - Personel: cari ve stok görür; Kasa, banka ve raporlar 403
+          ---
+          duration_ms: 13.83113
+          type: 'test'
+          ...
+        # Subtest: Finans Raporları kaldırılmış Muhasebe: Kasa görür, raporlar 403
+        ok 2 - Finans Raporları kaldırılmış Muhasebe: Kasa görür, raporlar 403
+          ---
+          duration_ms: 15.571454
+          type: 'test'
+          ...
+        # Subtest: yetkisi olmadığı şirketin kimliği 403, olmayan şirket 409; oturum özetinde yalnız kendi şirketleri
+        ok 3 - yetkisi olmadığı şirketin kimliği 403, olmayan şirket 409; oturum özetinde yalnız kendi şirketleri
+          ---
+          duration_ms: 6.046156
+          type: 'test'
+          ...
+        # Subtest: iki şirket: ikinci şirket boş başlar, verisi birinciye karışmaz; şirket geçişi istek başına
+        ok 4 - iki şirket: ikinci şirket boş başlar, verisi birinciye karışmaz; şirket geçişi istek başına
+          ---
+          duration_ms: 31.103526
+          type: 'test'
+          ...
+        # Subtest: çıkıştan sonra oturum kapanır
+        ok 5 - çıkıştan sonra oturum kapanır
+          ---
+          duration_ms: 55.4536
+          type: 'test'
+          ...
+        1..5
+    ok 9 - yetki ve şirket
+      ---
+      duration_ms: 569.271636
+      type: 'suite'
+      ...
+    1..9
+ok 2 - mobil görünüm: programın içinde, gerçek sunucu
+  ---
+  duration_ms: 1607.272505
+  type: 'suite'
+  ...
+# (node:28786) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: M2 uzak dinleyici: eşlenmemiş istemci (tünelin öbür ucu) hiçbir veri ve yerel işlem alamaz
+    # Subtest: eşli cihaz yoksa: /api/companies, /api/auth/me, yerel kurtarma kodu ve mobil uçlar reddedilir (127.0.0.1'den gelse de)
+    ok 1 - eşli cihaz yoksa: /api/companies, /api/auth/me, yerel kurtarma kodu ve mobil uçlar reddedilir (127.0.0.1'den gelse de)
+      ---
+      duration_ms: 624.528757
+      type: 'test'
+      ...
+    1..1
+ok 3 - M2 uzak dinleyici: eşlenmemiş istemci (tünelin öbür ucu) hiçbir veri ve yerel işlem alamaz
+  ---
+  duration_ms: 625.863498
+  type: 'suite'
+  ...
+# Subtest: M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi)
+    # Subtest: yalnız /mobil/ ve /api/mobil/ geçer: kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi, kurtarma yolu 404 remote-path
+    ok 1 - yalnız /mobil/ ve /api/mobil/ geçer: kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi, kurtarma yolu 404 remote-path
+      ---
+      duration_ms: 22.402197
+      type: 'test'
+      ...
+    # Subtest: uzak istek 127.0.0.1'den gelse de yerel sayılmaz: kurtarma kodu ve X-Forwarded-For taklidi işe yaramaz
+    ok 2 - uzak istek 127.0.0.1'den gelse de yerel sayılmaz: kurtarma kodu ve X-Forwarded-For taklidi işe yaramaz
+      ---
+      duration_ms: 4.143917
+      type: 'test'
+      ...
+    # Subtest: savunma derinliği: uzak işaretli istekte clientIp 'uzak' (127.0.0.1 ve X-Forwarded-For olsa da) → yerel sayılmaz
+    ok 3 - savunma derinliği: uzak işaretli istekte clientIp 'uzak' (127.0.0.1 ve X-Forwarded-For olsa da) → yerel sayılmaz
+      ---
+      duration_ms: 0.45169
+      type: 'test'
+      ...
+    # Subtest: uzak oturum cihaza bağlı: başka cihazın çereziyle aynı oturum geçmez
+    ok 4 - uzak oturum cihaza bağlı: başka cihazın çereziyle aynı oturum geçmez
+      ---
+      duration_ms: 218.613049
+      type: 'test'
+      ...
+    # Subtest: uzak oturum çerezi ofis ağı dinleyicisinde, ofisin hof_session çerezi uzak dinleyicide geçmez
+    ok 5 - uzak oturum çerezi ofis ağı dinleyicisinde, ofisin hof_session çerezi uzak dinleyicide geçmez
+      ---
+      duration_ms: 9.613329
+      type: 'test'
+      ...
+    # Subtest: başka siteden gelen uzak eşleme / giriş isteği reddedilir (Origin denetimi; çerezler SameSite=Strict)
+    ok 6 - başka siteden gelen uzak eşleme / giriş isteği reddedilir (Origin denetimi; çerezler SameSite=Strict)
+      ---
+      duration_ms: 72.299258
+      type: 'test'
+      ...
+    # Subtest: mobilde yazma yok: uzak yazma isteği 405 (M5'e kadar)
+    ok 7 - mobilde yazma yok: uzak yazma isteği 405 (M5'e kadar)
+      ---
+      duration_ms: 5.844146
+      type: 'test'
+      ...
+    1..7
+ok 4 - M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi)
+  ---
+  duration_ms: 864.626903
+  type: 'suite'
+  ...
+# Subtest: M2 eşleme: karekod (P1 5 dk, tek kullanım, P2), yalnız yönetici, uzak izin
+    # Subtest: uzak izni olmayana karekod yok (403 remote-permission); personel karekod üretemez (403)
+    ok 1 - uzak izni olmayana karekod yok (403 remote-permission); personel karekod üretemez (403)
+      ---
+      duration_ms: 70.174199
+      type: 'test'
+      ...
+    # Subtest: P1: karekod 4 dk 59 sn'de geçer, tam 5. dakikada (gece yarısı ve ay dönümünde) geçmez
+    ok 2 - P1: karekod 4 dk 59 sn'de geçer, tam 5. dakikada (gece yarısı ve ay dönümünde) geçmez
+      ---
+      duration_ms: 25.935089
+      type: 'test'
+      ...
+    # Subtest: P2: aynı kişiye yeni karekod öncekini geçersiz kılar
+    ok 3 - P2: aynı kişiye yeni karekod öncekini geçersiz kılar
+      ---
+      duration_ms: 17.15032
+      type: 'test'
+      ...
+    # Subtest: karekodun içeriği uzak adres + \#eslesme=<kod> (kod adres satırının \# kısmında; sunucuya gitmez); veri tabanında kod düz metin değil
+    ok 4 - karekodun içeriği uzak adres + \#eslesme=<kod> (kod adres satırının \# kısmında; sunucuya gitmez); veri tabanında kod düz metin değil
+      ---
+      duration_ms: 24.902439
+      type: 'test'
+      ...
+    1..4
+ok 5 - M2 eşleme: karekod (P1 5 dk, tek kullanım, P2), yalnız yönetici, uzak izin
+  ---
+  duration_ms: 689.482109
+  type: 'suite'
+  ...
+# Subtest: P14 eşleme bağlantısı (karekod okuyamayan uzak bilgisayar): aynı tek kullanımlık kod, aynı kurallar
+    # Subtest: bağlantı = uzak adres/mobil/\#eslesme=<kod>; tarayıcıda açılan sayfa çerezsiz gelir, kod \# kısmında (istek satırında yok); uzak bilgisayar eşlenir; tek kullanım, P2, P4
+    ok 1 - bağlantı = uzak adres/mobil/\#eslesme=<kod>; tarayıcıda açılan sayfa çerezsiz gelir, kod \# kısmında (istek satırında yok); uzak bilgisayar eşlenir; tek kullanım, P2, P4
+      ---
+      duration_ms: 947.00536
+      type: 'test'
+      ...
+    1..1
+ok 6 - P14 eşleme bağlantısı (karekod okuyamayan uzak bilgisayar): aynı tek kullanımlık kod, aynı kurallar
+  ---
+  duration_ms: 947.32072
+  type: 'suite'
+  ...
+# Subtest: M2 sınır: program başına 3 eşli cihaz, iki şirket birlikte (P3, P4, P5); silince yer açılır
+    # Subtest: telefon + tablet + uzak tarayıcı (iki şirketin kullanıcıları) = 3; 4. karekod üretilmez (P4), elde kalan kodla eşleme reddedilir (P3) ve kod harcanmaz
+    ok 1 - telefon + tablet + uzak tarayıcı (iki şirketin kullanıcıları) = 3; 4. karekod üretilmez (P4), elde kalan kodla eşleme reddedilir (P3) ve kod harcanmaz
+      ---
+      duration_ms: 203.371162
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki eşleme son yer için: yalnız biri kazanır
+    ok 2 - aynı anda iki eşleme son yer için: yalnız biri kazanır
+      ---
+      duration_ms: 22.907406
+      type: 'test'
+      ...
+    # Subtest: P5: lisanstaki sayı mevcudun altına düşerse eşli cihazlar sürer, yalnız yeni eşleme engellenir; sayı alanı belirteçten okunur (yoksa 3)
+    ok 3 - P5: lisanstaki sayı mevcudun altına düşerse eşli cihazlar sürer, yalnız yeni eşleme engellenir; sayı alanı belirteçten okunur (yoksa 3)
+      ---
+      duration_ms: 5.061304
+      type: 'test'
+      ...
+    1..3
+ok 7 - M2 sınır: program başına 3 eşli cihaz, iki şirket birlikte (P3, P4, P5); silince yer açılır
+  ---
+  duration_ms: 1216.576094
+  type: 'suite'
+  ...
+# Subtest: M2 silme, izin, kullanıcı: erişim HEMEN kesilir
+    # Subtest: cihaz silinince açık uzak oturumu sonraki istekte düşer (sayfa dosyası dahil); yeniden eşleme gerekir
+    ok 1 - cihaz silinince açık uzak oturumu sonraki istekte düşer (sayfa dosyası dahil); yeniden eşleme gerekir
+      ---
+      duration_ms: 70.763438
+      type: 'test'
+      ...
+    # Subtest: uzak izin kalkınca kişinin bütün cihazları, oturumları ve bekleyen karekodu düşer; başkası etkilenmez
+    ok 2 - uzak izin kalkınca kişinin bütün cihazları, oturumları ve bekleyen karekodu düşer; başkası etkilenmez
+      ---
+      duration_ms: 198.903404
+      type: 'test'
+      ...
+    # Subtest: kullanıcı silinince cihazı silinir (yer açılır); pasifleşince uzak oturumu kapanır
+    ok 3 - kullanıcı silinince cihazı silinir (yer açılır); pasifleşince uzak oturumu kapanır
+      ---
+      duration_ms: 77.880949
+      type: 'test'
+      ...
+    1..3
+ok 8 - M2 silme, izin, kullanıcı: erişim HEMEN kesilir
+  ---
+  duration_ms: 923.279551
+  type: 'suite'
+  ...
+# Subtest: M2 giriş: cihaza bağlı (P6), imza, deneme sınırı kullanıcı başına (P11–P13), oturum ömrü (P7, P8)
+    # Subtest: P6: cihazdan yalnız eşlendiği kullanıcı girer; imzasız ya da yeniden oynatılan meydan okuma reddedilir
+    ok 1 - P6: cihazdan yalnız eşlendiği kullanıcı girer; imzasız ya da yeniden oynatılan meydan okuma reddedilir
+      ---
+      duration_ms: 63.948965
+      type: 'test'
+      ...
+    # Subtest: P11–P13: 5. yanlış parola kilitler (o deneme 'parola yanlış'), kilitliyken doğru parola da reddedilir, 15 dk sonra açılır; yerel giriş ve başka kullanıcı etkilenmez
+    ok 2 - P11–P13: 5. yanlış parola kilitler (o deneme 'parola yanlış'), kilitliyken doğru parola da reddedilir, 15 dk sonra açılır; yerel giriş ve başka kullanıcı etkilenmez
+      ---
+      duration_ms: 451.224663
+      type: 'test'
+      ...
+    # Subtest: parolası doğru ama uzak izni olmayan giriş sayılmaz; başarılı giriş sayacı sıfırlar
+    ok 3 - parolası doğru ama uzak izni olmayan giriş sayılmaz; başarılı giriş sayacı sıfırlar
+      ---
+      duration_ms: 558.008847
+      type: 'test'
+      ...
+    # Subtest: P7: 15 dk işlem yoksa oturum kapanır (14:59 geçer); P8: işlem sürse de en çok 12 saat
+    ok 4 - P7: 15 dk işlem yoksa oturum kapanır (14:59 geçer); P8: işlem sürse de en çok 12 saat
+      ---
+      duration_ms: 276.370427
+      type: 'test'
+      ...
+    1..4
+ok 9 - M2 giriş: cihaza bağlı (P6), imza, deneme sınırı kullanıcı başına (P11–P13), oturum ömrü (P7, P8)
+  ---
+  duration_ms: 2045.822126
+  type: 'suite'
+  ...
+# Subtest: M2 şirket erişimi ve lisans
+    # Subtest: mobilde şirket kuralı aynı: işaretli şirket, işaretsiz yalnız 001, yönetici hepsi, olmayan şirket 409
+    ok 1 - mobilde şirket kuralı aynı: işaretli şirket, işaretsiz yalnız 001, yönetici hepsi, olmayan şirket 409
+      ---
+      duration_ms: 1119.733781
+      type: 'test'
+      ...
+    # Subtest: lisans geçersizken (salt okunur) uzaktan hiçbir istek geçmez, karekod üretilmez; eşleme silinmez
+    ok 2 - lisans geçersizken (salt okunur) uzaktan hiçbir istek geçmez, karekod üretilmez; eşleme silinmez
+      ---
+      duration_ms: 400.428693
+      type: 'test'
+      ...
+    1..2
+ok 10 - M2 şirket erişimi ve lisans
+  ---
+  duration_ms: 1520.61017
+  type: 'suite'
+  ...
+# Subtest: M2 ortak katman: yedekten geri yükleme cihazı geri getirmez
+    # Subtest: 001 yedeği geri yüklense de silinmiş cihaz ve kaldırılmış uzak izin canlıdaki gibi kalır (COMMON_TABLES)
+    ok 1 - 001 yedeği geri yüklense de silinmiş cihaz ve kaldırılmış uzak izin canlıdaki gibi kalır (COMMON_TABLES)
+      ---
+      duration_ms: 757.375169
+      type: 'test'
+      ...
+    1..1
+ok 11 - M2 ortak katman: yedekten geri yükleme cihazı geri getirmez
+  ---
+  duration_ms: 757.620917
+  type: 'suite'
+  ...
+# (node:28792) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim)
+    # Subtest: yalnız dört yazma ucu tanınır (tahsilat, ödeme, taksit kartına tahsilat, stok girişi); eski el yapımı yollar tanınmaz
+    ok 1 - yalnız dört yazma ucu tanınır (tahsilat, ödeme, taksit kartına tahsilat, stok girişi); eski el yapımı yollar tanınmaz
+      ---
+      duration_ms: 1.773302
+      type: 'test'
+      ...
+    # Subtest: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da
+    ok 2 - S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da
+      ---
+      duration_ms: 1.241943
+      type: 'test'
+      ...
+    # Subtest: tutar (banka planı §9.2/9): en çok 2 ondalık, binlik ayırıcısız; biçim dışı tutar YUVARLANMAZ (400 mobile-amount)
+    ok 3 - tutar (banka planı §9.2/9): en çok 2 ondalık, binlik ayırıcısız; biçim dışı tutar YUVARLANMAZ (400 mobile-amount)
+      ---
+      duration_ms: 0.620297
+      type: 'test'
+      ...
+    # Subtest: oturum özetinin yazma hakları yetkiden: personel tahsilat girer, ödeme / avans göremez; salt okunurda hiçbiri
+    ok 4 - oturum özetinin yazma hakları yetkiden: personel tahsilat girer, ödeme / avans göremez; salt okunurda hiçbiri
+      ---
+      duration_ms: 0.341723
+      type: 'test'
+      ...
+    # Subtest: S7 telefon kuralı: sonucu belirsiz istek formun açılışından 24 saat içinde aynı kimlikle yeniden gönderilir, sonra GÖNDERİLMEZ
+    ok 5 - S7 telefon kuralı: sonucu belirsiz istek formun açılışından 24 saat içinde aynı kimlikle yeniden gönderilir, sonra GÖNDERİLMEZ
+      ---
+      duration_ms: 0.401138
+      type: 'test'
+      ...
+    1..5
+ok 12 - M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim)
+  ---
+  duration_ms: 5.567923
+  type: 'suite'
+  ...
+# Subtest: M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç
+    # Subtest: S1 FIFO: bağsız mobil tahsilat en eski açık faturayı kapatır; masaüstüyle aynı (eşdeğerlik çifti)
+    ok 1 - S1 FIFO: bağsız mobil tahsilat en eski açık faturayı kapatır; masaüstüyle aynı (eşdeğerlik çifti)
+      ---
+      duration_ms: 306.553227
+      type: 'test'
+      ...
+    # Subtest: istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında
+    ok 2 - istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında
+      ---
+      duration_ms: 60.695793
+      type: 'test'
+      ...
+    # Subtest: S4 Kasa eksi (Uyar): soru 409 cash-negative, kayıt yok; 'Yine de Kaydet' aynı kimlikle → tek kayıt
+    ok 3 - S4 Kasa eksi (Uyar): soru 409 cash-negative, kayıt yok; 'Yine de Kaydet' aynı kimlikle → tek kayıt
+      ---
+      duration_ms: 53.115041
+      type: 'test'
+      ...
+    # Subtest: S3/K8: taksit kartına mobil tahsilat; kalanı aşan 409 plan-overpay, Fazlasını Avans Yaz (yönetici) yazar, ödenmiş kart 409 plan-paid
+    ok 4 - S3/K8: taksit kartına mobil tahsilat; kalanı aşan 409 plan-overpay, Fazlasını Avans Yaz (yönetici) yazar, ödenmiş kart 409 plan-paid
+      ---
+      duration_ms: 120.837295
+      type: 'test'
+      ...
+    # Subtest: S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok
+    ok 5 - S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok
+      ---
+      duration_ms: 52.51589
+      type: 'test'
+      ...
+    # Subtest: S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir
+    ok 6 - S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir
+      ---
+      duration_ms: 78.828192
+      type: 'test'
+      ...
+    # Subtest: yazma formunun hesap / POS seçicisi mobil beyaz listede (masaüstü formunun ucu)
+    ok 7 - yazma formunun hesap / POS seçicisi mobil beyaz listede (masaüstü formunun ucu)
+      ---
+      duration_ms: 11.738924
+      type: 'test'
+      ...
+    # Subtest: oturum özetinde yazma açık (writesEnabled + haklar)
+    ok 8 - oturum özetinde yazma açık (writesEnabled + haklar)
+      ---
+      duration_ms: 6.0199
+      type: 'test'
+      ...
+    1..8
+ok 13 - M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç
+  ---
+  duration_ms: 1221.823506
+  type: 'suite'
+  ...
+# Subtest: M5 uzaktan (eşli cihaz): M2 kapısı her yazmada
+    # Subtest: eşli cihazdan tahsilat yazılır; kaydı eşlendiği kullanıcı girer (uzak oturum)
+    ok 1 - eşli cihazdan tahsilat yazılır; kaydı eşlendiği kullanıcı girer (uzak oturum)
+      ---
+      duration_ms: 50.676906
+      type: 'test'
+      ...
+    # Subtest: rol yetkisi mobilde de aynı: personel ödeme 403, kayıt yok
+    ok 2 - rol yetkisi mobilde de aynı: personel ödeme 403, kayıt yok
+      ---
+      duration_ms: 19.779931
+      type: 'test'
+      ...
+    # Subtest: şirket yetkisi: personel 002'ye yazamaz (403); başka şirketin cari kimliği isteğin şirketinde çözülmez (404), hiçbir şirkete yazılmaz
+    ok 3 - şirket yetkisi: personel 002'ye yazamaz (403); başka şirketin cari kimliği isteğin şirketinde çözülmez (404), hiçbir şirkete yazılmaz
+      ---
+      duration_ms: 56.970373
+      type: 'test'
+      ...
+    # Subtest: aynı anda: iki cihaz + masaüstü aynı cariye ayrı kimlikle — üç kayıt; aynı cihazdan çift dokunuş (aynı kimlik aynı anda) — tek kayıt
+    ok 4 - aynı anda: iki cihaz + masaüstü aynı cariye ayrı kimlikle — üç kayıt; aynı cihazdan çift dokunuş (aynı kimlik aynı anda) — tek kayıt
+      ---
+      duration_ms: 122.181549
+      type: 'test'
+      ...
+    # Subtest: silinen cihaz ve uzak izni kaldırılan kullanıcı yazamaz (401), kayıt yok
+    ok 5 - silinen cihaz ve uzak izni kaldırılan kullanıcı yazamaz (401), kayıt yok
+      ---
+      duration_ms: 76.478988
+      type: 'test'
+      ...
+    1..5
+ok 14 - M5 uzaktan (eşli cihaz): M2 kapısı her yazmada
+  ---
+  duration_ms: 1194.290092
+  type: 'suite'
+  ...
+# Subtest: M5 lisans: lisans geçersizken mobil yazma kapalı, yenilenince açılır
+    # Subtest: salt okunur lisansta uzak yazma 403 remote-license; lisans geçerli olunca aynı cihaz yazar
+    ok 1 - salt okunur lisansta uzak yazma 403 remote-license; lisans geçerli olunca aynı cihaz yazar
+      ---
+      duration_ms: 611.523273
+      type: 'test'
+      ...
+    1..1
+ok 15 - M5 lisans: lisans geçersizken mobil yazma kapalı, yenilenince açılır
+  ---
+  duration_ms: 611.866712
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 1.680332
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 151.971968
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 143.840141
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 189.694298
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 394.11516
+      type: 'test'
+      ...
+    1..5
+ok 16 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 883.114974
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 51.251644
+      type: 'test'
+      ...
+    1..1
+ok 17 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 51.62367
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 128.4018
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.782235
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.506628
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 4.572872
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 3.785439
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 47.576883
+      type: 'test'
+      ...
+    1..6
+ok 18 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 194.15125
+  type: 'suite'
+  ...
+1..18
+# tests 74
+# suites 19
+# pass 74
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10039.005407

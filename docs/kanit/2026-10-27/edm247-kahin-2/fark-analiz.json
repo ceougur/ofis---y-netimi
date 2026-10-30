@@ -1,0 +1,613 @@
+{
+ "birlesim": "ay=gonderim;anahtar=sirket_ettn_ortam;e11048=kesinlestirir;pencere=icinde_dahil;geri_yukleme=etkilemez",
+ "fark_belge": 32,
+ "desenler": {
+  "gonder_belirsiz → gonder_belirsiz → belirsiz_kesinlesti_kabul": [
+   "U16-iki-belirsiz-sonra-kesinlesme 001|live|00000000-0000-4000-8000-000000000001",
+   "R3-rastgele-500-belge 001|test|06f89333-72e9-4649-aba8-f1f152c158b7"
+  ],
+  "gonder_belirsiz → belirsiz_kesinlesti_red → gonder_belirsiz → belirsiz_kesinlesti_kabul": [
+   "U17-red-araya-girer 001|live|00000000-0000-4000-8000-000000000001",
+   "R1-rastgele-500-belge 002|live|783ed0c6-9123-46f6-a818-cd9e2de5fa46"
+  ],
+  "gonder_belirsiz → gonder_red → belirsiz_kesinlesti_kabul": [
+   "U40-belirsiz-red-sonra-kesinlesme 001|live|00000000-0000-4000-8000-000000000001",
+   "R1-rastgele-500-belge 001|live|54d6f493-090c-4e5c-b3df-c87cb3574c27",
+   "R1-rastgele-500-belge 002|live|12b87d6b-d72f-4a4e-abb1-4c69e72812d6"
+  ],
+  "gonder_belirsiz → durum_bulunamadi → gonder_belirsiz → zaten_gonderilmis_11048": [
+   "U42-F1-bulunamadi-yeniden-belirsiz-11048 001|live|00000000-0000-4000-8000-000000000001",
+   "R1-rastgele-500-belge 002|live|80818b05-9e64-416c-b258-54a60d4009b6",
+   "R1-rastgele-500-belge 001|live|9b8e2877-d517-48b2-b47b-98caa625d37e",
+   "R3-rastgele-500-belge 002|live|3688e122-33ac-4420-9dc6-9c7d3b9a8378"
+  ],
+  "gonder_belirsiz → gonder_red → gonder_belirsiz → belirsiz_kesinlesti_kabul": [
+   "U43-F2-belirsiz-red-belirsiz-kesinlesme 001|live|00000000-0000-4000-8000-000000000001",
+   "R1-rastgele-500-belge 001|test|14fe7ebc-b34d-4c74-afc6-ee6fa8e33c94",
+   "R1-rastgele-500-belge 001|test|5157446e-7ddd-4f28-8d5e-4f3546c5e422"
+  ],
+  "gonder_belirsiz → durum_bulunamadi → belirsiz_kesinlesti_kabul": [
+   "U44-bulunamadi-sonra-yeni-deneme-olmadan-kabul 001|live|00000000-0000-4000-8000-000000000001"
+  ],
+  "belirsiz_kesinlesti_red → gonder_belirsiz → belirsiz_kesinlesti_kabul → gonder_belirsiz": [
+   "R2-rastgele-500-belge 002|live|7f0f6cef-d688-471b-92de-79f08966f410"
+  ],
+  "gonder_belirsiz → belirsiz_kesinlesti_kabul → gonder_belirsiz → gonder_red": [
+   "R2-rastgele-500-belge 002|live|f69419fc-1714-43c8-b461-ffe38572f656",
+   "R3-rastgele-500-belge 002|live|c04f8a98-2a48-44d2-a2f5-2e19e237d27e"
+  ],
+  "belirsiz_kesinlesti_kabul → gonder_belirsiz → gonder_belirsiz → gonder_red": [
+   "R2-rastgele-500-belge 001|live|e5cd8896-95fc-42d8-b5d5-4a1fa81fa4e9"
+  ],
+  "belirsiz_kesinlesti_kabul → gonder_red → gonder_belirsiz → gonder_belirsiz": [
+   "R2-rastgele-500-belge 001|live|a77499b5-e79c-4998-86e7-4757cf4f922e",
+   "R3-rastgele-500-belge 001|test|2d9f26f4-3758-40e7-9193-12221c18c36c"
+  ],
+  "gonder_red → gonder_belirsiz → belirsiz_kesinlesti_kabul": [
+   "R2-rastgele-500-belge 001|live|c388be6a-43c2-478a-8448-54cba2e3a674"
+  ],
+  "belirsiz_kesinlesti_kabul → gonder_belirsiz → belirsiz_kesinlesti_red → gonder_belirsiz": [
+   "R2-rastgele-500-belge 001|test|efe92255-9034-4554-aa70-3cc91c9e5f0d"
+  ],
+  "gonder_belirsiz → gonder_belirsiz → belirsiz_kesinlesti_kabul → belirsiz_kesinlesti_red": [
+   "R2-rastgele-500-belge 001|live|3eb86db6-0478-4bab-995d-b46f7d5aebb0"
+  ],
+  "gonder_red → gonder_belirsiz → gonder_belirsiz → belirsiz_kesinlesti_kabul": [
+   "R2-rastgele-500-belge 001|live|a8b3dd39-2bab-444d-b7cf-a6954429951a"
+  ],
+  "belirsiz_kesinlesti_kabul → gonder_belirsiz → gonder_belirsiz": [
+   "R2-rastgele-500-belge 001|live|3d452639-c84a-4bc6-8a2f-e36057c1f506",
+   "R3-rastgele-500-belge 002|live|95c76ab4-88ba-4ad9-99d5-450592f3277b"
+  ],
+  "gonder_belirsiz → durum_bulunamadi → zaten_gonderilmis_11048 → gonder_belirsiz": [
+   "R2-rastgele-500-belge 002|live|4ae39cd6-c700-4681-8ee0-7f2d9df34d5c"
+  ],
+  "gonder_belirsiz → gonder_belirsiz → gonder_red → belirsiz_kesinlesti_kabul": [
+   "R3-rastgele-500-belge 001|live|ba7a5d37-9ae6-4f45-a8b2-655ce802b1c2"
+  ],
+  "gonder_belirsiz → belirsiz_kesinlesti_kabul → belirsiz_kesinlesti_red → gonder_belirsiz": [
+   "R3-rastgele-500-belge 002|test|9b150026-110e-492f-91c2-14ed63bf768d"
+  ],
+  "gonder_belirsiz → gonder_belirsiz → zaten_gonderilmis_11048 → durum_bulunamadi": [
+   "R3-rastgele-500-belge 002|test|0490af52-1298-4b9b-864a-e0846d0d44b6"
+  ],
+  "durum_bulunamadi → zaten_gonderilmis_11048 → gonder_belirsiz → gonder_belirsiz": [
+   "R3-rastgele-500-belge 003|live|7a2e4703-f0af-4b16-8e11-8fbfa8350c8b"
+  ]
+ },
+ "ayrinti": [
+  {
+   "senaryo": "U16-iki-belirsiz-sonra-kesinlesme",
+   "belge": "001|live|00000000-0000-4000-8000-000000000001",
+   "kahin": {
+    "2026-09|live|efatura": 1
+   },
+   "program": {
+    "2026-10|live|efatura": 1
+   },
+   "olaylar": [
+    "2026-09-30T23:30:00+03:00 gonder_belirsiz",
+    "2026-10-01T08:00:00+03:00 gonder_belirsiz",
+    "2026-11-02T10:00:00+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "U17-red-araya-girer",
+   "belge": "001|live|00000000-0000-4000-8000-000000000001",
+   "kahin": {
+    "2026-10|live|efatura": 1
+   },
+   "program": {
+    "2026-09|live|efatura": 1
+   },
+   "olaylar": [
+    "2026-09-29T10:00:00+03:00 gonder_belirsiz",
+    "2026-09-30T10:00:00+03:00 belirsiz_kesinlesti_red",
+    "2026-10-02T10:00:00+03:00 gonder_belirsiz",
+    "2026-11-01T10:00:00+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "U40-belirsiz-red-sonra-kesinlesme",
+   "belge": "001|live|00000000-0000-4000-8000-000000000001",
+   "kahin": {
+    "2026-09|live|efatura": 1
+   },
+   "program": {
+    "2026-10|live|efatura": 1
+   },
+   "olaylar": [
+    "2026-09-30T22:00:00+03:00 gonder_belirsiz",
+    "2026-10-01T10:00:00+03:00 gonder_red",
+    "2026-10-02T10:00:00+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "U42-F1-bulunamadi-yeniden-belirsiz-11048",
+   "belge": "001|live|00000000-0000-4000-8000-000000000001",
+   "kahin": {
+    "2026-11|live|esmm": 1
+   },
+   "program": {
+    "2026-10|live|esmm": 1
+   },
+   "olaylar": [
+    "2026-10-30T10:00:00+03:00 gonder_belirsiz",
+    "2026-10-31T10:00:00+03:00 durum_bulunamadi",
+    "2026-11-01T08:00:00+03:00 gonder_belirsiz",
+    "2026-12-02T10:00:00+03:00 zaten_gonderilmis_11048"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "U43-F2-belirsiz-red-belirsiz-kesinlesme",
+   "belge": "001|live|00000000-0000-4000-8000-000000000001",
+   "kahin": {
+    "2026-09|live|efatura": 1
+   },
+   "program": {
+    "2026-10|live|efatura": 1
+   },
+   "olaylar": [
+    "2026-09-30T22:00:00+03:00 gonder_belirsiz",
+    "2026-10-01T10:00:00+03:00 gonder_red",
+    "2026-10-15T10:00:00+03:00 gonder_belirsiz",
+    "2026-11-02T10:00:00+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "U44-bulunamadi-sonra-yeni-deneme-olmadan-kabul",
+   "belge": "001|live|00000000-0000-4000-8000-000000000001",
+   "kahin": {
+    "2026-09|live|efatura": 1
+   },
+   "program": {},
+   "olaylar": [
+    "2026-09-30T23:00:00+03:00 gonder_belirsiz",
+    "2026-10-01T09:00:00+03:00 durum_bulunamadi",
+    "2026-10-05T10:00:00+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R1-rastgele-500-belge",
+   "belge": "001|live|54d6f493-090c-4e5c-b3df-c87cb3574c27",
+   "kahin": {
+    "2026-11|live|efatura": 1
+   },
+   "program": {
+    "2026-12|live|efatura": 1
+   },
+   "olaylar": [
+    "2026-11-30T23:34:22+03:00 gonder_belirsiz",
+    "2026-12-01T01:57:25+03:00 gonder_red",
+    "2026-12-01T02:52:53+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R1-rastgele-500-belge",
+   "belge": "002|live|80818b05-9e64-416c-b258-54a60d4009b6",
+   "kahin": {
+    "2027-04|live|efatura": 1
+   },
+   "program": {
+    "2027-03|live|efatura": 1
+   },
+   "olaylar": [
+    "2027-03-01T02:08:00+03:00 gonder_belirsiz",
+    "2027-03-01T02:12:39+03:00 durum_bulunamadi",
+    "2027-04-02T23:54:14+03:00 gonder_belirsiz",
+    "2027-04-03T01:05:39+03:00 zaten_gonderilmis_11048"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R1-rastgele-500-belge",
+   "belge": "002|live|783ed0c6-9123-46f6-a818-cd9e2de5fa46",
+   "kahin": {
+    "2027-04|live|efatura": 1
+   },
+   "program": {
+    "2027-03|live|efatura": 1
+   },
+   "olaylar": [
+    "2027-03-21T10:39:38+03:00 gonder_belirsiz",
+    "2027-04-20T08:00:23+03:00 belirsiz_kesinlesti_red",
+    "2027-04-20T10:04:18+03:00 gonder_belirsiz",
+    "2027-04-21T15:50:54+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R1-rastgele-500-belge",
+   "belge": "001|test|14fe7ebc-b34d-4c74-afc6-ee6fa8e33c94",
+   "kahin": {
+    "2027-04|test|earsiv": 1
+   },
+   "program": {
+    "2027-05|test|earsiv": 1
+   },
+   "olaylar": [
+    "2027-04-06T04:23:04+03:00 gonder_belirsiz",
+    "2027-04-27T17:51:30+03:00 gonder_red",
+    "2027-05-21T18:14:54+03:00 gonder_belirsiz",
+    "2027-05-21T18:17:41+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R1-rastgele-500-belge",
+   "belge": "001|live|9b8e2877-d517-48b2-b47b-98caa625d37e",
+   "kahin": {
+    "2027-09|live|earsiv": 1
+   },
+   "program": {
+    "2027-08|live|earsiv": 1
+   },
+   "olaylar": [
+    "2027-08-19T01:27:10+03:00 gonder_belirsiz",
+    "2027-09-27T13:01:24+03:00 durum_bulunamadi",
+    "2027-09-27T14:12:28+03:00 gonder_belirsiz",
+    "2027-09-27T11:17:04Z zaten_gonderilmis_11048"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R1-rastgele-500-belge",
+   "belge": "001|test|5157446e-7ddd-4f28-8d5e-4f3546c5e422",
+   "kahin": {
+    "2027-08|test|earsiv": 1
+   },
+   "program": {
+    "2027-09|test|earsiv": 1
+   },
+   "olaylar": [
+    "2027-08-29T16:24:40+03:00 gonder_belirsiz",
+    "2027-08-31T13:46:41+03:00 gonder_red",
+    "2027-09-03T05:59:15+03:00 gonder_belirsiz",
+    "2027-09-03T06:50:49+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R1-rastgele-500-belge",
+   "belge": "002|live|12b87d6b-d72f-4a4e-abb1-4c69e72812d6",
+   "kahin": {
+    "2027-11|live|earsiv": 1
+   },
+   "program": {
+    "2027-12|live|earsiv": 1
+   },
+   "olaylar": [
+    "2027-11-30T23:38:12+03:00 gonder_belirsiz",
+    "2027-12-01T00:07:02+03:00 gonder_red",
+    "2027-12-01T12:39:48+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R2-rastgele-500-belge",
+   "belge": "002|live|7f0f6cef-d688-471b-92de-79f08966f410",
+   "kahin": {
+    "2027-04|live|efatura": 1
+   },
+   "program": {
+    "2027-03|live|efatura": 1
+   },
+   "olaylar": [
+    "2027-04-08T22:25:53+03:00 belirsiz_kesinlesti_red",
+    "2027-04-08T22:28:19+03:00 gonder_belirsiz",
+    "2027-04-10T15:01:04+03:00 belirsiz_kesinlesti_kabul",
+    "2027-03-01T01:56:48+03:00 gonder_belirsiz"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R2-rastgele-500-belge",
+   "belge": "002|live|f69419fc-1714-43c8-b461-ffe38572f656",
+   "kahin": {
+    "2027-07|live|efatura": 1
+   },
+   "program": {
+    "2027-08|live|efatura": 1
+   },
+   "olaylar": [
+    "2027-08-30T11:19:18+03:00 gonder_belirsiz",
+    "2027-08-30T11:20:34+03:00 belirsiz_kesinlesti_kabul",
+    "2027-07-31T08:36:47+03:00 gonder_belirsiz",
+    "2027-07-31T10:20:50+03:00 gonder_red"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R2-rastgele-500-belge",
+   "belge": "001|live|e5cd8896-95fc-42d8-b5d5-4a1fa81fa4e9",
+   "kahin": {
+    "2027-06|live|earsiv": 1
+   },
+   "program": {
+    "2027-07|live|earsiv": 1
+   },
+   "olaylar": [
+    "2027-07-15T17:14:08+03:00 belirsiz_kesinlesti_kabul",
+    "2027-07-15T17:12:15+03:00 gonder_belirsiz",
+    "2027-06-23T22:48:08+03:00 gonder_belirsiz",
+    "2027-06-24T01:32:40+03:00 gonder_red"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R2-rastgele-500-belge",
+   "belge": "001|live|a77499b5-e79c-4998-86e7-4757cf4f922e",
+   "kahin": {
+    "2027-10|live|efatura": 1
+   },
+   "program": {
+    "2027-11|live|efatura": 1
+   },
+   "olaylar": [
+    "2027-11-08T09:49:27+03:00 belirsiz_kesinlesti_kabul",
+    "2027-10-06T09:14:31+03:00 gonder_red",
+    "2027-11-05T10:11:20+03:00 gonder_belirsiz",
+    "2027-10-06T09:13:29+03:00 gonder_belirsiz"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R2-rastgele-500-belge",
+   "belge": "001|live|c388be6a-43c2-478a-8448-54cba2e3a674",
+   "kahin": {
+    "2027-03|live|earsiv": 1
+   },
+   "program": {
+    "2027-04|live|earsiv": 1
+   },
+   "olaylar": [
+    "2027-04-06T02:28:36+03:00 gonder_red",
+    "2027-03-01T00:47:03+03:00 gonder_belirsiz",
+    "2027-04-06T02:30:48+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R2-rastgele-500-belge",
+   "belge": "001|test|efe92255-9034-4554-aa70-3cc91c9e5f0d",
+   "kahin": {
+    "2027-12|test|efatura": 1
+   },
+   "program": {
+    "2027-11|test|efatura": 1
+   },
+   "olaylar": [
+    "2027-12-14T05:57:32+03:00 belirsiz_kesinlesti_kabul",
+    "2027-11-04T12:32:14+03:00 gonder_belirsiz",
+    "2027-12-14T00:59:18+03:00 belirsiz_kesinlesti_red",
+    "2027-12-14T05:55:49+03:00 gonder_belirsiz"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R2-rastgele-500-belge",
+   "belge": "001|live|3eb86db6-0478-4bab-995d-b46f7d5aebb0",
+   "kahin": {
+    "2028-01|live|efatura": 1
+   },
+   "program": {
+    "2027-11|live|efatura": 1
+   },
+   "olaylar": [
+    "2028-01-11T11:44:36+03:00 gonder_belirsiz",
+    "2027-11-30T01:22:23+03:00 gonder_belirsiz",
+    "2028-01-11T12:56:09+03:00 belirsiz_kesinlesti_kabul",
+    "2027-12-02T09:10:15+03:00 belirsiz_kesinlesti_red"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R2-rastgele-500-belge",
+   "belge": "001|live|a8b3dd39-2bab-444d-b7cf-a6954429951a",
+   "kahin": {
+    "2027-06|live|efatura": 1
+   },
+   "program": {
+    "2027-07|live|efatura": 1
+   },
+   "olaylar": [
+    "2027-07-13T14:04:05+03:00 gonder_red",
+    "2027-07-13T14:05:24+03:00 gonder_belirsiz",
+    "2027-06-27T22:26:24+03:00 gonder_belirsiz",
+    "2027-07-13T14:06:46+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R2-rastgele-500-belge",
+   "belge": "001|live|3d452639-c84a-4bc6-8a2f-e36057c1f506",
+   "kahin": {
+    "2027-07|live|efatura": 1
+   },
+   "program": {
+    "2027-08|live|efatura": 1
+   },
+   "olaylar": [
+    "2027-08-05T17:11:27+03:00 belirsiz_kesinlesti_kabul",
+    "2027-07-01T02:49:35+03:00 gonder_belirsiz",
+    "2027-08-05T15:35:17+03:00 gonder_belirsiz"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R2-rastgele-500-belge",
+   "belge": "002|live|4ae39cd6-c700-4681-8ee0-7f2d9df34d5c",
+   "kahin": {
+    "2026-11|live|efatura": 1
+   },
+   "program": {
+    "2026-10|live|efatura": 1
+   },
+   "olaylar": [
+    "2026-11-06T00:47:59+03:00 gonder_belirsiz",
+    "2026-11-05T22:16:07+03:00 durum_bulunamadi",
+    "2026-11-06T00:50:02+03:00 zaten_gonderilmis_11048",
+    "2026-10-10T05:34:28+03:00 gonder_belirsiz"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R3-rastgele-500-belge",
+   "belge": "001|live|ba7a5d37-9ae6-4f45-a8b2-655ce802b1c2",
+   "kahin": {
+    "2027-09|live|earsiv": 1
+   },
+   "program": {
+    "2027-10|live|earsiv": 1
+   },
+   "olaylar": [
+    "2027-10-01T09:58:03+03:00 gonder_belirsiz",
+    "2027-09-30T23:34:19+03:00 gonder_belirsiz",
+    "2027-10-01T09:53:43+03:00 gonder_red",
+    "2027-10-01T12:41:04+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R3-rastgele-500-belge",
+   "belge": "002|live|95c76ab4-88ba-4ad9-99d5-450592f3277b",
+   "kahin": {
+    "2027-03|live|earsiv": 1
+   },
+   "program": {
+    "2027-05|live|earsiv": 1
+   },
+   "olaylar": [
+    "2027-05-09T23:57:22+03:00 belirsiz_kesinlesti_kabul",
+    "2027-03-30T11:59:52+03:00 gonder_belirsiz",
+    "2027-05-05T14:33:52+03:00 gonder_belirsiz"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R3-rastgele-500-belge",
+   "belge": "002|test|9b150026-110e-492f-91c2-14ed63bf768d",
+   "kahin": {
+    "2027-02|test|earsiv": 1
+   },
+   "program": {
+    "2027-01|test|earsiv": 1
+   },
+   "olaylar": [
+    "2027-02-18T00:48:50+03:00 gonder_belirsiz",
+    "2027-02-18T00:52:24+03:00 belirsiz_kesinlesti_kabul",
+    "2027-01-31T00:29:49+03:00 belirsiz_kesinlesti_red",
+    "2027-01-29T22:17:40+03:00 gonder_belirsiz"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R3-rastgele-500-belge",
+   "belge": "002|test|0490af52-1298-4b9b-864a-e0846d0d44b6",
+   "kahin": {
+    "2027-06|test|earsiv": 1
+   },
+   "program": {
+    "2027-05|test|earsiv": 1
+   },
+   "olaylar": [
+    "2027-05-17T17:05:40+03:00 gonder_belirsiz",
+    "2027-06-17T19:17:57+03:00 gonder_belirsiz",
+    "2027-06-17T19:18:06+03:00 zaten_gonderilmis_11048",
+    "2027-06-17T17:35:20+03:00 durum_bulunamadi"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R3-rastgele-500-belge",
+   "belge": "003|live|7a2e4703-f0af-4b16-8e11-8fbfa8350c8b",
+   "kahin": {
+    "2027-09|live|esmm": 1
+   },
+   "program": {
+    "2027-08|live|esmm": 1
+   },
+   "olaylar": [
+    "2027-09-02T19:22:00+03:00 durum_bulunamadi",
+    "2027-09-02T19:26:52+03:00 zaten_gonderilmis_11048",
+    "2027-09-02T19:26:23+03:00 gonder_belirsiz",
+    "2027-08-10T07:40:48+03:00 gonder_belirsiz"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R3-rastgele-500-belge",
+   "belge": "001|test|2d9f26f4-3758-40e7-9193-12221c18c36c",
+   "kahin": {
+    "2026-11|test|efatura": 1
+   },
+   "program": {
+    "2026-12|test|efatura": 1
+   },
+   "olaylar": [
+    "2026-12-13T21:42:24+03:00 belirsiz_kesinlesti_kabul",
+    "2026-12-09T11:26:31+03:00 gonder_red",
+    "2026-11-01T02:57:05+03:00 gonder_belirsiz",
+    "2026-12-09T11:28:41+03:00 gonder_belirsiz"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R3-rastgele-500-belge",
+   "belge": "002|live|3688e122-33ac-4420-9dc6-9c7d3b9a8378",
+   "kahin": {
+    "2027-06|live|earsiv": 1
+   },
+   "program": {
+    "2027-05|live|earsiv": 1
+   },
+   "olaylar": [
+    "2027-05-31T23:31:27+03:00 gonder_belirsiz",
+    "2027-06-02T16:21:33Z durum_bulunamadi",
+    "2027-06-02T20:16:55+03:00 gonder_belirsiz",
+    "2027-06-02T20:17:22+03:00 zaten_gonderilmis_11048"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R3-rastgele-500-belge",
+   "belge": "002|live|c04f8a98-2a48-44d2-a2f5-2e19e237d27e",
+   "kahin": {
+    "2027-04|live|esmm": 1
+   },
+   "program": {
+    "2027-05|live|esmm": 1
+   },
+   "olaylar": [
+    "2027-05-27T14:31:32+03:00 gonder_belirsiz",
+    "2027-05-27T14:32:27+03:00 belirsiz_kesinlesti_kabul",
+    "2027-04-17T16:58:51+03:00 gonder_belirsiz",
+    "2027-05-27T14:01:21+03:00 gonder_red"
+   ],
+   "gecmis": []
+  },
+  {
+   "senaryo": "R3-rastgele-500-belge",
+   "belge": "001|test|06f89333-72e9-4649-aba8-f1f152c158b7",
+   "kahin": {
+    "2027-01|test|earsiv": 1
+   },
+   "program": {
+    "2027-03|test|earsiv": 1
+   },
+   "olaylar": [
+    "2027-03-05T09:15:27+03:00 gonder_belirsiz",
+    "2027-01-25T20:19:54+03:00 gonder_belirsiz",
+    "2027-04-12T18:16:10+03:00 belirsiz_kesinlesti_kabul"
+   ],
+   "gecmis": []
+  }
+ ]
+}

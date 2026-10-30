@@ -1,0 +1,32 @@
+{
+  "ad": "goc-247/uret-v230-kucuk",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/goc247-20261029T1215/arac/goc247.mjs uret --surum v2.3.0 --hedef zb-taban --repo /home/user/ofis---y-netimi/.claude/worktrees/agent-a033e243fc1fdff5b --kok /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/goc247-20261029T1215/kok --hacim kucuk --tohum 11",
+  "commit": "d5e70c3b6a3a27a8ec5859031c3df8691781908d",
+  "dal": "worktree-agent-a033e243fc1fdff5b",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T12:20:06.131Z",
+  "sure_sn": 44.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2660,
+    "gecen": 2660,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/goc-247/uret-v230-kucuk.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a033e243fc1fdff5b",
+  "ham_cikti_sha256": "d74819946e7b95b0bee1dbf5c2f0dbc28b2aea57599975e9d7d6098159f42b53",
+  "ham_cikti_bayt": 1846
+}

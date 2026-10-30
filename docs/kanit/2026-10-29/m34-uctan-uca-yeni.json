@@ -1,0 +1,32 @@
+{
+  "ad": "m34-uctan-uca-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kapi-tunel-uctan-uca-247.test.mjs",
+  "commit": "2d40d927234196a64ab44cb4eeb560d9e78305e2",
+  "dal": "worktree-agent-a082ebcff5805485b",
+  "kirli": 3,
+  "izlenmeyen": 17,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T09:56:55.734Z",
+  "sure_sn": 6.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/m34-uctan-uca-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a082ebcff5805485b",
+  "ham_cikti_sha256": "cc2c71cde322096cd4baa92924ba3d18ccc6ca51c2538f615af0ba81906ff6e0",
+  "ham_cikti_bayt": 3424
+}

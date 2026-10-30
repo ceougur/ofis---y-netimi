@@ -1,0 +1,32 @@
+{
+  "ad": "247-surum/birim-mobil-247",
+  "komut": "node --test test/mobil-247.test.mjs",
+  "commit": "b46225bf851a1be8c013839fb72a2dcfe5a1b242",
+  "dal": "is/surum-247",
+  "kirli": 8,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T18:35:16.536Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/247-surum/birim-mobil-247.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a79b4af509cb039c0",
+  "ham_cikti_sha256": "1ee4eafe9e7ff2e819d45985ae89d54f042ef3950df51b6e8c419adaefd6d261",
+  "ham_cikti_bayt": 5318
+}

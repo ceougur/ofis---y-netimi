@@ -1,0 +1,1233 @@
+TAP version 13
+# Subtest: Aşama 3 (dilim 2) — Banka arayüzünün kaynak kuralları
+    # Subtest: sol menü: Banka Taksitler'in hemen altında, bank.view ister, rozetli; tıklama HOF.bank.open'a gider
+    ok 1 - sol menü: Banka Taksitler'in hemen altında, bank.view ister, rozetli; tıklama HOF.bank.open'a gider
+      ---
+      duration_ms: 2.541563
+      type: 'test'
+      ...
+    # Subtest: hof-bank.js yükleme sırası ve HOF.office kuralı; yetki sınıfı CSS kuralı
+    ok 2 - hof-bank.js yükleme sırası ve HOF.office kuralı; yetki sınıfı CSS kuralı
+      ---
+      duration_ms: 3.221679
+      type: 'test'
+      ...
+    # Subtest: canlı yenileme: istemcide banka yazımı defter değişikliği (LEDGER_PATHS); sunucuda ANLIK DURUM türleri bank'ı kapsar
+    ok 3 - canlı yenileme: istemcide banka yazımı defter değişikliği (LEDGER_PATHS); sunucuda ANLIK DURUM türleri bank'ı kapsar
+      ---
+      duration_ms: 1.36315
+      type: 'test'
+      ...
+    # Subtest: Yönetim → İşlem Geçmişi: her banka işlem geçmişi türünün adı var (admin.js EVENT_LABELS)
+    ok 4 - Yönetim → İşlem Geçmişi: her banka işlem geçmişi türünün adı var (admin.js EVENT_LABELS)
+      ---
+      duration_ms: 2.726392
+      type: 'test'
+      ...
+    1..4
+ok 1 - Aşama 3 (dilim 2) — Banka arayüzünün kaynak kuralları
+  ---
+  duration_ms: 11.442955
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları
+    # Subtest: kalemle ad: Banka, Fatura ve Raporlar adları kaydedilir; tanınmayan anahtar 400
+    ok 1 - kalemle ad: Banka, Fatura ve Raporlar adları kaydedilir; tanınmayan anahtar 400
+      ---
+      duration_ms: 15.409516
+      type: 'test'
+      ...
+    # Subtest: rozet: Hesabı Belirsiz Yeni Hareketler sayısı; personel 403
+    ok 2 - rozet: Hesabı Belirsiz Yeni Hareketler sayısı; personel 403
+      ---
+      duration_ms: 9.394699
+      type: 'test'
+      ...
+    # Subtest: Kurulum Sihirbazı ilk girişte: kapatma kişi ve şirket bazında kaydedilir; personel 403
+    ok 3 - Kurulum Sihirbazı ilk girişte: kapatma kişi ve şirket bazında kaydedilir; personel 403
+      ---
+      duration_ms: 172.24656
+      type: 'test'
+      ...
+    # Subtest: Hesap Detayı: son hareketler (açılış dahil, işaretli, açıklamalı), başka hesabın hareketi yok; kilitli açılış işaretli
+    ok 4 - Hesap Detayı: son hareketler (açılış dahil, işaretli, açıklamalı), başka hesabın hareketi yok; kilitli açılış işaretli
+      ---
+      duration_ms: 84.773049
+      type: 'test'
+      ...
+    # Subtest: Ayarlar ekranı verisi: Ekstre görünmez (available false), POS 2.2.0'da görünür; hesap eşlemelerinde adlar
+    ok 5 - Ayarlar ekranı verisi: Ekstre görünmez (available false), POS 2.2.0'da görünür; hesap eşlemelerinde adlar
+      ---
+      duration_ms: 3.719179
+      type: 'test'
+      ...
+    # Subtest: Ayarlar: boş sayı alanı yalnız boş bırakılabilen kalemde kabul edilir (sessizce 0 olmaz)
+    ok 6 - Ayarlar: boş sayı alanı yalnız boş bırakılabilen kalemde kabul edilir (sessizce 0 olmaz)
+      ---
+      duration_ms: 17.88225
+      type: 'test'
+      ...
+    # Subtest: canlı yenileme: banka yazımı herkese overview.changed (kinds bank) yayımlar
+    ok 7 - canlı yenileme: banka yazımı herkese overview.changed (kinds bank) yayımlar
+      ---
+      duration_ms: 267.290036
+      type: 'test'
+      ...
+    1..7
+ok 2 - Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları
+  ---
+  duration_ms: 1167.24505
+  type: 'suite'
+  ...
+# Subtest: 2.2.0 İz 2.9: görünen metinde "Kurumsal Kart" yok, "Kredi Kartı"
+    # Subtest: istemci kaynağı (client/assets/hof-*.js, admin.js): yorum dışında "kurumsal kart" geçmez
+    ok 1 - istemci kaynağı (client/assets/hof-*.js, admin.js): yorum dışında "kurumsal kart" geçmez
+      ---
+      duration_ms: 37.499304
+      type: 'test'
+      ...
+    # Subtest: sunucu kaynağı (server/**/*.mjs): yorum dışında "kurumsal kart" geçmez (hata ve açıklama metinleri, hesap türü adı, 309 adı)
+    ok 2 - sunucu kaynağı (server/**/*.mjs): yorum dışında "kurumsal kart" geçmez (hata ve açıklama metinleri, hesap türü adı, 309 adı)
+      ---
+      duration_ms: 72.017785
+      type: 'test'
+      ...
+    # Subtest: kullanım kılavuzu (docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html): "Kurumsal Kart" / "Kurumsal Kredi Kartı" yok
+    ok 3 - kullanım kılavuzu (docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html): "Kurumsal Kart" / "Kurumsal Kredi Kartı" yok
+      ---
+      duration_ms: 14.891931
+      type: 'test'
+      ...
+    # Subtest: çalışan sunucu: kullanıcıya dönen adlar ve hata metni
+        # Subtest: kart hesabının tür adı "Kredi Kartı"; kart yolunda kart seçilmeden ödeme → 400 "Kredi Kartı seçin"; 309 adı "Diğer Mali Borçlar (Kredi Kartları)"
+        ok 1 - kart hesabının tür adı "Kredi Kartı"; kart yolunda kart seçilmeden ödeme → 400 "Kredi Kartı seçin"; 309 adı "Diğer Mali Borçlar (Kredi Kartları)"
+          ---
+          duration_ms: 98.396451
+          type: 'test'
+          ...
+        1..1
+    ok 4 - çalışan sunucu: kullanıcıya dönen adlar ve hata metni
+      ---
+      duration_ms: 452.318201
+      type: 'suite'
+      ...
+    1..4
+ok 3 - 2.2.0 İz 2.9: görünen metinde "Kurumsal Kart" yok, "Kredi Kartı"
+  ---
+  duration_ms: 577.986313
+  type: 'suite'
+  ...
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 1.660619
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.367478
+      type: 'test'
+      ...
+    1..2
+ok 4 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 2.924326
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 1.034601
+      type: 'test'
+      ...
+    1..1
+ok 5 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 1.184249
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 2.663123
+      type: 'test'
+      ...
+    1..1
+ok 6 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 2.842734
+  type: 'suite'
+  ...
+# Subtest: dışa aktarım düğmeleri (UI11)
+    # Subtest: eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+    ok 1 - eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+      ---
+      duration_ms: 6.606824
+      type: 'test'
+      ...
+    # Subtest: PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+    ok 2 - PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+      ---
+      duration_ms: 2.21409
+      type: 'test'
+      ...
+    # Subtest: Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+    ok 3 - Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+      ---
+      duration_ms: 2.154243
+      type: 'test'
+      ...
+    # Subtest: ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+    ok 4 - ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+      ---
+      duration_ms: 2.024175
+      type: 'test'
+      ...
+    1..4
+ok 7 - dışa aktarım düğmeleri (UI11)
+  ---
+  duration_ms: 14.001989
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: özet satırları
+    # Subtest: node:test TAP ve spec biçimleri; son özet alınır
+    ok 1 - node:test TAP ve spec biçimleri; son özet alınır
+      ---
+      duration_ms: 2.08571
+      type: 'test'
+      ...
+    # Subtest: projedeki arayüz senaryosu biçimleri
+    ok 2 - projedeki arayüz senaryosu biçimleri
+      ---
+      duration_ms: 1.448471
+      type: 'test'
+      ...
+    # Subtest: mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+    ok 3 - mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+      ---
+      duration_ms: 0.320969
+      type: 'test'
+      ...
+    # Subtest: defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+    ok 4 - defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+      ---
+      duration_ms: 0.379258
+      type: 'test'
+      ...
+    # Subtest: tanınmayan ya da boş çıktı özet sayılmaz
+    ok 5 - tanınmayan ya da boş çıktı özet sayılmaz
+      ---
+      duration_ms: 0.227328
+      type: 'test'
+      ...
+    1..5
+ok 8 - kanıt aracı: özet satırları
+  ---
+  duration_ms: 7.320974
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: hüküm
+    # Subtest: GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+    ok 1 - GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+      ---
+      duration_ms: 0.887183
+      type: 'test'
+      ...
+    # Subtest: çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+    ok 2 - çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+      ---
+      duration_ms: 0.270737
+      type: 'test'
+      ...
+    # Subtest: başarısız, yarıda, başlatılamayan
+    ok 3 - başarısız, yarıda, başlatılamayan
+      ---
+      duration_ms: 0.262267
+      type: 'test'
+      ...
+    1..3
+ok 9 - kanıt aracı: hüküm
+  ---
+  duration_ms: 1.630398
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+    # Subtest: Linux/macOS: komut olduğu gibi
+    ok 1 - Linux/macOS: komut olduğu gibi
+      ---
+      duration_ms: 0.335968
+      type: 'test'
+      ...
+    # Subtest: Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+    ok 2 - Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+      ---
+      duration_ms: 0.87658
+      type: 'test'
+      ...
+    # Subtest: gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+    ok 3 - gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+      ---
+      duration_ms: 158.664521
+      type: 'test'
+      ...
+    1..3
+ok 10 - kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+  ---
+  duration_ms: 160.129998
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: gerçek koşu kaydı
+    # Subtest: alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+    ok 1 - alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+      ---
+      duration_ms: 112.303981
+      type: 'test'
+      ...
+    # Subtest: geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+    ok 2 - geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+      ---
+      duration_ms: 116.825555
+      type: 'test'
+      ...
+    # Subtest: özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+    ok 3 - özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+      ---
+      duration_ms: 107.153421
+      type: 'test'
+      ...
+    # Subtest: özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+    ok 4 - özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+      ---
+      duration_ms: 222.031146
+      type: 'test'
+      ...
+    # Subtest: kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+    ok 5 - kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+      ---
+      duration_ms: 152.295063
+      type: 'test'
+      ...
+    1..5
+ok 11 - kanıt aracı: gerçek koşu kaydı
+  ---
+  duration_ms: 710.952736
+  type: 'suite'
+  ...
+# Subtest: yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+    # Subtest: yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+    ok 1 - yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+      ---
+      duration_ms: 1.054405
+      type: 'test'
+      ...
+    # Subtest: ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+    ok 2 - ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+      ---
+      duration_ms: 0.389765
+      type: 'test'
+      ...
+    # Subtest: kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+    ok 3 - kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+      ---
+      duration_ms: 0.200007
+      type: 'test'
+      ...
+    # Subtest: testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+    ok 4 - testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+      ---
+      duration_ms: 0.762462
+      type: 'test'
+      ...
+    # Subtest: ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+    ok 5 - ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+      ---
+      duration_ms: 0.422134
+      type: 'test'
+      ...
+    1..5
+ok 12 - yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+  ---
+  duration_ms: 3.10382
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+    # Subtest: bütün işler başarılı ve kapı işi var → YEŞİL
+    ok 1 - bütün işler başarılı ve kapı işi var → YEŞİL
+      ---
+      duration_ms: 0.26363
+      type: 'test'
+      ...
+    # Subtest: Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+    ok 2 - Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+      ---
+      duration_ms: 0.201894
+      type: 'test'
+      ...
+    # Subtest: atlanan iş yeşil sayılmaz
+    ok 3 - atlanan iş yeşil sayılmaz
+      ---
+      duration_ms: 0.109659
+      type: 'test'
+      ...
+    # Subtest: kapı işi olmayan (eski) commit YEŞİL değil
+    ok 4 - kapı işi olmayan (eski) commit YEŞİL değil
+      ---
+      duration_ms: 0.130944
+      type: 'test'
+      ...
+    # Subtest: koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+    ok 5 - koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+      ---
+      duration_ms: 0.088572
+      type: 'test'
+      ...
+    # Subtest: aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+    ok 6 - aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+      ---
+      duration_ms: 0.12881
+      type: 'test'
+      ...
+    # Subtest: başka iş akışlarının koşuları (ör. yayın) hükme girmez
+    ok 7 - başka iş akışlarının koşuları (ör. yayın) hükme girmez
+      ---
+      duration_ms: 0.120909
+      type: 'test'
+      ...
+    # Subtest: GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+    ok 8 - GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+      ---
+      duration_ms: 0.115255
+      type: 'test'
+      ...
+    1..8
+ok 13 - doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+  ---
+  duration_ms: 1.315704
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI'deki kapı işinin hükmü
+    # Subtest: dört platform + e2e, aynı sayı, bu commit → geçer
+    ok 1 - dört platform + e2e, aynı sayı, bu commit → geçer
+      ---
+      duration_ms: 0.349165
+      type: 'test'
+      ...
+    # Subtest: Windows kaydı yoksa geçmez
+    ok 2 - Windows kaydı yoksa geçmez
+      ---
+      duration_ms: 0.133159
+      type: 'test'
+      ...
+    # Subtest: çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+    ok 3 - çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+      ---
+      duration_ms: 0.175193
+      type: 'test'
+      ...
+    # Subtest: Windows Linux'tan az test koştuysa geçmez
+    ok 4 - Windows Linux'tan az test koştuysa geçmez
+      ---
+      duration_ms: 0.133994
+      type: 'test'
+      ...
+    # Subtest: atlanan test varsa geçmez (o platformda doğrulanmadı)
+    ok 5 - atlanan test varsa geçmez (o platformda doğrulanmadı)
+      ---
+      duration_ms: 0.095071
+      type: 'test'
+      ...
+    # Subtest: başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+    ok 6 - başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+      ---
+      duration_ms: 0.258303
+      type: 'test'
+      ...
+    # Subtest: işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+    ok 7 - işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+      ---
+      duration_ms: 0.087258
+      type: 'test'
+      ...
+    # Subtest: aynı adla iki kayıt (biri eski) geçmez
+    ok 8 - aynı adla iki kayıt (biri eski) geçmez
+      ---
+      duration_ms: 0.117816
+      type: 'test'
+      ...
+    1..8
+ok 14 - doğrulama kapısı: CI'deki kapı işinin hükmü
+  ---
+  duration_ms: 1.507243
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+    # Subtest: her şey yeşilse kanca durdurmaz
+    ok 1 - her şey yeşilse kanca durdurmaz
+      ---
+      duration_ms: 0.33875
+      type: 'test'
+      ...
+    # Subtest: CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+    ok 2 - CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+      ---
+      duration_ms: 0.215002
+      type: 'test'
+      ...
+    # Subtest: CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+    ok 3 - CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+      ---
+      duration_ms: 0.187599
+      type: 'test'
+      ...
+    # Subtest: imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+    ok 4 - imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+      ---
+      duration_ms: 0.207576
+      type: 'test'
+      ...
+    # Subtest: tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+    ok 5 - tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+      ---
+      duration_ms: 49.429578
+      type: 'test'
+      ...
+    1..5
+ok 15 - doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+  ---
+  duration_ms: 50.5659
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+    # Subtest: kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+    ok 1 - kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+      ---
+      duration_ms: 115.326765
+      type: 'test'
+      ...
+    # Subtest: depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+    ok 2 - depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+      ---
+      duration_ms: 0.399861
+      type: 'test'
+      ...
+    1..2
+ok 16 - doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+  ---
+  duration_ms: 115.850024
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+    # Subtest: komut ve commit, aracın deposu değil çağrılan klasörün deposu
+    ok 1 - komut ve commit, aracın deposu değil çağrılan klasörün deposu
+      ---
+      duration_ms: 183.12077
+      type: 'test'
+      ...
+    1..1
+ok 17 - kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+  ---
+  duration_ms: 183.241246
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: başarısız testlerin adı, yeri ve hatası
+    # Subtest: gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 1 - gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 155.716491
+      type: 'test'
+      ...
+    # Subtest: gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 2 - gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 149.529325
+      type: 'test'
+      ...
+    # Subtest: Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+    ok 3 - Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+      ---
+      duration_ms: 1.388519
+      type: 'test'
+      ...
+    # Subtest: kapı özeti başarısız testleri adıyla yazar
+    ok 4 - kapı özeti başarısız testleri adıyla yazar
+      ---
+      duration_ms: 39.081468
+      type: 'test'
+      ...
+    1..4
+ok 18 - kanıt aracı: başarısız testlerin adı, yeri ve hatası
+  ---
+  duration_ms: 345.934956
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+    # Subtest: sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+    ok 1 - sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+      ---
+      duration_ms: 0.195939
+      type: 'test'
+      ...
+    1..1
+ok 19 - kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+  ---
+  duration_ms: 0.294827
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: anahtar üretimde kapalı
+    # Subtest: varsayılan kapalı; ortam değişkeniyle açılmaz; üretim girişi (server/server.mjs) anahtar vermez
+    ok 1 - varsayılan kapalı; ortam değişkeniyle açılmaz; üretim girişi (server/server.mjs) anahtar vermez
+      ---
+      duration_ms: 2.49274
+      type: 'test'
+      ...
+    1..1
+ok 20 - 2.4.5 madde 1–2: anahtar üretimde kapalı
+  ---
+  duration_ms: 3.281819
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: test/helpers.mjs startTestServer anahtarı config'e iletir
+    # Subtest: { legacyCasePayments: false, legacyTableTransfer: false } → 410; seçenek verilmezse yardımcının varsayılanı açık (eski testler)
+    ok 1 - { legacyCasePayments: false, legacyTableTransfer: false } → 410; seçenek verilmezse yardımcının varsayılanı açık (eski testler)
+      ---
+      duration_ms: 618.233421
+      type: 'test'
+      ...
+    1..1
+ok 21 - 2.4.5 madde 1–2: test/helpers.mjs startTestServer anahtarı config'e iletir
+  ---
+  duration_ms: 618.502007
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık
+    # Subtest: eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı
+    ok 1 - eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı
+      ---
+      duration_ms: 8.828169
+      type: 'test'
+      ...
+    # Subtest: POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+    ok 2 - POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+      ---
+      duration_ms: 9.205202
+      type: 'test'
+      ...
+    # Subtest: PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+    ok 3 - PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+      ---
+      duration_ms: 8.307702
+      type: 'test'
+      ...
+    # Subtest: oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+    ok 4 - oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+      ---
+      duration_ms: 103.502236
+      type: 'test'
+      ...
+    # Subtest: Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+    ok 5 - Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+      ---
+      duration_ms: 15.732337
+      type: 'test'
+      ...
+    # Subtest: DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+    ok 6 - DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+      ---
+      duration_ms: 66.012066
+      type: 'test'
+      ...
+    # Subtest: eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı
+    ok 7 - eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı
+      ---
+      duration_ms: 23.778848
+      type: 'test'
+      ...
+    1..7
+ok 22 - 2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık
+  ---
+  duration_ms: 985.676765
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu)
+    # Subtest: açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı
+    ok 1 - açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı
+      ---
+      duration_ms: 460.523643
+      type: 'test'
+      ...
+    1..1
+ok 23 - 2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu)
+  ---
+  duration_ms: 467.209638
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır)
+    # Subtest: 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş
+    ok 1 - 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş
+      ---
+      duration_ms: 400.33342
+      type: 'test'
+      ...
+    1..1
+ok 24 - 2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır)
+  ---
+  duration_ms: 420.987798
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–3: kaynakta kapılar
+    # Subtest: payments'a satır ekleyen her yer izinli: kapılı POST, Silinenler'den geri yükleme, eski aktarımın Geri Al'ı
+    ok 1 - payments'a satır ekleyen her yer izinli: kapılı POST, Silinenler'den geri yükleme, eski aktarımın Geri Al'ı
+      ---
+      duration_ms: 36.672535
+      type: 'test'
+      ...
+    # Subtest: payments'ın tutarını / tarihini değiştiren UPDATE yalnız kapılı PUT'ta (B1 bağ taşıma yalnız case_key, banka eşlemesi yalnız fin_ref değiştirir)
+    ok 2 - payments'ın tutarını / tarihini değiştiren UPDATE yalnız kapılı PUT'ta (B1 bağ taşıma yalnız case_key, banka eşlemesi yalnız fin_ref değiştirir)
+      ---
+      duration_ms: 32.533393
+      type: 'test'
+      ...
+    # Subtest: POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed
+    ok 3 - POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed
+      ---
+      duration_ms: 0.614068
+      type: 'test'
+      ...
+    # Subtest: POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız
+    ok 4 - POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız
+      ---
+      duration_ms: 0.533854
+      type: 'test'
+      ...
+    # Subtest: istemci: kayıt kartında Tahsilat düğmesi yok; Tablodan Aktar düğmesi yok (Son Aktarımlar var); ön dolumlar boş; eski tahsilatta düzelt yok
+    ok 5 - istemci: kayıt kartında Tahsilat düğmesi yok; Tablodan Aktar düğmesi yok (Son Aktarımlar var); ön dolumlar boş; eski tahsilatta düzelt yok
+      ---
+      duration_ms: 4.30324
+      type: 'test'
+      ...
+    1..5
+ok 25 - 2.4.5 madde 1–3: kaynakta kapılar
+  ---
+  duration_ms: 74.901588
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 26 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 7.305921
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 27 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 86.742178
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 28 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.263571
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 29 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.463478
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 30 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.447449
+  type: 'test'
+  ...
+# Subtest: 2.4.7 Maliyet Hesap Kartı: şablon — oranlar boş, etiketlerde sayı yok, Toplam
+    # Subtest: Cam kartları: KDV ve Maliyet kutuları boş, etiketler "KDV" / "Maliyet", toplama "Toplam"; bölenler değişmedi
+    ok 1 - Cam kartları: KDV ve Maliyet kutuları boş, etiketler "KDV" / "Maliyet", toplama "Toplam"; bölenler değişmedi
+      ---
+      duration_ms: 1.895538
+      type: 'test'
+      ...
+    # Subtest: Mika kartları: Masraf% ve Maliyet kutuları boş, etiketlerde sayı yok; toplama "Toplam" (yan panel "Genel"); bölenler değişmedi
+    ok 2 - Mika kartları: Masraf% ve Maliyet kutuları boş, etiketlerde sayı yok; toplama "Toplam" (yan panel "Genel"); bölenler değişmedi
+      ---
+      duration_ms: 0.70883
+      type: 'test'
+      ...
+    1..2
+ok 31 - 2.4.7 Maliyet Hesap Kartı: şablon — oranlar boş, etiketlerde sayı yok, Toplam
+  ---
+  duration_ms: 3.899941
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 Maliyet Hesap Kartı: API
+    # Subtest: yeni kart: oran kutuları boş, boşken oran 0 sayılır (NaN / hata yok); oran yazılınca zincir kuralı
+    ok 1 - yeni kart: oran kutuları boş, boşken oran 0 sayılır (NaN / hata yok); oran yazılınca zincir kuralı
+      ---
+      duration_ms: 25.610318
+      type: 'test'
+      ...
+    # Subtest: güncelleme: 2.4.6'da kurulmuş HİÇ kaydedilmemiş kart yeni ilk hâle döner; kullanıcının kaydettiği kart (18 / 20) değişmez; rev artmaz; ikinci açılış bir şey yapmaz
+    ok 2 - güncelleme: 2.4.6'da kurulmuş HİÇ kaydedilmemiş kart yeni ilk hâle döner; kullanıcının kaydettiği kart (18 / 20) değişmez; rev artmaz; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 20.923251
+      type: 'test'
+      ...
+    # Subtest: PDF: dört sekme; başlık sekmenin adı, kart adları ve ekrandaki (kaydedilmemiş) değer; hiçbir şey yazılmaz
+    ok 3 - PDF: dört sekme; başlık sekmenin adı, kart adları ve ekrandaki (kaydedilmemiş) değer; hiçbir şey yazılmaz
+      ---
+      duration_ms: 148.056272
+      type: 'test'
+      ...
+    # Subtest: PDF yetkisi: maliyet.view yoksa 403; görüntüleme yetkisi yeter (düzenleme gerekmez); sektör dışında 403
+    ok 4 - PDF yetkisi: maliyet.view yoksa 403; görüntüleme yetkisi yeter (düzenleme gerekmez); sektör dışında 403
+      ---
+      duration_ms: 121.455804
+      type: 'test'
+      ...
+    1..4
+ok 32 - 2.4.7 Maliyet Hesap Kartı: API
+  ---
+  duration_ms: 704.67572
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+    # Subtest: maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+    ok 1 - maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+      ---
+      duration_ms: 7.114085
+      type: 'test'
+      ...
+    # Subtest: maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+    ok 2 - maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+      ---
+      duration_ms: 2.990802
+      type: 'test'
+      ...
+    # Subtest: programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+    ok 3 - programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+      ---
+      duration_ms: 73.677371
+      type: 'test'
+      ...
+    # Subtest: mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+    ok 4 - mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+      ---
+      duration_ms: 0.615628
+      type: 'test'
+      ...
+    1..4
+ok 33 - 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+  ---
+  duration_ms: 85.928416
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri
+    # Subtest: 4 sekme Excel sırasıyla, nötr adlarla; marka ve yıl yok; miktar / fiyat / taban / fark yok
+    ok 1 - 4 sekme Excel sırasıyla, nötr adlarla; marka ve yıl yok; miktar / fiyat / taban / fark yok
+      ---
+      duration_ms: 2.555409
+      type: 'test'
+      ...
+    # Subtest: Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz; 2.4.7: oranlar boş, etiketlerde sayı yok
+    ok 2 - Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz; 2.4.7: oranlar boş, etiketlerde sayı yok
+      ---
+      duration_ms: 0.343467
+      type: 'test'
+      ...
+    # Subtest: zincir: tutar = miktar × fiyat → ARA → %18 → toplama → %20 ekle → ÷200; ara değer yuvarlanmaz; boş girdi 0 sayılır
+    ok 3 - zincir: tutar = miktar × fiyat → ARA → %18 → toplama → %20 ekle → ÷200; ara değer yuvarlanmaz; boş girdi 0 sayılır
+      ---
+      duration_ms: 0.519347
+      type: 'test'
+      ...
+    # Subtest: matris: liste-1 tesettür parlaktan, B7 zinciri, yan panel ayrı parlak farkı; liste-2 elle hücreler TABAN
+    ok 4 - matris: liste-1 tesettür parlaktan, B7 zinciri, yan panel ayrı parlak farkı; liste-2 elle hücreler TABAN
+      ---
+      duration_ms: 0.691431
+      type: 'test'
+      ...
+    # Subtest: sektör: Duşakabin Üretimi mevcut Üretim ve Sanayi grubunda, maliyet modülü yalnız onda
+    ok 5 - sektör: Duşakabin Üretimi mevcut Üretim ve Sanayi grubunda, maliyet modülü yalnız onda
+      ---
+      duration_ms: 0.157302
+      type: 'test'
+      ...
+    1..5
+ok 34 - 2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri
+  ---
+  duration_ms: 5.303436
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: göç v34 (yalnız ekleyici)
+    # Subtest: v33 veri dosyası v34'e geçer: yalnız maliyet_* tabloları (STRICT, boş) eklenir; ikinci açılış bir şey yapmaz
+    ok 1 - v33 veri dosyası v34'e geçer: yalnız maliyet_* tabloları (STRICT, boş) eklenir; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 288.595136
+      type: 'test'
+      ...
+    1..1
+ok 35 - 2.4.6 Maliyet Hesap Kartı: göç v34 (yalnız ekleyici)
+  ---
+  duration_ms: 288.771741
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: API
+    # Subtest: sektör dışında kapalı (403 maliyet-sector, şablon kurulmaz); Duşakabin Üretimi seçilince açılır, boş şablon bir kez kurulur
+    ok 1 - sektör dışında kapalı (403 maliyet-sector, şablon kurulmaz); Duşakabin Üretimi seçilince açılır, boş şablon bir kez kurulur
+      ---
+      duration_ms: 46.938032
+      type: 'test'
+      ...
+    # Subtest: Kaydet: miktar / fiyat, satır ekle / sil, ✎ adlar, oran / bölen; eklenen satır yalnız ARA'ya girer; etiket ile oran ayrı
+    ok 2 - Kaydet: miktar / fiyat, satır ekle / sil, ✎ adlar, oran / bölen; eklenen satır yalnız ARA'ya girer; etiket ile oran ayrı
+      ---
+      duration_ms: 24.099665
+      type: 'test'
+      ...
+    # Subtest: K1: bölen 0, boş ya da sayı değilse reddedilir ("Bölen 0 olamaz."); kayıt değişmez; ön izleme de reddeder
+    ok 3 - K1: bölen 0, boş ya da sayı değilse reddedilir ("Bölen 0 olamaz."); kayıt değişmez; ön izleme de reddeder
+      ---
+      duration_ms: 45.808627
+      type: 'test'
+      ...
+    # Subtest: ön izleme yazmaz; değişmeyen kart sürüm denetimine girmez ve yazılmaz
+    ok 4 - ön izleme yazmaz; değişmeyen kart sürüm denetimine girmez ve yazılmaz
+      ---
+      duration_ms: 18.546529
+      type: 'test'
+      ...
+    # Subtest: matris / gramaj / bilgi: taban hücresine fark yazılmaz, ölçü satırı ve bilgi satırı eklenmez; ✎ sütun / ölçü / parça; elle Giden Kğ
+    ok 5 - matris / gramaj / bilgi: taban hücresine fark yazılmaz, ölçü satırı ve bilgi satırı eklenmez; ✎ sütun / ölçü / parça; elle Giden Kğ
+      ---
+      duration_ms: 42.293421
+      type: 'test'
+      ...
+    # Subtest: iki kişi aynı anda: aynı kartta ikinci kaydeden 409 (ilkinin değişikliği korunur); farklı kartlar ikisi de yazılır; eşzamanlı iki PUT'tan biri geçer
+    ok 6 - iki kişi aynı anda: aynı kartta ikinci kaydeden 409 (ilkinin değişikliği korunur); farklı kartlar ikisi de yazılır; eşzamanlı iki PUT'tan biri geçer
+      ---
+      duration_ms: 138.506354
+      type: 'test'
+      ...
+    # Subtest: yetki: maliyet.view / maliyet.manage (varsayılan yalnız yönetici); Muhasebe ve Personel rolü görmez; izin verilince görür / yazar; kaldırılınca kapanır
+    ok 7 - yetki: maliyet.view / maliyet.manage (varsayılan yalnız yönetici); Muhasebe ve Personel rolü görmez; izin verilince görür / yazar; kaldırılınca kapanır
+      ---
+      duration_ms: 226.52535
+      type: 'test'
+      ...
+    # Subtest: sektör değişince veri silinmez (yalnız kapanır); yeniden seçilince aynen döner; yeniden başlatınca kalır
+    ok 8 - sektör değişince veri silinmez (yalnız kapanır); yeniden seçilince aynen döner; yeniden başlatınca kalır
+      ---
+      duration_ms: 184.550082
+      type: 'test'
+      ...
+    # Subtest: şirket kapsamı: 002'nin sektörü ayrı; 002 Duşakabin değilken kapalı, seçilince kendi boş şablonu; yedek → geri yükle; Tüm Hareketleri Sil dokunmaz, Tümünü Sıfırla siler
+    ok 9 - şirket kapsamı: 002'nin sektörü ayrı; 002 Duşakabin değilken kapalı, seçilince kendi boş şablonu; yedek → geri yükle; Tüm Hareketleri Sil dokunmaz, Tümünü Sıfırla siler
+      ---
+      duration_ms: 531.294328
+      type: 'test'
+      ...
+    1..9
+ok 36 - 2.4.6 Maliyet Hesap Kartı: API
+  ---
+  duration_ms: 1633.920367
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: yetki kataloğu
+    # Subtest: staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda
+    ok 1 - staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda
+      ---
+      duration_ms: 1.724594
+      type: 'test'
+      ...
+    # Subtest: istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)
+    ok 2 - istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)
+      ---
+      duration_ms: 3.960757
+      type: 'test'
+      ...
+    1..2
+ok 37 - 2.4.4 Personel Özlük: yetki kataloğu
+  ---
+  duration_ms: 6.511677
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: API
+    # Subtest: boş veri: liste boş, kartların hepsi sıfır
+    ok 1 - boş veri: liste boş, kartların hepsi sıfır
+      ---
+      duration_ms: 9.727152
+      type: 'test'
+      ...
+    # Subtest: bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var
+    ok 2 - bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var
+      ---
+      duration_ms: 30.890531
+      type: 'test'
+      ...
+    # Subtest: doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz
+    ok 3 - doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz
+      ---
+      duration_ms: 54.648423
+      type: 'test'
+      ...
+    # Subtest: aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409
+    ok 4 - aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409
+      ---
+      duration_ms: 11.196522
+      type: 'test'
+      ...
+    # Subtest: İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla
+    ok 5 - İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla
+      ---
+      duration_ms: 20.965762
+      type: 'test'
+      ...
+    # Subtest: KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok
+    ok 6 - KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok
+      ---
+      duration_ms: 2.732927
+      type: 'test'
+      ...
+    # Subtest: maaş yalnız bilgi: Kasa, Banka, cari ve Ana Defter'de iz yok
+    ok 7 - maaş yalnız bilgi: Kasa, Banka, cari ve Ana Defter'de iz yok
+      ---
+      duration_ms: 3.864904
+      type: 'test'
+      ...
+    # Subtest: yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403
+    ok 8 - yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403
+      ---
+      duration_ms: 205.98151
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez
+    ok 9 - 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez
+      ---
+      duration_ms: 133.699768
+      type: 'test'
+      ...
+    # Subtest: yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler
+    ok 10 - yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler
+      ---
+      duration_ms: 337.248249
+      type: 'test'
+      ...
+    1..10
+ok 38 - 2.4.4 Personel Özlük: API
+  ---
+  duration_ms: 1140.53671
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)
+    # Subtest: v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz
+    ok 1 - v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 85.475316
+      type: 'test'
+      ...
+    1..1
+ok 39 - 2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)
+  ---
+  duration_ms: 85.61583
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak)
+    # Subtest: kural tek yerde: dün / bugün → Ayrılanlar; yarın / ileri tarih → Çalışanlar + Ayrılacak; tarih yok → Çalışanlar
+    ok 1 - kural tek yerde: dün / bugün → Ayrılanlar; yarın / ileri tarih → Çalışanlar + Ayrılacak; tarih yok → Çalışanlar
+      ---
+      duration_ms: 0.168593
+      type: 'test'
+      ...
+    # Subtest: API + sahte saat: yarın ayrılacak çalışan bugün sayılır, gün ilerleyince kendiliğinden Ayrılanlar'a geçer
+    ok 2 - API + sahte saat: yarın ayrılacak çalışan bugün sayılır, gün ilerleyince kendiliğinden Ayrılanlar'a geçer
+      ---
+      duration_ms: 260.98629
+      type: 'test'
+      ...
+    1..2
+ok 40 - 2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak)
+  ---
+  duration_ms: 261.400463
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale)
+    # Subtest: donuk saatte: B (formu A'dan önce açtı) kaydedince 409 staff-stale; A'nın maaşı korunur; yeniden açınca B'nin kaydı geçer
+    ok 1 - donuk saatte: B (formu A'dan önce açtı) kaydedince 409 staff-stale; A'nın maaşı korunur; yeniden açınca B'nin kaydı geçer
+      ---
+      duration_ms: 22.724758
+      type: 'test'
+      ...
+    # Subtest: saat geri alınınca da sürüm ilerler: bayat kayıt yine 409
+    ok 2 - saat geri alınınca da sürüm ilerler: bayat kayıt yine 409
+      ---
+      duration_ms: 9.867198
+      type: 'test'
+      ...
+    # Subtest: gövde okunurken gelen yazım görülür: B'nin yavaş gövdesi A'nın kaydından sonra biterse 409
+    ok 3 - gövde okunurken gelen yazım görülür: B'nin yavaş gövdesi A'nın kaydından sonra biterse 409
+      ---
+      duration_ms: 162.860471
+      type: 'test'
+      ...
+    # Subtest: silinmiş karta yazım: 404 staff-missing, ileti ne olduğunu ve ne yapılacağını söyler, kart yeniden doğmaz
+    ok 4 - silinmiş karta yazım: 404 staff-missing, ileti ne olduğunu ve ne yapılacağını söyler, kart yeniden doğmaz
+      ---
+      duration_ms: 7.926581
+      type: 'test'
+      ...
+    # Subtest: 002 şirketinde aynı kural; sürüm göndermeyen kısmi çağrı yalnız gönderdiği alanı yazar
+    ok 5 - 002 şirketinde aynı kural; sürüm göndermeyen kısmi çağrı yalnız gönderdiği alanı yazar
+      ---
+      duration_ms: 137.258255
+      type: 'test'
+      ...
+    1..5
+ok 41 - 2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale)
+  ---
+  duration_ms: 638.70405
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.659723
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 114.508254
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 123.799511
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 125.74541
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 280.349971
+      type: 'test'
+      ...
+    1..5
+ok 42 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 646.201886
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 40.758019
+      type: 'test'
+      ...
+    1..1
+ok 43 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 40.993632
+  type: 'suite'
+  ...
+# Subtest: 6b: kimlik / iletişim başlıklı kolon metindir; hücre ham değeri gösterir (telefon WhatsApp için okunur)
+ok 44 - 6b: kimlik / iletişim başlıklı kolon metindir; hücre ham değeri gösterir (telefon WhatsApp için okunur)
+  ---
+  duration_ms: 1.775723
+  type: 'test'
+  ...
+# Subtest: 6b: tutar kolonları para kalır ve biçimlenir (komşular: Alacak Tutarı, Kalan Borç, Toplam Borç, Bakiye, TUTAR)
+ok 45 - 6b: tutar kolonları para kalır ve biçimlenir (komşular: Alacak Tutarı, Kalan Borç, Toplam Borç, Bakiye, TUTAR)
+  ---
+  duration_ms: 14.410176
+  type: 'test'
+  ...
+# Subtest: 6b: tutar kolonunda 10 haneden uzun ayraçsız rakam dizisi para biçimine çevrilmez; 10 hane ve ayraçlı tutar biçimlenir
+ok 46 - 6b: tutar kolonunda 10 haneden uzun ayraçsız rakam dizisi para biçimine çevrilmez; 10 hane ve ayraçlı tutar biçimlenir
+  ---
+  duration_ms: 0.387002
+  type: 'test'
+  ...
+# Subtest: 6b: paketteki kimlik başlığı listesi sunucunun IDENTIFIER_HEADER'ı ile aynı (tek liste)
+ok 47 - 6b: paketteki kimlik başlığı listesi sunucunun IDENTIFIER_HEADER'ı ile aynı (tek liste)
+  ---
+  duration_ms: 0.209748
+  type: 'test'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 66.710306
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 4.551003
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.514846
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 4.123156
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 2.266739
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 32.885709
+      type: 'test'
+      ...
+    1..6
+ok 48 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 114.213876
+  type: 'suite'
+  ...
+# Subtest: yetkiye göre görünürlük
+    # Subtest: data-requires / requires ile kullanılan her yetkinin gizleme kuralı var
+    ok 1 - data-requires / requires ile kullanılan her yetkinin gizleme kuralı var
+      ---
+      duration_ms: 16.679476
+      type: 'test'
+      ...
+    1..1
+ok 49 - yetkiye göre görünürlük
+  ---
+  duration_ms: 17.451313
+  type: 'suite'
+  ...
+1..49
+# tests 156
+# suites 41
+# pass 156
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14267.802253

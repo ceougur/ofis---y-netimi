@@ -1,0 +1,7 @@
+YAKALANDI MK19 B3 devre dışı ofis makineyi geri alamaz (dar kontrol K1: asıl kurulum kalıcı kapanır) 73 / 79 · not ok 1 - (c) dönen ofisin telefonu, devre dışı dönemde ofisin adresini açtıysa da canlı bağlantıya yeniden eşlemesiz döner (kapıcı cihaz çerezini silmemeli) | not ok 2 - (a/P5) cihaz sınırı düştükten sonra (P5: mevcutlar sürer) devre dışı kalıp dönen ofisin mevcut cihazları sürer; makine el değişt
+YAKALANDI MK27 B1 silinmiş cihazın çerezi silinmez 76 / 79 · not ok 5 - (c) devre dışıyken programda silinen cihaz dönüşte gelmez; silinen cihazın çerezi silinir (B1) | not ok 9 - dar kontrol K1 — dönen ofis | not ok 1 - silinen cihazın eski çerezi: sayfa 200 (cihazsız) + çerez silinir; veri ucu 401 kapi-cihaz + çerez silinir; yeni karekodla eşleme 200, giriş
+YAKALANDI MK33 K1 devre dışı kalan ofisin cihazları silinmiş sayılır (dönüşte telefon eşli değil) 78 / 79 · not ok 1 - (c) dönen ofisin telefonu, devre dışı dönemde ofisin adresini açtıysa da canlı bağlantıya yeniden eşlemesiz döner (kapıcı cihaz çerezini silmemeli) | not ok 9 - dar kontrol K1 — dönen ofis
+# mutasyon yakalanan 3/3
+# tests 3
+# pass 3
+# fail 0

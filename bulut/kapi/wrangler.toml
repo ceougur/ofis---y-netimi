@@ -1,0 +1,31 @@
+# DestekOfis mobil kapıcı — Cloudflare Worker yapılandırması (2.4.7 M3; docs/mobil/M3-TASARIM.md §5, dağıtım adımları teslim raporunda).
+# GİZLİ DEĞER YOK: KAPI_LISANS_ANAHTARI `wrangler secret put KAPI_LISANS_ANAHTARI` ile verilir (lisans servisinin Vercel ortam değişkeniyle aynı değer).
+# account_id: CLOUDFLARE_ACCOUNT_ID ortam değişkeninden (dosyaya yazılmaz).
+name = "destekofis-kapi"
+main = "kapi.mjs"
+compatibility_date = "2026-10-01"
+workers_dev = false
+
+# kapi. = programın yükleme uçları; m. = karşılama; *.destekofis.net = ofislerin telefon adresi (<ofis>.destekofis.net; DNS kaydını M4 açar, turuncu bulut).
+# Kök ad ve www Vercel'de ve DNS only (gri bulut) olduğundan bu rotaya girmez.
+routes = [
+  { pattern = "kapi.destekofis.net", custom_domain = true },
+  { pattern = "m.destekofis.net", custom_domain = true },
+  { pattern = "*.destekofis.net/*", zone_name = "destekofis.net" },
+]
+
+# Kovadaki anahtarlar: ofis/<ofis>/meta.json + ozet.json (M3), makine/<makine>.json (lisans makinesi → TEK ofis + hız sayaçları; bağımsız gözden geçirme B3,
+# bulut/kapi/makine.mjs), sayac/yeni-ofis/<gün>.json (günlük yeni ofis tavanı; günde bir küçük nesne — istenirse kovaya "sayac/" için 30 günlük silme kuralı).
+[[r2_buckets]]
+binding = "OZET"
+bucket_name = "destekofis-ozet"
+
+[vars]
+OFIS_ALANI = "destekofis.net"
+# 2.4.7 M4 (docs/mobil/M4-TASARIM.md §8): tünel ve DNS kaydını açan Cloudflare hesabı + destekofis.net bölgesi (kimlik, gizli değil). Belirteç gizli: CF_API_TOKEN
+# (Account → Cloudflare Tunnel: Edit; Zone destekofis.net → DNS: Edit) panelden ya da `wrangler secret put CF_API_TOKEN` ile.
+CF_ACCOUNT_ID = "671317dfe7772cf20920c6b09b04de83"
+CF_ZONE_ID = "a4521bf58a43349c69a0fdafb985bc83"
+LISANS_URL = "https://destek-ofis.vercel.app/api/lisans"
+# server/lib/license-keys.mjs TRUSTED_LICENSE_KEYS ile aynı (test/kapi-247.test.mjs denetler).
+LISANS_ANAHTARLARI = '{"destekofis-lisans-2026-1":"MCowBQYDK2VwAyEAZRdIMB11WVitpkoOEgCZDF/ULwhcsQ2mUuv9fl8Td7c="}'

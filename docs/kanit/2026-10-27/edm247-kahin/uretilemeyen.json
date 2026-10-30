@@ -1,0 +1,297 @@
+{
+ "U07-11048-ilk-olay": {
+  "yapay": false,
+  "uretilemeyen": 1,
+  "ornek": [
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-05T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U08-iptal-sonrasi-yeniden-gonderim": {
+  "yapay": false,
+  "uretilemeyen": 1,
+  "ornek": [
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-11-02T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U18-kabul-sonrasi-gurultu": {
+  "yapay": false,
+  "uretilemeyen": 2,
+  "ornek": [
+   {
+    "olay": "yeniden_deneme_kabul",
+    "zaman": "2026-10-06T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-07T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U19-iki-kullanici-ayni-saniye": {
+  "yapay": false,
+  "uretilemeyen": 1,
+  "ornek": [
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-05T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U21-eski-surumde-kabul-edilmis": {
+  "yapay": false,
+  "uretilemeyen": 1,
+  "ornek": [
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-01T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U28-yedekten-geri-yukleme": {
+  "yapay": false,
+  "uretilemeyen": 2,
+  "ornek": [
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-07T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-08T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000002",
+    "sirket": "001",
+    "neden": "belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   }
+  ]
+ },
+ "U31-ettn-buyuk-kucuk-harf": {
+  "yapay": false,
+  "uretilemeyen": 1,
+  "ornek": [
+   {
+    "olay": "yeniden_deneme_kabul",
+    "zaman": "2026-10-06T10:00:00+03:00",
+    "ettn": " abcdef01-2345-4678-9abc-def012345678 ",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U32-cok-gurultu": {
+  "yapay": false,
+  "uretilemeyen": 23,
+  "ornek": [
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-03T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-04T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-05T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-06T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-07T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   }
+  ]
+ },
+ "U34-ortam-degisti-kesinlesme": {
+  "yapay": false,
+  "uretilemeyen": 1,
+  "ornek": [
+   {
+    "olay": "belirsiz_kesinlesti_kabul",
+    "zaman": "2026-10-06T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "gönderilmemiş belgede Durum Sorgula yok"
+   }
+  ]
+ },
+ "U35-sirket-capraz-kesinlesme": {
+  "yapay": true,
+  "uretilemeyen": 1,
+  "ornek": [
+   {
+    "olay": "belirsiz_kesinlesti_kabul",
+    "zaman": "2026-10-06T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "002",
+    "neden": "gönderilmemiş belgede Durum Sorgula yok"
+   }
+  ]
+ },
+ "R1-rastgele-500-belge": {
+  "yapay": false,
+  "uretilemeyen": 90,
+  "ornek": [
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-02T20:49:18+03:00",
+    "ettn": "18934f6e-a8d3-4784-a294-48b5033314da",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-04T22:17:01+03:00",
+    "ettn": "34c57125-3dab-4850-b816-0826326f4891",
+    "sirket": "003",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-10T15:23:30+03:00",
+    "ettn": "154e5d1d-b4ae-4b91-b7d8-81e2c82e16dd",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-16T05:21:18+03:00",
+    "ettn": "c3716f50-5297-43d3-9978-237d7cec0c5f",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-17T20:11:15+03:00",
+    "ettn": "2933eb1c-f5d7-4e4d-8ecf-afe3ef784c8f",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "R2-rastgele-500-belge": {
+  "yapay": false,
+  "uretilemeyen": 93,
+  "ornek": [
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-09T05:41:43Z",
+    "ettn": "96f7a994-b028-49fe-9cd7-ad32c60a94e2",
+    "sirket": "002",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-09T09:06:30+03:00",
+    "ettn": "6e616e18-81cc-448b-a8c5-3a32cf50b477",
+    "sirket": "003",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-11T01:52:39+03:00",
+    "ettn": "52dc5f0c-6a03-4463-9cc0-a9704cd17063",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-17T03:14:54+03:00",
+    "ettn": "8e2b7783-5947-4990-a9a6-4a7041e89254",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-18T04:50:52+03:00",
+    "ettn": "b23a512e-cd4e-46aa-8860-369655bb3a7e",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "R3-rastgele-500-belge": {
+  "yapay": false,
+  "uretilemeyen": 80,
+  "ornek": [
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-09T09:25:39+03:00",
+    "ettn": "26a49ba4-2e9a-4c5a-81fc-12bb46a40070",
+    "sirket": "003",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-11T15:59:25Z",
+    "ettn": "f5f43d26-8559-4ba2-ab3f-7f2a0b1efd2a",
+    "sirket": "003",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-13T13:12:52+03:00",
+    "ettn": "85023646-827c-4d86-8765-280020393a33",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-22T08:58:10+03:00",
+    "ettn": "3d3f9be4-ff23-4967-9322-57ab426c166e",
+    "sirket": "002",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-23T19:13:58Z",
+    "ettn": "949cc376-77d2-419b-b4ac-7eb999581b2e",
+    "sirket": "001",
+    "neden": "iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ }
+}

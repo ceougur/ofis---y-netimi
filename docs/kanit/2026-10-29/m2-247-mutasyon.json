@@ -1,0 +1,32 @@
+{
+  "ad": "m2-247-mutasyon",
+  "komut": "python3 -I test/mobil-eslesme-247-mutasyon.py",
+  "commit": "357ca8ed0f0519193d9e2704bbfb5c8b923b6d0b",
+  "dal": "worktree-agent-a099dc3b7dda9f4d1",
+  "kirli": 0,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T05:31:07.345Z",
+  "sure_sn": 115.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/m2-247-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a099dc3b7dda9f4d1",
+  "ham_cikti_sha256": "4d46162659e3d3162ecf9ff2c158a46ff02a6c02b053d311ef3c02901e3f93f1",
+  "ham_cikti_bayt": 871
+}

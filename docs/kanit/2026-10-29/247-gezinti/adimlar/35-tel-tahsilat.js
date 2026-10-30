@@ -1,0 +1,24 @@
+// Telefon: Ayşe Demir kartı → Tahsilat Gir → form (alanlar, not) → Tutar 500 (insan hızı, Tab) → Nakit → Tahsilat Yeri: önce seçenekler okunur → Kaydet.
+const p = phones.telefon1;
+await p.click("[data-yazma=\"Tahsilat Gir\"]");
+await p.waitForSelector(".yz-sheet", { state: "visible" });
+await bekle(500);
+yaz("form", await p.$eval(".yz-sheet", e => e.innerText.replace(/\s+/g, " ").trim().slice(0, 500)));
+yaz("alanlar", await p.$$eval(".yz-sheet input, .yz-sheet select", els => els.map(e => `${e.name}:${e.type}:${e.value}:${e.tagName === "SELECT" ? [...e.options].map(o => `${o.value}=${o.textContent.trim()}`).join("/") : ""}`)));
+await p.click('.yz-sheet [name="amount"]');
+await typeSlow(p, "500", 45);
+await p.keyboard.press("Tab");
+await p.screenshot({ path: root + "/ekran/35a-tel-tahsilat-form.png", fullPage: true });
+const kasa0 = (await api("/api/workspace/cash")).data.data.totals.balance;
+vars.writeReqs = [];
+p.on("request", r => { if (r.method() === "POST" && /\/api\/mobil\//.test(r.url())) vars.writeReqs.push({ url: r.url(), headers: r.headers(), body: r.postData() }); });
+await p.click('.yz-sheet [data-yz="submit"]');
+await p.waitForSelector(".toast", { timeout: 10000 });
+yaz("bildirim", await p.$$eval(".toast", t => t.map(x => x.textContent.trim()).join(" | ")));
+await bekle(1200);
+yaz("yazma isteği", vars.writeReqs.map(r => `${new URL(r.url).pathname} ${r.body?.slice(0, 160)}`));
+yaz("telefon bakiye", (await p.textContent("[data-detail-balance]")).trim());
+yaz("masaüstü cari", (await api("/api/workspace/accounts")).data.data.accounts.map(a => `${a.name} ${a.balance}`), "Kasa", kasa0, "→", (await api("/api/workspace/cash")).data.data.totals.balance);
+yaz("DB account_entries", sql("SELECT kind, amount, method, date, created_by FROM account_entries ORDER BY rowid"));
+yaz("DB plan_entries", sql("SELECT kind, amount, method, date FROM plan_entries ORDER BY rowid"));
+yaz("telefon Son Hareketler", await p.$eval("#content", e => e.innerText.replace(/\s+/g, " ").trim().slice(-260)));

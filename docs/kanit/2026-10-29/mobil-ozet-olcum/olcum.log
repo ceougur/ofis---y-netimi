@@ -1,0 +1,15 @@
+20:18:48 A) özetsiz masaüstü
+20:19:48 A {"durumlar":{"200":912,"405":228},"olayDongusu":{"p99ms":246,"enCokMs":282},"uclar":{"cariListesi":{"n":228,"p50":183,"p95":243,"enCok":284},"cariArama":{"n":228,"p50":54,"p95":81,"enCok":95},"cariHareketleri":{"n":228,"p50":2,"p95":2,"enCok":8},"bankaHareketleri":{"n":228,"p50":7,"p95":10,"enCok":17},"stok":{"n":228,"p50":3,"p95":5,"enCok":8}}}
+20:19:54 B1) 1 kullanıcı özet
+20:20:07 B1 [{"ms":3815,"bayt":3034855,"kullanici":1,"cihaz":1,"olayDongusuEnCokMs":3299},{"ms":4356,"bayt":3034855,"kullanici":1,"cihaz":1,"olayDongusuEnCokMs":277},{"ms":4060,"bayt":3034855,"kullanici":1,"cihaz":1,"olayDongusuEnCokMs":3571}]
+20:20:37 B3) 3 kullanıcı özet
+file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/mobil-ozet-olcum.mjs:103
+      if (!r.ok) throw new Error(`${etiket} yükleme: ${JSON.stringify(r)}`);
+                       ^
+
+Error: B3 yükleme: {"ok":false,"status":413,"code":"kapi-buyuk","error":"İstek çok büyük."}
+    at yukleOlc (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/mobil-ozet-olcum.mjs:103:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/mobil-ozet-olcum.mjs:132:26
+
+Node.js v22.22.0

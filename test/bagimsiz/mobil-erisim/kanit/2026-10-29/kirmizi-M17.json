@@ -1,0 +1,78 @@
+{
+  "ad": "kirmizi-M17",
+  "komut": "python3 -I test/bagimsiz/mobil-erisim/kahin_test.py",
+  "commit": "973e98fedcfa30742d0893db6d6e9b4a69443617",
+  "dal": "worktree-agent-a4c3bf493ab87a3e7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T04:28:29.288Z",
+  "sure_sn": 4.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 60,
+    "gecen": 51,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B elle U10 (19 olay, 1 yaprak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B elle U11 (9 olay, 1 yaprak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B elle U12 (12 olay, 1 yaprak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B elle U21 (8 olay, 1 yaprak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B elle U29 (18 olay, 6 yaprak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C üretici R1: model girdi hatası verdi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C üretici R2: model girdi hatası verdi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C üretici R3: model girdi hatası verdi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D bölümü çöktü",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "test/bagimsiz/mobil-erisim/kanit/2026-10-29/kirmizi-M17.log",
+  "klasor": "/home/user/destekofis/.claude/worktrees/agent-a4c3bf493ab87a3e7",
+  "ham_cikti_sha256": "18cdb26025d5c6b44292b797c8104bdd20b309fbe759cb6c5d2f5b8e0072b769",
+  "ham_cikti_bayt": 6322
+}

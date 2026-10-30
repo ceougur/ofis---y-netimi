@@ -1,0 +1,280 @@
+TAP version 13
+# Subtest: dışa aktarım düğmeleri (UI11)
+    # Subtest: eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+    ok 1 - eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+      ---
+      duration_ms: 15.0069
+      type: 'test'
+      ...
+    # Subtest: PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+    ok 2 - PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+      ---
+      duration_ms: 6.448322
+      type: 'test'
+      ...
+    # Subtest: Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+    ok 3 - Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+      ---
+      duration_ms: 2.019764
+      type: 'test'
+      ...
+    # Subtest: ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+    ok 4 - ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+      ---
+      duration_ms: 50.308217
+      type: 'test'
+      ...
+    1..4
+ok 1 - dışa aktarım düğmeleri (UI11)
+  ---
+  duration_ms: 74.858988
+  type: 'suite'
+  ...
+# (node:12620) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.7 Maliyet Hesap Kartı: şablon — oranlar boş, etiketlerde sayı yok, Toplam
+    # Subtest: Cam kartları: KDV ve Maliyet kutuları boş, etiketler "KDV" / "Maliyet", toplama "Toplam"; bölenler değişmedi
+    ok 1 - Cam kartları: KDV ve Maliyet kutuları boş, etiketler "KDV" / "Maliyet", toplama "Toplam"; bölenler değişmedi
+      ---
+      duration_ms: 1.280131
+      type: 'test'
+      ...
+    # Subtest: Mika kartları: Masraf% ve Maliyet kutuları boş, etiketlerde sayı yok; toplama "Toplam" (yan panel "Genel"); bölenler değişmedi
+    ok 2 - Mika kartları: Masraf% ve Maliyet kutuları boş, etiketlerde sayı yok; toplama "Toplam" (yan panel "Genel"); bölenler değişmedi
+      ---
+      duration_ms: 13.160351
+      type: 'test'
+      ...
+    1..2
+ok 2 - 2.4.7 Maliyet Hesap Kartı: şablon — oranlar boş, etiketlerde sayı yok, Toplam
+  ---
+  duration_ms: 15.217288
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 Maliyet Hesap Kartı: API
+    # Subtest: yeni kart: oran kutuları boş, boşken oran 0 sayılır (NaN / hata yok); oran yazılınca zincir kuralı
+    ok 1 - yeni kart: oran kutuları boş, boşken oran 0 sayılır (NaN / hata yok); oran yazılınca zincir kuralı
+      ---
+      duration_ms: 52.605781
+      type: 'test'
+      ...
+    # Subtest: güncelleme: 2.4.6'da kurulmuş HİÇ kaydedilmemiş kart yeni ilk hâle döner; kullanıcının kaydettiği kart (18 / 20) değişmez; rev artmaz; ikinci açılış bir şey yapmaz
+    ok 2 - güncelleme: 2.4.6'da kurulmuş HİÇ kaydedilmemiş kart yeni ilk hâle döner; kullanıcının kaydettiği kart (18 / 20) değişmez; rev artmaz; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 38.218271
+      type: 'test'
+      ...
+    # Subtest: PDF: dört sekme; başlık sekmenin adı, kart adları ve ekrandaki (kaydedilmemiş) değer; hiçbir şey yazılmaz
+    ok 3 - PDF: dört sekme; başlık sekmenin adı, kart adları ve ekrandaki (kaydedilmemiş) değer; hiçbir şey yazılmaz
+      ---
+      duration_ms: 380.863061
+      type: 'test'
+      ...
+    # Subtest: PDF yetkisi: maliyet.view yoksa 403; görüntüleme yetkisi yeter (düzenleme gerekmez); sektör dışında 403
+    ok 4 - PDF yetkisi: maliyet.view yoksa 403; görüntüleme yetkisi yeter (düzenleme gerekmez); sektör dışında 403
+      ---
+      duration_ms: 134.524954
+      type: 'test'
+      ...
+    1..4
+ok 3 - 2.4.7 Maliyet Hesap Kartı: API
+  ---
+  duration_ms: 1263.415823
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+    # Subtest: maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+    ok 1 - maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+      ---
+      duration_ms: 5.354883
+      type: 'test'
+      ...
+    # Subtest: maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+    ok 2 - maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+      ---
+      duration_ms: 1.611958
+      type: 'test'
+      ...
+    # Subtest: programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+    ok 3 - programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+      ---
+      duration_ms: 573.681463
+      type: 'test'
+      ...
+    # Subtest: mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+    ok 4 - mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+      ---
+      duration_ms: 0.707211
+      type: 'test'
+      ...
+    1..4
+ok 4 - 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+  ---
+  duration_ms: 582.371623
+  type: 'suite'
+  ...
+# (node:12641) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri
+    # Subtest: 4 sekme Excel sırasıyla, nötr adlarla; marka ve yıl yok; miktar / fiyat / taban / fark yok
+    ok 1 - 4 sekme Excel sırasıyla, nötr adlarla; marka ve yıl yok; miktar / fiyat / taban / fark yok
+      ---
+      duration_ms: 2.093519
+      type: 'test'
+      ...
+    # Subtest: Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz; 2.4.7: oranlar boş, etiketlerde sayı yok
+    ok 2 - Excel tutarsızlıkları AYNEN: 130 / 150'lik 1S1Ç ÷120, Cam 130 1S2Ç CM elle (sonuç %20 Maliyet), Mika 120 1S2Ç etiketsiz; 2.4.7: oranlar boş, etiketlerde sayı yok
+      ---
+      duration_ms: 0.326732
+      type: 'test'
+      ...
+    # Subtest: zincir: tutar = miktar × fiyat → ARA → %18 → toplama → %20 ekle → ÷200; ara değer yuvarlanmaz; boş girdi 0 sayılır
+    ok 3 - zincir: tutar = miktar × fiyat → ARA → %18 → toplama → %20 ekle → ÷200; ara değer yuvarlanmaz; boş girdi 0 sayılır
+      ---
+      duration_ms: 0.454856
+      type: 'test'
+      ...
+    # Subtest: matris: liste-1 tesettür parlaktan, B7 zinciri, yan panel ayrı parlak farkı; liste-2 elle hücreler TABAN
+    ok 4 - matris: liste-1 tesettür parlaktan, B7 zinciri, yan panel ayrı parlak farkı; liste-2 elle hücreler TABAN
+      ---
+      duration_ms: 1.654142
+      type: 'test'
+      ...
+    # Subtest: sektör: Duşakabin Üretimi mevcut Üretim ve Sanayi grubunda, maliyet modülü yalnız onda
+    ok 5 - sektör: Duşakabin Üretimi mevcut Üretim ve Sanayi grubunda, maliyet modülü yalnız onda
+      ---
+      duration_ms: 0.149289
+      type: 'test'
+      ...
+    1..5
+ok 5 - 2.4.6 Maliyet Hesap Kartı: şablon (boş yapı) ve hesap zinciri
+  ---
+  duration_ms: 5.508669
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: göç v34 (yalnız ekleyici)
+    # Subtest: v33 veri dosyası v34'e geçer: yalnız maliyet_* tabloları (STRICT, boş) eklenir; ikinci açılış bir şey yapmaz
+    ok 1 - v33 veri dosyası v34'e geçer: yalnız maliyet_* tabloları (STRICT, boş) eklenir; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 338.136573
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.4.6 Maliyet Hesap Kartı: göç v34 (yalnız ekleyici)
+  ---
+  duration_ms: 338.317416
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı: API
+    # Subtest: sektör dışında kapalı (403 maliyet-sector, şablon kurulmaz); Duşakabin Üretimi seçilince açılır, boş şablon bir kez kurulur
+    ok 1 - sektör dışında kapalı (403 maliyet-sector, şablon kurulmaz); Duşakabin Üretimi seçilince açılır, boş şablon bir kez kurulur
+      ---
+      duration_ms: 157.219061
+      type: 'test'
+      ...
+    # Subtest: Kaydet: miktar / fiyat, satır ekle / sil, ✎ adlar, oran / bölen; eklenen satır yalnız ARA'ya girer; etiket ile oran ayrı
+    ok 2 - Kaydet: miktar / fiyat, satır ekle / sil, ✎ adlar, oran / bölen; eklenen satır yalnız ARA'ya girer; etiket ile oran ayrı
+      ---
+      duration_ms: 38.148688
+      type: 'test'
+      ...
+    # Subtest: K1: bölen 0, boş ya da sayı değilse reddedilir ("Bölen 0 olamaz."); kayıt değişmez; ön izleme de reddeder
+    ok 3 - K1: bölen 0, boş ya da sayı değilse reddedilir ("Bölen 0 olamaz."); kayıt değişmez; ön izleme de reddeder
+      ---
+      duration_ms: 71.259753
+      type: 'test'
+      ...
+    # Subtest: ön izleme yazmaz; değişmeyen kart sürüm denetimine girmez ve yazılmaz
+    ok 4 - ön izleme yazmaz; değişmeyen kart sürüm denetimine girmez ve yazılmaz
+      ---
+      duration_ms: 31.15086
+      type: 'test'
+      ...
+    # Subtest: matris / gramaj / bilgi: taban hücresine fark yazılmaz, ölçü satırı ve bilgi satırı eklenmez; ✎ sütun / ölçü / parça; elle Giden Kğ
+    ok 5 - matris / gramaj / bilgi: taban hücresine fark yazılmaz, ölçü satırı ve bilgi satırı eklenmez; ✎ sütun / ölçü / parça; elle Giden Kğ
+      ---
+      duration_ms: 96.581862
+      type: 'test'
+      ...
+    # Subtest: iki kişi aynı anda: aynı kartta ikinci kaydeden 409 (ilkinin değişikliği korunur); farklı kartlar ikisi de yazılır; eşzamanlı iki PUT'tan biri geçer
+    ok 6 - iki kişi aynı anda: aynı kartta ikinci kaydeden 409 (ilkinin değişikliği korunur); farklı kartlar ikisi de yazılır; eşzamanlı iki PUT'tan biri geçer
+      ---
+      duration_ms: 171.134021
+      type: 'test'
+      ...
+    # Subtest: yetki: maliyet.view / maliyet.manage (varsayılan yalnız yönetici); Muhasebe ve Personel rolü görmez; izin verilince görür / yazar; kaldırılınca kapanır
+    ok 7 - yetki: maliyet.view / maliyet.manage (varsayılan yalnız yönetici); Muhasebe ve Personel rolü görmez; izin verilince görür / yazar; kaldırılınca kapanır
+      ---
+      duration_ms: 290.547814
+      type: 'test'
+      ...
+    # Subtest: sektör değişince veri silinmez (yalnız kapanır); yeniden seçilince aynen döner; yeniden başlatınca kalır
+    ok 8 - sektör değişince veri silinmez (yalnız kapanır); yeniden seçilince aynen döner; yeniden başlatınca kalır
+      ---
+      duration_ms: 329.074867
+      type: 'test'
+      ...
+    # Subtest: şirket kapsamı: 002'nin sektörü ayrı; 002 Duşakabin değilken kapalı, seçilince kendi boş şablonu; yedek → geri yükle; Tüm Hareketleri Sil dokunmaz, Tümünü Sıfırla siler
+    ok 9 - şirket kapsamı: 002'nin sektörü ayrı; 002 Duşakabin değilken kapalı, seçilince kendi boş şablonu; yedek → geri yükle; Tüm Hareketleri Sil dokunmaz, Tümünü Sıfırla siler
+      ---
+      duration_ms: 660.792871
+      type: 'test'
+      ...
+    1..9
+ok 7 - 2.4.6 Maliyet Hesap Kartı: API
+  ---
+  duration_ms: 2483.742013
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 177.84018
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 59.593873
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 7.019255
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 19.792324
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 8.424836
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 51.04725
+      type: 'test'
+      ...
+    1..6
+ok 8 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 325.082222
+  type: 'suite'
+  ...
+1..8
+# tests 35
+# suites 8
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4019.245855

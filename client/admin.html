@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="/assets/admin.css">
   <script defer src="/assets/hof-core.js"></script>
   <script defer src="/assets/hof-auth.js"></script>
+  <script defer src="/assets/hof-mobile-devices.js"></script>
+  <script defer src="/assets/hof-mobile-tunnel.js"></script>
   <script defer src="/assets/admin.js"></script>
 </head>
 <body class="adm-body">
@@ -35,6 +37,7 @@
       <button type="button" role="tab" data-tab="companies" data-requires="system.manage" aria-selected="false">Şirketler</button>
       <button type="button" role="tab" data-tab="system" data-requires="system.manage" aria-selected="false">Sistem</button>
       <button type="button" role="tab" data-tab="license" data-requires="license.manage" aria-selected="false">Lisans</button>
+      <button type="button" role="tab" data-tab="mobile" data-requires="users.manage" aria-selected="false">Mobil Cihazlar</button>
     </nav>
 
     <section class="adm-panel" data-panel="users" role="tabpanel">
@@ -189,6 +192,20 @@
       <div class="adm-grid" id="adm-system"></div>
     </section>
 
+    <section class="adm-panel" data-panel="mobile" role="tabpanel" hidden>
+      <div class="adm-panel-head"><div><h1>Mobil Cihazlar</h1><p>Telefon, tablet ya da ofis dışındaki bir bilgisayarın tarayıcısı karekodla bir kez eşlenir; eşli cihazdan DestekOfis kullanıcı adı ve parolasıyla girilir. Sınır program başınadır (iki şirket birlikte); cihaz silinince yer açılır.</p></div></div>
+      <section class="adm-card adm-mobile-status" id="adm-mobile-status" aria-live="polite"><p class="adm-muted">Yükleniyor…</p></section>
+      <section class="adm-card">
+        <h2>Kullanıcılar</h2>
+        <p class="adm-muted">Karekod yalnız Uzaktan Bağlanabilir işaretli kullanıcıya oluşturulur; 5 dakika geçerli ve tek kullanımlıktır. İşaret kaldırılınca kişinin bütün cihazları hemen düşer.</p>
+        <div class="adm-table-wrap"><table class="hof-table adm-table"><thead><tr><th>Ad</th><th>Kullanıcı Adı</th><th>Uzaktan Bağlanabilir</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-mobile-users"><tr><td colspan="4" class="adm-muted">Yükleniyor…</td></tr></tbody></table></div>
+      </section>
+      <section class="adm-card">
+        <h2>Eşli Cihazlar</h2>
+        <div class="adm-table-wrap"><table class="hof-table adm-table"><thead><tr><th>Cihaz</th><th>Kullanıcı</th><th>Eşleme Tarihi</th><th>Son Erişim</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-mobile-devices"><tr><td colspan="5" class="adm-muted">Yükleniyor…</td></tr></tbody></table></div>
+      </section>
+    </section>
+
     <section class="adm-panel" data-panel="license" role="tabpanel" hidden>
       <div class="adm-panel-head"><div><h1>Lisans</h1><p>Deneme süresi, lisans ve lisans servisiyle doğrulama. Lisans bu sunucu bilgisayarına bağlıdır; personel bilgisayarları için ayrıca lisans gerekmez.</p></div></div>
       <section class="adm-card adm-license-status" id="adm-license-status" aria-live="polite"><p class="adm-muted">Yükleniyor…</p></section>
@@ -206,7 +223,7 @@
         </form>
         <form class="adm-card adm-license-box" id="adm-license-code" novalidate>
           <h2>İnternetsiz Etkinleştirme</h2>
-          <p class="adm-muted">Sunucu internete bağlanamıyorsa aşağıdaki <b>kurulum kodunu</b> bize iletin (Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55 · destekofis@proton.me); size verilen etkinleştirme kodunu buraya yapıştırın.</p>
+          <p class="adm-muted">Sunucu internete bağlanamıyorsa aşağıdaki <b>kurulum kodunu</b> bize iletin (Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55 · destek@destekofis.net); size verilen etkinleştirme kodunu buraya yapıştırın.</p>
           <div class="adm-install-code"><span>Kurulum Kodu</span><code id="adm-install-code">—</code><button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-install-copy">Kopyala</button></div>
           <p class="adm-install-source" id="adm-install-source"></p>
           <label class="hof-field"><span>Etkinleştirme Kodu</span><textarea name="code" rows="4" spellcheck="false" placeholder="DOLIS1.…"></textarea></label>
@@ -215,7 +232,7 @@
       </div>
       <div class="adm-card adm-roles">
         <h2>Lisans nasıl çalışır?</h2>
-        <p class="adm-license-contact">Teknik Destek ve Satın Alımlar İçin: <a href="tel:+905367715055"><b>0536 771 50 55</b></a> · <a href="mailto:destekofis@proton.me">destekofis@proton.me</a></p>
+        <p class="adm-license-contact">Teknik Destek ve Satın Alımlar İçin: <a href="tel:+905367715055"><b>0536 771 50 55</b></a> · <a href="mailto:destek@destekofis.net">destek@destekofis.net</a></p>
         <ul>
           <li><b>Deneme ve lisans aynı programdır:</b> ayrı kurulum gerekmez; lisansı girince deneme kendiliğinden lisanslıya döner.</li>
           <li><b>Süre dolunca veriler kaybolmaz:</b> program salt okunur çalışır; kayıtlar görüntülenir, dışa aktarılır ve yedeklenir, yalnızca yeni işlem yapılamaz. Lisans girilince her şey kaldığı yerden devam eder.</li>

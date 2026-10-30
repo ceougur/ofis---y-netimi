@@ -66,7 +66,7 @@ export function createUpdater({
   // geçildiğinde de doğru sürümle karşılaştırılır. (2.0.6 sahada: açılıştaki sürüm akılda tutulduğu için kurulu
   // sürüm yeniden "yeni sürüm" sanıldı ve çalışan sürümün klasörü yeniden açılmaya çalışıldı.)
   const installed = () => normalizeVersion(typeof currentVersion === "function" ? currentVersion() : currentVersion);
-  const userAgent = () => `DestekOfis-Guncelleyici/${installed() || "0.0.0"} (+https://destek-ofis.vercel.app)`;
+  const userAgent = () => `DestekOfis-Guncelleyici/${installed() || "0.0.0"} (+https://destekofis.net)`;
 
   // ---------- Ayarlar ve kalıcı durum ----------
   function config() {

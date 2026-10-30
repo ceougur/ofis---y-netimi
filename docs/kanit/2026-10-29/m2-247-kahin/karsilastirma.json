@@ -1,0 +1,1716 @@
+{
+ "birlesim": "kod_sure=5;yeni_kod_eskiyi=iptal_eder;sinir_dolunca=reddet;uretimde_sinir=denetler;sinir_dusunce=mevcutlar_kalir;cihaz_kullanici=yalniz_eslenen;oturum_bosta=15;oturum_mutlak=12;lisans_onbellek=1;ozet_yas_siniri=yok;deneme_siniri=5;deneme_anahtari=kullanici;kilit_dk=15",
+ "senaryolar": {
+  "U01": {
+   "olay": 9,
+   "eslesen": 6,
+   "farklar": [
+    {
+     "no": 3,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 4,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 9,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U02": {
+   "olay": 8,
+   "eslesen": 8,
+   "farklar": []
+  },
+  "U03": {
+   "olay": 6,
+   "eslesen": 6,
+   "farklar": []
+  },
+  "U04": {
+   "olay": 4,
+   "eslesen": 4,
+   "farklar": []
+  },
+  "U05": {
+   "olay": 4,
+   "eslesen": 4,
+   "farklar": []
+  },
+  "U06": {
+   "olay": 14,
+   "eslesen": 11,
+   "farklar": [
+    {
+     "no": 9,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 10,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 14,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U07": {
+   "olay": 17,
+   "eslesen": 17,
+   "farklar": []
+  },
+  "U08": {
+   "olay": 17,
+   "eslesen": 13,
+   "farklar": [
+    {
+     "no": 3,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 8,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 10,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 17,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U09": {
+   "olay": 14,
+   "eslesen": 8,
+   "farklar": [
+    {
+     "no": 4,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 5,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 6,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 12,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 13,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 14,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U10": {
+   "olay": 18,
+   "eslesen": 11,
+   "farklar": [
+    {
+     "no": 3,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 5,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 6,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 9,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 13,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 14,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 15,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U11": {
+   "olay": 7,
+   "eslesen": 2,
+   "farklar": [
+    {
+     "no": 3,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 5,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 6,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 7,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 9,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U12": {
+   "olay": 10,
+   "eslesen": 4,
+   "farklar": [
+    {
+     "no": 3,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 7,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 8,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 9,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 10,
+     "olay": "giris",
+     "program": {
+      "sonuc": "kabul"
+     },
+     "kahin": {
+      "sonuc": [
+       "ret:lisans_dogrulanamadi"
+      ],
+      "esli": [
+       {
+        "A": 2
+       }
+      ]
+     },
+     "sinif": "M3_KAPICI",
+     "ayrinti": "BULGU (kabul ↔ ret)",
+     "ipucu": [
+      "kapıcının lisans önbelleği P9 (M3 kapıcı kuralı; program kendi 7 günlük internetsiz toleransını uygular)"
+     ]
+    },
+    {
+     "no": 12,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U13": {
+   "olay": 19,
+   "eslesen": 16,
+   "farklar": [
+    {
+     "no": 4,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 8,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 15,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U14": {
+   "olay": 9,
+   "eslesen": 3,
+   "farklar": [
+    {
+     "no": 3,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 5,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 6,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 7,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 10,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 11,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U15": {
+   "olay": 26,
+   "eslesen": 26,
+   "farklar": []
+  },
+  "U16": {
+   "olay": 14,
+   "eslesen": 14,
+   "farklar": []
+  },
+  "U17": {
+   "olay": 23,
+   "eslesen": 23,
+   "farklar": []
+  },
+  "U18": {
+   "olay": 43,
+   "eslesen": 34,
+   "farklar": [
+    {
+     "no": 7,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 21,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 26,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 27,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 28,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 31,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 35,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 42,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 43,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U19": {
+   "olay": 24,
+   "eslesen": 17,
+   "farklar": [
+    {
+     "no": 3,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 7,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 9,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 16,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 19,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 23,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 24,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U20": {
+   "olay": 9,
+   "eslesen": 9,
+   "farklar": []
+  },
+  "U21": {
+   "olay": 7,
+   "eslesen": 2,
+   "farklar": [
+    {
+     "no": 3,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 4,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 5,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 6,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 8,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U22": {
+   "olay": 10,
+   "eslesen": 8,
+   "farklar": [
+    {
+     "no": 7,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 10,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U23": {
+   "olay": 5,
+   "eslesen": 3,
+   "farklar": [
+    {
+     "no": 4,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 5,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U24": {
+   "olay": 56,
+   "eslesen": 56,
+   "farklar": []
+  },
+  "U25": {
+   "olay": 10,
+   "eslesen": 10,
+   "farklar": []
+  },
+  "U26": {
+   "olay": 12,
+   "eslesen": 12,
+   "farklar": []
+  },
+  "U27": {
+   "olay": 8,
+   "eslesen": 8,
+   "farklar": []
+  },
+  "U28": {
+   "olay": 8,
+   "eslesen": 4,
+   "farklar": [
+    {
+     "no": 5,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 6,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 7,
+     "olay": "cihaz_sil",
+     "program": {
+      "sonuc": "kabul",
+      "esli": {
+       "A": 1
+      }
+     },
+     "kahin": {
+      "sonuc": [
+       "kabul"
+      ],
+      "esli": [
+       {
+        "A": 2
+       }
+      ]
+     },
+     "sinif": "M3_KAPICI",
+     "ayrinti": "BULGU (eşli / görünür / özet zamanı ya da önceki olaylarla tutarsız yol)",
+     "ipucu": [
+      "kapıcıya doğrudan kayıt (M3, DENENMEYEN) sonrası zincir: kâhinin dünyasında programda olmayan cihaz var"
+     ]
+    },
+    {
+     "no": 8,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U29": {
+   "olay": 14,
+   "eslesen": 8,
+   "farklar": [
+    {
+     "no": 7,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 10,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 11,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 12,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 15,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 18,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U30": {
+   "olay": 6,
+   "eslesen": 2,
+   "farklar": [
+    {
+     "no": 3,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 4,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 5,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 6,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "U31": {
+   "olay": 3,
+   "eslesen": 3,
+   "farklar": []
+  },
+  "U32": {
+   "olay": 7,
+   "eslesen": 7,
+   "farklar": []
+  },
+  "U33": {
+   "olay": 5,
+   "eslesen": 5,
+   "farklar": []
+  },
+  "R1": {
+   "olay": 601,
+   "eslesen": 531,
+   "farklar": [
+    {
+     "no": 4,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 5,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 7,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 341,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 342,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 345,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 126,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:oturum_gecersiz)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 21,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 427,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 28,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 31,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 32,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 242,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 245,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 246,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 557,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 558,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 562,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 372,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 33,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 36,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 37,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 247,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 250,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 251,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 429,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 432,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 38,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 43,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 44,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 58,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 72,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 73,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 75,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 78,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 252,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 81,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 82,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 444,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 452,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 453,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 455,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 612,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 613,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 615,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 83,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 86,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 87,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 179,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 459,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 88,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 96,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:oturum_gecersiz)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 283,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 374,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 377,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 402,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 405,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 406,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 407,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 410,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 411,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 412,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 181,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 184,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 461,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 464,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 514,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 515,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 285,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 288,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "R2": {
+   "olay": 567,
+   "eslesen": 483,
+   "farklar": [
+    {
+     "no": 321,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 322,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 324,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 76,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 518,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 519,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 523,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 528,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 226,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 228,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 231,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 4,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 5,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 7,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 79,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 80,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 343,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 534,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 537,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 29,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 538,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 403,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 404,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 410,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 418,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 419,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 422,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 427,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 81,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 252,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 84,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 85,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 255,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 256,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 436,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 437,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 439,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 539,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 542,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 543,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 461,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 462,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 464,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 384,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 385,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 387,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 86,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 257,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 260,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 261,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 544,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 97,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 100,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 101,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 262,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 266,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 269,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 270,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 102,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 105,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 106,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 271,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 274,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 275,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 107,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 276,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 281,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 282,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 284,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 314,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 315,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 317,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 143,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 145,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 148,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 183,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 184,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 190,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 31,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 34,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 44,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:oturum_gecersiz)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 61,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 62,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 67,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  },
+  "R3": {
+   "olay": 538,
+   "eslesen": 482,
+   "farklar": [
+    {
+     "no": 314,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 468,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 207,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 336,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:oturum_gecersiz)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 503,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 506,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 507,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 153,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 154,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 159,
+     "neden": "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS) (program: ret:tanınmadı_404_mobile-report)",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 168,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 169,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 36,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 39,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 40,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 443,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 446,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 447,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 508,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 511,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 512,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 186,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 381,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 382,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 384,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 41,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 44,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 45,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 448,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 451,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 452,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 513,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 46,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 453,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 543,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 546,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 547,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 548,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 551,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 552,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 73,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 74,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 88,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 89,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 91,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 553,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 209,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 212,
+     "neden": "DENENMEYEN: kapıcı/özet M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 229,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 232,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 233,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 234,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 237,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 238,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 239,
+     "neden": "DENENMEYEN: şifreli özet (R2) M3'te",
+     "sinif": "DENENMEYEN"
+    },
+    {
+     "no": 296,
+     "neden": "DENENMEYEN: kapıcı (Worker) M3'te",
+     "sinif": "DENENMEYEN"
+    }
+   ]
+  }
+ },
+ "toplam": {
+  "olay": 2152,
+  "eslesen": 1860,
+  "DENENMEYEN": 290,
+  "M3_KAPICI": 2,
+  "BULGU": 0,
+  "İNCELE": 0,
+  "denenmeyen_nedenleri": {
+   "DENENMEYEN: şifreli özet (R2) M3'te": 249,
+   "DENENMEYEN: kapıcı/özet M3'te": 13,
+   "DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS)": 17,
+   "DENENMEYEN: kapıcı (Worker) M3'te": 11
+  }
+ }
+}

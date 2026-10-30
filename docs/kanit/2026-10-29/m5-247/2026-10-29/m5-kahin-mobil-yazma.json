@@ -1,0 +1,68 @@
+{
+  "ad": "m5-kahin-mobil-yazma",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/mobil-yazma/program-surucu.mjs --cikti /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m5-247/son",
+  "commit": "f9c9e4bbc2bacbf3ed444c411a7a0eeb775ee086",
+  "dal": "worktree-agent-ac5df26589a6fb9c9",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:40:48.537Z",
+  "sure_sn": 210.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 52,
+    "gecen": 45,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "E02-es-havale-pos-mobil",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "E02-es-havale-pos-masaustu",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "E05-es-taksit-mobil",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "E05-es-taksit-masaustu",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "R1-rastgele-tohum1",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "R2-rastgele-tohum2",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "R3-rastgele-tohum3",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/m5-247/2026-10-29/m5-kahin-mobil-yazma.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac5df26589a6fb9c9",
+  "ham_cikti_sha256": "5e04359d818a2d75c2a181cbfa9d8a93b0e338bd470243e59f7b3936ba7f7700",
+  "ham_cikti_bayt": 6656
+}

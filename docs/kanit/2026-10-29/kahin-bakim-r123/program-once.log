@@ -1,0 +1,122 @@
+
+> destekofis@2.4.6 test:kahin-mobil-yazma
+> node --disable-warning=ExperimentalWarning test/bagimsiz/mobil-yazma/program-surucu.mjs
+
+ok 1 - E01-es-nakit-fifo-mobil
+ok 2 - E01-es-nakit-fifo-masaustu
+not ok 3 - E02-es-havale-pos-mobil
+  # adim:t4:http: program 404 · beklenen 400
+  # adim:t4:kod: program "bank-account-missing" · beklenen "bank-account-invalid"
+not ok 4 - E02-es-havale-pos-masaustu
+  # adim:t4:http: program 404 · beklenen 400
+  # adim:t4:kod: program "bank-account-missing" · beklenen "bank-account-invalid"
+ok 5 - E03-es-kapatilacak-mobil
+ok 6 - E03-es-kapatilacak-masaustu
+ok 7 - E04-es-odeme-mobil
+ok 8 - E04-es-odeme-masaustu
+ok 9 - E05-es-taksit-mobil
+ok 10 - E05-es-taksit-masaustu
+ok 11 - E06-kesinti-once
+ok 12 - E07-kesinti-sonra
+ok 13 - E08-ayni-kimlik-farkli-govde
+ok 14 - E09-reddedilen-kimlik
+ok 15 - E10-sunucu-kapali
+ok 16 - E11-sunucu-yeniden-kimlik
+ok 17 - E12-cihaz-silindi
+ok 18 - E13-uzak-izin
+ok 19 - E14-lisans
+ok 20 - E15-sirket-yetkisi
+ok 21 - E16-baska-sirket-kimligi
+ok 22 - E17-ayni-anda-ayni-cari
+ok 23 - E18-k8-yaris
+ok 24 - E19-es-stok-mobil
+ok 25 - E19-es-stok-masaustu
+ok 26 - E20-stok-yaris
+ok 27 - E21-gece-yarisi
+ok 28 - E22-gece-yarisi-yeniden
+ok 29 - E23-yil-donumu-kilit
+ok 30 - E24-kimlik-omru
+ok 31 - E25-yedek-geri-yukle
+ok 32 - E26-ayni-adli-cariler
+ok 33 - E27-eski-surum-verisi
+ok 34 - E28-rol-yetkisi
+ok 35 - E29-benzer-islem
+ok 36 - E30-es-kasa-eksi-mobil
+ok 37 - E30-es-kasa-eksi-masaustu
+ok 38 - E31-es-evrak-mobil
+ok 39 - E31-es-evrak-masaustu
+ok 40 - E32a-ayni-gun-sira
+ok 41 - E32b-ayni-gun-sira
+ok 42 - E34-iki-sirket-ayni-kimlik
+ok 43 - E35-iki-kullanici-ayni-kimlik
+ok 44 - E36-cihaz-sil-yarida
+ok 45 - E37-sunucu-kapali-yarida
+ok 46 - E38-sil-ayni-adla-ac
+ok 47 - E39-cift-dokunus-ayni-anda
+ok 48 - E40-es-iade-geri-odeme-mobil
+ok 49 - E40-es-iade-geri-odeme-masaustu
+ok 50 - E41-es-odenmis-kart-avans-mobil
+ok 51 - E41-es-odenmis-kart-avans-masaustu
+not ok 52 - R1-rastgele-tohum1
+  # adim:t1048:durum: program "ok" · beklenen "ret"
+  # adim:t1048:http: program okunamadı/eksik (beklenen 400)
+  # adim:t539:http: program 400 · beklenen [403, 404]
+  # k1729:002:cari:C2_05:bakiye: program 1048260 · beklenen 1049495
+  # k1729:002:cari:C2_05:hareketSayisi: program 9 · beklenen 8
+  # k1729:002:fatura:F2_33:acik: program 161560 · beklenen 162795
+  # k1729:002:kasa: program 6602257 · beklenen 6601022
+  # k2570:002:cari:C2_05:bakiye: program 514760 · beklenen 515995
+  # k2570:002:cari:C2_05:hareketSayisi: program 14 · beklenen 13
+  # k2570:002:fatura:F2_34:acik: program 80160 · beklenen 81395
+  # k2570:002:kasa: program 10031449 · beklenen 10030214
+not ok 53 - R2-rastgele-tohum2
+  # adim:t1405:durum: program "ok" · beklenen "ret"
+  # adim:t1405:http: program okunamadı/eksik (beklenen 400)
+  # adim:t159:http: program 400 · beklenen [403, 404]
+  # adim:t191:http: program 404 · beklenen 400
+  # adim:t191:kod: program "kodsuz" · beklenen "bank-account-required"
+  # adim:t2303:http: program 400 · beklenen [403, 404]
+  # adim:t554:http: program 404 · beklenen 400
+  # adim:t554:kod: program "kodsuz" · beklenen "bank-account-required"
+  # adim:t79:http: program 400 · beklenen [403, 404]
+  # k1715:002:cari:C2_01:bakiye: program 672592 · beklenen 673827
+  # k1715:002:cari:C2_01:hareketSayisi: program 9 · beklenen 8
+  # k1715:002:fatura:F2_30:acik: program 124768 · beklenen 126003
+  # k1715:002:pos:POS21: program 2523046 · beklenen 2521811
+  # k2563:002:cari:C2_01:bakiye: program 192767 · beklenen 194002
+  # k2563:002:cari:C2_01:hareketSayisi: program 18 · beklenen 17
+  # k2563:002:fatura:F2_75:acik: program 192767 · beklenen 194002
+  # k2563:002:pos:POS21: program 3603635 · beklenen 3602400
+not ok 54 - R3-rastgele-tohum3
+  # adim:t1425:durum: program "ok" · beklenen "ret"
+  # adim:t1425:http: program okunamadı/eksik (beklenen 400)
+  # k1732:001:cari:C1_04:bakiye: program -166131 · beklenen -164896
+  # k1732:001:cari:C1_04:hareketSayisi: program 14 · beklenen 13
+  # k1732:001:kasa: program 8118954 · beklenen 8117719
+  # k1732:001:kasaGun:2026-11-21: program 124785 · beklenen 123550
+  # k2589:001:cari:C1_04:bakiye: program 66469 · beklenen 67704
+  # k2589:001:cari:C1_04:hareketSayisi: program 17 · beklenen 16
+  # k2589:001:fatura:F1_62:acik: program 66469 · beklenen 67704
+  # k2589:001:kasa: program 9990834 · beklenen 9989599
+  # k2589:001:kasaGun:2026-11-21: program 124785 · beklenen 123550
+1..54
+# tests 54
+# pass 49
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# göreli G1-muhasebe-nakit-odeme: aynı
+# göreli G2-personel-stok: uygulanmaz (koşul {"stok_yonu":"giris_cikis"}; bilgi: aynı)
+# göreli G3-muhasebe-cek: uygulanmaz (koşul {"yollar":"evrak_dahil"}; bilgi: fark)
+#   adim:t1:durum: mobil "ret" · masaüstü "ok"
+#   adim:t1:http: mobil 400 · masaüstü undefined
+#   adim:t1:kod: mobil "mobile-field" · masaüstü undefined
+#   k1:001:cari:A:bakiye: mobil 100000 · masaüstü 70000
+#   k1:001:evrakSayisi: mobil 0 · masaüstü 1
+#   k1:001:fatura:F1:acik: mobil 100000 · masaüstü 70000
+#   k1:001:portfoy: mobil 0 · masaüstü 30000
+#   tani:t1:ileti: mobil "Mobilde ödeme yolu Nakit, Havale / EFT ya da POS / Kredi Kartı olabilir; çek / senet masaüstünden girilir." · masaüstü undefined
+# göreli G4-muhasebe-fazla-avans: aynı
+# göreli çift: 2 aynı, 0 fark, 2 uygulanmaz
+# birleşim: kapatilacak=yalniz_fifo;yollar=nakit_havale_pos;taksit=kart_secilir;onay=sorar;eksi_stok=sorar;tarih=sunucu_gunu;gec_yeniden=telefon_24s;stok_yonu=yalniz_giris

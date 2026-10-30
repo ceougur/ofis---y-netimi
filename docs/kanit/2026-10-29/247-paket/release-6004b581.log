@@ -1,0 +1,6 @@
+✓ Doğrulama kapısı: 6004b58 CI YEŞİL, çalışma ağacı temiz
+✓ DestekOfis 2.4.7 güncelleme paketi (stable, anahtar destekofis-2026-1)
+  dist/guncelleme/destekofis-guncelleme-2.4.7.zip · 7284 KB · 304 dosya · sha256 776cc7b6cfc94fc3e23b18a6aa6feee54a834f8b9efb99b5048d1195b2401083
+  dist/guncelleme/destekofis-guncelleme.json
+
+GitHub'da "v2.4.7" etiketiyle bir yayın (release) oluşturup bu iki dosyayı ekleyin.

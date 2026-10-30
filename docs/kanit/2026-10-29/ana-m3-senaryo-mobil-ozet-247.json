@@ -1,0 +1,32 @@
+{
+  "ad": "ana-m3-senaryo-mobil-ozet-247",
+  "komut": "npm run test:senaryo-mobil-ozet-247",
+  "commit": "98e3d98987f39249d1992a3b21f3594b4906c71f",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:49:03.730Z",
+  "sure_sn": 15.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 29,
+    "gecen": 29,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/ana-m3-senaryo-mobil-ozet-247.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "803d5d75ff3c24319d8fb30f42e6dc5195bf165fb8cc53f807ca8c25633d8007",
+  "ham_cikti_bayt": 2491
+}

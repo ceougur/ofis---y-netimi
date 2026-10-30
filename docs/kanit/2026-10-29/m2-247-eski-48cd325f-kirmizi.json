@@ -1,0 +1,158 @@
+{
+  "ad": "m2-247-eski-48cd325f-kirmizi",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m2-247-eski-48cd325f/test/mobil-eslesme-247.test.mjs",
+  "commit": "357ca8ed0f0519193d9e2704bbfb5c8b923b6d0b",
+  "dal": "worktree-agent-a099dc3b7dda9f4d1",
+  "kirli": 0,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T05:30:55.053Z",
+  "sure_sn": 4.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 26,
+    "gecen": 0,
+    "basarisiz": 15,
+    "iptal": 11,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 15 başarısız, 11 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "M2 uzak dinleyici: eşlenmemiş istemci (tünelin öbür ucu) hiçbir veri ve yerel işlem alamaz › eşli cihaz yoksa: /api/companies, /api/auth/me, yerel kurtarma kodu ve mobil uçlar reddedilir (127.0.0.1'den gelse de)",
+      "konum": "test/mobil-eslesme-247.test.mjs:60:3",
+      "hata": "uzaktan sunucu kurtarma kodu üretilmemeli (gelen 200 {\"ok\":true,\"data\":{\"file\":\"/tmp/destekofis-test-yf9Lej/data/YONETICI-KURTARMA-KO) (beklenen 200, gelen 200)"
+    },
+    {
+      "ad": "M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi) › yalnız /mobil/ ve /api/mobil/ geçer: kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi, kurtarma yolu 404 remote-path",
+      "konum": "test/mobil-eslesme-247.test.mjs:91:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi) › uzak istek 127.0.0.1'den gelse de yerel sayılmaz: kurtarma kodu ve X-Forwarded-For taklidi işe yaramaz",
+      "konum": "test/mobil-eslesme-247.test.mjs:107:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi) › savunma derinliği: uzak işaretli istekte clientIp 'uzak' (127.0.0.1 ve X-Forwarded-For olsa da) → yerel sayılmaz",
+      "konum": "test/mobil-eslesme-247.test.mjs:119:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi) › uzak oturum cihaza bağlı: başka cihazın çereziyle aynı oturum geçmez",
+      "konum": "test/mobil-eslesme-247.test.mjs:127:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi) › uzak oturum çerezi ofis ağı dinleyicisinde, ofisin hof_session çerezi uzak dinleyicide geçmez",
+      "konum": "test/mobil-eslesme-247.test.mjs:139:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi) › başka siteden gelen uzak eşleme / giriş isteği reddedilir (Origin denetimi; çerezler SameSite=Strict)",
+      "konum": "test/mobil-eslesme-247.test.mjs:152:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi) › mobilde yazma yok: uzak yazma isteği 405 (M5'e kadar)",
+      "konum": "test/mobil-eslesme-247.test.mjs:162:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi)",
+      "konum": "test/mobil-eslesme-247.test.mjs:80:1",
+      "hata": "karekod üretilemedi: {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "M2 eşleme: karekod (P1 5 dk, tek kullanım, P2), yalnız yönetici, uzak izin › uzak izni olmayana karekod yok (403 remote-permission); personel karekod üretemez (403)",
+      "konum": "test/mobil-eslesme-247.test.mjs:178:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 403 (beklenen 403, gelen 404)"
+    },
+    {
+      "ad": "M2 eşleme: karekod (P1 5 dk, tek kullanım, P2), yalnız yönetici, uzak izin › P1: karekod 4 dk 59 sn'de geçer, tam 5. dakikada (gece yarısı ve ay dönümünde) geçmez",
+      "konum": "test/mobil-eslesme-247.test.mjs:191:3",
+      "hata": "Cannot read properties of undefined (reading 'set')"
+    },
+    {
+      "ad": "M2 eşleme: karekod (P1 5 dk, tek kullanım, P2), yalnız yönetici, uzak izin › P2: aynı kişiye yeni karekod öncekini geçersiz kılar",
+      "konum": "test/mobil-eslesme-247.test.mjs:212:3",
+      "hata": "Cannot read properties of undefined (reading 'code')"
+    },
+    {
+      "ad": "M2 eşleme: karekod (P1 5 dk, tek kullanım, P2), yalnız yönetici, uzak izin › karekodun içeriği uzak adres + \\#eslesme=<kod> (kod adres satırının \\# kısmında; sunucuya gitmez); veri tabanında kod düz metin değil",
+      "konum": "test/mobil-eslesme-247.test.mjs:221:3",
+      "hata": "Cannot read properties of undefined (reading 'setPublicUrl')"
+    },
+    {
+      "ad": "P14 eşleme bağlantısı (karekod okuyamayan uzak bilgisayar): aynı tek kullanımlık kod, aynı kurallar › bağlantı = uzak adres/mobil/\\#eslesme=<kod>; tarayıcıda açılan sayfa çerezsiz gelir, kod \\# kısmında (istek satırında yok); uzak bilgisayar eşlenir; tek kullanım, P2, P4",
+      "konum": "test/mobil-eslesme-247.test.mjs:232:3",
+      "hata": "Cannot read properties of undefined (reading 'setPublicUrl')"
+    },
+    {
+      "ad": "M2 sınır: program başına 3 eşli cihaz, iki şirket birlikte (P3, P4, P5); silince yer açılır › telefon + tablet + uzak tarayıcı (iki şirketin kullanıcıları) = 3; 4. karekod üretilmez (P4), elde kalan kodla eşleme reddedilir (P3) ve kod harcanmaz",
+      "konum": "test/mobil-eslesme-247.test.mjs:294:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "M2 sınır: program başına 3 eşli cihaz, iki şirket birlikte (P3, P4, P5); silince yer açılır › aynı anda iki eşleme son yer için: yalnız biri kazanır",
+      "konum": "test/mobil-eslesme-247.test.mjs:319:3",
+      "hata": "Cannot read properties of undefined (reading 'devices')"
+    },
+    {
+      "ad": "M2 sınır: program başına 3 eşli cihaz, iki şirket birlikte (P3, P4, P5); silince yer açılır › P5: lisanstaki sayı mevcudun altına düşerse eşli cihazlar sürer, yalnız yeni eşleme engellenir; sayı alanı belirteçten okunur (yoksa 3)",
+      "konum": "test/mobil-eslesme-247.test.mjs:329:3",
+      "hata": "Cannot read properties of undefined (reading 'limit')"
+    },
+    {
+      "ad": "M2 silme, izin, kullanıcı: erişim HEMEN kesilir › cihaz silinince açık uzak oturumu sonraki istekte düşer (sayfa dosyası dahil); yeniden eşleme gerekir",
+      "konum": "test/mobil-eslesme-247.test.mjs:361:3",
+      "hata": "karekod üretilemedi: {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "M2 silme, izin, kullanıcı: erişim HEMEN kesilir › uzak izin kalkınca kişinin bütün cihazları, oturumları ve bekleyen karekodu düşer; başkası etkilenmez",
+      "konum": "test/mobil-eslesme-247.test.mjs:374:3",
+      "hata": "karekod üretilemedi: {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "M2 silme, izin, kullanıcı: erişim HEMEN kesilir › kullanıcı silinince cihazı silinir (yer açılır); pasifleşince uzak oturumu kapanır",
+      "konum": "test/mobil-eslesme-247.test.mjs:390:3",
+      "hata": "Cannot read properties of undefined (reading 'used')"
+    },
+    {
+      "ad": "M2 giriş: cihaza bağlı (P6), imza, deneme sınırı kullanıcı başına (P11–P13), oturum ömrü (P7, P8) › P6: cihazdan yalnız eşlendiği kullanıcı girer; imzasız ya da yeniden oynatılan meydan okuma reddedilir",
+      "konum": "test/mobil-eslesme-247.test.mjs:418:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 giriş: cihaza bağlı (P6), imza, deneme sınırı kullanıcı başına (P11–P13), oturum ömrü (P7, P8) › P11–P13: 5. yanlış parola kilitler (o deneme 'parola yanlış'), kilitliyken doğru parola da reddedilir, 15 dk sonra açılır; yerel giriş ve başka kullanıcı etkilenmez",
+      "konum": "test/mobil-eslesme-247.test.mjs:438:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 giriş: cihaza bağlı (P6), imza, deneme sınırı kullanıcı başına (P11–P13), oturum ömrü (P7, P8) › parolası doğru ama uzak izni olmayan giriş sayılmaz; başarılı giriş sayacı sıfırlar",
+      "konum": "test/mobil-eslesme-247.test.mjs:456:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 giriş: cihaza bağlı (P6), imza, deneme sınırı kullanıcı başına (P11–P13), oturum ömrü (P7, P8) › P7: 15 dk işlem yoksa oturum kapanır (14:59 geçer); P8: işlem sürse de en çok 12 saat",
+      "konum": "test/mobil-eslesme-247.test.mjs:464:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "M2 giriş: cihaza bağlı (P6), imza, deneme sınırı kullanıcı başına (P11–P13), oturum ömrü (P7, P8)",
+      "konum": "test/mobil-eslesme-247.test.mjs:403:1",
+      "hata": "karekod üretilemedi: {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/m2-247-eski-48cd325f-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a099dc3b7dda9f4d1",
+  "ham_cikti_sha256": "42dbe33ff11b057e5f7fbeddea31120246ea99303ba51414ca7a7a95ea018be9",
+  "ham_cikti_bayt": 30813
+}

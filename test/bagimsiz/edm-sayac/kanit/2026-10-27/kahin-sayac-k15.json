@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-sayac-k15",
+  "komut": "python3 -I test/bagimsiz/edm-sayac/kahin_test.py",
+  "commit": "c91b98f608754060dd181c07e13aab68aab90b6e",
+  "dal": "is/kahin-sayac-247-d",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T09:52:57.555Z",
+  "sure_sn": 46.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 136,
+    "gecen": 136,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "test/bagimsiz/edm-sayac/kanit/2026-10-27/kahin-sayac-k15.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3b2c2974fb1ed6f3",
+  "ham_cikti_sha256": "dbbed44c6f5c1714b381afe7a2a295ac4879a9c5ff4bdc1389c0e72a4489ecf4",
+  "ham_cikti_bayt": 20125
+}

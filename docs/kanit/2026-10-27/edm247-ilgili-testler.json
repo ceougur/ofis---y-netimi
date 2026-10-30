@@ -1,0 +1,158 @@
+{
+  "ad": "edm247-ilgili-testler",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/ebelge-240-birim.test.mjs test/ebelge-240-bitis-turu.test.mjs test/ebelge-240-ek-secenekler.test.mjs test/ebelge-240-gorunum.test.mjs test/ebelge-240-kontrol3.test.mjs test/ebelge-242-test-seri.test.mjs test/ebelge-243-gonderim.test.mjs test/ebelge-243.test.mjs test/ebelge-244-efatura-belirsiz-iptal.test.mjs test/ebelge-244-gonderim-izi.test.mjs test/ebelge-244-iptal-suresi.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/ebelge-244-yerel-iptal.test.mjs test/ebelge-uygunluk.test.mjs test/edm-gercek-duzenek.test.mjs test/edm-gercek-sozlesme.test.mjs test/edm-giris-241.test.mjs test/edm-tek-ucus-giris-244.test.mjs test/edm-uygulama-adi-247.test.mjs test/edoc-kullanim-247.test.mjs test/edoc-kullanim-birim-247.test.mjs test/edoc-uretim.test.mjs test/efatura-portali-244.test.mjs test/einvoice-240-resmi-gorunum.test.mjs test/einvoice-240-taslak.test.mjs test/einvoice-edm.test.mjs test/entegrator-kullanici-adi-244.test.mjs test/esmm-acik-244.test.mjs test/esmm-edm.test.mjs test/esmm-gizli-241.test.mjs test/esmm-gonderim-244.test.mjs test/esmm-ubl.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/fatura-liste-243-fark.test.mjs test/geri-yukleme-uyari-244.test.mjs test/gg243-dar-kontrol-ek.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar2-edm.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-dar2-iade-sira.test.mjs test/gg243-dar2-olcek.test.mjs test/gg243-dar3.test.mjs test/gg243-gonderim.test.mjs test/goc-243-iade-ref.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-243-stok-kdv.test.mjs test/goc-244-esmm-gonderim.test.mjs test/goc-244-iptal-suresi.test.mjs test/goc-244-numara-tabani.test.mjs test/goc-244-silinen-numara.test.mjs test/goc-245-cari-vade.test.mjs test/goc-246-iade-bagi.test.mjs test/guvenilirlik-221-goc.test.mjs test/kanit-araci.test.mjs test/karekod.test.mjs test/kontrol-241.test.mjs test/license.test.mjs test/lisans-nobetci.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/migrations.test.mjs test/mm-smm-244.test.mjs test/numara-silinen-244.test.mjs test/numara-silinen-tarih-244.test.mjs test/numara-tekil-244.test.mjs test/permissions.test.mjs test/platform-tasinabilirlik.test.mjs test/uiux-244-ux9.test.mjs test/uiux-a-243.test.mjs test/uiux-b-243.test.mjs test/vekil-sunucu-uygulama.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "8145db905fca2dc18e922e1d9b46ee344781ab0c",
+  "dal": "is/edm-247",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v165 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-27T06:30:14.243Z",
+  "sure_sn": 359,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 726,
+    "gecen": 641,
+    "basarisiz": 85,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 85 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Adet koduyla giden birimin adı belgede kalır; XML GİB/XSD'den geçer › Çuval / Hafta / Kg kalemli e-Fatura",
+      "konum": "test/ebelge-240-birim.test.mjs:38:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Adet koduyla giden birimin adı belgede kalır; XML GİB/XSD'den geçer › açıklamalı kalemde birim notu görünümde; Düzine adıyla; gelen e-Faturada birim geri okunur",
+      "konum": "test/ebelge-240-birim.test.mjs:55:3",
+      "hata": "Cannot find module 'xslt3/xslt3.js' · Require stack: · - /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › Y4: istisnalı kalem + KDV'li kalem → ISTISNA ve GİB şematronundan temiz; 351 + 301'de iki istisna kodu da belgede",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:346:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz) › E5: U+FFFE / U+FFFF kalem adından ayıklanır; belge şemadan geçer",
+      "konum": "test/ebelge-240-bitis-turu.test.mjs:363:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Cari bakiyesi faturanın notunda › kapalıyken not yok; açıkken bu fatura dahil bakiye (2 × 500 + %20 = 1.200,00 TL borç); belge GİB'e uygun",
+      "konum": "test/ebelge-240-ek-secenekler.test.mjs:89:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Ödeme şekli kodu (GİB kod listesi) › açıkken tamamı nakit: yalnız 10 (Nakit); belge GİB'e uygun; görünümde Ödeme Şekli: Nakit",
+      "konum": "test/ebelge-240-ek-secenekler.test.mjs:120:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Ödeme şekli kodu (GİB kod listesi) › 400 nakit + 500 kart + kalan 300 vadeli: 10, 48 ve açık kısım 42 (IBAN + son ödeme tarihi); görünümde vade peşinin tarihi değil",
+      "konum": "test/ebelge-240-ek-secenekler.test.mjs:127:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Ödeme şekli kodu (GİB kod listesi) › havale peşin 42, çek 20, senet 60 (alınan evrak faturaya bağlı)",
+      "konum": "test/ebelge-240-ek-secenekler.test.mjs:139:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Kalemde Seri No / Lot No › kayıt, ayrıntı, e-Belge (cac:ItemInstance), görünüm; GİB'e uygun",
+      "konum": "test/ebelge-240-ek-secenekler.test.mjs:156:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Kalemde Seri No / Lot No › yalnız lot ya da yalnız seri: boş alan yazılmaz",
+      "konum": "test/ebelge-240-ek-secenekler.test.mjs:169:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Şahıs firmasında ticari unvan e-Belgeye girer › TCKN'li şahıs firması: ad-soyad Person'da, cari adı (ticari unvan) PartyName'de; GİB şematronu ve XSD temiz",
+      "konum": "test/ebelge-240-gorunum.test.mjs:73:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Şahıs firmasında ticari unvan e-Belgeye girer › unvansız gerçek kişi: PartyName yazılmaz (ad-soyad tekrarlanmaz); belge temiz",
+      "konum": "test/ebelge-240-gorunum.test.mjs:82:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › şablon GİB örnek biçiminde gömülür (fatura no .xslt, base64, application/xml); belge XSD + GİB şematronundan temiz",
+      "konum": "test/ebelge-240-gorunum.test.mjs:101:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › görünüm belgenin kendi sayılarını gösterir: numara, ETTN, alıcı, kalemler, KDV oranları, ödenecek tutar (Türkçe sayı biçimi)",
+      "konum": "test/ebelge-240-gorunum.test.mjs:107:3",
+      "hata": "Cannot find module 'xslt3/xslt3.js' · Require stack: · - /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › alıcı (SAYIN) üst bölümün sol sütununda, satıcının altında; bilgi tablosunun yanındaki boşluk kalmaz (kullanıcı 16.10.2026)",
+      "konum": "test/ebelge-240-gorunum.test.mjs:113:3",
+      "hata": "Cannot find module 'xslt3/xslt3.js' · Require stack: · - /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › logo, banka hesabı (IBAN dörderli) ve alt not şablona gömülü; alt nottaki HTML metin olarak kalır (komut çalışmaz)",
+      "konum": "test/ebelge-240-gorunum.test.mjs:120:3",
+      "hata": "Cannot find module 'xslt3/xslt3.js' · Require stack: · - /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › e-Arşiv: başlık GİB ibaresiyle \"e-Arşiv Fatura\", gönderim şekli ve elektronik iletim ibaresi; belge e-Arşiv şematronundan temiz",
+      "konum": "test/ebelge-240-gorunum.test.mjs:127:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "e-Belge görünüm tasarımı (gömülü XSLT) › ayar: logo ve banka kapatılınca şablonda yok; görünüm kapatılınca belgeye şablon gömülmez (entegratörün varsayılanı)",
+      "konum": "test/ebelge-240-gorunum.test.mjs:146:3",
+      "hata": "Cannot find module 'xslt3/xslt3.js' · Require stack: · - /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi) › bozulmamış belge iki denetimden de geçer ve şematron kural çalıştırır",
+      "konum": "test/ebelge-uygunluk.test.mjs:78:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi) › şematron düşürür: CustomizationID TR1.0 (eski sürüm)",
+      "konum": "test/ebelge-uygunluk.test.mjs:89:5",
+      "hata": "Cannot find module 'saxon-js' · Require stack: · - /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi) › şematron düşürür: fatura numarası GİB biçiminde değil",
+      "konum": "test/ebelge-uygunluk.test.mjs:89:5",
+      "hata": "Cannot find module 'saxon-js' · Require stack: · - /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi) › şematron düşürür: döviz faturasında kur yok",
+      "konum": "test/ebelge-uygunluk.test.mjs:89:5",
+      "hata": "Cannot find module 'saxon-js' · Require stack: · - /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi) › şematron düşürür: geçersiz profil",
+      "konum": "test/ebelge-uygunluk.test.mjs:89:5",
+      "hata": "Cannot find module 'saxon-js' · Require stack: · - /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi) › XSD düşürür: boş IssueTime ve boş imza yuvası",
+      "konum": "test/ebelge-uygunluk.test.mjs:96:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    },
+    {
+      "ad": "Kâhin aracı: GİB şematronu ve UBL 2.1 XSD bozuk belgeyi yakalar (aracın dişi) › UBL-TR 1.2.1 XSD düşürür, OASIS geçirir: cac:Person'da FamilyName yok (EDM'nin 11029 ile reddettiği hâl)",
+      "konum": "test/ebelge-uygunluk.test.mjs:104:3",
+      "hata": "Cannot find package 'xmllint-wasm' imported from /home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea/tools/ebelge/dogrula.mjs"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-27/edm247-ilgili-testler.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-adc523efe8cab42ea",
+  "ham_cikti_sha256": "3cfb89b01ab71b8a7b181e7c653f21482992ff1eed35e222d83bfe1561ab17dc",
+  "ham_cikti_bayt": 369605
+}

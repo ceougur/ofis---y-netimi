@@ -288,7 +288,8 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
     for (const way of ["Nakit", "Havale / EFT", "POS", "Çek", "Senet"]) assert.ok(ways.has(way), `Alfa: yol ${way} yok (${[...ways].join(", ")})`);
     const invoiceRows = detail.rows.filter((_, index) => detail.rowMarks[index] === "invoice");
     assert.ok(invoiceRows.every(row => row[col(h, "Belge No")]), "her fatura satırında Belge No");
-    assert.ok(invoiceRows.some(row => row[col(h, "İşlem")] === "Satıştan İade Faturası" && kurus(row[col(h, "Alacak")]) > 0), "satıştan iade alacak tarafında");
+    // 2.4.7 (müşteri isteği 5): İşlem kolonunda tür kısa adı ("Satıştan İade"; önceden "Satıştan İade Faturası") — bilerek güncellendi.
+    assert.ok(invoiceRows.some(row => row[col(h, "İşlem")] === "Satıştan İade" && kurus(row[col(h, "Alacak")]) > 0), "satıştan iade alacak tarafında");
     const supplier = await must("tedarik", api.get(`/api/workspace/report-center/cari-ekstre?account=${names.get("Tedarik Toptan A.Ş.")}&from=1976-01-01&to=2026-12-31&items=1`));
     assert.ok(supplier.rows.some(row => row[col(h, "Yol")] === "Kredi Kartı"), "kart ödemesi Kredi Kartı");
     const stoppage = await must("kira", api.get(`/api/workspace/report-center/cari-ekstre?account=${names.get("Mehmet Kiraya Veren")}&from=1976-01-01&to=2026-12-31&items=1`));

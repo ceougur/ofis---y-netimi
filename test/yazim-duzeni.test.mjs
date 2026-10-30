@@ -203,6 +203,23 @@ describe("yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük", () 
     const found = names.filter(name => titleCase(name) !== name).map(name => `“${name}” → “${titleCase(name)}”`);
     assert.deepEqual(found, [], `Maliyet şablonu adları başlık yazımıyla yazılmalı:\n${found.join("\n")}`);
   });
+  // 2.4.7 M1 (mobil görünüm, client/mobil/): kullanıcının v0.3 ekranları programın içinde; adlar aynı kurala bağlı. Mobil betik tek tırnaklı
+  // dizgiler kullanır (seçenek çiftleri ['customer','Müşteri'], hızlı erişim kutuları, TITLES / reportGroups, stat / heading / reportField çağrıları);
+  // genel denetim çift tırnağa baktığından bu kalıplar ayrıca okunur. Okunamayan dosya boş sayılmaz (en az bir ad bulunmalı).
+  it("mobil görünümde (client/mobil) kurala uymayan ad yok", () => {
+    const files = ["client/mobil/index.html", "client/mobil/app.js", "client/mobil/yazma.js"]; // 2.4.7 M5: kayıt girişi formları
+    const found = files.flatMap(file => violations(file));
+    const src = read("client/mobil/app.js");
+    const texts = [
+      ...[...src.matchAll(/\[\s*'[\w-]+'\s*,\s*(?:'[^'\n]*'\s*,\s*)?'([^'\n]{3,60})'\s*\]/g)].map(m => m[1]),
+      ...[...src.matchAll(/\b(?:TITLES|reportGroups)\s*=\s*\{([^{}]{0,600})\}/g)].flatMap(m => [...m[1].matchAll(/:\s*'([^'\n]{3,70})'/g)].map(n => n[1])),
+      ...[...src.matchAll(/\b(?:stat|heading)\('([^'\n]{3,60})'/g)].map(m => m[1]),
+      ...[...src.matchAll(/\breportField\('[\w-]+','([^'\n]{3,60})'/g)].map(m => m[1]),
+    ];
+    assert.ok(texts.length >= 25, `mobil adlar okunamadı (${texts.length}; desen eşleşmedi — okunamayan veri boş sayılmaz)`);
+    for (const text of texts) if (eligible(text)) found.push(`client/mobil/app.js: “${text}” → “${titleCase(text)}”`);
+    assert.deepEqual(found, [], `Mobil görünümdeki adlar başlık yazımıyla yazılmalı:\n${found.join("\n")}`);
+  });
   it("rapor, PDF ve Excel başlıklarında kurala uymayan ad yok", () => {
     const files = readdirSync(new URL("server/routes/", ROOT)).map(name => `server/routes/${name}`);
     const found = files.flatMap(file => violations(file, { server: true }));

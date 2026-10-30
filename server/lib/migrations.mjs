@@ -1386,6 +1386,73 @@ export const MIGRATIONS = [
       });
     },
   },
+  {
+    version: 37,
+    name: "v2.4.7 e-Belge kullanım sayacının şirket izi (EDM iş ortaklığı; para dışı)",
+    up(store, { now = systemClock } = {}) {
+      // 2.4.7 E4 (EDM iş ortaklığı B1; kural lib/einvoice/kullanim.mjs; kullanıcı kararları S1–S5, 27.10.2026). Sayacın ASLI şirket dosyasının DIŞINDA,
+      // kurulum düzeyindeki kullanım defteridir (lib/einvoice/kullanim-defteri.mjs; S4: Yedekten Geri Yükle ve Şirket Verisini Sıfırla etkilemez). Bu tablo
+      // yalnız İZdir: sayılan gönderim durum yazımıyla AYNI işlemde buraya, işlemden sonra deftere yazılır; deftere yazım düşerse açılışta / kullanım
+      // özetinde izden tamamlanır (defterin birincil anahtarı çift sayımı önler). Şirket + ETTN + ortam başına bir satır. YALNIZ EKLEYİCİ: boş kurulur
+      // (geriye dönük doldurma YOK); eski sürüm (2.4.6) tabloyu görmez. Güncelleme ve silme tetikleyiciyle reddedilir. Para tablosu DEĞİL.
+      // edoc_usage_meta.since: sayacın bu dosyada başladığı an — bundan önceki belirsiz gönderimin sonradan kesinleşmesi sayılmaz (eski APPLICATION_NAME).
+      // settings'e DEĞİL ayrı tabloya (eski sürüm verisinin göçü mevcut satırları ve ayarları değiştirmez — test/guvenilirlik/goc-v20.mjs); ilk yazım kalır.
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS edoc_usage (
+          ettn TEXT NOT NULL, env TEXT NOT NULL CHECK (env IN ('test', 'live')), kind TEXT NOT NULL CHECK (kind IN ('efatura', 'earsiv', 'esmm')),
+          month TEXT NOT NULL CHECK (length(month) = 7), invoice_id TEXT NOT NULL DEFAULT '', source TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL,
+          PRIMARY KEY (ettn, env)
+        ) STRICT;
+        CREATE INDEX IF NOT EXISTS idx_edoc_usage_month ON edoc_usage(month, env, kind);
+        CREATE TRIGGER IF NOT EXISTS edoc_usage_no_update BEFORE UPDATE ON edoc_usage BEGIN SELECT RAISE(ABORT, 'edoc_usage yalnız eklenir'); END;
+        CREATE TRIGGER IF NOT EXISTS edoc_usage_no_delete BEFORE DELETE ON edoc_usage BEGIN SELECT RAISE(ABORT, 'edoc_usage yalnız eklenir'); END;
+        CREATE TABLE IF NOT EXISTS edoc_usage_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL) STRICT;
+      `);
+      store.run("INSERT OR IGNORE INTO edoc_usage_meta (key, value) VALUES ('since', ?)", (typeof now === "function" ? now() : new Date()).toISOString());
+    },
+  },
+  {
+    version: 38,
+    name: "v2.4.7 mobil cihaz eşleme ve uzak oturumlar (ortak katman; para dışı)",
+    up(store) {
+      // 2.4.7 M2 (docs/mobil/M2-TASARIM.md; lib/mobile-remote.mjs; kullanıcı kararları 26.10.2026 + P1–P13 29.10.2026). Program başına (iki şirket birlikte)
+      // sayılan eşli uzaktan cihazlar ORTAK KATMANDA (001'in veri tabanı; kullanıcılar ve oturumların yanında) kullanılır; şirket dosyalarında tablolar boş
+      // kalır. Yedekten Geri Yükle'de canlı hâl kalır (company-backups.mjs COMMON_TABLES: silinmiş cihaz eski yedekle geri gelmez); Şirket Verisini Sıfırla
+      // dokunmaz. YALNIZ EKLEYİCİ: yeni tablolar; mevcut tablo ve satır değişmez, eski sürüm (2.4.6) tabloları görmez. Kod/sır/oturum belirteci düz
+      // metin olarak YAZILMAZ (SHA-256 karması). Zamanlar ISO metni (uzaktan erişim saati, config.remoteNow).
+      // mobile_access: "Uzaktan Bağlanabilir" izni (kullanıcı başına; satır yoksa izin yok). mobile_codes: tek kullanımlık eşleme karekodları.
+      // mobile_devices: eşli cihazlar (revoked_at dolu = silinmiş; sayılmaz, giremez). mobile_sessions: cihaza bağlı uzak oturumlar (yerel sessions'tan ayrı).
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS mobile_access (
+          user_id TEXT PRIMARY KEY, remote INTEGER NOT NULL DEFAULT 0 CHECK (remote IN (0, 1)), updated_at TEXT NOT NULL, updated_by TEXT NOT NULL DEFAULT ''
+        ) STRICT;
+        CREATE TABLE IF NOT EXISTS mobile_codes (
+          code_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, created_by TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL, expires_at TEXT NOT NULL,
+          state TEXT NOT NULL DEFAULT 'active' CHECK (state IN ('active', 'used', 'revoked')), used_at TEXT, device_id TEXT
+        ) STRICT;
+        CREATE INDEX IF NOT EXISTS idx_mobile_codes_user ON mobile_codes(user_id, state);
+        CREATE TABLE IF NOT EXISTS mobile_devices (
+          id TEXT PRIMARY KEY, user_id TEXT NOT NULL, name TEXT NOT NULL, kind TEXT NOT NULL, secret_hash TEXT NOT NULL, public_key TEXT NOT NULL,
+          created_at TEXT NOT NULL, created_by TEXT NOT NULL DEFAULT '', last_seen_at TEXT, revoked_at TEXT, revoked_by TEXT, revoke_reason TEXT
+        ) STRICT;
+        CREATE INDEX IF NOT EXISTS idx_mobile_devices_user ON mobile_devices(user_id, revoked_at);
+        CREATE TABLE IF NOT EXISTS mobile_sessions (
+          token_hash TEXT PRIMARY KEY, device_id TEXT NOT NULL, user_id TEXT NOT NULL, created_at TEXT NOT NULL, last_seen_at TEXT NOT NULL, expires_at TEXT NOT NULL
+        ) STRICT;
+        CREATE INDEX IF NOT EXISTS idx_mobile_sessions_device ON mobile_sessions(device_id);
+        CREATE INDEX IF NOT EXISTS idx_mobile_sessions_user ON mobile_sessions(user_id);
+      `);
+    },
+  },
+  {
+    version: 39,
+    name: "v2.4.7 mobil şifreli özet: cihazın şifreleme anahtarı (ortak katman; para dışı)",
+    up(store) {
+      // 2.4.7 M3 (docs/mobil/M3-TASARIM.md; lib/mobile-ozet.mjs): eşlemede telefonun ürettiği, dışa aktarılamaz ECDH P-256 şifreleme anahtarının AÇIK kısmı
+      // (JWK). Şifreli özetin veri anahtarı bu anahtara sarılır. YALNIZ EKLEYİCİ: tek sütun; M2 ile eşlenmiş (anahtarsız) cihaz özeti açamaz, yeniden eşlenir.
+      addColumn(store, "mobile_devices", "enc_key", "TEXT");
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";

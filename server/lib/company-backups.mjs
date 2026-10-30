@@ -30,7 +30,8 @@ const RESTORE_STAGE_DIR = "geri-yukleme";
 const UPDATE_LABEL = /^(?:guncelleme-oncesi|basarisiz-guncelleme)(?:-|$)/;
 const HOLD_UPDATE_MS = 7 * 86_400_000;
 // Ortak katman: geri yüklemede dosyadaki değil, o anki hâli kalır.
-const COMMON_TABLES = ["users", "roles", "sessions"];
+// 2.4.7 M2: mobil cihaz eşleme tabloları da ortak katmandır (program başına sayılır; silinmiş cihaz ya da kaldırılmış uzak izin eski yedekle geri gelmez).
+const COMMON_TABLES = ["users", "roles", "sessions", "mobile_access", "mobile_codes", "mobile_devices", "mobile_sessions"];
 // v2.1.0 (gözden geçirme B3/B4): "meta.bank.%" (eski satır işareti, açılış onarımı raporu, K6 günlüğü, İşlem No sayacı) ve "meta.schema.%"
 // (göç damgaları) geri yüklenen dosyanın KENDİ verisinin parçasıdır: canlıdan aktarılmaz. Önceden sıfırlanmış canlı dosyanın işareti geri
 // yüklenen dosyaya yazılıyor, güncelleme öncesi satırlar "eski sürümün yeni yazdığı olaysız para satırı" sayılıyordu.
@@ -304,7 +305,8 @@ export function applyStagedRestore({ dataDir, backupRoot, dbPath, keep = 30, log
  *   busy      — Map(şirket kimliği → mesaj): geri yüklenen/silinen şirket (o sırada açılmaz, otomatik yedek atlanır)
  *   closeCompany — şirket örneğini kapatır (geri yüklemede dosya değişmeden önce)
  */
-export function createCompanyBackups({ registry, dataDir, keep = 30, log = null, withDb, busy = new Map(), closeCompany = async () => false }) {
+// usageRowsFor (2.4.7 E4): şirketin e-Belge kullanım defteri satırları — yedeğe kopyalanır; onRestored: geri yüklemeden sonra (defter birleştirmesi).
+export function createCompanyBackups({ registry, dataDir, keep = 30, log = null, withDb, busy = new Map(), closeCompany = async () => false, usageRowsFor = () => null, onRestored = () => {} }) {
   const isBusy = id => busy.has(id);
   const backupRoot = () => registry.dirsOf(registry.get(ROOT_COMPANY_ID) || { id: ROOT_COMPANY_ID, code: "001", name: "", dir: "" }).backupRoot;
   const folderOf = company => registry.dirsOf(company).backupDir;
@@ -356,7 +358,14 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
   }
   function backup(company, { label = "", keep: keepCount, stamp = "" } = {}) {
     if (registry.sharesRoot?.(company)) throw new HttpError(409, `“${labelOf(company)}” ilk şirketin (001) veri dosyasını gösteriyor; yedeği alınmaz (001'in yedeği alınıyor). Önce Yönetim → Şirketler → Ayır.`, { code: "company-shared" });
-    return withDb(company, db => createBackup(db, folderOf(company), { label, keep: keepCount ?? keep, company: identityOf(company), stamp })) || null;
+    const usageRows = (() => {
+      try {
+        return usageRowsFor(company);
+      } catch {
+        return null;
+      }
+    })();
+    return withDb(company, db => createBackup(db, folderOf(company), { label, keep: keepCount ?? keep, company: identityOf(company), stamp, usageRows })) || null;
   }
   // Aynı turda alınan yedekler aynı zamanı taşır (klasörlerde birlikte görünür).
   function backupMany(companies, { label = "" } = {}) {
@@ -704,6 +713,11 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
         throw new HttpError(500, `Veri dosyası değiştirilemedi; şirketin verisi değişmedi (${error.code || error.message}). Dosya başka bir programda açıksa kapatıp yeniden deneyin.`);
       }
       log?.info?.(`Yedekten geri yüklendi (${labelOf(target)}): ${path.basename(file)} (önceki veri: ${safety?.name || "—"})`);
+      try {
+        onRestored(target);
+      } catch (error) {
+        log?.warn?.(`Geri yüklemeden sonra kullanım defteri birleştirilemedi (${error.message}); açılışta birleştirilir.`);
+      }
       return { restored: true, name: path.basename(file), safety: safety?.name || "" };
     } finally {
       busy.delete(target.id);

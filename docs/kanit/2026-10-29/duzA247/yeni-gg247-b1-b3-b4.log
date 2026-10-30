@@ -1,0 +1,163 @@
+TAP version 13
+# Subtest: B1 silinen cihazın tarayıcısı kapıcı üzerinden yeniden eşlenir; eski çerez silinir
+    # Subtest: silinen cihazın eski çerezi: sayfa 200 (cihazsız) + çerez silinir; veri ucu 401 kapi-cihaz + çerez silinir; yeni karekodla eşleme 200, giriş 200
+    ok 1 - silinen cihazın eski çerezi: sayfa 200 (cihazsız) + çerez silinir; veri ucu 401 kapi-cihaz + çerez silinir; yeni karekodla eşleme 200, giriş 200
+      ---
+      duration_ms: 454.663936
+      type: 'test'
+      ...
+    # Subtest: eşleme ucu silinmiş cihazın çereziyle doğrudan gelirse de (sayfa açılmadan) 200; çerez yeni cihazınkiyle değişir
+    ok 2 - eşleme ucu silinmiş cihazın çereziyle doğrudan gelirse de (sayfa açılmadan) 200; çerez yeni cihazınkiyle değişir
+      ---
+      duration_ms: 389.929898
+      type: 'test'
+      ...
+    # Subtest: korunan davranış: kapıcının hiç görmediği (yeni eşlenmiş olabilecek) cihaz kimliği veri ucunda 401 kapi-cihaz alır ama çerezi SİLİNMEZ; eşli cihaz etkilenmez
+    ok 3 - korunan davranış: kapıcının hiç görmediği (yeni eşlenmiş olabilecek) cihaz kimliği veri ucunda 401 kapi-cihaz alır ama çerezi SİLİNMEZ; eşli cihaz etkilenmez
+      ---
+      duration_ms: 166.861772
+      type: 'test'
+      ...
+    1..3
+ok 1 - B1 silinen cihazın tarayıcısı kapıcı üzerinden yeniden eşlenir; eski çerez silinir
+  ---
+  duration_ms: 1504.402231
+  type: 'suite'
+  ...
+# Subtest: B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+    # Subtest: aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin kaydı/yüklemesi/canlı isteği 410
+    ok 1 - aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin kaydı/yüklemesi/canlı isteği 410
+      ---
+      duration_ms: 108.783045
+      type: 'test'
+      ...
+    # Subtest: her yeni ofis eskisinin tünelini + DNS kaydını siler: 5 kurulumdan sonra etkin tünel 1, DNS kaydı 1; eski ofisin tünel başvurusu 410
+    ok 2 - her yeni ofis eskisinin tünelini + DNS kaydını siler: 5 kurulumdan sonra etkin tünel 1, DNS kaydı 1; eski ofisin tünel başvurusu 410
+      ---
+      duration_ms: 53.442521
+      type: 'test'
+      ...
+    # Subtest: Cloudflare silmesi başarısızsa eski ofis yine kapanır, temizlik bekler; sonraki kayıtta tünel + DNS silinir
+    ok 3 - Cloudflare silmesi başarısızsa eski ofis yine kapanır, temizlik bekler; sonraki kayıtta tünel + DNS silinir
+      ---
+      duration_ms: 19.608951
+      type: 'test'
+      ...
+    # Subtest: ofis başka makineye taşınırsa (lisans yeni makineye aktarıldı) çalışmayı sürdürür; eski makinede açılan yeni ofis onun tüneline/DNS'ine dokunmaz
+    ok 4 - ofis başka makineye taşınırsa (lisans yeni makineye aktarıldı) çalışmayı sürdürür; eski makinede açılan yeni ofis onun tüneline/DNS'ine dokunmaz
+      ---
+      duration_ms: 28.392546
+      type: 'test'
+      ...
+    # Subtest: DENEME belirteci aynı kurallarla: aynı makinenin ikinci deneme ofisi birincisini kapatır
+    ok 5 - DENEME belirteci aynı kurallarla: aynı makinenin ikinci deneme ofisi birincisini kapatır
+      ---
+      duration_ms: 22.163803
+      type: 'test'
+      ...
+    # Subtest: eşzamanlı iki yeni ofis kaydı (aynı makine, 6 tur): her turda kapıdan geçen cihaz en çok 3
+    ok 6 - eşzamanlı iki yeni ofis kaydı (aynı makine, 6 tur): her turda kapıdan geçen cihaz en çok 3
+      ---
+      duration_ms: 102.697693
+      type: 'test'
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan
+    ok 7 - ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan
+      ---
+      duration_ms: 27.93976
+      type: 'test'
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (b): kaybeden (kapatılmamış) ofisin yeniden kaydı makineyi geri ALAMAZ (410); kazanan sürer
+    ok 8 - ZORLA ilk yazım yarışı (b): kaybeden (kapatılmamış) ofisin yeniden kaydı makineyi geri ALAMAZ (410); kazanan sürer
+      ---
+      duration_ms: 16.70078
+      type: 'test'
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)
+    ok 9 - ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)
+      ---
+      duration_ms: 18.304427
+      type: 'test'
+      ...
+    # Subtest: makine başına günde 10 ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır
+    ok 10 - makine başına günde 10 ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır
+      ---
+      duration_ms: 78.001156
+      type: 'test'
+      ...
+    # Subtest: kapıcı genelinde günde 50 yeni ofis; 51. (başka makine) 429 kapi-hiz; kayıtlı ofisin yeniden kaydı etkilenmez; ertesi gün açılır
+    ok 11 - kapıcı genelinde günde 50 yeni ofis; 51. (başka makine) 429 kapi-hiz; kayıtlı ofisin yeniden kaydı etkilenmez; ertesi gün açılır
+      ---
+      duration_ms: 212.115309
+      type: 'test'
+      ...
+    # Subtest: makine başına saatte 240 kayıt; sonraki 429 kapi-hiz; saat dönümünde açılır
+    ok 12 - makine başına saatte 240 kayıt; sonraki 429 kapi-hiz; saat dönümünde açılır
+      ---
+      duration_ms: 1154.168392
+      type: 'test'
+      ...
+    # Subtest: makine başına saatte 30 tünel başvurusu; sonraki 429 kapi-hiz; saat dönümünde açılır
+    ok 13 - makine başına saatte 30 tünel başvurusu; sonraki 429 kapi-hiz; saat dönümünde açılır
+      ---
+      duration_ms: 110.430913
+      type: 'test'
+      ...
+    1..13
+ok 2 - B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+  ---
+  duration_ms: 1954.96147
+  type: 'suite'
+  ...
+# Subtest: B4 alt alanlar arası çerez: __Host- adlar, Domain'li Set-Cookie düşer, çakışan çerez reddedilir
+    # Subtest: kapıcı başka ofisin kökeninden gelen Domain'li Set-Cookie'leri düşürür (Domain'siz kendi çerezi geçer)
+    ok 1 - kapıcı başka ofisin kökeninden gelen Domain'li Set-Cookie'leri düşürür (Domain'siz kendi çerezi geçer)
+      ---
+      duration_ms: 11.292006
+      type: 'test'
+      ...
+    # Subtest: program cihaz ve oturum çerezini __Host- adla, Secure + Path=/ ve Domain'siz yazar (kapıcı üzerinden)
+    ok 2 - program cihaz ve oturum çerezini __Host- adla, Secure + Path=/ ve Domain'siz yazar (kapıcı üzerinden)
+      ---
+      duration_ms: 123.569022
+      type: 'test'
+      ...
+    # Subtest: kurbanın isteğine eski (öneksiz) ad ile atılmış çerez erişimi kesmez — başta da sonda da
+    ok 3 - kurbanın isteğine eski (öneksiz) ad ile atılmış çerez erişimi kesmez — başta da sonda da
+      ---
+      duration_ms: 12.475845
+      type: 'test'
+      ...
+    # Subtest: aynı adlı iki cihaz ya da oturum çerezi kapıcıda 400 kapi-cerez (ilk/son seçilmez) — veri ucunda da sayfa yolunda da
+    ok 4 - aynı adlı iki cihaz ya da oturum çerezi kapıcıda 400 kapi-cerez (ilk/son seçilmez) — veri ucunda da sayfa yolunda da
+      ---
+      duration_ms: 14.684906
+      type: 'test'
+      ...
+    # Subtest: program da aynı kural: uzak dinleyiciye (kapıcısız) çakışan çerez 400 remote-cookie; tek çerez geçer
+    ok 5 - program da aynı kural: uzak dinleyiciye (kapıcısız) çakışan çerez 400 remote-cookie; tek çerez geçer
+      ---
+      duration_ms: 396.66681
+      type: 'test'
+      ...
+    # Subtest: tek ayrıştırma: kapıcı ve program çerezi aynı modülle okur (lib/mobil-cerez.mjs); kapıcıda ayrı çerez çözücü yok
+    ok 6 - tek ayrıştırma: kapıcı ve program çerezi aynı modülle okur (lib/mobil-cerez.mjs); kapıcıda ayrı çerez çözücü yok
+      ---
+      duration_ms: 0.905479
+      type: 'test'
+      ...
+    1..6
+ok 3 - B4 alt alanlar arası çerez: __Host- adlar, Domain'li Set-Cookie düşer, çakışan çerez reddedilir
+  ---
+  duration_ms: 1243.299056
+  type: 'suite'
+  ...
+1..3
+# tests 22
+# suites 3
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5669.810468

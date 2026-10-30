@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: 2.4.7 E2: e-Fatura/e-Arşiv servisinin her işleminde APPLICATION_NAME destekofis30, CHANNEL_NAME DestekOfis
+not ok 1 - 2.4.7 E2: e-Fatura/e-Arşiv servisinin her işleminde APPLICATION_NAME destekofis30, CHANNEL_NAME DestekOfis
+  ---
+  duration_ms: 52.800367
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247-eski-d31b4868/test/edm-uygulama-adi-247.test.mjs:31:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Login: APPLICATION_NAME destekofis30 bekleniyordu, DestekOfis geldi
+    + actual - expected
+    
+    + 'DestekOfis'
+    - 'destekofis30'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'destekofis30'
+  actual: 'DestekOfis'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247-eski-d31b4868/test/edm-uygulama-adi-247.test.mjs:48:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: 2.4.7 E2: e-SMM servisinin her işleminde APPLICATION_NAME destekofis30, CHANNEL_NAME DestekOfis
+not ok 2 - 2.4.7 E2: e-SMM servisinin her işleminde APPLICATION_NAME destekofis30, CHANNEL_NAME DestekOfis
+  ---
+  duration_ms: 9.024997
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247-eski-d31b4868/test/edm-uygulama-adi-247.test.mjs:53:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Login: APPLICATION_NAME destekofis30 bekleniyordu, DestekOfis geldi
+    + actual - expected
+    
+    + 'DestekOfis'
+    - 'destekofis30'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'destekofis30'
+  actual: 'DestekOfis'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247-eski-d31b4868/test/edm-uygulama-adi-247.test.mjs:64:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: 2.4.7 E1: uygulama adı seçenekle değiştirilemez (eski appName / applicationName yok sayılır); kanal adı channelName ile
+not ok 3 - 2.4.7 E1: uygulama adı seçenekle değiştirilemez (eski appName / applicationName yok sayılır); kanal adı channelName ile
+  ---
+  duration_ms: 0.980146
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247-eski-d31b4868/test/edm-uygulama-adi-247.test.mjs:69:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Login: APPLICATION_NAME destekofis30 bekleniyordu, Baska geldi
+    + actual - expected
+    
+    + 'Baska'
+    - 'destekofis30'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'destekofis30'
+  actual: 'Baska'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/edm247-eski-d31b4868/test/edm-uygulama-adi-247.test.mjs:76:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 177.931901

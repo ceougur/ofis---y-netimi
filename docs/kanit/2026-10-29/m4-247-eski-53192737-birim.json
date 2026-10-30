@@ -1,0 +1,58 @@
+{
+  "ad": "m4-247-eski-53192737-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-indirici-247.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-surec-247.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yapilandirma-247.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/kapi-tunel-247.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs",
+  "commit": "09175ccd3981b6cb8aaaaa526e7dbfed20a0ba1b",
+  "dal": "worktree-agent-a6890bef3afee1413",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T07:02:34.492Z",
+  "sure_sn": 0.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 0,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/kapi-tunel-247.test.mjs",
+      "konum": "test/kapi-tunel-247.test.mjs:1:1",
+      "hata": "test failed"
+    },
+    {
+      "ad": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-indirici-247.test.mjs",
+      "konum": "test/tunel-indirici-247.test.mjs:1:1",
+      "hata": "test failed"
+    },
+    {
+      "ad": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-surec-247.test.mjs",
+      "konum": "test/tunel-surec-247.test.mjs:1:1",
+      "hata": "test failed"
+    },
+    {
+      "ad": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yapilandirma-247.test.mjs",
+      "konum": "test/tunel-yapilandirma-247.test.mjs:1:1",
+      "hata": "test failed"
+    },
+    {
+      "ad": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs",
+      "konum": "test/tunel-yonetici-247.test.mjs:1:1",
+      "hata": "test failed"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/m4-247-eski-53192737-birim.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6890bef3afee1413",
+  "ham_cikti_sha256": "a02164dc592177b707af01b65bb6a96188970e339f276c762a41bc49f386ac49",
+  "ham_cikti_bayt": 8589
+}

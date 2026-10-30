@@ -1,0 +1,217 @@
+TAP version 13
+# Subtest: D1/D2: adres bekçisi (izin listesi)
+    # Subtest: gerçek kipte yalnız EDM test ortamının iki servisi (WSDL sorguları dahil) ve yerel adres; kuru kipte yalnız yerel
+    ok 1 - gerçek kipte yalnız EDM test ortamının iki servisi (WSDL sorguları dahil) ve yerel adres; kuru kipte yalnız yerel
+      ---
+      duration_ms: 1.245605
+      type: 'test'
+      ...
+    # Subtest: canlı EDM ve her varyantı reddedilir (büyük harf, port, yol, http, alt alan adı, kimlikli adres, portal, başka ana bilgisayar)
+    ok 2 - canlı EDM ve her varyantı reddedilir (büyük harf, port, yol, http, alt alan adı, kimlikli adres, portal, başka ana bilgisayar)
+      ---
+      duration_ms: 1.203519
+      type: 'test'
+      ...
+    # Subtest: bekçi izinsiz isteği AĞA ÇIKARMADAN düşürür; program bunu 'EDM'ye ulaşılamadı' (kesin ulaşmadı) sayar — belirsiz gönderim değil
+    ok 3 - bekçi izinsiz isteği AĞA ÇIKARMADAN düşürür; program bunu 'EDM'ye ulaşılamadı' (kesin ulaşmadı) sayar — belirsiz gönderim değil
+      ---
+      duration_ms: 6.211424
+      type: 'test'
+      ...
+    # Subtest: D2: oturum açıkken GÖNDERİM isteği (yan etkili, yinelenmeyen işlem) bekçiye takılınca da 'kesin ulaşmadı' — 'Sonucu Belirsiz' değil
+    ok 4 - D2: oturum açıkken GÖNDERİM isteği (yan etkili, yinelenmeyen işlem) bekçiye takılınca da 'kesin ulaşmadı' — 'Sonucu Belirsiz' değil
+      ---
+      duration_ms: 109.709446
+      type: 'test'
+      ...
+    1..4
+ok 1 - D1/D2: adres bekçisi (izin listesi)
+  ---
+  duration_ms: 119.717732
+  type: 'suite'
+  ...
+# Subtest: D4/D6: maskeleme ve üretim bayrakları
+    # Subtest: maskeci kullanıcı adını ve parolayı (uzunu önce) her yerde siler
+    ok 1 - maskeci kullanıcı adını ve parolayı (uzunu önce) her yerde siler
+      ---
+      duration_ms: 0.468311
+      type: 'test'
+      ...
+    # Subtest: düzenek bayrakları server/server.mjs'ten okur: e-Belge, canlı ve e-SMM açık (yorum satırlarındaki örnekler sayılmaz)
+    ok 2 - düzenek bayrakları server/server.mjs'ten okur: e-Belge, canlı ve e-SMM açık (yorum satırlarındaki örnekler sayılmaz)
+      ---
+      duration_ms: 0.863074
+      type: 'test'
+      ...
+    1..2
+ok 2 - D4/D6: maskeleme ve üretim bayrakları
+  ---
+  duration_ms: 1.604657
+  type: 'suite'
+  ...
+# Subtest: D8: resmî PDF'te düzenleyenin unvanı
+    # Subtest: e-SMM'de VKN'li düzenleyende BİLGİ (denetim değil); e-SMM'de TCKN'li düzenleyende ve e-Arşiv / e-Fatura'da denetim
+    ok 1 - e-SMM'de VKN'li düzenleyende BİLGİ (denetim değil); e-SMM'de TCKN'li düzenleyende ve e-Arşiv / e-Fatura'da denetim
+      ---
+      duration_ms: 0.551006
+      type: 'test'
+      ...
+    1..1
+ok 3 - D8: resmî PDF'te düzenleyenin unvanı
+  ---
+  duration_ms: 4.885989
+  type: 'suite'
+  ...
+# Subtest: Kuru koşu (sahte EDM): betik uçtan uca
+    # Subtest: bütün adımlar geçer; 5 e-SMM + 2 e-Arşiv gönderilir, 1 iptal; OZET kullanıcıya numaraları ve test portalını verir; kimlik bilgisi hiçbir dosyada ve ekranda yok
+    ok 1 - bütün adımlar geçer; 5 e-SMM + 2 e-Arşiv gönderilir, 1 iptal; OZET kullanıcıya numaraları ve test portalını verir; kimlik bilgisi hiçbir dosyada ve ekranda yok
+      ---
+      duration_ms: 2000.922193
+      type: 'test'
+      ...
+    # Subtest: D3: parola yanlışsa betik giriş adımında HEMEN durur — tek Login, yeniden deneme yok, başka hiçbir EDM isteği yok; çıkış 2
+    ok 2 - D3: parola yanlışsa betik giriş adımında HEMEN durur — tek Login, yeniden deneme yok, başka hiçbir EDM isteği yok; çıkış 2
+      ---
+      duration_ms: 1176.739376
+      type: 'test'
+      ...
+    # Subtest: D5/D7: önceki özetin üzerine --uzerine-yaz olmadan yazılmaz; kimlik bilgisi yoksa hiçbir istek yapılmaz (çıkış 4)
+    ok 3 - D5/D7: önceki özetin üzerine --uzerine-yaz olmadan yazılmaz; kimlik bilgisi yoksa hiçbir istek yapılmaz (çıkış 4)
+      ---
+      duration_ms: 1179.094004
+      type: 'test'
+      ...
+    1..3
+ok 4 - Kuru koşu (sahte EDM): betik uçtan uca
+  ---
+  duration_ms: 4357.013003
+  type: 'suite'
+  ...
+# Subtest: --eszamanli: yardımcılar
+    # Subtest: ardisikNumara boşluğu ve tekrarı bulur; soapIslemi işlem adını gövdeden okur
+    ok 1 - ardisikNumara boşluğu ve tekrarı bulur; soapIslemi işlem adını gövdeden okur
+      ---
+      duration_ms: 0.629132
+      type: 'test'
+      ...
+    # Subtest: izleyici en çok eşzamanlı isteği ve işlem sayısını yazar, hatayı aynen yükseltir
+    ok 2 - izleyici en çok eşzamanlı isteği ve işlem sayısını yazar, hatayı aynen yükseltir
+      ---
+      duration_ms: 5.575871
+      type: 'test'
+      ...
+    # Subtest: bağımsız okuyucu (programın EDM istemcisinden ayrı): kendi girişi, GetSMM YALNIZ ETTN ile, EDM'nin kaydındaki numarayı okur; olmayan ETTN 0 kayıt; yanlış parola giriş hatası
+    ok 3 - bağımsız okuyucu (programın EDM istemcisinden ayrı): kendi girişi, GetSMM YALNIZ ETTN ile, EDM'nin kaydındaki numarayı okur; olmayan ETTN 0 kayıt; yanlış parola giriş hatası
+      ---
+      duration_ms: 31.164977
+      type: 'test'
+      ...
+    1..3
+ok 5 - --eszamanli: yardımcılar
+  ---
+  duration_ms: 37.642358
+  type: 'suite'
+  ...
+# Subtest: --eszamanli: kuru koşu (sahte EDM)
+    # Subtest: zorla araya girme: bütün adımlar geçer, ön koşul GERÇEKTEN oluştu (sahte EDM'de ≥ 10 SendSMM aynı anda, önbellek soğuk); giriş tek uçuş (Login 1, N4); 30 belge, TES ardışık; OZET tablosu; kimlik bilgisi yok
+    ok 1 - zorla araya girme: bütün adımlar geçer, ön koşul GERÇEKTEN oluştu (sahte EDM'de ≥ 10 SendSMM aynı anda, önbellek soğuk); giriş tek uçuş (Login 1, N4); 30 belge, TES ardışık; OZET tablosu; kimlik bilgisi yok
+      ---
+      duration_ms: 11866.285588
+      type: 'test'
+      ...
+    # Subtest: N4 EDM davranışları (gerçek EDM'de görülen eşzamanlı giriş reddi; tek oturumlu EDM): tek uçuş girişle 20/20 iletilir, çakışan giriş yok, çıkış 0
+    ok 2 - N4 EDM davranışları (gerçek EDM'de görülen eşzamanlı giriş reddi; tek oturumlu EDM): tek uçuş girişle 20/20 iletilir, çakışan giriş yok, çıkış 0
+      ---
+      duration_ms: 23226.622908
+      type: 'test'
+      ...
+    # Subtest: testin dişi: sahte EDM'ye enjekte edilen her hata düzeneği KIRMIZI yapar, neden iletide (kayıp, çift kayıt, yanlış durum, askı)
+    ok 3 - testin dişi: sahte EDM'ye enjekte edilen her hata düzeneği KIRMIZI yapar, neden iletide (kayıp, çift kayıt, yanlış durum, askı)
+      ---
+      duration_ms: 19578.924091
+      type: 'test'
+      ...
+    # Subtest: hata enjeksiyonu / zorla / kısa zaman aşımı gerçek kipte ya da --eszamanli'siz reddedilir; hiçbir istek yapılmaz, çıktı klasörü açılmaz (çıkış 4)
+    ok 4 - hata enjeksiyonu / zorla / kısa zaman aşımı gerçek kipte ya da --eszamanli'siz reddedilir; hiçbir istek yapılmaz, çıktı klasörü açılmaz (çıkış 4)
+      ---
+      duration_ms: 292.276657
+      type: 'test'
+      ...
+    1..4
+ok 6 - --eszamanli: kuru koşu (sahte EDM)
+  ---
+  duration_ms: 54965.328441
+  type: 'suite'
+  ...
+# Subtest: Üretim girişi: e-Belge açık, test ve canlı ortam açık
+    # Subtest: server/server.mjs e-Belgeyi, canlı ortamı (kullanıcı 16.10.2026: "hem testi hem canlıyı aç") ve e-SMM'yi (2.4.4 iş listesi 24) açar; config bunları ortam değişkeniyle açmaz
+    ok 1 - server/server.mjs e-Belgeyi, canlı ortamı (kullanıcı 16.10.2026: "hem testi hem canlıyı aç") ve e-SMM'yi (2.4.4 iş listesi 24) açar; config bunları ortam değişkeniyle açmaz
+      ---
+      duration_ms: 2.171432
+      type: 'test'
+      ...
+    1..1
+ok 7 - Üretim girişi: e-Belge açık, test ve canlı ortam açık
+  ---
+  duration_ms: 3.50316
+  type: 'suite'
+  ...
+# Subtest: Test ortamı belgeleri (sahte EDM)
+    # Subtest: canlı ortam seçilemez (400); ayarlar test serisinin sıradaki numarasını gösterir, firmanın serisi 1'de kalır
+    ok 1 - canlı ortam seçilemez (400); ayarlar test serisinin sıradaki numarasını gösterir, firmanın serisi 1'de kalır
+      ---
+      duration_ms: 25.54393
+      type: 'test'
+      ...
+    # Subtest: test ortamında e-Fatura TEF, e-Arşiv TEA serisinden; belge 'Test' işaretli; firmanın serisi tüketilmez
+    ok 2 - test ortamında e-Fatura TEF, e-Arşiv TEA serisinden; belge 'Test' işaretli; firmanın serisi tüketilmez
+      ---
+      duration_ms: 233.871271
+      type: 'test'
+      ...
+    # Subtest: Gönderilecekler'deki belge numarasını gönderimde test serisinden alır
+    ok 3 - Gönderilecekler'deki belge numarasını gönderimde test serisinden alır
+      ---
+      duration_ms: 103.973965
+      type: 'test'
+      ...
+    # Subtest: test belgesinin PDF'i ve e-Belge görünümü TEST yazar; kâğıt belge yazmaz
+    ok 4 - test belgesinin PDF'i ve e-Belge görünümü TEST yazar; kâğıt belge yazmaz
+      ---
+      duration_ms: 2988.916339
+      type: 'test'
+      ...
+    # Subtest: firma kendi serisini TEF / TEA / TES yapamaz (400 series-reserved)
+    ok 5 - firma kendi serisini TEF / TEA / TES yapamaz (400 series-reserved)
+      ---
+      duration_ms: 18.421302
+      type: 'test'
+      ...
+    1..5
+ok 8 - Test ortamı belgeleri (sahte EDM)
+  ---
+  duration_ms: 4084.366533
+  type: 'suite'
+  ...
+# Subtest: Canlıya geçiş (canlı kilidi açılmış kurulum)
+    # Subtest: testte 2 belge (TEF 1–2) → canlıya geçince ilk belge EFT …001; test belgesi Test kalır, numarası değişmez
+    ok 1 - testte 2 belge (TEF 1–2) → canlıya geçince ilk belge EFT …001; test belgesi Test kalır, numarası değişmez
+      ---
+      duration_ms: 2695.715385
+      type: 'test'
+      ...
+    1..1
+ok 9 - Canlıya geçiş (canlı kilidi açılmış kurulum)
+  ---
+  duration_ms: 3089.83313
+  type: 'suite'
+  ...
+1..9
+# tests 24
+# suites 9
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 59690.535038

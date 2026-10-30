@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>DestekOfis Tanıtım Mobil</title>
+<style>
+@font-face { font-family: "Manrope"; src: url("file:///home/user/ofis---y-netimi/client/assets/fonts/manrope-latin-ext-wght-normal.woff2") format("woff2"); font-weight: 200 800; unicode-range: U+0100-024F, U+1E00-1EFF; }
+@font-face { font-family: "Manrope"; src: url("file:///home/user/ofis---y-netimi/client/assets/fonts/manrope-latin-wght-normal.woff2") format("woff2"); font-weight: 200 800; }
+@font-face { font-family: "DM Sans"; src: url("file:///home/user/ofis---y-netimi/client/assets/fonts/dm-sans-latin-ext-wght-normal.woff2") format("woff2"); font-weight: 100 1000; unicode-range: U+0100-024F, U+1E00-1EFF; }
+@font-face { font-family: "DM Sans"; src: url("file:///home/user/ofis---y-netimi/client/assets/fonts/dm-sans-latin-wght-normal.woff2") format("woff2"); font-weight: 100 1000; }
+:root { --gold: #f0cf86; --gold2: #e2b45e; --ink: #ffffff; --soft: rgba(255,255,255,.86); --mute: rgba(255,255,255,.72); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1350px; }
+body { font-family: "DM Sans", sans-serif; color: var(--ink); background: linear-gradient(158deg, #36926e 0%, #23775a 34%, #1a5f48 62%, #133f33 100%); position: relative; overflow: hidden; }
+body::before { content: ""; position: absolute; inset: 0; background: radial-gradient(900px 620px at 10% 0%, rgba(255,255,255,.10), transparent 70%); pointer-events: none; }
+.wrap { position: absolute; inset: 0; padding: 78px 84px 0; }
+/* Başlık: logo özgün görselden birebir alınır */
+.brand { display: flex; align-items: center; gap: 30px; }
+.logo { width: 134px; height: 134px; border-radius: 30px; background: url("file:///home/user/ofis---y-netimi/docs/pazarlama/DestekOfis-Tanitim.png") -82px -79px / 1080px 1350px no-repeat; box-shadow: 0 14px 34px rgba(0,0,0,.22); }
+.name { font-family: "Manrope"; font-weight: 800; font-size: 72px; letter-spacing: -1.5px; line-height: 1; }
+.name span { color: var(--gold); }
+.tag { font-size: 25px; color: var(--soft); margin-top: 12px; letter-spacing: .2px; }
+/* Mobil vitrini */
+.hero { position: relative; margin-top: 50px; height: 486px; }
+.badge { display: inline-flex; align-items: center; gap: 12px; background: linear-gradient(135deg, var(--gold), var(--gold2)); color: #163f31; font-weight: 800; font-size: 23px; letter-spacing: .6px; padding: 10px 20px 10px 12px; border-radius: 999px; box-shadow: 0 8px 22px rgba(0,0,0,.18); }
+.badge b { background: #163f31; color: var(--gold); border-radius: 999px; padding: 4px 12px; font-size: 18px; letter-spacing: 1px; }
+.h1 { font-family: "Manrope"; font-weight: 800; font-size: 88px; line-height: .98; letter-spacing: -2.4px; margin-top: 24px; }
+.h1 .g { color: var(--gold); display: block; }
+.sub { font-size: 28px; line-height: 1.34; color: var(--soft); margin-top: 20px; width: 560px; }
+.sub b { color: #fff; font-weight: 700; }
+.mini { margin-top: 20px; display: grid; gap: 11px; width: 560px; }
+.mini div { display: flex; align-items: center; gap: 14px; font-size: 24px; color: #fff; }
+.mini i { width: 12px; height: 12px; border-radius: 50%; background: var(--gold); flex: none; box-shadow: 0 0 0 5px rgba(240,207,134,.22); }
+/* Telefon */
+.phone { position: absolute; right: -6px; top: -40px; width: 290px; height: 560px; border-radius: 48px; background: #0d2a22; padding: 13px; box-shadow: 0 30px 60px rgba(0,0,0,.38), inset 0 0 0 2px rgba(255,255,255,.12); transform: rotate(4deg); }
+.screen { width: 100%; height: 100%; border-radius: 37px; background: #f4f7f6; overflow: hidden; color: #12352b; position: relative; }
+.notch { position: absolute; top: 10px; left: 50%; width: 92px; height: 24px; margin-left: -46px; background: #0d2a22; border-radius: 14px; }
+.sbar { display: flex; align-items: center; gap: 9px; padding: 46px 18px 12px; background: #fff; border-bottom: 1px solid #e4ebe8; }
+.sbar .ic { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(150deg, #2f8f6c, #17543f); color: #fff; font: 800 15px "Manrope"; display: grid; place-items: center; }
+.sbar strong { font: 800 17px "Manrope"; }
+.sbar .dot { margin-left: auto; font-size: 11px; color: #2f8f6c; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+.sbar .dot::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #2fbf7c; }
+.card { margin: 14px 14px 0; background: #fff; border-radius: 16px; padding: 14px 16px; box-shadow: 0 2px 8px rgba(18,53,43,.07); }
+.card .l { font-size: 11px; color: #6b827a; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; }
+.card .who { font: 800 16px "Manrope"; margin-bottom: 6px; }
+.card .big { font: 800 31px "Manrope"; letter-spacing: -.8px; margin-top: 2px; }
+.btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.btns span { text-align: center; font-size: 12.5px; font-weight: 800; border-radius: 10px; padding: 9px 0; }
+.btns .p { background: #1f7a5a; color: #fff; }
+.btns .s { background: #eaf2ef; color: #1f6b50; }
+.row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-top: 1px solid #edf2f0; font-size: 12.5px; }
+.row:first-of-type { border-top: 0; }
+.row small { display: block; color: #7f948c; font-size: 10.5px; margin-top: 2px; }
+.row em { font-style: normal; font-weight: 800; }
+.row em.a { color: #1f7a5a; }
+.tabs { position: absolute; bottom: 0; left: 0; right: 0; height: 58px; background: #fff; border-top: 1px solid #e4ebe8; display: flex; justify-content: space-around; align-items: center; font-size: 10.5px; color: #8aa098; font-weight: 700; }
+.tabs .on { color: #1f7a5a; }
+/* Program özellikleri */
+.sec { margin-top: 64px; font-family: "Manrope"; font-weight: 800; font-size: 40px; letter-spacing: -.8px; line-height: 1.1; }
+.sec span { color: var(--gold); }
+.list { margin-top: 20px; display: grid; gap: 12px; }
+.list div { display: flex; align-items: center; gap: 18px; font-size: 26px; color: var(--soft); }
+.list b { color: #fff; font-weight: 700; }
+.chk { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(140deg, #f3d792, #d9a64f); flex: none; display: grid; place-items: center; box-shadow: 0 4px 10px rgba(0,0,0,.18); }
+.chk::after { content: ""; width: 13px; height: 7px; border-left: 3px solid #1d4a3a; border-bottom: 3px solid #1d4a3a; transform: rotate(-45deg) translate(1px, -1px); }
+/* Alt bant */
+.foot { position: absolute; left: 84px; right: 84px; bottom: 56px; border-top: 2px solid rgba(255,255,255,.16); padding-top: 22px; display: flex; justify-content: space-between; align-items: flex-end; }
+.free { font-family: "Manrope"; font-weight: 800; font-size: 46px; letter-spacing: -.6px; }
+.free small { display: block; font-family: "DM Sans"; font-weight: 500; font-size: 22px; color: var(--mute); letter-spacing: 0; margin-top: 8px; }
+.contact { text-align: right; font-weight: 700; font-size: 27px; color: var(--gold); line-height: 1.42; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="logo" role="img" aria-label="DestekOfis logosu"></div>
+    <div>
+      <div class="name">Destek<span>Ofis</span></div>
+      <div class="tag">Ön Muhasebe ve Ofis Yönetimi</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="badge"><b>YENİ</b>Mobil sürüm yayında</div>
+    <div class="h1">Artık<span class="g">cebinizde.</span></div>
+    <div class="sub">Telefonunuzu karekodla <b>bir kez eşleyin</b>; ofisiniz her an yanınızda.</div>
+    <div class="mini">
+      <div><i></i>Cari, kasa, banka ve raporlar telefonda</div>
+      <div><i></i><span>Tahsilatı ve ödemeyi <b>yerinde girin</b></span></div>
+      <div><i></i>Bilgisayar kapalıyken de son durum</div>
+    </div>
+
+    <div class="phone" aria-hidden="true">
+      <div class="screen">
+        <div class="notch"></div>
+        <div class="sbar"><div class="ic">D</div><strong>DestekOfis</strong><span class="dot">Bağlı</span></div>
+        <div class="card">
+          <div class="who">Ayşe Demir</div>
+          <div class="l">Cari Bakiye</div>
+          <div class="big">₺8.750,00</div>
+          <div class="btns"><span class="p">Tahsilat Gir</span><span class="s">Ödeme Gir</span></div>
+        </div>
+        <div class="card">
+          <div class="l" style="margin-bottom:4px">Son Hareketler</div>
+          <div class="row"><div>Tahsilat<small>21.10.2026</small></div><em class="a">₺500,00</em></div>
+          <div class="row"><div>Taksit Tahsilatı<small>20.10.2026</small></div><em class="a">₺1.500,00</em></div>
+          <div class="row"><div>Satış Faturası<small>18.10.2026</small></div><em>₺13.200,00</em></div>
+        </div>
+        <div class="tabs"><span>Özet</span><span class="on">Cari</span><span>Finans</span><span>Stok</span><span>Raporlar</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">İşletmenizin bütün hesabı <span>tek programda.</span></div>
+  <div class="list">
+    <div><span class="chk"></span><span><b>Cari, kasa, banka, POS</b>, çek/senet, fatura, stok ve taksit</span></div>
+    <div><span class="chk"></span><span>Excel'inizi yükleyin, program <b>kendini ona göre kurar</b></span></div>
+    <div><span class="chk"></span><span>Cari ekstresini <b>WhatsApp'tan tek tıkla</b> gönderin</span></div>
+    <div><span class="chk"></span><span><b>Mizan, yevmiye, nakit akışı</b>; her rapor PDF ve Excel</span></div>
+    <div><span class="chk"></span><span>Verileriniz <b>kendi ofisinizde</b>; 6 saatte bir otomatik yedek</span></div>
+  </div>
+
+  <div class="foot">
+    <div class="free">30 gün ücretsiz<small>Mobil dahil tüm özellikleriyle · Kredi kartı istemez</small></div>
+    <div class="contact">📞 0536 771 50 55<br>destekofis.net<br>destek@destekofis.net</div>
+  </div>
+</div>
+</body>
+</html>

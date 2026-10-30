@@ -1,0 +1,236 @@
+TAP version 13
+# Subtest: M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared
+    # Subtest: 1. kimse uzaktan bağlanamazken: tünel Kapalı (Eşli cihaz yok), kapıcıya başvurulmaz, süreç yok
+    not ok 1 - 1. kimse uzaktan bağlanamazken: tünel Kapalı (Eşli cihaz yok), kapıcıya başvurulmaz, süreç yok
+      ---
+      duration_ms: 414.299403
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tünel durum ucu yanıtı (HTTP 404) — tünel yöneticisi yok mu?
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        status (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:62:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:86:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 2. Uzaktan Bağlanabilir işaretlenince adres önceden hazırlanır (kapıcıya bir başvuru), süreç YİNE başlamaz
+    not ok 2 - 2. Uzaktan Bağlanabilir işaretlenince adres önceden hazırlanır (kapıcıya bir başvuru), süreç YİNE başlamaz
+      ---
+      duration_ms: 10012.550305
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: 'kapıcı başvurusu 10000 ms içinde sağlanmadı'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        until (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:41:9)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:96:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 3. karekod oluşturulunca tünel kendiliğinden açılır → Bağlı; yapılandırma YALNIZ uzak dinleyiciye bağlı, ana port asla
+    not ok 3 - 3. karekod oluşturulunca tünel kendiliğinden açılır → Bağlı; yapılandırma YALNIZ uzak dinleyiciye bağlı, ana port asla
+      ---
+      duration_ms: 9.736872
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:106:3'
+      failureType: 'testCodeFailure'
+      error: ''
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:110:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 4. tünelden giren istek uzak kapıdan geçer: /mobil/ açık, programın öbür uçları 404 (remote-path); eşleme çerezi Secure
+    not ok 4 - 4. tünelden giren istek uzak kapıdan geçer: /mobil/ açık, programın öbür uçları 404 (remote-path); eşleme çerezi Secure
+      ---
+      duration_ms: 0.946188
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:129:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'port')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:130:41)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 5. cihaz silinince (bekleyen karekod da yok) tünel kapanır, süreç gider; yeni karekodla yeniden açılır
+    not ok 5 - 5. cihaz silinince (bekleyen karekod da yok) tünel kapanır, süreç gider; yeni karekodla yeniden açılır
+      ---
+      duration_ms: 0.54468
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:147:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'pid')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:148:43)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 6. lisans salt okunur olunca tünel kapanır (neden: lisans); lisans dönünce yeniden açılır
+    not ok 6 - 6. lisans salt okunur olunca tünel kapanır (neden: lisans); lisans dönünce yeniden açılır
+      ---
+      duration_ms: 0.537833
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:162:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'pid')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:163:43)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 7. bağlayıcı çökerse yeniden başlatılır (Bağlanıyor → Bağlı)
+    not ok 7 - 7. bağlayıcı çökerse yeniden başlatılır (Bağlanıyor → Bağlı)
+      ---
+      duration_ms: 0.558084
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:176:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'pid')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:177:43)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 8. durum ucu yalnız yöneticiye açık; belirteç / yerel port dönmez
+    not ok 8 - 8. durum ucu yalnız yöneticiye açık; belirteç / yerel port dönmez
+      ---
+      duration_ms: 147.965657
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:183:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        404 !== 403
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 403
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:187:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 9. program kapanınca bağlayıcı yetim kalmaz (süreç ve kimlik dosyası gider)
+    not ok 9 - 9. program kapanınca bağlayıcı yetim kalmaz (süreç ve kimlik dosyası gider)
+      ---
+      duration_ms: 1.592937
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:194:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'pid')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:195:43)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 1 - M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared
+  ---
+  duration_ms: 11085.851398
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:53:1'
+  failureType: 'subtestsFailed'
+  error: '9 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: M4 tünel yöneticisi — doğrulanamayan dosya ve test kurulumu
+    # Subtest: indirilen dosyanın özeti tutmazsa süreç HİÇ başlamaz, kapıcıya başvurulmaz; durum Kapalı + neden
+    not ok 1 - indirilen dosyanın özeti tutmazsa süreç HİÇ başlamaz, kapıcıya başvurulmaz; durum Kapalı + neden
+      ---
+      duration_ms: 662.827318
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:206:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'reason')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:228:35
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async until (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:37:12)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:226:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: test kurulumu (lisans adresi yerel döngü, kapıcı adresi verilmemiş) gerçek kapıcıya ASLA gitmez (ders 30): tünel 'bu kurulumda kapalı'
+    not ok 2 - test kurulumu (lisans adresi yerel döngü, kapıcı adresi verilmemiş) gerçek kapıcıya ASLA gitmez (ders 30): tünel 'bu kurulumda kapalı'
+      ---
+      duration_ms: 891.930473
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:242:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'state')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:259:22)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - M4 tünel yöneticisi — doğrulanamayan dosya ve test kurulumu
+  ---
+  duration_ms: 1555.643552
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m4-247-eski-53192737/test/tunel-yonetici-247.test.mjs:205:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 11
+# suites 2
+# pass 0
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13150.325384

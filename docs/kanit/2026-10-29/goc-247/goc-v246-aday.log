@@ -1,0 +1,24 @@
+[12:25:27] göç + ölçü: önce şema {"sirket-001":36,"sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120":36}; 001 açılışı (göç dahil) 837 ms; ilk erişim {"001":5,"002":248}; yeni yedek 001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-29T12-24-45-324Z-pre-migration-v39.sqlite, 002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-29T12-25-17-071Z-pre-migration-v39.sqlite
+  ✓ 001 şema 36 → 39
+  ✓ 001 bütünlük ok
+  ✓ 001 göç öncesi yedek pre-migration-v39
+  ✓ 001 yeni tablolar yalnız v37/v38 (edoc_usage, edoc_usage_meta, mobile_access, mobile_codes, mobile_devices, mobile_sessions); eski tablo düşmedi
+  ✓ 001 mobil tabloları boş (göç cihaz/izin yaratmaz)
+  ✓ 001 e-Belge sayacı izi boş (geriye dönük doldurma yok)
+  ✓ 001 eski tabloların satır sayıları aynı (değişenler: yok)
+  ✓ 002 şema 36 → 39
+  ✓ 002 bütünlük ok
+  ✓ 002 göç öncesi yedek pre-migration-v39
+  ✓ 002 yeni tablolar yalnız v37/v38 (edoc_usage, edoc_usage_meta, mobile_access, mobile_codes, mobile_devices, mobile_sessions); eski tablo düşmedi
+  ✓ 002 mobil tabloları boş (göç cihaz/izin yaratmaz)
+  ✓ 002 e-Belge sayacı izi boş (geriye dönük doldurma yok)
+  ✓ 002 eski tabloların satır sayıları aynı (değişenler: yok)
+  ✓ sirket-001 mobile_devices.enc_key kolonu (v39)
+  ✓ sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120 mobile_devices.enc_key kolonu (v39)
+# göç: 2 şirket
+# tests 16
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

@@ -1,0 +1,63 @@
+{
+  "ad": "m34-uctan-uca-eski-kancasiz",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m34-e2e-eski-2d40d927/test/kapi-tunel-uctan-uca-247.test.mjs",
+  "commit": "2d40d927234196a64ab44cb4eeb560d9e78305e2",
+  "dal": "worktree-agent-a082ebcff5805485b",
+  "kirli": 3,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T09:20:43.443Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 1,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "M3 + M4 uçtan uca — gerçek program, gerçek createKapi (tünel kancası), sahte Cloudflare API + kenar, sahte cloudflared › ilk kayıt ağ kesintisinde düşmüş ofis: tünel başvurusu gerçek kapıcıda kapi-ofis-yok → program M3 kaydını yapar, yeniden başvurur → tünel + DNS; eşli cihaz yokken süreç başlamaz",
+      "konum": "test/kapi-tunel-uctan-uca-247.test.mjs:208:3",
+      "hata": "kapıcı günlüğü (tünel durumu: off — Kapıcı isteği reddetti (HTTP 200).) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "M3 + M4 uçtan uca — gerçek program, gerçek createKapi (tünel kancası), sahte Cloudflare API + kenar, sahte cloudflared › karekod → tünel açılır (aynı tünel yeniden kullanılır); cloudflared yalnız uzak dinleyiciye ve kapıcının verdiği belirteçle; telefon kapıdan /mobil/ 200, eşleşir, giriş yapar",
+      "konum": "test/kapi-tunel-uctan-uca-247.test.mjs:229:3",
+      "hata": "karekod tünel adresini taşımalı: http://oy5jurarkejphwq7i.destekofis.test/mobil/#eslesme=Z5vC8iiLYzOwAcfYHwk1Ug (beklenen true, gelen false)"
+    },
+    {
+      "ad": "M3 + M4 uçtan uca — gerçek program, gerçek createKapi (tünel kancası), sahte Cloudflare API + kenar, sahte cloudflared › yasak yol: kapıcıda 404 kapi-yol (programa iletilmez); kapıyı atlatıp cloudflared'e işaretsiz istek 401 remote-kapi; geçerli işaretle yasak yol programda 404 remote-path",
+      "konum": "test/kapi-tunel-uctan-uca-247.test.mjs:263:3",
+      "hata": "Cannot read properties of undefined (reading 'get')"
+    },
+    {
+      "ad": "M3 + M4 uçtan uca — gerçek program, gerçek createKapi (tünel kancası), sahte Cloudflare API + kenar, sahte cloudflared › başka ofisin anahtarı A'nın tünelini alamaz (401 kapi-imza / 400 kapi-istek); B kendi kaydıyla AYRI tünel ve ad alır; A'nın DNS'i değişmez",
+      "konum": "test/kapi-tunel-uctan-uca-247.test.mjs:283:3",
+      "hata": "A'nın yolu B'nin anahtarıyla · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "M3 + M4 uçtan uca — gerçek program, gerçek createKapi (tünel kancası), sahte Cloudflare API + kenar, sahte cloudflared › lisans P9: 1 saattir doğrulanamıyor (servis kapalı) → kapıcı tüneli 503 ile reddeder ve canlı isteği programa İLETMEZ; servis dönünce yeniden açılır",
+      "konum": "test/kapi-tunel-uctan-uca-247.test.mjs:302:3",
+      "hata": "Kapıcı isteği reddetti (HTTP 200). · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "M3 + M4 uçtan uca — gerçek program, gerçek createKapi (tünel kancası), sahte Cloudflare API + kenar, sahte cloudflared › cihaz silinince (eşli cihaz kalmadı) tünel kapanır: cloudflared durur, kapıcı silinen cihazı reddeder, cihazsız istek kenarda bağlayıcı bulamaz (503 kapi-ofis-kapali)",
+      "konum": "test/kapi-tunel-uctan-uca-247.test.mjs:322:3",
+      "hata": "ön koşul: bağlayıcı çalışıyor (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-29/m34-uctan-uca-eski-kancasiz.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a082ebcff5805485b",
+  "ham_cikti_sha256": "5b9659a0f00ae2469b49108b3928291b54443f4882d98f49300eb2f452774325",
+  "ham_cikti_bayt": 9789
+}

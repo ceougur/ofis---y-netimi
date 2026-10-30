@@ -1,0 +1,32 @@
+{
+  "ad": "mobil-ozet-olcek-dar",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/kapi-247.test.mjs test/kapi-donen-ofis-247.test.mjs test/kapi-gg247-b1.test.mjs test/kapi-gg247-b3.test.mjs test/kapi-gg247-b4.test.mjs test/kapi-para-245.test.mjs test/kapi-tunel-247.test.mjs test/kapi-tunel-uctan-uca-247.test.mjs test/kapi-uyari-245.test.mjs test/mobil-247.test.mjs test/mobil-deneme-bitis-247.test.mjs test/mobil-eslesme-247.test.mjs test/mobil-gg247-b2.test.mjs test/mobil-gg247-b2b.test.mjs test/mobil-gg247-b5.test.mjs test/mobil-ofis-kaydi-247.test.mjs test/mobil-ozet-247.test.mjs test/mobil-ozet-olcek-247.test.mjs test/mobil-yazma-247.test.mjs test/tunel-indirici-247.test.mjs test/tunel-saat-247.test.mjs test/tunel-surec-247.test.mjs test/tunel-yapilandirma-247.test.mjs test/tunel-yonetici-247.test.mjs test/bagimsiz/mobil-erisim/*.test.mjs",
+  "commit": "a3a5f814b7725212d5d7d42745b502a27ba2e51b",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 3,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T20:44:35.786Z",
+  "sure_sn": 71.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 230,
+    "gecen": 230,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/mobil-ozet-olcek-dar.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "a17df1ee0ea8d6ea3761f0605e2efa860c3ca71cd11d62bbcd847af68362e3fc",
+  "ham_cikti_bayt": 88161
+}

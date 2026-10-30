@@ -1,0 +1,4304 @@
+TAP version 13
+# Subtest: mobil Kasa: hareket listesi telefona ve özete gitmez (M-H1)
+    # Subtest: masaüstü Kasa listesi aynen; mobil yanıt yalnız toplamları taşır, bakiye aynı
+    not ok 1 - masaüstü Kasa listesi aynen; mobil yanıt yalnız toplamları taşır, bakiye aynı
+      ---
+      duration_ms: 19.573552
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/eski-kirmizi-a3a5f814/test/mobil-ozet-olcek-247.test.mjs:34:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        mobil Kasa yanıtı hareket listesini taşımamalı
+        + actual - expected
+        
+        + [
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 10,
+        +     balance: 10,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 1',
+        +     editable: true,
+        +     id: 'cash-2c22749c-b48e-4f96-be1c-62584af1ed93',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 11,
+        +     balance: 21,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 2',
+        +     editable: true,
+        +     id: 'cash-35f0ab4a-57af-41ca-909e-66ca6907d604',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 16,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 3',
+        +     editable: true,
+        +     id: 'cash-bcf1ede9-e2bc-4939-a04b-58bb4038a88d',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 13,
+        +     balance: 29,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 4',
+        +     editable: true,
+        +     id: 'cash-9d347a1c-1c6f-466a-8def-aa69ce71d5bd',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 14,
+        +     balance: 43,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 5',
+        +     editable: true,
+        +     id: 'cash-f3dd22e3-c95f-4852-8876-07d73844822e',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 38,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 6',
+        +     editable: true,
+        +     id: 'cash-5817823e-03f0-4d2f-b0fd-ef9801226368',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 16,
+        +     balance: 54,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 7',
+        +     editable: true,
+        +     id: 'cash-bb6aab1e-4857-4bb4-adb5-9d4bc3a18e8c',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 17,
+        +     balance: 71,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 8',
+        +     editable: true,
+        +     id: 'cash-c10bdbc4-cf4c-4539-a4de-7d406dcea9ac',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 66,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 9',
+        +     editable: true,
+        +     id: 'cash-a5516d5f-8d01-42e4-a51a-22ffdc37c5bd',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 19,
+        +     balance: 85,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 10',
+        +     editable: true,
+        +     id: 'cash-ebfd21c0-4f16-40a8-be46-ce4ae42ccf4f',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 20,
+        +     balance: 105,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 11',
+        +     editable: true,
+        +     id: 'cash-da27a843-f811-4a2d-83f0-715ba9f5a53e',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 100,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 12',
+        +     editable: true,
+        +     id: 'cash-f87e17fb-7937-497a-86f9-996549884112',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 22,
+        +     balance: 122,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 13',
+        +     editable: true,
+        +     id: 'cash-03b74402-7105-40e6-adb1-8c9423f5cb8e',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 23,
+        +     balance: 145,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 14',
+        +     editable: true,
+        +     id: 'cash-9bfe0f09-e0a4-4a11-9ed8-5e04e467f0d8',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 140,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 15',
+        +     editable: true,
+        +     id: 'cash-557aacab-e954-456f-b41e-1e71077f2cc2',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 25,
+        +     balance: 165,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 16',
+        +     editable: true,
+        +     id: 'cash-6838f4f0-da83-4271-be59-42b8353a65ca',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 26,
+        +     balance: 191,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 17',
+        +     editable: true,
+        +     id: 'cash-dc084f60-0dfd-43a7-acff-d9a34f9cfe6b',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 186,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 18',
+        +     editable: true,
+        +     id: 'cash-928e3780-5312-40af-81d6-e882fb878cb2',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 28,
+        +     balance: 214,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 19',
+        +     editable: true,
+        +     id: 'cash-1da8505f-83c4-41cc-94ae-337fd5786419',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 29,
+        +     balance: 243,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 20',
+        +     editable: true,
+        +     id: 'cash-84ead6ca-9d5f-49eb-81b3-ceb289297570',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 238,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 21',
+        +     editable: true,
+        +     id: 'cash-4e6f05f4-14f9-4596-8e77-7b660419bb84',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 31,
+        +     balance: 269,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 22',
+        +     editable: true,
+        +     id: 'cash-54698e08-cf1f-4b85-a923-94efa1ac2620',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 32,
+        +     balance: 301,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 23',
+        +     editable: true,
+        +     id: 'cash-0a58b37b-12b9-43f3-ba22-ea3b10a3ea07',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 296,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 24',
+        +     editable: true,
+        +     id: 'cash-a10aa5a3-fee5-4ab9-9724-4fb26a1c5824',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 34,
+        +     balance: 330,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 25',
+        +     editable: true,
+        +     id: 'cash-deb68ce8-7872-4475-92b7-3a36326f5975',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 35,
+        +     balance: 365,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 26',
+        +     editable: true,
+        +     id: 'cash-f6909d7c-1fa1-4caa-b136-f953918cdb1d',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 360,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 27',
+        +     editable: true,
+        +     id: 'cash-cbab813d-bad1-4b7d-8fbc-5606eb48f001',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 37,
+        +     balance: 397,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 28',
+        +     editable: true,
+        +     id: 'cash-250e23d8-7722-4822-a201-52cbe28f0000',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 38,
+        +     balance: 435,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 29',
+        +     editable: true,
+        +     id: 'cash-5ab80a39-616f-4009-a10c-491001dfc351',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 430,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 30',
+        +     editable: true,
+        +     id: 'cash-7b6d05a6-b36d-460f-924e-cef5cf39090c',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 40,
+        +     balance: 470,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 31',
+        +     editable: true,
+        +     id: 'cash-ff9a7a49-a54c-46e9-ab75-b075ff2420d2',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 41,
+        +     balance: 511,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 32',
+        +     editable: true,
+        +     id: 'cash-fa16df59-d3f3-4c65-8621-9ec5477ed385',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 506,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 33',
+        +     editable: true,
+        +     id: 'cash-62ceccc0-4ce3-4073-a83d-ab9dc7a0495a',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 43,
+        +     balance: 549,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 34',
+        +     editable: true,
+        +     id: 'cash-dab5c287-8b45-46ed-8600-f9d174f32aae',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 44,
+        +     balance: 593,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 35',
+        +     editable: true,
+        +     id: 'cash-ba2c7135-5c6d-45a1-9be3-a4d0316fc567',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 588,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 36',
+        +     editable: true,
+        +     id: 'cash-6fbd6ace-9e99-4b3c-b048-b09e1ebd2600',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 46,
+        +     balance: 634,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 37',
+        +     editable: true,
+        +     id: 'cash-e2d966c1-b20a-4a31-93ae-9d557983058a',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 47,
+        +     balance: 681,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 38',
+        +     editable: true,
+        +     id: 'cash-25205d5c-3bad-4c9f-a614-a0c7d714e141',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 676,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 39',
+        +     editable: true,
+        +     id: 'cash-3cc0dac3-f42e-45b3-92c5-bcb472112a9b',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 49,
+        +     balance: 725,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 40',
+        +     editable: true,
+        +     id: 'cash-31cce599-d099-496c-8133-573af385cc84',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 50,
+        +     balance: 775,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 41',
+        +     editable: true,
+        +     id: 'cash-4ab23382-4758-4dfa-a577-5c4e016a48f2',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 770,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 42',
+        +     editable: true,
+        +     id: 'cash-77e1d7c0-6a35-444a-b777-35d9ea22ff64',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 52,
+        +     balance: 822,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 43',
+        +     editable: true,
+        +     id: 'cash-a78723bf-b140-43f2-84fa-e2d822519229',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 53,
+        +     balance: 875,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 44',
+        +     editable: true,
+        +     id: 'cash-cd68b251-2cf5-4457-ad29-f9cfb3fdb5e7',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 870,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 45',
+        +     editable: true,
+        +     id: 'cash-805ae7c6-0e2a-452e-b605-a3f612a71193',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 55,
+        +     balance: 925,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 46',
+        +     editable: true,
+        +     id: 'cash-20965f80-0eaa-4ebe-a964-3d93eaa48701',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 56,
+        +     balance: 981,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 47',
+        +     editable: true,
+        +     id: 'cash-549d8721-11f0-4960-992b-96f1dec7acd9',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 976,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 48',
+        +     editable: true,
+        +     id: 'cash-ee5bfaca-4600-40ee-8473-842710ebe019',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 58,
+        +     balance: 1034,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 49',
+        +     editable: true,
+        +     id: 'cash-8e8957a7-d5e5-47c3-b688-9a80edbd6efa',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 59,
+        +     balance: 1093,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 50',
+        +     editable: true,
+        +     id: 'cash-bbf54c15-08c6-492f-8ca7-9c56381cb094',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 1088,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 51',
+        +     editable: true,
+        +     id: 'cash-6866b24b-98ad-4281-8e09-0f3c5e5f4f6d',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 61,
+        +     balance: 1149,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 52',
+        +     editable: true,
+        +     id: 'cash-66923c15-7159-40d0-99f5-1c506a4d3024',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 62,
+        +     balance: 1211,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 53',
+        +     editable: true,
+        +     id: 'cash-2444fa26-6b29-4381-aab6-b7b3615fcccd',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 1206,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 54',
+        +     editable: true,
+        +     id: 'cash-e530fd8e-cd1b-40be-b3b2-91a11421a9bd',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 64,
+        +     balance: 1270,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 55',
+        +     editable: true,
+        +     id: 'cash-98bd2177-671a-490a-8a27-d25aae0d141e',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 65,
+        +     balance: 1335,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 56',
+        +     editable: true,
+        +     id: 'cash-9194c6b6-8e58-45bb-b69e-d8bd8494fc40',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 1330,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 57',
+        +     editable: true,
+        +     id: 'cash-6685e25f-d7f1-47fa-b90a-0561758bf547',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 67,
+        +     balance: 1397,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 58',
+        +     editable: true,
+        +     id: 'cash-1c57d0ce-eb2d-4244-b202-535e65db5f7d',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 68,
+        +     balance: 1465,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 59',
+        +     editable: true,
+        +     id: 'cash-c47a0984-5ddb-40e8-85a3-4d20ffb4d970',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 1460,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 60',
+        +     editable: true,
+        +     id: 'cash-16cc92dd-0d91-4dc9-8843-f0d92076fda8',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   }
+        + ]
+        - undefined
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      actual:
+        0:
+          id: 'cash-2c22749c-b48e-4f96-be1c-62584af1ed93'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 10
+          date: '2026-11-18'
+          description: 'Kasa hareketi 1'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 10
+          editable: true
+        1:
+          id: 'cash-35f0ab4a-57af-41ca-909e-66ca6907d604'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 11
+          date: '2026-11-18'
+          description: 'Kasa hareketi 2'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 21
+          editable: true
+        2:
+          id: 'cash-bcf1ede9-e2bc-4939-a04b-58bb4038a88d'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 3'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 16
+          editable: true
+        3:
+          id: 'cash-9d347a1c-1c6f-466a-8def-aa69ce71d5bd'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 13
+          date: '2026-11-18'
+          description: 'Kasa hareketi 4'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 29
+          editable: true
+        4:
+          id: 'cash-f3dd22e3-c95f-4852-8876-07d73844822e'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 14
+          date: '2026-11-18'
+          description: 'Kasa hareketi 5'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 43
+          editable: true
+        5:
+          id: 'cash-5817823e-03f0-4d2f-b0fd-ef9801226368'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 6'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 38
+          editable: true
+        6:
+          id: 'cash-bb6aab1e-4857-4bb4-adb5-9d4bc3a18e8c'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 16
+          date: '2026-11-18'
+          description: 'Kasa hareketi 7'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 54
+          editable: true
+        7:
+          id: 'cash-c10bdbc4-cf4c-4539-a4de-7d406dcea9ac'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 17
+          date: '2026-11-18'
+          description: 'Kasa hareketi 8'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 71
+          editable: true
+        8:
+          id: 'cash-a5516d5f-8d01-42e4-a51a-22ffdc37c5bd'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 9'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 66
+          editable: true
+        9:
+          id: 'cash-ebfd21c0-4f16-40a8-be46-ce4ae42ccf4f'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 19
+          date: '2026-11-18'
+          description: 'Kasa hareketi 10'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 85
+          editable: true
+        10:
+          id: 'cash-da27a843-f811-4a2d-83f0-715ba9f5a53e'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 20
+          date: '2026-11-18'
+          description: 'Kasa hareketi 11'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 105
+          editable: true
+        11:
+          id: 'cash-f87e17fb-7937-497a-86f9-996549884112'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 12'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 100
+          editable: true
+        12:
+          id: 'cash-03b74402-7105-40e6-adb1-8c9423f5cb8e'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 22
+          date: '2026-11-18'
+          description: 'Kasa hareketi 13'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 122
+          editable: true
+        13:
+          id: 'cash-9bfe0f09-e0a4-4a11-9ed8-5e04e467f0d8'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 23
+          date: '2026-11-18'
+          description: 'Kasa hareketi 14'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 145
+          editable: true
+        14:
+          id: 'cash-557aacab-e954-456f-b41e-1e71077f2cc2'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 15'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 140
+          editable: true
+        15:
+          id: 'cash-6838f4f0-da83-4271-be59-42b8353a65ca'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 25
+          date: '2026-11-18'
+          description: 'Kasa hareketi 16'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 165
+          editable: true
+        16:
+          id: 'cash-dc084f60-0dfd-43a7-acff-d9a34f9cfe6b'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 26
+          date: '2026-11-18'
+          description: 'Kasa hareketi 17'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 191
+          editable: true
+        17:
+          id: 'cash-928e3780-5312-40af-81d6-e882fb878cb2'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 18'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 186
+          editable: true
+        18:
+          id: 'cash-1da8505f-83c4-41cc-94ae-337fd5786419'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 28
+          date: '2026-11-18'
+          description: 'Kasa hareketi 19'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 214
+          editable: true
+        19:
+          id: 'cash-84ead6ca-9d5f-49eb-81b3-ceb289297570'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 29
+          date: '2026-11-18'
+          description: 'Kasa hareketi 20'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 243
+          editable: true
+        20:
+          id: 'cash-4e6f05f4-14f9-4596-8e77-7b660419bb84'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 21'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 238
+          editable: true
+        21:
+          id: 'cash-54698e08-cf1f-4b85-a923-94efa1ac2620'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 31
+          date: '2026-11-18'
+          description: 'Kasa hareketi 22'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 269
+          editable: true
+        22:
+          id: 'cash-0a58b37b-12b9-43f3-ba22-ea3b10a3ea07'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 32
+          date: '2026-11-18'
+          description: 'Kasa hareketi 23'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 301
+          editable: true
+        23:
+          id: 'cash-a10aa5a3-fee5-4ab9-9724-4fb26a1c5824'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 24'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 296
+          editable: true
+        24:
+          id: 'cash-deb68ce8-7872-4475-92b7-3a36326f5975'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 34
+          date: '2026-11-18'
+          description: 'Kasa hareketi 25'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 330
+          editable: true
+        25:
+          id: 'cash-f6909d7c-1fa1-4caa-b136-f953918cdb1d'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 35
+          date: '2026-11-18'
+          description: 'Kasa hareketi 26'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 365
+          editable: true
+        26:
+          id: 'cash-cbab813d-bad1-4b7d-8fbc-5606eb48f001'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 27'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 360
+          editable: true
+        27:
+          id: 'cash-250e23d8-7722-4822-a201-52cbe28f0000'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 37
+          date: '2026-11-18'
+          description: 'Kasa hareketi 28'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 397
+          editable: true
+        28:
+          id: 'cash-5ab80a39-616f-4009-a10c-491001dfc351'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 38
+          date: '2026-11-18'
+          description: 'Kasa hareketi 29'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 435
+          editable: true
+        29:
+          id: 'cash-7b6d05a6-b36d-460f-924e-cef5cf39090c'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 30'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 430
+          editable: true
+        30:
+          id: 'cash-ff9a7a49-a54c-46e9-ab75-b075ff2420d2'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 40
+          date: '2026-11-18'
+          description: 'Kasa hareketi 31'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 470
+          editable: true
+        31:
+          id: 'cash-fa16df59-d3f3-4c65-8621-9ec5477ed385'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 41
+          date: '2026-11-18'
+          description: 'Kasa hareketi 32'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 511
+          editable: true
+        32:
+          id: 'cash-62ceccc0-4ce3-4073-a83d-ab9dc7a0495a'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 33'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 506
+          editable: true
+        33:
+          id: 'cash-dab5c287-8b45-46ed-8600-f9d174f32aae'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 43
+          date: '2026-11-18'
+          description: 'Kasa hareketi 34'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 549
+          editable: true
+        34:
+          id: 'cash-ba2c7135-5c6d-45a1-9be3-a4d0316fc567'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 44
+          date: '2026-11-18'
+          description: 'Kasa hareketi 35'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 593
+          editable: true
+        35:
+          id: 'cash-6fbd6ace-9e99-4b3c-b048-b09e1ebd2600'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 36'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 588
+          editable: true
+        36:
+          id: 'cash-e2d966c1-b20a-4a31-93ae-9d557983058a'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 46
+          date: '2026-11-18'
+          description: 'Kasa hareketi 37'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 634
+          editable: true
+        37:
+          id: 'cash-25205d5c-3bad-4c9f-a614-a0c7d714e141'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 47
+          date: '2026-11-18'
+          description: 'Kasa hareketi 38'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 681
+          editable: true
+        38:
+          id: 'cash-3cc0dac3-f42e-45b3-92c5-bcb472112a9b'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 39'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 676
+          editable: true
+        39:
+          id: 'cash-31cce599-d099-496c-8133-573af385cc84'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 49
+          date: '2026-11-18'
+          description: 'Kasa hareketi 40'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 725
+          editable: true
+        40:
+          id: 'cash-4ab23382-4758-4dfa-a577-5c4e016a48f2'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 50
+          date: '2026-11-18'
+          description: 'Kasa hareketi 41'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 775
+          editable: true
+        41:
+          id: 'cash-77e1d7c0-6a35-444a-b777-35d9ea22ff64'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 42'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 770
+          editable: true
+        42:
+          id: 'cash-a78723bf-b140-43f2-84fa-e2d822519229'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 52
+          date: '2026-11-18'
+          description: 'Kasa hareketi 43'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 822
+          editable: true
+        43:
+          id: 'cash-cd68b251-2cf5-4457-ad29-f9cfb3fdb5e7'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 53
+          date: '2026-11-18'
+          description: 'Kasa hareketi 44'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 875
+          editable: true
+        44:
+          id: 'cash-805ae7c6-0e2a-452e-b605-a3f612a71193'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 45'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 870
+          editable: true
+        45:
+          id: 'cash-20965f80-0eaa-4ebe-a964-3d93eaa48701'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 55
+          date: '2026-11-18'
+          description: 'Kasa hareketi 46'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 925
+          editable: true
+        46:
+          id: 'cash-549d8721-11f0-4960-992b-96f1dec7acd9'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 56
+          date: '2026-11-18'
+          description: 'Kasa hareketi 47'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 981
+          editable: true
+        47:
+          id: 'cash-ee5bfaca-4600-40ee-8473-842710ebe019'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 48'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 976
+          editable: true
+        48:
+          id: 'cash-8e8957a7-d5e5-47c3-b688-9a80edbd6efa'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 58
+          date: '2026-11-18'
+          description: 'Kasa hareketi 49'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1034
+          editable: true
+        49:
+          id: 'cash-bbf54c15-08c6-492f-8ca7-9c56381cb094'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 59
+          date: '2026-11-18'
+          description: 'Kasa hareketi 50'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1093
+          editable: true
+        50:
+          id: 'cash-6866b24b-98ad-4281-8e09-0f3c5e5f4f6d'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 51'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1088
+          editable: true
+        51:
+          id: 'cash-66923c15-7159-40d0-99f5-1c506a4d3024'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 61
+          date: '2026-11-18'
+          description: 'Kasa hareketi 52'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1149
+          editable: true
+        52:
+          id: 'cash-2444fa26-6b29-4381-aab6-b7b3615fcccd'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 62
+          date: '2026-11-18'
+          description: 'Kasa hareketi 53'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1211
+          editable: true
+        53:
+          id: 'cash-e530fd8e-cd1b-40be-b3b2-91a11421a9bd'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 54'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1206
+          editable: true
+        54:
+          id: 'cash-98bd2177-671a-490a-8a27-d25aae0d141e'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 64
+          date: '2026-11-18'
+          description: 'Kasa hareketi 55'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1270
+          editable: true
+        55:
+          id: 'cash-9194c6b6-8e58-45bb-b69e-d8bd8494fc40'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 65
+          date: '2026-11-18'
+          description: 'Kasa hareketi 56'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1335
+          editable: true
+        56:
+          id: 'cash-6685e25f-d7f1-47fa-b90a-0561758bf547'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 57'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1330
+          editable: true
+        57:
+          id: 'cash-1c57d0ce-eb2d-4244-b202-535e65db5f7d'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 67
+          date: '2026-11-18'
+          description: 'Kasa hareketi 58'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1397
+          editable: true
+        58:
+          id: 'cash-c47a0984-5ddb-40e8-85a3-4d20ffb4d970'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 68
+          date: '2026-11-18'
+          description: 'Kasa hareketi 59'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1465
+          editable: true
+        59:
+          id: 'cash-16cc92dd-0d91-4dc9-8843-f0d92076fda8'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 60'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1460
+          editable: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/eski-kirmizi-a3a5f814/test/mobil-ozet-olcek-247.test.mjs:40:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: özetin Kasa bölümü hareket listesi taşımaz; bakiye masaüstüyle aynı
+    not ok 2 - özetin Kasa bölümü hareket listesi taşımaz; bakiye masaüstüyle aynı
+      ---
+      duration_ms: 73.31145
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/eski-kirmizi-a3a5f814/test/mobil-ozet-olcek-247.test.mjs:48:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        özetin Kasa bölümü hareket listesini taşımamalı
+        + actual - expected
+        
+        + [
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 10,
+        +     balance: 10,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 1',
+        +     editable: true,
+        +     id: 'cash-2c22749c-b48e-4f96-be1c-62584af1ed93',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 11,
+        +     balance: 21,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 2',
+        +     editable: true,
+        +     id: 'cash-35f0ab4a-57af-41ca-909e-66ca6907d604',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 16,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 3',
+        +     editable: true,
+        +     id: 'cash-bcf1ede9-e2bc-4939-a04b-58bb4038a88d',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 13,
+        +     balance: 29,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 4',
+        +     editable: true,
+        +     id: 'cash-9d347a1c-1c6f-466a-8def-aa69ce71d5bd',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 14,
+        +     balance: 43,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 5',
+        +     editable: true,
+        +     id: 'cash-f3dd22e3-c95f-4852-8876-07d73844822e',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 38,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 6',
+        +     editable: true,
+        +     id: 'cash-5817823e-03f0-4d2f-b0fd-ef9801226368',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 16,
+        +     balance: 54,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 7',
+        +     editable: true,
+        +     id: 'cash-bb6aab1e-4857-4bb4-adb5-9d4bc3a18e8c',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 17,
+        +     balance: 71,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 8',
+        +     editable: true,
+        +     id: 'cash-c10bdbc4-cf4c-4539-a4de-7d406dcea9ac',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 66,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 9',
+        +     editable: true,
+        +     id: 'cash-a5516d5f-8d01-42e4-a51a-22ffdc37c5bd',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 19,
+        +     balance: 85,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 10',
+        +     editable: true,
+        +     id: 'cash-ebfd21c0-4f16-40a8-be46-ce4ae42ccf4f',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 20,
+        +     balance: 105,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 11',
+        +     editable: true,
+        +     id: 'cash-da27a843-f811-4a2d-83f0-715ba9f5a53e',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 100,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 12',
+        +     editable: true,
+        +     id: 'cash-f87e17fb-7937-497a-86f9-996549884112',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 22,
+        +     balance: 122,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 13',
+        +     editable: true,
+        +     id: 'cash-03b74402-7105-40e6-adb1-8c9423f5cb8e',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 23,
+        +     balance: 145,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 14',
+        +     editable: true,
+        +     id: 'cash-9bfe0f09-e0a4-4a11-9ed8-5e04e467f0d8',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 140,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 15',
+        +     editable: true,
+        +     id: 'cash-557aacab-e954-456f-b41e-1e71077f2cc2',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 25,
+        +     balance: 165,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 16',
+        +     editable: true,
+        +     id: 'cash-6838f4f0-da83-4271-be59-42b8353a65ca',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 26,
+        +     balance: 191,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 17',
+        +     editable: true,
+        +     id: 'cash-dc084f60-0dfd-43a7-acff-d9a34f9cfe6b',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 186,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 18',
+        +     editable: true,
+        +     id: 'cash-928e3780-5312-40af-81d6-e882fb878cb2',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 28,
+        +     balance: 214,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 19',
+        +     editable: true,
+        +     id: 'cash-1da8505f-83c4-41cc-94ae-337fd5786419',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 29,
+        +     balance: 243,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 20',
+        +     editable: true,
+        +     id: 'cash-84ead6ca-9d5f-49eb-81b3-ceb289297570',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 238,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 21',
+        +     editable: true,
+        +     id: 'cash-4e6f05f4-14f9-4596-8e77-7b660419bb84',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 31,
+        +     balance: 269,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 22',
+        +     editable: true,
+        +     id: 'cash-54698e08-cf1f-4b85-a923-94efa1ac2620',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 32,
+        +     balance: 301,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 23',
+        +     editable: true,
+        +     id: 'cash-0a58b37b-12b9-43f3-ba22-ea3b10a3ea07',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 296,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 24',
+        +     editable: true,
+        +     id: 'cash-a10aa5a3-fee5-4ab9-9724-4fb26a1c5824',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 34,
+        +     balance: 330,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 25',
+        +     editable: true,
+        +     id: 'cash-deb68ce8-7872-4475-92b7-3a36326f5975',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 35,
+        +     balance: 365,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 26',
+        +     editable: true,
+        +     id: 'cash-f6909d7c-1fa1-4caa-b136-f953918cdb1d',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 360,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 27',
+        +     editable: true,
+        +     id: 'cash-cbab813d-bad1-4b7d-8fbc-5606eb48f001',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 37,
+        +     balance: 397,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 28',
+        +     editable: true,
+        +     id: 'cash-250e23d8-7722-4822-a201-52cbe28f0000',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 38,
+        +     balance: 435,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 29',
+        +     editable: true,
+        +     id: 'cash-5ab80a39-616f-4009-a10c-491001dfc351',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 430,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 30',
+        +     editable: true,
+        +     id: 'cash-7b6d05a6-b36d-460f-924e-cef5cf39090c',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 40,
+        +     balance: 470,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 31',
+        +     editable: true,
+        +     id: 'cash-ff9a7a49-a54c-46e9-ab75-b075ff2420d2',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 41,
+        +     balance: 511,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 32',
+        +     editable: true,
+        +     id: 'cash-fa16df59-d3f3-4c65-8621-9ec5477ed385',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 506,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 33',
+        +     editable: true,
+        +     id: 'cash-62ceccc0-4ce3-4073-a83d-ab9dc7a0495a',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 43,
+        +     balance: 549,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 34',
+        +     editable: true,
+        +     id: 'cash-dab5c287-8b45-46ed-8600-f9d174f32aae',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 44,
+        +     balance: 593,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 35',
+        +     editable: true,
+        +     id: 'cash-ba2c7135-5c6d-45a1-9be3-a4d0316fc567',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 588,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 36',
+        +     editable: true,
+        +     id: 'cash-6fbd6ace-9e99-4b3c-b048-b09e1ebd2600',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 46,
+        +     balance: 634,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 37',
+        +     editable: true,
+        +     id: 'cash-e2d966c1-b20a-4a31-93ae-9d557983058a',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 47,
+        +     balance: 681,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 38',
+        +     editable: true,
+        +     id: 'cash-25205d5c-3bad-4c9f-a614-a0c7d714e141',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 676,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 39',
+        +     editable: true,
+        +     id: 'cash-3cc0dac3-f42e-45b3-92c5-bcb472112a9b',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 49,
+        +     balance: 725,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 40',
+        +     editable: true,
+        +     id: 'cash-31cce599-d099-496c-8133-573af385cc84',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 50,
+        +     balance: 775,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 41',
+        +     editable: true,
+        +     id: 'cash-4ab23382-4758-4dfa-a577-5c4e016a48f2',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 770,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 42',
+        +     editable: true,
+        +     id: 'cash-77e1d7c0-6a35-444a-b777-35d9ea22ff64',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 52,
+        +     balance: 822,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 43',
+        +     editable: true,
+        +     id: 'cash-a78723bf-b140-43f2-84fa-e2d822519229',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 53,
+        +     balance: 875,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 44',
+        +     editable: true,
+        +     id: 'cash-cd68b251-2cf5-4457-ad29-f9cfb3fdb5e7',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 870,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 45',
+        +     editable: true,
+        +     id: 'cash-805ae7c6-0e2a-452e-b605-a3f612a71193',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 55,
+        +     balance: 925,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 46',
+        +     editable: true,
+        +     id: 'cash-20965f80-0eaa-4ebe-a964-3d93eaa48701',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 56,
+        +     balance: 981,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 47',
+        +     editable: true,
+        +     id: 'cash-549d8721-11f0-4960-992b-96f1dec7acd9',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 976,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 48',
+        +     editable: true,
+        +     id: 'cash-ee5bfaca-4600-40ee-8473-842710ebe019',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 58,
+        +     balance: 1034,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 49',
+        +     editable: true,
+        +     id: 'cash-8e8957a7-d5e5-47c3-b688-9a80edbd6efa',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 59,
+        +     balance: 1093,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 50',
+        +     editable: true,
+        +     id: 'cash-bbf54c15-08c6-492f-8ca7-9c56381cb094',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 1088,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 51',
+        +     editable: true,
+        +     id: 'cash-6866b24b-98ad-4281-8e09-0f3c5e5f4f6d',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 61,
+        +     balance: 1149,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 52',
+        +     editable: true,
+        +     id: 'cash-66923c15-7159-40d0-99f5-1c506a4d3024',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 62,
+        +     balance: 1211,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 53',
+        +     editable: true,
+        +     id: 'cash-2444fa26-6b29-4381-aab6-b7b3615fcccd',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 1206,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 54',
+        +     editable: true,
+        +     id: 'cash-e530fd8e-cd1b-40be-b3b2-91a11421a9bd',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 64,
+        +     balance: 1270,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 55',
+        +     editable: true,
+        +     id: 'cash-98bd2177-671a-490a-8a27-d25aae0d141e',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 65,
+        +     balance: 1335,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 56',
+        +     editable: true,
+        +     id: 'cash-9194c6b6-8e58-45bb-b69e-d8bd8494fc40',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 1330,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 57',
+        +     editable: true,
+        +     id: 'cash-6685e25f-d7f1-47fa-b90a-0561758bf547',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 67,
+        +     balance: 1397,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 58',
+        +     editable: true,
+        +     id: 'cash-1c57d0ce-eb2d-4244-b202-535e65db5f7d',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 68,
+        +     balance: 1465,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 59',
+        +     editable: true,
+        +     id: 'cash-c47a0984-5ddb-40e8-85a3-4d20ffb4d970',
+        +     kind: 'in',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   },
+        +   {
+        +     actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee',
+        +     actorName: 'Ofis yöneticisi',
+        +     amount: 5,
+        +     balance: 1460,
+        +     caseKey: '',
+        +     caseTitle: '',
+        +     createdAt: '2026-11-18T07:00:00.000Z',
+        +     date: '2026-11-18',
+        +     description: 'Kasa hareketi 60',
+        +     editable: true,
+        +     id: 'cash-16cc92dd-0d91-4dc9-8843-f0d92076fda8',
+        +     kind: 'out',
+        +     method: 'cash',
+        +     source: 'manual',
+        +     transferId: '',
+        +     updatedAt: null
+        +   }
+        + ]
+        - undefined
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      actual:
+        0:
+          id: 'cash-2c22749c-b48e-4f96-be1c-62584af1ed93'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 10
+          date: '2026-11-18'
+          description: 'Kasa hareketi 1'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 10
+          editable: true
+        1:
+          id: 'cash-35f0ab4a-57af-41ca-909e-66ca6907d604'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 11
+          date: '2026-11-18'
+          description: 'Kasa hareketi 2'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 21
+          editable: true
+        2:
+          id: 'cash-bcf1ede9-e2bc-4939-a04b-58bb4038a88d'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 3'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 16
+          editable: true
+        3:
+          id: 'cash-9d347a1c-1c6f-466a-8def-aa69ce71d5bd'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 13
+          date: '2026-11-18'
+          description: 'Kasa hareketi 4'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 29
+          editable: true
+        4:
+          id: 'cash-f3dd22e3-c95f-4852-8876-07d73844822e'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 14
+          date: '2026-11-18'
+          description: 'Kasa hareketi 5'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 43
+          editable: true
+        5:
+          id: 'cash-5817823e-03f0-4d2f-b0fd-ef9801226368'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 6'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 38
+          editable: true
+        6:
+          id: 'cash-bb6aab1e-4857-4bb4-adb5-9d4bc3a18e8c'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 16
+          date: '2026-11-18'
+          description: 'Kasa hareketi 7'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 54
+          editable: true
+        7:
+          id: 'cash-c10bdbc4-cf4c-4539-a4de-7d406dcea9ac'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 17
+          date: '2026-11-18'
+          description: 'Kasa hareketi 8'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 71
+          editable: true
+        8:
+          id: 'cash-a5516d5f-8d01-42e4-a51a-22ffdc37c5bd'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 9'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 66
+          editable: true
+        9:
+          id: 'cash-ebfd21c0-4f16-40a8-be46-ce4ae42ccf4f'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 19
+          date: '2026-11-18'
+          description: 'Kasa hareketi 10'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 85
+          editable: true
+        10:
+          id: 'cash-da27a843-f811-4a2d-83f0-715ba9f5a53e'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 20
+          date: '2026-11-18'
+          description: 'Kasa hareketi 11'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 105
+          editable: true
+        11:
+          id: 'cash-f87e17fb-7937-497a-86f9-996549884112'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 12'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 100
+          editable: true
+        12:
+          id: 'cash-03b74402-7105-40e6-adb1-8c9423f5cb8e'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 22
+          date: '2026-11-18'
+          description: 'Kasa hareketi 13'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 122
+          editable: true
+        13:
+          id: 'cash-9bfe0f09-e0a4-4a11-9ed8-5e04e467f0d8'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 23
+          date: '2026-11-18'
+          description: 'Kasa hareketi 14'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 145
+          editable: true
+        14:
+          id: 'cash-557aacab-e954-456f-b41e-1e71077f2cc2'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 15'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 140
+          editable: true
+        15:
+          id: 'cash-6838f4f0-da83-4271-be59-42b8353a65ca'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 25
+          date: '2026-11-18'
+          description: 'Kasa hareketi 16'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 165
+          editable: true
+        16:
+          id: 'cash-dc084f60-0dfd-43a7-acff-d9a34f9cfe6b'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 26
+          date: '2026-11-18'
+          description: 'Kasa hareketi 17'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 191
+          editable: true
+        17:
+          id: 'cash-928e3780-5312-40af-81d6-e882fb878cb2'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 18'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 186
+          editable: true
+        18:
+          id: 'cash-1da8505f-83c4-41cc-94ae-337fd5786419'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 28
+          date: '2026-11-18'
+          description: 'Kasa hareketi 19'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 214
+          editable: true
+        19:
+          id: 'cash-84ead6ca-9d5f-49eb-81b3-ceb289297570'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 29
+          date: '2026-11-18'
+          description: 'Kasa hareketi 20'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 243
+          editable: true
+        20:
+          id: 'cash-4e6f05f4-14f9-4596-8e77-7b660419bb84'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 21'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 238
+          editable: true
+        21:
+          id: 'cash-54698e08-cf1f-4b85-a923-94efa1ac2620'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 31
+          date: '2026-11-18'
+          description: 'Kasa hareketi 22'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 269
+          editable: true
+        22:
+          id: 'cash-0a58b37b-12b9-43f3-ba22-ea3b10a3ea07'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 32
+          date: '2026-11-18'
+          description: 'Kasa hareketi 23'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 301
+          editable: true
+        23:
+          id: 'cash-a10aa5a3-fee5-4ab9-9724-4fb26a1c5824'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 24'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 296
+          editable: true
+        24:
+          id: 'cash-deb68ce8-7872-4475-92b7-3a36326f5975'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 34
+          date: '2026-11-18'
+          description: 'Kasa hareketi 25'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 330
+          editable: true
+        25:
+          id: 'cash-f6909d7c-1fa1-4caa-b136-f953918cdb1d'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 35
+          date: '2026-11-18'
+          description: 'Kasa hareketi 26'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 365
+          editable: true
+        26:
+          id: 'cash-cbab813d-bad1-4b7d-8fbc-5606eb48f001'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 27'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 360
+          editable: true
+        27:
+          id: 'cash-250e23d8-7722-4822-a201-52cbe28f0000'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 37
+          date: '2026-11-18'
+          description: 'Kasa hareketi 28'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 397
+          editable: true
+        28:
+          id: 'cash-5ab80a39-616f-4009-a10c-491001dfc351'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 38
+          date: '2026-11-18'
+          description: 'Kasa hareketi 29'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 435
+          editable: true
+        29:
+          id: 'cash-7b6d05a6-b36d-460f-924e-cef5cf39090c'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 30'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 430
+          editable: true
+        30:
+          id: 'cash-ff9a7a49-a54c-46e9-ab75-b075ff2420d2'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 40
+          date: '2026-11-18'
+          description: 'Kasa hareketi 31'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 470
+          editable: true
+        31:
+          id: 'cash-fa16df59-d3f3-4c65-8621-9ec5477ed385'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 41
+          date: '2026-11-18'
+          description: 'Kasa hareketi 32'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 511
+          editable: true
+        32:
+          id: 'cash-62ceccc0-4ce3-4073-a83d-ab9dc7a0495a'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 33'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 506
+          editable: true
+        33:
+          id: 'cash-dab5c287-8b45-46ed-8600-f9d174f32aae'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 43
+          date: '2026-11-18'
+          description: 'Kasa hareketi 34'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 549
+          editable: true
+        34:
+          id: 'cash-ba2c7135-5c6d-45a1-9be3-a4d0316fc567'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 44
+          date: '2026-11-18'
+          description: 'Kasa hareketi 35'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 593
+          editable: true
+        35:
+          id: 'cash-6fbd6ace-9e99-4b3c-b048-b09e1ebd2600'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 36'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 588
+          editable: true
+        36:
+          id: 'cash-e2d966c1-b20a-4a31-93ae-9d557983058a'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 46
+          date: '2026-11-18'
+          description: 'Kasa hareketi 37'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 634
+          editable: true
+        37:
+          id: 'cash-25205d5c-3bad-4c9f-a614-a0c7d714e141'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 47
+          date: '2026-11-18'
+          description: 'Kasa hareketi 38'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 681
+          editable: true
+        38:
+          id: 'cash-3cc0dac3-f42e-45b3-92c5-bcb472112a9b'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 39'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 676
+          editable: true
+        39:
+          id: 'cash-31cce599-d099-496c-8133-573af385cc84'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 49
+          date: '2026-11-18'
+          description: 'Kasa hareketi 40'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 725
+          editable: true
+        40:
+          id: 'cash-4ab23382-4758-4dfa-a577-5c4e016a48f2'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 50
+          date: '2026-11-18'
+          description: 'Kasa hareketi 41'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 775
+          editable: true
+        41:
+          id: 'cash-77e1d7c0-6a35-444a-b777-35d9ea22ff64'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 42'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 770
+          editable: true
+        42:
+          id: 'cash-a78723bf-b140-43f2-84fa-e2d822519229'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 52
+          date: '2026-11-18'
+          description: 'Kasa hareketi 43'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 822
+          editable: true
+        43:
+          id: 'cash-cd68b251-2cf5-4457-ad29-f9cfb3fdb5e7'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 53
+          date: '2026-11-18'
+          description: 'Kasa hareketi 44'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 875
+          editable: true
+        44:
+          id: 'cash-805ae7c6-0e2a-452e-b605-a3f612a71193'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 45'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 870
+          editable: true
+        45:
+          id: 'cash-20965f80-0eaa-4ebe-a964-3d93eaa48701'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 55
+          date: '2026-11-18'
+          description: 'Kasa hareketi 46'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 925
+          editable: true
+        46:
+          id: 'cash-549d8721-11f0-4960-992b-96f1dec7acd9'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 56
+          date: '2026-11-18'
+          description: 'Kasa hareketi 47'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 981
+          editable: true
+        47:
+          id: 'cash-ee5bfaca-4600-40ee-8473-842710ebe019'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 48'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 976
+          editable: true
+        48:
+          id: 'cash-8e8957a7-d5e5-47c3-b688-9a80edbd6efa'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 58
+          date: '2026-11-18'
+          description: 'Kasa hareketi 49'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1034
+          editable: true
+        49:
+          id: 'cash-bbf54c15-08c6-492f-8ca7-9c56381cb094'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 59
+          date: '2026-11-18'
+          description: 'Kasa hareketi 50'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1093
+          editable: true
+        50:
+          id: 'cash-6866b24b-98ad-4281-8e09-0f3c5e5f4f6d'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 51'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1088
+          editable: true
+        51:
+          id: 'cash-66923c15-7159-40d0-99f5-1c506a4d3024'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 61
+          date: '2026-11-18'
+          description: 'Kasa hareketi 52'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1149
+          editable: true
+        52:
+          id: 'cash-2444fa26-6b29-4381-aab6-b7b3615fcccd'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 62
+          date: '2026-11-18'
+          description: 'Kasa hareketi 53'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1211
+          editable: true
+        53:
+          id: 'cash-e530fd8e-cd1b-40be-b3b2-91a11421a9bd'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 54'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1206
+          editable: true
+        54:
+          id: 'cash-98bd2177-671a-490a-8a27-d25aae0d141e'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 64
+          date: '2026-11-18'
+          description: 'Kasa hareketi 55'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1270
+          editable: true
+        55:
+          id: 'cash-9194c6b6-8e58-45bb-b69e-d8bd8494fc40'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 65
+          date: '2026-11-18'
+          description: 'Kasa hareketi 56'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1335
+          editable: true
+        56:
+          id: 'cash-6685e25f-d7f1-47fa-b90a-0561758bf547'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 57'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1330
+          editable: true
+        57:
+          id: 'cash-1c57d0ce-eb2d-4244-b202-535e65db5f7d'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 67
+          date: '2026-11-18'
+          description: 'Kasa hareketi 58'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1397
+          editable: true
+        58:
+          id: 'cash-c47a0984-5ddb-40e8-85a3-4d20ffb4d970'
+          kind: 'in'
+          source: 'manual'
+          method: 'cash'
+          amount: 68
+          date: '2026-11-18'
+          description: 'Kasa hareketi 59'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1465
+          editable: true
+        59:
+          id: 'cash-16cc92dd-0d91-4dc9-8843-f0d92076fda8'
+          kind: 'out'
+          source: 'manual'
+          method: 'cash'
+          amount: 5
+          date: '2026-11-18'
+          description: 'Kasa hareketi 60'
+          caseKey: ''
+          caseTitle: ''
+          transferId: ''
+          actorId: 'user-bc66fed9-2e8c-45be-98fa-2e7d529501ee'
+          actorName: 'Ofis yöneticisi'
+          createdAt: '2026-11-18T07:00:00.000Z'
+          updatedAt: ~
+          balance: 1460
+          editable: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/eski-kirmizi-a3a5f814/test/mobil-ozet-olcek-247.test.mjs:56:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - mobil Kasa: hareket listesi telefona ve özete gitmez (M-H1)
+  ---
+  duration_ms: 1662.946345
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/eski-kirmizi-a3a5f814/test/mobil-ozet-olcek-247.test.mjs:18:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: mobil özet hazırlanırken olay döngüsüne sıra verilir (M-H2)
+    # Subtest: en uzun kesintisiz çalışma yüklemenin toplam süresinin küçük bir parçası (iç istekler arasında masaüstüne sıra)
+    not ok 1 - en uzun kesintisiz çalışma yüklemenin toplam süresinin küçük bir parçası (iç istekler arasında masaüstüne sıra)
+      ---
+      duration_ms: 136.328568
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/eski-kirmizi-a3a5f814/test/mobil-ozet-olcek-247.test.mjs:84:3'
+      failureType: 'testCodeFailure'
+      error: 'özet sırasında olay döngüsü 107 ms kesintisiz meşgul (yükleme toplam 128 ms); iç istekler arasında sıra verilmeli'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/eski-kirmizi-a3a5f814/test/mobil-ozet-olcek-247.test.mjs:106:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # en uzun kesintisiz 107 ms / yükleme 128 ms (oran 0.83; sınır 0,35)
+    1..1
+not ok 2 - mobil özet hazırlanırken olay döngüsüne sıra verilir (M-H2)
+  ---
+  duration_ms: 2333.478724
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-mobil/eski-kirmizi-a3a5f814/test/mobil-ozet-olcek-247.test.mjs:61:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4727.647083

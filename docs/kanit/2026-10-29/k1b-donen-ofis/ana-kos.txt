@@ -1,0 +1,112 @@
+TAP version 13
+# devre dışı dönemde: sayfa { status: 410, code: 'kapi-ofis-degisti' } api { status: 401, code: 'kapi-cihaz' } çerez kaldı mı: false
+# Subtest: dar kontrol K1 — dönen ofis
+    # Subtest: (c) dönen ofisin telefonu, devre dışı dönemde ofisin adresini açtıysa da canlı bağlantıya yeniden eşlemesiz döner (kapıcı cihaz çerezini silmemeli)
+    not ok 1 - (c) dönen ofisin telefonu, devre dışı dönemde ofisin adresini açtıysa da canlı bağlantıya yeniden eşlemesiz döner (kapıcı cihaz çerezini silmemeli)
+      ---
+      duration_ms: 57.886758
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dar247k1-donen-ofis/donen-ofis.test.mjs:156:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        devre dışı dönemde adresi açan telefon dönüşte canlı geçmeli; gelen {"status":401,"code":"kapi-cihaz"}, çerez kavanozu {} (kapıcı devre dışı dönemde __Host-hof_device'ı sildi → cihaz listede ama sırrını yitirdi)
+        
+        401 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 401
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dar247k1-donen-ofis/donen-ofis.test.mjs:179:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+# dönüş kaydı: {"ok":false,"status":409,"code":"kapi-sinir","error":"Eşli cihaz sınırı dolu. Yeni cihaz için önce birini silin."} geçen cihaz: 0 geçici ofis: kapi-cihaz
+    # Subtest: (a/P5) cihaz sınırı düştükten sonra (P5: mevcutlar sürer) devre dışı kalıp dönen ofisin mevcut cihazları sürer; makine el değiştirince toplam 0 cihaz kalmaz
+    not ok 2 - (a/P5) cihaz sınırı düştükten sonra (P5: mevcutlar sürer) devre dışı kalıp dönen ofisin mevcut cihazları sürer; makine el değiştirince toplam 0 cihaz kalmaz
+      ---
+      duration_ms: 60.012661
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dar247k1-donen-ofis/donen-ofis.test.mjs:182:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        dönen ofis (P5'le 3 cihazlı) kabul edilmeli: {"ok":false,"status":409,"code":"kapi-sinir","error":"Eşli cihaz sınırı dolu. Yeni cihaz için önce birini silin."}
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dar247k1-donen-ofis/donen-ofis.test.mjs:197:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# etkin ofisin tüneli: false DNS: false verilen tünel kimliği: 00000001-1111-4111-8111-111111111111
+    # Subtest: (d) ZORLA: eski ofisin tünel temizliği sürerken o ofis geri dönüp tünel alırsa, temizlik bitince ETKİN ofisin tüneli/DNS kaydı silinmemeli
+    not ok 3 - (d) ZORLA: eski ofisin tünel temizliği sürerken o ofis geri dönüp tünel alırsa, temizlik bitince ETKİN ofisin tüneli/DNS kaydı silinmemeli
+      ---
+      duration_ms: 38.443603
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dar247k1-donen-ofis/donen-ofis.test.mjs:201:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        etkin ofisin tüneli (false) ve DNS kaydı (false) temizlikte silinmemeli
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dar247k1-donen-ofis/donen-ofis.test.mjs:228:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# kabul edilen el değişimi: 10 429: 11 tünel: 1
+    # Subtest: (a/e) aynı makinede iki canlı kurulum sırayla yeniden kaydolur: her an en çok 3 cihaz; günde en çok ofisDegisimGunluk el değişimi, sonra 429; etkin olmayanın tüneli kalmaz
+    ok 4 - (a/e) aynı makinede iki canlı kurulum sırayla yeniden kaydolur: her an en çok 3 cihaz; günde en çok ofisDegisimGunluk el değişimi, sonra 429; etkin olmayanın tüneli kalmaz
+      ---
+      duration_ms: 708.680148
+      type: 'test'
+      ...
+# oynatma yanıtları: kapi-sira kapi-sira kapi-sira
+    # Subtest: (b) yeniden oynatma: devre dışı ofisin ESKİ kaydının aynı baytları (yakalanmış) dönüşte de sonradan da reddedilir; B'nin eski kaydı makineyi geri alamaz
+    ok 5 - (b) yeniden oynatma: devre dışı ofisin ESKİ kaydının aynı baytları (yakalanmış) dönüşte de sonradan da reddedilir; B'nin eski kaydı makineyi geri alamaz
+      ---
+      duration_ms: 56.130546
+      type: 'test'
+      ...
+    # Subtest: (c) devre dışıyken programda silinen cihaz dönüşte gelmez; silinen cihazın çerezi silinir (B1)
+    ok 6 - (c) devre dışıyken programda silinen cihaz dönüşte gelmez; silinen cihazın çerezi silinir (B1)
+      ---
+      duration_ms: 30.838413
+      type: 'test'
+      ...
+    1..6
+not ok 1 - dar kontrol K1 — dönen ofis
+  ---
+  duration_ms: 953.662005
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dar247k1-donen-ofis/donen-ofis.test.mjs:155:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 3
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1069.482929

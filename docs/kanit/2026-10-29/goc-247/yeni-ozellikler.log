@@ -1,0 +1,20 @@
+  ✓ 001 EDM sayacı boş başlar: pencere toplamı 0, iz 0, eşitlenen 0 (eski veride e-Belge kartı 1199, gönderilmiş görünen 343)
+  ✓ 002 EDM sayacı boş başlar: pencere toplamı 0, iz 0, eşitlenen 0 (eski veride e-Belge kartı 631, gönderilmiş görünen 141)
+  ✗ 001 göçten sonra Kes ve Gönder e-Arşiv (200, ) → sayaç 2026-10 e-Arşiv 1, e-Fatura 0, e-SMM 0 — {"status":200,"data":"{\"id\":\"invoice-5f57f14c-14be-4795-a007-49615912f4c9\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"\",\"displayNo\":\"Gönderilecek\",\"internalNumber\":false,\"ettn\":\"eee0b97e-534b-446d-a122-01183ea","window":[{"month":"2026-08","env":"live","efatura":0,"earsiv":0,"esmm":0},{"month":"2026-08","env":"test","efatura":0,"earsiv":0,"esmm":0},{"month":"2026-09","env":"live","efatura":0,"earsiv":0,"esmm":0},{"month":"2026-09","env":"test","efatura":0,"earsiv":0,"esmm":0},{"month":"2026-10","env":"live","efatura":0,"earsiv":0,"esmm":0},{"month":"2026-10","env":"test","efatura":0,"earsiv":0,"esmm":0}],"edmSent":0}
+  ✓ uzaktan erişim dinleyicisi açıldı (http://127.0.0.1:37441)
+  ✓ göçmüş veride eşli cihaz yok (kullanılan 0 / sınır 3, lisans true)
+  ✓ admin: Uzaktan Bağlanabilir 200, karekod 200, eşleme 200, uzak giriş 200
+  ✗ telefondan oturum (200) iki şirketi görür — {"data":"{\"ok\":true,\"data\":{\"user\":{\"id\":\"user-8244b2d6-f75b-4d4e-abac-fa451c508d52\",\"username\":\"admin\",\"name\":\"Ofis yöneticisi\",\"roleLabel\":\"\",\"mustChangePassword\":false},\"office\":{\"name\":\"Merkez Ticaret ve Danışmanlık A.Ş.\"},\"companies\":[{\"id\":\"sirket-001\",\"code\":\"001\",\"name\":\"Merkez Ticaret ve Danışmanlık A.Ş.\",\"current\":true},{\"id\":\"sirket-ea9fa9d9-46a1-43be-9604-e9e3a06e8120\",\"code\":\"002\",\"name\":\"Yıld"}
+  ✓ 001 telefondaki Kasa = masaüstü Kasa (göçmüş veri; 200)
+  ✓ 001 telefondaki cari kartı = masaüstü (Mehmet Işık, bakiye undefined)
+  ✓ 002 telefondaki Kasa = masaüstü Kasa (göçmüş veri; 200)
+  ✓ 002 telefondaki cari kartı = masaüstü (Mehmet Uğurlu, bakiye undefined)
+  ✓ 3 cihaz sınırı (program başına): 2. ve 3. eşleme 200 (200, 200); 4. karekod/eşleme reddedilir (409/0)
+  ✓ cihazlar ortak katmanda: 001 3, 002 0 (002'nin tablosu boş kalır)
+# yeni özellikler eski veride (EDM sayacı, mobil eşleme, 3 cihaz)
+# tests 13
+# pass 11
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0

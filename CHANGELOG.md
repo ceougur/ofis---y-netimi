@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.4.7 — Mobil Sürüm ve İyileştirmeler
+
+- Yeni: telefondan kullanım — Yönetim → Mobil Cihazlar'da karekodla eşleme; cari, kasa, banka, stok ve raporlar telefonda; telefondan tahsilat, ödeme ve stok girişi; ofisteki bilgisayar kapalıyken son özet; en çok 3 cihaz.
+- İyileştirmeler: Ayrıntılı Cari Ekstre'de sütun seçimi ve kalem açıklaması, destek e-postası ve site adresi destekofis.net. Ayrıntı: docs/2.4.7-DEGISIKLIKLER.md.
+
 ## 2.4.6 — İyileştirmeler
 
 - İyileştirmeler ve hata düzeltmeleri (cari ekstre ve mizan, zil ve Tahsilat Takvimi, Nakit Akış Projeksiyonu, iade geri ödemesi, açılış bakiyesi).

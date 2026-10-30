@@ -1,0 +1,25 @@
+
+> destekofis@2.4.6 test:hiz-243-arka-plan
+> node --disable-warning=ExperimentalWarning test/e2e/hiz-243-arka-plan.mjs
+
+1) ilk açılış: takvim tamamı gelir, şeritte açık faturanın kalemi
+  ✓ şeritte 1 kalem (1)
+  ✓ ilk yanıt tam ve sürümlü (567 bayt, sürüm wpdg0m6ghh7YpCKRAeJ4xH.1111)
+2) başka oturum takvimi DEĞİŞTİRMEYEN kayıt (peşin ödenmiş satış)
+  ✓ ekran takvimi yeniledi (756 ms)
+  ✓ istek elindeki sürümle gitti (since=wpdg0m6ghh7YpCKRAeJ4xH.1111)
+  ✓ yanıt "değişmedi" ve küçük (98 bayt, değişmedi=true)
+  ✓ şerit yerinde, yeniden çizilmedi (işaret ilk, 1 kalem)
+3) başka oturum takvimi DEĞİŞTİREN kayıt (vadesi yarın açık satış)
+  ✓ yeni kalem şeritte belirdi (3136 ms; 2 kalem)
+  ✓ yanıt tam takvim (950 bayt)
+4) tahsilatla kapanan kalem şeritten düşer
+  ✓ kapanan kalem düştü (3905 ms; 1 kalem)
+5) kritik stok rozeti (sunucu önbelleği güncelliği bozmaz)
+  ✓ başta rozet boş ("")
+  ✓ rozet 1 oldu (1288 ms; "1")
+  ✓ kritik seviye 1 olunca rozet boşaldı (324 ms; "")
+  ✓ sayfa hatası yok
+takvim istekleri: 4 (sürümlü 3, değişmedi 1, toplam 2182 bayt)
+
+✓ hiz-243-arka-plan: 13 geçti, 0 kaldı

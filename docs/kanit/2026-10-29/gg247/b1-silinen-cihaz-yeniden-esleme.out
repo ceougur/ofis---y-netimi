@@ -1,0 +1,56 @@
+TAP version 13
+# (node:30946) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: B1 silinen cihaz → aynı tarayıcıdan yeni karekodla eşleme (kapıcı üzerinden)
+    # Subtest: kontrol: çerezsiz yeni tarayıcı yeni karekodla eşlenir
+    ok 1 - kontrol: çerezsiz yeni tarayıcı yeni karekodla eşlenir
+      ---
+      duration_ms: 233.155135
+      type: 'test'
+      ...
+# telefonun çerezleri: hof_device, hof_mobil
+# GET /mobil/ → 401 {"ok":false,"code":"kapi-cihaz","error":"Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin."}
+# POST /api/mobil/eslesme → 401 {"ok":false,"code":"kapi-cihaz","error":"Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin."}
+# telefonun çerezleri (sonra): hof_device, hof_mobil
+    # Subtest: silinen cihazın tarayıcısı (eski hof_device çerezi duruyor) yeni karekodla eşlenebilmeli
+    not ok 2 - silinen cihazın tarayıcısı (eski hof_device çerezi duruyor) yeni karekodla eşlenebilmeli
+      ---
+      duration_ms: 189.596748
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gg247-ana-tekrar/b1-silinen-cihaz-yeniden-esleme.test.mjs:23:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eşleme sayfası açılmalı; gelen 401 {"ok":false,"code":"kapi-cihaz","error":"Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil C
+        
+        401 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 401
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gg247-ana-tekrar/b1-silinen-cihaz-yeniden-esleme.test.mjs:39:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - B1 silinen cihaz → aynı tarayıcıdan yeni karekodla eşleme (kapıcı üzerinden)
+  ---
+  duration_ms: 925.844598
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/gg247-ana-tekrar/b1-silinen-cihaz-yeniden-esleme.test.mjs:7:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1315.707851

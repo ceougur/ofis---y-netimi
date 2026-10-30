@@ -1,0 +1,84 @@
+(node:4258) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+U01: 9 olay, 1 sn
+U02: 8 olay, 1 sn
+U03: 6 olay, 1 sn
+U04: 4 olay, 1 sn
+U05: 4 olay, 1 sn
+U06: 14 olay, 1 sn
+U07: 17 olay, 2 sn
+U08: 17 olay, 1 sn
+U09: 14 olay, 2 sn
+U10: 18 olay, 1 sn
+U11: 7 olay, 1 sn
+U12: 10 olay, 1 sn
+U13: 18 olay, 2 sn
+U14: 9 olay, 1 sn
+U15: 26 olay, 1 sn
+U16: 14 olay, 2 sn
+U17: 23 olay, 2 sn
+U18: 42 olay, 2 sn
+U19: 22 olay, 2 sn
+U20: 9 olay, 1 sn
+U21: 7 olay, 1 sn
+U22: 10 olay, 1 sn
+U23: 5 olay, 1 sn
+U24: 56 olay, 2 sn
+U25: 10 olay, 1 sn
+U26: 12 olay, 1 sn
+U27: 8 olay, 1 sn
+U28: 8 olay, 1 sn
+U29: 14 olay, 1 sn
+U30: 6 olay, 1 sn
+U31: 3 olay, 1 sn
+U32: 7 olay, 1 sn
+U33: 5 olay, 1 sn
+R1: 592 olay, 18 sn
+R2: 556 olay, 17 sn
+R3: 535 olay, 15 sn
+TAP version 13
+ok 1 - U01 (9/9)
+ok 2 - U02 (8/8)
+ok 3 - U03 (6/6)
+ok 4 - U04 (4/4)
+ok 5 - U05 (4/4)
+ok 6 - U06 (14/14)
+ok 7 - U07 (17/17)
+ok 8 - U08 (17/17)
+ok 9 - U09 (14/14)
+ok 10 - U10 (18/18)
+ok 11 - U11 (7/7)
+ok 12 - U12 (10/10)
+ok 13 - U13 (18/19; 1 DENENMEYEN)
+ok 14 - U14 (9/9)
+ok 15 - U15 (26/26)
+ok 16 - U16 (14/14)
+ok 17 - U17 (23/23)
+ok 18 - U18 (42/43; 1 DENENMEYEN)
+ok 19 - U19 (22/24; 2 DENENMEYEN)
+ok 20 - U20 (9/9)
+ok 21 - U21 (7/7)
+ok 22 - U22 (10/10)
+ok 23 - U23 (5/5)
+ok 24 - U24 (56/56)
+ok 25 - U25 (10/10)
+ok 26 - U26 (12/12)
+ok 27 - U27 (8/8)
+  # M3_KAPICI U28 {"no":7,"olay":"cihaz_sil","program":"kabul","kahin":["kabul"],"ipucu":["kapıcıya doğrudan kayıt (M3, DENENMEYEN) sonrası zincir: kâhinin dünyasında programda olmayan cihaz var"]}
+ok 28 - U28 (7/8; 1 DENENMEYEN)
+ok 29 - U29 (14/14)
+ok 30 - U30 (6/6)
+ok 31 - U31 (3/3)
+ok 32 - U32 (7/7)
+ok 33 - U33 (5/5)
+ok 34 - R1 (592/601; 9 DENENMEYEN)
+ok 35 - R2 (556/567; 11 DENENMEYEN)
+ok 36 - R3 (535/538; 3 DENENMEYEN)
+# birlesim kod_sure=5;yeni_kod_eskiyi=iptal_eder;sinir_dolunca=reddet;uretimde_sinir=denetler;sinir_dusunce=mevcutlar_kalir;cihaz_kullanici=yalniz_eslenen;oturum_bosta=15;oturum_mutlak=12;lisans_onbellek=1;ozet_yas_siniri=yok;deneme_siniri=5;deneme_anahtari=kullanici;kilit_dk=15
+# olay eşleşen 2124/2152 (programda üretilebilen 2124/2124) · BULGU 0 · İNCELE 0 · M3_KAPICI 1 · DENENMEYEN 27
+# DENENMEYEN 10 × DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405)
+# DENENMEYEN 17 × DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS)
+# çıktı /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/ana-m35-kahin-erisim
+# tests 36
+# pass 36
+# fail 0

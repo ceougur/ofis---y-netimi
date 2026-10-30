@@ -1,0 +1,43 @@
+TAP version 13
+# Subtest: mobil Kasa: hareket listesi telefona ve özete gitmez (M-H1)
+    # Subtest: masaüstü Kasa listesi aynen; mobil yanıt yalnız toplamları taşır, bakiye aynı
+    ok 1 - masaüstü Kasa listesi aynen; mobil yanıt yalnız toplamları taşır, bakiye aynı
+      ---
+      duration_ms: 13.770186
+      type: 'test'
+      ...
+    # Subtest: özetin Kasa bölümü hareket listesi taşımaz; bakiye masaüstüyle aynı
+    ok 2 - özetin Kasa bölümü hareket listesi taşımaz; bakiye masaüstüyle aynı
+      ---
+      duration_ms: 34.34799
+      type: 'test'
+      ...
+    1..2
+ok 1 - mobil Kasa: hareket listesi telefona ve özete gitmez (M-H1)
+  ---
+  duration_ms: 1462.194443
+  type: 'suite'
+  ...
+# Subtest: mobil özet hazırlanırken olay döngüsüne sıra verilir (M-H2)
+    # Subtest: en uzun kesintisiz çalışma yüklemenin toplam süresinin küçük bir parçası (iç istekler arasında masaüstüne sıra)
+    ok 1 - en uzun kesintisiz çalışma yüklemenin toplam süresinin küçük bir parçası (iç istekler arasında masaüstüne sıra)
+      ---
+      duration_ms: 153.530188
+      type: 'test'
+      ...
+    # en uzun kesintisiz 3 ms / yükleme 145 ms (oran 0.02; sınır 0,35)
+    1..1
+ok 2 - mobil özet hazırlanırken olay döngüsüne sıra verilir (M-H2)
+  ---
+  duration_ms: 1946.00329
+  type: 'suite'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3840.948625

@@ -1,0 +1,32 @@
+{
+  "ad": "goc-247/olcu-v246-taban",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/goc247-20261029T1215/arac/goc247.mjs olcu --repo /home/user/ofis---y-netimi/.claude/worktrees/agent-a033e243fc1fdff5b --kok /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/goc247-20261029T1215/kok",
+  "commit": "d5e70c3b6a3a27a8ec5859031c3df8691781908d",
+  "dal": "worktree-agent-a033e243fc1fdff5b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-29T12:24:01.765Z",
+  "sure_sn": 42.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-29/goc-247/olcu-v246-taban.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a033e243fc1fdff5b",
+  "ham_cikti_sha256": "69240d0dc6f56a67b8d0b0b8d235f0378cc3b437bf35a49522c0e5c154e35c11",
+  "ham_cikti_bayt": 266
+}
