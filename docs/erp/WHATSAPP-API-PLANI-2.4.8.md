@@ -255,6 +255,14 @@ müşterisinin hesabında bunları kurulumda açıp onaya gönderir (şablon Met
 Müşterinin programdaki tek işi API anahtarını yapıştırmak (+ Bağlantıyı Sına); sonra seç → Gönder. Şablon yoksa/onaysızsa program açık uyarı verir ("Verimor
 hesabınızda DestekOfis şablonları henüz hazır değil") ve gönderimi başlatmaz.
 
+KARAR (kullanıcı, 30.10.2026 ~10:30 UTC: "kullanıcıların kampanya mesajı göndermesini engelleyip sadece ekstre mesajı ile ekstre pdf göndermesini sağlayalım mı?
+hem kullanıcıları koruruz hem de izin kvkk yükünden kurtarırız"; baş mimar: UYGUN): WhatsApp API yolu YALNIZ 2 sabit bilgilendirme (utility) şablonu gönderir;
+serbest metin, kampanya/tanıtım, şablona ek cümle, ayardan açılan pazarlama YOK (Verimor da pazarlamayı 403 ile reddeder). Gerekçe: Yönetmelik md. 6 (tanıtımsız
+tahsilat/borç hatırlatma onay gerektirmez) + Meta kalite puanı. BAŞ MİMAR UYARISI (kullanıcıya iletildi): izin (İYS) yükü kalkar, KVKK yükü KALKMAZ — aydınlatma
+metni, Meta altyapısı nedeniyle yurt dışına aktarım (KVKK md. 9) kullanıcının danışmanında. S4 DEĞİŞİR: Ayarlar'daki bir kez onayın metni "carilerimden izin aldım"
+değil "WhatsApp'tan yalnız ekstre/ödeme hatırlatması gönderilir; aydınlatma metnime ekledim" olur; "WhatsApp Mesajı İstemiyor" işareti kalır. Kullanıcılara
+iletilecek bilgilendirme belgesi: Claude Docs "DestekOfis WhatsApp Gönderimi — Kullanıcı Bilgilendirmesi" (W7 kılavuzu bu metinle uyumlu yazılır).
+
 ## 12. Süre ve sıra
 
 - D0 Verimor yanıtına ve müşteri hesabına bağlı; kod sahte Verimor'la ilerler, "bitti" için gerçek gönderim (elle kabul) gerekir.
