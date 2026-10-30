@@ -6,11 +6,13 @@
 
 Bölümler:
   A  senaryolar.json güncel mi (yeniden üretilen = dosya)
-  B  her senaryo: ELLE yazılmış beklenen = model (her serbest seçim grubunda)
-  C  değişmezler (her senaryo, her grup): '+' ile numara, medya silme ≤ yükleme, kesin olmayan işte silme yok, metin bakiyesi = PDF bakiyesi,
-     sayaçların toplamı, yaklaşık ücret = teslim × 0,0009, iç denetim sayaçları 0
-  D  kapsam: senaryonun BİLDİRMEDİĞİ serbest seçim sonucu değiştirmemeli (değiştiriyorsa beklenen eksik verilmiş demektir)
-  E  girdi doğrulaması: planın sınıflamadığı hata kodu ve bilinmeyen olay sessizce geçmez
+  B  her senaryo: ELLE yazılmış beklenen = model
+  C  değişmezler (her senaryo, her zaman ucu): '+' ile numara, medya silme ≤ yükleme, kesin olmayan işte silme yok, metin bakiyesi = PDF bakiyesi,
+     sayaçların toplamı, 'Bu Ay' teslim = Teslim + Okundu iş sayısı, yaklaşık ücret = teslim × 0,0009, kabul/teslim edilmiş işte hata kodu yok (§7a 32),
+     iç denetim sayaçları 0
+  D  §7a sabitlemesi: serbest seçim YOK; iki zaman ucu (0,5 sn / 5 sn adım) aynı sonucu verir
+  E  girdi doğrulaması: §7a 12 sınıfsız kod reddedilmez (iş Başarısız); bilinmeyen olay / medya yanıtı sessizce geçmez
+  H  beklenen şablon metinleri (kahin.SABLONLAR) = plan §7a 23 ve W5 metni (plan dosyasından okunur)
   F  MUTASYON: modele bilerek hata; en az bir senaryonun elle beklenenine ya da iç denetim sayacına takılmalı (yakalanmayan = eksik senaryo)
   G  komut satırı (hesapla, karsilastir: 'biri', 'plan_susuyor', 'kisaltilabilir')
 """
@@ -58,7 +60,7 @@ def kos():
         else:
             gecen += 1
             print(f"ok {i} - {ad}")
-        for s in bilgi[:40]:
+        for s in bilgi[:80]:
             print(f"  # {s}")
     print(f"1..{gecen + kalan}")
     for ad, n in (("tests", gecen + kalan), ("pass", gecen), ("fail", kalan), ("cancelled", 0), ("skipped", 0), ("todo", 0)):
@@ -96,6 +98,8 @@ def _a():
             hata.append(f"{s['ad']}: dosyadaki beklenen ≠ yeniden hesaplanan")
     if dosya.get("serbest_secimler") != {k: list(v) for k, v in kahin.SERBEST.items()}:
         hata.append("serbest seçim listesi farklı")
+    if dosya.get("sablonlar") != kahin.SABLONLAR:
+        hata.append("şablon metinleri farklı")
     return hata + [f"bilgi: {len(adlar)} senaryo"]
 
 
@@ -150,9 +154,10 @@ def degismez_denetle(ad, sonuc):
             h.append(f"{ad} {anahtar}: kesin olmayan durumda ({d}) PDF silinmiş")
         if j["sablon"] == "destekofis_ekstre" and isinstance(j["pdf"], dict) and isinstance(j["degiskenler"], list):
             b = j["pdf"]["donem_sonu_bakiye"]
-            if isinstance(b, str) and not b.startswith("-"):
-                if j["degiskenler"][3] != kahin.para(Decimal(b)):
-                    h.append(f"{ad} {anahtar}: metin bakiyesi {j['degiskenler'][3]} ≠ PDF {b}")
+            if isinstance(b, str) and j["degiskenler"][3] != kahin.para(Decimal(b)):
+                h.append(f"{ad} {anahtar}: metin bakiyesi {j['degiskenler'][3]} ≠ PDF {b}")
+        if isinstance(d, str) and d in (kahin.KABUL, kahin.GONDERILDI, kahin.TESLIM, kahin.OKUNDU) and j["hata_kodu"] is not None:
+            h.append(f"{ad} {anahtar}: başarılı işte ({d}) hata kodu kaldı: {j['hata_kodu']}")
         for k_, m_, p_ in [(j["kabul"], j["meta_ileti"], j["post"])]:
             if all(isinstance(x, int) for x in (k_, m_, p_)) and not (k_ <= m_ <= p_):
                 h.append(f"{ad} {anahtar}: kabul_meta: kabul {k_} ≤ Meta'daki ileti {m_} ≤ POST {p_} bozuk")
@@ -161,16 +166,24 @@ def degismez_denetle(ad, sonuc):
         toplam = sum(v for v in m["post"].values() if isinstance(v, int))
         if all(isinstance(v, int) for v in m["post"].values()) and toplam != m["toplam_post"]:
             h.append(f"{ad}: Σ post {toplam} ≠ toplam_post {m['toplam_post']}")
-    for gorunum in ("sirket", "waba"):
-      for kova in yapraklar(sonuc["bu_ay"].get(gorunum, {})):
+    teslim_toplam = 0
+    for kova in yapraklar(sonuc["bu_ay"]):
         if not isinstance(kova, dict):
+            teslim_toplam = None
             continue
-        for _k, aylar in kova.items():
+        for _w, aylar in kova.items():
             for _a, b in aylar.items():
                 if isinstance(b, dict) and isinstance(b.get("teslim"), int):
+                    if teslim_toplam is not None:
+                        teslim_toplam += b["teslim"]
                     if b["yaklasik_usd"] != str((kahin.UCRET_USD * b["teslim"]).quantize(Decimal("0.0001"))):
                         h.append(f"{ad}: yaklaşık ücret {b['yaklasik_usd']} ≠ teslim {b['teslim']} × 0,0009")
+                else:
+                    teslim_toplam = None
     ds = sonuc.get("durum_sayilari")
+    if teslim_toplam is not None and isinstance(ds, dict) and all(isinstance(v, int) for v in ds.values()):
+        if teslim_toplam != ds.get(kahin.TESLIM, 0) + ds.get(kahin.OKUNDU, 0):
+            h.append(f"{ad}: teslim_sayac: 'Bu Ay' teslim {teslim_toplam} ≠ Teslim + Okundu iş {ds.get(kahin.TESLIM, 0) + ds.get(kahin.OKUNDU, 0)}")
     if isinstance(ds, dict) and all(isinstance(v, int) for v in ds.values()) and "isler" in sonuc:
         if sum(ds.values()) != len(sonuc["isler"]):
             h.append(f"{ad}: durum sayıları toplamı ≠ iş sayısı")
@@ -180,7 +193,7 @@ def degismez_denetle(ad, sonuc):
     return h
 
 
-@test("C değişmezler: her senaryo, her serbest seçim grubu")
+@test("C değişmezler: her senaryo (birleşik sonuç)")
 def _c():
     h = []
     for s in TUM:
@@ -196,7 +209,7 @@ def ihlal_bildirili(s, kismi, satir):
     return False
 
 
-@test("C değişmezler: sıra × zaman uçlarının HER biri ayrı (birleştirmeden önce); bildirilmiş ihlal yalnız bildirildiği seçimde")
+@test("C değişmezler: zaman uçlarının HER biri ayrı (birleştirmeden önce); bildirilmiş ihlal yalnız bildirildiği seçimde")
 def _c2():
     h = []; bilgi = []
     for s in TUM:
@@ -204,14 +217,13 @@ def _c2():
             continue
         goruldu = set()
         for kismi in kahin.secim_birlesimleri(s.get("serbest", [])):
-            for sira in kahin.SIRALAR:
-                for zaman in kahin.ZAMANLAR:
-                    r = kahin.Benzetim(senaryolar.girdi(s), kahin.tam_secim(kismi), sira, zaman).calistir()
-                    for satir in degismez_denetle(f"{s['ad']}[{sira}/{zaman}]", r):
-                        if ihlal_bildirili(s, kismi, satir):
-                            goruldu.add(satir.split(": ")[1])
-                        else:
-                            h.append(satir)
+            for zaman in kahin.ZAMANLAR:
+                r = kahin.Benzetim(senaryolar.girdi(s), kahin.tam_secim(kismi), zaman).calistir()
+                for satir in degismez_denetle(f"{s['ad']}[{zaman}]", r):
+                    if ihlal_bildirili(s, kismi, satir):
+                        goruldu.add(satir.split(": ")[1])
+                    else:
+                        h.append(satir)
         for tur, kosul in (s.get("bilinen_ihlal") or {}).items():
             if tur not in goruldu:
                 h.append(f"{s['ad']}: bildirilen ihlal '{tur}' hiç görülmedi")
@@ -221,54 +233,57 @@ def _c2():
 
 
 # ---- D -----------------------------------------------------------------------------------------------------------------------
-@test("D kapsam: bildirilmemiş serbest seçim sonucu değiştirmez (ozet senaryolar hariç)")
+@test("D §7a sabitlemesi: SERBEST boş, hiçbir senaryo serbest seçim bildirmiyor, beklenen tek grup")
 def _d():
     h = []
-    denenen = 0
+    if kahin.SERBEST:
+        h.append(f"SERBEST boş değil: {sorted(kahin.SERBEST)}")
     for s in TUM:
-        if s.get("ozet_cikti"):
-            continue
-        bildirilen = set(s.get("serbest", []))
-        temel_grup = beklenen(s)
-        for ad, secenekler in kahin.SERBEST.items():
-            if ad in bildirilen:
-                continue
-            for alt in secenekler[1:]:
-                for kismi in kahin.secim_birlesimleri(sorted(bildirilen)):
-                    denenen += 1
-                    sonuc = kahin.hesapla_tek(senaryolar.girdi(s), {**kismi, ad: alt})
-                    temel = kahin.grup_bul(temel_grup, kahin.tam_secim(kismi))["sonuc"]
-                    if not senaryolar._esit(sonuc, temel):
-                        h.append(f"{s['ad']}: bildirilmemiş '{ad}={alt}' sonucu değiştiriyor ({kismi})")
-    return h + [f"bilgi: {denenen} koşu"]
+        if s.get("serbest"):
+            h.append(f"{s['ad']}: serbest seçim bildiriyor {s['serbest']}")
+        if any(k for k, _y in s["elle"]):
+            h.append(f"{s['ad']}: elle beklenen seçime bağlı")
+        if len(beklenen(s)) != 1:
+            h.append(f"{s['ad']}: {len(beklenen(s))} grup")
+    return h
 
 
-@test("D ozet senaryolarda kapsam (yalnız sınır/medya/kanca ile ilgili seçimler)")
+def _biri_yollari(o, yol=""):
+    if isinstance(o, dict):
+        if set(o) == {"biri"}:
+            return [yol]
+        return [y for k, v in o.items() for y in _biri_yollari(v, f"{yol}.{k}" if yol else k)]
+    return []
+
+
+@test("D iki zaman ucu (adım 0,5 sn / 5 sn) her senaryoda aynı sonucu verir (beklenende 'biri' yaprağı yok)")
 def _d2():
     h = []
     for s in TUM:
-        if not s.get("ozet_cikti"):
-            continue
-        temel = beklenen(s)[0]["sonuc"]
-        for ad in ("sinir_mevcut_alici", "medya_tekrar", "kancasiz_son", "uretim_ani"):
-            if ad in s.get("serbest", []):
-                continue
-            alt = kahin.SERBEST[ad][1]
-            if not senaryolar._esit(kahin.hesapla_tek(senaryolar.girdi(s), {ad: alt}), temel):
-                h.append(f"{s['ad']}: bildirilmemiş '{ad}={alt}' sonucu değiştiriyor")
+        yollar = _biri_yollari(beklenen(s)[0]["sonuc"])
+        if yollar:
+            h.append(f"{s['ad']}: zaman ucuna bağlı {len(yollar)} değer (ör. {yollar[0]})")
     return h
 
 
 # ---- E -----------------------------------------------------------------------------------------------------------------------
-@test("E planın sınıflamadığı hata kodu (131048) sessizce geçmez: model reddeder")
+@test("E §7a 12: sınıfsız / tanınmayan kod reddedilmez → o iş Başarısız (kodlu), toplu iş sürer; 131048 → bekler, sonra gider")
 def _e1():
+    h = []
+    for kod in (100, 131053, 424242):
+        s = copy.deepcopy(senaryolar.girdi(TUM[0]))
+        s["meta_davranis"] = {"mesaj": {"A": {"hata": kod}}, "kanca": {"*": senaryolar.K_STD}}
+        r = kahin.hesapla(s)[0]["sonuc"]
+        if r["isler"]["T1/A"]["durum"] != kahin.BASARISIZ or r["isler"]["T1/A"]["hata_kodu"] != kod:
+            h.append(f"{kod}: A {r['isler']['T1/A']['durum']} / {r['isler']['T1/A']['hata_kodu']}")
+        if r["toplular"]["T1"]["durum"] != "aktif" or r["isler"]["T1/C"]["durum"] != kahin.TESLIM:
+            h.append(f"{kod}: toplu iş sürmedi ({r['toplular']['T1']})")
     s = copy.deepcopy(senaryolar.girdi(TUM[0]))
-    s["meta_davranis"] = {"mesaj": {"A": [{"hata": 131048}]}}
-    try:
-        kahin.hesapla(s)
-    except ValueError as e:
-        return [] if "PLAN SUSUYOR" in str(e) else [f"beklenmeyen ileti: {e}"]
-    return ["131048 kabul edildi — plan sınıfını vermiyor"]
+    s["meta_davranis"] = {"mesaj": {"A": [{"hata": 131048}]}, "kanca": {"*": senaryolar.K_STD}}
+    r = kahin.hesapla(s)[0]["sonuc"]
+    if r["isler"]["T1/A"]["durum"] != kahin.TESLIM or r["meta"]["post"]["A"] != 2:
+        h.append(f"131048: A {r['isler']['T1/A']['durum']}, POST {r['meta']['post']['A']}")
+    return h
 
 
 @test("E bilinmeyen olay türü ve modellenmemiş medya yanıtı reddedilir")
@@ -282,7 +297,7 @@ def _e2():
     except ValueError:
         pass
     s = copy.deepcopy(senaryolar.girdi(TUM[0]))
-    s["meta_davranis"] = {"medya": [{"hata": 131053}]}
+    s["meta_davranis"] = {"medya": ["uydurma"]}
     try:
         kahin.hesapla(s)
         h.append("modellenmemiş medya yanıtı kabul edildi")
@@ -308,43 +323,6 @@ def _e3():
 # İPUCU: bir önceki tam taramada mutasyonu ilk yakalayan senaryo. YALNIZ tarama SIRASINI değiştirir (önce ipucu denenir); ölçüt aynı —
 # ipucu artık yakalamıyorsa tarama bütün senaryolarla sürer. Boş bırakılırsa tam tarama (yavaş ama aynı sonuç).
 MUTASYON_IPUCU = {
-    "M1": "SINIR-05-pencerede-sayili-alici",
-    "M2": "KISI-08-istemiyor",
-    "M3": "CIFT-01-zaman-asimi-meta-aldi",
-    "M4": "KAYIP-01-kapaliyken-kanca",
-    "M5": "KISI-03-ayni-kisi-iki-kez",
-    "M6": "CIFT-12-geri-yukleme-dirilmez",
-    "M7": "KAYIP-02-sekiz-gun-kapali",
-    "M8": "SABLON-BASLATMA-PENDING",
-    "M9": "GECICI-02-bes-art-arda",
-    "M10": "HESAP-0",
-    "M12": "TEMEL-04-sirasiz-kanca",
-    "M13": "CIFT-12-geri-yukleme-dirilmez",
-    "M14": "TEMEL-01-ekstre-uc-kisi",
-    "M15": "TEMEL-01-ekstre-uc-kisi",
-    "M16": "TEMEL-01-ekstre-uc-kisi",
-    "M17": "GUV-04-onay-yok",
-    "M18": "GUV-02-salt-okunur-lisans",
-    "M18b": "GUV-03-lisans-arada-biter",
-    "M18y": "GUV-01-yetkisiz",
-    "M19": "ALICI-131049-bir-kez",
-    "M20": "ALICI-131049-iki-kez",
-    "M21": "SINIR-02-basamak-artti",
-    "M22": "CIFT-09-basarisizlari-yeniden-dene",
-    "M22b": "CIFT-09-basarisizlari-yeniden-dene",
-    "M23": "CIFT-12-geri-yukleme-dirilmez",
-    "M24": "CIFT-01-zaman-asimi-meta-aldi",
-    "M25": "CIFT-06-cift-tik",
-    "M27": "TARIH-04-eski-toplu-sinirda",
-    "M28": "CIFT-04-cokme-istek-ulasti",
-    "M29": "KAYIP-02-sekiz-gun-kapali",
-    "M30": "KISI-05-sabit-hat",
-    "M31": "CIFT-01-zaman-asimi-meta-aldi",
-    "M32": "CIFT-09-basarisizlari-yeniden-dene",
-    "M34": "ICERIK-02-devir-ve-donem-uclari",
-    "M35": "SINIR-04-meta-sinir-hatasi",
-    "M36": "CIFT-09-basarisizlari-yeniden-dene",
-    "M11": "TEMEL-04-sirasiz-kanca",
 }
 
 
@@ -396,22 +374,22 @@ def _g():
             return [f"hesapla çıkış {r.returncode}: {r.stderr[-300:]}"]
         with open(bek, "w", encoding="utf-8") as f:
             f.write(r.stdout)
-        tek = kahin.Benzetim(senaryolar.girdi(s), kahin.tam_secim({"belirsiz_cozum": "opaque_cozer"}), "secim", "hizli").calistir()
+        tek = kahin.Benzetim(senaryolar.girdi(s), kahin.tam_secim({}), "hizli").calistir()
         with open(prog, "w", encoding="utf-8") as f:
             json.dump(tek, f, ensure_ascii=False)
-        r = subprocess.run([sys.executable, "-I", os.path.join(_BURASI, "kahin.py"), "karsilastir", bek, prog, "--secim", "belirsiz_cozum=opaque_cozer"], capture_output=True, text=True)
+        r = subprocess.run([sys.executable, "-I", os.path.join(_BURASI, "kahin.py"), "karsilastir", bek, prog], capture_output=True, text=True)
         if r.returncode != 0 or "0 fark" not in r.stdout:
             h.append(f"kendi koşusu fark verdi: {r.stdout[-400:]}")
         tek["isler"]["T1/A"]["post"] = 2
         with open(prog, "w", encoding="utf-8") as f:
             json.dump(tek, f, ensure_ascii=False)
-        r = subprocess.run([sys.executable, "-I", os.path.join(_BURASI, "kahin.py"), "karsilastir", bek, prog, "--secim", "belirsiz_cozum=opaque_cozer"], capture_output=True, text=True)
+        r = subprocess.run([sys.executable, "-I", os.path.join(_BURASI, "kahin.py"), "karsilastir", bek, prog], capture_output=True, text=True)
         if r.returncode != 1 or "isler.T1/A.post" not in r.stdout:
             h.append(f"çift POST yakalanmadı: {r.stdout[-400:]}")
     return h
 
 
-@test("G karsilastir: 'biri' (sıra/zaman serbestliği), 'plan_susuyor' (denetlenmez), 'kisaltilabilir' (önek)")
+@test("G karsilastir: 'biri' (zaman serbestliği), 'plan_susuyor' (denetlenmez), 'kisaltilabilir' (önek)")
 def _g2():
     h = []
     b = [{"secimler": [{}], "sonuc": {"x": {"biri": [1, 2]}, "y": {"plan_susuyor": "vade"}, "z": {"kisaltilabilir": "Uzun Ad Soyad"}, "w": "sabit"}}]
@@ -423,20 +401,43 @@ def _g2():
     return h
 
 
-@test("G numara(): plan §2.2 '+' + ülke kodu; ilk numara; telefonsuz/geçersiz ayrımı")
+@test("G numara(): plan §2.2 '+' + ülke kodu; §7a 6 geçersiz = E.164'e çevrilemeyen; §7a 7 ayırıcılar; telefonsuz/geçersiz ayrımı")
 def _g3():
     ornek = {"0532 111 22 33": ("+905321112233", "mobil"), "+90 (532) 111-22-33": ("+905321112233", "mobil"), "905321112233": ("+905321112233", "mobil"),
              "0212 555 11 22": ("+902125551122", "sabit"), "+49 151 2345 6789": ("+4915123456789", "yurtdisi"), "0532 111 22 33 / 0533 444 55 66": ("+905321112233", "mobil"),
-             "-": (None, "telefonsuz"), None: (None, "telefonsuz"), "0532 111": (None, "gecersiz"), "5321112233": (None, "gecersiz")}
+             "0532 111 22 33\n0533 444 55 66": ("+905321112233", "mobil"), "0532 111 22 33;0533": ("+905321112233", "mobil"), "0532 111 22 33, 0533": ("+905321112233", "mobil"),
+             "5321112233": ("+905321112233", "mobil"), "0090 532 111 22 33": ("+905321112233", "mobil"), "+90 532 111 22": (None, "gecersiz"),
+             "-": (None, "telefonsuz"), None: (None, "telefonsuz"), "0532 111": (None, "gecersiz"), "123": (None, "gecersiz"), "+1 234": (None, "gecersiz")}
     return [f"{k!r}: {kahin.numara(k)} ≠ {v}" for k, v in ornek.items() if kahin.numara(k) != v]
 
 
-@test("G para(): '1.250,00 TL' biçimi; eksi bakiye PLAN SUSUYOR işareti")
+@test("G para(): '1.250,00 TL' biçimi; §7a 22 eksi bakiye '1.234,56 TL (Alacaklı)', 2 ondalık; donem_metni() §7a 21")
 def _g4():
-    ornek = {"1250": "1.250,00 TL", "0": "0,00 TL", "0.5": "0,50 TL", "1234567.89": "1.234.567,89 TL"}
+    ornek = {"1250": "1.250,00 TL", "0": "0,00 TL", "0.5": "0,50 TL", "1234567.89": "1.234.567,89 TL", "-1234.56": "1.234,56 TL (Alacaklı)",
+             "-0.5": "0,50 TL (Alacaklı)", "0.005": "0,01 TL", "-0.004": "0,00 TL"}
     h = [f"{k}: {kahin.para(Decimal(k))} ≠ {v}" for k, v in ornek.items() if kahin.para(Decimal(k)) != v]
-    if not isinstance(kahin.para(Decimal("-1")), dict):
-        h.append("eksi bakiye işaretlenmedi")
+    if kahin.donem_metni("2026-10-01", "2026-10-31") != "01.10.2026 \u2013 31.10.2026":
+        h.append(f"dönem metni {kahin.donem_metni('2026-10-01', '2026-10-31')!r}")
+    return h
+
+
+# ---- H -----------------------------------------------------------------------------------------------------------------------
+@test("H beklenen şablon metinleri = plan (§7a 23 ekstre gövdesi, W5 hatırlatma gövdesi, KVKK alt satırı ≤ 60)")
+def _h():
+    yol = os.path.normpath(os.path.join(_BURASI, "..", "..", "..", "..", "docs", "erp", "WHATSAPP-API-PLANI-2.4.8.md"))
+    with open(yol, encoding="utf-8") as f:
+        plan = " ".join(f.read().split())
+    h = []
+    for ad, s in kahin.SABLONLAR.items():
+        for alan in ("govde", "alt_satir"):
+            if s[alan] and s[alan] not in plan:
+                h.append(f"{ad}.{alan} planda yok: {s[alan][:60]}")
+        if s["alt_satir"] and len(s["alt_satir"]) > 60:
+            h.append(f"{ad}: alt satır {len(s['alt_satir'])} > 60")
+        if s["kategori"] != "UTILITY" or s["dil"] != "tr":
+            h.append(f"{ad}: kategori/dil")
+    if not kahin.SABLONLAR["destekofis_ekstre"]["govde"].endswith("İyi günler dileriz."):
+        h.append("ekstre gövdesi cümleyle bitmiyor (§7a 23)")
     return h
 
 

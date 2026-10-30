@@ -549,7 +549,7 @@ export class SahteMeta {
           const ornek = c.example?.body_text?.[0] ?? c.example?.body_text_named_params;
           if (!Array.isArray(ornek) || ornek.length !== d.length) return this.hata(100, { details: "SAHTE-META D0: değişken örnekleri (example) eksik" });
           const kirpik = c.text.trim();
-          // D0: "Variables cannot be at the start or end" — sondaki noktalama sonrası değişken sayılmaz varsayımı (README: plan şablonu "{{4}}." biter)
+          // D0: "Variables cannot be at the start or end" — "{{4}}." gibi sondaki noktalama sonrası değişken sayılmaz varsayımı (plan §7a 23 riski kaldırdı: ekstre gövdesi cümleyle biter)
           if (/^\{\{\s*[A-Za-z0-9_]+\s*\}\}/.test(kirpik) || /\{\{\s*[A-Za-z0-9_]+\s*\}\}$/.test(kirpik)) return this.hata(2388299);
         }
       } else if (t === "FOOTER") {

@@ -1,0 +1,222 @@
+ok 1 - A senaryolar.json güncel (yeniden üretim = dosya)
+  # bilgi: 139 senaryo
+ok 2 - A senaryo sayısı ≥ 40 ve plan §8 başlıklarının hepsi temsil ediliyor
+ok 3 - B elle = model: TEMEL-01-ekstre-uc-kisi
+ok 4 - B elle = model: TEMEL-02-odeme-hatirlatma
+ok 5 - B elle = model: TEMEL-03-okundu-teslimsiz
+ok 6 - B elle = model: TEMEL-04-sirasiz-kanca
+ok 7 - B elle = model: TEMEL-05-teslimden-sonra-failed
+ok 8 - B elle = model: CIFT-01-zaman-asimi-meta-aldi
+ok 9 - B elle = model: CIFT-02-yanitsiz-yine-de-gonder
+ok 10 - B elle = model: CIFT-03-yine-de-gonder-cift-gider
+ok 11 - B elle = model: CIFT-04-cokme-istek-ulasti
+ok 12 - B elle = model: CIFT-05-cokme-istek-ulasmadi
+ok 13 - B elle = model: CIFT-06-cift-tik
+ok 14 - B elle = model: CIFT-07-iki-sekme
+ok 15 - B elle = model: CIFT-08-iki-kullanici-ayni-cari
+ok 16 - B elle = model: CIFT-09-basarisizlari-yeniden-dene
+ok 17 - B elle = model: CIFT-10-yinelenen-kanca
+ok 18 - B elle = model: CIFT-11-medya-yanitsiz
+ok 19 - B elle = model: CIFT-12-geri-yukleme-dirilmez
+ok 20 - B elle = model: CIFT-13-veri-tasindi
+ok 21 - B elle = model: CIFT-14-geri-yukleme-sonra-baslat
+ok 22 - B elle = model: KAYIP-01-kapaliyken-kanca
+ok 23 - B elle = model: KAYIP-02-sekiz-gun-kapali
+ok 24 - B elle = model: KAYIP-03-tunel-kapali
+ok 25 - B elle = model: KAYIP-04-guncelleme-kapat-ac
+ok 26 - B elle = model: KAYIP-05-meta-ulasilamaz
+ok 27 - B elle = model: KAYIP-06-meta-ulasilamaz-uc-kisi
+ok 28 - B elle = model: KISI-01-telefon-kuyrukta-degisti
+ok 29 - B elle = model: KISI-02-ayni-adli-iki-cari
+ok 30 - B elle = model: KISI-03-ayni-kisi-iki-kez
+ok 31 - B elle = model: KISI-04-hucrede-iki-numara
+ok 32 - B elle = model: KISI-05-sabit-hat
+ok 33 - B elle = model: KISI-06-yurt-disi
+ok 34 - B elle = model: KISI-07-telefonsuz-gecersiz
+ok 35 - B elle = model: KISI-08-istemiyor
+ok 36 - B elle = model: KISI-09-istemiyor-sonradan
+ok 37 - B elle = model: KISI-10-silindi-kuyrukta
+ok 38 - B elle = model: KISI-11-numara-bicimleri
+ok 39 - B elle = model: KISI-12-ayni-telefon-iki-cari
+ok 40 - B elle = model: KISI-13-hepsi-elendi
+ok 41 - B elle = model: KISI-14-ayiricilar
+ok 42 - B elle = model: KISI-15-pasif
+ok 43 - B elle = model: ICERIK-01-pdf-karismasi
+ok 44 - B elle = model: ICERIK-02-devir-ve-donem-uclari
+ok 45 - B elle = model: ICERIK-03-yil-donumu
+ok 46 - B elle = model: ICERIK-04-turkce-emoji-satir-sonu
+ok 47 - B elle = model: ICERIK-05-cok-uzun-ad
+ok 48 - B elle = model: ICERIK-06-eksi-bakiye
+ok 49 - B elle = model: ICERIK-07-tutar-bicimi
+ok 50 - B elle = model: ICERIK-08-tum-hareketler
+ok 51 - B elle = model: ICERIK-09-kuyrukta-bakiye-degisti
+ok 52 - B elle = model: ICERIK-10-ttl-sonrasi-teslim
+ok 53 - B elle = model: ICERIK-11-ttl-icinde-gec-teslim
+ok 54 - B elle = model: ICERIK-12-hatirlatma-kuyrukta-odendi
+ok 55 - B elle = model: HESAP-0
+ok 56 - B elle = model: HESAP-10
+ok 57 - B elle = model: HESAP-200
+ok 58 - B elle = model: HESAP-131005
+ok 59 - B elle = model: HESAP-368
+ok 60 - B elle = model: HESAP-131031
+ok 61 - B elle = model: HESAP-131042
+ok 62 - B elle = model: HESAP-133010
+ok 63 - B elle = model: HESAP-131045
+ok 64 - B elle = model: SABLON-GONDERIM-132000
+ok 65 - B elle = model: SABLON-GONDERIM-132001
+ok 66 - B elle = model: SABLON-GONDERIM-132007
+ok 67 - B elle = model: SABLON-GONDERIM-132012
+ok 68 - B elle = model: SABLON-GONDERIM-132015
+ok 69 - B elle = model: SABLON-GONDERIM-132016
+ok 70 - B elle = model: SABLON-GONDERIM-132018
+ok 71 - B elle = model: HATA-SINIFSIZ-100
+ok 72 - B elle = model: HATA-SINIFSIZ-131008
+ok 73 - B elle = model: HATA-SINIFSIZ-135000
+ok 74 - B elle = model: HATA-SINIFSIZ-131053
+ok 75 - B elle = model: HATA-SINIFSIZ-131047
+ok 76 - B elle = model: HATA-SINIFSIZ-131050
+ok 77 - B elle = model: HATA-SINIFSIZ-131051
+ok 78 - B elle = model: HATA-SINIFSIZ-130403
+ok 79 - B elle = model: HATA-SINIFSIZ-131064
+ok 80 - B elle = model: HATA-SINIFSIZ-131063
+ok 81 - B elle = model: HATA-SINIFSIZ-133016
+ok 82 - B elle = model: HATA-SINIFSIZ-987654
+ok 83 - B elle = model: SABLON-BASLATMA-PENDING
+ok 84 - B elle = model: SABLON-BASLATMA-REJECTED
+ok 85 - B elle = model: SABLON-BASLATMA-PAZARLAMA
+ok 86 - B elle = model: SABLON-BASLATMA-DURAKLATILMIS
+ok 87 - B elle = model: SABLON-BASLATMA-YOK
+ok 88 - B elle = model: SABLON-BASLATMA-YALNIZ-HATIRLATMA
+ok 89 - B elle = model: SABLON-SONRAKI-TOPLU
+ok 90 - B elle = model: SABLON-PAZARLAMA-ARADA
+ok 91 - B elle = model: SABLON-PAZARLAMA-SAAT-ICINDE
+ok 92 - B elle = model: GECICI-01-131000-iki-kez
+ok 93 - B elle = model: GECICI-02-bes-art-arda
+ok 94 - B elle = model: GECICI-03-uc-sonra-kabul
+ok 95 - B elle = model: GECICI-03b-dort-hata-basarisiz
+ok 96 - B elle = model: GECICI-130429
+ok 97 - B elle = model: GECICI-131057
+ok 98 - B elle = model: GECICI-80007
+ok 99 - B elle = model: GECICI-4
+ok 100 - B elle = model: GECICI-1
+ok 101 - B elle = model: GECICI-2
+ok 102 - B elle = model: GECICI-133004
+ok 103 - B elle = model: GECICI-131056
+ok 104 - B elle = model: ALICI-131049-bir-kez
+ok 105 - B elle = model: ALICI-131049-iki-kez
+ok 106 - B elle = model: ALICI-131049-esanli
+ok 107 - B elle = model: ALICI-131026-kancada
+ok 108 - B elle = model: ALICI-131021-esanli
+ok 109 - B elle = model: SINIR-01-250-uzeri
+ok 110 - B elle = model: SINIR-02-basamak-artti
+ok 111 - B elle = model: SINIR-03-elle-ust-sinir
+ok 112 - B elle = model: SINIR-04-meta-sinir-hatasi
+ok 113 - B elle = model: SINIR-05-pencerede-sayili-alici
+ok 114 - B elle = model: SINIR-06-gece-yarisi-kayan
+ok 115 - B elle = model: SINIR-07-131048
+ok 116 - B elle = model: SIRKET-01-ayni-waba
+ok 117 - B elle = model: SIRKET-02-ayri-waba
+ok 118 - B elle = model: SIRKET-03-sinir-hatasi-ayri-waba
+ok 119 - B elle = model: OLCEK-01-iki-bin
+ok 120 - B elle = model: OLCEK-02-uc-gune-yayilan
+ok 121 - B elle = model: OLCEK-03-kanca-yagmuru
+ok 122 - B elle = model: OLCEK-04-pazarlama-300
+ok 123 - B elle = model: GUV-01-yetkisiz
+ok 124 - B elle = model: GUV-02-salt-okunur-lisans
+ok 125 - B elle = model: GUV-03-lisans-arada-biter
+ok 126 - B elle = model: GUV-04-onay-yok
+ok 127 - B elle = model: GUV-05-sahte-kanca
+ok 128 - B elle = model: GUV-06-sahte-opaque
+ok 129 - B elle = model: GUV-07-bagli-degil
+ok 130 - B elle = model: GUV-08-lisans-geri-gelir
+ok 131 - B elle = model: GUV-09-sahte-gercek-wamid
+ok 132 - B elle = model: GUV-10-yetki-ve-baglanti-sirasi
+ok 133 - B elle = model: GUV-11-yetki-lisans-onay-sirasi
+ok 134 - B elle = model: GUV-12-onay-sablon-sirasi
+ok 135 - B elle = model: TARIH-01-ay-sonu
+ok 136 - B elle = model: TARIH-02-ttl-sonu
+ok 137 - B elle = model: TARIH-03-kancasiz
+ok 138 - B elle = model: TARIH-03b-kancasiz-yol-calisiyor
+ok 139 - B elle = model: TARIH-04-eski-toplu-sinirda
+ok 140 - B elle = model: TARIH-05-eski-toplu
+ok 141 - B elle = model: TARIH-06-genc-toplu-kapat-ac
+ok 142 - C değişmezler: her senaryo (birleşik sonuç)
+ok 143 - C değişmezler: zaman uçlarının HER biri ayrı (birleştirmeden önce); bildirilmiş ihlal yalnız bildirildiği seçimde
+ok 144 - D §7a sabitlemesi: SERBEST boş, hiçbir senaryo serbest seçim bildirmiyor, beklenen tek grup
+ok 145 - D iki zaman ucu (adım 0,5 sn / 5 sn) her senaryoda aynı sonucu verir (beklenende 'biri' yaprağı yok)
+ok 146 - E §7a 12: sınıfsız / tanınmayan kod reddedilmez → o iş Başarısız (kodlu), toplu iş sürer; 131048 → bekler, sonra gider
+ok 147 - E bilinmeyen olay türü ve modellenmemiş medya yanıtı reddedilir
+ok 148 - E senaryo nesnesi koşudan sonra değişmez (aynı senaryo birçok kez koşar)
+ok 149 - F mutasyon: 60 mutasyonun her biri en az bir senaryoda yakalanır
+  # bilgi: M1 (gönderim sınırı FARKLI alıcı yerine kabul sayısıyla) ← CIFT-07-iki-sekme: CIFT-07-iki-sekme * [{}…] kontroller.K1.toplam_post: elle 2 ≠ model 1
+  # bilgi: M2 ('WhatsApp Mesajı İstemiyor' yok sayılır) ← KISI-08-istemiyor: KISI-08-istemiyor * [{}…] elenen.T1: elle {"B": "istemiyor"} ≠ model "<YOK>"
+  # bilgi: M3 (yanıtsız istek kendiliğinden yeniden gönderilir) ← CIFT-01-zaman-asimi-meta-aldi: CIFT-01-zaman-asimi-meta-aldi * [{}…] meta.post: elle {"A": 1} ≠ model {"A": 2}
+  # bilgi: M4 (PDF (medya) kesinleşmeden, kabulde silinir) ← KAYIP-01-kapaliyken-kanca: KAYIP-01-kapaliyken-kanca * [{}…] kontroller.K1.medya_silme: elle 0 ≠ model 2
+  # bilgi: M5 (aynı cari iki kez seçilince iki iş) ← KISI-03-ayni-kisi-iki-kez: KISI-03-ayni-kisi-iki-kez * [{}…] toplular.T1.is_sayisi: elle 2 ≠ model 3
+  # bilgi: M6 (sınır kayan 24 saat yerine takvim günü) ← CIFT-12-geri-yukleme-dirilmez: CIFT-12-geri-yukleme-dirilmez * [{}…] kontroller.K1.toplam_post: elle 2 ≠ model 4
+  # bilgi: M7 (TTL 3 gün yerine 30 gün) ← ICERIK-10-ttl-sonrasi-teslim: ICERIK-10-ttl-sonrasi-teslim * [{}…] kontroller.K2.isler: elle {"T1/A": "Süresi Doldu"} ≠ model {"T1/A": "Gönderildi"}
+  # bilgi: M8 (şablon durumu/kategorisi başlatmada denetlenmez) ← SABLON-BASLATMA-PENDING: SABLON-BASLATMA-PENDING * [{}…] baslamadi: elle {"T1": "sablon_uygun_degil"} ≠ model {}
+  # bilgi: M9 (5 ardışık geçici hatada duraklamaz) ← KAYIP-06-meta-ulasilamaz-uc-kisi: KAYIP-06-meta-ulasilamaz-uc-kisi * [{}…] kontroller.K1.isler: elle {"T1/A": "Duraklatıldı", "T1/B": "Başarısız", "T1/C": "Duraklatıldı"} ≠ model {"T1/
+  # bilgi: M10 (hesap/şablon hatası toplu işi duraklatmaz) ← HESAP-0: HESAP-0 * [{}…] kontroller.K1.toplam_post: elle 2 ≠ model 3
+  # bilgi: M11 (read'den sonra gelen delivered durumu geri alır) ← TEMEL-04-sirasiz-kanca: TEMEL-04-sirasiz-kanca * [{}…] isler.T1/A.durum: elle "Okundu" ≠ model "Teslim Edildi"
+  # bilgi: M12 (yinelenen delivered teslim sayacını artırır) ← TEMEL-04-sirasiz-kanca: TEMEL-04-sirasiz-kanca * [{}…] bu_ay.W1.2026-10: elle {"teslim": 1, "yaklasik_usd": "0.0009"} ≠ model {"teslim": 2, "yaklasik_usd": "0.0018"}
+  # bilgi: M13 (yedekten geri yükleme bitmemiş işleri durdurmaz) ← CIFT-12-geri-yukleme-dirilmez: CIFT-12-geri-yukleme-dirilmez * [{}…] kontroller.K1.durum_sayilari: elle {"Durduruldu (Geri Yükleme)": 3, "Sınır Nedeniyle Bekliyor": 2, "Teslim Edild
+  # bilgi: M14 (ekstrede devir (dönem öncesi bakiye) atlanır) ← TEMEL-01-ekstre-uc-kisi: TEMEL-01-ekstre-uc-kisi * [{}…] isler.T1/A.degiskenler: elle ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"] ≠ m
+  # bilgi: M15 (ekstre seçilen döneme uymaz (bütün hareketler)) ← TEMEL-01-ekstre-uc-kisi: TEMEL-01-ekstre-uc-kisi * [{}…] isler.T1/A.pdf: elle {"cari_ad": "Ayşe Yılmaz", "donem_bas": "2026-10-01", "donem_son": "2026-10-31", "devir": "1000.0
+  # bilgi: M16 (numara '+' olmadan gönderilir) ← TEMEL-01-ekstre-uc-kisi: TEMEL-01-ekstre-uc-kisi * [{}…] isler.T1/A.telefon: elle "+905321112233" ≠ model "905321112233"
+  # bilgi: M17 (bir kez onay işaretsizken de başlar) ← GUV-04-onay-yok: GUV-04-onay-yok * [{}…] baslamadi: elle {"T1": "onay_yok"} ≠ model {}
+  # bilgi: M18 (salt okunur lisansta başlar) ← GUV-02-salt-okunur-lisans: GUV-02-salt-okunur-lisans * [{}…] baslamadi: elle {"T1": "lisans_salt_okunur"} ≠ model {}
+  # bilgi: M18b (lisans gönderim sırasında salt okunura geçince işçi durmaz) ← GUV-03-lisans-arada-biter: GUV-03-lisans-arada-biter * [{}…] kontroller.K1.durum_sayilari: elle {"Lisans Nedeniyle Durdu": 2, "Teslim Edildi": 2} ≠ model {"Sınır Nedeniyle Bekli
+  # bilgi: M18y (whatsapp.send yetkisi denetlenmez) ← GUV-01-yetkisiz: GUV-01-yetkisiz * [{}…] baslamadi: elle {"T1": "yetki_yok"} ≠ model {}
+  # bilgi: M19 (131049'da 24 saat beklemeden yeniden gönderir) ← ALICI-131049-bir-kez: ALICI-131049-bir-kez * [{}…] kontroller.K1.isler: elle {"T1/A": "Meta Bekletti (24 Saat Sonra Yeniden)"} ≠ model {"T1/A": "Teslim Edildi"}
+  # bilgi: M20 (131049'da sınırsız yeniden gönderir) ← ALICI-131049-iki-kez: ALICI-131049-iki-kez * [{}…] isler.T1/A.durum: elle "Başarısız" ≠ model "Meta Bekletti (24 Saat Sonra Yeniden)"
+  # bilgi: M21 (Meta basamağı 6 saatte bir yeniden okunmaz) ← SINIR-02-basamak-artti: SINIR-02-basamak-artti * [{}…] kontroller.K2.durum_sayilari: elle {"Teslim Edildi": 300} ≠ model {"Sınır Nedeniyle Bekliyor": 50, "Teslim Edildi": 250
+  # bilgi: M22 ('Başarısızları Yeniden Dene' Sonucu Belirsiz işi de gönderir) ← CIFT-09-basarisizlari-yeniden-dene: CIFT-09-basarisizlari-yeniden-dene * [{}…] meta.post: elle {"A": 1, "B": 2, "C": 1} ≠ model {"A": 1, "B": 2, "C": 2}
+  # bilgi: M22b ('Başarısızları Yeniden Dene' kabul edilmiş/teslim edilmiş işi de gönderir) ← CIFT-09-basarisizlari-yeniden-dene: CIFT-09-basarisizlari-yeniden-dene * [{}…] meta.post: elle {"A": 1, "B": 2, "C": 1} ≠ model {"A": 2, "B": 2, "C": 1}
+  # bilgi: M23 (elle günlük üst sınır (dailyCap) yok sayılır) ← CIFT-07-iki-sekme: CIFT-07-iki-sekme * [{}…] elenen.T2: elle {"B": "zaten_kuyrukta", "C": "zaten_kuyrukta"} ≠ model {"biri": ["<YOK>", {"B": "zaten_kuyrukta", "C": "zate
+  # bilgi: M24 (imzasız (sahte) kanca Sonucu Belirsiz'i çözer) ← GUV-06-sahte-opaque: GUV-06-sahte-opaque * [{}…] meta.kabul: elle {"A": 0} ≠ model {"A": 1}
+  # bilgi: M27 (24 saatten eski toplu iş (kapalı kalan) açılışta sorulmadan sürer) ← TARIH-05-eski-toplu: TARIH-05-eski-toplu * [{}…] kontroller.K1.toplam_post: elle 1 ≠ model 2
+  # bilgi: M28 (program kapalıyken gelen kanca kaybolur (Meta yeniden denemesi yok sayılır)) ← CIFT-04-cokme-istek-ulasti: CIFT-04-cokme-istek-ulasti * [{}…] meta.kabul: elle {"A": 1, "B": 1, "C": 1} ≠ model {"A": 1, "B": 0, "C": 1}
+  # bilgi: M29 (Süresi Doldu'da PDF silinmez) ← ICERIK-10-ttl-sonrasi-teslim: ICERIK-10-ttl-sonrasi-teslim * [{}…] meta.medya_silme: elle {"A": 1} ≠ model {"A": 0}
+  # bilgi: M30 (failed 131026 işi Başarısız yapmaz) ← KISI-05-sabit-hat: KISI-05-sabit-hat * [{}…] isler.T1/L.durum: elle "Başarısız" ≠ model "Süresi Doldu"
+  # bilgi: M31 ('Bu Ay' sayacı teslim yerine kabulü sayar) ← KAYIP-02-sekiz-gun-kapali: KAYIP-02-sekiz-gun-kapali * [{}…] bu_ay: elle {} ≠ model {"W1": {"2026-10": {"teslim": 1, "yaklasik_usd": "0.0009"}}}
+  # bilgi: M32 (alıcı hatası (131009) toplu işi duraklatır) ← CIFT-09-basarisizlari-yeniden-dene: CIFT-09-basarisizlari-yeniden-dene * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Başarısız", "T1/C": "Sonucu Belirsiz"} ≠ model
+  # bilgi: M34 (mesajdaki bakiye dönemden bağımsız (PDF ile ayrışır)) ← ICERIK-02-devir-ve-donem-uclari: ICERIK-02-devir-ve-donem-uclari * [{}…] isler.T1/Q.degiskenler: elle ["Kemal Uç", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "250,00 TL"] 
+  # bilgi: M35 (Meta sınır hatası işi Başarısız yapar) ← SINIR-04-meta-sinir-hatasi: SINIR-04-meta-sinir-hatasi * [{}…] meta.post: elle {"A": 1, "B": 2, "C": 1, "D": 1, "E": 1} ≠ model {"A": 1, "B": 1, "C": 1, "D": 1, "E": 1}
+  # bilgi: M36 (yeniden denemede silinmiş medya kimliği kullanılır) ← CIFT-09-basarisizlari-yeniden-dene: CIFT-09-basarisizlari-yeniden-dene * [{}…] meta.medya_yukleme: elle {"A": 1, "B": 2, "C": 1} ≠ model {"A": 1, "B": 1, "C": 1}
+  # bilgi: M37 ('Zaten Kuyrukta' denetimi yok (bekleyen cariye ikinci iş)) ← CIFT-07-iki-sekme: CIFT-07-iki-sekme * [{}…] elenen.T2: elle {"B": "zaten_kuyrukta", "C": "zaten_kuyrukta"} ≠ model "<YOK>"
+  # bilgi: M38 (aynı istek kimliği yeni toplu iş açar) ← CIFT-06-cift-tik: CIFT-06-cift-tik * [{}…] ayni_istek: elle {"T2": "T1"} ≠ model {}
+  # bilgi: M39 (geçici hata sınırsız yeniden denenir (3 yeniden denemeden sonra Başarısız olmaz)) ← KAYIP-05-meta-ulasilamaz: KAYIP-05-meta-ulasilamaz * [{}…] kontroller.K1.isler: elle {"T1/A": "Başarısız"} ≠ model {"T1/A": "Bekliyor"}
+  # bilgi: M40 (toplu işi durduran hatayı alan iş Başarısız değil Duraklatıldı) ← KAYIP-06-meta-ulasilamaz-uc-kisi: KAYIP-06-meta-ulasilamaz-uc-kisi * [{}…] kontroller.K1.isler: elle {"T1/A": "Duraklatıldı", "T1/B": "Başarısız", "T1/C": "Duraklatıldı"} ≠ model {"T1/
+  # bilgi: M41 (kanca yolu hiç çalışmamışken de TTL sonunda Süresi Doldu) ← KAYIP-02-sekiz-gun-kapali: KAYIP-02-sekiz-gun-kapali * [{}…] isler.T1/A.durum: elle "Meta Kabul Etti" ≠ model "Süresi Doldu"
+  # bilgi: M42 (Süresi Doldu'dan sonra gelen teslim yok sayılır) ← ICERIK-10-ttl-sonrasi-teslim: ICERIK-10-ttl-sonrasi-teslim * [{}…] isler.T1/A.durum: elle "Teslim Edildi" ≠ model "Süresi Doldu"
+  # bilgi: M43 ('Bu Ay' ayı teslim yerine kabul zamanından) ← ICERIK-10-ttl-sonrasi-teslim: ICERIK-10-ttl-sonrasi-teslim * [{}…] bu_ay: elle {"W1": {"2026-11": {"teslim": 1, "yaklasik_usd": "0.0009"}}} ≠ model {"W1": {"2026-10": {"teslim": 1,
+  # bilgi: M44 (hatırlatmada gecikmiş borcu olmayan cari elenmez) ← TEMEL-02-odeme-hatirlatma: TEMEL-02-odeme-hatirlatma * [{}…] elenen.T1: elle {"B": "gecikmis_borc_yok", "H": "gecikmis_borc_yok"} ≠ model "<YOK>"
+  # bilgi: M45 (eksi bakiye '(Alacaklı)' eki olmadan) ← ICERIK-06-eksi-bakiye: ICERIK-06-eksi-bakiye * [{}…] isler.T1/V.degiskenler: elle ["Veli Alacaklı", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "500,00 TL (Alacak
+  # bilgi: M46 (lisans yeniden yazılabilir olunca işler kendiliğinden sürer) ← GUV-08-lisans-geri-gelir: GUV-08-lisans-geri-gelir * [{}…] kontroller.K1.durum_sayilari: elle {"Lisans Nedeniyle Durdu": 2, "Teslim Edildi": 2} ≠ model {"Sınır Nedeniyle Bekliy
+  # bilgi: M47 (sınıfsız hata kodu toplu işi duraklatır) ← HATA-SINIFSIZ-100: HATA-SINIFSIZ-100 * [{}…] toplular.T1.durum: elle "aktif" ≠ model "duraklatildi"
+  # bilgi: M48 (şablon kategorisi gönderim sürerken denetlenmez) ← SABLON-PAZARLAMA-ARADA: SABLON-PAZARLAMA-ARADA * [{}…] toplular.T1: elle {"durum": "duraklatildi", "neden": "Şablon Pazarlama'ya Alındı", "is_sayisi": 3} ≠ model {"durum": "a
+  # bilgi: M49 (bütün seçilenler elenince boş toplu iş kaydı oluşur) ← KISI-13-hepsi-elendi: KISI-13-hepsi-elendi * [{}…] olusmadi: elle ["T1"] ≠ model []
+  # bilgi: M50 (başarılı işin hata kodu temizlenmez) ← CIFT-09-basarisizlari-yeniden-dene: CIFT-09-basarisizlari-yeniden-dene * [{}…] isler.T1/B.hata_kodu: elle null ≠ model 131009
+  # bilgi: M51 (131048 işi Başarısız yapar (beklemez)) ← SINIR-07-131048: SINIR-07-131048 * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Sınır Nedeniyle Bekliyor", "T1/C": "Sınır Nedeniyle Bekliyor", "T
+  # bilgi: M52 (Meta sınır hatasında yalnız o toplu iş bekler (WABA'nın hepsi değil)) ← SINIR-04-meta-sinir-hatasi: SINIR-04-meta-sinir-hatasi * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Sınır Nedeniyle Bekliyor", "T1/C": "Sınır Nedeniyle Be
+  # bilgi: M53 (sabit hat elenir) ← KISI-05-sabit-hat: KISI-05-sabit-hat * [{}…] isler.T1/L.durum: elle "Başarısız" ≠ model "<YOK>"
+  # bilgi: M54 (aynı telefonlu ikinci cari elenir) ← KISI-12-ayni-telefon-iki-cari: KISI-12-ayni-telefon-iki-cari * [{}…] meta.post: elle {"X1": 1, "X2": 1} ≠ model {"X1": 1}
+  # bilgi: M55 (dönem metni ISO biçiminde) ← TEMEL-01-ekstre-uc-kisi: TEMEL-01-ekstre-uc-kisi * [{}…] isler.T1/A.degiskenler: elle ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"] ≠ m
+  # bilgi: M56 (24 saatten eski toplu işte sınır bekleyen iş de sorulur) ← TARIH-04-eski-toplu-sinirda: TARIH-04-eski-toplu-sinirda * [{}…] kontroller.K1.toplam_post: elle 2 ≠ model 1
+  # bilgi: M57 (kuyrukta 'İstemiyor' işaretlenen cariye yine gönderilir) ← KISI-09-istemiyor-sonradan: KISI-09-istemiyor-sonradan * [{}…] meta.post: elle {"A": 1, "B": 0} ≠ model {"A": 1, "B": 1}
+  # bilgi: M58 (iş verisi gönderimde değil başlatmada okunur) ← KISI-01-telefon-kuyrukta-degisti: KISI-01-telefon-kuyrukta-degisti * [{}…] isler.T2/B.telefon: elle "+905339998877" ≠ model "+905332223344"
+  # bilgi: M59 (bağlantı kurulamadığında Sonucu Belirsiz (geçici değil)) ← KAYIP-05-meta-ulasilamaz: KAYIP-05-meta-ulasilamaz * [{}…] kontroller.K0.isler: elle {"T1/A": "Bekliyor"} ≠ model {"T1/A": "Sonucu Belirsiz"}
+  # bilgi: M60 (131049'da PDF silinir ve yeniden yüklenir) ← ALICI-131049-bir-kez: ALICI-131049-bir-kez * [{}…] kontroller.K1.medya_silme: elle 0 ≠ model 1
+ok 150 - G komut satırı: hesapla + karsilastir (kendi tek koşusu 0 fark; bozulmuş çıktı fark verir)
+ok 151 - G karsilastir: 'biri' (zaman serbestliği), 'plan_susuyor' (denetlenmez), 'kisaltilabilir' (önek)
+ok 152 - G numara(): plan §2.2 '+' + ülke kodu; §7a 6 geçersiz = E.164'e çevrilemeyen; §7a 7 ayırıcılar; telefonsuz/geçersiz ayrımı
+ok 153 - G para(): '1.250,00 TL' biçimi; §7a 22 eksi bakiye '1.234,56 TL (Alacaklı)', 2 ondalık; donem_metni() §7a 21
+ok 154 - H beklenen şablon metinleri = plan (§7a 23 ekstre gövdesi, W5 hatırlatma gövdesi, KVKK alt satırı ≤ 60)
+1..154
+# tests 154
+# pass 154
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

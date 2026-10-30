@@ -6,8 +6,11 @@ madde K0) bağımsız kâhinidir:
 1. **Sahte Meta Graph sunucusu** (`sahte-meta/`, Node, bağımlılıksız `node:http`) — yalnız Meta'nın resmî belgelerinden (30.10.2026 okunan .md sayfaları;
    kopyaları depoya KONMADI). Belgede olmayan her davranış **D0** diye işaretli (aşağıda liste). Gerçek Meta'ya hiçbir istek gitmez (yalnız 127.0.0.1).
 2. **Kâhin modeli** (`kahin/kahin.py`, Python, yalnız standart kütüphane — programdan AYRI dil) — toplu gönderimin beklenen sonucu, YALNIZ planın ürün
-   kurallarından. Planın sustuğu her yer bir **serbest seçim**dir (aşağıda "PLAN SUSUYOR"); kâhin karar VERMEZ (ders 40, 43), her seçeneğin sonucunu ayrı verir.
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 103 senaryo, plan §8 "Nasıl bozulur?" başlıklarının hepsi.
+   kurallarından. İlk sürümde (ec4c8176) planın sustuğu 32 nokta "PLAN SUSUYOR" diye listelenmiş, 15'i serbest seçim olarak iki yönlü verilmişti; plan **§7a**
+   (30.10.2026, programın davranışına bakılmadan — ders 40; K1–K3 ürün sahibi, öbürleri baş mimar kararı + ürün sahibi "önerilerin uygun") hepsini kararlaştırdı.
+   Kâhin artık bu kararlara **SABİT**: serbest seçim yok (`kahin.SERBEST = {}`), her kuralın kaynak satırında "§7a n". Kararın açık bıraktığı ayrıntılar
+   aşağıda "Kâhin yorumları"nda (teyit gerekir).
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 139 senaryo, plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının her biri.
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
 araştırma belgesi, Meta belge sayfaları (send-messages, document-messages, media, template-media, components, template-management, template-categorization,
@@ -16,8 +19,9 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (37 bilerek hata, her biri en az bir senaryoda yakalanıyor), (c) kapsam testi (senaryonun bildirmediği serbest seçim
-sonucu değiştirmemeli).
+iki ayrı türetme, (b) mutasyon testi (60 bilerek hata — 23'ü §7a kararlarının tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
+karşılaştırılır (H).
 
 ## Dosyalar
 
@@ -29,19 +33,19 @@ sonucu değiştirmemeli).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 34) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 18 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 103 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
-| `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu (serbest seçim gruplarıyla) |
-| `kahin/kahin_test.py` | Kâhinin kendi testi (A–G) + mutasyon; TAP + `# tests/pass/fail` |
+| `kahin/senaryolar.py` | 139 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
+| `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
 ## Nasıl koşulur (depo kökünden)
 
 ```sh
-node tools/kanit.mjs kos 248-k0-sahte-meta -- node --test test/bagimsiz/whatsapp-248/sahte-meta/sunucu.test.mjs
-node tools/kanit.mjs kos 248-k0-sahte-meta-mutasyon -- node test/bagimsiz/whatsapp-248/sahte-meta/mutasyon.mjs   # TMPDIR'de benzersiz kopyalar
-node tools/kanit.mjs kos 248-k0-senaryolar -- python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py   # senaryolar.json (elle ≠ model → yazmaz, çıkış 1)
-node tools/kanit.mjs kos 248-k0-kahin -- python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py
+node tools/kanit.mjs kos 248-k0-sabit-sahte-meta -- node --test test/bagimsiz/whatsapp-248/sahte-meta/sunucu.test.mjs
+node tools/kanit.mjs kos 248-k0-sabit-sahte-meta-mutasyon -- node test/bagimsiz/whatsapp-248/sahte-meta/mutasyon.mjs   # TMPDIR'de benzersiz kopyalar
+node tools/kanit.mjs kos 248-k0-sabit-senaryolar -- python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py   # senaryolar.json (elle ≠ model → yazmaz, çıkış 1)
+node tools/kanit.mjs kos 248-k0-sabit-kahin -- python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py
 python3 -I test/bagimsiz/whatsapp-248/kahin/kahin.py hesapla senaryo.json
-python3 -I test/bagimsiz/whatsapp-248/kahin/kahin.py karsilastir beklenen.json program.json --secim 'uretim_ani=baslatma,belirsiz_cozum=bilinmeyen_duser'
+python3 -I test/bagimsiz/whatsapp-248/kahin/kahin.py karsilastir beklenen.json program.json
 ```
 
 ## 1. Sahte Meta sunucusu
@@ -78,46 +82,66 @@ Kanca adresi önceliği (belge): numara override → Messaging hesabı override 
 
 ## 2. Kâhin modeli
 
-**Girdi** (senaryo): `baslangic` (ISO, yerel saat dilimi), `cariler` (`id, ad, telefon, istemiyor, silindi, sirket, hareketler[{tarih, borc, alacak}]`), `ayar`
+**Girdi** (senaryo): `baslangic` (ISO, yerel saat dilimi), `cariler` (`id, ad, telefon, istemiyor, silindi, pasif, sirket, hareketler[{tarih, borc, alacak}],
+vadeler[{vade, kalan}]` — hatırlatma için açık kalemler), `ayar`
 (`bagli, onay, gunluk_ust_sinir, lisans_yazilabilir`), `kullanicilar` (`whatsapp.send`), `firmalar`, `wabalar` (şirket → WABA), `meta` (`basamak`, şablon
 durum/kategori), `meta_davranis` (`mesaj` alıcı başına n. POST yanıtı; `medya` genel sıra; `kanca` iletiye Meta'nın göndereceği durumlar), `olaylar`
-(`baslat` [etiket, seçim SIRASIYLA, şablon, dönem, kullanıcı, `cift`], `kontrol`, `cari`, `kapat`, `ac`, `cokme` [o carinin isteği anında süreç ölür,
-`istek_ulasti`], `tunel`, `kanca_kuyrugu`, `lisans`, `duraklat`/`devam`/`iptal`, `basarisizlari_yeniden_dene`, `yine_de_gonder`, `geri_yukle`/`sifirla`/
-`tasindi`, `meta_basamak`, `meta_sablon`, `meta_kapali`, `sahte_kanca`), `serbest` (senaryonun bağlı olduğu PLAN SUSUYOR seçimleri), `ozet_cikti`.
+(`baslat` [etiket, seçim SIRASIYLA, şablon, dönem, kullanıcı, `istek` = istek kimliği], `kontrol`, `cari` [telefon / istemiyor / silindi / pasif / ad /
+hareket_ekle / vadeler], `kapat`, `ac`, `cokme` [o carinin isteği anında süreç ölür, `istek_ulasti`], `tunel`, `kanca_kuyrugu`, `lisans`, `duraklat`/`devam`/
+`iptal`, `basarisizlari_yeniden_dene`, `yine_de_gonder`, `geri_yukle`/`sifirla`/`tasindi`, `meta_basamak`, `meta_sablon` [durum / kategori], `meta_kapali`,
+`sahte_kanca` [İMZASIZ olay: `wamid` ya da `is` (gerçek işin wamid'i), `durum`, `kod`, `opaque`]), `ozet_cikti`. `meta_davranis.kanca` olayları Meta'nındır
+(kapıcıda imzası doğrulanmış sayılır, §7a 3).
 
-**Çıktı** (beklenen; `[{secimler, sonuc}]` — aynı sonucu veren serbest seçim birleşimleri tek grupta): `baslamadi` (etiket → neden), `elenen` (etiket → cari →
-neden), `bos_toplu`, `toplular` (durum `aktif`/`duraklatildi`/`iptal`/`soruluyor` — iç ad; neden kodu), `durum_sayilari`, `isler` ("T1/A" → durum, telefon,
-şablon, değişkenler, pdf {cari_ad, donem_bas, donem_son, devir, hareket_sayisi, donem_sonu_bakiye}, dosya_adi {on_ek, son_ek}, hata_kodu, post, kabul,
-meta_ileti, medya_yukleme, medya_silme), `meta` (cari başına POST / programın bildiği kabul / Meta'daki ileti / medya yükleme / silme, toplamlar), `kontroller`
-(kontrol anında durum sayıları, iş durumları, toplam POST/kabul, pencere içindeki farklı alıcı, silinen medya), `bu_ay` (İKİ görünüm: `sirket`, `waba` →
-ay → {kabul, teslim, yaklasik_usd}), `degismez` (iç denetim sayaçları; hep 0).
+**Çıktı** (beklenen; `[{secimler: [{}], sonuc}]` — serbest seçim kalmadığından TEK grup): `baslamadi` (etiket → neden: `bagli_degil` / `yetki_yok` /
+`lisans_salt_okunur` / `onay_yok` / `sablon_uygun_degil`, §7a 29 sırasıyla), `elenen` (etiket → cari → neden: `telefonsuz` / `gecersiz` / `istemiyor` /
+`silindi` / `pasif` / `gecikmis_borc_yok` / `zaten_kuyrukta`), `olusmadi` (bütün seçilenler elendiği için kaydı OLUŞMAYAN toplu işler, §7a 31), `ayni_istek`
+(aynı istek kimliğiyle gelen başlatma → ilk toplu iş, §7a 9), `toplular` (durum `aktif`/`duraklatildi`/`iptal`; neden: hata kodu, `kullanici` ya da "Şablon
+Pazarlama'ya Alındı"), `durum_sayilari`, `isler` ("T1/A" → durum, telefon, şablon, değişkenler, pdf {cari_ad, donem_bas, donem_son, devir, hareket_sayisi,
+donem_sonu_bakiye}, dosya_adi {on_ek, son_ek}, hata_kodu, post, kabul, meta_ileti, medya_yukleme, medya_silme, atlanma_nedeni), `meta` (cari başına POST /
+programın bildiği kabul / Meta'daki ileti / medya yükleme / silme, toplamlar), `kontroller` (kontrol anında durum sayıları, iş durumları, toplam POST/kabul,
+pencere içindeki farklı alıcı, silinen medya), `bu_ay` (§7a 19: WABA → ay (teslim zamanı, Türkiye saati) → {teslim (Teslim + Okundu), yaklasik_usd}),
+`degismez` (iç denetim sayaçları; hep 0).
 
-**Yaprak türleri:** düz değer = kesin; `{"biri": [...]}` = sıra/zaman serbestliği (program bunlardan biri olmalı); `{"plan_susuyor": …}` = denetlenmez;
-`{"kisaltilabilir": tam}` = program tam değeri ya da önekini verebilir (D0 uzunluk sınırı).
+**Yaprak türleri:** düz değer = kesin; `{"biri": [...]}` = zaman serbestliği (program bunlardan biri olmalı; bugünkü 139 senaryoda HİÇ yok — D2 testi);
+`{"plan_susuyor": …}` = denetlenmez (yalnız ICERIK-08 "Tüm Hareketler" dönem metni); `{"kisaltilabilir": tam}` = program tam değeri ya da önekini verebilir
+(D0 uzunluk sınırı).
 
-**İki uç:** her birleşim 4 kez koşar: sıra ∈ {seçim, ters} × zaman ∈ {hızlı: 0,5 sn adım + 30 sn geçici bekleme, yavaş: 5 sn + 15 dk}.
+**İki uç:** her senaryo 2 kez koşar: işçi adımı ∈ {hızlı 0,5 sn, yavaş 5 sn} (planın "~1 sn"i). Sıra artık plan kuralı (§7a 5, seçim sırası); geçici bekleme
+dizisi sabit (§7a 15: 30 sn → 2 dk → 15 dk).
 **Ufuk:** benzetim olay kalmayınca ya da başlangıçtan 10 gün sonra biter (senaryoların en geç denetimi +8 gün; TTL 73 sa ve 7 gün kuralı içinde).
 "Son durum" = bu ufuktaki durum.
 
-**Planın kâhine aktarılan kuralları** (kaynak satırları kodda): seçim → tek onay; onay / yetki / lisans / bağlantı / şablon (APPROVED + UTILITY) yoksa
-BAŞLAMAZ; İstemiyor / telefonsuz / geçersiz elenir; aynı cari bir iş; numara '+' ve ülke koduyla; değişkenler + PDF AYNI okumadan, PDF seçilen döneme (devir +
-dönem hareketleri + dönem sonu; "Tüm Hareketler" = bütün hesap), metin bakiyesi = PDF bakiyesi; tutar "1.250,00 TL"; değişken tek satır; tek işçi;
-"Gönderiliyor" istekten önce; yanıtsız → Sonucu Belirsiz, kendiliğinden yeniden YOK; medya yanıtsızsa yeniden yüklenir; hesap/şablon hatası İLK hatada
-DURAKLAR; alıcı hatası (131026, 131021, 131009) o iş Başarısız, sürer; 131049 → 24 saat sonra en çok bir kez; geçici → artan bekleme, 5 art arda → durur;
-131056 → 1 dk; günlük sınır = min(Meta basamağı [başlarken + 6 saatte bir okunur], elle üst sınır), kayan 24 saatte "Meta Kabul Etti" olmuş FARKLI alıcı,
-makine düzeyi + WABA'ya göre (iki şirket aynı WABA → ortak; geri yükleme azaltmaz); sınırda kalanlar "Sınır Nedeniyle Bekliyor", pencere açılınca sürer;
-Meta sınır hatası → kalanlar 24 saat; durum yalnız ileri (read'den sonra delivered yok sayılır; read = teslim edildi — Meta); yinelenen kanca etkisiz;
-TTL 3 gün + 1 saat → Süresi Doldu; kesin durumda (teslim / başarısız / süresi doldu) PDF Meta'dan silinir, bir kez; "Başarısızları Yeniden Dene" yalnız
-kesin Başarısız; "Yine de Gönder" Sonucu Belirsiz'i yeniden gönderir (çift gidebilir); kapanış: kaldığı yerden sürer, "Gönderiliyor" → Sonucu Belirsiz, 24
-saatten eski toplu iş kendiliğinden sürmez; geri yükleme / sıfırlama / taşıma → bitmemiş işler durur; salt okunur lisans → yeni başlamaz, bekleyenler
-"Lisans Nedeniyle Durdu", kanca kabulü sürer; kapalıyken kancayı Meta 7 güne kadar yeniden dener; "Bu Ay": Meta Kabul Etti + Teslim Edilen ayrı, yaklaşık
-ücret = teslim × 0,0009 USD; bilinmeyen wamid düşer.
+**Planın kâhine aktarılan kuralları** (kaynak satırları kodda): seçim → tek onay; bağlantı / yetki / lisans / onay / şablon (APPROVED + UTILITY) yoksa
+BAŞLAMAZ, ret nedeni bu sırayla (§7a 29); telefonsuz / E.164'e çevrilemeyen / İstemiyor / silinmiş / pasif / (hatırlatmada) gecikmiş borcu olmayan / aynı cari +
+şablon + dönem için bekleyen ya da gönderilmekte işi olan ("Zaten Kuyrukta", süre penceresi yok, iki kullanıcı/sekme dahil) cari elenir; sabit hat ve yurt dışı
+ELENMEZ (K1); aynı telefonlu iki cari iki ileti (K2); aynı istek kimliği tek toplu iş; hepsi elenince toplu iş kaydı oluşmaz; aynı cari bir iş; gönderim sırası =
+seçim sırası; iş verisi (telefon, ad, bakiye, PDF) GÖNDERİM ANINDA okunur, kuyrukta İstemiyor/silinmiş/pasif olan "Atlandı"; numara '+' ve ülke koduyla; değişkenler
++ PDF AYNI okumadan, PDF seçilen döneme (devir + dönem hareketleri uçlar dahil + dönem sonu; dönem sonundan sonraki hareket girmez; "Tüm Hareketler" = bütün hesap),
+metin bakiyesi = PDF bakiyesi; ekstre {{3}} "01.10.2026 – 31.10.2026", {{4}} dönem sonu bakiyesi (K3 şablonu); hatırlatma {{3}} en eski gecikmiş vade, {{4}} vadesi
+geçmiş toplam, {{5}} güncel bakiye; tutar "1.250,00 TL", eksi "1.234,56 TL (Alacaklı)"; değişken tek satır; tek işçi; "Gönderiliyor" istekten önce; yanıtsız →
+Sonucu Belirsiz, kendiliğinden yeniden YOK, toplu iş SÜRER; bağlantı hiç kurulamadı → geçici; medya geçerliyse aynısı, yoksa yeniden yüklenir; hesap/şablon hatası
+İLK hatada DURAKLAR (hatayı alan Başarısız, bekleyenler Duraklatıldı); alıcı hatası (131026, 131021, 131009) ve sınıfsız/tanınmayan kod o iş Başarısız, sürer;
+geçici (131000, 131016, 130429, 80007, 4, 131057, 1, 2, 133004, bağlantı) 30 sn → 2 dk → 15 dk sonra Başarısız, toplu işte 5 art arda (medya hataları dahil,
+başarılı gönderimle sıfır) → durur; 131056 → 1 dk; 131049 → "Meta Bekletti", PDF silinmez, 24 saat sonra aynı medyayla en çok bir kez; günlük sınır = min(Meta
+basamağı [başlarken + 6 saatte bir okunur], elle üst sınır), kayan 24 saatte "Meta Kabul Etti" olmuş FARKLI alıcı, pencerede sayılmış alıcı geçer, makine düzeyi +
+WABA'ya göre (iki şirket aynı WABA → ortak; geri yükleme azaltmaz); sınırda kalanlar "Sınır Nedeniyle Bekliyor", pencere açılınca sürer; Meta sınır hatası ve
+131048 → aynı WABA'nın BÜTÜN işleri 24 saat; durum yalnız ileri (read'den sonra delivered, delivered/read'den sonra failed yok sayılır; read = teslim edildi —
+Meta); yinelenen kanca etkisiz; Sonucu Belirsiz YALNIZ imzalı olay + iş kimliğiyle çözülür (sayaç ve pencereye girer), imzasız olay düşer; kanca yolu çalışıyorsa
+(son 7 günde kanca) TTL 3 gün + 1 saat → Süresi Doldu, çalışmıyorsa "Meta Kabul Etti"de kalır; Süresi Doldu'dan sonra gelen teslim yazılır (zaman = kanca
+timestamp'i); kesin durumda (teslim / başarısız / süresi doldu) PDF Meta'dan silinir, bir kez; başarılı işin hata kodu temizlenir; "Başarısızları Yeniden Dene"
+yalnız kesin Başarısız; "Yine de Gönder" Sonucu Belirsiz'i yeniden gönderir (çift gidebilir); kapanış: kaldığı yerden sürer, "Gönderiliyor" → Sonucu Belirsiz; 24
+saatten eski toplu işte SINIR / Meta Bekletti bekleyeni sürer, öbürü açılışta sorulur; geri yükleme / sıfırlama → "Durduruldu (Geri Yükleme)", taşıma → "Taşınan
+Veri — Durduruldu", kendiliğinden sürmez; salt okunur lisans → yeni başlamaz, bekleyenler "Lisans Nedeniyle Durdu", lisans dönünce de kendiliğinden SÜRMEZ, kanca
+kabulü sürer; şablon kategorisi toplu iş sürerken saatte bir okunur, MARKETING → iş durur ("Şablon Pazarlama'ya Alındı"); kapalıyken kancayı Meta 7 güne kadar
+yeniden dener; "Bu Ay" = TESLİM (Teslim + Okundu), teslim ayı (Türkiye saati), WABA kapsamı, yaklaşık ücret = teslim × 0,0009 USD; bilinmeyen wamid düşer.
 
 ## 3. Senaryo kümesi
 
-**103 senaryo** (`kahin/senaryolar.json`): TEMEL 4 · ÇİFT 13 · KAYIP 5 · YANLIŞ KİŞİ 11 · YANLIŞ İÇERİK 11 · HESAP / META 36 (hesap/yetki kodları 9, şablon
-hatası gönderimde 7, şablon başlatmada 7, geçici 8, alıcı/131049 5) · ÖLÇEK 8 (300 / 600 / 2.000 / 500 × 9 kanca) · TARİH 6 (gece yarısı kayan pencere, ay sonu,
-1 Ocak yıl dönümü, TTL sonu, kancasız, 24 saatten eski iş) · ŞİRKET 2 · GÜVENLİK 7. Her senaryoda elle beklenen (yalnız plandan) ve modelin tam sonucu var.
+**139 senaryo** (`kahin/senaryolar.json`): TEMEL 5 · ÇİFT 14 · KAYIP 6 · YANLIŞ KİŞİ 15 · YANLIŞ İÇERİK 12 · HESAP / META 54 (hesap/yetki kodları 9, şablon
+hatası gönderimde 7, sınıfsız kodlar 12, şablon başlatmada 7 + sürerken Pazarlama'ya alınma 2, geçici 12, alıcı/131049 5) · ÖLÇEK 10 (300 / 600 / 2.000 / 500 × 9
+kanca / 300 + Pazarlama, sınır hatası, 131048) · TARİH 8 (gece yarısı kayan pencere, ay sonu, 1 Ocak yıl dönümü, TTL sonu, kancasız iki yol, 24 saatten eski /
+genç iş) · ŞİRKET 3 · GÜVENLİK 12 (ret sırası üç senaryo, imzasız sahte olaylar üç senaryo, lisans dönüşü). Her senaryoda elle beklenen (yalnız plandan) ve
+modelin tam sonucu var. Önceki sürüme göre değişen beklentiler: aşağıda §5.
 
 ## 4. D0 varsayımları (Meta belgesinde yok ya da belirsiz — D0'da doğrulanır, program bunlara yaslanmadan önce)
 
@@ -132,7 +156,7 @@ Sahte sunucu:
 8. Medya GET/DELETE hataları (yok, silinmiş, süresi dolmuş, `phone_number_id` uyuşmazlığı, ikinci DELETE) → 100; belirteçsiz indirme → 401.
 9. **Resumable Upload akışının tamamı** (uç adları, `file_offset`, `OAuth` başlığı, `{h}` yanıtı, App ID denetimi).
 10. Şablon oluşturma yanıtı `{id, status, category}`; ilk durum PENDING.
-11. Medya başlıklı şablonda `example.header_handle` zorunlu ve Resumable Upload'tan; değişkenli gövdede örnek zorunlu (100); "… {{4}}." (noktayla biten) gövde 2388299 SAYILMAZ — plan şablonu böyle bitiyor, gerçek Meta reddederse metin değişmeli.
+11. Medya başlıklı şablonda `example.header_handle` zorunlu ve Resumable Upload'tan; değişkenli gövdede örnek zorunlu (100); "… {{4}}." (noktayla biten) gövde 2388299 SAYILMAZ (sahte sunucunun varsayımı; plan §7a 23 ekstre gövdesini "İyi günler dileriz." ile bitirerek riski kaldırdı).
 12. Desteklenen dil listesi ("tr" dahil; supported-languages sayfası yerelde yok).
 13. Şablon yönetiminde kodu belgede olmayan retler (silinen onaylı adın 30 gün kapalı oluşu, onaylının kategori düzenlemesi, düzenleme sınırı, DISABLED silme, olmayan ad silme) → 100; REJECTED düzenlenince PENDING.
 14. Şablon listesinde `name` süzgeci, varsayılan limit 25, imleç biçimi.
@@ -155,40 +179,78 @@ Kâhin:
 29. 60 karakteri aşan değişken değeri "kısaltılabilir" (Meta sınırı yerelde yok; plan "kısaltır" der).
 30. Meta TTL'den sonra teslim edilmeyen iletiyi düşürür (belge); kâhin TTL'yi kabul anından sayar.
 
-## 5. PLAN SUSUYOR (kâhin karar vermedi; `kahin.SERBEST` adı parantezde)
+## 5. Plan §7a kararları kâhinde (ilk sürümün "PLAN SUSUYOR" 1–32 listesiyle aynı numaralar)
 
-1. **İş üretim anı** (`uretim_ani`: başlatma / işleme): telefon, ad, bakiye, PDF toplu iş başlatılırken mi, işçi sırası gelince mi okunur. §6 W2 "Her iş ANINDA üretilir" ile §8 "iş üretilirken okunan numara kullanılır" iki türlü okunabiliyor. Kuyrukta telefon/bakiye değişince hangisi gider (KISI-01, ICERIK-09).
-2. **Kuyruktayken "İstemiyor" işaretlenen / silinen cari** (`kuyruk_degisimi`): gönderilir mi elenir mi; §8 yalnız risk olarak anar (KISI-09, KISI-10).
-3. **ÇELİŞKİ — Sonucu Belirsiz'in kancayla çözülmesi** (`belirsiz_cozum`): §6 W2 "kanca `biz_opaque_callback_data` = iş kimliği ile gelirse çözülür" ↔ §3 "program yalnız kendi kaydındaki wamid'lerin durumunu yazar, bilinmeyen olay düşer" (belirsiz işin wamid'i yoktur). Çözülürse "Meta Kabul Etti" sayacına ve sınır penceresine girer mi. GÜVENLİK: gizli yolu bilen sahte olayla Sonucu Belirsiz işi Meta'da ileti YOKKEN "Teslim Edildi" yaptırabilir ve sayaçları şişirir (GUV-06; kâhin bu ihlali bildirilmiş istisna olarak ölçer).
-4. **Sınır doluyken penceresinde zaten sayılmış alıcı** (`sinir_mevcut_alici`: geçer / bekler) — FARKLI alıcı sayımında yer tutmaz; "kalanlar bekler" ile çelişir (SINIR-05).
-5. **Toplu iş içindeki gönderim sırası** (seçim sırası, ad, cari kodu…). Bu yüzden "hangisi ertesi güne kalır" yalnız SAYI olarak beklenir (kâhin sıra × 2 uç).
-6. **Sabit hat ve yurt dışı numara** (`sabit_hat`, `yurtdisi`): elenir mi; "geçersiz numara" ölçütü (uzunluk, ülke kodu, 10 haneli "532…", "00" öneki). Kâhin yalnız açık biçimleri kabul eder.
-7. Hücrede birden çok numaranın **ayırıcıları** (plan yalnız "waNumber ilkini alır"); kâhin "/", ",", ";" varsayar.
-8. **Aynı telefonlu iki farklı cari**: iki ileti mi (şema UNIQUE yalnız batch + account), tek mi.
-9. **Çift başlatmanın tanınması**: süre penceresi, aynı seçim mi çakışan cari mi, aynı şablon + dönem mi, iki kullanıcı/sekme. §8 ÇİFT bunları çift sayar, mekanizma yok. Kâhin senaryoda `cift` işaretli başlatmada çakışan cariye ikinci ileti beklemez.
-10. **Sonucu Belirsiz'den sonra toplu iş** (`belirsiz_sonrasi`: sürer / durur).
-11. **Bağlantı hiç kurulamadı** (`baglanti_kurulamadi`): istek Meta'ya ulaşmadığı kesinken Sonucu Belirsiz mi (W2 "ağ"), geçici hata mı.
-12. **Sınıfı planda olmayan kodlar**: 100, 131008, 135000 (§2.7 "parametre", W2'de sınıf yok), 131053 (yüklemede ve gönderimde), 131047, 131048, 131050, 131051, 130497, 131064, 131063, 130403, 133004, 133016, 1, 2, 33, tanınmayan kod ve Meta sınır aşım kodu (D0). Kâhin bu kodlu senaryoyu REDDEDER.
-13. Duraklayan toplu işte hatayı alan işin ve bekleyenlerin ekran durumu (kâhin: hepsi "Duraklatıldı", planın durum listesinden — teyit gerekir).
-14. **131049 beklemesi**: ekran adı (durum "yalnız ileri" kuralıyla çelişir: Meta Kabul Etti → yeniden bekleme), PDF'in silinip silinmeyeceği (S3 "başarısız = kesin → sil", ama 24 saat sonra yeniden gönderilecek); kancadaki ve eşzamanlı 131049 aynı mı.
-15. **Yeniden denemede medya** (`medya_tekrar`: aynı medya kimliği / yeni yükleme) — geçici hata, Devam Et, Yine de Gönder, 131049 sonrası; 131056'da kaç kez 1 dk; geçici bekleme dizisi (30 sn → 15 dk arası); "5 kez art arda" sayacı neyle sıfırlanır, medya yükleme hataları sayılır mı; medya kaç kez yeniden yüklenir.
-16. **ÇELİŞKİ — kancası hiç gelmeyen iş** (`kancasiz_son`): "Süresi Doldu (TTL + 1 saat, teslim yok)" ↔ "Durum Bilinmiyor (kanca 7 günde gelmedi)": TTL 3 gün olunca Durum Bilinmiyor'a hiç varılmaz.
-17. **Süresi Doldu'dan sonra gelen delivered/read** (`gec_teslim`; Meta 7 gün yeniden dener): yok sayılır mı, Teslim Edildi yazılır mı; durum zamanı kanca `timestamp`'i mi varış mı.
-18. delivered/read'den SONRA gelen failed.
-19. **"Bu Ay" sayacı** (`teslim_ay`: kabul / teslim ayı): Teslim Edilen durumdan mı (Teslim + Okundu) `pricing.billable`'dan mı; saat dilimi; "Kendime Deneme Gönder" sayılır mı; kapsam şirket mi WABA mı (kâhin İKİ görünümü verir: `bu_ay.sirket`, `bu_ay.waba`); geri yüklemede (şirket dosyasındaysa) azalır mı.
-20. Ödeme hatırlatma **{{3}} vade ve {{4}} tutar** kaynağı (en eski gecikmiş taksit mi, toplam vadesi geçmiş mi); vadesi olmayan cari.
-21. **{{3}} dönem metninin** ve dosya adındaki `<dönem>`'in biçimi.
-22. **Eksi (alacaklı) bakiye metni**; yuvarlama kuralı; ileri tarihli hareketin döneme girmesi; dönem uçları (kâhin iki ucu dahil sayar — W3 fark testi mevcut Cari Ekstre'ye bağlar).
-23. **KÖR NOKTA — "{{4}} Güncel bakiye" etiketi**: plan "metinle aynı bakiye" (= PDF'in dönem sonu bakiyesi) der; geçmiş dönem ekstresinde mesaj "Güncel bakiye" diye dönem sonu bakiyesini yazar. Kâhin plan kuralını uygular (dönem sonu).
-24. **ÇELİŞKİ — 24 saatten eski toplu iş** (`eski_toplu_sinir`): "kendiliğinden SÜRMEZ" ↔ "250 sınırında birkaç güne yayılan iş": açılışta sınır bekleyen eski iş sorulur mu sürer mi.
-25. Lisans yeniden yazılabilir olunca "Lisans Nedeniyle Durdu" işler kendiliğinden sürer mi.
-26. Geri yükleme / sıfırlama sonrası durmuş işlerin ekran adı ("Taşınan Veri — Durduruldu" yalnız kimlik uyuşmazlığına yazılmış).
-27. Toplu iş **SÜRERKEN şablon Pazarlama'ya alınırsa** (Meta APPROVED kalır, ileti 12 kat ücretle gider): günlük denetimden önce iş durur mu; "günde bir" denetimin saati; şablon kancası yalnız uygulamanın varsayılan adresine gider (Yol 1'de müşterinin uygulaması).
-28. Bir kez onay **tekli gönderimde** ve "Kendime Deneme Gönder"de de şart mı.
-29. Aynı anda birden çok başlatma reddi nedeni varsa hangisi söylenir (kâhin sırası: bağlı değil → yetki → lisans → onay → şablon).
-30. **Meta sınır hatasında "kalanlar 24 saat bekler"** (`sinir_hatasi_kapsam`): o toplu iş mi, aynı WABA'nın bütün işleri mi.
-31. Bütün seçilenler elenince boş toplu iş kaydı oluşur mu (kâhin: `bos_toplu`).
-32. Hatadan sonra başarılı olan işin hata kodu temizlenir mi (kâhin hata kodunu yalnız Başarısız/Duraklatıldı işte bekler; senaryolar sonradan başarılı işin kodunu denetlemez).
+| § | Karar (plan §7a) | Kâhinde | Senaryo (değişen beklenti) |
+|---|---|---|---|
+| 1 | Veri GÖNDERİM ANINDA okunur | `uretim_ani` kalktı | KISI-01 (yeni numara), ICERIK-09 (3.000,00 TL), ICERIK-12 |
+| 2 | Kuyrukta İstemiyor / silinmiş / pasif → ELENİR ("Atlandı" + neden) | `kuyruk_degisimi` kalktı; durum "Atlandı", `atlanma_nedeni` | KISI-09, KISI-10 (POST 0), KISI-15 |
+| 3 | Sonucu Belirsiz yalnız imzalı olay + iş kimliğiyle çözülür; imzasız düşer; çözülen sayaç/pencereye girer | `belirsiz_cozum` kalktı; imzasız sahte olay tümüyle düşer | CIFT-01/04 Teslim Edildi; GUV-06 Sonucu Belirsiz kalır — artık İHLAL DEĞİL, beklenen davranış; GUV-09 |
+| 4 | Pencerede sayılmış alıcı GEÇER | `sinir_mevcut_alici` kalktı | SINIR-05 (A Teslim), KISI-12 |
+| 5 | Sıra = seçim sırası | ters sıra ucu kalktı | — (hepsi) |
+| 6 | (K1) Geçersiz = E.164'e çevrilemeyen; sabit hat / yurt dışı ELENMEZ | `sabit_hat`, `yurtdisi` kalktı; `numara()` 10 hane ve "00" öneki | KISI-05 (131026 → Başarısız), KISI-06, KISI-07, KISI-11 |
+| 7 | Ayırıcılar "/", ",", ";", satır sonu | satır sonu eklendi | KISI-14 |
+| 8 | (K2) Aynı telefon iki cari → iki ileti | — | KISI-12 (yeni) |
+| 9 | Aynı cari + şablon + dönem için bekleyen/gönderilmekte iş varken o cari elenir ("Zaten Kuyrukta"); süre penceresi yok; aynı istek kimliği tek toplu iş | `cift` işareti kalktı; `istek` + `zaten_kuyrukta` | CIFT-06 (`ayni_istek`), CIFT-07 (A'ya İKİNCİ ileti), CIFT-08, CIFT-14 |
+| 10 | Sonucu Belirsiz'den sonra toplu iş SÜRER | `belirsiz_sonrasi` kalktı | CIFT-04, CIFT-05 |
+| 11 | Bağlantı kurulamadı → geçici | `baglanti_kurulamadi` kalktı; kod "BAGLANTI" | KAYIP-05 (~17,5 dk'da Başarısız), KAYIP-06 |
+| 12 | 1, 2, 133004 geçici; 100, 131008, 135000, 131053, 131047, 131050, 131051, 130403, 131064, 131063, 133016, tanınmayan → iş Başarısız, sürer; 131048 + sınır aşımı → bekler | kâhin bu kodlu senaryoları artık REDDETMEZ | HATA-SINIFSIZ-* (12), GECICI-1/2/133004, SINIR-07 |
+| 13 | Hatayı alan iş Başarısız (kodlu), bekleyenler Duraklatıldı | — | HESAP-* (B Başarısız, Devam Et ile C), SABLON-GONDERIM-*, GECICI-02 |
+| 14 | 131049 → "Meta Bekletti (24 Saat Sonra Yeniden)", PDF silinmez, aynı medya | `PLAN-SUSUYOR:131049-bekleme` kalktı | ALICI-131049-* (medya 1 yükleme) |
+| 15 | Medya geçerliyse aynısı; geçici 30 sn → 2 dk → 15 dk sonra Başarısız; "5 art arda" başarıyla sıfırlanır, medya hataları sayılır | `medya_tekrar` kalktı; iş başı deneme sayacı | GECICI-03 (3 hata → kabul), GECICI-03b (4 hata → Başarısız), CIFT-02 |
+| 16 | Kanca yolu çalışıyorsa TTL + 1 sa Süresi Doldu, yoksa Meta Kabul Etti'de kalır; "Durum Bilinmiyor" KALKAR | `kancasiz_son` ve "Durum Bilinmiyor" kalktı | KAYIP-02, TARIH-03 (Meta Kabul Etti, PDF silinmez), TARIH-03b (yeni) |
+| 17 | Süresi Doldu'dan sonra teslim yazılır; zaman = kanca timestamp'i | `gec_teslim` kalktı | ICERIK-10 (Teslim Edildi) |
+| 18 | delivered/read'den sonra failed yok sayılır | — | TEMEL-05 (yeni) |
+| 19 | "Bu Ay" = TESLİM (Teslim + Okundu), teslim ayı (Türkiye saati), WABA kapsamı; geri yüklemede azalmaz; Kendime Deneme sayılmaz | `teslim_ay` kalktı; `bu_ay` tek görünüm: WABA → ay → {teslim, yaklasik_usd}; kabul kovası yok | TARIH-01, ICERIK-03/10/11 (teslim ayı), SIRKET-01/02 |
+| 20 | Hatırlatma {{3}} en eski gecikmiş vade, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; gecikmişi olmayan elenir | `vadeler` girdisi | TEMEL-02, ICERIK-12 |
+| 21 | Dönem metni "01.10.2026 – 31.10.2026" | `donem_metni()` | hepsi (eskiden `{"donem": [..]}` yaprağı) |
+| 22 | Eksi "1.234,56 TL (Alacaklı)"; 2 ondalık; uçlar dahil; dönem sonundan sonrası girmez | `para()` | ICERIK-06, ICERIK-07 (0,005 → 0,01), ICERIK-02 |
+| 23 | (K3) Ekstre gövdesi "… Dönem sonu bakiyesi: {{4}}. İyi günler dileriz." | `kahin.SABLONLAR` + `senaryolar.json` `sablonlar`; H testi plan metniyle karşılaştırır | sahte sunucu testinin şablon fikstürü de güncellendi |
+| 24 | 24 saatten eski toplu işte SINIR bekleyeni sürer, öbürü açılışta sorulur | `eski_toplu_sinir` kalktı | TARIH-04 (K1 POST 2), TARIH-05, TARIH-06 |
+| 25 | Lisans dönünce "Lisans Nedeniyle Durdu" kendiliğinden SÜRMEZ | Devam Et sürdürür | GUV-08 (yeni) |
+| 26 | Geri yükleme/sıfırlama → "Durduruldu (Geri Yükleme)" | `PLAN-SUSUYOR:geri-yukleme-durdu` kalktı | CIFT-12, CIFT-14 |
+| 27 | Şablon kategorisi başlarken + sürerken saatte bir; MARKETING → iş durur ("Şablon Pazarlama'ya Alındı") | saatlik okuma | SABLON-PAZARLAMA-ARADA, -SAAT-ICINDE, OLCEK-04 |
+| 28 | Onay toplu ve tekli gönderimde şart; Kendime Deneme hariç | tekli/Kendime Deneme modellenmedi | GUV-04 |
+| 29 | Ret sırası bağlı değil → yetki → lisans → onay → şablon | — | GUV-10/11/12 (yeni) |
+| 30 | Meta sınır hatasında aynı WABA'nın BÜTÜN işleri 24 saat | `sinir_hatasi_kapsam` kalktı | SINIR-04 (T2/E bekler), SIRKET-03 (öbür WABA sürer) |
+| 31 | Hepsi elenince toplu iş kaydı OLUŞMAZ | `bos_toplu` → `olusmadi` | KISI-13 |
+| 32 | Başarılı işin hata kodu temizlenir | değişmez denetimi (C) | CIFT-09, GECICI-01, SINIR-07, ALICI-131049-bir-kez |
+
+**Kâhin yorumları** (§7a metninin açık bıraktığı ayrıntı; kâhin bir okumayı seçti — programla fark çıkarsa önce bunlar ürün sahibine/baş mimara sorulur, kâhin
+programa UYDURULMAZ, ders 40/43):
+1. §7a 15 "3 deneme" = 3 YENİDEN deneme (toplam 4 POST; 30 sn, 2 dk, 15 dk beklemeleri; 4. hatada Başarısız — ilk hatadan ~17,5 dk sonra).
+2. §7a 15 "5 kez art arda" toplu iş düzeyinde (farklı işlerin ardışık geçici hataları birlikte sayılır); 5. hatayı alan iş Başarısız (§7a 13). Devam Et toplu
+   sayacı sıfırlar, iş başı deneme sayacını sıfırlamaz; "Başarısızları Yeniden Dene" sıfırlar.
+3. §7a 9 "bekleyen/gönderilmekte" = Bekliyor, Hazırlanıyor, Gönderiliyor, Sınır Nedeniyle Bekliyor, Duraklatıldı, Meta Bekletti, Lisans Nedeniyle Durdu, açılışta
+   sorulan ve Sonucu Belirsiz (§7a 10 "belirsiz iş bekler"); Meta Kabul Etti / Gönderildi / kesin durumlar ve Durduruldu (Geri Yükleme) / Taşınan sayılmaz.
+   Eşleşme aynı şirket + cari + şablon + dönem.
+4. §7a 3 imzasız olay wamid'i bilinse de düşer (GUV-09); §7a 16 "kanca yolu çalışıyor" = aynı WABA'da son 7 günde imzalı ve programın tanıdığı bir iletiye ait
+   kanca işlendi.
+5. §7a 20 "vadesi geçmiş" = vade < bugün ve kalan > 0 (vadesi bugün olan gecikmiş değil — TEMEL-02 H carisi); {{5}} bugüne kadarki hareketlerin bakiyesi.
+6. §7a 22 yuvarlama yarım yukarı (0,005 → 0,01); sıfıra yuvarlanan eksi (−0,004) "0,00 TL" (Alacaklı eki yok).
+7. §7a 14 "Meta Bekletti" işi §7a 24'te Sınır gibi kendiliğinden sürer; §7a 26'da durur.
+8. §7a 27 saatlik okuma toplu iş başlatıldığı andan saatte bir, bekleyen işi varken; MARKETING görülünce toplu iş durur, bekleyenler Duraklatıldı.
+9. §7a 19 Türkiye saati = UTC+3 (yaz saati yok).
+10. Bağlantı kurulamadı hatasının kodu kâhinde "BAGLANTI" (Meta kodu yok; programın gösterdiği kod sürücüde eşlenir).
+11. §7a 24 "24 saatten eski" = toplu işin başlatıldığı andan; açılışta yalnız "Bekliyor" işler sorulur.
+12. §7a 6 geçerli biçimler: "+" ile 8–15 hane; "00" öneki; 0 + 10 hane, 90 + 10 hane ve 10 hane (ilk hane 0 değil) → Türkiye (Meta da "+"sız numaraya işletme ülke
+    kodunu ekler); "+90" ile 12 hane dışı geçersiz.
+13. §7a 2 "pasif" cari silinmiş gibi elenir (neden "pasif").
+14. Yanıtsız medya yüklemesi beklemeden yeniden denenir (W2), ama "5 art arda"ya sayılır.
+
+**Kararların sonuçları** (kâhin bunları BEKLER; ürün sahibine bildirilmesi gerekenler):
+- §7a 9 (süre penceresi yok): gönderilmiş (Meta Kabul Etti / Teslim Edildi) cari aynı şablon + dönemle yeniden seçilirse İKİNCİ ileti gider (CIFT-07; iki sekmede
+  ilki bitmişse de). Yalnız bekleyen iş korunur.
+- §7a 27 (saatte bir): kategori MARKETING'e geçtikten sonra en çok ~1 saat ileti gider ve Meta'nın Pazarlama ücretiyle (0,0109 USD) ücretlenebilir
+  (SABLON-PAZARLAMA-SAAT-ICINDE).
+- §7a 15: ~17,5 dakikalık internet kesintisinde iş Başarısız olur; üç ya da daha çok işte 5. hatada toplu iş durur (KAYIP-05/06) — "Başarısızları Yeniden Dene" gerekir.
+- §7a 16: kanca yolu hiç çalışmayan kurulumda (ör. tünel kapalı, kanca kaydı yapılmamış) iş "Meta Kabul Etti"de kalır ve PDF Meta'dan program tarafından silinmez
+  (Meta medyayı 30 günde kendisi siler) (TARIH-03, KAYIP-02).
+
+**Hâlâ planda olmayan** (kâhin denetlemez ya da modellemez): "Tüm Hareketler"de {{3}} dönem metni (ICERIK-08, `plan_susuyor` yaprağı); §7a 24'te açılışta sorulan
+işin ekran durumu adı (kâhin iç adı `PLAN-SUSUYOR:24-saatten-eski-devam-sorusu`, TARIH-05); PDF dosya adındaki dönemin biçimi (§7a 21 "mevcut düzen + dönem";
+kâhin yalnız "Ekstre <ad> " öneki ve ".pdf" soneki); Devam Et'te şablon kategorisinin yeniden okunup okunmadığı; tekli gönderim ve "Kendime Deneme Gönder"
+(§7a 19/28) senaryosuz.
 
 ## 6. Programdan okunması gerekecek bilgiler (sürücü — ŞİMDİ YAZILMADI, program uçları yok)
 
@@ -203,11 +265,12 @@ ya da `gecikmeMs` + öldürme; `istek_ulasti: false` için kural `koptu: "once"`
 (kurulum kimliği değişimi); cari düzenleme; işçiyi sahte saatle tetikleme (TTL denetimi, 6 saatlik basamak okuma, 131049 ve sınır beklemeleri).
 
 **Okunacaklar:**
-- başlatma: başlamadıysa neden; elenenler ve nedeni (telefonsuz, geçersiz, istemiyor, sabit hat, yurt dışı, çift); iş sayısı;
+- başlatma: başlamadıysa neden; elenenler ve nedeni (telefonsuz, geçersiz, istemiyor, silindi, pasif, gecikmiş borç yok, zaten kuyrukta); toplu iş kaydı
+  oluşmadıysa bunun bilgisi; aynı istek kimliği tanındıysa hangi toplu işe bağlandığı; iş sayısı;
 - her iş: cari, telefon (E.164, '+'), şablon adı + dil, değişken değerleri, PDF adı, PDF baytları (sahte sunucu `medya/<id>` → sürücü PDF metninden cari adı,
   dönem, devir, hareket sayısı, dönem sonu bakiye), ekran durumu, hata kodu, wamid, medya kimliği, POST sayısı, kabul/teslim zamanları;
 - toplu iş: duraklatıldı mı + neden kodu;
-- "Bu Ay Gönderilen İleti Sayısı": Meta Kabul Etti, Teslim Edilen (Ücretli), yaklaşık USD — ay başına, programın gösterdiği kapsamla;
+- "Bu Ay Gönderilen İleti Sayısı": teslim edilen (Teslim + Okundu) ve yaklaşık USD — WABA ve ay (teslim ayı) başına;
 - sınır sayacı: penceredeki farklı alıcı (WABA başına), sonraki açılış;
 - sahte sunucu kaydı: alıcı başına POST (deneme dahil), Meta'daki ileti (kabul), medya yükleme/silme, kanca teslimleri, belirteç sızıntısı, geçersiz medyayla
   gönderim denemesi; ayrıca program günlüğü/yanıtları/yedekte belirteç izi (sürücü tarar).
@@ -215,5 +278,5 @@ ya da `gecikmeMs` + öldürme; `istek_ulasti: false` için kural `koptu: "once"`
 **Eşleme:** kâhin cari kimliği ↔ program cari kimliği; toplu etiketi (T1…) ↔ toplu iş kimliği; iş anahtarı "T1/A" ↔ programın iş kimliği (kancadaki opaque =
 programın iş kimliği); `meta_davranis` → sahte kurallar (`mesaj` → `{yol: "messages", to, deneme, yanit}`; `yanitsiz_kabul` → `{koptu: "sonra"}`;
 `yanitsiz_red` → `{koptu: "once"}`; `{sinir: true}`; `medya` → `{yol: "media", deneme: n}`; `kanca` → `durumGonder` sahte saatle; `kanca_kuyrugu` →
-`kuyruguIsle`; `meta_kapali` → sahte sunucuyu kapat). Sürücü program durumunu kâhinin sonuç yapısında üretir ve seçilen serbest birleşimle
+`kuyruguIsle`; `meta_kapali` → sahte sunucuyu kapat; `sahte_kanca` → `kanca/ham` İMZASIZ). Sürücü program durumunu kâhinin sonuç yapısında üretir ve
 `kahin.py karsilastir` ile karşılaştırır; "ozet_cikti" senaryolarında yalnız toplamlar ve durum sayıları.

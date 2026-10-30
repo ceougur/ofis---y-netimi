@@ -20,7 +20,7 @@ const EKSTRE = {
   waba: WABA, name: "destekofis_ekstre", language: "tr", category: "UTILITY", status: "APPROVED",
   components: [
     { type: "HEADER", format: "DOCUMENT", example: { header_handle: ["4::ornek"] } },
-    { type: "BODY", text: "Sayın {{1}}, {{2}} firmasındaki cari hesabınızın {{3}} dönemine ait ekstresi ektedir. Güncel bakiye: {{4}}.", example: { body_text: [["Ali", "Firma", "Ekim 2026", "1.250,00 TL"]] } },
+    { type: "BODY", text: "Sayın {{1}}, {{2}} firmasındaki cari hesabınızın {{3}} dönemine ait ekstresi ektedir. Dönem sonu bakiyesi: {{4}}. İyi günler dileriz.", example: { body_text: [["Ali", "Firma", "01.10.2026 – 31.10.2026", "1.250,00 TL"]] } },
     { type: "FOOTER", text: "KVKK aydınlatma metni için firmamıza başvurabilirsiniz." },
   ],
 };
