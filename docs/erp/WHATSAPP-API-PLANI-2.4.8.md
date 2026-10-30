@@ -273,7 +273,7 @@ beklenen sonuç tablosu (kime, hangi PDF, hangi değişkenler, kaç kez, hangi d
 P0 → K0 ∥ W1 → W2 → W3 ∥ W5 ∥ W6 → W9 (S1 yanıtına göre) → W4 → D0 → W7 → W8 → T. MZ bağımsız ve İLK (Aralık'tan önce). Tahmin ~6–8 iş günü (doğrulama dahil); devir 2.5.0
 en geç 1 Aralık'ta başlamalı → 2.4.8 ~20 Kasım'a dek yayında. "Bitti" için D0 gerçek gönderimi + elle kabul gerekir; Yol 2'nin gerçek bağlaması Tech Provider'a kalır (BİLİNEN SINIR).
 
-## 7a. Plan netleştirmeleri (K0 "PLAN SUSUYOR" listesi; 30.10.2026 ~15:40 UTC; program karşılaştırmasından ÖNCE, programın davranışına bakılmadan — ders 40)
+## 7a. Plan netleştirmeleri (K0 "PLAN SUSUYOR" listesi; 30.10.2026 ~14:25 UTC; program karşılaştırmasından ÖNCE, programın davranışına bakılmadan — ders 40)
 
 BAŞ MİMAR KARARLARI (en yaygın uygulama; ★ = kime / kaç kez gideceğini etkiler; K1–K3 kullanıcıya soruldu, 5 dk yetkisi):
 1. ★ İş verisi (telefon, ad, bakiye, PDF) işçi sırası gelince, GÖNDERİM ANINDA okunur (en güncel veri).
