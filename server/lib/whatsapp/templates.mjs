@@ -163,6 +163,40 @@ export function describeTemplate(def, found) {
 }
 
 const findExact = (items, def) => (Array.isArray(items) ? items.find(item => item?.name === def.name && String(item.language || "") === def.language) : null) || null;
+
+const NOT_APPROVED = Object.freeze({
+  PENDING: name => `Şablon (${name}) Meta onayını bekliyor; onaylanınca gönderim başlatılabilir.`,
+  IN_APPEAL: name => `Şablon (${name}) için Meta itirazı inceliyor; onaylanınca gönderim başlatılabilir.`,
+  REJECTED: name => `Şablon (${name}) Meta tarafından reddedildi.`,
+  PAUSED: name => `Şablon (${name}) düşük kalite nedeniyle Meta tarafından duraklatıldı.`,
+  DISABLED: name => `Şablon (${name}) Meta tarafından kalıcı olarak kapatıldı; yeni şablon gerekir.`,
+});
+/**
+ * T2-7 (bağımsız gözden geçirme r6): GÖNDERİM KARARI — gönderim çekirdeği (lib/whatsapp/queue.mjs: toplu iş başlarken, önizlemede ve R2 yeniden okumasında) ve
+ * ekrandaki "Gönderime Hazır" (describeTemplate → templateUsable) AYNI kuralla karar verir; kural yalnız burada. items: Meta'nın şablon listesi (ayrıntılı
+ * alanlar, components dahil — META_D0_W5.detailFields), name: programın şablon adı. Dönüş { ok, code, reason, template }.
+ * Plan §1 "yalnız 2 sabit bilgilendirme şablonu; kampanya / serbest metin yok" sunucuda zorlanır: içeriği programın sabit metninden farklı şablonla gönderilmez
+ * ("template-content"). İçerik okunamadıysa (Meta components vermedi — D0-W5-5 temel alanlara düşüş) ekranla aynı kural: içerik bilinmez, engellenmez.
+ */
+export function sendingVerdict(items, name) {
+  const def = TEMPLATE_DEFS.find(item => item.name === name);
+  const found = def ? findExact(items, def) : null;
+  if (!found) return { ok: false, code: "template-missing", reason: `Şablon (${name}) bu WhatsApp Business hesabında yok; şablonlar bağlantıdan sonra program tarafından açılır.` };
+  const item = describeTemplate(def, found);
+  const template = { name, language: String(found.language || ""), status: item.status, category: item.category };
+  if (item.status !== "APPROVED") {
+    const reason = NOT_APPROVED[item.status]?.(name) || `Şablon (${name}) onaylı değil (Meta durumu: ${item.status || "bilinmiyor"}).`;
+    return { ok: false, code: `template-${(item.status || "unknown").toLowerCase().replace(/_/g, "-")}`, reason, template };
+  }
+  // Plan §2.4 KATEGORİ RİSKİ + §7a 27: yalnız UTILITY + APPROVED ile gönderilir; pazarlamaya alınmış şablonla gönderim başlamaz / süren iş durur.
+  if (item.category === "MARKETING") return { ok: false, code: "template-marketing", reason: "Şablon Pazarlama'ya Alındı: Meta şablonu pazarlama kategorisine aldı; WhatsApp Yöneticisi'nden yeniden inceleme isteyin. Bu şablonla gönderim yapılmaz.", template };
+  if (item.category !== PROGRAM_TEMPLATE_CATEGORY) return { ok: false, code: "template-category", reason: `Şablonun Meta kategorisi bilgilendirme (Utility) değil (${item.category || "bilinmiyor"}); gönderim yapılmaz.`, template };
+  if (item.contentMatches === false) {
+    return { ok: false, code: "template-content", reason: `Şablonun (${name}) içeriği WhatsApp Yöneticisi'nde değiştirilmiş görünüyor; program yalnız kendi sabit bilgilendirme metniyle gönderir, bu şablonla gönderim yapılmaz. DestekOfis desteğine başvurun.`, template };
+  }
+  if (!item.usable) return { ok: false, code: "template-unusable", reason: `Şablon (${name}) gönderime hazır değil.`, template };
+  return { ok: true, template };
+}
 const parse = value => {
   try {
     const parsed = JSON.parse(value || "null");

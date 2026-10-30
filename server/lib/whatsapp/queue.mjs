@@ -23,7 +23,8 @@ import { dayText } from "../plans.mjs";
 import { statementData, statementFileName, statementPdf } from "../statement-pdf.mjs";
 import { e164Of, waPresetRange } from "./alici.mjs";
 import { DAY_MS } from "./defter.mjs";
-import { META_D0, MetaGraphError, classifyMetaCode, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
+import { META_D0, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
+import { sendingVerdict } from "./templates.mjs";
 
 export const TEMPLATE_NAMES = Object.freeze({ statement: "destekofis_ekstre", reminder: "destekofis_odeme_hatirlatma" });
 export const KIND_LABELS = Object.freeze({ statement: "Ekstre", reminder: "Ödeme Hatırlatma" });
@@ -248,33 +249,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // ---------- Meta denetimleri (şablon + sınır basamağı) ----------
   const templateCache = new Map(); // `${waba}|${name}` → { at, result }
   const tierCache = new Map(); // waba → { at, limit, tier }
-  function judgeTemplate(items, name) {
-    const found = items.filter(item => item?.name === name);
-    if (!found.length) return { ok: false, code: "template-missing", reason: `Şablon (${name}) bu WhatsApp Business hesabında yok; şablonlar bağlantıdan sonra program tarafından açılır.` };
-    const approved = found.filter(item => String(item.status || "").toUpperCase() === "APPROVED");
-    const pick = approved.find(item => item.language === "tr") || approved[0] || found.find(item => item.language === "tr") || found[0];
-    const status = String(pick.status || "").toUpperCase();
-    const category = String(pick.category || "").toUpperCase();
-    const template = { name, language: String(pick.language || ""), status, category };
-    if (status !== "APPROVED") {
-      const reason = {
-        PENDING: `Şablon (${name}) Meta onayını bekliyor; onaylanınca gönderim başlatılabilir.`,
-        REJECTED: `Şablon (${name}) Meta tarafından reddedildi.`,
-        PAUSED: `Şablon (${name}) düşük kalite nedeniyle Meta tarafından duraklatıldı.`,
-        DISABLED: `Şablon (${name}) Meta tarafından kalıcı olarak kapatıldı; yeni şablon gerekir.`,
-      }[status] || `Şablon (${name}) onaylı değil (Meta durumu: ${status || "bilinmiyor"}).`;
-      return { ok: false, code: `template-${(status || "unknown").toLowerCase()}`, reason, template };
-    }
-    // Plan §2.4 KATEGORİ RİSKİ + §7a 27: yalnız UTILITY + APPROVED ile gönderilir; pazarlamaya alınmış şablonla gönderim başlamaz / süren iş durur.
-    if (category === "MARKETING") return { ok: false, code: "template-marketing", reason: "Şablon Pazarlama'ya Alındı: Meta şablonu pazarlama kategorisine aldı; WhatsApp Yöneticisi'nden yeniden inceleme isteyin. Bu şablonla gönderim yapılmaz.", template };
-    if (category !== "UTILITY") return { ok: false, code: "template-category", reason: `Şablonun Meta kategorisi bilgilendirme (Utility) değil (${category || "bilinmiyor"}); gönderim yapılmaz.`, template };
-    return { ok: true, template };
-  }
-  async function checkTemplate(graph, wabaId, name, { force = false } = {}) {
-    const key = `${wabaId}|${name}`;
+  // T2-7: karar ekrandaki "Gönderime Hazır" ile AYNI kuralla, tek yerde (lib/whatsapp/templates.mjs sendingVerdict: durum, kategori VE içerik).
+  const judgeTemplate = (items, name) => sendingVerdict(items, name);
+  // Şablon listesi Şablonlar kartıyla AYNI okumayla (createMetaTemplates.details: içerik dahil ayrıntılı alanlar; alan reddinde temel alanlara bir kez düşer).
+  async function checkTemplate(record, name, { force = false } = {}) {
+    const key = `${record.wabaId}|${name}`;
     const cached = templateCache.get(key);
     if (!force && cached && nowMs() - cached.at < TEMPLATE_CHECK_MS && nowMs() >= cached.at && cached.sent < TEMPLATE_CHECK_EVERY) return cached.result;
-    const listing = await graph.templates(wabaId);
+    const listing = await createMetaTemplates(connection.metaOptions(record)).details(record.wabaId);
     const result = judgeTemplate(listing.items, name);
     templateCache.set(key, { at: nowMs(), result, sent: 0 });
     return result;
@@ -392,7 +374,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let limitInfo;
     let template;
     try {
-      template = await checkTemplate(graph, record.wabaId, TEMPLATE_NAMES[kind], { force: true });
+      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true });
       limitInfo = await dailyLimit(graph, record, { force: true });
     } catch (error) {
       if (error instanceof MetaGraphError) throw metaHttp(error);
@@ -438,7 +420,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let template;
     let limitInfo;
     try {
-      template = await checkTemplate(graph, record.wabaId, TEMPLATE_NAMES[kind], { force: true });
+      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true });
       if (template.ok) limitInfo = await dailyLimit(graph, record, { force: true });
     } catch (error) {
       if (error instanceof MetaGraphError) throw metaHttp(error);
@@ -651,7 +633,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let template = null;
     let checkError = null;
     try {
-      template = await checkTemplate(graph, batch.waba_id, batch.template);
+      template = await checkTemplate(record, batch.template);
       if (template.ok) limitInfo = await dailyLimit(graph, record);
     } catch (error) {
       if (!(error instanceof MetaGraphError)) throw error;
