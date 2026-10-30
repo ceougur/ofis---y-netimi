@@ -1,0 +1,32 @@
+{
+  "ad": "248-w1-birlesim",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/whatsapp-w1-baglanti.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/whatsapp-meta-graph.test.mjs test/edoc-uretim.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/ci-kapi-listesi.test.mjs test/yazim-duzeni.test.mjs test/tunel-durum-248.test.mjs test/kapi-247.test.mjs test/mutabakat-cekirdek.test.mjs test/kanit-araci.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "add0afa76c59930a10533a3e8b590f908834911c",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T13:42:12.044Z",
+  "sure_sn": 69,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 142,
+    "gecen": 142,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-w1-birlesim.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "4d2c2dccf4a53efb499e7d405954408ed0676c87706ed886376728a8a1be6890",
+  "ham_cikti_bayt": 48581
+}
