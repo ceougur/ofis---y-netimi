@@ -283,20 +283,29 @@ describe("2.4.8 I1 içe aktarma istek kimliği (tek sunucu)", () => {
 
   // Dar kontrol 2 (I1): çek 409 iletisinin "cariye işlenmeden açılan evrak sonradan cariye işlenmez; bu yüklemede açılan evrakı silip seçenek işaretli
   // yeniden yükleyin" önerisi izlenince çift evrak ya da çift cari etkisi doğmaz (silinen evrak tekrar denetiminde sayılmaz). Beklenen dosyadan: 3 evrak,
-  // bağlanan carinin 2 evrakı (1.000 + 500) → 2 cari hareketi; Tanınmayan keşidecinin evrakı cariye işlenmez.
+  // bağlanan carinin 2 evrakı (1.000 + 500) → 2 cari hareketi; Tanınmayan keşidecinin evrakı cariye işlenmez. Silinenler'den geri yükleme tuzağı (D1) 2.5.0'da.
   it("çek 409 önerisi izlenir: cariye işlenmemiş yükleme silinip “Bağlanan carilere de işle” ile yeniden yüklenince 3 evrak, 2 cari hareketi (bir kez)", async () => {
     const acc = await customer(`Öneri Çek ${++n}`);
-    const first = await send(ctx.client, "cheques", chequesBody(acc.name, { post: false }), RID("oneri-cek-1"));
+    // Seri No'lu dosya: tekrar denetimi (aynı no + yön + tür + banka) gerçekten çalışır; silinen evrak onu bağlamamalı.
+    const serial = `ON${n}`;
+    const withSerial = extra => chequesBody(acc.name, { matrix: [["Keşideci", "Tutar", "Vade Tarihi", "Banka", "Seri No"], [acc.name, "1.000", "31.12.2026", "Ziraat", `${serial}-1`], [acc.name, "500", "30.11.2026", "Akbank", `${serial}-2`], [`${acc.name} Tanınmayan`, "250", "15.12.2026", "", `${serial}-3`]], roles: { 0: "drawer", 1: "amount", 2: "due", 3: "bank", 4: "serial" }, ...extra });
+    const l0 = await ledgerOf(ctx.api);
+    const first = await send(ctx.client, "cheques", withSerial({ post: false }), RID("oneri-cek-1"));
     expectStatus(first, 200, "", "ilk yükleme (cariye işlenmeden)");
     assert.deepEqual([counts(ctx.store(), acc.name).cheques, counts(ctx.store(), acc.name).chequeEntries], [3, 0], "ilk yükleme: 3 evrak, cari hareketi yok");
-    expectStatus(await send(ctx.client, "cheques", chequesBody(acc.name), RID("oneri-cek-1")), 409, "request-id-reused", "seçenek işaretlenip aynı kimlikle");
+    expectStatus(await send(ctx.client, "cheques", withSerial(), RID("oneri-cek-1")), 409, "request-id-reused", "seçenek işaretlenip aynı kimlikle");
     const ids = ctx.store().all("SELECT id FROM cheques WHERE deleted_at IS NULL AND drawer LIKE ?", `${acc.name}%`).map(row => row.id);
     for (const id of ids) assert.equal((await ctx.client.del(`/api/workspace/cheques/${id}`)).status, 200, `evrak ${id} silinemedi`);
-    const again = await send(ctx.client, "cheques", chequesBody(acc.name), RID("oneri-cek-2"));
+    const again = await send(ctx.client, "cheques", withSerial(), RID("oneri-cek-2"));
     expectStatus(again, 200, "", "seçenek işaretli yeniden yükleme (yeni pencere, yeni kimlik)");
     assert.equal(again.data?.created, 3, "yeniden yüklemede 3 evrak açıldı (silinenler tekrar sayılmadı)");
     const c = counts(ctx.store(), acc.name);
     assert.deepEqual([c.cheques, c.chequeEntries], [3, 2], `öneri izlenince çift yazım: ${JSON.stringify(c)}`);
+    // Mizan: portföy (101) dosyanın toplamı kadar bir kez artar (1.000 + 500 + 250 = 1.750), bağlanan carinin alacağı (120) 1.000 + 500 = 1.500 bir kez düşer.
+    const l1 = await ledgerOf(ctx.api);
+    const delta = code => Math.round(((l1.tb[code] || 0) - (l0.tb[code] || 0)) * 100) / 100;
+    assert.equal(Math.abs(delta("101")), 1750, `101 Alınan Çekler farkı ${delta("101")} (beklenen 1.750, bir kez)`);
+    assert.equal(Math.abs(delta("120")), 1500, `120 Alıcılar farkı ${delta("120")} (beklenen 1.500, bir kez)`);
   });
 
   it("aynı kimlik başka içe aktarmada ayrı kapsamdır (cari yüklemesinin kimliği çek yüklemesini engellemez, sonucu sızmaz)", async () => {
