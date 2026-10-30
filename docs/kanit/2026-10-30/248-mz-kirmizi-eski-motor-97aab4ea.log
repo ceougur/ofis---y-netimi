@@ -1,0 +1,111 @@
+TAP version 13
+# Subtest: mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027)
+    # Subtest: tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı
+    not ok 1 - tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı
+      ---
+      duration_ms: 13094.7261
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mz-248-ba722fb2/eski-97aab4ea/test/mutabakat-yil-donumu.test.mjs:48:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [
+         {
+          "at": "işlem 384 (fatura-hatasi, 2027-01-08)",
+          "problems": [
+           "fatura-hatasi/kronoloji: reddedilmesi gerekirken kaydedildi (chronology)"
+          ]
+         },
+         {
+          "at": "işlem 385 (alim, 2027-01-08)",
+          "problems": [
+           "Cari Aynı Ad Müşteri T39 (2): program -7406.74 · model -10853,69",
+           "Stok Ürün 2 T39: program -24 · model -20",
+           "Fatura FIS2026000000012 (sale, issued): programda var, modelde yok (yetim kayıt)",
+           "Ana defter cari hesapları ≠ model: 120 -61560.78/-65007.73, 320 -167920.43/-167920.43, 336 -15642.03/-15642.03"
+          ]
+         }
+        ]
+        + actual - expected
+        
+        + [
+        +   {
+        +     at: 'işlem 384 (fatura-hatasi, 2027-01-08)',
+        +     problems: [
+        +       'fatura-hatasi/kronoloji: reddedilmesi gerekirken kaydedildi (chronology)'
+        +     ]
+        +   },
+        +   {
+        +     at: 'işlem 385 (alim, 2027-01-08)',
+        +     problems: [
+        +       'Cari Aynı Ad Müşteri T39 (2): program -7406.74 · model -10853,69',
+        +       'Stok Ürün 2 T39: program -24 · model -20',
+        +       'Fatura FIS2026000000012 (sale, issued): programda var, modelde yok (yetim kayıt)',
+        +       'Ana defter cari hesapları ≠ model: 120 -61560.78/-65007.73, 320 -167920.43/-167920.43, 336 -15642.03/-15642.03'
+        +     ]
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          at: 'işlem 384 (fatura-hatasi, 2027-01-08)'
+          problems:
+            0: 'fatura-hatasi/kronoloji: reddedilmesi gerekirken kaydedildi (chronology)'
+        1:
+          at: 'işlem 385 (alim, 2027-01-08)'
+          problems:
+            0: 'Cari Aynı Ad Müşteri T39 (2): program -7406.74 · model -10853,69'
+            1: 'Stok Ürün 2 T39: program -24 · model -20'
+            2: 'Fatura FIS2026000000012 (sale, issued): programda var, modelde yok (yetim kayıt)'
+            3: 'Ana defter cari hesapları ≠ model: 120 -61560.78/-65007.73, 320 -167920.43/-167920.43, 336 -15642.03/-15642.03'
+      operator: 'deepStrictEqual'
+      stack: |-
+        yilDonumuKosusu (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mz-248-ba722fb2/eski-97aab4ea/test/mutabakat-yil-donumu.test.mjs:31:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mz-248-ba722fb2/eski-97aab4ea/test/mutabakat-yil-donumu.test.mjs:49:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı
+    not ok 2 - tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı
+      ---
+      duration_ms: 24235.868021
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mz-248-ba722fb2/eski-97aab4ea/test/mutabakat-yil-donumu.test.mjs:52:3'
+      failureType: 'testCodeFailure'
+      error: 'ön koşul oluşmadı (Ret): undefined — tohumu yeniden seçin'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mz-248-ba722fb2/eski-97aab4ea/test/mutabakat-yil-donumu.test.mjs:54:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027)
+  ---
+  duration_ms: 37332.617343
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mz-248-ba722fb2/eski-97aab4ea/test/mutabakat-yil-donumu.test.mjs:47:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 37765.565434

@@ -1,0 +1,148 @@
+2.4.8 MZ — tohum araması ve yan bulgu (30.10.2026, worktree is/mz-248, taban 97aab4ea; yeni motor = bu commit'in test/mutabakat/motor.mjs'i;
+eski motor = 97aab4ea git archive kopyası). Betik: docs/kanit/2026-10-30/248-mz-tohum-ara.mjs. Satır = bir koşu (JSON; "seriler" kısaltıldı).
+Sayaçlar: kronolojiOncekiYilKabul = geçen yıl tarihli, geçen yılın serisinde daha geç belge yok (program keser; eski motor ret bekliyordu);
+kronolojiOncekiYilRet = geçen yılın serisinde daha geç belge var (program 400 chronology).
+
+== Yapılandırma 1: saat 2027-01-10, span 25, 600 işlem, her 10 (yeni motor) — %70 kilidi (bugün−3 ≈ 30.12) Aralık tarihlerini kapatıyor
+{"seed":1,"sn":23,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":2,"sn":20,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":3,"sn":18,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":4,"sn":17,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":5,"sn":18,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":11,"sn":23,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":12,"sn":20,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":13,"sn":19,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":14,"sn":18,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":15,"sn":16,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":6,"sn":24,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":7,"sn":18,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":1}}
+{"seed":8,"sn":20,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":9,"sn":16,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":10,"sn":17,"zaman":{"from":"2026-12-16","to":"2027-01-10"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":1}}
+
+== Yapılandırma 2: saat 2027-01-07, span 20, 1000 işlem, her 10 (yeni motor)
+{"seed":1,"sn":44,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":2,"sn":44,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":3,"sn":38,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":4,"sn":38,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":5,"sn":37,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":6,"sn":35,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":13,"sn":45,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":14,"sn":42,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":15,"sn":41,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":16,"sn":37,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":17,"sn":36,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":18,"sn":39,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":19,"sn":41,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":20,"sn":43,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":21,"sn":37,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":22,"sn":34,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":23,"sn":36,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":24,"sn":37,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":7,"sn":44,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":8,"sn":43,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":9,"sn":37,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":10,"sn":35,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":11,"sn":36,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":12,"sn":38,"zaman":{"from":"2026-12-18","to":"2027-01-07"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+
+== Yapılandırma 3: saat 2027-01-25, span 50, 1500 işlem, her 10 (yeni motor)
+{"seed":1,"sn":77,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":2,"sn":77,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":3,"sn":72,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":4,"sn":68,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":13,"sn":87,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":14,"sn":81,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":15,"sn":75,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":16,"sn":67,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":5,"sn":83,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":6,"sn":77,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":7,"sn":68,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":8,"sn":73,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":9,"sn":75,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":10,"sn":67,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":11,"sn":76,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":12,"sn":72,"zaman":{"from":"2026-12-06","to":"2027-01-25"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":1}}
+
+== Yapılandırma 4: saat 2027-01-22, span 38, 1500 işlem, her 10 (yeni motor) — tohum 12 uyuşmazlığı: YAN BULGU (aşağıda)
+{"seed":1,"sn":76,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":2,"sn":76,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":3,"sn":69,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":4,"sn":73,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":13,"sn":83,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":14,"sn":80,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":15,"sn":84,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":16,"sn":66,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":5,"sn":78,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":6,"sn":73,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":7,"sn":69,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":8,"sn":74,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":9,"sn":78,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":2,"kronolojiOncekiYilKabul":0}}
+{"seed":10,"sn":69,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":11,"sn":72,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":12,"sn":73,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":1,"ilk":"işlem 1130 (supheli-karsilik, 2027-01-12): supheli-karsilik: beklenmeyen ret 400 {\"ok\":false,\"error\":\"Karşılık (1,47 TL) kalan şüpheli tutarı aşıyor: kalan 0,98 TL → en çok 0,98 TL.\",\"code\":\"doubtful-provision-exceeds\",\"field\":\"amount\",\"remainingMinor\":98,\"provisionMinor\":0}","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+
+== Yapılandırma 5 (TESTİN çizelgesi): saat 2027-01-22, span 38, 600 işlem, her 5 (yeni motor) → tohum 39 Kabul 1, tohum 29 Ret 2
+{"seed":1,"sn":30,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":2,"sn":26,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":3,"sn":23,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":4,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":5,"sn":20,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":6,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":7,"sn":20,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":8,"sn":22,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":9,"sn":18,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":10,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":11,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":12,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":13,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":14,"sn":23,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":15,"sn":22,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":16,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":17,"sn":20,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":18,"sn":23,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":19,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":20,"sn":24,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":21,"sn":33,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":22,"sn":25,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":23,"sn":23,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":24,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":25,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":26,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":27,"sn":19,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":28,"sn":20,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":29,"sn":20,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":2,"kronolojiOncekiYilKabul":0}}
+{"seed":30,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":31,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":32,"sn":19,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":33,"sn":19,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":34,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":35,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":1,"kronolojiOncekiYilKabul":0}}
+{"seed":36,"sn":20,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":37,"sn":25,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":38,"sn":21,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":39,"sn":23,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":1}}
+{"seed":40,"sn":22,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":0,"ilk":"","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+
+== YAN BULGU yeniden üretim (tohum 12, span 38, 1500 işlem): t12-eski-ocak = eski motor 2027-01-22; t12-yeni-ocak-tekrar = yeni motor tekrar; t12-yeni-haziran = yeni motor 2027-06-22 (çizelge yıl sınırını KESMEZ); t12-yeni-haziran-her1 = her işlemde doğrulama
+{"seed":12,"sn":73,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":1,"ilk":"işlem 1130 (supheli-karsilik, 2027-01-12): supheli-karsilik: beklenmeyen ret 400 {\"ok\":false,\"error\":\"Karşılık (1,47 TL) kalan şüpheli tutarı aşıyor: kalan 0,98 TL → en çok 0,98 TL.\",\"code\":\"doubtful-provision-exceeds\",\"field\":\"amount\",\"remainingMinor\":98,\"provisionMinor\":0}","yil":null}
+{"seed":12,"sn":75,"zaman":{"from":"2027-05-15","to":"2027-06-22"},"uyusmazlik":1,"ilk":"işlem 1130 (supheli-karsilik, 2027-06-12): supheli-karsilik: beklenmeyen ret 400 {\"ok\":false,\"error\":\"Karşılık (1,47 TL) kalan şüpheli tutarı aşıyor: kalan 0,98 TL → en çok 0,98 TL.\",\"code\":\"doubtful-provision-exceeds\",\"field\":\"amount\",\"remainingMinor\":98,\"provisionMinor\":0}","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":12,"sn":258,"zaman":{"from":"2027-05-15","to":"2027-06-22"},"uyusmazlik":1,"ilk":"işlem 1130 (supheli-karsilik, 2027-06-12): supheli-karsilik: beklenmeyen ret 400 {\"ok\":false,\"error\":\"Karşılık (1,47 TL) kalan şüpheli tutarı aşıyor: kalan 0,98 TL → en çok 0,98 TL.\",\"code\":\"doubtful-provision-exceeds\",\"field\":\"amount\",\"remainingMinor\":98,\"provisionMinor\":0}","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":12,"sn":75,"zaman":{"from":"2027-05-15","to":"2027-06-22"},"uyusmazlik":1,"ilk":"işlem 1130 (supheli-karsilik, 2027-06-12): supheli-karsilik: beklenmeyen ret 400 {\"ok\":false,\"error\":\"Karşılık (1,47 TL) kalan şüpheli tutarı aşıyor: kalan 0,98 TL → en çok 0,98 TL.\",\"code\":\"doubtful-provision-exceeds\",\"field\":\"amount\",\"remainingMinor\":98,\"provisionMinor\":0}","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+{"seed":12,"sn":75,"zaman":{"from":"2026-12-15","to":"2027-01-22"},"uyusmazlik":1,"ilk":"işlem 1130 (supheli-karsilik, 2027-01-12): supheli-karsilik: beklenmeyen ret 400 {\"ok\":false,\"error\":\"Karşılık (1,47 TL) kalan şüpheli tutarı aşıyor: kalan 0,98 TL → en çok 0,98 TL.\",\"code\":\"doubtful-provision-exceeds\",\"field\":\"amount\",\"remainingMinor\":98,\"provisionMinor\":0}","yil":{"kronolojiOncekiYilRet":0,"kronolojiOncekiYilKabul":0}}
+
+== YAN BULGU TANI (tohum 12, 2027-06-22, işlem 1130 supheli-karsilik; tanı satırı eklenmiş motor kopyasıyla)
+model kaydı: kalan 98 kuruş, karşılık 0 → room 98; motorun istediği karşılık 147 kuruş (1,47 TL)
+program kaydı: remainingMinor 98, provisionMinor 0 → program 400 doubtful-provision-exceeds (DOĞRU)
+KÖK NEDEN (motor, test aracı): supheli-karsilik (test/mutabakat/motor.mjs satır 2135) ve supheli-al (satır 2117) tutarı moneyCents(1, max(1, floor(room/100))) ile seçer;
+moneyCents(a,b) = R.int(a,b)*100 + (R.chance(0.7) ? R.int(0,99) : 0) en çok floor(room/100)*100+99 kuruş verir → room < 100 kuruşta (ya da room'un kuruş
+kısmı küçükken) tutar room'u aşar; "over" dalı seçilmediği için motor mustOk bekler. Yıl dönümüyle İLGİSİZ (eski motorda ve Haziran çizelgesinde aynı).
+Önerilen düzeltme (bu commit'te YAPILMADI; kapsam MZ): amount = Math.min(room, moneyCents(...)) — rastgele tüketimi değiştirmez, yalnız bu durumda tutarı kırpar.
+
+== KIRMIZI ve MUTASYON kopyaları (ders 23/25: not defterinde benzersiz klasör mz-248-ba722fb2, koşudan sonra silindi)
+248-mz-kirmizi-eski-motor-97aab4ea: `git archive 97aab4ea | tar -x` + bu commit'in test/mutabakat-yil-donumu.test.mjs'i (motor 97aab4ea'nınki, lastSeries[series]).
+  tohum 39: "işlem 384 (fatura-hatasi, 2027-01-08): fatura-hatasi/kronoloji: reddedilmesi gerekirken kaydedildi (chronology)" — beklenen neden (KIRMIZI KANIT).
+  tohum 29: eski motorda uyuşmazlık YOK; yalnız report.yilDonumu olmadığı için "ön koşul oluşmadı (Ret): undefined" — kanıt SAYILMAZ (ders 38); bu tohum Ret dalını korur.
+248-mz-mutasyon-anahtar-yalniz-seri: bu commit'in kodu, motor satır 684 `const seriesKey = (series, day) => series;` (anahtar yeniden yalnız seri).
+  tohum 39: aynı ileti ile KIRMIZI (mutasyon yakalandı); tohum 29: yeşil (Ret durumunda program ve mutasyonlu motor aynı ret).
+Kayıtlardaki "commit undefined": kopyalar git deposu değil; kod kaynağı yukarıda.
