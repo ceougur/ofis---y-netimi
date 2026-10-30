@@ -604,6 +604,18 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return { jobId: null, waitMs: soon ? Math.max(0, Date.parse(soon) - nowMs()) : null };
   }
 
+  // T2-2 (bağımsız gözden geçirme r1): bekleme noktasından (Meta okuması, PDF yükleme) sonra iş ve toplu iş YENİDEN okunur. Dönüş { job, batch } (toplu iş sürüyor,
+  // iş beklenen durumda ve beklemesi dolmuş) ya da null — o zaman işe dokunulmaz: İptal Et / geri yükleme işi zaten kapatmıştır; Duraklat yalnız Bekliyor /
+  // Sınır'dakileri tutar, "Hazırlanıyor"da kalan iş burada "Duraklatıldı"ya geçer (Devam Et onu yeniden Bekliyor yapar).
+  function stillRunning(jobId, states) {
+    const current = jobRow(jobId);
+    const row = current ? batchRow(current.batch_id) : null;
+    if (current && row?.state === "running" && states.includes(current.state) && !(current.next_at && current.next_at > iso())) return { job: current, batch: row };
+    if (current && row?.state === "paused" && current.state === "preparing") updateJob(current.id, { state: "paused", next_at: null });
+    if (row) notify(row.id);
+    return null;
+  }
+
   async function step() {
     const pick = next();
     if (!pick.jobId) return { did: false, waitMs: pick.waitMs };
@@ -633,22 +645,31 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       pauseBatch(batch, "token", error.message);
       return { did: true };
     }
-    // Şablon (saatte bir; §7a 27) ve sınır basamağı (6 saatte bir).
+    // Şablon (R2: her 100 iletide / en geç 10 dk; §7a 27) ve sınır basamağı (6 saatte bir).
     let limitInfo;
     let language = batch.lang;
+    let template = null;
+    let checkError = null;
     try {
-      const template = await checkTemplate(graph, batch.waba_id, batch.template);
-      if (!template.ok) {
-        pauseBatch(batch, template.code, template.reason);
-        return { did: true };
-      }
-      language = template.template.language || batch.lang;
-      limitInfo = await dailyLimit(graph, record);
+      template = await checkTemplate(graph, batch.waba_id, batch.template);
+      if (template.ok) limitInfo = await dailyLimit(graph, record);
     } catch (error) {
       if (!(error instanceof MetaGraphError)) throw error;
-      handleFailure(batch, job, error, { stage: "check" });
+      checkError = error;
+    }
+    // T2-2: Meta okuması beklenirken kullanıcı İptal Et / Duraklat'a basmış olabilir — iş ve toplu iş YENİDEN okunur; artık yürütülemiyorsa dokunulmaz.
+    const afterCheck = stillRunning(job.id, ["pending", "limited", "held"]);
+    if (!afterCheck) return { did: true };
+    job = afterCheck.job;
+    if (checkError) {
+      handleFailure(afterCheck.batch, job, checkError, { stage: "check" });
       return { did: true };
     }
+    if (!template.ok) {
+      pauseBatch(afterCheck.batch, template.code, template.reason);
+      return { did: true };
+    }
+    language = template.template.language || batch.lang;
     // ---------- Hazırlanıyor: cari GÖNDERİM ANINDA okunur (§7a 1, 2) ----------
     const user = userFor(batch.created_by);
     let account = null;
@@ -682,12 +703,25 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     updateJob(job.id, { state: "preparing", next_at: null });
     let prepared;
+    let prepareError = null;
     try {
       prepared = await prepare(batch, job, graph, record, account, user);
     } catch (error) {
+      prepareError = error;
+    }
+    // T2-2: PDF yüklenirken İptal Et / Duraklat / geri yükleme olmuş olabilir — Meta'ya ileti isteğinden HEMEN ÖNCE iş ve toplu iş yeniden okunur (buradan
+    // isteğe dek bekleme noktası yok: defter talebi ve durum yazımları eşzamanlı). İptal edilen işin yüklenmiş PDF'i işte kayıtlıdır; kesin durumda olduğu için
+    // bakım turu Meta'dan siler (S3 A). Duraklatılan iş "Duraklatıldı"ya geçer; Devam Et'te aynı PDF yeniden kullanılır (§7a 15).
+    const ready = stillRunning(job.id, ["preparing"]);
+    if (!ready) {
+      if (prepareError && !(prepareError instanceof MetaGraphError)) log.warn?.(`WhatsApp işi hazırlanamadı (${job.id}; iş artık yürütülmüyor): ${prepareError.message}`);
+      return { did: true };
+    }
+    job = ready.job;
+    if (prepareError) {
       updateJob(job.id, { state: "pending" });
-      if (!(error instanceof MetaGraphError)) throw error;
-      handleFailure(batch, jobRow(job.id), error, { stage: "media" });
+      if (!(prepareError instanceof MetaGraphError)) throw prepareError;
+      handleFailure(ready.batch, jobRow(job.id), prepareError, { stage: "media" });
       return { did: true };
     }
     if (prepared.skip) {
@@ -798,7 +832,15 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
   const connectionBack = () => ({ pause_code: "", pause_reason: "", retry_at: null, offline_tries: 0 });
 
-  function handleFailure(batch, job, error, { stage, attempt = null }) {
+  function handleFailure(batch, job, error, options) {
+    applyFailure(batch, job, error, options);
+    // T2-2: ileti isteği sürerken toplu iş iptal edildi / durduruldu: yeniden denemeye dönen iş (Bekliyor / Sınır / Meta Bekletti) kapanmış toplu işte asılı kalmaz.
+    const row = batchRow(batch.id);
+    if (row && ["canceled", "stopped"].includes(row.state)) {
+      store.run("UPDATE wa_jobs SET state = ?, closed_at = ?, updated_at = ? WHERE id = ? AND state IN ('pending', 'limited', 'preparing', 'paused', 'held')", row.state, iso(), iso(), job.id);
+    }
+  }
+  function applyFailure(batch, job, error, { stage, attempt = null }) {
     const row = batchRow(batch.id);
     const reachedMeta = error.reason === "meta";
     const record = outcome => {
