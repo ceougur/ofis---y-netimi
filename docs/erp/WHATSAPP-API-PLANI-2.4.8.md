@@ -1,5 +1,7 @@
 # WhatsApp Otomatik Gönderim (Verimor API) — 2.4.8 Planı
 
+> **YERİNE GEÇTİ (30.10.2026):** Verimor yolu bırakıldı. Yön: Meta WhatsApp Cloud API, entegratörsüz, iki bağlanma yolu (Elle Bağla + Tech Provider ile WhatsApp'ı Bağla). Gerekçe ve kesin bilgiler: `docs/erp/WHATSAPP-ENTEGRATOR-ARASTIRMA.md` ve CLAUDE.md "SIKIŞTIRMA ÖNCESİ DURUM 6". Bu belgedeki ürün kararları (yalnız bilgilendirme şablonları, aydınlatma, onay kutusu, PDF dönemi, kuyruk, sınır) geçerli; Verimor'a özgü teknik kısımlar (X-API-Key, header_media link, yoklama, IP 60/dk) GEÇERSİZ. Plan 2.4.8 başlarken Meta'ya göre yeniden yazılacak.
+
 > DURUM: PLAN — kod yok. Kullanıcı 30.10.2026 ~03:40 UTC: "sürekli ertelediğim ama müşterilerin talep ettiği whatsapp toplu gönderim işini planlayalım 2.4.8 için …
 > belge ve dökümanlarını incele apilerini vs kontrol et. planlamanı yap, 2.4.7 kontrolleri bitince ben başla dediğimde başlarsın."
 > "başla"da madde 0a ile `docs/2.4.8-IS-LISTESI.md` açılır (BELGE_YOLLARI'na eklenir); bu plan oraya bağlanır. Sorular §11'de, yanıtlanınca buraya işlenir.
