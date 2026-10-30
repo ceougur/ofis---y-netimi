@@ -311,6 +311,8 @@ BAŞ MİMAR KARARLARI (en yaygın uygulama; ★ = kime / kaç kez gideceğini et
 31. Bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; ekranda nedenler listelenir.
 32. Başarılı olan işin hata kodu temizlenir (önceki deneme geçmişte kalır).
 
+> KARAR (30.10.2026 15:18 UTC, kullanıcı 5 dk içinde yanıt vermedi → 5 dk yetkisiyle uygulandı): plan §7a revizyonu R1 (internet yokken "Bağlantı Bekleniyor", Başarısız değil), R2 (kategori her 100 iletide / en geç 10 dk), R3 (daha önce gönderilmiş dönem uyarısı, varsayılan Bunları Çıkar) GEÇERLİ.
+
 REVİZYON ÖNERİSİ (baş mimar, 30.10.2026 ~14:55 UTC; kâhin K0'ın "ürün sahibine bildirilecek sonuçlar"ı üzerine, program karşılaştırmasından ÖNCE; kullanıcıya soruldu, 5 dk yetkisi):
 - R1 (§7a 11 + 15): Meta'ya HİÇ ulaşılamıyorsa (internet yok; istek gitmediği kesin) işler Başarısız SAYILMAZ: toplu iş "Bağlantı Bekleniyor" diye durur, bağlantı dönünce kendiliğinden sürer (iş deneme sayacı artmaz). 30 sn → 2 dk → 15 dk → Başarısız dizisi yalnız Meta'nın yanıt verdiği geçici hatalarda (5xx, 1, 2, 133004).
 - R2 (§7a 27): şablon kategorisi toplu iş sürerken saatte bir yerine HER 100 İLETİDE ve EN GEÇ 10 DAKİKADA bir okunur (Pazarlama ücretiyle giden ileti en çok ~100; ≈ 1 USD).
