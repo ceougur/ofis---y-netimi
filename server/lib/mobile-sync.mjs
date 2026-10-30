@@ -27,6 +27,11 @@ export const OZET_KURALLARI = Object.freeze({
   stokAyrinti: 30,
   azamiBayt: 6 * 1024 * 1024, // aşılırsa ayrıntılar kırpılır
   turMs: 30_000, // zamanlayıcı turu
+  // 2.4.8: kapıcı kaydı "kapi-lisans" ile reddedince (süresi dolmuş deneme, engelli lisans) AYNI imza (lisans belirteci + cihaz listesi) için bu süre boyunca
+  // kapıcıya yeniden kayıt gönderilmez, son ret yanıtı döner. Yoksa her turda (30 sn) bir istek: ofis başına günde ~2.880 Worker isteği, ~35 böyle ofis
+  // Cloudflare ücretsiz planının günlük 100.000 isteğini doldurur. zorla (güvenlik/elle), belirteç ya da cihaz değişikliği, başarılı kayıt bunu sıfırlar;
+  // saatte bir kayıt kapıcının "kayıt silindi" bildirimini (L1) yine görür.
+  lisansRetMs: 60 * 60_000,
   kapanisMs: 5_000, // kapanışta son yükleme için en çok bekleme
 });
 
@@ -79,7 +84,7 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     : null;
   let ofis = null;
   let hazir = null;
-  const durum = { son: null, kayit: null, kirliIlk: null, kirliSon: null, veriGun: "", veriSayisi: 0, sonVeri: 0, sonKayitImzasi: "", bekleyenGuvenlik: false };
+  const durum = { son: null, kayit: null, kirliIlk: null, kirliSon: null, veriGun: "", veriSayisi: 0, sonVeri: 0, sonKayitImzasi: "", lisansRet: null, bekleyenGuvenlik: false };
   let kuyruk = Promise.resolve();
   let tur = null;
   let kapali = false;
@@ -169,15 +174,23 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
       return Infinity;
     }
   };
+  const cihazListesi = () => cihazlar().map(d => ({ id: d.id, anahtar: d.publicKey }));
+  const kayitImzasi = (zarf, liste) => JSON.stringify([zarf.payload, liste.map(d => d.id)]);
   async function kayitGonder({ ekCihazlar = [], zorla = false, ozetTetikle = true } = {}) {
     await hazirla();
     const ilk = license?.tokenEnvelope?.() || null;
+    const ret = durum.lisansRet;
+    if (!zorla && !ekCihazlar.length && ret && ilk) {
+      const gecen = clock.ms() - ret.ms;
+      // Belirteç yaşlansa da pencere içinde lisans sorgusu da yapılmaz (aynı imza → aynı ret); pencere bitince sorgu + kayıt bir kez.
+      if (gecen >= 0 && gecen < OZET_KURALLARI.lisansRetMs && kayitImzasi(ilk, cihazListesi()) === ret.imza) return { ...ret.sonuc, onceden: true };
+    }
     // 50 dk: kapıcının 1 saatlik sınırına 10 dk pay; etkin ofiste saatte en çok bir lisans sorgusu (lisans servisine yük bindirmez).
     if (ilk && belirtecYasi(ilk) >= KAPI_KURALLARI.lisansTazeMs - 10 * 60_000) await license.check?.().catch(() => null);
     const lisans = license?.tokenEnvelope?.() || null;
     if (!lisans) return { ok: false, code: "lisans-yok", error: "Lisans belirteci yok." };
-    const liste = [...cihazlar().map(d => ({ id: d.id, anahtar: d.publicKey })), ...ekCihazlar];
-    const imza = JSON.stringify([lisans.payload, liste.map(d => d.id)]);
+    const liste = [...cihazListesi(), ...ekCihazlar];
+    const imza = kayitImzasi(lisans, liste);
     if (!zorla && imza === durum.sonKayitImzasi) return { ok: true, data: durum.kayit, onceden: true };
     const farkOnce = saat.farkMs;
     let sonuc = await istemci.kayit(ofis, { lisans, cihazlar: liste });
@@ -188,6 +201,8 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     // yeniden eşlenir), Yönetim → Mobil Cihazlar bunu söyler.
     const silindi = sonuc.ok ? sonuc.data?.silindi : sonuc.silindi;
     if (silindi) kapiKaydiSilindi(silindi);
+    // Ret penceresi (OZET_KURALLARI.lisansRetMs): yalnız kapi-lisans açar; başka her yanıt (başarı dahil) kapatır. Eşleme kaydı (ek cihazlı) pencere açmaz.
+    durum.lisansRet = sonuc.code === "kapi-lisans" && !ekCihazlar.length ? { imza, ms: clock.ms(), sonuc } : null;
     if (sonuc.ok) {
       durum.sonKayitImzasi = imza;
       durum.kayit = sonuc.data;
