@@ -234,6 +234,9 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
 43. FARK GÖRÜLDÜKTEN SONRA PARA KURALI KULLANICIYA SORULUR. Kâhin ile program ayrıştıktan sonra para / kapama sırasını belirleyen bir netleştirme gerekiyorsa baş mimar karar vermez;
     soruyu kullanıcıya iki seçenekli (öneriyle) yazar, yanıt gelene kadar o kural ne kâhinde ne kodda kesinleşir; 5 dk yetkisi bu sorulara uygulanmaz. (25.10.2026: K-c yanlış okunup
     kâhinin beklentisi iki kez değiştirildi — KS8.3 üretildi, geri alındı; kullanıcı "anayasamızı ve derslerimize göz at" deyince öz denetimde görüldü, kullanıcı "önerini uygula".)
+44. ORTAK AĞAÇTA COMMIT YALNIZ KENDİ YOLLARINLA. Başka ajanın çalıştığı ağaçta `git add -u` / `git add -A` / `commit -a` kullanılmaz; commit'e yalnız adı verilen
+    yollar girer (`git add <yol>`), önce `git status -s` okunur. (30.10.2026: ana oturumun iki belge commit'i 4a3aba3b, 98cd83f1 K0 kâhin ajanının yarım dosyalarını alıp
+    gönderdi; son içerik aynı çıktı, zarar yok — ders 23'ün commit karışması ailesi.)
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
