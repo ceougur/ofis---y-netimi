@@ -139,7 +139,7 @@ function sayacli(env, cloudflare) {
  * sonraki tura kalır (tur hep aynı başa dönmez). İmleç listeden HEMEN sonra sayfanın sonuna yazılır (tur ortasında istisna / sınır aşımında da sonraki tur
  * ilerler); bütçe sayfanın ortasında biterse tur sonunda son ele alınan ofise geri çekilir.
  */
-export async function mobilTemizlik(ortamGercek, { now = () => Date.now(), lisansGorunumu, cloudflare = null, alan = "destekofis.net" }) {
+export async function mobilTemizlik(ortamGercek, { now = () => Date.now(), lisansGorunumu, cloudflare = null, alan = "destekofis.net", log = console }) {
   const simdi = now();
   const { env, cf, sayac } = sayacli(ortamGercek, cloudflare);
   const yeter = n => sayac.n + n <= TEMIZLIK.butce - TEMIZLIK.waPay - 1; // 1: tur sonundaki imleç yazımı; waPay: aynı çağrıdaki WhatsApp oturum temizliği
@@ -150,7 +150,7 @@ export async function mobilTemizlik(ortamGercek, { now = () => Date.now(), lisan
   // Sayfa tamamsa sonraki tur sayfanın son ofisinden sonra; sayfa listenin sonuysa baştan.
   const sayfaSonu = liste.truncated && ofisler.length ? ofisler.at(-1) : null;
   await imlecYaz(sayfaSonu);
-  const rapor = { taranan: 0, denetlenen: 0, silinen: [], ertelenen: 0, hata: [], imlec: sayfaSonu, islem: 0 };
+  const rapor = { taranan: 0, denetlenen: 0, silinen: [], ertelenen: 0, hata: [], bozuk: [], imlec: sayfaSonu, islem: 0 };
   let sonEle = onceki; // son ele alınan ofis (bütçe sayfa ortasında biterse imleç buraya)
   let durdu = false;
   const gorunumAl = async (meta, secenek) => {
@@ -162,7 +162,19 @@ export async function mobilTemizlik(ortamGercek, { now = () => Date.now(), lisan
       durdu = true;
       break;
     }
-    const kayit = await oku(env, metaAnahtari(ofis));
+    // Son dar kontrol D4b: kayıt başına hata yalıtımı — R2 okuma hatası ya da bozuk JSON bütün turu düşürmez (imleç sayfa sonuna önceden yazıldığından
+    // sayfadaki sonraki ofisler hep atlanırdı). Bozuk kayıt SİLİNMEZ (elle incelenir): atlanır, sayılır, günlüğe adıyla yazılır; tur sürer.
+    let kayit;
+    try {
+      kayit = await oku(env, metaAnahtari(ofis));
+      if (kayit && (!kayit.veri || typeof kayit.veri !== "object" || Array.isArray(kayit.veri))) throw new Error("ofis kaydı nesne değil");
+    } catch (error) {
+      rapor.bozuk.push(ofis);
+      log.warn?.(`Kapıcı temizliği: ofis/${ofis}/meta.json okunamadı (${error?.message || error}); kayıt atlandı, silinmedi.`);
+      sonEle = ofis;
+      rapor.taranan += 1;
+      continue;
+    }
     if (!kayit) {
       sonEle = ofis;
       rapor.taranan += 1;
