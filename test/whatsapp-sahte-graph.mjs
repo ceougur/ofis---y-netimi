@@ -54,6 +54,8 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
     // ttlRange: [en az, en çok] verilirse dışındaki değer 100 ile reddedilir (D0-W5-8: izinli aralık belgede okunmadı). templateEdits: düzenleme istekleri.
     ttlRange: null,
     templateEdits: [],
+    // 2.4.8 T2-3/4: Meta'da şu an kayıtlı alternatif kanca adresi (POST subscribed_apps yazar; GET okur).
+    override: null,
   };
   // Çok parçalı gövdeden alanlar (ad → { value | filename, type, data }).
   const multipart = (raw, type) => {
@@ -205,7 +207,16 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
       if (req.method === "POST" && parts.length === 2 && parts[1] === "subscribed_apps") {
         if (parts[0] !== wabaId) return reply(400, metaError(100, `Unsupported post request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
         state.subscriptions.push(entry.body || {});
+        // Meta'da WABA + uygulama başına TEK alternatif adres (webhooks/override): son kayıt geçerlidir; gövdesiz abonelik adresi kaldırır.
+        state.override = entry.body?.override_callback_uri || null;
         return reply(200, { success: true });
+      }
+      // 2.4.8 T2-3/4 (aynı el — kâhin DEĞİL): Meta'da kayıtlı adres (webhooks/override "Get Messaging account alternate callback" yanıt biçimi). Test state.override'ı
+      // değiştirerek "Meta'daki adres değişti" durumunu kurar.
+      if (req.method === "GET" && parts.length === 2 && parts[1] === "subscribed_apps") {
+        if (parts[0] !== wabaId) return reply(400, metaError(100, `Unsupported get request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
+        if (!state.subscriptions.length && !state.override) return reply(200, { data: [] });
+        return reply(200, { data: [{ whatsapp_business_api_data: { id: appId, link: `https://www.facebook.com/games/?app_id=${appId}`, name: "DestekOfis Mesaj" }, ...(state.override ? { override_callback_uri: state.override } : {}) }] });
       }
       // 2.4.8 W7 (aynı el — kâhin DEĞİL): WhatsApp'ı Bağla sonrası numara kaydı (6 haneli PIN) ve birlikte kullanım eşitlemesi.
       if (req.method === "POST" && parts.length === 2 && (parts[1] === "register" || parts[1] === "smb_app_data")) {

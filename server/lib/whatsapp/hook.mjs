@@ -7,8 +7,10 @@
 // Doğrulama: kapıcı açıkken (mobileSync.enabled) işaret ZORUNLU (tüneli atlatan istek 401). İşaretin cihaz bölümü "wa1" = kapıcı Meta imzasını (X-Hub-Signature-256)
 // DestekOfis uygulama sırrıyla doğruladı (Yol 2, "WhatsApp'ı Bağla"), "wa0" = imzasız / doğrulanamadı (Yol 1 "Elle Bağla": imza müşterinin uygulama sırrıyla atılır,
 // programda o sır YOK — plan §3 C). Yol 2 bağlantısında imzasız istek reddedilir (BAŞ MİMAR KARARI: plan "kapıcı geçersizi düşürür" der; kapıcı şirketin yolunu
-// bilmediğinden imzasızı "wa0" diye geçirir, düşürme programda — etki aynı). Gizli yol karmasıyla şirket bulunur (lib/whatsapp/hub.mjs registry); şirket açık
-// değilse açılır, geri yükleniyorsa 503 (Meta 7 gün yeniden dener). Yinelenen / sırasız bildirim etkisizdir (queue.applyStatuses yalnız ileri yazar).
+// bilmediğinden imzasızı "wa0" diye geçirir, düşürme programda — etki aynı). T2-3/4 (bağımsız gözden geçirme r2 + r7): gizli yolun karması WABA'nın kaydını bulur
+// (makine defteri, şirket dosyası DIŞINDA — Meta'da alternatif adres WABA başına tektir); her durum bildirimi şirketine wamid'le (deftere kabul yazan şirket) ya da
+// — yalnız imzalı olayda — iş kimliğiyle (biz_opaque_callback_data) gider; şirketi bilinmeyen olay düşer. Şirket açık değilse açılır, geri yükleniyorsa 503
+// (Meta 7 gün yeniden dener). Yinelenen / sırasız bildirim etkisizdir (queue.applyStatuses yalnız ileri yazar).
 //   GET  ?hub.mode=subscribe&hub.verify_token=…&hub.challenge=… → 200 challenge (düz metin) | 403
 //   POST { object, entry[].changes[] { field: "messages", value: { metadata.phone_number_id, statuses[] } } } → 200 (durumlar yazılır; gelen ileti / öbür alanlar
 //        SAKLANMAZ — kapsam dışı)
@@ -45,12 +47,12 @@ async function readBody(req, max) {
 
 /**
  * @param {object} o
- * @param {object} o.registry lib/whatsapp/hub.mjs registry (companyOfHook)
+ * @param {object} o.hooks makine defteri (lib/whatsapp/defter.mjs: hookByPath, companyOfWamid, companyOfJob, hookSeen)
  * @param {(id: string) => object|null} o.companyOf şirket kimliği → şirket kaydı
  * @param {(company: object) => object} o.appFor şirketin program örneği (app.mjs appFor; meşgulse HttpError 503 atar)
  * @param {(req) => { ok: boolean, signed?: boolean }} o.verifyMark kapıcı işareti (lib/mobile-sync.mjs kancaIsareti)
  */
-export function createWhatsappHook({ registry, companyOf, appFor, verifyMark = () => ({ ok: true, signed: false }), log = console, maxBytes = HOOK_MAX_BYTES }) {
+export function createWhatsappHook({ hooks, companyOf, appFor, verifyMark = () => ({ ok: true, signed: false }), log = console, maxBytes = HOOK_MAX_BYTES, now = () => new Date() }) {
   async function handle(req, res) {
     const url = new URL(String(req.url || "/"), "http://kanca.invalid");
     const secret = url.pathname.slice(HOOK_PREFIX.length);
@@ -59,26 +61,14 @@ export function createWhatsappHook({ registry, companyOf, appFor, verifyMark = (
     if (method !== "GET" && method !== "POST") return failure(res, 405, "whatsapp-hook-method", "Yöntem desteklenmiyor.");
     const mark = verifyMark(req);
     if (!mark?.ok) return failure(res, 401, "whatsapp-hook-mark", "İstek kapıcıdan gelmedi.");
-    const companyId = registry.companyOfHook(sha256(secret));
-    const company = companyId ? companyOf(companyId) : null;
-    if (!company) return failure(res, 404, "whatsapp-hook-missing", "Bu adres uzaktan erişime açık değil.");
-    let app;
-    try {
-      app = appFor(company);
-    } catch (error) {
-      // Geri yükleme / silme sürüyor: Meta bildirimi yeniden dener (200 dışı yanıtta 7 güne kadar).
-      return failure(res, error?.status === 503 ? 503 : 500, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
-    }
-    const wa = app?.context?.whatsapp;
-    // Kayıt bayatsa (bağlantı kaldırıldı / kanca yenilendi) şirketin kendi kaydıyla yeniden denetlenir.
-    if (!wa?.connection?.hookMatches(secret)) return failure(res, 404, "whatsapp-hook-missing", "Bu adres uzaktan erişime açık değil.");
+    const hook = hooks?.hookByPath(sha256(secret)) || null;
+    if (!hook) return failure(res, 404, "whatsapp-hook-missing", "Bu adres uzaktan erişime açık değil.");
     if (method === "GET") {
-      const ok = url.searchParams.get("hub.mode") === "subscribe" && wa.connection.verifyMatches(url.searchParams.get("hub.verify_token") || "");
+      const token = url.searchParams.get("hub.verify_token") || "";
+      const ok = url.searchParams.get("hub.mode") === "subscribe" && Boolean(token) && hook.verifyHash === sha256(token);
       if (!ok) return failure(res, 403, "whatsapp-hook-verify", "Doğrulama belirteci geçersiz.");
       return reply(res, 200, String(url.searchParams.get("hub.challenge") || "").slice(0, 200), "text/plain; charset=utf-8");
     }
-    const record = wa.connection.read();
-    if (record?.mode === "embedded" && !mark.signed) return failure(res, 401, "whatsapp-hook-signature", "Meta imzası doğrulanmadı.");
     const body = await readBody(req, maxBytes);
     if (!body) return failure(res, 413, "whatsapp-hook-large", "İstek çok büyük.");
     let payload;
@@ -87,16 +77,60 @@ export function createWhatsappHook({ registry, companyOf, appFor, verifyMark = (
     } catch {
       return failure(res, 400, "whatsapp-hook-json", "İstek okunamadı.");
     }
+    const signed = mark.signed === true;
+    hooks.hookSeen?.(hook.wabaId, now().toISOString());
+    // Durumlar şirkete göre toplanır (wamid → kabulü yazan şirket; imzalı olayda iş kimliği → talebi yazan şirket). Aynı WABA'nın olayı değilse düşer.
+    const groups = new Map(); // şirket → [{ phoneNumberId, statuses[] }]
     const out = { applied: 0, ignored: 0, unknown: 0 };
-    if (wa.queue) {
-      for (const entry of Array.isArray(payload?.entry) ? payload.entry : []) {
-        for (const change of Array.isArray(entry?.changes) ? entry.changes : []) {
-          if (change?.field !== META_D0.hookEnvelope.field || !Array.isArray(change?.value?.statuses)) continue; // D0-18
-          const result = wa.queue.applyStatuses(change.value.statuses, { phoneNumberId: String(change.value.metadata?.phone_number_id || ""), signed: mark.signed === true });
-          for (const key of Object.keys(out)) out[key] += result[key] || 0;
+    for (const entry of Array.isArray(payload?.entry) ? payload.entry : []) {
+      for (const change of Array.isArray(entry?.changes) ? entry.changes : []) {
+        if (change?.field !== META_D0.hookEnvelope.field || !Array.isArray(change?.value?.statuses)) continue; // D0-18
+        const phoneNumberId = String(change.value.metadata?.phone_number_id || "");
+        for (const status of change.value.statuses) {
+          const owner = hooks.companyOfWamid(String(status?.id || "").slice(0, 200)) || (signed ? hooks.companyOfJob(String(status?.biz_opaque_callback_data || "").slice(0, 120)) : null);
+          if (!owner || owner.wabaId !== hook.wabaId) {
+            out.unknown += 1;
+            continue;
+          }
+          const list = groups.get(owner.companyId) || [];
+          list.push({ phoneNumberId, status });
+          groups.set(owner.companyId, list);
         }
       }
     }
+    let unsigned = 0;
+    for (const [companyId, items] of groups) {
+      const company = companyOf(companyId);
+      if (!company) {
+        out.unknown += items.length;
+        continue;
+      }
+      let app;
+      try {
+        app = appFor(company);
+      } catch (error) {
+        // Geri yükleme / silme sürüyor: Meta bildirimi yeniden dener (200 dışı yanıtta 7 güne kadar; uygulanmış olanlar yinelenince etkisizdir).
+        return failure(res, error?.status === 503 ? 503 : 500, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
+      }
+      const wa = app?.context?.whatsapp;
+      const record = wa?.connection?.read?.();
+      if (!wa?.queue || !record || record.wabaId !== hook.wabaId) {
+        out.ignored += items.length;
+        continue;
+      }
+      if (record.mode === "embedded" && !signed) {
+        unsigned += items.length;
+        continue;
+      }
+      const byPhone = new Map();
+      for (const item of items) byPhone.set(item.phoneNumberId, [...(byPhone.get(item.phoneNumberId) || []), item.status]);
+      for (const [phoneNumberId, statuses] of byPhone) {
+        const result = wa.queue.applyStatuses(statuses, { phoneNumberId, signed });
+        for (const key of Object.keys(out)) out[key] += result[key] || 0;
+      }
+    }
+    // Yol 2 bağlantısında imzasız bildirim yazılmaz; hiçbir şey yazılmadıysa 401 (kapıcı imzayı doğrulamadı).
+    if (unsigned && !out.applied) return failure(res, 401, "whatsapp-hook-signature", "Meta imzası doğrulanmadı.");
     if (out.applied || out.unknown) log.info?.(`WhatsApp durum bildirimi: ${out.applied} yazıldı, ${out.unknown} tanınmadı, ${out.ignored} değişmedi.`);
     return reply(res, 200, { ok: true });
   }

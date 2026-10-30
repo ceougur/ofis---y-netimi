@@ -83,6 +83,9 @@ export const META_D0 = Object.freeze({
   // anahtar müşterinin uygulamasınındır (programda yok); kapıcı yalnız DestekOfis uygulamasının (Yol 2) imzasını denetleyebilir (plan §3 C).
   // D0-17: Abonelik (POST /<WABA_ID>/subscribed_apps { override_callback_uri, verify_token }) yanıtı { success: true }; adres doğrulaması GET
   // ?hub.mode=subscribe&hub.verify_token=…&hub.challenge=… ile gelir, yanıt challenge'ın kendisi (düz metin, 200).
+  // D0-17b (T2-3/4): Meta'da alternatif adres WABA + uygulama başına TEKTİR (son kayıt geçerli); kayıtlı adres GET /<WABA_ID>/subscribed_apps yanıtındaki
+  // override_callback_uri'dir (webhooks/override). Yol 1'de (müşterinin kendi uygulaması, System User belirteci) listede o uygulamanın tek satırı olduğu varsayılır;
+  // birden çok uygulama varsa programın adresi herhangi bir satırda aranır. Telefon numarası düzeyindeki alternatif adres (webhook_configuration) KULLANILMAZ.
   // D0-18 (W9): Kanca gövdesinin zarfı { object: "whatsapp_business_account", entry: [{ id: <WABA>, changes: [{ field: "messages", value: { messaging_product,
   // metadata: { display_phone_number, phone_number_id }, statuses[] | messages[] } }] }] } (webhooks/reference/messages); bir istekte birden çok entry/change
   // olabilir; durum dışı olaylar (gelen ileti, şablon/hesap) aynı uca gelir ve 200 ile kabul edilir. Gövde boyutu için Meta sınırı belgede bulunmadı (programda
@@ -341,6 +344,12 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     subscribeApp: async (wabaId, { callbackUri, verifyToken }) => {
       const json = await request("POST", [wabaId, "subscribed_apps"], { body: { override_callback_uri: callbackUri, verify_token: verifyToken } });
       return json.success === true || json.success === "true";
+    },
+    // T2-3/4 (D0-17b): Meta'da KAYITLI adres — GET /<WABA_ID>/subscribed_apps → { data: [{ whatsapp_business_api_data: { id, link, name }, override_callback_uri? }] }
+    // (webhooks/override "Get Messaging account alternate callback" örnek yanıtı). Alternatif adres yoksa alan gelmez. Dönüş: [{ appId, overrideUri }].
+    subscribedApps: async wabaId => {
+      const json = await request("GET", [wabaId, "subscribed_apps"]);
+      return (Array.isArray(json.data) ? json.data : []).map(item => ({ appId: String(item?.whatsapp_business_api_data?.id || ""), overrideUri: typeof item?.override_callback_uri === "string" ? item.override_callback_uri : "" }));
     },
     // ---------- 2.4.8 W7: "WhatsApp'ı Bağla" sonrası Meta adımları (plan §2.8; D0 — META_D0_W7) ----------
     // Birlikte kullanım DEĞİLSE numara Cloud API'ye kaydedilir (iki adımlı doğrulama PIN'i programca üretilir).

@@ -170,10 +170,12 @@ describe("2.4.8 W9 — kanca adresinin kaydı ve doğrulaması (Meta → kapıc�
       const secret = ctx.secret();
       const token = ctx.verifyToken();
       assert.ok(!JSON.stringify(view).includes(secret) && !JSON.stringify(view).includes(token), "görünümde gizli yol / belirteç yok");
-      // Kayıtlı ve etkin: sonraki turlarda Meta'ya yeniden gitmez.
+      // Kayıtlı ve etkin: sonraki turlarda Meta'ya yeniden KAYDEDİLMEZ. T2-3/4: bakım turu saatte en çok bir kez Meta'daki kayıtlı adresi OKUR (GET) ve
+      // programınkiyle aynı görünce dokunmaz (beklenti 2.4.8 T2'de bilerek güncellendi: önceden okuma yoktu).
       ctx.clock.advance(2 * HOUR);
       await ctx.drain();
-      assert.equal(ctx.fake.requests.filter(item => item.path.endsWith("/subscribed_apps")).length, 2);
+      assert.equal(ctx.fake.requests.filter(item => item.method === "POST" && item.path.endsWith("/subscribed_apps")).length, 2);
+      assert.equal(ctx.fake.requests.filter(item => item.method === "GET" && item.path.endsWith("/subscribed_apps")).length, 1, "Meta'daki adres bir kez okundu");
       // GET doğrulaması.
       const ok = await ctx.meta("GET", `/wa/kanca/${secret}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(token)}&hub.challenge=1158201444`);
       assert.equal(ok.status, 200, ok.text);

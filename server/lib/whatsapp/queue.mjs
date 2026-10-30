@@ -1024,7 +1024,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const { ttlHours } = settings();
     const out = { expired: 0, mediaDeleted: 0, mediaFailed: 0 };
     // Bildirim yolu çalışıyorsa (son 7 günde bu şirkete en az bir durum bildirimi geldi) teslim edilmeyen ileti TTL + 1 saatte "Süresi Doldu"; yoksa "Meta Kabul Etti"de kalır.
-    const seen = Date.parse(store.setting(HOOK_SEEN_KEY, "") || "");
+    // T2-3/4: bildirim yolu WABA düzeyinde (makine defteri hook_seen; aynı WABA'yı kullanan şirketlerin hepsi için) ya da bu şirketin son bildirimi.
+    const seenWaba = Date.parse(ledger.hookSeenAt?.(connection.read()?.wabaId || "") || "");
+    const seenHere = Date.parse(store.setting(HOOK_SEEN_KEY, "") || "");
+    const seen = Math.max(Number.isFinite(seenWaba) ? seenWaba : -Infinity, Number.isFinite(seenHere) ? seenHere : -Infinity);
     if (Number.isFinite(seen) && nowMs() - seen <= HOOK_ALIVE_MS) {
       const ttlLimit = iso(nowMs() - (ttlHours + 1) * HOUR);
       for (const row of store.all("SELECT id FROM wa_jobs WHERE state IN ('accepted', 'sent') AND accepted_at IS NOT NULL AND accepted_at < ?", ttlLimit)) {
