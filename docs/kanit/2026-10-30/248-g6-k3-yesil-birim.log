@@ -1,0 +1,405 @@
+TAP version 13
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 2.917687
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.566047
+      type: 'test'
+      ...
+    1..2
+ok 1 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 4.856513
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 1.586528
+      type: 'test'
+      ...
+    1..1
+ok 2 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 1.795787
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 3.502996
+      type: 'test'
+      ...
+    1..1
+ok 3 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 3.689507
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.738063
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 151.435007
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 218.270619
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 164.607062
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 384.823606
+      type: 'test'
+      ...
+    1..5
+ok 4 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 921.104677
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 61.281085
+      type: 'test'
+      ...
+    1..1
+ok 5 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 61.532213
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — Meta istemcisi
+    # Subtest: istek: sürüm sabiti + belirteç yalnız başlıkta; adres sorgusunda ve gövdede yok; yönlendirme izlenmez (manual)
+    ok 1 - istek: sürüm sabiti + belirteç yalnız başlıkta; adres sorgusunda ve gövdede yok; yönlendirme izlenmez (manual)
+      ---
+      duration_ms: 35.280989
+      type: 'test'
+      ...
+    # Subtest: belirteç açılamazsa (boş) ve kimlik adres karakteri taşırsa istek yapılmaz
+    ok 2 - belirteç açılamazsa (boş) ve kimlik adres karakteri taşırsa istek yapılmaz
+      ---
+      duration_ms: 1.654794
+      type: 'test'
+      ...
+    # Subtest: Meta hata gövdesi: Türkçe başlık + kod + yeniden deneme sınıfı; Meta metni belirteci yankılasa da iletide yok
+    ok 3 - Meta hata gövdesi: Türkçe başlık + kod + yeniden deneme sınıfı; Meta metni belirteci yankılasa da iletide yok
+      ---
+      duration_ms: 1.898811
+      type: 'test'
+      ...
+    # Subtest: ağ hatası, zaman aşımı, gövdesiz 5xx, 3xx yönlendirme → sonuç bilinmiyor (retry unknown)
+    ok 4 - ağ hatası, zaman aşımı, gövdesiz 5xx, 3xx yönlendirme → sonuç bilinmiyor (retry unknown)
+      ---
+      duration_ms: 86.552638
+      type: 'test'
+      ...
+    # Subtest: sayfalama: `after` imleciyle yapılandırılmış adrese; yanıttaki mutlak paging.next adresine gidilmez; en çok 3 sayfa
+    ok 5 - sayfalama: `after` imleciyle yapılandırılmış adrese; yanıttaki mutlak paging.next adresine gidilmez; en çok 3 sayfa
+      ---
+      duration_ms: 6.893409
+      type: 'test'
+      ...
+    # Subtest: hata sınıfları (plan §6 W2) ve sınır basamağı / kalite metinleri
+    ok 6 - hata sınıfları (plan §6 W2) ve sınır basamağı / kalite metinleri
+      ---
+      duration_ms: 17.499073
+      type: 'test'
+      ...
+    1..6
+ok 6 - 2.4.8 W1 — Meta istemcisi
+  ---
+  duration_ms: 151.704347
+  type: 'suite'
+  ...
+# Subtest: yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+ok 7 - yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+  ---
+  duration_ms: 101.987802
+  type: 'test'
+  ...
+# Subtest: Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz
+ok 8 - Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz
+  ---
+  duration_ms: 1.642458
+  type: 'test'
+  ...
+# Subtest: kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+ok 9 - kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+  ---
+  duration_ms: 169.849511
+  type: 'test'
+  ...
+# Subtest: ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez
+ok 10 - ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez
+  ---
+  duration_ms: 905.150598
+  type: 'test'
+  ...
+# Subtest: 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+    # Subtest: bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+    ok 1 - bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+      ---
+      duration_ms: 448.374395
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+    ok 2 - Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+      ---
+      duration_ms: 21.662077
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+    ok 3 - Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+      ---
+      duration_ms: 10.27951
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+    ok 4 - Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+      ---
+      duration_ms: 20.41446
+      type: 'test'
+      ...
+    # Subtest: Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+    ok 5 - Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+      ---
+      duration_ms: 3364.892714
+      type: 'test'
+      ...
+    # Subtest: Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+    ok 6 - Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+      ---
+      duration_ms: 42.66447
+      type: 'test'
+      ...
+    # Subtest: gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+    ok 7 - gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+      ---
+      duration_ms: 116.972731
+      type: 'test'
+      ...
+    # Subtest: iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+    ok 8 - iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+      ---
+      duration_ms: 334.464244
+      type: 'test'
+      ...
+    # Subtest: yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+    ok 9 - yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+      ---
+      duration_ms: 54.748085
+      type: 'test'
+      ...
+    # Subtest: belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+    ok 10 - belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+      ---
+      duration_ms: 132.301876
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+    ok 11 - Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+      ---
+      duration_ms: 42.758062
+      type: 'test'
+      ...
+    1..11
+ok 11 - 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+  ---
+  duration_ms: 5042.185021
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+    # Subtest: salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+    ok 1 - salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+      ---
+      duration_ms: 465.533508
+      type: 'test'
+      ...
+    # Subtest: Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+    ok 2 - Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+      ---
+      duration_ms: 338.175409
+      type: 'test'
+      ...
+    1..2
+ok 12 - 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+  ---
+  duration_ms: 804.182504
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W5 — WhatsApp bilgilendirme şablonları
+    # Subtest: şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+    ok 1 - şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+      ---
+      duration_ms: 14.883941
+      type: 'test'
+      ...
+    # Subtest: bağlantı yokken denetim 409, Meta'ya istek yok; yetkisiz kullanıcı GET / POST 403
+    ok 2 - bağlantı yokken denetim 409, Meta'ya istek yok; yetkisiz kullanıcı GET / POST 403
+      ---
+      duration_ms: 123.346975
+      type: 'test'
+      ...
+    # Subtest: App ID yokken: Ödeme Hatırlatma açılır (UTILITY, plandaki gövde, örnek değerler); Ekstre açılmaz, nedeni Uygulama Kimliği; yükleme yok
+    ok 3 - App ID yokken: Ödeme Hatırlatma açılır (UTILITY, plandaki gövde, örnek değerler); Ekstre açılmaz, nedeni Uygulama Kimliği; yükleme yok
+      ---
+      duration_ms: 28.726947
+      type: 'test'
+      ...
+    # Subtest: App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denetim yeni şablon açmaz
+    ok 4 - App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denetim yeni şablon açmaz
+      ---
+      duration_ms: 45.443651
+      type: 'test'
+      ...
+    # Subtest: durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içeriği değiştirilmiş
+    ok 5 - durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içeriği değiştirilmiş
+      ---
+      duration_ms: 24.329586
+      type: 'test'
+      ...
+    # Subtest: GET görünümü Meta'ya gitmez ve son denetimi gösterir; başka WABA'ya geçince eski sonuç bayat sayılır (Denetlenmedi)
+    ok 6 - GET görünümü Meta'ya gitmez ve son denetimi gösterir; başka WABA'ya geçince eski sonuç bayat sayılır (Denetlenmedi)
+      ---
+      duration_ms: 20.923908
+      type: 'test'
+      ...
+    # Subtest: Meta ayrıntı alanlarını tanımazsa (100) temel alanlarla bir kez yeniden okunur; listede görünmeyen şablon için 2388024 'zaten var' sayılır
+    ok 7 - Meta ayrıntı alanlarını tanımazsa (100) temel alanlarla bir kez yeniden okunur; listede görünmeyen şablon için 2388024 'zaten var' sayılır
+      ---
+      duration_ms: 38.274826
+      type: 'test'
+      ...
+    # Subtest: Meta belirteci reddederse 502 + Türkçe neden, son hata kaydedilir; yanıtta / kayıtta / işlem geçmişinde / günlükte belirteç yok
+    ok 8 - Meta belirteci reddederse 502 + Türkçe neden, son hata kaydedilir; yanıtta / kayıtta / işlem geçmişinde / günlükte belirteç yok
+      ---
+      duration_ms: 8.624044
+      type: 'test'
+      ...
+    # Subtest: Meta istemcisi kampanya / pazarlama şablonu açmaz: kategori UTILITY değilse istek gönderilmez
+    ok 9 - Meta istemcisi kampanya / pazarlama şablonu açmaz: kategori UTILITY değilse istek gönderilmez
+      ---
+      duration_ms: 1.534086
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: görünüm okunur, denetim 403 LICENSE_READ_ONLY, Meta'ya istek yok
+    ok 10 - salt okunur lisans: görünüm okunur, denetim 403 LICENSE_READ_ONLY, Meta'ya istek yok
+      ---
+      duration_ms: 483.493689
+      type: 'test'
+      ...
+    1..10
+ok 13 - 2.4.8 W5 — WhatsApp bilgilendirme şablonları
+  ---
+  duration_ms: 1309.694137
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W6 — Aydınlatma Metni Hazırla
+    # Subtest: firma bilgisi eksikken: eksikler adıyla, metinde köşeli ayraçlı yer tutucu; 'undefined' / 'null' yok
+    ok 1 - firma bilgisi eksikken: eksikler adıyla, metinde köşeli ayraçlı yer tutucu; 'undefined' / 'null' yok
+      ---
+      duration_ms: 17.422497
+      type: 'test'
+      ...
+    # Subtest: firma bilgileriyle: KVKK md. 10 öğeleri, md. 11'in dokuz bendi, Meta + yurt dışı (md. 9), veri işleyen, 30 gün; eksik yok
+    ok 2 - firma bilgileriyle: KVKK md. 10 öğeleri, md. 11'in dokuz bendi, Meta + yurt dışı (md. 9), veri işleyen, 30 gün; eksik yok
+      ---
+      duration_ms: 24.671219
+      type: 'test'
+      ...
+    # Subtest: PDF: indirme, application/pdf, dosya adı firma adıyla; metin PDF'te de aynı (başlık, firma, md. 9, ğ bendi, sayfa numarası)
+    ok 3 - PDF: indirme, application/pdf, dosya adı firma adıyla; metin PDF'te de aynı (başlık, firma, md. 9, ğ bendi, sayfa numarası)
+      ---
+      duration_ms: 55.264951
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı (Personel) metni ve PDF'i alamaz (403)
+    ok 4 - yetkisiz kullanıcı (Personel) metni ve PDF'i alamaz (403)
+      ---
+      duration_ms: 137.570829
+      type: 'test'
+      ...
+    1..4
+ok 14 - 2.4.8 W6 — Aydınlatma Metni Hazırla
+  ---
+  duration_ms: 734.833787
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 88.031448
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.670855
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.594695
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 5.508477
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 4.892664
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 55.27602
+      type: 'test'
+      ...
+    1..6
+ok 15 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 163.74082
+  type: 'suite'
+  ...
+1..15
+# tests 53
+# suites 11
+# pass 53
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6570.60017

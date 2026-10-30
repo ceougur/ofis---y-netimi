@@ -1,0 +1,1091 @@
+TAP version 13
+# Subtest: teslimNumarasi: + varsa yalnız rakamlar; + yoksa işletme ülke kodu başa eklenir (belge tablosu)
+ok 1 - teslimNumarasi: + varsa yalnız rakamlar; + yoksa işletme ülke kodu başa eklenir (belge tablosu)
+  ---
+  duration_ms: 1.426222
+  type: 'test'
+  ...
+# Subtest: değişken ayrıştırma ve hata gövdesi biçimi (belge 'Error response syntax')
+ok 2 - değişken ayrıştırma ve hata gövdesi biçimi (belge 'Error response syntax')
+  ---
+  duration_ms: 1.432413
+  type: 'test'
+  ...
+# Subtest: ekstre şablonu + belge başlığı (medya id) kabul edilir; yanıt contacts/messages, kayıt değişkenleri tutar
+ok 3 - ekstre şablonu + belge başlığı (medya id) kabul edilir; yanıt contacts/messages, kayıt değişkenleri tutar
+  ---
+  duration_ms: 80.443173
+  type: 'test'
+  ...
+# Subtest: şablon yok / PENDING → 132001, PAUSED → 132015, DISABLED → 132016; değişken sayısı → 132000
+ok 4 - şablon yok / PENDING → 132001, PAUSED → 132015, DISABLED → 132016; değişken sayısı → 132000
+  ---
+  duration_ms: 48.06013
+  type: 'test'
+  ...
+# Subtest: D0 değişken kuralı: satır sonu / sekme / 5+ ardışık boşluk → 132018; boşluklu tek satır kabul
+ok 5 - D0 değişken kuralı: satır sonu / sekme / 5+ ardışık boşluk → 132018; boşluklu tek satır kabul
+  ---
+  duration_ms: 21.537295
+  type: 'test'
+  ...
+# Subtest: silinmiş ya da 30 günü geçmiş medya kimliğiyle gönderim reddedilir (D0: 131053) ve ayrıca kaydedilir
+ok 6 - silinmiş ya da 30 günü geçmiş medya kimliğiyle gönderim reddedilir (D0: 131053) ve ayrıca kaydedilir
+  ---
+  duration_ms: 34.263058
+  type: 'test'
+  ...
+# Subtest: + olmadan gönderim: işletme numarasının ülke kodu eklenir (yanlış kişi riski kayıtta görünür)
+ok 7 - + olmadan gönderim: işletme numarasının ülke kodu eklenir (yanlış kişi riski kayıtta görünür)
+  ---
+  duration_ms: 8.457546
+  type: 'test'
+  ...
+# Subtest: gönderen = alıcı → 131021; şablonsuz ileti müşteri hizmeti penceresi dışında → 131047
+ok 8 - gönderen = alıcı → 131021; şablonsuz ileti müşteri hizmeti penceresi dışında → 131047
+  ---
+  duration_ms: 11.722141
+  type: 'test'
+  ...
+# Subtest: hesap/numara: kayıtsız 133010, bakım 131057, ödeme yöntemi yok 131042, kısıtlı 368
+ok 9 - hesap/numara: kayıtsız 133010, bakım 131057, ödeme yöntemi yok 131042, kısıtlı 368
+  ---
+  duration_ms: 18.105873
+  type: 'test'
+  ...
+# Subtest: belirteç: yok (POST) 190, süresi dolmuş 190/401, iptal 0, ileti izni yok 10, varlık erişimi yok 200/403
+ok 10 - belirteç: yok (POST) 190, süresi dolmuş 190/401, iptal 0, ileti izni yok 10, varlık erişimi yok 200/403
+  ---
+  duration_ms: 24.997857
+  type: 'test'
+  ...
+# Subtest: kural: 1. denemede 131000, 2. denemede kabul; sayılar her denemeyi tutar
+ok 11 - kural: 1. denemede 131000, 2. denemede kabul; sayılar her denemeyi tutar
+  ---
+  duration_ms: 16.11989
+  type: 'test'
+  ...
+# Subtest: kural koptu:'sonra' → ileti KABUL edildi ama yanıt gelmez (çift gönderim tuzağı); 'once' → kabul yok
+ok 12 - kural koptu:'sonra' → ileti KABUL edildi ama yanıt gelmez (çift gönderim tuzağı); 'once' → kabul yok
+  ---
+  duration_ms: 10.626323
+  type: 'test'
+  ...
+# Subtest: kural: gövdesiz 5xx (işlendi / işlenmedi), gecikme (istemci zaman aşımı, ileti yine kabul), bozuk yanıt
+ok 13 - kural: gövdesiz 5xx (işlendi / işlenmedi), gecikme (istemci zaman aşımı, ileti yine kabul), bozuk yanıt
+  ---
+  duration_ms: 613.549996
+  type: 'test'
+  ...
+# Subtest: hız: numara başına mps aşılınca 130429 (belge: throughput)
+ok 14 - hız: numara başına mps aşılınca 130429 (belge: throughput)
+  ---
+  duration_ms: 19.46878
+  type: 'test'
+  ...
+# Subtest: gönderim sınırı (D0 kodu): kayan 24 saatte FARKLI alıcı; aynı alıcıya yeniden yer tutmaz; 24 sa sonra açılır
+ok 15 - gönderim sınırı (D0 kodu): kayan 24 saatte FARKLI alıcı; aynı alıcıya yeniden yer tutmaz; 24 sa sonra açılır
+  ---
+  duration_ms: 19.797661
+  type: 'test'
+  ...
+# Subtest: medya: PDF dışı içerik application/pdf → 131053; desteklenmeyen tür → 131053; messaging_product yok → 100; dosya yok → 131008
+ok 16 - medya: PDF dışı içerik application/pdf → 131053; desteklenmeyen tür → 131053; messaging_product yok → 100; dosya yok → 131008
+  ---
+  duration_ms: 19.923642
+  type: 'test'
+  ...
+# Subtest: medya GET (url/mime/sha256/boyut), indirme belirteç ister, DELETE success, ikinci DELETE ve süresi dolmuş GET hata
+ok 17 - medya GET (url/mime/sha256/boyut), indirme belirteç ister, DELETE success, ikinci DELETE ve süresi dolmuş GET hata
+  ---
+  duration_ms: 32.759378
+  type: 'test'
+  ...
+# Subtest: şablon oluşturma: ad kuralı 100, aynı ad+dil 100/2388024, alt satır > 60 → 2388040, sondaki değişken 2388299
+ok 18 - şablon oluşturma: ad kuralı 100, aynı ad+dil 100/2388024, alt satır > 60 → 2388040, sondaki değişken 2388299
+  ---
+  duration_ms: 44.107701
+  type: 'test'
+  ...
+# Subtest: belge başlıklı şablon: Resumable Upload tutamağı şart (D0 akışı); Meta UTILITY isteneni MARKETING onaylayabilir
+ok 19 - belge başlıklı şablon: Resumable Upload tutamağı şart (D0 akışı); Meta UTILITY isteneni MARKETING onaylayabilir
+  ---
+  duration_ms: 10.902727
+  type: 'test'
+  ...
+# Subtest: şablon listesi: fields + status süzgeci, quality_score {score,date}, sayfalama
+ok 20 - şablon listesi: fields + status süzgeci, quality_score {score,date}, sayfalama
+  ---
+  duration_ms: 12.772524
+  type: 'test'
+  ...
+# Subtest: şablon silme: ada göre; onaylı silinen ad 30 gün açılamaz (D0 kod); DISABLED silinemez; düzenleme sınırları
+ok 21 - şablon silme: ada göre; onaylı silinen ad 30 gün açılamaz (D0 kod); DISABLED silinemez; düzenleme sınırları
+  ---
+  duration_ms: 21.352565
+  type: 'test'
+  ...
+# Subtest: numara: whatsapp_business_manager_messaging_limit TIER_250; messaging_limit_tier reddedilir (kaldırıldı); webhook_configuration
+ok 22 - numara: whatsapp_business_manager_messaging_limit TIER_250; messaging_limit_tier reddedilir (kaldırıldı); webhook_configuration
+  ---
+  duration_ms: 17.392994
+  type: 'test'
+  ...
+# Subtest: subscribed_apps: override ≤ 200 karakter + verify_token; GET override_callback_uri gösterir; gövdesiz POST override'ı kaldırır
+ok 23 - subscribed_apps: override ≤ 200 karakter + verify_token; GET override_callback_uri gösterir; gövdesiz POST override'ı kaldırır
+  ---
+  duration_ms: 16.947438
+  type: 'test'
+  ...
+# Subtest: register: 72 saatte 10 deneme, 11. → 133016; yanlış PIN 133005; birlikte kullanımda deregister reddi (D0)
+ok 24 - register: 72 saatte 10 deneme, 11. → 133016; yanlış PIN 133005; birlikte kullanımda deregister reddi (D0)
+  ---
+  duration_ms: 24.514778
+  type: 'test'
+  ...
+# Subtest: oauth/access_token: kod → iş belirteci; ikinci kullanım ve 30 sn sonrası ret; yanlış gizli anahtar ret
+ok 25 - oauth/access_token: kod → iş belirteci; ikinci kullanım ve 30 sn sonrası ret; yanlış gizli anahtar ret
+  ---
+  duration_ms: 9.747486
+  type: 'test'
+  ...
+# Subtest: kanca gövdesi belge biçiminde: sent (fiyatsız) → delivered (pricing utility/regular) → read (fiyatsız); opaque geri gelir; imza (D0)
+ok 26 - kanca gövdesi belge biçiminde: sent (fiyatsız) → delivered (pricing utility/regular) → read (fiyatsız); opaque geri gelir; imza (D0)
+  ---
+  duration_ms: 24.100111
+  type: 'test'
+  ...
+# Subtest: kanca: failed + errors[] (131026), yinelenen olay (tekrar), sahte/bilinmeyen wamid ham gönderimi
+ok 27 - kanca: failed + errors[] (131026), yinelenen olay (tekrar), sahte/bilinmeyen wamid ham gönderimi
+  ---
+  duration_ms: 17.25201
+  type: 'test'
+  ...
+# Subtest: kanca 200 dışı → Meta kuyruğu; sonraki işlemede teslim; 7 günü geçen düşer (belge: 7 güne kadar yeniden deneme)
+ok 28 - kanca 200 dışı → Meta kuyruğu; sonraki işlemede teslim; 7 günü geçen düşer (belge: 7 güne kadar yeniden deneme)
+  ---
+  duration_ms: 15.140297
+  type: 'test'
+  ...
+# Subtest: kanca doğrulama GET (D0): hub.mode/hub.verify_token/hub.challenge; alıcı challenge'ı dönerse geçti
+ok 29 - kanca doğrulama GET (D0): hub.mode/hub.verify_token/hub.challenge; alıcı challenge'ı dönerse geçti
+  ---
+  duration_ms: 7.18759
+  type: 'test'
+  ...
+# Subtest: WhatsApp kullanmayan alıcı: ileti KABUL edilir, failed 131026 kancası kendiliğinden gelir (plan §2.7 D0: teslim hatası kancada)
+ok 30 - WhatsApp kullanmayan alıcı: ileti KABUL edilir, failed 131026 kancası kendiliğinden gelir (plan §2.7 D0: teslim hatası kancada)
+  ---
+  duration_ms: 23.530831
+  type: 'test'
+  ...
+# Subtest: belirteç sızıntısı: belirteç gövdede/sorguda görülürse kayda düşer (Authorization başlığı sayılmaz)
+ok 31 - belirteç sızıntısı: belirteç gövdede/sorguda görülürse kayda düşer (Authorization başlığı sayılmaz)
+  ---
+  duration_ms: 8.034642
+  type: 'test'
+  ...
+# Subtest: sürüm: sürümsüz yol çalışır; kaldırılmış sürüm reddedilir (D0)
+ok 32 - sürüm: sürümsüz yol çalışır; kaldırılmış sürüm reddedilir (D0)
+  ---
+  duration_ms: 4.567067
+  type: 'test'
+  ...
+# Subtest: denetim uçları HTTP üzerinden: /__sahte/kural, /__sahte/saat, /__sahte/sablon, /__sahte/kayit
+ok 33 - denetim uçları HTTP üzerinden: /__sahte/kural, /__sahte/saat, /__sahte/sablon, /__sahte/kayit
+  ---
+  duration_ms: 21.25891
+  type: 'test'
+  ...
+# Subtest: durumGovdesi saf: birden çok durum tek gövdede (Meta toplu teslim edebilir)
+ok 34 - durumGovdesi saf: birden çok durum tek gövdede (Meta toplu teslim edebilir)
+  ---
+  duration_ms: 0.388024
+  type: 'test'
+  ...
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 2.008595
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.435116
+      type: 'test'
+      ...
+    1..2
+ok 35 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 3.541818
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 1.583153
+      type: 'test'
+      ...
+    1..1
+ok 36 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 1.726569
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 3.160695
+      type: 'test'
+      ...
+    1..1
+ok 37 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 3.33973
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: özet satırları
+    # Subtest: node:test TAP ve spec biçimleri; son özet alınır
+    ok 1 - node:test TAP ve spec biçimleri; son özet alınır
+      ---
+      duration_ms: 12.838516
+      type: 'test'
+      ...
+    # Subtest: projedeki arayüz senaryosu biçimleri
+    ok 2 - projedeki arayüz senaryosu biçimleri
+      ---
+      duration_ms: 1.950026
+      type: 'test'
+      ...
+    # Subtest: mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+    ok 3 - mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+      ---
+      duration_ms: 0.527483
+      type: 'test'
+      ...
+    # Subtest: defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+    ok 4 - defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+      ---
+      duration_ms: 0.619426
+      type: 'test'
+      ...
+    # Subtest: tanınmayan ya da boş çıktı özet sayılmaz
+    ok 5 - tanınmayan ya da boş çıktı özet sayılmaz
+      ---
+      duration_ms: 0.244698
+      type: 'test'
+      ...
+    1..5
+ok 38 - kanıt aracı: özet satırları
+  ---
+  duration_ms: 19.972377
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: hüküm
+    # Subtest: GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+    ok 1 - GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+      ---
+      duration_ms: 0.492483
+      type: 'test'
+      ...
+    # Subtest: çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+    ok 2 - çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+      ---
+      duration_ms: 2.728919
+      type: 'test'
+      ...
+    # Subtest: başarısız, yarıda, başlatılamayan
+    ok 3 - başarısız, yarıda, başlatılamayan
+      ---
+      duration_ms: 0.404559
+      type: 'test'
+      ...
+    1..3
+ok 39 - kanıt aracı: hüküm
+  ---
+  duration_ms: 3.911303
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+    # Subtest: Linux/macOS: komut olduğu gibi
+    ok 1 - Linux/macOS: komut olduğu gibi
+      ---
+      duration_ms: 0.508355
+      type: 'test'
+      ...
+    # Subtest: Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+    ok 2 - Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+      ---
+      duration_ms: 9.283292
+      type: 'test'
+      ...
+    # Subtest: gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+    ok 3 - gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+      ---
+      duration_ms: 232.314395
+      type: 'test'
+      ...
+    1..3
+ok 40 - kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+  ---
+  duration_ms: 242.389353
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: gerçek koşu kaydı
+    # Subtest: alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+    ok 1 - alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+      ---
+      duration_ms: 164.712318
+      type: 'test'
+      ...
+    # Subtest: geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+    ok 2 - geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+      ---
+      duration_ms: 145.785569
+      type: 'test'
+      ...
+    # Subtest: özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+    ok 3 - özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+      ---
+      duration_ms: 146.876318
+      type: 'test'
+      ...
+    # Subtest: özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+    ok 4 - özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+      ---
+      duration_ms: 331.929359
+      type: 'test'
+      ...
+    # Subtest: kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+    ok 5 - kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+      ---
+      duration_ms: 220.770474
+      type: 'test'
+      ...
+    1..5
+ok 41 - kanıt aracı: gerçek koşu kaydı
+  ---
+  duration_ms: 1010.540426
+  type: 'suite'
+  ...
+# Subtest: yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+    # Subtest: yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+    ok 1 - yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+      ---
+      duration_ms: 1.291103
+      type: 'test'
+      ...
+    # Subtest: ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+    ok 2 - ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+      ---
+      duration_ms: 0.292334
+      type: 'test'
+      ...
+    # Subtest: kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+    ok 3 - kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+      ---
+      duration_ms: 0.180208
+      type: 'test'
+      ...
+    # Subtest: testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+    ok 4 - testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+      ---
+      duration_ms: 0.193695
+      type: 'test'
+      ...
+    # Subtest: ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+    ok 5 - ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+      ---
+      duration_ms: 1.790415
+      type: 'test'
+      ...
+    1..5
+ok 42 - yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+  ---
+  duration_ms: 4.137685
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+    # Subtest: bütün işler başarılı ve kapı işi var → YEŞİL
+    ok 1 - bütün işler başarılı ve kapı işi var → YEŞİL
+      ---
+      duration_ms: 0.353232
+      type: 'test'
+      ...
+    # Subtest: Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+    ok 2 - Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+      ---
+      duration_ms: 0.32691
+      type: 'test'
+      ...
+    # Subtest: atlanan iş yeşil sayılmaz
+    ok 3 - atlanan iş yeşil sayılmaz
+      ---
+      duration_ms: 0.282916
+      type: 'test'
+      ...
+    # Subtest: kapı işi olmayan (eski) commit YEŞİL değil
+    ok 4 - kapı işi olmayan (eski) commit YEŞİL değil
+      ---
+      duration_ms: 0.154098
+      type: 'test'
+      ...
+    # Subtest: koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+    ok 5 - koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+      ---
+      duration_ms: 0.144786
+      type: 'test'
+      ...
+    # Subtest: aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+    ok 6 - aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+      ---
+      duration_ms: 0.1739
+      type: 'test'
+      ...
+    # Subtest: başka iş akışlarının koşuları (ör. yayın) hükme girmez
+    ok 7 - başka iş akışlarının koşuları (ör. yayın) hükme girmez
+      ---
+      duration_ms: 0.140557
+      type: 'test'
+      ...
+    # Subtest: GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+    ok 8 - GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+      ---
+      duration_ms: 0.225138
+      type: 'test'
+      ...
+    1..8
+ok 43 - doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+  ---
+  duration_ms: 2.040126
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI'deki kapı işinin hükmü
+    # Subtest: dört platform + e2e, aynı sayı, bu commit → geçer
+    ok 1 - dört platform + e2e, aynı sayı, bu commit → geçer
+      ---
+      duration_ms: 0.476412
+      type: 'test'
+      ...
+    # Subtest: Windows kaydı yoksa geçmez
+    ok 2 - Windows kaydı yoksa geçmez
+      ---
+      duration_ms: 0.137615
+      type: 'test'
+      ...
+    # Subtest: çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+    ok 3 - çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+      ---
+      duration_ms: 0.321426
+      type: 'test'
+      ...
+    # Subtest: Windows Linux'tan az test koştuysa geçmez
+    ok 4 - Windows Linux'tan az test koştuysa geçmez
+      ---
+      duration_ms: 0.242463
+      type: 'test'
+      ...
+    # Subtest: atlanan test varsa geçmez (o platformda doğrulanmadı)
+    ok 5 - atlanan test varsa geçmez (o platformda doğrulanmadı)
+      ---
+      duration_ms: 0.137506
+      type: 'test'
+      ...
+    # Subtest: başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+    ok 6 - başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+      ---
+      duration_ms: 0.291846
+      type: 'test'
+      ...
+    # Subtest: işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+    ok 7 - işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+      ---
+      duration_ms: 0.206991
+      type: 'test'
+      ...
+    # Subtest: aynı adla iki kayıt (biri eski) geçmez
+    ok 8 - aynı adla iki kayıt (biri eski) geçmez
+      ---
+      duration_ms: 0.097651
+      type: 'test'
+      ...
+    1..8
+ok 44 - doğrulama kapısı: CI'deki kapı işinin hükmü
+  ---
+  duration_ms: 2.143057
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+    # Subtest: her şey yeşilse kanca durdurmaz
+    ok 1 - her şey yeşilse kanca durdurmaz
+      ---
+      duration_ms: 0.462785
+      type: 'test'
+      ...
+    # Subtest: CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+    ok 2 - CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+      ---
+      duration_ms: 0.347849
+      type: 'test'
+      ...
+    # Subtest: CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+    ok 3 - CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+      ---
+      duration_ms: 0.252549
+      type: 'test'
+      ...
+    # Subtest: imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+    ok 4 - imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+      ---
+      duration_ms: 0.211105
+      type: 'test'
+      ...
+    # Subtest: tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+    ok 5 - tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+      ---
+      duration_ms: 64.066681
+      type: 'test'
+      ...
+    1..5
+ok 45 - doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+  ---
+  duration_ms: 65.610103
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+    # Subtest: kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+    ok 1 - kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+      ---
+      duration_ms: 140.176448
+      type: 'test'
+      ...
+    # Subtest: depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+    ok 2 - depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+      ---
+      duration_ms: 0.476656
+      type: 'test'
+      ...
+    1..2
+ok 46 - doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+  ---
+  duration_ms: 140.828298
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+    # Subtest: komut ve commit, aracın deposu değil çağrılan klasörün deposu
+    ok 1 - komut ve commit, aracın deposu değil çağrılan klasörün deposu
+      ---
+      duration_ms: 218.972715
+      type: 'test'
+      ...
+    1..1
+ok 47 - kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+  ---
+  duration_ms: 219.11339
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: başarısız testlerin adı, yeri ve hatası
+    # Subtest: gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 1 - gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 207.865569
+      type: 'test'
+      ...
+    # Subtest: gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 2 - gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 205.6773
+      type: 'test'
+      ...
+    # Subtest: Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+    ok 3 - Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+      ---
+      duration_ms: 1.851121
+      type: 'test'
+      ...
+    # Subtest: kapı özeti başarısız testleri adıyla yazar
+    ok 4 - kapı özeti başarısız testleri adıyla yazar
+      ---
+      duration_ms: 50.729922
+      type: 'test'
+      ...
+    1..4
+ok 48 - kanıt aracı: başarısız testlerin adı, yeri ve hatası
+  ---
+  duration_ms: 466.414316
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+    # Subtest: sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+    ok 1 - sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+      ---
+      duration_ms: 0.226301
+      type: 'test'
+      ...
+    1..1
+ok 49 - kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+  ---
+  duration_ms: 0.297949
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 50 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 11.960197
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 51 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 125.345789
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 52 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.314663
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 53 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 1.565888
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 54 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 2.003525
+  type: 'test'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.721593
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 157.381363
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 149.425363
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 177.527443
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 333.20121
+      type: 'test'
+      ...
+    1..5
+ok 55 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 819.541069
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 44.921492
+      type: 'test'
+      ...
+    1..1
+ok 56 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 45.089584
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M1 — tünel durum göstergesi bağlantıyı connIndex başına sayar (cloudflared'in kendi /ready sayacı gibi)
+    # Subtest: 0. dört bağlantı kurulunca Bağlı, 4 (açılış satırları sayılmaz)
+    ok 1 - 0. dört bağlantı kurulunca Bağlı, 4 (açılış satırları sayılmaz)
+      ---
+      duration_ms: 426.626242
+      type: 'test'
+      ...
+    # Subtest: 1. ZORLA ÜRETME: tek bağlantı (connIndex=2) iki kez yeniden denenip kurulamıyor, öbür üçü ayakta → Bağlı, 3 ("Bağlantı koptu" DEĞİL)
+    ok 2 - 1. ZORLA ÜRETME: tek bağlantı (connIndex=2) iki kez yeniden denenip kurulamıyor, öbür üçü ayakta → Bağlı, 3 ("Bağlantı koptu" DEĞİL)
+      ---
+      duration_ms: 667.16725
+      type: 'test'
+      ...
+    # Subtest: 2. ZORLA ÜRETME: dört bağlantı sırayla birer kez kopup geri geliyor (kısa ağ dalgalanması) → Bağlı, 4
+    ok 3 - 2. ZORLA ÜRETME: dört bağlantı sırayla birer kez kopup geri geliyor (kısa ağ dalgalanması) → Bağlı, 4
+      ---
+      duration_ms: 417.510987
+      type: 'test'
+      ...
+    # Subtest: 3. ZORLA ÜRETME: dört bağlantı da düzgün kapanıyor (Unregistered + Retrying), hiçbiri dönmüyor → Bağlanıyor, 0 ("Bağlı" DEĞİL); biri dönünce Bağlı, 1
+    ok 4 - 3. ZORLA ÜRETME: dört bağlantı da düzgün kapanıyor (Unregistered + Retrying), hiçbiri dönmüyor → Bağlanıyor, 0 ("Bağlı" DEĞİL); biri dönünce Bağlı, 1
+      ---
+      duration_ms: 707.425612
+      type: 'test'
+      ...
+    # Subtest: 4. http2 yolu: "Lost connection with the edge" + Retrying + Connection terminated tek kopuştur → Bağlı, 3
+    ok 5 - 4. http2 yolu: "Lost connection with the edge" + Retrying + Connection terminated tek kopuştur → Bağlı, 3
+      ---
+      duration_ms: 412.179607
+      type: 'test'
+      ...
+    # Subtest: 5. gerçek kopuş gizlenmez: dört bağlantı da düşüp yeniden deneniyor → Bağlanıyor (Bağlantı koptu), 0; biri dönünce Bağlı, 1
+    ok 6 - 5. gerçek kopuş gizlenmez: dört bağlantı da düşüp yeniden deneniyor → Bağlanıyor (Bağlantı koptu), 0; biri dönünce Bağlı, 1
+      ---
+      duration_ms: 683.528657
+      type: 'test'
+      ...
+    # Subtest: 6. süreç çöküp yeniden başlayınca eski bağlantılar sayılmaz: ilk süreçte 4, yenisinde 1 → Bağlı, 1
+    ok 7 - 6. süreç çöküp yeniden başlayınca eski bağlantılar sayılmaz: ilk süreçte 4, yenisinde 1 → Bağlı, 1
+      ---
+      duration_ms: 1454.971946
+      type: 'test'
+      ...
+    1..7
+ok 57 - 2.4.8 M1 — tünel durum göstergesi bağlantıyı connIndex başına sayar (cloudflared'in kendi /ready sayacı gibi)
+  ---
+  duration_ms: 4771.505784
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M2 — cloudflared çıktısı program veri klasöründe günlük dosyasına (sınırlı, döndürmeli, gizli bilgi yok)
+    # Subtest: 7. satırlar <veri>/bilesenler/cloudflared/cloudflared.log'a yazılır; belirteç ve kimlik bilgisi YAZILMAZ
+    ok 1 - 7. satırlar <veri>/bilesenler/cloudflared/cloudflared.log'a yazılır; belirteç ve kimlik bilgisi YAZILMAZ
+      ---
+      duration_ms: 415.59958
+      type: 'test'
+      ...
+    # Subtest: 8. dosya sınırı aşınca bir önceki dosyaya döner (cloudflared.log.1); en çok iki dosya, her biri sınırın altında, son satır güncel dosyada
+    ok 2 - 8. dosya sınırı aşınca bir önceki dosyaya döner (cloudflared.log.1); en çok iki dosya, her biri sınırın altında, son satır güncel dosyada
+      ---
+      duration_ms: 421.047048
+      type: 'test'
+      ...
+    1..2
+ok 58 - 2.4.8 M2 — cloudflared çıktısı program veri klasöründe günlük dosyasına (sınırlı, döndürmeli, gizli bilgi yok)
+  ---
+  duration_ms: 838.13465
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — Meta istemcisi
+    # Subtest: istek: sürüm sabiti + belirteç yalnız başlıkta; adres sorgusunda ve gövdede yok; yönlendirme izlenmez (manual)
+    ok 1 - istek: sürüm sabiti + belirteç yalnız başlıkta; adres sorgusunda ve gövdede yok; yönlendirme izlenmez (manual)
+      ---
+      duration_ms: 28.980828
+      type: 'test'
+      ...
+    # Subtest: belirteç açılamazsa (boş) ve kimlik adres karakteri taşırsa istek yapılmaz
+    ok 2 - belirteç açılamazsa (boş) ve kimlik adres karakteri taşırsa istek yapılmaz
+      ---
+      duration_ms: 1.225301
+      type: 'test'
+      ...
+    # Subtest: Meta hata gövdesi: Türkçe başlık + kod + yeniden deneme sınıfı; Meta metni belirteci yankılasa da iletide yok
+    ok 3 - Meta hata gövdesi: Türkçe başlık + kod + yeniden deneme sınıfı; Meta metni belirteci yankılasa da iletide yok
+      ---
+      duration_ms: 1.280161
+      type: 'test'
+      ...
+    # Subtest: ağ hatası, zaman aşımı, gövdesiz 5xx, 3xx yönlendirme → sonuç bilinmiyor (retry unknown)
+    ok 4 - ağ hatası, zaman aşımı, gövdesiz 5xx, 3xx yönlendirme → sonuç bilinmiyor (retry unknown)
+      ---
+      duration_ms: 82.653111
+      type: 'test'
+      ...
+    # Subtest: sayfalama: `after` imleciyle yapılandırılmış adrese; yanıttaki mutlak paging.next adresine gidilmez; en çok 3 sayfa
+    ok 5 - sayfalama: `after` imleciyle yapılandırılmış adrese; yanıttaki mutlak paging.next adresine gidilmez; en çok 3 sayfa
+      ---
+      duration_ms: 2.25455
+      type: 'test'
+      ...
+    # Subtest: hata sınıfları (plan §6 W2) ve sınır basamağı / kalite metinleri
+    ok 6 - hata sınıfları (plan §6 W2) ve sınır basamağı / kalite metinleri
+      ---
+      duration_ms: 16.928192
+      type: 'test'
+      ...
+    1..6
+ok 59 - 2.4.8 W1 — Meta istemcisi
+  ---
+  duration_ms: 134.738378
+  type: 'suite'
+  ...
+# Subtest: yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+ok 60 - yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+  ---
+  duration_ms: 96.968531
+  type: 'test'
+  ...
+# Subtest: Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz
+ok 61 - Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz
+  ---
+  duration_ms: 2.29522
+  type: 'test'
+  ...
+# Subtest: kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+ok 62 - kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+  ---
+  duration_ms: 246.418332
+  type: 'test'
+  ...
+# Subtest: ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez
+ok 63 - ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez
+  ---
+  duration_ms: 881.138399
+  type: 'test'
+  ...
+# Subtest: 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+    # Subtest: bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+    ok 1 - bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+      ---
+      duration_ms: 470.311414
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+    ok 2 - Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+      ---
+      duration_ms: 20.689515
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+    ok 3 - Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+      ---
+      duration_ms: 8.297816
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+    ok 4 - Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+      ---
+      duration_ms: 17.768305
+      type: 'test'
+      ...
+    # Subtest: Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+    ok 5 - Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+      ---
+      duration_ms: 3362.701337
+      type: 'test'
+      ...
+    # Subtest: Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+    ok 6 - Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+      ---
+      duration_ms: 38.044578
+      type: 'test'
+      ...
+    # Subtest: gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+    ok 7 - gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+      ---
+      duration_ms: 120.832912
+      type: 'test'
+      ...
+    # Subtest: iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+    ok 8 - iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+      ---
+      duration_ms: 305.533912
+      type: 'test'
+      ...
+    # Subtest: yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+    ok 9 - yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+      ---
+      duration_ms: 38.508803
+      type: 'test'
+      ...
+    # Subtest: belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+    ok 10 - belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+      ---
+      duration_ms: 93.887316
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+    ok 11 - Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+      ---
+      duration_ms: 42.129231
+      type: 'test'
+      ...
+    1..11
+ok 64 - 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+  ---
+  duration_ms: 4997.440993
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+    # Subtest: salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+    ok 1 - salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+      ---
+      duration_ms: 455.89208
+      type: 'test'
+      ...
+    # Subtest: Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+    ok 2 - Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+      ---
+      duration_ms: 362.646851
+      type: 'test'
+      ...
+    1..2
+ok 65 - 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+  ---
+  duration_ms: 818.911253
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W5 — WhatsApp bilgilendirme şablonları
+    # Subtest: şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+    ok 1 - şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+      ---
+      duration_ms: 13.185506
+      type: 'test'
+      ...
+    # Subtest: bağlantı yokken denetim 409, Meta'ya istek yok; yetkisiz kullanıcı GET / POST 403
+    ok 2 - bağlantı yokken denetim 409, Meta'ya istek yok; yetkisiz kullanıcı GET / POST 403
+      ---
+      duration_ms: 132.518791
+      type: 'test'
+      ...
+    # Subtest: App ID yokken: Ödeme Hatırlatma açılır (UTILITY, plandaki gövde, örnek değerler); Ekstre açılmaz, nedeni Uygulama Kimliği; yükleme yok
+    ok 3 - App ID yokken: Ödeme Hatırlatma açılır (UTILITY, plandaki gövde, örnek değerler); Ekstre açılmaz, nedeni Uygulama Kimliği; yükleme yok
+      ---
+      duration_ms: 31.790461
+      type: 'test'
+      ...
+    # Subtest: App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denetim yeni şablon açmaz
+    ok 4 - App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denetim yeni şablon açmaz
+      ---
+      duration_ms: 50.446425
+      type: 'test'
+      ...
+    # Subtest: durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içeriği değiştirilmiş
+    ok 5 - durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içeriği değiştirilmiş
+      ---
+      duration_ms: 26.059591
+      type: 'test'
+      ...
+    # Subtest: GET görünümü Meta'ya gitmez ve son denetimi gösterir; başka WABA'ya geçince eski sonuç bayat sayılır (Denetlenmedi)
+    ok 6 - GET görünümü Meta'ya gitmez ve son denetimi gösterir; başka WABA'ya geçince eski sonuç bayat sayılır (Denetlenmedi)
+      ---
+      duration_ms: 20.68977
+      type: 'test'
+      ...
+    # Subtest: Meta ayrıntı alanlarını tanımazsa (100) temel alanlarla bir kez yeniden okunur; listede görünmeyen şablon için 2388024 'zaten var' sayılır
+    ok 7 - Meta ayrıntı alanlarını tanımazsa (100) temel alanlarla bir kez yeniden okunur; listede görünmeyen şablon için 2388024 'zaten var' sayılır
+      ---
+      duration_ms: 32.683626
+      type: 'test'
+      ...
+    # Subtest: Meta belirteci reddederse 502 + Türkçe neden, son hata kaydedilir; yanıtta / kayıtta / işlem geçmişinde / günlükte belirteç yok
+    ok 8 - Meta belirteci reddederse 502 + Türkçe neden, son hata kaydedilir; yanıtta / kayıtta / işlem geçmişinde / günlükte belirteç yok
+      ---
+      duration_ms: 10.029542
+      type: 'test'
+      ...
+    # Subtest: Meta istemcisi kampanya / pazarlama şablonu açmaz: kategori UTILITY değilse istek gönderilmez
+    ok 9 - Meta istemcisi kampanya / pazarlama şablonu açmaz: kategori UTILITY değilse istek gönderilmez
+      ---
+      duration_ms: 1.827697
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: görünüm okunur, denetim 403 LICENSE_READ_ONLY, Meta'ya istek yok
+    ok 10 - salt okunur lisans: görünüm okunur, denetim 403 LICENSE_READ_ONLY, Meta'ya istek yok
+      ---
+      duration_ms: 429.087412
+      type: 'test'
+      ...
+    1..10
+ok 66 - 2.4.8 W5 — WhatsApp bilgilendirme şablonları
+  ---
+  duration_ms: 1173.555028
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W6 — Aydınlatma Metni Hazırla
+    # Subtest: firma bilgisi eksikken: eksikler adıyla, metinde köşeli ayraçlı yer tutucu; 'undefined' / 'null' yok
+    ok 1 - firma bilgisi eksikken: eksikler adıyla, metinde köşeli ayraçlı yer tutucu; 'undefined' / 'null' yok
+      ---
+      duration_ms: 19.457779
+      type: 'test'
+      ...
+    # Subtest: firma bilgileriyle: KVKK md. 10 öğeleri, md. 11'in dokuz bendi, Meta + yurt dışı (md. 9), veri işleyen, 30 gün; eksik yok
+    ok 2 - firma bilgileriyle: KVKK md. 10 öğeleri, md. 11'in dokuz bendi, Meta + yurt dışı (md. 9), veri işleyen, 30 gün; eksik yok
+      ---
+      duration_ms: 26.005791
+      type: 'test'
+      ...
+    # Subtest: PDF: indirme, application/pdf, dosya adı firma adıyla; metin PDF'te de aynı (başlık, firma, md. 9, ğ bendi, sayfa numarası)
+    ok 3 - PDF: indirme, application/pdf, dosya adı firma adıyla; metin PDF'te de aynı (başlık, firma, md. 9, ğ bendi, sayfa numarası)
+      ---
+      duration_ms: 50.071861
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı (Personel) metni ve PDF'i alamaz (403)
+    ok 4 - yetkisiz kullanıcı (Personel) metni ve PDF'i alamaz (403)
+      ---
+      duration_ms: 144.855046
+      type: 'test'
+      ...
+    1..4
+ok 67 - 2.4.8 W6 — Aydınlatma Metni Hazırla
+  ---
+  duration_ms: 698.054994
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 117.714397
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 8.06047
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 3.701317
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 7.523692
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 4.985047
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 54.689619
+      type: 'test'
+      ...
+    1..6
+ok 68 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 198.68886
+  type: 'suite'
+  ...
+1..68
+# tests 151
+# suites 25
+# pass 151
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12080.554903

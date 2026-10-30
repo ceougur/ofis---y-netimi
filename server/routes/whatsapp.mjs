@@ -36,6 +36,7 @@ import { createWhatsappConnection } from "../lib/whatsapp/connection.mjs";
 import { createWaQueue } from "../lib/whatsapp/queue.mjs";
 import { createReportHeader } from "../lib/report-header.mjs";
 import { waNumber, waPresetRange as presetRange } from "../lib/whatsapp/alici.mjs";
+import { registerWhatsappTemplateRoutes } from "./whatsapp-sablon.mjs";
 
 const MAX_TARGETS = 5000;
 const pad = value => String(value).padStart(2, "0");
@@ -213,6 +214,9 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     const result = await connection.selfTest(user, `+${phone.wa}`);
     ok(res, { result: result.result, connection: view() });
   });
+
+  // ---------- 2.4.8 W5: bilgilendirme şablonları (routes/whatsapp-sablon.mjs) ----------
+  registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection });
 
   // ---------- 2.4.8 W2: gönderim çekirdeği ----------
   if (!whatsapp?.ledger) return { connection, queue: null };

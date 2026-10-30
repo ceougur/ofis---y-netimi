@@ -273,6 +273,51 @@ beklenen sonuç tablosu (kime, hangi PDF, hangi değişkenler, kaç kez, hangi d
 P0 → K0 ∥ W1 → W2 → W3 ∥ W5 ∥ W6 → W9 (S1 yanıtına göre) → W4 → D0 → W7 → W8 → T. MZ bağımsız ve İLK (Aralık'tan önce). Tahmin ~6–8 iş günü (doğrulama dahil); devir 2.5.0
 en geç 1 Aralık'ta başlamalı → 2.4.8 ~20 Kasım'a dek yayında. "Bitti" için D0 gerçek gönderimi + elle kabul gerekir; Yol 2'nin gerçek bağlaması Tech Provider'a kalır (BİLİNEN SINIR).
 
+## 7a. Plan netleştirmeleri (K0 "PLAN SUSUYOR" listesi; 30.10.2026 ~14:25 UTC; program karşılaştırmasından ÖNCE, programın davranışına bakılmadan — ders 40)
+
+> KARAR (kullanıcı, 30.10.2026 ~14:30 UTC: "önerilerin uygun"): plan §7a K1 A (sabit hat/yurt dışı elenmez), K2 A (aynı telefon iki cari → iki ileti), K3 A (ekstre şablonu "Dönem sonu bakiyesi: {{4}}. İyi günler dileriz."); §7a'nın öbür 29 baş mimar kararı da bu yanıtla kabul edildi.
+
+BAŞ MİMAR KARARLARI (en yaygın uygulama; ★ = kime / kaç kez gideceğini etkiler; K1–K3 kullanıcıya soruldu, 5 dk yetkisi):
+1. ★ İş verisi (telefon, ad, bakiye, PDF) işçi sırası gelince, GÖNDERİM ANINDA okunur (en güncel veri).
+2. ★ Kuyruktayken "WhatsApp Mesajı İstemiyor" işaretlenen ya da silinen/pasif cari ELENİR ("Atlandı" + neden).
+3. Sonucu Belirsiz iş kancayla YALNIZ Meta imzası kapıcıda doğrulanmış ve programa kapıcının imzasıyla gelen olayla, iş kimliği (biz_opaque_callback_data) eşleşirse çözülür; imzasız/eşleşmeyen olay düşer (GUV-06 kapanır). Çözülen iş sayaçlara ve sınır penceresine girer.
+4. Sınır doluyken penceresinde zaten sayılmış alıcı GEÇER (farklı alıcı sayımında yer tutmaz).
+5. Toplu iş içinde gönderim sırası = ekrandaki seçim sırası.
+6. ★ (K1) Geçersiz numara = E.164'e çevrilemeyen (uzunluk/ülke kodu); elenir. Sabit hat ve yurt dışı numara ELENMEZ (Meta karar verir; teslim edilmeyen ileti ücretlendirilmez).
+7. Hücrede birden çok numara: ayırıcılar "/", ",", ";", satır sonu; ilki alınır.
+8. ★ (K2) Aynı telefonlu iki farklı cari → İKİ ileti (her cari kendi ekstresi).
+9. ★ Çift başlatma: aynı cari + aynı şablon + aynı dönem için bekleyen/gönderilmekte iş varken yeni başlatmada o cari elenir ("Zaten Kuyrukta"); süre penceresi yok; iki kullanıcı/sekme dahil; aynı istek kimliği tek toplu iş.
+10. Sonucu Belirsiz'den sonra toplu iş SÜRER (belirsiz iş bekler; yeniden göndermez).
+11. Bağlantı hiç kurulamadı (istek Meta'ya ulaşmadığı kesin: DNS, bağlantı reddi) → geçici hata, yeniden dener.
+12. Sınıfsız kodlar: 1, 2, 133004 → geçici; 100, 131008, 135000, 131053 (gönderimde), 131047, 131050, 131051, 130403, 131064, 131063, 133016 ve tanınmayan kod → o İŞ Başarısız (kodlu), toplu iş sürer; 131048 ve Meta sınır aşımı → bekler (madde 30). Liste META_D0'da gözden geçirilir.
+13. Duraklayan toplu işte hatayı alan iş "Başarısız" (kodlu), bekleyenler "Duraklatıldı".
+14. 131049: iş "Meta Bekletti (24 Saat Sonra Yeniden)"; PDF silinmez; yeniden gönderimde aynı medya (geçerliyse).
+15. Yeniden denemede medya kimliği geçerliyse aynısı, silinmiş/süresi dolmuşsa yeniden yüklenir; geçici bekleme 30 sn → 2 dk → 15 dk (3 deneme) sonra Başarısız; "5 kez art arda" sayacı başarılı gönderimle sıfırlanır, medya yükleme hataları da sayılır.
+16. Kancası hiç gelmeyen iş: kanca yolu çalışıyorsa (bağlantıda son 7 günde en az bir kanca geldi) TTL + 1 saatte "Süresi Doldu"; kanca yolu yoksa "Meta Kabul Etti"de kalır ("Durum Bilinmiyor" durumu KALKAR).
+17. Süresi Doldu'dan sonra gelen delivered/read → "Teslim Edildi"/"Okundu" yazılır (gerçek bilgi); durum zamanı kanca timestamp'i.
+18. delivered/read'den SONRA gelen failed yok sayılır (yalnız ileri).
+19. "Bu Ay Gönderilen İleti Sayısı" = TESLİM edilen (Teslim + Okundu), ay = teslim zamanı (Türkiye saati), kapsam WABA (makine düzeyi; geri yüklemede azalmaz); Kendime Deneme sayılmaz.
+20. ★ Ödeme hatırlatma: {{3}} en eski gecikmiş vade tarihi, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; vadesi geçmiş borcu olmayan cari elenir ("Gecikmiş Borç Yok").
+21. Dönem metni "01.10.2026 – 31.10.2026"; PDF dosya adı mevcut kişi adlı ekstre düzeni + dönem.
+22. Eksi bakiye "1.234,56 TL (Alacaklı)"; 2 ondalık; dönem uçları dahil; ileri tarihli hareket dönem sonundan sonraysa girmez (Cari Ekstre ile aynı — W3 fark testi).
+23. (K3) Ekstre şablonunda "Güncel bakiye" → "Dönem sonu bakiyesi" (geçmiş dönemde yanlış etiket olmasın) ve gövde değişkenle bitmesin (Meta 2388299 riski): "Sayın {{1}}, {{2}} firmasındaki cari hesabınızın {{3}} dönemine ait ekstresi ektedir. Dönem sonu bakiyesi: {{4}}. İyi günler dileriz." Ödeme hatırlatma zaten cümleyle bitiyor.
+24. 24 saatten eski toplu iş: SINIR nedeniyle bekleyen iş kendiliğinden sürer; başka nedenle (program kapalı kaldı) duran iş açılışta sorulur (Devam Et / İptal Et).
+25. Lisans yeniden yazılabilir olunca "Lisans Nedeniyle Durdu" işler kendiliğinden SÜRMEZ ("Devam Et").
+26. Geri yükleme/sıfırlama sonrası bekleyen işler "Durduruldu (Geri Yükleme)", kendiliğinden sürmez.
+27. Şablon kategorisi toplu iş başlarken ve sürerken saatte bir okunur; MARKETING görülünce iş durur ("Şablon Pazarlama'ya Alındı").
+28. Bir kez onay toplu ve tekli gönderimde şart; Kendime Deneme Gönder hariç.
+29. Başlatma reddi sırası: bağlı değil → yetki → lisans → onay → şablon.
+30. Meta sınır hatasında aynı WABA'nın BÜTÜN işleri 24 saat bekler.
+31. Bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; ekranda nedenler listelenir.
+32. Başarılı olan işin hata kodu temizlenir (önceki deneme geçmişte kalır).
+
+> KARAR (30.10.2026 15:18 UTC, kullanıcı 5 dk içinde yanıt vermedi → 5 dk yetkisiyle uygulandı): plan §7a revizyonu R1 (internet yokken "Bağlantı Bekleniyor", Başarısız değil), R2 (kategori her 100 iletide / en geç 10 dk), R3 (daha önce gönderilmiş dönem uyarısı, varsayılan Bunları Çıkar) GEÇERLİ.
+
+REVİZYON ÖNERİSİ (baş mimar, 30.10.2026 ~14:55 UTC; kâhin K0'ın "ürün sahibine bildirilecek sonuçlar"ı üzerine, program karşılaştırmasından ÖNCE; kullanıcıya soruldu, 5 dk yetkisi):
+- R1 (§7a 11 + 15): Meta'ya HİÇ ulaşılamıyorsa (internet yok; istek gitmediği kesin) işler Başarısız SAYILMAZ: toplu iş "Bağlantı Bekleniyor" diye durur, bağlantı dönünce kendiliğinden sürer (iş deneme sayacı artmaz). 30 sn → 2 dk → 15 dk → Başarısız dizisi yalnız Meta'nın yanıt verdiği geçici hatalarda (5xx, 1, 2, 133004).
+- R2 (§7a 27): şablon kategorisi toplu iş sürerken saatte bir yerine HER 100 İLETİDE ve EN GEÇ 10 DAKİKADA bir okunur (Pazarlama ücretiyle giden ileti en çok ~100; ≈ 1 USD).
+- R3 (§7a 9, yeni W4 kuralı): aynı cariye aynı şablon + dönem DAHA ÖNCE gönderilmişse (Meta Kabul Etti ve sonrası) başlatmada "N kişiye bu dönem daha önce gönderildi (son tarih)" uyarısı + seçenek "Yine de Gönder" / "Bunları Çıkar"; varsayılan Bunları Çıkar.
+
 ## 8. Nasıl bozulur? (0b — son hâli; testler buradan çıkar)
 
 - ÇİFT: zaman aşımından sonra yeniden deneme; yanıt gelmeden program kapanır / elektrik gider ("Gönderiliyor" anında süreç öldürülür); iki kullanıcı aynı cariye aynı anda;

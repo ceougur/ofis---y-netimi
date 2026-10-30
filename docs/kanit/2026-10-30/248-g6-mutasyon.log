@@ -1,0 +1,19 @@
+M0 bozulmamış kopya: YEŞİL (# tests 14 · # pass 14 · # fail 0)
+M1 ekstre şablonunun KVKK alt satırı düşer: YAKALANDI (# tests 10 · # pass 6 · # fail 4) — ilk kırmızı: şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+M2 alt satır Meta'ya gönderilmez (bileşen kurulmaz): YAKALANDI (# tests 10 · # pass 7 · # fail 3) — ilk kırmızı: App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denet
+M3 Pazarlama'ya alınma uyarısı kalkar: YAKALANDI (# tests 10 · # pass 8 · # fail 2) — ilk kırmızı: durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içer
+M4 MARKETING şablon da gönderime hazır sayılır: YAKALANDI (# tests 10 · # pass 8 · # fail 2) — ilk kırmızı: durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içer
+M5 program şablonu MARKETING olarak açılmaya çalışılır: YAKALANDI (# tests 10 · # pass 5 · # fail 5) — ilk kırmızı: şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+M6 istemcideki UTILITY kilidi kalkar (kampanya şablonu Meta'ya gider): YAKALANDI (# tests 10 · # pass 9 · # fail 1) — ilk kırmızı: Meta istemcisi kampanya / pazarlama şablonu açmaz: kategori UTILITY değilse istek gönderilmez
+M7 var olan şablon yeniden açılır (liste denetimi yok): YAKALANDI (# tests 10 · # pass 7 · # fail 3) — ilk kırmızı: App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denet
+M8 App ID yokken de yükleme denenir (nedenli ileti yok): YAKALANDI (# tests 10 · # pass 9 · # fail 1) — ilk kırmızı: App ID yokken: Ödeme Hatırlatma açılır (UTILITY, plandaki gövde, örnek değerler); Ekstre açılmaz, nedeni Uygulama Kimliği; yükleme yok
+M9 gövde metni plandan sapar: YAKALANDI (# tests 10 · # pass 6 · # fail 4) — ilk kırmızı: şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+M16 ekstre gövdesi yine değişkenle biter (K3 öncesi metin): YAKALANDI (# tests 10 · # pass 6 · # fail 4) — ilk kırmızı: şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+M10 şablon kaydına belirteç yazılır: YAKALANDI (# tests 10 · # pass 9 · # fail 1) — ilk kırmızı: Meta belirteci reddederse 502 + Türkçe neden, son hata kaydedilir; yanıtta / kayıtta / işlem geçmişinde / günlükte belirteç yok
+M11 şablon uçları yönetici dışına açılır (accounts.view): YAKALANDI (# tests 10 · # pass 9 · # fail 1) — ilk kırmızı: bağlantı yokken denetim 409, Meta'ya istek yok; yetkisiz kullanıcı GET / POST 403
+M12 aydınlatma metninden yurt dışı aktarım (md. 9) bölümü düşer: YAKALANDI (# tests 4 · # pass 2 · # fail 2) — ilk kırmızı: firma bilgileriyle: KVKK md. 10 öğeleri, md. 11'in dokuz bendi, Meta + yurt dışı (md. 9), veri işleyen, 30 gün; eksik yok
+M13 md. 11'in ğ bendi düşer: YAKALANDI (# tests 4 · # pass 2 · # fail 2) — ilk kırmızı: firma bilgileriyle: KVKK md. 10 öğeleri, md. 11'in dokuz bendi, Meta + yurt dışı (md. 9), veri işleyen, 30 gün; eksik yok
+M14 eksik firma e-postası söylenmez: YAKALANDI (# tests 4 · # pass 3 · # fail 1) — ilk kırmızı: firma bilgisi eksikken: eksikler adıyla, metinde köşeli ayraçlı yer tutucu; 'undefined' / 'null' yok
+M15 aydınlatma metni yönetici dışına açılır: YAKALANDI (# tests 4 · # pass 3 · # fail 1) — ilk kırmızı: yetkisiz kullanıcı (Personel) metni ve PDF'i alamaz (403)
+
+17 geçti, 0 kaldı

@@ -1,0 +1,63 @@
+
+> destekofis@2.4.7 test:senaryo-whatsapp-sablon-248
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-sablon-248.mjs
+
+
+■ B0 bağlantı yokken: şablon kartı görünür, düğme pasif ve nedeni yazılı
+  ✓ kart başlığı
+  ✓ Şablonları Denetle ve Oluştur pasif
+  ✓ neden: Önce yukarıdaki Elle Bağla ile WhatsApp Business API bağlantısını kurun.
+  ✓ durum Denetlenmedi
+  ✓ Meta'ya istek yok
+
+■ B1 App ID'siz bağlantı → Denetle: Ödeme Hatırlatma açılır, Ekstre için Uygulama Kimliği istenir
+  ✓ bağlantı kaydedildi (200)
+  ✓ Ödeme Hatırlatma: Onay Bekliyor
+  ✓ Ekstre: Henüz Açılmadı
+  ✓ Ekstre için App ID nedeni görünür
+  ✓ Meta'ya yalnız Ödeme Hatırlatma, UTILITY
+
+■ B2 Bilgileri Değiştir: App ID Tab ile → Kaydet ve Sına → Ekstre kendiliğinden açılır (örnek PDF, KVKK alt satırı)
+  ✓ Tab: WABA ID → App ID
+  ✓ Ekstre: Onay Bekliyor (kendiliğinden açıldı)
+  ✓ örnek PDF Meta'ya yüklendi
+  ✓ Ekstre UTILITY, tr
+  ✓ BELGE başlığı + yükleme tanıtıcısı
+  ✓ gövde plandaki metin
+  ✓ KVKK alt satırı
+  ✓ Ödeme Hatırlatma yeniden açılmadı
+  ✓ veri tabanında App ID yazılan
+  ✓ kendiliğinden açmadan sonra: sayfada belirteç yok
+
+■ B3 Meta Ekstre'yi Pazarlama'ya aldı, Hatırlatma onaylandı → klavyeyle Denetle: açık uyarı, Ekstre gönderime hazır değil
+  ✓ Ekstre kategorisi Pazarlama
+  ✓ Ekstre gönderime hazır: Hayır
+  ✓ Hatırlatma Onaylandı / Evet
+  ✓ uyarı görünür: Meta bu şablonu Pazarlama (Marketing) sınıfına aldı; program bu şablonla gönderi
+  ✓ uyarı ekranda görünür
+  ✓ yeniden şablon açılmadı
+
+■ B4 yetkisiz (Personel): şablon API'si 403
+  ✓ GET 403
+  ✓ POST 403
+  ✓ aydınlatma metni 403
+  ✓ aydınlatma PDF 403
+
+■ B5 Aydınlatma Metni Hazırla: firma bilgileri, eksik e-posta, Kopyala = API metni, PDF, Esc
+  ✓ firma bilgisi kaydedildi (e-posta yok)
+  ✓ kart başlığı
+  ✓ pencere başlığı Aydınlatma Metni
+  ✓ metinde unvan, VKN, adres
+  ✓ metinde Meta, md. 9, veri işleyen
+  ✓ eksik e-posta yer tutucusu
+  ✓ eksik bilgi adıyla söylendi
+  ✓ panodaki metin API metniyle aynı (5923 karakter)
+  ✓ inen dosya PDF
+  ✓ dosya adı (başlık): inline; filename="KVKK Aydinlatma Metni (WhatsApp) Mavi Muhasebe Ltd. Sti..pdf"; filename*=UTF-8''KVKK Aydınlatma Metni (WhatsApp) Mavi Muhasebe Ltd. Şti..pdf
+  ✓ PDF isteği şirket parametreli: /api/workspace/whatsapp/aydinlatma-metni.pdf?hofCompany=sirket-001
+  ✓ düğme adı Aydınlatma Metni - PDF
+  ✓ Esc ile kapandı, soru sorulmadı
+  ✓ API yanıtlarında belirteç yok (35 yanıt)
+  ✓ sayfa hatası yok (—)
+
+45 geçti, 0 kaldı
