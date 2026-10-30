@@ -1,0 +1,31 @@
+
+■ Kurulum: yönetici girer, Excel yüklenir; cariler açılır (biri sabit hatlı, biri numarasız)
+✓ cari: Tülay Arıkan
+✓ cari: Kemal Bakkal
+✓ cari: Sabit Hatlı Büfe
+✓ cari: Numarasız Müşteri
+✓ cari: Hesabı Kapalı Ayşe
+✓ cari: Anadolu Gıda
+
+■ 1. Cari → üç cari seçilir → WhatsApp Ekstre: alıcılar, geçersiz numara nedeni, kişiye özel ekstre ön izlemesi
+✓ seçim yokken: süzgeçteki hepsine gönderim düğmeleri
+✓ seçim çubuğu: 3 cari seçildi Seçilenlere Taksit Planı WhatsApp Ekstre WhatsApp Mesaj Seçimi Temizle
+✓ özet: 3 Cari 2 Geçerli Numara 1 Numarası Yok / Hatalı 2 Gönderilecek
+✓ sabit hat nedeniyle ayrıldı
+✓ ön izleme kişiye özel
+✓ ekstre metni bakiyeyi içerir: Sayın Tülay Arıkan,
+cari hesap ekstreniz (01.10.2026 – 30.10.2026):
+
+30.10.2026 Borç · Açılış bakiyesi: +1.250,00 TL
+
+Güncel bakiye: 1.250,0
+✓ satıra tıklayınca o kişinin ekstresi (Tüm Hareketler)
+
+■ 2. Gönderime Başla → sıra: 1 / 2, WhatsApp'ta Aç ve Sıradakine Geç; her gönderim cari kartına yazılır
+✓ ilerleme 1 / 2
+✗ Ekstre PDF bağlantısı
+Error: BAŞARISIZ: Ekstre PDF bağlantısı
+    at ok (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t3fix-eski-49395f77-r7q/test/e2e/senaryo-213.mjs:53:20)
+    at file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t3fix-eski-49395f77-r7q/test/e2e/senaryo-213.mjs:164:5
+    at async step (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t3fix-eski-49395f77-r7q/test/e2e/senaryo-213.mjs:57:3)
+    at async file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t3fix-eski-49395f77-r7q/test/e2e/senaryo-213.mjs:159:3

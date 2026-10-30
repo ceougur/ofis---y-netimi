@@ -212,10 +212,15 @@ await step("D4 WhatsApp Mesajı İstemiyor: formda Tab + Boşluk, kartta rozet, 
   await page.waitForSelector(`${TOP} .hof-wa-head`);
   const head = await page.$eval(`${TOP} .hof-wa-head`, node => node.innerText.replace(/\s+/g, " "));
   ok(/0 Gönderilecek/.test(head), `özet: ${head}`);
+  // T3 UI/UX ORTA-2: İstemiyor ayrı sayılır (Otomatik Gönder'in eleme adı), "Numarası Yok / Hatalı" sayacına girmez.
+  ok(/1 WhatsApp Mesajı İstemiyor/.test(head) && /0 Numarası Yok \/ Hatalı/.test(head), `özet İstemiyor'u ayrı sayar: ${head}`);
   const row = await page.$eval(`${TOP} tr[data-preview="${person.id}"]`, node => node.innerText.replace(/\s+/g, " "));
   ok(/WhatsApp Mesajı İstemiyor/.test(row), "satırda neden yazılı");
   ok(await page.isDisabled(`${TOP} [data-pick="${person.id}"]`), "kişi seçilemez");
   ok(await page.isDisabled(`${TOP} [data-start]`), "Gönderime Başla pasif");
+  // T3 UI/UX DÜŞÜK-8: pasif düğmenin nedeni görünür yazı (anayasa).
+  const why = await page.$eval(`${TOP} [data-start-why]`, node => (node.offsetParent ? node.innerText.trim() : "")).catch(() => "");
+  ok(/Gönderilebilecek kişi yok/.test(why) && /istemiyor/.test(why), `Gönderime Başla pasifliğinin nedeni görünür: ${why || "(yok)"}`);
   await shot("05-istemiyor");
   await closeAll();
 });

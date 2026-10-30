@@ -262,6 +262,7 @@ export function createWaBagla({ now, lisansGorunumu, gunceliIste, hizDenetle, wa
     const ayar = JSON.stringify(hazir ? { appId: String(env.WA_UYGULAMA_KIMLIGI), configId: String(env.WA_KURULUM_KIMLIGI), surum: WA_BAGLA_D0.graphSurum, ekler, sdk: WA_BAGLA_D0.sdkAdresi, ileti: SAYFA_ILETILERI } : { kapali: true }).replace(/</g, "\\u003c");
     const stil = "font-family:system-ui,sans-serif;padding:24px;max-width:560px;margin:auto;color:#102a36;line-height:1.5";
     const govde = `<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WhatsApp'ı Bağla — DestekOfis</title>
+<style nonce="${nonce}">#wa-bagla{cursor:pointer}#wa-bagla:disabled{opacity:.45;cursor:not-allowed;background:#6b8793}</style>
 <body style="${stil}"><h1 style="font-size:22px">WhatsApp'ı Bağla</h1>
 <p>İşletmenizin WhatsApp Business numarasını DestekOfis'e bağlamak için Facebook hesabınızla giriş yapın; açılan Meta penceresinde işletmenizi ve numaranızı seçin. Numara WhatsApp Business uygulamasında da kullanılmaya devam eder.</p>
 <p id="wa-hedef" hidden style="padding:10px 12px;border-radius:8px;background:#eef6f9;overflow-wrap:anywhere">Bağlanacak Program: <strong id="wa-firma"></strong></p>
