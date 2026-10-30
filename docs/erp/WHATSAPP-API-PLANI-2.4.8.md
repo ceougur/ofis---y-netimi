@@ -265,8 +265,9 @@ iletilecek bilgilendirme belgesi: Claude Docs "DestekOfis WhatsApp Gönderimi �
 
 KARAR (kullanıcı, 30.10.2026 ~10:45 UTC, üç seçenekten yalnız "1"): Ayarlar → WhatsApp → "Aydınlatma Metni Hazırla" — program hazır KVKK aydınlatma metnini firma
 unvanı/adresi/e-postasıyla doldurur (WhatsApp + Verimor + Meta altyapısı maddesi), PDF ve düz metin verir; kullanıcı okur ve kendisi iletir. Metnin taslağını baş mimar
-yazar, son hâlini KULLANICI (hukukçu gözüyle) onaylar. SEÇİLMEYENLER: (2) onay kutusu işaretlenmeden toplu gönderimi engelleme — YOK (S4'teki bir kez onay eskisi gibi
-bilgi amaçlı); (3) ekstre şablonuna KVKK alt satırı — YOK (şablonlar değişmez). Madde W5'e eklenir ([M]). AÇIK (baş mimar uyarısı, kullanıcının işi): kapıcıda 3 gün duran
+yazar, son hâlini KULLANICI (hukukçu gözüyle) onaylar. GÜNCELLEME (kullanıcı, birkaç dk sonra: "hepsine evet") → (2) EVET: S4'teki bir kez onay "Aydınlatma metnimi okudum, carilerime
+ulaştıracağım" olur ve işaretlenmeden toplu gönderim BAŞLAMAZ; (3) EVET: `destekofis_ekstre` şablonuna sabit alt satır (footer, 55 karakter) "KVKK aydınlatma metni için
+firmamıza başvurabilirsiniz." — Verimor'a gidecek şablon metnine eklenir (zaten gönderildiyse düzeltme e-postası; onaydan sonra değişirse Meta yeniden onaylar). Madde W5'e eklenir ([M]). AÇIK (baş mimar uyarısı, kullanıcının işi): kapıcıda 3 gün duran
 şifreli PDF nedeniyle DestekOfis veri işleyen sayılır + Cloudflare yurt dışı aktarım → lisans sözleşmesine veri işleme maddesi.
 
 ## 12. Süre ve sıra
