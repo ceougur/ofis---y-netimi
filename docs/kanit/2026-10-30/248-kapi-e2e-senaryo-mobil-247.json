@@ -1,0 +1,32 @@
+{
+  "ad": "248-kapi-e2e-senaryo-mobil-247",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mobil-247.mjs",
+  "commit": "b5deb22115921e0d101514aa848e7dab10f7b11a",
+  "dal": "is/kapi-248",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:50:00.531Z",
+  "sure_sn": 17.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 77,
+    "gecen": 77,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-kapi-e2e-senaryo-mobil-247.log",
+  "klasor": "/home/user/wt-kapi-248",
+  "ham_cikti_sha256": "878efda4988ff8b49f32f0e622211f114f842ad812e1db8bcefecd3c79d1110d",
+  "ham_cikti_bayt": 4483
+}

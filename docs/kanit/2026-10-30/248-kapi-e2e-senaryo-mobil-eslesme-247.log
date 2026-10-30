@@ -1,0 +1,54 @@
+
+■ E1 Mobil Cihazlar sekmesi: işaretsiz kişide karekod pasif, nedeni yazılı
+  ✓ sekme adı Mobil Cihazlar
+  ✓ sayaç 0 / 3 eşli cihaz (iki şirket birlikte; telefon, tablet ve uzak tarayıcı sayılır).
+  ✓ işaretsiz kişide Karekod Oluştur pasif
+  ✓ pasifliğin nedeni görünür
+  ✓ eşli cihaz yok yazısı
+
+■ E2 Uzaktan Bağlanabilir işaretlenir; Karekod Oluştur → karekod (uzak adres + #eslesme=)
+  ✓ izin sunucuda kayıtlı
+  ✓ pencere başlığı
+  ✓ geçerlilik süresi yazılı (5 dakika)
+  ✓ karekod okundu: http://127.0.0.1:38895/mobil/#eslesme=…
+
+■ E3 telefon karekodu açar → Eşleştir → giriş → Genel Bakış; masaüstünde cihaz satırı
+  ✓ cihaz adı önerisi: iPhone
+  ✓ kod adres çubuğundan silindi
+  ✓ eşlemeden sonra giriş ekranı
+  ✓ Genel Bakış açıldı
+  ✓ cihaz kaydı: {"id":"dev-db7f4296-4c36-4069-86e6-e1fee74f22b2","name":"Ali'nin iPhone'u","kind":"telefon","userId":"user-0bc0ec73-68c1-4c98-bd4b-43cb846ae0d7","userName":"Ali Mobil","username":"mobil-ali","createdAt":"2026-10-30T19:50:24.223Z","lastSeenAt":"2026-10-30T19:50:25.500Z","kindLabel":"Telefon"}
+  ✓ satır: Ali'nin iPhone'u TelefonAli Mobil 30.10.2026 19:5030.10.2026 19:50 Sil
+  ✓ sayaç 1 / 3
+
+■ E3b P14 Eşleme Bağlantısı: Kopyala → uzak bilgisayarın tarayıcısında açılır → eşleşir
+  ✓ bağlantı karekodun içeriğiyle aynı (kod # kısmında)
+  ✓ alan adı Eşleme Bağlantısı
+  ✓ Kopyala bağlantıyı panoya yazdı
+  ✓ cihaz adı önerisi: Uzak Tarayıcı
+  ✓ uzak bilgisayarda Genel Bakış (geniş ekran)
+  ✓ uzak tarayıcı eşlendi (2 / 3, Uzak Tarayıcı)
+  ✓ bağlantı tek kullanımlık (remote-code)
+
+■ E4 sınır 3/3: karekod düğmeleri pasif, neden ve uyarı görünür
+  ✓ D6 tablet cihaz adı önerisi: Tablet
+  ✓ D6 tablet kaydı: tablet / Tablet
+  ✓ D6 Yönetim satırı: Tablet TabletAyşe Mobil 30.10.2026 19:5030.10.2026 19:50 Sil
+  ✓ sayaç 3 / 3
+  ✓ uyarı: 3 cihazın hepsi eşli; yeni cihaz için önce aşağıdan birini silin.
+  ✓ bütün Karekod Oluştur düğmeleri pasif
+  ✓ neden: Cihaz sınırı dolu.
+
+■ E5 Sil (onaylı) → yer açılır; telefondaki oturum hemen düşer; yasak yol 404
+  ✓ onay penceresi sonucu söylüyor
+  ✓ sayaç 2 / 3
+  ✓ yer açılınca karekod düğmesi etkin
+  ✓ telefonda "Cihaz Eşli Değil": Bu simge eşli değil ya da eşlemesi kaldırıldı. Karekodu Okut'a dokunup
+  ✓ uzaktan /api/companies kapalı (401)
+
+■ E6 izni kaldır (onaylı) → kişinin cihazları düşer
+  ✓ veli'nin cihazı düştü, 1 / 3
+  ✓ izin kaldırıldı
+  ✓ sayfa hatası yok (—)
+
+38 geçti, 0 kaldı
