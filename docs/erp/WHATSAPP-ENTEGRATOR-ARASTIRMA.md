@@ -192,3 +192,18 @@ Diğerleri:
 35. https://www.connexease.com/tr/fiyatlar (https://www.connexease.com/tr/whatsapp → 404)
 
 Not: Bütçe ~40 sayfaydı; dizin (llms.txt) ve erişim yoklamaları dahil ~45 istek yapıldı. Turkcell / Türk Telekom bu yüzden açılmadı.
+
+
+## Ek — Meta'nın resmî Türkiye tarifesi (30.10.2026, kullanıcının indirip yüklediği Meta tarife dosyaları)
+
+Kaynak: Meta "Cost per message in USD on the WhatsApp Business Platform, effective October 1, 2026" (liste fiyatları + hacim kademeleri; developers.facebook.com/docs/whatsapp/pricing).
+
+| Kategori | Türkiye, USD / teslim edilen ileti |
+| --- | --- |
+| Utility (bilgilendirme — bizim iki şablon) | 0,0009 |
+| Marketing (pazarlama) | 0,0109 |
+| Authentication (kimlik doğrulama) | 0,0009 |
+| Service (şablonsuz yanıt) | 0,0009 |
+
+Utility hacim kademesi (AYLIK ileti): 0–100.000 liste fiyatı; 100.001–1.000.000 −%5; 1.000.001–4.500.000 −%10; 4.500.001–40.000.000 −%15; üstü −%20/−%25.
+Örnek: ayda 1.000 ekstre ≈ 0,90 USD; 10.000 ≈ 9 USD. Ek maliyetler: kart kur/komisyon farkı; yurt dışı hizmette sorumlu sıfatıyla KDV (mali müşavir).
