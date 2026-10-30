@@ -46,7 +46,7 @@ import {
 import { CIHAZ_CEREZI, MOBIL_CEREZLERI, OTURUM_CEREZI, cerezCakisiyor, cerezCikar, cerezOku, cerezSilSatirlari, setCookieAdi, setCookieAlanli } from "../../server/lib/mobil-cerez.mjs";
 import { KAPI_HIZ, MakineHatasi, guncelMi, kayitSonrasi, makineKaydi, metaAnahtari, ozetAnahtari, silinenBirlestir } from "./makine.mjs";
 import { TUNEL_YOLU, cloudflareVarsa, ofisTuneliniSil, tunelIstegi } from "./tunel.mjs"; // 2.4.7 M4: ofis tüneli (ayrı dosya)
-import { mezarAnahtari, mezarOku, mobilTemizlik } from "./temizlik.mjs"; // 2.4.8 L1: mobil kaydın kendiliğinden silinmesi (zamanlanmış tur)
+import { TEMIZLIK, mezarAnahtari, mezarOku, mobilTemizlik } from "./temizlik.mjs"; // 2.4.8 L1: mobil kaydın kendiliğinden silinmesi (zamanlanmış tur)
 import { createWaBagla, waOturumTemizle } from "./wa-bagla.mjs"; // 2.4.8 W7: "WhatsApp'ı Bağla" (Embedded Signup; kod → belirteç değişimi yalnız burada)
 
 export { KAPI_HIZ };
@@ -178,7 +178,14 @@ function kokenYaniti(yanit, sil = []) {
  * @param {object} [o.cloudflare] Cloudflare tünel/DNS istemcisi (testte sahte; yoksa env'deki ayarla, ayar yoksa kayıtta temizlik yapılmaz — B3)
  * @param {typeof fetch} [o.waFetch] 2.4.8 W7: Meta'ya kod → belirteç değişimi isteği (testte sahte Meta)
  */
-export function createKapi({ now = () => Date.now(), fetchOrigin = request => fetch(request), lisansFetch = (...a) => fetch(...a), onbellek = null, cloudflare = null, waFetch = (...a) => fetch(...a) } = {}) {
+// 2.4.8 GG (D5): lisans servisi isteğinin (yanıt gövdesi dahil) zaman aşımı — yanıt vermeyen servis kapıcı isteğini ve temizlik turunu asmasın.
+export const LISANS_SERVIS_ZAMAN_ASIMI_MS = 5_000;
+const zamanAsimli = (soz, ms) => {
+  let zamanlayici;
+  return Promise.race([soz, new Promise((_, reddet) => (zamanlayici = setTimeout(() => reddet(new Error("lisans servisi zaman aşımı")), ms)))]).finally(() => clearTimeout(zamanlayici));
+};
+
+export function createKapi({ now = () => Date.now(), fetchOrigin = request => fetch(request), lisansFetch = (...a) => fetch(...a), onbellek = null, cloudflare = null, waFetch = (...a) => fetch(...a), servisZamanAsimiMs = LISANS_SERVIS_ZAMAN_ASIMI_MS } = {}) {
   const pencere = new Map(); // hız sınırı (isolate içi; HIZ bağlaması yoksa)
   const yenileniyor = new Map(); // ofis → lisans yenileme sözü (aynı anda tek istek)
   const sonDeneme = new Map(); // ofis → son başarısız yenileme anı (servise yük bindirmesin)
@@ -244,12 +251,16 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
         meta.ofis,
         (async () => {
           try {
-            const yanit = await lisansFetch(`${String(env.LISANS_URL).replace(/\/+$/, "")}/v1/kapi/durum`, {
-              method: "POST",
-              headers: { "content-type": "application/json", accept: "application/json", ...(env.KAPI_LISANS_ANAHTARI ? { authorization: `Bearer ${env.KAPI_LISANS_ANAHTARI}` } : {}) },
-              body: JSON.stringify({ licenseId: meta.lisansKimligi, machine: meta.makine }),
-            });
-            const govde = await yanit.json().catch(() => null);
+            const yanit = await zamanAsimli(
+              lisansFetch(`${String(env.LISANS_URL).replace(/\/+$/, "")}/v1/kapi/durum`, {
+                method: "POST",
+                headers: { "content-type": "application/json", accept: "application/json", ...(env.KAPI_LISANS_ANAHTARI ? { authorization: `Bearer ${env.KAPI_LISANS_ANAHTARI}` } : {}) },
+                body: JSON.stringify({ licenseId: meta.lisansKimligi, machine: meta.makine }),
+                signal: AbortSignal.timeout(servisZamanAsimiMs),
+              }),
+              servisZamanAsimiMs,
+            );
+            const govde = await zamanAsimli(yanit.json(), servisZamanAsimiMs).catch(() => null);
             // 2.4.8 S-L1a: servis bu lisansı / makineyi AÇIKÇA tanımıyor (LICENSE_NOT_FOUND; site kapi_durum_impl). Ağ hatası, 5xx, zaman aşımı, yetki (UNAUTHORIZED)
             // ya da biçim (BAD_REQUEST) hatası "tanımıyor" SAYILMAZ (yanlış ayarlı anahtar bütün ofisleri sildirmesin).
             if (govde?.ok === false && govde.code === "LICENSE_NOT_FOUND") {
@@ -274,8 +285,9 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     return yenileniyor.get(meta.ofis);
   }
   /** Dönüş: { durum: "gecerli" | "gecersiz" | "dogrulanamadi", iddia, tanimiyor? }. Adaylar: kayıttaki belirteç, önbellek, gerekirse servisten yeni. Tazelik: imzalı
-   * issuedAt. tanimiyor: true → belirteç bayat ve servis bu lisansı açıkça tanımadı (S-L1a; temizlik.mjs 60 gün kuralı). */
-  async function lisansGorunumu(env, meta) {
+   * issuedAt. tanimiyor: true → belirteç bayat ve servis bu lisansı açıkça tanımadı (S-L1a; temizlik.mjs 60 gün kuralı). yenilendi: true → bu çağrıda servisten
+   * taze belirteç alındı. zorla: true → belirteç taze olsa da servise sorulur (GG D1: silme kararından hemen önce). */
+  async function lisansGorunumu(env, meta, { zorla = false } = {}) {
     const keys = guvenilen(env);
     const adaylar = [];
     for (const zarf of [meta.lisans, await onbellektenLisans(meta.ofis)]) {
@@ -284,17 +296,21 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     }
     let en = adaylar.sort((a, b) => b.issuedAt - a.issuedAt)[0] || null;
     let tanimiyor = false;
-    if (!en || now() - en.issuedAt >= K.lisansYenileMs) {
+    let yenilendi = false;
+    if (zorla || !en || now() - en.issuedAt >= K.lisansYenileMs) {
       const yanit = await servistenYenile(env, meta);
       tanimiyor = Boolean(yanit?.tanimiyor);
       const iddia = yanit?.token ? await lisansDogrula(yanit.token, keys) : null;
-      if (iddia && (!en || iddia.issuedAt >= en.issuedAt)) en = iddia;
+      if (iddia) yenilendi = true;
+      // Zorunlu yenilemede karar YALNIZ servisin şimdi verdiği belirteçle (saklı belirteç ne kadar taze olursa olsun).
+      if (zorla) en = iddia;
+      else if (iddia && (!en || iddia.issuedAt >= en.issuedAt)) en = iddia;
     }
     if (!en || now() - en.issuedAt >= K.lisansTazeMs) return { durum: "dogrulanamadi", iddia: en, ...(tanimiyor ? { tanimiyor: true } : {}) };
     // 2.4.8 L1: mobil kullanım hakkı (kapi-protokol mobilHakki — programla AYNI kural): "hosgoru" = ücretli lisans bitti, 30 gün salt okunur (canlı + son özet
     // geçer; yeni cihaz eklenmez).
     const hak = mobilHakki(en, now());
-    return { durum: hak.durum === "gecerli" ? "gecerli" : hak.acik ? "hosgoru" : "gecersiz", iddia: en, hak };
+    return { durum: hak.durum === "gecerli" ? "gecerli" : hak.acik ? "hosgoru" : "gecersiz", iddia: en, hak, ...(yenilendi ? { yenilendi: true } : {}) };
   }
   // Ret yanıtının iletisi hakkın durumuna göre (ör. "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin."); mobilHak telefonun ayırt etmesi için.
   const lisansEki = g => {
@@ -678,7 +694,8 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
   const temizlik = async env => {
     const rapor = await mobilTemizlik(env, { now, lisansGorunumu, cloudflare: cloudflare || cloudflareVarsa(env), alan: String(env.OFIS_ALANI || "destekofis.net").toLowerCase() });
     // 2.4.8 W7: süresi geçen WhatsApp bağlama oturumları (şifreli; en çok 10 dk geçerli).
-    rapor.waOturum = await waOturumTemizle(env, now()).catch(() => 0);
+    // GG D4: çağrının toplam işlem bütçesi içinde (TEMIZLIK.waPay; liste + oturum başına okuma + silme).
+    rapor.waOturum = await waOturumTemizle(env, now(), Math.floor((TEMIZLIK.waPay - 1) / 2)).catch(() => 0);
     return rapor;
   };
 

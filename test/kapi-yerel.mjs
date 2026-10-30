@@ -66,10 +66,11 @@ export function sahteR2() {
       sayac.A += 1;
       nesneler.delete(key);
     },
-    /** 2.4.8 L1: R2 list (Workers): prefix, delimiter (delimitedPrefixes), limit, cursor (sıradaki anahtar), truncated. Anahtar sırası sözlük sırası. */
-    async list({ prefix = "", delimiter = "", limit = 1000, cursor = "" } = {}) {
+    /** 2.4.8 L1: R2 list (Workers): prefix, delimiter (delimitedPrefixes), limit, cursor (sıradaki anahtar), startAfter (bu anahtardan sonrası), truncated.
+     * Anahtar sırası sözlük sırası. */
+    async list({ prefix = "", delimiter = "", limit = 1000, cursor = "", startAfter = "" } = {}) {
       sayac.A += 1;
-      const anahtarlar = [...nesneler.keys()].filter(key => key.startsWith(prefix)).sort();
+      const anahtarlar = [...nesneler.keys()].filter(key => key.startsWith(prefix) && (!startAfter || key > startAfter)).sort();
       const ogeler = [];
       const goruldu = new Set();
       for (const key of anahtarlar) {

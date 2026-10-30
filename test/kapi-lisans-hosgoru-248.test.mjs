@@ -341,6 +341,9 @@ describe("2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silm
     assert.deepEqual([c.kayitVar(y.ofis), c.kayitVar(s.ofis)], [HEPSI, HEPSI]);
     c.servisErisim = true;
     c.ilerle(2 * MIN);
+    // 2.4.8 GG ORTA-1: doğrulanamayan ofis TEMIZLIK.dogrulanamayanMs (24 saat) aday sayılmaz — servis dönse de o süre sorulmaz.
+    assert.deepEqual((await c.temizlik()).silinen, [], "doğrulanamayan ofis 24 saat beklenir");
+    c.ilerle(24 * 3_600_000);
     const r = await c.temizlik();
     assert.deepEqual(r.silinen, [s.ofis.id], `yenilenen lisanslı ofis kalır, deneme silinir: ${JSON.stringify(r)}`);
     assert.deepEqual(c.kayitVar(y.ofis), HEPSI);
@@ -444,9 +447,12 @@ describe("2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silm
     c.saat(BITIS + 31 * GUN);
     const r1 = await c.temizlik();
     assert.ok(r1.silinen.length > 0 && r1.silinen.length < 9, `ilk turda bütçe kadar: ${r1.silinen.length}, ertelenen ${r1.ertelenen}`);
-    for (let i = 0; i < 4; i += 1) {
+    // 2.4.8 GG D4: tur bütçesi R2 + Cache + servis + Cloudflare toplamı ≤ 45 (bir silme ~22 işlem) → turda 1–2 silme; 9 ofis en çok 12 turda.
+    assert.ok(r1.islem <= 45, `tur işlemi ${r1.islem}`);
+    for (let i = 0; i < 11; i += 1) {
       c.ilerle(3_600_000);
-      await c.temizlik();
+      const r = await c.temizlik();
+      assert.ok(r.islem <= 45, `tur işlemi ${r.islem}`);
     }
     assert.deepEqual(biten.map(b => c.kayitVar(b.ofis).meta), Array(9).fill(false), "birkaç turda hepsi silindi");
     assert.deepEqual(c.kayitVar(kalan.ofis), HEPSI, "geçerli ofis kaldı");
