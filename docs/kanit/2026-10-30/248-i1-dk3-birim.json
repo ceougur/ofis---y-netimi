@@ -1,0 +1,32 @@
+{
+  "ad": "248-i1-dk3-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/ice-aktarma-istek-kimligi-248.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "4994cc7f3c7dcb7c3051c10736274c835ff5cb40",
+  "dal": "is/ithal-248",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T20:05:14.153Z",
+  "sure_sn": 6.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-i1-dk3-birim.log",
+  "klasor": "/home/user/wt-ithal-248",
+  "ham_cikti_sha256": "0291205b13c97fde56cc0227501f53fba29f1bd36ab298dfa090b2b64f69bc04",
+  "ham_cikti_bayt": 9050
+}

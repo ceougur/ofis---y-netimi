@@ -380,6 +380,17 @@
   // İstek kimliği (v2.0.22): formun açıldığı anda üretilir, her gönderimde aynı gider; sunucu ikinci gönderimde yeni belge
   // açmaz (server/lib/idempotency.mjs). LAN'da (http://192.168…) crypto.randomUUID yoktur; getRandomValues her yerde var.
   HOF.requestId = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("");
+  // 2.4.8 I1 (dar kontrol ORTA-1): Excel / Sheets içe aktarma pencerelerinin gönderimi. Yanıt gelmediyse (ağ kopması, zaman aşımı, yarıda kesilen yanıt;
+  // durum 0) yükleme sunucuda kaydedilmiş olabilir: kullanıcı pencereyi kapatmadan aynı kimlikle yeniden basmalı (sunucu ikinci kez yazmaz). Dosyayı yeni
+  // pencerede yeniden yüklemek yeni kimlik demektir; Cari No'suz / telefonsuz cari ve numarasız evrak ikinci kez açılır.
+  HOF.importApi = async (path, options) => {
+    try {
+      return await HOF.api(path, options);
+    } catch (error) {
+      if (error && error.status === 0) error.message = `${error.message} Yükleme sunucuda kaydedilmiş olabilir; pencereyi kapatmadan yeniden basın, ikinci kez yazılmaz.`;
+      throw error;
+    }
+  };
   const sendApi = async (path, { method = "GET", body, signal, timeoutMs = 30000, requestId = "", background = false } = {}) => {
     // 2.4.3: yazma isteğini başlatan pencere (odaktaki ya da son basılan öğenin penceresi); başarılı yazmadan sonra o pencerenin taslağı
     // "kaydedildi" sayılır (noteWrite). Arka plan isteği ve kullanıcı hareketi olmadan giden yazma hiçbir pencereye yazılmaz (writeOrigin).

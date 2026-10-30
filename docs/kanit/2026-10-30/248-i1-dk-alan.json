@@ -1,0 +1,32 @@
+{
+  "ad": "248-i1-dk-alan",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/istek-kimligi-222.test.mjs test/cek-istek-kimligi-247.test.mjs test/yazim-duzeni.test.mjs test/banka-210-arayuz.test.mjs test/inceleme-226.test.mjs test/import-crash.test.mjs test/accounts-stock.test.mjs test/plans.test.mjs test/cheques-overview.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "4982bf30d63c508128062c3155e512f6a10e564a",
+  "dal": "is/ithal-248",
+  "kirli": 8,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:23:32.284Z",
+  "sure_sn": 41.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 152,
+    "gecen": 152,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-i1-dk-alan.log",
+  "klasor": "/home/user/wt-ithal-248",
+  "ham_cikti_sha256": "4367aa97095a3b7f174d887531e6178c96058330467ee11c757be8d08c499111",
+  "ham_cikti_bayt": 51020
+}
