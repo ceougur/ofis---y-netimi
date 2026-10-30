@@ -1,0 +1,55 @@
+
+> destekofis@2.4.7 test:senaryo-whatsapp-ayar-248
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-ayar-248.mjs
+
+
+■ A1 sekme ve boş durum: "Bağlı Değil", Elle Bağla
+  ✓ sekme adı WhatsApp
+  ✓ sekme seçili
+  ✓ durum Bağlı Değil
+  ✓ Elle Bağla düğmesi görünür
+  ✓ sekme açılınca Meta'ya istek yok
+
+■ A2 Elle Bağla: Tab ile insan hızında yazım → Kaydet ve Sına → Bağlı; belirteç ekranda ve yanıtlarda yok
+  ✓ pencere başlığı Elle Bağla
+  ✓ Tab sırası: kimlikler → belirteç
+  ✓ sınama sonrası durum Bağlı
+  ✓ pencere kapandı
+  ✓ görünen ad: Deneme Ticaret Ltd
+  ✓ kalite: Yüksek
+  ✓ sınır: 24 saatte 250 farklı kişi
+  ✓ belirteç: Kayıtlı (şifreli; ekranda gösterilmez)
+  ✓ deneme şablonu: hello_world: Onaylı (en_US)
+  ✓ Meta'ya giden belirteç yazılanla birebir (karakter kaybı yok)
+  ✓ veri tabanında kimlikler yazılanla aynı
+  ✓ veri tabanında belirteç mühürlü
+  ✓ bağlandıktan sonra: sayfada belirteç yok
+  ✓ API yanıtlarında belirteç yok (26 yanıt)
+
+■ A3 Kendime Deneme Gönder: numara + Enter → Meta'ya +90 ile hello_world; kartta Son Deneme
+  ✓ pencere başlığı
+  ✓ alıcı +905321112233 (+905321112233)
+  ✓ şablon hello_world, dil listeden (en_US)
+  ✓ Son Deneme: 03.11.2026 06:00 · …2233 · Meta kabul etti (wamid.SAHTE0001)
+  ✓ Meta'ya tek deneme iletisi (1)
+
+■ A4 Bilgileri Değiştir: kimlikler dolu, belirteç boş; yanlış belirteç → Sınama Başarısız; doğru belirteç → Bağlı
+  ✓ kimlikler dolu geldi
+  ✓ belirteç alanı boş (ekrana geri gelmez)
+  ✓ belirteç yardım yazısı
+  ✓ yanlış belirteçte Sınama Başarısız
+  ✓ neden Türkçe: 03.11.2026 06:00 · başarısız — Erişim belirtecinin süresi dolmuş. Meta İşletme Ayarları → 
+  ✓ doğru belirteçle yeniden Bağlı
+  ✓ yeniden bağlandıktan sonra: sayfada belirteç yok
+
+■ A5 Bağlantıyı Kaldır (onaylı) → Bağlı Değil; ayar satırı silindi
+  ✓ onay sorusu soruldu
+  ✓ durum Bağlı Değil
+  ✓ veri tabanında bağlantı yok
+
+■ A6 yetkisiz (Personel): Yönetim açılmaz, WhatsApp bağlantı API'si 403
+  ✓ Yönetim paneli personelde kapalı
+  ✓ API 403 (403)
+  ✓ sayfa hatası yok (—)
+
+37 geçti, 0 kaldı
