@@ -521,7 +521,7 @@
             if (data[`c${index}`]) roles[index] = data[`c${index}`];
           });
           if (!Object.values(roles).includes("name")) throw new Error("Ürün adı kolonunu seçin.");
-          const result = await HOF.api("/api/workspace/stock/import", { method: "POST", body: { matrix: source.matrix, headerAt: preview.headerAt, roles, unit: data.unit, mode: data.mode, fileName: source.fileName }, requestId });
+          const result = await HOF.importApi("/api/workspace/stock/import", { method: "POST", body: { matrix: source.matrix, headerAt: preview.headerAt, roles, unit: data.unit, mode: data.mode, fileName: source.fileName }, requestId });
           view.mode = "list";
           if (!modal) open();
           else {

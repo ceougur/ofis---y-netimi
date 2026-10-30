@@ -1,0 +1,32 @@
+{
+  "ad": "248-i1-dk-kahin-defter",
+  "komut": "npm run test:kahin-defter",
+  "commit": "4982bf30d63c508128062c3155e512f6a10e564a",
+  "dal": "is/ithal-248",
+  "kirli": 8,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:28:51.949Z",
+  "sure_sn": 4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 176,
+    "gecen": 176,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-i1-dk-kahin-defter.log",
+  "klasor": "/home/user/wt-ithal-248",
+  "ham_cikti_sha256": "5f3b1d5840cec841ebe756a8a8339ce9242d1560dc4e2077e6365bab07a7be60",
+  "ham_cikti_bayt": 1621
+}

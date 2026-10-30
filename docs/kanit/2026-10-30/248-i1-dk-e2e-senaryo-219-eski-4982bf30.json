@@ -1,0 +1,63 @@
+{
+  "ad": "248-i1-dk-e2e-senaryo-219-eski-4982bf30",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1dk-eski-4982bf30/test/e2e/senaryo-219.mjs",
+  "commit": "4982bf30d63c508128062c3155e512f6a10e564a",
+  "dal": "is/ithal-248",
+  "kirli": 8,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:25:42.365Z",
+  "sure_sn": 88.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 74,
+    "gecen": 68,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ilk basış sunucuda yazıldı (3 cari), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: \"Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ilk basış sunucuda yazıldı (3 evrak), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: \"Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ilk basış sunucuda yazıldı (2 ürün), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: \"Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ilk basış sunucuda yazıldı (2 kart), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: \"Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ilk basış yazıldı (3 cari, 2 açılış), yanıt kayboldu: \"Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "409 iletisi ilk yüklemeyi söyler, dosyayı yeniden yüklemeye yönlendirmez: \"Bu yükleme penceresinden farklı içerikle (dosya, kolon eşlemesi ya da seçenek değişmiş) bir yükleme zaten kaydedildi; ikinci kez yazılmadı. Yeniden yüklemek için pencereyi kapatıp dosyayı yeniden seçin.\"",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-i1-dk-e2e-senaryo-219-eski-4982bf30.log",
+  "klasor": "/home/user/wt-ithal-248",
+  "ham_cikti_sha256": "936a1c2d49692ba8be925891356fcce05009fb9befa9f8d36f49a4f84abfb49b",
+  "ham_cikti_bayt": 7674
+}

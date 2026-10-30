@@ -1,0 +1,102 @@
+
+■ Kurulum: yönetici girer, başlangıç tablosu yüklenir
+  ✓ başlangıçta cari yok (boş veri)
+
+■ 1. Cari → Excel / Sheets’ten Yükle → Excel dosyası (müşterinin şikâyeti)
+  ✓ accounts: eşleme penceresi açıldı
+  ✓ kolonlar tanındı: name, phone, group, balance, extra
+  ✓ pencere: 4 satır bulundu; kayda bağlama yazısı yok
+  ✓ sonuç bildirimi: 4 cari açıldı, 2 açılış bakiyesi yazıldı, 2 grup tanımlandı.×
+  ✓ cari listesinde 4 cari (beklenen 4)
+  ✓ aynı adlı iki kişi iki ayrı cari (0532 111 22 33 · 0533 444 55 66)
+  ✓ Ayşe Kaya (0532…) açılış bakiyesi 1250.5 (beklenen 1.250,50)
+  ✓ Can Öztürk açılış bakiyesi 3000 (beklenen 3.000)
+  ✓ Deniz Ak (telefonsuz, bakiyesiz) açıldı, bakiye 0
+  ✓ ek alan kartta: Veli=Hasan Kaya
+  ✓ Cari penceresinde 4 satır görünüyor
+
+■ 2. Aynı Excel ikinci kez (Aynı cari zaten varsa: Atla) → telefonlu kişiler çift açılmaz
+  ✓ accounts: eşleme penceresi açıldı
+  ✓ sonuç bildirimi: 1 cari açıldı. 3 satır atlandı (Bu cari zaten var).×
+  ✓ ikinci yüklemeden sonra 5 cari; Ayşe Kaya 2, Can Öztürk 1 (çift yok)
+  ✓ telefonsuz Deniz Ak kurala göre yeniden açıldı (emin olunamayan satır)
+
+■ 3. Cari → Excel / Sheets’ten Yükle → Google Sheets bağlantısı
+  ✓ accounts: eşleme penceresi açıldı
+  ✓ sonuç bildirimi: 3 cari açıldı, 2 açılış bakiyesi yazıldı.×
+  ✓ cari listesinde 8 cari (beklenen 8)
+  ✓ Emre Yıldız: bakiye 500, telefon 0536 100 20 30
+
+■ 3b. (2.0.22) Tür kolonunda “Müşteri/Tedarikçi” ve tanınmayan değer → Tür Değerleri'nden seçim
+  ✓ accounts: eşleme penceresi açıldı
+  ✓ Tür Değerleri tablosu: Müşteri → customer · Tedarikçi → supplier · Müşteri/Tedarikçi İki Tür Birden → Varsayılan · xyz Tanınmadı → Varsayılan
+  ✓ tek türü açık yazan değerler kendi türüyle, uyarısız
+  ✓ “Müşteri/Tedarikçi” işaretli (İki Tür Birden), türü seçilmemiş — sessizce Tedarikçi değil
+  ✓ “xyz” işaretli (Tanınmadı)
+  ✓ satır raporunda 2 tür uyarısı (4 satır hazır · 2 uyarı (alınır, raporlanır))
+  ✓ seçim yapılınca o değerin uyarısı kalktı (1 uyarı kaldı: xyz)
+  ✓ sonuç bildirimi: 4 cari açıldı, 4 açılış bakiyesi yazıldı, 1 carinin türü belirsizdi, Müşteri olarak açıldı (satır 5).×
+  ✓ Tür İkisi: supplier, bakiye -100 (seçilen Tedarikçi; açılış alacak)
+  ✓ Tür Garip: customer (varsayılan Müşteri, raporlandı)
+  ✓ açık yazılan tür aynen (Müşteri)
+  ✓ “Tedarikçi” değeri için Varsayılan Tür seçildi → customer (Tür kolonu yoksa: Müşteri)
+
+■ 4. Stok → Excel / Sheets’ten Yükle
+  ✓ stock: eşleme penceresi açıldı
+  ✓ sonuç bildirimi: 2 ürün açıldı, 2 ürüne açılış stoku yazıldı.×
+  ✓ stokta 2 ürün; Çelik Raf 10 Adet
+
+■ 5. Taksitler → Excel / Sheets’ten Yükle
+  ✓ plans: eşleme penceresi açıldı
+  ✓ sonuç bildirimi: 2 kart oluşturuldu. Yanlışsa Son Aktarımlar’dan geri alınır.×
+  ✓ 2 taksit kartı; Hakan Çelik toplam 6000, 6 taksit
+
+■ 6. Çek / Senet → Excel / Sheets’ten Yükle
+  ✓ cheques: eşleme penceresi açıldı
+  ✓ sonuç bildirimi: 2 evrak portföye alındı, 1 cariye bağlandı.×
+  ✓ portföyde 2 evrak
+
+■ 7. (2.4.8 I1) Cari Excel: yanıt kaybolur, yeniden “Carileri Oluştur” → tek yükleme, açılış bakiyesi bir kez
+  ✓ accounts: eşleme penceresi açıldı
+  ✗ ilk basış sunucuda yazıldı (3 cari), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin."
+  ✓ iki gönderim aynı istek kimliğiyle: 36e966c2b1f54f05c20c72b78a372cc1 · 36e966c2b1f54f05c20c72b78a372cc1
+  ✓ cari sayısı 3 (beklenen 3; ikinci basış yeni cari açmamalı)
+  ✓ açılış bakiyesi 2 satır (bir kez)
+  ✓ Kimlik carilerinin bakiyesi 3500.5 (beklenen 3.500,50 Borçlu)
+  ✓ 120 Alıcılar +3500.5 (beklenen +3.500,50, bir kez)
+  ✓ ekran bildirimi: "Bu yükleme zaten kaydedildi; ikinci kez yazılmadı. İlk yükleme: 3 cari açıldı, 2 açılış bakiyesi yazıldı."
+
+■ 8. (2.4.8 I1) Çek / Senet Excel + “Cariye işle”: yanıt kaybolur, yeniden “Portföye Al” → tek yükleme, cari bir kez
+  ✓ cheques: eşleme penceresi açıldı
+  ✗ ilk basış sunucuda yazıldı (3 evrak), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin."
+  ✓ iki gönderim aynı istek kimliğiyle: 157bf0b30b18a75262e15154e8df972e · 157bf0b30b18a75262e15154e8df972e
+  ✓ evrak sayısı 3 (beklenen 3; ikinci basış yeni evrak açmamalı)
+  ✓ Can Öztürk bakiyesi 3000 → 2100 (beklenen 3.000 → 2.100; evrak cariye bir kez)
+  ✓ 101 Alınan Çekler +1150 (beklenen +1.150, bir kez)
+  ✓ ekran bildirimi: "Bu yükleme zaten kaydedildi; ikinci kez yazılmadı. İlk yükleme: 3 evrak portföye alındı, 2 cariye bağlandı, 2 cari hareketi yazıldı."
+
+■ 9. (2.4.8 I1) Stok Excel: yanıt kaybolur, yeniden “Ürünleri Oluştur” → ilk yüklemenin bildirimi (önceden “0 ürün açıldı”)
+  ✓ stock: eşleme penceresi açıldı
+  ✗ ilk basış sunucuda yazıldı (2 ürün), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin."
+  ✓ iki gönderim aynı istek kimliğiyle: b4058998f362323769a621498bdb5407 · b4058998f362323769a621498bdb5407
+  ✓ 2 ürün, açılış stoku bir kez (2 ürün)
+  ✓ ekran bildirimi: "Bu yükleme zaten kaydedildi; ikinci kez yazılmadı. İlk yükleme: 2 ürün açıldı, 2 ürüne açılış stoku yazıldı."
+
+■ 10. (2.4.8 I1) Taksit Excel: yanıt kaybolur, yeniden “Kartları Oluştur” → ilk yüklemenin bildirimi, tek aktarım
+  ✓ plans: eşleme penceresi açıldı
+  ✗ ilk basış sunucuda yazıldı (2 kart), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin."
+  ✓ iki gönderim aynı istek kimliğiyle: 2384c17cc2d2e2d9efa4692fe4cc7add · 2384c17cc2d2e2d9efa4692fe4cc7add
+  ✓ 2 kart, tek aktarım kaydı (2 kart)
+  ✓ ekran bildirimi: "Bu yükleme zaten kaydedildi; ikinci kez yazılmadı. İlk yükleme: 2 kart oluşturuldu. Yanlışsa Son Aktarımlar’dan geri alınır."
+
+■ 11. (2.4.8 I1, dar kontrol ORTA-1) Cari Excel: yanıt kaybolur, “Tür kolonu yoksa” değiştirilip yeniden basılır → 409; ileti ilk yüklemeyi söyler, dosyayı yeniden yüklemeye yönlendirmez
+  ✓ accounts: eşleme penceresi açıldı
+  ✗ ilk basış yazıldı (3 cari, 2 açılış), yanıt kayboldu: "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin."
+  ✓ iki gönderim aynı istek kimliğiyle: f1c5c3f80780a0ee41db1766e85a41a2 · f1c5c3f80780a0ee41db1766e85a41a2
+  ✓ seçenek değişince yazım yok (3 cari, 2 açılış; beklenen 3 / 2)
+  ✗ 409 iletisi ilk yüklemeyi söyler, dosyayı yeniden yüklemeye yönlendirmez: "Bu yükleme penceresinden farklı içerikle (dosya, kolon eşlemesi ya da seçenek değişmiş) bir yükleme zaten kaydedildi; ikinci kez yazılmadı. Yeniden yüklemek için pencereyi kapatıp dosyayı yeniden seçin."
+  ✓ ilk yükleme önceki seçenekle (Müşteri) kayıtlı: customer, customer, customer
+  ✓ mutabakat (ana defter ↔ Kasa/Cari/Stok/Taksit/Çek) tutarlı
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo 2.0.19: 68 geçti, 6 kaldı. Ekranlar: ../../../tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1dk-eski-4982bf30/test/e2e/artifacts/senaryo-219

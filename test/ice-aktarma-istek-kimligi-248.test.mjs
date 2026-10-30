@@ -242,26 +242,42 @@ describe("2.4.8 I1 içe aktarma istek kimliği (tek sunucu)", () => {
     }
   });
 
-  it("aynı kimlik + farklı içerik (seçenek ya da eşleme değişti) → 409 request-id-reused, hiçbir şey yazılmaz, 409 ilk raporu sızdırmaz", async () => {
+  // Dar kontrol I1 ORTA-1: yanıt kaybolduktan sonra seçenek değiştirilip yeniden basılınca 409 iletisi ilk yüklemenin ÖNCEKİ seçeneklerle kaydedildiğini sayılarıyla
+  // söyler ve dosyanın yeniden yüklenmesine YÖNLENDİRMEZ (önceden "pencereyi kapatıp dosyayı yeniden seçin" deniyordu; yeni pencere yeni kimlik → cari 3 → 6).
+  // 409 gövdesinde ilk raporun yalnız özet sayıları (first); satır listeleri ve ham rapor (refId) yok.
+  it("aynı kimlik + farklı içerik (seçenek ya da eşleme değişti) → 409 request-id-reused, hiçbir şey yazılmaz; ileti ilk yüklemenin sayılarını söyler, yeniden yüklemeye yönlendirmez", async () => {
     const acc = await customer(`Farklı Gövde ${++n}`);
     expectStatus(await send(ctx.client, "cheques", chequesBody(acc.name), RID("farkli-cek")), 200, "", "ilk");
     const before_ = counts(ctx.store(), acc.name);
     const changed = await send(ctx.client, "cheques", chequesBody(acc.name, { post: false }), RID("farkli-cek"));
     expectStatus(changed, 409, "request-id-reused", "Cariye işle kaldırılıp aynı kimlikle");
-    assert.match(changed.error, /farklı içerikle/);
-    assert.equal(changed.data?.refId, undefined, "409 içinde ilk yüklemenin raporu yok");
+    assert.equal(changed.error, "İlk yükleme (önceki seçeneklerle) kaydedildi: 3 evrak portföye alındı, 2 cari hareketi yazıldı; ikinci kez yazılmadı. Çek / Senet listesini kontrol edin. Dosyayı yeniden yüklerseniz numarasız evrak ikinci kez açılır (“Cariye işle” seçiliyse cari etkisi de); değişikliği evrak kartlarında yapın.", `çek 409 iletisi: "${changed.error}"`);
+    assert.doesNotMatch(changed.error, /dosyayı yeniden seçin/, "ileti dosyanın yeniden yüklenmesine yönlendirmez");
+    assert.deepEqual(changed.data?.first, { created: 3, linked: 2, posted: 2, skippedTotal: 0 }, "409 gövdesinde ilk yüklemenin özet sayıları");
+    assert.equal(changed.data?.refId, undefined, "409 içinde ilk yüklemenin ham raporu yok");
+    assert.equal(changed.data?.skipped, undefined, "409 içinde satır listesi yok");
     assert.deepEqual(counts(ctx.store(), acc.name), before_, "yeni evrak / cari satırı yok");
     const prefix = `Farklı Cari ${++n}`;
     expectStatus(await send(ctx.client, "accounts", accountsBody(prefix), RID("farkli-cari")), 200, "", "ilk cari");
-    expectStatus(await send(ctx.client, "accounts", accountsBody(prefix, { roles: { 0: "name" } }), RID("farkli-cari")), 409, "request-id-reused", "eşleme değişti");
+    const remapped = await send(ctx.client, "accounts", accountsBody(prefix, { roles: { 0: "name" } }), RID("farkli-cari"));
+    expectStatus(remapped, 409, "request-id-reused", "eşleme değişti");
+    assert.equal(remapped.error, "İlk yükleme (önceki seçeneklerle) kaydedildi: 3 cari açıldı, 2 açılış bakiyesi yazıldı; ikinci kez yazılmadı. Cari listesini kontrol edin. Dosyayı yeniden yüklerseniz Cari No'suz ya da telefonsuz satırlar ikinci kez açılır; değişikliği cari kartlarında yapın.", `cari 409 iletisi: "${remapped.error}"`);
+    assert.deepEqual(remapped.data?.first, { created: 3, updated: 0, balances: 2 }, "cari 409 özeti (atlanan yoksa skippedTotal alanı raporda yok)");
     expectStatus(await send(ctx.client, "accounts", accountsBody(prefix, { matrix: [...accountsBody(prefix).matrix, [`${prefix} Dört`, "10"]] }), RID("farkli-cari")), 409, "request-id-reused", "dosya değişti");
     assert.equal(counts(ctx.store(), prefix).accounts, 3);
     const sprefix = `Farklı Stok ${++n}`;
     expectStatus(await send(ctx.client, "stock", stockBody(sprefix), RID("farkli-stok")), 200, "", "ilk stok");
-    expectStatus(await send(ctx.client, "stock", stockBody(sprefix, { mode: "update" }), RID("farkli-stok")), 409, "request-id-reused", "stok seçenek");
+    const restocked = await send(ctx.client, "stock", stockBody(sprefix, { mode: "update" }), RID("farkli-stok"));
+    expectStatus(restocked, 409, "request-id-reused", "stok seçenek");
+    assert.equal(restocked.error, "İlk yükleme (önceki seçeneklerle) kaydedildi: 2 ürün açıldı, 2 ürüne açılış stoku yazıldı; ikinci kez yazılmadı. Ürün listesini kontrol edin. Değişikliği ürün kartlarında yapın ya da dosyayı “Bilgilerini Güncelle” seçeneğiyle yeniden yükleyin (miktar eklenmez).", `stok 409 iletisi: "${restocked.error}"`);
+    assert.deepEqual(restocked.data?.first, { created: 2, updated: 0, opening: 2, skippedTotal: 0 });
     const pprefix = `Farklı Taksit ${++n}`;
-    expectStatus(await send(ctx.client, "plans", plansBody(pprefix), RID("farkli-taksit")), 200, "", "ilk taksit");
-    expectStatus(await send(ctx.client, "plans", plansBody(pprefix, { groupName: "Başka Grup" }), RID("farkli-taksit")), 409, "request-id-reused", "taksit seçenek");
+    const planFirst = await send(ctx.client, "plans", plansBody(pprefix), RID("farkli-taksit"));
+    expectStatus(planFirst, 200, "", "ilk taksit");
+    const regrouped = await send(ctx.client, "plans", plansBody(pprefix, { groupName: "Başka Grup" }), RID("farkli-taksit"));
+    expectStatus(regrouped, 409, "request-id-reused", "taksit seçenek");
+    assert.equal(regrouped.error, "İlk yükleme (önceki seçeneklerle) kaydedildi: 2 kart oluşturuldu; ikinci kez yazılmadı. Taksitler listesini kontrol edin. Dosyayı başka seçenekle yeniden yüklerseniz kartlar ikinci kez açılabilir; değişikliği kartlarda yapın ya da önce Son Aktarımlar’dan geri alın.", `taksit 409 iletisi: "${regrouped.error}"`);
+    assert.deepEqual(regrouped.data?.first, { created: 2, importId: planFirst.data.importId }, "taksit 409 özeti Geri Al'ın aktarımını gösterir");
     assert.equal(counts(ctx.store(), pprefix).plans, 2);
   });
 
@@ -364,17 +380,24 @@ describe("2.4.8 I1 içe aktarma istek kimliği: yeniden başlatma ve şirketler"
     assert.equal(counts(ctx.server.app.store, "Yeniden Başlatma").accounts, 3);
     const created = await must("002", ctx.api.post("/api/companies", { code: "002", name: "İthal İkinci Şirket" }));
     const companyB = created.company?.id || created.id;
+    // Dar kontrol I1 DÜŞÜK-2: şirketin sayısı o şirketin API'sinden (?hofCompany=) okunur; app.store istek dışında 001'i okur.
+    const inCompany = async company => (await must(`cari listesi ${company}`, ctx.api.get(`/api/workspace/accounts?status=all&limit=50&q=${encodeURIComponent("Yeniden Başlatma")}&hofCompany=${encodeURIComponent(company)}`))).accounts.filter(item => item.name.startsWith("Yeniden Başlatma")).length;
+    assert.equal(await inCompany("sirket-001"), 3, "001'de 3 cari");
+    assert.equal(await inCompany(companyB), 0, "002 boş başlar");
     await must("002 seç", ctx.api.post("/api/companies/select", { id: companyB }));
     try {
       const inB = await send(ctx.client, "accounts", accountsBody("Yeniden Başlatma"), RID("restart"));
       expectStatus(inB, 200, "", "002");
       assert.notEqual(inB.data.replayed, true, "002'de yeni yükleme (001'in sonucu sızmaz)");
-      expectStatus(await send(ctx.client, "accounts", accountsBody("Yeniden Başlatma"), RID("restart")), 200, "", "002 yeniden");
-      assert.equal(counts(ctx.server.app.store, "Yeniden Başlatma").accounts, 3, "002'de tek yükleme");
+      assert.equal(inB.data.created, 3);
+      const againB = await send(ctx.client, "accounts", accountsBody("Yeniden Başlatma"), RID("restart"));
+      expectStatus(againB, 200, "", "002 yeniden");
+      assert.equal(againB.data.replayed, true, `002'de aynı istek yeniden işlendi: ${againB.data.created} cari açıldı`);
+      assert.equal(await inCompany(companyB), 3, "002'de tek yükleme (002'nin API'sinden)");
     } finally {
       await must("001 seç", ctx.api.post("/api/companies/select", { id: "sirket-001" }));
     }
-    assert.equal(counts(ctx.server.app.store, "Yeniden Başlatma").accounts, 3, "001'de tek yükleme");
+    assert.equal(await inCompany("sirket-001"), 3, "001'de tek yükleme (001'in API'sinden)");
     await integrityOk(ctx.api, "001");
   });
 });

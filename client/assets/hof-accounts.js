@@ -1591,7 +1591,7 @@
         });
         if (!Object.values(roles).includes("name")) throw new Error("Ad Soyad / Unvan kolonunu seçin.");
         const typeMap = form ? typeChoices(form) : {};
-        const result = await HOF.api("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, typeMap, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName }, requestId });
+        const result = await HOF.importApi("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, typeMap, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName }, requestId });
         view.status = "all";
         view.mode = "list";
         if (!modal) open();

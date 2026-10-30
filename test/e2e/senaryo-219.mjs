@@ -73,6 +73,12 @@ const idStockXlsx = xlsx("stok-kimlik.xlsx", "Stok", ["Ürün Adı", "Birim", "M
   { "Ürün Adı": "Kimlik Dolap", Birim: "Adet", Miktar: "3" },
   { "Ürün Adı": "Kimlik Sandalye", Birim: "Adet", Miktar: "12" },
 ]);
+// 2.4.8 I1 dar kontrol ORTA-1: yanıt kaybından sonra seçenek değiştirilip yeniden basılan cari yüklemesi (409 iletisi).
+const optionAccountsXlsx = xlsx("cari-secenek.xlsx", "Cariler", ["Ad Soyad", "Açılış Bakiyesi"], [
+  { "Ad Soyad": "Seçenek Bir", "Açılış Bakiyesi": "1.000" },
+  { "Ad Soyad": "Seçenek İki", "Açılış Bakiyesi": "2.500,50" },
+  { "Ad Soyad": "Seçenek Üç", "Açılış Bakiyesi": "" },
+]);
 const idPlansXlsx = xlsx("taksit-kimlik.xlsx", "Taksit", ["Ad Soyad", "Telefon", "Toplam Tutar", "Taksit Sayısı", "İlk Vade"], [
   { "Ad Soyad": "Kimlik Kerem", Telefon: "0539 333 00 33", "Toplam Tutar": "3.000", "Taksit Sayısı": "3", "İlk Vade": tr(iso(15)) },
   { "Ad Soyad": "Kimlik Leyla", Telefon: "0539 444 00 44", "Toplam Tutar": "1.200", "Taksit Sayısı": "2", "İlk Vade": tr(iso(25)) },
@@ -329,12 +335,14 @@ try {
   // Bağımsız beklenen (dosyadan elle): cari 3 kişi, açılış 1.000 + 2.500,50 = 3.500,50 (120 Alıcılar); çek 3 evrak 700 + 200 + 250 = 1.150 (101), "Cariye işle"
   // ile Can Öztürk'ün borcu 3.000 − 900 = 2.100; stok 2 ürün (3 + 12 Adet); taksit 2 kart. Önceden ikinci basış cari / evrakı ve bakiyeyi ikinci kez yazıyordu.
   const notice = "Bu yükleme zaten kaydedildi; ikinci kez yazılmadı. İlk yükleme: ";
+  // Dar kontrol I1 ORTA-1: yanıt gelmeyince pencere kullanıcıyı "kapatmadan yeniden bas"a yönlendirir (yeni pencere yeni kimlik → ikinci yükleme).
+  const LOST = "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin. Yükleme sunucuda kaydedilmiş olabilir; pencereyi kapatmadan yeniden basın, ikinci kez yazılmaz.";
   console.log("\n■ 7. (2.4.8 I1) Cari Excel: yanıt kaybolur, yeniden “Carileri Oluştur” → tek yükleme, açılış bakiyesi bir kez");
   if (await openImport("accounts", { file: idAccountsXlsx })) {
     const count = () => dbCount("SELECT COUNT(*) AS n FROM accounts WHERE deleted_at IS NULL AND name LIKE 'Kimlik %'");
     const l0 = await ledgerNow();
     const run = await lostResponseRetry("/api/workspace/accounts/import", count);
-    ok(run.afterFirst === 3 && /Sunucuya ulaşılamadı|yanıt/.test(run.firstError), `ilk basış sunucuda yazıldı (${run.afterFirst} cari), yanıt kayboldu; pencere açık: "${run.firstError}"`);
+    ok(run.afterFirst === 3 && run.firstError === LOST, `ilk basış sunucuda yazıldı (${run.afterFirst} cari), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: "${run.firstError}"`);
     ok(sameRequest(run.headers), `iki gönderim aynı istek kimliğiyle: ${run.headers.map(h => h || "(kimlik yok)").join(" · ")}`);
     ok(count() === 3, `cari sayısı ${count()} (beklenen 3; ikinci basış yeni cari açmamalı)`);
     ok(dbCount("SELECT COUNT(*) AS n FROM account_entries e JOIN accounts a ON a.id = e.account_id WHERE a.name LIKE 'Kimlik %' AND e.is_opening = 1") === 2, "açılış bakiyesi 2 satır (bir kez)");
@@ -354,7 +362,7 @@ try {
     const before_ = await can();
     const l0 = await ledgerNow();
     const run = await lostResponseRetry("/api/workspace/cheques/import", count);
-    ok(run.afterFirst === 3 && Boolean(run.firstError), `ilk basış sunucuda yazıldı (${run.afterFirst} evrak), yanıt kayboldu; pencere açık: "${run.firstError}"`);
+    ok(run.afterFirst === 3 && run.firstError === LOST, `ilk basış sunucuda yazıldı (${run.afterFirst} evrak), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: "${run.firstError}"`);
     ok(sameRequest(run.headers), `iki gönderim aynı istek kimliğiyle: ${run.headers.map(h => h || "(kimlik yok)").join(" · ")}`);
     ok(count() === 3, `evrak sayısı ${count()} (beklenen 3; ikinci basış yeni evrak açmamalı)`);
     const after_ = await can();
@@ -368,7 +376,7 @@ try {
   if (await openImport("stock", { file: idStockXlsx })) {
     const count = () => dbCount("SELECT COUNT(*) AS n FROM stock_items WHERE deleted_at IS NULL AND name LIKE 'Kimlik %'");
     const run = await lostResponseRetry("/api/workspace/stock/import", count);
-    ok(run.afterFirst === 2 && Boolean(run.firstError), `ilk basış sunucuda yazıldı (${run.afterFirst} ürün), yanıt kayboldu; pencere açık: "${run.firstError}"`);
+    ok(run.afterFirst === 2 && run.firstError === LOST, `ilk basış sunucuda yazıldı (${run.afterFirst} ürün), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: "${run.firstError}"`);
     ok(sameRequest(run.headers), `iki gönderim aynı istek kimliğiyle: ${run.headers.map(h => h || "(kimlik yok)").join(" · ")}`);
     ok(count() === 2 && dbCount("SELECT COUNT(*) AS n FROM stock_moves m JOIN stock_items i ON i.id = m.item_id WHERE i.name LIKE 'Kimlik %' AND m.is_opening = 1") === 2, `2 ürün, açılış stoku bir kez (${count()} ürün)`);
     ok(run.toast === `${notice}2 ürün açıldı, 2 ürüne açılış stoku yazıldı.`, `ekran bildirimi: "${run.toast}"`);
@@ -378,11 +386,61 @@ try {
     const count = () => dbCount("SELECT COUNT(*) AS n FROM plans WHERE deleted_at IS NULL AND name LIKE 'Kimlik %'");
     const imports0 = dbCount("SELECT COUNT(*) AS n FROM plan_imports");
     const run = await lostResponseRetry("/api/workspace/plans/import", count);
-    ok(run.afterFirst === 2 && Boolean(run.firstError), `ilk basış sunucuda yazıldı (${run.afterFirst} kart), yanıt kayboldu; pencere açık: "${run.firstError}"`);
+    ok(run.afterFirst === 2 && run.firstError === LOST, `ilk basış sunucuda yazıldı (${run.afterFirst} kart), yanıt kayboldu; pencere açık, yeniden basmaya yönlendirir: "${run.firstError}"`);
     ok(sameRequest(run.headers), `iki gönderim aynı istek kimliğiyle: ${run.headers.map(h => h || "(kimlik yok)").join(" · ")}`);
     ok(count() === 2 && dbCount("SELECT COUNT(*) AS n FROM plan_imports") === imports0 + 1, `2 kart, tek aktarım kaydı (${count()} kart)`);
     ok(run.toast === `${notice}2 kart oluşturuldu. Yanlışsa Son Aktarımlar’dan geri alınır.`, `ekran bildirimi: "${run.toast}"`);
   }
+  console.log("\n■ 11. (2.4.8 I1, dar kontrol ORTA-1) Cari Excel: yanıt kaybolur, “Tür kolonu yoksa” değiştirilip yeniden basılır → 409; ileti ilk yüklemeyi söyler, dosyayı yeniden yüklemeye yönlendirmez");
+  if (await openImport("accounts", { file: optionAccountsXlsx })) {
+    const count = () => dbCount("SELECT COUNT(*) AS n FROM accounts WHERE deleted_at IS NULL AND name LIKE 'Seçenek %'");
+    const openings = () => dbCount("SELECT COUNT(*) AS n FROM account_entries e JOIN accounts a ON a.id = e.account_id WHERE a.name LIKE 'Seçenek %' AND e.is_opening = 1");
+    const isImport = url => new URL(url).pathname === "/api/workspace/accounts/import";
+    const headers = [];
+    let dropped = false;
+    await page.route(isImport, async route => {
+      const request = route.request();
+      if (request.method() !== "POST") return route.continue();
+      headers.push(request.headers()["x-hof-request"] || "");
+      if (dropped) return route.continue();
+      dropped = true;
+      await route.fetch(); // yazılır; yanıt tarayıcıya ulaşmaz
+      return route.abort("connectionreset");
+    });
+    const formError = () => page.$eval(`${MODAL_TOP} .hof-import-form .hof-form-error`, node => node.textContent.trim()).catch(() => "");
+    try {
+      await page.waitForTimeout(500);
+      await page.click(`${MODAL_TOP} .hof-import-form button[type="submit"]`);
+      let lost = "";
+      for (let i = 0; i < 40 && !lost; i += 1) {
+        await page.waitForTimeout(250);
+        lost = await formError();
+      }
+      ok(count() === 3 && openings() === 2 && lost === LOST, `ilk basış yazıldı (${count()} cari, ${openings()} açılış), yanıt kayboldu: "${lost}"`);
+      await page.selectOption(`${MODAL_TOP} .hof-import-form select[name="type"]`, "supplier");
+      await page.waitForTimeout(400);
+      await page.click(`${MODAL_TOP} .hof-import-form button[type="submit"]`);
+      let conflict = "";
+      for (let i = 0; i < 40 && (!conflict || conflict === lost); i += 1) {
+        await page.waitForTimeout(250);
+        conflict = await formError();
+      }
+      await shot("i1-409-secenek-degisti");
+      ok(sameRequest(headers), `iki gönderim aynı istek kimliğiyle: ${headers.map(h => h || "(kimlik yok)").join(" · ")}`);
+      ok(count() === 3 && openings() === 2, `seçenek değişince yazım yok (${count()} cari, ${openings()} açılış; beklenen 3 / 2)`);
+      ok(
+        conflict === "İlk yükleme (önceki seçeneklerle) kaydedildi: 3 cari açıldı, 2 açılış bakiyesi yazıldı; ikinci kez yazılmadı. Cari listesini kontrol edin. Dosyayı yeniden yüklerseniz Cari No'suz ya da telefonsuz satırlar ikinci kez açılır; değişikliği cari kartlarında yapın.",
+        `409 iletisi ilk yüklemeyi söyler, dosyayı yeniden yüklemeye yönlendirmez: "${conflict}"`,
+      );
+    } finally {
+      await page.unroute(isImport);
+    }
+    await closeAll();
+    const list = await call("/api/workspace/accounts?status=all&limit=50&q=Se%C3%A7enek");
+    const types = list.accounts.filter(item => item.name.startsWith("Seçenek ")).map(item => item.type);
+    ok(types.length === 3 && types.every(type => type === "customer"), `ilk yükleme önceki seçenekle (Müşteri) kayıtlı: ${types.join(", ")}`);
+  }
+
   const integrity = await call("/api/workspace/ledger/integrity");
   ok(integrity?.ok === true, `mutabakat (ana defter ↔ Kasa/Cari/Stok/Taksit/Çek) tutarlı${integrity?.ok ? "" : `: ${JSON.stringify(integrity?.failures).slice(0, 300)}`}`);
 

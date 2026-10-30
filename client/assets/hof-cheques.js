@@ -653,7 +653,7 @@
         });
         if (!Object.values(roles).includes("amount")) throw new Error("Tutar kolonunu seçin.");
         if (!Object.values(roles).includes("due")) throw new Error("Vade tarihi kolonunu seçin.");
-        const result = await HOF.api("/api/workspace/cheques/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, direction: data.direction, instrument: data.instrument, post: data.post === true, fileName }, requestId });
+        const result = await HOF.importApi("/api/workspace/cheques/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, direction: data.direction, instrument: data.instrument, post: data.post === true, fileName }, requestId });
         const parts = [`${result.created} evrak portföye alındı`];
         if (result.linked) parts.push(`${result.linked} cariye bağlandı`);
         if (result.posted) parts.push(`${result.posted} cari hareketi yazıldı`);

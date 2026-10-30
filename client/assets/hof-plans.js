@@ -1125,7 +1125,7 @@
         preview.headers.forEach((_, index) => {
           if (data[`c${index}`]) roles[index] = data[`c${index}`];
         });
-        const result = await HOF.api("/api/workspace/plans/import", { method: "POST", body: { matrix: sheet.matrix, headerAt: preview.headerAt, roles, defaultCount: data.defaultCount, defaultFirstDue: data.defaultFirstDue, dueDay: data.dueDay, groupName: data.groupName, linkRecords: preview.hasTable ? Boolean(data.linkRecords) : false, fileName }, timeoutMs: 300_000, requestId });
+        const result = await HOF.importApi("/api/workspace/plans/import", { method: "POST", body: { matrix: sheet.matrix, headerAt: preview.headerAt, roles, defaultCount: data.defaultCount, defaultFirstDue: data.defaultFirstDue, dueDay: data.dueDay, groupName: data.groupName, linkRecords: preview.hasTable ? Boolean(data.linkRecords) : false, fileName }, timeoutMs: 300_000, requestId });
         await loadGroups();
         view.status = "all";
         view.mode = "list";
