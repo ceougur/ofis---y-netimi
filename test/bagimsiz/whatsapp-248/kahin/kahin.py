@@ -51,9 +51,14 @@ ATLANDI = "Atlandı"                                   # §7a 2
 BEKLEME_131049 = "Meta Bekletti (24 Saat Sonra Yeniden)"   # §7a 14
 SORULUYOR = "PLAN-SUSUYOR:24-saatten-eski-devam-sorusu"    # §7a 24 "açılışta sorulur" — iş durumu adı verilmedi
 SABLON_PAZARLAMA = "Şablon Pazarlama'ya Alındı"       # §7a 27 (toplu işin durma nedeni)
-BAGLANTI = "BAGLANTI"                                 # bağlantı kurulamadı (§7a 11) — Meta kodu yok; kâhinin iç etiketi
+BAGLANTI = "BAGLANTI"                                 # bağlantı kurulamadı (§7a 11) — Meta kodu yok; kâhinin iç etiketi (yalnız M61'de iş koduna yazılır)
+BAGLANTI_BEKLENIYOR = "Bağlantı Bekleniyor"           # §7a R1: Meta'ya hiç ulaşılamıyorsa toplu işin durma nedeni
+DAHA_ONCE = "daha_once_gonderildi"                    # §7a R3: elenme nedeni ("Daha Önce Gönderildi")
 
 SIRA = {KABUL: 1, GONDERILDI: 2, TESLIM: 3, OKUNDU: 4}
+GONDERILMIS = {KABUL, GONDERILDI, TESLIM, OKUNDU}     # §7a R3 "Meta Kabul Etti ve sonrası" (kâhin yorumu: Süresi Doldu / Başarısız sayılmaz)
+SABLON_OKUMA_ARALIK = 10 * 60 * 1000                  # §7a R2: en geç 10 dakikada bir
+SABLON_OKUMA_ILETI = 100                              # §7a R2: her 100 iletide
 KESIN = {TESLIM, OKUNDU, BASARISIZ, SURESI_DOLDU}
 CALISIR = (BEKLIYOR, SINIR, BEKLEME_131049)
 GERI_DONEBILIR = {BEKLIYOR, SINIR, BEKLEME_131049, HAZIRLANIYOR, DURAKLATILDI, LISANS, SORULUYOR, GONDERILIYOR}
@@ -64,7 +69,7 @@ KUYRUKTA = {BEKLIYOR, HAZIRLANIYOR, GONDERILIYOR, SINIR, DURAKLATILDI, BEKLEME_1
 DURAKLATAN = {0, 190, 10, 131005, 368, 131031, 131042, 133010, 131045, 132001, 132000, 132012, 132018, 132007, 132015, 132016}
 DURAKLATAN_ARALIK = range(200, 300)
 ALICI = {131026, 131021, 131009}
-GECICI = {131000, 131016, 130429, 80007, 4, 131057, 1, 2, 133004, BAGLANTI}   # §7a 11, 12
+GECICI = {131000, 131016, 130429, 80007, 4, 131057, 1, 2, 133004}   # §7a 12, 15 + R1: Meta'nın YANIT verdiği geçici hatalar (bağlantı yok → R1 beklemesi)
 SINIR_KODLARI = {131048}                                                       # §7a 12 → madde 30
 GECICI_DIZI = (30 * SN, 2 * DK, 15 * DK)                                        # §7a 15: 30 sn → 2 dk → 15 dk, sonra Başarısız
 ICERIK_SABLON = {"ekstre": "destekofis_ekstre", "hatirlatma": "destekofis_odeme_hatirlatma"}
@@ -146,8 +151,15 @@ MUTASYONLAR = {
     "M56": "24 saatten eski toplu işte sınır bekleyen iş de sorulur",
     "M57": "kuyrukta 'İstemiyor' işaretlenen cariye yine gönderilir",
     "M58": "iş verisi gönderimde değil başlatmada okunur",
-    "M59": "bağlantı kurulamadığında Sonucu Belirsiz (geçici değil)",
+    "M59": "bağlantı kurulamadığında Sonucu Belirsiz (bekleme değil)",
     "M60": "131049'da PDF silinir ve yeniden yüklenir",
+    "M61": "bağlantı yokken iş geçici hata sayılır (30 sn → 2 dk → 15 dk → Başarısız; R1 öncesi)",
+    "M62": "bağlantı dönünce 'Bağlantı Bekleniyor' toplu iş kendiliğinden sürmez",
+    "M63": "şablon kategorisi saatte bir okunur (R2 öncesi)",
+    "M64": "şablon kategorisi 100 iletide okunmaz (yalnız 10 dk)",
+    "M65": "daha önce gönderilmiş cari bayraksız da gönderilir (R3 yok)",
+    "M66": "'Yine de Gönder' bayrağı yok sayılır (daha önce gönderilen hep elenir)",
+    "M67": "daha önce Başarısız olan iş de 'Daha Önce Gönderildi' sayılır",
 }
 
 # ---- yardımcılar -----------------------------------------------------------------------------------------------------------
@@ -269,7 +281,7 @@ class Toplu:
     def __init__(self, etiket, sablon, donem, sirket, t, kullanici):
         self.etiket = etiket; self.sablon = sablon; self.donem = donem; self.sirket = sirket; self.t = t; self.kullanici = kullanici
         self.isler = []; self.durum = "aktif"; self.neden = None; self.gecici = 0
-        self.bas = 0; self.sablon_okuma = t
+        self.bas = 0; self.sablon_okuma = t; self.okuma_sayac = 0
 
 
 class Benzetim:
@@ -302,6 +314,7 @@ class Benzetim:
         self.ttl_aktif = {}
         self.son_kanca = {}          # waba → son İMZALI kancanın işlendiği an (§7a 16 "kanca yolu çalışıyor")
         self.istekler = {}           # istek kimliği → toplu etiketi (§7a 9)
+        self.onceki_uyari = {}       # §7a R3: etiket → {sayi, son} ("N kişiye bu dönem daha önce gönderildi (son tarih)")
         self.ayni_istek = {}; self.olusmadi = []
         self.bitis = zaman_ayristir(sen["bitis"], self.T0) if sen.get("bitis") else self.T0 + 10 * GUN
         self.cokme = None
@@ -446,6 +459,10 @@ class Benzetim:
                     st[k] = o[k]
         elif tur == "meta_kapali":
             self.meta["kapali"] = o["kapali"]
+            if not o["kapali"] and "M62" not in self.mut:         # §7a R1: bağlantı dönünce kendiliğinden sürer
+                for tp in self.toplular.values():
+                    if tp.durum == "baglanti_bekleniyor":
+                        tp.durum = "aktif"; tp.neden = None; tp.bas = 0
         elif tur == "sahte_kanca":
             wamid = o.get("wamid", "wamid.SAHTE")
             if "is" in o:                                    # sahte olay gerçek bir işin wamid'ini taşır (saldırgan wamid'i biliyor)
@@ -480,6 +497,20 @@ class Benzetim:
                     return True
         return False
 
+    def onceden_gonderildi(self, cid, sablon, donem, sirket):
+        """§7a R3: aynı cari + şablon + dönem DAHA ÖNCE gönderilmiş (Meta Kabul Etti ve sonrası) → son kabul anı, yoksa None.
+        Kâhin yorumu: yalnız dönemli ekstrede (uyarı metni "bu dönem"); hatırlatmada (dönemsiz) uygulanmaz — planda yok."""
+        if "M65" in self.mut or sablon != "ekstre" or donem in (None, "tum"):
+            return None
+        sayilan = GONDERILMIS | ({BASARISIZ} if "M67" in self.mut else set())
+        en = None
+        for tp in self.toplular.values():
+            if tp.sablon == sablon and tp.donem == donem and tp.sirket == sirket:
+                for j in tp.isler:
+                    if j.cari == cid and j.durum in sayilan and j.kabul_t is not None:
+                        en = j.kabul_t if en is None else max(en, j.kabul_t)
+        return en
+
     def gecikmis(self, c, t):
         """§7a 20: vadesi geçmiş açık kalemler (girdi: cari 'vadeler' [{vade, kalan}]; gecikmiş = vade < bugün — kâhin yorumu)."""
         bugun = tarih(t, self.tz)
@@ -511,7 +542,7 @@ class Benzetim:
             self.istekler[istek] = etiket
         waba = self.wabalar[sirket]
         tp = Toplu(etiket, sablon, o.get("donem"), sirket, t, kullanici)
-        elenen = {}; goruldu = set(); telefonlar = set()
+        elenen = {}; goruldu = set(); telefonlar = set(); onceki = []
         for cid in o["secim"]:
             if cid in goruldu and "M5" not in self.mut:
                 continue                                                  # UNIQUE(batch_id, account_id)
@@ -532,6 +563,11 @@ class Benzetim:
                 elenen[cid] = "gecikmis_borc_yok"; continue               # §7a 20
             if "M37" not in self.mut and self.kuyrukta(cid, sablon, o.get("donem"), sirket):
                 elenen[cid] = "zaten_kuyrukta"; continue                  # §7a 9
+            onceki_t = self.onceden_gonderildi(cid, sablon, o.get("donem"), sirket)
+            if onceki_t is not None:                                      # §7a R3: uyarı + "Yine de Gönder" / "Bunları Çıkar" (varsayılan)
+                onceki.append(onceki_t)
+                if o.get("onceki", "cikar") != "gonder" or "M66" in self.mut:
+                    elenen[cid] = DAHA_ONCE; continue
             telefonlar.add(tel)
             anahtar = f"{etiket}/{cid}"
             n = 1
@@ -544,6 +580,8 @@ class Benzetim:
             tp.isler.append(j)
             self.isler[anahtar] = j
         self.elenen[etiket] = elenen
+        if onceki:
+            self.onceki_uyari[etiket] = {"sayi": len(onceki), "son": tarih(max(onceki), self.tz)}
         if not tp.isler and "M49" not in self.mut:
             self.olusmadi.append(etiket)                                  # §7a 31: kayıt OLUŞMAZ, nedenler listelenir
             return
@@ -724,7 +762,7 @@ class Benzetim:
             if not canli:
                 while True:
                     if self.meta["kapali"]:
-                        return self.hata_isle(j, tp, BAGLANTI, ts, post_yok=True) if "M59" not in self.mut else self.belirsiz(j, ts)
+                        return self.baglanti_yok(j, tp, ts)
                     self.medya_toplam += 1
                     y = self.meta_yanit_medya()
                     if y == "kabul":
@@ -761,7 +799,7 @@ class Benzetim:
         if "M36" in self.mut and tp.sablon == "ekstre" and len(j.medyalar) <= j.silinen_n:
             self.degismez["silinmis_medyayla_gonderim"] += 1
         if self.meta["kapali"]:                             # §7a 11: bağlantı hiç kurulamadı → geçici
-            return self.hata_isle(j, tp, BAGLANTI, ts, post_yok=True) if "M59" not in self.mut else self.belirsiz(j, ts)
+            return self.baglanti_yok(j, tp, ts)
         y = self.meta_yanit_mesaj(j, self.post_hedef.get(j.telefon, 0) + 1)
         self.post_say(j, tp, ts)
         if y == "kabul":
@@ -787,6 +825,16 @@ class Benzetim:
             self.durum(j, SINIR, ts); j.next_at = ts + GUN
             return
         self.hata_isle(j, tp, kod, ts)
+
+    def baglanti_yok(self, j, tp, ts):
+        """§7a 11 + R1: Meta'ya HİÇ ulaşılamadı (istek gitmediği kesin) → iş Başarısız SAYILMAZ, deneme sayacı artmaz; toplu iş
+        'Bağlantı Bekleniyor' diye durur, bağlantı dönünce kendiliğinden sürer."""
+        if "M59" in self.mut:
+            return self.belirsiz(j, ts)
+        if "M61" in self.mut:
+            return self.hata_isle(j, tp, BAGLANTI, ts, post_yok=True)
+        self.durum(j, BEKLIYOR, ts); j.next_at = ts
+        tp.durum = "baglanti_bekleniyor"; tp.neden = BAGLANTI_BEKLENIYOR
 
     def belirsiz(self, j, ts):
         self.durum(j, BELIRSIZ, ts); j.belirsiz_t = ts       # §7a 10: toplu iş SÜRER
@@ -821,7 +869,7 @@ class Benzetim:
         if kod == 131056:
             j.next_at = ts + DK
             return
-        if kod in GECICI:                                   # §7a 15: 30 sn → 2 dk → 15 dk, sonra Başarısız; 5 art arda → toplu iş durur
+        if kod in GECICI or kod == BAGLANTI:                # §7a 15: 30 sn → 2 dk → 15 dk, sonra Başarısız; 5 art arda → toplu iş durur (BAGLANTI yalnız M61)
             tp.gecici += 1; j.gecici_deneme += 1
             if tp.gecici >= 5 and "M9" not in self.mut:
                 return self.duraklatan(j, tp, kod, ts)
@@ -878,6 +926,7 @@ class Benzetim:
             j.kod = None                                     # §7a 32
         p = self.pencere.setdefault(waba, {})
         p[j.telefon] = max(p.get(j.telefon, 0), ts)
+        tp.okuma_sayac += 1                                  # §7a R2: son kategori okumasından beri ileti
         self.kabul_kaydi.append((ts, waba, tp.sirket, j.telefon, j.anahtar))
         self.durum(j, KABUL, ts)
 
@@ -1019,19 +1068,22 @@ class Benzetim:
         for e in self.toplu_sira:
             tp = self.toplular[e]
             if tp.durum == "aktif" and self.toplu_bekleyen(tp):
-                aday = tp.sablon_okuma + SA
+                aday = tp.sablon_okuma + (SA if "M63" in self.mut else SABLON_OKUMA_ARALIK)
                 if en is None or aday < en:
                     en = aday
         return en
 
     def sablon_okuma_isle(self, t):
-        """§7a 27: şablon kategorisi toplu iş sürerken saatte bir okunur; MARKETING görülünce iş durur."""
+        """§7a 27 + R2: şablon kategorisi toplu iş sürerken HER 100 İLETİDE ve EN GEÇ 10 DAKİKADA bir okunur (hangisi önce);
+        MARKETING görülünce iş durur. Okuma işçinin sıradaki gönderiminden önce yapılır (adim_isle sırası)."""
         if "M48" in self.mut:
             return
+        aralik = SA if "M63" in self.mut else SABLON_OKUMA_ARALIK
+        sayiyla = "M63" not in self.mut and "M64" not in self.mut
         for e in self.toplu_sira:
             tp = self.toplular[e]
-            if tp.durum == "aktif" and t >= tp.sablon_okuma + SA and self.toplu_bekleyen(tp):
-                tp.sablon_okuma = t
+            if tp.durum == "aktif" and (t >= tp.sablon_okuma + aralik or (sayiyla and tp.okuma_sayac >= SABLON_OKUMA_ILETI)) and self.toplu_bekleyen(tp):
+                tp.sablon_okuma = t; tp.okuma_sayac = 0
                 st = self.meta["sablonlar"].get(ICERIK_SABLON[tp.sablon]) or {}
                 if st.get("kategori") != "UTILITY":
                     tp.durum = "duraklatildi"; tp.neden = SABLON_PAZARLAMA
@@ -1058,6 +1110,7 @@ class Benzetim:
             "toplam_kabul": len(self.kabul_kaydi),
             "pencere_farkli_alici": {w: len(self.pencere_kumesi(w, t)) for w in sorted(set(self.wabalar.values()))},
             "medya_silme": sum(j.silinen_n for j in self.isler.values()),
+            "toplular": {e: self.toplular[e].durum for e in self.toplu_sira},
         }
         if not self.ozet:
             k["isler"] = {a: j.durum for a, j in sorted(self.isler.items())}
@@ -1101,6 +1154,7 @@ class Benzetim:
             "elenen": {k: dict(sorted(v.items())) for k, v in sorted(self.elenen.items()) if v},
             "olusmadi": sorted(self.olusmadi),
             "ayni_istek": dict(sorted(self.ayni_istek.items())),
+            "onceki_uyari": dict(sorted(self.onceki_uyari.items())),
             "toplular": {e: {"durum": self.toplular[e].durum, "neden": self.toplular[e].neden, "is_sayisi": len(self.toplular[e].isler)} for e in self.toplu_sira},
             "durum_sayilari": dict(sorted(sayi.items())),
             "meta": {"post": topla(lambda j: j.post), "kabul": topla(lambda j: len(j.wamidler)), "meta_ileti": topla(lambda j: j.meta_sayi),
