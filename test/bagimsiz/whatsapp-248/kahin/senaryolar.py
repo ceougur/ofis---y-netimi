@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""WhatsApp toplu gönderim kâhininin SENARYO KÜMESİ — DestekOfis 2.4.8 K0 (plan §7a kararlarına SABİT).
+"""WhatsApp toplu gönderim kâhininin SENARYO KÜMESİ — DestekOfis 2.4.8 K0 (plan §7a kararlarına + revizyon R1–R3'e SABİT).
 
 Her senaryo: GİRDİ (cariler, seçim, saat, sahte Meta davranışı, olaylar) + ELLE yazılmış beklenen (yalnız plandan, kâhinin modelinden
 bağımsız hesaplanmış anahtar sayılar). `python3 -I senaryolar.py` modeli koşar; elle beklenen ile model AYNI değilse dosya YAZILMAZ,
 çıkış 1 (iki ayrı türetme birbirini denetler). Aynıysa `senaryolar.json` (girdi + elle + modelin bütün beklenen sonucu) yazılır.
 
 Başlıklar plan §8 "Nasıl bozulur?" listesinden: ÇİFT, KAYIP, YANLIŞ KİŞİ, YANLIŞ İÇERİK, HESAP / META, GÜVENLİK, TARİH, ÖLÇEK, (+ TEMEL, ŞİRKET).
-Kaynak sütununda "§7a n" = plan netleştirmesi n (30.10.2026). Serbest seçim YOK (§7a hepsini kararlaştırdı).
+Kaynak sütununda "§7a n" = plan netleştirmesi n, "R1–R3" = §7a revizyonu (30.10.2026). Serbest seçim YOK.
 Zaman ifadeleri: "+5s", "+2h", "+3d", "cokme+10m" (çökmeye göre). Sahte Meta davranışı (meta_davranis):
   mesaj: {cari | "*": [yanıt1, yanıt2, …] | yanıt}  — o alıcının n. POST'u (sahte sunucu kuralı: yol messages + to + deneme n)
          yanıt ∈ "kabul" | "yanitsiz_kabul" (Meta aldı, yanıt kayboldu: koptu "sonra" / gecikme / işlenmiş gövdesiz 5xx)
@@ -177,10 +177,16 @@ S("CIFT-06-cift-tik", "ÇİFT", "Çift tık: aynı istek kimliğiyle iki başlat
   {"ayni_istek": {"T2": "T1"}, "toplular": {"T1": {"durum": "aktif", "neden": None, "is_sayisi": 2}}, "meta.post": {"A": 1, "B": 1}},
   meta_davranis={"kanca": {"*": K_STD}})
 
-S("CIFT-07-iki-sekme", "ÇİFT", "İki sekme (ayrı istek) 5 sn arayla aynı seçim, sınır 1: bekleyen B ve C 'Zaten Kuyrukta'; gönderilmiş A'ya süre penceresi olmadığından İKİNCİ ileti",
-  "§8 ÇİFT, §7a 9 (süre penceresi yok) + §7a 4", [A(), B(), C()], [baslat("+0s", "T1", "ABC", istek="R1"), baslat("+5s", "T2", "ABC", istek="R2"), kontrol("+1h", "K1")],
-  {"elenen.T2": {"B": "zaten_kuyrukta", "C": "zaten_kuyrukta"}, "toplular.T2.is_sayisi": 1, "kontroller.K1.toplam_post": 2,
-   "meta.post": {"A": 2, "B": 1, "C": 1}, "durum_sayilari": {"Teslim Edildi": 4}},
+S("CIFT-07-iki-sekme", "ÇİFT", "İki sekme (ayrı istek) 5 sn arayla aynı seçim, sınır 1: bekleyen B ve C 'Zaten Kuyrukta', gönderilmiş A 'Daha Önce Gönderildi' (varsayılan Bunları Çıkar) → ikinci toplu iş oluşmaz",
+  "§8 ÇİFT, §7a 9, §7a R3, §7a 31", [A(), B(), C()], [baslat("+0s", "T1", "ABC", istek="R1"), baslat("+5s", "T2", "ABC", istek="R2"), kontrol("+1h", "K1")],
+  {"elenen.T2": {"A": "daha_once_gonderildi", "B": "zaten_kuyrukta", "C": "zaten_kuyrukta"}, "olusmadi": ["T2"], "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}},
+   "kontroller.K1.toplam_post": 1, "meta.post": {"A": 1, "B": 1, "C": 1}, "durum_sayilari": {"Teslim Edildi": 3}},
+  ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
+
+S("CIFT-07b-iki-sekme-yine-de-gonder", "ÇİFT", "CIFT-07 + kullanıcı uyarıda 'Yine de Gönder' seçti: gönderilmiş A'ya İKİNCİ ileti; bekleyenler yine 'Zaten Kuyrukta'",
+  "§7a 9, §7a R3 (açık bayrak)", [A(), B(), C()], [baslat("+0s", "T1", "ABC", istek="R1"), baslat("+5s", "T2", "ABC", istek="R2", onceki="gonder"), kontrol("+1h", "K1")],
+  {"elenen.T2": {"B": "zaten_kuyrukta", "C": "zaten_kuyrukta"}, "toplular.T2.is_sayisi": 1, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}},
+   "kontroller.K1.toplam_post": 2, "meta.post": {"A": 2, "B": 1, "C": 1}, "durum_sayilari": {"Teslim Edildi": 4}},
   ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
 
 S("CIFT-08-iki-kullanici-ayni-cari", "ÇİFT", "İki kullanıcı, çakışan cari (B) sınırda bekliyor — B'ye tek ileti", "§8 ÇİFT, §7a 9 (iki kullanıcı dahil)",
@@ -219,6 +225,22 @@ S("CIFT-13-veri-tasindi", "ÇİFT", "Veri başka makineye taşındı: bitmemiş 
   {"kontroller.K1.toplam_post": 1, "meta.toplam_post": 1, "durum_sayilari": {"Taşınan Veri — Durduruldu": 2, "Teslim Edildi": 1}},
   ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
 
+S("CIFT-15-daha-once-basarisiz", "ÇİFT", "Önceki toplu işte A Başarısız (131026), B Teslim Edildi; aynı dönem yeniden: A gider, B 'Daha Önce Gönderildi'",
+  "§7a R3 (kâhin yorumu: Başarısız 'gönderilmiş' sayılmaz)", [A(), B()], [baslat("+0s", "T1", "AB"), baslat("+1h", "T2", "AB")],
+  {"elenen.T2": {"B": "daha_once_gonderildi"}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}}, "toplular.T2.is_sayisi": 1,
+   "meta.post": {"A": 2, "B": 1}, "isler.T2/A.durum": "Başarısız", "isler.T2/A.hata_kodu": 131026},
+  meta_davranis={"kanca": {"A": [["sent", "+1s"], ["failed", "+3s", {"kod": 131026}]], "B": K_STD}})
+
+S("CIFT-16-daha-once-suresi-doldu", "ÇİFT", "Önceki ileti Süresi Doldu (teslim edilmedi); aynı dönem yeniden: gider (kâhin yorumu: Süresi Doldu 'gönderilmiş' sayılmaz)",
+  "§7a R3, §7a 16", [A()], [baslat("+0s", "T1", "A"), kontrol("+3d2h", "K1"), baslat("+4d", "T2", "A")],
+  {"kontroller.K1.isler": {"T1/A": "Süresi Doldu"}, "elenen": {}, "onceki_uyari": {}, "meta.post": {"A": 2}, "isler.T2/A.durum": "Süresi Doldu"},
+  meta_davranis={"kanca": {"A": [["sent", "+1s"]]}})
+
+S("CIFT-17-baska-donem", "ÇİFT", "Eylül ekstresi gönderilmiş cariye Ekim ekstresi: başka dönem, uyarı yok", "§7a R3 (aynı dönem)",
+  [A()], [baslat("+0s", "T1", "A", donem=EYLUL), baslat("+1h", "T2", "A")],
+  {"elenen": {}, "onceki_uyari": {}, "meta.post": {"A": 2}, "durum_sayilari": {"Teslim Edildi": 2}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
 S("CIFT-14-geri-yukleme-sonra-baslat", "ÇİFT", "Geri yüklemeyle duran işin carisi yeniden seçilir: duran iş 'Zaten Kuyrukta' saymaz, yeni iş gider",
   "§7a 9 + 26 (Durduruldu bekleyen/gönderilmekte değil)", [A(), B()],
   [baslat("+0s", "T1", "AB"), olay("+1h", "geri_yukle"), baslat("+2h", "T2", "B"), kontrol("+3h", "K1")],
@@ -248,20 +270,29 @@ S("KAYIP-04-guncelleme-kapat-ac", "KAYIP", "Güncelleme kurulumu (düzgün kapan
   {"meta.post": {"A": 1, "B": 1, "C": 1, "D": 1}, "kontroller.K1.durum_sayilari": {"Teslim Edildi": 4}},
   meta_davranis={"kanca": {"*": K_STD}})
 
-S("KAYIP-05-meta-ulasilamaz", "KAYIP", "Meta'ya bağlantı hiç kurulamıyor 1 saat: geçici; 30 sn → 2 dk → 15 dk yeniden, 4. hatada Başarısız (~17,5 dk)",
-  "§7a 11, 15", [A()], [olay("+0s", "meta_kapali", kapali=True), baslat("+0s", "T1", "A"), kontrol("+10m", "K0"), kontrol("+30m", "K1"), olay("+1h", "meta_kapali", kapali=False)],
-  {"kontroller.K0.isler": {"T1/A": "Bekliyor"}, "kontroller.K1.isler": {"T1/A": "Başarısız"}, "isler.T1/A.durum": "Başarısız", "isler.T1/A.hata_kodu": "BAGLANTI",
-   "meta.post": {"A": 0}, "meta.toplam_medya_yukleme": 0, "toplular.T1.durum": "aktif"},
+S("KAYIP-05-meta-ulasilamaz", "KAYIP", "Meta'ya bağlantı hiç kurulamıyor 1 saat: iş Başarısız OLMAZ; toplu iş 'Bağlantı Bekleniyor', bağlantı dönünce kendiliğinden sürer",
+  "§7a 11, R1", [A()], [olay("+0s", "meta_kapali", kapali=True), baslat("+0s", "T1", "A"), kontrol("+10m", "K0"), kontrol("+50m", "K1"), olay("+1h", "meta_kapali", kapali=False),
+                         kontrol("+1h30m", "K2")],
+  {"kontroller.K0.isler": {"T1/A": "Bekliyor"}, "kontroller.K0.toplular": {"T1": "baglanti_bekleniyor"}, "kontroller.K1.isler": {"T1/A": "Bekliyor"},
+   "kontroller.K1.toplular": {"T1": "baglanti_bekleniyor"}, "kontroller.K1.toplam_post": 0, "kontroller.K1.medya_silme": 0,
+   "kontroller.K2.isler": {"T1/A": "Teslim Edildi"}, "kontroller.K2.toplular": {"T1": "aktif"},
+   "isler.T1/A.durum": "Teslim Edildi", "isler.T1/A.hata_kodu": None, "meta.post": {"A": 1}, "meta.toplam_medya_yukleme": 1, "toplular.T1": {"durum": "aktif", "neden": None, "is_sayisi": 1}},
   meta_davranis={"kanca": {"*": K_STD}})
 
-S("KAYIP-06-meta-ulasilamaz-uc-kisi", "KAYIP", "Meta'ya ulaşılamıyor, üç cari: 5. ardışık geçici hatada toplu iş durur (hatayı alan Başarısız, bekleyenler Duraklatıldı); Devam Et ile sürer",
-  "§6 W2, §7a 11, 13, 15", [A(), B(), C()],
-  [olay("+0s", "meta_kapali", kapali=True), baslat("+0s", "T1", "ABC"), kontrol("+10m", "K1"), olay("+1h", "meta_kapali", kapali=False),
-   olay("+2h", "devam", toplu="T1"), kontrol("+3h", "K2")],
-  {"kontroller.K1.isler": {"T1/A": "Duraklatıldı", "T1/B": "Başarısız", "T1/C": "Duraklatıldı"}, "kontroller.K1.toplam_post": 0,
-   "isler.T1/B.hata_kodu": "BAGLANTI", "meta.post": {"A": 1, "B": 0, "C": 1}, "kontroller.K2.durum_sayilari": {"Başarısız": 1, "Teslim Edildi": 2},
-   "isler.T1/A.hata_kodu": None},
+S("KAYIP-06-meta-ulasilamaz-uc-kisi", "KAYIP", "Meta'ya ulaşılamıyor, üç cari: bağlantı hataları '5 art arda'ya sayılmaz, kimse Başarısız olmaz; toplu iş 'Bağlantı Bekleniyor'da bekler, dönünce üçü de gider",
+  "§6 W2, §7a 11, 15, R1", [A(), B(), C()],
+  [olay("+0s", "meta_kapali", kapali=True), baslat("+0s", "T1", "ABC"), kontrol("+10m", "K1"), olay("+1h", "meta_kapali", kapali=False), kontrol("+2h", "K2")],
+  {"kontroller.K1.isler": {"T1/A": "Bekliyor", "T1/B": "Bekliyor", "T1/C": "Bekliyor"}, "kontroller.K1.toplam_post": 0, "kontroller.K1.toplular": {"T1": "baglanti_bekleniyor"},
+   "toplular.T1.neden": None, "meta.post": {"A": 1, "B": 1, "C": 1}, "kontroller.K2.durum_sayilari": {"Teslim Edildi": 3}},
   meta_davranis={"kanca": {"*": K_STD}})
+
+S("KAYIP-07-baglanti-arada-koptu", "KAYIP", "B iki geçici hata (Meta yanıt verdi) aldıktan sonra internet koptu: bekleme deneme sayacını ARTIRMAZ; dönünce üçüncü hata + kabul (Başarısız değil)",
+  "§7a 15, R1", [A(), B()],
+  [baslat("+0s", "T1", "AB"), olay("+1m", "meta_kapali", kapali=True), kontrol("+20m", "K1"), olay("+30m", "meta_kapali", kapali=False), kontrol("+1h30m", "K2")],
+  {"kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/B": "Bekliyor"}, "kontroller.K1.toplular": {"T1": "baglanti_bekleniyor"}, "kontroller.K1.toplam_post": 3,
+   "kontroller.K2.toplam_post": 5, "kontroller.K2.isler.T1/B": "Teslim Edildi",
+   "isler.T1/B.durum": "Teslim Edildi", "isler.T1/B.hata_kodu": None, "meta.post": {"A": 1, "B": 4}, "toplular.T1.durum": "aktif"},
+  meta_davranis={"mesaj": {"B": [{"hata": 131000}] * 3}, "kanca": {"*": K_STD}})
 
 # ======================================================================== YANLIŞ KİŞİ
 S("KISI-01-telefon-kuyrukta-degisti", "YANLIŞ KİŞİ", "Sınır nedeniyle bekleyen işin carisinin telefonu değişti: gönderim anındaki numara", "§8 YANLIŞ KİŞİ, §7a 1",
@@ -468,16 +499,17 @@ S("SABLON-SONRAKI-TOPLU", "HESAP / META", "Şablon arada duraklatıldı (Meta): 
   [A(), B()], [baslat("+0s", "T1", "A"), olay("+1h", "meta_sablon", ad="destekofis_ekstre", durum="PAUSED"), baslat("+2h", "T2", "B")],
   {"baslamadi": {"T2": "sablon_uygun_degil"}, "meta.post": {"A": 1}}, meta_davranis={"kanca": {"*": K_STD}})
 
-S("SABLON-PAZARLAMA-ARADA", "HESAP / META", "Toplu iş sürerken şablon Pazarlama'ya alındı: saatlik okumada iş durur ('Şablon Pazarlama'ya Alındı')", "§7a 27",
+S("SABLON-PAZARLAMA-ARADA", "HESAP / META", "Toplu iş sürerken şablon Pazarlama'ya alındı: en geç 10 dakikalık okumada iş durur ('Şablon Pazarlama'ya Alındı')", "§7a 27, R2",
   [A(), B(), C()], [baslat("+0s", "T1", "ABC"), olay("+30m", "meta_sablon", ad="destekofis_ekstre", kategori="MARKETING"), kontrol("+2h", "K1")],
   {"toplular.T1": {"durum": "duraklatildi", "neden": "Şablon Pazarlama'ya Alındı", "is_sayisi": 3},
    "kontroller.K1.durum_sayilari": {"Duraklatıldı": 2, "Teslim Edildi": 1}, "meta.post": {"A": 1, "B": 0, "C": 0}},
   ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
 
-S("SABLON-PAZARLAMA-SAAT-ICINDE", "HESAP / META", "§7a 27 sonucu: kategori değişiminden sonra ilk saatlik okumaya dek gönderim SÜRER (ileti Pazarlama ücretiyle gidebilir)",
-  "§7a 27 (saatte bir), §7a 15", [A(), B(), C()],
-  [baslat("+0s", "T1", "ABC"), olay("+5m", "meta_sablon", ad="destekofis_ekstre", kategori="MARKETING"), kontrol("+20m", "K1"), kontrol("+2h", "K2")],
-  {"kontroller.K1.durum_sayilari": {"Teslim Edildi": 3}, "meta.post": {"A": 1, "B": 4, "C": 1}, "toplular.T1.durum": "aktif"},
+S("SABLON-PAZARLAMA-10-DK", "HESAP / META", "Kategori 5. dakikada Pazarlama; B geçici hatayla 17,5. dakikayı bekliyor: 10. dakika okumasında iş durur, B gönderilmez",
+  "§7a 27, R2 (en geç 10 dk), §7a 15", [A(), B(), C()],
+  [baslat("+0s", "T1", "ABC"), olay("+5m", "meta_sablon", ad="destekofis_ekstre", kategori="MARKETING"), kontrol("+9m", "K0"), kontrol("+20m", "K1"), kontrol("+2h", "K2")],
+  {"kontroller.K0.toplular": {"T1": "aktif"}, "kontroller.K1.durum_sayilari": {"Duraklatıldı": 1, "Teslim Edildi": 2},
+   "toplular.T1": {"durum": "duraklatildi", "neden": "Şablon Pazarlama'ya Alındı", "is_sayisi": 3}, "meta.post": {"A": 1, "B": 3, "C": 1}},
   meta_davranis={"mesaj": {"B": [{"hata": 131000}] * 3}, "kanca": {"*": K_STD}})
 
 # ---- geçici hatalar
@@ -639,10 +671,17 @@ S("OLCEK-03-kanca-yagmuru", "ÖLÇEK", "500 ileti × 9 kanca (3× yinelenen, sı
   ozet_cikti=True, meta={"basamak": 2000},
   meta_davranis={"kanca": {"*": [["read", "+2s", {"tekrar": 3}], ["delivered", "+4s", {"tekrar": 3}], ["sent", "+6s", {"tekrar": 3}]]}})
 
-S("OLCEK-04-pazarlama-300", "ÖLÇEK", "300 kişi, basamak 250; 50'si sınırda beklerken şablon Pazarlama'ya alındı: saatlik okumada 50'si Duraklatıldı", "§7a 27",
+S("OLCEK-04-pazarlama-300", "ÖLÇEK", "300 kişi, basamak 250; 50'si sınırda beklerken şablon Pazarlama'ya alındı: en geç 10 dakikalık okumada 50'si Duraklatıldı", "§7a 27, R2",
   KAL300, [baslat("+0s", "T1", [c["id"] for c in KAL300]), olay("+2h30m", "meta_sablon", ad="destekofis_ekstre", kategori="MARKETING"), kontrol("+4h", "K1")],
   {"kontroller.K1.durum_sayilari": {"Duraklatıldı": 50, "Teslim Edildi": 250}, "toplular.T1.neden": "Şablon Pazarlama'ya Alındı", "meta.toplam_post": 250},
   ozet_cikti=True, meta={"basamak": 250}, meta_davranis={"kanca": {"*": K_STD}})
+
+S("OLCEK-05-pazarlama-100-ileti", "ÖLÇEK", "300 kişi (sınırsız); kategori 10. saniyede Pazarlama: 100. iletiden sonraki okumada iş durur — Pazarlama ücretiyle giden ileti en çok 100 (≈ 1 USD)",
+  "§7a 27, R2 (her 100 iletide)", KAL300,
+  [baslat("+0s", "T1", [c["id"] for c in KAL300]), olay("+10s", "meta_sablon", ad="destekofis_ekstre", kategori="MARKETING"), kontrol("+1h", "K1")],
+  {"kontroller.K1.durum_sayilari": {"Duraklatıldı": 200, "Teslim Edildi": 100}, "kontroller.K1.toplam_post": 100, "toplular.T1.neden": "Şablon Pazarlama'ya Alındı",
+   "meta.toplam_post": 100, "meta.toplam_medya_yukleme": 100},
+  ozet_cikti=True, meta={"basamak": 2000}, meta_davranis={"kanca": {"*": K_STD}})
 
 # ======================================================================== GÜVENLİK
 S("GUV-01-yetkisiz", "GÜVENLİK", "whatsapp.send yetkisi olmayan kullanıcı başlatamaz", "§4",

@@ -12,7 +12,7 @@ Bölümler:
      iç denetim sayaçları 0
   D  §7a sabitlemesi: serbest seçim YOK; iki zaman ucu (0,5 sn / 5 sn adım) aynı sonucu verir
   E  girdi doğrulaması: §7a 12 sınıfsız kod reddedilmez (iş Başarısız); bilinmeyen olay / medya yanıtı sessizce geçmez
-  H  beklenen şablon metinleri (kahin.SABLONLAR) = plan §7a 23 ve W5 metni (plan dosyasından okunur)
+  H  beklenen şablon metinleri (kahin.SABLONLAR) = plan §7a 23 ve W5 metni (plan dosyasından okunur); R1–R3 kararı planda
   F  MUTASYON: modele bilerek hata; en az bir senaryonun elle beklenenine ya da iç denetim sayacına takılmalı (yakalanmayan = eksik senaryo)
   G  komut satırı (hesapla, karsilastir: 'biri', 'plan_susuyor', 'kisaltilabilir')
 """
@@ -438,6 +438,11 @@ def _h():
             h.append(f"{ad}: kategori/dil")
     if not kahin.SABLONLAR["destekofis_ekstre"]["govde"].endswith("İyi günler dileriz."):
         h.append("ekstre gövdesi cümleyle bitmiyor (§7a 23)")
+    for parca in ("R1", "R2", "R3", "GEÇERLİ", "Bağlantı Bekleniyor", "HER 100 İLETİDE", "EN GEÇ 10 DAKİKADA", "Bunları Çıkar"):
+        if parca not in plan:
+            h.append(f"plan revizyon metninde yok: {parca}")
+    if (kahin.SABLON_OKUMA_ILETI, kahin.SABLON_OKUMA_ARALIK) != (100, 10 * kahin.DK):
+        h.append("R2 okuma sıklığı plandan farklı")
     return h
 
 

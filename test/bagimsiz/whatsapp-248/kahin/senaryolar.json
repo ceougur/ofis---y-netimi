@@ -202,6 +202,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -255,6 +256,9 @@
          "W1": 3
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -527,6 +531,7 @@
       },
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -688,6 +693,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -862,6 +868,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -1037,6 +1044,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -1223,6 +1231,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -1416,6 +1425,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -1459,6 +1469,9 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Sonucu Belirsiz"
         }
@@ -1618,6 +1631,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -1842,6 +1856,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -2129,6 +2144,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -2407,6 +2423,7 @@
       "ayni_istek": {
        "T2": "T1"
       },
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -2528,8 +2545,8 @@
   {
    "ad": "CIFT-07-iki-sekme",
    "baslik": "ÇİFT",
-   "aciklama": "İki sekme (ayrı istek) 5 sn arayla aynı seçim, sınır 1: bekleyen B ve C 'Zaten Kuyrukta'; gönderilmiş A'ya süre penceresi olmadığından İKİNCİ ileti",
-   "kaynak": "§8 ÇİFT, §7a 9 (süre penceresi yok) + §7a 4",
+   "aciklama": "İki sekme (ayrı istek) 5 sn arayla aynı seçim, sınır 1: bekleyen B ve C 'Zaten Kuyrukta', gönderilmiş A 'Daha Önce Gönderildi' (varsayılan Bunları Çıkar) → ikinci toplu iş oluşmaz",
+   "kaynak": "§8 ÇİFT, §7a 9, §7a R3, §7a 31",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -2648,10 +2665,368 @@
      "secim": {},
      "yollar": {
       "elenen.T2": {
+       "A": "daha_once_gonderildi",
+       "B": "zaten_kuyrukta",
+       "C": "zaten_kuyrukta"
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "kontroller.K1.toplam_post": 1,
+      "meta.post": {
+       "A": 1,
+       "B": 1,
+       "C": 1
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 3
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi",
+        "B": "zaten_kuyrukta",
+        "C": "zaten_kuyrukta"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 3
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 3
+      },
+      "meta": {
+       "post": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "kabul": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "meta_ileti": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "medya_yukleme": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "medya_silme": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "toplam_post": 3,
+       "toplam_kabul_program": 3,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 3
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-30T11:00:00+03:00",
+        "durum_sayilari": {
+         "Sınır Nedeniyle Bekliyor": 2,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 1,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Teslim Edildi",
+         "T1/B": "Sınır Nedeniyle Bekliyor",
+         "T1/C": "Sınır Nedeniyle Bekliyor"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        },
+        "2026-11": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/C": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905343334455",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Zeynep Demir",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "0,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Zeynep Demir",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "0.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Zeynep Demir ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "CIFT-07b-iki-sekme-yine-de-gonder",
+   "baslik": "ÇİFT",
+   "aciklama": "CIFT-07 + kullanıcı uyarıda 'Yine de Gönder' seçti: gönderilmiş A'ya İKİNCİ ileti; bekleyenler yine 'Zaten Kuyrukta'",
+   "kaynak": "§7a 9, §7a R3 (açık bayrak)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     },
+     {
+      "id": "C",
+      "ad": "Zeynep Demir",
+      "telefon": "0534 333 44 55",
+      "hareketler": [
+       {
+        "tarih": "2026-08-01",
+        "borc": 300,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-09-01",
+        "borc": 0,
+        "alacak": 300
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B",
+       "C"
+      ],
+      "sablon": "ekstre",
+      "istek": "R1",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+5s",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "A",
+       "B",
+       "C"
+      ],
+      "sablon": "ekstre",
+      "istek": "R2",
+      "onceki": "gonder",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+1h",
+      "tur": "kontrol",
+      "ad": "K1"
+     }
+    ],
+    "ayar": {
+     "gunluk_ust_sinir": 1
+    },
+    "meta_davranis": {
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "elenen.T2": {
        "B": "zaten_kuyrukta",
        "C": "zaten_kuyrukta"
       },
       "toplular.T2.is_sayisi": 1,
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
       "kontroller.K1.toplam_post": 2,
       "meta.post": {
        "A": 2,
@@ -2679,6 +3054,12 @@
       },
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -2738,6 +3119,10 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Sınır Nedeniyle Bekliyor",
@@ -3040,6 +3425,7 @@
       },
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -3355,6 +3741,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -3411,6 +3798,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -3629,6 +4019,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -3806,6 +4197,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -4094,6 +4486,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -4175,6 +4568,10 @@
          "W1": 2
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -4197,6 +4594,10 @@
          "W1": 2
         },
         "medya_silme": 4,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -4567,6 +4968,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -4622,6 +5024,9 @@
          "W1": 0
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Taşınan Veri — Durduruldu",
@@ -4733,6 +5138,757 @@
         "meta_ileti": 0,
         "medya_yukleme": 0,
         "medya_silme": 0,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "CIFT-15-daha-once-basarisiz",
+   "baslik": "ÇİFT",
+   "aciklama": "Önceki toplu işte A Başarısız (131026), B Teslim Edildi; aynı dönem yeniden: A gider, B 'Daha Önce Gönderildi'",
+   "kaynak": "§7a R3 (kâhin yorumu: Başarısız 'gönderilmiş' sayılmaz)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+1h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     }
+    ],
+    "meta_davranis": {
+     "kanca": {
+      "A": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "failed",
+        "+3s",
+        {
+         "kod": 131026
+        }
+       ]
+      ],
+      "B": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "elenen.T2": {
+       "B": "daha_once_gonderildi"
+      },
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular.T2.is_sayisi": 1,
+      "meta.post": {
+       "A": 2,
+       "B": 1
+      },
+      "isler.T2/A.durum": "Başarısız",
+      "isler.T2/A.hata_kodu": 131026
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "B": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       },
+       "T2": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Başarısız": 2,
+       "Teslim Edildi": 1
+      },
+      "meta": {
+       "post": {
+        "A": 2,
+        "B": 1
+       },
+       "kabul": {
+        "A": 2,
+        "B": 1
+       },
+       "meta_ileti": {
+        "A": 2,
+        "B": 1
+       },
+       "medya_yukleme": {
+        "A": 2,
+        "B": 1
+       },
+       "medya_silme": {
+        "A": 2,
+        "B": 1
+       },
+       "toplam_post": 3,
+       "toplam_kabul_program": 3,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 3
+      },
+      "kontroller": {},
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Başarısız",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": 131026,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T2/A": {
+        "durum": "Başarısız",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": 131026,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "CIFT-16-daha-once-suresi-doldu",
+   "baslik": "ÇİFT",
+   "aciklama": "Önceki ileti Süresi Doldu (teslim edilmedi); aynı dönem yeniden: gider (kâhin yorumu: Süresi Doldu 'gönderilmiş' sayılmaz)",
+   "kaynak": "§7a R3, §7a 16",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+3d2h",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+4d",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     }
+    ],
+    "meta_davranis": {
+     "kanca": {
+      "A": [
+       [
+        "sent",
+        "+1s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.isler": {
+       "T1/A": "Süresi Doldu"
+      },
+      "elenen": {},
+      "onceki_uyari": {},
+      "meta.post": {
+       "A": 2
+      },
+      "isler.T2/A.durum": "Süresi Doldu"
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       },
+       "T2": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Süresi Doldu": 2
+      },
+      "meta": {
+       "post": {
+        "A": 2
+       },
+       "kabul": {
+        "A": 2
+       },
+       "meta_ileti": {
+        "A": 2
+       },
+       "medya_yukleme": {
+        "A": 2
+       },
+       "medya_silme": {
+        "A": 2
+       },
+       "toplam_post": 2,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 2,
+       "toplam_medya_yukleme": 2
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-11-02T12:00:00+03:00",
+        "durum_sayilari": {
+         "Süresi Doldu": 1
+        },
+        "toplam_post": 1,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 0
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Süresi Doldu"
+        }
+       }
+      },
+      "bu_ay": {},
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Süresi Doldu",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T2/A": {
+        "durum": "Süresi Doldu",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "CIFT-17-baska-donem",
+   "baslik": "ÇİFT",
+   "aciklama": "Eylül ekstresi gönderilmiş cariye Ekim ekstresi: başka dönem, uyarı yok",
+   "kaynak": "§7a R3 (aynı dönem)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-09-01",
+       "son": "2026-09-30"
+      }
+     },
+     {
+      "t": "+1h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     }
+    ],
+    "meta_davranis": {
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "elenen": {},
+      "onceki_uyari": {},
+      "meta.post": {
+       "A": 2
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 2
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       },
+       "T2": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "A": 2
+       },
+       "kabul": {
+        "A": 2
+       },
+       "meta_ileti": {
+        "A": 2
+       },
+       "medya_yukleme": {
+        "A": 2
+       },
+       "medya_silme": {
+        "A": 2
+       },
+       "toplam_post": 2,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 2,
+       "toplam_medya_yukleme": 2
+      },
+      "kontroller": {},
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.09.2026 – 30.09.2026",
+         "1.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-09-01",
+         "donem_son": "2026-09-30",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "1000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T2/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
         "atlanma_nedeni": null
        }
       }
@@ -4868,6 +6024,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -4924,6 +6081,10 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Durduruldu (Geri Yükleme)",
@@ -5164,6 +6325,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -5212,6 +6374,9 @@
          "W1": 2
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Gönderildi",
          "T1/B": "Gönderildi"
@@ -5228,6 +6393,9 @@
          "W1": 2
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi"
@@ -5415,6 +6583,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -5458,6 +6627,9 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Meta Kabul Etti"
         }
@@ -5609,6 +6781,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -5652,6 +6825,9 @@
          "W1": 1
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Meta Kabul Etti"
         }
@@ -5857,6 +7033,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -5915,6 +7092,9 @@
          "W1": 4
         },
         "medya_silme": 4,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -6067,8 +7247,8 @@
   {
    "ad": "KAYIP-05-meta-ulasilamaz",
    "baslik": "KAYIP",
-   "aciklama": "Meta'ya bağlantı hiç kurulamıyor 1 saat: geçici; 30 sn → 2 dk → 15 dk yeniden, 4. hatada Başarısız (~17,5 dk)",
-   "kaynak": "§7a 11, 15",
+   "aciklama": "Meta'ya bağlantı hiç kurulamıyor 1 saat: iş Başarısız OLMAZ; toplu iş 'Bağlantı Bekleniyor', bağlantı dönünce kendiliğinden sürer",
+   "kaynak": "§7a 11, R1",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -6121,7 +7301,7 @@
       "ad": "K0"
      },
      {
-      "t": "+30m",
+      "t": "+50m",
       "tur": "kontrol",
       "ad": "K1"
      },
@@ -6129,6 +7309,11 @@
       "t": "+1h",
       "tur": "meta_kapali",
       "kapali": false
+     },
+     {
+      "t": "+1h30m",
+      "tur": "kontrol",
+      "ad": "K2"
      }
     ],
     "meta_davranis": {
@@ -6153,16 +7338,34 @@
       "kontroller.K0.isler": {
        "T1/A": "Bekliyor"
       },
+      "kontroller.K0.toplular": {
+       "T1": "baglanti_bekleniyor"
+      },
       "kontroller.K1.isler": {
-       "T1/A": "Başarısız"
+       "T1/A": "Bekliyor"
       },
-      "isler.T1/A.durum": "Başarısız",
-      "isler.T1/A.hata_kodu": "BAGLANTI",
+      "kontroller.K1.toplular": {
+       "T1": "baglanti_bekleniyor"
+      },
+      "kontroller.K1.toplam_post": 0,
+      "kontroller.K1.medya_silme": 0,
+      "kontroller.K2.isler": {
+       "T1/A": "Teslim Edildi"
+      },
+      "kontroller.K2.toplular": {
+       "T1": "aktif"
+      },
+      "isler.T1/A.durum": "Teslim Edildi",
+      "isler.T1/A.hata_kodu": null,
       "meta.post": {
-       "A": 0
+       "A": 1
       },
-      "meta.toplam_medya_yukleme": 0,
-      "toplular.T1.durum": "aktif"
+      "meta.toplam_medya_yukleme": 1,
+      "toplular.T1": {
+       "durum": "aktif",
+       "neden": null,
+       "is_sayisi": 1
+      }
      }
     }
    ],
@@ -6176,6 +7379,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -6184,28 +7388,28 @@
        }
       },
       "durum_sayilari": {
-       "Başarısız": 1
+       "Teslim Edildi": 1
       },
       "meta": {
        "post": {
-        "A": 0
+        "A": 1
        },
        "kabul": {
-        "A": 0
+        "A": 1
        },
        "meta_ileti": {
-        "A": 0
+        "A": 1
        },
        "medya_yukleme": {
-        "A": 0
+        "A": 1
        },
        "medya_silme": {
-        "A": 0
+        "A": 1
        },
-       "toplam_post": 0,
-       "toplam_kabul_program": 0,
-       "toplam_meta_ileti": 0,
-       "toplam_medya_yukleme": 0
+       "toplam_post": 1,
+       "toplam_kabul_program": 1,
+       "toplam_meta_ileti": 1,
+       "toplam_medya_yukleme": 1
       },
       "kontroller": {
        "K0": {
@@ -6219,14 +7423,17 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "baglanti_bekleniyor"
+        },
         "isler": {
          "T1/A": "Bekliyor"
         }
        },
        "K1": {
-        "t": "2026-10-30T10:30:00+03:00",
+        "t": "2026-10-30T10:50:00+03:00",
         "durum_sayilari": {
-         "Başarısız": 1
+         "Bekliyor": 1
         },
         "toplam_post": 0,
         "toplam_kabul": 0,
@@ -6234,12 +7441,40 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "baglanti_bekleniyor"
+        },
         "isler": {
-         "T1/A": "Başarısız"
+         "T1/A": "Bekliyor"
+        }
+       },
+       "K2": {
+        "t": "2026-10-30T11:30:00+03:00",
+        "durum_sayilari": {
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 1,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Teslim Edildi"
         }
        }
       },
-      "bu_ay": {},
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
       "degismez": {
        "silinmis_medyayla_gonderim": 0,
        "kesin_oncesi_medya_silme": 0,
@@ -6249,7 +7484,7 @@
       },
       "isler": {
        "T1/A": {
-        "durum": "Başarısız",
+        "durum": "Teslim Edildi",
         "telefon": "+905321112233",
         "sablon": "destekofis_ekstre",
         "degiskenler": [
@@ -6270,12 +7505,12 @@
          "on_ek": "Ekstre Ayşe Yılmaz ",
          "son_ek": ".pdf"
         },
-        "hata_kodu": "BAGLANTI",
-        "post": 0,
-        "kabul": 0,
-        "meta_ileti": 0,
-        "medya_yukleme": 0,
-        "medya_silme": 0,
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
         "atlanma_nedeni": null
        }
       }
@@ -6286,8 +7521,8 @@
   {
    "ad": "KAYIP-06-meta-ulasilamaz-uc-kisi",
    "baslik": "KAYIP",
-   "aciklama": "Meta'ya ulaşılamıyor, üç cari: 5. ardışık geçici hatada toplu iş durur (hatayı alan Başarısız, bekleyenler Duraklatıldı); Devam Et ile sürer",
-   "kaynak": "§6 W2, §7a 11, 13, 15",
+   "aciklama": "Meta'ya ulaşılamıyor, üç cari: bağlantı hataları '5 art arda'ya sayılmaz, kimse Başarısız olmaz; toplu iş 'Bağlantı Bekleniyor'da bekler, dönünce üçü de gider",
+   "kaynak": "§6 W2, §7a 11, 15, R1",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -6377,11 +7612,6 @@
      },
      {
       "t": "+2h",
-      "tur": "devam",
-      "toplu": "T1"
-     },
-     {
-      "t": "+3h",
       "tur": "kontrol",
       "ad": "K2"
      }
@@ -6406,22 +7636,23 @@
      "secim": {},
      "yollar": {
       "kontroller.K1.isler": {
-       "T1/A": "Duraklatıldı",
-       "T1/B": "Başarısız",
-       "T1/C": "Duraklatıldı"
+       "T1/A": "Bekliyor",
+       "T1/B": "Bekliyor",
+       "T1/C": "Bekliyor"
       },
       "kontroller.K1.toplam_post": 0,
-      "isler.T1/B.hata_kodu": "BAGLANTI",
+      "kontroller.K1.toplular": {
+       "T1": "baglanti_bekleniyor"
+      },
+      "toplular.T1.neden": null,
       "meta.post": {
        "A": 1,
-       "B": 0,
+       "B": 1,
        "C": 1
       },
       "kontroller.K2.durum_sayilari": {
-       "Başarısız": 1,
-       "Teslim Edildi": 2
-      },
-      "isler.T1/A.hata_kodu": null
+       "Teslim Edildi": 3
+      }
      }
     }
    ],
@@ -6435,6 +7666,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -6443,46 +7675,44 @@
        }
       },
       "durum_sayilari": {
-       "Başarısız": 1,
-       "Teslim Edildi": 2
+       "Teslim Edildi": 3
       },
       "meta": {
        "post": {
         "A": 1,
-        "B": 0,
+        "B": 1,
         "C": 1
        },
        "kabul": {
         "A": 1,
-        "B": 0,
+        "B": 1,
         "C": 1
        },
        "meta_ileti": {
         "A": 1,
-        "B": 0,
+        "B": 1,
         "C": 1
        },
        "medya_yukleme": {
         "A": 1,
-        "B": 0,
+        "B": 1,
         "C": 1
        },
        "medya_silme": {
         "A": 1,
-        "B": 0,
+        "B": 1,
         "C": 1
        },
-       "toplam_post": 2,
-       "toplam_kabul_program": 2,
-       "toplam_meta_ileti": 2,
-       "toplam_medya_yukleme": 2
+       "toplam_post": 3,
+       "toplam_kabul_program": 3,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 3
       },
       "kontroller": {
        "K1": {
         "t": "2026-10-30T10:10:00+03:00",
         "durum_sayilari": {
-         "Başarısız": 1,
-         "Duraklatıldı": 2
+         "Bekliyor": 3
         },
         "toplam_post": 0,
         "toplam_kabul": 0,
@@ -6490,28 +7720,364 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "baglanti_bekleniyor"
+        },
         "isler": {
-         "T1/A": "Duraklatıldı",
-         "T1/B": "Başarısız",
-         "T1/C": "Duraklatıldı"
+         "T1/A": "Bekliyor",
+         "T1/B": "Bekliyor",
+         "T1/C": "Bekliyor"
         }
        },
        "K2": {
-        "t": "2026-10-30T13:00:00+03:00",
+        "t": "2026-10-30T12:00:00+03:00",
         "durum_sayilari": {
-         "Başarısız": 1,
+         "Teslim Edildi": 3
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 3,
+        "pencere_farkli_alici": {
+         "W1": 3
+        },
+        "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Teslim Edildi",
+         "T1/B": "Teslim Edildi",
+         "T1/C": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 3,
+         "yaklasik_usd": "0.0027"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/C": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905343334455",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Zeynep Demir",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "0,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Zeynep Demir",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "0.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Zeynep Demir ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "KAYIP-07-baglanti-arada-koptu",
+   "baslik": "KAYIP",
+   "aciklama": "B iki geçici hata (Meta yanıt verdi) aldıktan sonra internet koptu: bekleme deneme sayacını ARTIRMAZ; dönünce üçüncü hata + kabul (Başarısız değil)",
+   "kaynak": "§7a 15, R1",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+1m",
+      "tur": "meta_kapali",
+      "kapali": true
+     },
+     {
+      "t": "+20m",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+30m",
+      "tur": "meta_kapali",
+      "kapali": false
+     },
+     {
+      "t": "+1h30m",
+      "tur": "kontrol",
+      "ad": "K2"
+     }
+    ],
+    "meta_davranis": {
+     "mesaj": {
+      "B": [
+       {
+        "hata": 131000
+       },
+       {
+        "hata": 131000
+       },
+       {
+        "hata": 131000
+       }
+      ]
+     },
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.isler": {
+       "T1/A": "Teslim Edildi",
+       "T1/B": "Bekliyor"
+      },
+      "kontroller.K1.toplular": {
+       "T1": "baglanti_bekleniyor"
+      },
+      "kontroller.K1.toplam_post": 3,
+      "kontroller.K2.toplam_post": 5,
+      "kontroller.K2.isler.T1/B": "Teslim Edildi",
+      "isler.T1/B.durum": "Teslim Edildi",
+      "isler.T1/B.hata_kodu": null,
+      "meta.post": {
+       "A": 1,
+       "B": 4
+      },
+      "toplular.T1.durum": "aktif"
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "A": 1,
+        "B": 4
+       },
+       "kabul": {
+        "A": 1,
+        "B": 1
+       },
+       "meta_ileti": {
+        "A": 1,
+        "B": 1
+       },
+       "medya_yukleme": {
+        "A": 1,
+        "B": 1
+       },
+       "medya_silme": {
+        "A": 1,
+        "B": 1
+       },
+       "toplam_post": 5,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 2,
+       "toplam_medya_yukleme": 2
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-30T10:20:00+03:00",
+        "durum_sayilari": {
+         "Bekliyor": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "baglanti_bekleniyor"
+        },
+        "isler": {
+         "T1/A": "Teslim Edildi",
+         "T1/B": "Bekliyor"
+        }
+       },
+       "K2": {
+        "t": "2026-10-30T11:30:00+03:00",
+        "durum_sayilari": {
          "Teslim Edildi": 2
         },
-        "toplam_post": 2,
+        "toplam_post": 5,
         "toplam_kabul": 2,
         "pencere_farkli_alici": {
          "W1": 2
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
-         "T1/B": "Başarısız",
-         "T1/C": "Teslim Edildi"
+         "T1/B": "Teslim Edildi"
         }
        }
       },
@@ -6562,7 +8128,7 @@
         "atlanma_nedeni": null
        },
        "T1/B": {
-        "durum": "Başarısız",
+        "durum": "Teslim Edildi",
         "telefon": "+905332223344",
         "sablon": "destekofis_ekstre",
         "degiskenler": [
@@ -6583,38 +8149,8 @@
          "on_ek": "Ekstre Mehmet Kaya ",
          "son_ek": ".pdf"
         },
-        "hata_kodu": "BAGLANTI",
-        "post": 0,
-        "kabul": 0,
-        "meta_ileti": 0,
-        "medya_yukleme": 0,
-        "medya_silme": 0,
-        "atlanma_nedeni": null
-       },
-       "T1/C": {
-        "durum": "Teslim Edildi",
-        "telefon": "+905343334455",
-        "sablon": "destekofis_ekstre",
-        "degiskenler": [
-         "Zeynep Demir",
-         "Deneme Ticaret Ltd. Şti.",
-         "01.10.2026 – 31.10.2026",
-         "0,00 TL"
-        ],
-        "pdf": {
-         "cari_ad": "Zeynep Demir",
-         "donem_bas": "2026-10-01",
-         "donem_son": "2026-10-31",
-         "devir": "0.00",
-         "hareket_sayisi": 0,
-         "donem_sonu_bakiye": "0.00"
-        },
-        "dosya_adi": {
-         "on_ek": "Ekstre Zeynep Demir ",
-         "son_ek": ".pdf"
-        },
         "hata_kodu": null,
-        "post": 1,
+        "post": 4,
         "kabul": 1,
         "meta_ileti": 1,
         "medya_yukleme": 1,
@@ -6753,6 +8289,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -6807,6 +8344,10 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T2/B": "Sınır Nedeniyle Bekliyor"
@@ -6996,6 +8537,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -7212,6 +8754,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -7413,6 +8956,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -7576,6 +9120,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -7724,6 +9269,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -7949,6 +9495,7 @@
       },
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -8154,6 +9701,7 @@
       },
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -8397,6 +9945,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -8452,6 +10001,10 @@
          "W1": 0
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T2/B": "Atlandı"
@@ -8664,6 +10217,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -8719,6 +10273,10 @@
          "W1": 0
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T2/B": "Atlandı"
@@ -8948,6 +10506,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -9276,6 +10835,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -9324,6 +10884,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/X1": "Teslim Edildi",
          "T1/X2": "Teslim Edildi"
@@ -9500,6 +11063,7 @@
        "T1"
       ],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -9640,6 +11204,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -9926,6 +11491,7 @@
       },
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -10248,6 +11814,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -10569,6 +12136,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -10758,6 +12326,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -10921,6 +12490,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -11084,6 +12654,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -11249,6 +12820,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -11465,6 +13037,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -11745,6 +13318,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -11955,6 +13529,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -12185,6 +13760,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -12228,6 +13804,9 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Gönderildi"
         }
@@ -12243,6 +13822,9 @@
          "W1": 0
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Süresi Doldu"
         }
@@ -12394,6 +13976,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -12437,6 +14020,9 @@
          "W1": 0
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi"
         }
@@ -12620,6 +14206,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -12670,6 +14257,9 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Atlandı"
@@ -12889,6 +14479,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -12945,6 +14536,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -12963,6 +14557,9 @@
          "W1": 2
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -13231,6 +14828,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -13287,6 +14885,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -13305,6 +14906,9 @@
          "W1": 2
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -13573,6 +15177,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -13629,6 +15234,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -13647,6 +15255,9 @@
          "W1": 2
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -13915,6 +15526,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -13971,6 +15583,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -13989,6 +15604,9 @@
          "W1": 2
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -14257,6 +15875,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -14313,6 +15932,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -14331,6 +15953,9 @@
          "W1": 2
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -14599,6 +16224,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -14655,6 +16281,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -14673,6 +16302,9 @@
          "W1": 2
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -14941,6 +16573,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -14997,6 +16630,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -15015,6 +16651,9 @@
          "W1": 2
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -15283,6 +16922,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -15339,6 +16979,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -15357,6 +17000,9 @@
          "W1": 2
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -15625,6 +17271,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -15681,6 +17328,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -15699,6 +17349,9 @@
          "W1": 2
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız",
@@ -15945,6 +17598,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "duraklatildi",
@@ -16213,6 +17867,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "duraklatildi",
@@ -16481,6 +18136,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "duraklatildi",
@@ -16749,6 +18405,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "duraklatildi",
@@ -17017,6 +18674,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "duraklatildi",
@@ -17285,6 +18943,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "duraklatildi",
@@ -17553,6 +19212,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "duraklatildi",
@@ -17821,6 +19481,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -18103,6 +19764,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -18385,6 +20047,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -18667,6 +20330,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -18949,6 +20613,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -19231,6 +20896,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -19513,6 +21179,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -19795,6 +21462,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -20077,6 +21745,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -20359,6 +22028,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -20641,6 +22311,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -20923,6 +22594,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -21170,6 +22842,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -21290,6 +22963,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -21410,6 +23084,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -21530,6 +23205,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -21650,6 +23326,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -21799,6 +23476,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -22000,6 +23678,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -22086,8 +23765,8 @@
   {
    "ad": "SABLON-PAZARLAMA-ARADA",
    "baslik": "HESAP / META",
-   "aciklama": "Toplu iş sürerken şablon Pazarlama'ya alındı: saatlik okumada iş durur ('Şablon Pazarlama'ya Alındı')",
-   "kaynak": "§7a 27",
+   "aciklama": "Toplu iş sürerken şablon Pazarlama'ya alındı: en geç 10 dakikalık okumada iş durur ('Şablon Pazarlama'ya Alındı')",
+   "kaynak": "§7a 27, R2",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -22221,6 +23900,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "duraklatildi",
@@ -22276,6 +23956,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Duraklatıldı",
@@ -22395,10 +24078,10 @@
    ]
   },
   {
-   "ad": "SABLON-PAZARLAMA-SAAT-ICINDE",
+   "ad": "SABLON-PAZARLAMA-10-DK",
    "baslik": "HESAP / META",
-   "aciklama": "§7a 27 sonucu: kategori değişiminden sonra ilk saatlik okumaya dek gönderim SÜRER (ileti Pazarlama ücretiyle gidebilir)",
-   "kaynak": "§7a 27 (saatte bir), §7a 15",
+   "aciklama": "Kategori 5. dakikada Pazarlama; B geçici hatayla 17,5. dakikayı bekliyor: 10. dakika okumasında iş durur, B gönderilmez",
+   "kaynak": "§7a 27, R2 (en geç 10 dk), §7a 15",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -22478,6 +24161,11 @@
       "kategori": "MARKETING"
      },
      {
+      "t": "+9m",
+      "tur": "kontrol",
+      "ad": "K0"
+     },
+     {
       "t": "+20m",
       "tur": "kontrol",
       "ad": "K1"
@@ -22520,15 +24208,23 @@
     {
      "secim": {},
      "yollar": {
+      "kontroller.K0.toplular": {
+       "T1": "aktif"
+      },
       "kontroller.K1.durum_sayilari": {
-       "Teslim Edildi": 3
+       "Duraklatıldı": 1,
+       "Teslim Edildi": 2
+      },
+      "toplular.T1": {
+       "durum": "duraklatildi",
+       "neden": "Şablon Pazarlama'ya Alındı",
+       "is_sayisi": 3
       },
       "meta.post": {
        "A": 1,
-       "B": 4,
+       "B": 3,
        "C": 1
-      },
-      "toplular.T1.durum": "aktif"
+      }
      }
     }
    ],
@@ -22542,30 +24238,32 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
-        "durum": "aktif",
-        "neden": null,
+        "durum": "duraklatildi",
+        "neden": "Şablon Pazarlama'ya Alındı",
         "is_sayisi": 3
        }
       },
       "durum_sayilari": {
-       "Teslim Edildi": 3
+       "Duraklatıldı": 1,
+       "Teslim Edildi": 2
       },
       "meta": {
        "post": {
         "A": 1,
-        "B": 4,
+        "B": 3,
         "C": 1
        },
        "kabul": {
         "A": 1,
-        "B": 1,
+        "B": 0,
         "C": 1
        },
        "meta_ileti": {
         "A": 1,
-        "B": 1,
+        "B": 0,
         "C": 1
        },
        "medya_yukleme": {
@@ -22575,46 +24273,75 @@
        },
        "medya_silme": {
         "A": 1,
-        "B": 1,
+        "B": 0,
         "C": 1
        },
-       "toplam_post": 6,
-       "toplam_kabul_program": 3,
-       "toplam_meta_ileti": 3,
+       "toplam_post": 5,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 2,
        "toplam_medya_yukleme": 3
       },
       "kontroller": {
+       "K0": {
+        "t": "2026-10-30T10:09:00+03:00",
+        "durum_sayilari": {
+         "Bekliyor": 1,
+         "Teslim Edildi": 2
+        },
+        "toplam_post": 5,
+        "toplam_kabul": 2,
+        "pencere_farkli_alici": {
+         "W1": 2
+        },
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Teslim Edildi",
+         "T1/B": "Bekliyor",
+         "T1/C": "Teslim Edildi"
+        }
+       },
        "K1": {
         "t": "2026-10-30T10:20:00+03:00",
         "durum_sayilari": {
-         "Teslim Edildi": 3
+         "Duraklatıldı": 1,
+         "Teslim Edildi": 2
         },
-        "toplam_post": 6,
-        "toplam_kabul": 3,
+        "toplam_post": 5,
+        "toplam_kabul": 2,
         "pencere_farkli_alici": {
-         "W1": 3
+         "W1": 2
         },
-        "medya_silme": 3,
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
-         "T1/B": "Teslim Edildi",
+         "T1/B": "Duraklatıldı",
          "T1/C": "Teslim Edildi"
         }
        },
        "K2": {
         "t": "2026-10-30T12:00:00+03:00",
         "durum_sayilari": {
-         "Teslim Edildi": 3
+         "Duraklatıldı": 1,
+         "Teslim Edildi": 2
         },
-        "toplam_post": 6,
-        "toplam_kabul": 3,
+        "toplam_post": 5,
+        "toplam_kabul": 2,
         "pencere_farkli_alici": {
-         "W1": 3
+         "W1": 2
         },
-        "medya_silme": 3,
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "duraklatildi"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
-         "T1/B": "Teslim Edildi",
+         "T1/B": "Duraklatıldı",
          "T1/C": "Teslim Edildi"
         }
        }
@@ -22622,8 +24349,8 @@
       "bu_ay": {
        "W1": {
         "2026-10": {
-         "teslim": 3,
-         "yaklasik_usd": "0.0027"
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
         }
        }
       },
@@ -22666,7 +24393,7 @@
         "atlanma_nedeni": null
        },
        "T1/B": {
-        "durum": "Teslim Edildi",
+        "durum": "Duraklatıldı",
         "telefon": "+905332223344",
         "sablon": "destekofis_ekstre",
         "degiskenler": [
@@ -22687,12 +24414,12 @@
          "on_ek": "Ekstre Mehmet Kaya ",
          "son_ek": ".pdf"
         },
-        "hata_kodu": null,
-        "post": 4,
-        "kabul": 1,
-        "meta_ileti": 1,
+        "hata_kodu": 131000,
+        "post": 3,
+        "kabul": 0,
+        "meta_ileti": 0,
         "medya_yukleme": 1,
-        "medya_silme": 1,
+        "medya_silme": 0,
         "atlanma_nedeni": null
        },
        "T1/C": {
@@ -22866,6 +24593,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -22920,6 +24648,9 @@
          "W1": 2
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Bekliyor",
@@ -23157,6 +24888,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "duraklatildi",
@@ -23427,6 +25159,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -23476,6 +25209,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Bekliyor"
@@ -23492,6 +25228,9 @@
          "W1": 2
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi"
@@ -23704,6 +25443,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -23754,6 +25494,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Başarısız"
@@ -23953,6 +25696,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -24002,6 +25746,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Bekliyor"
@@ -24201,6 +25948,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -24250,6 +25998,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Bekliyor"
@@ -24449,6 +26200,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -24498,6 +26250,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Bekliyor"
@@ -24697,6 +26452,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -24746,6 +26502,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Bekliyor"
@@ -24945,6 +26704,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -24994,6 +26754,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Bekliyor"
@@ -25193,6 +26956,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -25242,6 +27006,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Bekliyor"
@@ -25441,6 +27208,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -25490,6 +27258,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Bekliyor"
@@ -25711,6 +27482,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -25765,6 +27537,9 @@
          "W1": 2
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Bekliyor",
@@ -25782,6 +27557,9 @@
          "W1": 3
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -26030,6 +27808,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -26073,6 +27852,9 @@
          "W1": 1
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Meta Bekletti (24 Saat Sonra Yeniden)"
         }
@@ -26088,6 +27870,9 @@
          "W1": 1
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Meta Bekletti (24 Saat Sonra Yeniden)"
         }
@@ -26103,6 +27888,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi"
         }
@@ -26258,6 +28046,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -26301,6 +28090,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Başarısız"
         }
@@ -26455,6 +28247,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -26498,6 +28291,9 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Meta Bekletti (24 Saat Sonra Yeniden)"
         }
@@ -26513,6 +28309,9 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi"
         }
@@ -26685,6 +28484,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -26932,6 +28732,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -29266,6 +31067,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -29294,7 +31096,10 @@
         "pencere_farkli_alici": {
          "W1": 250
         },
-        "medya_silme": 250
+        "medya_silme": 250,
+        "toplular": {
+         "T1": "aktif"
+        }
        },
        "K2": {
         "t": "2026-10-31T11:00:00+03:00",
@@ -29306,7 +31111,10 @@
         "pencere_farkli_alici": {
          "W1": 50
         },
-        "medya_silme": 300
+        "medya_silme": 300,
+        "toplular": {
+         "T1": "aktif"
+        }
        }
       },
       "bu_ay": {
@@ -31605,6 +33413,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -31633,7 +33442,10 @@
         "pencere_farkli_alici": {
          "W1": 250
         },
-        "medya_silme": 250
+        "medya_silme": 250,
+        "toplular": {
+         "T1": "aktif"
+        }
        },
        "K2": {
         "t": "2026-10-30T17:00:00+03:00",
@@ -31645,7 +33457,10 @@
         "pencere_farkli_alici": {
          "W1": 300
         },
-        "medya_silme": 300
+        "medya_silme": 300,
+        "toplular": {
+         "T1": "aktif"
+        }
        }
       },
       "bu_ay": {
@@ -31918,6 +33733,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -31982,6 +33798,9 @@
          "W1": 3
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -32001,6 +33820,9 @@
          "W1": 2
         },
         "medya_silme": 5,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -32364,6 +34186,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -32433,6 +34256,10 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Sınır Nedeniyle Bekliyor",
@@ -32452,6 +34279,10 @@
          "W1": 4
         },
         "medya_silme": 5,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -32773,6 +34604,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -32832,6 +34664,10 @@
          "W1": 2
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -32850,6 +34686,10 @@
          "W1": 2
         },
         "medya_silme": 4,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -33177,6 +35017,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -33246,6 +35087,10 @@
          "W1": 3
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -33266,6 +35111,10 @@
          "W1": 3
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -33285,6 +35134,10 @@
          "W1": 2
         },
         "medya_silme": 5,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -33633,6 +35486,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -33697,6 +35551,10 @@
          "W1": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Sınır Nedeniyle Bekliyor",
@@ -33715,6 +35573,10 @@
          "W1": 3
         },
         "medya_silme": 4,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -34034,6 +35896,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -34098,6 +35961,10 @@
          "W1": 3
         },
         "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A1": "Teslim Edildi",
          "T1/A2": "Teslim Edildi",
@@ -34116,6 +35983,10 @@
          "W1": 1
         },
         "medya_silme": 4,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A1": "Teslim Edildi",
          "T1/A2": "Teslim Edildi",
@@ -34394,6 +36265,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -34448,6 +36320,10 @@
          "W2": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A1": "Teslim Edildi",
          "T2/B1": "Teslim Edildi"
@@ -34678,6 +36554,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -34738,6 +36615,10 @@
          "W2": 1
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
         "isler": {
          "T1/A1": "Sınır Nedeniyle Bekliyor",
          "T1/A2": "Sınır Nedeniyle Bekliyor",
@@ -48936,6 +50817,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -48963,7 +50845,10 @@
         "pencere_farkli_alici": {
          "W1": 2000
         },
-        "medya_silme": 2000
+        "medya_silme": 2000,
+        "toplular": {
+         "T1": "aktif"
+        }
        }
       },
       "bu_ay": {
@@ -53376,6 +55261,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -53404,7 +55290,10 @@
         "pencere_farkli_alici": {
          "W1": 250
         },
-        "medya_silme": 250
+        "medya_silme": 250,
+        "toplular": {
+         "T1": "aktif"
+        }
        },
        "K2": {
         "t": "2026-10-31T11:00:00+03:00",
@@ -53417,7 +55306,10 @@
         "pencere_farkli_alici": {
          "W1": 250
         },
-        "medya_silme": 500
+        "medya_silme": 500,
+        "toplular": {
+         "T1": "aktif"
+        }
        },
        "K3": {
         "t": "2026-11-01T09:00:00+03:00",
@@ -53430,7 +55322,10 @@
         "pencere_farkli_alici": {
          "W1": 250
         },
-        "medya_silme": 500
+        "medya_silme": 500,
+        "toplular": {
+         "T1": "aktif"
+        }
        },
        "K4": {
         "t": "2026-11-01T11:00:00+03:00",
@@ -53442,7 +55337,10 @@
         "pencere_farkli_alici": {
          "W1": 100
         },
-        "medya_silme": 600
+        "medya_silme": 600,
+        "toplular": {
+         "T1": "aktif"
+        }
        }
       },
       "bu_ay": {
@@ -57153,6 +59051,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -57180,7 +59079,10 @@
         "pencere_farkli_alici": {
          "W1": 500
         },
-        "medya_silme": 500
+        "medya_silme": 500,
+        "toplular": {
+         "T1": "aktif"
+        }
        }
       },
       "bu_ay": {
@@ -57300,8 +59202,8 @@
   {
    "ad": "OLCEK-04-pazarlama-300",
    "baslik": "ÖLÇEK",
-   "aciklama": "300 kişi, basamak 250; 50'si sınırda beklerken şablon Pazarlama'ya alındı: saatlik okumada 50'si Duraklatıldı",
-   "kaynak": "§7a 27",
+   "aciklama": "300 kişi, basamak 250; 50'si sınırda beklerken şablon Pazarlama'ya alındı: en geç 10 dakikalık okumada 50'si Duraklatıldı",
+   "kaynak": "§7a 27, R2",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -59474,6 +61376,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "duraklatildi",
@@ -59503,7 +61406,10 @@
         "pencere_farkli_alici": {
          "W1": 250
         },
-        "medya_silme": 250
+        "medya_silme": 250,
+        "toplular": {
+         "T1": "duraklatildi"
+        }
        }
       },
       "bu_ay": {
@@ -59622,6 +61528,2336 @@
    ]
   },
   {
+   "ad": "OLCEK-05-pazarlama-100-ileti",
+   "baslik": "ÖLÇEK",
+   "aciklama": "300 kişi (sınırsız); kategori 10. saniyede Pazarlama: 100. iletiden sonraki okumada iş durur — Pazarlama ücretiyle giden ileti en çok 100 (≈ 1 USD)",
+   "kaynak": "§7a 27, R2 (her 100 iletide)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "K0001",
+      "ad": "Kişi 0001",
+      "telefon": "0550 000 0001",
+      "hareketler": []
+     },
+     {
+      "id": "K0002",
+      "ad": "Kişi 0002",
+      "telefon": "0550 000 0002",
+      "hareketler": []
+     },
+     {
+      "id": "K0003",
+      "ad": "Kişi 0003",
+      "telefon": "0550 000 0003",
+      "hareketler": []
+     },
+     {
+      "id": "K0004",
+      "ad": "Kişi 0004",
+      "telefon": "0550 000 0004",
+      "hareketler": []
+     },
+     {
+      "id": "K0005",
+      "ad": "Kişi 0005",
+      "telefon": "0550 000 0005",
+      "hareketler": []
+     },
+     {
+      "id": "K0006",
+      "ad": "Kişi 0006",
+      "telefon": "0550 000 0006",
+      "hareketler": []
+     },
+     {
+      "id": "K0007",
+      "ad": "Kişi 0007",
+      "telefon": "0550 000 0007",
+      "hareketler": []
+     },
+     {
+      "id": "K0008",
+      "ad": "Kişi 0008",
+      "telefon": "0550 000 0008",
+      "hareketler": []
+     },
+     {
+      "id": "K0009",
+      "ad": "Kişi 0009",
+      "telefon": "0550 000 0009",
+      "hareketler": []
+     },
+     {
+      "id": "K0010",
+      "ad": "Kişi 0010",
+      "telefon": "0550 000 0010",
+      "hareketler": []
+     },
+     {
+      "id": "K0011",
+      "ad": "Kişi 0011",
+      "telefon": "0550 000 0011",
+      "hareketler": []
+     },
+     {
+      "id": "K0012",
+      "ad": "Kişi 0012",
+      "telefon": "0550 000 0012",
+      "hareketler": []
+     },
+     {
+      "id": "K0013",
+      "ad": "Kişi 0013",
+      "telefon": "0550 000 0013",
+      "hareketler": []
+     },
+     {
+      "id": "K0014",
+      "ad": "Kişi 0014",
+      "telefon": "0550 000 0014",
+      "hareketler": []
+     },
+     {
+      "id": "K0015",
+      "ad": "Kişi 0015",
+      "telefon": "0550 000 0015",
+      "hareketler": []
+     },
+     {
+      "id": "K0016",
+      "ad": "Kişi 0016",
+      "telefon": "0550 000 0016",
+      "hareketler": []
+     },
+     {
+      "id": "K0017",
+      "ad": "Kişi 0017",
+      "telefon": "0550 000 0017",
+      "hareketler": []
+     },
+     {
+      "id": "K0018",
+      "ad": "Kişi 0018",
+      "telefon": "0550 000 0018",
+      "hareketler": []
+     },
+     {
+      "id": "K0019",
+      "ad": "Kişi 0019",
+      "telefon": "0550 000 0019",
+      "hareketler": []
+     },
+     {
+      "id": "K0020",
+      "ad": "Kişi 0020",
+      "telefon": "0550 000 0020",
+      "hareketler": []
+     },
+     {
+      "id": "K0021",
+      "ad": "Kişi 0021",
+      "telefon": "0550 000 0021",
+      "hareketler": []
+     },
+     {
+      "id": "K0022",
+      "ad": "Kişi 0022",
+      "telefon": "0550 000 0022",
+      "hareketler": []
+     },
+     {
+      "id": "K0023",
+      "ad": "Kişi 0023",
+      "telefon": "0550 000 0023",
+      "hareketler": []
+     },
+     {
+      "id": "K0024",
+      "ad": "Kişi 0024",
+      "telefon": "0550 000 0024",
+      "hareketler": []
+     },
+     {
+      "id": "K0025",
+      "ad": "Kişi 0025",
+      "telefon": "0550 000 0025",
+      "hareketler": []
+     },
+     {
+      "id": "K0026",
+      "ad": "Kişi 0026",
+      "telefon": "0550 000 0026",
+      "hareketler": []
+     },
+     {
+      "id": "K0027",
+      "ad": "Kişi 0027",
+      "telefon": "0550 000 0027",
+      "hareketler": []
+     },
+     {
+      "id": "K0028",
+      "ad": "Kişi 0028",
+      "telefon": "0550 000 0028",
+      "hareketler": []
+     },
+     {
+      "id": "K0029",
+      "ad": "Kişi 0029",
+      "telefon": "0550 000 0029",
+      "hareketler": []
+     },
+     {
+      "id": "K0030",
+      "ad": "Kişi 0030",
+      "telefon": "0550 000 0030",
+      "hareketler": []
+     },
+     {
+      "id": "K0031",
+      "ad": "Kişi 0031",
+      "telefon": "0550 000 0031",
+      "hareketler": []
+     },
+     {
+      "id": "K0032",
+      "ad": "Kişi 0032",
+      "telefon": "0550 000 0032",
+      "hareketler": []
+     },
+     {
+      "id": "K0033",
+      "ad": "Kişi 0033",
+      "telefon": "0550 000 0033",
+      "hareketler": []
+     },
+     {
+      "id": "K0034",
+      "ad": "Kişi 0034",
+      "telefon": "0550 000 0034",
+      "hareketler": []
+     },
+     {
+      "id": "K0035",
+      "ad": "Kişi 0035",
+      "telefon": "0550 000 0035",
+      "hareketler": []
+     },
+     {
+      "id": "K0036",
+      "ad": "Kişi 0036",
+      "telefon": "0550 000 0036",
+      "hareketler": []
+     },
+     {
+      "id": "K0037",
+      "ad": "Kişi 0037",
+      "telefon": "0550 000 0037",
+      "hareketler": []
+     },
+     {
+      "id": "K0038",
+      "ad": "Kişi 0038",
+      "telefon": "0550 000 0038",
+      "hareketler": []
+     },
+     {
+      "id": "K0039",
+      "ad": "Kişi 0039",
+      "telefon": "0550 000 0039",
+      "hareketler": []
+     },
+     {
+      "id": "K0040",
+      "ad": "Kişi 0040",
+      "telefon": "0550 000 0040",
+      "hareketler": []
+     },
+     {
+      "id": "K0041",
+      "ad": "Kişi 0041",
+      "telefon": "0550 000 0041",
+      "hareketler": []
+     },
+     {
+      "id": "K0042",
+      "ad": "Kişi 0042",
+      "telefon": "0550 000 0042",
+      "hareketler": []
+     },
+     {
+      "id": "K0043",
+      "ad": "Kişi 0043",
+      "telefon": "0550 000 0043",
+      "hareketler": []
+     },
+     {
+      "id": "K0044",
+      "ad": "Kişi 0044",
+      "telefon": "0550 000 0044",
+      "hareketler": []
+     },
+     {
+      "id": "K0045",
+      "ad": "Kişi 0045",
+      "telefon": "0550 000 0045",
+      "hareketler": []
+     },
+     {
+      "id": "K0046",
+      "ad": "Kişi 0046",
+      "telefon": "0550 000 0046",
+      "hareketler": []
+     },
+     {
+      "id": "K0047",
+      "ad": "Kişi 0047",
+      "telefon": "0550 000 0047",
+      "hareketler": []
+     },
+     {
+      "id": "K0048",
+      "ad": "Kişi 0048",
+      "telefon": "0550 000 0048",
+      "hareketler": []
+     },
+     {
+      "id": "K0049",
+      "ad": "Kişi 0049",
+      "telefon": "0550 000 0049",
+      "hareketler": []
+     },
+     {
+      "id": "K0050",
+      "ad": "Kişi 0050",
+      "telefon": "0550 000 0050",
+      "hareketler": []
+     },
+     {
+      "id": "K0051",
+      "ad": "Kişi 0051",
+      "telefon": "0550 000 0051",
+      "hareketler": []
+     },
+     {
+      "id": "K0052",
+      "ad": "Kişi 0052",
+      "telefon": "0550 000 0052",
+      "hareketler": []
+     },
+     {
+      "id": "K0053",
+      "ad": "Kişi 0053",
+      "telefon": "0550 000 0053",
+      "hareketler": []
+     },
+     {
+      "id": "K0054",
+      "ad": "Kişi 0054",
+      "telefon": "0550 000 0054",
+      "hareketler": []
+     },
+     {
+      "id": "K0055",
+      "ad": "Kişi 0055",
+      "telefon": "0550 000 0055",
+      "hareketler": []
+     },
+     {
+      "id": "K0056",
+      "ad": "Kişi 0056",
+      "telefon": "0550 000 0056",
+      "hareketler": []
+     },
+     {
+      "id": "K0057",
+      "ad": "Kişi 0057",
+      "telefon": "0550 000 0057",
+      "hareketler": []
+     },
+     {
+      "id": "K0058",
+      "ad": "Kişi 0058",
+      "telefon": "0550 000 0058",
+      "hareketler": []
+     },
+     {
+      "id": "K0059",
+      "ad": "Kişi 0059",
+      "telefon": "0550 000 0059",
+      "hareketler": []
+     },
+     {
+      "id": "K0060",
+      "ad": "Kişi 0060",
+      "telefon": "0550 000 0060",
+      "hareketler": []
+     },
+     {
+      "id": "K0061",
+      "ad": "Kişi 0061",
+      "telefon": "0550 000 0061",
+      "hareketler": []
+     },
+     {
+      "id": "K0062",
+      "ad": "Kişi 0062",
+      "telefon": "0550 000 0062",
+      "hareketler": []
+     },
+     {
+      "id": "K0063",
+      "ad": "Kişi 0063",
+      "telefon": "0550 000 0063",
+      "hareketler": []
+     },
+     {
+      "id": "K0064",
+      "ad": "Kişi 0064",
+      "telefon": "0550 000 0064",
+      "hareketler": []
+     },
+     {
+      "id": "K0065",
+      "ad": "Kişi 0065",
+      "telefon": "0550 000 0065",
+      "hareketler": []
+     },
+     {
+      "id": "K0066",
+      "ad": "Kişi 0066",
+      "telefon": "0550 000 0066",
+      "hareketler": []
+     },
+     {
+      "id": "K0067",
+      "ad": "Kişi 0067",
+      "telefon": "0550 000 0067",
+      "hareketler": []
+     },
+     {
+      "id": "K0068",
+      "ad": "Kişi 0068",
+      "telefon": "0550 000 0068",
+      "hareketler": []
+     },
+     {
+      "id": "K0069",
+      "ad": "Kişi 0069",
+      "telefon": "0550 000 0069",
+      "hareketler": []
+     },
+     {
+      "id": "K0070",
+      "ad": "Kişi 0070",
+      "telefon": "0550 000 0070",
+      "hareketler": []
+     },
+     {
+      "id": "K0071",
+      "ad": "Kişi 0071",
+      "telefon": "0550 000 0071",
+      "hareketler": []
+     },
+     {
+      "id": "K0072",
+      "ad": "Kişi 0072",
+      "telefon": "0550 000 0072",
+      "hareketler": []
+     },
+     {
+      "id": "K0073",
+      "ad": "Kişi 0073",
+      "telefon": "0550 000 0073",
+      "hareketler": []
+     },
+     {
+      "id": "K0074",
+      "ad": "Kişi 0074",
+      "telefon": "0550 000 0074",
+      "hareketler": []
+     },
+     {
+      "id": "K0075",
+      "ad": "Kişi 0075",
+      "telefon": "0550 000 0075",
+      "hareketler": []
+     },
+     {
+      "id": "K0076",
+      "ad": "Kişi 0076",
+      "telefon": "0550 000 0076",
+      "hareketler": []
+     },
+     {
+      "id": "K0077",
+      "ad": "Kişi 0077",
+      "telefon": "0550 000 0077",
+      "hareketler": []
+     },
+     {
+      "id": "K0078",
+      "ad": "Kişi 0078",
+      "telefon": "0550 000 0078",
+      "hareketler": []
+     },
+     {
+      "id": "K0079",
+      "ad": "Kişi 0079",
+      "telefon": "0550 000 0079",
+      "hareketler": []
+     },
+     {
+      "id": "K0080",
+      "ad": "Kişi 0080",
+      "telefon": "0550 000 0080",
+      "hareketler": []
+     },
+     {
+      "id": "K0081",
+      "ad": "Kişi 0081",
+      "telefon": "0550 000 0081",
+      "hareketler": []
+     },
+     {
+      "id": "K0082",
+      "ad": "Kişi 0082",
+      "telefon": "0550 000 0082",
+      "hareketler": []
+     },
+     {
+      "id": "K0083",
+      "ad": "Kişi 0083",
+      "telefon": "0550 000 0083",
+      "hareketler": []
+     },
+     {
+      "id": "K0084",
+      "ad": "Kişi 0084",
+      "telefon": "0550 000 0084",
+      "hareketler": []
+     },
+     {
+      "id": "K0085",
+      "ad": "Kişi 0085",
+      "telefon": "0550 000 0085",
+      "hareketler": []
+     },
+     {
+      "id": "K0086",
+      "ad": "Kişi 0086",
+      "telefon": "0550 000 0086",
+      "hareketler": []
+     },
+     {
+      "id": "K0087",
+      "ad": "Kişi 0087",
+      "telefon": "0550 000 0087",
+      "hareketler": []
+     },
+     {
+      "id": "K0088",
+      "ad": "Kişi 0088",
+      "telefon": "0550 000 0088",
+      "hareketler": []
+     },
+     {
+      "id": "K0089",
+      "ad": "Kişi 0089",
+      "telefon": "0550 000 0089",
+      "hareketler": []
+     },
+     {
+      "id": "K0090",
+      "ad": "Kişi 0090",
+      "telefon": "0550 000 0090",
+      "hareketler": []
+     },
+     {
+      "id": "K0091",
+      "ad": "Kişi 0091",
+      "telefon": "0550 000 0091",
+      "hareketler": []
+     },
+     {
+      "id": "K0092",
+      "ad": "Kişi 0092",
+      "telefon": "0550 000 0092",
+      "hareketler": []
+     },
+     {
+      "id": "K0093",
+      "ad": "Kişi 0093",
+      "telefon": "0550 000 0093",
+      "hareketler": []
+     },
+     {
+      "id": "K0094",
+      "ad": "Kişi 0094",
+      "telefon": "0550 000 0094",
+      "hareketler": []
+     },
+     {
+      "id": "K0095",
+      "ad": "Kişi 0095",
+      "telefon": "0550 000 0095",
+      "hareketler": []
+     },
+     {
+      "id": "K0096",
+      "ad": "Kişi 0096",
+      "telefon": "0550 000 0096",
+      "hareketler": []
+     },
+     {
+      "id": "K0097",
+      "ad": "Kişi 0097",
+      "telefon": "0550 000 0097",
+      "hareketler": []
+     },
+     {
+      "id": "K0098",
+      "ad": "Kişi 0098",
+      "telefon": "0550 000 0098",
+      "hareketler": []
+     },
+     {
+      "id": "K0099",
+      "ad": "Kişi 0099",
+      "telefon": "0550 000 0099",
+      "hareketler": []
+     },
+     {
+      "id": "K0100",
+      "ad": "Kişi 0100",
+      "telefon": "0550 000 0100",
+      "hareketler": []
+     },
+     {
+      "id": "K0101",
+      "ad": "Kişi 0101",
+      "telefon": "0550 000 0101",
+      "hareketler": []
+     },
+     {
+      "id": "K0102",
+      "ad": "Kişi 0102",
+      "telefon": "0550 000 0102",
+      "hareketler": []
+     },
+     {
+      "id": "K0103",
+      "ad": "Kişi 0103",
+      "telefon": "0550 000 0103",
+      "hareketler": []
+     },
+     {
+      "id": "K0104",
+      "ad": "Kişi 0104",
+      "telefon": "0550 000 0104",
+      "hareketler": []
+     },
+     {
+      "id": "K0105",
+      "ad": "Kişi 0105",
+      "telefon": "0550 000 0105",
+      "hareketler": []
+     },
+     {
+      "id": "K0106",
+      "ad": "Kişi 0106",
+      "telefon": "0550 000 0106",
+      "hareketler": []
+     },
+     {
+      "id": "K0107",
+      "ad": "Kişi 0107",
+      "telefon": "0550 000 0107",
+      "hareketler": []
+     },
+     {
+      "id": "K0108",
+      "ad": "Kişi 0108",
+      "telefon": "0550 000 0108",
+      "hareketler": []
+     },
+     {
+      "id": "K0109",
+      "ad": "Kişi 0109",
+      "telefon": "0550 000 0109",
+      "hareketler": []
+     },
+     {
+      "id": "K0110",
+      "ad": "Kişi 0110",
+      "telefon": "0550 000 0110",
+      "hareketler": []
+     },
+     {
+      "id": "K0111",
+      "ad": "Kişi 0111",
+      "telefon": "0550 000 0111",
+      "hareketler": []
+     },
+     {
+      "id": "K0112",
+      "ad": "Kişi 0112",
+      "telefon": "0550 000 0112",
+      "hareketler": []
+     },
+     {
+      "id": "K0113",
+      "ad": "Kişi 0113",
+      "telefon": "0550 000 0113",
+      "hareketler": []
+     },
+     {
+      "id": "K0114",
+      "ad": "Kişi 0114",
+      "telefon": "0550 000 0114",
+      "hareketler": []
+     },
+     {
+      "id": "K0115",
+      "ad": "Kişi 0115",
+      "telefon": "0550 000 0115",
+      "hareketler": []
+     },
+     {
+      "id": "K0116",
+      "ad": "Kişi 0116",
+      "telefon": "0550 000 0116",
+      "hareketler": []
+     },
+     {
+      "id": "K0117",
+      "ad": "Kişi 0117",
+      "telefon": "0550 000 0117",
+      "hareketler": []
+     },
+     {
+      "id": "K0118",
+      "ad": "Kişi 0118",
+      "telefon": "0550 000 0118",
+      "hareketler": []
+     },
+     {
+      "id": "K0119",
+      "ad": "Kişi 0119",
+      "telefon": "0550 000 0119",
+      "hareketler": []
+     },
+     {
+      "id": "K0120",
+      "ad": "Kişi 0120",
+      "telefon": "0550 000 0120",
+      "hareketler": []
+     },
+     {
+      "id": "K0121",
+      "ad": "Kişi 0121",
+      "telefon": "0550 000 0121",
+      "hareketler": []
+     },
+     {
+      "id": "K0122",
+      "ad": "Kişi 0122",
+      "telefon": "0550 000 0122",
+      "hareketler": []
+     },
+     {
+      "id": "K0123",
+      "ad": "Kişi 0123",
+      "telefon": "0550 000 0123",
+      "hareketler": []
+     },
+     {
+      "id": "K0124",
+      "ad": "Kişi 0124",
+      "telefon": "0550 000 0124",
+      "hareketler": []
+     },
+     {
+      "id": "K0125",
+      "ad": "Kişi 0125",
+      "telefon": "0550 000 0125",
+      "hareketler": []
+     },
+     {
+      "id": "K0126",
+      "ad": "Kişi 0126",
+      "telefon": "0550 000 0126",
+      "hareketler": []
+     },
+     {
+      "id": "K0127",
+      "ad": "Kişi 0127",
+      "telefon": "0550 000 0127",
+      "hareketler": []
+     },
+     {
+      "id": "K0128",
+      "ad": "Kişi 0128",
+      "telefon": "0550 000 0128",
+      "hareketler": []
+     },
+     {
+      "id": "K0129",
+      "ad": "Kişi 0129",
+      "telefon": "0550 000 0129",
+      "hareketler": []
+     },
+     {
+      "id": "K0130",
+      "ad": "Kişi 0130",
+      "telefon": "0550 000 0130",
+      "hareketler": []
+     },
+     {
+      "id": "K0131",
+      "ad": "Kişi 0131",
+      "telefon": "0550 000 0131",
+      "hareketler": []
+     },
+     {
+      "id": "K0132",
+      "ad": "Kişi 0132",
+      "telefon": "0550 000 0132",
+      "hareketler": []
+     },
+     {
+      "id": "K0133",
+      "ad": "Kişi 0133",
+      "telefon": "0550 000 0133",
+      "hareketler": []
+     },
+     {
+      "id": "K0134",
+      "ad": "Kişi 0134",
+      "telefon": "0550 000 0134",
+      "hareketler": []
+     },
+     {
+      "id": "K0135",
+      "ad": "Kişi 0135",
+      "telefon": "0550 000 0135",
+      "hareketler": []
+     },
+     {
+      "id": "K0136",
+      "ad": "Kişi 0136",
+      "telefon": "0550 000 0136",
+      "hareketler": []
+     },
+     {
+      "id": "K0137",
+      "ad": "Kişi 0137",
+      "telefon": "0550 000 0137",
+      "hareketler": []
+     },
+     {
+      "id": "K0138",
+      "ad": "Kişi 0138",
+      "telefon": "0550 000 0138",
+      "hareketler": []
+     },
+     {
+      "id": "K0139",
+      "ad": "Kişi 0139",
+      "telefon": "0550 000 0139",
+      "hareketler": []
+     },
+     {
+      "id": "K0140",
+      "ad": "Kişi 0140",
+      "telefon": "0550 000 0140",
+      "hareketler": []
+     },
+     {
+      "id": "K0141",
+      "ad": "Kişi 0141",
+      "telefon": "0550 000 0141",
+      "hareketler": []
+     },
+     {
+      "id": "K0142",
+      "ad": "Kişi 0142",
+      "telefon": "0550 000 0142",
+      "hareketler": []
+     },
+     {
+      "id": "K0143",
+      "ad": "Kişi 0143",
+      "telefon": "0550 000 0143",
+      "hareketler": []
+     },
+     {
+      "id": "K0144",
+      "ad": "Kişi 0144",
+      "telefon": "0550 000 0144",
+      "hareketler": []
+     },
+     {
+      "id": "K0145",
+      "ad": "Kişi 0145",
+      "telefon": "0550 000 0145",
+      "hareketler": []
+     },
+     {
+      "id": "K0146",
+      "ad": "Kişi 0146",
+      "telefon": "0550 000 0146",
+      "hareketler": []
+     },
+     {
+      "id": "K0147",
+      "ad": "Kişi 0147",
+      "telefon": "0550 000 0147",
+      "hareketler": []
+     },
+     {
+      "id": "K0148",
+      "ad": "Kişi 0148",
+      "telefon": "0550 000 0148",
+      "hareketler": []
+     },
+     {
+      "id": "K0149",
+      "ad": "Kişi 0149",
+      "telefon": "0550 000 0149",
+      "hareketler": []
+     },
+     {
+      "id": "K0150",
+      "ad": "Kişi 0150",
+      "telefon": "0550 000 0150",
+      "hareketler": []
+     },
+     {
+      "id": "K0151",
+      "ad": "Kişi 0151",
+      "telefon": "0550 000 0151",
+      "hareketler": []
+     },
+     {
+      "id": "K0152",
+      "ad": "Kişi 0152",
+      "telefon": "0550 000 0152",
+      "hareketler": []
+     },
+     {
+      "id": "K0153",
+      "ad": "Kişi 0153",
+      "telefon": "0550 000 0153",
+      "hareketler": []
+     },
+     {
+      "id": "K0154",
+      "ad": "Kişi 0154",
+      "telefon": "0550 000 0154",
+      "hareketler": []
+     },
+     {
+      "id": "K0155",
+      "ad": "Kişi 0155",
+      "telefon": "0550 000 0155",
+      "hareketler": []
+     },
+     {
+      "id": "K0156",
+      "ad": "Kişi 0156",
+      "telefon": "0550 000 0156",
+      "hareketler": []
+     },
+     {
+      "id": "K0157",
+      "ad": "Kişi 0157",
+      "telefon": "0550 000 0157",
+      "hareketler": []
+     },
+     {
+      "id": "K0158",
+      "ad": "Kişi 0158",
+      "telefon": "0550 000 0158",
+      "hareketler": []
+     },
+     {
+      "id": "K0159",
+      "ad": "Kişi 0159",
+      "telefon": "0550 000 0159",
+      "hareketler": []
+     },
+     {
+      "id": "K0160",
+      "ad": "Kişi 0160",
+      "telefon": "0550 000 0160",
+      "hareketler": []
+     },
+     {
+      "id": "K0161",
+      "ad": "Kişi 0161",
+      "telefon": "0550 000 0161",
+      "hareketler": []
+     },
+     {
+      "id": "K0162",
+      "ad": "Kişi 0162",
+      "telefon": "0550 000 0162",
+      "hareketler": []
+     },
+     {
+      "id": "K0163",
+      "ad": "Kişi 0163",
+      "telefon": "0550 000 0163",
+      "hareketler": []
+     },
+     {
+      "id": "K0164",
+      "ad": "Kişi 0164",
+      "telefon": "0550 000 0164",
+      "hareketler": []
+     },
+     {
+      "id": "K0165",
+      "ad": "Kişi 0165",
+      "telefon": "0550 000 0165",
+      "hareketler": []
+     },
+     {
+      "id": "K0166",
+      "ad": "Kişi 0166",
+      "telefon": "0550 000 0166",
+      "hareketler": []
+     },
+     {
+      "id": "K0167",
+      "ad": "Kişi 0167",
+      "telefon": "0550 000 0167",
+      "hareketler": []
+     },
+     {
+      "id": "K0168",
+      "ad": "Kişi 0168",
+      "telefon": "0550 000 0168",
+      "hareketler": []
+     },
+     {
+      "id": "K0169",
+      "ad": "Kişi 0169",
+      "telefon": "0550 000 0169",
+      "hareketler": []
+     },
+     {
+      "id": "K0170",
+      "ad": "Kişi 0170",
+      "telefon": "0550 000 0170",
+      "hareketler": []
+     },
+     {
+      "id": "K0171",
+      "ad": "Kişi 0171",
+      "telefon": "0550 000 0171",
+      "hareketler": []
+     },
+     {
+      "id": "K0172",
+      "ad": "Kişi 0172",
+      "telefon": "0550 000 0172",
+      "hareketler": []
+     },
+     {
+      "id": "K0173",
+      "ad": "Kişi 0173",
+      "telefon": "0550 000 0173",
+      "hareketler": []
+     },
+     {
+      "id": "K0174",
+      "ad": "Kişi 0174",
+      "telefon": "0550 000 0174",
+      "hareketler": []
+     },
+     {
+      "id": "K0175",
+      "ad": "Kişi 0175",
+      "telefon": "0550 000 0175",
+      "hareketler": []
+     },
+     {
+      "id": "K0176",
+      "ad": "Kişi 0176",
+      "telefon": "0550 000 0176",
+      "hareketler": []
+     },
+     {
+      "id": "K0177",
+      "ad": "Kişi 0177",
+      "telefon": "0550 000 0177",
+      "hareketler": []
+     },
+     {
+      "id": "K0178",
+      "ad": "Kişi 0178",
+      "telefon": "0550 000 0178",
+      "hareketler": []
+     },
+     {
+      "id": "K0179",
+      "ad": "Kişi 0179",
+      "telefon": "0550 000 0179",
+      "hareketler": []
+     },
+     {
+      "id": "K0180",
+      "ad": "Kişi 0180",
+      "telefon": "0550 000 0180",
+      "hareketler": []
+     },
+     {
+      "id": "K0181",
+      "ad": "Kişi 0181",
+      "telefon": "0550 000 0181",
+      "hareketler": []
+     },
+     {
+      "id": "K0182",
+      "ad": "Kişi 0182",
+      "telefon": "0550 000 0182",
+      "hareketler": []
+     },
+     {
+      "id": "K0183",
+      "ad": "Kişi 0183",
+      "telefon": "0550 000 0183",
+      "hareketler": []
+     },
+     {
+      "id": "K0184",
+      "ad": "Kişi 0184",
+      "telefon": "0550 000 0184",
+      "hareketler": []
+     },
+     {
+      "id": "K0185",
+      "ad": "Kişi 0185",
+      "telefon": "0550 000 0185",
+      "hareketler": []
+     },
+     {
+      "id": "K0186",
+      "ad": "Kişi 0186",
+      "telefon": "0550 000 0186",
+      "hareketler": []
+     },
+     {
+      "id": "K0187",
+      "ad": "Kişi 0187",
+      "telefon": "0550 000 0187",
+      "hareketler": []
+     },
+     {
+      "id": "K0188",
+      "ad": "Kişi 0188",
+      "telefon": "0550 000 0188",
+      "hareketler": []
+     },
+     {
+      "id": "K0189",
+      "ad": "Kişi 0189",
+      "telefon": "0550 000 0189",
+      "hareketler": []
+     },
+     {
+      "id": "K0190",
+      "ad": "Kişi 0190",
+      "telefon": "0550 000 0190",
+      "hareketler": []
+     },
+     {
+      "id": "K0191",
+      "ad": "Kişi 0191",
+      "telefon": "0550 000 0191",
+      "hareketler": []
+     },
+     {
+      "id": "K0192",
+      "ad": "Kişi 0192",
+      "telefon": "0550 000 0192",
+      "hareketler": []
+     },
+     {
+      "id": "K0193",
+      "ad": "Kişi 0193",
+      "telefon": "0550 000 0193",
+      "hareketler": []
+     },
+     {
+      "id": "K0194",
+      "ad": "Kişi 0194",
+      "telefon": "0550 000 0194",
+      "hareketler": []
+     },
+     {
+      "id": "K0195",
+      "ad": "Kişi 0195",
+      "telefon": "0550 000 0195",
+      "hareketler": []
+     },
+     {
+      "id": "K0196",
+      "ad": "Kişi 0196",
+      "telefon": "0550 000 0196",
+      "hareketler": []
+     },
+     {
+      "id": "K0197",
+      "ad": "Kişi 0197",
+      "telefon": "0550 000 0197",
+      "hareketler": []
+     },
+     {
+      "id": "K0198",
+      "ad": "Kişi 0198",
+      "telefon": "0550 000 0198",
+      "hareketler": []
+     },
+     {
+      "id": "K0199",
+      "ad": "Kişi 0199",
+      "telefon": "0550 000 0199",
+      "hareketler": []
+     },
+     {
+      "id": "K0200",
+      "ad": "Kişi 0200",
+      "telefon": "0550 000 0200",
+      "hareketler": []
+     },
+     {
+      "id": "K0201",
+      "ad": "Kişi 0201",
+      "telefon": "0550 000 0201",
+      "hareketler": []
+     },
+     {
+      "id": "K0202",
+      "ad": "Kişi 0202",
+      "telefon": "0550 000 0202",
+      "hareketler": []
+     },
+     {
+      "id": "K0203",
+      "ad": "Kişi 0203",
+      "telefon": "0550 000 0203",
+      "hareketler": []
+     },
+     {
+      "id": "K0204",
+      "ad": "Kişi 0204",
+      "telefon": "0550 000 0204",
+      "hareketler": []
+     },
+     {
+      "id": "K0205",
+      "ad": "Kişi 0205",
+      "telefon": "0550 000 0205",
+      "hareketler": []
+     },
+     {
+      "id": "K0206",
+      "ad": "Kişi 0206",
+      "telefon": "0550 000 0206",
+      "hareketler": []
+     },
+     {
+      "id": "K0207",
+      "ad": "Kişi 0207",
+      "telefon": "0550 000 0207",
+      "hareketler": []
+     },
+     {
+      "id": "K0208",
+      "ad": "Kişi 0208",
+      "telefon": "0550 000 0208",
+      "hareketler": []
+     },
+     {
+      "id": "K0209",
+      "ad": "Kişi 0209",
+      "telefon": "0550 000 0209",
+      "hareketler": []
+     },
+     {
+      "id": "K0210",
+      "ad": "Kişi 0210",
+      "telefon": "0550 000 0210",
+      "hareketler": []
+     },
+     {
+      "id": "K0211",
+      "ad": "Kişi 0211",
+      "telefon": "0550 000 0211",
+      "hareketler": []
+     },
+     {
+      "id": "K0212",
+      "ad": "Kişi 0212",
+      "telefon": "0550 000 0212",
+      "hareketler": []
+     },
+     {
+      "id": "K0213",
+      "ad": "Kişi 0213",
+      "telefon": "0550 000 0213",
+      "hareketler": []
+     },
+     {
+      "id": "K0214",
+      "ad": "Kişi 0214",
+      "telefon": "0550 000 0214",
+      "hareketler": []
+     },
+     {
+      "id": "K0215",
+      "ad": "Kişi 0215",
+      "telefon": "0550 000 0215",
+      "hareketler": []
+     },
+     {
+      "id": "K0216",
+      "ad": "Kişi 0216",
+      "telefon": "0550 000 0216",
+      "hareketler": []
+     },
+     {
+      "id": "K0217",
+      "ad": "Kişi 0217",
+      "telefon": "0550 000 0217",
+      "hareketler": []
+     },
+     {
+      "id": "K0218",
+      "ad": "Kişi 0218",
+      "telefon": "0550 000 0218",
+      "hareketler": []
+     },
+     {
+      "id": "K0219",
+      "ad": "Kişi 0219",
+      "telefon": "0550 000 0219",
+      "hareketler": []
+     },
+     {
+      "id": "K0220",
+      "ad": "Kişi 0220",
+      "telefon": "0550 000 0220",
+      "hareketler": []
+     },
+     {
+      "id": "K0221",
+      "ad": "Kişi 0221",
+      "telefon": "0550 000 0221",
+      "hareketler": []
+     },
+     {
+      "id": "K0222",
+      "ad": "Kişi 0222",
+      "telefon": "0550 000 0222",
+      "hareketler": []
+     },
+     {
+      "id": "K0223",
+      "ad": "Kişi 0223",
+      "telefon": "0550 000 0223",
+      "hareketler": []
+     },
+     {
+      "id": "K0224",
+      "ad": "Kişi 0224",
+      "telefon": "0550 000 0224",
+      "hareketler": []
+     },
+     {
+      "id": "K0225",
+      "ad": "Kişi 0225",
+      "telefon": "0550 000 0225",
+      "hareketler": []
+     },
+     {
+      "id": "K0226",
+      "ad": "Kişi 0226",
+      "telefon": "0550 000 0226",
+      "hareketler": []
+     },
+     {
+      "id": "K0227",
+      "ad": "Kişi 0227",
+      "telefon": "0550 000 0227",
+      "hareketler": []
+     },
+     {
+      "id": "K0228",
+      "ad": "Kişi 0228",
+      "telefon": "0550 000 0228",
+      "hareketler": []
+     },
+     {
+      "id": "K0229",
+      "ad": "Kişi 0229",
+      "telefon": "0550 000 0229",
+      "hareketler": []
+     },
+     {
+      "id": "K0230",
+      "ad": "Kişi 0230",
+      "telefon": "0550 000 0230",
+      "hareketler": []
+     },
+     {
+      "id": "K0231",
+      "ad": "Kişi 0231",
+      "telefon": "0550 000 0231",
+      "hareketler": []
+     },
+     {
+      "id": "K0232",
+      "ad": "Kişi 0232",
+      "telefon": "0550 000 0232",
+      "hareketler": []
+     },
+     {
+      "id": "K0233",
+      "ad": "Kişi 0233",
+      "telefon": "0550 000 0233",
+      "hareketler": []
+     },
+     {
+      "id": "K0234",
+      "ad": "Kişi 0234",
+      "telefon": "0550 000 0234",
+      "hareketler": []
+     },
+     {
+      "id": "K0235",
+      "ad": "Kişi 0235",
+      "telefon": "0550 000 0235",
+      "hareketler": []
+     },
+     {
+      "id": "K0236",
+      "ad": "Kişi 0236",
+      "telefon": "0550 000 0236",
+      "hareketler": []
+     },
+     {
+      "id": "K0237",
+      "ad": "Kişi 0237",
+      "telefon": "0550 000 0237",
+      "hareketler": []
+     },
+     {
+      "id": "K0238",
+      "ad": "Kişi 0238",
+      "telefon": "0550 000 0238",
+      "hareketler": []
+     },
+     {
+      "id": "K0239",
+      "ad": "Kişi 0239",
+      "telefon": "0550 000 0239",
+      "hareketler": []
+     },
+     {
+      "id": "K0240",
+      "ad": "Kişi 0240",
+      "telefon": "0550 000 0240",
+      "hareketler": []
+     },
+     {
+      "id": "K0241",
+      "ad": "Kişi 0241",
+      "telefon": "0550 000 0241",
+      "hareketler": []
+     },
+     {
+      "id": "K0242",
+      "ad": "Kişi 0242",
+      "telefon": "0550 000 0242",
+      "hareketler": []
+     },
+     {
+      "id": "K0243",
+      "ad": "Kişi 0243",
+      "telefon": "0550 000 0243",
+      "hareketler": []
+     },
+     {
+      "id": "K0244",
+      "ad": "Kişi 0244",
+      "telefon": "0550 000 0244",
+      "hareketler": []
+     },
+     {
+      "id": "K0245",
+      "ad": "Kişi 0245",
+      "telefon": "0550 000 0245",
+      "hareketler": []
+     },
+     {
+      "id": "K0246",
+      "ad": "Kişi 0246",
+      "telefon": "0550 000 0246",
+      "hareketler": []
+     },
+     {
+      "id": "K0247",
+      "ad": "Kişi 0247",
+      "telefon": "0550 000 0247",
+      "hareketler": []
+     },
+     {
+      "id": "K0248",
+      "ad": "Kişi 0248",
+      "telefon": "0550 000 0248",
+      "hareketler": []
+     },
+     {
+      "id": "K0249",
+      "ad": "Kişi 0249",
+      "telefon": "0550 000 0249",
+      "hareketler": []
+     },
+     {
+      "id": "K0250",
+      "ad": "Kişi 0250",
+      "telefon": "0550 000 0250",
+      "hareketler": []
+     },
+     {
+      "id": "K0251",
+      "ad": "Kişi 0251",
+      "telefon": "0550 000 0251",
+      "hareketler": []
+     },
+     {
+      "id": "K0252",
+      "ad": "Kişi 0252",
+      "telefon": "0550 000 0252",
+      "hareketler": []
+     },
+     {
+      "id": "K0253",
+      "ad": "Kişi 0253",
+      "telefon": "0550 000 0253",
+      "hareketler": []
+     },
+     {
+      "id": "K0254",
+      "ad": "Kişi 0254",
+      "telefon": "0550 000 0254",
+      "hareketler": []
+     },
+     {
+      "id": "K0255",
+      "ad": "Kişi 0255",
+      "telefon": "0550 000 0255",
+      "hareketler": []
+     },
+     {
+      "id": "K0256",
+      "ad": "Kişi 0256",
+      "telefon": "0550 000 0256",
+      "hareketler": []
+     },
+     {
+      "id": "K0257",
+      "ad": "Kişi 0257",
+      "telefon": "0550 000 0257",
+      "hareketler": []
+     },
+     {
+      "id": "K0258",
+      "ad": "Kişi 0258",
+      "telefon": "0550 000 0258",
+      "hareketler": []
+     },
+     {
+      "id": "K0259",
+      "ad": "Kişi 0259",
+      "telefon": "0550 000 0259",
+      "hareketler": []
+     },
+     {
+      "id": "K0260",
+      "ad": "Kişi 0260",
+      "telefon": "0550 000 0260",
+      "hareketler": []
+     },
+     {
+      "id": "K0261",
+      "ad": "Kişi 0261",
+      "telefon": "0550 000 0261",
+      "hareketler": []
+     },
+     {
+      "id": "K0262",
+      "ad": "Kişi 0262",
+      "telefon": "0550 000 0262",
+      "hareketler": []
+     },
+     {
+      "id": "K0263",
+      "ad": "Kişi 0263",
+      "telefon": "0550 000 0263",
+      "hareketler": []
+     },
+     {
+      "id": "K0264",
+      "ad": "Kişi 0264",
+      "telefon": "0550 000 0264",
+      "hareketler": []
+     },
+     {
+      "id": "K0265",
+      "ad": "Kişi 0265",
+      "telefon": "0550 000 0265",
+      "hareketler": []
+     },
+     {
+      "id": "K0266",
+      "ad": "Kişi 0266",
+      "telefon": "0550 000 0266",
+      "hareketler": []
+     },
+     {
+      "id": "K0267",
+      "ad": "Kişi 0267",
+      "telefon": "0550 000 0267",
+      "hareketler": []
+     },
+     {
+      "id": "K0268",
+      "ad": "Kişi 0268",
+      "telefon": "0550 000 0268",
+      "hareketler": []
+     },
+     {
+      "id": "K0269",
+      "ad": "Kişi 0269",
+      "telefon": "0550 000 0269",
+      "hareketler": []
+     },
+     {
+      "id": "K0270",
+      "ad": "Kişi 0270",
+      "telefon": "0550 000 0270",
+      "hareketler": []
+     },
+     {
+      "id": "K0271",
+      "ad": "Kişi 0271",
+      "telefon": "0550 000 0271",
+      "hareketler": []
+     },
+     {
+      "id": "K0272",
+      "ad": "Kişi 0272",
+      "telefon": "0550 000 0272",
+      "hareketler": []
+     },
+     {
+      "id": "K0273",
+      "ad": "Kişi 0273",
+      "telefon": "0550 000 0273",
+      "hareketler": []
+     },
+     {
+      "id": "K0274",
+      "ad": "Kişi 0274",
+      "telefon": "0550 000 0274",
+      "hareketler": []
+     },
+     {
+      "id": "K0275",
+      "ad": "Kişi 0275",
+      "telefon": "0550 000 0275",
+      "hareketler": []
+     },
+     {
+      "id": "K0276",
+      "ad": "Kişi 0276",
+      "telefon": "0550 000 0276",
+      "hareketler": []
+     },
+     {
+      "id": "K0277",
+      "ad": "Kişi 0277",
+      "telefon": "0550 000 0277",
+      "hareketler": []
+     },
+     {
+      "id": "K0278",
+      "ad": "Kişi 0278",
+      "telefon": "0550 000 0278",
+      "hareketler": []
+     },
+     {
+      "id": "K0279",
+      "ad": "Kişi 0279",
+      "telefon": "0550 000 0279",
+      "hareketler": []
+     },
+     {
+      "id": "K0280",
+      "ad": "Kişi 0280",
+      "telefon": "0550 000 0280",
+      "hareketler": []
+     },
+     {
+      "id": "K0281",
+      "ad": "Kişi 0281",
+      "telefon": "0550 000 0281",
+      "hareketler": []
+     },
+     {
+      "id": "K0282",
+      "ad": "Kişi 0282",
+      "telefon": "0550 000 0282",
+      "hareketler": []
+     },
+     {
+      "id": "K0283",
+      "ad": "Kişi 0283",
+      "telefon": "0550 000 0283",
+      "hareketler": []
+     },
+     {
+      "id": "K0284",
+      "ad": "Kişi 0284",
+      "telefon": "0550 000 0284",
+      "hareketler": []
+     },
+     {
+      "id": "K0285",
+      "ad": "Kişi 0285",
+      "telefon": "0550 000 0285",
+      "hareketler": []
+     },
+     {
+      "id": "K0286",
+      "ad": "Kişi 0286",
+      "telefon": "0550 000 0286",
+      "hareketler": []
+     },
+     {
+      "id": "K0287",
+      "ad": "Kişi 0287",
+      "telefon": "0550 000 0287",
+      "hareketler": []
+     },
+     {
+      "id": "K0288",
+      "ad": "Kişi 0288",
+      "telefon": "0550 000 0288",
+      "hareketler": []
+     },
+     {
+      "id": "K0289",
+      "ad": "Kişi 0289",
+      "telefon": "0550 000 0289",
+      "hareketler": []
+     },
+     {
+      "id": "K0290",
+      "ad": "Kişi 0290",
+      "telefon": "0550 000 0290",
+      "hareketler": []
+     },
+     {
+      "id": "K0291",
+      "ad": "Kişi 0291",
+      "telefon": "0550 000 0291",
+      "hareketler": []
+     },
+     {
+      "id": "K0292",
+      "ad": "Kişi 0292",
+      "telefon": "0550 000 0292",
+      "hareketler": []
+     },
+     {
+      "id": "K0293",
+      "ad": "Kişi 0293",
+      "telefon": "0550 000 0293",
+      "hareketler": []
+     },
+     {
+      "id": "K0294",
+      "ad": "Kişi 0294",
+      "telefon": "0550 000 0294",
+      "hareketler": []
+     },
+     {
+      "id": "K0295",
+      "ad": "Kişi 0295",
+      "telefon": "0550 000 0295",
+      "hareketler": []
+     },
+     {
+      "id": "K0296",
+      "ad": "Kişi 0296",
+      "telefon": "0550 000 0296",
+      "hareketler": []
+     },
+     {
+      "id": "K0297",
+      "ad": "Kişi 0297",
+      "telefon": "0550 000 0297",
+      "hareketler": []
+     },
+     {
+      "id": "K0298",
+      "ad": "Kişi 0298",
+      "telefon": "0550 000 0298",
+      "hareketler": []
+     },
+     {
+      "id": "K0299",
+      "ad": "Kişi 0299",
+      "telefon": "0550 000 0299",
+      "hareketler": []
+     },
+     {
+      "id": "K0300",
+      "ad": "Kişi 0300",
+      "telefon": "0550 000 0300",
+      "hareketler": []
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "K0001",
+       "K0002",
+       "K0003",
+       "K0004",
+       "K0005",
+       "K0006",
+       "K0007",
+       "K0008",
+       "K0009",
+       "K0010",
+       "K0011",
+       "K0012",
+       "K0013",
+       "K0014",
+       "K0015",
+       "K0016",
+       "K0017",
+       "K0018",
+       "K0019",
+       "K0020",
+       "K0021",
+       "K0022",
+       "K0023",
+       "K0024",
+       "K0025",
+       "K0026",
+       "K0027",
+       "K0028",
+       "K0029",
+       "K0030",
+       "K0031",
+       "K0032",
+       "K0033",
+       "K0034",
+       "K0035",
+       "K0036",
+       "K0037",
+       "K0038",
+       "K0039",
+       "K0040",
+       "K0041",
+       "K0042",
+       "K0043",
+       "K0044",
+       "K0045",
+       "K0046",
+       "K0047",
+       "K0048",
+       "K0049",
+       "K0050",
+       "K0051",
+       "K0052",
+       "K0053",
+       "K0054",
+       "K0055",
+       "K0056",
+       "K0057",
+       "K0058",
+       "K0059",
+       "K0060",
+       "K0061",
+       "K0062",
+       "K0063",
+       "K0064",
+       "K0065",
+       "K0066",
+       "K0067",
+       "K0068",
+       "K0069",
+       "K0070",
+       "K0071",
+       "K0072",
+       "K0073",
+       "K0074",
+       "K0075",
+       "K0076",
+       "K0077",
+       "K0078",
+       "K0079",
+       "K0080",
+       "K0081",
+       "K0082",
+       "K0083",
+       "K0084",
+       "K0085",
+       "K0086",
+       "K0087",
+       "K0088",
+       "K0089",
+       "K0090",
+       "K0091",
+       "K0092",
+       "K0093",
+       "K0094",
+       "K0095",
+       "K0096",
+       "K0097",
+       "K0098",
+       "K0099",
+       "K0100",
+       "K0101",
+       "K0102",
+       "K0103",
+       "K0104",
+       "K0105",
+       "K0106",
+       "K0107",
+       "K0108",
+       "K0109",
+       "K0110",
+       "K0111",
+       "K0112",
+       "K0113",
+       "K0114",
+       "K0115",
+       "K0116",
+       "K0117",
+       "K0118",
+       "K0119",
+       "K0120",
+       "K0121",
+       "K0122",
+       "K0123",
+       "K0124",
+       "K0125",
+       "K0126",
+       "K0127",
+       "K0128",
+       "K0129",
+       "K0130",
+       "K0131",
+       "K0132",
+       "K0133",
+       "K0134",
+       "K0135",
+       "K0136",
+       "K0137",
+       "K0138",
+       "K0139",
+       "K0140",
+       "K0141",
+       "K0142",
+       "K0143",
+       "K0144",
+       "K0145",
+       "K0146",
+       "K0147",
+       "K0148",
+       "K0149",
+       "K0150",
+       "K0151",
+       "K0152",
+       "K0153",
+       "K0154",
+       "K0155",
+       "K0156",
+       "K0157",
+       "K0158",
+       "K0159",
+       "K0160",
+       "K0161",
+       "K0162",
+       "K0163",
+       "K0164",
+       "K0165",
+       "K0166",
+       "K0167",
+       "K0168",
+       "K0169",
+       "K0170",
+       "K0171",
+       "K0172",
+       "K0173",
+       "K0174",
+       "K0175",
+       "K0176",
+       "K0177",
+       "K0178",
+       "K0179",
+       "K0180",
+       "K0181",
+       "K0182",
+       "K0183",
+       "K0184",
+       "K0185",
+       "K0186",
+       "K0187",
+       "K0188",
+       "K0189",
+       "K0190",
+       "K0191",
+       "K0192",
+       "K0193",
+       "K0194",
+       "K0195",
+       "K0196",
+       "K0197",
+       "K0198",
+       "K0199",
+       "K0200",
+       "K0201",
+       "K0202",
+       "K0203",
+       "K0204",
+       "K0205",
+       "K0206",
+       "K0207",
+       "K0208",
+       "K0209",
+       "K0210",
+       "K0211",
+       "K0212",
+       "K0213",
+       "K0214",
+       "K0215",
+       "K0216",
+       "K0217",
+       "K0218",
+       "K0219",
+       "K0220",
+       "K0221",
+       "K0222",
+       "K0223",
+       "K0224",
+       "K0225",
+       "K0226",
+       "K0227",
+       "K0228",
+       "K0229",
+       "K0230",
+       "K0231",
+       "K0232",
+       "K0233",
+       "K0234",
+       "K0235",
+       "K0236",
+       "K0237",
+       "K0238",
+       "K0239",
+       "K0240",
+       "K0241",
+       "K0242",
+       "K0243",
+       "K0244",
+       "K0245",
+       "K0246",
+       "K0247",
+       "K0248",
+       "K0249",
+       "K0250",
+       "K0251",
+       "K0252",
+       "K0253",
+       "K0254",
+       "K0255",
+       "K0256",
+       "K0257",
+       "K0258",
+       "K0259",
+       "K0260",
+       "K0261",
+       "K0262",
+       "K0263",
+       "K0264",
+       "K0265",
+       "K0266",
+       "K0267",
+       "K0268",
+       "K0269",
+       "K0270",
+       "K0271",
+       "K0272",
+       "K0273",
+       "K0274",
+       "K0275",
+       "K0276",
+       "K0277",
+       "K0278",
+       "K0279",
+       "K0280",
+       "K0281",
+       "K0282",
+       "K0283",
+       "K0284",
+       "K0285",
+       "K0286",
+       "K0287",
+       "K0288",
+       "K0289",
+       "K0290",
+       "K0291",
+       "K0292",
+       "K0293",
+       "K0294",
+       "K0295",
+       "K0296",
+       "K0297",
+       "K0298",
+       "K0299",
+       "K0300"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+10s",
+      "tur": "meta_sablon",
+      "ad": "destekofis_ekstre",
+      "kategori": "MARKETING"
+     },
+     {
+      "t": "+1h",
+      "tur": "kontrol",
+      "ad": "K1"
+     }
+    ],
+    "ozet_cikti": true,
+    "meta": {
+     "basamak": 2000
+    },
+    "meta_davranis": {
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.durum_sayilari": {
+       "Duraklatıldı": 200,
+       "Teslim Edildi": 100
+      },
+      "kontroller.K1.toplam_post": 100,
+      "toplular.T1.neden": "Şablon Pazarlama'ya Alındı",
+      "meta.toplam_post": 100,
+      "meta.toplam_medya_yukleme": 100
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "duraklatildi",
+        "neden": "Şablon Pazarlama'ya Alındı",
+        "is_sayisi": 300
+       }
+      },
+      "durum_sayilari": {
+       "Duraklatıldı": 200,
+       "Teslim Edildi": 100
+      },
+      "meta": {
+       "toplam_post": 100,
+       "toplam_kabul_program": 100,
+       "toplam_meta_ileti": 100,
+       "toplam_medya_yukleme": 100
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-30T11:00:00+03:00",
+        "durum_sayilari": {
+         "Duraklatıldı": 200,
+         "Teslim Edildi": 100
+        },
+        "toplam_post": 100,
+        "toplam_kabul": 100,
+        "pencere_farkli_alici": {
+         "W1": 100
+        },
+        "medya_silme": 100,
+        "toplular": {
+         "T1": "duraklatildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 100,
+         "yaklasik_usd": "0.0900"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler_ornek": {
+       "T1/K0001": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905500000001",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Kişi 0001",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "0,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Kişi 0001",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "0.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Kişi 0001 ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/K0002": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905500000002",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Kişi 0002",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "0,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Kişi 0002",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "0.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Kişi 0002 ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/K0003": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905500000003",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Kişi 0003",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "0,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Kişi 0003",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "0.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Kişi 0003 ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      },
+      "isler_post_dagilimi": {
+       "0": 200,
+       "1": 100
+      }
+     }
+    }
+   ]
+  },
+  {
    "ad": "GUV-01-yetkisiz",
    "baslik": "GÜVENLİK",
    "aciklama": "whatsapp.send yetkisi olmayan kullanıcı başlatamaz",
@@ -59700,6 +63936,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -59801,6 +64038,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -59978,6 +64216,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -60038,6 +64277,9 @@
          "W1": 2
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -60057,6 +64299,9 @@
          "W1": 0
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -60294,6 +64539,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -60419,6 +64665,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -60590,6 +64837,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -60740,6 +64988,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -60936,6 +65185,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -60995,6 +65245,9 @@
          "W1": 2
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -61014,6 +65267,9 @@
          "W1": 0
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -61032,6 +65288,9 @@
          "W1": 2
         },
         "medya_silme": 4,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi",
@@ -61275,6 +65534,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -61318,6 +65578,9 @@
          "W1": 1
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Gönderildi"
         }
@@ -61485,6 +65748,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -61629,6 +65893,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -61738,6 +66003,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {},
       "durum_sayilari": {},
       "meta": {
@@ -61852,6 +66118,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -62028,6 +66295,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -62071,6 +66339,9 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Gönderildi"
         }
@@ -62086,6 +66357,9 @@
          "W1": 0
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Süresi Doldu"
         }
@@ -62220,6 +66494,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -62263,6 +66538,9 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Meta Kabul Etti"
         }
@@ -62278,6 +66556,9 @@
          "W1": 0
         },
         "medya_silme": 0,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Meta Kabul Etti"
         }
@@ -62449,6 +66730,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -62499,6 +66781,9 @@
          "W1": 0
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Meta Kabul Etti",
          "T1/B": "Teslim Edildi"
@@ -62516,6 +66801,9 @@
          "W1": 0
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Süresi Doldu",
          "T1/B": "Teslim Edildi"
@@ -62723,6 +67011,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -62771,6 +67060,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi"
@@ -62787,6 +67079,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi"
@@ -63002,6 +67297,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -63051,6 +67347,9 @@
          "W1": 0
         },
         "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "PLAN-SUSUYOR:24-saatten-eski-devam-sorusu"
@@ -63067,6 +67366,9 @@
          "W1": 1
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi"
@@ -63267,6 +67569,7 @@
       "elenen": {},
       "olusmadi": [],
       "ayni_istek": {},
+      "onceki_uyari": {},
       "toplular": {
        "T1": {
         "durum": "aktif",
@@ -63315,6 +67618,9 @@
          "W1": 2
         },
         "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
         "isler": {
          "T1/A": "Teslim Edildi",
          "T1/B": "Teslim Edildi"
