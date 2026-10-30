@@ -250,12 +250,18 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
               body: JSON.stringify({ licenseId: meta.lisansKimligi, machine: meta.makine }),
             });
             const govde = await yanit.json().catch(() => null);
+            // 2.4.8 S-L1a: servis bu lisansı / makineyi AÇIKÇA tanımıyor (LICENSE_NOT_FOUND; site kapi_durum_impl). Ağ hatası, 5xx, zaman aşımı, yetki (UNAUTHORIZED)
+            // ya da biçim (BAD_REQUEST) hatası "tanımıyor" SAYILMAZ (yanlış ayarlı anahtar bütün ofisleri sildirmesin).
+            if (govde?.ok === false && govde.code === "LICENSE_NOT_FOUND") {
+              sonDeneme.set(meta.ofis, now());
+              return { tanimiyor: true };
+            }
             if (!govde?.ok || !govde.token) throw new Error("lisans servisi belirteç vermedi");
             const iddia = await lisansDogrula(govde.token, guvenilen(env));
             if (!iddia || iddia.machine !== meta.makine) throw new Error("belirteç bu ofise ait değil");
             await onbellegeYaz(meta.ofis, govde.token);
             sonDeneme.delete(meta.ofis);
-            return govde.token;
+            return { token: govde.token };
           } catch {
             sonDeneme.set(meta.ofis, now());
             return null;
@@ -267,7 +273,8 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     }
     return yenileniyor.get(meta.ofis);
   }
-  /** Dönüş: { durum: "gecerli" | "gecersiz" | "dogrulanamadi", iddia }. Adaylar: kayıttaki belirteç, önbellek, gerekirse servisten yeni. Tazelik: imzalı issuedAt. */
+  /** Dönüş: { durum: "gecerli" | "gecersiz" | "dogrulanamadi", iddia, tanimiyor? }. Adaylar: kayıttaki belirteç, önbellek, gerekirse servisten yeni. Tazelik: imzalı
+   * issuedAt. tanimiyor: true → belirteç bayat ve servis bu lisansı açıkça tanımadı (S-L1a; temizlik.mjs 60 gün kuralı). */
   async function lisansGorunumu(env, meta) {
     const keys = guvenilen(env);
     const adaylar = [];
@@ -276,12 +283,14 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
       if (iddia && iddia.machine === meta.makine) adaylar.push(iddia);
     }
     let en = adaylar.sort((a, b) => b.issuedAt - a.issuedAt)[0] || null;
+    let tanimiyor = false;
     if (!en || now() - en.issuedAt >= K.lisansYenileMs) {
-      const zarf = await servistenYenile(env, meta);
-      const iddia = zarf ? await lisansDogrula(zarf, keys) : null;
+      const yanit = await servistenYenile(env, meta);
+      tanimiyor = Boolean(yanit?.tanimiyor);
+      const iddia = yanit?.token ? await lisansDogrula(yanit.token, keys) : null;
       if (iddia && (!en || iddia.issuedAt >= en.issuedAt)) en = iddia;
     }
-    if (!en || now() - en.issuedAt >= K.lisansTazeMs) return { durum: "dogrulanamadi", iddia: en };
+    if (!en || now() - en.issuedAt >= K.lisansTazeMs) return { durum: "dogrulanamadi", iddia: en, ...(tanimiyor ? { tanimiyor: true } : {}) };
     // 2.4.8 L1: mobil kullanım hakkı (kapi-protokol mobilHakki — programla AYNI kural): "hosgoru" = ücretli lisans bitti, 30 gün salt okunur (canlı + son özet
     // geçer; yeni cihaz eklenmez).
     const hak = mobilHakki(en, now());

@@ -26,6 +26,10 @@ export const TEMIZLIK = Object.freeze({
   disTur: 40, // bir turda en çok dış istek (lisans servisi + Cloudflare API); ücretsiz planın 50 sınırının altında
   silmeDis: 6, // bir ofis silmenin dış istek payı (lisans 1 + tünel ara/bağlantı/sil 3 + DNS ara/sil 2)
   kontrolMs: 24 * 3_600_000, // her ofisin lisansı en çok günde bir kez servise sorulur
+  // 2.4.8 KARAR S-L1a (30.10.2026 20:38 UTC; kullanıcı yanıt vermedi → 5 dk yetkisiyle uygulandı): lisans servisinin AÇIKÇA tanımadığı (LICENSE_NOT_FOUND) ofisin
+  // kaydı, kapıcının o ofisi SON GÖRDÜĞÜ andan (meta.sonKayit: son yazılan kayıt) 60 gün sonra silinir. Servise ulaşılamazsa (ağ / 5xx / zaman aşımı) ya da
+  // servis başka bir hata verirse "tanımıyor" sayılmaz, silinmez. Program arada kaydolursa sonKayit yenilenir (sayaç sıfırlanır). Silme yolu L1 ile aynı (ofisiSil).
+  tanimayanMs: 60 * 24 * 3_600_000,
 });
 export const mezarAnahtari = ofis => `silinen/${ofis}.json`;
 const IMLEC = "sayac/temizlik.json";
@@ -131,6 +135,24 @@ export async function mobilTemizlik(env, { now = () => Date.now(), lisansGorunum
     } catch {
       continue;
     }
+    // Silme (L1 ve S-L1a aynı yol): tur bütçesi yetmezse ertelenir; Cloudflare/R2 hatası işareti bırakır, sonraki turda sürer.
+    const sil = async neden => {
+      if (dis + TEMIZLIK.silmeDis - 1 > TEMIZLIK.disTur) {
+        rapor.ertelenen += 1;
+        return;
+      }
+      dis += TEMIZLIK.silmeDis - 1;
+      try {
+        if (await ofisiSil(env, kayit, { neden, simdi, cloudflare, alan })) rapor.silinen.push(ofis);
+      } catch (error) {
+        rapor.hata.push({ ofis, ileti: String(error?.kod || error?.message || error) });
+      }
+    };
+    // S-L1a: servis açıkça tanımıyor ve kapıcı ofisi 60 gündür görmedi → silinir.
+    if (gorunum?.tanimiyor && simdi - (Number(meta.sonKayit) || 0) >= TEMIZLIK.tanimayanMs) {
+      await sil("tanimiyor");
+      continue;
+    }
     // Taze, doğrulanmış lisans bilgisi yoksa karar verilmez (silinmez).
     if (!gorunum || gorunum.durum === "dogrulanamadi" || !gorunum.iddia) continue;
     const iddia = gorunum.iddia;
@@ -138,16 +160,7 @@ export async function mobilTemizlik(env, { now = () => Date.now(), lisansGorunum
     const hak = mobilHakki(iddia, simdi);
     const silmeAni = mobilSilmeAni(iddia, { engelMs: engel?.ms ?? null });
     if (!hak.acik && silmeAni !== null && simdi >= silmeAni) {
-      if (dis + TEMIZLIK.silmeDis - 1 > TEMIZLIK.disTur) {
-        rapor.ertelenen += 1;
-        continue;
-      }
-      dis += TEMIZLIK.silmeDis - 1;
-      try {
-        if (await ofisiSil(env, kayit, { neden: hak.durum, simdi, cloudflare, alan })) rapor.silinen.push(ofis);
-      } catch (error) {
-        rapor.hata.push({ ofis, ileti: String(error?.kod || error?.message || error) });
-      }
+      await sil(hak.durum);
       continue;
     }
     // Karar yok: denetim anı + engelin ilk görülmesi (yenilenen lisansta silme işareti ve engel kalkar). Yarışta (program o anda kaydoldu) yazılmaz.
