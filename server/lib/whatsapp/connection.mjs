@@ -174,13 +174,16 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     const token = typeof input.token === "string" ? input.token.trim() : "";
     if (!token || !META_D0.tokenPattern.test(token)) fail(502, "Meta'dan gelen erişim belirteci okunamadı; WhatsApp'ı Bağla'yı yeniden deneyin.", "whatsapp-embedded-token");
     const coex = String(input.olay || "") === META_D0_W7.coexEvent;
+    // App ID: belirtecin ait olduğu Meta uygulaması (kapıcının verdiği DestekOfis uygulaması); ekstre şablonunun örnek PDF'i bununla yüklenir. Gelmezse boş
+    // (eski kapıcı / eksik ayar) — Şablonlar kartı bu kipe uygun nedeni yazar (lib/whatsapp/templates.mjs).
+    const appId = META_D0.idPattern.test(String(input.appId || "")) ? String(input.appId) : "";
     const at = iso();
     const record = {
       v: 1,
       mode: "embedded",
       phoneNumberId,
       wabaId,
-      appId: "",
+      appId,
       tokenSealed: secrets().seal(token),
       savedAt: at,
       savedBy: user.id,
@@ -192,7 +195,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       pinSealed: "",
     };
     write(record, user.id);
-    audit(user, "whatsapp.connection.saved", "whatsapp", { mode: "embedded", phoneNumberId, wabaId, coex, first: !previous });
+    audit(user, "whatsapp.connection.saved", "whatsapp", { mode: "embedded", phoneNumberId, wabaId, appId, coex, first: !previous });
     announce();
     return view();
   }

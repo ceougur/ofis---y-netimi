@@ -200,7 +200,8 @@ export function kapiIstemcisi({ url, fetchImpl, simdi, kayitSimdi = simdi, kayit
     ozetYukle: (ofis, zarfMetni) => istek(ofis, "PUT", `/v1/ofis/${ofis.id}/ozet`, zarfMetni),
     ozetSil: (ofis, sira) => istek(ofis, "DELETE", `/v1/ofis/${ofis.id}/ozet?sira=${sira}`),
     // 2.4.8 W7 "WhatsApp'ı Bağla" (bulut/kapi/wa-bagla.mjs): oturum aç (programın geçici açık anahtarı) / şifreli belirteci al (bir kez). İkisi de ofis imzalı.
-    waOturum: (ofis, anahtar) => istek(ofis, "POST", `/v1/ofis/${ofis.id}/wa/oturum`, JSON.stringify({ v: 1, ofis: ofis.id, anahtar })),
+    // 2.4.8 W7: ek = { sirOzeti (tek kullanımlık sırrın SHA-256 özeti; sır kapıcıya gitmez), firma (bağlama sayfasında "Bağlanacak Program") }.
+    waOturum: (ofis, anahtar, ek = {}) => istek(ofis, "POST", `/v1/ofis/${ofis.id}/wa/oturum`, JSON.stringify({ v: 1, ofis: ofis.id, anahtar, sirOzeti: String(ek.sirOzeti || ""), firma: String(ek.firma || "") })),
     waAl: (ofis, oturum) => istek(ofis, "POST", `/v1/ofis/${ofis.id}/wa/oturum/${oturum}/al`, JSON.stringify({ v: 1, ofis: ofis.id })),
   };
 }

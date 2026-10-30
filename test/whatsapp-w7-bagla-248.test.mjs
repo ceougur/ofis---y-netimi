@@ -5,6 +5,7 @@
 // ofisin oturumuna bağlanır; kod iki kez kullanılır; kapıcı belirteci düz saklar ya da 10 dk'dan uzun tutar; Meta onayı yokken ileti anlaşılmaz.
 // Eski kodda (8ef48138) uçlar ve modül yok → beklenen nedenle kırmızı (404 / modül bulunamadı).
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { describe, it } from "node:test";
 import { createKapi } from "../bulut/kapi/kapi.mjs";
 // Ad alanıyla: eski kodda (W7 yardımcıları yok) dosya yine yüklenir, denetimler davranışla kırmızı olur (ders 38).
@@ -28,6 +29,10 @@ const WABA = "102290129340398";
 const PNID = "106540352242922";
 const ONAY = "Bu bağlantı DestekOfis'in Meta onayından sonra çalışır; şimdilik Elle Bağla.";
 const WA_ENV = { WA_UYGULAMA_KIMLIGI: APP_ID, WA_KURULUM_KIMLIGI: CONFIG_ID, WA_UYGULAMA_SIRRI: SIR, WA_GRAPH_URL: "https://meta.kapi.test" };
+// Taşınamaz bağlantı (bağımsız gözden geçirme ORTA; ayrıntılı denetimler test/whatsapp-w7-tasinma-248.test.mjs): programın oturum sırrı (yalnız özeti kapıcıya) —
+// burada sayfanın postMessage ile aldığı sır yerine sabit bir değer.
+const OTURUM_SIRRI = "W7-oturum-sirri-0123456789abcdefghijklmnopqr".slice(0, 43);
+const SIR_OZETI = createHash("sha256").update(OTURUM_SIRRI).digest("hex");
 
 /** Sahte Meta (yalnız kod → belirteç değişimi): istek kaydı; hata / gizli yankısı düğmeleri. */
 function sahteMeta() {
@@ -81,14 +86,14 @@ async function ortam({ ekEnv = WA_ENV, lisansEk = {} } = {}) {
       return { status: r.status, ...(await r.json().catch(() => ({}))) };
     },
     // Programın imzalı kanalı (server/lib/mobile-ozet.mjs waOturum / waAl ile aynı istek; burada doğrudan — eski kodda da koşar).
-    waOturum: (o, anahtar) => c.ham(o, `/v1/ofis/${o.id}/wa/oturum`, { v: 1, ofis: o.id, anahtar }),
+    waOturum: (o, anahtar) => c.ham(o, `/v1/ofis/${o.id}/wa/oturum`, { v: 1, ofis: o.id, anahtar, sirOzeti: SIR_OZETI, firma: "Deneme Ticaret Ltd" }),
     waAl: (o, oturum) => c.ham(o, `/v1/ofis/${o.id}/wa/oturum/${oturum}/al`, { v: 1, ofis: o.id }),
     async sayfa() {
       const r = await istek(`https://${KAPI}/wa/bagla`, { headers: { accept: "text/html", "sec-fetch-mode": "navigate" } });
       return { status: r.status, metin: await r.text(), csp: r.headers.get("content-security-policy") || "" };
     },
     async kod(govde, { origin = `https://${KAPI}` } = {}) {
-      const r = await istek(`https://${KAPI}/wa/bagla/kod`, { method: "POST", headers: { "content-type": "application/json", ...(origin ? { origin } : {}) }, body: JSON.stringify(govde) });
+      const r = await istek(`https://${KAPI}/wa/bagla/kod`, { method: "POST", headers: { "content-type": "application/json", ...(origin ? { origin } : {}) }, body: JSON.stringify({ sir: OTURUM_SIRRI, ...govde }) });
       return { status: r.status, ...(await r.json().catch(() => ({}))) };
     },
     r2Metni: () => [...r2.nesneler.values()].map(k => new TextDecoder().decode(k.veri)).join("\n"),
@@ -222,9 +227,10 @@ describe("2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç ka
       server,
       admin,
       olay,
-      async sayfayaKod(url, ek = {}) {
+      // sir: programın POST /embedded yanıtındaki tek kullanımlık sır (ekran onu bağlama penceresine postMessage ile verir).
+      async sayfayaKod(url, sir, ek = {}) {
         const oturum = new URL(url).hash.replace(/^#o=/, "");
-        const r = await rawRequest(kapi.base, "POST", "/wa/bagla/kod", { headers: { host: KAPI }, body: { oturum, kod: "AQD-program-kodu-1", wabaId: WABA, phoneNumberId: PNID, olay, ...ek } });
+        const r = await rawRequest(kapi.base, "POST", "/wa/bagla/kod", { headers: { host: KAPI }, body: { oturum, sir, kod: "AQD-program-kodu-1", wabaId: WABA, phoneNumberId: PNID, olay, ...ek } });
         return { status: r.status, data: r.data };
       },
       close: async () => {
@@ -246,11 +252,11 @@ describe("2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç ka
     try {
       const bas = await c.admin.post("/api/workspace/whatsapp/connection/embedded", {});
       assert.equal(bas.status, 200, JSON.stringify(bas.data));
-      const { session, url, seconds } = bas.data.data;
+      const { session, url, seconds, secret } = bas.data.data;
       assert.match(url, new RegExp(`^https://${KAPI.replace(/\./g, "\\.")}/wa/bagla#o=${session}$`));
       assert.equal(seconds, 600);
       assert.equal((await c.admin.post(`/api/workspace/whatsapp/connection/embedded/${session}`, {})).data.data.state, "waiting", "kod gelmeden bekliyor");
-      const kod = await c.sayfayaKod(url);
+      const kod = await c.sayfayaKod(url, secret);
       assert.equal(kod.status, 200, JSON.stringify(kod.data));
       const sonuc = await c.admin.post(`/api/workspace/whatsapp/connection/embedded/${session}`, {});
       assert.equal(sonuc.status, 200, JSON.stringify(sonuc.data));
@@ -273,8 +279,8 @@ describe("2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç ka
   it("birlikte kullanım değilse numara Cloud API'ye kaydedilir (6 haneli PIN, ekranda yok)", async () => {
     const c = await program({ olay: "FINISH" });
     try {
-      const { session, url } = (await c.admin.post("/api/workspace/whatsapp/connection/embedded", {})).data.data;
-      assert.equal((await c.sayfayaKod(url)).status, 200);
+      const { session, url, secret } = (await c.admin.post("/api/workspace/whatsapp/connection/embedded", {})).data.data;
+      assert.equal((await c.sayfayaKod(url, secret)).status, 200);
       const view = (await c.admin.post(`/api/workspace/whatsapp/connection/embedded/${session}`, {})).data.data.connection;
       assert.deepEqual([view.embedded?.coex, view.embedded?.steps.map(s => [s.name, s.ok])], [false, [["register", true]]]);
       const pin = c.graph.state.embeddedSteps[0].body.pin;
@@ -296,8 +302,8 @@ describe("2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç ka
     const red = await program();
     try {
       red.meta.hata = "Application does not have permission for this action";
-      const { session, url } = (await red.admin.post("/api/workspace/whatsapp/connection/embedded", {})).data.data;
-      assert.equal((await red.sayfayaKod(url)).status, 502);
+      const { session, url, secret } = (await red.admin.post("/api/workspace/whatsapp/connection/embedded", {})).data.data;
+      assert.equal((await red.sayfayaKod(url, secret)).status, 502);
       const s = await red.admin.post(`/api/workspace/whatsapp/connection/embedded/${session}`, {});
       assert.deepEqual([s.data.data.state, s.data.data.message], ["error", `Meta bağlantıyı tamamlamadı. ${ONAY} Meta'nın yanıtı: Application does not have permission for this action`], JSON.stringify(s.data));
       assert.equal((await red.admin.get("/api/workspace/whatsapp/connection")).data.data.configured, false, "bağlantı kaydedilmedi");

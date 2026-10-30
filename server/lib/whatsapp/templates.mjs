@@ -256,7 +256,9 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
       for (const def of TEMPLATE_DEFS) {
         if (stop || findExact(listing.items, def)) continue;
         if (def.header === "DOCUMENT" && !record.appId) {
-          actions.push({ name: def.name, label: def.label, ok: false, code: "app-id", message: `${def.label} şablonunun örnek PDF'i Meta'ya yüklenirken Uygulama Kimliği (App ID) gerekir; Bilgileri Değiştir ile Meta uygulama panelindeki App ID'yi girin, sonra Şablonları Denetle ve Oluştur'a basın.` });
+          // Neden bağlantı yoluna göre: Elle Bağla'da kullanıcı App ID'yi girer; WhatsApp'ı Bağla'da App ID kapıcıdan gelir (ekranda "Bilgileri Değiştir" yok).
+          const fix = record.mode === "embedded" ? "WhatsApp'ı Bağla bu kimliği vermedi; WhatsApp'ı Yeniden Bağla ile yeniden bağlayın, sorun sürerse DestekOfis destekle görüşün." : "Bilgileri Değiştir ile Meta uygulama panelindeki App ID'yi girin, sonra Şablonları Denetle ve Oluştur'a basın.";
+          actions.push({ name: def.name, label: def.label, ok: false, code: "app-id", message: `${def.label} şablonunun örnek PDF'i Meta'ya yüklenirken Uygulama Kimliği (App ID) gerekir; ${fix}` });
           continue;
         }
         try {

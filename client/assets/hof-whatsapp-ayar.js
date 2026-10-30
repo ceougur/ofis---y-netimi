@@ -19,6 +19,27 @@
     const state = status === "APPROVED" ? "Onaylı" : status === "PENDING" ? "Onay bekliyor" : status === "REJECTED" ? "Reddedildi" : status === "PAUSED" ? "Duraklatıldı" : status === "DISABLED" ? "Kapatıldı" : item.status || "Bilinmiyor";
     return `${item.name}: ${state}${item.language ? ` (${item.language})` : ""}`;
   };
+  // 2.4.8 W7: WhatsApp'ı Bağla yalnız programın YEREL / ÖZEL AĞ adresinden (bağlama penceresi sırrı yalnız böyle kökenden kabul eder). Kural
+  // server/lib/whatsapp/embedded.mjs isLocalOrigin ve bulut/kapi/wa-bagla.mjs yerelKoken ile AYNI (test/whatsapp-w7-tasinma-248.test.mjs karşılaştırır).
+  // <yerel-koken>
+  function isLocalOrigin(origin) {
+    let url;
+    try {
+      url = new URL(String(origin));
+    } catch {
+      return false;
+    }
+    if ((url.protocol !== "http:" && url.protocol !== "https:") || url.origin !== String(origin)) return false;
+    const host = url.hostname;
+    if (host === "localhost" || host === "[::1]" || /^([a-z0-9-]+\.)+local$/.test(host)) return true;
+    const ip = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(host);
+    if (!ip) return false;
+    const a = Number(ip[1]);
+    const b = Number(ip[2]);
+    return a === 127 || a === 10 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168);
+  }
+  // </yerel-koken>
+  const LOCAL_ONLY = "WhatsApp'ı Bağla işlemi ofisteki bilgisayardan yapılır: programı ofis ağındaki bir bilgisayarda açıp yeniden deneyin.";
   // Düğmeleri pasif bırakan ilk neden (görünür yazı); boşsa düğmeler etkin.
   const blockOf = (data, { needsMeta }) => {
     if (!data.writable) return "Lisans salt okunur: bağlantı değiştirilemez, sınanamaz ve deneme gönderilemez.";
@@ -40,12 +61,15 @@
     box.className = `adm-card adm-wa-status is-${state.tone}`;
     const editBlock = blockOf(data, { needsMeta: false });
     const metaBlock = blockOf(data, { needsMeta: true });
+    // WhatsApp'ı Bağla'nın kendi nedeni (yerel adres): yalnız o düğme pasif, neden görünür yazıyla; Elle Bağla etkilenmez.
+    const embeddedBlock = editBlock || (isLocalOrigin(location.origin) ? "" : LOCAL_ONLY);
+    const embeddedWhy = !editBlock && embeddedBlock ? `<p class="adm-wa-why" data-wa-why-embedded>${esc(embeddedBlock)}</p>` : "";
     if (!data.configured) {
       box.innerHTML = `
         <div class="adm-wa-head"><span class="adm-license-badge" data-wa-state>${esc(state.label)}</span><h2>WhatsApp Business API Bağlantısı</h2>
           <p>Carilere ekstre ve ödeme hatırlatmasını WhatsApp'tan kendiliğinden göndermek için WhatsApp'ı Bağla ile işletmenizin WhatsApp Business numarasını Facebook hesabınızla bağlayın ya da Meta'daki kendi uygulamanızın bilgilerini Elle Bağla ile girin. Kendi WhatsApp'ınızla tek tek gönderim bağlantı olmadan da çalışır.</p></div>
-        <div class="adm-inline"><button type="button" class="hof-button" data-wa-action="embedded" ${editBlock ? "disabled" : ""}>WhatsApp'ı Bağla</button><button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Elle Bağla</button></div>
-        ${editBlock ? `<p class="adm-wa-why" data-wa-why>${esc(editBlock)}</p>` : ""}`;
+        <div class="adm-inline"><button type="button" class="hof-button" data-wa-action="embedded" ${embeddedBlock ? "disabled" : ""}>WhatsApp'ı Bağla</button><button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Elle Bağla</button></div>
+        ${editBlock ? `<p class="adm-wa-why" data-wa-why>${esc(editBlock)}</p>` : ""}${embeddedWhy}`;
       return;
     }
     const test = data.lastTest;
@@ -76,10 +100,10 @@
       <div class="adm-inline adm-wa-actions">
         <button type="button" class="hof-button" data-wa-action="test" ${metaBlock ? "disabled" : ""}>Bağlantıyı Sına</button>
         <button type="button" class="hof-button hof-button-ghost" data-wa-action="self-test" ${metaBlock ? "disabled" : ""}>Kendime Deneme Gönder</button>
-        ${data.mode === "embedded" ? `<button type="button" class="hof-button hof-button-ghost" data-wa-action="embedded" ${editBlock ? "disabled" : ""}>WhatsApp'ı Yeniden Bağla</button>` : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Bilgileri Değiştir</button>`}
+        ${data.mode === "embedded" ? `<button type="button" class="hof-button hof-button-ghost" data-wa-action="embedded" ${embeddedBlock ? "disabled" : ""}>WhatsApp'ı Yeniden Bağla</button>` : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Bilgileri Değiştir</button>`}
         <button type="button" class="hof-button hof-button-danger" data-wa-action="remove" ${editBlock ? "disabled" : ""}>Bağlantıyı Kaldır</button>
       </div>
-      ${metaBlock ? `<p class="adm-wa-why" data-wa-why>${esc(metaBlock)}</p>` : ""}`;
+      ${metaBlock ? `<p class="adm-wa-why" data-wa-why>${esc(metaBlock)}</p>` : ""}${data.mode === "embedded" ? embeddedWhy : ""}`;
   }
 
   async function load() {
@@ -184,26 +208,66 @@
 
   // ---------- 2.4.8 W7: WhatsApp'ı Bağla (Embedded Signup + birlikte kullanım) ----------
   // Düğme düz açık (ürün sahibi kararı). Bağlama sayfası DestekOfis kapıcısında (Meta'nın izin verdiği sabit HTTPS alanı); pencere tıklama anında açılır
-  // (açılır pencere engeli), adresi program kapıcıdan alınca verilir. Program sonucu iki saniyede bir sorar; Meta onayı yoksa iletisi görünür.
+  // (açılır pencere engeli), adresi program kapıcıdan alınca verilir. TAŞINAMAZ BAĞLANTI: sunucu her oturumda tek kullanımlık SIR verir (kapıcıda yalnız
+  // özeti); sır ADRESE YAZILMAZ, yalnız bu ekranın açtığı pencereye postMessage ile, hedef köken TAM kapıcının kökeni verilir — pencere "hazırım" deyince
+  // (aynı pencere, aynı köken, aynı oturum). Başkasına gönderilen bağlantı sırsızdır; kapıcı sayfası Meta akışını başlatmaz. Program sonucu iki saniyede bir
+  // sorar; Meta onayı yoksa iletisi görünür. Yönetim sayfası Cross-Origin-Opener-Policy: same-origin-allow-popups ile sunulur (pencereyle bağ kalsın).
   const STEP_LABEL = Object.freeze({ register: "Numara Kaydı", smb_app_state_sync: "Kişi Eşitlemesi", history: "Geçmiş Eşitlemesi" });
+  const WINDOW_NAME = "destekofis-wa-bagla";
+  const WINDOW_FEATURES = "popup,width=640,height=760";
   let embeddedBusy = false;
   const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
   async function embeddedConnect(button) {
     if (embeddedBusy) return;
+    if (!isLocalOrigin(location.origin)) {
+      HOF.toast(LOCAL_ONLY, { type: "info", timeout: 8000 });
+      return;
+    }
     embeddedBusy = true;
     button?.classList.add("is-busy");
-    const popup = window.open("about:blank", "destekofis-wa-bagla", "popup,width=640,height=760");
+    let popup = window.open("about:blank", WINDOW_NAME, WINDOW_FEATURES);
+    let secret = "";
+    let onMessage = null;
     try {
+      if (!popup) {
+        HOF.toast("Tarayıcı bağlama penceresini engelledi. Bu adres için açılır pencerelere izin verip WhatsApp'ı Bağla'ya yeniden basın.", { type: "error", timeout: 10000 });
+        return;
+      }
       let session;
       try {
         session = await HOF.api(`${API}/embedded`, { method: "POST", body: {} });
       } catch (error) {
-        popup?.close();
+        popup.close();
         HOF.toastError(error);
         return;
       }
-      if (popup && !popup.closed) popup.location.href = session.url;
-      else window.open(session.url, "destekofis-wa-bagla");
+      secret = String(session.secret || "");
+      let kapiOrigin = "";
+      try {
+        kapiOrigin = new URL(session.url).origin;
+      } catch {
+        kapiOrigin = "";
+      }
+      if (!secret || !kapiOrigin.startsWith("https://")) {
+        popup.close();
+        HOF.toast("Kapıcının yanıtı okunamadı; WhatsApp'ı Bağla'yı yeniden deneyin.", { type: "error" });
+        return;
+      }
+      // Sır yalnız: bu pencereden (event.source), kapıcının kökeninden, bu oturum için; bir kez verilir ("alındı" gelince bellekten silinir).
+      onMessage = event => {
+        if (!secret || event.source !== popup || event.origin !== kapiOrigin) return;
+        const data = event.data;
+        if (!data || typeof data !== "object" || data.oturum !== session.session) return;
+        if (data.tur === "destekofis-wa-hazir") popup.postMessage({ tur: "destekofis-wa-sir", oturum: session.session, sir: secret }, kapiOrigin);
+        else if (data.tur === "destekofis-wa-alindi") secret = "";
+      };
+      window.addEventListener("message", onMessage);
+      if (popup.closed) popup = window.open("about:blank", WINDOW_NAME, WINDOW_FEATURES);
+      if (!popup) {
+        HOF.toast("Bağlama penceresi kapatıldı; bağlantı tamamlanmadı. WhatsApp'ı Bağla'yı yeniden açabilirsiniz.", { type: "info", timeout: 8000 });
+        return;
+      }
+      popup.location.href = session.url;
       HOF.toast("Açılan pencerede Facebook ile devam edin; bağlantı tamamlanınca bu ekran kendiliğinden yenilenir.", { type: "info", timeout: 8000 });
       const until = Date.now() + session.seconds * 1000;
       let closedPolls = 0;
@@ -228,13 +292,15 @@
           HOF.toast(answer.message, { type: "error", timeout: 12000 });
           return;
         }
-        if (popup && popup.closed && (closedPolls += 1) > 2) {
+        if (popup.closed && (closedPolls += 1) > 2) {
           HOF.toast("Bağlama penceresi kapatıldı; bağlantı tamamlanmadı. WhatsApp'ı Bağla'yı yeniden açabilirsiniz.", { type: "info", timeout: 8000 });
           return;
         }
       }
       HOF.toast("Bağlama 10 dakika içinde tamamlanmadı; WhatsApp'ı Bağla'yı yeniden açın.", { type: "info", timeout: 8000 });
     } finally {
+      secret = "";
+      if (onMessage) window.removeEventListener("message", onMessage);
       embeddedBusy = false;
       button?.classList.remove("is-busy");
     }

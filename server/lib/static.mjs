@@ -2,7 +2,7 @@
 import { readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { brotliCompressSync, gzipSync, constants as zlib } from "node:zlib";
-import { HTML_CSP, MOBILE_PERMISSIONS, SECURITY_HEADERS } from "./http.mjs";
+import { ADMIN_OPENER_POLICY, HTML_CSP, MOBILE_PERMISSIONS, SECURITY_HEADERS } from "./http.mjs";
 
 const TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -25,6 +25,7 @@ export function createStaticHandler(publicDir) {
   const root = path.resolve(publicDir);
   const cache = new Map();
   const mobilePage = path.join(root, "mobil", "index.html");
+  const adminPage = path.join(root, "admin.html");
 
   const resolve = pathname => {
     let decoded;
@@ -73,6 +74,10 @@ export function createStaticHandler(publicDir) {
     };
     if (ext === ".html") headers["content-security-policy"] = HTML_CSP;
     if (ext === ".html" && full === mobilePage) headers["permissions-policy"] = MOBILE_PERMISSIONS; // 2.4.8 M4: simgede Karekodu Okut
+    // 2.4.8 W7: Yönetim sayfası WhatsApp'ı Bağla penceresine (kapıcı, başka köken) tek kullanımlık sırrı postMessage ile verir; "same-origin" bu pencereyle
+    // bağı keser (pencere açanı göremez, program pencereyi "kapandı" sanar). "same-origin-allow-popups" yalnız BU sayfanın açtığı pencerelerle bağı korur;
+    // başka sitenin bu sayfayı açıp tutması yine kesilir. Öbür bütün sayfalar "same-origin" kalır.
+    if (ext === ".html" && full === adminPage) headers["cross-origin-opener-policy"] = ADMIN_OPENER_POLICY;
     if (ext !== ".html" && req.headers["if-none-match"] === etag) {
       res.writeHead(304, headers);
       res.end();
