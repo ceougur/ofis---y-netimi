@@ -627,6 +627,9 @@
       return HOF.toastError(error);
     }
     const sample = matrix[preview.headerAt + 1] || [];
+    // 2.4.8 I1: yüklemenin istek kimliği eşleme penceresi açılınca üretilir; yanıt kaybolup yeniden "Portföye Al"a basılınca aynı kimlik gider, sunucu evrakı
+    // ikinci kez açmaz, ilk yüklemenin raporunu döndürür (replayed). Yeni pencere yeni kimliktir.
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: "Çek / Senet Portföyü: Kolonları Eşle",
       eyebrow: fileName,
@@ -650,13 +653,13 @@
         });
         if (!Object.values(roles).includes("amount")) throw new Error("Tutar kolonunu seçin.");
         if (!Object.values(roles).includes("due")) throw new Error("Vade tarihi kolonunu seçin.");
-        const result = await HOF.api("/api/workspace/cheques/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, direction: data.direction, instrument: data.instrument, post: data.post === true, fileName } });
+        const result = await HOF.api("/api/workspace/cheques/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, direction: data.direction, instrument: data.instrument, post: data.post === true, fileName }, requestId });
         const parts = [`${result.created} evrak portföye alındı`];
         if (result.linked) parts.push(`${result.linked} cariye bağlandı`);
         if (result.posted) parts.push(`${result.posted} cari hareketi yazıldı`);
         if (result.truncated) parts.push(`${result.truncated} satır sınır dışı kaldı`);
         const skipped = result.skippedTotal ? ` ${result.skippedTotal} satır alınmadı (${[...new Set(result.skipped.map(item => item.reason))].slice(0, 3).join("; ")}).` : "";
-        HOF.toast(`${parts.join(", ")}.${skipped}`, { type: result.created ? "success" : "error", timeout: 10000 });
+        HOF.toast(`${result.replayed ? "Bu yükleme zaten kaydedildi; ikinci kez yazılmadı. İlk yükleme: " : ""}${parts.join(", ")}.${skipped}`, { type: result.replayed ? "info" : result.created ? "success" : "error", timeout: 10000 });
         view.status = "open";
         view.mode = "list";
         if (!modal) open();

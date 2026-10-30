@@ -1550,6 +1550,9 @@
   };
   function mappingForm({ fileName, matrix, preview }) {
     const sample = matrix[preview.headerAt + 1] || [];
+    // 2.4.8 I1: yüklemenin istek kimliği eşleme penceresi açılınca üretilir; yanıt kaybolup yeniden "Carileri Oluştur"a basılınca aynı kimlik gider, sunucu
+    // carileri ve açılış bakiyelerini ikinci kez yazmaz, ilk yüklemenin raporunu döndürür (replayed). Yeni pencere yeni kimliktir.
+    const requestId = HOF.requestId();
     let form = null;
     HOF.formModal({
       title: "Excel’den Cari Yükle: Kolonları Eşle",
@@ -1588,7 +1591,7 @@
         });
         if (!Object.values(roles).includes("name")) throw new Error("Ad Soyad / Unvan kolonunu seçin.");
         const typeMap = form ? typeChoices(form) : {};
-        const result = await HOF.api("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, typeMap, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName } });
+        const result = await HOF.api("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, typeMap, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName }, requestId });
         view.status = "all";
         view.mode = "list";
         if (!modal) open();
@@ -1605,7 +1608,7 @@
         // v2.0.22: türü belirsiz (iki tür birden / tanınmayan) satırlar varsayılan türle açıldıysa satır numaralarıyla söylenir.
         if (result.typeDefaultedTotal) parts.push(`${result.typeDefaultedTotal} carinin türü belirsizdi, ${TYPES[data.type] || "Müşteri"} olarak açıldı (satır ${result.typeDefaulted.slice(0, 8).map(item => item.row).join(", ")}${result.typeDefaultedTotal > 8 ? "…" : ""})`);
         const skipped = result.skipped.length ? ` ${result.skippedTotal || result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
-        HOF.toast(`${parts.join(", ")}.${skipped}`, { type: result.created || result.updated ? "success" : "error", timeout: result.typeDefaultedTotal ? 20000 : 10000 });
+        HOF.toast(`${result.replayed ? "Bu yükleme zaten kaydedildi; ikinci kez yazılmadı. İlk yükleme: " : ""}${parts.join(", ")}.${skipped}`, { type: result.replayed ? "info" : result.created || result.updated ? "success" : "error", timeout: result.typeDefaultedTotal ? 20000 : 10000 });
       },
     });
   }

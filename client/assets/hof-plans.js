@@ -1094,6 +1094,9 @@
     });
   function mappingForm(fileName, sheet, preview) {
     const sample = sheet.matrix[preview.headerAt + 1] || [];
+    // 2.4.8 I1: yüklemenin istek kimliği eşleme penceresi açılınca üretilir; yanıt kaybolup yeniden "Kartları Oluştur"a basılınca aynı kimlik gider, sunucu
+    // kartları ikinci kez açmaz, ilk yüklemenin raporunu döndürür (replayed). Yeni pencere yeni kimliktir.
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: "Excel’den Yükle: Kolonları Eşle",
       eyebrow: fileName,
@@ -1122,7 +1125,7 @@
         preview.headers.forEach((_, index) => {
           if (data[`c${index}`]) roles[index] = data[`c${index}`];
         });
-        const result = await HOF.api("/api/workspace/plans/import", { method: "POST", body: { matrix: sheet.matrix, headerAt: preview.headerAt, roles, defaultCount: data.defaultCount, defaultFirstDue: data.defaultFirstDue, dueDay: data.dueDay, groupName: data.groupName, linkRecords: preview.hasTable ? Boolean(data.linkRecords) : false, fileName }, timeoutMs: 300_000 });
+        const result = await HOF.api("/api/workspace/plans/import", { method: "POST", body: { matrix: sheet.matrix, headerAt: preview.headerAt, roles, defaultCount: data.defaultCount, defaultFirstDue: data.defaultFirstDue, dueDay: data.dueDay, groupName: data.groupName, linkRecords: preview.hasTable ? Boolean(data.linkRecords) : false, fileName }, timeoutMs: 300_000, requestId });
         await loadGroups();
         view.status = "all";
         view.mode = "list";
@@ -1130,7 +1133,7 @@
         loadList();
         HOF.dues?.reloadSoon?.(300);
         const skipped = result.skipped.length ? ` ${result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
-        HOF.toast(`${result.created} kart oluşturuldu${result.groups ? `, ${result.groups} grup tanımlandı` : ""}${result.records ? `, ${result.records} kart tablodaki kaydına bağlandı` : ""}${result.opening ? `; Excel'de ödenmiş ${money(result.opening)} açılış olarak yazıldı (Kasa dışı)` : ""}.${skipped}${result.importId ? " Yanlışsa Son Aktarımlar’dan geri alınır." : ""}`, { type: result.created ? "success" : "error", timeout: 12000 });
+        HOF.toast(`${result.replayed ? "Bu yükleme zaten kaydedildi; ikinci kez yazılmadı. İlk yükleme: " : ""}${result.created} kart oluşturuldu${result.groups ? `, ${result.groups} grup tanımlandı` : ""}${result.records ? `, ${result.records} kart tablodaki kaydına bağlandı` : ""}${result.opening ? `; Excel'de ödenmiş ${money(result.opening)} açılış olarak yazıldı (Kasa dışı)` : ""}.${skipped}${result.importId ? " Yanlışsa Son Aktarımlar’dan geri alınır." : ""}`, { type: result.replayed ? "info" : result.created ? "success" : "error", timeout: 12000 });
       },
     });
   }

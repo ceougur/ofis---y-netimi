@@ -497,6 +497,9 @@
     try {
       const preview = await HOF.api("/api/workspace/stock/import/preview", { method: "POST", body: { matrix: source.matrix } });
       const sample = source.matrix[preview.headerAt + 1] || [];
+      // 2.4.8 I1: yüklemenin istek kimliği eşleme penceresi açılınca üretilir; yanıt kaybolup yeniden "Ürünleri Oluştur"a basılınca aynı kimlik gider, sunucu
+      // yüklemeyi ikinci kez işlemez, ilk yüklemenin bildirimini döndürür (replayed). Yeni pencere yeni kimliktir.
+      const requestId = HOF.requestId();
       HOF.formModal({
         title: "Ürünleri Yükle: Kolonları Eşle",
         eyebrow: source.fileName,
@@ -518,7 +521,7 @@
             if (data[`c${index}`]) roles[index] = data[`c${index}`];
           });
           if (!Object.values(roles).includes("name")) throw new Error("Ürün adı kolonunu seçin.");
-          const result = await HOF.api("/api/workspace/stock/import", { method: "POST", body: { matrix: source.matrix, headerAt: preview.headerAt, roles, unit: data.unit, mode: data.mode, fileName: source.fileName } });
+          const result = await HOF.api("/api/workspace/stock/import", { method: "POST", body: { matrix: source.matrix, headerAt: preview.headerAt, roles, unit: data.unit, mode: data.mode, fileName: source.fileName }, requestId });
           view.mode = "list";
           if (!modal) open();
           else {
@@ -527,7 +530,7 @@
           }
           refreshAlerts();
           // Gözden geçirme 2.4.3 (5c): metin sunucudan (atlanan satır ile alanı boş bırakılan satır ayrı sayılır).
-          HOF.toast(result.message, { type: result.created || result.updated ? "success" : "error", timeout: 9000 });
+          HOF.toast(`${result.replayed ? "Bu yükleme zaten kaydedildi; ikinci kez yazılmadı. İlk yükleme: " : ""}${result.message}`, { type: result.replayed ? "info" : result.created || result.updated ? "success" : "error", timeout: 9000 });
         },
       });
     } catch (error) {
