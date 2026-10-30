@@ -207,3 +207,10 @@ Kaynak: Meta "Cost per message in USD on the WhatsApp Business Platform, effecti
 
 Utility hacim kademesi (AYLIK ileti): 0–100.000 liste fiyatı; 100.001–1.000.000 −%5; 1.000.001–4.500.000 −%10; 4.500.001–40.000.000 −%15; üstü −%20/−%25.
 Örnek: ayda 1.000 ekstre ≈ 0,90 USD; 10.000 ≈ 9 USD. Ek maliyetler: kart kur/komisyon farkı; yurt dışı hizmette sorumlu sıfatıyla KDV (mali müşavir).
+
+## Ek — Birlikte kullanım (Coexistence) şartı (30.10.2026, Meta "Onboard WhatsApp Business app users" sayfası, Requirements)
+
+- Birlikte kullanım (müşterinin WhatsApp Business uygulamasındaki numarasını API ile birlikte kullanması) YALNIZ Embedded Signup ile açılır ve uygulama sahibinin
+  **Solution Partner ya da Tech Provider** olmasını şart koşar; WhatsApp Business uygulaması ≥ 2.24.17; birlikte kullanılan numarada hız 20 ileti/sn sabit.
+- Sonuç: müşterinin kendi Meta uygulamasıyla (direct developer) kurulumda birlikte kullanım YOK; müşteri WhatsApp'ta kullanılmayan ayrı bir numara bağlar.
+  Birlikte kullanımı sunmak için DestekOfis'in Tech Provider olması (vergi kaydı + işletme doğrulaması + App Review) gerekir.
