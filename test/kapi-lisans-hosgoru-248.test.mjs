@@ -34,9 +34,12 @@ function sahteCloudflare() {
   s.istemci = {
     async findTunnel(name) {
       s.calls.push(`find ${name}`);
-      if (s.engel?.ad === name) {
-        s.engel.ulasti();
-        await s.engel.kapi;
+      // Tek seferlik (yalnız ilk istek bekletilir; aynı ofisin yarıştaki ikinci silme yolu bekletilmez).
+      const engel = s.engel;
+      if (engel?.ad === name) {
+        s.engel = null;
+        engel.ulasti();
+        await engel.kapi;
       }
       if (s.bozuk) throw hata();
       return s.tunnels.find(t => t.name === name) || null;
@@ -239,8 +242,11 @@ describe("2.4.8 L1 — kapıcı: hoşgörüde son özet, canlı kapı ve tünel 
     assert.equal((await c.ozet(ofis, tels[0])).status, 200, "30. günün son anı açık");
     c.saat(BITIS + 30 * GUN);
     const son = await c.ozet(ofis, tels[0]);
-    assert.deepEqual([son.status, son.code, son.error], [403, "kapi-lisans", "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin."], `30. günün sonunda kapanır: ${JSON.stringify(son)}`);
-    assert.deepEqual([(await c.canli(ofis, tels[0])).status, (await c.tunel(ofis)).status], [403, 403], "canlı kapı ve tünel de kapanır");
+    // 2.4.8 L1 kâhin F2: 30. günün sonundaki İLK istekte kayıt HEMEN silinir (KARAR L1) → telefon artık eşli değil.
+    assert.deepEqual([son.status, son.code], [401, "kapi-cihaz"], `30. günün sonunda kapanır ve kayıt bu istekte silinir: ${JSON.stringify(son)}`);
+    assert.deepEqual(c.kayitVar(ofis), HIC, "ofis kaydı + özet + tünel + DNS ilk istekte silindi (sonraki temizliği beklemez)");
+    const [canli, tunel] = [await c.canli(ofis, tels[0]), await c.tunel(ofis)];
+    assert.ok(canli.status >= 400 && tunel.status >= 400, `canlı kapı ve tünel de kapalı: ${canli.status} ${tunel.status}`);
   });
 
   it("deneme bitişte hemen kapanır (özet, canlı, tünel); engelli lisans hemen kapanır — iletiler hakkın durumuna göre", async () => {
@@ -365,7 +371,7 @@ describe("2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silm
     assert.deepEqual(c.kayitVar(d.ofis), HIC);
   });
 
-  it("ZORLA: silme sürerken program yenilenen lisansla kaydolursa ofis kaydı SİLİNMEZ (iz yazılmaz), telefon çalışmayı sürdürür", async () => {
+  it("ZORLA: silme sürerken program (silme anından sonra) yenilenen lisansla kaydolursa kayıt cihazsız açılır ('silindi'); temizlik yeni kaydı silmez", async () => {
     const c = ortam();
     const d = await c.ofisKur({ makine: makine(18), k: DENEME() });
     c.saat(BITIS + 30 * GUN);
@@ -377,18 +383,19 @@ describe("2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silm
     await ulastiSoz; // silme işareti yazıldı, Cloudflare'de bekliyor
     c.servisKaydi.set(makine(18), LISANS({ expiresAt: new Date(BITIS + 365 * GUN).toISOString() }));
     const geri = await c.kayit(d.ofis, { makine: makine(18), cihazlar: d.tels });
-    assert.equal(geri.ok, true, `ön koşul: yenilenen lisansla kayıt kabul: ${JSON.stringify(geri)}`);
-    c.cf.engel = null;
+    // 2.4.8 L1 kâhin F2: silme anı geçmiş (kapıcı silme anında hâlâ bitik gördü) → yenilenen lisansla gelen eski cihaz listesi kabul edilmez: kayıt bu istekte
+    // silinir, program "silindi" alır ve kayıt CİHAZSIZ açılır (telefon karekodla yeniden eşlenir).
+    assert.deepEqual([geri.ok, geri.data?.cihaz, Boolean(geri.data?.silindi)], [true, 0, true], `yenilenen lisansla kayıt cihazsız açılır, 'silindi' bildirilir: ${JSON.stringify(geri)}`);
     birak();
     const r = await tur;
-    assert.deepEqual(r.silinen, [], `yarışta silme bırakılmalı: ${JSON.stringify(r)}`);
-    assert.equal(c.var(`ofis/${d.ofis.id}/meta.json`), true, "ofis kaydı durdu");
-    assert.equal(c.var(`silinen/${d.ofis.id}.json`), false, "silinen kaydın izi yazılmadı");
-    assert.equal(c.meta(d.ofis.id).silme, undefined, "yeniden kayıt işareti kaldırdı");
-    assert.equal((await c.ozet(d.ofis, d.tels[0])).status, 200, "telefon son özeti almayı sürdürür (Cloudflare yanıtından sonra kayıt yeniden okundu, özet silinmedi)");
+    assert.deepEqual(r.silinen, [], `yarışta temizlik yeni kaydı silmez (yeniden okuma): ${JSON.stringify(r)}`);
+    assert.equal(c.var(`ofis/${d.ofis.id}/meta.json`), true, "yeni (cihazsız) ofis kaydı durdu");
+    assert.equal(c.var(`silinen/${d.ofis.id}.json`), false, "iz yeni kayıtla kalktı");
+    assert.equal(c.meta(d.ofis.id).silme, undefined, "yeni kayıtta silme işareti yok");
+    assert.equal((await c.ozet(d.ofis, d.tels[0])).code, "kapi-cihaz", "eski telefon geçmez (silinmiş kayıt geri gelmez)");
   });
 
-  it("ZORLA (2): program özet silinirken yeniden kaydolursa da ofis kaydı silinmez; silinen kaydın izi geri alınır, telefon geçer", async () => {
+  it("ZORLA (2): program özet silinirken yeniden kaydolursa kayıt cihazsız açılır; temizliğin izi geri alınır, yeni kayıt silinmez, eski telefon geçmez", async () => {
     const c = ortam();
     const d = await c.ofisKur({ makine: makine(20), k: DENEME() });
     c.saat(BITIS + 30 * GUN);
@@ -397,8 +404,10 @@ describe("2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silm
     const ulastiSoz = new Promise(r => (ulasti = r));
     const kapi = new Promise(r => (birak = r));
     const asilSil = c.r2.delete.bind(c.r2);
+    let bekletildi = false; // tek seferlik: yalnız temizliğin özet silmesi bekletilir
     c.r2.delete = async key => {
-      if (key === `ofis/${d.ofis.id}/ozet.json`) {
+      if (key === `ofis/${d.ofis.id}/ozet.json` && !bekletildi) {
+        bekletildi = true;
         ulasti();
         await kapi;
       }
@@ -408,15 +417,16 @@ describe("2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silm
     await ulastiSoz; // Cloudflare silindi, R2 özeti silinmek üzere
     c.servisKaydi.set(makine(20), LISANS({ expiresAt: new Date(BITIS + 365 * GUN).toISOString() }));
     const geri = await c.kayit(d.ofis, { makine: makine(20), cihazlar: d.tels });
-    assert.equal(geri.ok, true, `ön koşul: yenilenen lisansla kayıt kabul: ${JSON.stringify(geri)}`);
+    // 2.4.8 L1 kâhin F2: silme anı geçmiş → kayıt bu istekte silinir, cihazsız açılır ("silindi").
+    assert.deepEqual([geri.ok, geri.data?.cihaz, Boolean(geri.data?.silindi)], [true, 0, true], `yenilenen lisansla kayıt cihazsız açılır: ${JSON.stringify(geri)}`);
     birak();
     const r = await tur;
     c.r2.delete = asilSil;
-    assert.deepEqual(r.silinen, [], `yarışta silme bırakılmalı: ${JSON.stringify(r)}`);
-    assert.equal(c.var(`ofis/${d.ofis.id}/meta.json`), true, "ofis kaydı durdu");
-    assert.equal(c.var(`silinen/${d.ofis.id}.json`), false, "silinen kaydın izi geri alındı");
-    assert.equal(c.meta(d.ofis.id).cihazlar.length, 1, "cihaz listesi korundu");
-    assert.equal((await c.ozet(d.ofis, d.tels[0])).code, "kapi-ozet-yok", "telefon geçiyor (özet program tarafından yeniden yüklenir — K1 (b))");
+    assert.deepEqual(r.silinen, [], `yarışta temizlik yeni kaydı silmez: ${JSON.stringify(r)}`);
+    assert.equal(c.var(`ofis/${d.ofis.id}/meta.json`), true, "yeni ofis kaydı durdu");
+    assert.equal(c.var(`silinen/${d.ofis.id}.json`), false, "temizliğin yazdığı iz geri alındı (kayıt değişmişti)");
+    assert.equal(c.meta(d.ofis.id).cihazlar.length, 0, "eski cihaz listesi geri gelmez");
+    assert.equal((await c.ozet(d.ofis, d.tels[0])).code, "kapi-cihaz", "eski telefon geçmez");
   });
 
   it("silinmiş kayıt GERİ GELMEZ: lisans alınınca aynı kimlik cihazsız açılır ve 'silindi' bildirilir; geçersiz lisansla kayıt açılmaz; başka anahtar alamaz", async () => {
