@@ -275,6 +275,8 @@ en geç 1 Aralık'ta başlamalı → 2.4.8 ~20 Kasım'a dek yayında. "Bitti" i�
 
 ## 7a. Plan netleştirmeleri (K0 "PLAN SUSUYOR" listesi; 30.10.2026 ~14:25 UTC; program karşılaştırmasından ÖNCE, programın davranışına bakılmadan — ders 40)
 
+> KARAR (kullanıcı, 30.10.2026 ~14:30 UTC: "önerilerin uygun"): plan §7a K1 A (sabit hat/yurt dışı elenmez), K2 A (aynı telefon iki cari → iki ileti), K3 A (ekstre şablonu "Dönem sonu bakiyesi: {{4}}. İyi günler dileriz."); §7a'nın öbür 29 baş mimar kararı da bu yanıtla kabul edildi.
+
 BAŞ MİMAR KARARLARI (en yaygın uygulama; ★ = kime / kaç kez gideceğini etkiler; K1–K3 kullanıcıya soruldu, 5 dk yetkisi):
 1. ★ İş verisi (telefon, ad, bakiye, PDF) işçi sırası gelince, GÖNDERİM ANINDA okunur (en güncel veri).
 2. ★ Kuyruktayken "WhatsApp Mesajı İstemiyor" işaretlenen ya da silinen/pasif cari ELENİR ("Atlandı" + neden).
