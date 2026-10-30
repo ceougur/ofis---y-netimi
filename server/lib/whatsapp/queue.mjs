@@ -22,6 +22,7 @@ import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
 import { statementData, statementFileName, statementPdf } from "../statement-pdf.mjs";
 import { e164Of, waPresetRange } from "./alici.mjs";
+import { periodKeyOf, queueKeyOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
 import { sendingVerdict } from "./templates.mjs";
@@ -100,9 +101,7 @@ export function periodOf(body, today) {
   const preset = ["thisMonth", "lastMonth", "last3", "all"].includes(body.preset) ? body.preset : "thisMonth";
   return { ...waPresetRange(preset, today), preset };
 }
-// Dönem anahtarı (makine defteri; R3 "daha önce gönderildi"): ekstre = dönemin iki ucu; ödeme hatırlatma = gönderim GÜNÜ (BAŞ MİMAR KARARI: hatırlatmanın dönemi yok;
-// aynı gün ikinci hatırlatma sorulur, ertesi gün yeni hatırlatma serbest).
-const periodKeyOf = (kind, period, day = "") => (kind === "statement" ? `${period.from}|${period.to}` : `gun|${day}`);
+// Dönem eşliği (R3 "daha önce gönderildi" anahtarı ve §7a 9 "Zaten Kuyrukta"): TEK YER lib/whatsapp/donem.mjs (T2-1; kural kullanıcıdan bekleniyor).
 // İletideki dönem metni ({{3}}; §7a 21): "01.10.2026 – 31.10.2026"; Tüm Hareketler: ilk hareketten dönem sonuna (bugün).
 function periodText(period, lines) {
   if (period.from) return `${dayText(period.from)} – ${dayText(period.to)}`;
@@ -296,8 +295,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return ids;
   }
   // §7a 9: aynı cari + aynı şablon + aynı dönem için bekleyen / gönderilmekte iş (süren ya da duraklatılmış toplu işte) — iki kullanıcı, iki sekme.
-  const queued = (accountId, kind, period) =>
-    store.get(`SELECT j.id FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.account_id = ? AND b.kind = ? AND b.period_from = ? AND b.period_to = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")}) LIMIT 1`, accountId, kind, period.from, period.to, ...OPEN_JOB);
+  // Dönem eşliği donem.mjs queueKeyOf'tan (T2-1: tek yer).
+  const queued = (accountId, kind, period) => {
+    const want = queueKeyOf(kind, period);
+    const rows = store.all(`SELECT j.id, b.period_from, b.period_to, b.preset FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.account_id = ? AND b.kind = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")})`, accountId, kind, ...OPEN_JOB);
+    return rows.find(row => queueKeyOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }) === want) || null;
+  };
   // Cari, gönderim için uygun mu (toplu iş açılırken ve GÖNDERİM ANINDA aynı kural — §7a 1, 2, 6, 20). Dönüş: neden (boş = uygun) + numara.
   function eligibility(account, kind) {
     const phone = e164Of(account.phone);
@@ -748,7 +751,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let claim;
     try {
       injected("ledger-claim", job);
-      claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, { from: batch.period_from, to: batch.period_to }, today()), at: iso() });
+      claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, { from: batch.period_from, to: batch.period_to, preset: batch.preset }, today()), at: iso() });
     } catch (error) {
       // Defter yazılamadı (disk dolu, kilit): istek GÖNDERİLMEZ, iş bekler.
       updateJob(job.id, { state: "pending", attempt: job.attempt || 0, sending_at: null, next_at: iso(nowMs() + JOB_BACKOFF_MS[0]) });
