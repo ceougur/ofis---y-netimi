@@ -2,7 +2,7 @@
 // sıraya alınmaz. Kapsam /mobil/ (dosyanın kendi klasörü); masaüstü programın sayfalarına karışmaz.
 // 2.4.7 M3: ofis sunucusu kapalıyken kapıcı sayfa dosyası yerine 503 verir (ağ hatası değil) → başarısız yanıtta da önbellekteki kabuk açılır; sayfa
 // kapıcıdan şifreli son özeti alır (/kapi/ozet; önbelleğe ALINMAZ).
-const CACHE = "destekofis-mobil-kabuk-v5";
+const CACHE = "destekofis-mobil-kabuk-v6"; // 2.4.8 L1: kabukta mobil hak uyarısı (license-banner)
 const BASE = new URL("./", self.location).pathname;
 // 2.4.7 gezinti B1: kayıt girişi modülleri (yazma*) de kabuğun parçası — sunucu kapalıyken açılan sayfa, sunucu dönünce düğmeleri gösterir.
 // 2.4.8 M4: karekod.js app.js'in DURAĞAN içe aktarması → kabukta olmalı (yoksa sunucu kapalıyken sayfa hiç açılmaz). Karekod çözücü (vendor/jsqr-1.4.0.js,

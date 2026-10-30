@@ -312,11 +312,12 @@ describe("M3 kapıcı — cihazın özet okuması (imza, cihaz listesi, P9, K14)
     assert.equal(r.code, "kapi-lisans", "engellenen lisans okumayı kapatmalı");
   });
 
-  it("süresi biten lisans bitiş ANINDA kapanır; özet yoksa kapi-ozet-yok", async () => {
+  // 2.4.8 L1 (ürün sahibi kararı "KARAR L1"): bitiş anında kapanan DENEME belirtecidir; ücretli lisans 30 gün salt okunur sürer (test/kapi-lisans-hosgoru-248.test.mjs).
+  it("süresi biten DENEME bitiş ANINDA kapanır; özet yoksa kapi-ozet-yok", async () => {
     const c = await ortam({ servis: false });
     const tel = await cihaz();
     const bitis = c.now() + 10 * MIN;
-    const { ofis } = await c.ofisKur({ cihazlar: [tel], belirtec: { expiresAt: new Date(bitis).toISOString() } });
+    const { ofis } = await c.ofisKur({ cihazlar: [tel], belirtec: { kind: "trial", expiresAt: new Date(bitis).toISOString() } });
     assert.equal((await c.cihazIstegi(ofis.id, "GET", "/kapi/ozet", await tel.basliklar("GET", c.now()))).code, "kapi-ozet-yok");
     await c.istemci.ozetYukle(ofis, await ozet(ofis, 1, [tel], c.now()));
     c.ilerle(10 * MIN - 1);

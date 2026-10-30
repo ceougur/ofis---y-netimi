@@ -29,3 +29,8 @@ CF_ZONE_ID = "a4521bf58a43349c69a0fdafb985bc83"
 LISANS_URL = "https://destek-ofis.vercel.app/api/lisans"
 # server/lib/license-keys.mjs TRUSTED_LICENSE_KEYS ile aynı (test/kapi-247.test.mjs denetler).
 LISANS_ANAHTARLARI = '{"destekofis-lisans-2026-1":"MCowBQYDK2VwAyEAZRdIMB11WVitpkoOEgCZDF/ULwhcsQ2mUuv9fl8Td7c="}'
+
+# 2.4.8 L1 (ürün sahibi kararı "KARAR L1", 30.10.2026): saatte bir mobil kayıt temizliği (bulut/kapi/temizlik.mjs) — denemesi biten + 30 gün, ücretli lisansı
+# biten + 30 gün (hoşgörü sonu), engellenen + 30 gün → ofis kaydı, cihazlar, R2 özeti, tünel ve DNS kaydı silinir. Dakika 23 (saat başı yoğunluğundan uzak).
+[triggers]
+crons = ["23 * * * *"]

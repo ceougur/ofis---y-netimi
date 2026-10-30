@@ -4,7 +4,7 @@
 // ofisine ait tüneli ve ofis adını ister, cloudflared'i (ilk kullanımda indirilir, özeti doğrulanır) yalnız uzak dinleyiciye (app.listenRemote,
 // 127.0.0.1) bağlayarak çalıştırır, adresi karekoda verir (mobileRemote.setPublicUrl). Müşteri başına elle iş yok.
 //
-// Ne zaman açık (BAŞ MİMAR KARARI, §6): lisans yazılabilir VE (en az bir eşli cihaz VAR ya da süresi dolmamış bir karekod BEKLİYOR ya da — 2.4.8 W9, plan §6 W9 /
+// Ne zaman açık (BAŞ MİMAR KARARI, §6): lisans yazılabilir (2.4.8 L1: mobil kullanım hakkı açık — ücretli lisansın 30 günlük hoşgörüsü dahil) VE (en az bir eşli cihaz VAR ya da süresi dolmamış bir karekod BEKLİYOR ya da — 2.4.8 W9, plan §6 W9 /
 // §11 S1 A — WhatsApp Business API BAĞLI: Meta'nın durum bildirimi kapıcıdan tünel üzerinden gelir; extraDemand). Hiçbiri yoksa cloudflared çalışmaz (internete açık kapı yok). Adres önceden hazır olsun diye "Uzaktan Bağlanabilir" işaretli kullanıcı varsa kapıcıya
 // bir kez başvurulur (adres saklanır, süreç başlamaz). Durum Yönetim → Mobil Cihazlar kartında: Bağlı / Bağlanıyor / Kapalı + neden.
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -14,6 +14,7 @@ import { TunnelError, ensureBinary as defaultEnsureBinary } from "./download.mjs
 import { LOG_MAX_BYTES, createLineLog } from "./log-file.mjs";
 import { createProcessSupervisor, reapOrphan } from "./process.mjs";
 import { CLOUDFLARED_VERSION, assetFor } from "./release.mjs";
+import { mobileRightOf } from "../license.mjs";
 
 const INFO_SETTING = "mobile.tunnel.info";
 export const TUNNEL_STATES = Object.freeze({ off: "Kapalı", connecting: "Bağlanıyor", connected: "Bağlı" });
@@ -123,9 +124,11 @@ export function createTunnelManager({
     const remoteUsers = store.get("SELECT COUNT(*) AS n FROM mobile_access a JOIN users u ON u.id = a.user_id WHERE a.remote = 1 AND u.deleted_at IS NULL").n;
     return { devices, codes, remoteUsers };
   }
+  // 2.4.8 L1: tünel mobil kullanım hakkıyla açık (lib/license.mjs mobileRightOf — kapıcıyla AYNI kural): ücretli lisansın 30 günlük hoşgörüsünde de
+  // (canlı bağlantı salt okunur), deneme / engel / hak sonunda kapalı.
   const licenseOk = () => {
     try {
-      return Boolean(license?.status?.().writable);
+      return Boolean(license?.status && mobileRightOf(license.status()).acik);
     } catch {
       return false;
     }

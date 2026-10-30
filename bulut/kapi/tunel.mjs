@@ -157,7 +157,8 @@ export async function tunelIstegi(request, env, { now = () => Date.now(), lisans
     if (typeof lisansGorunumu !== "function") at("kapi-tunel-ayar");
     const gorunum = await lisansGorunumu(env, meta);
     if (gorunum?.durum === "dogrulanamadi") at("kapi-lisans-dogrulanamadi");
-    if (gorunum?.durum !== "gecerli") at("kapi-lisans");
+    // 2.4.8 L1: ücretli lisansın 30 günlük hoşgörüsünde de tünel verilir (canlı bağlantı salt okunur; kapi-protokol mobilHakki — programla aynı kural).
+    if (gorunum?.durum !== "gecerli" && gorunum?.durum !== "hosgoru") at("kapi-lisans");
 
     const cf = cloudflare || cloudflareOf(env);
     const alan = String(env.OFIS_ALANI || "destekofis.net").toLowerCase();

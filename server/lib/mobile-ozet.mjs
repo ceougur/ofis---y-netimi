@@ -187,7 +187,7 @@ export function kapiIstemcisi({ url, fetchImpl, simdi, kayitSimdi = simdi, kayit
       veri = null;
     }
     if (yanit.ok && veri?.ok) return { ok: true, data: veri.data, status: yanit.status };
-    return { ok: false, status: yanit.status, code: veri?.code || `kapi-http-${yanit.status}`, error: veri?.error || `Kapıcı yanıtı ${yanit.status}`, ...(veri?.zaman ? { zaman: veri.zaman } : {}) };
+    return { ok: false, status: yanit.status, code: veri?.code || `kapi-http-${yanit.status}`, error: veri?.error || `Kapıcı yanıtı ${yanit.status}`, ...(veri?.zaman ? { zaman: veri.zaman } : {}), ...(veri?.silindi ? { silindi: veri.silindi } : {}) };
   }
   return {
     // Kayıtta zaman gövdede de (imzalı) ve imzanınkiyle AYNI; kapıcı daha eski kaydı yeniden oynatma sayar (silinmiş cihaz geri gelmez).

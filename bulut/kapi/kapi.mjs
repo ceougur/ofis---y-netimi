@@ -36,8 +36,9 @@ import {
   esitMi,
   hmac,
   lisansDogrula,
-  lisansGecerli,
   mesaj,
+  mobilHakIletisi,
+  mobilHakki,
   sha256Hex,
   trGunu,
   yolSorunu,
@@ -45,6 +46,7 @@ import {
 import { CIHAZ_CEREZI, MOBIL_CEREZLERI, OTURUM_CEREZI, cerezCakisiyor, cerezCikar, cerezOku, cerezSilSatirlari, setCookieAdi, setCookieAlanli } from "../../server/lib/mobil-cerez.mjs";
 import { KAPI_HIZ, MakineHatasi, guncelMi, kayitSonrasi, makineKaydi, metaAnahtari, ozetAnahtari, silinenBirlestir, yeniOfisDenetle, yeniOfisSay } from "./makine.mjs";
 import { TUNEL_YOLU, cloudflareVarsa, ofisTuneliniSil, tunelIstegi } from "./tunel.mjs"; // 2.4.7 M4: ofis tüneli (ayrı dosya)
+import { mezarAnahtari, mezarOku, mobilTemizlik } from "./temizlik.mjs"; // 2.4.8 L1: mobil kaydın kendiliğinden silinmesi (zamanlanmış tur)
 
 export { KAPI_HIZ };
 
@@ -278,14 +280,28 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
       if (iddia && (!en || iddia.issuedAt >= en.issuedAt)) en = iddia;
     }
     if (!en || now() - en.issuedAt >= K.lisansTazeMs) return { durum: "dogrulanamadi", iddia: en };
-    return { durum: lisansGecerli(en, now()) ? "gecerli" : "gecersiz", iddia: en };
+    // 2.4.8 L1: mobil kullanım hakkı (kapi-protokol mobilHakki — programla AYNI kural): "hosgoru" = ücretli lisans bitti, 30 gün salt okunur (canlı + son özet
+    // geçer; yeni cihaz eklenmez).
+    const hak = mobilHakki(en, now());
+    return { durum: hak.durum === "gecerli" ? "gecerli" : hak.acik ? "hosgoru" : "gecersiz", iddia: en, hak };
   }
+  // Ret yanıtının iletisi hakkın durumuna göre (ör. "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin."); mobilHak telefonun ayırt etmesi için.
+  const lisansEki = g => {
+    const ileti = mobilHakIletisi(g?.hak);
+    return ileti ? { error: ileti, mobilHak: g.hak.durum } : {};
+  };
+  // Erişim (canlı kapı, son özet, tünel): geçerli lisans ya da hoşgörü.
   async function lisansIste(env, meta) {
     const g = await lisansGorunumu(env, meta);
     if (g.durum === "dogrulanamadi") at("kapi-lisans-dogrulanamadi");
-    if (g.durum !== "gecerli") at("kapi-lisans");
+    if (g.durum !== "gecerli" && g.durum !== "hosgoru") at("kapi-lisans", lisansEki(g));
     return g;
   }
+  // Telefona hakkın uyarısı (son 7 gün / hoşgörü): yanıt başlığında, cümle metni kodlanmış (başlık değeri ASCII olmalı). Uyarı yoksa başlık yok.
+  const hakBasligi = g => {
+    const ileti = mobilHakIletisi(g?.hak);
+    return ileti ? { "x-do-mobil-ileti": encodeURIComponent(ileti) } : {};
+  };
 
   // ---------- Program (ofis sunucusu) uçları ----------
   async function ofisImzasi(request, yol, govdeMetni, anahtar) {
@@ -316,6 +332,9 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     const yeniAnahtar = acikAnahtar(govde.anahtar);
     if (!yeniAnahtar) at("kapi-istek");
     if (mevcut && !ayniAnahtar(mevcut.veri.anahtar, yeniAnahtar)) at("kapi-ofis-anahtari");
+    // 2.4.8 L1: kaydı silinmiş ofisin kimliği yalnız AYNI anahtarla yeniden açılır (silinen kaydın izi anahtarı tutar; ofis kimliği herkese açık DNS adıdır).
+    const mezar = mevcut ? null : await mezarOku(env, ofis);
+    if (mezar && !ayniAnahtar(mezar.anahtar, yeniAnahtar)) at("kapi-ofis-anahtari");
     const ms = await ofisImzasi(request, yol, metin, yeniAnahtar);
     if (govde.zaman !== ms) at("kapi-istek");
     // Eski bir kaydın yeniden oynatılması (silinmiş cihazı geri getirir) reddedilir: kayıt zamanı kesin artar.
@@ -353,13 +372,22 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     const eklenen = temiz.filter(c => !eskiKimlikler.has(c.id));
     let cihazHatasi = null;
     if (gorunum.durum === "dogrulanamadi") cihazHatasi = "kapi-lisans-dogrulanamadi";
+    // 2.4.8 L1: hoşgörüde (ücretli lisans bitti, 30 gün salt okunur) mevcut cihazlar sürer, yeni cihaz eklenmez.
+    else if (gorunum.durum === "hosgoru") cihazHatasi = eklenen.length ? "kapi-lisans" : null;
     else if (gorunum.durum !== "gecerli") cihazHatasi = "kapi-lisans";
     else if (eklenen.length && temiz.length > sinir) cihazHatasi = "kapi-sinir";
+    const silindi = mezar ? { ms: mezar.ms, neden: mezar.neden } : null;
+    // 2.4.8 L1: lisansı geçersiz (bitmiş / engelli) YENİ ofis — kaydı silinmiş ofis dahil — kapıcıya yazılmaz; silinmekte olan ofisin kaydı da lisans geçersizken
+    // yeniden yazılmaz (temizlik turu yarıda kesilmesin). Kayıtlı ofisin geçersiz lisansla kaydı önceki gibi yazılır (cihaz silme her durumda uygulanır).
+    if (gorunum.durum === "gecersiz" && (!mevcut || eski?.silme)) at("kapi-lisans", { ...lisansEki(gorunum), ...(silindi ? { silindi } : {}) });
     // Cihaz EKLEME yalnız lisans geçerliyken ve sınır içinde; silme (listeden çıkan cihaz) her durumda uygulanır (güvenlik: silinen cihaz hemen düşer).
-    meta.cihazlar = cihazHatasi ? temiz.filter(c => eskiKimlikler.has(c.id)) : temiz;
+    // 2.4.8 L1: silinmiş kayıt geri GELMEZ — programın listesindeki cihazlar alınmaz (telefonlar karekodla yeniden eşlenir; eski çerezleri canlı kapıda silinir).
+    meta.cihazlar = silindi ? [] : cihazHatasi ? temiz.filter(c => eskiKimlikler.has(c.id)) : temiz;
     // B1: listeden çıkan cihazların kimliği (canlı kapı eski çerezini tanıyıp siler; yeni eşlenip kaydı henüz gelmemiş cihazın çerezi silinmez).
     const guncel = meta.cihazlar.map(c => c.id);
-    meta.silinen = silinenBirlestir([...eskiKimlikler].filter(id => !guncel.includes(id)), eski?.silinen, guncel);
+    meta.silinen = silinenBirlestir([...eskiKimlikler, ...(silindi ? temiz.map(c => c.id) : [])].filter(id => !guncel.includes(id)), eski?.silinen, guncel);
+    // 2.4.8 L1: engelin kapıcıca ilk görüldüğü an (kayıt silme süresi engelden 30 gün; temizlik.mjs). Engel kalkınca düşer.
+    if (gorunum.iddia?.status === "blocked") meta.engel = eski?.engel?.ms ? eski.engel : { ms: now() };
     // B3: makine → ofis tek eşleme (yeni ofis günlük tavanı, makine başına saatlik kayıt ve günlük ofis değişimi sınırı) ofis kaydından ÖNCE; değişimde
     // önceki ofis kayıttan sonra kapatılır (kayitSonrasi).
     if (!mevcut) await yeniOfisDenetle(env, now());
@@ -371,9 +399,10 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     });
     if (!yazildi) at("kapi-yaris");
     await onbellegeYaz(ofis, lisans);
+    if (mezar) await env.OZET.delete(mezarAnahtari(ofis));
     await kayitSonrasi(env, { makine: iddia.machine, ofis, simdi: now(), temizle: temizleyici(env) });
-    if (cihazHatasi) at(cihazHatasi, { cihaz: meta.cihazlar.length, sinir });
-    return json(200, { ok: true, data: { ofis, cihaz: meta.cihazlar.length, sinir } });
+    if (cihazHatasi) at(cihazHatasi, { cihaz: meta.cihazlar.length, sinir, ...(cihazHatasi === "kapi-lisans" ? lisansEki(gorunum) : {}), ...(silindi ? { silindi } : {}) });
+    return json(200, { ok: true, data: { ofis, cihaz: meta.cihazlar.length, sinir, ...(silindi ? { silindi } : {}) } });
   }
 
   // B3: ofis devre dışıysa ya da makinesinin eşlemesi başka ofisi gösteriyorsa (yarışta kapanmamış eski ofis) 410; ikinci durumda ofis kapatılır.
@@ -449,11 +478,12 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     // B3: makinesinin güncel ofisi değilse (devre dışı) cihaz listesi boş sayılır → kapi-cihaz (telefon "eşli değil" ekranına döner).
     const cihaz = await cihazIste(request, env, (await guncelMi(env, mevcut?.veri, now())) ? mevcut.veri : null, "/kapi/ozet");
     await hizDenetle(env, "ozet", `${ofis}|${cihaz.id}`, K.dakikadaOzet);
-    await lisansIste(env, mevcut.veri);
+    const gorunum = await lisansIste(env, mevcut.veri);
     if (request.method !== "GET" && request.method !== "HEAD") at("kapi-yazma");
     const nesne = await env.OZET.get(ozetAnahtari(ofis));
     if (!nesne) at("kapi-ozet-yok");
-    const basliklar = { etag: nesne.etag, "x-do-sira": String(nesne.customMetadata?.sira || ""), "x-do-uretim": String(nesne.customMetadata?.uretim || "") };
+    // 2.4.8 L1: son 7 gün / hoşgörü uyarısı telefona (sunucu kapalıyken de "Lisansınız bitti; mobil kullanım hakkınız N gün sonra sona erecek.").
+    const basliklar = { etag: nesne.etag, "x-do-sira": String(nesne.customMetadata?.sira || ""), "x-do-uretim": String(nesne.customMetadata?.uretim || ""), ...hakBasligi(gorunum) };
     if ((request.headers.get("if-none-match") || "") === nesne.etag) return new Response(null, { status: 304, headers: { ...GUVENLIK, ...basliklar } });
     return new Response(request.method === "HEAD" ? null : nesne.body, { status: 200, headers: { "content-type": "application/json; charset=utf-8", ...GUVENLIK, ...basliklar } });
   }
@@ -624,8 +654,21 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     }
   }
 
-  return { fetch: fetchHandler, lisansGorunumu, esitMi };
+  // 2.4.8 L1: zamanlanmış temizlik turu (Worker Cron → scheduled). Cloudflare ayarı yoksa yalnız R2 kayıtları silinir.
+  const temizlik = env => mobilTemizlik(env, { now, lisansGorunumu, cloudflare: cloudflare || cloudflareVarsa(env), alan: String(env.OFIS_ALANI || "destekofis.net").toLowerCase() });
+
+  return { fetch: fetchHandler, lisansGorunumu, esitMi, temizlik };
 }
 
 const varsayilan = createKapi();
-export default { fetch: (request, env, ctx) => varsayilan.fetch(request, env, ctx) };
+export default {
+  fetch: (request, env, ctx) => varsayilan.fetch(request, env, ctx),
+  // wrangler.toml [triggers] crons: saatte bir (Worker günlüğüne tur özeti; gizli değer yazılmaz).
+  scheduled: (_olay, env, ctx) =>
+    ctx.waitUntil(
+      varsayilan
+        .temizlik(env)
+        .then(rapor => console.log(`mobil temizlik: taranan ${rapor.taranan}, denetlenen ${rapor.denetlenen}, silinen ${rapor.silinen.length}, ertelenen ${rapor.ertelenen}, hata ${rapor.hata.length}`))
+        .catch(error => console.error(`mobil temizlik durdu: ${error?.message || error}`)),
+    ),
+};

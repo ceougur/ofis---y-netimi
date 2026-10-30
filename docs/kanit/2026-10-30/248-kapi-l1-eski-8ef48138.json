@@ -1,0 +1,123 @@
+{
+  "ad": "248-kapi-l1-eski-8ef48138",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/kapi-lisans-hosgoru-248.test.mjs test/mobil-lisans-hosgoru-248.test.mjs test/tunel-yonetici-l1.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:15:35.484Z",
+  "sure_sn": 10,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 28,
+    "gecen": 10,
+    "basarisiz": 18,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 18 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 L1 — mobil kullanım hakkı kuralı (kapi-protokol; program ve kapıcı aynı işlev) › ücretli lisans: 7 gün kala uyarı, bitişte 30 gün hoşgörü (29. günün sonunda 1 gün), 30. günün sonunda kapanır; gece yarısı sınırları",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:188:3",
+      "hata": "kapi-protokol mobilHakki yok (2.4.8 L1) · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "2.4.8 L1 — mobil kullanım hakkı kuralı (kapi-protokol; program ve kapıcı aynı işlev) › deneme bitişte HEMEN kapanır (hoşgörü yok); engelli hemen kapanır; silme anı: bitiş + 30 gün, engel + 30 gün (erken olanı)",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:205:3",
+      "hata": "mobilHakki is not a function"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcı: hoşgörüde son özet, canlı kapı ve tünel açık; yeni cihaz eklenmez; sonunda kapanır › ücretli lisans: 7 gün kala özette uyarı; bitişten 30 gün salt okunur (özet + canlı + tünel), 30. günün sonunda kapanır ve ileti 'sona erdi'",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:224:3",
+      "hata": "7 gün kala telefon uyarısı (son özet yanıtında) · + actual - expected · + '' (beklenen Lisansınız 7 gün sonra bitiyor., gelen )"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcı: hoşgörüde son özet, canlı kapı ve tünel açık; yeni cihaz eklenmez; sonunda kapanır › deneme bitişte hemen kapanır (özet, canlı, tünel); engelli lisans hemen kapanır — iletiler hakkın durumuna göre",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:246:3",
+      "hata": "deneme bitiş anında kapanır · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcı: hoşgörüde son özet, canlı kapı ve tünel açık; yeni cihaz eklenmez; sonunda kapanır › hoşgörüde mevcut cihazlar sürer, YENİ cihaz eklenmez; lisansı geçersiz YENİ ofis kapıcıya yazılmaz",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:262:3",
+      "hata": "hoşgörüde aynı cihaz listesiyle kayıt kabul · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama › deneme: bitişten 30 gün geçmeden SİLİNMEZ; 30. günde ofis kaydı, özet, tünel, DNS silinir; geçerli lisanslı komşu ofise dokunulmaz",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:280:3",
+      "hata": "kapıcıda zamanlanmış temizlik yok (2.4.8 L1) · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama › ücretli lisans: hoşgörünün son anında kayıt durur, 30. günün sonundaki ilk turda HEMEN silinir; telefon 'eşli değil' değil kayıt yok görür",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:300:3",
+      "hata": "kapi.temizlik is not a function"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama › engel: ilk tur engeli kaydeder; engelden 29 gün sonra durur, 30 gün sonra silinir; engel kalkarsa (lisans açıldı) kayıt silinmez",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:312:3",
+      "hata": "kapi.temizlik is not a function"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama › lisans yenilendiyse (servis yeni bitiş verdi) saklı belirteç 30 günden eski olsa da SİLİNMEZ; servise ulaşılamıyorsa hiçbir şey silinmez",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:333:3",
+      "hata": "kapi.temizlik is not a function"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama › Cloudflare yanıt vermezse silme yarıda kalır (işaret kalır), sonraki turda tamamlanır",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:350:3",
+      "hata": "kapi.temizlik is not a function"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama › ZORLA: silme sürerken program yenilenen lisansla kaydolursa ofis kaydı SİLİNMEZ (iz yazılmaz), telefon çalışmayı sürdürür",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:365:3",
+      "hata": "kapi.temizlik is not a function"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama › silinmiş kayıt GERİ GELMEZ: lisans alınınca aynı kimlik cihazsız açılır ve 'silindi' bildirilir; geçersiz lisansla kayıt açılmaz; başka anahtar alamaz",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:388:3",
+      "hata": "kapi.temizlik is not a function"
+    },
+    {
+      "ad": "2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama › tur sınırı: dış istek bütçesi aşılınca kalanlar sonraki tura kalır; birkaç turda hepsi silinir, geçerli ofisler kalır",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:408:3",
+      "hata": "kapi.temizlik is not a function"
+    },
+    {
+      "ad": "2.4.8 L1 — dağıtım yapılandırması › wrangler.toml saatte bir zamanlanmış tur tanımlar; Worker scheduled işleyicisi var",
+      "konum": "test/kapi-lisans-hosgoru-248.test.mjs:426:3",
+      "hata": "saatlik cron (beklenen , gelen |-)"
+    },
+    {
+      "ad": "2.4.8 L1 — program: ücretli lisans bitince mobil 30 gün salt okunur, uyarılar, sonunda kapanır › 7 gün kala telefonda ve Yönetim → Mobil Cihazlar'da uyarı; bitişte masaüstü salt okunur ama telefon girer (salt okunur), 30. günün sonunda kapanır",
+      "konum": "test/mobil-lisans-hosgoru-248.test.mjs:81:3",
+      "hata": "lib/license.mjs mobileRightOf yok (2.4.8 L1) · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "2.4.8 L1 — program: ücretli lisans bitince mobil 30 gün salt okunur, uyarılar, sonunda kapanır › deneme: bitiş anında telefon kapanır (ileti 'Deneme süreniz bitti'); kapıcı kaydı silinince program eşlemeleri kaldırır, lisansla yeniden eşleme açık iletiyle",
+      "konum": "test/mobil-lisans-hosgoru-248.test.mjs:119:3",
+      "hata": "deneme bitti: {\"status\":403,\"code\":\"kapi-lisans\",\"error\":\"Lisans geçerli değil; uzaktan erişim kapalı.\",\"hak\":null,\"sirket\":\"\"} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 6b. ücretli lisansın 30 günlük hoşgörüsünde tünel açık kalır; hoşgörü bitince ve süresi dolmuş denemede kapanır",
+      "konum": "test/tunel-yonetici-l1.test.mjs:194:3",
+      "hata": "hoşgörüde (bitişten 1 gün sonra) tünel bağlı kalmalı: {\"state\":\"off\",\"label\":\"Kapalı\",\"reason\":\"Lisans geçerli değil; uzaktan bağlantı kapalı.\",\"since\":\"2026-10-30T19:15:39.977Z\",\"connections\":0,\"publicUrl\":\"https://oabcdefghijklmnop.destekofis.net\",\"retryInSeconds\":null,\"version\":\"test\"} · 'off' !== 'connected' (beklenen connected, gelen off)"
+    },
+    {
+      "ad": "M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared › 7. bağlayıcı çökerse yeniden başlatılır (Bağlanıyor → Bağlı)",
+      "konum": "test/tunel-yonetici-l1.test.mjs:218:3",
+      "hata": "The \"pid\" argument must be of type number. Received null"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt-kapi-248/docs/kanit/2026-10-30/248-kapi-l1-eski-8ef48138.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138",
+  "ham_cikti_sha256": "2f51ca1ce382435da3441025f403e4f7575d5378be467b3b4c99c2d90f736c6c",
+  "ham_cikti_bayt": 33047
+}

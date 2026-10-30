@@ -84,7 +84,15 @@ export async function loadSummary() {
     } catch {
       throw Error("İnternet bağlantısı yok; son özet de alınamadı.");
     }
-    if (resp.ok) return await openSummary(await resp.text(), keys);
+    if (resp.ok) {
+      // 2.4.8 L1: kapıcının mobil hak uyarısı (son 7 gün / hoşgörü; sunucu kapalıyken de) — özetin içindeki eski oturum bilgisi yerine.
+      try {
+        offline.hakIleti = decodeURIComponent(resp.headers.get("x-do-mobil-ileti") || "");
+      } catch {
+        offline.hakIleti = "";
+      }
+      return await openSummary(await resp.text(), keys);
+    }
     let data = {};
     try {
       data = await resp.json();
@@ -118,6 +126,7 @@ export function enter(veri) {
   offline.veri = veri;
   offline.uretim = veri.uretim || "";
   d.setAuth(veri.oturum);
+  d.hakNotu?.(offline.hakIleti || "");
   d.state.writesEnabled = false; // 2.4.7 M5 birleşimi: sunucu kapalıyken kayıt girilmez — oturumdan kalan yazma hakkı çevrimdışı görünümde düğme göstermesin
   const when = fmtTime(offline.uretim);
   el("offline-banner").textContent = `Ofis sunucusuna ulaşılamıyor. Son güncelleme: ${when} — bilgiler salt okunurdur; yenilemek için ↻.`;

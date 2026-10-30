@@ -19,6 +19,7 @@ import { HttpError } from "./http.mjs";
 import { TRUSTED_LICENSE_KEYS } from "./license-keys.mjs";
 import { LicenseError, PRODUCT, decodeCode, formatInstallCode, normalizeMachineId, verifyToken } from "./license-token.mjs";
 import { resolveMachineId } from "./machine.mjs";
+import { mobilHakIletisi, mobilHakki } from "./kapi-protokol.mjs";
 
 // Lisans uyarılarında gösterilen iletişim bilgisi (deneme/lisans bitişi, engel, taşıma).
 // Teknik destek ve satın alma hattı (v2.0.9). Genel telefon (0532 605 05 87) yalnız sitenin iletişim kartındadır.
@@ -83,6 +84,25 @@ const toTime = value => {
   const time = typeof value === "number" ? value : Date.parse(value ?? "");
   return Number.isFinite(time) ? time : null;
 };
+
+// ---------- 2.4.8 L1: mobil kullanım hakkı (ürün sahibi kararı "KARAR L1"; kural kapi-protokol mobilHakki — kapıcıyla AYNI) ----------
+// Program tarafında uzak dinleyici (lib/mobile-remote.mjs), tünel (lib/tunnel/manager.mjs), Yönetim → Mobil Cihazlar ve telefonun oturum bilgisi bunu okur.
+// Yazılabilir lisans (deneme, lisanslı, geçiş) → açık (bitişe 7 gün kala uyarı); süresi dolmuş ÜCRETLİ lisans → 30 gün salt okunur (hosgoru); süresi dolmuş
+// deneme, engel, doğrulanamama, saat geri alma ve etkinleştirilmemiş kurulum → kapalı. Saat: lisansın etkin zamanı (saat geri alma koruması dahil).
+// Dönüş: { durum, acik, yazilir, tur, kalanGun, sonMs, uyari, ileti }.
+export function mobileRightOf(status) {
+  const s = status || {};
+  const t = Date.parse(s.effectiveNow || "") || Date.now();
+  const iddia = s.kind ? { kind: s.kind, status: s.state === "blocked" ? "blocked" : "active", expiresAt: s.expiresAt ? Date.parse(s.expiresAt) : null } : null;
+  let hak;
+  if (s.writable) hak = iddia ? mobilHakki(iddia, t) : { durum: "gecerli", acik: true, tur: null, kalanGun: null, sonMs: null, uyari: false };
+  else if (s.state === "expired" && iddia) hak = mobilHakki(iddia, t);
+  else if (s.state === "blocked") hak = { durum: "engelli", acik: false, tur: iddia?.kind || null, kalanGun: null, sonMs: null, uyari: true };
+  else hak = { durum: "kapali", acik: false, tur: iddia?.kind || null, kalanGun: null, sonMs: null, uyari: false };
+  // Yazılabilir lisansta hak her zaman açık (geçiş dönemi, zorlanmayan lisans): belirteçteki bitiş geçmiş olsa da yazılabilirlik programın kararıdır.
+  if (s.writable && !hak.acik) hak = { ...hak, durum: "gecerli", acik: true };
+  return { ...hak, yazilir: Boolean(s.writable), sonMs: hak.sonMs ?? null, ileti: mobilHakIletisi(hak) };
+}
 
 // ---------- Saf değerlendirme (testlerde doğrudan sınanır) ----------
 // token: doğrulanmış iddialar (claims) veya null · tokenProblem: belirteç var ama bu bilgisayara ait değilse açıklama.
@@ -675,6 +695,8 @@ export function createLicenseService({
       customer: current.customer,
       transitionEndsAt: current.transitionEndsAt,
       contact: SUPPORT_CONTACT,
+      // 2.4.8 L1: mobil kullanım hakkı (telefonun oturum bilgisi ve Yönetim → Mobil Cihazlar).
+      mobile: (({ durum, acik, kalanGun, ileti }) => ({ durum, acik, kalanGun, ileti }))(mobileRightOf(current)),
     };
     if (!user || user.role !== "admin") return brief;
     return {
@@ -723,5 +745,5 @@ export function createLicenseService({
     }
   };
 
-  return { init, start, stop, status, writable, mobileDeviceLimit, tokenEnvelope, summary: summaryFor, permissionsFor, assertWritable, check, startTrial, activateKey, applyCode, submitContact, usageSummary: usageBody, machine: () => ({ ...machine, installCode: formatInstallCode(machine.id) }) };
+  return { init, start, stop, status, writable, mobileRight: () => mobileRightOf(status()), mobileDeviceLimit, tokenEnvelope, summary: summaryFor, permissionsFor, assertWritable, check, startTrial, activateKey, applyCode, submitContact, usageSummary: usageBody, machine: () => ({ ...machine, installCode: formatInstallCode(machine.id) }) };
 }

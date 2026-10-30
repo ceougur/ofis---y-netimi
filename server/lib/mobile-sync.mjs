@@ -12,7 +12,7 @@
 // Lisans yazılabilir değilse yüklenmez (K14); kapıcıya yalnız lisansın son hâli bildirilir.
 import { Readable } from "node:stream";
 import { HttpError, REMOTE_REQUEST, REMOTE_SESSION, parseCookies } from "./http.mjs";
-import { DEVICE_COOKIE, REMOTE_ERRORS, publicKeyOf } from "./mobile-remote.mjs";
+import { DEVICE_COOKIE, KAPI_SILINDI_SETTING, REMOTE_ERRORS, publicKeyOf } from "./mobile-remote.mjs";
 import { captureResponse } from "./mobile.mjs";
 import { isaretDogrula, kapiIstemcisi, kayitKabul, kayitZamani, ofisKaydi, ozetPaketle, sonrakiSira } from "./mobile-ozet.mjs";
 import { KAPI_KURALLARI, trGunu } from "./kapi-protokol.mjs";
@@ -184,11 +184,27 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     // B2b: kapıcı "saat uyuşmuyor" dediyse ve yanıtının Date başlığı yeni bir fark gösterdiyse düzeltilmiş saatle bir kez yinelenir.
     if (sonuc.code === "kapi-zaman" && saat.farkMs !== farkOnce) sonuc = await istemci.kayit(ofis, { lisans, cihazlar: liste });
     if (sonuc.code === "kapi-yaris" || sonuc.code === "kapi-sira") sonuc = await istemci.kayit(ofis, { lisans, cihazlar: liste });
+    // 2.4.8 L1: kapıcı bu ofisin mobil kaydını silmişti (hak sona erdi) — silinmiş kayıt geri gelmez: eşlemeler programda da kaldırılır (telefonlar karekodla
+    // yeniden eşlenir), Yönetim → Mobil Cihazlar bunu söyler.
+    const silindi = sonuc.ok ? sonuc.data?.silindi : sonuc.silindi;
+    if (silindi) kapiKaydiSilindi(silindi);
     if (sonuc.ok) {
       durum.sonKayitImzasi = imza;
       durum.kayit = sonuc.data;
     } else durum.sonKayitImzasi = "";
     return sonuc;
+  }
+
+  function kapiKaydiSilindi(bilgi) {
+    const at = new Date(clock.ms()).toISOString();
+    const n = store.tx(() => {
+      const kaldirilan = store.run("UPDATE mobile_devices SET revoked_at = ?, revoked_by = '', revoke_reason = 'kapi-silindi' WHERE revoked_at IS NULL", at).changes;
+      store.run("DELETE FROM mobile_sessions");
+      return kaldirilan;
+    });
+    store.setSetting(KAPI_SILINDI_SETTING, JSON.stringify({ ms: Number(bilgi?.ms) || clock.ms(), neden: String(bilgi?.neden || ""), gorulme: clock.ms() }));
+    durum.sonKayitImzasi = "";
+    log.warn?.(`Mobil kullanım hakkı sona erdiği için kapıcıdaki mobil kayıt silinmişti; ${n} eşli cihaz kaldırıldı (telefonlar karekodla yeniden eşlenir).`);
   }
 
   // ---------- Yükleme (sıralı; aynı anda tek) ----------
@@ -319,6 +335,8 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     // Eşleme kaydedildikten sonra: şifreleme anahtarı cihaz satırına; telefona ofis kimliği ve özet imza anahtarı.
     paired: (deviceId, encKey) => {
       if (encKey) store.run("UPDATE mobile_devices SET enc_key = ? WHERE id = ?", JSON.stringify(encKey), deviceId);
+      // 2.4.8 L1: yeniden eşleme yapıldı — "mobil kaydınız silinmişti" uyarısı kalkar.
+      store.run("DELETE FROM settings WHERE key = ?", KAPI_SILINDI_SETTING);
       return ofis ? { ofis: { kimlik: ofis.id, anahtar: ofis.acik } } : {};
     },
     // Kapıcı açıkken her uzak istek kapıcının işaretini taşımalı (cihaz → lisans → yol kapıcıda denetlendi; tünel kapıcıyı atlatamaz). İşaretteki cihaz,

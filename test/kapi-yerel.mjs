@@ -66,6 +66,31 @@ export function sahteR2() {
       sayac.A += 1;
       nesneler.delete(key);
     },
+    /** 2.4.8 L1: R2 list (Workers): prefix, delimiter (delimitedPrefixes), limit, cursor (sıradaki anahtar), truncated. Anahtar sırası sözlük sırası. */
+    async list({ prefix = "", delimiter = "", limit = 1000, cursor = "" } = {}) {
+      sayac.A += 1;
+      const anahtarlar = [...nesneler.keys()].filter(key => key.startsWith(prefix)).sort();
+      const ogeler = [];
+      const goruldu = new Set();
+      for (const key of anahtarlar) {
+        const kalan = key.slice(prefix.length);
+        const i = delimiter ? kalan.indexOf(delimiter) : -1;
+        const oge = i >= 0 ? { onek: prefix + kalan.slice(0, i + delimiter.length) } : { key };
+        const ad = oge.onek || oge.key;
+        if (goruldu.has(ad)) continue;
+        goruldu.add(ad);
+        ogeler.push(oge);
+      }
+      const bas = cursor ? ogeler.findIndex(oge => (oge.onek || oge.key) > cursor) : 0;
+      const sayfa = bas < 0 ? [] : ogeler.slice(bas, bas + limit);
+      const truncated = bas >= 0 && bas + limit < ogeler.length;
+      return {
+        objects: sayfa.filter(oge => oge.key).map(oge => nesne(oge.key, nesneler.get(oge.key), false)),
+        delimitedPrefixes: sayfa.filter(oge => oge.onek).map(oge => oge.onek),
+        truncated,
+        ...(truncated ? { cursor: sayfa.at(-1).onek || sayfa.at(-1).key } : {}),
+      };
+    },
   };
 }
 
