@@ -1,0 +1,78 @@
+{
+  "ad": "kirmizi-M58",
+  "komut": "python3 -I test/bagimsiz/mobil-erisim/kahin_test.py",
+  "commit": "009674a1ff8eca4db1f33876b2845ce1d8588364",
+  "dal": "is/kahin-l1-248",
+  "kirli": 5,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T21:06:55.479Z",
+  "sure_sn": 44.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 70,
+    "gecen": 61,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "B elle L01 (38 olay, 18 yaprak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B elle L02 (19 olay, 6 yaprak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B elle L03 (25 olay, 4 yaprak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B elle L05 (29 olay, 6 yaprak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "B elle L06 (13 olay, 2 yaprak)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C üretici R1: model girdi hatası verdi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C üretici R2 (660 olay, 30 birleşim)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C üretici R3 (687 olay, 30 birleşim)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D bölümü çöktü",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "test/bagimsiz/mobil-erisim/kanit/2026-10-30/kirmizi-M58.log",
+  "klasor": "/home/user/wt-kahin-l1-248",
+  "ham_cikti_sha256": "2c263973831d396da965d15446512b7e266caab74b24bef80250d00e538557b8",
+  "ham_cikti_bayt": 28610
+}
