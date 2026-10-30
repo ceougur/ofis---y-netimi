@@ -1453,6 +1453,45 @@ export const MIGRATIONS = [
       addColumn(store, "mobile_devices", "enc_key", "TEXT");
     },
   },
+  {
+    version: 40,
+    name: "v2.4.8 WhatsApp Business API gönderim kuyruğu + WhatsApp Mesajı İstemiyor (para dışı)",
+    up(store) {
+      // 2.4.8 W2 (docs/erp/WHATSAPP-API-PLANI-2.4.8.md §6 W2; lib/whatsapp/queue.mjs): toplu gönderim (wa_batches) ve kişi başına iş (wa_jobs). Şirket
+      // dosyasında; yalnız ekleyici (yeni tablolar + accounts'a bir sütun). message_sends (wa.me yolu, 2.0.13) DOKUNULMAZ — CHECK kısıtı yeni durumları almaz;
+      // cari kartının geçmişi ikisini birleştirir. İletinin METNİ saklanmaz: değişken değerleri (params_json) + PDF adı (plan §5). Çift gönderimin ve
+      // 24 saat sınırının kaydı şirket dosyasının DIŞINDA, makine düzeyindeki defterde (lib/whatsapp/defter.mjs): geri yükleme sayacı azaltmaz, eski işleri diriltmez.
+      // accounts.wa_opt_out: "WhatsApp Mesajı İstemiyor" (1 = toplu gönderimden çıkar; bilgi alanı, defteri değiştirmez — lib/db.mjs INFO_COLUMNS).
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS wa_batches (
+          id TEXT PRIMARY KEY, kind TEXT NOT NULL CHECK (kind IN ('statement', 'reminder')), period_from TEXT NOT NULL DEFAULT '', period_to TEXT NOT NULL DEFAULT '',
+          preset TEXT NOT NULL DEFAULT '', template TEXT NOT NULL, lang TEXT NOT NULL DEFAULT '', phone_number_id TEXT NOT NULL, waba_id TEXT NOT NULL,
+          ledger_id TEXT NOT NULL DEFAULT '', company_id TEXT NOT NULL DEFAULT '',
+          state TEXT NOT NULL DEFAULT 'running' CHECK (state IN ('running', 'paused', 'done', 'canceled', 'stopped')),
+          pause_reason TEXT NOT NULL DEFAULT '', pause_code TEXT NOT NULL DEFAULT '', request_key TEXT, retry_at TEXT, troubles INTEGER NOT NULL DEFAULT 0, offline_tries INTEGER NOT NULL DEFAULT 0,
+          created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, finished_at TEXT
+        ) STRICT;
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_wa_batches_request ON wa_batches(request_key) WHERE request_key IS NOT NULL;
+        CREATE INDEX IF NOT EXISTS idx_wa_batches_state ON wa_batches(state, created_at);
+        CREATE TABLE IF NOT EXISTS wa_jobs (
+          id TEXT PRIMARY KEY, batch_id TEXT NOT NULL, account_id TEXT NOT NULL, account_name TEXT NOT NULL DEFAULT '', phone_e164 TEXT NOT NULL DEFAULT '',
+          template TEXT NOT NULL, lang TEXT NOT NULL DEFAULT '', params_json TEXT NOT NULL DEFAULT '[]', pdf_name TEXT NOT NULL DEFAULT '',
+          period_from TEXT NOT NULL DEFAULT '', period_to TEXT NOT NULL DEFAULT '',
+          state TEXT NOT NULL CHECK (state IN ('pending', 'preparing', 'sending', 'accepted', 'sent', 'delivered', 'read', 'failed', 'uncertain', 'limited', 'held', 'paused', 'canceled', 'expired', 'skipped', 'stopped')),
+          skip_reason TEXT NOT NULL DEFAULT '', media_id TEXT, media_at TEXT, media_deleted_at TEXT, media_delete_tries INTEGER NOT NULL DEFAULT 0, wamid TEXT,
+          attempt INTEGER NOT NULL DEFAULT 0, temp_tries INTEGER NOT NULL DEFAULT 0, error_code INTEGER, error_text TEXT NOT NULL DEFAULT '', next_at TEXT, retry_131049 INTEGER NOT NULL DEFAULT 0,
+          sending_at TEXT, accepted_at TEXT, sent_at TEXT, delivered_at TEXT, read_at TEXT, failed_at TEXT, closed_at TEXT, billable INTEGER,
+          created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+          UNIQUE (batch_id, account_id)
+        ) STRICT;
+        CREATE INDEX IF NOT EXISTS idx_wa_jobs_batch ON wa_jobs(batch_id, state);
+        CREATE INDEX IF NOT EXISTS idx_wa_jobs_state ON wa_jobs(state, next_at);
+        CREATE INDEX IF NOT EXISTS idx_wa_jobs_account ON wa_jobs(account_id, created_at);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_wa_jobs_wamid ON wa_jobs(wamid) WHERE wamid IS NOT NULL;
+      `);
+      addColumn(store, "accounts", "wa_opt_out", "INTEGER NOT NULL DEFAULT 0");
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";

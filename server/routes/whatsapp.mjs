@@ -17,10 +17,25 @@
 //   POST   /api/workspace/whatsapp/connection/test        Bağlantıyı Sına (numara, görünen ad, kalite, sınır basamağı, şablonlar)
 //   POST   /api/workspace/whatsapp/connection/self-test   Kendime Deneme Gönder { to } — yazılabilir lisans
 // Yazma uçları salt okunur lisansta app.mjs'teki genel kapıda (license.assertWritable) 403 LICENSE_READ_ONLY alır; deneme ayrıca burada denetlenir.
+//
+// 2.4.8 W2 (plan §6 W2; lib/whatsapp/queue.mjs): gönderim çekirdeği — toplu gönderim (Ekstre + PDF / Ödeme Hatırlatma), yetki whatsapp.send.
+//   GET  /api/workspace/whatsapp/ack                         bir kez onay ("Aydınlatma metnimi okudum, carilerime ulaştıracağım.") — whatsapp.send
+//   PUT  /api/workspace/whatsapp/ack                         { ack: true | false } — yalnız yönetici (system.manage)
+//   GET|PUT /api/workspace/whatsapp/sending-settings         { dailyCap (elle günlük sınır, boş = Meta), ttlHours (S2 A: 72) } — system.manage
+//   POST /api/workspace/whatsapp/batches/preview             önizleme: kişiler, atlama nedenleri, bugünkü sınırdan kalan, yarına kalacak (Meta'ya yalnız okuma)
+//   POST /api/workspace/whatsapp/batches                     { kind: statement|reminder, ids | all + süzgeçler, preset | from + to, requestId, repeat }
+//   GET  /api/workspace/whatsapp/batches                     son toplu gönderimler; GET …/batches/:id ayrıntı + işler
+//   POST /api/workspace/whatsapp/batches/:id/pause | resume | cancel | retry-failed
+//   POST /api/workspace/whatsapp/jobs/:id/send-anyway        Sonucu Belirsiz → "Yine de Gönder" { confirm: true }
+//   GET  /api/workspace/whatsapp/stats?month=YYYY-MM         "Bu Ay Gönderilen İleti Sayısı" (Meta Kabul Etti / Teslim Edilen (Ücretli) / yaklaşık ücret)
+// Onay ve salt okunur lisans SUNUCUDA da denetlenir (istemci atlatılsa da gönderim başlamaz).
 import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { createWhatsappConnection } from "../lib/whatsapp/connection.mjs";
+import { createWaQueue } from "../lib/whatsapp/queue.mjs";
+import { createReportHeader } from "../lib/report-header.mjs";
+import { waNumber, waPresetRange as presetRange } from "../lib/whatsapp/alici.mjs";
 import { registerWhatsappTemplateRoutes } from "./whatsapp-sablon.mjs";
 
 const MAX_TARGETS = 5000;
@@ -28,37 +43,8 @@ const pad = value => String(value).padStart(2, "0");
 const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
 const tl = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
 
-// Telefon → wa.me biçimi (ülke kodlu, yalnız rakam). Türkiye cep: 05xx… / 5xx… / +90 5xx… → 905xxxxxxxxx.
-export function waNumber(phone) {
-  // Hücrede birden çok numara olabilir ("0537… / 0532…"): ilki kullanılır.
-  let digits = (String(phone || "").split(/[,;/|\n]/).find(part => /\d/.test(part)) || "").replace(/\D/g, "");
-  if (!digits) return { wa: "", valid: false, reason: "Telefon yok" };
-  if (digits.startsWith("00")) digits = digits.slice(2);
-  // Başında 0 ya da 5 olan numara yurt içidir (hane sayısı yanlış olsa bile: "eksik" diye söylenir).
-  else if (digits.startsWith("0")) digits = `90${digits.slice(1)}`;
-  else if (digits.startsWith("5") && digits.length <= 11) digits = `90${digits}`;
-  if (digits.startsWith("90")) {
-    if (digits.length !== 12) return { wa: digits, valid: false, reason: "Numara eksik ya da fazla haneli" };
-    if (digits[2] !== "5") return { wa: digits, valid: false, reason: "Sabit hat (WhatsApp cep numarası değil)" };
-    return { wa: digits, valid: true, reason: "" };
-  }
-  return digits.length >= 11 && digits.length <= 15 ? { wa: digits, valid: true, reason: "" } : { wa: digits, valid: false, reason: "Numara biçimi tanınmadı" };
-}
-
-function presetRange(preset, today) {
-  const [y, m] = today.split("-").map(Number);
-  if (preset === "all") return { from: "", to: "" };
-  if (preset === "last3") {
-    const start = new Date(Date.UTC(y, m - 3, 1));
-    return { from: `${start.getUTCFullYear()}-${pad(start.getUTCMonth() + 1)}-01`, to: today };
-  }
-  if (preset === "lastMonth") {
-    const start = new Date(Date.UTC(y, m - 2, 1));
-    const end = new Date(Date.UTC(y, m - 1, 0));
-    return { from: `${start.getUTCFullYear()}-${pad(start.getUTCMonth() + 1)}-01`, to: `${end.getUTCFullYear()}-${pad(end.getUTCMonth() + 1)}-${pad(end.getUTCDate())}` };
-  }
-  return { from: `${y}-${pad(m)}-01`, to: today };
-}
+// Telefon → wa.me biçimi ve WhatsApp penceresinin dönemleri: lib/whatsapp/alici.mjs (2.4.8 W2: API çekirdeği de aynı kuralla okur).
+export { waNumber };
 
 // Kişiye özel ekstre metni (WhatsApp'ta düz metin; kalın için *…*). En çok 20 hareket; fazlası sayı olarak belirtilir.
 export function statementText({ office, account, lines, range, next, overdue }) {
@@ -84,7 +70,7 @@ export function statementText({ office, account, lines, range, next, overdue }) 
   return out.join("\n");
 }
 
-export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock }) {
+export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null }) {
   const today = () => {
     const d = clock();
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -97,6 +83,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     return out;
   };
 
+  // 2.4.8 W2: gönderim kuyruğu (aşağıda kurulur; geçmiş ucu istek anında okur).
+  let queue = null;
   router.post("/api/workspace/whatsapp/targets", async ({ req, res }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const body = await readJson(req, { limit: 2_000_000 });
@@ -124,6 +112,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
         continue;
       }
       const phone = waNumber(account.phone);
+      // 2.4.8 W2: "WhatsApp Mesajı İstemiyor" işaretli cari elle (wa.me) toplu/tekli gönderimde de seçilemez (BAŞ MİMAR KARARI; Sohbeti Aç serbest).
+      if (Number(account.waOptOut) === 1) Object.assign(phone, { valid: false, reason: "WhatsApp Mesajı İstemiyor" });
       const plans = (account.plans || []).filter(plan => plan.status === "active");
       const next = plans.map(plan => plan.next).filter(Boolean).sort((a, b) => (a.dueDate < b.dueDate ? -1 : 1))[0] || null;
       const overdue = { count: account.totals.overdueCount || 0, amount: roundMoney(account.totals.overdue || 0) };
@@ -138,6 +128,7 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
         wa: phone.wa,
         valid: phone.valid,
         reason: phone.reason,
+        optOut: Number(account.waOptOut) === 1,
         balance: account.totals.balance,
         next: next ? { dueDate: next.dueDate, amount: roundMoney(next.remaining ?? next.amount ?? 0) } : null,
         overdue,
@@ -168,18 +159,19 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   router.get("/api/workspace/whatsapp/history", async ({ req, res, url }) => {
     auth.requirePermission(req, "accounts.view");
     const accountId = limited(url.searchParams.get("accountId"), 120, "Cari");
-    ok(
-      res,
-      store.all(
-        `SELECT s.id, s.kind, s.status, s.body, s.created_at AS at, COALESCE(u.display_name, '') AS actorName FROM message_sends s LEFT JOIN users u ON u.id = s.created_by
-         WHERE s.account_id = ? ORDER BY s.created_at DESC LIMIT 20`,
-        accountId,
-      ),
+    const manual = store.all(
+      `SELECT s.id, s.kind, s.status, s.body, s.created_at AS at, COALESCE(u.display_name, '') AS actorName FROM message_sends s LEFT JOIN users u ON u.id = s.created_by
+       WHERE s.account_id = ? ORDER BY s.created_at DESC LIMIT 20`,
+      accountId,
     );
+    // 2.4.8 W2: cari kartı geçmişi iki yolu birleştirir (plan §6 W2): elle (wa.me, message_sends) + otomatik (WhatsApp Business API, wa_jobs; channel "api").
+    const automatic = queue ? queue.historyOf(accountId) : [];
+    ok(res, [...manual.map(row => ({ ...row, channel: "manual" })), ...automatic].sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0)).slice(0, 20));
   });
 
   // ---------- 2.4.8 W1: WhatsApp Business API bağlantısı ----------
-  const connection = createWhatsappConnection({ store, config, audit, now: clock });
+  // onChange (W2/W9): ortak katmanın kaydı (tünel kuralı, durum bildiriminin şirketi) — lib/whatsapp/hub.mjs.
+  const connection = createWhatsappConnection({ store, config, audit, now: clock, onChange: summary => whatsapp?.registry?.set(companyId, summary) });
   const writable = () => !license || license.writable();
   const view = () => connection.view({ writable: writable() });
   router.get("/api/workspace/whatsapp/connection", async ({ req, res }) => {
@@ -203,6 +195,13 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     await connection.test(user);
     ok(res, view());
   });
+  // 2.4.8 W9: durum bildirimi (web kancası) adresini Meta'ya şimdi kaydet (bakım turu da kendiliğinden kaydeder; bu uç ekrandaki "Yeniden Kaydet" içindir).
+  router.post("/api/workspace/whatsapp/connection/hook", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; durum bildirimi adresi kaydedilemez.", { code: "LICENSE_READ_ONLY" });
+    await connection.registerHook(user, mobileRemote?.publicUrl?.() || "");
+    ok(res, view());
+  });
   router.post("/api/workspace/whatsapp/connection/self-test", async ({ req, res }) => {
     // Bağlantı ekranının denemesi: yalnız yönetici (system.manage yalnız yönetici rolündedir ve yönetici her yetkiye — whatsapp.send dahil — sahiptir).
     // whatsapp.send kişiye verilebilen toplu gönderim yetkisidir (W2/W4). Salt okunur lisansta gönderim başlamaz (plan §4): genel kapı + burada da.
@@ -218,4 +217,85 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
 
   // ---------- 2.4.8 W5: bilgilendirme şablonları (routes/whatsapp-sablon.mjs) ----------
   registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection });
+
+  // ---------- 2.4.8 W2: gönderim çekirdeği ----------
+  if (!whatsapp?.ledger) return { connection, queue: null };
+  const header = createReportHeader({ store });
+  queue = createWaQueue({
+    store,
+    companyId,
+    ledger: whatsapp.ledger,
+    connection,
+    accounts,
+    now: clock,
+    audit,
+    log,
+    license: { status: () => ({ writable: writable() }) },
+    header: () => header.pdf({ brand: store.setting("office.name", "") || "DestekOfis" }),
+    events,
+    kick: () => whatsapp.scheduler?.kick(),
+    fault: config.whatsappFault || null,
+    // W9: durum bildirimi adresinin tabanı = ofisin uzaktan (telefon) adresi (tünel açılınca hazır; lib/tunnel/manager.mjs).
+    hookUrl: () => mobileRemote?.publicUrl?.() || "",
+  });
+  const sendUser = req => auth.requirePermission(req, "whatsapp.send");
+  router.get("/api/workspace/whatsapp/ack", async ({ req, res }) => {
+    sendUser(req);
+    ok(res, queue.ackView());
+  });
+  router.put("/api/workspace/whatsapp/ack", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = await readJson(req, { limit: 4096 });
+    ok(res, queue.setAck(user, body.ack === true));
+  });
+  router.get("/api/workspace/whatsapp/sending-settings", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, queue.settings());
+  });
+  router.put("/api/workspace/whatsapp/sending-settings", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = await readJson(req, { limit: 4096 });
+    ok(res, queue.setSending(user, body));
+  });
+  // Plan §7a 29: başlatma reddi sırası bağlı değil → yetki → lisans → onay → şablon (salt okunur lisansta app.mjs'nin genel yazma kapısı her POST'tan önce 403 verir).
+  router.post("/api/workspace/whatsapp/batches/preview", async ({ req, res }) => {
+    queue.connected();
+    const user = sendUser(req);
+    const body = await readJson(req, { limit: 2_000_000 });
+    ok(res, await queue.preview(user, body));
+  });
+  router.post("/api/workspace/whatsapp/batches", async ({ req, res }) => {
+    queue.connected();
+    const user = sendUser(req);
+    const body = await readJson(req, { limit: 2_000_000 });
+    ok(res, await queue.createBatch(user, body));
+  });
+  router.get("/api/workspace/whatsapp/batches", async ({ req, res, url }) => {
+    sendUser(req);
+    ok(res, queue.list({ limit: Number(url.searchParams.get("limit")) || 50 }));
+  });
+  router.get("/api/workspace/whatsapp/batches/:id", async ({ req, res, params }) => {
+    sendUser(req);
+    ok(res, queue.detail(params.id));
+  });
+  for (const action of ["pause", "resume", "cancel", "retry-failed"]) {
+    router.post(`/api/workspace/whatsapp/batches/:id/${action}`, async ({ req, res, params }) => {
+      const user = sendUser(req);
+      const body = await readJson(req, { limit: 4096 }).catch(() => ({}));
+      if (action === "pause") return ok(res, queue.pause(user, params.id));
+      if (action === "resume") return ok(res, queue.resume(user, params.id));
+      if (action === "cancel") return ok(res, queue.cancel(user, params.id));
+      ok(res, await queue.retryFailed(user, params.id, body || {}));
+    });
+  }
+  router.post("/api/workspace/whatsapp/jobs/:id/send-anyway", async ({ req, res, params }) => {
+    const user = sendUser(req);
+    const body = await readJson(req, { limit: 4096 });
+    ok(res, await queue.sendAnyway(user, params.id, body));
+  });
+  router.get("/api/workspace/whatsapp/stats", async ({ req, res, url }) => {
+    sendUser(req);
+    ok(res, queue.monthStats(url.searchParams.get("month") || ""));
+  });
+  return { connection, queue };
 }

@@ -1,0 +1,32 @@
+{
+  "ad": "248-g5-e2e-senaryo-form-izolasyon-243",
+  "komut": "npm run test:senaryo-form-izolasyon-243",
+  "commit": "87fb5e5f8746bf3c5be530dcf259df3112014ac0",
+  "dal": "is/cekirdek-248",
+  "kirli": 0,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T15:51:25.866Z",
+  "sure_sn": 242.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-e2e-senaryo-form-izolasyon-243.log",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "4c0247f721988ecab2c9b8f6b3615673b589e7e0a21e6f5e2063a7e41954d352",
+  "ham_cikti_bayt": 29414
+}

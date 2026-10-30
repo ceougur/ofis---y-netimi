@@ -45,6 +45,49 @@ export const META_D0 = Object.freeze({
   pageLimit: 100,
   maxPages: 3,
   // D0-8: Şablon ileti dil kodu, şablon listesinin `language` alanındaki değerdir (ör. en_US); ayrıca eşleme yapılmaz.
+  // ---------- 2.4.8 W2/W3/W9 (gönderim çekirdeği) ----------
+  // D0-9: İleti isteğindeki `biz_opaque_callback_data` (en çok 512 karakter varsayımı) durum bildiriminde aynen geri gelir (plan §2.2: alan durum kancası
+  // başvurusunda var, istek tarafı okunmadı). Program buraya İŞ KİMLİĞİNİ koyar; sonucu belirsiz iş, bildirim gelince bununla çözülür.
+  bizOpaqueMax: 512,
+  // D0-10: Gönderim sınırına (24 saatte farklı kişi) takılınca Meta'nın döndüğü hata kodu belgede okunmadı (plan §2.5). Program 131048'i (gönderim
+  // sınırlandı) "sınır" sayar: aynı WABA'nın BÜTÜN işleri 24 saat bekler (plan §7a madde 30). Gerçek kod D0'da okunur, buraya eklenir.
+  limitCodes: Object.freeze([131048]),
+  // Kod sınıfları (plan §6 W2 + §7a madde 12; "Liste META_D0'da gözden geçirilir"). Burada olmayan TANINMAYAN kod → o iş Başarısız (kodlu), toplu iş sürer.
+  //   tempCodes: geçici — iş 30 sn → 2 dk → 15 dk bekler (3 deneme), sonra Başarısız; toplu işte art arda 5 → duraklar.
+  //   pauseCodes: belirteç / yetki / hesap / ödeme / numara / şablon — toplu iş İLK hatada duraklar, hatayı alan iş Başarısız (madde 13).
+  //   jobFailCodes: alıcıya ya da bu iletiye özgü — o iş Başarısız (kodlu), toplu iş sürer (madde 12; 131009 alıcı numarası).
+  tempCodes: Object.freeze([1, 2, 4, 80007, 130429, 131000, 131016, 131057, 133004, 2494100]),
+  pauseCodes: Object.freeze([0, 3, 10, 33, 190, 368, 130497, 131005, 131031, 131037, 131042, 131045, 133010, 132000, 132001, 132005, 132007, 132012, 132015, 132016, 132018]),
+  jobFailCodes: Object.freeze([100, 130403, 131008, 131009, 131021, 131026, 131047, 131050, 131051, 131053, 131063, 131064, 133016, 135000]),
+  // 131056: aynı kişiye kısa sürede çok ileti → o iş 1 dk sonra. 131049: ekosistem sağlığı → "Meta Bekletti (24 Saat Sonra Yeniden)", en çok bir kez (madde 14).
+  pairRateCode: 131056,
+  ecosystemCode: 131049,
+  // D0-11: İleti ömrü (TTL) ileti isteğinde değil ŞABLONDA tanımlanır (message_send_ttl_seconds; şablonları W5 açar). Program kendi "Süresi Doldu"
+  // kararını iç kuralla verir (plan §7a madde 16): durum bildirimi yolu çalışıyorsa (son 7 günde en az bir bildirim geldi) teslim olmayan ileti TTL
+  // (S2 A: 3 gün) + 1 saatte "Süresi Doldu"; bildirim yolu yoksa "Meta Kabul Etti"de kalır.
+  defaultTtlHours: 72,
+  // D0-12: Medya yükleme (POST /<PHONE_NUMBER_ID>/media, multipart: messaging_product, type, file) yanıtı { id }; silme (DELETE /<MEDIA_ID>) { success: true }.
+  // Zaten silinmiş / süresi dolmuş medyanın silinmesi hata kodu 100 (ya da HTTP 404) döner varsayımı → program "silinmiş" sayar.
+  // D0-13: TESLİM EDİLMİŞ iletinin medyasını silmek alıcının telefonundaki belgeyi ETKİLEMEZ (WhatsApp belgeyi teslimde kendi sunucusundan iletir;
+  // Cloud API medya kimliği yalnız işletmenin yüklediği kopyadır). Bu yüzden silme yalnız kesin durumdan (teslim / okundu / başarısız / süresi doldu /
+  // 7 günde durum gelmedi / iptal) sonra yapılır (plan §2.3, S3 A).
+  mediaGoneCodes: Object.freeze([100]),
+  // D0-14: Şablon değişken değerinde satır sonu, sekme ve 4'ten çok ardışık boşluk yasak, tek değer en çok 1024 karakter (plan §2.2 "D0"). Program
+  // değerleri tek satıra indirir, ardışık boşluğu teke düşürür ve kısaltır (ad / firma 60 karakter).
+  paramMax: 60,
+  // D0-15: Durum bildirimlerinin (statuses[]) alanları: id (wamid), status (sent / delivered / read / failed), timestamp (Unix saniye), recipient_id,
+  // errors[] { code, title, message, error_data.details }, pricing { billable, category, pricing_model, type }, biz_opaque_callback_data (webhooks/reference/
+  // messages/status). "read" yalnız "delivered"dan sonra gelir; aynı bildirim birden çok kez ve sırasız gelebilir (plan §3).
+  statusOrder: Object.freeze({ accepted: 1, sent: 2, delivered: 3, read: 4 }),
+  // D0-16: Web kancası imzası "X-Hub-Signature-256: sha256=<gövdenin uygulama gizli anahtarıyla HMAC-SHA256'sı, onaltılık>" (webhooks/overview). Yol 1'de
+  // anahtar müşterinin uygulamasınındır (programda yok); kapıcı yalnız DestekOfis uygulamasının (Yol 2) imzasını denetleyebilir (plan §3 C).
+  // D0-17: Abonelik (POST /<WABA_ID>/subscribed_apps { override_callback_uri, verify_token }) yanıtı { success: true }; adres doğrulaması GET
+  // ?hub.mode=subscribe&hub.verify_token=…&hub.challenge=… ile gelir, yanıt challenge'ın kendisi (düz metin, 200).
+  // D0-18 (W9): Kanca gövdesinin zarfı { object: "whatsapp_business_account", entry: [{ id: <WABA>, changes: [{ field: "messages", value: { messaging_product,
+  // metadata: { display_phone_number, phone_number_id }, statuses[] | messages[] } }] }] } (webhooks/reference/messages); bir istekte birden çok entry/change
+  // olabilir; durum dışı olaylar (gelen ileti, şablon/hesap) aynı uca gelir ve 200 ile kabul edilir. Gövde boyutu için Meta sınırı belgede bulunmadı (programda
+  // ve kapıcıda 3 MB, plan §6 W9). 200 dışı yanıtta Meta 7 güne kadar yeniden dener (plan §3) — D0'da Dev moddaki uygulamayla denenir.
+  hookEnvelope: Object.freeze({ object: "whatsapp_business_account", field: "messages" }),
 });
 
 // ---------- Hata kodları (plan §2.7; Meta support/error-codes) ----------
@@ -161,7 +204,7 @@ export function graphBaseOk(baseUrl) {
 export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalThis.fetch(...args), openToken = () => "", timeoutMs = TIMEOUT_MS } = {}) {
   const base = String(baseUrl || "").replace(/\/+$/, "");
 
-  async function request(method, parts, { query = {}, body = null } = {}) {
+  async function request(method, parts, { query = {}, body = null, form = null } = {}) {
     if (!base) throw new MetaGraphError({ title: "Bu kurulumda WhatsApp Business API'ye bağlanılamaz (Meta adresi tanımlı değil).", reason: "graph-off", kind: "config", retry: "never" });
     if (!graphBaseOk(base)) throw new MetaGraphError({ title: "WhatsApp Business API adresi geçersiz (https olmalı).", reason: "graph-off", kind: "config", retry: "never" });
     for (const part of parts) if (!/^[A-Za-z0-9_]+$/.test(String(part))) throw new MetaGraphError({ title: "Meta isteğinin adresi geçersiz.", reason: "request", kind: "request", retry: "never" });
@@ -172,6 +215,8 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     if (!token) throw new MetaGraphError({ title: "Kayıtlı erişim belirteci açılamadı; Elle Bağla ile belirteci yeniden girin.", reason: "token", kind: "token", retry: "never" });
     const headers = { authorization: `Bearer ${token}`, accept: "application/json" };
     if (body) headers["content-type"] = "application/json";
+    // form (2.4.8 W3, medya yükleme): çok parçalı gövde; içerik türünü (sınır dizgesiyle) fetch koyar.
+    const payload = form || (body ? JSON.stringify(body) : undefined);
     const controller = new AbortController();
     let timer = null;
     const deadline = new Promise((_, reject) => {
@@ -183,7 +228,7 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     let status = 0;
     let raw = "";
     try {
-      const response = await Promise.race([fetchImpl(url.href, { method, headers, body: body ? JSON.stringify(body) : undefined, redirect: "manual", signal: controller.signal }), deadline]);
+      const response = await Promise.race([fetchImpl(url.href, { method, headers, body: payload, redirect: "manual", signal: controller.signal }), deadline]);
       status = response.status;
       if (status >= 300 && status < 400) {
         await response.body?.cancel?.().catch(() => {});
@@ -259,15 +304,56 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     // Şablonlar (template-management: ?fields=name,category,status; dil de istenir).
     templates: wabaId => list([wabaId, "message_templates"], { fields: "name,language,status,category" }),
     // Şablon iletisi (send-messages; numara "+" ve ülke koduyla — "+" yoksa Meta işletmenin ülke kodunu ekler). Yanıt kabuldür, teslim değil.
-    sendTemplate: async (phoneNumberId, { to, name, language, components }) => {
+    // bizOpaque (2.4.8 W2, D0-9): iş kimliği; durum bildiriminde biz_opaque_callback_data olarak geri gelir.
+    sendTemplate: async (phoneNumberId, { to, name, language, components, bizOpaque = "" }) => {
       const template = { name, language: { code: language } };
       if (Array.isArray(components) && components.length) template.components = components;
-      const json = await request("POST", [phoneNumberId, "messages"], { body: { messaging_product: "whatsapp", recipient_type: "individual", to, type: "template", template } });
+      const message = { messaging_product: "whatsapp", recipient_type: "individual", to, type: "template", template };
+      if (bizOpaque) message.biz_opaque_callback_data = String(bizOpaque).slice(0, META_D0.bizOpaqueMax);
+      const json = await request("POST", [phoneNumberId, "messages"], { body: message });
       const id = String(json.messages?.[0]?.id || "");
       if (!id) throw new MetaGraphError({ title: "Meta yanıtında ileti kimliği yok; iletinin gidip gitmediği bilinmiyor.", httpStatus: 200, reason: "body", kind: "network", retry: "unknown" });
       return { wamid: id, waId: String(json.contacts?.[0]?.wa_id || ""), pacing: String(json.messages?.[0]?.message_status || "") };
     },
+    // ---------- 2.4.8 W3: medya (ekstre PDF'i; plan §2.3, D0-12/13) ----------
+    // PDF bellekten yüklenir (diske yazılmaz); dönen medya kimliği 30 gün geçerli.
+    uploadMedia: async (phoneNumberId, { data, filename, mime = "application/pdf" }) => {
+      const form = new FormData();
+      form.append("messaging_product", "whatsapp");
+      form.append("type", mime);
+      form.append("file", new Blob([data], { type: mime }), filename || "belge.pdf");
+      const json = await request("POST", [phoneNumberId, "media"], { form });
+      const id = String(json.id || "");
+      if (!/^[A-Za-z0-9_]+$/.test(id)) throw new MetaGraphError({ title: "Meta medya yükleme yanıtında dosya kimliği yok.", httpStatus: 200, reason: "body", kind: "network", retry: "unknown" });
+      return id;
+    },
+    // Kesin durumdan sonra (S3 A). Zaten silinmiş medya (D0-12) başarı sayılır: { deleted: true, gone }.
+    deleteMedia: async mediaId => {
+      try {
+        await request("DELETE", [mediaId]);
+        return { deleted: true, gone: false };
+      } catch (error) {
+        if (error instanceof MetaGraphError && (META_D0.mediaGoneCodes.includes(error.code) || (error.code == null && error.httpStatus === 404))) return { deleted: true, gone: true };
+        throw error;
+      }
+    },
+    // ---------- 2.4.8 W9: durum bildirimi aboneliği (plan §3 C, D0-17) ----------
+    subscribeApp: async (wabaId, { callbackUri, verifyToken }) => {
+      const json = await request("POST", [wabaId, "subscribed_apps"], { body: { override_callback_uri: callbackUri, verify_token: verifyToken } });
+      return json.success === true || json.success === "true";
+    },
   };
+}
+
+/**
+ * İsteğin Meta'ya HİÇ ULAŞMADIĞI kesin mi (2.4.8 W2: yeniden göndermek çift ileti üretmez)? Adres yok / belirteç açılamadı / yapılandırma hatası ya da
+ * bağlantı kurulmadan düşen ağ hatası (ad çözülemedi, bağlantı reddedildi, ağa ulaşılamadı). Zaman aşımı, bağlantı kopması, gövdesiz 5xx: BELİRSİZ.
+ */
+export function neverReachedMeta(error) {
+  if (!(error instanceof MetaGraphError)) return false;
+  if (["graph-off", "token", "request"].includes(error.reason)) return true;
+  if (error.reason !== "network") return false;
+  return /\b(ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ENETUNREACH|EHOSTUNREACH|ERR_INVALID_URL|UND_ERR_CONNECT_TIMEOUT|CERT_|ERR_TLS_CERT|UNABLE_TO_VERIFY|SELF_SIGNED|DEPTH_ZERO)/.test(String(error.details || ""));
 }
 
 /** Sınır basamağını ekranda okunur hâle getirir (D0-4): { limit: sayı | null (sınırsız: Infinity), label }. */

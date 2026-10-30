@@ -59,11 +59,14 @@
     state.wa = win || null;
     return Boolean(win) || !("open" in window) || true;
   };
-  const statementPdf = person => `/api/workspace/accounts/${encodeURIComponent(person.id)}/ekstre.pdf`;
-  const downloadPdf = person => {
+  // 2.4.8 W3 (plan §6 W3, S5): PDF pencerede seçilen DÖNEMLE (metindeki dönem ve bakiyeyle aynı; sunucunun hazırlık yanıtındaki range). Önceden bütün
+  // hareketleri basıyordu. Dosya adı sunucunun dönemli ekstre adıyla aynı düzende ("Ekstre <Ad> <dönem>.pdf").
+  const pdfDay = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
+  const statementPdf = (person, range = {}, extra = "") => `/api/workspace/accounts/${encodeURIComponent(person.id)}/ekstre.pdf?${new URLSearchParams({ donem: "1", from: range.from || "", to: range.to || "" })}${extra}`;
+  const downloadPdf = (person, range = {}) => {
     const a = document.createElement("a");
-    a.href = `${statementPdf(person)}?download=1`;
-    a.download = `Cari-ekstre ${person.name}.pdf`;
+    a.href = statementPdf(person, range, "&download=1");
+    a.download = `Ekstre ${person.name} ${range.from ? pdfDay(range.from) : "baslangic"}-${range.to ? pdfDay(range.to) : "bugun"}.pdf`;
     a.rel = "noopener";
     document.body.appendChild(a);
     a.click();
@@ -152,7 +155,7 @@
           <button type="button" class="hof-button hof-button-ghost" data-prev ${state.at ? "" : "disabled"}>← Önceki</button>
           <button type="button" class="hof-button hof-button-ghost" data-skip>Atla</button>
           <button type="button" class="hof-button hof-button-ghost" data-copy>Metni Kopyala</button>
-          ${kind === "statement" ? HOF.outputButton({ kind: "pdf", href: statementPdf(person), label: "Cari Ekstre - PDF", tip: "Bu kişinin cari ekstresi PDF olarak açılır", attrs: 'target="_blank" rel="noopener"' }) : ""}
+          ${kind === "statement" ? HOF.outputButton({ kind: "pdf", href: statementPdf(person, state.data.range), label: "Cari Ekstre - PDF", tip: "Bu kişinin seçilen dönemdeki cari ekstresi PDF olarak açılır", attrs: 'target="_blank" rel="noopener"' }) : ""}
           <button type="button" class="hof-button hof-whatsapp" data-send>${state.armed && state.auto ? "Şimdi Aç" : "WhatsApp'ta Aç ve Sıradakine Geç"}</button>
         </div>
         <div class="hof-wa-auto">
@@ -168,7 +171,7 @@
       const current = root.querySelector("[data-current]");
       if (current) person.text = current.value;
       openChat(state, person);
-      if (kind === "statement" && state.pdf) downloadPdf(person);
+      if (kind === "statement" && state.pdf) downloadPdf(person, state.data.range);
       log(person, "sent", person.text);
       state.sent += 1;
       state.at += 1;

@@ -1,0 +1,32 @@
+{
+  "ad": "248-g5-birlesik-tam-npm-test",
+  "komut": "npm test",
+  "commit": "9ba71958078289c31165b68ed198eb3893e9de27",
+  "dal": "is/cekirdek-248",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T16:39:03.251Z",
+  "sure_sn": 2170,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4036,
+    "gecen": 4036,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-birlesik-tam-npm-test.log.gz",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "4363ba0855985eca0e3b1094986d63b7d9ce51cc36b3bce43371a41475b8171e",
+  "ham_cikti_bayt": 1467971
+}

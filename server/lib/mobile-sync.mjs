@@ -345,9 +345,23 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     });
   }
 
+  // 2.4.8 W9: WhatsApp durum bildirimi (kapıcının cihazsız geçirdiği /wa/kanca/ yolu; lib/whatsapp/hook.mjs). İşaretin cihaz bölümü "wa1" (kapıcı Meta imzasını
+  // DestekOfis uygulama sırrıyla doğruladı) ya da "wa0" (imzasız). Kapıcı açıkken işaretsiz / yanlış işaretli istek (tüneli atlatan) reddedilir; kapıcı adresi
+  // tanımlı değilse (tünel de yok, uzak dinleyici yalnız 127.0.0.1) istek imzasız sayılır. Başlık her durumda silinir.
+  function kancaIsareti(req) {
+    const header = req.headers["x-do-kapi"];
+    delete req.headers["x-do-kapi"];
+    if (!enabled) return { ok: true, signed: false };
+    if (!ofis) return { ok: false };
+    const checked = isaretDogrula(header, { yontem: req.method === "HEAD" ? "GET" : req.method, yolSorgu: String(req.url || "/"), sir: ofis.sir, simdi: kapiSaati() });
+    if (!checked.ok || (checked.cihaz !== "wa0" && checked.cihaz !== "wa1")) return { ok: false };
+    return { ok: true, signed: checked.cihaz === "wa1" };
+  }
+
   return {
     enabled: () => enabled,
     izle,
+    kancaIsareti,
     hazirla,
     ofis: async () => {
       await hazirla();

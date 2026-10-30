@@ -1,0 +1,32 @@
+{
+  "ad": "248-g5-birlesik-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-w1-baglanti.test.mjs test/whatsapp-w2-cekirdek-248.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-w2-surec-olumu-248.test.mjs test/whatsapp-w3-ekstre-248.test.mjs test/whatsapp-w5-sablon.test.mjs test/whatsapp-w6-aydinlatma.test.mjs test/whatsapp-w9-kanca-248.test.mjs test/whatsapp-213.test.mjs test/whatsapp-meta-graph.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/kapi-247.test.mjs test/tunel-durum-248.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/bagimsiz/whatsapp-248/sahte-meta/sunucu.test.mjs",
+  "commit": "32635f3e2009e108c40bd6ae8770df5a490bab8f",
+  "dal": "is/cekirdek-248",
+  "kirli": 90,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T16:37:36.445Z",
+  "sure_sn": 68.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 224,
+    "gecen": 224,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-birlesik-birim.log",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "57f5748034a0fc3771b02322ec14d4eab6dcf640e02a21c3aabd1ea89f6dcf30",
+  "ham_cikti_bayt": 81927
+}

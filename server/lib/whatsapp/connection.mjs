@@ -8,6 +8,7 @@
 // açılınca belirteç yeniden girilir). Belirteç istemciye (yalnız "Kayıtlı" işareti; son karakterleri de dönmez), günlüğe, işlem geçmişine
 // (audit), hata iletisine, yedeğe ve dışa aktarmaya ÇIKMAZ; açık hâli yalnız lib/whatsapp/meta-graph.mjs isteğinin içinde yaşar.
 // Kimlikler gizli değildir (Meta panelinde görünürler); ekranda gösterilir.
+import { createHash, randomBytes } from "node:crypto";
 import { HttpError } from "../http.mjs";
 import { createSecretBox } from "../secret-box.mjs";
 import { META_D0, MetaGraphError, createMetaGraph, qualityLabel, tierInfo } from "./meta-graph.mjs";
@@ -41,10 +42,23 @@ const idOf = (value, label, field, { required = true } = {}) => {
 const last4 = e164 => String(e164 || "").replace(/\D/g, "").slice(-4);
 
 /**
- * createWhatsappConnection({ store, config, audit, now }) — bu şirketin bağlantısı.
+ * createWhatsappConnection({ store, config, audit, now, onChange }) — bu şirketin bağlantısı.
  * config: dataDir (secret.key), whatsappGraphUrl (boşsa dış istek YOK), fetchImpl (vekil sunucu ayarı), whatsappTimeoutMs (yalnız testler).
+ * onChange(summary) (2.4.8 W2/W9): bağlantı kaydedilince / kaldırılınca / durum bildirimi adresi kaydedilince — ortak katmandaki kayıt (tünelin açık olma
+ * kuralı, web kancasının şirketi) güncellenir. summary gizli değer taşımaz (yalnız kanca yolunun ve doğrulama belirtecinin SHA-256 karması).
  */
-export function createWhatsappConnection({ store, config = {}, audit = () => {}, now = () => new Date() }) {
+export const HOOK_PATH = /^[A-Za-z0-9_-]{43}$/;
+// Kanca kaydı düştüyse / yarım kaldıysa bakım turunun yeniden denemesi (Meta'ya saatte en çok bir abonelik isteği).
+export const HOOK_RETRY_MS = 3_600_000;
+/** Ayar satırından (whatsapp.meta, JSON) ortak katmanın özeti — açık olmayan şirketin dosyası salt okunur okunurken de (lib/whatsapp/hub.mjs). */
+export function summaryOf(value) {
+  const raw = parse(value);
+  if (!raw || !raw.phoneNumberId || !raw.wabaId) return { configured: false };
+  const hook = raw.hook && typeof raw.hook === "object" && raw.hook.pathHash ? { pathHash: String(raw.hook.pathHash), verifyHash: String(raw.hook.verifyHash || ""), state: String(raw.hook.state || "") } : null;
+  return { configured: typeof raw.tokenSealed === "string" && raw.tokenSealed !== "", mode: raw.mode === "embedded" ? "embedded" : "manual", wabaId: String(raw.wabaId), phoneNumberId: String(raw.phoneNumberId), hook };
+}
+export const sha256 = value => createHash("sha256").update(String(value)).digest("hex");
+export function createWhatsappConnection({ store, config = {}, audit = () => {}, now = () => new Date(), onChange = () => {} }) {
   let box = null;
   const secrets = () => (box ||= createSecretBox(config.dataDir || "."));
   const iso = () => now().toISOString();
@@ -64,6 +78,8 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       savedByName: raw.savedByName || "",
       lastTest: raw.lastTest && typeof raw.lastTest === "object" ? raw.lastTest : null,
       lastSelfTest: raw.lastSelfTest && typeof raw.lastSelfTest === "object" ? raw.lastSelfTest : null,
+      // 2.4.8 W9: durum bildirimi (web kancası) adresi — gizli yol ve doğrulama belirteci mühürlü + karması (karşılaştırma karmayla).
+      hook: raw.hook && typeof raw.hook === "object" && raw.hook.pathHash ? raw.hook : null,
     };
   }
   const write = (record, userId = null) => store.setSetting(SETTING_KEY, JSON.stringify(record), userId);
@@ -88,7 +104,18 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       savedByName: record.savedByName,
       lastTest: record.lastTest,
       lastSelfTest: record.lastSelfTest,
+      // 2.4.8 W9: durum bildirimi kaydı (gizli yol ve belirteç YOK; yalnız durum).
+      ...(record.hook ? { hook: { state: record.hook.state, registeredAt: record.hook.registeredAt || null, error: record.hook.error || "" } } : {}),
     };
+  }
+  // Ortak katmanın kaydı (tünel kuralı, web kancasının şirketi): gizli değer YOK.
+  const summary = () => summaryOf(store.setting(SETTING_KEY, ""));
+  const announce = () => {
+    try {
+      onChange(summary());
+    } catch {
+      // ortak kayıt güncellenemese de bağlantı yazıldı; ortak katman açılışta yeniden tarar
+    }
   }
 
   function save(user, input = {}) {
@@ -119,10 +146,13 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       // Bağlantı değişince eski sınama sonucu geçersizdir (e-Belge Entegratör Ayarları düzeni).
       lastTest: changed ? null : previous.lastTest,
       lastSelfTest: changed ? null : previous.lastSelfTest,
+      // 2.4.8 W9: aynı numara + hesapta durum bildirimi aboneliği geçerli kalır (belirteç değişse de); kimlik değişince yeniden kaydedilir.
+      hook: previous && previous.phoneNumberId === phoneNumberId && previous.wabaId === wabaId ? previous.hook : null,
     };
     write(record, user.id);
     // İşlem geçmişine belirteç YAZILMAZ; yalnız değişip değişmediği.
     audit(user, "whatsapp.connection.saved", "whatsapp", { mode: "manual", phoneNumberId, wabaId, appId, tokenChanged, first: !previous });
+    announce();
     return view();
   }
 
@@ -131,6 +161,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     if (!previous) return view();
     store.run("DELETE FROM settings WHERE key = ?", SETTING_KEY);
     audit(user, "whatsapp.connection.removed", "whatsapp", { phoneNumberId: previous.phoneNumberId, wabaId: previous.wabaId });
+    announce();
     return view();
   }
 
@@ -264,6 +295,74 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     }
   }
 
+  // ---------- 2.4.8 W2: gönderim çekirdeğinin Meta istemcisi (belirteç yine yalnız meta-graph.mjs isteğinde açılır) ----------
+  function client() {
+    const record = required();
+    return { record, graph: graphFor(record) };
+  }
+
+  // ---------- 2.4.8 W9: durum bildirimi (web kancası) adresinin Meta'ya kaydı (plan §3 C) ----------
+  // Adres: <ofisin telefon adresi>/wa/kanca/<32 baytlık gizli yol> (kapıcı yalnız bu yolu cihazsız ofisin tüneline geçirir; saklamaz). Doğrulama belirteci
+  // (verify_token) Meta'nın GET doğrulamasında karşılaştırılır. İkisi de mühürlü saklanır, karşılaştırma SHA-256 karmasıyla. Kayıt önce "Bekliyor" yazılır
+  // (Meta abonelik sırasında adresi doğrulayabilir), Meta kabul edince "Kayıtlı".
+  const hookBase = publicUrl => String(publicUrl || "").replace(/\/+$/, "");
+  const usableBase = base => /^https:\/\/[^\s/?#]+$/i.test(base) || /^http:\/\/[^\s/?#]+\.(test|localhost)(:\d+)?$/i.test(base);
+  async function registerHook(user, publicUrl) {
+    const record = required();
+    const base = hookBase(publicUrl);
+    if (!usableBase(base)) fail(409, "Ofisin uzaktan bağlantı adresi henüz hazır değil; Yönetim → Mobil Cihazlar'da uzaktan bağlantı açılınca yeniden deneyin.", "whatsapp-hook-url");
+    const graph = graphFor(record);
+    const secret = randomBytes(32).toString("base64url");
+    const verify = randomBytes(32).toString("base64url");
+    const hook = { state: "pending", base, pathHash: sha256(secret), pathSealed: secrets().seal(secret), verifyHash: sha256(verify), verifySealed: secrets().seal(verify), requestedAt: iso(), registeredAt: null, error: "" };
+    write({ v: 1, ...record, hook });
+    announce();
+    try {
+      await graph.subscribeApp(record.wabaId, { callbackUri: `${base}/wa/kanca/${secret}`, verifyToken: verify });
+    } catch (error) {
+      if (!(error instanceof MetaGraphError)) throw error;
+      const current = read();
+      if (current?.hook?.pathHash === hook.pathHash) write({ v: 1, ...current, hook: { ...hook, state: "failed", error: error.message } });
+      announce();
+      audit(user, "whatsapp.hook.failed", "whatsapp", { code: error.code, reason: error.reason });
+      throw metaFailure(error);
+    }
+    const current = read();
+    if (current?.hook?.pathHash === hook.pathHash) write({ v: 1, ...current, hook: { ...hook, state: "active", registeredAt: iso() } });
+    announce();
+    audit(user, "whatsapp.hook.registered", "whatsapp", { wabaId: record.wabaId });
+    return view();
+  }
+  /**
+   * Bakım turunda (lib/whatsapp/queue.mjs maintain; plan §3 C "program adresi kendisi kaydeder"): belirteçli bağlantı + ofisin uzaktan adresi hazır + kanca kaydı
+   * yok / başka adrese (ofis adresi değişti) / düşmüş ya da yarım kalmış (en çok saatte bir yeniden) → Meta'ya kaydedilir. Dönüş: ne yapıldığı (günlük ve test için).
+   */
+  async function ensureHook(publicUrl) {
+    const record = read();
+    if (!record?.tokenSealed || !config.whatsappGraphUrl) return { skipped: "no-connection" };
+    const base = hookBase(publicUrl);
+    if (!usableBase(base)) return { skipped: "no-url" };
+    const hook = record.hook;
+    if (hook && hook.base === base && hook.state === "active") return { skipped: "active" };
+    const last = Date.parse(hook?.requestedAt || "");
+    if (hook && hook.base === base && Number.isFinite(last) && now().getTime() - last < HOOK_RETRY_MS && now().getTime() >= last) return { skipped: "recent" };
+    try {
+      await registerHook(null, base);
+      return { registered: true };
+    } catch (error) {
+      return { failed: error.message };
+    }
+  }
+  /** Gelen web kancası isteğinin gizli yolu / doğrulama belirteci bu şirketin mi (SHA-256 karmasıyla karşılaştırılır; gizli değer saklanmaz). */
+  function hookMatches(secret) {
+    const record = read();
+    return Boolean(record?.hook && HOOK_PATH.test(String(secret || "")) && record.hook.pathHash === sha256(secret));
+  }
+  function verifyMatches(token) {
+    const record = read();
+    return Boolean(record?.hook && token && record.hook.verifyHash === sha256(token));
+  }
+
   // 2.4.8 W5: başka WhatsApp modüllerinin (şablonlar; meta-graph createMetaTemplates) Meta seçenekleri — graphFor ile AYNI denetimler; belirteç yalnız
   // istek anında openToken içinde açılır (mühürlü belirtece yalnız bu modül dokunur).
   function metaOptions(record) {
@@ -271,5 +370,5 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     return { baseUrl: config.whatsappGraphUrl, fetchImpl: config.fetchImpl, openToken: () => secrets().open(record.tokenSealed), timeoutMs: Number(config.whatsappTimeoutMs) > 0 ? Number(config.whatsappTimeoutMs) : undefined };
   }
 
-  return { read, view, save, remove, test, selfTest, metaOptions };
+  return { read, view, save, remove, test, selfTest, client, summary, registerHook, ensureHook, hookMatches, verifyMatches, metaOptions };
 }

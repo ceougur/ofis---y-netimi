@@ -1,0 +1,26 @@
+M0 bozulmamış kopya: YEŞİL (# tests 29 · # pass 29 · # fail 0)
+W2-M1 çift gönderim kilidi: defter önceki kabul/belirsiz denemeyi görmez: YAKALANDI (# tests 29 · # pass 28 · # fail 1) not ok 8 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+W2-M2 açılışta 'Gönderiliyor' işi belirsiz yerine Bekliyor'a döner (yeniden gönderir): YAKALANDI (# tests 2 · # pass 1 · # fail 1) not ok 1 - 2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL)
+W2-M3 sınır sayacı: pencere sayımı kullanılmaz (sınır hiç dolmaz): YAKALANDI () not ok 5 - 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30) | not ok 7 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26) | not ok 8 - 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+W2-M4 sınır sayacı gün başında sıfırlanır (kayan 24 saat yerine takvim günü): YAKALANDI (# tests 27 · # pass 26 · # fail 1) not ok 5 - 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+W2-M5 pencerede sayılmış alıcı da yeni hak harcar (§7a 4): YAKALANDI (# tests 15 · # pass 13 · # fail 2) not ok 5 - 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+W2-M6 WhatsApp Mesajı İstemiyor atlanmaz: YAKALANDI (# tests 27 · # pass 25 · # fail 2) not ok 2 - 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi | not ok 6 - 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+W2-M7 onay kutusu sunucuda denetlenmez: YAKALANDI (# tests 15 · # pass 14 · # fail 1) not ok 1 - 2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 29, 31)
+W2-M8 'Zaten Kuyrukta' kuralı yok (iki sekme iki ileti): YAKALANDI (# tests 15 · # pass 14 · # fail 1) not ok 3 - 2.4.8 W2 — çift gönderim yok (§7a 9, 10)
+W2-M9 aynı istek kimliği yeni toplu iş açar (çift tık): YAKALANDI (# tests 15 · # pass 14 · # fail 1) not ok 3 - 2.4.8 W2 — çift gönderim yok (§7a 9, 10)
+W2-M10 yanıtsız istek belirsiz değil Bekliyor (yeniden gönderilir): YAKALANDI (# tests 15 · # pass 13 · # fail 2) not ok 3 - 2.4.8 W2 — çift gönderim yok (§7a 9, 10) | not ok 4 - 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+W2-M11 belirteç hatasında toplu iş durmaz (herkese istek gider): YAKALANDI (# tests 15 · # pass 14 · # fail 1) not ok 4 - 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+W2-M12 geri yüklemede toplu işler defterde durdurulmaz: YAKALANDI (# tests 12 · # pass 11 · # fail 1) not ok 2 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+W2-M19 001'in açılışta uygulanan geri yüklemesi toplu işleri defterde durdurmaz: YAKALANDI (# tests 12 · # pass 11 · # fail 1) not ok 2 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+W2-M13 taşınan veride (defter yok) eski işler yürür: YAKALANDI (# tests 12 · # pass 11 · # fail 1) not ok 2 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+W2-M14 salt okunur lisansta işçi durmaz: YAKALANDI (# tests 12 · # pass 11 · # fail 1) not ok 2 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+W2-M15 Meta sınır hatası yalnız o işi bekletir (WABA'nın bütün işleri değil): YAKALANDI (# tests 15 · # pass 14 · # fail 1) not ok 5 - 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+W2-M16 'Bu Ay' teslim yerine kabul sayar: YAKALANDI (# tests 12 · # pass 11 · # fail 1) not ok 3 - 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+W2-M17 gönderim anında okunmaz: kuyruktaki eski telefon kullanılır: YAKALANDI (# tests 12 · # pass 11 · # fail 1) not ok 1 - 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+W2-M18 sabit hat elenir (K1: elenmemeli): YAKALANDI (# tests 15 · # pass 14 · # fail 1) not ok 2 - 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi
+W2-M20 R1: Meta'ya ulaşılamıyorken iş eski kuralla denenip Başarısız / toplu iş duraklar: YAKALANDI (# tests 15 · # pass 14 · # fail 1) not ok 4 - 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+W2-M21 R2: şablon her 100 iletide yeniden okunmaz: YAKALANDI (# tests 15 · # pass 14 · # fail 1) not ok 4 - 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+W2-M22 R2: şablon 10 dakika yerine saatte bir okunur: YAKALANDI (# tests 15 · # pass 14 · # fail 1) not ok 4 - 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+W2-M23 R3: daha önce gönderilen cari açık bayrak olmadan elenmez: YAKALANDI (# tests 27 · # pass 24 · # fail 3) not ok 2 - 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi | not ok 3 - 2.4.8 W2 — çift gönderim yok (§7a 9, 10) | not ok 7 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+W2-M24 R3: hatırlatmanın dönemi gün değil (ertesi gün de 'Daha Önce Gönderildi'): YAKALANDI (# tests 15 · # pass 14 · # fail 1) not ok 2 - 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi
+25 geçti, 0 kaldı
