@@ -239,7 +239,7 @@
 <h2>9. Cari</h2>
 <p>Sol menüden <b>Cari</b>. Kiminle para alışverişi yapıyorsanız (müşteri, öğrenci, veli, site sakini, tedarikçi) onun hesap kartı.</p>
 <ol class="steps">
-  <li><b>Carileri toplu açın:</b> <b>Excel / Sheets’ten Yükle</b> (binlerce kişi tek seferde). Yüklemeden önce hangi satırın hazır, hangisinde sorun olduğu gösterilir. Aynı kişi ikinci kez açılmaz; Excel'deki ek kolonlar (Veli, Okul, Plaka…) kartta aynı adla görünür. Tür kolonunda "Müşteri/Tedarikçi" gibi iki türü birden yazan ya da tanınmayan değer varsa <b>Tür Değerleri</b> tablosunda sarı görünür; türünü oradan seçin (açılış bakiyesinin yönü türe göre yazılır).</li>
+  <li><b>Carileri toplu açın:</b> <b>Excel / Sheets’ten Yükle</b> (binlerce kişi tek seferde). Yüklemeden önce hangi satırın hazır, hangisinde sorun olduğu gösterilir. Aynı kişi ikinci kez açılmaz; Excel'deki ek kolonlar (Veli, Okul, Plaka…) kartta aynı adla görünür. Tür kolonunda "Müşteri/Tedarikçi" gibi iki türü birden yazan ya da tanınmayan değer varsa <b>Tür Değerleri</b> tablosunda sarı görünür; türünü oradan seçin (açılış bakiyesinin yönü türe göre yazılır). Yükleme sırasında bağlantı koparsa pencereyi kapatmadan <b>Carileri Oluştur</b>'a yeniden basın; ikinci kez yazılmaz (stok, taksit ve çek / senet yüklemesinde de aynı).</li>
   <li><b>Tek cari:</b> <b>+ Yeni Cari</b>. <b>Tablodaki Kayıt</b> alanı cariyi tablodaki kişiye bağlar; aynı adlı iki kişi varsa program tahmin etmez, listeden siz seçersiniz.</li>
   <li><b>Hareket girin:</b> kartta <b>+ Tahsilat</b> (nakit Kasa'ya, havale / EFT banka hesabına girer; makbuzu alınır), <b>Borç Yaz</b>, <b>Alacak Yaz</b>, <b>− Ödeme</b> (nakit Kasa'dan, havale / EFT banka hesabından çıkar; <b>Kredi Kartı</b> şirket kartınızın borcuna yazılır). Açık taksit kartı varsa tahsilatı taksite mi yazacağınız sorulur: taksit ödemesiyse <b>Taksite Yaz</b>; <b>Taksit Dışı Tahsilat</b> taksiti ve taksitli faturayı kapatmaz, carinin hesabına yazılır. <b>Satış Faturası</b> ve <b>Alış Faturası</b> pilleri bu cariye fatura keser (bkz. Fatura).</li>
 </ol>
@@ -265,13 +265,21 @@
   <li><b>Nerede görünür:</b> kartta Şüpheli Alacak bilgisi (alınan, karşılık, tahsil edilen, değersiz, kalan); ANLIK DURUM alacak toplamında ve Vade Takip'te ayrı satır; <b>Raporlar → Tüm Raporlar → Şüpheli Alacaklar</b> (Durum: Açık / Kapanan / Tümü, Neden); Alacak Yaşlandırma'da <b>Vade Gecikme (Gün)</b> (en eski açık kalemin gecikmesi) ve <b>Şüpheli Alacak (dilimlere dahil)</b> kolonları; Hesap Planı Mizanı'nda 128 / 129. Bu işlemler <b>Şüpheli Alacak İşlemleri</b> yetkisi ister (yönetici ve muhasebe); silinen kayıt <b>Yönetim → Silinenler</b>'den geri yüklenir.</li>
 </ol>
 <h3>WhatsApp ile Ekstre ve Mesaj</h3>
+<p>İki yol vardır: <b>Otomatik Gönder</b> (Yönetim → WhatsApp'ta bağlantı kuruluysa; ekstre PDF'i ve mesaj kendiliğinden gider, bkz. 17. bölüm) ve <b>WhatsApp Web ile Gönder</b> (kendi WhatsApp'ınızla tek tek). Bağlantı kuruluysa gönderim penceresinin üstünde iki sekme olarak çıkar; bağlantı yoksa pencere doğrudan WhatsApp Web ile açılır.</p>
 <ol class="steps">
   <li><b>Tek cari:</b> kartta <b>WhatsApp</b> → <b>Ekstre Gönder</b>, <b>Mesaj Gönder</b> ya da <b>Sohbeti Aç</b>. Altta son gönderimler görünür.</li>
   <li><b>Toplu:</b> listede soldaki kutularla carileri seçin → <b>WhatsApp Ekstre</b> ya da <b>WhatsApp Mesaj</b>. Hiç seçmezseniz <b>Tümüne WhatsApp …</b> süzgeçteki bütün carilere gönderir (önce grup ya da <i>Borçlular</i> seçin). Başlıktaki kutu süzgeçteki herkesi seçer; sonra birkaç kişinin işaretini kaldırırsanız o kişiler gönderime girmez (<i>997 cari seçildi, 3 hariç</i>).</li>
   <li><b>Hazırlık:</b> telefonu olmayan ya da sabit hat olan cariler ayrı gösterilir. Ekstrede dönemi seçin; mesajda hazır şablonu seçin ya da kendiniz yazın. <b>{Ad}</b>, <b>{Bakiye}</b>, <b>{Sıradaki Taksit}</b> gibi değişkenler her kişide kendi bilgisiyle dolar; sağda ön izleme vardır. <b>Yalnız Borçlu Carilere Gönder</b> ile alacaklıları çıkarın.</li>
-  <li><b>Gönderim:</b> <b>Gönderime Başla</b> → her kişi için mesaj hazır gelir; <b>WhatsApp'ta Aç ve Sıradakine Geç</b> deyin, açılan WhatsApp'ta <b>Gönder</b>'e basın. <b>Otomatik Sıra</b> açıkken WhatsApp'tan programa dönmeniz yeter: sıradaki kişinin sohbeti kendiliğinden açılır (beklemeden açmak için <b>Şimdi Aç</b>). Ekstre gönderiminde <b>Ekstre PDF'ini kendiliğinden indir</b> açıksa her kişinin ekstresi kişinin adıyla iner; dosyayı sohbete sürükleyin. Mesajı o kişiye özel düzeltebilir, <b>Atla</b>yabilirsiniz. Gönderilenler cari kartına yazılır.</li>
+  <li><b>Otomatik Gönder:</b> <b>Ekstre Dönemi</b>'ni seçin; elenen kişiler nedenleriyle görünür. Bu dönem daha önce gönderilmiş kişiler varsa program sorar: <b>Bunları Çıkar</b> (seçili gelir) ya da <b>Yine de Gönder</b>. Onay kutusu bir kez işaretlenmemişse gönderim başlamaz (17. bölüm). <b>Gönder (… Kişi)</b>'ye basın; iletiler sırayla kendiliğinden gider, durumu <b>Gönderimler</b>'den izlersiniz (<i>Teslim Edildi</i>, <i>Başarısız</i>).</li>
+  <li><b>Bağlantı Bekleniyor:</b> internet ya da program kapalıyken iletiler başarısız sayılmaz; bağlantı gelince kendiliğinden sürer. <i>Sonucu Belirsiz</i> yazan ileti kendiliğinden yeniden gönderilmez; satırdaki <b>Yine de Gönder</b> ile gönderirsiniz (kişiye iki kez gidebilir).</li>
+  <li><b>Günlük sınır:</b> Meta 24 saatte en çok 250 farklı kişiye izin verir (Meta'da işletme doğrulamasından sonra 2.000). Fazlası <i>Ertesi Güne Kalacak</i> diye gösterilir ve süre dolunca kendiliğinden gider.</li>
+  <li><b>WhatsApp Web ile Gönder:</b> <b>Gönderime Başla</b> → her kişi için mesaj hazır gelir; <b>WhatsApp'ta Aç ve Sıradakine Geç</b> deyin, açılan WhatsApp'ta <b>Gönder</b>'e basın. <b>Otomatik Sıra</b> açıkken WhatsApp'tan programa dönmeniz yeter: sıradaki kişinin sohbeti kendiliğinden açılır (beklemeden açmak için <b>Şimdi Aç</b>). Ekstre gönderiminde <b>Ekstre PDF'ini kendiliğinden indir</b> açıksa her kişinin ekstresi kişinin adıyla iner; dosyayı sohbete sürükleyin. Mesajı o kişiye özel düzeltebilir, <b>Atla</b>yabilirsiniz. Gönderilenler cari kartına yazılır.</li>
 </ol>
-<p>Mesajları sizin WhatsApp'ınız (bilgisayardaki WhatsApp ya da WhatsApp Web) gönderir; ücretli bir hizmet gerekmez.</p>
+<ul>
+  <li><b>Ücret:</b> <b>WhatsApp Web ile Gönder</b>'de mesajları sizin WhatsApp'ınız gönderir; ücret yoktur. <b>Otomatik Gönder</b>'in ücretini Meta, Meta hesabınıza tanımladığınız karttan, yalnız teslim edilen ileti başına çeker (Türkiye'de bilgilendirme iletisi bugün 0,0009 USD; güncel tutar için Meta'nın tarifesine bakın).</li>
+  <li><b>WhatsApp Mesajı İstemiyor:</b> mesaj almak istemeyen carinin kartında bu kutuyu işaretleyin; o cariye WhatsApp ile ekstre ve ödeme hatırlatması gönderilmez.</li>
+  <li><b>Yalnız bilgilendirme:</b> otomatik yolla yalnız ekstre ve ödeme hatırlatması gider; kampanya ve serbest metin gönderilmez.</li>
+</ul>
 
 <h2>10. Taksitler</h2>
 <p>Sol menüden <b>Taksitler</b>. Kişilerin taksitli borçlarını takip eder. Kartlar <b>Grup › Alt Grup</b> ile düzenlenir (servis plakası › güzergâh, site › blok, okul › sınıf). Grup listesi her grubun kaç kartı ve kaç carisi olduğunu gösterir: <i>34 SRV 202 · 0 kart · 3 cari</i>.</p>
@@ -416,12 +424,28 @@
 <figure><img src="ekran/k20-kurtarma-karti.jpg" alt="Kurtarma anahtarı kartı"><figcaption>Yönetim → Kullanıcılar: kurtarma anahtarını oluşturun ve yazdırın.</figcaption></figure>
 <figure><img src="ekran/k18-parolami-unuttum.jpg" alt="Giriş ekranı: Parolamı Unuttum"><figcaption>Parolamı Unuttum: anahtar ya da sunucu kodu ve yeni parola.</figcaption></figure>
 </div>
+<h3>WhatsApp Bağlantısı</h3>
+<p><b>Yönetim → WhatsApp</b>: carilere ekstre ve ödeme hatırlatmasını WhatsApp'tan kendiliğinden göndermek için. Bağlantı şirket başınadır; öbür şirket kendi bağlantısını ayrıca kurar.</p>
+<ol class="steps">
+  <li><b>Elle Bağla</b> (kendi Meta uygulamanız): Meta'da işletmenize bir uygulama ve numara açın; numara telefonda WhatsApp'ta kayıtlı olmamalıdır (ör. sabit hat). Programa dört bilgi girilir: <b>Telefon Numarası Kimliği (Phone Number ID)</b>, <b>WhatsApp Business Hesap Kimliği (WABA ID)</b>, <b>Uygulama Kimliği (App ID)</b> ve <b>Kalıcı Erişim Belirteci (System User)</b> → <b>Kaydet ve Sına</b>. Meta panelini İngilizce kullanın; tarayıcının çevirisi düğmeleri bozar. Belirteci kimseyle paylaşmayın, e-postayla ya da mesajla göndermeyin; program onu şifreli saklar, ekranda göstermez.</li>
+  <li><b>WhatsApp'ı Bağla</b> (işletmenizin WhatsApp Business numarası, Facebook hesabınızla): WhatsApp'ı Bağla'yı ofisteki bilgisayarda <b>Yönetim → WhatsApp</b> ekranından açın; bağlama penceresi yalnız programın açtığı pencerede çalışır. Size e-postayla, WhatsApp'tan ya da telefonla “WhatsApp'ınızı bağlayın” diye gönderilen bağlantıyı açmayın; DestekOfis böyle bağlantı göndermez. Bu yol Meta'nın DestekOfis'e onayından sonra çalışır; o zamana dek ekran “şimdilik Elle Bağla” der.</li>
+  <li><b>Bağlantıyı Sına</b>: bilgileri Meta'da denetler; numara, görünen ad ve gönderim sınırı görünür. <b>Kendime Deneme Gönder</b> kendi numaranıza deneme iletisi yollar.</li>
+  <li><b>Bilgilendirme Şablonları</b>: program Meta'da iki şablon açar: <b>Ekstre</b> (PDF ile) ve <b>Ödeme Hatırlatma</b>. Meta onaylayınca durum <i>Onaylı</i> olur; gerekirse <b>Şablonları Denetle ve Oluştur</b>'a basın. Yalnız bilgilendirme iletisi gider; kampanya ve serbest metin yoktur.</li>
+  <li><b>KVKK Aydınlatma Metni</b>: <b>Aydınlatma Metni Hazırla</b> firma bilgilerinizle (Fatura Ayarları → Firma Bilgisi) hazır metin üretir; <b>Kopyala</b> ya da <b>Aydınlatma Metni - PDF</b> ile alıp carilerinize ulaştırın (sözleşme eki, e-posta ya da internet siteniz). Metni kendi hukuk danışmanınızla gözden geçirin.</li>
+  <li><b>Gönderim Onayı</b>: onay kutusu bu şirket için bir kez işaretlenmeden otomatik gönderim başlamaz. Onayı yalnız yönetici verir.</li>
+  <li><b>Yetki:</b> personelin otomatik göndermesi için <b>Yönetim → Kullanıcılar → Yetkiler → WhatsApp ile Otomatik Gönder</b>. Kendi WhatsApp'ıyla tek tek gönderim bu yetkiyi istemez.</li>
+</ol>
+<ul>
+  <li><b>Bu Ay Gönderilen İleti Sayısı:</b> teslim edilen, ücretli ve yaklaşık ücret görünür. Bu sayı programın kaydıdır; Meta'daki fatura esastır, ay sonunda Meta'nın fatura sayfasıyla karşılaştırın.</li>
+  <li><b>Ücret ve sınır:</b> ücreti Meta, Meta hesabınıza tanımladığınız karttan, yalnız teslim edilen ileti başına çeker (Türkiye'de bilgilendirme iletisi bugün 0,0009 USD; güncel tutar için Meta'nın tarifesine bakın). Günde 250 farklı kişiye gönderilir; Meta'da işletme doğrulamasından sonra 2.000. Fazlası ertesi güne kalır ve kendiliğinden gider.</li>
+  <li><b>Yurt dışına aktarım (KVKK md. 9):</b> iletiler Meta'nın yurt dışındaki sunucularından geçer. Aktarımı Meta'nın standart sözleşmesine dayandırıyorsanız sözleşmeyi imzaladıktan sonra 5 iş günü içinde Kişisel Verileri Koruma Kurulu'na bildirin.</li>
+</ul>
 
 <h2>18. Telefondan Kullanım</h2>
 <p>Telefon, tablet ya da ofis dışındaki bir bilgisayarın tarayıcısı bir kez eşlenir; sonra DestekOfis kullanıcı adınız ve parolanızla girersiniz. İnternet bağlantısı gerekir.</p>
 <ol class="steps">
   <li><b>Eşleme (yönetici):</b> <b>Yönetim → Mobil Cihazlar</b>'da kişinin satırında <b>Uzaktan Bağlanabilir</b>'i işaretleyin, <b>Karekod Oluştur</b>'a basın. Karekod 5 dakika geçerli ve tek kullanımlıktır.</li>
-  <li><b>iPhone ve iPad:</b> karekodu kamerayla okutun; açılan sayfada Paylaş → <b>Ana Ekrana Ekle</b>'ye dokunun. Ana ekrandaki <b>DestekOfis</b> simgesini açın, <b>Karekodu Okut</b> ile bilgisayardaki aynı karekodu okutun, <b>Cihaz Adı</b>'nı yazıp <b>Eşleştir</b>'e basın. Bundan sonra DestekOfis'i hep bu simgeden açın.</li>
+  <li><b>iPhone ve iPad:</b> karekodu kamerayla okutun; açılan sayfada Paylaş → <b>Ana Ekrana Ekle</b>'ye dokunun. Ana ekrandaki <b>DestekOfis</b> simgesini açın, <b>Karekodu Okut</b> ile bilgisayardaki aynı karekodu okutun, <b>Cihaz Adı</b>'nı yazıp <b>Eşleştir</b>'e basın. Safari'de açılan sayfada eşleme yapılmaz; DestekOfis'i hep bu simgeden açın. Simge “Cihaz Eşli Değil” derse <b>Karekodu Okut</b> ile yöneticinin oluşturduğu yeni karekodu okutun.</li>
   <li><b>Android telefon:</b> karekodu kamerayla okutun, <b>Cihaz Adı</b>'nı yazıp <b>Eşleştir</b>'e basın. İsterseniz Chrome menüsünden <b>Ana ekrana ekle</b>; DestekOfis bir uygulama gibi açılır.</li>
   <li><b>Giriş:</b> <b>Kullanıcı Adı</b> ve <b>Parola</b> → <b>Giriş Yap</b>. Karekod okuyamayan bilgisayarda karekodun altındaki <b>Eşleme Bağlantısı</b>'nı <b>Kopyala</b> ile alıp o bilgisayarın tarayıcısında açın.</li>
 </ol>
@@ -433,6 +457,7 @@
   <li><b>Ofisteki bilgisayar kapalıyken:</b> giriş ekranında <b>Son Özeti Göster</b>'e basın; son güncellemedeki bakiyeler ve hareketler salt okunur görünür. Bu sırada kayıt girilemez, rapor, PDF ve Excel alınamaz.</li>
   <li><b>En çok 3 cihaz:</b> telefon, tablet ve uzak bilgisayar tarayıcısı sayılır; iki şirket birlikte. Yeni cihaz için önce birini silin.</li>
   <li><b>Telefon kaybolursa:</b> <b>Yönetim → Mobil Cihazlar → Eşli Cihazlar</b>'da cihazın satırında <b>Sil</b>: o cihazın oturumu hemen kapanır. Kişinin bütün cihazlarını kapatmak için <b>Uzaktan Bağlanabilir</b> işaretini kaldırın.</li>
+  <li><b>Lisans bitince:</b> deneme süresi bitince telefondan kullanım hemen kapanır. Ücretli lisans bitince eşli telefonlar 30 gün daha salt okunur bağlanır (kayıt girilmez, yeni karekod oluşturulamaz); 30 günün sonunda mobil kullanım kapanır ve mobil kayıt silinir. Lisansı yenileyince telefonları karekodla yeniden eşleyin. Bitişe 7 gün kala ve bu süre boyunca telefonda ve <b>Yönetim → Mobil Cihazlar</b>'da kaç gün kaldığı yazar.</li>
   <li><b>Oturum:</b> 15 dakika işlem yapılmazsa ya da 12 saat sonra yeniden parola istenir.</li>
 </ul>
 
