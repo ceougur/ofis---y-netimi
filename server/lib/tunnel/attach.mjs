@@ -23,7 +23,9 @@ export function kapiBasvurusu({ client = null, gateUrl = "", config = {}, store,
       } catch (error) {
         const sync = mobileSync();
         if (!["kapi-ofis-yok", "kapi-zaman"].includes(error?.gateCode) || !sync?.kayitGonder) throw error;
-        await sync.kayitGonder().catch(() => null);
+        // Kapıcı yanıt verdi (ofis yok / saat) → kaydın artan hata beklemesi aşılır (kapıcı ulaşılabilir; eski ağ hatası tüneli bekletmesin); kapi-lisans penceresi
+        // aynen. Yineleme sıklığını tünel yöneticisinin kendi beklemesi (manager.mjs RETRY, 30 sn → 10 dk) sınırlar.
+        await sync.kayitGonder({ hataBeklemesiz: true }).catch(() => null);
         return istemci.provision();
       }
     },

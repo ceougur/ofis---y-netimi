@@ -1,0 +1,2058 @@
+TAP version 13
+# Subtest: M3 kapıcı — program uçları: ofis anahtarı, yeniden oynatma, lisans imzası
+    # Subtest: ilk kayıt ofis anahtarını bağlar; aynı kimlik BAŞKA anahtarla reddedilir (kapi-ofis-anahtari)
+    ok 1 - ilk kayıt ofis anahtarını bağlar; aynı kimlik BAŞKA anahtarla reddedilir (kapi-ofis-anahtari)
+      ---
+      duration_ms: 35.153196
+      type: 'test'
+      ...
+    # Subtest: imza bozuk → kapi-imza; zaman ±5 dk dışında → kapi-zaman ve kapıcının saati döner
+    ok 2 - imza bozuk → kapi-imza; zaman ±5 dk dışında → kapi-zaman ve kapıcının saati döner
+      ---
+      duration_ms: 15.267725
+      type: 'test'
+      ...
+    # Subtest: eski kaydın yeniden oynatılması silinmiş cihazı GERİ GETİREMEZ (kapi-sira)
+    ok 3 - eski kaydın yeniden oynatılması silinmiş cihazı GERİ GETİREMEZ (kapi-sira)
+      ---
+      duration_ms: 21.654678
+      type: 'test'
+      ...
+    # Subtest: başka anahtarla imzalanmış lisans belirteci kabul edilmez (kapi-lisans)
+    ok 4 - başka anahtarla imzalanmış lisans belirteci kabul edilmez (kapi-lisans)
+      ---
+      duration_ms: 4.647232
+      type: 'test'
+      ...
+    1..4
+ok 1 - M3 kapıcı — program uçları: ofis anahtarı, yeniden oynatma, lisans imzası
+  ---
+  duration_ms: 78.605047
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — eşli cihaz sınırı kapıcıda da (K13), P5 ve silme
+    # Subtest: 3 cihaz varken 4. ekleme kapıcıda reddedilir; lisans 2'ye düşünce mevcut 3 sürer (P5), yeni ekleme reddedilir, silme her durumda geçer
+    ok 1 - 3 cihaz varken 4. ekleme kapıcıda reddedilir; lisans 2'ye düşünce mevcut 3 sürer (P5), yeni ekleme reddedilir, silme her durumda geçer
+      ---
+      duration_ms: 44.200831
+      type: 'test'
+      ...
+    # Subtest: engelli lisansla kayıt: belirteç saklanır (okumalar hemen kapanır), kapi-lisans döner, cihaz EKLENMEZ
+    ok 2 - engelli lisansla kayıt: belirteç saklanır (okumalar hemen kapanır), kapi-lisans döner, cihaz EKLENMEZ
+      ---
+      duration_ms: 38.568664
+      type: 'test'
+      ...
+    1..2
+ok 2 - M3 kapıcı — eşli cihaz sınırı kapıcıda da (K13), P5 ve silme
+  ---
+  duration_ms: 83.243101
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — özet yükleme: sıra, boyut, sınırlar
+    # Subtest: sıra kesin artar; aynı ya da eski sıra (yeniden oynatma) reddedilir; silindikten sonra eski yükleme geri getirilemez
+    ok 1 - sıra kesin artar; aynı ya da eski sıra (yeniden oynatma) reddedilir; silindikten sonra eski yükleme geri getirilemez
+      ---
+      duration_ms: 36.50942
+      type: 'test'
+      ...
+    # Subtest: başka ofisin gövdesi, iç imzası bozuk özet ve 8 MB üstü reddedilir
+    ok 2 - başka ofisin gövdesi, iç imzası bozuk özet ve 8 MB üstü reddedilir
+      ---
+      duration_ms: 104.56169
+      type: 'test'
+      ...
+    # Subtest: günlük yükleme sınırı (ofis başına 200) ve İstanbul gün dönümünde sıfırlanır; dakikada 30'dan fazlası reddedilir
+    ok 3 - günlük yükleme sınırı (ofis başına 200) ve İstanbul gün dönümünde sıfırlanır; dakikada 30'dan fazlası reddedilir
+      ---
+      duration_ms: 1123.805767
+      type: 'test'
+      ...
+    1..3
+ok 3 - M3 kapıcı — özet yükleme: sıra, boyut, sınırlar
+  ---
+  duration_ms: 1265.642484
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — cihazın özet okuması (imza, cihaz listesi, P9, K14)
+    # Subtest: eşli cihaz imzalı istekle özeti alır (gövde değişmeden); etag ile 304; cihaz listede yoksa / başka ofisinse kapi-cihaz
+    ok 1 - eşli cihaz imzalı istekle özeti alır (gövde değişmeden); etag ile 304; cihaz listede yoksa / başka ofisinse kapi-cihaz
+      ---
+      duration_ms: 24.927589
+      type: 'test'
+      ...
+    # Subtest: imza başka cihazın anahtarıyla → kapi-imza; saat kayması → kapi-zaman (kapıcı saatini döner)
+    ok 2 - imza başka cihazın anahtarıyla → kapi-imza; saat kayması → kapi-zaman (kapıcı saatini döner)
+      ---
+      duration_ms: 15.445522
+      type: 'test'
+      ...
+    # Subtest: P9: lisans servisine ulaşılamazken belirteç 59:59 dk → okunur; 60:00 dk → kapi-lisans-dogrulanamadi (fail-closed); servis dönünce açılır
+    ok 3 - P9: lisans servisine ulaşılamazken belirteç 59:59 dk → okunur; 60:00 dk → kapi-lisans-dogrulanamadi (fail-closed); servis dönünce açılır
+      ---
+      duration_ms: 22.578214
+      type: 'test'
+      ...
+    # Subtest: belirteç 30 dk'dan eskiyse ve servis erişilebilirse kapıcı yeniler; engellenen lisans 1 saat dolmadan yansır
+    ok 4 - belirteç 30 dk'dan eskiyse ve servis erişilebilirse kapıcı yeniler; engellenen lisans 1 saat dolmadan yansır
+      ---
+      duration_ms: 22.415945
+      type: 'test'
+      ...
+    # Subtest: süresi biten DENEME bitiş ANINDA kapanır; özet yoksa kapi-ozet-yok
+    ok 5 - süresi biten DENEME bitiş ANINDA kapanır; özet yoksa kapi-ozet-yok
+      ---
+      duration_ms: 13.620852
+      type: 'test'
+      ...
+    # Subtest: cihaz özete YAZAMAZ: cihaz + lisans geçince kapi-yazma (K22); cihaz yoksa önce kapi-cihaz
+    ok 6 - cihaz özete YAZAMAZ: cihaz + lisans geçince kapi-yazma (K22); cihaz yoksa önce kapi-cihaz
+      ---
+      duration_ms: 16.976217
+      type: 'test'
+      ...
+    1..6
+ok 4 - M3 kapıcı — cihazın özet okuması (imza, cihaz listesi, P9, K14)
+  ---
+  duration_ms: 116.596046
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — canlı bağlantı kapısı (ofisin telefon adresi → tünel)
+    # Subtest: cihazsız yalnız sayfa dosyası ve eşleme geçer; mobil uç cihazsız kapi-cihaz
+    ok 1 - cihazsız yalnız sayfa dosyası ve eşleme geçer; mobil uç cihazsız kapi-cihaz
+      ---
+      duration_ms: 9.780798
+      type: 'test'
+      ...
+    # Subtest: listede olmayan cihaz çerezi → kapi-cihaz (iletilmez); eşli cihaz → iletilir, işaret programın doğrulayacağı biçimde, istemcinin işaret taklidi ezilir
+    ok 2 - listede olmayan cihaz çerezi → kapi-cihaz (iletilmez); eşli cihaz → iletilir, işaret programın doğrulayacağı biçimde, istemcinin işaret taklidi ezilir
+      ---
+      duration_ms: 6.61055
+      type: 'test'
+      ...
+    # Subtest: yasak yollar tünele GİTMEZ (kapi-yol): program API'si, kodlanmış/çift kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi
+    ok 3 - yasak yollar tünele GİTMEZ (kapi-yol): program API'si, kodlanmış/çift kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi
+      ---
+      duration_ms: 17.3948
+      type: 'test'
+      ...
+    # Subtest: tünel kapalıyken kapi-ofis-kapali (503); lisans 1 saattir doğrulanamıyorsa iletilmez
+    ok 4 - tünel kapalıyken kapi-ofis-kapali (503); lisans 1 saattir doğrulanamıyorsa iletilmez
+      ---
+      duration_ms: 11.919053
+      type: 'test'
+      ...
+    # Subtest: m. ve tanınmayan alt ad karşılama sayfası verir; programın yükleme ucu ofis adresinde de imzasız geçmez
+    ok 5 - m. ve tanınmayan alt ad karşılama sayfası verir; programın yükleme ucu ofis adresinde de imzasız geçmez
+      ---
+      duration_ms: 5.320377
+      type: 'test'
+      ...
+    1..5
+ok 5 - M3 kapıcı — canlı bağlantı kapısı (ofisin telefon adresi → tünel)
+  ---
+  duration_ms: 51.642642
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — lisans servisi izolasyonu (ders 30)
+    # Subtest: LISANS_URL yoksa kapıcı hiçbir lisans isteği yapmaz; varsa yalnız verilen işleve (gerçek servise değil)
+    ok 1 - LISANS_URL yoksa kapıcı hiçbir lisans isteği yapmaz; varsa yalnız verilen işleve (gerçek servise değil)
+      ---
+      duration_ms: 7.34478
+      type: 'test'
+      ...
+    1..1
+ok 6 - M3 kapıcı — lisans servisi izolasyonu (ders 30)
+  ---
+  duration_ms: 7.50783
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — yol kuralı programla aynı (M2 lib/mobile-remote.mjs remotePathProblem ↔ kapi-protokol yolSorunu)
+    # Subtest: iki uygulama aynı sonucu verir (kâhinin bütün istek yolları + ek kalıplar)
+    ok 1 - iki uygulama aynı sonucu verir (kâhinin bütün istek yolları + ek kalıplar)
+      ---
+      duration_ms: 68.217424
+      type: 'test'
+      ...
+    1..1
+ok 7 - M3 kapıcı — yol kuralı programla aynı (M2 lib/mobile-remote.mjs remotePathProblem ↔ kapi-protokol yolSorunu)
+  ---
+  duration_ms: 68.412605
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — dağıtım yapılandırması (bulut/kapi/wrangler.toml)
+    # Subtest: lisans açık anahtarları programınkiyle aynı; gizli değer dosyada yok; R2 bağlaması OZET; ofis alanı destekofis.net
+    ok 1 - lisans açık anahtarları programınkiyle aynı; gizli değer dosyada yok; R2 bağlaması OZET; ofis alanı destekofis.net
+      ---
+      duration_ms: 1.12364
+      type: 'test'
+      ...
+    1..1
+ok 8 - M3 kapıcı — dağıtım yapılandırması (bulut/kapi/wrangler.toml)
+  ---
+  duration_ms: 1.24958
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M3 kapıcı — tarayıcıya Türkçe hata sayfası, mobil istemciye JSON
+    # Subtest: karekod / adres çubuğu: tünel kapalıyken (bağlantı hatası, Cloudflare 530 ve HTML 502) 503 + "Ofis Sunucusuna Ulaşılamıyor" sayfası
+    ok 1 - karekod / adres çubuğu: tünel kapalıyken (bağlantı hatası, Cloudflare 530 ve HTML 502) 503 + "Ofis Sunucusuna Ulaşılamıyor" sayfası
+      ---
+      duration_ms: 16.394529
+      type: 'test'
+      ...
+    # Subtest: 2.4.8 M4/M5: ofis kapalı sayfası Son Özeti Göster'i söyler; karşılama sayfası iPhone'u Ana Ekrana Ekle → Karekodu Okut'a yönlendirir
+    ok 2 - 2.4.8 M4/M5: ofis kapalı sayfası Son Özeti Göster'i söyler; karşılama sayfası iPhone'u Ana Ekrana Ekle → Karekodu Okut'a yönlendirir
+      ---
+      duration_ms: 6.470503
+      type: 'test'
+      ...
+    # Subtest: Sec-Fetch başlığı göndermeyen eski tarayıcı (Accept text/html) da sayfa alır; HEAD gövdesiz
+    ok 3 - Sec-Fetch başlığı göndermeyen eski tarayıcı (Accept text/html) da sayfa alır; HEAD gövdesiz
+      ---
+      duration_ms: 8.216657
+      type: 'test'
+      ...
+    # Subtest: mobil istemcinin fetch'i (app.js) ve başlıksız istek JSON almaya devam eder: kapi-ofis-kapali 503 aynen
+    ok 4 - mobil istemcinin fetch'i (app.js) ve başlıksız istek JSON almaya devam eder: kapi-ofis-kapali 503 aynen
+      ---
+      duration_ms: 11.573784
+      type: 'test'
+      ...
+    # Subtest: öbür kapıcı hataları da sayfa olur: eşli olmayan cihaz (401 Cihaz Eşli Değil), kayıtsız ofis (404 Ofis Bulunamadı); çerez silme başlığı korunur
+    ok 5 - öbür kapıcı hataları da sayfa olur: eşli olmayan cihaz (401 Cihaz Eşli Değil), kayıtsız ofis (404 Ofis Bulunamadı); çerez silme başlığı korunur
+      ---
+      duration_ms: 8.095226
+      type: 'test'
+      ...
+    1..5
+ok 9 - 2.4.8 M3 kapıcı — tarayıcıya Türkçe hata sayfası, mobil istemciye JSON
+  ---
+  duration_ms: 51.191058
+  type: 'suite'
+  ...
+# devre dışı dönemde: sayfa { status: 410, code: 'kapi-ofis-degisti' } api { status: 401, code: 'kapi-cihaz' } çerez kaldı mı: true
+# Subtest: dar kontrol K1 — dönen ofis
+    # Subtest: (c) dönen ofisin telefonu, devre dışı dönemde ofisin adresini açtıysa da canlı bağlantıya yeniden eşlemesiz döner (kapıcı cihaz çerezini silmemeli)
+    ok 1 - (c) dönen ofisin telefonu, devre dışı dönemde ofisin adresini açtıysa da canlı bağlantıya yeniden eşlemesiz döner (kapıcı cihaz çerezini silmemeli)
+      ---
+      duration_ms: 59.161447
+      type: 'test'
+      ...
+# dönüş kaydı: {"ok":true,"data":{"ofis":"olzrvjrrxmfq2m7mv","cihaz":3,"sinir":2,"ozet":false},"status":200} geçen cihaz: 3 geçici ofis: kapi-cihaz
+    # Subtest: (a/P5) cihaz sınırı düştükten sonra (P5: mevcutlar sürer) devre dışı kalıp dönen ofisin mevcut cihazları sürer; makine el değiştirince toplam 0 cihaz kalmaz
+    ok 2 - (a/P5) cihaz sınırı düştükten sonra (P5: mevcutlar sürer) devre dışı kalıp dönen ofisin mevcut cihazları sürer; makine el değiştirince toplam 0 cihaz kalmaz
+      ---
+      duration_ms: 48.926309
+      type: 'test'
+      ...
+# kabul edilen el değişimi: 10 429: 11 tünel: 1
+    # Subtest: (a/e) aynı makinede iki canlı kurulum sırayla yeniden kaydolur: her an en çok 3 cihaz; günde en çok ofisDegisimGunluk el değişimi, sonra 429; etkin olmayanın tüneli kalmaz
+    ok 3 - (a/e) aynı makinede iki canlı kurulum sırayla yeniden kaydolur: her an en çok 3 cihaz; günde en çok ofisDegisimGunluk el değişimi, sonra 429; etkin olmayanın tüneli kalmaz
+      ---
+      duration_ms: 554.018972
+      type: 'test'
+      ...
+# oynatma yanıtları: kapi-sira kapi-sira kapi-sira
+    # Subtest: (b) yeniden oynatma: devre dışı ofisin ESKİ kaydının aynı baytları (yakalanmış) dönüşte de sonradan da reddedilir; B'nin eski kaydı makineyi geri alamaz
+    ok 4 - (b) yeniden oynatma: devre dışı ofisin ESKİ kaydının aynı baytları (yakalanmış) dönüşte de sonradan da reddedilir; B'nin eski kaydı makineyi geri alamaz
+      ---
+      duration_ms: 45.629842
+      type: 'test'
+      ...
+    # Subtest: (c) devre dışıyken programda silinen cihaz dönüşte gelmez; silinen cihazın çerezi silinir (B1)
+    ok 5 - (c) devre dışıyken programda silinen cihaz dönüşte gelmez; silinen cihazın çerezi silinir (B1)
+      ---
+      duration_ms: 25.707214
+      type: 'test'
+      ...
+    1..5
+ok 10 - dar kontrol K1 — dönen ofis
+  ---
+  duration_ms: 734.81261
+  type: 'suite'
+  ...
+# Subtest: B1 silinen cihazın tarayıcısı kapıcı üzerinden yeniden eşlenir; eski çerez silinir
+    # Subtest: silinen cihazın eski çerezi: sayfa 200 (cihazsız) + çerez silinir; veri ucu 401 kapi-cihaz + çerez silinir; yeni karekodla eşleme 200, giriş 200
+    ok 1 - silinen cihazın eski çerezi: sayfa 200 (cihazsız) + çerez silinir; veri ucu 401 kapi-cihaz + çerez silinir; yeni karekodla eşleme 200, giriş 200
+      ---
+      duration_ms: 386.482157
+      type: 'test'
+      ...
+    # Subtest: eşleme ucu silinmiş cihazın çereziyle doğrudan gelirse de (sayfa açılmadan) 200; çerez yeni cihazınkiyle değişir
+    ok 2 - eşleme ucu silinmiş cihazın çereziyle doğrudan gelirse de (sayfa açılmadan) 200; çerez yeni cihazınkiyle değişir
+      ---
+      duration_ms: 348.141155
+      type: 'test'
+      ...
+    # Subtest: korunan davranış: kapıcının hiç görmediği (yeni eşlenmiş olabilecek) cihaz kimliği veri ucunda 401 kapi-cihaz alır ama çerezi SİLİNMEZ; eşli cihaz etkilenmez
+    ok 3 - korunan davranış: kapıcının hiç görmediği (yeni eşlenmiş olabilecek) cihaz kimliği veri ucunda 401 kapi-cihaz alır ama çerezi SİLİNMEZ; eşli cihaz etkilenmez
+      ---
+      duration_ms: 143.639515
+      type: 'test'
+      ...
+    1..3
+ok 11 - B1 silinen cihazın tarayıcısı kapıcı üzerinden yeniden eşlenir; eski çerez silinir
+  ---
+  duration_ms: 1409.41987
+  type: 'suite'
+  ...
+# Subtest: B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+    # Subtest: aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin canlı isteği 410
+    ok 1 - aynı makine 4 ofis × 3 cihaz: her yeni ofis kabul, eskisi devre dışı → aynı anda kapıdan geçen cihaz 3 (sınır); eski ofisin canlı isteği 410
+      ---
+      duration_ms: 117.707941
+      type: 'test'
+      ...
+    # Subtest: son kaydolan kazanır (dar kontrol K1): yeniden kurulumdan sonra eski veri geri yüklenince devre dışı ofis makineyi geri alır; önceki kapanır, yine 3 cihaz
+    ok 2 - son kaydolan kazanır (dar kontrol K1): yeniden kurulumdan sonra eski veri geri yüklenince devre dışı ofis makineyi geri alır; önceki kapanır, yine 3 cihaz
+      ---
+      duration_ms: 58.588997
+      type: 'test'
+      ...
+    # Subtest: her yeni ofis eskisinin tünelini + DNS kaydını siler: 5 kurulumdan sonra etkin tünel 1, DNS kaydı 1; eski ofisin tünel başvurusu 410
+    ok 3 - her yeni ofis eskisinin tünelini + DNS kaydını siler: 5 kurulumdan sonra etkin tünel 1, DNS kaydı 1; eski ofisin tünel başvurusu 410
+      ---
+      duration_ms: 47.444106
+      type: 'test'
+      ...
+    # Subtest: Cloudflare silmesi başarısızsa eski ofis yine kapanır, temizlik bekler; sonraki kayıtta tünel + DNS silinir
+    ok 4 - Cloudflare silmesi başarısızsa eski ofis yine kapanır, temizlik bekler; sonraki kayıtta tünel + DNS silinir
+      ---
+      duration_ms: 17.670673
+      type: 'test'
+      ...
+    # Subtest: ofis başka makineye taşınırsa (lisans yeni makineye aktarıldı) çalışmayı sürdürür; eski makinede açılan yeni ofis onun tüneline/DNS'ine dokunmaz
+    ok 5 - ofis başka makineye taşınırsa (lisans yeni makineye aktarıldı) çalışmayı sürdürür; eski makinede açılan yeni ofis onun tüneline/DNS'ine dokunmaz
+      ---
+      duration_ms: 32.972471
+      type: 'test'
+      ...
+    # Subtest: DENEME belirteci aynı kurallarla: aynı makinenin ikinci deneme ofisi birincisini kapatır
+    ok 6 - DENEME belirteci aynı kurallarla: aynı makinenin ikinci deneme ofisi birincisini kapatır
+      ---
+      duration_ms: 22.513425
+      type: 'test'
+      ...
+    # Subtest: eşzamanlı iki yeni ofis kaydı (aynı makine, 6 tur): her turda kapıdan geçen cihaz en çok 3
+    ok 7 - eşzamanlı iki yeni ofis kaydı (aynı makine, 6 tur): her turda kapıdan geçen cihaz en çok 3
+      ---
+      duration_ms: 115.725723
+      type: 'test'
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan
+    ok 8 - ZORLA ilk yazım yarışı (a): yine YALNIZ bir ofisin 3 cihazı geçer — eşlemeyi son yazan
+      ---
+      duration_ms: 25.023271
+      type: 'test'
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (b): kaybeden ofisin yeniden kaydı makineyi devralır (son kaydolan kazanır); aynı anda yine YALNIZ bir ofisin 3 cihazı
+    ok 9 - ZORLA ilk yazım yarışı (b): kaybeden ofisin yeniden kaydı makineyi devralır (son kaydolan kazanır); aynı anda yine YALNIZ bir ofisin 3 cihazı
+      ---
+      duration_ms: 26.721865
+      type: 'test'
+      ...
+    # Subtest: ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)
+    ok 10 - ZORLA ilk yazım yarışı (c): kaybeden (kapatılmamış) ofis tünel alamaz (410)
+      ---
+      duration_ms: 17.891583
+      type: 'test'
+      ...
+    # Subtest: makine başına günde 10 ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır
+    ok 11 - makine başına günde 10 ofis değişimi; sonraki yeni ofis 429 kapi-hiz ve güncel ofis bozulmaz; İstanbul gün dönümünde açılır
+      ---
+      duration_ms: 61.655322
+      type: 'test'
+      ...
+    # Subtest: kapıcı genelinde günde 50 yeni TÜNEL; 51. ofisin kaydı kabul, tüneli 429 kapi-hiz; var olan tünel yeniden verilir; ertesi gün açılır
+    ok 12 - kapıcı genelinde günde 50 yeni TÜNEL; 51. ofisin kaydı kabul, tüneli 429 kapi-hiz; var olan tünel yeniden verilir; ertesi gün açılır
+      ---
+      duration_ms: 444.174396
+      type: 'test'
+      ...
+    # Subtest: makine başına saatte 240 kayıt; sonraki 429 kapi-hiz; saat dönümünde açılır
+    ok 13 - makine başına saatte 240 kayıt; sonraki 429 kapi-hiz; saat dönümünde açılır
+      ---
+      duration_ms: 1249.423299
+      type: 'test'
+      ...
+    # Subtest: makine başına saatte 30 tünel başvurusu; sonraki 429 kapi-hiz; saat dönümünde açılır
+    ok 14 - makine başına saatte 30 tünel başvurusu; sonraki 429 kapi-hiz; saat dönümünde açılır
+      ---
+      duration_ms: 108.199923
+      type: 'test'
+      ...
+    1..14
+ok 12 - B3 tek lisans (tek makine) → kapıcıda TEK etkin ofis
+  ---
+  duration_ms: 2348.379772
+  type: 'suite'
+  ...
+# Subtest: B4 alt alanlar arası çerez: __Host- adlar, Domain'li Set-Cookie düşer, çakışan çerez reddedilir
+    # Subtest: kapıcı başka ofisin kökeninden gelen Domain'li Set-Cookie'leri düşürür (Domain'siz kendi çerezi geçer)
+    ok 1 - kapıcı başka ofisin kökeninden gelen Domain'li Set-Cookie'leri düşürür (Domain'siz kendi çerezi geçer)
+      ---
+      duration_ms: 9.749218
+      type: 'test'
+      ...
+    # Subtest: program cihaz ve oturum çerezini __Host- adla, Secure + Path=/ ve Domain'siz yazar (kapıcı üzerinden)
+    ok 2 - program cihaz ve oturum çerezini __Host- adla, Secure + Path=/ ve Domain'siz yazar (kapıcı üzerinden)
+      ---
+      duration_ms: 108.942704
+      type: 'test'
+      ...
+    # Subtest: kurbanın isteğine eski (öneksiz) ad ile atılmış çerez erişimi kesmez — başta da sonda da
+    ok 3 - kurbanın isteğine eski (öneksiz) ad ile atılmış çerez erişimi kesmez — başta da sonda da
+      ---
+      duration_ms: 12.305023
+      type: 'test'
+      ...
+    # Subtest: aynı adlı iki cihaz ya da oturum çerezi kapıcıda 400 kapi-cerez (ilk/son seçilmez) — veri ucunda da sayfa yolunda da
+    ok 4 - aynı adlı iki cihaz ya da oturum çerezi kapıcıda 400 kapi-cerez (ilk/son seçilmez) — veri ucunda da sayfa yolunda da
+      ---
+      duration_ms: 15.572309
+      type: 'test'
+      ...
+    # Subtest: program da aynı kural: uzak dinleyiciye (kapıcısız) çakışan çerez 400 remote-cookie; tek çerez geçer
+    ok 5 - program da aynı kural: uzak dinleyiciye (kapıcısız) çakışan çerez 400 remote-cookie; tek çerez geçer
+      ---
+      duration_ms: 458.733674
+      type: 'test'
+      ...
+    # Subtest: tek ayrıştırma: kapıcı ve program çerezi aynı modülle okur (lib/mobil-cerez.mjs); kapıcıda ayrı çerez çözücü yok
+    ok 6 - tek ayrıştırma: kapıcı ve program çerezi aynı modülle okur (lib/mobil-cerez.mjs); kapıcıda ayrı çerez çözücü yok
+      ---
+      duration_ms: 1.164671
+      type: 'test'
+      ...
+    1..6
+ok 13 - B4 alt alanlar arası çerez: __Host- adlar, Domain'li Set-Cookie düşer, çakışan çerez reddedilir
+  ---
+  duration_ms: 1360.546551
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 L1 — mobil kullanım hakkı kuralı (kapi-protokol; program ve kapıcı aynı işlev)
+    # Subtest: ücretli lisans: 7 gün kala uyarı, bitişte 30 gün hoşgörü (29. günün sonunda 1 gün), 30. günün sonunda kapanır; gece yarısı sınırları
+    ok 1 - ücretli lisans: 7 gün kala uyarı, bitişte 30 gün hoşgörü (29. günün sonunda 1 gün), 30. günün sonunda kapanır; gece yarısı sınırları
+      ---
+      duration_ms: 1.565213
+      type: 'test'
+      ...
+    # Subtest: deneme bitişte HEMEN kapanır (hoşgörü yok); engelli hemen kapanır; silme anı: bitiş + 30 gün, engel + 30 gün (erken olanı)
+    ok 2 - deneme bitişte HEMEN kapanır (hoşgörü yok); engelli hemen kapanır; silme anı: bitiş + 30 gün, engel + 30 gün (erken olanı)
+      ---
+      duration_ms: 0.438129
+      type: 'test'
+      ...
+    1..2
+ok 14 - 2.4.8 L1 — mobil kullanım hakkı kuralı (kapi-protokol; program ve kapıcı aynı işlev)
+  ---
+  duration_ms: 3.318048
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 L1 — kapıcı: hoşgörüde son özet, canlı kapı ve tünel açık; yeni cihaz eklenmez; sonunda kapanır
+    # Subtest: ücretli lisans: 7 gün kala özette uyarı; bitişten 30 gün salt okunur (özet + canlı + tünel), 30. günün sonunda kapanır ve ileti 'sona erdi'
+    ok 1 - ücretli lisans: 7 gün kala özette uyarı; bitişten 30 gün salt okunur (özet + canlı + tünel), 30. günün sonunda kapanır ve ileti 'sona erdi'
+      ---
+      duration_ms: 106.342157
+      type: 'test'
+      ...
+    # Subtest: deneme bitişte hemen kapanır (özet, canlı, tünel); engelli lisans hemen kapanır — iletiler hakkın durumuna göre
+    ok 2 - deneme bitişte hemen kapanır (özet, canlı, tünel); engelli lisans hemen kapanır — iletiler hakkın durumuna göre
+      ---
+      duration_ms: 65.848522
+      type: 'test'
+      ...
+    # Subtest: hoşgörüde mevcut cihazlar sürer, YENİ cihaz eklenmez; lisansı geçersiz YENİ ofis kapıcıya yazılmaz
+    ok 3 - hoşgörüde mevcut cihazlar sürer, YENİ cihaz eklenmez; lisansı geçersiz YENİ ofis kapıcıya yazılmaz
+      ---
+      duration_ms: 33.008118
+      type: 'test'
+      ...
+    1..3
+ok 15 - 2.4.8 L1 — kapıcı: hoşgörüde son özet, canlı kapı ve tünel açık; yeni cihaz eklenmez; sonunda kapanır
+  ---
+  duration_ms: 205.741281
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama
+    # Subtest: deneme: bitişten 30 gün geçmeden SİLİNMEZ; 30. günde ofis kaydı, özet, tünel, DNS silinir; geçerli lisanslı komşu ofise dokunulmaz
+    ok 1 - deneme: bitişten 30 gün geçmeden SİLİNMEZ; 30. günde ofis kaydı, özet, tünel, DNS silinir; geçerli lisanslı komşu ofise dokunulmaz
+      ---
+      duration_ms: 45.729728
+      type: 'test'
+      ...
+    # Subtest: ücretli lisans: hoşgörünün son anında kayıt durur, 30. günün sonundaki ilk turda HEMEN silinir; telefon 'eşli değil' değil kayıt yok görür
+    ok 2 - ücretli lisans: hoşgörünün son anında kayıt durur, 30. günün sonundaki ilk turda HEMEN silinir; telefon 'eşli değil' değil kayıt yok görür
+      ---
+      duration_ms: 19.453103
+      type: 'test'
+      ...
+    # Subtest: engel: ilk tur engeli kaydeder; engelden 29 gün sonra durur, 30 gün sonra silinir; engel kalkarsa (lisans açıldı) kayıt silinmez
+    ok 3 - engel: ilk tur engeli kaydeder; engelden 29 gün sonra durur, 30 gün sonra silinir; engel kalkarsa (lisans açıldı) kayıt silinmez
+      ---
+      duration_ms: 41.433019
+      type: 'test'
+      ...
+    # Subtest: lisans yenilendiyse (servis yeni bitiş verdi) saklı belirteç 30 günden eski olsa da SİLİNMEZ; servise ulaşılamıyorsa hiçbir şey silinmez
+    ok 4 - lisans yenilendiyse (servis yeni bitiş verdi) saklı belirteç 30 günden eski olsa da SİLİNMEZ; servise ulaşılamıyorsa hiçbir şey silinmez
+      ---
+      duration_ms: 37.406015
+      type: 'test'
+      ...
+    # Subtest: Cloudflare yanıt vermezse silme yarıda kalır (işaret kalır), sonraki turda tamamlanır
+    ok 5 - Cloudflare yanıt vermezse silme yarıda kalır (işaret kalır), sonraki turda tamamlanır
+      ---
+      duration_ms: 18.0868
+      type: 'test'
+      ...
+    # Subtest: ZORLA: silme sürerken program yenilenen lisansla kaydolursa ofis kaydı SİLİNMEZ (iz yazılmaz), telefon çalışmayı sürdürür
+    ok 6 - ZORLA: silme sürerken program yenilenen lisansla kaydolursa ofis kaydı SİLİNMEZ (iz yazılmaz), telefon çalışmayı sürdürür
+      ---
+      duration_ms: 21.508715
+      type: 'test'
+      ...
+    # Subtest: ZORLA (2): program özet silinirken yeniden kaydolursa da ofis kaydı silinmez; silinen kaydın izi geri alınır, telefon geçer
+    ok 7 - ZORLA (2): program özet silinirken yeniden kaydolursa da ofis kaydı silinmez; silinen kaydın izi geri alınır, telefon geçer
+      ---
+      duration_ms: 20.984222
+      type: 'test'
+      ...
+    # Subtest: silinmiş kayıt GERİ GELMEZ: lisans alınınca aynı kimlik cihazsız açılır ve 'silindi' bildirilir; geçersiz lisansla kayıt açılmaz; başka anahtar alamaz
+    ok 8 - silinmiş kayıt GERİ GELMEZ: lisans alınınca aynı kimlik cihazsız açılır ve 'silindi' bildirilir; geçersiz lisansla kayıt açılmaz; başka anahtar alamaz
+      ---
+      duration_ms: 23.720453
+      type: 'test'
+      ...
+    # Subtest: tur sınırı: dış istek bütçesi aşılınca kalanlar sonraki tura kalır; birkaç turda hepsi silinir, geçerli ofisler kalır
+    ok 9 - tur sınırı: dış istek bütçesi aşılınca kalanlar sonraki tura kalır; birkaç turda hepsi silinir, geçerli ofisler kalır
+      ---
+      duration_ms: 148.240889
+      type: 'test'
+      ...
+    1..9
+ok 16 - 2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama
+  ---
+  duration_ms: 377.66012
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 L1 — dağıtım yapılandırması
+    # Subtest: wrangler.toml saatte bir zamanlanmış tur tanımlar; Worker scheduled işleyicisi var
+    ok 1 - wrangler.toml saatte bir zamanlanmış tur tanımlar; Worker scheduled işleyicisi var
+      ---
+      duration_ms: 1.298463
+      type: 'test'
+      ...
+    1..1
+ok 17 - 2.4.8 L1 — dağıtım yapılandırması
+  ---
+  duration_ms: 1.407107
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: anahtar üretimde kapalı
+    # Subtest: varsayılan kapalı; ortam değişkeniyle açılmaz; üretim girişi (server/server.mjs) anahtar vermez
+    ok 1 - varsayılan kapalı; ortam değişkeniyle açılmaz; üretim girişi (server/server.mjs) anahtar vermez
+      ---
+      duration_ms: 2.994728
+      type: 'test'
+      ...
+    1..1
+ok 18 - 2.4.5 madde 1–2: anahtar üretimde kapalı
+  ---
+  duration_ms: 3.994709
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: test/helpers.mjs startTestServer anahtarı config'e iletir
+    # Subtest: { legacyCasePayments: false, legacyTableTransfer: false } → 410; seçenek verilmezse yardımcının varsayılanı açık (eski testler)
+    ok 1 - { legacyCasePayments: false, legacyTableTransfer: false } → 410; seçenek verilmezse yardımcının varsayılanı açık (eski testler)
+      ---
+      duration_ms: 893.269825
+      type: 'test'
+      ...
+    1..1
+ok 19 - 2.4.5 madde 1–2: test/helpers.mjs startTestServer anahtarı config'e iletir
+  ---
+  duration_ms: 893.684213
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık
+    # Subtest: eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı
+    ok 1 - eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı
+      ---
+      duration_ms: 13.811107
+      type: 'test'
+      ...
+    # Subtest: POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+    ok 2 - POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+      ---
+      duration_ms: 14.774548
+      type: 'test'
+      ...
+    # Subtest: PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+    ok 3 - PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+      ---
+      duration_ms: 11.048945
+      type: 'test'
+      ...
+    # Subtest: oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+    ok 4 - oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+      ---
+      duration_ms: 118.403957
+      type: 'test'
+      ...
+    # Subtest: Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+    ok 5 - Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+      ---
+      duration_ms: 13.957428
+      type: 'test'
+      ...
+    # Subtest: DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+    ok 6 - DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+      ---
+      duration_ms: 58.020678
+      type: 'test'
+      ...
+    # Subtest: eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı
+    ok 7 - eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı
+      ---
+      duration_ms: 35.106101
+      type: 'test'
+      ...
+    1..7
+ok 20 - 2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık
+  ---
+  duration_ms: 1290.358143
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu)
+    # Subtest: açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı
+    ok 1 - açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı
+      ---
+      duration_ms: 574.190359
+      type: 'test'
+      ...
+    1..1
+ok 21 - 2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu)
+  ---
+  duration_ms: 583.797412
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır)
+    # Subtest: 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş
+    ok 1 - 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş
+      ---
+      duration_ms: 512.479866
+      type: 'test'
+      ...
+    1..1
+ok 22 - 2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır)
+  ---
+  duration_ms: 542.374589
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–3: kaynakta kapılar
+    # Subtest: payments'a satır ekleyen her yer izinli: kapılı POST, Silinenler'den geri yükleme, eski aktarımın Geri Al'ı
+    ok 1 - payments'a satır ekleyen her yer izinli: kapılı POST, Silinenler'den geri yükleme, eski aktarımın Geri Al'ı
+      ---
+      duration_ms: 45.212099
+      type: 'test'
+      ...
+    # Subtest: payments'ın tutarını / tarihini değiştiren UPDATE yalnız kapılı PUT'ta (B1 bağ taşıma yalnız case_key, banka eşlemesi yalnız fin_ref değiştirir)
+    ok 2 - payments'ın tutarını / tarihini değiştiren UPDATE yalnız kapılı PUT'ta (B1 bağ taşıma yalnız case_key, banka eşlemesi yalnız fin_ref değiştirir)
+      ---
+      duration_ms: 49.303461
+      type: 'test'
+      ...
+    # Subtest: POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed
+    ok 3 - POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed
+      ---
+      duration_ms: 1.423792
+      type: 'test'
+      ...
+    # Subtest: POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız
+    ok 4 - POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız
+      ---
+      duration_ms: 0.886737
+      type: 'test'
+      ...
+    # Subtest: istemci: kayıt kartında Tahsilat düğmesi yok; Tablodan Aktar düğmesi yok (Son Aktarımlar var); ön dolumlar boş; eski tahsilatta düzelt yok
+    ok 5 - istemci: kayıt kartında Tahsilat düğmesi yok; Tablodan Aktar düğmesi yok (Son Aktarımlar var); ön dolumlar boş; eski tahsilatta düzelt yok
+      ---
+      duration_ms: 7.630962
+      type: 'test'
+      ...
+    1..5
+ok 23 - 2.4.5 madde 1–3: kaynakta kapılar
+  ---
+  duration_ms: 104.870694
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 K1 (a) — temizlik sürerken dönen ofisin tüneli / DNS kaydı silinmez (her Cloudflare silmesinden önce eşleme yeniden okunur)
+    # Subtest: ZORLA: tünel bağlantı silmesi beklerken eski ofis geri dönüp tüneli alır → temizlik bitince ETKİN ofisin tüneli ve DNS kaydı durur
+    ok 1 - ZORLA: tünel bağlantı silmesi beklerken eski ofis geri dönüp tüneli alır → temizlik bitince ETKİN ofisin tüneli ve DNS kaydı durur
+      ---
+      duration_ms: 69.173236
+      type: 'test'
+      ...
+    # Subtest: ZORLA: tünel silindikten sonra DNS silmesi beklerken ofis geri dönüp yeni tünel alır → DNS kaydı silinmez (DNS silmesinden önce de yeniden okunur)
+    ok 2 - ZORLA: tünel silindikten sonra DNS silmesi beklerken ofis geri dönüp yeni tünel alır → DNS kaydı silinmez (DNS silmesinden önce de yeniden okunur)
+      ---
+      duration_ms: 28.492066
+      type: 'test'
+      ...
+    # Subtest: dönmeyen eski ofisin tüneli ve DNS kaydı yine silinir (temizlik çalışıyor)
+    ok 3 - dönmeyen eski ofisin tüneli ve DNS kaydı yine silinir (temizlik çalışıyor)
+      ---
+      duration_ms: 18.839811
+      type: 'test'
+      ...
+    1..3
+ok 24 - 2.4.8 K1 (a) — temizlik sürerken dönen ofisin tüneli / DNS kaydı silinmez (her Cloudflare silmesinden önce eşleme yeniden okunur)
+  ---
+  duration_ms: 118.447928
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 K1 (b) — devralma kaydından sonra program özeti HEMEN yükler (gerçek program + yerel kapıcı)
+    # Subtest: başka kurulum makineyi devraldıktan sonra asıl kurulum geri dönünce telefon son özeti hemen alır (bir sonraki veri değişikliğini beklemez)
+    ok 1 - başka kurulum makineyi devraldıktan sonra asıl kurulum geri dönünce telefon son özeti hemen alır (bir sonraki veri değişikliğini beklemez)
+      ---
+      duration_ms: 718.486294
+      type: 'test'
+      ...
+    1..1
+ok 25 - 2.4.8 K1 (b) — devralma kaydından sonra program özeti HEMEN yükler (gerçek program + yerel kapıcı)
+  ---
+  duration_ms: 718.753519
+  type: 'suite'
+  ...
+# Subtest: M4 kapıcı tünel bölümü — M3 ofis kaydıyla, sahte Cloudflare API
+    # Subtest: ilk başvuru tüneli + DNS'i OLUŞTURUR (<ofis>.destekofis.net, proxied), ikinci YENİDEN KULLANIR (yeni tünel/DNS yok)
+    ok 1 - ilk başvuru tüneli + DNS'i OLUŞTURUR (<ofis>.destekofis.net, proxied), ikinci YENİDEN KULLANIR (yeni tünel/DNS yok)
+      ---
+      duration_ms: 34.144013
+      type: 'test'
+      ...
+    # Subtest: kapıcıda kayıtlı olmayan ofis → 404 kapi-ofis-yok; Cloudflare'e çağrı yok
+    ok 2 - kapıcıda kayıtlı olmayan ofis → 404 kapi-ofis-yok; Cloudflare'e çağrı yok
+      ---
+      duration_ms: 3.60965
+      type: 'test'
+      ...
+    # Subtest: başka ofisin tüneli → ret: A'nın yoluna B'nin anahtarıyla imza (401 kapi-imza); A'nın imzasıyla gövdede B (400); Cloudflare'e çağrı yok
+    ok 3 - başka ofisin tüneli → ret: A'nın yoluna B'nin anahtarıyla imza (401 kapi-imza); A'nın imzasıyla gövdede B (400); Cloudflare'e çağrı yok
+      ---
+      duration_ms: 19.457818
+      type: 'test'
+      ...
+    # Subtest: saat 5 dk'dan çok kaymış → 401 kapi-zaman (kapıcı kendi saatini döner); biçim/yöntem → 400
+    ok 4 - saat 5 dk'dan çok kaymış → 401 kapi-zaman (kapıcı kendi saatini döner); biçim/yöntem → 400
+      ---
+      duration_ms: 5.695721
+      type: 'test'
+      ...
+    # Subtest: lisans: engelli / süresi dolmuş → 403 kapi-lisans; 1 saatten eski (P9) → 503 kapi-lisans-dogrulanamadi; Cloudflare'e çağrı yok
+    ok 5 - lisans: engelli / süresi dolmuş → 403 kapi-lisans; 1 saatten eski (P9) → 503 kapi-lisans-dogrulanamadi; Cloudflare'e çağrı yok
+      ---
+      duration_ms: 19.047979
+      type: 'test'
+      ...
+    # Subtest: DNS kaydı yanlış hedefte → tünelin adresine düzeltilir (PATCH, proxied), yeni kayıt açılmaz
+    ok 6 - DNS kaydı yanlış hedefte → tünelin adresine düzeltilir (PATCH, proxied), yeni kayıt açılmaz
+      ---
+      duration_ms: 7.828944
+      type: 'test'
+      ...
+    # Subtest: eşzamanlı ilk başvuru (oluşturma 'ad var' ile düşer) → var olan tünel bulunup kullanılır
+    ok 7 - eşzamanlı ilk başvuru (oluşturma 'ad var' ile düşer) → var olan tünel bulunup kullanılır
+      ---
+      duration_ms: 14.320004
+      type: 'test'
+      ...
+    # Subtest: yanıtta Cloudflare HESAP belirteci yok; Worker ayarı eksikse (CF_API_TOKEN yok) 500 kapi-tunel-ayar, belirteç sızmaz
+    ok 8 - yanıtta Cloudflare HESAP belirteci yok; Worker ayarı eksikse (CF_API_TOKEN yok) 500 kapi-tunel-ayar, belirteç sızmaz
+      ---
+      duration_ms: 7.311829
+      type: 'test'
+      ...
+    1..8
+ok 26 - M4 kapıcı tünel bölümü — M3 ofis kaydıyla, sahte Cloudflare API
+  ---
+  duration_ms: 113.134384
+  type: 'suite'
+  ...
+# Subtest: M3 + M4 uçtan uca — gerçek program, gerçek createKapi (tünel kancası), sahte Cloudflare API + kenar, sahte cloudflared
+    # Subtest: ilk kayıt ağ kesintisinde düşmüş ofis: tünel başvurusu gerçek kapıcıda kapi-ofis-yok → program M3 kaydını yapar, yeniden başvurur → tünel + DNS; eşli cihaz yokken süreç başlamaz
+    ok 1 - ilk kayıt ağ kesintisinde düşmüş ofis: tünel başvurusu gerçek kapıcıda kapi-ofis-yok → program M3 kaydını yapar, yeniden başvurur → tünel + DNS; eşli cihaz yokken süreç başlamaz
+      ---
+      duration_ms: 53.657912
+      type: 'test'
+      ...
+    # Subtest: karekod → tünel açılır (aynı tünel yeniden kullanılır); cloudflared yalnız uzak dinleyiciye ve kapıcının verdiği belirteçle; telefon kapıdan /mobil/ 200, eşleşir, giriş yapar
+    ok 2 - karekod → tünel açılır (aynı tünel yeniden kullanılır); cloudflared yalnız uzak dinleyiciye ve kapıcının verdiği belirteçle; telefon kapıdan /mobil/ 200, eşleşir, giriş yapar
+      ---
+      duration_ms: 293.164
+      type: 'test'
+      ...
+    # Subtest: yasak yol: kapıcıda 404 kapi-yol (programa iletilmez); kapıyı atlatıp cloudflared'e işaretsiz istek 401 remote-kapi; geçerli işaretle yasak yol programda 404 remote-path
+    ok 3 - yasak yol: kapıcıda 404 kapi-yol (programa iletilmez); kapıyı atlatıp cloudflared'e işaretsiz istek 401 remote-kapi; geçerli işaretle yasak yol programda 404 remote-path
+      ---
+      duration_ms: 18.533511
+      type: 'test'
+      ...
+    # Subtest: başka ofisin anahtarı A'nın tünelini alamaz (401 kapi-imza / 400 kapi-istek); B kendi kaydıyla AYRI tünel ve ad alır; A'nın DNS'i değişmez
+    ok 4 - başka ofisin anahtarı A'nın tünelini alamaz (401 kapi-imza / 400 kapi-istek); B kendi kaydıyla AYRI tünel ve ad alır; A'nın DNS'i değişmez
+      ---
+      duration_ms: 27.143455
+      type: 'test'
+      ...
+    # Subtest: lisans P9: 1 saattir doğrulanamıyor (servis kapalı) → kapıcı tüneli 503 ile reddeder ve canlı isteği programa İLETMEZ; servis dönünce yeniden açılır
+    ok 5 - lisans P9: 1 saattir doğrulanamıyor (servis kapalı) → kapıcı tüneli 503 ile reddeder ve canlı isteği programa İLETMEZ; servis dönünce yeniden açılır
+      ---
+      duration_ms: 23.133635
+      type: 'test'
+      ...
+    # Subtest: cihaz silinince (eşli cihaz kalmadı) tünel kapanır: cloudflared durur, kapıcı silinen cihazı reddeder, cihazsız istek kenarda bağlayıcı bulamaz (503 kapi-ofis-kapali)
+    ok 6 - cihaz silinince (eşli cihaz kalmadı) tünel kapanır: cloudflared durur, kapıcı silinen cihazı reddeder, cihazsız istek kenarda bağlayıcı bulamaz (503 kapi-ofis-kapali)
+      ---
+      duration_ms: 132.761481
+      type: 'test'
+      ...
+    # Subtest: koşu boyunca yerel döngü ve sahte Cloudflare dışına hiçbir istek gitmedi (ders 30)
+    ok 7 - koşu boyunca yerel döngü ve sahte Cloudflare dışına hiçbir istek gitmedi (ders 30)
+      ---
+      duration_ms: 0.386072
+      type: 'test'
+      ...
+    1..7
+ok 27 - M3 + M4 uçtan uca — gerçek program, gerçek createKapi (tünel kancası), sahte Cloudflare API + kenar, sahte cloudflared
+  ---
+  duration_ms: 996.003252
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 4: dueSources = computeDues(...).sources (son tarihlerin exclude'u aynı kural)
+    # Subtest: tahsilat ve okul servisi örneklerinde aynı kolonlar; exclude olmadan Söz Tarihi son tarihe düşerdi
+    ok 1 - tahsilat ve okul servisi örneklerinde aynı kolonlar; exclude olmadan Söz Tarihi son tarihe düşerdi
+      ---
+      duration_ms: 96.431096
+      type: 'test'
+      ...
+    # Subtest: KS6: 'Son Ödeme' son tarih değil; 'Duruşma Tarihi' ve 'Sözleşme Bitiş' son tarih
+    ok 2 - KS6: 'Son Ödeme' son tarih değil; 'Duruşma Tarihi' ve 'Sözleşme Bitiş' son tarih
+      ---
+      duration_ms: 4.353407
+      type: 'test'
+      ...
+    1..2
+ok 28 - 2.4.5 madde 4: dueSources = computeDues(...).sources (son tarihlerin exclude'u aynı kural)
+  ---
+  duration_ms: 102.029334
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 4: kaynak — tablo kalemleri (computeDues) yalnız eski davranış anahtarıyla bir listeye girer
+    # Subtest: routes/dues.mjs: computeDues yalnız legacyTable dalında; öbür sayfanın tablo kalemi yalnız legacyTable ile
+    ok 1 - routes/dues.mjs: computeDues yalnız legacyTable dalında; öbür sayfanın tablo kalemi yalnız legacyTable ile
+      ---
+      duration_ms: 0.990574
+      type: 'test'
+      ...
+    # Subtest: routes/overview.mjs: Vade Takip kaynaklarında table / promise yok; Projeksiyon withTable yalnız legacyTable ile
+    ok 2 - routes/overview.mjs: Vade Takip kaynaklarında table / promise yok; Projeksiyon withTable yalnız legacyTable ile
+      ---
+      duration_ms: 0.882778
+      type: 'test'
+      ...
+    # Subtest: anahtar üretimde kapalı: varsayılan false, ortam değişkeni yok, üretim girişi vermiyor
+    ok 3 - anahtar üretimde kapalı: varsayılan false, ortam değişkeni yok, üretim girişi vermiyor
+      ---
+      duration_ms: 2.444895
+      type: 'test'
+      ...
+    1..3
+ok 29 - 2.4.5 madde 4: kaynak — tablo kalemleri (computeDues) yalnız eski davranış anahtarıyla bir listeye girer
+  ---
+  duration_ms: 5.558513
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı
+    # Subtest: Tahsilat Takvimi / zil: tablo kalemi YOK (açık sayfa, öbür sayfa, kartlı kişinin sözü); yan alanlar boş
+    ok 1 - Tahsilat Takvimi / zil: tablo kalemi YOK (açık sayfa, öbür sayfa, kartlı kişinin sözü); yan alanlar boş
+      ---
+      duration_ms: 1.064802
+      type: 'test'
+      ...
+    # Subtest: modül kalemleri aynı: 1 gecikmiş taksit, 1 çek, 1 vadeli fatura, 1 planlı banka (senaryodan); eski davranış ve v2.4.4 ile birebir
+    ok 2 - modül kalemleri aynı: 1 gecikmiş taksit, 1 çek, 1 vadeli fatura, 1 planlı banka (senaryodan); eski davranış ve v2.4.4 ile birebir
+      ---
+      duration_ms: 1.074625
+      type: 'test'
+      ...
+    # Subtest: son tarihler KALIR ve aynı: Sözleşme bitiş + Sigorta yenileme (açık sayfa), Lisans Bitiş (öbür sayfa); Söz Tarihi son tarih değil
+    ok 3 - son tarihler KALIR ve aynı: Sözleşme bitiş + Sigorta yenileme (açık sayfa), Lisans Bitiş (öbür sayfa); Söz Tarihi son tarih değil
+      ---
+      duration_ms: 0.565759
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı (personel): tablo kalemi yok; çek / fatura / banka süzgeci 2.4.4 gibi; son tarihler aynı
+    ok 4 - yetkisiz kullanıcı (personel): tablo kalemi yok; çek / fatura / banka süzgeci 2.4.4 gibi; son tarihler aynı
+      ---
+      duration_ms: 0.673205
+      type: 'test'
+      ...
+    # Subtest: Anlık Durum Vade Takip: Tablo / Ödeme Sözü kaynağı ve satırı yok; öbür kaynaklar ve son tarihler aynı; dormant boş
+    ok 5 - Anlık Durum Vade Takip: Tablo / Ödeme Sözü kaynağı ve satırı yok; öbür kaynaklar ve son tarihler aynı; dormant boş
+      ---
+      duration_ms: 0.703866
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış Projeksiyonu: tablo kalemi yok, 'Tablo' seçeneği yok (table=0 / table=1 aynı); v2.4.4'ün table=0 sonucuyla aynı
+    ok 6 - Nakit Akış Projeksiyonu: tablo kalemi yok, 'Tablo' seçeneği yok (table=0 / table=1 aynı); v2.4.4'ün table=0 sonucuyla aynı
+      ---
+      duration_ms: 0.383717
+      type: 'test'
+      ...
+    # Subtest: madde 5: Tablo Raporları satırları aynı motor (v2.4.4 ile aynı); tablodan gelen tutar 'Muhasebe Kaydı Değil'; Nakit Akışı'nda Kasa sütunu yok
+    ok 7 - madde 5: Tablo Raporları satırları aynı motor (v2.4.4 ile aynı); tablodan gelen tutar 'Muhasebe Kaydı Değil'; Nakit Akışı'nda Kasa sütunu yok
+      ---
+      duration_ms: 1.246439
+      type: 'test'
+      ...
+    # Subtest: önbellek: tablo yeniden yüklenince (aynı dosya) yine tablo kalemi yok; son tarih değişince takvim yenilenir
+    ok 8 - önbellek: tablo yeniden yüklenince (aynı dosya) yine tablo kalemi yok; son tarih değişince takvim yenilenir
+      ---
+      duration_ms: 141.165167
+      type: 'test'
+      ...
+    1..8
+ok 30 - 2.4.5 madde 4 + 5 (API): ürün = v2.4.4 − tablo kalemleri; son tarihler ve modül kalemleri aynı
+  ---
+  duration_ms: 2859.181564
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 31 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 5.412829
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 32 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 108.612396
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 33 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.809085
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 34 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.991013
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 35 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 2.270664
+  type: 'test'
+  ...
+# Subtest: mobil görünüm: beyaz liste (lib/mobile.mjs)
+    # Subtest: her mobil yol programın mevcut ucuna, şirket hofCompany ile gider
+    ok 1 - her mobil yol programın mevcut ucuna, şirket hofCompany ile gider
+      ---
+      duration_ms: 2.594454
+      type: 'test'
+      ...
+    # Subtest: Raporlar: yalnız izinli 10 rapor ve raporun izinli süzgeçleri; değerler doğrulanır
+    ok 2 - Raporlar: yalnız izinli 10 rapor ve raporun izinli süzgeçleri; değerler doğrulanır
+      ---
+      duration_ms: 1.6228
+      type: 'test'
+      ...
+    # Subtest: salt okunur: giriş/çıkış dışındaki her yazma isteği 405, listede olmayan yol 404
+    ok 3 - salt okunur: giriş/çıkış dışındaki her yazma isteği 405, listede olmayan yol 404
+      ---
+      duration_ms: 0.544681
+      type: 'test'
+      ...
+    # Subtest: telefon imzası: iPhone ve Android telefon evet; Android tablet ve bilgisayar hayır
+    ok 4 - telefon imzası: iPhone ve Android telefon evet; Android tablet ve bilgisayar hayır
+      ---
+      duration_ms: 0.449254
+      type: 'test'
+      ...
+    1..4
+ok 36 - mobil görünüm: beyaz liste (lib/mobile.mjs)
+  ---
+  duration_ms: 6.475323
+  type: 'suite'
+  ...
+# Subtest: mobil görünüm: programın içinde, gerçek sunucu
+    # Subtest: /mobil/ sayfası ve dosyaları programın sunucusundan; /mobil → /mobil/
+    ok 1 - /mobil/ sayfası ve dosyaları programın sunucusundan; /mobil → /mobil/
+      ---
+      duration_ms: 31.011971
+      type: 'test'
+      ...
+    # Subtest: telefon ana adreste mobil görünüme yönlenir; bilgisayar, tablet ve ?masaustu=1 masaüstünü görür
+    ok 2 - telefon ana adreste mobil görünüme yönlenir; bilgisayar, tablet ve ?masaustu=1 masaüstünü görür
+      ---
+      duration_ms: 11.72248
+      type: 'test'
+      ...
+    # Subtest: oturumsuz istek 401 (veri dönmez)
+    ok 3 - oturumsuz istek 401 (veri dönmez)
+      ---
+      duration_ms: 75.114453
+      type: 'test'
+      ...
+    # Subtest: başka siteden giriş isteği reddedilir (programın istek kaynağı denetimi mobil yolda da)
+    ok 4 - başka siteden giriş isteği reddedilir (programın istek kaynağı denetimi mobil yolda da)
+      ---
+      duration_ms: 2.585326
+      type: 'test'
+      ...
+    # Subtest: oturum özeti: kullanıcı, şirketler, seçili şirket; mobil yazma hakları (2.4.7 M5: yönetici tahsilat / ödeme / stok girişi)
+    ok 5 - oturum özeti: kullanıcı, şirketler, seçili şirket; mobil yazma hakları (2.4.7 M5: yönetici tahsilat / ödeme / stok girişi)
+      ---
+      duration_ms: 3.737536
+      type: 'test'
+      ...
+    # Subtest: sayılar masaüstü ucunun döndürdüğüyle aynı (Kasa, banka, cari bakiyesi, stok miktarı)
+    ok 6 - sayılar masaüstü ucunun döndürdüğüyle aynı (Kasa, banka, cari bakiyesi, stok miktarı)
+      ---
+      duration_ms: 42.822035
+      type: 'test'
+      ...
+    # Subtest: Raporlar: katalogda yalnız izinli raporlar; ön izleme, PDF ve Excel programın rapor motorundan
+    ok 7 - Raporlar: katalogda yalnız izinli raporlar; ön izleme, PDF ve Excel programın rapor motorundan
+      ---
+      duration_ms: 57.809809
+      type: 'test'
+      ...
+    # Subtest: salt okunur: mobil yoldan yazma 405, veri tabanı değişmez
+    ok 8 - salt okunur: mobil yoldan yazma 405, veri tabanı değişmez
+      ---
+      duration_ms: 8.921359
+      type: 'test'
+      ...
+    # Subtest: yetki ve şirket
+        # Subtest: Personel: cari ve stok görür; Kasa, banka ve raporlar 403
+        ok 1 - Personel: cari ve stok görür; Kasa, banka ve raporlar 403
+          ---
+          duration_ms: 23.503228
+          type: 'test'
+          ...
+        # Subtest: Finans Raporları kaldırılmış Muhasebe: Kasa görür, raporlar 403
+        ok 2 - Finans Raporları kaldırılmış Muhasebe: Kasa görür, raporlar 403
+          ---
+          duration_ms: 18.019817
+          type: 'test'
+          ...
+        # Subtest: yetkisi olmadığı şirketin kimliği 403, olmayan şirket 409; oturum özetinde yalnız kendi şirketleri
+        ok 3 - yetkisi olmadığı şirketin kimliği 403, olmayan şirket 409; oturum özetinde yalnız kendi şirketleri
+          ---
+          duration_ms: 9.627829
+          type: 'test'
+          ...
+        # Subtest: iki şirket: ikinci şirket boş başlar, verisi birinciye karışmaz; şirket geçişi istek başına
+        ok 4 - iki şirket: ikinci şirket boş başlar, verisi birinciye karışmaz; şirket geçişi istek başına
+          ---
+          duration_ms: 50.454475
+          type: 'test'
+          ...
+        # Subtest: çıkıştan sonra oturum kapanır
+        ok 5 - çıkıştan sonra oturum kapanır
+          ---
+          duration_ms: 72.5813
+          type: 'test'
+          ...
+        1..5
+    ok 9 - yetki ve şirket
+      ---
+      duration_ms: 608.847581
+      type: 'suite'
+      ...
+    1..9
+ok 37 - mobil görünüm: programın içinde, gerçek sunucu
+  ---
+  duration_ms: 1529.467064
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 deneme süresi dolunca mobil kapanır, lisans alınınca aynı telefon döner
+    # Subtest: deneme bitişinde eşli telefonun oturumu, sayfası ve yeni karekod 403 remote-license; lisansla yeniden açılır, eşleme silinmez
+    ok 1 - deneme bitişinde eşli telefonun oturumu, sayfası ve yeni karekod 403 remote-license; lisansla yeniden açılır, eşleme silinmez
+      ---
+      duration_ms: 623.36424
+      type: 'test'
+      ...
+    1..1
+ok 38 - 2.4.7 deneme süresi dolunca mobil kapanır, lisans alınınca aynı telefon döner
+  ---
+  duration_ms: 624.41137
+  type: 'suite'
+  ...
+# Subtest: M2 uzak dinleyici: eşlenmemiş istemci (tünelin öbür ucu) hiçbir veri ve yerel işlem alamaz
+    # Subtest: eşli cihaz yoksa: /api/companies, /api/auth/me, yerel kurtarma kodu ve mobil uçlar reddedilir (127.0.0.1'den gelse de)
+    ok 1 - eşli cihaz yoksa: /api/companies, /api/auth/me, yerel kurtarma kodu ve mobil uçlar reddedilir (127.0.0.1'den gelse de)
+      ---
+      duration_ms: 546.374383
+      type: 'test'
+      ...
+    1..1
+ok 39 - M2 uzak dinleyici: eşlenmemiş istemci (tünelin öbür ucu) hiçbir veri ve yerel işlem alamaz
+  ---
+  duration_ms: 548.7093
+  type: 'suite'
+  ...
+# Subtest: M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi)
+    # Subtest: yalnız /mobil/ ve /api/mobil/ geçer: kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi, kurtarma yolu 404 remote-path
+    ok 1 - yalnız /mobil/ ve /api/mobil/ geçer: kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi, kurtarma yolu 404 remote-path
+      ---
+      duration_ms: 25.495702
+      type: 'test'
+      ...
+    # Subtest: uzak istek 127.0.0.1'den gelse de yerel sayılmaz: kurtarma kodu ve X-Forwarded-For taklidi işe yaramaz
+    ok 2 - uzak istek 127.0.0.1'den gelse de yerel sayılmaz: kurtarma kodu ve X-Forwarded-For taklidi işe yaramaz
+      ---
+      duration_ms: 3.615944
+      type: 'test'
+      ...
+    # Subtest: savunma derinliği: uzak işaretli istekte clientIp 'uzak' (127.0.0.1 ve X-Forwarded-For olsa da) → yerel sayılmaz
+    ok 3 - savunma derinliği: uzak işaretli istekte clientIp 'uzak' (127.0.0.1 ve X-Forwarded-For olsa da) → yerel sayılmaz
+      ---
+      duration_ms: 0.400338
+      type: 'test'
+      ...
+    # Subtest: uzak oturum cihaza bağlı: başka cihazın çereziyle aynı oturum geçmez
+    ok 4 - uzak oturum cihaza bağlı: başka cihazın çereziyle aynı oturum geçmez
+      ---
+      duration_ms: 178.406313
+      type: 'test'
+      ...
+    # Subtest: uzak oturum çerezi ofis ağı dinleyicisinde, ofisin hof_session çerezi uzak dinleyicide geçmez
+    ok 5 - uzak oturum çerezi ofis ağı dinleyicisinde, ofisin hof_session çerezi uzak dinleyicide geçmez
+      ---
+      duration_ms: 3.287673
+      type: 'test'
+      ...
+    # Subtest: başka siteden gelen uzak eşleme / giriş isteği reddedilir (Origin denetimi; çerezler SameSite=Strict)
+    ok 6 - başka siteden gelen uzak eşleme / giriş isteği reddedilir (Origin denetimi; çerezler SameSite=Strict)
+      ---
+      duration_ms: 51.596311
+      type: 'test'
+      ...
+    # Subtest: mobilde yazma yok: uzak yazma isteği 405 (M5'e kadar)
+    ok 7 - mobilde yazma yok: uzak yazma isteği 405 (M5'e kadar)
+      ---
+      duration_ms: 2.863595
+      type: 'test'
+      ...
+    1..7
+ok 40 - M2 uzak dinleyici: güven sınırı (yol beyaz listesi, 'yerel' taklidi)
+  ---
+  duration_ms: 685.380446
+  type: 'suite'
+  ...
+# Subtest: M2 eşleme: karekod (P1 5 dk, tek kullanım, P2), yalnız yönetici, uzak izin
+    # Subtest: uzak izni olmayana karekod yok (403 remote-permission); personel karekod üretemez (403)
+    ok 1 - uzak izni olmayana karekod yok (403 remote-permission); personel karekod üretemez (403)
+      ---
+      duration_ms: 69.419247
+      type: 'test'
+      ...
+    # Subtest: P1: karekod 4 dk 59 sn'de geçer, tam 5. dakikada (gece yarısı ve ay dönümünde) geçmez
+    ok 2 - P1: karekod 4 dk 59 sn'de geçer, tam 5. dakikada (gece yarısı ve ay dönümünde) geçmez
+      ---
+      duration_ms: 26.385768
+      type: 'test'
+      ...
+    # Subtest: P2: aynı kişiye yeni karekod öncekini geçersiz kılar
+    ok 3 - P2: aynı kişiye yeni karekod öncekini geçersiz kılar
+      ---
+      duration_ms: 14.863696
+      type: 'test'
+      ...
+    # Subtest: karekodun içeriği uzak adres + \#eslesme=<kod> (kod adres satırının \# kısmında; sunucuya gitmez); veri tabanında kod düz metin değil
+    ok 4 - karekodun içeriği uzak adres + \#eslesme=<kod> (kod adres satırının \# kısmında; sunucuya gitmez); veri tabanında kod düz metin değil
+      ---
+      duration_ms: 20.55088
+      type: 'test'
+      ...
+    1..4
+ok 41 - M2 eşleme: karekod (P1 5 dk, tek kullanım, P2), yalnız yönetici, uzak izin
+  ---
+  duration_ms: 551.949261
+  type: 'suite'
+  ...
+# Subtest: P14 eşleme bağlantısı (karekod okuyamayan uzak bilgisayar): aynı tek kullanımlık kod, aynı kurallar
+    # Subtest: bağlantı = uzak adres/mobil/\#eslesme=<kod>; tarayıcıda açılan sayfa çerezsiz gelir, kod \# kısmında (istek satırında yok); uzak bilgisayar eşlenir; tek kullanım, P2, P4
+    ok 1 - bağlantı = uzak adres/mobil/\#eslesme=<kod>; tarayıcıda açılan sayfa çerezsiz gelir, kod \# kısmında (istek satırında yok); uzak bilgisayar eşlenir; tek kullanım, P2, P4
+      ---
+      duration_ms: 902.648786
+      type: 'test'
+      ...
+    1..1
+ok 42 - P14 eşleme bağlantısı (karekod okuyamayan uzak bilgisayar): aynı tek kullanımlık kod, aynı kurallar
+  ---
+  duration_ms: 902.913377
+  type: 'suite'
+  ...
+# Subtest: M2 sınır: program başına 3 eşli cihaz, iki şirket birlikte (P3, P4, P5); silince yer açılır
+    # Subtest: telefon + tablet + uzak tarayıcı (iki şirketin kullanıcıları) = 3; 4. karekod üretilmez (P4), elde kalan kodla eşleme reddedilir (P3) ve kod harcanmaz
+    ok 1 - telefon + tablet + uzak tarayıcı (iki şirketin kullanıcıları) = 3; 4. karekod üretilmez (P4), elde kalan kodla eşleme reddedilir (P3) ve kod harcanmaz
+      ---
+      duration_ms: 192.711011
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki eşleme son yer için: yalnız biri kazanır
+    ok 2 - aynı anda iki eşleme son yer için: yalnız biri kazanır
+      ---
+      duration_ms: 16.659844
+      type: 'test'
+      ...
+    # Subtest: P5: lisanstaki sayı mevcudun altına düşerse eşli cihazlar sürer, yalnız yeni eşleme engellenir; sayı alanı belirteçten okunur (yoksa 3)
+    ok 3 - P5: lisanstaki sayı mevcudun altına düşerse eşli cihazlar sürer, yalnız yeni eşleme engellenir; sayı alanı belirteçten okunur (yoksa 3)
+      ---
+      duration_ms: 4.296895
+      type: 'test'
+      ...
+    1..3
+ok 43 - M2 sınır: program başına 3 eşli cihaz, iki şirket birlikte (P3, P4, P5); silince yer açılır
+  ---
+  duration_ms: 1236.603631
+  type: 'suite'
+  ...
+# Subtest: M2 silme, izin, kullanıcı: erişim HEMEN kesilir
+    # Subtest: cihaz silinince açık uzak oturumu sonraki istekte düşer (sayfa dosyası dahil); yeniden eşleme gerekir
+    ok 1 - cihaz silinince açık uzak oturumu sonraki istekte düşer (sayfa dosyası dahil); yeniden eşleme gerekir
+      ---
+      duration_ms: 67.796745
+      type: 'test'
+      ...
+    # Subtest: uzak izin kalkınca kişinin bütün cihazları, oturumları ve bekleyen karekodu düşer; başkası etkilenmez
+    ok 2 - uzak izin kalkınca kişinin bütün cihazları, oturumları ve bekleyen karekodu düşer; başkası etkilenmez
+      ---
+      duration_ms: 183.122377
+      type: 'test'
+      ...
+    # Subtest: kullanıcı silinince cihazı silinir (yer açılır); pasifleşince uzak oturumu kapanır
+    ok 3 - kullanıcı silinince cihazı silinir (yer açılır); pasifleşince uzak oturumu kapanır
+      ---
+      duration_ms: 70.659237
+      type: 'test'
+      ...
+    1..3
+ok 44 - M2 silme, izin, kullanıcı: erişim HEMEN kesilir
+  ---
+  duration_ms: 900.654691
+  type: 'suite'
+  ...
+# Subtest: M2 giriş: cihaza bağlı (P6), imza, deneme sınırı kullanıcı başına (P11–P13), oturum ömrü (P7, P8)
+    # Subtest: P6: cihazdan yalnız eşlendiği kullanıcı girer; imzasız ya da yeniden oynatılan meydan okuma reddedilir
+    ok 1 - P6: cihazdan yalnız eşlendiği kullanıcı girer; imzasız ya da yeniden oynatılan meydan okuma reddedilir
+      ---
+      duration_ms: 61.990227
+      type: 'test'
+      ...
+    # Subtest: P11–P13: 5. yanlış parola kilitler (o deneme 'parola yanlış'), kilitliyken doğru parola da reddedilir, 15 dk sonra açılır; yerel giriş ve başka kullanıcı etkilenmez
+    ok 2 - P11–P13: 5. yanlış parola kilitler (o deneme 'parola yanlış'), kilitliyken doğru parola da reddedilir, 15 dk sonra açılır; yerel giriş ve başka kullanıcı etkilenmez
+      ---
+      duration_ms: 464.327849
+      type: 'test'
+      ...
+    # Subtest: parolası doğru ama uzak izni olmayan giriş sayılmaz; başarılı giriş sayacı sıfırlar
+    ok 3 - parolası doğru ama uzak izni olmayan giriş sayılmaz; başarılı giriş sayacı sıfırlar
+      ---
+      duration_ms: 474.554202
+      type: 'test'
+      ...
+    # Subtest: P7: 15 dk işlem yoksa oturum kapanır (14:59 geçer); P8: işlem sürse de en çok 12 saat
+    ok 4 - P7: 15 dk işlem yoksa oturum kapanır (14:59 geçer); P8: işlem sürse de en çok 12 saat
+      ---
+      duration_ms: 273.43614
+      type: 'test'
+      ...
+    1..4
+ok 45 - M2 giriş: cihaza bağlı (P6), imza, deneme sınırı kullanıcı başına (P11–P13), oturum ömrü (P7, P8)
+  ---
+  duration_ms: 1878.200737
+  type: 'suite'
+  ...
+# Subtest: M2 şirket erişimi ve lisans
+    # Subtest: mobilde şirket kuralı aynı: işaretli şirket, işaretsiz yalnız 001, yönetici hepsi, olmayan şirket 409
+    ok 1 - mobilde şirket kuralı aynı: işaretli şirket, işaretsiz yalnız 001, yönetici hepsi, olmayan şirket 409
+      ---
+      duration_ms: 993.43814
+      type: 'test'
+      ...
+    # Subtest: lisans geçersizken (salt okunur) uzaktan hiçbir istek geçmez, karekod üretilmez; eşleme silinmez
+    ok 2 - lisans geçersizken (salt okunur) uzaktan hiçbir istek geçmez, karekod üretilmez; eşleme silinmez
+      ---
+      duration_ms: 468.924482
+      type: 'test'
+      ...
+    1..2
+ok 46 - M2 şirket erişimi ve lisans
+  ---
+  duration_ms: 1462.852414
+  type: 'suite'
+  ...
+# Subtest: M2 ortak katman: yedekten geri yükleme cihazı geri getirmez
+    # Subtest: 001 yedeği geri yüklense de silinmiş cihaz ve kaldırılmış uzak izin canlıdaki gibi kalır (COMMON_TABLES)
+    ok 1 - 001 yedeği geri yüklense de silinmiş cihaz ve kaldırılmış uzak izin canlıdaki gibi kalır (COMMON_TABLES)
+      ---
+      duration_ms: 618.151813
+      type: 'test'
+      ...
+    1..1
+ok 47 - M2 ortak katman: yedekten geri yükleme cihazı geri getirmez
+  ---
+  duration_ms: 618.361287
+  type: 'suite'
+  ...
+# Subtest: B2 ofis saati ileri kayıp geri gelince kapıcı kaydı (Date başlığı yok)
+    # Subtest: saat doğruyken kayıt geçer
+    ok 1 - saat doğruyken kayıt geçer
+      ---
+      duration_ms: 27.089025
+      type: 'test'
+      ...
+    # Subtest: saat 3 saat ileri (saat dilimi hatası): kayıt reddedilir, reddedilen zaman SAKLANMAZ
+    ok 2 - saat 3 saat ileri (saat dilimi hatası): kayıt reddedilir, reddedilen zaman SAKLANMAZ
+      ---
+      duration_ms: 14.310669
+      type: 'test'
+      ...
+    # Subtest: saat düzeltilince kayıt yeniden geçer; yeni eşlenen telefon kapıcıdan girer
+    ok 3 - saat düzeltilince kayıt yeniden geçer; yeni eşlenen telefon kapıcıdan girer
+      ---
+      duration_ms: 202.550337
+      type: 'test'
+      ...
+    # Subtest: eski sürümün bıraktığı ileri sonKayitMs (şimdi + 3 sa) kırpılır: kayıt geçer, saklı değer kabul edilen zamana iner
+    ok 4 - eski sürümün bıraktığı ileri sonKayitMs (şimdi + 3 sa) kırpılır: kayıt geçer, saklı değer kabul edilen zamana iner
+      ---
+      duration_ms: 18.203294
+      type: 'test'
+      ...
+    # Subtest: saat 4 dk ileri (pay içinde) kabul edilen kayıttan sonra saat geri gelince sıra korunur (kapıcının son kaydının gerisine düşmez)
+    ok 5 - saat 4 dk ileri (pay içinde) kabul edilen kayıttan sonra saat geri gelince sıra korunur (kapıcının son kaydının gerisine düşmez)
+      ---
+      duration_ms: 19.627732
+      type: 'test'
+      ...
+    1..5
+ok 48 - B2 ofis saati ileri kayıp geri gelince kapıcı kaydı (Date başlığı yok)
+  ---
+  duration_ms: 745.51787
+  type: 'suite'
+  ...
+# Subtest: B2b pay: Date başlığı programa ulaşmasa da ±3 dk farkta kayıt + eşleme + canlı giriş geçer
+    # Subtest: ofis saati 3 dk
+        # Subtest: kayıt, eşleme ve giriş 200; saat farkı ölçülmedi (telafi yok)
+        ok 1 - kayıt, eşleme ve giriş 200; saat farkı ölçülmedi (telafi yok)
+          ---
+          duration_ms: 225.944334
+          type: 'test'
+          ...
+        1..1
+    ok 1 - ofis saati 3 dk
+      ---
+      duration_ms: 691.85271
+      type: 'suite'
+      ...
+    # Subtest: ofis saati -3 dk
+        # Subtest: kayıt, eşleme ve giriş 200; saat farkı ölçülmedi (telafi yok)
+        ok 1 - kayıt, eşleme ve giriş 200; saat farkı ölçülmedi (telafi yok)
+          ---
+          duration_ms: 133.12242
+          type: 'test'
+          ...
+        1..1
+    ok 2 - ofis saati -3 dk
+      ---
+      duration_ms: 516.531743
+      type: 'suite'
+      ...
+    # Subtest: pay sabiti 5 dk (kapıcının işareti ve programın doğrulaması aynı sabiti kullanır)
+    ok 3 - pay sabiti 5 dk (kapıcının işareti ve programın doğrulaması aynı sabiti kullanır)
+      ---
+      duration_ms: 0.33463
+      type: 'test'
+      ...
+    1..3
+ok 49 - B2b pay: Date başlığı programa ulaşmasa da ±3 dk farkta kayıt + eşleme + canlı giriş geçer
+  ---
+  duration_ms: 1209.453608
+  type: 'suite'
+  ...
+# Subtest: B2b telafi: ofis saati payın dışında (±10 dk), kapıcı yanıtının Date başlığıyla düzeltilir ve Yönetim uyarır
+    # Subtest: ofis saati 10 dk
+        # Subtest: kayıt (ilk ret + ölçülen farkla bir kez yineleme) geçer; eşleme ve canlı giriş 200
+        ok 1 - kayıt (ilk ret + ölçülen farkla bir kez yineleme) geçer; eşleme ve canlı giriş 200
+          ---
+          duration_ms: 156.774949
+          type: 'test'
+          ...
+        # Subtest: Yönetim → Mobil Cihazlar: sunucu farkı döndürür, ekranda uyarı cümlesi görünür
+        ok 2 - Yönetim → Mobil Cihazlar: sunucu farkı döndürür, ekranda uyarı cümlesi görünür
+          ---
+          duration_ms: 10.630006
+          type: 'test'
+          ...
+        1..2
+    ok 1 - ofis saati 10 dk
+      ---
+      duration_ms: 510.064775
+      type: 'suite'
+      ...
+    # Subtest: ofis saati -10 dk
+        # Subtest: kayıt (ilk ret + ölçülen farkla bir kez yineleme) geçer; eşleme ve canlı giriş 200
+        ok 1 - kayıt (ilk ret + ölçülen farkla bir kez yineleme) geçer; eşleme ve canlı giriş 200
+          ---
+          duration_ms: 146.840873
+          type: 'test'
+          ...
+        # Subtest: Yönetim → Mobil Cihazlar: sunucu farkı döndürür, ekranda uyarı cümlesi görünür
+        ok 2 - Yönetim → Mobil Cihazlar: sunucu farkı döndürür, ekranda uyarı cümlesi görünür
+          ---
+          duration_ms: 4.229979
+          type: 'test'
+          ...
+        1..2
+    ok 2 - ofis saati -10 dk
+      ---
+      duration_ms: 451.160338
+      type: 'suite'
+      ...
+    1..2
+ok 50 - B2b telafi: ofis saati payın dışında (±10 dk), kapıcı yanıtının Date başlığıyla düzeltilir ve Yönetim uyarır
+  ---
+  duration_ms: 961.762944
+  type: 'suite'
+  ...
+# Subtest: B2b uyarı eşiği: saat doğruyken (fark < 2 sn ölçüm payı) düzeltme yok, uyarı yok
+    # Subtest: fark 0 ölçülür; Yönetim'de saat uyarısı yok
+    ok 1 - fark 0 ölçülür; Yönetim'de saat uyarısı yok
+      ---
+      duration_ms: 17.043899
+      type: 'test'
+      ...
+    # Subtest: uyarı eşiği 2 dk: 1 dk 59 sn uyarmaz, 2 dk uyarır (ekran)
+    ok 2 - uyarı eşiği 2 dk: 1 dk 59 sn uyarmaz, 2 dk uyarır (ekran)
+      ---
+      duration_ms: 7.019371
+      type: 'test'
+      ...
+    1..2
+ok 51 - B2b uyarı eşiği: saat doğruyken (fark < 2 sn ölçüm payı) düzeltme yok, uyarı yok
+  ---
+  duration_ms: 356.81038
+  type: 'suite'
+  ...
+# Subtest: B5 şirket seçimi / lisans denetimi → özet yüklemesi
+    # Subtest: sınıflama: select / license check / license contact yüklemez; erişim, şirket yaşam döngüsü ve lisans etkinleştirme güvenlik
+    ok 1 - sınıflama: select / license check / license contact yüklemez; erişim, şirket yaşam döngüsü ve lisans etkinleştirme güvenlik
+      ---
+      duration_ms: 1.528982
+      type: 'test'
+      ...
+    # Subtest: 10 şirket geçişi ve 3 elle lisans denetimi özet yüklemesi doğurmaz (istekler 200)
+    ok 2 - 10 şirket geçişi ve 3 elle lisans denetimi özet yüklemesi doğurmaz (istekler 200)
+      ---
+      duration_ms: 278.909539
+      type: 'test'
+      ...
+    # Subtest: komşu: şirket ERİŞİMİ değişikliği hemen bir özet yüklemesi doğurur (güvenlik olarak kalır)
+    ok 3 - komşu: şirket ERİŞİMİ değişikliği hemen bir özet yüklemesi doğurur (güvenlik olarak kalır)
+      ---
+      duration_ms: 138.976057
+      type: 'test'
+      ...
+    1..3
+ok 52 - B5 şirket seçimi / lisans denetimi → özet yüklemesi
+  ---
+  duration_ms: 1160.17928
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 — kapıcı 'kapi-lisans' dönerken program kaydı her turda yinelemez (Cloudflare günlük istek kotası)
+    # Subtest: 1 saatlik pencerede tek kayıt isteği; pencere bitince bir kez daha; belirteç değişince ve zorla hemen
+    ok 1 - 1 saatlik pencerede tek kayıt isteği; pencere bitince bir kez daha; belirteç değişince ve zorla hemen
+      ---
+      duration_ms: 676.411235
+      type: 'test'
+      ...
+    # Subtest: kapıcıya ulaşılamazken (ağ hatası) artan bekleme 1, 2, 4, 8, en çok 15 dk; kapıcı dönünce bir sonraki denemede başarı ve sıfırlanma; zorla beklemez
+    ok 2 - kapıcıya ulaşılamazken (ağ hatası) artan bekleme 1, 2, 4, 8, en çok 15 dk; kapıcı dönünce bir sonraki denemede başarı ve sıfırlanma; zorla beklemez
+      ---
+      duration_ms: 452.036593
+      type: 'test'
+      ...
+    1..2
+ok 53 - 2.4.8 — kapıcı 'kapi-lisans' dönerken program kaydı her turda yinelemez (Cloudflare günlük istek kotası)
+  ---
+  duration_ms: 1129.931876
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M4 iOS / simge algılaması (client/mobil/karekod.js)
+    # Subtest: iPhone ve iPad (masaüstü imzası + dokunmatik) iOS; Android ve masaüstü değil
+    ok 1 - iPhone ve iPad (masaüstü imzası + dokunmatik) iOS; Android ve masaüstü değil
+      ---
+      duration_ms: 5.050699
+      type: 'test'
+      ...
+    # Subtest: tarayıcı sekmesi ↔ ana ekran simgesi: navigator.standalone ya da display-mode: standalone
+    ok 2 - tarayıcı sekmesi ↔ ana ekran simgesi: navigator.standalone ya da display-mode: standalone
+      ---
+      duration_ms: 0.440982
+      type: 'test'
+      ...
+    1..2
+ok 54 - 2.4.8 M4 iOS / simge algılaması (client/mobil/karekod.js)
+  ---
+  duration_ms: 6.385037
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M4 karekod metninden eşleme kodu — yalnız bu ofisin adresi
+    # Subtest: bu ofisin eşleme adresi → kod
+    ok 1 - bu ofisin eşleme adresi → kod
+      ---
+      duration_ms: 1.246142
+      type: 'test'
+      ...
+    # Subtest: başka ofisin adresi → 'başka bir ofisin' iletisi; biçimsiz / başka site / yol → 'eşleme karekodu değil'
+    ok 2 - başka ofisin adresi → 'başka bir ofisin' iletisi; biçimsiz / başka site / yol → 'eşleme karekodu değil'
+      ---
+      duration_ms: 0.443381
+      type: 'test'
+      ...
+    # Subtest: kamera hataları açık ileti verir (izin reddi ayrı)
+    ok 3 - kamera hataları açık ileti verir (izin reddi ayrı)
+      ---
+      duration_ms: 0.202331
+      type: 'test'
+      ...
+    1..3
+ok 55 - 2.4.8 M4 karekod metninden eşleme kodu — yalnız bu ofisin adresi
+  ---
+  duration_ms: 2.150167
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M4 karekod çözücü (client/mobil/vendor/jsqr-1.4.0.js; Apache 2.0)
+    # Subtest: çözücü npm jsqr@1.4.0 dist/jsQR.js ile bayt bayt aynı (yalnız ES modülü sarmalı); lisans ve kaynak dosya başında, lisans metni yanında
+    ok 1 - çözücü npm jsqr@1.4.0 dist/jsQR.js ile bayt bayt aynı (yalnız ES modülü sarmalı); lisans ve kaynak dosya başında, lisans metni yanında
+      ---
+      duration_ms: 3.307751
+      type: 'test'
+      ...
+    # Subtest: programın kendi karekodu (Yönetim → Mobil Cihazlar adresi) piksellerden okunur → aynı eşleme kodu
+    ok 2 - programın kendi karekodu (Yönetim → Mobil Cihazlar adresi) piksellerden okunur → aynı eşleme kodu
+      ---
+      duration_ms: 573.805498
+      type: 'test'
+      ...
+    1..2
+ok 56 - 2.4.8 M4 karekod çözücü (client/mobil/vendor/jsqr-1.4.0.js; Apache 2.0)
+  ---
+  duration_ms: 577.707043
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M4 sunucu: kamera izni yalnız mobil sayfada; kabuk karekod.js'i taşır
+    # Subtest: /mobil/ belgesi camera=(self) (ofis ağı + uzak dinleyici); masaüstü ve öbür yanıtlar camera=()
+    ok 1 - /mobil/ belgesi camera=(self) (ofis ağı + uzak dinleyici); masaüstü ve öbür yanıtlar camera=()
+      ---
+      duration_ms: 74.402986
+      type: 'test'
+      ...
+    # Subtest: hizmet çalışanı karekod.js'i kabukta tutar (app.js'in durağan içe aktarması; sunucu kapalıyken sayfa açılır)
+    ok 2 - hizmet çalışanı karekod.js'i kabukta tutar (app.js'in durağan içe aktarması; sunucu kapalıyken sayfa açılır)
+      ---
+      duration_ms: 0.814001
+      type: 'test'
+      ...
+    1..2
+ok 57 - 2.4.8 M4 sunucu: kamera izni yalnız mobil sayfada; kabuk karekod.js'i taşır
+  ---
+  duration_ms: 350.225118
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M4/M5 ekran ve kılavuz metinleri
+    # Subtest: M4: yönlendirme sayfası üç adım, eşleme yok; simgede Karekodu Okut + yeni karekod notu
+    ok 1 - M4: yönlendirme sayfası üç adım, eşleme yok; simgede Karekodu Okut + yeni karekod notu
+      ---
+      duration_ms: 0.799359
+      type: 'test'
+      ...
+    # Subtest: M5: Son Özeti Göster giriş formunun alanlarından ÖNCE; uyarı cümlesi
+    ok 2 - M5: Son Özeti Göster giriş formunun alanlarından ÖNCE; uyarı cümlesi
+      ---
+      duration_ms: 0.562416
+      type: 'test'
+      ...
+    # Subtest: kılavuz: iPhone'da Ana Ekrana Ekle → simgede Karekodu Okut; Android bugünkü gibi
+    ok 3 - kılavuz: iPhone'da Ana Ekrana Ekle → simgede Karekodu Okut; Android bugünkü gibi
+      ---
+      duration_ms: 1.248898
+      type: 'test'
+      ...
+    1..3
+ok 58 - 2.4.8 M4/M5 ekran ve kılavuz metinleri
+  ---
+  duration_ms: 2.909293
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 L1 — program: ücretli lisans bitince mobil 30 gün salt okunur, uyarılar, sonunda kapanır
+    # Subtest: 7 gün kala telefonda ve Yönetim → Mobil Cihazlar'da uyarı; bitişte masaüstü salt okunur ama telefon girer (salt okunur), 30. günün sonunda kapanır
+    ok 1 - 7 gün kala telefonda ve Yönetim → Mobil Cihazlar'da uyarı; bitişte masaüstü salt okunur ama telefon girer (salt okunur), 30. günün sonunda kapanır
+      ---
+      duration_ms: 854.564184
+      type: 'test'
+      ...
+    # Subtest: deneme: bitiş anında telefon kapanır (ileti 'Deneme süreniz bitti'); kapıcı kaydı silinince program eşlemeleri kaldırır, lisansla yeniden eşleme açık iletiyle
+    ok 2 - deneme: bitiş anında telefon kapanır (ileti 'Deneme süreniz bitti'); kapıcı kaydı silinince program eşlemeleri kaldırır, lisansla yeniden eşleme açık iletiyle
+      ---
+      duration_ms: 622.229375
+      type: 'test'
+      ...
+    1..2
+ok 59 - 2.4.8 L1 — program: ücretli lisans bitince mobil 30 gün salt okunur, uyarılar, sonunda kapanır
+  ---
+  duration_ms: 1477.975824
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 ofis kaydı: eşzamanlı ilk kullanım tek kimlik üretir
+    # Subtest: aynı anda iki çağrı → aynı kimlik ve anahtar; ayardaki kayıt da o
+    ok 1 - aynı anda iki çağrı → aynı kimlik ve anahtar; ayardaki kayıt da o
+      ---
+      duration_ms: 12.785268
+      type: 'test'
+      ...
+    # Subtest: beş eşzamanlı çağrı → tek kimlik; kayıt ayara bir kez yazılır
+    ok 2 - beş eşzamanlı çağrı → tek kimlik; kayıt ayara bir kez yazılır
+      ---
+      duration_ms: 3.798538
+      type: 'test'
+      ...
+    # Subtest: ayrı depolar ayrı kimlik alır (tek uçuş depo başına)
+    ok 3 - ayrı depolar ayrı kimlik alır (tek uçuş depo başına)
+      ---
+      duration_ms: 3.431322
+      type: 'test'
+      ...
+    1..3
+ok 60 - 2.4.7 ofis kaydı: eşzamanlı ilk kullanım tek kimlik üretir
+  ---
+  duration_ms: 21.352612
+  type: 'suite'
+  ...
+# Subtest: M3 program: ofis kimliği, eşlemede şifreleme anahtarı, telefon adresi
+    # Subtest: ofis kimliği DNS etiketi; açılışta kapıcıya kayıt; karekod ofisin telefon adresini taşır; kimlik geri yüklemede canlıdan kalan ayarda
+    ok 1 - ofis kimliği DNS etiketi; açılışta kapıcıya kayıt; karekod ofisin telefon adresini taşır; kimlik geri yüklemede canlıdan kalan ayarda
+      ---
+      duration_ms: 37.42804
+      type: 'test'
+      ...
+    # Subtest: eşleme şifreleme anahtarını (ECDH) saklar ve yanıtta ofisin imza anahtarını verir; gizli bileşenli anahtar reddedilir
+    ok 2 - eşleme şifreleme anahtarını (ECDH) saklar ve yanıtta ofisin imza anahtarını verir; gizli bileşenli anahtar reddedilir
+      ---
+      duration_ms: 202.604004
+      type: 'test'
+      ...
+    1..2
+ok 61 - M3 program: ofis kimliği, eşlemede şifreleme anahtarı, telefon adresi
+  ---
+  duration_ms: 726.186486
+  type: 'suite'
+  ...
+# Subtest: M3 program: özet kullanıcıya göre süzülür (K23), şifreli, cihaz silinince açılamaz
+    # Subtest: yönetici: iki şirket, Anlık Durum dahil; saha personeli: yalnız 001'in Cari bölümü — 002 ve yetkisiz bölümler özete HİÇ girmez
+    ok 1 - yönetici: iki şirket, Anlık Durum dahil; saha personeli: yalnız 001'in Cari bölümü — 002 ve yetkisiz bölümler özete HİÇ girmez
+      ---
+      duration_ms: 13.920275
+      type: 'test'
+      ...
+    # Subtest: buluttaki nesne şifreli: cari adı, şirket adı, tutar düz metin olarak yok; sahanın cihazı yöneticinin bölümünü açamaz
+    ok 2 - buluttaki nesne şifreli: cari adı, şirket adı, tutar düz metin olarak yok; sahanın cihazı yöneticinin bölümünü açamaz
+      ---
+      duration_ms: 0.594888
+      type: 'test'
+      ...
+    # Subtest: yetki değişikliği HEMEN yansır: 002 erişimi verilince özette 002 görünür, kaldırılınca bir sonraki (otomatik) özette yok
+    ok 3 - yetki değişikliği HEMEN yansır: 002 erişimi verilince özette 002 görünür, kaldırılınca bir sonraki (otomatik) özette yok
+      ---
+      duration_ms: 184.248492
+      type: 'test'
+      ...
+    # Subtest: silinen cihaz: kapıcı reddeder; elde kalan eski erişimle yeni özet indirilse bile çözülemez (anahtar yenilendi)
+    ok 4 - silinen cihaz: kapıcı reddeder; elde kalan eski erişimle yeni özet indirilse bile çözülemez (anahtar yenilendi)
+      ---
+      duration_ms: 54.731243
+      type: 'test'
+      ...
+    1..4
+ok 62 - M3 program: özet kullanıcıya göre süzülür (K23), şifreli, cihaz silinince açılamaz
+  ---
+  duration_ms: 1420.494097
+  type: 'suite'
+  ...
+# Subtest: M3 program: yükleme tetikleri (Eylül: 15 dk / 10 dk hareketsizlik / günde 20; güvenlik hemen; kapanışta son hâl)
+    # Subtest: yazma türleri: GET, giriş/çıkış ve karekod üretimi tetiklemez; kullanıcı/rol/şirket erişimi/mobil/lisans/eşleme güvenlik; öbürü veri
+    ok 1 - yazma türleri: GET, giriş/çıkış ve karekod üretimi tetiklemez; kullanıcı/rol/şirket erişimi/mobil/lisans/eşleme güvenlik; öbürü veri
+      ---
+      duration_ms: 0.469705
+      type: 'test'
+      ...
+    # Subtest: veri: 10 dk hareketsizlikte yüklenir; sürekli değişiklikte en geç 15 dk; iki veri yüklemesi arası ≥ 15 dk; günde en çok 20, İstanbul gün dönümünde sıfırlanır
+    ok 2 - veri: 10 dk hareketsizlikte yüklenir; sürekli değişiklikte en geç 15 dk; iki veri yüklemesi arası ≥ 15 dk; günde en çok 20, İstanbul gün dönümünde sıfırlanır
+      ---
+      duration_ms: 2604.41624
+      type: 'test'
+      ...
+    # Subtest: güvenlik değişikliği 20 sınırını beklemez; program kapanırken bekleyen değişiklik son hâl olarak yüklenir; sonra telefon canlıda 'ofis kapalı', özette son hâl
+    ok 3 - güvenlik değişikliği 20 sınırını beklemez; program kapanırken bekleyen değişiklik son hâl olarak yüklenir; sonra telefon canlıda 'ofis kapalı', özette son hâl
+      ---
+      duration_ms: 604.047942
+      type: 'test'
+      ...
+    1..3
+ok 63 - M3 program: yükleme tetikleri (Eylül: 15 dk / 10 dk hareketsizlik / günde 20; güvenlik hemen; kapanışta son hâl)
+  ---
+  duration_ms: 3209.428078
+  type: 'suite'
+  ...
+# Subtest: M3 program: kapıcı açıkken uzak istek kapıcının işaretini taşımalı; lisans geçersizse yüklenmez
+    # Subtest: tünele kapıcıyı atlatıp doğrudan gelen (işaretsiz ya da başka cihazın işaretli) istek reddedilir (remote-kapi)
+    ok 1 - tünele kapıcıyı atlatıp doğrudan gelen (işaretsiz ya da başka cihazın işaretli) istek reddedilir (remote-kapi)
+      ---
+      duration_ms: 6.900695
+      type: 'test'
+      ...
+    # Subtest: lisans engellenince program özet yüklemez; kapıcıya engelli belirteç bildirilir ve telefonun okuması hemen kapanır (K14)
+    ok 2 - lisans engellenince program özet yüklemez; kapıcıya engelli belirteç bildirilir ve telefonun okuması hemen kapanır (K14)
+      ---
+      duration_ms: 16.520523
+      type: 'test'
+      ...
+    1..2
+ok 64 - M3 program: kapıcı açıkken uzak istek kapıcının işaretini taşımalı; lisans geçersizse yüklenmez
+  ---
+  duration_ms: 485.010826
+  type: 'suite'
+  ...
+# Subtest: M3: yapılandırma ve kaynak uyumu
+    # Subtest: kapıcı yalnız üretim girişiyle (mobileKapi) açılır; lisans servisi ortam değişkeniyle değiştirilmişse kapalı kalır (ders 30)
+    ok 1 - kapıcı yalnız üretim girişiyle (mobileKapi) açılır; lisans servisi ortam değişkeniyle değiştirilmişse kapalı kalır (ders 30)
+      ---
+      duration_ms: 2.928565
+      type: 'test'
+      ...
+    # Subtest: telefon (client/mobil/ozet.js) imza ve şifreleme bağlam metinlerini protokolle aynı kurar
+    ok 2 - telefon (client/mobil/ozet.js) imza ve şifreleme bağlam metinlerini protokolle aynı kurar
+      ---
+      duration_ms: 0.399454
+      type: 'test'
+      ...
+    1..2
+ok 65 - M3: yapılandırma ve kaynak uyumu
+  ---
+  duration_ms: 3.468718
+  type: 'suite'
+  ...
+# Subtest: mobil Kasa: hareket listesi telefona ve özete gitmez (M-H1)
+    # Subtest: masaüstü Kasa listesi aynen; mobil yanıt yalnız toplamları taşır, bakiye aynı
+    ok 1 - masaüstü Kasa listesi aynen; mobil yanıt yalnız toplamları taşır, bakiye aynı
+      ---
+      duration_ms: 24.887705
+      type: 'test'
+      ...
+    # Subtest: özetin Kasa bölümü hareket listesi taşımaz; bakiye masaüstüyle aynı
+    ok 2 - özetin Kasa bölümü hareket listesi taşımaz; bakiye masaüstüyle aynı
+      ---
+      duration_ms: 56.445765
+      type: 'test'
+      ...
+    1..2
+ok 66 - mobil Kasa: hareket listesi telefona ve özete gitmez (M-H1)
+  ---
+  duration_ms: 1713.848721
+  type: 'suite'
+  ...
+# Subtest: mobil özet hazırlanırken olay döngüsüne sıra verilir (M-H2)
+    # Subtest: en uzun kesintisiz çalışma yüklemenin toplam süresinin küçük bir parçası (iç istekler arasında masaüstüne sıra)
+    ok 1 - en uzun kesintisiz çalışma yüklemenin toplam süresinin küçük bir parçası (iç istekler arasında masaüstüne sıra)
+      ---
+      duration_ms: 158.719078
+      type: 'test'
+      ...
+    # en uzun kesintisiz 4 ms / yükleme 151 ms (oran 0.03; sınır 0,35)
+    1..1
+ok 67 - mobil özet hazırlanırken olay döngüsüne sıra verilir (M-H2)
+  ---
+  duration_ms: 2282.477167
+  type: 'suite'
+  ...
+# Subtest: M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim)
+    # Subtest: yalnız dört yazma ucu tanınır (tahsilat, ödeme, taksit kartına tahsilat, stok girişi); eski el yapımı yollar tanınmaz
+    ok 1 - yalnız dört yazma ucu tanınır (tahsilat, ödeme, taksit kartına tahsilat, stok girişi); eski el yapımı yollar tanınmaz
+      ---
+      duration_ms: 2.495345
+      type: 'test'
+      ...
+    # Subtest: S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da
+    ok 2 - S1/S2/S3/S6/S8: kapalı alan REDDEDİLİR (400 mobile-field), sessizce düşürülmez; bilinmeyen alan da
+      ---
+      duration_ms: 1.370021
+      type: 'test'
+      ...
+    # Subtest: tutar (banka planı §9.2/9): en çok 2 ondalık, binlik ayırıcısız; biçim dışı tutar YUVARLANMAZ (400 mobile-amount)
+    ok 3 - tutar (banka planı §9.2/9): en çok 2 ondalık, binlik ayırıcısız; biçim dışı tutar YUVARLANMAZ (400 mobile-amount)
+      ---
+      duration_ms: 0.635456
+      type: 'test'
+      ...
+    # Subtest: oturum özetinin yazma hakları yetkiden: personel tahsilat girer, ödeme / avans göremez; salt okunurda hiçbiri
+    ok 4 - oturum özetinin yazma hakları yetkiden: personel tahsilat girer, ödeme / avans göremez; salt okunurda hiçbiri
+      ---
+      duration_ms: 0.420856
+      type: 'test'
+      ...
+    # Subtest: S7 telefon kuralı: sonucu belirsiz istek formun açılışından 24 saat içinde aynı kimlikle yeniden gönderilir, sonra GÖNDERİLMEZ
+    ok 5 - S7 telefon kuralı: sonucu belirsiz istek formun açılışından 24 saat içinde aynı kimlikle yeniden gönderilir, sonra GÖNDERİLMEZ
+      ---
+      duration_ms: 0.40241
+      type: 'test'
+      ...
+    1..5
+ok 68 - M5 sözleşme: mobil yazma beyaz listesi ve telefon kuralları (birim)
+  ---
+  duration_ms: 6.427499
+  type: 'suite'
+  ...
+# Subtest: M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç
+    # Subtest: S1 FIFO: bağsız mobil tahsilat en eski açık faturayı kapatır; masaüstüyle aynı (eşdeğerlik çifti)
+    ok 1 - S1 FIFO: bağsız mobil tahsilat en eski açık faturayı kapatır; masaüstüyle aynı (eşdeğerlik çifti)
+      ---
+      duration_ms: 228.9981
+      type: 'test'
+      ...
+    # Subtest: istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında
+    ok 2 - istek kimliği zorunlu; aynı kimlik ikinci kez yeni kayıt açmaz (ilk sonuç), farklı içerik 409; kimlik şirketin veri dosyasında
+      ---
+      duration_ms: 40.573241
+      type: 'test'
+      ...
+    # Subtest: S4 Kasa eksi (Uyar): soru 409 cash-negative, kayıt yok; 'Yine de Kaydet' aynı kimlikle → tek kayıt
+    ok 3 - S4 Kasa eksi (Uyar): soru 409 cash-negative, kayıt yok; 'Yine de Kaydet' aynı kimlikle → tek kayıt
+      ---
+      duration_ms: 31.936264
+      type: 'test'
+      ...
+    # Subtest: S3/K8: taksit kartına mobil tahsilat; kalanı aşan 409 plan-overpay, Fazlasını Avans Yaz (yönetici) yazar, ödenmiş kart 409 plan-paid
+    ok 4 - S3/K8: taksit kartına mobil tahsilat; kalanı aşan 409 plan-overpay, Fazlasını Avans Yaz (yönetici) yazar, ödenmiş kart 409 plan-paid
+      ---
+      duration_ms: 84.036386
+      type: 'test'
+      ...
+    # Subtest: S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok
+    ok 5 - S8: mobil stok girişi parasız miktar girişi (Kasa ve cari değişmez); çıkış yolu yok
+      ---
+      duration_ms: 43.919988
+      type: 'test'
+      ...
+    # Subtest: S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir
+    ok 6 - S6: tarih sunucunun TR günü — gece yarısından önce o gün, sonra ertesi gün (ay sonu → ay başı); telefon tarihi reddedilir
+      ---
+      duration_ms: 48.74059
+      type: 'test'
+      ...
+    # Subtest: yazma formunun hesap / POS seçicisi mobil beyaz listede (masaüstü formunun ucu)
+    ok 7 - yazma formunun hesap / POS seçicisi mobil beyaz listede (masaüstü formunun ucu)
+      ---
+      duration_ms: 6.429993
+      type: 'test'
+      ...
+    # Subtest: oturum özetinde yazma açık (writesEnabled + haklar)
+    ok 8 - oturum özetinde yazma açık (writesEnabled + haklar)
+      ---
+      duration_ms: 3.556316
+      type: 'test'
+      ...
+    1..8
+ok 69 - M5 ofis ağında mobil yazma (olağan oturum): masaüstünün aynı ucu, aynı sonuç
+  ---
+  duration_ms: 942.029251
+  type: 'suite'
+  ...
+# Subtest: M5 uzaktan (eşli cihaz): M2 kapısı her yazmada
+    # Subtest: eşli cihazdan tahsilat yazılır; kaydı eşlendiği kullanıcı girer (uzak oturum)
+    ok 1 - eşli cihazdan tahsilat yazılır; kaydı eşlendiği kullanıcı girer (uzak oturum)
+      ---
+      duration_ms: 38.897902
+      type: 'test'
+      ...
+    # Subtest: rol yetkisi mobilde de aynı: personel ödeme 403, kayıt yok
+    ok 2 - rol yetkisi mobilde de aynı: personel ödeme 403, kayıt yok
+      ---
+      duration_ms: 13.705284
+      type: 'test'
+      ...
+    # Subtest: şirket yetkisi: personel 002'ye yazamaz (403); başka şirketin cari kimliği isteğin şirketinde çözülmez (404), hiçbir şirkete yazılmaz
+    ok 3 - şirket yetkisi: personel 002'ye yazamaz (403); başka şirketin cari kimliği isteğin şirketinde çözülmez (404), hiçbir şirkete yazılmaz
+      ---
+      duration_ms: 37.03071
+      type: 'test'
+      ...
+    # Subtest: aynı anda: iki cihaz + masaüstü aynı cariye ayrı kimlikle — üç kayıt; aynı cihazdan çift dokunuş (aynı kimlik aynı anda) — tek kayıt
+    ok 4 - aynı anda: iki cihaz + masaüstü aynı cariye ayrı kimlikle — üç kayıt; aynı cihazdan çift dokunuş (aynı kimlik aynı anda) — tek kayıt
+      ---
+      duration_ms: 86.175744
+      type: 'test'
+      ...
+    # Subtest: silinen cihaz ve uzak izni kaldırılan kullanıcı yazamaz (401), kayıt yok
+    ok 5 - silinen cihaz ve uzak izni kaldırılan kullanıcı yazamaz (401), kayıt yok
+      ---
+      duration_ms: 54.639072
+      type: 'test'
+      ...
+    1..5
+ok 70 - M5 uzaktan (eşli cihaz): M2 kapısı her yazmada
+  ---
+  duration_ms: 986.617541
+  type: 'suite'
+  ...
+# Subtest: M5 lisans: lisans geçersizken mobil yazma kapalı, yenilenince açılır
+    # Subtest: salt okunur lisansta uzak yazma 403 remote-license; lisans geçerli olunca aynı cihaz yazar
+    ok 1 - salt okunur lisansta uzak yazma 403 remote-license; lisans geçerli olunca aynı cihaz yazar
+      ---
+      duration_ms: 498.152415
+      type: 'test'
+      ...
+    1..1
+ok 71 - M5 lisans: lisans geçersizken mobil yazma kapalı, yenilenince açılır
+  ---
+  duration_ms: 498.439027
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 1.019969
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 151.320879
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 137.617899
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 143.80384
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 306.563541
+      type: 'test'
+      ...
+    1..5
+ok 72 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 741.842009
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 37.65687
+      type: 'test'
+      ...
+    1..1
+ok 73 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 38.001536
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim
+    # Subtest: Meta onayı (kapıcı ayarı) yokken: oturum açılmaz, açık Türkçe ileti; sayfa Facebook SDK'sını yüklemez ve aynı iletiyi gösterir
+    ok 1 - Meta onayı (kapıcı ayarı) yokken: oturum açılmaz, açık Türkçe ileti; sayfa Facebook SDK'sını yüklemez ve aynı iletiyi gösterir
+      ---
+      duration_ms: 46.355639
+      type: 'test'
+      ...
+    # Subtest: uçtan uca: oturum (imzalı) → sayfa (App ID + config_id var, App Secret YOK) → kod → Meta'ya değişim (sır yalnız bu istekte) → şifreli teslim bir kez; R2'de düz belirteç yok
+    ok 2 - uçtan uca: oturum (imzalı) → sayfa (App ID + config_id var, App Secret YOK) → kod → Meta'ya değişim (sır yalnız bu istekte) → şifreli teslim bir kez; R2'de düz belirteç yok
+      ---
+      duration_ms: 28.090755
+      type: 'test'
+      ...
+    # Subtest: kod değişimi İMZASIZ olamaz: imzasız / başka anahtarla oturum ve teslim 401; başka ofis bu oturumun belirtecini alamaz; kod iki kez kullanılamaz
+    ok 3 - kod değişimi İMZASIZ olamaz: imzasız / başka anahtarla oturum ve teslim 401; başka ofis bu oturumun belirtecini alamaz; kod iki kez kullanılamaz
+      ---
+      duration_ms: 24.959236
+      type: 'test'
+      ...
+    # Subtest: Meta değişimi reddederse açık ileti (sır ve kod iletiden ayıklanır); oturum 'hata' olarak programa bir kez verilir
+    ok 4 - Meta değişimi reddederse açık ileti (sır ve kod iletiden ayıklanır); oturum 'hata' olarak programa bir kez verilir
+      ---
+      duration_ms: 12.686048
+      type: 'test'
+      ...
+    # Subtest: oturum en çok 10 dk: süresi geçince kod ve teslim 410; zamanlanmış tur artığı siler; lisansı biten ofis oturum açamaz
+    ok 5 - oturum en çok 10 dk: süresi geçince kod ve teslim 410; zamanlanmış tur artığı siler; lisansı biten ofis oturum açamaz
+      ---
+      duration_ms: 18.80942
+      type: 'test'
+      ...
+    1..5
+ok 74 - 2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim
+  ---
+  duration_ms: 132.384422
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç kapıcıdan şifreli gelir, 'embedded' kipinde mühürlenir; Meta adımları
+    # Subtest: birlikte kullanım: Bağla → kapıcı sayfası → kod → program belirteci alır, 'embedded' kipinde mühürler, eşitlemeyi başlatır ve sınar; belirteç ve App Secret yanıtta / veri tabanında / işlem geçmişinde YOK
+    ok 1 - birlikte kullanım: Bağla → kapıcı sayfası → kod → program belirteci alır, 'embedded' kipinde mühürler, eşitlemeyi başlatır ve sınar; belirteç ve App Secret yanıtta / veri tabanında / işlem geçmişinde YOK
+      ---
+      duration_ms: 528.295862
+      type: 'test'
+      ...
+    # Subtest: birlikte kullanım değilse numara Cloud API'ye kaydedilir (6 haneli PIN, ekranda yok)
+    ok 2 - birlikte kullanım değilse numara Cloud API'ye kaydedilir (6 haneli PIN, ekranda yok)
+      ---
+      duration_ms: 363.318901
+      type: 'test'
+      ...
+    # Subtest: Tech Provider onayı yokken (kapıcı Meta ayarı yok): düğme açık, ileti 'Bu bağlantı DestekOfis'in Meta onayından sonra çalışır; şimdilik Elle Bağla.'; Meta reddederse aynı ileti + Meta'nın yanıtı
+    ok 3 - Tech Provider onayı yokken (kapıcı Meta ayarı yok): düğme açık, ileti 'Bu bağlantı DestekOfis'in Meta onayından sonra çalışır; şimdilik Elle Bağla.'; Meta reddederse aynı ileti + Meta'nın yanıtı
+      ---
+      duration_ms: 1028.194917
+      type: 'test'
+      ...
+    1..3
+ok 75 - 2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç kapıcıdan şifreli gelir, 'embedded' kipinde mühürlenir; Meta adımları
+  ---
+  duration_ms: 1920.441326
+  type: 'suite'
+  ...
+1..75
+# tests 253
+# suites 75
+# pass 253
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 63948.064955

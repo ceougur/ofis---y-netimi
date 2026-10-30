@@ -18,6 +18,16 @@ const BITIS = Date.parse("2026-12-01T00:00:00+03:00");
 const TUR = 30_000;
 
 async function kur() {
+  // Kapıcıya giden istekler bu sarmalayıcıdan geçer: ag.kesik iken kayıt isteği ağ hatasıyla düşer (kapıcı kapalı / ulaşılamıyor); her deneme saatiyle yazılır.
+  const ag = { kesik: false, denemeler: [] };
+  let saatOku = () => 0;
+  const mobileKapiFetch = async (adres, secenek) => {
+    if (String(adres).endsWith("/kayit")) {
+      ag.denemeler.push(saatOku());
+      if (ag.kesik) throw new TypeError("fetch failed (test: kapıcı kapalı)");
+    }
+    return globalThis.fetch(adres, secenek);
+  };
   const clock = createClock({ time: new Date(BITIS - 10 * 86_400_000).toISOString(), fixed: true });
   const lisans = lisansAnahtari();
   const durum = { kind: "trial", status: "active", expiresAt: new Date(BITIS).toISOString(), licenseId: "DEN-YINELEME-TEST" };
@@ -27,9 +37,11 @@ async function kur() {
     now: clock,
     remoteNow: clock,
     mobileKapiUrl: kapi.base,
+    mobileKapiFetch,
     license: { enforce: true, trustedKeys: lisans.trusted, services: ["https://lisans.yineleme.test/api/lisans"], fetchImpl: async () => ({ status: 200, json: async () => ({ ok: true, token: belirtec() }) }), machineId: MACHINE, now: () => clock.ms(), firstCheckDelayMs: 3_600_000, autoTrial: false },
   });
   await server.app.license.startTrial({});
+  saatOku = () => clock.ms();
   const sync = server.app.mobileSync;
   const ofis = await sync.ofis();
   const close = async () => {
@@ -50,6 +62,7 @@ async function kur() {
     clock,
     server,
     sync,
+    ag,
     kayitSayisi: () => kapi.gunluk.filter(g => g.yontem === "POST" && g.adres.endsWith(kayitYolu)).length,
     close,
   };
@@ -113,6 +126,61 @@ describe("2.4.8 — kapıcı 'kapi-lisans' dönerken program kaydı her turda yi
       // Davranış denetimlerinden SONRA (kırmızının nedeni kayıt sayısı olsun — ders 38): pencere adlı sabitte.
       assert.equal(OZET_KURALLARI.lisansRetMs, 60 * DK, "OZET_KURALLARI.lisansRetMs (adlı sabit, 1 saat)");
     } finally {
+      await c.close();
+    }
+  });
+
+  it("kapıcıya ulaşılamazken (ağ hatası) artan bekleme 1, 2, 4, 8, en çok 15 dk; kapıcı dönünce bir sonraki denemede başarı ve sıfırlanma; zorla beklemez", async () => {
+    const c = await kur();
+    try {
+      // Deneme lisansı geçerli (bitişe 5 gün). Kapıcı kesildi; lisans sorgusu belirteci yeniler → imza değişir → kayıt gerekir.
+      const t0 = BITIS - 5 * 86_400_000;
+      c.clock.set(t0);
+      c.ag.kesik = true;
+      await c.server.app.license.check();
+      const bas = c.ag.denemeler.length;
+      for (let t = t0; t < t0 + 60 * DK; t += TUR) {
+        c.clock.set(t);
+        await c.sync.tick();
+      }
+      // Beklenen (kendi hesap): deneme 0. dk → hata 1 → 1 dk bekle → 1. dk → hata 2 → 2 dk → 3. dk → 4 dk → 7. dk → 8 dk → 15. dk → 16 dk yerine tavan 15 →
+      // 30. dk → 15 → 45. dk → 15 → 60. dk (pencere dışı). 1 saatte 7 istek: 0, 1, 3, 7, 15, 30, 45.
+      const denemeler = c.ag.denemeler.slice(bas).map(ms => (ms - t0) / DK);
+      assert.equal(denemeler.length, 7, `kapıcı kapalıyken 1 saatte giden kayıt isteği: ${denemeler.length} (beklenen 7; her tur yineleniyorsa ~120): ${JSON.stringify(denemeler.slice(0, 12))}`);
+      assert.deepEqual(denemeler, [0, 1, 3, 7, 15, 30, 45], "deneme dakikaları artan beklemeye uyar (tavan 15 dk)");
+      const bekleyen = await c.sync.tick();
+      assert.deepEqual([bekleyen?.ok, bekleyen?.code, bekleyen?.onceden], [false, "kapi-ag", true], `bekleme içinde son hata döner: ${JSON.stringify(bekleyen)}`);
+
+      // Kapıcı döndü (50. dk): bekleme bitene dek (60. dk) istek yok; 60. dk'da bir deneme → başarı.
+      c.ag.kesik = false;
+      c.clock.set(t0 + 50 * DK);
+      await c.sync.tick();
+      assert.equal(c.ag.denemeler.length - bas, 7, "bekleme sürerken istek yok");
+      c.clock.set(t0 + 60 * DK);
+      const donus = await c.sync.tick();
+      assert.equal(donus?.ok, true, `kapıcı dönünce bir sonraki denemede başarı: ${JSON.stringify(donus)}`);
+      assert.equal(c.ag.denemeler.length - bas, 8);
+
+      // Sıfırlandı: yeni kesintide bekleme yine 1 dk'dan başlar (önceki sayaç taşınmaz).
+      c.ag.kesik = true;
+      c.clock.set(t0 + 61 * DK);
+      await c.server.app.license.check(); // yeni belirteç (yeni saat) → kayıt gerekir
+      await c.sync.tick();
+      c.clock.set(t0 + 61 * DK + 30_000);
+      await c.sync.tick();
+      c.clock.set(t0 + 62 * DK);
+      await c.sync.tick();
+      const sonra = c.ag.denemeler.slice(bas + 8).map(ms => (ms - t0) / DK);
+      assert.deepEqual(sonra, [61, 62], `başarıdan sonra bekleme 1 dk'dan başlar: ${JSON.stringify(sonra)}`);
+
+      // zorla (güvenlik / elle) beklemez.
+      c.clock.set(t0 + 62 * DK + 30_000);
+      await c.sync.kayitGonder({ zorla: true });
+      assert.equal(c.ag.denemeler.length - bas, 11, "zorla: true beklemeye takılmaz");
+      // Davranış denetimlerinden SONRA (ders 38): bekleme adlı sabitlerde.
+      assert.deepEqual([OZET_KURALLARI.hataBeklemeIlkMs, OZET_KURALLARI.hataBeklemeAzamiMs], [DK, 15 * DK], "OZET_KURALLARI.hataBeklemeIlkMs / hataBeklemeAzamiMs");
+    } finally {
+      c.ag.kesik = false;
       await c.close();
     }
   });
