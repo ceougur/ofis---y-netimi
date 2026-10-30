@@ -119,7 +119,7 @@ describe("2.4.8 W5 — WhatsApp bilgilendirme şablonları", () => {
     assert.equal(itemOf(view, "destekofis_odeme_hatirlatma").usable, false, "onay bekleyen gönderime hazır değil");
     assert.equal(itemOf(view, "destekofis_ekstre").exists, false);
     const why = view.actions.find(action => action.name === "destekofis_ekstre");
-    assert.ok(why && !why.ok && /Uygulama Kimliği \(App ID\)/.test(why.message), `neden: ${why?.message}`);
+    assert.ok(why && !why.ok && /Uygulama Kimliği \(App ID\)/.test(why.message) && /Bilgileri Değiştir ile/.test(why.message), `neden ve çözüm yolu: ${why?.message}`);
   });
 
   it("App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denetim yeni şablon açmaz", async () => {
