@@ -242,6 +242,12 @@ PDF'te (şablon değişkeni çok satır taşıyamaz — bugünkü uzun metin API
   ZORUNLU DEĞİL. (Alternatif: yalnız izni işaretli carilere gönderim — müşteriye her cariyi işaretleme yükü.)
 - S5 PDF dönemi: ÖNERİ seçilen dönem (devir + dönem hareketleri + dönem sonu bakiye), metinle aynı; "Tüm Hareketler" bütün hesap. (Bugün PDF dönemden bağımsız.)
 
+KARAR (kullanıcı, 30.10.2026 ~04:20 UTC: "müşteri sürtünmesi 0 olmalı. olmazsa biz 1 kez destek olalım. toplu gönderim için seçip gönder dediğinde toplu
+gitmeli pdf ya da mesajları"): (1) HEDEF SIFIR SÜRTÜNME — öncelik Verimor'un şablonları kurulumda kendiliğinden açması (soru 9); (2) olmazsa DestekOfis müşteriye
+BİR KEZ kurulum desteği verir (Verimor hesabı + numara + şablon + API anahtarı); program rehberi (2 şablon, Kopyala) yine yapılır; (3) kurulumdan sonra müşteri
+yalnız SEÇER → GÖNDER: PDF'li ekstreler ya da mesajlar toplu, kendiliğinden gider; tek tek onay/Gönder YOK (yalnız başta bir "N kişiye gönderilsin mi?" onayı).
+Kabul ölçütü (elle kabul + e2e): seçim → tek tık → bütün kişiler kuyrukta, kullanıcıdan başka adım istenmez.
+
 ## 12. Süre ve sıra
 
 - D0 Verimor yanıtına ve müşteri hesabına bağlı; kod sahte Verimor'la ilerler, "bitti" için gerçek gönderim (elle kabul) gerekir.
