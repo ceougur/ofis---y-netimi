@@ -179,6 +179,8 @@ function kokenYaniti(yanit, sil = []) {
  * @param {object} [o.cloudflare] Cloudflare tünel/DNS istemcisi (testte sahte; yoksa env'deki ayarla, ayar yoksa kayıtta temizlik yapılmaz — B3)
  * @param {typeof fetch} [o.waFetch] 2.4.8 W7: Meta'ya kod → belirteç değişimi isteği (testte sahte Meta)
  */
+// 2.4.8 son dar kontrol D1: istek yolundaki başarısız F2 silmesi bu süre yeniden denenmez (ofis başına).
+export const VADE_SILME_BEKLEME_MS = 5 * 60_000;
 // 2.4.8 GG (D5): lisans servisi isteğinin (yanıt gövdesi dahil) zaman aşımı — yanıt vermeyen servis kapıcı isteğini ve temizlik turunu asmasın.
 export const LISANS_SERVIS_ZAMAN_ASIMI_MS = 5_000;
 const zamanAsimli = (soz, ms) => {
@@ -305,12 +307,19 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
    * ÖNCEyse yenileme o anda olmuş olabilir (BAŞ MİMAR KARARI: kuşkuda müşterinin aleyhine silinmez — temizliğin D1 kuralıyla aynı) → kalır.
    * Silme yolu temizlikle aynı (ofisiSil: işaret, yeniden okumalar, iz). Dönüş: "silindi" | "belirsiz" | null.
    */
+  // Son dar kontrol D1: başarısız silme (Cloudflare / R2 hatası) ofis başına VADE_SILME_BEKLEME_MS hatırlanır; o sürede istek yolları yeniden denemez (her istek
+  // servis + Cloudflare çağrısı ve 500 doğurmasın) — istek "bekliyor" ile reddedilir, silme sonraki denemede ya da zamanlanmış temizlikte sürer.
+  const silmeHatasi = new Map(); // ofis → başarısız denemenin anı (Worker örneği başına; kalıcı değil)
   async function vadesiGecenSil(env, mevcut) {
     const meta = mevcut.veri;
     const onceki = await sakliIddia(env, meta);
     if (!onceki) return null;
     const silmeAni = mobilSilmeAni(onceki, { engelMs: meta.engel?.ms ?? null });
     if (silmeAni === null || now() < silmeAni || mobilHakki(onceki, now()).acik) return null;
+    const hataAni = silmeHatasi.get(meta.ofis);
+    if (hataAni !== undefined && now() - hataAni >= 0 && now() - hataAni < VADE_SILME_BEKLEME_MS) return "bekliyor";
+    silmeHatasi.delete(meta.ofis);
+    if (silmeHatasi.size > 1000) silmeHatasi.clear();
     const taze = await lisansGorunumu(env, meta, { zorla: true });
     if (!taze.yenilendi || !taze.iddia) return "belirsiz";
     const tazeSilme = mobilSilmeAni(taze.iddia, { engelMs: taze.iddia.status === "blocked" ? (meta.engel?.ms ?? now()) : null });
@@ -318,9 +327,19 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     const halaGecti = !hak.acik && tazeSilme !== null && now() >= tazeSilme;
     if (!halaGecti && onceki.issuedAt < silmeAni) return null;
     const neden = halaGecti ? hak.durum : mobilHakki(onceki, now()).durum;
-    const silindi = await ofisiSil(env, mevcut, { neden, simdi: now(), cloudflare: cloudflare || cloudflareVarsa(env), alan: String(env.OFIS_ALANI || "destekofis.net").toLowerCase() });
-    return silindi ? "silindi" : null;
+    try {
+      const silindi = await ofisiSil(env, mevcut, { neden, simdi: now(), cloudflare: cloudflare || cloudflareVarsa(env), alan: String(env.OFIS_ALANI || "destekofis.net").toLowerCase() });
+      return silindi ? "silindi" : null;
+    } catch {
+      silmeHatasi.set(meta.ofis, now());
+      return "bekliyor";
+    }
   }
+  // Silme anı geçmiş ama kayıt henüz silinemedi: istek "hak sona erdi" ile reddedilir (erişim kapalı; eski cihaz geçmez).
+  const vadeReddi = vade => {
+    if (vade === "belirsiz") at("kapi-lisans-dogrulanamadi");
+    if (vade === "bekliyor") at("kapi-lisans", { error: mobilHakIletisi({ durum: "bitti" }), mobilHak: "bitti" });
+  };
 
   // 2.4.8 L1 kâhin F3 (KARAR P17 = A, 30.10.2026 21:30 UTC, 5 dk yetkisiyle): kaydı silinmiş ofisin cihazına iletiyi kapıcı verir — silinen kaydın izinden
   // (silinen/<ofis>.json: yalnız neden + an; kişisel veri yok). KARAR L1: "sonra 'Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin'".
@@ -407,7 +426,7 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     // F2: silme anı geçtiyse kayıt bu istekte silinir; program "silindi" alır (eski cihaz listesi kabul edilmez). Taze lisans alınamazsa kayıt yazılmaz.
     if (mevcut) {
       const vade = await vadesiGecenSil(env, mevcut);
-      if (vade === "belirsiz") at("kapi-lisans-dogrulanamadi");
+      vadeReddi(vade);
       if (vade === "silindi") {
         mevcut = null;
         mezar = await mezarOku(env, ofis);
@@ -509,7 +528,7 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     // F2: silme anı geçtiyse kayıt bu istekte silinir (program sonraki kaydında "silindi" alır).
     const vade = await vadesiGecenSil(env, mevcut);
     if (vade === "silindi") at("kapi-ofis-yok");
-    if (vade === "belirsiz") at("kapi-lisans-dogrulanamadi");
+    vadeReddi(vade);
     await lisansIste(env, meta);
     const onceki = await env.OZET.head(ozetAnahtari(ofis));
     const oncekiSira = Math.max(meta.sira || 0, Number(onceki?.customMetadata?.sira || 0));
@@ -562,7 +581,7 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     await hizDenetle(env, "ozet", `${ofis}|${cihaz.id}`, K.dakikadaOzet);
     const vade = await vadesiGecenSil(env, mevcut);
     if (vade === "silindi") at("kapi-cihaz", SONA_ERDI());
-    if (vade === "belirsiz") at("kapi-lisans-dogrulanamadi");
+    vadeReddi(vade);
     const gorunum = await lisansIste(env, mevcut.veri);
     if (request.method !== "GET" && request.method !== "HEAD") at("kapi-yazma");
     const nesne = await env.OZET.get(ozetAnahtari(ofis));
@@ -674,13 +693,17 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
       if (!meta && eslesme && (await silinmisMi(env, ofis, meta))) at("kapi-lisans", SONA_ERDI());
       if (!meta) at("kapi-ofis-yok");
       if (!guncel) at("kapi-ofis-degisti");
-      // F2: silme anı geçtiyse kayıt bu istekte silinir (cihaz da düşer).
-      const vade = await vadesiGecenSil(env, mevcut);
-      if (vade === "silindi") at("kapi-cihaz", cihaz !== "-" ? SONA_ERDI() : {});
-      if (vade === "belirsiz") at("kapi-lisans-dogrulanamadi");
+      // Son dar kontrol D1: hız sınırı silme denemesinden ÖNCE (kimliksiz istek seli servis / Cloudflare çağrısı doğurmasın).
+      await hizDenetle(env, "vekil", cihaz !== "-" ? `${ofis}|${cihaz}` : `${ofis}|${request.headers.get("cf-connecting-ip") || "?"}`, K.dakikadaVekil);
+      // F2: silme anı geçtiyse kayıt bu istekte silinir (cihaz da düşer) — YALNIZ cihazı doğrulanmış istekte; cihazsız istek (eşleme, sayfa) silme
+      // denemez, süresi geçmiş lisansı lisansIste reddeder.
+      if (cihaz !== "-") {
+        const vade = await vadesiGecenSil(env, mevcut);
+        if (vade === "silindi") at("kapi-cihaz", SONA_ERDI());
+        vadeReddi(vade);
+      }
       await lisansIste(env, meta);
       if (yolSorunu(yolSorgu)) at("kapi-yol");
-      await hizDenetle(env, "vekil", cihaz !== "-" ? `${ofis}|${cihaz}` : `${ofis}|${request.headers.get("cf-connecting-ip") || "?"}`, K.dakikadaVekil);
       const ms = now();
       const isaret = `${ms}.${cihaz}.${await hmac(meta.sir, mesaj.vekil(yontem, yolSorgu, cihaz, ms))}`;
       const basliklar = new Headers(request.headers);
