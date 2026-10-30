@@ -1,4 +1,12 @@
-# Mobil Uzaktan Erişim — Temiz Oda Kâhini (2.4.7 M2 + M3/M4 erişim denetimi)
+# Mobil Uzaktan Erişim — Temiz Oda Kâhini (2.4.7 M2 + M3/M4 erişim denetimi; 2.4.8 L1 lisans hoşgörüsü)
+
+**2.4.8 L1 (30.10.2026):** 2.4.7 kuralı ("deneme/lisans bitince mobil HEMEN kapanır") yerine KARAR L1 işlendi: ücretli lisans
+bitince mobil 30 gün salt okunur + uyarılar, sonunda kapanır ve kapıcı kaydı HEMEN silinir; deneme ve engel hemen kapanır,
+kayıt 30 günde silinir; sonradan lisans alınınca karekodla yeniden eşleme. Yalnız şu karar metinlerinden (program kodu ve
+sürücü bu güncelleme yazılırken OKUNMADI; sürücü ancak beklentiler commit edildikten sonra açıldı):
+- `docs/2.4.8-IS-LISTESI.md` → "| L1 |" satırı ve "KARAR L1 (kullanıcı, 30.10.2026 ~17:45 UTC" maddesi;
+- `CLAUDE.md` → Açık iş "ERTELENDİ → SONRAKİ SÜRÜM (kullanıcı, 29.10.2026 ~13:05 UTC" (ÜCRETLİ LİSANS hoşgörüsü, UYARI metinleri,
+  7 gün) ve "SIKIŞTIRMA ÖNCESİ DURUM 7" içindeki "KARAR L1" cümlesi (ana CLAUDE.md; çalışma ağacının CLAUDE.md'sinde bu madde yok).
 
 Bu klasör 2.4.7'deki **karekodlu cihaz eşleme, 3 cihaz sınırı, cihaz silme** (M2) ile **kapıcı (Worker), şifreli özet ve
 tünelin erişim denetimi** (M3/M4'ün güvenlik sınırları) için bağımsız kâhindir. Para hesabı YOKTUR (o M5 kâhininde).
@@ -15,7 +23,9 @@ Kâhin programın kodu (server/, client/, packaging/, tools/ ve test/ altındaki
 
 Metnin sustuğu her noktada kâhin **karar vermedi** (ders 40, 43): büyük sorular parametre (P1–P13, "AÇIK SORULAR"), küçük
 noktalar ya "ikisi de olur" diye açık bırakıldı (beklenen sonuç `kabul|ret:x`) ya da açıkça yazılmış okuma (V…) oldu.
-`kabul.json` → `secilen_birlesim` **boş** (kullanıcı kararı bekleniyor); karşılaştırma o gelene dek öneri birleşimiyle yapılır:
+`kabul.json` → `secilen_birlesim` P1–P13 için 2.4.7'de seçildi (öneri birleşimi); P14–P17 (2.4.8 L1) kullanıcı kararı bekliyor,
+karşılaştırma o gelene dek öneri değeriyle yapılır (`otuz_gun=sure;hosgoruda_esleme=reddet;erken_yenileme=esleme_doner;
+kapanis_iletisi=kapicidan`). 2.4.7 öneri birleşimi:
 
 ```
 kod_sure=5;yeni_kod_eskiyi=iptal_eder;sinir_dolunca=reddet;uretimde_sinir=denetler;sinir_dusunce=mevcutlar_kalir;
@@ -28,9 +38,9 @@ deneme_anahtari=kullanici;kilit_dk=15
 | Dosya | İçerik |
 |---|---|
 | `kahin.py` | Model (yalnız standart kütüphane) + komut satırı (`hesapla`, `karsilastir`, `parametreler`) |
-| `senaryolar.py` | 33 elle yazılmış uç senaryo (U01–U33, beklenenler ELLE) + tohum 1–3 rastgele üretici (R1–R3, akışın kendi beklentisi); `kabul.json`'u yazar |
-| `kabul.json` | 36 senaryo, 2.242 olay. Elle senaryolarda karar ağacının bütün yaprakları (68), rastgelelerde 25 birleşimin birleşik sonuç kümesi + öneri çıktısı |
-| `kahin_test.py` | Kâhinin kendi testi (A–E) + 55 mutasyon (F); TAP + `# tests/pass/fail` |
+| `senaryolar.py` | 33 + 6 elle yazılmış uç senaryo (U01–U33, L01–L06; beklenenler ELLE) + tohum 1–3 rastgele üretici (R1–R3, akışın kendi beklentisi; 13 akış türü, `f_hosgoru` dahil); `kabul.json`'u yazar |
+| `kabul.json` | 42 senaryo, 2.708 olay. Elle senaryolarda karar ağacının bütün yaprakları, rastgelelerde tek tek/karşıt/rastgele birleşimlerin birleşik sonuç kümesi + öneri çıktısı |
+| `kahin_test.py` | Kâhinin kendi testi (A–E, D10 dahil) + 71 mutasyon (F); TAP + `# tests/pass/fail` |
 | `kanit/` | `tools/kanit.mjs kos` kayıtları (çıkış kodu, sayılar, ham çıktı, commit); `kanit/<gün>/kirmizi-*` bilerek bozuk modelle kırmızı kanıt |
 
 ## Nasıl koşulur
@@ -74,6 +84,13 @@ Kendi testi ~75 sn (55 mutasyonun her biri bütün senaryoları yeniden koşar).
 | K21 | Ürün kuralı (yukarıda) + "Anlık Durum yalnız yönetici" (CLAUDE.md 2.4.3) | Canlıda ve özette aynı kural; `yetki_yok`, olmayan şirket `sirket_yok` |
 | K22 | "Worker (kapıcı): yalnız lisanslı … sunucunun yazmasına" izin verir | Cihazın özete yazması `yazma_yasak` |
 | K23 | "yetkisiz kullanıcı yetkisiz şirketi/raporu/kasayı göremez" (görev) + özet şifreli, telefon kendi içinde çözer | Özette görünen içerik cihazın eşlendiği kullanıcının GÜNCEL yetkisini aşamaz |
+| L1a | KARAR L1: "ÜCRETLİ lisans biter → mobil 30 gün salt okunur (uyarılar) → 30. gün sonunda mobil KAPANIR"; 29.10: "kind license, status active … MOBİL 30 GÜN daha çalışır — salt okunur görüntüleme (canlı + son özet …)"; "(program + kapıcı + tünel aynı kuralla)" | Plan standart/pro, durum geçerli, bitiş geçti, kapanıştan (P14) önce: özet okuma, giriş, canlı okuma kabul; mobil yazma `salt_okunur` |
+| L1b | KARAR L1: "kayıt HEMEN silinir (toplam 30 gün …)" | Kapanış anından sonraki ilk olayda kapıcı kaydı silinir: cihazlar, özet, oturumlar → eski cihaz `cihaz_yok` |
+| L1c | KARAR L1: "DENEME biter → mobil HEMEN kapanır; 30 gün içinde lisans alınmazsa kapıcıdaki mobil kaydı (ofis, cihazlar, R2 özet, tünel, DNS) silinir" | Deneme bitişinde `lisans_gecersiz`; 30 gün (P14) dolmadan silmek BULGU, dolduktan sonra temizlik koşunca kesin silinmiş (V27) |
+| L1d | KARAR L1: "ENGELLENEN lisans → mobil hemen kapanır, kayıt 30 günde silinir"; 29.10: "Engellenen lisans ve DENEME hoşgörü ALMAZ" | Engel (önbellek penceresinden sonra) `lisans_gecersiz`; hoşgörüdeki ücretli lisans engellenince de; 30 gün engel anından |
+| L1e | KARAR L1: "Sonradan lisans alınır/yenilenirse telefon karekodla yeniden eşlenir" | Silinmiş kayıtta eski cihaz yenilemeden sonra da `cihaz_yok`; yeni karekod + eşleme kabul. Silinmeden önce yenilemede eşleme P16 |
+| L1f | 29.10: "masaüstü bugünkü gibi salt okunur" | `masaustu_yazma`: ücretli bitince (hoşgörüde ve sonra) `salt_okunur`; mobil aynı anda okur (L06) |
+| L1g | 29.10 UYARI: "bitişe 7 gün kala Yönetim → Mobil Cihazlar + telefonda "lisans X gün sonra bitiyor" notu; hoşgörüde "Lisansınız bitti; mobil kullanım hakkınız N gün sonra sona erecek"; sonra "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin"" | Gözlem `uyari` (aşağıda); metinler aynen; X/N V22; nerede zorunlu V23–V24; kapanış iletisi P17 |
 
 ## Varsayımlar (V…; metin söylemiyor, kâhinin okuması — program ayrışırsa önce hata sayılır, sonra sorulur: ders 6, 40)
 
@@ -111,6 +128,22 @@ Kendi testi ~75 sn (55 mutasyonun her biri bütün senaryoları yeniden koşar).
 - **V20** Yerel (ofis içi) istekler bu kâhinin kapsamı dışındadır; olay dilinde yoktur.
 - **V21** Silinen ya da izni kalkan cihazın önceden indirip çözdüğü özet telefonda kalabilir (Eylül: "bir sonraki güncellemeden itibaren
   hiçbir şey açamaz"). Kâhin yalnız kapıcının yanıtını gözler.
+- **V22** (L1) Uyarıdaki gün sayısı X (bitişe) / N (kapanışa): aşağı yuvarlama, yukarı yuvarlama ve İstanbul takvim günü farkının her biri
+  kabul. 7 gün notu, bu sayımlardan biri ≤ 7 ise gösterilebilir; hepsi ≤ 7 ise zorunlu, hepsi > 7 ise gösterilmez (8 gün kala yok).
+- **V23** (L1) "lisans X gün sonra bitiyor" notu ÜCRETLİ lisansta zorunlu; denemede ikisi de olur (karar ücretli lisans maddesinde).
+  Yönetim → Mobil Cihazlar'da 7 gün notu zorunlu; hoşgörü ve "sona erdi" iletileri masaüstünde ikisi de olur (cümlede yer bir kez yazılı).
+- **V24** (L1) Telefonda uyarı zorunlu yer GİRİŞTİR ("her girişte uyarı"); özet okuma ve canlı istekte ikisi de olur.
+- **V25** (L1) Hoşgörüde karekod üretimi: V11 (kabul | ret); ret sınıfı `lisans_gecersiz` ya da `salt_okunur`.
+- **V26** (L1) Hoşgörüde program özet yükleyebilir de yüklemeyebilir de ("son özet").
+- **V27** (L1) Deneme/engel kaydının silinmesi: 30 gün (P14) dolmadan silinmez; dolduktan sonra kapıcı temizliği (`kapici_temizlik`) koşana
+  dek silinmiş de silinmemiş de olabilir; temizlikten sonra kesin. Ücretli kayıt kapanış anında kesin ("HEMEN"). Engel ve bitiş birlikteyse
+  en erken ile en geç an arası ikisi de olur. Kapıcı önbellek penceresindeki (en uzun P9) bütün kayıtlar karara girer.
+- **V28** (L1) Kayıt silinince programın Mobil Cihazlar listesi de boşalır ("telefon karekodla yeniden eşlenir" — eski cihaz yer tutmaz);
+  program en geç sonraki "Lisansı Şimdi Denetle"de, özet yüklemede ya da eşlemede öğrenir, arada eski sayıyı da gösterebilir.
+- **V29** (L1) Hoşgörüde mobil yazma `salt_okunur` (yeni ret sınıfı); ret önceliğinde yetkiden sonra.
+- **V30** (L1) Engel için 30 gün, lisans servisindeki engel anından sayılır; kapıcının engeli geç öğrenmesi silmeyi yalnız geciktirir (V27).
+- **V31** (L1) Masaüstü yazma: deneme biten ya da engelli lisansta masaüstü davranışı karar metninde yok → denetlenmez (her sonuç kabul).
+- **V32** (L1) Başlangıç durumunda engelli lisans girdi hatasıdır (engel anı bilinmez); engel `lisans_degis` ile verilir.
 
 ## AÇIK SORULAR (kullanıcıya sorulacak; kâhin karar vermedi — ders 40, 43)
 
@@ -131,6 +164,11 @@ Her soru bir parametredir; `kabul.json` her senaryoda bütün seçeneklerin bekl
 | P11 | Uzaktan kaç ardışık yanlış parolada kilit? | 5 · 10 | **5** — yaygın uygulama; ana oturum programın mevcut (yerel olmayan) sınırıyla aynı olduğunu koddan doğrulamalı. |
 | P12 | Yanlış deneme sayacı neye göre? | kullanıcı başına · cihaz başına | **Kullanıcı başına** — ASVS §2.2.1 hesap başına; cihaz başına sayaç 3 cihazla üç kat deneme verir. |
 | P13 | Kilit süresi | 15 · 30 dk | **15 dk** — P7 ile aynı ölçek; yaygın uygulama. |
+
+| P14 | (L1) "30 gün" / "30. günün sonu" nasıl sayılır? (hoşgörü ve silme) | sure (bitiş + 30×24 saat) · gun_sonu (bitiş günü sayılmaz, 30. günün sonu) · gun_sonu_dahil (bitiş günü 1. gün) | **sure** — KARAR L1 "toplam 30 gün"; abonelik hoşgörü süreleri bitiş anından süre olarak işler. Gece yarısı biten lisansta sure = gun_sonu_dahil; gun_sonu bir gün uzun. (gun_sonu, projenin İPTAL 8 gün kuralıyla — "başlangıç günü sayılmaz" — aynı sayımdır.) |
+| P15 | (L1) Hoşgörüde yeni cihaz eşlenebilir mi? | reddet · kabul | **Reddet** — mobil "salt okunur görüntüleme"; süresi geçmiş lisansla cihaz eklemek yazmadır; yaygın uygulama hoşgörüde mevcut erişimi sürdürür, yenisini açmaz. |
+| P16 | (L1) Deneme / engel 30 gün dolmadan (kayıt silinmeden) lisans alınırsa eski eşleme geri gelir mi? | esleme_doner · yeniden_esleme | **Döner** — karar "30 gün içinde lisans alınmazsa silinir" diyor (alınırsa kayıt, cihazlar dahil, kalır); 2.4.7 K9 "yenilenince eşlemeler geri gelecek". "Sonradan … karekodla yeniden eşlenir" silinmiş kayda okunur. |
+| P17 | (L1) "Mobil kullanım hakkınız sona erdi…" iletisi telefonda nereden gelir? (kayıt HEMEN silinince) | kapicidan (kapıcının ret yanıtında; silinmiş kayıt için küçük bir iz tutulur) · uygulamada (telefon uygulaması kendi gösterir; yanıtta aranmaz) | **Kapıcıdan** — hoşgörüde telefonu hiç açmamış kullanıcı ancak sunucu yanıtıyla öğrenir; KÖR NOKTA aşağıda. |
 
 Kullanıcıya sorulacak biçim (kısa): "P1 karekod 5 dk mı? P2 ikinci karekod ilkini iptal etsin mi? P3 dolu iken yeni eşleme reddedilsin mi? …
 (öneri: yukarıdaki kalın değerler)". Karar gelince `kabul.json` → `secilen_birlesim` yazılır, `kahin.py`'de öneri değişmez (geri dönüş için).
@@ -158,13 +196,21 @@ Kullanıcı: `{"rol": "yonetici|kullanici", "uzaktan": bool, "sirketler": [...],
 | `program_lisans_denetle` | ofis | "Lisansı Şimdi Denetle" | — |
 | `sunucu` | ofis, durum | Programı durdur / başlat (tünel düşer / kalkar) | — |
 | `bekle` | — | Yalnız saat ilerler | — |
+| `kapici_temizlik` | — (bütün ofisler) | (L1) Kapıcının dönemsel temizlik işini sahte saatle tetikle | — |
+| `mobil_cihazlar_oku` | ofis, yapan | (L1) Yönetim → Mobil Cihazlar (yerel oturum) | kabul / ret, `esli`, `uyari` |
+| `masaustu_yazma` | ofis, yapan | (L1) Masaüstünde sıradan bir yazma (ör. yeni kayıt) | kabul / `salt_okunur` |
+
+**Uyarı gözlemi (L1):** `giris`, `istek`, `ozet_oku`, `mobil_cihazlar_oku` çıktısında `uyari` = programın gösterdiği uyarı/ileti metni
+(yoksa `null`). Kâhinin kabul kümesi: metin(ler), `(yok)` (uyarı yok), `(herhangi)` (denetlenmez). Eşleşme: metin AYNEN içerilmeli;
+yalnız ilk harfin büyük/küçüğü ve sondaki nokta serbest; 2.4.7 iletisi "Lisans geçerli değil; uzaktan erişim kapalı" önek olarak aranır.
+Programın çıktısında `uyari` yoksa "uyarı yok" sayılır; zorunlu uyarı beklenen yerde bu FARK'tır (ders 4).
 
 Saat: program `config.now` ile, kapıcı (yerel Worker) aynı sahte saatle; V9 penceresi gerçek saatle denenemez.
 
 **Ret sınıfları** (sürücü programın yanıtını — HTTP durumu + hata kodu — bunlara çevirir; eşleme tablosu karşılaştırmadan ÖNCE yazılır,
 ders 5): `cihaz_yok`, `sinir_asimi`, `lisans_gecersiz`, `lisans_dogrulanamadi`, `yol_yasak`, `sunucu_kapali`, `oturum_gecersiz`, `yetki_yok`,
 `sirket_yok`, `yazma_yasak`, `ozet_yok`, `ozet_eski`, `kod_gecersiz`, `sinir_dolu`, `uzaktan_izni_yok`, `parola_yanlis`, `deneme_siniri`,
-`cihaz_baska_kullanici`.
+`cihaz_baska_kullanici`, (L1) `salt_okunur`.
 
 ## Çıktı ve karşılaştırma
 
@@ -180,7 +226,17 @@ alt sınırdaki her bölüm görünmeli. Programın üretemediği senaryo `progr
 Sürücü (program tarafı) bu kâhinin işi değildir; ana oturum / M2 geliştiricisi yazar ve bu klasöre `program-surucu.mjs` adıyla koyar
 (kâhin onu okumaz).
 
-## Senaryolar (36)
+## Senaryolar (42)
+
+- **L01** ücretli, İstanbul gece yarısı bitiş: 8 gün / 7 gün + 1 sa / 7 gün / 3,5 gün / 1 sn kala notu; bitiş anı (hoşgörü, N, salt okunur
+  yazma); 29. gün; 30. günün son anı ve sonu, 31. günün son anı ve sonu (P14); 31. gün liste boş; kayıt silinmiş; yenilenince eski cihaz yok,
+  karekodla yeniden eşleme · **L02** Pro, gün ortası UTC yazımlı bitiş; hoşgörü 31 Aralık 23:59:59 (UTC yazım) ve 1 Ocak 00:00:01 (ofsetsiz)
+  geçer; P14'ün üç sınırı ayrı ayrı · **L03** hoşgörüde canlı/özet okuma, yazma reddi, Anlık Durum, karekod (V25) ve eşleme (P15), cihaz silme,
+  sunucu kapalı, hoşgörüde yenileme · **L04** deneme iki ofis: hemen kapanış, 30 gün dolmadan lisans (P16), 30 gün + temizlik (V27, P14),
+  silinmiş kayıtta yeniden eşleme · **L05** engel: 25 saat sonra kapalı, 29. gün kayıt durur, 30 gün + temizlik (P14), engel kalkınca yeniden
+  eşleme; hoşgörüdeki ücretli lisans engellenince hemen kapanır · **L06** masaüstü salt okunur ↔ mobil hoşgörü, Mobil Cihazlar'da 5 gün notu.
+- 2.4.8'de değişen 2.4.7 senaryoları: U10 (artık deneme; yenilemede P16), U11 (engel kalkınca P16), U21 (yıl sonu deneme bitişi), R üreticisi
+  `f_lisans` (P16) + yeni `f_hosgoru` (ücretli bitiş → hoşgörü okuma/yazma → 32. gün silinmiş → yenile → yeniden eşle).
 
 - U01 temel akış (Standart lisans) · U02 karekod 1,5/3/7/12 dk · U03 süre tam sınırda · U04 aynı kodun ikinci kullanımı · U05 ikinci karekod
 - U06 4. cihaz (telefon + tablet + tarayıcı), silince yer açılır · U07 sınır iki şirkete dağılmış + aynı kişinin iki cihazı + iki ofis ayrı ·
@@ -213,9 +269,40 @@ sayılmaz (yarış) · M46 kapıcı doğrudan kayıtta sınır yok · M47 olmaya
 dahil · M52 boşta sınırı dahil · M53 kilit bitmez · M54 yeniden başlatma belirsizliği daraltılır · M56 özet yöneticinin görünümüyle · M57 Pro
 kilidi (Standart lisansta mobil kapalı).
 
+2.4.8 L1: M58 hoşgörü yok (2.4.7 kuralı) · M59 deneme hoşgörü alır · M60 engel hoşgörü alır · M61 hoşgörüde yazma · M62 hoşgörü bir gün
+uzun · M63 ücretli kayıt silinmez · M64 deneme/engel kaydı silinmez · M65 kapanışta hemen silinir · M66 N yerine geçen gün · M67 7 gün notu
+yok · M68 hoşgörüde "sona erdi" · M69 P15 ters · M70 P16 ters · M71 masaüstü hoşgörüde yazar · M72 P17 ters · M73 hoşgörü bir gün kısa.
+
 Bir mutasyon, elle senaryoların karar ağacında ya da rastgele senaryoların öneri birleşiminde en az bir beklentiyle ayrışmalıdır;
-55/55 yakalandı, 55/55'i öneri birleşiminde de yakalandı. Bazı mutasyonlar ayrıca girdi hatası verir (ör. M01'de belirsiz sınır) — sayılmaz,
+71/71 yakalandı, 71/71'i öneri birleşiminde de yakalandı (2.4.8 L1 güncellemesi). Bazı mutasyonlar ayrıca girdi hatası verir (ör. M01'de belirsiz sınır) — sayılmaz,
 yalnız not edilir.
+
+## Karşılaştırma — 2.4.8 L1 (30.10.2026; kâhin a348f472'de sabitlendikten SONRA)
+
+Komut: `HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=test/bagimsiz/mobil-erisim/kanit node tools/kanit.mjs kos 248-l1-kahin -- node
+test/bagimsiz/mobil-erisim/program-surucu.mjs --cikti <klasör>` → 42 senaryodan 30 uyumlu, 12 farklı (`kanit/2026-10-30/248-l1-kahin.*`,
+fark listesi `248-l1-kahin-farklar.txt`, ham çıktı `*.json.gz`). Birleşim: P1–P13 seçili, P14–P17 öneri. Sürücüye 2.4.8 için yalnız API
+çağrıları, eşleme ve saat düzeni eklendi (dosya başındaki "2.4.8 L1" notu): deneme → belirteç `kind: "trial"`; uyarı gözlemi (giriş yanıtı +
+girişten sonra `/api/mobil/session`, özet, Mobil Cihazlar; ≤ 300 karakterlik metinlerde kalıp taraması); `kapici_temizlik` → yerel kapıcının
+temizlik işi; `masaustu_yazma` → yeni cari (`POST /api/workspace/accounts`; tanı için kullanıcı açma da denenir); sahte saat ≥ 1 saat ilerleyince
+programın lisans denetimi (üretimdeki düzenli denetimin yerine). Tanı koşusu D01 (L01 + kapanıştan 1 sa sonra temizlik + geçerli lisansta mobil
+yazma; beklenti kâhinin kendi modelinden) `248-l1-tani-D01-*`.
+
+Uyumlu: hoşgörüde okuma (giriş, canlı, özet) ve masaüstü salt okunur (yeni cari `salt_okunur`, "Lisans süresi doldu. Program salt okunur
+çalışıyor…"); hoşgörü iletisi metni ve N; P14 sınırları programda `sure` (L01: 9 Ara 23:59:59 açık, 10 Ara 00:00 kapalı; L02: 14 Oca 14:29:59 açık,
+14:30 kapalı); ücretli kapanış iletisi U3 (kayıt silinmeden önce); deneme ve engel hemen kapanır (hoşgörüdeki ücretli engellenince de);
+hoşgörüde yeni eşleme reddedilir (P15 öneri); deneme kaydı 30 gün + temizlikten sonra silinir, yenilemede karekodla yeniden eşleme.
+
+Farklar (kâhinin beklentisine dokunulmadı — ders 40; sınıflar sürücünün): F1 engel kaydı 30 gün + temizlikten sonra silinmiyor, engel kalkınca
+eski cihaz çalışıyor (L05) · F2 ücretli kayıt kapanış anında silinmiyor, sonraki temizliğe dek duruyor; arada yenilenirse eski cihaz dönüyor ve yer
+tutuyor (L01, L02, L06; R1–R3'teki sınır/eşli farklarının hepsi bu zincir; D01'de temizlikten sonra silindi) · F3 silindikten sonra telefon "Bu cihaz
+eşli değil…" alıyor, U3 değil (D01; P17) · F4 7 gün notu "Lisansınız X gün sonra bitiyor." (karar: "lisans X gün sonra bitiyor") · F5 deneme notu
+"Deneme süreniz X gün sonra bitiyor.", deneme kapanışı "Deneme süreniz bitti; mobil kullanım kapalı. Lisans alınca yeniden açılır.", engel
+"Lisansınız engellendi; mobil kullanım kapalı." (kâhin V23/P17 kümesi dışında; karar bu metinleri söylemiyor) · F6 özetteki uyarı yükleme anında
+donuk: hoşgörüde ve yenilemeden sonra "Lisansınız 3 gün sonra bitiyor." / "Deneme süreniz 1 gün sonra bitiyor." (L03, L05, L06, U10, U21, L04) ·
+F7 V28: silinen cihaz programın listesinde lisans denetiminden sonra da sayılıyor, özet yüklemede düşüyor (L04 olay 28) — kâhinin okuması.
+DENENMEYEN: mobil yazma (sürücünün yazma ucu lisans geçerliyken de "Mobil görünüm salt okunurdur…" döndürüyor — D01 olay 40; gerçek tahsilat ucu
+sürücüde yok), Kasa raporu (2.4.7'den).
 
 ## DENENEN
 
@@ -234,7 +321,8 @@ yalnız not edilir.
 
 ## DENENMEYEN
 
-- Program tarafıyla karşılaştırma (M2 kodu yok; sürücü ana oturumda yazılacak).
+- (2.4.7 notu, artık geçersiz: sürücü `program-surucu.mjs` / `m3-surucu.mjs` var.) 2.4.8 L1 karşılaştırmasının sonucu teslim raporunda ve
+  `kanit/2026-10-30/` altında.
 - Gerçek Cloudflare (Worker, R2, tünel), gerçek telefon/tarayıcı (passkey/PIN kilidi, ana ekrana ekleme), gerçek ağ kesintisi.
 - Şifreleme ve anahtar yenileme (zarf şifreleme) — kâhin yalnız kapıcının verdiği/vermediği yanıtı ve çözülen içeriğin yetki sınırını gözler.
 - Özet yükleme zamanlaması (15 dk / 10 dk hareketsizlik / günde 20) — erişim denetimi değil; `ozet_yukle` olayla tetiklenir.
@@ -251,4 +339,9 @@ yalnız not edilir.
 - Ret önceliği (V16) bir okumadır; sınıf farkları İNCELE'dir, kabul ↔ ret farkı BULGU'dur.
 - Olay dilinin programa eşlenmesi (özellikle `yetki` → gerçek uç, ret sınıfı ↔ HTTP yanıtı, `ozet_oku`'da çözülen içerik → `gorunur`) program
   tarafının işidir; eşleme yanlışsa kâhin ile program aynı yanlış girdiyle ayrışmadan geçebilir (ders 5).
-- Rastgele senaryoların tam karar ağacı denetlenmedi (25 birleşim); elle senaryolarda tam.
+- Rastgele senaryoların tam karar ağacı denetlenmedi (tek tek / karşıt / 8 rastgele birleşim); elle senaryolarda tam.
+- (L1) V22–V32 ve P14–P17 kâhinin okumasıdır; karar metni gün sayımını, uyarının yerini/yuvarlamasını, hoşgörüde eşlemeyi, silmenin
+  zamanlamasını ve programın listesini söylemiyor. L01–L06'nın beklentileri ve model AYNI elden (bu güncellemeyi yazan ajan) çıktı.
+- (L1) KÖR NOKTA (kullanıcıya): "kayıt HEMEN silinir" ile telefonda "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin" iletisi
+  birlikte, ancak kapıcı silinmiş kayıt için küçük bir iz tutarsa ya da uygulama kendisi hatırlarsa olur (P17). Ayrıca karar programın
+  Mobil Cihazlar listesini söylemiyor (V28): liste eski cihazları gösterirse yeniden eşleme 3 cihaz sınırına takılır.
