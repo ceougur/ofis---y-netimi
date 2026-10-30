@@ -5,6 +5,7 @@
 // 2.4.7 M2 (docs/mobil/M2-TASARIM.md): uzaktan bağlantıda cihaz karekodla eşlenir — tarayıcı dışa aktarılamaz ECDSA P-256 anahtarı üretir (IndexedDB), girişte
 // sunucunun tek kullanımlık meydan okumasını imzalar. Ofis ağında (yerel adres) olağan giriş sürer.
 import * as ozet from './ozet.js'; // 2.4.7 M3: sunucu kapalıyken şifreli son özet (client/mobil/ozet.js)
+import * as karekod from './karekod.js'; // 2.4.8 M4: iPhone'da eşleme simgenin içinde (Karekodu Okut); iOS tarayıcı sekmesi yalnız yönlendirir
 const $=id=>document.getElementById(id);
 const API='/api/mobil';
 const state={user:null,companies:[],company:'',page:'home',selected:null,list:[],listTotal:0,stock:[],stockTotal:0,listQuery:'',reportCatalog:[],reportSelected:null,reportQuery:null,reportResult:null,reportAccounts:[],reportChosenAccount:null,requestGeneration:0,searchTimer:0};
@@ -220,8 +221,20 @@ const secure=()=>window.isSecureContext&&!!window.crypto?.subtle&&!!window.index
 // döndürülünce de kısa kenarı < 600). Masaüstü imzası (dokunmatik dizüstü dahil) Uzak Tarayıcı kalır. Tür yalnız Yönetim → Mobil Cihazlar'da gösterilir.
 function deviceKind(){const ua=navigator.userAgent||'';if(/iPad|Tablet|Android(?!.*Mobile)/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1))return 'tablet';if(/iPhone|iPod|Android.*Mobile|Windows Phone|Mobile/i.test(ua)){const touch=navigator.maxTouchPoints>0||'ontouchstart' in window;const side=Math.min(Number(screen?.width)||0,Number(screen?.height)||0);return touch&&side>=600?'tablet':'telefon'}return 'tarayici'}
 function deviceNameGuess(){const ua=navigator.userAgent||'';if(/iPad/.test(ua))return 'iPad';const kind=deviceKind();if(kind==='tablet')return 'Tablet';if(/iPhone/.test(ua))return 'iPhone';return kind==='telefon'?'Android Telefon':'Uzak Tarayıcı'}
-function showPanel(id){for(const p of ['login-form','pair-form','unpaired'])$(p).classList.toggle('hidden',p!==id);$('login').classList.remove('hidden');$('app').classList.add('hidden')}
-function showUnpaired(message){state.user=null;if(message)$('unpaired-text').textContent=message;showPanel('unpaired')}
+const scanState={stop:true,gen:0}; // 2.4.8 M4: simgedeki kamera taraması (Vazgeç / başka panel → durur, kamera kapanır)
+function showPanel(id){if(id!=='scan')scanState.stop=true;for(const p of ['login-form','pair-form','unpaired','ios-guide','scan'])$(p).classList.toggle('hidden',p!==id);$('login').classList.remove('hidden');$('app').classList.add('hidden')}
+// 2.4.8 M4: iOS simgesinde eşli değilse "Karekodu Okut" (simgenin deposuna eşleme) + yeni karekod notu; iOS tarayıcı sekmesinde eşleme yapılmaz → yönlendirme.
+const UNPAIRED_DEFAULT=$('unpaired-text').textContent;
+const UNPAIRED_ICON='Bu simge eşli değil ya da eşlemesi kaldırıldı. Karekodu Okut\'a dokunup bilgisayardaki DestekOfis karekodunu okutun.';
+function showUnpaired(message){state.user=null;if(karekod.iosTarayici()){showIosGuide(message);return}const icon=karekod.iosSimge();$('unpaired-text').textContent=icon?UNPAIRED_ICON:(message||UNPAIRED_DEFAULT);for(const id of ['scan-open','unpaired-icon-note'])$(id).classList.toggle('hidden',!icon);$('scan-error').classList.add('hidden');showPanel('unpaired')}
+function showIosGuide(message){state.user=null;$('ios-guide-reason').textContent=message||'';$('ios-guide-reason').classList.toggle('hidden',!message);showPanel('ios-guide')}
+// Simgede kamera: karekod çözülür, adres bu ofisin eşleme adresi mi denetlenir (başka köke gidilmez), kod bugünkü eşleme formuna verilir.
+async function startScan(){const err=$('scan-error');err.classList.add('hidden');const gen=++scanState.gen;scanState.stop=false;showPanel('scan');$('scan-status').textContent='Kamera açılıyor…';
+  const iptal=()=>scanState.stop||gen!==scanState.gen;let text=null;try{text=await karekod.karekodOku($('scan-video'),{iptal,durum:t=>{if(!iptal())$('scan-status').textContent=t}})}catch(e){if(!iptal())unpairedError(e.message);return}
+  if(text===null||iptal())return;const r=karekod.eslesmeKodu(text,location);if(r.hata){unpairedError(r.hata);return}showPair(r.kod)}
+function unpairedError(message){showUnpaired();$('scan-error').textContent=message;$('scan-error').classList.remove('hidden')}
+$('scan-open').addEventListener('click',()=>{startScan()});
+$('scan-cancel').addEventListener('click',()=>{scanState.stop=true;showUnpaired()});
 const pairing={code:''};
 function showPair(code){pairing.code=code;$('device-name').value=deviceNameGuess();showPanel('pair-form')}
 // Uzak bağlantıda girişin cihaz kanıtı: meydan okuma + cihaz anahtarıyla imza. Ofis ağında uç yoktur (404) → olağan giriş.
@@ -240,7 +253,7 @@ $('pair-form').addEventListener('submit',async e=>{e.preventDefault();const butt
   pairing.code='';toast('Cihaz eşlendi. Kullanıcı adınız ve parolanızla girin.');showPanel('login-form')
 }catch(err){if(err instanceof SessionEnded)return;$('pair-error').textContent=err.message;$('pair-error').classList.remove('hidden')}finally{button.disabled=false}});
 
-$('login-form').addEventListener('submit',async e=>{e.preventDefault();const button=$('login-submit');button.disabled=true;$('login-error').classList.add('hidden');try{const proof=await loginProof();await api('/session/login',{username:$('username').value,password:$('password').value,...(proof||{})});$('password').value='';await startSession()}catch(err){$('login-error').textContent=err.message;$('login-error').classList.remove('hidden');if(err.unreachable)ozet.offer()}finally{button.disabled=false}});
+$('login-form').addEventListener('submit',async e=>{e.preventDefault();const button=$('login-submit');button.disabled=true;$('login-error').classList.add('hidden');try{const proof=await loginProof();await api('/session/login',{username:$('username').value,password:$('password').value,...(proof||{})});$('password').value='';await startSession()}catch(err){$('login-error').textContent=err.message;$('login-error').classList.remove('hidden');if(err.unreachable)ozet.offer().then(has=>{if(has)$('login-error').textContent=`${err.message} ${ozet.OFFLINE_HINT}`})}finally{button.disabled=false}});
 $('company').addEventListener('change',e=>{state.company=e.target.value;state.reportSelected=null;state.reportQuery=null;state.reportResult=null;state.reportChosenAccount=null;state.reportCatalog=[];setPage('home')});
 document.addEventListener('click',async e=>{const reportPick=e.target.closest('[data-report-pick]');if(reportPick){selectReport(reportPick.dataset.reportPick);return}const reportBack=e.target.closest('[data-report-back]');if(reportBack){renderReportCatalog();return}const reportSearch=e.target.closest('[data-report-search]');if(reportSearch){searchReportAccounts();return}const reportDownload=e.target.closest('[data-report-download]');if(reportDownload){downloadReport(reportDownload.dataset.reportDownload);return}const reportStatement=e.target.closest('[data-account-statement]');if(reportStatement){downloadAccountStatement(reportStatement.dataset.accountStatement);return}const nav=e.target.closest('[data-nav]');if(nav){setPage(nav.dataset.nav);return}const row=e.target.closest('[data-detail]');if(row){const [kind,id]=row.dataset.detail.split(':');if(id)detail(kind,id);return}const act=e.target.closest('[data-action]')?.dataset.action;if(!act)return;if(act==='refresh'){if(ozet.aktif())return ozet.refresh(startSession);state.selected?detail(state.selected.kind,state.selected.id):load()}if(act==='back')setPage(state.page);if(act==='logout'){if(!ozet.aktif()){try{await api('/session/logout',{})}catch{}}loggedOut()}});
 $('content').addEventListener('input',e=>{if(e.target.id==='list-search')listSearch(e.target.value,e.target.selectionStart)});
@@ -250,7 +263,9 @@ ozet.bagla({keyOp,b64url,secure,setAuth,serverState,loggedOut,showUnpaired,setPa
 // 2.4.7 gezinti D9: sayfa açılırken lisans kapısı (programın remote-license'ı ya da kapıcının kapi-lisans / kapi-lisans-dogrulanamadi yanıtı) giriş ekranında
 // gerekçesiyle yazılır — önceden ileti yutuluyor, boş giriş ekranı geliyordu (açık oturumda ↻ iletiyi zaten gösteriyordu).
 const LICENSE_CODES=new Set(['remote-license','kapi-lisans','kapi-lisans-dogrulanamadi']);
-(async()=>{const m=/^#eslesme=([A-Za-z0-9_-]{8,64})$/.exec(location.hash);if(m){history.replaceState(null,'',location.pathname+location.search);showPair(m[1]);return}try{await startSession()}catch(e){if(!(e instanceof SessionEnded)){loggedOut();if(LICENSE_CODES.has(e.code)){$('login-error').textContent=e.message;$('login-error').classList.remove('hidden')}else if(e.unreachable)ozet.offer()}}})();
+// 2.4.8 M4: iPhone / iPad tarayıcı sekmesinde (simge değil) karekod sayfası EŞLEMEZ ve kodu sunucuya göndermez (tüketmez; karekod 5 dk geçerli kalır): yalnız
+// "Ana Ekrana Ekle → simgede Karekodu Okut" yönlendirmesi. Simge Safari'den ayrı depoyla açılır; Safari'de yapılan eşleme simgeye geçmezdi (B1).
+(async()=>{const m=karekod.KOD_KALIBI.exec(location.hash);if(m){history.replaceState(null,'',location.pathname+location.search);if(karekod.iosTarayici()){showIosGuide();return}showPair(m[1]);return}try{await startSession()}catch(e){if(!(e instanceof SessionEnded)){loggedOut();if(LICENSE_CODES.has(e.code)){$('login-error').textContent=e.message;$('login-error').classList.remove('hidden')}else if(e.unreachable)ozet.offer()}}})();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 // 2.4.7 M5: kayıt girişi (yazma.js — tahsilat, ödeme, taksit tahsilatı, stok girişi); modül yüklenemezse mobil salt okunur kalır.
 // 2.4.7 gezinti B1: sunucu kapalıyken açılan sayfada modül yüklenemezse sonraki kayıt açılışında yeniden denenir (sunucu dönünce düğmeler gelir; sw.js modülleri de önbellekte tutar).

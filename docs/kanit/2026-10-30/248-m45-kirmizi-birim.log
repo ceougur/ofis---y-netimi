@@ -1,0 +1,1187 @@
+TAP version 13
+# Subtest: M3 kapıcı — program uçları: ofis anahtarı, yeniden oynatma, lisans imzası
+    # Subtest: ilk kayıt ofis anahtarını bağlar; aynı kimlik BAŞKA anahtarla reddedilir (kapi-ofis-anahtari)
+    ok 1 - ilk kayıt ofis anahtarını bağlar; aynı kimlik BAŞKA anahtarla reddedilir (kapi-ofis-anahtari)
+      ---
+      duration_ms: 28.313682
+      type: 'test'
+      ...
+    # Subtest: imza bozuk → kapi-imza; zaman ±5 dk dışında → kapi-zaman ve kapıcının saati döner
+    ok 2 - imza bozuk → kapi-imza; zaman ±5 dk dışında → kapi-zaman ve kapıcının saati döner
+      ---
+      duration_ms: 11.499316
+      type: 'test'
+      ...
+    # Subtest: eski kaydın yeniden oynatılması silinmiş cihazı GERİ GETİREMEZ (kapi-sira)
+    ok 3 - eski kaydın yeniden oynatılması silinmiş cihazı GERİ GETİREMEZ (kapi-sira)
+      ---
+      duration_ms: 15.86186
+      type: 'test'
+      ...
+    # Subtest: başka anahtarla imzalanmış lisans belirteci kabul edilmez (kapi-lisans)
+    ok 4 - başka anahtarla imzalanmış lisans belirteci kabul edilmez (kapi-lisans)
+      ---
+      duration_ms: 4.895889
+      type: 'test'
+      ...
+    1..4
+ok 1 - M3 kapıcı — program uçları: ofis anahtarı, yeniden oynatma, lisans imzası
+  ---
+  duration_ms: 61.755379
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — eşli cihaz sınırı kapıcıda da (K13), P5 ve silme
+    # Subtest: 3 cihaz varken 4. ekleme kapıcıda reddedilir; lisans 2'ye düşünce mevcut 3 sürer (P5), yeni ekleme reddedilir, silme her durumda geçer
+    ok 1 - 3 cihaz varken 4. ekleme kapıcıda reddedilir; lisans 2'ye düşünce mevcut 3 sürer (P5), yeni ekleme reddedilir, silme her durumda geçer
+      ---
+      duration_ms: 42.660886
+      type: 'test'
+      ...
+    # Subtest: engelli lisansla kayıt: belirteç saklanır (okumalar hemen kapanır), kapi-lisans döner, cihaz EKLENMEZ
+    ok 2 - engelli lisansla kayıt: belirteç saklanır (okumalar hemen kapanır), kapi-lisans döner, cihaz EKLENMEZ
+      ---
+      duration_ms: 19.877309
+      type: 'test'
+      ...
+    1..2
+ok 2 - M3 kapıcı — eşli cihaz sınırı kapıcıda da (K13), P5 ve silme
+  ---
+  duration_ms: 62.997082
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — özet yükleme: sıra, boyut, sınırlar
+    # Subtest: sıra kesin artar; aynı ya da eski sıra (yeniden oynatma) reddedilir; silindikten sonra eski yükleme geri getirilemez
+    ok 1 - sıra kesin artar; aynı ya da eski sıra (yeniden oynatma) reddedilir; silindikten sonra eski yükleme geri getirilemez
+      ---
+      duration_ms: 33.543411
+      type: 'test'
+      ...
+    # Subtest: başka ofisin gövdesi, iç imzası bozuk özet ve 8 MB üstü reddedilir
+    ok 2 - başka ofisin gövdesi, iç imzası bozuk özet ve 8 MB üstü reddedilir
+      ---
+      duration_ms: 106.033897
+      type: 'test'
+      ...
+    # Subtest: günlük yükleme sınırı (ofis başına 200) ve İstanbul gün dönümünde sıfırlanır; dakikada 30'dan fazlası reddedilir
+    ok 3 - günlük yükleme sınırı (ofis başına 200) ve İstanbul gün dönümünde sıfırlanır; dakikada 30'dan fazlası reddedilir
+      ---
+      duration_ms: 1009.68831
+      type: 'test'
+      ...
+    1..3
+ok 3 - M3 kapıcı — özet yükleme: sıra, boyut, sınırlar
+  ---
+  duration_ms: 1150.255222
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — cihazın özet okuması (imza, cihaz listesi, P9, K14)
+    # Subtest: eşli cihaz imzalı istekle özeti alır (gövde değişmeden); etag ile 304; cihaz listede yoksa / başka ofisinse kapi-cihaz
+    ok 1 - eşli cihaz imzalı istekle özeti alır (gövde değişmeden); etag ile 304; cihaz listede yoksa / başka ofisinse kapi-cihaz
+      ---
+      duration_ms: 18.79427
+      type: 'test'
+      ...
+    # Subtest: imza başka cihazın anahtarıyla → kapi-imza; saat kayması → kapi-zaman (kapıcı saatini döner)
+    ok 2 - imza başka cihazın anahtarıyla → kapi-imza; saat kayması → kapi-zaman (kapıcı saatini döner)
+      ---
+      duration_ms: 11.284924
+      type: 'test'
+      ...
+    # Subtest: P9: lisans servisine ulaşılamazken belirteç 59:59 dk → okunur; 60:00 dk → kapi-lisans-dogrulanamadi (fail-closed); servis dönünce açılır
+    ok 3 - P9: lisans servisine ulaşılamazken belirteç 59:59 dk → okunur; 60:00 dk → kapi-lisans-dogrulanamadi (fail-closed); servis dönünce açılır
+      ---
+      duration_ms: 21.799892
+      type: 'test'
+      ...
+    # Subtest: belirteç 30 dk'dan eskiyse ve servis erişilebilirse kapıcı yeniler; engellenen lisans 1 saat dolmadan yansır
+    ok 4 - belirteç 30 dk'dan eskiyse ve servis erişilebilirse kapıcı yeniler; engellenen lisans 1 saat dolmadan yansır
+      ---
+      duration_ms: 32.903332
+      type: 'test'
+      ...
+    # Subtest: süresi biten lisans bitiş ANINDA kapanır; özet yoksa kapi-ozet-yok
+    ok 5 - süresi biten lisans bitiş ANINDA kapanır; özet yoksa kapi-ozet-yok
+      ---
+      duration_ms: 21.40291
+      type: 'test'
+      ...
+    # Subtest: cihaz özete YAZAMAZ: cihaz + lisans geçince kapi-yazma (K22); cihaz yoksa önce kapi-cihaz
+    ok 6 - cihaz özete YAZAMAZ: cihaz + lisans geçince kapi-yazma (K22); cihaz yoksa önce kapi-cihaz
+      ---
+      duration_ms: 27.771482
+      type: 'test'
+      ...
+    1..6
+ok 4 - M3 kapıcı — cihazın özet okuması (imza, cihaz listesi, P9, K14)
+  ---
+  duration_ms: 134.522444
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — canlı bağlantı kapısı (ofisin telefon adresi → tünel)
+    # Subtest: cihazsız yalnız sayfa dosyası ve eşleme geçer; mobil uç cihazsız kapi-cihaz
+    ok 1 - cihazsız yalnız sayfa dosyası ve eşleme geçer; mobil uç cihazsız kapi-cihaz
+      ---
+      duration_ms: 10.00655
+      type: 'test'
+      ...
+    # Subtest: listede olmayan cihaz çerezi → kapi-cihaz (iletilmez); eşli cihaz → iletilir, işaret programın doğrulayacağı biçimde, istemcinin işaret taklidi ezilir
+    ok 2 - listede olmayan cihaz çerezi → kapi-cihaz (iletilmez); eşli cihaz → iletilir, işaret programın doğrulayacağı biçimde, istemcinin işaret taklidi ezilir
+      ---
+      duration_ms: 7.425627
+      type: 'test'
+      ...
+    # Subtest: yasak yollar tünele GİTMEZ (kapi-yol): program API'si, kodlanmış/çift kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi
+    ok 3 - yasak yollar tünele GİTMEZ (kapi-yol): program API'si, kodlanmış/çift kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi
+      ---
+      duration_ms: 19.771376
+      type: 'test'
+      ...
+    # Subtest: tünel kapalıyken kapi-ofis-kapali (503); lisans 1 saattir doğrulanamıyorsa iletilmez
+    ok 4 - tünel kapalıyken kapi-ofis-kapali (503); lisans 1 saattir doğrulanamıyorsa iletilmez
+      ---
+      duration_ms: 9.084024
+      type: 'test'
+      ...
+    # Subtest: m. ve tanınmayan alt ad karşılama sayfası verir; programın yükleme ucu ofis adresinde de imzasız geçmez
+    ok 5 - m. ve tanınmayan alt ad karşılama sayfası verir; programın yükleme ucu ofis adresinde de imzasız geçmez
+      ---
+      duration_ms: 5.424069
+      type: 'test'
+      ...
+    1..5
+ok 5 - M3 kapıcı — canlı bağlantı kapısı (ofisin telefon adresi → tünel)
+  ---
+  duration_ms: 52.312622
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — lisans servisi izolasyonu (ders 30)
+    # Subtest: LISANS_URL yoksa kapıcı hiçbir lisans isteği yapmaz; varsa yalnız verilen işleve (gerçek servise değil)
+    ok 1 - LISANS_URL yoksa kapıcı hiçbir lisans isteği yapmaz; varsa yalnız verilen işleve (gerçek servise değil)
+      ---
+      duration_ms: 7.326572
+      type: 'test'
+      ...
+    1..1
+ok 6 - M3 kapıcı — lisans servisi izolasyonu (ders 30)
+  ---
+  duration_ms: 7.495479
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — yol kuralı programla aynı (M2 lib/mobile-remote.mjs remotePathProblem ↔ kapi-protokol yolSorunu)
+    # Subtest: iki uygulama aynı sonucu verir (kâhinin bütün istek yolları + ek kalıplar)
+    ok 1 - iki uygulama aynı sonucu verir (kâhinin bütün istek yolları + ek kalıplar)
+      ---
+      duration_ms: 82.74164
+      type: 'test'
+      ...
+    1..1
+ok 7 - M3 kapıcı — yol kuralı programla aynı (M2 lib/mobile-remote.mjs remotePathProblem ↔ kapi-protokol yolSorunu)
+  ---
+  duration_ms: 82.88713
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — dağıtım yapılandırması (bulut/kapi/wrangler.toml)
+    # Subtest: lisans açık anahtarları programınkiyle aynı; gizli değer dosyada yok; R2 bağlaması OZET; ofis alanı destekofis.net
+    ok 1 - lisans açık anahtarları programınkiyle aynı; gizli değer dosyada yok; R2 bağlaması OZET; ofis alanı destekofis.net
+      ---
+      duration_ms: 0.938394
+      type: 'test'
+      ...
+    1..1
+ok 8 - M3 kapıcı — dağıtım yapılandırması (bulut/kapi/wrangler.toml)
+  ---
+  duration_ms: 1.039198
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M3 kapıcı — tarayıcıya Türkçe hata sayfası, mobil istemciye JSON
+    # Subtest: karekod / adres çubuğu: tünel kapalıyken (bağlantı hatası, Cloudflare 530 ve HTML 502) 503 + "Ofis Sunucusuna Ulaşılamıyor" sayfası
+    ok 1 - karekod / adres çubuğu: tünel kapalıyken (bağlantı hatası, Cloudflare 530 ve HTML 502) 503 + "Ofis Sunucusuna Ulaşılamıyor" sayfası
+      ---
+      duration_ms: 17.944328
+      type: 'test'
+      ...
+    # Subtest: 2.4.8 M4/M5: ofis kapalı sayfası Son Özeti Göster'i söyler; karşılama sayfası iPhone'u Ana Ekrana Ekle → Karekodu Okut'a yönlendirir
+    not ok 2 - 2.4.8 M4/M5: ofis kapalı sayfası Son Özeti Göster'i söyler; karşılama sayfası iPhone'u Ana Ekrana Ekle → Karekodu Okut'a yönlendirir
+      ---
+      duration_ms: 7.941532
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/kapi-247.test.mjs:485:3'
+      failureType: 'testCodeFailure'
+      error: 'ipucu "Son Özeti Göster" demeli: <!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ofis Sunucusuna Ulaşılamıyor — DestekOfis Mobil</title><body style="font-family:system-ui,sans-serif;padding:24px;max-width:520px;margin:auto;color:#102a36;line-height:1.5"><h1 style="font-size:22px">Ofis Sunucusuna Ulaşılamıyor</h1><p>Ofis sunucusuna ulaşılamıyor (kapalı ya da internete bağlı değil).</p><p>Ofisteki bilgisayar kapalı, DestekOfis çalışmıyor ya da ofisin internet bağlantısı kesik olabilir.</p><p>Birkaç dakika sonra sayfayı yenileyin. Telefonunuz eşliyse ana ekrandaki DestekOfis simgesinden açtığınızda son yüklenen özeti görebilirsiniz.</p><p><a href="" style="display:inline-block;padding:10px 18px;border-radius:8px;background:#0f6a8b;color:#fff;text-decoration:none">Yeniden Dene</a></p><p style="font-size:12px;color:#5b6b73">Hata kodu: kapi-ofis-ka'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/kapi-247.test.mjs:490:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Sec-Fetch başlığı göndermeyen eski tarayıcı (Accept text/html) da sayfa alır; HEAD gövdesiz
+    ok 3 - Sec-Fetch başlığı göndermeyen eski tarayıcı (Accept text/html) da sayfa alır; HEAD gövdesiz
+      ---
+      duration_ms: 9.927582
+      type: 'test'
+      ...
+    # Subtest: mobil istemcinin fetch'i (app.js) ve başlıksız istek JSON almaya devam eder: kapi-ofis-kapali 503 aynen
+    ok 4 - mobil istemcinin fetch'i (app.js) ve başlıksız istek JSON almaya devam eder: kapi-ofis-kapali 503 aynen
+      ---
+      duration_ms: 12.497317
+      type: 'test'
+      ...
+    # Subtest: öbür kapıcı hataları da sayfa olur: eşli olmayan cihaz (401 Cihaz Eşli Değil), kayıtsız ofis (404 Ofis Bulunamadı); çerez silme başlığı korunur
+    ok 5 - öbür kapıcı hataları da sayfa olur: eşli olmayan cihaz (401 Cihaz Eşli Değil), kayıtsız ofis (404 Ofis Bulunamadı); çerez silme başlığı korunur
+      ---
+      duration_ms: 9.8474
+      type: 'test'
+      ...
+    1..5
+not ok 9 - 2.4.8 M3 kapıcı — tarayıcıya Türkçe hata sayfası, mobil istemciye JSON
+  ---
+  duration_ms: 58.698683
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/kapi-247.test.mjs:448:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:30882) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 M4 iOS / simge algılaması (client/mobil/karekod.js)
+    # Subtest: iPhone ve iPad (masaüstü imzası + dokunmatik) iOS; Android ve masaüstü değil
+    not ok 1 - iPhone ve iPad (masaüstü imzası + dokunmatik) iOS; Android ve masaüstü değil
+      ---
+      duration_ms: 3.003852
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:46:3'
+      failureType: 'testCodeFailure'
+      error: 'client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:18:27)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:47:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+      ...
+    # Subtest: tarayıcı sekmesi ↔ ana ekran simgesi: navigator.standalone ya da display-mode: standalone
+    not ok 2 - tarayıcı sekmesi ↔ ana ekran simgesi: navigator.standalone ya da display-mode: standalone
+      ---
+      duration_ms: 0.326355
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:54:3'
+      failureType: 'testCodeFailure'
+      error: 'client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:18:27)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:55:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..2
+not ok 10 - 2.4.8 M4 iOS / simge algılaması (client/mobil/karekod.js)
+  ---
+  duration_ms: 4.291744
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:45:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 M4 karekod metninden eşleme kodu — yalnız bu ofisin adresi
+    # Subtest: bu ofisin eşleme adresi → kod
+    not ok 1 - bu ofisin eşleme adresi → kod
+      ---
+      duration_ms: 0.27702
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:71:3'
+      failureType: 'testCodeFailure'
+      error: 'client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:18:27)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:72:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+      ...
+    # Subtest: başka ofisin adresi → 'başka bir ofisin' iletisi; biçimsiz / başka site / yol → 'eşleme karekodu değil'
+    not ok 2 - başka ofisin adresi → 'başka bir ofisin' iletisi; biçimsiz / başka site / yol → 'eşleme karekodu değil'
+      ---
+      duration_ms: 0.283912
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:76:3'
+      failureType: 'testCodeFailure'
+      error: 'client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:18:27)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:77:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kamera hataları açık ileti verir (izin reddi ayrı)
+    not ok 3 - kamera hataları açık ileti verir (izin reddi ayrı)
+      ---
+      duration_ms: 0.15495
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: 'client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:18:27)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:87:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 11 - 2.4.8 M4 karekod metninden eşleme kodu — yalnız bu ofisin adresi
+  ---
+  duration_ms: 0.965065
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:68:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 M4 karekod çözücü (client/mobil/vendor/jsqr-1.4.0.js; Apache 2.0)
+    # Subtest: çözücü npm jsqr@1.4.0 dist/jsQR.js ile bayt bayt aynı (yalnız ES modülü sarmalı); lisans ve kaynak dosya başında, lisans metni yanında
+    not ok 1 - çözücü npm jsqr@1.4.0 dist/jsQR.js ile bayt bayt aynı (yalnız ES modülü sarmalı); lisans ve kaynak dosya başında, lisans metni yanında
+      ---
+      duration_ms: 0.558523
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:97:3'
+      failureType: 'testCodeFailure'
+      error: 'client/mobil/vendor/jsqr-1.4.0.js yok (karekod çözücü depoda değil)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:98:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: programın kendi karekodu (Yönetim → Mobil Cihazlar adresi) piksellerden okunur → aynı eşleme kodu
+    not ok 2 - programın kendi karekodu (Yönetim → Mobil Cihazlar adresi) piksellerden okunur → aynı eşleme kodu
+      ---
+      duration_ms: 0.636568
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: 'client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        need (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:18:27)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:113:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 12 - 2.4.8 M4 karekod çözücü (client/mobil/vendor/jsqr-1.4.0.js; Apache 2.0)
+  ---
+  duration_ms: 1.5462
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:95:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 M4 sunucu: kamera izni yalnız mobil sayfada; kabuk karekod.js'i taşır
+    # Subtest: /mobil/ belgesi camera=(self) (ofis ağı + uzak dinleyici); masaüstü ve öbür yanıtlar camera=()
+    not ok 1 - /mobil/ belgesi camera=(self) (ofis ağı + uzak dinleyici); masaüstü ve öbür yanıtlar camera=()
+      ---
+      duration_ms: 33.613253
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:148:3'
+      failureType: 'testCodeFailure'
+      error: 'http://127.0.0.1:43749/mobil/: simgede Karekodu Okut için kamera kendi kökenine açık olmalı (gelen "camera=(), microphone=(), geolocation=(), payment=()")'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'camera=(), microphone=(), geolocation=(), payment=()'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:154:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: hizmet çalışanı karekod.js'i kabukta tutar (app.js'in durağan içe aktarması; sunucu kapalıyken sayfa açılır)
+    not ok 2 - hizmet çalışanı karekod.js'i kabukta tutar (app.js'in durağan içe aktarması; sunucu kapalıyken sayfa açılır)
+      ---
+      duration_ms: 0.975539
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:168:3'
+      failureType: 'testCodeFailure'
+      error: 'sw.js ASSETS karekod.js içermeli'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        // DestekOfis Mobil: yalnız uygulama kabuğu (sayfa, stil, betik, simge) önbelleğe alınır; mali API yanıtları ASLA saklanmaz, yeniden oynatılmaz,
+        // sıraya alınmaz. Kapsam /mobil/ (dosyanın kendi klasörü); masaüstü programın sayfalarına karışmaz.
+        // 2.4.7 M3: ofis sunucusu kapalıyken kapıcı sayfa dosyası yerine 503 verir (ağ hatası değil) → başarısız yanıtta da önbellekteki kabuk açılır; sayfa
+        // kapıcıdan şifreli son özeti alır (/kapi/ozet; önbelleğe ALINMAZ).
+        const CACHE = "destekofis-mobil-kabuk-v4";
+        const BASE = new URL("./", self.location).pathname;
+        // 2.4.7 gezinti B1: kayıt girişi modülleri (yazma*) de kabuğun parçası — sunucu kapalıyken açılan sayfa, sunucu dönünce düğmeleri gösterir.
+        const ASSETS = ["", "index.html", "styles.css", "ozet.css", "app.js", "ozet.js", "yazma.js", "yazma.css", "yazma-bekleyen.js", "manifest.webmanifest", "icons/app.svg"].map(name => BASE + name);
+        self.addEventListener("install", e => {
+          e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+        });
+        self.addEventListener("activate", e => {
+          e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+        });
+        self.addEventListener("fetch", e => {
+          const url = new URL(e.request.url);
+          if (e.request.method !== "GET" || url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
+          if (!ASSETS.includes(url.pathname)) return;
+          e.respondWith(
+            fetch(e.request)
+              .then(response => (response.ok ? response : caches.match(e.request).then(cached => cached || response)))
+              .catch(() => caches.match(e.request)),
+          );
+        });
+        
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:170:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 13 - 2.4.8 M4 sunucu: kamera izni yalnız mobil sayfada; kabuk karekod.js'i taşır
+  ---
+  duration_ms: 382.166332
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:139:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 M4/M5 ekran ve kılavuz metinleri
+    # Subtest: M4: yönlendirme sayfası üç adım, eşleme yok; simgede Karekodu Okut + yeni karekod notu
+    not ok 1 - M4: yönlendirme sayfası üç adım, eşleme yok; simgede Karekodu Okut + yeni karekod notu
+      ---
+      duration_ms: 0.625837
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:177:3'
+      failureType: 'testCodeFailure'
+      error: 'ios-guide paneli yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ''
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:179:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: M5: Son Özeti Göster giriş formunun alanlarından ÖNCE; uyarı cümlesi
+    not ok 2 - M5: Son Özeti Göster giriş formunun alanlarından ÖNCE; uyarı cümlesi
+      ---
+      duration_ms: 0.292619
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:187:3'
+      failureType: 'testCodeFailure'
+      error: 'Son Özeti Göster kullanıcı adı alanının ÜSTÜNDE olmalı'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:191:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kılavuz: iPhone'da Ana Ekrana Ekle → simgede Karekodu Okut; Android bugünkü gibi
+    not ok 3 - kılavuz: iPhone'da Ana Ekrana Ekle → simgede Karekodu Okut; Android bugünkü gibi
+      ---
+      duration_ms: 1.741892
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:195:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /<b>iPhone ve iPad:<\/b>[^\n]*<b>Ana Ekrana Ekle<\/b>[^\n]*<b>Karekodu Okut<\/b>/. Input:
+        
+        '<!doctype html>\n' +
+          '<html lang="tr">\n' +
+          '<head>\n' +
+          '<meta charset="utf-8">\n' +
+          '<title>DestekOfis Kısa Kullanım Kılavuzu</title>\n' +
+          '<link rel="stylesheet" href="ortak.css">\n' +
+          '</head>\n' +
+          '<body>\n' +
+          '<main>\n' +
+          '\n' +
+          '<section class="cover">\n' +
+          '  <div class="brand"><b>D</b> DestekOfis</div>\n' +
+          '  <h1>Kısa Kullanım Kılavuzu</h1>\n' +
+          '  <p class="sub">Sürüm 2.4.7 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>\n' +
+          '</section>\n' +
+          '\n' +
+          "<p>DestekOfis, Excel'de ya da Google Sheets'te tuttuğunuz tabloyu ofisteki herkesin aynı anda kullandığı bir çalışma alanına dönüştürür. Tablonuzu yüklersiniz; program kolonlarınızı tanır, ekranları ona göre kurar. Siz kayıtlara not, tahsilat, görev ve belge eklersiniz; <b>Excel dosyanız hiç bozulmaz</b>.</p>\n" +
+          '\n' +
+          '<figure class="narrow-svg">\n' +
+          '<svg viewBox="0 0 560 170" width="100%" role="img" aria-label="Sunucu bilgisayar ve personel bilgisayarları">\n' +
+          '  <rect x="300" y="40" width="240" height="90" rx="14" fill="#1f6a50"/>\n' +
+          '  <text x="420" y="78" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Sunucu Bilgisayar</text>\n' +
+          '  <text x="420" y="102" text-anchor="middle" fill="#d7ece2" font-size="12">Kayıtlar ve yedekler burada</text>\n' +
+          '  <g fill="#fff" stroke="#c3d8cb" stroke-width="2"><rect x="20" y="10" width="190" height="44" rx="12"/><rect x="20" y="63" width="190" height="44" rx="12"/><rect x="20" y="116" width="190" height="44" rx="12"/></g>\n' +
+          '  <g font-size="13" fill="#142b25" text-anchor="middle"><text x="115" y="37">Personel Bilgisayarı</text><text x="115" y="90">Personel Bilgisayarı</text><text x="115" y="143">Personel Bilgisayarı</text></g>\n' +
+          '  <g stroke="#8fb9a5" stroke-width="2.5"><line x1="210" y1="32" x2="300" y2="70"/><line x1="210" y1="85" x2="300" y2="85"/><line x1="210" y1="138" x2="300" y2="100"/></g>\n' +
+          '</svg>\n' +
+          '<figcaption>Kayıtlar tek bilgisayarda (sunucu) durur; diğer bilgisayarlar ona bağlanır. Sunucu gün boyu açık kalmalıdır.</figcaption>\n' +
+          '</figure>\n' +
+          '\n' +
+          '<ol class="toc">\n' +
+          '  <li>Kurulum ve İlk Giriş</li>\n' +
+          '  <li>Verinizi Yükleyin</li>\n' +
+          '  <li>Ana Ekran</li>\n' +
+          '  <li>Veri Sağlığı</li>\n' +
+          '  <li>Kayıtla Çalışmak</li>\n' +
+          '  <li>Uyarılar</li>\n' +
+          '  <li>Kasa</li>\n' +
+          '  <li>Banka</li>\n' +
+          '  <li>Cari</li>\n' +
+          '  <li>Taksitler</li>\n' +
+          '  <li>Stok</li>\n' +
+          '  <li>Çek / Senet</li>\n' +
+          '  <li>Fatura</li>\n' +
+          '  <li>ANLIK DURUM</li>\n' +
+          '  <li>Raporlar</li>\n' +
+          '  <li>Belgeler ve Mesajlar</li>\n' +
+          '  <li>Yönetici İçin</li>\n' +
+          '  <li>Telefondan Kullanım</li>\n' +
+          '  <li>Bir Sorun mu Var?</li>\n' +
+          '</ol>\n' +
+          '\n' +
+          '<h2>1. Kurulum ve İlk Giriş</h2>\n' +
+          '<ol class="steps">\n' +
+          `  <li><b>Sunucu bilgisayara</b> kurulum dosyasını (<i>DestekOfis-Kurulum.exe</i>) çalıştırın, <b>Sunucu Bilgisayar</b>'ı seçip <b>Kur</b>'a basın. Windows "bilgisayarınızı korudu" derse <b>Ek bilgi → Yine de çalıştır</b>.</li>\n` +
+          '  <li><b>Personel bilgisayarlarına</b> aynı dosyayı kurun. Program sunucuyu ağda kendisi bulur; masaüstündeki DestekOfis simgesiyle açılır.</li>\n' +
+          '  <li>İlk girişi sunucudan yapın: kullanıcı adı <b>admin</b>, parola <b>Ofis2026!</b>. Program yeni bir parola ister; not edin.</li>\n' +
+          '</ol>\n' +
+          '<figure class="narrow"><img src="ekran/k01-giris.jpg" alt="Giriş ekranı"></figure>\n' +
+          `<div class="box warn"><b class="t">İlk İş: Kurtarma Anahtarı</b><b>Yönetim → Kullanıcılar → Kurtarma Anahtarı Oluştur</b>'a basın, anahtarı <b>yazdırın</b> ve güvenli bir yerde saklayın. Yönetici parolanızı unutursanız giriş ekranındaki <b>Parolamı Unuttum</b> ile bu anahtarla yeni parola belirlersiniz (17. bölüm).</div>\n` +
+          `<div class="box tip"><b class="t">Deneme Kendiliğinden Başlar</b>Sunucu internete bağlıysa 30 günlük deneme birkaç saniyede başlar. Lisans anahtarınızı <b>Yönetim → Lisans</b>'a yazarsınız. Süre dolsa da hiçbir kayıt silinmez.</div>\n` +
+          `<div class="box"><b class="t">Başlarken</b>Yeni bir şirketi ilk açtığınızda açılış ekranında <b>Başlarken</b> listesi çıkar (yalnız yöneticiye): <b>Şirket Adını Yazın</b>, <b>Firma Bilgilerini Girin</b>, <b>Fatura Ayarlarını Kaydedin</b>, <b>İlk Banka Hesabını Açın</b>, <b>İlk Cariyi Açın</b>. Her adımın düğmesi ilgili pencereyi açar; sıradaki adımın düğmesi koyu renktedir, biten adımda <b>Tamamlandı</b> yazar. Listeyi <b>Gizle</b> ile kaldırın; istediğiniz zaman kullanıcı kartındaki <b>Başlarken</b>'den ya da Hızlı Arama'dan (Ctrl+K) yeniden açarsınız.</div>\n` +
+          '\n' +
+          '<h2>2. Verinizi Yükleyin</h2>\n' +
+          '<ol class="steps">\n' +
+          "  <li>Excel dosyanızı açılış ekranındaki kutuya <b>sürükleyin</b> (ya da <b>Excel Dosyası Seçin</b>) veya Google Sheets bağlantısını yapıştırıp <b>Bağla</b>'ya basın.</li>\n" +
+          '  <li>Ön izlemede <b>sarı</b> kolon varsa açılır listeden doğru türü seçin, sonra <b>Yükle</b>.</li>\n' +
+          '  <li>Önerilen sektör doğruysa <b>Evet, Uygula</b>; değilse <b>Başka Sektör Seç</b> ya da <b>Kendi Sektörünüzü Oluşturun</b> → <b>Kaydet ve Uygula</b>.</li>\n' +
+          '</ol>\n' +
+          '<div class="pair">\n' +
+          '<figure><img src="ekran/k03-analiz.jpg" alt="Veri analizi ve sektör önerisi"><figcaption>Program ne bulduğunu ve neden o sektörü önerdiğini gösterir; siz onaylamadan hiçbir şey değişmez.</figcaption></figure>\n' +
+          '<figure><img src="ekran/k09-kendi-sektorun.jpg" alt="Kendi sektörünü oluşturma"><figcaption>Kendi sektörünüz: alttaki ön izleme ekranların nasıl görüneceğini gösterir.</figcaption></figure>\n' +
+          '</div>\n' +
+          "<p><b>Exceliniz yok mu?</b> <b>Taslak Excel'i İndir</b> ile sektörünüze uygun boş Excel'i indirin, doldurup yükleyin.</p>\n" +
+          `<figure class="w80"><img src="ekran/k15-taslak-excel.jpg" alt="Açılış ekranı"><figcaption>Açılış ekranı: Excel'i yükleyin ya da Google Sheets bağlantısını yapıştırın; yoksa taslağı indirip doldurun.</figcaption></figure>\n` +
+          `<div class="box"><b class="t">Excel'deki Her Şey Gelir</b>Bütün sayfalar sekme olur; Google Sheets bağlıysa değişiklikler kendiliğinden gelir. Okunamayan satırlar <b>İşaretlenen hatalar</b> sekmesine düşer; düzeltip <b>Sorun Yok</b> deyin.</div>\n` +
+          `<div class="box tip"><b class="t">Borç Sütunu Nasıl Tanınır</b>Tablo raporları borcu önce <b>Kalan Borç</b> sütunundan, yoksa <b>Toplam Borç</b>, <b>Genel Toplam</b> ya da <b>Tutar</b> sütunundan okur. Raporda “borç sütunu seçilemedi” notu görürseniz Excel'de başlığı bunlardan biri yapıp tabloyu yeniden yükleyin.</div>\n` +
+          `<div class="box"><b class="t">Aynı Tabloyu Yeniden Yüklemek</b>Program sorar: <b>Devamı Olarak Ekle</b> yeni satırları ekler; <b>Yerine Koy</b> tabloyu dosyanın güncel hâliyle değiştirir (yeni dosyada olmayan kayıtlar kalkar, sayısı önceden söylenir). Kayıtlara eklediğiniz not, tahsilat ve cari bağı silinmez; taşınamayan bağ için program adıyla onay ister. Google Sheets eşitlemesi durursa <b>Ayarlar → Veri</b>'deki uyarıdan inceleyin. İşlemden önce yedek alınır.</div>\n` +
+          '\n' +
+          '<h2>3. Ana Ekran</h2>\n' +
+          '<figure><img src="ekran/k04-ana-ekran.jpg" alt="Ana ekran"></figure>\n' +
+          '<ul>\n' +
+          "  <li><b>Sol üstte Şirket:</b> <b>001 · Unvan ▾</b>. Her şirketin verisi ayrıdır (cari, Kasa, stok, taksit, çek/senet, fatura, sayfalar); seçim yalnız sizin ekranınızı değiştirir. İki pencerede (ya da aynı kullanıcıyla iki bilgisayarda) iki ayrı şirket açık olabilir: her pencere, sol üstte yazan şirkete kaydeder. <b>+ Yeni Şirket</b> ile ikinci şirket (ör. 002) sıfırdan açılır; en fazla 2 şirket açılabilir (yenisi için önce birini silin); yönetimi <b>Yönetim → Şirketler</b>'de.</li>\n" +
+          '  <li><b>Hızlı Arama (Ctrl+K):</b> menünün üstündeki <b>Ara</b> kutusuna sayfa, işlem ya da rapor adının başını yazın: <b>alış f</b> → Alış Faturaları, Yeni Alış Faturası ve Alış Faturaları raporu; <b>cari h</b> → Tüm Cari Hareketleri; <b>çek</b> → çekle ilgili her şey. Türkçe harf fark etmez (cek = çek), yalnız yetkiniz olanlar listelenir; ok tuşlarıyla seçip <b>Enter</b> ile açın, <b>Esc</b> kapatır. Kişi ve cari adları burada aranmaz; onlar tablonun kendi arama kutusunda.</li>\n' +
+          "  <li><b>Sol menü · Operasyon Merkezi:</b> Görevler, Mesajlar, Görev Ata, Cari, Kasa, Stok, Fatura, Çek / Senet, Taksitler, Banka, Raporlar, Personel Raporu ve bu kılavuz. Köşedeki kalemle düğmelere kendi adlarınızı verebilirsiniz. <b>Yeni Kayıt</b> ortadaki tablonun başlığında, <b>Dışa Aktar</b>'ın yanındadır.</li>\n" +
+          '  <li><b>Kullanıcı kartı:</b> Profil, Parola, Yönetim (yalnız yönetici), Başlarken (yalnız yönetici) ve Çıkış. Hemen altındaki <b>Ayarlar</b> veri kaynağını, eşitlemeyi, sektörü ve görünümü açar (yönetici).</li>\n' +
+          '  <li><b>Üstte zil:</b> bekleyen tahsilatlar, son günü yaklaşan işler ve görevleriniz.</li>\n' +
+          '  <li><b>ANLIK DURUM</b> (yalnız yönetici) ve <b>özet kartları:</b> toplam kayıt, tutar toplamı, Veri Sağlığı. Karta tıklayınca ilgili liste açılır.</li>\n' +
+          '  <li><b>Tahsilat Takvimi şeridi:</b> vadesi gelen taksit, fatura, çek / senet ve cari borçları; bir pile tıklayınca kalemin kartı açılır, <b>Tahsilat Gir</b> o kalemin formunu açar (6. bölüm).</li>\n' +
+          "  <li><b>Sayfalar şeridi (ortada):</b> her Excel / Google Sheets ayrı bir <b>sayfa</b>dır; veriler karışmaz. Pile tıklayınca o sayfa açılır; kalemle adını değiştirin, çöp kutusuyla <b>Sayfayı Sil</b> (ilk sayfa silinmez; önce tam yedek alınır). <b>+ Sayfa</b>: <b>Excel'den Aktar</b>, <b>Google Sheets'ten Aktar</b> ya da <b>Boş Sayfa</b>. Bütün sayfaların yaklaşan tarihleri zilde sayfa adıyla görünür; <b>Kayda Git</b> o sayfaya geçer.</li>\n" +
+          '  <li><b>Sekmeler:</b> açık sayfanın Excel sayfaları. <b>✎</b> ile adını değiştirin ya da silin. Serbest sayfanın menüsünde <b>Veri Sekmesine Dönüştür</b>: başlık ve değerler veri sekmesi olur (tarih uyarıları, detay kartı ve raporlar kapsar).</li>\n' +
+          '  <li><b>Tablo:</b> üstünde <b>Dışa Aktar</b> (Excel/CSV), yenile ve sık görünüm; altında arama kutusu (kutunun her yerine tıklayıp yazabilirsiniz, Enter ilk sonuca gider; kısayolu <b>Ctrl+Shift+F</b>). Kolon genişliğini başlığın sağ kenarından sürükleyin; çift tık eski haline döndürür.</li>\n' +
+          '  <li><b>Sağda detay kartı:</b> seçtiğiniz kaydın bütün bilgileri ve işlemleri.</li>\n' +
+          '</ul>\n' +
+          '<p><b>Açık pencereler kendiliğinden yenilenir:</b> Kasa, Cari, Taksitler, Stok, Çek / Senet ya da Raporlar açıkken siz ya da ofisteki başka biri bir işlem yaparsa (ör. bağlı bir çek hareketini silmek) pencere kapatıp açmadan güncellenir; yazdığınız ama henüz kaydetmediğiniz alanlar yerinde kalır.</p>\n' +
+          '<ul>\n' +
+          '  <li><b>Dolu formu kapatmak:</b> yazdığınız bir form <b>Esc</b>, <b>×</b> ya da pencere dışına tıklamayla kapatılmak istenirse program sorar: <b>Kaydetmeden Kapat</b> ya da <b'... 72073 more characters
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        <!doctype html>
+        <html lang="tr">
+        <head>
+        <meta charset="utf-8">
+        <title>DestekOfis Kısa Kullanım Kılavuzu</title>
+        <link rel="stylesheet" href="ortak.css">
+        </head>
+        <body>
+        <main>
+        
+        <section class="cover">
+          <div class="brand"><b>D</b> DestekOfis</div>
+          <h1>Kısa Kullanım Kılavuzu</h1>
+          <p class="sub">Sürüm 2.4.7 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
+        </section>
+        
+        <p>DestekOfis, Excel'de ya da Google Sheets'te tuttuğunuz tabloyu ofisteki herkesin aynı anda kullandığı bir çalışma alanına dönüştürür. Tablonuzu yüklersiniz; program kolonlarınızı tanır, ekranları ona göre kurar. Siz kayıtlara not, tahsilat, görev ve belge eklersiniz; <b>Excel dosyanız hiç bozulmaz</b>.</p>
+        
+        <figure class="narrow-svg">
+        <svg viewBox="0 0 560 170" width="100%" role="img" aria-label="Sunucu bilgisayar ve personel bilgisayarları">
+          <rect x="300" y="40" width="240" height="90" rx="14" fill="#1f6a50"/>
+          <text x="420" y="78" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Sunucu Bilgisayar</text>
+          <text x="420" y="102" text-anchor="middle" fill="#d7ece2" font-size="12">Kayıtlar ve yedekler burada</text>
+          <g fill="#fff" stroke="#c3d8cb" stroke-width="2"><rect x="20" y="10" width="190" height="44" rx="12"/><rect x="20" y="63" width="190" height="44" rx="12"/><rect x="20" y="116" width="190" height="44" rx="12"/></g>
+          <g font-size="13" fill="#142b25" text-anchor="middle"><text x="115" y="37">Personel Bilgisayarı</text><text x="115" y="90">Personel Bilgisayarı</text><text x="115" y="143">Personel Bilgisayarı</text></g>
+          <g stroke="#8fb9a5" stroke-width="2.5"><line x1="210" y1="32" x2="300" y2="70"/><line x1="210" y1="85" x2="300" y2="85"/><line x1="210" y1="138" x2="300" y2="100"/></g>
+        </svg>
+        <figcaption>Kayıtlar tek bilgisayarda (sunucu) durur; diğer bilgisayarlar ona bağlanır. Sunucu gün boyu açık kalmalıdır.</figcaption>
+        </figure>
+        
+        <ol class="toc">
+          <li>Kurulum ve İlk Giriş</li>
+          <li>Verinizi Yükleyin</li>
+          <li>Ana Ekran</li>
+          <li>Veri Sağlığı</li>
+          <li>Kayıtla Çalışmak</li>
+          <li>Uyarılar</li>
+          <li>Kasa</li>
+          <li>Banka</li>
+          <li>Cari</li>
+          <li>Taksitler</li>
+          <li>Stok</li>
+          <li>Çek / Senet</li>
+          <li>Fatura</li>
+          <li>ANLIK DURUM</li>
+          <li>Raporlar</li>
+          <li>Belgeler ve Mesajlar</li>
+          <li>Yönetici İçin</li>
+          <li>Telefondan Kullanım</li>
+          <li>Bir Sorun mu Var?</li>
+        </ol>
+        
+        <h2>1. Kurulum ve İlk Giriş</h2>
+        <ol class="steps">
+          <li><b>Sunucu bilgisayara</b> kurulum dosyasını (<i>DestekOfis-Kurulum.exe</i>) çalıştırın, <b>Sunucu Bilgisayar</b>'ı seçip <b>Kur</b>'a basın. Windows "bilgisayarınızı korudu" derse <b>Ek bilgi → Yine de çalıştır</b>.</li>
+          <li><b>Personel bilgisayarlarına</b> aynı dosyayı kurun. Program sunucuyu ağda kendisi bulur; masaüstündeki DestekOfis simgesiyle açılır.</li>
+          <li>İlk girişi sunucudan yapın: kullanıcı adı <b>admin</b>, parola <b>Ofis2026!</b>. Program yeni bir parola ister; not edin.</li>
+        </ol>
+        <figure class="narrow"><img src="ekran/k01-giris.jpg" alt="Giriş ekranı"></figure>
+        <div class="box warn"><b class="t">İlk İş: Kurtarma Anahtarı</b><b>Yönetim → Kullanıcılar → Kurtarma Anahtarı Oluştur</b>'a basın, anahtarı <b>yazdırın</b> ve güvenli bir yerde saklayın. Yönetici parolanızı unutursanız giriş ekranındaki <b>Parolamı Unuttum</b> ile bu anahtarla yeni parola belirlersiniz (17. bölüm).</div>
+        <div class="box tip"><b class="t">Deneme Kendiliğinden Başlar</b>Sunucu internete bağlıysa 30 günlük deneme birkaç saniyede başlar. Lisans anahtarınızı <b>Yönetim → Lisans</b>'a yazarsınız. Süre dolsa da hiçbir kayıt silinmez.</div>
+        <div class="box"><b class="t">Başlarken</b>Yeni bir şirketi ilk açtığınızda açılış ekranında <b>Başlarken</b> listesi çıkar (yalnız yöneticiye): <b>Şirket Adını Yazın</b>, <b>Firma Bilgilerini Girin</b>, <b>Fatura Ayarlarını Kaydedin</b>, <b>İlk Banka Hesabını Açın</b>, <b>İlk Cariyi Açın</b>. Her adımın düğmesi ilgili pencereyi açar; sıradaki adımın düğmesi koyu renktedir, biten adımda <b>Tamamlandı</b> yazar. Listeyi <b>Gizle</b> ile kaldırın; istediğiniz zaman kullanıcı kartındaki <b>Başlarken</b>'den ya da Hızlı Arama'dan (Ctrl+K) yeniden açarsınız.</div>
+        
+        <h2>2. Verinizi Yükleyin</h2>
+        <ol class="steps">
+          <li>Excel dosyanızı açılış ekranındaki kutuya <b>sürükleyin</b> (ya da <b>Excel Dosyası Seçin</b>) veya Google Sheets bağlantısını yapıştırıp <b>Bağla</b>'ya basın.</li>
+          <li>Ön izlemede <b>sarı</b> kolon varsa açılır listeden doğru türü seçin, sonra <b>Yükle</b>.</li>
+          <li>Önerilen sektör doğruysa <b>Evet, Uygula</b>; değilse <b>Başka Sektör Seç</b> ya da <b>Kendi Sektörünüzü Oluşturun</b> → <b>Kaydet ve Uygula</b>.</li>
+        </ol>
+        <div class="pair">
+        <figure><img src="ekran/k03-analiz.jpg" alt="Veri analizi ve sektör önerisi"><figcaption>Program ne bulduğunu ve neden o sektörü önerdiğini gösterir; siz onaylamadan hiçbir şey değişmez.</figcaption></figure>
+        <figure><img src="ekran/k09-kendi-sektorun.jpg" alt="Kendi sektörünü oluşturma"><figcaption>Kendi sektörünüz: alttaki ön izleme ekranların nasıl görüneceğini gösterir.</figcaption></figure>
+        </div>
+        <p><b>Exceliniz yok mu?</b> <b>Taslak Excel'i İndir</b> ile sektörünüze uygun boş Excel'i indirin, doldurup yükleyin.</p>
+        <figure class="w80"><img src="ekran/k15-taslak-excel.jpg" alt="Açılış ekranı"><figcaption>Açılış ekranı: Excel'i yükleyin ya da Google Sheets bağlantısını yapıştırın; yoksa taslağı indirip doldurun.</figcaption></figure>
+        <div class="box"><b class="t">Excel'deki Her Şey Gelir</b>Bütün sayfalar sekme olur; Google Sheets bağlıysa değişiklikler kendiliğinden gelir. Okunamayan satırlar <b>İşaretlenen hatalar</b> sekmesine düşer; düzeltip <b>Sorun Yok</b> deyin.</div>
+        <div class="box tip"><b class="t">Borç Sütunu Nasıl Tanınır</b>Tablo raporları borcu önce <b>Kalan Borç</b> sütunundan, yoksa <b>Toplam Borç</b>, <b>Genel Toplam</b> ya da <b>Tutar</b> sütunundan okur. Raporda “borç sütunu seçilemedi” notu görürseniz Excel'de başlığı bunlardan biri yapıp tabloyu yeniden yükleyin.</div>
+        <div class="box"><b class="t">Aynı Tabloyu Yeniden Yüklemek</b>Program sorar: <b>Devamı Olarak Ekle</b> yeni satırları ekler; <b>Yerine Koy</b> tabloyu dosyanın güncel hâliyle değiştirir (yeni dosyada olmayan kayıtlar kalkar, sayısı önceden söylenir). Kayıtlara eklediğiniz not, tahsilat ve cari bağı silinmez; taşınamayan bağ için program adıyla onay ister. Google Sheets eşitlemesi durursa <b>Ayarlar → Veri</b>'deki uyarıdan inceleyin. İşlemden önce yedek alınır.</div>
+        
+        <h2>3. Ana Ekran</h2>
+        <figure><img src="ekran/k04-ana-ekran.jpg" alt="Ana ekran"></figure>
+        <ul>
+          <li><b>Sol üstte Şirket:</b> <b>001 · Unvan ▾</b>. Her şirketin verisi ayrıdır (cari, Kasa, stok, taksit, çek/senet, fatura, sayfalar); seçim yalnız sizin ekranınızı değiştirir. İki pencerede (ya da aynı kullanıcıyla iki bilgisayarda) iki ayrı şirket açık olabilir: her pencere, sol üstte yazan şirkete kaydeder. <b>+ Yeni Şirket</b> ile ikinci şirket (ör. 002) sıfırdan açılır; en fazla 2 şirket açılabilir (yenisi için önce birini silin); yönetimi <b>Yönetim → Şirketler</b>'de.</li>
+          <li><b>Hızlı Arama (Ctrl+K):</b> menünün üstündeki <b>Ara</b> kutusuna sayfa, işlem ya da rapor adının başını yazın: <b>alış f</b> → Alış Faturaları, Yeni Alış Faturası ve Alış Faturaları raporu; <b>cari h</b> → Tüm Cari Hareketleri; <b>çek</b> → çekle ilgili her şey. Türkçe harf fark etmez (cek = çek), yalnız yetkiniz olanlar listelenir; ok tuşlarıyla seçip <b>Enter</b> ile açın, <b>Esc</b> kapatır. Kişi ve cari adları burada aranmaz; onlar tablonun kendi arama kutusunda.</li>
+          <li><b>Sol menü · Operasyon Merkezi:</b> Görevler, Mesajlar, Görev Ata, Cari, Kasa, Stok, Fatura, Çek / Senet, Taksitler, Banka, Raporlar, Personel Raporu ve bu kılavuz. Köşedeki kalemle düğmelere kendi adlarınızı verebilirsiniz. <b>Yeni Kayıt</b> ortadaki tablonun başlığında, <b>Dışa Aktar</b>'ın yanındadır.</li>
+          <li><b>Kullanıcı kartı:</b> Profil, Parola, Yönetim (yalnız yönetici), Başlarken (yalnız yönetici) ve Çıkış. Hemen altındaki <b>Ayarlar</b> veri kaynağını, eşitlemeyi, sektörü ve görünümü açar (yönetici).</li>
+          <li><b>Üstte zil:</b> bekleyen tahsilatlar, son günü yaklaşan işler ve görevleriniz.</li>
+          <li><b>ANLIK DURUM</b> (yalnız yönetici) ve <b>özet kartları:</b> toplam kayıt, tutar toplamı, Veri Sağlığı. Karta tıklayınca ilgili liste açılır.</li>
+          <li><b>Tahsilat Takvimi şeridi:</b> vadesi gelen taksit, fatura, çek / senet ve cari borçları; bir pile tıklayınca kalemin kartı açılır, <b>Tahsilat Gir</b> o kalemin formunu açar (6. bölüm).</li>
+          <li><b>Sayfalar şeridi (ortada):</b> her Excel / Google Sheets ayrı bir <b>sayfa</b>dır; veriler karışmaz. Pile tıklayınca o sayfa açılır; kalemle adını değiştirin, çöp kutusuyla <b>Sayfayı Sil</b> (ilk sayfa silinmez; önce tam yedek alınır). <b>+ Sayfa</b>: <b>Excel'den Aktar</b>, <b>Google Sheets'ten Aktar</b> ya da <b>Boş Sayfa</b>. Bütün sayfaların yaklaşan tarihleri zilde sayfa adıyla görünür; <b>Kayda Git</b> o sayfaya geçer.</li>
+          <li><b>Sekmeler:</b> açık sayfanın Excel sayfaları. <b>✎</b> ile adını değiştirin ya da silin. Serbest sayfanın menüsünde <b>Veri Sekmesine Dönüştür</b>: başlık ve değerler veri sekmesi olur (tarih uyarıları, detay kartı ve raporlar kapsar).</li>
+          <li><b>Tablo:</b> üstünde <b>Dışa Aktar</b> (Excel/CSV), yenile ve sık görünüm; altında arama kutusu (kutunun her yerine tıklayıp yazabilirsiniz, Enter ilk sonuca gider; kısayolu <b>Ctrl+Shift+F</b>). Kolon genişliğini başlığın sağ kenarından sürükleyin; çift tık eski haline döndürür.</li>
+          <li><b>Sağda detay kartı:</b> seçtiğiniz kaydın bütün bilgileri ve işlemleri.</li>
+        </ul>
+        <p><b>Açık pencereler kendiliğinden yenilenir:</b> Kasa, Cari, Taksitler, Stok, Çek / Senet ya da Raporlar açıkken siz ya da ofisteki başka biri bir işlem yaparsa (ör. bağlı bir çek hareketini silmek) pencere kapatıp açmadan güncellenir; yazdığınız ama henüz kaydetmediğiniz alanlar yerinde kalır.</p>
+        <ul>
+          <li><b>Dolu formu kapatmak:</b> yazdığınız bir form <b>Esc</b>, <b>×</b> ya da pencere dışına tıklamayla kapatılmak istenirse program sorar: <b>Kaydetmeden Kapat</b> ya da <b>Forma Dön</b>. Açık bir liste varken Esc önce listeyi kapatır.</li>
+          <li><b>Onay pencerelerinde Enter vazgeçer:</b> silme, kaldırma, kapatma gibi geri dönüşü olan sorularda imleç <b>Vazgeç</b> (ya da <b>Forma Dön</b>) üzerindedir; yanlışlıkla Enter'a basmak bir şey silmez. Onaylamak için düğmeye tıklayın ya da Tab ile geçin.</li>
+          <li><b>Bildirimler:</b> uzun ileti okunacak kadar kalır; farenizi üzerine getirirseniz bekler. Hata ve uyarı bildirimindeki <b>Kopyala</b> iletinin tamamını panoya alır (destek hattına iletmek için).</li>
+        </ul>
+        <div class="pair">
+        <figure><img src="ekran/k19-sayfa-excel.jpg" alt="Sayfalar şeridi ve + Sayfa menüsü"><figcaption>Sayfalar şeridi: açık sayfa yeşil; <b>+ Sayfa</b> → Excel'den, Google Sheets'ten ya da Boş Sayfa.</figcaption></figure>
+        <figure><img src="ekran/k25-sirket-secici.jpg" alt="Şirket seçici"><figcaption>Sol üstte şirket seçici: şirketler, <b>+ Yeni Şirket</b>, <b>Şirketleri Yönet</b>.</figcaption></figure>
+        </div>
+        
+        <h2>4. Veri Sağlığı</h2>
+        <p>Ana ekrandaki <b>Veri Sağlığı</b> kartı tablodaki eksik ve hatalı hücreleri sayar. Karta tıklayın:</p>
+        <ul>
+          <li>Kayda tıklayınca tabloda o satıra gidersiniz; düzeltmeyi orada yapın.</li>
+          <li>Bilerek böyle olan uyarıyı <b>Yok Say</b> ile kapatın (başlıktaki <b>Yok Say (N)</b> hepsini kapatır); karar ofisteki herkes için geçerlidir. Geri almak için <b>Yok Sayılanlar</b> → <b>Geri Al</b>.</li>
+          <li><b>Toplu Düzeltmeler</b> farklı yazılmış telefon, tarih ve durumları tek yazıma çevirir.</li>
+        </ul>
+        <figure class="w80"><img src="ekran/k23-veri-sagligi.jpg" alt="Veri Sağlığı penceresi"><figcaption>Veri Sağlığı: kayıt başına ya da toptan <b>Yok Say</b>.</figcaption></figure>
+        
+        <h2>5. Kayıtla Çalışmak</h2>
+        <ol class="steps">
+          <li>Tablodan bir satıra tıklayın; sağda kaydın kartı açılır. Arama kutusu tüm sekmelerde arar.</li>
+          <li>Bir bilgiyi değiştirmek için üzerine gelip <b>✎</b>'ye basın ya da <b>Düzenle</b> ile hepsini birden değiştirin. Kim, ne zaman değiştirdi kaydedilir.</li>
+          <li><b>▾</b> işaretli alanlar açılır listedir: tıklayın, listeden seçin.</li>
+          <li>Kartın düğmeleriyle <b>Not</b>, <b>Telefon</b>, <b>Görev</b> ve <b>Belge</b> ekleyin; <b>WhatsApp</b> kayıttaki numaraya yazar. Tahsilat ve taksit cariden girilir: kişinin <b>Cari</b> kartında <b>+ Tahsilat</b> ve <b>+ Taksit Planı</b>.</li>
+          <li><b>İşlem Geçmişi</b> kartın altındadır: son 3 işlem görünür, <b>Daha Fazla Göster</b> tamamını açar. Not, telefon, haciz ve tahsilat satırlarını <b>✎</b> ile düzeltin, <b>×</b> ile silin (silinen <b>Yönetim → Silinenler</b>'den geri gelir; haciz düzeltilince düşüm tarihi ve uyarısı yenilenir). Taksit ve görev satırında <b>Kayda Git</b> kendi penceresini açar.</li>
+          <li><b>Sütun ekle / sil</b> (yönetici): başlığın üzerine gelin; <b>+ Ekle</b> sağına yeni sütun açar, <b>× Sil</b> sütunu kaldırır. Excel dosyanız değişmez; <b>Geri Al</b> ya da <b>Yönetim → Silinenler</b> geri getirir.</li>
+        </ol>
+        <figure class="narrow"><img src="ekran/k05-detay-acilir-liste.jpg" alt="Detay kartında açılır liste"><figcaption>Excel'deki açılır liste kartta da açılır liste olarak çalışır.</figcaption></figure>
+        <div class="box tip"><b class="t">Tablo Ajanda ve Rehberdir</b>Excel / Sheets tablosu kişileri, notları ve tarihleri tutar; para kaydı değildir. Tahsilat, ödeme ve taksit kişinin <b>Cari</b> kartından girilir; kayıt kartında tahsilat düğmesi yoktur. Tablodaki tutarlar (borç, ödeme günü, aidat, ödeme sözü) zilde, Tahsilat Takvimi'nde ve Nakit Akış'ta görünmez; duruşma, sözleşme bitişi, icra son tarihi gibi tutarsız tarihler hatırlatılmaya devam eder. Tablodan taksit kartı kurulmaz; önceden tablodan aktarılmış kartı <b>Taksitler → Son Aktarımlar → Geri Al</b> ile geri alabilirsiniz.</div>
+        <p><b>Kayıt ve cari ayrıdır:</b> <b>Yeni Kayıt</b> formu cari açmaz. Kişinin hesap kartı için <b>Cari</b> ekranında <b>+ Yeni Cari</b> ya da <b>Excel / Sheets’ten Yükle</b> kullanın. Cariyi tablodaki kişiye bağlamak isterseniz cari kartındaki <b>Tablodaki Kayıt</b> alanını kullanın; ad yazılınca tabloda aynı adlı tek kayıt varsa kendiliğinden seçilir.</p>
+        
+        <h2>6. Uyarılar</h2>
+        <p>Vadesi gelen taksit, fatura, çek / senet ve cari borçları, son günü yaklaşan işler ve görevler sağ altta <b>tek tek</b> belirir; her uyarı 20 saniye kalır, üzerine gelirseniz bekler.</p>
+        <figure class="half"><img src="ekran/k06-uyari.jpg" alt="Uyarı kartı"></figure>
+        <ul>
+          <li><b>Tahsilat Gir:</b> kalemin kendi formu açılır: faturada faturanın tahsilatı, carinin borcunda carinin tahsilatı (açık taksit kartı varsa taksite). Nakit Kasa'ya, havale / EFT seçtiğiniz banka hesabına düşer.</li>
+          <li><b>✓ Gerçekleştirildi:</b> iş yapıldıysa basın; hücreye "Gerçekleştirildi" yazılır ve uyarı bir daha gelmez (bildirimdeki <b>Geri Al</b> ile döner).</li>
+          <li><b>Kayda Git</b> / <b>Fatura Kartını Aç</b> / <b>Cariyi Aç</b>: kalemin kaynağını açar.</li>
+        </ul>
+        <p><b>Acil görev</b> kırmızı bildirimle gelir ve tamamlanana kadar zilde kalır. Bütün uyarılar üstteki <b>zil</b>dedir; <b>✕</b> ile kendi listenizden kaldırırsınız.</p>
+        
+        <h2>7. Kasa</h2>
+        <p>Sol menüden <b>Kasa</b>. Kasa yalnız <b>nakit</b> parayı gösterir (<b>Nakit Kasa</b>). Kayıtlara, carilere, taksitlere ve satışlara nakit girdiğiniz tahsilatlar buraya kendiliğinden gelir. Diğer nakit gelir ve giderleri <b>+ Tahsilat</b> ve <b>− Ödeme</b> ile ekleyin. Dönemi <b>Bu Ay</b>, <b>Geçen Ay</b>, <b>Bu Yıl</b>, <b>Tümü</b> ya da <b>Tarih Aralığı</b> ile seçin; <b>Kasa Dökümü - PDF</b> ile dökümü alın. Çek / senet ya da stoktan gelen satırın yanındaki <b>↗</b> kaynağını açar.</p>
+        <ul>
+          <li><b>Ödeme ve tahsilat yolu:</b> cari, fatura, taksit, stok ve çek / senet ekranlarında her tahsilat ve ödemede <b>Nakit</b>, <b>Havale / EFT</b> ya da kartı seçin: tahsilatta <b>POS</b>, sizin ödemenizde <b>Kredi Kartı</b>. Nakit Kasa'ya yazılır; havale / EFT ve şirket kartıyla ödeme Banka'ya (8. bölüm). Cari kartında <b>Çek / Senet</b> seçerseniz evrak formu açılır; satışta <b>Açık Hesap</b> tutarı müşterinin borcuna yazar.</li>
+          <li><b>Kasa ile banka arasında para:</b> bankadan nakit çektiyseniz <b>Bankadan Kasaya Aktar</b>, kasadaki parayı bankaya yatırdıysanız <b>Kasadan Bankaya Yatır</b>; banka hesabını seçin. Kasa ve banka hesabı birlikte değişir.</li>
+          <li><b>Vergi Ödemesi:</b> beyannameyle ödenen KDV, muhtasar ya da başka vergiyi nakit ödediyseniz <b>Vergi Ödemesi</b> → türü, tutarı ve varsa <b>Gecikme Zammı / Faizi</b>. Ödeme gider yazılmaz, ödenecek vergi borcunu (360) kapatır; gecikme zammı ayrı gider olarak yazılır. Tutar ödenecek vergiden fazlaysa program sorar. Bankadan ödediyseniz Banka'da <b>+ Vergi Ödemesi</b> (8. bölüm).</li>
+          <li><b>Kasa eksiye düşecekse</b> program sorar. Tutarı ya da yolu yanlış seçtiyseniz düzeltin; doğruysa <b>Yine de Kaydet</b>. Yönetici sormayı kapatabilir ya da kaydı tamamen engelleyebilir (17. bölüm).</li>
+          <li><b>İleri tarih yok:</b> Kasa, banka, cari, stok ve taksit hareketine bugünden sonraki bir tarih yazılamaz. Gelecekteki ödeme ya da tahsilatı taksit veya çek / senet vadesi olarak girin; günü gelince tahsil edin.</li>
+        </ul>
+        <figure class="w80"><img src="ekran/k08-kasa.jpg" alt="Kasa"><figcaption>Kasa yalnız nakit; banka ile para geçişi için <b>Bankadan Kasaya Aktar</b> ve <b>Kasadan Bankaya Yatır</b>.</figcaption></figure>
+        
+        <h2>8. Banka</h2>
+        <p>Sol menüde <b>Taksitler</b>'in altında <b>Banka</b>. Banka hesaplarınızın bakiyesi, şirket kredi kartınızın ve kredilerinizin borcu, banka masrafları ve hesaplarınız arasındaki transferler burada. Pencerenin sekmeleri: <b>Genel Bakış</b>, <b>Hesaplar</b>, <b>Hareketler</b>, <b>Ayarlar</b>. <b>Gerçek Banka</b>, banka hesaplarınızın bugünkü toplam bakiyesidir; kart ve kredi borcu ayrı yazılır (<b>Kart ve Kredi Borcu</b>).</p>
+        <figure><img src="ekran/k27-banka-genel-bakis.jpg" alt="Banka: Genel Bakış"><figcaption>Genel Bakış: Gerçek Banka, Kart ve Kredi Borcu, hesaplar, <b>Bugün ve Bu Ay</b> ve son banka hareketleri.</figcaption></figure>
+        
+        <h3>İlk Kurulum: Kurulum Sihirbazı</h3>
+        <ol class="steps">
+          <li>Banka'yı ilk açtığınızda <b>Kurulum Sihirbazı</b> gelir. <b>Hesap ve Açılış</b> adımında her hesap için Banka Adı, Hesap Adı, Hesap Türü, IBAN, Açılış Tarihi ve o günün başındaki bakiyeyi (<b>Açılış Bakiyesi</b>) yazın. Tutarı bankadan teyit ettiyseniz <b>Bakiye Doğrulandı</b> kutusunu işaretleyin. Başka hesap için <b>Kaydet ve Yeni Hesap Ekle</b>, bitince <b>Kaydet ve İlerle</b>.</li>
+          <li><b>Eski Hareketleri Aktar</b> (yalnız gerekiyorsa gelir): hesap tanımlanmadan Havale / EFT ile girdiğiniz tahsilat ve ödemeler hesaba bağlanır. Hesabı seçin, <b>Aktar</b>'a basın. Açılış tarihinden önceki hareketler açılış bakiyesinin içindedir; onlar <b>Devir Kapanışı</b> ile kapanır, ikinci kez sayılmaz. Tarihi henüz gelmemiş eski hareket (programın eski sürümünde ileri tarihle girilmiş) atlanır; günü gelince hesaba atarsınız.</li>
+          <li><b>Bitti</b>: <b>Kurulum Tamamlandı</b>. Her adımı <b>Bu Adımı Atla</b> ile geçebilirsiniz; o zaman Genel Bakış'ta <b>Kurulumu Tamamla</b> kalır. Yanlış aktardıysanız Hesabı Atanmamış Eski Hareketler ekranındaki <b>Kurulum Geçmişi</b>'nden <b>Geri Al</b>.</li>
+        </ol>
+        <div class="pair">
+        <figure><img src="ekran/k28-banka-sihirbaz.jpg" alt="Kurulum Sihirbazı: Hesap ve Açılış"><figcaption>Hesap ve Açılış: açılış tarihindeki bakiye ve <b>Bakiye Doğrulandı</b>.</figcaption></figure>
+        <figure><img src="ekran/k29-banka-eski-hareketler.jpg" alt="Kurulum Sihirbazı: Eski Hareketleri Aktar"><figcaption>Eski Hareketleri Aktar: önce ne olacağı gösterilir, sonra <b>Aktar</b>.</figcaption></figure>
+        </div>
+        <p><b>Hesabı Atanmamış Eski Hareketler:</b> hesabı belli olmayan eski havale / EFT ve kart hareketleri Genel Bakış'ta bu satırda görünür; Gerçek Banka'ya ve hiçbir toplama girmez. <b>Şimdi Düzenle</b> → listede hareketleri işaretleyin → <b>Hedef Hesap</b>'ı seçin → <b>Seçilenleri Bu Hesaba Ata</b>. Tarihi henüz gelmemiş hareketin yanında <b>Tarihi Gelince Atanabilir</b> yazar: o gün aynı ekrandan hesaba atayın.</p>
+        <figure><img src="ekran/k37-banka-hesabi-atanmamis.jpg" alt="Hesabı Atanmamış Eski Hareketler"><figcaption>Seçip <b>Seçilenleri Bu Hesaba Ata</b>; tarihi gelmemiş satırda <b>Tarihi Gelince Atanabilir</b>.</figcaption></figure>
+        
+        <h3>Hesap Açmak</h3>
+        <ol class="steps">
+          <li><b>Hesaplar</b> → <b>+ Yeni Hesap</b>. <b>Hesap Türü</b>: <i>Vadesiz</i> (kredili mevduatınız varsa <b>KMH Limiti</b>), <i>Ticari</i>, <i>Vadeli</i>, <i>Kredi Hesabı</i> ya da <i>Diğer</i>. <b>Hesap Kodu</b>'nu boş bırakırsanız program önerir. Kredi kartı bankanın içinden eklenir (aşağıda).</li>
+          <li><b>Kullanım işaretleri:</b> <b>Kredi Kartı Kullan</b> (altına kart eklenir), <b>Çek Kullan</b> (verilen çekte <b>Çek Hesabı</b> olarak seçilir; çek ödenince para bu hesaptan çıkar; alınan çek bu hesaba tahsile verilir), <b>Senet Kullan</b> (verilen senedin ödemesinde önerilir; alınan senet bu hesaba tahsile verilir), <b>POS Kullan</b>.</li>
+          <li>Açılış Tarihi ve bakiyeyi yazın; bakiyeyi bankadan teyit ettiyseniz <b>Bakiye Doğrulandı</b>'yı işaretleyin → <b>Hesabı Aç</b>. <b>IBAN faturada gösterilsin</b> işaretliyse IBAN fatura belgesine basılır. Listede <b>Açılış Bakiyesi Doğrulanmadı</b> yazıyorsa: hesaba tıklayın → <b>Açılışı Düzelt</b> → <b>Bu tutar bankadaki gerçek bakiyedir</b>'i işaretleyin (işaretlenmeden o hesapta eksi bakiye denetimi çalışmaz).</li>
+          <li><b>Hesap ayrıntısı:</b> listede hesaba tıklayın. Bakiye, hesap bilgileri ve hareketler; düğmeler hesabın türüne göre: <b>+ Masraf</b>, <b>+ Faiz</b>, <b>+ Diğer İşlem</b>, <b>Transfer</b> (kartta <b>+ Kart Borcu Ödemesi</b>, kredide <b>+ Kredi İşlemi</b>), <b>Düzenle</b>, <b>Açılışı Düzelt</b>, <b>Pasife Al</b>, <b>Sil</b>. Hareketi olan hesap silinmez; kullanmayacaksanız <b>Pasife Al</b>. Kapalı düğmenin nedeni altında yazar.</li>
+        </ol>
+        <div class="pair">
+        <figure><img src="ekran/k38-banka-kart-hesabi.jpg" alt="Kredi Kartı Ekle"><figcaption>Kredi Kartı Ekle: bağlı banka hesabı, son 4 hane, Kart Limiti ve kart günleri.</figcaption></figure>
+        <figure><img src="ekran/k30-banka-hesap-detayi.jpg" alt="Banka hesap ayrıntısı"><figcaption>Hesap ayrıntısı: bakiye, bilgiler, işlem düğmeleri ve hareketler.</figcaption></figure>
+        </div>
+        
+        <h3>Banka Fişi: Masraf, Faiz, Kart Borcu ve Kredi</h3>
+        <p>Bankanın kendi yaptığı işlemleri <b>Hareketler</b> sekmesinden ya da hesap ayrıntısından girin:</p>
+        <ul>
+          <li><b>+ Masraf:</b> <b>Masraf Türü</b> (EFT, FAST, Havale, Hesap İşletim…), <b>Vergi</b> (<i>BSMV Dahil</i>, <i>BSMV Hariç</i>; banka fatura kestiyse <i>KDV Dahil (Faturalı)</i> ya da <i>KDV Hariç (Faturalı)</i>; <i>Yok</i>) ve tutar. Formun altındaki satır bankadan çıkacak toplamı gösterir.</li>
+          <li><b>+ Faiz:</b> <i>Faiz Geliri</i> (mevduat faizi; bankanın kestiği stopaj oranı önerilir) ya da <i>Faiz Gideri</i>.</li>
+          <li><b>+ Diğer İşlem:</b> <i>Diğer Gelir</i>, <i>Diğer Gider</i>, <i>Kart Borcu Ödemesi</i> (şirket kartının borcunu bankadan ödediniz), <i>Kredi Kullanımı</i> (kredi hesabınıza yatan kredi), <i>Kredi Geri Ödemesi</i>.</li>
+          <li><b>+ Vergi Ödemesi:</b> bankadan ödenen KDV, muhtasar ve stopaj ya da diğer vergi; gider değildir, ödenecek vergiyi (360) kapatır. Gecikme zammı ayrı alana yazılır. Yetki: <i>Vergi Ödemesi ve KDV Mahsubu</i> (yönetici ve muhasebe).</li>
+          <li><b>+ Planlı İşlem:</b> kira, kredi taksiti gibi tekrarlanan ödemeleri planlayın. Planlı işlem bakiyeyi değiştirmez; günü gelince Genel Bakış'ta görünür, bankada gerçekleştiyse <b>Planlı İşlemler</b>'den <b>Gerçekleştir</b>.</li>
+          <li><b>Yanlış girdiyseniz:</b> hareketin satırına tıklayın, <b>İşlem Kartı</b> açılır. <b>Ters Kaydet</b> işlemi iptal eder; <b>Düzelt</b> eskisini ters kaydedip doğrusunu yazar; yalnız açıklama için <b>Açıklamayı Düzelt</b>. Hiçbir şey kaybolmaz: eski ve yeni kayıt hareketlerde ve İşlem Geçmişi'nde kalır. Her işlemin bir <b>İşlem No</b>'su vardır (ör. BNK-2026-000010).</li>
+        </ul>
+        <div class="pair">
+        <figure><img src="ekran/k31-banka-masraf.jpg" alt="Banka Masrafı"><figcaption>Banka Masrafı: masraf türü, vergi ve bankadan çıkan toplam.</figcaption></figure>
+        <figure><img src="ekran/k33-banka-islem-karti.jpg" alt="İşlem Kartı"><figcaption>İşlem Kartı: <b>Ters Kaydet</b>, <b>Düzelt</b>, <b>Açıklamayı Düzelt</b>.</figcaption></figure>
+        </div>
+        
+        <h3>Bankalar Arası Transfer</h3>
+        <p><b>Hareketler</b> ya da hesap ayrıntısında <b>Transfer</b>: <b>Gönderen Hesap</b>, <b>Alıcı Hesap</b>, tutar, <b>Kanal</b> (EFT, FAST, Havale, Virman) ve gerekiyorsa <b>Valör</b> (paranın alıcı hesaba geçtiği gün). Banka ücret kestiyse <b>Ücret</b> ve <b>Ücret Vergisi</b>'ni yazın. Alttaki satır <i>Alıcıya Giren</i>, <i>Ücret</i> ve <i>Gönderenden Çıkan</i> tutarlarını gösterir. Kendi hesaplarınız arasındaki para Genel Bakış'ta ve ANLIK DURUM'da <b>Transfer</b> olarak ayrı yazılır; giriş ve çıkışa sayılmaz. Kasa ile banka arasındaki para için Kasa'daki <b>Bankadan Kasaya Aktar</b> / <b>Kasadan Bankaya Yatır</b>.</p>
+        <figure class="w80"><img src="ekran/k32-banka-transfer.jpg" alt="Bankalar Arası Transfer"><figcaption>Bankalar Arası Transfer: ücret gönderen hesaptan ayrıca düşer.</figcaption></figure>
+        
+        <h3>Tahsilat ve Ödemede Banka Hesabı</h3>
+        <p>Cari kartındaki <b>+ Tahsilat</b> / <b>− Ödeme</b>, fatura ödemesi, taksit tahsilatı, stok giriş ve çıkışı, çek / senet tahsil ve ödemesinde yol <b>Havale / EFT</b> seçilince <b>Banka Hesabı</b> alanı çıkar. Tek banka hesabınız varsa para kendiliğinden ona yazılır (altında hangi hesap olduğu yazar); birden çok hesabınız varsa hesap seçilmeden kaydedilmez. Nakit seçildiğinde alan görünmez, para Kasa'ya gider.</p>
+        <ul>
+          <li><b>Bakiye:</b> listede her hesabın, işlem tarihindeki bakiyesi yazar; seçtiğiniz hesabın altında <b>Bakiye</b> ve <b>İşlemden Sonra</b> görünür (tutarı yazdıkça değişir). Eksiye düşecekse satır kırmızıdır. <b>Kasadan Bankaya Yatır</b>'da Nakit Kasa'nın bakiyesi de yazar.</li>
+          <li><b>Hesap yoksa:</b> formdaki “… Tanımla” düğmesiyle (ör. <b>Kredi Kartı Tanımla</b>) form kapanmadan tanımlayın; kaydedince formda seçili gelir. Yetkiniz yoksa “tanımlı değil, yöneticinize başvurun” yazar.</li>
+        </ul>
+        <p><b>Hesap açılışından önceki havaleyi girmek ya da düzeltmek:</b> <b>Banka Hesabı</b> alanında <b>Hesapsız (Açılıştan Önce)</b>'yi seçin ve hareketin gerçek tarihini yazın. Hareket hiçbir hesaba yazılmaz, <b>Hesabı Atanmamış Eski Hareketler</b>'de kalır (o tarihteki bakiye zaten açılış bakiyesinin içindedir). Tarih hesapların açılışından önce değilse program kaydetmez.</p>
+        <p><b>"Aktarılmış eski hareket" uyarısı:</b> eski bir hareketin tutarını, tarihini ya da yolunu düzeltirken <b>Devir Kapanışı</b>, <b>Kart Borcuna Aktar</b> ya da <b>Bankaya Geçmiş Say</b> ile kapandığı yazarsa: Banka → <b>Hesaplar</b> → <b>Eski Hareketler</b> → <b>Kurulum Geçmişi</b>'nde uyarıda yazan İşlem No'lu satırda <b>Geri Al</b> → hareketi düzeltin → işlemi yeniden yapın (Devir Kapanışı için <b>Kurulum Sihirbazı</b>, öbürleri için Eski Hareketler'deki <b>Kart Borcuna Aktar</b> / <b>Bankaya Geçmiş Say</b>).</p>
+        <figure class="half"><img src="ekran/k34-banka-hesap-secimi.jpg" alt="Cari tahsilatında Banka Hesabı"><figcaption>Havale / EFT → <b>Banka Hesabı</b>.</figcaption></figure>
+        
+        <h3>Şirket Kredi Kartı</h3>
+        <ol class="steps">
+          <li>Kartın borcunu ödeyen banka hesabına tıklayın → <b>Düzenle</b> → <b>Kredi Kartı Kullan</b> → <b>+ Kredi Kartı Ekle</b>: Kart Adı, Son 4 Hane, <b>Kart Limiti</b>, Hesap Kesim ve Son Ödeme Günü. Bir bankaya birden çok kart eklenir; kart Hesaplar'da bankasının altında görünür. Eski kartın altında <b>Öneri</b> yazıyorsa <b>Bağla</b>.</li>
+          <li>Cari kartındaki <b>− Ödeme</b>'de, alış faturasının ödemesinde ve stok alımında (<b>+ Giriş</b>) yol <b>Kredi Kartı</b> seçilince <b>Kredi Kartı</b> alanı çıkar: tek kartınız varsa kendiliğinden o karta yazılır, birden çok kartınız varsa kartı seçersiniz.</li>
+          <li>Kartla ödeme bankadan para çıkarmaz; kartın borcuna yazılır (Genel Bakış'ta ve ANLIK DURUM'da <b>Kart ve Kredi Borcu</b>). Borcu ödediğinizde kartın ayrıntısında <b>+ Kart Borcu Ödemesi</b>: ödeyen hesap kartın bağlı olduğu banka hesabıyla gelir; banka bakiyesi düşer, kartın borcu azalır.</li>
+        </ol>
+        <p>Kart limitini aşacak ödemede <b>Eksi Bakiye</b> sorusu gelir (kullanılabilir tutar yazar). Müşteriden kartla aldığınız tahsilatta yol <b>POS</b>'tur; kredi kartı sorulmaz.</p>
+        <figure class="half"><img src="ekran/k39-banka-kurumsal-kart.jpg" alt="Cari ödemesinde Kredi Kartı"><figcaption>Kredi Kartı → ödeme şirket kartının borcuna yazılır.</figcaption></figure>
+        
+        <h3>POS ile Tahsilat</h3>
+        <ol class="steps">
+          <li><b>POS tanımlama:</b> POS'un parasının geçtiği banka hesabına tıklayın → <b>Düzenle</b> → <b>POS Kullan</b> → hesabın altındaki <b>+ POS Ekle</b>: POS Adı, Üye İşyeri ve Terminal No, <b>Valör Günü</b> ve <b>Komisyon Oranları</b> (Tek Çekim, 3 Taksit…). Formda POS yoksa <b>POS Tanımla</b> ile form kapanmadan eklenir.</li>
+          <li><b>POS ile tahsilat:</b> satış faturasında <b>+ POS</b>, cari, taksit ve stok satışında yol <b>POS</b>: POS'u (birden çoksa) ve <b>POS Taksit Sayısı</b>'nı seçin; komisyon, bankaya geçecek tutar ve valör günü altta yazar. Para satış anında bankaya geçmez; valör günü komisyonu düşülmüş tutar hesaba yazılır (<b>Banka → POS → POS Ödeme Takvimi</b>; beklemeden <b>Şimdi Aktar</b>).</li>
+          <li><b>İptal ve iade:</b> aynı gün, bankaya geçmeden <b>Banka → POS → POS İşlemleri → İptal Et</b> (komisyonsuz). Sonrasında satıştan iade faturasında <b>+ POS İadesi</b> (asıl satış önerilir) ya da POS İşlemleri'nde <b>İade</b>.</li>
+        </ol>
+        
+        <h3>Eksi Bakiye Sorusu</h3>
+        <p>Bir çıkış banka hesabını eksiye düşürecekse (vadesizde KMH Limiti, kartta Kart Limiti dahil) program <b>Eksi Bakiye</b> penceresiyle sorar: hesapta ne kadar olduğu ve işlemden sonra ne olacağı yazar. Yanlışsa <b>Vazgeç</b>, doğruysa <b>Yine de Kaydet</b>. Ne olacağını <b>Ayarlar</b> → <b>Eksi Bakiye</b> → <b>Banka Hesapları</b>'nda seçin: <b>Uyar</b> (sorar), <b>Engelle</b> (kaydetmez), <b>Kontrol Yok</b>; tek bir hesap için hesap formundaki <b>Eksi Bakiye Denetimi</b>'nden. Açılış bakiyesi doğrulanmamış (<b>Bakiye Doğrulandı</b> işaretsiz) hesapta soru gelmez.</p>
+        <figure class="half"><img src="ekran/k35-banka-eksi-bakiye.jpg" alt="Eksi Bakiye sorusu"></figure>
+        
+        <h3>Banka Raporları, Ayarlar ve Yetkiler</h3>
+        <ul>
+          <li><b>Raporlar → Tüm Raporlar → Banka:</b> <i>Banka Bakiye Raporu</i>, <i>Banka Hareket Raporu</i>, <i>Banka Masraf Raporu</i> (POS komisyonları dahil), <i>Alt Hesap Mizanı</i>, <i>POS Ödeme Takvimi</i>, <i>Faturası Beklenen Komisyonlar</i>, <i>POS Satış Raporu</i> ve <i>POS Komisyon Raporu</i> (POS başına aylık / yıllık kesinti: brüt, komisyon, BSMV / KDV, net; iadeler ayrı satır), <i>Günlük</i> ve <i>Aylık Banka Raporu</i> (giriş / çıkış ile transferler ayrı), <i>Banka Bazında</i> ve <i>Para Birimi Bazında Bakiye</i>, <i>Bankalar Arası</i> ve <i>Kasa ve Banka Transfer Raporu</i>, <i>Cari</i> / <i>Fatura</i> / <i>Taksit ve Banka Hareketleri</i>, <i>Banka Nakit Akış Raporu</i> (planlı işlemler, kart borcu son ödeme günü ve tahsildeki çekler; planlanan transferler ayrı kolon). Hepsi <b>PDF</b> ve <b>Excel</b> düğmeleriyle iner. Raporlar <b>Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis</b> sırasıyla listelenir; <b>Tüm Zamanlar</b> seçilince Başlangıç alanı boş kalır.</li>
+          <li><b>Hareketler sekmesinde PDF / Excel:</b> süzgeçleri (hesap, tür, yön, tarih, tutar, arama) ayarlayın, <b>PDF</b> ya da <b>Excel</b>'e basın; dosya ekrandaki satırları ve alt TOPLAM'ı taşır.</li>
+          <li><b>Zil ve Vade Takip:</b> gerçekleştirilmemiş planlı banka işlemleri (masraf talimatı, kredi taksiti, planlı transfer) ve şirket kartının son ödeme günü zile ve Raporlar → <b>Vade Takip</b> / <b>Nakit Akış</b>'a girer; zildeki <b>Planlı İşlemler</b> düğmesi Banka → Hareketler → Planlı İşlemler'i açar.</li>
+          <li><b>ANLIK DURUM</b>'da <b>Nakit Kasa</b> ile <b>Gerçek Banka</b> ayrı kutulardadır (14. bölüm); Raporlar → <b>Nakit Akış</b> bugünkü nakit ve banka bakiyesinden başlar.</li>
+          <li><b>Ayarlar:</b> standartlar seçili gelir; çoğu ofisin bir şeyi değiştirmesi gerekmez. <b>Varsayılan Tahsilat Hesabı</b>, <b>Eksi Bakiye</b>, <b>Benzer İşlem Uyarısı</b> (aynı gün aynı hesaba, aynı cariye aynı tutar ikinci kez girilince uyarır), <b>Banka Masrafı Vergisi</b> ve <b>Masraf Türleri</b>. Değiştirdiğinizi <b>Ayarları Kaydet</b>; standartlara dönmek için <b>Varsayılanlara Dön</b>.</li>
+          <li><b>Kimler kullanır:</b> yönetici ve muhasebe. Başka birine <b>Yönetim → Kullanıcılar → Yetkiler → Banka ve POS</b> grubundan açılır: <i>Banka Görüntüleme</i>, <i>Banka Raporları</i>, <i>Banka Hesabı Tanımlama ve Açılış</i>, <i>Banka Hareketi Girme ve Bankadan Çıkış</i>, <i>Banka Hareketi Silme, İptal ve Ters Kayıt</i>, <i>Transfer Yapma</i>, <i>Banka Ayarları</i>, <i>POS Tanımlama</i>, <i>Komisyon Oranlarını Değiştirme</i>.</li>
+        </ul>
+        <figure><img src="ekran/k36-banka-raporu.jpg" alt="Banka Bakiye Raporu"><figcaption>Raporlar → Tüm Raporlar → Banka → Banka Bakiye Raporu.</figcaption></figure>
+        <figure class="narrow"><img src="ekran/k40-banka-yetkiler.jpg" alt="Yetkiler: Banka ve POS"><figcaption>Yetkiler → Banka ve POS: bu kişiye Banka Görüntüleme ve Banka Raporları eklendi (yeşil).</figcaption></figure>
+        
+        <h2>9. Cari</h2>
+        <p>Sol menüden <b>Cari</b>. Kiminle para alışverişi yapıyorsanız (müşteri, öğrenci, veli, site sakini, tedarikçi) onun hesap kartı.</p>
+        <ol class="steps">
+          <li><b>Carileri toplu açın:</b> <b>Excel / Sheets’ten Yükle</b> (binlerce kişi tek seferde). Yüklemeden önce hangi satırın hazır, hangisinde sorun olduğu gösterilir. Aynı kişi ikinci kez açılmaz; Excel'deki ek kolonlar (Veli, Okul, Plaka…) kartta aynı adla görünür. Tür kolonunda "Müşteri/Tedarikçi" gibi iki türü birden yazan ya da tanınmayan değer varsa <b>Tür Değerleri</b> tablosunda sarı görünür; türünü oradan seçin (açılış bakiyesinin yönü türe göre yazılır).</li>
+          <li><b>Tek cari:</b> <b>+ Yeni Cari</b>. <b>Tablodaki Kayıt</b> alanı cariyi tablodaki kişiye bağlar; aynı adlı iki kişi varsa program tahmin etmez, listeden siz seçersiniz.</li>
+          <li><b>Hareket girin:</b> kartta <b>+ Tahsilat</b> (nakit Kasa'ya, havale / EFT banka hesabına girer; makbuzu alınır), <b>Borç Yaz</b>, <b>Alacak Yaz</b>, <b>− Ödeme</b> (nakit Kasa'dan, havale / EFT banka hesabından çıkar; <b>Kredi Kartı</b> şirket kartınızın borcuna yazılır). Açık taksit kartı varsa tahsilatı taksite mi yazacağınız sorulur: taksit ödemesiyse <b>Taksite Yaz</b>; <b>Taksit Dışı Tahsilat</b> taksiti ve taksitli faturayı kapatmaz, carinin hesabına yazılır. <b>Satış Faturası</b> ve <b>Alış Faturası</b> pilleri bu cariye fatura keser (bkz. Fatura).</li>
+        </ol>
+        <ul>
+          <li><b>Bakiye</b> = borç − alacak. <b style="color:#177245">Borçlu</b>: cari size borçlu; <b style="color:#b3473a">Alacaklı</b>: siz cariye borçlusunuz; <b>Kapalı</b>: bakiye sıfır. Listede, kartta, raporlarda ve çıktılarda aynı sözcük ve renk.</li>
+          <li><b>Arama ve süzgeç:</b> ad, telefon, cari no, adres ve ek alanlar; tür, grup, bakiye (Borçlular, Alacaklılar, Taksidi Gecikenler…).</li>
+          <li><b>Çıktı:</b> listede PDF, Yazdır ve Excel (süzgeç varsa yalnız süzülenler); kartta cari ekstre PDF'i.</li>
+          <li><b>Ayrıntılı Ekstre:</b> kartta ya da <b>Raporlar → Cari Mizanı ve Ekstresi</b>'nde carinin ekstresinde <b>Ayrıntılı Ekstre</b>'ye basın (ya da <b>Raporlar → Tüm Raporlar → Cari Ekstre</b>'de <b>Fatura Kalemlerini Göster</b>'i işaretleyin): her faturanın altında kalemleri (miktar, birim fiyat, iskonto, KDV'siz tutar, KDV, toplam; varsa tevkifat ve stopaj), her harekette belge no ve ödeme yolu, en altta <b>DÖNEM TOPLAMI</b> ve <b>GENEL TOPLAM</b>. PDF ve Excel ekrandakiyle aynıdır. Finans Raporları yetkisi gerekir.</li>
+          <li><b>Vade Tarihi ve Beklenen Ödeme Tarihi:</b> <b>Borç Yaz</b>, <b>Alacak Yaz</b> ve <b>Açılış Bakiyesi</b>'nde isteğe bağlı iki tarih: <b>Vade Tarihi</b> gelince borç Tahsilat Takvimi'nde ve zilde görünür; müşteri ödeme sözü verdiyse <b>Beklenen Ödeme Tarihi</b>'ni yazın, hatırlatma o güne kayar (<i>Ödeme Sözü</i>). Tahsilat girildikçe kalan tutar küçülür; borç kapanınca hatırlatma kalkar.</li>
+          <li><b>İade bedelini geri ödeme:</b> iade ettiğiniz malın parasını müşteriye geri verirken cari kartında <b>− Ödeme</b> (tedarikçiden geri alıyorsanız <b>+ Tahsilat</b>) → <b>Kapatılacak Fatura</b>'da o iadeyi seçin. Taksitli faturanın iadesinin parası taksit kartından ya da iade belgesinden verilir.</li>
+          <li><b>Açılış bakiyesi:</b> tedarikçinin bakiyesi <b>Alacaklı</b> (sizin borcunuz), müşterininki <b>Borçlu</b> yazılır. Yanlış yönde girdiğiniz harekette ✎ ile <b>Yön</b>'ü değiştirin.</li>
+          <li><b>Aynı kişi iki kez açılmaz:</b> ad yazarken aynı adlı cari varsa altında gösterilir; kaydederken <b>Mevcut Cariyi Aç</b> diyebilirsiniz.</li>
+          <li><b>Cariyi iki kişi aynı anda düzenlerse:</b> ikinci kaydeden uyarılır (“Bu cari siz düzenlerken başka biri tarafından değiştirildi”); formda güncel bilgi yüklenir, sizin değiştirdiğiniz alanlar yerinde kalır. Kontrol edip yeniden <b>Kaydet</b>; kimsenin değişikliği sessizce silinmez.</li>
+          <li><b>Mükellef Sorgula:</b> VKN / TCKN'yi GİB'de sorar; e-Fatura mükellefiyse kutu işaretlenir ve posta kutusunu seçersiniz. GİB'deki unvan yazdığınızdan farklıysa altında gösterilir; <b>Unvanı Bununla Değiştir</b> ile alın ya da kendi yazdığınızı bırakın.</li>
+          <li><b>Hareketler süzgeci:</b> <i>Tahsilat / Ödeme</i> seçeneği nakit, havale / EFT, POS ve kartla yapılan bütün tahsilat ve ödemeleri gösterir.</li>
+        </ul>
+        <h3>Ticari Şüpheli Alacaklar</h3>
+        <ol class="steps">
+          <li><b>Şüpheliye alın:</b> tahsili şüpheli hâle gelen borç (karşılıksız çek, protestolu senet, dava, icra) için müşteri kartında <b>Şüpheli Alacağa Al</b> → tutar (en çok borç bakiyesi), tarih ve neden. Bakiye değişmez; kartta ve listede <b>Şüpheli</b> rozeti görünür. Karşılıksız dönen çekin / senedin kartındaki <b>Şüpheli Alacağa Al</b> neden ve tutarı evraktan alır.</li>
+          <li><b>Karşılık Ayır:</b> kayıt satırında, en çok kalan şüpheli tutar kadar (VUK 323). Sonradan gelen tahsilat önce şüpheli tutardan düşer; karşılığın fazlası kendiliğinden çözülür.</li>
+          <li><b>Tahsilatta seçim:</b> şüpheli kaydı açık müşteride <b>+ Tahsilat</b> formunda <b>Normal Cari Hesaba İşle</b> kutusu vardır; işaretlerseniz tahsilat şüpheliden düşmez, normal cari hesapta kalır (kartta <i>Normal Cariye İşlendi</i> yazar). Satış faturasının peşini ve <b>Kapatılacak Fatura</b> bağlı tahsilat kendiliğinden normal cari hesaba işlenir.</li>
+          <li><b>Değersiz Alacak Yaz:</b> kesinleşmiş kayıpta; onaydan sonra cari bakiyesi o tutar kadar kapanır (kartta <i>Değersiz Alacak</i> satırı). <b>Şüpheliden Çıkar</b> kalan tutarı normal alacağa geri alır.</li>
+          <li><b>Nerede görünür:</b> kartta Şüpheli Alacak bilgisi (alınan, karşılık, tahsil edilen, değersiz, kalan); ANLIK DURUM alacak toplamında ve Vade Takip'te ayrı satır; <b>Raporlar → Tüm Raporlar → Şüpheli Alacaklar</b> (Durum: Açık / Kapanan / Tümü, Neden); Alacak Yaşlandırma'da <b>Vade Gecikme (Gün)</b> (en eski açık kalemin gecikmesi) ve <b>Şüpheli Alacak (dilimlere dahil)</b> kolonları; Hesap Planı Mizanı'nda 128 / 129. Bu işlemler <b>Şüpheli Alacak İşlemleri</b> yetkisi ister (yönetici ve muhasebe); silinen kayıt <b>Yönetim → Silinenler</b>'den geri yüklenir.</li>
+        </ol>
+        <h3>WhatsApp ile Ekstre ve Mesaj</h3>
+        <ol class="steps">
+          <li><b>Tek cari:</b> kartta <b>WhatsApp</b> → <b>Ekstre Gönder</b>, <b>Mesaj Gönder</b> ya da <b>Sohbeti Aç</b>. Altta son gönderimler görünür.</li>
+          <li><b>Toplu:</b> listede soldaki kutularla carileri seçin → <b>WhatsApp Ekstre</b> ya da <b>WhatsApp Mesaj</b>. Hiç seçmezseniz <b>Tümüne WhatsApp …</b> süzgeçteki bütün carilere gönderir (önce grup ya da <i>Borçlular</i> seçin). Başlıktaki kutu süzgeçteki herkesi seçer; sonra birkaç kişinin işaretini kaldırırsanız o kişiler gönderime girmez (<i>997 cari seçildi, 3 hariç</i>).</li>
+          <li><b>Hazırlık:</b> telefonu olmayan ya da sabit hat olan cariler ayrı gösterilir. Ekstrede dönemi seçin; mesajda hazır şablonu seçin ya da kendiniz yazın. <b>{Ad}</b>, <b>{Bakiye}</b>, <b>{Sıradaki Taksit}</b> gibi değişkenler her kişide kendi bilgisiyle dolar; sağda ön izleme vardır. <b>Yalnız Borçlu Carilere Gönder</b> ile alacaklıları çıkarın.</li>
+          <li><b>Gönderim:</b> <b>Gönderime Başla</b> → her kişi için mesaj hazır gelir; <b>WhatsApp'ta Aç ve Sıradakine Geç</b> deyin, açılan WhatsApp'ta <b>Gönder</b>'e basın. <b>Otomatik Sıra</b> açıkken WhatsApp'tan programa dönmeniz yeter: sıradaki kişinin sohbeti kendiliğinden açılır (beklemeden açmak için <b>Şimdi Aç</b>). Ekstre gönderiminde <b>Ekstre PDF'ini kendiliğinden indir</b> açıksa her kişinin ekstresi kişinin adıyla iner; dosyayı sohbete sürükleyin. Mesajı o kişiye özel düzeltebilir, <b>Atla</b>yabilirsiniz. Gönderilenler cari kartına yazılır.</li>
+        </ol>
+        <p>Mesajları sizin WhatsApp'ınız (bilgisayardaki WhatsApp ya da WhatsApp Web) gönderir; ücretli bir hizmet gerekmez.</p>
+        
+        <h2>10. Taksitler</h2>
+        <p>Sol menüden <b>Taksitler</b>. Kişilerin taksitli borçlarını takip eder. Kartlar <b>Grup › Alt Grup</b> ile düzenlenir (servis plakası › güzergâh, site › blok, okul › sınıf). Grup listesi her grubun kaç kartı ve kaç carisi olduğunu gösterir: <i>34 SRV 202 · 0 kart · 3 cari</i>.</p>
+        <ol class="steps">
+          <li><b>Tek kart:</b> <b>+ Yeni Kart</b> → cariyi seçin (ad yazınca bulunur; yoksa bu adla cari açılır); kartın Kayıt Tarihi ve grubu cariden gelir. Toplam tutar, taksit sayısı ve ilk vadeyi yazın. Taksitleri sonra <b>Otomatik Dağıt</b> ya da <b>+ Taksit</b> ile de kurabilirsiniz. İlk vade Kayıt Tarihi'nden önce olamaz; Kayıt Tarihi bugünden ileri olamaz.</li>
+          <li><b>Birden çok cariye birden:</b> <b>+ Toplu Taksitlendir</b> ya da süzgeç satırındaki <b>Cari Seç</b>. Açılan pencerede grup, alt grup ve adla süzün, kutularla carileri seçin (başlıktaki kutu hepsini seçer) → <b>Seçilenlere Taksit Planı</b>. Tutarı herkese aynı yazın ya da her carinin kartındaki alandan (ör. <i>Servis Ücreti</i>) okutun; taksit sayısı ve ilk vadeyi girin. Program önce kaç kart, toplam ne kadar ve hangi carilere açılacağını gösterir; <b>N Kartı Aç</b> deyince kartlar açılır. Açık kartı olan cari listeye gelmez; çift kart açılmaz.</li>
+          <li><b>Kartsız grup:</b> bir grubu seçtiğinizde carileri olup hiç kartı yoksa liste boş kalmaz; <b>Bu Gruba Toplu Taksitlendir</b> ile o grubun carileri seçili gelir.</li>
+          <li><b>Veresiye satışı ya da mevcut borcu taksitlendirme:</b> cari kartında <b>+ Taksit Planı</b> → <b>Borcun Kaynağı: Carinin Mevcut Borcu</b> (tutar bakiyeden gelir). Borç ikinci kez yazılmaz, yalnız vadelere bölünür. Satış anında da yapabilirsiniz: Stok → <b>− Çıkış</b> → <b>Açık Hesap</b> → <b>Bu Satışı Taksitlendir</b>. Yeni bir hizmet ya da satışsa <b>Yeni Borç</b> seçin. Kart açıldığı günkü borcu taksitlendirir; tutarı sonradan büyütülmez, yeni borç için yeni kart açın.</li>
+          <li><b>Tahsilat:</b> kartta <b>+ Tahsilat</b> ya da taksitin yanındaki <b>₺</b>. Tutar sıradaki taksit kadar hazır gelir; en eski açık taksite sayılır, fazlası sonrakine geçer. Nakit Kasa'ya, havale / EFT seçtiğiniz banka hesabına düşer; <b>Makbuz</b> A5 boyutundadır. İade için <b>− Ödeme / İade</b>.</li>
+          <li><b>Excel'den:</b> <b>Excel / Sheets’ten Yükle</b> listenizdeki taksitleri gerçek vade ve tutarlarıyla kurar; yanlış yüklediyseniz <b>Son Aktarımlar → Geri Al</b>.</li>
+        </ol>
+        <div class="pair">
+        <figure><img src="ekran/k21-taksitler-grup.jpg" alt="Taksitler: kartsız grup"><figcaption>Grubun carileri var, kartı yok: <b>Bu Gruba Toplu Taksitlendir</b>.</figcaption></figure>
+        <figure><img src="ekran/k22-cari-sec.jpg" alt="Cari Seç"><figcaption><b>Cari Seç</b>: grup, alt grup ve adla süzün, seçin, <b>Seçilenlere Taksit Planı</b>.</figcaption></figure>
+        </div>
+        <ul>
+          <li><b>Liste:</b> <i>Devam Eden, Geciken, Biten, Kapalı, Tümü</i>; göstergelerde kalan alacak, geciken, bu ay beklenen ve tahsil edilen. Tahsilatı bırakan müşteri için <b>Kartı Kapat</b>: kalan varken program kalan tutarı söyleyip onay ister; kapalı kart uyarı vermez, kayıt durur, gerekirse <b>Yeniden Aç</b>.</li>
+          <li><b>Uyarı:</b> vadesi geçen taksit takvimde, sağ altta ve zilde <i>Tahsilat alınmadı</i> olarak görünür.</li>
+          <li><b>PDF ve Yazdır:</b> kart ekstresi ve süzülmüş liste (ör. yalnız bir plakanın gecikenleri).</li>
+          <li><b>Tablodaki kişi:</b> taksit kartı ve tahsilatı tablodaki kayıttan değil, carinin kartından (<b>+ Taksit Planı</b>, <b>+ Tahsilat</b>) ya da <b>Taksitler → + Yeni Kart</b>'tan.</li>
+        </ul>
+        
+        <h2>11. Stok</h2>
+        <p>Sol menüden <b>Stok</b>. Ürünler (çay, yağ, kâğıt…) ve giriş/çıkış hareketleri; <b>Mevcut</b> = girişler − çıkışlar.</p>
+        <ol class="steps">
+          <li><b>+ Yeni Ürün:</b> <b>Stok Kodu</b> (isteğe bağlı; barkod okutabilirsiniz, her ürünün kodu ayrıdır), ad, <b>birim</b> (Adet, Kg, Lt, Metre, M², Paket, Koli, Saat…; listede yoksa kendiniz yazın), kategori, kritik seviye, birim fiyat, <b>KDV Oranı</b> (isteğe bağlı; faturada ürünü seçince kalemin KDV'si buradan gelir, değiştirebilirsiniz). Açılış miktarı (elinizdeki stok) Ana Defter'e açılış olarak girer (miktar × birim fiyat; Hesap Planı Mizanı'nda 153). Ürünü şimdi nakit aldıysanız <i>Kasa'ya yansıt</i>'ı işaretleyin: tutar Kasa'dan düşer (açılış değil, Kasa'dan alım sayılır). Toplu açılış için <b>Excel / Sheets’ten Yükle</b>.</li>
+          <li><b>Alış ve satış fiyatı:</b> ürün kartında ikisini ayrı yazın; <b>− Çıkış</b> satış fiyatıyla, <b>+ Giriş</b> alış fiyatıyla açılır.</li>
+          <li><b>+ Giriş / − Çıkış:</b> miktar ve birim fiyatı yazınca tutar hesaplanır. Para <b>Nakit</b> (Kasa), <b>Havale / EFT</b> (seçtiğiniz banka hesabı), satışta <b>POS</b>, alımda <b>Kredi Kartı</b> (şirket kartınızın borcu) ile yazılır ya da <b>Açık Hesap</b> ile cariye.</li>
+          <li><b>↩ Müşteri İadesi:</b> geri gelen ürün stoğa girer; parası müşteriye geri ödenir ya da borcundan düşülür. Taksitlendirilmiş satıştan iade borçtan düşülürse taksit kartı da o kadar küçülür; para geri verilirse kart değişmez.</li>
+          <li><b>↪ Tedarikçiye İade:</b> ürünü seçip <b>↪ Tedarikçiye İade</b>: ürün stoktan çıkar; parası tedarikçiden geri alınır (Nakit, Havale / EFT) ya da <b>Açık Hesap</b> ile tedarikçiye olan borcunuzdan düşer.</li>
+          <li><b>Kasiyer:</b> <i>Yönetim → Yeni Rol</i>'de <b>Satış Yapma</b> yetkisi verilen kişi ürün kartına dokunmadan satış ve iade girer.</li>
+          <li><b>Kritik seviye:</b> ürün bu miktara inince listede üstte kırmızı görünür, sol menüde rozet çıkar.</li>
+        </ol>
+        <p><b>Hizmet kalemi:</b> <i>Kalem Türü</i>'nü <i>Hizmet</i> yapın (yıkama, servis ücreti…); stoğu tutulmaz, satışı Kasa'ya ya da cariye yazılır.</p>
+        
+        <h2>12. Çek / Senet</h2>
+        <p>Sol menüden <b>Çek / Senet</b>. Aldığınız ve verdiğiniz çek ve senetlerin portföyü.</p>
+        <figure><img src="ekran/k13-cek-senet.jpg" alt="Çek / Senet"></figure>
+        <ol class="steps">
+          <li><b>+ Çek / Senet Al:</b> cari, tutar, vade, seri no, banka. İsterseniz <b>Taksite Say</b>: evrak carinin en eski açık taksitlerine sayılır; ya da <b>Kapatılacak Fatura</b>: evrak seçtiğiniz faturayı kapatır (seçmezseniz en eski açık faturayı). Evrak <i>Portföyde</i>dir; carinin borcu düşer, para henüz Kasa'da değildir.</li>
+          <li><b>Vadesinde:</b> evrak kartında <b>Tahsil Et</b> (nakit Kasa'ya, havale / EFT banka hesabına girer), <b>Ciro Et</b> (tedarikçiye verirsiniz) ya da <b>Karşılıksız / İade</b> (müşteri yeniden borçlanır; evrakın kapattığı fatura yeniden açılır).</li>
+          <li><b>+ Çek / Senet Ver:</b> tedarikçiye borç yazılır; vadesinde <b>Ödeme Yap</b> Kasa'dan ya da seçtiğiniz banka hesabından çıkarır.</li>
+        </ol>
+        <ul>
+          <li><b>Yanlış işlem:</b> evrak kartındaki <b>“…” İşlemini Geri Al</b> son işlemi ve bağlı kayıtlarını birebir kaldırır; açık Kasa ve Cari pencereleri hemen güncellenir.</li>
+          <li><b>Vade takibi:</b> vadesi geçen ve bugün gelen evrak rozette, takvimde ve bildirimlerde; 7 gün içinde gelenler ANLIK DURUM'da.</li>
+          <li><b>Excel / Sheets’ten Yükle</b> ile mevcut portföyünüzü alın. Liste PDF ve Excel olarak iner.</li>
+          <li><b>Bankaya Tahsile Ver:</b> portföydeki alınan evrakın kartında → banka hesabını seçin (çekte <b>Çek Kullan</b>, senette <b>Senet Kullan</b> işaretli hesaplar gelir; hiç yoksa <b>Banka Hesabı Tanımla</b>) → evrak <i>Bankada Tahsilde</i> olur. Banka bakiyesi değişmez; listede <b>Bankada Tahsilde</b> süzgeciyle bulunur.</li>
+          <li><b>Bankadan Geri Al:</b> banka evrakı geri verdiyse; evrak yeniden <i>Portföyde</i> olur, ciro edilebilir ya da elden tahsil edilir. Bankadaki evrak ciro edilemez, silinemez.</li>
+          <li><b>Banka tahsil edince:</b> <b>Tahsil Et</b> → para evrakın verildiği hesaba girer (yol ve hesap sabittir). Karşılıksız dönerse <b>Karşılıksız / İade</b>: müşteri yeniden borçlanır.</li>
+        </ul>
+        
+        
+        <h2>13. Fatura</h2>
+        <p>Sol menüden <b>Fatura</b>. Satış, alış ve iade faturalarınız; her fatura kaydedildiği anda stoğu, cariyi, Kasa'yı, taksit kartını ve çek/senedi birlikte yazar; ayrıca bir yere girmezsiniz.</p>
+        <figure><img src="ekran/k24-fatura-formu.jpg" alt="Fatura formu"><figcaption>Satış faturası: cari, kalemler, KDV ve ödeme tek formda.</figcaption></figure>
+        <ol class="steps">
+          <li><b>+ Yeni Fatura</b> → ne yapacağınızı seçin: <i>Stoktan Satış</i>, <i>Hizmet Satışı</i>, <i>Serbest Meslek Makbuzu</i>, <i>Fiyat Farkı Faturası</i>, <i>Satıştan İade</i>; <i>Stoğa Mal Alışı</i>, <i>Hizmet ve Gider Alışı</i>, <i>Alıştan İade</i>. Stok, KDV ve ödeme kuralları seçtiğiniz senaryodan gelir. Cari kartındaki <b>Satış Faturası</b> / <b>Alış Faturası</b> pili aynı formu cari dolu açar.</li>
+          <li><b>Cari:</b> adını yazıp seçin; vergi dairesi, VKN/TCKN ve adres cari kartından gelir. Kayıtlı değilse yanındaki <b>+ Yeni Cari</b> formdan ayrılmadan açar; kaydedince seçili gelir. Kimliğini bilmediğiniz perakende müşteriye satışta <b>Nihai Tüketici</b>: tek tıkla hazır “Nihai Tüketici” carisi seçilir (ilk kullanımda bir kez açılır). e-Arşivde tutar 30.000 TL'yi aşarsa program alıcının gerçek kimliğini ve adresini ister. 11111111111 yalnız kimliği bilinmeyen alıcı içindir: adı belli kişinin carisine bu numarayı yazarsanız program kaydetmeden önce sorar.</li>
+          <li><b>Kalemler:</b> <b>Kod / Barkod</b> ya da ürün adını yazınca stoktan öneri gelir (ok tuşlarıyla seçin); kodu yazıp Enter ya da Tab'a basınca (barkod okuyucu da) ürün doğrudan seçilir, kod hiçbir ürüne ait değilse satırda yazar. Miktar, birim fiyat, iskonto ve KDV; bütün satırlara aynı oran için üstteki <b>Tüm Kalemlere KDV</b>. <i>Stoğa Mal Alışı</i>'nda stokta olmayan ürün için listeden <b>+ Yeni Stok Kartı</b>: kart fatura kaydedilince açılır, ürün stoğa girer. Cari ve ürün seçilince <b>bu müşteriye ve başkalarına son satış/alış fiyatı</b> görünür, tıklayınca fiyata yazılır. <b>Not</b> belgenin altına basılır.</li>
+          <li><b>Ödeme:</b> yola göre düğme: <b>+ Nakit</b> (Kasa), <b>+ Havale / EFT</b> (seçtiğiniz banka hesabı), satışta <b>+ POS</b>, alışta <b>+ Kredi Kartı</b> (şirket kartınızın borcu), <b>+ Çek / Senet</b> (portföy), alışta <b>Portföyden Ciro Et</b>. Kalanın hepsini bir yolla girmek için <b>Kalanın Tamamını Tahsil Et</b> (alışta <b>Kalanın Tamamını Öde</b>) → yolu seçin. Kalanı <b>Açık Hesap</b> (vadeli) ya da <b>Taksit</b> (taksit kartı açılır). Taksitli faturanın tahsilatı taksit kartına girilir; faturadaki açık, kartın kalanıdır.</li>
+          <li><b>Faturayı Kaydet</b> (ya da <b>Taslak Olarak Kaydet</b>: deftere işlenmez, Taslaklar sekmesinde bekler).</li>
+          <li><b>Düzeltme:</b> kaydedilmiş faturanın kartında <b>Düzenle</b> → değiştirin → <b>Değişiklikleri Kaydet</b>. Numara aynı kalır; stok, cari, Kasa ve taksit yeni hale göre yazılır. İadesi olan, kilitli dönemdeki ya da taksitinden tahsilat alınmış faturada Düzenle kapalıdır (nedeni düğmenin üstünde yazar); o zaman <b>İptal Et</b> ya da <b>İade</b>.</li>
+        </ol>
+        <ul>
+          <li><b>Sonradan tahsilat / ödeme:</b> fatura kartında <b>+ Tahsilat Ekle</b> (alışta <b>+ Ödeme Yap</b>) → yolu seçin; kayıt bu faturayı kapatır. <b>Çek / Senet</b> seçilince evrak formu cari, tutar ve <b>Kapatılacak Fatura</b> dolu açılır. Fatura iptal edilirse evrak portföyde kalır, yalnız faturaya bağı kalkar.</li>
+          <li><b>İade:</b> kartta <b>İade</b> pili ya da senaryoda <i>Satıştan / Alıştan İade</i>; en üstteki arama ile iade edilecek faturayı bulun, kalem ve miktarı seçin. Kısmi iadede iade etmediğiniz kalemi <b>×</b> ile çıkarın ya da miktarını 0 yapın. Para Kasa'dan geri verilir ya da cari borcundan düşer. Asıl fatura kâğıt (e-Belge olmayan) numaralıysa iadeyi e-Belge olarak keserken <b>İade Edilen Belge No (e-Belge Referansı)</b> alanı açılır: program 16 karakterlik değeri önerir, kontrol edip onaylarsınız; asıl fatura değişmez. Borçtan düşülen iade, faturayı taksitlendiren kartı (faturanın kendi kartı ya da Carinin Mevcut Borcu kartı) o kadar küçültür; iade iptal edilince kart geri büyür.</li>
+          <li><b>Belgeyi verin:</b> kartta <b>Satış Faturası - PDF</b> / <b>Yazdır</b>, <b>WhatsApp</b> (PDF iner, sohbet açılır) ve <b>E-Posta</b> (PDF iner, cari kartındaki adrese hazır metinle e-posta penceresi açılır). Resmî e-Fatura bağlantısı açılana kadar belge <b>Müşteri Fişi</b> başlığıyla basılır; resmî fatura yerine geçmez.</li>
+          <li><b>e-Fatura / e-Arşiv denemesi:</b> Fatura → <b>Entegratör Ayarları</b> → Çalışma Ortamı <b>Test Ortamı</b>; kullanıcı adı ve parolayı EDM Bilişim'den test hesabı olarak isteyin → <b>Kaydet</b> → <b>Bağlantıyı Test Et</b> → <b>Etiketleri Getir</b>, Gönderici Birim (GB) ve Posta Kutusu (PK) seçip yeniden <b>Kaydet</b>. Firma / Etiket Tanımları'nda VKN, EDM test hesabının VKN'si olmalı; "e-Fatura mükellefiyim" (ve gerekiyorsa "e-Arşiv kullanıcısıyım") işaretleyin — işaretsizken fatura kâğıt belge (FIS) olarak kaydedilir. Test belgeleri <b>TEF / TEA</b> (e-SMM'de <b>TES</b>) serisinden numara alır, <b>Test</b> olarak görünür ve yasal geçerliliği yoktur; denemeyi ikinci bir şirkette yapın (test faturaları da cari, stok ve kasaya işlenir). EDM'nin test hesabı ortaktır: “Daha önce gönderdiğiniz bir faturayı tekrar göndermeye çalıştınız” gelirse belgeyi <b>İptal Et</b> ile iptal edip yeniden kesin; gerekirse Otomatik Seriler → <b>Test Ortamında Sıradaki No</b>'yu ileri alın. Carinin e-Fatura mükellefi olup olmadığını cari kartında <b>Mükellef Sorgula</b> belirler (işaretliyse e-Fatura, değilse e-Arşiv kesilir; kutu elle işaretlenmez); mükellefse açılan listeden posta kutusunu (PK) seçin — seçilmemişse fatura kaydedilmez, numara harcanmaz. Numara almış faturanın türü Düzenle ile değişmez: <b>İptal Et</b> → <b>Kopyala</b> ile yeniden kesin. <b>Kaydet ve Gönder</b> onayından sonra gönderilen belge düzenlenemez; yanlışsa iptal ya da iade gerekir. Gönderilmiş e-Arşiv fatura alıcıya iletildiği günden sonraki 8 gün içinde (8. gün dahil) <b>İptal Et</b> ile iptal edilir; son gün fatura kartında <b>Son İptal Günü</b>'nde yazar, süre dolunca iptal yerine iade faturası kesilir. Nakit / kartla ödenen faturada ödeme şekli belgeye yazılır (Entegratör Ayarları → Ek Seçenekler). Gönderirken bağlantı koparsa ya da program kapanırsa belge <b>Sonucu Belirsiz</b> görünür; Düzenle, Sil ve İptal Et kapalıdır: önce kartta <b>Durum Sorgula</b> (<b>e-Belge Gönder</b> de önce EDM'ye sorar). Belge EDM'ye ulaşmışsa gönderilmiş sayılır ve ikinci kez gönderilmez; EDM'de yoksa yeniden gönderebilirsiniz. Entegratöre hiç ulaşılamıyorsa yetkili kişi sonucu belirsiz ya da EDM portalına taslak olarak yüklenmiş belgeyi <b>Yalnız Programda İptal Et</b> ile programda iptal edebilir; EDM'ye iletilmiş belge yalnız <b>İptal Et</b> ile iptal edilir.</li>
+          <li><b>e-SMM (serbest meslek makbuzu):</b> serbest meslek erbabıysanız Fatura → <b>Entegratör Ayarları</b> → <b>Firma / Etiket Tanımları</b>'nda <b>e-SMM kullanıcısıyım</b>'ı işaretleyip <b>Kaydet</b>; <b>Bağlantıyı Test Et</b> e-SMM bağlantısını da dener. <b>+ Yeni Fatura</b> → <i>Serbest Meslek Makbuzu</i>: brüt ücret, stopaj (alıcı şirketse %20; gerçek kişi alıcı tacir ya da serbest meslek erbabıysa <b>Stopaj %</b> kutusuna oranı yazın) ve KDV formda hesaplanır. Eline geçecek net ücreti biliyorsanız önce cariyi seçin, kalemlerin üstündeki <b>Netten Brüte</b>'ye basın, <b>Net Ücret</b>'i yazıp <b>Brütü Hesapla</b>: brüt ücret ilk kaleme yazılır (stopaj alıcıya göre; KDV hariç). Makbuzda tutarlar <b>Brüt Ücret</b>, <b>Net Ücret</b> ve <b>Tahsil Edilen (Net Alınan)</b> adıyla görünür. <b>Kaydet ve Gönder</b> makbuzu EDM üzerinden gönderir, <b>Kaydet, Sonra Gönder</b> Gönderilecekler'de bekletir. Test Ortamı'nda makbuz <b>TES</b> serisinden numara alır. Kartta <b>Durum Sorgula</b> sonucu, <b>Resmî Görüntü</b> alıcının gördüğü makbuzu gösterir. Logo ve kaşe e-SMM'de yalnız programın PDF'ine basılır; resmî görüntüyü EDM çizer (Test Ortamı'ndaki görüntü canlıdakinden farklı olabilir). Gönderilmiş e-SMM, alıcıya iletildiği günden sonraki 8 gün içinde (8. gün dahil) <b>İptal Et</b> ile iptal edilir; süre dolunca iptal edilmez. İşaret kapalıyken makbuz kâğıt olarak (SMM serisi) kaydedilir, gönderilmez. Gönderilecekler'deki makbuzu yalnız GİB'in ya da EDM'nin arızası veya bakımı sırasında matbu kâğıt makbuzla düzenlediyseniz kartta <b>Kâğıt Makbuz Olarak Bırak</b>: makbuz kâğıt makbuz numarası alır ve sonra e-SMM olarak gönderilmez (yanlışsa <b>İptal Et</b> ile iptal edip yeniden kesin). Canlıda e-SMM kesebilmek için EDM Bilişim'den ayrıca e-SMM siparişi verip hesabınızı açtırın; canlıya geçmeden önce Test Ortamı'nda deneyin.</li>
+          <li><b>e-Belge numara sırası ve Gönderilecekler:</b> e-Belge numarası tarih sırasıyla verilir (GİB kuralı). Aynı seride daha eski tarihli gönderilmemiş belge varken yeni belge numara almaz, <b>numarasız</b> olarak <b>Gönderilecekler</b>'de bekler; bildirim bunu söyler. <b>Tümünü Gönder</b> bekleyenleri eski tarihliden yeniye gönderir; ilerleme düğmede görünür (<i>Gönderiliyor: 40 / 120</i>), bu sırada ikinci kez basılamaz. Çok belge varsa gönderim sunucuda sürebilir: “sunucuda sürüyor olabilir” iletisi hata değildir, bir süre sonra Gönderilecekler'e bakın. EDM'ye ulaşılamazsa belge numara harcanmadan bekler. Bir belgeyi hiç göndermeyecekseniz kartta <b>Müşteri Fişi Olarak Bırak</b>: e-Belge gönderilmez, belge fiş numarasıyla Müşteri Fişi olarak kalır; stok, cari, Kasa ve taksit etkileri geri alınmaz.</li>
+          <li><b>Tarih ve numara sırası:</b> bir seride numara tarih sırasıyla verilir; seride daha yeni tarihli kayıtlı belge varken eski tarihli belge kaydedilemez. Formdaki <b>Toplamlar</b> kutusu bunu kaydetmeden önce, hangi tarihten itibaren kaydedilebileceğiyle yazar; kilitli döneme düşen tarih ve aynı tedarikçide kayıtlı alış numarası da orada görünür. Numara kayıtta verilmeyecekse (seride daha eski bekleyen belge) onay penceresi numara göstermez.</li>
+          <li><b>Seçilenleri Gönder:</b> yalnız bazı belgeleri göndermek için listede satırları işaretleyin; seçim çubuğundaki <b>Seçilenleri Gönder (N)</b> seçimdeki Gönderilecekler'i eski tarihliden yeniye gönderir. Aynı seride seçmediğiniz daha eski tarihli bekleyen belge varsa program göndermeden önce sorar: <b>Onları da Ekle ve Gönder</b> ile birlikte gönderin ya da <b>Vazgeç</b> (hiçbir belgeye numara verilmez).</li>
+          <li><b>Canlıya geçiş:</b> Denemeler bitince Entegratör Ayarları → Çalışma Ortamı <b>Canlı Ortam</b>; EDM'nin canlı kullanıcı adı ve parolasını girin → <b>Kaydet</b> → <b>Bağlantıyı Test Et</b> (“Kullanıcı Bulunamadı” gelirse test hesabı girilmiştir; EDM'nin canlı hesabını girin). Otomatik Seriler'de firmanızın kendi serisini seçin (TEF / TEA / TES test serisi canlıda kullanılamaz). Canlıda gönderilen belge yasal belgedir; ilk faturayı küçük tutarla kendi firmanıza kesip EDM portalından kontrol edin.</li>
+          <li><b>e-Fatura Portalı:</b> Fatura üst satırındaki <b>e-Fatura Portalı</b> düğmesi EDM'nin portalını ekran boyunda ayrı bir pencerede açar (Test Ortamı'nda test portalı, Canlı Ortam'da canlı portal). İlk girişte Entegratör Ayarları'ndaki kullanıcı adı ve parolayı portalın giriş sayfasına bir kez kendiniz yazın, insan doğrulamasını geçin ve <b>Beni Hatırla</b>'yı işaretleyin; tarayıcı parolayı kaydetmeyi önerirse <b>Kaydet</b>'e basın. Sonraki açılışlarda portal genellikle doğrudan açılır. Gelen e-Faturalar, e-Arşiv ve raporlar portalda da görünür. e-SMM için portalda sarı <b>SMMM Portalı Girişi</b> düğmesini kullanın; canlıda e-SMM kesebilmek için EDM Bilişim'den ayrıca e-SMM siparişi verilmesi gerekir. Düğme pasifse nedeni yanında yazar (bağlantı kayıtlı değil ya da Fatura Kesme ve İptal yetkiniz yok). Tarayıcı açılır pencereyi engellerse çıkan pencerede <b>e-Fatura Portalını Aç</b> bağlantısını kullanın ya da adres çubuğundan bu programa açılır pencere izni verin.</li>
+          <li><b>e-Faturada ölçü birimi:</b> Kg, Lt, Metre, M², Paket, Kutu, Saat, Gün gibi birimler e-Belgeye kendi adıyla gider. Çuval, Koli, Şişe, Rulo, Torba, Teneke, Hafta gibi birimler e-Fatura / e-Arşivde <b>Adet</b> olarak görünür; birimin adı kalemin altına not olarak yazılır. Stok kartı, programdaki fatura ve raporlar gerçek birimi gösterir.</li>
+          <li><b>Toplu işler:</b> listede soldaki kutularla belgeleri seçin → <b>Seçilenleri PDF / Excel</b>; Taslaklar sekmesinde <b>Seçilenleri Kaydet</b> (eski tarihli önce), Satış/Alış sekmesinde <b>Seçilenleri İptal Et</b>. Kaydedilemeyen ya da iptal edilemeyen belge nedeniyle bildirilir ve seçili kalır.</li>
+          <li><b>Tekrarla:</b> kira, aidat, abonelik gibi her ay düzenlenen fatura için kartta <b>Tekrarla</b>; her dönem taslak hazır gelir, Taslaklar'dan toplu kaydedersiniz.</li>
+          <li><b>Fatura Ayarları</b> (dişli): belgenin üstünde yazan firma bilgisi, <b>Logo</b> (seçtiğiniz görsel küçültülüp belgeye basılır), <b>Kaşe / İmza</b> (kaşe üzerine atılmış imzanın resmi; e-Arşiv faturasına basılır, e-Faturada da isterseniz Entegratör Ayarları → Görünüm), <b>Banka Hesapları</b> (IBAN'lar; Banka'da “IBAN faturada gösterilsin” işaretli hesaplar da basılır), belge alt notu, varsayılan KDV ve vade günü, belgenin altındaki <b>Teslim Alan / Kaşe-İmza</b> kutuları. Logo ya da kaşe seçmek yazdığınız öbür alanları silmez; <b>Esc</b> fatura listesine döner (kaydetmediğiniz değişiklik varsa sorar). <b>Seri No / Lot No</b> işaretlenirse kalemin <b>⋯</b> ayrıntısında Seri No ve Lot No alanları açılır; belgeye kalem adının altında basılır (stokta izlenmez).</li>
+          <li><b>Tabela Adı:</b> <b>Fatura Ayarları</b> → <b>Firma Bilgisi</b>'nde <b>Tabela Adı</b>'nı yazıp <b>Rapor ve Ekstre Başlığı</b>'nı seçin: <b>Yalnız Tabela Adı</b> ya da <b>Tabela Adı ve Firma Bilgileri</b> (unvan, VKN / TCKN, vergi dairesi, adres). Rapor ve ekstre PDF / Excel başlıkları buna göre çıkar; fatura ve makbuzda unvan değişmez. Tabela Adı boşsa başlıkta şirket adı yazar.</li>
+          <li><b>Raporlar → Tüm Raporlar:</b> <i>Satış Faturaları</i>, <i>Alış Faturaları</i>, <i>İade Faturaları</i>, <i>KDV Özeti</i>, <i>Açık Faturalar</i>, <i>Ürün Bazında Satış ve Kârlılık</i>. Açık faturalar Vade Takip'te ve ANLIK DURUM'da da görünür.</li>
+          <li><b>KDV Mahsup Fişi:</b> ay kapanınca Raporlar → Tüm Raporlar → <i>KDV Özeti</i> → <b>KDV Mahsup Fişi Oluştur</b> → ayı seçin; fiş ön izlenir (hesaplanan KDV 391, indirilecek KDV 191, önceki aydan devreden 190) ve sonuç <i>Ödenecek KDV (360)</i> ya da <i>Sonraki Aya Devreden KDV (190)</i> olarak yazılır → <b>Mahsup Fişini Oluştur</b>. Bir ay bir kez mahsup edilir; yanlışsa listedeki en son mahsubu <b>Geri Al</b> (ters kayıt), düzeltip yeniden oluşturun. Ödenecek KDV'yi ödeyince Kasa ya da Banka'da <b>Vergi Ödemesi</b> girin.</li>
+          <li><b>Kimler görür:</b> yönetici ve muhasebe; başka birine <b>Yönetim → Kullanıcılar → Yetkiler → Fatura</b> ile açılır.</li>
+        </ul>
+        
+        <h2>14. ANLIK DURUM</h2>
+        <p>Yalnız <b>yöneticinin</b> ana ekranında: <b>Nakit Kasa</b>, <b>Gerçek Banka</b> (banka hesaplarınızın toplamı; altında bugünkü giriş/çıkış, <b>Transfer</b> ve varsa <b>Kart ve Kredi Borcu</b>), <b>Kritik Stok</b>, <b>Toplam Alacak</b> (carilerin borcu + portföydeki çek/senet + açık satış faturaları) ve <b>Toplam Borç / Ödemeler</b>. Her işlemde sayfa yenilenmeden değişir; rakamlar Kasa, Banka, Cari, Stok ve Çek / Senet ekranlarıyla aynıdır. Kutuya tıklayınca ilgili ekran açılır; <b>Rapor Al</b> Raporlar penceresini açar.</p>
+        <figure><img src="ekran/k10-anlik-durum.jpg" alt="ANLIK DURUM kartı"><figcaption>Nakit Kasa ve Gerçek Banka ayrı kutularda; kart ve kredi borcu Gerçek Banka'nın altında.</figcaption></figure>
+        
+        <h2>15. Raporlar</h2>
+        <p>Sol menüden <b>Raporlar</b> (ya da ANLIK DURUM'daki <b>Rapor Al</b>). Üstteki sekmeden seçin:</p>
+        <ul>
+          <li><b>Cari Mizanı ve Ekstresi:</b> tarih aralığı → <b>Raporu Getir</b>: her cari için devir, dönem borç ve alacak, bakiye. Cariye tıklayınca ekstresi açılır; fatura kalemleri için <b>Ayrıntılı Ekstre</b>. Henüz cari yoksa <b>Cari Ekranını Aç</b>.</li>
+          <li><b>Vade Takip:</b> vadesi olan her açık kalem tek listede (taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri). Gecikmiş, Bugün, 7 / 30 / 90 Gün; satıra tıklayınca kaynağı açılır.</li>
+          <li><b>Nakit Akış:</b> bugünkü nakit kasa ve banka bakiyesinden (<b>Bugünkü Nakit ve Banka</b>) başlayıp beklenen tahsilat ve ödemelerle ilerleyen tahmini bakiye; en düşük günü gösterir. Carideki vadeli borcun kalanı Vade Tarihi (varsa Beklenen Ödeme Tarihi) gününde görünür.</li>
+          <li><b>Çek / Senet:</b> portföy raporu.</li>
+          <li><b>Tüm Raporlar:</b> Kasa, Banka, Cari, Taksit, Çek / Senet, Stok, Fatura ve kayıt raporları (ör. <i>Cari Listesi ve Bakiyeler</i>, <i>Tüm Cari Hareketleri</i>, <i>Cari Bazında Tahsilat</i>, <i>Taksit Kartları</i>). Soldan raporu, üstten dönemi seçin; ön izleme gelir.</li>
+          <li><b>Tablo Raporları:</b> yalnız Excel tablonuza dayalı raporlar: <i>Tablodaki Kişiler</i> (kişi başına tablodaki tutar, kayda bağlı tahsilat ve yürüyen bakiye), <i>Tablodaki Vadeler</i> (gecikmiş, bugün, yaklaşan) ve <i>Tablodaki Nakit Akışı</i> (dönem başına beklenen ve gerçekleşen tahsilat; <b>Sayfa</b> ve <b>Sekme</b> ile süzülür). Tabloda hem Toplam Borç hem Kalan Borç kolonu varsa borç <b>Kalan Borç</b>'tan okunur; o satırda Kalan boşsa Toplam Borç alınır. Tablodaki tutarlar muhasebe kaydı değildir; zile, Tahsilat Takvimi'ne ve Nakit Akış'a girmez. <i>Kalan Gün</i> gibi gün ve adet kolonları tutar sayılmaz; ödeme sözü tutarı borç değil, beklenen tahsilattır (2. bölüm, Borç Sütunu Nasıl Tanınır). Aynı dosya numarası birden çok sekmede borç taşıyorsa her sekme ayrı sayılır ve rapor bunu notla söyler (aynı borçsa kopya sekmeyi kaldırın ya da <b>Sekme</b> süzgeciyle bakın); tahsilatı bir kez sayılır.</li>
+          <li><b>Ana Defter</b> (Tüm Raporlar içinde): <i>Hesap Planı Mizanı</i>, <i>Yevmiye Defteri</i> ve <i>Defter Mutabakatı</i>. Mutabakatta her satır <b>Tutarlı</b> olmalıdır; <b>Fark Var</b> görürseniz destek hattını arayın. Defterleri bozacak bir kayıt hiç yazılmaz ve <i>Mutabakat Günlüğü</i>'nde görünür. Mizanda alınan çekler 101, alınan senetler 121; verilen çekler 103, verilen senetler 321 hesabındadır. Ürünlerin açılış stoku 153'te (karşılığı açılış hesabı 500), ödenen vergi 360'ta, KDV mahsubu 391 / 191 / 190'da görünür.</li>
+        </ul>
+        <p>Her rapor <b>PDF</b> ve <b>Excel</b> düğmeleriyle iner. Tablonun en altındaki kalın <b>TOPLAM</b> satırı bütün satırların toplamıdır (PDF ve Excel'de de aynı). Yönü karışık raporlarda her yön ayrı TOPLAM satırındadır, altta Net: <i>KDV Özeti</i>'nde Satış, Satıştan İade, Alış, Alıştan İade ve Net KDV; <i>Açık Faturalar</i>'da Alacak, Borç ve Net. Raporlar <b>Bu Yıl</b> ile açılır ve son seçtiğiniz dönemi hatırlar; aradığınız kayıt görünmüyorsa <b>Tüm Zamanlar</b>'ı seçin.</p>
+        <div class="box tip"><b class="t">Hangi sayı hangi raporda?</b>
+        <ul>
+          <li><b>Ciro (satış):</b> <i>Satış Faturaları</i> → <b>Matrah</b> KDV hariç, <b>Ödenecek</b> KDV dahil; iadeler düşülmüş hâli <i>Cari Bazında Satış ve Alış</i> → <b>Net Satış</b>.</li>
+          <li><b>Toplam alacak:</b> <i>Cari Listesi ve Bakiyeler</i> → <b>Müşteri Alacakları (Borçlu Cariler)</b>, <b>Tedarikçi Borçları (Alacaklı Cariler)</b> ve <b>Net Bakiye</b>.</li>
+          <li><b>Vadesi geçen alacak:</b> <i>Alacak Yaşlandırma</i> → faturaya ya da taksite bağlı olmayan cari borcu (devir borcu, karşılıksız çekten doğan borç) da hareket tarihiyle yaşlandırılır.</li>
+          <li><b>Taksitler:</b> <i>Taksit Kartları</i> → her kartın ve hepsinin <b>Toplam</b>, <b>Ödenen</b>, <b>Kalan</b>, <b>Geciken</b> tutarı.</li>
+          <li><b>Banka:</b> <i>Banka Bakiye Raporu</i> → her banka hesabının dönem başı ve dönem sonu bakiyesi, giriş, çıkış ve transferleri; <b>Hesap Grubu</b> ile <i>Gerçek Banka</i>, <i>Kart ve Kredi Borcu</i> ya da <i>Hesabı Atanmamış Eski Hareketler</i>.</li>
+          <li><b>Kimden ne tahsil edildi:</b> <i>Cari Bazında Tahsilat</i>. Taksitleri Excel'den yüklerken "Ödenen" kolonunda yazan tutar <b>Önceden Ödenen (Açılış)</b> kolonunda görünür ve toplama dahildir (Kasa'ya girmez; o para programdan önce alınmıştır).</li>
+        </ul></div>
+        <div class="pair">
+        <figure><img src="ekran/k16-raporlar-bos-defter.jpg" alt="Raporlar: cari yokken"><figcaption>Cari yoksa Raporlar yol gösterir.</figcaption></figure>
+        <figure><img src="ekran/k11-rapor-al.jpg" alt="Raporlar: Vade Takip"><figcaption>Vade Takip: taksit, çek/senet, Kasa ve tablodaki vadeler tek listede.</figcaption></figure>
+        </div>
+        <figure><img src="ekran/k12-rapor-merkezi.jpg" alt="Raporlar: Tüm Raporlar"><figcaption>Tüm Raporlar → Cari Bazında Tahsilat.</figcaption></figure>
+        <p><b>Kimler görür:</b> yönetici ve Muhasebe rolündekiler. Başka birine açmak ya da bir kişiden kaldırmak için <b>Yönetim → Kullanıcılar → Yetkiler → Raporlar → Finans Raporları</b>.</p>
+        
+        <h2>16. Belgeler ve Mesajlar</h2>
+        <p><b>Belge:</b> kartta <b>Belge</b>'ye basın ya da dosyaları kartın üzerine sürükleyin; ekran görüntüsünü <b>Ctrl+V</b> ile yapıştırın. PDF, resim, Word, Excel ve UYAP dosyaları eklenir. Birden çok belge varsa <b>Yan Yana Gör</b>: seçtiklerinizi indirir ya da yazdırırsınız.</p>
+        <figure><img src="ekran/k07-belge-karti.jpg" alt="Belge kartı"></figure>
+        <p><b>Mesajlar:</b> <b>Ofis Geneli</b> herkese açıktır; kişiye yazdığınızı yalnız o kişi görür. Eski mesajlar için <b>↑ Önceki Günün Mesajlarını Yükle</b>; 30 günden eskileri <b>Arşivi İndir</b> ile açarsınız.</p>
+        
+        <h2>17. Yönetici İçin</h2>
+        <ul>
+          <li><b>Kullanıcılar:</b> <b>+ Yeni Kullanıcı</b>: ad, kullanıcı adı, rol, ilk parola (alan boş gelir; kendiniz yazın ya da <b>Parola Üret</b>'e basın, üretilen parola seçili gelir, kopyalayıp iletin). Ad ve kullanıcı adını yanlarındaki <b>✎</b> ile düzeltin. <b>Parola Sıfırla</b> personelin parolasını yeniler (burada da <b>Parola Üret</b>).</li>
+          <li><b>Yetkiler:</b> satırdaki <b>Yetkiler</b> pili bütün yetkileri açar: rolün verdikleri işaretli gelir; kutuyla o kişiye <b>ekler</b> (yeşil) ya da <b>çıkarırsınız</b> (kırmızı) → <b>Yetkileri Kaydet</b>. <b>+ Yeni Rol</b> ile kendi rolünüzü kurun. Banka yetkileri <b>Banka ve POS</b> grubundadır (8. bölüm).</li>
+          <li><b>Sil:</b> kişi giriş yapamaz; yaptıkları geçmişte adıyla kalır. <b>Silinen Kullanıcılar</b>'dan geri alınır.</li>
+          <li><b>Kurtarma anahtarı:</b> <b>Kurtarma Anahtarı Oluştur</b> → yazdırın. Parolanızı unutursanız giriş ekranında <b>Parolamı Unuttum</b> → anahtar + yeni parola. Anahtar da kayıpsa <b>sunucu bilgisayarında</b> aynı ekrandan <b>Sunucu Kodu Oluştur</b>; kodu Başlat menüsündeki <b>DestekOfis → Yönetici kurtarma kodunu aç</b> gösterir (10 dakika geçerli).</li>
+          <li><b>Yedekler:</b> program 6 saatte bir bütün şirketlerin yedeğini kendiliğinden alır; her şirketin yedeği yedek klasöründe kendi adını taşıyan klasördedir (ör. <i>001 - Şirket 1</i>). <b>Yönetim → Yedekler → Şimdi Yedek Al</b>: <b>Tüm Şirketler</b> ya da yalnız açık şirket. <b>İndir</b> ile indirin. <b>Geri Yükle</b> yedeği yalnız kendi şirketine yükler (onay için şirket kodu ve parolanız; önce bugünkü veri ayrıca yedeklenir); ilk şirket (001) geri yüklenirken program birkaç saniye yeniden başlar, kullanıcılar ve lisans korunur. Geri yüklemeden sonra yeni fatura kaydetmeden ya da e-Belge göndermeden önce <b>Fatura Ayarları → Numaralar</b>'dan sıradaki numarayı EDM'deki ve elinizdeki son numaranın ilerisine alın (Fatura bunu bir kez hatırlatır). <b>Yedekleri Denetle</b>, her şirketin yedeklerinin kendi klasöründe ve o şirkete ait olduğunu kontrol eder; hiçbir dosyaya dokunmaz. Yedekler sunucu bilgisayarda <i>backups</i> klasöründedir; dışarıda saklamak için bu klasörü düzenli olarak harici diske kopyalayın.</li>
+          <li><b>Silinenler:</b> silinen kayıt, sekme, belge, tahsilat, kasa hareketleri ve faturalar <b>Yönetim → Silinenler</b>'dedir; <b>Geri Yükle</b> eski yerine getirir. Burayı yalnız yönetici açar; personel silinen bir şeyi geri istemek için yöneticisine söyler.</li>
+          <li><b>Şirketler:</b> <b>Yönetim → Şirketler</b>: <b>+ Yeni Şirket</b> (en fazla 2 şirket; kod önerilir: 002), <b>Adını / Kodunu Değiştir</b> (veri aynı şirkette kalır), <b>Kullanıcı Yetkileri</b> (kim hangi şirketi görür; yönetici hepsini), <b>Birleşik Rapor</b> (seçilen şirketlerin Nakit Kasa, Gerçek Banka, Kart ve Kredi Borcu, cari, stok ve açık fatura toplamları yan yana + toplam; PDF/Excel). <b>Verisini Sıfırla</b>: <i>Tüm Hareketleri Sil</i> (kartlar ve ayarlar kalır, bakiyeler sıfır; dönem kilidi de kaldırılır) ya da <i>Tümünü Sıfırla</i>; fatura ve fiş numaraları seride baştan başlar (<b>Tahsilat Makbuzu Numaraları da Sıfırlansın</b> işaretliyse makbuz numaraları da; e-Belge gönderdiyseniz yeniden göndermeden önce <b>Fatura Ayarları → Numaralar</b>'dan sıradaki numarayı ileri alın); önce zorunlu yedek alınır, onay kutusu şirket koduyla dolu gelir, parolanızı yazarsınız; lisans, kullanıcılar ve öbür şirketler etkilenmez. <b>Sil</b> (001 silinmez): önce yedek, klasör saklanır. <b>Veri ve Yedek Klasörleri</b>: her şirketin veri dosyası, cari sayısı, son yedeği ve yedek klasörü.</li>
+          <li><b>Eksi bakiye denetimi:</b> Nakit Kasa için <b>Yönetim → Sistem → Eksi Bakiye Denetimi</b>: <b>Uyar (Sorulur)</b> (sorar, onayla kaydeder), <b>Engelle</b> (kaydetmez), <b>Kontrol Yok</b>. Banka hesapları için <b>Banka → Ayarlar → Eksi Bakiye</b> ya da hesap formundaki <b>Eksi Bakiye Denetimi</b> (8. bölüm).</li>
+          <li><b>Dönem kilidi:</b> ay kapandığında <b>Yönetim → Sistem → Dönem Kilidi ve Mutabakat</b>'ta son günü seçip <b>Kilitle</b>. O tarih ve öncesine hareket eklenemez, düzeltilemez, silinemez. Düzeltme gerekirse <b>Kilidi Kaldır</b>, düzeltin, yeniden kilitleyin. Kilitli dönemde hareketi olan cari, taksit kartı ve çek/senet silinemez, geri yüklenemez; carinin türü de değiştirilemez. Kart, defterlerin tutarlı olup olmadığını da gösterir.</li>
+          <li><b>Güncelleme:</b> <b>Yönetim → Sistem → Güncellemeleri Denetle → Şimdi Güncelle</b>. Veriler ve lisans korunur; önce yedek alınır.</li>
+          <li><b>Vekil sunucu (proxy):</b> ağınız internete vekil sunucuyla çıkıyorsa program Windows'un makine geneli ayarını kendiliğinden kullanır. Farklı bir sunucu gerekirse <b>Yönetim → Sistem → Ağ Bağlantısı</b> → <b>Elle Yazılan Adres</b> → adres (ör. <i>vekil.firma.local:8080</i>), gerekiyorsa kullanıcı adı ve parola → <b>Kaydet</b> → <b>Bağlantıyı Dene</b>. Güncelleme, lisans, Google E-Tablolar ve e-Belge bu ayarla çıkar.</li>
+          <li><b>Sektör ve görünüm:</b> <b>Ayarlar → Sektör ve Görünüm</b>.</li>
+          <li><b>Personel Özlük:</b> sol menüden <b>Personel Raporu</b> → <b>+ Yeni Personel</b>. Yalnız Ad Soyad zorunludur; Doğum Tarihi'ni yazın, yaş kendiliğinden hesaplanır. TC No, IBAN, maaş, kullanılan izin günü ve fotoğrafı sonradan da ekleyebilirsiniz. Satıra tıklayınca <b>Personel Özeti</b> açılır; <b>Düzenle</b> ile her bilgiyi değiştirirsiniz. Çalışan ayrılınca <b>İşten Ayrılış Tarihi</b>'ni yazın: kart <b>Ayrılanlar</b>'a geçer (tarihi silerseniz <b>Çalışanlar</b>'a döner); kartı silmeyin. İleri bir tarih yazarsanız (ihbar süresi) çalışan o güne kadar <b>Çalışanlar</b>'da <b>Ayrılacak</b> notuyla kalır, maaşı Toplam Maaş'ta sayılır; ayrılış günü gelince kendiliğinden <b>Ayrılanlar</b>'a geçer. Arama kutusuna ad, görev, telefon ya da TC No yazın (Türkçe harf fark etmez: <i>ayse</i> → Ayşe). Üstteki <b>Toplam Maaş</b> aktif çalışanların aylık maaşlarıdır; maaş yalnız bilgidir, Kasa'ya ve Banka'ya yazılmaz. Bu bilgiler kişisel veridir, yalnız yönetici görür; başkasına açmak için <b>Yönetim → Kullanıcılar → Yetkiler → Personel Özlük</b> (<i>Personel Özlük Görüntüleme</i>, düzeltme için ayrıca <i>Personel Özlük Düzenleme</i>).</li>
+        </ul>
+        <figure><img src="ekran/k17-yetkiler.jpg" alt="Yönetim → Kullanıcılar: kişiye özel yetkiler"><figcaption>Yetkiler: bu kişiye Kasa'yı görme eklendi (yeşil), tabloyu dışa aktarma kaldırıldı (kırmızı). Kilitli olanlar yalnız yöneticidedir.</figcaption></figure>
+        <figure><img src="ekran/k26-sirketler.jpg" alt="Yönetim → Şirketler"><figcaption>Yönetim → Şirketler: liste, kullanıcı yetkileri ve birleşik rapor.</figcaption></figure>
+        <div class="pair">
+        <figure><img src="ekran/k20-kurtarma-karti.jpg" alt="Kurtarma anahtarı kartı"><figcaption>Yönetim → Kullanıcılar: kurtarma anahtarını oluşturun ve yazdırın.</figcaption></figure>
+        <figure><img src="ekran/k18-parolami-unuttum.jpg" alt="Giriş ekranı: Parolamı Unuttum"><figcaption>Parolamı Unuttum: anahtar ya da sunucu kodu ve yeni parola.</figcaption></figure>
+        </div>
+        
+        <h2>18. Telefondan Kullanım</h2>
+        <p>Telefon, tablet ya da ofis dışındaki bir bilgisayarın tarayıcısı bir kez eşlenir; sonra DestekOfis kullanıcı adınız ve parolanızla girersiniz. İnternet bağlantısı gerekir.</p>
+        <ol class="steps">
+          <li><b>Eşleme (yönetici):</b> <b>Yönetim → Mobil Cihazlar</b>'da kişinin satırında <b>Uzaktan Bağlanabilir</b>'i işaretleyin, <b>Karekod Oluştur</b>'a basın. Karekod 5 dakika geçerli ve tek kullanımlıktır.</li>
+          <li><b>Telefonda:</b> karekodu kamerayla okutun, <b>Cihaz Adı</b>'nı yazıp <b>Eşleştir</b>'e basın. Sonra <b>Kullanıcı Adı</b> ve <b>Parola</b> → <b>Giriş Yap</b>. Karekod okuyamayan bilgisayarda karekodun altındaki <b>Eşleme Bağlantısı</b>'nı <b>Kopyala</b> ile alıp o bilgisayarın tarayıcısında açın.</li>
+          <li><b>Ana ekrana ekleyin:</b> iPhone'da Safari'de Paylaş → <b>Ana Ekrana Ekle</b>; Android'de Chrome menüsünden <b>Ana ekrana ekle</b>. DestekOfis bir uygulama gibi açılır.</li>
+        </ol>
+        <ul>
+          <li><b>Neler görünür:</b> <b>Genel Bakış</b>, <b>Cari Hesaplar</b>, <b>Kasa ve Banka</b>, <b>Stok Yönetimi</b> ve <b>Müşteri Raporları</b> (PDF ve Excel dahil). Yalnız yetkiniz olan bilgiler görünür.</li>
+          <li><b>Şirket:</b> üstteki şirket kutusundan şirket seçin; yalnız yetkili olduğunuz şirketler görünür.</li>
+          <li><b>Kayıt girmek:</b> cari kartında <b>Tahsilat Gir</b> ve <b>Ödeme Gir</b>; carinin açık taksit kartı varsa <b>Tahsilat Yeri</b> boş gelir: taksit kartını ya da <b>Cari Hesabına (En Eski Borç)</b>'u seçin; seçmeden kaydedilmez. Stok kartında <b>Stok Girişi</b> (yalnız giriş; çıkış ve satış masaüstünden). Cari hesabına yazılan tahsilat ve ödeme carinin en eski açık borcunu kapatır, bugünün tarihiyle yazılır. Kim ne girebilir masaüstündeki yetkilerle aynıdır: <i>Cariden Tahsilat Girme</i>, <i>Taksit Tahsilatı Girme</i>, <i>Cari Yönetimi</i> (ödeme), <i>Stok Hareketi Girme</i>.</li>
+          <li><b>Bağlantı koparsa:</b> kaydın sonucu belirsizse ekranda <b>Sonucu Belirsiz İşlemler</b> çıkar; <b>Yeniden Gönder</b> aynı kaydı bir kez yazar, çift kayıt açmaz.</li>
+          <li><b>Ofisteki bilgisayar kapalıyken:</b> giriş ekranında <b>Son Özeti Göster</b>'e basın; son güncellemedeki bakiyeler ve hareketler salt okunur görünür. Bu sırada kayıt girilemez, rapor, PDF ve Excel alınamaz.</li>
+          <li><b>En çok 3 cihaz:</b> telefon, tablet ve uzak bilgisayar tarayıcısı sayılır; iki şirket birlikte. Yeni cihaz için önce birini silin.</li>
+          <li><b>Telefon kaybolursa:</b> <b>Yönetim → Mobil Cihazlar → Eşli Cihazlar</b>'da cihazın satırında <b>Sil</b>: o cihazın oturumu hemen kapanır. Kişinin bütün cihazlarını kapatmak için <b>Uzaktan Bağlanabilir</b> işaretini kaldırın.</li>
+          <li><b>Oturum:</b> 15 dakika işlem yapılmazsa ya da 12 saat sonra yeniden parola istenir.</li>
+        </ul>
+        
+        <h2>19. Bir Sorun mu Var?</h2>
+        <table>
+          <thead><tr><th>Durum</th><th>Ne Yapmalı?</th></tr></thead>
+          <tbody>
+            <tr><td>Personel bilgisayarı bağlanamıyor</td><td>Sunucu bilgisayar açık ve aynı ağda mı? Uykuya geçmediğinden emin olun.</td></tr>
+            <tr><td>"Deneme henüz başlamadı" / "Lisans doğrulanamadı"</td><td>Sunucunun internetini kontrol edin; ardından <b>Yönetim → Lisans → Şimdi Doğrula</b>.</td></tr>
+            <tr><td>Süre doldu, program salt okunur</td><td>Kayıtlarınız duruyor. Bize ulaşın; lisansınız tanımlanınca kaldığınız yerden devam edersiniz.</td></tr>
+            <tr><td>"DestekOfis … sürümüne güncellendi"</td><td>Yazdığınızı kaydedip <b>Yenile</b>'ye basın.</td></tr>
+            <tr><td>Yönetici parolasını unuttum</td><td>Giriş ekranında <b>Parolamı Unuttum</b> (17. bölüm).</td></tr>
+            <tr><td>Banka'da “Hesabı Atanmamış Eski Hareketler” görünüyor</td><td>Banka hesabı açılmadan girilmiş havale / EFT hareketleridir. <b>Banka → Genel Bakış → Şimdi Düzenle</b>: hareketleri seçin, <b>Seçilenleri Bu Hesaba Ata</b>. <i>Tarihi Gelince Atanabilir</i> yazanları o gün atayın.</td></tr>
+            <tr><td>Kredi kartıyla ödeme banka bakiyesini düşürmedi</td><td>Doğrudur: kartla ödeme şirket kartının borcuna yazılır (<b>Kart ve Kredi Borcu</b>). Kart borcunu bankadan ödediğinizde kartın ayrıntısında <b>+ Kart Borcu Ödemesi</b> girin.</td></tr>
+            <tr><td>Bir şeyi yanlışlıkla sildim</td><td>Hemen çıkan bildirimdeki <b>Geri Al</b>; sonra ise <b>Yönetim → Silinenler → Geri Yükle</b>.</td></tr>
+            <tr><td>Şirket kutusunun altında “aynı veri dosyasını kullanıyor” uyarısı</td><td><b>Yönetim → Şirketler</b>'deki kırmızı kutuda <b>Ayır</b>'a basın (önce yedek alınır, hiçbir kayıt silinmez). Sonra her şirkette o şirkete ait olmayan kayıtları silin.</td></tr>
+            <tr><td>İnternet kesildi</td><td>Çalışmaya devam edin; program 7 gün internetsiz çalışır.</td></tr>
+            <tr><td>Excel'de sürükleyince 1-2-3 gitmiyor, çift tık doldurmuyor</td><td>Program Excel dosyanıza <b>hiç yazmaz</b> (yalnız okur; Dışa Aktar yeni dosya üretir). Excel'de <b>Dosya → Seçenekler → Gelişmiş → "Doldurma tutamacını ve hücre sürükleyip bırakmayı etkinleştir"</b> işaretli olsun; 1 ve 2 yazılı iki hücreyi <b>birlikte</b> seçip sürükleyin (Ctrl basılıysa kopyalar); hücre biçimi "Metin" ise Genel yapıp yeniden girin; çift tık yandaki sütun doluysa çalışır.</td></tr>
+          </tbody>
+        </table>
+        <div class="box tip"><b class="t">Teknik Destek ve Satın Alımlar İçin</b>Telefon: <b>0536 771 50 55</b> · E-posta: <b>destek@destekofis.net</b></div>
+        
+        <p class="foot">DestekOfis 2.4.7 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
+        </main>
+        </body>
+        </html>
+        
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:197:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 14 - 2.4.8 M4/M5 ekran ve kılavuz metinleri
+  ---
+  duration_ms: 2.843765
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs:175:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..14
+# tests 40
+# suites 14
+# pass 27
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1752.689179

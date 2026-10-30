@@ -1,0 +1,32 @@
+{
+  "ad": "248-m45-e2e-iphone",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mobil-iphone-248.mjs",
+  "commit": "e7c7338d478c0afe55f7c4946b618380f44a60ea",
+  "dal": "is/mobil2-248",
+  "kirli": 18,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T18:07:49.789Z",
+  "sure_sn": 9.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-m45-e2e-iphone.log",
+  "klasor": "/home/user/wt-mobil2-248",
+  "ham_cikti_sha256": "281de677029b8b6ef9c3afed5829b57b4e79187300917d85bb56d13926baf9ce",
+  "ham_cikti_bayt": 3528
+}

@@ -1,0 +1,43 @@
+
+■ I1 iPhone Safari karekodu açar → yalnız yönlendirme; kod tüketilmez
+  ✗ yönlendirme sayfası görünür (Ana Ekrana Ekleyin)
+  ✗ Cihazı Eşleştir formu görünmez (eşleme yapılmaz)
+  ✗ üç adım: 
+  ✓ yönlendirmede seçenek / düğme yok
+  ✓ kod adres çubuğundan silindi
+  ✓ eşleme isteği gönderilmedi (0)
+  ✓ veri tabanı: kod active, cihaz 0 (beklenen active, 0)
+
+■ I2 simge (ayrı depo) → Karekodu Okut → kamera → Eşleştir → giriş → Genel Bakış; AYNI kod tüketilir
+  ✗ Cihaz Eşli Değil ekranında Karekodu Okut düğmesi
+  ✗ adım yarıda kaldı: page.textContent: Timeout 15000ms exceeded.
+
+■ I3 Safari sekmesi (ayrı depo) eşleme sonrası da yönlendirir; eşleme sunmaz
+  ✗ Safari'de eşli olmayan sayfa → Ana Ekrana Ekleyin yönlendirmesi
+  ✓ Safari'de Karekodu Okut / Eşleştir yok
+
+■ I4 kamera izni reddi → açık ileti
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ I7 M5 (simge, eşli) ofis sunucusuna ulaşılamıyor → Son Özeti Göster formun üstünde + uyarı cümlesi; kendiliğinden açılmaz
+  ✓ M5 simgesi eşlendi
+  ✓ ofis kaydı yazıldı (tamam)
+  ✗ Son Özeti Göster kullanıcı adının ÜSTÜNDE (not y=672.390625–805.15625, alan y=297.015625)
+  ✓ düğme ilk ekranda, kaydırmadan görünür (alt 805.15625 ≤ 844)
+  ✗ uyarıda Son Özeti Göster cümlesi: Ofis sunucusuna ulaşılamıyor. Bu cihazda son özet açılabilir (salt okunur).Son Özeti Göster
+  ✓ son özet kendiliğinden açılmadı
+  ✗ giriş hatası cümleyi söyler: Ofis sunucusuyla bağlantı kurulamadı. Sunucunun açık olduğunu denetleyin.
+  ✓ M5 simgesi silindi (sınır için)
+
+■ I6 Android ve masaüstü tarayıcı: bugünkü akış (Cihazı Eşleştir)
+  ✓ Android: Cihazı Eşleştir (yönlendirme yok)
+  ✓ Android cihaz adı önerisi
+  ✓ Android eşlendi: kod used, cihaz 1
+  ✓ masaüstü tarayıcı: Cihazı Eşleştir (yönlendirme yok)
+  ✓ masaüstünde formu açmak kodu tüketmez
+
+■ I5 başka ofisin karekodu ve DestekOfis olmayan karekod → açık ileti, eşleme yok
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+  ✓ sayfa hatası yok (—)
+
+16 geçti, 11 kaldı

@@ -106,7 +106,8 @@ const SAYFA_BASLIGI = Object.freeze({
 const SAYFA_IPUCU = Object.freeze({
   "kapi-ofis-kapali": [
     "Ofisteki bilgisayar kapalı, DestekOfis çalışmıyor ya da ofisin internet bağlantısı kesik olabilir.",
-    "Birkaç dakika sonra sayfayı yenileyin. Telefonunuz eşliyse ana ekrandaki DestekOfis simgesinden açtığınızda son yüklenen özeti görebilirsiniz.",
+    // 2.4.8 M4/M5: iPhone'da eşleme ana ekran simgesinin içinde yapılır (Safari'deki eşleme simgeye geçmez); son özet giriş ekranındaki "Son Özeti Göster" ile açılır.
+    "Birkaç dakika sonra sayfayı yenileyin. Cihazınız eşliyse DestekOfis'i eşlediğiniz yerden açın (iPhone'da ana ekrandaki DestekOfis simgesi) ve Son Özeti Göster'e basarak son yüklenen bilgileri görün.",
   ],
   "kapi-lisans-dogrulanamadi": ["Birkaç dakika sonra sayfayı yenileyin; sorun sürerse yöneticinize haber verin."],
   "kapi-hiz": ["Bir dakika bekleyip sayfayı yenileyin."],
@@ -586,7 +587,7 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     }
   }
 
-  const KARSILAMA = `<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DestekOfis Mobil</title><body style="font-family:system-ui,sans-serif;padding:24px;max-width:520px;margin:auto;color:#102a36"><h1 style="font-size:22px">DestekOfis Mobil</h1><p>Telefonunuzu ofisinizdeki DestekOfis'e bağlamak için yöneticinizin Yönetim → Mobil Cihazlar'da oluşturduğu karekodu okutun.</p><p>Eşlediğiniz cihazda ana ekrandaki DestekOfis simgesinden açın.</p></body></html>`;
+  const KARSILAMA = `<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DestekOfis Mobil</title><body style="font-family:system-ui,sans-serif;padding:24px;max-width:520px;margin:auto;color:#102a36"><h1 style="font-size:22px">DestekOfis Mobil</h1><p>Telefonunuzu ofisinizdeki DestekOfis'e bağlamak için yöneticinizin Yönetim → Mobil Cihazlar'da oluşturduğu karekodu okutun.</p><p>iPhone'da karekodla açılan sayfada Paylaş → Ana Ekrana Ekle'ye dokunun, sonra ana ekrandaki DestekOfis simgesini açıp Karekodu Okut ile aynı karekodu okutun. Android telefonda ve bilgisayarda karekodla açılan sayfada eşleyin.</p><p>Eşli cihazda DestekOfis'i eşlediğiniz yerden açın (iPhone'da ana ekrandaki simge).</p></body></html>`;
 
   async function fetchHandler(request, env) {
     const url = new URL(request.url);

@@ -1,0 +1,32 @@
+{
+  "ad": "248-m45-e2e-mobil-eslesme-247",
+  "komut": "npm run test:senaryo-mobil-eslesme-247",
+  "commit": "e7c7338d478c0afe55f7c4946b618380f44a60ea",
+  "dal": "is/mobil2-248",
+  "kirli": 18,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T18:10:09.242Z",
+  "sure_sn": 15.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 38,
+    "gecen": 38,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-m45-e2e-mobil-eslesme-247.log",
+  "klasor": "/home/user/wt-mobil2-248",
+  "ham_cikti_sha256": "50920a5e68155c6263c4990582647d393e8db0edb3af9bd573a0b828358ca817",
+  "ham_cikti_bayt": 2813
+}

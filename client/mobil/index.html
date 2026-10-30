@@ -25,6 +25,8 @@
       <form id="login-form" class="login-form" autocomplete="on">
         <div class="mobile-brand"><div class="brand-mark">D<span>O</span></div><strong>DestekOfis</strong></div>
         <span class="eyebrow">DESTEKOFİS MOBİL</span>
+        <!-- 2.4.8 M5: sunucuya ulaşılamayınca son özet düğmesi formun ÜSTÜNDE ve belirgin (kendiliğinden açılmaz) -->
+        <div id="offline-note" class="offline-note hidden" role="status"><strong>Ofis sunucusuna ulaşılamıyor.</strong><span>Son Özeti Göster'e basarak son yüklenen bilgileri görebilirsiniz (salt okunur).</span><button class="btn primary full" type="button" id="offline-open">Son Özeti Göster</button></div>
         <h2>Tekrar Hoş Geldiniz</h2>
         <p>DestekOfis kullanıcı adınız ve parolanızla giriş yapın.</p>
         <label for="username">Kullanıcı Adı</label><input id="username" name="username" autocomplete="username" required placeholder="Kullanıcı adınız" maxlength="100" />
@@ -32,7 +34,6 @@
         <button class="btn primary full" type="submit" id="login-submit">Giriş Yap <span aria-hidden="true">→</span></button>
         <div id="login-error" class="form-error hidden" role="alert"></div>
         <div class="safe-note"><span class="safe-icon">♢</span> Bilgiler ofisinizdeki DestekOfis sunucusundan okunur. Sunucu kapalıyken yalnız bu cihazda açılabilen şifreli son özet görünür.</div>
-        <div id="offline-note" class="safe-note hidden" role="status"><span>Ofis sunucusuna ulaşılamıyor. Bu cihazda son özet açılabilir (salt okunur).</span><button class="btn full" type="button" id="offline-open">Son Özeti Göster</button></div>
       </form>
       <form id="pair-form" class="login-form hidden" autocomplete="off">
         <div class="mobile-brand"><div class="brand-mark">D<span>O</span></div><strong>DestekOfis</strong></div>
@@ -49,6 +50,31 @@
         <span class="eyebrow">DESTEKOFİS MOBİL</span>
         <h2>Cihaz Eşli Değil</h2>
         <p id="unpaired-text">Yöneticiniz Yönetim → Mobil Cihazlar'dan sizin için karekod oluşturmalı; karekodu bu cihazın kamerasıyla okutun.</p>
+        <!-- 2.4.8 M4: iPhone / iPad ana ekran simgesinde eşleme simgenin içinde (kamera) -->
+        <button class="btn primary full hidden" type="button" id="scan-open">Karekodu Okut <span aria-hidden="true">→</span></button>
+        <div id="scan-error" class="form-error hidden" role="alert"></div>
+        <div id="unpaired-icon-note" class="safe-note hidden"><span class="safe-icon">♢</span> Karekod 5 dakika geçerlidir. Süresi geçtiyse ya da karekod okunmuyorsa yöneticinizden yeni karekod isteyin.</div>
+      </div>
+      <div id="scan" class="login-form hidden" role="region" aria-label="Karekodu Okut">
+        <div class="mobile-brand"><div class="brand-mark">D<span>O</span></div><strong>DestekOfis</strong></div>
+        <span class="eyebrow">DESTEKOFİS MOBİL</span>
+        <h2>Karekodu Okut</h2>
+        <p id="scan-status" role="status">Kamera açılıyor…</p>
+        <div class="scan-frame"><video id="scan-video" playsinline muted autoplay></video></div>
+        <button class="btn full" type="button" id="scan-cancel">Vazgeç</button>
+      </div>
+      <div id="ios-guide" class="login-form hidden" role="status">
+        <div class="mobile-brand"><div class="brand-mark">D<span>O</span></div><strong>DestekOfis</strong></div>
+        <span class="eyebrow">DESTEKOFİS MOBİL</span>
+        <h2>Ana Ekrana Ekleyin</h2>
+        <p id="ios-guide-reason" class="hidden"></p>
+        <p>iPhone ve iPad'de DestekOfis ana ekrandaki simgeden kullanılır; eşleme de simgenin içinde yapılır.</p>
+        <ol class="guide-steps">
+          <li>Paylaş düğmesine dokunun → <b>Ana Ekrana Ekle</b>.</li>
+          <li>Ana ekrandaki <b>DestekOfis</b> simgesini açın.</li>
+          <li><b>Karekodu Okut</b> ile bilgisayardaki aynı karekodu okutun (karekod 5 dakika geçerli).</li>
+        </ol>
+        <div class="safe-note"><span class="safe-icon">♢</span> Bu sayfada eşleme yapılmadı; karekod kullanılmadı, simgede okutabilirsiniz.</div>
       </div>
     </div>
   </div>
