@@ -1,0 +1,218 @@
+TAP version 13
+# Subtest: 2.4.8 M1 — tünel durum göstergesi bağlantıyı connIndex başına sayar (cloudflared'in kendi /ready sayacı gibi)
+    # Subtest: 0. dört bağlantı kurulunca Bağlı, 4 (açılış satırları sayılmaz)
+    ok 1 - 0. dört bağlantı kurulunca Bağlı, 4 (açılış satırları sayılmaz)
+      ---
+      duration_ms: 419.31598
+      type: 'test'
+      ...
+    # Subtest: 1. ZORLA ÜRETME: tek bağlantı (connIndex=2) iki kez yeniden denenip kurulamıyor, öbür üçü ayakta → Bağlı, 3 ("Bağlantı koptu" DEĞİL)
+    not ok 2 - 1. ZORLA ÜRETME: tek bağlantı (connIndex=2) iki kez yeniden denenip kurulamıyor, öbür üçü ayakta → Bağlı, 3 ("Bağlantı koptu" DEĞİL)
+      ---
+      duration_ms: 4720.083935
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:122:3'
+      failureType: 'testCodeFailure'
+      error: 'üç bağlantı ayaktayken "Bağlantı koptu; yeniden kuruluyor." yazmamalı; gelen {"state":"connecting","connections":0,"reason":"Bağlantı koptu; yeniden kuruluyor."}'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Bağlantı koptu; yeniden kuruluyor.'
+      actual: 'Bağlantı koptu; yeniden kuruluyor.'
+      operator: 'notStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:128:14
+        async senaryo (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:107:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:123:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 2. ZORLA ÜRETME: dört bağlantı sırayla birer kez kopup geri geliyor (kısa ağ dalgalanması) → Bağlı, 4
+    not ok 3 - 2. ZORLA ÜRETME: dört bağlantı sırayla birer kez kopup geri geliyor (kısa ağ dalgalanması) → Bağlı, 4
+      ---
+      duration_ms: 2425.573372
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        beklenen: Bağlı, 4 bağlantı; gelen: {"state":"connected","connections":1,"reason":""}
+        + actual - expected
+        
+          {
+        +   connections: 1,
+        -   connections: 4,
+            state: 'connected'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        state: 'connected'
+        connections: 4
+      actual:
+        state: 'connected'
+        connections: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        BAGLI (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:113:32)
+        file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:137:7
+        async senaryo (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:107:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:136:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 3. ZORLA ÜRETME: dört bağlantı da düzgün kapanıyor (Unregistered + Retrying), hiçbiri dönmüyor → Bağlanıyor, 0 ("Bağlı" DEĞİL); biri dönünce Bağlı, 1
+    not ok 4 - 3. ZORLA ÜRETME: dört bağlantı da düzgün kapanıyor (Unregistered + Retrying), hiçbiri dönmüyor → Bağlanıyor, 0 ("Bağlı" DEĞİL); biri dönünce Bağlı, 1
+      ---
+      duration_ms: 2422.144426
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:141:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        dört bağlantı da kapalıyken "Bağlı" yazmamalı; gelen {"state":"connected","connections":3,"reason":""}
+        + actual - expected
+        
+          {
+        +   connections: 3,
+        +   reason: '',
+        +   state: 'connected'
+        -   connections: 0,
+        -   reason: 'Bağlantı koptu; yeniden kuruluyor.',
+        -   state: 'connecting'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        state: 'connecting'
+        connections: 0
+        reason: 'Bağlantı koptu; yeniden kuruluyor.'
+      actual:
+        state: 'connected'
+        connections: 3
+        reason: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:145:14
+        async senaryo (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:107:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:143:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 4. http2 yolu: "Lost connection with the edge" + Retrying + Connection terminated tek kopuştur → Bağlı, 3
+    not ok 5 - 4. http2 yolu: "Lost connection with the edge" + Retrying + Connection terminated tek kopuştur → Bağlı, 3
+      ---
+      duration_ms: 2413.414778
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:151:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        beklenen: Bağlı, 3 bağlantı; gelen: {"state":"connected","connections":1,"reason":""}
+        + actual - expected
+        
+          {
+        +   connections: 1,
+        -   connections: 3,
+            state: 'connected'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        state: 'connected'
+        connections: 3
+      actual:
+        state: 'connected'
+        connections: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        BAGLI (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:113:32)
+        file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:153:7
+        async senaryo (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:107:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:152:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 5. gerçek kopuş gizlenmez: dört bağlantı da düşüp yeniden deneniyor → Bağlanıyor (Bağlantı koptu), 0; biri dönünce Bağlı, 1
+    ok 6 - 5. gerçek kopuş gizlenmez: dört bağlantı da düşüp yeniden deneniyor → Bağlanıyor (Bağlantı koptu), 0; biri dönünce Bağlı, 1
+      ---
+      duration_ms: 685.022953
+      type: 'test'
+      ...
+    # Subtest: 6. süreç çöküp yeniden başlayınca eski bağlantılar sayılmaz: ilk süreçte 4, yenisinde 1 → Bağlı, 1
+    ok 7 - 6. süreç çöküp yeniden başlayınca eski bağlantılar sayılmaz: ilk süreçte 4, yenisinde 1 → Bağlı, 1
+      ---
+      duration_ms: 1453.333252
+      type: 'test'
+      ...
+    1..7
+not ok 1 - 2.4.8 M1 — tünel durum göstergesi bağlantıyı connIndex başına sayar (cloudflared'in kendi /ready sayacı gibi)
+  ---
+  duration_ms: 14540.989536
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:115:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 M2 — cloudflared çıktısı program veri klasöründe günlük dosyasına (sınırlı, döndürmeli, gizli bilgi yok)
+    # Subtest: 7. satırlar <veri>/bilesenler/cloudflared/cloudflared.log'a yazılır; belirteç ve kimlik bilgisi YAZILMAZ
+    not ok 1 - 7. satırlar <veri>/bilesenler/cloudflared/cloudflared.log'a yazılır; belirteç ve kimlik bilgisi YAZILMAZ
+      ---
+      duration_ms: 413.937335
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:173:3'
+      failureType: 'testCodeFailure'
+      error: 'günlük dosyası yok: /tmp/m1-tunel-durum-6RI7D7/bilesen/cloudflared.log'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:177:14
+        async senaryo (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:107:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:174:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 8. dosya sınırı aşınca bir önceki dosyaya döner (cloudflared.log.1); en çok iki dosya, her biri sınırın altında, son satır güncel dosyada
+    not ok 2 - 8. dosya sınırı aşınca bir önceki dosyaya döner (cloudflared.log.1); en çok iki dosya, her biri sınırın altında, son satır güncel dosyada
+      ---
+      duration_ms: 415.762729
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:187:3'
+      failureType: 'testCodeFailure'
+      error: 'günlük dosyası yok: /tmp/m1-tunel-durum-nt6u7d/bilesen/cloudflared.log'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        senaryo.logMaxBytes (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:192:14)
+        async senaryo (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:107:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:189:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.4.8 M2 — cloudflared çıktısı program veri klasöründe günlük dosyasına (sınırlı, döndürmeli, gizli bilgi yok)
+  ---
+  duration_ms: 830.798145
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add/test/tunel-durum-248.test.mjs:172:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 9
+# suites 2
+# pass 3
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 20450.746113

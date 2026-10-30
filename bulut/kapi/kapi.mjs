@@ -76,6 +76,56 @@ const hata = (kod, ek = {}, basliklar = {}) => {
   const [status, error] = HATA[kod];
   return json(status, { ok: false, code: kod, error, ...ek }, basliklar);
 };
+
+// 2.4.8 M3 — TARAYICI gezintisine (adres çubuğu, karekod, bağlantı) hata ham JSON yerine Türkçe HTML sayfa olarak döner (CLAUDE.md "KULLANICI BULGUSU 2.4.7 CANLI":
+// telefonda karekod → ham "kapi-ofis-kapali" JSON'u). Durum kodu, Set-Cookie (çerez silme) ve güvenlik başlıkları AYNEN; yalnız gövde ve içerik türü değişir.
+// Mobil istemci (client/mobil/app.js fetch; x-requested-with, Sec-Fetch-Mode cors/same-origin, Accept */*) ve program uçları JSON almaya devam eder.
+// Hizmet çalışanı (client/mobil/sw.js) gezintiyi kendisi iletir: yanıt başarısızsa (HTML de olsa) önbellekteki kabuğu açar — davranış değişmez.
+const SAYFA_BASLIGI = Object.freeze({
+  "kapi-ofis-kapali": "Ofis Sunucusuna Ulaşılamıyor",
+  "kapi-ofis-yok": "Ofis Bulunamadı",
+  "kapi-ofis-degisti": "Ofis Kimliği Değişti",
+  "kapi-cihaz": "Cihaz Eşli Değil",
+  "kapi-lisans": "Uzaktan Erişim Kapalı",
+  "kapi-lisans-dogrulanamadi": "Uzaktan Erişim Geçici Olarak Kapalı",
+  "kapi-yol": "Sayfa Bulunamadı",
+  "kapi-hiz": "Çok Sık İstek",
+  "kapi-cerez": "Tarayıcı Verisi Çakışıyor",
+});
+const SAYFA_IPUCU = Object.freeze({
+  "kapi-ofis-kapali": [
+    "Ofisteki bilgisayar kapalı, DestekOfis çalışmıyor ya da ofisin internet bağlantısı kesik olabilir.",
+    "Birkaç dakika sonra sayfayı yenileyin. Telefonunuz eşliyse ana ekrandaki DestekOfis simgesinden açtığınızda son yüklenen özeti görebilirsiniz.",
+  ],
+  "kapi-lisans-dogrulanamadi": ["Birkaç dakika sonra sayfayı yenileyin; sorun sürerse yöneticinize haber verin."],
+  "kapi-hiz": ["Bir dakika bekleyip sayfayı yenileyin."],
+});
+const kacir = metin => String(metin).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+/** İstek bir tarayıcı sayfa gezintisi mi (fetch/XHR değil)? Sec-Fetch-Mode varsa yalnız "navigate"; yoksa (eski tarayıcı) Accept text/html. */
+function tarayiciGezintisi(request) {
+  if (request.method !== "GET" && request.method !== "HEAD") return false;
+  if (request.headers.get("x-requested-with")) return false;
+  const mod = request.headers.get("sec-fetch-mode");
+  if (mod) return mod === "navigate";
+  return /\btext\/html\b/i.test(request.headers.get("accept") || "");
+}
+const SAYFA_STILI = "font-family:system-ui,sans-serif;padding:24px;max-width:520px;margin:auto;color:#102a36;line-height:1.5";
+function hataSayfasi(request, status, kod, ileti, basliklar = {}) {
+  const baslik = SAYFA_BASLIGI[kod] || "Sayfa Açılamadı";
+  const ipuclari = (SAYFA_IPUCU[kod] || []).map(p => `<p>${kacir(p)}</p>`).join("");
+  const govde = `<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${kacir(baslik)} — DestekOfis Mobil</title><body style="${SAYFA_STILI}"><h1 style="font-size:22px">${kacir(baslik)}</h1><p>${kacir(ileti)}</p>${ipuclari}<p><a href="" style="display:inline-block;padding:10px 18px;border-radius:8px;background:#0f6a8b;color:#fff;text-decoration:none">Yeniden Dene</a></p><p style="font-size:12px;color:#5b6b73">Hata kodu: ${kacir(kod)}</p></body></html>`;
+  return new Response(request.method === "HEAD" ? null : govde, {
+    status,
+    headers: basliklarKur({ "content-type": "text/html; charset=utf-8", ...GUVENLIK, "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'", ...basliklar }),
+  });
+}
+/** Hata yanıtı: tarayıcı gezintisine HTML sayfa, öbürlerine (mobil istemci, program) JSON. */
+const hataYaniti = (request, kod, ek = {}, basliklar = {}) => {
+  if (!tarayiciGezintisi(request)) return hata(kod, ek, basliklar);
+  const [status, error] = HATA[kod];
+  return hataSayfasi(request, status, kod, error, basliklar);
+};
+
 class KapiHatasi extends Error {
   constructor(kod, ek = {}, basliklar = {}) {
     super(kod);
@@ -493,8 +543,9 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
       if (url.pathname.startsWith("/kapi/")) at("kapi-yol");
       return await vekil(request, env, ofis, url);
     } catch (error) {
-      if (error instanceof KapiHatasi) return hata(error.kod, error.ek, error.basliklar);
-      if (error instanceof MakineHatasi && HATA[error.kod]) return hata(error.kod, error.ek);
+      if (error instanceof KapiHatasi) return hataYaniti(request, error.kod, error.ek, error.basliklar);
+      if (error instanceof MakineHatasi && HATA[error.kod]) return hataYaniti(request, error.kod, error.ek);
+      if (tarayiciGezintisi(request)) return hataSayfasi(request, 500, "kapi-hata", "Kapıcı isteği işleyemedi. Birkaç dakika sonra yeniden deneyin.");
       return json(500, { ok: false, code: "kapi-hata", error: "Kapıcı isteği işleyemedi." });
     }
   }
