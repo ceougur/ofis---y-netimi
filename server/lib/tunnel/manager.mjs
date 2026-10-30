@@ -11,6 +11,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { assertSafeIngress, buildIngress, cloudflaredArgs, ingressYaml } from "./config.mjs";
 import { TunnelError, ensureBinary as defaultEnsureBinary } from "./download.mjs";
+import { LOG_MAX_BYTES, createLineLog } from "./log-file.mjs";
 import { createProcessSupervisor, reapOrphan } from "./process.mjs";
 import { CLOUDFLARED_VERSION, assetFor } from "./release.mjs";
 
@@ -18,6 +19,15 @@ const INFO_SETTING = "mobile.tunnel.info";
 export const TUNNEL_STATES = Object.freeze({ off: "Kapalı", connecting: "Bağlanıyor", connected: "Bağlı" });
 const RETRY = { network: [30_000, 60_000, 120_000, 300_000, 600_000], gate: [30_000, 60_000, 120_000, 300_000, 600_000], hash: [3_600_000], disk: [900_000], size: [3_600_000] };
 const STOP_GRACE_MS = 60_000;
+
+// 2.4.8 M1 — bağlantı durumu cloudflared çıktısından, bağlantı DİZİNİ (connIndex) başına: cloudflared'in kendi /ready sayacı (tunnelstate/conntracker.go) gibi
+// "Registered" o dizini bağlı, kopuş satırları o dizini bağlı değil yapar. Önceden her satır +1/−1 sayılıyordu: tek kopuş birden çok satır yazdığı için
+// (Serve tunnel error + Retrying connection + Connection terminated; her başarısız denemede yeniden) sayaç düşüyor, tünel ayaktayken "Bağlantı koptu" görünüyordu;
+// büyük/küçük harf duyarsız /Registered tunnel connection/ "Unregistered" satırını da bağlantı sayıyordu (zorla üretme test/tunel-durum-248.test.mjs).
+// Satır biçimleri cloudflared 2026.10.5 kaynağından (connection/observer.go, control.go, http2.go; supervisor/tunnel.go, supervisor.go).
+const CONN_UP = /(?<![A-Za-z])Registered tunnel connection/;
+const CONN_DOWN = /Unregistered tunnel connection|Connection terminated|Lost connection with the edge|Retrying connection|Serve tunnel error/;
+const CONN_INDEX = /\bconnIndex=(\d+)/;
 
 export const TUNNEL_REASONS = Object.freeze({
   disabled: "Uzaktan bağlantı bu kurulumda kapalı.",
@@ -64,6 +74,7 @@ export function createTunnelManager({
   log = console,
   platform = process.platform,
   stopGraceMs = STOP_GRACE_MS,
+  logMaxBytes = LOG_MAX_BYTES,
 }) {
   let state = { state: "off", reason: enabled ? TUNNEL_REASONS.idle : TUNNEL_REASONS.disabled, since: new Date(now()).toISOString(), connections: 0, error: "" };
   let info = readInfo();
@@ -80,9 +91,16 @@ export function createTunnelManager({
   let failures = {};
   let exitsWithoutConnect = 0;
   let reaped = false;
+  const live = new Set(); // bağlı connIndex'ler (bu sürecin)
+  let anonymous = 0;
+  let knownToken = null;
+  let loggedPid = null;
+  let loggedExit = null;
 
   const pidFile = () => path.join(root, "cloudflared.pid");
   const configFile = () => path.join(root, "tunel.yml");
+  const logFile = () => path.join(root, "cloudflared.log");
+  const lineLog = createLineLog({ file: logFile, maxBytes: logMaxBytes, secrets: () => [token, knownToken], now });
 
   function readInfo() {
     try {
@@ -125,6 +143,7 @@ export function createTunnelManager({
     set("connecting", TUNNEL_REASONS.gate);
     const result = await gate.provision();
     token = result.token;
+    if (token) knownToken = token; // günlükte gizlenir (süreç kapanırken token null olsa da)
     info = { tunnelId: result.tunnelId, hostname: result.hostname, publicUrl: result.publicUrl, provisionedAt: new Date(now()).toISOString() };
     store.setSetting(INFO_SETTING, JSON.stringify(info));
     mobileRemote?.setPublicUrl?.(info.publicUrl);
@@ -132,17 +151,30 @@ export function createTunnelManager({
   }
 
   function onLine(line) {
-    if (/Registered tunnel connection/i.test(line)) {
+    lineLog.append(line);
+    const index = CONN_INDEX.exec(line)?.[1];
+    if (CONN_DOWN.test(line)) {
+      // Dizinsiz kopuş satırı (beklenmez): eski davranış gibi bir bağlantı düşülür.
+      live.delete(index ?? [...live].at(-1));
+      if (live.size === 0) set("connecting", TUNNEL_REASONS.reconnecting, { connections: 0 });
+      else state = { ...state, connections: live.size };
+    } else if (CONN_UP.test(line)) {
+      live.add(index ?? `?${(anonymous += 1)}`);
       exitsWithoutConnect = 0;
       failures = {};
-      set("connected", "", { connections: Math.min(4, state.connections + 1), error: "" });
-    } else if (/Unregistered tunnel connection|Connection terminated|Lost connection|Retrying connection/i.test(line)) {
-      const left = Math.max(0, state.connections - 1);
-      if (left === 0) set("connecting", TUNNEL_REASONS.reconnecting, { connections: 0 });
-      else state = { ...state, connections: left };
+      set("connected", "", { connections: live.size, error: "" });
     }
   }
   function onProcessState(s) {
+    if (s.running && s.pid && s.pid !== loggedPid) {
+      loggedPid = s.pid;
+      lineLog.append(`[DestekOfis] Bağlantı bileşeni başlatıldı (pid ${s.pid}).`);
+    }
+    if (s.lastExit && !s.running && s.lastExit !== loggedExit) {
+      loggedExit = s.lastExit;
+      lineLog.append(`[DestekOfis] Bağlantı bileşeni kapandı (çıkış kodu ${s.lastExit.code ?? "-"}${s.lastExit.signal ? `, sinyal ${s.lastExit.signal}` : ""}).`);
+    }
+    if (s.lastExit && !s.running) live.clear(); // yeni süreç bağlantılarını baştan kurar
     if (s.lastExit && !s.running && supervisor && s.nextRetryMs) {
       exitsWithoutConnect += state.state === "connected" ? 0 : 1;
       set("connecting", TUNNEL_REASONS.reconnecting, { connections: 0, retryInSeconds: Math.round(s.nextRetryMs / 1000) });
@@ -175,6 +207,7 @@ export function createTunnelManager({
     mkdirSync(root, { recursive: true });
     writeFileSync(configFile(), ingressYaml(config));
     set("connecting", TUNNEL_REASONS.starting, { connections: 0 });
+    live.clear();
     exitsWithoutConnect = 0;
     supervisor = createProcessSupervisor({
       binary: command,
@@ -195,6 +228,7 @@ export function createTunnelManager({
     supervisor = null;
     token = null;
     if (current) await current.stop();
+    live.clear();
   }
 
   async function tick() {
@@ -292,5 +326,6 @@ export function createTunnelManager({
     pid: () => supervisor?.pid() ?? null,
     configFile,
     pidFile,
+    logFile,
   };
 }

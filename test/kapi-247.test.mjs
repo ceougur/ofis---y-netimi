@@ -10,6 +10,7 @@ import { isaretDogrula, kapiIstemcisi, ozetPaketle } from "../server/lib/mobile-
 import { CIHAZ_CEREZI } from "../server/lib/mobil-cerez.mjs";
 import { sahteOnbellek, sahteR2 } from "./kapi-yerel.mjs";
 import { cihaz, lisansAnahtari, ofisAnahtari, rastgeleOfis } from "./kapi-ortak.mjs";
+import { titleCase } from "../server/lib/text-case.mjs";
 
 const T0 = Date.parse("2026-11-30T23:40:00+03:00"); // ay sonu, gece yarısına 20 dk
 const MIN = 60_000;
@@ -36,6 +37,8 @@ async function ortam({ servis = true } = {}) {
     fetchOrigin: async request => {
       iletilen.push({ method: request.method, url: request.url, kapi: request.headers.get("x-do-kapi"), cookie: request.headers.get("cookie") });
       if (!tunelAcik) throw new TypeError("fetch failed");
+      // 2.4.8 M3: tünel kapalıyken Cloudflare'in kendi HTML yanıtı (530 = 1033, ya da 502/504).
+      if (typeof tunelAcik === "number") return new Response("<html><body>error code: 1033</body></html>", { status: tunelAcik, headers: { "content-type": "text/html; charset=UTF-8" } });
       return new Response(JSON.stringify({ ok: true, data: { yol: new URL(request.url).pathname } }), { status: 200, headers: { "content-type": "application/json" } });
     },
   });
@@ -439,3 +442,76 @@ describe("M3 kapıcı — dağıtım yapılandırması (bulut/kapi/wrangler.toml
 });
 
 void rastgeleOfis;
+
+// 2.4.8 M3 — tarayıcı gezintisine hata Türkçe HTML sayfa; mobil istemciye (fetch) ve programa JSON aynen (CLAUDE.md "KULLANICI BULGUSU 2.4.7 CANLI": telefonda karekod →
+// ham "kapi-ofis-kapali" JSON'u). Eski kodda (e9602add) gezinti de JSON alır → aşağıdaki HTML denetimleri kırmızı; JSON denetimleri iki kodda da yeşil (kırma yok).
+describe("2.4.8 M3 kapıcı — tarayıcıya Türkçe hata sayfası, mobil istemciye JSON", () => {
+  const GEZINTI = { "sec-fetch-mode": "navigate", "sec-fetch-dest": "document", accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" };
+  const ISTEMCI = { "x-requested-with": "DestekOfisMobile", "sec-fetch-mode": "same-origin", "sec-fetch-dest": "empty", accept: "*/*" };
+  async function hazirOfis() {
+    const c = await ortam();
+    const tel = await cihaz();
+    const { ofis } = await c.ofisKur({ cihazlar: [tel] });
+    return { c, ofis, cerez: `${CIHAZ_CEREZI}=${tel.id}.${"s".repeat(43)}` };
+  }
+  const htmlMi = (r, status, baslik, kod) => {
+    assert.equal(r.status, status, `durum kodu korunmalı (gelen ${r.status})`);
+    assert.match(r.headers.get("content-type") || "", /^text\/html/, `tarayıcıya HTML dönmeli; gelen içerik türü ${r.headers.get("content-type")}, gövde ${r.text.slice(0, 120)}`);
+    assert.equal(r.data, null, "gövde JSON olmamalı");
+    assert.match(r.text, /<html lang="tr">/);
+    assert.ok(r.text.includes(`<h1 style="font-size:22px">${baslik}</h1>`), `başlık "${baslik}" olmalı: ${r.text.slice(0, 400)}`);
+    assert.equal(titleCase(baslik), baslik, "başlık yazım düzeninde (her sözcük büyük)");
+    assert.ok(r.text.includes(`Hata kodu: ${kod}`), "destek için hata kodu sayfada");
+    assert.ok(r.text.includes(">Yeniden Dene</a>"), "Yeniden Dene bağlantısı");
+    assert.equal(r.headers.get("cache-control"), "no-store");
+    assert.equal(r.headers.get("x-content-type-options"), "nosniff");
+    assert.match(r.headers.get("content-security-policy") || "", /default-src 'none'/);
+  };
+
+  it("karekod / adres çubuğu: tünel kapalıyken (bağlantı hatası, Cloudflare 530 ve HTML 502) 503 + \"Ofis Sunucusuna Ulaşılamıyor\" sayfası", async () => {
+    const { c, ofis } = await hazirOfis();
+    for (const durum of [false, 530, 502]) {
+      c.tunel(durum);
+      const r = await c.cihazIstegi(ofis.id, "GET", "/mobil/", GEZINTI);
+      htmlMi(r, 503, "Ofis Sunucusuna Ulaşılamıyor", "kapi-ofis-kapali");
+      assert.match(r.text, /Ofis sunucusuna ulaşılamıyor \(kapalı ya da internete bağlı değil\)\./, `tünel ${durum}: ileti`);
+      assert.match(r.text, /sayfayı yenileyin/, "ne yapılacağı yazmalı");
+      assert.ok(!r.text.includes("error code: 1033"), "Cloudflare'in İngilizce sayfası geçmemeli");
+    }
+  });
+
+  it("Sec-Fetch başlığı göndermeyen eski tarayıcı (Accept text/html) da sayfa alır; HEAD gövdesiz", async () => {
+    const { c, ofis } = await hazirOfis();
+    c.tunel(false);
+    htmlMi(await c.cihazIstegi(ofis.id, "GET", "/mobil/index.html", { accept: "text/html,*/*;q=0.8" }), 503, "Ofis Sunucusuna Ulaşılamıyor", "kapi-ofis-kapali");
+    const bas = await c.kapi.fetch(new Request(`https://${ofis.id}.${ALAN}/mobil/`, { method: "HEAD", headers: GEZINTI }), c.env);
+    assert.equal(bas.status, 503);
+    assert.match(bas.headers.get("content-type") || "", /^text\/html/);
+    assert.equal(await bas.text(), "");
+  });
+
+  it("mobil istemcinin fetch'i (app.js) ve başlıksız istek JSON almaya devam eder: kapi-ofis-kapali 503 aynen", async () => {
+    const { c, ofis, cerez } = await hazirOfis();
+    c.tunel(false);
+    for (const basliklar of [{ ...ISTEMCI, cookie: cerez }, { cookie: cerez }, { cookie: cerez, accept: "text/html", "sec-fetch-mode": "cors" }]) {
+      const r = await c.cihazIstegi(ofis.id, "GET", "/api/mobil/session", basliklar);
+      assert.deepEqual([r.status, r.code, r.data?.ok], [503, "kapi-ofis-kapali", false], `JSON beklenir (${JSON.stringify(basliklar)}): ${r.text.slice(0, 120)}`);
+      assert.match(r.headers.get("content-type") || "", /^application\/json/);
+    }
+    // Eşleme POST'u (karekod sayfasındaki fetch) tarayıcı gezintisi değildir.
+    const es = await c.cihazIstegi(ofis.id, "POST", "/api/mobil/eslesme", { "content-type": "application/json", accept: "text/html", "sec-fetch-mode": "navigate" });
+    assert.equal(es.code, "kapi-ofis-kapali", "POST her zaman JSON");
+  });
+
+  it("öbür kapıcı hataları da sayfa olur: eşli olmayan cihaz (401 Cihaz Eşli Değil), kayıtsız ofis (404 Ofis Bulunamadı); çerez silme başlığı korunur", async () => {
+    const { c, ofis } = await hazirOfis();
+    htmlMi(await c.cihazIstegi(ofis.id, "GET", "/", GEZINTI), 401, "Cihaz Eşli Değil", "kapi-cihaz");
+    const yok = await c.cihazIstegi(rastgeleOfis(), "GET", "/mobil/", GEZINTI);
+    htmlMi(yok, 404, "Ofis Bulunamadı", "kapi-ofis-yok");
+    c.tunel(false);
+    const bozuk = await c.cihazIstegi(ofis.id, "GET", "/mobil/", { ...GEZINTI, cookie: `${CIHAZ_CEREZI}=bozuk-kimlik.xyz` });
+    htmlMi(bozuk, 503, "Ofis Sunucusuna Ulaşılamıyor", "kapi-ofis-kapali");
+    const silme = bozuk.headers.getSetCookie();
+    assert.ok(silme.length >= 1 && silme.every(satir => /Max-Age=0|Expires=Thu, 01 Jan 1970/i.test(satir)), `bozuk cihaz çerezi HTML yanıtta da silinmeli: ${JSON.stringify(silme)}`);
+  });
+});

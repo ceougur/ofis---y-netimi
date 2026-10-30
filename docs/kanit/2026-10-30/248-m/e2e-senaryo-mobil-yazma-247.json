@@ -1,0 +1,32 @@
+{
+  "ad": "248-m/e2e-senaryo-mobil-yazma-247",
+  "komut": "npm run test:senaryo-mobil-yazma-247",
+  "commit": "e9602add7dea524a0c8348913ac125d5195fffc0",
+  "dal": "is/mobil-248",
+  "kirli": 3,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T12:55:48.978Z",
+  "sure_sn": 19.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 74,
+    "gecen": 74,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-m/e2e-senaryo-mobil-yazma-247.log",
+  "klasor": "/home/user/wt-mobil-248",
+  "ham_cikti_sha256": "2c6abd7b235964a22ce757c37395c369f7bbb29a9b650857dbd493c60357e407",
+  "ham_cikti_bayt": 6136
+}
