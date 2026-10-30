@@ -1,0 +1,32 @@
+{
+  "ad": "248-mz-platform-son",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/kanit-araci.test.mjs",
+  "commit": "97aab4eadf795ae54416ecc299268c9854f0b5b2",
+  "dal": "is/mz-248",
+  "kirli": 1,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T12:52:09.861Z",
+  "sure_sn": 4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 61,
+    "gecen": 61,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-mz-platform-son.log",
+  "klasor": "/home/user/wt-mz-248",
+  "ham_cikti_sha256": "17fbca1b221b60fae071d53b37169463fb339791b258ca4c4f0f4c00e736e322",
+  "ham_cikti_bayt": 17530
+}

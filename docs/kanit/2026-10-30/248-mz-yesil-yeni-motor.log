@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027)
+    # Subtest: tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı
+    ok 1 - tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı
+      ---
+      duration_ms: 27354.923347
+      type: 'test'
+      ...
+    # Subtest: tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı
+    ok 2 - tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı
+      ---
+      duration_ms: 25357.709238
+      type: 'test'
+      ...
+    1..2
+ok 1 - mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027)
+  ---
+  duration_ms: 52713.983827
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 53147.025237
