@@ -224,7 +224,13 @@ webhook (WhatsApp API için belgelenmemiş). KALANLAR:
 7. İş ortaklığı: DestekOfis üzerinden açılan hesaplar için gelir paylaşımı; isteklerde iş ortağı kimliği (EDM'deki APPLICATION_NAME gibi) gönderilebilir mi?
 8. Coexistence'ta API'den giden mesajlar WhatsApp Business uygulamasında görünür mü?
 
-## 11. Kullanıcı kararı bekleyen sorular (öneriyle)
+## 11. Kullanıcı kararları (öneriyle sorulan)
+
+KARAR (kullanıcı, 30.10.2026 ~04:05 UTC: "önerilerin uygun") → S1–S5 ÖNERİLDİĞİ GİBİ: herkese; PDF kapıcıda şifreli en çok 3 gün; mutabakat motoru
+yıl düzeltmesi 2.4.8'e (MZ); "WhatsApp Mesajı İstemiyor" işareti + bir kez izin onayı; PDF seçilen döneme uyar. Aynı iletide soru "toplu pdf ve toplu ekstre metnini
+gönderebilecek mi?" → yanıt EVET: toplu ve tekli, her kişiye kendi PDF'i + kısa ekstre metni (ad, firma, dönem, güncel bakiye) tek mesajda; hareket listesi
+PDF'te (şablon değişkeni çok satır taşıyamaz — bugünkü uzun metin API'de yok).
+
 
 - S1 Pro'ya özel mi, herkese mi? ÖNERİ herkese (mobil gibi; ücreti müşteri Verimor'a öder; 2.0.14'teki "ayrı Pro özelliği" notunun yerine).
 - S2 PDF bağlantısı §6.3 (b): DestekOfis kapıcısında şifreli, en çok 3 gün, sonra silinir? ÖNERİ evet (KVKK metnine bir cümle).
