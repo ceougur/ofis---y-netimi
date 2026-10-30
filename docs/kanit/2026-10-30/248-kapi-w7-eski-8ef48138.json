@@ -1,0 +1,73 @@
+{
+  "ad": "248-kapi-w7-eski-8ef48138",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/whatsapp-w7-bagla-248.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:44:09.981Z",
+  "sure_sn": 1.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 0,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim › Meta onayı (kapıcı ayarı) yokken: oturum açılmaz, açık Türkçe ileti; sayfa Facebook SDK'sını yüklemez ve aynı iletiyi gösterir",
+      "konum": "test/whatsapp-w7-bagla-248.test.mjs:100:3",
+      "hata": "ayarsız kapıcı: {\"status\":200} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim › uçtan uca: oturum (imzalı) → sayfa (App ID + config_id var, App Secret YOK) → kod → Meta'ya değişim (sır yalnız bu istekte) → şifreli teslim bir kez; R2'de düz belirteç yok",
+      "konum": "test/whatsapp-w7-bagla-248.test.mjs:113:3",
+      "hata": "{\"status\":200} · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim › kod değişimi İMZASIZ olamaz: imzasız / başka anahtarla oturum ve teslim 401; başka ofis bu oturumun belirtecini alamaz; kod iki kez kullanılamaz",
+      "konum": "test/whatsapp-w7-bagla-248.test.mjs:143:3",
+      "hata": "oturum ofis imzası ister · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim › Meta değişimi reddederse açık ileti (sır ve kod iletiden ayıklanır); oturum 'hata' olarak programa bir kez verilir",
+      "konum": "test/whatsapp-w7-bagla-248.test.mjs:162:3",
+      "hata": "Cannot destructure property 'oturum' of '(intermediate value).data' as it is undefined."
+    },
+    {
+      "ad": "2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim › oturum en çok 10 dk: süresi geçince kod ve teslim 410; zamanlanmış tur artığı siler; lisansı biten ofis oturum açamaz",
+      "konum": "test/whatsapp-w7-bagla-248.test.mjs:177:3",
+      "hata": "Cannot destructure property 'oturum' of '(intermediate value).data' as it is undefined."
+    },
+    {
+      "ad": "2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç kapıcıdan şifreli gelir, 'embedded' kipinde mühürlenir; Meta adımları › birlikte kullanım: Bağla → kapıcı sayfası → kod → program belirteci alır, 'embedded' kipinde mühürler, eşitlemeyi başlatır ve sınar; belirteç ve App Secret yanıtta / veri tabanında / işlem geçmişinde YOK",
+      "konum": "test/whatsapp-w7-bagla-248.test.mjs:244:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç kapıcıdan şifreli gelir, 'embedded' kipinde mühürlenir; Meta adımları › birlikte kullanım değilse numara Cloud API'ye kaydedilir (6 haneli PIN, ekranda yok)",
+      "konum": "test/whatsapp-w7-bagla-248.test.mjs:273:3",
+      "hata": "Cannot destructure property 'session' of '(intermediate value).data.data' as it is undefined."
+    },
+    {
+      "ad": "2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç kapıcıdan şifreli gelir, 'embedded' kipinde mühürlenir; Meta adımları › Tech Provider onayı yokken (kapıcı Meta ayarı yok): düğme açık, ileti 'Bu bağlantı DestekOfis'in Meta onayından sonra çalışır; şimdilik Elle Bağla.'; Meta reddederse aynı ileti + Meta'nın yanıtı",
+      "konum": "test/whatsapp-w7-bagla-248.test.mjs:288:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt-kapi-248/docs/kanit/2026-10-30/248-kapi-w7-eski-8ef48138.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138",
+  "ham_cikti_sha256": "d2df52c0c479f452c176b6030eed025fc48cb44e56cf787638728ef8f2cae795",
+  "ham_cikti_bayt": 12140
+}

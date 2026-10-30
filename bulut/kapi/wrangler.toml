@@ -34,3 +34,10 @@ LISANS_ANAHTARLARI = '{"destekofis-lisans-2026-1":"MCowBQYDK2VwAyEAZRdIMB11WVitp
 # biten + 30 gün (hoşgörü sonu), engellenen + 30 gün → ofis kaydı, cihazlar, R2 özeti, tünel ve DNS kaydı silinir. Dakika 23 (saat başı yoğunluğundan uzak).
 [triggers]
 crons = ["23 * * * *"]
+
+# 2.4.8 W7 "WhatsApp'ı Bağla" (bulut/kapi/wa-bagla.mjs; bağlama sayfası https://kapi.destekofis.net/wa/bagla — Meta uygulamasının "Allowed domains" ve
+# "Valid OAuth redirect URIs" listesine bu adres girilir). GİZLİ DEĞİL, Tech Provider onayından sonra [vars]'a yazılır (o güne dek boş → program "Bu bağlantı
+# DestekOfis'in Meta onayından sonra çalışır; şimdilik Elle Bağla." der):
+#   WA_UYGULAMA_KIMLIGI = "<DestekOfis Meta App ID>"
+#   WA_KURULUM_KIMLIGI  = "<Embedded Signup yapılandırma kimliği (config_id)>"
+# GİZLİ: WA_UYGULAMA_SIRRI (Meta App Secret; W9 kanca imzasıyla AYNI değer) — `wrangler secret put WA_UYGULAMA_SIRRI`; kod → belirteç değişimi yalnız burada.

@@ -109,6 +109,22 @@ await step("A1 sekme ve boş durum: \"Bağlı Değil\", Elle Bağla", async () =
   await shot("01-bos");
 });
 
+// 2.4.8 W7 (ürün sahibi kararı: düğme DÜZ AÇIK — gizli bayrak / "yakında" yok): bu kurulumda kapıcı yok → tıklayınca açık Türkçe ileti; açılan boş pencere kapanır.
+await step("A1b WhatsApp'ı Bağla: düğme görünür ve etkin; kapıcısız kurulumda açık ileti, pencere kapanır, Meta'ya istek yok", async () => {
+  const button = '[data-wa-action="embedded"]';
+  ok(await page.isVisible(button), "WhatsApp'ı Bağla düğmesi görünür");
+  ok((await text(button)) === "WhatsApp'ı Bağla", "düğme adı");
+  ok(!(await page.isDisabled(button)), "düğme etkin (düz açık)");
+  const popupPromise = page.waitForEvent("popup", { timeout: 5000 }).catch(() => null);
+  await page.click(button);
+  const popup = await popupPromise;
+  await page.waitForFunction(() => (document.getElementById("hof-toasts")?.textContent || "").includes("WhatsApp'ı Bağla bu kurulumda kullanılamıyor"), null, { timeout: 15000 });
+  if (popup) await popup.waitForEvent("close", { timeout: 5000 }).catch(() => null);
+  ok(!popup || popup.isClosed(), "boş bağlama penceresi kapandı");
+  ok(fake.requests.length === 0, "Meta'ya istek yok");
+  await shot("01b-bagla-ileti");
+});
+
 await step("A2 Elle Bağla: Tab ile insan hızında yazım → Kaydet ve Sına → Bağlı; belirteç ekranda ve yanıtlarda yok", async () => {
   await page.click('[data-wa-action="connect"]');
   const modal = await topModal();

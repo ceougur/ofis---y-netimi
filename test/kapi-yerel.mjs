@@ -154,13 +154,15 @@ export async function kokeneIlet(request, taban) {
  * @param {boolean} [o.tls] ayrıca https dinleyicisi (Chromium için; kendinden imzalı)
  * @param {object} [o.trustedKeys] lisans açık anahtarları (varsayılan programınkiler)
  * @param {Function} [o.fetchOrigin] canlı istek iletimi (varsayılan: tunel() ile verilen tabana; uçtan uca testte sahte Cloudflare kenarı)
+ * @param {object} [o.ekEnv] 2.4.8 W7: ek Worker ayarları (WA_UYGULAMA_KIMLIGI, WA_KURULUM_KIMLIGI, WA_UYGULAMA_SIRRI, WA_GRAPH_URL …)
+ * @param {typeof fetch} [o.waFetch] 2.4.8 W7: kapıcının Meta'ya kod değişimi isteği (sahte Meta; verilmezse istek reddedilir)
  */
-export async function startKapi({ now = () => Date.now(), lisansFetch = null, alan = "destekofis.test", tls = false, trustedKeys = TRUSTED_LICENSE_KEYS, fetchOrigin = null } = {}) {
+export async function startKapi({ now = () => Date.now(), lisansFetch = null, alan = "destekofis.test", tls = false, trustedKeys = TRUSTED_LICENSE_KEYS, fetchOrigin = null, ekEnv = {}, waFetch = null } = {}) {
   const r2 = sahteR2();
   const onbellek = sahteOnbellek();
   const kokenler = new Map();
   const gunluk = [];
-  const env = { OZET: r2, LISANS_ANAHTARLARI: JSON.stringify(trustedKeys), OFIS_ALANI: alan, ...(lisansFetch ? { LISANS_URL: "https://lisans.kapi.test/api/lisans", KAPI_LISANS_ANAHTARI: "test-kapi-anahtari" } : {}) };
+  const env = { OZET: r2, LISANS_ANAHTARLARI: JSON.stringify(trustedKeys), OFIS_ALANI: alan, ...(lisansFetch ? { LISANS_URL: "https://lisans.kapi.test/api/lisans", KAPI_LISANS_ANAHTARI: "test-kapi-anahtari" } : {}), ...ekEnv };
   const kapi = createKapi({
     now,
     fetchOrigin: fetchOrigin || tunelIlet(kokenler),
@@ -168,6 +170,9 @@ export async function startKapi({ now = () => Date.now(), lisansFetch = null, al
       throw new TypeError("lisans servisi yok");
     }),
     onbellek,
+    waFetch: waFetch || (async () => {
+      throw new TypeError("Meta yok (test)");
+    }),
   });
   const isle = tlsMi => async (req, res) => {
     const parcalar = [];

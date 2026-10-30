@@ -47,6 +47,7 @@ import { CIHAZ_CEREZI, MOBIL_CEREZLERI, OTURUM_CEREZI, cerezCakisiyor, cerezCika
 import { KAPI_HIZ, MakineHatasi, guncelMi, kayitSonrasi, makineKaydi, metaAnahtari, ozetAnahtari, silinenBirlestir } from "./makine.mjs";
 import { TUNEL_YOLU, cloudflareVarsa, ofisTuneliniSil, tunelIstegi } from "./tunel.mjs"; // 2.4.7 M4: ofis tüneli (ayrı dosya)
 import { mezarAnahtari, mezarOku, mobilTemizlik } from "./temizlik.mjs"; // 2.4.8 L1: mobil kaydın kendiliğinden silinmesi (zamanlanmış tur)
+import { createWaBagla, waOturumTemizle } from "./wa-bagla.mjs"; // 2.4.8 W7: "WhatsApp'ı Bağla" (Embedded Signup; kod → belirteç değişimi yalnız burada)
 
 export { KAPI_HIZ };
 
@@ -175,8 +176,9 @@ function kokenYaniti(yanit, sil = []) {
  * @param {typeof fetch} [o.lisansFetch] lisans servisine istek
  * @param {{ match(req): Promise<Response|undefined>, put(req, res): Promise<void> }} [o.onbellek] lisans önbelleği (üretimde caches.default)
  * @param {object} [o.cloudflare] Cloudflare tünel/DNS istemcisi (testte sahte; yoksa env'deki ayarla, ayar yoksa kayıtta temizlik yapılmaz — B3)
+ * @param {typeof fetch} [o.waFetch] 2.4.8 W7: Meta'ya kod → belirteç değişimi isteği (testte sahte Meta)
  */
-export function createKapi({ now = () => Date.now(), fetchOrigin = request => fetch(request), lisansFetch = (...a) => fetch(...a), onbellek = null, cloudflare = null } = {}) {
+export function createKapi({ now = () => Date.now(), fetchOrigin = request => fetch(request), lisansFetch = (...a) => fetch(...a), onbellek = null, cloudflare = null, waFetch = (...a) => fetch(...a) } = {}) {
   const pencere = new Map(); // hız sınırı (isolate içi; HIZ bağlaması yoksa)
   const yenileniyor = new Map(); // ofis → lisans yenileme sözü (aynı anda tek istek)
   const sonDeneme = new Map(); // ofis → son başarısız yenileme anı (servise yük bindirmesin)
@@ -620,6 +622,9 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     }
   }
 
+  // 2.4.8 W7: "WhatsApp'ı Bağla" (bulut/kapi/wa-bagla.mjs): ofis imzası, lisans ve güncel ofis denetimi bu kapıcının işlevleriyle.
+  const waBagla = createWaBagla({ now, lisansGorunumu, gunceliIste, hizDenetle, waFetch });
+
   const KARSILAMA = `<!doctype html><html lang="tr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DestekOfis Mobil</title><body style="font-family:system-ui,sans-serif;padding:24px;max-width:520px;margin:auto;color:#102a36"><h1 style="font-size:22px">DestekOfis Mobil</h1><p>Telefonunuzu ofisinizdeki DestekOfis'e bağlamak için yöneticinizin Yönetim → Mobil Cihazlar'da oluşturduğu karekodu okutun.</p><p>iPhone'da karekodla açılan sayfada Paylaş → Ana Ekrana Ekle'ye dokunun, sonra ana ekrandaki DestekOfis simgesini açıp Karekodu Okut ile aynı karekodu okutun. Android telefonda ve bilgisayarda karekodla açılan sayfada eşleyin.</p><p>Eşli cihazda DestekOfis'i eşlediğiniz yerden açın (iPhone'da ana ekrandaki simge).</p></body></html>`;
 
   async function fetchHandler(request, env) {
@@ -627,6 +632,11 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
     try {
       // 2.4.7 M4: tünel başvurusu (ofis imzası + lisans P9; Cloudflare hesap belirteci yalnız Worker gizlisinde).
       if (TUNEL_YOLU.test(url.pathname)) return await tunelIstegi(request, env, { now, lisansGorunumu, cloudflare });
+      const alan = String(env.OFIS_ALANI || "destekofis.net").toLowerCase();
+      const host = url.hostname.toLowerCase();
+      // 2.4.8 W7: WhatsApp'ı Bağla — program uçları (imzalı, her adreste) ve bağlama sayfası (yalnız kapi.<alan>).
+      const wa = await waBagla.istek(request, env, url, { kapiHost: host === `kapi.${alan}` });
+      if (wa) return wa;
       // Program uçları (her adreste; imzalı).
       const program = /^\/v1\/ofis\/([^/]+)\/(kayit|ozet)$/.exec(url.pathname);
       if (program) {
@@ -637,8 +647,6 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
         if (uc === "ozet" && request.method === "DELETE") return await ozetSil(request, env, ofis, url.pathname, url);
         at("kapi-istek");
       }
-      const alan = String(env.OFIS_ALANI || "destekofis.net").toLowerCase();
-      const host = url.hostname.toLowerCase();
       const ofis = host.endsWith(`.${alan}`) ? host.slice(0, -alan.length - 1) : "";
       // 2.4.8 W9: WhatsApp kancaları (madde 8).
       if (url.pathname === "/wa/meta" && !OFIS_KIMLIGI.test(ofis)) return await waMeta(request, env, url);
@@ -658,7 +666,12 @@ export function createKapi({ now = () => Date.now(), fetchOrigin = request => fe
   }
 
   // 2.4.8 L1: zamanlanmış temizlik turu (Worker Cron → scheduled). Cloudflare ayarı yoksa yalnız R2 kayıtları silinir.
-  const temizlik = env => mobilTemizlik(env, { now, lisansGorunumu, cloudflare: cloudflare || cloudflareVarsa(env), alan: String(env.OFIS_ALANI || "destekofis.net").toLowerCase() });
+  const temizlik = async env => {
+    const rapor = await mobilTemizlik(env, { now, lisansGorunumu, cloudflare: cloudflare || cloudflareVarsa(env), alan: String(env.OFIS_ALANI || "destekofis.net").toLowerCase() });
+    // 2.4.8 W7: süresi geçen WhatsApp bağlama oturumları (şifreli; en çok 10 dk geçerli).
+    rapor.waOturum = await waOturumTemizle(env, now()).catch(() => 0);
+    return rapor;
+  };
 
   return { fetch: fetchHandler, lisansGorunumu, esitMi, temizlik };
 }

@@ -396,6 +396,19 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     noteWrite,
     uploadNow: (neden = "elle") => (enabled ? sirala(neden) : Promise.resolve({ ok: false, code: "kapi-kapali", error: "Kapıcı adresi tanımlı değil." })),
     kayitGonder: secenek => (enabled ? kayitGonder(secenek) : Promise.resolve({ ok: false, code: "kapi-kapali" })),
+    // 2.4.8 W7: "WhatsApp'ı Bağla" oturumu (lib/whatsapp/embedded.mjs) — ofisin imzalı kanalı. Kayıt önce yenilenir (kapıcı ofisi tanısın, lisans taze olsun).
+    waOturumAc: async anahtar => {
+      if (!enabled) return { ok: false, code: "kapi-kapali", error: "Kapıcı adresi tanımlı değil." };
+      await hazirla();
+      const kayit = await kayitGonder();
+      if (!kayit.ok && kayit.code !== "kapi-lisans") return kayit;
+      return { ...(await istemci.waOturum(ofis, anahtar)), ofis: ofis.id };
+    },
+    waOturumAl: async oturum => {
+      if (!enabled) return { ok: false, code: "kapi-kapali", error: "Kapıcı adresi tanımlı değil." };
+      await hazirla();
+      return { ...(await istemci.waAl(ofis, oturum)), ofis: ofis.id };
+    },
     idle: () => kuyruk,
     tick: turAt,
     veriZamani,

@@ -11,6 +11,8 @@ T = 'bulut/kapi/temizlik.mjs'
 L1 = ['test/kapi-lisans-hosgoru-248.test.mjs', 'test/mobil-lisans-hosgoru-248.test.mjs']
 TUN = ['test/tunel-yonetici-247.test.mjs']
 K1 = ['test/kapi-temizlik-yarisi-248.test.mjs', 'test/kapi-gg247-b3.test.mjs']
+W7 = ['test/whatsapp-w7-bagla-248.test.mjs']
+WB = 'bulut/kapi/wa-bagla.mjs'
 MUTS = [
     # L1 — kural (kapi-protokol; program ve kapıcı aynı işlev)
     ("ML1 hoşgörü denemeye de verilir", P, 'if (tur === "license" && t < bitis + MOBIL_HAK.hosgoruMs) {', 'if (t < bitis + MOBIL_HAK.hosgoruMs) {', L1),
@@ -40,6 +42,17 @@ MUTS = [
     ("MK2a kapıcı özetin yokluğunu bildirmez", K, 'ozet: ozetVar,', 'ozet: true,', K1),
     ("MK2b program devralmada özeti yüklemez", 'server/lib/mobile-sync.mjs', 'if (ozetTetikle && sonuc.data?.ozet === false && !durum.ozetIstendi', 'if (false && ozetTetikle && sonuc.data?.ozet === false && !durum.ozetIstendi', K1),
     ("MK3 günlük yeni tünel tavanı denetlenmez", 'bulut/kapi/tunel.mjs', '      await yeniOfisDenetle(env, now());\n', '', K1),
+    # W7 — WhatsApp'ı Bağla
+    ("MW1 App Secret bağlama sayfasına sızar", WB, 'configId: String(env.WA_KURULUM_KIMLIGI), surum:', 'configId: String(env.WA_KURULUM_KIMLIGI), sir: String(env.WA_UYGULAMA_SIRRI), surum:', W7),
+    ("MW2 App Secret programa (teslim yanıtına) sızar", WB, 'return json(200, { ok: true, data: { durum: "hazir", sifreli: o.sifreli,', 'return json(200, { ok: true, data: { durum: "hazir", uygulamaSirri: String(env.WA_UYGULAMA_SIRRI), sifreli: o.sifreli,', W7),
+    ("MW3 kod değişimi oturumu imzasız açılır / alınır", WB, '    if (!(await ecdsaDogrula(meta.anahtar, mesaj.ofis("POST", yol, ms, await sha256Hex(metinDegeri)), request.headers.get("x-do-imza") || ""))) at("kapi-imza");\n', '', W7),
+    ("MW4 kapıcı belirteci düz saklar", WB, 'JSON.stringify({ ...o, durum: "hazir", sifreli, wabaId, phoneNumberId, olay })', 'JSON.stringify({ ...o, durum: "hazir", sifreli, belirtec: veri.access_token, wabaId, phoneNumberId, olay })', W7),
+    ("MW5 kod iki kez kullanılır", WB, '    if (o.durum !== "bekliyor") at("kapi-wa-kullanildi");\n', '', W7),
+    ("MW6 başka ofis oturumun belirtecini alır", WB, 'if (!kayit || kayit.veri.ofis !== ofis) at("kapi-wa-oturum");', 'if (!kayit) at("kapi-wa-oturum");', W7),
+    ("MW7 süresi geçen oturumda kod değiştirilir", WB, '      at("kapi-wa-sure");\n    }\n    if (o.durum !== "bekliyor")', '    }\n    if (o.durum !== "bekliyor")', W7),
+    ("MW8 program belirteci yanıta koyar", 'server/routes/whatsapp.mjs', 'ok(res, { state: "ready", connection: view() });', 'ok(res, { state: "ready", connection: view(), token: result.token });', W7),
+    ("MW9 Meta iletisinden gizli değerler ayıklanmaz", WB, '  for (const g of gizliler) if (g && g.length >= 6) s = s.split(g).join("[gizli]");\n', '', W7),
+    ("MW10 Meta onayı yokken ileti kaybolur", 'server/lib/whatsapp/embedded.mjs', '    if (result.code === "kapi-wa-ayar") fail(409, EMBEDDED_UNAVAILABLE, "whatsapp-embedded-unavailable");\n', '', W7),
 ]
 SEC = re.compile(os.environ.get('KAPI248_MUT_SEC') or '.')
 results = []

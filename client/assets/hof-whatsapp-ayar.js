@@ -43,8 +43,8 @@
     if (!data.configured) {
       box.innerHTML = `
         <div class="adm-wa-head"><span class="adm-license-badge" data-wa-state>${esc(state.label)}</span><h2>WhatsApp Business API Bağlantısı</h2>
-          <p>Carilere ekstre ve ödeme hatırlatmasını WhatsApp'tan kendiliğinden göndermek için Meta'daki uygulamanızın bilgilerini Elle Bağla ile girin. Kendi WhatsApp'ınızla tek tek gönderim bağlantı olmadan da çalışır.</p></div>
-        <div class="adm-inline"><button type="button" class="hof-button" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Elle Bağla</button></div>
+          <p>Carilere ekstre ve ödeme hatırlatmasını WhatsApp'tan kendiliğinden göndermek için WhatsApp'ı Bağla ile işletmenizin WhatsApp Business numarasını Facebook hesabınızla bağlayın ya da Meta'daki kendi uygulamanızın bilgilerini Elle Bağla ile girin. Kendi WhatsApp'ınızla tek tek gönderim bağlantı olmadan da çalışır.</p></div>
+        <div class="adm-inline"><button type="button" class="hof-button" data-wa-action="embedded" ${editBlock ? "disabled" : ""}>WhatsApp'ı Bağla</button><button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Elle Bağla</button></div>
         ${editBlock ? `<p class="adm-wa-why" data-wa-why>${esc(editBlock)}</p>` : ""}`;
       return;
     }
@@ -70,11 +70,13 @@
         ${fact("Son Sınama", lastTest, "lastTest")}
         ${fact("Son Deneme", lastSelf, "lastSelfTest")}
         ${fact("Kaydeden", [data.savedByName, when(data.savedAt)].filter(Boolean).join(" · "), "saved")}
+        ${data.embedded ? fact("Numara Kullanımı", data.embedded.coex ? "WhatsApp Business uygulamasıyla birlikte" : "Yalnız WhatsApp Business API", "coex") : ""}
+        ${data.embedded?.steps?.length ? fact("Meta Adımları", data.embedded.steps.map(step => `${STEP_LABEL[step.name] || step.name}: ${step.ok ? "tamam" : `tamamlanamadı — ${step.message}`}`).join(" · "), "steps") : ""}
       </dl>
       <div class="adm-inline adm-wa-actions">
         <button type="button" class="hof-button" data-wa-action="test" ${metaBlock ? "disabled" : ""}>Bağlantıyı Sına</button>
         <button type="button" class="hof-button hof-button-ghost" data-wa-action="self-test" ${metaBlock ? "disabled" : ""}>Kendime Deneme Gönder</button>
-        <button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Bilgileri Değiştir</button>
+        ${data.mode === "embedded" ? `<button type="button" class="hof-button hof-button-ghost" data-wa-action="embedded" ${editBlock ? "disabled" : ""}>WhatsApp'ı Yeniden Bağla</button>` : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Bilgileri Değiştir</button>`}
         <button type="button" class="hof-button hof-button-danger" data-wa-action="remove" ${editBlock ? "disabled" : ""}>Bağlantıyı Kaldır</button>
       </div>
       ${metaBlock ? `<p class="adm-wa-why" data-wa-why>${esc(metaBlock)}</p>` : ""}`;
@@ -180,6 +182,64 @@
     });
   }
 
+  // ---------- 2.4.8 W7: WhatsApp'ı Bağla (Embedded Signup + birlikte kullanım) ----------
+  // Düğme düz açık (ürün sahibi kararı). Bağlama sayfası DestekOfis kapıcısında (Meta'nın izin verdiği sabit HTTPS alanı); pencere tıklama anında açılır
+  // (açılır pencere engeli), adresi program kapıcıdan alınca verilir. Program sonucu iki saniyede bir sorar; Meta onayı yoksa iletisi görünür.
+  const STEP_LABEL = Object.freeze({ register: "Numara Kaydı", smb_app_state_sync: "Kişi Eşitlemesi", history: "Geçmiş Eşitlemesi" });
+  let embeddedBusy = false;
+  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  async function embeddedConnect(button) {
+    if (embeddedBusy) return;
+    embeddedBusy = true;
+    button?.classList.add("is-busy");
+    const popup = window.open("about:blank", "destekofis-wa-bagla", "popup,width=640,height=760");
+    try {
+      let session;
+      try {
+        session = await HOF.api(`${API}/embedded`, { method: "POST", body: {} });
+      } catch (error) {
+        popup?.close();
+        HOF.toastError(error);
+        return;
+      }
+      if (popup && !popup.closed) popup.location.href = session.url;
+      else window.open(session.url, "destekofis-wa-bagla");
+      HOF.toast("Açılan pencerede Facebook ile devam edin; bağlantı tamamlanınca bu ekran kendiliğinden yenilenir.", { type: "info", timeout: 8000 });
+      const until = Date.now() + session.seconds * 1000;
+      let closedPolls = 0;
+      while (Date.now() < until) {
+        await wait(2000);
+        let answer;
+        try {
+          answer = await HOF.api(`${API}/embedded/${encodeURIComponent(session.session)}`, { method: "POST", body: {} });
+        } catch (error) {
+          HOF.toastError(error);
+          return;
+        }
+        if (answer.state === "ready") {
+          view = answer.connection;
+          render();
+          await HOF.whatsappTemplates?.ensure({ quiet: true });
+          HOF.toast("WhatsApp bağlandı.", { type: "success" });
+          await load();
+          return;
+        }
+        if (answer.state === "error") {
+          HOF.toast(answer.message, { type: "error", timeout: 12000 });
+          return;
+        }
+        if (popup && popup.closed && (closedPolls += 1) > 2) {
+          HOF.toast("Bağlama penceresi kapatıldı; bağlantı tamamlanmadı. WhatsApp'ı Bağla'yı yeniden açabilirsiniz.", { type: "info", timeout: 8000 });
+          return;
+        }
+      }
+      HOF.toast("Bağlama 10 dakika içinde tamamlanmadı; WhatsApp'ı Bağla'yı yeniden açın.", { type: "info", timeout: 8000 });
+    } finally {
+      embeddedBusy = false;
+      button?.classList.remove("is-busy");
+    }
+  }
+
   function selfTestForm() {
     HOF.formModal({
       title: "Kendime Deneme Gönder",
@@ -213,6 +273,7 @@
     if (!button || button.disabled) return;
     const action = button.dataset.waAction;
     if (action === "connect") connectForm();
+    else if (action === "embedded") embeddedConnect(button);
     else if (action === "test") {
       button.disabled = true;
       button.classList.add("is-busy");

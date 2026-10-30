@@ -342,8 +342,26 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
       const json = await request("POST", [wabaId, "subscribed_apps"], { body: { override_callback_uri: callbackUri, verify_token: verifyToken } });
       return json.success === true || json.success === "true";
     },
+    // ---------- 2.4.8 W7: "WhatsApp'ı Bağla" sonrası Meta adımları (plan §2.8; D0 — META_D0_W7) ----------
+    // Birlikte kullanım DEĞİLSE numara Cloud API'ye kaydedilir (iki adımlı doğrulama PIN'i programca üretilir).
+    registerPhone: async (phoneNumberId, pin) => {
+      const json = await request("POST", [phoneNumberId, "register"], { body: { messaging_product: "whatsapp", pin } });
+      return json.success === true || json.success === "true";
+    },
+    // Birlikte kullanımda bağlantıdan sonra 24 saat içinde kişi ve geçmiş eşitlemesi başlatılmalı (yoksa Meta müşteriyi çıkarır). İçerik programda SAKLANMAZ.
+    startSync: async (phoneNumberId, syncType) => {
+      const json = await request("POST", [phoneNumberId, "smb_app_data"], { body: { messaging_product: "whatsapp", sync_type: syncType } });
+      return json.success === true || json.success === "true" || Boolean(json.request_id);
+    },
   };
 }
+
+// 2.4.8 W7 D0 (Tech Provider aşamasında gerçek Meta'da doğrulanır; tek yer): Embedded Signup oturum olayının birlikte kullanım adı ve eşitleme türleri.
+export const META_D0_W7 = Object.freeze({
+  coexEvent: "FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING",
+  syncTypes: Object.freeze(["smb_app_state_sync", "history"]),
+  pinLength: 6,
+});
 
 /**
  * İsteğin Meta'ya HİÇ ULAŞMADIĞI kesin mi (2.4.8 W2: yeniden göndermek çift ileti üretmez)? Adres yok / belirteç açılamadı / yapılandırma hatası ya da

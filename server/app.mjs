@@ -441,7 +441,7 @@ export function createApp(overrides = {}) {
   if (hub && overrides.posQueue !== false) setImmediate(() => posQueue.start());
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
   // 2.4.8 W2: WhatsApp Business API gönderim kuyruğu bu şirketin; işçi ortak katmanda tek (whatsapp.scheduler). Açılışta yarım kalan işler defterden çözülür.
-  context.whatsapp = registerWhatsappRoutes(router, { ...context, whatsapp, accounts: () => context.accounts });
+  context.whatsapp = registerWhatsappRoutes(router, { ...context, whatsapp, accounts: () => context.accounts, mobileSyncOf: () => context.mobileSync });
   if (context.whatsapp.queue) {
     try {
       const recovered = context.whatsapp.queue.recover();

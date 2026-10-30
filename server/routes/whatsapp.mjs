@@ -16,6 +16,8 @@
 //   DELETE /api/workspace/whatsapp/connection             Bağlantıyı Kaldır
 //   POST   /api/workspace/whatsapp/connection/test        Bağlantıyı Sına (numara, görünen ad, kalite, sınır basamağı, şablonlar)
 //   POST   /api/workspace/whatsapp/connection/self-test   Kendime Deneme Gönder { to } — yazılabilir lisans
+//   POST   /api/workspace/whatsapp/connection/embedded            2.4.8 W7 WhatsApp'ı Bağla: oturum aç → { session, url (kapi.<alan>/wa/bagla#o=…), seconds }
+//   POST   /api/workspace/whatsapp/connection/embedded/:session   oturumun sonucu: { state: waiting | error (message) | ready (connection) }
 // Yazma uçları salt okunur lisansta app.mjs'teki genel kapıda (license.assertWritable) 403 LICENSE_READ_ONLY alır; deneme ayrıca burada denetlenir.
 //
 // 2.4.8 W2 (plan §6 W2; lib/whatsapp/queue.mjs): gönderim çekirdeği — toplu gönderim (Ekstre + PDF / Ödeme Hatırlatma), yetki whatsapp.send.
@@ -37,6 +39,7 @@ import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { createWhatsappConnection } from "../lib/whatsapp/connection.mjs";
+import { createEmbeddedSignup } from "../lib/whatsapp/embedded.mjs";
 import { createWaQueue } from "../lib/whatsapp/queue.mjs";
 import { createReportHeader } from "../lib/report-header.mjs";
 import { waNumber, waPresetRange as presetRange } from "../lib/whatsapp/alici.mjs";
@@ -75,7 +78,7 @@ export function statementText({ office, account, lines, range, next, overdue }) 
   return out.join("\n");
 }
 
-export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null }) {
+export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null, mobileSyncOf = () => null }) {
   const today = () => {
     const d = clock();
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -218,6 +221,32 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     // Meta: numara "+" ve ülke koduyla verilmezse işletmenin ülke kodu eklenir (yanlış kişi riski) — her zaman "+" ile.
     const result = await connection.selfTest(user, `+${phone.wa}`);
     ok(res, { result: result.result, connection: view() });
+  });
+
+  // ---------- 2.4.8 W7: "WhatsApp'ı Bağla" (Embedded Signup + birlikte kullanım; lib/whatsapp/embedded.mjs, kapıcı bulut/kapi/wa-bagla.mjs) ----------
+  // Düğme düz açık (ürün sahibi kararı); DestekOfis Meta'da Tech Provider olana dek kapıcı "Bu bağlantı DestekOfis'in Meta onayından sonra çalışır; şimdilik
+  // Elle Bağla." der. Belirteç kapıcıdan şifreli gelir, burada mühürlenir; yanıtlara girmez.
+  const embedded = createEmbeddedSignup({ mobileSync: mobileSyncOf, now: () => clock().getTime() });
+  router.post("/api/workspace/whatsapp/connection/embedded", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; WhatsApp bağlanamaz.", { code: "LICENSE_READ_ONLY" });
+    ok(res, await embedded.start({ companyId }));
+  });
+  router.post("/api/workspace/whatsapp/connection/embedded/:session", async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; WhatsApp bağlanamaz.", { code: "LICENSE_READ_ONLY" });
+    const result = await embedded.poll({ session: params.session, companyId });
+    if (result.state !== "ready") return ok(res, { state: result.state, ...(result.message ? { message: result.message } : {}) });
+    connection.saveEmbedded(user, { token: result.token, wabaId: result.wabaId, phoneNumberId: result.phoneNumberId, olay: result.event });
+    // Meta adımları (birlikte kullanımda eşitleme / değilse numara kaydı) ve Bağlantıyı Sına: hata bağlantıyı bozmaz, sonuç kartta.
+    for (const step of [() => connection.embeddedSteps(user), () => connection.test(user)]) {
+      try {
+        await step();
+      } catch (error) {
+        log.warn?.(`WhatsApp'ı Bağla sonrası adım tamamlanamadı: ${error?.message || error}`);
+      }
+    }
+    ok(res, { state: "ready", connection: view() });
   });
 
   // ---------- 2.4.8 W5: bilgilendirme şablonları (routes/whatsapp-sablon.mjs) ----------
