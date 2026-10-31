@@ -345,6 +345,7 @@ MUTASYON_IPUCU = {
     "M109": "E2-03-yeniden-denemede-kuyrukta-once-belirsiz", "M110": "E2-05-yeniden-denemede-belirsiz-once-r3", "M111": "E2-06-isteki-yine-de-gonder-zaten-kuyrukta",
     "M112": "E2-01-yeni-is-uclu-cakisma", "M113": "E2-01-yeni-is-uclu-cakisma", "M114": "E3-01-hatirlatma-belirsiz-ayni-yerel-gun",
     "M115": "E3-01-hatirlatma-belirsiz-ayni-yerel-gun", "M116": "E4-01-son-3-ay-sonraki-teslim-7-gun", "M117": "N6-01-yeniden-denemede-baska-iste-bekleyen",
+    "M118": "F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider", "M119": "F2-01-hatirlatma-yeniden-deneme-ertesi-gun",
 }
 
 
@@ -499,7 +500,7 @@ def _i1():
 @test("I karar izlenebilirliği: K1–K8, D1–D8, E1–E4, N6 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
 def _i2():
     h = []
-    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6"):
+    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -542,7 +543,7 @@ def _i4():
         if isinstance(o, list):
             return [y for i, v in enumerate(o) for y in gez(v, f"{yol}[{i}]")]
         return []
-    eski = [s for s in TUM if not (len(s["baslik"]) == 2 and s["baslik"][0] in "KDEN" and s["baslik"][1].isdigit())]
+    eski = [s for s in TUM if not (len(s["baslik"]) == 2 and s["baslik"][0] in "KDENF" and s["baslik"][1].isdigit())]
     for s in eski:
         r = beklenen(s)[0]["sonuc"]
         if gez(r) or "yeniden" in r or "listeler" in r:
