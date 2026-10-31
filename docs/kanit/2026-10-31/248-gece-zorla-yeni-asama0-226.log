@@ -1,0 +1,88 @@
+▶ A1 — kayıt (detay kartı) tahsilatı: tarih, kilit, eksi bakiye, Silinenler yolu
+  ✔ çalışıyor mu: Havale/EFT kayıt tahsilatı sil → geri yükle → yine Havale/EFT; Kasa ve banka toplamı aynı (149.280472ms)
+  ✔ çalışıyor mu: düzeltme ve silmenin denetim kaydında eski ödeme yolu var (55.438769ms)
+  ✔ nasıl bozarım: ileri tarihli kayıt tahsilatı → 400 date-future (kapıdaki belirsiz 409 değil) (4.085042ms)
+  ✔ nasıl bozarım: geçersiz tarih ve tanınmayan yol reddedilir, sessizce bugün/nakit yazılmaz (6.546728ms)
+  ✔ nasıl bozarım: Kasa'yı eksiye düşüren silme ve düzeltme Uyar'da 409 cash-negative; onaylanırsa 200 (86.558631ms)
+  ✔ nasıl bozarım: aynı tahsilatı iki kişi aynı anda siler → biri 200, öbürü 404; Silinenler'de tek kayıt (27.474789ms)
+  ✔ nasıl bozarım (B5): Silinenler'e yazım arızalanırsa (disk hatası benzetimi) tahsilat da silinmez — yarım kayıt yok (34.143484ms)
+  ✔ nasıl bozarım (B5): Kasa hareketi silinirken Silinenler yazımı arızalanırsa hareket de silinmez (23.888869ms)
+  ✔ nasıl bozarım: kilitli döneme kayıt tahsilatı 409 period-locked (ledger-integrity değil); kilitlideki tahsilat düzeltilmez, silinmez, kilide taşınmaz (141.855412ms)
+✔ A1 — kayıt (detay kartı) tahsilatı: tarih, kilit, eksi bakiye, Silinenler yolu (1018.824542ms)
+▶ A2 — Taksite Aktar ödeme yolunu korur
+  ✔ çalışıyor mu: Havale/EFT ve POS kayıt tahsilatı karta taşınınca yol aynı; geri alınca kayda yine aynı yolla döner; Kasa/banka toplamı değişmez (215.692311ms)
+✔ A2 — Taksite Aktar ödeme yolunu korur (540.713956ms)
+▶ A3 — kilitli dönemde hareketi olan cari: silme, geri yükleme, tür değişikliği; cari silmede eksi bakiye
+  ✔ nasıl bozarım: kilitli dönemde yalnız Borç Yaz satırı olan cariyi sil → 409 period-locked (2.542675ms)
+  ✔ nasıl bozarım: kilitli dönemde hareketi olan carinin türünü Müşteri'den Tedarikçi'ye çevir → 409 period-locked (2.762635ms)
+  ✔ çalışıyor mu: kilitli carinin adı ve telefonu düzeltilir (200) (12.738741ms)
+  ✔ nasıl bozarım: kilitli dönemde parası (tahsilatı) olan cariyi sil → 409 period-locked (2.09601ms)
+  ✔ nasıl bozarım: kilitli dönem satırı olan silinmiş cariyi geri yükle → 409 period-locked (2.418903ms)
+  ✔ nasıl bozarım: kilit altındaki cari doğrudan SQL ile silinir ya da türü değişirse kilit izi (party_lock) yakalar (17.077423ms)
+  ✔ çalışıyor mu: kilitli dönemde satırı olmayan cari silinir ve türü değişir (200) (30.507408ms)
+  ✔ nasıl bozarım: Kasa'yı eksiye düşüren cari silme Uyar'da 409 cash-negative; onaylanırsa 200 (50.023751ms)
+  ✔ çalışıyor mu: kilit kaldırılınca kilitli günlü cari silinir ve geri yüklenir; sayılar aynı (57.659601ms)
+✔ A3 — kilitli dönemde hareketi olan cari: silme, geri yükleme, tür değişikliği; cari silmede eksi bakiye (757.165663ms)
+▶ A4 — taksit kartı silmede eksi bakiye; kilitli kartın geri yüklenmesi
+  ✔ nasıl bozarım: Kasa'yı eksiye düşüren kart silme Uyar'da 409 cash-negative; onaylanırsa 200 (63.538484ms)
+  ✔ nasıl bozarım: Kayıt Tarihi kilitli dönemde olan silinmiş kartı geri yükle → 409 period-locked (2.724063ms)
+  ✔ çalışıyor mu: açık dönemdeki silinmiş kart geri yüklenir (200) (22.182426ms)
+✔ A4 — taksit kartı silmede eksi bakiye; kilitli kartın geri yüklenmesi (503.81346ms)
+▶ A6 — çek/senet: alış/veriliş tarihi, dönem kilidi, kilit izi, ileri tarih
+  ✔ çalışıyor mu: bugün tarihli çek 200; alış tarihi yazılmazsa bugün (37.818143ms)
+  ✔ nasıl bozarım: ileri tarihli alış tarihi → 400 date-future (3.001463ms)
+  ✔ nasıl bozarım: kilitli dönem alış tarihiyle yeni çek → 409 period-locked (2.22529ms)
+  ✔ nasıl bozarım: kilitli dönemdeki çeki sil → 409 period-locked (2.056802ms)
+  ✔ nasıl bozarım: kilitli dönemdeki çekin tutarını ya da alış tarihini düzenle → 409 period-locked (6.506254ms)
+  ✔ çalışıyor mu: kilitli dönemdeki çekin vadesi, notu ve seri bilgisi düzeltilir (para değil) (15.229362ms)
+  ✔ çalışıyor mu: kilitli ayda alınan çek bugün tahsil edilir ve geri alınır (54.017398ms)
+  ✔ nasıl bozarım: kilitli dönemdeki silinmiş çeki geri yükle → 409 period-locked (2.648385ms)
+  ✔ nasıl bozarım: kilitli dönemdeki çek ya da olayı doğrudan SQL ile değişirse kilit izi yakalar (27.710043ms)
+  ✔ nasıl bozarım: ileri tarihli çek olayı doğrudan SQL ile eklenirse kapı yakalar (dates:future:cheque_events) (8.094968ms)
+  ✔ nasıl bozarım: Excel'den toplu alımda ileri tarihli ya da kilitli dönem alış tarihi olan satır nedeniyle atlanır (29.936226ms)
+✔ A6 — çek/senet: alış/veriliş tarihi, dönem kilidi, kilit izi, ileri tarih (597.970499ms)
+▶ A7 — Silinenler'den geri yükleme: bütün kolonlar, kuruş, dönem kilidi
+  ✔ çalışıyor mu: Kapatılacak Fatura'ya bağlı tahsilat sil → geri yükle → fatura bağı, yolu ve kaynağı aynı; faturanın açığı eski hâline döner (91.589177ms)
+  ✔ nasıl bozarım: Silinenler yükündeki tutar kuruş artığı taşırsa (100,004) geri yüklemede kuruşa yuvarlanır, kapı 409 vermez (46.679552ms)
+  ✔ çalışıyor mu: Kasa ↔ Banka transferi silinip geri yüklenince iki tarafı birlikte döner (59.550087ms)
+  ▶ kilit konduktan sonra kilitli dönemdeki satırlar geri yüklenmez (409 period-locked, ledger-integrity değil)
+    ✔ Kasa hareketi (2.786107ms)
+    ✔ kayıt tahsilatı (1.926355ms)
+    ✔ cari hareketi (2.080818ms)
+    ✔ taksit hareketi (1.964472ms)
+    ✔ mutabakat bozulmadı (9.517181ms)
+  ✔ kilit konduktan sonra kilitli dönemdeki satırlar geri yüklenmez (409 period-locked, ledger-integrity değil) (39.108201ms)
+✔ A7 — Silinenler'den geri yükleme: bütün kolonlar, kuruş, dönem kilidi (716.441963ms)
+▶ A9 — mahsupta kullanılan Alacak Yaz satırı
+  ✔ nasıl bozarım: mahsuptaki satırı sil → 409 offset-linked, nedeni 'Önce mahsubu kaldırın' (2.536673ms)
+  ✔ nasıl bozarım: mahsuptaki satırın tutarını mahsubun altına indir ya da yönünü çevir → 409 offset-linked (5.185708ms)
+  ✔ çalışıyor mu: mahsuptaki satırın açıklaması düzeltilir; tutar mahsuptan büyük kalacak şekilde artırılır (35.011351ms)
+  ✔ çalışıyor mu: mahsubu kaldırıp satırı silme 200; mutabakat 0 (32.000988ms)
+✔ A9 — mahsupta kullanılan Alacak Yaz satırı (470.740019ms)
+▶ B7 — tanınmayan ödeme yolu: iç yazıcılarda hata (sessiz nakit yok), kapıda money:method; eski veri okunur
+  ✔ nasıl bozarım: iç yazıcıya (cari satırı yazan servis) 'bitcoin' yolu → hata; satır yazılmaz (0.883264ms)
+  ✔ nasıl bozarım: Silinenler yükündeki yol bozuksa (stok hareketi 'bitcoin') geri yükleme 400; nakit sayılmaz (50.414009ms)
+  ✔ nasıl bozarım: kayıt tahsilatı yükünde yol bozuksa geri yükleme 400 (kapıdaki gl:100 sapması değil) (33.692246ms)
+  ✔ nasıl bozarım: para tablosuna tanınmayan yolla satır yazan işlemi kapı 'money:method' adıyla geri alır (10.860945ms)
+  ✔ çalışıyor mu: geçerli yollar (Nakit, Havale/EFT, POS) her yazıcıda aynen yazılır (115.60414ms)
+  ✔ çalışıyor mu: eski veride tanınmayan yolla kalmış satır açılışta taban sayılır; yeni işlemler engellenmez, Kasa okunmaya devam eder (38.37949ms)
+✔ B7 — tanınmayan ödeme yolu: iç yazıcılarda hata (sessiz nakit yok), kapıda money:method; eski veri okunur (577.565975ms)
+▶ A12 — dönem kilidi varken 'Tüm Hareketleri Sil'
+  ✔ çalışıyor mu: kilit varken Tüm Hareketleri Sil 200; kilit kalkar, denetim kaydı yazılır, mutabakat 0, kartlar kalır (134.554573ms)
+  ✔ çalışıyor mu: kilit yokken de aynı (yanıtta kilit boş, kilit kaydı yazılmaz) (110.803933ms)
+  ✔ çalışıyor mu: kilit varken Tümünü Sıfırla da 200 (159.339588ms)
+✔ A12 — dönem kilidi varken 'Tüm Hareketleri Sil' (829.982393ms)
+ℹ tests 54
+ℹ suites 10
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6025.492564
+
+[dış saat] başlangıç günü 2026-10-31 → bitiş günü 2026-11-01: ön koşul GERÇEKLEŞTİ
+(node:31685) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[zorla] test/asama0-226.test.mjs · gece yarısına 1.5 sn · ön koşul GERÇEKLEŞTİ · test YEŞİL

@@ -1,0 +1,125 @@
+NORMAL test/asama0-226.test.mjs cikis=0 sure=6.124354879
+ZORLA test/asama0-226.test.mjs pay=1.5 cikis=1 ön koşul GERÇEKLEŞTİ · test KIRMIZI (çıkış 1)
+ZORLA test/asama0-226.test.mjs pay=3.0 cikis=1 ön koşul GERÇEKLEŞTİ · test KIRMIZI (çıkış 1)
+ZORLA test/asama0-226.test.mjs pay=4.8 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/banka-210-ariza.test.mjs cikis=0 sure=4.227540319
+ZORLA test/banka-210-ariza.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-ariza.test.mjs pay=2.1 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-ariza.test.mjs pay=3.3 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/banka-210-defter.test.mjs cikis=0 sure=.877105438
+ZORLA test/banka-210-defter.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+ZORLA test/banka-210-defter.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+ZORLA test/banka-210-defter.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+NORMAL test/banka-210-dun-bugun.test.mjs cikis=0 sure=7.552238429
+ZORLA test/banka-210-dun-bugun.test.mjs pay=1.8 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-dun-bugun.test.mjs pay=3.7 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-dun-bugun.test.mjs pay=6.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/banka-210-gg-olay.test.mjs cikis=0 sure=3.234337583
+ZORLA test/banka-210-gg-olay.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-gg-olay.test.mjs pay=1.6 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-gg-olay.test.mjs pay=2.5 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/banka-210-ileri-tarihli-eski.test.mjs cikis=0 sure=2.060440537
+ZORLA test/banka-210-ileri-tarihli-eski.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-ileri-tarihli-eski.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-ileri-tarihli-eski.test.mjs pay=1.6 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/banka-210-kapi.test.mjs cikis=0 sure=2.357097071
+ZORLA test/banka-210-kapi.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-kapi.test.mjs pay=1.1 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-kapi.test.mjs pay=1.8 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/banka-210-onarim.test.mjs cikis=0 sure=3.151950428
+ZORLA test/banka-210-onarim.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-onarim.test.mjs pay=1.5 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-onarim.test.mjs pay=2.5 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/banka-210-post-kesinti.test.mjs cikis=0 sure=2.540751783
+ZORLA test/banka-210-post-kesinti.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-post-kesinti.test.mjs pay=1.2 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-post-kesinti.test.mjs pay=2.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/banka-210-post.test.mjs cikis=0 sure=3.824742079
+ZORLA test/banka-210-post.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-post.test.mjs pay=1.9 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-post.test.mjs pay=3.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/banka-210-tek-kaynak.test.mjs cikis=0 sure=2.803910694
+ZORLA test/banka-210-tek-kaynak.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-tek-kaynak.test.mjs pay=1.4 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-210-tek-kaynak.test.mjs pay=2.2 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/banka-bakiye-ileri-tarihli.test.mjs cikis=0 sure=4.359364463
+ZORLA test/banka-bakiye-ileri-tarihli.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-bakiye-ileri-tarihli.test.mjs pay=2.1 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/banka-bakiye-ileri-tarihli.test.mjs pay=3.4 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/cari-bilgi-222.test.mjs cikis=0 sure=3.049803599
+ZORLA test/cari-bilgi-222.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/cari-bilgi-222.test.mjs pay=1.5 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/cari-bilgi-222.test.mjs pay=2.4 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/cheques-overview.test.mjs cikis=0 sure=8.945314795
+ZORLA test/cheques-overview.test.mjs pay=2.2 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/cheques-overview.test.mjs pay=4.4 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/cheques-overview.test.mjs pay=7.1 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/ice-aktarma-istek-kimligi-248.test.mjs cikis=0 sure=5.461715367
+ZORLA test/ice-aktarma-istek-kimligi-248.test.mjs pay=1.3 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/ice-aktarma-istek-kimligi-248.test.mjs pay=2.7 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/ice-aktarma-istek-kimligi-248.test.mjs pay=4.3 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/inceleme-222.test.mjs cikis=0 sure=3.655475751
+ZORLA test/inceleme-222.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/inceleme-222.test.mjs pay=1.8 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/inceleme-222.test.mjs pay=2.9 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/inceleme-226.test.mjs cikis=0 sure=5.039634970
+ZORLA test/inceleme-226.test.mjs pay=1.2 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/inceleme-226.test.mjs pay=2.5 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/inceleme-226.test.mjs pay=4.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/istek-kimligi-222.test.mjs cikis=0 sure=1.173013273
+ZORLA test/istek-kimligi-222.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/istek-kimligi-222.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/istek-kimligi-222.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/kalan-borc-ortak-30a.test.mjs cikis=0 sure=1.073497737
+ZORLA test/kalan-borc-ortak-30a.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+ZORLA test/kalan-borc-ortak-30a.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+ZORLA test/kalan-borc-ortak-30a.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+NORMAL test/kalan-borc-satir-31d.test.mjs cikis=0 sure=.989017626
+ZORLA test/kalan-borc-satir-31d.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/kalan-borc-satir-31d.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/kalan-borc-satir-31d.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+NORMAL test/nakit-akis-ileri-tarihli-yol.test.mjs cikis=0 sure=1.714123118
+ZORLA test/nakit-akis-ileri-tarihli-yol.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/nakit-akis-ileri-tarihli-yol.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/nakit-akis-ileri-tarihli-yol.test.mjs pay=1.3 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/nakit-akis-kasa-mm6.test.mjs cikis=0 sure=1.085750854
+ZORLA test/nakit-akis-kasa-mm6.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/nakit-akis-kasa-mm6.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/nakit-akis-kasa-mm6.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/nakit-akis-sekme-30e.test.mjs cikis=0 sure=.927113446
+ZORLA test/nakit-akis-sekme-30e.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+ZORLA test/nakit-akis-sekme-30e.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+ZORLA test/nakit-akis-sekme-30e.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+NORMAL test/odeme-yolu-222.test.mjs cikis=0 sure=.994675807
+ZORLA test/odeme-yolu-222.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+ZORLA test/odeme-yolu-222.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+ZORLA test/odeme-yolu-222.test.mjs pay=1.0 cikis=2 ön koşul GERÇEKLEŞMEDİ · test YEŞİL
+NORMAL test/plan-transfer.test.mjs cikis=0 sure=1.848652560
+ZORLA test/plan-transfer.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/plan-transfer.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/plan-transfer.test.mjs pay=1.4 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/rapor-220.test.mjs cikis=0 sure=2.399365768
+ZORLA test/rapor-220.test.mjs pay=1.0 cikis=1 ön koşul GERÇEKLEŞTİ · test KIRMIZI (çıkış 1)
+ZORLA test/rapor-220.test.mjs pay=1.1 cikis=1 ön koşul GERÇEKLEŞTİ · test KIRMIZI (çıkış 1)
+ZORLA test/rapor-220.test.mjs pay=1.9 cikis=1 ön koşul GERÇEKLEŞTİ · test KIRMIZI (çıkış 1)
+NORMAL test/raporlar-209.test.mjs cikis=0 sure=4.062462543
+ZORLA test/raporlar-209.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/raporlar-209.test.mjs pay=2.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/raporlar-209.test.mjs pay=3.2 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/sirketler-217.test.mjs cikis=0 sure=2.315090007
+ZORLA test/sirketler-217.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/sirketler-217.test.mjs pay=1.1 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/sirketler-217.test.mjs pay=1.8 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/tablo-borc-dosya-u2.test.mjs cikis=0 sure=1.395656090
+ZORLA test/tablo-borc-dosya-u2.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/tablo-borc-dosya-u2.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/tablo-borc-dosya-u2.test.mjs pay=1.1 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/vade-takip-kaynak-yetki-210.test.mjs cikis=0 sure=1.629987406
+ZORLA test/vade-takip-kaynak-yetki-210.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/vade-takip-kaynak-yetki-210.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/vade-takip-kaynak-yetki-210.test.mjs pay=1.3 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+NORMAL test/yedek-denetim-221.test.mjs cikis=0 sure=4.169475521
+ZORLA test/yedek-denetim-221.test.mjs pay=1.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/yedek-denetim-221.test.mjs pay=2.0 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+ZORLA test/yedek-denetim-221.test.mjs pay=3.3 cikis=0 ön koşul GERÇEKLEŞTİ · test YEŞİL
+BITTI

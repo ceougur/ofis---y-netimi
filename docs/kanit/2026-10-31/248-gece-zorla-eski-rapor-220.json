@@ -1,0 +1,63 @@
+{
+  "ad": "248-gece-zorla-eski-rapor-220",
+  "komut": "node test/gece-yarisi-zorla.mjs test/rapor-220.test.mjs 1.1",
+  "commit": "6e1f1b6871d2d80e8fcbd55636a11b93407f92b4",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T01:10:04.719Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 5,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 0 başarısız, 5 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "her raporda TOPLAM (varsa) satır toplamına eşit; ekran = PDF = Excel",
+      "konum": "test/rapor-220.test.mjs:177:3",
+      "hata": "'test did not finish before its parent and was cancelled'"
+    },
+    {
+      "ad": "Tüm Zamanlar: çek portföyü ve taksit vadelerinde ileri vadeler de gelir; Aylık Kasa ilk hareketten başlar",
+      "konum": "test/rapor-220.test.mjs:219:3",
+      "hata": "'test did not finish before its parent and was cancelled'"
+    },
+    {
+      "ad": "yön karışık raporlarda (çek portföyü, açık faturalar) TOPLAM yalnız tek yön süzülünce; stokta farklı birim toplanmaz",
+      "konum": "test/rapor-220.test.mjs:228:3",
+      "hata": "'test did not finish before its parent and was cancelled'"
+    },
+    {
+      "ad": "katalog: dönemli raporlar Bu Yıl ile açılır (vade listesi Bu Ay, Ba-Bs Geçen Ay kalır)",
+      "konum": "test/rapor-220.test.mjs:240:3",
+      "hata": "'test did not finish before its parent and was cancelled'"
+    },
+    {
+      "ad": "Raporlar → Cari Ekstre (Mizan) PDF ve Excel'inde TOPLAM; Excel'de süzgeç dışında",
+      "konum": "test/rapor-220.test.mjs:248:3",
+      "hata": "'test did not finish before its parent and was cancelled'"
+    },
+    {
+      "ad": "Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır",
+      "konum": "test/rapor-220.test.mjs:149:1",
+      "hata": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: · 400 !== 200"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-gece-zorla-eski-rapor-220.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/altin248-eski-6e1f1b68",
+  "ham_cikti_sha256": "5a93483c814f82086a0ab5c5bcd02f07d8df110a1599c2792f2b6a0240c6e358",
+  "ham_cikti_bayt": 3969
+}
