@@ -28,6 +28,16 @@ const lockFile = file => {
     }
   };
 };
+/** Kapanıştan SONRA kısa sınama sayacı (zamanlayıcı kapanmış örnekte ateşlenmemeli — yalnız fırlatmaması yetmez). */
+function probesAfterClose(store) {
+  const state = { closed: false, after: 0 };
+  const original = store.probeWritable;
+  store.probeWritable = (...args) => {
+    if (state.closed) state.after += 1;
+    return original.apply(store, args);
+  };
+  return state;
+}
 async function ok(res, label) {
   assert.equal(res.status, 200, `${label}: ${res.status} ${JSON.stringify(res.data)}`);
   return res.data.data;
@@ -37,6 +47,7 @@ describe("2.4.8 İş R1 — kapanan şirketin yeniden deneme zamanlayıcıları 
   it("belge temizliği kilitte yeniden denemeye kaldı → uygulama kapanır → zamanlayıcı ateşlenmez, yakalanmamış istisna yok", { timeout: 60_000 }, async () => {
     const start = uncaught.length;
     const server = await startTestServer({ __testWriteLockBackoffMs: 1_000 });
+    const probes = probesAfterClose(server.app.store);
     const release = lockFile(server.app.config.dbPath);
     try {
       await wait(5_400); // belge temizliği 5. sn'de kilidi görür → 1 sn sonra yeniden deneme kurulur
@@ -44,13 +55,16 @@ describe("2.4.8 İş R1 — kapanan şirketin yeniden deneme zamanlayıcıları 
       release();
     }
     await server.close();
+    probes.closed = true;
     await wait(1_500); // yeniden deneme anı geçti
     assert.deepEqual(uncaught.slice(start), [], "kapanıştan sonra yakalanmamış istisna yok");
+    assert.equal(probes.after, 0, "kapanmış örnekte yeniden deneme zamanlayıcısı ateşlenmedi");
   });
 
   it("sohbet arşivi kilitte yeniden denemeye kaldı → uygulama kapanır → yakalanmamış istisna yok", { timeout: 60_000 }, async () => {
     const start = uncaught.length;
     const server = await startTestServer({ __testWriteLockBackoffMs: 1_000 });
+    const probes = probesAfterClose(server.app.store);
     await wait(19_000);
     const release = lockFile(server.app.config.dbPath);
     try {
@@ -59,8 +73,10 @@ describe("2.4.8 İş R1 — kapanan şirketin yeniden deneme zamanlayıcıları 
       release();
     }
     await server.close();
+    probes.closed = true;
     await wait(1_500);
     assert.deepEqual(uncaught.slice(start), [], "kapanıştan sonra yakalanmamış istisna yok");
+    assert.equal(probes.after, 0, "kapanmış örnekte sohbet arşivi yeniden denemesi ateşlenmedi");
   });
 
   it("iki şirket: 002'nin belge temizliği kilitte → 002 silinir → ortak süreçte yakalanmamış istisna yok, ortak katman yanıt verir", { timeout: 60_000 }, async () => {

@@ -65,5 +65,6 @@ describe("2.4.8 İş R2 — kapanan / sınaması fırlatan şirket işçi turunu
     assert.equal(result?.did, true, "001'in işi aynı turda yürüdü");
     assert.equal(q1.calls.step, 1, "001 işi");
     assert.equal(q2.calls.maintain + q2.calls.step, 0, "çıkmış 002'ye dokunulmadı");
+    assert.equal(probed002, 1, "çıkmış 002 kapalı veri tabanında sınanmadı");
   });
 });
