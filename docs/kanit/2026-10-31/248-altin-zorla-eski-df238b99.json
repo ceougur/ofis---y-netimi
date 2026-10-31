@@ -1,0 +1,43 @@
+{
+  "ad": "248-altin-zorla-eski-df238b99",
+  "komut": "node test/banka-210-altin-gece-yarisi.mjs 6",
+  "commit": "df238b99d3a40439c5107c5c0861c01ed3fbeadd",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T00:57:54.623Z",
+  "sure_sn": 19.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 4,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)",
+      "konum": "test/banka-210-altin.test.mjs:460:3",
+      "hata": "AssertionError [ERR_ASSERTION]: 1 fark: · zincir · 002 · admin · pdf /api/workspace/report-center/kasa-aylik/pdf?from=2000-01-01&to=2099-12-31: Expected values to be strictly deep-equal:"
+    },
+    {
+      "ad": "v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)",
+      "konum": "test/banka-210-altin.test.mjs:483:3",
+      "hata": "AssertionError [ERR_ASSERTION]: fatura: 400 {\"ok\":false,\"error\":\"FIS serisinde son belge FIS2026000000022 01.11.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı).\",\"code\":\"chronology\",\"field\":\"issueDate\"} · 400 !== 200"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-altin-zorla-eski-df238b99.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/altin248-eski-df238b99",
+  "ham_cikti_sha256": "1e3ced961228fbafa8e457ab7186cd1552bd006101c4f41560a4dca4737259be",
+  "ham_cikti_bayt": 7668
+}
