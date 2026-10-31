@@ -18,6 +18,10 @@ kaynak CLAUDE.md "Açık iş" KARAR satırları + docs/2.4.8-IS-LISTESI.md) kâh
 kararı taşınır (açılıştan önceki kabuller yok sayılır), yeniden denemede Sonucu Belirsiz elemesi + öneri, Gönderimler listesi (30'ar, imleç, yerel gün).
 Karar metninin sustuğu yerler {"plan_susuyor": …} ya da {"secenek": [...], "susuyor": …} yaprağıdır (README §7 "KÂHİN SUSUYOR").
 
+KÂHİN GÜNCELLEMESİ 4 (31.10.2026): N2–N5 yanıtları E1–E4 (KARARLAR) — yorum 21 teyit (defterdeki belirsiz yeni işte elemez, yeniden denemede eler), TEK neden
+ve HER YERDE sıra Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi (elenen R3 uyarısına girmez), hatırlatmada belirsiz eşliği aynı yerel gün, Son 3 Ay / Tüm'de
+sonraki denemenin kabulü 7 günden eskiyse yeniden gönderilir; N6: yeniden denemede başka işte bekleyen "Zaten Kuyrukta".
+
 KÂHİN GÜNCELLEMESİ 3 (31.10.2026, temiz oda): README §7.4'teki ★ soruların kullanıcı yanıtları D1–D8 (KARARLAR): Sonucu Belirsiz kişi yeni toplu işte de
 "Sonucu Belirsiz" ile elenir (eski yorum 3 "Zaten Kuyrukta" düştü), hatırlatmada Zaten Kuyrukta gün bakılmadan, Son 3 Ay / Tüm'de yeniden denemenin 7 günü yeni
 gönderim anından, özel aralık ↔ aynı tarihli hazır seçim aynı dönem, asıl işten yeniden denenen kişinin sonraki denemesi kabul edildiyse "Daha Önce Gönderildi" /
@@ -227,6 +231,16 @@ MUTASYONLAR = {
     "M106": "D4: özel aralık ile aynı tarihli hazır seçim (Bu Ay / Geçen Ay) hiç eşleşmez",
     "M107": "D1: yeni toplu işte Sonucu Belirsiz kişi elenmez (alınır)",
     "M108": "D1 + yorum 21: yeni toplu işte YALNIZ makine defterinde kalan Sonucu Belirsiz de eler",
+    # ---- kâhin güncellemesi 4 (31.10.2026, N2–N5 yanıtları E1–E4 + N6) ----
+    "M109": "E2: yeniden denemede Sonucu Belirsiz, Zaten Kuyrukta'dan ÖNCE denetlenir (eski yorum 22 sırası)",
+    "M110": "E2: yeniden denemede Daha Önce Gönderildi, Sonucu Belirsiz'den ÖNCE denetlenir",
+    "M111": "E2: işteki Yine de Gönder'de Zaten Kuyrukta denetimi yok",
+    "M112": "E2: yeni toplu işte Sonucu Belirsiz, Zaten Kuyrukta'dan ÖNCE denetlenir",
+    "M113": "E2: Zaten Kuyrukta / Sonucu Belirsiz ile elenen R3 uyarı sayısına girer",
+    "M114": "E3: hatırlatmada Sonucu Belirsiz eşliği UTC günü",
+    "M115": "E3: hatırlatmada Sonucu Belirsiz eşliği gün bakılmadan (dünkü belirsiz bugünküyü eler)",
+    "M116": "E4: 7 günden eski sonraki kabul / teslim de 'Daha Önce Gönderildi' (D5 7 gün kuralına üstün)",
+    "M117": "N6: yeniden denemede başka işte bekleyen kişi elenmez (yalnız kendi sonraki denemesi)",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -283,6 +297,20 @@ KARARLAR = {
     "D8": {"kaynak_turu": "kullanıcı (★ SORU madde 14 'a'); BAŞ MİMAR ★6 düşer",
            "metin": ["başka bilgisayara TAŞINAN veride şirket dosyasında Meta Kabul Etti / Teslim Edildi / Okundu duran ileti, yeni bilgisayarın defterinde yoksa R3'te "
                      "sayılır (\"Daha Önce Gönderildi\", varsayılan Bunları Çıkar)."]},
+    "E1": {"kaynak_turu": "kullanıcı (N2 'a'; yorum 21 teyit)",
+           "metin": ["geri yüklemeden sonra YALNIZ makine defterinde kalan Sonucu Belirsiz deneme (iş şirket dosyasında yok) yeni toplu işte kişiyi ELEMEZ; Başarısızları "
+                     "Yeniden Dene'de defterdeki belirsiz yine eler (ileti \"yeni gönderim başlatın\")."]},
+    "E2": {"kaynak_turu": "kullanıcı (N3 'a')",
+           "metin": ["birden çok eleme nedeni varsa TEK neden yazılır; sıra HER YERDE (yeni toplu iş + Başarısızları Yeniden Dene + işteki Yine de Gönder'in açtığı iş) "
+                     "\"Zaten Kuyrukta\" → \"Sonucu Belirsiz\" → \"Daha Önce Gönderildi\"; Zaten Kuyrukta / Sonucu Belirsiz ile elenen R3 uyarısına GİRMEZ, R3'te "
+                     "\"Yine de Gönder\" seçilse de gitmez."]},
+    "E3": {"kaynak_turu": "kullanıcı (N4 'a')",
+           "metin": ["Ödeme Hatırlatma'da Sonucu Belirsiz elemesinin eşliği AYNI YEREL GÜN — dünkü belirsiz hatırlatma bugünkü yeni hatırlatmayı elemez; aynı gün başlatılan eler."]},
+    "E4": {"kaynak_turu": "kullanıcı (N5 'a')",
+           "metin": ["Son 3 Ay / Tüm'de asıl işin yeniden denemesinde sonraki denemenin kabul/teslimi yeni gönderim anından geriye 7 gün içindeyse \"Daha Önce Gönderildi\", "
+                     "7 günden eskiyse yeniden gönderilir (7 gün kuralı D5'e üstün)."]},
+    "N6": {"kaynak_turu": "kullanıcı (ana oturum iletisi: 'E2 sırasıyla Zaten Kuyrukta')",
+           "metin": ["N6 (\"başka işte bekleyen kişi yeniden denemede\") E2 sırasıyla \"Zaten Kuyrukta\"."]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -712,11 +740,13 @@ class Benzetim:
                         self.durum(j, SORULUYOR, t)
 
     # ---- başlatma -----------------------------------------------------------------------------------------------------------
-    def kuyrukta(self, cid, sablon, ctx, sirket, t):
+    def kuyrukta(self, cid, sablon, ctx, sirket, t, yalniz=None):
         """§7a 9 + K1/K2 + D2(b): aynı cari + şablon + dönem EŞLİĞİ için bekleyen / gönderilmekte iş (süre penceresi yok — K2: Son 3 Ay / Tüm Hareketler'de
         bekleyen işin yaşına bakılmaz). Hatırlatmada GÜN BAKILMADAN (D2 b: dünden bekleyen bugünküyü eler). ctx = (eşlik anahtarı, tarih) — donem_coz()."""
         durumlar = KUYRUKTA | ({BELIRSIZ} if "M101" in self.mut else set())
         for j in self.isler.values():
+            if yalniz is not None and j is not yalniz:
+                continue
             if j.sirket != sirket or j.cari != cid or j.durum not in durumlar or self.toplular[j.toplu].sablon != sablon:
                 continue
             if sablon == "hatirlatma":
@@ -752,12 +782,17 @@ class Benzetim:
         return (sd in GONDERILMIS or ("M67" in self.mut and sd == BASARISIZ) or ("M77" in self.mut and sd == BEKLEME_131049)
                 or ("M78" in self.mut and sd == IPTAL) or ("M79" in self.mut and sd in (DURDU_GERI_YUKLEME, TASINAN)))
 
-    def eslesir(self, rec, cid, sablon, ctx, sirket, t, pencere_t=None):
+    def eslesir(self, rec, cid, sablon, ctx, sirket, t, pencere_t=None, belirsiz=False):
         """K1 + D4 dönem eşliği: Bu Ay / Geçen Ay aynı takvim ayı; özel aralık birebir ya da aynı tarihli hazır seçim; Son 3 Ay / Tüm Hareketler aynı seçim +
         son 7 gün (D3: yeni gönderim anından geriye — pencere_t yalnız M98'de); hatırlatma aynı (yerel) gün (D2 a)."""
         if rec["sirket"] != sirket or rec["cari"] != cid or rec["sablon"] != sablon:
             return False
         if sablon == "hatirlatma":
+            if belirsiz:                                     # E3: Sonucu Belirsiz eşliği aynı YEREL gün
+                if "M115" in self.mut:
+                    return True
+                tz = timezone.utc if "M114" in self.mut else self.tz
+                return tarih(rec["t"], tz) == tarih(t, tz)
             if "M73" in self.mut:
                 return False
             tz = timezone.utc if "M74" in self.mut else self.tz
@@ -803,7 +838,7 @@ class Benzetim:
         mevcut = {x.son_kayit for x in self.isler.values() if x.durum == BELIRSIZ and x.son_kayit is not None}
         bulunan = None
         for rec, dosya_mi, rid in self.gorunen_kayitlar():
-            if rec["son_durum"] != BELIRSIZ or not self.eslesir(rec, cid, sablon, ctx, sirket, t):
+            if rec["son_durum"] != BELIRSIZ or not self.eslesir(rec, cid, sablon, ctx, sirket, t, belirsiz=True):
                 continue
             if sinir is not None and rec["t"] <= sinir:
                 continue
@@ -847,25 +882,39 @@ class Benzetim:
             if g not in hedef:
                 continue
             ctx = (j.anahtar_donem, j.tarih_donem, j.kanon_donem)
-            kaynak = self.belirsiz_kaynagi(j.cari, tp.sablon, ctx, tp.sirket, t, sinir=sinir if "M85" in self.mut else None)
-            if "M97" in self.mut and tp.send_again:
-                kaynak = None
-            if kaynak and "M84" not in self.mut and j.durum not in GONDERILMIS:
-                sonuc["elenen"][j.cari] = BELIRSIZ_NEDEN                    # K6 (+ D6: aşılmış eski belirsiz deneme de)
-                oneri = ONERI_IS if (kaynak == "dosya" or "M86" in self.mut) else ONERI_YENI
-                sonuc["oneri"] = ONERI_IS if ONERI_IS in (sonuc["oneri"], oneri) else oneri
-                continue
             sonraki = j.durum not in hedef and j.durum != BELIRSIZ       # asıl işte Başarısız, sonraki denemesi başka durumda
             if not (sonraki and "M99" in self.mut):
-                if self.kuyrukta(j.cari, tp.sablon, ctx, tp.sirket, t):
-                    sonuc["elenen"][j.cari] = "zaten_kuyrukta"              # D5: sonraki denemesi bekliyorsa (kâhin yorumu 22: başka işte bekleyen de)
-                    continue
-                if self.onceden_gonderildi(j.cari, tp.sablon, ctx, tp.sirket, t, sinir=sinir, pencere_t=pencere_t) is not None:
-                    sonuc["elenen"][j.cari] = DAHA_ONCE                     # K5 / D5: açılıştan SONRA giden (sonraki denemesi dahil) elenir
+                # E2: TEK neden, sıra Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi (M109 / M110 sırayı bozar)
+                sira = ("belirsiz", "kuyruk", "r3") if "M109" in self.mut else (("kuyruk", "r3", "belirsiz") if "M110" in self.mut else ("kuyruk", "belirsiz", "r3"))
+                neden = None
+                for k in sira:
+                    if k == "kuyruk":
+                        if self.kuyrukta(j.cari, tp.sablon, ctx, tp.sirket, t, yalniz=j if "M117" in self.mut else None):
+                            neden = "zaten_kuyrukta"                       # D5 + N6: kendi sonraki denemesi ya da başka işte bekliyor
+                    elif k == "belirsiz":
+                        kaynak = self.belirsiz_kaynagi(j.cari, tp.sablon, ctx, tp.sirket, t, sinir=sinir if "M85" in self.mut else None)
+                        if "M97" in self.mut and tp.send_again:
+                            kaynak = None
+                        if kaynak and "M84" not in self.mut and j.durum not in GONDERILMIS:
+                            neden = BELIRSIZ_NEDEN                          # K6 (+ D6 aşılmış, + E1 defterdeki)
+                            oneri = ONERI_IS if (kaynak == "dosya" or "M86" in self.mut) else ONERI_YENI
+                            sonuc["oneri"] = ONERI_IS if ONERI_IS in (sonuc["oneri"], oneri) else oneri
+                    elif self.onceden_gonderildi(j.cari, tp.sablon, ctx, tp.sirket, t, sinir=sinir, pencere_t=pencere_t) is not None:
+                        neden = DAHA_ONCE                                   # K5 / D5 / E4: 7 gün içinde (Son 3 Ay / Tüm) giden — sonraki denemesi dahil
+                    if neden:
+                        break
+                if neden:
+                    sonuc["elenen"][j.cari] = neden
                     continue
                 if sonraki:
-                    sonuc["elenen"][j.cari] = {"plan_susuyor": f"asıl işte Başarısız, sonraki denemesi {j.durum}: asıl işten yeniden denenince ne olur"}
-                    continue
+                    if j.durum in GONDERILMIS and "M116" not in self.mut:
+                        pass                                                # E4: sonraki denemenin kabulü 7 günden eski (Son 3 Ay / Tüm) → yeniden gönderilir
+                    elif j.durum in GONDERILMIS:
+                        sonuc["elenen"][j.cari] = DAHA_ONCE
+                        continue
+                    else:
+                        sonuc["elenen"][j.cari] = {"plan_susuyor": f"asıl işte Başarısız, sonraki denemesi {j.durum}: asıl işten yeniden denenince ne olur"}
+                        continue
             self.tasi(j, tp, t); j.gecici_deneme = 0
             sonuc["alinan"].append(j.cari)
         if sonuc["alinan"] or not o.get("etiket"):
@@ -882,8 +931,11 @@ class Benzetim:
         tp = self.toplular[o["toplu"]]
         sonuc = {"elenen": {}, "alinan": [], "oneri": None}
         if j.durum == BELIRSIZ:
-            if self.onceden_gonderildi(j.cari, tp.sablon, (j.anahtar_donem, j.tarih_donem, j.kanon_donem), tp.sirket, t, sinir=self.karar_siniri(tp, "M83"),
-                                       pencere_t=tp.t if "M98" in self.mut else None) is not None:
+            ctx = (j.anahtar_donem, j.tarih_donem, j.kanon_donem)
+            if "M111" not in self.mut and self.kuyrukta(j.cari, tp.sablon, ctx, tp.sirket, t):
+                sonuc["elenen"][j.cari] = "zaten_kuyrukta"                  # E2: işteki Yine de Gönder'in açtığı işte de sıra Zaten Kuyrukta ile başlar
+            elif self.onceden_gonderildi(j.cari, tp.sablon, ctx, tp.sirket, t, sinir=self.karar_siniri(tp, "M83"),
+                                         pencere_t=tp.t if "M98" in self.mut else None) is not None:
                 sonuc["elenen"][j.cari] = DAHA_ONCE
             else:
                 self.tasi(j, tp, t)
@@ -986,11 +1038,21 @@ class Benzetim:
             if sablon == "hatirlatma" and not self.gecikmis(c, t) and "M44" not in self.mut:
                 elenen[cid] = "gecikmis_borc_yok"; continue               # §7a 20
             ctx = (coz["anahtar"], coz["tarih"], coz["kanon"])
-            if "M37" not in self.mut and self.kuyrukta(cid, sablon, ctx, sirket, t):
-                elenen[cid] = "zaten_kuyrukta"; continue                  # §7a 9 + K1 eşlik + K2 + D2(b)
-            if "M101" not in self.mut and "M107" not in self.mut and not ("M102" in self.mut and o.get("onceki") == "gonder"):
-                if self.belirsiz_kaynagi(cid, sablon, ctx, sirket, t, yalniz_dosya=True):
-                    elenen[cid] = BELIRSIZ_NEDEN; continue                # D1: Sonucu Belirsiz kalmış kişi yeni toplu işte de elenir (çaresi işteki Yine de Gönder)
+            neden = None                                                  # E2: TEK neden, sıra Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi
+            for k in (("belirsiz", "kuyruk") if "M112" in self.mut else ("kuyruk", "belirsiz")):
+                if k == "kuyruk" and "M37" not in self.mut and self.kuyrukta(cid, sablon, ctx, sirket, t):
+                    neden = "zaten_kuyrukta"                              # §7a 9 + K1 eşlik + K2 + D2(b)
+                elif (k == "belirsiz" and "M101" not in self.mut and "M107" not in self.mut and not ("M102" in self.mut and o.get("onceki") == "gonder")
+                      and self.belirsiz_kaynagi(cid, sablon, ctx, sirket, t, yalniz_dosya=True)):
+                    neden = BELIRSIZ_NEDEN                                # D1 (+ E1: yalnız dosyadaki; + E3 hatırlatmada aynı yerel gün)
+                if neden:
+                    break
+            if neden:
+                if "M113" in self.mut:                                    # E2: bu nedenlerle elenen R3 uyarısına GİRMEZ (M113 sokar)
+                    ot = self.onceden_gonderildi(cid, sablon, ctx, sirket, t)
+                    if ot is not None:
+                        onceki.append(ot)
+                elenen[cid] = neden; continue
             onceki_t = self.onceden_gonderildi(cid, sablon, ctx, sirket, t)   # R3 + K1 (hatırlatma dahil) + D4 + D7 + D8
             if onceki_t is not None:                                      # §7a R3: uyarı + "Yine de Gönder" / "Bunları Çıkar" (varsayılan)
                 onceki.append(onceki_t)

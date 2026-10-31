@@ -12,8 +12,8 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 198 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
-   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8).
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 210 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
 araştırma belgesi, Meta belge sayfaları (send-messages, document-messages, media, template-media, components, template-management, template-categorization,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (108 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (117 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -36,7 +36,7 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 34) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 18 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 198 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 210 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -106,7 +106,7 @@ programın bildiği kabul / Meta'daki ileti / medya yükleme / silme, toplamlar)
 pencere içindeki farklı alıcı, silinen medya, toplu iş durumları), `bu_ay` (§7a 19: WABA → ay (teslim zamanı, Türkiye saati) → {teslim (Teslim + Okundu), yaklasik_usd}),
 `degismez` (iç denetim sayaçları; hep 0).
 
-**Yaprak türleri:** düz değer = kesin; `{"biri": [...]}` = zaman serbestliği (program bunlardan biri olmalı; bugünkü 198 senaryoda HİÇ yok — D2 testi); `{"secenek": [...], "susuyor": neden}` = karar metni hangisi olduğunu söylemiyor (§7; program seçeneklerden biri olmalı);
+**Yaprak türleri:** düz değer = kesin; `{"biri": [...]}` = zaman serbestliği (program bunlardan biri olmalı; bugünkü 210 senaryoda HİÇ yok — D2 testi); `{"secenek": [...], "susuyor": neden}` = karar metni hangisi olduğunu söylemiyor (§7; program seçeneklerden biri olmalı);
 `{"plan_susuyor": …}` = denetlenmez (yalnız ICERIK-08 "Tüm Hareketler" dönem metni); `{"kisaltilabilir": tam}` = program tam değeri ya da önekini verebilir
 (D0 uzunluk sınırı).
 
@@ -438,15 +438,17 @@ Kâhinin kendi testi: **220/220** (F mutasyon **108/108**; yeni I5: D4'ün iki o
 değil); kanıt `docs/kanit/2026-10-31/248-kahin3-kendi-testi.{log,json}`.
 
 ### 8.3 Kâhin yorumları (21–23; teyit gerekir)
-21. D1'in yeni toplu iş elemesi yalnız şirket dosyasındaki belirsiz denemeye bakar; geri yüklemeyle dosyadan çıkıp YALNIZ makine defterinde kalan belirsiz deneme yeni toplu
+21. (güncelleme 4: E1 ile TEYİT EDİLDİ) D1'in yeni toplu iş elemesi yalnız şirket dosyasındaki belirsiz denemeye bakar; geri yüklemeyle dosyadan çıkıp YALNIZ makine defterinde kalan belirsiz deneme yeni toplu
     işte ELEMEZ (D1'in çaresi "işteki Yine de Gönder" ancak iş dosyadayken var; 11:45 kararı bu durumda "yeni gönderim başlatın" der). Başarısızları Yeniden Dene'de
     defterdeki belirsiz yine eler (öneri "yeni gönderim", K6-03). M108 bunun tersidir.
-22. Yeniden denemede kişi BAŞKA bir işte de bekliyorsa (D5 yalnız kendi sonraki denemesini söyler) "Zaten Kuyrukta" ile elenir; elenme sırası Sonucu Belirsiz →
-    Zaten Kuyrukta → Daha Önce Gönderildi; yeni toplu işte Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi (yalnız ilk neden yazılır, R3 uyarısına girmez).
+22. ~~Yeniden denemede kişi BAŞKA bir işte de bekliyorsa (D5 yalnız kendi sonraki denemesini söyler) "Zaten Kuyrukta" ile elenir; elenme sırası Sonucu Belirsiz →
+    Zaten Kuyrukta → Daha Önce Gönderildi; yeni toplu işte Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi (yalnız ilk neden yazılır, R3 uyarısına girmez).~~
+    → güncelleme 4: E2 (sıra HER YERDE Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi) + N6 (başka işte bekleyen "Zaten Kuyrukta") kullanıcı kararı oldu.
 23. D4 "o gün" = hazır seçimin KENDİ günü (Bu Ay 15.10'da gönderildiyse tarihleri 01.10–15.10); öbür okuma (özel aralığın günündeki hazır seçim) OKUMA_Y olarak
     hesaplanır — I5 bütün senaryoların iki okumada aynı sonucu verdiğini denetler.
 
 ### 8.4 KÂHİN SUSUYOR — güncelleme 3'ten sonra kalan / yeni (★ = kime / kaç kez)
+> GÜNCELLEME 4 (31.10.2026): N2, N3, N4, N5 kullanıcı tarafından yanıtlandı → E1–E4; N6 → "Zaten Kuyrukta" (§9). N7, N8 kullanıcı kararıyla 2.5.0 / BİLİNEN SINIR.
 - **N1 (bilgi):** 09:35'in "iş dosyada dururken, açılıştan ÖNCE belirsiz kalmış ileti" yolu D1'den sonra da KURULAMIYOR: D1 aynı eşlikle yeni toplu işte eler → kişi
   asıl işe hiç giremez (pencere "yeni gönderim anından" yalnız büyür). Tek kurulabilen yol geri yükleme sonrası defter (K6-03; yorum 21).
 - **N2 ★:** yalnız makine defterinde kalan belirsiz deneme yeni toplu işte eler mi (yorum 21: elemez; D1 "aynı eşlik" der, kaynak demez).
@@ -469,3 +471,46 @@ değil); kanıt `docs/kanit/2026-10-31/248-kahin3-kendi-testi.{log,json}`.
 ### 8.6 DENENMEYEN (güncelleme 3)
 - Programa karşı sürücü koşusu (görev: sürücü eşlemesi başka ajanda).
 - N1 yolu (kurulamıyor); N2, N4, N5, N6, N7 senaryosuz; iki şirket (cari şirkete özgü — eşlik zaten şirket başına, ayrı senaryo yazılmadı); hatırlatma + D1/D6.
+
+## 9. Kâhin güncellemesi 4 — N2–N5 yanıtları E1–E4 + N6 (31.10.2026)
+
+Kaynak: ana oturumun iletisi (kullanıcı kararları AYNEN `kahin.KARARLAR` E1–E4, N6). Program kodu yine GÖRÜLMEDİ; `surucu.mjs`'e dokunulmadı. Yeni olay türü YOK.
+
+### 9.1 Kurallar
+| Karar | Kural (kâhin) | Kod |
+|---|---|---|
+| E1 (N2 "a") | Yalnız makine defterinde kalan belirsiz deneme yeni toplu işte ELEMEZ; Başarısızları Yeniden Dene'de eler (öneri "yeni gönderim") — yorum 21 teyit | `belirsiz_kaynagi(yalniz_dosya)` |
+| E2 (N3 "a") | TEK neden; sıra HER YERDE (yeni toplu iş, Başarısızları Yeniden Dene, işteki Yine de Gönder) Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi; Zaten Kuyrukta / Sonucu Belirsiz ile elenen R3 uyarısına girmez, R3'te Yine de Gönder seçilse de gitmez. İşteki Yine de Gönder artık Zaten Kuyrukta'yı da denetler (Sonucu Belirsiz'i değil — onaylı yol, K6) | `baslat`, `yeniden_dene`, `yine_de_gonder` |
+| E3 (N4 "a") | Hatırlatmada Sonucu Belirsiz eşliği aynı YEREL gün (dünkü belirsiz bugünküyü elemez) | `eslesir(belirsiz=True)` |
+| E4 (N5 "a") | Son 3 Ay / Tüm'de asıl işten yeniden denemede sonraki denemenin kabul/teslimi yeni gönderim anından 7 gün içindeyse "Daha Önce Gönderildi", eskiyse yeniden gönderilir | `yeniden_dene` |
+| N6 | Yeniden denemede başka işte bekleyen kişi "Zaten Kuyrukta" | `kuyrukta` |
+
+### 9.2 Senaryolar (12) ve mutasyonlar (9)
+| Karar | Senaryo | Sınır | Mutasyon (yakalayan) |
+|---|---|---|---|
+| E1 | E1-01 dosyada (B) ↔ yalnız defterde (A) belirsiz: yeni işte B elenir A alınır; yeniden denemede A "Sonucu Belirsiz" (öneri yeni gönderim); yeni gönderimle gider (+ K6-03) | geri yükleme | M108 (K6-03, E1-01) |
+| E2 | E2-01 yeni iş üçlü (R3 + aşılmış belirsiz + bekleyen; Yine de Gönder) · E2-02 yeni iş belirsiz + R3, Yine de Gönder (uyarı yalnız B) · E2-03 yeniden deneme bekleyen + defterde belirsiz · E2-04 yeniden deneme üçlü · E2-05 yeniden deneme belirsiz + R3 · E2-06 işteki Yine de Gönder "Zaten Kuyrukta" | 8. gün (Son 3 Ay), 25 saat (sınır penceresi) | M109 (E2-03), M110 (E2-05), M111 (E2-06), M112 + M113 (E2-01) |
+| E3 | E3-01 23:50 / 23:55 / 00:10 (yerel yeni gün, UTC aynı gün) · E3-02 aynı gün yeniden deneme | gece yarısı yerel ≠ UTC | M114, M115 (E3-01) |
+| E4 | E4-01 Son 3 Ay 6g23s elenir / 7g1s gider · E4-02 Tüm Hareketler aynı | 6g23s / 7g1s | M116 (E4-01) |
+| N6 | N6-01 başka işte sınırda bekleyen | — | M117 (N6-01) |
+
+**Değişen eski beklentiler: YOK** (198 senaryonun tam sonucu `git show 1f4ab323:…/senaryolar.json` ile bayt bayt aynı; yeniden deneme sırası değişikliği ve işteki Yine de Gönder'in
+Zaten Kuyrukta denetimi hiçbir eski senaryoda etkili değildi). Kâhinin kendi testi **232/232**, F mutasyon **117/117**; kanıt `docs/kanit/2026-10-31/248-kahin4-kendi-testi.{log,json}`.
+
+### 9.3 KÂHİN SUSUYOR — güncelleme 4'ten sonra
+- **P1 ★:** işteki Yine de Gönder'de BAŞKA bir denemenin Sonucu Belirsiz'i (defterdeki ya da aşılmış eski deneme) eler mi? Kâhin: elemez (K6: onaylı yol; E2 yalnız sırayı
+  söyler). Senaryo yok.
+- **P2 ★:** hatırlatmada asıl işin yeniden denemesi ERTESİ gün: belirsizin "aynı gün" eşliği yeniden denemenin gününe mi (E3 → elemez, gider), asıl işin gününe mi (K4)
+  göre? Kâhin yeniden denemenin gününü kullanır; senaryo yalnız aynı gün (E3-02).
+- **P3 (bilgi):** iç denetim "kesin olmayan durumda PDF silinmiş" işin BÜTÜN denemelerinin PDF'ini sayıyor; E4'te Başarısız ilk denemenin PDF'i silinmiş, sonraki deneme
+  yalnız "Meta Kabul Etti"de kalırsa denetim yanlış ihlal verir → E4-02 teslim bildirimiyle kuruldu, "yalnız kabul" hâli DENENMEYEN. Sürücü ajanına (S-11): bu sayaç
+  yalnız SON denemenin PDF'ine bakmalı.
+- N7, N8: kullanıcı kararıyla 2.5.0 / BİLİNEN SINIR (plan_susuyor kalır).
+
+### 9.4 Sürücü için
+- **S-11:** yeni olay türü yok. Yeni nedenler başlatma özetinde ve yeniden deneme yanıtında S-7 / S-9 eşlemeleriyle (Zaten Kuyrukta, Sonucu Belirsiz, Daha Önce
+  Gönderildi); işteki Yine de Gönder yanıtında da "Zaten Kuyrukta" → `zaten_kuyrukta` (E2-06). İç denetim sayacı `kesin_oncesi_medya_silme` yalnız işin SON denemesinin
+  PDF'ine bakmalı (P3).
+
+### 9.5 DENENMEYEN (güncelleme 4)
+- Programa karşı sürücü koşusu; P1, P2 (ertesi gün) senaryoları; E4'ün "yalnız Meta Kabul Etti" hâli (P3); hatırlatmada E2 çakışmaları.
