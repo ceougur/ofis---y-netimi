@@ -179,6 +179,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const keys = Object.keys(fields);
     store.run(`UPDATE wa_batches SET ${keys.map(key => `${key} = ?`).join(", ")}, updated_at = ? WHERE id = ?`, ...keys.map(key => fields[key]), iso(), id);
   };
+  // T6-B1/B2 (son aday arıza testleri): Meta DIŞI hatada (şirket dosyasına yazım düştü — disk dolu, kilit — ya da beklenmeyen hata) işin beklemesi BELLEKTE de tutulur
+  // (jobId → { tries, until }); dosyaya yazılamasa da işçi aynı işi beklemesiz yeniden seçmez. Program kapanınca gider: açılışta / bakım turunda iş yeniden değerlendirilir.
+  const localDefer = new Map();
+  let inFlight = null; // işçinin şu an yürüttüğü iş (bakım turu "Hazırlanıyor" toparlamasında ona dokunmaz)
   function counts(batchId) {
     const out = Object.fromEntries(Object.keys(JOB_STATES).map(state => [state, 0]));
     for (const row of store.all("SELECT state, COUNT(*) AS n FROM wa_jobs WHERE batch_id = ? GROUP BY state", batchId)) out[row.state] = row.n;
@@ -600,12 +604,43 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     notify(row.id);
   }
   // "5 kez art arda" (§7a 15): geçici hata, belirsiz sonuç ve medya yükleme hataları sayar; başarılı gönderim sıfırlar. Dönüş: duraklatıldı mı.
-  function trouble(row, reason) {
+  function trouble(row, reason, { local = false } = {}) {
     const troubles = (row.troubles || 0) + 1;
     updateBatch(row.id, { troubles });
     if (troubles < MAX_TROUBLES) return false;
-    pauseBatch({ ...row, troubles }, "meta-unreachable", `Meta'ya art arda ${MAX_TROUBLES} kez ulaşılamadı ya da Meta geçici hata verdi (son: ${reason}). İnternet bağlantısını denetleyip Devam Et'e basın.`);
+    if (local) pauseBatch({ ...row, troubles }, "local", `Gönderim art arda ${MAX_TROUBLES} kez bu bilgisayarda yürütülemedi (son: ${reason}). Diskte boş yer olduğunu denetleyip Devam Et'e basın.`);
+    else pauseBatch({ ...row, troubles }, "meta-unreachable", `Meta'ya art arda ${MAX_TROUBLES} kez ulaşılamadı ya da Meta geçici hata verdi (son: ${reason}). İnternet bağlantısını denetleyip Devam Et'e basın.`);
     return true;
+  }
+  // T6-B1/B2: iş yürütülürken Meta DIŞI hata — ileti isteği GİTMEMİŞTİR (defter talebi "Gönderiliyor"dan sonra; o aşamadaki hatalar kendi yolunda). İş bellekte bekletilir
+  // (30 sn → 2 dk → 15 dk, en çok) — yazım düşse de meşgul döngü / her turda yeni PDF yüklemesi olmaz; dosyaya da "Bekliyor" + bekleme yazılmaya çalışılır (yazılamazsa
+  // "Hazırlanıyor"da kalan iş bakım turunda / açılışta Bekliyor'a döner); toplu işin "art arda" sayacı artar (5'te "Duraklatıldı").
+  const DEFERRABLE = ["pending", "limited", "held", "preparing"];
+  function deferLocal(batchId, jobId, error) {
+    const tries = (localDefer.get(jobId)?.tries || 0) + 1;
+    const waitMs = JOB_BACKOFF_MS[Math.min(tries, JOB_BACKOFF_MS.length) - 1];
+    localDefer.set(jobId, { tries, until: nowMs() + waitMs });
+    const reason = `şirket dosyasına yazılamadı ya da beklenmeyen hata: ${error?.code || error?.message || error}`;
+    try {
+      store.run(
+        `UPDATE wa_jobs SET state = CASE WHEN state = 'preparing' THEN 'pending' ELSE state END, next_at = ?, sending_at = NULL, updated_at = ? WHERE id = ? AND state IN (${DEFERRABLE.map(() => "?").join(",")})`,
+        iso(nowMs() + waitMs),
+        iso(),
+        jobId,
+        ...DEFERRABLE,
+      );
+    } catch {
+      // yazılamadı (disk dolu / kilit): bellekteki bekleme geçerli
+    }
+    try {
+      const row = batchRow(batchId);
+      if (row?.state === "running") trouble(row, reason, { local: true });
+    } catch {
+      // sayaç yazılamadı
+    }
+    log.warn?.(`WhatsApp işi yürütülemedi (${jobId}; ${error?.message || error}); ${Math.round(waitMs / 1000)} sn sonra yeniden denenecek.`);
+    if (batchId) notify(batchId);
+    return { did: true, deferred: true };
   }
   // Sınır: bu WABA'nın bu şirketteki süren işlerinde, pencerede olmayan numaraya giden bekleyen işler pencere açılana dek bekler.
   // T2 dar kontrol D2: "Meta Bekletti" (held) iş de bekleme bitene dek ileri alınır (durumu korunur) — yoksa işçi aynı işi her turda yeniden seçerdi (boş döngü);
@@ -625,17 +660,27 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   /** Sıradaki iş (şimdi yürütülebilir) ya da beklenecek süre. Sıra: toplu iş açılış sırası, içinde seçim sırası (§7a 5). */
   function next() {
     const t = iso();
+    // T6-B1/B2: bellekteki beklemesi dolmamış iş seçilmez (dosyaya yazılamamış olsa da).
+    const nowT = nowMs();
+    const deferred = [...localDefer].filter(([, item]) => item.until > nowT).map(([id]) => id);
+    const notDeferred = deferred.length ? ` AND j.id NOT IN (${deferred.map(() => "?").join(",")})` : "";
     const row = store.get(
       `SELECT j.id FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE b.state = 'running' AND (b.retry_at IS NULL OR b.retry_at <= ?)
-       AND j.state IN ('pending', 'limited', 'held') AND (j.next_at IS NULL OR j.next_at <= ?) ORDER BY b.created_at, b.rowid, j.rowid LIMIT 1`,
+       AND j.state IN ('pending', 'limited', 'held') AND (j.next_at IS NULL OR j.next_at <= ?)${notDeferred} ORDER BY b.created_at, b.rowid, j.rowid LIMIT 1`,
       t,
       t,
+      ...deferred,
     );
     if (row) return { jobId: row.id };
-    // En yakın uyanış: işin kendi beklemesi ya da toplu işin bağlantı beklemesi (hangisi geç ise).
-    const soon = store.get(`SELECT MIN(MAX(COALESCE(j.next_at, ''), COALESCE(b.retry_at, ''))) AS at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
-      WHERE b.state = 'running' AND j.state IN ('pending', 'limited', 'held') AND (j.next_at IS NOT NULL OR b.retry_at IS NOT NULL)`)?.at;
-    return { jobId: null, waitMs: soon ? Math.max(0, Date.parse(soon) - nowMs()) : null };
+    // En yakın uyanış: işin kendi beklemesi ya da toplu işin bağlantı beklemesi (hangisi geç ise); bellekteki beklemeler de.
+    const soon = store.get(
+      `SELECT MIN(MAX(COALESCE(j.next_at, ''), COALESCE(b.retry_at, ''))) AS at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
+      WHERE b.state = 'running' AND j.state IN ('pending', 'limited', 'held') AND (j.next_at IS NOT NULL OR b.retry_at IS NOT NULL)${notDeferred}`,
+      ...deferred,
+    )?.at;
+    const waits = deferred.map(id => localDefer.get(id).until - nowT);
+    if (soon) waits.push(Math.max(0, Date.parse(soon) - nowT));
+    return { jobId: null, waitMs: waits.length ? Math.min(...waits) : null };
   }
 
   // T2-2 (bağımsız gözden geçirme r1): bekleme noktasından (Meta okuması, PDF yükleme) sonra iş ve toplu iş YENİDEN okunur. Dönüş { job, batch } (toplu iş sürüyor,
@@ -736,7 +781,27 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       const waits = [pick.waitMs, watched.waitMs].filter(Number.isFinite);
       return { did: false, waitMs: waits.length ? Math.min(...waits) : null };
     }
-    let job = jobRow(pick.jobId);
+    inFlight = pick.jobId;
+    try {
+      return await runJob(pick.jobId);
+    } catch (error) {
+      // T6-B1/B2: Meta DIŞI hata (yazım, disk, kilit, beklenmeyen) — iş henüz ileti isteği aşamasına gelmediyse güvenli duruma döner ve BEKLEMELİ yeniden denenir.
+      // "Gönderiliyor" / "Sonucu Belirsiz" (istek aşaması) kendi yolunda çözülür (defter; bakım turu 5 dk kuralı) — hata yukarı gider.
+      let row = null;
+      try {
+        row = jobRow(pick.jobId);
+      } catch {
+        throw error;
+      }
+      if (!row || !DEFERRABLE.includes(row.state)) throw error;
+      return deferLocal(row.batch_id, row.id, error);
+    } finally {
+      inFlight = null;
+    }
+  }
+
+  async function runJob(jobId) {
+    let job = jobRow(jobId);
     const batch = batchRow(job.batch_id);
     // (5) geri yüklenen / taşınan veri: defterde canlı olmayan toplu iş yürütülmez.
     const live = ledger.batchState(batch.id);
@@ -902,6 +967,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       updateJob(job.id, { state: "accepted", wamid: sent.wamid, accepted_at: iso(), error_code: null, error_text: "", next_at: null });
       updateBatch(batch.id, { troubles: 0, ...connectionBack() });
     });
+    localDefer.delete(job.id);
     finishIfDone(batch.id);
     notify(batch.id);
     return { did: true, sent: true };
@@ -945,7 +1011,17 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       let mediaId = job.media_id;
       if (!mediaUsable(job)) {
         mediaId = await graph.uploadMedia(record.phoneNumberId, { data: pdf, filename, mime: "application/pdf" });
-        updateJob(job.id, { media_id: mediaId, media_at: iso(), media_deleted_at: null, media_delete_tries: 0 });
+        try {
+          updateJob(job.id, { media_id: mediaId, media_at: iso(), media_deleted_at: null, media_delete_tries: 0 });
+        } catch (error) {
+          // T6-B2 (S3 A): yüklenen PDF'in kimliği kaydedilemedi (disk dolu, kilit) — Meta'da sahipsiz kalmasın: bellekteki kimlikle HEMEN silinmeye çalışılır.
+          try {
+            await graph.deleteMedia(mediaId);
+          } catch (deleteError) {
+            log.warn?.(`WhatsApp: kaydedilemeyen PDF Meta'dan silinemedi (${job.id}; ${deleteError.message}); Meta 30 günde kendisi düşürür.`);
+          }
+          throw error;
+        }
       }
       document = { id: mediaId, filename };
     }
@@ -1199,6 +1275,15 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // Kabul yazımı düşmüş (disk dolu) ve 5 dakikadır "Gönderiliyor"da kalan iş (tek işçi; istek 15 sn'de biter): açılıştaki kuralla defterden çözülür.
     const stuck = store.all("SELECT * FROM wa_jobs WHERE state = 'sending' AND sending_at < ?", iso(nowMs() - 5 * 60_000));
     if (stuck.length) out.repaired = settleSending(stuck);
+    // T6-B1: "Hazırlanıyor"da kalan iş (hazırlık sonrası yazım disk dolu / kilit yüzünden düştü; ileti isteği gitmedi — defter talebi "Gönderiliyor"dan sonra) yalnız
+    // açılışta değil bakım turunda da (5 dakikadır değişmediyse; işçinin şu anki işi hariç) Bekliyor'a döner.
+    for (const row of store.all("SELECT id FROM wa_jobs WHERE state = 'preparing' AND updated_at < ?", iso(nowMs() - 5 * 60_000))) {
+      if (row.id === inFlight) continue;
+      updateJob(row.id, { state: "pending" });
+      out.resetPreparing = (out.resetPreparing || 0) + 1;
+    }
+    // Bellekteki beklemeler: kapanmış işlerinki silinir.
+    for (const id of [...localDefer.keys()]) if (!OPEN_JOB.includes(jobRow(id)?.state)) localDefer.delete(id);
     for (const row of store.all("SELECT id FROM wa_batches WHERE state = 'running'")) finishIfDone(row.id);
     // W9 (plan §3 C): durum bildirimi adresi Meta'ya kayıtlı değilse / ofisin uzaktan adresi değiştiyse / kayıt düştüyse (saatte en çok bir kez) kaydedilir.
     // Salt okunur lisansta kaydedilmez (tünel de kapalı).
