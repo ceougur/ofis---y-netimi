@@ -338,6 +338,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const ids = selection(user, body);
     const sendAgain = fixed ? false : body.sendAgain === true;
     const sent = ledger.sentBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()), since: sentSinceOf(kind, period, nowMs()), after: fixed?.sendAgainAfter || "" });
+    // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"): YALNIZ "Başarısızları Yeniden Dene" (fixed.retry) — aynı cariye aynı dönem iletisi Sonucu Belirsiz kalmışsa elenir
+    // (soru sorulmadan ikinci ileti gitmez; göndermek için işteki "Yine de Gönder" — "iki kez gidebilir" onayıyla). Yeni gönderim ve Yine de Gönder değişmez.
+    // asıl işin "Yine de Gönder" sınırı (sendAgainAfter) burada UYGULANMAZ: o karar yalnız Meta'nın KABUL ETTİĞİ önceki gönderimi kapsıyordu.
+    const unsettled = fixed?.retry === true ? ledger.unsettledBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()), since: sentSinceOf(kind, period, nowMs()) }) : null;
     const people = [];
     for (const id of ids) {
       let account;
@@ -355,6 +359,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       const last = sent.get(account.id);
       if (last) person.sentBefore = last;
       if (!person.skip && last && !sendAgain) person.skip = "Daha Önce Gönderildi";
+      if (!person.skip && unsettled?.has(account.id)) person.skip = "Sonucu Belirsiz";
       people.push(person);
     }
     return { kind, period, people };
@@ -452,6 +457,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         ? ` Bu kişilere bugün daha önce ödeme hatırlatması gönderildi; yeniden göndermek için yeni gönderimde "Yine de Gönder" seçin.`
         : ` Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde "Yine de Gönder" seçin.`;
     }
+    if (summary.skipped?.["Sonucu Belirsiz"]) text += ` Bu kişilerin önceki iletisinin sonucu belirsiz; göndermek için işteki "Yine de Gönder"i kullanın.`;
     return text;
   }
 
@@ -578,7 +584,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const row = editable(id);
     const ids = store.all("SELECT account_id AS id FROM wa_jobs WHERE batch_id = ? AND state = 'failed' ORDER BY rowid", row.id).map(item => item.id);
     if (!ids.length) fail(400, "Bu gönderimde yeniden denenecek başarısız ileti yok.", "whatsapp-nothing");
-    return createBatch(user, { kind: row.kind, ids, requestId: body.requestId }, { period: periodOfRow(row) });
+    return createBatch(user, { kind: row.kind, ids, requestId: body.requestId }, { period: { ...periodOfRow(row), retry: true } });
   }
   // T1 P6 (S3 A + §7a 15; BAŞ MİMAR KARARI): "Yine de Gönder" AYNI iletiyi yeniden gönderir — yeni iş belirsiz işin dondurulmuş değişkenlerini ve (29 gün geçerliyse)
   // Meta'daki PDF'ini devralır: PDF yeniden yüklenmez, iki ileti de aynı içeriği taşır (ikisi birden ulaşsa da çelişmez). PDF'in TEK sahibi artık yeni iştir: belirsiz

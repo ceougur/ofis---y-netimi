@@ -158,6 +158,15 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       WHERE c.company_id = ? AND c.kind = ? AND c.period_key = ? AND a.at >= ? AND c.at > ?
         AND (NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt) OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
       GROUP BY c.account_id`),
+    // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"; dar kontrol 6 kapsam dışı gözlem): yalnız "Başarısızları Yeniden Dene"de — bu cariye bu şablon + dönem için SONUCU
+    // BELLİ OLMAYAN deneme (işin son denemesi: kabul, teslim edilemedi, 131049 bırakıldı ya da "gitmedi" sonucu yok — Sonucu Belirsiz ya da sonucu yazılamamış) varsa
+    // elenir. Kabul edilen R3'e (sentBefore), teslim edilemeyen ve gitmeyen yeniden denemeye kalır. Pencere ve dönem anahtarı R3 ile aynı (donem.mjs).
+    unsettled: db.prepare(`SELECT DISTINCT c.account_id AS accountId FROM claims c
+      WHERE c.company_id = ? AND c.kind = ? AND c.period_key = ? AND c.at >= ? AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = c.job_id)
+        AND NOT EXISTS (SELECT 1 FROM accepts a WHERE a.job_id = c.job_id)
+        AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
+        AND NOT EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
+        AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome IN ('accepted', 'failed', 'released'))`),
     hold: db.prepare("INSERT INTO holds (waba_id, until, reason, at) VALUES (?, ?, ?, ?)"),
     holdOf: db.prepare("SELECT MAX(until) AS until FROM holds WHERE waba_id = ? AND until > ?"),
     accepted: db.prepare("SELECT COUNT(*) AS n FROM accepts WHERE company_id = ? AND at >= ? AND at < ?"),
@@ -370,6 +379,10 @@ export function openWaLedger({ dir, log = console, fault = null }) {
      */
     sentBefore({ companyId, kind, periodKey, since = "", after = "" }) {
       return new Map(q.sentBefore.all(String(companyId), String(kind), String(periodKey), String(since || ""), String(after || "")).map(row => [row.accountId, row.last]));
+    },
+    /** Sonucu belli olmayan son denemesi olan cariler (yalnız "Başarısızları Yeniden Dene" eler; yukarıdaki unsettled). Dönüş: Set(accountId). */
+    unsettledBefore({ companyId, kind, periodKey, since = "" }) {
+      return new Set(q.unsettled.all(String(companyId), String(kind), String(periodKey), String(since || "")).map(row => row.accountId));
     },
     // ---------- Meta sınır beklemesi (WABA başına) ----------
     holdWaba(wabaId, until, reason, at) {
