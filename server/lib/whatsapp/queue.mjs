@@ -350,6 +350,29 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const rows = store.all(`SELECT j.id, b.period_from, b.period_to, b.preset, b.created_at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.account_id = ? AND b.kind = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")})`, accountId, kind, ...OPEN_JOB);
     return rows.find(row => sameKeys(want, queueKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, localDayOf(row.created_at)))) || null;
   };
+  // KULLANICI KARARI (31.10.2026 ~11:30 UTC "a"; ★ soru 8): başka bilgisayara TAŞINAN veride şirket dosyasında Meta Kabul Etti / Gönderildi / Teslim Edildi / Okundu duran
+  // ileti, bu bilgisayarın defterinde yoksa R3'te sayılır. Yalnız bu defterde AÇILMAMIŞ toplu işler (ledger_id başka) taranır: bu bilgisayarda açılan toplu işin
+  // (aynı bilgisayara geri yüklenmiş eski veri dahil) kararı defterindir (★ soru 7) — defter yalnız kendi ledger_id'li toplu işin talebini yazar (runJob), çift sayım
+  // olmaz; aynı cari birden çok kaynaktan gelirse en son kabul anı alınır. Dönem eşliği, 7 gün penceresi (since) ve asıl işin "Yine de Gönder" sınırı (after)
+  // defterdeki R3 ile aynı kural (anahtar kümesi işin gönderim gününe göre). Dönüş: Map(cari → son kabul anı ISO).
+  function movedSentBefore(ids, kind, keys, since, after) {
+    const out = new Map();
+    for (let i = 0; i < ids.length; i += 500) {
+      const part = ids.slice(i, i + 500);
+      const rows = store.all(
+        `SELECT j.id, j.account_id AS accountId, COALESCE(j.accepted_at, j.sent_at, j.delivered_at, j.read_at, j.sending_at) AS acceptedAt, COALESCE(j.sending_at, j.accepted_at) AS sendingAt,
+          b.period_from, b.period_to, b.preset FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
+         WHERE b.kind = ? AND b.ledger_id <> ? AND j.state IN ('accepted', 'sent', 'delivered', 'read') AND j.account_id IN (${part.map(() => "?").join(",")})`,
+        kind, ledger.id, ...part,
+      );
+      for (const row of rows) {
+        if (!row.acceptedAt || (since && row.acceptedAt < since) || (after && !(String(row.sendingAt || "") > after))) continue;
+        if (!sameKeys(keys, periodKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, localDayOf(row.sendingAt || row.acceptedAt)))) continue;
+        if (!out.has(row.accountId) || out.get(row.accountId) < row.acceptedAt) out.set(row.accountId, row.acceptedAt);
+      }
+    }
+    return out;
+  }
   // Cari, gönderim için uygun mu (toplu iş açılırken ve GÖNDERİM ANINDA aynı kural — §7a 1, 2, 6, 20). Dönüş: neden (boş = uygun) + numara.
   function eligibility(account, kind) {
     const phone = e164Of(account.phone);
@@ -381,6 +404,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const since = sentSinceOf(kind, period, nowMs());
     const after = fixed?.sendAgainAfter || "";
     const sent = ledger.sentBefore({ companyId, kind, periodKeys: keys, since, after });
+    for (const [accountId, last] of movedSentBefore(ids, kind, keys, since, after)) if (!sent.has(accountId) || sent.get(accountId) < last) sent.set(accountId, last);
     // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"): "Başarısızları Yeniden Dene"de aynı cariye aynı dönem iletisi Sonucu Belirsiz kalmışsa elenir (soru sorulmadan ikinci
     // ileti gitmez; göndermek için işteki "Yine de Gönder" — "iki kez gidebilir" onayıyla). KULLANICI KARARI (31.10.2026 ~10:55 UTC "b"; ★ soru 1): YENİ toplu işte de aynı
     // kural ve eşlik (aynı tür + dönem; Son 3 Ay / Tüm'de son 7 gün, gönderim anından). Yalnız "Yine de Gönder"in kendisi (anyway) elenmez.
