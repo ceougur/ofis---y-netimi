@@ -165,7 +165,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"; dar kontrol 6 kapsam dışı gözlem): yalnız "Başarısızları Yeniden Dene"de — bu cariye bu şablon + dönem için SONUCU
     // BELLİ OLMAYAN deneme (işin son denemesi: kabul, teslim edilemedi, 131049 bırakıldı ya da "gitmedi" sonucu yok — Sonucu Belirsiz ya da sonucu yazılamamış) varsa
     // elenir. Kabul edilen R3'e (sentBefore), teslim edilemeyen ve gitmeyen yeniden denemeye kalır. Pencere ve dönem anahtarı R3 ile aynı (donem.mjs).
-    unsettled: db.prepare(`SELECT DISTINCT c.account_id AS accountId FROM claims c
+    unsettled: db.prepare(`SELECT DISTINCT c.account_id AS accountId, c.job_id AS jobId FROM claims c
       WHERE c.company_id = ? AND c.kind = ? AND c.period_key = ? AND c.at >= ? AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = c.job_id)
         AND NOT EXISTS (SELECT 1 FROM accepts a WHERE a.job_id = c.job_id)
         AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
@@ -384,9 +384,17 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     sentBefore({ companyId, kind, periodKey, since = "", after = "" }) {
       return new Map(q.sentBefore.all(String(companyId), String(kind), String(periodKey), String(since || ""), String(after || "")).map(row => [row.accountId, row.last]));
     },
-    /** Sonucu belli olmayan son denemesi olan cariler (yalnız "Başarısızları Yeniden Dene" eler; yukarıdaki unsettled). Dönüş: Set(accountId). */
+    /**
+     * Sonucu belli olmayan son denemesi olan cariler (yalnız "Başarısızları Yeniden Dene" eler; yukarıdaki unsettled). Dönüş: Map(accountId → [jobId]) — iş kimlikleri
+     * elenme iletisinde "Yine de Gönder"in gerçekten var olup olmadığını (iş şirket dosyasında hâlâ Sonucu Belirsiz mi) bilmek için (dar kontrol 7 DÜŞÜK-1).
+     */
     unsettledBefore({ companyId, kind, periodKey, since = "" }) {
-      return new Set(q.unsettled.all(String(companyId), String(kind), String(periodKey), String(since || "")).map(row => row.accountId));
+      const out = new Map();
+      for (const row of q.unsettled.all(String(companyId), String(kind), String(periodKey), String(since || ""))) {
+        if (!out.has(row.accountId)) out.set(row.accountId, []);
+        out.get(row.accountId).push(row.jobId);
+      }
+      return out;
     },
     // ---------- Meta sınır beklemesi (WABA başına) ----------
     holdWaba(wabaId, until, reason, at) {

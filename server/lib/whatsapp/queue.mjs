@@ -382,6 +382,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // asıl işin "Yine de Gönder" sınırı (sendAgainAfter) burada UYGULANMAZ: o karar yalnız Meta'nın KABUL ETTİĞİ önceki gönderimi kapsıyordu.
     const unsettled = fixed?.retry === true ? ledger.unsettledBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()), since: sentSinceOf(kind, period, nowMs()) }) : null;
     const people = [];
+    let uncertainOpen = 0;
     for (const id of ids) {
       let account;
       try {
@@ -398,10 +399,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       const last = sent.get(account.id);
       if (last) person.sentBefore = last;
       if (!person.skip && last && !sendAgain) person.skip = "Daha Önce Gönderildi";
-      if (!person.skip && unsettled?.has(account.id)) person.skip = "Sonucu Belirsiz";
+      if (!person.skip && unsettled?.has(account.id)) {
+        person.skip = "Sonucu Belirsiz";
+        // Dar kontrol 7 DÜŞÜK-1: "Yine de Gönder" yalnız iş şirket dosyasında hâlâ Sonucu Belirsiz ise vardır (geri yüklemeden sonra iş dosyadan gider, defterde kalır).
+        if (unsettled.get(account.id).some(jobId => store.get("SELECT 1 AS found FROM wa_jobs WHERE id = ? AND state = 'uncertain'", jobId))) uncertainOpen += 1;
+      }
       people.push(person);
     }
-    return { kind, period, people };
+    return { kind, period, people, uncertainOpen };
   }
 
   // §7a 29: başlatma reddi sırası bağlı değil → yetki → lisans → onay → şablon (yetki rotada, bağlantıdan hemen sonra denetlenir: routes/whatsapp.mjs).
@@ -488,7 +493,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
 
   // Bütün seçilenler elendiğinde ileti: nedenler sayılarıyla + "Daha Önce Gönderildi" için ne yapılacağı (cümle düzeni).
-  function nothingMessage(summary) {
+  function nothingMessage(summary, uncertainOpen = 0) {
     const reasons = Object.entries(summary.skipped || {}).map(([reason, n]) => `${reason}: ${n}`).join(", ");
     let text = `Gönderilebilecek kişi yok (seçilenlerin hepsi elendi${reasons ? ` — ${reasons}` : ""}).`;
     if (summary.skipped?.["Daha Önce Gönderildi"]) {
@@ -496,7 +501,13 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         ? ` Bu kişilere bugün daha önce ödeme hatırlatması gönderildi; yeniden göndermek için yeni gönderimde "Yine de Gönder" seçin.`
         : ` Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde "Yine de Gönder" seçin.`;
     }
-    if (summary.skipped?.["Sonucu Belirsiz"]) text += ` Bu kişilerin önceki iletisinin sonucu belirsiz; göndermek için işteki "Yine de Gönder"i kullanın.`;
+    // Dar kontrol 7 DÜŞÜK-1: işteki "Yine de Gönder" yalnız o iş şirket dosyasında Sonucu Belirsiz duruyorsa söylenir (uncertainOpen); yoksa (ör. geri yüklemeden sonra)
+    // yalnız yeni gönderim. Yeni gönderim "iki kez gidebilir" diye sormaz → uyarı iletide.
+    if (summary.skipped?.["Sonucu Belirsiz"]) {
+      text += uncertainOpen > 0
+        ? ` Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki "Yine de Gönder"i kullanın ya da yeni gönderim başlatın.`
+        : ` Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için yeni gönderim başlatın.`;
+    }
     return text;
   }
 
@@ -528,7 +539,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const plotted = plan(user, body, period);
     const summary = summarize(plotted, record, limitInfo, template);
     // §7a 31: bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; nedenler yanıtta ve İLETİDE (dar kontrol 5 ORTA-1: istemci yalnız iletiyi gösterir).
-    if (!summary.sendable) fail(400, nothingMessage(summary), "whatsapp-nothing", { summary });
+    if (!summary.sendable) fail(400, nothingMessage(summary, plotted.uncertainOpen), "whatsapp-nothing", { summary });
     const batchId = newId("wab");
     const at = iso();
     // dar kontrol 5 ORTA-1: "Yine de Gönder" kararı — yeni işte gövdenin açık sendAgain'i (açılış anı), yeniden denemede asıl işin kayıtlı anı (zincirde kaymaz).
