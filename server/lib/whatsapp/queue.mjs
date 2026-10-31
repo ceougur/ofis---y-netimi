@@ -348,19 +348,19 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
   // §7a 9: aynı cari + aynı şablon + aynı dönem için bekleyen / gönderilmekte iş (süren ya da duraklatılmış toplu işte) — iki kullanıcı, iki sekme.
   // Dönem eşliği donem.mjs queueKeysOf'tan (T2-1: tek yer). ★ soru 4 (özel aralık ↔ hazır seçim): yeni gönderimin kümesi BUGÜNE, süren işinki AÇILDIĞI GÜNE göre.
-  const queued = (accountId, kind, period) => {
-    const want = queueKeysOf(kind, period, today());
-    const rows = store.all(`SELECT j.id, b.period_from, b.period_to, b.preset, b.created_at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.account_id = ? AND b.kind = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")})`, accountId, kind, ...OPEN_JOB);
+  const queued = (accountId, kind, period, day = today()) => {
+    const want = queueKeysOf(kind, period, day);
+    const rows = store.all(`SELECT j.id, b.period_from, b.period_to, b.preset, b.created_at, b.key_day FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.account_id = ? AND b.kind = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")})`, accountId, kind, ...OPEN_JOB);
     return rows.find(row => sameKeys(want, queueKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, keyDayOfBatch({ ...row, kind })))) || null;
   };
   // Dar kontrol 9 ORTA-1 (★ soru 4 "o gün" = özel aralığın kullanıldığı gün = TOPLU İŞİN AÇILIŞ GÜNÜ; BAŞ MİMAR yorumu): bir toplu işin dönem anahtar kümesi hangi
   // gün gönderilirse gönderilsin (günlük sınırla ertesi güne kalan, Meta Bekletti'nin ertesi gün 2. denemesi) AÇILDIĞI yerel güne göre — talep (runJob), Zaten Kuyrukta
   // (queued) ve taşınan veri (movedSentBefore) aynı yerden okur. YALNIZ EKSTRE: Ödeme Hatırlatma'nın "aynı gün"ü gönderim / yeniden denemenin günüdür (ek 3/4, son 2/2).
-  // KULLANICIDA (karar yok): Başarısızları Yeniden Dene / Yine de Gönder'in açtığı işte "o gün" asıl işin günü mü — bugün yeni işin KENDİ açılış günü; karar gelince
-  // yalnız bu işlev değişir.
+  // KULLANICI KARARI (31.10.2026, dk9 soru 1/7 "a"): Başarısızları Yeniden Dene / işteki Yine de Gönder'in açtığı işte "o gün" ASIL işin açıldığı gündür (dönem gibi
+  // taşınır: wa_batches.key_day, göç v43; boşsa işin kendi açılış günü).
   function keyDayOfBatch(batch) {
     if (batch?.kind !== "statement") return today();
-    return localDayOf(batch.created_at) || today();
+    return batch.key_day || localDayOf(batch.created_at) || today();
   }
   // KULLANICI KARARI (31.10.2026 ~11:30 UTC "a"; ★ soru 8): başka bilgisayara TAŞINAN veride şirket dosyasında Meta Kabul Etti / Gönderildi / Teslim Edildi / Okundu duran
   // ileti, bu bilgisayarın defterinde yoksa R3'te sayılır. Yalnız bu defterde AÇILMAMIŞ toplu işler (ledger_id başka) taranır: bu bilgisayarda açılan toplu işin
@@ -375,7 +375,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       const part = ids.slice(i, i + 500);
       const rows = store.all(
         `SELECT j.id, j.account_id AS accountId, COALESCE(j.accepted_at, j.sent_at, j.delivered_at, j.read_at, j.sending_at) AS acceptedAt, COALESCE(j.sending_at, j.accepted_at) AS sendingAt,
-          b.kind, b.period_from, b.period_to, b.preset, b.created_at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
+          b.kind, b.period_from, b.period_to, b.preset, b.created_at, b.key_day FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
          WHERE b.kind = ? AND b.ledger_id <> ? AND j.state IN ('accepted', 'sent', 'delivered', 'read') AND j.account_id IN (${part.map(() => "?").join(",")})`,
         kind, ledger.id, ...part,
       );
@@ -414,7 +414,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const period = kind === "statement" ? (fixed ? { from: fixed.from || "", to: fixed.to || "", preset: fixed.preset || "" } : periodOf(body, today())) : { from: "", to: "", preset: "" };
     const ids = selection(user, body);
     const sendAgain = fixed ? false : body.sendAgain === true;
-    const keys = periodKeysOf(kind, period, today());
+    // dk9 soru 1/7 "a": yeniden denemede / Yine de Gönder'de "o gün" asıl işin günü (fixed.keyDay); yeni gönderimde bugün (yeni işin açılış günü).
+    const keyDay = kind === "statement" && fixed?.keyDay ? fixed.keyDay : today();
+    const keys = periodKeysOf(kind, period, keyDay);
     const since = sentSinceOf(kind, period, nowMs());
     const after = fixed?.sendAgainAfter || "";
     const sent = ledger.sentBefore({ companyId, kind, periodKeys: keys, since, after });
@@ -439,7 +441,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       // KULLANICI KARARI (31.10.2026, ek soru 2/4 "a"): birden çok eleme nedeninde TEK neden, sıra HER YERDE (yeni toplu iş, Başarısızları Yeniden Dene, işteki Yine de
       // Gönder'in açtığı iş): "Zaten Kuyrukta" → "Sonucu Belirsiz" → "Daha Önce Gönderildi". İlk ikisiyle elenen kişi R3 uyarısına (sayı / liste: sentBefore) GİRMEZ;
       // R3'te "Yine de Gönder" seçilse de ona gitmez (belirsizi göndermenin tek yolu işteki Yine de Gönder).
-      if (!person.skip && queued(account.id, kind, period)) person.skip = "Zaten Kuyrukta";
+      if (!person.skip && queued(account.id, kind, period, keyDay)) person.skip = "Zaten Kuyrukta";
       if (!person.skip && unsettled?.has(account.id)) {
         // Dar kontrol 7 DÜŞÜK-1: "Yine de Gönder" yalnız iş şirket dosyasında hâlâ Sonucu Belirsiz ise vardır (geri yüklemeden sonra iş dosyadan gider, defterde kalır).
         const open = unsettled.get(account.id).some(jobId => store.get("SELECT 1 AS found FROM wa_jobs WHERE id = ? AND state = 'uncertain'", jobId));
@@ -605,8 +607,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     store.tx(() => {
       store.run(
-        "INSERT INTO wa_batches (id, kind, period_from, period_to, preset, template, lang, phone_number_id, waba_id, ledger_id, company_id, state, request_key, send_again_after, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'running', ?, ?, ?, ?, ?)",
-        batchId, kind, plotted.period.from, plotted.period.to, plotted.period.preset, TEMPLATE_NAMES[kind], template.template.language, record.phoneNumberId, record.wabaId, ledger.id, companyId, requestKey, sendAgainAfter, user.id, at, at,
+        "INSERT INTO wa_batches (id, kind, period_from, period_to, preset, template, lang, phone_number_id, waba_id, ledger_id, company_id, state, request_key, send_again_after, key_day, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'running', ?, ?, ?, ?, ?, ?)",
+        batchId, kind, plotted.period.from, plotted.period.to, plotted.period.preset, TEMPLATE_NAMES[kind], template.template.language, record.phoneNumberId, record.wabaId, ledger.id, companyId, requestKey, sendAgainAfter, kind === "statement" ? period?.keyDay || today() : "", user.id, at, at,
       );
       for (const person of plotted.people) {
         if (!person.id || store.get("SELECT 1 AS found FROM wa_jobs WHERE batch_id = ? AND account_id = ?", batchId, person.id)) continue;
@@ -682,7 +684,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
   // Yeniden deneme / Yine de Gönder AYNI toplu işin dönemindedir (KULLANICI KARARI T2-1 A + 31.10 "a"): kayıtlı dönem preset'iyle birlikte taşınır (dar kontrol 4 ORTA-1);
   // asıl işin "Yine de Gönder" kararı da (send_again_after; dar kontrol 5 ORTA-1, KULLANICI KARARI 31.10.2026 "a şıkkı").
-  const periodOfRow = row => ({ from: row.period_from || "", to: row.period_to || "", preset: row.preset || "", sendAgainAfter: row.send_again_after || "" });
+  const periodOfRow = row => ({ from: row.period_from || "", to: row.period_to || "", preset: row.preset || "", sendAgainAfter: row.send_again_after || "", keyDay: row.kind === "statement" ? keyDayOfBatch(row) : "" });
   // Başarısızları Yeniden Dene: yalnız kesin Başarısız işlerin carileri YENİ toplu işle (eski işler kayıtta kalır). Kabul edilmiş iş girmez.
   async function retryFailed(user, id, body = {}) {
     const row = editable(id);

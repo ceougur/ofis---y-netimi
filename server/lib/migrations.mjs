@@ -1515,6 +1515,16 @@ export const MIGRATIONS = [
       addColumn(store, "wa_batches", "send_again_after", "TEXT NOT NULL DEFAULT ''");
     },
   },
+  {
+    version: 43,
+    name: "v2.4.8 WhatsApp: toplu işin dönem günü (özel aralık ↔ hazır seçim eşliği) yeniden denemeye taşınır (para dışı)",
+    up(store) {
+      // 2.4.8 dar kontrol 9 İş J (KULLANICI KARARI 31.10.2026 dk9 soru 1/7 "a"; lib/whatsapp/queue.mjs keyDayOfBatch): ekstrede özel aralığın "o gün"ü toplu işin
+      // AÇILDIĞI yerel gündür; Başarısızları Yeniden Dene / işteki Yine de Gönder'in açtığı işte ASIL işin günü (dönem gibi taşınır). key_day: '' = açılış günü
+      // (created_at; eski satırlar dahil — bugünkü davranış); dolu = YYYY-AA-GG. YALNIZ EKLEYİCİ: tek sütun.
+      addColumn(store, "wa_batches", "key_day", "TEXT NOT NULL DEFAULT ''");
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";
