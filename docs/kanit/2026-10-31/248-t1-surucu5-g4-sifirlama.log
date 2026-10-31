@@ -1,0 +1,48 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+not ok 1 - G4-01-sifirlama-meta-bekletti-sayilmaz [hizli] (23 fark; davranış farkı 23)
+  # olusmadi: beklenen [], program ['T2']
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # toplular.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Durduruldu (Geri Yükleme): beklenen 1, program '<YOK>'
+  # durum_sayilari.Meta Bekletti (24 Saat Sonra Yeniden): beklenen 1, program '<YOK>'
+  # meta.post.A: beklenen 2, program '<YOK>'
+  # meta.kabul.A: beklenen 2, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 2, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 2, program '<YOK>'
+  # meta.toplam_post: beklenen 2, program 1
+  # meta.toplam_kabul_program: beklenen 2, program 1
+  # meta.toplam_meta_ileti: beklenen 2, program 1
+  # meta.toplam_medya_yukleme: beklenen 2, program 1
+  # kontroller.K1.durum_sayilari.Durduruldu (Geri Yükleme): beklenen 1, program '<YOK>'
+  # kontroller.K1.durum_sayilari.Meta Bekletti (24 Saat Sonra Yeniden): beklenen 1, program '<YOK>'
+  # kontroller.K1.toplam_post: beklenen 2, program 1
+  # kontroller.K1.toplam_kabul: beklenen 2, program 1
+  # kontroller.K1.toplular.T1: beklenen 'aktif', program '<YOK>'
+  # kontroller.K1.toplular.T2: beklenen 'aktif', program '<YOK>'
+  # kontroller.K1.isler.T1/A: beklenen 'Durduruldu (Geri Yükleme)', program '<YOK>'
+  # kontroller.K1.isler.T2/A: beklenen 'Meta Bekletti (24 Saat Sonra Yeniden)', program '<YOK>'
+  # isler.T1/A: beklenen nesne, program '<YOK>'
+  # isler.T2/A: beklenen nesne, program '<YOK>'
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+  # not: SIFIRLAMA (movements): silinen satırlar — account_entries 3, wa_jobs 1, wa_batches 1, audit_events 11; yedek alındı
+  # not: SIFIRLAMA sonrası cari A: 200 kimlik aynı, bakiye 0, borç 0, WhatsApp istemiyor 0
+  # not: SIFIRLAMA: T1 toplu işi (wab-fc4defc6-de22-41e9-9294-4226b751aa03) şirket dosyasında yok
+not ok 2 - G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir [hizli] (9 fark; davranış farkı 9)
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # durum_sayilari: beklenen şunlardan biri (karar susuyor) [{'Durduruldu (Geri Yükleme)': 1}, {'Teslim Edildi': 1}], program {}
+  # meta.post.A: beklenen 1, program '<YOK>'
+  # meta.kabul.A: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 1, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 1, program '<YOK>'
+  # meta.medya_silme.A: beklenen 1, program '<YOK>'
+  # bu_ay.W1: beklenen nesne, program '<YOK>'
+  # isler.T1/A: beklenen nesne, program '<YOK>'
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+  # not: SIFIRLAMA (movements): silinen satırlar — account_entries 3, wa_jobs 1, wa_batches 1, audit_events 11; yedek alındı
+  # not: SIFIRLAMA sonrası cari A: 200 kimlik aynı, bakiye 0, borç 0, WhatsApp istemiyor 0
+  # not: SIFIRLAMA: T1 toplu işi (wab-3503f8fc-ff27-4d83-bb57-42017679efde) şirket dosyasında yok
+1..2
+# tests 2
+# pass 0
+# fail 2

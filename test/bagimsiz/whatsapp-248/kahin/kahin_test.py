@@ -14,7 +14,10 @@ Bölümler:
   E  girdi doğrulaması: §7a 12 sınıfsız kod reddedilmez (iş Başarısız); bilinmeyen olay / medya yanıtı sessizce geçmez
   H  beklenen şablon metinleri (kahin.SABLONLAR) = plan §7a 23 ve W5 metni (plan dosyasından okunur); R1–R3 kararı planda
   F  MUTASYON: modele bilerek hata; en az bir senaryonun elle beklenenine ya da iç denetim sayacına takılmalı (yakalanmayan = eksik senaryo)
-  G  komut satırı (hesapla, karsilastir: 'biri', 'plan_susuyor', 'kisaltilabilir')
+  G  komut satırı (hesapla, karsilastir: 'biri', 'plan_susuyor', 'kisaltilabilir', 'secenek')
+  I  kâhin güncellemesi 2 (K1–K8, 31.10.2026): dönem çözümü birim denetimi (ay sonu, 31.12 → 01.01, şubat), karar izlenebilirliği (her karar ≥ 2 senaryo),
+     yeniden deneme ve liste çıktılarının iç tutarlılığı, eski 145 senaryoda yeni yaprak türü yok; güncelleme 3 (D1–D8): D4'ün iki okuması beklentiyi değiştirmez,
+     Sonucu Belirsiz artık Zaten Kuyrukta değil; güncelleme 4 (E1–E4, N6): karar izlenebilirliği
 """
 import copy
 import json
@@ -60,7 +63,7 @@ def kos():
         else:
             gecen += 1
             print(f"ok {i} - {ad}")
-        for s in bilgi[:80]:
+        for s in bilgi[:300]:
             print(f"  # {s}")
     print(f"1..{gecen + kalan}")
     for ad, n in (("tests", gecen + kalan), ("pass", gecen), ("fail", kalan), ("cancelled", 0), ("skipped", 0), ("todo", 0)):
@@ -100,6 +103,8 @@ def _a():
         hata.append("serbest seçim listesi farklı")
     if dosya.get("sablonlar") != kahin.SABLONLAR:
         hata.append("şablon metinleri farklı")
+    if dosya.get("kararlar") != kahin.KARARLAR:
+        hata.append("karar metinleri (K1–K8) farklı")
     return hata + [f"bilgi: {len(adlar)} senaryo"]
 
 
@@ -165,7 +170,7 @@ def degismez_denetle(ad, sonuc):
     if isinstance(m.get("post"), dict) and isinstance(m.get("toplam_post"), int):
         toplam = sum(v for v in m["post"].values() if isinstance(v, int))
         if all(isinstance(v, int) for v in m["post"].values()) and toplam != m["toplam_post"]:
-            h.append(f"{ad}: Σ post {toplam} ≠ toplam_post {m['toplam_post']}")
+            h.append(f"{ad}: post_toplam: Σ post {toplam} ≠ toplam_post {m['toplam_post']}")
     teslim_toplam = 0
     for kova in yapraklar(sonuc["bu_ay"]):
         if not isinstance(kova, dict):
@@ -323,6 +328,28 @@ def _e3():
 # İPUCU: bir önceki tam taramada mutasyonu ilk yakalayan senaryo. YALNIZ tarama SIRASINI değiştirir (önce ipucu denenir); ölçüt aynı —
 # ipucu artık yakalamıyorsa tarama bütün senaryolarla sürer. Boş bırakılırsa tam tarama (yavaş ama aynı sonuç).
 MUTASYON_IPUCU = {
+    "M68": "K1-01-ay-sonu-bu-ay-sonra-gecen-ay", "M69": "K1-03-yarim-ay-bu-ay-sonra-tam-ay-gecen-ay", "M70": "K1-05-son-3-ay-7-gun",
+    "M71": "K1-05-son-3-ay-7-gun", "M72": "K2-01-son-3-ay-bekleyen-yasi-yok", "M73": "K1-07-hatirlatma-ayni-yerel-gun", "M74": "K1-07-hatirlatma-ayni-yerel-gun",
+    "M75": "K1-05-son-3-ay-7-gun", "M76": "K3-02-meta-bekletti-ret-sonra-gec-teslim-sayilir", "M77": "K7-01-meta-bekletti-ikinci-deneme-reddi-sayilmaz",
+    "M78": "K7-02-iptal-meta-bekletti-sayilmaz", "M79": "K7-04-geri-yukleme-meta-bekletti-sayilmaz", "M80": "K5-01-karar-yeniden-denemeye-tasinir",
+    "M81": "K5-02-acilistan-sonra-baska-isle-giden-elenir", "M82": "K5-03-sonra-programin-saatine-gore", "M83": "K5-04-isteki-yine-de-gonder-karari-tasir",
+    "M22": "K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil", "M84": "K6-01-yeniden-denemesi-belirsiz-elenir", "M85": "K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi", "M86": "K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi",
+    "M87": "K4-01-ay-sonu-yeniden-deneme-donemi-tasinir", "M88": "K4-03-son-3-ay-yeniden-deneme-secim-tasinir", "M89": "K8-01-sayfalama-imlec-kaymaz",
+    "M90": "K8-01-sayfalama-imlec-kaymaz", "M91": "K8-01-sayfalama-imlec-kaymaz", "M92": "K8-02-tarih-suzgeci-yerel-gun", "M93": "K8-02-tarih-suzgeci-yerel-gun",
+    "M94": "K8-02-tarih-suzgeci-yerel-gun", "M95": "K5-05-karar-yokken-onceki-gec-teslim-sayilir", "M96": "K1-09-bu-ay-gecen-ay-farkli-ay",
+    "M97": "K6-02-asil-isin-karari-belirsizi-gecmez",
+    "M98": "D3-01-yeniden-deneme-7-gun-yeni-gonderimden", "M99": "D5-01-sonraki-denemesi-kabul-daha-once", "M100": "D6-01-asilmis-belirsiz-yeni-toplu-iste-eler",
+    "M101": "D1-01-belirsiz-yeni-toplu-iste-elenir", "M102": "D1-01-belirsiz-yeni-toplu-iste-elenir", "M103": "D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir",
+    "M104": "D8-01-tasinan-veride-dosyadaki-ileti-sayilir", "M105": "D2-01-hatirlatma-dunden-bekleyen-bugunku-eler", "M106": "D4-01-ozel-aralik-ayni-gun-bu-ay",
+    "M107": "D1-01-belirsiz-yeni-toplu-iste-elenir", "M108": "K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi",
+    "M109": "E2-03-yeniden-denemede-kuyrukta-once-belirsiz", "M110": "E2-05-yeniden-denemede-belirsiz-once-r3", "M111": "E2-06-isteki-yine-de-gonder-zaten-kuyrukta",
+    "M112": "E2-01-yeni-is-uclu-cakisma", "M113": "E2-01-yeni-is-uclu-cakisma", "M114": "E3-01-hatirlatma-belirsiz-ayni-yerel-gun",
+    "M115": "E3-01-hatirlatma-belirsiz-ayni-yerel-gun", "M116": "E4-01-son-3-ay-sonraki-teslim-7-gun", "M117": "N6-01-yeniden-denemede-baska-iste-bekleyen",
+    "M118": "F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider", "M119": "F2-01-hatirlatma-yeniden-deneme-ertesi-gun",
+    "M120": "G2-01-bu-ay-0311-ozel-0511", "M121": "G2-02-iki-ozel-aralik-kendi-gunlerinde-bu-ay", "M122": "G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem",
+    "M123": "G2-03-gece-yarisi-bu-ay-yerel-gun", "M124": "G3-01-tasinan-belirsiz-yeni-iste-eler", "M125": "G4-01-sifirlama-meta-bekletti-sayilmaz",
+    "M126": "G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir", "M127": "G0-01-sonraki-denemesi-teslimsiz-durdu-yeniden-gider",
+    "M128": "G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder", "M129": "G6-01-son-3-ay-ozel-aralik-7-gun", "M130": "G6-01-son-3-ay-ozel-aralik-7-gun",
 }
 
 
@@ -419,6 +446,153 @@ def _g4():
     if kahin.donem_metni("2026-10-01", "2026-10-31") != "01.10.2026 \u2013 31.10.2026":
         h.append(f"dönem metni {kahin.donem_metni('2026-10-01', '2026-10-31')!r}")
     return h
+
+
+@test("G karsilastir: 'secenek' yaprağı (karar susuyor: program seçeneklerden biri olmalı)")
+def _g5():
+    h = []
+    b = [{"secimler": [{}], "sonuc": {"d": {"secenek": ["İptal", "Teslim Edildi"], "susuyor": "x"}, "s": {"secenek": [{"a": 1}, {"b": 1}], "susuyor": "y"}}}]
+    if kahin.karsilastir(b, {"d": "Teslim Edildi", "s": {"b": 1}}, kahin.tam_secim({})):
+        h.append("geçerli seçenek fark verdi")
+    if len(kahin.karsilastir(b, {"d": "Başarısız", "s": {"a": 2}}, kahin.tam_secim({}))) != 2:
+        h.append("geçersiz seçenekler iki fark vermedi")
+    return h
+
+
+# ---- I -----------------------------------------------------------------------------------------------------------------------
+def _ms(iso_):
+    return kahin.zaman_ayristir(iso_, 0)
+
+
+@test("I dönem çözümü (K1): Bu Ay/Geçen Ay takvim ayı anahtarı; ay sonu → 1'i; 31.12 → 01.01; şubat kırpması; hatırlatma yerel gün")
+def _i1():
+    tz = kahin.TR
+    h = []
+    def c(donem, t, sablon="ekstre"):
+        return kahin.donem_coz(donem, _ms(t), tz, sablon)
+    ornek = [
+        ({"secim": "bu_ay"}, "2026-10-31T10:00:00+03:00", ("ay", "2026-10"), [("2026-10-01", "2026-10-31")]),
+        ({"secim": "gecen_ay"}, "2026-11-01T10:00:00+03:00", ("ay", "2026-10"), [("2026-10-01", "2026-10-31")]),
+        ({"secim": "gecen_ay"}, "2027-01-01T00:30:00+03:00", ("ay", "2026-12"), [("2026-12-01", "2026-12-31")]),
+        ({"secim": "bu_ay"}, "2026-10-15T10:00:00+03:00", ("ay", "2026-10"), [("2026-10-01", "2026-10-15"), ("2026-10-01", "2026-10-31")]),
+        ({"secim": "gecen_ay"}, "2028-03-01T09:00:00+03:00", ("ay", "2028-02"), [("2028-02-01", "2028-02-29")]),
+        ({"bas": "2026-10-01", "son": "2026-10-15"}, "2026-10-30T10:00:00+03:00", ("aralik", "2026-10-01", "2026-10-15"), [("2026-10-01", "2026-10-15")]),
+        ("tum", "2026-10-30T10:00:00+03:00", ("secim", "tum"), [(None, None)]),
+        ({"secim": "son_3_ay"}, "2026-10-30T10:00:00+03:00", ("secim", "son_3_ay"), None),
+    ]
+    for d, t, anahtar, okumalar in ornek:
+        r = c(d, t)
+        if r["anahtar"] != anahtar:
+            h.append(f"{d} @ {t}: anahtar {r['anahtar']} ≠ {anahtar}")
+        if okumalar is not None and r["okumalar"] != okumalar:
+            h.append(f"{d} @ {t}: okumalar {r['okumalar']} ≠ {okumalar}")
+    if kahin.ay_ekle(kahin.date(2026, 5, 31), -3) != kahin.date(2026, 2, 28) or kahin.ay_ekle(kahin.date(2028, 5, 31), -3) != kahin.date(2028, 2, 29):
+        h.append("ay_ekle şubat kırpması")
+    if kahin.ay_ekle(kahin.date(2027, 1, 15), -3) != kahin.date(2026, 10, 15):
+        h.append("ay_ekle yıl geçişi")
+    r = c(None, "2026-10-31T00:10:00+03:00", "hatirlatma")
+    if r["anahtar"] != ("gun", "2026-10-31"):
+        h.append(f"hatırlatma yerel gün {r['anahtar']} (UTC'de 30.10)")
+    try:
+        c({"secim": "uydurma"}, "2026-10-30T10:00:00+03:00")
+        h.append("bilinmeyen seçim kabul edildi")
+    except ValueError:
+        pass
+    return h
+
+
+@test("I karar izlenebilirliği: K1–K8, D1–D8, E1–E4, N6 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
+def _i2():
+    h = []
+    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5", "G6"):
+        if not kahin.KARARLAR.get(k, {}).get("metin"):
+            h.append(f"{k}: karar metni yok")
+        n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
+        if n < 2:
+            h.append(f"{k}: yalnız {n} senaryo")
+        else:
+            h.append(f"bilgi: {k}: {n} senaryo")
+    return h
+
+
+@test("I yeniden deneme ve liste çıktıları tutarlı (elenen ∩ alınan = ∅; sayfa ≤ 30, etiket tekil, kısa sayfada Daha Fazla yok)")
+def _i3():
+    h = []
+    for s in TUM:
+        r = beklenen(s)[0]["sonuc"]
+        for e, y in (r.get("yeniden") or {}).items():
+            if set(y["elenen"]) & set(y["alinan"]):
+                h.append(f"{s['ad']} {e}: aynı kişi hem elendi hem alındı")
+            if y["oneri"] and kahin.BELIRSIZ_NEDEN not in y["elenen"].values():
+                h.append(f"{s['ad']} {e}: Sonucu Belirsiz elemesi yokken öneri var")
+        for e, l_ in (r.get("listeler") or {}).items():
+            if "ret" in l_:
+                continue
+            et = l_["etiketler"]
+            if len(et) > kahin.SAYFA or len(set(et)) != len(et):
+                h.append(f"{s['ad']} {e}: sayfa {len(et)} / tekil değil")
+            if len(et) < kahin.SAYFA and l_["daha_fazla"] is not False:
+                h.append(f"{s['ad']} {e}: kısa sayfada Daha Fazla Göster")
+    return h
+
+
+@test("I eski 145 senaryoda yeni yaprak türü ('secenek') ve yeni çıktı alanı (yeniden, listeler) YOK (beklentileri değişmedi)")
+def _i4():
+    h = []
+    def gez(o, yol=""):
+        if isinstance(o, dict):
+            if "secenek" in o:
+                return [yol]
+            return [y for k, v in o.items() for y in gez(v, f"{yol}.{k}")]
+        if isinstance(o, list):
+            return [y for i, v in enumerate(o) for y in gez(v, f"{yol}[{i}]")]
+        return []
+    eski = [s for s in TUM if not (len(s["baslik"]) == 2 and s["baslik"][0] in "KDENFG" and s["baslik"][1].isdigit())]
+    for s in eski:
+        r = beklenen(s)[0]["sonuc"]
+        if gez(r) or "yeniden" in r or "listeler" in r:
+            h.append(f"{s['ad']}: yeni yaprak/alan")
+    if len(eski) != 145:
+        h.append(f"eski senaryo sayısı {len(eski)} ≠ 145")
+    return h
+
+
+@test("I G2 dönem eşliği birim denetimi: hazır seçimin o günkü tarihleri + kendi günlerinde Bu Ay'a eşit özel aralıklar BİRLİKTE (G0 3: şüphede aynı dönem)")
+def _i5():
+    e = kahin.donem_eslesir
+    bu_ay_0311 = (("ay", "2026-11"), ("2026-11-01", "2026-11-03"), None)
+    ozel_0103_gun05 = (("aralik", "2026-11-01", "2026-11-03"), ("2026-11-01", "2026-11-03"), None)
+    ozel_0103_gun03 = (("aralik", "2026-11-01", "2026-11-03"), ("2026-11-01", "2026-11-03"), ("ay", "2026-11"))
+    ozel_0105_gun05 = (("aralik", "2026-11-01", "2026-11-05"), ("2026-11-01", "2026-11-05"), ("ay", "2026-11"))
+    ozel_0104_gun05 = (("aralik", "2026-11-01", "2026-11-04"), ("2026-11-01", "2026-11-04"), None)
+    gecen_ay_ekim = (("ay", "2026-10"), ("2026-10-01", "2026-10-31"), None)
+    ornek = [(bu_ay_0311, ozel_0103_gun05, True), (ozel_0103_gun03, ozel_0105_gun05, True), (ozel_0104_gun05, bu_ay_0311, False),
+             (ozel_0105_gun05, gecen_ay_ekim, False), (ozel_0104_gun05, ozel_0105_gun05, False),
+             ((("secim", "son_3_ay"), None, None), (("secim", "tum"), None, None), False)]
+    h = [f"{a} ↔ {b}: {e(a, b)} ≠ {v}" for a, b, v in ornek if e(a, b) != v or e(b, a) != v]
+    if e(bu_ay_0311, ozel_0103_gun05, {"M120"}) or e(ozel_0103_gun03, ozel_0105_gun05, {"M121"}):
+        h.append("M120 / M121 birim düzeyinde etkisiz")
+    # G6: Son 3 Ay / Tüm'ün o günkü tarihleri ↔ özel aralık (iki yön); 7 gün eslesir()'de
+    son3 = (("secim", "son_3_ay"), None, None, (("2026-07-30", "2026-10-30"), ("2026-08-01", "2026-10-30")))
+    ozel_eq = (("aralik", "2026-08-01", "2026-10-30"), ("2026-08-01", "2026-10-30"), None, (("2026-08-01", "2026-10-30"),))
+    ozel_ne = (("aralik", "2026-08-02", "2026-10-30"), ("2026-08-02", "2026-10-30"), None, (("2026-08-02", "2026-10-30"),))
+    if not (e(son3, ozel_eq) and e(ozel_eq, son3)) or e(son3, ozel_ne) or e(son3, ozel_eq, {"M129"}):
+        h.append("G6 çapraz eşlik birim denetimi")
+    return h
+
+
+@test("I D1: hiçbir senaryoda Sonucu Belirsiz kişi 'Zaten Kuyrukta' ile elenmiyor (eski yorum 3 düştü); yeni toplu işte 'Sonucu Belirsiz' elemesi en az bir senaryoda")
+def _i6():
+    h = []
+    n = 0
+    for s in TUM:
+        r = beklenen(s)[0]["sonuc"]
+        n += sum(1 for v in r["elenen"].values() for x in v.values() if x == kahin.BELIRSIZ_NEDEN)
+    if kahin.BELIRSIZ in kahin.KUYRUKTA:
+        h.append("Sonucu Belirsiz hâlâ KUYRUKTA kümesinde")
+    if n == 0:
+        h.append("yeni toplu işte Sonucu Belirsiz elemesi hiç yok")
+    return h + [f"bilgi: yeni toplu işte Sonucu Belirsiz elemesi {n} kez"]
 
 
 # ---- H -----------------------------------------------------------------------------------------------------------------------

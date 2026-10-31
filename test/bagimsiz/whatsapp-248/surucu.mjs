@@ -13,12 +13,18 @@
 //   127.0.0.1'e bağlanır). Kapıcı işareti doğrulaması (mobileSync.kancaIsareti) alıcının başlığını okuyacak biçimde bağlanır: kapıcı + tünel W9 testinde
 //   gerçek kodla sınanır; burada yalnız imzalı/imzasız ayrımı taşınır.
 // Saat: tek sahte, SABİT saat (config.now) + sahte Meta saati; işçi elle sürülür (whatsappWorker "manual", ders 20). İki zaman ucu (README §2): işçi adımı
-// hızlı 0,5 sn / yavaş 5 sn — her ileti isteğinde saat bu kadar ilerler (kâhinde ts = t + adım). TZ Europe/Istanbul (kâhinin "bugün"ü +03:00).
+// hızlı 0,5 sn / yavaş 5 sn — her ileti isteğinde saat bu kadar ilerler (kâhinde ts = t + adım). Programın süreç saat dilimi varsayılan Europe/Istanbul (kâhinin
+// "bugün"ü +03:00); --tz <IANA> ile başka dilim (ör. UTC: Türkiye dışı ayarlı makine, ders 13/22) — kâhinin beklentisi DEĞİŞMEZ, yalnız programın yerel günü kayar.
+// Kâhin güncellemesi 2 eşlemeleri (README §7.5, S-1..S-8): senaryonun "bitis" ufku; hazır dönem seçimi → programın preset'i; etiketli Başarısızları Yeniden Dene /
+// Yine de Gönder yanıtı → sonuc.yeniden; yedek_al / geri_yukle {yedek}; liste → WhatsApp Gönderimleri ucu (30'ar, imleç, Başlangıç/Bitiş) → sonuc.listeler;
+// "Sonucu Belirsiz" eleme nedeni. Sürücü elenme nedenini HESAPLAMAZ, yalnız programın yanıtından okur. S-8: --mutasyon-denetimi her eşlemeye bilerek hata enjekte eder
+// (aynı süreçte, programa dokunmadan) ve kâhin karşılaştırmasının ayrıştığını denetler (ayrışmayan = dişsiz eşleme).
 // Lisans: "lisans" olayı programın lisans nesnesinin writable/assertWritable yanıtını değiştirir (salt okunur lisansın dış koşulu; gerçek lisans servisi yok).
 // Çökme ("cokme"): istek Meta'dayken veri klasörünün o anki kopyası alınır (SIGKILL'in bıraktığı disk), süreç atılır; "ac" o kopyadan açar (açılış toparlaması GERÇEK).
 //
 // Kullanım (depo kökünden):
-//   TZ=Europe/Istanbul node test/bagimsiz/whatsapp-248/surucu.mjs [--senaryo AD1,AD2|önek*] [--uc hizli|yavas|ikisi] [--kip imzali|yol1|yol2] [--cikti <klasör>]
+//   node test/bagimsiz/whatsapp-248/surucu.mjs [--senaryo AD1,AD2|önek*] [--uc hizli|yavas|ikisi] [--kip imzali|yol1|yol2] [--tz <IANA>] [--cikti <klasör>]
+//   node test/bagimsiz/whatsapp-248/surucu.mjs --mutasyon-denetimi [--cikti <klasör>]   (S-8; yalnız hızlı uç)
 //   node tools/kanit.mjs kos 248-t1-kahin -- node test/bagimsiz/whatsapp-248/surucu.mjs --cikti docs/kanit/2026-10-30/248-t1-kahin
 // --kip imzali (varsayılan): Elle Bağla (Yol 1) kurulumu, Meta kancası imzalı geçer (kâhinin varsayımı: "imza kapıcıda doğrulanır", §7a 3);
 //       yol1: GERÇEKÇİ Yol 1 — kapıcı müşterinin uygulama sırrını bilmez, her kanca "wa0" (plan §3 C); yol2: WhatsApp'ı Bağla kipi (connection.saveEmbedded),
@@ -34,7 +40,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
 
-process.env.TZ = "Europe/Istanbul";
+// Saat dilimi argümanı programı içe aktarmadan ÖNCE okunur (aynı süreç: program ve sürücü aynı dilimde).
+const TZ_ARG = (() => {
+  const i = process.argv.indexOf("--tz");
+  return i >= 0 ? process.argv[i + 1] : null;
+})();
+process.env.TZ = TZ_ARG || "Europe/Istanbul";
 // Ders 30: gerçek programın lisans servisi ölü yerel adres (aynı süreçte lisans uygulaması da kapalı: startTestServer license.enforce false).
 process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
 // Ofisin uzak adresi (*.localhost) bu süreçte yerel döngüye çözülür (sahte Meta'nın kanca istekleri alıcıya gelir).
@@ -80,12 +91,33 @@ const ATLAMA = new Map([
   ["Gecikmiş Borç Yok", "gecikmis_borc_yok"],
   ["Zaten Kuyrukta", "zaten_kuyrukta"],
   ["Daha Önce Gönderildi", "daha_once_gonderildi"],
+  // S-7 (kâhin güncellemesi 2, K6): Başarısızları Yeniden Dene'de önceki iletisi Sonucu Belirsiz kalan kişi; S-9 (güncelleme 3, D1): yeni toplu işin başlatma özetinde de.
+  // "Zaten Kuyrukta" / "Daha Önce Gönderildi" yeniden deneme yanıtında da aynı adla (S-9, D5).
+  ["Sonucu Belirsiz", "sonucu_belirsiz"],
 ]);
-const atlamaKodu = metin => ATLAMA.get(String(metin || "")) || (metin ? `?${metin}` : null);
+// S-8: sürücü eşlemelerine bilerek hata (yalnız --mutasyon / --mutasyon-denetimi; programa dokunmaz). null = mutasyon yok.
+let MUTASYON = null;
+const mut = ad => MUTASYON === ad;
+// yer: "baslat" (başlatma özeti — S-9), "yeniden" (Başarısızları Yeniden Dene yanıtı — S-3, S-7, S-9), "yine" (işteki Yine de Gönder yanıtı — S-4, S-11),
+// "is" (gönderimde atlanan iş).
+// Tablo üç yerde AYNI; yer yalnız S-8 mutasyonlarının her yolu ayrı sınayabilmesi için.
+const atlamaKodu = (metin, yer = "is") => {
+  const m = String(metin || "");
+  if (yer === "yeniden" && mut("S7-yeniden-belirsiz-eslemesi-yok") && m === "Sonucu Belirsiz") return `?${m}`;
+  if (yer === "baslat" && mut("S9-baslatma-belirsiz-eslemesi-yok") && m === "Sonucu Belirsiz") return `?${m}`;
+  if (yer === "yeniden" && mut("S9-yeniden-kuyrukta-eslemesi-yok") && m === "Zaten Kuyrukta") return `?${m}`;
+  if (yer === "yeniden" && mut("S9-yeniden-daha-once-eslemesi-yok") && m === "Daha Önce Gönderildi") return `?${m}`;
+  if (yer === "yine" && mut("S11-yine-kuyrukta-eslemesi-yok") && m === "Zaten Kuyrukta") return `?${m}`;
+  return ATLAMA.get(m) || (metin ? `?${metin}` : null);
+};
+// S-2: kâhinin hazır dönem seçimi → programın hazır dönem değeri (istemcinin "Ekstre Dönemi" listesi: hof-whatsapp-api.js PRESETS; sunucu waPresetRange).
+const HAZIR_DONEM = { bu_ay: "thisMonth", gecen_ay: "lastMonth", son_3_ay: "last3", tum: "all" };
+// S-6: WhatsApp Gönderimleri ekranının sayfa boyu (istemci PAGE = 30; limit 31 istenir, 31. kayıt "Daha Fazla Göster"i açar).
+const SAYFA = 30;
 
 // ---------- komut satırı ----------
 function argumanlar(argv) {
-  const o = { senaryo: null, uc: "ikisi", kip: "imzali", cikti: null, ayrinti: false };
+  const o = { senaryo: null, uc: "ikisi", kip: "imzali", cikti: null, ayrinti: false, tz: process.env.TZ, mutasyon: null, mutasyonDenetimi: false, dokum: null };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === "--senaryo") o.senaryo = argv[++i];
@@ -93,6 +125,10 @@ function argumanlar(argv) {
     else if (a === "--kip") o.kip = argv[++i];
     else if (a === "--cikti") o.cikti = argv[++i];
     else if (a === "--ayrinti") o.ayrinti = true;
+    else if (a === "--tz") i += 1; // dosyanın başında okundu
+    else if (a === "--mutasyon") o.mutasyon = argv[++i];
+    else if (a === "--mutasyon-denetimi") o.mutasyonDenetimi = true;
+    else if (a === "--dokum") o.dokum = argv[++i];
     else throw new Error(`bilinmeyen seçenek: ${a}`);
   }
   if (!["hizli", "yavas", "ikisi"].includes(o.uc)) throw new Error("--uc hizli|yavas|ikisi");
@@ -188,7 +224,9 @@ async function kos(sen, uc, secenek) {
   const g = sen.girdi;
   const adim = uc === "hizli" ? 500 : 5 * SN;
   const T0 = zaman(g.baslangic, 0);
-  const ufuk = T0 + 10 * GUN;
+  // S-1: senaryonun "bitis"i varsa ufuk odur (README §7.1 "bitis (ufuk)"); yoksa kâhinin varsayılanı başlangıç + 10 gün (README §2 "Ufuk").
+  const ufuk = g.bitis && !mut("S1-bitis-yok-sayilir") ? zaman(g.bitis, T0) : T0 + 10 * GUN;
+  if (g.bitis && !Number.isFinite(ufuk)) throw new Error(`sürücü bu bitişi çözemedi: ${g.bitis}`);
   const kok = fs.mkdtempSync(path.join(os.tmpdir(), "t1-248-surucu-"));
   const dataDir = path.join(kok, "data");
   const backupDir = path.join(kok, "backups");
@@ -289,7 +327,9 @@ async function kos(sen, uc, secenek) {
   const ekle = (url, s) => (sirketSorgu(s) ? `${url}${url.includes("?") ? "&" : "?"}${sirketSorgu(s)}` : url);
   const toplular = {}; // etiket → { sirket, batchIds: [], ilk }
   const batchEtiket = {}; // program toplu iş kimliği → etiket
-  const sonuc = { baslamadi: {}, elenen: {}, olusmadi: [], ayni_istek: {}, onceki_uyari: {}, kontroller: {} };
+  const sonuc = { baslamadi: {}, elenen: {}, olusmadi: [], ayni_istek: {}, onceki_uyari: {}, kontroller: {}, yeniden: {}, listeler: {} };
+  const yedekler = {}; // S-5: kâhin yedek adı → programın yedek dosyası adı
+  const listeDurum = {}; // S-6: kâhin liste adı → { ids (ekranda birikmiş, imleç için), from, to }
   const elenenToplu = {}; // etiket → Set(program cari kimliği) — başlatmada elenen (iş sayılmaz)
   const planlar = {}; // kâhin cari → [plan kimliği]
   const kancalar = []; // { t, olayT, wamid, durum, kod, tekrar, sira }
@@ -297,6 +337,7 @@ async function kos(sen, uc, secenek) {
   const istekKimlikleri = {};
   const degismez = { silinmis_medyayla_gonderim: 0, kesin_oncesi_medya_silme: 0, artisiz_numaraya_gonderim: 0, lisanssiz_gonderim: 0, duraklatilmis_toplu_gonderim: 0 };
   const medyaIs = new Map(); // medya kimliği → program iş kimliği (programın bildiği medya)
+  const iletilenKabul = []; // S-K: programa ulaşan Meta 200 + wamid yanıtları { wamid, is, t }
   const isMetaSayisi = new Map(); // kâhin iş anahtarı → Meta'daki ileti sayısı (kanca planı "1"/"2"/"*")
   const ttlAdaylari = [];
   let cokme = null; // { cari, toplu, istek_ulasti, oldu, t }
@@ -409,6 +450,14 @@ async function kos(sen, uc, secenek) {
       kancaPlanla(once);
       if (!yanit.ok) return void res.socket?.destroy();
       res.writeHead(yanit.status, { "content-type": yanit.headers["content-type"] || "application/json" });
+      // S-K: Meta'nın 200 + wamid yanıtı programa GERÇEKTEN ulaştı mı ("finish" = yanıt programın bağlantısına yazıldı; kopmuş/zaman aşımına düşmüş bağlantıda olmaz).
+      let kabulWamid = null;
+      try {
+        kabulWamid = yanit.status === 200 ? JSON.parse(yanit.body.toString("utf8")).messages?.[0]?.id || null : null;
+      } catch {
+        kabulWamid = null;
+      }
+      if (kabulWamid) res.once("finish", () => iletilenKabul.push({ wamid: String(kabulWamid), is: isId, t: simdi }));
       return void res.end(yanit.body);
     }
     const medyaYukleme = req.method === "POST" && /\/media$/.test(new URL(yol, "http://x").pathname);
@@ -433,10 +482,26 @@ async function kos(sen, uc, secenek) {
       const medyaId = new URL(yol, "http://x").pathname.split("/").filter(Boolean).pop();
       const isId = medyaIs.get(String(medyaId));
       const st = isId ? programIsDurumu(isId) : null;
-      if (st && ["accepted", "sent", "uncertain"].includes(st)) degismez.kesin_oncesi_medya_silme += 1;
+      // S-11 (README §9.3 P3 / §9.4): iç denetim yalnız kâhin işinin SON denemesinin PDF'ine bakar — önceki (ör. Başarısız) denemenin PDF'i silinirken iş başka
+      // denemede "Meta Kabul Etti"de olabilir; o silme ihlal değildir.
+      const son = isId && !mut("S11-medya-silme-son-deneme-yok") ? sonDenemeMi(isId) : true;
+      if (mut("S11-medya-silme-durumsuz") ? Boolean(isId) : son && st && ["accepted", "sent", "uncertain"].includes(st)) degismez.kesin_oncesi_medya_silme += 1;
     }
     res.writeHead(yanit.status, { "content-type": yanit.headers["content-type"] || "application/json" });
     res.end(yanit.body);
+  }
+  // Program işinin, kâhin işinin (etiket/cari: asıl toplu iş + ona bağlı yeniden deneme / Yine de Gönder toplu işleri) EN SON denemesi olup olmadığı.
+  // Kâhin işine bağlanamayan iş kendi başına son deneme sayılır.
+  function sonDenemeMi(isId) {
+    const bilgi = isBilgisi(isId);
+    const etiket = bilgi ? batchEtiket[bilgi.batchId] : null;
+    const tp = etiket ? toplular[etiket] : null;
+    if (!bilgi || !tp) return true;
+    for (const id of [...tp.batchIds].reverse()) {
+      const row = db(tp.sirket)?.get("SELECT id FROM wa_jobs WHERE batch_id = ? AND account_id = ? ORDER BY rowid DESC LIMIT 1", id, bilgi.accountId);
+      if (row) return row.id === isId;
+    }
+    return true;
   }
   function programIsDurumu(isId) {
     for (const s of sirketler) {
@@ -506,7 +571,13 @@ async function kos(sen, uc, secenek) {
     const imzali = imzaGecerli(ham, req.headers["x-hub-signature-256"]);
     const isaret = secenek.kip === "yol1" ? "wa0" : imzali ? "wa1" : "wa0";
     const yanit = await ilet({ port: program.uzakPort, method: req.method, yol: req.url, headers: { "content-type": "application/json", "x-surucu-isaret": isaret }, govde: ham });
-    kancaKaydi.push({ t: simdi, http: yanit.ok ? yanit.status : 0, isaret });
+    let wamidler = [];
+    try {
+      wamidler = JSON.parse(ham.toString("utf8")).entry.flatMap(e => e.changes || []).flatMap(c => c.value?.statuses || []).filter(st => st.biz_opaque_callback_data).map(st => String(st.id));
+    } catch {
+      wamidler = [];
+    }
+    kancaKaydi.push({ t: simdi, http: yanit.ok ? yanit.status : 0, isaret, wamidler });
     res.writeHead(yanit.ok ? yanit.status : 502);
     res.end(yanit.ok ? yanit.body : undefined);
   }
@@ -568,10 +639,43 @@ async function kos(sen, uc, secenek) {
     program = null;
     await p.server.close();
   }
+  // Ayıklama dökümü (--dokum): olaylar başladıktan sonra sürücünün programa yaptığı her istek ve yanıtı (ham).
+  let apiKaydi = null;
   const api = async (istemci, yontem, url, govde) => {
     const r = await (yontem === "GET" ? istemci.get(url) : yontem === "DELETE" ? istemci.del(url) : yontem === "PUT" ? istemci.put(url, govde) : istemci.post(url, govde));
+    if (apiKaydi && !(yontem === "GET" && /\/whatsapp\/batches\/[^/?]+$/.test(url))) {
+      const maskeli = govde && typeof govde === "object" && "password" in govde ? { ...govde, password: "<gizli>" } : govde ?? null;
+      apiKaydi.push({ t: trIso(simdi), yontem, url, govde: maskeli, status: r.status, yanit: JSON.stringify(r.data ?? null).slice(0, 4000) });
+    }
     return r;
   };
+  // S-K (BAŞ MİMAR KARARI, test altyapısı; EŞLEME BELİRSİZ 1 kapandı; ilk adı S-12 — README §11.4'ün S-12'siyle karışmasın diye S-K): "kabul" (README §2: programın bildiği kabul) şirket dosyasından DEĞİL, telin iki ucundaki
+  // bağımsız kayıttan sayılır: (A) Meta'nın 200 + wamid yanıtı programın bağlantısına GERÇEKTEN yazıldı (vekil; sahte Meta'nın kendi kaydı çökme anında da 200 yazar ama yanıt
+  // programa gitmez — bu yüzden sahte Meta kaydı tek başına yetmez), (B) yanıtı programa ulaşmamış ama Meta'da bulunan iletinin İMZALI, iş kimliği taşıyan durum bildirimi
+  // programa ulaştı ve program 200 dedi (alıcı kaydı; §7a 3 "yalnız imzalı olay + iş kimliğiyle çözülür"). İş kimliği isteğin / iletinin biz_opaque_callback_data'sı.
+  // Sahte Meta dosyaları değişmedi (yalnız kayit() okunur).
+  function kabulHaritasi(kayit) {
+    const harita = new Map();
+    let toplam = 0;
+    const say = isId => {
+      toplam += 1;
+      if (isId) harita.set(isId, (harita.get(isId) || 0) + 1);
+    };
+    if (mut("SK-kabul-meta-iletisinden")) {
+      for (const m of kayit.mesajlar) say(m.opaque);
+      return { harita, toplam };
+    }
+    const yanitiGiden = new Set();
+    for (const k of iletilenKabul) {
+      yanitiGiden.add(k.wamid);
+      say(k.is);
+    }
+    if (!mut("SK-kabul-kanca-cozumu-yok")) {
+      const imzaliUlasan = new Set(kancaKaydi.filter(k => k.isaret === "wa1" && k.http === 200).flatMap(k => k.wamidler || []));
+      for (const m of kayit.mesajlar) if (!yanitiGiden.has(String(m.wamid)) && imzaliUlasan.has(String(m.wamid))) say(m.opaque);
+    }
+    return { harita, toplam };
+  }
   const sart = async (etiket, promise) => {
     const r = await promise;
     if (r.status !== 200) throw new Error(`${etiket}: ${r.status} ${JSON.stringify(r.data).slice(0, 400)}`);
@@ -601,7 +705,7 @@ async function kos(sen, uc, secenek) {
         const r = await api(A, "PUT", ekle("/api/workspace/whatsapp/ack", s), { ack: true });
         if (r.status !== 200 && ayar.bagli) throw new Error(`onay ${s}: ${r.status} ${JSON.stringify(r.data)}`);
       }
-      if (ayar.gunluk_ust_sinir) await sart(`sınır ${s}`, api(A, "PUT", ekle("/api/workspace/whatsapp/sending-settings", s), { dailyCap: ayar.gunluk_ust_sinir }));
+      if (ayar.gunluk_ust_sinir && !mut("S14-gunluk-sinir-yok-sayilir")) await sart(`sınır ${s}`, api(A, "PUT", ekle("/api/workspace/whatsapp/sending-settings", s), { dailyCap: ayar.gunluk_ust_sinir }));
     }
     // ---- kullanıcılar ----
     for (const [ad, yetki] of Object.entries(kullanicilar)) {
@@ -614,7 +718,13 @@ async function kos(sen, uc, secenek) {
       program.istemciler[ad] = c;
     }
     // ---- cariler ----
-    const bugun = () => trGun(simdi);
+    // Kurulumda "bugün" programın kendi yerel günüdür (süreç saat dilimi; programın ileri tarih denetimi bu günle yapılır). --tz Europe/Istanbul'da Türkiye
+    // günüyle aynı; --tz UTC'de gece 00:00–03:00 (TR) arasında bir gün geride (sürücü düzeltmesi: önceki sürüm Türkiye gününü kullanıyordu, UTC'de ICERIK-03
+    // kurulumu "İleri tarihli hareket girilemez" ile düşüyordu).
+    const bugun = () => {
+      const d = new Date(simdi);
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    };
     async function hareketYaz(cid, h) {
       const p = cariProgram[cid];
       const tutar = Number(h.borc || 0) > 0 ? h.borc : h.alacak;
@@ -646,6 +756,7 @@ async function kos(sen, uc, secenek) {
       planlar[cid] = [plan.id];
       for (const v of acik) await sart(`taksit ${cid}`, api(A, "POST", ekle(`/api/workspace/plans/${plan.id}/items`, p.sirket), { dueDate: v.vade, amount: Number(v.kalan) }));
     }
+    const ileriHareketler = [];
     for (const c of g.cariler) {
       const s = c.sirket || "A";
       const govde = { name: c.ad, ...(c.telefon !== null && c.telefon !== undefined ? { phone: c.telefon } : {}) };
@@ -659,12 +770,18 @@ async function kos(sen, uc, secenek) {
       const r = yanit.data.data;
       cariProgram[c.id] = { id: r.id, sirket: s, ad: c.ad };
       programCari[r.id] = c.id;
-      for (const h of c.hareketler || []) await hareketYaz(c.id, h);
+      // İleri tarihli hareket (programın bugününden sonra) bütün cariler açıldıktan SONRA girilir: saat o güne alınıp girilen hareket, sonraki kart yazımlarında
+      // programın tam kapısını ("İleri tarihli hareket", gate-equivalence 500) tetikliyordu (sürücü düzeltmesi, G1-01/02 kurulumu; yalnız giriş sırası değişir).
+      for (const h of c.hareketler || []) {
+        if (h.tarih > bugun()) ileriHareketler.push([c.id, h]);
+        else await hareketYaz(c.id, h);
+      }
       if (c.vadeler?.length) await vadeleriKur(c.id, c.vadeler);
       if (c.istemiyor) await sart(`istemiyor ${c.id}`, api(A, "PUT", ekle(`/api/workspace/accounts/${r.id}`, s), { waOptOut: true }));
       if (c.pasif) await sart(`pasif ${c.id}`, api(A, "PUT", ekle(`/api/workspace/accounts/${r.id}`, s), { status: "passive" }));
       if (c.silindi) await sart(`sil ${c.id}`, api(A, "DELETE", ekle(`/api/workspace/accounts/${r.id}`, s)));
     }
+    for (const [cid, h] of ileriHareketler) await hareketYaz(cid, h);
     // Bakım turu: durum bildirimi adresi Meta'ya kaydedilir (program kendisi; plan §3 C).
     await program.server.app.whatsapp.scheduler.maintain();
     lisansYazilabilir = ayar.lisans_yazilabilir;
@@ -688,10 +805,14 @@ async function kos(sen, uc, secenek) {
         }
         sahipler.push(`${s}:${hook?.pathHash === karma ? "SAHİP" : hook ? "başka yol" : "kayıt yok"}`);
       }
+      // Programın sonraki sürümü kanca kaydını makine defterinde WABA başına tutar (ledger.hookOf); yalnız tanı.
+      const defterKanca = program.server.app.whatsapp.ledger?.hookOf?.(WABA_ID[w]) || null;
+      if (defterKanca) sahipler.push(`defter:${defterKanca.pathHash === karma ? "SAHİP" : "başka yol"} (${defterKanca.state})`);
       notlar.push(`KANCA ${w}: Meta'daki adres → ${sahipler.join(", ")}`);
     }
 
     // ---- olaylar ----
+    if (secenek.dokum) apiKaydi = [];
     const olaylar = [];
     g.olaylar.forEach((o, i) => {
       if (o.tur === "cokme") return;
@@ -707,15 +828,30 @@ async function kos(sen, uc, secenek) {
       const ids = (o.secim || []).map(cid => cariProgram[cid]?.id).filter(Boolean);
       const govde = { kind: sablon === "hatirlatma" ? "reminder" : "statement", ids };
       if (sablon !== "hatirlatma") {
-        if (!o.donem || o.donem === "tum") govde.preset = "all";
-        else Object.assign(govde, { from: o.donem.bas, to: o.donem.son });
+        // S-15 (README §12.3): aynı senaryoda özel aralık ve hazır seçim (Son 3 Ay / "tum") birlikte — iki eşleme de olduğu gibi; program dönemi kendisi çözer.
+        if (!o.donem || o.donem === "tum") govde.preset = mut("S15-tum-son-3-ay") ? "last3" : "all";
+        else if (o.donem.secim !== undefined) {
+          // S-2: hazır dönem seçimi programın preset'iyle (dönemi program çözer; sürücü tarih hesaplamaz).
+          let secim = o.donem.secim;
+          if (mut("S2-bu-ay-gecen-ay-takas")) secim = secim === "bu_ay" ? "gecen_ay" : secim === "gecen_ay" ? "bu_ay" : secim;
+          if (mut("S2-son-3-ay-tum") && secim === "son_3_ay") secim = "tum";
+          const preset = HAZIR_DONEM[secim];
+          if (!preset) throw new Error(`sürücü bu hazır dönemi bilmiyor: ${JSON.stringify(o.donem)}`);
+          if (o.donem.bas !== undefined || o.donem.son !== undefined) throw new Error(`EŞLEME BELİRSİZ: hazır seçim ile tarih aralığı birlikte (${JSON.stringify(o.donem)})`);
+          govde.preset = preset;
+          cevir(`dönem ${o.donem.secim}→${preset}`);
+        } else {
+          let son = o.donem.son;
+          if (mut("S15-ozel-aralik-bitisi-kaydir") && son) son = new Date(Date.parse(`${son}T12:00:00Z`) - GUN).toISOString().slice(0, 10);
+          Object.assign(govde, { from: o.donem.bas, to: son });
+        }
       }
       if (o.istek !== undefined && o.istek !== null) govde.requestId = (istekKimlikleri[o.istek] ||= `istek-${String(o.istek).replace(/[^A-Za-z0-9_-]/g, "_")}-000`);
       if (o.onceki === "gonder") govde.sendAgain = true;
       const r = await api(istemci, "POST", ekle("/api/workspace/whatsapp/batches", s), govde);
       const ozet = r.data?.data?.summary || r.data?.summary || null;
       const elenenler = {};
-      for (const kisi of ozet?.people || []) if (kisi.skip) elenenler[programCari[kisi.id] || kisi.id] = atlamaKodu(kisi.skip);
+      for (const kisi of ozet?.people || []) if (kisi.skip) elenenler[programCari[kisi.id] || kisi.id] = atlamaKodu(kisi.skip, "baslat");
       if (Object.keys(elenenler).length) sonuc.elenen[o.etiket] = elenenler;
       if (ozet?.alreadySent?.count) sonuc.onceki_uyari[o.etiket] = { sayi: ozet.alreadySent.count, son: ozet.alreadySent.last ? trGun(Date.parse(ozet.alreadySent.last)) : null };
       if (r.status === 200) {
@@ -750,6 +886,46 @@ async function kos(sen, uc, secenek) {
         out[etiket] = ayrinti;
       }
       return out;
+    }
+    // S-5: geri yüklemeden sonra yedekten SONRA açılmış toplu işler şirket dosyasında yoktur (programın ayrıntı ucu 404): izlenen listeden çıkarılır (adıyla notta).
+    // Program 404 dışında bir yanıt verirse sürücü durur (okunamayan veri boş sayılmaz, ders 4).
+    async function dosyadakiTopluIsler(neden) {
+      for (const [etiket, tp] of Object.entries(toplular)) {
+        const kalan = [];
+        for (const id of tp.batchIds) {
+          const r = await api(program.admin, "GET", ekle(`/api/workspace/whatsapp/batches/${id}`, tp.sirket));
+          if (r.status === 200) kalan.push(id);
+          else if (r.status === 404) notlar.push(`${neden}: ${etiket} toplu işi (${id}) şirket dosyasında yok`);
+          else throw new Error(`${neden}: ${etiket} toplu işi okunamadı: ${r.status} ${JSON.stringify(r.data).slice(0, 200)}`);
+        }
+        if (kalan.length) tp.batchIds = kalan;
+        else delete toplular[etiket];
+      }
+    }
+    // S-3 / S-4: Başarısızları Yeniden Dene / Yine de Gönder yanıtı → kâhinin yeniden.<etiket> = { elenen: {cari: neden}, alinan: [cari], oneri }.
+    // 200: yeni toplu işin özeti (kişiler ve eleme nedenleri); 400 "Gönderilebilecek kişi yok": hata gövdesindeki özet + İLETİ. Öneri = iletinin "sonucu belirsiz"
+    // cümlesinde gösterilen yol (K6: işteki Yine de Gönder / yeni gönderim); iki yol birden yazılıysa ikisi "+" ile (kâhinin "yalnız" kuralı görünsün); 200'de ileti yok → null.
+    // Alt çizgili alanlar (_http, _kod, _ileti) yalnız tanı içindir; kâhin karşılaştırıcısı beklenende olmayan alana bakmaz.
+    function oneriOku(ileti) {
+      const belirsiz = String(ileti || "").split(/(?<=[.!?])\s+/).filter(c => /sonucu belirsiz/i.test(c));
+      const yollar = [];
+      if (belirsiz.some(c => /işteki\s+"?Yine de Gönder/.test(c))) yollar.push("isteki_yine_de_gonder");
+      if (belirsiz.some(c => /yeni gönderim başlatın/.test(c))) yollar.push("yeni_gonderim");
+      if (mut("S3-oneri-takas")) return yollar.length ? yollar.map(y => (y === "yeni_gonderim" ? "isteki_yine_de_gonder" : "yeni_gonderim")).join("+") : null;
+      return yollar.length ? yollar.join("+") : null;
+    }
+    function yenidenOku(r, yer = "yeniden") {
+      const govde = r.data || {};
+      const ozet = r.status === 200 ? govde.data?.summary || null : govde.summary || null;
+      const elenen = {};
+      const alinan = [];
+      for (const kisi of ozet?.people || []) {
+        const cid = programCari[kisi.id] || `?${kisi.id}`;
+        if (kisi.skip && !mut("S3-alinan-elenenleri-de-sayar")) elenen[cid] = atlamaKodu(kisi.skip, yer);
+        else alinan.push(cid);
+      }
+      const ileti = r.status === 200 ? "" : String(govde.error || "");
+      return { elenen: mut("S3-elenen-okunmaz") ? {} : elenen, alinan, oneri: oneriOku(ileti), _http: r.status, _kod: govde.code || null, ...(ileti ? { _ileti: ileti } : {}), ...(ozet ? {} : { _ozet: "yanıtta özet yok" }) };
     }
     let sonOkuma = null; // program kapalıyken son okunan hâl
     kapanisOncesi = async () => {
@@ -792,7 +968,10 @@ async function kos(sen, uc, secenek) {
       for (const b of liste.slice(1)) if (["paused", "running"].includes(b.state) && !(b.state === "running" && !b.pauseCode)) secilen = b;
       const durum = durumOf(secilen);
       let neden = null;
-      if (durum === "duraklatildi" || durum === "baglanti_bekleniyor" || durum === "durduruldu") {
+      // İptal edilen toplu iş: program önceki duraklatma nedenini (pauseCode/pauseReason) toplu işte tutar; kâhinin "neden"i de taşır (sürücü düzeltmesi, ayıklama
+      // 31.10.2026: K2-02 — önceki eşleme iptalde nedeni hiç okumuyordu).
+      const iptalNedeni = durum === "iptal" && secilen.pauseCode && !mut("S16-iptal-nedeni-okunmaz");
+      if (durum === "duraklatildi" || durum === "baglanti_bekleniyor" || durum === "durduruldu" || iptalNedeni) {
         const kod = secilen.pauseCode || "";
         if (kod === "user") neden = "kullanici";
         else if (kod === "template-marketing") neden = "Şablon Pazarlama'ya Alındı";
@@ -833,7 +1012,7 @@ async function kos(sen, uc, secenek) {
         t: trIso(simdi),
         durum_sayilari: Object.fromEntries(Object.entries(durumlar).sort(([a], [b]) => (a < b ? -1 : 1))),
         toplam_post: kayit.sayilar.toplamMesajIstegi,
-        toplam_kabul: [...isler.values()].flat().filter(x => x.job.wamid).length,
+        toplam_kabul: mut("SK-kabul-dosyadan") ? [...isler.values()].flat().filter(x => x.job.wamid).length : kabulHaritasi(kayit).toplam,
         pencere_farkli_alici: pencere,
         medya_silme: kayit.sayilar.medyaSilme,
         toplular: Object.fromEntries(Object.keys(okuma || {}).map(e => [e, topluDurum(okuma[e]).durum])),
@@ -842,10 +1021,10 @@ async function kos(sen, uc, secenek) {
       if (!g.ozet_cikti) k.isler = Object.fromEntries([...Object.entries(isDurumlari)].sort(([a], [b]) => (a < b ? -1 : 1)));
       sonuc.kontroller[o.ad] = k;
     }
-    function programIsi(etiket, cid) {
+    function programIsi(etiket, cid, { asil = false } = {}) {
       const tp = toplular[etiket];
       if (!tp || !program) return null;
-      for (const id of [...tp.batchIds].reverse()) {
+      for (const id of asil ? [tp.batchIds[0]] : [...tp.batchIds].reverse()) {
         const row = db(tp.sirket)?.get("SELECT id, state, wamid FROM wa_jobs WHERE batch_id = ? AND account_id = ? ORDER BY rowid DESC LIMIT 1", id, cariProgram[cid]?.id);
         if (row) return row;
       }
@@ -911,31 +1090,104 @@ async function kos(sen, uc, secenek) {
       }
       if (tur === "basarisizlari_yeniden_dene") {
         const tp = toplular[o.toplu];
-        const r = await api(program.admin, "POST", ekle(`/api/workspace/whatsapp/batches/${tp.batchIds.at(-1)}/retry-failed`, tp.sirket), {});
+        if (!tp) {
+          // Toplu iş hiç açılmamış (bütün seçilenler elendi) ya da dosyada yok: ekranda düğme yok. Sürücü durmaz; sonuç alanları yazılmaz (karşılaştırmada <YOK>).
+          notlar.push(`Başarısızları Yeniden Dene ${o.etiket || ""}: ${o.toplu} toplu işi programda yok`);
+          if (o.etiket) sonuc.yeniden[o.etiket] = { _yok: `${o.toplu} toplu işi programda yok` };
+          return;
+        }
+        // S-3: hedef "asil" → asıl (ilk) toplu iş; hedefsiz → son toplu iş (önceki eşleme; ekranda en son açılan gönderim).
+        if (o.hedef !== undefined && o.hedef !== "asil") throw new Error(`sürücü bu yeniden deneme hedefini bilmiyor: ${o.hedef}`);
+        const hedefId = o.hedef === "asil" && !mut("S3-hedef-yok-sayilir") ? tp.batchIds[0] : tp.batchIds.at(-1);
+        const r = await api(program.admin, "POST", ekle(`/api/workspace/whatsapp/batches/${hedefId}/retry-failed`, tp.sirket), {});
         if (r.status === 200 && r.data.data.batch) {
           tp.batchIds.push(r.data.data.batch.id);
           batchEtiket[r.data.data.batch.id] = o.toplu;
-        } else notlar.push(`Başarısızları Yeniden Dene: ${r.status} ${r.data?.code || ""} ${r.data?.error || ""}`);
+        } else notlar.push(`Başarısızları Yeniden Dene ${o.etiket || ""}: ${r.status} ${r.data?.code || ""} ${r.data?.error || ""}`);
+        if (o.etiket && !(mut("S3-ret-yaniti-okunmaz") && r.status !== 200)) sonuc.yeniden[o.etiket] = yenidenOku(r);
         return;
       }
       if (tur === "yine_de_gonder") {
         const tp = toplular[o.toplu];
-        const is = programIsi(o.toplu, o.cari);
-        const r = is ? await api(program.admin, "POST", ekle(`/api/workspace/whatsapp/jobs/${is.id}/send-anyway`, tp.sirket), { confirm: true }) : { status: 0, data: { code: "iş yok" } };
+        // S-12 (README §11.4, G0-02): hedef "asil" → ASIL toplu işteki iş (asılda belirsiz kalan deneme); hedefsiz → o carinin bu etiketteki en son işi (önceki eşleme).
+        if (o.hedef !== undefined && o.hedef !== "asil") throw new Error(`sürücü bu Yine de Gönder hedefini bilmiyor: ${o.hedef}`);
+        const is = tp ? programIsi(o.toplu, o.cari, { asil: o.hedef === "asil" && !mut("S12-yine-hedef-yok-sayilir") }) : null;
+        // Ekranda "Yine de Gönder" iki kez gidebilir onayından sonra confirm: true ile gider (hof-whatsapp-api.js sendAnyway).
+        const r = is ? await api(program.admin, "POST", ekle(`/api/workspace/whatsapp/jobs/${is.id}/send-anyway`, tp.sirket), { confirm: !mut("S4-onaysiz-yine-de-gonder") }) : { status: 0, data: { code: "iş yok" } };
         if (r.status === 200 && r.data.data.batch) {
           tp.batchIds.push(r.data.data.batch.id);
           batchEtiket[r.data.data.batch.id] = o.toplu;
         } else notlar.push(`Yine de Gönder ${o.toplu}/${o.cari}: ${r.status} ${r.data?.code || ""} ${r.data?.error || ""}`);
+        if (o.etiket) sonuc.yeniden[o.etiket] = r.status === 0 ? { _http: 0, _kod: "iş yok" } : yenidenOku(r, "yine");
+        return;
+      }
+      if (tur === "yedek_al") {
+        // S-5: adlı yedek (Yönetim → Yedekler → bu şirketin yedeği); geri_yukle {yedek} bu dosyaya döner.
+        const s = o.sirket || "A";
+        const yedek = await sart(`yedek ${o.ad}`, api(program.admin, "POST", "/api/admin/backups", { scope: "one", companyId: sirketKimligi[s] }));
+        yedekler[o.ad] = { ad: yedek.backups[0].name, sirket: s };
+        return;
+      }
+      if (tur === "sifirla" && !mut("S13-sifirla-geri-yukleme-benzetimi")) {
+        // S-13 (README §11.4): programın GERÇEK "Şirket Verisini Sıfırla" ucu, varsayılan tür "movements" (Tüm Hareketleri Sil: cari kartları kalır; hareketler,
+        // faturalar, taksitler ve WhatsApp toplu işleri/işleri silinir; makine defterinde şirketin süren gönderimleri durdurulur — server/app.mjs resetData).
+        // Kâhin bu yolda karar vermedi (geri yükleme düzeni bekler); sonrasında carilerin ve işlerin ne olduğu notta yazılır, ayrışma sınıflanır.
+        const s = o.sirket || "A";
+        if (s !== "A") throw new Error("EŞLEME BELİRSİZ: A dışındaki şirketi sıfırlama (onay kodu)");
+        const r = await sart("sıfırla", api(program.admin, "POST", `/api/companies/${sirketKimligi[s]}/reset`, { confirm: "001", password: ADMIN_PASSWORD, mode: o.tum ? "all" : "movements" }));
+        const silinen = Object.entries(r.counts || {}).filter(([, n]) => n).map(([t, n]) => `${t} ${n}`).join(", ");
+        notlar.push(`SIFIRLAMA (${r.mode}): silinen satırlar — ${silinen || "yok"}; yedek ${r.backup ? "alındı" : "yok"}`);
+        for (const [cid, p] of Object.entries(cariProgram)) {
+          const c = await api(program.admin, "GET", ekle(`/api/workspace/accounts/${p.id}`, p.sirket));
+          const hesap = c.data?.data || {};
+          notlar.push(`SIFIRLAMA sonrası cari ${cid}: ${c.status}${c.status === 200 ? ` kimlik ${hesap.id === p.id ? "aynı" : "DEĞİŞTİ"}, bakiye ${JSON.stringify(hesap.totals?.balance ?? "okunamadı")}, borç ${JSON.stringify(hesap.totals?.debit ?? "okunamadı")}, WhatsApp istemiyor ${JSON.stringify(hesap.waOptOut ?? "okunamadı")}` : ""}`);
+        }
+        await dosyadakiTopluIsler("SIFIRLAMA");
         return;
       }
       if (tur === "geri_yukle" || tur === "sifirla") {
-        const yedek = await sart("yedek", api(program.admin, "POST", "/api/admin/backups", { scope: "one", companyId: "sirket-001" }));
-        const ad = yedek.backups[0].name;
+        let ad;
+        if (o.yedek !== undefined && !mut("S5-yedek-yok-sayilir")) {
+          if (!yedekler[o.yedek]) throw new Error(`geri yükle: ${o.yedek} adlı yedek alınmamış`);
+          if (yedekler[o.yedek].sirket !== "A") throw new Error("EŞLEME BELİRSİZ: A dışındaki şirketin yedeğine dönüş (sürücü yalnız 001'i geri yükler)");
+          ad = yedekler[o.yedek].ad;
+        } else {
+          // Yedek adı yoksa (eski senaryolar): o an yedek alınıp hemen dönülür (önceki eşleme).
+          const yedek = await sart("yedek", api(program.admin, "POST", "/api/admin/backups", { scope: "one", companyId: "sirket-001" }));
+          ad = yedek.backups[0].name;
+        }
         const r = await sart("geri yükle", api(program.admin, "POST", "/api/admin/backups/restore", { name: ad, company: "sirket-001", confirm: "001", password: ADMIN_PASSWORD }));
         if (r.staged) {
           await programKapat();
           await programAc();
-              }
+        }
+        await dosyadakiTopluIsler(`GERİ YÜKLEME (${o.yedek || "anlık yedek"})`);
+        return;
+      }
+      if (tur === "liste") {
+        // S-6: WhatsApp Gönderimleri (GET …/batches?limit=31&from&to&before). "devam" = o listenin Daha Fazla Göster'i: imleç ekrandaki son gönderim, süzgeç aynı.
+        const onceki = o.devam !== undefined ? listeDurum[o.devam] : null;
+        if (o.devam !== undefined && !onceki) throw new Error(`liste ${o.ad}: devam edilecek ${o.devam} listesi yok`);
+        if (onceki && (o.bas !== undefined || o.son !== undefined)) throw new Error(`EŞLEME BELİRSİZ: liste ${o.ad} hem devam hem yeni süzgeç taşıyor`);
+        const devral = onceki && !mut("S6-devam-suzgeci-devralmaz");
+        const from = mut("S6-suzgec-gonderilmez") ? "" : devral ? onceki.from : o.bas || "";
+        const to = mut("S6-suzgec-gonderilmez") ? "" : devral ? onceki.to : o.son || "";
+        const boy = mut("S6-sayfa-31") ? SAYFA + 1 : SAYFA;
+        const q = new URLSearchParams({ limit: String(boy + 1) });
+        if (from) q.set("from", from);
+        if (to) q.set("to", to);
+        if (onceki?.ids.length && !mut("S6-imlec-gonderilmez")) q.set("before", onceki.ids.at(-1));
+        const r = await api(program.admin, "GET", ekle(`/api/workspace/whatsapp/batches?${q}`, o.sirket || "A"));
+        if (r.status === 200 && Array.isArray(r.data?.data)) {
+          const gelen = r.data.data;
+          const sayfa = gelen.slice(0, boy);
+          listeDurum[o.ad] = { ids: [...(onceki?.ids || []), ...sayfa.map(b => b.id)], from, to };
+          sonuc.listeler[o.ad] = { etiketler: sayfa.map(b => batchEtiket[b.id] || `?${b.id}`), daha_fazla: mut("S6-daha-fazla-hep-yok") ? false : gelen.length > boy };
+        } else if (r.status === 400 && r.data?.field === "from" && /Bitiş tarihinden sonra olamaz/.test(String(r.data?.error || "")) && !mut("S6-ters-aralik-bos-liste")) {
+          sonuc.listeler[o.ad] = { ret: "bas_son_ters", _ileti: r.data.error };
+        } else if (mut("S6-ters-aralik-bos-liste") && r.status === 400) {
+          sonuc.listeler[o.ad] = { etiketler: [], daha_fazla: false };
+        } else sonuc.listeler[o.ad] = { ret: `?${r.status} ${r.data?.code || ""}`, _ileti: String(r.data?.error || "") };
         return;
       }
       if (tur === "tasindi") {
@@ -1057,6 +1309,7 @@ async function kos(sen, uc, secenek) {
     }
     const iletiIs = new Map();
     for (const m of kayit.mesajlar) if (m.opaque) iletiIs.set(m.opaque, (iletiIs.get(m.opaque) || 0) + 1);
+    const kabulKaydi = kabulHaritasi(kayit);
     for (const m of kayit.mesajlar) if (m.medyaId && m.opaque) medyaIs.set(String(m.medyaId), m.opaque);
     for (const s of sirketler) for (const row of db(s)?.all("SELECT id, media_id FROM wa_jobs WHERE media_id IS NOT NULL") || []) medyaIs.set(String(row.media_id), row.id);
     const medyaYukleme = new Map();
@@ -1072,6 +1325,17 @@ async function kos(sen, uc, secenek) {
       const m = meta.meta.medyalar.get(String(medyaId));
       if (!m) return null;
       return ekstreOku(pdfText(m.icerik));
+    };
+    // Kâhin işi (etiket/cari) programda birden çok işe yayılır (Başarısızları Yeniden Dene / Yine de Gönder yeni toplu iş açar). Hata kodu: son işin kendi kodu; son
+    // işin kodu yoksa ve son iş başarılı değilse (README §2: "başarılı işin hata kodu temizlenir", §7a 32) önceki işlerin en son kodu (sürücü düzeltmesi, ayıklama
+    // 31.10.2026: E3-02 / F2-02'de asıl iş 131026 + yeniden denemesi Sonucu Belirsiz — program iki bilgiyi de gösteriyor, sürücü yalnız sonuncuyu okuyordu).
+    const BASARILI = new Set(["accepted", "sent", "delivered", "read"]);
+    const hataKodu = liste => {
+      const son = liste.at(-1).job;
+      if (Number.isFinite(son.errorCode)) return son.errorCode;
+      if (mut("S16-hata-kodu-yalniz-son-is") || BASARILI.has(son.state)) return null;
+      for (const x of [...liste].reverse()) if (Number.isFinite(x.job.errorCode)) return x.job.errorCode;
+      return null;
     };
     const isSonucu = {};
     const toplam = { post: {}, kabul: {}, meta_ileti: {}, medya_yukleme: {}, medya_silme: {} };
@@ -1101,9 +1365,9 @@ async function kos(sen, uc, secenek) {
         degiskenler: icerikli ? icerikli.job.params : null,
         pdf: sablon === "destekofis_ekstre" && sonMedya ? pdfOku(sonMedya) : null,
         dosya_adi: sablon === "destekofis_ekstre" ? dosya : null,
-        hata_kodu: Number.isFinite(son.job.errorCode) ? son.job.errorCode : null,
+        hata_kodu: hataKodu(liste),
         post: say(istekIs),
-        kabul: liste.filter(x => x.job.wamid).length,
+        kabul: mut("SK-kabul-dosyadan") ? liste.filter(x => x.job.wamid).length : say(kabulKaydi.harita),
         meta_ileti: say(iletiIs),
         medya_yukleme: say(medyaYukleme),
         medya_silme: say(medyaSilme),
@@ -1148,13 +1412,16 @@ async function kos(sen, uc, secenek) {
       meta: {
         ...Object.fromEntries(Object.entries(toplam).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).sort())])),
         toplam_post: kayit.sayilar.toplamMesajIstegi,
-        toplam_kabul_program: Object.values(isSonucu).reduce((s, v) => s + v.kabul, 0),
+        toplam_kabul_program: mut("SK-kabul-dosyadan") ? Object.values(isSonucu).reduce((s, v) => s + v.kabul, 0) : kabulKaydi.toplam,
         toplam_meta_ileti: kayit.sayilar.toplamKabul,
         toplam_medya_yukleme: kayit.sayilar.medyaYukleme,
       },
       kontroller: sonuc.kontroller,
       bu_ay: buAy,
       degismez,
+      // Kâhin güncellemesi 2 alanları yalnız ilgili olay varsa (README §7.1: eski senaryolar etkilenmez).
+      ...(g.olaylar.some(x => ["basarisizlari_yeniden_dene", "yine_de_gonder"].includes(x.tur) && x.etiket) ? { yeniden: Object.fromEntries(Object.entries(sonuc.yeniden).sort()) } : {}),
+      ...(g.olaylar.some(x => x.tur === "liste") ? { listeler: Object.fromEntries(Object.entries(sonuc.listeler).sort()) } : {}),
     };
     if (g.ozet_cikti) {
       cikti.meta = Object.fromEntries(Object.entries(cikti.meta).filter(([k]) => k.startsWith("toplam")));
@@ -1163,6 +1430,38 @@ async function kos(sen, uc, secenek) {
       for (const v of Object.values(isSonucu)) dag[String(v.post)] = (dag[String(v.post)] || 0) + 1;
       cikti.isler_post_dagilimi = Object.fromEntries(Object.entries(dag).sort());
     } else cikti.isler = isSonucu;
+    if (secenek.dokum) {
+      // Ayıklama dökümü (ders 6): programın HTTP yanıtları, toplu işlerin ham ayrıntısı (şirket dosyası), makine defteri, sahte Meta kaydı. Yalnız okuma.
+      const defterDokum = {};
+      const dosya = path.join(dataDir, "whatsapp-gonderim.sqlite");
+      if (fs.existsSync(dosya)) {
+        const d = new DatabaseSync(dosya, { readOnly: true });
+        try {
+          for (const { name } of d.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all()) {
+            defterDokum[name] = d.prepare(`SELECT * FROM "${name}" ORDER BY rowid`).all().slice(0, 400);
+          }
+        } finally {
+          d.close();
+        }
+      }
+      const cariAdi = id => programCari[id] || id;
+      const dokum = {
+        senaryo: sen.ad, uc, tz: process.env.TZ, bitis: trIso(simdi), notlar,
+        program_api: apiKaydi,
+        toplular: Object.fromEntries(Object.entries(okuma || {}).map(([e, liste]) => [e, liste.map(b => ({ ...b, jobs: b.jobs.map(j => ({ cari: cariAdi(j.accountId), ...j })) }))])),
+        cari_eslemesi: Object.fromEntries(Object.entries(cariProgram).map(([k, v]) => [k, v.id])),
+        defter: defterDokum,
+        sahte_meta: {
+          istekler: kayit.istekler.filter(i => ["messages", "media"].includes(i.islem) || /DELETE/.test(i.yontem)).map(i => ({ sira: i.sira, t: trIso(i.t), yontem: i.yontem, islem: i.islem, hedef: i.hedef, deneme: i.deneme, http: i.http, sonuc: i.sonuc, is: i.govde?.biz_opaque_callback_data || null, yanit: i.yanit })),
+          mesajlar: kayit.mesajlar.map(m => ({ wamid: m.wamid, to: m.to, kabul: trIso(m.kabulT), is: m.opaque || null, medya: m.medyaId || null })),
+          kancalar: kayit.kancalar.map(k => ({ t: trIso(k.t), wamid: k.wamid, durum: k.durum, http: k.http, basarili: k.basarili, hata: k.hata || null, url: String(k.url || '').replace(/\/wa\/kanca\/.*/, '/wa/kanca/<gizli>') })),
+          sayilar: kayit.sayilar,
+        },
+        alici_kanca_kaydi: kancaKaydi,
+      };
+      fs.mkdirSync(secenek.dokum, { recursive: true });
+      fs.writeFileSync(path.join(secenek.dokum, `${sen.ad}-${uc}-${String(process.env.TZ).replace(/[^A-Za-z0-9]+/g, "-")}.json`), JSON.stringify(dokum, null, 1));
+    }
     return { cikti, notlar, ceviriler, kancalar: kancaKaydi.length, bitis: trIso(simdi) };
   } finally {
     try {
@@ -1298,61 +1597,149 @@ const NORMALLESTIRMELER = [
 // ---------- ana ----------
 const secenek = argumanlar(process.argv.slice(2));
 const veri = JSON.parse(fs.readFileSync(SENARYOLAR, "utf8"));
-let liste = veri.senaryolar;
-if (secenek.senaryo) {
-  const istenen = secenek.senaryo.split(",").map(s => s.trim()).filter(Boolean);
-  liste = liste.filter(s => istenen.some(x => (x.endsWith("*") ? s.ad.startsWith(x.slice(0, -1)) : s.ad === x)));
+const secici = desen => {
+  const istenen = desen.split(",").map(s => s.trim()).filter(Boolean);
+  return veri.senaryolar.filter(s => istenen.some(x => (x.endsWith("*") ? s.ad.startsWith(x.slice(0, -1)) : s.ad === x)));
+};
+const tzAdi = String(process.env.TZ).replace(/[^A-Za-z0-9]+/g, "-");
+
+async function kosVeKarsilastir(sen, uc) {
+  const baslangic = Date.now();
+  try {
+    const r = await kos(sen, uc, secenek);
+    const farklar = karsilastir(sen.beklenen, r.cikti);
+    const siniflar = {};
+    let kalanFark = farklar;
+    if (farklar.length) {
+      const beklenenSonuc = sen.beklenen[0].sonuc;
+      let birikimli = r.cikti;
+      for (const [ad, fn] of NORMALLESTIRMELER) {
+        birikimli = fn(JSON.parse(JSON.stringify(birikimli)), beklenenSonuc);
+        const sonra = karsilastir(sen.beklenen, birikimli);
+        const kayan = kalanFark.filter(f => !sonra.includes(f));
+        if (kayan.length) siniflar[ad] = kayan;
+        kalanFark = sonra;
+        if (!kalanFark.length) break;
+      }
+    }
+    return { ad: sen.ad, uc, kip: secenek.kip, tz: process.env.TZ, mutasyon: MUTASYON, farklar, davranis_farki: kalanFark, siniflar, notlar: r.notlar, ceviriler: r.ceviriler, kanca_istegi: r.kancalar, bitis: r.bitis, sure_ms: Date.now() - baslangic, program: r.cikti };
+  } catch (error) {
+    return { ad: sen.ad, uc, kip: secenek.kip, tz: process.env.TZ, mutasyon: MUTASYON, hata: String(error.stack || error), farklar: ["SÜRÜCÜ HATASI"], sure_ms: Date.now() - baslangic };
+  }
 }
-const uclar = secenek.uc === "ikisi" ? ["hizli", "yavas"] : [secenek.uc];
+
+// S-8: sürücü eşlemelerinin dişi. Her satır: [mutasyon, hedef senaryolar (önek*), eşleme]. Hedef senaryo mutasyonsuz İKİ kez koşar (kararlılık: iki fark listesi aynı
+// olmalı); mutasyonlu koşunun fark listesi tabandan FARKLIYSA yakalandı. Ayrışmayan = dişsiz eşleme (o eşlemeyi hiçbir hedef senaryo sınamıyor) — raporda adıyla.
+const MUTASYONLAR = [
+  ["S1-bitis-yok-sayilir", "K1-03*,K7-01*,K7-02*,K7-04*,D3-02*,D8-01*", "S-1 / S-10 bitis → ufuk"],
+  ["S2-bu-ay-gecen-ay-takas", "K1-01*,K1-03*,K1-09*,D1-02*,D4-01*,D7-02*", "S-2 bu_ay/gecen_ay → thisMonth/lastMonth"],
+  ["S2-son-3-ay-tum", "K1-05*,K4-03*,D1-03*,D3-01*,G6-01*,G6-03*,G6-05*", "S-2 son_3_ay → last3"],
+  ["S3-hedef-yok-sayilir", "K6-01*,K6-02*,D5-01*,D5-02*", "S-3 hedef asil → asıl toplu iş"],
+  ["S3-elenen-okunmaz", "K5-02*,K6-01*,K6-03*,D3-01*,D5-02*", "S-3 yanıttaki elenen + neden"],
+  ["S3-alinan-elenenleri-de-sayar", "K5-02*,K6-03*,D5-01*", "S-3 yanıttaki alınan"],
+  ["S3-oneri-takas", "K6-01*,K6-03*,D6-02*", "S-3 iletideki öneri"],
+  ["S3-ret-yaniti-okunmaz", "K5-02*,K6-03*,D3-02*", "S-3 400 yanıtı okunur"],
+  ["S4-onaysiz-yine-de-gonder", "K5-04*,D1-01*,D3-02*,D6-01*,F1-01*,F1-03*", "S-4 Yine de Gönder (onaylı) + yanıtı"],
+  ["S5-yedek-yok-sayilir", "K6-03*,D7-01*,D7-02*,E1-01*,E2-03*", "S-5 geri_yukle {yedek} → adlı yedek"],
+  ["S6-imlec-gonderilmez", "K8-01*", "S-6 imleç (before)"],
+  ["S6-suzgec-gonderilmez", "K8-02*,K8-03*", "S-6 Başlangıç/Bitiş (from/to)"],
+  ["S6-devam-suzgeci-devralmaz", "K8-03*", "S-6 devam süzgeci devralır"],
+  ["S6-sayfa-31", "K8-01*,K8-03*", "S-6 sayfa boyu 30"],
+  ["S6-daha-fazla-hep-yok", "K8-01*,K8-03*", "S-6 Daha Fazla Göster (31. kayıt)"],
+  ["S6-ters-aralik-bos-liste", "K8-02*", "S-6 Başlangıç > Bitiş reddi"],
+  ["S7-yeniden-belirsiz-eslemesi-yok", "K6-01*,K6-02*,K6-03*,D6-02*,F2-01*", "S-7 yeniden denemede Sonucu Belirsiz → sonucu_belirsiz"],
+  ["S9-baslatma-belirsiz-eslemesi-yok", "D1-01*,D1-02*,D1-03*,D6-01*,D6-03*", "S-9 başlatmada Sonucu Belirsiz → sonucu_belirsiz"],
+  ["S9-yeniden-kuyrukta-eslemesi-yok", "D5-02*", "S-9 yeniden denemede Zaten Kuyrukta → zaten_kuyrukta"],
+  ["S9-yeniden-daha-once-eslemesi-yok", "K5-02*,D3-01*,D5-01*,F2-02*", "S-9 yeniden denemede Daha Önce Gönderildi → daha_once_gonderildi"],
+  ["S11-yine-kuyrukta-eslemesi-yok", "E2-06*,F1-02*", "S-11 işteki Yine de Gönder'de Zaten Kuyrukta → zaten_kuyrukta"],
+  ["S11-medya-silme-durumsuz", "TEMEL-01*,E4-01*,E4-02*", "S-11 iç denetim: yalnız kesinleşmemiş işin PDF silmesi sayılır"],
+  ["S11-medya-silme-son-deneme-yok", "E4-01*,E4-02*,K4-01*,D5-01*", "S-11 iç denetim: yalnız SON denemenin PDF'i"],
+  ["SK-kabul-dosyadan", "D7-01*,D7-02*,K7-01*,K3-02*,ALICI-131049-iki-kez", "S-K kabul telin bağımsız kaydından (dosyadaki wamid değil)"],
+  ["SK-kabul-meta-iletisinden", "CIFT-03*", "S-K kabul = programa ulaşan yanıt / imzalı çözüm (Meta'daki her ileti değil)"],
+  ["SK-kabul-kanca-cozumu-yok", "CIFT-01*,CIFT-04*", "S-K imzalı durum bildirimiyle çözülen belirsiz ileti kabul sayılır"],
+  ["S16-hata-kodu-yalniz-son-is", "E3-02*,F2-02*", "ayıklama düzeltmesi: kâhin işinin hata kodu önceki denemeden taşınır (başarıya dek)"],
+  ["S16-iptal-nedeni-okunmaz", "K2-02*", "ayıklama düzeltmesi: iptal edilen toplu işin önceki duraklatma nedeni"],
+  ["S12-yine-hedef-yok-sayilir", "G0-02*", "S-12 Yine de Gönder hedef asil → asıl toplu işteki iş"],
+  ["S13-sifirla-geri-yukleme-benzetimi", "G4-01*,G4-02*", "S-13 sıfırla → programın gerçek Şirket Verisini Sıfırla ucu"],
+  ["S14-gunluk-sinir-yok-sayilir", "G1-01*,G1-02*,E2-03*", "S-14 günlük üst sınır (ayar.gunluk_ust_sinir)"],
+  ["S15-tum-son-3-ay", "G6-02*,G6-04*,K1-06*", "S-15 \"tum\" → all (özel aralıkla aynı senaryoda)"],
+  ["S15-ozel-aralik-bitisi-kaydir", "G6-01*,G6-02*,G6-04*,G6-05*,K1-10*", "S-15 özel aralık bas/son olduğu gibi (hazır seçimle aynı senaryoda)"],
+];
+
 const sonuclar = [];
 let n = 0;
 let gecen = 0;
 let kalan = 0;
 console.log("TAP version 13");
-for (const sen of liste) {
-  for (const uc of uclar) {
-    n += 1;
-    const baslangic = Date.now();
-    let kayit;
-    try {
-      const r = await kos(sen, uc, secenek);
-      const farklar = karsilastir(sen.beklenen, r.cikti);
-      const siniflar = {};
-      let kalanFark = farklar;
-      if (farklar.length) {
-        const beklenenSonuc = sen.beklenen[0].sonuc;
-        let birikimli = r.cikti;
-        for (const [ad, fn] of NORMALLESTIRMELER) {
-          birikimli = fn(JSON.parse(JSON.stringify(birikimli)), beklenenSonuc);
-          const sonra = karsilastir(sen.beklenen, birikimli);
-          const kayan = kalanFark.filter(f => !sonra.includes(f));
-          if (kayan.length) siniflar[ad] = kayan;
-          kalanFark = sonra;
-          if (!kalanFark.length) break;
-        }
+console.log(`# saat dilimi ${process.env.TZ}`);
+if (secenek.mutasyonDenetimi) {
+  const taban = new Map(); // senaryo → fark listesi (sıralı)
+  const sirala = f => [...f].sort();
+  const esit = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
+  const kararsiz = new Set();
+  for (const [ad, desen, esleme] of MUTASYONLAR) {
+    const hedefler = secici(desen);
+    if (!hedefler.length) throw new Error(`mutasyon ${ad}: hedef senaryo yok (${desen})`);
+    const ayrinti = [];
+    for (const sen of hedefler) {
+      if (!taban.has(sen.ad)) {
+        MUTASYON = null;
+        const a = await kosVeKarsilastir(sen, "hizli");
+        const b = await kosVeKarsilastir(sen, "hizli");
+        if (!esit(sirala(a.farklar), sirala(b.farklar))) kararsiz.add(sen.ad);
+        taban.set(sen.ad, { farklar: sirala(a.farklar), hata: a.hata || b.hata || null });
+        sonuclar.push({ ...a, rol: "taban-1" }, { ...b, rol: "taban-2" });
       }
-      kayit = { ad: sen.ad, uc, kip: secenek.kip, farklar, davranis_farki: kalanFark, siniflar, notlar: r.notlar, ceviriler: r.ceviriler, kanca_istegi: r.kancalar, bitis: r.bitis, sure_ms: Date.now() - baslangic, program: r.cikti };
-    } catch (error) {
-      kayit = { ad: sen.ad, uc, kip: secenek.kip, hata: String(error.stack || error), farklar: ["SÜRÜCÜ HATASI"], sure_ms: Date.now() - baslangic };
+      MUTASYON = ad;
+      const m = await kosVeKarsilastir(sen, "hizli");
+      MUTASYON = null;
+      const t = taban.get(sen.ad);
+      const yeni = sirala(m.farklar).filter(f => !t.farklar.includes(f));
+      const kayan = t.farklar.filter(f => !m.farklar.includes(f));
+      const yakaladi = !kararsiz.has(sen.ad) && !t.hata && !m.hata && (yeni.length > 0 || kayan.length > 0);
+      ayrinti.push({ senaryo: sen.ad, yakaladi, yeni_fark: yeni.length, kaybolan_fark: kayan.length, ornek: yeni.slice(0, 3), kararsiz_taban: kararsiz.has(sen.ad), hata: m.hata || t.hata || null });
+      sonuclar.push({ ...m, rol: "mutasyon" });
     }
-    sonuclar.push(kayit);
-    const siniflama = Object.entries(kayit.siniflar || {}).map(([k, v]) => `${k} ${v.length}`).join(", ");
-    if (!kayit.farklar.length) {
+    n += 1;
+    const yakalayan = ayrinti.filter(x => x.yakaladi).map(x => x.senaryo);
+    sonuclar.push({ rol: "ozet", mutasyon: ad, esleme, hedefler: hedefler.map(s => s.ad), yakalayan, ayrinti });
+    if (yakalayan.length) {
       gecen += 1;
-      console.log(`ok ${n} - ${sen.ad} [${uc}]`);
+      console.log(`ok ${n} - mutasyon ${ad} (${esleme}) yakalandı: ${yakalayan.join(", ")}`);
     } else {
       kalan += 1;
-      const davranis = kayit.davranis_farki || kayit.farklar;
-      console.log(`not ok ${n} - ${sen.ad} [${uc}] (${kayit.farklar.length} fark; davranış farkı ${davranis.length}${siniflama ? `; gösterim: ${siniflama}` : ""})`);
-      for (const f of davranis.slice(0, secenek.ayrinti ? 1000 : 12)) console.log(`  # ${f}`);
-      if (kayit.hata) console.log(`  # ${kayit.hata.split("\n").slice(0, 4).join(" | ")}`);
+      console.log(`not ok ${n} - mutasyon ${ad} (${esleme}) DİŞSİZ: hiçbir hedefte ayrışma yok`);
     }
-    if (secenek.ayrinti && kayit.notlar?.length) for (const s of kayit.notlar) console.log(`  # not: ${s}`);
+    for (const x of ayrinti) console.log(`  # ${x.senaryo}: ${x.yakaladi ? "ayrıştı" : "ayrışmadı"} (yeni fark ${x.yeni_fark}, kaybolan ${x.kaybolan_fark}${x.kararsiz_taban ? ", TABAN KARARSIZ" : ""}${x.hata ? `, HATA ${String(x.hata).split("\n")[0]}` : ""})${x.ornek[0] ? ` örn. ${x.ornek[0].slice(0, 160)}` : ""}`);
+  }
+} else {
+  MUTASYON = secenek.mutasyon;
+  const liste = secenek.senaryo ? secici(secenek.senaryo) : veri.senaryolar;
+  const uclar = secenek.uc === "ikisi" ? ["hizli", "yavas"] : [secenek.uc];
+  for (const sen of liste) {
+    for (const uc of uclar) {
+      n += 1;
+      const kayit = await kosVeKarsilastir(sen, uc);
+      sonuclar.push(kayit);
+      const siniflama = Object.entries(kayit.siniflar || {}).map(([k, v]) => `${k} ${v.length}`).join(", ");
+      if (!kayit.farklar.length) {
+        gecen += 1;
+        console.log(`ok ${n} - ${sen.ad} [${uc}]`);
+      } else {
+        kalan += 1;
+        const davranis = kayit.davranis_farki || kayit.farklar;
+        console.log(`not ok ${n} - ${sen.ad} [${uc}] (${kayit.farklar.length} fark; davranış farkı ${davranis.length}${siniflama ? `; gösterim: ${siniflama}` : ""})`);
+        for (const f of davranis.slice(0, secenek.ayrinti ? 1000 : 12)) console.log(`  # ${f}`);
+        if (kayit.hata) console.log(`  # ${kayit.hata.split("\n").slice(0, 4).join(" | ")}`);
+      }
+      if (secenek.ayrinti && kayit.notlar?.length) for (const s of kayit.notlar) console.log(`  # not: ${s}`);
+    }
   }
 }
 if (secenek.cikti) {
   fs.mkdirSync(secenek.cikti, { recursive: true });
-  fs.writeFileSync(path.join(secenek.cikti, `karsilastirma-${secenek.kip}-${secenek.uc}.json`), JSON.stringify(sonuclar));
+  const dosya = secenek.mutasyonDenetimi ? `surucu-mutasyon-${tzAdi}.json` : `karsilastirma-${secenek.kip}-${secenek.uc}-${tzAdi}${MUTASYON ? `-mut-${MUTASYON}` : ""}.json`;
+  fs.writeFileSync(path.join(secenek.cikti, dosya), JSON.stringify(sonuclar));
 }
 console.log(`1..${n}`);
 console.log(`# tests ${n}`);
