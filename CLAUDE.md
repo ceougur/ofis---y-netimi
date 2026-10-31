@@ -242,6 +242,10 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
 44. ORTAK AĞAÇTA COMMIT YALNIZ KENDİ YOLLARINLA. Başka ajanın çalıştığı ağaçta `git add -u` / `git add -A` / `commit -a` kullanılmaz; commit'e yalnız adı verilen
     yollar girer (`git add <yol>`), önce `git status -s` okunur. (30.10.2026: ana oturumun iki belge commit'i 4a3aba3b, 98cd83f1 K0 kâhin ajanının yarım dosyalarını alıp
     gönderdi; son içerik aynı çıktı, zarar yok — ders 23'ün commit karışması ailesi.)
+45. "KİME KAÇ KEZ" İLKESİ PLANDA YAZILIR. Dış servise bağlı ve durum tutan her özellikte (WhatsApp, e-Belge gönderimi, ödeme, bildirim…) "kime kaç kez" ve "çift işlem" ilkesi
+    (kesin almadıysa sayılmaz / almış olabilirse elenir + onaylı tek yol / aldıysa aynı dönemde elenir, şüphede aynı / çıkmaz yok / taşınan-geri yüklenen veride aynı kural) PLAN aşamasında
+    yazılır ve kullanıcıya onaylatılır; kâhin bu ilkeyle kurulur. Son aday aşamasında yeni kural GİRMEZ (ilkeyle de olsa); çok seyrek çift işlem yolları BİLİNEN SINIR olarak sonraki sürüme.
+    (31.10.2026, kullanıcı "ekle": 2.4.8'de kurallar son adayda tek tek verildi — 15 soru, dar kontrol 3→10 = 8 tur; baş mimarın dondurmadan sonra İLKEYLE eklediği L5 dk10 DÜŞÜK-1'i doğurdu.)
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
