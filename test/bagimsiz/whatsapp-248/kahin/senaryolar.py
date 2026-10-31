@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """WhatsApp toplu gönderim kâhininin SENARYO KÜMESİ — DestekOfis 2.4.8 K0 (plan §7a kararlarına + revizyon R1–R3'e SABİT;
-kâhin güncellemesi 2: ürün sahibinin 31.10.2026 kararları K1–K8 — başlıklar K1…K8, 34 senaryo).
+kâhin güncellemesi 2: ürün sahibinin 31.10.2026 kararları K1–K8 — başlıklar K1…K8, 34 senaryo;
+kâhin güncellemesi 3: ★ soruların yanıtları D1–D8 — başlıklar D1…D8, 19 senaryo).
 
 Her senaryo: GİRDİ (cariler, seçim, saat, sahte Meta davranışı, olaylar) + ELLE yazılmış beklenen (yalnız plandan, kâhinin modelinden
 bağımsız hesaplanmış anahtar sayılar). `python3 -I senaryolar.py` modeli koşar; elle beklenen ile model AYNI değilse dosya YAZILMAZ,
@@ -982,12 +983,12 @@ S("K4-02-yil-donumu-yeniden-deneme", "K4", "31.12 'Bu Ay': A Başarısız; 01.01
    "meta.post": {"A": 3}},
   baslangic="2026-12-31T10:00:00+03:00", meta_davranis={"mesaj": {"A": [{"hata": 131026}]}, "kanca": {"*": K_STD}})
 
-S("K4-03-son-3-ay-yine-de-gonder-secim-tasinir", "K4", "'Son 3 Ay' Y Sonucu Belirsiz; 2. gün Yine de Gönder (seçim taşınır); 3. gün 'Son 3 Ay' Y 'Daha Önce Gönderildi'",
-  "K4 (Yine de Gönder asıl işin döneminde), K1 (7 gün)", [Y()],
-  [baslat("+0s", "T1", "Y", donem=SON3), olay("+2d", "yine_de_gonder", toplu="T1", cari="Y", etiket="G1"), baslat("+3d", "T2", "Y", donem=SON3), kontrol("+3d1h", "K1")],
-  {"yeniden": {"G1": yeniden(alinan="Y")}, "olusmadi": ["T2"], "elenen": {"T2": {"Y": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-11-01"}},
+S("K4-03-son-3-ay-yeniden-deneme-secim-tasinir", "K4", "'Son 3 Ay' Y Başarısız; 2. gün Başarısızları Yeniden Dene (seçim taşınır); 3. gün 'Son 3 Ay' Y 'Daha Önce Gönderildi'",
+  "K4 (yeniden deneme asıl işin döneminde), K1 (7 gün) — güncelleme 3'te Yine de Gönder yerine yeniden deneme (D6 ile iki neden aynı anda: README §8.4)", [Y()],
+  [baslat("+0s", "T1", "Y", donem=SON3), olay("+2d", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y1"), baslat("+3d", "T2", "Y", donem=SON3), kontrol("+3d1h", "K1")],
+  {"yeniden": {"Y1": yeniden(alinan="Y")}, "olusmadi": ["T2"], "elenen": {"T2": {"Y": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-11-01"}},
    "meta.post": {"Y": 2}, "isler.T1/Y.durum": "Teslim Edildi"},
-  meta_davranis={"mesaj": {"Y": ["yanitsiz_red"]}, "kanca": {"*": K_STD}})
+  meta_davranis={"mesaj": {"Y": [{"hata": 131026}]}, "kanca": {"*": K_STD}})
 
 # ---- K5: asıl işin "Yine de Gönder" kararı taşınır ----
 S("K5-01-karar-yeniden-denemeye-tasinir", "K5", "T0'da gönderilmiş A'ya T1 'Yine de Gönder' ile; T1'de A Başarısız → Başarısızları Yeniden Dene A'yı gönderir (açılıştan önceki kabul yok sayılır)",
@@ -1099,6 +1100,164 @@ S("K8-03-suzgec-ile-sayfalama", "K8", "Tek günde 33 gönderim + ertesi gün 2: 
   {"listeler": {"L1": {"etiketler": [f"T{i:02d}" for i in range(33, 3, -1)], "daha_fazla": True},
                 "L2": {"etiketler": ["T03", "T02", "T01"], "daha_fazla": False}, "L3": {"etiketler": ["T35", "T34"], "daha_fazla": False}}},
   baslangic="2026-10-30T00:10:00+03:00", ozet_cikti=True, meta_davranis={"kanca": {"*": K_STD}})
+
+
+# ======================================================================== KÂHİN GÜNCELLEMESİ 3 (31.10.2026): ★ soruların yanıtları D1–D8
+# Kaynak: iş listesi "★ SORU n/8" (kullanıcı yanıtları; metinler kahin.KARARLAR D1–D8). Yeni olay türü YOK (yedek_al / geri_yukle {yedek} / etiketli yeniden deneme
+# güncelleme 2'den). Sınırlar: ay sonu, yıl dönümü, gece yarısı (yerel ≠ UTC), 6g23s / 7g1s.
+KF = [["sent", "+1s"], ["failed", "+3s", {"kod": 131026}]]
+
+
+def I_(**kw):
+    return cari("I", "İsmail Vade", "0540 999 00 11", [("2026-10-02", 500, 0)], vadeler=[{"vade": "2026-10-25", "kalan": 500}], **kw)
+
+
+# ---- D1: Sonucu Belirsiz kişi YENİ toplu işte de elenir ----
+S("D1-01-belirsiz-yeni-toplu-iste-elenir", "D1", "A Sonucu Belirsiz: yeni seçimde 'Sonucu Belirsiz' elenir (B 'Daha Önce Gönderildi'); R3'teki 'Yine de Gönder' bu elemeyi geçmez; işteki Yine de Gönder ile gider",
+  "D1 (madde 1 'b': yeni toplu işte de elenir; çaresi işteki Yine de Gönder)", [A(), B()],
+  [baslat("+0s", "T1", "AB"), baslat("+1h", "T2", "AB"), baslat("+2h", "T3", "AB", onceki="gonder"), olay("+3h", "yine_de_gonder", toplu="T1", cari="A", etiket="G1"),
+   kontrol("+4h", "K1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"A": "sonucu_belirsiz", "B": "daha_once_gonderildi"}, "T3": {"A": "sonucu_belirsiz"}},
+   "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}, "T3": {"sayi": 1, "son": "2026-10-30"}}, "toplular.T3.is_sayisi": 1,
+   "yeniden": {"G1": yeniden(alinan="A")}, "meta.post": {"A": 2, "B": 2}, "isler.T1/A.durum": "Teslim Edildi"},
+  meta_davranis={"mesaj": {"A": ["yanitsiz_red", "kabul"]}, "kanca": {"*": K_STD}})
+
+S("D1-02-belirsiz-ay-sonu-eslik", "D1", "31.10 'Bu Ay' A Sonucu Belirsiz: 01.11 'Geçen Ay' (Ekim) 'Sonucu Belirsiz' elenir; 01.11 'Bu Ay' (Kasım) gider", "D1 (eşlik K1: takvim ayı)",
+  [A()], [baslat("+0s", "T1", "A", donem=BU_AY), baslat("+1d", "T2", "A", donem=GECEN_AY), baslat("+1d1m", "T3", "A", donem=BU_AY), kontrol("+1d1h", "K1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"A": "sonucu_belirsiz"}}, "toplular.T3.is_sayisi": 1, "meta.post": {"A": 2}, "isler.T1/A.durum": "Sonucu Belirsiz",
+   "isler.T3/A.durum": "Teslim Edildi"},
+  baslangic="2026-10-31T10:00:00+03:00", meta_davranis={"mesaj": {"A": ["yanitsiz_red"]}, "kanca": {"*": K_STD}})
+
+S("D1-03-belirsiz-son-3-ay-7-gun", "D1", "'Son 3 Ay' Y Sonucu Belirsiz: 6 gün 23 saat sonra aynı seçim 'Sonucu Belirsiz' elenir; 7 gün 1 saat sonra gider", "D1 + D6 (Son 3 Ay: son 7 gün, gönderim anından)",
+  [Y()], [baslat("+0s", "T1", "Y", donem=SON3), baslat("+6d23h", "T2", "Y", donem=SON3), baslat("+7d1h", "T3", "Y", donem=SON3), kontrol("+7d2h", "K1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"Y": "sonucu_belirsiz"}}, "toplular.T3.is_sayisi": 1, "meta.post": {"Y": 2}, "isler.T3/Y.durum": "Teslim Edildi"},
+  meta_davranis={"mesaj": {"Y": ["yanitsiz_red"]}, "kanca": {"*": K_STD}})
+
+# ---- D2: Ödeme Hatırlatma — R3 aynı yerel gün; Zaten Kuyrukta gün bakılmadan ----
+S("D2-01-hatirlatma-dunden-bekleyen-bugunku-eler", "D2", "30.10 23:00 hatırlatma sınır 1: I bekliyor; 31.10 10:00 (yerel ve UTC'de başka gün) yeni hatırlatmada I 'Zaten Kuyrukta'",
+  "D2 (madde 2 'a' (b): süren hatırlatma işi varken yenisi gün bakılmadan Zaten Kuyrukta)", [H(), I_()],
+  [baslat("+0s", "T1", ["H", "I"], sablon="hatirlatma"), baslat("+11h", "T2", ["I"], sablon="hatirlatma"), kontrol("+11h30m", "K1"), kontrol("+25h", "K2")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"I": "zaten_kuyrukta"}}, "kontroller.K1.isler": {"T1/H": "Teslim Edildi", "T1/I": "Sınır Nedeniyle Bekliyor"},
+   "kontroller.K2.isler": {"T1/H": "Teslim Edildi", "T1/I": "Teslim Edildi"}, "meta.post": {"H": 1, "I": 1}},
+  baslangic="2026-10-30T23:00:00+03:00", ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
+
+S("D2-02-hatirlatma-uc-gundur-bekleyen-ve-ertesi-gun-serbest", "D2", "Duraklatılmış hatırlatmada I 3 gündür bekliyor: yeni hatırlatmada 'Zaten Kuyrukta'; H'ye 3 gün sonra yeni hatırlatma gider (aynı gün değil)",
+  "D2 (b: gün bakılmadan Zaten Kuyrukta; a: ertesi gün serbest)", [H(), I_()],
+  [baslat("+0s", "T1", ["H", "I"], sablon="hatirlatma"), olay("+1m", "duraklat", toplu="T1"), baslat("+3d", "T2", ["I"], sablon="hatirlatma"),
+   baslat("+3d1m", "T3", ["H"], sablon="hatirlatma"), kontrol("+3d1h", "K1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"I": "zaten_kuyrukta"}}, "onceki_uyari": {}, "toplular.T3.is_sayisi": 1,
+   "kontroller.K1.isler": {"T1/H": "Teslim Edildi", "T1/I": "Duraklatıldı", "T3/H": "Teslim Edildi"}, "meta.post": {"H": 2, "I": 0}},
+  ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
+
+# ---- D3: Son 3 Ay / Tüm'de yeniden deneme ve Yine de Gönder için 7 gün YENİ GÖNDERİM ANINDAN ----
+S("D3-01-yeniden-deneme-7-gun-yeni-gonderimden", "D3", "T1 'Son 3 Ay' A Başarısız; T2 (1 saat sonra) A'ya gitti: T1'in yeniden denemesi 6g23s sonra elenir, 7g1s sonra gider (7 gün asıl işin açılışından değil)",
+  "D3 (madde 5 'a')", [A()],
+  [baslat("+0s", "T1", "A", donem=SON3), baslat("+1h", "T2", "A", donem=SON3), olay("+7d", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y1"),
+   olay("+7d2h", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y2"), kontrol("+7d3h", "K1")],
+  {"yeniden": {"Y1": yeniden(elenen={"A": "daha_once_gonderildi"}), "Y2": yeniden(alinan="A")}, "meta.post": {"A": 3}, "isler.T1/A.durum": "Teslim Edildi",
+   "toplular.T2.is_sayisi": 1},
+  meta_davranis={"mesaj": {"A": [{"hata": 131026}]}, "kanca": {"*": K_STD}})
+
+S("D3-02-yine-de-gonder-7-gun-yeni-gonderimden", "D3", "T1 'Tüm Hareketler' A Sonucu Belirsiz; 8. gün T2 (belirsiz 7 günü geçti) A'ya gitti; T1'de Yine de Gönder 6g23s sonra elenir, 7g2s sonra gider",
+  "D3 (madde 5 'a'), D1 (7 gün)", [A()],
+  [baslat("+0s", "T1", "A", donem="tum"), baslat("+8d", "T2", "A", donem="tum"), olay("+14d23h", "yine_de_gonder", toplu="T1", cari="A", etiket="G1"),
+   olay("+15d2h", "yine_de_gonder", toplu="T1", cari="A", etiket="G2"), kontrol("+15d3h", "K1")],
+  {"elenen": {}, "yeniden": {"G1": yeniden(elenen={"A": "daha_once_gonderildi"}), "G2": yeniden(alinan="A")}, "meta.post": {"A": 3},
+   "isler.T1/A.durum": "Teslim Edildi", "isler.T2/A.durum": "Teslim Edildi"},
+  bitis="+15d4h", meta_davranis={"mesaj": {"A": ["yanitsiz_red"]}, "kanca": {"*": K_STD}})
+
+# ---- D4: özel aralık ↔ aynı tarihli hazır seçim aynı dönem ----
+S("D4-01-ozel-aralik-ayni-gun-bu-ay", "D4", "15.10 'Bu Ay' (01.10–15.10) gönderildi: aynı gün özel 01.10–15.10 elenir; özel 01.10–14.10 gider",
+  "D4 (madde 6 'b': Bu Ay = ayın 1'i – bugün)", [A()],
+  [baslat("+0s", "T1", "A", donem=BU_AY), baslat("+1h", "T2", "A", donem={"bas": "2026-10-01", "son": "2026-10-15"}),
+   baslat("+2h", "T3", "A", donem={"bas": "2026-10-01", "son": "2026-10-14"}), kontrol("+3h", "K1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"A": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-15"}}, "toplular.T3.is_sayisi": 1,
+   "meta.post": {"A": 2}, "isler.T3/A.degiskenler": ["Ayşe Yılmaz", FIRMA, "01.10.2026 – 14.10.2026", "1.500,00 TL"]},
+  baslangic="2026-10-15T10:00:00+03:00", meta_davranis={"kanca": {"*": K_STD}})
+
+S("D4-02-ay-sonu-bu-ay-sonra-ozel-aralik", "D4", "31.10 'Bu Ay' (01.10–31.10) gönderildi: 01.11 özel 01.10–31.10 (= 'Geçen Ay') elenir; özel 01.11–01.11 gider",
+  "D4 (Geçen Ay = önceki ayın 1'i – son günü; ay sonu → 1'i)", [A()],
+  [baslat("+0s", "T1", "A", donem=BU_AY), baslat("+1d", "T2", "A", donem={"bas": "2026-10-01", "son": "2026-10-31"}),
+   baslat("+1d1m", "T3", "A", donem={"bas": "2026-11-01", "son": "2026-11-01"}), kontrol("+1d1h", "K1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"A": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-31"}}, "toplular.T3.is_sayisi": 1,
+   "meta.post": {"A": 2}},
+  baslangic="2026-10-31T10:00:00+03:00", meta_davranis={"kanca": {"*": K_STD}})
+
+S("D4-03-yil-donumu-ozel-aralik-zaten-kuyrukta", "D4", "31.12 23:00 özel 01.12–31.12 sınır 1: B bekliyor; 01.01 00:30 'Geçen Ay' (Aralık) B 'Zaten Kuyrukta'",
+  "D4 (Zaten Kuyrukta da; 31.12 → 01.01, gece yarısı)", [A(), B()],
+  [baslat("+0s", "T1", "AB", donem={"bas": "2026-12-01", "son": "2026-12-31"}), baslat("+1h30m", "T2", "B", donem=GECEN_AY), kontrol("+2h", "K1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"B": "zaten_kuyrukta"}}, "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/B": "Sınır Nedeniyle Bekliyor"},
+   "meta.post": {"A": 1, "B": 1}},
+  baslangic="2026-12-31T23:00:00+03:00", ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
+
+# ---- D5: asıl işte Başarısız, sonraki denemesi kabul edilmiş / bekleyen ----
+S("D5-01-sonraki-denemesi-kabul-daha-once", "D5", "A Başarısız → yeniden deneme teslim edildi → asıl işte yeniden Başarısızları Yeniden Dene: A 'Daha Önce Gönderildi'",
+  "D5 (madde 9 'a')", [A()],
+  [baslat("+0s", "T1", "A"), olay("+1h", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y1"),
+   olay("+2h", "basarisizlari_yeniden_dene", toplu="T1", hedef="asil", etiket="Y2"), kontrol("+3h", "K1")],
+  {"yeniden": {"Y1": yeniden(alinan="A"), "Y2": yeniden(elenen={"A": "daha_once_gonderildi"})}, "meta.post": {"A": 2}, "isler.T1/A.durum": "Teslim Edildi"},
+  meta_davranis={"mesaj": {"A": [{"hata": 131026}]}, "kanca": {"*": K_STD}})
+
+S("D5-02-sonraki-denemesi-bekliyor-zaten-kuyrukta", "D5", "Sınır 1: A Başarısız → yeniden deneme sınırda bekliyor → asıl işte yeniden Başarısızları Yeniden Dene: A 'Zaten Kuyrukta'",
+  "D5 (madde 9 'a')", [A(), B()],
+  [baslat("+0s", "T1", "AB"), olay("+1h", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y1"),
+   olay("+2h", "basarisizlari_yeniden_dene", toplu="T1", hedef="asil", etiket="Y2"), kontrol("+3h", "K1")],
+  {"yeniden": {"Y1": yeniden(alinan="A"), "Y2": yeniden(elenen={"A": "zaten_kuyrukta"})}, "kontroller.K1.isler": {"T1/A": "Sınır Nedeniyle Bekliyor", "T1/B": "Teslim Edildi"},
+   "meta.post": {"A": 2, "B": 1}, "isler.T1/A.durum": "Teslim Edildi"},
+  ayar={"gunluk_ust_sinir": 1}, meta_davranis={"mesaj": {"A": [{"hata": 131026}]}, "kanca": {"*": K_STD}})
+
+# ---- D6: Yine de Gönder ile aşılmış eski Sonucu Belirsiz deneme de sayılır ----
+S("D6-01-asilmis-belirsiz-yeni-toplu-iste-eler", "D6", "A Sonucu Belirsiz → Yine de Gönder → Başarısız (131026): eski belirsiz deneme sayılır, yeni seçimde A 'Sonucu Belirsiz'",
+  "D6 (madde 10 'a'), D1", [A()],
+  [baslat("+0s", "T1", "A"), olay("+1h", "yine_de_gonder", toplu="T1", cari="A", etiket="G1"), kontrol("+2h", "K1"), baslat("+3h", "T2", "A")],
+  {"yeniden": {"G1": yeniden(alinan="A")}, "kontroller.K1.isler": {"T1/A": "Başarısız"}, "olusmadi": ["T2"], "elenen": {"T2": {"A": "sonucu_belirsiz"}},
+   "meta.post": {"A": 2}},
+  meta_davranis={"mesaj": {"A": ["yanitsiz_red", "kabul"]}, "kanca": {"A": {"1": KF}}})
+
+S("D6-02-asilmis-belirsiz-yeniden-denemede-eler", "D6", "A Sonucu Belirsiz → Yine de Gönder → Başarısız: Başarısızları Yeniden Dene A'yı 'Sonucu Belirsiz' ile eler (öneri işteki Yine de Gönder)",
+  "D6 (madde 10 'a'), K6", [A()],
+  [baslat("+0s", "T1", "A"), olay("+1h", "yine_de_gonder", toplu="T1", cari="A", etiket="G1"), olay("+2h", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y1")],
+  {"yeniden": {"G1": yeniden(alinan="A"), "Y1": yeniden(elenen={"A": "sonucu_belirsiz"}, oneri="isteki_yine_de_gonder")}, "meta.post": {"A": 2},
+   "isler.T1/A.durum": "Başarısız"},
+  meta_davranis={"mesaj": {"A": ["yanitsiz_red", "kabul"]}, "kanca": {"A": {"1": KF}}})
+
+S("D6-03-asilmis-belirsiz-son-3-ay-7-gun", "D6", "'Son 3 Ay' Y: belirsiz → Yine de Gönder → Başarısız; 6g23s sonra yeni seçimde 'Sonucu Belirsiz', 7g1s sonra gider (7 gün belirsiz denemenin gönderim anından)",
+  "D6 (Son 3 Ay / Tüm'de son 7 gün gönderim anından)", [Y()],
+  [baslat("+0s", "T1", "Y", donem=SON3), olay("+1h", "yine_de_gonder", toplu="T1", cari="Y", etiket="G1"), baslat("+6d23h", "T2", "Y", donem=SON3),
+   baslat("+7d1h", "T3", "Y", donem=SON3), kontrol("+7d2h", "K1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"Y": "sonucu_belirsiz"}}, "toplular.T3.is_sayisi": 1, "meta.post": {"Y": 3}, "isler.T3/Y.durum": "Başarısız"},
+  meta_davranis={"mesaj": {"Y": ["yanitsiz_red", "kabul", "kabul"]}, "kanca": {"Y": {"1": KF}}})
+
+# ---- D7: geri yüklemeden sonra yalnız makine defterinde kalan KABUL R3'te sayılır ----
+S("D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir", "D7", "Yedek alındı, A'ya gönderildi (Meta Kabul Etti), önceki yedek geri yüklendi (iş dosyada yok): aynı dönem 'Daha Önce Gönderildi'",
+  "D7 (madde 13 'a')", [A()],
+  [olay("+0s", "yedek_al", ad="Y0"), baslat("+1s", "T1", "A"), olay("+10m", "geri_yukle", yedek="Y0"), kontrol("+15m", "K1"), baslat("+20m", "T2", "A")],
+  {"kontroller.K1.isler": {}, "olusmadi": ["T2"], "elenen": {"T2": {"A": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}},
+   "meta.toplam_post": 1, "meta.post": {}},
+  bilinen_ihlal={"post_toplam": {"neden": "geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden"}})
+
+S("D7-02-geri-yukleme-ay-donumu-defterdeki-kabul", "D7", "31.10 22:00 yedek, 'Bu Ay' A'ya gönderildi, yedek geri yüklendi; 01.11 01:00 'Geçen Ay' (Ekim) 'Daha Önce Gönderildi'",
+  "D7, K1 (ay sonu → 1'i, gece yarısı)", [A()],
+  [olay("+0s", "yedek_al", ad="Y0"), baslat("+1s", "T1", "A", donem=BU_AY), olay("+1h", "geri_yukle", yedek="Y0"), baslat("+3h", "T2", "A", donem=GECEN_AY)],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"A": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-31"}}, "meta.toplam_post": 1},
+  baslangic="2026-10-31T22:00:00+03:00",
+  bilinen_ihlal={"post_toplam": {"neden": "geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden"}})
+
+# ---- D8: taşınan veride dosyadaki kabul / teslim / okundu R3'te sayılır ----
+S("D8-01-tasinan-veride-dosyadaki-ileti-sayilir", "D8", "A Teslim, B Okundu, C Meta Kabul Etti; veri başka bilgisayara taşındı: yeni seçimde üçü de 'Daha Önce Gönderildi'",
+  "D8 (madde 14 'a'; eski ★6 düştü)", [A(), B(), C()],
+  [baslat("+0s", "T1", "ABC"), olay("+1h", "tasindi"), baslat("+2h", "T2", "ABC")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"A": "daha_once_gonderildi", "B": "daha_once_gonderildi", "C": "daha_once_gonderildi"}},
+   "onceki_uyari": {"T2": {"sayi": 3, "son": "2026-10-30"}}, "meta.post": {"A": 1, "B": 1, "C": 1},
+   "isler.T1/A.durum": "Teslim Edildi", "isler.T1/B.durum": "Okundu", "isler.T1/C.durum": "Meta Kabul Etti"},
+  bitis="+3h", meta_davranis={"kanca": {"A": K_STD, "B": K_STD + [["read", "+1m"]], "C": []}})
+
+S("D8-02-tasinan-veride-yine-de-gonder", "D8", "Taşınan veride A Teslim Edildi: varsayılan Bunları Çıkar ile elenir; 'Yine de Gönder' ile ikinci ileti",
+  "D8 (varsayılan Bunları Çıkar), R3", [A()],
+  [baslat("+0s", "T1", "A"), olay("+1h", "tasindi"), baslat("+2h", "T2", "A"), baslat("+2h1m", "T3", "A", onceki="gonder"), kontrol("+3h", "K1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"A": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}, "T3": {"sayi": 1, "son": "2026-10-30"}},
+   "toplular.T3.is_sayisi": 1, "meta.post": {"A": 2}},
+  meta_davranis={"kanca": {"*": K_STD}})
 
 
 # ======================================================================== üretim / denetim
