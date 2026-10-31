@@ -117,7 +117,7 @@ const SAYFA = 30;
 
 // ---------- komut satırı ----------
 function argumanlar(argv) {
-  const o = { senaryo: null, uc: "ikisi", kip: "imzali", cikti: null, ayrinti: false, tz: process.env.TZ, mutasyon: null, mutasyonDenetimi: false };
+  const o = { senaryo: null, uc: "ikisi", kip: "imzali", cikti: null, ayrinti: false, tz: process.env.TZ, mutasyon: null, mutasyonDenetimi: false, dokum: null };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
     if (a === "--senaryo") o.senaryo = argv[++i];
@@ -128,6 +128,7 @@ function argumanlar(argv) {
     else if (a === "--tz") i += 1; // dosyanın başında okundu
     else if (a === "--mutasyon") o.mutasyon = argv[++i];
     else if (a === "--mutasyon-denetimi") o.mutasyonDenetimi = true;
+    else if (a === "--dokum") o.dokum = argv[++i];
     else throw new Error(`bilinmeyen seçenek: ${a}`);
   }
   if (!["hizli", "yavas", "ikisi"].includes(o.uc)) throw new Error("--uc hizli|yavas|ikisi");
@@ -336,6 +337,7 @@ async function kos(sen, uc, secenek) {
   const istekKimlikleri = {};
   const degismez = { silinmis_medyayla_gonderim: 0, kesin_oncesi_medya_silme: 0, artisiz_numaraya_gonderim: 0, lisanssiz_gonderim: 0, duraklatilmis_toplu_gonderim: 0 };
   const medyaIs = new Map(); // medya kimliği → program iş kimliği (programın bildiği medya)
+  const iletilenKabul = []; // S-12: programa ulaşan Meta 200 + wamid yanıtları { wamid, is, t }
   const isMetaSayisi = new Map(); // kâhin iş anahtarı → Meta'daki ileti sayısı (kanca planı "1"/"2"/"*")
   const ttlAdaylari = [];
   let cokme = null; // { cari, toplu, istek_ulasti, oldu, t }
@@ -448,6 +450,14 @@ async function kos(sen, uc, secenek) {
       kancaPlanla(once);
       if (!yanit.ok) return void res.socket?.destroy();
       res.writeHead(yanit.status, { "content-type": yanit.headers["content-type"] || "application/json" });
+      // S-12: Meta'nın 200 + wamid yanıtı programa GERÇEKTEN ulaştı mı ("finish" = yanıt programın bağlantısına yazıldı; kopmuş/zaman aşımına düşmüş bağlantıda olmaz).
+      let kabulWamid = null;
+      try {
+        kabulWamid = yanit.status === 200 ? JSON.parse(yanit.body.toString("utf8")).messages?.[0]?.id || null : null;
+      } catch {
+        kabulWamid = null;
+      }
+      if (kabulWamid) res.once("finish", () => iletilenKabul.push({ wamid: String(kabulWamid), is: isId, t: simdi }));
       return void res.end(yanit.body);
     }
     const medyaYukleme = req.method === "POST" && /\/media$/.test(new URL(yol, "http://x").pathname);
@@ -561,7 +571,13 @@ async function kos(sen, uc, secenek) {
     const imzali = imzaGecerli(ham, req.headers["x-hub-signature-256"]);
     const isaret = secenek.kip === "yol1" ? "wa0" : imzali ? "wa1" : "wa0";
     const yanit = await ilet({ port: program.uzakPort, method: req.method, yol: req.url, headers: { "content-type": "application/json", "x-surucu-isaret": isaret }, govde: ham });
-    kancaKaydi.push({ t: simdi, http: yanit.ok ? yanit.status : 0, isaret });
+    let wamidler = [];
+    try {
+      wamidler = JSON.parse(ham.toString("utf8")).entry.flatMap(e => e.changes || []).flatMap(c => c.value?.statuses || []).filter(st => st.biz_opaque_callback_data).map(st => String(st.id));
+    } catch {
+      wamidler = [];
+    }
+    kancaKaydi.push({ t: simdi, http: yanit.ok ? yanit.status : 0, isaret, wamidler });
     res.writeHead(yanit.ok ? yanit.status : 502);
     res.end(yanit.ok ? yanit.body : undefined);
   }
@@ -623,10 +639,42 @@ async function kos(sen, uc, secenek) {
     program = null;
     await p.server.close();
   }
+  // Ayıklama dökümü (--dokum): olaylar başladıktan sonra sürücünün programa yaptığı her istek ve yanıtı (ham).
+  let apiKaydi = null;
   const api = async (istemci, yontem, url, govde) => {
     const r = await (yontem === "GET" ? istemci.get(url) : yontem === "DELETE" ? istemci.del(url) : yontem === "PUT" ? istemci.put(url, govde) : istemci.post(url, govde));
+    if (apiKaydi && !(yontem === "GET" && /\/whatsapp\/batches\/[^/?]+$/.test(url))) {
+      apiKaydi.push({ t: trIso(simdi), yontem, url, govde: govde ?? null, status: r.status, yanit: JSON.stringify(r.data ?? null).slice(0, 4000) });
+    }
     return r;
   };
+  // S-12 (BAŞ MİMAR KARARI, test altyapısı; EŞLEME BELİRSİZ 1 kapandı): "kabul" (README §2: programın bildiği kabul) şirket dosyasından DEĞİL, telin iki ucundaki
+  // bağımsız kayıttan sayılır: (A) Meta'nın 200 + wamid yanıtı programın bağlantısına GERÇEKTEN yazıldı (vekil; sahte Meta'nın kendi kaydı çökme anında da 200 yazar ama yanıt
+  // programa gitmez — bu yüzden sahte Meta kaydı tek başına yetmez), (B) yanıtı programa ulaşmamış ama Meta'da bulunan iletinin İMZALI, iş kimliği taşıyan durum bildirimi
+  // programa ulaştı ve program 200 dedi (alıcı kaydı; §7a 3 "yalnız imzalı olay + iş kimliğiyle çözülür"). İş kimliği isteğin / iletinin biz_opaque_callback_data'sı.
+  // Sahte Meta dosyaları değişmedi (yalnız kayit() okunur).
+  function kabulHaritasi(kayit) {
+    const harita = new Map();
+    let toplam = 0;
+    const say = isId => {
+      toplam += 1;
+      if (isId) harita.set(isId, (harita.get(isId) || 0) + 1);
+    };
+    if (mut("S12-kabul-meta-iletisinden")) {
+      for (const m of kayit.mesajlar) say(m.opaque);
+      return { harita, toplam };
+    }
+    const yanitiGiden = new Set();
+    for (const k of iletilenKabul) {
+      yanitiGiden.add(k.wamid);
+      say(k.is);
+    }
+    if (!mut("S12-kabul-kanca-cozumu-yok")) {
+      const imzaliUlasan = new Set(kancaKaydi.filter(k => k.isaret === "wa1" && k.http === 200).flatMap(k => k.wamidler || []));
+      for (const m of kayit.mesajlar) if (!yanitiGiden.has(String(m.wamid)) && imzaliUlasan.has(String(m.wamid))) say(m.opaque);
+    }
+    return { harita, toplam };
+  }
   const sart = async (etiket, promise) => {
     const r = await promise;
     if (r.status !== 200) throw new Error(`${etiket}: ${r.status} ${JSON.stringify(r.data).slice(0, 400)}`);
@@ -756,6 +804,7 @@ async function kos(sen, uc, secenek) {
     }
 
     // ---- olaylar ----
+    if (secenek.dokum) apiKaydi = [];
     const olaylar = [];
     g.olaylar.forEach((o, i) => {
       if (o.tur === "cokme") return;
@@ -947,7 +996,7 @@ async function kos(sen, uc, secenek) {
         t: trIso(simdi),
         durum_sayilari: Object.fromEntries(Object.entries(durumlar).sort(([a], [b]) => (a < b ? -1 : 1))),
         toplam_post: kayit.sayilar.toplamMesajIstegi,
-        toplam_kabul: [...isler.values()].flat().filter(x => x.job.wamid).length,
+        toplam_kabul: mut("S12-kabul-dosyadan") ? [...isler.values()].flat().filter(x => x.job.wamid).length : kabulHaritasi(kayit).toplam,
         pencere_farkli_alici: pencere,
         medya_silme: kayit.sayilar.medyaSilme,
         toplular: Object.fromEntries(Object.keys(okuma || {}).map(e => [e, topluDurum(okuma[e]).durum])),
@@ -1220,6 +1269,7 @@ async function kos(sen, uc, secenek) {
     }
     const iletiIs = new Map();
     for (const m of kayit.mesajlar) if (m.opaque) iletiIs.set(m.opaque, (iletiIs.get(m.opaque) || 0) + 1);
+    const kabulKaydi = kabulHaritasi(kayit);
     for (const m of kayit.mesajlar) if (m.medyaId && m.opaque) medyaIs.set(String(m.medyaId), m.opaque);
     for (const s of sirketler) for (const row of db(s)?.all("SELECT id, media_id FROM wa_jobs WHERE media_id IS NOT NULL") || []) medyaIs.set(String(row.media_id), row.id);
     const medyaYukleme = new Map();
@@ -1266,7 +1316,7 @@ async function kos(sen, uc, secenek) {
         dosya_adi: sablon === "destekofis_ekstre" ? dosya : null,
         hata_kodu: Number.isFinite(son.job.errorCode) ? son.job.errorCode : null,
         post: say(istekIs),
-        kabul: liste.filter(x => x.job.wamid).length,
+        kabul: mut("S12-kabul-dosyadan") ? liste.filter(x => x.job.wamid).length : say(kabulKaydi.harita),
         meta_ileti: say(iletiIs),
         medya_yukleme: say(medyaYukleme),
         medya_silme: say(medyaSilme),
@@ -1311,7 +1361,7 @@ async function kos(sen, uc, secenek) {
       meta: {
         ...Object.fromEntries(Object.entries(toplam).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).sort())])),
         toplam_post: kayit.sayilar.toplamMesajIstegi,
-        toplam_kabul_program: Object.values(isSonucu).reduce((s, v) => s + v.kabul, 0),
+        toplam_kabul_program: mut("S12-kabul-dosyadan") ? Object.values(isSonucu).reduce((s, v) => s + v.kabul, 0) : kabulKaydi.toplam,
         toplam_meta_ileti: kayit.sayilar.toplamKabul,
         toplam_medya_yukleme: kayit.sayilar.medyaYukleme,
       },
@@ -1329,6 +1379,38 @@ async function kos(sen, uc, secenek) {
       for (const v of Object.values(isSonucu)) dag[String(v.post)] = (dag[String(v.post)] || 0) + 1;
       cikti.isler_post_dagilimi = Object.fromEntries(Object.entries(dag).sort());
     } else cikti.isler = isSonucu;
+    if (secenek.dokum) {
+      // Ayıklama dökümü (ders 6): programın HTTP yanıtları, toplu işlerin ham ayrıntısı (şirket dosyası), makine defteri, sahte Meta kaydı. Yalnız okuma.
+      const defterDokum = {};
+      const dosya = path.join(dataDir, "whatsapp-gonderim.sqlite");
+      if (fs.existsSync(dosya)) {
+        const d = new DatabaseSync(dosya, { readOnly: true });
+        try {
+          for (const { name } of d.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all()) {
+            defterDokum[name] = d.prepare(`SELECT * FROM "${name}" ORDER BY rowid`).all().slice(0, 400);
+          }
+        } finally {
+          d.close();
+        }
+      }
+      const cariAdi = id => programCari[id] || id;
+      const dokum = {
+        senaryo: sen.ad, uc, tz: process.env.TZ, bitis: trIso(simdi), notlar,
+        program_api: apiKaydi,
+        toplular: Object.fromEntries(Object.entries(okuma || {}).map(([e, liste]) => [e, liste.map(b => ({ ...b, jobs: b.jobs.map(j => ({ cari: cariAdi(j.accountId), ...j })) }))])),
+        cari_eslemesi: Object.fromEntries(Object.entries(cariProgram).map(([k, v]) => [k, v.id])),
+        defter: defterDokum,
+        sahte_meta: {
+          istekler: kayit.istekler.filter(i => ["messages", "media"].includes(i.islem) || /DELETE/.test(i.yontem)).map(i => ({ sira: i.sira, t: trIso(i.t), yontem: i.yontem, islem: i.islem, hedef: i.hedef, deneme: i.deneme, http: i.http, sonuc: i.sonuc, is: i.govde?.biz_opaque_callback_data || null, yanit: i.yanit })),
+          mesajlar: kayit.mesajlar.map(m => ({ wamid: m.wamid, to: m.to, kabul: trIso(m.kabulT), is: m.opaque || null, medya: m.medyaId || null })),
+          kancalar: kayit.kancalar.map(k => ({ t: trIso(k.t), wamid: k.wamid, durum: k.durum, http: k.http, basarili: k.basarili, hata: k.hata || null, url: String(k.url || '').replace(/\/wa\/kanca\/.*/, '/wa/kanca/<gizli>') })),
+          sayilar: kayit.sayilar,
+        },
+        alici_kanca_kaydi: kancaKaydi,
+      };
+      fs.mkdirSync(secenek.dokum, { recursive: true });
+      fs.writeFileSync(path.join(secenek.dokum, `${sen.ad}-${uc}-${String(process.env.TZ).replace(/[^A-Za-z0-9]+/g, "-")}.json`), JSON.stringify(dokum, null, 1));
+    }
     return { cikti, notlar, ceviriler, kancalar: kancaKaydi.length, bitis: trIso(simdi) };
   } finally {
     try {
@@ -1521,6 +1603,9 @@ const MUTASYONLAR = [
   ["S11-yine-kuyrukta-eslemesi-yok", "E2-06*,F1-02*", "S-11 işteki Yine de Gönder'de Zaten Kuyrukta → zaten_kuyrukta"],
   ["S11-medya-silme-durumsuz", "TEMEL-01*,E4-01*,E4-02*", "S-11 iç denetim: yalnız kesinleşmemiş işin PDF silmesi sayılır"],
   ["S11-medya-silme-son-deneme-yok", "E4-01*,E4-02*,K4-01*,D5-01*", "S-11 iç denetim: yalnız SON denemenin PDF'i"],
+  ["S12-kabul-dosyadan", "D7-01*,D7-02*,K7-01*,K3-02*,ALICI-131049-iki-kez", "S-12 kabul sahte Meta kaydından (dosyadaki wamid değil)"],
+  ["S12-kabul-meta-iletisinden", "CIFT-03*", "S-12 kabul = programa ulaşan yanıt / imzalı çözüm (Meta'daki her ileti değil)"],
+  ["S12-kabul-kanca-cozumu-yok", "CIFT-01*,CIFT-04*", "S-12 imzalı durum bildirimiyle çözülen belirsiz ileti kabul sayılır"],
 ];
 
 const sonuclar = [];
