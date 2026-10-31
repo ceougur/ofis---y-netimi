@@ -57,6 +57,7 @@ const JOB_BACKOFF_MS = [30_000, 120_000, 900_000];
 const OFFLINE_BACKOFF_MS = [30_000, 60_000, 120_000, 300_000];
 export const OFFLINE_LABEL = "Bağlantı Bekleniyor";
 const MAX_TROUBLES = 5;
+const PREPARING_STUCK_MS = 30_000; // T6-B1: bakım turunda "Hazırlanıyor"da takılı sayılma eşiği
 const HOUR = 3_600_000;
 const HOOK_ALIVE_MS = 7 * DAY_MS; // Meta 7 güne kadar yeniden dener (plan §3)
 const MEDIA_REUSE_MS = 29 * DAY_MS; // medya kimliği 30 gün geçerli (plan §2.3)
@@ -1276,8 +1277,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const stuck = store.all("SELECT * FROM wa_jobs WHERE state = 'sending' AND sending_at < ?", iso(nowMs() - 5 * 60_000));
     if (stuck.length) out.repaired = settleSending(stuck);
     // T6-B1: "Hazırlanıyor"da kalan iş (hazırlık sonrası yazım disk dolu / kilit yüzünden düştü; ileti isteği gitmedi — defter talebi "Gönderiliyor"dan sonra) yalnız
-    // açılışta değil bakım turunda da (5 dakikadır değişmediyse; işçinin şu anki işi hariç) Bekliyor'a döner.
-    for (const row of store.all("SELECT id FROM wa_jobs WHERE state = 'preparing' AND updated_at < ?", iso(nowMs() - 5 * 60_000))) {
+    // açılışta değil bakım turunda da Bekliyor'a döner. Bakım işçi turunun içinde koşar (zamanlayıcı runOnce kilidi; aynı anda iş yürütülmez) → bu anda "Hazırlanıyor"daki
+    // iş takılıdır; yine de işçinin şu anki işi ve son 30 sn'de yazılan iş hariç tutulur (yer açılınca en geç bir bakım aralığında — 60 sn — sürer).
+    for (const row of store.all("SELECT id FROM wa_jobs WHERE state = 'preparing' AND updated_at < ?", iso(nowMs() - PREPARING_STUCK_MS))) {
       if (row.id === inFlight) continue;
       updateJob(row.id, { state: "pending" });
       out.resetPreparing = (out.resetPreparing || 0) + 1;

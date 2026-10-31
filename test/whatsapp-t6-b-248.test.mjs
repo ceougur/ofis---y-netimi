@@ -4,7 +4,7 @@
 //       alıyordu) → yer açılınca da gitmiyor, toplu iş bitmiyor; (b) "Hazırlanıyor" yazımı düşen öbür işler her turda BEKLEMESİZ yeniden deneniyordu (meşgul döngü).
 //   B2: yalnız PDF kimliğinin (media_id) yazımı düşünce her turda Meta'ya YENİ PDF yükleniyor, kimlik kayboluyor → Meta'da sahipsiz kişisel mali veri (S3 A ihlali).
 // Beklenen: Meta dışı hatada iş güvenli duruma döner ve BEKLEMELİ yeniden denenir (30 sn → 2 dk → 15 dk; bellekte de — yazım düşse de); yüklenip kaydedilemeyen PDF
-// bellekteki kimlikle hemen Meta'dan silinir; "Hazırlanıyor"da kalan iş bakım turunda (5 dk) da Bekliyor'a döner; çift ileti yok.
+// bellekteki kimlikle hemen Meta'dan silinir; "Hazırlanıyor"da kalan iş bakım turunda (30 sn eşikle) da Bekliyor'a döner; çift ileti yok.
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5) + sahte saat (ders 13); disk dolu = şirket dosyasının yazım işlevi (store.run) hata atar
 // (SQLITE_FULL iletisiyle); dolum anı PDF yükleme isteğinin İÇİNE denk getirilir (ders 20).
 import assert from "node:assert/strict";
@@ -94,7 +94,7 @@ describe("2.4.8 T6-B1 / T6-B2 — Meta dışı hata (yazım, disk dolu) yolunda 
       if (uploads(ctx.fake) !== 1) problems.push(`dolu diskte ${uploads(ctx.fake)} PDF yüklendi`);
       if (ctx.fake.state.media.size !== 0) problems.push(`kimliği yazılamayan PDF Meta'da kaldı (${ctx.fake.state.media.size})`);
       full = false;
-      ctx.clock.advance(6 * 60_000);
+      ctx.clock.advance(60_000); // bellekteki bekleme (30 sn) + bakım turundaki "Hazırlanıyor" eşiği (30 sn) dolar
       await ctx.drain();
       await ctx.drain();
       const d = await ctx.detail(id);
