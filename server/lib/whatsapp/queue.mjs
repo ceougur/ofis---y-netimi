@@ -974,7 +974,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       const tries = (job.temp_tries || 0) + 1;
       if (tries > JOB_BACKOFF_MS.length) failJob(code, `${text} (${JOB_BACKOFF_MS.length} kez yeniden denendi)`);
       else updateJob(job.id, { state: "pending", temp_tries: tries, next_at: iso(nowMs() + JOB_BACKOFF_MS[tries - 1]), error_code: Number.isFinite(code) ? code : null, error_text: text });
-      trouble(row, text);
+      // T1 P4 (§7a 13): art arda 5. geçici hatada toplu iş duraklar — hatayı ALAN iş "Başarısız" (kodlu), bekleyenler "Duraklatıldı".
+      if (trouble(row, text) && tries <= JOB_BACKOFF_MS.length) failJob(code, `${text} (art arda ${MAX_TROUBLES} geçici hata; toplu iş duraklatıldı)`);
     };
     // Okuma (şablon listesi, sınır basamağı) Meta'nın geçici hatasıyla yapılamadı: işin kendi deneme hakkı harcanmaz; iş bekler, toplu işin sayacı artar.
     const checkLater = text => {
