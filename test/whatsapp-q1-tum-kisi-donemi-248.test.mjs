@@ -193,4 +193,56 @@ describe("2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk harek
       removeTestDir(root);
     }
   });
+
+  // İş R5 (dar kontrol 12; İLKEYLE — ilke 3 + S1b + Q1): Tüm Hareketler'in kişiye özel dönemi o günün "Bu Ay"ına eşitse "Bu Ay" ile aynı dönem (iki yön); ilk hareketi
+  // ay başında olmayan cari eşleşmez (kişi başına).
+  async function monthStart(extra = {}) {
+    const ctx = await startWa({ now: { time: localIso(2026, 11, 1), fixed: true }, ...extra });
+    const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800); // ilk hareketi 01.11
+    ctx.clock.set(localIso(2026, 11, 2));
+    const q = await ctx.account("Ayşe Yılmaz", "0532 111 22 33", 500); // ilk hareketi 02.11
+    return { ctx, p, q };
+  }
+  const buAy = ids => ({ kind: "statement", ids, preset: "thisMonth" });
+
+  it("R5 A: 'Bu Ay' 02.11'de gitti → 03.11 Tüm Hareketler (P'nin dönemi 01.11–03.11 = o günün Bu Ay'ı) 'Daha Önce Gönderildi'; Q (02.11–03.11) gönderilecek", async () => {
+    const { ctx, p, q } = await monthStart();
+    try {
+      assert.deepEqual((await send(ctx, buAy([p.id, q.id]))).map(job => job.state), ["accepted", "accepted"], "ön koşul: Bu Ay kabul");
+      ctx.clock.set(localIso(2026, 11, 3));
+      assert.deepEqual(await previewSkip(ctx, tum([p.id, q.id]), "03.11 Tüm"), ["Daha Önce Gönderildi", "gönderilecek"]);
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  it("R5 A2: Tüm Hareketler 02.11'de gitti (P: 01.11–02.11 = o günün Bu Ay'ı) → 03.11 'Bu Ay' P 'Daha Önce Gönderildi'; Q (02.11–02.11) gönderilecek", async () => {
+    const { ctx, p, q } = await monthStart();
+    try {
+      assert.deepEqual((await send(ctx, tum([p.id, q.id]))).map(job => job.state), ["accepted", "accepted"], "ön koşul: Tüm kabul");
+      ctx.clock.set(localIso(2026, 11, 3));
+      assert.deepEqual(await previewSkip(ctx, buAy([p.id, q.id]), "03.11 Bu Ay"), ["Daha Önce Gönderildi", "gönderilecek"]);
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  it("R5 Zaten Kuyrukta iki yön: Bu Ay işi sırada → Tüm (P) 'Zaten Kuyrukta'; Tüm işi sırada → ertesi gün Bu Ay (P) 'Zaten Kuyrukta'", async () => {
+    let s = await monthStart();
+    try {
+      s.ctx.clock.set(localIso(2026, 11, 3));
+      await send(s.ctx, buAy([s.p.id]), { error: PAIR });
+      assert.deepEqual(await previewSkip(s.ctx, tum([s.p.id, s.q.id]), "Tüm (Bu Ay sırada)"), ["Zaten Kuyrukta", "gönderilecek"]);
+    } finally {
+      await s.ctx.close();
+    }
+    s = await monthStart();
+    try {
+      await send(s.ctx, tum([s.p.id]), { error: PAIR });
+      s.ctx.clock.set(localIso(2026, 11, 3));
+      assert.deepEqual(await previewSkip(s.ctx, buAy([s.p.id, s.q.id]), "Bu Ay (Tüm sırada)"), ["Zaten Kuyrukta", "gönderilecek"]);
+    } finally {
+      await s.ctx.close();
+    }
+  });
 });

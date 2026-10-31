@@ -55,9 +55,24 @@ export function allPeriodStartOf(period, lines) {
  * first (İş Q1): yalnız "Tüm Hareketler"de kişinin ilk hareketi (firstLineDateOf) — kümeye "aralik|<ilk hareket>|<dönem sonu>" girer (iletideki tarihlerle birebir aynı
  * özel aralık aynı dönem; iki yön). Kişiye özel olduğundan çağıran KİŞİ BAŞINA hesaplar.
  */
+/**
+ * Tarih aralığının (from–to) anahtar kümesi — özel aralığın ve "Tüm Hareketler"in kişiye özel aralığının TEK kuralı: [aralik|from|to] ve (★ soru 4 / S1b) aralık o günün
+ * "Bu Ay" / "Geçen Ay" tarihlerine birebir eşitse ay|YYYY-AA. İş R5 (dar kontrol 12; İLKEYLE — ilke 3 + S1b + Q1): Tüm'ün kişiye özel dönemi aynı tarihli özel aralığın
+ * BÜTÜN eşliklerini alır.
+ */
+function rangeKeys(from, to, day) {
+  const keys = [`aralik|${from}|${to}`];
+  if (!day) return keys;
+  for (const preset of ["thisMonth", "lastMonth"]) {
+    const range = waPresetRange(preset, day);
+    if (range.from === from && range.to === to) return [...keys, `ay|${String(from).slice(0, 7)}`];
+  }
+  return keys;
+}
+
 function statementKeys(period, day, first = "") {
   const own = statementKey(period);
-  if (own === "secim|all") return first && period?.to ? [own, `aralik|${first}|${period.to}`] : [own];
+  if (own === "secim|all") return first && period?.to ? [own, ...rangeKeys(first, period.to, day)] : [own];
   // KULLANICI KARARI (31.10.2026, "KİME KAÇ KEZ" ilkesi, S1a): HAZIR seçimle ("Bu Ay" / "Geçen Ay") yapılan gönderimin o günkü (toplu işin açıldığı gün) TARİHLERİ de
   // kümeye girer → aynı tarihli özel aralıkla (hangi gün kullanılırsa kullanılsın) aynı dönem. S1b (özel aralık o günün hazır seçimine eşitse "ay|…") aşağıda, aynen.
   if (own.startsWith("ay|")) return period?.from && period?.to ? [own, `aralik|${period.from}|${period.to}`] : [own];
@@ -65,12 +80,8 @@ function statementKeys(period, day, first = "") {
   // bu eşlikte de seçimin 7 gün penceresi geçerli (defter sentBefore / unsettled "rolling"; queue taşınan veri). "Tüm Hareketler"in başlangıcı boş → kişiye özel eşlik yukarıda
   // (İş Q1: ilk hareket – dönem sonu; aynı 7 gün penceresi).
   if (own.startsWith("secim|")) return period?.from && period?.to ? [own, `aralik|${period.from}|${period.to}`] : [own];
-  if (!own.startsWith("aralik|") || !day) return [own];
-  for (const preset of ["thisMonth", "lastMonth"]) {
-    const range = waPresetRange(preset, day);
-    if (range.from === period.from && range.to === period.to) return [own, `ay|${String(period.from).slice(0, 7)}`];
-  }
-  return [own];
+  if (!own.startsWith("aralik|")) return [own];
+  return rangeKeys(period?.from || "", period?.to || "", day);
 }
 
 /** Ekstre dönemi { from, to, preset } ya da hatırlatma; day: gönderim günü (YYYY-AA-GG). Defterde talebin KENDİ anahtarı (claims.period_key). */
