@@ -58,6 +58,10 @@ describe("2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu bell
       assert.equal(ctx.messages().filter(item => item.to === P_TEL).length, sent, "yeni gönderim kişiye ikinci ileti göndermedi");
       const dup = ctx.statuses([{ id: wamid, status: "read", timestamp: ts(), recipient_id: "905334445566", biz_opaque_callback_data: jobId }], { signed: true });
       assert.equal(dup.unknown + dup.applied, 1, "yinelenen / sonraki bildirim hata vermez");
+      // §7a 18: teslimden SONRA gelen "failed" yok sayılır (defterde teslim edilemedi yazılmaz).
+      const lateFail = ctx.statuses([{ id: wamid, status: "failed", timestamp: ts(), recipient_id: "905334445566", biz_opaque_callback_data: jobId, errors: [{ code: 131026, title: "x" }] }], { signed: true });
+      assert.equal(lateFail.applied, 0, `teslimden sonra gelen failed uygulanmaz (geldi ${JSON.stringify(lateFail)})`);
+      assert.deepEqual(ctx.wa.ledger.attempts(jobId).map(item => item.outcome), ["uncertain"], "defterde teslim edilemedi yazılmadı");
     } finally {
       await ctx.close();
     }

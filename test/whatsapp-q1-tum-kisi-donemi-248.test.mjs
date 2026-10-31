@@ -24,12 +24,14 @@ async function ok(res, label) {
   return res.data.data;
 }
 const previewSkip = async (ctx, body, label) => skipOf(await ok(await ctx.api.post(URLS.preview, body), label));
-/** 15.10'da P (ilk hareketi 15.10), 20.10'da Q (ilk hareketi 20.10) açılır; saat 03.11 10:00. */
+/** 15.10'da P (ilk hareketi 15.10; 25.10'da ikinci hareketi — ilk hareket İLK satırdır), 20.10'da Q (ilk hareketi 20.10) açılır; saat 03.11 10:00. */
 async function start(extra = {}) {
   const ctx = await startWa({ now: { time: localIso(2026, 10, 15), fixed: true }, ...extra });
   const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
   ctx.clock.set(localIso(2026, 10, 20));
   const q = await ctx.account("Ayşe Yılmaz", "0532 111 22 33", 500);
+  ctx.clock.set(localIso(2026, 10, 25));
+  await ok(await ctx.api.post(`/api/workspace/accounts/${p.id}/entries`, { kind: "debt", amount: "100", date: "2026-10-25", note: "Ek hizmet" }), "P'nin ikinci hareketi");
   ctx.clock.set(localIso(2026, 11, 3));
   return { ctx, p, q };
 }
