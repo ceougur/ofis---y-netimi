@@ -568,6 +568,22 @@ async function kos(sen, uc, secenek) {
       res.writeHead(503);
       return void res.end();
     }
+    // S-16 (README §13.3, H3): kanca iş şirket dosyasında YOKKEN de (yedeğe dönüşten sonra) programa iletilir; kâhinin geciktirilmiş kancası (kanca.<cari>.<n>, "+3h")
+    // ileti anında işe bağlanır, dosyadan bağımsız. meta.post / kabul cari başına dosyadaki işlerden (dosyadan çıkan işin POST'u toplamda; kâhin bilinen_ihlal post_toplam).
+    if (mut("S16-dosyasiz-kanca-iletilmez")) {
+      let dosyasiz = false;
+      try {
+        const ops = JSON.parse(ham.toString("utf8")).entry.flatMap(e => e.changes || []).flatMap(c => c.value?.statuses || []).map(st => st.biz_opaque_callback_data).filter(Boolean);
+        dosyasiz = ops.length > 0 && ops.every(op => programIsDurumu(op) === null);
+      } catch {
+        dosyasiz = false;
+      }
+      if (dosyasiz) {
+        kancaKaydi.push({ t: simdi, http: 200, isaret: "mutasyon-iletilmedi", wamidler: [] });
+        res.writeHead(200);
+        return void res.end();
+      }
+    }
     const imzali = imzaGecerli(ham, req.headers["x-hub-signature-256"]);
     const isaret = secenek.kip === "yol1" ? "wa0" : imzali ? "wa1" : "wa0";
     const yanit = await ilet({ port: program.uzakPort, method: req.method, yol: req.url, headers: { "content-type": "application/json", "x-surucu-isaret": isaret }, govde: ham });
@@ -1192,10 +1208,19 @@ async function kos(sen, uc, secenek) {
       }
       if (tur === "tasindi") {
         // Veri başka bilgisayara taşındı: şirket verisi aynı, makine düzeyindeki gönderim defteri o bilgisayarda yok.
+        // S-17 (README §13.3, H2): program KAPALIYKEN (çökmeden ya da "kapat"tan sonra) taşıma — taşınan disk, açılacak disktir: çökme kopyası (SIGKILL'in bıraktığı
+        // hâl) önce yerine konur, defter ondan ayrılır; program burada AÇILMAZ ("ac" olayı açar). Program açıkken taşıma önceki gibi: kapat → taşı → aç.
+        const acikti = Boolean(program);
         await programKapat();
+        if (cokmeKopyasi && !mut("S17-tasima-cokme-diskine-uygulanmaz")) {
+          fs.rmSync(dataDir, { recursive: true, force: true });
+          fs.renameSync(cokmeKopyasi, dataDir);
+          cokmeKopyasi = null;
+        }
         for (const ad of fs.readdirSync(dataDir)) if (ad.startsWith("whatsapp-gonderim.sqlite")) fs.renameSync(path.join(dataDir, ad), path.join(kok, `eski-makine-${ad}`));
-        await programAc();
-            return;
+        if (acikti) await programAc();
+        else notlar.push("TAŞIMA program kapalıyken (açılış sonraki \"ac\" olayında)");
+        return;
       }
       if (tur === "sahte_kanca") {
         let wamid = o.wamid || "wamid.SAHTE";
@@ -1664,6 +1689,8 @@ const MUTASYONLAR = [
   ["S14-gunluk-sinir-yok-sayilir", "G1-01*,G1-02*,E2-03*", "S-14 günlük üst sınır (ayar.gunluk_ust_sinir)"],
   ["S15-tum-son-3-ay", "G6-02*,G6-04*,K1-06*", "S-15 \"tum\" → all (özel aralıkla aynı senaryoda)"],
   ["S15-ozel-aralik-bitisi-kaydir", "G6-01*,G6-02*,G6-04*,G6-05*,K1-10*", "S-15 özel aralık bas/son olduğu gibi (hazır seçimle aynı senaryoda)"],
+  ["S16-dosyasiz-kanca-iletilmez", "H3-01*,H3-02*", "S-16 iş dosyada yokken gelen (geciktirilmiş) imzalı kanca programa iletilir"],
+  ["S17-tasima-cokme-diskine-uygulanmaz", "H2-01*,H2-02*", "S-17 çökme → taşıma (program kapalı) → açılış: taşıma çökme diskine uygulanır"],
 ];
 
 const sonuclar = [];
