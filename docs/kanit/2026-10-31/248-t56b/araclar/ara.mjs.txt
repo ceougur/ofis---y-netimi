@@ -1,0 +1,103 @@
+// T56b — 2.4.8 İÇİ ARA ŞEMA → v43 (Aday 2). Ölçüm aracı; ürün koduna dokunmaz.
+// Kullanım (her mod ayrı süreç; kod kökü ESKİ sürümün `git archive` kopyası ya da aday çalışma ağacı — ders 23):
+//   node ara.mjs uret <kodKok> <veriKok>        : o kodun KENDİ API'siyle WhatsApp verisi (toplu iş + işler + makine defteri) üretir
+//   node ara.mjs olc  <kodKok> <veriKok> <out>  : aynı veride (gerekirse göç) R3 / Zaten Kuyrukta / Sonucu Belirsiz / Yeniden Dene / Yine de Gönder sonuçlarını yazar
+// Senaryo (şirket 001, sahte saat 03.11.2026 TR, sabit): 10 cari G0..G9.
+//   B1 ekstre "Bu Ay" G0..G4 → G0..G3 kabul (G0 teslim bildirimi), G4 Meta 131026 → Başarısız
+//   B1b ekstre "Bu Ay" G5 → istek işlendi, yanıt yok → Sonucu Belirsiz
+//   G6, G7, G9 taksit kartı (ilk vade 15.10.2026 geçmiş); B4 hatırlatma G9 → kabul. B2 hatırlatma G6, G7 → kuyrukta bekler; B3 ekstre "Bu Ay" G8 → kuyrukta bekler.
+// Beklenen (plan R3 / Zaten Kuyrukta / Sonucu Belirsiz kuralları ve testin girdiği veriden; programın çıktısından türetilmez — ders 5):
+//   ekstre Bu Ay: G0..G3 "Daha Önce Gönderildi", G5 "Sonucu Belirsiz", G8 "Zaten Kuyrukta", G4 / G6 / G7 / G9 gönderilir.
+//   hatırlatma: G9 "Daha Önce Gönderildi" (bugün), G6, G7 "Zaten Kuyrukta", öbürleri "Gecikmiş Borç Yok"; ekstre Bu Ay: G9 gönderilir (ekstre gitmedi). Yeniden Dene (B1): yalnız G4 yeni iş. Yine de Gönder (G5, onaylı): G5 yeni iş.
+import path from "node:path";
+import { writeFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
+
+if (process.env.HUKUK_LICENSE_URL !== "http://127.0.0.1:9") throw new Error("ders 30: HUKUK_LICENSE_URL ölü yerel adres olmalı");
+const [mode, kok, veri, out] = process.argv.slice(2);
+const { startWa, OFFICE } = await import(pathToFileURL(path.join(kok, "test/whatsapp-248-ortak.mjs")).href);
+const NAMES = Array.from({ length: 10 }, (_, i) => `Ara Şema G${i}`);
+const phoneOf = i => `0554 200 00 ${String(10 + i)}`;
+const e164Of = i => `+90554200000${String(10 + i)}`.replace("+905542000001", "+905542000001");
+const opts = time => ({ dataDir: path.join(veri, "data"), backupDir: path.join(veri, "backups"), now: { time, fixed: true }, whatsappWorker: "manual", whatsappGapMs: 0, whatsappTimeoutMs: 800 });
+const must = (what, res) => {
+  if (res.status !== 200) throw new Error(`${what}: ${res.status} ${JSON.stringify(res.data).slice(0, 400)}`);
+  return res.data.data;
+};
+
+if (mode === "uret") {
+  const ctx = await startWa(opts("2026-11-03T09:00:00+03:00"));
+  const r = { version: null, batches: {}, states: {} };
+  try {
+    const ids = [];
+    for (let i = 0; i < 10; i += 1) ids.push((await ctx.account(NAMES[i], phoneOf(i), 100 + i)).id);
+    const e164 = i => `+90${phoneOf(i).replace(/\D/g, "").slice(1)}`;
+    ctx.fake.state.recipientErrors[e164(4)] = { status: 400, body: { error: { message: "(#131026) Message undeliverable", type: "OAuthException", code: 131026, error_data: { messaging_product: "whatsapp", details: "Message undeliverable" }, fbtrace_id: "AbCd" } } };
+    const b1 = must("B1", await ctx.batch({ kind: "statement", ids: ids.slice(0, 5), preset: "thisMonth", requestId: "t56b-ara-b1-0001" }));
+    r.batches.B1 = b1.batch.id;
+    await ctx.drain();
+    for (const i of [6, 7, 9]) must(`taksit G${i}`, await ctx.api.post("/api/workspace/plans", { accountId: ids[i], name: "Taksit", total: "3000", count: 3, firstDue: "2026-10-15", registeredOn: "2026-10-01" }));
+    const b4 = must("B4", await ctx.batch({ kind: "reminder", ids: [ids[9]], requestId: "t56b-ara-b4-0001" }));
+    r.batches.B4 = b4.batch.id;
+    await ctx.drain();
+    ctx.fake.state.dropAfter = /\/messages$/;
+    const b1b = must("B1b", await ctx.batch({ kind: "statement", ids: [ids[5]], preset: "thisMonth", requestId: "t56b-ara-b1b-0001" }));
+    r.batches.B1b = b1b.batch.id;
+    await ctx.drain();
+    ctx.fake.state.dropAfter = null;
+    const w0 = ctx.store.get("SELECT wamid FROM wa_jobs WHERE account_id = ?", ids[0])?.wamid;
+    try {
+      ctx.statuses([{ id: w0, status: "delivered", timestamp: String(Math.floor(Date.parse("2026-11-03T09:01:00+03:00") / 1000)), recipient_id: e164(0).slice(1) }]);
+      r.delivered = w0;
+    } catch (error) {
+      r.delivered = `HATA ${error.message}`;
+    }
+    const b2 = must("B2", await ctx.batch({ kind: "reminder", ids: [ids[6], ids[7]], requestId: "t56b-ara-b2-0001" }));
+    r.batches.B2 = b2.batch.id;
+    const b3 = must("B3", await ctx.batch({ kind: "statement", ids: [ids[8]], preset: "thisMonth", requestId: "t56b-ara-b3-0001" }));
+    r.batches.B3 = b3.batch.id;
+    r.version = ctx.store.get("PRAGMA user_version").user_version;
+    for (const row of ctx.store.all("SELECT a.name AS name, j.state AS state, b.state AS bstate FROM wa_jobs j JOIN accounts a ON a.id = j.account_id JOIN wa_batches b ON b.id = j.batch_id ORDER BY a.name, j.rowid")) r.states[row.name] = `${row.state}/${row.bstate}`;
+    r.meta = { messages: ctx.fake.state.messages.length, to: ctx.fake.state.messages.map(m => m.to) };
+  } finally {
+    await ctx.close();
+  }
+  process.stdout.write(`${JSON.stringify({ ok: true, ...r })}\n`);
+} else if (mode === "olc") {
+  const ctx = await startWa({ ...opts("2026-11-03T10:00:00+03:00"), connect: false, ack: false });
+  const r = { version: null, previews: {}, retry: null, anyway: null, after: {} };
+  const people = data => Object.fromEntries((data.people || []).map(p => [p.name || p.accountName, { skip: p.skip || "", sentBefore: p.sentBefore || null }]));
+  try {
+    r.version = ctx.store.get("PRAGMA user_version").user_version;
+    const pv = async (key, body) => {
+      const res = await ctx.api.post("/api/workspace/whatsapp/batches/preview", body);
+      r.previews[key] = res.status === 200 ? { status: 200, sendable: res.data.data.sendable, skipped: res.data.data.skipped, alreadySent: res.data.data.alreadySent, people: people(res.data.data) } : { status: res.status, body: res.data };
+    };
+    await pv("ekstre-buay", { kind: "statement", all: true, status: "all", preset: "thisMonth" });
+    await pv("hatirlatma", { kind: "reminder", all: true, status: "all" });
+    await pv("ekstre-ozel-1kasim-3kasim", { kind: "statement", all: true, status: "all", preset: "custom", from: "2026-11-01", to: "2026-11-03" });
+    const batches = ctx.store.all("SELECT id, request_key AS rk, state FROM wa_batches ORDER BY rowid");
+    const idOf = rk => batches.find(b => b.rk && b.rk.includes(rk))?.id || null;
+    const jobsOf = async id => (id ? (await ctx.detail(id))?.jobs || [] : []).map(j => `${j.accountName || j.account_name || j.name}:${j.state}${j.reason ? `(${j.reason})` : ""}`).sort();
+    r.batchStates = Object.fromEntries(await Promise.all(["t56b-ara-b1-", "t56b-ara-b1b-", "t56b-ara-b2-", "t56b-ara-b3-", "t56b-ara-b4-"].map(async rk => [rk, { state: batches.find(b => b.rk && b.rk.includes(rk))?.state, jobs: await jobsOf(idOf(rk)) }])));
+    const retry = await ctx.api.post(`/api/workspace/whatsapp/batches/${idOf("t56b-ara-b1-")}/retry-failed`, { requestId: "t56b-ara-retry-0001" });
+    r.retry = { status: retry.status, code: retry.data?.code || null, jobs: retry.status === 200 ? await jobsOf(retry.data.data.batch.id) : [], message: retry.status === 200 ? null : retry.data?.error || retry.data?.message };
+    const g5 = ctx.store.get("SELECT j.id AS id FROM wa_jobs j JOIN accounts a ON a.id = j.account_id WHERE a.name = ? AND j.state = 'uncertain'", NAMES[5]);
+    const noConfirm = await ctx.api.post(`/api/workspace/whatsapp/jobs/${g5?.id}/send-anyway`, { requestId: "t56b-ara-anyway-0000" });
+    const anyway = await ctx.api.post(`/api/workspace/whatsapp/jobs/${g5?.id}/send-anyway`, { confirm: true, requestId: "t56b-ara-anyway-0001" });
+    r.anyway = { onaysiz: noConfirm.status, onaysizKod: noConfirm.data?.code || null, status: anyway.status, jobs: anyway.status === 200 ? await jobsOf(anyway.data.data.batch.id) : [], message: anyway.status === 200 ? null : anyway.data };
+    // Yeniden Dene + Yine de Gönder kuyrukta bekliyorken (henüz gönderilmedi) ekstre önizlemesi: G4 ve G5 "Zaten Kuyrukta"
+    const res = await ctx.api.post("/api/workspace/whatsapp/batches/preview", { kind: "statement", all: true, status: "all", preset: "thisMonth" });
+    r.after["ekstre-buay-kuyrukla"] = res.status === 200 ? { skipped: res.data.data.skipped, people: people(res.data.data) } : { status: res.status };
+    r.cols = Object.fromEntries(["wa_batches", "wa_jobs"].map(t => [t, ctx.store.all(`PRAGMA table_info(${t})`).map(c => c.name)]));
+    r.newCols = ctx.store.all("SELECT request_key AS rk, " + (r.cols.wa_batches.includes("key_day") ? "key_day" : "'(yok)'") + " AS keyDay, " + (r.cols.wa_batches.includes("send_again_after") ? "send_again_after" : "'(yok)'") + " AS again FROM wa_batches ORDER BY rowid");
+  } finally {
+    await ctx.close();
+  }
+  writeFileSync(out, `${JSON.stringify(r, null, 1)}\n`);
+  process.stdout.write(`${JSON.stringify({ ok: true, version: r.version })}\n`);
+} else {
+  throw new Error(`bilinmeyen mod ${mode}`);
+}
+void OFFICE;
+void e164Of;

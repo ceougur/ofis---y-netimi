@@ -1,0 +1,31 @@
+TAP version 13
+# \# T6c {"label":"c1","kilitAniIleti":2,"kilitteIleti":0,"kilitteMesajIstegi":2,"yanitSuresiMs":{"enCok":29426,"ortanca":29426,"basarisiz":0,"adet":2},"kilitteGunluk":["[WARN] WhatsApp işi yürütülemedi (waj-76340698-9bc4-48dc-be22-62a51fca4041; database is locked); 30 sn sonra yeniden denenecek."],"kilitteDurumlar":{"accepted":2,"pending":4},"son":{"toplu":"Tamamlandı","neden":"","isler":["accepted","accepted","accepted","accepted","accepted","accepted"],"aliciBasina":[1,1,1,1,1,1]}}
+# Subtest: T6 (c) — kilitli dosya
+    # Subtest: c1: şirket dosyası gönderim sürerken 25 sn kilitli
+    ok 1 - c1: şirket dosyası gönderim sürerken 25 sn kilitli
+      ---
+      duration_ms: 43053.234979
+      type: 'test'
+      ...
+# \# T6c {"label":"c2","kilitAniIleti":2,"kilitteIleti":0,"kilitteMesajIstegi":2,"yanitSuresiMs":{"enCok":9466,"ortanca":9450,"basarisiz":0,"adet":4},"kilitteGunluk":["[WARN] WhatsApp gönderim defteri yazılamadı (waj-b940c2de-7f52-4f2e-854d-ad1fd770d73a): database is locked","[WARN] WhatsApp gönderim defteri yazılamadı (waj-2efafa2a-dc14-4e4a-ba97-99728bd1bf69): database is locked","[WARN] WhatsApp gönderim defteri yazılamadı (waj-3d49c352-9ecb-4ae1-a9c0-81e87794e6e9): database is locked"],"kilitteDurumlar":{"accepted":2,"pending":3,"sending":1},"son":{"toplu":"Tamamlandı","neden":"","isler":["accepted","accepted","accepted","accepted","accepted","accepted"],"aliciBasina":[1,1,1,1,1,1]}}
+    # Subtest: c2: makine defteri (whatsapp-gonderim.sqlite) gönderim sürerken 25 sn kilitli → kilitteyken ileti GİTMEZ
+    ok 2 - c2: makine defteri (whatsapp-gonderim.sqlite) gönderim sürerken 25 sn kilitli → kilitteyken ileti GİTMEZ
+      ---
+      duration_ms: 63677.084975
+      type: 'test'
+      ...
+    1..2
+ok 1 - T6 (c) — kilitli dosya
+  ---
+  duration_ms: 106731.623432
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 122131.570821

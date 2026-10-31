@@ -1,0 +1,33 @@
+# 2afd1d53: üretim {"ok":true,"version":41,"batches":{"B1":"wab-ac8ad715-4bf1-4b96-8be5-df19d2dbc7ab","B4":"wab-34e6cbb1-61f6-4645-b0ed-423c35ff36b5","B1b":"wab-963b1eb9-11fa-455b-a8b7-e9e38b4cfb2d","B2":"wab-7f16c817-7e86-455e-80c3-d10b15b7dc7f","B3":"wab-2967af6d-6329-459a-9004-af63cb6b4831"},"states":{"Ara Şema G0":"delivered/done","Ara Şema G1":"accepted/done","Ara Şema G2":"accepted/done","Ara Şema G3":"accepted/done","Ara Şema G4":"failed/done","Ara Şema G5":"uncertain/done","Ara Şema G6":"pending/running","Ara Şema G7":"pending/running","Ara Şema G8":"pending/running","Ara Şema G9":"accepted/done"},"delivered":"wamid.SAHTE0001","meta":{"messages":6,"to":["+905542000010","+905542000011","+905542000012","+905542000013","+905542000019","+905542000015"]}}
+  ✓ 2afd1d53 eski kod kendi API'siyle veri üretti (şema v41; işler {"Ara Şema G0":"delivered/done","Ara Şema G1":"accepted/done","Ara Şema G2":"accepted/done","Ara Şema G3":"accepted/done","Ara Şema G4":"failed/done","Ara Şema G5":"uncertain/done","Ara Şema G6":"pending/running","Ara Şema G7":"pending/running","Ara Şema G8":"pending/running","Ara Şema G9":"accepted/done"})
+  ✓ 2afd1d53 göç v41 → v43 (beklenen 43), bütünlük ok
+  ✓ 2afd1d53 eklenen sütunlar yalnız beklenenler: wa_batches +[send_again_after,key_day] (beklenen [send_again_after,key_day]), wa_jobs +[] (beklenen [])
+  ✓ 2afd1d53 şirket dosyasında tablo farkı yok (eklenen , düşen )
+  ✓ 2afd1d53 eski iş satırları göçten sonra aynı durumda (10)
+  ✓ 2afd1d53 göçmüş toplu işlerde key_day = '' ve send_again_after = '' (eski davranış; 5 iş)
+  ✓ 2afd1d53 makine defteri: eklenen tablolar [claim_keys] (learned_wamids, claim_keys şirket dosyasında DEĞİL, defterde var); eski satırlar korunur (claims 7 → ≥, accepts 5 → ≥)
+  ✓ 2afd1d53 önce (eski kod) Ekstre "Bu Ay": G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta, G4/G6/G7/G9 gönderilir (G5: gönderilir)
+  ✓ 2afd1d53 önce (eski kod) Ödeme Hatırlatma: G9 Daha Önce Gönderildi (bugün), G6/G7 Zaten Kuyrukta, öbürleri Gecikmiş Borç Yok
+  ✓ 2afd1d53 önce (eski kod) Başarısızları Yeniden Dene (B1): yalnız G4 yeni iş (["Ara Şema G4:pending"])
+  ✓ 2afd1d53 önce (eski kod) Yine de Gönder (G5 belirsiz): onaysız 409, onaylı 200 → G5 yeni iş (["Ara Şema G5:pending"])
+  ✓ 2afd1d53 önce (eski kod) Yeniden Dene + Yine de Gönder kuyruktayken Ekstre "Bu Ay": G4, G5, G8 Zaten Kuyrukta
+  ✗ 2afd1d53 sonra (aday) Ekstre "Bu Ay": G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta, G4/G6/G7/G9 gönderilir (G5: gönderilir) — {"badE":["G0=","G1=","G2=","G3="],"skipped":{"Zaten Kuyrukta":1}}
+  ✓ 2afd1d53 sonra (aday) Ödeme Hatırlatma: G9 Daha Önce Gönderildi (bugün), G6/G7 Zaten Kuyrukta, öbürleri Gecikmiş Borç Yok
+  ✓ 2afd1d53 sonra (aday) Başarısızları Yeniden Dene (B1): yalnız G4 yeni iş (["Ara Şema G4:pending"])
+  ✓ 2afd1d53 sonra (aday) Yine de Gönder (G5 belirsiz): onaysız 409, onaylı 200 → G5 yeni iş (["Ara Şema G5:pending"])
+  ✓ 2afd1d53 sonra (aday) Yeniden Dene + Yine de Gönder kuyruktayken Ekstre "Bu Ay": G4, G5, G8 Zaten Kuyrukta
+  ✗ 2afd1d53 sonra (aday) özel aralık 01.11–03.11 = o günün "Bu Ay"ı → G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta (karar "b"; göçmüş defterde claim_keys satırı tablo yok) — {"badOz":["G0=","G1=","G2=","G3="],"skipped":{"Zaten Kuyrukta":1}}
+  ✗ 2afd1d53 önce = sonra: ekstre — [{"k":"Ara Şema G0","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G1","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G2","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G3","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}}]
+  ✓ 2afd1d53 önce = sonra: hat
+  ✓ 2afd1d53 önce = sonra: retry
+  ✓ 2afd1d53 önce = sonra: anyway
+  ✗ 2afd1d53 önce = sonra: kuyruk — [{"k":"Ara Şema G0","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G1","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G2","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G3","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}}]
+  ✓ 2afd1d53 önce = sonra: durum
+# 2afd1d53 bilgi: özel aralık 01.11–03.11 eski kodda {"Daha Önce Gönderildi":4,"Zaten Kuyrukta":1} / adayda {"Zaten Kuyrukta":1} (eşlik kararı "b" 82e4e07e ile geldi; v42'den önceki kodda yok)
+# 2afd1d53 bilgi: yeni işlerin key_day / send_again_after (aday): [{"rk":"user-0b7cf91b-d49a-423c-9107-03c56f590d00|t56b-ara-retry-0001","keyDay":"2026-11-03","again":""},{"rk":"user-0b7cf91b-d49a-423c-9107-03c56f590d00|t56b-ara-anyway-0001","keyDay":"2026-11-03","again":""}]
+# tests 24
+# pass 20
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0

@@ -1,0 +1,10 @@
+#!/bin/bash
+# kullanım: kos.sh <kanıt adı> <adım> [adım argümanları…] — 2.4.8 Aday 2 (wt-t56b-248, is/t56b-248 ← 21ea0474), kanit.mjs kos ile
+S=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t56b-t5
+R=/home/user/wt-t56b-248
+ad=$1; shift
+cd "$R" || exit 9
+TMPDIR=$S/tmp HUKUK_LICENSE_URL=http://127.0.0.1:9 node tools/kanit.mjs kos "248-t56b-t5-$ad" --sure 120 -- node --disable-warning=ExperimentalWarning "$S/arac/goc248.mjs" "$@" --repo "$R" --kok "$S/kok" > "$S/$ad.out" 2>&1
+code=$?
+echo "$ad cikis $code"
+exit $code

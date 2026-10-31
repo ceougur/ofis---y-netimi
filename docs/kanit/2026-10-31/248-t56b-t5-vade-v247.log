@@ -1,0 +1,8 @@
+[15:32:18] vade verildi (v2.4.7 kendi ucu): {"puts":110,"sirket-001:kilitliRet":385,"sirket-001:vade":4,"sirket-001:vadeBeklenen":2,"sirket-001:elleBorc":795,"sirket-861c8ed4-e977-4b33-ac9d-74dbe80b47ae:vade":76,"sirket-861c8ed4-e977-4b33-ac9d-74dbe80b47ae:vadeBeklenen":28,"sirket-861c8ed4-e977-4b33-ac9d-74dbe80b47ae:elleBorc":209}
+# 110 PUT (Vade / Beklenen) 200; kilitli dönem reddi ayrı sayıldı: {"sirket-001:kilitliRet":385}
+# tests 110
+# pass 110
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

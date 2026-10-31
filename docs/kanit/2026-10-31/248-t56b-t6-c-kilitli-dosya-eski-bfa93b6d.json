@@ -1,0 +1,32 @@
+{
+  "ad": "248-t56b-t6-c-kilitli-dosya-eski-bfa93b6d",
+  "komut": "node --no-warnings --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t56b-t6/eski-29c6514b/test/t6-248/c-kilitli-dosya.mjs",
+  "commit": "21ea0474a9e07670fcbc9afa81048e0046e164e1",
+  "dal": "is/t56b-248",
+  "kirli": 0,
+  "izlenmeyen": 41,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T16:04:03.000Z",
+  "sure_sn": 114.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t56b-t6-c-kilitli-dosya-eski-bfa93b6d.log",
+  "klasor": "/home/user/wt-t56b-248",
+  "ham_cikti_sha256": "f25f7079114e1fabf83d4e36af095b73ed694addc0a9a15169290b35b08a24d6",
+  "ham_cikti_bayt": 1988
+}

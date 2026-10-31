@@ -1,0 +1,45 @@
+TAP version 13
+# \# T6f1 {"gonderim":{"ileti":4,"durumlar":{"accepted":4}},"geriYukleme":{"staged":true,"restarting":false,"restartRequired":true,"company":"001 · Şirket 1","name":"destekofis-001-2026-10-31T16-02-11-328Z-manuel.sqlite"},"geriYuklemeSonrasiTopluIs":0,"defterKabul":4,"onizleme":{"status":200,"alreadySent":{"count":4,"last":"2026-11-03T06:00:01.542Z","included":0}},"yenidenCalis":{"status":400,"skipped":{"Daha Önce Gönderildi":4},"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 4). Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde \\"Yine de Gönder\\" seçin."},"yenidenCalisSonrasiIleti":4,"yineDeGonder":{"status":200,"error":""},"aliciBasina":{"+905531009300":2,"+905531009301":1,"+905531009302":1,"+905531009303":1},"stats":{"month":"2026-11","configured":true,"wabaId":"102290129340398","delivered":0,"billable":0,"accepted":5,"approxUsd":0,"unitUsd":0.0009,"company":{"delivered":0,"billable":0,"accepted":5},"note":"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır."}}
+# Subtest: T6 (f) yedek tatbikatı
+    # Subtest: f1 yedek → gönder (4 kişi) → geri yükle → yeniden çalış: R3 dört kişiyi 'Daha Önce Gönderildi' sayar, varsayılan Bunları Çıkar → ikinci ileti YOK; 'Yine de Gönder' seçilirse gider
+    ok 1 - f1 yedek → gönder (4 kişi) → geri yükle → yeniden çalış: R3 dört kişiyi 'Daha Önce Gönderildi' sayar, varsayılan Bunları Çıkar → ikinci ileti YOK; 'Yine de Gönder' seçilirse gider
+      ---
+      duration_ms: 5815.927919
+      type: 'test'
+      ...
+# \# T6f2 {"yedekAniIleti":2,"bitinceIleti":6,"geriYuklenen":{"toplu":"Durduruldu","neden":"Durduruldu (Geri Yükleme): bu toplu gönderim bu bilgisayarda zaten bitmişti; yedekteki eski işler yeniden başlatılmaz.","isler":["accepted","accepted","stopped","stopped","stopped","stopped"]},"geriYuklemeSonrasiIleti":6,"sayac":{"once":{"month":"2026-11","configured":true,"wabaId":"102290129340398","delivered":0,"billable":0,"accepted":6,"approxUsd":0,"unitUsd":0.0009,"company":{"delivered":0,"billable":0,"accepted":6},"note":"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır."},"sonra":{"month":"2026-11","configured":true,"wabaId":"102290129340398","delivered":0,"billable":0,"accepted":6,"approxUsd":0,"unitUsd":0.0009,"company":{"delivered":0,"billable":0,"accepted":6},"note":"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır."}},"r3":{"count":6,"last":"2026-11-03T06:00:08.078Z","included":0},"aliciBasina":{"+905531009400":1,"+905531009401":1,"+905531009402":1,"+905531009403":1,"+905531009404":1,"+905531009405":1},"medya":{"yukleme":6,"metadaKalan":6}}
+    # Subtest: f2 gönderim SÜRERKEN yedek → gönderim biter → o yedek geri yüklenir → bekleyen görünen işler 'Durduruldu (Geri Yükleme)', ileti GİTMEZ; sayaç azalmaz
+    ok 2 - f2 gönderim SÜRERKEN yedek → gönderim biter → o yedek geri yüklenir → bekleyen görünen işler 'Durduruldu (Geri Yükleme)', ileti GİTMEZ; sayaç azalmaz
+      ---
+      duration_ms: 18137.027861
+      type: 'test'
+      ...
+    1..2
+ok 1 - T6 (f) yedek tatbikatı
+  ---
+  duration_ms: 23954.319032
+  type: 'suite'
+  ...
+# \# T6g {"sifirla":{"status":200,"error":""},"sifirlaAniIleti":2,"sonrakiIleti":3,"kuyruk":0,"isSatiri":0,"defter":[{"event":"open","reason":""},{"event":"stop","reason":"reset"}],"defterSonuc":[{"outcome":"accepted","n":3}],"cariSayisi":null,"aliciBasina":{"+905531009500":1,"+905531009501":1,"+905531009502":1},"medya":{"yukleme":3,"metadaKalan":3}}
+# Subtest: T6 (g) Şirket Verisini Sıfırla
+    # Subtest: g: toplu gönderim SÜRERKEN (ileti isteği Meta'dayken) sıfırla → sonra ileti GİTMEZ, çift yok, kuyruk boş; yeniden çalış → R3
+    ok 1 - g: toplu gönderim SÜRERKEN (ileti isteği Meta'dayken) sıfırla → sonra ileti GİTMEZ, çift yok, kuyruk boş; yeniden çalış → R3
+      ---
+      duration_ms: 17038.696436
+      type: 'test'
+      ...
+    1..1
+ok 2 - T6 (g) Şirket Verisini Sıfırla
+  ---
+  duration_ms: 17039.052359
+  type: 'suite'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 56313.776547
