@@ -274,9 +274,13 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const cap = settings().dailyCap;
     return { limit: cap ? Math.min(cap, meta) : meta, tier: info.tier, meta, cap };
   }
-  const metaHttp = error => {
+  // starting (T1 P2 A, 5 dk yetkisi): toplu iş BAŞLATILIRKEN Meta'ya ulaşılamadıysa meta-graph.mjs'in "…; sonuç bilinmiyor." metni yanıltıcıdır (hiçbir ileti
+  // gönderilmedi, toplu iş açılmadı) → açık ileti.
+  const START_UNREACHABLE = "Meta'ya ulaşılamıyor; gönderim başlatılmadı. Bağlantı gelince yeniden başlatın.";
+  const metaHttp = (error, { starting = false } = {}) => {
     if (error instanceof HttpError) return error;
-    return new HttpError(502, error.message, { code: error.reason === "meta" ? "whatsapp-meta" : "whatsapp-meta-unreachable", meta: error.toJSON?.() });
+    const reached = error.reason === "meta";
+    return new HttpError(502, !reached && starting ? START_UNREACHABLE : error.message, { code: reached ? "whatsapp-meta" : "whatsapp-meta-unreachable", meta: error.toJSON?.() });
   };
   const usage = wabaId => ledger.windowUsage(wabaId, iso(nowMs() - DAY_MS));
 
@@ -443,7 +447,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true });
       if (template.ok) limitInfo = await dailyLimit(graph, record, { force: true });
     } catch (error) {
-      if (error instanceof MetaGraphError) throw metaHttp(error);
+      if (error instanceof MetaGraphError) throw metaHttp(error, { starting: true });
       throw error;
     }
     if (!template.ok) fail(409, template.reason, `whatsapp-${template.code}`, { template: template.template || null });
