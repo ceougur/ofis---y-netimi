@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkRfix-mutasyon-mR1-kapali-isaret-koyar-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/kapanis-zamanlayici-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/write-lock-248.test.mjs",
+  "commit": "0213f1e80a41bfb7fa46f3cfd6b1cf5dc66c8682",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T22:36:45.571Z",
+  "sure_sn": 39.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 9,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş P1 — store.probeWritable ve yazım kilidi işareti › İş R1: kapalı bağlantıda kısa sınama fırlatmaz, 'closed' döner; guard yazılamaz der ama İŞARET KOYMAZ (kapanma kilit değildir)",
+      "konum": "test/write-lock-248.test.mjs:107:3",
+      "hata": "kapalı → işaret yok · true !== false (beklenen false, gelen true)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkRfix-mutasyon-mR1-kapali-isaret-koyar-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "91520563865c671e1832b37bd34db7f945c0d876ec25c03ddfc3c00c89634753",
+  "ham_cikti_bayt": 4783
+}

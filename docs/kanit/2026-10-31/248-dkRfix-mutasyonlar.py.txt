@@ -1,0 +1,36 @@
+# İş R mutasyonları: python3 mut.py <kök> <ad>. Her (dosya, eski, yeni) eski metin dosyada TAM BİR kez geçmeli.
+import sys
+Q = "server/lib/whatsapp/queue.mjs"
+D = "server/lib/whatsapp/defter.mjs"
+DB = "server/lib/db.mjs"
+DN = "server/lib/whatsapp/donem.mjs"
+M = {
+  "mR1-kapali-firlatir": [(DB, "    if (db.isOpen === false) return PROBE_CLOSED;\n    if (db.isTransaction) return null;\n  } catch (error) {\n    return isClosedError(error) ? PROBE_CLOSED : null;\n  }", "    if (db.isTransaction) return null;\n  } catch (error) {\n    throw error;\n  }")],
+  "mR1-kapali-isaret-koyar": [("server/lib/write-lock.mjs", "      if (probed === PROBE_CLOSED) return false;", "      if (probed === PROBE_CLOSED) {\n        until.set(key, now() + backoffMs);\n        return false;\n      }")],
+  "mR1-belge-zamanlayici-tutulmaz": [("server/routes/documents.mjs", "      stopped = true;\n      clearTimeout(purgeTimer);\n      clearTimeout(retryTimer);", "      clearTimeout(purgeTimer);")],
+  "mR1-arsiv-zamanlayici-tutulmaz": [("server/app.mjs", "      clearTimeout(archiveRetry);\n", ""), ("server/app.mjs", "    if (closed) return; // İş R1: kapanmış örnekte arşiv çalışmaz\n", "")],
+  "mR2-try-yok": [("server/lib/whatsapp/scheduler.mjs", "    try {\n      return queue.canWrite?.() !== false;\n    } catch (error) {", "    {\n      return queue.canWrite?.() !== false;\n    } if (false) { const error = null;")],
+  "mR2-cikmis-sinanir": [("server/lib/whatsapp/scheduler.mjs", "    if (queues.get(key) !== queue) return false;\n", "")],
+  "mR3-defter-turu-yok": [(Q, "writeLock?.isMarked(companyId) ? \"company\" : writeLock?.isMarked(LEDGER_LOCK_KEY) ? \"ledger\" : null;", "writeLock?.isMarked(companyId) ? \"company\" : null;")],
+  "mR3-talepte-not-yok": [(Q, "        writeLock?.mark(LEDGER_LOCK_KEY);\n        syncLockNote(); // İş R3: ekranda defter cümlesi\n", "        writeLock?.mark(LEDGER_LOCK_KEY);\n")],
+  "mR3-oncelik-ters": [(Q, "writeLock?.isMarked(companyId) ? \"company\" : writeLock?.isMarked(LEDGER_LOCK_KEY) ? \"ledger\" : null;", "writeLock?.isMarked(LEDGER_LOCK_KEY) ? \"ledger\" : writeLock?.isMarked(companyId) ? \"company\" : null;")],
+  "mR4-cozumde-yazilmaz": [(Q, "      if (resolving && [\"sent\", \"delivered\", \"read\"].includes(fields.state)) fields.accepted_at = at;\n", "")],
+  "mR4-toparlamada-eski": [(Q, "accepted_at: attempt.at || job.sending_at || iso()", "accepted_at: job.accepted_at || job.sending_at || iso()")],
+  "mR7-yok": [(Q, "        else if (lateFailureOfMissingJob(wamid, value, at)) out.applied += 1;\n", "")],
+  "mR7-teslim-sonrasi-uygulanir": [(Q, "    if (ledger.deliveredJob?.(owner.jobId)) return false;\n    return ledger.deliveryFailed", "    return ledger.deliveryFailed")],
+  "mR6-bos-baslangic": [(DN, "  return firstLineDateOf(period, lines) || String(period?.to || \"\");", "  return firstLineDateOf(period, lines);")],
+  "mR5-ay-yok": [(DN, "return first && period?.to ? [own, ...rangeKeys(first, period.to, day)] : [own];", "return first && period?.to ? [own, `aralik|${first}|${period.to}`] : [own];")],
+  "mR5-yanlis-gun": [(DN, "return first && period?.to ? [own, ...rangeKeys(first, period.to, day)] : [own];", "return first && period?.to ? [own, ...rangeKeys(first, period.to, first)] : [own];")],
+}
+if sys.argv[1] == "--list":
+    print("\n".join(M)); sys.exit(0)
+root, name = sys.argv[1], sys.argv[2]
+for path, old, new in M[name]:
+    p = f"{root}/{path}"
+    s = open(p).read()
+    n = s.count(old)
+    if n != 1:
+        sys.exit(f"{name}: {path} eski metin {n} kez")
+    s = s.replace(old, new)
+    open(p, "w").write(s)
+print(f"{name}: uygulandı")
