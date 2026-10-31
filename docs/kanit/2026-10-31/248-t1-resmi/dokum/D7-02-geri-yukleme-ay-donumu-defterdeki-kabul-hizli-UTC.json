@@ -1,0 +1,414 @@
+{
+ "senaryo": "D7-02-geri-yukleme-ay-donumu-defterdeki-kabul",
+ "uc": "hizli",
+ "tz": "UTC",
+ "bitis": "2026-11-04T02:00:00+03:00",
+ "notlar": [
+  "KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)",
+  "GERİ YÜKLEME (Y0): T1 toplu işi (wab-47aef156-9568-4220-af5e-a06e78a25cd8) şirket dosyasında yok"
+ ],
+ "program_api": [
+  {
+   "t": "2026-10-31T22:00:00+03:00",
+   "yontem": "POST",
+   "url": "/api/admin/backups",
+   "govde": {
+    "scope": "one",
+    "companyId": "sirket-001"
+   },
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"scope\":\"one\",\"name\":\"destekofis-001-2026-10-31T15-15-11-327Z-manuel.sqlite\",\"size\":1404928,\"company\":{\"id\":\"sirket-001\",\"code\":\"001\",\"name\":\"Şirket 1\"},\"backups\":[{\"companyId\":\"sirket-001\",\"company\":\"001 · Şirket 1\",\"code\":\"001\",\"name\":\"destekofis-001-2026-10-31T15-15-11-327Z-manuel.sqlite\",\"size\":1404928,\"folder\":\"/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-tmp/t1-248-surucu-mz9tzO/backups/001 - Şirket 1\"}],\"failed\":[]}}"
+  },
+  {
+   "t": "2026-10-31T22:00:01+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "statement",
+    "ids": [
+     "account-61c9a22f-8246-4a86-ac79-c982f68ad146"
+    ],
+    "preset": "thisMonth"
+   },
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"batch\":{\"id\":\"wab-47aef156-9568-4220-af5e-a06e78a25cd8\",\"kind\":\"statement\",\"kindLabel\":\"Ekstre\",\"template\":\"destekofis_ekstre\",\"period\":{\"from\":\"2026-10-01\",\"to\":\"2026-10-31\",\"preset\":\"thisMonth\"},\"state\":\"running\",\"stateLabel\":\"Sürüyor\",\"waitingUntil\":null,\"pauseReason\":\"\",\"pauseCode\":\"\",\"createdAt\":\"2026-10-31T19:00:01.000Z\",\"createdByName\":\"Ofis yöneticisi\",\"finishedAt\":null,\"total\":1,\"counts\":{\"pending\":1,\"preparing\":0,\"sending\":0,\"accepted\":0,\"sent\":0,\"delivered\":0,\"read\":0,\"failed\":0,\"uncertain\":0,\"limited\":0,\"held\":0,\"paused\":0,\"canceled\":0,\"expired\":0,\"skipped\":0,\"stopped\":0}},\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-10-01\",\"to\":\"2026-10-31\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":1,\"skipped\":{},\"alreadySent\":{\"count\":0,\"last\":null,\"included\":0},\"people\":[{\"id\":\"account-61c9a22f-8246-4a86-ac79-c982f68ad146\",\"name\":\"Ayşe Yılmaz\",\"phone\":\"+905321112233\",\"skip\":\"\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":0,\"left\":250,\"later\":0,\"holdUntil\":null},\"seconds\":1},\"reused\":false}}"
+  },
+  {
+   "t": "2026-10-31T23:00:00+03:00",
+   "yontem": "POST",
+   "url": "/api/admin/backups/restore",
+   "govde": {
+    "name": "destekofis-001-2026-10-31T15-15-11-327Z-manuel.sqlite",
+    "company": "sirket-001",
+    "confirm": "001",
+    "password": "<gizli>"
+   },
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"staged\":true,\"restarting\":false,\"restartRequired\":true,\"company\":\"001 · Şirket 1\",\"name\":\"destekofis-001-2026-10-31T15-15-11-327Z-manuel.sqlite\"}}"
+  },
+  {
+   "t": "2026-11-01T01:00:00+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "statement",
+    "ids": [
+     "account-61c9a22f-8246-4a86-ac79-c982f68ad146"
+    ],
+    "preset": "lastMonth"
+   },
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"batch\":{\"id\":\"wab-c5e19a11-0b07-4013-bd6b-50839cbe7c59\",\"kind\":\"statement\",\"kindLabel\":\"Ekstre\",\"template\":\"destekofis_ekstre\",\"period\":{\"from\":\"2026-09-01\",\"to\":\"2026-09-30\",\"preset\":\"lastMonth\"},\"state\":\"running\",\"stateLabel\":\"Sürüyor\",\"waitingUntil\":null,\"pauseReason\":\"\",\"pauseCode\":\"\",\"createdAt\":\"2026-10-31T22:00:00.000Z\",\"createdByName\":\"Ofis yöneticisi\",\"finishedAt\":null,\"total\":1,\"counts\":{\"pending\":1,\"preparing\":0,\"sending\":0,\"accepted\":0,\"sent\":0,\"delivered\":0,\"read\":0,\"failed\":0,\"uncertain\":0,\"limited\":0,\"held\":0,\"paused\":0,\"canceled\":0,\"expired\":0,\"skipped\":0,\"stopped\":0}},\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-09-01\",\"to\":\"2026-09-30\",\"preset\":\"lastMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":1,\"skipped\":{},\"alreadySent\":{\"count\":0,\"last\":null,\"included\":0},\"people\":[{\"id\":\"account-61c9a22f-8246-4a86-ac79-c982f68ad146\",\"name\":\"Ayşe Yılmaz\",\"phone\":\"+905321112233\",\"skip\":\"\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":1},\"reused\":false}}"
+  },
+  {
+   "t": "2026-11-04T02:00:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-09",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-09\",\"configured\":true,\"wabaId\":\"800000000000001\",\"delivered\":0,\"billable\":0,\"accepted\":0,\"approxUsd\":0,\"unitUsd\":0.0009,\"company\":{\"delivered\":0,\"billable\":0,\"accepted\":0},\"note\":\"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır.\"}}"
+  },
+  {
+   "t": "2026-11-04T02:00:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-10",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-10\",\"configured\":true,\"wabaId\":\"800000000000001\",\"delivered\":0,\"billable\":0,\"accepted\":1,\"approxUsd\":0,\"unitUsd\":0.0009,\"company\":{\"delivered\":0,\"billable\":0,\"accepted\":1},\"note\":\"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır.\"}}"
+  },
+  {
+   "t": "2026-11-04T02:00:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-11",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-11\",\"configured\":true,\"wabaId\":\"800000000000001\",\"delivered\":0,\"billable\":0,\"accepted\":1,\"approxUsd\":0,\"unitUsd\":0.0009,\"company\":{\"delivered\":0,\"billable\":0,\"accepted\":1},\"note\":\"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır.\"}}"
+  }
+ ],
+ "toplular": {
+  "T2": [
+   {
+    "id": "wab-c5e19a11-0b07-4013-bd6b-50839cbe7c59",
+    "kind": "statement",
+    "kindLabel": "Ekstre",
+    "template": "destekofis_ekstre",
+    "period": {
+     "from": "2026-09-01",
+     "to": "2026-09-30",
+     "preset": "lastMonth"
+    },
+    "state": "done",
+    "stateLabel": "Tamamlandı",
+    "waitingUntil": null,
+    "pauseReason": "",
+    "pauseCode": "",
+    "createdAt": "2026-10-31T22:00:00.000Z",
+    "createdByName": "Ofis yöneticisi",
+    "finishedAt": "2026-10-31T22:00:00.500Z",
+    "total": 1,
+    "counts": {
+     "pending": 0,
+     "preparing": 0,
+     "sending": 0,
+     "accepted": 1,
+     "sent": 0,
+     "delivered": 0,
+     "read": 0,
+     "failed": 0,
+     "uncertain": 0,
+     "limited": 0,
+     "held": 0,
+     "paused": 0,
+     "canceled": 0,
+     "expired": 0,
+     "skipped": 0,
+     "stopped": 0
+    },
+    "jobs": [
+     {
+      "cari": "A",
+      "id": "waj-4a07b372-a42f-4671-9140-9d75e46a91fd",
+      "accountId": "account-61c9a22f-8246-4a86-ac79-c982f68ad146",
+      "accountName": "Ayşe Yılmaz",
+      "phone": "+905321112233",
+      "state": "accepted",
+      "stateLabel": "Meta Kabul Etti",
+      "reason": "",
+      "errorCode": null,
+      "attempt": 1,
+      "nextAt": null,
+      "pdfName": "Ekstre Ayşe Yılmaz 01.09.2026-30.09.2026.pdf",
+      "params": [
+       "Ayşe Yılmaz",
+       "Deneme Ticaret Ltd. Şti.",
+       "01.09.2026 – 30.09.2026",
+       "1.000,00 TL (Borçlu)"
+      ],
+      "wamid": "wamid.a7WBBAJDKkD4yMdSkeKnmZ+U+vgViXNk",
+      "acceptedAt": "2026-10-31T22:00:00.500Z",
+      "sentAt": null,
+      "deliveredAt": null,
+      "readAt": null,
+      "failedAt": null,
+      "billable": null,
+      "mediaDeleted": false
+     }
+    ]
+   }
+  ]
+ },
+ "cari_eslemesi": {
+  "A": "account-61c9a22f-8246-4a86-ac79-c982f68ad146"
+ },
+ "defter": {
+  "accepts": [
+   {
+    "job_id": "waj-a1c6aa10-a5e8-4628-a334-d51140f0db6d",
+    "company_id": "sirket-001",
+    "waba_id": "800000000000001",
+    "at": "2026-10-31T19:00:01.500Z"
+   },
+   {
+    "job_id": "waj-4a07b372-a42f-4671-9140-9d75e46a91fd",
+    "company_id": "sirket-001",
+    "waba_id": "800000000000001",
+    "at": "2026-10-31T22:00:00.500Z"
+   }
+  ],
+  "batch_events": [
+   {
+    "batch_id": "wab-47aef156-9568-4220-af5e-a06e78a25cd8",
+    "company_id": "sirket-001",
+    "event": "open",
+    "reason": "",
+    "at": "2026-10-31T19:00:01.000Z"
+   },
+   {
+    "batch_id": "wab-47aef156-9568-4220-af5e-a06e78a25cd8",
+    "company_id": "sirket-001",
+    "event": "stop",
+    "reason": "done",
+    "at": "2026-10-31T19:00:01.500Z"
+   },
+   {
+    "batch_id": "wab-c5e19a11-0b07-4013-bd6b-50839cbe7c59",
+    "company_id": "sirket-001",
+    "event": "open",
+    "reason": "",
+    "at": "2026-10-31T22:00:00.000Z"
+   },
+   {
+    "batch_id": "wab-c5e19a11-0b07-4013-bd6b-50839cbe7c59",
+    "company_id": "sirket-001",
+    "event": "stop",
+    "reason": "done",
+    "at": "2026-10-31T22:00:00.500Z"
+   }
+  ],
+  "batch_log": [],
+  "claim_keys": [
+   {
+    "job_id": "waj-a1c6aa10-a5e8-4628-a334-d51140f0db6d",
+    "attempt": 1,
+    "period_key": "aralik|2026-10-01|2026-10-31"
+   },
+   {
+    "job_id": "waj-4a07b372-a42f-4671-9140-9d75e46a91fd",
+    "attempt": 1,
+    "period_key": "aralik|2026-09-01|2026-09-30"
+   }
+  ],
+  "claims": [
+   {
+    "job_id": "waj-a1c6aa10-a5e8-4628-a334-d51140f0db6d",
+    "attempt": 1,
+    "batch_id": "wab-47aef156-9568-4220-af5e-a06e78a25cd8",
+    "company_id": "sirket-001",
+    "waba_id": "800000000000001",
+    "phone": "+905321112233",
+    "account_id": "account-61c9a22f-8246-4a86-ac79-c982f68ad146",
+    "kind": "statement",
+    "period_key": "ay|2026-10",
+    "at": "2026-10-31T19:00:01.000Z"
+   },
+   {
+    "job_id": "waj-4a07b372-a42f-4671-9140-9d75e46a91fd",
+    "attempt": 1,
+    "batch_id": "wab-c5e19a11-0b07-4013-bd6b-50839cbe7c59",
+    "company_id": "sirket-001",
+    "waba_id": "800000000000001",
+    "phone": "+905321112233",
+    "account_id": "account-61c9a22f-8246-4a86-ac79-c982f68ad146",
+    "kind": "statement",
+    "period_key": "ay|2026-09",
+    "at": "2026-10-31T22:00:00.000Z"
+   }
+  ],
+  "deliveries": [],
+  "failures": [],
+  "holds": [],
+  "hook_events": [
+   {
+    "seq": 1,
+    "waba_id": "800000000000001",
+    "path_hash": "97626fe7743dcaf4ec2f6b490eac4936f332f7bd969e91a0d352d8eca21a1b7d",
+    "verify_hash": "ed65739c9d332b40de9e7a9315b1e01bb37c251167c87461c486325f9b0e257b",
+    "base": "http://ofis.localhost:34645",
+    "state": "pending",
+    "reason": "manual",
+    "error": "",
+    "at": "2026-10-31T19:00:00.000Z"
+   },
+   {
+    "seq": 2,
+    "waba_id": "800000000000001",
+    "path_hash": "97626fe7743dcaf4ec2f6b490eac4936f332f7bd969e91a0d352d8eca21a1b7d",
+    "verify_hash": "ed65739c9d332b40de9e7a9315b1e01bb37c251167c87461c486325f9b0e257b",
+    "base": "http://ofis.localhost:34645",
+    "state": "active",
+    "reason": "manual",
+    "error": "",
+    "at": "2026-10-31T19:00:00.000Z"
+   }
+  ],
+  "hook_seen": [],
+  "learned_wamids": [],
+  "meta": [
+   {
+    "key": "ledgerId",
+    "value": "wal-1d160074-80a9-4141-a9f8-b1c4ef667bf2"
+   }
+  ],
+  "outcomes": [
+   {
+    "job_id": "waj-a1c6aa10-a5e8-4628-a334-d51140f0db6d",
+    "attempt": 1,
+    "outcome": "accepted",
+    "wamid": "wamid.BzqDKm4tVAH+StQ+nYG4beuojNyXeg12",
+    "at": "2026-10-31T19:00:01.500Z"
+   },
+   {
+    "job_id": "waj-4a07b372-a42f-4671-9140-9d75e46a91fd",
+    "attempt": 1,
+    "outcome": "accepted",
+    "wamid": "wamid.a7WBBAJDKkD4yMdSkeKnmZ+U+vgViXNk",
+    "at": "2026-10-31T22:00:00.500Z"
+   }
+  ],
+  "releases": []
+ },
+ "sahte_meta": {
+  "istekler": [
+   {
+    "sira": 7,
+    "t": "2026-10-31T22:00:01+03:00",
+    "yontem": "POST",
+    "islem": "media",
+    "hedef": null,
+    "deneme": 1,
+    "http": 200,
+    "sonuc": "yanit",
+    "is": null,
+    "yanit": {
+     "id": "25186076545828223"
+    }
+   },
+   {
+    "sira": 8,
+    "t": "2026-10-31T22:00:01+03:00",
+    "yontem": "POST",
+    "islem": "messages",
+    "hedef": "905321112233",
+    "deneme": 1,
+    "http": 200,
+    "sonuc": "yanit",
+    "is": "waj-a1c6aa10-a5e8-4628-a334-d51140f0db6d",
+    "yanit": {
+     "messaging_product": "whatsapp",
+     "contacts": [
+      {
+       "input": "+905321112233",
+       "wa_id": "905321112233"
+      }
+     ],
+     "messages": [
+      {
+       "id": "wamid.BzqDKm4tVAH+StQ+nYG4beuojNyXeg12"
+      }
+     ]
+    }
+   },
+   {
+    "sira": 13,
+    "t": "2026-11-01T01:00:00+03:00",
+    "yontem": "POST",
+    "islem": "media",
+    "hedef": null,
+    "deneme": 2,
+    "http": 200,
+    "sonuc": "yanit",
+    "is": null,
+    "yanit": {
+     "id": "87940783579790877"
+    }
+   },
+   {
+    "sira": 14,
+    "t": "2026-11-01T01:00:00+03:00",
+    "yontem": "POST",
+    "islem": "messages",
+    "hedef": "905321112233",
+    "deneme": 2,
+    "http": 200,
+    "sonuc": "yanit",
+    "is": "waj-4a07b372-a42f-4671-9140-9d75e46a91fd",
+    "yanit": {
+     "messaging_product": "whatsapp",
+     "contacts": [
+      {
+       "input": "+905321112233",
+       "wa_id": "905321112233"
+      }
+     ],
+     "messages": [
+      {
+       "id": "wamid.a7WBBAJDKkD4yMdSkeKnmZ+U+vgViXNk"
+      }
+     ]
+    }
+   }
+  ],
+  "mesajlar": [
+   {
+    "wamid": "wamid.BzqDKm4tVAH+StQ+nYG4beuojNyXeg12",
+    "to": "+905321112233",
+    "kabul": "2026-10-31T22:00:01+03:00",
+    "is": "waj-a1c6aa10-a5e8-4628-a334-d51140f0db6d",
+    "medya": "25186076545828223"
+   },
+   {
+    "wamid": "wamid.a7WBBAJDKkD4yMdSkeKnmZ+U+vgViXNk",
+    "to": "+905321112233",
+    "kabul": "2026-11-01T01:00:00+03:00",
+    "is": "waj-4a07b372-a42f-4671-9140-9d75e46a91fd",
+    "medya": "87940783579790877"
+   }
+  ],
+  "kancalar": [],
+  "sayilar": {
+   "mesajIstegi": {
+    "905321112233": 2
+   },
+   "kabul": {
+    "905321112233": 2
+   },
+   "toplamMesajIstegi": 2,
+   "toplamKabul": 2,
+   "medyaYukleme": 2,
+   "medyaKabul": 2,
+   "medyaSilme": 0,
+   "koptu": 0
+  }
+ },
+ "alici_kanca_kaydi": []
+}
