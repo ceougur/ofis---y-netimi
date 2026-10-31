@@ -1,0 +1,43 @@
+{
+  "ad": "248-dk7fix-mutasyon-m1-son-deneme-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs",
+  "commit": "3a41a5e2266f01ed7163d86eb197b472dd6961cc",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T09:11:31.355Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 2,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 dar kontrol 7 ORTA-1 — Meta Bekletti işin 2. denemesi reddedilince kişi 'Daha Önce Gönderildi' sayılmaz (P3) › M yolu: O kabul → M (Yine de Gönder) Başarısız → O 131049 → O'nun 2. denemesi eşzamanlı ret → M'nin Yeniden Dene'si P'ye gider; yeni gönderimde P elenmez",
+      "konum": "test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs:64:3",
+      "hata": "M'nin Yeniden Dene'si açılmalı (geldi 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde \\\"Yine de Gönder\\\" seçin.\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-03\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Daha Önce Gönderildi\":1},\"alreadySent\":{\"count\":1,\"last\":\"2026-11-03T10:00:00.000Z\",\"included\":0},\"people\":[{\"id\":\"account-80c470c4-5a32-4c78-88ea-770371d2bba6\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T10:00:00.000Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":0,\"left\":250,\"later\":0,\"holdUntil\":null},\"seconds\":0}}) · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 7 ORTA-1 — Meta Bekletti işin 2. denemesi reddedilince kişi 'Daha Önce Gönderildi' sayılmaz (P3) › O yolu: O kabul → O 131049 → O'nun 2. denemesi eşzamanlı ret → O'nun kendi Yeniden Dene'si P'ye gider",
+      "konum": "test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs:85:3",
+      "hata": "O'nun Yeniden Dene'si açılmalı (geldi 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde \\\"Yine de Gönder\\\" seçin.\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-03\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Daha Önce Gönderildi\":1},\"alreadySent\":{\"count\":1,\"last\":\"2026-11-03T10:00:00.000Z\",\"included\":0},\"people\":[{\"id\":\"account-3d311665-a818-4a8e-adb0-70ff35efe157\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T10:00:00.000Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":0,\"left\":250,\"later\":0,\"holdUntil\":null},\"seconds\":0}}) · 400 !== 200 (beklenen 200, gelen 400)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk7fix-mutasyon-m1-son-deneme-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "9df621272efa09b054e6bc23c16cb5f32cc23aeeacb4c26ee9e248575b686b5c",
+  "ham_cikti_bayt": 5776
+}

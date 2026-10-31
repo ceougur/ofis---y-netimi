@@ -1,0 +1,32 @@
+{
+  "ad": "248-dk7fix-yeni-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /home/user/wt-t2fix-248/test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk7-son3-pencere-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk7-bekletti-iptal-248.test.mjs",
+  "commit": "3a41a5e2266f01ed7163d86eb197b472dd6961cc",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T09:11:09.433Z",
+  "sure_sn": 7.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk7fix-yeni-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "93e629f616cf17d2b7ad8fdf1482526a5d806bb8280ae78283fc25b83a0392f6",
+  "ham_cikti_bayt": 5212
+}

@@ -1,0 +1,232 @@
+TAP version 13
+# Subtest: 2.4.8 dar kontrol 7 ORTA-1 — Meta Bekletti işin 2. denemesi reddedilince kişi 'Daha Önce Gönderildi' sayılmaz (P3)
+    # Subtest: M yolu: O kabul → M (Yine de Gönder) Başarısız → O 131049 → O'nun 2. denemesi eşzamanlı ret → M'nin Yeniden Dene'si P'ye gider; yeni gönderimde P elenmez
+    not ok 1 - M yolu: O kabul → M (Yine de Gönder) Başarısız → O 131049 → O'nun 2. denemesi eşzamanlı ret → M'nin Yeniden Dene'si P'ye gider; yeni gönderimde P elenmez
+      ---
+      duration_ms: 642.526642
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs:64:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        M'nin Yeniden Dene'si açılmalı (geldi 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde \"Yine de Gönder\" seçin.","code":"whatsapp-nothing","summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-03","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":0,"skipped":{"Daha Önce Gönderildi":1},"alreadySent":{"count":1,"last":"2026-11-03T07:00:00.000Z","included":0},"people":[{"id":"account-1d253808-c773-42d8-b2a2-2aefccc33197","name":"Burak Kaya","phone":"+905334445566","skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T07:00:00.000Z"}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":0,"left":250,"later":0,"holdUntil":null},"seconds":0}})
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs:73:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: O yolu: O kabul → O 131049 → O'nun 2. denemesi eşzamanlı ret → O'nun kendi Yeniden Dene'si P'ye gider
+    not ok 2 - O yolu: O kabul → O 131049 → O'nun 2. denemesi eşzamanlı ret → O'nun kendi Yeniden Dene'si P'ye gider
+      ---
+      duration_ms: 400.036251
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs:85:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        O'nun Yeniden Dene'si açılmalı (geldi 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde \"Yine de Gönder\" seçin.","code":"whatsapp-nothing","summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-03","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":0,"skipped":{"Daha Önce Gönderildi":1},"alreadySent":{"count":1,"last":"2026-11-03T07:00:00.000Z","included":0},"people":[{"id":"account-a7ca3b60-7259-4492-bb14-f6a2d86c212f","name":"Burak Kaya","phone":"+905334445566","skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T07:00:00.000Z"}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":0,"left":250,"later":0,"holdUntil":null},"seconds":0}})
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs:92:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Komşu (ders 10): O'nun 2. denemesi kabul → yeni gönderimde P 'Daha Önce Gönderildi' (R3 değişmedi)
+    ok 3 - Komşu (ders 10): O'nun 2. denemesi kabul → yeni gönderimde P 'Daha Önce Gönderildi' (R3 değişmedi)
+      ---
+      duration_ms: 518.858578
+      type: 'test'
+      ...
+    # Subtest: Komşu (ders 10): O'nun 2. denemesi kabul + teslim → yeni gönderimde P 'Daha Önce Gönderildi' (R3 değişmedi)
+    ok 4 - Komşu (ders 10): O'nun 2. denemesi kabul + teslim → yeni gönderimde P 'Daha Önce Gönderildi' (R3 değişmedi)
+      ---
+      duration_ms: 359.390063
+      type: 'test'
+      ...
+    1..4
+not ok 1 - 2.4.8 dar kontrol 7 ORTA-1 — Meta Bekletti işin 2. denemesi reddedilince kişi 'Daha Önce Gönderildi' sayılmaz (P3)
+  ---
+  duration_ms: 1922.549338
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs:63:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 İş 5 — Meta Bekletti iş iptal edilince kişi 'Daha Önce Gönderildi' sayılmaz; geç teslimde sayılır
+    # Subtest: Tamamlandı → 131049 ile yeniden açılmış toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+    not ok 1 - Tamamlandı → 131049 ile yeniden açılmış toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+      ---
+      duration_ms: 510.19086
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:54:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        iptal edilen Meta Bekletti teslim edilmedi → P 'Daha Önce Gönderildi' DEĞİL
+        + actual - expected
+        
+          [
+        +   'Daha Önce Gönderildi'
+        -   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'gönderilecek'
+      actual:
+        0: 'Daha Önce Gönderildi'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:62:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Sürüyor (yeniden açılmamış) toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+    not ok 2 - Sürüyor (yeniden açılmamış) toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+      ---
+      duration_ms: 390.437304
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:54:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        iptal edilen Meta Bekletti teslim edilmedi → P 'Daha Önce Gönderildi' DEĞİL
+        + actual - expected
+        
+          [
+        +   'Daha Önce Gönderildi'
+        -   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'gönderilecek'
+      actual:
+        0: 'Daha Önce Gönderildi'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:62:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: İptalden sonra geç 'delivered' (1. denemenin wamid'i) → P 'Daha Önce Gönderildi' (geç teslim sayılır)
+    not ok 3 - İptalden sonra geç 'delivered' (1. denemenin wamid'i) → P 'Daha Önce Gönderildi' (geç teslim sayılır)
+      ---
+      duration_ms: 394.022315
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:75:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul: geç teslim kancası uygulandı ({"applied":0,"ignored":1,"unknown":0})
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:82:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Değişmeyen: Meta Bekletti beklerken (iptal yok) yeni gönderimde P 'Zaten Kuyrukta'; Yine de Gönder'de de
+    ok 4 - Değişmeyen: Meta Bekletti beklerken (iptal yok) yeni gönderimde P 'Zaten Kuyrukta'; Yine de Gönder'de de
+      ---
+      duration_ms: 361.380857
+      type: 'test'
+      ...
+    1..4
+not ok 2 - 2.4.8 İş 5 — Meta Bekletti iş iptal edilince kişi 'Daha Önce Gönderildi' sayılmaz; geç teslimde sayılır
+  ---
+  duration_ms: 1657.526522
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:52:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 dar kontrol 7 DÜŞÜK-1 — geri yüklemeden sonra Sonucu Belirsiz elemesinin iletisi var olmayan 'Yine de Gönder'i göstermez
+    # Subtest: A Başarısız → yedek → R1 Sonucu Belirsiz → geri yükleme (R1 dosyadan gider) → A'nın Yeniden Dene'si: 'Sonucu Belirsiz' + yalnız 'yeni gönderim başlatın'; yeni gönderim gider
+    not ok 1 - A Başarısız → yedek → R1 Sonucu Belirsiz → geri yükleme (R1 dosyadan gider) → A'nın Yeniden Dene'si: 'Sonucu Belirsiz' + yalnız 'yeni gönderim başlatın'; yeni gönderim gider
+      ---
+      duration_ms: 892.630181
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs:23:3'
+      failureType: 'testCodeFailure'
+      error: 'ileti var olmayan "Yine de Gönder"i göstermez (geldi "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz; göndermek için işteki "Yine de Gönder"i kullanın.")'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz; göndermek için işteki "Yine de Gönder"i kullanın.'
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs:53:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 3 - 2.4.8 dar kontrol 7 DÜŞÜK-1 — geri yüklemeden sonra Sonucu Belirsiz elemesinin iletisi var olmayan 'Yine de Gönder'i göstermez
+  ---
+  duration_ms: 894.236862
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/eski/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 dar kontrol 7 DÜŞÜK-2 — Sonucu Belirsiz elemesinin 7 günlük penceresi (Son 3 Ay / Tüm Hareketler)
+    # Subtest: Son 3 Ay: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+    ok 1 - Son 3 Ay: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+      ---
+      duration_ms: 645.582916
+      type: 'test'
+      ...
+    # Subtest: Tüm Hareketler: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+    ok 2 - Tüm Hareketler: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+      ---
+      duration_ms: 448.336977
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.4.8 dar kontrol 7 DÜŞÜK-2 — Sonucu Belirsiz elemesinin 7 günlük penceresi (Son 3 Ay / Tüm Hareketler)
+  ---
+  duration_ms: 1095.382306
+  type: 'suite'
+  ...
+1..4
+# tests 11
+# suites 4
+# pass 5
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7071.236964
