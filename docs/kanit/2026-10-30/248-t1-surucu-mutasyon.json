@@ -1,0 +1,61 @@
+{
+  "ad": "248-t1-surucu-mutasyon",
+  "komut": "bash /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t1-248-mutasyon.sh",
+  "commit": "35cc3e78e17df03986fe0783be695f42f342c829",
+  "dal": "is/t1-248",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T23:42:58.518Z",
+  "sure_sn": 35.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": null,
+  "hukum": "BELİRSİZ",
+  "neden": "özet satırı tanınmadı",
+  "basarisiz_testler": [
+    {
+      "ad": "KISI-08-istemiyor [hizli] (10 fark; davranış farkı 9; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KISI-09-istemiyor-sonradan [hizli] (29 fark; davranış farkı 27; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-07-iki-sekme [hizli] (20 fark; davranış farkı 18; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TEMEL-04-sirasiz-kanca [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ICERIK-10-ttl-sonrasi-teslim [hizli] (4 fark; davranış farkı 3; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TARIH-02-ttl-sonu [hizli] (8 fark; davranış farkı 7; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-01-zaman-asimi-meta-aldi [hizli] (9 fark; davranış farkı 8; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-t1-surucu-mutasyon.log",
+  "klasor": "/home/user/wt-t1-248",
+  "ham_cikti_sha256": "6a72d9ba1e61a0e7d777666360b52f6e06f35b8c89313eac4e99ddb9d97e3432",
+  "ham_cikti_bayt": 946
+}

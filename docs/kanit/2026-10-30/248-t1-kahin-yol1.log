@@ -1,0 +1,289 @@
+TAP version 13
+not ok 1 - TEMEL-01-ekstre-uc-kisi [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 2 - TEMEL-02-odeme-hatirlatma [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 3 - TEMEL-03-okundu-teslimsiz [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 4 - TEMEL-04-sirasiz-kanca [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 5 - TEMEL-05-teslimden-sonra-failed [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 6 - CIFT-01-zaman-asimi-meta-aldi [hizli] (9 fark; davranış farkı 8; gösterim: G1-borclu-eki 1)
+  # durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # meta.kabul.A: beklenen 1, program 0
+  # meta.medya_silme.A: beklenen 1, program 0
+  # meta.toplam_kabul_program: beklenen 1, program 0
+  # bu_ay.W1: beklenen nesne, program '<YOK>'
+  # isler.T1/A.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+  # isler.T1/A.kabul: beklenen 1, program 0
+  # isler.T1/A.medya_silme: beklenen 1, program 0
+not ok 7 - CIFT-02-yanitsiz-yine-de-gonder [hizli] (5 fark; davranış farkı 4; gösterim: G1-borclu-eki 1)
+  # meta.medya_yukleme.A: beklenen 1, program 2
+  # meta.toplam_medya_yukleme: beklenen 1, program 2
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+  # isler.T1/A.medya_yukleme: beklenen 1, program 2
+not ok 8 - CIFT-03-yine-de-gonder-cift-gider [hizli] (4 fark; davranış farkı 3; gösterim: G1-borclu-eki 1)
+  # meta.medya_yukleme.A: beklenen 1, program 2
+  # meta.toplam_medya_yukleme: beklenen 1, program 2
+  # isler.T1/A.medya_yukleme: beklenen 1, program 2
+not ok 9 - CIFT-04-cokme-istek-ulasti [hizli] (11 fark; davranış farkı 9; gösterim: G1-borclu-eki 2)
+  # durum_sayilari.Teslim Edildi: beklenen 3, program 2
+  # meta.kabul.B: beklenen 1, program 0
+  # meta.medya_silme.B: beklenen 1, program 0
+  # meta.toplam_kabul_program: beklenen 3, program 2
+  # bu_ay.W1.2026-10.teslim: beklenen 3, program 2
+  # bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0027', program '0.0018'
+  # isler.T1/B.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+  # isler.T1/B.kabul: beklenen 1, program 0
+  # isler.T1/B.medya_silme: beklenen 1, program 0
+not ok 10 - CIFT-05-cokme-istek-ulasmadi [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 11 - CIFT-06-cift-tik [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 12 - CIFT-07-iki-sekme [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 13 - CIFT-07b-iki-sekme-yine-de-gonder [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+not ok 14 - CIFT-08-iki-kullanici-ayni-cari [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 15 - CIFT-09-basarisizlari-yeniden-dene [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+not ok 16 - CIFT-10-yinelenen-kanca [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 17 - CIFT-11-medya-yanitsiz [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 18 - CIFT-12-geri-yukleme-dirilmez [hizli] (20 fark; davranış farkı 0; gösterim: G1-borclu-eki 4, G2-toplu-gosterim 4, G3-gonderilmeyen-icerik 12)
+not ok 19 - CIFT-13-veri-tasindi [hizli] (13 fark; davranış farkı 1; gösterim: G1-borclu-eki 1, G2-toplu-gosterim 3, G3-gonderilmeyen-icerik 8)
+  # bu_ay.W1: beklenen nesne, program '<YOK>'
+not ok 20 - CIFT-15-daha-once-basarisiz [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+not ok 21 - CIFT-16-daha-once-suresi-doldu [hizli] (14 fark; davranış farkı 13; gösterim: G1-borclu-eki 1)
+  # olusmadi: beklenen [], program ['T2']
+  # toplular.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Süresi Doldu: beklenen 2, program 1
+  # meta.post.A: beklenen 2, program 1
+  # meta.kabul.A: beklenen 2, program 1
+  # meta.meta_ileti.A: beklenen 2, program 1
+  # meta.medya_yukleme.A: beklenen 2, program 1
+  # meta.medya_silme.A: beklenen 2, program 1
+  # meta.toplam_post: beklenen 2, program 1
+  # meta.toplam_kabul_program: beklenen 2, program 1
+  # meta.toplam_meta_ileti: beklenen 2, program 1
+  # meta.toplam_medya_yukleme: beklenen 2, program 1
+not ok 22 - CIFT-17-baska-donem [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 23 - CIFT-14-geri-yukleme-sonra-baslat [hizli] (9 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G2-toplu-gosterim 3, G3-gonderilmeyen-icerik 4)
+not ok 24 - KAYIP-01-kapaliyken-kanca [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 25 - KAYIP-02-sekiz-gun-kapali [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 26 - KAYIP-03-tunel-kapali [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 27 - KAYIP-04-guncelleme-kapat-ac [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+not ok 28 - KAYIP-05-meta-ulasilamaz [hizli] (26 fark; davranış farkı 26)
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # meta.post.A: beklenen 1, program '<YOK>'
+  # meta.kabul.A: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 1, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 1, program '<YOK>'
+  # meta.medya_silme.A: beklenen 1, program '<YOK>'
+  # meta.toplam_post: beklenen 1, program 0
+  # meta.toplam_kabul_program: beklenen 1, program 0
+  # meta.toplam_meta_ileti: beklenen 1, program 0
+  # meta.toplam_medya_yukleme: beklenen 1, program 0
+  # kontroller.K0.durum_sayilari.Bekliyor: beklenen 1, program '<YOK>'
+not ok 29 - KAYIP-06-meta-ulasilamaz-uc-kisi [hizli] (39 fark; davranış farkı 39)
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 3, program '<YOK>'
+  # meta.post.A: beklenen 1, program '<YOK>'
+  # meta.post.B: beklenen 1, program '<YOK>'
+  # meta.post.C: beklenen 1, program '<YOK>'
+  # meta.kabul.A: beklenen 1, program '<YOK>'
+  # meta.kabul.B: beklenen 1, program '<YOK>'
+  # meta.kabul.C: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.B: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.C: beklenen 1, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 1, program '<YOK>'
+not ok 30 - KAYIP-07-baglanti-arada-koptu [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 31 - KISI-01-telefon-kuyrukta-degisti [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 32 - KISI-02-ayni-adli-iki-cari [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 33 - KISI-03-ayni-kisi-iki-kez [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 34 - KISI-04-hucrede-iki-numara [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 35 - KISI-05-sabit-hat [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 36 - KISI-06-yurt-disi [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 37 - KISI-07-telefonsuz-gecersiz [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 38 - KISI-08-istemiyor [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 39 - KISI-09-istemiyor-sonradan [hizli] (5 fark; davranış farkı 0; gösterim: G1-borclu-eki 1, G3-gonderilmeyen-icerik 4)
+not ok 40 - KISI-10-silindi-kuyrukta [hizli] (5 fark; davranış farkı 0; gösterim: G1-borclu-eki 1, G3-gonderilmeyen-icerik 4)
+not ok 41 - KISI-11-numara-bicimleri [hizli] (4 fark; davranış farkı 0; gösterim: G1-borclu-eki 4)
+not ok 42 - KISI-12-ayni-telefon-iki-cari [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+ok 43 - KISI-13-hepsi-elendi [hizli]
+not ok 44 - KISI-14-ayiricilar [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 45 - KISI-15-pasif [hizli] (5 fark; davranış farkı 0; gösterim: G1-borclu-eki 1, G3-gonderilmeyen-icerik 4)
+not ok 46 - ICERIK-01-pdf-karismasi [hizli] (5 fark; davranış farkı 0; gösterim: G1-borclu-eki 5)
+not ok 47 - ICERIK-02-devir-ve-donem-uclari [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 48 - ICERIK-03-yil-donumu [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 49 - ICERIK-04-turkce-emoji-satir-sonu [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)
+  # isler.T1/S.pdf.cari_ad: beklenen 'Şükrü Öğüt 😀 Çağ', program 'ŞükrüÖğüt   Çağ'
+  # isler.T1/S.dosya_adi.on_ek: beklenen 'Ekstre Şükrü Öğüt 😀 Çağ ', program 'Ekstre Şükrü Öğüt 😀   Çağ 01.10.2026-31.10.2026'
+not ok 50 - ICERIK-05-cok-uzun-ad [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1, G4-liste-icinde-ozel-yaprak 1)
+ok 51 - ICERIK-06-eksi-bakiye [hizli]
+not ok 52 - ICERIK-07-tutar-bicimi [hizli] (4 fark; davranış farkı 0; gösterim: G1-borclu-eki 4)
+not ok 53 - ICERIK-08-tum-hareketler [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1, G4-liste-icinde-ozel-yaprak 1)
+not ok 54 - ICERIK-09-kuyrukta-bakiye-degisti [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 55 - ICERIK-10-ttl-sonrasi-teslim [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 56 - ICERIK-11-ttl-icinde-gec-teslim [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 57 - ICERIK-12-hatirlatma-kuyrukta-odendi [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 1, G3-gonderilmeyen-icerik 2)
+not ok 58 - HESAP-0 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 59 - HESAP-10 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 60 - HESAP-200 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 61 - HESAP-131005 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 62 - HESAP-368 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 63 - HESAP-131031 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 64 - HESAP-131042 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 65 - HESAP-133010 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 66 - HESAP-131045 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 67 - SABLON-GONDERIM-132000 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 68 - SABLON-GONDERIM-132001 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 69 - SABLON-GONDERIM-132007 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 70 - SABLON-GONDERIM-132012 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 71 - SABLON-GONDERIM-132015 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 72 - SABLON-GONDERIM-132016 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 73 - SABLON-GONDERIM-132018 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 74 - HATA-SINIFSIZ-100 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 75 - HATA-SINIFSIZ-131008 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 76 - HATA-SINIFSIZ-135000 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 77 - HATA-SINIFSIZ-131053 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 78 - HATA-SINIFSIZ-131047 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 79 - HATA-SINIFSIZ-131050 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 80 - HATA-SINIFSIZ-131051 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 81 - HATA-SINIFSIZ-130403 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 82 - HATA-SINIFSIZ-131064 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 83 - HATA-SINIFSIZ-131063 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 84 - HATA-SINIFSIZ-133016 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 85 - HATA-SINIFSIZ-987654 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+ok 86 - SABLON-BASLATMA-PENDING [hizli]
+ok 87 - SABLON-BASLATMA-REJECTED [hizli]
+ok 88 - SABLON-BASLATMA-PAZARLAMA [hizli]
+ok 89 - SABLON-BASLATMA-DURAKLATILMIS [hizli]
+ok 90 - SABLON-BASLATMA-YOK [hizli]
+not ok 91 - SABLON-BASLATMA-YALNIZ-HATIRLATMA [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 92 - SABLON-SONRAKI-TOPLU [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 93 - SABLON-PAZARLAMA-ARADA [hizli] (13 fark; davranış farkı 4; gösterim: G1-borclu-eki 1, G3-gonderilmeyen-icerik 8)
+  # kontroller.K1.durum_sayilari.Duraklatıldı: beklenen 2, program '<YOK>'
+  # kontroller.K1.toplular.T1: beklenen 'duraklatildi', program 'aktif'
+  # kontroller.K1.isler.T1/B: beklenen 'Duraklatıldı', program 'Sınır Nedeniyle Bekliyor'
+  # kontroller.K1.isler.T1/C: beklenen 'Duraklatıldı', program 'Sınır Nedeniyle Bekliyor'
+not ok 94 - SABLON-PAZARLAMA-10-DK [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 95 - GECICI-01-131000-iki-kez [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 96 - GECICI-02-bes-art-arda [hizli] (7 fark; davranış farkı 5; gösterim: G1-borclu-eki 2)
+  # durum_sayilari.Başarısız: beklenen 1, program '<YOK>'
+  # durum_sayilari.Duraklatıldı: beklenen 2, program 3
+  # meta.medya_silme.B: beklenen 1, program 0
+  # isler.T1/B.durum: beklenen 'Başarısız', program 'Duraklatıldı'
+  # isler.T1/B.medya_silme: beklenen 1, program 0
+not ok 97 - GECICI-03-uc-sonra-kabul [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 98 - GECICI-03b-dort-hata-basarisiz [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 99 - GECICI-130429 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 100 - GECICI-131057 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 101 - GECICI-80007 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 102 - GECICI-4 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 103 - GECICI-1 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 104 - GECICI-2 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 105 - GECICI-133004 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 106 - GECICI-131056 [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 107 - ALICI-131049-bir-kez [hizli] (27 fark; davranış farkı 26; gösterim: G1-borclu-eki 1)
+  # durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # meta.post.A: beklenen 2, program 1
+  # meta.kabul.A: beklenen 2, program 1
+  # meta.meta_ileti.A: beklenen 2, program 1
+  # meta.toplam_post: beklenen 2, program 1
+  # meta.toplam_kabul_program: beklenen 2, program 1
+  # meta.toplam_meta_ileti: beklenen 2, program 1
+  # kontroller.K1.durum_sayilari.Meta Bekletti (24 Saat Sonra Yeniden): beklenen 1, program '<YOK>'
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+  # kontroller.K1.medya_silme: beklenen 0, program 1
+  # kontroller.K1.isler.T1/A: beklenen 'Meta Bekletti (24 Saat Sonra Yeniden)', program 'Başarısız'
+  # kontroller.K2.durum_sayilari.Meta Bekletti (24 Saat Sonra Yeniden): beklenen 1, program '<YOK>'
+not ok 108 - ALICI-131049-iki-kez [hizli] (13 fark; davranış farkı 12; gösterim: G1-borclu-eki 1)
+  # meta.post.A: beklenen 2, program 1
+  # meta.kabul.A: beklenen 2, program 1
+  # meta.meta_ileti.A: beklenen 2, program 1
+  # meta.toplam_post: beklenen 2, program 1
+  # meta.toplam_kabul_program: beklenen 2, program 1
+  # meta.toplam_meta_ileti: beklenen 2, program 1
+  # kontroller.K1.toplam_post: beklenen 2, program 1
+  # kontroller.K1.toplam_kabul: beklenen 2, program 1
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+  # isler.T1/A.post: beklenen 2, program 1
+  # isler.T1/A.kabul: beklenen 2, program 1
+  # isler.T1/A.meta_ileti: beklenen 2, program 1
+not ok 109 - ALICI-131049-esanli [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 110 - ALICI-131026-kancada [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 111 - ALICI-131021-esanli [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+ok 112 - SINIR-01-250-uzeri [hizli]
+not ok 113 - SINIR-02-basamak-artti [hizli] (5 fark; davranış farkı 5)
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 300, program 250
+  # kontroller.K2.toplam_post: beklenen 300, program 250
+  # kontroller.K2.toplam_kabul: beklenen 300, program 250
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 300, program 250
+  # kontroller.K2.medya_silme: beklenen 300, program 250
+not ok 114 - SINIR-03-elle-ust-sinir [hizli] (4 fark; davranış farkı 0; gösterim: G1-borclu-eki 4)
+not ok 115 - SINIR-04-meta-sinir-hatasi [hizli] (4 fark; davranış farkı 0; gösterim: G1-borclu-eki 4)
+not ok 116 - SINIR-05-pencerede-sayili-alici [hizli] (4 fark; davranış farkı 1; gösterim: G1-borclu-eki 3)
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 1
+not ok 117 - SINIR-06-gece-yarisi-kayan [hizli] (4 fark; davranış farkı 0; gösterim: G1-borclu-eki 4)
+not ok 118 - SINIR-07-131048 [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+not ok 119 - SIRKET-01-ayni-waba [hizli] (21 fark; davranış farkı 17; gösterim: G1-borclu-eki 4)
+  # durum_sayilari.Teslim Edildi: beklenen 4, program 2
+  # meta.medya_silme.A1: beklenen 1, program 0
+  # meta.medya_silme.A2: beklenen 1, program 0
+  # kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 3, program 1
+  # kontroller.K1.medya_silme: beklenen 3, program 1
+  # kontroller.K1.isler.T1/A1: beklenen 'Teslim Edildi', program 'Meta Kabul Etti'
+  # kontroller.K1.isler.T1/A2: beklenen 'Teslim Edildi', program 'Meta Kabul Etti'
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 4, program 2
+  # kontroller.K2.medya_silme: beklenen 4, program 2
+  # kontroller.K2.isler.T1/A1: beklenen 'Teslim Edildi', program 'Meta Kabul Etti'
+  # kontroller.K2.isler.T1/A2: beklenen 'Teslim Edildi', program 'Meta Kabul Etti'
+  # bu_ay.W1.2026-10.teslim: beklenen 4, program 2
+not ok 120 - SIRKET-02-ayri-waba [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 121 - SIRKET-03-sinir-hatasi-ayri-waba [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+ok 122 - OLCEK-01-iki-bin [hizli]
+ok 123 - OLCEK-02-uc-gune-yayilan [hizli]
+ok 124 - OLCEK-03-kanca-yagmuru [hizli]
+not ok 125 - OLCEK-04-pazarlama-300 [hizli] (2 fark; davranış farkı 2)
+  # kontroller.K1.durum_sayilari.Duraklatıldı: beklenen 50, program '<YOK>'
+  # kontroller.K1.toplular.T1: beklenen 'duraklatildi', program 'aktif'
+ok 126 - OLCEK-05-pazarlama-100-ileti [hizli]
+ok 127 - GUV-01-yetkisiz [hizli]
+ok 128 - GUV-02-salt-okunur-lisans [hizli]
+not ok 129 - GUV-03-lisans-arada-biter [hizli] (16 fark; davranış farkı 3; gösterim: G1-borclu-eki 2, G2-toplu-gosterim 3, G3-gonderilmeyen-icerik 8)
+  # kontroller.K1.durum_sayilari.Lisans Nedeniyle Durdu: beklenen 2, program '<YOK>'
+  # kontroller.K1.isler.T1/C: beklenen 'Lisans Nedeniyle Durdu', program 'Sınır Nedeniyle Bekliyor'
+  # kontroller.K1.isler.T1/D: beklenen 'Lisans Nedeniyle Durdu', program 'Sınır Nedeniyle Bekliyor'
+ok 130 - GUV-04-onay-yok [hizli]
+not ok 131 - GUV-05-sahte-kanca [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 132 - GUV-06-sahte-opaque [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+ok 133 - GUV-07-bagli-degil [hizli]
+not ok 134 - GUV-08-lisans-geri-gelir [hizli] (14 fark; davranış farkı 11; gösterim: G1-borclu-eki 3)
+  # kontroller.K1.durum_sayilari.Lisans Nedeniyle Durdu: beklenen 2, program '<YOK>'
+  # kontroller.K1.isler.T1/C: beklenen 'Lisans Nedeniyle Durdu', program 'Sınır Nedeniyle Bekliyor'
+  # kontroller.K1.isler.T1/D: beklenen 'Lisans Nedeniyle Durdu', program 'Sınır Nedeniyle Bekliyor'
+  # kontroller.K2.durum_sayilari.Lisans Nedeniyle Durdu: beklenen 2, program '<YOK>'
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 2, program 4
+  # kontroller.K2.toplam_post: beklenen 2, program 4
+  # kontroller.K2.toplam_kabul: beklenen 2, program 4
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 0, program 2
+  # kontroller.K2.medya_silme: beklenen 2, program 4
+  # kontroller.K2.isler.T1/C: beklenen 'Lisans Nedeniyle Durdu', program 'Teslim Edildi'
+  # kontroller.K2.isler.T1/D: beklenen 'Lisans Nedeniyle Durdu', program 'Teslim Edildi'
+not ok 135 - GUV-09-sahte-gercek-wamid [hizli] (6 fark; davranış farkı 5; gösterim: G1-borclu-eki 1)
+  # durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K1.durum_sayilari.Gönderildi: beklenen 1, program '<YOK>'
+  # kontroller.K1.medya_silme: beklenen 0, program 1
+  # kontroller.K1.isler.T1/A: beklenen 'Gönderildi', program 'Teslim Edildi'
+  # isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Teslim Edildi'
+not ok 136 - GUV-10-yetki-ve-baglanti-sirasi [hizli] (2 fark; davranış farkı 2)
+  # baslamadi.T1: beklenen 'bagli_degil', program 'lisans_salt_okunur'
+  # baslamadi.T2: beklenen 'bagli_degil', program 'lisans_salt_okunur'
+not ok 137 - GUV-11-yetki-lisans-onay-sirasi [hizli] (1 fark; davranış farkı 1)
+  # baslamadi.T1: beklenen 'yetki_yok', program 'lisans_salt_okunur'
+ok 138 - GUV-12-onay-sablon-sirasi [hizli]
+not ok 139 - TARIH-01-ay-sonu [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 140 - TARIH-02-ttl-sonu [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 141 - TARIH-03-kancasiz [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 142 - TARIH-03b-kancasiz-yol-calisiyor [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 143 - TARIH-04-eski-toplu-sinirda [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 144 - TARIH-05-eski-toplu [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G2-toplu-gosterim 1)
+not ok 145 - TARIH-06-genc-toplu-kapat-ac [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+1..145
+# tests 145
+# pass 17
+# fail 128
