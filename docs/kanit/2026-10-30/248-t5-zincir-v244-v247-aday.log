@@ -1,0 +1,28 @@
+[23:25:55] kaynak zb-taban: şema sirket-001: 32, sirket-5a193f23-b0cf-4462-9bbe-5488c756b610: 32
+[23:26:25]   v2.4.4 ölçüsü yazıldı
+[23:26:27]   v2.4.7 kendi koduyla açtı: şema sirket-001: 39, sirket-5a193f23-b0cf-4462-9bbe-5488c756b610: 39 (1213 ms)
+[23:28:19] v2.4.7 → aday: 92 olgu; {"EŞİT":81,"BULGU":5,"BELGELİ":6}
+[23:28:19]   [BULGU] * kullanıcı admin  {"role":["admin","admin"],"gained":["whatsapp.send"],"lost":[]}
+[23:28:19]   [BELGELİ] 001 cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan) K6.4 eski satırlarda Vade / Beklenen boş; K6.2 Kalan yalnız elle borç / alacak / açılışta, 0 ≤ Kalan ≤ tutar {"after":{"dueDate":0,"expectedDate":0,"remaining":782,"remainingOutOfRange":[],"entries":3470},"before":{"dueDate":0,"expectedDate":0,"remaining":782,"remainingOutOfRange":[],"entries":3470}}
+[23:28:19]   [BELGELİ] 001 Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu) K4.1 "Tablo" seçeneği kalktı, tablo kalemi yok (madde 4; toplam düşer) {"tabloIleGiris":{"in":473809.04,"out":11880,"net":461929.04},"tablosuz244":{"in":473809.04,"out":11880,"net":461929.04},"sonra":{"in":473809.04,"out":11880,"net":461929.04},"tabloPayiMinor":0,"satir":[81,81,81],"firstDiff":null}
+[23:28:19]   [BELGELİ] 001 Anlık Durum · Vade Takip (kaynak başına) K4.1 tablo ve ödeme sözü kaynağı yok; öbür kaynaklar birebir; toplam farkı = o iki kaynak (madde 4); cari vadesi kaynağı (K6.3) eski veride boş {"gone":[],"added":[],"bad":[],"removed":{"count":0,"inMinor":0},"totals":[{"in":{"overdue":{"count":1687,"amount":10213946.52},"today":{"count":6,"amount":58542.42},"upcoming":{"count":70,"amount":386690.4},"total":{"count":1763,"amount":10659179.34}},"out":{"overdue":{"count":135,"amount":1232188.19},"today":{"count":1,"amount":3180},"upcoming":{"count":2,"amount":8700},"total":{"count":138,"amount":1244068.19}},"noAmount":0,"count":1901,"net":9415111.15},{"in":{"overdue":{"count":1687,"amount":10213946.52},"today":{"count":6,"amount":58542.42},"upcoming":{"count":70,"amount":386690.4},"total":{"count":1763,"amount":10659179.34}},"out":{"overdue":{"count":135,"amount":1232188.19},"today":{"count":1,"amount":3180},"upcoming":{"count":2,"amount":8700},"total":{"count":138,"amount":1244068.19}},"noAmount":0,"count":1901,"net":9415111.15}]}
+[23:28:19]   [BELGELİ] 002 cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan) K6.4 eski satırlarda Vade / Beklenen boş; K6.2 Kalan yalnız elle borç / alacak / açılışta, 0 ≤ Kalan ≤ tutar {"after":{"dueDate":0,"expectedDate":0,"remaining":197,"remainingOutOfRange":[],"entries":1381},"before":{"dueDate":0,"expectedDate":0,"remaining":197,"remainingOutOfRange":[],"entries":1381}}
+[23:28:19]   [BELGELİ] 002 Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu) K4.1 "Tablo" seçeneği kalktı, tablo kalemi yok (madde 4; toplam düşer) {"tabloIleGiris":{"in":201496.46,"out":0,"net":201496.46},"tablosuz244":{"in":201496.46,"out":0,"net":201496.46},"sonra":{"in":201496.46,"out":0,"net":201496.46},"tabloPayiMinor":0,"satir":[42,42,42],"firstDiff":null}
+[23:28:19]   [BELGELİ] 002 Anlık Durum · Vade Takip (kaynak başına) K4.1 tablo ve ödeme sözü kaynağı yok; öbür kaynaklar birebir; toplam farkı = o iki kaynak (madde 4); cari vadesi kaynağı (K6.3) eski veride boş {"gone":[],"added":[],"bad":[],"removed":{"count":0,"inMinor":0},"totals":[{"in":{"overdue":{"count":784,"amount":5274485.94},"today":{"count":2,"amount":6876.36},"upcoming":{"count":38,"amount":176152.58},"total":{"count":824,"amount":5457514.88}},"out":{"overdue":{"count":38,"amount":399963.07},"today":{"count":0,"amount":0},"upcoming":{"count":0,"amount":0},"total":{"count":38,"amount":399963.07}},"noAmount":0,"count":862,"net":5057551.81},{"in":{"overdue":{"count":784,"amount":5274485.94},"today":{"count":2,"amount":6876.36},"upcoming":{"count":38,"amount":176152.58},"total":{"count":824,"amount":5457514.88}},"out":{"overdue":{"count":38,"amount":399963.07},"today":{"count":0,"amount":0},"upcoming":{"count":0,"amount":0},"total":{"count":38,"amount":399963.07}},"noAmount":0,"count":862,"net":5057551.81}]}
+[23:28:19]   [BULGU] 001 veri dosyası: şema sürümü göç v33 (K6.4) {"before":39,"after":40,"integrity":"ok"}
+[23:28:19]   [BULGU] 001 veri dosyası: tablolar, kolonlar ve satır sayıları K6.4 account_entries + due_date, expected_date (boş) {"newTables":["wa_batches","wa_jobs"],"lostTables":[],"addedColumns":[],"lostColumns":[],"filled":{"due_date":0,"expected_date":0},"counts":[]}
+[23:28:19]   [BULGU] 002 veri dosyası: şema sürümü göç v33 (K6.4) {"before":39,"after":40,"integrity":"ok"}
+[23:28:19]   [BULGU] 002 veri dosyası: tablolar, kolonlar ve satır sayıları K6.4 account_entries + due_date, expected_date (boş) {"newTables":["wa_batches","wa_jobs"],"lostTables":[],"addedColumns":[],"lostColumns":[],"filled":{"due_date":0,"expected_date":0},"counts":[]}
+  ✓ 001 yol bağımsızlığı: zb-taban → v2.4.7 → aday = zb-taban → aday (doğrudan) (fark yok)
+  ✓ 001 şema 40 (adım adım 40, doğrudan 40), bütünlük ok/ok
+  ✓ 001 veri dosyası: tablolar aynı; satır sayıları aynı (farklı: audit_events,sessions — oturum/denetim izi hariç)
+  ✓ 002 yol bağımsızlığı: zb-taban → v2.4.7 → aday = zb-taban → aday (doğrudan) (fark yok)
+  ✓ 002 şema 40 (adım adım 40, doğrudan 40), bütünlük ok/ok
+  ✓ 002 veri dosyası: tablolar aynı; satır sayıları aynı (farklı: yok — oturum/denetim izi hariç)
+# zincir zb-taban → v2.4.7 → aday; fark satırları (5 'BULGU') elle sınıflanır
+# tests 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

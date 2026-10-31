@@ -1,0 +1,32 @@
+{
+  "ad": "248-t4/tarih-t7",
+  "komut": "node test/e2e/senaryo-tarih-248.mjs",
+  "commit": "aa76592c81a177cf0aabad5299c97612cb53b5fc",
+  "dal": "is/t4-248",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T01:42:25.994Z",
+  "sure_sn": 8.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 40,
+    "gecen": 40,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t4/tarih-t7.log",
+  "klasor": "/home/user/wt-t4-248",
+  "ham_cikti_sha256": "ac09f0e0f4f293d3ec373d43337da3f55fcd304645e7be6a08a72346f1005ddf",
+  "ham_cikti_bayt": 4854
+}

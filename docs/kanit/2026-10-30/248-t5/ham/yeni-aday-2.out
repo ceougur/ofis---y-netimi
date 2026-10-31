@@ -1,0 +1,21 @@
+  ✓ 001 göçten sonra: yeni e-Arşiv (200) + bekleyen 3 → Tümünü Gönder 4 sonuç, kalan 0; EDM'nin kabul ettiği 4 (benzersiz 4) = sayaç 2026-10 test artışı 56 → 60; öbür ay/ortam 100 → 100
+  ✓ 002 sayacı 001'in gönderiminden etkilenmez (73 → 73)
+  ✓ uzaktan erişim dinleyicisi açıldı (http://127.0.0.1:39043)
+  ✓ göçmüş veride eşli cihaz yok (kullanılan 0 / sınır 3, lisans true)
+  ✓ admin: Uzaktan Bağlanabilir 200, karekod 200, eşleme 200, uzak giriş 200
+  ✓ telefondan oturum (200) iki şirketi görür (001, 002)
+  ✓ 001 telefondaki Kasa = masaüstü Kasa, hareket listesi hariç (göçmüş veri; 200)
+  ✓ 001 telefondaki cari kartı = masaüstü (Mehmet Işık, bakiye 3600)
+  ✓ 002 telefondaki Kasa = masaüstü Kasa, hareket listesi hariç (göçmüş veri; 200)
+  ✓ 002 telefondaki cari kartı = masaüstü (Mehmet Uğurlu, bakiye 0)
+  ✓ 3 cihaz sınırı (program başına): 2. ve 3. eşleme 200 (200, 200); 4. karekod/eşleme reddedilir (409/0)
+  ✓ cihazlar ortak katmanda: 001 3, 002 0 (002'nin tablosu boş kalır)
+# yeni özellikler eski veride (EDM sayacı, mobil eşleme, 3 cihaz)
+# tests 12
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+[kanit] 248-t5-yeni-aday-2: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 49395f7 +24 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0

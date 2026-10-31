@@ -1,0 +1,61 @@
+  ✓ v2.4.7: telefon eşlendi (eşleme 200, uzak giriş 200, eşli cihaz 1)
+  ✓ 001/last3: wa.me hedefleri v2.4.7 ↔ aday BİREBİR (3223 cari; geçerli 3207/3207; farklı satır 0; optOut≠false 0)
+  ✓ 001/all: wa.me hedefleri 3223 = 3223; metin dışı alanlar aynı (farklı 0); metni değişen 0 cari (yalnız ileri tarihli hareketi olanlar beklenir — aşağıda denetlenir); aralık {"from":"","to":""} → {"from":"","to":"2026-10-30"}; optOut≠false 0
+  ✓ 001/thisMonth: wa.me hedefleri v2.4.7 ↔ aday BİREBİR (3223 cari; geçerli 3207/3207; farklı satır 0; optOut≠false 0)
+  ✓ 001/message: wa.me hedefleri v2.4.7 ↔ aday BİREBİR (3223 cari; geçerli 3207/3207; farklı satır 0; optOut≠false 0)
+  ✓ 002/last3: wa.me hedefleri v2.4.7 ↔ aday BİREBİR (935 cari; geçerli 919/919; farklı satır 0; optOut≠false 0)
+  ✓ 002/all: wa.me hedefleri 935 = 935; metin dışı alanlar aynı (farklı 0); metni değişen 0 cari (yalnız ileri tarihli hareketi olanlar beklenir — aşağıda denetlenir); aralık {"from":"","to":""} → {"from":"","to":"2026-10-30"}; optOut≠false 0
+  ✓ 002/thisMonth: wa.me hedefleri v2.4.7 ↔ aday BİREBİR (935 cari; geçerli 919/919; farklı satır 0; optOut≠false 0)
+  ✓ 002/message: wa.me hedefleri v2.4.7 ↔ aday BİREBİR (935 cari; geçerli 919/919; farklı satır 0; optOut≠false 0)
+  ✓ 001 e-Belge sayacı (Bu Ay / 24 ay penceresi, iz) v2.4.7 ↔ aday aynı (pencere satırı 48)
+  ✓ 002 e-Belge sayacı (Bu Ay / 24 ay penceresi, iz) v2.4.7 ↔ aday aynı (pencere satırı 48)
+  ✓ 001/ayniA: wa.me gönderim geçmişi aday kart geçmişinde aynı (1 → 1)
+  ✓ 001/sabit: wa.me gönderim geçmişi aday kart geçmişinde aynı (1 → 1)
+  ✓ 001/yurtdisi: wa.me gönderim geçmişi aday kart geçmişinde aynı (1 → 1)
+  ✓ 002/ayniA: wa.me gönderim geçmişi aday kart geçmişinde aynı (1 → 1)
+  ✓ 002/sabit: wa.me gönderim geçmişi aday kart geçmişinde aynı (1 → 1)
+  ✓ 002/yurtdisi: wa.me gönderim geçmişi aday kart geçmişinde aynı (1 → 1)
+  ✓ v2.4.7'de eşlenen telefon göçten sonra eşli (1 cihaz), oturum 200
+  ✗ 001 göçten sonra telefondaki Kasa = masaüstü (200) ve = göçten önce telefonun gördüğü — {"status":200,"same":false,"farBefore":true}
+  ✗ 002 göçten sonra telefondaki Kasa = masaüstü (200) ve = göçten önce telefonun gördüğü — {"status":200,"same":false,"farBefore":true}
+  ✓ 001 Elle Bağla 200, onay 200, Ekstre önizlemesi 200
+  ✓ 001 WA Göç Telefonsuz: telefon "" → beklenen elenir "Telefon yok"; program: elenir "Telefon yok"
+  ✓ 001 WA Göç Aynı Telefon A: telefon "0532 111 22 33" → beklenen gönderilir +905321112233; program: gönderilir +905321112233
+  ✓ 001 WA Göç Aynı Telefon B: telefon "+90 532 111 22 33" → beklenen gönderilir +905321112233; program: gönderilir +905321112233
+  ✓ 001 WA Göç Sabit Hat: telefon "0212 555 01 02" → beklenen gönderilir +902125550102; program: gönderilir +902125550102
+  ✓ 001 WA Göç Yurt Dışı: telefon "+49 151 23456789" → beklenen gönderilir +4915123456789; program: gönderilir +4915123456789
+  ✓ 001 WA Göç Yurt Dışı Çift Sıfır: telefon "0044 7911 123456" → beklenen gönderilir +447911123456; program: gönderilir +447911123456
+  ✓ 001 WA Göç Çok Numaralı: telefon "0537 222 33 44 / 0212 444 55 66" → beklenen gönderilir +905372223344; program: gönderilir +905372223344
+  ✓ 001 WA Göç Eksik Hane: telefon "0532 12 34" → beklenen elenir "Numara eksik ya da fazla haneli"; program: elenir "Numara eksik ya da fazla haneli"
+  ✓ 001 WA Göç Ülke Kodsuz Cep: telefon "5321234567" → beklenen gönderilir +905321234567; program: gönderilir +905321234567
+  ✓ 001 WA Göç Pasif: telefon "0533 999 88 77" → beklenen elenir "Pasif Cari"; program: elenir "Pasif Cari"
+  ✓ 001 önizleme bütün cariler (3223; gönderilebilir 3207; elenen {"Telefon yok":14,"Numara eksik ya da fazla haneli":1,"Pasif Cari":1}): wa.me kuralıyla tutarlı (uyuşmayan 0); "WhatsApp Mesajı İstemiyor" 0; "Daha Önce Gönderildi" 0; "Zaten Kuyrukta" 0
+[23:12:25]   001 Ödeme Hatırlatma önizlemesi 200: gönderilebilir 217, elenen {"Gecikmiş Borç Yok":2990,"Telefon yok":14,"Numara eksik ya da fazla haneli":1,"Pasif Cari":1}
+  ✓ 002 Elle Bağla 200, onay 200, Ekstre önizlemesi 200
+  ✓ 002 WA Göç Telefonsuz: telefon "" → beklenen elenir "Telefon yok"; program: elenir "Telefon yok"
+  ✓ 002 WA Göç Aynı Telefon A: telefon "0532 111 22 33" → beklenen gönderilir +905321112233; program: gönderilir +905321112233
+  ✓ 002 WA Göç Aynı Telefon B: telefon "+90 532 111 22 33" → beklenen gönderilir +905321112233; program: gönderilir +905321112233
+  ✓ 002 WA Göç Sabit Hat: telefon "0212 555 01 02" → beklenen gönderilir +902125550102; program: gönderilir +902125550102
+  ✓ 002 WA Göç Yurt Dışı: telefon "+49 151 23456789" → beklenen gönderilir +4915123456789; program: gönderilir +4915123456789
+  ✓ 002 WA Göç Yurt Dışı Çift Sıfır: telefon "0044 7911 123456" → beklenen gönderilir +447911123456; program: gönderilir +447911123456
+  ✓ 002 WA Göç Çok Numaralı: telefon "0537 222 33 44 / 0212 444 55 66" → beklenen gönderilir +905372223344; program: gönderilir +905372223344
+  ✓ 002 WA Göç Eksik Hane: telefon "0532 12 34" → beklenen elenir "Numara eksik ya da fazla haneli"; program: elenir "Numara eksik ya da fazla haneli"
+  ✓ 002 WA Göç Ülke Kodsuz Cep: telefon "5321234567" → beklenen gönderilir +905321234567; program: gönderilir +905321234567
+  ✓ 002 WA Göç Pasif: telefon "0533 999 88 77" → beklenen elenir "Pasif Cari"; program: elenir "Pasif Cari"
+  ✓ 002 önizleme bütün cariler (935; gönderilebilir 919; elenen {"Telefon yok":14,"Numara eksik ya da fazla haneli":1,"Pasif Cari":1}): wa.me kuralıyla tutarlı (uyuşmayan 0); "WhatsApp Mesajı İstemiyor" 0; "Daha Önce Gönderildi" 0; "Zaten Kuyrukta" 0
+[23:12:25]   002 Ödeme Hatırlatma önizlemesi 200: gönderilebilir 79, elenen {"Gecikmiş Borç Yok":840,"Telefon yok":14,"Numara eksik ya da fazla haneli":1,"Pasif Cari":1}
+  ✓ sirket-001 veri dosyası: şema 40; 3223 cari, "İstemiyor" 0; wa_batches 0, wa_jobs 0; message_sends 3
+  ✓ sirket-b96e3278-1a73-4a99-894a-0aef6e0cd8fa veri dosyası: şema 40; 935 cari, "İstemiyor" 0; wa_batches 0, wa_jobs 0; message_sends 3
+# WhatsApp eski veride: wa.me hedefleri, sayaç, geçmiş, eşli telefon, önizleme, wa_opt_out
+# tests 46
+# pass 44
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+
+[kanit] başarısız testler (2):
+  ✖ 001 göçten sonra telefondaki Kasa = masaüstü (200) ve = göçten önce telefonun gördüğü — {"status":200,"same":false,"farBefore":true}
+  ✖ 002 göçten sonra telefondaki Kasa = masaüstü (200) ve = göçten önce telefonun gördüğü — {"status":200,"same":false,"farBefore":true}
+
+[kanit] 248-t5-wa-v247-aday: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 44/46 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit 49395f7 +14 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0

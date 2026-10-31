@@ -1,0 +1,32 @@
+{
+  "ad": "248-t3fix-e2e-senaryo-213",
+  "komut": "npm run test:senaryo-213",
+  "commit": "49395f775a91c8bc93572a43806895bdbdc7b515",
+  "dal": "is/t3-248",
+  "kirli": 8,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T23:25:15.847Z",
+  "sure_sn": 54.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 64,
+    "gecen": 64,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-t3fix-e2e-senaryo-213.log",
+  "klasor": "/home/user/wt-t3-248",
+  "ham_cikti_sha256": "32f1df981d65e2608b9b4ab793fdf1d345d4b438122a614ad2efc31fff3e5f80",
+  "ham_cikti_bayt": 5262
+}

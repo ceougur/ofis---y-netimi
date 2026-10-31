@@ -13,6 +13,8 @@
 //   I6 Android ve masaüstü tarayıcı: karekod sayfası bugünkü gibi Cihazı Eşleştir (Android eşlenir).
 //   I7 M5: ofis sunucusuna ulaşılamıyor → "Son Özeti Göster" kullanıcı adı alanının ÜSTÜNDE, uyarıda "Son Özeti Göster'e basarak…" cümlesi; kendiliğinden açılmaz;
 //      giriş denemesinin hata iletisi de cümleyi söyler.
+//   I8 (T3 UI/UX ORTA-1) lisans hoşgörüsü: ücretli lisans bitti (30 gün salt okunur) → yöneticinin Genel Bakış notu asıl nedeni (lisans) söyler, "yetkisi yok" DEMEZ;
+//      lisans geçerliyken aynı yönetici yazma notunu görür. Ayrı program (gerçek lisans kapısı, sahte lisans servisi işlevi — ders 30; sahte saat — ders 13).
 // Çıkış: "N geçti, M kaldı" (kaldıysa 1). Ekran görüntüleri EKRAN_DIR (varsayılan test/e2e/artifacts/senaryo-mobil-iphone-248).
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -21,6 +23,8 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { encodeQr } from "../../server/lib/qr.mjs";
 import { ADMIN_PASSWORD, createClient, startTestServer } from "../helpers.mjs";
+import { createClock } from "../../server/lib/clock.mjs";
+import { lisansAnahtari } from "../kapi-ortak.mjs";
 
 const root = mkdtempSync(path.join(tmpdir(), "senaryo-mobil-iphone-248-"));
 const shots = process.env.EKRAN_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-mobil-iphone-248");
@@ -300,6 +304,71 @@ await step("I5 başka ofisin karekodu ve DestekOfis olmayan karekod → açık i
   }
   const d = db("baska-ayse");
   ok(d.codes.at(-1) === "active" && d.devices.length === 0, `veri tabanı: son kod ${d.codes.at(-1)}, cihaz ${d.devices.length}`);
+});
+
+await step("I8 lisans hoşgörüsünde Genel Bakış notu asıl nedeni söyler (lisans), \"yetkisi yok\" demez", async () => {
+  const GUN = 86_400_000;
+  const BITIS = Date.parse("2026-12-01T00:00:00+03:00");
+  const MACHINE = "0123456789abcdef0123456789abcdef";
+  const clock = createClock({ time: new Date(BITIS - 20 * GUN).toISOString(), fixed: true });
+  const lisans = lisansAnahtari();
+  const belirtec = () => lisans.belirtec({ at: clock.ms(), machine: MACHINE, kind: "license", status: "active", expiresAt: new Date(BITIS).toISOString(), licenseId: "LIS-I8" });
+  const lisansli = await startTestServer({
+    dataDir: path.join(root, "i8-data"),
+    now: clock,
+    remoteNow: clock,
+    env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" },
+    license: { enforce: true, trustedKeys: lisans.trusted, services: ["https://lisans.i8.test/api/lisans"], fetchImpl: async () => ({ status: 200, json: async () => ({ ok: true, token: belirtec() }) }), machineId: MACHINE, now: () => clock.ms(), firstCheckDelayMs: 3_600_000, autoTrial: false },
+  });
+  const browser = await chromium.launch();
+  try {
+    await lisansli.app.license.activateKey("DO-ABCDE-FGHJK-MNPQR-STVWX");
+    const uzak = await lisansli.app.listenRemote(0, "127.0.0.1");
+    const base = `http://127.0.0.1:${uzak.port}`;
+    lisansli.app.mobileRemote.setPublicUrl(base);
+    const yonetici = createClient(lisansli.base);
+    await yonetici.login("admin", ADMIN_PASSWORD);
+    const adminId = (await yonetici.get("/api/admin/users")).data.data.find(user => user.username === "admin").id;
+    ok((await yonetici.put(`/api/admin/mobile/access/${adminId}`, { remote: true })).status === 200, "ön koşul: yöneticiye uzak izin");
+    const kod = await yonetici.post("/api/admin/mobile/codes", { userId: adminId });
+    ok(kod.status === 200, `ön koşul: karekod (${kod.status})`);
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, userAgent: ANDROID, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: "tr-TR", serviceWorkers: "block" });
+    const tel = await context.newPage();
+    tel.setDefaultTimeout(15000);
+    tel.on("pageerror", error => pageErrors.push(`I8: ${error.message}`));
+    current = tel;
+    await tel.goto(kod.data.data.url);
+    await tel.waitForSelector("#pair-form:not(.hidden)");
+    await tel.click("#pair-submit");
+    await tel.waitForSelector("#login-form:not(.hidden)");
+    const giris = async () => {
+      await tel.goto(`${base}/mobil/`);
+      await tel.waitForSelector("#login-form:not(.hidden), #app:not(.hidden) #content [data-home-note]");
+      if (await visible(tel, "#login-form")) {
+        await tel.click("#username");
+        await typeSlow(tel, "admin");
+        await tel.keyboard.press("Tab");
+        await typeSlow(tel, ADMIN_PASSWORD);
+        await tel.click("#login-submit");
+      }
+      await tel.waitForSelector("#app:not(.hidden) #content [data-home-note]");
+      return (await tel.textContent("[data-home-note]")).trim();
+    };
+    const gecerli = await giris();
+    ok(/kayıt ofis sunucusuna yazılır/.test(gecerli) && !/yetkisi yok/.test(gecerli), `lisans geçerli: yazma notu (${gecerli})`);
+    clock.set(BITIS + 3 * GUN);
+    const durum = lisansli.app.license.status();
+    ok(durum.writable === false, `ön koşul: lisans bitti, masaüstü salt okunur (${durum.state}, yazılabilir ${durum.writable})`);
+    const hosgoru = await giris();
+    const serit = (await tel.textContent("#license-banner").catch(() => "")).trim();
+    ok(/mobil kullanım hakkınız \d+ gün sonra sona erecek/.test(serit), `ön koşul: hoşgörü şeridi (${serit})`);
+    ok(/Lisans bittiği için telefondan kayıt girilemez/.test(hosgoru) && !/yetkisi yok/.test(hosgoru), `hoşgörü: asıl neden lisans (${hosgoru})`);
+    await shot("08-hosgoru-genel-bakis", tel);
+    await context.close();
+  } finally {
+    await browser.close();
+    await lisansli.close();
+  }
 });
 
 ok(pageErrors.length === 0, `sayfa hatası yok (${pageErrors.join(" | ") || "—"})`);

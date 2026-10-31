@@ -425,6 +425,9 @@ await step("A8 TAŞINAN BAĞLANTI (pencereyi açan yok): ileti, düğme pasif, S
   ok((await statusOf(tab)) === W7.yalniz, `ileti: ${await statusOf(tab)}`);
   await tab.waitForTimeout(1500);
   ok(await tab.isDisabled("#wa-bagla"), "Facebook ile Devam Et pasif");
+  // T3 UI/UX ORTA-3: pasif düğme pasif GÖRÜNÜR (soluk + yasak imleç); CSP gevşetilmeden (sayfanın nonce'lu stili).
+  const gorunus = await tab.$eval("#wa-bagla", node => ({ opacity: Number(getComputedStyle(node).opacity), cursor: getComputedStyle(node).cursor }));
+  ok(gorunus.opacity <= 0.6 && gorunus.cursor === "not-allowed", `pasif görünüm: opaklık ${gorunus.opacity}, imleç ${gorunus.cursor}`);
   ok(await tab.isHidden("#wa-hedef"), "firma adı gösterilmedi");
   ok(!sdkLoads.includes("tasinan"), "Facebook SDK yüklenmedi (Meta akışı başlamadı)");
   ok(kapiIstekleri("/wa/bagla/dogrula") === before[0] && kapiIstekleri("/wa/bagla/kod") === before[1], "kapıcıya doğrulama / kod isteği gitmedi");
