@@ -349,7 +349,7 @@ MUTASYON_IPUCU = {
     "M120": "G2-01-bu-ay-0311-ozel-0511", "M121": "G2-02-iki-ozel-aralik-kendi-gunlerinde-bu-ay", "M122": "G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem",
     "M123": "G2-03-gece-yarisi-bu-ay-yerel-gun", "M124": "G3-01-tasinan-belirsiz-yeni-iste-eler", "M125": "G4-01-sifirlama-meta-bekletti-sayilmaz",
     "M126": "G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir", "M127": "G0-01-sonraki-denemesi-teslimsiz-durdu-yeniden-gider",
-    "M128": "G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder",
+    "M128": "G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder", "M129": "G6-01-son-3-ay-ozel-aralik-7-gun", "M130": "G6-01-son-3-ay-ozel-aralik-7-gun",
 }
 
 
@@ -504,7 +504,7 @@ def _i1():
 @test("I karar izlenebilirliği: K1–K8, D1–D8, E1–E4, N6 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
 def _i2():
     h = []
-    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5"):
+    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5", "G6"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -572,6 +572,12 @@ def _i5():
     h = [f"{a} ↔ {b}: {e(a, b)} ≠ {v}" for a, b, v in ornek if e(a, b) != v or e(b, a) != v]
     if e(bu_ay_0311, ozel_0103_gun05, {"M120"}) or e(ozel_0103_gun03, ozel_0105_gun05, {"M121"}):
         h.append("M120 / M121 birim düzeyinde etkisiz")
+    # G6: Son 3 Ay / Tüm'ün o günkü tarihleri ↔ özel aralık (iki yön); 7 gün eslesir()'de
+    son3 = (("secim", "son_3_ay"), None, None, (("2026-07-30", "2026-10-30"), ("2026-08-01", "2026-10-30")))
+    ozel_eq = (("aralik", "2026-08-01", "2026-10-30"), ("2026-08-01", "2026-10-30"), None, (("2026-08-01", "2026-10-30"),))
+    ozel_ne = (("aralik", "2026-08-02", "2026-10-30"), ("2026-08-02", "2026-10-30"), None, (("2026-08-02", "2026-10-30"),))
+    if not (e(son3, ozel_eq) and e(ozel_eq, son3)) or e(son3, ozel_ne) or e(son3, ozel_eq, {"M129"}):
+        h.append("G6 çapraz eşlik birim denetimi")
     return h
 
 

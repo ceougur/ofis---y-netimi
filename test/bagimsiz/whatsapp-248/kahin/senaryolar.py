@@ -5,7 +5,8 @@ kâhin güncellemesi 2: ürün sahibinin 31.10.2026 kararları K1–K8 — başl
 kâhin güncellemesi 3: ★ soruların yanıtları D1–D8 — başlıklar D1…D8, 19 senaryo;
 kâhin güncellemesi 4: N2–N5 yanıtları E1–E4 + N6 — başlıklar E1…E4, N6, 12 senaryo;
 kâhin güncellemesi 5: P1/P2 yanıtları F1/F2 — başlıklar F1, F2, 5 senaryo;
-kâhin güncellemesi 6: G0 genel ilke + G1–G5 — başlıklar G0…G5, 16 senaryo).
+kâhin güncellemesi 6: G0 genel ilke + G1–G5 — başlıklar G0…G5, 16 senaryo;
+kâhin güncellemesi 7: G6 (baş mimar, G0 3 İLKEYLE) — başlık G6, 5 senaryo).
 
 Her senaryo: GİRDİ (cariler, seçim, saat, sahte Meta davranışı, olaylar) + ELLE yazılmış beklenen (yalnız plandan, kâhinin modelinden
 bağımsız hesaplanmış anahtar sayılar). `python3 -I senaryolar.py` modeli koşar; elle beklenen ile model AYNI değilse dosya YAZILMAZ,
@@ -1523,6 +1524,44 @@ S("G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim", "G5", "Meta Bekletti; 2. d
   {"olusmadi": ["T2"], "elenen": {"T2": {"A": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-31"}}, "isler.T1/A.durum": "Teslim Edildi",
    "meta.post": {"A": 2}},
   meta_davranis={"mesaj": {"A": ["kabul", "yanitsiz_kabul"]}, "kanca": {"A": {"1": K49, "2": [["sent", "+1s"], ["delivered", "+30m"]]}}})
+
+
+# ======================================================================== KÂHİN GÜNCELLEMESİ 7 (31.10.2026): G6 (baş mimar, G0 (3) İLKEYLE)
+S("G6-01-son-3-ay-ozel-aralik-7-gun", "G6", "30.10 'Son 3 Ay' Y (o günkü okumalardan biri 30.07–30.10): 6g23s sonra özel 30.07–30.10 'Daha Önce Gönderildi', 7g1s sonra gider",
+  "G6 (Son 3 Ay → özel aralık; 7 gün penceresi bu eşlikte de)", [Y()],
+  [baslat("+0s", "T1", "Y", donem=SON3), baslat("+6d23h", "T2", "Y", donem={"bas": "2026-07-30", "son": "2026-10-30"}),
+   baslat("+7d1h", "T3", "Y", donem={"bas": "2026-07-30", "son": "2026-10-30"})],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"Y": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}}, "toplular.T3.is_sayisi": 1,
+   "meta.post": {"Y": 2}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
+S("G6-02-ozel-aralik-tum-hareketler-kisiye-gore", "G6", "Özel 15.01–30.10 Y ve Z'ye gönderildi; aynı gün 'Tüm Hareketler': Y'nin o günkü tarihleri (ilk hareket 15.01 – bugün) eşit → elenir; Z'ninki (10.02 – bugün) değil → gider",
+  "G6 (özel aralık → Tüm Hareketler; Tüm = kişinin ilk hareketi – o gün, README §12)", [Y(), Z()],
+  [baslat("+0s", "T1", "YZ", donem={"bas": "2026-01-15", "son": "2026-10-30"}), baslat("+1h", "T2", "YZ", donem="tum")],
+  {"elenen": {"T2": {"Y": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}}, "toplular.T2.is_sayisi": 1, "meta.post": {"Y": 1, "Z": 2}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
+S("G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi", "G6", "01.11 00:30 (UTC'de 31.10) 'Son 3 Ay' sınır 1: Y bekliyor; 01:30 özel 01.09–01.11 (o günkü okumalardan biri) Y 'Zaten Kuyrukta'",
+  "G6 (Zaten Kuyrukta; gece yarısı yerel ≠ UTC)", [A(), Y()],
+  [baslat("+0s", "T1", ["A", "Y"], donem=SON3), baslat("+1h", "T2", "Y", donem={"bas": "2026-09-01", "son": "2026-11-01"}), kontrol("+2h", "K1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"Y": "zaten_kuyrukta"}}, "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T1/Y": "Sınır Nedeniyle Bekliyor"},
+   "meta.post": {"A": 1, "Y": 1}},
+  baslangic="2026-11-01T00:30:00+03:00", ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
+
+S("G6-04-tum-hareketler-belirsiz-ozel-aralik", "G6", "'Tüm Hareketler' Y Sonucu Belirsiz; aynı gün özel 15.01–30.10 'Sonucu Belirsiz'; işteki Yine de Gönder ile gider",
+  "G6 (Sonucu Belirsiz; Tüm → özel)", [Y()],
+  [baslat("+0s", "T1", "Y", donem="tum"), baslat("+1h", "T2", "Y", donem={"bas": "2026-01-15", "son": "2026-10-30"}),
+   olay("+2h", "yine_de_gonder", toplu="T1", cari="Y", etiket="G1")],
+  {"olusmadi": ["T2"], "elenen": {"T2": {"Y": "sonucu_belirsiz"}}, "yeniden": {"G1": yeniden(alinan="Y")}, "meta.post": {"Y": 2}},
+  meta_davranis={"mesaj": {"Y": ["yanitsiz_red", "kabul"]}, "kanca": {"*": K_STD}})
+
+S("G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu", "G6", "30.10 23:00 'Son 3 Ay' Y Başarısız; 31.10 01:00 yeniden deneme (tarihler asıl işin 30.10'undan); 31.10 10:00 özel 30.07–30.10 'Daha Önce Gönderildi'",
+  "G6 + G1 (yeniden denemede asıl işin günü; gece yarısı)", [Y()],
+  [baslat("+0s", "T1", "Y", donem=SON3), olay("+2h", "basarisizlari_yeniden_dene", toplu="T1", etiket="Y1"),
+   baslat("+11h", "T2", "Y", donem={"bas": "2026-07-30", "son": "2026-10-30"})],
+  {"yeniden": {"Y1": yeniden(alinan="Y")}, "olusmadi": ["T2"], "elenen": {"T2": {"Y": "daha_once_gonderildi"}}, "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-31"}},
+   "meta.post": {"Y": 2}},
+  baslangic="2026-10-30T23:00:00+03:00", meta_davranis={"mesaj": {"Y": [{"hata": 131026}]}, "kanca": {"*": K_STD}})
 
 
 # ======================================================================== üretim / denetim
