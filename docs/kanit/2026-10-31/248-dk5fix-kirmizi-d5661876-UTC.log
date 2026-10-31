@@ -1,0 +1,183 @@
+TAP version 13
+# (node:1083) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır
+    # Subtest: Başarısızları Yeniden Dene: asıl iş 'Yine de Gönder' ile açılmış → B'ye gider (toplam 2 ekstre); yeniden deneme işi aynı kararı taşır
+    not ok 1 - Başarısızları Yeniden Dene: asıl iş 'Yine de Gönder' ile açılmış → B'ye gider (toplam 2 ekstre); yeniden deneme işi aynı kararı taşır
+      ---
+      duration_ms: 621.605128
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:62:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Başarısızları Yeniden Dene: 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).","code":"whatsapp-nothing","summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-04","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":0,"skipped":{"Daha Önce Gönderildi":1},"alreadySent":{"count":1,"last":"2026-11-03T10:00:00.000Z","included":0},"people":[{"id":"account-557a41af-3e58-42d0-af28-7a1ab02f978f","name":"Burak Kaya","phone":"+905334445566","skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T10:00:00.000Z"}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":0,"left":250,"later":0,"holdUntil":null},"seconds":0}}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        ok (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:29:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:68:27)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Aynı an (sahte saat durur): asıl iş ilk ekstreyle aynı anda açılsa da kararı geçerli — Başarısızları Yeniden Dene B'ye gider
+    not ok 2 - Aynı an (sahte saat durur): asıl iş ilk ekstreyle aynı anda açılsa da kararı geçerli — Başarısızları Yeniden Dene B'ye gider
+      ---
+      duration_ms: 425.149389
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Başarısızları Yeniden Dene: 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).","code":"whatsapp-nothing","summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-03","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":0,"skipped":{"Daha Önce Gönderildi":1},"alreadySent":{"count":1,"last":"2026-11-03T10:00:00.000Z","included":0},"people":[{"id":"account-5e285dba-6503-4a8b-ba62-ab802f95ae23","name":"Burak Kaya","phone":"+905334445566","skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T10:00:00.000Z"}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":1,"left":249,"later":0,"holdUntil":null},"seconds":0}}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        ok (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:29:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:91:13)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Sonucu Belirsiz → işteki Yine de Gönder: asıl iş 'Yine de Gönder' ile açılmış → yeni iş açılır, Meta'ya üçüncü ileti isteği gider
+    not ok 3 - Sonucu Belirsiz → işteki Yine de Gönder: asıl iş 'Yine de Gönder' ile açılmış → yeni iş açılır, Meta'ya üçüncü ileti isteği gider
+      ---
+      duration_ms: 397.519689
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:99:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Yine de Gönder (işte): 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).","code":"whatsapp-nothing","summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-04","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":0,"skipped":{"Daha Önce Gönderildi":1},"alreadySent":{"count":1,"last":"2026-11-03T10:00:00.000Z","included":0},"people":[{"id":"account-fafe8505-10de-4b9b-924b-94fff9f939fb","name":"Burak Kaya","phone":"+905334445566","skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T10:00:00.000Z"}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":1,"left":249,"later":0,"holdUntil":null},"seconds":0}}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        ok (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:29:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:105:27)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Sınır: asıl iş açıldıktan SONRA başka bir işle B'ye aynı dönem gitti → Başarısızları Yeniden Dene ve işteki Yine de Gönder 'Daha Önce Gönderildi' (iletide neden), çift ileti yok; gövde sınırı zorlayamaz
+    not ok 4 - Sınır: asıl iş açıldıktan SONRA başka bir işle B'ye aynı dönem gitti → Başarısızları Yeniden Dene ve işteki Yine de Gönder 'Daha Önce Gönderildi' (iletide neden), çift ileti yok; gövde sınırı zorlayamaz
+      ---
+      duration_ms: 458.729809
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:115:3'
+      failureType: 'testCodeFailure'
+      error: 'Başarısızları Yeniden Dene: neden İLETİDE görünmeli (geldi "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).")'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).'
+      operator: 'match'
+      stack: |-
+        assertAlreadySent (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:36:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:127:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Sınır (Sonucu Belirsiz): asıl iş açıldıktan SONRA başka bir işle B'ye gitti → işteki Yine de Gönder 'Daha Önce Gönderildi', gövde zorlayamaz
+    not ok 5 - Sınır (Sonucu Belirsiz): asıl iş açıldıktan SONRA başka bir işle B'ye gitti → işteki Yine de Gönder 'Daha Önce Gönderildi', gövde zorlayamaz
+      ---
+      duration_ms: 463.033672
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:137:3'
+      failureType: 'testCodeFailure'
+      error: 'Yine de Gönder (işte; gövde zorluyor): neden İLETİDE görünmeli (geldi "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).")'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).'
+      operator: 'match'
+      stack: |-
+        assertAlreadySent (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:36:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:147:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Dış istek: asıl iş 'Yine de Gönder' OLMADAN açıldıysa gövdedeki sendAgain / sendAgainAfter / since yeniden denemeye karar vermez; yeni gönderimde de yalnız sendAgain sayılır
+    not ok 6 - Dış istek: asıl iş 'Yine de Gönder' OLMADAN açıldıysa gövdedeki sendAgain / sendAgainAfter / since yeniden denemeye karar vermez; yeni gönderimde de yalnız sendAgain sayılır
+      ---
+      duration_ms: 369.326197
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:155:3'
+      failureType: 'testCodeFailure'
+      error: 'Başarısızları Yeniden Dene (gövde sendAgain zorluyor): neden İLETİDE görünmeli (geldi "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).")'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).'
+      operator: 'match'
+      stack: |-
+        assertAlreadySent (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:36:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:169:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Ödeme Hatırlatma (aynı gün kuralı): asıl hatırlatma 'Yine de Gönder' ile → B Başarısız → Yeniden Dene gider; aynı gün yeni hatırlatma 'Daha Önce Gönderildi' (iletide 'bugün'), ertesi gün serbest
+    not ok 7 - Ödeme Hatırlatma (aynı gün kuralı): asıl hatırlatma 'Yine de Gönder' ile → B Başarısız → Yeniden Dene gider; aynı gün yeni hatırlatma 'Daha Önce Gönderildi' (iletide 'bugün'), ertesi gün serbest
+      ---
+      duration_ms: 352.622997
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:178:3'
+      failureType: 'testCodeFailure'
+      error: 'aynı gün ikinci hatırlatma (karar yok): neden İLETİDE görünmeli (geldi "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).")'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).'
+      operator: 'match'
+      stack: |-
+        assertAlreadySent (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:36:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:188:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Ay dönümü: 31.10 'Bu Ay' (Ekim) işi 01.11'de yeniden denenince dönem 01.10–31.10, {{3}} ve PDF Ekim; 01.11 'Geçen Ay' → Daha Önce Gönderildi, 'Bu Ay' → gönderilecek
+    ok 8 - Ay dönümü: 31.10 'Bu Ay' (Ekim) işi 01.11'de yeniden denenince dönem 01.10–31.10, {{3}} ve PDF Ekim; 01.11 'Geçen Ay' → Daha Önce Gönderildi, 'Bu Ay' → gönderilecek
+      ---
+      duration_ms: 415.213129
+      type: 'test'
+      ...
+    1..8
+not ok 1 - 2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır
+  ---
+  duration_ms: 3504.959012
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs:61:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 1
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3902.927388
