@@ -49,6 +49,9 @@ export const MAX_RECIPIENTS = 5000;
 const TR_OFFSET = "+03:00";
 // Bekleyen / gönderilmekte (çift başlatma kuralı §7a 9 ve toplu işin bitişi). Sonucu Belirsiz bu kümede DEĞİL (bekler ama gönderilmez; "Yine de Gönder" onaylı).
 const OPEN_JOB = ["pending", "preparing", "sending", "limited", "held", "paused"];
+// ★ soru 1 ek sorusu (KULLANICIYA SORULDU 31.10.2026): yeni toplu iş, iş şirket dosyasında OLMAYAN (yalnız makine defterinde kalan) Sonucu Belirsiz denemeyle de elesin mi.
+// false = bugünkü davranış (elemez). Karar gelince yalnız bu değer + test/whatsapp-dk7-belirsiz-ileti-248.test.mjs değişir.
+const NEW_BATCH_LEDGER_ONLY_UNSETTLED = false;
 // Kesin durum: medya Meta'dan silinir (S3 A). "Meta Bekletti" kesin değil (aynı medya yeniden kullanılır, §7a 14).
 const FINAL = ["delivered", "read", "failed", "expired", "canceled", "skipped", "stopped"];
 // Geçici hata: iş 30 sn → 2 dk → 15 dk (3 deneme), sonra Başarısız (§7a 15); toplu işte art arda 5 → duraklar.
@@ -431,9 +434,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (!person.skip && unsettled?.has(account.id)) {
         // Dar kontrol 7 DÜŞÜK-1: "Yine de Gönder" yalnız iş şirket dosyasında hâlâ Sonucu Belirsiz ise vardır (geri yüklemeden sonra iş dosyadan gider, defterde kalır).
         const open = unsettled.get(account.id).some(jobId => store.get("SELECT 1 AS found FROM wa_jobs WHERE id = ? AND state = 'uncertain'", jobId));
-        // BAŞ MİMAR KARARI (★ soru 1 + 11:45 "A"): yeni toplu işte eleme YALNIZ işteki "Yine de Gönder" varken (iş dosyada) — iş dosyada yoksa (geri yükleme) 11:45 "A"
-        // iletisinin gösterdiği tek yol "yeni gönderim"dir; o da elenseydi kişiye hiç gönderilemezdi. Başarısızları Yeniden Dene'de (08:00 "A") her zaman elenir.
-        if (fixed?.retry === true || open) {
+        // ★ soru 1: yeni toplu işte iş dosyadaysa (işteki "Yine de Gönder" var) elenir. YALNIZ defterde kalan belirsiz deneme (iş dosyada yok — geri yükleme sonrası)
+        // için karar KULLANICIYA SORULDU (31.10.2026, ders 43): yanıt gelene dek bugünkü davranış (yeni gönderim elemez; 11:45 "A" iletisinin gösterdiği yol açık) —
+        // tek koşul NEW_BATCH_LEDGER_ONLY_UNSETTLED. Başarısızları Yeniden Dene'de (08:00 "A") her zaman elenir.
+        if (fixed?.retry === true || open || NEW_BATCH_LEDGER_ONLY_UNSETTLED) {
           person.skip = "Sonucu Belirsiz";
           if (open) uncertainOpen += 1;
         }

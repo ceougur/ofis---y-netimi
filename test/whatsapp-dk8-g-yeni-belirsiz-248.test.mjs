@@ -1,7 +1,7 @@
 // 2.4.8 İş G — KULLANICI KARARI (31.10.2026 ~10:55 UTC "b"; ★ soru 1): "Sonucu Belirsiz" kalmış kişi YENİ toplu işte de elenir, neden "Sonucu Belirsiz" (Başarısızları
 // Yeniden Dene'deki 08:00 "A" kuralıyla aynı eşlik: aynı tür + dönem eşliği; Son 3 Ay / Tüm Hareketler'de son 7 gün, gönderim anından); göndermek için işteki "Yine de
 // Gönder" (onaylı). İleti iş dosyada duruyorsa "işteki Yine de Gönder" (11:45 "A"). Değişmeyen: işteki "Yine de Gönder"in kendisi elenmez (soru 6 A: aşılmış eski belirsiz
-// deneme sonraki gönderimleri yine eler). İş dosyada yokken (geri yükleme) yeni gönderimin açık kaldığı test/whatsapp-dk7-belirsiz-ileti-248.test.mjs'te (BAŞ MİMAR KARARI).
+// deneme sonraki gönderimleri yine eler). İş dosyada yokken (geri yükleme) yeni gönderimin davranışı KULLANICIYA SORULDU (queue.mjs NEW_BATCH_LEDGER_ONLY_UNSETTLED; bugünkü hâl test/whatsapp-dk7-belirsiz-ileti-248.test.mjs).
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5); sahte saat (ders 13); dosya TZ=UTC ve TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
