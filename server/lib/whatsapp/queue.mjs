@@ -49,8 +49,8 @@ export const MAX_RECIPIENTS = 5000;
 const TR_OFFSET = "+03:00";
 // Bekleyen / gönderilmekte (çift başlatma kuralı §7a 9 ve toplu işin bitişi). Sonucu Belirsiz bu kümede DEĞİL (bekler ama gönderilmez; "Yine de Gönder" onaylı).
 const OPEN_JOB = ["pending", "preparing", "sending", "limited", "held", "paused"];
-// ★ soru 1 ek sorusu (KULLANICIYA SORULDU 31.10.2026): yeni toplu iş, iş şirket dosyasında OLMAYAN (yalnız makine defterinde kalan) Sonucu Belirsiz denemeyle de elesin mi.
-// false = bugünkü davranış (elemez). Karar gelince yalnız bu değer + test/whatsapp-dk7-belirsiz-ileti-248.test.mjs değişir.
+// KULLANICI KARARI (31.10.2026, ek soru 1/4 "a"): yeni toplu iş, iş şirket dosyasında OLMAYAN (yalnız makine defterinde kalan) Sonucu Belirsiz denemeyle ELEMEZ.
+// Test: test/whatsapp-dk8-g-ek-248.test.mjs + test/whatsapp-dk7-belirsiz-ileti-248.test.mjs.
 const NEW_BATCH_LEDGER_ONLY_UNSETTLED = false;
 // Kesin durum: medya Meta'dan silinir (S3 A). "Meta Bekletti" kesin değil (aynı medya yeniden kullanılır, §7a 14).
 const FINAL = ["delivered", "read", "failed", "expired", "canceled", "skipped", "stopped"];
@@ -425,23 +425,26 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       const check = eligibility(account, kind);
       const person = { id: account.id, name: account.name, phone: check.phone.e164, skip: check.skip };
+      // KULLANICI KARARI (31.10.2026, ek soru 2/4 "a"): birden çok eleme nedeninde TEK neden, sıra HER YERDE (yeni toplu iş, Başarısızları Yeniden Dene, işteki Yine de
+      // Gönder'in açtığı iş): "Zaten Kuyrukta" → "Sonucu Belirsiz" → "Daha Önce Gönderildi". İlk ikisiyle elenen kişi R3 uyarısına (sayı / liste: sentBefore) GİRMEZ;
+      // R3'te "Yine de Gönder" seçilse de ona gitmez (belirsizi göndermenin tek yolu işteki Yine de Gönder).
       if (!person.skip && queued(account.id, kind, period)) person.skip = "Zaten Kuyrukta";
-      // R3 (plan §7a revizyonu): bu cariye bu şablon + dönem daha önce Meta'ya kabul ettirildiyse açık "sendAgain" bayrağı olmadan elenir (W4 sorar: "Yine de
-      // Gönder" / "Bunları Çıkar", varsayılan Bunları Çıkar). Bilgi makine defterinden (geri yükleme silmez).
-      const last = sent.get(account.id);
-      if (last) person.sentBefore = last;
-      if (!person.skip && last && !sendAgain) person.skip = "Daha Önce Gönderildi";
       if (!person.skip && unsettled?.has(account.id)) {
         // Dar kontrol 7 DÜŞÜK-1: "Yine de Gönder" yalnız iş şirket dosyasında hâlâ Sonucu Belirsiz ise vardır (geri yüklemeden sonra iş dosyadan gider, defterde kalır).
         const open = unsettled.get(account.id).some(jobId => store.get("SELECT 1 AS found FROM wa_jobs WHERE id = ? AND state = 'uncertain'", jobId));
-        // ★ soru 1: yeni toplu işte iş dosyadaysa (işteki "Yine de Gönder" var) elenir. YALNIZ defterde kalan belirsiz deneme (iş dosyada yok — geri yükleme sonrası)
-        // için karar KULLANICIYA SORULDU (31.10.2026, ders 43): yanıt gelene dek bugünkü davranış (yeni gönderim elemez; 11:45 "A" iletisinin gösterdiği yol açık) —
-        // tek koşul NEW_BATCH_LEDGER_ONLY_UNSETTLED. Başarısızları Yeniden Dene'de (08:00 "A") her zaman elenir.
+        // ★ soru 1: yeni toplu işte iş dosyadaysa (işteki "Yine de Gönder" var) elenir. KULLANICI KARARI (31.10.2026, ek soru 1/4 "a"): YALNIZ defterde kalan belirsiz
+        // deneme (iş dosyada yok — geri yükleme sonrası) yeni toplu işte ELEMEZ (NEW_BATCH_LEDGER_ONLY_UNSETTLED = false). Başarısızları Yeniden Dene'de (08:00 "A") her
+        // zaman elenir (ileti "yeni gönderim başlatın").
         if (fixed?.retry === true || open || NEW_BATCH_LEDGER_ONLY_UNSETTLED) {
           person.skip = "Sonucu Belirsiz";
           if (open) uncertainOpen += 1;
         }
       }
+      // R3 (plan §7a revizyonu): bu cariye bu şablon + dönem daha önce Meta'ya kabul ettirildiyse açık "sendAgain" bayrağı olmadan elenir (W4 sorar: "Yine de
+      // Gönder" / "Bunları Çıkar", varsayılan Bunları Çıkar). Bilgi makine defterinden (geri yükleme silmez).
+      const last = sent.get(account.id);
+      if (last && !["Zaten Kuyrukta", "Sonucu Belirsiz"].includes(person.skip)) person.sentBefore = last;
+      if (!person.skip && last && !sendAgain) person.skip = "Daha Önce Gönderildi";
       people.push(person);
     }
     return { kind, period, people, uncertainOpen };

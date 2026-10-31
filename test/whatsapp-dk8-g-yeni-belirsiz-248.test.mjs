@@ -69,9 +69,12 @@ describe("2.4.8 İş G (★ soru 1) — Sonucu Belirsiz kalmış kişi yeni topl
       assert.deepEqual((await ctx.jobs(sent.batch.id)).map(item => item.state), ["accepted"], "Yine de Gönder kabul");
       assert.equal(count(ctx), 2, "onaylı ileti gitti");
       ctx.clock.advance(HOUR);
-      assert.deepEqual(skipOf(await ok(await ctx.api.post(URLS.preview, body), "önizleme")), ["Daha Önce Gönderildi"], "R3 önce gelir (kabul edilmiş gönderim)");
-      const pv = await ok(await ctx.api.post(URLS.preview, { ...body, sendAgain: true }), "önizleme (Yine de Gönder seçimi)");
-      assert.deepEqual(skipOf(pv), ["Sonucu Belirsiz"], "soru 6 A: aşılmış eski belirsiz deneme yeni gönderimde kişiyi yine eler");
+      // Ek soru 2/4 "a": sıra Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi; belirsizle elenen R3 uyarısına girmez.
+      for (const extra of [{}, { sendAgain: true }]) {
+        const pv = await ok(await ctx.api.post(URLS.preview, { ...body, ...extra }), `önizleme ${JSON.stringify(extra)}`);
+        assert.deepEqual(skipOf(pv), ["Sonucu Belirsiz"], `${JSON.stringify(extra)}: soru 6 A — aşılmış eski belirsiz deneme yeni gönderimde kişiyi yine eler (R3'ten önce)`);
+        assert.equal(pv.alreadySent?.count, 0, `${JSON.stringify(extra)}: belirsizle elenen R3 sayısına girmez`);
+      }
     } finally {
       await ctx.close();
     }

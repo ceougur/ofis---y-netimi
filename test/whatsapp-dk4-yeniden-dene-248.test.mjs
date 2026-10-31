@@ -18,6 +18,14 @@ const metaError = (code, message) => ({ error: { message, type: "OAuthException"
 const skipOf = preview => Object.fromEntries(preview.people.map(person => [person.name, person.skip || "gönderilecek"]));
 const count = (ctx, phone) => ctx.messages().filter(item => item.to === phone).length;
 const periodOf = batch => ({ from: batch.period.from, to: batch.period.to, preset: batch.period.preset });
+// KULLANICI KARARI (31.10.2026, ek soru 2/4 "a"): belirsiz iş dururken "Sonucu Belirsiz" R3'ten önce gelir. Dönem taşımasını R3 üzerinden sınamak için önce belirsiz iş
+// Meta'nın imzalı bildirimiyle (iş kimliği) "teslim edilemedi" olarak çözülür (Sonucu Belirsiz elemesi kalkar).
+function settleUncertain(ctx, job, phone) {
+  const wamid = ctx.messages().filter(item => item.to === phone)[0].wamid;
+  const ts = String(Math.floor(ctx.clock().getTime() / 1000));
+  const hook = ctx.statuses([{ id: wamid, status: "failed", timestamp: ts, recipient_id: phone.slice(1), biz_opaque_callback_data: job.id, errors: [{ code: 131026, title: "Message undeliverable" }] }], { signed: true });
+  assert.equal(hook.applied, 1, `ön koşul: belirsiz iş çözüldü (${JSON.stringify(hook)})`);
+}
 
 async function preview(ctx, body) {
   const res = await ctx.api.post(URLS.preview, body);
@@ -108,6 +116,8 @@ describe("2.4.8 dar kontrol 4 — Yeniden Dene / Yine de Gönder asıl toplu iş
       await ctx.drain();
       assert.equal((await ctx.jobs(again.data.data.batch.id))[0].state, "accepted", "ön koşul: yeni iş kabul");
       ctx.clock.advance(24 * HOUR);
+      assert.deepEqual(skipOf(await preview(ctx, { kind: "statement", ids: [a.id], preset: "thisMonth" })), { "Ayşe Yılmaz": "Sonucu Belirsiz" }, "ek soru 2/4: belirsiz iş dururken Sonucu Belirsiz önce");
+      settleUncertain(ctx, job, A_TEL);
       assert.deepEqual(skipOf(await preview(ctx, { kind: "statement", ids: [a.id], preset: "thisMonth" })), { "Ayşe Yılmaz": "Daha Önce Gönderildi" });
       assert.deepEqual(periodOf(again.data.data.batch), periodOf(first.data.data.batch), "Yine de Gönder asıl işin dönemini (preset dahil) taşır");
     } finally {
@@ -142,6 +152,8 @@ describe("2.4.8 dar kontrol 4 — Yeniden Dene / Yine de Gönder asıl toplu iş
       assert.equal(again.status, 200, JSON.stringify(again.data));
       await ctx.drain();
       ctx.clock.advance(24 * HOUR);
+      assert.deepEqual(skipOf(await preview(ctx, body)), { "Ayşe Yılmaz": "Sonucu Belirsiz", "Burak Kaya": "Daha Önce Gönderildi" }, "ek soru 2/4: belirsiz iş dururken Sonucu Belirsiz önce");
+      settleUncertain(ctx, job, A_TEL);
       assert.deepEqual(skipOf(await preview(ctx, body)), { "Ayşe Yılmaz": "Daha Önce Gönderildi", "Burak Kaya": "Daha Önce Gönderildi" }, "ertesi gün 'Geçen Ay'");
       assertNothing(await ctx.batch(body), "ertesi gün 'Geçen Ay'");
       const october = { from: "2026-10-01", to: "2026-10-31", preset: "lastMonth" };
