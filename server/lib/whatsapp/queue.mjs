@@ -1354,11 +1354,22 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
 
   // ---------- Açılış (program yeniden açıldı) ----------
   // "Gönderiliyor"da kalmış işin sonucu makine defterinden: talep yok → istek gitmedi (Bekliyor); kabul → Meta Kabul Etti; talep var sonuç yok → Sonucu Belirsiz.
+  // Toplu iş bu bilgisayarın defterinde AÇILMAMIŞ (recover'ın "Taşınan Veri" koşulu ile aynı).
+  function movedHere(batchId) {
+    const row = store.get("SELECT ledger_id, company_id FROM wa_batches WHERE id = ?", batchId);
+    return !row || row.ledger_id !== ledger.id || row.company_id !== companyId || !ledger.batchState(batchId).opened;
+  }
   function settleSending(jobs) {
     const out = { sendingToPending: 0, sendingToAccepted: 0, sendingToUncertain: 0 };
     for (const job of jobs) {
       const attempt = ledger.attempts(job.id).find(item => item.attempt === job.attempt);
-      if (!attempt) {
+      if (!attempt && movedHere(job.batch_id)) {
+        // İş Q3 (dar kontrol 10 DÜŞÜK-3; ilke 2 + 5): toplu iş bu bilgisayarın defterinde açılmamış (veri başka bilgisayardan / defteri silinmiş kurulumdan geldi) →
+        // talebin yokluğu "istek gitmedi" demek DEĞİL: ileti öbür bilgisayardan gitmiş olabilir. Sonucu Belirsiz (deneme numarası korunur); kendiliğinden yeniden
+        // gönderilmez, yeni gönderim kişiyi "Sonucu Belirsiz" ile eler (taşınan veri yolu), göndermek için işteki Yine de Gönder. Test: whatsapp-q3-tasinan-gonderiliyor-248.
+        updateJob(job.id, { state: "uncertain", error_text: "Gönderim başka bilgisayarda sürerken veri taşındı; iletinin Meta'ya ulaşıp ulaşmadığı bilinmiyor." });
+        out.sendingToUncertain += 1;
+      } else if (!attempt) {
         updateJob(job.id, { state: "pending", attempt: Math.max(0, (job.attempt || 1) - 1), sending_at: null });
         out.sendingToPending += 1;
       } else if (attempt.outcome === "accepted") {
