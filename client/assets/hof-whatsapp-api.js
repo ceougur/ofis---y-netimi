@@ -313,8 +313,9 @@
       }
       from?.setAttribute("max", state.listTo);
       to?.setAttribute("min", state.listFrom);
+      // Dar kontrol 8 DÜŞÜK-3: Süzgeci Temizle yuvası yalnız düğmenin var / yok durumu değişince yenilenir (basılan düğme altından değiştirilmez).
       const slot = filter.querySelector("[data-wa-api-filter-clear-slot]");
-      if (slot) slot.innerHTML = clearButton();
+      if (slot && Boolean(slot.querySelector("[data-wa-api-filter-clear]")) !== Boolean(state.listFrom || state.listTo)) slot.innerHTML = clearButton();
       if (clear) from?.focus();
       resetList();
       renderList();
@@ -526,8 +527,30 @@
       else if (target.dataset.waApiAnyway) sendAnyway(target.dataset.waApiAnyway);
     });
     // Süzgeç alanında yarım kalmış yazım Enter'da ya da alandan çıkınca uygulanır.
+    // Dar kontrol 8 DÜŞÜK-3: alandan fareyle penceredeki bir düğmeye / satıra basılarak çıkılıyorsa (Süzgeci Temizle, satır, Daha Fazla Göster) yarım değer
+    // uygulanmaz — uygulansaydı liste yeniden kurulur, basılan öğe tıklama gelmeden kalkardı. Basış o öğede bitmezse (fare kaydırılıp bırakıldı) değer uygulanır.
+    // Klavyeyle (Tab) çıkışta her zaman uygulanır.
+    let pressed = null;
+    let pendingInput = null;
+    root.addEventListener("pointerdown", event => {
+      pressed = event.target.closest?.("button, tr[data-wa-api-open]") || null;
+      if (!pressed) return;
+      window.addEventListener("pointerup", up => {
+        const input = pendingInput;
+        const target = pressed;
+        pressed = null;
+        pendingInput = null;
+        if (input && alive() && !target.contains(up.target)) applyFilter(input, { force: true });
+      }, { once: true, capture: true });
+    });
     root.addEventListener("focusout", event => {
-      if (event.target.matches?.("[data-wa-api-from], [data-wa-api-to]")) applyFilter(event.target, { force: true });
+      if (!event.target.matches?.("[data-wa-api-from], [data-wa-api-to]")) return;
+      // relatedTarget yoksa (düğmeye basış odak vermeyen tarayıcı) da basış bu çıkışın nedenidir.
+      if (pressed && (!event.relatedTarget || pressed.contains(event.relatedTarget))) {
+        pendingInput = event.target;
+        return;
+      }
+      applyFilter(event.target, { force: true });
     });
     root.addEventListener("keydown", event => {
       if (event.key === "Enter" && event.target.matches?.("[data-wa-api-from], [data-wa-api-to]")) {
