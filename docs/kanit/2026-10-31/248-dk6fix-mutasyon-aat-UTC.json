@@ -1,0 +1,43 @@
+{
+  "ad": "248-dk6fix-mutasyon-aat-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-2ebb8e98/test/whatsapp-dk6-saat-kaymasi-248.test.mjs",
+  "commit": "f891540ed1730f60a2f8612917ceeb8ab2e22416",
+  "dal": "is/t2fix-248",
+  "kirli": 1,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T07:58:09.408Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 dar kontrol 6 — Yine de Gönder sınırı Meta saatine bağlı değil › Meta saati 2 dk geride: asıl işten 1 dk SONRA giden (Sonucu Belirsiz → imzalı 'delivered' kancası) ileti asıl işin yeniden denemesini 'Daha Önce Gönderildi' ile eler; B'ye toplam 2 ekstre",
+      "konum": "test/whatsapp-dk6-saat-kaymasi-248.test.mjs:34:5",
+      "hata": "M'nin yeniden denemesi iş açmamalı (geldi 200 {\"ok\":true,\"data\":{\"batch\":{\"id\":\"wab-fe736e8f-c0af-4d20-a3a3-09b4f04810fd\",\"kind\":\"statement\",\"kindLabel\":\"Ekstre\",\"template\":\"destekofis_ekstre\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-04\",\"preset\":\"thisMonth\"},\"state\":\"running\",\"stateLabel\":\"Sürüyor\",\"waitingUntil\":null,\"pauseReason\":\"\",\"pauseCode\":\"\",\"createdAt\":\"2026-11-04T11:01:00.000Z\",\"createdByName\":\"Ofis yöneticisi\",\"finishedAt\":null,\"total\":1,\"counts\":{\"pending\":1,\"preparing\":0,\"sending\":0,\"accepted\":0,\"sent\":0,\"delivered\":0,\"read\":0,\"failed\":0,\"uncertain\":0,\"limited\":0,\"held\":0,\"paused\":0,\"canceled\":0,\"expired\":0,\"skipped\":0,\"stopped\":0}},\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-04\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":1,\"skipped\":{},\"alreadySent\":{\"count\":0,\"last\":null,\"included\":0},\"people\":[{\"id\":\"account-ef8b1060-5f78-486c-bfeb-4615e1a3565d\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":1},\"reused\":false}}) · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 6 — Yine de Gönder sınırı Meta saatine bağlı değil › Meta saati 30 dk geride: asıl işten 1 dk SONRA giden (Sonucu Belirsiz → imzalı 'delivered' kancası) ileti asıl işin yeniden denemesini 'Daha Önce Gönderildi' ile eler; B'ye toplam 2 ekstre",
+      "konum": "test/whatsapp-dk6-saat-kaymasi-248.test.mjs:34:5",
+      "hata": "M'nin yeniden denemesi iş açmamalı (geldi 200 {\"ok\":true,\"data\":{\"batch\":{\"id\":\"wab-72e93c7a-9de1-4aef-8ab0-6017725b61e5\",\"kind\":\"statement\",\"kindLabel\":\"Ekstre\",\"template\":\"destekofis_ekstre\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-04\",\"preset\":\"thisMonth\"},\"state\":\"running\",\"stateLabel\":\"Sürüyor\",\"waitingUntil\":null,\"pauseReason\":\"\",\"pauseCode\":\"\",\"createdAt\":\"2026-11-04T11:01:00.000Z\",\"createdByName\":\"Ofis yöneticisi\",\"finishedAt\":null,\"total\":1,\"counts\":{\"pending\":1,\"preparing\":0,\"sending\":0,\"accepted\":0,\"sent\":0,\"delivered\":0,\"read\":0,\"failed\":0,\"uncertain\":0,\"limited\":0,\"held\":0,\"paused\":0,\"canceled\":0,\"expired\":0,\"skipped\":0,\"stopped\":0}},\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-04\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":1,\"skipped\":{},\"alreadySent\":{\"count\":0,\"last\":null,\"included\":0},\"people\":[{\"id\":\"account-9eeefd6c-36b9-4232-ae9c-b49d228df1fb\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":1},\"reused\":false}}) · 200 !== 400 (beklenen 400, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk6fix-mutasyon-aat-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "1252b86f5f886305cf83c7ca67075c5172e55d9c84eea82718c92d8b4cd08ae5",
+  "ham_cikti_bayt": 5761
+}

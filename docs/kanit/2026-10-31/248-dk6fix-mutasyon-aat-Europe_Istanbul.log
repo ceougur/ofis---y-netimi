@@ -1,0 +1,69 @@
+TAP version 13
+# Subtest: 2.4.8 dar kontrol 6 — Yine de Gönder sınırı Meta saatine bağlı değil
+    # Subtest: Meta saati 2 dk geride: asıl işten 1 dk SONRA giden (Sonucu Belirsiz → imzalı 'delivered' kancası) ileti asıl işin yeniden denemesini 'Daha Önce Gönderildi' ile eler; B'ye toplam 2 ekstre
+    not ok 1 - Meta saati 2 dk geride: asıl işten 1 dk SONRA giden (Sonucu Belirsiz → imzalı 'delivered' kancası) ileti asıl işin yeniden denemesini 'Daha Önce Gönderildi' ile eler; B'ye toplam 2 ekstre
+      ---
+      duration_ms: 672.754328
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-2ebb8e98/test/whatsapp-dk6-saat-kaymasi-248.test.mjs:34:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        M'nin yeniden denemesi iş açmamalı (geldi 200 {"ok":true,"data":{"batch":{"id":"wab-7f912542-2403-4837-bba5-de371541059b","kind":"statement","kindLabel":"Ekstre","template":"destekofis_ekstre","period":{"from":"2026-11-01","to":"2026-11-04","preset":"thisMonth"},"state":"running","stateLabel":"Sürüyor","waitingUntil":null,"pauseReason":"","pauseCode":"","createdAt":"2026-11-04T08:01:00.000Z","createdByName":"Ofis yöneticisi","finishedAt":null,"total":1,"counts":{"pending":1,"preparing":0,"sending":0,"accepted":0,"sent":0,"delivered":0,"read":0,"failed":0,"uncertain":0,"limited":0,"held":0,"paused":0,"canceled":0,"expired":0,"skipped":0,"stopped":0}},"summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-04","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":1,"skipped":{},"alreadySent":{"count":0,"last":null,"included":0},"people":[{"id":"account-542053a4-a339-4a65-9b19-861a7fe4c747","name":"Burak Kaya","phone":"+905334445566","skip":""}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":1,"left":249,"later":0,"holdUntil":null},"seconds":1},"reused":false}})
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-2ebb8e98/test/whatsapp-dk6-saat-kaymasi-248.test.mjs:73:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Meta saati 30 dk geride: asıl işten 1 dk SONRA giden (Sonucu Belirsiz → imzalı 'delivered' kancası) ileti asıl işin yeniden denemesini 'Daha Önce Gönderildi' ile eler; B'ye toplam 2 ekstre
+    not ok 2 - Meta saati 30 dk geride: asıl işten 1 dk SONRA giden (Sonucu Belirsiz → imzalı 'delivered' kancası) ileti asıl işin yeniden denemesini 'Daha Önce Gönderildi' ile eler; B'ye toplam 2 ekstre
+      ---
+      duration_ms: 424.414583
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-2ebb8e98/test/whatsapp-dk6-saat-kaymasi-248.test.mjs:34:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        M'nin yeniden denemesi iş açmamalı (geldi 200 {"ok":true,"data":{"batch":{"id":"wab-b428fb8f-b066-41ae-8085-cab273c0d7b6","kind":"statement","kindLabel":"Ekstre","template":"destekofis_ekstre","period":{"from":"2026-11-01","to":"2026-11-04","preset":"thisMonth"},"state":"running","stateLabel":"Sürüyor","waitingUntil":null,"pauseReason":"","pauseCode":"","createdAt":"2026-11-04T08:01:00.000Z","createdByName":"Ofis yöneticisi","finishedAt":null,"total":1,"counts":{"pending":1,"preparing":0,"sending":0,"accepted":0,"sent":0,"delivered":0,"read":0,"failed":0,"uncertain":0,"limited":0,"held":0,"paused":0,"canceled":0,"expired":0,"skipped":0,"stopped":0}},"summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-04","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":1,"skipped":{},"alreadySent":{"count":0,"last":null,"included":0},"people":[{"id":"account-cb89bb98-a29d-416d-8a36-6d3b1022301d","name":"Burak Kaya","phone":"+905334445566","skip":""}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":1,"left":249,"later":0,"holdUntil":null},"seconds":1},"reused":false}})
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-2ebb8e98/test/whatsapp-dk6-saat-kaymasi-248.test.mjs:73:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 dar kontrol 6 — Yine de Gönder sınırı Meta saatine bağlı değil
+  ---
+  duration_ms: 1098.668491
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-2ebb8e98/test/whatsapp-dk6-saat-kaymasi-248.test.mjs:32:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1438.758778
