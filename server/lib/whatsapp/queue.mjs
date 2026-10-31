@@ -367,8 +367,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // (aynı bilgisayara geri yüklenmiş eski veri dahil) kararı defterindir (★ soru 7) — defter yalnız kendi ledger_id'li toplu işin talebini yazar (runJob), çift sayım
   // olmaz; aynı cari birden çok kaynaktan gelirse en son kabul anı alınır. Dönem eşliği, 7 gün penceresi (since) ve asıl işin "Yine de Gönder" sınırı (after)
   // defterdeki R3 ile aynı kural (anahtar kümesi keyDayOfBatch). Dönüş: Map(cari → son kabul anı ISO).
+  // Dar kontrol 9 (ölçek): başka defterde açılmış bu türde toplu iş yoksa (taşınan veri yok — olağan kurulum) iş tablosu hiç taranmaz.
   function movedSentBefore(ids, kind, keys, since, after) {
     const out = new Map();
+    if (!store.get("SELECT 1 AS found FROM wa_batches WHERE kind = ? AND ledger_id <> ? LIMIT 1", kind, ledger.id)) return out;
     for (let i = 0; i < ids.length; i += 500) {
       const part = ids.slice(i, i + 500);
       const rows = store.all(
