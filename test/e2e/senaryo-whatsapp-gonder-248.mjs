@@ -526,6 +526,147 @@ await step("G8b Gönderimler: Daha Fazla Göster (klavye) satırı artırır, so
   await closeAll();
 });
 
+// Dar kontrol 8 DÜŞÜK-2/3/4 (ders 12, 20): gerçek fare / klavye, insan hızında; ön koşullar (süren istek) yol üzerinde geciktirilip SAYILARAK oluşturulur.
+//   (a) canlı yenileme isteği sürerken Daha Fazla Göster (Enter ve fare) yutulmaz; (b) Daha Fazla Göster yüklenirken düğme odakta kalır (aria-disabled, "Yükleniyor…"),
+//   ikinci basış ikinci istek açmaz; (c) yarım tarihle Süzgeci Temizle'ye / bir satıra fareyle basış kaybolmaz; (d) yarım tarih Tab ile ve Enter ile uygulanır.
+await step("G8c Gönderimler: süren yenilemede Daha Fazla Göster, yüklenirken odak ve çift basış, yarım tarihle Süzgeci Temizle / satır, Tab ve Enter", async () => {
+  const rowsOf = () => page.$$eval(`${TOP} [data-wa-api-batches] tr[data-wa-api-open]`, rows => rows.length);
+  const extra = db("SELECT id FROM accounts WHERE name = 'Liste Deneme'")?.id || (await ctx.account("Liste Deneme", "0536 500 00 09", 10)).id;
+  const open = async () => {
+    const res = await ctx.batch({ kind: "statement", ids: [extra], preset: "thisMonth", sendAgain: true });
+    if (res.status !== 200) throw new Error(`toplu iş açılamadı: ${res.status} ${JSON.stringify(res.data)}`);
+    await ctx.drain();
+  };
+  while (db("SELECT COUNT(*) AS n FROM wa_batches").n < 100) await open();
+  ok(db("SELECT COUNT(*) AS n FROM wa_batches").n === 100, "veri tabanı: 100 gönderim (üç sayfadan fazla)");
+  const focused = () => page.evaluate(sel => {
+    const a = document.activeElement;
+    const rows = [...document.querySelectorAll(`${sel} [data-wa-api-batches] tr[data-wa-api-open]`)];
+    return { tag: a === document.body ? "BODY" : `${a?.tagName}${a?.getAttribute?.("name") ? `[name=${a.getAttribute("name")}]` : ""}`, row: rows.indexOf(a), aria: a?.getAttribute?.("aria-disabled") || "", text: (a?.textContent || "").trim().slice(0, 40), value: a?.value ?? null };
+  }, TOP);
+  const delay = { keep: 0, append: 0 };
+  const inFlight = { keep: 0, append: 0 };
+  const listReqs = [];
+  let onKeep = null; // canlı yenileme isteği yol üzerinde bekletilmeye başladı
+  const handler = async route => {
+    if (route.request().method() !== "GET") return route.continue();
+    const kind = new URL(route.request().url()).searchParams.has("before") ? "append" : "keep";
+    listReqs.push({ kind, search: new URL(route.request().url()).search });
+    inFlight[kind] += 1;
+    if (kind === "keep") onKeep?.();
+    try {
+      if (delay[kind]) await page.waitForTimeout(delay[kind]);
+      await route.continue();
+    } finally {
+      inFlight[kind] -= 1;
+    }
+  };
+  const isList = url => url.pathname === "/api/workspace/whatsapp/batches";
+  await page.route(isList, handler);
+  try {
+    await openWhatsapp();
+    await waitPreview();
+    await page.click(`${TOP} [data-wa-api-list]`);
+    await page.waitForFunction(sel => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length === 30, TOP);
+    ok((await rowsOf()) === 30, "ilk açılışta 30 satır");
+    // Satır sayısı n'ye ulaşıp düğme yüklemeden çıkana dek (en çok 10 sn); ulaşmazsa denetim aşağıda görülen sayıyla kırmızı.
+    const settled = n => page.waitForFunction(([sel, want]) => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length === want && !document.querySelector(`${sel} [data-wa-api-more][aria-disabled]`), [TOP, n], { timeout: 10000 });
+    const liveStarted = () => Promise.race([new Promise(resolve => { onKeep = resolve; }), page.waitForTimeout(15000)]).finally(() => { onKeep = null; });
+    // (a) Enter: canlı yenileme isteği 1,5 sn gecikir; o sürerken Daha Fazla Göster'de Enter.
+    delay.keep = 1500;
+    await page.focus(`${TOP} [data-wa-api-more]`);
+    let started = liveStarted();
+    await open();
+    await started;
+    ok(inFlight.keep === 1, `ön koşul: canlı yenileme isteği sürüyor (süren ${inFlight.keep})`);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(150);
+    const during = await focused();
+    ok(during.text === "Yükleniyor…" && during.aria === "true", `yenileme sürerken basılan Daha Fazla Göster "Yükleniyor…" gösterir, odakta (görülen ${JSON.stringify(during)})`);
+    await settled(60).catch(() => null);
+    ok((await rowsOf()) === 60, `canlı yenileme sürerken Enter yutulmadı → 60 satır (görülen ${await rowsOf()})`);
+    // (a) fare: aynı ön koşul, gerçek tıklama.
+    started = liveStarted();
+    await open();
+    await started;
+    ok(inFlight.keep === 1, `ön koşul: canlı yenileme isteği sürüyor (fare; süren ${inFlight.keep})`);
+    await page.click(`${TOP} [data-wa-api-more]`);
+    await settled(90).catch(() => null);
+    ok((await rowsOf()) === 90, `canlı yenileme sürerken fareyle basış yutulmadı → 90 satır (görülen ${await rowsOf()})`);
+    delay.keep = 0;
+    // (b) Daha Fazla Göster'in kendi isteği 1,5 sn gecikir: odak düğmede (aria-disabled, "Yükleniyor…"), ikinci Enter ikinci istek açmaz.
+    delay.append = 1500;
+    const total = db("SELECT COUNT(*) AS n FROM wa_batches").n;
+    const appendsBefore = listReqs.filter(item => item.kind === "append").length;
+    await page.focus(`${TOP} [data-wa-api-more]`);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(200);
+    const loading = await focused();
+    ok(inFlight.append === 1, `ön koşul: Daha Fazla Göster isteği sürüyor (süren ${inFlight.append})`);
+    ok(loading.tag === "BUTTON[name=waListMore]" && loading.aria === "true" && loading.text === "Yükleniyor…", `yüklenirken odak düğmede, aria-disabled + "Yükleniyor…" (görülen ${JSON.stringify(loading)})`);
+    await page.keyboard.press("Enter");
+    await settled(total).catch(() => null);
+    ok((await rowsOf()) === total, `sonda ${total} satır (görülen ${await rowsOf()})`);
+    const appends = listReqs.filter(item => item.kind === "append").length - appendsBefore;
+    ok(appends === 1, `yüklenirken ikinci Enter ikinci istek açmadı (Daha Fazla Göster isteği ${appends})`);
+    ok((await focused()).row === 90, `yükleme bitince odak ilk yeni satırda (91.) (görülen ${JSON.stringify(await focused())})`);
+    delay.append = 0;
+    // (c) Süzgeci Temizle görünür olsun: Bitiş tam tarihle (31.12.2026) uygulanır.
+    await page.fill(`${TOP} [data-wa-api-to]`, "2026-12-31");
+    await page.waitForSelector(`${TOP} [data-wa-api-filter-clear]`);
+    await page.waitForFunction(sel => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length === 30, TOP);
+    // Başlangıç'a insan hızında YARIM tarih (01.01.000 2 → yıl 0002), sonra fareyle Süzgeci Temizle.
+    await page.focus(`${TOP} [data-wa-api-from]`);
+    await page.keyboard.type("01012", { delay: 120 });
+    await page.waitForTimeout(300);
+    const half = await page.inputValue(`${TOP} [data-wa-api-from]`);
+    ok(/^000\d-01-01$/.test(half), `ön koşul: Başlangıç'ta yarım yıl (görülen ${half})`);
+    await page.click(`${TOP} [data-wa-api-filter-clear]`);
+    await page.waitForTimeout(600);
+    const cleared = { from: await page.inputValue(`${TOP} [data-wa-api-from]`), to: await page.inputValue(`${TOP} [data-wa-api-to]`), button: Boolean(await page.$(`${TOP} [data-wa-api-filter-clear]`)) };
+    ok(cleared.from === "" && cleared.to === "" && !cleared.button, `yarım tarihle Süzgeci Temizle'ye fareyle basış kaybolmadı: alanlar boş, düğme kalktı (görülen ${JSON.stringify(cleared)})`);
+    await page.waitForFunction(sel => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length === 30, TOP).catch(() => null);
+    ok((await rowsOf()) === 30, "Süzgeci Temizle → baştan 30 satır");
+    // (d) Tab: Bitiş'e yarım tarih (01.01.0020) + Tab → yarım değer uygulanır (sunucu bu aralıkta gönderim bulmaz ya da nedenini söyler).
+    const tabFrom = listReqs.length;
+    await page.focus(`${TOP} [data-wa-api-to]`);
+    await page.keyboard.type("010120", { delay: 120 });
+    await page.waitForTimeout(300);
+    ok(!listReqs.slice(tabFrom).some(item => /to=0/.test(item.search)), "ön koşul: yarım yılla yazarken istek gitmedi");
+    // Chromium'da Tab önce tarih alanının kendi bölümlerinde ilerler; odak alandan çıkana dek (en çok 3).
+    for (let i = 0; i < 3 && (await focused()).tag === "INPUT[name=waListTo]"; i += 1) await page.keyboard.press("Tab");
+    await page.waitForTimeout(800);
+    ok(listReqs.slice(tabFrom).some(item => /to=0020-01-01/.test(item.search)), `Tab ile alandan çıkınca yarım tarih uygulandı (istekler ${JSON.stringify(listReqs.slice(tabFrom).map(item => item.search))})`);
+    ok((await rowsOf()) === 0, `Tab sonrası liste yarım tarihe göre (görülen ${await rowsOf()} satır)`);
+    // (d) Enter: süzgeç temizlenir, aynı yarım tarih Enter ile.
+    await page.click(`${TOP} [data-wa-api-filter-clear]`);
+    await page.waitForFunction(sel => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length === 30, TOP);
+    const enterFrom = listReqs.length;
+    await page.focus(`${TOP} [data-wa-api-to]`);
+    await page.keyboard.type("010120", { delay: 120 });
+    await page.waitForTimeout(300);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(800);
+    const enterFocus = await focused();
+    ok(listReqs.slice(enterFrom).some(item => /to=0020-01-01/.test(item.search)) && (await rowsOf()) === 0, `Enter ile yarım tarih uygulandı (istekler ${JSON.stringify(listReqs.slice(enterFrom).map(item => item.search))}, ${await rowsOf()} satır)`);
+    ok(enterFocus.tag === "INPUT[name=waListTo]", `Enter'dan sonra odak Bitiş'te (görülen ${JSON.stringify(enterFocus)})`);
+    // (c) satır: süzgeç temizlenir, Başlangıç'a yarım tarih, fareyle ilk satıra basış → o gönderim açılır.
+    await page.click(`${TOP} [data-wa-api-filter-clear]`);
+    await page.waitForFunction(sel => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length === 30, TOP);
+    const firstId = await page.getAttribute(`${TOP} [data-wa-api-batches] tr[data-wa-api-open]`, "data-wa-api-open");
+    await page.focus(`${TOP} [data-wa-api-from]`);
+    await page.keyboard.type("01012", { delay: 120 });
+    await page.waitForTimeout(300);
+    await page.click(`${TOP} [data-wa-api-batches] tr[data-wa-api-open] td`);
+    const opened = await page.waitForSelector(`${TOP} [data-wa-batch="${firstId}"]`, { timeout: 5000 }).then(() => true, () => false);
+    ok(opened, `yarım tarihle satıra fareyle basış kaybolmadı: gönderim ${firstId} açıldı`);
+    await shot("12d-liste-basislar");
+  } finally {
+    await page.unroute(isList, handler);
+  }
+  await closeAll();
+});
+
 await step("G9 WhatsApp Web ile Gönder (wa.me) bağlantı varken de çalışır", async () => {
   const before = db("SELECT COUNT(*) AS n FROM message_sends WHERE status = 'sent'").n;
   await openWhatsapp();
