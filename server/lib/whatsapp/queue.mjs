@@ -1423,12 +1423,15 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       let reopenedHere = false; // dar kontrol 2 DÜŞÜK-1: bu bildirim defterde toplu işi yeniden açtı mı (dosya yazımı düşerse telafi)
       const resolving = ["uncertain", "sending"].includes(current);
       if (resolving && wamid) fields.wamid = wamid;
+      // İş 5 (KULLANICI KARARI 31.10.2026 "a"): Meta Bekletti'de (131049) iken İptal Et ile durdurulan işin kabul edilmiş iletisi sonradan teslim edildiyse geç
+      // "delivered" / "read" uygulanır (P3'ün geç teslim kuralı; defter deliveries → R3 sayar). Yalnız bu işin KENDİ wamid'iyle (yukarıdaki sahip denetimi).
+      const lateAfterHold = current === "canceled" && job.retry_131049 === 1 && Boolean(job.wamid) && wamid === job.wamid;
       if (value === "sent") {
         if (resolving || current === "accepted") Object.assign(fields, { state: "sent", sent_at: at });
       } else if (value === "delivered") {
-        if (resolving || ["accepted", "sent", "expired"].includes(current)) Object.assign(fields, { state: "delivered", delivered_at: at, sent_at: job.sent_at || at, closed_at: iso() });
+        if (resolving || lateAfterHold || ["accepted", "sent", "expired"].includes(current)) Object.assign(fields, { state: "delivered", delivered_at: at, sent_at: job.sent_at || at, closed_at: iso() });
       } else if (value === "read") {
-        if (resolving || ["accepted", "sent", "delivered", "expired"].includes(current)) Object.assign(fields, { state: "read", read_at: at, delivered_at: job.delivered_at || at, sent_at: job.sent_at || at, closed_at: iso() });
+        if (resolving || lateAfterHold || ["accepted", "sent", "delivered", "expired"].includes(current)) Object.assign(fields, { state: "read", read_at: at, delivered_at: job.delivered_at || at, sent_at: job.sent_at || at, closed_at: iso() });
       } else if (value === "failed") {
         // §7a 18: delivered / read'den SONRA gelen failed yok sayılır.
         if (resolving || ["accepted", "sent", "expired"].includes(current)) {

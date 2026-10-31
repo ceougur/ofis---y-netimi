@@ -152,6 +152,10 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // Kabul satırı (accepts, iş başına tek) işin İLK kabul edilen denemesinden kalır; sonuç ise işin SON denemesinden okunur: 131049 (Meta Bekletti) kabul edilmiş
     // denemeyi bırakır ve iş 24 saat sonra bir kez daha denenir. O son deneme Meta'ca eşzamanlı reddedildiyse (outcomes 'failed') ya da kabul edilip teslim
     // edilemediyse (failures) ve hiç teslim (deliveries) yoksa kişi SAYILMAZ (P3; 2.4.8 dar kontrol 7 ORTA-1, test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs).
+    // KULLANICI KARARI (31.10.2026 ~10:10 UTC "a"): son deneme 131049 ile bırakılmış (releases; teslim edilmedi) ve toplu işin defterdeki SON durumu "İptal Et" ise
+    // (batch_events durdurma nedeni ya da — 131049 "Tamamlandı" işi yeniden açtıysa — batch_log'un son satırı 'stop:canceled'; bir daha denenmeyecek) kişi SAYILMAZ;
+    // iş Meta Bekletti'de beklerken sayılır (yeni gönderimi ayrıca "Zaten Kuyrukta" eler). Geç "delivered" / "read" gelirse (deliveries) sayılır. Geri yükleme /
+    // taşınma durdurmaları karar kapsamında DEĞİL (bugünkü gibi sayılır). Test: test/whatsapp-dk7-bekletti-iptal-248.test.mjs.
     // "after" (asıl işin "Yine de Gönder" sınırı, yerel saatle açılış anı) TALEP anıyla (claims.at, yerel saat, istekten hemen önce) karşılaştırılır, kabul anıyla
     // DEĞİL: geç kabulde accepts.at Meta'nın durum bildirimi saatinden gelir; Meta saati yerelden gerideyse asıl işten SONRA giden ileti "önce" sayılıp çift ekstre
     // gidiyordu (2.4.8 dar kontrol 6, test/whatsapp-dk6-saat-kaymasi-248.test.mjs).
@@ -159,7 +163,10 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
       WHERE c.company_id = ? AND c.kind = ? AND c.period_key = ? AND a.at >= ? AND c.at > ?
         AND ((NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
-              AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'failed'))
+              AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'failed')
+              AND NOT (EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
+                AND COALESCE((SELECT l.event || ':' || l.reason FROM batch_log l WHERE l.batch_id = c.batch_id ORDER BY l.seq DESC LIMIT 1),
+                  (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') = 'stop:canceled'))
           OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
       GROUP BY c.account_id`),
     // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"; dar kontrol 6 kapsam dışı gözlem): yalnız "Başarısızları Yeniden Dene"de — bu cariye bu şablon + dönem için SONUCU
