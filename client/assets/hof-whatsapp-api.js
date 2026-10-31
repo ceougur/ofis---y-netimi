@@ -241,28 +241,83 @@
       </div>`;
     }
 
-    function listView() {
+    // Liste kabı (tablo + Daha Fazla Göster + neden): yenilemeler (sayfa, canlı olay) YALNIZ bunu değiştirir; süzgeç alanları yeniden kurulmaz (dar kontrol 7 ORTA-2:
+    // klavyeyle yazılan tarih ve odak canlı yenilemede kaybolmaz).
+    function listBody() {
       const rows = (state.list || []).map(b => {
         const c = b.counts || {};
         return `<tr data-wa-api-open="${esc(b.id)}" tabindex="0"><td>${esc(when(b.createdAt))}</td><td>${esc(b.kindLabel)}</td><td>${esc(periodLabel(b.period))}</td><td><span class="hof-wa-api-state is-${b.state}">${esc(b.stateLabel)}</span></td><td class="num">${count(b.total)}</td><td class="num">${count((c.delivered || 0) + (c.read || 0))}</td><td class="num">${count(c.failed)}</td></tr>`;
       }).join("");
       const filtered = Boolean(state.listFrom || state.listTo);
-      const filter = `<div class="hof-wa-api-filter" data-wa-api-filter><label class="hof-field"><span>Başlangıç</span><input type="date" data-wa-api-from value="${esc(state.listFrom)}" max="${esc(state.listTo)}"></label>
-        <label class="hof-field"><span>Bitiş</span><input type="date" data-wa-api-to value="${esc(state.listTo)}" min="${esc(state.listFrom)}"></label>
-        ${filtered ? '<button type="button" class="hof-button hof-button-ghost hof-button-small" data-wa-api-filter-clear>Süzgeci Temizle</button>' : ""}</div>`;
       const empty = state.listError
         ? `<p class="hof-empty hof-wa-api-list-error" role="alert" data-wa-api-list-error>${esc(state.listError)}</p>`
         : `<p class="hof-empty" data-wa-api-batches-empty>${filtered ? "Bu tarihlerde gönderim yok." : "Henüz otomatik gönderim yapılmadı."}</p>`;
-      // Daha eski gönderim yoksa düğme görünmez; nedeni yazılır (pasif / gizli düğmenin nedeni görünür).
+      // Daha eski gönderim yoksa düğme görünmez; nedeni yazılır (pasif / gizli düğmenin nedeni görünür). Yüklenirken düğme odakta kalır (aria-disabled; disabled
+      // odağı düşürürdü), ikinci basış yok sayılır.
       const more = rows
         ? state.listMore
-          ? `<button type="button" class="hof-button hof-button-ghost hof-wa-api-more" data-wa-api-more${state.listLoading ? " disabled" : ""}>${state.listLoading ? "Yükleniyor…" : "Daha Fazla Göster"}</button>`
+          ? `<button type="button" class="hof-button hof-button-ghost hof-wa-api-more" name="waListMore" data-wa-api-more${state.listLoading ? ' aria-disabled="true"' : ""}>${state.listLoading ? "Yükleniyor…" : "Daha Fazla Göster"}</button>`
           : `<p class="hof-wa-api-note" data-wa-api-list-end>${filtered ? "Bu tarihlerdeki bütün gönderimler gösteriliyor." : "Bütün gönderimler gösteriliyor."}</p>`
         : "";
+      return state.list === null ? '<p class="hof-empty">Yükleniyor…</p>' : rows ? `<div class="hof-wa-list"><table class="hof-table"><thead><tr><th>Başlangıç</th><th>Tür</th><th>Dönem</th><th>Durum</th><th class="num">Kişi</th><th class="num">Teslim Edildi</th><th class="num">Başarısız</th></tr></thead><tbody data-wa-api-batches>${rows}</tbody></table></div>${more}` : empty;
+    }
+    const clearButton = () => (state.listFrom || state.listTo ? '<button type="button" class="hof-button hof-button-ghost hof-button-small" name="waListClear" data-wa-api-filter-clear>Süzgeci Temizle</button>' : "");
+    function listView() {
+      const filter = `<div class="hof-wa-api-filter" data-wa-api-filter><label class="hof-field"><span>Başlangıç</span><input type="date" name="waListFrom" aria-label="Başlangıç" data-wa-api-from value="${esc(state.listFrom)}" max="${esc(state.listTo)}"></label>
+        <label class="hof-field"><span>Bitiş</span><input type="date" name="waListTo" aria-label="Bitiş" data-wa-api-to value="${esc(state.listTo)}" min="${esc(state.listFrom)}"></label>
+        <span data-wa-api-filter-clear-slot>${clearButton()}</span></div>`;
       return `<div class="hof-wa-api-bar"><p class="hof-wa-api-title"><b>WhatsApp Gönderimleri</b></p><button type="button" class="hof-button hof-button-ghost hof-button-small" data-wa-api-new>Yeni Gönderim</button></div>
         ${filter}
-        ${state.list === null ? '<p class="hof-empty">Yükleniyor…</p>' : rows ? `<div class="hof-wa-list"><table class="hof-table"><thead><tr><th>Başlangıç</th><th>Tür</th><th>Dönem</th><th>Durum</th><th class="num">Kişi</th><th class="num">Teslim Edildi</th><th class="num">Başarısız</th></tr></thead><tbody data-wa-api-batches>${rows}</tbody></table></div>${more}` : empty}
+        <div data-wa-api-list-body>${listBody()}</div>
         <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-wa-api-close>Kapat</button></div>`;
+    }
+    // Liste görünümündeyse yalnız liste kabı yeniden çizilir: kutu kaydırması (.hof-wa-list scrollTop) ve odaktaki satır korunur; değilse tam çizim.
+    // focusRow: "Daha Fazla Göster"den sonra odak bu sıradaki (ilk yeni) satıra verilir.
+    function renderList({ focusRow = -1 } = {}) {
+      const body = alive() && state.view === "list" ? root.querySelector("[data-wa-api-list-body]") : null;
+      if (!body) return render();
+      const scroll = body.querySelector(".hof-wa-list")?.scrollTop || 0;
+      const active = document.activeElement;
+      const rowId = active && body.contains(active) && active.matches("tr[data-wa-api-open]") ? active.dataset.waApiOpen : "";
+      HOF.swap ? HOF.swap(body, listBody()) : (body.innerHTML = listBody());
+      const box = body.querySelector(".hof-wa-list");
+      if (box) box.scrollTop = scroll;
+      const rows = body.querySelectorAll("tr[data-wa-api-open]");
+      if (focusRow >= 0 && rows[focusRow]) rows[focusRow].focus();
+      else if (rowId) [...rows].find(row => row.dataset.waApiOpen === rowId)?.focus({ preventScroll: true });
+    }
+    // Süzgeç: boş (temizlendi) ya da geçerli tam tarih (yıl ≥ 1900) "change"te; yarım yazım (Chromium yılın her hanesinde change verir: 0002, 0020 …) ancak Enter /
+    // alandan çıkınca (sunucu geçersizse nedenini listede söyler). Alanlar yeniden kurulmaz; yalnız sınırlar ve Süzgeci Temizle güncellenir.
+    const fullDate = value => /^(\d{4})-\d{2}-\d{2}$/.test(value) && Number(value.slice(0, 4)) >= 1900;
+    function applyFilter(input, { force = false } = {}) {
+      const isFrom = input.matches("[data-wa-api-from]");
+      const value = input.value;
+      if (value === (isFrom ? state.listFrom : state.listTo)) return;
+      if (!force && value !== "" && !fullDate(value)) return;
+      if (isFrom) state.listFrom = value;
+      else state.listTo = value;
+      filterChanged();
+    }
+    // Süzgeç değeri değişti: sınırlar ve Süzgeci Temizle yerinde güncellenir, liste baştan yüklenir. clear: alanlar boşaltılır, odak Başlangıç'a (düğme kalkar).
+    function filterChanged({ clear = false } = {}) {
+      const filter = root.querySelector("[data-wa-api-filter]");
+      if (!filter) return openList();
+      const from = filter.querySelector("[data-wa-api-from]");
+      const to = filter.querySelector("[data-wa-api-to]");
+      if (clear) {
+        if (from) from.value = "";
+        if (to) to.value = "";
+      }
+      from?.setAttribute("max", state.listTo);
+      to?.setAttribute("min", state.listFrom);
+      const slot = filter.querySelector("[data-wa-api-filter-clear-slot]");
+      if (slot) slot.innerHTML = clearButton();
+      if (clear) from?.focus();
+      state.list = null;
+      state.listMore = false;
+      state.listError = "";
+      renderList();
+      loadList();
     }
 
     function render() {
@@ -298,7 +353,7 @@
       if (append && loaded) query.set("before", state.list[loaded - 1].id);
       const seq = ++listSeq;
       state.listLoading = true;
-      if (append) render();
+      if (append) renderList();
       try {
         const got = await HOF.api(`${BASE}/batches?${query}`, { background: true });
         if (seq !== listSeq || !alive()) return;
@@ -317,7 +372,7 @@
         }
       }
       state.listLoading = false;
-      render();
+      renderList({ focusRow: append && (state.list || []).length > loaded ? loaded : -1 });
     }
     async function openList() {
       state.view = "list";
@@ -425,10 +480,8 @@
       } else if (target.matches("[data-wa-api-ack]")) {
         if (target.checked) setAck(true);
       } else if (target.matches("[data-wa-api-from], [data-wa-api-to]")) {
-        // Süzgeç değişince liste baştan yüklenir (geçersiz aralıkta sunucunun nedeni listede görünür).
-        if (target.matches("[data-wa-api-from]")) state.listFrom = target.value;
-        else state.listTo = target.value;
-        openList();
+        // Süzgeç değişince liste baştan yüklenir (geçersiz aralıkta sunucunun nedeni listede görünür); yarım yazım beklenir (applyFilter).
+        applyFilter(target);
       }
     });
     root.addEventListener("click", event => {
@@ -437,11 +490,13 @@
       if (target.matches("[data-wa-api-send]")) start();
       else if (target.matches("[data-wa-api-retry]")) loadPreview();
       else if (target.matches("[data-wa-api-list]")) openList();
-      else if (target.matches("[data-wa-api-more]")) loadList({ append: true });
+      else if (target.matches("[data-wa-api-more]")) {
+        if (!state.listLoading) loadList({ append: true });
+      }
       else if (target.matches("[data-wa-api-filter-clear]")) {
         state.listFrom = "";
         state.listTo = "";
-        openList();
+        filterChanged({ clear: true });
       }
       else if (target.matches("[data-wa-api-new]")) {
         state.view = "compose";
@@ -450,7 +505,16 @@
       else if (target.dataset.waApiAct) act(target.dataset.waApiAct);
       else if (target.dataset.waApiAnyway) sendAnyway(target.dataset.waApiAnyway);
     });
+    // Süzgeç alanında yarım kalmış yazım Enter'da ya da alandan çıkınca uygulanır.
+    root.addEventListener("focusout", event => {
+      if (event.target.matches?.("[data-wa-api-from], [data-wa-api-to]")) applyFilter(event.target, { force: true });
+    });
     root.addEventListener("keydown", event => {
+      if (event.key === "Enter" && event.target.matches?.("[data-wa-api-from], [data-wa-api-to]")) {
+        event.preventDefault();
+        applyFilter(event.target, { force: true });
+        return;
+      }
       const row = event.target.closest?.("tr[data-wa-api-open]");
       if (row && (event.key === "Enter" || event.key === " ")) {
         event.preventDefault();

@@ -432,6 +432,79 @@ await step("G8b Gönderimler: Daha Fazla Göster (klavye) satırı artırır, so
   ok((await rowsOf()) === total, `Daha Fazla Göster (Enter) → ${total} satır`);
   ok(!(await page.$(`${TOP} [data-wa-api-more]`)), "daha eski yok → düğme görünmez");
   ok(((await page.textContent(`${TOP} [data-wa-api-list-end]`)) || "").trim() === "Bütün gönderimler gösteriliyor.", "düğmenin yokluğunun nedeni yazılı");
+  // Dar kontrol 7 ORTA-2 (ders 12): Daha Fazla Göster'den sonra odak ilk YENİ satırda (31.) ve kutu ona kaymış; odak sayfaya düşmez.
+  const focusInfo = () => page.evaluate(sel => {
+    const a = document.activeElement;
+    const rows = [...document.querySelectorAll(`${sel} [data-wa-api-batches] tr[data-wa-api-open]`)];
+    const box = document.querySelector(`${sel} .hof-wa-list`);
+    const r = a?.getBoundingClientRect?.();
+    const b = box?.getBoundingClientRect();
+    return { tag: a === document.body ? "BODY" : `${a?.tagName}${a?.getAttribute?.("name") ? `[name=${a.getAttribute("name")}]` : ""}`, row: rows.indexOf(a), value: a?.value ?? null, scroll: Math.round(box?.scrollTop || 0), visible: Boolean(r && b && r.top >= b.top - 1 && r.bottom <= b.bottom + 1) };
+  }, TOP);
+  const afterMore = await focusInfo();
+  ok(afterMore.row === 30, `Daha Fazla Göster sonrası odak ilk yeni satırda (31.) (görülen ${JSON.stringify(afterMore)})`);
+  ok(afterMore.scroll > 0 && afterMore.visible, `kutu ilk yeni satıra kaydı, satır görünür (görülen ${JSON.stringify(afterMore)})`);
+  await page.keyboard.press("Tab");
+  ok((await focusInfo()).row === 31, "Tab → sonraki satır (odak listede sürer)");
+  // Canlı yenileme (arka planda yeni gönderim) kutu kaydırmasını ve odaktaki satırı korur.
+  await page.$eval(`${TOP} .hof-wa-list`, el => { el.scrollTop = 200; });
+  const focusedId = await page.evaluate(() => document.activeElement?.dataset?.waApiOpen || "");
+  const liveList = page.waitForResponse(res => new URL(res.url()).pathname === "/api/workspace/whatsapp/batches" && res.request().method() === "GET", { timeout: 15000 });
+  await open(null);
+  await liveList;
+  await page.waitForTimeout(400);
+  const afterLive = await focusInfo();
+  ok(afterLive.scroll === 200, `canlı yenileme kutu kaydırmasını korur (200 → ${afterLive.scroll})`);
+  ok(await page.evaluate(id => document.activeElement?.dataset?.waApiOpen === id, focusedId), `canlı yenilemede odak aynı satırda kalır (görülen ${JSON.stringify(afterLive)})`);
+  await shot("12b2-daha-fazla-odak");
+  // Klavyeyle tarih yazımı insan hızında (ders 12): Chromium yılın her hanesinde "change" verir (0002, 0020 …); süzgeç yarım yılla uygulanmaz, odak alanda kalır.
+  // Gün = ay seçilir (01.01.2026): alanın gün/ay sırası tarayıcı diline bağlı olsa da aynı değer çıkar.
+  const listUrls = [];
+  const onRequest = req => {
+    const url = new URL(req.url());
+    if (url.pathname === "/api/workspace/whatsapp/batches" && req.method() === "GET") listUrls.push(url.search);
+  };
+  page.on("request", onRequest);
+  await page.focus(`${TOP} [data-wa-api-from]`);
+  await page.keyboard.type("01012026", { delay: 120 });
+  // Liste ya da (eski davranışta) neden gelene dek beklenir; denetim aşağıda.
+  const settled = sel => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length > 0 || Boolean(document.querySelector(`${sel} [data-wa-api-list-error]`));
+  await page.waitForFunction(settled, TOP);
+  await page.waitForTimeout(300);
+  const typedFrom = await focusInfo();
+  ok(typedFrom.tag === "INPUT[name=waListFrom]" && typedFrom.value === "2026-01-01", `Başlangıç'a klavyeyle 01.01.2026: değer tam, odak alanda (görülen ${JSON.stringify(typedFrom)})`);
+  ok(listUrls.length > 0 && listUrls.every(q => /from=2026-01-01/.test(q)), `yarım yılla (0002 …) liste isteği gitmedi (istekler ${JSON.stringify(listUrls)})`);
+  ok(!(await page.$(`${TOP} [data-wa-api-list-error]`)), "geçersiz tarih nedeni çıkmadı (süzgeç tam tarihle uygulandı)");
+  // Süren gönderim sırasında (canlı yenilemeler) Bitiş'e insan hızında yazım: değer ve odak kaybolmaz.
+  listUrls.length = 0;
+  let pumping = true;
+  const pumpErrors = [];
+  const pump = (async () => {
+    let n = 0;
+    while (pumping) {
+      // Sessiz açılış: geçen denetim sayısı koşudan koşuya değişmesin (yazım süresine bağlı); hatalar aşağıda tek denetimde.
+      const res = await ctx.batch({ kind: "statement", ids: [extra.id], preset: "thisMonth", sendAgain: true });
+      if (res.status !== 200) pumpErrors.push(res.status);
+      await ctx.drain();
+      n += 1;
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    return n;
+  })();
+  await page.focus(`${TOP} [data-wa-api-to]`);
+  await page.keyboard.type("12122026", { delay: 150 });
+  await page.waitForTimeout(300);
+  pumping = false;
+  const pumped = await pump;
+  ok(pumpErrors.length === 0, `arka plan gönderimleri açıldı (hatalar ${JSON.stringify(pumpErrors)})`);
+  await page.waitForFunction(settled, TOP);
+  const typedTo = await focusInfo();
+  const liveWhileTyping = listUrls.filter(q => !/to=/.test(q)).length;
+  ok(pumped >= 2 && liveWhileTyping >= 1, `ön koşul: yazım sırasında arka planda ${pumped} gönderim, ${liveWhileTyping} canlı yenileme (istekler ${JSON.stringify(listUrls)})`);
+  ok(typedTo.tag === "INPUT[name=waListTo]" && typedTo.value === "2026-12-12", `süren gönderimde Bitiş'e klavyeyle 12.12.2026: değer tam, odak alanda (görülen ${JSON.stringify(typedTo)})`);
+  ok(listUrls.some(q => /from=2026-01-01/.test(q) && /to=2026-12-12/.test(q)) && !listUrls.some(q => /to=0/.test(q)), "Bitiş yalnız tam tarihle uygulandı");
+  page.off("request", onRequest);
+  await shot("12b3-klavye-tarih");
   await page.fill(`${TOP} [data-wa-api-from]`, "2026-11-01");
   await page.waitForFunction(sel => document.querySelector(`${sel} [data-wa-api-from]`)?.value === "2026-11-01" && document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length > 0, TOP);
   await page.fill(`${TOP} [data-wa-api-to]`, "2026-11-01");
@@ -449,6 +522,7 @@ await step("G8b Gönderimler: Daha Fazla Göster (klavye) satırı artırır, so
   await page.click(`${TOP} [data-wa-api-filter-clear]`);
   await page.waitForFunction(sel => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length === 30, TOP);
   ok((await rowsOf()) === 30 && (await page.inputValue(`${TOP} [data-wa-api-from]`)) === "", "Süzgeci Temizle → baştan 30 satır, alanlar boş");
+  ok((await focusInfo()).tag === "INPUT[name=waListFrom]", "Süzgeci Temizle'den sonra odak Başlangıç'ta (düğme kalktı, odak sayfaya düşmez)");
   await closeAll();
 });
 
