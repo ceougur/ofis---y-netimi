@@ -220,6 +220,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     billable: row.billable === null ? null : row.billable === 1,
     mediaDeleted: Boolean(row.media_deleted_at),
   });
+  // İş P2: ekrandaki kilit nedeni — işçinin SON sınaması kilit gördüyse true; yalnız sonraki sınama (canWrite / markLocked) değiştirir. İşaret süresi (30 sn) dolup işçi
+  // henüz yeniden sınamadıysa not sönüp yanmaz (kalıcı kilitte sürekli görünür); kilit kalkınca işçinin ilk turunda kalkar.
+  let lockShown = false;
   function batchView(row, { jobs = false } = {}) {
     if (!row) return null;
     const c = counts(row.id);
@@ -227,7 +230,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // İş P2: arka plan işçisi şirket dosyasını kilitli gördü (İş P1 işareti) ve bu toplu işte gidecek ileti var → ekranda neden. Yalnız SÜREN toplu iş: duraklatılmış iş
     // kullanıcıyı bekler (gönderim kilidi beklemiyor), Devam Et'in kendi hatası görünür. İşaret kalkınca (≤ 30 sn) not da kalkar.
     const open = OPEN_JOB.reduce((sum, state) => sum + (c[state] || 0), 0);
-    const lockNote = row.state === "running" && open > 0 && writeLock?.isMarked(companyId) ? LOCK_NOTE : null;
+    const lockNote = row.state === "running" && open > 0 && lockShown ? LOCK_NOTE : null;
     const actor = store.get("SELECT display_name AS name FROM users WHERE id = ?", row.created_by)?.name || "";
     return {
       id: row.id,
@@ -1828,7 +1831,6 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
 
   // İş P1: arka plan işçisi bu şirkete şimdi yazabilir mi (turun başında; scheduler.mjs) ve kilit işareti (bakım turunda kilit görülünce).
   // İş P2: işaretin konması ve kalkması ekrana canlı olayla bildirilir (liste ve toplu iş ekranı nedeni hemen gösterir / kaldırır). İşçi her turda canWrite'ı çağırır.
-  let lockShown = false;
   const syncLockNote = () => {
     const marked = Boolean(writeLock?.isMarked(companyId));
     if (marked === lockShown) return;

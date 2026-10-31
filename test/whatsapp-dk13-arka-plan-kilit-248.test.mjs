@@ -3,7 +3,7 @@
 // busy_timeout'u finally'de geri alır): kilit 2 sn sürerken kullanıcının yazımı bekler ve 200 alır.
 // Değişmeyen: kilit kalkınca bekleyen iş gider, çift ileti yok; tur içinde başlayan kilit (İş N/O) test/whatsapp-dk11-kilit-248.test.mjs ve dk12'de.
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5); kilit ayrı bağlantıyla ya da ayrı iş parçacığında (gerçek SQLite kilidi; gerçek saat).
-// İş P2: kilit işaretliyken SÜREN toplu işin görünümünde (ayrıntı + liste) kullanıcının cümlesi "lockNote"; işaret konunca ve kalkınca canlı olay; duraklatılmış işte not yok.
+// İş P2: işçi kilidi gördüyse (son sınama) SÜREN toplu işin görünümünde (ayrıntı + liste) kullanıcının cümlesi "lockNote"; işaret konunca ve kalkınca canlı olay; duraklatılmış işte not yok.
 // Dosya TZ=UTC ve TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
 import path from "node:path";
@@ -149,6 +149,8 @@ describe("2.4.8 İş P2 — kilitte ekranda neden", () => {
       assert.equal(await note(run), LOCK_NOTE, "süren işin ayrıntısında not");
       assert.deepEqual(await listNotes(), { [run]: LOCK_NOTE, [held]: null }, "listede süren işte not, duraklatılmışta yok");
       assert.deepEqual(seen, [true], "işaret konunca canlı olay");
+      await wait(350); // işaret süresi (300 ms) doldu, işçi henüz yeniden sınamadı: not sönmez (kalıcı kilitte yanıp sönme yok)
+      assert.equal(await note(run), LOCK_NOTE, "işaret süresi dolunca da (işçi yeniden sınayana dek) not durur");
       lock.exec("ROLLBACK");
       lock.close();
       lock = null;
