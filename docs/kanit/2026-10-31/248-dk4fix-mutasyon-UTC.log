@@ -1,0 +1,174 @@
+TAP version 13
+# (node:7236) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 dar kontrol 4 — Yeniden Dene / Yine de Gönder asıl toplu işin dönemini taşır
+    # Subtest: Bu Ay: B Başarısız → Başarısızları Yeniden Dene → kabul; aynı gün ve ertesi gün 'Bu Ay' iki kişide 'Daha Önce Gönderildi', ikinci iş açılmaz, kişi başına BİR ekstre
+    ok 1 - Bu Ay: B Başarısız → Başarısızları Yeniden Dene → kabul; aynı gün ve ertesi gün 'Bu Ay' iki kişide 'Daha Önce Gönderildi', ikinci iş açılmaz, kişi başına BİR ekstre
+      ---
+      duration_ms: 594.286771
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta: yeniden deneme işi sınırda beklerken ertesi gün 'Bu Ay' → B 'Zaten Kuyrukta', ikinci iş açılmaz; sınırdan sonra B'ye BİR ekstre
+    ok 2 - Zaten Kuyrukta: yeniden deneme işi sınırda beklerken ertesi gün 'Bu Ay' → B 'Zaten Kuyrukta', ikinci iş açılmaz; sınırdan sonra B'ye BİR ekstre
+      ---
+      duration_ms: 397.99508
+      type: 'test'
+      ...
+    # Subtest: Yine de Gönder (Bu Ay, Sonucu Belirsiz): yeni iş asıl işin dönemini taşır; ertesi gün 'Bu Ay' → 'Daha Önce Gönderildi'
+    ok 3 - Yine de Gönder (Bu Ay, Sonucu Belirsiz): yeni iş asıl işin dönemini taşır; ertesi gün 'Bu Ay' → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 360.798858
+      type: 'test'
+      ...
+    # Subtest: Geçen Ay: Başarısızları Yeniden Dene ve Yine de Gönder 'Geçen Ay' dönemini taşır; ertesi gün 'Geçen Ay' iki kişide 'Daha Önce Gönderildi'
+    not ok 4 - Geçen Ay: Başarısızları Yeniden Dene ve Yine de Gönder 'Geçen Ay' dönemini taşır; ertesi gün 'Geçen Ay' iki kişide 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 387.934781
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk4fix-248-mut-p5z2/test/whatsapp-dk4-yeniden-dene-248.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ertesi gün 'Geçen Ay'
+        + actual - expected
+        
+          {
+        +   'Ayşe Yılmaz': 'gönderilecek',
+        +   'Burak Kaya': 'gönderilecek'
+        -   'Ayşe Yılmaz': 'Daha Önce Gönderildi',
+        -   'Burak Kaya': 'Daha Önce Gönderildi'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Ayşe Yılmaz: 'Daha Önce Gönderildi'
+        Burak Kaya: 'Daha Önce Gönderildi'
+      actual:
+        Ayşe Yılmaz: 'gönderilecek'
+        Burak Kaya: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk4fix-248-mut-p5z2/test/whatsapp-dk4-yeniden-dene-248.test.mjs:145:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tüm Hareketler: Başarısızları Yeniden Dene 200 (dönem korunur), ileti gider; 2 gün sonra aynı seçim 'Daha Önce Gönderildi'
+    not ok 5 - Tüm Hareketler: Başarısızları Yeniden Dene 200 (dönem korunur), ileti gider; 2 gün sonra aynı seçim 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 345.015187
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk4fix-248-mut-p5z2/test/whatsapp-dk4-yeniden-dene-248.test.mjs:156:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   'Burak Kaya': 'gönderilecek'
+        -   'Burak Kaya': 'Daha Önce Gönderildi'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Burak Kaya: 'Daha Önce Gönderildi'
+      actual:
+        Burak Kaya: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk4fix-248-mut-p5z2/test/whatsapp-dk4-yeniden-dene-248.test.mjs:172:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Son 3 Ay: Başarısızları Yeniden Dene 200 (dönem korunur), ileti gider; 2 gün sonra aynı seçim 'Daha Önce Gönderildi'
+    not ok 6 - Son 3 Ay: Başarısızları Yeniden Dene 200 (dönem korunur), ileti gider; 2 gün sonra aynı seçim 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 344.578804
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk4fix-248-mut-p5z2/test/whatsapp-dk4-yeniden-dene-248.test.mjs:156:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+        +   'Burak Kaya': 'gönderilecek'
+        -   'Burak Kaya': 'Daha Önce Gönderildi'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Burak Kaya: 'Daha Önce Gönderildi'
+      actual:
+        Burak Kaya: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk4fix-248-mut-p5z2/test/whatsapp-dk4-yeniden-dene-248.test.mjs:172:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tüm Hareketler (Sonucu Belirsiz): Yine de Gönder 200, ileti gider (önceden 400 'Dönemin başlangıç ve bitiş tarihini seçin.')
+    not ok 7 - Tüm Hareketler (Sonucu Belirsiz): Yine de Gönder 200, ileti gider (önceden 400 'Dönemin başlangıç ve bitiş tarihini seçin.')
+      ---
+      duration_ms: 337.502004
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk4fix-248-mut-p5z2/test/whatsapp-dk4-yeniden-dene-248.test.mjs:182:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        dönem korunur
+        + actual - expected
+        
+          {
+        +   from: '2026-11-01',
+        +   preset: 'thisMonth',
+        -   from: '',
+        -   preset: 'all',
+            to: '2026-11-03'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        from: ''
+        to: '2026-11-03'
+        preset: 'all'
+      actual:
+        from: '2026-11-01'
+        to: '2026-11-03'
+        preset: 'thisMonth'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk4fix-248-mut-p5z2/test/whatsapp-dk4-yeniden-dene-248.test.mjs:197:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Dış istek dönemi gövdeyle veremez: toplu iş ve yeniden deneme gövdesindeki 'period' okunmaz
+    ok 8 - Dış istek dönemi gövdeyle veremez: toplu iş ve yeniden deneme gövdesindeki 'period' okunmaz
+      ---
+      duration_ms: 332.032498
+      type: 'test'
+      ...
+    1..8
+not ok 1 - 2.4.8 dar kontrol 4 — Yeniden Dene / Yine de Gönder asıl toplu işin dönemini taşır
+  ---
+  duration_ms: 3101.904452
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk4fix-248-mut-p5z2/test/whatsapp-dk4-yeniden-dene-248.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 4
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3438.704623
