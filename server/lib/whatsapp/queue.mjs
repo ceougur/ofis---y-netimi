@@ -1221,7 +1221,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (!claim.ok) {
       // Önceki deneme kabul edilmiş ya da sonucu belirsiz: ikinci kez gönderilmez.
       const accepted = claim.previous.outcome === "accepted";
-      updateJob(job.id, accepted ? { state: "accepted", attempt: claim.previous.attempt, wamid: claim.previous.wamid || null, accepted_at: job.accepted_at || iso() } : { state: "uncertain", attempt: claim.previous.attempt, error_text: "Bu iletinin önceki gönderim denemesinin sonucu bilinmiyor; ikinci kez gönderilmedi." });
+      // İş R4: accepted_at = SON kabul edilen denemenin anı (defterdeki o denemenin kabulü; önceki denemenin eski değeri değil).
+      updateJob(job.id, accepted ? { state: "accepted", attempt: claim.previous.attempt, wamid: claim.previous.wamid || null, accepted_at: claim.previous.at || iso() } : { state: "uncertain", attempt: claim.previous.attempt, error_text: "Bu iletinin önceki gönderim denemesinin sonucu bilinmiyor; ikinci kez gönderilmedi." });
       finishIfDone(batch.id);
       return { did: true };
     }
@@ -1460,7 +1461,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         updateJob(job.id, { state: "pending", attempt: Math.max(0, (job.attempt || 1) - 1), sending_at: null });
         out.sendingToPending += 1;
       } else if (attempt.outcome === "accepted") {
-        updateJob(job.id, { state: "accepted", wamid: attempt.wamid || null, accepted_at: job.accepted_at || job.sending_at || iso(), error_code: null, error_text: "" });
+        // İş R4: kabul anı defterdeki o denemenin kabulü (2. denemede 1. denemenin accepted_at'i kalmaz); yoksa denemenin gönderim anı.
+        updateJob(job.id, { state: "accepted", wamid: attempt.wamid || null, accepted_at: attempt.at || job.sending_at || iso(), error_code: null, error_text: "" });
         out.sendingToAccepted += 1;
       } else if (attempt.outcome === "failed") {
         updateJob(job.id, { state: "pending" });
@@ -1742,6 +1744,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
           else Object.assign(fields, { state: "failed", failed_at: at, closed_at: iso(), error_code: Number.isFinite(code) ? code : null, error_text: errorText });
         }
       }
+      // İş R4 + R8 (dar kontrol 12): sonucu belirsiz deneme bildirimle kabul edilmiş çıkınca accepted_at O denemenin anı (bildirimin zamanı = defterde lateAccept /
+      // learnWamid'e yazılan an; Q5 "son kabul anı"). Önce 1. denemenin değeri kalıyordu: taşınan veride R3 ayrışıyor, "Süresi Doldu" 1. denemeden ölçülüyordu.
+      if (resolving && ["sent", "delivered", "read"].includes(fields.state)) fields.accepted_at = at;
       if (status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing) fields.billable = status.pricing.billable === false ? 0 : 1;
       // Dar kontrol 2 ORTA-A: Sonucu Belirsiz denemenin wamid'i (imzalı kanca + iş kimliği) defterde O DENEMEYE bağlanır — şirket dosyasına yazımdan ÖNCE; böylece
       // aynı wamid'in yinelenen bildirimi sonraki denemeye (ör. 131049 sonrası yeniden deneme) yazılmaz.

@@ -194,7 +194,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       OR (SELECT l.event FROM batch_log l WHERE l.batch_id = o.batch_id ORDER BY l.seq DESC LIMIT 1) = 'reopen')`),
     logLast: db.prepare("SELECT event, reason, at FROM batch_log WHERE batch_id = ? ORDER BY seq DESC LIMIT 1"),
     logAdd: db.prepare("INSERT INTO batch_log (batch_id, company_id, event, reason, at) VALUES (?, ?, ?, ?, ?)"),
-    attempts: db.prepare(`SELECT c.attempt, CASE WHEN f.job_id IS NOT NULL THEN 'failed' WHEN r.job_id IS NOT NULL THEN 'released' ELSE o.outcome END AS outcome, o.wamid FROM claims c
+    attempts: db.prepare(`SELECT c.attempt, CASE WHEN f.job_id IS NOT NULL THEN 'failed' WHEN r.job_id IS NOT NULL THEN 'released' ELSE o.outcome END AS outcome, o.wamid, o.at FROM claims c
       LEFT JOIN outcomes o ON o.job_id = c.job_id AND o.attempt = c.attempt LEFT JOIN failures f ON f.job_id = c.job_id AND f.attempt = c.attempt
       LEFT JOIN releases r ON r.job_id = c.job_id AND r.attempt = c.attempt WHERE c.job_id = ? ORDER BY c.attempt`),
     claim: db.prepare("INSERT INTO claims (job_id, attempt, batch_id, company_id, waba_id, phone, account_id, kind, period_key, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"),
@@ -339,13 +339,13 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     },
     // ---------- Çift gönderim kilidi ----------
     /** Bir işin denemeleri: [{ attempt, outcome (null = sonuç yazılmadı), wamid }]. */
-    attempts: jobId => q.attempts.all(String(jobId)).map(row => ({ attempt: row.attempt, outcome: row.outcome || null, wamid: row.wamid || "" })),
+    attempts: jobId => q.attempts.all(String(jobId)).map(row => ({ attempt: row.attempt, outcome: row.outcome || null, wamid: row.wamid || "", at: row.at || "" })),
     /**
      * Yeni deneme talebi. Önceki bir deneme kabul edilmiş / belirsiz / sonuçsuz ise talep YAZILMAZ: { ok: false, previous }. Yazım düşerse hata fırlatır
      * (çağıran isteği GÖNDERMEZ).
      */
     claim(row) {
-      const previous = q.attempts.all(String(row.jobId)).map(item => ({ attempt: item.attempt, outcome: item.outcome || null, wamid: item.wamid || "" }));
+      const previous = q.attempts.all(String(row.jobId)).map(item => ({ attempt: item.attempt, outcome: item.outcome || null, wamid: item.wamid || "", at: item.at || "" }));
       // "failed" (gitmedi / teslim edilemedi) ve "released" (131049: Meta 24 saat sonra yeniden denenmesini istedi) yeni denemeyi engellemez.
       const open = item => item.outcome !== "failed" && item.outcome !== "released";
       const blocking = previous.find(open);
@@ -356,7 +356,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
         const again = q.attempts.all(String(row.jobId)).find(open);
         if (again) {
           db.exec("ROLLBACK");
-          return { ok: false, previous: { attempt: again.attempt, outcome: again.outcome || null, wamid: again.wamid || "" } };
+          return { ok: false, previous: { attempt: again.attempt, outcome: again.outcome || null, wamid: again.wamid || "", at: again.at || "" } };
         }
         q.claim.run(String(row.jobId), Number(row.attempt), String(row.batchId), String(row.companyId), String(row.wabaId), String(row.phone), String(row.accountId || ""), String(row.kind || ""), String(row.periodKey || ""), String(row.at));
         for (const key of Array.isArray(row.periodKeys) ? row.periodKeys : []) if (key && key !== row.periodKey) q.claimKey.run(String(row.jobId), Number(row.attempt), String(key));
