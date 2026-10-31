@@ -1,0 +1,80 @@
+TAP version 13
+# Subtest: 2.4.8 İş N — şirket dosyası kilitliyken işçi turu olay döngüsünü busy_timeout'tan uzun tutmaz
+    # Subtest: kilitli dosyada her tur ≤ 12 sn (önce bakım + iş ~40 sn), ileti gitmez; kilit kalkınca iş gider, çift ileti yok, toplu iş Tamamlandı
+    not ok 1 - kilitli dosyada her tur ≤ 12 sn (önce bakım + iş ~40 sn), ileti gitmez; kilit kalkınca iş gider, çift ileti yok, toplu iş Tamamlandı
+      ---
+      duration_ms: 40687.397235
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk11-eski-e156f8f0-mut/test/whatsapp-dk11-kilit-248.test.mjs:15:3'
+      failureType: 'testCodeFailure'
+      error: 'kilitli dosyada 2. tur olay döngüsünü en çok ~10 sn (busy_timeout) tutar (turlar [10024,30112] ms)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk11-eski-e156f8f0-mut/test/whatsapp-dk11-kilit-248.test.mjs:33:53)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.4.8 İş N — şirket dosyası kilitliyken işçi turu olay döngüsünü busy_timeout'tan uzun tutmaz
+  ---
+  duration_ms: 40690.259627
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk11-eski-e156f8f0-mut/test/whatsapp-dk11-kilit-248.test.mjs:14:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 T6-B1 / T6-B2 — Meta dışı hata (yazım, disk dolu) yolunda bekleme, PDF temizliği, takılı iş
+    # Subtest: B2: yalnız PDF kimliğinin yazımı düşüyor — 20 turda tek yükleme ve Meta'da sahipsiz PDF yok; bekleme 30 sn → 2 dk; yazım düzelince tek ileti
+    ok 1 - B2: yalnız PDF kimliğinin yazımı düşüyor — 20 turda tek yükleme ve Meta'da sahipsiz PDF yok; bekleme 30 sn → 2 dk; yazım düzelince tek ileti
+      ---
+      duration_ms: 626.749683
+      type: 'test'
+      ...
+    # Subtest: B1: disk ilk PDF yüklemesi Meta'dayken doluyor — dolu diskte meşgul döngü yok; yer açılınca 'Hazırlanıyor'da kalan iş bakım turunda döner, herkes bir kez alır
+    ok 2 - B1: disk ilk PDF yüklemesi Meta'dayken doluyor — dolu diskte meşgul döngü yok; yer açılınca 'Hazırlanıyor'da kalan iş bakım turunda döner, herkes bir kez alır
+      ---
+      duration_ms: 469.135691
+      type: 'test'
+      ...
+    1..2
+ok 2 - 2.4.8 T6-B1 / T6-B2 — Meta dışı hata (yazım, disk dolu) yolunda bekleme, PDF temizliği, takılı iş
+  ---
+  duration_ms: 1097.605332
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL)
+    # Subtest: ileti isteği Meta'dayken süreç öldü → yeniden açılışta Sonucu Belirsiz; kendiliğinden ikinci istek YOK
+    ok 1 - ileti isteği Meta'dayken süreç öldü → yeniden açılışta Sonucu Belirsiz; kendiliğinden ikinci istek YOK
+      ---
+      duration_ms: 1183.540089
+      type: 'test'
+      ...
+    # Subtest: PDF Meta'ya yüklenirken süreç öldü → yeniden açılışta iş Bekliyor; ileti BİR kez gider (yarım medya 30 günde Meta'da düşer)
+    ok 2 - PDF Meta'ya yüklenirken süreç öldü → yeniden açılışta iş Bekliyor; ileti BİR kez gider (yarım medya 30 günde Meta'da düşer)
+      ---
+      duration_ms: 1244.427842
+      type: 'test'
+      ...
+    1..2
+ok 3 - 2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL)
+  ---
+  duration_ms: 2429.256439
+  type: 'suite'
+  ...
+1..3
+# tests 5
+# suites 3
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 45448.432578
