@@ -351,26 +351,35 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   const queued = (accountId, kind, period) => {
     const want = queueKeysOf(kind, period, today());
     const rows = store.all(`SELECT j.id, b.period_from, b.period_to, b.preset, b.created_at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.account_id = ? AND b.kind = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")})`, accountId, kind, ...OPEN_JOB);
-    return rows.find(row => sameKeys(want, queueKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, localDayOf(row.created_at)))) || null;
+    return rows.find(row => sameKeys(want, queueKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, keyDayOfBatch({ ...row, kind })))) || null;
   };
+  // Dar kontrol 9 ORTA-1 (★ soru 4 "o gün" = özel aralığın kullanıldığı gün = TOPLU İŞİN AÇILIŞ GÜNÜ; BAŞ MİMAR yorumu): bir toplu işin dönem anahtar kümesi hangi
+  // gün gönderilirse gönderilsin (günlük sınırla ertesi güne kalan, Meta Bekletti'nin ertesi gün 2. denemesi) AÇILDIĞI yerel güne göre — talep (runJob), Zaten Kuyrukta
+  // (queued) ve taşınan veri (movedSentBefore) aynı yerden okur. YALNIZ EKSTRE: Ödeme Hatırlatma'nın "aynı gün"ü gönderim / yeniden denemenin günüdür (ek 3/4, son 2/2).
+  // KULLANICIDA (karar yok): Başarısızları Yeniden Dene / Yine de Gönder'in açtığı işte "o gün" asıl işin günü mü — bugün yeni işin KENDİ açılış günü; karar gelince
+  // yalnız bu işlev değişir.
+  function keyDayOfBatch(batch) {
+    if (batch?.kind !== "statement") return today();
+    return localDayOf(batch.created_at) || today();
+  }
   // KULLANICI KARARI (31.10.2026 ~11:30 UTC "a"; ★ soru 8): başka bilgisayara TAŞINAN veride şirket dosyasında Meta Kabul Etti / Gönderildi / Teslim Edildi / Okundu duran
   // ileti, bu bilgisayarın defterinde yoksa R3'te sayılır. Yalnız bu defterde AÇILMAMIŞ toplu işler (ledger_id başka) taranır: bu bilgisayarda açılan toplu işin
   // (aynı bilgisayara geri yüklenmiş eski veri dahil) kararı defterindir (★ soru 7) — defter yalnız kendi ledger_id'li toplu işin talebini yazar (runJob), çift sayım
   // olmaz; aynı cari birden çok kaynaktan gelirse en son kabul anı alınır. Dönem eşliği, 7 gün penceresi (since) ve asıl işin "Yine de Gönder" sınırı (after)
-  // defterdeki R3 ile aynı kural (anahtar kümesi işin gönderim gününe göre). Dönüş: Map(cari → son kabul anı ISO).
+  // defterdeki R3 ile aynı kural (anahtar kümesi keyDayOfBatch). Dönüş: Map(cari → son kabul anı ISO).
   function movedSentBefore(ids, kind, keys, since, after) {
     const out = new Map();
     for (let i = 0; i < ids.length; i += 500) {
       const part = ids.slice(i, i + 500);
       const rows = store.all(
         `SELECT j.id, j.account_id AS accountId, COALESCE(j.accepted_at, j.sent_at, j.delivered_at, j.read_at, j.sending_at) AS acceptedAt, COALESCE(j.sending_at, j.accepted_at) AS sendingAt,
-          b.period_from, b.period_to, b.preset FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
+          b.kind, b.period_from, b.period_to, b.preset, b.created_at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
          WHERE b.kind = ? AND b.ledger_id <> ? AND j.state IN ('accepted', 'sent', 'delivered', 'read') AND j.account_id IN (${part.map(() => "?").join(",")})`,
         kind, ledger.id, ...part,
       );
       for (const row of rows) {
         if (!row.acceptedAt || (since && row.acceptedAt < since) || (after && !(String(row.sendingAt || "") > after))) continue;
-        if (!sameKeys(keys, periodKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, localDayOf(row.sendingAt || row.acceptedAt)))) continue;
+        if (!sameKeys(keys, periodKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, kind === "statement" ? keyDayOfBatch(row) : localDayOf(row.sendingAt || row.acceptedAt)))) continue;
         if (!out.has(row.accountId) || out.get(row.accountId) < row.acceptedAt) out.set(row.accountId, row.acceptedAt);
       }
     }
@@ -1056,7 +1065,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     try {
       injected("ledger-claim", job);
       const batchPeriod = { from: batch.period_from, to: batch.period_to, preset: batch.preset };
-      claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, batchPeriod, today()), periodKeys: periodKeysOf(batch.kind, batchPeriod, today()), at: iso() });
+      const keyDay = keyDayOfBatch(batch);
+      claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, batchPeriod, keyDay), periodKeys: periodKeysOf(batch.kind, batchPeriod, keyDay), at: iso() });
     } catch (error) {
       // Defter yazılamadı (disk dolu, kilit): istek GÖNDERİLMEZ, iş bekler.
       updateJob(job.id, { state: "pending", attempt: job.attempt || 0, sending_at: null, next_at: iso(nowMs() + JOB_BACKOFF_MS[0]) });
