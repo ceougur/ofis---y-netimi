@@ -218,6 +218,8 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     reopenBatch(batchId, companyId, at) {
       try {
         const state = this.batchState(batchId);
+        // Dar kontrol 2 DÜŞÜK-1: zaten yeniden açık (önceki bildirimde açıldı, şirket dosyasına yazım düştü / telafi yazılamadı) → idempotent: açık sayılır.
+        if (state.live && state.reopened) return true;
         if (!state.stopped || state.reason !== "done") return false;
         guard("reopen", { batchId });
         q.logAdd.run(String(batchId), String(companyId), "reopen", "", String(at));

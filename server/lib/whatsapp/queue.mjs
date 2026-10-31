@@ -1337,6 +1337,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       const current = job.state;
       const fields = {};
+      let reopenedHere = false; // dar kontrol 2 DÜŞÜK-1: bu bildirim defterde toplu işi yeniden açtı mı (dosya yazımı düşerse telafi)
       const resolving = ["uncertain", "sending"].includes(current);
       if (resolving && wamid) fields.wamid = wamid;
       if (value === "sent") {
@@ -1357,7 +1358,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
           // 24 saat sonra BİR kez aynı medyayla yeniden; ikinci 131049 Başarısız.
           // Tamamlanmış toplu iş defterde yeniden açılır (ORTA-1: sonraki durdurma / iptal defterde doğru kaydedilir); açılamazsa (iptal / geri yükleme / yazılamadı) Başarısız.
           const heldBatch = batchRow(job.batch_id);
-          const canHold = code === META_D0.ecosystemCode && !job.retry_131049 && (["running", "paused"].includes(heldBatch?.state) || (heldBatch?.state === "done" && ledger.reopenBatch(heldBatch.id, companyId, iso())));
+          const canHold =
+            code === META_D0.ecosystemCode && !job.retry_131049 && (["running", "paused"].includes(heldBatch?.state) || (heldBatch?.state === "done" && (reopenedHere = ledger.reopenBatch(heldBatch.id, companyId, iso()))));
           if (canHold) Object.assign(fields, { state: "held", next_at: iso(nowMs() + DAY_MS), retry_131049: 1, error_code: code, error_text: errorText });
           else Object.assign(fields, { state: "failed", failed_at: at, closed_at: iso(), error_code: Number.isFinite(code) ? code : null, error_text: errorText });
         }
@@ -1372,9 +1374,17 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         continue;
       }
       try {
-        updateJob(job.id, fields);
+        // Dar kontrol 2 DÜŞÜK-1: Meta Bekletti + "Tamamlandı" toplu işin yeniden "Sürüyor" olması şirket dosyasında TEK işlemde (biri yazılıp öbürü düşmez).
+        if (fields.state === "held" && batchRow(job.batch_id)?.state === "done") {
+          store.tx(() => {
+            updateJob(job.id, fields);
+            updateBatch(job.batch_id, { state: "running", finished_at: null });
+          });
+        } else updateJob(job.id, fields);
       } catch (error) {
-        // wamid tekil dizini: aynı wamid başka işte (olmamalı) → olay düşer.
+        // wamid tekil dizini: aynı wamid başka işte (olmamalı) → olay düşer. Bu bildirim defterde toplu işi yeniden açtıysa telafi: defter dosyayla aynı ("Tamamlandı")
+        // kalır; telafi de yazılamazsa sonraki (yinelenen) bildirimde yeniden açma idempotenttir.
+        if (reopenedHere) ledger.stopBatch(job.batch_id, companyId, "done", iso());
         log.warn?.(`WhatsApp durum bildirimi yazılamadı (${job.id}): ${error.message}`);
         out.ignored += 1;
         continue;
@@ -1383,11 +1393,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (resolving && changed) ledger.lateAccept({ jobId: job.id, attempt: job.attempt, wamid: fields.wamid || "", companyId, wabaId, at });
       if (["delivered", "read"].includes(fields.state)) ledger.delivered({ jobId: job.id, companyId, wabaId, billable: fields.billable === undefined ? job.billable !== 0 : fields.billable === 1, at: fields.delivered_at || at });
       if (fields.state === "failed") ledger.deliveryFailed({ jobId: job.id, attempt: job.attempt, at });
-      if (fields.state === "held") {
-        ledger.released({ jobId: job.id, attempt: job.attempt, at });
-        // Bütün işleri kabul edilmiş (Tamamlandı) toplu iş yeniden SÜRER: yalnız bu iş 24 saat sonra bir kez daha gider (çift gönderim kilidi defterde).
-        if (batchRow(job.batch_id)?.state === "done") updateBatch(job.batch_id, { state: "running", finished_at: null });
-      }
+      // Bütün işleri kabul edilmiş (Tamamlandı) toplu iş yeniden SÜRER (yukarıda iş yazımıyla aynı işlemde): yalnız bu iş 24 saat sonra bir kez daha gider (çift gönderim
+      // kilidi defterde).
+      if (fields.state === "held") ledger.released({ jobId: job.id, attempt: job.attempt, at });
       out.applied += 1;
       notify(job.batch_id);
       if (fields.state && ["delivered", "read", "failed"].includes(fields.state)) finishIfDone(job.batch_id);
