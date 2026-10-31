@@ -579,12 +579,17 @@ await step("G8c Gönderimler: süren yenilemede Daha Fazla Göster, yüklenirken
     await open();
     await started;
     ok(inFlight.keep === 1, `ön koşul: canlı yenileme isteği sürüyor (süren ${inFlight.keep})`);
+    const appendsC1 = listReqs.filter(item => item.kind === "append").length;
     await page.keyboard.press("Enter");
     await page.waitForTimeout(150);
     const during = await focused();
     ok(during.text === "Yükleniyor…" && during.aria === "true", `yenileme sürerken basılan Daha Fazla Göster "Yükleniyor…" gösterir, odakta (görülen ${JSON.stringify(during)})`);
+    // Yenileme hâlâ sürerken ikinci Enter (çift basış): yenileme bitince TEK sayfa eklenir.
+    await page.keyboard.press("Enter");
     await settled(60).catch(() => null);
     ok((await rowsOf()) === 60, `canlı yenileme sürerken Enter yutulmadı → 60 satır (görülen ${await rowsOf()})`);
+    const doubleC1 = listReqs.filter(item => item.kind === "append").length - appendsC1;
+    ok(doubleC1 === 1, `yenileme sürerken iki Enter → tek Daha Fazla Göster isteği (görülen ${doubleC1})`);
     // (a) fare: aynı ön koşul, gerçek tıklama.
     started = liveStarted();
     await open();
