@@ -57,7 +57,10 @@ describe("2.4.8 İş G (★ soru 1) — Sonucu Belirsiz kalmış kişi yeni topl
     }
   });
 
-  it("Onaylı yol açık ve aşılmış belirsiz deneme yine sayılır: işteki Yine de Gönder gider (Meta Kabul Etti); sonraki yeni gönderim 'Daha Önce Gönderildi'", async () => {
+  // İş Q2 (KULLANICI KARARI A; beklenti bilerek değişti — önce "soru 6 A: aşılmış eski belirsiz deneme yine eler"): Yine de Gönder işi KABUL edilince kaynak belirsiz
+  // elemez; kişi R3'e düşer ("Daha Önce Gönderildi"; R3'te Yine de Gönder yolu açık — çıkmaz yok). Yine de Gönder işi başarısız / belirsiz kalırsa kaynak eler
+  // (test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs).
+  it("Onaylı yol açık: işteki Yine de Gönder gider (Meta Kabul Etti); sonraki yeni gönderim 'Daha Önce Gönderildi', R3'te Yine de Gönder seçimiyle gönderilecek", async () => {
     const ctx = await startWa({ now: NOW });
     try {
       const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
@@ -70,10 +73,10 @@ describe("2.4.8 İş G (★ soru 1) — Sonucu Belirsiz kalmış kişi yeni topl
       assert.equal(count(ctx), 2, "onaylı ileti gitti");
       ctx.clock.advance(HOUR);
       // Ek soru 2/4 "a": sıra Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi; belirsizle elenen R3 uyarısına girmez.
-      for (const extra of [{}, { sendAgain: true }]) {
+      for (const [extra, want] of [[{}, "Daha Önce Gönderildi"], [{ sendAgain: true }, "gönderilecek"]]) {
         const pv = await ok(await ctx.api.post(URLS.preview, { ...body, ...extra }), `önizleme ${JSON.stringify(extra)}`);
-        assert.deepEqual(skipOf(pv), ["Sonucu Belirsiz"], `${JSON.stringify(extra)}: soru 6 A — aşılmış eski belirsiz deneme yeni gönderimde kişiyi yine eler (R3'ten önce)`);
-        assert.equal(pv.alreadySent?.count, 0, `${JSON.stringify(extra)}: belirsizle elenen R3 sayısına girmez`);
+        assert.deepEqual(skipOf(pv), [want], `${JSON.stringify(extra)}: İş Q2 — kabul edilen Yine de Gönder işinin kaynağı elemez; kişi R3'te (${want})`);
+        assert.equal(pv.alreadySent?.count, 1, `${JSON.stringify(extra)}: R3 sayısı 1 (Yine de Gönder işinin kabulü)`);
       }
     } finally {
       await ctx.close();

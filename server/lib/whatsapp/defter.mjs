@@ -80,6 +80,9 @@ const SCHEMA = `
   CREATE INDEX IF NOT EXISTS idx_outcomes_wamid ON outcomes(wamid) WHERE wamid <> '';
   -- T2 dar kontrol 2 ORTA-A: Meta'nın kabul ettiği ama eşzamanlı yanıtı alınamamış (Sonucu Belirsiz) denemenin wamid'i sonradan (imzalı durum kancası / geç kabul)
   -- öğrenilir; outcomes "ilk yazılan kalır" (belirsiz satırında wamid boş) → wamid'in hangi denemeye ait olduğu bu tabloya yazılır. Yalnız eklenir; ilk yazılan kalır.
+  -- 2.4.8 İş Q2: işteki "Yine de Gönder"in açtığı iş (job_id) → kaynağı olan Sonucu Belirsiz iş (source_job_id). Kabul / teslim edilen iş zincirinin kaynakları
+  -- "Sonucu Belirsiz" elemesi yapmaz (unsettled).
+  CREATE TABLE IF NOT EXISTS anyway_links (job_id TEXT PRIMARY KEY, source_job_id TEXT NOT NULL, at TEXT NOT NULL) STRICT;
   CREATE TABLE IF NOT EXISTS learned_wamids (job_id TEXT NOT NULL, attempt INTEGER NOT NULL, wamid TEXT NOT NULL, at TEXT NOT NULL, PRIMARY KEY (job_id, attempt)) STRICT;
   CREATE INDEX IF NOT EXISTS idx_learned_wamids_wamid ON learned_wamids(wamid);
   CREATE TRIGGER IF NOT EXISTS learned_wamids_no_update BEFORE UPDATE ON learned_wamids BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
@@ -105,6 +108,8 @@ const SCHEMA = `
   CREATE TRIGGER IF NOT EXISTS releases_no_delete BEFORE DELETE ON releases BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS accepts_no_update BEFORE UPDATE ON accepts BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS accepts_no_delete BEFORE DELETE ON accepts BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS anyway_links_no_update BEFORE UPDATE ON anyway_links BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS anyway_links_no_delete BEFORE DELETE ON anyway_links BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS deliveries_no_update BEFORE UPDATE ON deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS deliveries_no_delete BEFORE DELETE ON deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
 `;
@@ -197,8 +202,19 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // elenir. Kabul edilen R3'e (sentBefore), teslim edilemeyen ve gitmeyen yeniden denemeye kalır. Pencere ve dönem anahtarı R3 ile aynı (donem.mjs).
     // KULLANICI KARARI ("KİME KAÇ KEZ" ilkesi, S4; dar kontrol 9 DÜŞÜK-1): kabul DENEME bazında (outcomes accepted / sonradan öğrenilen wamid) — Meta Bekletti'den sonra
     // 2. deneme belirsiz kalınca 1. denemenin kabulü onu gizlemez. İşin teslimi (deliveries; geç teslim dahil) varsa kişi kesin ALDI → R3 (soru 7/K7), belirsiz sayılmaz.
-    unsettled: db.prepare(`SELECT DISTINCT c.account_id AS accountId, c.job_id AS jobId FROM claims c
-      WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND c.at >= ? AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = c.job_id)
+    // İş Q2 (KULLANICI KARARI A): kaynağı olduğu "Yine de Gönder" işi (zincirde herhangi biri) SON denemesinde kabul edilmiş (eşzamanlı / öğrenilen wamid; sonradan
+    // teslim edilemedi ya da 131049 ile bırakıldı değil) ya da teslim edilmişse kaynak belirsiz SAYILMAZ. Yine de Gönder işi Başarısız / Belirsiz / Meta Bekletti ise
+    // kaynak sayılmaya devam eder.
+    unsettled: db.prepare(`WITH RECURSIVE settled_up(job) AS (
+        SELECT al.source_job_id FROM anyway_links al WHERE EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = al.job_id)
+          OR EXISTS (SELECT 1 FROM claims c3 WHERE c3.job_id = al.job_id AND c3.attempt = (SELECT MAX(c4.attempt) FROM claims c4 WHERE c4.job_id = al.job_id)
+            AND (EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c3.job_id AND o.attempt = c3.attempt AND o.outcome = 'accepted')
+              OR EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c3.job_id AND l.attempt = c3.attempt))
+            AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c3.job_id AND f.attempt = c3.attempt)
+            AND NOT EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c3.job_id AND r.attempt = c3.attempt))
+        UNION SELECT al.source_job_id FROM anyway_links al JOIN settled_up s ON al.job_id = s.job)
+      SELECT DISTINCT c.account_id AS accountId, c.job_id AS jobId FROM claims c
+      WHERE c.job_id NOT IN (SELECT job FROM settled_up) AND c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND c.at >= ? AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = c.job_id)
         AND (c.period_key NOT IN ('secim|last3', 'secim|all') OR c.at >= ?)
         AND NOT EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt)
         AND NOT EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id)
@@ -226,6 +242,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     attemptOfWamid: db.prepare(`SELECT job_id AS jobId, attempt FROM outcomes WHERE wamid = ?1 AND wamid <> ''
       UNION ALL SELECT job_id, attempt FROM learned_wamids WHERE wamid = ?1 AND wamid <> '' LIMIT 1`),
     learnWamid: db.prepare("INSERT OR IGNORE INTO learned_wamids (job_id, attempt, wamid, at) VALUES (?, ?, ?, ?)"),
+    anywayLink: db.prepare("INSERT OR IGNORE INTO anyway_links (job_id, source_job_id, at) VALUES (?, ?, ?)"),
   };
   const hookView = row => {
     if (!row) return null;
@@ -369,6 +386,17 @@ export function openWaLedger({ dir, log = console, fault = null }) {
         return true;
       } catch (error) {
         log.warn?.(`WhatsApp gönderim defteri: ${row.jobId} ileti kimliği yazılamadı (${error.message}).`);
+        return false;
+      }
+    },
+    /** İş Q2: işteki "Yine de Gönder"in açtığı iş ↔ kaynağı (yalnız eklenir). Hata fırlatmaz: yazılamazsa kaynak belirsiz kalır (güvenli yön: eler). */
+    anywayLink(row) {
+      try {
+        guard("link", row);
+        q.anywayLink.run(String(row.jobId), String(row.sourceJobId), String(row.at));
+        return true;
+      } catch (error) {
+        log.warn?.(`WhatsApp gönderim defteri: ${row.jobId} Yine de Gönder bağı yazılamadı (${error.message}).`);
         return false;
       }
     },

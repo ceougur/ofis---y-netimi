@@ -1525,6 +1525,17 @@ export const MIGRATIONS = [
       addColumn(store, "wa_batches", "key_day", "TEXT NOT NULL DEFAULT ''");
     },
   },
+  {
+    version: 44,
+    name: "v2.4.8 WhatsApp: işteki \"Yine de Gönder\" işinin kaynağı (para dışı)",
+    up(store) {
+      // 2.4.8 İş Q2 (dar kontrol 10 DÜŞÜK-2; KULLANICI KARARI A; "KİME KAÇ KEZ" ilkesi 4 + 5; lib/whatsapp/queue.mjs createBatch / plan): işteki "Yine de Gönder"in açtığı
+      // iş, kaynağı olan Sonucu Belirsiz işin kimliğini taşır. Bu iş (ya da onun "Yine de Gönder" zinciri) Meta'ca kabul / teslim edilince kaynak artık "Sonucu Belirsiz"
+      // elemesi yapmaz (kişi "Daha Önce Gönderildi"ye düşer; R3 sorusu yolu açık — çıkmaz yok). Taşınan veride de aynı kural (bağ şirket dosyasında). inherit_of: '' = bağ
+      // yok (eski satırlar dahil — bugünkü davranış). YALNIZ EKLEYİCİ: tek sütun.
+      addColumn(store, "wa_jobs", "inherit_of", "TEXT NOT NULL DEFAULT ''");
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";

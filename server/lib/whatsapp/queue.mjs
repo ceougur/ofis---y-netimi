@@ -420,6 +420,26 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     return out;
   }
+  // İş Q2 (KULLANICI KARARI A; ilke 4 + 5): şirket dosyasındaki "Yine de Gönder" bağı (wa_jobs.inherit_of, göç v44) — kaynağı olduğu iş (zincirde herhangi biri) Meta
+  // Kabul Etti / Gönderildi / Teslim Edildi / Okundu ise kaynak belirsiz SAYILMAZ (defterdeki anyway_links ile aynı kural; taşınan veride ve defter bağı yazılamadıysa bu
+  // yol). Bağı olan iş yoksa (olağan) tek sorgu.
+  function dropSettledSources(unsettled) {
+    if (!unsettled.size) return;
+    const links = store.all("SELECT id, inherit_of AS source, state FROM wa_jobs WHERE inherit_of <> ''");
+    if (!links.length) return;
+    const parent = new Map(links.map(row => [row.id, row.source]));
+    const settled = new Set();
+    for (const row of links) {
+      if (!["accepted", "sent", "delivered", "read"].includes(row.state)) continue;
+      for (let source = row.source, guard = 0; source && !settled.has(source) && guard < 1000; source = parent.get(source), guard += 1) settled.add(source);
+    }
+    if (!settled.size) return;
+    for (const [accountId, jobIds] of [...unsettled]) {
+      const left = jobIds.filter(jobId => !settled.has(jobId));
+      if (left.length) unsettled.set(accountId, left);
+      else unsettled.delete(accountId);
+    }
+  }
   // Cari, gönderim için uygun mu (toplu iş açılırken ve GÖNDERİM ANINDA aynı kural — §7a 1, 2, 6, 20). Dönüş: neden (boş = uygun) + numara.
   function eligibility(account, kind) {
     const phone = e164Of(account.phone);
@@ -461,6 +481,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // asıl işin "Yine de Gönder" sınırı (sendAgainAfter) burada UYGULANMAZ: o karar yalnız Meta'nın KABUL ETTİĞİ önceki gönderimi kapsıyordu.
     const unsettled = anyway ? null : ledger.unsettledBefore({ companyId, kind, periodKeys: keys, since, rolling });
     if (unsettled) for (const [accountId, jobIds] of movedUnsettled(ids, kind, keys, since)) unsettled.set(accountId, [...(unsettled.get(accountId) || []), ...jobIds]);
+    if (unsettled) dropSettledSources(unsettled);
     const people = [];
     let uncertainOpen = 0;
     for (const id of ids) {
@@ -652,8 +673,16 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
           newId("waj"), batchId, person.id, person.name, person.phone, TEMPLATE_NAMES[kind], template.template.language, plotted.period.from, plotted.period.to, person.skip ? "skipped" : "pending", person.skip, at, at,
         );
       }
-      if (inherit) inheritContent(batchId, inherit.id, at);
+      if (inherit) {
+        // İş Q2: kaynağın bağı şirket dosyasında da (taşınan veride aynı kural — ilke 5; göç v44).
+        store.run("UPDATE wa_jobs SET inherit_of = ? WHERE batch_id = ? AND account_id = ? AND state = 'pending'", inherit.id, batchId, inherit.account_id);
+        inheritContent(batchId, inherit.id, at);
+      }
     });
+    if (inherit) {
+      const target = store.get("SELECT id FROM wa_jobs WHERE batch_id = ? AND inherit_of = ?", batchId, inherit.id);
+      if (target) ledger.anywayLink({ jobId: target.id, sourceJobId: inherit.id, at });
+    }
     audit(user, "whatsapp.batch.created", batchId, { kind, period: plotted.period, total: summary.total, sendable: summary.sendable, skipped: summary.skipped });
     notify(batchId);
     kick();

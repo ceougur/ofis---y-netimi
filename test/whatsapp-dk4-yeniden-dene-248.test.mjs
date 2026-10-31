@@ -116,7 +116,8 @@ describe("2.4.8 dar kontrol 4 — Yeniden Dene / Yine de Gönder asıl toplu iş
       await ctx.drain();
       assert.equal((await ctx.jobs(again.data.data.batch.id))[0].state, "accepted", "ön koşul: yeni iş kabul");
       ctx.clock.advance(24 * HOUR);
-      assert.deepEqual(skipOf(await preview(ctx, { kind: "statement", ids: [a.id], preset: "thisMonth" })), { "Ayşe Yılmaz": "Sonucu Belirsiz" }, "ek soru 2/4: belirsiz iş dururken Sonucu Belirsiz önce");
+      // İş Q2 (KULLANICI KARARI A; beklenti bilerek değişti — önce "Sonucu Belirsiz"): belirsiz işin Yine de Gönder işi kabul edildi → kaynak elemez, kişi R3'e düşer.
+      assert.deepEqual(skipOf(await preview(ctx, { kind: "statement", ids: [a.id], preset: "thisMonth" })), { "Ayşe Yılmaz": "Daha Önce Gönderildi" }, "İş Q2: Yine de Gönder işi kabul edildi → Daha Önce Gönderildi (kaynak belirsiz elemez)");
       settleUncertain(ctx, job, A_TEL);
       assert.deepEqual(skipOf(await preview(ctx, { kind: "statement", ids: [a.id], preset: "thisMonth" })), { "Ayşe Yılmaz": "Daha Önce Gönderildi" });
       assert.deepEqual(periodOf(again.data.data.batch), periodOf(first.data.data.batch), "Yine de Gönder asıl işin dönemini (preset dahil) taşır");
@@ -152,7 +153,8 @@ describe("2.4.8 dar kontrol 4 — Yeniden Dene / Yine de Gönder asıl toplu iş
       assert.equal(again.status, 200, JSON.stringify(again.data));
       await ctx.drain();
       ctx.clock.advance(24 * HOUR);
-      assert.deepEqual(skipOf(await preview(ctx, body)), { "Ayşe Yılmaz": "Sonucu Belirsiz", "Burak Kaya": "Daha Önce Gönderildi" }, "ek soru 2/4: belirsiz iş dururken Sonucu Belirsiz önce");
+      // İş Q2 (beklenti bilerek değişti — önce A "Sonucu Belirsiz"): A'nın Yine de Gönder işi kabul edildi → kaynak elemez.
+      assert.deepEqual(skipOf(await preview(ctx, body)), { "Ayşe Yılmaz": "Daha Önce Gönderildi", "Burak Kaya": "Daha Önce Gönderildi" }, "İş Q2: Yine de Gönder işi kabul edildi → Daha Önce Gönderildi");
       settleUncertain(ctx, job, A_TEL);
       assert.deepEqual(skipOf(await preview(ctx, body)), { "Ayşe Yılmaz": "Daha Önce Gönderildi", "Burak Kaya": "Daha Önce Gönderildi" }, "ertesi gün 'Geçen Ay'");
       assertNothing(await ctx.batch(body), "ertesi gün 'Geçen Ay'");
