@@ -176,6 +176,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     sentBefore: db.prepare(`SELECT c.account_id AS accountId, MAX(a.at) AS last FROM accepts a
       JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
       WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND a.at >= ? AND c.at > ?
+        AND (c.period_key NOT IN ('secim|last3', 'secim|all') OR a.at >= ?)
         AND ((NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
               AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'failed')
               AND (EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted')
@@ -192,6 +193,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // 2. deneme belirsiz kalınca 1. denemenin kabulü onu gizlemez. İşin teslimi (deliveries; geç teslim dahil) varsa kişi kesin ALDI → R3 (soru 7/K7), belirsiz sayılmaz.
     unsettled: db.prepare(`SELECT DISTINCT c.account_id AS accountId, c.job_id AS jobId FROM claims c
       WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND c.at >= ? AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = c.job_id)
+        AND (c.period_key NOT IN ('secim|last3', 'secim|all') OR c.at >= ?)
         AND NOT EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt)
         AND NOT EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id)
         AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
@@ -408,18 +410,19 @@ export function openWaLedger({ dir, log = console, fault = null }) {
      * since: bu andan (dahil) sonraki kabuller ("Son 3 Ay" / "Tüm Hareketler" 7 gün penceresi). after: bu andan KESİNLİKLE sonraki kabuller — yeniden denemede asıl
      * işin "Yine de Gönder" kararı (açılış anı; açılıştan önceki kabuller o kararla kabul edilmişti; dar kontrol 5 ORTA-1, KULLANICI KARARI 31.10.2026 "a şıkkı").
      */
-    sentBefore({ companyId, kind, periodKey = "", periodKeys = null, since = "", after = "" }) {
+    // rolling (İş L5): kendi anahtarı "Son 3 Ay" / "Tüm Hareketler" olan gönderim yalnız bu andan sonraysa eşleşir (seçimin 7 gün penceresi; boş = sınır yok).
+    sentBefore({ companyId, kind, periodKey = "", periodKeys = null, since = "", after = "", rolling = "" }) {
       const keys = JSON.stringify((periodKeys || [periodKey]).map(String));
-      return new Map(q.sentBefore.all(String(companyId), String(kind), keys, keys, String(since || ""), String(after || "")).map(row => [row.accountId, row.last]));
+      return new Map(q.sentBefore.all(String(companyId), String(kind), keys, keys, String(since || ""), String(after || ""), String(rolling || "")).map(row => [row.accountId, row.last]));
     },
     /**
      * Sonucu belli olmayan son denemesi olan cariler (yalnız "Başarısızları Yeniden Dene" eler; yukarıdaki unsettled). Dönüş: Map(accountId → [jobId]) — iş kimlikleri
      * elenme iletisinde "Yine de Gönder"in gerçekten var olup olmadığını (iş şirket dosyasında hâlâ Sonucu Belirsiz mi) bilmek için (dar kontrol 7 DÜŞÜK-1).
      */
-    unsettledBefore({ companyId, kind, periodKey = "", periodKeys = null, since = "" }) {
+    unsettledBefore({ companyId, kind, periodKey = "", periodKeys = null, since = "", rolling = "" }) {
       const out = new Map();
       const keys = JSON.stringify((periodKeys || [periodKey]).map(String));
-      for (const row of q.unsettled.all(String(companyId), String(kind), keys, keys, String(since || ""))) {
+      for (const row of q.unsettled.all(String(companyId), String(kind), keys, keys, String(since || ""), String(rolling || ""))) {
         if (!out.has(row.accountId)) out.set(row.accountId, []);
         out.get(row.accountId).push(row.jobId);
       }

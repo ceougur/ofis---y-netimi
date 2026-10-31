@@ -22,7 +22,7 @@ import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
 import { statementData, statementFileName, statementPdf } from "../statement-pdf.mjs";
 import { e164Of, waPresetRange } from "./alici.mjs";
-import { localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, sameKeys, sentSinceOf } from "./donem.mjs";
+import { localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
 import { deliveryTtlSeconds, sendingVerdict } from "./templates.mjs";
@@ -381,6 +381,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       );
       for (const row of rows) {
         if (!row.acceptedAt || (since && row.acceptedAt < since) || (after && !(String(row.sendingAt || "") > after))) continue;
+        if (["last3", "all"].includes(row.preset) && row.acceptedAt < rollingSinceOf(nowMs())) continue; // İş L5: seçimin 7 gün penceresi
         if (!sameKeys(keys, periodKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, kind === "statement" ? keyDayOfBatch(row) : localDayOf(row.sendingAt || row.acceptedAt)))) continue;
         if (!out.has(row.accountId) || out.get(row.accountId) < row.acceptedAt) out.set(row.accountId, row.acceptedAt);
       }
@@ -403,6 +404,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       );
       for (const row of rows) {
         if (since && String(row.sendingAt || "") < since) continue;
+        if (["last3", "all"].includes(row.preset) && String(row.sendingAt || "") < rollingSinceOf(nowMs())) continue; // İş L5
         if (!sameKeys(keys, periodKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, kind === "statement" ? keyDayOfBatch(row) : localDayOf(row.sendingAt)))) continue;
         if (!out.has(row.accountId)) out.set(row.accountId, []);
         out.get(row.accountId).push(row.id);
@@ -442,13 +444,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const keys = periodKeysOf(kind, period, keyDay);
     const since = sentSinceOf(kind, period, nowMs());
     const after = fixed?.sendAgainAfter || "";
-    const sent = ledger.sentBefore({ companyId, kind, periodKeys: keys, since, after });
+    const rolling = rollingSinceOf(nowMs());
+    const sent = ledger.sentBefore({ companyId, kind, periodKeys: keys, since, after, rolling });
     for (const [accountId, last] of movedSentBefore(ids, kind, keys, since, after)) if (!sent.has(accountId) || sent.get(accountId) < last) sent.set(accountId, last);
     // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"): "Başarısızları Yeniden Dene"de aynı cariye aynı dönem iletisi Sonucu Belirsiz kalmışsa elenir (soru sorulmadan ikinci
     // ileti gitmez; göndermek için işteki "Yine de Gönder" — "iki kez gidebilir" onayıyla). KULLANICI KARARI (31.10.2026 ~10:55 UTC "b"; ★ soru 1): YENİ toplu işte de aynı
     // kural ve eşlik (aynı tür + dönem; Son 3 Ay / Tüm'de son 7 gün, gönderim anından). Yalnız "Yine de Gönder"in kendisi (anyway) elenmez.
     // asıl işin "Yine de Gönder" sınırı (sendAgainAfter) burada UYGULANMAZ: o karar yalnız Meta'nın KABUL ETTİĞİ önceki gönderimi kapsıyordu.
-    const unsettled = anyway ? null : ledger.unsettledBefore({ companyId, kind, periodKeys: keys, since });
+    const unsettled = anyway ? null : ledger.unsettledBefore({ companyId, kind, periodKeys: keys, since, rolling });
     if (unsettled) for (const [accountId, jobIds] of movedUnsettled(ids, kind, keys, since)) unsettled.set(accountId, [...(unsettled.get(accountId) || []), ...jobIds]);
     const people = [];
     let uncertainOpen = 0;

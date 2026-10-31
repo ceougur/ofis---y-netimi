@@ -34,6 +34,9 @@ function statementKeys(period, day) {
   // KULLANICI KARARI (31.10.2026, "KİME KAÇ KEZ" ilkesi, S1a): HAZIR seçimle ("Bu Ay" / "Geçen Ay") yapılan gönderimin o günkü (toplu işin açıldığı gün) TARİHLERİ de
   // kümeye girer → aynı tarihli özel aralıkla (hangi gün kullanılırsa kullanılsın) aynı dönem. S1b (özel aralık o günün hazır seçimine eşitse "ay|…") aşağıda, aynen.
   if (own.startsWith("ay|")) return period?.from && period?.to ? [own, `aralik|${period.from}|${period.to}`] : [own];
+  // "KİME KAÇ KEZ" ilkesi (3) ile (İş L5): "Son 3 Ay" / "Tüm Hareketler" gönderiminin o günkü tarihleri de kümeye girer (birebir aynı tarihli özel aralık aynı dönem);
+  // bu eşlikte de seçimin 7 gün penceresi geçerli (defter sentBefore / unsettled "rolling"; queue taşınan veri). "Tüm Hareketler"in başlangıcı boş → özel aralıkla eşleşmez.
+  if (own.startsWith("secim|")) return period?.from && period?.to ? [own, `aralik|${period.from}|${period.to}`] : [own];
   if (!own.startsWith("aralik|") || !day) return [own];
   for (const preset of ["thisMonth", "lastMonth"]) {
     const range = waPresetRange(preset, day);
@@ -53,6 +56,9 @@ export function periodKeysOf(kind, period, day = "") {
 }
 
 /** R3 penceresi: "Son 3 Ay" / "Tüm Hareketler" yalnız son 7 günde gönderilmişse aynı dönem. Dönüş: ISO alt sınır ya da "" (pencere yok). */
+/** İş L5: kendi anahtarı "Son 3 Ay" / "Tüm Hareketler" olan gönderim, istek hangi seçim olursa olsun, yalnız bu andan (son 7 gün) sonra kabul edildiyse eşleşir. */
+export const rollingSinceOf = nowMs => new Date(nowMs - ROLLING_MS).toISOString();
+
 export function sentSinceOf(kind, period, nowMs) {
   if (kind !== "statement") return "";
   return ["last3", "all"].includes(String(period?.preset || "")) ? new Date(nowMs - ROLLING_MS).toISOString() : "";
