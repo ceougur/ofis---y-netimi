@@ -1,0 +1,32 @@
+{
+  "ad": "248-t6/t8-guvenlik",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/t6-248/t8-guvenlik.mjs",
+  "commit": "bfa93b6d5b0df3b1e592fd09e6370e723b42e0eb",
+  "dal": "is/t6-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T01:15:25.777Z",
+  "sure_sn": 2.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t6/t8-guvenlik.log",
+  "klasor": "/home/user/wt-t6-248",
+  "ham_cikti_sha256": "2f2018e94cd8d897f6aade2192fcd89951472626bdf81cd61332d589e6b4b645",
+  "ham_cikti_bayt": 6102
+}
