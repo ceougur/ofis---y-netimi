@@ -1425,7 +1425,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (resolving && wamid) fields.wamid = wamid;
       // İş 5 (KULLANICI KARARI 31.10.2026 "a"): Meta Bekletti'de (131049) iken İptal Et ile durdurulan işin kabul edilmiş iletisi sonradan teslim edildiyse geç
       // "delivered" / "read" uygulanır (P3'ün geç teslim kuralı; defter deliveries → R3 sayar). Yalnız bu işin KENDİ wamid'iyle (yukarıdaki sahip denetimi).
-      const lateAfterHold = current === "canceled" && job.retry_131049 === 1 && Boolean(job.wamid) && wamid === job.wamid;
+      // Dar kontrol 8 DÜŞÜK-5 (KULLANICI KARARI 31.10.2026 ~11:00 UTC "A"): yedekten geri yükleme / taşıma ile "Durduruldu" olan Meta Bekletti işi de (iptalden ÖNCEKİ
+      // yedek geri yüklenince dosyadaki iş "stopped" olur) aynı kuralla.
+      const lateAfterHold = ["canceled", "stopped"].includes(current) && job.retry_131049 === 1 && Boolean(job.wamid) && wamid === job.wamid;
       if (value === "sent") {
         if (resolving || current === "accepted") Object.assign(fields, { state: "sent", sent_at: at });
       } else if (value === "delivered") {

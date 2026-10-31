@@ -154,8 +154,12 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // edilemediyse (failures) ve hiç teslim (deliveries) yoksa kişi SAYILMAZ (P3; 2.4.8 dar kontrol 7 ORTA-1, test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs).
     // KULLANICI KARARI (31.10.2026 ~10:10 UTC "a"): son deneme 131049 ile bırakılmış (releases; teslim edilmedi) ve toplu işin defterdeki SON durumu "İptal Et" ise
     // (batch_events durdurma nedeni ya da — 131049 "Tamamlandı" işi yeniden açtıysa — batch_log'un son satırı 'stop:canceled'; bir daha denenmeyecek) kişi SAYILMAZ;
-    // iş Meta Bekletti'de beklerken sayılır (yeni gönderimi ayrıca "Zaten Kuyrukta" eler). Geç "delivered" / "read" gelirse (deliveries) sayılır. Geri yükleme /
-    // taşınma durdurmaları karar kapsamında DEĞİL (bugünkü gibi sayılır). Test: test/whatsapp-dk7-bekletti-iptal-248.test.mjs.
+    // iş Meta Bekletti'de beklerken sayılır (yeni gönderimi ayrıca "Zaten Kuyrukta" eler). Geç "delivered" / "read" gelirse (deliveries) sayılır. Test:
+    // test/whatsapp-dk7-bekletti-iptal-248.test.mjs.
+    // KULLANICI KARARI (31.10.2026 ~11:00 UTC "A"): yedekten GERİ YÜKLEME ('stop:restored') ya da TAŞIMA ('stop:moved') ile durmuş Meta Bekletti de (bir daha
+    // denenmeyecek) aynı kuralla SAYILMAZ; geç teslim sayılır. Başka bilgisayara taşınan veride yeni bilgisayarın defterinde o işin talebi (claims) yoktur, kişi zaten
+    // sayılmaz; 'stop:moved' bu defterde açılmış bir toplu işe ancak veri başka şirkete geri yüklenince yazılır. Şirket Verisini Sıfırla ('reset') karar kapsamında
+    // DEĞİL (cariler silinir). Test: test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs.
     // "after" (asıl işin "Yine de Gönder" sınırı, yerel saatle açılış anı) TALEP anıyla (claims.at, yerel saat, istekten hemen önce) karşılaştırılır, kabul anıyla
     // DEĞİL: geç kabulde accepts.at Meta'nın durum bildirimi saatinden gelir; Meta saati yerelden gerideyse asıl işten SONRA giden ileti "önce" sayılıp çift ekstre
     // gidiyordu (2.4.8 dar kontrol 6, test/whatsapp-dk6-saat-kaymasi-248.test.mjs).
@@ -166,7 +170,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
               AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'failed')
               AND NOT (EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
                 AND COALESCE((SELECT l.event || ':' || l.reason FROM batch_log l WHERE l.batch_id = c.batch_id ORDER BY l.seq DESC LIMIT 1),
-                  (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') = 'stop:canceled'))
+                  (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') IN ('stop:canceled', 'stop:restored', 'stop:moved')))
           OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
       GROUP BY c.account_id`),
     // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"; dar kontrol 6 kapsam dışı gözlem): yalnız "Başarısızları Yeniden Dene"de — bu cariye bu şablon + dönem için SONUCU
