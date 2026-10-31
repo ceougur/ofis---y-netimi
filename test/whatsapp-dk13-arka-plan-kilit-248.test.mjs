@@ -148,7 +148,7 @@ describe("2.4.8 İş P2 — kilitte ekranda neden", () => {
       assert.equal(ctx.messages().length, 0, "ön koşul: kilitte ileti gitmedi");
       assert.equal(await note(run), LOCK_NOTE, "süren işin ayrıntısında not");
       assert.deepEqual(await listNotes(), { [run]: LOCK_NOTE, [held]: null }, "listede süren işte not, duraklatılmışta yok");
-      assert.deepEqual(seen, [true], "işaret konunca canlı olay");
+      assert.deepEqual(seen.map(Boolean), [true], "işaret konunca canlı olay");
       await wait(350); // işaret süresi (300 ms) doldu, işçi henüz yeniden sınamadı: not sönmez (kalıcı kilitte yanıp sönme yok)
       assert.equal(await note(run), LOCK_NOTE, "işaret süresi dolunca da (işçi yeniden sınayana dek) not durur");
       lock.exec("ROLLBACK");
@@ -156,7 +156,7 @@ describe("2.4.8 İş P2 — kilitte ekranda neden", () => {
       lock = null;
       await wait(350);
       await ctx.wa.scheduler.runOnce();
-      assert.deepEqual(seen, [true, false], "işaret kalkınca canlı olay");
+      assert.deepEqual(seen.map(Boolean), [true, false], "işaret kalkınca canlı olay");
       await ctx.drain();
       assert.ok(!(await note(run)), "kilit kalkınca not kalktı");
       assert.equal(ctx.messages().length, 1, "iş gitti");
@@ -168,6 +168,109 @@ describe("2.4.8 İş P2 — kilitte ekranda neden", () => {
       } catch {
         // kilit zaten kalktı
       }
+      await ctx.close();
+    }
+  });
+});
+
+// İş R3 (dar kontrol 12; KARAR Y1 5 dk yetkisiyle, Y2): makine defteri kilidinde ekranda / listede / canlı olayda defter cümlesi; kalıcı kilitte not sürekli, toplu iş Sürüyor;
+// iki kilit birden → şirket cümlesi; Duraklatıldı işte not yok; tur içinde başlayan defter kilidi (talep anı) de defter cümlesi (deferLocal "Şirket dosyası" demez).
+const LEDGER_NOTE = "WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.";
+function spyLock(ctx) {
+  const events = ctx.server.app.context.events;
+  const publish = events.publish;
+  const seen = [];
+  events.publish = (event, data, ...rest) => {
+    if (event === "whatsapp.changed" && data && "lock" in data) seen.push(data.lock);
+    return publish.call(events, event, data, ...rest);
+  };
+  return { seen, restore: () => (events.publish = publish) };
+}
+const exclusive = file => {
+  const db = new DatabaseSync(file);
+  db.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
+  return () => {
+    try {
+      db.exec("ROLLBACK");
+      db.close();
+    } catch {
+      // zaten kalktı
+    }
+  };
+};
+describe("2.4.8 İş R3 — makine defteri kilidinde ekranda neden", () => {
+  it("kalıcı defter kilidi: ayrıntı + liste + canlı olay defter cümlesi; 6 turda not sürekli, toplu iş Sürüyor, ileti yok; kilit kalkınca not kalkar, tek ileti", { timeout: 120_000 }, async () => {
+    const ctx = await startWa({ now: NOW, __testWriteLockBackoffMs: 300 });
+    const spy = spyLock(ctx);
+    let release = null;
+    try {
+      const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
+      const id = (await ctx.batch({ kind: "statement", ids: [p.id], preset: "thisMonth" })).data.data.batch.id;
+      release = exclusive(ctx.wa.ledger.file);
+      const notes = [];
+      for (let i = 0; i < 6; i += 1) {
+        await ctx.wa.scheduler.runOnce();
+        const view = (await ctx.api.get(`${URLS.batches}/${id}`)).data.data;
+        const listed = (await ctx.api.get(URLS.batches)).data.data.find(item => item.id === id);
+        notes.push([view.state, view.lockNote, listed?.lockNote]);
+        ctx.clock.advance(60_000);
+        await wait(350);
+      }
+      assert.ok(notes.every(([state, a, b]) => state === "running" && a === LEDGER_NOTE && b === LEDGER_NOTE), `her turda Sürüyor + defter cümlesi (ayrıntı ve liste) (geldi ${JSON.stringify(notes)})`);
+      assert.deepEqual(spy.seen, ["ledger"], "canlı olay bir kez (defter)");
+      assert.equal(ctx.messages().length, 0, "kilitte ileti yok");
+      release();
+      release = null;
+      await wait(350);
+      await ctx.wa.scheduler.runOnce();
+      assert.deepEqual(spy.seen, ["ledger", null], "kilit kalkınca canlı olay");
+      await ctx.drain();
+      const view = (await ctx.api.get(`${URLS.batches}/${id}`)).data.data;
+      assert.ok(!view.lockNote, "not kalktı");
+      assert.equal(ctx.messages().length, 1, "tek ileti");
+    } finally {
+      spy.restore();
+      release?.();
+      await ctx.close();
+    }
+  });
+
+  it("iki kilit birden → şirket cümlesi (defter önce kilitlenmiş olsa da); Duraklatıldı işte not yok", { timeout: 120_000 }, async () => {
+    const ctx = await startWa({ now: NOW, __testWriteLockBackoffMs: 300 });
+    const releases = [];
+    try {
+      const a = await ctx.account("Not Bir", "0533 444 55 71", 800);
+      const b = await ctx.account("Not İki", "0533 444 55 72", 900);
+      const run = (await ctx.batch({ kind: "statement", ids: [a.id], preset: "thisMonth" })).data.data.batch.id;
+      const held = (await ctx.batch({ kind: "statement", ids: [b.id], preset: "lastMonth" })).data.data.batch.id;
+      assert.equal((await ctx.api.post(`${URLS.batches}/${held}/pause`, {})).status, 200, "ön koşul: duraklatıldı");
+      releases.push(exclusive(ctx.wa.ledger.file));
+      await ctx.wa.scheduler.runOnce();
+      const notesOf = async () => Object.fromEntries((await ctx.api.get(URLS.batches)).data.data.map(item => [item.id, item.lockNote || null]));
+      assert.deepEqual(await notesOf(), { [run]: LEDGER_NOTE, [held]: null }, "defter kilidi: süren işte defter cümlesi, duraklatılmışta yok");
+      releases.push(exclusive(ctx.server.app.config.dbPath));
+      await wait(350);
+      await ctx.wa.scheduler.runOnce();
+      assert.deepEqual(await notesOf(), { [run]: "Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.", [held]: null }, "iki kilit: şirket cümlesi");
+    } finally {
+      for (const release of releases.reverse()) release();
+      await ctx.close();
+    }
+  });
+
+  it("defter kilidi tur İÇİNDE (talep anında) başlar → iş Bekliyor, not defter cümlesi (şirket cümlesi değil)", { timeout: 120_000 }, async () => {
+    const ctx = await startWa({ now: NOW, __testWriteLockProbe: false, __testWriteLockBackoffMs: 60_000 });
+    let release = null;
+    try {
+      const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
+      const id = (await ctx.batch({ kind: "statement", ids: [p.id], preset: "thisMonth" })).data.data.batch.id;
+      release = exclusive(ctx.wa.ledger.file);
+      await ctx.wa.scheduler.runOnce();
+      const view = (await ctx.api.get(`${URLS.batches}/${id}`)).data.data;
+      assert.equal(ctx.messages().length, 0, "talep yazılamadı → istek gitmedi");
+      assert.deepEqual([view.jobs[0].state, view.lockNote], ["pending", LEDGER_NOTE], `iş Bekliyor + defter cümlesi (geldi ${JSON.stringify([view.jobs[0].state, view.lockNote])})`);
+    } finally {
+      release?.();
       await ctx.close();
     }
   });

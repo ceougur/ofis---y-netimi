@@ -56,7 +56,11 @@ const NEW_BATCH_LEDGER_ONLY_UNSETTLED = false;
 // İş P1 (c2): makine defterinin kilit işareti anahtarı (şirket kimliğinden ayrı).
 const LEDGER_LOCK_KEY = "whatsapp-gonderim-defteri";
 // İş P2 (kullanıcı metni): şirket dosyası kilitliyken süren toplu işin ekranındaki neden.
-const LOCK_NOTE = "Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.";
+// İş R3 (dar kontrol 12; 5 dk yetkisiyle KARAR Y1): makine defteri (whatsapp-gonderim.sqlite) kilitliyken de neden; iki kilit birden → şirket cümlesi.
+const LOCK_NOTES = Object.freeze({
+  company: "Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.",
+  ledger: "WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.",
+});
 // Kesin durum: medya Meta'dan silinir (S3 A). "Meta Bekletti" kesin değil (aynı medya yeniden kullanılır, §7a 14).
 const FINAL = ["delivered", "read", "failed", "expired", "canceled", "skipped", "stopped"];
 // Geçici hata: iş 30 sn → 2 dk → 15 dk (3 deneme), sonra Başarısız (§7a 15); toplu işte art arda 5 → duraklar.
@@ -222,7 +226,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   });
   // İş P2: ekrandaki kilit nedeni — işçinin SON sınaması kilit gördüyse true; yalnız sonraki sınama (canWrite / markLocked) değiştirir. İşaret süresi (30 sn) dolup işçi
   // henüz yeniden sınamadıysa not sönüp yanmaz (kalıcı kilitte sürekli görünür); kilit kalkınca işçinin ilk turunda kalkar.
-  let lockShown = false;
+  let lockShown = null; // İş R3: null | "company" | "ledger"
   function batchView(row, { jobs = false } = {}) {
     if (!row) return null;
     const c = counts(row.id);
@@ -230,7 +234,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // İş P2: arka plan işçisi şirket dosyasını kilitli gördü (İş P1 işareti) ve bu toplu işte gidecek ileti var → ekranda neden. Yalnız SÜREN toplu iş: duraklatılmış iş
     // kullanıcıyı bekler (gönderim kilidi beklemiyor), Devam Et'in kendi hatası görünür. İşaret kalkınca (≤ 30 sn) not da kalkar.
     const open = OPEN_JOB.reduce((sum, state) => sum + (c[state] || 0), 0);
-    const lockNote = row.state === "running" && open > 0 && lockShown ? LOCK_NOTE : null;
+    const lockNote = row.state === "running" && open > 0 && lockShown ? LOCK_NOTES[lockShown] : null;
     const actor = store.get("SELECT display_name AS name FROM users WHERE id = ?", row.created_by)?.name || "";
     return {
       id: row.id,
@@ -1205,7 +1209,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, batchPeriod, keyDay), periodKeys: periodKeysOf(batch.kind, batchPeriod, keyDay, { first }), at: iso() });
     } catch (error) {
       // Defter yazılamadı (disk dolu, kilit): istek GÖNDERİLMEZ, iş bekler. Kilitse sonraki arka plan turları deftere yazmayı denemez (İş P1 işareti).
-      if (isLockError(error)) writeLock?.mark(LEDGER_LOCK_KEY);
+      if (isLockError(error)) {
+        writeLock?.mark(LEDGER_LOCK_KEY);
+        syncLockNote(); // İş R3: ekranda defter cümlesi
+      }
       updateJob(job.id, { state: "pending", attempt: job.attempt || 0, sending_at: null, next_at: iso(nowMs() + JOB_BACKOFF_MS[0]) });
       trouble(batchRow(batch.id), `gönderim defteri yazılamadı (${error.code || error.message})`);
       log.warn?.(`WhatsApp gönderim defteri yazılamadı (${job.id}): ${error.message}`);
@@ -1832,11 +1839,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // İş P1: arka plan işçisi bu şirkete şimdi yazabilir mi (turun başında; scheduler.mjs) ve kilit işareti (bakım turunda kilit görülünce).
   // İş P2: işaretin konması ve kalkması ekrana canlı olayla bildirilir (liste ve toplu iş ekranı nedeni hemen gösterir / kaldırır). İşçi her turda canWrite'ı çağırır.
   const syncLockNote = () => {
-    const marked = Boolean(writeLock?.isMarked(companyId));
-    if (marked === lockShown) return;
-    lockShown = marked;
-    notify(null, { lock: marked });
+    const kind = writeLock?.isMarked(companyId) ? "company" : writeLock?.isMarked(LEDGER_LOCK_KEY) ? "ledger" : null;
+    if (kind === lockShown) return;
+    lockShown = kind;
+    notify(null, { lock: kind });
   };
+
   // İş P1 (c2): makine defteri (whatsapp-gonderim.sqlite) de başka süreçte kilitli olabilir — işçi her işte deftere yazar; aynı kısa sınama + işaret (anahtar defter).
   const canWrite = () => {
     const ok = writeLock ? writeLock.guard(companyId, store) && writeLock.guard(LEDGER_LOCK_KEY, ledger) : true;

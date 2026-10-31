@@ -16,6 +16,7 @@
 //   G8 Bağlantı Bekleniyor (Meta'ya ulaşılamıyor) ve Sınır Nedeniyle Bekliyor (elle günlük sınır) ekranda açıkça; bağlantı dönünce sürer.
 //   G8d (İş P2) şirket dosyası başka programda kilitli: süren toplu işin ekranında "Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor."
 //       ve listede "Dosya Kullanımda" (canlı olayla); kilit kalkınca ikisi de kalkar, iş gider (tek ileti).
+//   G8e (İş R3) makine defteri kilitli: süren gönderimde "WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.", listede etiket.
 //   G9 WhatsApp Web ile Gönder (bugünkü wa.me yolu) bağlantı varken de çalışır: Otomatik Sıra, wa.me adresi, cari kartına kayıt (message_sends).
 //   G10 yetkisiz (Personel): Otomatik Gönder sekmesinde neden, Gönder pasif; API 403. G11 dar pencere (760 px) taşma yok. G12 salt okunur lisans: neden, pasif.
 // Çıkış: "N geçti, M kaldı" (kaldıysa 1). Ekran görüntüleri EKRAN_DIR (varsayılan test/e2e/artifacts/senaryo-whatsapp-gonder-248).
@@ -716,6 +717,50 @@ await step("G8d şirket dosyası başka programda kilitli: süren gönderimde ne
     await page.waitForSelector(`${TOP} [data-wa-batch="${lockedBatch}"]`);
     await waitChip("accepted", 1);
     ok(!(await page.$(`${TOP} [data-wa-api-lock]`)), "gönderim ekranında not yok");
+  } finally {
+    try {
+      lock?.exec("ROLLBACK");
+      lock?.close();
+    } catch {
+      // kilit zaten kalktı
+    }
+  }
+  await closeAll();
+});
+
+await step("G8e makine defteri başka programda kilitli: süren gönderimde defter cümlesi ve listede etiket; kilit kalkınca kalkar", async () => {
+  const person = await ctx.account("Defter Kilidi Kişi", "0536 600 00 02", 10);
+  const created = await ctx.batch({ kind: "statement", ids: [person.id], preset: "thisMonth", requestId: "r3-e2e-defter-01" });
+  ok(created.status === 200, `toplu iş açıldı (${created.status})`);
+  const ledgerBatch = created.data.data?.batch?.id || "";
+  const sentBefore = ctx.messages().length;
+  await openWhatsapp();
+  await waitPreview();
+  await page.click(`${TOP} [data-wa-api-list]`);
+  await page.click(`${TOP} [data-wa-api-open="${ledgerBatch}"]`);
+  await page.waitForSelector(`${TOP} [data-wa-batch="${ledgerBatch}"]`);
+  const { DatabaseSync } = await import("node:sqlite");
+  let lock = new DatabaseSync(ctx.wa.ledger.file);
+  try {
+    lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
+    await ctx.wa.scheduler.runOnce();
+    ok(ctx.messages().length === sentBefore, "defter kilitliyken ileti gitmedi");
+    const shown = await page.waitForSelector(`${TOP} [data-wa-api-lock]`, { timeout: 15000 }).then(() => true, () => false);
+    const text = ((await page.textContent(`${TOP} [data-wa-api-lock]`).catch(() => "")) || "").replace(/\s+/g, " ").trim();
+    ok(shown && text === "Bekliyor: WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.", `ekranda defter cümlesi (görülen: ${text})`);
+    await shot("12g-defter-kilidi");
+    await page.click(`${TOP} [data-wa-api-list]`);
+    const tagged = await page.waitForSelector(`${TOP} tr[data-wa-api-open="${ledgerBatch}"] [data-wa-api-lock-tag]`, { timeout: 15000 }).then(() => true, () => false);
+    ok(tagged, "listede Dosya Kullanımda etiketi");
+    lock.exec("ROLLBACK");
+    lock.close();
+    lock = null;
+    await page.waitForTimeout(2_200);
+    await ctx.wa.scheduler.runOnce();
+    const gone = await page.waitForFunction(sel => !document.querySelector(`${sel} [data-wa-api-lock-tag]`), TOP, { timeout: 15000 }).then(() => true, () => false);
+    ok(gone, "kilit kalkınca etiket kalktı");
+    await ctx.drain();
+    ok(ctx.messages().length === sentBefore + 1, `kilit kalkınca tek ileti (${ctx.messages().length - sentBefore})`);
   } finally {
     try {
       lock?.exec("ROLLBACK");
