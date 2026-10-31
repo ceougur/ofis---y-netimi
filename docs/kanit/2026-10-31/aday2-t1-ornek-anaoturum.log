@@ -1,0 +1,32 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+not ok 1 - CIFT-01-zaman-asimi-meta-aldi [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 2 - SINIR-05-pencerede-sayili-alici [hizli] (4 fark; davranış farkı 1; gösterim: G1-borclu-eki 3)
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 1
+not ok 3 - K7-05-tasima-meta-bekletti-gec-teslim-sayilir [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 1, G2-toplu-gosterim 2)
+not ok 4 - K5-01-karar-yeniden-denemeye-tasinir [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 5 - D1-01-belirsiz-yeni-toplu-iste-elenir [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+not ok 6 - D4-01-ozel-aralik-ayni-gun-bu-ay [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+not ok 7 - E2-01-yeni-is-uclu-cakisma [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+not ok 8 - F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)
+not ok 9 - G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 10 - G3-01-tasinan-belirsiz-yeni-iste-eler [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 11 - G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # onceki_uyari.T2.son: beklenen '2026-10-31', program '2026-10-30'
+not ok 12 - G6-02-ozel-aralik-tum-hareketler-kisiye-gore [hizli] (18 fark; davranış farkı 15; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # toplular.T2.is_sayisi: beklenen 1, program 2
+  # durum_sayilari.Teslim Edildi: beklenen 3, program 4
+  # meta.post.Y: beklenen 1, program 2
+  # meta.kabul.Y: beklenen 1, program 2
+  # meta.meta_ileti.Y: beklenen 1, program 2
+  # meta.medya_yukleme.Y: beklenen 1, program 2
+  # meta.medya_silme.Y: beklenen 1, program 2
+  # meta.toplam_post: beklenen 3, program 4
+  # meta.toplam_kabul_program: beklenen 3, program 4
+  # meta.toplam_meta_ileti: beklenen 3, program 4
+1..12
+# tests 12
+# pass 0
+# fail 12
