@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { cpSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { DatabaseSync } from "node:sqlite";
 import path from "node:path";
 import { deliveryTtlSeconds } from "../server/lib/whatsapp/templates.mjs";
 import { removeTestDir } from "./helpers.mjs";
@@ -166,8 +167,15 @@ describe("2.4.8 İş Q5 — 'Daha Önce Gönderildi' tarihi son kabul edilen den
       fail = false;
       const stuck = (await ctx.jobs(o.batch.id))[0];
       assert.deepEqual([stuck.attempt, stuck.state], [2, "sending"], "ön koşul: 2. denemenin kabulü dosyaya yazılamadı");
-      const ledgerAt = ctx.wa.ledger.attempts(stuck.id).at(-1).at;
-      assert.ok(ledgerAt && ledgerAt > first.acceptedAt, `ön koşul: defterde 2. denemenin kabulü (${JSON.stringify(ctx.wa.ledger.attempts(stuck.id))}, 1. ${first.acceptedAt})`);
+      // İş S2 (ders 38): kabul anı defter DOSYASINDAN okunur (program API'sine bağlı değil — eski kodda ön koşul değil asıl iddia kırmızı olsun).
+      const reader = new DatabaseSync(ctx.wa.ledger.file, { readOnly: true });
+      let ledgerAt;
+      try {
+        ledgerAt = reader.prepare("SELECT at FROM outcomes WHERE job_id = ? AND attempt = 2 AND outcome = 'accepted'").get(stuck.id)?.at;
+      } finally {
+        reader.close();
+      }
+      assert.ok(ledgerAt && ledgerAt > first.acceptedAt, `ön koşul: defterde 2. denemenin kabulü (${ledgerAt}, 1. ${first.acceptedAt})`);
       ctx.clock.advance(10 * 60_000);
       await ctx.wa.scheduler.maintain();
       const after = (await ctx.jobs(o.batch.id))[0];
