@@ -18,6 +18,11 @@ kaynak CLAUDE.md "Açık iş" KARAR satırları + docs/2.4.8-IS-LISTESI.md) kâh
 kararı taşınır (açılıştan önceki kabuller yok sayılır), yeniden denemede Sonucu Belirsiz elemesi + öneri, Gönderimler listesi (30'ar, imleç, yerel gün).
 Karar metninin sustuğu yerler {"plan_susuyor": …} ya da {"secenek": [...], "susuyor": …} yaprağıdır (README §7 "KÂHİN SUSUYOR").
 
+KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
+elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
+taşımada "Gönderiliyor" kalan iş Sonucu Belirsiz; iş dosyada yokken gelen İMZALI geç kabul/teslim defterdeki sonucu belli olmayan son deneme için sayılır;
+R3 "son gönderim" = son kabul/teslim edilen denemenin anı — README §13.
+
 KÂHİN GÜNCELLEMESİ 7 (31.10.2026): G6 (baş mimar, G0 (3) İLKEYLE) — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri özel aralığa birebir eşitse aynı dönem
 (iki yön; 7 gün penceresi bu eşlikte de). Son 3 Ay'ın tarih uçları karar metninde yok → G0 (3) gereği kâhinin dört okumasından BİRİ eşitse; Tüm Hareketler = kişinin
 ilk hareketi – o gün (baş mimar KAYIT'ı) — README §12.
@@ -266,6 +271,12 @@ MUTASYONLAR = {
     # ---- kâhin güncellemesi 7 (31.10.2026, G6 — baş mimar, G0 (3) İLKEYLE) ----
     "M129": "G6: Son 3 Ay / Tüm Hareketler ile o günkü tarihlerine birebir eşit özel aralık eşleşmez",
     "M130": "G6: Son 3 Ay / Tüm ↔ özel aralık çapraz eşliğinde 7 gün penceresi yok",
+    "M131": "H1: Yine de Gönder ile açılan işin kabul/teslimi kaynak Sonucu Belirsiz denemeyi çözmez (D6 gibi elemeye devam eder)",
+    "M132": "H1: Yine de Gönder kaynak belirsizi açılan işin SONUCUNA bakmadan çözer (başarısız/belirsiz kalsa da)",
+    "M133": "H2: taşımada Gönderiliyor kalan iş 'Taşınan Veri — Durduruldu' olur (Sonucu Belirsiz değil)",
+    "M134": "H3: iş şirket dosyasında yokken gelen imzalı geç kabul/teslim yok sayılır",
+    "M135": "H4: R3 'son gönderim' tarihi SAYILMAYAN (başarısız) denemeler dahil son denemenin anı",
+    "M136": "H4: R3 'son gönderim' tarihi UTC günüyle yazılır (yerel gün değil)",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -363,6 +374,16 @@ KARARLAR = {
            "metin": ["\"Son 3 Ay\" / \"Tüm Hareketler\" gönderiminin o günkü (toplu işin açıldığı gün; yeniden denemede asıl işin günü) tarihleri, özel aralığın "
                      "tarihleriyle BİREBİR aynıysa aynı dönem (R3 + Zaten Kuyrukta + Sonucu Belirsiz; iki yön); Son 3 Ay / Tüm'ün 7 gün penceresi bu eşlikte de geçerli "
                      "(7 günden eskiyse ayrı dönem)."]},
+    "H1": {"kaynak_turu": "kullanıcı (ana oturum iletisi, aynen)",
+           "metin": ["\"Yine de Gönder\" ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık \"Sonucu Belirsiz\" saymaz; kişi \"Daha Önce "
+                     "Gönderildi\" olur, yolu yeni gönderimdeki R3 \"Yine de Gönder\"; Yine de Gönder ile açılan iş başarısız/belirsiz kalırsa kaynak belirsiz sayılmaya "
+                     "devam eder (D6/F1 aynen)."]},
+    "H2": {"kaynak_turu": "BAŞ MİMAR (G0 İLKEYLE; ana oturum iletisi)",
+           "metin": ["veri başka bilgisayara taşınınca \"Gönderiliyor\"da kalmış iş \"Sonucu Belirsiz\" olur (kişi elenir, işteki Yine de Gönder)."]},
+    "H3": {"kaynak_turu": "BAŞ MİMAR (G0 İLKEYLE; ana oturum iletisi)",
+           "metin": ["iş dosyada yokken (sıfırlama / geri yükleme) gelen İMZALI geç kabul/teslim, defterde sonucu belli olmayan son deneme için sayılır."]},
+    "H4": {"kaynak_turu": "BAŞ MİMAR (G0 İLKEYLE; ana oturum iletisi)",
+           "metin": ["R3 uyarısındaki \"son gönderim\" tarihi son kabul/teslim edilen denemenin anıdır."]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -595,6 +616,7 @@ class Is:
         self.son_kayit = None       # durum değişikliklerinin yazıldığı son deneme (yeni deneme açılınca kopar)
         self.asil_durum = None      # ilk kez yeniden denemeye / Yine de Gönder'e alındığında asıl işteki durumu (programda asıl iş bu durumda kalır)
         self.yeniden = False        # yeniden deneme / Yine de Gönder ile gönderime alındı mı (K4 mutasyonları)
+        self.yine_kaynak = ()       # H1: bu iş "Yine de Gönder" ile açıldıysa kaynak Sonucu Belirsiz denemeleri (yeni denemeye "kaynaklar" olarak yazılır)
         self.gec_teslim = None      # K3/K7: teslimsiz kapandıktan sonra gelen teslimin durumu (Teslim Edildi / Okundu) — ekran durumu KÂHİN SUSUYOR
 
 
@@ -766,6 +788,12 @@ class Benzetim:
                 self.defter = set()                                     # başka bilgisayar: makine defteri o bilgisayarda yok (§6 W2)
             for tp in self.toplular.values():
                 for j in tp.isler:
+                    if tur == "tasindi" and j.durum == GONDERILIYOR:
+                        if "M133" in self.mut:
+                            self.durum(j, TASINAN, t)
+                        else:                                           # H2 (İLKEYLE G0 2): taşımada Gönderiliyor kalan → Sonucu Belirsiz (işteki Yine de Gönder)
+                            self.durum(j, BELIRSIZ, t); j.belirsiz_t = t
+                        continue
                     if j.durum in DURDURULABILIR:
                         if tur == "sifirla" and j.son_kayit is not None:
                             self.kayitlar[j.son_kayit]["sifir"] = True          # G4: sıfırlamayla duran deneme (yalnız M125 kullanır)
@@ -886,16 +914,18 @@ class Benzetim:
         Kaynak: makine defteri (D7: geri yüklemeden sonra yalnız defterde kalan kabul SAYILIR) ∪ şirket dosyası (D8: taşınan veride dosyadaki kabul / teslim SAYILIR)."""
         if "M65" in self.mut:
             return None
-        en = None
+        en = None; en_tum = None
         for rec, dosyada, rid in self.gorunen_kayitlar():
             if ("M103" in self.mut and not dosyada) or ("M104" in self.mut and rid not in self.defter):
                 continue
-            if not self.eslesir(rec, cid, sablon, ctx, sirket, t, pencere_t) or not self.sayilir(rec):
+            if not self.eslesir(rec, cid, sablon, ctx, sirket, t, pencere_t):
                 continue
             if sinir is not None and rec["t"] < sinir:                  # İLKEYLE G0 (3): açılışla AYNI ANDA giden şüphede "sonra" (elenir)
                 continue
-            en = rec["t"] if en is None else max(en, rec["t"])
-        return en
+            en_tum = rec["t"] if en_tum is None else max(en_tum, rec["t"])
+            if self.sayilir(rec):
+                en = rec["t"] if en is None else max(en, rec["t"])   # H4: son kabul/teslim edilen (sayılan) denemenin anı
+        return en_tum if ("M135" in self.mut and en is not None) else en
 
     def karar_siniri(self, tp, tasima_mut):
         """K5: asıl işin "Yine de Gönder" kararı yeniden denemeye / işteki Yine de Gönder'e taşınır → sınır = asıl işin açılış anı."""
@@ -911,8 +941,16 @@ class Benzetim:
         iş geri yüklemeyle dosyadan çıktı) / None. 09:35 kararı: asıl işin Yine de Gönder sınırı bu elemeye UYGULANMAZ (sinir yalnız M85'te).
         yalniz_dosya: yeni toplu işte yalnız dosyadaki denemeler (kâhin yorumu 21 — D1'in çaresi "işteki Yine de Gönder" ancak iş dosyadaysa var)."""
         mevcut = {x.son_kayit for x in self.isler.values() if x.durum == BELIRSIZ and x.son_kayit is not None}
+        gorunen = self.gorunen_kayitlar()
+        cozulen = set()                                                    # H1: Yine de Gönder ile açılan iş kabul/teslim edildi → kaynak belirsiz artık elemez
+        if "M131" not in self.mut:
+            for r2, _, _ in gorunen:
+                if r2.get("kaynaklar") and ("M132" in self.mut or self.sayilir(r2)):
+                    cozulen.update(r2["kaynaklar"])
         bulunan = None
-        for rec, dosya_mi, rid in self.gorunen_kayitlar():
+        for rec, dosya_mi, rid in gorunen:
+            if rid in cozulen:
+                continue
             if rid == haric or rec["son_durum"] != BELIRSIZ or not self.eslesir(rec, cid, sablon, ctx, sirket, t, belirsiz=True):
                 continue
             if "M124" in self.mut and rid not in self.defter:              # G3'ün tersi: taşınan veride dosyadaki belirsiz sayılmaz
@@ -936,6 +974,7 @@ class Benzetim:
             j.asil_durum = j.durum
         j.son_kayit = None
         j.yeniden = True
+        j.yine_kaynak = ()
         if "M87" in self.mut:
             j.coz_ozel = donem_coz(tp.donem, t, self.tz, tp.sablon, self.mut)
             j.anahtar_donem, j.tarih_donem, j.kanon_donem = j.coz_ozel["anahtar"], j.coz_ozel["tarih"], j.coz_ozel["kanon"]
@@ -1024,7 +1063,9 @@ class Benzetim:
                                          pencere_t=tp.t if "M98" in self.mut else None) is not None:
                 sonuc["elenen"][j.cari] = DAHA_ONCE
             else:
+                kaynak = tuple(r for r in j.kayitlar if self.kayitlar[r]["son_durum"] == BELIRSIZ)   # H1: aşılan Sonucu Belirsiz deneme(ler)
                 self.tasi(j, tp, t)
+                j.yine_kaynak = kaynak
                 tp.durum = "aktif"; tp.bas = 0
                 sonuc["alinan"].append(j.cari)
         if o.get("etiket"):
@@ -1159,7 +1200,7 @@ class Benzetim:
             self.isler[anahtar] = j
         self.elenen[etiket] = elenen
         if onceki:
-            self.onceki_uyari[etiket] = {"sayi": len(onceki), "son": tarih(max(onceki), self.tz)}
+            self.onceki_uyari[etiket] = {"sayi": len(onceki), "son": tarih(max(onceki), timezone.utc if "M136" in self.mut else self.tz)}
         if not tp.isler and "M49" not in self.mut:
             self.olusmadi.append(etiket)                                  # §7a 31: kayıt OLUŞMAZ, nedenler listelenir
             return
@@ -1496,7 +1537,7 @@ class Benzetim:
             c2 = donem_coz(tp.donem, ts, self.tz, tp.sablon, self.mut)
             tarih_, kanon_, tarihler_ = c2["tarih"], c2["kanon"], self.kisi_tarihleri(c2, j.cari)
         self.kayitlar[rid] = {"sirket": j.sirket, "cari": j.cari, "sablon": tp.sablon, "anahtar": j.anahtar_donem, "tarih": tarih_, "kanon": kanon_, "tarihler": tarihler_, "t": ts, "is": j.anahtar,
-                              "kabul": False, "teslim": False, "son_durum": GONDERILIYOR}
+                              "kabul": False, "teslim": False, "son_durum": GONDERILIYOR, "kaynaklar": j.yine_kaynak}
         self.defter.add(rid); j.kayitlar.append(rid); j.son_kayit = rid
 
     def post_say(self, j, tp, ts):
@@ -1570,6 +1611,8 @@ class Benzetim:
         j = self.wamid_is.get(wamid)
         if j is None:
             aday = self.isler.get(ek.get("opaque"))            # §7a 3: iş kimliği eşleşirse çözülür; sayaçlara ve pencereye girer
+            if aday is None and ek.get("imzali") and "M134" not in self.mut:
+                return self.dosyasiz_kanca(wamid, durum, ek)   # H3: iş şirket dosyasında yok (geri yükleme)
             if not (aday and aday.durum == BELIRSIZ):
                 return
             j = aday
@@ -1614,6 +1657,27 @@ class Benzetim:
             if "M30" in self.mut and kod == 131026:
                 return
             self.durum(j, BASARISIZ, t); self.kesinlesti(j, t)
+
+    def dosyasiz_kanca(self, wamid, durum, ek):
+        """H3 (İLKEYLE G0 2, 5): iş şirket dosyasında yokken (geri yükleme) gelen İMZALI geç kabul/teslim, makine defterindeki sonucu belli olmayan SON deneme
+        için sayılır. wamid biliniyorsa o deneme (teslim sayılır — K3/K7 geç teslim gibi); bilinmiyorsa iş kimliğiyle (opaque) defterdeki son deneme, yalnız sonucu
+        belli değilse (Sonucu Belirsiz / Gönderiliyor): Meta kabul etmiş demektir; failed gelirse kesin almadı (Başarısız). "Bu Ay" sayacına dokunulmaz (README §13)."""
+        teslim_olayi = durum in ("delivered", "read")
+        rid = self.wamid_kayit.get(wamid)
+        if rid is not None:
+            if rid in self.defter and teslim_olayi:
+                self.kayitlar[rid]["teslim"] = True
+            return
+        adaylar = [r for r in self.defter if self.kayitlar[r]["is"] == ek.get("opaque")]
+        if not adaylar:
+            return
+        rid = max(adaylar)
+        rec = self.kayitlar[rid]
+        if rec["kabul"] or rec["son_durum"] not in (BELIRSIZ, GONDERILIYOR):
+            return
+        rec["kabul"] = True; self.wamid_kayit[wamid] = rid
+        rec["son_durum"] = {"sent": GONDERILDI, "delivered": TESLIM, "read": OKUNDU, "failed": BASARISIZ}.get(durum, KABUL)
+        rec["teslim"] = teslim_olayi
 
     def teslim_yaz(self, j, olay_t):
         if j.teslim_t is None:
