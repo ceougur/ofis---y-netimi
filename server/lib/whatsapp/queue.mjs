@@ -691,6 +691,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       releaseJobs(row.id);
       updateBatch(row.id, { state: "running", pause_code: "", pause_reason: "", troubles: 0, retry_at: null, offline_tries: 0 });
     });
+    lockTroubles.delete(row.id); // İş O2: "art arda" sayacı sıfırlanan her yerde bellekteki kilit sayacı da
     templateCache.clear();
     audit(user, "whatsapp.batch.resumed", row.id, { from: row.pause_code });
     notify(row.id);
