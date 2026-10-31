@@ -31,6 +31,9 @@ function statementKey(period) {
 /** Ekstre dönemi + gün → anahtar kümesi: [kendi anahtarı] ya da özel aralık o günün "Bu Ay" / "Geçen Ay" tarihlerine birebir eşitse [kendi anahtarı, "ay|YYYY-AA"]. */
 function statementKeys(period, day) {
   const own = statementKey(period);
+  // KULLANICI KARARI (31.10.2026, "KİME KAÇ KEZ" ilkesi, S1a): HAZIR seçimle ("Bu Ay" / "Geçen Ay") yapılan gönderimin o günkü (toplu işin açıldığı gün) TARİHLERİ de
+  // kümeye girer → aynı tarihli özel aralıkla (hangi gün kullanılırsa kullanılsın) aynı dönem. S1b (özel aralık o günün hazır seçimine eşitse "ay|…") aşağıda, aynen.
+  if (own.startsWith("ay|")) return period?.from && period?.to ? [own, `aralik|${period.from}|${period.to}`] : [own];
   if (!own.startsWith("aralik|") || !day) return [own];
   for (const preset of ["thisMonth", "lastMonth"]) {
     const range = waPresetRange(preset, day);
