@@ -24,8 +24,8 @@ import { statementData, statementFileName, statementPdf } from "../statement-pdf
 import { e164Of, waPresetRange } from "./alici.mjs";
 import { periodKeyOf, queueKeyOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
-import { META_D0, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
-import { sendingVerdict } from "./templates.mjs";
+import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
+import { deliveryTtlSeconds, sendingVerdict } from "./templates.mjs";
 
 export const TEMPLATE_NAMES = Object.freeze({ statement: "destekofis_ekstre", reminder: "destekofis_odeme_hatirlatma" });
 export const KIND_LABELS = Object.freeze({ statement: "Ekstre", reminder: "Ödeme Hatırlatma" });
@@ -1137,24 +1137,35 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
 
   // ---------- Bakım: süre dolumu (§7a 16), medya silme (S3 A), takılı "Gönderiliyor" ----------
   async function maintain() {
-    const { ttlHours } = settings();
     const out = { expired: 0, mediaDeleted: 0, mediaFailed: 0 };
     // Bildirim yolu çalışıyorsa (son 7 günde bu şirkete en az bir durum bildirimi geldi) teslim edilmeyen ileti TTL + 1 saatte "Süresi Doldu"; yoksa "Meta Kabul Etti"de kalır.
     // T2-3/4: bildirim yolu WABA düzeyinde (makine defteri hook_seen; aynı WABA'yı kullanan şirketlerin hepsi için) ya da bu şirketin son bildirimi.
     const seenWaba = Date.parse(ledger.hookSeenAt?.(connection.read()?.wabaId || "") || "");
     const seenHere = Date.parse(store.setting(HOOK_SEEN_KEY, "") || "");
     const seen = Math.max(Number.isFinite(seenWaba) ? seenWaba : -Infinity, Number.isFinite(seenHere) ? seenHere : -Infinity);
+    // T2-5 güvenli taraf: TTL = META'NIN KABUL ETTİĞİ ileti ömrü (lib/whatsapp/templates.mjs deliveryTtlSeconds; okunamazsa / reddedildiyse Meta'nın varsayılanı 30 gün) —
+    // ayardaki değer değil: Meta'nın hâlâ teslim etmeye çalıştığı iletiyi "Süresi Doldu" saymaz, PDF'ini önceden silmez.
+    const ttlOf = new Map();
+    const ttlMs = (wabaId, name) => {
+      const key = `${wabaId}|${name}`;
+      if (!ttlOf.has(key)) ttlOf.set(key, deliveryTtlSeconds(store, wabaId, name) * 1000);
+      return ttlOf.get(key);
+    };
     if (Number.isFinite(seen) && nowMs() - seen <= HOOK_ALIVE_MS) {
-      const ttlLimit = iso(nowMs() - (ttlHours + 1) * HOUR);
-      for (const row of store.all("SELECT id FROM wa_jobs WHERE state IN ('accepted', 'sent') AND accepted_at IS NOT NULL AND accepted_at < ?", ttlLimit)) {
+      for (const row of store.all("SELECT j.id, j.accepted_at, b.waba_id, b.template FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL")) {
+        if (Date.parse(row.accepted_at) + ttlMs(row.waba_id, row.template) + HOUR >= nowMs()) continue;
         updateJob(row.id, { state: "expired", closed_at: iso() });
         out.expired += 1;
       }
     }
+    // PDF Meta'dan yalnız kesin sonuçta silinir; bildirim yolu çalışmasa da Meta'nın en uzun ömrü (30 gün) + 1 saat geçen kabul edilmiş iletinin PDF'i (Meta artık
+    // teslim etmeye çalışmaz; medya kimliği de 30 günde düşer) silinir.
     const doomed = store.all(
       `SELECT j.id, j.media_id, j.media_delete_tries, b.waba_id FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
-       WHERE j.media_id IS NOT NULL AND j.media_deleted_at IS NULL AND j.media_delete_tries < 5 AND j.state IN (${FINAL.map(() => "?").join(",")}) LIMIT 50`,
+       WHERE j.media_id IS NOT NULL AND j.media_deleted_at IS NULL AND j.media_delete_tries < 5
+         AND (j.state IN (${FINAL.map(() => "?").join(",")}) OR (j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL AND j.accepted_at < ?)) LIMIT 50`,
       ...FINAL,
+      iso(nowMs() - META_DEFAULT_TTL_SECONDS * 1000 - HOUR),
     );
     if (doomed.length) {
       const record = connection.read();

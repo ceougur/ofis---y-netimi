@@ -84,7 +84,7 @@ describe("2.4.8 T2-5 — şablonun teslim süresi (TTL) Meta'ya gider", () => {
       assert.equal(res.status, 200, JSON.stringify(res.data));
       for (const tpl of program(fake)) assert.ok(tpl && tpl.message_send_ttl_seconds === undefined, "şablon teslim süresiz açıldı");
       const items = res.data.data.items;
-      assert.ok(items.every(item => item.warnings.some(text => /teslim süresini \(72 saat\) kabul etmedi/.test(text))), JSON.stringify(items.map(item => item.warnings)));
+      assert.ok(items.every(item => item.warnings.includes("Meta teslim süresini kabul etmedi; Meta 30 güne kadar teslim etmeyi dener.")), JSON.stringify(items.map(item => item.warnings)));
       for (const tpl of program(fake)) tpl.status = "APPROVED";
       fake.requests.length = 0;
       assert.equal((await ctx.api.post(ENSURE, {})).status, 200);

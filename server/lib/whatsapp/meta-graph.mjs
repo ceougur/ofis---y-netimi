@@ -64,7 +64,8 @@ export const META_D0 = Object.freeze({
   ecosystemCode: 131049,
   // D0-11: İleti ömrü (TTL) ileti isteğinde değil ŞABLONDA tanımlanır (message_send_ttl_seconds; şablonları W5 açar). Program kendi "Süresi Doldu"
   // kararını iç kuralla verir (plan §7a madde 16): durum bildirimi yolu çalışıyorsa (son 7 günde en az bir bildirim geldi) teslim olmayan ileti TTL
-  // (S2 A: 3 gün) + 1 saatte "Süresi Doldu"; bildirim yolu yoksa "Meta Kabul Etti"de kalır. Şablona TTL'yi programın kendisi yazar (T2-5): D0-W5-8.
+  // (S2 A: 3 gün) + 1 saatte "Süresi Doldu"; bildirim yolu yoksa "Meta Kabul Etti"de kalır. Şablona TTL'yi programın kendisi yazar (T2-5): D0-W5-8. Bu değer
+  // YALNIZ şablona yazılan istektir; "Süresi Doldu" ve PDF silme Meta'nın KABUL ETTİĞİ değere bağlıdır (D0-W5-9; bilinmezse 30 gün).
   defaultTtlHours: 72,
   // D0-12: Medya yükleme (POST /<PHONE_NUMBER_ID>/media, multipart: messaging_product, type, file) yanıtı { id }; silme (DELETE /<MEDIA_ID>) { success: true }.
   // Zaten silinmiş / süresi dolmuş medyanın silinmesi hata kodu 100 (ya da HTTP 404) döner varsayımı → program "silinmiş" sayar.
@@ -443,7 +444,14 @@ export const META_D0_W5 = Object.freeze({
   // Şablon listesi bu alanı istemez (tanınmayan alan bütün ayrıntılı listeyi temel alanlara düşürür — D0-W5-5): uygulanan değer programın kaydında tutulur.
   ttlField: "message_send_ttl_seconds",
   ttlEditable: Object.freeze(["APPROVED", "REJECTED", "PAUSED"]),
+  // D0-W5-9 (T2-5 güvenli taraf): Meta'nın KABUL ETTİĞİ teslim süresi şablon listesinde message_send_ttl_seconds alanından (istenirse) ya da şablon açma yanıtında aynı
+  // alandan okunur — ikisi de belgede okunmadı. Program "Süresi Doldu" anını ve PDF silmeyi YALNIZ Meta'nın bildirdiği değere bağlar; değer gelmezse / reddedildiyse
+  // Meta'nın varsayılanı (30 gün; send-messages "Default TTL") geçerli sayılır. Liste bu alanı tanımazsa (100) bir kez TTL'siz ayrıntılı alanlara düşülür
+  // (components kaybolmasın), sonra temel alanlara.
+  ttlDetailFields: "name,language,status,category,quality_score,rejected_reason,components,message_send_ttl_seconds",
 });
+// Meta'nın varsayılan ileti ömrü (send-messages "Default TTL: All messages except authentication templates: 30 days") — teslim süresi okunamazsa.
+export const META_DEFAULT_TTL_SECONDS = 30 * 24 * 3600;
 
 // Program YALNIZ bilgilendirme şablonu açar (ürün kararı: kampanya / pazarlama şablonu yok). Kategori bu istemcide de kilitlidir: çağıran yanlışlıkla
 // başka kategori verirse Meta'ya istek GİTMEZ.
@@ -463,7 +471,9 @@ export function createMetaTemplates(options = {}) {
 
   // Şablonların ayrıntılı listesi (D0-W5-5): imleçli, en çok META_D0.maxPages sayfa. İlk sayfa 100 dönerse bir kez temel alanlarla yeniden.
   async function details(wabaId) {
-    let fields = META_D0_W5.detailFields;
+    // D0-W5-9: önce teslim süresiyle; alan tanınmazsa TTL'siz ayrıntılı alanlar; o da olmazsa temel alanlar (D0-W5-5).
+    const ladder = [META_D0_W5.ttlDetailFields, META_D0_W5.detailFields];
+    let fields = ladder.shift();
     let fallback = false;
     for (;;) {
       const items = [];
@@ -479,8 +489,11 @@ export function createMetaTemplates(options = {}) {
         return { items, complete: false, fields: fallback ? "basic" : "detail" };
       } catch (error) {
         if (!fallback && error instanceof MetaGraphError && error.code === 100 && !items.length) {
-          fallback = true;
-          fields = META_D0_W5.basicFields;
+          if (ladder.length) fields = ladder.shift();
+          else {
+            fallback = true;
+            fields = META_D0_W5.basicFields;
+          }
           continue;
         }
         throw error;
@@ -497,7 +510,9 @@ export function createMetaTemplates(options = {}) {
     const body = { name, language, category, components };
     if (Number.isInteger(ttlSeconds) && ttlSeconds > 0) body[META_D0_W5.ttlField] = ttlSeconds;
     const json = await graph.request("POST", [wabaId, "message_templates"], { body });
-    return { id: String(json.id || ""), status: String(json.status || ""), category: String(json.category || "") };
+    // D0-W5-9: yanıt teslim süresini yansıtırsa Meta'nın kabul ettiği değer odur (yansıtmazsa null — kabul edildiği BİLİNMEZ).
+    const echoed = Number(json[META_D0_W5.ttlField]);
+    return { id: String(json.id || ""), status: String(json.status || ""), category: String(json.category || ""), ttlSeconds: Number.isInteger(echoed) && echoed > 0 ? echoed : null };
   }
 
   // Mevcut şablonun teslim süresini günceller (T2-5, D0-W5-8): yalnız TTL alanı gönderilir (components / kategori DEĞİŞMEZ).
