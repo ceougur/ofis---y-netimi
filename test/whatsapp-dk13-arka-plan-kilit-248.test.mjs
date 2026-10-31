@@ -236,7 +236,7 @@ describe("2.4.8 İş R3 — makine defteri kilidinde ekranda neden", () => {
   });
 
   it("iki kilit birden → şirket cümlesi (defter önce kilitlenmiş olsa da); Duraklatıldı işte not yok", { timeout: 120_000 }, async () => {
-    const ctx = await startWa({ now: NOW, __testWriteLockBackoffMs: 300 });
+    const ctx = await startWa({ now: NOW, __testWriteLockBackoffMs: 5_000 });
     const releases = [];
     try {
       const a = await ctx.account("Not Bir", "0533 444 55 71", 800);
@@ -248,8 +248,8 @@ describe("2.4.8 İş R3 — makine defteri kilidinde ekranda neden", () => {
       await ctx.wa.scheduler.runOnce();
       const notesOf = async () => Object.fromEntries((await ctx.api.get(URLS.batches)).data.data.map(item => [item.id, item.lockNote || null]));
       assert.deepEqual(await notesOf(), { [run]: LEDGER_NOTE, [held]: null }, "defter kilidi: süren işte defter cümlesi, duraklatılmışta yok");
+      // Defter işareti SÜRERKEN (5 sn) şirket dosyası da kilitlenir: işçinin sınaması şirketi de işaretler → iki işaret birden.
       releases.push(exclusive(ctx.server.app.config.dbPath));
-      await wait(350);
       await ctx.wa.scheduler.runOnce();
       assert.deepEqual(await notesOf(), { [run]: "Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.", [held]: null }, "iki kilit: şirket cümlesi");
     } finally {
