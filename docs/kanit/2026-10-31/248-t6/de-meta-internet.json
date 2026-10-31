@@ -1,0 +1,38 @@
+{
+  "ad": "248-t6/de-meta-internet",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/t6-248/de-meta-internet.mjs",
+  "commit": "bfa93b6d5b0df3b1e592fd09e6370e723b42e0eb",
+  "dal": "is/t6-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T01:09:32.140Z",
+  "sure_sn": 195.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "T6 (e) internet yok — R1 › e2 ZORLA (reminder): kesinti iki ileti ARASINA, havuzdaki soket canlıyken (≤4 sn) → ilk istek ne oluyor",
+      "konum": "test/t6-248/de-meta-internet.mjs:156:5",
+      "hata": "BULGU T6-E2 (reminder): Meta'ya hiç ulaşmayan 1 ileti 'Sonucu Belirsiz' oldu ve gönderilmedi: [\"accepted\",\"uncertain(Meta 3 saniyede yanıt vermedi; sonuç bilinmiyor.)\",\"pending\"] · 1 !== 0 (beklenen 0, gelen 1)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t6/de-meta-internet.log",
+  "klasor": "/home/user/wt-t6-248",
+  "ham_cikti_sha256": "9f2f62ffa626a0963e58e91438107423ee767c16acbda2f0bf56ced15fc464f7",
+  "ham_cikti_bayt": 6187
+}
