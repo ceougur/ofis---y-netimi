@@ -398,6 +398,60 @@ await step("G8 Bağlantı Bekleniyor (Meta'ya ulaşılamıyor) ve Sınır Nedeni
   await closeAll();
 });
 
+// Kullanıcı isteği (31.10.2026 "şimdi yap"): Gönderimler listesi yalnız son 30'u gösteriyordu. Veri programın API'siyle üretilir; üç gönderim yerel 01.11'e (saat geri alınıp
+// sonra eski yerine konur), kalanı bugüne açılır — toplam 30'u aşar.
+await step("G8b Gönderimler: Daha Fazla Göster (klavye) satırı artırır, sonda düğme yok + neden; tarih süzgeci daraltır, boş gün ipucu, geçersiz aralıkta neden; Süzgeci Temizle", async () => {
+  const rowsOf = () => page.$$eval(`${TOP} [data-wa-api-batches] tr[data-wa-api-open]`, rows => rows.length);
+  const extra = await ctx.account("Liste Deneme", "0536 500 00 09", 10);
+  const saved = ctx.clock();
+  const open = async when => {
+    if (when) ctx.clock.set(when);
+    const res = await ctx.batch({ kind: "statement", ids: [extra.id], preset: "thisMonth", sendAgain: true });
+    ok(res.status === 200, `toplu iş açıldı (${res.status})`);
+    await ctx.drain();
+  };
+  try {
+    for (let i = 0; i < 3; i += 1) await open(new Date(2026, 10, 1, 10, i, 0, 0));
+  } finally {
+    ctx.clock.set(saved);
+  }
+  const before = db("SELECT COUNT(*) AS n FROM wa_batches").n;
+  for (let i = before; i < 36; i += 1) await open(null);
+  const total = db("SELECT COUNT(*) AS n FROM wa_batches").n;
+  ok(total >= 36 && total <= 60, `veri tabanı: ${total} gönderim (30'dan fazla)`);
+  await openWhatsapp();
+  await waitPreview();
+  await page.click(`${TOP} [data-wa-api-list]`);
+  await page.waitForFunction(sel => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length > 0, TOP);
+  ok((await rowsOf()) === 30, `ilk açılışta 30 satır (görülen ${await rowsOf()})`);
+  ok(((await page.textContent(`${TOP} [data-wa-api-more]`)) || "").trim() === "Daha Fazla Göster", "Daha Fazla Göster düğmesi görünür");
+  await shot("12b-liste-ilk-30");
+  await page.focus(`${TOP} [data-wa-api-more]`);
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(([sel, n]) => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length === n, [TOP, total]);
+  ok((await rowsOf()) === total, `Daha Fazla Göster (Enter) → ${total} satır`);
+  ok(!(await page.$(`${TOP} [data-wa-api-more]`)), "daha eski yok → düğme görünmez");
+  ok(((await page.textContent(`${TOP} [data-wa-api-list-end]`)) || "").trim() === "Bütün gönderimler gösteriliyor.", "düğmenin yokluğunun nedeni yazılı");
+  await page.fill(`${TOP} [data-wa-api-from]`, "2026-11-01");
+  await page.waitForFunction(sel => document.querySelector(`${sel} [data-wa-api-from]`)?.value === "2026-11-01" && document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length > 0, TOP);
+  await page.fill(`${TOP} [data-wa-api-to]`, "2026-11-01");
+  await page.waitForFunction(sel => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length === 3, TOP);
+  ok((await rowsOf()) === 3, "Başlangıç = Bitiş = 01.11 → 3 satır (süzgeç daraltır)");
+  ok(/Bu tarihlerdeki bütün gönderimler gösteriliyor\./.test((await page.textContent(`${TOP} [data-wa-api-list-end]`)) || ""), "süzgeçli sonda neden");
+  await shot("12c-liste-tarih-suzgeci");
+  await page.fill(`${TOP} [data-wa-api-from]`, "2026-11-02");
+  await page.waitForSelector(`${TOP} [data-wa-api-list-error]`);
+  ok(((await page.textContent(`${TOP} [data-wa-api-list-error]`)) || "").trim() === "Başlangıç tarihi Bitiş tarihinden sonra olamaz.", "geçersiz aralık: sunucunun nedeni listede");
+  await page.fill(`${TOP} [data-wa-api-from]`, "2026-10-15");
+  await page.fill(`${TOP} [data-wa-api-to]`, "2026-10-15");
+  await page.waitForFunction(sel => /Bu tarihlerde gönderim yok\./.test(document.querySelector(`${sel} [data-wa-api-batches-empty]`)?.textContent || ""), TOP);
+  ok(true, "gönderimsiz gün: \"Bu tarihlerde gönderim yok.\"");
+  await page.click(`${TOP} [data-wa-api-filter-clear]`);
+  await page.waitForFunction(sel => document.querySelectorAll(`${sel} [data-wa-api-batches] tr`).length === 30, TOP);
+  ok((await rowsOf()) === 30 && (await page.inputValue(`${TOP} [data-wa-api-from]`)) === "", "Süzgeci Temizle → baştan 30 satır, alanlar boş");
+  await closeAll();
+});
+
 await step("G9 WhatsApp Web ile Gönder (wa.me) bağlantı varken de çalışır", async () => {
   const before = db("SELECT COUNT(*) AS n FROM message_sends WHERE status = 'sent'").n;
   await openWhatsapp();

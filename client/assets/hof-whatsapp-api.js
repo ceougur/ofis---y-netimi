@@ -60,7 +60,9 @@
    * @param {{ kind: "statement"|"reminder", selection: object, info: object, onDone?: Function, onTitle?: Function }} options
    */
   function mount(root, { kind = "statement", selection = {}, info = null, onDone = null }) {
-    const state = { kind, preset: "thisMonth", sendAgain: false, info, preview: null, error: null, loading: false, requestId: HOF.requestId(), view: "compose", batchId: "", batch: null, list: null, busy: false, seq: 0 };
+    const state = { kind, preset: "thisMonth", sendAgain: false, info, preview: null, error: null, loading: false, requestId: HOF.requestId(), view: "compose", batchId: "", batch: null, list: null, listFrom: "", listTo: "", listMore: false, listError: "", listLoading: false, busy: false, seq: 0 };
+    let listSeq = 0; // liste yüklemelerinin sırası (geç gelen eski yanıt yeni sayfanın üstüne yazmaz)
+    const PAGE = 30; // "Daha Fazla Göster" her basışta 30 daha eski gönderim (sunucuda imleçli sayfalama; en çok 200)
     root.setAttribute("data-nodirty", "");
     let pollTimer = 0;
     let liveTimer = 0;
@@ -244,8 +246,22 @@
         const c = b.counts || {};
         return `<tr data-wa-api-open="${esc(b.id)}" tabindex="0"><td>${esc(when(b.createdAt))}</td><td>${esc(b.kindLabel)}</td><td>${esc(periodLabel(b.period))}</td><td><span class="hof-wa-api-state is-${b.state}">${esc(b.stateLabel)}</span></td><td class="num">${count(b.total)}</td><td class="num">${count((c.delivered || 0) + (c.read || 0))}</td><td class="num">${count(c.failed)}</td></tr>`;
       }).join("");
+      const filtered = Boolean(state.listFrom || state.listTo);
+      const filter = `<div class="hof-wa-api-filter" data-wa-api-filter><label class="hof-field"><span>Başlangıç</span><input type="date" data-wa-api-from value="${esc(state.listFrom)}" max="${esc(state.listTo)}"></label>
+        <label class="hof-field"><span>Bitiş</span><input type="date" data-wa-api-to value="${esc(state.listTo)}" min="${esc(state.listFrom)}"></label>
+        ${filtered ? '<button type="button" class="hof-button hof-button-ghost hof-button-small" data-wa-api-filter-clear>Süzgeci Temizle</button>' : ""}</div>`;
+      const empty = state.listError
+        ? `<p class="hof-empty hof-wa-api-list-error" role="alert" data-wa-api-list-error>${esc(state.listError)}</p>`
+        : `<p class="hof-empty" data-wa-api-batches-empty>${filtered ? "Bu tarihlerde gönderim yok." : "Henüz otomatik gönderim yapılmadı."}</p>`;
+      // Daha eski gönderim yoksa düğme görünmez; nedeni yazılır (pasif / gizli düğmenin nedeni görünür).
+      const more = rows
+        ? state.listMore
+          ? `<button type="button" class="hof-button hof-button-ghost hof-wa-api-more" data-wa-api-more${state.listLoading ? " disabled" : ""}>${state.listLoading ? "Yükleniyor…" : "Daha Fazla Göster"}</button>`
+          : `<p class="hof-wa-api-note" data-wa-api-list-end>${filtered ? "Bu tarihlerdeki bütün gönderimler gösteriliyor." : "Bütün gönderimler gösteriliyor."}</p>`
+        : "";
       return `<div class="hof-wa-api-bar"><p class="hof-wa-api-title"><b>WhatsApp Gönderimleri</b></p><button type="button" class="hof-button hof-button-ghost hof-button-small" data-wa-api-new>Yeni Gönderim</button></div>
-        ${state.list === null ? '<p class="hof-empty">Yükleniyor…</p>' : rows ? `<div class="hof-wa-list"><table class="hof-table"><thead><tr><th>Başlangıç</th><th>Tür</th><th>Dönem</th><th>Durum</th><th class="num">Kişi</th><th class="num">Teslim Edildi</th><th class="num">Başarısız</th></tr></thead><tbody data-wa-api-batches>${rows}</tbody></table></div>` : '<p class="hof-empty" data-wa-api-batches-empty>Henüz otomatik gönderim yapılmadı.</p>'}
+        ${filter}
+        ${state.list === null ? '<p class="hof-empty">Yükleniyor…</p>' : rows ? `<div class="hof-wa-list"><table class="hof-table"><thead><tr><th>Başlangıç</th><th>Tür</th><th>Dönem</th><th>Durum</th><th class="num">Kişi</th><th class="num">Teslim Edildi</th><th class="num">Başarısız</th></tr></thead><tbody data-wa-api-batches>${rows}</tbody></table></div>${more}` : empty}
         <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-wa-api-close>Kapat</button></div>`;
     }
 
@@ -271,17 +287,45 @@
       }
       render();
     }
+    // Liste: ilk sayfa (append = false) ya da "Daha Fazla Göster" (append = true; imleç = ekrandaki son gönderim). Bir fazla istenir: gelirse daha eskisi var.
+    // keep (canlı yenileme): yüklenmiş kadar satır baştan yeniden okunur (en çok 199), süzgeç korunur.
+    async function loadList({ append = false, keep = false } = {}) {
+      const loaded = (state.list || []).length;
+      const size = keep ? Math.min(199, Math.max(PAGE, loaded)) : PAGE;
+      const query = new URLSearchParams({ limit: String(size + 1) });
+      if (state.listFrom) query.set("from", state.listFrom);
+      if (state.listTo) query.set("to", state.listTo);
+      if (append && loaded) query.set("before", state.list[loaded - 1].id);
+      const seq = ++listSeq;
+      state.listLoading = true;
+      if (append) render();
+      try {
+        const got = await HOF.api(`${BASE}/batches?${query}`, { background: true });
+        if (seq !== listSeq || !alive()) return;
+        state.listMore = got.length > size;
+        state.list = append ? [...(state.list || []), ...got.slice(0, size)] : got.slice(0, size);
+        state.listError = "";
+      } catch (error) {
+        if (seq !== listSeq || !alive()) return;
+        if (error?.status === 400 && !append) {
+          state.list = [];
+          state.listMore = false;
+          state.listError = error.message || "Gönderimler yüklenemedi.";
+        } else {
+          if (!append) state.list = [];
+          HOF.toastError(error);
+        }
+      }
+      state.listLoading = false;
+      render();
+    }
     async function openList() {
       state.view = "list";
       state.list = null;
+      state.listMore = false;
+      state.listError = "";
       render();
-      try {
-        state.list = await HOF.api(`${BASE}/batches?limit=30`, { background: true });
-      } catch (error) {
-        state.list = [];
-        HOF.toastError(error);
-      }
-      render();
+      await loadList();
     }
     // Süren işte yedek yoklama (canlı olay kaçarsa); bitmiş işte ve pencere kapanınca durur.
     function schedulePoll() {
@@ -296,7 +340,7 @@
       liveTimer = setTimeout(() => {
         if (!alive()) return;
         if (state.view === "batch") loadBatch();
-        else if (state.view === "list") openList();
+        else if (state.view === "list") loadList({ keep: true });
         else refreshInfo().then(() => alive() && render());
       }, 400);
     };
@@ -380,6 +424,11 @@
         loadPreview();
       } else if (target.matches("[data-wa-api-ack]")) {
         if (target.checked) setAck(true);
+      } else if (target.matches("[data-wa-api-from], [data-wa-api-to]")) {
+        // Süzgeç değişince liste baştan yüklenir (geçersiz aralıkta sunucunun nedeni listede görünür).
+        if (target.matches("[data-wa-api-from]")) state.listFrom = target.value;
+        else state.listTo = target.value;
+        openList();
       }
     });
     root.addEventListener("click", event => {
@@ -388,6 +437,12 @@
       if (target.matches("[data-wa-api-send]")) start();
       else if (target.matches("[data-wa-api-retry]")) loadPreview();
       else if (target.matches("[data-wa-api-list]")) openList();
+      else if (target.matches("[data-wa-api-more]")) loadList({ append: true });
+      else if (target.matches("[data-wa-api-filter-clear]")) {
+        state.listFrom = "";
+        state.listTo = "";
+        openList();
+      }
       else if (target.matches("[data-wa-api-new]")) {
         state.view = "compose";
         refreshInfo().then(loadPreview);

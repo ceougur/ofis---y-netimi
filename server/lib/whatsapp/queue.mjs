@@ -235,7 +235,46 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       ...(jobs ? { jobs: store.all("SELECT * FROM wa_jobs WHERE batch_id = ? ORDER BY rowid", row.id).map(jobView) } : {}),
     };
   }
-  const list = ({ limit = 50 } = {}) => store.all("SELECT * FROM wa_batches ORDER BY created_at DESC, rowid DESC LIMIT ?", Math.min(200, Math.max(1, Number(limit) || 50))).map(row => batchView(row));
+  // WhatsApp Gönderimleri listesi (kullanıcı isteği 31.10.2026 "şimdi yap"): en yeni önce; "Daha Fazla Göster" İMLEÇLİ sayfalama — before = ekrandaki son gönderimin
+  // kimliği, ondan daha eskiler (created_at, rowid) sırasıyla; OFFSET yok (araya yeni gönderim girse de sayfa kaymaz). from / to: gönderimin başladığı YEREL gün
+  // (lib/clock.mjs now.today ile aynı gün tanımı; iki uç dahil). Dış girdi doğrulanır; limit en çok 200.
+  const DAY_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+  const dayStart = (value, field, label) => {
+    const match = DAY_RE.exec(value);
+    const date = match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 0, 0, 0, 0) : null;
+    if (!date || date.getFullYear() !== Number(match[1]) || date.getMonth() !== Number(match[2]) - 1 || date.getDate() !== Number(match[3])) {
+      fail(400, `${label} tarihi geçersiz.`, "whatsapp-invalid", { field });
+    }
+    return date;
+  };
+  const list = ({ limit = 50, before = "", from = "", to = "" } = {}) => {
+    const text = value => (typeof value === "string" ? value.trim() : "");
+    const where = [];
+    const args = [];
+    const fromDay = text(from);
+    const toDay = text(to);
+    const start = fromDay ? dayStart(fromDay, "from", "Başlangıç") : null;
+    const end = toDay ? dayStart(toDay, "to", "Bitiş") : null;
+    if (start && end && start > end) fail(400, "Başlangıç tarihi Bitiş tarihinden sonra olamaz.", "whatsapp-invalid", { field: "from" });
+    if (start) {
+      where.push("created_at >= ?");
+      args.push(start.toISOString());
+    }
+    if (end) {
+      where.push("created_at < ?");
+      args.push(new Date(end.getFullYear(), end.getMonth(), end.getDate() + 1, 0, 0, 0, 0).toISOString());
+    }
+    const cursorId = text(before);
+    if (cursorId) {
+      const cursor = /^[A-Za-z0-9_-]{1,80}$/.test(cursorId) ? store.get("SELECT created_at, rowid FROM wa_batches WHERE id = ?", cursorId) : null;
+      if (!cursor) fail(400, "Daha eski gönderimler yüklenemedi; listeyi yeniden açın.", "whatsapp-invalid", { field: "before" });
+      where.push("(created_at < ? OR (created_at = ? AND rowid < ?))");
+      args.push(cursor.created_at, cursor.created_at, cursor.rowid);
+    }
+    return store
+      .all(`SELECT * FROM wa_batches${where.length ? ` WHERE ${where.join(" AND ")}` : ""} ORDER BY created_at DESC, rowid DESC LIMIT ?`, ...args, Math.min(200, Math.max(1, Number(limit) || 50)))
+      .map(row => batchView(row));
+  };
   const detail = id => {
     const row = batchRow(String(id || "").slice(0, 80));
     if (!row) fail(404, "Toplu gönderim bulunamadı.", "whatsapp-batch-missing");

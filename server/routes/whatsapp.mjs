@@ -345,7 +345,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   });
   router.get("/api/workspace/whatsapp/batches", async ({ req, res, url }) => {
     sendUser(req);
-    ok(res, queue.list({ limit: Number(url.searchParams.get("limit")) || 50 }));
+    const param = name => String(url.searchParams.get(name) || "").slice(0, 100);
+    ok(res, queue.list({ limit: Number(url.searchParams.get("limit")) || 50, before: param("before"), from: param("from"), to: param("to") }));
   });
   router.get("/api/workspace/whatsapp/batches/:id", async ({ req, res, params }) => {
     sendUser(req);
