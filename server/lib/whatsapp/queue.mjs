@@ -65,6 +65,7 @@ const TEMPLATE_CHECK_MS = 10 * 60_000;
 const TEMPLATE_CHECK_EVERY = 100;
 const TIER_CHECK_MS = 6 * HOUR;
 const STALE_BATCH_MS = DAY_MS; // §7a 24: 24 saatten eski toplu iş açılışta sorulur (sınır nedeniyle bekleyen hariç)
+const LICENSE_PAUSE = "Lisans Nedeniyle Durdu: program salt okunur çalışıyor; lisans yenilenince Devam Et'e basın.";
 
 const fail = (status, message, code, extra = {}) => {
   throw new HttpError(status, message, { code, ...extra });
@@ -619,9 +620,92 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return null;
   }
 
+  // T1 B3–B5 (kâhin karşılaştırması GUV-03/08, SINIR-02, SABLON-PAZARLAMA-ARADA, OLCEK-04): yürütülebilir iş yokken de SÜREN toplu işler denetlenir — sınırda /
+  // 131049 beklemesinde / yeniden denemeyi bekleyen işi olanlar: lisans salt okunura düştüyse "Lisans Nedeniyle Durdu" (plan §4, §7a 25: kendiliğinden SÜRMEZ),
+  // onay / firma adı / bağlantı (T2-8 ile aynı engeller), şablon kategorisi + içeriği R2 aralığıyla (her 100 iletide / en geç 10 dakikada; §7a 27), Meta sınır
+  // basamağı 6 saatte bir (§6 W2) — basamak yükseldiyse sınırda bekleyenler erkenden bırakılır (yeni sınırı yine işçinin pencere denetimi uygular). "Bağlantı
+  // Bekleniyor"daki toplu işte Meta okunmaz (R1). Okuma düşerse en erken 1 dk sonra yeniden. Dönüş: { acted, waitMs } (en yakın denetim anı).
+  const WATCH_RETRY_MS = 60_000;
+  const watchTried = new Map(); // `${waba}|${şablon}` / `tier|${waba}` → son deneme (ms)
+  async function watch() {
+    let acted = false;
+    let soon = null;
+    const consider = at => {
+      if (Number.isFinite(at)) soon = soon === null ? at : Math.min(soon, at);
+    };
+    const due = (key, at, span) => (!Number.isFinite(at) || nowMs() < at || nowMs() - at >= span) && !(nowMs() - (watchTried.get(key) ?? -Infinity) < WATCH_RETRY_MS && nowMs() >= (watchTried.get(key) ?? 0));
+    for (const batch of store.all("SELECT * FROM wa_batches WHERE state = 'running' ORDER BY created_at, rowid")) {
+      const waiting = store.get("SELECT COUNT(*) AS n, COALESCE(SUM(CASE WHEN state = 'limited' THEN 1 ELSE 0 END), 0) AS limited FROM wa_jobs WHERE batch_id = ? AND state IN ('pending', 'limited', 'held')", batch.id);
+      if (!waiting.n || !ledger.batchState(batch.id).live) continue;
+      if (!writable()) {
+        pauseBatch(batch, "license", LICENSE_PAUSE);
+        acted = true;
+        continue;
+      }
+      const block = startBlock();
+      if (block) {
+        pauseBatch(batch, block.pauseCode, block.pauseReason);
+        acted = true;
+        continue;
+      }
+      const record = connection.read();
+      if (!record || record.wabaId !== batch.waba_id || record.phoneNumberId !== batch.phone_number_id) {
+        pauseBatch(batch, "connection", "WhatsApp bağlantısı kaldırıldı ya da değişti; gönderim duraklatıldı.");
+        acted = true;
+        continue;
+      }
+      if (batch.pause_code === "offline") continue;
+      const key = `${batch.waba_id}|${batch.template}`;
+      const cached = templateCache.get(key);
+      if (due(key, cached?.at, TEMPLATE_CHECK_MS) || (cached && cached.sent >= TEMPLATE_CHECK_EVERY)) {
+        watchTried.set(key, nowMs());
+        let result = null;
+        try {
+          result = await checkTemplate(record, batch.template, { force: true });
+        } catch (error) {
+          if (!(error instanceof MetaGraphError) && !(error instanceof HttpError)) throw error;
+        }
+        if (result && !result.ok) {
+          pauseBatch(batch, result.code, result.reason);
+          acted = true;
+          continue;
+        }
+      }
+      consider(Math.max((templateCache.get(key)?.at ?? -Infinity) + TEMPLATE_CHECK_MS, (watchTried.get(key) ?? -Infinity) + WATCH_RETRY_MS));
+      if (waiting.limited) {
+        const tierKey = `tier|${batch.waba_id}`;
+        const tier = tierCache.get(batch.waba_id);
+        if (due(tierKey, tier?.at, TIER_CHECK_MS)) {
+          watchTried.set(tierKey, nowMs());
+          const before = tier?.limit;
+          try {
+            await dailyLimit(connection.client().graph, record, { force: true });
+          } catch (error) {
+            if (!(error instanceof MetaGraphError) && !(error instanceof HttpError)) throw error;
+          }
+          const after = tierCache.get(batch.waba_id)?.limit;
+          const raised = before !== undefined && after !== undefined && (after === Infinity ? before !== Infinity : Number.isFinite(before) && Number.isFinite(after) && after > before);
+          if (raised) {
+            store.run("UPDATE wa_jobs SET state = 'pending', next_at = NULL, updated_at = ? WHERE state = 'limited' AND batch_id IN (SELECT id FROM wa_batches WHERE waba_id = ? AND state = 'running')", iso(), batch.waba_id);
+            log.info?.(`WhatsApp sınır basamağı yükseldi (${batch.waba_id}): sınırda bekleyen iletiler sürüyor.`);
+            notify(batch.id);
+            acted = true;
+          }
+        }
+        consider(Math.max((tierCache.get(batch.waba_id)?.at ?? -Infinity) + TIER_CHECK_MS, (watchTried.get(tierKey) ?? -Infinity) + WATCH_RETRY_MS));
+      }
+    }
+    return { acted, waitMs: soon === null ? null : Math.max(0, soon - nowMs()) };
+  }
+
   async function step() {
     const pick = next();
-    if (!pick.jobId) return { did: false, waitMs: pick.waitMs };
+    if (!pick.jobId) {
+      const watched = await watch();
+      if (watched.acted) return { did: true };
+      const waits = [pick.waitMs, watched.waitMs].filter(Number.isFinite);
+      return { did: false, waitMs: waits.length ? Math.min(...waits) : null };
+    }
     let job = jobRow(pick.jobId);
     const batch = batchRow(job.batch_id);
     // (5) geri yüklenen / taşınan veri: defterde canlı olmayan toplu iş yürütülmez.
@@ -636,7 +720,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     if (!writable()) {
       // §7a 25: lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (Devam Et).
-      pauseBatch(batch, "license", "Lisans Nedeniyle Durdu: program salt okunur çalışıyor; lisans yenilenince Devam Et'e basın.");
+      pauseBatch(batch, "license", LICENSE_PAUSE);
       return { did: true };
     }
     const record = connection.read();
