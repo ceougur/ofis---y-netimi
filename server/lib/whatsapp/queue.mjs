@@ -851,7 +851,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     // ---------- Gönderiliyor (istekten ÖNCE yazılır) ----------
     const attempt = (job.attempt || 0) + 1;
-    updateJob(job.id, { state: "sending", attempt, sending_at: iso() });
+    // T2 dar kontrol ORTA-2: önceki denemenin wamid'i işte kalmaz (eski denemenin bildirimi yeni denemeyle eşleşmesin; sonucu belirsiz yeni deneme imzalı kancayla çözülebilsin).
+    updateJob(job.id, { state: "sending", attempt, sending_at: iso(), wamid: null });
     let claim;
     try {
       injected("ledger-claim", job);
@@ -1223,6 +1224,13 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       if (!job) {
         out.unknown += 1;
+        continue;
+      }
+      // T2 dar kontrol ORTA-2: wamid'in AİT OLDUĞU deneme defterden okunur — işin şimdiki denemesi değilse (eski denemenin yinelenen bildirimi) işin durumu ve kilidi
+      // DEĞİŞMEZ.
+      const owner = wamid ? ledger.attemptOfWamid?.(wamid) : null;
+      if (owner && (owner.jobId !== job.id || owner.attempt !== job.attempt)) {
+        out.ignored += 1;
         continue;
       }
       const batch = batchRow(job.batch_id);

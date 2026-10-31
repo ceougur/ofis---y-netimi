@@ -163,6 +163,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     hookSeenAt: db.prepare("SELECT MAX(at) AS at FROM hook_seen WHERE waba_id = ?"),
     companyOfWamid: db.prepare("SELECT c.company_id AS companyId, c.waba_id AS wabaId FROM outcomes o JOIN claims c ON c.job_id = o.job_id AND c.attempt = o.attempt WHERE o.wamid = ? LIMIT 1"),
     companyOfJob: db.prepare("SELECT company_id AS companyId, waba_id AS wabaId FROM claims WHERE job_id = ? LIMIT 1"),
+    attemptOfWamid: db.prepare("SELECT job_id AS jobId, attempt FROM outcomes WHERE wamid = ? AND wamid <> '' LIMIT 1"),
   };
   const hookView = row => {
     if (!row) return null;
@@ -379,6 +380,8 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     /** Durum bildiriminin şirketi: wamid'in (kabul edilmiş deneme) ya da iş kimliğinin (sonucu belirsiz deneme) talebini yazan şirket. */
     companyOfWamid: wamid => (wamid ? q.companyOfWamid.get(String(wamid)) || null : null),
     companyOfJob: jobId => (jobId ? q.companyOfJob.get(String(jobId)) || null : null),
+    /** T2 dar kontrol ORTA-2: wamid'in ait olduğu deneme (Meta'nın kabul ettiği deneme; wamid her denemede yenidir). Bildirim yalnız o denemeye yazılır. */
+    attemptOfWamid: wamid => (wamid ? q.attemptOfWamid.get(String(wamid)) || null : null),
     // ---------- Aylık sayım ----------
     monthCounts({ companyId, wabaId = "", from, to }) {
       const company = { accepted: q.accepted.get(String(companyId), from, to).n, ...(row => ({ delivered: row.n, billable: row.billable }))(q.delivered.get(String(companyId), from, to)) };
