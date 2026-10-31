@@ -1,0 +1,58 @@
+# Tek mutasyon uygular: python3 mut.py <kök> <ad>. Her (dosya, eski, yeni) eski metin dosyada TAM BİR kez geçmeli.
+import sys
+Q = "server/lib/whatsapp/queue.mjs"
+D = "server/lib/whatsapp/defter.mjs"
+M = {
+  # İş O
+  "mO1-ikinci-yazim": [(Q, "          if (isLockError(error)) {", "          if (false && isLockError(error)) {")],
+  "mO1b-ikinci-silme": [(Q, "        if (mediaDeletedPending.has(row.id)) {", "        if (false && mediaDeletedPending.has(row.id)) {")],
+  "mO2-devam-sayac-kalir": [(Q, "    lockTroubles.delete(row.id); // İş O2", "    // lockTroubles.delete(row.id); // İş O2")],
+  "mMb-bekleyen-sifir": [(Q, "        const pending = lockTroubles.get(batchId) || 0;", "        const pending = 0;")],
+  "mMc-basarida-silinmez": [(Q, "\n      lockTroubles.delete(batch.id);\n", "\n")],
+  # İş P1
+  "mP1-sinama-yok": [("server/lib/write-lock.mjs", "      if (store?.probeWritable?.() === false) {", "      if (false) {")],
+  "mP1-busy-geri-alinmaz": [("server/lib/db.mjs", "    db.exec(`PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS}`);\n  }\n}", "    // busy_timeout geri alınmaz\n  }\n}")],
+  "mP1-isaret-tutmaz": [("server/lib/write-lock.mjs", "    mark: key => void until.set(key, now() + backoffMs),", "    mark: key => void key,")],
+  "mP1-pos-sinamasiz": [("server/lib/bank/pos.mjs", "      if (!canWrite()) return;", "      // canWrite yok")],
+  "mP1c2-defter-sinamasiz": [(Q, "writeLock.guard(companyId, store) && writeLock.guard(LEDGER_LOCK_KEY, ledger)", "writeLock.guard(companyId, store)")],
+  "mP1c2-kanca-defter-sinamasiz": [("server/lib/whatsapp/hook.mjs", "    if (hooks.probeWritable?.() === false) return failure(", "    if (false) return failure(")],
+  # İş P3
+  "mP3-kanca-sinamasiz": [("server/lib/whatsapp/hook.mjs", "      if (app?.context?.canWriteInBackground?.() === false) return failure(", "      if (false) return failure(")],
+  # İş P2
+  "mP2-not-yok": [(Q, "    const lockNote = row.state === \"running\" && open > 0 && lockShown ? LOCK_NOTE : null;", "    const lockNote = null;")],
+  "mP2-duraklatilmista-da": [(Q, "    const lockNote = row.state === \"running\" && open > 0 && lockShown ? LOCK_NOTE : null;", "    const lockNote = [\"running\", \"paused\"].includes(row.state) && open > 0 && lockShown ? LOCK_NOTE : null;")],
+  "mP2-isaret-tabanli": [(Q, "    const lockNote = row.state === \"running\" && open > 0 && lockShown ? LOCK_NOTE : null;", "    const lockNote = row.state === \"running\" && open > 0 && writeLock?.isMarked(companyId) ? LOCK_NOTE : null;")],
+  "mP2-olay-yok": [(Q, "    notify(null, { lock: marked });", "    void marked;")],
+  # İş Q5
+  "mQ5-ilk-kabul": [(D, "        COALESCE((SELECT o.at FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted'),\n          (SELECT l.at FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt), a.at) AS at", "        a.at AS at")],
+  # İş Q3
+  "mQ3-tasinan-bekliyor": [(Q, "      if (!attempt && movedHere(job.batch_id)) {", "      if (false) {")],
+  # İş Q4
+  "mQ4-dal-yok": [(Q, "        else if (signed && lateResultOfMissingJob(status, wamid, value, at)) out.applied += 1;", "        else if (false) out.applied += 1;")],
+  "mQ4-imzasiz-acar": [(Q, "        else if (signed && lateResultOfMissingJob(status, wamid, value, at)) out.applied += 1;", "        else if (lateResultOfMissingJob(status, wamid, value, at)) out.applied += 1;")],
+  "mQ4-kabul-teslimi-yok": [(Q, "    if (attempt?.outcome !== \"released\" && !(attempt?.outcome === \"accepted\" && !row)) return false;", "    if (attempt?.outcome !== \"released\") return false;")],
+  "mQ4-teslim-sonrasi-failed": [(Q, "    } else if (value === \"failed\" && !ledger.deliveredJob?.(jobId)) {", "    } else if (value === \"failed\") {")],
+  # İş Q2
+  "mQ2-defter-bagi-yok": [(D, "      WHERE c.job_id NOT IN (SELECT job FROM settled_up) AND c.company_id = ?", "      WHERE c.company_id = ?")],
+  "mQ2-dosya-bagi-yok": [(Q, "    if (!unsettled.size) return;\n    const links", "    return;\n    const links")],
+  "mQ2-her-durum-sayar": [(D, "            AND (EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c3.job_id AND o.attempt = c3.attempt AND o.outcome = 'accepted')\n              OR EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c3.job_id AND l.attempt = c3.attempt))", "            AND 1"),
+                           (Q, "      if (![\"accepted\", \"sent\", \"delivered\", \"read\"].includes(row.state)) continue;", "      if (false) continue;")],
+  "mQ2-zincir-yok": [(D, "        UNION SELECT al.source_job_id FROM anyway_links al JOIN settled_up s ON al.job_id = s.job)", ")"),
+                      (Q, "source = parent.get(source), guard += 1) settled.add(source);", "source = \"\", guard += 1) settled.add(source);")],
+  # İş Q1
+  "mQ1-kisi-anahtari-yok": [("server/lib/whatsapp/donem.mjs", "  if (own === \"secim|all\") return first && period?.to ? [own, `aralik|${first}|${period.to}`] : [own];", "  if (own === \"secim|all\") return [own];")],
+  "mQ1-kisi-suzmesi-yok": [(D, "  const mine = accountKeys.get(row.accountId);\n  if (!mine?.length) return false;", "  return true;\n  const mine = accountKeys.get(row.accountId);")],
+  "mQ1-son-satir": [("server/lib/whatsapp/donem.mjs", "    if (!to || date <= to) return date ? String(date) : \"\";\n  }\n  return \"\";", "    if (!to || date <= to) last = date ? String(date) : \"\";\n  }\n  return last;"),
+                    ("server/lib/whatsapp/donem.mjs", "  const to = period?.to;\n  for (const line of lines || []) {", "  const to = period?.to;\n  let last = \"\";\n  for (const line of lines || []) {")],
+}
+if sys.argv[1] == "--list":
+    print("\n".join(M)); sys.exit(0)
+root, name = sys.argv[1], sys.argv[2]
+for path, old, new in M[name]:
+    p = f"{root}/{path}"
+    s = open(p).read()
+    n = s.count(old)
+    if n != 1:
+        sys.exit(f"{name}: {path} eski metin {n} kez")
+    open(p, "w").write(s.replace(old, new))
+print(f"{name}: uygulandı")

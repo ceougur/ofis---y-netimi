@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkPQfix-mutasyon-mQ1-kisi-suzmesi-yok-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk10-son3-ozel-248.test.mjs",
+  "commit": "7550b93a430b5a6222efc9002e754897f5aaf263",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 151,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T20:15:49.268Z",
+  "sure_sn": 8.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 13,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › kişi başına süzme: Q'ya P'nin Tüm dönemiyle aynı tarihli özel aralık (15.10–05.11) gitti / belirsiz kaldı → 05.11 Tüm Hareketler'de Q elenmez (Q'nun dönemi 20.10–05.11)",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:79:3",
+      "hata": "P'nin anahtarı Q'nun talebini eşlemez · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-mutasyon-mQ1-kisi-suzmesi-yok-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "c0e9a85aa328d346ac7216ee1b57363b29e6b916fee1084a7e96fd1b424b1fef",
+  "ham_cikti_bayt": 7475
+}

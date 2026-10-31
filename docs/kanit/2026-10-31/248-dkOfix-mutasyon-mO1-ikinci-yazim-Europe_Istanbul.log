@@ -1,0 +1,73 @@
+TAP version 13
+# Subtest: 2.4.8 İş N — şirket dosyası kilitliyken işçi turu olay döngüsünü busy_timeout'tan uzun tutmaz
+    # Subtest: kilitli dosyada her tur ≤ 12 sn (önce bakım + iş ~40 sn), ileti gitmez; kilit kalkınca iş gider, çift ileti yok, toplu iş Tamamlandı
+    ok 1 - kilitli dosyada her tur ≤ 12 sn (önce bakım + iş ~40 sn), ileti gitmez; kilit kalkınca iş gider, çift ileti yok, toplu iş Tamamlandı
+      ---
+      duration_ms: 20639.329571
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.4.8 İş N — şirket dosyası kilitliyken işçi turu olay döngüsünü busy_timeout'tan uzun tutmaz
+  ---
+  duration_ms: 20640.403564
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş O — kilitli dosyada bakım turu ve bellekteki 'art arda' sayacı
+    # Subtest: O1: teslim edilmiş iletinin PDF'i silinmemişken dosya kilitli → bakım ≤ 12 sn (önce ~30 sn); kilit kalkınca kayıt yazılır, Meta'ya ikinci silme isteği gitmez
+    not ok 1 - O1: teslim edilmiş iletinin PDF'i silinmemişken dosya kilitli → bakım ≤ 12 sn (önce ~30 sn); kilit kalkınca kayıt yazılır, Meta'ya ikinci silme isteği gitmez
+      ---
+      duration_ms: 20603.985435
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk12-kilit-bakim-sayac-248.test.mjs:72:3'
+      failureType: 'testCodeFailure'
+      error: 'kilitte bakım olay döngüsünü en çok ~10 sn tutar (geldi 20052 ms)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk12-kilit-bakim-sayac-248.test.mjs:89:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: O2: kilitte sayaç birikti → Duraklat → Devam Et → tek disk dolu hatası toplu işi DURAKLATMAZ (art arda 1)
+    ok 2 - O2: kilitte sayaç birikti → Duraklat → Devam Et → tek disk dolu hatası toplu işi DURAKLATMAZ (art arda 1)
+      ---
+      duration_ms: 40647.895073
+      type: 'test'
+      ...
+    # Subtest: O3a: kilitte biriken 4 + kilit kalkınca tek disk dolu hatası = art arda 5 → Duraklatıldı (bellekteki sayaç dosyaya geçer)
+    ok 3 - O3a: kilitte biriken 4 + kilit kalkınca tek disk dolu hatası = art arda 5 → Duraklatıldı (bellekteki sayaç dosyaya geçer)
+      ---
+      duration_ms: 40572.860724
+      type: 'test'
+      ...
+    # Subtest: O3b: kilitte biriken 4 → kilit kalkınca bir iş BAŞARIYLA gider (sayaç sıfırlanır) → sonraki tek disk dolu hatası art arda 1
+    ok 4 - O3b: kilitte biriken 4 → kilit kalkınca bir iş BAŞARIYLA gider (sayaç sıfırlanır) → sonraki tek disk dolu hatası art arda 1
+      ---
+      duration_ms: 40629.068448
+      type: 'test'
+      ...
+    1..4
+not ok 2 - 2.4.8 İş O — kilitli dosyada bakım turu ve bellekteki 'art arda' sayacı
+  ---
+  duration_ms: 142455.561787
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk12-kilit-bakim-sayac-248.test.mjs:71:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 163847.228503

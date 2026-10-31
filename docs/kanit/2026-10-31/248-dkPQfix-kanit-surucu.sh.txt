@@ -1,0 +1,66 @@
+#!/bin/bash
+# İş O + P + Q kanıt sürücüsü: eski kod (ayrı kopya, ders 23) + mutasyonlar (HEAD kopyası) — iki TZ, her koşu tools/kanit.mjs kos ile.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2
+W=/home/user/wt-t2fix-248
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+export PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-q7m3/pw
+kos() { # ad kök dosyalar…
+  local ad=$1 kok=$2; shift 2
+  local files=(); for f in "$@"; do files+=("$kok/test/$f"); done
+  for tz in UTC Europe/Istanbul; do
+    local out=$K/kos-$ad-${tz//\//_}.out
+    TZ=$tz node tools/kanit.mjs kos "$ad-${tz//\//_}" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 "${files[@]}" > $out 2>&1
+    echo "$ad $tz çıkış=$? $(grep '\[kanit\]' $out | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-100)"
+    grep -E "^\s+not ok" $out | cut -c1-140 | sed 's/^/      /'
+  done
+}
+eski() { # önek kısa-ad commit dosyalar…
+  local onek=$1 ad=$2 commit=$3; shift 3
+  local kok=$K/eski-$ad-$commit
+  rm -rf -- "${kok:?}"; mkdir -p $kok
+  git -C $W archive $commit | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules
+  for f in "$@"; do cp $W/test/$f $kok/test/$f; done
+  cp $W/test/fixtures/sqlite-kilit-isci.mjs $kok/test/fixtures/
+  kos "$onek-eski-$ad-$commit" $kok "$@"
+  rm -rf -- "${kok:?}"
+}
+mutk() { # önek mutasyon dosyalar…
+  local onek=$1 m=$2; shift 2
+  local kok=$K/mut
+  if [ ! -d $kok ]; then mkdir -p $kok && git -C $W archive HEAD | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules; fi
+  rm -rf -- "$kok/server" && git -C $W archive HEAD server | tar -x -C $kok
+  python3 $K/mut.py $kok $m || return
+  kos "$onek-mutasyon-$m" $kok "$@"
+}
+O="whatsapp-dk11-kilit-248.test.mjs whatsapp-dk12-kilit-bakim-sayac-248.test.mjs"
+P1="write-lock-248.test.mjs whatsapp-dk13-arka-plan-kilit-248.test.mjs"
+P3="whatsapp-w9-kanca-248.test.mjs"
+P2="whatsapp-dk13-arka-plan-kilit-248.test.mjs"
+Q5="whatsapp-q5-son-kabul-248.test.mjs"
+Q3="whatsapp-q3-tasinan-gonderiliyor-248.test.mjs whatsapp-w2-surec-olumu-248.test.mjs"
+Q4="whatsapp-q4-dosyasiz-imzali-248.test.mjs"
+Q2="whatsapp-q2-yine-de-gonder-kabul-248.test.mjs whatsapp-dk4-yeniden-dene-248.test.mjs whatsapp-dk8-g-yeni-belirsiz-248.test.mjs whatsapp-dk8-g-ek-248.test.mjs"
+Q1="whatsapp-q1-tum-kisi-donemi-248.test.mjs whatsapp-dk10-son3-ozel-248.test.mjs"
+echo "== ESKİ KOD"
+eski 248-dkOfix O bdf9614e $O
+eski 248-dkPQfix P1 05c17618 $P1
+eski 248-dkPQfix P3 afa3fc01 $P3
+eski 248-dkPQfix P2 0b928e8f $P2
+eski 248-dkPQfix Q5 af481bab $Q5
+eski 248-dkPQfix Q3 faf7ca84 $Q3
+eski 248-dkPQfix Q4 52ab81db $Q4
+eski 248-dkPQfix Q2 4affbb07 $Q2
+eski 248-dkPQfix Q1 781b24eb $Q1
+echo "== MUTASYONLAR"
+for m in mO1-ikinci-yazim mO1b-ikinci-silme mO2-devam-sayac-kalir mMb-bekleyen-sifir mMc-basarida-silinmez; do mutk 248-dkOfix $m $O; done
+for m in mP1-sinama-yok mP1-busy-geri-alinmaz mP1-isaret-tutmaz mP1-pos-sinamasiz; do mutk 248-dkPQfix $m $P1; done
+mutk 248-dkPQfix mP3-kanca-sinamasiz $P3
+for m in mP2-not-yok mP2-duraklatilmista-da mP2-olay-yok; do mutk 248-dkPQfix $m $P2; done
+mutk 248-dkPQfix mQ5-ilk-kabul $Q5
+mutk 248-dkPQfix mQ3-tasinan-bekliyor $Q3
+for m in mQ4-dal-yok mQ4-imzasiz-acar mQ4-kabul-teslimi-yok mQ4-teslim-sonrasi-failed; do mutk 248-dkPQfix $m $Q4; done
+for m in mQ2-defter-bagi-yok mQ2-dosya-bagi-yok mQ2-her-durum-sayar mQ2-zincir-yok; do mutk 248-dkPQfix $m $Q2; done
+for m in mQ1-kisi-anahtari-yok mQ1-kisi-suzmesi-yok mQ1-son-satir; do mutk 248-dkPQfix $m $Q1; done
+rm -rf -- "$K/mut"
+echo BITTI
