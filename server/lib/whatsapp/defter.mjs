@@ -14,6 +14,11 @@
 //   4. AYLIK SAYIM: teslim edilen (ücretli) iletiler — "Bu Ay Gönderilen İleti Sayısı" = TESLİM (Teslim Edildi + Okundu), ay = teslim zamanı (Türkiye saati),
 //      kapsam WABA (plan §7a madde 19); kabul edilenler ayrıca. Geri yüklemeden etkilenmez.
 //   5. META SINIR BEKLEMESİ: Meta sınır hatası verince aynı WABA'nın BÜTÜN işleri (iki şirket de) 24 saat bekler (plan §7a madde 30).
+//   6. DURUM BİLDİRİMİ ADRESİ (T2-3/4, bağımsız gözden geçirme r2 + r7): Meta'da kanca adresi (override_callback_uri) WABA + uygulama başına TEKTİR (plan §3) → kaydı
+//      da WABA başına tek ve şirket dosyalarının DIŞINDA (hook_events; gizli yolun ve doğrulama belirtecinin yalnız SHA-256 karması — açık değer hiçbir yerde
+//      saklanmaz). Aynı WABA'yı kullanan iki şirket aynı adresi paylaşır; gelen bildirim wamid'den (claims + outcomes) ya da imzalı iş kimliğinden doğru şirkete
+//      yönlendirilir. Yedekten Geri Yükle / Şirket Verisini Sıfırla bu kaydı değiştirmez (eski bir dosya eski gizli yolu "geri getiremez"). hook_seen: bu WABA'nın
+//      kancasına son bildirim (saat başına bir satır; §7a 16 "bildirim yolu çalışıyor").
 // Zamanlar iş saatinden (config.now) ISO metni; karşılaştırmalar metin üzerinden (hepsi toISOString biçiminde, UTC).
 import { mkdirSync } from "node:fs";
 import { randomUUID } from "node:crypto";
@@ -42,6 +47,9 @@ const SCHEMA = `
   -- Kabul edilip sonradan TESLİM EDİLEMEDİĞİ bildirilen deneme (durum kancası "failed"): kilit çözülür ("Başarısızları Yeniden Dene" çift değildir),
   -- 24 saat sayacına girmez.
   CREATE TABLE IF NOT EXISTS failures (job_id TEXT NOT NULL, attempt INTEGER NOT NULL, at TEXT NOT NULL, PRIMARY KEY (job_id, attempt)) STRICT;
+  -- T1 B2: kabul edilip durum kancasıyla 131049 (ekosistem sağlığı) bildirilen deneme — iş "Meta Bekletti (24 Saat Sonra Yeniden)": kilit çözülür (24 saat sonra BİR
+  -- kez yeniden), ama 24 saat sayacından DÜŞMEZ (iletinin alıcısı pencerede sayılmış kalır; plan §6 W2, §7a 14).
+  CREATE TABLE IF NOT EXISTS releases (job_id TEXT NOT NULL, attempt INTEGER NOT NULL, at TEXT NOT NULL, PRIMARY KEY (job_id, attempt)) STRICT;
   CREATE TABLE IF NOT EXISTS accepts (job_id TEXT PRIMARY KEY, company_id TEXT NOT NULL, waba_id TEXT NOT NULL, at TEXT NOT NULL) STRICT;
   CREATE INDEX IF NOT EXISTS idx_accepts_company ON accepts(company_id, at);
   CREATE TABLE IF NOT EXISTS holds (waba_id TEXT NOT NULL, until TEXT NOT NULL, reason TEXT NOT NULL DEFAULT '', at TEXT NOT NULL) STRICT;
@@ -49,6 +57,20 @@ const SCHEMA = `
   CREATE TRIGGER IF NOT EXISTS holds_no_update BEFORE UPDATE ON holds BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS holds_no_delete BEFORE DELETE ON holds BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TABLE IF NOT EXISTS deliveries (job_id TEXT PRIMARY KEY, company_id TEXT NOT NULL, waba_id TEXT NOT NULL, billable INTEGER NOT NULL DEFAULT 1, at TEXT NOT NULL) STRICT;
+  -- T2-3/4: durum bildirimi adresinin kayıt olayları (WABA başına; son satır geçerli kayıt). reason: manual (Yeniden Kaydet / Bağlantıyı Sına), auto (bakım turu:
+  -- kayıt yok / adres değişti / düşmüştü), mismatch (Meta'daki adres programınkinden farklıydı).
+  CREATE TABLE IF NOT EXISTS hook_events (
+    seq INTEGER PRIMARY KEY AUTOINCREMENT, waba_id TEXT NOT NULL, path_hash TEXT NOT NULL, verify_hash TEXT NOT NULL, base TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (state IN ('pending', 'active', 'failed', 'conflict')), reason TEXT NOT NULL DEFAULT '', error TEXT NOT NULL DEFAULT '', at TEXT NOT NULL
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_hook_events_waba ON hook_events(waba_id, seq);
+  CREATE INDEX IF NOT EXISTS idx_hook_events_path ON hook_events(path_hash);
+  CREATE TABLE IF NOT EXISTS hook_seen (waba_id TEXT NOT NULL, hour TEXT NOT NULL, at TEXT NOT NULL, PRIMARY KEY (waba_id, hour)) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_outcomes_wamid ON outcomes(wamid) WHERE wamid <> '';
+  CREATE TRIGGER IF NOT EXISTS hook_events_no_update BEFORE UPDATE ON hook_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS hook_events_no_delete BEFORE DELETE ON hook_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS hook_seen_no_update BEFORE UPDATE ON hook_seen BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS hook_seen_no_delete BEFORE DELETE ON hook_seen BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE INDEX IF NOT EXISTS idx_deliveries_company ON deliveries(company_id, at);
   CREATE TRIGGER IF NOT EXISTS batch_events_no_update BEFORE UPDATE ON batch_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS batch_events_no_delete BEFORE DELETE ON batch_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
@@ -58,6 +80,8 @@ const SCHEMA = `
   CREATE TRIGGER IF NOT EXISTS outcomes_no_delete BEFORE DELETE ON outcomes BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS failures_no_update BEFORE UPDATE ON failures BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS failures_no_delete BEFORE DELETE ON failures BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS releases_no_update BEFORE UPDATE ON releases BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS releases_no_delete BEFORE DELETE ON releases BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS accepts_no_update BEFORE UPDATE ON accepts BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS accepts_no_delete BEFORE DELETE ON accepts BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS deliveries_no_update BEFORE UPDATE ON deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
@@ -92,12 +116,14 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     events: db.prepare("SELECT event, reason, at FROM batch_events WHERE batch_id = ?"),
     liveOf: db.prepare("SELECT o.batch_id AS batchId FROM batch_events o WHERE o.company_id = ? AND o.event = 'open' AND NOT EXISTS (SELECT 1 FROM batch_events s WHERE s.batch_id = o.batch_id AND s.event = 'stop')"),
     liveCompanies: db.prepare("SELECT DISTINCT o.company_id AS companyId FROM batch_events o WHERE o.event = 'open' AND NOT EXISTS (SELECT 1 FROM batch_events s WHERE s.batch_id = o.batch_id AND s.event = 'stop')"),
-    attempts: db.prepare(`SELECT c.attempt, CASE WHEN f.job_id IS NOT NULL THEN 'failed' ELSE o.outcome END AS outcome, o.wamid FROM claims c
-      LEFT JOIN outcomes o ON o.job_id = c.job_id AND o.attempt = c.attempt LEFT JOIN failures f ON f.job_id = c.job_id AND f.attempt = c.attempt WHERE c.job_id = ? ORDER BY c.attempt`),
+    attempts: db.prepare(`SELECT c.attempt, CASE WHEN f.job_id IS NOT NULL THEN 'failed' WHEN r.job_id IS NOT NULL THEN 'released' ELSE o.outcome END AS outcome, o.wamid FROM claims c
+      LEFT JOIN outcomes o ON o.job_id = c.job_id AND o.attempt = c.attempt LEFT JOIN failures f ON f.job_id = c.job_id AND f.attempt = c.attempt
+      LEFT JOIN releases r ON r.job_id = c.job_id AND r.attempt = c.attempt WHERE c.job_id = ? ORDER BY c.attempt`),
     claim: db.prepare("INSERT INTO claims (job_id, attempt, batch_id, company_id, waba_id, phone, account_id, kind, period_key, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"),
     outcome: db.prepare("INSERT OR IGNORE INTO outcomes (job_id, attempt, outcome, wamid, at) VALUES (?, ?, ?, ?, ?)"),
     accept: db.prepare("INSERT OR IGNORE INTO accepts (job_id, company_id, waba_id, at) VALUES (?, ?, ?, ?)"),
     failure: db.prepare("INSERT OR IGNORE INTO failures (job_id, attempt, at) VALUES (?, ?, ?)"),
+    release: db.prepare("INSERT OR IGNORE INTO releases (job_id, attempt, at) VALUES (?, ?, ?)"),
     deliver: db.prepare("INSERT OR IGNORE INTO deliveries (job_id, company_id, waba_id, billable, at) VALUES (?, ?, ?, ?, ?)"),
     window: db.prepare(`SELECT c.phone, MIN(c.at) AS first FROM claims c LEFT JOIN outcomes o ON o.job_id = c.job_id AND o.attempt = c.attempt
       WHERE c.waba_id = ? AND c.at > ? AND (o.outcome IS NULL OR o.outcome <> 'failed')
@@ -114,6 +140,31 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     acceptedWaba: db.prepare("SELECT COUNT(*) AS n FROM accepts WHERE waba_id = ? AND at >= ? AND at < ?"),
     delivered: db.prepare("SELECT COUNT(*) AS n, COALESCE(SUM(billable), 0) AS billable FROM deliveries WHERE company_id = ? AND at >= ? AND at < ?"),
     deliveredWaba: db.prepare("SELECT COUNT(*) AS n, COALESCE(SUM(billable), 0) AS billable FROM deliveries WHERE waba_id = ? AND at >= ? AND at < ?"),
+    // T2-3/4
+    hookEvent: db.prepare("INSERT INTO hook_events (waba_id, path_hash, verify_hash, base, state, reason, error, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"),
+    hookLast: db.prepare("SELECT * FROM hook_events WHERE waba_id = ? ORDER BY seq DESC LIMIT 1"),
+    hookFirstOf: db.prepare("SELECT MIN(at) AS at FROM hook_events WHERE waba_id = ? AND path_hash = ?"),
+    hookActiveOf: db.prepare("SELECT MAX(at) AS at FROM hook_events WHERE waba_id = ? AND path_hash = ? AND state = 'active'"),
+    hookByPath: db.prepare("SELECT DISTINCT waba_id AS wabaId FROM hook_events WHERE path_hash = ?"),
+    hookSeen: db.prepare("INSERT OR IGNORE INTO hook_seen (waba_id, hour, at) VALUES (?, ?, ?)"),
+    hookSeenAt: db.prepare("SELECT MAX(at) AS at FROM hook_seen WHERE waba_id = ?"),
+    companyOfWamid: db.prepare("SELECT c.company_id AS companyId, c.waba_id AS wabaId FROM outcomes o JOIN claims c ON c.job_id = o.job_id AND c.attempt = o.attempt WHERE o.wamid = ? LIMIT 1"),
+    companyOfJob: db.prepare("SELECT company_id AS companyId, waba_id AS wabaId FROM claims WHERE job_id = ? LIMIT 1"),
+  };
+  const hookView = row => {
+    if (!row) return null;
+    return {
+      wabaId: row.waba_id,
+      pathHash: row.path_hash,
+      verifyHash: row.verify_hash,
+      base: row.base,
+      state: row.state,
+      reason: row.reason,
+      error: row.error,
+      at: row.at,
+      requestedAt: q.hookFirstOf.get(row.waba_id, row.path_hash)?.at || row.at,
+      registeredAt: q.hookActiveOf.get(row.waba_id, row.path_hash)?.at || null,
+    };
   };
   return {
     file,
@@ -158,12 +209,14 @@ export function openWaLedger({ dir, log = console, fault = null }) {
      */
     claim(row) {
       const previous = q.attempts.all(String(row.jobId)).map(item => ({ attempt: item.attempt, outcome: item.outcome || null, wamid: item.wamid || "" }));
-      const blocking = previous.find(item => item.outcome !== "failed");
+      // "failed" (gitmedi / teslim edilemedi) ve "released" (131049: Meta 24 saat sonra yeniden denenmesini istedi) yeni denemeyi engellemez.
+      const open = item => item.outcome !== "failed" && item.outcome !== "released";
+      const blocking = previous.find(open);
       if (blocking) return { ok: false, previous: blocking };
       guard("claim", row);
       db.exec("BEGIN IMMEDIATE");
       try {
-        const again = q.attempts.all(String(row.jobId)).find(item => item.outcome !== "failed");
+        const again = q.attempts.all(String(row.jobId)).find(open);
         if (again) {
           db.exec("ROLLBACK");
           return { ok: false, previous: { attempt: again.attempt, outcome: again.outcome || null, wamid: again.wamid || "" } };
@@ -214,6 +267,17 @@ export function openWaLedger({ dir, log = console, fault = null }) {
         return false;
       }
     },
+    /** T1 B2: kabul edilmiş deneme 131049 ile döndü — iş 24 saat sonra BİR kez yeniden denenebilir; 24 saat sayacında kalır. Hata fırlatmaz. */
+    released(row) {
+      try {
+        guard("release", row);
+        q.release.run(String(row.jobId), Number(row.attempt), String(row.at));
+        return true;
+      } catch (error) {
+        log.warn?.(`WhatsApp gönderim defteri: ${row.jobId} yeniden deneme izni yazılamadı (${error.message}).`);
+        return false;
+      }
+    },
     delivered(row) {
       try {
         guard("deliver", row);
@@ -249,6 +313,38 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     },
     /** Süren bekleme bitişi (ISO) ya da null. */
     holdOf: (wabaId, now) => q.holdOf.get(String(wabaId), String(now))?.until || null,
+    // ---------- T2-3/4: durum bildirimi adresi (WABA başına) ve bildirimin şirketi ----------
+    /** WABA'nın geçerli kanca kaydı (son olay) ya da null. */
+    hookOf: wabaId => hookView(q.hookLast.get(String(wabaId))),
+    /** Gizli yolun karması GEÇERLİ kayda aitse o kayıt (yenilenmiş / eski yol → null). */
+    hookByPath(pathHash) {
+      for (const row of q.hookByPath.all(String(pathHash))) {
+        const current = hookView(q.hookLast.get(row.wabaId));
+        if (current?.pathHash === String(pathHash)) return current;
+      }
+      return null;
+    },
+    /** Kanca kaydı olayı (yazılamazsa hata fırlatır — çağıran Meta'ya kayıt isteğini GÖNDERMEZ). */
+    hookEvent(row) {
+      guard("hook", row);
+      q.hookEvent.run(String(row.wabaId), String(row.pathHash), String(row.verifyHash || ""), String(row.base || ""), String(row.state), String(row.reason || ""), String(row.error || "").slice(0, 500), String(row.at));
+      return this.hookOf(row.wabaId);
+    },
+    /** Bu WABA'nın kancasına bildirim geldi (saat başına bir satır). Hata fırlatmaz. */
+    hookSeen(wabaId, at) {
+      try {
+        guard("hookSeen", { wabaId });
+        q.hookSeen.run(String(wabaId), String(at).slice(0, 13), String(at));
+        return true;
+      } catch (error) {
+        log.warn?.(`WhatsApp gönderim defteri: kanca bildirimi işareti yazılamadı (${error.message}).`);
+        return false;
+      }
+    },
+    hookSeenAt: wabaId => q.hookSeenAt.get(String(wabaId))?.at || null,
+    /** Durum bildiriminin şirketi: wamid'in (kabul edilmiş deneme) ya da iş kimliğinin (sonucu belirsiz deneme) talebini yazan şirket. */
+    companyOfWamid: wamid => (wamid ? q.companyOfWamid.get(String(wamid)) || null : null),
+    companyOfJob: jobId => (jobId ? q.companyOfJob.get(String(jobId)) || null : null),
     // ---------- Aylık sayım ----------
     monthCounts({ companyId, wabaId = "", from, to }) {
       const company = { accepted: q.accepted.get(String(companyId), from, to).n, ...(row => ({ delivered: row.n, billable: row.billable }))(q.delivered.get(String(companyId), from, to)) };

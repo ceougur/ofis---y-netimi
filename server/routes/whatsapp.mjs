@@ -178,8 +178,9 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   });
 
   // ---------- 2.4.8 W1: WhatsApp Business API bağlantısı ----------
-  // onChange (W2/W9): ortak katmanın kaydı (tünel kuralı, durum bildiriminin şirketi) — lib/whatsapp/hub.mjs.
-  const connection = createWhatsappConnection({ store, config, audit, now: clock, onChange: summary => whatsapp?.registry?.set(companyId, summary) });
+  // onChange (W2/W9): ortak katmanın kaydı (tünel kuralı) — lib/whatsapp/hub.mjs. T2-3/4: durum bildirimi adresinin kaydı WABA düzeyinde, makine defterinde
+  // (whatsapp.ledger; şirket dosyasının dışında — geri yükleme / sıfırlama bozmaz); publicUrl: Bağlantıyı Sına kanca adresini Meta'dakiyle karşılaştırır.
+  const connection = createWhatsappConnection({ store, config, audit, now: clock, onChange: summary => whatsapp?.registry?.set(companyId, summary), hooks: whatsapp?.ledger || null, publicUrl: () => mobileRemote?.publicUrl?.() || "" });
   const writable = () => !license || license.writable();
   const view = () => connection.view({ writable: writable() });
   router.get("/api/workspace/whatsapp/connection", async ({ req, res }) => {
@@ -251,7 +252,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   });
 
   // ---------- 2.4.8 W5: bilgilendirme şablonları (routes/whatsapp-sablon.mjs) ----------
-  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection });
+  // T2-5: şablona yazılan teslim süresi gönderim ayarından (kuyruk aşağıda kurulur; istek anında okunur).
+  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection, ttlHours: () => queue?.settings?.().ttlHours });
 
   // ---------- 2.4.8 W4: gönderim ekranının durumu ----------
   router.get("/api/workspace/whatsapp/sending-status", async ({ req, res }) => {

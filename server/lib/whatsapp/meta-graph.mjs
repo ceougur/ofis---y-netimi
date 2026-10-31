@@ -64,7 +64,8 @@ export const META_D0 = Object.freeze({
   ecosystemCode: 131049,
   // D0-11: İleti ömrü (TTL) ileti isteğinde değil ŞABLONDA tanımlanır (message_send_ttl_seconds; şablonları W5 açar). Program kendi "Süresi Doldu"
   // kararını iç kuralla verir (plan §7a madde 16): durum bildirimi yolu çalışıyorsa (son 7 günde en az bir bildirim geldi) teslim olmayan ileti TTL
-  // (S2 A: 3 gün) + 1 saatte "Süresi Doldu"; bildirim yolu yoksa "Meta Kabul Etti"de kalır.
+  // (S2 A: 3 gün) + 1 saatte "Süresi Doldu"; bildirim yolu yoksa "Meta Kabul Etti"de kalır. Şablona TTL'yi programın kendisi yazar (T2-5): D0-W5-8. Bu değer
+  // YALNIZ şablona yazılan istektir; "Süresi Doldu" ve PDF silme Meta'nın KABUL ETTİĞİ değere bağlıdır (D0-W5-9; bilinmezse 30 gün).
   defaultTtlHours: 72,
   // D0-12: Medya yükleme (POST /<PHONE_NUMBER_ID>/media, multipart: messaging_product, type, file) yanıtı { id }; silme (DELETE /<MEDIA_ID>) { success: true }.
   // Zaten silinmiş / süresi dolmuş medyanın silinmesi hata kodu 100 (ya da HTTP 404) döner varsayımı → program "silinmiş" sayar.
@@ -83,6 +84,9 @@ export const META_D0 = Object.freeze({
   // anahtar müşterinin uygulamasınındır (programda yok); kapıcı yalnız DestekOfis uygulamasının (Yol 2) imzasını denetleyebilir (plan §3 C).
   // D0-17: Abonelik (POST /<WABA_ID>/subscribed_apps { override_callback_uri, verify_token }) yanıtı { success: true }; adres doğrulaması GET
   // ?hub.mode=subscribe&hub.verify_token=…&hub.challenge=… ile gelir, yanıt challenge'ın kendisi (düz metin, 200).
+  // D0-17b (T2-3/4): Meta'da alternatif adres WABA + uygulama başına TEKTİR (son kayıt geçerli); kayıtlı adres GET /<WABA_ID>/subscribed_apps yanıtındaki
+  // override_callback_uri'dir (webhooks/override). Yol 1'de (müşterinin kendi uygulaması, System User belirteci) listede o uygulamanın tek satırı olduğu varsayılır;
+  // birden çok uygulama varsa programın adresi herhangi bir satırda aranır. Telefon numarası düzeyindeki alternatif adres (webhook_configuration) KULLANILMAZ.
   // D0-18 (W9): Kanca gövdesinin zarfı { object: "whatsapp_business_account", entry: [{ id: <WABA>, changes: [{ field: "messages", value: { messaging_product,
   // metadata: { display_phone_number, phone_number_id }, statuses[] | messages[] } }] }] } (webhooks/reference/messages); bir istekte birden çok entry/change
   // olabilir; durum dışı olaylar (gelen ileti, şablon/hesap) aynı uca gelir ve 200 ile kabul edilir. Gövde boyutu için Meta sınırı belgede bulunmadı (programda
@@ -342,6 +346,12 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
       const json = await request("POST", [wabaId, "subscribed_apps"], { body: { override_callback_uri: callbackUri, verify_token: verifyToken } });
       return json.success === true || json.success === "true";
     },
+    // T2-3/4 (D0-17b): Meta'da KAYITLI adres — GET /<WABA_ID>/subscribed_apps → { data: [{ whatsapp_business_api_data: { id, link, name }, override_callback_uri? }] }
+    // (webhooks/override "Get Messaging account alternate callback" örnek yanıtı). Alternatif adres yoksa alan gelmez. Dönüş: [{ appId, overrideUri }].
+    subscribedApps: async wabaId => {
+      const json = await request("GET", [wabaId, "subscribed_apps"]);
+      return (Array.isArray(json.data) ? json.data : []).map(item => ({ appId: String(item?.whatsapp_business_api_data?.id || ""), overrideUri: typeof item?.override_callback_uri === "string" ? item.override_callback_uri : "" }));
+    },
     // ---------- 2.4.8 W7: "WhatsApp'ı Bağla" sonrası Meta adımları (plan §2.8; D0 — META_D0_W7) ----------
     // Birlikte kullanım DEĞİLSE numara Cloud API'ye kaydedilir (iki adımlı doğrulama PIN'i programca üretilir).
     registerPhone: async (phoneNumberId, pin) => {
@@ -426,14 +436,29 @@ export const META_D0_W5 = Object.freeze({
   maxUploadBytes: 5_000_000,
   // Şablon adı kuralı (template-management: ^[a-z0-9_]+$, en çok 512).
   templateName: /^[a-z0-9_]{1,512}$/,
+  // D0-W5-8 (T2-5; S2 A "utility TTL 3 gün"): iletinin ömrü (TTL) ŞABLONDA `message_send_ttl_seconds` (saniye) alanıyla verilir — açarken (POST /<WABA>/message_templates)
+  // ve düzenlerken (POST /<TEMPLATE_ID>; template-management "yalnız kategori, components ya da time-to-live düzenlenebilir", düzenlenebilen durumlar APPROVED /
+  // REJECTED / PAUSED; onaylı şablonda 24 saatte 1, 30 günde 10 düzenleme; düzenlemeden sonra Meta yeniden onaylar). Alan adı send-messages "Customizing TTL for
+  // templates" bağlantısından (time-to-live sayfası yerelde yok); utility şablonda İZİNLİ ARALIK OKUNMADI. Program ayardaki teslim süresini (varsayılan 72 saat)
+  // gönderir; Meta alanı ya da değeri reddederse (100) şablon BİR KEZ TTL'siz açılır (Meta varsayılanı 30 gün) ve kartta uyarı çıkar — gönderim kapanmaz.
+  // Şablon listesi bu alanı istemez (tanınmayan alan bütün ayrıntılı listeyi temel alanlara düşürür — D0-W5-5): uygulanan değer programın kaydında tutulur.
+  ttlField: "message_send_ttl_seconds",
+  ttlEditable: Object.freeze(["APPROVED", "REJECTED", "PAUSED"]),
+  // D0-W5-9 (T2-5 güvenli taraf): Meta'nın KABUL ETTİĞİ teslim süresi şablon listesinde message_send_ttl_seconds alanından (istenirse) ya da şablon açma yanıtında aynı
+  // alandan okunur — ikisi de belgede okunmadı. Program "Süresi Doldu" anını ve PDF silmeyi YALNIZ Meta'nın bildirdiği değere bağlar; değer gelmezse / reddedildiyse
+  // Meta'nın varsayılanı (30 gün; send-messages "Default TTL") geçerli sayılır. Liste bu alanı tanımazsa (100) bir kez TTL'siz ayrıntılı alanlara düşülür
+  // (components kaybolmasın), sonra temel alanlara.
+  ttlDetailFields: "name,language,status,category,quality_score,rejected_reason,components,message_send_ttl_seconds",
 });
+// Meta'nın varsayılan ileti ömrü (send-messages "Default TTL: All messages except authentication templates: 30 days") — teslim süresi okunamazsa.
+export const META_DEFAULT_TTL_SECONDS = 30 * 24 * 3600;
 
 // Program YALNIZ bilgilendirme şablonu açar (ürün kararı: kampanya / pazarlama şablonu yok). Kategori bu istemcide de kilitlidir: çağıran yanlışlıkla
 // başka kategori verirse Meta'ya istek GİTMEZ.
 export const PROGRAM_TEMPLATE_CATEGORY = "UTILITY";
 
 /**
- * createMetaTemplates({ baseUrl, fetchImpl, openToken, timeoutMs }) → { details, createTemplate, resumableUpload }.
+ * createMetaTemplates({ baseUrl, fetchImpl, openToken, timeoutMs }) → { details, createTemplate, editTemplateTtl, resumableUpload }.
  * Seçenekler createMetaGraph ile aynıdır; belirteç yine yalnız istek anında açılır.
  */
 export function createMetaTemplates(options = {}) {
@@ -446,7 +471,9 @@ export function createMetaTemplates(options = {}) {
 
   // Şablonların ayrıntılı listesi (D0-W5-5): imleçli, en çok META_D0.maxPages sayfa. İlk sayfa 100 dönerse bir kez temel alanlarla yeniden.
   async function details(wabaId) {
-    let fields = META_D0_W5.detailFields;
+    // D0-W5-9: önce teslim süresiyle; alan tanınmazsa TTL'siz ayrıntılı alanlar; o da olmazsa temel alanlar (D0-W5-5).
+    const ladder = [META_D0_W5.ttlDetailFields, META_D0_W5.detailFields];
+    let fields = ladder.shift();
     let fallback = false;
     for (;;) {
       const items = [];
@@ -462,8 +489,11 @@ export function createMetaTemplates(options = {}) {
         return { items, complete: false, fields: fallback ? "basic" : "detail" };
       } catch (error) {
         if (!fallback && error instanceof MetaGraphError && error.code === 100 && !items.length) {
-          fallback = true;
-          fields = META_D0_W5.basicFields;
+          if (ladder.length) fields = ladder.shift();
+          else {
+            fallback = true;
+            fields = META_D0_W5.basicFields;
+          }
           continue;
         }
         throw error;
@@ -472,12 +502,25 @@ export function createMetaTemplates(options = {}) {
   }
 
   // Şablon açma (template-management "Create templates"): yalnız UTILITY ve geçerli ad; yoksa istek yapılmaz.
-  async function createTemplate(wabaId, { name, language, category, components } = {}) {
+  // ttlSeconds (T2-5, D0-W5-8): verilirse istekte message_send_ttl_seconds.
+  async function createTemplate(wabaId, { name, language, category, components, ttlSeconds = null } = {}) {
     if (category !== PROGRAM_TEMPLATE_CATEGORY) throw refuse("Program yalnız bilgilendirme (Utility) şablonu açar; pazarlama ya da başka türde şablon açılmaz.");
     if (!META_D0_W5.templateName.test(String(name || ""))) throw refuse("Şablon adı geçersiz (yalnız küçük harf, rakam ve alt çizgi).");
     if (!Array.isArray(components) || !components.length) throw refuse("Şablonun içeriği boş.");
-    const json = await graph.request("POST", [wabaId, "message_templates"], { body: { name, language, category, components } });
-    return { id: String(json.id || ""), status: String(json.status || ""), category: String(json.category || "") };
+    const body = { name, language, category, components };
+    if (Number.isInteger(ttlSeconds) && ttlSeconds > 0) body[META_D0_W5.ttlField] = ttlSeconds;
+    const json = await graph.request("POST", [wabaId, "message_templates"], { body });
+    // D0-W5-9: yanıt teslim süresini yansıtırsa Meta'nın kabul ettiği değer odur (yansıtmazsa null — kabul edildiği BİLİNMEZ).
+    const echoed = Number(json[META_D0_W5.ttlField]);
+    return { id: String(json.id || ""), status: String(json.status || ""), category: String(json.category || ""), ttlSeconds: Number.isInteger(echoed) && echoed > 0 ? echoed : null };
+  }
+
+  // Mevcut şablonun teslim süresini günceller (T2-5, D0-W5-8): yalnız TTL alanı gönderilir (components / kategori DEĞİŞMEZ).
+  async function editTemplateTtl(templateId, ttlSeconds) {
+    if (!META_D0.idPattern.test(String(templateId || ""))) throw refuse("Şablon kimliği geçersiz.");
+    if (!Number.isInteger(ttlSeconds) || ttlSeconds <= 0) throw refuse("Teslim süresi geçersiz.");
+    const json = await graph.request("POST", [String(templateId)], { body: { [META_D0_W5.ttlField]: ttlSeconds } });
+    return json.success === true || json.success === "true";
   }
 
   // Resumable Upload (D0-W5-2…4): dosya baytları → şablon örneği tanıtıcısı (header_handle).
@@ -555,5 +598,5 @@ export function createMetaTemplates(options = {}) {
     return json;
   }
 
-  return { details, createTemplate, resumableUpload };
+  return { details, createTemplate, editTemplateTtl, resumableUpload };
 }

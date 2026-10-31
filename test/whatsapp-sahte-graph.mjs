@@ -50,6 +50,12 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
     hideFromList: false,
     rejectDetailFields: false,
     created: 0,
+    // 2.4.8 T2-5 (aynı el — kâhin DEĞİL): şablonun teslim süresi (message_send_ttl_seconds) açarken ve düzenlerken (POST /<TEMPLATE_ID>) kaydedilir;
+    // ttlRange: [en az, en çok] verilirse dışındaki değer 100 ile reddedilir (D0-W5-8: izinli aralık belgede okunmadı). templateEdits: düzenleme istekleri.
+    ttlRange: null,
+    templateEdits: [],
+    // 2.4.8 T2-3/4: Meta'da şu an kayıtlı alternatif kanca adresi (POST subscribed_apps yazar; GET okur).
+    override: null,
   };
   // Çok parçalı gövdeden alanlar (ad → { value | filename, type, data }).
   const multipart = (raw, type) => {
@@ -150,8 +156,10 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
         if (footer && String(footer.text || "").length > 60) return reply(400, metaError(100, "Footer text too long"));
         const body = components.find(item => String(item.type).toUpperCase() === "BODY");
         if (!body || String(body.text || "").length > 1024) return reply(400, metaError(100, "Invalid parameter: body"));
+        const ttl = sent.message_send_ttl_seconds;
+        if (ttl !== undefined && (!Number.isInteger(ttl) || (state.ttlRange && (ttl < state.ttlRange[0] || ttl > state.ttlRange[1])))) return reply(400, metaError(100, "Invalid parameter: message_send_ttl_seconds"));
         state.created += 1;
-        const made = { name: sent.name, language: sent.language, status: state.createStatus, category: state.forceCategory || sent.category, id: `91000000000${String(state.created).padStart(4, "0")}`, components, quality_score: { score: "UNKNOWN", date: 1761800000 } };
+        const made = { name: sent.name, language: sent.language, status: state.createStatus, category: state.forceCategory || sent.category, id: `91000000000${String(state.created).padStart(4, "0")}`, components, quality_score: { score: "UNKNOWN", date: 1761800000 }, ...(ttl !== undefined ? { message_send_ttl_seconds: ttl } : {}) };
         state.templates.push(made);
         return reply(200, { id: made.id, status: made.status, category: made.category });
       }
@@ -163,6 +171,17 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
         if (parts[0] !== wabaId) return reply(400, metaError(100, `Unsupported get request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
         if (state.rejectDetailFields && /quality_score|rejected_reason|components/.test(entry.query.fields || "")) return reply(400, metaError(100, "(#100) Tried accessing nonexisting field (rejected_reason) on node type (WhatsAppBusinessHSM)"));
         return reply(200, { data: state.hideFromList ? [] : state.templates, paging: { cursors: { before: "QVFIUb", after: "QVFIUa" } } });
+      }
+      // 2.4.8 T2-5: mevcut şablonun düzenlenmesi (yalnız teslim süresi); APPROVED / REJECTED / PAUSED düzenlenebilir.
+      if (req.method === "POST" && parts.length === 1 && state.templates.some(item => item.id === parts[0])) {
+        const tpl = state.templates.find(item => item.id === parts[0]);
+        const sent = entry.body || {};
+        state.templateEdits.push({ id: parts[0], body: sent });
+        if (!["APPROVED", "REJECTED", "PAUSED"].includes(String(tpl.status).toUpperCase())) return reply(400, metaError(100, "Template cannot be edited in its current status"));
+        const ttl = sent.message_send_ttl_seconds;
+        if (!Number.isInteger(ttl) || (state.ttlRange && (ttl < state.ttlRange[0] || ttl > state.ttlRange[1]))) return reply(400, metaError(100, "Invalid parameter: message_send_ttl_seconds"));
+        tpl.message_send_ttl_seconds = ttl;
+        return reply(200, { success: true });
       }
       if (req.method === "GET" && parts.length === 1) {
         if (parts[0] !== phoneNumberId) return reply(400, metaError(100, `Unsupported get request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
@@ -188,7 +207,16 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
       if (req.method === "POST" && parts.length === 2 && parts[1] === "subscribed_apps") {
         if (parts[0] !== wabaId) return reply(400, metaError(100, `Unsupported post request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
         state.subscriptions.push(entry.body || {});
+        // Meta'da WABA + uygulama başına TEK alternatif adres (webhooks/override): son kayıt geçerlidir; gövdesiz abonelik adresi kaldırır.
+        state.override = entry.body?.override_callback_uri || null;
         return reply(200, { success: true });
+      }
+      // 2.4.8 T2-3/4 (aynı el — kâhin DEĞİL): Meta'da kayıtlı adres (webhooks/override "Get Messaging account alternate callback" yanıt biçimi). Test state.override'ı
+      // değiştirerek "Meta'daki adres değişti" durumunu kurar.
+      if (req.method === "GET" && parts.length === 2 && parts[1] === "subscribed_apps") {
+        if (parts[0] !== wabaId) return reply(400, metaError(100, `Unsupported get request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
+        if (!state.subscriptions.length && !state.override) return reply(200, { data: [] });
+        return reply(200, { data: [{ whatsapp_business_api_data: { id: appId, link: `https://www.facebook.com/games/?app_id=${appId}`, name: "DestekOfis Mesaj" }, ...(state.override ? { override_callback_uri: state.override } : {}) }] });
       }
       // 2.4.8 W7 (aynı el — kâhin DEĞİL): WhatsApp'ı Bağla sonrası numara kaydı (6 haneli PIN) ve birlikte kullanım eşitlemesi.
       if (req.method === "POST" && parts.length === 2 && (parts[1] === "register" || parts[1] === "smb_app_data")) {
