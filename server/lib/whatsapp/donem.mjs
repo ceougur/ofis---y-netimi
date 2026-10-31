@@ -28,14 +28,34 @@ function statementKey(period) {
   return `aralik|${period?.from || ""}|${period?.to || ""}`;
 }
 
-/** Ekstre dönemi + gün → anahtar kümesi: [kendi anahtarı] ya da özel aralık o günün "Bu Ay" / "Geçen Ay" tarihlerine birebir eşitse [kendi anahtarı, "ay|YYYY-AA"]. */
-function statementKeys(period, day) {
+/**
+ * İş Q1 (dar kontrol 10 DÜŞÜK-1; "KİME KAÇ KEZ" ilkesi 3 "şüphede aynı dönem"): "Tüm Hareketler"in iletideki dönemi KİŞİYE özeldir — "<ilk hareket> – <dönem sonu>"
+ * (lib/whatsapp/queue.mjs periodText bu yardımcıdan okur: TEK KAYNAK). Dönüş: cari hareketlerinden dönem sonuna (dahil) kadar olan ilk satırın tarihi; yoksa "" (hareketsiz
+ * ya da yalnız ileri tarihli hareket → kişiye özel eşlik yok). lines: cari ekstresinin satırları (cari kartının sırası) ya da yalnız tarihleri (dizgi dizisi).
+ */
+export function firstLineDateOf(period, lines) {
+  const to = period?.to;
+  for (const line of lines || []) {
+    const date = typeof line === "string" ? line : line?.date;
+    if (!to || date <= to) return date ? String(date) : "";
+  }
+  return "";
+}
+
+/**
+ * Ekstre dönemi + gün → anahtar kümesi: [kendi anahtarı] ya da özel aralık o günün "Bu Ay" / "Geçen Ay" tarihlerine birebir eşitse [kendi anahtarı, "ay|YYYY-AA"].
+ * first (İş Q1): yalnız "Tüm Hareketler"de kişinin ilk hareketi (firstLineDateOf) — kümeye "aralik|<ilk hareket>|<dönem sonu>" girer (iletideki tarihlerle birebir aynı
+ * özel aralık aynı dönem; iki yön). Kişiye özel olduğundan çağıran KİŞİ BAŞINA hesaplar.
+ */
+function statementKeys(period, day, first = "") {
   const own = statementKey(period);
+  if (own === "secim|all") return first && period?.to ? [own, `aralik|${first}|${period.to}`] : [own];
   // KULLANICI KARARI (31.10.2026, "KİME KAÇ KEZ" ilkesi, S1a): HAZIR seçimle ("Bu Ay" / "Geçen Ay") yapılan gönderimin o günkü (toplu işin açıldığı gün) TARİHLERİ de
   // kümeye girer → aynı tarihli özel aralıkla (hangi gün kullanılırsa kullanılsın) aynı dönem. S1b (özel aralık o günün hazır seçimine eşitse "ay|…") aşağıda, aynen.
   if (own.startsWith("ay|")) return period?.from && period?.to ? [own, `aralik|${period.from}|${period.to}`] : [own];
   // "KİME KAÇ KEZ" ilkesi (3) ile (İş L5): "Son 3 Ay" / "Tüm Hareketler" gönderiminin o günkü tarihleri de kümeye girer (birebir aynı tarihli özel aralık aynı dönem);
-  // bu eşlikte de seçimin 7 gün penceresi geçerli (defter sentBefore / unsettled "rolling"; queue taşınan veri). "Tüm Hareketler"in başlangıcı boş → özel aralıkla eşleşmez.
+  // bu eşlikte de seçimin 7 gün penceresi geçerli (defter sentBefore / unsettled "rolling"; queue taşınan veri). "Tüm Hareketler"in başlangıcı boş → kişiye özel eşlik yukarıda
+  // (İş Q1: ilk hareket – dönem sonu; aynı 7 gün penceresi).
   if (own.startsWith("secim|")) return period?.from && period?.to ? [own, `aralik|${period.from}|${period.to}`] : [own];
   if (!own.startsWith("aralik|") || !day) return [own];
   for (const preset of ["thisMonth", "lastMonth"]) {
@@ -51,8 +71,8 @@ export function periodKeyOf(kind, period, day = "") {
 }
 
 /** R3 anahtar kümesi (ilk öğe periodKeyOf; ek öğeler ★ soru 4 eşliği — defterde claim_keys). day: o günün yerel tarihi (YYYY-AA-GG). */
-export function periodKeysOf(kind, period, day = "") {
-  return kind === "statement" ? statementKeys(period, day) : [`gun|${day}`];
+export function periodKeysOf(kind, period, day = "", { first = "" } = {}) {
+  return kind === "statement" ? statementKeys(period, day, first) : [`gun|${day}`];
 }
 
 /** R3 penceresi: "Son 3 Ay" / "Tüm Hareketler" yalnız son 7 günde gönderilmişse aynı dönem. Dönüş: ISO alt sınır ya da "" (pencere yok). */
@@ -65,8 +85,8 @@ export function sentSinceOf(kind, period, nowMs) {
 }
 
 /** "Zaten Kuyrukta" anahtar kümesi (aynı cari + aynı şablon + kümeler kesişiyor → elenir). day: toplu işin açıldığı / yeni gönderimin yerel günü. */
-export function queueKeysOf(kind, period, day = "") {
-  return kind === "statement" ? statementKeys(period, day) : ["hatirlatma"];
+export function queueKeysOf(kind, period, day = "", { first = "" } = {}) {
+  return kind === "statement" ? statementKeys(period, day, first) : ["hatirlatma"];
 }
 
 /** İki anahtar kümesi kesişiyor mu (aynı dönem). */

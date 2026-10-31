@@ -113,6 +113,54 @@ const SCHEMA = `
   CREATE TRIGGER IF NOT EXISTS deliveries_no_update BEFORE UPDATE ON deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS deliveries_no_delete BEFORE DELETE ON deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
 `;
+// R3 sorgusu (aşağıdaki q.sentBefore açıklaması). outer / tail: gruplanmış (cari → son an) ya da İş Q1'in satır satır biçimi (eşleşen anahtarlarla).
+const SENT_BEFORE_SQL = (outer, tail) => `${outer} FROM (SELECT c.account_id AS accountId, c.batch_id AS batch_id, c.job_id AS job_id, c.attempt AS attempt, c.period_key AS period_key, c.at AS claim_at,
+        (SELECT group_concat(k2.period_key, char(31)) FROM claim_keys k2 WHERE k2.job_id = c.job_id AND k2.attempt = c.attempt) AS extra_keys,
+        COALESCE((SELECT o.at FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted'),
+          (SELECT l.at FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt), a.at) AS at
+      FROM accepts a JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
+      WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?))))) c
+      WHERE c.at >= ? AND c.claim_at > ?
+        AND (c.period_key NOT IN ('secim|last3', 'secim|all') OR c.at >= ?)
+        AND ((NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
+              AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'failed')
+              AND (EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted')
+                OR EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt))
+              AND NOT (EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
+                AND COALESCE((SELECT l.event || ':' || l.reason FROM batch_log l WHERE l.batch_id = c.batch_id ORDER BY l.seq DESC LIMIT 1),
+                  (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') IN ('stop:canceled', 'stop:restored', 'stop:moved', 'stop:reset')))
+          OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
+      ${tail}`;
+// "Sonucu Belirsiz" sorgusu (aşağıdaki q.unsettled açıklaması). extra: İş Q1'in eşleşen anahtar sütunları.
+const UNSETTLED_SQL = extra => `WITH RECURSIVE settled_up(job) AS (
+        SELECT al.source_job_id FROM anyway_links al WHERE EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = al.job_id)
+          OR EXISTS (SELECT 1 FROM claims c3 WHERE c3.job_id = al.job_id AND c3.attempt = (SELECT MAX(c4.attempt) FROM claims c4 WHERE c4.job_id = al.job_id)
+            AND (EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c3.job_id AND o.attempt = c3.attempt AND o.outcome = 'accepted')
+              OR EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c3.job_id AND l.attempt = c3.attempt))
+            AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c3.job_id AND f.attempt = c3.attempt)
+            AND NOT EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c3.job_id AND r.attempt = c3.attempt))
+        UNION SELECT al.source_job_id FROM anyway_links al JOIN settled_up s ON al.job_id = s.job)
+      SELECT DISTINCT c.account_id AS accountId, c.job_id AS jobId${extra} FROM claims c
+      WHERE c.job_id NOT IN (SELECT job FROM settled_up) AND c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND c.at >= ? AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = c.job_id)
+        AND (c.period_key NOT IN ('secim|last3', 'secim|all') OR c.at >= ?)
+        AND NOT EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt)
+        AND NOT EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id)
+        AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
+        AND NOT EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
+        AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome IN ('accepted', 'failed', 'released'))`;
+// İş Q1: kişiye ait anahtarların birleşimi (JSON; yoksa null) ve eşleşen talebin anahtarlarından biri o cariye ait mi.
+const ownKeysJson = accountKeys => {
+  if (!accountKeys?.size) return null;
+  const all = new Set();
+  for (const list of accountKeys.values()) for (const key of list || []) all.add(String(key));
+  return all.size ? JSON.stringify([...all]) : null;
+};
+const keyedMatch = (accountKeys, row) => {
+  const mine = accountKeys.get(row.accountId);
+  if (!mine?.length) return false;
+  const theirs = [row.ownKey, ...String(row.extraKeys || "").split("\u001f")].filter(Boolean);
+  return mine.some(key => theirs.includes(key));
+};
 export const DAY_MS = 86_400_000;
 
 /**
@@ -181,22 +229,9 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // İş Q5 (T1 G5-02): "son gönderim" anı ve pencereler (since, Son 3 Ay / Tüm Hareketler) SON denemenin kabul anından okunur (eşzamanlı kabul outcomes, sonradan
     // öğrenilen wamid learned_wamids; yoksa — yalnız teslimle sayılan iş — işin kabul satırı). accepts iş başına tek satırdır ve İLK kabul edilen denemeden kalır:
     // 131049 sonrası 24 saat sonraki 2. deneme kabul edilince tarih 1. denemeyi gösteriyordu. Test: test/whatsapp-q5-son-kabul-248.test.mjs.
-    sentBefore: db.prepare(`SELECT accountId, MAX(at) AS last FROM (SELECT c.account_id AS accountId, c.batch_id AS batch_id, c.job_id AS job_id, c.attempt AS attempt, c.period_key AS period_key, c.at AS claim_at,
-        COALESCE((SELECT o.at FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted'),
-          (SELECT l.at FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt), a.at) AS at
-      FROM accepts a JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
-      WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?))))) c
-      WHERE c.at >= ? AND c.claim_at > ?
-        AND (c.period_key NOT IN ('secim|last3', 'secim|all') OR c.at >= ?)
-        AND ((NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
-              AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'failed')
-              AND (EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted')
-                OR EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt))
-              AND NOT (EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
-                AND COALESCE((SELECT l.event || ':' || l.reason FROM batch_log l WHERE l.batch_id = c.batch_id ORDER BY l.seq DESC LIMIT 1),
-                  (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') IN ('stop:canceled', 'stop:restored', 'stop:moved', 'stop:reset')))
-          OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
-      GROUP BY accountId`),
+    sentBefore: db.prepare(SENT_BEFORE_SQL("SELECT accountId, MAX(at) AS last", "GROUP BY accountId")),
+    // İş Q1: kişiye özel anahtarlar ("Tüm Hareketler"in "<ilk hareket> – <dönem sonu>"u) — eşleşen talebin anahtarları da döner, kişiye ait mi JS'te süzülür.
+    sentBeforeKeyed: db.prepare(SENT_BEFORE_SQL("SELECT accountId, at, period_key AS ownKey, extra_keys AS extraKeys", "")),
     // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"; dar kontrol 6 kapsam dışı gözlem): yalnız "Başarısızları Yeniden Dene"de — bu cariye bu şablon + dönem için SONUCU
     // BELLİ OLMAYAN deneme (işin son denemesi: kabul, teslim edilemedi, 131049 bırakıldı ya da "gitmedi" sonucu yok — Sonucu Belirsiz ya da sonucu yazılamamış) varsa
     // elenir. Kabul edilen R3'e (sentBefore), teslim edilemeyen ve gitmeyen yeniden denemeye kalır. Pencere ve dönem anahtarı R3 ile aynı (donem.mjs).
@@ -205,22 +240,8 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // İş Q2 (KULLANICI KARARI A): kaynağı olduğu "Yine de Gönder" işi (zincirde herhangi biri) SON denemesinde kabul edilmiş (eşzamanlı / öğrenilen wamid; sonradan
     // teslim edilemedi ya da 131049 ile bırakıldı değil) ya da teslim edilmişse kaynak belirsiz SAYILMAZ. Yine de Gönder işi Başarısız / Belirsiz / Meta Bekletti ise
     // kaynak sayılmaya devam eder.
-    unsettled: db.prepare(`WITH RECURSIVE settled_up(job) AS (
-        SELECT al.source_job_id FROM anyway_links al WHERE EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = al.job_id)
-          OR EXISTS (SELECT 1 FROM claims c3 WHERE c3.job_id = al.job_id AND c3.attempt = (SELECT MAX(c4.attempt) FROM claims c4 WHERE c4.job_id = al.job_id)
-            AND (EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c3.job_id AND o.attempt = c3.attempt AND o.outcome = 'accepted')
-              OR EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c3.job_id AND l.attempt = c3.attempt))
-            AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c3.job_id AND f.attempt = c3.attempt)
-            AND NOT EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c3.job_id AND r.attempt = c3.attempt))
-        UNION SELECT al.source_job_id FROM anyway_links al JOIN settled_up s ON al.job_id = s.job)
-      SELECT DISTINCT c.account_id AS accountId, c.job_id AS jobId FROM claims c
-      WHERE c.job_id NOT IN (SELECT job FROM settled_up) AND c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND c.at >= ? AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = c.job_id)
-        AND (c.period_key NOT IN ('secim|last3', 'secim|all') OR c.at >= ?)
-        AND NOT EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt)
-        AND NOT EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id)
-        AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
-        AND NOT EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
-        AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome IN ('accepted', 'failed', 'released'))`),
+    unsettled: db.prepare(UNSETTLED_SQL("")),
+    unsettledKeyed: db.prepare(UNSETTLED_SQL(", c.period_key AS ownKey, (SELECT group_concat(k2.period_key, char(31)) FROM claim_keys k2 WHERE k2.job_id = c.job_id AND k2.attempt = c.attempt) AS extraKeys")),
     hold: db.prepare("INSERT INTO holds (waba_id, until, reason, at) VALUES (?, ?, ?, ?)"),
     holdOf: db.prepare("SELECT MAX(until) AS until FROM holds WHERE waba_id = ? AND until > ?"),
     accepted: db.prepare("SELECT COUNT(*) AS n FROM accepts WHERE company_id = ? AND at >= ? AND at < ?"),
@@ -446,21 +467,34 @@ export function openWaLedger({ dir, log = console, fault = null }) {
      * işin "Yine de Gönder" kararı (açılış anı; açılıştan önceki kabuller o kararla kabul edilmişti; dar kontrol 5 ORTA-1, KULLANICI KARARI 31.10.2026 "a şıkkı").
      */
     // rolling (İş L5): kendi anahtarı "Son 3 Ay" / "Tüm Hareketler" olan gönderim yalnız bu andan sonraysa eşleşir (seçimin 7 gün penceresi; boş = sınır yok).
-    sentBefore({ companyId, kind, periodKey = "", periodKeys = null, since = "", after = "", rolling = "" }) {
+    // accountKeys (İş Q1): Map(cari → yalnız o cariye ait ek anahtarlar; "Tüm Hareketler"in "aralik|<ilk hareket>|<dönem sonu>"u). Ortak anahtarlarla eşleşme bugünkü gibi;
+    // kişiye ait anahtarlar BİRLEŞİMLE sorgulanır, eşleşen talebin anahtarı o cariye ait değilse sayılmaz (başka carinin aynı tarihli aralığı karışmaz).
+    sentBefore({ companyId, kind, periodKey = "", periodKeys = null, since = "", after = "", rolling = "", accountKeys = null }) {
       const keys = JSON.stringify((periodKeys || [periodKey]).map(String));
-      return new Map(q.sentBefore.all(String(companyId), String(kind), keys, keys, String(since || ""), String(after || ""), String(rolling || "")).map(row => [row.accountId, row.last]));
+      const out = new Map(q.sentBefore.all(String(companyId), String(kind), keys, keys, String(since || ""), String(after || ""), String(rolling || "")).map(row => [row.accountId, row.last]));
+      const own = ownKeysJson(accountKeys);
+      if (own) {
+        for (const row of q.sentBeforeKeyed.all(String(companyId), String(kind), own, own, String(since || ""), String(after || ""), String(rolling || ""))) {
+          if (!keyedMatch(accountKeys, row)) continue;
+          if (!out.has(row.accountId) || out.get(row.accountId) < row.at) out.set(row.accountId, row.at);
+        }
+      }
+      return out;
     },
     /**
      * Sonucu belli olmayan son denemesi olan cariler (yalnız "Başarısızları Yeniden Dene" eler; yukarıdaki unsettled). Dönüş: Map(accountId → [jobId]) — iş kimlikleri
      * elenme iletisinde "Yine de Gönder"in gerçekten var olup olmadığını (iş şirket dosyasında hâlâ Sonucu Belirsiz mi) bilmek için (dar kontrol 7 DÜŞÜK-1).
      */
-    unsettledBefore({ companyId, kind, periodKey = "", periodKeys = null, since = "", rolling = "" }) {
+    unsettledBefore({ companyId, kind, periodKey = "", periodKeys = null, since = "", rolling = "", accountKeys = null }) {
       const out = new Map();
-      const keys = JSON.stringify((periodKeys || [periodKey]).map(String));
-      for (const row of q.unsettled.all(String(companyId), String(kind), keys, keys, String(since || ""), String(rolling || ""))) {
+      const add = row => {
         if (!out.has(row.accountId)) out.set(row.accountId, []);
-        out.get(row.accountId).push(row.jobId);
-      }
+        if (!out.get(row.accountId).includes(row.jobId)) out.get(row.accountId).push(row.jobId);
+      };
+      const keys = JSON.stringify((periodKeys || [periodKey]).map(String));
+      for (const row of q.unsettled.all(String(companyId), String(kind), keys, keys, String(since || ""), String(rolling || ""))) add(row);
+      const own = ownKeysJson(accountKeys); // İş Q1 (sentBefore ile aynı)
+      if (own) for (const row of q.unsettledKeyed.all(String(companyId), String(kind), own, own, String(since || ""), String(rolling || ""))) if (keyedMatch(accountKeys, row)) add(row);
       return out;
     },
     // ---------- Meta sınır beklemesi (WABA başına) ----------

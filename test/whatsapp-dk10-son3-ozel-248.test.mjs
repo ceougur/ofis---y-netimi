@@ -1,6 +1,7 @@
 // 2.4.8 İş L5 (İLKEYLE — "KİME KAÇ KEZ" ilkesi (3) "dönem eşliğinde şüphede AYNI dönem"): "Son 3 Ay" / "Tüm Hareketler" gönderiminin o günkü tarihleri özel aralığın
 // tarihleriyle BİREBİR aynıysa aynı dönem — R3, Zaten Kuyrukta ve Sonucu Belirsiz elemesi, iki yönde. Seçimin 7 gün penceresi bu eşlikte de geçerli (7 günden eskiyse ayrı).
-// Değişmeyen: tarihleri farklı özel aralık ayrı dönem; "Tüm Hareketler"in başlangıcı boş olduğundan özel aralıkla eşleşmez.
+// Değişmeyen: tarihleri farklı özel aralık ayrı dönem. "Tüm Hareketler" İş Q1'den sonra KİŞİYE ÖZEL dönemiyle (ilk hareket – o gün) eşleşir:
+// test/whatsapp-q1-tum-kisi-donemi-248.test.mjs (önce "başlangıç boş → özel aralıkla eşleşmez" yazıyordu).
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5); sahte saat, çok günlü (ders 13); dosya TZ=UTC ve TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
 import { cpSync, mkdtempSync, readdirSync } from "node:fs";
@@ -63,7 +64,8 @@ describe("2.4.8 İş L5 — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri = 
       assert.deepEqual(await previewSkip(ctx, son3(p), "03.11 Son 3 Ay"), ["Daha Önce Gönderildi"], "aynı tarihler → aynı dönem");
       ctx.clock.set(localIso(2026, 11, 5, 10));
       assert.deepEqual(await previewSkip(ctx, son3(p), "05.11 Son 3 Ay"), ["gönderilecek"], "Son 3 Ay'ın o günkü tarihleri farklı → ayrı");
-      assert.deepEqual(await previewSkip(ctx, tum(p), "05.11 Tüm Hareketler"), ["gönderilecek"], "Tüm Hareketler özel aralıkla eşleşmez (başlangıç boş)");
+      // İş Q1 (açıklama bilerek değişti; beklenen aynı): P'nin ilk hareketi 03.11 → 05.11 Tüm Hareketler'in dönemi 03.11–05.11, gönderilen özel aralıktan (01.09–03.11) farklı.
+      assert.deepEqual(await previewSkip(ctx, tum(p), "05.11 Tüm Hareketler"), ["gönderilecek"], "Tüm Hareketler'in kişiye özel dönemi (03.11–05.11) bu özel aralıktan farklı → ayrı");
     } finally {
       await ctx.close();
     }

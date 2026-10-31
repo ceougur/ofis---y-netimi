@@ -23,7 +23,7 @@ import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
 import { statementData, statementFileName, statementPdf } from "../statement-pdf.mjs";
 import { e164Of, waPresetRange } from "./alici.mjs";
-import { localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
+import { firstLineDateOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
 import { deliveryTtlSeconds, sendingVerdict } from "./templates.mjs";
@@ -113,7 +113,8 @@ export function periodOf(body, today) {
 // İletideki dönem metni ({{3}}; §7a 21): "01.10.2026 – 31.10.2026"; Tüm Hareketler: ilk hareketten dönem sonuna (bugün).
 function periodText(period, lines) {
   if (period.from) return `${dayText(period.from)} – ${dayText(period.to)}`;
-  const first = lines.find(line => !period.to || line.date <= period.to)?.date || period.to;
+  // İş Q1: ilk hareket TEK KAYNAKTAN (donem.mjs firstLineDateOf; Tüm Hareketler'in kişiye özel dönem anahtarı da buradan).
+  const first = firstLineDateOf(period, lines) || period.to;
   return `${dayText(first)} – ${dayText(period.to)}`;
 }
 // Ödeme hatırlatması (§7a 20): {{3}} en eski gecikmiş vade tarihi (açık taksit kartlarının en eski ödenmemiş taksiti, vadesi bugünden önce), {{4}} vadesi geçmiş
@@ -356,11 +357,17 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
   // §7a 9: aynı cari + aynı şablon + aynı dönem için bekleyen / gönderilmekte iş (süren ya da duraklatılmış toplu işte) — iki kullanıcı, iki sekme.
   // Dönem eşliği donem.mjs queueKeysOf'tan (T2-1: tek yer). ★ soru 4 (özel aralık ↔ hazır seçim): yeni gönderimin kümesi BUGÜNE, süren işinki AÇILDIĞI GÜNE göre.
-  const queued = (accountId, kind, period, day = today()) => {
-    const want = queueKeysOf(kind, period, day);
+  // dates (İş Q1): carinin hareket tarihleri (cari ekstresinin sırası) — "Tüm Hareketler"in kişiye özel dönemi (ilk hareket – dönem sonu) iki yanda da.
+  const queued = (accountId, kind, period, day = today(), dates = []) => {
+    const want = queueKeysOf(kind, period, day, { first: firstOfAll(period, dates) });
     const rows = store.all(`SELECT j.id, b.period_from, b.period_to, b.preset, b.created_at, b.key_day FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.account_id = ? AND b.kind = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")})`, accountId, kind, ...OPEN_JOB);
-    return rows.find(row => sameKeys(want, queueKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, keyDayOfBatch({ ...row, kind })))) || null;
+    return rows.find(row => {
+      const rowPeriod = { from: row.period_from, to: row.period_to, preset: row.preset };
+      return sameKeys(want, queueKeysOf(kind, rowPeriod, keyDayOfBatch({ ...row, kind }), { first: firstOfAll(rowPeriod, dates) }));
+    }) || null;
   };
+  // İş Q1: "Tüm Hareketler" döneminde carinin ilk hareketi (donem.mjs firstLineDateOf; iletideki dönem metniyle aynı kaynak), başka seçimde "".
+  const firstOfAll = (period, dates) => (period?.preset === "all" ? firstLineDateOf(period, dates) : "");
   // Dar kontrol 9 ORTA-1 (★ soru 4 "o gün" = özel aralığın kullanıldığı gün = TOPLU İŞİN AÇILIŞ GÜNÜ; BAŞ MİMAR yorumu): bir toplu işin dönem anahtar kümesi hangi
   // gün gönderilirse gönderilsin (günlük sınırla ertesi güne kalan, Meta Bekletti'nin ertesi gün 2. denemesi) AÇILDIĞI yerel güne göre — talep (runJob), Zaten Kuyrukta
   // (queued) ve taşınan veri (movedSentBefore) aynı yerden okur. YALNIZ EKSTRE: Ödeme Hatırlatma'nın "aynı gün"ü gönderim / yeniden denemenin günüdür (ek 3/4, son 2/2).
@@ -376,7 +383,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // olmaz; aynı cari birden çok kaynaktan gelirse en son kabul anı alınır. Dönem eşliği, 7 gün penceresi (since) ve asıl işin "Yine de Gönder" sınırı (after)
   // defterdeki R3 ile aynı kural (anahtar kümesi keyDayOfBatch). Dönüş: Map(cari → son kabul anı ISO).
   // Dar kontrol 9 (ölçek): başka defterde açılmış bu türde toplu iş yoksa (taşınan veri yok — olağan kurulum) iş tablosu hiç taranmaz.
-  function movedSentBefore(ids, kind, keys, since, after) {
+  // keysOf / datesOf (İş Q1): istenen dönemin cari başına anahtar kümesi ve carinin hareket tarihleri ("Tüm Hareketler" satırının kişiye özel dönemi için).
+  function movedSentBefore(ids, kind, keysOf, since, after, datesOf) {
     const out = new Map();
     if (!store.get("SELECT 1 AS found FROM wa_batches WHERE kind = ? AND ledger_id <> ? LIMIT 1", kind, ledger.id)) return out;
     for (let i = 0; i < ids.length; i += 500) {
@@ -390,7 +398,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       for (const row of rows) {
         if (!row.acceptedAt || (since && row.acceptedAt < since) || (after && !(String(row.sendingAt || "") > after))) continue;
         if (["last3", "all"].includes(row.preset) && row.acceptedAt < rollingSinceOf(nowMs())) continue; // İş L5: seçimin 7 gün penceresi
-        if (!sameKeys(keys, periodKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, kind === "statement" ? keyDayOfBatch(row) : localDayOf(row.sendingAt || row.acceptedAt)))) continue;
+        const rowPeriod = { from: row.period_from, to: row.period_to, preset: row.preset };
+        const rowKeys = periodKeysOf(kind, rowPeriod, kind === "statement" ? keyDayOfBatch(row) : localDayOf(row.sendingAt || row.acceptedAt), { first: row.preset === "all" ? firstOfAll(rowPeriod, datesOf(row.accountId)) : "" });
+        if (!sameKeys(keysOf(row.accountId), rowKeys)) continue;
         if (!out.has(row.accountId) || out.get(row.accountId) < row.acceptedAt) out.set(row.accountId, row.acceptedAt);
       }
     }
@@ -399,7 +409,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // KULLANICI KARARI (31.10.2026, "KİME KAÇ KEZ" ilkesi, S2): taşınan veride şirket dosyasında "Sonucu Belirsiz" duran iş (bu defterde açılmamış toplu işte) yeni
   // toplu işte ve Başarısızları Yeniden Dene'de kişiyi "Sonucu Belirsiz" ile eler; işteki Yine de Gönder yolu açık (iş dosyada). Eşlik defterdeki elemeyle aynı (dönem
   // kümesi keyDayOfBatch, Son 3 Ay / Tüm'de 7 gün — gönderim anından). Dönüş: Map(cari → [iş kimliği]).
-  function movedUnsettled(ids, kind, keys, since) {
+  function movedUnsettled(ids, kind, keysOf, since, datesOf) {
     const out = new Map();
     if (!store.get("SELECT 1 AS found FROM wa_batches WHERE kind = ? AND ledger_id <> ? LIMIT 1", kind, ledger.id)) return out;
     for (let i = 0; i < ids.length; i += 500) {
@@ -413,7 +423,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       for (const row of rows) {
         if (since && String(row.sendingAt || "") < since) continue;
         if (["last3", "all"].includes(row.preset) && String(row.sendingAt || "") < rollingSinceOf(nowMs())) continue; // İş L5
-        if (!sameKeys(keys, periodKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, kind === "statement" ? keyDayOfBatch(row) : localDayOf(row.sendingAt)))) continue;
+        const rowPeriod = { from: row.period_from, to: row.period_to, preset: row.preset };
+        const rowKeys = periodKeysOf(kind, rowPeriod, kind === "statement" ? keyDayOfBatch(row) : localDayOf(row.sendingAt), { first: row.preset === "all" ? firstOfAll(rowPeriod, datesOf(row.accountId)) : "" });
+        if (!sameKeys(keysOf(row.accountId), rowKeys)) continue;
         if (!out.has(row.accountId)) out.set(row.accountId, []);
         out.get(row.accountId).push(row.id);
       }
@@ -473,22 +485,53 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const since = sentSinceOf(kind, period, nowMs());
     const after = fixed?.sendAgainAfter || "";
     const rolling = rollingSinceOf(nowMs());
-    const sent = ledger.sentBefore({ companyId, kind, periodKeys: keys, since, after, rolling });
-    for (const [accountId, last] of movedSentBefore(ids, kind, keys, since, after)) if (!sent.has(accountId) || sent.get(accountId) < last) sent.set(accountId, last);
+    // İş Q1 (dar kontrol 10 DÜŞÜK-1; ilke 3): "Tüm Hareketler"in dönemi kişiye özel (ilk hareket – dönem sonu) → anahtar kümesi CARİ BAŞINA. Cari okuması (detail) bir kez
+    // yapılır; yalnız hareket TARİHLERİ tutulur (kişi döngüsü aynı okumayı kullanır). Başka seçimlerde bugünkü gibi tek küme ve tembel okuma.
+    const loaded = new Map(); // cari → okunan cari (hareket satırları tutulmaz) ya da null (silinmiş)
+    const datesCache = new Map(); // cari → hareket tarihleri
+    const load = id => {
+      if (!loaded.has(id)) {
+        let account = null;
+        try {
+          account = accounts().detail(id, user);
+        } catch {
+          account = null;
+        }
+        datesCache.set(id, (account?.ledger || []).map(line => line.date));
+        if (account) {
+          const { ledger: _lines, ...rest } = account;
+          loaded.set(id, rest);
+        } else loaded.set(id, null);
+      }
+      return loaded.get(id);
+    };
+    const datesOf = id => {
+      if (!datesCache.has(id)) load(id);
+      return datesCache.get(id) || [];
+    };
+    const perPerson = kind === "statement" && period.preset === "all";
+    const ownKeys = new Map();
+    if (perPerson) {
+      for (const id of ids) {
+        const first = firstOfAll(period, datesOf(id));
+        if (first) ownKeys.set(id, periodKeysOf(kind, period, keyDay, { first }).filter(key => !keys.includes(key)));
+      }
+    }
+    const keysOf = id => (perPerson && ownKeys.has(id) ? [...keys, ...ownKeys.get(id)] : keys);
+    const sent = ledger.sentBefore({ companyId, kind, periodKeys: keys, since, after, rolling, accountKeys: perPerson ? ownKeys : null });
+    for (const [accountId, last] of movedSentBefore(ids, kind, keysOf, since, after, datesOf)) if (!sent.has(accountId) || sent.get(accountId) < last) sent.set(accountId, last);
     // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"): "Başarısızları Yeniden Dene"de aynı cariye aynı dönem iletisi Sonucu Belirsiz kalmışsa elenir (soru sorulmadan ikinci
     // ileti gitmez; göndermek için işteki "Yine de Gönder" — "iki kez gidebilir" onayıyla). KULLANICI KARARI (31.10.2026 ~10:55 UTC "b"; ★ soru 1): YENİ toplu işte de aynı
     // kural ve eşlik (aynı tür + dönem; Son 3 Ay / Tüm'de son 7 gün, gönderim anından). Yalnız "Yine de Gönder"in kendisi (anyway) elenmez.
     // asıl işin "Yine de Gönder" sınırı (sendAgainAfter) burada UYGULANMAZ: o karar yalnız Meta'nın KABUL ETTİĞİ önceki gönderimi kapsıyordu.
-    const unsettled = anyway ? null : ledger.unsettledBefore({ companyId, kind, periodKeys: keys, since, rolling });
-    if (unsettled) for (const [accountId, jobIds] of movedUnsettled(ids, kind, keys, since)) unsettled.set(accountId, [...(unsettled.get(accountId) || []), ...jobIds]);
+    const unsettled = anyway ? null : ledger.unsettledBefore({ companyId, kind, periodKeys: keys, since, rolling, accountKeys: perPerson ? ownKeys : null });
+    if (unsettled) for (const [accountId, jobIds] of movedUnsettled(ids, kind, keysOf, since, datesOf)) unsettled.set(accountId, [...(unsettled.get(accountId) || []), ...jobIds]);
     if (unsettled) dropSettledSources(unsettled);
     const people = [];
     let uncertainOpen = 0;
     for (const id of ids) {
-      let account;
-      try {
-        account = accounts().detail(id, user);
-      } catch {
+      const account = load(id);
+      if (!account) {
         people.push({ id, name: "", phone: "", skip: "Cari Silinmiş" });
         continue;
       }
@@ -497,7 +540,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       // KULLANICI KARARI (31.10.2026, ek soru 2/4 "a"): birden çok eleme nedeninde TEK neden, sıra HER YERDE (yeni toplu iş, Başarısızları Yeniden Dene, işteki Yine de
       // Gönder'in açtığı iş): "Zaten Kuyrukta" → "Sonucu Belirsiz" → "Daha Önce Gönderildi". İlk ikisiyle elenen kişi R3 uyarısına (sayı / liste: sentBefore) GİRMEZ;
       // R3'te "Yine de Gönder" seçilse de ona gitmez (belirsizi göndermenin tek yolu işteki Yine de Gönder).
-      if (!person.skip && queued(account.id, kind, period, keyDay)) person.skip = "Zaten Kuyrukta";
+      if (!person.skip && queued(account.id, kind, period, keyDay, datesOf(id))) person.skip = "Zaten Kuyrukta";
       if (!person.skip && unsettled?.has(account.id)) {
         // Dar kontrol 7 DÜŞÜK-1: "Yine de Gönder" yalnız iş şirket dosyasında hâlâ Sonucu Belirsiz ise vardır (geri yüklemeden sonra iş dosyadan gider, defterde kalır).
         const open = unsettled.get(account.id).some(jobId => store.get("SELECT 1 AS found FROM wa_jobs WHERE id = ? AND state = 'uncertain'", jobId));
@@ -1152,7 +1195,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       injected("ledger-claim", job);
       const batchPeriod = { from: batch.period_from, to: batch.period_to, preset: batch.preset };
       const keyDay = keyDayOfBatch(batch);
-      claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, batchPeriod, keyDay), periodKeys: periodKeysOf(batch.kind, batchPeriod, keyDay), at: iso() });
+      // İş Q1: "Tüm Hareketler"de talebin anahtar kümesine kişinin dönemi (ilk hareket – dönem sonu; iletideki metinle aynı kaynak) girer.
+      const first = firstOfAll(batchPeriod, account?.ledger || []);
+      claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, batchPeriod, keyDay), periodKeys: periodKeysOf(batch.kind, batchPeriod, keyDay, { first }), at: iso() });
     } catch (error) {
       // Defter yazılamadı (disk dolu, kilit): istek GÖNDERİLMEZ, iş bekler.
       updateJob(job.id, { state: "pending", attempt: job.attempt || 0, sending_at: null, next_at: iso(nowMs() + JOB_BACKOFF_MS[0]) });
