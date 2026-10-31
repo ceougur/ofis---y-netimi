@@ -10,6 +10,9 @@ export function openDatabase(dbPath, { readOnly = false } = {}) {
   return db;
 }
 
+/** Dosya başka bağlantıca kilitli (SQLITE_BUSY / SQLITE_LOCKED; busy_timeout dolduktan sonra) mi — 2.4.8 İş N (WhatsApp işçisi aynı turda yeniden yazmaz). */
+export const isLockError = error => /database is locked|database table is locked|SQLITE_BUSY|SQLITE_LOCKED/i.test(`${error?.code || ""} ${error?.message || ""}`) || [5, 6].includes(Number(error?.errcode) & 0xff);
+
 export function createStore(db) {
   const cache = new Map();
   const prepare = sql => {

@@ -3,6 +3,8 @@
 // bir iş yürütür; iki iş ASLA aynı anda yürümez (Meta'ya giden ileti istekleri arka arkaya, arada gapMs). Bekleyen iş yoksa en yakın bekleme anına ya da
 // idleMs'e kadar uyur; yeni toplu iş açılınca kick() ile hemen uyanır. Bakım (süre dolumu, medya silme) maintainMs'de bir.
 // manual: true (yalnız testler) → zamanlayıcı yok; test runOnce() / drain() ile sürer (ders 20: zamanlayıcı yarışı yok).
+import { isLockError } from "../db.mjs";
+
 export function createWaScheduler({ gapMs = 1000, idleMs = 30_000, maintainMs = 60_000, manual = false, log = console } = {}) {
   const queues = new Map(); // anahtar (şirket kimliği) → kuyruk
   let order = [];
@@ -19,28 +21,36 @@ export function createWaScheduler({ gapMs = 1000, idleMs = 30_000, maintainMs = 
     timer.unref?.();
   };
 
+  // İş N (T6 Ü2): dosyası KİLİTLİ (SQLITE_BUSY / LOCKED) şirketin kimlikleri — her yazım denemesi busy_timeout (10 sn) boyunca olay döngüsünü tutar; bakım turunda kilide
+  // takılan şirketin işi AYNI turda yürütülmez (bir sonraki turda yeniden denenir).
   async function maintainAll() {
-    for (const queue of [...queues.values()]) {
+    const locked = new Set();
+    for (const [key, queue] of [...queues.entries()]) {
       try {
         await queue.maintain();
       } catch (error) {
-        log.error?.("WhatsApp bakım turu çalışmadı", error);
+        if (isLockError(error)) {
+          locked.add(key);
+          log.warn?.(`WhatsApp bakım turu: şirket dosyası kilitli (${key}); bu turda iş yürütülmez.`);
+        } else log.error?.("WhatsApp bakım turu çalışmadı", error);
       }
     }
+    return locked;
   }
 
   // Bir tur: sıradaki şirketten (dönüşümlü) yürütülebilir bir iş. Dönüş: { did, waitMs }.
   async function turn() {
+    let locked = new Set();
     if (Date.now() - lastMaintain >= maintainMs) {
       lastMaintain = Date.now();
-      await maintainAll();
+      locked = await maintainAll();
     }
     order = [...queues.keys()];
     let wait = null;
     for (let i = 0; i < order.length; i += 1) {
       const key = order[(cursor + i) % order.length];
       const queue = queues.get(key);
-      if (!queue) continue;
+      if (!queue || locked.has(key)) continue;
       let result;
       try {
         result = await queue.step();
