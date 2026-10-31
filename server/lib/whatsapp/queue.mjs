@@ -1679,6 +1679,21 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     return applied;
   }
+  // İş R7 (dar kontrol 12 DÜŞÜK, Q4 komşusu; ilke 1 + KULLANICI KARARLARI 31.10 ~10:10 / ~11:00): iş şirket dosyasında YOK (Şirket Verisini Sıfırla) ve wamid defterde BU
+  // şirketin işinin SON denemesine bağlı (eşzamanlı kabulün wamid'i ya da imzalı bildirimle öğrenilmiş) → teslimden önce gelen "failed" (131026, 131049 dahil — iş dosyada
+  // olmadığından 24 saat sonraki deneme YOK) defterde "teslim edilemedi": kişi "Daha Önce Gönderildi" sayılmaz, yeni gönderim gider. İmzalı ve imzasız (wamid'in bağı
+  // Meta'nın eşzamanlı yanıtından / imzalı bildirimden; lateDeliveryOfReleased ile aynı güven). Teslimden sonra gelen failed yok sayılır (§7a 18).
+  // Test: test/whatsapp-q4-dosyasiz-imzali-248.test.mjs ("R7").
+  function lateFailureOfMissingJob(wamid, value, at) {
+    if (value !== "failed" || !wamid) return false;
+    const owner = ledger.attemptOfWamid?.(wamid);
+    if (!owner || jobRow(owner.jobId)) return false;
+    if (ledger.companyOfWamid?.(wamid)?.companyId !== companyId) return false;
+    const last = ledger.attempts(owner.jobId).at(-1);
+    if (!last || last.attempt !== owner.attempt || ["failed", "released"].includes(last.outcome)) return false;
+    if (ledger.deliveredJob?.(owner.jobId)) return false;
+    return ledger.deliveryFailed({ jobId: owner.jobId, attempt: owner.attempt, at });
+  }
   function applyStatuses(statuses = [], { phoneNumberId = "", signed = false } = {}) {
     const out = { applied: 0, ignored: 0, unknown: 0 };
     store.setSetting(HOOK_SEEN_KEY, iso());
@@ -1694,6 +1709,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       if (!job) {
         if (wamid && ["delivered", "read"].includes(value) && lateDeliveryOfReleased(wamid, status, at, phoneNumberId)) out.applied += 1;
+        else if (lateFailureOfMissingJob(wamid, value, at)) out.applied += 1;
         else if (signed && lateResultOfMissingJob(status, wamid, value, at)) out.applied += 1;
         else out.unknown += 1;
         continue;

@@ -118,4 +118,55 @@ describe("2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu bell
       await ctx.close();
     }
   });
+
+  // İş R7 (dar kontrol 12; ilke 1 + 10:10 / 11:00 kararları): KABUL edilmiş iletinin işi sıfırlamayla silindi; teslimden önce gelen "failed" (131026 / 131049; imzalı ve
+  // imzasız) → defterde teslim edilemedi, kişi "Daha Önce Gönderildi" sayılmaz, yeni gönderim gider.
+  for (const code of [131026, 131049]) {
+    for (const signed of [true, false]) {
+      it(`R7: kabul → sıfırla → ${signed ? "imzalı" : "imzasız"} failed ${code} → teslim edilemedi, kişi elenmez, yeni gönderim gider`, async () => {
+        const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+        try {
+          const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
+          const body = { kind: "statement", ids: [p.id], preset: "thisMonth" };
+          const o = await ok(await ctx.batch(body), "ilk gönderim");
+          await ctx.drain();
+          const job = (await ctx.jobs(o.batch.id))[0];
+          assert.equal(job.state, "accepted", "ön koşul: kabul");
+          ctx.clock.advance(3_600_000);
+          await ok(await ctx.api.post("/api/companies/sirket-001/reset", { mode: "movements", confirm: "001", password: ADMIN_PASSWORD }), "Şirket Verisini Sıfırla");
+          ctx.clock.advance(60_000);
+          const st = ctx.statuses([{ id: job.wamid, status: "failed", timestamp: String(Math.floor(ctx.clock().getTime() / 1000)), recipient_id: "905334445566", ...(signed ? { biz_opaque_callback_data: job.id } : {}), errors: [{ code, title: "x" }] }], { signed });
+          assert.equal(st.applied, 1, `geç failed uygulandı (geldi ${JSON.stringify(st)})`);
+          assert.deepEqual(ctx.wa.ledger.attempts(job.id).map(item => item.outcome), ["failed"], "defterde teslim edilemedi");
+          assert.deepEqual(skipOf(await ok(await ctx.api.post(URLS.preview, body), "önizleme")), ["gönderilecek"], "kişi elenmez");
+          const sent = ctx.messages().filter(item => item.to === P_TEL).length;
+          await ok(await ctx.batch(body), "yeni gönderim");
+          await ctx.drain();
+          assert.equal(ctx.messages().filter(item => item.to === P_TEL).length, sent + 1, "yeni gönderim gitti");
+        } finally {
+          await ctx.close();
+        }
+      });
+    }
+  }
+
+  it("R7 gerileme: teslimden sonra gelen failed (iş dosyada yok) yok sayılır; kişi Daha Önce Gönderildi kalır", async () => {
+    const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+    try {
+      const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
+      const body = { kind: "statement", ids: [p.id], preset: "thisMonth" };
+      const o = await ok(await ctx.batch(body), "ilk gönderim");
+      await ctx.drain();
+      const job = (await ctx.jobs(o.batch.id))[0];
+      ctx.clock.advance(3_600_000);
+      await ok(await ctx.api.post("/api/companies/sirket-001/reset", { mode: "movements", confirm: "001", password: ADMIN_PASSWORD }), "Şirket Verisini Sıfırla");
+      const ts = () => String(Math.floor(ctx.clock().getTime() / 1000));
+      assert.equal(ctx.statuses([{ id: job.wamid, status: "delivered", timestamp: ts(), recipient_id: "905334445566" }]).applied, 1, "ön koşul: geç teslim");
+      const st = ctx.statuses([{ id: job.wamid, status: "failed", timestamp: ts(), recipient_id: "905334445566", errors: [{ code: 131026, title: "x" }] }]);
+      assert.equal(st.applied, 0, `teslimden sonra failed uygulanmaz (geldi ${JSON.stringify(st)})`);
+      assert.deepEqual(skipOf(await ok(await ctx.api.post(URLS.preview, body), "önizleme")), ["Daha Önce Gönderildi"]);
+    } finally {
+      await ctx.close();
+    }
+  });
 });
