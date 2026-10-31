@@ -1483,7 +1483,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const attempt = ledger.attempts(owner.jobId).find(item => item.attempt === owner.attempt);
     if (attempt?.outcome !== "released") return false;
     const row = jobRow(owner.jobId);
-    if (!row || Number(row.attempt) <= Number(owner.attempt)) return false;
+    // KULLANICI KARARI ("KİME KAÇ KEZ" ilkesi, S3): iş şirket dosyasında YOKSA (Şirket Verisini Sıfırla wa_jobs'u siler) geç teslim yine sayılır (kesin aldı) — WABA
+    // defterdeki talepten; şirket denetimi yukarıda (companyOfWamid).
+    if (!row) {
+      const owned = ledger.companyOfWamid?.(wamid);
+      const billable = status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing ? status.pricing.billable !== false : true;
+      return Boolean(owned?.wabaId) && ledger.delivered({ jobId: owner.jobId, companyId, wabaId: owned.wabaId, billable, at });
+    }
+    if (Number(row.attempt) <= Number(owner.attempt)) return false;
     const batch = batchRow(row.batch_id);
     if (!batch || (phoneNumberId && batch.phone_number_id !== String(phoneNumberId))) return false;
     const billable = status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing ? status.pricing.billable !== false : row.billable !== 0;
