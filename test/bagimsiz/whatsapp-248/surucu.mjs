@@ -1127,8 +1127,8 @@ async function kos(sen, uc, secenek) {
         notlar.push(`SIFIRLAMA (${r.mode}): silinen satırlar — ${silinen || "yok"}; yedek ${r.backup ? "alındı" : "yok"}`);
         for (const [cid, p] of Object.entries(cariProgram)) {
           const c = await api(program.admin, "GET", ekle(`/api/workspace/accounts/${p.id}`, p.sirket));
-          const hesap = c.data?.data?.account || c.data?.data || {};
-          notlar.push(`SIFIRLAMA sonrası cari ${cid}: ${c.status}${c.status === 200 ? ` kimlik aynı, bakiye ${JSON.stringify(hesap.balance ?? hesap.bakiye ?? null)}, WhatsApp istemiyor ${JSON.stringify(hesap.waOptOut ?? null)}` : ""}`);
+          const hesap = c.data?.data || {};
+          notlar.push(`SIFIRLAMA sonrası cari ${cid}: ${c.status}${c.status === 200 ? ` kimlik ${hesap.id === p.id ? "aynı" : "DEĞİŞTİ"}, bakiye ${JSON.stringify(hesap.totals?.balance ?? "okunamadı")}, borç ${JSON.stringify(hesap.totals?.debit ?? "okunamadı")}, WhatsApp istemiyor ${JSON.stringify(hesap.waOptOut ?? "okunamadı")}` : ""}`);
         }
         await dosyadakiTopluIsler("SIFIRLAMA");
         return;
