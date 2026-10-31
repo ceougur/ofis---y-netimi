@@ -605,10 +605,17 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return true;
   }
   // Sınır: bu WABA'nın bu şirketteki süren işlerinde, pencerede olmayan numaraya giden bekleyen işler pencere açılana dek bekler.
+  // T2 dar kontrol D2: "Meta Bekletti" (held) iş de bekleme bitene dek ileri alınır (durumu korunur) — yoksa işçi aynı işi her turda yeniden seçerdi (boş döngü);
+  // zaten aynı beklemedeki satır yeniden yazılmaz.
   function markLimited(wabaId, until, phones = null) {
-    const rows = store.all("SELECT j.id, j.phone_e164 AS phone FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE b.waba_id = ? AND b.state = 'running' AND j.state IN ('pending', 'limited')", wabaId);
+    const rows = store.all("SELECT j.id, j.phone_e164 AS phone, j.state, j.next_at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE b.waba_id = ? AND b.state = 'running' AND j.state IN ('pending', 'limited', 'held')", wabaId);
     store.tx(() => {
-      for (const row of rows) if (!phones?.has(row.phone)) updateJob(row.id, { state: "limited", next_at: until });
+      for (const row of rows) {
+        if (phones?.has(row.phone)) continue;
+        if (row.state === "held") {
+          if (!row.next_at || row.next_at < until) updateJob(row.id, { next_at: until });
+        } else if (!(row.state === "limited" && row.next_at === until)) updateJob(row.id, { state: "limited", next_at: until });
+      }
     });
   }
 

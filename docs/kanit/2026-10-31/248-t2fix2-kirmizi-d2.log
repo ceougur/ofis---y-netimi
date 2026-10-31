@@ -1,0 +1,91 @@
+# komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-t2dk-d2-248.test.mjs
+# kod: c44d7724 (git archive kopyası, ders 23); test dosyası: is/t2fix-248 D2 commit'indeki hâli
+# platform: Linux node v22.22.0; tarih: 2026-10-31T01:11:36Z
+TAP version 13
+# Subtest: 2.4.8 T2 dar kontrol D2 — Meta Bekletti iş + WABA sınır beklemesi: boş döngü yok, satırlar her turda yeniden yazılmaz
+    # Subtest: işçi boş döngüye girmez; bekleme bitince Meta Bekletti iş bir kez gider
+    not ok 1 - işçi boş döngüye girmez; bekleme bitince Meta Bekletti iş bir kez gider
+      ---
+      duration_ms: 730.695574
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-d2-248.test.mjs:29:3'
+      failureType: 'testCodeFailure'
+      error: 'işçi boş döngüye girmemeli (tur 200)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-d2-248.test.mjs:35:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: her turda sınırda bekleyen 40 iş yeniden yazılmaz; Meta'ya ileti gitmez
+    not ok 2 - her turda sınırda bekleyen 40 iş yeniden yazılmaz; Meta'ya ileti gitmez
+      ---
+      duration_ms: 903.39394
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-d2-248.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        her turda bekleyen işler yeniden yazılmamalı (turlarda yeniden yazılan: 40, 40, 40, 40, 40)
+        + actual - expected
+        
+          [
+        +   40,
+        +   40,
+        +   40,
+        +   40,
+        +   40
+        -   0,
+        -   0,
+        -   0,
+        -   0,
+        -   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+      actual:
+        0: 40
+        1: 40
+        2: 40
+        3: 40
+        4: 40
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-d2-248.test.mjs:64:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 T2 dar kontrol D2 — Meta Bekletti iş + WABA sınır beklemesi: boş döngü yok, satırlar her turda yeniden yazılmaz
+  ---
+  duration_ms: 1635.905383
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-d2-248.test.mjs:28:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2012.447365
+# çıkış kodu: 1
