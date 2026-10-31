@@ -588,6 +588,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     notify(row.id);
   }
   function pauseBatch(row, code, reason) {
+    // T2 dar kontrol D1: kullanıcının iptal ettiği ya da geri yüklemenin durdurduğu toplu iş (ör. istek sürerken İptal Et, sonra Meta 131031 / 190) yeniden
+    // "Duraklatıldı" yapılmaz. "Tamamlandı" duraklatılabilir: tek işlik toplu işte hatayı alan iş Başarısız olunca toplu iş önce kapanır, neden yine görünmeli (§7a 13).
+    if (["canceled", "stopped"].includes(batchRow(row.id)?.state)) return;
     store.tx(() => {
       holdJobs(row.id);
       updateBatch(row.id, { state: "paused", pause_code: code, pause_reason: reason });
