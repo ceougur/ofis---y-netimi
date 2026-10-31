@@ -155,6 +155,8 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     (motorNow(): yerel bugün 06:00'dan akar) başlatılır ve motor koşu sonunda gün değiştiyse sonucu GEÇERSİZ sayar. (11.10: CI 565 c8d596b
     mutabakat-cekirdek tohum 2 23:59:56 UTC'de başlayıp 00:00:00'da kırmızı; program doğruydu — ters kaydı yeni günle yazdı; zorla
     `test/mutabakat-gece-yarisi.mjs` ile üretildi.)
+    (31.10.2026: CI #941 df238b99 Windows Node 24 banka-210-altin 23:58 UTC'de başladı — test TODAY'i dosya yüklenirken bir kez okuyor, config.now'suz v2.0.26 açılıyor, gün dönünce
+    fatura kronoloji 400; tarama asama0-226 ve rapor-220'de aynı kalıbı buldu. Düzeltme: test/fixtures/surec-saati-sabah.mjs İLK içe aktarım; zorla: test/gece-yarisi-zorla.mjs <dosya> <sn>.)
 23. ESKİ KOD AYRI KOPYADA. Kırmızı kanıt için eski kod çalışma ağacında `git checkout <eski> -- dosya` ile denenmez: dosya hazırlık
     alanına girer, sonraki commit'e karışır ve aynı ağaçta koşan öbür testler eski kodu görür. Eski kod `git archive <eski> | tar -x` ya da
     `git worktree` kopyasında koşulur. (11.10: e372a00 kanıt commit'ine eski hof-workspace.js girdi ve gönderildi — ca966fb ile geri alındı;
