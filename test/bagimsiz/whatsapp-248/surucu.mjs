@@ -669,7 +669,13 @@ async function kos(sen, uc, secenek) {
       program.istemciler[ad] = c;
     }
     // ---- cariler ----
-    const bugun = () => trGun(simdi);
+    // Kurulumda "bugün" programın kendi yerel günüdür (süreç saat dilimi; programın ileri tarih denetimi bu günle yapılır). --tz Europe/Istanbul'da Türkiye
+    // günüyle aynı; --tz UTC'de gece 00:00–03:00 (TR) arasında bir gün geride (sürücü düzeltmesi: önceki sürüm Türkiye gününü kullanıyordu, UTC'de ICERIK-03
+    // kurulumu "İleri tarihli hareket girilemez" ile düşüyordu).
+    const bugun = () => {
+      const d = new Date(simdi);
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    };
     async function hareketYaz(cid, h) {
       const p = cariProgram[cid];
       const tutar = Number(h.borc || 0) > 0 ? h.borc : h.alacak;
