@@ -14,6 +14,8 @@
 //   G6 sayfa yenilenir → pencere yeniden açılır: Gönderimler listesinden aynı toplu iş, durumlar sunucudan. İkinci sekme aynı anda: süren işte "Zaten Kuyrukta".
 //   G7 R3: aynı dönem yeniden → "3 kişiye bu dönem daha önce gönderildi", varsayılan Bunları Çıkar (gönderilecek 1); Yine de Gönder → 4.
 //   G8 Bağlantı Bekleniyor (Meta'ya ulaşılamıyor) ve Sınır Nedeniyle Bekliyor (elle günlük sınır) ekranda açıkça; bağlantı dönünce sürer.
+//   G8d (İş P2) şirket dosyası başka programda kilitli: süren toplu işin ekranında "Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor."
+//       ve listede "Dosya Kullanımda" (canlı olayla); kilit kalkınca ikisi de kalkar, iş gider (tek ileti).
 //   G9 WhatsApp Web ile Gönder (bugünkü wa.me yolu) bağlantı varken de çalışır: Otomatik Sıra, wa.me adresi, cari kartına kayıt (message_sends).
 //   G10 yetkisiz (Personel): Otomatik Gönder sekmesinde neden, Gönder pasif; API 403. G11 dar pencere (760 px) taşma yok. G12 salt okunur lisans: neden, pasif.
 // Çıkış: "N geçti, M kaldı" (kaldıysa 1). Ekran görüntüleri EKRAN_DIR (varsayılan test/e2e/artifacts/senaryo-whatsapp-gonder-248).
@@ -46,7 +48,8 @@ const ok = (cond, what) => {
   return Boolean(cond);
 };
 
-let ctx = await startWa({ dataDir, ack: false });
+// İş P2 (G8d): yazım kilidi işareti 2 sn (üretimde 30 sn; yalnız test oluşturucu seçeneği) — kilit kalkınca notun kalkması beklenebilir sürede.
+let ctx = await startWa({ dataDir, ack: false, __testWriteLockBackoffMs: 2_000 });
 const setup = async () => {
   const test = await ctx.api.post(`${URLS.conn}/test`, {});
   if (test.status !== 200) throw new Error(`sınama: ${test.status} ${JSON.stringify(test.data)}`);
@@ -668,6 +671,58 @@ await step("G8c Gönderimler: süren yenilemede Daha Fazla Göster, yüklenirken
     await shot("12d-liste-basislar");
   } finally {
     await page.unroute(isList, handler);
+  }
+  await closeAll();
+});
+
+await step("G8d şirket dosyası başka programda kilitli: süren gönderimde neden ve listede etiket; kilit kalkınca kalkar, iş gider", async () => {
+  const person = await ctx.account("Kilit Kişi", "0536 600 00 01", 10);
+  const created = await ctx.batch({ kind: "statement", ids: [person.id], preset: "thisMonth", requestId: "p2-e2e-kilit-01" });
+  ok(created.status === 200, `toplu iş açıldı (${created.status})`);
+  const lockedBatch = created.data.data?.batch?.id || "";
+  const sentBefore = ctx.messages().length;
+  await openWhatsapp();
+  await waitPreview();
+  await page.click(`${TOP} [data-wa-api-list]`);
+  await page.click(`${TOP} [data-wa-api-open="${lockedBatch}"]`);
+  await page.waitForSelector(`${TOP} [data-wa-batch="${lockedBatch}"]`);
+  ok(!(await page.$(`${TOP} [data-wa-api-lock]`)), "kilitsizde not yok");
+  const { DatabaseSync } = await import("node:sqlite");
+  let lock = new DatabaseSync(ctx.server.app.config.dbPath);
+  try {
+    lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
+    await ctx.wa.scheduler.runOnce();
+    ok(ctx.messages().length === sentBefore, "kilitte ileti gitmedi");
+    const shown = await page.waitForSelector(`${TOP} [data-wa-api-lock]`, { timeout: 15000 }).then(() => true, () => false);
+    const text = ((await page.textContent(`${TOP} [data-wa-api-lock]`).catch(() => "")) || "").replace(/\s+/g, " ").trim();
+    ok(shown && text === "Bekliyor: Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.", `ekranda neden (görülen: ${text})`);
+    await shot("12e-kilit-bekliyor");
+    await page.click(`${TOP} [data-wa-api-list]`);
+    const tagged = await page.waitForSelector(`${TOP} tr[data-wa-api-open="${lockedBatch}"] [data-wa-api-lock-tag]`, { timeout: 15000 }).then(() => true, () => false);
+    ok(tagged && ((await page.textContent(`${TOP} tr[data-wa-api-open="${lockedBatch}"] [data-wa-api-lock-tag]`)) || "").trim() === "Dosya Kullanımda", "listede Dosya Kullanımda etiketi");
+    const others = await page.$$eval(`${TOP} [data-wa-api-lock-tag]`, nodes => nodes.length);
+    ok(others === 1, `etiket yalnız süren gönderimde (${others})`);
+    await shot("12f-kilit-liste");
+    lock.exec("ROLLBACK");
+    lock.close();
+    lock = null;
+    await page.waitForTimeout(2_200); // işaret süresi (2 sn) dolsun
+    await ctx.wa.scheduler.runOnce();
+    const gone = await page.waitForFunction(sel => !document.querySelector(`${sel} [data-wa-api-lock-tag]`), TOP, { timeout: 15000 }).then(() => true, () => false);
+    ok(gone, "kilit kalkınca listedeki etiket kalktı (canlı olay)");
+    await ctx.drain();
+    ok(batchState(lockedBatch) === "done" && ctx.messages().length === sentBefore + 1, `kilit kalkınca iş gitti, tek ileti (${batchState(lockedBatch)}, ${ctx.messages().length - sentBefore})`);
+    await page.click(`${TOP} [data-wa-api-open="${lockedBatch}"]`);
+    await page.waitForSelector(`${TOP} [data-wa-batch="${lockedBatch}"]`);
+    await waitChip("accepted", 1);
+    ok(!(await page.$(`${TOP} [data-wa-api-lock]`)), "gönderim ekranında not yok");
+  } finally {
+    try {
+      lock?.exec("ROLLBACK");
+      lock?.close();
+    } catch {
+      // kilit zaten kalktı
+    }
   }
   await closeAll();
 });

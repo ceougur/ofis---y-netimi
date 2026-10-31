@@ -53,6 +53,8 @@ const OPEN_JOB = ["pending", "preparing", "sending", "limited", "held", "paused"
 // KULLANICI KARARI (31.10.2026, ek soru 1/4 "a"): yeni toplu iş, iş şirket dosyasında OLMAYAN (yalnız makine defterinde kalan) Sonucu Belirsiz denemeyle ELEMEZ.
 // Test: test/whatsapp-dk8-g-ek-248.test.mjs + test/whatsapp-dk7-belirsiz-ileti-248.test.mjs.
 const NEW_BATCH_LEDGER_ONLY_UNSETTLED = false;
+// İş P2 (kullanıcı metni): şirket dosyası kilitliyken süren toplu işin ekranındaki neden.
+const LOCK_NOTE = "Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.";
 // Kesin durum: medya Meta'dan silinir (S3 A). "Meta Bekletti" kesin değil (aynı medya yeniden kullanılır, §7a 14).
 const FINAL = ["delivered", "read", "failed", "expired", "canceled", "skipped", "stopped"];
 // Geçici hata: iş 30 sn → 2 dk → 15 dk (3 deneme), sonra Başarısız (§7a 15); toplu işte art arda 5 → duraklar.
@@ -219,6 +221,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (!row) return null;
     const c = counts(row.id);
     const total = Object.values(c).reduce((sum, n) => sum + n, 0);
+    // İş P2: arka plan işçisi şirket dosyasını kilitli gördü (İş P1 işareti) ve bu toplu işte gidecek ileti var → ekranda neden. Yalnız SÜREN toplu iş: duraklatılmış iş
+    // kullanıcıyı bekler (gönderim kilidi beklemiyor), Devam Et'in kendi hatası görünür. İşaret kalkınca (≤ 30 sn) not da kalkar.
+    const open = OPEN_JOB.reduce((sum, state) => sum + (c[state] || 0), 0);
+    const lockNote = row.state === "running" && open > 0 && writeLock?.isMarked(companyId) ? LOCK_NOTE : null;
     const actor = store.get("SELECT display_name AS name FROM users WHERE id = ?", row.created_by)?.name || "";
     return {
       id: row.id,
@@ -231,6 +237,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       waitingUntil: row.state === "running" && row.pause_code === "offline" ? row.retry_at : null,
       pauseReason: row.pause_reason,
       pauseCode: row.pause_code,
+      lockNote,
       createdAt: row.created_at,
       createdByName: actor,
       finishedAt: row.finished_at,
@@ -794,6 +801,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const reason = `şirket dosyasına yazılamadı ya da beklenmeyen hata: ${error?.code || error?.message || error}`;
     if (isLockError(error)) {
       writeLock?.mark(companyId); // İş P1: sonraki arka plan turları bu şirkete yazmayı denemez (işaret süresince)
+      syncLockNote(); // İş P2: ekrandaki neden
       if (batchId) lockTroubles.set(batchId, (lockTroubles.get(batchId) || 0) + 1);
       log.warn?.(`WhatsApp işi yürütülemedi (${jobId}; şirket dosyası kilitli); ${Math.round(waitMs / 1000)} sn sonra yeniden denenecek.`);
       if (batchId) notify(batchId);
@@ -1700,7 +1708,22 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
 
   // İş P1: arka plan işçisi bu şirkete şimdi yazabilir mi (turun başında; scheduler.mjs) ve kilit işareti (bakım turunda kilit görülünce).
-  const canWrite = () => (writeLock ? writeLock.guard(companyId, store) : true);
-  const markLocked = () => writeLock?.mark(companyId);
+  // İş P2: işaretin konması ve kalkması ekrana canlı olayla bildirilir (liste ve toplu iş ekranı nedeni hemen gösterir / kaldırır). İşçi her turda canWrite'ı çağırır.
+  let lockShown = false;
+  const syncLockNote = () => {
+    const marked = Boolean(writeLock?.isMarked(companyId));
+    if (marked === lockShown) return;
+    lockShown = marked;
+    notify(null, { lock: marked });
+  };
+  const canWrite = () => {
+    const ok = writeLock ? writeLock.guard(companyId, store) : true;
+    syncLockNote();
+    return ok;
+  };
+  const markLocked = () => {
+    writeLock?.mark(companyId);
+    syncLockNote();
+  };
   return { canWrite, markLocked, connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate };
 }

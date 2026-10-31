@@ -215,6 +215,8 @@
       const chips = STATE_ORDER.filter(key => c[key]).map(key => `<span class="hof-wa-api-tag is-${TONE[key] || "info"}" data-wa-count="${key}">${esc(labels[key] || key)}: <b>${count(c[key])}</b></span>`).join("");
       const offline = b.stateLabel === "Bağlantı Bekleniyor";
       const notes = [
+        // İş P2: şirket dosyası başka programda kilitli → gönderim bekliyor (sunucunun cümlesi; işaret kalkınca kendiliğinden kalkar)
+        b.lockNote ? `<p class="hof-wa-api-wait is-warn" role="status" data-wa-api-lock><b>Bekliyor:</b> ${esc(b.lockNote)}</p>` : "",
         offline ? `<p class="hof-wa-api-wait" data-wa-api-offline><b>Bağlantı Bekleniyor:</b> Meta'ya ulaşılamıyor (internet bağlantısını denetleyin). İletiler başarısız sayılmaz; bağlantı dönünce kendiliğinden sürer${b.waitingUntil ? ` (sonraki deneme ${esc(when(b.waitingUntil))})` : ""}.</p>` : "",
         c.limited ? `<p class="hof-wa-api-wait" data-wa-api-limited><b>Sınır Nedeniyle Bekliyor:</b> ${count(c.limited)} kişi Meta'nın 24 saatlik gönderim sınırına takıldı; pencere açılınca kendiliğinden gönderilir.</p>` : "",
         c.held ? `<p class="hof-wa-api-wait"><b>Meta Bekletti:</b> ${count(c.held)} kişi 24 saat sonra bir kez yeniden denenecek.</p>` : "",
@@ -248,7 +250,7 @@
     function listBody() {
       const rows = (state.list || []).map(b => {
         const c = b.counts || {};
-        return `<tr data-wa-api-open="${esc(b.id)}" tabindex="0"><td>${esc(when(b.createdAt))}</td><td>${esc(b.kindLabel)}</td><td>${esc(periodLabel(b.period))}</td><td><span class="hof-wa-api-state is-${b.state}">${esc(b.stateLabel)}</span></td><td class="num">${count(b.total)}</td><td class="num">${count((c.delivered || 0) + (c.read || 0))}</td><td class="num">${count(c.failed)}</td></tr>`;
+        return `<tr data-wa-api-open="${esc(b.id)}" tabindex="0"><td>${esc(when(b.createdAt))}</td><td>${esc(b.kindLabel)}</td><td>${esc(periodLabel(b.period))}</td><td><span class="hof-wa-api-state is-${b.state}">${esc(b.stateLabel)}</span>${b.lockNote ? ` <span class="hof-wa-api-tag is-warn" data-wa-api-lock-tag title="${esc(b.lockNote)}">Dosya Kullanımda</span>` : ""}</td><td class="num">${count(b.total)}</td><td class="num">${count((c.delivered || 0) + (c.read || 0))}</td><td class="num">${count(c.failed)}</td></tr>`;
       }).join("");
       const filtered = Boolean(state.listFrom || state.listTo);
       const empty = state.listError

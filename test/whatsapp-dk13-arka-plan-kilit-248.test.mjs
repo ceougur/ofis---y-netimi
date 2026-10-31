@@ -3,6 +3,7 @@
 // busy_timeout'u finally'de geri alır): kilit 2 sn sürerken kullanıcının yazımı bekler ve 200 alır.
 // Değişmeyen: kilit kalkınca bekleyen iş gider, çift ileti yok; tur içinde başlayan kilit (İş N/O) test/whatsapp-dk11-kilit-248.test.mjs ve dk12'de.
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5); kilit ayrı bağlantıyla ya da ayrı iş parçacığında (gerçek SQLite kilidi; gerçek saat).
+// İş P2: kilit işaretliyken SÜREN toplu işin görünümünde (ayrıntı + liste) kullanıcının cümlesi "lockNote"; işaret konunca ve kalkınca canlı olay; duraklatılmış işte not yok.
 // Dosya TZ=UTC ve TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
 import path from "node:path";
@@ -73,6 +74,56 @@ describe("2.4.8 İş P1 — kilitli şirket dosyasında arka plan işleri olay d
       assert.equal(res.status, 200, `kullanıcı yazımı kilit kalkınca tamamlandı (geldi ${res.status} ${JSON.stringify(res.data)})`);
       assert.ok(ms >= 1_000, `yazım kilidi bekledi (${ms} ms) — busy_timeout kısa kalmadı`);
     } finally {
+      await ctx.close();
+    }
+  });
+});
+
+const LOCK_NOTE = "Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.";
+describe("2.4.8 İş P2 — kilitte ekranda neden", () => {
+  it("işçi kilidi görünce süren toplu işin ayrıntısında ve listede not; konunca ve kalkınca canlı olay; kilit kalkıp işaret süresi dolunca not kalkar; duraklatılmış işte not yok", { timeout: 120_000 }, async () => {
+    const ctx = await startWa({ now: NOW, __testWriteLockBackoffMs: 300 });
+    let lock = null;
+    const events = ctx.server.app.context.events;
+    const publish = events.publish;
+    const seen = [];
+    events.publish = (event, data, ...rest) => {
+      if (event === "whatsapp.changed" && data && "lock" in data) seen.push(data.lock);
+      return publish.call(events, event, data, ...rest);
+    };
+    try {
+      const a = await ctx.account("Not Bir", "0533 444 55 71", 800);
+      const b = await ctx.account("Not İki", "0533 444 55 72", 900);
+      const run = (await ctx.batch({ kind: "statement", ids: [a.id], preset: "thisMonth" })).data.data.batch.id;
+      const held = (await ctx.batch({ kind: "statement", ids: [b.id], preset: "lastMonth" })).data.data.batch.id;
+      assert.equal((await ctx.api.post(`${URLS.batches}/${held}/pause`, {})).status, 200, "ön koşul: ikinci iş duraklatıldı");
+      const note = async id => (await ctx.api.get(`${URLS.batches}/${id}`)).data.data.lockNote;
+      const listNotes = async () => Object.fromEntries((await ctx.api.get(URLS.batches)).data.data.map(item => [item.id, item.lockNote]));
+      assert.equal(await note(run), null, "kilitsizde not yok");
+      lock = new DatabaseSync(ctx.server.app.config.dbPath);
+      lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
+      await ctx.wa.scheduler.runOnce();
+      assert.equal(ctx.messages().length, 0, "ön koşul: kilitte ileti gitmedi");
+      assert.equal(await note(run), LOCK_NOTE, "süren işin ayrıntısında not");
+      assert.deepEqual(await listNotes(), { [run]: LOCK_NOTE, [held]: null }, "listede süren işte not, duraklatılmışta yok");
+      assert.deepEqual(seen, [true], "işaret konunca canlı olay");
+      lock.exec("ROLLBACK");
+      lock.close();
+      lock = null;
+      await wait(350);
+      await ctx.wa.scheduler.runOnce();
+      assert.deepEqual(seen, [true, false], "işaret kalkınca canlı olay");
+      await ctx.drain();
+      assert.equal(await note(run), null, "kilit kalkınca not kalktı");
+      assert.equal(ctx.messages().length, 1, "iş gitti");
+    } finally {
+      events.publish = publish;
+      try {
+        lock?.exec("ROLLBACK");
+        lock?.close();
+      } catch {
+        // kilit zaten kalktı
+      }
       await ctx.close();
     }
   });
