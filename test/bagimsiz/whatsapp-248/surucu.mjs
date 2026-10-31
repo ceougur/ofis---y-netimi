@@ -955,7 +955,10 @@ async function kos(sen, uc, secenek) {
       for (const b of liste.slice(1)) if (["paused", "running"].includes(b.state) && !(b.state === "running" && !b.pauseCode)) secilen = b;
       const durum = durumOf(secilen);
       let neden = null;
-      if (durum === "duraklatildi" || durum === "baglanti_bekleniyor" || durum === "durduruldu") {
+      // İptal edilen toplu iş: program önceki duraklatma nedenini (pauseCode/pauseReason) toplu işte tutar; kâhinin "neden"i de taşır (sürücü düzeltmesi, ayıklama
+      // 31.10.2026: K2-02 — önceki eşleme iptalde nedeni hiç okumuyordu).
+      const iptalNedeni = durum === "iptal" && secilen.pauseCode && !mut("S16-iptal-nedeni-okunmaz");
+      if (durum === "duraklatildi" || durum === "baglanti_bekleniyor" || durum === "durduruldu" || iptalNedeni) {
         const kod = secilen.pauseCode || "";
         if (kod === "user") neden = "kullanici";
         else if (kod === "template-marketing") neden = "Şablon Pazarlama'ya Alındı";
@@ -1286,6 +1289,17 @@ async function kos(sen, uc, secenek) {
       if (!m) return null;
       return ekstreOku(pdfText(m.icerik));
     };
+    // Kâhin işi (etiket/cari) programda birden çok işe yayılır (Başarısızları Yeniden Dene / Yine de Gönder yeni toplu iş açar). Hata kodu: son işin kendi kodu; son
+    // işin kodu yoksa ve son iş başarılı değilse (README §2: "başarılı işin hata kodu temizlenir", §7a 32) önceki işlerin en son kodu (sürücü düzeltmesi, ayıklama
+    // 31.10.2026: E3-02 / F2-02'de asıl iş 131026 + yeniden denemesi Sonucu Belirsiz — program iki bilgiyi de gösteriyor, sürücü yalnız sonuncuyu okuyordu).
+    const BASARILI = new Set(["accepted", "sent", "delivered", "read"]);
+    const hataKodu = liste => {
+      const son = liste.at(-1).job;
+      if (Number.isFinite(son.errorCode)) return son.errorCode;
+      if (mut("S16-hata-kodu-yalniz-son-is") || BASARILI.has(son.state)) return null;
+      for (const x of [...liste].reverse()) if (Number.isFinite(x.job.errorCode)) return x.job.errorCode;
+      return null;
+    };
     const isSonucu = {};
     const toplam = { post: {}, kabul: {}, meta_ileti: {}, medya_yukleme: {}, medya_silme: {} };
     for (const [anahtar, liste] of [...isler].sort(([a], [b]) => (a < b ? -1 : 1))) {
@@ -1314,7 +1328,7 @@ async function kos(sen, uc, secenek) {
         degiskenler: icerikli ? icerikli.job.params : null,
         pdf: sablon === "destekofis_ekstre" && sonMedya ? pdfOku(sonMedya) : null,
         dosya_adi: sablon === "destekofis_ekstre" ? dosya : null,
-        hata_kodu: Number.isFinite(son.job.errorCode) ? son.job.errorCode : null,
+        hata_kodu: hataKodu(liste),
         post: say(istekIs),
         kabul: mut("S12-kabul-dosyadan") ? liste.filter(x => x.job.wamid).length : say(kabulKaydi.harita),
         meta_ileti: say(iletiIs),
@@ -1589,7 +1603,7 @@ const MUTASYONLAR = [
   ["S3-oneri-takas", "K6-01*,K6-03*,D6-02*", "S-3 iletideki öneri"],
   ["S3-ret-yaniti-okunmaz", "K5-02*,K6-03*,D3-02*", "S-3 400 yanıtı okunur"],
   ["S4-onaysiz-yine-de-gonder", "K5-04*,D1-01*,D3-02*,D6-01*,F1-01*,F1-03*", "S-4 Yine de Gönder (onaylı) + yanıtı"],
-  ["S5-yedek-yok-sayilir", "K6-03*,D7-01*,D7-02*", "S-5 geri_yukle {yedek} → adlı yedek"],
+  ["S5-yedek-yok-sayilir", "K6-03*,D7-01*,D7-02*,E1-01*,E2-03*", "S-5 geri_yukle {yedek} → adlı yedek"],
   ["S6-imlec-gonderilmez", "K8-01*", "S-6 imleç (before)"],
   ["S6-suzgec-gonderilmez", "K8-02*,K8-03*", "S-6 Başlangıç/Bitiş (from/to)"],
   ["S6-devam-suzgeci-devralmaz", "K8-03*", "S-6 devam süzgeci devralır"],
@@ -1606,6 +1620,8 @@ const MUTASYONLAR = [
   ["S12-kabul-dosyadan", "D7-01*,D7-02*,K7-01*,K3-02*,ALICI-131049-iki-kez", "S-12 kabul sahte Meta kaydından (dosyadaki wamid değil)"],
   ["S12-kabul-meta-iletisinden", "CIFT-03*", "S-12 kabul = programa ulaşan yanıt / imzalı çözüm (Meta'daki her ileti değil)"],
   ["S12-kabul-kanca-cozumu-yok", "CIFT-01*,CIFT-04*", "S-12 imzalı durum bildirimiyle çözülen belirsiz ileti kabul sayılır"],
+  ["S16-hata-kodu-yalniz-son-is", "E3-02*,F2-02*", "ayıklama düzeltmesi: kâhin işinin hata kodu önceki denemeden taşınır (başarıya dek)"],
+  ["S16-iptal-nedeni-okunmaz", "K2-02*", "ayıklama düzeltmesi: iptal edilen toplu işin önceki duraklatma nedeni"],
 ];
 
 const sonuclar = [];
