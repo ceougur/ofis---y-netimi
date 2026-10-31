@@ -91,15 +91,22 @@ const ATLAMA = new Map([
   ["Gecikmiş Borç Yok", "gecikmis_borc_yok"],
   ["Zaten Kuyrukta", "zaten_kuyrukta"],
   ["Daha Önce Gönderildi", "daha_once_gonderildi"],
-  // S-7 (kâhin güncellemesi 2, K6): Başarısızları Yeniden Dene'de önceki iletisi Sonucu Belirsiz kalan kişi.
+  // S-7 (kâhin güncellemesi 2, K6): Başarısızları Yeniden Dene'de önceki iletisi Sonucu Belirsiz kalan kişi; S-9 (güncelleme 3, D1): yeni toplu işin başlatma özetinde de.
+  // "Zaten Kuyrukta" / "Daha Önce Gönderildi" yeniden deneme yanıtında da aynı adla (S-9, D5).
   ["Sonucu Belirsiz", "sonucu_belirsiz"],
 ]);
 // S-8: sürücü eşlemelerine bilerek hata (yalnız --mutasyon / --mutasyon-denetimi; programa dokunmaz). null = mutasyon yok.
 let MUTASYON = null;
 const mut = ad => MUTASYON === ad;
-const atlamaKodu = metin => {
-  if (mut("S7-belirsiz-eslemesi-yok") && String(metin || "") === "Sonucu Belirsiz") return `?${metin}`;
-  return ATLAMA.get(String(metin || "")) || (metin ? `?${metin}` : null);
+// yer: "baslat" (başlatma özeti — S-9), "yeniden" (Başarısızları Yeniden Dene / Yine de Gönder yanıtı — S-3, S-7, S-9), "is" (gönderimde atlanan iş).
+// Tablo üç yerde AYNI; yer yalnız S-8 mutasyonlarının her yolu ayrı sınayabilmesi için.
+const atlamaKodu = (metin, yer = "is") => {
+  const m = String(metin || "");
+  if (yer === "yeniden" && mut("S7-yeniden-belirsiz-eslemesi-yok") && m === "Sonucu Belirsiz") return `?${m}`;
+  if (yer === "baslat" && mut("S9-baslatma-belirsiz-eslemesi-yok") && m === "Sonucu Belirsiz") return `?${m}`;
+  if (yer === "yeniden" && mut("S9-yeniden-kuyrukta-eslemesi-yok") && m === "Zaten Kuyrukta") return `?${m}`;
+  if (yer === "yeniden" && mut("S9-yeniden-daha-once-eslemesi-yok") && m === "Daha Önce Gönderildi") return `?${m}`;
+  return ATLAMA.get(m) || (metin ? `?${metin}` : null);
 };
 // S-2: kâhinin hazır dönem seçimi → programın hazır dönem değeri (istemcinin "Ekstre Dönemi" listesi: hof-whatsapp-api.js PRESETS; sunucu waPresetRange).
 const HAZIR_DONEM = { bu_ay: "thisMonth", gecen_ay: "lastMonth", son_3_ay: "last3", tum: "all" };
@@ -758,7 +765,7 @@ async function kos(sen, uc, secenek) {
       const r = await api(istemci, "POST", ekle("/api/workspace/whatsapp/batches", s), govde);
       const ozet = r.data?.data?.summary || r.data?.summary || null;
       const elenenler = {};
-      for (const kisi of ozet?.people || []) if (kisi.skip) elenenler[programCari[kisi.id] || kisi.id] = atlamaKodu(kisi.skip);
+      for (const kisi of ozet?.people || []) if (kisi.skip) elenenler[programCari[kisi.id] || kisi.id] = atlamaKodu(kisi.skip, "baslat");
       if (Object.keys(elenenler).length) sonuc.elenen[o.etiket] = elenenler;
       if (ozet?.alreadySent?.count) sonuc.onceki_uyari[o.etiket] = { sayi: ozet.alreadySent.count, son: ozet.alreadySent.last ? trGun(Date.parse(ozet.alreadySent.last)) : null };
       if (r.status === 200) {
@@ -828,7 +835,7 @@ async function kos(sen, uc, secenek) {
       const alinan = [];
       for (const kisi of ozet?.people || []) {
         const cid = programCari[kisi.id] || `?${kisi.id}`;
-        if (kisi.skip && !mut("S3-alinan-elenenleri-de-sayar")) elenen[cid] = atlamaKodu(kisi.skip);
+        if (kisi.skip && !mut("S3-alinan-elenenleri-de-sayar")) elenen[cid] = atlamaKodu(kisi.skip, "yeniden");
         else alinan.push(cid);
       }
       const ileti = r.status === 200 ? "" : String(govde.error || "");
@@ -1467,23 +1474,26 @@ async function kosVeKarsilastir(sen, uc) {
 // S-8: sürücü eşlemelerinin dişi. Her satır: [mutasyon, hedef senaryolar (önek*), eşleme]. Hedef senaryo mutasyonsuz İKİ kez koşar (kararlılık: iki fark listesi aynı
 // olmalı); mutasyonlu koşunun fark listesi tabandan FARKLIYSA yakalandı. Ayrışmayan = dişsiz eşleme (o eşlemeyi hiçbir hedef senaryo sınamıyor) — raporda adıyla.
 const MUTASYONLAR = [
-  ["S1-bitis-yok-sayilir", "K1-03*,K7-01*,K7-02*,K7-04*", "S-1 bitis → ufuk"],
-  ["S2-bu-ay-gecen-ay-takas", "K1-01*,K1-03*,K1-09*", "S-2 bu_ay/gecen_ay → thisMonth/lastMonth"],
-  ["S2-son-3-ay-tum", "K1-05*,K4-03*", "S-2 son_3_ay → last3"],
-  ["S3-hedef-yok-sayilir", "K6-01*,K6-02*", "S-3 hedef asil → asıl toplu iş"],
-  ["S3-elenen-okunmaz", "K5-02*,K6-01*,K6-03*", "S-3 yanıttaki elenen + neden"],
-  ["S3-alinan-elenenleri-de-sayar", "K5-02*,K6-03*", "S-3 yanıttaki alınan"],
-  ["S3-oneri-takas", "K6-01*,K6-03*", "S-3 iletideki öneri"],
-  ["S3-ret-yaniti-okunmaz", "K5-02*,K6-03*", "S-3 400 yanıtı okunur"],
-  ["S4-onaysiz-yine-de-gonder", "K4-03*,K5-04*", "S-4 Yine de Gönder (onaylı) + yanıtı"],
-  ["S5-yedek-yok-sayilir", "K6-03*", "S-5 geri_yukle {yedek} → adlı yedek"],
+  ["S1-bitis-yok-sayilir", "K1-03*,K7-01*,K7-02*,K7-04*,D3-02*,D8-01*", "S-1 / S-10 bitis → ufuk"],
+  ["S2-bu-ay-gecen-ay-takas", "K1-01*,K1-03*,K1-09*,D1-02*,D4-01*,D7-02*", "S-2 bu_ay/gecen_ay → thisMonth/lastMonth"],
+  ["S2-son-3-ay-tum", "K1-05*,K4-03*,D1-03*,D3-01*", "S-2 son_3_ay → last3"],
+  ["S3-hedef-yok-sayilir", "K6-01*,K6-02*,D5-01*,D5-02*", "S-3 hedef asil → asıl toplu iş"],
+  ["S3-elenen-okunmaz", "K5-02*,K6-01*,K6-03*,D3-01*,D5-02*", "S-3 yanıttaki elenen + neden"],
+  ["S3-alinan-elenenleri-de-sayar", "K5-02*,K6-03*,D5-01*", "S-3 yanıttaki alınan"],
+  ["S3-oneri-takas", "K6-01*,K6-03*,D6-02*", "S-3 iletideki öneri"],
+  ["S3-ret-yaniti-okunmaz", "K5-02*,K6-03*,D3-02*", "S-3 400 yanıtı okunur"],
+  ["S4-onaysiz-yine-de-gonder", "K5-04*,D1-01*,D3-02*,D6-01*", "S-4 Yine de Gönder (onaylı) + yanıtı"],
+  ["S5-yedek-yok-sayilir", "K6-03*,D7-01*,D7-02*", "S-5 geri_yukle {yedek} → adlı yedek"],
   ["S6-imlec-gonderilmez", "K8-01*", "S-6 imleç (before)"],
   ["S6-suzgec-gonderilmez", "K8-02*,K8-03*", "S-6 Başlangıç/Bitiş (from/to)"],
   ["S6-devam-suzgeci-devralmaz", "K8-03*", "S-6 devam süzgeci devralır"],
   ["S6-sayfa-31", "K8-01*,K8-03*", "S-6 sayfa boyu 30"],
   ["S6-daha-fazla-hep-yok", "K8-01*,K8-03*", "S-6 Daha Fazla Göster (31. kayıt)"],
   ["S6-ters-aralik-bos-liste", "K8-02*", "S-6 Başlangıç > Bitiş reddi"],
-  ["S7-belirsiz-eslemesi-yok", "K6-01*,K6-02*,K6-03*", "S-7 Sonucu Belirsiz → sonucu_belirsiz"],
+  ["S7-yeniden-belirsiz-eslemesi-yok", "K6-01*,K6-02*,K6-03*,D6-02*", "S-7 yeniden denemede Sonucu Belirsiz → sonucu_belirsiz"],
+  ["S9-baslatma-belirsiz-eslemesi-yok", "D1-01*,D1-02*,D1-03*,D6-01*,D6-03*", "S-9 başlatmada Sonucu Belirsiz → sonucu_belirsiz"],
+  ["S9-yeniden-kuyrukta-eslemesi-yok", "D5-02*", "S-9 yeniden denemede Zaten Kuyrukta → zaten_kuyrukta"],
+  ["S9-yeniden-daha-once-eslemesi-yok", "K5-02*,D3-01*,D5-01*", "S-9 yeniden denemede Daha Önce Gönderildi → daha_once_gonderildi"],
 ];
 
 const sonuclar = [];
