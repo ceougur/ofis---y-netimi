@@ -1543,8 +1543,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (!owner) return false;
     if (ledger.companyOfWamid?.(wamid)?.companyId !== companyId) return false;
     const attempt = ledger.attempts(owner.jobId).find(item => item.attempt === owner.attempt);
-    if (attempt?.outcome !== "released") return false;
     const row = jobRow(owner.jobId);
+    // İş Q4: iş dosyada YOKKEN kabul edilmiş denemenin geç teslimi de yazılır (Bu Ay Gönderilen İleti Sayısı = teslim; R3 zaten kabulden sayar).
+    if (attempt?.outcome !== "released" && !(attempt?.outcome === "accepted" && !row)) return false;
     // KULLANICI KARARI ("KİME KAÇ KEZ" ilkesi, S3): iş şirket dosyasında YOKSA (Şirket Verisini Sıfırla wa_jobs'u siler) geç teslim yine sayılır (kesin aldı) — WABA
     // defterdeki talepten; şirket denetimi yukarıda (companyOfWamid).
     if (!row) {
@@ -1559,6 +1560,35 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (!ledger.delivered({ jobId: row.id, companyId, wabaId: batch.waba_id, billable, at })) return false;
     notify(row.batch_id);
     return true;
+  }
+  // İş Q4 (dar kontrol 10 DÜŞÜK-4; "KİME KAÇ KEZ" ilkesi 3): iş şirket dosyasında YOK (Şirket Verisini Sıfırla wa_jobs'u siler) ve defterdeki SON denemesinin sonucu
+  // belli değil (Sonucu Belirsiz / sonuçsuz talep) → İMZALI bildirim (kanca gizli yolu + biz_opaque_callback_data = iş kimliği) o denemenin sonucunu defterde kapatır:
+  // wamid o denemeye bağlanır (learnWamid) ve kabul yazılır (lateAccept); "delivered" / "read" → teslim (R3 "Daha Önce Gönderildi"), "failed" → teslim edilemedi
+  // (yeniden gönderilebilir). Şirket dosyasına yazım YOK (iş yok). İmzasız bildirim bu yolu açmaz (P5 aynen: iş kimliği doğrulanmamış). Yalnız bu şirketin talebi
+  // (claims.company_id). wamid başka denemeye / işe bağlıysa dokunulmaz. Test: test/whatsapp-q4-dosyasiz-imzali-248.test.mjs.
+  function lateResultOfMissingJob(status, wamid, value, at) {
+    const jobId = String(status?.biz_opaque_callback_data || "").slice(0, 120);
+    if (!jobId || !wamid || !["sent", "delivered", "read", "failed"].includes(value) || jobRow(jobId)) return false;
+    const owned = ledger.companyOfJob?.(jobId);
+    if (!owned || owned.companyId !== companyId || !owned.wabaId) return false;
+    const last = ledger.attempts(jobId).at(-1);
+    if (!last || (last.outcome && last.outcome !== "uncertain")) return false;
+    const bound = ledger.attemptOfWamid?.(wamid);
+    if (bound && (bound.jobId !== jobId || bound.attempt !== last.attempt)) return false;
+    let applied = false;
+    if (!bound) {
+      if (!ledger.learnWamid?.({ jobId, attempt: last.attempt, wamid, at })) return false;
+      ledger.lateAccept({ jobId, attempt: last.attempt, wamid, companyId, wabaId: owned.wabaId, at });
+      applied = true;
+    }
+    if (["delivered", "read"].includes(value)) {
+      const billable = status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing ? status.pricing.billable !== false : true;
+      applied = ledger.delivered({ jobId, companyId, wabaId: owned.wabaId, billable, at }) || applied;
+    } else if (value === "failed" && !ledger.deliveredJob?.(jobId)) {
+      // §7a 18: teslimden SONRA gelen failed yok sayılır. Meta Bekletti (131049) de burada teslim edilemedi sayılır: iş dosyada yok, 24 saat sonraki deneme olmaz.
+      applied = ledger.deliveryFailed({ jobId, attempt: last.attempt, at }) || applied;
+    }
+    return applied;
   }
   function applyStatuses(statuses = [], { phoneNumberId = "", signed = false } = {}) {
     const out = { applied: 0, ignored: 0, unknown: 0 };
@@ -1575,6 +1605,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       if (!job) {
         if (wamid && ["delivered", "read"].includes(value) && lateDeliveryOfReleased(wamid, status, at, phoneNumberId)) out.applied += 1;
+        else if (signed && lateResultOfMissingJob(status, wamid, value, at)) out.applied += 1;
         else out.unknown += 1;
         continue;
       }

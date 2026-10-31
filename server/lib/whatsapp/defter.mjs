@@ -222,6 +222,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     companyOfWamid: db.prepare(`SELECT c.company_id AS companyId, c.waba_id AS wabaId FROM outcomes o JOIN claims c ON c.job_id = o.job_id AND c.attempt = o.attempt WHERE o.wamid = ?1
       UNION ALL SELECT c.company_id, c.waba_id FROM learned_wamids l JOIN claims c ON c.job_id = l.job_id AND c.attempt = l.attempt WHERE l.wamid = ?1 LIMIT 1`),
     companyOfJob: db.prepare("SELECT company_id AS companyId, waba_id AS wabaId FROM claims WHERE job_id = ? LIMIT 1"),
+    deliveredJob: db.prepare("SELECT 1 AS x FROM deliveries WHERE job_id = ?"),
     attemptOfWamid: db.prepare(`SELECT job_id AS jobId, attempt FROM outcomes WHERE wamid = ?1 AND wamid <> ''
       UNION ALL SELECT job_id, attempt FROM learned_wamids WHERE wamid = ?1 AND wamid <> '' LIMIT 1`),
     learnWamid: db.prepare("INSERT OR IGNORE INTO learned_wamids (job_id, attempt, wamid, at) VALUES (?, ?, ?, ?)"),
@@ -479,6 +480,8 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     /** Durum bildiriminin şirketi: wamid'in (kabul edilmiş deneme) ya da iş kimliğinin (sonucu belirsiz deneme) talebini yazan şirket. */
     companyOfWamid: wamid => (wamid ? q.companyOfWamid.get(String(wamid)) || null : null),
     companyOfJob: jobId => (jobId ? q.companyOfJob.get(String(jobId)) || null : null),
+    /** İş Q4: işin teslimi defterde var mı (teslimden sonra gelen "failed" yok sayılır). */
+    deliveredJob: jobId => Boolean(jobId && q.deliveredJob.get(String(jobId))),
     /**
      * T2 dar kontrol ORTA-2 / dar kontrol 2 ORTA-A: wamid'in ait olduğu deneme (Meta'nın kabul ettiği deneme; wamid her denemede yenidir) — eşzamanlı kabulden
      * (outcomes) ya da sonradan öğrenilenden (learned_wamids). Bildirim yalnız o denemeye yazılır.
