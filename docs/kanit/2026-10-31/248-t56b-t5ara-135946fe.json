@@ -1,0 +1,58 @@
+{
+  "ad": "248-t56b-t5ara-135946fe",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t56b-ara/arac/ara-kos.mjs 135946fe /home/user/wt-t56b-248",
+  "commit": "21ea0474a9e07670fcbc9afa81048e0046e164e1",
+  "dal": "is/t56b-248",
+  "kirli": 0,
+  "izlenmeyen": 30,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T15:56:31.217Z",
+  "sure_sn": 3.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 19,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "135946fe önce (eski kod) Yeniden Dene + Yine de Gönder kuyruktayken Ekstre \"Bu Ay\": G4, G5, G8 Zaten Kuyrukta — {\"G4\":\"\",\"G5\":\"\",\"G8\":\"Zaten Kuyrukta\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe sonra (aday) Ekstre \"Bu Ay\": G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta, G4/G6/G7/G9 gönderilir (G5: gönderilir) — {\"badE\":[\"G0=\",\"G1=\",\"G2=\",\"G3=\"],\"skipped\":{\"Zaten Kuyrukta\":1}}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe sonra (aday) özel aralık 01.11–03.11 = o günün \"Bu Ay\"ı → G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta (karar \"b\"; göçmüş defterde claim_keys satırı tablo yok) — {\"badOz\":[\"G0=\",\"G1=\",\"G2=\",\"G3=\"],\"skipped\":{\"Zaten Kuyrukta\":1}}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe önce = sonra: ekstre — [{\"k\":\"Ara Şema G0\",\"once\":{\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T06:00:00.000Z\"},\"sonra\":{\"skip\":\"\",\"sentBefore\":null}},{\"k\":\"Ara Şema G1\",\"once\":{\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T06:00:00.000Z\"},\"sonra\":{\"skip\":\"\",\"sentBefore\":",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe önce = sonra: kuyruk — [{\"k\":\"Ara Şema G0\",\"once\":{\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T06:00:00.000Z\"},\"sonra\":{\"skip\":\"\",\"sentBefore\":null}},{\"k\":\"Ara Şema G1\",\"once\":{\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T06:00:00.000Z\"},\"sonra\":{\"skip\":\"\",\"sentBefore\":",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t56b-t5ara-135946fe.log",
+  "klasor": "/home/user/wt-t56b-248",
+  "ham_cikti_sha256": "2f16f12e7459f916f5172d1492412b4309334b8cc3d0e25eb403823724fdd3b4",
+  "ham_cikti_bayt": 5558
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "248-t56b-kaynak-tarama-2",
+  "komut": "node --no-warnings --test test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/whatsapp-meta-izolasyon.test.mjs",
+  "commit": "93eed9362cbc4e02175462a0bce32acb1ca6c26c",
+  "dal": "is/t56b-248",
+  "kirli": 0,
+  "izlenmeyen": 66,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T16:26:40.708Z",
+  "sure_sn": 2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t56b-kaynak-tarama-2.log",
+  "klasor": "/home/user/wt-t56b-248",
+  "ham_cikti_sha256": "193db884ad4d70abfd8c391af30496c00d93439bb850a22759747a555d527c88",
+  "ham_cikti_bayt": 4628
+}

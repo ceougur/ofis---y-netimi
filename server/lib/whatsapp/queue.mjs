@@ -17,6 +17,7 @@
 // (iki kullanıcı / iki sekme; süre penceresi YOK — §7a 9); (5) geri yüklenen / taşınan veride defterde canlı olmayan toplu iş yürütülmez.
 // GÜNLÜK SINIR: min(Meta basamağı, elle sınır); sayaç makine defterinde WABA kimliğine göre (kayan 24 saat, farklı kişi; geri yükleme azaltmaz).
 import { randomUUID } from "node:crypto";
+import { isLockError } from "../db.mjs";
 import { HttpError } from "../http.mjs";
 import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
@@ -780,11 +781,21 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // (30 sn → 2 dk → 15 dk, en çok) — yazım düşse de meşgul döngü / her turda yeni PDF yüklemesi olmaz; dosyaya da "Bekliyor" + bekleme yazılmaya çalışılır (yazılamazsa
   // "Hazırlanıyor"da kalan iş bakım turunda / açılışta Bekliyor'a döner); toplu işin "art arda" sayacı artar (5'te "Duraklatıldı").
   const DEFERRABLE = ["pending", "limited", "held", "preparing"];
+  // İş N (T6 yeniden koşusu Ü2, ORTA gerileme): dosya KİLİTLİYKEN (SQLITE_BUSY / LOCKED) her yazım denemesi busy_timeout (10 sn) boyunca olay döngüsünü tutar; ilk yazım
+  // kilitle düştüyse aynı turda başka yazım denenmez — bekleme bellekte (localDefer), toplu işin "art arda" sayacı bellekte artar (lockTroubles) ve kilit kalkınca ilk
+  // yazılabilen sayaçla birlikte yazılır; işin başarılı yürütülmesi (troubles: 0) bellekteki sayacı da sıfırlar. Disk dolu ve öbür hatalar bugünkü gibi (T6-B1/B2).
+  const lockTroubles = new Map(); // toplu iş → kilit yüzünden yazılamamış "art arda" sayısı
   function deferLocal(batchId, jobId, error) {
     const tries = (localDefer.get(jobId)?.tries || 0) + 1;
     const waitMs = JOB_BACKOFF_MS[Math.min(tries, JOB_BACKOFF_MS.length) - 1];
     localDefer.set(jobId, { tries, until: nowMs() + waitMs });
     const reason = `şirket dosyasına yazılamadı ya da beklenmeyen hata: ${error?.code || error?.message || error}`;
+    if (isLockError(error)) {
+      if (batchId) lockTroubles.set(batchId, (lockTroubles.get(batchId) || 0) + 1);
+      log.warn?.(`WhatsApp işi yürütülemedi (${jobId}; şirket dosyası kilitli); ${Math.round(waitMs / 1000)} sn sonra yeniden denenecek.`);
+      if (batchId) notify(batchId);
+      return { did: true, deferred: true };
+    }
     try {
       store.run(
         `UPDATE wa_jobs SET state = CASE WHEN state = 'preparing' THEN 'pending' ELSE state END, next_at = ?, sending_at = NULL, updated_at = ? WHERE id = ? AND state IN (${DEFERRABLE.map(() => "?").join(",")})`,
@@ -798,7 +809,11 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     try {
       const row = batchRow(batchId);
-      if (row?.state === "running") trouble(row, reason, { local: true });
+      if (row?.state === "running") {
+        const pending = lockTroubles.get(batchId) || 0;
+        trouble({ ...row, troubles: (row.troubles || 0) + pending }, reason, { local: true });
+        lockTroubles.delete(batchId); // yazıldı (yazım düşerse yukarıdaki satır hata atar, sayaç bellekte kalır)
+      }
     } catch {
       // sayaç yazılamadı
     }
@@ -1132,6 +1147,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     store.tx(() => {
       updateJob(job.id, { state: "accepted", wamid: sent.wamid, accepted_at: iso(), error_code: null, error_text: "", next_at: null });
       updateBatch(batch.id, { troubles: 0, ...connectionBack() });
+      lockTroubles.delete(batch.id);
     });
     localDefer.delete(job.id);
     finishIfDone(batch.id);
