@@ -60,8 +60,10 @@
    * @param {{ kind: "statement"|"reminder", selection: object, info: object, onDone?: Function, onTitle?: Function }} options
    */
   function mount(root, { kind = "statement", selection = {}, info = null, onDone = null }) {
-    const state = { kind, preset: "thisMonth", sendAgain: false, info, preview: null, error: null, loading: false, requestId: HOF.requestId(), view: "compose", batchId: "", batch: null, list: null, listFrom: "", listTo: "", listMore: false, listError: "", listLoading: false, busy: false, seq: 0 };
+    const state = { kind, preset: "thisMonth", sendAgain: false, info, preview: null, error: null, loading: false, requestId: HOF.requestId(), view: "compose", batchId: "", batch: null, list: null, listFrom: "", listTo: "", listMore: false, listError: "", moreLoading: false, busy: false, seq: 0 };
     let listSeq = 0; // liste yüklemelerinin sırası (geç gelen eski yanıt yeni sayfanın üstüne yazmaz)
+    let listJob = null; // süren liste isteği (Daha Fazla Göster onu bekler; dar kontrol 8 DÜŞÜK-2)
+    let refreshAgain = false; // Daha Fazla Göster sürerken gelen canlı yenileme: o bitince yapılır
     const PAGE = 30; // "Daha Fazla Göster" her basışta 30 daha eski gönderim (sunucuda imleçli sayfalama; en çok 200)
     root.setAttribute("data-nodirty", "");
     let pollTimer = 0;
@@ -253,10 +255,11 @@
         ? `<p class="hof-empty hof-wa-api-list-error" role="alert" data-wa-api-list-error>${esc(state.listError)}</p>`
         : `<p class="hof-empty" data-wa-api-batches-empty>${filtered ? "Bu tarihlerde gönderim yok." : "Henüz otomatik gönderim yapılmadı."}</p>`;
       // Daha eski gönderim yoksa düğme görünmez; nedeni yazılır (pasif / gizli düğmenin nedeni görünür). Yüklenirken düğme odakta kalır (aria-disabled; disabled
-      // odağı düşürürdü), ikinci basış yok sayılır.
+      // odağı düşürürdü), ikinci basış yok sayılır. "Yükleniyor…" YALNIZ Daha Fazla Göster'in kendi yüklemesini gösterir (canlı yenileme düğmeyi pasif yapmaz;
+      // dar kontrol 8 DÜŞÜK-2).
       const more = rows
         ? state.listMore
-          ? `<button type="button" class="hof-button hof-button-ghost hof-wa-api-more" name="waListMore" data-wa-api-more${state.listLoading ? ' aria-disabled="true"' : ""}>${state.listLoading ? "Yükleniyor…" : "Daha Fazla Göster"}</button>`
+          ? `<button type="button" class="hof-button hof-button-ghost hof-wa-api-more" name="waListMore" data-wa-api-more${state.moreLoading ? ' aria-disabled="true"' : ""}>${state.moreLoading ? "Yükleniyor…" : "Daha Fazla Göster"}</button>`
           : `<p class="hof-wa-api-note" data-wa-api-list-end>${filtered ? "Bu tarihlerdeki bütün gönderimler gösteriliyor." : "Bütün gönderimler gösteriliyor."}</p>`
         : "";
       return state.list === null ? '<p class="hof-empty">Yükleniyor…</p>' : rows ? `<div class="hof-wa-list"><table class="hof-table"><thead><tr><th>Başlangıç</th><th>Tür</th><th>Dönem</th><th>Durum</th><th class="num">Kişi</th><th class="num">Teslim Edildi</th><th class="num">Başarısız</th></tr></thead><tbody data-wa-api-batches>${rows}</tbody></table></div>${more}` : empty;
@@ -313,9 +316,7 @@
       const slot = filter.querySelector("[data-wa-api-filter-clear-slot]");
       if (slot) slot.innerHTML = clearButton();
       if (clear) from?.focus();
-      state.list = null;
-      state.listMore = false;
-      state.listError = "";
+      resetList();
       renderList();
       loadList();
     }
@@ -344,7 +345,20 @@
     }
     // Liste: ilk sayfa (append = false) ya da "Daha Fazla Göster" (append = true; imleç = ekrandaki son gönderim). Bir fazla istenir: gelirse daha eskisi var.
     // keep (canlı yenileme): yüklenmiş kadar satır baştan yeniden okunur (en çok 199), süzgeç korunur.
+    // Dar kontrol 8 DÜŞÜK-2: canlı yenileme sürerken Daha Fazla Göster'e basılınca basış YUTULMAZ — düğme "Yükleniyor…" olur, yenileme bitince sayfa eklenir; Daha
+    // Fazla Göster sürerken gelen canlı yenileme onu bozmaz (sonra yapılır). Süzgeç değişimi / yeni liste (resetList) ikisini de geçersiz kılar.
     async function loadList({ append = false, keep = false } = {}) {
+      if (keep && state.moreLoading) {
+        refreshAgain = true;
+        return;
+      }
+      if (append) {
+        if (state.moreLoading) return;
+        state.moreLoading = true;
+        renderList();
+        if (listJob) await listJob;
+        if (!state.moreLoading || !alive()) return;
+      }
       const loaded = (state.list || []).length;
       const size = keep ? Math.min(199, Math.max(PAGE, loaded)) : PAGE;
       const query = new URLSearchParams({ limit: String(size + 1) });
@@ -352,33 +366,41 @@
       if (state.listTo) query.set("to", state.listTo);
       if (append && loaded) query.set("before", state.list[loaded - 1].id);
       const seq = ++listSeq;
-      state.listLoading = true;
-      if (append) renderList();
-      try {
-        const got = await HOF.api(`${BASE}/batches?${query}`, { background: true });
-        if (seq !== listSeq || !alive()) return;
+      const job = HOF.api(`${BASE}/batches?${query}`, { background: true }).then(got => ({ got }), error => ({ error }));
+      listJob = job;
+      const { got, error } = await job;
+      if (listJob === job) listJob = null;
+      if (seq !== listSeq || !alive()) return;
+      if (append) state.moreLoading = false;
+      if (got) {
         state.listMore = got.length > size;
         state.list = append ? [...(state.list || []), ...got.slice(0, size)] : got.slice(0, size);
         state.listError = "";
-      } catch (error) {
-        if (seq !== listSeq || !alive()) return;
-        if (error?.status === 400 && !append) {
-          state.list = [];
-          state.listMore = false;
-          state.listError = error.message || "Gönderimler yüklenemedi.";
-        } else {
-          if (!append) state.list = [];
-          HOF.toastError(error);
-        }
+      } else if (error?.status === 400 && !append) {
+        state.list = [];
+        state.listMore = false;
+        state.listError = error.message || "Gönderimler yüklenemedi.";
+      } else {
+        if (!append) state.list = [];
+        HOF.toastError(error);
       }
-      state.listLoading = false;
       renderList({ focusRow: append && (state.list || []).length > loaded ? loaded : -1 });
+      if (append && refreshAgain) {
+        refreshAgain = false;
+        loadList({ keep: true });
+      }
     }
-    async function openList() {
-      state.view = "list";
+    // Yeni liste (pencere açılışı, süzgeç değişimi): süren Daha Fazla Göster ve bekleyen yenileme düşer.
+    function resetList() {
       state.list = null;
       state.listMore = false;
       state.listError = "";
+      state.moreLoading = false;
+      refreshAgain = false;
+    }
+    async function openList() {
+      state.view = "list";
+      resetList();
       render();
       await loadList();
     }
@@ -490,9 +512,7 @@
       if (target.matches("[data-wa-api-send]")) start();
       else if (target.matches("[data-wa-api-retry]")) loadPreview();
       else if (target.matches("[data-wa-api-list]")) openList();
-      else if (target.matches("[data-wa-api-more]")) {
-        if (!state.listLoading) loadList({ append: true });
-      }
+      else if (target.matches("[data-wa-api-more]")) loadList({ append: true });
       else if (target.matches("[data-wa-api-filter-clear]")) {
         state.listFrom = "";
         state.listTo = "";
