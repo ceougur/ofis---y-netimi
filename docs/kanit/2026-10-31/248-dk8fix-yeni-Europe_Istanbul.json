@@ -1,0 +1,32 @@
+{
+  "ad": "248-dk8fix-yeni-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /home/user/wt-t2fix-248/test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk8-gec-teslim-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk8-iki-bekletti-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs",
+  "commit": "1674786f87c31851d0596f3ef903389cdfb1be44",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T10:13:05.174Z",
+  "sure_sn": 10.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk8fix-yeni-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "7fe855a7c839755dae5a8ad7e1e8e280d90052590a1f805ebb358aa68e494210",
+  "ham_cikti_bayt": 6819
+}
