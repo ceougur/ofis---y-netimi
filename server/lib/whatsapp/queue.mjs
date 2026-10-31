@@ -428,7 +428,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     };
   }
 
-  async function createBatch(user, body) {
+  // options.inherit (T1 P6): "Yine de Gönder"in kaynağı olan Sonucu Belirsiz iş — yeni iş onun dondurulmuş içeriğini ve Meta'daki PDF'ini devralır (sendAnyway).
+  async function createBatch(user, body, { inherit = null } = {}) {
     const record = preconditions();
     const requestId = typeof body.requestId === "string" && /^[A-Za-z0-9_-]{6,100}$/.test(body.requestId) ? body.requestId : "";
     const requestKey = requestId ? `${user.id}|${requestId}` : null;
@@ -473,6 +474,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
           newId("waj"), batchId, person.id, person.name, person.phone, TEMPLATE_NAMES[kind], template.template.language, plotted.period.from, plotted.period.to, person.skip ? "skipped" : "pending", person.skip, at, at,
         );
       }
+      if (inherit) inheritContent(batchId, inherit.id, at);
     });
     audit(user, "whatsapp.batch.created", batchId, { kind, period: plotted.period, total: summary.total, sendable: summary.sendable, skipped: summary.skipped });
     notify(batchId);
@@ -545,6 +547,20 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (!ids.length) fail(400, "Bu gönderimde yeniden denenecek başarısız ileti yok.", "whatsapp-nothing");
     return createBatch(user, { ...sameBody(row), ids, requestId: body.requestId });
   }
+  // T1 P6 (S3 A + §7a 15; BAŞ MİMAR KARARI): "Yine de Gönder" AYNI iletiyi yeniden gönderir — yeni iş belirsiz işin dondurulmuş değişkenlerini ve (29 gün geçerliyse)
+  // Meta'daki PDF'ini devralır: PDF yeniden yüklenmez, iki ileti de aynı içeriği taşır (ikisi birden ulaşsa da çelişmez). PDF'in TEK sahibi artık yeni iştir: belirsiz
+  // işin medya kaydı boşaltılır, yeni iş kesinleşince bakım turu Meta'dan bir kez siler (belirsiz iş hiç kesinleşmeyebileceği için silme ona bağlanmaz).
+  function inheritContent(batchId, sourceId, at) {
+    const source = jobRow(sourceId);
+    const target = source ? store.get("SELECT * FROM wa_jobs WHERE batch_id = ? AND account_id = ? AND state = 'pending'", batchId, source.account_id) : null;
+    if (!source || !target || source.state !== "uncertain" || !source.prepared_at) return;
+    const media = mediaUsable(source);
+    store.run(
+      "UPDATE wa_jobs SET prepared_at = ?, params_json = ?, pdf_name = ?, media_id = ?, media_at = ?, updated_at = ? WHERE id = ?",
+      source.prepared_at, source.params_json, source.pdf_name, media ? source.media_id : null, media ? source.media_at : null, at, target.id,
+    );
+    if (media) store.run("UPDATE wa_jobs SET media_id = NULL, media_at = NULL, updated_at = ? WHERE id = ?", at, source.id);
+  }
   // Sonucu Belirsiz iş için "Yine de Gönder": kullanıcı çift gidebileceğini onaylar (confirm: true) → o cariye yeni iş.
   async function sendAnyway(user, jobId, body = {}) {
     const job = jobRow(String(jobId || "").slice(0, 80));
@@ -552,7 +568,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (job.state !== "uncertain") fail(409, "Yalnız sonucu belirsiz ileti yeniden gönderilir.", "whatsapp-job-state");
     if (body.confirm !== true) fail(409, "İletinin Meta'ya ulaşıp ulaşmadığı bilinmiyor; yeniden gönderilirse kişiye iki kez gidebilir. Onaylıyorsanız yeniden isteyin.", "whatsapp-confirm-required");
     const row = batchRow(job.batch_id);
-    const result = await createBatch(user, { ...sameBody(row), ids: [job.account_id], requestId: body.requestId });
+    const result = await createBatch(user, { ...sameBody(row), ids: [job.account_id], requestId: body.requestId }, { inherit: job });
     audit(user, "whatsapp.job.send-anyway", job.id, { batchId: result.batch.id });
     return result;
   }
