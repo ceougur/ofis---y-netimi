@@ -756,6 +756,7 @@ async function kos(sen, uc, secenek) {
       planlar[cid] = [plan.id];
       for (const v of acik) await sart(`taksit ${cid}`, api(A, "POST", ekle(`/api/workspace/plans/${plan.id}/items`, p.sirket), { dueDate: v.vade, amount: Number(v.kalan) }));
     }
+    const ileriHareketler = [];
     for (const c of g.cariler) {
       const s = c.sirket || "A";
       const govde = { name: c.ad, ...(c.telefon !== null && c.telefon !== undefined ? { phone: c.telefon } : {}) };
@@ -769,12 +770,18 @@ async function kos(sen, uc, secenek) {
       const r = yanit.data.data;
       cariProgram[c.id] = { id: r.id, sirket: s, ad: c.ad };
       programCari[r.id] = c.id;
-      for (const h of c.hareketler || []) await hareketYaz(c.id, h);
+      // İleri tarihli hareket (programın bugününden sonra) bütün cariler açıldıktan SONRA girilir: saat o güne alınıp girilen hareket, sonraki kart yazımlarında
+      // programın tam kapısını ("İleri tarihli hareket", gate-equivalence 500) tetikliyordu (sürücü düzeltmesi, G1-01/02 kurulumu; yalnız giriş sırası değişir).
+      for (const h of c.hareketler || []) {
+        if (h.tarih > bugun()) ileriHareketler.push([c.id, h]);
+        else await hareketYaz(c.id, h);
+      }
       if (c.vadeler?.length) await vadeleriKur(c.id, c.vadeler);
       if (c.istemiyor) await sart(`istemiyor ${c.id}`, api(A, "PUT", ekle(`/api/workspace/accounts/${r.id}`, s), { waOptOut: true }));
       if (c.pasif) await sart(`pasif ${c.id}`, api(A, "PUT", ekle(`/api/workspace/accounts/${r.id}`, s), { status: "passive" }));
       if (c.silindi) await sart(`sil ${c.id}`, api(A, "DELETE", ekle(`/api/workspace/accounts/${r.id}`, s)));
     }
+    for (const [cid, h] of ileriHareketler) await hareketYaz(cid, h);
     // Bakım turu: durum bildirimi adresi Meta'ya kaydedilir (program kendisi; plan §3 C).
     await program.server.app.whatsapp.scheduler.maintain();
     lisansYazilabilir = ayar.lisans_yazilabilir;
