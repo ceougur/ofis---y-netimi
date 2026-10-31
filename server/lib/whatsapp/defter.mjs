@@ -74,6 +74,12 @@ const SCHEMA = `
   CREATE INDEX IF NOT EXISTS idx_hook_events_path ON hook_events(path_hash);
   CREATE TABLE IF NOT EXISTS hook_seen (waba_id TEXT NOT NULL, hour TEXT NOT NULL, at TEXT NOT NULL, PRIMARY KEY (waba_id, hour)) STRICT;
   CREATE INDEX IF NOT EXISTS idx_outcomes_wamid ON outcomes(wamid) WHERE wamid <> '';
+  -- T2 dar kontrol 2 ORTA-A: Meta'nın kabul ettiği ama eşzamanlı yanıtı alınamamış (Sonucu Belirsiz) denemenin wamid'i sonradan (imzalı durum kancası / geç kabul)
+  -- öğrenilir; outcomes "ilk yazılan kalır" (belirsiz satırında wamid boş) → wamid'in hangi denemeye ait olduğu bu tabloya yazılır. Yalnız eklenir; ilk yazılan kalır.
+  CREATE TABLE IF NOT EXISTS learned_wamids (job_id TEXT NOT NULL, attempt INTEGER NOT NULL, wamid TEXT NOT NULL, at TEXT NOT NULL, PRIMARY KEY (job_id, attempt)) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_learned_wamids_wamid ON learned_wamids(wamid);
+  CREATE TRIGGER IF NOT EXISTS learned_wamids_no_update BEFORE UPDATE ON learned_wamids BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS learned_wamids_no_delete BEFORE DELETE ON learned_wamids BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS hook_events_no_update BEFORE UPDATE ON hook_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS hook_events_no_delete BEFORE DELETE ON hook_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS hook_seen_no_update BEFORE UPDATE ON hook_seen BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
@@ -161,9 +167,12 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     hookByPath: db.prepare("SELECT DISTINCT waba_id AS wabaId FROM hook_events WHERE path_hash = ?"),
     hookSeen: db.prepare("INSERT OR IGNORE INTO hook_seen (waba_id, hour, at) VALUES (?, ?, ?)"),
     hookSeenAt: db.prepare("SELECT MAX(at) AS at FROM hook_seen WHERE waba_id = ?"),
-    companyOfWamid: db.prepare("SELECT c.company_id AS companyId, c.waba_id AS wabaId FROM outcomes o JOIN claims c ON c.job_id = o.job_id AND c.attempt = o.attempt WHERE o.wamid = ? LIMIT 1"),
+    companyOfWamid: db.prepare(`SELECT c.company_id AS companyId, c.waba_id AS wabaId FROM outcomes o JOIN claims c ON c.job_id = o.job_id AND c.attempt = o.attempt WHERE o.wamid = ?1
+      UNION ALL SELECT c.company_id, c.waba_id FROM learned_wamids l JOIN claims c ON c.job_id = l.job_id AND c.attempt = l.attempt WHERE l.wamid = ?1 LIMIT 1`),
     companyOfJob: db.prepare("SELECT company_id AS companyId, waba_id AS wabaId FROM claims WHERE job_id = ? LIMIT 1"),
-    attemptOfWamid: db.prepare("SELECT job_id AS jobId, attempt FROM outcomes WHERE wamid = ? AND wamid <> '' LIMIT 1"),
+    attemptOfWamid: db.prepare(`SELECT job_id AS jobId, attempt FROM outcomes WHERE wamid = ?1 AND wamid <> ''
+      UNION ALL SELECT job_id, attempt FROM learned_wamids WHERE wamid = ?1 AND wamid <> '' LIMIT 1`),
+    learnWamid: db.prepare("INSERT OR IGNORE INTO learned_wamids (job_id, attempt, wamid, at) VALUES (?, ?, ?, ?)"),
   };
   const hookView = row => {
     if (!row) return null;
@@ -285,9 +294,25 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       try {
         guard("accept", row);
         q.accept.run(String(row.jobId), String(row.companyId), String(row.wabaId), String(row.at));
+        if (row.wamid && Number(row.attempt) > 0) q.learnWamid.run(String(row.jobId), Number(row.attempt), String(row.wamid), String(row.at));
         return true;
       } catch (error) {
         log.warn?.(`WhatsApp gönderim defteri: ${row.jobId} kabulü yazılamadı (${error.message}).`);
+        return false;
+      }
+    },
+    /**
+     * Dar kontrol 2 ORTA-A: Sonucu Belirsiz denemenin wamid'i durum kancasından öğrenildi — (job_id, attempt, wamid) yalnız eklenir (ilk yazılan kalır). Şirket dosyasına
+     * yazımdan ÖNCE çağrılır: dosya yazımı düşse de sonraki (yinelenen) bildirim doğru denemeye bağlanır. Hata fırlatmaz.
+     */
+    learnWamid(row) {
+      try {
+        if (!row.wamid || !(Number(row.attempt) > 0)) return false;
+        guard("learn", row);
+        q.learnWamid.run(String(row.jobId), Number(row.attempt), String(row.wamid), String(row.at));
+        return true;
+      } catch (error) {
+        log.warn?.(`WhatsApp gönderim defteri: ${row.jobId} ileti kimliği yazılamadı (${error.message}).`);
         return false;
       }
     },
@@ -380,7 +405,10 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     /** Durum bildiriminin şirketi: wamid'in (kabul edilmiş deneme) ya da iş kimliğinin (sonucu belirsiz deneme) talebini yazan şirket. */
     companyOfWamid: wamid => (wamid ? q.companyOfWamid.get(String(wamid)) || null : null),
     companyOfJob: jobId => (jobId ? q.companyOfJob.get(String(jobId)) || null : null),
-    /** T2 dar kontrol ORTA-2: wamid'in ait olduğu deneme (Meta'nın kabul ettiği deneme; wamid her denemede yenidir). Bildirim yalnız o denemeye yazılır. */
+    /**
+     * T2 dar kontrol ORTA-2 / dar kontrol 2 ORTA-A: wamid'in ait olduğu deneme (Meta'nın kabul ettiği deneme; wamid her denemede yenidir) — eşzamanlı kabulden
+     * (outcomes) ya da sonradan öğrenilenden (learned_wamids). Bildirim yalnız o denemeye yazılır.
+     */
     attemptOfWamid: wamid => (wamid ? q.attemptOfWamid.get(String(wamid)) || null : null),
     // ---------- Aylık sayım ----------
     monthCounts({ companyId, wabaId = "", from, to }) {

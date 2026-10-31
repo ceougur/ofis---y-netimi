@@ -1363,6 +1363,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         }
       }
       if (status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing) fields.billable = status.pricing.billable === false ? 0 : 1;
+      // Dar kontrol 2 ORTA-A: Sonucu Belirsiz denemenin wamid'i (imzalı kanca + iş kimliği) defterde O DENEMEYE bağlanır — şirket dosyasına yazımdan ÖNCE; böylece
+      // aynı wamid'in yinelenen bildirimi sonraki denemeye (ör. 131049 sonrası yeniden deneme) yazılmaz.
+      if (resolving && wamid) ledger.learnWamid?.({ jobId: job.id, attempt: job.attempt, wamid, at });
       const changed = Boolean(fields.state) && fields.state !== current;
       if (!changed && !("billable" in fields && fields.billable !== job.billable)) {
         out.ignored += 1;
@@ -1377,7 +1380,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         continue;
       }
       const wabaId = batch.waba_id;
-      if (resolving && changed) ledger.lateAccept({ jobId: job.id, companyId, wabaId, at });
+      if (resolving && changed) ledger.lateAccept({ jobId: job.id, attempt: job.attempt, wamid: fields.wamid || "", companyId, wabaId, at });
       if (["delivered", "read"].includes(fields.state)) ledger.delivered({ jobId: job.id, companyId, wabaId, billable: fields.billable === undefined ? job.billable !== 0 : fields.billable === 1, at: fields.delivered_at || at });
       if (fields.state === "failed") ledger.deliveryFailed({ jobId: job.id, attempt: job.attempt, at });
       if (fields.state === "held") {
