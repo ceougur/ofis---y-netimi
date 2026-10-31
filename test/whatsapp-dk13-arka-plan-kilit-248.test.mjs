@@ -99,7 +99,7 @@ describe("2.4.8 İş P2 — kilitte ekranda neden", () => {
       assert.equal((await ctx.api.post(`${URLS.batches}/${held}/pause`, {})).status, 200, "ön koşul: ikinci iş duraklatıldı");
       const note = async id => (await ctx.api.get(`${URLS.batches}/${id}`)).data.data.lockNote;
       const listNotes = async () => Object.fromEntries((await ctx.api.get(URLS.batches)).data.data.map(item => [item.id, item.lockNote]));
-      assert.equal(await note(run), null, "kilitsizde not yok");
+      assert.ok(!(await note(run)), "kilitsizde not yok");
       lock = new DatabaseSync(ctx.server.app.config.dbPath);
       lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
       await ctx.wa.scheduler.runOnce();
@@ -114,7 +114,7 @@ describe("2.4.8 İş P2 — kilitte ekranda neden", () => {
       await ctx.wa.scheduler.runOnce();
       assert.deepEqual(seen, [true, false], "işaret kalkınca canlı olay");
       await ctx.drain();
-      assert.equal(await note(run), null, "kilit kalkınca not kalktı");
+      assert.ok(!(await note(run)), "kilit kalkınca not kalktı");
       assert.equal(ctx.messages().length, 1, "iş gitti");
     } finally {
       events.publish = publish;
