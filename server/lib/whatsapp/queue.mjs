@@ -1389,6 +1389,26 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
    * imzasıyla geldi (Yol 2). Yalnız bu şirketin kaydındaki wamid'ler güncellenir; Sonucu Belirsiz iş YALNIZ imzalı bildirim + iş kimliği (biz_opaque_callback_data)
    * eşleşince çözülür (§7a 3); bilinmeyen / imzasız eşleşmeyen olay düşer. Durum yalnız ileri gider (§7a 17–18); yinelenen bildirim etkisizdir.
    */
+  /**
+   * Dar kontrol 8 DÜŞÜK-1 (P3 "geç teslim sayılır"): Meta Bekletti (131049) ile BIRAKILMIŞ eski denemenin wamid'ine sonradan "delivered" / "read" gelir; iş o arada
+   * 2. denemeye geçtiği için (wamid işten silinir) wamid'le bulunamaz. Deneme bu şirketin defterindeyse ve bırakılmışsa (releases) işin durumuna DOKUNULMADAN yalnız defter
+   * teslimi (deliveries) yazılır: R3 kişiyi sayar, "Bu Ay" sayacı teslimi görür. Başka şirketin / bilinmeyen / bırakılmamış denemenin wamid'i düşer.
+   */
+  function lateDeliveryOfReleased(wamid, status, at, phoneNumberId) {
+    const owner = ledger.attemptOfWamid?.(wamid);
+    if (!owner) return false;
+    if (ledger.companyOfWamid?.(wamid)?.companyId !== companyId) return false;
+    const attempt = ledger.attempts(owner.jobId).find(item => item.attempt === owner.attempt);
+    if (attempt?.outcome !== "released") return false;
+    const row = jobRow(owner.jobId);
+    if (!row || Number(row.attempt) <= Number(owner.attempt)) return false;
+    const batch = batchRow(row.batch_id);
+    if (!batch || (phoneNumberId && batch.phone_number_id !== String(phoneNumberId))) return false;
+    const billable = status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing ? status.pricing.billable !== false : row.billable !== 0;
+    if (!ledger.delivered({ jobId: row.id, companyId, wabaId: batch.waba_id, billable, at })) return false;
+    notify(row.batch_id);
+    return true;
+  }
   function applyStatuses(statuses = [], { phoneNumberId = "", signed = false } = {}) {
     const out = { applied: 0, ignored: 0, unknown: 0 };
     store.setSetting(HOOK_SEEN_KEY, iso());
@@ -1403,7 +1423,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         if (candidate && ["uncertain", "sending"].includes(candidate.state) && !candidate.wamid) job = candidate;
       }
       if (!job) {
-        out.unknown += 1;
+        if (wamid && ["delivered", "read"].includes(value) && lateDeliveryOfReleased(wamid, status, at, phoneNumberId)) out.applied += 1;
+        else out.unknown += 1;
         continue;
       }
       // T2 dar kontrol ORTA-2: wamid'in AİT OLDUĞU deneme defterden okunur — işin şimdiki denemesi değilse (eski denemenin yinelenen bildirimi) işin durumu ve kilidi
