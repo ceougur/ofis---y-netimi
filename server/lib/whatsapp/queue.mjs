@@ -626,7 +626,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const batch = batchRow(job.batch_id);
     // (5) geri yüklenen / taşınan veri: defterde canlı olmayan toplu iş yürütülmez.
     const live = ledger.batchState(batch.id);
-    if (!live.live || batch.ledger_id !== ledger.id || batch.company_id !== companyId) {
+    // T1 B2: bu bilgisayarda TAMAMLANMIŞ (defterde "done") toplu işin 131049 ile Meta Bekletti'ye dönen işi yürütülür — çift gönderimi defterin talep kilidi önler
+    // (önceki denemesi yalnız 131049 izniyle açık; yeniden deneme kabul edildiyse yeni talep reddedilir).
+    const revived = !live.live && live.stopped && live.reason === "done" && job.state === "held" && job.retry_131049 === 1;
+    if ((!live.live && !revived) || batch.ledger_id !== ledger.id || batch.company_id !== companyId) {
       const moved = !live.opened || batch.ledger_id !== ledger.id || batch.company_id !== companyId;
       stopBatch(batch, moved ? "Taşınan Veri — Durduruldu: bu toplu gönderim bu bilgisayarın gönderim defterinde yok; gönderilmemiş kişilere gönderilmedi." : "Durduruldu (Geri Yükleme): yedekten geri yükleme / Şirket Verisini Sıfırla sonrası eski gönderim yeniden başlatılmaz.", moved ? "moved" : "restored");
       return { did: true };
@@ -792,6 +795,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return { did: true, sent: true };
   }
 
+  // Meta'daki PDF kopyası yeniden kullanılabilir mi (§7a 15): kimliği var, 29 günü dolmadı, silinmedi.
+  const mediaUsable = job => Boolean(job.media_id && job.media_at && !job.media_deleted_at && nowMs() - Date.parse(job.media_at) <= MEDIA_REUSE_MS);
   // T2-6 (bağımsız gözden geçirme r3): değişkenler ve PDF İLK HAZIRLIKTA AYNI cari okumasından üretilir ve DONDURULUR (prepared_at, params_json, pdf_name,
   // pdf_blob — göç v41); her yeniden deneme (131056, geçici hata, Bağlantı Bekleniyor, 131049, Duraklat → Devam Et) aynı metni ve aynı PDF'i gönderir (metin = PDF,
   // §7a 1; aynı medya, §7a 14–15). Meta'daki kopya geçerliyse (29 gün, silinmemiş) aynısı, değilse dondurulmuş baytlar yeniden yüklenir. Uygunluk (İstemiyor, pasif,
@@ -801,7 +806,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let params = job.prepared_at ? parse(job.params_json, null) : null;
     let pdf = job.prepared_at && job.pdf_blob ? Buffer.from(job.pdf_blob) : null;
     let filename = job.pdf_name || "";
-    const frozen = Array.isArray(params) && params.length > 0 && (batch.kind !== "statement" || Boolean(pdf?.length && filename));
+    // Dondurulmuş PDF baytları iş Meta'ya kabul edilince silinir (bakım); 131049 / Yine de Gönder sonrası yeniden denemede Meta'daki kopya geçerliyse o yeter.
+    const frozen = Array.isArray(params) && params.length > 0 && (batch.kind !== "statement" || Boolean(filename && (pdf?.length || mediaUsable(job))));
     if (!frozen) {
       const office = cleanParam(store.setting("office.name", "") || "");
       const name = cleanParam(account.name);
@@ -825,7 +831,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let document = null;
     if (batch.kind === "statement") {
       let mediaId = job.media_id;
-      if (!mediaId || !job.media_at || nowMs() - Date.parse(job.media_at) > MEDIA_REUSE_MS || job.media_deleted_at) {
+      if (!mediaUsable(job)) {
         mediaId = await graph.uploadMedia(record.phoneNumberId, { data: pdf, filename, mime: "application/pdf" });
         updateJob(job.id, { media_id: mediaId, media_at: iso(), media_deleted_at: null, media_delete_tries: 0 });
       }
@@ -1003,7 +1009,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         out.stopped += 1;
         continue;
       }
-      if (state.stopped) {
+      // T1 B2: 131049 ile yeniden açılmış (defterde "done", dosyada yalnız Meta Bekletti işleri açık) toplu iş — geri yükleme değil, durdurulmaz.
+      const onlyRevived = state.stopped && state.reason === "done" && !store.get(`SELECT 1 AS found FROM wa_jobs WHERE batch_id = ? AND state IN (${OPEN_JOB.map(() => "?").join(",")}) AND NOT (state = 'held' AND retry_131049 = 1) LIMIT 1`, row.id, ...OPEN_JOB);
+      if (state.stopped && !onlyRevived) {
         // §7a 26: defterde durmuş (geri yükleme, sıfırlama, bu bilgisayarda bitmiş/iptal edilmiş) ama dosyada sürüyor görünen iş: dosya ESKİ (yedekten geri yüklendi).
         const text = ["done", "canceled"].includes(state.reason)
           ? "Durduruldu (Geri Yükleme): bu toplu gönderim bu bilgisayarda zaten bitmişti; yedekteki eski işler yeniden başlatılmaz."
@@ -1128,7 +1136,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
           const code = Number(first?.code);
           const known = Number.isFinite(code) ? classifyMetaCode(code) : null;
           const text = known?.title || String(first?.error_data?.details || first?.message || first?.title || "İleti teslim edilemedi.").slice(0, 300);
-          Object.assign(fields, { state: "failed", failed_at: at, closed_at: iso(), error_code: Number.isFinite(code) ? code : null, error_text: Number.isFinite(code) ? `${text} (Meta hata kodu ${code})` : text });
+          const errorText = Number.isFinite(code) ? `${text} (Meta hata kodu ${code})` : text;
+          // T1 B2 (plan §6 W2 + §7a 14): 131049 kancayla da gelir (eşzamanlı yanıtla aynı kural) — ilk kez "Meta Bekletti (24 Saat Sonra Yeniden)": PDF silinmez,
+          // 24 saat sonra BİR kez aynı medyayla yeniden; ikinci 131049 Başarısız.
+          const heldBatch = batchRow(job.batch_id);
+          if (code === META_D0.ecosystemCode && !job.retry_131049 && ["running", "paused", "done"].includes(heldBatch?.state)) Object.assign(fields, { state: "held", next_at: iso(nowMs() + DAY_MS), retry_131049: 1, error_code: code, error_text: errorText });
+          else Object.assign(fields, { state: "failed", failed_at: at, closed_at: iso(), error_code: Number.isFinite(code) ? code : null, error_text: errorText });
         }
       }
       if (status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing) fields.billable = status.pricing.billable === false ? 0 : 1;
@@ -1149,6 +1162,11 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (resolving && changed) ledger.lateAccept({ jobId: job.id, companyId, wabaId, at });
       if (["delivered", "read"].includes(fields.state)) ledger.delivered({ jobId: job.id, companyId, wabaId, billable: fields.billable === undefined ? job.billable !== 0 : fields.billable === 1, at: fields.delivered_at || at });
       if (fields.state === "failed") ledger.deliveryFailed({ jobId: job.id, attempt: job.attempt, at });
+      if (fields.state === "held") {
+        ledger.released({ jobId: job.id, attempt: job.attempt, at });
+        // Bütün işleri kabul edilmiş (Tamamlandı) toplu iş yeniden SÜRER: yalnız bu iş 24 saat sonra bir kez daha gider (çift gönderim kilidi defterde).
+        if (batchRow(job.batch_id)?.state === "done") updateBatch(job.batch_id, { state: "running", finished_at: null });
+      }
       out.applied += 1;
       notify(job.batch_id);
       if (fields.state && ["delivered", "read", "failed"].includes(fields.state)) finishIfDone(job.batch_id);

@@ -47,6 +47,9 @@ const SCHEMA = `
   -- Kabul edilip sonradan TESLİM EDİLEMEDİĞİ bildirilen deneme (durum kancası "failed"): kilit çözülür ("Başarısızları Yeniden Dene" çift değildir),
   -- 24 saat sayacına girmez.
   CREATE TABLE IF NOT EXISTS failures (job_id TEXT NOT NULL, attempt INTEGER NOT NULL, at TEXT NOT NULL, PRIMARY KEY (job_id, attempt)) STRICT;
+  -- T1 B2: kabul edilip durum kancasıyla 131049 (ekosistem sağlığı) bildirilen deneme — iş "Meta Bekletti (24 Saat Sonra Yeniden)": kilit çözülür (24 saat sonra BİR
+  -- kez yeniden), ama 24 saat sayacından DÜŞMEZ (iletinin alıcısı pencerede sayılmış kalır; plan §6 W2, §7a 14).
+  CREATE TABLE IF NOT EXISTS releases (job_id TEXT NOT NULL, attempt INTEGER NOT NULL, at TEXT NOT NULL, PRIMARY KEY (job_id, attempt)) STRICT;
   CREATE TABLE IF NOT EXISTS accepts (job_id TEXT PRIMARY KEY, company_id TEXT NOT NULL, waba_id TEXT NOT NULL, at TEXT NOT NULL) STRICT;
   CREATE INDEX IF NOT EXISTS idx_accepts_company ON accepts(company_id, at);
   CREATE TABLE IF NOT EXISTS holds (waba_id TEXT NOT NULL, until TEXT NOT NULL, reason TEXT NOT NULL DEFAULT '', at TEXT NOT NULL) STRICT;
@@ -77,6 +80,8 @@ const SCHEMA = `
   CREATE TRIGGER IF NOT EXISTS outcomes_no_delete BEFORE DELETE ON outcomes BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS failures_no_update BEFORE UPDATE ON failures BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS failures_no_delete BEFORE DELETE ON failures BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS releases_no_update BEFORE UPDATE ON releases BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS releases_no_delete BEFORE DELETE ON releases BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS accepts_no_update BEFORE UPDATE ON accepts BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS accepts_no_delete BEFORE DELETE ON accepts BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS deliveries_no_update BEFORE UPDATE ON deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
@@ -111,12 +116,14 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     events: db.prepare("SELECT event, reason, at FROM batch_events WHERE batch_id = ?"),
     liveOf: db.prepare("SELECT o.batch_id AS batchId FROM batch_events o WHERE o.company_id = ? AND o.event = 'open' AND NOT EXISTS (SELECT 1 FROM batch_events s WHERE s.batch_id = o.batch_id AND s.event = 'stop')"),
     liveCompanies: db.prepare("SELECT DISTINCT o.company_id AS companyId FROM batch_events o WHERE o.event = 'open' AND NOT EXISTS (SELECT 1 FROM batch_events s WHERE s.batch_id = o.batch_id AND s.event = 'stop')"),
-    attempts: db.prepare(`SELECT c.attempt, CASE WHEN f.job_id IS NOT NULL THEN 'failed' ELSE o.outcome END AS outcome, o.wamid FROM claims c
-      LEFT JOIN outcomes o ON o.job_id = c.job_id AND o.attempt = c.attempt LEFT JOIN failures f ON f.job_id = c.job_id AND f.attempt = c.attempt WHERE c.job_id = ? ORDER BY c.attempt`),
+    attempts: db.prepare(`SELECT c.attempt, CASE WHEN f.job_id IS NOT NULL THEN 'failed' WHEN r.job_id IS NOT NULL THEN 'released' ELSE o.outcome END AS outcome, o.wamid FROM claims c
+      LEFT JOIN outcomes o ON o.job_id = c.job_id AND o.attempt = c.attempt LEFT JOIN failures f ON f.job_id = c.job_id AND f.attempt = c.attempt
+      LEFT JOIN releases r ON r.job_id = c.job_id AND r.attempt = c.attempt WHERE c.job_id = ? ORDER BY c.attempt`),
     claim: db.prepare("INSERT INTO claims (job_id, attempt, batch_id, company_id, waba_id, phone, account_id, kind, period_key, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"),
     outcome: db.prepare("INSERT OR IGNORE INTO outcomes (job_id, attempt, outcome, wamid, at) VALUES (?, ?, ?, ?, ?)"),
     accept: db.prepare("INSERT OR IGNORE INTO accepts (job_id, company_id, waba_id, at) VALUES (?, ?, ?, ?)"),
     failure: db.prepare("INSERT OR IGNORE INTO failures (job_id, attempt, at) VALUES (?, ?, ?)"),
+    release: db.prepare("INSERT OR IGNORE INTO releases (job_id, attempt, at) VALUES (?, ?, ?)"),
     deliver: db.prepare("INSERT OR IGNORE INTO deliveries (job_id, company_id, waba_id, billable, at) VALUES (?, ?, ?, ?, ?)"),
     window: db.prepare(`SELECT c.phone, MIN(c.at) AS first FROM claims c LEFT JOIN outcomes o ON o.job_id = c.job_id AND o.attempt = c.attempt
       WHERE c.waba_id = ? AND c.at > ? AND (o.outcome IS NULL OR o.outcome <> 'failed')
@@ -202,12 +209,14 @@ export function openWaLedger({ dir, log = console, fault = null }) {
      */
     claim(row) {
       const previous = q.attempts.all(String(row.jobId)).map(item => ({ attempt: item.attempt, outcome: item.outcome || null, wamid: item.wamid || "" }));
-      const blocking = previous.find(item => item.outcome !== "failed");
+      // "failed" (gitmedi / teslim edilemedi) ve "released" (131049: Meta 24 saat sonra yeniden denenmesini istedi) yeni denemeyi engellemez.
+      const open = item => item.outcome !== "failed" && item.outcome !== "released";
+      const blocking = previous.find(open);
       if (blocking) return { ok: false, previous: blocking };
       guard("claim", row);
       db.exec("BEGIN IMMEDIATE");
       try {
-        const again = q.attempts.all(String(row.jobId)).find(item => item.outcome !== "failed");
+        const again = q.attempts.all(String(row.jobId)).find(open);
         if (again) {
           db.exec("ROLLBACK");
           return { ok: false, previous: { attempt: again.attempt, outcome: again.outcome || null, wamid: again.wamid || "" } };
@@ -255,6 +264,17 @@ export function openWaLedger({ dir, log = console, fault = null }) {
         return true;
       } catch (error) {
         log.warn?.(`WhatsApp gönderim defteri: ${row.jobId} teslim hatası yazılamadı (${error.message}).`);
+        return false;
+      }
+    },
+    /** T1 B2: kabul edilmiş deneme 131049 ile döndü — iş 24 saat sonra BİR kez yeniden denenebilir; 24 saat sayacında kalır. Hata fırlatmaz. */
+    released(row) {
+      try {
+        guard("release", row);
+        q.release.run(String(row.jobId), Number(row.attempt), String(row.at));
+        return true;
+      } catch (error) {
+        log.warn?.(`WhatsApp gönderim defteri: ${row.jobId} yeniden deneme izni yazılamadı (${error.message}).`);
         return false;
       }
     },
