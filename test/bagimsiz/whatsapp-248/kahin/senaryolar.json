@@ -192,6 +192,12 @@
     "Meta Bekletti sonrası 2. deneme Sonucu Belirsiz kalırsa kişi \"Sonucu Belirsiz\" ile elenir; işteki Yine de Gönder onaylı çalışır."
    ]
   },
+  "G6": {
+   "kaynak_turu": "BAŞ MİMAR (G0 (3) İLKEYLE; ana oturum iletisi)",
+   "metin": [
+    "\"Son 3 Ay\" / \"Tüm Hareketler\" gönderiminin o günkü (toplu işin açıldığı gün; yeniden denemede asıl işin günü) tarihleri, özel aralığın tarihleriyle BİREBİR aynıysa aynı dönem (R3 + Zaten Kuyrukta + Sonucu Belirsiz; iki yön); Son 3 Ay / Tüm'ün 7 gün penceresi bu eşlikte de geçerli (7 günden eskiyse ayrı dönem)."
+   ]
+  },
   "K8": {
    "kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
    "metin": [
@@ -94793,6 +94799,1261 @@
         "meta_ileti": 2,
         "medya_yukleme": 1,
         "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "G6-01-son-3-ay-ozel-aralik-7-gun",
+   "baslik": "G6",
+   "aciklama": "30.10 'Son 3 Ay' Y (o günkü okumalardan biri 30.07–30.10): 6g23s sonra özel 30.07–30.10 'Daha Önce Gönderildi', 7g1s sonra gider",
+   "kaynak": "G6 (Son 3 Ay → özel aralık; 7 gün penceresi bu eşlikte de)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "Y",
+      "ad": "Yusuf Eski",
+      "telefon": "0541 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-01-15",
+        "borc": 400,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "Y"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "secim": "son_3_ay"
+      }
+     },
+     {
+      "t": "+6d23h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "Y"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-07-30",
+       "son": "2026-10-30"
+      }
+     },
+     {
+      "t": "+7d1h",
+      "tur": "baslat",
+      "etiket": "T3",
+      "secim": [
+       "Y"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-07-30",
+       "son": "2026-10-30"
+      }
+     }
+    ],
+    "meta_davranis": {
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "olusmadi": [
+       "T2"
+      ],
+      "elenen": {
+       "T2": {
+        "Y": "daha_once_gonderildi"
+       }
+      },
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular.T3.is_sayisi": 1,
+      "meta.post": {
+       "Y": 2
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "Y": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       },
+       "T3": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "Y": 2
+       },
+       "kabul": {
+        "Y": 2
+       },
+       "meta_ileti": {
+        "Y": 2
+       },
+       "medya_yukleme": {
+        "Y": 2
+       },
+       "medya_silme": {
+        "Y": 2
+       },
+       "toplam_post": 2,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 2,
+       "toplam_medya_yukleme": 2
+      },
+      "kontroller": {},
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        },
+        "2026-11": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/Y": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905411112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Yusuf Eski",
+         "Deneme Ticaret Ltd. Şti.",
+         {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "400,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Yusuf Eski",
+         "donem_bas": {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "donem_son": {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "devir": "400.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "400.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Yusuf Eski ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T3/Y": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905411112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Yusuf Eski",
+         "Deneme Ticaret Ltd. Şti.",
+         "30.07.2026 – 30.10.2026",
+         "400,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Yusuf Eski",
+         "donem_bas": "2026-07-30",
+         "donem_son": "2026-10-30",
+         "devir": "400.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "400.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Yusuf Eski ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "G6-02-ozel-aralik-tum-hareketler-kisiye-gore",
+   "baslik": "G6",
+   "aciklama": "Özel 15.01–30.10 Y ve Z'ye gönderildi; aynı gün 'Tüm Hareketler': Y'nin o günkü tarihleri (ilk hareket 15.01 – bugün) eşit → elenir; Z'ninki (10.02 – bugün) değil → gider",
+   "kaynak": "G6 (özel aralık → Tüm Hareketler; Tüm = kişinin ilk hareketi – o gün, README §12)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "Y",
+      "ad": "Yusuf Eski",
+      "telefon": "0541 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-01-15",
+        "borc": 400,
+        "alacak": 0
+       }
+      ]
+     },
+     {
+      "id": "Z",
+      "ad": "Zehra Eski",
+      "telefon": "0542 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-02-10",
+        "borc": 600,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "Y",
+       "Z"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-01-15",
+       "son": "2026-10-30"
+      }
+     },
+     {
+      "t": "+1h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "Y",
+       "Z"
+      ],
+      "sablon": "ekstre",
+      "donem": "tum"
+     }
+    ],
+    "meta_davranis": {
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "elenen": {
+       "T2": {
+        "Y": "daha_once_gonderildi"
+       }
+      },
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular.T2.is_sayisi": 1,
+      "meta.post": {
+       "Y": 1,
+       "Z": 2
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "Y": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       },
+       "T2": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 3
+      },
+      "meta": {
+       "post": {
+        "Y": 1,
+        "Z": 2
+       },
+       "kabul": {
+        "Y": 1,
+        "Z": 2
+       },
+       "meta_ileti": {
+        "Y": 1,
+        "Z": 2
+       },
+       "medya_yukleme": {
+        "Y": 1,
+        "Z": 2
+       },
+       "medya_silme": {
+        "Y": 1,
+        "Z": 2
+       },
+       "toplam_post": 3,
+       "toplam_kabul_program": 3,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 3
+      },
+      "kontroller": {},
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 3,
+         "yaklasik_usd": "0.0027"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/Y": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905411112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Yusuf Eski",
+         "Deneme Ticaret Ltd. Şti.",
+         "15.01.2026 – 30.10.2026",
+         "400,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Yusuf Eski",
+         "donem_bas": "2026-01-15",
+         "donem_son": "2026-10-30",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "400.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Yusuf Eski ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/Z": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905422223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Zehra Eski",
+         "Deneme Ticaret Ltd. Şti.",
+         "15.01.2026 – 30.10.2026",
+         "600,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Zehra Eski",
+         "donem_bas": "2026-01-15",
+         "donem_son": "2026-10-30",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "600.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Zehra Eski ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T2/Z": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905422223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Zehra Eski",
+         "Deneme Ticaret Ltd. Şti.",
+         {
+          "plan_susuyor": "Tüm Hareketler dönem metni"
+         },
+         "600,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Zehra Eski",
+         "donem_bas": null,
+         "donem_son": null,
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "600.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Zehra Eski ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi",
+   "baslik": "G6",
+   "aciklama": "01.11 00:30 (UTC'de 31.10) 'Son 3 Ay' sınır 1: Y bekliyor; 01:30 özel 01.09–01.11 (o günkü okumalardan biri) Y 'Zaten Kuyrukta'",
+   "kaynak": "G6 (Zaten Kuyrukta; gece yarısı yerel ≠ UTC)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-11-01T00:30:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "Y",
+      "ad": "Yusuf Eski",
+      "telefon": "0541 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-01-15",
+        "borc": 400,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "Y"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "secim": "son_3_ay"
+      }
+     },
+     {
+      "t": "+1h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "Y"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-09-01",
+       "son": "2026-11-01"
+      }
+     },
+     {
+      "t": "+2h",
+      "tur": "kontrol",
+      "ad": "K1"
+     }
+    ],
+    "ayar": {
+     "gunluk_ust_sinir": 1
+    },
+    "meta_davranis": {
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "olusmadi": [
+       "T2"
+      ],
+      "elenen": {
+       "T2": {
+        "Y": "zaten_kuyrukta"
+       }
+      },
+      "kontroller.K1.isler": {
+       "T1/A": "Teslim Edildi",
+       "T1/Y": "Sınır Nedeniyle Bekliyor"
+      },
+      "meta.post": {
+       "A": 1,
+       "Y": 1
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "Y": "zaten_kuyrukta"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "A": 1,
+        "Y": 1
+       },
+       "kabul": {
+        "A": 1,
+        "Y": 1
+       },
+       "meta_ileti": {
+        "A": 1,
+        "Y": 1
+       },
+       "medya_yukleme": {
+        "A": 1,
+        "Y": 1
+       },
+       "medya_silme": {
+        "A": 1,
+        "Y": 1
+       },
+       "toplam_post": 2,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 2,
+       "toplam_medya_yukleme": 2
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-11-01T02:30:00+03:00",
+        "durum_sayilari": {
+         "Sınır Nedeniyle Bekliyor": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 1,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Teslim Edildi",
+         "T1/Y": "Sınır Nedeniyle Bekliyor"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-11": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "donem_son": {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "devir": "0.00",
+         "hareket_sayisi": 3,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/Y": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905411112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Yusuf Eski",
+         "Deneme Ticaret Ltd. Şti.",
+         {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "400,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Yusuf Eski",
+         "donem_bas": {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "donem_son": {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "devir": "400.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "400.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Yusuf Eski ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "G6-04-tum-hareketler-belirsiz-ozel-aralik",
+   "baslik": "G6",
+   "aciklama": "'Tüm Hareketler' Y Sonucu Belirsiz; aynı gün özel 15.01–30.10 'Sonucu Belirsiz'; işteki Yine de Gönder ile gider",
+   "kaynak": "G6 (Sonucu Belirsiz; Tüm → özel)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "Y",
+      "ad": "Yusuf Eski",
+      "telefon": "0541 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-01-15",
+        "borc": 400,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "Y"
+      ],
+      "sablon": "ekstre",
+      "donem": "tum"
+     },
+     {
+      "t": "+1h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "Y"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-01-15",
+       "son": "2026-10-30"
+      }
+     },
+     {
+      "t": "+2h",
+      "tur": "yine_de_gonder",
+      "toplu": "T1",
+      "cari": "Y",
+      "etiket": "G1"
+     }
+    ],
+    "meta_davranis": {
+     "mesaj": {
+      "Y": [
+       "yanitsiz_red",
+       "kabul"
+      ]
+     },
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "olusmadi": [
+       "T2"
+      ],
+      "elenen": {
+       "T2": {
+        "Y": "sonucu_belirsiz"
+       }
+      },
+      "yeniden": {
+       "G1": {
+        "elenen": {},
+        "alinan": [
+         "Y"
+        ],
+        "oneri": null
+       }
+      },
+      "meta.post": {
+       "Y": 2
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "Y": "sonucu_belirsiz"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 1
+      },
+      "meta": {
+       "post": {
+        "Y": 2
+       },
+       "kabul": {
+        "Y": 1
+       },
+       "meta_ileti": {
+        "Y": 1
+       },
+       "medya_yukleme": {
+        "Y": 1
+       },
+       "medya_silme": {
+        "Y": 1
+       },
+       "toplam_post": 2,
+       "toplam_kabul_program": 1,
+       "toplam_meta_ileti": 1,
+       "toplam_medya_yukleme": 1
+      },
+      "kontroller": {},
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "yeniden": {
+       "G1": {
+        "elenen": {},
+        "alinan": [
+         "Y"
+        ],
+        "oneri": null
+       }
+      },
+      "isler": {
+       "T1/Y": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905411112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Yusuf Eski",
+         "Deneme Ticaret Ltd. Şti.",
+         {
+          "plan_susuyor": "Tüm Hareketler dönem metni"
+         },
+         "400,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Yusuf Eski",
+         "donem_bas": null,
+         "donem_son": null,
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "400.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Yusuf Eski ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 2,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu",
+   "baslik": "G6",
+   "aciklama": "30.10 23:00 'Son 3 Ay' Y Başarısız; 31.10 01:00 yeniden deneme (tarihler asıl işin 30.10'undan); 31.10 10:00 özel 30.07–30.10 'Daha Önce Gönderildi'",
+   "kaynak": "G6 + G1 (yeniden denemede asıl işin günü; gece yarısı)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T23:00:00+03:00",
+    "cariler": [
+     {
+      "id": "Y",
+      "ad": "Yusuf Eski",
+      "telefon": "0541 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-01-15",
+        "borc": 400,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "Y"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "secim": "son_3_ay"
+      }
+     },
+     {
+      "t": "+2h",
+      "tur": "basarisizlari_yeniden_dene",
+      "toplu": "T1",
+      "etiket": "Y1"
+     },
+     {
+      "t": "+11h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "Y"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-07-30",
+       "son": "2026-10-30"
+      }
+     }
+    ],
+    "meta_davranis": {
+     "mesaj": {
+      "Y": [
+       {
+        "hata": 131026
+       }
+      ]
+     },
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "yeniden": {
+       "Y1": {
+        "elenen": {},
+        "alinan": [
+         "Y"
+        ],
+        "oneri": null
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "elenen": {
+       "T2": {
+        "Y": "daha_once_gonderildi"
+       }
+      },
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-31"
+       }
+      },
+      "meta.post": {
+       "Y": 2
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "Y": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-31"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 1
+      },
+      "meta": {
+       "post": {
+        "Y": 2
+       },
+       "kabul": {
+        "Y": 1
+       },
+       "meta_ileti": {
+        "Y": 1
+       },
+       "medya_yukleme": {
+        "Y": 2
+       },
+       "medya_silme": {
+        "Y": 2
+       },
+       "toplam_post": 2,
+       "toplam_kabul_program": 1,
+       "toplam_meta_ileti": 1,
+       "toplam_medya_yukleme": 2
+      },
+      "kontroller": {},
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "yeniden": {
+       "Y1": {
+        "elenen": {},
+        "alinan": [
+         "Y"
+        ],
+        "oneri": null
+       }
+      },
+      "isler": {
+       "T1/Y": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905411112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Yusuf Eski",
+         "Deneme Ticaret Ltd. Şti.",
+         {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "400,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Yusuf Eski",
+         "donem_bas": {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "donem_son": {
+          "plan_susuyor": "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 17)"
+         },
+         "devir": "400.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "400.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Yusuf Eski ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 2,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 2,
+        "medya_silme": 2,
         "atlanma_nedeni": null
        }
       }
