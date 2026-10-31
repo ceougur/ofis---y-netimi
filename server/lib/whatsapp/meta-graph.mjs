@@ -208,7 +208,7 @@ export function graphBaseOk(baseUrl) {
 export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalThis.fetch(...args), openToken = () => "", timeoutMs = TIMEOUT_MS } = {}) {
   const base = String(baseUrl || "").replace(/\/+$/, "");
 
-  async function request(method, parts, { query = {}, body = null, form = null } = {}) {
+  async function request(method, parts, { query = {}, body = null, form = null, fresh = false } = {}) {
     if (!base) throw new MetaGraphError({ title: "Bu kurulumda WhatsApp Business API'ye bağlanılamaz (Meta adresi tanımlı değil).", reason: "graph-off", kind: "config", retry: "never" });
     if (!graphBaseOk(base)) throw new MetaGraphError({ title: "WhatsApp Business API adresi geçersiz (https olmalı).", reason: "graph-off", kind: "config", retry: "never" });
     for (const part of parts) if (!/^[A-Za-z0-9_]+$/.test(String(part))) throw new MetaGraphError({ title: "Meta isteğinin adresi geçersiz.", reason: "request", kind: "request", retry: "never" });
@@ -221,6 +221,12 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     if (body) headers["content-type"] = "application/json";
     // form (2.4.8 W3, medya yükleme): çok parçalı gövde; içerik türünü (sınır dizgesiyle) fetch koyar.
     const payload = form || (body ? JSON.stringify(body) : undefined);
+    // 2.4.8 T6-E2: fresh (ileti isteği) — tek kullanımlık bağlantı (lib/net-proxy.mjs directFresh); havuzdaki, iki ileti arasındaki kesintide ölmüş soket kullanılmaz.
+    // Bağlantı kurulmadan düşen istek (bağlantı reddedildi / kurulamadan süre doldu) Meta'ya HİÇ ulaşmamıştır → "gönderilmedi" (R1 Bağlantı Bekleniyor);
+    // bağlantı kurulduktan sonraki kopma / yanıtsızlık "Sonucu Belirsiz" kalır (§7a 10). İşareti tutmayan fetch'te (tracked false) eski kural geçer.
+    const link = fresh ? { tracked: false, connected: false } : null;
+    const notConnected = () =>
+      new MetaGraphError({ title: "Meta'ya bağlanılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); ileti gönderilmedi.", details: "NOT_CONNECTED", reason: "network", kind: "network", retry: "unknown" });
     const controller = new AbortController();
     let timer = null;
     const deadline = new Promise((_, reject) => {
@@ -232,7 +238,7 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     let status = 0;
     let raw = "";
     try {
-      const response = await Promise.race([fetchImpl(url.href, { method, headers, body: payload, redirect: "manual", signal: controller.signal }), deadline]);
+      const response = await Promise.race([fetchImpl(url.href, { method, headers, body: payload, redirect: "manual", signal: controller.signal, ...(link ? { fresh: link } : {}) }), deadline]);
       status = response.status;
       if (status >= 300 && status < 400) {
         await response.body?.cancel?.().catch(() => {});
@@ -245,6 +251,7 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
       }
       raw = await Promise.race([response.text(), deadline]);
     } catch (error) {
+      if (link?.tracked && !link.connected && !status) throw notConnected();
       if (error instanceof MetaGraphError) throw error;
       // fetch'in kendi hatası (DNS, bağlantı, vekil, TLS, iptal): iletisi belirteç taşımaz ama yine de arındırılır.
       throw new MetaGraphError({ title: "Meta'ya ulaşılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); sonuç bilinmiyor.", details: clip(redact(error?.cause?.code || error?.message || "", token), 120), reason: "network", kind: "network", retry: "unknown" });
@@ -314,7 +321,7 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
       if (Array.isArray(components) && components.length) template.components = components;
       const message = { messaging_product: "whatsapp", recipient_type: "individual", to, type: "template", template };
       if (bizOpaque) message.biz_opaque_callback_data = String(bizOpaque).slice(0, META_D0.bizOpaqueMax);
-      const json = await request("POST", [phoneNumberId, "messages"], { body: message });
+      const json = await request("POST", [phoneNumberId, "messages"], { body: message, fresh: true });
       const id = String(json.messages?.[0]?.id || "");
       if (!id) throw new MetaGraphError({ title: "Meta yanıtında ileti kimliği yok; iletinin gidip gitmediği bilinmiyor.", httpStatus: 200, reason: "body", kind: "network", retry: "unknown" });
       return { wamid: id, waId: String(json.contacts?.[0]?.wa_id || ""), pacing: String(json.messages?.[0]?.message_status || "") };
@@ -381,7 +388,8 @@ export function neverReachedMeta(error) {
   if (!(error instanceof MetaGraphError)) return false;
   if (["graph-off", "token", "request"].includes(error.reason)) return true;
   if (error.reason !== "network") return false;
-  return /\b(ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ENETUNREACH|EHOSTUNREACH|ERR_INVALID_URL|UND_ERR_CONNECT_TIMEOUT|CERT_|ERR_TLS_CERT|UNABLE_TO_VERIFY|SELF_SIGNED|DEPTH_ZERO)/.test(String(error.details || ""));
+  // NOT_CONNECTED (T6-E2): tek kullanımlık bağlantı hiç kurulamadı (gövde gitmedi).
+  return /\b(ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ENETUNREACH|EHOSTUNREACH|ERR_INVALID_URL|UND_ERR_CONNECT_TIMEOUT|NOT_CONNECTED|CERT_|ERR_TLS_CERT|UNABLE_TO_VERIFY|SELF_SIGNED|DEPTH_ZERO)/.test(String(error.details || ""));
 }
 
 /** Sınır basamağını ekranda okunur hâle getirir (D0-4): { limit: sayı | null (sınırsız: Infinity), label }. */
