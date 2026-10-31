@@ -1,0 +1,168 @@
+K1 zincir: durumu değişen belge 12; karşılaştırılan yanıt 550; senet katlaması (2.2.0 İz 4.2) 0 yanıt, ekranla karşılaştırılan dosya 0; Nakit Akışı faturasız kalem (2.4.3 MM5) 264
+▶ altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+  ✖ zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket) (16690.024626ms)
+  ✖ v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal) (2693.678395ms)
+✖ altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir (19385.782667ms)
+▶ altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder
+  ✔ aynı sayılar başka satır kırılımıyla ve kesiksiz özet tutarıyla: aynı (0.541985ms)
+  ✔ tablo tutarının son rakamı değişirse fark (0.295112ms)
+  ✔ kesik özet tutarı yeni tutarın öneki değilse fark; kesiğin devamına metin giremez (0.391846ms)
+  ✔ araya sözcük girerse ya da sözcük değişirse fark; Rapor Merkezi dışındaki PDF bu kurala girmez (0.213594ms)
+✔ altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder (1.879763ms)
+ℹ tests 6
+ℹ suites 2
+ℹ pass 4
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19393.175669
+
+✖ failing tests:
+
+test at test/banka-210-altin.test.mjs:460:3
+✖ zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket) (16690.024626ms)
+  AssertionError [ERR_ASSERTION]: 1 fark:
+  zincir · 002 · admin · pdf /api/workspace/report-center/kasa-aylik/pdf?from=2000-01-01&to=2099-12-31: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    'Aylık Kasa Özeti\n' +
+      '01.01.2000 – 31.12.2099\n' +
+      'Oluşturma: TARİH SAAT\n' +
+      'Hazırlayan: Ofis yöneticisi\n' +
+      'Devir\n' +
+  ...
+      'Şahin İnşaat ve Ticaret Ltd. Şti. · Aylık Kasa Özeti\n' +
+  +   'Sayfa 1 / 8\n' +
+  -   'Sayfa 1 / 9\n' +
+      'Aylık Kasa Özeti · 01.01.2000 – 31.12.2099\n' +
+      'Ay\n' +
+      'Hareket\n' +
+      'Ay Başı Kasa\n' +
+      'Giriş\n' +
+  ...
+      'Şahin İnşaat ve Ticaret Ltd. Şti. · Aylık Kasa Özeti\n' +
+  +   'Sayfa 2 / 8\n' +
+  -   'Sayfa 2 / 9\n' +
+      'Aylık Kasa Özeti · 01.01.2000 – 31.12.2099\n' +
+      'Ay\n' +
+      'Hareket\n' +
+      'Ay Başı Kasa\n' +
+      'Giriş\n' +
+  ...
+      'Şahin İnşaat ve Ticaret Ltd. Şti. · Aylık Kasa Özeti\n' +
+  +   'Sayfa 3 / 8\n' +
+  -   'Sayfa 3 / 9\n' +
+      'Aylık Kasa Özeti · 01.01.2000 – 31.12.2099\n' +
+      'Ay\n' +
+      'Hareket\n' +
+      'Ay Başı Kasa\n' +
+      'Giriş\n' +
+  ...
+      'Şahin İnşaat ve Ticaret Ltd. Şti. · Aylık Kasa Özeti\n' +
+  +   'Sayfa 4 / 8\n' +
+  -   'Sayfa 4 / 9\n' +
+      'Aylık Kasa Özeti · 01.01.2000 – 31.12.2099\n' +
+      'Ay\n' +
+      'Hareket\n' +
+      'Ay Başı Kasa\n' +
+      'Giriş\n' +
+  ...
+      '0,00 TL\n' +
+  +   '0,'... 8940 more characters
+  -   '0,'... 9166 more characters
+  
+  + actual - expected
+  
+  + [
+  +   'zincir · 002 · admin · pdf /api/workspace/report-center/kasa-aylik/pdf?from=2000-01-01&to=2099-12-31: Expected values to be strictly deep-equal:\n' +
+  +     '+ actual - expected\n' +
+  +     '... Skipped lines\n' +
+  +     '\n' +
+  +     "  'Aylık Kasa Özeti\\n' +\n" +
+  +     "    '01.01.2000 – 31.12.2099\\n' +\n" +
+  +     "    'Oluşturma: TARİH SAAT\\n' +\n" +
+  +     "    'Hazırlayan: Ofis yöneticisi\\n' +\n" +
+  +     "    'Devir\\n' +\n" +
+  +     '...\n' +
+  +     "    'Şahin İnşaat ve Ticaret Ltd. Şti. · Aylık Kasa Özeti\\n' +\n" +
+  +     "+   'Sayfa 1 / 8\\n' +\n" +
+  +     "-   'Sayfa 1 / 9\\n' +\n" +
+  +     "    'Aylık Kasa Özeti · 01.01.2000 – 31.12.2099\\n' +\n" +
+  +     "    'Ay\\n' +\n" +
+  +     "    'Hareket\\n' +\n" +
+  +     "    'Ay Başı Kasa\\n' +\n" +
+  +     "    'Giriş\\n' +\n" +
+  +     '...\n' +
+  +     "    'Şahin İnşaat ve Ticaret Ltd. Şti. · Aylık Kasa Özeti\\n' +\n" +
+  +     "+   'Sayfa 2 / 8\\n' +\n" +
+  +     "-   'Sayfa 2 / 9\\n' +\n" +
+  +     "    'Aylık Kasa Özeti · 01.01.2000 – 31.12.2099\\n' +\n" +
+  +     "    'Ay\\n' +\n" +
+  +     "    'Hareket\\n' +\n" +
+  +     "    'Ay Başı Kasa\\n' +\n" +
+  +     "    'Giriş\\n' +\n" +
+  +     '...\n' +
+  +     "    'Şahin İnşaat ve Ticaret Ltd. Şti. · Aylık Kasa Özeti\\n' +\n" +
+  +     "+   'Sayfa 3 / 8\\n' +\n" +
+  +     "-   'Sayfa 3 / 9\\n' +\n" +
+  +     "    'Aylık Kasa Özeti · 01.01.2000 – 31.12.2099\\n' +\n" +
+  +     "    'Ay\\n' +\n" +
+  +     "    'Hareket\\n' +\n" +
+  +     "    'Ay Başı Kasa\\n' +\n" +
+  +     "    'Giriş\\n' +\n" +
+  +     '...\n' +
+  +     "    'Şahin İnşaat ve Ticaret Ltd. Şti. · Aylık Kasa Özeti\\n' +\n" +
+  +     "+   'Sayfa 4 / 8\\n' +\n" +
+  +     "-   'Sayfa 4 / 9\\n' +\n" +
+  +     "    'Aylık Kasa Özeti · 01.01.2000 – 31.12.2099\\n' +\n" +
+  +     "    'Ay\\n' +\n" +
+  +     "    'Hareket\\n' +\n" +
+  +     "    'Ay Başı Kasa\\n' +\n" +
+  +     "    'Giriş\\n' +\n" +
+  +     '...\n' +
+  +     "    '0,00 TL\\n' +\n" +
+  +     "+   '0,'... 8940 more characters\n" +
+  +     "-   '0,'... 9166 more characters\n"
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/altin248-eski-df238b99/test/banka-210-altin.test.mjs:477:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/banka-210-altin.test.mjs:483:3
+✖ v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal) (2693.678395ms)
+  AssertionError [ERR_ASSERTION]: fatura: 400 {"ok":false,"error":"FIS serisinde son belge FIS2026000000022 01.11.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı).","code":"chronology","field":"issueDate"}
+  
+  400 !== 200
+  
+      at ok (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/altin248-eski-df238b99/test/banka-210-altin.test.mjs:500:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/altin248-eski-df238b99/test/banka-210-altin.test.mjs:511:21)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 400,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+[dış saat] başlangıç günü 2026-10-31 → bitiş günü 2026-11-01: ön koşul GERÇEKLEŞTİ
+(node:11896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[zorla] gece yarısına 6 sn · ön koşul GERÇEKLEŞTİ · test KIRMIZI (çıkış 1)

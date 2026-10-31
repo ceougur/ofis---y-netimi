@@ -5,6 +5,9 @@
 //       doğrudan SQL ile kilit altındaki satırı değiştirme, bozuk Silinenler yükü, tanınmayan ödeme yolu.
 // Bu dosyadaki testler 2.0.25 kodunda (c2206bc) koşturulup kırmızı olanlar docs/2.0.26-KANIT.md'ye yazıldı.
 // Saat ilerletmeli A13 testi ayrı dosyada (asama0-226-saat.test.mjs); gerçek SIGKILL testi asama0-226-kesinti.test.mjs.
+// Saat (ders 13, 22): İLK içe aktarım — süreç saati yerel bugün 06:00'dan akar; TODAY yüklemede bir kez okunur, sunucu gerçek saatli açılır.
+// Önceden koşu gece yarısına rastlayınca kırmızıydı (zorla: node test/gece-yarisi-zorla.mjs test/asama0-226.test.mjs 2).
+import "./fixtures/surec-saati-sabah.mjs";
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
