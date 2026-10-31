@@ -1,0 +1,32 @@
+{
+  "ad": "248-orta1a-e2e-senaryo-whatsapp-gonder-248",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-gonder-248.mjs",
+  "commit": "1f2642647ed215b95ac672021051faeca9ffc32d",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T06:00:34.861Z",
+  "sure_sn": 39.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 87,
+    "gecen": 87,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-orta1a-e2e-senaryo-whatsapp-gonder-248.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/orta1a-248-253d4d63/yeni-1f264264",
+  "ham_cikti_sha256": "702b336700d8a23674d1ace8ff49c6d59b8acf62b93ae0e691fad4e9ac62337c",
+  "ham_cikti_bayt": 5719
+}
