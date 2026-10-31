@@ -328,12 +328,16 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
    */
   // fixed (yalnız iç çağrı; dar kontrol 4 ORTA-1): "Başarısızları Yeniden Dene" / "Yine de Gönder" asıl toplu işin KAYITLI dönemini { from, to, preset } taşır — dönem
   // gövdeden yeniden hesaplanmaz (preset kaybolup "Bu Ay" özel aralık sayılmasın, "Tüm Hareketler"in boş başlangıcı 400 vermesin). Rotalar bu bağımsız değişkeni vermez.
+  // fixed.sendAgainAfter (dar kontrol 5 ORTA-1; KULLANICI KARARI 31.10.2026 "a şıkkı"): asıl işte kullanıcı R3 sorusunda "Yine de Gönder" dediyse asıl işin açılış anı.
+  // O zaman R3 yalnız bu andan SONRAKİ kabulleri sayar: açılıştan önceki gönderim (R3'ü doğuran) o kararla kabul edilmişti; açılıştan sonra başka bir işle aynı kişiye
+  // aynı dönem giden yine "Daha Önce Gönderildi" (çift ileti yok). Yeniden denemede gövdenin sendAgain'i okunmaz (karar yalnız asıl işin kaydından).
   function plan(user, body, fixed = null) {
     const kind = body.kind === "reminder" ? "reminder" : body.kind === "statement" ? "statement" : null;
     if (!kind) fail(400, "Gönderim türünü seçin (Ekstre ya da Ödeme Hatırlatma).", "whatsapp-invalid", { field: "kind" });
     const period = kind === "statement" ? (fixed ? { from: fixed.from || "", to: fixed.to || "", preset: fixed.preset || "" } : periodOf(body, today())) : { from: "", to: "", preset: "" };
     const ids = selection(user, body);
-    const sent = ledger.sentBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()), since: sentSinceOf(kind, period, nowMs()) });
+    const sendAgain = fixed ? false : body.sendAgain === true;
+    const sent = ledger.sentBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()), since: sentSinceOf(kind, period, nowMs()), after: fixed?.sendAgainAfter || "" });
     const people = [];
     for (const id of ids) {
       let account;
@@ -350,7 +354,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       // Gönder" / "Bunları Çıkar", varsayılan Bunları Çıkar). Bilgi makine defterinden (geri yükleme silmez).
       const last = sent.get(account.id);
       if (last) person.sentBefore = last;
-      if (!person.skip && last && body.sendAgain !== true) person.skip = "Daha Önce Gönderildi";
+      if (!person.skip && last && !sendAgain) person.skip = "Daha Önce Gönderildi";
       people.push(person);
     }
     return { kind, period, people };
@@ -439,9 +443,21 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     };
   }
 
+  // Bütün seçilenler elendiğinde ileti: nedenler sayılarıyla + "Daha Önce Gönderildi" için ne yapılacağı (cümle düzeni).
+  function nothingMessage(summary) {
+    const reasons = Object.entries(summary.skipped || {}).map(([reason, n]) => `${reason}: ${n}`).join(", ");
+    let text = `Gönderilebilecek kişi yok (seçilenlerin hepsi elendi${reasons ? ` — ${reasons}` : ""}).`;
+    if (summary.skipped?.["Daha Önce Gönderildi"]) {
+      text += summary.kind === "reminder"
+        ? ` Bu kişilere bugün daha önce ödeme hatırlatması gönderildi; yeniden göndermek için yeni gönderimde "Yine de Gönder" seçin.`
+        : ` Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde "Yine de Gönder" seçin.`;
+    }
+    return text;
+  }
+
   // options.inherit (T1 P6): "Yine de Gönder"in kaynağı olan Sonucu Belirsiz iş — yeni iş onun dondurulmuş içeriğini ve Meta'daki PDF'ini devralır (sendAnyway).
-  // options.period (dar kontrol 4 ORTA-1): asıl toplu işin kayıtlı dönemi (retryFailed / sendAnyway); yalnız iç çağrı — rota createBatch(user, body) ile çağırır, gövdedeki
-  // "period" alanı okunmaz.
+  // options.period (dar kontrol 4 ORTA-1): asıl toplu işin kayıtlı dönemi ve "Yine de Gönder" kararı { from, to, preset, sendAgainAfter } (retryFailed / sendAnyway);
+  // yalnız iç çağrı — rota createBatch(user, body) ile çağırır, gövdedeki "period" / "sendAgainAfter" / "send_again_after" alanları okunmaz.
   async function createBatch(user, body, { inherit = null, period = null } = {}) {
     const record = preconditions();
     const requestId = typeof body.requestId === "string" && /^[A-Za-z0-9_-]{6,100}$/.test(body.requestId) ? body.requestId : "";
@@ -466,10 +482,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     preconditions();
     const plotted = plan(user, body, period);
     const summary = summarize(plotted, record, limitInfo, template);
-    // §7a 31: bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; nedenler yanıtta.
-    if (!summary.sendable) fail(400, "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).", "whatsapp-nothing", { summary });
+    // §7a 31: bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; nedenler yanıtta ve İLETİDE (dar kontrol 5 ORTA-1: istemci yalnız iletiyi gösterir).
+    if (!summary.sendable) fail(400, nothingMessage(summary), "whatsapp-nothing", { summary });
     const batchId = newId("wab");
     const at = iso();
+    // dar kontrol 5 ORTA-1: "Yine de Gönder" kararı — yeni işte gövdenin açık sendAgain'i (açılış anı), yeniden denemede asıl işin kayıtlı anı (zincirde kaymaz).
+    const sendAgainAfter = period ? period.sendAgainAfter || "" : body.sendAgain === true ? at : "";
     try {
       ledger.openBatch(batchId, companyId, at);
     } catch (error) {
@@ -477,8 +495,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     store.tx(() => {
       store.run(
-        "INSERT INTO wa_batches (id, kind, period_from, period_to, preset, template, lang, phone_number_id, waba_id, ledger_id, company_id, state, request_key, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'running', ?, ?, ?, ?)",
-        batchId, kind, plotted.period.from, plotted.period.to, plotted.period.preset, TEMPLATE_NAMES[kind], template.template.language, record.phoneNumberId, record.wabaId, ledger.id, companyId, requestKey, user.id, at, at,
+        "INSERT INTO wa_batches (id, kind, period_from, period_to, preset, template, lang, phone_number_id, waba_id, ledger_id, company_id, state, request_key, send_again_after, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'running', ?, ?, ?, ?, ?)",
+        batchId, kind, plotted.period.from, plotted.period.to, plotted.period.preset, TEMPLATE_NAMES[kind], template.template.language, record.phoneNumberId, record.wabaId, ledger.id, companyId, requestKey, sendAgainAfter, user.id, at, at,
       );
       for (const person of plotted.people) {
         if (!person.id || store.get("SELECT 1 AS found FROM wa_jobs WHERE batch_id = ? AND account_id = ?", batchId, person.id)) continue;
@@ -552,8 +570,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     kick();
     return batchView(batchRow(row.id));
   }
-  // Yeniden deneme / Yine de Gönder AYNI toplu işin dönemindedir (KULLANICI KARARI T2-1 A + 31.10 "a"): kayıtlı dönem preset'iyle birlikte taşınır (dar kontrol 4 ORTA-1).
-  const periodOfRow = row => ({ from: row.period_from || "", to: row.period_to || "", preset: row.preset || "" });
+  // Yeniden deneme / Yine de Gönder AYNI toplu işin dönemindedir (KULLANICI KARARI T2-1 A + 31.10 "a"): kayıtlı dönem preset'iyle birlikte taşınır (dar kontrol 4 ORTA-1);
+  // asıl işin "Yine de Gönder" kararı da (send_again_after; dar kontrol 5 ORTA-1, KULLANICI KARARI 31.10.2026 "a şıkkı").
+  const periodOfRow = row => ({ from: row.period_from || "", to: row.period_to || "", preset: row.preset || "", sendAgainAfter: row.send_again_after || "" });
   // Başarısızları Yeniden Dene: yalnız kesin Başarısız işlerin carileri YENİ toplu işle (eski işler kayıtta kalır). Kabul edilmiş iş girmez.
   async function retryFailed(user, id, body = {}) {
     const row = editable(id);

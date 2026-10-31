@@ -1504,6 +1504,17 @@ export const MIGRATIONS = [
       addColumn(store, "wa_jobs", "pdf_blob", "BLOB");
     },
   },
+  {
+    version: 42,
+    name: "v2.4.8 WhatsApp: toplu işin \"Yine de Gönder\" kararı yeniden denemeye taşınır (para dışı)",
+    up(store) {
+      // 2.4.8 dar kontrol 5 ORTA-1 (KULLANICI KARARI 31.10.2026 "a şıkkı"; lib/whatsapp/queue.mjs plan): kullanıcı R3 sorusunda "Yine de Gönder" dediyse bu karar
+      // "Başarısızları Yeniden Dene"ye ve işteki "Yine de Gönder"e taşınır; yalnız ASIL işin açılışından ÖNCEKİ kabuller yok sayılır. send_again_after: '' = karar yok
+      // (eski satırlar dahil — bugünkü davranış); dolu = asıl işin açılış anı (ISO). Yeniden denemenin yeniden denemesi aynı anı devralır (zincirde sınır kaymaz).
+      // YALNIZ EKLEYİCİ: tek sütun.
+      addColumn(store, "wa_batches", "send_again_after", "TEXT NOT NULL DEFAULT ''");
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";

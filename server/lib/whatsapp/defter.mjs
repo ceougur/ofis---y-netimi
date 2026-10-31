@@ -152,7 +152,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // Kabul her zaman işin son denemesindedir (kabulden / belirsizden sonra yeni deneme yok).
     sentBefore: db.prepare(`SELECT c.account_id AS accountId, MAX(a.at) AS last FROM accepts a
       JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
-      WHERE c.company_id = ? AND c.kind = ? AND c.period_key = ? AND a.at >= ?
+      WHERE c.company_id = ? AND c.kind = ? AND c.period_key = ? AND a.at >= ? AND a.at > ?
         AND (NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt) OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
       GROUP BY c.account_id`),
     hold: db.prepare("INSERT INTO holds (waba_id, until, reason, at) VALUES (?, ?, ?, ?)"),
@@ -360,9 +360,13 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       for (const row of rows) if (!oldest || row.first < oldest) oldest = row.first;
       return { count: rows.length, phones: new Set(rows.map(row => row.phone)), oldest };
     },
-    /** R3: { companyId, kind, periodKey } → Map(cari kimliği → son kabul anı ISO). Geri yükleme bu bilgiyi silmez (makine defteri). */
-    sentBefore({ companyId, kind, periodKey, since = "" }) {
-      return new Map(q.sentBefore.all(String(companyId), String(kind), String(periodKey), String(since || "")).map(row => [row.accountId, row.last]));
+    /**
+     * R3: { companyId, kind, periodKey } → Map(cari kimliği → son kabul anı ISO). Geri yükleme bu bilgiyi silmez (makine defteri).
+     * since: bu andan (dahil) sonraki kabuller ("Son 3 Ay" / "Tüm Hareketler" 7 gün penceresi). after: bu andan KESİNLİKLE sonraki kabuller — yeniden denemede asıl
+     * işin "Yine de Gönder" kararı (açılış anı; açılıştan önceki kabuller o kararla kabul edilmişti; dar kontrol 5 ORTA-1, KULLANICI KARARI 31.10.2026 "a şıkkı").
+     */
+    sentBefore({ companyId, kind, periodKey, since = "", after = "" }) {
+      return new Map(q.sentBefore.all(String(companyId), String(kind), String(periodKey), String(since || ""), String(after || "")).map(row => [row.accountId, row.last]));
     },
     // ---------- Meta sınır beklemesi (WABA başına) ----------
     holdWaba(wabaId, until, reason, at) {
