@@ -98,7 +98,8 @@ const ATLAMA = new Map([
 // S-8: sürücü eşlemelerine bilerek hata (yalnız --mutasyon / --mutasyon-denetimi; programa dokunmaz). null = mutasyon yok.
 let MUTASYON = null;
 const mut = ad => MUTASYON === ad;
-// yer: "baslat" (başlatma özeti — S-9), "yeniden" (Başarısızları Yeniden Dene / Yine de Gönder yanıtı — S-3, S-7, S-9), "is" (gönderimde atlanan iş).
+// yer: "baslat" (başlatma özeti — S-9), "yeniden" (Başarısızları Yeniden Dene yanıtı — S-3, S-7, S-9), "yine" (işteki Yine de Gönder yanıtı — S-4, S-11),
+// "is" (gönderimde atlanan iş).
 // Tablo üç yerde AYNI; yer yalnız S-8 mutasyonlarının her yolu ayrı sınayabilmesi için.
 const atlamaKodu = (metin, yer = "is") => {
   const m = String(metin || "");
@@ -106,6 +107,7 @@ const atlamaKodu = (metin, yer = "is") => {
   if (yer === "baslat" && mut("S9-baslatma-belirsiz-eslemesi-yok") && m === "Sonucu Belirsiz") return `?${m}`;
   if (yer === "yeniden" && mut("S9-yeniden-kuyrukta-eslemesi-yok") && m === "Zaten Kuyrukta") return `?${m}`;
   if (yer === "yeniden" && mut("S9-yeniden-daha-once-eslemesi-yok") && m === "Daha Önce Gönderildi") return `?${m}`;
+  if (yer === "yine" && mut("S11-yine-kuyrukta-eslemesi-yok") && m === "Zaten Kuyrukta") return `?${m}`;
   return ATLAMA.get(m) || (metin ? `?${metin}` : null);
 };
 // S-2: kâhinin hazır dönem seçimi → programın hazır dönem değeri (istemcinin "Ekstre Dönemi" listesi: hof-whatsapp-api.js PRESETS; sunucu waPresetRange).
@@ -470,10 +472,26 @@ async function kos(sen, uc, secenek) {
       const medyaId = new URL(yol, "http://x").pathname.split("/").filter(Boolean).pop();
       const isId = medyaIs.get(String(medyaId));
       const st = isId ? programIsDurumu(isId) : null;
-      if (st && ["accepted", "sent", "uncertain"].includes(st)) degismez.kesin_oncesi_medya_silme += 1;
+      // S-11 (README §9.3 P3 / §9.4): iç denetim yalnız kâhin işinin SON denemesinin PDF'ine bakar — önceki (ör. Başarısız) denemenin PDF'i silinirken iş başka
+      // denemede "Meta Kabul Etti"de olabilir; o silme ihlal değildir.
+      const son = isId && !mut("S11-medya-silme-son-deneme-yok") ? sonDenemeMi(isId) : true;
+      if (mut("S11-medya-silme-durumsuz") ? Boolean(isId) : son && st && ["accepted", "sent", "uncertain"].includes(st)) degismez.kesin_oncesi_medya_silme += 1;
     }
     res.writeHead(yanit.status, { "content-type": yanit.headers["content-type"] || "application/json" });
     res.end(yanit.body);
+  }
+  // Program işinin, kâhin işinin (etiket/cari: asıl toplu iş + ona bağlı yeniden deneme / Yine de Gönder toplu işleri) EN SON denemesi olup olmadığı.
+  // Kâhin işine bağlanamayan iş kendi başına son deneme sayılır.
+  function sonDenemeMi(isId) {
+    const bilgi = isBilgisi(isId);
+    const etiket = bilgi ? batchEtiket[bilgi.batchId] : null;
+    const tp = etiket ? toplular[etiket] : null;
+    if (!bilgi || !tp) return true;
+    for (const id of [...tp.batchIds].reverse()) {
+      const row = db(tp.sirket)?.get("SELECT id FROM wa_jobs WHERE batch_id = ? AND account_id = ? ORDER BY rowid DESC LIMIT 1", id, bilgi.accountId);
+      if (row) return row.id === isId;
+    }
+    return true;
   }
   function programIsDurumu(isId) {
     for (const s of sirketler) {
@@ -828,14 +846,14 @@ async function kos(sen, uc, secenek) {
       if (mut("S3-oneri-takas")) return yollar.length ? yollar.map(y => (y === "yeni_gonderim" ? "isteki_yine_de_gonder" : "yeni_gonderim")).join("+") : null;
       return yollar.length ? yollar.join("+") : null;
     }
-    function yenidenOku(r) {
+    function yenidenOku(r, yer = "yeniden") {
       const govde = r.data || {};
       const ozet = r.status === 200 ? govde.data?.summary || null : govde.summary || null;
       const elenen = {};
       const alinan = [];
       for (const kisi of ozet?.people || []) {
         const cid = programCari[kisi.id] || `?${kisi.id}`;
-        if (kisi.skip && !mut("S3-alinan-elenenleri-de-sayar")) elenen[cid] = atlamaKodu(kisi.skip, "yeniden");
+        if (kisi.skip && !mut("S3-alinan-elenenleri-de-sayar")) elenen[cid] = atlamaKodu(kisi.skip, yer);
         else alinan.push(cid);
       }
       const ileti = r.status === 200 ? "" : String(govde.error || "");
@@ -1022,7 +1040,7 @@ async function kos(sen, uc, secenek) {
           tp.batchIds.push(r.data.data.batch.id);
           batchEtiket[r.data.data.batch.id] = o.toplu;
         } else notlar.push(`Yine de Gönder ${o.toplu}/${o.cari}: ${r.status} ${r.data?.code || ""} ${r.data?.error || ""}`);
-        if (o.etiket) sonuc.yeniden[o.etiket] = r.status === 0 ? { elenen: {}, alinan: [], oneri: null, _http: 0, _kod: "iş yok" } : yenidenOku(r);
+        if (o.etiket) sonuc.yeniden[o.etiket] = r.status === 0 ? { elenen: {}, alinan: [], oneri: null, _http: 0, _kod: "iş yok" } : yenidenOku(r, "yine");
         return;
       }
       if (tur === "yedek_al") {
@@ -1494,6 +1512,9 @@ const MUTASYONLAR = [
   ["S9-baslatma-belirsiz-eslemesi-yok", "D1-01*,D1-02*,D1-03*,D6-01*,D6-03*", "S-9 başlatmada Sonucu Belirsiz → sonucu_belirsiz"],
   ["S9-yeniden-kuyrukta-eslemesi-yok", "D5-02*", "S-9 yeniden denemede Zaten Kuyrukta → zaten_kuyrukta"],
   ["S9-yeniden-daha-once-eslemesi-yok", "K5-02*,D3-01*,D5-01*", "S-9 yeniden denemede Daha Önce Gönderildi → daha_once_gonderildi"],
+  ["S11-yine-kuyrukta-eslemesi-yok", "E2-06*", "S-11 işteki Yine de Gönder'de Zaten Kuyrukta → zaten_kuyrukta"],
+  ["S11-medya-silme-durumsuz", "TEMEL-01*,E4-01*,E4-02*", "S-11 iç denetim: yalnız kesinleşmemiş işin PDF silmesi sayılır"],
+  ["S11-medya-silme-son-deneme-yok", "E4-01*,E4-02*,K4-01*,D5-01*", "S-11 iç denetim: yalnız SON denemenin PDF'i"],
 ];
 
 const sonuclar = [];
