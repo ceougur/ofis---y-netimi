@@ -173,10 +173,16 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // "after" (asıl işin "Yine de Gönder" sınırı, yerel saatle açılış anı) TALEP anıyla (claims.at, yerel saat, istekten hemen önce) karşılaştırılır, kabul anıyla
     // DEĞİL: geç kabulde accepts.at Meta'nın durum bildirimi saatinden gelir; Meta saati yerelden gerideyse asıl işten SONRA giden ileti "önce" sayılıp çift ekstre
     // gidiyordu (2.4.8 dar kontrol 6, test/whatsapp-dk6-saat-kaymasi-248.test.mjs).
-    sentBefore: db.prepare(`SELECT c.account_id AS accountId, MAX(a.at) AS last FROM accepts a
-      JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
-      WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND a.at >= ? AND c.at > ?
-        AND (c.period_key NOT IN ('secim|last3', 'secim|all') OR a.at >= ?)
+    // İş Q5 (T1 G5-02): "son gönderim" anı ve pencereler (since, Son 3 Ay / Tüm Hareketler) SON denemenin kabul anından okunur (eşzamanlı kabul outcomes, sonradan
+    // öğrenilen wamid learned_wamids; yoksa — yalnız teslimle sayılan iş — işin kabul satırı). accepts iş başına tek satırdır ve İLK kabul edilen denemeden kalır:
+    // 131049 sonrası 24 saat sonraki 2. deneme kabul edilince tarih 1. denemeyi gösteriyordu. Test: test/whatsapp-q5-son-kabul-248.test.mjs.
+    sentBefore: db.prepare(`SELECT accountId, MAX(at) AS last FROM (SELECT c.account_id AS accountId, c.batch_id AS batch_id, c.job_id AS job_id, c.attempt AS attempt, c.period_key AS period_key, c.at AS claim_at,
+        COALESCE((SELECT o.at FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted'),
+          (SELECT l.at FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt), a.at) AS at
+      FROM accepts a JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
+      WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?))))) c
+      WHERE c.at >= ? AND c.claim_at > ?
+        AND (c.period_key NOT IN ('secim|last3', 'secim|all') OR c.at >= ?)
         AND ((NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
               AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'failed')
               AND (EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted')
@@ -185,7 +191,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
                 AND COALESCE((SELECT l.event || ':' || l.reason FROM batch_log l WHERE l.batch_id = c.batch_id ORDER BY l.seq DESC LIMIT 1),
                   (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') IN ('stop:canceled', 'stop:restored', 'stop:moved', 'stop:reset')))
           OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
-      GROUP BY c.account_id`),
+      GROUP BY accountId`),
     // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"; dar kontrol 6 kapsam dışı gözlem): yalnız "Başarısızları Yeniden Dene"de — bu cariye bu şablon + dönem için SONUCU
     // BELLİ OLMAYAN deneme (işin son denemesi: kabul, teslim edilemedi, 131049 bırakıldı ya da "gitmedi" sonucu yok — Sonucu Belirsiz ya da sonucu yazılamamış) varsa
     // elenir. Kabul edilen R3'e (sentBefore), teslim edilemeyen ve gitmeyen yeniden denemeye kalır. Pencere ve dönem anahtarı R3 ile aynı (donem.mjs).
