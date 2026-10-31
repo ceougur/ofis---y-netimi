@@ -56,6 +56,7 @@ describe("2.4.8 T2-1 = A — 'Daha Önce Gönderildi' / 'Zaten Kuyrukta' dönem 
       assert.deepEqual(skip, { "Ayşe Yılmaz": "Daha Önce Gönderildi", "Burak Kaya": "Zaten Kuyrukta" }, `ertesi gün aynı 'Bu Ay' seçimi aynı dönem sayılmalı (geldi ${JSON.stringify(skip)})`);
       const second = await ctx.batch(body);
       assert.equal(second.status, 400, `bütün seçilenler elendi → toplu iş açılmaz (§7a 31; geldi ${second.status})`);
+        assert.equal(second.data.code, "whatsapp-nothing", `neden 'bütün seçilenler elendi' olmalı (dar kontrol 4 DÜŞÜK-2; geldi ${second.data.code})`);
       ctx.clock.advance(21 * HOUR);
       await ctx.drain();
       ctx.clock.advance(25 * HOUR);
@@ -144,6 +145,7 @@ describe("2.4.8 T2-1 = A — 'Daha Önce Gönderildi' / 'Zaten Kuyrukta' dönem 
         assert.deepEqual(skip, { "Ayşe Yılmaz": "Daha Önce Gönderildi", "Burak Kaya": "Zaten Kuyrukta" }, `'Bu Ay' ile 'Geçen Ay' aynı takvim ayı → aynı dönem (geldi ${JSON.stringify(skip)})`);
         const second = await ctx.batch(body);
         assert.equal(second.status, 400, `bütün seçilenler elendi → toplu iş açılmaz (§7a 31; geldi ${second.status})`);
+        assert.equal(second.data.code, "whatsapp-nothing", `neden 'bütün seçilenler elendi' olmalı (dar kontrol 4 DÜŞÜK-2; geldi ${second.data.code})`);
         for (let i = 0; i < 4; i += 1) {
           ctx.clock.advance(25 * HOUR);
           await ctx.drain();

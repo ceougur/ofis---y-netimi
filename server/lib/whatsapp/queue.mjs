@@ -326,10 +326,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
    * Kişi listesi ve eleme nedenleri (önizleme ve açma aynı kuralla). Dönüş: { kind, period, people: [{ id, name, phone, skip }] }. Sıra = seçim sırası (§7a 5).
    * İçerik (bakiye, PDF, telefon) burada SAKLANMAZ — gönderim anında aynı cari okumasından (§7a 1).
    */
-  function plan(user, body) {
+  // fixed (yalnız iç çağrı; dar kontrol 4 ORTA-1): "Başarısızları Yeniden Dene" / "Yine de Gönder" asıl toplu işin KAYITLI dönemini { from, to, preset } taşır — dönem
+  // gövdeden yeniden hesaplanmaz (preset kaybolup "Bu Ay" özel aralık sayılmasın, "Tüm Hareketler"in boş başlangıcı 400 vermesin). Rotalar bu bağımsız değişkeni vermez.
+  function plan(user, body, fixed = null) {
     const kind = body.kind === "reminder" ? "reminder" : body.kind === "statement" ? "statement" : null;
     if (!kind) fail(400, "Gönderim türünü seçin (Ekstre ya da Ödeme Hatırlatma).", "whatsapp-invalid", { field: "kind" });
-    const period = kind === "statement" ? periodOf(body, today()) : { from: "", to: "", preset: "" };
+    const period = kind === "statement" ? (fixed ? { from: fixed.from || "", to: fixed.to || "", preset: fixed.preset || "" } : periodOf(body, today())) : { from: "", to: "", preset: "" };
     const ids = selection(user, body);
     const sent = ledger.sentBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()), since: sentSinceOf(kind, period, nowMs()) });
     const people = [];
@@ -438,7 +440,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
 
   // options.inherit (T1 P6): "Yine de Gönder"in kaynağı olan Sonucu Belirsiz iş — yeni iş onun dondurulmuş içeriğini ve Meta'daki PDF'ini devralır (sendAnyway).
-  async function createBatch(user, body, { inherit = null } = {}) {
+  // options.period (dar kontrol 4 ORTA-1): asıl toplu işin kayıtlı dönemi (retryFailed / sendAnyway); yalnız iç çağrı — rota createBatch(user, body) ile çağırır, gövdedeki
+  // "period" alanı okunmaz.
+  async function createBatch(user, body, { inherit = null, period = null } = {}) {
     const record = preconditions();
     const requestId = typeof body.requestId === "string" && /^[A-Za-z0-9_-]{6,100}$/.test(body.requestId) ? body.requestId : "";
     const requestKey = requestId ? `${user.id}|${requestId}` : null;
@@ -460,7 +464,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const again = requestKey ? store.get("SELECT * FROM wa_batches WHERE request_key = ?", requestKey) : null;
     if (again) return { batch: batchView(again), reused: true };
     preconditions();
-    const plotted = plan(user, body);
+    const plotted = plan(user, body, period);
     const summary = summarize(plotted, record, limitInfo, template);
     // §7a 31: bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; nedenler yanıtta.
     if (!summary.sendable) fail(400, "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).", "whatsapp-nothing", { summary });
@@ -548,13 +552,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     kick();
     return batchView(batchRow(row.id));
   }
-  const sameBody = row => ({ kind: row.kind, ...(row.period_from || row.period_to ? { from: row.period_from, to: row.period_to } : { preset: row.preset || "all" }) });
+  // Yeniden deneme / Yine de Gönder AYNI toplu işin dönemindedir (KULLANICI KARARI T2-1 A + 31.10 "a"): kayıtlı dönem preset'iyle birlikte taşınır (dar kontrol 4 ORTA-1).
+  const periodOfRow = row => ({ from: row.period_from || "", to: row.period_to || "", preset: row.preset || "" });
   // Başarısızları Yeniden Dene: yalnız kesin Başarısız işlerin carileri YENİ toplu işle (eski işler kayıtta kalır). Kabul edilmiş iş girmez.
   async function retryFailed(user, id, body = {}) {
     const row = editable(id);
     const ids = store.all("SELECT account_id AS id FROM wa_jobs WHERE batch_id = ? AND state = 'failed' ORDER BY rowid", row.id).map(item => item.id);
     if (!ids.length) fail(400, "Bu gönderimde yeniden denenecek başarısız ileti yok.", "whatsapp-nothing");
-    return createBatch(user, { ...sameBody(row), ids, requestId: body.requestId });
+    return createBatch(user, { kind: row.kind, ids, requestId: body.requestId }, { period: periodOfRow(row) });
   }
   // T1 P6 (S3 A + §7a 15; BAŞ MİMAR KARARI): "Yine de Gönder" AYNI iletiyi yeniden gönderir — yeni iş belirsiz işin dondurulmuş değişkenlerini ve (29 gün geçerliyse)
   // Meta'daki PDF'ini devralır: PDF yeniden yüklenmez, iki ileti de aynı içeriği taşır (ikisi birden ulaşsa da çelişmez). PDF'in TEK sahibi artık yeni iştir: belirsiz
@@ -577,7 +582,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (job.state !== "uncertain") fail(409, "Yalnız sonucu belirsiz ileti yeniden gönderilir.", "whatsapp-job-state");
     if (body.confirm !== true) fail(409, "İletinin Meta'ya ulaşıp ulaşmadığı bilinmiyor; yeniden gönderilirse kişiye iki kez gidebilir. Onaylıyorsanız yeniden isteyin.", "whatsapp-confirm-required");
     const row = batchRow(job.batch_id);
-    const result = await createBatch(user, { ...sameBody(row), ids: [job.account_id], requestId: body.requestId }, { inherit: job });
+    const result = await createBatch(user, { kind: row.kind, ids: [job.account_id], requestId: body.requestId }, { inherit: job, period: periodOfRow(row) });
     audit(user, "whatsapp.job.send-anyway", job.id, { batchId: result.batch.id });
     return result;
   }
