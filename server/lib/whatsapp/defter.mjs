@@ -168,6 +168,8 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // sayılmaz; 'stop:moved' bu defterde açılmış bir toplu işe ancak veri başka şirkete geri yüklenince yazılır. KULLANICI KARARI ("KİME KAÇ KEZ" ilkesi, S3): Şirket
     // Verisini Sıfırla ('stop:reset'; "Yalnız Hareketler" carileri bırakır) ile duran da sayılmaz. Testler: test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs,
     // test/whatsapp-dk9-ilke-248.test.mjs.
+    // KULLANICI KARARI ("KİME KAÇ KEZ" ilkesi, S4): kabul SON DENEME bazında — son deneme Meta'ca kabul edilmiş (eşzamanlı ya da sonradan öğrenilen wamid) olmalı; Meta
+    // Bekletti'den sonra 2. deneme Sonucu Belirsiz / sonuçsuzsa 1. denemenin kabulü kişiyi "aldı" saymaz (almış olabilir → unsettled; işteki Yine de Gönder çıkmazsız).
     // "after" (asıl işin "Yine de Gönder" sınırı, yerel saatle açılış anı) TALEP anıyla (claims.at, yerel saat, istekten hemen önce) karşılaştırılır, kabul anıyla
     // DEĞİL: geç kabulde accepts.at Meta'nın durum bildirimi saatinden gelir; Meta saati yerelden gerideyse asıl işten SONRA giden ileti "önce" sayılıp çift ekstre
     // gidiyordu (2.4.8 dar kontrol 6, test/whatsapp-dk6-saat-kaymasi-248.test.mjs).
@@ -176,6 +178,8 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND a.at >= ? AND c.at > ?
         AND ((NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
               AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'failed')
+              AND (EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted')
+                OR EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt))
               AND NOT (EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
                 AND COALESCE((SELECT l.event || ':' || l.reason FROM batch_log l WHERE l.batch_id = c.batch_id ORDER BY l.seq DESC LIMIT 1),
                   (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') IN ('stop:canceled', 'stop:restored', 'stop:moved', 'stop:reset')))
@@ -184,9 +188,12 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"; dar kontrol 6 kapsam dışı gözlem): yalnız "Başarısızları Yeniden Dene"de — bu cariye bu şablon + dönem için SONUCU
     // BELLİ OLMAYAN deneme (işin son denemesi: kabul, teslim edilemedi, 131049 bırakıldı ya da "gitmedi" sonucu yok — Sonucu Belirsiz ya da sonucu yazılamamış) varsa
     // elenir. Kabul edilen R3'e (sentBefore), teslim edilemeyen ve gitmeyen yeniden denemeye kalır. Pencere ve dönem anahtarı R3 ile aynı (donem.mjs).
+    // KULLANICI KARARI ("KİME KAÇ KEZ" ilkesi, S4; dar kontrol 9 DÜŞÜK-1): kabul DENEME bazında (outcomes accepted / sonradan öğrenilen wamid) — Meta Bekletti'den sonra
+    // 2. deneme belirsiz kalınca 1. denemenin kabulü onu gizlemez. İşin teslimi (deliveries; geç teslim dahil) varsa kişi kesin ALDI → R3 (soru 7/K7), belirsiz sayılmaz.
     unsettled: db.prepare(`SELECT DISTINCT c.account_id AS accountId, c.job_id AS jobId FROM claims c
       WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND c.at >= ? AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = c.job_id)
-        AND NOT EXISTS (SELECT 1 FROM accepts a WHERE a.job_id = c.job_id)
+        AND NOT EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt)
+        AND NOT EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id)
         AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
         AND NOT EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
         AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome IN ('accepted', 'failed', 'released'))`),
