@@ -1,0 +1,54 @@
+// İş K ölçümü: ROOT=<kod kopyası> DATA=<veri klasörü> MODE=uret|olc node olcum.mjs
+// uret: 2.000 cari + bir toplu iş (programın API'si), sonra o toplu işin 99 kopyası (aynı defter kimliği) SQL ile → ~200.000 iş satırı.
+// olc: aynı veriyle önizleme (2.000 cari, Bu Ay) 9 kez; ilk ısınma atılır; ortanca + en az + en çok ms.
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const ROOT = process.env.ROOT;
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { URLS, startWa } = await imp("test/whatsapp-248-ortak.mjs");
+const dataDir = process.env.DATA;
+const now = { time: new Date(2026, 10, 3, 10, 0, 0, 0).toISOString(), fixed: true };
+if (process.env.MODE === "uret") {
+  const ctx = await startWa({ dataDir, now });
+  const ids = [];
+  for (let i = 0; i < 2000; i += 1) {
+    const res = await ctx.api.post("/api/workspace/accounts", { name: `Ölçüm Cari ${i}`, phone: `0532 ${String(1000000 + i).slice(-7, -4)} ${String(1000000 + i).slice(-4, -2)} ${String(1000000 + i).slice(-2)}`, openingBalance: "100" });
+    if (res.status !== 200) throw new Error(`cari ${i}: ${res.status} ${JSON.stringify(res.data)}`);
+    ids.push(res.data.data.id);
+  }
+  const o = await ctx.batch({ kind: "statement", ids, preset: "thisMonth" });
+  if (o.status !== 200) throw new Error(`toplu iş: ${o.status} ${JSON.stringify(o.data).slice(0, 300)}`);
+  await ctx.drain();
+  const store = ctx.store;
+  const src = o.data.data.batch.id;
+  const bcols = store.all("PRAGMA table_info(wa_batches)").map(c => c.name);
+  const jcols = store.all("PRAGMA table_info(wa_jobs)").map(c => c.name);
+  store.tx(() => {
+    for (let n = 1; n < 100; n += 1) {
+      const nb = `${src}-k${n}`;
+      store.run(`INSERT INTO wa_batches (${bcols.join(",")}) SELECT ${bcols.map(c => (c === "id" ? "?" : c === "request_key" ? "NULL" : c === "state" ? "'done'" : c)).join(",")} FROM wa_batches WHERE id = ?`, nb, src);
+      store.run(`INSERT INTO wa_jobs (${jcols.join(",")}) SELECT ${jcols.map(c => (c === "id" ? "id || '-k' || ?" : c === "batch_id" ? "?" : c === "wamid" ? "NULL" : c === "state" ? "'accepted'" : c === "accepted_at" ? "COALESCE(accepted_at, ?)" : c)).join(",")} FROM wa_jobs WHERE batch_id = ?`, String(n), nb, now.time, src);
+    }
+  });
+  console.log(JSON.stringify({ accounts: ids.length, batches: store.get("SELECT COUNT(*) AS n FROM wa_batches").n, jobs: store.get("SELECT COUNT(*) AS n FROM wa_jobs").n, ids: ids.length }));
+  const fs = await import("node:fs");
+  fs.writeFileSync(path.join(dataDir, "olcum-ids.json"), JSON.stringify(ids));
+  await ctx.close();
+} else {
+  const fs = await import("node:fs");
+  const ids = JSON.parse(fs.readFileSync(path.join(dataDir, "olcum-ids.json"), "utf8"));
+  const ctx = await startWa({ dataDir, now, connect: true, ack: true });
+  const times = [];
+  let last = null;
+  for (let i = 0; i < 9; i += 1) {
+    const t0 = process.hrtime.bigint();
+    const res = await ctx.api.post(URLS.preview, { kind: "statement", ids, preset: "thisMonth" });
+    const ms = Number(process.hrtime.bigint() - t0) / 1e6;
+    if (res.status !== 200) throw new Error(`önizleme ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
+    last = res.data.data;
+    if (i > 0) times.push(ms);
+  }
+  times.sort((a, b) => a - b);
+  console.log(JSON.stringify({ jobs: ctx.store.get("SELECT COUNT(*) AS n FROM wa_jobs").n, n: times.length, medianMs: Math.round(times[Math.floor(times.length / 2)]), minMs: Math.round(times[0]), maxMs: Math.round(times.at(-1)), skipped: last.skipped, sendable: last.sendable }));
+  await ctx.close();
+}

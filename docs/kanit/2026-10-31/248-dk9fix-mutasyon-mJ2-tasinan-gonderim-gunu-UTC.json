@@ -1,0 +1,38 @@
+{
+  "ad": "248-dk9fix-mutasyon-mJ2-tasinan-gonderim-gunu-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=120000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk9-acilis-gunu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk9-ilke-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk8-g-ek-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk8-g-son-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk8-h-ozel-aralik-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk8-i-tasinan-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk5-yine-de-gonder-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk4-yeniden-dene-248.test.mjs",
+  "commit": "7172dd2f9cdd98bb3826c3150042f01d57feba79",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T13:09:33.686Z",
+  "sure_sn": 40.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 61,
+    "gecen": 60,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 dar kontrol 9 ORTA-1 — toplu işin dönem anahtarı açıldığı güne göre (★ soru 4) › taşınan veri: aynı çok günlü gönderim başka bilgisayara (defter olmadan) taşınınca 10.11'de 'Bu Ay' iki kişide 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-dk9-acilis-gunu-248.test.mjs:95:3",
+      "hata": "taşınan veride de açılış günü · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk9fix-mutasyon-mJ2-tasinan-gonderim-gunu-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "e3d590c83ecfff841622db451b5785c6c2bf6ccd086274dbdd8a53d1ea70c50f",
+  "ham_cikti_bayt": 30636
+}
