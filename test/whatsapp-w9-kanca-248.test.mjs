@@ -447,7 +447,9 @@ describe("2.4.8 W9 — tünel kuralı: WhatsApp bağlıyken de açık (plan §6 
 // 2.4.8 İş P3: şirket dosyası kilitliyken durum bildirimi 10 sn beklemez — kısa sınama kilidi görür, program 503 döner (Meta yeniden dener; kapıcı programın JSON 503'ünü
 // olduğu gibi geçirir — bulut/kapi/kapi.mjs waKanca yalnız JSON olmayan 530/502/504'ü "ofis kapalı"ya çevirir). Kilit kalkınca aynı bildirim 200 + yazılır.
 describe("2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kapıcı geçirir), kilit kalkınca yazılır", () => {
-  it("kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi", { timeout: 120_000 }, async () => {
+  // c2 (İş P1): makine defteri (whatsapp-gonderim.sqlite) kilitli olunca da aynı (durumlar deftere de yazılır).
+  for (const [label, fileOf] of [["şirket dosyası", ctx => ctx.server.app.config.dbPath], ["makine defteri", ctx => ctx.wa.ledger.file]]) {
+  it(`${label} kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi`, { timeout: 120_000 }, async () => {
     const ctx = await kurulum({ __testWriteLockBackoffMs: 300 });
     let lock = null;
     try {
@@ -460,7 +462,7 @@ describe("2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kap
       const job = (await ctx.detail(batchId)).jobs[0];
       assert.equal(job.state, "accepted", "ön koşul: kabul");
       const body = statusEvent([status(job.wamid, "delivered")]);
-      lock = new DatabaseSync(ctx.server.app.config.dbPath);
+      lock = new DatabaseSync(fileOf(ctx));
       lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
       const t0 = Date.now();
       const busy = await ctx.meta("POST", `/wa/kanca/${secret}`, { body });
@@ -485,4 +487,5 @@ describe("2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kap
       await ctx.close();
     }
   });
+  }
 });

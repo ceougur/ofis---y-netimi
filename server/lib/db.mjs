@@ -14,6 +14,29 @@ export function openDatabase(dbPath, { readOnly = false } = {}) {
 }
 
 /** Dosya başka bağlantıca kilitli (SQLITE_BUSY / SQLITE_LOCKED; busy_timeout dolduktan sonra) mi — 2.4.8 İş N (WhatsApp işçisi aynı turda yeniden yazmaz). */
+/**
+ * 2.4.8 İş P1: bağlantının dosyası şimdi yazılabilir mi — SENKRON kısa sınama (busy_timeout ms; BEGIN IMMEDIATE + ROLLBACK); busy_timeout finally'de BUSY_TIMEOUT_MS'e
+ * geri alınır. Şirket dosyası (store.probeWritable) ve WhatsApp makine defteri (lib/whatsapp/defter.mjs) aynı yardımcıyı kullanır. Dönüş: true | false (kilitli) |
+ * null (bilinmiyor: işlem içindeyken sınanmaz, başka hata).
+ */
+export function probeWritableDb(db, ms = 150) {
+  if (db.isTransaction) return null;
+  try {
+    db.exec(`PRAGMA busy_timeout = ${Math.max(0, Math.floor(ms))}`);
+    db.exec("BEGIN IMMEDIATE");
+    db.exec("ROLLBACK");
+    return true;
+  } catch (error) {
+    return isLockError(error) ? false : null;
+  } finally {
+    try {
+      if (db.isTransaction) db.exec("ROLLBACK");
+    } catch {
+      // açık işlem kalmadı
+    }
+    db.exec(`PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS}`);
+  }
+}
 export const isLockError = error => /database is locked|database table is locked|SQLITE_BUSY|SQLITE_LOCKED/i.test(`${error?.code || ""} ${error?.message || ""}`) || [5, 6].includes(Number(error?.errcode) & 0xff);
 
 export function createStore(db) {
@@ -254,22 +277,8 @@ export function createStore(db) {
      * içindeyken sınanmaz, başka hata) — null bugünkü yolu seçtirir.
      */
     probeWritable(ms = 150) {
-      if (depth > 0 || db.isTransaction) return null;
-      try {
-        db.exec(`PRAGMA busy_timeout = ${Math.max(0, Math.floor(ms))}`);
-        db.exec("BEGIN IMMEDIATE");
-        db.exec("ROLLBACK");
-        return true;
-      } catch (error) {
-        return isLockError(error) ? false : null;
-      } finally {
-        try {
-          if (db.isTransaction) db.exec("ROLLBACK");
-        } catch {
-          // açık işlem kalmadı
-        }
-        db.exec(`PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS}`);
-      }
+      if (depth > 0) return null;
+      return probeWritableDb(db, ms);
     },
     db,
     get: (sql, ...args) => prepare(sql).get(...args),

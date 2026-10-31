@@ -23,7 +23,7 @@
 import { mkdirSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
-import { openDatabase } from "../db.mjs";
+import { openDatabase, probeWritableDb } from "../db.mjs";
 
 export const WA_LEDGER_FILE = "whatsapp-gonderim.sqlite";
 const SCHEMA = `
@@ -542,6 +542,9 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     /** Durum bildiriminin şirketi: wamid'in (kabul edilmiş deneme) ya da iş kimliğinin (sonucu belirsiz deneme) talebini yazan şirket. */
     companyOfWamid: wamid => (wamid ? q.companyOfWamid.get(String(wamid)) || null : null),
     companyOfJob: jobId => (jobId ? q.companyOfJob.get(String(jobId)) || null : null),
+    /** 2.4.8 İş P1 (c2): defter dosyası şimdi yazılabilir mi — kısa senkron sınama (lib/db.mjs probeWritableDb); başka süreç kilitliyken arka plan işi ve durum kancası
+     * 10 sn beklemez. Dönüş: true | false | null. */
+    probeWritable: (ms = 150) => probeWritableDb(db, ms),
     /** İş Q4: işin teslimi defterde var mı (teslimden sonra gelen "failed" yok sayılır). */
     deliveredJob: jobId => Boolean(jobId && q.deliveredJob.get(String(jobId))),
     /**

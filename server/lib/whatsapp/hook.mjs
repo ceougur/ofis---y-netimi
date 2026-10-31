@@ -94,6 +94,8 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       return failure(res, 400, "whatsapp-hook-json", "İstek okunamadı.");
     }
     const signed = mark.signed === true;
+    // 2.4.8 İş P1 (c2): makine defteri başka süreçte kilitliyse (kısa sınama) durumlar 10 sn beklemeden yazılmaz → 503, Meta yeniden dener (P3 ile aynı yanıt).
+    if (hooks.probeWritable?.() === false) return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
     hooks.hookSeen?.(hook.wabaId, now().toISOString());
     // Durumlar şirkete göre toplanır (wamid → kabulü yazan şirket; imzalı olayda iş kimliği → talebi yazan şirket). Aynı WABA'nın olayı değilse düşer.
     const groups = new Map(); // şirket → [{ phoneNumberId, statuses[] }]

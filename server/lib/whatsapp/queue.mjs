@@ -53,6 +53,8 @@ const OPEN_JOB = ["pending", "preparing", "sending", "limited", "held", "paused"
 // KULLANICI KARARI (31.10.2026, ek soru 1/4 "a"): yeni toplu iş, iş şirket dosyasında OLMAYAN (yalnız makine defterinde kalan) Sonucu Belirsiz denemeyle ELEMEZ.
 // Test: test/whatsapp-dk8-g-ek-248.test.mjs + test/whatsapp-dk7-belirsiz-ileti-248.test.mjs.
 const NEW_BATCH_LEDGER_ONLY_UNSETTLED = false;
+// İş P1 (c2): makine defterinin kilit işareti anahtarı (şirket kimliğinden ayrı).
+const LEDGER_LOCK_KEY = "whatsapp-gonderim-defteri";
 // İş P2 (kullanıcı metni): şirket dosyası kilitliyken süren toplu işin ekranındaki neden.
 const LOCK_NOTE = "Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.";
 // Kesin durum: medya Meta'dan silinir (S3 A). "Meta Bekletti" kesin değil (aynı medya yeniden kullanılır, §7a 14).
@@ -1199,7 +1201,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       const first = firstOfAll(batchPeriod, account?.ledger || []);
       claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, batchPeriod, keyDay), periodKeys: periodKeysOf(batch.kind, batchPeriod, keyDay, { first }), at: iso() });
     } catch (error) {
-      // Defter yazılamadı (disk dolu, kilit): istek GÖNDERİLMEZ, iş bekler.
+      // Defter yazılamadı (disk dolu, kilit): istek GÖNDERİLMEZ, iş bekler. Kilitse sonraki arka plan turları deftere yazmayı denemez (İş P1 işareti).
+      if (isLockError(error)) writeLock?.mark(LEDGER_LOCK_KEY);
       updateJob(job.id, { state: "pending", attempt: job.attempt || 0, sending_at: null, next_at: iso(nowMs() + JOB_BACKOFF_MS[0]) });
       trouble(batchRow(batch.id), `gönderim defteri yazılamadı (${error.code || error.message})`);
       log.warn?.(`WhatsApp gönderim defteri yazılamadı (${job.id}): ${error.message}`);
@@ -1832,8 +1835,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     lockShown = marked;
     notify(null, { lock: marked });
   };
+  // İş P1 (c2): makine defteri (whatsapp-gonderim.sqlite) de başka süreçte kilitli olabilir — işçi her işte deftere yazar; aynı kısa sınama + işaret (anahtar defter).
   const canWrite = () => {
-    const ok = writeLock ? writeLock.guard(companyId, store) : true;
+    const ok = writeLock ? writeLock.guard(companyId, store) && writeLock.guard(LEDGER_LOCK_KEY, ledger) : true;
     syncLockNote();
     return ok;
   };

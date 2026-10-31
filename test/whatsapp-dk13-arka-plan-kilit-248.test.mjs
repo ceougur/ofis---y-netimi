@@ -57,6 +57,48 @@ describe("2.4.8 İş P1 — kilitli şirket dosyasında arka plan işleri olay d
     }
   });
 
+  it("c2: makine defteri (whatsapp-gonderim.sqlite) kilitliyken de işçi turları ≤ 1 sn, ileti gitmez; kilit kalkınca iş gider, çift ileti yok", { timeout: 120_000 }, async () => {
+    const ctx = await startWa({ now: NOW, __testWriteLockBackoffMs: 300 });
+    let lock = null;
+    try {
+      const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
+      const created = await ctx.batch({ kind: "statement", ids: [p.id], preset: "thisMonth" });
+      assert.equal(created.status, 200, JSON.stringify(created.data));
+      const id = created.data.data.batch.id;
+      lock = new DatabaseSync(ctx.wa.ledger.file);
+      lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
+      const turns = [];
+      for (let i = 0; i < 3; i += 1) {
+        const t0 = Date.now();
+        await ctx.wa.scheduler.runOnce();
+        turns.push(Date.now() - t0);
+        await wait(350);
+      }
+      assert.equal(ctx.messages().length, 0, "defter kilitliyken ileti gitmedi");
+      assert.ok(turns.every(ms => ms <= 1_000), `defter kilitliyken her işçi turu ≤ 1 sn (turlar ${JSON.stringify(turns)} ms)`);
+      lock.exec("ROLLBACK");
+      lock.close();
+      lock = null;
+      await wait(350);
+      await ctx.drain();
+      for (let i = 0; i < 3 && ctx.messages().length === 0; i += 1) {
+        ctx.clock.advance(60_000);
+        await ctx.drain();
+      }
+      const detail = (await ctx.api.get(`${URLS.batches}/${id}`)).data.data;
+      assert.deepEqual(detail.jobs.map(job => job.state), ["accepted"], "kilit kalkınca iş gitti");
+      assert.equal(ctx.messages().filter(item => item.to === "+905334445566").length, 1, "çift ileti yok");
+    } finally {
+      try {
+        lock?.exec("ROLLBACK");
+        lock?.close();
+      } catch {
+        // kilit zaten kalktı
+      }
+      await ctx.close();
+    }
+  });
+
   it("kullanıcı yazımı bugünkü beklemeyi korur: arka plan sınamasından SONRA dosya ayrı iş parçacığında 2 sn kilitliyken cari açma bekler ve 200 alır", { timeout: 60_000 }, async () => {
     const ctx = await startWa({ now: NOW });
     try {
