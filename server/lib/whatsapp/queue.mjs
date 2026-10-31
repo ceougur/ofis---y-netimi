@@ -1465,6 +1465,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return out;
   }
 
+  // T1 ayıklaması İş M: taşınan veride (bu defterde açılmamış toplu iş) wamid'in işi — kancanın sahip araması için (lib/whatsapp/hook.mjs movedOwnerOf). Dönüş: { wabaId } | null.
+  function movedOwnerOfWamid(wamid) {
+    if (!wamid) return null;
+    const row = store.get("SELECT b.waba_id AS wabaId FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.wamid = ? AND b.ledger_id <> ? LIMIT 1", String(wamid), ledger.id);
+    return row?.wabaId ? { wabaId: row.wabaId } : null;
+  }
   // ---------- Durum bildirimleri (W9; lib/whatsapp/hook.mjs) ----------
   /**
    * statuses: Meta'nın statuses[] öğeleri (D0-15). phoneNumberId: bildirimin geldiği numara (metadata). signed: Meta imzası kapıcıda doğrulandı ve istek kapıcının
@@ -1656,5 +1662,5 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return settings();
   }
 
-  return { connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate };
+  return { connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate };
 }

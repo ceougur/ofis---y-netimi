@@ -718,7 +718,7 @@ export function createApp(overrides = {}) {
   // 2.4.8 W9: WhatsApp durum bildirimi (kapıcının cihazsız geçirdiği /wa/kanca/<gizli yol>; lib/whatsapp/hook.mjs) mobil uzak oturum kapısından ÖNCE işlenir.
   const whatsappHook = hub
     ? null
-    : createWhatsappHook({ hooks: whatsapp.ledger, companyOf: id => companies.get(id), appFor: company => appFor(company), verifyMark: req => context.mobileSync.kancaIsareti(req), log, now: () => new Date(config.now()) });
+    : createWhatsappHook({ hooks: whatsapp.ledger, companyOf: id => companies.get(id), companies: () => companies.list(), appFor: company => appFor(company), verifyMark: req => context.mobileSync.kancaIsareti(req), log, now: () => new Date(config.now()) });
   const remoteServer = hub ? null : createServer((req, res) => {
     if (isHookRequest(req)) return void whatsappHook.handle(req, res);
     context.mobileSync.izle(req, res); // 2.4.7 M3

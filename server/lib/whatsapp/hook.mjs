@@ -52,7 +52,23 @@ async function readBody(req, max) {
  * @param {(company: object) => object} o.appFor şirketin program örneği (app.mjs appFor; meşgulse HttpError 503 atar)
  * @param {(req) => { ok: boolean, signed?: boolean }} o.verifyMark kapıcı işareti (lib/mobile-sync.mjs kancaIsareti)
  */
-export function createWhatsappHook({ hooks, companyOf, appFor, verifyMark = () => ({ ok: true, signed: false }), log = console, maxBytes = HOOK_MAX_BYTES, now = () => new Date() }) {
+export function createWhatsappHook({ hooks, companyOf, companies = () => [], appFor, verifyMark = () => ({ ok: true, signed: false }), log = console, maxBytes = HOOK_MAX_BYTES, now = () => new Date() }) {
+  // T1 ayıklaması İş M (soru 8 / K7 + "KİME KAÇ KEZ" ilkesi (5)): başka bilgisayardan TAŞINAN veride bildirimin sahibi bu makinenin defterinde yoktur; o zaman wamid
+  // şirket dosyalarında, yalnız BU DEFTERDE AÇILMAMIŞ toplu işlerin işlerinde aranır (queue.movedOwnerOfWamid; aynı bilgisayardaki veride karar defterindir). Sahip
+  // şirketin WABA'sı kancanınkiyle aynı olmalı (aşağıda); Yol 2'de imzasız bildirim yine yazılmaz (aynı kurallar). Şirket açılamıyorsa o şirket atlanır.
+  function movedOwnerOf(wamid) {
+    if (!wamid) return null;
+    for (const company of companies() || []) {
+      if (!company) continue;
+      try {
+        const found = appFor(company)?.context?.whatsapp?.queue?.movedOwnerOfWamid?.(wamid);
+        if (found) return { companyId: company.id, wabaId: found.wabaId };
+      } catch {
+        // şirket şu an açılamıyor (geri yükleme): bu şirkette aranmaz; bildirim tanınmazsa Meta yeniden dener (aşağıdaki 503 yolu yalnız sahibi bilinen şirkette)
+      }
+    }
+    return null;
+  }
   async function handle(req, res) {
     const url = new URL(String(req.url || "/"), "http://kanca.invalid");
     const secret = url.pathname.slice(HOOK_PREFIX.length);
@@ -87,7 +103,8 @@ export function createWhatsappHook({ hooks, companyOf, appFor, verifyMark = () =
         if (change?.field !== META_D0.hookEnvelope.field || !Array.isArray(change?.value?.statuses)) continue; // D0-18
         const phoneNumberId = String(change.value.metadata?.phone_number_id || "");
         for (const status of change.value.statuses) {
-          const owner = hooks.companyOfWamid(String(status?.id || "").slice(0, 200)) || (signed ? hooks.companyOfJob(String(status?.biz_opaque_callback_data || "").slice(0, 120)) : null);
+          const wamid = String(status?.id || "").slice(0, 200);
+          const owner = hooks.companyOfWamid(wamid) || (signed ? hooks.companyOfJob(String(status?.biz_opaque_callback_data || "").slice(0, 120)) : null) || movedOwnerOf(wamid);
           if (!owner || owner.wabaId !== hook.wabaId) {
             out.unknown += 1;
             continue;
