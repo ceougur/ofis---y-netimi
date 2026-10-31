@@ -1,7 +1,7 @@
 // 2.4.8 İş Q1 (dar kontrol 10 DÜŞÜK-1; "KİME KAÇ KEZ" ilkesi 3 "dönem eşliğinde şüphede AYNI dönem"): "Tüm Hareketler"in iletideki dönemi KİŞİYE ÖZELDİR —
 // "<carinin ilk hareketi> – <o gün>" (periodText). Bu tarihlerle birebir aynı özel aralık aynı dönemdir (R3 "Daha Önce Gönderildi", "Zaten Kuyrukta", "Sonucu Belirsiz";
 // iki yön; taşınan veri). Önce "Tüm Hareketler"in başlangıcı boş sayılıp hiçbir özel aralıkla eşleşmiyordu (dar kontrol 10 b1/b1b: Excel'le aynı gün açılmış 3 cariye
-// aynı dönem metniyle İKİŞER ileti — 6). Eşlik cari başınadır: başka carinin ilk hareketi karışmaz. Hareketsiz cari (ya da yalnız ileri tarihli hareket) eşleşmez.
+// aynı dönem metniyle İKİŞER ileti — 6). Eşlik cari başınadır: başka carinin ilk hareketi karışmaz. Hareketsiz cari (ya da yalnız ileri tarihli hareketli): dönemi iletideki gibi "<o gün> – <o gün>" (İş R6).
 // Seçimin 7 gün penceresi bu eşlikte de geçerli.
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5); sahte saat, çok günlü (ders 13); dosya TZ=UTC ve TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
@@ -117,14 +117,27 @@ describe("2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk harek
     }
   });
 
-  it("hareketsiz cari eşleşmez: Tüm Hareketler (iletide 03.11 – 03.11) → 05.11 özel 03.11–03.11 'gönderilecek'", async () => {
-    const ctx = await startWa({ now: { time: localIso(2026, 11, 3), fixed: true } });
+  // İş R6 (dar kontrol 12; ilke 3): BİLEREK DEĞİŞEN BEKLENTİ — önce "hareketsiz cari eşleşmez" (İş Q1 BAŞ MİMAR KARARI 8; GERİ ALINDI). Hareketsiz carinin kişiye özel
+  // dönemi iletideki dönemle aynı: "<o gün> – <o gün>" (donem.mjs allPeriodStartOf).
+  it("R6 hareketsiz cari: Tüm Hareketler (iletide 03.11 – 03.11) → 05.11 özel 03.11–03.11 'Daha Önce Gönderildi'; ters yön: özel 03.11–03.11 → aynı gün Tüm 'Daha Önce Gönderildi'", async () => {
+    let ctx = await startWa({ now: { time: localIso(2026, 11, 3), fixed: true } });
     try {
       const r = await ctx.account("Hareketsiz Kişi", "0533 444 55 66");
       const jobs = await send(ctx, tum([r.id]));
       assert.deepEqual(jobs.map(job => job.state), ["accepted"], "ön koşul: kabul");
+      assert.equal(ctx.messages().at(-1).params[2], "03.11.2026 – 03.11.2026", "ön koşul: iletideki dönem");
       ctx.clock.set(localIso(2026, 11, 5));
-      assert.deepEqual(await previewSkip(ctx, custom([r.id], "2026-11-03", "2026-11-03"), "05.11 özel 03.11–03.11"), ["gönderilecek"]);
+      assert.deepEqual(await previewSkip(ctx, custom([r.id], "2026-11-03", "2026-11-03"), "05.11 özel 03.11–03.11"), ["Daha Önce Gönderildi"]);
+      assert.deepEqual(await previewSkip(ctx, custom([r.id], "2026-11-04", "2026-11-04"), "05.11 özel 04.11–04.11"), ["gönderilecek"], "başka gün ayrı");
+    } finally {
+      await ctx.close();
+    }
+    ctx = await startWa({ now: { time: localIso(2026, 11, 3), fixed: true } });
+    try {
+      const r = await ctx.account("Hareketsiz Kişi", "0533 444 55 66");
+      assert.deepEqual((await send(ctx, custom([r.id], "2026-11-03", "2026-11-03"))).map(job => job.state), ["accepted"], "ön koşul: özel kabul");
+      ctx.clock.set(localIso(2026, 11, 3, 18));
+      assert.deepEqual(await previewSkip(ctx, tum([r.id]), "03.11 Tüm"), ["Daha Önce Gönderildi"], "ters yön");
     } finally {
       await ctx.close();
     }

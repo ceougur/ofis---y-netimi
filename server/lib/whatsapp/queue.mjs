@@ -23,7 +23,7 @@ import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
 import { statementData, statementFileName, statementPdf } from "../statement-pdf.mjs";
 import { e164Of, waPresetRange } from "./alici.mjs";
-import { firstLineDateOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
+import { allPeriodStartOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
 import { deliveryTtlSeconds, sendingVerdict } from "./templates.mjs";
@@ -119,8 +119,8 @@ export function periodOf(body, today) {
 // İletideki dönem metni ({{3}}; §7a 21): "01.10.2026 – 31.10.2026"; Tüm Hareketler: ilk hareketten dönem sonuna (bugün).
 function periodText(period, lines) {
   if (period.from) return `${dayText(period.from)} – ${dayText(period.to)}`;
-  // İş Q1: ilk hareket TEK KAYNAKTAN (donem.mjs firstLineDateOf; Tüm Hareketler'in kişiye özel dönem anahtarı da buradan).
-  const first = firstLineDateOf(period, lines) || period.to;
+  // İş Q1: ilk hareket TEK KAYNAKTAN (donem.mjs allPeriodStartOf; Tüm Hareketler'in kişiye özel dönem anahtarı da buradan).
+  const first = allPeriodStartOf(period, lines);
   return `${dayText(first)} – ${dayText(period.to)}`;
 }
 // Ödeme hatırlatması (§7a 20): {{3}} en eski gecikmiş vade tarihi (açık taksit kartlarının en eski ödenmemiş taksiti, vadesi bugünden önce), {{4}} vadesi geçmiş
@@ -375,8 +375,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       return sameKeys(want, queueKeysOf(kind, rowPeriod, keyDayOfBatch({ ...row, kind }), { first: firstOfAll(rowPeriod, dates) }));
     }) || null;
   };
-  // İş Q1: "Tüm Hareketler" döneminde carinin ilk hareketi (donem.mjs firstLineDateOf; iletideki dönem metniyle aynı kaynak), başka seçimde "".
-  const firstOfAll = (period, dates) => (period?.preset === "all" ? firstLineDateOf(period, dates) : "");
+  // İş Q1 + R6: "Tüm Hareketler" döneminde carinin dönem başı (ilk hareket, yoksa dönem sonu — iletideki dönem metniyle aynı kaynak), başka seçimde "".
+  // İş R6: iletideki dönemle AYNI kaynak (donem.mjs allPeriodStartOf: ilk hareket, yoksa dönem sonu).
+  const firstOfAll = (period, dates) => (period?.preset === "all" ? allPeriodStartOf(period, dates) : "");
   // Dar kontrol 9 ORTA-1 (★ soru 4 "o gün" = özel aralığın kullanıldığı gün = TOPLU İŞİN AÇILIŞ GÜNÜ; BAŞ MİMAR yorumu): bir toplu işin dönem anahtar kümesi hangi
   // gün gönderilirse gönderilsin (günlük sınırla ertesi güne kalan, Meta Bekletti'nin ertesi gün 2. denemesi) AÇILDIĞI yerel güne göre — talep (runJob), Zaten Kuyrukta
   // (queued) ve taşınan veri (movedSentBefore) aynı yerden okur. YALNIZ EKSTRE: Ödeme Hatırlatma'nın "aynı gün"ü gönderim / yeniden denemenin günüdür (ek 3/4, son 2/2).

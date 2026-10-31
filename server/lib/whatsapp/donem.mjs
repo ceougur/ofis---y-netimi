@@ -43,6 +43,14 @@ export function firstLineDateOf(period, lines) {
 }
 
 /**
+ * İş R6 (dar kontrol 12; ilke 3; İş Q1 BAŞ MİMAR KARARI 8 GERİ ALINDI): "Tüm Hareketler"in dönem başı — iletideki dönem metni (queue.mjs periodText) ve kişiye özel
+ * dönem anahtarı TEK yerden: ilk hareket, yoksa (hareketsiz ya da yalnız ileri tarihli hareketli cari) dönem sonu ("<o gün> – <o gün>").
+ */
+export function allPeriodStartOf(period, lines) {
+  return firstLineDateOf(period, lines) || String(period?.to || "");
+}
+
+/**
  * Ekstre dönemi + gün → anahtar kümesi: [kendi anahtarı] ya da özel aralık o günün "Bu Ay" / "Geçen Ay" tarihlerine birebir eşitse [kendi anahtarı, "ay|YYYY-AA"].
  * first (İş Q1): yalnız "Tüm Hareketler"de kişinin ilk hareketi (firstLineDateOf) — kümeye "aralik|<ilk hareket>|<dönem sonu>" girer (iletideki tarihlerle birebir aynı
  * özel aralık aynı dönem; iki yön). Kişiye özel olduğundan çağıran KİŞİ BAŞINA hesaplar.
