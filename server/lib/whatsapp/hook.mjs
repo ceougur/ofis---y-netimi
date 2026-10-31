@@ -14,6 +14,7 @@
 //   GET  ?hub.mode=subscribe&hub.verify_token=…&hub.challenge=… → 200 challenge (düz metin) | 403
 //   POST { object, entry[].changes[] { field: "messages", value: { metadata.phone_number_id, statuses[] } } } → 200 (durumlar yazılır; gelen ileti / öbür alanlar
 //        SAKLANMAZ — kapsam dışı)
+import { PROBE_CLOSED } from "../db.mjs";
 import { HOOK_PATH, sha256 } from "./connection.mjs";
 import { META_D0 } from "./meta-graph.mjs";
 
@@ -95,7 +96,8 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     }
     const signed = mark.signed === true;
     // 2.4.8 İş P1 (c2): makine defteri başka süreçte kilitliyse (kısa sınama) durumlar 10 sn beklemeden yazılmaz → 503, Meta yeniden dener (P3 ile aynı yanıt).
-    if (hooks.probeWritable?.() === false) return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
+    const ledgerWritable = hooks.probeWritable?.();
+    if (ledgerWritable === false || ledgerWritable === PROBE_CLOSED) return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
     hooks.hookSeen?.(hook.wabaId, now().toISOString());
     // Durumlar şirkete göre toplanır (wamid → kabulü yazan şirket; imzalı olayda iş kimliği → talebi yazan şirket). Aynı WABA'nın olayı değilse düşer.
     const groups = new Map(); // şirket → [{ phoneNumberId, statuses[] }]

@@ -17,24 +17,37 @@ export function openDatabase(dbPath, { readOnly = false } = {}) {
 /**
  * 2.4.8 İş P1: bağlantının dosyası şimdi yazılabilir mi — SENKRON kısa sınama (busy_timeout ms; BEGIN IMMEDIATE + ROLLBACK); busy_timeout finally'de BUSY_TIMEOUT_MS'e
  * geri alınır. Şirket dosyası (store.probeWritable) ve WhatsApp makine defteri (lib/whatsapp/defter.mjs) aynı yardımcıyı kullanır. Dönüş: true | false (kilitli) |
- * null (bilinmiyor: işlem içindeyken sınanmaz, başka hata).
+ * PROBE_CLOSED (bağlantı kapalı: şirket kapandı / silindi / geri yükleniyor — kilit DEĞİL; yazılmaz, işaret konmaz) | null (bilinmiyor: işlem içindeyken sınanmaz,
+ * başka hata). İş R1: kapalı bağlantıda ASLA fırlatmaz (kapanan şirketin zamanlayıcısı süreci çökertiyordu).
  */
+export const PROBE_CLOSED = "closed";
+const isClosedError = error => error?.code === "ERR_INVALID_STATE";
 export function probeWritableDb(db, ms = 150) {
-  if (db.isTransaction) return null;
+  try {
+    if (db.isOpen === false) return PROBE_CLOSED;
+    if (db.isTransaction) return null;
+  } catch (error) {
+    return isClosedError(error) ? PROBE_CLOSED : null;
+  }
   try {
     db.exec(`PRAGMA busy_timeout = ${Math.max(0, Math.floor(ms))}`);
     db.exec("BEGIN IMMEDIATE");
     db.exec("ROLLBACK");
     return true;
   } catch (error) {
+    if (isClosedError(error)) return PROBE_CLOSED;
     return isLockError(error) ? false : null;
   } finally {
     try {
       if (db.isTransaction) db.exec("ROLLBACK");
     } catch {
-      // açık işlem kalmadı
+      // açık işlem kalmadı (ya da bağlantı kapalı)
     }
-    db.exec(`PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS}`);
+    try {
+      db.exec(`PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS}`);
+    } catch {
+      // bağlantı kapalı: geri alınacak ayar yok
+    }
   }
 }
 export const isLockError = error => /database is locked|database table is locked|SQLITE_BUSY|SQLITE_LOCKED/i.test(`${error?.code || ""} ${error?.message || ""}`) || [5, 6].includes(Number(error?.errcode) & 0xff);

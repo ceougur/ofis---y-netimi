@@ -6,6 +6,8 @@
 // kilit görürse işaretlenir ve o tur yazım yapılmaz. KULLANICI istekleri bugünkü 10 sn beklemeyi KORUR (yalnız arka plan atlar; veri kaybı yok).
 // İşaret gerçek saatle (Date.now) LOCK_BACKOFF_MS sürer, sonra kendiliğinden kalkar. Tur içinde başlayan kilit yine ilk yazımda 10 sn tutar (İş N/O) ve mark() ile işaretlenir.
 
+import { PROBE_CLOSED } from "./db.mjs";
+
 export const LOCK_BACKOFF_MS = 30_000;
 
 /**
@@ -33,7 +35,10 @@ export function createWriteLock({ backoffMs = LOCK_BACKOFF_MS, probe = true, now
     guard(key, store) {
       if (isMarked(key)) return false;
       if (!probe) return true;
-      if (store?.probeWritable?.() === false) {
+      const probed = store?.probeWritable?.();
+      // İş R1: kapalı bağlantı (şirket kapandı) yazılamaz ama KİLİT DEĞİL — işaret konmaz, ekranda not yanmaz.
+      if (probed === PROBE_CLOSED) return false;
+      if (probed === false) {
         until.set(key, now() + backoffMs);
         return false;
       }

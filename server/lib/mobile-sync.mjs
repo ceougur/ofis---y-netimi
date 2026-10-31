@@ -481,9 +481,10 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
     start: baslat,
     // Kapanışta: bekleyen veri değişikliği varsa son hâl yüklenir (en çok kapanisMs beklenir).
     async flush() {
-      if (!etkin()) return;
+      // İş R1 (sertleştirme): tur zamanlayıcısı her durumda silinir (kapanmış örnekte tur çalışmaz).
       clearInterval(tur);
       tur = null;
+      if (!etkin()) return;
       if (durum.kirliIlk !== null && cihazlar().some(d => d.encKey)) {
         await Promise.race([sirala("kapanis"), new Promise(resolve => setTimeout(resolve, OZET_KURALLARI.kapanisMs).unref?.())]);
       }

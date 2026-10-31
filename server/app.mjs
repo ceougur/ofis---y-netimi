@@ -826,12 +826,16 @@ export function createApp(overrides = {}) {
   sessionTimer.unref();
   // Sohbet arşivi: açılıştan kısa süre sonra ve 6 saatte bir (v2.0.2).
   let archiveRetried = false;
+  let archiveRetry = null; // İş R1: yeniden deneme zamanlayıcısı tutulur, close() siler
   const archiveChat = () => {
+    archiveRetry = null;
+    if (closed) return; // İş R1: kapanmış örnekte arşiv çalışmaz
     // İş P1: kilitli dosyada arşiv o tur atlanır (6 saatte bir yeniden; açılış turu kilitteyse 30 sn sonra bir kez daha denenir).
     if (!canWriteInBackground()) {
       if (!archiveRetried) {
         archiveRetried = true;
-        setTimeout(archiveChat, writeLock.backoffMs).unref?.();
+        archiveRetry = setTimeout(archiveChat, writeLock.backoffMs);
+        archiveRetry.unref?.();
       }
       return;
     }
@@ -1040,6 +1044,7 @@ export function createApp(overrides = {}) {
       clearInterval(context.integrity?.scanTimer);
       clearTimeout(archiveStart);
       clearInterval(archiveTimer);
+      clearTimeout(archiveRetry);
       alertScheduler.stop();
       // Oturum sınırlayıcı ve lisans ortak katmanın: şirket örneği kapanırken (geri yükleme, silme) durdurulmaz
       // (v2.0.17'de şirket silinince ilk şirketin lisans denetimi de duruyordu).

@@ -8,7 +8,7 @@ import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { describe, it } from "node:test";
 import { createPosQueue } from "../server/lib/bank/pos.mjs";
-import { BUSY_TIMEOUT_MS, createStore, openDatabase } from "../server/lib/db.mjs";
+import { BUSY_TIMEOUT_MS, createStore, openDatabase, probeWritableDb } from "../server/lib/db.mjs";
 import { createWriteLock } from "../server/lib/write-lock.mjs";
 import { removeTestDir } from "./helpers.mjs";
 
@@ -102,5 +102,19 @@ describe("2.4.8 İş P1 — store.probeWritable ve yazım kilidi işareti", () =
     await new Promise(resolve => setImmediate(resolve));
     assert.equal(ran, 1, "yazılabilir olunca tur çalıştı");
     queue.stop();
+  });
+
+  it("İş R1: kapalı bağlantıda kısa sınama fırlatmaz, 'closed' döner; guard yazılamaz der ama İŞARET KOYMAZ (kapanma kilit değildir)", () => {
+    const t = fresh();
+    t.db.close();
+    let result;
+    assert.doesNotThrow(() => (result = probeWritableDb(t.db)), "kapalı bağlantıda istisna yok");
+    assert.equal(result, "closed");
+    assert.doesNotThrow(() => (result = t.store.probeWritable()), "store üzerinden de");
+    assert.equal(result, "closed");
+    removeTestDir(t.dir);
+    const lock = createWriteLock({ backoffMs: 30_000 });
+    assert.equal(lock.guard("s1", { probeWritable: () => "closed" }), false, "kapalı → yazılmaz");
+    assert.equal(lock.isMarked("s1"), false, "kapalı → işaret yok");
   });
 });
