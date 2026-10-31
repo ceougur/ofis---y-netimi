@@ -47,6 +47,10 @@ const SCHEMA = `
   ) STRICT;
   CREATE INDEX IF NOT EXISTS idx_claims_waba ON claims(waba_id, at);
   CREATE INDEX IF NOT EXISTS idx_claims_account ON claims(company_id, account_id, kind, at);
+  -- KULLANICI KARARI (31.10.2026 ~11:10 UTC "b"; ★ soru 4; lib/whatsapp/donem.mjs periodKeysOf): talebin EK dönem anahtarları — özel aralık o günün "Bu Ay" / "Geçen Ay"
+  -- tarihlerine birebir eşitse "ay|YYYY-AA". R3 ve Sonucu Belirsiz elemesi claims.period_key YA DA bu anahtarlardan biri isteğin kümesindeyse eşleşir. Yalnız eklenir.
+  CREATE TABLE IF NOT EXISTS claim_keys (job_id TEXT NOT NULL, attempt INTEGER NOT NULL, period_key TEXT NOT NULL, PRIMARY KEY (job_id, attempt, period_key)) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_claim_keys_key ON claim_keys(period_key);
   CREATE TABLE IF NOT EXISTS outcomes (
     job_id TEXT NOT NULL, attempt INTEGER NOT NULL, outcome TEXT NOT NULL CHECK (outcome IN ('accepted', 'failed', 'uncertain')), wamid TEXT NOT NULL DEFAULT '', at TEXT NOT NULL,
     PRIMARY KEY (job_id, attempt)
@@ -96,6 +100,8 @@ const SCHEMA = `
   CREATE TRIGGER IF NOT EXISTS failures_no_update BEFORE UPDATE ON failures BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS failures_no_delete BEFORE DELETE ON failures BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS releases_no_update BEFORE UPDATE ON releases BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS claim_keys_no_update BEFORE UPDATE ON claim_keys BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS claim_keys_no_delete BEFORE DELETE ON claim_keys BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS releases_no_delete BEFORE DELETE ON releases BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS accepts_no_update BEFORE UPDATE ON accepts BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS accepts_no_delete BEFORE DELETE ON accepts BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
@@ -139,6 +145,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       LEFT JOIN outcomes o ON o.job_id = c.job_id AND o.attempt = c.attempt LEFT JOIN failures f ON f.job_id = c.job_id AND f.attempt = c.attempt
       LEFT JOIN releases r ON r.job_id = c.job_id AND r.attempt = c.attempt WHERE c.job_id = ? ORDER BY c.attempt`),
     claim: db.prepare("INSERT INTO claims (job_id, attempt, batch_id, company_id, waba_id, phone, account_id, kind, period_key, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"),
+    claimKey: db.prepare("INSERT OR IGNORE INTO claim_keys (job_id, attempt, period_key) VALUES (?, ?, ?)"),
     outcome: db.prepare("INSERT OR IGNORE INTO outcomes (job_id, attempt, outcome, wamid, at) VALUES (?, ?, ?, ?, ?)"),
     accept: db.prepare("INSERT OR IGNORE INTO accepts (job_id, company_id, waba_id, at) VALUES (?, ?, ?, ?)"),
     failure: db.prepare("INSERT OR IGNORE INTO failures (job_id, attempt, at) VALUES (?, ?, ?)"),
@@ -165,7 +172,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // gidiyordu (2.4.8 dar kontrol 6, test/whatsapp-dk6-saat-kaymasi-248.test.mjs).
     sentBefore: db.prepare(`SELECT c.account_id AS accountId, MAX(a.at) AS last FROM accepts a
       JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
-      WHERE c.company_id = ? AND c.kind = ? AND c.period_key = ? AND a.at >= ? AND c.at > ?
+      WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND a.at >= ? AND c.at > ?
         AND ((NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
               AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'failed')
               AND NOT (EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
@@ -177,7 +184,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     // BELLİ OLMAYAN deneme (işin son denemesi: kabul, teslim edilemedi, 131049 bırakıldı ya da "gitmedi" sonucu yok — Sonucu Belirsiz ya da sonucu yazılamamış) varsa
     // elenir. Kabul edilen R3'e (sentBefore), teslim edilemeyen ve gitmeyen yeniden denemeye kalır. Pencere ve dönem anahtarı R3 ile aynı (donem.mjs).
     unsettled: db.prepare(`SELECT DISTINCT c.account_id AS accountId, c.job_id AS jobId FROM claims c
-      WHERE c.company_id = ? AND c.kind = ? AND c.period_key = ? AND c.at >= ? AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = c.job_id)
+      WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?)))) AND c.at >= ? AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = c.job_id)
         AND NOT EXISTS (SELECT 1 FROM accepts a WHERE a.job_id = c.job_id)
         AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
         AND NOT EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
@@ -297,6 +304,7 @@ export function openWaLedger({ dir, log = console, fault = null }) {
           return { ok: false, previous: { attempt: again.attempt, outcome: again.outcome || null, wamid: again.wamid || "" } };
         }
         q.claim.run(String(row.jobId), Number(row.attempt), String(row.batchId), String(row.companyId), String(row.wabaId), String(row.phone), String(row.accountId || ""), String(row.kind || ""), String(row.periodKey || ""), String(row.at));
+        for (const key of Array.isArray(row.periodKeys) ? row.periodKeys : []) if (key && key !== row.periodKey) q.claimKey.run(String(row.jobId), Number(row.attempt), String(key));
         db.exec("COMMIT");
       } catch (error) {
         try {
@@ -392,16 +400,18 @@ export function openWaLedger({ dir, log = console, fault = null }) {
      * since: bu andan (dahil) sonraki kabuller ("Son 3 Ay" / "Tüm Hareketler" 7 gün penceresi). after: bu andan KESİNLİKLE sonraki kabuller — yeniden denemede asıl
      * işin "Yine de Gönder" kararı (açılış anı; açılıştan önceki kabuller o kararla kabul edilmişti; dar kontrol 5 ORTA-1, KULLANICI KARARI 31.10.2026 "a şıkkı").
      */
-    sentBefore({ companyId, kind, periodKey, since = "", after = "" }) {
-      return new Map(q.sentBefore.all(String(companyId), String(kind), String(periodKey), String(since || ""), String(after || "")).map(row => [row.accountId, row.last]));
+    sentBefore({ companyId, kind, periodKey = "", periodKeys = null, since = "", after = "" }) {
+      const keys = JSON.stringify((periodKeys || [periodKey]).map(String));
+      return new Map(q.sentBefore.all(String(companyId), String(kind), keys, keys, String(since || ""), String(after || "")).map(row => [row.accountId, row.last]));
     },
     /**
      * Sonucu belli olmayan son denemesi olan cariler (yalnız "Başarısızları Yeniden Dene" eler; yukarıdaki unsettled). Dönüş: Map(accountId → [jobId]) — iş kimlikleri
      * elenme iletisinde "Yine de Gönder"in gerçekten var olup olmadığını (iş şirket dosyasında hâlâ Sonucu Belirsiz mi) bilmek için (dar kontrol 7 DÜŞÜK-1).
      */
-    unsettledBefore({ companyId, kind, periodKey, since = "" }) {
+    unsettledBefore({ companyId, kind, periodKey = "", periodKeys = null, since = "" }) {
       const out = new Map();
-      for (const row of q.unsettled.all(String(companyId), String(kind), String(periodKey), String(since || ""))) {
+      const keys = JSON.stringify((periodKeys || [periodKey]).map(String));
+      for (const row of q.unsettled.all(String(companyId), String(kind), keys, keys, String(since || ""))) {
         if (!out.has(row.accountId)) out.set(row.accountId, []);
         out.get(row.accountId).push(row.jobId);
       }
