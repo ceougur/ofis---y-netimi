@@ -1,0 +1,48 @@
+{
+  "ad": "248-liste-mutasyon-offset-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-liste-a77085cd/offset/test/whatsapp-gonderim-listesi-248.test.mjs",
+  "commit": "2a84301381f3b54235ad447cab31294e5f2b3e76",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T08:25:38.347Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 1,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 WhatsApp Gönderimleri — Daha Fazla Göster (imleç) ve tarih süzgeci › İlk 30, sonraki 30, son 5 (en yeni önce; aynı anda açılanlar sonra açılan önce); sonrası boş",
+      "konum": "test/whatsapp-gonderim-listesi-248.test.mjs:55:3",
+      "hata": "son 5 (bir fazla istenince daha eskisi yok) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 WhatsApp Gönderimleri — Daha Fazla Göster (imleç) ve tarih süzgeci › İmleç kararlılığı: ilk sayfa okunduktan sonra yeni gönderim gelse de ikinci sayfa kaymaz",
+      "konum": "test/whatsapp-gonderim-listesi-248.test.mjs:66:3",
+      "hata": "araya giren yeni gönderim ikinci sayfayı kaydırmaz (tekrar ya da atlama yok) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.4.8 WhatsApp Gönderimleri — Daha Fazla Göster (imleç) ve tarih süzgeci › Tarih süzgeci: yerel gün, iki uç dahil (23:59:59 ve 00:00:00), ayın 1'i; süzgeç + imleç birlikte; boş gün",
+      "konum": "test/whatsapp-gonderim-listesi-248.test.mjs:75:3",
+      "hata": "süzgeçli sonraki sayfa (süzgeç dışına taşmaz) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-liste-mutasyon-offset-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "d435513eb1b0092a26c79bf7f2ec57314bec0ca59cfff8f9485c1fb57676f5b6",
+  "ham_cikti_bayt": 15968
+}
