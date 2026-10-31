@@ -147,12 +147,13 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     window: db.prepare(`SELECT c.phone, MIN(c.at) AS first FROM claims c LEFT JOIN outcomes o ON o.job_id = c.job_id AND o.attempt = c.attempt
       WHERE c.waba_id = ? AND c.at > ? AND (o.outcome IS NULL OR o.outcome <> 'failed')
       AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt) GROUP BY c.phone`),
-    // R3 (plan §7a revizyonu): bu cariye bu şablon + dönem Meta'ya KABUL ETTİRİLMİŞ mi (Meta Kabul Etti ve sonrası; sonradan teslim edilemedi diye düşen hariç).
+    // R3 (plan §7a revizyonu): bu cariye bu şablon + dönem Meta'ya KABUL ETTİRİLMİŞ mi (Meta Kabul Etti ve sonrası; sonradan teslim edilemedi diye düşen hariç —
+    // Başarısız ve Süresi Doldu, kullanıcı kararı P3 = SAYILMAZ; teslim edilmişse — geç "delivered" dahil — sayılır).
     // Kabul her zaman işin son denemesindedir (kabulden / belirsizden sonra yeni deneme yok).
     sentBefore: db.prepare(`SELECT c.account_id AS accountId, MAX(a.at) AS last FROM accepts a
       JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
       WHERE c.company_id = ? AND c.kind = ? AND c.period_key = ? AND a.at >= ?
-        AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
+        AND (NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt) OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
       GROUP BY c.account_id`),
     hold: db.prepare("INSERT INTO holds (waba_id, until, reason, at) VALUES (?, ?, ?, ?)"),
     holdOf: db.prepare("SELECT MAX(until) AS until FROM holds WHERE waba_id = ? AND until > ?"),

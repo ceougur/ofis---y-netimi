@@ -1235,9 +1235,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       return ttlOf.get(key);
     };
     if (Number.isFinite(seen) && nowMs() - seen <= HOOK_ALIVE_MS) {
-      for (const row of store.all("SELECT j.id, j.accepted_at, b.waba_id, b.template FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL")) {
+      for (const row of store.all("SELECT j.id, j.attempt, j.accepted_at, b.waba_id, b.template FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL")) {
         if (Date.parse(row.accepted_at) + ttlMs(row.waba_id, row.template) + HOUR >= nowMs()) continue;
         updateJob(row.id, { state: "expired", closed_at: iso() });
+        // KULLANICI KARARI P3 = SAYILMAZ (31.10.2026): Meta teslim edemedi → defterde "teslim edilemedi" (Başarısız gibi): "Daha Önce Gönderildi" (R3) saymaz, çift
+        // gönderim kilidi çözülür. Meta sonradan "delivered" bildirirse R3 yine sayar (defter deliveries; lib/whatsapp/defter.mjs sentBefore).
+        ledger.deliveryFailed({ jobId: row.id, attempt: row.attempt, at: iso() });
         out.expired += 1;
       }
     }
