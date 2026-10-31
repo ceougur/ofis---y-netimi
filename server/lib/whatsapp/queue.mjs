@@ -22,7 +22,7 @@ import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
 import { statementData, statementFileName, statementPdf } from "../statement-pdf.mjs";
 import { e164Of, waPresetRange } from "./alici.mjs";
-import { periodKeyOf, queueKeyOf } from "./donem.mjs";
+import { periodKeyOf, queueKeyOf, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
 import { deliveryTtlSeconds, sendingVerdict } from "./templates.mjs";
@@ -103,7 +103,7 @@ export function periodOf(body, today) {
   const preset = ["thisMonth", "lastMonth", "last3", "all"].includes(body.preset) ? body.preset : "thisMonth";
   return { ...waPresetRange(preset, today), preset };
 }
-// Dönem eşliği (R3 "daha önce gönderildi" anahtarı ve §7a 9 "Zaten Kuyrukta"): TEK YER lib/whatsapp/donem.mjs (T2-1; kural kullanıcıdan bekleniyor).
+// Dönem eşliği (R3 "daha önce gönderildi" anahtarı ve §7a 9 "Zaten Kuyrukta"): TEK YER lib/whatsapp/donem.mjs (T2-1 = A, kullanıcı kararı 31.10.2026).
 // İletideki dönem metni ({{3}}; §7a 21): "01.10.2026 – 31.10.2026"; Tüm Hareketler: ilk hareketten dönem sonuna (bugün).
 function periodText(period, lines) {
   if (period.from) return `${dayText(period.from)} – ${dayText(period.to)}`;
@@ -331,7 +331,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (!kind) fail(400, "Gönderim türünü seçin (Ekstre ya da Ödeme Hatırlatma).", "whatsapp-invalid", { field: "kind" });
     const period = kind === "statement" ? periodOf(body, today()) : { from: "", to: "", preset: "" };
     const ids = selection(user, body);
-    const sent = ledger.sentBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()) });
+    const sent = ledger.sentBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()), since: sentSinceOf(kind, period, nowMs()) });
     const people = [];
     for (const id of ids) {
       let account;
