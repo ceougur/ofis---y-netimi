@@ -17,6 +17,7 @@ const metaError = (code, message) => ({ error: { message, type: "OAuthException"
 const count = (ctx, phone) => ctx.messages().filter(item => item.to === phone).length;
 const failB = ctx => (ctx.fake.state.recipientErrors[B_TEL] = { status: 400, body: metaError(131026, "Message undeliverable") });
 const healB = ctx => (ctx.fake.state.recipientErrors = {});
+// Kayıt denetimleri (send_again_after) her testte DAVRANIŞ denetimlerinden SONRA: eski kodda sütun yok, kırmızı yanlış nedenle ("no such column") çıkmasın (ders 38).
 const rowOf = (ctx, id) => ctx.store.get("SELECT created_at, send_again_after FROM wa_batches WHERE id = ?", id);
 const retry = (ctx, batchId, body = {}) => ctx.api.post(`${URLS.batches}/${batchId}/retry-failed`, body);
 const anyway = (ctx, jobId, body = {}) => ctx.api.post(`/api/workspace/whatsapp/jobs/${jobId}/send-anyway`, { confirm: true, ...body });
@@ -54,7 +55,6 @@ async function sendAgainFailed(ctx, b, { uncertain = false } = {}) {
   healB(ctx);
   const jobs = await ctx.jobs(main.batch.id);
   assert.deepEqual(jobs.map(job => job.state), [uncertain ? "uncertain" : "failed"], "ön koşul: asıl işte B kalmadı");
-  assert.equal(rowOf(ctx, main.batch.id).send_again_after, rowOf(ctx, main.batch.id).created_at, "asıl işin kararı kaydında (açılış anı)");
   return { main, job: jobs[0] };
 }
 
@@ -69,6 +69,7 @@ describe("2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden 
       await ctx.drain();
       assert.deepEqual((await ctx.jobs(again.batch.id)).map(job => job.state), ["accepted"], "yeniden deneme kabul");
       assert.equal(count(ctx, B_TEL), 2, "B'ye iki ekstre (ilk + kullanıcının 'Yine de Gönder' kararı)");
+      assert.equal(rowOf(ctx, main.batch.id).send_again_after, rowOf(ctx, main.batch.id).created_at, "asıl işin kararı kaydında (açılış anı)");
       assert.equal(rowOf(ctx, again.batch.id).send_again_after, rowOf(ctx, main.batch.id).created_at, "yeniden deneme asıl işin açılış anını devralır (zincirde kaymaz)");
     } finally {
       await ctx.close();
@@ -160,7 +161,6 @@ describe("2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden 
       await ctx.drain();
       healB(ctx);
       assert.deepEqual((await ctx.jobs(main.batch.id)).map(job => job.state), ["failed"], "ön koşul: B Başarısız");
-      assert.equal(rowOf(ctx, main.batch.id).send_again_after, "", "gövdedeki sendAgainAfter / send_again_after kayda girmez");
       ctx.clock.advance(HOUR);
       const other = await ok(await ctx.batch({ kind: "statement", ids: [b.id], preset: "thisMonth" }), "başka iş");
       await ctx.drain();
@@ -169,6 +169,7 @@ describe("2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden 
       assertAlreadySent(await retry(ctx, main.batch.id, FORCE), "Başarısızları Yeniden Dene (gövde sendAgain zorluyor)");
       await ctx.drain();
       assert.equal(count(ctx, B_TEL), 1, "B'ye bir ekstre");
+      assert.equal(rowOf(ctx, main.batch.id).send_again_after, "", "gövdedeki sendAgainAfter / send_again_after kayda girmez");
     } finally {
       await ctx.close();
     }
