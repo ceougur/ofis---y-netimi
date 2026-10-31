@@ -12,8 +12,8 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 215 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
-   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10).
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 231 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
 araştırma belgesi, Meta belge sayfaları (send-messages, document-messages, media, template-media, components, template-management, template-categorization,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (119 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (128 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -36,7 +36,7 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 34) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 18 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 215 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 231 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -106,7 +106,7 @@ programın bildiği kabul / Meta'daki ileti / medya yükleme / silme, toplamlar)
 pencere içindeki farklı alıcı, silinen medya, toplu iş durumları), `bu_ay` (§7a 19: WABA → ay (teslim zamanı, Türkiye saati) → {teslim (Teslim + Okundu), yaklasik_usd}),
 `degismez` (iç denetim sayaçları; hep 0).
 
-**Yaprak türleri:** düz değer = kesin; `{"biri": [...]}` = zaman serbestliği (program bunlardan biri olmalı; bugünkü 215 senaryoda HİÇ yok — D2 testi); `{"secenek": [...], "susuyor": neden}` = karar metni hangisi olduğunu söylemiyor (§7; program seçeneklerden biri olmalı);
+**Yaprak türleri:** düz değer = kesin; `{"biri": [...]}` = zaman serbestliği (program bunlardan biri olmalı; bugünkü 231 senaryoda HİÇ yok — D2 testi); `{"secenek": [...], "susuyor": neden}` = karar metni hangisi olduğunu söylemiyor (§7; program seçeneklerden biri olmalı);
 `{"plan_susuyor": …}` = denetlenmez (yalnız ICERIK-08 "Tüm Hareketler" dönem metni); `{"kisaltilabilir": tam}` = program tam değeri ya da önekini verebilir
 (D0 uzunluk sınırı).
 
@@ -444,7 +444,7 @@ değil); kanıt `docs/kanit/2026-10-31/248-kahin3-kendi-testi.{log,json}`.
 22. ~~Yeniden denemede kişi BAŞKA bir işte de bekliyorsa (D5 yalnız kendi sonraki denemesini söyler) "Zaten Kuyrukta" ile elenir; elenme sırası Sonucu Belirsiz →
     Zaten Kuyrukta → Daha Önce Gönderildi; yeni toplu işte Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi (yalnız ilk neden yazılır, R3 uyarısına girmez).~~
     → güncelleme 4: E2 (sıra HER YERDE Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi) + N6 (başka işte bekleyen "Zaten Kuyrukta") kullanıcı kararı oldu.
-23. D4 "o gün" = hazır seçimin KENDİ günü (Bu Ay 15.10'da gönderildiyse tarihleri 01.10–15.10); öbür okuma (özel aralığın günündeki hazır seçim) OKUMA_Y olarak
+23. (güncelleme 6: G2 ile İKİ okuma birlikte — `donem_eslesir`) D4 "o gün" = hazır seçimin KENDİ günü (Bu Ay 15.10'da gönderildiyse tarihleri 01.10–15.10); öbür okuma (özel aralığın günündeki hazır seçim) OKUMA_Y olarak
     hesaplanır — I5 bütün senaryoların iki okumada aynı sonucu verdiğini denetler.
 
 ### 8.4 KÂHİN SUSUYOR — güncelleme 3'ten sonra kalan / yeni (★ = kime / kaç kez)
@@ -527,3 +527,49 @@ mutasyon ve kendi testi eklendi. Program kodu görülmedi; `surucu.mjs`'e dokunu
 
 **Değişen eski beklentiler: YOK** (210 senaryonun tam sonucu `git show 083ee0b0:…/senaryolar.json` ile bayt bayt aynı). Kendi testi **237/237**, F mutasyon **119/119**;
 kanıt `docs/kanit/2026-10-31/248-kahin5-kendi-testi.{log,json}`. Kalan KÂHİN SUSUYOR: §9.3 P3 (bilgi, sürücü S-11) ve 2.5.0 / BİLİNEN SINIR maddeleri.
+
+## 11. Kâhin güncellemesi 6 — G0 genel ilke + G1–G5 (31.10.2026)
+
+Kaynak: ana oturumun iletisi (kullanıcı kararları AYNEN `kahin.KARARLAR` G0–G5). Program kodu görülmedi; `surucu.mjs`'e dokunulmadı.
+
+### 11.1 Kurallar
+| Karar | Kâhinde | Değişti mi |
+|---|---|---|
+| G0 (1, 4) | Asıl işte Başarısız, sonraki denemesi teslimsiz duran (Durduruldu / Taşınan / İptal / Süresi Doldu / Atlandı) kişi asıl işten yeniden denenince GÖNDERİLİR — eski `plan_susuyor` yaprağı **İLKEYLE** çözüldü | evet (`yeniden_dene`) |
+| G0 (4) + D6 | İşteki Yine de Gönder, asıl işte belirsiz KALAN denemede de (`hedef: "asil"`, şu anki deneme Başarısız olsa da) çalışır — çıkmaz yok (D6-02 / D6-01'in önerdiği yol) **İLKEYLE** | evet (`yine_de_gonder`) |
+| G0 (3) | Son 3 Ay / Tüm'de tam 7. gün aynı dönem (`<=`) **İLKEYLE**; asıl işin açılışıyla AYNI ANDA giden "sonra" sayılır (elenir) **İLKEYLE** — ikisi de senaryosuz (kâhinde gönderim anı iki zaman ucunda farklı) | evet (sınırlar) |
+| G0 (2), (5) | Belirsiz eler / taşınan-geri yüklenen veride aynı kurallar — zaten böyle | hayır |
+| G1 | Özel aralık / hazır seçim tarihi ("o gün") toplu işin açıldığı gün; yeniden denemede asıl işin günü; sınırla ertesi güne kayan aynı dönem — zaten böyle (iş başlatmada çözülür, K4) | hayır |
+| G2 | D4'ün İKİ okuması birlikte: hazır seçimin o günkü tarihleri (03.11 Bu Ay ↔ 05.11 özel 01.11–03.11) VE kendi günlerinde Bu Ay'a eşit iki özel aralık (01.11–03.11 @03.11 ↔ 01.11–05.11 @05.11) aynı dönem | evet (`donem_eslesir`; eski I5 sağlamlık denetimi kalktı, yerine birim denetimi) |
+| G3 | Taşınan veride dosyadaki belirsiz eler (yeni iş + yeniden deneme), işteki Yine de Gönder çalışır; dosyadan gelen kabul/teslime 7 gün + K5 sınırı — zaten böyle | hayır |
+| G4 | Sıfırlamayla duran teslimsiz Meta Bekletti sayılmaz, geç teslim sayılır — zaten böyle (kâhinde sıfırlama §7a 26 düzeninde: işler "Durduruldu (Geri Yükleme)") | hayır |
+| G5 | Meta Bekletti sonrası belirsiz kalan 2. deneme kişiyi "Sonucu Belirsiz" ile eler, Yine de Gönder çalışır — zaten böyle | hayır |
+
+### 11.2 Senaryolar (16) ve mutasyonlar (9)
+| Karar | Senaryo | Sınır | Mutasyon |
+|---|---|---|---|
+| G0 | G0-01 sonraki deneme geri yüklemeyle durdu → yeniden gider · G0-02 asıl işte belirsiz kalan denemeye Yine de Gönder | — | M127, M128 |
+| G1 | G1-01 özel 01.10–15.10 @15.10 23:00 sınır 1 → B 16.10'da, 20.10 özel 01.10–20.10 elenir · G1-02 Bu Ay aynı · G1-03 yeniden deneme ertesi gün 02:00 | gece yarısı, ertesi gün | M122 |
+| G2 | G2-01 03.11 Bu Ay ↔ 05.11 özel · G2-02 iki özel aralık kendi günlerinde · G2-03 04.11 00:10 (UTC 03.11) Bu Ay = 01.11–04.11 | gece yarısı yerel ≠ UTC | M120, M121, M123 |
+| G3 | G3-01 yeni iş · G3-02 yeniden deneme · G3-03 Son 3 Ay 6g23s / 7g1s · G3-04 K5 sınırı | 7 gün | M124 (+ M104, M80) |
+| G4 | G4-01 sıfırlama → gider · G4-02 sıfırlama + geç teslim → elenir | — | M125 (+ M79, M76) |
+| G5 | G5-01 2. deneme belirsiz → elenir, Yine de Gönder gider · G5-02 2. deneme imzalı teslimle çözüldü → "Daha Önce Gönderildi" | 24 saat | M126 |
+
+**Değişen eski beklentiler: YOK** (215 senaryonun tam sonucu `git show adf735b6:…/senaryolar.json` ile bayt bayt aynı — İLKEYLE değişiklikler ve G2 birleşimi hiçbir eski senaryoda etkili değil). Kendi testi
+**253/253**, F mutasyon **128/128**; kanıt `docs/kanit/2026-10-31/248-kahin6-kendi-testi.{log,json}`.
+
+### 11.3 Plan_susuyor kalan "kime kaç kez" yaprağı: YOK
+Kalan `plan_susuyor` / `secenek` yaprakları kime-kaç-kez değil: ekstre içerik tarih uçları (Bu Ay bitişi / Son 3 Ay — madde 3, 2.5.0), "Tüm Hareketler" dönem metni,
+hatırlatmada gecikmiş borcu olmayanın değişkenleri (yalnız M44), Gönderimler'de tam sayfada Daha Fazla Göster, teslimsiz kapanan işe geç teslimin EKRAN durumu
+(K3/K7), İptal / geri yükleme / taşıma ile duran işin PDF silinmesi (S3).
+
+### 11.4 Sürücü için
+- **S-12:** `yine_de_gonder {hedef: "asil"}` → ASIL toplu işteki iş (bugün sürücü son toplu işteki işi seçer) — G0-02.
+- **S-13:** `sifirla` sürücüde geri yükleme gibi (o an yedek + geri yükle); kâhin §7a 26 düzenini (işler "Durduruldu (Geri Yükleme)", dosya kalır) kullanır. Gerçek
+  "Şirket Verisini Sıfırla" carileri ve işleri silerse G4'ün "geç teslim sayılır" yolu bambaşka işler (cari kimliği değişir) → gerçek sıfırlama eşlemesi ve beklentisi
+  ayrıca konuşulmalı (BİLGİ; kâhin karar vermez).
+- **S-14:** G1-01/02'de günlük sınır 1 (`ayar.gunluk_ust_sinir`, mevcut).
+
+### 11.5 DENENMEYEN
+- Programa karşı sürücü koşusu; G0 (3) sınırları (tam 7. gün, aynı an) — kâhinde iki zaman ucu farklı gönderim anı verdiği için senaryolanamadı; gerçek sıfırlamanın veri
+  silme etkisi (S-13); hatırlatmada G1 (karar yalnız ekstre).

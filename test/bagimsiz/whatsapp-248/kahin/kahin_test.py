@@ -346,6 +346,10 @@ MUTASYON_IPUCU = {
     "M112": "E2-01-yeni-is-uclu-cakisma", "M113": "E2-01-yeni-is-uclu-cakisma", "M114": "E3-01-hatirlatma-belirsiz-ayni-yerel-gun",
     "M115": "E3-01-hatirlatma-belirsiz-ayni-yerel-gun", "M116": "E4-01-son-3-ay-sonraki-teslim-7-gun", "M117": "N6-01-yeniden-denemede-baska-iste-bekleyen",
     "M118": "F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider", "M119": "F2-01-hatirlatma-yeniden-deneme-ertesi-gun",
+    "M120": "G2-01-bu-ay-0311-ozel-0511", "M121": "G2-02-iki-ozel-aralik-kendi-gunlerinde-bu-ay", "M122": "G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem",
+    "M123": "G2-03-gece-yarisi-bu-ay-yerel-gun", "M124": "G3-01-tasinan-belirsiz-yeni-iste-eler", "M125": "G4-01-sifirlama-meta-bekletti-sayilmaz",
+    "M126": "G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir", "M127": "G0-01-sonraki-denemesi-teslimsiz-durdu-yeniden-gider",
+    "M128": "G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder",
 }
 
 
@@ -500,7 +504,7 @@ def _i1():
 @test("I karar izlenebilirliği: K1–K8, D1–D8, E1–E4, N6 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
 def _i2():
     h = []
-    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2"):
+    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -543,7 +547,7 @@ def _i4():
         if isinstance(o, list):
             return [y for i, v in enumerate(o) for y in gez(v, f"{yol}[{i}]")]
         return []
-    eski = [s for s in TUM if not (len(s["baslik"]) == 2 and s["baslik"][0] in "KDENF" and s["baslik"][1].isdigit())]
+    eski = [s for s in TUM if not (len(s["baslik"]) == 2 and s["baslik"][0] in "KDENFG" and s["baslik"][1].isdigit())]
     for s in eski:
         r = beklenen(s)[0]["sonuc"]
         if gez(r) or "yeniden" in r or "listeler" in r:
@@ -553,14 +557,21 @@ def _i4():
     return h
 
 
-@test("I D4'ün iki okuması ('o gün' = hazır seçimin kendi günü / özel aralığın günü) HİÇBİR senaryoda beklentiyi değiştirmez (senaryolar okumaya bağlı değil)")
+@test("I G2 dönem eşliği birim denetimi: hazır seçimin o günkü tarihleri + kendi günlerinde Bu Ay'a eşit özel aralıklar BİRLİKTE (G0 3: şüphede aynı dönem)")
 def _i5():
-    h = []
-    for s in TUM:
-        if s.get("ozet_cikti") and s["baslik"] not in ("D4",):
-            continue
-        if not senaryolar._esit(kahin.hesapla(senaryolar.girdi(s), frozenset(["OKUMA_Y"])), beklenen(s)):
-            h.append(f"{s['ad']}: OKUMA_Y ile beklenti değişti")
+    e = kahin.donem_eslesir
+    bu_ay_0311 = (("ay", "2026-11"), ("2026-11-01", "2026-11-03"), None)
+    ozel_0103_gun05 = (("aralik", "2026-11-01", "2026-11-03"), ("2026-11-01", "2026-11-03"), None)
+    ozel_0103_gun03 = (("aralik", "2026-11-01", "2026-11-03"), ("2026-11-01", "2026-11-03"), ("ay", "2026-11"))
+    ozel_0105_gun05 = (("aralik", "2026-11-01", "2026-11-05"), ("2026-11-01", "2026-11-05"), ("ay", "2026-11"))
+    ozel_0104_gun05 = (("aralik", "2026-11-01", "2026-11-04"), ("2026-11-01", "2026-11-04"), None)
+    gecen_ay_ekim = (("ay", "2026-10"), ("2026-10-01", "2026-10-31"), None)
+    ornek = [(bu_ay_0311, ozel_0103_gun05, True), (ozel_0103_gun03, ozel_0105_gun05, True), (ozel_0104_gun05, bu_ay_0311, False),
+             (ozel_0105_gun05, gecen_ay_ekim, False), (ozel_0104_gun05, ozel_0105_gun05, False),
+             ((("secim", "son_3_ay"), None, None), (("secim", "tum"), None, None), False)]
+    h = [f"{a} ↔ {b}: {e(a, b)} ≠ {v}" for a, b, v in ornek if e(a, b) != v or e(b, a) != v]
+    if e(bu_ay_0311, ozel_0103_gun05, {"M120"}) or e(ozel_0103_gun03, ozel_0105_gun05, {"M121"}):
+        h.append("M120 / M121 birim düzeyinde etkisiz")
     return h
 
 
