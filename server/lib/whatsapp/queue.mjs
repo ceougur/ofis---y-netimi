@@ -135,7 +135,7 @@ function overdueOf(account, today) {
  * @param {Function} [o.header] () => rapor başlığı pdf() (lib/report-header.mjs)
  * @param {Function} [o.fault] testlerde kesinti: fault(nokta, iş) → true ise o noktada hata (ör. "db-accept": kabul yazımı düşer)
  */
-export function createWaQueue({ store, companyId, ledger, connection, accounts, now, audit = () => {}, log = console, license = null, header = () => ({}), events = null, kick = () => {}, fault = null, hookUrl = () => "" }) {
+export function createWaQueue({ store, companyId, ledger, connection, accounts, now, audit = () => {}, log = console, license = null, header = () => ({}), events = null, kick = () => {}, fault = null, hookUrl = () => "", writeLock = null }) {
   const iso = (ms = now().getTime()) => new Date(ms).toISOString();
   const nowMs = () => now().getTime();
   const today = () => now.today?.() || iso().slice(0, 10);
@@ -793,6 +793,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     localDefer.set(jobId, { tries, until: nowMs() + waitMs });
     const reason = `şirket dosyasına yazılamadı ya da beklenmeyen hata: ${error?.code || error?.message || error}`;
     if (isLockError(error)) {
+      writeLock?.mark(companyId); // İş P1: sonraki arka plan turları bu şirkete yazmayı denemez (işaret süresince)
       if (batchId) lockTroubles.set(batchId, (lockTroubles.get(batchId) || 0) + 1);
       log.warn?.(`WhatsApp işi yürütülemedi (${jobId}; şirket dosyası kilitli); ${Math.round(waitMs / 1000)} sn sonra yeniden denenecek.`);
       if (batchId) notify(batchId);
@@ -1698,5 +1699,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return settings();
   }
 
-  return { connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate };
+  // İş P1: arka plan işçisi bu şirkete şimdi yazabilir mi (turun başında; scheduler.mjs) ve kilit işareti (bakım turunda kilit görülünce).
+  const canWrite = () => (writeLock ? writeLock.guard(companyId, store) : true);
+  const markLocked = () => writeLock?.mark(companyId);
+  return { canWrite, markLocked, connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate };
 }

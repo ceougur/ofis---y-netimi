@@ -1497,7 +1497,7 @@ export function createPos({ store, bank, money, period, settings, audit, now, lo
  * Valör kuyruğunun tetikleri (plan §4.4/2): start() açılışta bir tur (setImmediate; açılışı beklemez) + 15 dakikada bir (unref); kalan grup
  * varsa sonraki tur setImmediate ile. kick(): hemen bir tur. stop(): kapanışta. Tur hatası günlüğe yazılır (iş durmaz).
  */
-export function createPosQueue({ pos, log = null, minutes = 15 }) {
+export function createPosQueue({ pos, log = null, minutes = 15, canWrite = () => true }) {
   let timer = null;
   let scheduled = false;
   let stopped = false;
@@ -1507,6 +1507,8 @@ export function createPosQueue({ pos, log = null, minutes = 15 }) {
     try {
       const service = pos();
       if (!service?.isReady?.()) return;
+      // 2.4.8 İş P1: şirket dosyası kilitliyse bu tur atlanır (15 dk'da bir ya da "Şimdi Aktar" kick'iyle yeniden).
+      if (!canWrite()) return;
       const result = service.runQueue();
       try {
         service.autoDrafts();

@@ -78,7 +78,7 @@ export function statementText({ office, account, lines, range, next, overdue }) 
   return out.join("\n");
 }
 
-export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null, mobileSyncOf = () => null }) {
+export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null, mobileSyncOf = () => null, writeLock = null }) {
   const today = () => {
     const d = clock();
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -310,6 +310,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     fault: config.whatsappFault || null,
     // W9: durum bildirimi adresinin tabanı = ofisin uzaktan (telefon) adresi (tünel açılınca hazır; lib/tunnel/manager.mjs).
     hookUrl: () => mobileRemote?.publicUrl?.() || "",
+    // 2.4.8 İş P1/P2: şirket dosyası kilidi (lib/write-lock.mjs; app.mjs context.writeLock).
+    writeLock,
   });
   const sendUser = req => auth.requirePermission(req, "whatsapp.send");
   router.get("/api/workspace/whatsapp/ack", async ({ req, res }) => {

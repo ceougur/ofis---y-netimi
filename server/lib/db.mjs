@@ -1,12 +1,15 @@
 // SQLite bağlantısı ve küçük sorgu yardımcıları (node:sqlite, bağımlılıksız).
 import { DatabaseSync } from "node:sqlite";
 
+// Kullanıcı isteklerinin yazımları kilitli dosyada bu kadar bekler (sonra SQLITE_BUSY). Arka plan işleri kısa sınamayla atlar (probeWritable; İş P1).
+export const BUSY_TIMEOUT_MS = 10_000;
+
 export function openDatabase(dbPath, { readOnly = false } = {}) {
   const db = readOnly ? new DatabaseSync(dbPath, { readOnly: true }) : new DatabaseSync(dbPath);
   // WAL + synchronous FULL (v2.0.6): her COMMIT diske işlenir; elektrik kesilse de tamamlanmış işlem kaybolmaz, yarım
   // işlem kalmaz (geri alınır). Yerel ofis programında yazma sıklığı düşük; güvenlik hız maliyetine değer.
   if (!readOnly) db.exec("PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;");
-  db.exec("PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 10000;");
+  db.exec(`PRAGMA foreign_keys = ON; PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS};`);
   return db;
 }
 
@@ -245,6 +248,29 @@ export function createStore(db) {
     return out;
   }
   const store = {
+    /**
+     * 2.4.8 İş P1 (lib/write-lock.mjs): dosya şimdi yazılabilir mi — SENKRON kısa sınama (busy_timeout ms; BEGIN IMMEDIATE + ROLLBACK), bitince busy_timeout
+     * finally'de BUSY_TIMEOUT_MS'e geri alınır (arada başka JS çalışmaz; kullanıcı yazımları kısalmaz). Dönüş: true | false (kilitli) | null (bilinmiyor: işlem
+     * içindeyken sınanmaz, başka hata) — null bugünkü yolu seçtirir.
+     */
+    probeWritable(ms = 150) {
+      if (depth > 0 || db.isTransaction) return null;
+      try {
+        db.exec(`PRAGMA busy_timeout = ${Math.max(0, Math.floor(ms))}`);
+        db.exec("BEGIN IMMEDIATE");
+        db.exec("ROLLBACK");
+        return true;
+      } catch (error) {
+        return isLockError(error) ? false : null;
+      } finally {
+        try {
+          if (db.isTransaction) db.exec("ROLLBACK");
+        } catch {
+          // açık işlem kalmadı
+        }
+        db.exec(`PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS}`);
+      }
+    },
     db,
     get: (sql, ...args) => prepare(sql).get(...args),
     all: (sql, ...args) => prepare(sql).all(...args),

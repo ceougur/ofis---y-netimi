@@ -63,7 +63,7 @@ export function yazmaTuru(method, pathname) {
  * @param {object} o.clock uzaktan erişim saati (config.remoteNow)
  * @param {{ url: string, officeUrl: string }} o.kapi kapıcı adresi ("" = kapalı) ve telefon adresi kalıbı ("https://{ofis}.destekofis.net")
  */
-export function createMobileSync({ store, license, mobileRemote, dispatch, clock, kapi = {}, fetchImpl = (...a) => globalThis.fetch(...a), log = console, otomatik = true }) {
+export function createMobileSync({ store, license, mobileRemote, dispatch, clock, kapi = {}, fetchImpl = (...a) => globalThis.fetch(...a), log = console, otomatik = true, canWrite = () => true }) {
   const url = String(kapi.url || "");
   const enabled = Boolean(url);
   // B2b: kapıcı yanıtlarının HTTP Date başlığından ölçülen saat farkı (kapıcı − bu bilgisayar). Program kapıcıya giden imza zamanlarını ve kapıcının işaretini
@@ -353,6 +353,8 @@ export function createMobileSync({ store, license, mobileRemote, dispatch, clock
   }
   async function turAt() {
     if (!etkin()) return null;
+    // 2.4.8 İş P1: zamanlanmış tur şirket dosyası kilitliyken atlanır (tur kayıt/eşleme durumunu yazabilir; sonraki turda yeniden).
+    if (!canWrite()) return null;
     const t = clock.ms();
     if (!cihazlar().some(d => d.encKey)) {
       durum.kirliIlk = durum.kirliSon = null;

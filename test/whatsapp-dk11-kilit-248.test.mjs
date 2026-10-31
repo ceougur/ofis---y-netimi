@@ -13,7 +13,9 @@ const localIso = (y, m, d, h = 10) => new Date(y, m - 1, d, h, 0, 0, 0).toISOStr
 
 describe("2.4.8 İş N — şirket dosyası kilitliyken işçi turu olay döngüsünü busy_timeout'tan uzun tutmaz", () => {
   it("kilitli dosyada her tur ≤ 12 sn (önce bakım + iş ~40 sn), ileti gitmez; kilit kalkınca iş gider, çift ileti yok, toplu iş Tamamlandı", { timeout: 120_000 }, async () => {
-    const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+    // İş P1'den sonra turun başındaki kısa sınama kilidi görür ve turu atlar (test/whatsapp-dk13-arka-plan-kilit-248.test.mjs); bu test TUR İÇİNDE başlayan kilidi
+    // (sınamadan sonra) sınar → sınama kapalı, işaret süresi 0 (yalnız test oluşturucu seçenekleri; her tur kilide yeniden takılır — İş N yolu).
+    const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true }, __testWriteLockProbe: false, __testWriteLockBackoffMs: 0 });
     let lock = null;
     try {
       const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);

@@ -11,6 +11,8 @@ import { describe, it } from "node:test";
 import { URLS, startWa } from "./whatsapp-248-ortak.mjs";
 
 const localIso = (y, m, d, h = 10) => new Date(y, m - 1, d, h, 0, 0, 0).toISOString();
+// İş P1'den sonra turun başındaki kısa sınama kilidi görür ve turu atlar; bu dosya TUR İÇİNDE başlayan kilidi (sınamadan sonra) sınar → sınama kapalı
+// (__testWriteLockProbe: yalnız test oluşturucu seçeneği); işaret süresi 0 (her tur kilide yeniden takılır — İş N/O yolu).
 const NOW = { time: localIso(2026, 11, 3, 10), fixed: true };
 const lockOf = ctx => {
   const db = new DatabaseSync(ctx.server.app.config.dbPath);
@@ -33,7 +35,7 @@ const batchRow = (ctx, id) => ctx.store.get("SELECT state, troubles, pause_code 
  * bellekteki kilit sayacı 4. Kilit kalkar. Dönüş: { ctx, id }.
  */
 async function lockedFour() {
-  const ctx = await startWa({ now: NOW });
+  const ctx = await startWa({ now: NOW, __testWriteLockProbe: false, __testWriteLockBackoffMs: 0 });
   const ids = [];
   for (let i = 0; i < 7; i += 1) ids.push((await ctx.account(`Sayaç ${i}`, `0533 444 56 ${String(10 + i)}`, 100 + i)).id);
   const created = await ctx.batch({ kind: "statement", ids, preset: "thisMonth" });
@@ -68,7 +70,7 @@ function diskFullOnce(ctx) {
 
 describe("2.4.8 İş O — kilitli dosyada bakım turu ve bellekteki 'art arda' sayacı", () => {
   it("O1: teslim edilmiş iletinin PDF'i silinmemişken dosya kilitli → bakım ≤ 12 sn (önce ~30 sn); kilit kalkınca kayıt yazılır, Meta'ya ikinci silme isteği gitmez", { timeout: 180_000 }, async () => {
-    const ctx = await startWa({ now: NOW });
+    const ctx = await startWa({ now: NOW, __testWriteLockProbe: false, __testWriteLockBackoffMs: 0 });
     let lock = null;
     try {
       const a = await ctx.account("Medya Bir", "0533 444 55 61", 800);
