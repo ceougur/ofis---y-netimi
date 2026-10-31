@@ -1,7 +1,7 @@
 // 2.4.8 dar kontrol 7 DÜŞÜK-1 (zorla üretildi: dk7 yoklaması p-belirsiz.mjs s1-geri-yukleme) — yedek geri yüklenince Sonucu Belirsiz yeniden deneme (R1) şirket dosyasından
 // gider, makine defterinde kalır; asıl işin "Başarısızları Yeniden Dene"si kişiyi yine "Sonucu Belirsiz" ile eler (doğru: ileti Meta'ya ulaşmış olabilir), ama ileti
-// artık hiçbir yerde olmayan işteki "Yine de Gönder"i gösteriyordu. Şimdi: iş şirket dosyasında Sonucu Belirsiz duruyorsa "Yine de Gönder ya da yeni gönderim", yoksa
-// yalnız "yeni gönderim başlatın" (ikisinde de "ileti iki kez gidebilir"). İşin dosyada durduğu durum test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs'te.
+// artık hiçbir yerde olmayan işteki "Yine de Gönder"i gösteriyordu. Şimdi: iş şirket dosyasında Sonucu Belirsiz duruyorsa yalnız işteki "Yine de Gönder" (KULLANICI KARARI
+// 31.10.2026 ~11:45 UTC "A"), yoksa yalnız "yeni gönderim başlatın" (ikisinde de "ileti iki kez gidebilir"). İşin dosyada durduğu durum test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs'te.
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5); sahte saat (ders 13); dosya TZ=UTC ve TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";

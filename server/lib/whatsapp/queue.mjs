@@ -503,9 +503,11 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     // Dar kontrol 7 DÜŞÜK-1: işteki "Yine de Gönder" yalnız o iş şirket dosyasında Sonucu Belirsiz duruyorsa söylenir (uncertainOpen); yoksa (ör. geri yüklemeden sonra)
     // yalnız yeni gönderim. Yeni gönderim "iki kez gidebilir" diye sormaz → uyarı iletide.
+    // KULLANICI KARARI (31.10.2026 ~11:45 UTC "A"): iş dosyada DURURKEN yalnız onaylı yol ("Yine de Gönder" iki kez gidebileceğini sorar) önerilir; onaysız "yeni gönderim
+    // başlatın" yolu bu durumda söylenmez. İş dosyada yokken başka yol olmadığından "yeni gönderim başlatın" kalır.
     if (summary.skipped?.["Sonucu Belirsiz"]) {
       text += uncertainOpen > 0
-        ? ` Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki "Yine de Gönder"i kullanın ya da yeni gönderim başlatın.`
+        ? ` Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki "Yine de Gönder"i kullanın.`
         : ` Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için yeni gönderim başlatın.`;
     }
     return text;

@@ -26,7 +26,9 @@ function assertUncertainSkip(res, label) {
   assert.equal(res.data.code, "whatsapp-nothing", `${label}: kod`);
   assert.deepEqual(res.data.summary?.skipped, { "Sonucu Belirsiz": 1 }, `${label}: neden`);
   assert.match(res.data.error, /Sonucu Belirsiz: 1/, `${label}: neden İLETİDE (geldi "${res.data.error}")`);
-  assert.match(res.data.error, /Bu kişilerin önceki iletisinin sonucu belirsiz \(ileti iki kez gidebilir\); göndermek için işteki "Yine de Gönder"i kullanın ya da yeni gönderim başlatın\./, `${label}: ne yapılacağı iletide (geldi "${res.data.error}")`);
+  assert.match(res.data.error, /Bu kişilerin önceki iletisinin sonucu belirsiz \(ileti iki kez gidebilir\); göndermek için işteki "Yine de Gönder"i kullanın\./, `${label}: ne yapılacağı iletide (geldi "${res.data.error}")`);
+  // KULLANICI KARARI (31.10.2026 ~11:45 UTC "A"): iş dosyada dururken onaysız "yeni gönderim başlatın" yolu önerilmez.
+  assert.doesNotMatch(res.data.error, /yeni gönderim başlatın/, `${label}: iş dosyada dururken onaysız yeni gönderim önerilmez (geldi "${res.data.error}")`);
 }
 
 /** M: B'ye ekstre (sendAgain: önce A gider, M "Yine de Gönder" ile), Meta B için kalıcı hata. Dönüş: M. */
