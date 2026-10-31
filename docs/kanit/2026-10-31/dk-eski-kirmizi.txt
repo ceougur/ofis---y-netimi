@@ -1,0 +1,132 @@
+TAP version 13
+# (node:6712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T1 B2 — kancayla gelen 131049: Meta Bekletti (24 Saat Sonra Yeniden), aynı medya, bir kez
+    # Subtest: ilk 131049 → Meta Bekletti; PDF silinmez; 24 saat dolmadan gitmez; sonra AYNI medyayla bir kez gider, teslimde hata kodu temizlenir
+    not ok 1 - ilk 131049 → Meta Bekletti; PDF silinmez; 24 saat dolmadan gitmez; sonra AYNI medyayla bir kez gider, teslimde hata kodu temizlenir
+      ---
+      duration_ms: 587.480553
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2dk-r9x4-eski-49395f77/test/whatsapp-t1-b2-248.test.mjs:28:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kancadaki 131049 → Meta Bekletti olmalı (geldi failed)
+        
+        'failed' !== 'held'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'held'
+      actual: 'failed'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2dk-r9x4-eski-49395f77/test/whatsapp-t1-b2-248.test.mjs:35:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: ikinci 131049 → Başarısız (kodlu); kesin durumda PDF Meta'dan silinir; üçüncü gönderim olmaz
+    not ok 2 - ikinci 131049 → Başarısız (kodlu); kesin durumda PDF Meta'dan silinir; üçüncü gönderim olmaz
+      ---
+      duration_ms: 424.757571
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2dk-r9x4-eski-49395f77/test/whatsapp-t1-b2-248.test.mjs:62:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        1 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2dk-r9x4-eski-49395f77/test/whatsapp-t1-b2-248.test.mjs:68:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 T1 B2 — kancayla gelen 131049: Meta Bekletti (24 Saat Sonra Yeniden), aynı medya, bir kez
+  ---
+  duration_ms: 1013.52305
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2dk-r9x4-eski-49395f77/test/whatsapp-t1-b2-248.test.mjs:27:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:6732) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T2-4 — geri yükleme / sıfırlama durum bildirimi yolunu bozmaz; Meta'daki adres denetlenir
+    # Subtest: yedek → Yeniden Kaydet → yedekten geri yükle: Meta'nın KAYITLI adresine gelen bildirim kabul edilir (404 değil) ve işe yazılır; Şirket Verisini Sıfırla da bozmaz
+    not ok 1 - yedek → Yeniden Kaydet → yedekten geri yükle: Meta'nın KAYITLI adresine gelen bildirim kabul edilir (404 değil) ve işe yazılır; Şirket Verisini Sıfırla da bozmaz
+      ---
+      duration_ms: 1010.815929
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2dk-r9x4-eski-49395f77/test/whatsapp-t2-4-248.test.mjs:62:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Meta'nın kayıtlı adresi geri yüklemeden sonra da açık olmalı (geldi 404 {"ok":false,"code":"whatsapp-hook-missing","error":"Bu adres uzaktan erişime açık değil."})
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2dk-r9x4-eski-49395f77/test/whatsapp-t2-4-248.test.mjs:75:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Meta'daki adres değiştirilince bakım turu fark eder ve yeniden kaydeder; 24 saat içinde yine değişirse (iki kurulum çekişmesi) 'Çakışma' der, Bağlantıyı Sına bu bilgisayarı seçer
+    not ok 2 - Meta'daki adres değiştirilince bakım turu fark eder ve yeniden kaydeder; 24 saat içinde yine değişirse (iki kurulum çekişmesi) 'Çakışma' der, Bağlantıyı Sına bu bilgisayarı seçer
+      ---
+      duration_ms: 587.762868
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2dk-r9x4-eski-49395f77/test/whatsapp-t2-4-248.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Meta'daki adres farklı görülünce yeniden kaydedildi
+        
+        1 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2dk-r9x4-eski-49395f77/test/whatsapp-t2-4-248.test.mjs:104:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.4.8 T2-4 — geri yükleme / sıfırlama durum bildirimi yolunu bozmaz; Meta'daki adres denetlenir
+  ---
+  duration_ms: 1600.048923
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2dk-r9x4-eski-49395f77/test/whatsapp-t2-4-248.test.mjs:61:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3362.415847

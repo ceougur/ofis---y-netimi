@@ -33,6 +33,13 @@ const SCHEMA = `
     PRIMARY KEY (batch_id, event)
   ) STRICT;
   CREATE INDEX IF NOT EXISTS idx_batch_events_company ON batch_events(company_id, event);
+  -- T2 dar kontrol ORTA-1: ilk açılış / ilk durdurmadan SONRAKİ yaşam döngüsü (131049 ile yeniden açılma, sonraki durdurma / iptal / bitiş) sırayla. Son olay geçerlidir;
+  -- günlük yoksa batch_events geçerlidir. Geri yüklenen eski dosya defterdeki son kararı (ör. iptal) geri alamaz.
+  CREATE TABLE IF NOT EXISTS batch_log (
+    seq INTEGER PRIMARY KEY AUTOINCREMENT, batch_id TEXT NOT NULL, company_id TEXT NOT NULL, event TEXT NOT NULL CHECK (event IN ('reopen', 'stop')),
+    reason TEXT NOT NULL DEFAULT '', at TEXT NOT NULL
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_batch_log_batch ON batch_log(batch_id, seq);
   CREATE TABLE IF NOT EXISTS claims (
     job_id TEXT NOT NULL, attempt INTEGER NOT NULL, batch_id TEXT NOT NULL, company_id TEXT NOT NULL, waba_id TEXT NOT NULL, phone TEXT NOT NULL,
     account_id TEXT NOT NULL DEFAULT '', kind TEXT NOT NULL DEFAULT '', period_key TEXT NOT NULL DEFAULT '', at TEXT NOT NULL,
@@ -74,6 +81,8 @@ const SCHEMA = `
   CREATE INDEX IF NOT EXISTS idx_deliveries_company ON deliveries(company_id, at);
   CREATE TRIGGER IF NOT EXISTS batch_events_no_update BEFORE UPDATE ON batch_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS batch_events_no_delete BEFORE DELETE ON batch_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS batch_log_no_update BEFORE UPDATE ON batch_log BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS batch_log_no_delete BEFORE DELETE ON batch_log BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS claims_no_update BEFORE UPDATE ON claims BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS claims_no_delete BEFORE DELETE ON claims BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS outcomes_no_update BEFORE UPDATE ON outcomes BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
@@ -114,8 +123,12 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     open: db.prepare("INSERT OR IGNORE INTO batch_events (batch_id, company_id, event, reason, at) VALUES (?, ?, 'open', '', ?)"),
     stop: db.prepare("INSERT OR IGNORE INTO batch_events (batch_id, company_id, event, reason, at) VALUES (?, ?, 'stop', ?, ?)"),
     events: db.prepare("SELECT event, reason, at FROM batch_events WHERE batch_id = ?"),
-    liveOf: db.prepare("SELECT o.batch_id AS batchId FROM batch_events o WHERE o.company_id = ? AND o.event = 'open' AND NOT EXISTS (SELECT 1 FROM batch_events s WHERE s.batch_id = o.batch_id AND s.event = 'stop')"),
-    liveCompanies: db.prepare("SELECT DISTINCT o.company_id AS companyId FROM batch_events o WHERE o.event = 'open' AND NOT EXISTS (SELECT 1 FROM batch_events s WHERE s.batch_id = o.batch_id AND s.event = 'stop')"),
+    liveOf: db.prepare(`SELECT o.batch_id AS batchId FROM batch_events o WHERE o.company_id = ? AND o.event = 'open' AND (NOT EXISTS (SELECT 1 FROM batch_events s WHERE s.batch_id = o.batch_id AND s.event = 'stop')
+      OR (SELECT l.event FROM batch_log l WHERE l.batch_id = o.batch_id ORDER BY l.seq DESC LIMIT 1) = 'reopen')`),
+    liveCompanies: db.prepare(`SELECT DISTINCT o.company_id AS companyId FROM batch_events o WHERE o.event = 'open' AND (NOT EXISTS (SELECT 1 FROM batch_events s WHERE s.batch_id = o.batch_id AND s.event = 'stop')
+      OR (SELECT l.event FROM batch_log l WHERE l.batch_id = o.batch_id ORDER BY l.seq DESC LIMIT 1) = 'reopen')`),
+    logLast: db.prepare("SELECT event, reason, at FROM batch_log WHERE batch_id = ? ORDER BY seq DESC LIMIT 1"),
+    logAdd: db.prepare("INSERT INTO batch_log (batch_id, company_id, event, reason, at) VALUES (?, ?, ?, ?, ?)"),
     attempts: db.prepare(`SELECT c.attempt, CASE WHEN f.job_id IS NOT NULL THEN 'failed' WHEN r.job_id IS NOT NULL THEN 'released' ELSE o.outcome END AS outcome, o.wamid FROM claims c
       LEFT JOIN outcomes o ON o.job_id = c.job_id AND o.attempt = c.attempt LEFT JOIN failures f ON f.job_id = c.job_id AND f.attempt = c.attempt
       LEFT JOIN releases r ON r.job_id = c.job_id AND r.attempt = c.attempt WHERE c.job_id = ? ORDER BY c.attempt`),
@@ -174,23 +187,44 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       guard("open", { batchId });
       q.open.run(String(batchId), String(companyId), String(at));
     },
-    /** Toplu işi kalıcı olarak durdurur (bitti, iptal, geri yükleme, sıfırlama, taşınma). İkinci kez yazılmaz (ilk neden kalır). */
+    /** Toplu işi durdurur (bitti, iptal, geri yükleme, sıfırlama, taşınma). Zaten durmuşsa yazılmaz (ilk neden kalır); yeniden açılmışsa (131049) yeni durdurma günlüğe. */
     stopBatch(batchId, companyId, reason, at) {
       try {
+        const state = this.batchState(batchId);
+        if (state.opened && !state.live) return true;
         guard("stop", { batchId });
-        q.stop.run(String(batchId), String(companyId), String(reason || ""), String(at));
+        if (state.reopened) q.logAdd.run(String(batchId), String(companyId), "stop", String(reason || ""), String(at));
+        else q.stop.run(String(batchId), String(companyId), String(reason || ""), String(at));
         return true;
       } catch (error) {
         log.warn?.(`WhatsApp gönderim defteri: toplu iş ${batchId} durduruldu olarak yazılamadı (${error.message}).`);
         return false;
       }
     },
-    /** { live, opened, stopped, reason } — işçi yalnız live işleri yürütür. */
+    /**
+     * T2 dar kontrol ORTA-1: durmuş toplu işi yeniden açar (yalnız "done" — bütün işleri kabul edilmişken bir işine kancayla 131049 geldi; plan §7a 14). Başka nedenle
+     * (iptal, geri yükleme, sıfırlama, taşınma) durmuş toplu iş açılmaz. Dönüş: açıldı mı (yazılamazsa false + günlük).
+     */
+    reopenBatch(batchId, companyId, at) {
+      try {
+        const state = this.batchState(batchId);
+        if (!state.stopped || state.reason !== "done") return false;
+        guard("reopen", { batchId });
+        q.logAdd.run(String(batchId), String(companyId), "reopen", "", String(at));
+        return true;
+      } catch (error) {
+        log.warn?.(`WhatsApp gönderim defteri: toplu iş ${batchId} yeniden açılamadı (${error.message}).`);
+        return false;
+      }
+    },
+    /** { live, opened, stopped, reason, reopened } — işçi yalnız live işleri yürütür. Günlükteki son olay ilk açılış / durdurmanın önüne geçer. */
     batchState(batchId) {
       const events = q.events.all(String(batchId));
       const open = events.find(item => item.event === "open");
       const stop = events.find(item => item.event === "stop");
-      return { live: Boolean(open && !stop), opened: Boolean(open), stopped: Boolean(stop), reason: stop?.reason || "" };
+      const last = stop ? q.logLast.get(String(batchId)) : null;
+      if (last) return { live: Boolean(open) && last.event === "reopen", opened: Boolean(open), stopped: last.event === "stop", reason: last.event === "stop" ? last.reason : "", reopened: true };
+      return { live: Boolean(open && !stop), opened: Boolean(open), stopped: Boolean(stop), reason: stop?.reason || "", reopened: false };
     },
     liveBatches: companyId => q.liveOf.all(String(companyId)).map(row => row.batchId),
     liveCompanies: () => q.liveCompanies.all().map(row => row.companyId),

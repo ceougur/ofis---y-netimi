@@ -730,10 +730,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const batch = batchRow(job.batch_id);
     // (5) geri yüklenen / taşınan veri: defterde canlı olmayan toplu iş yürütülmez.
     const live = ledger.batchState(batch.id);
-    // T1 B2: bu bilgisayarda TAMAMLANMIŞ (defterde "done") toplu işin 131049 ile Meta Bekletti'ye dönen işi yürütülür — çift gönderimi defterin talep kilidi önler
-    // (önceki denemesi yalnız 131049 izniyle açık; yeniden deneme kabul edildiyse yeni talep reddedilir).
-    const revived = !live.live && live.stopped && live.reason === "done" && job.state === "held" && job.retry_131049 === 1;
-    if ((!live.live && !revived) || batch.ledger_id !== ledger.id || batch.company_id !== companyId) {
+    if (!live.live || batch.ledger_id !== ledger.id || batch.company_id !== companyId) {
       const moved = !live.opened || batch.ledger_id !== ledger.id || batch.company_id !== companyId;
       stopBatch(batch, moved ? "Taşınan Veri — Durduruldu: bu toplu gönderim bu bilgisayarın gönderim defterinde yok; gönderilmemiş kişilere gönderilmedi." : "Durduruldu (Geri Yükleme): yedekten geri yükleme / Şirket Verisini Sıfırla sonrası eski gönderim yeniden başlatılmaz.", moved ? "moved" : "restored");
       return { did: true };
@@ -1114,9 +1111,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         out.stopped += 1;
         continue;
       }
-      // T1 B2: 131049 ile yeniden açılmış (defterde "done", dosyada yalnız Meta Bekletti işleri açık) toplu iş — geri yükleme değil, durdurulmaz.
-      const onlyRevived = state.stopped && state.reason === "done" && !store.get(`SELECT 1 AS found FROM wa_jobs WHERE batch_id = ? AND state IN (${OPEN_JOB.map(() => "?").join(",")}) AND NOT (state = 'held' AND retry_131049 = 1) LIMIT 1`, row.id, ...OPEN_JOB);
-      if (state.stopped && !onlyRevived) {
+      if (state.stopped) {
         // §7a 26: defterde durmuş (geri yükleme, sıfırlama, bu bilgisayarda bitmiş/iptal edilmiş) ama dosyada sürüyor görünen iş: dosya ESKİ (yedekten geri yüklendi).
         const text = ["done", "canceled"].includes(state.reason)
           ? "Durduruldu (Geri Yükleme): bu toplu gönderim bu bilgisayarda zaten bitmişti; yedekteki eski işler yeniden başlatılmaz."
@@ -1255,8 +1250,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
           const errorText = Number.isFinite(code) ? `${text} (Meta hata kodu ${code})` : text;
           // T1 B2 (plan §6 W2 + §7a 14): 131049 kancayla da gelir (eşzamanlı yanıtla aynı kural) — ilk kez "Meta Bekletti (24 Saat Sonra Yeniden)": PDF silinmez,
           // 24 saat sonra BİR kez aynı medyayla yeniden; ikinci 131049 Başarısız.
+          // Tamamlanmış toplu iş defterde yeniden açılır (ORTA-1: sonraki durdurma / iptal defterde doğru kaydedilir); açılamazsa (iptal / geri yükleme / yazılamadı) Başarısız.
           const heldBatch = batchRow(job.batch_id);
-          if (code === META_D0.ecosystemCode && !job.retry_131049 && ["running", "paused", "done"].includes(heldBatch?.state)) Object.assign(fields, { state: "held", next_at: iso(nowMs() + DAY_MS), retry_131049: 1, error_code: code, error_text: errorText });
+          const canHold = code === META_D0.ecosystemCode && !job.retry_131049 && (["running", "paused"].includes(heldBatch?.state) || (heldBatch?.state === "done" && ledger.reopenBatch(heldBatch.id, companyId, iso())));
+          if (canHold) Object.assign(fields, { state: "held", next_at: iso(nowMs() + DAY_MS), retry_131049: 1, error_code: code, error_text: errorText });
           else Object.assign(fields, { state: "failed", failed_at: at, closed_at: iso(), error_code: Number.isFinite(code) ? code : null, error_text: errorText });
         }
       }
