@@ -129,6 +129,9 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
         // Geri yükleme / silme sürüyor: Meta bildirimi yeniden dener (200 dışı yanıtta 7 güne kadar; uygulanmış olanlar yinelenince etkisizdir).
         return failure(res, error?.status === 503 ? 503 : 500, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
       }
+      // 2.4.8 İş P3: şirket dosyası kilitliyse (kısa sınama / arka plan işareti; lib/write-lock.mjs) durumlar 10 sn beklemeden yazılmaz → 503, Meta yeniden dener
+      // (uygulanmış durumlar yinelenince etkisiz). İmza / işaret / WABA denetimleri yukarıda, aynen.
+      if (app?.context?.canWriteInBackground?.() === false) return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
       const wa = app?.context?.whatsapp;
       const record = wa?.connection?.read?.();
       if (!wa?.queue || !record || record.wabaId !== hook.wabaId) {
