@@ -16,7 +16,8 @@ Bölümler:
   F  MUTASYON: modele bilerek hata; en az bir senaryonun elle beklenenine ya da iç denetim sayacına takılmalı (yakalanmayan = eksik senaryo)
   G  komut satırı (hesapla, karsilastir: 'biri', 'plan_susuyor', 'kisaltilabilir', 'secenek')
   I  kâhin güncellemesi 2 (K1–K8, 31.10.2026): dönem çözümü birim denetimi (ay sonu, 31.12 → 01.01, şubat), karar izlenebilirliği (her karar ≥ 2 senaryo),
-     yeniden deneme ve liste çıktılarının iç tutarlılığı, eski 145 senaryoda yeni yaprak türü yok
+     yeniden deneme ve liste çıktılarının iç tutarlılığı, eski 145 senaryoda yeni yaprak türü yok; güncelleme 3 (D1–D8): D4'ün iki okuması beklentiyi değiştirmez,
+     Sonucu Belirsiz artık Zaten Kuyrukta değil
 """
 import copy
 import json
@@ -333,10 +334,14 @@ MUTASYON_IPUCU = {
     "M78": "K7-02-iptal-meta-bekletti-sayilmaz", "M79": "K7-04-geri-yukleme-meta-bekletti-sayilmaz", "M80": "K5-01-karar-yeniden-denemeye-tasinir",
     "M81": "K5-02-acilistan-sonra-baska-isle-giden-elenir", "M82": "K5-03-sonra-programin-saatine-gore", "M83": "K5-04-isteki-yine-de-gonder-karari-tasir",
     "M22": "K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil", "M84": "K6-01-yeniden-denemesi-belirsiz-elenir", "M85": "K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi", "M86": "K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi",
-    "M87": "K4-01-ay-sonu-yeniden-deneme-donemi-tasinir", "M88": "K4-03-son-3-ay-yine-de-gonder-secim-tasinir", "M89": "K8-01-sayfalama-imlec-kaymaz",
+    "M87": "K4-01-ay-sonu-yeniden-deneme-donemi-tasinir", "M88": "K4-03-son-3-ay-yeniden-deneme-secim-tasinir", "M89": "K8-01-sayfalama-imlec-kaymaz",
     "M90": "K8-01-sayfalama-imlec-kaymaz", "M91": "K8-01-sayfalama-imlec-kaymaz", "M92": "K8-02-tarih-suzgeci-yerel-gun", "M93": "K8-02-tarih-suzgeci-yerel-gun",
     "M94": "K8-02-tarih-suzgeci-yerel-gun", "M95": "K5-05-karar-yokken-onceki-gec-teslim-sayilir", "M96": "K1-09-bu-ay-gecen-ay-farkli-ay",
     "M97": "K6-02-asil-isin-karari-belirsizi-gecmez",
+    "M98": "D3-01-yeniden-deneme-7-gun-yeni-gonderimden", "M99": "D5-01-sonraki-denemesi-kabul-daha-once", "M100": "D6-01-asilmis-belirsiz-yeni-toplu-iste-eler",
+    "M101": "D1-01-belirsiz-yeni-toplu-iste-elenir", "M102": "D1-01-belirsiz-yeni-toplu-iste-elenir", "M103": "D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir",
+    "M104": "D8-01-tasinan-veride-dosyadaki-ileti-sayilir", "M105": "D2-01-hatirlatma-dunden-bekleyen-bugunku-eler", "M106": "D4-01-ozel-aralik-ayni-gun-bu-ay",
+    "M107": "D1-01-belirsiz-yeni-toplu-iste-elenir", "M108": "K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi",
 }
 
 
@@ -488,10 +493,10 @@ def _i1():
     return h
 
 
-@test("I karar izlenebilirliği: K1–K8 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
+@test("I karar izlenebilirliği: K1–K8 ve D1–D8 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
 def _i2():
     h = []
-    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8"):
+    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -534,7 +539,7 @@ def _i4():
         if isinstance(o, list):
             return [y for i, v in enumerate(o) for y in gez(v, f"{yol}[{i}]")]
         return []
-    eski = [s for s in TUM if s["baslik"] not in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8")]
+    eski = [s for s in TUM if not (len(s["baslik"]) == 2 and s["baslik"][0] in "KD" and s["baslik"][1].isdigit())]
     for s in eski:
         r = beklenen(s)[0]["sonuc"]
         if gez(r) or "yeniden" in r or "listeler" in r:
@@ -542,6 +547,31 @@ def _i4():
     if len(eski) != 145:
         h.append(f"eski senaryo sayısı {len(eski)} ≠ 145")
     return h
+
+
+@test("I D4'ün iki okuması ('o gün' = hazır seçimin kendi günü / özel aralığın günü) HİÇBİR senaryoda beklentiyi değiştirmez (senaryolar okumaya bağlı değil)")
+def _i5():
+    h = []
+    for s in TUM:
+        if s.get("ozet_cikti") and s["baslik"] not in ("D4",):
+            continue
+        if not senaryolar._esit(kahin.hesapla(senaryolar.girdi(s), frozenset(["OKUMA_Y"])), beklenen(s)):
+            h.append(f"{s['ad']}: OKUMA_Y ile beklenti değişti")
+    return h
+
+
+@test("I D1: hiçbir senaryoda Sonucu Belirsiz kişi 'Zaten Kuyrukta' ile elenmiyor (eski yorum 3 düştü); yeni toplu işte 'Sonucu Belirsiz' elemesi en az bir senaryoda")
+def _i6():
+    h = []
+    n = 0
+    for s in TUM:
+        r = beklenen(s)[0]["sonuc"]
+        n += sum(1 for v in r["elenen"].values() for x in v.values() if x == kahin.BELIRSIZ_NEDEN)
+    if kahin.BELIRSIZ in kahin.KUYRUKTA:
+        h.append("Sonucu Belirsiz hâlâ KUYRUKTA kümesinde")
+    if n == 0:
+        h.append("yeni toplu işte Sonucu Belirsiz elemesi hiç yok")
+    return h + [f"bilgi: yeni toplu işte Sonucu Belirsiz elemesi {n} kez"]
 
 
 # ---- H -----------------------------------------------------------------------------------------------------------------------
