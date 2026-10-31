@@ -17,7 +17,7 @@ Bölümler:
   G  komut satırı (hesapla, karsilastir: 'biri', 'plan_susuyor', 'kisaltilabilir', 'secenek')
   I  kâhin güncellemesi 2 (K1–K8, 31.10.2026): dönem çözümü birim denetimi (ay sonu, 31.12 → 01.01, şubat), karar izlenebilirliği (her karar ≥ 2 senaryo),
      yeniden deneme ve liste çıktılarının iç tutarlılığı, eski 145 senaryoda yeni yaprak türü yok; güncelleme 3 (D1–D8): D4'ün iki okuması beklentiyi değiştirmez,
-     Sonucu Belirsiz artık Zaten Kuyrukta değil
+     Sonucu Belirsiz artık Zaten Kuyrukta değil; güncelleme 4 (E1–E4, N6): karar izlenebilirliği
 """
 import copy
 import json
@@ -342,6 +342,9 @@ MUTASYON_IPUCU = {
     "M101": "D1-01-belirsiz-yeni-toplu-iste-elenir", "M102": "D1-01-belirsiz-yeni-toplu-iste-elenir", "M103": "D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir",
     "M104": "D8-01-tasinan-veride-dosyadaki-ileti-sayilir", "M105": "D2-01-hatirlatma-dunden-bekleyen-bugunku-eler", "M106": "D4-01-ozel-aralik-ayni-gun-bu-ay",
     "M107": "D1-01-belirsiz-yeni-toplu-iste-elenir", "M108": "K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi",
+    "M109": "E2-03-yeniden-denemede-kuyrukta-once-belirsiz", "M110": "E2-05-yeniden-denemede-belirsiz-once-r3", "M111": "E2-06-isteki-yine-de-gonder-zaten-kuyrukta",
+    "M112": "E2-01-yeni-is-uclu-cakisma", "M113": "E2-01-yeni-is-uclu-cakisma", "M114": "E3-01-hatirlatma-belirsiz-ayni-yerel-gun",
+    "M115": "E3-01-hatirlatma-belirsiz-ayni-yerel-gun", "M116": "E4-01-son-3-ay-sonraki-teslim-7-gun", "M117": "N6-01-yeniden-denemede-baska-iste-bekleyen",
 }
 
 
@@ -493,10 +496,10 @@ def _i1():
     return h
 
 
-@test("I karar izlenebilirliği: K1–K8 ve D1–D8 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
+@test("I karar izlenebilirliği: K1–K8, D1–D8, E1–E4, N6 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
 def _i2():
     h = []
-    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8"):
+    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -539,7 +542,7 @@ def _i4():
         if isinstance(o, list):
             return [y for i, v in enumerate(o) for y in gez(v, f"{yol}[{i}]")]
         return []
-    eski = [s for s in TUM if not (len(s["baslik"]) == 2 and s["baslik"][0] in "KD" and s["baslik"][1].isdigit())]
+    eski = [s for s in TUM if not (len(s["baslik"]) == 2 and s["baslik"][0] in "KDEN" and s["baslik"][1].isdigit())]
     for s in eski:
         r = beklenen(s)[0]["sonuc"]
         if gez(r) or "yeniden" in r or "listeler" in r:
