@@ -828,7 +828,8 @@ async function kos(sen, uc, secenek) {
       const ids = (o.secim || []).map(cid => cariProgram[cid]?.id).filter(Boolean);
       const govde = { kind: sablon === "hatirlatma" ? "reminder" : "statement", ids };
       if (sablon !== "hatirlatma") {
-        if (!o.donem || o.donem === "tum") govde.preset = "all";
+        // S-15 (README §12.3): aynı senaryoda özel aralık ve hazır seçim (Son 3 Ay / "tum") birlikte — iki eşleme de olduğu gibi; program dönemi kendisi çözer.
+        if (!o.donem || o.donem === "tum") govde.preset = mut("S15-tum-son-3-ay") ? "last3" : "all";
         else if (o.donem.secim !== undefined) {
           // S-2: hazır dönem seçimi programın preset'iyle (dönemi program çözer; sürücü tarih hesaplamaz).
           let secim = o.donem.secim;
@@ -839,7 +840,11 @@ async function kos(sen, uc, secenek) {
           if (o.donem.bas !== undefined || o.donem.son !== undefined) throw new Error(`EŞLEME BELİRSİZ: hazır seçim ile tarih aralığı birlikte (${JSON.stringify(o.donem)})`);
           govde.preset = preset;
           cevir(`dönem ${o.donem.secim}→${preset}`);
-        } else Object.assign(govde, { from: o.donem.bas, to: o.donem.son });
+        } else {
+          let son = o.donem.son;
+          if (mut("S15-ozel-aralik-bitisi-kaydir") && son) son = new Date(Date.parse(`${son}T12:00:00Z`) - GUN).toISOString().slice(0, 10);
+          Object.assign(govde, { from: o.donem.bas, to: son });
+        }
       }
       if (o.istek !== undefined && o.istek !== null) govde.requestId = (istekKimlikleri[o.istek] ||= `istek-${String(o.istek).replace(/[^A-Za-z0-9_-]/g, "_")}-000`);
       if (o.onceki === "gonder") govde.sendAgain = true;
@@ -1628,7 +1633,7 @@ async function kosVeKarsilastir(sen, uc) {
 const MUTASYONLAR = [
   ["S1-bitis-yok-sayilir", "K1-03*,K7-01*,K7-02*,K7-04*,D3-02*,D8-01*", "S-1 / S-10 bitis → ufuk"],
   ["S2-bu-ay-gecen-ay-takas", "K1-01*,K1-03*,K1-09*,D1-02*,D4-01*,D7-02*", "S-2 bu_ay/gecen_ay → thisMonth/lastMonth"],
-  ["S2-son-3-ay-tum", "K1-05*,K4-03*,D1-03*,D3-01*", "S-2 son_3_ay → last3"],
+  ["S2-son-3-ay-tum", "K1-05*,K4-03*,D1-03*,D3-01*,G6-01*,G6-03*,G6-05*", "S-2 son_3_ay → last3"],
   ["S3-hedef-yok-sayilir", "K6-01*,K6-02*,D5-01*,D5-02*", "S-3 hedef asil → asıl toplu iş"],
   ["S3-elenen-okunmaz", "K5-02*,K6-01*,K6-03*,D3-01*,D5-02*", "S-3 yanıttaki elenen + neden"],
   ["S3-alinan-elenenleri-de-sayar", "K5-02*,K6-03*,D5-01*", "S-3 yanıttaki alınan"],
@@ -1657,6 +1662,8 @@ const MUTASYONLAR = [
   ["S12-yine-hedef-yok-sayilir", "G0-02*", "S-12 Yine de Gönder hedef asil → asıl toplu işteki iş"],
   ["S13-sifirla-geri-yukleme-benzetimi", "G4-01*,G4-02*", "S-13 sıfırla → programın gerçek Şirket Verisini Sıfırla ucu"],
   ["S14-gunluk-sinir-yok-sayilir", "G1-01*,G1-02*,E2-03*", "S-14 günlük üst sınır (ayar.gunluk_ust_sinir)"],
+  ["S15-tum-son-3-ay", "G6-02*,G6-04*,K1-06*", "S-15 \"tum\" → all (özel aralıkla aynı senaryoda)"],
+  ["S15-ozel-aralik-bitisi-kaydir", "G6-01*,G6-02*,G6-04*,G6-05*,K1-10*", "S-15 özel aralık bas/son olduğu gibi (hazır seçimle aynı senaryoda)"],
 ];
 
 const sonuclar = [];
