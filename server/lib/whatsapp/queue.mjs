@@ -370,17 +370,19 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // fixed.sendAgainAfter (dar kontrol 5 ORTA-1; KULLANICI KARARI 31.10.2026 "a şıkkı"): asıl işte kullanıcı R3 sorusunda "Yine de Gönder" dediyse asıl işin açılış anı.
   // O zaman R3 yalnız bu andan SONRAKİ kabulleri sayar: açılıştan önceki gönderim (R3'ü doğuran) o kararla kabul edilmişti; açılıştan sonra başka bir işle aynı kişiye
   // aynı dönem giden yine "Daha Önce Gönderildi" (çift ileti yok). Yeniden denemede gövdenin sendAgain'i okunmaz (karar yalnız asıl işin kaydından).
-  function plan(user, body, fixed = null) {
+  // options.anyway (★ soru 1): "Yine de Gönder" (sendAnyway) — kullanıcı belirsiz işi onaylayarak yeniden gönderiyor; Sonucu Belirsiz elemesi uygulanmaz.
+  function plan(user, body, fixed = null, { anyway = false } = {}) {
     const kind = body.kind === "reminder" ? "reminder" : body.kind === "statement" ? "statement" : null;
     if (!kind) fail(400, "Gönderim türünü seçin (Ekstre ya da Ödeme Hatırlatma).", "whatsapp-invalid", { field: "kind" });
     const period = kind === "statement" ? (fixed ? { from: fixed.from || "", to: fixed.to || "", preset: fixed.preset || "" } : periodOf(body, today())) : { from: "", to: "", preset: "" };
     const ids = selection(user, body);
     const sendAgain = fixed ? false : body.sendAgain === true;
     const sent = ledger.sentBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()), since: sentSinceOf(kind, period, nowMs()), after: fixed?.sendAgainAfter || "" });
-    // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"): YALNIZ "Başarısızları Yeniden Dene" (fixed.retry) — aynı cariye aynı dönem iletisi Sonucu Belirsiz kalmışsa elenir
-    // (soru sorulmadan ikinci ileti gitmez; göndermek için işteki "Yine de Gönder" — "iki kez gidebilir" onayıyla). Yeni gönderim ve Yine de Gönder değişmez.
+    // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"): "Başarısızları Yeniden Dene"de aynı cariye aynı dönem iletisi Sonucu Belirsiz kalmışsa elenir (soru sorulmadan ikinci
+    // ileti gitmez; göndermek için işteki "Yine de Gönder" — "iki kez gidebilir" onayıyla). KULLANICI KARARI (31.10.2026 ~10:55 UTC "b"; ★ soru 1): YENİ toplu işte de aynı
+    // kural ve eşlik (aynı tür + dönem; Son 3 Ay / Tüm'de son 7 gün, gönderim anından). Yalnız "Yine de Gönder"in kendisi (anyway) elenmez.
     // asıl işin "Yine de Gönder" sınırı (sendAgainAfter) burada UYGULANMAZ: o karar yalnız Meta'nın KABUL ETTİĞİ önceki gönderimi kapsıyordu.
-    const unsettled = fixed?.retry === true ? ledger.unsettledBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()), since: sentSinceOf(kind, period, nowMs()) }) : null;
+    const unsettled = anyway ? null : ledger.unsettledBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()), since: sentSinceOf(kind, period, nowMs()) });
     const people = [];
     let uncertainOpen = 0;
     for (const id of ids) {
@@ -400,9 +402,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (last) person.sentBefore = last;
       if (!person.skip && last && !sendAgain) person.skip = "Daha Önce Gönderildi";
       if (!person.skip && unsettled?.has(account.id)) {
-        person.skip = "Sonucu Belirsiz";
         // Dar kontrol 7 DÜŞÜK-1: "Yine de Gönder" yalnız iş şirket dosyasında hâlâ Sonucu Belirsiz ise vardır (geri yüklemeden sonra iş dosyadan gider, defterde kalır).
-        if (unsettled.get(account.id).some(jobId => store.get("SELECT 1 AS found FROM wa_jobs WHERE id = ? AND state = 'uncertain'", jobId))) uncertainOpen += 1;
+        const open = unsettled.get(account.id).some(jobId => store.get("SELECT 1 AS found FROM wa_jobs WHERE id = ? AND state = 'uncertain'", jobId));
+        // BAŞ MİMAR KARARI (★ soru 1 + 11:45 "A"): yeni toplu işte eleme YALNIZ işteki "Yine de Gönder" varken (iş dosyada) — iş dosyada yoksa (geri yükleme) 11:45 "A"
+        // iletisinin gösterdiği tek yol "yeni gönderim"dir; o da elenseydi kişiye hiç gönderilemezdi. Başarısızları Yeniden Dene'de (08:00 "A") her zaman elenir.
+        if (fixed?.retry === true || open) {
+          person.skip = "Sonucu Belirsiz";
+          if (open) uncertainOpen += 1;
+        }
       }
       people.push(person);
     }
@@ -538,7 +545,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const again = requestKey ? store.get("SELECT * FROM wa_batches WHERE request_key = ?", requestKey) : null;
     if (again) return { batch: batchView(again), reused: true };
     preconditions();
-    const plotted = plan(user, body, period);
+    const plotted = plan(user, body, period, { anyway: Boolean(inherit) });
     const summary = summarize(plotted, record, limitInfo, template);
     // §7a 31: bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; nedenler yanıtta ve İLETİDE (dar kontrol 5 ORTA-1: istemci yalnız iletiyi gösterir).
     if (!summary.sendable) fail(400, nothingMessage(summary, plotted.uncertainOpen), "whatsapp-nothing", { summary });

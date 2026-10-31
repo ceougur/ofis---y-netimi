@@ -134,13 +134,18 @@ describe("2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden 
     }
   });
 
+  // ★ soru 1 (KULLANICI KARARI 31.10.2026 ~10:55 UTC "b"): iş Sonucu Belirsiz dururken YENİ toplu iş B'yi "Sonucu Belirsiz" ile eler → "başka iş" artık yalnız işteki
+  // "Yine de Gönder" (onaylı) olabilir; o kabul edilince aynı işin ikinci "Yine de Gönder"i "Daha Önce Gönderildi" (asıl işin açılışından SONRA giden sayılır).
   it("Sınır (Sonucu Belirsiz): asıl iş açıldıktan SONRA başka bir işle B'ye gitti → işteki Yine de Gönder 'Daha Önce Gönderildi', gövde zorlayamaz", async () => {
     const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true } });
     try {
       const b = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
       const { job } = await sendAgainFailed(ctx, b, { uncertain: true });
       ctx.clock.advance(HOUR);
-      const other = await ok(await ctx.batch({ kind: "statement", ids: [b.id], preset: "thisMonth", sendAgain: true }), "başka iş");
+      const fresh = await ctx.batch({ kind: "statement", ids: [b.id], preset: "thisMonth", sendAgain: true });
+      assert.equal(fresh.status, 400, `★ soru 1: iş Sonucu Belirsiz dururken yeni gönderim B'yi eler (geldi ${fresh.status} ${JSON.stringify(fresh.data)})`);
+      assert.deepEqual(fresh.data.summary?.skipped, { "Sonucu Belirsiz": 1 }, "★ soru 1: neden Sonucu Belirsiz");
+      const other = await ok(await anyway(ctx, job.id), "başka iş (işteki Yine de Gönder, onaylı)");
       await ctx.drain();
       assert.deepEqual((await ctx.jobs(other.batch.id)).map(item => item.state), ["accepted"], "ön koşul: başka iş kabul");
       ctx.clock.advance(HOUR);

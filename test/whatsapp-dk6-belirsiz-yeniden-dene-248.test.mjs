@@ -87,7 +87,8 @@ describe("2.4.8 dar kontrol 6 — Başarısızları Yeniden Dene Sonucu Belirsiz
     });
   }
 
-  it("Başka iş: M'den sonra yeni gönderim (O) B için Sonucu Belirsiz → M'nin Yeniden Dene'si 'Sonucu Belirsiz'; yeni gönderimin önizlemesi DEĞİŞMEDİ (B gönderilecek)", async () => {
+  // ★ soru 1 (KULLANICI KARARI 31.10.2026 ~10:55 UTC "b"): yeni gönderim de aynı kuralla eler (önceden "yeni gönderim değişmez" idi).
+  it("Başka iş: M'den sonra yeni gönderim (O) B için Sonucu Belirsiz → M'nin Yeniden Dene'si 'Sonucu Belirsiz'; yeni gönderimin önizlemesinde de B 'Sonucu Belirsiz' (★ soru 1)", async () => {
     const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true } });
     try {
       const b = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
@@ -100,7 +101,9 @@ describe("2.4.8 dar kontrol 6 — Başarısızları Yeniden Dene Sonucu Belirsiz
       assertUncertainSkip(await retry(ctx, main.batch.id), "M'nin Yeniden Dene'si");
       assert.equal(count(ctx), 1, "B'ye ikinci ileti gitmedi");
       const pv = await ok(await ctx.api.post(URLS.preview, body), "yeni gönderim önizlemesi");
-      assert.deepEqual(skipOf(pv), ["gönderilecek"], "yeni gönderim Sonucu Belirsiz yüzünden elenmez (karar: yeni gönderim değişmez)");
+      assert.deepEqual(skipOf(pv), ["Sonucu Belirsiz"], "★ soru 1: yeni gönderimde de B Sonucu Belirsiz ile elenir");
+      assertUncertainSkip(await ctx.batch(body), "yeni gönderim (★ soru 1)");
+      assert.equal(count(ctx), 1, "yeni gönderimle B'ye ikinci ileti gitmedi");
     } finally {
       await ctx.close();
     }
