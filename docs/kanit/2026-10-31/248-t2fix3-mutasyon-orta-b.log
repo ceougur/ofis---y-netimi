@@ -1,0 +1,236 @@
+# ===== MUTASYON (dogrudan): server/lib/net-proxy.mjs secureConnect dinleyicisi bozuldu — kopya afc785c3 (git archive), fark:
+324c324
+<     if (secure) socket.once("secureConnect", ready);
+---
+>     if (secure) socket.once("secureConnectX", ready); // MUTASYON
+# komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-t6-e2-tls-248.test.mjs
+# platform: Linux node v22.22.0; tarih: 2026-10-31T02:53:53Z
+TAP version 13
+# Subtest: 2.4.8 T2 dar kontrol 2 ORTA-B — ileti isteğinin sınıflaması GERÇEK TLS ile: gövde gittiyse belirsiz, gitmediyse gönderilmedi
+    # Subtest: doğrudan: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+    not ok 1 - doğrudan: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+      ---
+      duration_ms: 34.320843
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix3-mut-dogrudan-afc785c3-q8m/test/whatsapp-t6-e2-tls-248.test.mjs:110:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        gövdesi Meta'ya gitmiş istek "gönderilmedi" sayılmamalı (çift ileti) — network: Meta'ya bağlanılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); ileti gönderilmedi. / NOT_CONNECTED
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix3-mut-dogrudan-afc785c3-q8m/test/whatsapp-t6-e2-tls-248.test.mjs:115:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: vekil üzerinden: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+    ok 2 - vekil üzerinden: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+      ---
+      duration_ms: 11.395992
+      type: 'test'
+      ...
+    # Subtest: doğrudan: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+    not ok 3 - doğrudan: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+      ---
+      duration_ms: 803.753014
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix3-mut-dogrudan-afc785c3-q8m/test/whatsapp-t6-e2-tls-248.test.mjs:110:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        gövdesi Meta'ya gitmiş istek "gönderilmedi" sayılmamalı (çift ileti) — network: Meta'ya bağlanılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); ileti gönderilmedi. / NOT_CONNECTED
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix3-mut-dogrudan-afc785c3-q8m/test/whatsapp-t6-e2-tls-248.test.mjs:115:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: vekil üzerinden: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+    ok 4 - vekil üzerinden: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+      ---
+      duration_ms: 804.947625
+      type: 'test'
+      ...
+    # Subtest: doğrudan: TCP kabul edildi, TLS hiç kurulmadı (zaman aşımı) → gönderilmedi
+    ok 5 - doğrudan: TCP kabul edildi, TLS hiç kurulmadı (zaman aşımı) → gönderilmedi
+      ---
+      duration_ms: 503.3257
+      type: 'test'
+      ...
+    # Subtest: doğrudan: sertifika doğrulanamadı → gönderilmedi, sunucuya gövde gitmedi
+    ok 6 - doğrudan: sertifika doğrulanamadı → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 11.374859
+      type: 'test'
+      ...
+    # Subtest: vekil: CONNECT 200, hedefle TLS kurulmadan kopma → gönderilmedi, sunucuya gövde gitmedi
+    ok 7 - vekil: CONNECT 200, hedefle TLS kurulmadan kopma → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 7.760476
+      type: 'test'
+      ...
+    # Subtest: vekil: CONNECT reddedildi (502) → gönderilmedi, sunucuya gövde gitmedi
+    ok 8 - vekil: CONNECT reddedildi (502) → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 4.766884
+      type: 'test'
+      ...
+    # Subtest: vekil: sertifika doğrulanamadı (vekil TLS denetimi / yanlış kök) → gönderilmedi, sunucuya gövde gitmedi
+    ok 9 - vekil: sertifika doğrulanamadı (vekil TLS denetimi / yanlış kök) → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 8.736083
+      type: 'test'
+      ...
+    1..9
+not ok 1 - 2.4.8 T2 dar kontrol 2 ORTA-B — ileti isteğinin sınıflaması GERÇEK TLS ile: gövde gittiyse belirsiz, gitmediyse gönderilmedi
+  ---
+  duration_ms: 2196.307828
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix3-mut-dogrudan-afc785c3-q8m/test/whatsapp-t6-e2-tls-248.test.mjs:97:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 7
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2300.966509
+# çıkış kodu: 1
+# ===== MUTASYON (vekil): server/lib/net-proxy.mjs secureConnect dinleyicisi bozuldu — kopya afc785c3 (git archive), fark:
+292c292
+<         if (mark) secure.once("secureConnect", () => (mark.connected = true));
+---
+>         if (mark) secure.once("secureConnectX", () => (mark.connected = true)); // MUTASYON
+# komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-t6-e2-tls-248.test.mjs
+# platform: Linux node v22.22.0; tarih: 2026-10-31T02:53:58Z
+TAP version 13
+# Subtest: 2.4.8 T2 dar kontrol 2 ORTA-B — ileti isteğinin sınıflaması GERÇEK TLS ile: gövde gittiyse belirsiz, gitmediyse gönderilmedi
+    # Subtest: doğrudan: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+    ok 1 - doğrudan: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+      ---
+      duration_ms: 35.103842
+      type: 'test'
+      ...
+    # Subtest: vekil üzerinden: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+    not ok 2 - vekil üzerinden: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+      ---
+      duration_ms: 10.817962
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix3-mut-vekil-afc785c3-q8m/test/whatsapp-t6-e2-tls-248.test.mjs:120:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        gövdesi Meta'ya gitmiş istek "gönderilmedi" sayılmamalı (çift ileti) — network: Meta'ya bağlanılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); ileti gönderilmedi. / NOT_CONNECTED
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix3-mut-vekil-afc785c3-q8m/test/whatsapp-t6-e2-tls-248.test.mjs:126:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: doğrudan: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+    ok 3 - doğrudan: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+      ---
+      duration_ms: 803.270051
+      type: 'test'
+      ...
+    # Subtest: vekil üzerinden: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+    not ok 4 - vekil üzerinden: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+      ---
+      duration_ms: 804.827151
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix3-mut-vekil-afc785c3-q8m/test/whatsapp-t6-e2-tls-248.test.mjs:120:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        gövdesi Meta'ya gitmiş istek "gönderilmedi" sayılmamalı (çift ileti) — network: Meta'ya bağlanılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); ileti gönderilmedi. / NOT_CONNECTED
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix3-mut-vekil-afc785c3-q8m/test/whatsapp-t6-e2-tls-248.test.mjs:126:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: doğrudan: TCP kabul edildi, TLS hiç kurulmadı (zaman aşımı) → gönderilmedi
+    ok 5 - doğrudan: TCP kabul edildi, TLS hiç kurulmadı (zaman aşımı) → gönderilmedi
+      ---
+      duration_ms: 502.435012
+      type: 'test'
+      ...
+    # Subtest: doğrudan: sertifika doğrulanamadı → gönderilmedi, sunucuya gövde gitmedi
+    ok 6 - doğrudan: sertifika doğrulanamadı → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 9.104666
+      type: 'test'
+      ...
+    # Subtest: vekil: CONNECT 200, hedefle TLS kurulmadan kopma → gönderilmedi, sunucuya gövde gitmedi
+    ok 7 - vekil: CONNECT 200, hedefle TLS kurulmadan kopma → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 5.48248
+      type: 'test'
+      ...
+    # Subtest: vekil: CONNECT reddedildi (502) → gönderilmedi, sunucuya gövde gitmedi
+    ok 8 - vekil: CONNECT reddedildi (502) → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 3.41185
+      type: 'test'
+      ...
+    # Subtest: vekil: sertifika doğrulanamadı (vekil TLS denetimi / yanlış kök) → gönderilmedi, sunucuya gövde gitmedi
+    ok 9 - vekil: sertifika doğrulanamadı (vekil TLS denetimi / yanlış kök) → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 6.440413
+      type: 'test'
+      ...
+    1..9
+not ok 1 - 2.4.8 T2 dar kontrol 2 ORTA-B — ileti isteğinin sınıflaması GERÇEK TLS ile: gövde gittiyse belirsiz, gitmediyse gönderilmedi
+  ---
+  duration_ms: 2186.5578
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix3-mut-vekil-afc785c3-q8m/test/whatsapp-t6-e2-tls-248.test.mjs:97:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 7
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2274.390315
+# çıkış kodu: 1
