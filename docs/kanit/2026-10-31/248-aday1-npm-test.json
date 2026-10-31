@@ -1,0 +1,32 @@
+{
+  "ad": "248-aday1-npm-test",
+  "komut": "npm test",
+  "commit": "29c6514be42ca2bcc6afe002ebfe374eda50122f",
+  "dal": "is/aday1-248",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T00:39:40.804Z",
+  "sure_sn": 1884.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4163,
+    "gecen": 4163,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-aday1-npm-test.log.gz",
+  "klasor": "/home/user/wt-aday1-248",
+  "ham_cikti_sha256": "6dec38585f6d8920083ad09e0fbd8cae97c262ebf61bee87830843f8e3b275d7",
+  "ham_cikti_bayt": 1527343
+}
