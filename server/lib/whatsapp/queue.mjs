@@ -785,6 +785,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // kilitle düştüyse aynı turda başka yazım denenmez — bekleme bellekte (localDefer), toplu işin "art arda" sayacı bellekte artar (lockTroubles) ve kilit kalkınca ilk
   // yazılabilen sayaçla birlikte yazılır; işin başarılı yürütülmesi (troubles: 0) bellekteki sayacı da sıfırlar. Disk dolu ve öbür hatalar bugünkü gibi (T6-B1/B2).
   const lockTroubles = new Map(); // toplu iş → kilit yüzünden yazılamamış "art arda" sayısı
+  const mediaDeletedPending = new Map(); // iş → Meta'da silinme anı (kayıt kilit yüzünden yazılamadı; İş O1)
   function deferLocal(batchId, jobId, error) {
     const tries = (localDefer.get(jobId)?.tries || 0) + 1;
     const waitMs = JOB_BACKOFF_MS[Math.min(tries, JOB_BACKOFF_MS.length) - 1];
@@ -1444,11 +1445,26 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       for (const row of doomed) {
         if (!graph || record.wabaId !== row.waba_id) break;
+        // İş O1: Meta'da silinmiş ama kaydı kilit yüzünden yazılamamış PDF — Meta'ya ikinci silme isteği GİTMEZ, yalnız kayıt yazılır.
+        if (mediaDeletedPending.has(row.id)) {
+          updateJob(row.id, { media_deleted_at: mediaDeletedPending.get(row.id) });
+          mediaDeletedPending.delete(row.id);
+          out.mediaDeleted += 1;
+          continue;
+        }
+        let deletedAt = null;
         try {
           await graph.deleteMedia(row.media_id);
-          updateJob(row.id, { media_deleted_at: iso() });
+          deletedAt = iso();
+          updateJob(row.id, { media_deleted_at: deletedAt });
           out.mediaDeleted += 1;
         } catch (error) {
+          // İş O1 (dar kontrol 11 ORTA-1, İş N kalıbı): media_deleted_at yazımı dosya KİLİDİNE takıldıysa aynı turda ikinci yazım (media_delete_tries) denenmez — tur
+          // bırakılır (scheduler bu şirketin işini o turda yürütmez); PDF Meta'da silindi, kayıt kilit kalkınca bir sonraki bakımda yazılır (mediaDeletedPending).
+          if (isLockError(error)) {
+            if (deletedAt) mediaDeletedPending.set(row.id, deletedAt);
+            throw error;
+          }
           updateJob(row.id, { media_delete_tries: (row.media_delete_tries || 0) + 1 });
           out.mediaFailed += 1;
           log.warn?.(`WhatsApp: gönderilen PDF Meta'dan silinemedi (${row.id}; ${error.message}); sonra yeniden denenecek.`);
