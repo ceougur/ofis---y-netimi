@@ -387,6 +387,29 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     return out;
   }
+  // KULLANICI KARARI (31.10.2026, "KİME KAÇ KEZ" ilkesi, S2): taşınan veride şirket dosyasında "Sonucu Belirsiz" duran iş (bu defterde açılmamış toplu işte) yeni
+  // toplu işte ve Başarısızları Yeniden Dene'de kişiyi "Sonucu Belirsiz" ile eler; işteki Yine de Gönder yolu açık (iş dosyada). Eşlik defterdeki elemeyle aynı (dönem
+  // kümesi keyDayOfBatch, Son 3 Ay / Tüm'de 7 gün — gönderim anından). Dönüş: Map(cari → [iş kimliği]).
+  function movedUnsettled(ids, kind, keys, since) {
+    const out = new Map();
+    if (!store.get("SELECT 1 AS found FROM wa_batches WHERE kind = ? AND ledger_id <> ? LIMIT 1", kind, ledger.id)) return out;
+    for (let i = 0; i < ids.length; i += 500) {
+      const part = ids.slice(i, i + 500);
+      const rows = store.all(
+        `SELECT j.id, j.account_id AS accountId, COALESCE(j.sending_at, j.updated_at) AS sendingAt, b.kind, b.period_from, b.period_to, b.preset, b.created_at, b.key_day
+         FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
+         WHERE b.kind = ? AND b.ledger_id <> ? AND j.state = 'uncertain' AND j.account_id IN (${part.map(() => "?").join(",")})`,
+        kind, ledger.id, ...part,
+      );
+      for (const row of rows) {
+        if (since && String(row.sendingAt || "") < since) continue;
+        if (!sameKeys(keys, periodKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, kind === "statement" ? keyDayOfBatch(row) : localDayOf(row.sendingAt)))) continue;
+        if (!out.has(row.accountId)) out.set(row.accountId, []);
+        out.get(row.accountId).push(row.id);
+      }
+    }
+    return out;
+  }
   // Cari, gönderim için uygun mu (toplu iş açılırken ve GÖNDERİM ANINDA aynı kural — §7a 1, 2, 6, 20). Dönüş: neden (boş = uygun) + numara.
   function eligibility(account, kind) {
     const phone = e164Of(account.phone);
@@ -426,6 +449,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // kural ve eşlik (aynı tür + dönem; Son 3 Ay / Tüm'de son 7 gün, gönderim anından). Yalnız "Yine de Gönder"in kendisi (anyway) elenmez.
     // asıl işin "Yine de Gönder" sınırı (sendAgainAfter) burada UYGULANMAZ: o karar yalnız Meta'nın KABUL ETTİĞİ önceki gönderimi kapsıyordu.
     const unsettled = anyway ? null : ledger.unsettledBefore({ companyId, kind, periodKeys: keys, since });
+    if (unsettled) for (const [accountId, jobIds] of movedUnsettled(ids, kind, keys, since)) unsettled.set(accountId, [...(unsettled.get(accountId) || []), ...jobIds]);
     const people = [];
     let uncertainOpen = 0;
     for (const id of ids) {
