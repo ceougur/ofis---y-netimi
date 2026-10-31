@@ -11634,6 +11634,10 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-wa-api-again { border-color: #f5b041; background: rgba(245, 176, 65, .08); }
 .hof-wa-api-again p { margin: 0 0 6px; }
 .hof-wa-api-active { margin: 0 0 10px; font-size: .88rem; }
+.hof-wa-api-filter { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 12px; margin: 0 0 12px; }
+.hof-wa-api-filter .hof-field { margin: 0; min-width: 150px; }
+.hof-wa-api-more { margin-top: 10px; }
+.hof-wa-api-list-error { color: var(--do-danger, #b42318); }
 .hof-wa-api-tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .78rem; border: 1px solid var(--do-border); white-space: nowrap; }
 .hof-wa-api-tag.is-ok { color: #0f7b3f; border-color: rgba(15, 123, 63, .4); }
 .hof-wa-api-tag.is-info { color: #1d4ed8; border-color: rgba(29, 78, 216, .35); }

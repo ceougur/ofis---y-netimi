@@ -1492,6 +1492,39 @@ export const MIGRATIONS = [
       addColumn(store, "accounts", "wa_opt_out", "INTEGER NOT NULL DEFAULT 0");
     },
   },
+  {
+    version: 41,
+    name: "v2.4.8 WhatsApp: iletinin dondurulmuş içeriği (para dışı)",
+    up(store) {
+      // 2.4.8 T2-6 (bağımsız gözden geçirme r3; plan §7a 1 "metin = PDF", §7a 14–15 "yeniden denemede aynı medya"): iş İLK HAZIRLANDIĞINDA değişkenler (params_json)
+      // ve ekstre PDF'i tek anlık görüntüden üretilip dondurulur; her yeniden deneme aynı metni ve aynı PDF'i kullanır, Meta'daki kopya silinmiş / süresi
+      // dolmuşsa aynı baytlardan yeniden yüklenir. prepared_at: dondurma anı. pdf_blob: PDF'in kendisi — YALNIZ iş açıkken (Bekliyor / Sınırda / Duraklatıldı …)
+      // tutulur; iş Meta'ya kabul edilince ya da kesinleşince bakım turu siler (plan §5: iletinin içeriği saklanmaz; yalnız değişkenler + PDF adı kalır).
+      addColumn(store, "wa_jobs", "prepared_at", "TEXT");
+      addColumn(store, "wa_jobs", "pdf_blob", "BLOB");
+    },
+  },
+  {
+    version: 42,
+    name: "v2.4.8 WhatsApp: toplu işin \"Yine de Gönder\" kararı yeniden denemeye taşınır (para dışı)",
+    up(store) {
+      // 2.4.8 dar kontrol 5 ORTA-1 (KULLANICI KARARI 31.10.2026 "a şıkkı"; lib/whatsapp/queue.mjs plan): kullanıcı R3 sorusunda "Yine de Gönder" dediyse bu karar
+      // "Başarısızları Yeniden Dene"ye ve işteki "Yine de Gönder"e taşınır; yalnız ASIL işin açılışından ÖNCEKİ kabuller yok sayılır. send_again_after: '' = karar yok
+      // (eski satırlar dahil — bugünkü davranış); dolu = asıl işin açılış anı (ISO). Yeniden denemenin yeniden denemesi aynı anı devralır (zincirde sınır kaymaz).
+      // YALNIZ EKLEYİCİ: tek sütun.
+      addColumn(store, "wa_batches", "send_again_after", "TEXT NOT NULL DEFAULT ''");
+    },
+  },
+  {
+    version: 43,
+    name: "v2.4.8 WhatsApp: toplu işin dönem günü (özel aralık ↔ hazır seçim eşliği) yeniden denemeye taşınır (para dışı)",
+    up(store) {
+      // 2.4.8 dar kontrol 9 İş J (KULLANICI KARARI 31.10.2026 dk9 soru 1/7 "a"; lib/whatsapp/queue.mjs keyDayOfBatch): ekstrede özel aralığın "o gün"ü toplu işin
+      // AÇILDIĞI yerel gündür; Başarısızları Yeniden Dene / işteki Yine de Gönder'in açtığı işte ASIL işin günü (dönem gibi taşınır). key_day: '' = açılış günü
+      // (created_at; eski satırlar dahil — bugünkü davranış); dolu = YYYY-AA-GG. YALNIZ EKLEYİCİ: tek sütun.
+      addColumn(store, "wa_batches", "key_day", "TEXT NOT NULL DEFAULT ''");
+    },
+  },
 ];
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";

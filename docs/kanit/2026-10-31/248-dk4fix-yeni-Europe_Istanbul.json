@@ -1,0 +1,32 @@
+{
+  "ad": "248-dk4fix-yeni-Europe_Istanbul",
+  "komut": "node --test test/whatsapp-dk4-yeniden-dene-248.test.mjs test/whatsapp-t2-1-248.test.mjs",
+  "commit": "810cf68d3c2b402304a7ddacd424c8d68ae68cdf",
+  "dal": "is/t2fix-248",
+  "kirli": 2,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T06:17:25.482Z",
+  "sure_sn": 3.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk4fix-yeni-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "1a131386f86fcc6c0e58f6d5ce585a682d08b958c900fc348675b740836008fc",
+  "ham_cikti_bayt": 7251
+}

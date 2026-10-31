@@ -1,0 +1,161 @@
+# komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-t2dk-orta1-248.test.mjs
+# kod: c44d7724 (git archive kopyası, ders 23); test dosyası: is/t2fix-248 ORTA-1 commit'indeki hâli
+# platform: Linux node v22.22.0; tarih: 2026-10-31T01:05:38Z
+TAP version 13
+# Subtest: 2.4.8 T2 dar kontrol ORTA-1 — 131049 ile yeniden açılan toplu iş defterde de canlı; sonraki durdurma / iptal kaydedilir
+    # Subtest: defter: yeniden açılan toplu iş canlı; iptal edilince defterde 'canceled'
+    not ok 1 - defter: yeniden açılan toplu iş canlı; iptal edilince defterde 'canceled'
+      ---
+      duration_ms: 596.590588
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:41:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        defterde canlı olmalı ({"live":false,"opened":true,"stopped":true,"reason":"done"})
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:44:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (a) yeniden denemede geçici Meta hatası (131000): toplu iş 'Durduruldu' OLMAZ, iş beklemeden sonra gider
+    not ok 2 - (a) yeniden denemede geçici Meta hatası (131000): toplu iş 'Durduruldu' OLMAZ, iş beklemeden sonra gider
+      ---
+      duration_ms: 462.19308
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:54:3'
+      failureType: 'testCodeFailure'
+      error: "geçici hata toplu işi 'Durduruldu' yapmamalı (geldi stopped: Durduruldu (Geri Yükleme): yedekten geri yükleme / Şirket Verisini Sıfırla sonrası eski gönderim yeniden başlatılmaz.)"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'stopped'
+      actual: 'stopped'
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:63:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b) Duraklat → Devam Et kabul edilir
+    not ok 3 - (b) Duraklat → Devam Et kabul edilir
+      ---
+      duration_ms: 396.26094
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:71:39'
+      failureType: 'testCodeFailure'
+      error: |-
+        duraklat: Devam Et kabul edilmeli (geldi 409 {"ok":false,"error":"Bu toplu gönderim geri yüklenen ya da taşınan veriye ait; sürdürülemez. Gerekirse yeni gönderim başlatın.","code":"whatsapp-batch-moved"})
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:82:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (c) Gönderim Onayı kaldırılıp yeniden işaretlenince Devam Et kabul edilir
+    not ok 4 - (c) Gönderim Onayı kaldırılıp yeniden işaretlenince Devam Et kabul edilir
+      ---
+      duration_ms: 393.142627
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:71:39'
+      failureType: 'testCodeFailure'
+      error: |-
+        onay: Devam Et kabul edilmeli (geldi 409 {"ok":false,"error":"Bu toplu gönderim geri yüklenen ya da taşınan veriye ait; sürdürülemez. Gerekirse yeni gönderim başlatın.","code":"whatsapp-batch-moved"})
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:82:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (d) İptal Et → dosya iptalden önceki hâline dönerse (geri yükleme benzetimi): açılış toparlaması toplu işi durdurur, iptal edilen ileti GİTMEZ
+    not ok 5 - (d) İptal Et → dosya iptalden önceki hâline dönerse (geri yükleme benzetimi): açılış toparlaması toplu işi durdurur, iptal edilen ileti GİTMEZ
+      ---
+      duration_ms: 423.969037
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:91:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iptal edilmiş iletinin eski kopyası gönderilmemeli (§7a 26)
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:102:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: GERÇEK yedek → İptal Et → yedekten geri yükle (ikinci şirket, gerçek kanca): iptal edilen ileti geri yüklemeden sonra GİTMEZ
+    not ok 6 - GERÇEK yedek → İptal Et → yedekten geri yükle (ikinci şirket, gerçek kanca): iptal edilen ileti geri yüklemeden sonra GİTMEZ
+      ---
+      duration_ms: 860.598407
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:109:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kullanıcının iptal ettiği ileti geri yüklemeden sonra gönderilmemeli (§7a 26; toplu iş done, iş accepted)
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:150:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 1 - 2.4.8 T2 dar kontrol ORTA-1 — 131049 ile yeniden açılan toplu iş defterde de canlı; sonraki durdurma / iptal kaydedilir
+  ---
+  duration_ms: 3134.969746
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta1-248.test.mjs:40:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3551.970334
+# çıkış kodu: 1

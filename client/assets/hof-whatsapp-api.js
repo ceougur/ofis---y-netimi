@@ -60,7 +60,11 @@
    * @param {{ kind: "statement"|"reminder", selection: object, info: object, onDone?: Function, onTitle?: Function }} options
    */
   function mount(root, { kind = "statement", selection = {}, info = null, onDone = null }) {
-    const state = { kind, preset: "thisMonth", sendAgain: false, info, preview: null, error: null, loading: false, requestId: HOF.requestId(), view: "compose", batchId: "", batch: null, list: null, busy: false, seq: 0 };
+    const state = { kind, preset: "thisMonth", sendAgain: false, info, preview: null, error: null, loading: false, requestId: HOF.requestId(), view: "compose", batchId: "", batch: null, list: null, listFrom: "", listTo: "", listMore: false, listError: "", moreLoading: false, busy: false, seq: 0 };
+    let listSeq = 0; // liste yüklemelerinin sırası (geç gelen eski yanıt yeni sayfanın üstüne yazmaz)
+    let listJob = null; // süren liste isteği (Daha Fazla Göster onu bekler; dar kontrol 8 DÜŞÜK-2)
+    let refreshAgain = false; // Daha Fazla Göster sürerken gelen canlı yenileme: o bitince yapılır
+    const PAGE = 30; // "Daha Fazla Göster" her basışta 30 daha eski gönderim (sunucuda imleçli sayfalama; en çok 200)
     root.setAttribute("data-nodirty", "");
     let pollTimer = 0;
     let liveTimer = 0;
@@ -239,14 +243,83 @@
       </div>`;
     }
 
-    function listView() {
+    // Liste kabı (tablo + Daha Fazla Göster + neden): yenilemeler (sayfa, canlı olay) YALNIZ bunu değiştirir; süzgeç alanları yeniden kurulmaz (dar kontrol 7 ORTA-2:
+    // klavyeyle yazılan tarih ve odak canlı yenilemede kaybolmaz).
+    function listBody() {
       const rows = (state.list || []).map(b => {
         const c = b.counts || {};
         return `<tr data-wa-api-open="${esc(b.id)}" tabindex="0"><td>${esc(when(b.createdAt))}</td><td>${esc(b.kindLabel)}</td><td>${esc(periodLabel(b.period))}</td><td><span class="hof-wa-api-state is-${b.state}">${esc(b.stateLabel)}</span></td><td class="num">${count(b.total)}</td><td class="num">${count((c.delivered || 0) + (c.read || 0))}</td><td class="num">${count(c.failed)}</td></tr>`;
       }).join("");
+      const filtered = Boolean(state.listFrom || state.listTo);
+      const empty = state.listError
+        ? `<p class="hof-empty hof-wa-api-list-error" role="alert" data-wa-api-list-error>${esc(state.listError)}</p>`
+        : `<p class="hof-empty" data-wa-api-batches-empty>${filtered ? "Bu tarihlerde gönderim yok." : "Henüz otomatik gönderim yapılmadı."}</p>`;
+      // Daha eski gönderim yoksa düğme görünmez; nedeni yazılır (pasif / gizli düğmenin nedeni görünür). Yüklenirken düğme odakta kalır (aria-disabled; disabled
+      // odağı düşürürdü), ikinci basış yok sayılır. "Yükleniyor…" YALNIZ Daha Fazla Göster'in kendi yüklemesini gösterir (canlı yenileme düğmeyi pasif yapmaz;
+      // dar kontrol 8 DÜŞÜK-2).
+      const more = rows
+        ? state.listMore
+          ? `<button type="button" class="hof-button hof-button-ghost hof-wa-api-more" name="waListMore" data-wa-api-more${state.moreLoading ? ' aria-disabled="true"' : ""}>${state.moreLoading ? "Yükleniyor…" : "Daha Fazla Göster"}</button>`
+          : `<p class="hof-wa-api-note" data-wa-api-list-end>${filtered ? "Bu tarihlerdeki bütün gönderimler gösteriliyor." : "Bütün gönderimler gösteriliyor."}</p>`
+        : "";
+      return state.list === null ? '<p class="hof-empty">Yükleniyor…</p>' : rows ? `<div class="hof-wa-list"><table class="hof-table"><thead><tr><th>Başlangıç</th><th>Tür</th><th>Dönem</th><th>Durum</th><th class="num">Kişi</th><th class="num">Teslim Edildi</th><th class="num">Başarısız</th></tr></thead><tbody data-wa-api-batches>${rows}</tbody></table></div>${more}` : empty;
+    }
+    const clearButton = () => (state.listFrom || state.listTo ? '<button type="button" class="hof-button hof-button-ghost hof-button-small" name="waListClear" data-wa-api-filter-clear>Süzgeci Temizle</button>' : "");
+    function listView() {
+      const filter = `<div class="hof-wa-api-filter" data-wa-api-filter><label class="hof-field"><span>Başlangıç</span><input type="date" name="waListFrom" aria-label="Başlangıç" data-wa-api-from value="${esc(state.listFrom)}" max="${esc(state.listTo)}"></label>
+        <label class="hof-field"><span>Bitiş</span><input type="date" name="waListTo" aria-label="Bitiş" data-wa-api-to value="${esc(state.listTo)}" min="${esc(state.listFrom)}"></label>
+        <span data-wa-api-filter-clear-slot>${clearButton()}</span></div>`;
       return `<div class="hof-wa-api-bar"><p class="hof-wa-api-title"><b>WhatsApp Gönderimleri</b></p><button type="button" class="hof-button hof-button-ghost hof-button-small" data-wa-api-new>Yeni Gönderim</button></div>
-        ${state.list === null ? '<p class="hof-empty">Yükleniyor…</p>' : rows ? `<div class="hof-wa-list"><table class="hof-table"><thead><tr><th>Başlangıç</th><th>Tür</th><th>Dönem</th><th>Durum</th><th class="num">Kişi</th><th class="num">Teslim Edildi</th><th class="num">Başarısız</th></tr></thead><tbody data-wa-api-batches>${rows}</tbody></table></div>` : '<p class="hof-empty" data-wa-api-batches-empty>Henüz otomatik gönderim yapılmadı.</p>'}
+        ${filter}
+        <div data-wa-api-list-body>${listBody()}</div>
         <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-wa-api-close>Kapat</button></div>`;
+    }
+    // Liste görünümündeyse yalnız liste kabı yeniden çizilir: kutu kaydırması (.hof-wa-list scrollTop) ve odaktaki satır korunur; değilse tam çizim.
+    // focusRow: "Daha Fazla Göster"den sonra odak bu sıradaki (ilk yeni) satıra verilir.
+    function renderList({ focusRow = -1 } = {}) {
+      const body = alive() && state.view === "list" ? root.querySelector("[data-wa-api-list-body]") : null;
+      if (!body) return render();
+      const scroll = body.querySelector(".hof-wa-list")?.scrollTop || 0;
+      const active = document.activeElement;
+      const rowId = active && body.contains(active) && active.matches("tr[data-wa-api-open]") ? active.dataset.waApiOpen : "";
+      HOF.swap ? HOF.swap(body, listBody()) : (body.innerHTML = listBody());
+      const box = body.querySelector(".hof-wa-list");
+      if (box) box.scrollTop = scroll;
+      const rows = body.querySelectorAll("tr[data-wa-api-open]");
+      if (focusRow >= 0 && rows[focusRow]) rows[focusRow].focus();
+      else if (rowId) [...rows].find(row => row.dataset.waApiOpen === rowId)?.focus({ preventScroll: true });
+    }
+    // Süzgeç: boş (temizlendi) ya da geçerli tam tarih (yıl ≥ 1900) "change"te; yarım yazım (Chromium yılın her hanesinde change verir: 0002, 0020 …) ancak Enter /
+    // alandan çıkınca (sunucu geçersizse nedenini listede söyler). Alanlar yeniden kurulmaz; yalnız sınırlar ve Süzgeci Temizle güncellenir.
+    const fullDate = value => /^(\d{4})-\d{2}-\d{2}$/.test(value) && Number(value.slice(0, 4)) >= 1900;
+    function applyFilter(input, { force = false } = {}) {
+      const isFrom = input.matches("[data-wa-api-from]");
+      const value = input.value;
+      if (value === (isFrom ? state.listFrom : state.listTo)) return;
+      if (!force && value !== "" && !fullDate(value)) return;
+      if (isFrom) state.listFrom = value;
+      else state.listTo = value;
+      filterChanged();
+    }
+    // Süzgeç değeri değişti: sınırlar ve Süzgeci Temizle yerinde güncellenir, liste baştan yüklenir. clear: alanlar boşaltılır, odak Başlangıç'a (düğme kalkar).
+    function filterChanged({ clear = false } = {}) {
+      const filter = root.querySelector("[data-wa-api-filter]");
+      if (!filter) return openList();
+      const from = filter.querySelector("[data-wa-api-from]");
+      const to = filter.querySelector("[data-wa-api-to]");
+      if (clear) {
+        if (from) from.value = "";
+        if (to) to.value = "";
+      }
+      from?.setAttribute("max", state.listTo);
+      to?.setAttribute("min", state.listFrom);
+      // Dar kontrol 8 DÜŞÜK-3: Süzgeci Temizle yuvası yalnız düğmenin var / yok durumu değişince yenilenir (basılan düğme altından değiştirilmez).
+      const slot = filter.querySelector("[data-wa-api-filter-clear-slot]");
+      if (slot && Boolean(slot.querySelector("[data-wa-api-filter-clear]")) !== Boolean(state.listFrom || state.listTo)) slot.innerHTML = clearButton();
+      if (clear) from?.focus();
+      resetList();
+      renderList();
+      loadList();
     }
 
     function render() {
@@ -271,17 +344,66 @@
       }
       render();
     }
-    async function openList() {
-      state.view = "list";
-      state.list = null;
-      render();
-      try {
-        state.list = await HOF.api(`${BASE}/batches?limit=30`, { background: true });
-      } catch (error) {
+    // Liste: ilk sayfa (append = false) ya da "Daha Fazla Göster" (append = true; imleç = ekrandaki son gönderim). Bir fazla istenir: gelirse daha eskisi var.
+    // keep (canlı yenileme): yüklenmiş kadar satır baştan yeniden okunur (en çok 199), süzgeç korunur.
+    // Dar kontrol 8 DÜŞÜK-2: canlı yenileme sürerken Daha Fazla Göster'e basılınca basış YUTULMAZ — düğme "Yükleniyor…" olur, yenileme bitince sayfa eklenir; Daha
+    // Fazla Göster sürerken gelen canlı yenileme onu bozmaz (sonra yapılır). Süzgeç değişimi / yeni liste (resetList) ikisini de geçersiz kılar.
+    async function loadList({ append = false, keep = false } = {}) {
+      if (keep && state.moreLoading) {
+        refreshAgain = true;
+        return;
+      }
+      if (append) {
+        if (state.moreLoading) return;
+        state.moreLoading = true;
+        renderList();
+        if (listJob) await listJob;
+        if (!state.moreLoading || !alive()) return;
+      }
+      const loaded = (state.list || []).length;
+      const size = keep ? Math.min(199, Math.max(PAGE, loaded)) : PAGE;
+      const query = new URLSearchParams({ limit: String(size + 1) });
+      if (state.listFrom) query.set("from", state.listFrom);
+      if (state.listTo) query.set("to", state.listTo);
+      if (append && loaded) query.set("before", state.list[loaded - 1].id);
+      const seq = ++listSeq;
+      const job = HOF.api(`${BASE}/batches?${query}`, { background: true }).then(got => ({ got }), error => ({ error }));
+      listJob = job;
+      const { got, error } = await job;
+      if (listJob === job) listJob = null;
+      if (seq !== listSeq || !alive()) return;
+      if (append) state.moreLoading = false;
+      if (got) {
+        state.listMore = got.length > size;
+        state.list = append ? [...(state.list || []), ...got.slice(0, size)] : got.slice(0, size);
+        state.listError = "";
+      } else if (error?.status === 400 && !append) {
         state.list = [];
+        state.listMore = false;
+        state.listError = error.message || "Gönderimler yüklenemedi.";
+      } else {
+        if (!append) state.list = [];
         HOF.toastError(error);
       }
+      renderList({ focusRow: append && (state.list || []).length > loaded ? loaded : -1 });
+      if (append && refreshAgain) {
+        refreshAgain = false;
+        loadList({ keep: true });
+      }
+    }
+    // Yeni liste (pencere açılışı, süzgeç değişimi): süren Daha Fazla Göster ve bekleyen yenileme düşer.
+    function resetList() {
+      state.list = null;
+      state.listMore = false;
+      state.listError = "";
+      state.moreLoading = false;
+      refreshAgain = false;
+    }
+    async function openList() {
+      state.view = "list";
+      resetList();
       render();
+      await loadList();
     }
     // Süren işte yedek yoklama (canlı olay kaçarsa); bitmiş işte ve pencere kapanınca durur.
     function schedulePoll() {
@@ -296,7 +418,7 @@
       liveTimer = setTimeout(() => {
         if (!alive()) return;
         if (state.view === "batch") loadBatch();
-        else if (state.view === "list") openList();
+        else if (state.view === "list") loadList({ keep: true });
         else refreshInfo().then(() => alive() && render());
       }, 400);
     };
@@ -380,6 +502,9 @@
         loadPreview();
       } else if (target.matches("[data-wa-api-ack]")) {
         if (target.checked) setAck(true);
+      } else if (target.matches("[data-wa-api-from], [data-wa-api-to]")) {
+        // Süzgeç değişince liste baştan yüklenir (geçersiz aralıkta sunucunun nedeni listede görünür); yarım yazım beklenir (applyFilter).
+        applyFilter(target);
       }
     });
     root.addEventListener("click", event => {
@@ -388,6 +513,12 @@
       if (target.matches("[data-wa-api-send]")) start();
       else if (target.matches("[data-wa-api-retry]")) loadPreview();
       else if (target.matches("[data-wa-api-list]")) openList();
+      else if (target.matches("[data-wa-api-more]")) loadList({ append: true });
+      else if (target.matches("[data-wa-api-filter-clear]")) {
+        state.listFrom = "";
+        state.listTo = "";
+        filterChanged({ clear: true });
+      }
       else if (target.matches("[data-wa-api-new]")) {
         state.view = "compose";
         refreshInfo().then(loadPreview);
@@ -395,7 +526,38 @@
       else if (target.dataset.waApiAct) act(target.dataset.waApiAct);
       else if (target.dataset.waApiAnyway) sendAnyway(target.dataset.waApiAnyway);
     });
+    // Süzgeç alanında yarım kalmış yazım Enter'da ya da alandan çıkınca uygulanır.
+    // Dar kontrol 8 DÜŞÜK-3: alandan fareyle penceredeki bir düğmeye / satıra basılarak çıkılıyorsa (Süzgeci Temizle, satır, Daha Fazla Göster) yarım değer
+    // uygulanmaz — uygulansaydı liste yeniden kurulur, basılan öğe tıklama gelmeden kalkardı. Basış o öğede bitmezse (fare kaydırılıp bırakıldı) değer uygulanır.
+    // Klavyeyle (Tab) çıkışta her zaman uygulanır.
+    let pressed = null;
+    let pendingInput = null;
+    root.addEventListener("pointerdown", event => {
+      pressed = event.target.closest?.("button, tr[data-wa-api-open]") || null;
+      if (!pressed) return;
+      window.addEventListener("pointerup", up => {
+        const input = pendingInput;
+        const target = pressed;
+        pressed = null;
+        pendingInput = null;
+        if (input && alive() && !target.contains(up.target)) applyFilter(input, { force: true });
+      }, { once: true, capture: true });
+    });
+    root.addEventListener("focusout", event => {
+      if (!event.target.matches?.("[data-wa-api-from], [data-wa-api-to]")) return;
+      // relatedTarget yoksa (düğmeye basış odak vermeyen tarayıcı) da basış bu çıkışın nedenidir.
+      if (pressed && (!event.relatedTarget || pressed.contains(event.relatedTarget))) {
+        pendingInput = event.target;
+        return;
+      }
+      applyFilter(event.target, { force: true });
+    });
     root.addEventListener("keydown", event => {
+      if (event.key === "Enter" && event.target.matches?.("[data-wa-api-from], [data-wa-api-to]")) {
+        event.preventDefault();
+        applyFilter(event.target, { force: true });
+        return;
+      }
       const row = event.target.closest?.("tr[data-wa-api-open]");
       if (row && (event.key === "Enter" || event.key === " ")) {
         event.preventDefault();

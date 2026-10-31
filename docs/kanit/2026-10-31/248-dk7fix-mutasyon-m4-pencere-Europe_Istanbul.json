@@ -1,0 +1,43 @@
+{
+  "ad": "248-dk7fix-mutasyon-m4-pencere-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-son3-pencere-248.test.mjs",
+  "commit": "3a41a5e2266f01ed7163d86eb197b472dd6961cc",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T09:11:37.483Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 dar kontrol 7 DÜŞÜK-2 — Sonucu Belirsiz elemesinin 7 günlük penceresi (Son 3 Ay / Tüm Hareketler) › Son 3 Ay: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider",
+      "konum": "test/whatsapp-dk7-son3-pencere-248.test.mjs:23:5",
+      "hata": "8. gün: pencere dışı, gitmeli (geldi 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki \\\"Yine de Gönder\\\"i kullanın ya da yeni gönderim başlatın.\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-09-01\",\"to\":\"2026-11-03\",\"preset\":\"last3\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Sonucu Belirsiz\":1},\"alreadySent\":{\"count\":0,\"last\":null,\"included\":0},\"people\":[{\"id\":\"account-d7f80a94-897c-4d87-902e-f169854c1bcd\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"Sonucu Belirsiz\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":0,\"left\":250,\"later\":0,\"holdUntil\":null},\"seconds\":0}}) · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 7 DÜŞÜK-2 — Sonucu Belirsiz elemesinin 7 günlük penceresi (Son 3 Ay / Tüm Hareketler) › Tüm Hareketler: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider",
+      "konum": "test/whatsapp-dk7-son3-pencere-248.test.mjs:23:5",
+      "hata": "8. gün: pencere dışı, gitmeli (geldi 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki \\\"Yine de Gönder\\\"i kullanın ya da yeni gönderim başlatın.\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"\",\"to\":\"2026-11-03\",\"preset\":\"all\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Sonucu Belirsiz\":1},\"alreadySent\":{\"count\":0,\"last\":null,\"included\":0},\"people\":[{\"id\":\"account-ceb7f0c4-7a13-4c50-bcf5-46e5277a2881\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"Sonucu Belirsiz\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":0,\"left\":250,\"later\":0,\"holdUntil\":null},\"seconds\":0}}) · 400 !== 200 (beklenen 200, gelen 400)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk7fix-mutasyon-m4-pencere-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "ea29174886e6745f13ec256c660756576f854a57b1a8facef9f2c3b4fb50ce3c",
+  "ham_cikti_bayt": 4841
+}

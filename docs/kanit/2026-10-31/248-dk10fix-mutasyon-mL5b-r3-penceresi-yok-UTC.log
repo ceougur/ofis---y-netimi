@@ -1,0 +1,358 @@
+TAP version 13
+# Subtest: 2.4.8 İş L5 — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri = özel aralık → aynı dönem (7 gün penceresiyle)
+    # Subtest: 03.11 Son 3 Ay gönderildi → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 (8 gün) 'gönderilecek'; tarihleri farklı özel aralık ayrı
+    not ok 1 - 03.11 Son 3 Ay gönderildi → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 (8 gün) 'gönderilecek'; tarihleri farklı özel aralık ayrı
+      ---
+      duration_ms: 643.450144
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk10fix-248-c0cb20a4/mut/test/whatsapp-dk10-son3-ozel-248.test.mjs:44:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Son 3 Ay'ın 7 gün penceresi bu eşlikte de geçerli
+        + actual - expected
+        
+          [
+        +   'Daha Önce Gönderildi'
+        -   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'gönderilecek'
+      actual:
+        0: 'Daha Önce Gönderildi'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk10fix-248-c0cb20a4/mut/test/whatsapp-dk10-son3-ozel-248.test.mjs:52:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: ters yön: 03.11 özel 01.09–03.11 gönderildi → aynı gün Son 3 Ay 'Daha Önce Gönderildi'; 05.11 Son 3 Ay (01.09–05.11) ayrı
+    ok 2 - ters yön: 03.11 özel 01.09–03.11 gönderildi → aynı gün Son 3 Ay 'Daha Önce Gönderildi'; 05.11 Son 3 Ay (01.09–05.11) ayrı
+      ---
+      duration_ms: 547.441892
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta (iki yön): 03.11 Son 3 Ay işi sırada → 05.11 özel 01.09–03.11 'Zaten Kuyrukta'; 03.11 özel işi sırada → aynı gün Son 3 Ay 'Zaten Kuyrukta'
+    ok 3 - Zaten Kuyrukta (iki yön): 03.11 Son 3 Ay işi sırada → 05.11 özel 01.09–03.11 'Zaten Kuyrukta'; 03.11 özel işi sırada → aynı gün Son 3 Ay 'Zaten Kuyrukta'
+      ---
+      duration_ms: 1015.423951
+      type: 'test'
+      ...
+    # Subtest: Sonucu Belirsiz: 03.11 Son 3 Ay belirsiz → 05.11 özel 01.09–03.11 'Sonucu Belirsiz'; 11.11 (8 gün) elemez
+    ok 4 - Sonucu Belirsiz: 03.11 Son 3 Ay belirsiz → 05.11 özel 01.09–03.11 'Sonucu Belirsiz'; 11.11 (8 gün) elemez
+      ---
+      duration_ms: 419.996021
+      type: 'test'
+      ...
+    # Subtest: taşınan veri: 03.11 Son 3 Ay kabul → defter olmadan taşındı → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 'gönderilecek'
+    ok 5 - taşınan veri: 03.11 Son 3 Ay kabul → defter olmadan taşındı → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 'gönderilecek'
+      ---
+      duration_ms: 562.745048
+      type: 'test'
+      ...
+    1..5
+not ok 1 - 2.4.8 İş L5 — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri = özel aralık → aynı dönem (7 gün penceresiyle)
+  ---
+  duration_ms: 3190.811369
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk10fix-248-c0cb20a4/mut/test/whatsapp-dk10-son3-ozel-248.test.mjs:43:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 İş G ek 1/4 — yalnız defterde kalan belirsiz deneme yeni toplu işte elemez
+    # Subtest: geri yükleme: belirsiz iş dosyadan gider → yeni gönderim önizlemesi 'gönderilecek', açılır ve gider; Başarısızları Yeniden Dene yine 'Sonucu Belirsiz'
+    ok 1 - geri yükleme: belirsiz iş dosyadan gider → yeni gönderim önizlemesi 'gönderilecek', açılır ve gider; Başarısızları Yeniden Dene yine 'Sonucu Belirsiz'
+      ---
+      duration_ms: 1275.059112
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.8 İş G ek 1/4 — yalnız defterde kalan belirsiz deneme yeni toplu işte elemez
+  ---
+  duration_ms: 1276.719103
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G ek 2/4 — çakışan eleme nedenleri: Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi
+    # Subtest: yeni toplu iş: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz', R3 sayısına girmez; R3'te Yine de Gönder seçilse de gitmez
+    ok 1 - yeni toplu iş: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz', R3 sayısına girmez; R3'te Yine de Gönder seçilse de gitmez
+      ---
+      duration_ms: 492.362383
+      type: 'test'
+      ...
+    # Subtest: yeni toplu iş: R3 + Zaten Kuyrukta → 'Zaten Kuyrukta' (R3 sayısına girmez); Zaten Kuyrukta + Sonucu Belirsiz (+ R3) → 'Zaten Kuyrukta'; işteki Yine de Gönder'in açtığı iş de aynı sıra
+    ok 2 - yeni toplu iş: R3 + Zaten Kuyrukta → 'Zaten Kuyrukta' (R3 sayısına girmez); Zaten Kuyrukta + Sonucu Belirsiz (+ R3) → 'Zaten Kuyrukta'; işteki Yine de Gönder'in açtığı iş de aynı sıra
+      ---
+      duration_ms: 474.807726
+      type: 'test'
+      ...
+    # Subtest: Başarısızları Yeniden Dene: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz' (R3 sayısına girmez)
+    ok 3 - Başarısızları Yeniden Dene: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz' (R3 sayısına girmez)
+      ---
+      duration_ms: 452.388262
+      type: 'test'
+      ...
+    # Subtest: Başarısızları Yeniden Dene: Zaten Kuyrukta + Sonucu Belirsiz → 'Zaten Kuyrukta'
+    ok 4 - Başarısızları Yeniden Dene: Zaten Kuyrukta + Sonucu Belirsiz → 'Zaten Kuyrukta'
+      ---
+      duration_ms: 473.00474
+      type: 'test'
+      ...
+    1..4
+ok 3 - 2.4.8 İş G ek 2/4 — çakışan eleme nedenleri: Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi
+  ---
+  duration_ms: 1893.316235
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G ek 3/4 — Ödeme Hatırlatma'da Sonucu Belirsiz eşliği aynı YEREL gün (gece yarısı)
+    # Subtest: yeni toplu iş: 23:30'da belirsiz kalan hatırlatma 23:50'de (aynı yerel gün) yeni hatırlatmayı eler, 00:10'da (ertesi yerel gün) elemez
+    ok 1 - yeni toplu iş: 23:30'da belirsiz kalan hatırlatma 23:50'de (aynı yerel gün) yeni hatırlatmayı eler, 00:10'da (ertesi yerel gün) elemez
+      ---
+      duration_ms: 537.705896
+      type: 'test'
+      ...
+    # Subtest: Başarısızları Yeniden Dene: 23:30'da belirsiz kalan yeniden deneme 23:50'de ikinci yeniden denemeyi eler, 00:10'da elemez (gider)
+    ok 2 - Başarısızları Yeniden Dene: 23:30'da belirsiz kalan yeniden deneme 23:50'de ikinci yeniden denemeyi eler, 00:10'da elemez (gider)
+      ---
+      duration_ms: 462.566613
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.4.8 İş G ek 3/4 — Ödeme Hatırlatma'da Sonucu Belirsiz eşliği aynı YEREL gün (gece yarısı)
+  ---
+  duration_ms: 1000.85812
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G ek 4/4 — Son 3 Ay Başarısızları Yeniden Dene: sonraki kabul 7 gün içindeyse elenir, eskiyse gider
+    # Subtest: asıl Son 3 Ay işinde P Başarısız → başka işle kabul → 6 gün 23 saat sonra Yeniden Dene: Daha Önce Gönderildi
+    ok 1 - asıl Son 3 Ay işinde P Başarısız → başka işle kabul → 6 gün 23 saat sonra Yeniden Dene: Daha Önce Gönderildi
+      ---
+      duration_ms: 478.709373
+      type: 'test'
+      ...
+    # Subtest: asıl Son 3 Ay işinde P Başarısız → başka işle kabul → 7 gün 1 saat sonra Yeniden Dene: gider
+    ok 2 - asıl Son 3 Ay işinde P Başarısız → başka işle kabul → 7 gün 1 saat sonra Yeniden Dene: gider
+      ---
+      duration_ms: 502.734646
+      type: 'test'
+      ...
+    1..2
+ok 5 - 2.4.8 İş G ek 4/4 — Son 3 Ay Başarısızları Yeniden Dene: sonraki kabul 7 gün içindeyse elenir, eskiyse gider
+  ---
+  duration_ms: 982.043503
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş H (★ soru 4) — özel aralık o günün hazır seçimine birebir eşitse aynı dönem
+    # Subtest: Bu Ay (03.11) gönderildi → aynı gün özel 01.11–03.11 'Daha Önce Gönderildi'; özel 01.11–02.11 ayrı dönem
+    ok 1 - Bu Ay (03.11) gönderildi → aynı gün özel 01.11–03.11 'Daha Önce Gönderildi'; özel 01.11–02.11 ayrı dönem
+      ---
+      duration_ms: 611.029844
+      type: 'test'
+      ...
+    # Subtest: Geçen Ay (03.11 → Ekim) gönderildi → özel 01.10–31.10 'Daha Önce Gönderildi'; özel 01.10–30.10 ayrı dönem
+    ok 2 - Geçen Ay (03.11 → Ekim) gönderildi → özel 01.10–31.10 'Daha Önce Gönderildi'; özel 01.10–30.10 ayrı dönem
+      ---
+      duration_ms: 515.86909
+      type: 'test'
+      ...
+    # Subtest: Önce özel aralık: 03.11'de özel 01.11–03.11 (o gün Bu Ay) gönderildi → 05.11'de Bu Ay 'Daha Önce Gönderildi'; aynı özel aralık yine aynı dönem (gerileme)
+    ok 3 - Önce özel aralık: 03.11'de özel 01.11–03.11 (o gün Bu Ay) gönderildi → 05.11'de Bu Ay 'Daha Önce Gönderildi'; aynı özel aralık yine aynı dönem (gerileme)
+      ---
+      duration_ms: 446.218889
+      type: 'test'
+      ...
+    # Subtest: Önce özel aralık, o gün hazır seçime EŞİT DEĞİL: 05.11'de özel 01.11–03.11 gönderildi → Bu Ay ayrı dönem (gönderilecek)
+    ok 4 - Önce özel aralık, o gün hazır seçime EŞİT DEĞİL: 05.11'de özel 01.11–03.11 gönderildi → Bu Ay ayrı dönem (gönderilecek)
+      ---
+      duration_ms: 442.959048
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta: 03.11'de açılan özel 01.11–03.11 işi sırada beklerken 04.11'de Bu Ay 'Zaten Kuyrukta' (süren işin günü açıldığı gün); Bu Ay işi beklerken özel eşit 'Zaten Kuyrukta'
+    ok 5 - Zaten Kuyrukta: 03.11'de açılan özel 01.11–03.11 işi sırada beklerken 04.11'de Bu Ay 'Zaten Kuyrukta' (süren işin günü açıldığı gün); Bu Ay işi beklerken özel eşit 'Zaten Kuyrukta'
+      ---
+      duration_ms: 848.299753
+      type: 'test'
+      ...
+    # Subtest: Ay sonu ve yıl dönümü: 30.11'de Bu Ay = 01.11–30.11; 05.01.2027'de Geçen Ay = Aralık 2026
+    ok 6 - Ay sonu ve yıl dönümü: 30.11'de Bu Ay = 01.11–30.11; 05.01.2027'de Geçen Ay = Aralık 2026
+      ---
+      duration_ms: 938.857399
+      type: 'test'
+      ...
+    # Subtest: Sonucu Belirsiz elemesi de aynı eşlikle (komşu): özel 01.11–03.11 (o gün Bu Ay) belirsiz kaldı → Bu Ay yeni gönderimde 'Sonucu Belirsiz'
+    ok 7 - Sonucu Belirsiz elemesi de aynı eşlikle (komşu): özel 01.11–03.11 (o gün Bu Ay) belirsiz kaldı → Bu Ay yeni gönderimde 'Sonucu Belirsiz'
+      ---
+      duration_ms: 445.462513
+      type: 'test'
+      ...
+    1..7
+ok 6 - 2.4.8 İş H (★ soru 4) — özel aralık o günün hazır seçimine birebir eşitse aynı dönem
+  ---
+  duration_ms: 4250.8222
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş I (★ soru 8) — taşınan veride dosyadaki kabul / teslim R3'te sayılır
+    # Subtest: Bu Ay: kaynakta P 'accepted' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+    ok 1 - Bu Ay: kaynakta P 'accepted' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+      ---
+      duration_ms: 819.809489
+      type: 'test'
+      ...
+    # Subtest: Bu Ay: kaynakta P 'delivered' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+    ok 2 - Bu Ay: kaynakta P 'delivered' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+      ---
+      duration_ms: 639.997478
+      type: 'test'
+      ...
+    # Subtest: Bu Ay: kaynakta P 'read' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+    ok 3 - Bu Ay: kaynakta P 'read' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+      ---
+      duration_ms: 665.098464
+      type: 'test'
+      ...
+    # Subtest: Sayılmayanlar: kaynakta Başarısız (131026) ya da Meta Bekletti (taşınınca Durduruldu) olan ileti taşınan veride sayılmaz
+    ok 4 - Sayılmayanlar: kaynakta Başarısız (131026) ya da Meta Bekletti (taşınınca Durduruldu) olan ileti taşınan veride sayılmaz
+      ---
+      duration_ms: 1414.860354
+      type: 'test'
+      ...
+    # Subtest: Son 3 Ay: dosyadaki kabul 7 günden eskiyse taşınan veride sayılmaz, 7 gün içindeyse sayılır (R3 penceresi)
+    ok 5 - Son 3 Ay: dosyadaki kabul 7 günden eskiyse taşınan veride sayılmaz, 7 gün içindeyse sayılır (R3 penceresi)
+      ---
+      duration_ms: 1406.088461
+      type: 'test'
+      ...
+    # Subtest: Aynı bilgisayar (gerileme, çift sayım yok): kabul edilen ileti defterden bir kez sayılır, alreadySent 1
+    ok 6 - Aynı bilgisayar (gerileme, çift sayım yok): kabul edilen ileti defterden bir kez sayılır, alreadySent 1
+      ---
+      duration_ms: 527.682456
+      type: 'test'
+      ...
+    1..6
+ok 7 - 2.4.8 İş I (★ soru 8) — taşınan veride dosyadaki kabul / teslim R3'te sayılır
+  ---
+  duration_ms: 5475.488043
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 9 ORTA-1 — toplu işin dönem anahtarı açıldığı güne göre (★ soru 4)
+    # Subtest: günlük sınır: 03.11'de açılan özel 01.11–03.11 işinde ertesi günlere kalan B de 10.11'de 'Bu Ay' ile 'Daha Önce Gönderildi'; ikinci ekstre gitmez
+    ok 1 - günlük sınır: 03.11'de açılan özel 01.11–03.11 işinde ertesi günlere kalan B de 10.11'de 'Bu Ay' ile 'Daha Önce Gönderildi'; ikinci ekstre gitmez
+      ---
+      duration_ms: 786.531683
+      type: 'test'
+      ...
+    # Subtest: Meta Bekletti: 03.11 23:30 özel 01.11–03.11 → 131049 → 2. deneme 04.11 23:45'te kabul → 10.11 'Bu Ay' 'Daha Önce Gönderildi'
+    ok 2 - Meta Bekletti: 03.11 23:30 özel 01.11–03.11 → 131049 → 2. deneme 04.11 23:45'te kabul → 10.11 'Bu Ay' 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 508.803388
+      type: 'test'
+      ...
+    # Subtest: taşınan veri: aynı çok günlü gönderim başka bilgisayara (defter olmadan) taşınınca 10.11'de 'Bu Ay' iki kişide 'Daha Önce Gönderildi'
+    ok 3 - taşınan veri: aynı çok günlü gönderim başka bilgisayara (defter olmadan) taşınınca 10.11'de 'Bu Ay' iki kişide 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 722.725133
+      type: 'test'
+      ...
+    1..3
+ok 8 - 2.4.8 dar kontrol 9 ORTA-1 — toplu işin dönem anahtarı açıldığı güne göre (★ soru 4)
+  ---
+  duration_ms: 2019.860762
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş J (dk9 soru 1/7) — yeniden denemede özel aralığın 'o gün'ü asıl işin günü
+    # Subtest: 03.11 23:30 asıl iş özel 01.11–03.11, P Başarısız → 04.11 P'ye 'Bu Ay' gitti → 05.11 00:30 asıl işin Yeniden Dene'si P'yi 'Daha Önce Gönderildi' ile eler
+    ok 1 - 03.11 23:30 asıl iş özel 01.11–03.11, P Başarısız → 04.11 P'ye 'Bu Ay' gitti → 05.11 00:30 asıl işin Yeniden Dene'si P'yi 'Daha Önce Gönderildi' ile eler
+      ---
+      duration_ms: 906.183694
+      type: 'test'
+      ...
+    # Subtest: Yine de Gönder: 03.11 23:30 özel 01.11–03.11 belirsiz → 05.11 00:30 işteki Yine de Gönder kabul → belirsiz çözülünce 10.11 'Bu Ay' 'Daha Önce Gönderildi'
+    ok 2 - Yine de Gönder: 03.11 23:30 özel 01.11–03.11 belirsiz → 05.11 00:30 işteki Yine de Gönder kabul → belirsiz çözülünce 10.11 'Bu Ay' 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 657.922557
+      type: 'test'
+      ...
+    1..2
+ok 9 - 2.4.8 İş J (dk9 soru 1/7) — yeniden denemede özel aralığın 'o gün'ü asıl işin günü
+  ---
+  duration_ms: 1565.805394
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş L1 (S1a) — hazır seçimin o günkü tarihleri de dönem kümesinde
+    # Subtest: 03.11 'Bu Ay' gönderildi → 05.11 özel 01.11–03.11 'Daha Önce Gönderildi'; 03.11 Bu Ay işi beklerken 05.11 özel 01.11–03.11 'Zaten Kuyrukta'
+    ok 1 - 03.11 'Bu Ay' gönderildi → 05.11 özel 01.11–03.11 'Daha Önce Gönderildi'; 03.11 Bu Ay işi beklerken 05.11 özel 01.11–03.11 'Zaten Kuyrukta'
+      ---
+      duration_ms: 636.652
+      type: 'test'
+      ...
+    # Subtest: 03.11 'Geçen Ay' (Ekim) gönderildi → 15.12'de özel 01.10–31.10 'Daha Önce Gönderildi'
+    ok 2 - 03.11 'Geçen Ay' (Ekim) gönderildi → 15.12'de özel 01.10–31.10 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 489.882753
+      type: 'test'
+      ...
+    1..2
+ok 10 - 2.4.8 İş L1 (S1a) — hazır seçimin o günkü tarihleri de dönem kümesinde
+  ---
+  duration_ms: 1128.182557
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş L2 (S2) — taşınan veride dosyadaki Sonucu Belirsiz eler; onaylı yol açık
+    # Subtest: kaynakta P Sonucu Belirsiz (Bu Ay) + asıl işte Başarısız → taşınan veride yeni gönderim ve Yeniden Dene 'Sonucu Belirsiz' (onaylı yol iletide); işteki Yine de Gönder gider
+    ok 1 - kaynakta P Sonucu Belirsiz (Bu Ay) + asıl işte Başarısız → taşınan veride yeni gönderim ve Yeniden Dene 'Sonucu Belirsiz' (onaylı yol iletide); işteki Yine de Gönder gider
+      ---
+      duration_ms: 725.47115
+      type: 'test'
+      ...
+    1..1
+ok 11 - 2.4.8 İş L2 (S2) — taşınan veride dosyadaki Sonucu Belirsiz eler; onaylı yol açık
+  ---
+  duration_ms: 725.830169
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş L3 (S3) — Şirket Verisini Sıfırla ile duran Meta Bekletti sayılmaz; geç teslim sayılır
+    # Subtest: P Meta Bekletti → Şirket Verisini Sıfırla (Yalnız Hareketler; cari kalır) → P 'gönderilecek'; 1. denemenin geç 'delivered'ı → 'Daha Önce Gönderildi'
+    ok 1 - P Meta Bekletti → Şirket Verisini Sıfırla (Yalnız Hareketler; cari kalır) → P 'gönderilecek'; 1. denemenin geç 'delivered'ı → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 703.192334
+      type: 'test'
+      ...
+    1..1
+ok 12 - 2.4.8 İş L3 (S3) — Şirket Verisini Sıfırla ile duran Meta Bekletti sayılmaz; geç teslim sayılır
+  ---
+  duration_ms: 703.698156
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş L4 (S4) — Meta Bekletti sonrası 2. deneme belirsizse 'Sonucu Belirsiz'
+    # Subtest: P kabul → 131049 → 24 saat sonra 2. deneme belirsiz → yeni gönderim 'Sonucu Belirsiz' (onaylı yol iletide); 1. denemenin geç teslimi → 'Daha Önce Gönderildi'
+    ok 1 - P kabul → 131049 → 24 saat sonra 2. deneme belirsiz → yeni gönderim 'Sonucu Belirsiz' (onaylı yol iletide); 1. denemenin geç teslimi → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 540.767539
+      type: 'test'
+      ...
+    # Subtest: onaylı yol: 2. deneme belirsizken işteki Yine de Gönder gider
+    ok 2 - onaylı yol: 2. deneme belirsizken işteki Yine de Gönder gider
+      ---
+      duration_ms: 586.705054
+      type: 'test'
+      ...
+    1..2
+ok 13 - 2.4.8 İş L4 (S4) — Meta Bekletti sonrası 2. deneme belirsizse 'Sonucu Belirsiz'
+  ---
+  duration_ms: 1127.889862
+  type: 'suite'
+  ...
+1..13
+# tests 38
+# suites 13
+# pass 37
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27914.496722

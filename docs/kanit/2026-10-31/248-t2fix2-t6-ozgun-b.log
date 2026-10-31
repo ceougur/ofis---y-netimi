@@ -1,0 +1,31 @@
+TAP version 13
+# \# T6b {"label":"b1","bosYerBaslangic":47292416,"dolumdanSonraBosYer":0,"dolumAni":{"medya":1,"ileti":0},"doluDisk20sn":{"medyaYukleme":0,"iletiIstegi":0,"isciHatasi":0,"defterUyarisi":0,"metaIsledi":0},"doluDiskGunlukOrnek":["[WARN] WhatsApp işi yürütülemedi (waj-ec42547a-eb2f-446d-9634-24c89c7e19ac; database or disk is full); 30 sn sonra yeniden denenecek.","[WARN] WhatsApp işi yürütülemedi (waj-80880cab-a28a-4ed0-ae39-e6ab76a4fab5; database or disk is full); 30 sn sonra yeniden denenecek.","[WARN] WhatsApp işi yürütülemedi (waj-4b359444-fb1b-472a-bddf-02007da1cd2d; database or disk is full); 30 sn sonra yeniden denenecek.","[WARN] WhatsApp işi yürütülemedi (waj-dce500b2-f65e-44c4-8c08-2ecfacae80da; database or disk is full); 30 sn sonra yeniden denenecek."],"doluDiskApi":{"status":200,"state":"running","pauseReason":"","jobs":["preparing","pending","pending","pending"]},"yerAcildi":47165440,"toparlanma":{"medyaYukleme":4,"iletiIstegi":4,"toplamMedya":5,"toplamIleti":4,"metaIsledi":4,"toplu":"done","isler":["accepted","accepted","accepted","accepted"]},"aliciBasina":{"+905531007001":1,"+905531007002":1,"+905531007003":1,"+905531007000":1},"metadaKalanPdf":4,"sahipsizPdf":0,"durumlar":{"accepted":4},"butunluk":{"integrity_check":"ok"},"yenidenAcilis":{"toplu":"done","isler":["accepted","accepted","accepted","accepted"],"toplamMedya":5,"toplamIleti":4,"metaIsledi":4,"metadaKalanPdf":4}}
+# Subtest: T6 (b) — disk dolu
+    # Subtest: b1 GERÇEK tmpfs: ilk PDF yüklemesi Meta'dayken disk doldu → çift ileti yok; yer açılınca biter
+    ok 1 - b1 GERÇEK tmpfs: ilk PDF yüklemesi Meta'dayken disk doldu → çift ileti yok; yer açılınca biter
+      ---
+      duration_ms: 67920.936749
+      type: 'test'
+      ...
+# \# T6b3 {"turSayisi":20,"dusenYazim":1,"medyaYukleme":1,"metadaKalanPdf":0,"iletiIstegi":0,"isDurumlari":["pending"],"isDurumu":{"id":"waj-11075e2f-15e3-4854-9de4-1b7cf5f8b119","accountId":"account-f78b94a4-8e9e-4c0a-9d19-edc33a653432","accountName":"Zorla PDF","phone":"+905539990001","state":"pending","stateLabel":"Bekliyor","reason":"","errorCode":null,"attempt":0,"nextAt":"2026-11-03T06:00:30.000Z","pdfName":"Ekstre Zorla PDF 01.11.2026-03.11.2026.pdf","params":["Zorla PDF","Örnek Ticaret","01.11.2026 – 03.11.2026","40,00 TL (Borçlu)"],"wamid":"","acceptedAt":null,"sentAt":null,"deliveredAt":null,"readAt":null,"failedAt":null,"billable":null,"mediaDeleted":false},"yerAcilincaIleti":0,"yerAcilincaMedya":1,"yerAcilincaMetadaKalan":0,"sonIs":"pending"}
+    # Subtest: b3 ZORLA: PDF yüklendikten SONRAKİ yazım (media_id) düşüyor → kaç tur, kaç PDF yüklendi (T2 kuşkusu)
+    ok 2 - b3 ZORLA: PDF yüklendikten SONRAKİ yazım (media_id) düşüyor → kaç tur, kaç PDF yüklendi (T2 kuşkusu)
+      ---
+      duration_ms: 555.441988
+      type: 'test'
+      ...
+    1..2
+ok 1 - T6 (b) — disk dolu
+  ---
+  duration_ms: 68477.890411
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 83269.981734

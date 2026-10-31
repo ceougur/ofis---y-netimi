@@ -1,0 +1,77 @@
+# komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-t2dk-d1-248.test.mjs
+# kod: c44d7724 (git archive kopyası, ders 23); test dosyası: is/t2fix-248 D1 commit'indeki hâli
+# platform: Linux node v22.22.0; tarih: 2026-10-31T01:14:13Z
+TAP version 13
+# Subtest: 2.4.8 T2 dar kontrol D1 — istek sürerken İptal Et + Meta duraklatma sınıfı hata: toplu iş İptal kalır
+    # Subtest: İptal Et basıldı, istek 131031 ile döndü → toplu iş İptal; Devam Et reddedilir; başka ileti gitmez
+    not ok 1 - İptal Et basıldı, istek 131031 ile döndü → toplu iş İptal; Devam Et reddedilir; başka ileti gitmez
+      ---
+      duration_ms: 569.313375
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-d1-248.test.mjs:39:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kullanıcının iptali korunmalı (geldi paused meta-account)
+        + actual - expected
+        
+        + 'paused'
+        - 'canceled'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'canceled'
+      actual: 'paused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-d1-248.test.mjs:57:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: İptal Et basıldı, istek 190 ile döndü → toplu iş İptal; Devam Et reddedilir; başka ileti gitmez
+    not ok 2 - İptal Et basıldı, istek 190 ile döndü → toplu iş İptal; Devam Et reddedilir; başka ileti gitmez
+      ---
+      duration_ms: 457.231865
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-d1-248.test.mjs:39:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kullanıcının iptali korunmalı (geldi paused meta-token)
+        + actual - expected
+        
+        + 'paused'
+        - 'canceled'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'canceled'
+      actual: 'paused'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-d1-248.test.mjs:57:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 T2 dar kontrol D1 — istek sürerken İptal Et + Meta duraklatma sınıfı hata: toplu iş İptal kalır
+  ---
+  duration_ms: 1028.283274
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-d1-248.test.mjs:37:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1442.796311
+# çıkış kodu: 1

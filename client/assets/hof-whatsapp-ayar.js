@@ -19,6 +19,17 @@
     const state = status === "APPROVED" ? "Onaylı" : status === "PENDING" ? "Onay bekliyor" : status === "REJECTED" ? "Reddedildi" : status === "PAUSED" ? "Duraklatıldı" : status === "DISABLED" ? "Kapatıldı" : item.status || "Bilinmiyor";
     return `${item.name}: ${state}${item.language ? ` (${item.language})` : ""}`;
   };
+  // T2 dar kontrol D3: durum bildirimi yolu (teslim / okundu bilgisi; Meta'da WhatsApp hesabı başına tek adres — lib/whatsapp/connection.mjs ensureHook) kartta görünür.
+  // Çakışma: aynı WhatsApp hesabı başka bir bilgisayarda da bağlı; program adresi kendiliğinden ezmez, Bağlantıyı Sına bu bilgisayarı seçer.
+  const HOOK_CONFLICT = "Teslim ve okundu bilgisi şu an bu bilgisayara gelmiyor olabilir: aynı WhatsApp hesabı başka bir bilgisayarda da bağlı. Bu bilgisayarda almak için Bağlantıyı Sına'ya basın; öbür bilgisayarda kullanılmıyorsa bağlantıyı orada kaldırın.";
+  const hookText = hook => {
+    if (!hook) return "Kayıtlı Değil · ofisin uzaktan bağlantısı açılınca kendiliğinden kaydedilir";
+    if (hook.state === "active") return `Çalışıyor${hook.registeredAt ? ` · ${when(hook.registeredAt)} tarihinde kaydedildi` : ""}`;
+    if (hook.state === "pending") return "Kaydediliyor · Meta'nın yanıtı bekleniyor";
+    if (hook.state === "failed") return `Kaydedilemedi${hook.error ? ` · ${hook.error}` : ""} (program saatte bir yeniden dener)`;
+    if (hook.state === "conflict") return "Çakışma · Meta'daki adres bu bilgisayarınkinden farklı";
+    return hook.state || "Bilinmiyor";
+  };
   // 2.4.8 W7: WhatsApp'ı Bağla yalnız programın YEREL / ÖZEL AĞ adresinden (bağlama penceresi sırrı yalnız böyle kökenden kabul eder). Kural
   // server/lib/whatsapp/embedded.mjs isLocalOrigin ve bulut/kapi/wa-bagla.mjs yerelKoken ile AYNI (test/whatsapp-w7-tasinma-248.test.mjs karşılaştırır).
   // <yerel-koken>
@@ -92,6 +103,7 @@
         ${fact("Gönderim Sınırı", phone?.tierLabel, "tier")}
         ${fact("Deneme Şablonu", test?.ok ? templateText(test.templates?.test) : "", "testTemplate")}
         ${fact("Son Sınama", lastTest, "lastTest")}
+        ${fact("Bildirim Yolu", hookText(data.hook), "hook")}
         ${fact("Son Deneme", lastSelf, "lastSelfTest")}
         ${fact("Kaydeden", [data.savedByName, when(data.savedAt)].filter(Boolean).join(" · "), "saved")}
         ${data.embedded ? fact("Numara Kullanımı", data.embedded.coex ? "WhatsApp Business uygulamasıyla birlikte" : "Yalnız WhatsApp Business API", "coex") : ""}
@@ -103,7 +115,8 @@
         ${data.mode === "embedded" ? `<button type="button" class="hof-button hof-button-ghost" data-wa-action="embedded" ${embeddedBlock ? "disabled" : ""}>WhatsApp'ı Yeniden Bağla</button>` : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Bilgileri Değiştir</button>`}
         <button type="button" class="hof-button hof-button-danger" data-wa-action="remove" ${editBlock ? "disabled" : ""}>Bağlantıyı Kaldır</button>
       </div>
-      ${metaBlock ? `<p class="adm-wa-why" data-wa-why>${esc(metaBlock)}</p>` : ""}${data.mode === "embedded" ? embeddedWhy : ""}`;
+      ${metaBlock ? `<p class="adm-wa-why" data-wa-why>${esc(metaBlock)}</p>` : ""}${data.mode === "embedded" ? embeddedWhy : ""}
+      ${data.hook?.state === "conflict" ? `<p class="adm-wa-why" data-wa-hook-why>${esc(HOOK_CONFLICT)}</p>` : ""}`;
   }
 
   async function load() {

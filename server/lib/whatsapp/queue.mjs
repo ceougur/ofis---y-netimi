@@ -22,8 +22,10 @@ import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
 import { statementData, statementFileName, statementPdf } from "../statement-pdf.mjs";
 import { e164Of, waPresetRange } from "./alici.mjs";
+import { localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
-import { META_D0, MetaGraphError, classifyMetaCode, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
+import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
+import { deliveryTtlSeconds, sendingVerdict } from "./templates.mjs";
 
 export const TEMPLATE_NAMES = Object.freeze({ statement: "destekofis_ekstre", reminder: "destekofis_odeme_hatirlatma" });
 export const KIND_LABELS = Object.freeze({ statement: "Ekstre", reminder: "Ödeme Hatırlatma" });
@@ -47,6 +49,9 @@ export const MAX_RECIPIENTS = 5000;
 const TR_OFFSET = "+03:00";
 // Bekleyen / gönderilmekte (çift başlatma kuralı §7a 9 ve toplu işin bitişi). Sonucu Belirsiz bu kümede DEĞİL (bekler ama gönderilmez; "Yine de Gönder" onaylı).
 const OPEN_JOB = ["pending", "preparing", "sending", "limited", "held", "paused"];
+// KULLANICI KARARI (31.10.2026, ek soru 1/4 "a"): yeni toplu iş, iş şirket dosyasında OLMAYAN (yalnız makine defterinde kalan) Sonucu Belirsiz denemeyle ELEMEZ.
+// Test: test/whatsapp-dk8-g-ek-248.test.mjs + test/whatsapp-dk7-belirsiz-ileti-248.test.mjs.
+const NEW_BATCH_LEDGER_ONLY_UNSETTLED = false;
 // Kesin durum: medya Meta'dan silinir (S3 A). "Meta Bekletti" kesin değil (aynı medya yeniden kullanılır, §7a 14).
 const FINAL = ["delivered", "read", "failed", "expired", "canceled", "skipped", "stopped"];
 // Geçici hata: iş 30 sn → 2 dk → 15 dk (3 deneme), sonra Başarısız (§7a 15); toplu işte art arda 5 → duraklar.
@@ -55,6 +60,7 @@ const JOB_BACKOFF_MS = [30_000, 120_000, 900_000];
 const OFFLINE_BACKOFF_MS = [30_000, 60_000, 120_000, 300_000];
 export const OFFLINE_LABEL = "Bağlantı Bekleniyor";
 const MAX_TROUBLES = 5;
+const PREPARING_STUCK_MS = 30_000; // T6-B1: bakım turunda "Hazırlanıyor"da takılı sayılma eşiği
 const HOUR = 3_600_000;
 const HOOK_ALIVE_MS = 7 * DAY_MS; // Meta 7 güne kadar yeniden dener (plan §3)
 const MEDIA_REUSE_MS = 29 * DAY_MS; // medya kimliği 30 gün geçerli (plan §2.3)
@@ -63,6 +69,7 @@ const TEMPLATE_CHECK_MS = 10 * 60_000;
 const TEMPLATE_CHECK_EVERY = 100;
 const TIER_CHECK_MS = 6 * HOUR;
 const STALE_BATCH_MS = DAY_MS; // §7a 24: 24 saatten eski toplu iş açılışta sorulur (sınır nedeniyle bekleyen hariç)
+const LICENSE_PAUSE = "Lisans Nedeniyle Durdu: program salt okunur çalışıyor; lisans yenilenince Devam Et'e basın.";
 
 const fail = (status, message, code, extra = {}) => {
   throw new HttpError(status, message, { code, ...extra });
@@ -99,9 +106,7 @@ export function periodOf(body, today) {
   const preset = ["thisMonth", "lastMonth", "last3", "all"].includes(body.preset) ? body.preset : "thisMonth";
   return { ...waPresetRange(preset, today), preset };
 }
-// Dönem anahtarı (makine defteri; R3 "daha önce gönderildi"): ekstre = dönemin iki ucu; ödeme hatırlatma = gönderim GÜNÜ (BAŞ MİMAR KARARI: hatırlatmanın dönemi yok;
-// aynı gün ikinci hatırlatma sorulur, ertesi gün yeni hatırlatma serbest).
-const periodKeyOf = (kind, period, day = "") => (kind === "statement" ? `${period.from}|${period.to}` : `gun|${day}`);
+// Dönem eşliği (R3 "daha önce gönderildi" anahtarı ve §7a 9 "Zaten Kuyrukta"): TEK YER lib/whatsapp/donem.mjs (T2-1 = A, kullanıcı kararı 31.10.2026).
 // İletideki dönem metni ({{3}}; §7a 21): "01.10.2026 – 31.10.2026"; Tüm Hareketler: ilk hareketten dönem sonuna (bugün).
 function periodText(period, lines) {
   if (period.from) return `${dayText(period.from)} – ${dayText(period.to)}`;
@@ -178,6 +183,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const keys = Object.keys(fields);
     store.run(`UPDATE wa_batches SET ${keys.map(key => `${key} = ?`).join(", ")}, updated_at = ? WHERE id = ?`, ...keys.map(key => fields[key]), iso(), id);
   };
+  // T6-B1/B2 (son aday arıza testleri): Meta DIŞI hatada (şirket dosyasına yazım düştü — disk dolu, kilit — ya da beklenmeyen hata) işin beklemesi BELLEKTE de tutulur
+  // (jobId → { tries, until }); dosyaya yazılamasa da işçi aynı işi beklemesiz yeniden seçmez. Program kapanınca gider: açılışta / bakım turunda iş yeniden değerlendirilir.
+  const localDefer = new Map();
+  let inFlight = null; // işçinin şu an yürüttüğü iş (bakım turu "Hazırlanıyor" toparlamasında ona dokunmaz)
   function counts(batchId) {
     const out = Object.fromEntries(Object.keys(JOB_STATES).map(state => [state, 0]));
     for (const row of store.all("SELECT state, COUNT(*) AS n FROM wa_jobs WHERE batch_id = ? GROUP BY state", batchId)) out[row.state] = row.n;
@@ -229,7 +238,46 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       ...(jobs ? { jobs: store.all("SELECT * FROM wa_jobs WHERE batch_id = ? ORDER BY rowid", row.id).map(jobView) } : {}),
     };
   }
-  const list = ({ limit = 50 } = {}) => store.all("SELECT * FROM wa_batches ORDER BY created_at DESC, rowid DESC LIMIT ?", Math.min(200, Math.max(1, Number(limit) || 50))).map(row => batchView(row));
+  // WhatsApp Gönderimleri listesi (kullanıcı isteği 31.10.2026 "şimdi yap"): en yeni önce; "Daha Fazla Göster" İMLEÇLİ sayfalama — before = ekrandaki son gönderimin
+  // kimliği, ondan daha eskiler (created_at, rowid) sırasıyla; OFFSET yok (araya yeni gönderim girse de sayfa kaymaz). from / to: gönderimin başladığı YEREL gün
+  // (lib/clock.mjs now.today ile aynı gün tanımı; iki uç dahil). Dış girdi doğrulanır; limit en çok 200.
+  const DAY_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+  const dayStart = (value, field, label) => {
+    const match = DAY_RE.exec(value);
+    const date = match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 0, 0, 0, 0) : null;
+    if (!date || date.getFullYear() !== Number(match[1]) || date.getMonth() !== Number(match[2]) - 1 || date.getDate() !== Number(match[3])) {
+      fail(400, `${label} tarihi geçersiz.`, "whatsapp-invalid", { field });
+    }
+    return date;
+  };
+  const list = ({ limit = 50, before = "", from = "", to = "" } = {}) => {
+    const text = value => (typeof value === "string" ? value.trim() : "");
+    const where = [];
+    const args = [];
+    const fromDay = text(from);
+    const toDay = text(to);
+    const start = fromDay ? dayStart(fromDay, "from", "Başlangıç") : null;
+    const end = toDay ? dayStart(toDay, "to", "Bitiş") : null;
+    if (start && end && start > end) fail(400, "Başlangıç tarihi Bitiş tarihinden sonra olamaz.", "whatsapp-invalid", { field: "from" });
+    if (start) {
+      where.push("created_at >= ?");
+      args.push(start.toISOString());
+    }
+    if (end) {
+      where.push("created_at < ?");
+      args.push(new Date(end.getFullYear(), end.getMonth(), end.getDate() + 1, 0, 0, 0, 0).toISOString());
+    }
+    const cursorId = text(before);
+    if (cursorId) {
+      const cursor = /^[A-Za-z0-9_-]{1,80}$/.test(cursorId) ? store.get("SELECT created_at, rowid FROM wa_batches WHERE id = ?", cursorId) : null;
+      if (!cursor) fail(400, "Daha eski gönderimler yüklenemedi; listeyi yeniden açın.", "whatsapp-invalid", { field: "before" });
+      where.push("(created_at < ? OR (created_at = ? AND rowid < ?))");
+      args.push(cursor.created_at, cursor.created_at, cursor.rowid);
+    }
+    return store
+      .all(`SELECT * FROM wa_batches${where.length ? ` WHERE ${where.join(" AND ")}` : ""} ORDER BY created_at DESC, rowid DESC LIMIT ?`, ...args, Math.min(200, Math.max(1, Number(limit) || 50)))
+      .map(row => batchView(row));
+  };
   const detail = id => {
     const row = batchRow(String(id || "").slice(0, 80));
     if (!row) fail(404, "Toplu gönderim bulunamadı.", "whatsapp-batch-missing");
@@ -248,33 +296,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // ---------- Meta denetimleri (şablon + sınır basamağı) ----------
   const templateCache = new Map(); // `${waba}|${name}` → { at, result }
   const tierCache = new Map(); // waba → { at, limit, tier }
-  function judgeTemplate(items, name) {
-    const found = items.filter(item => item?.name === name);
-    if (!found.length) return { ok: false, code: "template-missing", reason: `Şablon (${name}) bu WhatsApp Business hesabında yok; şablonlar bağlantıdan sonra program tarafından açılır.` };
-    const approved = found.filter(item => String(item.status || "").toUpperCase() === "APPROVED");
-    const pick = approved.find(item => item.language === "tr") || approved[0] || found.find(item => item.language === "tr") || found[0];
-    const status = String(pick.status || "").toUpperCase();
-    const category = String(pick.category || "").toUpperCase();
-    const template = { name, language: String(pick.language || ""), status, category };
-    if (status !== "APPROVED") {
-      const reason = {
-        PENDING: `Şablon (${name}) Meta onayını bekliyor; onaylanınca gönderim başlatılabilir.`,
-        REJECTED: `Şablon (${name}) Meta tarafından reddedildi.`,
-        PAUSED: `Şablon (${name}) düşük kalite nedeniyle Meta tarafından duraklatıldı.`,
-        DISABLED: `Şablon (${name}) Meta tarafından kalıcı olarak kapatıldı; yeni şablon gerekir.`,
-      }[status] || `Şablon (${name}) onaylı değil (Meta durumu: ${status || "bilinmiyor"}).`;
-      return { ok: false, code: `template-${(status || "unknown").toLowerCase()}`, reason, template };
-    }
-    // Plan §2.4 KATEGORİ RİSKİ + §7a 27: yalnız UTILITY + APPROVED ile gönderilir; pazarlamaya alınmış şablonla gönderim başlamaz / süren iş durur.
-    if (category === "MARKETING") return { ok: false, code: "template-marketing", reason: "Şablon Pazarlama'ya Alındı: Meta şablonu pazarlama kategorisine aldı; WhatsApp Yöneticisi'nden yeniden inceleme isteyin. Bu şablonla gönderim yapılmaz.", template };
-    if (category !== "UTILITY") return { ok: false, code: "template-category", reason: `Şablonun Meta kategorisi bilgilendirme (Utility) değil (${category || "bilinmiyor"}); gönderim yapılmaz.`, template };
-    return { ok: true, template };
-  }
-  async function checkTemplate(graph, wabaId, name, { force = false } = {}) {
-    const key = `${wabaId}|${name}`;
+  // T2-7: karar ekrandaki "Gönderime Hazır" ile AYNI kuralla, tek yerde (lib/whatsapp/templates.mjs sendingVerdict: durum, kategori VE içerik).
+  const judgeTemplate = (items, name) => sendingVerdict(items, name);
+  // Şablon listesi Şablonlar kartıyla AYNI okumayla (createMetaTemplates.details: içerik dahil ayrıntılı alanlar; alan reddinde temel alanlara bir kez düşer).
+  async function checkTemplate(record, name, { force = false } = {}) {
+    const key = `${record.wabaId}|${name}`;
     const cached = templateCache.get(key);
     if (!force && cached && nowMs() - cached.at < TEMPLATE_CHECK_MS && nowMs() >= cached.at && cached.sent < TEMPLATE_CHECK_EVERY) return cached.result;
-    const listing = await graph.templates(wabaId);
+    const listing = await createMetaTemplates(connection.metaOptions(record)).details(record.wabaId);
     const result = judgeTemplate(listing.items, name);
     templateCache.set(key, { at: nowMs(), result, sent: 0 });
     return result;
@@ -292,9 +321,13 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const cap = settings().dailyCap;
     return { limit: cap ? Math.min(cap, meta) : meta, tier: info.tier, meta, cap };
   }
-  const metaHttp = error => {
+  // starting (T1 P2 A, 5 dk yetkisi): toplu iş BAŞLATILIRKEN Meta'ya ulaşılamadıysa meta-graph.mjs'in "…; sonuç bilinmiyor." metni yanıltıcıdır (hiçbir ileti
+  // gönderilmedi, toplu iş açılmadı) → açık ileti.
+  const START_UNREACHABLE = "Meta'ya ulaşılamıyor; gönderim başlatılmadı. Bağlantı gelince yeniden başlatın.";
+  const metaHttp = (error, { starting = false } = {}) => {
     if (error instanceof HttpError) return error;
-    return new HttpError(502, error.message, { code: error.reason === "meta" ? "whatsapp-meta" : "whatsapp-meta-unreachable", meta: error.toJSON?.() });
+    const reached = error.reason === "meta";
+    return new HttpError(502, !reached && starting ? START_UNREACHABLE : error.message, { code: reached ? "whatsapp-meta" : "whatsapp-meta-unreachable", meta: error.toJSON?.() });
   };
   const usage = wabaId => ledger.windowUsage(wabaId, iso(nowMs() - DAY_MS));
 
@@ -314,8 +347,71 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return ids;
   }
   // §7a 9: aynı cari + aynı şablon + aynı dönem için bekleyen / gönderilmekte iş (süren ya da duraklatılmış toplu işte) — iki kullanıcı, iki sekme.
-  const queued = (accountId, kind, period) =>
-    store.get(`SELECT j.id FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.account_id = ? AND b.kind = ? AND b.period_from = ? AND b.period_to = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")}) LIMIT 1`, accountId, kind, period.from, period.to, ...OPEN_JOB);
+  // Dönem eşliği donem.mjs queueKeysOf'tan (T2-1: tek yer). ★ soru 4 (özel aralık ↔ hazır seçim): yeni gönderimin kümesi BUGÜNE, süren işinki AÇILDIĞI GÜNE göre.
+  const queued = (accountId, kind, period, day = today()) => {
+    const want = queueKeysOf(kind, period, day);
+    const rows = store.all(`SELECT j.id, b.period_from, b.period_to, b.preset, b.created_at, b.key_day FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.account_id = ? AND b.kind = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")})`, accountId, kind, ...OPEN_JOB);
+    return rows.find(row => sameKeys(want, queueKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, keyDayOfBatch({ ...row, kind })))) || null;
+  };
+  // Dar kontrol 9 ORTA-1 (★ soru 4 "o gün" = özel aralığın kullanıldığı gün = TOPLU İŞİN AÇILIŞ GÜNÜ; BAŞ MİMAR yorumu): bir toplu işin dönem anahtar kümesi hangi
+  // gün gönderilirse gönderilsin (günlük sınırla ertesi güne kalan, Meta Bekletti'nin ertesi gün 2. denemesi) AÇILDIĞI yerel güne göre — talep (runJob), Zaten Kuyrukta
+  // (queued) ve taşınan veri (movedSentBefore) aynı yerden okur. YALNIZ EKSTRE: Ödeme Hatırlatma'nın "aynı gün"ü gönderim / yeniden denemenin günüdür (ek 3/4, son 2/2).
+  // KULLANICI KARARI (31.10.2026, dk9 soru 1/7 "a"): Başarısızları Yeniden Dene / işteki Yine de Gönder'in açtığı işte "o gün" ASIL işin açıldığı gündür (dönem gibi
+  // taşınır: wa_batches.key_day, göç v43; boşsa işin kendi açılış günü).
+  function keyDayOfBatch(batch) {
+    if (batch?.kind !== "statement") return today();
+    return batch.key_day || localDayOf(batch.created_at) || today();
+  }
+  // KULLANICI KARARI (31.10.2026 ~11:30 UTC "a"; ★ soru 8): başka bilgisayara TAŞINAN veride şirket dosyasında Meta Kabul Etti / Gönderildi / Teslim Edildi / Okundu duran
+  // ileti, bu bilgisayarın defterinde yoksa R3'te sayılır. Yalnız bu defterde AÇILMAMIŞ toplu işler (ledger_id başka) taranır: bu bilgisayarda açılan toplu işin
+  // (aynı bilgisayara geri yüklenmiş eski veri dahil) kararı defterindir (★ soru 7) — defter yalnız kendi ledger_id'li toplu işin talebini yazar (runJob), çift sayım
+  // olmaz; aynı cari birden çok kaynaktan gelirse en son kabul anı alınır. Dönem eşliği, 7 gün penceresi (since) ve asıl işin "Yine de Gönder" sınırı (after)
+  // defterdeki R3 ile aynı kural (anahtar kümesi keyDayOfBatch). Dönüş: Map(cari → son kabul anı ISO).
+  // Dar kontrol 9 (ölçek): başka defterde açılmış bu türde toplu iş yoksa (taşınan veri yok — olağan kurulum) iş tablosu hiç taranmaz.
+  function movedSentBefore(ids, kind, keys, since, after) {
+    const out = new Map();
+    if (!store.get("SELECT 1 AS found FROM wa_batches WHERE kind = ? AND ledger_id <> ? LIMIT 1", kind, ledger.id)) return out;
+    for (let i = 0; i < ids.length; i += 500) {
+      const part = ids.slice(i, i + 500);
+      const rows = store.all(
+        `SELECT j.id, j.account_id AS accountId, COALESCE(j.accepted_at, j.sent_at, j.delivered_at, j.read_at, j.sending_at) AS acceptedAt, COALESCE(j.sending_at, j.accepted_at) AS sendingAt,
+          b.kind, b.period_from, b.period_to, b.preset, b.created_at, b.key_day FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
+         WHERE b.kind = ? AND b.ledger_id <> ? AND j.state IN ('accepted', 'sent', 'delivered', 'read') AND j.account_id IN (${part.map(() => "?").join(",")})`,
+        kind, ledger.id, ...part,
+      );
+      for (const row of rows) {
+        if (!row.acceptedAt || (since && row.acceptedAt < since) || (after && !(String(row.sendingAt || "") > after))) continue;
+        if (["last3", "all"].includes(row.preset) && row.acceptedAt < rollingSinceOf(nowMs())) continue; // İş L5: seçimin 7 gün penceresi
+        if (!sameKeys(keys, periodKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, kind === "statement" ? keyDayOfBatch(row) : localDayOf(row.sendingAt || row.acceptedAt)))) continue;
+        if (!out.has(row.accountId) || out.get(row.accountId) < row.acceptedAt) out.set(row.accountId, row.acceptedAt);
+      }
+    }
+    return out;
+  }
+  // KULLANICI KARARI (31.10.2026, "KİME KAÇ KEZ" ilkesi, S2): taşınan veride şirket dosyasında "Sonucu Belirsiz" duran iş (bu defterde açılmamış toplu işte) yeni
+  // toplu işte ve Başarısızları Yeniden Dene'de kişiyi "Sonucu Belirsiz" ile eler; işteki Yine de Gönder yolu açık (iş dosyada). Eşlik defterdeki elemeyle aynı (dönem
+  // kümesi keyDayOfBatch, Son 3 Ay / Tüm'de 7 gün — gönderim anından). Dönüş: Map(cari → [iş kimliği]).
+  function movedUnsettled(ids, kind, keys, since) {
+    const out = new Map();
+    if (!store.get("SELECT 1 AS found FROM wa_batches WHERE kind = ? AND ledger_id <> ? LIMIT 1", kind, ledger.id)) return out;
+    for (let i = 0; i < ids.length; i += 500) {
+      const part = ids.slice(i, i + 500);
+      const rows = store.all(
+        `SELECT j.id, j.account_id AS accountId, COALESCE(j.sending_at, j.updated_at) AS sendingAt, b.kind, b.period_from, b.period_to, b.preset, b.created_at, b.key_day
+         FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
+         WHERE b.kind = ? AND b.ledger_id <> ? AND j.state = 'uncertain' AND j.account_id IN (${part.map(() => "?").join(",")})`,
+        kind, ledger.id, ...part,
+      );
+      for (const row of rows) {
+        if (since && String(row.sendingAt || "") < since) continue;
+        if (["last3", "all"].includes(row.preset) && String(row.sendingAt || "") < rollingSinceOf(nowMs())) continue; // İş L5
+        if (!sameKeys(keys, periodKeysOf(kind, { from: row.period_from, to: row.period_to, preset: row.preset }, kind === "statement" ? keyDayOfBatch(row) : localDayOf(row.sendingAt)))) continue;
+        if (!out.has(row.accountId)) out.set(row.accountId, []);
+        out.get(row.accountId).push(row.id);
+      }
+    }
+    return out;
+  }
   // Cari, gönderim için uygun mu (toplu iş açılırken ve GÖNDERİM ANINDA aynı kural — §7a 1, 2, 6, 20). Dönüş: neden (boş = uygun) + numara.
   function eligibility(account, kind) {
     const phone = e164Of(account.phone);
@@ -331,13 +427,34 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
    * Kişi listesi ve eleme nedenleri (önizleme ve açma aynı kuralla). Dönüş: { kind, period, people: [{ id, name, phone, skip }] }. Sıra = seçim sırası (§7a 5).
    * İçerik (bakiye, PDF, telefon) burada SAKLANMAZ — gönderim anında aynı cari okumasından (§7a 1).
    */
-  function plan(user, body) {
+  // fixed (yalnız iç çağrı; dar kontrol 4 ORTA-1): "Başarısızları Yeniden Dene" / "Yine de Gönder" asıl toplu işin KAYITLI dönemini { from, to, preset } taşır — dönem
+  // gövdeden yeniden hesaplanmaz (preset kaybolup "Bu Ay" özel aralık sayılmasın, "Tüm Hareketler"in boş başlangıcı 400 vermesin). Rotalar bu bağımsız değişkeni vermez.
+  // fixed.sendAgainAfter (dar kontrol 5 ORTA-1; KULLANICI KARARI 31.10.2026 "a şıkkı"): asıl işte kullanıcı R3 sorusunda "Yine de Gönder" dediyse asıl işin açılış anı.
+  // O zaman R3 yalnız bu andan SONRAKİ kabulleri sayar: açılıştan önceki gönderim (R3'ü doğuran) o kararla kabul edilmişti; açılıştan sonra başka bir işle aynı kişiye
+  // aynı dönem giden yine "Daha Önce Gönderildi" (çift ileti yok). Yeniden denemede gövdenin sendAgain'i okunmaz (karar yalnız asıl işin kaydından).
+  // options.anyway (★ soru 1): "Yine de Gönder" (sendAnyway) — kullanıcı belirsiz işi onaylayarak yeniden gönderiyor; Sonucu Belirsiz elemesi uygulanmaz.
+  function plan(user, body, fixed = null, { anyway = false } = {}) {
     const kind = body.kind === "reminder" ? "reminder" : body.kind === "statement" ? "statement" : null;
     if (!kind) fail(400, "Gönderim türünü seçin (Ekstre ya da Ödeme Hatırlatma).", "whatsapp-invalid", { field: "kind" });
-    const period = kind === "statement" ? periodOf(body, today()) : { from: "", to: "", preset: "" };
+    const period = kind === "statement" ? (fixed ? { from: fixed.from || "", to: fixed.to || "", preset: fixed.preset || "" } : periodOf(body, today())) : { from: "", to: "", preset: "" };
     const ids = selection(user, body);
-    const sent = ledger.sentBefore({ companyId, kind, periodKey: periodKeyOf(kind, period, today()) });
+    const sendAgain = fixed ? false : body.sendAgain === true;
+    // dk9 soru 1/7 "a": yeniden denemede / Yine de Gönder'de "o gün" asıl işin günü (fixed.keyDay); yeni gönderimde bugün (yeni işin açılış günü).
+    const keyDay = kind === "statement" && fixed?.keyDay ? fixed.keyDay : today();
+    const keys = periodKeysOf(kind, period, keyDay);
+    const since = sentSinceOf(kind, period, nowMs());
+    const after = fixed?.sendAgainAfter || "";
+    const rolling = rollingSinceOf(nowMs());
+    const sent = ledger.sentBefore({ companyId, kind, periodKeys: keys, since, after, rolling });
+    for (const [accountId, last] of movedSentBefore(ids, kind, keys, since, after)) if (!sent.has(accountId) || sent.get(accountId) < last) sent.set(accountId, last);
+    // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"): "Başarısızları Yeniden Dene"de aynı cariye aynı dönem iletisi Sonucu Belirsiz kalmışsa elenir (soru sorulmadan ikinci
+    // ileti gitmez; göndermek için işteki "Yine de Gönder" — "iki kez gidebilir" onayıyla). KULLANICI KARARI (31.10.2026 ~10:55 UTC "b"; ★ soru 1): YENİ toplu işte de aynı
+    // kural ve eşlik (aynı tür + dönem; Son 3 Ay / Tüm'de son 7 gün, gönderim anından). Yalnız "Yine de Gönder"in kendisi (anyway) elenmez.
+    // asıl işin "Yine de Gönder" sınırı (sendAgainAfter) burada UYGULANMAZ: o karar yalnız Meta'nın KABUL ETTİĞİ önceki gönderimi kapsıyordu.
+    const unsettled = anyway ? null : ledger.unsettledBefore({ companyId, kind, periodKeys: keys, since, rolling });
+    if (unsettled) for (const [accountId, jobIds] of movedUnsettled(ids, kind, keys, since)) unsettled.set(accountId, [...(unsettled.get(accountId) || []), ...jobIds]);
     const people = [];
+    let uncertainOpen = 0;
     for (const id of ids) {
       let account;
       try {
@@ -348,15 +465,29 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       const check = eligibility(account, kind);
       const person = { id: account.id, name: account.name, phone: check.phone.e164, skip: check.skip };
-      if (!person.skip && queued(account.id, kind, period)) person.skip = "Zaten Kuyrukta";
+      // KULLANICI KARARI (31.10.2026, ek soru 2/4 "a"): birden çok eleme nedeninde TEK neden, sıra HER YERDE (yeni toplu iş, Başarısızları Yeniden Dene, işteki Yine de
+      // Gönder'in açtığı iş): "Zaten Kuyrukta" → "Sonucu Belirsiz" → "Daha Önce Gönderildi". İlk ikisiyle elenen kişi R3 uyarısına (sayı / liste: sentBefore) GİRMEZ;
+      // R3'te "Yine de Gönder" seçilse de ona gitmez (belirsizi göndermenin tek yolu işteki Yine de Gönder).
+      if (!person.skip && queued(account.id, kind, period, keyDay)) person.skip = "Zaten Kuyrukta";
+      if (!person.skip && unsettled?.has(account.id)) {
+        // Dar kontrol 7 DÜŞÜK-1: "Yine de Gönder" yalnız iş şirket dosyasında hâlâ Sonucu Belirsiz ise vardır (geri yüklemeden sonra iş dosyadan gider, defterde kalır).
+        const open = unsettled.get(account.id).some(jobId => store.get("SELECT 1 AS found FROM wa_jobs WHERE id = ? AND state = 'uncertain'", jobId));
+        // ★ soru 1: yeni toplu işte iş dosyadaysa (işteki "Yine de Gönder" var) elenir. KULLANICI KARARI (31.10.2026, ek soru 1/4 "a"): YALNIZ defterde kalan belirsiz
+        // deneme (iş dosyada yok — geri yükleme sonrası) yeni toplu işte ELEMEZ (NEW_BATCH_LEDGER_ONLY_UNSETTLED = false). Başarısızları Yeniden Dene'de (08:00 "A") her
+        // zaman elenir (ileti "yeni gönderim başlatın").
+        if (fixed?.retry === true || open || NEW_BATCH_LEDGER_ONLY_UNSETTLED) {
+          person.skip = "Sonucu Belirsiz";
+          if (open) uncertainOpen += 1;
+        }
+      }
       // R3 (plan §7a revizyonu): bu cariye bu şablon + dönem daha önce Meta'ya kabul ettirildiyse açık "sendAgain" bayrağı olmadan elenir (W4 sorar: "Yine de
       // Gönder" / "Bunları Çıkar", varsayılan Bunları Çıkar). Bilgi makine defterinden (geri yükleme silmez).
       const last = sent.get(account.id);
-      if (last) person.sentBefore = last;
-      if (!person.skip && last && body.sendAgain !== true) person.skip = "Daha Önce Gönderildi";
+      if (last && !["Zaten Kuyrukta", "Sonucu Belirsiz"].includes(person.skip)) person.sentBefore = last;
+      if (!person.skip && last && !sendAgain) person.skip = "Daha Önce Gönderildi";
       people.push(person);
     }
-    return { kind, period, people };
+    return { kind, period, people, uncertainOpen };
   }
 
   // §7a 29: başlatma reddi sırası bağlı değil → yetki → lisans → onay → şablon (yetki rotada, bağlantıdan hemen sonra denetlenir: routes/whatsapp.mjs).
@@ -367,9 +498,24 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
   // Başlatmayı engelleyen (bağlantı ve lisanstan sonraki) ilk neden: onay → firma adı. Önizleme bunu YANITTA söyler (2.4.8 W4: önizleme onaydan önce görülür,
   // "Gönder" onay işaretlenene dek pasif kalır); toplu iş açma reddeder.
+  // T2-8: aynı engel süren toplu işte de geçerlidir — Devam Et reddedilir, işçi her adımda ve ileti isteğinden hemen önce denetler (pauseCode / pauseReason).
   function startBlock() {
-    if (!ack()) return { code: "whatsapp-ack-required", message: `Gönderimden önce Yönetim → WhatsApp'ta "${ACK_TEXT}" onayını işaretleyin.` };
-    if (!String(store.setting("office.name", "") || "").trim()) return { code: "whatsapp-office-missing", message: "Firma adı yazılmamış (iletide firmanızın adı geçer); Yönetim → Ofis Bilgileri'nde firma adını yazın." };
+    if (!ack()) {
+      return {
+        code: "whatsapp-ack-required",
+        message: `Gönderimden önce Yönetim → WhatsApp'ta "${ACK_TEXT}" onayını işaretleyin.`,
+        pauseCode: "ack",
+        pauseReason: `Gönderim onayı kaldırıldı; onay olmadan ileti gönderilmez. Yönetim → WhatsApp'ta "${ACK_TEXT}" onayını yeniden işaretleyip Devam Et'e basın.`,
+      };
+    }
+    if (!String(store.setting("office.name", "") || "").trim()) {
+      return {
+        code: "whatsapp-office-missing",
+        message: "Firma adı yazılmamış (iletide firmanızın adı geçer); Yönetim → Ofis Bilgileri'nde firma adını yazın.",
+        pauseCode: "office",
+        pauseReason: "Firma adı silinmiş (iletide firmanızın adı geçer); Yönetim → Ofis Bilgileri'nde firma adını yazıp Devam Et'e basın.",
+      };
+    }
     return null;
   }
   function preconditions() {
@@ -392,7 +538,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let limitInfo;
     let template;
     try {
-      template = await checkTemplate(graph, record.wabaId, TEMPLATE_NAMES[kind], { force: true });
+      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true });
       limitInfo = await dailyLimit(graph, record, { force: true });
     } catch (error) {
       if (error instanceof MetaGraphError) throw metaHttp(error);
@@ -427,7 +573,31 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     };
   }
 
-  async function createBatch(user, body) {
+  // Bütün seçilenler elendiğinde ileti: nedenler sayılarıyla + "Daha Önce Gönderildi" için ne yapılacağı (cümle düzeni).
+  function nothingMessage(summary, uncertainOpen = 0) {
+    const reasons = Object.entries(summary.skipped || {}).map(([reason, n]) => `${reason}: ${n}`).join(", ");
+    let text = `Gönderilebilecek kişi yok (seçilenlerin hepsi elendi${reasons ? ` — ${reasons}` : ""}).`;
+    if (summary.skipped?.["Daha Önce Gönderildi"]) {
+      text += summary.kind === "reminder"
+        ? ` Bu kişilere bugün daha önce ödeme hatırlatması gönderildi; yeniden göndermek için yeni gönderimde "Yine de Gönder" seçin.`
+        : ` Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde "Yine de Gönder" seçin.`;
+    }
+    // Dar kontrol 7 DÜŞÜK-1: işteki "Yine de Gönder" yalnız o iş şirket dosyasında Sonucu Belirsiz duruyorsa söylenir (uncertainOpen); yoksa (ör. geri yüklemeden sonra)
+    // yalnız yeni gönderim. Yeni gönderim "iki kez gidebilir" diye sormaz → uyarı iletide.
+    // KULLANICI KARARI (31.10.2026 ~11:45 UTC "A"): iş dosyada DURURKEN yalnız onaylı yol ("Yine de Gönder" iki kez gidebileceğini sorar) önerilir; onaysız "yeni gönderim
+    // başlatın" yolu bu durumda söylenmez. İş dosyada yokken başka yol olmadığından "yeni gönderim başlatın" kalır.
+    if (summary.skipped?.["Sonucu Belirsiz"]) {
+      text += uncertainOpen > 0
+        ? ` Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki "Yine de Gönder"i kullanın.`
+        : ` Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için yeni gönderim başlatın.`;
+    }
+    return text;
+  }
+
+  // options.inherit (T1 P6): "Yine de Gönder"in kaynağı olan Sonucu Belirsiz iş — yeni iş onun dondurulmuş içeriğini ve Meta'daki PDF'ini devralır (sendAnyway).
+  // options.period (dar kontrol 4 ORTA-1): asıl toplu işin kayıtlı dönemi ve "Yine de Gönder" kararı { from, to, preset, sendAgainAfter } (retryFailed / sendAnyway);
+  // yalnız iç çağrı — rota createBatch(user, body) ile çağırır, gövdedeki "period" / "sendAgainAfter" / "send_again_after" alanları okunmaz.
+  async function createBatch(user, body, { inherit = null, period = null } = {}) {
     const record = preconditions();
     const requestId = typeof body.requestId === "string" && /^[A-Za-z0-9_-]{6,100}$/.test(body.requestId) ? body.requestId : "";
     const requestKey = requestId ? `${user.id}|${requestId}` : null;
@@ -438,10 +608,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let template;
     let limitInfo;
     try {
-      template = await checkTemplate(graph, record.wabaId, TEMPLATE_NAMES[kind], { force: true });
+      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true });
       if (template.ok) limitInfo = await dailyLimit(graph, record, { force: true });
     } catch (error) {
-      if (error instanceof MetaGraphError) throw metaHttp(error);
+      if (error instanceof MetaGraphError) throw metaHttp(error, { starting: true });
       throw error;
     }
     if (!template.ok) fail(409, template.reason, `whatsapp-${template.code}`, { template: template.template || null });
@@ -449,12 +619,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const again = requestKey ? store.get("SELECT * FROM wa_batches WHERE request_key = ?", requestKey) : null;
     if (again) return { batch: batchView(again), reused: true };
     preconditions();
-    const plotted = plan(user, body);
+    const plotted = plan(user, body, period, { anyway: Boolean(inherit) });
     const summary = summarize(plotted, record, limitInfo, template);
-    // §7a 31: bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; nedenler yanıtta.
-    if (!summary.sendable) fail(400, "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).", "whatsapp-nothing", { summary });
+    // §7a 31: bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; nedenler yanıtta ve İLETİDE (dar kontrol 5 ORTA-1: istemci yalnız iletiyi gösterir).
+    if (!summary.sendable) fail(400, nothingMessage(summary, plotted.uncertainOpen), "whatsapp-nothing", { summary });
     const batchId = newId("wab");
     const at = iso();
+    // dar kontrol 5 ORTA-1: "Yine de Gönder" kararı — yeni işte gövdenin açık sendAgain'i (açılış anı), yeniden denemede asıl işin kayıtlı anı (zincirde kaymaz).
+    const sendAgainAfter = period ? period.sendAgainAfter || "" : body.sendAgain === true ? at : "";
     try {
       ledger.openBatch(batchId, companyId, at);
     } catch (error) {
@@ -462,8 +634,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     store.tx(() => {
       store.run(
-        "INSERT INTO wa_batches (id, kind, period_from, period_to, preset, template, lang, phone_number_id, waba_id, ledger_id, company_id, state, request_key, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'running', ?, ?, ?, ?)",
-        batchId, kind, plotted.period.from, plotted.period.to, plotted.period.preset, TEMPLATE_NAMES[kind], template.template.language, record.phoneNumberId, record.wabaId, ledger.id, companyId, requestKey, user.id, at, at,
+        "INSERT INTO wa_batches (id, kind, period_from, period_to, preset, template, lang, phone_number_id, waba_id, ledger_id, company_id, state, request_key, send_again_after, key_day, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'running', ?, ?, ?, ?, ?, ?)",
+        batchId, kind, plotted.period.from, plotted.period.to, plotted.period.preset, TEMPLATE_NAMES[kind], template.template.language, record.phoneNumberId, record.wabaId, ledger.id, companyId, requestKey, sendAgainAfter, kind === "statement" ? period?.keyDay || today() : "", user.id, at, at,
       );
       for (const person of plotted.people) {
         if (!person.id || store.get("SELECT 1 AS found FROM wa_jobs WHERE batch_id = ? AND account_id = ?", batchId, person.id)) continue;
@@ -472,6 +644,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
           newId("waj"), batchId, person.id, person.name, person.phone, TEMPLATE_NAMES[kind], template.template.language, plotted.period.from, plotted.period.to, person.skip ? "skipped" : "pending", person.skip, at, at,
         );
       }
+      if (inherit) inheritContent(batchId, inherit.id, at);
     });
     audit(user, "whatsapp.batch.created", batchId, { kind, period: plotted.period, total: summary.total, sendable: summary.sendable, skipped: summary.skipped });
     notify(batchId);
@@ -503,6 +676,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const row = editable(id);
     if (row.state !== "paused") fail(409, "Yalnız duraklatılmış gönderim sürdürülür.", "whatsapp-batch-state");
     if (!writable()) fail(403, "Program salt okunur çalışıyor; WhatsApp gönderimi sürdürülemez.", "LICENSE_READ_ONLY");
+    // T2-8 (plan §1 + §7a 28): onay (ve firma adı) yokken Devam Et de reddedilir — başlatmayla aynı engel.
+    const block = startBlock();
+    if (block) fail(409, block.message, block.code);
     const state = ledger.batchState(row.id);
     if (!state.live) {
       stopBatch(row, "Bu toplu gönderim bu bilgisayarın gönderim defterinde açık değil (veri yedekten geri yüklenmiş ya da başka bilgisayardan taşınmış olabilir); yeniden başlatılmaz. Gerekirse yeni gönderim başlatın.", state.opened ? "restored" : "moved");
@@ -533,13 +709,29 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     kick();
     return batchView(batchRow(row.id));
   }
-  const sameBody = row => ({ kind: row.kind, ...(row.period_from || row.period_to ? { from: row.period_from, to: row.period_to } : { preset: row.preset || "all" }) });
+  // Yeniden deneme / Yine de Gönder AYNI toplu işin dönemindedir (KULLANICI KARARI T2-1 A + 31.10 "a"): kayıtlı dönem preset'iyle birlikte taşınır (dar kontrol 4 ORTA-1);
+  // asıl işin "Yine de Gönder" kararı da (send_again_after; dar kontrol 5 ORTA-1, KULLANICI KARARI 31.10.2026 "a şıkkı").
+  const periodOfRow = row => ({ from: row.period_from || "", to: row.period_to || "", preset: row.preset || "", sendAgainAfter: row.send_again_after || "", keyDay: row.kind === "statement" ? keyDayOfBatch(row) : "" });
   // Başarısızları Yeniden Dene: yalnız kesin Başarısız işlerin carileri YENİ toplu işle (eski işler kayıtta kalır). Kabul edilmiş iş girmez.
   async function retryFailed(user, id, body = {}) {
     const row = editable(id);
     const ids = store.all("SELECT account_id AS id FROM wa_jobs WHERE batch_id = ? AND state = 'failed' ORDER BY rowid", row.id).map(item => item.id);
     if (!ids.length) fail(400, "Bu gönderimde yeniden denenecek başarısız ileti yok.", "whatsapp-nothing");
-    return createBatch(user, { ...sameBody(row), ids, requestId: body.requestId });
+    return createBatch(user, { kind: row.kind, ids, requestId: body.requestId }, { period: { ...periodOfRow(row), retry: true } });
+  }
+  // T1 P6 (S3 A + §7a 15; BAŞ MİMAR KARARI): "Yine de Gönder" AYNI iletiyi yeniden gönderir — yeni iş belirsiz işin dondurulmuş değişkenlerini ve (29 gün geçerliyse)
+  // Meta'daki PDF'ini devralır: PDF yeniden yüklenmez, iki ileti de aynı içeriği taşır (ikisi birden ulaşsa da çelişmez). PDF'in TEK sahibi artık yeni iştir: belirsiz
+  // işin medya kaydı boşaltılır, yeni iş kesinleşince bakım turu Meta'dan bir kez siler (belirsiz iş hiç kesinleşmeyebileceği için silme ona bağlanmaz).
+  function inheritContent(batchId, sourceId, at) {
+    const source = jobRow(sourceId);
+    const target = source ? store.get("SELECT * FROM wa_jobs WHERE batch_id = ? AND account_id = ? AND state = 'pending'", batchId, source.account_id) : null;
+    if (!source || !target || source.state !== "uncertain" || !source.prepared_at) return;
+    const media = mediaUsable(source);
+    store.run(
+      "UPDATE wa_jobs SET prepared_at = ?, params_json = ?, pdf_name = ?, media_id = ?, media_at = ?, updated_at = ? WHERE id = ?",
+      source.prepared_at, source.params_json, source.pdf_name, media ? source.media_id : null, media ? source.media_at : null, at, target.id,
+    );
+    if (media) store.run("UPDATE wa_jobs SET media_id = NULL, media_at = NULL, updated_at = ? WHERE id = ?", at, source.id);
   }
   // Sonucu Belirsiz iş için "Yine de Gönder": kullanıcı çift gidebileceğini onaylar (confirm: true) → o cariye yeni iş.
   async function sendAnyway(user, jobId, body = {}) {
@@ -548,7 +740,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (job.state !== "uncertain") fail(409, "Yalnız sonucu belirsiz ileti yeniden gönderilir.", "whatsapp-job-state");
     if (body.confirm !== true) fail(409, "İletinin Meta'ya ulaşıp ulaşmadığı bilinmiyor; yeniden gönderilirse kişiye iki kez gidebilir. Onaylıyorsanız yeniden isteyin.", "whatsapp-confirm-required");
     const row = batchRow(job.batch_id);
-    const result = await createBatch(user, { ...sameBody(row), ids: [job.account_id], requestId: body.requestId });
+    const result = await createBatch(user, { kind: row.kind, ids: [job.account_id], requestId: body.requestId }, { inherit: job, period: periodOfRow(row) });
     audit(user, "whatsapp.job.send-anyway", job.id, { batchId: result.batch.id });
     return result;
   }
@@ -564,6 +756,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     notify(row.id);
   }
   function pauseBatch(row, code, reason) {
+    // T2 dar kontrol D1: kullanıcının iptal ettiği ya da geri yüklemenin durdurduğu toplu iş (ör. istek sürerken İptal Et, sonra Meta 131031 / 190) yeniden
+    // "Duraklatıldı" yapılmaz. "Tamamlandı" duraklatılabilir: tek işlik toplu işte hatayı alan iş Başarısız olunca toplu iş önce kapanır, neden yine görünmeli (§7a 13).
+    if (["canceled", "stopped"].includes(batchRow(row.id)?.state)) return;
     store.tx(() => {
       holdJobs(row.id);
       updateBatch(row.id, { state: "paused", pause_code: code, pause_reason: reason });
@@ -573,41 +768,204 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     notify(row.id);
   }
   // "5 kez art arda" (§7a 15): geçici hata, belirsiz sonuç ve medya yükleme hataları sayar; başarılı gönderim sıfırlar. Dönüş: duraklatıldı mı.
-  function trouble(row, reason) {
+  function trouble(row, reason, { local = false } = {}) {
     const troubles = (row.troubles || 0) + 1;
     updateBatch(row.id, { troubles });
     if (troubles < MAX_TROUBLES) return false;
-    pauseBatch({ ...row, troubles }, "meta-unreachable", `Meta'ya art arda ${MAX_TROUBLES} kez ulaşılamadı ya da Meta geçici hata verdi (son: ${reason}). İnternet bağlantısını denetleyip Devam Et'e basın.`);
+    if (local) pauseBatch({ ...row, troubles }, "local", `Gönderim art arda ${MAX_TROUBLES} kez bu bilgisayarda yürütülemedi (son: ${reason}). Diskte boş yer olduğunu denetleyip Devam Et'e basın.`);
+    else pauseBatch({ ...row, troubles }, "meta-unreachable", `Meta'ya art arda ${MAX_TROUBLES} kez ulaşılamadı ya da Meta geçici hata verdi (son: ${reason}). İnternet bağlantısını denetleyip Devam Et'e basın.`);
     return true;
   }
+  // T6-B1/B2: iş yürütülürken Meta DIŞI hata — ileti isteği GİTMEMİŞTİR (defter talebi "Gönderiliyor"dan sonra; o aşamadaki hatalar kendi yolunda). İş bellekte bekletilir
+  // (30 sn → 2 dk → 15 dk, en çok) — yazım düşse de meşgul döngü / her turda yeni PDF yüklemesi olmaz; dosyaya da "Bekliyor" + bekleme yazılmaya çalışılır (yazılamazsa
+  // "Hazırlanıyor"da kalan iş bakım turunda / açılışta Bekliyor'a döner); toplu işin "art arda" sayacı artar (5'te "Duraklatıldı").
+  const DEFERRABLE = ["pending", "limited", "held", "preparing"];
+  function deferLocal(batchId, jobId, error) {
+    const tries = (localDefer.get(jobId)?.tries || 0) + 1;
+    const waitMs = JOB_BACKOFF_MS[Math.min(tries, JOB_BACKOFF_MS.length) - 1];
+    localDefer.set(jobId, { tries, until: nowMs() + waitMs });
+    const reason = `şirket dosyasına yazılamadı ya da beklenmeyen hata: ${error?.code || error?.message || error}`;
+    try {
+      store.run(
+        `UPDATE wa_jobs SET state = CASE WHEN state = 'preparing' THEN 'pending' ELSE state END, next_at = ?, sending_at = NULL, updated_at = ? WHERE id = ? AND state IN (${DEFERRABLE.map(() => "?").join(",")})`,
+        iso(nowMs() + waitMs),
+        iso(),
+        jobId,
+        ...DEFERRABLE,
+      );
+    } catch {
+      // yazılamadı (disk dolu / kilit): bellekteki bekleme geçerli
+    }
+    try {
+      const row = batchRow(batchId);
+      if (row?.state === "running") trouble(row, reason, { local: true });
+    } catch {
+      // sayaç yazılamadı
+    }
+    log.warn?.(`WhatsApp işi yürütülemedi (${jobId}; ${error?.message || error}); ${Math.round(waitMs / 1000)} sn sonra yeniden denenecek.`);
+    if (batchId) notify(batchId);
+    return { did: true, deferred: true };
+  }
   // Sınır: bu WABA'nın bu şirketteki süren işlerinde, pencerede olmayan numaraya giden bekleyen işler pencere açılana dek bekler.
+  // T2 dar kontrol D2: "Meta Bekletti" (held) iş de bekleme bitene dek ileri alınır (durumu korunur) — yoksa işçi aynı işi her turda yeniden seçerdi (boş döngü);
+  // zaten aynı beklemedeki satır yeniden yazılmaz.
   function markLimited(wabaId, until, phones = null) {
-    const rows = store.all("SELECT j.id, j.phone_e164 AS phone FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE b.waba_id = ? AND b.state = 'running' AND j.state IN ('pending', 'limited')", wabaId);
+    const rows = store.all("SELECT j.id, j.phone_e164 AS phone, j.state, j.next_at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE b.waba_id = ? AND b.state = 'running' AND j.state IN ('pending', 'limited', 'held')", wabaId);
     store.tx(() => {
-      for (const row of rows) if (!phones?.has(row.phone)) updateJob(row.id, { state: "limited", next_at: until });
+      for (const row of rows) {
+        if (phones?.has(row.phone)) continue;
+        if (row.state === "held") {
+          if (!row.next_at || row.next_at < until) updateJob(row.id, { next_at: until });
+        } else if (!(row.state === "limited" && row.next_at === until)) updateJob(row.id, { state: "limited", next_at: until });
+      }
     });
   }
 
   /** Sıradaki iş (şimdi yürütülebilir) ya da beklenecek süre. Sıra: toplu iş açılış sırası, içinde seçim sırası (§7a 5). */
   function next() {
     const t = iso();
+    // T6-B1/B2: bellekteki beklemesi dolmamış iş seçilmez (dosyaya yazılamamış olsa da).
+    const nowT = nowMs();
+    const deferred = [...localDefer].filter(([, item]) => item.until > nowT).map(([id]) => id);
+    const notDeferred = deferred.length ? ` AND j.id NOT IN (${deferred.map(() => "?").join(",")})` : "";
     const row = store.get(
       `SELECT j.id FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE b.state = 'running' AND (b.retry_at IS NULL OR b.retry_at <= ?)
-       AND j.state IN ('pending', 'limited', 'held') AND (j.next_at IS NULL OR j.next_at <= ?) ORDER BY b.created_at, b.rowid, j.rowid LIMIT 1`,
+       AND j.state IN ('pending', 'limited', 'held') AND (j.next_at IS NULL OR j.next_at <= ?)${notDeferred} ORDER BY b.created_at, b.rowid, j.rowid LIMIT 1`,
       t,
       t,
+      ...deferred,
     );
     if (row) return { jobId: row.id };
-    // En yakın uyanış: işin kendi beklemesi ya da toplu işin bağlantı beklemesi (hangisi geç ise).
-    const soon = store.get(`SELECT MIN(MAX(COALESCE(j.next_at, ''), COALESCE(b.retry_at, ''))) AS at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
-      WHERE b.state = 'running' AND j.state IN ('pending', 'limited', 'held') AND (j.next_at IS NOT NULL OR b.retry_at IS NOT NULL)`)?.at;
-    return { jobId: null, waitMs: soon ? Math.max(0, Date.parse(soon) - nowMs()) : null };
+    // En yakın uyanış: işin kendi beklemesi ya da toplu işin bağlantı beklemesi (hangisi geç ise); bellekteki beklemeler de.
+    const soon = store.get(
+      `SELECT MIN(MAX(COALESCE(j.next_at, ''), COALESCE(b.retry_at, ''))) AS at FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
+      WHERE b.state = 'running' AND j.state IN ('pending', 'limited', 'held') AND (j.next_at IS NOT NULL OR b.retry_at IS NOT NULL)${notDeferred}`,
+      ...deferred,
+    )?.at;
+    const waits = deferred.map(id => localDefer.get(id).until - nowT);
+    if (soon) waits.push(Math.max(0, Date.parse(soon) - nowT));
+    return { jobId: null, waitMs: waits.length ? Math.min(...waits) : null };
+  }
+
+  // T2-2 (bağımsız gözden geçirme r1): bekleme noktasından (Meta okuması, PDF yükleme) sonra iş ve toplu iş YENİDEN okunur. Dönüş { job, batch } (toplu iş sürüyor,
+  // iş beklenen durumda ve beklemesi dolmuş) ya da null — o zaman işe dokunulmaz: İptal Et / geri yükleme işi zaten kapatmıştır; Duraklat yalnız Bekliyor /
+  // Sınır'dakileri tutar, "Hazırlanıyor"da kalan iş burada "Duraklatıldı"ya geçer (Devam Et onu yeniden Bekliyor yapar).
+  function stillRunning(jobId, states) {
+    const current = jobRow(jobId);
+    const row = current ? batchRow(current.batch_id) : null;
+    if (current && row?.state === "running" && states.includes(current.state) && !(current.next_at && current.next_at > iso())) return { job: current, batch: row };
+    if (current && row?.state === "paused" && current.state === "preparing") updateJob(current.id, { state: "paused", next_at: null });
+    if (row) notify(row.id);
+    return null;
+  }
+
+  // T1 B3–B5 (kâhin karşılaştırması GUV-03/08, SINIR-02, SABLON-PAZARLAMA-ARADA, OLCEK-04): yürütülebilir iş yokken de SÜREN toplu işler denetlenir — sınırda /
+  // 131049 beklemesinde / yeniden denemeyi bekleyen işi olanlar: lisans salt okunura düştüyse "Lisans Nedeniyle Durdu" (plan §4, §7a 25: kendiliğinden SÜRMEZ),
+  // onay / firma adı / bağlantı (T2-8 ile aynı engeller), şablon kategorisi + içeriği R2 aralığıyla (her 100 iletide / en geç 10 dakikada; §7a 27), Meta sınır
+  // basamağı 6 saatte bir (§6 W2) — basamak yükseldiyse sınırda bekleyenler erkenden bırakılır (yeni sınırı yine işçinin pencere denetimi uygular). "Bağlantı
+  // Bekleniyor"daki toplu işte Meta okunmaz (R1). Okuma düşerse en erken 1 dk sonra yeniden. Dönüş: { acted, waitMs } (en yakın denetim anı).
+  const WATCH_RETRY_MS = 60_000;
+  const watchTried = new Map(); // `${waba}|${şablon}` / `tier|${waba}` → son deneme (ms)
+  async function watch() {
+    let acted = false;
+    let soon = null;
+    const consider = at => {
+      if (Number.isFinite(at)) soon = soon === null ? at : Math.min(soon, at);
+    };
+    const due = (key, at, span) => (!Number.isFinite(at) || nowMs() < at || nowMs() - at >= span) && !(nowMs() - (watchTried.get(key) ?? -Infinity) < WATCH_RETRY_MS && nowMs() >= (watchTried.get(key) ?? 0));
+    for (const batch of store.all("SELECT * FROM wa_batches WHERE state = 'running' ORDER BY created_at, rowid")) {
+      const waiting = store.get("SELECT COUNT(*) AS n, COALESCE(SUM(CASE WHEN state = 'limited' THEN 1 ELSE 0 END), 0) AS limited FROM wa_jobs WHERE batch_id = ? AND state IN ('pending', 'limited', 'held')", batch.id);
+      if (!waiting.n || !ledger.batchState(batch.id).live) continue;
+      if (!writable()) {
+        pauseBatch(batch, "license", LICENSE_PAUSE);
+        acted = true;
+        continue;
+      }
+      const block = startBlock();
+      if (block) {
+        pauseBatch(batch, block.pauseCode, block.pauseReason);
+        acted = true;
+        continue;
+      }
+      const record = connection.read();
+      if (!record || record.wabaId !== batch.waba_id || record.phoneNumberId !== batch.phone_number_id) {
+        pauseBatch(batch, "connection", "WhatsApp bağlantısı kaldırıldı ya da değişti; gönderim duraklatıldı.");
+        acted = true;
+        continue;
+      }
+      if (batch.pause_code === "offline") continue;
+      const key = `${batch.waba_id}|${batch.template}`;
+      const cached = templateCache.get(key);
+      if (due(key, cached?.at, TEMPLATE_CHECK_MS) || (cached && cached.sent >= TEMPLATE_CHECK_EVERY)) {
+        watchTried.set(key, nowMs());
+        let result = null;
+        try {
+          result = await checkTemplate(record, batch.template, { force: true });
+        } catch (error) {
+          if (!(error instanceof MetaGraphError) && !(error instanceof HttpError)) throw error;
+        }
+        if (result && !result.ok) {
+          pauseBatch(batch, result.code, result.reason);
+          acted = true;
+          continue;
+        }
+      }
+      consider(Math.max((templateCache.get(key)?.at ?? -Infinity) + TEMPLATE_CHECK_MS, (watchTried.get(key) ?? -Infinity) + WATCH_RETRY_MS));
+      if (waiting.limited) {
+        const tierKey = `tier|${batch.waba_id}`;
+        const tier = tierCache.get(batch.waba_id);
+        if (due(tierKey, tier?.at, TIER_CHECK_MS)) {
+          watchTried.set(tierKey, nowMs());
+          const before = tier?.limit;
+          try {
+            await dailyLimit(connection.client().graph, record, { force: true });
+          } catch (error) {
+            if (!(error instanceof MetaGraphError) && !(error instanceof HttpError)) throw error;
+          }
+          const after = tierCache.get(batch.waba_id)?.limit;
+          const raised = before !== undefined && after !== undefined && (after === Infinity ? before !== Infinity : Number.isFinite(before) && Number.isFinite(after) && after > before);
+          if (raised) {
+            store.run("UPDATE wa_jobs SET state = 'pending', next_at = NULL, updated_at = ? WHERE state = 'limited' AND batch_id IN (SELECT id FROM wa_batches WHERE waba_id = ? AND state = 'running')", iso(), batch.waba_id);
+            log.info?.(`WhatsApp sınır basamağı yükseldi (${batch.waba_id}): sınırda bekleyen iletiler sürüyor.`);
+            notify(batch.id);
+            acted = true;
+          }
+        }
+        consider(Math.max((tierCache.get(batch.waba_id)?.at ?? -Infinity) + TIER_CHECK_MS, (watchTried.get(tierKey) ?? -Infinity) + WATCH_RETRY_MS));
+      }
+    }
+    return { acted, waitMs: soon === null ? null : Math.max(0, soon - nowMs()) };
   }
 
   async function step() {
     const pick = next();
-    if (!pick.jobId) return { did: false, waitMs: pick.waitMs };
-    let job = jobRow(pick.jobId);
+    if (!pick.jobId) {
+      const watched = await watch();
+      if (watched.acted) return { did: true };
+      const waits = [pick.waitMs, watched.waitMs].filter(Number.isFinite);
+      return { did: false, waitMs: waits.length ? Math.min(...waits) : null };
+    }
+    inFlight = pick.jobId;
+    try {
+      return await runJob(pick.jobId);
+    } catch (error) {
+      // T6-B1/B2: Meta DIŞI hata (yazım, disk, kilit, beklenmeyen) — iş henüz ileti isteği aşamasına gelmediyse güvenli duruma döner ve BEKLEMELİ yeniden denenir.
+      // "Gönderiliyor" / "Sonucu Belirsiz" (istek aşaması) kendi yolunda çözülür (defter; bakım turu 5 dk kuralı) — hata yukarı gider.
+      let row = null;
+      try {
+        row = jobRow(pick.jobId);
+      } catch {
+        throw error;
+      }
+      if (!row || !DEFERRABLE.includes(row.state)) throw error;
+      return deferLocal(row.batch_id, row.id, error);
+    } finally {
+      inFlight = null;
+    }
+  }
+
+  async function runJob(jobId) {
+    let job = jobRow(jobId);
     const batch = batchRow(job.batch_id);
     // (5) geri yüklenen / taşınan veri: defterde canlı olmayan toplu iş yürütülmez.
     const live = ledger.batchState(batch.id);
@@ -618,12 +976,18 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     if (!writable()) {
       // §7a 25: lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (Devam Et).
-      pauseBatch(batch, "license", "Lisans Nedeniyle Durdu: program salt okunur çalışıyor; lisans yenilenince Devam Et'e basın.");
+      pauseBatch(batch, "license", LICENSE_PAUSE);
       return { did: true };
     }
     const record = connection.read();
     if (!record || record.wabaId !== batch.waba_id || record.phoneNumberId !== batch.phone_number_id) {
       pauseBatch(batch, "connection", "WhatsApp bağlantısı kaldırıldı ya da değişti; gönderim duraklatıldı.");
+      return { did: true };
+    }
+    // T2-8: Gönderim Onayı kaldırıldı / firma adı silindi → süren toplu iş duraklar (kendiliğinden SÜRMEZ; Devam Et).
+    const block = startBlock();
+    if (block) {
+      pauseBatch(batch, block.pauseCode, block.pauseReason);
       return { did: true };
     }
     let graph;
@@ -633,22 +997,31 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       pauseBatch(batch, "token", error.message);
       return { did: true };
     }
-    // Şablon (saatte bir; §7a 27) ve sınır basamağı (6 saatte bir).
+    // Şablon (R2: her 100 iletide / en geç 10 dk; §7a 27) ve sınır basamağı (6 saatte bir).
     let limitInfo;
     let language = batch.lang;
+    let template = null;
+    let checkError = null;
     try {
-      const template = await checkTemplate(graph, batch.waba_id, batch.template);
-      if (!template.ok) {
-        pauseBatch(batch, template.code, template.reason);
-        return { did: true };
-      }
-      language = template.template.language || batch.lang;
-      limitInfo = await dailyLimit(graph, record);
+      template = await checkTemplate(record, batch.template);
+      if (template.ok) limitInfo = await dailyLimit(graph, record);
     } catch (error) {
       if (!(error instanceof MetaGraphError)) throw error;
-      handleFailure(batch, job, error, { stage: "check" });
+      checkError = error;
+    }
+    // T2-2: Meta okuması beklenirken kullanıcı İptal Et / Duraklat'a basmış olabilir — iş ve toplu iş YENİDEN okunur; artık yürütülemiyorsa dokunulmaz.
+    const afterCheck = stillRunning(job.id, ["pending", "limited", "held"]);
+    if (!afterCheck) return { did: true };
+    job = afterCheck.job;
+    if (checkError) {
+      handleFailure(afterCheck.batch, job, checkError, { stage: "check" });
       return { did: true };
     }
+    if (!template.ok) {
+      pauseBatch(afterCheck.batch, template.code, template.reason);
+      return { did: true };
+    }
+    language = template.template.language || batch.lang;
     // ---------- Hazırlanıyor: cari GÖNDERİM ANINDA okunur (§7a 1, 2) ----------
     const user = userFor(batch.created_by);
     let account = null;
@@ -682,12 +1055,32 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     updateJob(job.id, { state: "preparing", next_at: null });
     let prepared;
+    let prepareError = null;
     try {
       prepared = await prepare(batch, job, graph, record, account, user);
     } catch (error) {
+      prepareError = error;
+    }
+    // T2-2: PDF yüklenirken İptal Et / Duraklat / geri yükleme olmuş olabilir — Meta'ya ileti isteğinden HEMEN ÖNCE iş ve toplu iş yeniden okunur (buradan
+    // isteğe dek bekleme noktası yok: defter talebi ve durum yazımları eşzamanlı). İptal edilen işin yüklenmiş PDF'i işte kayıtlıdır; kesin durumda olduğu için
+    // bakım turu Meta'dan siler (S3 A). Duraklatılan iş "Duraklatıldı"ya geçer; Devam Et'te aynı PDF yeniden kullanılır (§7a 15).
+    const ready = stillRunning(job.id, ["preparing"]);
+    if (!ready) {
+      if (prepareError && !(prepareError instanceof MetaGraphError)) log.warn?.(`WhatsApp işi hazırlanamadı (${job.id}; iş artık yürütülmüyor): ${prepareError.message}`);
+      return { did: true };
+    }
+    job = ready.job;
+    // T2-8: onay PDF yüklenirken kaldırılmış olabilir — ileti isteğinden hemen önce yeniden denetlenir; iş Bekliyor'a döner, toplu iş duraklar.
+    const lateBlock = startBlock();
+    if (lateBlock) {
       updateJob(job.id, { state: "pending" });
-      if (!(error instanceof MetaGraphError)) throw error;
-      handleFailure(batch, jobRow(job.id), error, { stage: "media" });
+      pauseBatch(ready.batch, lateBlock.pauseCode, lateBlock.pauseReason);
+      return { did: true };
+    }
+    if (prepareError) {
+      updateJob(job.id, { state: "pending" });
+      if (!(prepareError instanceof MetaGraphError)) throw prepareError;
+      handleFailure(ready.batch, jobRow(job.id), prepareError, { stage: "media" });
       return { did: true };
     }
     if (prepared.skip) {
@@ -697,11 +1090,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     // ---------- Gönderiliyor (istekten ÖNCE yazılır) ----------
     const attempt = (job.attempt || 0) + 1;
-    updateJob(job.id, { state: "sending", attempt, sending_at: iso() });
+    // T2 dar kontrol ORTA-2: önceki denemenin wamid'i işte kalmaz (eski denemenin bildirimi yeni denemeyle eşleşmesin; sonucu belirsiz yeni deneme imzalı kancayla çözülebilsin).
+    updateJob(job.id, { state: "sending", attempt, sending_at: iso(), wamid: null });
     let claim;
     try {
       injected("ledger-claim", job);
-      claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, { from: batch.period_from, to: batch.period_to }, today()), at: iso() });
+      const batchPeriod = { from: batch.period_from, to: batch.period_to, preset: batch.preset };
+      const keyDay = keyDayOfBatch(batch);
+      claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, batchPeriod, keyDay), periodKeys: periodKeysOf(batch.kind, batchPeriod, keyDay), at: iso() });
     } catch (error) {
       // Defter yazılamadı (disk dolu, kilit): istek GÖNDERİLMEZ, iş bekler.
       updateJob(job.id, { state: "pending", attempt: job.attempt || 0, sending_at: null, next_at: iso(nowMs() + JOB_BACKOFF_MS[0]) });
@@ -737,36 +1133,63 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       updateJob(job.id, { state: "accepted", wamid: sent.wamid, accepted_at: iso(), error_code: null, error_text: "", next_at: null });
       updateBatch(batch.id, { troubles: 0, ...connectionBack() });
     });
+    localDefer.delete(job.id);
     finishIfDone(batch.id);
     notify(batch.id);
     return { did: true, sent: true };
   }
 
-  // Değişkenler ve PDF AYNI cari okumasından (metin = PDF; §7a 1). Medya geçerliyse (30 gün, silinmemiş) aynısı yeniden kullanılır (§7a 14–15).
+  // Meta'daki PDF kopyası yeniden kullanılabilir mi (§7a 15): kimliği var, 29 günü dolmadı, silinmedi.
+  const mediaUsable = job => Boolean(job.media_id && job.media_at && !job.media_deleted_at && nowMs() - Date.parse(job.media_at) <= MEDIA_REUSE_MS);
+  // T2-6 (bağımsız gözden geçirme r3): değişkenler ve PDF İLK HAZIRLIKTA AYNI cari okumasından üretilir ve DONDURULUR (prepared_at, params_json, pdf_name,
+  // pdf_blob — göç v41); her yeniden deneme (131056, geçici hata, Bağlantı Bekleniyor, 131049, Duraklat → Devam Et) aynı metni ve aynı PDF'i gönderir (metin = PDF,
+  // §7a 1; aynı medya, §7a 14–15). Meta'daki kopya geçerliyse (29 gün, silinmemiş) aynısı, değilse dondurulmuş baytlar yeniden yüklenir. Uygunluk (İstemiyor, pasif,
+  // silinmiş, telefon; hatırlatmada gecikmiş borç) her denemede GÜNCEL okunur (§7a 2): içerik donar, gönderilip gönderilmeyeceği donmaz.
   async function prepare(batch, job, graph, record, account, user) {
-    const office = cleanParam(store.setting("office.name", "") || "");
-    const name = cleanParam(account.name);
-    let params;
+    if (batch.kind !== "statement" && !overdueOf(account, today())) return { skip: "Gecikmiş Borç Yok" };
+    let params = job.prepared_at ? parse(job.params_json, null) : null;
+    let pdf = job.prepared_at && job.pdf_blob ? Buffer.from(job.pdf_blob) : null;
+    let filename = job.pdf_name || "";
+    // Dondurulmuş PDF baytları iş Meta'ya kabul edilince silinir (bakım); 131049 / Yine de Gönder sonrası yeniden denemede Meta'daki kopya geçerliyse o yeter.
+    const frozen = Array.isArray(params) && params.length > 0 && (batch.kind !== "statement" || Boolean(filename && (pdf?.length || mediaUsable(job))));
+    if (!frozen) {
+      const office = cleanParam(store.setting("office.name", "") || "");
+      const name = cleanParam(account.name);
+      if (batch.kind === "statement") {
+        const range = { from: batch.period_from, to: batch.period_to };
+        const data = statementData(account, range);
+        params = [name, office, periodText(range, account.ledger || []), balanceText(data.closing)];
+        // eslint-disable-next-line no-control-regex
+        filename = statementFileName(data, today()).replace(/[\\/:*?"<>|\u0000-\u001f]+/g, " ");
+        pdf = Buffer.from(statementPdf(data, { today: today(), now: now(), userName: user.display_name || user.username || "", header: header() }));
+      } else {
+        const overdue = overdueOf(account, today());
+        params = [name, office, dayText(overdue.dueDate), moneyText(overdue.amount), balanceText(account.totals.balance)];
+        filename = "";
+        pdf = null;
+      }
+      // Yeni anlık görüntü: önceki bir denemenin Meta'daki kopyası (varsa) bu içeriğe ait sayılmaz → yeniden yüklenir.
+      updateJob(job.id, { prepared_at: iso(), params_json: JSON.stringify(params), pdf_name: filename, pdf_blob: pdf, ...(job.media_id ? { media_id: null, media_at: null } : {}) });
+      job = jobRow(job.id);
+    }
     let document = null;
     if (batch.kind === "statement") {
-      const range = { from: batch.period_from, to: batch.period_to };
-      const data = statementData(account, range);
-      params = [name, office, periodText(range, account.ledger || []), balanceText(data.closing)];
-      // eslint-disable-next-line no-control-regex
-      const filename = statementFileName(data, today()).replace(/[\\/:*?"<>|\u0000-\u001f]+/g, " ");
       let mediaId = job.media_id;
-      if (!mediaId || !job.media_at || nowMs() - Date.parse(job.media_at) > MEDIA_REUSE_MS || job.media_deleted_at) {
-        const pdf = statementPdf(data, { today: today(), now: now(), userName: user.display_name || user.username || "", header: header() });
+      if (!mediaUsable(job)) {
         mediaId = await graph.uploadMedia(record.phoneNumberId, { data: pdf, filename, mime: "application/pdf" });
-        updateJob(job.id, { media_id: mediaId, media_at: iso(), media_deleted_at: null, media_delete_tries: 0 });
+        try {
+          updateJob(job.id, { media_id: mediaId, media_at: iso(), media_deleted_at: null, media_delete_tries: 0 });
+        } catch (error) {
+          // T6-B2 (S3 A): yüklenen PDF'in kimliği kaydedilemedi (disk dolu, kilit) — Meta'da sahipsiz kalmasın: bellekteki kimlikle HEMEN silinmeye çalışılır.
+          try {
+            await graph.deleteMedia(mediaId);
+          } catch (deleteError) {
+            log.warn?.(`WhatsApp: kaydedilemeyen PDF Meta'dan silinemedi (${job.id}; ${deleteError.message}); Meta 30 günde kendisi düşürür.`);
+          }
+          throw error;
+        }
       }
       document = { id: mediaId, filename };
-      updateJob(job.id, { params_json: JSON.stringify(params), pdf_name: filename });
-    } else {
-      const overdue = overdueOf(account, today());
-      if (!overdue) return { skip: "Gecikmiş Borç Yok" };
-      params = [name, office, dayText(overdue.dueDate), moneyText(overdue.amount), balanceText(account.totals.balance)];
-      updateJob(job.id, { params_json: JSON.stringify(params) });
     }
     const components = [];
     if (document) components.push({ type: "header", parameters: [{ type: "document", document }] });
@@ -798,7 +1221,15 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   }
   const connectionBack = () => ({ pause_code: "", pause_reason: "", retry_at: null, offline_tries: 0 });
 
-  function handleFailure(batch, job, error, { stage, attempt = null }) {
+  function handleFailure(batch, job, error, options) {
+    applyFailure(batch, job, error, options);
+    // T2-2: ileti isteği sürerken toplu iş iptal edildi / durduruldu: yeniden denemeye dönen iş (Bekliyor / Sınır / Meta Bekletti) kapanmış toplu işte asılı kalmaz.
+    const row = batchRow(batch.id);
+    if (row && ["canceled", "stopped"].includes(row.state)) {
+      store.run("UPDATE wa_jobs SET state = ?, closed_at = ?, updated_at = ? WHERE id = ? AND state IN ('pending', 'limited', 'preparing', 'paused', 'held')", row.state, iso(), iso(), job.id);
+    }
+  }
+  function applyFailure(batch, job, error, { stage, attempt = null }) {
     const row = batchRow(batch.id);
     const reachedMeta = error.reason === "meta";
     const record = outcome => {
@@ -813,7 +1244,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       const tries = (job.temp_tries || 0) + 1;
       if (tries > JOB_BACKOFF_MS.length) failJob(code, `${text} (${JOB_BACKOFF_MS.length} kez yeniden denendi)`);
       else updateJob(job.id, { state: "pending", temp_tries: tries, next_at: iso(nowMs() + JOB_BACKOFF_MS[tries - 1]), error_code: Number.isFinite(code) ? code : null, error_text: text });
-      trouble(row, text);
+      // T1 P4 (§7a 13): art arda 5. geçici hatada toplu iş duraklar — hatayı ALAN iş "Başarısız" (kodlu), bekleyenler "Duraklatıldı".
+      if (trouble(row, text) && tries <= JOB_BACKOFF_MS.length) failJob(code, `${text} (art arda ${MAX_TROUBLES} geçici hata; toplu iş duraklatıldı)`);
     };
     // Okuma (şablon listesi, sınır basamağı) Meta'nın geçici hatasıyla yapılamadı: işin kendi deneme hakkı harcanmaz; iş bekler, toplu işin sayacı artar.
     const checkLater = text => {
@@ -953,21 +1385,38 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
 
   // ---------- Bakım: süre dolumu (§7a 16), medya silme (S3 A), takılı "Gönderiliyor" ----------
   async function maintain() {
-    const { ttlHours } = settings();
     const out = { expired: 0, mediaDeleted: 0, mediaFailed: 0 };
     // Bildirim yolu çalışıyorsa (son 7 günde bu şirkete en az bir durum bildirimi geldi) teslim edilmeyen ileti TTL + 1 saatte "Süresi Doldu"; yoksa "Meta Kabul Etti"de kalır.
-    const seen = Date.parse(store.setting(HOOK_SEEN_KEY, "") || "");
+    // T2-3/4: bildirim yolu WABA düzeyinde (makine defteri hook_seen; aynı WABA'yı kullanan şirketlerin hepsi için) ya da bu şirketin son bildirimi.
+    const seenWaba = Date.parse(ledger.hookSeenAt?.(connection.read()?.wabaId || "") || "");
+    const seenHere = Date.parse(store.setting(HOOK_SEEN_KEY, "") || "");
+    const seen = Math.max(Number.isFinite(seenWaba) ? seenWaba : -Infinity, Number.isFinite(seenHere) ? seenHere : -Infinity);
+    // T2-5 güvenli taraf: TTL = META'NIN KABUL ETTİĞİ ileti ömrü (lib/whatsapp/templates.mjs deliveryTtlSeconds; okunamazsa / reddedildiyse Meta'nın varsayılanı 30 gün) —
+    // ayardaki değer değil: Meta'nın hâlâ teslim etmeye çalıştığı iletiyi "Süresi Doldu" saymaz, PDF'ini önceden silmez.
+    const ttlOf = new Map();
+    const ttlMs = (wabaId, name) => {
+      const key = `${wabaId}|${name}`;
+      if (!ttlOf.has(key)) ttlOf.set(key, deliveryTtlSeconds(store, wabaId, name) * 1000);
+      return ttlOf.get(key);
+    };
     if (Number.isFinite(seen) && nowMs() - seen <= HOOK_ALIVE_MS) {
-      const ttlLimit = iso(nowMs() - (ttlHours + 1) * HOUR);
-      for (const row of store.all("SELECT id FROM wa_jobs WHERE state IN ('accepted', 'sent') AND accepted_at IS NOT NULL AND accepted_at < ?", ttlLimit)) {
+      for (const row of store.all("SELECT j.id, j.attempt, j.accepted_at, b.waba_id, b.template FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL")) {
+        if (Date.parse(row.accepted_at) + ttlMs(row.waba_id, row.template) + HOUR >= nowMs()) continue;
         updateJob(row.id, { state: "expired", closed_at: iso() });
+        // KULLANICI KARARI P3 = SAYILMAZ (31.10.2026): Meta teslim edemedi → defterde "teslim edilemedi" (Başarısız gibi): "Daha Önce Gönderildi" (R3) saymaz, çift
+        // gönderim kilidi çözülür. Meta sonradan "delivered" bildirirse R3 yine sayar (defter deliveries; lib/whatsapp/defter.mjs sentBefore).
+        ledger.deliveryFailed({ jobId: row.id, attempt: row.attempt, at: iso() });
         out.expired += 1;
       }
     }
+    // PDF Meta'dan yalnız kesin sonuçta silinir; bildirim yolu çalışmasa da Meta'nın en uzun ömrü (30 gün) + 1 saat geçen kabul edilmiş iletinin PDF'i (Meta artık
+    // teslim etmeye çalışmaz; medya kimliği de 30 günde düşer) silinir.
     const doomed = store.all(
       `SELECT j.id, j.media_id, j.media_delete_tries, b.waba_id FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id
-       WHERE j.media_id IS NOT NULL AND j.media_deleted_at IS NULL AND j.media_delete_tries < 5 AND j.state IN (${FINAL.map(() => "?").join(",")}) LIMIT 50`,
+       WHERE j.media_id IS NOT NULL AND j.media_deleted_at IS NULL AND j.media_delete_tries < 5
+         AND (j.state IN (${FINAL.map(() => "?").join(",")}) OR (j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL AND j.accepted_at < ?)) LIMIT 50`,
       ...FINAL,
+      iso(nowMs() - META_DEFAULT_TTL_SECONDS * 1000 - HOUR),
     );
     if (doomed.length) {
       const record = connection.read();
@@ -990,9 +1439,21 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         }
       }
     }
+    // T2-6 + plan §5: dondurulmuş PDF (pdf_blob) yalnız iş açıkken (yeniden denenebilirken) tutulur; kabul edilen / kesinleşen işte silinir (değişkenler ve PDF adı kalır).
+    store.run(`UPDATE wa_jobs SET pdf_blob = NULL WHERE pdf_blob IS NOT NULL AND state NOT IN (${OPEN_JOB.map(() => "?").join(",")})`, ...OPEN_JOB);
     // Kabul yazımı düşmüş (disk dolu) ve 5 dakikadır "Gönderiliyor"da kalan iş (tek işçi; istek 15 sn'de biter): açılıştaki kuralla defterden çözülür.
     const stuck = store.all("SELECT * FROM wa_jobs WHERE state = 'sending' AND sending_at < ?", iso(nowMs() - 5 * 60_000));
     if (stuck.length) out.repaired = settleSending(stuck);
+    // T6-B1: "Hazırlanıyor"da kalan iş (hazırlık sonrası yazım disk dolu / kilit yüzünden düştü; ileti isteği gitmedi — defter talebi "Gönderiliyor"dan sonra) yalnız
+    // açılışta değil bakım turunda da Bekliyor'a döner. Bakım işçi turunun içinde koşar (zamanlayıcı runOnce kilidi; aynı anda iş yürütülmez) → bu anda "Hazırlanıyor"daki
+    // iş takılıdır; yine de işçinin şu anki işi ve son 30 sn'de yazılan iş hariç tutulur (yer açılınca en geç bir bakım aralığında — 60 sn — sürer).
+    for (const row of store.all("SELECT id FROM wa_jobs WHERE state = 'preparing' AND updated_at < ?", iso(nowMs() - PREPARING_STUCK_MS))) {
+      if (row.id === inFlight) continue;
+      updateJob(row.id, { state: "pending" });
+      out.resetPreparing = (out.resetPreparing || 0) + 1;
+    }
+    // Bellekteki beklemeler: kapanmış işlerinki silinir.
+    for (const id of [...localDefer.keys()]) if (!OPEN_JOB.includes(jobRow(id)?.state)) localDefer.delete(id);
     for (const row of store.all("SELECT id FROM wa_batches WHERE state = 'running'")) finishIfDone(row.id);
     // W9 (plan §3 C): durum bildirimi adresi Meta'ya kayıtlı değilse / ofisin uzaktan adresi değiştiyse / kayıt düştüyse (saatte en çok bir kez) kaydedilir.
     // Salt okunur lisansta kaydedilmez (tünel de kapalı).
@@ -1007,12 +1468,45 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return out;
   }
 
+  // T1 ayıklaması İş M: taşınan veride (bu defterde açılmamış toplu iş) wamid'in işi — kancanın sahip araması için (lib/whatsapp/hook.mjs movedOwnerOf). Dönüş: { wabaId } | null.
+  function movedOwnerOfWamid(wamid) {
+    if (!wamid) return null;
+    const row = store.get("SELECT b.waba_id AS wabaId FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.wamid = ? AND b.ledger_id <> ? LIMIT 1", String(wamid), ledger.id);
+    return row?.wabaId ? { wabaId: row.wabaId } : null;
+  }
   // ---------- Durum bildirimleri (W9; lib/whatsapp/hook.mjs) ----------
   /**
    * statuses: Meta'nın statuses[] öğeleri (D0-15). phoneNumberId: bildirimin geldiği numara (metadata). signed: Meta imzası kapıcıda doğrulandı ve istek kapıcının
    * imzasıyla geldi (Yol 2). Yalnız bu şirketin kaydındaki wamid'ler güncellenir; Sonucu Belirsiz iş YALNIZ imzalı bildirim + iş kimliği (biz_opaque_callback_data)
    * eşleşince çözülür (§7a 3); bilinmeyen / imzasız eşleşmeyen olay düşer. Durum yalnız ileri gider (§7a 17–18); yinelenen bildirim etkisizdir.
    */
+  /**
+   * Dar kontrol 8 DÜŞÜK-1 (P3 "geç teslim sayılır"): Meta Bekletti (131049) ile BIRAKILMIŞ eski denemenin wamid'ine sonradan "delivered" / "read" gelir; iş o arada
+   * 2. denemeye geçtiği için (wamid işten silinir) wamid'le bulunamaz. Deneme bu şirketin defterindeyse ve bırakılmışsa (releases) işin durumuna DOKUNULMADAN yalnız defter
+   * teslimi (deliveries) yazılır: R3 kişiyi sayar, "Bu Ay" sayacı teslimi görür. Başka şirketin / bilinmeyen / bırakılmamış denemenin wamid'i düşer.
+   */
+  function lateDeliveryOfReleased(wamid, status, at, phoneNumberId) {
+    const owner = ledger.attemptOfWamid?.(wamid);
+    if (!owner) return false;
+    if (ledger.companyOfWamid?.(wamid)?.companyId !== companyId) return false;
+    const attempt = ledger.attempts(owner.jobId).find(item => item.attempt === owner.attempt);
+    if (attempt?.outcome !== "released") return false;
+    const row = jobRow(owner.jobId);
+    // KULLANICI KARARI ("KİME KAÇ KEZ" ilkesi, S3): iş şirket dosyasında YOKSA (Şirket Verisini Sıfırla wa_jobs'u siler) geç teslim yine sayılır (kesin aldı) — WABA
+    // defterdeki talepten; şirket denetimi yukarıda (companyOfWamid).
+    if (!row) {
+      const owned = ledger.companyOfWamid?.(wamid);
+      const billable = status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing ? status.pricing.billable !== false : true;
+      return Boolean(owned?.wabaId) && ledger.delivered({ jobId: owner.jobId, companyId, wabaId: owned.wabaId, billable, at });
+    }
+    if (Number(row.attempt) <= Number(owner.attempt)) return false;
+    const batch = batchRow(row.batch_id);
+    if (!batch || (phoneNumberId && batch.phone_number_id !== String(phoneNumberId))) return false;
+    const billable = status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing ? status.pricing.billable !== false : row.billable !== 0;
+    if (!ledger.delivered({ jobId: row.id, companyId, wabaId: batch.waba_id, billable, at })) return false;
+    notify(row.batch_id);
+    return true;
+  }
   function applyStatuses(statuses = [], { phoneNumberId = "", signed = false } = {}) {
     const out = { applied: 0, ignored: 0, unknown: 0 };
     store.setSetting(HOOK_SEEN_KEY, iso());
@@ -1027,7 +1521,15 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         if (candidate && ["uncertain", "sending"].includes(candidate.state) && !candidate.wamid) job = candidate;
       }
       if (!job) {
-        out.unknown += 1;
+        if (wamid && ["delivered", "read"].includes(value) && lateDeliveryOfReleased(wamid, status, at, phoneNumberId)) out.applied += 1;
+        else out.unknown += 1;
+        continue;
+      }
+      // T2 dar kontrol ORTA-2: wamid'in AİT OLDUĞU deneme defterden okunur — işin şimdiki denemesi değilse (eski denemenin yinelenen bildirimi) işin durumu ve kilidi
+      // DEĞİŞMEZ.
+      const owner = wamid ? ledger.attemptOfWamid?.(wamid) : null;
+      if (owner && (owner.jobId !== job.id || owner.attempt !== job.attempt)) {
+        out.ignored += 1;
         continue;
       }
       const batch = batchRow(job.batch_id);
@@ -1037,14 +1539,20 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       const current = job.state;
       const fields = {};
+      let reopenedHere = false; // dar kontrol 2 DÜŞÜK-1: bu bildirim defterde toplu işi yeniden açtı mı (dosya yazımı düşerse telafi)
       const resolving = ["uncertain", "sending"].includes(current);
       if (resolving && wamid) fields.wamid = wamid;
+      // İş 5 (KULLANICI KARARI 31.10.2026 "a"): Meta Bekletti'de (131049) iken İptal Et ile durdurulan işin kabul edilmiş iletisi sonradan teslim edildiyse geç
+      // "delivered" / "read" uygulanır (P3'ün geç teslim kuralı; defter deliveries → R3 sayar). Yalnız bu işin KENDİ wamid'iyle (yukarıdaki sahip denetimi).
+      // Dar kontrol 8 DÜŞÜK-5 (KULLANICI KARARI 31.10.2026 ~11:00 UTC "A"): yedekten geri yükleme / taşıma ile "Durduruldu" olan Meta Bekletti işi de (iptalden ÖNCEKİ
+      // yedek geri yüklenince dosyadaki iş "stopped" olur) aynı kuralla.
+      const lateAfterHold = ["canceled", "stopped"].includes(current) && job.retry_131049 === 1 && Boolean(job.wamid) && wamid === job.wamid;
       if (value === "sent") {
         if (resolving || current === "accepted") Object.assign(fields, { state: "sent", sent_at: at });
       } else if (value === "delivered") {
-        if (resolving || ["accepted", "sent", "expired"].includes(current)) Object.assign(fields, { state: "delivered", delivered_at: at, sent_at: job.sent_at || at, closed_at: iso() });
+        if (resolving || lateAfterHold || ["accepted", "sent", "expired"].includes(current)) Object.assign(fields, { state: "delivered", delivered_at: at, sent_at: job.sent_at || at, closed_at: iso() });
       } else if (value === "read") {
-        if (resolving || ["accepted", "sent", "delivered", "expired"].includes(current)) Object.assign(fields, { state: "read", read_at: at, delivered_at: job.delivered_at || at, sent_at: job.sent_at || at, closed_at: iso() });
+        if (resolving || lateAfterHold || ["accepted", "sent", "delivered", "expired"].includes(current)) Object.assign(fields, { state: "read", read_at: at, delivered_at: job.delivered_at || at, sent_at: job.sent_at || at, closed_at: iso() });
       } else if (value === "failed") {
         // §7a 18: delivered / read'den SONRA gelen failed yok sayılır.
         if (resolving || ["accepted", "sent", "expired"].includes(current)) {
@@ -1052,27 +1560,49 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
           const code = Number(first?.code);
           const known = Number.isFinite(code) ? classifyMetaCode(code) : null;
           const text = known?.title || String(first?.error_data?.details || first?.message || first?.title || "İleti teslim edilemedi.").slice(0, 300);
-          Object.assign(fields, { state: "failed", failed_at: at, closed_at: iso(), error_code: Number.isFinite(code) ? code : null, error_text: Number.isFinite(code) ? `${text} (Meta hata kodu ${code})` : text });
+          const errorText = Number.isFinite(code) ? `${text} (Meta hata kodu ${code})` : text;
+          // T1 B2 (plan §6 W2 + §7a 14): 131049 kancayla da gelir (eşzamanlı yanıtla aynı kural) — ilk kez "Meta Bekletti (24 Saat Sonra Yeniden)": PDF silinmez,
+          // 24 saat sonra BİR kez aynı medyayla yeniden; ikinci 131049 Başarısız.
+          // Tamamlanmış toplu iş defterde yeniden açılır (ORTA-1: sonraki durdurma / iptal defterde doğru kaydedilir); açılamazsa (iptal / geri yükleme / yazılamadı) Başarısız.
+          const heldBatch = batchRow(job.batch_id);
+          const canHold =
+            code === META_D0.ecosystemCode && !job.retry_131049 && (["running", "paused"].includes(heldBatch?.state) || (heldBatch?.state === "done" && (reopenedHere = ledger.reopenBatch(heldBatch.id, companyId, iso()))));
+          if (canHold) Object.assign(fields, { state: "held", next_at: iso(nowMs() + DAY_MS), retry_131049: 1, error_code: code, error_text: errorText });
+          else Object.assign(fields, { state: "failed", failed_at: at, closed_at: iso(), error_code: Number.isFinite(code) ? code : null, error_text: errorText });
         }
       }
       if (status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing) fields.billable = status.pricing.billable === false ? 0 : 1;
+      // Dar kontrol 2 ORTA-A: Sonucu Belirsiz denemenin wamid'i (imzalı kanca + iş kimliği) defterde O DENEMEYE bağlanır — şirket dosyasına yazımdan ÖNCE; böylece
+      // aynı wamid'in yinelenen bildirimi sonraki denemeye (ör. 131049 sonrası yeniden deneme) yazılmaz.
+      if (resolving && wamid) ledger.learnWamid?.({ jobId: job.id, attempt: job.attempt, wamid, at });
       const changed = Boolean(fields.state) && fields.state !== current;
       if (!changed && !("billable" in fields && fields.billable !== job.billable)) {
         out.ignored += 1;
         continue;
       }
       try {
-        updateJob(job.id, fields);
+        // Dar kontrol 2 DÜŞÜK-1: Meta Bekletti + "Tamamlandı" toplu işin yeniden "Sürüyor" olması şirket dosyasında TEK işlemde (biri yazılıp öbürü düşmez).
+        if (fields.state === "held" && batchRow(job.batch_id)?.state === "done") {
+          store.tx(() => {
+            updateJob(job.id, fields);
+            updateBatch(job.batch_id, { state: "running", finished_at: null });
+          });
+        } else updateJob(job.id, fields);
       } catch (error) {
-        // wamid tekil dizini: aynı wamid başka işte (olmamalı) → olay düşer.
+        // wamid tekil dizini: aynı wamid başka işte (olmamalı) → olay düşer. Bu bildirim defterde toplu işi yeniden açtıysa telafi: defter dosyayla aynı ("Tamamlandı")
+        // kalır; telafi de yazılamazsa sonraki (yinelenen) bildirimde yeniden açma idempotenttir.
+        if (reopenedHere) ledger.stopBatch(job.batch_id, companyId, "done", iso());
         log.warn?.(`WhatsApp durum bildirimi yazılamadı (${job.id}): ${error.message}`);
         out.ignored += 1;
         continue;
       }
       const wabaId = batch.waba_id;
-      if (resolving && changed) ledger.lateAccept({ jobId: job.id, companyId, wabaId, at });
+      if (resolving && changed) ledger.lateAccept({ jobId: job.id, attempt: job.attempt, wamid: fields.wamid || "", companyId, wabaId, at });
       if (["delivered", "read"].includes(fields.state)) ledger.delivered({ jobId: job.id, companyId, wabaId, billable: fields.billable === undefined ? job.billable !== 0 : fields.billable === 1, at: fields.delivered_at || at });
       if (fields.state === "failed") ledger.deliveryFailed({ jobId: job.id, attempt: job.attempt, at });
+      // Bütün işleri kabul edilmiş (Tamamlandı) toplu iş yeniden SÜRER (yukarıda iş yazımıyla aynı işlemde): yalnız bu iş 24 saat sonra bir kez daha gider (çift gönderim
+      // kilidi defterde).
+      if (fields.state === "held") ledger.released({ jobId: job.id, attempt: job.attempt, at });
       out.applied += 1;
       notify(job.batch_id);
       if (fields.state && ["delivered", "read", "failed"].includes(fields.state)) finishIfDone(job.batch_id);
@@ -1135,5 +1665,5 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return settings();
   }
 
-  return { connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate };
+  return { connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate };
 }

@@ -1,0 +1,43 @@
+{
+  "ad": "248-dk5fix-mutasyon-m2-Europe_Istanbul",
+  "komut": "node --test test/whatsapp-dk5-yine-de-gonder-248.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T07:16:11.399Z",
+  "sure_sn": 4.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 6,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır › Sınır: asıl iş açıldıktan SONRA başka bir işle B'ye aynı dönem gitti → Başarısızları Yeniden Dene ve işteki Yine de Gönder 'Daha Önce Gönderildi' (iletide neden), çift ileti yok; gövde sınırı zorlayamaz",
+      "konum": "test/whatsapp-dk5-yine-de-gonder-248.test.mjs:115:3",
+      "hata": "Başarısızları Yeniden Dene: toplu iş açılmamalı (geldi 200 {\"ok\":true,\"data\":{\"batch\":{\"id\":\"wab-d0d6d661-e4f0-41db-b728-1b70c34525b7\",\"kind\":\"statement\",\"kindLabel\":\"Ekstre\",\"template\":\"destekofis_ekstre\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-04\",\"preset\":\"thisMonth\"},\"state\":\"running\",\"stateLabel\":\"Sürüyor\",\"waitingUntil\":null,\"pauseReason\":\"\",\"pauseCode\":\"\",\"createdAt\":\"2026-11-04T09:00:00.000Z\",\"createdByName\":\"Ofis yöneticisi\",\"finishedAt\":null,\"total\":1,\"counts\":{\"pending\":1,\"preparing\":0,\"sending\":0,\"accepted\":0,\"sent\":0,\"delivered\":0,\"read\":0,\"failed\":0,\"uncertain\":0,\"limited\":0,\"held\":0,\"paused\":0,\"canceled\":0,\"expired\":0,\"skipped\":0,\"stopped\":0}},\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-04\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":1,\"skipped\":{},\"alreadySent\":{\"count\":1,\"last\":\"2026-11-04T08:00:00.000Z\",\"included\":1},\"people\":[{\"id\":\"account-aa3cf33f-0fa0-4caa-9e74-698f73f37e6d\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"\",\"sentBefore\":\"2026-11-04T08:00:00.000Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":1},\"reused\":false}}) · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır › Sınır (Sonucu Belirsiz): asıl iş açıldıktan SONRA başka bir işle B'ye gitti → işteki Yine de Gönder 'Daha Önce Gönderildi', gövde zorlayamaz",
+      "konum": "test/whatsapp-dk5-yine-de-gonder-248.test.mjs:137:3",
+      "hata": "Yine de Gönder (işte; gövde zorluyor): toplu iş açılmamalı (geldi 200 {\"ok\":true,\"data\":{\"batch\":{\"id\":\"wab-6582ce9f-0360-45c4-a33c-a6d43545d183\",\"kind\":\"statement\",\"kindLabel\":\"Ekstre\",\"template\":\"destekofis_ekstre\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-04\",\"preset\":\"thisMonth\"},\"state\":\"running\",\"stateLabel\":\"Sürüyor\",\"waitingUntil\":null,\"pauseReason\":\"\",\"pauseCode\":\"\",\"createdAt\":\"2026-11-04T09:00:00.000Z\",\"createdByName\":\"Ofis yöneticisi\",\"finishedAt\":null,\"total\":1,\"counts\":{\"pending\":1,\"preparing\":0,\"sending\":0,\"accepted\":0,\"sent\":0,\"delivered\":0,\"read\":0,\"failed\":0,\"uncertain\":0,\"limited\":0,\"held\":0,\"paused\":0,\"canceled\":0,\"expired\":0,\"skipped\":0,\"stopped\":0}},\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-04\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":1,\"skipped\":{},\"alreadySent\":{\"count\":1,\"last\":\"2026-11-04T08:00:00.000Z\",\"included\":1},\"people\":[{\"id\":\"account-20a1d0a3-0f2c-483c-8f93-d4fa66ec6393\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"\",\"sentBefore\":\"2026-11-04T08:00:00.000Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":1},\"reused\":false}}) · 200 !== 400 (beklenen 400, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk5fix-mutasyon-m2-Europe_Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/m2",
+  "ham_cikti_sha256": "ea76ace209b4b9ef5e6bb983aaa9b95fdcc3579972cd8a930e87e78388741bb5",
+  "ham_cikti_bayt": 9021
+}

@@ -1,0 +1,53 @@
+{
+  "ad": "248-dk8ghi-mutasyon-mGr-r3-listesine-girer-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-ek-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-h-ozel-aralik-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-i-tasinan-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk4-yeniden-dene-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk5-yine-de-gonder-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs",
+  "commit": "608b50889b6c48f3a0ebb451a891b5dd332ac290",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 66,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T11:40:27.900Z",
+  "sure_sn": 28,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 47,
+    "gecen": 43,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş G ek 2/4 — çakışan eleme nedenleri: Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi › yeni toplu iş: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz', R3 sayısına girmez; R3'te Yine de Gönder seçilse de gitmez",
+      "konum": "test/whatsapp-dk8-g-ek-248.test.mjs:112:3",
+      "hata": "{}: R3 uyarısına girmez · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "2.4.8 İş G ek 2/4 — çakışan eleme nedenleri: Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi › yeni toplu iş: R3 + Zaten Kuyrukta → 'Zaten Kuyrukta' (R3 sayısına girmez); Zaten Kuyrukta + Sonucu Belirsiz (+ R3) → 'Zaten Kuyrukta'; işteki Yine de Gönder'in açtığı iş de aynı sıra",
+      "konum": "test/whatsapp-dk8-g-ek-248.test.mjs:133:3",
+      "hata": "{}: Zaten Kuyrukta ile elenen R3 uyarısına girmez · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "2.4.8 İş G ek 2/4 — çakışan eleme nedenleri: Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi › Başarısızları Yeniden Dene: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz' (R3 sayısına girmez)",
+      "konum": "test/whatsapp-dk8-g-ek-248.test.mjs:156:3",
+      "hata": "Yeniden Dene (R3 + belirsiz): Sonucu Belirsiz ile elenen R3 sayısına girmez (geldi {\"count\":1,\"last\":\"2026-11-03T12:00:00.000Z\",\"included\":0}) · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "2.4.8 İş G (★ soru 1) — Sonucu Belirsiz kalmış kişi yeni toplu işte de elenir › Onaylı yol açık ve aşılmış belirsiz deneme yine sayılır: işteki Yine de Gönder gider (Meta Kabul Etti); sonraki yeni gönderim 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs:60:3",
+      "hata": "{}: belirsizle elenen R3 sayısına girmez · 1 !== 0 (beklenen 0, gelen 1)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk8ghi-mutasyon-mGr-r3-listesine-girer-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "9078428cef8c93c3b241bc4969e0edb81503987c9b6ba51988f81a73d60b7d44",
+  "ham_cikti_bayt": 25794
+}

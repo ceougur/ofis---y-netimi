@@ -1,0 +1,38 @@
+{
+  "ad": "248-dk10fix-mutasyon-mL5b-r3-penceresi-yok-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=120000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk10fix-248-c0cb20a4/mut/test/whatsapp-dk10-son3-ozel-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk10fix-248-c0cb20a4/mut/test/whatsapp-dk8-h-ozel-aralik-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk10fix-248-c0cb20a4/mut/test/whatsapp-dk8-g-ek-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk10fix-248-c0cb20a4/mut/test/whatsapp-dk8-i-tasinan-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk10fix-248-c0cb20a4/mut/test/whatsapp-dk9-ilke-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk10fix-248-c0cb20a4/mut/test/whatsapp-dk9-acilis-gunu-248.test.mjs",
+  "commit": "7717c855d0a999b07dcb2b4ebb421a486f7830a2",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T14:08:52.926Z",
+  "sure_sn": 29.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 38,
+    "gecen": 37,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş L5 — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri = özel aralık → aynı dönem (7 gün penceresiyle) › 03.11 Son 3 Ay gönderildi → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 (8 gün) 'gönderilecek'; tarihleri farklı özel aralık ayrı",
+      "konum": "test/whatsapp-dk10-son3-ozel-248.test.mjs:44:3",
+      "hata": "Son 3 Ay'ın 7 gün penceresi bu eşlikte de geçerli · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk10fix-mutasyon-mL5b-r3-penceresi-yok-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "7a29f06fbac95c9fccd04b2366943580f594fec7b8fea96bbb4b349aceb2dc0a",
+  "ham_cikti_bayt": 19303
+}

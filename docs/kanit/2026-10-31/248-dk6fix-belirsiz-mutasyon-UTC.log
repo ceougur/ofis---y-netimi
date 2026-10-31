@@ -1,0 +1,107 @@
+TAP version 13
+# Subtest: 2.4.8 dar kontrol 6 — Başarısızları Yeniden Dene Sonucu Belirsiz kalan kişiyi eler
+    # Subtest: İki kez Yeniden Dene (asıl iş kararsız): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+    not ok 1 - İki kez Yeniden Dene (asıl iş kararsız): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+      ---
+      duration_ms: 578.288225
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-f437787b/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:61:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        R2 (ikinci Yeniden Dene): toplu iş açılmamalı (geldi 200 {"ok":true,"data":{"batch":{"id":"wab-66af34ba-6e44-4528-b4d3-6e3621f80b05","kind":"statement","kindLabel":"Ekstre","template":"destekofis_ekstre","period":{"from":"2026-11-01","to":"2026-11-03","preset":"thisMonth"},"state":"running","stateLabel":"Sürüyor","waitingUntil":null,"pauseReason":"","pauseCode":"","createdAt":"2026-11-03T12:00:00.000Z","createdByName":"Ofis yöneticisi","finishedAt":null,"total":1,"counts":{"pending":1,"preparing":0,"sending":0,"accepted":0,"sent":0,"delivered":0,"read":0,"failed":0,"uncertain":0,"limited":0,"held":0,"paused":0,"canceled":0,"expired":0,"skipped":0,"stopped":0}},"summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-03","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":1,"skipped":{},"alreadySent":{"count":0,"last":null,"included":0},"people":[{"id":"account-2521eb14-9a50-4322-b96c-77b72b905899","name":"Burak Kaya","phone":"+905334445566","skip":""}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":1,"left":249,"later":0,"holdUntil":null},"seconds":1},"reused":false}})
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        assertUncertainSkip (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-f437787b/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:25:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-f437787b/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:72:9)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: İki kez Yeniden Dene (asıl iş 'Yine de Gönder' ile): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+    not ok 2 - İki kez Yeniden Dene (asıl iş 'Yine de Gönder' ile): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+      ---
+      duration_ms: 462.475288
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-f437787b/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:61:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        R2 (ikinci Yeniden Dene): toplu iş açılmamalı (geldi 200 {"ok":true,"data":{"batch":{"id":"wab-b2e52b4d-3686-4bc9-87bc-7ced48210280","kind":"statement","kindLabel":"Ekstre","template":"destekofis_ekstre","period":{"from":"2026-11-01","to":"2026-11-04","preset":"thisMonth"},"state":"running","stateLabel":"Sürüyor","waitingUntil":null,"pauseReason":"","pauseCode":"","createdAt":"2026-11-04T12:00:00.000Z","createdByName":"Ofis yöneticisi","finishedAt":null,"total":1,"counts":{"pending":1,"preparing":0,"sending":0,"accepted":0,"sent":0,"delivered":0,"read":0,"failed":0,"uncertain":0,"limited":0,"held":0,"paused":0,"canceled":0,"expired":0,"skipped":0,"stopped":0}},"summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-04","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":1,"skipped":{},"alreadySent":{"count":0,"last":null,"included":0},"people":[{"id":"account-022f2055-6eed-429f-88cd-bd58b74d29e2","name":"Burak Kaya","phone":"+905334445566","skip":""}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":1,"left":249,"later":0,"holdUntil":null},"seconds":1},"reused":false}})
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        assertUncertainSkip (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-f437787b/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:25:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-f437787b/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:72:9)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Başka iş: M'den sonra yeni gönderim (O) B için Sonucu Belirsiz → M'nin Yeniden Dene'si 'Sonucu Belirsiz'; yeni gönderimin önizlemesi DEĞİŞMEDİ (B gönderilecek)
+    not ok 3 - Başka iş: M'den sonra yeni gönderim (O) B için Sonucu Belirsiz → M'nin Yeniden Dene'si 'Sonucu Belirsiz'; yeni gönderimin önizlemesi DEĞİŞMEDİ (B gönderilecek)
+      ---
+      duration_ms: 392.581282
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-f437787b/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        M'nin Yeniden Dene'si: toplu iş açılmamalı (geldi 200 {"ok":true,"data":{"batch":{"id":"wab-ad721ea7-1299-42f8-90e4-9e9c2fc1bc52","kind":"statement","kindLabel":"Ekstre","template":"destekofis_ekstre","period":{"from":"2026-11-01","to":"2026-11-03","preset":"thisMonth"},"state":"running","stateLabel":"Sürüyor","waitingUntil":null,"pauseReason":"","pauseCode":"","createdAt":"2026-11-03T11:01:00.000Z","createdByName":"Ofis yöneticisi","finishedAt":null,"total":1,"counts":{"pending":1,"preparing":0,"sending":0,"accepted":0,"sent":0,"delivered":0,"read":0,"failed":0,"uncertain":0,"limited":0,"held":0,"paused":0,"canceled":0,"expired":0,"skipped":0,"stopped":0}},"summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-03","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":1,"skipped":{},"alreadySent":{"count":0,"last":null,"included":0},"people":[{"id":"account-08d52a27-c348-4893-aa5e-34cbf271a58a","name":"Burak Kaya","phone":"+905334445566","skip":""}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":1,"left":249,"later":0,"holdUntil":null},"seconds":1},"reused":false}})
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        assertUncertainSkip (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-f437787b/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:25:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-f437787b/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:98:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Belirsiz çözülünce: kanca 'failed' (P3 teslim edilemedi) → Yeniden Dene gider; kanca 'delivered' → 'Daha Önce Gönderildi' (R3 önceliği değişmedi)
+    ok 4 - Belirsiz çözülünce: kanca 'failed' (P3 teslim edilemedi) → Yeniden Dene gider; kanca 'delivered' → 'Daha Önce Gönderildi' (R3 önceliği değişmedi)
+      ---
+      duration_ms: 787.613447
+      type: 'test'
+      ...
+    # Subtest: T2-1 dönem eşliği: başka dönemin (Bu Ay) Sonucu Belirsiz iletisi Geçen Ay işinin Yeniden Dene'sini ELEMEZ
+    ok 5 - T2-1 dönem eşliği: başka dönemin (Bu Ay) Sonucu Belirsiz iletisi Geçen Ay işinin Yeniden Dene'sini ELEMEZ
+      ---
+      duration_ms: 403.294571
+      type: 'test'
+      ...
+    1..5
+not ok 1 - 2.4.8 dar kontrol 6 — Başarısızları Yeniden Dene Sonucu Belirsiz kalan kişiyi eler
+  ---
+  duration_ms: 2625.692541
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-f437787b/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:59:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2981.721784

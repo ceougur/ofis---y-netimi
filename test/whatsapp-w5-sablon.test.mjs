@@ -224,8 +224,9 @@ describe("2.4.8 W5 — WhatsApp bilgilendirme şablonları", () => {
     let res = await call("post", `${URL_TPL}/ensure`, {});
     assert.equal(res.status, 200, JSON.stringify(res.data));
     const gets = fake.requests.filter(item => item.method === "GET" && item.path.endsWith("/message_templates"));
-    assert.equal(gets.length, 2, "önce ayrıntılı, sonra temel alanlar");
-    assert.ok(/quality_score/.test(gets[0].query.fields) && !/quality_score/.test(gets[1].query.fields));
+    // T2-5 güvenli taraf (D0-W5-9; beklenti bilerek güncellendi): önce teslim süresiyle ayrıntılı, sonra TTL'siz ayrıntılı, sonra temel alanlar.
+    assert.equal(gets.length, 3, "önce teslim süresiyle ayrıntılı, sonra ayrıntılı, sonra temel alanlar");
+    assert.ok(/message_send_ttl_seconds/.test(gets[0].query.fields) && /quality_score/.test(gets[1].query.fields) && !/message_send_ttl_seconds/.test(gets[1].query.fields) && !/quality_score/.test(gets[2].query.fields));
     assert.equal(itemOf(res.data.data, "destekofis_odeme_hatirlatma").statusLabel, "Kapatıldı");
     fake.state.rejectDetailFields = false;
 
