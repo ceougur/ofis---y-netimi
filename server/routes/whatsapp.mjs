@@ -122,6 +122,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
       const phone = waNumber(account.phone);
       // 2.4.8 W2: "WhatsApp Mesajı İstemiyor" işaretli cari elle (wa.me) toplu/tekli gönderimde de seçilemez (BAŞ MİMAR KARARI; Sohbeti Aç serbest).
       if (Number(account.waOptOut) === 1) Object.assign(phone, { valid: false, reason: "WhatsApp Mesajı İstemiyor" });
+      // KARAR S-PC A (30.10.2026, 5 dk yetkisi): Otomatik Gönder'deki gibi pasif cari de elenir; neden adı kuyrukla aynı (lib/whatsapp/queue.mjs eligibility sırası).
+      else if (account.status === "passive") Object.assign(phone, { valid: false, reason: "Pasif Cari" });
       const plans = (account.plans || []).filter(plan => plan.status === "active");
       const next = plans.map(plan => plan.next).filter(Boolean).sort((a, b) => (a.dueDate < b.dueDate ? -1 : 1))[0] || null;
       const overdue = { count: account.totals.overdueCount || 0, amount: roundMoney(account.totals.overdue || 0) };
@@ -137,6 +139,7 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
         valid: phone.valid,
         reason: phone.reason,
         optOut: Number(account.waOptOut) === 1,
+        passive: account.status === "passive",
         balance: account.totals.balance,
         next: next ? { dueDate: next.dueDate, amount: roundMoney(next.remaining ?? next.amount ?? 0) } : null,
         overdue,

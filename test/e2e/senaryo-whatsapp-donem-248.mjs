@@ -8,6 +8,8 @@
 //   D3 "Tüm Hareketler": PDF "Tüm Hareketler · 03.11.2026 tarihine kadar", bakiye metindekiyle aynı.
 //   D4 Cariyi Düzenle → "WhatsApp Mesajı İstemiyor" Tab ile bulunur, Boşluk ile işaretlenir → Kaydet: veri tabanında 1; kartta "WhatsApp İstemiyor" rozeti;
 //      WhatsApp → Ekstre penceresinde kişi seçilemez ("WhatsApp Mesajı İstemiyor"), Gönderilecek 0.
+//   D5 (KARAR S-PC A) cari kartında "Pasife Al" → WhatsApp → Ekstre: kişi "Pasif Cari" nedeniyle seçilemez, özette ayrı "Pasif Cari" sayacı (Otomatik Gönder'in
+//      eleme adı), "Numarası Yok / Hatalı" 0; Gönderime Başla pasif + nedeni görünür; veri tabanında status passive.
 // Çıkış: "N geçti, M kaldı" (kaldıysa 1). Ekran görüntüleri EKRAN_DIR (varsayılan test/e2e/artifacts/senaryo-whatsapp-donem-248).
 import { mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -34,6 +36,7 @@ const must = async (label, promise) => {
   return res.data.data;
 };
 const person = await must("cari", api.post("/api/workspace/accounts", { name: NAME, phone: "0532 777 88 99", openingBalance: "1000", registeredOn: "2026-09-01" }));
+const pasif = await must("pasif adayı cari", api.post("/api/workspace/accounts", { name: "Pasif Kişisi", phone: "0533 111 22 33", openingBalance: "300", registeredOn: "2026-09-01" }));
 for (const body of [
   { kind: "debt", amount: "200", date: "2026-10-01", note: "Ekim ilk gün" },
   { kind: "in", amount: "350", date: "2026-10-31", note: "Ekim son gün" },
@@ -94,11 +97,11 @@ const closeAll = async () => {
     }
   }
 };
-const openCard = async () => {
+const openCard = async (id = person.id) => {
   await closeAll();
   await page.click('#hof-sidecard [data-action="accounts"]');
-  await page.waitForSelector(`${TOP} tr[data-account="${person.id}"]`);
-  await page.click(`${TOP} tr[data-account="${person.id}"]`);
+  await page.waitForSelector(`${TOP} tr[data-account="${id}"]`);
+  await page.click(`${TOP} tr[data-account="${id}"]`);
   await page.waitForSelector(`${TOP} [data-act="edit"]`);
 };
 const openStatementDialog = async () => {
@@ -212,11 +215,38 @@ await step("D4 WhatsApp Mesajı İstemiyor: formda Tab + Boşluk, kartta rozet, 
   await page.waitForSelector(`${TOP} .hof-wa-head`);
   const head = await page.$eval(`${TOP} .hof-wa-head`, node => node.innerText.replace(/\s+/g, " "));
   ok(/0 Gönderilecek/.test(head), `özet: ${head}`);
+  // T3 UI/UX ORTA-2: İstemiyor ayrı sayılır (Otomatik Gönder'in eleme adı), "Numarası Yok / Hatalı" sayacına girmez.
+  ok(/1 WhatsApp Mesajı İstemiyor/.test(head) && /0 Numarası Yok \/ Hatalı/.test(head), `özet İstemiyor'u ayrı sayar: ${head}`);
   const row = await page.$eval(`${TOP} tr[data-preview="${person.id}"]`, node => node.innerText.replace(/\s+/g, " "));
   ok(/WhatsApp Mesajı İstemiyor/.test(row), "satırda neden yazılı");
   ok(await page.isDisabled(`${TOP} [data-pick="${person.id}"]`), "kişi seçilemez");
   ok(await page.isDisabled(`${TOP} [data-start]`), "Gönderime Başla pasif");
+  // T3 UI/UX DÜŞÜK-8: pasif düğmenin nedeni görünür yazı (anayasa).
+  const why = await page.$eval(`${TOP} [data-start-why]`, node => (node.offsetParent ? node.innerText.trim() : "")).catch(() => "");
+  ok(/Gönderilebilecek kişi yok/.test(why) && /istemiyor/.test(why), `Gönderime Başla pasifliğinin nedeni görünür: ${why || "(yok)"}`);
   await shot("05-istemiyor");
+  await closeAll();
+});
+
+await step("D5 Pasif Cari: kartta Pasife Al → WhatsApp penceresinde seçilemez, ayrı sayaç, nedeni görünür", async () => {
+  await openCard(pasif.id);
+  await page.click(`${TOP} [data-act="passive"]`);
+  await page.waitForSelector(`${TOP} [data-act="activate"]`, { timeout: 15000 });
+  const status = server.app.store.get("SELECT status AS v FROM accounts WHERE id = ?", pasif.id).v;
+  ok(status === "passive", `veri tabanında durum ${status}`);
+  await page.click(`${TOP} [data-act="whatsapp"]`);
+  await page.waitForSelector(`${TOP} [data-kind="statement"]`);
+  await page.click(`${TOP} [data-kind="statement"]`);
+  await page.waitForSelector(`${TOP} .hof-wa-head`);
+  const head = await page.$eval(`${TOP} .hof-wa-head`, node => node.innerText.replace(/\s+/g, " "));
+  ok(/1 Pasif Cari/.test(head) && /0 Numarası Yok \/ Hatalı/.test(head) && /0 Gönderilecek/.test(head), `özet Pasif Cari'yi ayrı sayar: ${head}`);
+  const row = await page.$eval(`${TOP} tr[data-preview="${pasif.id}"]`, node => node.innerText.replace(/\s+/g, " "));
+  ok(/Pasif Cari/.test(row), `satırda neden yazılı: ${row}`);
+  ok(await page.isDisabled(`${TOP} [data-pick="${pasif.id}"]`), "kişi seçilemez");
+  ok(await page.isDisabled(`${TOP} [data-start]`), "Gönderime Başla pasif");
+  const why = await page.$eval(`${TOP} [data-start-why]`, node => (node.offsetParent ? node.innerText.trim() : "")).catch(() => "");
+  ok(/Gönderilebilecek kişi yok/.test(why) && /pasif/.test(why), `pasifliğin nedeni görünür: ${why || "(yok)"}`);
+  await shot("06-pasif-cari");
   await closeAll();
 });
 

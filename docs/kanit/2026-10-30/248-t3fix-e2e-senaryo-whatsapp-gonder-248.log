@@ -1,0 +1,119 @@
+
+> destekofis@2.4.7 test:senaryo-whatsapp-gonder-248
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-gonder-248.mjs
+
+
+■ Giriş
+  ✓ yönetici girdi
+
+■ G1 Cari listesi → hepsini seç → WhatsApp Ekstre: iki yol, Otomatik Gönder seçili; önizleme sayıları; onaysız Gönder pasif + neden
+  ✓ iki yol: Otomatik Gönder + WhatsApp Web ile Gönder
+  ✓ bağlı ve şablon hazır → Otomatik Gönder varsayılan
+  ✓ pencere başlığı
+  ✓ seçilen 7 (7)
+  ✓ gönderilecek 4: aynı adlı iki + aynı telefonlu iki (§7a 8) (4)
+  ✓ elenen 3 (3)
+  ✓ nedenler: Telefon yok 1, WhatsApp Mesajı İstemiyor 1, Pasif Cari 1
+  ✓ aynı adlı iki cari ayrı satırda, telefonun son haneleriyle (…0001, …0002)
+  ✓ tahmini ücret 4 × 0,0009 = 0,0036 USD (≈ 0,0036 USD (4 ileti × 0,0009 USD; yalnız teslim edilen ileti ücretlidir, Meta faturası esastır))
+  ✓ 24 saatlik sınır 250 (TIER_250)
+  ✓ ertesi güne kalan 0
+  ✓ onay işaretsiz: Gönder PASİF
+  ✓ nedeni görünür yazı: Gönderim için onay kutusunu işaretleyin: "Aydınlatma metnimi okudum, carilerime ulaştıracağım."
+  ✓ Aydınlatma Metni bağlantısı (yönetici)
+  ✓ önizleme: toplu iş yok, Meta'ya ileti yok
+
+■ G2 her seçenek: Ödeme Hatırlatma (gecikmiş borç yok → hepsi elenir, Gönder pasif + neden) ve Geçen Ay dönemi
+  ✓ Ödeme Hatırlatma: gönderilecek 0
+  ✓ Gecikmiş Borç Yok 4 (4)
+  ✓ hatırlatmada dönem seçimi yok
+  ✓ Gönder pasif
+  ✓ Geçen Ay dönemi 01.10.2026 – 31.10.2026
+  ✓ Geçen Ay: gönderilecek 4
+  ✓ Bu Ay dönemi 01.11.2026 – 03.11.2026
+
+■ G3 onay Tab + Boşluk → Gönder (4 Kişi) → soru → toplu iş ekranı; veri tabanı 1 toplu iş, 7 iş
+  ✓ onay kutusuna Tab ile gelindi
+  ✓ onay veri tabanında (whatsapp.ack)
+  ✓ onaydan sonra Gönder etkin
+  ✓ düğme: Gönder (4 Kişi)
+  ✓ soru penceresi "Gönderim Başlasın mı?" (görülen: Gönderim Başlasın mı?)
+  ✓ veri tabanı: 1 toplu iş
+  ✓ veri tabanı: 4 bekliyor + 3 atlandı ({"pending":4,"skipped":3})
+  ✓ ekranda Bekliyor 4, Atlandı 3
+  ✓ durum Sürüyor
+  ✓ işçi çalışmadan Meta'ya ileti yok
+
+■ G4 Duraklat → Devam Et (veri tabanı); işçi → sahte Meta 4 ileti, ekranda Meta Kabul Etti 4
+  ✓ veri tabanı: paused
+  ✓ ekranda Duraklatıldı 4
+  ✓ duraklatılmış işten ileti gitmedi
+  ✓ veri tabanı: running
+  ✓ sahte Meta: 4 ileti (4)
+  ✓ aynı telefona iki ileti, iki ayrı PDF (Ekstre Ortak Telefon A 01.11.2026-03.11.2026.pdf | Ekstre Ortak Telefon B 01.11.2026-03.11.2026.pdf)
+  ✓ şablon destekofis_ekstre, dil tr
+  ✓ İstemiyor ve pasif cariye ileti yok
+  ✓ ekranda Meta Kabul Etti 4 (canlı olayla)
+  ✓ toplu iş Tamamlandı
+
+■ G5 kanca (HTTP) → Teslim Edildi 2, Okundu 1, Başarısız 1 (neden); Bu Ay 3
+  ✓ kanca 200 (200 {"ok":true})
+  ✓ ekranda Teslim Edildi 2, Okundu 1, Başarısız 1
+  ✓ başarısızın nedeni satırda (İleti alıcıya iletilemedi (numara WhatsApp kullanmıyor, WhatsApp'ın koşullarını kabul etmemiş ya da WhatsApp'ı çok eski). (Meta hata kodu 131026))
+  ✓ Başarısızları Yeniden Dene görünür
+  ✓ API: bu ay teslim 3, ücretli 3 (3/3)
+
+■ G6 yenile → Gönderimler listesinden aynı toplu iş; ikinci sekmede süren işte 'Zaten Kuyrukta'
+  ✓ Gönderim Özeti: Bu Ay Gönderilen İleti Sayısı 3
+  ✓ Gönderimler listesinde toplu iş
+  ✓ yeniden açılınca durumlar sunucudan (Teslim 2, Başarısız 1)
+  ✓ Yönetim → WhatsApp: Teslim Edilen İleti 3
+  ✓ Meta faturasıyla karşılaştırma notu
+  ✓ Yönetim kartında onay işaretli
+
+■ G7 R3: aynı dönem yeniden → 3 kişiye daha önce gönderildi; varsayılan Bunları Çıkar (1); Yine de Gönder (4); iki sekme → Zaten Kuyrukta
+  ✓ R3 uyarısı (3 kişiye bu dönem daha önce gönderildi (son gönderim 03.11.2026 06:00). Aynı ekstre ya da )
+  ✓ varsayılan Bunları Çıkar
+  ✓ gönderilecek 1 (başarısız olan), Daha Önce Gönderildi 3
+  ✓ Yine de Gönder → gönderilecek 4
+  ✓ Bunları Çıkar'a dönünce 1
+  ✓ soru penceresi "Gönderim Başlasın mı?" (görülen: Gönderim Başlasın mı?)
+  ✓ yalnız başarısız olan (Ortak Telefon B) bekliyor
+  ✓ ikinci sekme: Zaten Kuyrukta 1 (1)
+  ✓ ikinci sekme: gönderilecek 0, Gönder pasif
+  ✓ ikinci sekmede 'Süren gönderim var' notu
+  ✓ sahte Meta: toplam 5 ileti (5)
+
+■ G8 Bağlantı Bekleniyor (Meta'ya ulaşılamıyor) ve Sınır Nedeniyle Bekliyor ekranda açıkça
+  ✓ toplu iş açıldı (200)
+  ✓ durum Bağlantı Bekleniyor
+  ✓ açıklama: iletiler başarısız sayılmaz, kendiliğinden sürer
+  ✓ Devam Et gerekmez (düğme yok)
+  ✓ bağlantı dönünce gönderildi (done)
+  ✓ elle günlük sınır 4
+  ✓ Sınır Nedeniyle Bekliyor açıklaması
+
+■ G9 WhatsApp Web ile Gönder (wa.me) bağlantı varken de çalışır
+  ✓ başlık bugünkü (WhatsApp ile Ekstre Gönder)
+  ✓ otomatik panel gizli
+  ✓ wa.me adresi açıldı (905321000001)
+  ✓ cari kartına kayıt (message_sends +1)
+
+■ G10 yetkisiz (Personel): Otomatik Gönder sekmesinde neden, Gönder pasif; API 403
+  ✓ yetkisiz: WhatsApp Web ile Gönder varsayılan
+  ✓ sekmede neden: yetkiniz yok
+  ✓ Gönder pasif
+  ✓ neden görünür: WhatsApp ile otomatik gönderim yetkiniz yok (yetkiyi yönetici verir: WhatsApp ile Otomatik Gönder).
+  ✓ API: personel toplu iş 403 (403)
+
+■ G11 dar pencere (760 px): yatay taşma yok
+  ✓ pencerede yatay taşma yok (0 px)
+
+■ G12 salt okunur lisans: Otomatik Gönder'de neden, Gönder pasif; yeni toplu iş yok
+  ✓ salt okunur: WhatsApp Web ile Gönder varsayılan
+  ✓ Gönder pasif
+  ✓ neden görünür: Program salt okunur çalışıyor (lisans); WhatsApp ile otomatik gönderim yapılamaz.
+  ✓ yeni toplu iş yok
+  ✓ sayfa hatası yok
+
+87 geçti, 0 kaldı
