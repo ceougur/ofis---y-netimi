@@ -1,0 +1,8 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+not ok 1 - ICERIK-03-yil-donumu [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 2 - ICERIK-03-yil-donumu [yavas] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+1..2
+# tests 2
+# pass 0
+# fail 2

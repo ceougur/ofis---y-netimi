@@ -1,0 +1,98 @@
+{
+  "ad": "248-t1-surucu2-eski-surucu-35cc3e78",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-608b5088/test/bagimsiz/whatsapp-248/surucu-eski-35cc3e78.mjs --senaryo CIFT-02-yanitsiz-yine-de-gonder,CIFT-03-yine-de-gonder-cift-gider,CIFT-16-daha-once-suresi-doldu,ICERIK-10-ttl-sonrasi-teslim,SABLON-PAZARLAMA-ARADA,GECICI-02-bes-art-arda,ALICI-131049-bir-kez,ALICI-131049-iki-kez,SINIR-02-basamak-artti,SIRKET-01-ayni-waba,OLCEK-04-pazarlama-300,GUV-03-lisans-arada-biter,GUV-08-lisans-geri-gelir,TARIH-02-ttl-sonu,TARIH-03b-kancasiz-yol-calisiyor --uc hizli --cikti docs/kanit/2026-10-31/248-t1-surucu2-eski-surucu",
+  "commit": "990549a69dc389c76c9bd15214dea1e173aa8ec6",
+  "dal": "is/surucu2-248",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T12:13:51.567Z",
+  "sure_sn": 32.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 2,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "CIFT-02-yanitsiz-yine-de-gonder [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-03-yine-de-gonder-cift-gider [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-16-daha-once-suresi-doldu [hizli] (19 fark; davranış farkı 18; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ICERIK-10-ttl-sonrasi-teslim [hizli] (4 fark; davranış farkı 3; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "SABLON-PAZARLAMA-ARADA [hizli] (9 fark; davranış farkı 0; gösterim: G1-borclu-eki 1, G3-gonderilmeyen-icerik 8)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "GECICI-02-bes-art-arda [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ALICI-131049-bir-kez [hizli] (5 fark; davranış farkı 4; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ALICI-131049-iki-kez [hizli] (6 fark; davranış farkı 5; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "SIRKET-01-ayni-waba [hizli] (4 fark; davranış farkı 0; gösterim: G1-borclu-eki 4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "GUV-03-lisans-arada-biter [hizli] (14 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G2-toplu-gosterim 4, G3-gonderilmeyen-icerik 8)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "GUV-08-lisans-geri-gelir [hizli] (5 fark; davranış farkı 0; gösterim: G1-borclu-eki 3, G2-toplu-gosterim 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TARIH-02-ttl-sonu [hizli] (8 fark; davranış farkı 7; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TARIH-03b-kancasiz-yol-calisiyor [hizli] (9 fark; davranış farkı 7; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t1-surucu2-eski-surucu-35cc3e78.log",
+  "klasor": "/home/user/wt-surucu2-248",
+  "ham_cikti_sha256": "056c1b977011fdc4e77c68199501584997368ed81355da8894c86a98ff5731b6",
+  "ham_cikti_bayt": 3737
+}
