@@ -149,14 +149,18 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       AND NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt) GROUP BY c.phone`),
     // R3 (plan §7a revizyonu): bu cariye bu şablon + dönem Meta'ya KABUL ETTİRİLMİŞ mi (Meta Kabul Etti ve sonrası; sonradan teslim edilemedi diye düşen hariç —
     // Başarısız ve Süresi Doldu, kullanıcı kararı P3 = SAYILMAZ; teslim edilmişse — geç "delivered" dahil — sayılır).
-    // Kabul her zaman işin son denemesindedir (kabulden / belirsizden sonra yeni deneme yok).
+    // Kabul satırı (accepts, iş başına tek) işin İLK kabul edilen denemesinden kalır; sonuç ise işin SON denemesinden okunur: 131049 (Meta Bekletti) kabul edilmiş
+    // denemeyi bırakır ve iş 24 saat sonra bir kez daha denenir. O son deneme Meta'ca eşzamanlı reddedildiyse (outcomes 'failed') ya da kabul edilip teslim
+    // edilemediyse (failures) ve hiç teslim (deliveries) yoksa kişi SAYILMAZ (P3; 2.4.8 dar kontrol 7 ORTA-1, test/whatsapp-dk7-bekletti-ikinci-deneme-248.test.mjs).
     // "after" (asıl işin "Yine de Gönder" sınırı, yerel saatle açılış anı) TALEP anıyla (claims.at, yerel saat, istekten hemen önce) karşılaştırılır, kabul anıyla
     // DEĞİL: geç kabulde accepts.at Meta'nın durum bildirimi saatinden gelir; Meta saati yerelden gerideyse asıl işten SONRA giden ileti "önce" sayılıp çift ekstre
     // gidiyordu (2.4.8 dar kontrol 6, test/whatsapp-dk6-saat-kaymasi-248.test.mjs).
     sentBefore: db.prepare(`SELECT c.account_id AS accountId, MAX(a.at) AS last FROM accepts a
       JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
       WHERE c.company_id = ? AND c.kind = ? AND c.period_key = ? AND a.at >= ? AND c.at > ?
-        AND (NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt) OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
+        AND ((NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
+              AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'failed'))
+          OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
       GROUP BY c.account_id`),
     // KULLANICI KARARI (31.10.2026 ~08:00 UTC "A"; dar kontrol 6 kapsam dışı gözlem): yalnız "Başarısızları Yeniden Dene"de — bu cariye bu şablon + dönem için SONUCU
     // BELLİ OLMAYAN deneme (işin son denemesi: kabul, teslim edilemedi, 131049 bırakıldı ya da "gitmedi" sonucu yok — Sonucu Belirsiz ya da sonucu yazılamamış) varsa
