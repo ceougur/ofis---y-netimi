@@ -76,6 +76,27 @@ describe("2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk harek
     }
   });
 
+  it("kişi başına süzme: Q'ya P'nin Tüm dönemiyle aynı tarihli özel aralık (15.10–05.11) gitti / belirsiz kaldı → 05.11 Tüm Hareketler'de Q elenmez (Q'nun dönemi 20.10–05.11)", async () => {
+    const { ctx, p, q } = await start();
+    try {
+      ctx.clock.set(localIso(2026, 11, 5));
+      assert.deepEqual((await send(ctx, custom([q.id], "2026-10-15", "2026-11-05"))).map(job => job.state), ["accepted"], "ön koşul: Q'ya özel kabul");
+      ctx.clock.set(localIso(2026, 11, 5, 18));
+      assert.deepEqual(await previewSkip(ctx, tum([p.id, q.id]), "05.11 Tüm (R3)"), ["gönderilecek", "gönderilecek"], "P'nin anahtarı Q'nun talebini eşlemez");
+    } finally {
+      await ctx.close();
+    }
+    const s = await start();
+    try {
+      s.ctx.clock.set(localIso(2026, 11, 5));
+      assert.deepEqual((await send(s.ctx, custom([s.q.id], "2026-10-15", "2026-11-05"), { drop: true })).map(job => job.state), ["uncertain"], "ön koşul: Q'ya özel belirsiz");
+      s.ctx.clock.set(localIso(2026, 11, 5, 18));
+      assert.deepEqual(await previewSkip(s.ctx, tum([s.p.id, s.q.id]), "05.11 Tüm (belirsiz)"), ["gönderilecek", "gönderilecek"], "P'nin anahtarı Q'nun belirsiz talebini eşlemez");
+    } finally {
+      await s.ctx.close();
+    }
+  });
+
   it("b1b: aynı gün (Excel yükleme günü) açılmış 3 cariye 03.11 Tüm → 05.11 özel 15.10–03.11 toplu: üçü de elenir, ikinci ileti yok (önce 6 ileti)", async () => {
     const ctx = await startWa({ now: { time: localIso(2026, 10, 15), fixed: true } });
     try {
