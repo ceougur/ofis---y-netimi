@@ -1245,7 +1245,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (checked) checked.sent += 1; // R2: her 100 iletide şablon yeniden okunur
     injected("db-accept", job);
     store.tx(() => {
-      updateJob(job.id, { state: "accepted", wamid: sent.wamid, accepted_at: iso(), error_code: null, error_text: "", next_at: null });
+      // İş S1 koşulu (a): istek Meta'dayken bu denemenin durum bildirimi (imzalı iş kimliği yolu) işi zaten ilerletmiş olabilir (Teslim Edildi / Başarısız) — "Meta Kabul
+      // Etti" onu EZMEZ (durum geriye gitmez). Yalnız iş hâlâ bu denemede "Gönderiliyor" ise yazılır.
+      const current = jobRow(job.id);
+      if (current?.state === "sending" && Number(current.attempt) === attempt) updateJob(job.id, { state: "accepted", wamid: sent.wamid, accepted_at: iso(), error_code: null, error_text: "", next_at: null });
       updateBatch(batch.id, { troubles: 0, ...connectionBack() });
       lockTroubles.delete(batch.id);
     });
@@ -1634,8 +1637,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (ledger.companyOfWamid?.(wamid)?.companyId !== companyId) return false;
     const attempt = ledger.attempts(owner.jobId).find(item => item.attempt === owner.attempt);
     const row = jobRow(owner.jobId);
-    // İş Q4: iş dosyada YOKKEN kabul edilmiş denemenin geç teslimi de yazılır (Bu Ay Gönderilen İleti Sayısı = teslim; R3 zaten kabulden sayar).
-    if (attempt?.outcome !== "released" && !(attempt?.outcome === "accepted" && !row)) return false;
+    // İş Q4 / S1: kabul edilmiş SON denemenin (satır yok ya da bilmiyor) geç teslimi lateResultOfUnknownAttempt'te; burada yalnız 131049 ile bırakılmış deneme (L3).
+    if (attempt?.outcome !== "released") return false;
     // KULLANICI KARARI ("KİME KAÇ KEZ" ilkesi, S3): iş şirket dosyasında YOKSA (Şirket Verisini Sıfırla wa_jobs'u siler) geç teslim yine sayılır (kesin aldı) — WABA
     // defterdeki talepten; şirket denetimi yukarıda (companyOfWamid).
     if (!row) {
@@ -1685,15 +1688,39 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // olmadığından 24 saat sonraki deneme YOK) defterde "teslim edilemedi": kişi "Daha Önce Gönderildi" sayılmaz, yeni gönderim gider. İmzalı ve imzasız (wamid'in bağı
   // Meta'nın eşzamanlı yanıtından / imzalı bildirimden; lateDeliveryOfReleased ile aynı güven). Teslimden sonra gelen failed yok sayılır (§7a 18).
   // Test: test/whatsapp-q4-dosyasiz-imzali-248.test.mjs ("R7").
-  function lateFailureOfMissingJob(wamid, value, at) {
-    if (value !== "failed" || !wamid) return false;
+  // İş S1 (dar kontrol 13 DÜŞÜK; İLKEYLE ilke 1 + 5): wamid defterde (eşzamanlı kabulün wamid'i ya da imzalı bildirimle öğrenilmiş) BU şirketin işinin SON denemesine bağlı mı;
+  // şirket dosyasındaki satır o denemeyi biliyor mu. knows = satır o denemede ve sonucunu henüz yazmamış (Gönderiliyor / Sonucu Belirsiz, wamid'siz — ör. kabul dosyaya
+  // yazılamadı): bildirim satırı olağan yoldan ilerletir (imzalı ve imzasız — wamid'in bağı Meta'nın eşzamanlı yanıtından / önceki imzalı bildirimden; dosyadaki wamid'le
+  // bulunan işe uygulanan güvenle aynı; BAŞ MİMAR KARARI, onaylı). Satır yoksa, eski (geri yüklenmiş / durdurulmuş) ya da başka denemedeyse (daha yeni denemede: dokunulmaz)
+  // → yalnız defter (lateResultOfUnknownAttempt). Dönüş: null | { jobId, attempt, wabaId, last, row, knows }.
+  function ledgerOwnerOf(wamid) {
+    if (!wamid) return null;
     const owner = ledger.attemptOfWamid?.(wamid);
-    if (!owner || jobRow(owner.jobId)) return false;
-    if (ledger.companyOfWamid?.(wamid)?.companyId !== companyId) return false;
+    if (!owner) return null;
+    const owned = ledger.companyOfWamid?.(wamid);
+    if (!owned || owned.companyId !== companyId) return null;
     const last = ledger.attempts(owner.jobId).at(-1);
-    if (!last || last.attempt !== owner.attempt || ["failed", "released"].includes(last.outcome)) return false;
-    if (ledger.deliveredJob?.(owner.jobId)) return false;
-    return ledger.deliveryFailed({ jobId: owner.jobId, attempt: owner.attempt, at });
+    if (!last || last.attempt !== owner.attempt) return null;
+    const row = jobRow(owner.jobId);
+    const knows = Boolean(row) && Number(row.attempt) === Number(owner.attempt) && ["sending", "uncertain"].includes(row.state) && !row.wamid;
+    return { jobId: owner.jobId, attempt: owner.attempt, wabaId: owned.wabaId, last, row, knows };
+  }
+  // İş R7 + S1 (ii): satır o denemeyi BİLMİYOR (yok — Şirket Verisini Sıfırla; ya da geri yüklenmiş / durdurulmuş eski satır) → yalnız defter, dosyaya yazım yok:
+  // "failed" (131026, 131049 dahil — yeniden deneme yok) → teslim edilemedi (teslimden SONRA gelen yok sayılır, §7a 18); "delivered" / "read" → teslim (Bu Ay sayacı; R3
+  // zaten kabulden sayar). İmzalı ve imzasız. Satır daha YENİ denemedeyse (attempt > owner) hiçbir şey yapılmaz.
+  function lateResultOfUnknownAttempt(owned, status, value, at) {
+    if (!owned || owned.knows || !owned.wabaId) return false;
+    if (owned.row && Number(owned.row.attempt) > Number(owned.attempt)) return false;
+    if (["failed", "released"].includes(owned.last.outcome)) return false;
+    if (value === "failed") {
+      if (ledger.deliveredJob?.(owned.jobId)) return false;
+      return ledger.deliveryFailed({ jobId: owned.jobId, attempt: owned.attempt, at });
+    }
+    if (["delivered", "read"].includes(value)) {
+      const billable = status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing ? status.pricing.billable !== false : true;
+      return ledger.delivered({ jobId: owned.jobId, companyId, wabaId: owned.wabaId, billable, at });
+    }
+    return false;
   }
   function applyStatuses(statuses = [], { phoneNumberId = "", signed = false } = {}) {
     const out = { applied: 0, ignored: 0, unknown: 0 };
@@ -1703,6 +1730,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       const value = String(status?.status || "").toLowerCase();
       const at = Number.isFinite(Number(status?.timestamp)) && Number(status.timestamp) > 0 ? new Date(Number(status.timestamp) * 1000).toISOString() : iso();
       let job = wamid ? store.get("SELECT * FROM wa_jobs WHERE wamid = ?", wamid) : null;
+      // İş S1: wamid dosyada yoksa defterdeki sahibi — satır o denemede sonucunu yazmamışsa o satır (imzalı ve imzasız).
+      const owned = job ? null : ledgerOwnerOf(wamid);
+      if (!job && owned?.knows) job = owned.row;
       if (!job && signed) {
         const opaque = String(status?.biz_opaque_callback_data || "").slice(0, 120);
         const candidate = opaque ? jobRow(opaque) : null;
@@ -1710,7 +1740,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       }
       if (!job) {
         if (wamid && ["delivered", "read"].includes(value) && lateDeliveryOfReleased(wamid, status, at, phoneNumberId)) out.applied += 1;
-        else if (lateFailureOfMissingJob(wamid, value, at)) out.applied += 1;
+        else if (lateResultOfUnknownAttempt(owned, status, value, at)) out.applied += 1;
         else if (signed && lateResultOfMissingJob(status, wamid, value, at)) out.applied += 1;
         else out.unknown += 1;
         continue;
