@@ -684,6 +684,66 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       await s.close();
     }
   });
+  // İş T eki (prensip §4): defter yazımı YAZIM ORTASINDA başarısız — kanca 503, dosya satırı değişmez; yineleme gelince son durum tek yazımla aynı.
+  /** Defterin bir yöntemini BİR kez bozar (fn(özgün, defter dosyası, ...argümanlar)); dönüş: { hits(), restore() }. */
+  const breakOnce = (s, name, fn) => {
+    const ledger = s.ctx.wa.ledger;
+    const original = ledger[name];
+    let hits = 0;
+    ledger[name] = function (...args) {
+      if (hits === 0) {
+        hits += 1;
+        return fn(original.bind(ledger), ledger.file, ...args);
+      }
+      return original.apply(ledger, args);
+    };
+    return { hits: () => hits, restore: () => (ledger[name] = original) };
+  };
+  const midWriteCells = [
+    ["T-K0d defter teslimi yazılamadı (false)", "delivered", "delivered", () => false],
+    ["T-K0e defter teslim edilemedi yazımı fırlatır (kilit)", "deliveryFailed", "failed", () => {
+      throw Object.assign(new Error("database is locked"), { code: "ERR_SQLITE_ERROR", errcode: 5 });
+    }],
+    ["T-K0f yazım ortasında GERÇEK defter kilidi (ön sınamadan sonra, ayrı bağlantı)", "delivered", "delivered", (original, file, row) => {
+      const lock = new DatabaseSync(file);
+      lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
+      try {
+        return original(row);
+      } finally {
+        lock.exec("ROLLBACK");
+        lock.close();
+      }
+    }],
+  ];
+  for (const [label, method, value, fn] of midWriteCells) {
+    it(`${label} → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay ${value === "delivered" ? 1 : 0}, accepted_at değişmez)`, { timeout: 120_000 }, async () => {
+      const s = await hookHarness();
+      try {
+        const { batchId, job } = await accepted(s);
+        const before = await s.job(batchId);
+        const broken = breakOnce(s, method, fn);
+        const event = value === "failed" ? failedSt(s, job.wamid) : st(s, job.wamid, "delivered");
+        try {
+          const first = await s.post([event]);
+          assert.equal(first.status, 503, `defter yazılamadı → 503 (geldi ${first.status} ${first.text})`);
+        } finally {
+          broken.restore();
+        }
+        assert.equal(broken.hits(), 1, "ön koşul: defter yazımı bozuldu");
+        const mid = await s.job(batchId);
+        assert.deepEqual([mid.state, mid.acceptedAt], ["accepted", before.acceptedAt], "dosya satırı değişmedi");
+        for (let i = 0; i < 2; i += 1) assert.equal((await s.post([event])).status, 200, "yineleme 200");
+        const after = await s.job(batchId);
+        assert.deepEqual([after.state, after.acceptedAt], [value, before.acceptedAt], "son durum tek yazımla aynı");
+        assert.equal(await s.buAy(), value === "delivered" ? 1 : 0, "Bu Ay");
+        if (value === "delivered") assert.equal(s.delivered(job.id), true);
+        else assert.equal(s.last(job.id), "failed", "defterde teslim edilemedi");
+        assert.deepEqual(await s.skip(), [value === "delivered" ? "Daha Önce Gönderildi" : "gönderilecek"]);
+      } finally {
+        await s.close();
+      }
+    });
+  }
   it("T-K0a/b ön sınamada şirket dosyası ya da defter kilitli → 503, yazım yok", { timeout: 120_000 }, async () => {
     const s = await hookHarness();
     try {
