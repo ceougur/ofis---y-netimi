@@ -907,8 +907,8 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
       await s.close();
     }
   });
-  it("T36-kilit onarım listesi dolu + defter BAŞKA SÜREÇTE kilitli → önizleme ve yeni gönderim BEKLEMEZ (< 1,5 sn); neden kilit notuyla aynı cümle; kilit kalkınca önizleme onarır (V3, n5)", { timeout: 120_000 }, async () => {
-    const s = await harness({ lockBackoffMs: 200 });
+  it("T36-kilit onarım listesi dolu + defter BAŞKA SÜREÇTE kilitli → önizleme ve yeni gönderim BEKLEMEZ (< 1,5 sn); neden kilit notuyla aynı cümle; kilit kalkınca BEKLEMEDEN önizleme onarır (V3, n5; X3: üretim işaret süresiyle — bayat işaret yok)", { timeout: 120_000 }, async () => {
+    const s = await harness();
     try {
       s.ledgerFault.on = true;
       const batchId = await s.batch();
@@ -935,7 +935,7 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
         lock.exec("ROLLBACK");
         lock.close();
       }
-      await wait(300); // işaret süresi (testte 200 ms)
+      // İş X3 (dar kontrol 17 f3): kilit kalkınca BEKLEMEDEN (30 sn işaret sürerken) — onarım işarete bakmaz, doğrudan sınar.
       const res = await s.ctx.api.post(URLS.preview, s.body);
       assert.equal(res.data.data.startBlock ?? null, null, "kilit kalkınca engel yok");
       assert.deepEqual(skipOf(res.data.data), ["Daha Önce Gönderildi"]);
@@ -1483,7 +1483,8 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       try {
         const busy = await s.post([st(s, job.wamid, "delivered")]);
         assert.equal(busy.status, 503, `geçici açılamama → 503 (geldi ${busy.status} ${busy.text})`);
-        assert.equal(s.deliveredSql(job.id), false, "geçicide yalnız defter yolu YOK");
+        // İş X1 (dar kontrol 17; BİLEREK DEĞİŞEN beklenti, ders 28): 503'ten ÖNCE teslim deftere yazılır (karar 1) — önce "yazılmaz"dı.
+        assert.equal(s.deliveredSql(job.id), true, "503'ten önce teslim defterde");
       } finally {
         s.ctx.server.app.context.busyCompanies.delete(s.company.id);
       }
@@ -1592,7 +1593,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       try {
         const res = await s.post([st(s, job.wamid, "delivered")]);
         assert.equal(res.status, 503, `kilitli dosya geçicidir → 503 (geldi ${res.status} ${res.text})`);
-        assert.equal(s.deliveredSql(job.id), false, "yalnız defter yolu YOK");
+        assert.equal(s.deliveredSql(job.id), true, "İş X1 (BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde");
       } finally {
         lock.exec("ROLLBACK");
         lock.close();
@@ -1616,7 +1617,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       try {
         const res = await s.post([st(s, job.wamid, "delivered")]);
         assert.equal(res.status, 503, `bozuk dosya geçicidir → 503 (geldi ${res.status} ${res.text})`);
-        assert.equal(s.deliveredSql(job.id), false, "yalnız defter yolu YOK");
+        assert.equal(s.deliveredSql(job.id), true, "İş X1 (dar kontrol 17 f1b; BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde — Meta bırakırsa da sayılır");
       } finally {
         s.ctx.server.app.context.closeCompany(s.company.id);
         rmSync(file, { force: true });
@@ -1625,6 +1626,46 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       }
       assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200);
       assert.equal((await s.job(batchId)).state, "delivered");
+      assert.equal(await s.buAy(), 1, "Bu Ay çift saymaz");
+    } finally {
+      await s.close().catch(() => {});
+    }
+  });
+  it("T-Kbozuk-yabancı 002'nin veri dosyası BOZUK + tanınmayan (sahibi bulunamayan) bildirim, A6 penceresi dışında → 200 (süresiz 503 yok; İş X1, dar kontrol 17 f1)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness({ second: true });
+    try {
+      const batchId = await s.batch();
+      await s.ctx.drain();
+      assert.equal((await s.job(batchId)).state, "accepted", "ön koşul: kabul (talep sonuçlu)");
+      const putBack = hideCompanyFile(s);
+      const root = path.join(s.ctx.server.app.config.dataDir, "sirketler");
+      const file = resolveDbPath(path.join(root, readdirSync(root)[0]));
+      writeFileSync(file, "bu bir veri tabanı değil — bozuk dosya ".repeat(200));
+      try {
+        s.ctx.clock.advance(6 * 60_000);
+        for (let i = 0; i < 3; i += 1) {
+          const res = await s.post([st(s, `wamid.YABANCI-B${i}`, "delivered")]);
+          assert.equal(res.status, 200, `tanınmayan bildirim 200 (geldi ${res.status} ${res.text})`);
+          s.ctx.clock.advance(10 * 60_000);
+        }
+      } finally {
+        s.ctx.server.app.context.closeCompany(s.company.id);
+        rmSync(file, { force: true });
+        for (const suffix of ["-wal", "-shm"]) rmSync(file + suffix, { force: true });
+        putBack();
+      }
+    } finally {
+      await s.close().catch(() => {});
+    }
+  });
+  it("T-dosya-yok-ekran 002'nin veri dosyası YOK → olağan ekran isteği 503 iletisi Türkçe neden + dosya yolu; kod adı (COMPANY_DATA_MISSING) yok (İş X2, dar kontrol 17 f2; ders 10)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness({ second: true });
+    try {
+      hideCompanyFile(s);
+      const res = await s.ctx.api.get(`/api/workspace/accounts${s.q}`);
+      assert.equal(res.status, 503);
+      assert.match(String(res.data.error || ""), /veri dosyası bulunamadı/);
+      assert.doesNotMatch(String(res.data.error || ""), /COMPANY_DATA_MISSING/);
     } finally {
       await s.close().catch(() => {});
     }

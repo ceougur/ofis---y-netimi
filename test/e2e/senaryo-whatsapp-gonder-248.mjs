@@ -50,7 +50,9 @@ const ok = (cond, what) => {
 };
 
 // İş P2 (G8d): yazım kilidi işareti 2 sn (üretimde 30 sn; yalnız test oluşturucu seçeneği) — kilit kalkınca notun kalkması beklenebilir sürede.
-let ctx = await startWa({ dataDir, ack: false, __testWriteLockBackoffMs: 2_000 });
+// İş X4 (dar kontrol 17 f4): defter kesintisi — eşzamanlı KABUL deftere yazılamaz (G8f kabulü EKSİK işle kurulur).
+let ledgerFaultOn = false;
+let ctx = await startWa({ dataDir, ack: false, __testWriteLockBackoffMs: 2_000, whatsappLedgerFault: (op, row) => ledgerFaultOn && op === "outcome" && row?.outcome === "accepted" });
 const setup = async () => {
   const test = await ctx.api.post(`${URLS.conn}/test`, {});
   if (test.status !== 200) throw new Error(`sınama: ${test.status} ${JSON.stringify(test.data)}`);
@@ -772,10 +774,21 @@ await step("G8e makine defteri başka programda kilitli: süren gönderimde deft
   await closeAll();
 });
 
-await step("G8f İş V3: önceki bir kabul deftere taşınamamışken defter başka programda kilitli → önizleme beklemez, Gönder pasif + kilit cümlesi; kilit kalkınca kalkar", async () => {
-  const pendingJob = db("SELECT id FROM wa_jobs WHERE wamid IS NOT NULL ORDER BY rowid LIMIT 1")?.id;
-  ok(Boolean(pendingJob), "ön koşul: kabul edilmiş bir iş");
-  ctx.store.setSetting("whatsapp.ledgerRepair", JSON.stringify([pendingJob])); // onarım listesinde bir iş (defterde kabulü zaten var — kilit kalkınca liste boşalır)
+await step("G8f İş V3 + X4: önceki bir kabul deftere YAZILAMADI (onarım listesinde) + defter başka programda kilitli → önizleme beklemez, Gönder pasif + kilit cümlesi; kilit kalkınca BEKLEMEDEN kalkar", async () => {
+  // Kurgu (dar kontrol 17 f4): kabulü defterde EKSİK iş — yeni kişi, işçi turu sırasında defter kesintisi (dosyada Meta Kabul Etti, defterde sonuç yok).
+  const person = await ctx.account("Onarım Kişisi", "0536 600 00 03", 10);
+  const created = await ctx.batch({ kind: "statement", ids: [person.id], preset: "thisMonth", requestId: "x4-e2e-onarim-01" });
+  ok(created.status === 200, `toplu iş açıldı (${created.status})`);
+  const repairBatch = created.data.data?.batch?.id || "";
+  ledgerFaultOn = true;
+  try {
+    await ctx.drain({ maintain: false });
+  } finally {
+    ledgerFaultOn = false;
+  }
+  const pendingJob = db(`SELECT id, wamid, state FROM wa_jobs WHERE batch_id = '${repairBatch}'`);
+  ok(pendingJob?.state === "accepted" && Boolean(pendingJob?.wamid), `ön koşul: dosyada Meta Kabul Etti (${pendingJob?.state})`);
+  ok(/"waj-/.test(db("SELECT value FROM settings WHERE key = 'whatsapp.ledgerRepair'")?.value || ""), "ön koşul: onarım listesinde (defterde kabul YOK)");
   const { DatabaseSync } = await import("node:sqlite");
   let lock = new DatabaseSync(ctx.wa.ledger.file);
   const NOTE = "WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.";
@@ -793,11 +806,11 @@ await step("G8f İş V3: önceki bir kabul deftere taşınamamışken defter ba�
     lock.exec("ROLLBACK");
     lock.close();
     lock = null;
-    await page.waitForTimeout(2_200);
+    // İş X3: kilit kalkınca BEKLEMEDEN (işaret süresi dolmadan) neden kalkar.
     await openWhatsapp();
     await waitPreview();
-    ok((await why()) !== NOTE, `kilit kalkınca neden kalktı (görülen: ${await why() || "—"})`);
-    ok(!db("SELECT value FROM settings WHERE key = 'whatsapp.ledgerRepair' AND value <> ''"), "onarım listesi boşaldı");
+    ok((await why()) !== NOTE, `kilit kalkınca neden hemen kalktı (görülen: ${await why() || "—"})`);
+    ok(!db("SELECT value FROM settings WHERE key = 'whatsapp.ledgerRepair' AND value <> ''"), "onarım listesi boşaldı (kabul deftere yazıldı)");
   } finally {
     try {
       lock?.exec("ROLLBACK");
