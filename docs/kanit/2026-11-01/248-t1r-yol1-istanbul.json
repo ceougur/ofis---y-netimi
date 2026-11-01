@@ -1,0 +1,158 @@
+{
+  "ad": "248-t1r-yol1-istanbul",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t1r-0435ed69/test/bagimsiz/whatsapp-248/surucu.mjs --uc hizli --kip yol1 --tz Europe/Istanbul --cikti docs/kanit/2026-11-01/248-t1r --dokum /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t1r-0435ed69-dokum/yol1",
+  "commit": "9ef34b6e02557addc9e1ee936fa74d2ab57e425f",
+  "dal": "is/surucu2-248",
+  "kirli": 0,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T09:12:24.481Z",
+  "sure_sn": 460.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 284,
+    "gecen": 25,
+    "basarisiz": 259,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 259 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "TEMEL-01-ekstre-uc-kisi [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TEMEL-02-odeme-hatirlatma [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TEMEL-03-okundu-teslimsiz [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TEMEL-04-sirasiz-kanca [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TEMEL-05-teslimden-sonra-failed [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-01-zaman-asimi-meta-aldi [hizli] (9 fark; davranış farkı 8; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-02-yanitsiz-yine-de-gonder [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-03-yine-de-gonder-cift-gider [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-04-cokme-istek-ulasti [hizli] (11 fark; davranış farkı 9; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-05-cokme-istek-ulasmadi [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-06-cift-tik [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-07-iki-sekme [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-07b-iki-sekme-yine-de-gonder [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-08-iki-kullanici-ayni-cari [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-09-basarisizlari-yeniden-dene [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-10-yinelenen-kanca [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-11-medya-yanitsiz [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-12-geri-yukleme-dirilmez [hizli] (20 fark; davranış farkı 0; gösterim: G1-borclu-eki 4, G2-toplu-gosterim 4, G3-gonderilmeyen-icerik 12)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-13-veri-tasindi [hizli] (13 fark; davranış farkı 1; gösterim: G1-borclu-eki 1, G2-toplu-gosterim 3, G3-gonderilmeyen-icerik 8)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-15-daha-once-basarisiz [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-16-daha-once-suresi-doldu [hizli] (19 fark; davranış farkı 18; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-17-baska-donem [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-14-geri-yukleme-sonra-baslat [hizli] (9 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G2-toplu-gosterim 3, G3-gonderilmeyen-icerik 4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KAYIP-01-kapaliyken-kanca [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KAYIP-02-sekiz-gun-kapali [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t1r-yol1-istanbul.log",
+  "klasor": "/home/user/wt-surucu2-248",
+  "ham_cikti_sha256": "f32a7504069dc0ee6251007988f6863e0078255e986a59d7f9989ce89b217199",
+  "ham_cikti_bayt": 53424
+}
