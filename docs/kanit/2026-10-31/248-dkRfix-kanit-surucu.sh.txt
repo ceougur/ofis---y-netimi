@@ -1,0 +1,46 @@
+#!/bin/bash
+# İş R kanıt sürücüsü: eski kod 94b3f3a0 (ayrı archive kopyası, ders 23/25) + mutasyonlar (HEAD kopyası) — iki TZ, her koşu tools/kanit.mjs kos ile.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2
+W=/home/user/wt-t2fix-248
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+kos() {
+  local ad=$1 kok=$2; shift 2
+  local files=(); for f in "$@"; do files+=("$kok/test/$f"); done
+  for tz in UTC Europe/Istanbul; do
+    local out=$K/kos-$ad-${tz//\//_}.out
+    TZ=$tz node tools/kanit.mjs kos "$ad-${tz//\//_}" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 "${files[@]}" > $out 2>&1
+    echo "$ad $tz çıkış=$? $(grep '\[kanit\]' $out | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-100)"
+  done
+}
+R1="kapanis-zamanlayici-248.test.mjs write-lock-248.test.mjs"
+R2="whatsapp-dk14-isci-kapanis-248.test.mjs"
+R3="whatsapp-dk13-arka-plan-kilit-248.test.mjs"
+R4="whatsapp-q5-son-kabul-248.test.mjs"
+R7="whatsapp-q4-dosyasiz-imzali-248.test.mjs"
+R56="whatsapp-q1-tum-kisi-donemi-248.test.mjs"
+ALL="$R1 $R2 $R3 $R4 $R7 $R56"
+echo "== ESKİ KOD 94b3f3a0"
+kok=$K/eski-94b3f3a0
+rm -rf -- "${kok:?}"; mkdir -p $kok
+git -C $W archive 94b3f3a0 | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules
+for f in $ALL; do cp $W/test/$f $kok/test/$f; done
+kos 248-dkRfix-eski-94b3f3a0 $kok $ALL
+rm -rf -- "${kok:?}"
+echo "== MUTASYONLAR"
+kok=$K/mut
+mkdir -p $kok && git -C $W archive HEAD | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules
+mutk() {
+  local m=$1; shift
+  rm -rf -- "$kok/server" && git -C $W archive HEAD server | tar -x -C $kok
+  python3 $K/mut.py $kok $m || return
+  kos "248-dkRfix-mutasyon-$m" $kok "$@"
+}
+for m in mR1-kapali-firlatir mR1-kapali-isaret-koyar mR1-belge-zamanlayici-tutulmaz mR1-arsiv-zamanlayici-tutulmaz; do mutk $m $R1; done
+for m in mR2-try-yok mR2-cikmis-sinanir; do mutk $m $R2; done
+for m in mR3-defter-turu-yok mR3-talepte-not-yok mR3-oncelik-ters; do mutk $m $R3; done
+for m in mR4-cozumde-yazilmaz mR4-toparlamada-eski; do mutk $m $R4; done
+for m in mR7-yok mR7-teslim-sonrasi-uygulanir; do mutk $m $R7; done
+for m in mR6-bos-baslangic mR5-ay-yok mR5-yanlis-gun; do mutk $m $R56; done
+rm -rf -- "${kok:?}"
+echo BITTI

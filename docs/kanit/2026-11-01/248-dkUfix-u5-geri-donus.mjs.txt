@@ -1,0 +1,31 @@
+// İş U5 geri dönüş: YENİ kodla (attempt_deliveries'li) üretilmiş defter ESKİ kodla (ad4db62b defter.mjs) açılır — açılış hatasız, sayım iş başına (eski kural).
+// Kullanım: node u5-geri-donus.mjs <yeni kod kökü> <eski kod kökü>
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const [yeni, eski] = process.argv.slice(2);
+const quiet = { warn() {}, info() {}, error() {} };
+const NOV = { from: "2026-10-31T21:00:00.000Z", to: "2026-11-30T21:00:00.000Z" };
+const W = "102290129340398";
+const dir = mkdtempSync(path.join(tmpdir(), "u5-geri-"));
+const New = await import(pathToFileURL(path.join(yeni, "server/lib/whatsapp/defter.mjs")).href);
+let l = New.openWaLedger({ dir, log: quiet });
+l.delivered({ jobId: "waj-g", attempt: 1, companyId: "sirket-001", wabaId: W, billable: true, at: "2026-11-03T10:00:00.000Z" });
+l.delivered({ jobId: "waj-g", attempt: 2, companyId: "sirket-001", wabaId: W, billable: true, at: "2026-11-04T10:00:00.000Z" });
+const yeniSayim = l.monthCounts({ companyId: "sirket-001", wabaId: W, ...NOV }).company.delivered;
+l.close();
+const Old = await import(pathToFileURL(path.join(eski, "server/lib/whatsapp/defter.mjs")).href);
+l = Old.openWaLedger({ dir, log: quiet });
+const eskiSayim = l.monthCounts({ companyId: "sirket-001", wabaId: W, ...NOV }).company.delivered;
+const eskiTeslimEdildi = l.deliveredJob("waj-g");
+l.delivered({ jobId: "waj-h", companyId: "sirket-001", wabaId: W, billable: true, at: "2026-11-05T10:00:00.000Z" });
+const eskiYazim = l.monthCounts({ companyId: "sirket-001", wabaId: W, ...NOV }).company.delivered;
+l.close();
+l = New.openWaLedger({ dir, log: quiet });
+const yeniyeDonus = l.monthCounts({ companyId: "sirket-001", wabaId: W, ...NOV }).company.delivered;
+l.close();
+const ok = yeniSayim === 2 && eskiSayim === 1 && eskiTeslimEdildi && eskiYazim === 2 && yeniyeDonus === 3;
+console.log(JSON.stringify({ yeniSayim, eskiSayim, eskiTeslimEdildi, eskiYazim, yeniyeDonus, ok }));
+console.log(ok ? "# tests 1\n# pass 1\n# fail 0" : "# tests 1\n# pass 0\n# fail 1");
+process.exit(ok ? 0 : 1);

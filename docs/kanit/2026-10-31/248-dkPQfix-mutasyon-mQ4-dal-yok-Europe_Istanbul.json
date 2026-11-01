@@ -1,0 +1,43 @@
+{
+  "ad": "248-dkPQfix-mutasyon-mQ4-dal-yok-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs",
+  "commit": "8faf4ca60d96b7654d631a355710a84e5d77343d",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 109,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T20:11:46.232Z",
+  "sure_sn": 3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 2,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › imzalı 'delivered' → kişi 'Daha Önce Gönderildi', Bu Ay Gönderilen 1; yeni gönderim kişiye ikinci ileti göndermez",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:40:3",
+      "hata": "imzalı geç bildirim uygulandı (geldi {\"applied\":0,\"ignored\":0,\"unknown\":1}) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › imzalı 'failed' → teslim edilemedi: kişi elenmez, yeni gönderim gider",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:70:3",
+      "hata": "imzalı geç 'failed' uygulandı (geldi {\"applied\":0,\"ignored\":0,\"unknown\":1}) · 0 !== 1 (beklenen 1, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-mutasyon-mQ4-dal-yok-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "fc9d03b9c4efd40bb3e56e21d06f28c69e3478fd53d4d2ba41c555e4faef3b9b",
+  "ham_cikti_bayt": 3831
+}

@@ -153,6 +153,9 @@ describe("2.4.8 İş G ek 2/4 — çakışan eleme nedenleri: Zaten Kuyrukta →
     }
   });
 
+  // İş Q2 (beklenti bilerek değişti): R3 önceden işteki Yine de Gönder'in kabulünden doğuyordu; Q2'den sonra o kabul kaynağın belirsizliğini kapatır (çakışma kalmaz).
+  // Çakışma sırası (Sonucu Belirsiz R3'ten önce) BAŞKA bir kabulle sınanır: asıl iş Başarısız → ayrı yeni gönderim kabul (R3) → "Yine de Gönder" seçimli yeni gönderim
+  // belirsiz. Kabul edilen Yine de Gönder işinin kaynağı: test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs.
   it("Başarısızları Yeniden Dene: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz' (R3 sayısına girmez)", async () => {
     const ctx = await startWa({ now: NOW });
     try {
@@ -160,11 +163,9 @@ describe("2.4.8 İş G ek 2/4 — çakışan eleme nedenleri: Zaten Kuyrukta →
       const body = { kind: "statement", ids: [p.id], preset: "thisMonth" };
       const main = await failed(ctx, body, "asıl iş");
       ctx.clock.advance(HOUR);
-      const u = await uncertainVia(ctx, () => ctx.batch(body));
+      await accepted(ctx, body, "ayrı yeni gönderim (R3 doğar)");
       ctx.clock.advance(HOUR);
-      const sent = await ok(await anyway(ctx, u.job.id), "işteki Yine de Gönder (R3 doğar)");
-      await ctx.drain();
-      assert.deepEqual((await ctx.jobs(sent.batch.id)).map(job => job.state), ["accepted"], "ön koşul: kabul (R3)");
+      await uncertainVia(ctx, () => ctx.batch({ ...body, sendAgain: true }));
       ctx.clock.advance(HOUR);
       assertOnly(await retry(ctx, main.batch.id), "Sonucu Belirsiz", "Yeniden Dene (R3 + belirsiz)");
     } finally {

@@ -1,0 +1,36 @@
+{
+ "satir": 200000,
+ "olcumler": [
+  {
+   "label": "repairPending boş liste (ayar okuması)",
+   "times": 10000,
+   "toplamMs": 20.49,
+   "birMs": 0.002
+  },
+  {
+   "label": "settleUncertainFromLedger sorgusu",
+   "times": 200,
+   "toplamMs": 8.2,
+   "birMs": 0.041
+  },
+  {
+   "label": "kanca dosya araması (wamid)",
+   "times": 10000,
+   "toplamMs": 49.95,
+   "birMs": 0.005
+  }
+ ],
+ "planlar": {
+  "settle": [
+   "SEARCH wa_jobs USING INDEX idx_wa_jobs_state (state=?)"
+  ],
+  "kanca": [
+   "SEARCH j USING INDEX idx_wa_jobs_wamid (wamid=?)",
+   "SEARCH b USING COVERING INDEX sqlite_autoindex_wa_batches_1 (id=?)"
+  ]
+ },
+ "bakimTuruMs": 104.8
+}
+# tests 1
+# pass 1
+# fail 0

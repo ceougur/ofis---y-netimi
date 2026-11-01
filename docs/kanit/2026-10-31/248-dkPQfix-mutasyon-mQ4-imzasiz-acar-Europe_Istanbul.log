@@ -1,0 +1,71 @@
+TAP version 13
+# Subtest: 2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır
+    # Subtest: imzalı 'delivered' → kişi 'Daha Önce Gönderildi', Bu Ay Gönderilen 1; yeni gönderim kişiye ikinci ileti göndermez
+    ok 1 - imzalı 'delivered' → kişi 'Daha Önce Gönderildi', Bu Ay Gönderilen 1; yeni gönderim kişiye ikinci ileti göndermez
+      ---
+      duration_ms: 721.402818
+      type: 'test'
+      ...
+    # Subtest: imzalı 'failed' → teslim edilemedi: kişi elenmez, yeni gönderim gider
+    ok 2 - imzalı 'failed' → teslim edilemedi: kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 559.8612
+      type: 'test'
+      ...
+    # Subtest: İMZASIZ 'delivered' (P5 aynen) → düşer; kişi 'Daha Önce Gönderildi' sayılmaz
+    not ok 3 - İMZASIZ 'delivered' (P5 aynen) → düşer; kişi 'Daha Önce Gönderildi' sayılmaz
+      ---
+      duration_ms: 511.194841
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:87:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        imzasız bildirim uygulanmadı (geldi {"applied":1,"ignored":0,"unknown":0})
+        + actual - expected
+        
+          [
+        +   1,
+            0,
+        -   1
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 1
+      actual:
+        0: 1
+        1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:92:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: komşu: KABUL edilmiş iletinin işi sıfırlamayla silindikten sonra gelen geç 'delivered' (wamid defterde) Bu Ay Gönderilen'e yazılır; kişi yine Daha Önce Gönderildi
+    ok 4 - komşu: KABUL edilmiş iletinin işi sıfırlamayla silindikten sonra gelen geç 'delivered' (wamid defterde) Bu Ay Gönderilen'e yazılır; kişi yine Daha Önce Gönderildi
+      ---
+      duration_ms: 494.599595
+      type: 'test'
+      ...
+    1..4
+not ok 1 - 2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır
+  ---
+  duration_ms: 2288.597239
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:39:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2665.634703

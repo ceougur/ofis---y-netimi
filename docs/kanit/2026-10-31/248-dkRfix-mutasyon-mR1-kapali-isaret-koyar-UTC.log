@@ -1,0 +1,108 @@
+TAP version 13
+# Subtest: 2.4.8 İş R1 — kapanan şirketin yeniden deneme zamanlayıcıları süreci düşürmez
+    # Subtest: belge temizliği kilitte yeniden denemeye kaldı → uygulama kapanır → zamanlayıcı ateşlenmez, yakalanmamış istisna yok
+    ok 1 - belge temizliği kilitte yeniden denemeye kaldı → uygulama kapanır → zamanlayıcı ateşlenmez, yakalanmamış istisna yok
+      ---
+      duration_ms: 7327.865583
+      type: 'test'
+      ...
+    # Subtest: sohbet arşivi kilitte yeniden denemeye kaldı → uygulama kapanır → yakalanmamış istisna yok
+    ok 2 - sohbet arşivi kilitte yeniden denemeye kaldı → uygulama kapanır → yakalanmamış istisna yok
+      ---
+      duration_ms: 22206.73602
+      type: 'test'
+      ...
+    # Subtest: iki şirket: 002'nin belge temizliği kilitte → 002 silinir → ortak süreçte yakalanmamış istisna yok, ortak katman yanıt verir
+    ok 3 - iki şirket: 002'nin belge temizliği kilitte → 002 silinir → ortak süreçte yakalanmamış istisna yok, ortak katman yanıt verir
+      ---
+      duration_ms: 7724.309036
+      type: 'test'
+      ...
+    # Subtest: geri yüklemeden sonra yeni uygulama örneğinin kilit işareti eskisinden bağımsız: yeni gönderim hemen gider, ekranda kilit notu yok
+    ok 4 - geri yüklemeden sonra yeni uygulama örneğinin kilit işareti eskisinden bağımsız: yeni gönderim hemen gider, ekranda kilit notu yok
+      ---
+      duration_ms: 1148.553328
+      type: 'test'
+      ...
+    1..4
+ok 1 - 2.4.8 İş R1 — kapanan şirketin yeniden deneme zamanlayıcıları süreci düşürmez
+  ---
+  duration_ms: 38409.009991
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş P1 — store.probeWritable ve yazım kilidi işareti
+    # Subtest: kilitsizde true, busy_timeout 10 sn kalır
+    ok 1 - kilitsizde true, busy_timeout 10 sn kalır
+      ---
+      duration_ms: 10.048361
+      type: 'test'
+      ...
+    # Subtest: başka bağlantı kilitliyken ≤ 0,5 sn içinde false; busy_timeout yine 10 sn
+    ok 2 - başka bağlantı kilitliyken ≤ 0,5 sn içinde false; busy_timeout yine 10 sn
+      ---
+      duration_ms: 159.854938
+      type: 'test'
+      ...
+    # Subtest: işlem içindeyken sınanmaz (null) ve işlem bozulmaz
+    ok 3 - işlem içindeyken sınanmaz (null) ve işlem bozulmaz
+      ---
+      duration_ms: 6.901289
+      type: 'test'
+      ...
+    # Subtest: createWriteLock: kilitte işaretler ve işaret süresi boyunca yeniden sınamaz; süre dolunca kalkar; sınama null ise yazılabilir sayar
+    ok 4 - createWriteLock: kilitte işaretler ve işaret süresi boyunca yeniden sınamaz; süre dolunca kalkar; sınama null ise yazılabilir sayar
+      ---
+      duration_ms: 0.435718
+      type: 'test'
+      ...
+    # Subtest: POS valör kuyruğu: yazılamıyorken tur runQueue çağırmaz
+    ok 5 - POS valör kuyruğu: yazılamıyorken tur runQueue çağırmaz
+      ---
+      duration_ms: 11.422954
+      type: 'test'
+      ...
+    # Subtest: İş R1: kapalı bağlantıda kısa sınama fırlatmaz, 'closed' döner; guard yazılamaz der ama İŞARET KOYMAZ (kapanma kilit değildir)
+    not ok 6 - İş R1: kapalı bağlantıda kısa sınama fırlatmaz, 'closed' döner; guard yazılamaz der ama İŞARET KOYMAZ (kapanma kilit değildir)
+      ---
+      duration_ms: 7.255599
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/write-lock-248.test.mjs:107:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kapalı → işaret yok
+        
+        true !== false
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: false
+      actual: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/write-lock-248.test.mjs:118:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 2 - 2.4.8 İş P1 — store.probeWritable ve yazım kilidi işareti
+  ---
+  duration_ms: 197.518906
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/write-lock-248.test.mjs:24:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 10
+# suites 2
+# pass 9
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39348.177856

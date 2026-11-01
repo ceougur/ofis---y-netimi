@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkPQfix-mutasyon-mQ4-imzasiz-acar-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs",
+  "commit": "8faf4ca60d96b7654d631a355710a84e5d77343d",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 113,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T20:11:52.764Z",
+  "sure_sn": 2.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › İMZASIZ 'delivered' (P5 aynen) → düşer; kişi 'Daha Önce Gönderildi' sayılmaz",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:87:3",
+      "hata": "imzasız bildirim uygulanmadı (geldi {\"applied\":1,\"ignored\":0,\"unknown\":0}) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-mutasyon-mQ4-imzasiz-acar-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "3508a8c9acc80f2fb420f6d4aafe939c4fb9e71623765bbae8451da0a6023323",
+  "ham_cikti_bayt": 2969
+}

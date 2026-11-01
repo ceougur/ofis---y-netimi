@@ -1,0 +1,42 @@
+#!/bin/bash
+# İş S kanıt sürücüsü: S1 eski kod f1a4ed13, S2 eski kod 94b3f3a0 (ayrı archive kopyaları) + mutasyonlar (HEAD kopyası) — iki TZ, kanit kos.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4
+W=/home/user/wt-t2fix-248
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+kos() {
+  local ad=$1 kok=$2; shift 2
+  local files=(); for f in "$@"; do files+=("$kok/test/$f"); done
+  for tz in UTC Europe/Istanbul; do
+    local out=$K/kos-$ad-${tz//\//_}.out
+    TZ=$tz node tools/kanit.mjs kos "$ad-${tz//\//_}" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 "${files[@]}" > $out 2>&1
+    echo "$ad $tz çıkış=$? $(grep '\[kanit\]' $out | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-100)"
+  done
+}
+eski() {
+  local ad=$1 commit=$2; shift 2
+  local kok=$K/eski-$commit
+  rm -rf -- "${kok:?}"; mkdir -p $kok
+  git -C $W archive $commit | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules
+  for f in "$@"; do cp $W/test/$f $kok/test/$f; done
+  kos "248-dkSfix-eski-$ad-$commit" $kok "$@"
+  rm -rf -- "${kok:?}"
+}
+S1="whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs whatsapp-q4-dosyasiz-imzali-248.test.mjs"
+S2="whatsapp-q5-son-kabul-248.test.mjs"
+echo "== ESKİ KOD"
+eski S1 f1a4ed13 $S1
+eski S2 94b3f3a0 $S2
+echo "== MUTASYONLAR"
+kok=$K/mut
+mkdir -p $kok && git -C $W archive HEAD | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules
+mutk() {
+  local m=$1; shift
+  rm -rf -- "$kok/server" && git -C $W archive HEAD server | tar -x -C $kok
+  python3 $K/mut.py $kok $m || return
+  kos "248-dkSfix-mutasyon-$m" $kok "$@"
+}
+for m in mS1-satir-kolu-yok mS1-defter-kolu-yok mS1-teslim-kolu-yok mS1-teslim-sonrasi-failed mS1-yeni-deneme-korumasi-yok mS1-kabul-ezer; do mutk $m $S1; done
+mutk mR4-toparlamada-eski $S2
+rm -rf -- "${kok:?}"
+echo BITTI

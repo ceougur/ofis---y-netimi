@@ -1,0 +1,53 @@
+{
+  "ad": "248-dkTfix-mutasyon-mYol-bilmiyor-sonra-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut/test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": "b8c8ea63179a94f3395f9d0e150542a477bd5425",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 50,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T01:13:03.056Z",
+  "sure_sn": 28.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 38,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T12 delivered (imzasız) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:267:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T12 failed (imzasız) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:282:5",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'pending' (beklenen failed, gelen pending)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T12 delivered (imzalı) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:267:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T12 failed (imzalı) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:282:5",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'pending' (beklenen failed, gelen pending)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkTfix-mutasyon-mYol-bilmiyor-sonra-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "5bd5ba8899c927b1c2b41c6894f42ce88fde47a15513ee1c5d68aa81c35b0292",
+  "ham_cikti_bayt": 18016
+}

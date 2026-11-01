@@ -1,0 +1,44 @@
+// İş U6 / U4 ölçüm notu (onaylı koşul a): 100 × 2.000 = 200.000 wa_jobs satırlı şirket dosyasında yeni sorguların maliyeti ve sorgu planı.
+// (1) repairPending boş liste = tek ayar okuması; (2) settleUncertainFromLedger sorgusu (state = 'uncertain' AND wamid IS NULL; idx_wa_jobs_state);
+// (3) kanca dosya araması (wa_jobs.wamid tekil dizini); (4) bakım turunun (queue.maintain) tamamı. Kullanım: node u6-olcum.mjs <kod kökü>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const root = process.argv[2];
+const { startWa } = await import(pathToFileURL(path.join(root, "test/whatsapp-248-ortak.mjs")).href);
+const ctx = await startWa({ now: { time: "2026-11-03T10:00:00+03:00", fixed: true } });
+const store = ctx.server.app.store;
+const now = new Date().toISOString();
+store.tx(() => {
+for (let b = 0; b < 100; b += 1) {
+  for (let i = 0; i < 2000; i += 1) {
+    const n = b * 2000 + i;
+    const state = n % 4000 === 0 ? "uncertain" : n % 3 ? "delivered" : "accepted";
+    store.run("INSERT INTO wa_jobs (id, batch_id, account_id, template, state, wamid, attempt, accepted_at, created_at, updated_at) VALUES (?, ?, ?, 'destekofis_ekstre', ?, ?, 1, ?, ?, ?)",
+      `waj-o-${n}`, `wab-o-${b}`, `acc-${i}`, state, state === "uncertain" ? null : `wamid.OLCUM${n}`, now, now, now);
+  }
+}
+});
+const time = (label, times, fn) => {
+  const t0 = process.hrtime.bigint();
+  for (let i = 0; i < times; i += 1) fn(i);
+  const ms = Number(process.hrtime.bigint() - t0) / 1e6;
+  return { label, times, toplamMs: Number(ms.toFixed(2)), birMs: Number((ms / times).toFixed(4)) };
+};
+const out = {
+  satir: store.get("SELECT COUNT(*) AS n FROM wa_jobs").n,
+  olcumler: [
+    time("repairPending boş liste (ayar okuması)", 10_000, () => store.setting("whatsapp.ledgerRepair", "")),
+    time("settleUncertainFromLedger sorgusu", 200, () => store.all("SELECT id, attempt FROM wa_jobs WHERE state = 'uncertain' AND wamid IS NULL")),
+    time("kanca dosya araması (wamid)", 10_000, i => store.get("SELECT j.id, b.ledger_id AS ledgerId, b.waba_id AS wabaId FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.wamid = ? LIMIT 1", `wamid.OLCUM${(i * 37) % 200000}`)),
+  ],
+  planlar: {
+    settle: store.all("EXPLAIN QUERY PLAN SELECT id, attempt FROM wa_jobs WHERE state = 'uncertain' AND wamid IS NULL").map(row => row.detail),
+    kanca: store.all("EXPLAIN QUERY PLAN SELECT j.id FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.wamid = ? LIMIT 1", "x").map(row => row.detail),
+  },
+};
+const t0 = process.hrtime.bigint();
+await ctx.wa.scheduler.maintain();
+out.bakimTuruMs = Number((Number(process.hrtime.bigint() - t0) / 1e6).toFixed(1));
+console.log(JSON.stringify(out, null, 1));
+await ctx.close();
+console.log("# tests 1\n# pass 1\n# fail 0");

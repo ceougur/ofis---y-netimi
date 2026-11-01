@@ -10,6 +10,7 @@
 import assert from "node:assert/strict";
 import { createHmac, randomBytes } from "node:crypto";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
 import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -56,7 +57,7 @@ function raw(base, method, pathAndQuery, { body = null, headers = {} } = {}) {
 const status = (id, value, extra = {}) => ({ id, status: value, timestamp: String(Math.floor(Date.parse("2026-11-03T09:05:00+03:00") / 1000)), recipient_id: "905370000001", ...extra });
 
 /** Program + kapıcı + sahte Meta; kapıcının tünel iletimi kayda alınır (programa geçen başlıklar). */
-async function kurulum() {
+async function kurulum(extra = {}) {
   const clock = createClock({ time: "2026-11-03T09:00:00+03:00", fixed: true });
   const lisans = lisansAnahtari();
   const belirtec = () => lisans.belirtec({ at: clock.ms(), machine: MACHINE, licenseId: "LIS-W9-TEST" });
@@ -87,6 +88,7 @@ async function kurulum() {
       whatsappTimeoutMs: 800,
       whatsappGapMs: 0,
       tunnel: { enabled: false, tickMs: 3_600_000, firstTickMs: 3_600_000 },
+      ...extra,
     });
     await server.app.license.activateKey("DO-ABCDE-FGHJK-MNPQR-STVWX");
     const sync = server.app.mobileSync;
@@ -440,4 +442,50 @@ describe("2.4.8 W9 — tünel kuralı: WhatsApp bağlıyken de açık (plan §6 
       rmSync(dir, { recursive: true, force: true });
     }
   });
+});
+
+// 2.4.8 İş P3: şirket dosyası kilitliyken durum bildirimi 10 sn beklemez — kısa sınama kilidi görür, program 503 döner (Meta yeniden dener; kapıcı programın JSON 503'ünü
+// olduğu gibi geçirir — bulut/kapi/kapi.mjs waKanca yalnız JSON olmayan 530/502/504'ü "ofis kapalı"ya çevirir). Kilit kalkınca aynı bildirim 200 + yazılır.
+describe("2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kapıcı geçirir), kilit kalkınca yazılır", () => {
+  // c2 (İş P1): makine defteri (whatsapp-gonderim.sqlite) kilitli olunca da aynı (durumlar deftere de yazılır).
+  for (const [label, fileOf] of [["şirket dosyası", ctx => ctx.server.app.config.dbPath], ["makine defteri", ctx => ctx.wa.ledger.file]]) {
+  it(`${label} kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi`, { timeout: 120_000 }, async () => {
+    const ctx = await kurulum({ __testWriteLockBackoffMs: 300 });
+    let lock = null;
+    try {
+      await ctx.register();
+      const secret = ctx.secret();
+      const res = await ctx.api.post(URLS.batches, { kind: "statement", ids: [await account(ctx, "Kilit Kanca", "0537 000 00 01")], preset: "thisMonth" });
+      assert.equal(res.status, 200, JSON.stringify(res.data));
+      const batchId = res.data.data.batch.id;
+      await ctx.drain();
+      const job = (await ctx.detail(batchId)).jobs[0];
+      assert.equal(job.state, "accepted", "ön koşul: kabul");
+      const body = statusEvent([status(job.wamid, "delivered")]);
+      lock = new DatabaseSync(fileOf(ctx));
+      lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
+      const t0 = Date.now();
+      const busy = await ctx.meta("POST", `/wa/kanca/${secret}`, { body });
+      const ms = Date.now() - t0;
+      assert.equal(busy.status, 503, `kilitte 503 (geldi ${busy.status} ${busy.text})`);
+      assert.ok(ms <= 2_000, `kilitte bildirim yanıtı ≤ 2 sn (geldi ${ms} ms)`);
+      lock.exec("ROLLBACK");
+      lock.close();
+      lock = null;
+      await new Promise(resolve => setTimeout(resolve, 400)); // işaret süresi (300 ms) dolsun
+      assert.equal(ctx.store.get("SELECT state FROM wa_jobs WHERE id = ?", job.id).state, "accepted", "kilitte iş değişmedi");
+      const again = await ctx.meta("POST", `/wa/kanca/${secret}`, { body });
+      assert.equal(again.status, 200, again.text);
+      assert.equal((await ctx.detail(batchId)).jobs[0].state, "delivered", "kilit kalkınca Meta'nın yinelediği bildirim yazıldı");
+    } finally {
+      try {
+        lock?.exec("ROLLBACK");
+        lock?.close();
+      } catch {
+        // kilit zaten kalktı
+      }
+      await ctx.close();
+    }
+  });
+  }
 });

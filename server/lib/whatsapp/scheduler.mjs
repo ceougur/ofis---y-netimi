@@ -23,13 +23,30 @@ export function createWaScheduler({ gapMs = 1000, idleMs = 30_000, maintainMs = 
 
   // İş N (T6 Ü2): dosyası KİLİTLİ (SQLITE_BUSY / LOCKED) şirketin kimlikleri — her yazım denemesi busy_timeout (10 sn) boyunca olay döngüsünü tutar; bakım turunda kilide
   // takılan şirketin işi AYNI turda yürütülmez (bir sonraki turda yeniden denenir).
+  // İş R2 (dar kontrol 12): şirket o turda yazılabilir mi — tur sürerken kuyruktan çıkmış (silinen / geri yüklenen / kapanan şirket) ya da sınaması fırlatan şirket
+  // o turda atlanır, ÖBÜR şirketlerin bakımı ve işi sürer (önce kapalı veri tabanındaki sınama bütün turu düşürüyordu).
+  function writable(key, queue) {
+    if (queues.get(key) !== queue) return false;
+    try {
+      return queue.canWrite?.() !== false;
+    } catch (error) {
+      log.warn?.(`WhatsApp işçisi: şirket (${key}) bu turda yazılamıyor (${error?.code || error?.message || error}); öbür şirketler sürer.`);
+      return false;
+    }
+  }
   async function maintainAll() {
     const locked = new Set();
     for (const [key, queue] of [...queues.entries()]) {
+      // İş P1: şirket dosyası kilitli (işaretli ya da kısa sınama) → bakım ve iş o turda yok, olay döngüsü tutulmaz.
+      if (!writable(key, queue)) {
+        locked.add(key);
+        continue;
+      }
       try {
         await queue.maintain();
       } catch (error) {
         if (isLockError(error)) {
+          queue.markLocked?.();
           locked.add(key);
           log.warn?.(`WhatsApp bakım turu: şirket dosyası kilitli (${key}); bu turda iş yürütülmez.`);
         } else log.error?.("WhatsApp bakım turu çalışmadı", error);
@@ -50,7 +67,7 @@ export function createWaScheduler({ gapMs = 1000, idleMs = 30_000, maintainMs = 
     for (let i = 0; i < order.length; i += 1) {
       const key = order[(cursor + i) % order.length];
       const queue = queues.get(key);
-      if (!queue || locked.has(key)) continue;
+      if (!queue || locked.has(key) || !writable(key, queue)) continue;
       let result;
       try {
         result = await queue.step();

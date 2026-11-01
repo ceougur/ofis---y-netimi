@@ -1,0 +1,43 @@
+{
+  "ad": "248-dkRfix-mutasyon-mR7-teslim-sonrasi-uygulanir-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs",
+  "commit": "0213f1e80a41bfb7fa46f3cfd6b1cf5dc66c8682",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 52,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T22:42:57.173Z",
+  "sure_sn": 5.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 7,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › imzalı 'delivered' → kişi 'Daha Önce Gönderildi', Bu Ay Gönderilen 1; yeni gönderim kişiye ikinci ileti göndermez",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:40:3",
+      "hata": "teslimden sonra gelen failed uygulanmaz (geldi {\"applied\":1,\"ignored\":0,\"unknown\":0}) · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › R7 gerileme: teslimden sonra gelen failed (iş dosyada yok) yok sayılır; kişi Daha Önce Gönderildi kalır",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:153:3",
+      "hata": "teslimden sonra failed uygulanmaz (geldi {\"applied\":1,\"ignored\":0,\"unknown\":0}) · 1 !== 0 (beklenen 0, gelen 1)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkRfix-mutasyon-mR7-teslim-sonrasi-uygulanir-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "4fba75fdeba433222b6576c54bd3e913fa1e1cb5afe10b0da4a3528a47b0829e",
+  "ham_cikti_bayt": 5383
+}

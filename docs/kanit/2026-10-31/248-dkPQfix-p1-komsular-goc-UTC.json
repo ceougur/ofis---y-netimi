@@ -1,0 +1,32 @@
+{
+  "ad": "248-dkPQfix-p1-komsular-goc-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/dataset.test.mjs test/sheets-yedek.test.mjs test/banka-220-pos-kuyruk.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-pos-moduller.test.mjs test/chat-archive.test.mjs test/chat.test.mjs test/documents.test.mjs test/sessions.test.mjs test/banka-210-gg-tarama.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-kapi.test.mjs test/tunel-saat-247.test.mjs test/mobil-247.test.mjs test/mobil-deneme-bitis-247.test.mjs test/mobil-eslesme-247.test.mjs test/mobil-gg247-b2.test.mjs test/mobil-gg247-b2b.test.mjs test/mobil-gg247-b5.test.mjs test/mobil-kapi-lisans-yineleme-248.test.mjs test/mobil-karekod-248.test.mjs test/mobil-l1-kahin-f1-248.test.mjs test/mobil-l1-kahin-f6-248.test.mjs test/mobil-lisans-hosgoru-248.test.mjs test/mobil-ofis-kaydi-247.test.mjs test/mobil-ozet-247.test.mjs test/mobil-ozet-olcek-247.test.mjs test/mobil-yazma-247.test.mjs test/backup.test.mjs test/migrations.test.mjs test/whatsapp-w2-veri-248.test.mjs test/goc-246-iade-bagi.test.mjs test/guvenilirlik-221-goc.test.mjs",
+  "commit": "5157413e158769650f51096903ed654362fbe42b",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 179,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T20:51:53.414Z",
+  "sure_sn": 135.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 260,
+    "gecen": 260,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-p1-komsular-goc-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "53d6defb9ef3ae08279149a4ccaab0e8bc1af979e1d4ca1c17d00e40a9938ce3",
+  "ham_cikti_bayt": 98901
+}

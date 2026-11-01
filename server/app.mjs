@@ -87,6 +87,7 @@ import { registerMobileTunnelRoutes } from "./routes/mobile-tunnel.mjs";
 import { attachTunnel } from "./lib/tunnel/attach.mjs";
 import { createWhatsappHub } from "./lib/whatsapp/hub.mjs";
 import { createWhatsappHook, isHookRequest } from "./lib/whatsapp/hook.mjs";
+import { createWriteLock } from "./lib/write-lock.mjs";
 
 function ensureInitialAdmin(store, config, log) {
   if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", config.adminUsername)) return;
@@ -259,6 +260,9 @@ export function createApp(overrides = {}) {
   // (cari, kasa, fatura, sıfırlama…) iletilmez: her şirket kendi verisinin olayını kendi kanalında yayınlar.
   const unbridgeHubEvents = hub?.events ? hub.events.tap((event, data, target) => isSharedEvent(event, data) && events.publish(event, data, target)) : null;
   const chat = createChat({ store, events, audit, roles: access });
+  // 2.4.8 İş P1 (lib/write-lock.mjs): arka plan işleri kilitli şirket dosyasına yazmayı denemez (olay döngüsü tutulmaz). __testWriteLock* yalnız test oluşturucusundan.
+  const writeLock = createWriteLock({ probe: overrides.__testWriteLockProbe !== false, ...(Number.isFinite(overrides.__testWriteLockBackoffMs) ? { backoffMs: overrides.__testWriteLockBackoffMs } : {}) });
+  const canWriteInBackground = () => writeLock.guard(companyId, store);
   // 30 günden eski sohbet mesajları veri klasöründeki mesaj-arsivi/ klasörüne taşınır (v2.0.2).
   const chatArchive = createChatArchive({ store, dir: path.join(config.dataDir, "mesaj-arsivi"), log });
   // Lisans (Faz 3): süresi dolan, engellenen veya doğrulanamayan kurulum salt okunur çalışır. Veri eşitlemesi de
@@ -280,7 +284,8 @@ export function createApp(overrides = {}) {
     bank,
     autoSync: config.datasetAutoSync,
     tickMs: config.datasetTickMs,
-    canWrite: () => !license || license.writable(),
+    // İş P1: zamanlanmış eşitleme kilitli dosyada o tur atlanır (kullanıcının "Şimdi Eşitle"si bu denetimden geçmez).
+    canWrite: () => (!license || license.writable()) && canWriteInBackground(),
   });
   clientState.useDataset(() => dataset.info());
   // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
@@ -334,6 +339,8 @@ export function createApp(overrides = {}) {
   };
   const context = {
     closeLive,
+    writeLock,
+    canWriteInBackground,
     config, log, store, bank, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, companies, companyId, company: () => companies.get(companyId),
     // İş saati (v2.1.0; lib/clock.mjs): modüller "bugün"ü ve zaman damgalarını buradan okur (config.now; testlerde sahte saat).
     now: config.now,
@@ -429,6 +436,8 @@ export function createApp(overrides = {}) {
   context.integrity.scanMinutes = INTEGRITY_SCAN_MINUTES;
   // Gözden geçirme B7: tarama ayrı iş parçacığında (salt okunur bağlantı); veri, gün ve kilit değişmediyse atlanır.
   context.integrity.scanTimer = overrides.integrityScan === false ? null : setInterval(() => {
+    // İş P1: tarama sapma bulursa integrity_log'a yazar — kilitli dosyada o tur atlanır.
+    if (!canWriteInBackground()) return;
     context.integrity.scanInBackground().catch(error => log.error?.("Mutabakat taraması çalışmadı", error));
   }, INTEGRITY_SCAN_MINUTES * 60_000);
   context.integrity.scanTimer?.unref?.();
@@ -436,7 +445,7 @@ export function createApp(overrides = {}) {
   // (b) 15 dakikada bir (unref; kapanışta durur); (f) "Şimdi Aktar" ve (g) dönem kilidi öncesi uçlarda; (d) ortak katmanda günde bir: bu süreçte
   // açılmamış şirketin veri dosyasında vadesi gelmiş POS kalemi varsa şirket açılır (açılış kendi kuyruğunu çalıştırır). Gün dönümü (c) 15
   // dakikalık turla karşılanır (karar). Kuyruk açılışı beklemez (setImmediate).
-  const posQueue = createPosQueue({ pos: () => context.bankAccounts?.pos, log });
+  const posQueue = createPosQueue({ pos: () => context.bankAccounts?.pos, log, canWrite: canWriteInBackground });
   context.posQueue = posQueue;
   if (hub && overrides.posQueue !== false) setImmediate(() => posQueue.start());
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
@@ -559,7 +568,9 @@ export function createApp(overrides = {}) {
       const file = resolveDbPath(dirs.dataDir);
       if (!existsSync(file)) {
         const fresh = existsSync(dirs.dataDir) && readdirSync(dirs.dataDir).length === 0 && !store.setting(openedKey, "");
-        if (!fresh) throw new Error(`veri dosyası bulunamadı: ${file}`);
+        // İş V1 (dar kontrol 16) + X2 (dar kontrol 17): sürüp giden yokluk — kancanın "kalıcı açılamama" ayrımı bu alana bakar (geri yükleme / Ayır sırasında
+        // busyCompanies önce yanıt verir). İşaret `code`'a KONMAZ: ekran iletisi (dispatch) code'u gösterir, Türkçe neden + dosya yolu kalsın.
+        if (!fresh) throw Object.assign(new Error(`veri dosyası bulunamadı: ${file}`), { dataMissing: true });
       }
       mkdirSync(dirs.dataDir, { recursive: true });
       child = createApp({
@@ -640,7 +651,7 @@ export function createApp(overrides = {}) {
     return dispatchApp(req, res);
   };
   // 2.4.7 M3 (lib/mobile-sync.mjs; docs/mobil/M3-TASARIM.md): şifreli özet üreticisi + kapıcıya yükleyici (ortak katmanda tek örnek; kapıcı adresi yoksa dış istek yok).
-  context.mobileSync = hub ? hub.mobileSync : mobileSyncFromConfig({ store, license, mobileRemote: context.mobileRemote, dispatch, config, log });
+  context.mobileSync = hub ? hub.mobileSync : mobileSyncFromConfig({ store, license, mobileRemote: context.mobileRemote, dispatch, config, log, canWrite: canWriteInBackground });
   // 2.4.8 L1 kâhin F1: lisans durumu değişince kapıcıya hemen bildirilir (engelin başlangıcı kapıcıda o an; lib/mobile-sync.mjs lisansDegisti).
   if (!hub) events.tap(event => event === "license.changed" && context.mobileSync?.lisansDegisti?.());
   const dispatchApp = (req, res) => {
@@ -803,6 +814,8 @@ export function createApp(overrides = {}) {
   if (overrides.alertScheduler !== false) alertScheduler.start();
   auth.purgeExpiredSessions();
   const sessionTimer = setInterval(() => {
+    // İş P1: kilitli dosyada oturum temizliği o tur atlanır (saatte bir yeniden).
+    if (!canWriteInBackground()) return;
     auth.purgeExpiredSessions();
     if (!hub) {
       try {
@@ -814,7 +827,20 @@ export function createApp(overrides = {}) {
   }, 3_600_000);
   sessionTimer.unref();
   // Sohbet arşivi: açılıştan kısa süre sonra ve 6 saatte bir (v2.0.2).
+  let archiveRetried = false;
+  let archiveRetry = null; // İş R1: yeniden deneme zamanlayıcısı tutulur, close() siler
   const archiveChat = () => {
+    archiveRetry = null;
+    if (closed) return; // İş R1: kapanmış örnekte arşiv çalışmaz
+    // İş P1: kilitli dosyada arşiv o tur atlanır (6 saatte bir yeniden; açılış turu kilitteyse 30 sn sonra bir kez daha denenir).
+    if (!canWriteInBackground()) {
+      if (!archiveRetried) {
+        archiveRetried = true;
+        archiveRetry = setTimeout(archiveChat, writeLock.backoffMs);
+        archiveRetry.unref?.();
+      }
+      return;
+    }
     try {
       chatArchive.run();
     } catch (error) {
@@ -1020,6 +1046,7 @@ export function createApp(overrides = {}) {
       clearInterval(context.integrity?.scanTimer);
       clearTimeout(archiveStart);
       clearInterval(archiveTimer);
+      clearTimeout(archiveRetry);
       alertScheduler.stop();
       // Oturum sınırlayıcı ve lisans ortak katmanın: şirket örneği kapanırken (geri yükleme, silme) durdurulmaz
       // (v2.0.17'de şirket silinince ilk şirketin lisans denetimi de duruyordu).

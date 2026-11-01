@@ -1,0 +1,32 @@
+{
+  "ad": "248-dkTfix-ek-dar-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /home/user/wt-t2fix-248/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs",
+  "commit": "e5d8baf77a9ace82d0ffec2d7890317f308fec1c",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T01:43:29.189Z",
+  "sure_sn": 52.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 64,
+    "gecen": 64,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkTfix-ek-dar-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "70aad859e6734c8c032088f2b725ed05715a435c92bdfb9902c071f27857e5d1",
+  "ham_cikti_bayt": 22146
+}

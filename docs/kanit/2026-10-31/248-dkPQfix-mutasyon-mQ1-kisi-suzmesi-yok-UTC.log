@@ -1,0 +1,138 @@
+TAP version 13
+# Subtest: 2.4.8 İş L5 — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri = özel aralık → aynı dönem (7 gün penceresiyle)
+    # Subtest: 03.11 Son 3 Ay gönderildi → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 (8 gün) 'gönderilecek'; tarihleri farklı özel aralık ayrı
+    ok 1 - 03.11 Son 3 Ay gönderildi → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 (8 gün) 'gönderilecek'; tarihleri farklı özel aralık ayrı
+      ---
+      duration_ms: 619.27951
+      type: 'test'
+      ...
+    # Subtest: ters yön: 03.11 özel 01.09–03.11 gönderildi → aynı gün Son 3 Ay 'Daha Önce Gönderildi'; 05.11 Son 3 Ay (01.09–05.11) ayrı
+    ok 2 - ters yön: 03.11 özel 01.09–03.11 gönderildi → aynı gün Son 3 Ay 'Daha Önce Gönderildi'; 05.11 Son 3 Ay (01.09–05.11) ayrı
+      ---
+      duration_ms: 468.374235
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta (iki yön): 03.11 Son 3 Ay işi sırada → 05.11 özel 01.09–03.11 'Zaten Kuyrukta'; 03.11 özel işi sırada → aynı gün Son 3 Ay 'Zaten Kuyrukta'
+    ok 3 - Zaten Kuyrukta (iki yön): 03.11 Son 3 Ay işi sırada → 05.11 özel 01.09–03.11 'Zaten Kuyrukta'; 03.11 özel işi sırada → aynı gün Son 3 Ay 'Zaten Kuyrukta'
+      ---
+      duration_ms: 869.900788
+      type: 'test'
+      ...
+    # Subtest: Sonucu Belirsiz: 03.11 Son 3 Ay belirsiz → 05.11 özel 01.09–03.11 'Sonucu Belirsiz'; 11.11 (8 gün) elemez
+    ok 4 - Sonucu Belirsiz: 03.11 Son 3 Ay belirsiz → 05.11 özel 01.09–03.11 'Sonucu Belirsiz'; 11.11 (8 gün) elemez
+      ---
+      duration_ms: 425.742244
+      type: 'test'
+      ...
+    # Subtest: taşınan veri: 03.11 Son 3 Ay kabul → defter olmadan taşındı → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 'gönderilecek'
+    ok 5 - taşınan veri: 03.11 Son 3 Ay kabul → defter olmadan taşındı → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 'gönderilecek'
+      ---
+      duration_ms: 521.841275
+      type: 'test'
+      ...
+    1..5
+ok 1 - 2.4.8 İş L5 — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri = özel aralık → aynı dönem (7 gün penceresiyle)
+  ---
+  duration_ms: 2907.737208
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem
+    # Subtest: 03.11 Tüm Hareketler P ve Q'ya → 05.11 özel 15.10–03.11: P 'Daha Önce Gönderildi' (iletideki dönem), Q 'gönderilecek' (Q'nun dönemi 20.10–03.11); 11.11 pencere dışı
+    ok 1 - 03.11 Tüm Hareketler P ve Q'ya → 05.11 özel 15.10–03.11: P 'Daha Önce Gönderildi' (iletideki dönem), Q 'gönderilecek' (Q'nun dönemi 20.10–03.11); 11.11 pencere dışı
+      ---
+      duration_ms: 638.840722
+      type: 'test'
+      ...
+    # Subtest: ters yön: 05.11 özel 15.10–05.11 P'ye gönderildi → aynı gün Tüm Hareketler 'Daha Önce Gönderildi' (Q gönderilecek); 06.11 Tüm (15.10–06.11) ayrı
+    ok 2 - ters yön: 05.11 özel 15.10–05.11 P'ye gönderildi → aynı gün Tüm Hareketler 'Daha Önce Gönderildi' (Q gönderilecek); 06.11 Tüm (15.10–06.11) ayrı
+      ---
+      duration_ms: 442.669365
+      type: 'test'
+      ...
+    # Subtest: kişi başına süzme: Q'ya P'nin Tüm dönemiyle aynı tarihli özel aralık (15.10–05.11) gitti / belirsiz kaldı → 05.11 Tüm Hareketler'de Q elenmez (Q'nun dönemi 20.10–05.11)
+    not ok 3 - kişi başına süzme: Q'ya P'nin Tüm dönemiyle aynı tarihli özel aralık (15.10–05.11) gitti / belirsiz kaldı → 05.11 Tüm Hareketler'de Q elenmez (Q'nun dönemi 20.10–05.11)
+      ---
+      duration_ms: 419.832221
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        P'nin anahtarı Q'nun talebini eşlemez
+        + actual - expected
+        
+          [
+            'gönderilecek',
+        +   'Daha Önce Gönderildi'
+        -   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'gönderilecek'
+        1: 'gönderilecek'
+      actual:
+        0: 'gönderilecek'
+        1: 'Daha Önce Gönderildi'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:85:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: b1b: aynı gün (Excel yükleme günü) açılmış 3 cariye 03.11 Tüm → 05.11 özel 15.10–03.11 toplu: üçü de elenir, ikinci ileti yok (önce 6 ileti)
+    ok 4 - b1b: aynı gün (Excel yükleme günü) açılmış 3 cariye 03.11 Tüm → 05.11 özel 15.10–03.11 toplu: üçü de elenir, ikinci ileti yok (önce 6 ileti)
+      ---
+      duration_ms: 565.388928
+      type: 'test'
+      ...
+    # Subtest: hareketsiz cari eşleşmez: Tüm Hareketler (iletide 03.11 – 03.11) → 05.11 özel 03.11–03.11 'gönderilecek'
+    ok 5 - hareketsiz cari eşleşmez: Tüm Hareketler (iletide 03.11 – 03.11) → 05.11 özel 03.11–03.11 'gönderilecek'
+      ---
+      duration_ms: 399.356961
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta: Tüm işi sırada → aynı tarihli özel aralık 'Zaten Kuyrukta' (Q gönderilecek)
+    ok 6 - Zaten Kuyrukta: Tüm işi sırada → aynı tarihli özel aralık 'Zaten Kuyrukta' (Q gönderilecek)
+      ---
+      duration_ms: 391.549844
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta ters yön: özel 15.10–03.11 işi sırada → aynı gün Tüm 'Zaten Kuyrukta' (Q gönderilecek)
+    ok 7 - Zaten Kuyrukta ters yön: özel 15.10–03.11 işi sırada → aynı gün Tüm 'Zaten Kuyrukta' (Q gönderilecek)
+      ---
+      duration_ms: 409.351177
+      type: 'test'
+      ...
+    # Subtest: Sonucu Belirsiz: Tüm belirsiz → ertesi gün aynı tarihli özel aralık 'Sonucu Belirsiz' (Q gönderilecek)
+    ok 8 - Sonucu Belirsiz: Tüm belirsiz → ertesi gün aynı tarihli özel aralık 'Sonucu Belirsiz' (Q gönderilecek)
+      ---
+      duration_ms: 492.631272
+      type: 'test'
+      ...
+    # Subtest: taşınan veri (defter yok): eski bilgisayarda 03.11 Tüm P'ye kabul → yeni bilgisayarda 05.11 özel 15.10–03.11 'Daha Önce Gönderildi', Q 'gönderilecek'
+    ok 9 - taşınan veri (defter yok): eski bilgisayarda 03.11 Tüm P'ye kabul → yeni bilgisayarda 05.11 özel 15.10–03.11 'Daha Önce Gönderildi', Q 'gönderilecek'
+      ---
+      duration_ms: 569.420467
+      type: 'test'
+      ...
+    1..9
+not ok 2 - 2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem
+  ---
+  duration_ms: 4331.35932
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:48:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 14
+# suites 2
+# pass 13
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8008.557034

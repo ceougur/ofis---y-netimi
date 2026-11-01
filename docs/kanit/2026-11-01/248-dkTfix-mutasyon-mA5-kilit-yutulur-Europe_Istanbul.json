@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkTfix-mutasyon-mA5-kilit-yutulur-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut/test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": "b8c8ea63179a94f3395f9d0e150542a477bd5425",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 26,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T01:07:08.112Z",
+  "sure_sn": 30.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 41,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0c ön sınamadan SONRA dosya yazımı kilide takılır → 503, defter önce yazıldı; Meta'nın yinelemesi tamamlar, Bu Ay 1 (eşgüçlü)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:657:3",
+      "hata": "yazım kilitte 503 (geldi 200 {\"ok\":true}) · 200 !== 503 (beklenen 503, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkTfix-mutasyon-mA5-kilit-yutulur-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "249d3bf3791afa73b95824a758c266a1d9262346bde0f55c07bc51e977395a95",
+  "ham_cikti_bayt": 14792
+}

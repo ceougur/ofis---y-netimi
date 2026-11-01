@@ -1,0 +1,21 @@
+#!/bin/bash
+# Gerçek süreçli kilit ölçümü (T6 c-kilitli-dosya, wt-t56b-248 test/t6-248 betikleri) + e3b medya bakımı: eski 05c17618 (P1 öncesi) ve yeni HEAD; sırayla (ders 15).
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2
+W=/home/user/wt-t2fix-248
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+for kod in eski-05c17618 yeni-HEAD; do
+  commit=${kod#*-}
+  kok=$K/olc-$kod
+  rm -rf -- "${kok:?}"; mkdir -p $kok
+  git -C $W archive $commit | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules
+  mkdir -p $kok/test/t6-248 && cp /home/user/wt-t56b-248/test/t6-248/{c-kilitli-dosya.mjs,ortak.mjs,cocuk.mjs} $kok/test/t6-248/
+  mkdir -p $K/t6kok-$kod
+  T6_KOK=$K/t6kok-$kod node tools/kanit.mjs kos 248-dkPQfix-olcum-c-kilitli-dosya-$kod -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=600000 $kok/test/t6-248/c-kilitli-dosya.mjs > $K/olc-c-$kod.out 2>&1
+  echo "c $kod çıkış=$? $(grep '\[kanit\]' $K/olc-c-$kod.out | tail -1 | cut -c1-160)"
+  grep -E "# T6c" $K/olc-c-$kod.out | cut -c1-600
+  node tools/kanit.mjs kos 248-dkPQfix-olcum-e3b-medya-bakim-$kod -- node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk11-inc-betik/e3b-medya-bakim-http.mjs $kok > $K/olc-e3b-$kod.out 2>&1
+  echo "e3b $kod çıkış=$?"; grep "# E3" $K/olc-e3b-$kod.out | cut -c1-900
+  rm -rf -- "${kok:?}" "${K:?}/t6kok-$kod"
+done
+echo OLCUM-BITTI

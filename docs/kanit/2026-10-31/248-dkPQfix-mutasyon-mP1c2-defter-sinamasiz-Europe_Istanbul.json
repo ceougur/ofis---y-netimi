@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkPQfix-mutasyon-mP1c2-defter-sinamasiz-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/write-lock-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-w9-kanca-248.test.mjs",
+  "commit": "5157413e158769650f51096903ed654362fbe42b",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 165,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T20:33:31.152Z",
+  "sure_sn": 26.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 17,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş P1 — kilitli şirket dosyasında arka plan işleri olay döngüsünü tutmaz › c2: makine defteri (whatsapp-gonderim.sqlite) kilitliyken de işçi turları ≤ 1 sn, ileti gitmez; kilit kalkınca iş gider, çift ileti yok",
+      "konum": "test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:60:3",
+      "hata": "defter kilitliyken her işçi turu ≤ 1 sn (turlar [10045,2,1] ms) (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-mutasyon-mP1c2-defter-sinamasiz-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "ffa74dec73527f3455c7450a632a4eeecdc583c1cd61aa84b700359c33f24e5a",
+  "ham_cikti_bayt": 9978
+}

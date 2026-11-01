@@ -1,0 +1,48 @@
+{
+  "ad": "248-dkRfix-mutasyon-mR3-defter-turu-yok-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs",
+  "commit": "0213f1e80a41bfb7fa46f3cfd6b1cf5dc66c8682",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 30,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T22:40:28.663Z",
+  "sure_sn": 23.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 4,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş R3 — makine defteri kilidinde ekranda neden › kalıcı defter kilidi: ayrıntı + liste + canlı olay defter cümlesi; 6 turda not sürekli, toplu iş Sürüyor, ileti yok; kilit kalkınca not kalkar, tek ileti",
+      "konum": "test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:202:3",
+      "hata": "her turda Sürüyor + defter cümlesi (ayrıntı ve liste) (geldi [[\"running\",null,null],[\"running\",null,null],[\"running\",null,null],[\"running\",null,null],[\"running\",null,null],[\"running\",null,null]]) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş R3 — makine defteri kilidinde ekranda neden › iki kilit birden → şirket cümlesi (defter önce kilitlenmiş olsa da); Duraklatıldı işte not yok",
+      "konum": "test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:238:3",
+      "hata": "defter kilidi: süren işte defter cümlesi, duraklatılmışta yok · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş R3 — makine defteri kilidinde ekranda neden › defter kilidi tur İÇİNDE (talep anında) başlar → iş Bekliyor, not defter cümlesi (şirket cümlesi değil)",
+      "konum": "test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:261:3",
+      "hata": "iş Bekliyor + defter cümlesi (geldi [\"pending\",null]) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkRfix-mutasyon-mR3-defter-turu-yok-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "4bda917efdccf1aeccd2dd16961a655a1783331211a3700fe38ffdd5705d0192",
+  "ham_cikti_bayt": 7362
+}

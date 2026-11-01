@@ -1,0 +1,37 @@
+#!/bin/bash
+# İş V kanıt sürücüsü 2 (sağ çıkan mutasyonların hücreleri eklendikten sonra, HEAD): tablo + U5 iki TZ, eski kod dc467f1c, üç mutasyon yeniden.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos
+SP=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad
+W=/home/user/wt-t2fix-248
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+T="whatsapp-t-durum-karar-tablosu-248.test.mjs whatsapp-u5-teslim-denemesi-gocu-248.test.mjs"
+kos() {
+  local ad=$1 kok=$2; shift 2
+  local files=(); for f in "$@"; do files+=("$kok/test/$f"); done
+  for tz in UTC Europe/Istanbul; do
+    local out=$K/kos-$ad-${tz//\//_}.out
+    TZ=$tz node tools/kanit.mjs kos "$ad-${tz//\//_}" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 "${files[@]}" > $out 2>&1
+    echo "$ad $tz çıkış=$? $(grep '\[kanit\]' $out | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-100)"
+    grep -E "^    not ok|^  not ok" $out | cut -c1-110 | sed 's/^/      /'
+  done
+}
+echo "== YENİ KOD (tablo + U5)"
+kos 248-dkVfix-tablo2 $W $T
+echo "== ESKİ KOD dc467f1c (güncel tablo)"
+kok=$SP/v-eski2-dc467f1c
+rm -rf -- "${kok:?}"; mkdir -p $kok
+git -C $W archive dc467f1c | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules
+for f in $T; do cp $W/test/$f $kok/test/$f; done
+kos 248-dkVfix-eski2-dc467f1c $kok $T
+rm -rf -- "${kok:?}"
+echo "== MUTASYONLAR (yeniden)"
+mk=$K/mut-v2
+rm -rf -- "${mk:?}"; mkdir -p $mk && git -C $W archive HEAD | tar -x -C $mk && rm -rf -- "$mk/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $mk/node_modules
+for m in mV1-kalici-genis mV4-dal-teslimi-yazmaz mE-u2-tasinan-satir-yolu-yok mC-settle-tekil-denetimi-yok mG-u4-kabul-ani-simdi; do
+  rm -rf -- "$mk/server" && git -C $W archive HEAD server | tar -x -C $mk
+  python3 $K/mut-v.py $mk $m || continue
+  kos "248-dkVfix-mutasyon2-$m" $mk $T
+done
+rm -rf -- "${mk:?}"
+echo BITTI

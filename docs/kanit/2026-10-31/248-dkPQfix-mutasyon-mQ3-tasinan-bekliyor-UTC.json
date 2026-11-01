@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkPQfix-mutasyon-mQ3-tasinan-bekliyor-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q3-tasinan-gonderiliyor-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-w2-surec-olumu-248.test.mjs",
+  "commit": "8faf4ca60d96b7654d631a355710a84e5d77343d",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 103,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T20:11:33.630Z",
+  "sure_sn": 4.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 2,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş Q3 — taşınan veride Gönderiliyor'da kalmış iş Sonucu Belirsiz › istek Meta'dayken süreç öldü, veri defter olmadan taşındı → iş Sonucu Belirsiz (deneme 1); yeni gönderim kişiyi eler (ikinci istek yok); Yine de Gönder gider",
+      "konum": "test/whatsapp-q3-tasinan-gonderiliyor-248.test.mjs:65:3",
+      "hata": "taşınan veride iş Sonucu Belirsiz, deneme korunur (geldi {\"id\":\"waj-bdbe48cf-b4ec-4fba-b67f-36c7ed1a0210\",\"accountId\":\"account-3ad2e8fb-f57a-4672-9beb-4378db3c2f46\",\"accountName\":\"Süreç Ölümü\",\"phone\":\"+905530000001\",\"state\":\"stopped\",\"stateLabel\":\"Durduruldu\",\"reason\":\"Taşınan Veri — Durduruldu: bu toplu gönderim bu bilgisayarın gönderim defterinde yok (veri başka bilgisayardan taşınmış olabilir); gönderilmemiş kişilere gönderilmedi.\",\"errorCode\":null,\"attempt\":0,\"nextAt\":null,\"pdfName\":\"Ekstre Süreç Ölümü 01.11.2026-03.11.2026.pdf\",\"params\":[\"Süreç Ölümü\",\"Örnek Ticaret\",\"01.11.2026 – 03.11.2026\",\"75,00 TL (Borçlu)\"],\"wamid\":\"\",\"acceptedAt\":null,\"sentAt\":null,\"deliveredAt\":null,\"readAt\":null,\"failedAt\":null,\"billable\":null,\"mediaDeleted\":false}) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-mutasyon-mQ3-tasinan-bekliyor-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "e0747110635373ffe842ef5f31685a018eb1c917b9d44f362caa794e8ca9f12e",
+  "ham_cikti_bayt": 3858
+}

@@ -1,0 +1,116 @@
+TAP version 13
+# Subtest: 2.4.8 W9 — kanca adresinin kaydı ve doğrulaması (Meta → kapıcı → tünel → program)
+    # Subtest: bakım turu adresi Meta'ya KENDİLİĞİNDEN kaydeder (bir kez); GET doğrulaması kapıcıdan geçer; yanlış belirteç 403, bilinmeyen gizli yol 404; düşen kayıt saatte bir yeniden; görünümde gizli değer YOK
+    ok 1 - bakım turu adresi Meta'ya KENDİLİĞİNDEN kaydeder (bir kez); GET doğrulaması kapıcıdan geçer; yanlış belirteç 403, bilinmeyen gizli yol 404; düşen kayıt saatte bir yeniden; görünümde gizli değer YOK
+      ---
+      duration_ms: 540.227885
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.4.8 W9 — kanca adresinin kaydı ve doğrulaması (Meta → kapıcı → tünel → program)
+  ---
+  duration_ms: 541.623248
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W9 — durum bildirimi (POST): imza, belirsizin çözümü, yinelenen / sırasız olay
+    # Subtest: imzasız (Yol 1) olay yalnız kaydındaki wamid'i yazar; Sonucu Belirsiz iş imzasız olayla ÇÖZÜLMEZ, yanlış imzayla çözülmez, DestekOfis sırrıyla imzalı + iş kimliğiyle çözülür; bilinmeyen / başka numaranın olayı düşer; gelen ileti saklanmaz; kapıcı Meta'nın başlıklarını geçirmez
+    ok 1 - imzasız (Yol 1) olay yalnız kaydındaki wamid'i yazar; Sonucu Belirsiz iş imzasız olayla ÇÖZÜLMEZ, yanlış imzayla çözülmez, DestekOfis sırrıyla imzalı + iş kimliğiyle çözülür; bilinmeyen / başka numaranın olayı düşer; gelen ileti saklanmaz; kapıcı Meta'nın başlıklarını geçirmez
+      ---
+      duration_ms: 555.426364
+      type: 'test'
+      ...
+    # Subtest: Yol 2 (WhatsApp'ı Bağla) bağlantısında imzasız bildirim REDDEDİLİR (401), DestekOfis sırrıyla imzalı kabul edilir
+    ok 2 - Yol 2 (WhatsApp'ı Bağla) bağlantısında imzasız bildirim REDDEDİLİR (401), DestekOfis sırrıyla imzalı kabul edilir
+      ---
+      duration_ms: 449.778273
+      type: 'test'
+      ...
+    1..2
+ok 2 - 2.4.8 W9 — durum bildirimi (POST): imza, belirsizin çözümü, yinelenen / sırasız olay
+  ---
+  duration_ms: 1005.783511
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W9 — kapıcı geçişinin sınırları ve tüneli atlatma
+    # Subtest: tünel yok → 503 kapi-ofis-kapali (Meta yeniden dener); gövde 3 MB üstü 413; işaretsiz / sahte işaretli doğrudan istek 401; programın Set-Cookie'si Meta'ya dönmez
+    ok 1 - tünel yok → 503 kapi-ofis-kapali (Meta yeniden dener); gövde 3 MB üstü 413; işaretsiz / sahte işaretli doğrudan istek 401; programın Set-Cookie'si Meta'ya dönmez
+      ---
+      duration_ms: 394.98407
+      type: 'test'
+      ...
+    # Subtest: kapi.<alan>/wa/meta (uygulamanın varsayılan kanca ucu): doğrulama belirteciyle GET, DestekOfis sırrıyla imzalı POST 200 (saklanmaz); imzasız / yanlış / sır tanımsız reddedilir
+    ok 2 - kapi.<alan>/wa/meta (uygulamanın varsayılan kanca ucu): doğrulama belirteciyle GET, DestekOfis sırrıyla imzalı POST 200 (saklanmaz); imzasız / yanlış / sır tanımsız reddedilir
+      ---
+      duration_ms: 11.631539
+      type: 'test'
+      ...
+    1..2
+ok 3 - 2.4.8 W9 — kapıcı geçişinin sınırları ve tüneli atlatma
+  ---
+  duration_ms: 406.957947
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W9 — tünel kuralı: WhatsApp bağlıyken de açık (plan §6 W9, S1 A)
+    # Subtest: eşli cihaz ve karekod YOKKEN: WhatsApp bağlı → tünel açılır; bağlı değil → kapalı (başvuru da yok); salt okunur lisansta WhatsApp bağlı olsa da kapalı
+    ok 1 - eşli cihaz ve karekod YOKKEN: WhatsApp bağlı → tünel açılır; bağlı değil → kapalı (başvuru da yok); salt okunur lisansta WhatsApp bağlı olsa da kapalı
+      ---
+      duration_ms: 117.280944
+      type: 'test'
+      ...
+    # Subtest: programda: belirteçli WhatsApp bağlantısı kaydedilince tünel yöneticisi tüneli ister; bağlantı kaldırılınca istemez (app.mjs → registry.anyConfigured)
+    ok 2 - programda: belirteçli WhatsApp bağlantısı kaydedilince tünel yöneticisi tüneli ister; bağlantı kaldırılınca istemez (app.mjs → registry.anyConfigured)
+      ---
+      duration_ms: 446.720384
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.4.8 W9 — tünel kuralı: WhatsApp bağlıyken de açık (plan §6 W9, S1 A)
+  ---
+  duration_ms: 564.684494
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kapıcı geçirir), kilit kalkınca yazılır
+    # Subtest: kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi
+    not ok 1 - kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi
+      ---
+      duration_ms: 10625.122316
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-P3-afa3fc01/test/whatsapp-w9-kanca-248.test.mjs:450:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kilitte 503 (geldi 500 {"ok":false,"code":"whatsapp-hook-error","error":"Bildirim işlenemedi; yeniden denenecek."})
+        
+        500 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 500
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-P3-afa3fc01/test/whatsapp-w9-kanca-248.test.mjs:468:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 5 - 2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kapıcı geçirir), kilit kalkınca yazılır
+  ---
+  duration_ms: 10626.541347
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-P3-afa3fc01/test/whatsapp-w9-kanca-248.test.mjs:449:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 8
+# suites 5
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13626.76625

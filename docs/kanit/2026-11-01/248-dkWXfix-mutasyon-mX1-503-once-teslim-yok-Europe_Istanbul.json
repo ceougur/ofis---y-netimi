@@ -1,0 +1,48 @@
+{
+  "ad": "248-dkWXfix-mutasyon-mX1-503-once-teslim-yok-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-wx/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-wx/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "2a72ed571a4ef0d442ef41f0603790498f9c5384",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 34,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T07:59:13.758Z",
+  "sure_sn": 81.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 97,
+    "gecen": 94,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0h2 sahibi DEFTERDE bilinen wamid · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503, yalnız defter YAZILMAZ; açılınca 200 ve satır Teslim (U6 koşul a)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1475:3",
+      "hata": "503'ten önce teslim defterde · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Kgecici şirket açılmamışken veri dosyası BAŞKA SÜREÇTE kilitli → 503 (geçici); kilit kalkınca yineleme 200 ve Teslim Edildi (V1 ii, V6 mD)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1583:3",
+      "hata": "İş X1 (BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Kbozuk şirket açılmamışken veri dosyası BOZUK (veri tabanı değil) → 503 (geçici; düzeltilince uygulanır); dosya düzelince yineleme 200 ve Teslim (V1 ii)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1607:3",
+      "hata": "İş X1 (dar kontrol 17 f1b; BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde — Meta bırakırsa da sayılır · false !== true (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkWXfix-mutasyon-mX1-503-once-teslim-yok-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "f58997b2de238d92b8b57470ad66f5e240d7eb1e9e9276f10b3455caf7490120",
+  "ham_cikti_bayt": 39776
+}

@@ -1,0 +1,289 @@
+TAP version 13
+# Subtest: 2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır
+    # Subtest: imzalı 'delivered' → kişi 'Daha Önce Gönderildi', Bu Ay Gönderilen 1; yeni gönderim kişiye ikinci ileti göndermez
+    ok 1 - imzalı 'delivered' → kişi 'Daha Önce Gönderildi', Bu Ay Gönderilen 1; yeni gönderim kişiye ikinci ileti göndermez
+      ---
+      duration_ms: 711.711376
+      type: 'test'
+      ...
+    # Subtest: imzalı 'failed' → teslim edilemedi: kişi elenmez, yeni gönderim gider
+    ok 2 - imzalı 'failed' → teslim edilemedi: kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 618.853798
+      type: 'test'
+      ...
+    # Subtest: İMZASIZ 'delivered' (P5 aynen) → düşer; kişi 'Daha Önce Gönderildi' sayılmaz
+    ok 3 - İMZASIZ 'delivered' (P5 aynen) → düşer; kişi 'Daha Önce Gönderildi' sayılmaz
+      ---
+      duration_ms: 479.647068
+      type: 'test'
+      ...
+    # Subtest: komşu: KABUL edilmiş iletinin işi sıfırlamayla silindikten sonra gelen geç 'delivered' (wamid defterde) Bu Ay Gönderilen'e yazılır; kişi yine Daha Önce Gönderildi
+    ok 4 - komşu: KABUL edilmiş iletinin işi sıfırlamayla silindikten sonra gelen geç 'delivered' (wamid defterde) Bu Ay Gönderilen'e yazılır; kişi yine Daha Önce Gönderildi
+      ---
+      duration_ms: 498.226607
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzalı failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 5 - R7: kabul → sıfırla → imzalı failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 511.130982
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzasız failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 6 - R7: kabul → sıfırla → imzasız failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 512.430542
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzalı failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 7 - R7: kabul → sıfırla → imzalı failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 513.867975
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzasız failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 8 - R7: kabul → sıfırla → imzasız failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 537.529892
+      type: 'test'
+      ...
+    # Subtest: R7 gerileme: teslimden sonra gelen failed (iş dosyada yok) yok sayılır; kişi Daha Önce Gönderildi kalır
+    ok 9 - R7 gerileme: teslimden sonra gelen failed (iş dosyada yok) yok sayılır; kişi Daha Önce Gönderildi kalır
+      ---
+      duration_ms: 515.670099
+      type: 'test'
+      ...
+    1..9
+ok 1 - 2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır
+  ---
+  duration_ms: 4901.171623
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim
+    # Subtest: (a) yedek iş Bekliyor'dayken → kabul → geri yükleme → imzasız failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+    not ok 1 - (a) yedek iş Bekliyor'dayken → kabul → geri yükleme → imzasız failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+      ---
+      duration_ms: 1010.203059
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:77:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        geç failed uygulandı (geldi {"applied":0,"ignored":0,"unknown":1})
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:83:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (a) yedek iş Bekliyor'dayken → kabul → geri yükleme → imzalı failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+    not ok 2 - (a) yedek iş Bekliyor'dayken → kabul → geri yükleme → imzalı failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+      ---
+      duration_ms: 875.419406
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:77:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        geç failed uygulandı (geldi {"applied":0,"ignored":0,"unknown":1})
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:83:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (a2) yedek Meta Bekletti'deyken → kabul → geri yükleme → imzasız failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+    not ok 3 - (a2) yedek Meta Bekletti'deyken → kabul → geri yükleme → imzasız failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+      ---
+      duration_ms: 791.539187
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:77:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        geç failed uygulandı (geldi {"applied":0,"ignored":0,"unknown":1})
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:83:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (a2) yedek Meta Bekletti'deyken → kabul → geri yükleme → imzalı failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+    not ok 4 - (a2) yedek Meta Bekletti'deyken → kabul → geri yükleme → imzalı failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+      ---
+      duration_ms: 812.108697
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:77:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        geç failed uygulandı (geldi {"applied":0,"ignored":0,"unknown":1})
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:83:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (a) delivered imzasız → Bu Ay Gönderilen 1, kişi Daha Önce Gönderildi; sonra gelen failed yok sayılır (§7a 18)
+    not ok 5 - (a) delivered imzasız → Bu Ay Gönderilen 1, kişi Daha Önce Gönderildi; sonra gelen failed yok sayılır (§7a 18)
+      ---
+      duration_ms: 805.090478
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:98:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geç teslim uygulandı (geldi {"applied":0,"ignored":0,"unknown":1})
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:103:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b) aynı bilgisayar: kabul dosyaya yazılamadı (Gönderiliyor) → imzasız failed 131026 → iş Başarısız, kişi elenmez; bakım sonra Meta Kabul Etti YAPMAZ
+    not ok 6 - (b) aynı bilgisayar: kabul dosyaya yazılamadı (Gönderiliyor) → imzasız failed 131026 → iş Başarısız, kişi elenmez; bakım sonra Meta Kabul Etti YAPMAZ
+      ---
+      duration_ms: 383.583487
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:115:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        bildirim uygulandı (geldi {"applied":0,"ignored":0,"unknown":1})
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:129:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b) aynı bilgisayar: kabul dosyaya yazılamadı (Gönderiliyor) → imzalı failed 131026 → iş Başarısız, kişi elenmez; bakım sonra Meta Kabul Etti YAPMAZ
+    ok 7 - (b) aynı bilgisayar: kabul dosyaya yazılamadı (Gönderiliyor) → imzalı failed 131026 → iş Başarısız, kişi elenmez; bakım sonra Meta Kabul Etti YAPMAZ
+      ---
+      duration_ms: 395.429662
+      type: 'test'
+      ...
+    # Subtest: (b) imzasız delivered → iş Teslim Edildi, accepted_at bildirimin anı (R4), Bu Ay 1
+    not ok 8 - (b) imzasız delivered → iş Teslim Edildi, accepted_at bildirimin anı (R4), Bu Ay 1
+      ---
+      duration_ms: 384.763303
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:141:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        uygulandı
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:152:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: koşul (a): istek Meta'dayken imzalı bildirim işi Teslim Edildi yaptı → yanıt gelince 'Meta Kabul Etti' EZMEZ, çift ileti yok
+    not ok 9 - koşul (a): istek Meta'dayken imzalı bildirim işi Teslim Edildi yaptı → yanıt gelince 'Meta Kabul Etti' EZMEZ, çift ileti yok
+      ---
+      duration_ms: 1231.103701
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:161:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        durum geriye gitmedi (Meta Kabul Etti ezmedi)
+        + actual - expected
+        
+          [
+        +   'accepted',
+        -   'delivered',
+            'wamid.SAHTE0001'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'delivered'
+        1: 'wamid.SAHTE0001'
+      actual:
+        0: 'accepted'
+        1: 'wamid.SAHTE0001'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:181:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: koşul (b): satır daha YENİ denemedeyse eski denemenin failed'ı hiçbir şey yapmaz (131049 → 2. deneme istek Meta'da)
+    ok 10 - koşul (b): satır daha YENİ denemedeyse eski denemenin failed'ı hiçbir şey yapmaz (131049 → 2. deneme istek Meta'da)
+      ---
+      duration_ms: 1213.114552
+      type: 'test'
+      ...
+    1..10
+not ok 2 - 2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim
+  ---
+  duration_ms: 7905.29573
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/eski-f1a4ed13/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:75:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 19
+# suites 2
+# pass 11
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13581.00494

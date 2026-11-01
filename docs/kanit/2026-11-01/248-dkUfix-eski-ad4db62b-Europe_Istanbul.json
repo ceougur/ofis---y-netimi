@@ -1,0 +1,133 @@
+{
+  "ad": "248-dkUfix-eski-ad4db62b-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/u5-eski-ad4db62b/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/u5-eski-ad4db62b/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "66b948c4afa690751993c926578a4017ab2d8590",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T02:59:19.178Z",
+  "sure_sn": 53.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 67,
+    "gecen": 47,
+    "basarisiz": 20,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T35 istek Meta'dayken toparlama denemeye 'uncertain' yazdı → yanıt gelince kabul öğrenilir (A7, K8); sonraki imzasız delivered uygulanır; Daha Önce",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:599:3",
+      "hata": "İş U4: satır da Meta Kabul Etti (belirsizlik metni temiz) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:630:5",
+      "hata": "geç teslim uygulandı · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T11 Başarısız (131026) · delivered → Teslim Edildi, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:649:5",
+      "hata": "Expected values to be strictly equal: · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç read → Okundu, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:630:5",
+      "hata": "geç teslim uygulandı · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T11 Başarısız (131026) · read → Okundu, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:649:5",
+      "hata": "Expected values to be strictly equal: · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · delivered → yalnız defter SON denemeye; satır değişmez (U2)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:697:5",
+      "hata": "satır değişmez · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · failed → yalnız defter SON denemeye; satır değişmez (U2)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:697:5",
+      "hata": "satır değişmez · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (eski-once) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:744:5",
+      "hata": "yinelenen etkisiz · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (yeni-once) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:744:5",
+      "hata": "yinelenen etkisiz · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T35r GERÇEK yol: istek Meta'dayken yedek + geri yükleme (toparlama 'Sonucu Belirsiz' yazar) → yanıt gelince satır Meta Kabul Etti; aynı dönem Daha Önce; kişiye 1 ileti (U4)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:764:3",
+      "hata": "satır Meta Kabul Etti · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0g dosya yazımında KİLİT DIŞI hata — SQLITE_READONLY (salt okunur) → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:953:5",
+      "hata": "kilit dışı yazım hatası yutulmaz → 500 (geldi 200 {\"ok\":true}) · 200 !== 500 (beklenen 500, gelen 200)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0g dosya yazımında KİLİT DIŞI hata — SQLITE_FULL (disk dolu) → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:953:5",
+      "hata": "kilit dışı yazım hatası yutulmaz → 500 (geldi 200 {\"ok\":true}) · 200 !== 500 (beklenen 500, gelen 200)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T36 eşzamanlı kabul DEFTERE yazılamadı (dosyada Meta Kabul Etti + wamid) → onarılamazken gönderim başlatılmaz (503), imzasız teslim 6 dk sonra da tanınır; defter düzelince onarım: Daha Önce Gönderildi, kişiye 1 ileti (U6)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1009:3",
+      "hata": "s.ctx.wa.ledger.outcomeOf is not a function"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T36c talepten ÖNCE onarım: 1. kişinin kabulü deftere yazılamadı → defter düzelene dek 2. kişiye gönderilmez; düzelince ikisi de tek ileti (U6)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1036:3",
+      "hata": "onarılamazken 2. kişiye talep yazılmadı · 2 !== 1 (beklenen 1, gelen 2)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0h sahibi yalnız dosyada bulunan wamid (U6 onarım listesi) · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503; açılınca 200 ve uygulanır (U6)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1059:3",
+      "hata": "Expected values to be strictly equal: · 503 !== 200 (beklenen 200, gelen 503)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil şirket silinmiş (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1082:5",
+      "hata": "s.ctx.wa.ledger.deliveredAttempt is not a function"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil şirket veri dosyası yok (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1082:5",
+      "hata": "kalıcı açılamama → 200 (geldi 500 {\"ok\":false,\"code\":\"whatsapp-hook-busy\",\"error\":\"Şirket şu anda açılamıyor; bildirim yeniden denenecek.\"}) · 500 !== 200 (beklenen 200, gelen 500)"
+    },
+    {
+      "ad": "2.4.8 İş U5 — Bu Ay deneme başına teslim (göçsüz) › ad4db62b'nin gerçek defteri yeni kodla açılır: eski teslim 1 kez; aynı teslimin (aynı an) yinelenmesi çift saymaz; 2. denemenin teslimi ayrı (2)",
+      "konum": "test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs:31:3",
+      "hata": "ledger.deliveredAttempt is not a function"
+    },
+    {
+      "ad": "2.4.8 İş U5 — Bu Ay deneme başına teslim (göçsüz) › yarıda kalmış şema (attempt_deliveries var, dizin / tetikleyici yok) açılışta tamamlanır; sayım doğru; yalnız eklenir",
+      "konum": "test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs:55:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş U5 — Bu Ay deneme başına teslim (göçsüz) › yeni defter: iki denemenin teslimi Bu Ay 2, iş başına 'kişi aldı' tek; aynı denemenin yinelenen teslimi etkisiz",
+      "konum": "test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs:81:3",
+      "hata": "Expected values to be strictly equal: · 1 !== 2 (beklenen 2, gelen 1)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkUfix-eski-ad4db62b-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "302b5d5e0ef903b6dd9c3e81a914220bcffbb1e6e72c18698c90ed2338588682",
+  "ham_cikti_bayt": 44402
+}

@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkVfix-mutasyon-mD-kanca-kilit-gecici-degil-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-v/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-v/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "41a60c47704cfd840a8e7cbdfc4667d91118bd81",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 20,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T05:37:19.336Z",
+  "sure_sn": 75.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 81,
+    "gecen": 80,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Kgecici şirket açılmamışken veri dosyası BAŞKA SÜREÇTE kilitli → 503 (geçici); kilit kalkınca yineleme 200 ve Teslim Edildi (V1 ii, V6 mD)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1376:3",
+      "hata": "kilitli dosya geçicidir → 503 (geldi 200 {\"ok\":true}) · 200 !== 503 (beklenen 503, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkVfix-mutasyon-mD-kanca-kilit-gecici-degil-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "12a2ccaebac9a5d81a496745c23f2d8d3c1b6dafaed77f9f130972b8b181448f",
+  "ham_cikti_bayt": 31621
+}

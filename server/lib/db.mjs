@@ -1,16 +1,55 @@
 // SQLite bağlantısı ve küçük sorgu yardımcıları (node:sqlite, bağımlılıksız).
 import { DatabaseSync } from "node:sqlite";
 
+// Kullanıcı isteklerinin yazımları kilitli dosyada bu kadar bekler (sonra SQLITE_BUSY). Arka plan işleri kısa sınamayla atlar (probeWritable; İş P1).
+export const BUSY_TIMEOUT_MS = 10_000;
+
 export function openDatabase(dbPath, { readOnly = false } = {}) {
   const db = readOnly ? new DatabaseSync(dbPath, { readOnly: true }) : new DatabaseSync(dbPath);
   // WAL + synchronous FULL (v2.0.6): her COMMIT diske işlenir; elektrik kesilse de tamamlanmış işlem kaybolmaz, yarım
   // işlem kalmaz (geri alınır). Yerel ofis programında yazma sıklığı düşük; güvenlik hız maliyetine değer.
   if (!readOnly) db.exec("PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;");
-  db.exec("PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 10000;");
+  db.exec(`PRAGMA foreign_keys = ON; PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS};`);
   return db;
 }
 
 /** Dosya başka bağlantıca kilitli (SQLITE_BUSY / SQLITE_LOCKED; busy_timeout dolduktan sonra) mi — 2.4.8 İş N (WhatsApp işçisi aynı turda yeniden yazmaz). */
+/**
+ * 2.4.8 İş P1: bağlantının dosyası şimdi yazılabilir mi — SENKRON kısa sınama (busy_timeout ms; BEGIN IMMEDIATE + ROLLBACK); busy_timeout finally'de BUSY_TIMEOUT_MS'e
+ * geri alınır. Şirket dosyası (store.probeWritable) ve WhatsApp makine defteri (lib/whatsapp/defter.mjs) aynı yardımcıyı kullanır. Dönüş: true | false (kilitli) |
+ * PROBE_CLOSED (bağlantı kapalı: şirket kapandı / silindi / geri yükleniyor — kilit DEĞİL; yazılmaz, işaret konmaz) | null (bilinmiyor: işlem içindeyken sınanmaz,
+ * başka hata). İş R1: kapalı bağlantıda ASLA fırlatmaz (kapanan şirketin zamanlayıcısı süreci çökertiyordu).
+ */
+export const PROBE_CLOSED = "closed";
+const isClosedError = error => error?.code === "ERR_INVALID_STATE";
+export function probeWritableDb(db, ms = 150) {
+  try {
+    if (db.isOpen === false) return PROBE_CLOSED;
+    if (db.isTransaction) return null;
+  } catch (error) {
+    return isClosedError(error) ? PROBE_CLOSED : null;
+  }
+  try {
+    db.exec(`PRAGMA busy_timeout = ${Math.max(0, Math.floor(ms))}`);
+    db.exec("BEGIN IMMEDIATE");
+    db.exec("ROLLBACK");
+    return true;
+  } catch (error) {
+    if (isClosedError(error)) return PROBE_CLOSED;
+    return isLockError(error) ? false : null;
+  } finally {
+    try {
+      if (db.isTransaction) db.exec("ROLLBACK");
+    } catch {
+      // açık işlem kalmadı (ya da bağlantı kapalı)
+    }
+    try {
+      db.exec(`PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS}`);
+    } catch {
+      // bağlantı kapalı: geri alınacak ayar yok
+    }
+  }
+}
 export const isLockError = error => /database is locked|database table is locked|SQLITE_BUSY|SQLITE_LOCKED/i.test(`${error?.code || ""} ${error?.message || ""}`) || [5, 6].includes(Number(error?.errcode) & 0xff);
 
 export function createStore(db) {
@@ -245,6 +284,15 @@ export function createStore(db) {
     return out;
   }
   const store = {
+    /**
+     * 2.4.8 İş P1 (lib/write-lock.mjs): dosya şimdi yazılabilir mi — SENKRON kısa sınama (busy_timeout ms; BEGIN IMMEDIATE + ROLLBACK), bitince busy_timeout
+     * finally'de BUSY_TIMEOUT_MS'e geri alınır (arada başka JS çalışmaz; kullanıcı yazımları kısalmaz). Dönüş: true | false (kilitli) | null (bilinmiyor: işlem
+     * içindeyken sınanmaz, başka hata) — null bugünkü yolu seçtirir.
+     */
+    probeWritable(ms = 150) {
+      if (depth > 0) return null;
+      return probeWritableDb(db, ms);
+    },
     db,
     get: (sql, ...args) => prepare(sql).get(...args),
     all: (sql, ...args) => prepare(sql).all(...args),
