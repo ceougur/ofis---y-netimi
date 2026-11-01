@@ -1,0 +1,32 @@
+{
+  "ad": "248-t9/gecmis-olcum-40-2",
+  "komut": "node test/t9-248/wa-gecmis-olcum.mjs --veri /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-40 --is /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/m2-is --json /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-olcum-40-2.json",
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "dal": "is/t9-248",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T16:30:26.816Z",
+  "sure_sn": 450.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t9/gecmis-olcum-40-2.log",
+  "klasor": "/home/user/wt-t9-248",
+  "ham_cikti_sha256": "517a09732f1ef08e83ea292ee48f5076dce854ff5b0d711ffde64c02dea64a58",
+  "ham_cikti_bayt": 4268
+}

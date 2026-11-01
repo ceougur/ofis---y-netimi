@@ -1,0 +1,38 @@
+{
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "basladi": "2026-11-01T14:01:46.595Z",
+  "onizleme": {
+    "durum": 200,
+    "ms": 44022,
+    "gonderilecek": 3012
+  },
+  "baslatma30sn": {
+    "durum": 0,
+    "ms": 41498,
+    "zamanAsimi": true
+  },
+  "sonrakiIstekMs": 7,
+  "acilanIs": 1,
+  "acilanIsKisi": 3014,
+  "yenidenBasma": {
+    "durum": 200,
+    "isSayisi": 1
+  },
+  "denetimler": [
+    {
+      "ad": "önizleme 200",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "istemci zaman aşımına rağmen sunucu toplu işi açtı (ölçülen davranış)",
+      "ok": true,
+      "ayrinti": "zaman aşımı true, açılan 1"
+    },
+    {
+      "ad": "aynı istek kimliğiyle yeniden basma ikinci iş açmaz",
+      "ok": true,
+      "ayrinti": "1"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "248-t9/kaynak-tarayan-testler",
+  "komut": "node --test test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/whatsapp-meta-izolasyon.test.mjs",
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "dal": "is/t9-248",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T16:45:04.718Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 15,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t9/kaynak-tarayan-testler.log",
+  "klasor": "/home/user/wt-t9-248",
+  "ham_cikti_sha256": "4d3f319bd8585867c10e667128924adf69aef12b976d8705e7e9cc6fee35073a",
+  "ham_cikti_bayt": 4803
+}

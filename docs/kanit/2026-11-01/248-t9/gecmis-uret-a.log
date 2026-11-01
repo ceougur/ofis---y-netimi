@@ -1,0 +1,54 @@
+(node:21689) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21699) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+14:28:00 gönderim 1/100 {"sira":1,"gun":"2025-11-03","tur":"statement","donem":"lastMonth","acmaMs":27843,"yurutulen":2000,"isBasinaMs":33.5,"durumlar":{"delivered":1264,"read":736},"sureSn":98} RSS 603.1 MB {"toplu":1,"is":2000,"metaIleti":0,"kancaOlay":48,"kancaDurum":4736,"kancaHata":0,"yenidenDene":0,"yineDeGonder":0}
+14:36:34 gönderim 6/100 {"sira":6,"gun":"2025-11-21","tur":"statement","donem":"lastMonth","acmaMs":26973,"yurutulen":2000,"isBasinaMs":33,"durumlar":{"read":795,"delivered":1205},"sureSn":99} RSS 697.8 MB {"toplu":10,"is":12000,"metaIleti":0,"kancaOlay":293,"kancaDurum":28698,"kancaHata":0,"yenidenDene":1,"yineDeGonder":3}
+(node:21689) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+14:45:42 gönderim 11/100 {"sira":11,"gun":"2025-12-09","tur":"statement","donem":"lastMonth","acmaMs":35721,"yurutulen":2000,"isBasinaMs":35.6,"durumlar":{"delivered":1139,"read":841,"failed":20},"yenidenDene":"wab-9e0152ed-7bde-4eb5-8159-c37c7c7ccbf4","sureSn":120} RSS 365 MB {"toplu":16,"is":22000,"metaIleti":0,"kancaOlay":538,"kancaDurum":52827,"kancaHata":0,"yenidenDene":2,"yineDeGonder":3,"hatirlatmaYok":1}
+(node:21689) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+14:54:47 gönderim 16/100 {"sira":16,"gun":"2025-12-27","tur":"statement","donem":"lastMonth","acmaMs":27529,"yurutulen":2000,"isBasinaMs":33.7,"durumlar":{"delivered":1190,"read":810},"sureSn":109} RSS 390.3 MB {"toplu":24,"is":32000,"metaIleti":0,"kancaOlay":783,"kancaDurum":76813,"kancaHata":0,"yenidenDene":2,"yineDeGonder":6,"hatirlatmaYok":1}
+(node:21689) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+15:02:57 gönderim 21/100 {"sira":21,"gun":"2026-01-15","tur":"statement","donem":"lastMonth","acmaMs":29156,"yurutulen":2000,"isBasinaMs":36.4,"durumlar":{"delivered":1224,"read":776},"sureSn":119} RSS 398.8 MB {"toplu":30,"is":42000,"metaIleti":0,"kancaOlay":978,"kancaDurum":96000,"kancaHata":0,"yenidenDene":3,"yineDeGonder":6,"hatirlatmaYok":1}
+(node:21689) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21689) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+15:12:56 gönderim 26/100 {"sira":26,"gun":"2026-02-02","tur":"statement","donem":"lastMonth","acmaMs":26867,"yurutulen":2000,"isBasinaMs":33,"durumlar":{"delivered":1197,"read":803},"sureSn":113} RSS 401.5 MB {"toplu":39,"is":52000,"metaIleti":0,"kancaOlay":1225,"kancaDurum":120041,"kancaHata":0,"yenidenDene":4,"yineDeGonder":9,"hatirlatmaYok":1}
+(node:21689) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+15:21:24 gönderim 31/100 {"sira":31,"gun":"2026-02-20","tur":"statement","donem":"lastMonth","acmaMs":27461,"yurutulen":2000,"isBasinaMs":35.3,"durumlar":{"read":809,"delivered":1191},"sureSn":122} RSS 399.7 MB {"toplu":44,"is":62000,"metaIleti":0,"kancaOlay":1419,"kancaDurum":139238,"kancaHata":0,"yenidenDene":4,"yineDeGonder":9,"hatirlatmaYok":1}
+(node:21689) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+<--- Last few GCs --->
+
+[21699:0x21d76000]  3647597 ms: Mark-Compact 1901.8 (2085.1) -> 1894.5 (2090.6) MB, pooled: 6 MB, 132.11 / 0.00 ms  (average mu = 0.997, current mu = 0.980) task; scavenge might not succeed
+[21699:0x21d76000]  3655541 ms: Mark-Compact 1907.9 (2090.6) -> 1900.9 (2097.6) MB, pooled: 0 MB, 146.23 / 0.00 ms  (average mu = 0.995, current mu = 0.982) task; scavenge might not succeed
+
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0xe40d24 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/opt/node22/bin/node]
+ 2: 0x1216be0 v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [/opt/node22/bin/node]
+ 3: 0x1216eb7 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [/opt/node22/bin/node]
+ 4: 0x1444875  [/opt/node22/bin/node]
+ 5: 0x145e109 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/opt/node22/bin/node]
+ 6: 0x14a683d v8::internal::MinorGCJob::Task::RunInternal() [/opt/node22/bin/node]
+ 7: 0x1026733  [/opt/node22/bin/node]
+ 8: 0x102a0b8 node::PerIsolatePlatformData::FlushForegroundTasksInternal() [/opt/node22/bin/node]
+ 9: 0x1d03eb3  [/opt/node22/bin/node]
+10: 0x1d1ab54  [/opt/node22/bin/node]
+11: 0x1d04c17 uv_run [/opt/node22/bin/node]
+12: 0xe91c46 node::SpinEventLoopInternal(node::Environment*) [/opt/node22/bin/node]
+13: 0xfee1b1 node::NodeMainInstance::Run() [/opt/node22/bin/node]
+14: 0xf47eab node::Start(int, char**) [/opt/node22/bin/node]
+15: 0x7f62a822a1ca  [/lib/x86_64-linux-gnu/libc.so.6]
+16: 0x7f62a822a28b __libc_start_main [/lib/x86_64-linux-gnu/libc.so.6]
+17: 0xe8d35e _start [/opt/node22/bin/node]

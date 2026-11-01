@@ -1,0 +1,355 @@
+{
+  "kip": "sinir",
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "node": "v22.22.0",
+  "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/taban-2910",
+  "kisi": 2000,
+  "aralikMs": 0,
+  "tier": "TIER_250",
+  "saat": "2026-11-02T10:00:00+03:00",
+  "basladi": "2026-11-01T12:23:24.506Z",
+  "acilisMs": 5607,
+  "cariSayisi": {
+    "toplam": 3014,
+    "telefonlu": 3012
+  },
+  "B_onizleme": {
+    "ekstreGecenAy": [
+      {
+        "durum": 200,
+        "ms": 22278,
+        "olayDongusuEnCokMs": 22263,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260473
+      },
+      {
+        "durum": 200,
+        "ms": 22340,
+        "olayDongusuEnCokMs": 22330,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260473
+      }
+    ],
+    "ekstreBuAy": [
+      {
+        "durum": 200,
+        "ms": 21727,
+        "olayDongusuEnCokMs": 21726,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260473
+      },
+      {
+        "durum": 200,
+        "ms": 23553,
+        "olayDongusuEnCokMs": 23555,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260473
+      }
+    ],
+    "ekstreSon3Ay": [
+      {
+        "durum": 200,
+        "ms": 22521,
+        "olayDongusuEnCokMs": 22515,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260469
+      },
+      {
+        "durum": 200,
+        "ms": 23857,
+        "olayDongusuEnCokMs": 0,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260469
+      }
+    ],
+    "ekstreTumHareketler": [
+      {
+        "durum": 200,
+        "ms": 24850,
+        "olayDongusuEnCokMs": 24847,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260457
+      },
+      {
+        "durum": 200,
+        "ms": 24347,
+        "olayDongusuEnCokMs": 24344,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260457
+      }
+    ],
+    "ekstreOzelAralik": [
+      {
+        "durum": 200,
+        "ms": 24038,
+        "olayDongusuEnCokMs": 24042,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260464
+      },
+      {
+        "durum": 200,
+        "ms": 23447,
+        "olayDongusuEnCokMs": 0,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260464
+      }
+    ],
+    "hatirlatma": [
+      {
+        "durum": 200,
+        "ms": 22631,
+        "olayDongusuEnCokMs": 22632,
+        "toplam": 2000,
+        "gonderilecek": 8,
+        "elenen": {
+          "Gecikmiş Borç Yok": 1992
+        },
+        "yanitBayt": 298319
+      },
+      {
+        "durum": 200,
+        "ms": 23916,
+        "olayDongusuEnCokMs": 23908,
+        "toplam": 2000,
+        "gonderilecek": 8,
+        "elenen": {
+          "Gecikmiş Borç Yok": 1992
+        },
+        "yanitBayt": 298319
+      }
+    ],
+    "tumunuSecGecenAy": [
+      {
+        "durum": 200,
+        "ms": 34476,
+        "olayDongusuEnCokMs": 0,
+        "toplam": 3014,
+        "gonderilecek": 3012,
+        "elenen": {
+          "Telefon yok": 2
+        },
+        "yanitBayt": 392293
+      },
+      {
+        "durum": 200,
+        "ms": 38475,
+        "olayDongusuEnCokMs": 38487,
+        "toplam": 3014,
+        "gonderilecek": 3012,
+        "elenen": {
+          "Telefon yok": 2
+        },
+        "yanitBayt": 392293
+      }
+    ]
+  },
+  "C_baslatma": {
+    "durum": 200,
+    "ms": 25150,
+    "olayDongusuEnCokMs": 25149,
+    "toplam": {
+      "pending": 2000,
+      "preparing": 0,
+      "sending": 0,
+      "accepted": 0,
+      "sent": 0,
+      "delivered": 0,
+      "read": 0,
+      "failed": 0,
+      "uncertain": 0,
+      "limited": 0,
+      "held": 0,
+      "paused": 0,
+      "canceled": 0,
+      "expired": 0,
+      "skipped": 0,
+      "stopped": 0
+    }
+  },
+  "gonderilecek": 2000,
+  "sinir": [
+    {
+      "pencere": 1,
+      "saat": "2026-11-02T07:00:00.000Z",
+      "yurutulen": 251,
+      "ms": 8710,
+      "isBasinaMs": 34.7,
+      "sayim": {
+        "batch": "running",
+        "durumlar": {
+          "delivered": 250,
+          "limited": 1750
+        },
+        "jobs": 2000
+      },
+      "meta": {
+        "gonderilen": 250,
+        "medya": 250,
+        "rss": 112373760
+      },
+      "kanca": {
+        "olay": 5,
+        "durum": 500,
+        "kodlar": {
+          "200": 5
+        }
+      }
+    },
+    {
+      "pencere": 2,
+      "saat": "2026-11-03T07:01:00.000Z",
+      "yurutulen": 251,
+      "ms": 7869,
+      "isBasinaMs": 31.4,
+      "sayim": {
+        "batch": "running",
+        "durumlar": {
+          "delivered": 500,
+          "limited": 1500
+        },
+        "jobs": 2000
+      },
+      "meta": {
+        "gonderilen": 500,
+        "medya": 450,
+        "rss": 129675264
+      },
+      "kanca": {
+        "olay": 5,
+        "durum": 500,
+        "kodlar": {
+          "200": 5
+        }
+      }
+    }
+  ],
+  "sonDurum": {
+    "batch": "running",
+    "isler": {
+      "delivered": 500,
+      "limited": 1500
+    },
+    "meta": {
+      "gonderilen": 500,
+      "medya": 450,
+      "rss": 131510272
+    }
+  },
+  "bellek": {
+    "rssEnCokMb": 570.5,
+    "rssSonMb": 574.6,
+    "heapEnCokMb": 382.4,
+    "ornek": 25
+  },
+  "dosyalar": {
+    "destekofis.sqlite": 205139968,
+    "e-belge-kullanim.sqlite": 16384,
+    "sirketler/002/destekofis.sqlite": 24350720,
+    "sirketler/002/destekofis.sqlite-shm": 32768,
+    "sirketler/002/destekofis.sqlite-wal": 0,
+    "whatsapp-gonderim.sqlite": 978944
+  },
+  "denetimler": [
+    {
+      "ad": "Muhasebe personeli (olcek10) girişi",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "2000 telefonlu cari var",
+      "ok": true,
+      "ayrinti": "3012 telefonlu"
+    },
+    {
+      "ad": "önizleme ekstreGecenAy: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme ekstreBuAy: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme ekstreSon3Ay: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme ekstreTumHareketler: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme ekstreOzelAralik: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme hatirlatma: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme tumunuSecGecenAy: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "toplu iş açıldı (200)",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "1. pencere: kanca istekleri 200",
+      "ok": true,
+      "ayrinti": "{\"200\":5}"
+    },
+    {
+      "ad": "2. pencere: kanca istekleri 200",
+      "ok": true,
+      "ayrinti": "{\"200\":5}"
+    },
+    {
+      "ad": "1. pencere: gidenler teslim edildi (kanca işlendi)",
+      "ok": true,
+      "ayrinti": "{\"delivered\":250,\"limited\":1750}"
+    },
+    {
+      "ad": "1. pencere: en çok 250 kişiye gitti",
+      "ok": true,
+      "ayrinti": "Meta'ya giden 250, kabul/teslim 250"
+    },
+    {
+      "ad": "1. pencere: kalanlar Sınır Nedeniyle Bekliyor",
+      "ok": true,
+      "ayrinti": "{\"delivered\":250,\"limited\":1750}"
+    },
+    {
+      "ad": "2. pencere (24 sa sonra): iş kendiliğinden sürdü, toplam en çok 500",
+      "ok": true,
+      "ayrinti": "Meta'ya giden 500"
+    }
+  ],
+  "bitti": "2026-11-01T12:30:07.124Z"
+}

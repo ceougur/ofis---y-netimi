@@ -1,0 +1,38 @@
+{
+  "ad": "248-t9/gecmis-uret-b",
+  "komut": "node test/t9-248/wa-gecmis-uret.mjs --veri /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-a --is /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-40 --json /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-uret-b.json --bas 34 --adet 6",
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "dal": "is/t9-248",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T15:56:41.022Z",
+  "sure_sn": 613.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 2,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "yeniden deneme ve Yine de Gönder zinciri üretildi ({\"toplu\":7,\"is\":12000,\"metaIleti\":8683,\"kancaOlay\":212,\"kancaDurum\":20857,\"kancaHata\":0,\"yenidenDene\":1,\"yineDeGonder\":0})",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t9/gecmis-uret-b.log",
+  "klasor": "/home/user/wt-t9-248",
+  "ham_cikti_sha256": "f49ac977dffc7e63499e1cda85e1b3e642cfc92f68a98b80fa6a2505fcea6be7",
+  "ham_cikti_bayt": 1313
+}

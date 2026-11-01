@@ -1,0 +1,513 @@
+{
+  "kip": "yuk",
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "node": "v22.22.0",
+  "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/taban-2910",
+  "kisi": 2000,
+  "aralikMs": 1000,
+  "tier": "TIER_2K",
+  "saat": "2026-11-02T10:00:00+03:00",
+  "basladi": "2026-11-01T13:05:22.118Z",
+  "acilisMs": 6561,
+  "cariSayisi": {
+    "toplam": 3014,
+    "telefonlu": 3012
+  },
+  "A_gonderimsiz": {
+    "sureSn": 62,
+    "tur": 24,
+    "durumlar": {
+      "cariListesi:200": 24,
+      "cariArama:200": 24,
+      "cariKarti:200": 24,
+      "kasa:200": 24,
+      "raporCariListesi:200": 24,
+      "raporBankaBakiye:200": 24,
+      "raporKasaHareketleri:200": 24,
+      "bankaHareketleri:200": 24,
+      "waGonderimler:200": 24,
+      "waAyrinti:200": 24,
+      "waGonderimDurumu:200": 24
+    },
+    "olayDongusu": {
+      "p99ms": 1019,
+      "enCokMs": 1489
+    },
+    "uclar": {
+      "cariListesi": {
+        "n": 24,
+        "p50": 165,
+        "p95": 219,
+        "enCok": 273
+      },
+      "cariArama": {
+        "n": 24,
+        "p50": 45,
+        "p95": 78,
+        "enCok": 82
+      },
+      "cariKarti": {
+        "n": 24,
+        "p50": 15,
+        "p95": 144,
+        "enCok": 170
+      },
+      "kasa": {
+        "n": 24,
+        "p50": 596,
+        "p95": 764,
+        "enCok": 838
+      },
+      "raporCariListesi": {
+        "n": 24,
+        "p50": 175,
+        "p95": 236,
+        "enCok": 242
+      },
+      "raporBankaBakiye": {
+        "n": 24,
+        "p50": 435,
+        "p95": 528,
+        "enCok": 642
+      },
+      "raporKasaHareketleri": {
+        "n": 24,
+        "p50": 1020,
+        "p95": 1388,
+        "enCok": 1488
+      },
+      "bankaHareketleri": {
+        "n": 24,
+        "p50": 8,
+        "p95": 11,
+        "enCok": 12
+      },
+      "waGonderimler": {
+        "n": 24,
+        "p50": 2,
+        "p95": 3,
+        "enCok": 5
+      },
+      "waAyrinti": {
+        "n": 24,
+        "p50": 1,
+        "p95": 2,
+        "enCok": 2
+      },
+      "waGonderimDurumu": {
+        "n": 24,
+        "p50": 2,
+        "p95": 3,
+        "enCok": 4
+      }
+    }
+  },
+  "B_onizleme": {
+    "ekstreGecenAy": [
+      {
+        "durum": 200,
+        "ms": 23177,
+        "olayDongusuEnCokMs": 23169,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260472
+      },
+      {
+        "durum": 200,
+        "ms": 22715,
+        "olayDongusuEnCokMs": 22716,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260472
+      }
+    ],
+    "ekstreBuAy": [
+      {
+        "durum": 200,
+        "ms": 22534,
+        "olayDongusuEnCokMs": 22532,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260472
+      },
+      {
+        "durum": 200,
+        "ms": 23919,
+        "olayDongusuEnCokMs": 0,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260472
+      }
+    ],
+    "ekstreSon3Ay": [
+      {
+        "durum": 200,
+        "ms": 23138,
+        "olayDongusuEnCokMs": 0,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260468
+      },
+      {
+        "durum": 200,
+        "ms": 24059,
+        "olayDongusuEnCokMs": 24059,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260468
+      }
+    ],
+    "ekstreTumHareketler": [
+      {
+        "durum": 200,
+        "ms": 24693,
+        "olayDongusuEnCokMs": 24696,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260456
+      },
+      {
+        "durum": 200,
+        "ms": 23475,
+        "olayDongusuEnCokMs": 0,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260456
+      }
+    ],
+    "ekstreOzelAralik": [
+      {
+        "durum": 200,
+        "ms": 23421,
+        "olayDongusuEnCokMs": 0,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260463
+      },
+      {
+        "durum": 200,
+        "ms": 23032,
+        "olayDongusuEnCokMs": 23035,
+        "toplam": 2000,
+        "gonderilecek": 2000,
+        "elenen": {},
+        "yanitBayt": 260463
+      }
+    ],
+    "hatirlatma": [
+      {
+        "durum": 200,
+        "ms": 23606,
+        "olayDongusuEnCokMs": 23606,
+        "toplam": 2000,
+        "gonderilecek": 8,
+        "elenen": {
+          "Gecikmiş Borç Yok": 1992
+        },
+        "yanitBayt": 298320
+      },
+      {
+        "durum": 200,
+        "ms": 22993,
+        "olayDongusuEnCokMs": 0,
+        "toplam": 2000,
+        "gonderilecek": 8,
+        "elenen": {
+          "Gecikmiş Borç Yok": 1992
+        },
+        "yanitBayt": 298320
+      }
+    ],
+    "tumunuSecGecenAy": [
+      {
+        "durum": 200,
+        "ms": 39848,
+        "olayDongusuEnCokMs": 0,
+        "toplam": 3014,
+        "gonderilecek": 3012,
+        "elenen": {
+          "Telefon yok": 2
+        },
+        "yanitBayt": 392295
+      },
+      {
+        "durum": 200,
+        "ms": 37666,
+        "olayDongusuEnCokMs": 37682,
+        "toplam": 3014,
+        "gonderilecek": 3012,
+        "elenen": {
+          "Telefon yok": 2
+        },
+        "yanitBayt": 392295
+      }
+    ]
+  },
+  "C_baslatma": {
+    "durum": 200,
+    "ms": 25892,
+    "olayDongusuEnCokMs": 25887,
+    "toplam": {
+      "pending": 2000,
+      "preparing": 0,
+      "sending": 0,
+      "accepted": 0,
+      "sent": 0,
+      "delivered": 0,
+      "read": 0,
+      "failed": 0,
+      "uncertain": 0,
+      "limited": 0,
+      "held": 0,
+      "paused": 0,
+      "canceled": 0,
+      "expired": 0,
+      "skipped": 0,
+      "stopped": 0
+    }
+  },
+  "gonderilecek": 2000,
+  "D_gonderimSirasinda": {
+    "sureSn": 2882,
+    "tur": 1017,
+    "durumlar": {
+      "cariListesi:200": 1017,
+      "cariArama:200": 1017,
+      "cariKarti:200": 1017,
+      "kasa:200": 1017,
+      "raporCariListesi:200": 1017,
+      "raporBankaBakiye:200": 1017,
+      "raporKasaHareketleri:200": 1017,
+      "bankaHareketleri:200": 1017,
+      "waGonderimler:200": 1017,
+      "waAyrinti:200": 1017,
+      "waGonderimDurumu:200": 1017
+    },
+    "olayDongusu": {
+      "p99ms": 1037,
+      "enCokMs": 1878
+    },
+    "uclar": {
+      "cariListesi": {
+        "n": 1017,
+        "p50": 188,
+        "p95": 254,
+        "enCok": 424
+      },
+      "cariArama": {
+        "n": 1017,
+        "p50": 51,
+        "p95": 79,
+        "enCok": 339
+      },
+      "cariKarti": {
+        "n": 1017,
+        "p50": 18,
+        "p95": 129,
+        "enCok": 284
+      },
+      "kasa": {
+        "n": 1017,
+        "p50": 655,
+        "p95": 859,
+        "enCok": 1064
+      },
+      "raporCariListesi": {
+        "n": 1017,
+        "p50": 214,
+        "p95": 274,
+        "enCok": 376
+      },
+      "raporBankaBakiye": {
+        "n": 1017,
+        "p50": 454,
+        "p95": 597,
+        "enCok": 717
+      },
+      "raporKasaHareketleri": {
+        "n": 1017,
+        "p50": 1074,
+        "p95": 1352,
+        "enCok": 1920
+      },
+      "bankaHareketleri": {
+        "n": 1017,
+        "p50": 11,
+        "p95": 20,
+        "enCok": 44
+      },
+      "waGonderimler": {
+        "n": 1017,
+        "p50": 5,
+        "p95": 8,
+        "enCok": 23
+      },
+      "waAyrinti": {
+        "n": 1017,
+        "p50": 41,
+        "p95": 60,
+        "enCok": 77
+      },
+      "waGonderimDurumu": {
+        "n": 1017,
+        "p50": 5,
+        "p95": 10,
+        "enCok": 36
+      }
+    },
+    "isSuresiSn": 2882
+  },
+  "kanca": {
+    "olay": 4976,
+    "durum": 4976,
+    "kodlar": {
+      "200": 4976
+    },
+    "sure": {
+      "n": 4976,
+      "p50": 6,
+      "p95": 906,
+      "enCok": 1470
+    }
+  },
+  "rssOnceMb": 302.3,
+  "sonDurum": {
+    "batch": "done",
+    "isler": {
+      "read": 976,
+      "delivered": 1024
+    },
+    "meta": {
+      "gonderilen": 2000,
+      "medya": 36,
+      "rss": 111689728
+    }
+  },
+  "buAy": {
+    "month": "2026-11",
+    "configured": true,
+    "wabaId": "102290129340398",
+    "delivered": 2000,
+    "billable": 2000,
+    "accepted": 2000,
+    "approxUsd": 1.8,
+    "unitUsd": 0.0009,
+    "company": {
+      "delivered": 2000,
+      "billable": 2000,
+      "accepted": 2000
+    },
+    "note": "Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır."
+  },
+  "bellek": {
+    "rssEnCokMb": 1122.9,
+    "rssSonMb": 780.7,
+    "heapEnCokMb": 527.1,
+    "ornek": 1120
+  },
+  "dosyalar": {
+    "destekofis.sqlite": 202498048,
+    "e-belge-kullanim.sqlite": 16384,
+    "sirketler/002/destekofis.sqlite": 24350720,
+    "sirketler/002/destekofis.sqlite-shm": 32768,
+    "sirketler/002/destekofis.sqlite-wal": 0,
+    "whatsapp-gonderim.sqlite": 3260416
+  },
+  "denetimler": [
+    {
+      "ad": "Muhasebe personeli (olcek10) girişi",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "2000 telefonlu cari var",
+      "ok": true,
+      "ayrinti": "3012 telefonlu"
+    },
+    {
+      "ad": "A: bütün masaüstü istekleri 200",
+      "ok": true,
+      "ayrinti": "{\"cariListesi:200\":24,\"cariArama:200\":24,\"cariKarti:200\":24,\"kasa:200\":24,\"raporCariListesi:200\":24,\"raporBankaBakiye:200\":24,\"raporKasaHareketleri:200\":24,\"bankaHareketleri:200\":24,\"waGonderimler:200\":24,\"waAyrinti:200\":24,\"waGonderimDurumu:200\":24}"
+    },
+    {
+      "ad": "önizleme ekstreGecenAy: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme ekstreBuAy: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme ekstreSon3Ay: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme ekstreTumHareketler: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme ekstreOzelAralik: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme hatirlatma: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "önizleme tumunuSecGecenAy: 200",
+      "ok": true,
+      "ayrinti": "[200,200]"
+    },
+    {
+      "ad": "toplu iş açıldı (200)",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "D: bütün masaüstü/WhatsApp ekranı istekleri 200",
+      "ok": true,
+      "ayrinti": "{\"cariListesi:200\":1017,\"cariArama:200\":1017,\"cariKarti:200\":1017,\"kasa:200\":1017,\"raporCariListesi:200\":1017,\"raporBankaBakiye:200\":1017,\"raporKasaHareketleri:200\":1017,\"bankaHareketleri:200\":1017,\"waGonderimler:200\":1017,\"waAyrinti:200\":1017,\"waGonderimDurumu:200\":1017}"
+    },
+    {
+      "ad": "toplu iş tamamlandı",
+      "ok": true,
+      "ayrinti": "done"
+    },
+    {
+      "ad": "kanca istekleri 200",
+      "ok": true,
+      "ayrinti": "{\"200\":4976}"
+    },
+    {
+      "ad": "bütün gönderilecekler teslim/okundu",
+      "ok": true,
+      "ayrinti": "teslim+okundu 2000 / 2000; {\"read\":976,\"delivered\":1024}"
+    },
+    {
+      "ad": "Meta'ya giden ileti = gönderilecek (çift yok)",
+      "ok": true,
+      "ayrinti": "2000"
+    },
+    {
+      "ad": "Bu Ay teslim sayısı = teslim",
+      "ok": true,
+      "ayrinti": "2000"
+    }
+  ],
+  "bitti": "2026-11-01T14:00:58.316Z"
+}

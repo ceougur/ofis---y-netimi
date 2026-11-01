@@ -1,0 +1,37 @@
+16:30:27 veri {"defter":{"claims":72155,"claim_keys":72167,"outcomes":72155,"accepts":72028,"deliveries":70689,"attempt_deliveries":70689,"learned_wamids":0,"anyway_links":12,"batch_events":115,"batch_log":0,"hook_seen":51},"sirket001":{"wa_batches":58,"wa_jobs":80126,"accounts":3014,"account_entries":57227,"money_lines":null},"zincir":{"inheritOfDolu":12}} {"destekofis.sqlite":455335936,"destekofis.sqlite-shm":32768,"destekofis.sqlite-wal":0,"e-belge-kullanim.sqlite":16384,"sirketler/002/destekofis.sqlite":24350720,"sirketler/002/destekofis.sqlite-shm":32768,"sirketler/002/destekofis.sqlite-wal":144232,"whatsapp-gonderim.sqlite":109785088,"whatsapp-gonderim.sqlite-shm":32768,"whatsapp-gonderim.sqlite-wal":0}
+(node:27800) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27810) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+16:30:35 açılış ms 6709
+16:30:36 bakım {"n":5,"p50":203,"p95":210,"enCok":210} probe {"n":200,"p50":0,"p95":0,"enCok":0,"son":true}
+ok 1 - defter yazılabilir (probeWritable) (true)
+ok 2 - Gönderimler ilk 30: 200 + en çok 30 satır (200 30)
+ok 3 - Daha Fazla Göster sonuna kadar: bütün gönderimler bir kez (58 / 58)
+ok 4 - tarih süzgeçleri 200 ({"birAy":8,"birGun":0,"yalnizBaslangic":0,"yalnizBitis":25})
+16:30:36 gönderimler {"ilk30":{"n":5,"p50":7,"p95":9,"enCok":9},"dahaFazla":{"n":2,"p50":2,"p95":6,"enCok":6},"sayfa":2,"satir":58,"tarihSuzgeci":{"birAy":{"n":5,"p50":3,"p95":3,"enCok":3,"satir":8,"durum":200},"birGun":{"n":5,"p50":1,"p95":2,"enCok":2,"satir":0,"durum":200},"yalnizBaslangic":{"n":5,"p50":1,"p95":2,"enCok":2,"satir":0,"durum":200},"yalnizBitis":{"n":5,"p50":5,"p95":5,"enCok":5,"satir":25,"durum":200}},"eskiAyrinti":{"n":5,"p50":53,"p95":57,"enCok":57,"is":2000,"bayt":1405996}}
+16:30:37 bu ay {"buAy":{"n":10,"p50":18,"p95":23,"enCok":23,"deger":0},"gecenAy":{"n":10,"p50":65,"p95":72,"enCok":72,"deger":8683}}
+ok 5 - Bu Ay sayımı 200
+16:31:34 önizleme ekstreGecenAy {"n":2,"p50":28354,"p95":28414,"enCok":28414,"durum":200,"gonderilecek":2000,"elenen":{},"dahaOnce":{"count":0,"last":null,"included":0}}
+16:32:29 önizleme ekstreBuAy {"n":2,"p50":27010,"p95":27570,"enCok":27570,"durum":200,"gonderilecek":2000,"elenen":{},"dahaOnce":{"count":0,"last":null,"included":0}}
+16:33:29 önizleme ekstreTumHareketler {"n":2,"p50":29576,"p95":31043,"enCok":31043,"durum":200,"gonderilecek":2000,"elenen":{},"dahaOnce":{"count":0,"last":null,"included":0}}
+ok 6 - yoklayıcı girişi (olcek10)
+16:34:15 eş zamanlı önizleme {"ms":29256,"durum":200,"yoklayici":{"n":61,"p50":57,"p95":82,"enCok":29097,"durumlar":{"200":61}}}
+ok 7 - önizlemeler 200
+16:35:00 başlatma {"ms":27423,"durum":200,"yoklayici":{"n":69,"p50":56,"p95":79,"enCok":27220,"durumlar":{"200":69}}}
+ok 8 - yeni toplu iş açıldı (Yine de Gönder ile) (200)
+16:36:44 yeni iş {"yurutulen":2000,"isBasina":{"n":2000,"p50":36,"p95":50,"enCok":951},"kanca":{"n":400,"p50":12,"p95":17,"enCok":30,"kodlar":{"200":436}}}
+ok 9 - yeni işin bütün kişileri teslim edildi ({"delivered":2000})
+ok 10 - kanca istekleri 200 ({"200":436})
+16:36:56 eski ileti kanca {"n":300,"p50":7,"p95":11,"enCok":39,"kodlar":{"200":300},"adet":300}
+ok 11 - eski iletilere geç bildirim 200 ({"200":300})
+ok 12 - olcek10 girişi
+16:37:57 masaüstü {"durumlar":{"cariListesi:200":218,"cariKarti:200":218,"cariWhatsappGecmisi:200":218,"waGonderimler:200":218,"waGonderimDurumu:200":218,"waBuAy:200":218},"olayDongusu":{"p99ms":221,"enCokMs":244},"uclar":{"cariListesi":{"n":218,"p50":170,"p95":221,"enCok":249},"cariKarti":{"n":218,"p50":15,"p95":110,"enCok":239},"cariWhatsappGecmisi":{"n":218,"p50":2,"p95":3,"enCok":7},"waGonderimler":{"n":218,"p50":6,"p95":9,"enCok":12},"waGonderimDurumu":{"n":218,"p50":28,"p95":42,"enCok":53},"waBuAy":{"n":218,"p50":23,"p95":35,"enCok":47}}}
+ok 13 - masaüstü uçları 200 ({"cariListesi:200":218,"cariKarti:200":218,"cariWhatsappGecmisi:200":218,"waGonderimler:200":218,"waGonderimDurumu:200":218,"waBuAy:200":218})
+1..13
+# tests 13
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

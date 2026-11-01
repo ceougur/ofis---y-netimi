@@ -1,0 +1,32 @@
+{
+  "ad": "248-t9/tumunu-sec-baslat",
+  "komut": "node test/t9-248/tumunu-sec-baslat.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/taban-2910 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/ts-is /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/tumunu-sec-baslat.json",
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "dal": "is/t9-248",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T14:01:46.224Z",
+  "sure_sn": 94.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t9/tumunu-sec-baslat.log",
+  "klasor": "/home/user/wt-t9-248",
+  "ham_cikti_sha256": "624570bdc68b3ae5446dc337c01041ce97d20b57befeabbb510a8c72fb1793d1",
+  "ham_cikti_bayt": 885
+}
