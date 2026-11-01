@@ -282,7 +282,7 @@
    "metin": [
     "S9-1 (kime kaç kez) \"Gitmesin\" — Yine de Gönder onaylanmış ama yeni ileti henüz gitmemişken eski iletinin teslimi gelirse yeni ileti GİTMEZ (ilke 3; belirsizlik kalktı).",
     "KARAR (kullanıcı, 01.11.2026 07:11 UTC): S9-1 KAPSAMI \"Yalnız belirsizlik onayları\" — (a) Sonucu Belirsiz işteki Yine de Gönder kapsanır; (c) Başarısızları Yeniden Dene yalnız (a) zincirinden gelen yeniden denemede kapsanır; (b) yeni gönderimde \"Daha Önce Gönderildi\" uyarısına rağmen bilerek seçilen Yine de Gönder KAPSANMAZ (ikinci kopya gider).",
-    "ana oturum iletisi (CLAUDE.md'de yok): iş \"Atlandı — Daha Önce Gönderildi\", Bu Ay değişmez"
+    "ana oturum iletisi (CLAUDE.md'de yok): iş \"Atlandı — Daha Önce Gönderildi\", Bu Ay değişmez — ana oturum teyidi: BAŞ MİMAR KARARI (adlandırma); atlanan sayılmaz, eski teslim J5 ile sayılır"
    ]
   },
   "J11": {
@@ -290,6 +290,13 @@
    "metin": [
     "S9-2 \"İlk hareket – gönderim günü\" — Tüm Hareketler ekstresinin dönem metni ({3}) ilk hareket tarihi – gönderim günü; hareketsiz caride gönderim günü – gönderim günü.",
     "S9-2 GÜNÜ \"Ekstrenin hazırlandığı gün\" — \"gönderim günü\" = gönderimin açıldığı, ekstre ve bakiyenin hazırlandığı gün (kod değişmez; metin PDF ile aynı)."
+   ]
+  },
+  "J12": {
+   "kaynak_turu": "kullanıcı (07:11'de seçilen seçeneğin metni AYNEN — ana oturum iletisi); §7a 1'in ekstre yorumunun YERİNE (ana oturum)",
+   "metin": [
+    "'Gönderim günü' = gönderimin açıldığı, ekstrenin ve bakiyenin hazırlandığı gün. İleti metni PDF'teki dönem ve bakiyeyle aynı kalır (ekstre tarihi = düzenleme tarihi, yaygın uygulama).",
+    "sorunun metni: \"Ekstre PDF'i ve bakiye açılış gününde hazırlanıyor\""
    ]
   },
   "K8": {
@@ -13684,8 +13691,8 @@
   {
    "ad": "ICERIK-09-kuyrukta-bakiye-degisti",
    "baslik": "YANLIŞ İÇERİK",
-   "aciklama": "Sınırda beklerken cariye hareket girdi: metin ve PDF gönderim anında AYNI okumadan",
-   "kaynak": "§6 W2 (metin = PDF), §7a 1",
+   "aciklama": "Sınırda beklerken cariye hareket girdi: ekstre (metin + PDF) toplu işin AÇILIŞINDA hazırlandığı gibi gider (güncelleme 9c, J12; eskiden gönderim anında)",
+   "kaynak": "§6 W2 (metin = PDF), J12 (§7a 1'in ekstre yorumunun yerine)",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -13789,10 +13796,10 @@
        "Mehmet Kaya",
        "Deneme Ticaret Ltd. Şti.",
        "01.10.2026 – 31.10.2026",
-       "3.000,00 TL"
+       "2.000,00 TL"
       ],
-      "isler.T2/B.pdf.donem_sonu_bakiye": "3000.00",
-      "isler.T2/B.pdf.hareket_sayisi": 2
+      "isler.T2/B.pdf.donem_sonu_bakiye": "2000.00",
+      "isler.T2/B.pdf.hareket_sayisi": 1
      }
     }
    ],
@@ -13903,15 +13910,15 @@
          "Mehmet Kaya",
          "Deneme Ticaret Ltd. Şti.",
          "01.10.2026 – 31.10.2026",
-         "3.000,00 TL"
+         "2.000,00 TL"
         ],
         "pdf": {
          "cari_ad": "Mehmet Kaya",
          "donem_bas": "2026-10-01",
          "donem_son": "2026-10-31",
          "devir": "0.00",
-         "hareket_sayisi": 2,
-         "donem_sonu_bakiye": "3000.00"
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
         },
         "dosya_adi": {
          "on_ek": "Ekstre Mehmet Kaya ",
@@ -108948,6 +108955,710 @@
         },
         "dosya_adi": {
          "on_ek": "Ekstre Ufuk Kasım ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "J12-01-yine-de-gonder-ekstre-icerigi-acilistaki-gibi",
+   "baslik": "J12",
+   "aciklama": "B Sonucu Belirsiz (Meta almadı); kuyrukta B'ye 1.000 TL hareket girdi; işteki Yine de Gönder AÇILIŞTA hazırlanan ekstreyi gönderir (2.000,00 TL)",
+   "kaynak": "J12 (Y9d-1: yeniden gönderilse de değişmez) + K4",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+30m",
+      "tur": "cari",
+      "id": "B",
+      "hareket_ekle": {
+       "tarih": "2026-10-30",
+       "borc": 1000,
+       "alacak": 0
+      }
+     },
+     {
+      "t": "+1h",
+      "tur": "yine_de_gonder",
+      "toplu": "T1",
+      "cari": "B",
+      "etiket": "G1"
+     }
+    ],
+    "meta_davranis": {
+     "mesaj": {
+      "B": [
+       "yanitsiz_red",
+       "kabul"
+      ]
+     },
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "yeniden": {
+       "G1": {
+        "elenen": {},
+        "alinan": [
+         "B"
+        ],
+        "oneri": null
+       }
+      },
+      "isler.T1/B.durum": "Teslim Edildi",
+      "isler.T1/B.degiskenler": [
+       "Mehmet Kaya",
+       "Deneme Ticaret Ltd. Şti.",
+       "01.10.2026 – 31.10.2026",
+       "2.000,00 TL"
+      ],
+      "isler.T1/B.pdf": {
+       "cari_ad": "Mehmet Kaya",
+       "donem_bas": "2026-10-01",
+       "donem_son": "2026-10-31",
+       "devir": "0.00",
+       "hareket_sayisi": 1,
+       "donem_sonu_bakiye": "2000.00"
+      },
+      "meta.post": {
+       "B": 2
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 1
+      },
+      "meta": {
+       "post": {
+        "B": 2
+       },
+       "kabul": {
+        "B": 1
+       },
+       "meta_ileti": {
+        "B": 1
+       },
+       "medya_yukleme": {
+        "B": 1
+       },
+       "medya_silme": {
+        "B": 1
+       },
+       "toplam_post": 2,
+       "toplam_kabul_program": 1,
+       "toplam_meta_ileti": 1,
+       "toplam_medya_yukleme": 1
+      },
+      "kontroller": {},
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "yeniden": {
+       "G1": {
+        "elenen": {},
+        "alinan": [
+         "B"
+        ],
+        "oneri": null
+       }
+      },
+      "isler": {
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 2,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez",
+   "baslik": "J12",
+   "aciklama": "30.10 Tüm Hareketler: F2'nin 15.11 tarihli hareketi ekstreye girmez (05.10–30.10, 300,00 TL); yalnız ileri tarihli hareketi olan G2 hareketsiz gibi (30.10–30.10, 0,00 TL)",
+   "kaynak": "J12 + J11 (Y9d-3; Y9c-6 çözüldü)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "F2",
+      "ad": "Ferhat İleri",
+      "telefon": "0550 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-10-05",
+        "borc": 300,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-11-15",
+        "borc": 500,
+        "alacak": 0
+       }
+      ]
+     },
+     {
+      "id": "G2",
+      "ad": "Gül İleri",
+      "telefon": "0550 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-11-20",
+        "borc": 90,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "F2",
+       "G2"
+      ],
+      "sablon": "ekstre",
+      "donem": "tum"
+     }
+    ],
+    "meta_davranis": {
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "isler.T1/F2.degiskenler": [
+       "Ferhat İleri",
+       "Deneme Ticaret Ltd. Şti.",
+       "05.10.2026 – 30.10.2026",
+       "300,00 TL"
+      ],
+      "isler.T1/F2.pdf": {
+       "cari_ad": "Ferhat İleri",
+       "donem_bas": "2026-10-05",
+       "donem_son": "2026-10-30",
+       "devir": "0.00",
+       "hareket_sayisi": 1,
+       "donem_sonu_bakiye": "300.00"
+      },
+      "isler.T1/G2.degiskenler": [
+       "Gül İleri",
+       "Deneme Ticaret Ltd. Şti.",
+       "30.10.2026 – 30.10.2026",
+       "0,00 TL"
+      ],
+      "isler.T1/G2.pdf": {
+       "cari_ad": "Gül İleri",
+       "donem_bas": "2026-10-30",
+       "donem_son": "2026-10-30",
+       "devir": "0.00",
+       "hareket_sayisi": 0,
+       "donem_sonu_bakiye": "0.00"
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "F2": 1,
+        "G2": 1
+       },
+       "kabul": {
+        "F2": 1,
+        "G2": 1
+       },
+       "meta_ileti": {
+        "F2": 1,
+        "G2": 1
+       },
+       "medya_yukleme": {
+        "F2": 1,
+        "G2": 1
+       },
+       "medya_silme": {
+        "F2": 1,
+        "G2": 1
+       },
+       "toplam_post": 2,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 2,
+       "toplam_medya_yukleme": 2
+      },
+      "kontroller": {},
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/F2": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905501112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ferhat İleri",
+         "Deneme Ticaret Ltd. Şti.",
+         "05.10.2026 – 30.10.2026",
+         "300,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ferhat İleri",
+         "donem_bas": "2026-10-05",
+         "donem_son": "2026-10-30",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "300.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ferhat İleri ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/G2": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905502223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Gül İleri",
+         "Deneme Ticaret Ltd. Şti.",
+         "30.10.2026 – 30.10.2026",
+         "0,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Gül İleri",
+         "donem_bas": "2026-10-30",
+         "donem_son": "2026-10-30",
+         "devir": "0.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "0.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Gül İleri ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket",
+   "baslik": "J12",
+   "aciklama": "05.11 23:30 Tüm sınır 1: R ertesi gün gider; 06.11'de R'ye hareket girdi — ekstre açılıştaki gibi (15.10–05.11, 70,00 TL, 1 hareket)",
+   "kaynak": "J12 (Y9d-1, Y9d-3) + J11",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-11-05T23:30:00+03:00",
+    "cariler": [
+     {
+      "id": "P",
+      "ad": "Pelin Kara",
+      "telefon": "0543 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-11-01",
+        "borc": 100,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-11-03",
+        "borc": 50,
+        "alacak": 0
+       }
+      ]
+     },
+     {
+      "id": "R",
+      "ad": "Rana Ortada",
+      "telefon": "0545 333 44 55",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 70,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "P",
+       "R"
+      ],
+      "sablon": "ekstre",
+      "donem": "tum"
+     },
+     {
+      "t": "+10h30m",
+      "tur": "cari",
+      "id": "R",
+      "hareket_ekle": {
+       "tarih": "2026-11-06",
+       "borc": 25,
+       "alacak": 0
+      }
+     },
+     {
+      "t": "+11h",
+      "tur": "kontrol",
+      "ad": "K1"
+     }
+    ],
+    "ayar": {
+     "gunluk_ust_sinir": 1
+    },
+    "meta_davranis": {
+     "kanca": {
+      "*": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.isler": {
+       "T1/P": "Teslim Edildi",
+       "T1/R": "Sınır Nedeniyle Bekliyor"
+      },
+      "isler.T1/R.durum": "Teslim Edildi",
+      "isler.T1/R.degiskenler": [
+       "Rana Ortada",
+       "Deneme Ticaret Ltd. Şti.",
+       "15.10.2026 – 05.11.2026",
+       "70,00 TL"
+      ],
+      "isler.T1/R.pdf": {
+       "cari_ad": "Rana Ortada",
+       "donem_bas": "2026-10-15",
+       "donem_son": "2026-11-05",
+       "devir": "0.00",
+       "hareket_sayisi": 1,
+       "donem_sonu_bakiye": "70.00"
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "P": 1,
+        "R": 1
+       },
+       "kabul": {
+        "P": 1,
+        "R": 1
+       },
+       "meta_ileti": {
+        "P": 1,
+        "R": 1
+       },
+       "medya_yukleme": {
+        "P": 1,
+        "R": 1
+       },
+       "medya_silme": {
+        "P": 1,
+        "R": 1
+       },
+       "toplam_post": 2,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 2,
+       "toplam_medya_yukleme": 2
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-11-06T10:30:00+03:00",
+        "durum_sayilari": {
+         "Sınır Nedeniyle Bekliyor": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 1,
+        "toplam_kabul": 1,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/P": "Teslim Edildi",
+         "T1/R": "Sınır Nedeniyle Bekliyor"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-11": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/P": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905431112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Pelin Kara",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.11.2026 – 05.11.2026",
+         "150,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Pelin Kara",
+         "donem_bas": "2026-11-01",
+         "donem_son": "2026-11-05",
+         "devir": "0.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "150.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Pelin Kara ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/R": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905453334455",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Rana Ortada",
+         "Deneme Ticaret Ltd. Şti.",
+         "15.10.2026 – 05.11.2026",
+         "70,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Rana Ortada",
+         "donem_bas": "2026-10-15",
+         "donem_son": "2026-11-05",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "70.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Rana Ortada ",
          "son_ek": ".pdf"
         },
         "hata_kodu": null,

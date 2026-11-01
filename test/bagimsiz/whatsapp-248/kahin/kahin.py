@@ -28,6 +28,9 @@ GÜNCELLEME 9b (01.11.2026 07:07 + 07:11 UTC, J10/J11): S9-1 "Gitmesin" yalnız 
 Başarısızları Yeniden Dene) bekleyen işte eski iletinin teslimi gelirse yeni ileti gitmez, iş "Atlandı — Daha Önce Gönderildi"; düz yeniden deneme ve R3 Yine de Gönder
 kapsanmaz (ikinci kopya gider). S9-2 — Tüm Hareketler {{3}} ve PDF dönemi = ilk hareket – AÇILIŞ günü (hareketsiz: açılış – açılış); J8 kişiye özel dönem TEK okuma
 (ilk – açılış günü) — README §14.10–14.11.
+GÜNCELLEME 9c (07:11 seçenek metni, J12): ekstre İÇERİĞİ (ad, firma, {{3}}, bakiye, PDF, dosya adı) toplu işin AÇILIŞINDA hazırlanır, gönderim ertesi güne kaysa /
+kuyrukta hareket girse / yeniden gönderilse de değişmez (§7a 1'in ekstre yorumunun yerine); telefon, eleme denetimleri ve Ödeme Hatırlatma gönderim anında;
+Tüm Hareketler'e açılış gününden sonra tarihli hareket girmez — README §14.13.
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -207,7 +210,7 @@ MUTASYONLAR = {
     "M55": "dönem metni ISO biçiminde",
     "M56": "24 saatten eski toplu işte sınır bekleyen iş de sorulur",
     "M57": "kuyrukta 'İstemiyor' işaretlenen cariye yine gönderilir",
-    "M58": "iş verisi gönderimde değil başlatmada okunur",
+    "M58": "telefon (ve hatırlatma verisi) gönderimde değil başlatmada okunur — güncelleme 9c: ekstre içeriğinin açılışta hazırlanması artık doğru model (M163)",
     "M59": "bağlantı kurulamadığında Sonucu Belirsiz (bekleme değil)",
     "M60": "131049'da PDF silinir ve yeniden yüklenir",
     "M61": "bağlantı yokken iş geçici hata sayılır (30 sn → 2 dk → 15 dk → Başarısız; R1 öncesi)",
@@ -319,6 +322,9 @@ MUTASYONLAR = {
     "M160": "J10 (07:11 c): belirsizlik zinciri dışındaki düz Başarısızları Yeniden Dene de durdurulur (düşen Y9b-2 İLKEYLE)",
     "M161": "J10 (07:11 b): R3 uyarısına rağmen bilerek seçilen Yine de Gönder de önceki işin teslimiyle durdurulur",
     "M162": "J11 (07:11 'metin PDF ile aynı'): Tüm Hareketler PDF'inde dönem uçları yok (eski: None)",
+    # ---- kâhin güncellemesi 9c (07:11 seçenek metni, J12) ----
+    "M163": "J12: ekstre içeriği GÖNDERİM ANINDA okunur (§7a 1'in eski ekstre yorumu; açılışta hazırlanmaz)",
+    "M164": "J12 + Y9d-3: Tüm Hareketler içeriğine açılış gününden sonra tarihli hareket girer (eski 'bütün hesap')",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -454,11 +460,15 @@ KARARLAR = {
                       "KARAR (kullanıcı, 01.11.2026 07:11 UTC): S9-1 KAPSAMI \"Yalnız belirsizlik onayları\" — (a) Sonucu Belirsiz işteki Yine de Gönder kapsanır; (c) Başarısızları "
                       "Yeniden Dene yalnız (a) zincirinden gelen yeniden denemede kapsanır; (b) yeni gönderimde \"Daha Önce Gönderildi\" uyarısına rağmen bilerek seçilen Yine de "
                       "Gönder KAPSANMAZ (ikinci kopya gider).",
-                      "ana oturum iletisi (CLAUDE.md'de yok): iş \"Atlandı — Daha Önce Gönderildi\", Bu Ay değişmez"]},
+                      "ana oturum iletisi (CLAUDE.md'de yok): iş \"Atlandı — Daha Önce Gönderildi\", Bu Ay değişmez — ana oturum teyidi: BAŞ MİMAR KARARI (adlandırma); atlanan sayılmaz, eski teslim J5 ile sayılır"]},
     "J11": {"kaynak_turu": "kullanıcı (KARAR 01.11.2026 07:07 + 07:11 UTC, S9-2 ve günü, aynen)",
             "metin": ["S9-2 \"İlk hareket – gönderim günü\" — Tüm Hareketler ekstresinin dönem metni ({3}) ilk hareket tarihi – gönderim günü; hareketsiz caride gönderim "
                       "günü – gönderim günü.",
                       "S9-2 GÜNÜ \"Ekstrenin hazırlandığı gün\" — \"gönderim günü\" = gönderimin açıldığı, ekstre ve bakiyenin hazırlandığı gün (kod değişmez; metin PDF ile aynı)."]},
+    "J12": {"kaynak_turu": "kullanıcı (07:11'de seçilen seçeneğin metni AYNEN — ana oturum iletisi); §7a 1'in ekstre yorumunun YERİNE (ana oturum)",
+            "metin": ["'Gönderim günü' = gönderimin açıldığı, ekstrenin ve bakiyenin hazırlandığı gün. İleti metni PDF'teki dönem ve bakiyeyle aynı kalır (ekstre tarihi = "
+                      "düzenleme tarihi, yaygın uygulama).",
+                      "sorunun metni: \"Ekstre PDF'i ve bakiye açılış gününde hazırlanıyor\""]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -610,7 +620,7 @@ def tum_tarihleri(cari_, bugun, mut=()):
     """G6: "Tüm Hareketler"in o günkü tarihleri = kişinin İLK hareketi – o gün (baş mimar KAYIT'ı; karar metninde yok — README §12); hareketi yoksa yok.
     J8 + J11 (README §14.10 Y9b-4): kişiye özel dönem = iletideki dönem = ilk hareket – gün (TEK okuma; M157 eski "ilk – son hareket" okumasını ekler).
     Hareketsiz cari (Y9b-5): gün – gün (M156 eski: tarih yok)."""
-    tarihler_ = [h["tarih"] for h in cari_.get("hareketler", [])]
+    tarihler_ = [h["tarih"] for h in cari_.get("hareketler", []) if "M164" in mut or h["tarih"] <= bugun]   # Y9d-3: açılıştan sonra tarihli hareket dönemde yok
     if not tarihler_:
         return () if "M156" in mut else ((bugun, bugun),)
     oku = [(min(tarihler_), bugun)]
@@ -1324,6 +1334,8 @@ class Benzetim:
             j.tarihler_donem = ctx[3]
             if "M58" in self.mut:
                 j.telefon = tel; j.icerik = self.icerik(c, tp, t, j)
+            elif sablon == "ekstre" and "M163" not in self.mut and "M158" not in self.mut:
+                j.hazir = self.icerik(c, tp, t, j)                        # J12 (Y9d-1): ekstre içeriği toplu işin AÇILIŞINDA hazırlanır (işe gönderimde yazılır)
             tp.isler.append(j)
             self.isler[anahtar] = j
         self.elenen[etiket] = elenen
@@ -1348,8 +1360,10 @@ class Benzetim:
         ad = deger(c["ad"]); firma = deger(self.firmalar[tp.sirket]); tam_ad = temizle(c["ad"])
         hareketler = [(h["tarih"], Decimal(str(h.get("borc", 0))) - Decimal(str(h.get("alacak", 0)))) for h in c["hareketler"]]
         if tp.sablon == "ekstre":
-            if d_bas is None:
-                bas = son = None; devir = Decimal("0"); donem_h = hareketler
+            if d_bas is None:                                   # J11 + J12 (Y9d-3): ilk hareket – açılış günü; açılıştan sonra tarihli hareket girmez
+                gun = tarih(t, self.tz) if "M158" in self.mut else tarih(tp.t, self.tz)
+                bas = son = None; devir = Decimal("0")
+                donem_h = hareketler if "M164" in self.mut else [(tr, d) for tr, d in hareketler if tr <= gun]
             else:
                 bas, son = d_bas, d_son
                 if "M15" in self.mut:
@@ -1362,12 +1376,11 @@ class Benzetim:
             sonu = devir + sum((d for _, d in donem_h), Decimal("0"))
             mesaj_bakiye = sum((d for _, d in hareketler), Decimal("0")) if "M34" in self.mut else sonu
             if d_bas is None:                                   # J11 (S9-2 + 07:11, Y9c-5/6): {{3}} ve PDF = ilk hareket – AÇILIŞ günü; hareketsiz: açılış – açılış
-                gun = tarih(t, self.tz) if "M158" in self.mut else tarih(tp.t, self.tz)
-                ilk = min((h["tarih"] for h in c["hareketler"]), default=gun)
-                bitis = max((h["tarih"] for h in c["hareketler"]), default=gun) if "M155" in self.mut else gun
+                ilk = min((tr for tr, _d in donem_h), default=gun)
+                bitis = max((tr for tr, _d in donem_h), default=gun) if "M155" in self.mut else gun
                 metin3 = donem_metni(ilk, bitis, self.mut)
                 if "M162" not in self.mut:
-                    bas, son = ilk, bitis                       # "metin PDF ile aynı" (devir 0 ve hareketler bütün hesap — değişmedi)
+                    bas, son = ilk, bitis                       # "metin PDF ile aynı" (devir 0; açılış gününe kadarki hareketler — Y9d-3)
             else:
                 metin3 = donem_metni(bas, son, self.mut)
             return {
@@ -1474,7 +1487,7 @@ class Benzetim:
                 if (c["silindi"] or c["pasif"] or c["istemiyor"]) and "M57" not in self.mut:   # §7a 2: kuyrukta işaretlenen / silinen / pasif → Atlandı
                     self.atla(j, "silindi" if c["silindi"] else ("pasif" if c["pasif"] else "istemiyor"), t)
                     continue
-                if "M58" not in self.mut or j.icerik is None:                     # §7a 1: veri GÖNDERİM ANINDA okunur
+                if "M58" not in self.mut or j.telefon is None:                    # §7a 1 + §7a 2: telefon ve eleme GÖNDERİM ANINDA (ekstre içeriği açılışta — J12)
                     tel, tur_ = numara(c.get("telefon"))
                     if tel is None:
                         self.atla(j, tur_, t)
@@ -1483,7 +1496,11 @@ class Benzetim:
                         self.atla(j, "gecikmis_borc_yok", t)
                         continue
                     j.telefon = tel[1:] if "M16" in self.mut else tel
-                    j.icerik = self.icerik(c, tp, t, j)
+                    hazir = getattr(j, "hazir", None)
+                    if tp.sablon == "ekstre" and hazir is not None:          # J12: açılışta hazırlanan ekstre — gönderim ertesi güne kaysa / yeniden gönderilse de AYNI
+                        j.icerik = hazir
+                    else:                                                     # Y9d-2: hatırlatma gönderim anında (M163 / M158: ekstre de, eski düzen)
+                        j.icerik = self.icerik(c, tp, t, j)
                 blok = self.blok.get(("toplu", tp.etiket), 0) if "M52" in self.mut else self.blok.get(("waba", waba), 0)
                 if blok > t:                                                  # §7a 30: Meta sınır hatası → WABA'nın bütün işleri 24 sa
                     self.durum(j, SINIR, t); j.next_at = blok

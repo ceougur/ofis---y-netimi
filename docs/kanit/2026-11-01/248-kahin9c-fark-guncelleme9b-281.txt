@@ -1,0 +1,8 @@
+# Güncelleme 9c — güncelleme 9b'nin 281 senaryosunun TAM model sonucu: eski = git show 8e9b6635:…/senaryolar.json, yeni = 2766a54b
+# komut: git show 8e9b6635:test/bagimsiz/whatsapp-248/kahin/senaryolar.json > g9b.json && python3 -I docs/kanit/2026-11-01/248-kahin9-araclar/fark.py test/bagimsiz/whatsapp-248/kahin g9b.json
+DEĞİŞTİ ICERIK-09-kuyrukta-bakiye-degisti
+    [0].sonuc.isler.T2/B.degiskenler[3] : "3.000,00 TL" → "2.000,00 TL"
+    [0].sonuc.isler.T2/B.pdf.donem_sonu_bakiye : "3000.00" → "2000.00"
+    [0].sonuc.isler.T2/B.pdf.hareket_sayisi : 2 → 1
+1 / 281 eski senaryonun tam sonucu değişti
+# çıkış 0
