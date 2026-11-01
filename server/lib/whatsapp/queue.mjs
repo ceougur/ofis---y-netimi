@@ -17,7 +17,7 @@
 // (iki kullanıcı / iki sekme; süre penceresi YOK — §7a 9); (5) geri yüklenen / taşınan veride defterde canlı olmayan toplu iş yürütülmez.
 // GÜNLÜK SINIR: min(Meta basamağı, elle sınır); sayaç makine defterinde WABA kimliğine göre (kayan 24 saat, farklı kişi; geri yükleme azaltmaz).
 import { randomUUID } from "node:crypto";
-import { isLockError } from "../db.mjs";
+import { PROBE_CLOSED, isLockError } from "../db.mjs";
 import { HttpError } from "../http.mjs";
 import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
@@ -1733,7 +1733,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const list = repairList();
     repairState.lock = false;
     if (!list.length) return true;
-    if (writeLock && !writeLock.guard(LEDGER_LOCK_KEY, ledger)) {
+    // İş X3 (dar kontrol 17 f3): işarete BAKILMAZ (kilit kalkınca 30 sn bayat engel olmasın) — her çağrıda doğrudan kısa sınama; kilitliyse işaret konur (işçi turları
+    // için P1 davranışı: canWrite işarete bakar).
+    const probed = ledger.probeWritable?.();
+    if (probed === PROBE_CLOSED) return false;
+    if (probed === false) {
+      writeLock?.mark(LEDGER_LOCK_KEY);
       repairState.lock = true;
       return false;
     }

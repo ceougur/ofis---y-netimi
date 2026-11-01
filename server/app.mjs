@@ -568,8 +568,9 @@ export function createApp(overrides = {}) {
       const file = resolveDbPath(dirs.dataDir);
       if (!existsSync(file)) {
         const fresh = existsSync(dirs.dataDir) && readdirSync(dirs.dataDir).length === 0 && !store.setting(openedKey, "");
-        // İş V1 (dar kontrol 16): sürüp giden yokluk — kancanın "kalıcı açılamama" ayrımı bu koda bakar (geri yükleme / Ayır sırasında busyCompanies önce yanıt verir).
-        if (!fresh) throw Object.assign(new Error(`veri dosyası bulunamadı: ${file}`), { code: "COMPANY_DATA_MISSING" });
+        // İş V1 (dar kontrol 16) + X2 (dar kontrol 17): sürüp giden yokluk — kancanın "kalıcı açılamama" ayrımı bu alana bakar (geri yükleme / Ayır sırasında
+        // busyCompanies önce yanıt verir). İşaret `code`'a KONMAZ: ekran iletisi (dispatch) code'u gösterir, Türkçe neden + dosya yolu kalsın.
+        if (!fresh) throw Object.assign(new Error(`veri dosyası bulunamadı: ${file}`), { dataMissing: true });
       }
       mkdirSync(dirs.dataDir, { recursive: true });
       child = createApp({

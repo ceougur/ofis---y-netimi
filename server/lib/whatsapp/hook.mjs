@@ -59,11 +59,13 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
   // T1 ayıklaması İş M (soru 8 / K7 + "KİME KAÇ KEZ" ilkesi (5)): başka bilgisayardan TAŞINAN veride bildirimin sahibi bu makinenin defterinde yoktur; o zaman wamid
   // şirket dosyalarında, yalnız BU DEFTERDE AÇILMAMIŞ toplu işlerin işlerinde aranır (queue.movedOwnerOfWamid; aynı bilgisayardaki veride karar defterindir). Sahip
   // şirketin WABA'sı kancanınkiyle aynı olmalı (aşağıda); Yol 2'de imzasız bildirim yine yazılmaz (aynı kurallar). İş U6 (dar kontrol 15): kabulü deftere yazılamamış
-  // işin wamid'i de dosyada aranır (queue.movedOwnerOfWamid). Şirket GEÇİCİ olarak açılamıyorsa (geri yükleme / açılış sürüyor, kilit) lookup.busy işaretlenir →
-  // sahibi bulunamayan bildirim 503 alır (Meta yeniden dener); KALICI açılamama (veri dosyası yok, bozuk kayıt) atlanır.
-  // İş V1 (dar kontrol 16 n2/n11): KALICI yalnız sürüp giden veri dosyası yokluğu (app.mjs appFor COMPANY_DATA_MISSING) — öbür her açılış hatası (geri yükleme / Ayır
-  // sürüyor [busyCompanies], kilit, disk dolu, G/Ç, bozuk dosya, "Ayır" gerektiren kayıt) GEÇİCİ: 503, Meta yeniden dener.
-  const temporary = error => error?.code !== "COMPANY_DATA_MISSING";
+  // işin wamid'i de dosyada aranır (queue.movedOwnerOfWamid). Dosya aramasında YALNIZ gerçekten geçici açılamama (geri yükleme / Ayır sürüyor [busyCompanies,
+  // retryAfter], kilit) lookup.busy koyar → sahibi bulunamayan bildirim 503 (Meta yeniden dener); öbür açılamama (bozuk dosya, "Ayır" gerektiren kayıt, izin, veri dosyası
+  // yok) aramada atlanır — tanınmayan bildirim süresiz 503 almaz (İş X1, dar kontrol 17 f1; karar 6).
+  // İş V1 (dar kontrol 16 n2/n11): sahibi BİLİNEN bildirimde KALICI yalnız sürüp giden veri dosyası yokluğu (app.mjs appFor dataMissing) → 200 + yalnız defter; öbür
+  // her açılış hatası (geçici + bozuk / Ayır / izin) 503 — ama İş X1: 503'ten ÖNCE delivered / read deftere yazılır (karar 1 "teslim her durumda sayılır").
+  const permanent = error => error?.dataMissing === true;
+  const transient = error => Boolean(error?.retryAfter || error?.extra?.retryAfter) || isLockError(error); // HttpError(503, …, { retryAfter }) — appFor busyCompanies
   function movedOwnerOf(wamid, lookup) {
     if (!wamid) return null;
     for (const company of companies() || []) {
@@ -72,7 +74,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
         const found = appFor(company)?.context?.whatsapp?.queue?.movedOwnerOfWamid?.(wamid);
         if (found) return { companyId: company.id, wabaId: found.wabaId };
       } catch (error) {
-        if (temporary(error)) lookup.busy = true;
+        if (transient(error)) lookup.busy = true;
       }
     }
     return null;
@@ -162,9 +164,13 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       try {
         app = appFor(company);
       } catch (error) {
-        // Geri yükleme / açılış sürüyor (geçici): Meta bildirimi yeniden dener (200 dışı yanıtta 7 güne kadar; uygulanmış olanlar yinelenince etkisizdir).
-        if (temporary(error)) return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
-        // İş U (a): KALICI açılamama (veri dosyası yok / bozuk kayıt) → yalnız defter, 200.
+        // Geri yükleme / açılış sürüyor, kilit, bozuk dosya …: 503, Meta bildirimi yeniden dener (200 dışı yanıtta 7 güne kadar; uygulanmış olanlar yinelenince etkisizdir).
+        // İş X1 (dar kontrol 17 f1b): 503'ten ÖNCE delivered / read deftere (o denemeye; eşgüçlü) — Meta bırakırsa da teslim sayılır; failed şirket açılınca uygulanır.
+        if (!permanent(error)) {
+          ledgerOnly(items.filter(item => ["delivered", "read"].includes(String(item.status?.status || "").toLowerCase())), items[0].owner, signed, { applied: 0, ignored: 0, unknown: 0 });
+          return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
+        }
+        // İş U (a) + V1: KALICI açılamama (sürüp giden veri dosyası yokluğu) → yalnız defter, 200.
         log.warn?.(`WhatsApp durum bildirimi: şirket açılamadı (${error?.message}); yalnız defter yazıldı.`);
         ledgerOnly(items, items[0].owner, signed, out);
         continue;
