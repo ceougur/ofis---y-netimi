@@ -17,7 +17,10 @@ Bölümler:
   G  komut satırı (hesapla, karsilastir: 'biri', 'plan_susuyor', 'kisaltilabilir', 'secenek')
   I  kâhin güncellemesi 2 (K1–K8, 31.10.2026): dönem çözümü birim denetimi (ay sonu, 31.12 → 01.01, şubat), karar izlenebilirliği (her karar ≥ 2 senaryo),
      yeniden deneme ve liste çıktılarının iç tutarlılığı, eski 145 senaryoda yeni yaprak türü yok; güncelleme 3 (D1–D8): D4'ün iki okuması beklentiyi değiştirmez,
-     Sonucu Belirsiz artık Zaten Kuyrukta değil; güncelleme 4 (E1–E4, N6): karar izlenebilirliği
+     Sonucu Belirsiz artık Zaten Kuyrukta değil; güncelleme 4 (E1–E4, N6): karar izlenebilirliği; güncelleme 9 (J1–J9): BİLİNEN SINIR işaretleri ve kanca
+     yanıt sayıları tutarlı
+  C (güncelleme 9, J5): "Bu Ay" teslim = Teslim + Okundu İŞ sayısı yalnız her işin tek iletisi olan ve bütün iletileri dosyada olan senaryoda; öbüründe
+     Teslim + Okundu ≤ Σ "Bu Ay" ≤ Meta'daki ileti (J5: "Bu Ay" teslim edilen DENEMEyi sayar)
 """
 import copy
 import json
@@ -187,8 +190,17 @@ def degismez_denetle(ad, sonuc):
                     teslim_toplam = None
     ds = sonuc.get("durum_sayilari")
     if teslim_toplam is not None and isinstance(ds, dict) and all(isinstance(v, int) for v in ds.values()):
-        if teslim_toplam != ds.get(kahin.TESLIM, 0) + ds.get(kahin.OKUNDU, 0):
-            h.append(f"{ad}: teslim_sayac: 'Bu Ay' teslim {teslim_toplam} ≠ Teslim + Okundu iş {ds.get(kahin.TESLIM, 0) + ds.get(kahin.OKUNDU, 0)}")
+        to = ds.get(kahin.TESLIM, 0) + ds.get(kahin.OKUNDU, 0)
+        isler_ = sonuc.get("isler")
+        tek = True
+        if isler_ is not None:                                         # J5: deneme başına; tek iletili ve hepsi dosyada → iş sayısına eşit
+            mi = [j["meta_ileti"] for j in isler_.values()]
+            tek = (all(isinstance(x, int) and x <= 1 for x in mi) and sum(x for x in mi if isinstance(x, int)) == m.get("toplam_meta_ileti")
+                   and not any(j.get("atlanma_nedeni") == kahin.DAHA_ONCE for j in isler_.values()))   # J10: eski iletisi teslim edilip Atlandı olan iş
+        if tek and teslim_toplam != to:
+            h.append(f"{ad}: teslim_sayac: 'Bu Ay' teslim {teslim_toplam} ≠ Teslim + Okundu iş {to}")
+        elif not tek and not (to <= teslim_toplam <= (m.get("toplam_meta_ileti") or 0)):
+            h.append(f"{ad}: teslim_sayac: Teslim + Okundu {to} ≤ 'Bu Ay' {teslim_toplam} ≤ Meta'daki ileti {m.get('toplam_meta_ileti')} bozuk")
     if isinstance(ds, dict) and all(isinstance(v, int) for v in ds.values()) and "isler" in sonuc:
         if sum(ds.values()) != len(sonuc["isler"]):
             h.append(f"{ad}: durum sayıları toplamı ≠ iş sayısı")
@@ -352,6 +364,17 @@ MUTASYON_IPUCU = {
     "M128": "G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder", "M129": "G6-01-son-3-ay-ozel-aralik-7-gun", "M130": "G6-01-son-3-ay-ozel-aralik-7-gun",
     "M131": "H1-01-yine-de-gonder-teslim-daha-once", "M132": "H1-02-yine-de-gonder-basarisiz-belirsiz-surer", "M133": "H2-01-tasima-gonderiliyor-belirsiz",
     "M134": "H3-01-geri-yukleme-dosyasiz-gec-kabul", "M135": "H4-01-r3-son-gonderim-son-kabul-gece-yarisi", "M136": "H4-01-r3-son-gonderim-son-kabul-gece-yarisi",
+    "M137": "J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir", "M138": "J1-03-silinmis-sirket-gec-bildirim", "M139": "J2-01-meta-bekletti-teslim-is-kapanir",
+    "M140": "J3-01-geri-yukleme-sonrasi-gec-failed-yeniden-gonderilir", "M141": "J4-01-suresi-doldu-son-kabulden-meta-bekletti", "M142": "J5-01-bekletme-sonrasi-iki-teslim",
+    "M143": "J6-01-yanit-beklenirken-taninmayan-503-yineleme", "M144": "J6-02-sirket-gecici-acilamaz-503", "M145": "J6-03-bildirim-kaydedilemez-503",
+    "M146": "J1-03-silinmis-sirket-gec-bildirim", "M147": "J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz", "M148": "J8-01-tum-hareketler-bu-ay-ayni-gun",
+    "M150": "J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay",
+    "M151": "J9-01-n3-iptal-sonrasi-ikinci-is-gec-teslim-iki-ileti", "M152": "J1-04-asilmis-belirsiz-gec-teslim-iki-deneme",
+    "M153": "J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz",
+    "M154": "J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez", "M155": "J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun",
+    "M156": "J11-02-hareketsiz-cari-metni-ve-eslik", "M157": "J8-02-tum-hareketler-gecen-ay-ayni-gun", "M158": "J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun",
+    "M159": "J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir", "M160": "J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider",
+    "M161": "J10-05-b-r3-yine-de-gonder-onceki-teslim-ikinci-kopya-gider", "M162": "ICERIK-08-tum-hareketler",
 }
 
 
@@ -506,7 +529,8 @@ def _i1():
 @test("I karar izlenebilirliği: K1–K8, D1–D8, E1–E4, N6 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
 def _i2():
     h = []
-    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5", "G6", "H1", "H2", "H3", "H4"):
+    for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5", "G6", "H1", "H2", "H3", "H4",
+              "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -549,7 +573,7 @@ def _i4():
         if isinstance(o, list):
             return [y for i, v in enumerate(o) for y in gez(v, f"{yol}[{i}]")]
         return []
-    eski = [s for s in TUM if not (len(s["baslik"]) == 2 and s["baslik"][0] in "KDENFGH" and s["baslik"][1].isdigit())]
+    eski = [s for s in TUM if not (len(s["baslik"]) in (2, 3) and s["baslik"][0] in "KDENFGHJ" and s["baslik"][1:].isdigit())]
     for s in eski:
         r = beklenen(s)[0]["sonuc"]
         if gez(r) or "yeniden" in r or "listeler" in r:
@@ -595,6 +619,29 @@ def _i6():
     if n == 0:
         h.append("yeni toplu işte Sonucu Belirsiz elemesi hiç yok")
     return h + [f"bilgi: yeni toplu işte Sonucu Belirsiz elemesi {n} kez"]
+
+
+@test("I güncelleme 9: BİLİNEN SINIR işaretleri (J9 n3 + J5 iki ileti) ve kanca yanıt sayıları tutarlı")
+def _i7():
+    h = []; bilgi = []
+    for s in TUM:
+        bs = s.get("bilinen_sinir") or {}
+        for k, neden in bs.items():
+            if not neden:
+                h.append(f"{s['ad']}: bilinen sınır {k} nedensiz")
+            bilgi.append(f"bilgi: BİLİNEN SINIR {k}: {s['ad']}")
+        if s["baslik"] == "J9" and "n3" not in bs:
+            h.append(f"{s['ad']}: J9 senaryosu 'n3' BİLİNEN SINIR işaretli değil")
+        r = beklenen(s)[0]["sonuc"]
+        if s.get("kanca_yanit_cikti"):
+            ky = r.get("kanca_yanitlari")
+            if not isinstance(ky, dict) or set(ky) != {"200", "503"} or ky["200"] < 1:
+                h.append(f"{s['ad']}: kanca_yanitlari biçimi {ky}")
+        elif "kanca_yanitlari" in r:
+            h.append(f"{s['ad']}: istenmediği hâlde kanca_yanitlari çıktıda (eski senaryolar değişmemeli)")
+    if sum(1 for s in TUM if "n3" in (s.get("bilinen_sinir") or {})) < 2:
+        h.append("n3 BİLİNEN SINIR senaryosu < 2")
+    return h + bilgi
 
 
 # ---- H -----------------------------------------------------------------------------------------------------------------------

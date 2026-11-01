@@ -12,8 +12,8 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 244 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
-   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13).
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 281 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14) + 8 **güncelleme 9b** (S9-1 / S9-2 kararları J10–J11; §14.10–14.12).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
 araştırma belgesi, Meta belge sayfaları (send-messages, document-messages, media, template-media, components, template-management, template-categorization,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (136 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (161 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) ve 9'u J10–J11'in (M154–M162) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -36,7 +36,7 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 34) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 18 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 244 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 281 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -657,3 +657,158 @@ ucuna bağlıydı — ikisi de senaryo yazımı; kâhin kuralı değişmedi.)
 
 ### 13.4 DENENMEYEN
 - Programa karşı sürücü koşusu; 13.1'deki senaryosuz yorumlar (Süresi Doldu, zincir, failed, "Bu Ay"); gerçek sıfırlamanın işleri silmesi (S-13).
+
+## 14. Kâhin güncellemesi 9 — 01.11.2026 kullanıcı onaylı 8 davranış (J1–J8) + n3 BİLİNEN SINIR (J9)
+
+### 14.1 Kaynak ve bağımsızlık
+Kaynak YALNIZ CLAUDE.md "Açık iş" iki KARAR satırı (AYNEN `kahin.KARARLAR` J1–J9): **KARAR 01.11.2026 06:28 UTC** ("önerini uygula" → "Hepsini onaylıyorum": 8 WhatsApp
+davranışı, madde (1)–(8) → J1–J8) ve **KARAR 01.11.2026 05:58 UTC** ("Şimdi durdur" + "Bilinen sınır": n3 → J9). Bunlara ek olarak G0 genel ilkesi (31.10.2026 12:40) ve
+önceki güncellemelerin kararları. Program kodu (`server/`, `client/`, `bulut/`), program testleri, düzeltme ajanı kanıtları (`248-dk*fix-*`), tasarım notları ve dar kontrol
+betikleri GÖRÜLMEDİ; iş listesinden yalnız n3 sorusunun tek satırı (514–515: "aynı kişi + aynı dönem için kuyruktaki İKİNCİ iş, birincinin geç teslimi geldikten sonra da
+gidiyor … yalnız Meta'nın failed/131049 sonrası geç teslimiyle"; A/B seçenekleri) okundu. Bu bölümün 14.2–14.4'ü kodlamadan ve programla karşılaştırmadan ÖNCE yazıldı (ders 40).
+
+### 14.2 Güncelleme 9 yorumları (kâhinin okuması; her birinin kaynağı)
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y9-1 | "Teslim" = İMZALI delivered/read bildirimi, programın tanıdığı bir DENEMEYE: wamid biliniyorsa o deneme; wamid bilinmiyorsa iş kimliği (opaque) → o işin sonucu belli olmayan (kabul bilinmeyen, Sonucu Belirsiz / Gönderiliyor kalmış) SON denemesi — H3'ün dosyasız düzeni artık dosyadaki işte de | J1 + §7a 3 + H3 |
+| Y9-2 | "Her durumda": iş Meta Bekletti (bekleyen), Duraklatıldı / Lisans Nedeniyle Durdu (Meta Bekletti'den), İptal, Durduruldu (Geri Yükleme), Taşınan, Başarısız, Süresi Doldu, şirket dosyasında yok (yedeğe dönüş) ya da şirket silinmiş olsa da deneme TESLİM sayılır → aynı dönemde "Daha Önce Gönderildi" (R3 eşliği — dönem, 7 gün, K5 sınırı — DEĞİŞMEZ) | J1 |
+| Y9-3 | "İş yeniden açılmaz": teslimsiz kapanmış iş geç teslimle gönderime dönmez (POST artmaz); Başarısızları Yeniden Dene o kişiyi "Daha Önce Gönderildi" ile eler (R3/D5 düzeni). Ekran durumu önceki gibi `secenek` (K3/K7 KÂHİN SUSUYOR 7 — değişmedi) | J1 |
+| Y9-4 | "Şirket silinmiş" kâhinde yeni olay `sirket_sil {sirket}`: şirket dosyası (toplu işler, işler) KALICI olarak gider; makine defteri, "Bu Ay", sınır penceresi ve Meta'daki iletiler kalır; geç bildirim defterdeki denemeye yazılır (teslim / başarısız). Gözlem: aynı WABA'yı paylaşan öbür şirketin "Bu Ay"ı + kanca yanıtı (200, J6) | J1, J3, J6 |
+| Y9-5 | Dosyadaki işin "aşılmış" (Yine de Gönder ile geride kalmış) Sonucu Belirsiz denemesine iş kimliğiyle gelen geç bildirim o DENEMEYE yazılır: delivered/read → teslim (R3 + "Bu Ay"), sent → kabul (R3), failed → Başarısız (kişi almadı). Eski kâhin bunu düşürüyordu (yalnız şu an Sonucu Belirsiz duran iş çözülüyordu). İşin ekran durumu: iş Meta Kabul Etti / Gönderildi'deyse teslimle Teslim Edildi (wamid'i bilinen eski denemenin teslimiyle aynı); eski denemenin failed'ı işin ŞU ANKİ denemesine dokunmaz | J1, J3 + G0 (1, 3) |
+| Y9-6 | J2 "iş kapanır" = iş Teslim Edildi (read ise Okundu) olur — §7a 17 "gerçek bilgi yazılır" düzeni; 24 sa sonraki 2. deneme GİTMEZ (POST 1); kesin duruma geçtiği için PDF Meta'dan silinir (§11 S3); "Bu Ay" +1 | J2 + §7a 17 + S3 |
+| Y9-7 | Meta Bekletti iken toplu iş duraklatılmış (Duraklatıldı) ya da lisans salt okunura geçmiş (Lisans Nedeniyle Durdu) iş hâlâ "Meta Bekletti'deki ileti"yi taşır: teslim gelince iş yine kapanır, Devam Et 2. denemeyi GÖNDERMEZ | J2 ("2. deneme gitmez") + J1 ("durdurulmuş olsa da") |
+| Y9-8 | J3: imzalı failed, programın tanıdığı ve TESLİM EDİLMEMİŞ bir denemeye (wamid ya da iş kimliği) gelince o deneme Başarısız sayılır → R3'te sayılmaz, kişi yeniden gönderilebilir. Dosyada olmayan işin wamid'i bilinen KABUL'üne gelen failed da (eski kâhin bunu yok sayıyordu, D7 gereği kabul sayılmaya devam ediyordu → DEĞİŞTİ). Delivered/read'den sonra gelen failed yine yok sayılır (§7a 18; J3 teslimi geri almaz). Dosyada olmayan işin 131049 failed'ı da "almadı" (Meta Bekletti 2. denemesi olamaz; K7). Sıfırlama kâhinde işleri dosyada bırakır (S-13) — orada failed zaten işleniyordu | J3 + §7a 18 + K7 |
+| Y9-9 | J4: Süresi Doldu (3 gün + 1 saat payı, §6 W2 / S2 A) işin Meta'nın kabul ettiği SON denemesinin kabul anından; Meta Bekletti 2. denemesi ve Yine de Gönder TTL'yi yeniden başlatır; eski bir denemenin sonradan (iş kimliğiyle) öğrenilen kabulü TTL'yi geri çekmez. Kâhin zaten böyleydi (kural değişmedi; yeni senaryo + mutasyon) | J4 |
+| Y9-10 | J5: "Bu Ay Gönderilen" = teslim edilen DENEME sayısı (iş değil); ay = o denemenin İLK teslim bildiriminin zamanı (Türkiye saati, §7a 19); WABA kapsamı; aynı denemenin yinelenen ya da sonraki (read) bildirimi bir daha saymaz; dosyada olmayan işin ve silinmiş şirketin denemeleri DAHİL. Bekletme sonrası iki teslim → 2 (kişiye 2 ileti: J5 metninde BİLİNEN SINIR) | J5 + J1 |
+| Y9-11 | J6 kâhine KANCA YANIT katmanı olarak eklendi (çıktıda `kanca_yanitlari {"200", "503"}` yalnız senaryo `kanca_yanit_cikti: true` ise). Programa ULAŞAN her İMZALI bildirim: (a) bildirim kaydedilemiyorsa (`bildirim_yazilamaz`; şirketin dosyası yazılamıyorsa da) 503; (b) bildirimin şirketi geçici açılamıyorsa (`sirket_acilamaz`) 503; (c) wamid'i TANINMAYAN bildirim, program bir Meta yanıtı beklerken (yeni Meta davranışı `gec_kabul`: Meta kabul eder, HTTP yanıtı programın zaman aşımından ÖNCE gecikmeli gelir) ilk görülmesinden en çok 5 dk 503; (d) öbür her durumda 200 (silinmiş — kalıcı — şirket, yinelenen, bekleyen yanıt yokken tanınmayan → 200 ve düşer). 503 alan bildirimi Meta yineler (kâhinde `kanca_kuyrugu` olayı; sahte Meta kuyruğu). Program kapalı / tünel kapalıyken bildirim programa ULAŞMAZ (eski düzen) ve imzasız bildirim kapıcıda düşer — ikisi de sayıma girmez | J6 + D0 20 |
+| Y9-12 | J6 "aynı numarayı başka araçla kullananda o aracın bildirimleri de": başka aracın (bilinmeyen wamid, iş kimliği yok) imzalı bildirimi yanıt beklenirken 503, Meta yineleyince (yanıt artık beklenmiyorsa) 200 ve düşer; programın işlerine etkisi yok | J6 |
+| Y9-13 | J6 eşgüçlülük: 503'ten sonra yinelenen bildirimle son durum, tek bildirimin vereceği durumla aynı (Teslim Edildi, "Bu Ay" 1, POST 1) | J6 + görev metni |
+| Y9-14 | J7 "defterde onarım bekleyen kabul" = Meta'nın kabul ettiği, makine defterine yazılmış ama şirket dosyasına yazılamamış deneme; kâhinde Meta yanıtı geldiği anda `dosya_yazilamaz {sirket}` açıksa oluşur (iş dosyada Gönderiliyor kalır). Varken yeni toplu gönderim BAŞLAMAZ, `baslamadi` nedeni `onarim_bekleyen_kabul` (§7a 29 sırasının SONUNDA). Onarım = dosya yazılabilir olunca iş Meta Kabul Etti; onarımın ZAMANI karar metninde yok → senaryo onarımdan sonra programı kapatıp açar (iki okuma aynı sonuç). §6 W2 "Gönderiliyor istekten önce yazılır" gereği dosyası yazılamayan şirketin işçisi istek göndermez | J7 + §6 W2 |
+| Y9-15 | J8 "Tüm Hareketler'in kişiye özel dönemi" tanımı karar metninde yok: kâhinin G6 KAYIT'ı (ilk hareket – o gün) ile öbür okuma (ilk hareket – son hareket) BİRLİKTE — **İLKEYLE G0 (3)** "şüphede aynı dönem" (G6'daki Son 3 Ay birleşimi gibi). Program tek okuma kullanırsa J8-01 / J8-02'den biri ayrışır → OKUMA FARKI, ana oturuma | J8 + G0 (3) |
+| Y9-16 | J8 "o günün Bu Ay/Geçen Ay'ı" = Tüm Hareketler gönderiminin (toplu işin açıldığı — G1) günündeki Bu Ay (ayın 1'i – o gün) / Geçen Ay (önceki ayın 1'i – son günü) — D4 tarihleri; eşitse Tüm Hareketler o kişi için O AYIN dönemidir (K1: o takvim ayını gösteren her Bu Ay / Geçen Ay ile aynı dönem — G2 kanon düzeni). Öbür yön (Bu Ay / Geçen Ay gönderiminin KENDİ günündeki tarihleri Tüm'ün kişiye özel dönemine eşit) de aynı dönem (G2 düzeni, G0 3) | J8 + D4 + G1 + G2 |
+| Y9-17 | J8 çapraz eşlikte (Tüm ↔ Bu Ay / Geçen Ay) R3 ve Sonucu Belirsiz için Son 3 Ay / Tüm'ün 7 gün penceresi geçerli (G6 düzeni); Zaten Kuyrukta yaşa bakmaz (K2). Senaryolar 7 gün içinde | J8 + K1 + K2 + G6 |
+| Y9-18 | J8 "hareketsiz carinin dönemi iletideki dönem": kâhin Tüm Hareketler ileti dönem metnini bilmiyor (ICERIK-08 `plan_susuyor`) → hareketsiz cari için çapraz eşlik HESAPLANMAZ (G6 KAYIT 12.1-2 gibi), senaryo YOK (14.4 S9-2) | J8 + ICERIK-08 |
+| Y9-19 | J9 (n3, BİLİNEN SINIR — bugünkü davranış, 2.5.0'da düzelir): aynı kişi + aynı dönem için birinci iş teslimsiz kapanmışken (İptal / Başarısız) açılan ve kuyrukta bekleyen İKİNCİ iş, birincinin geç teslimi geldikten SONRA da gönderilir (gönderim anında R3 yeniden denetlenmez) → kişiye 2 ileti, "Bu Ay" 2. Kâhin bunu BEKLER; senaryo `bilinen_sinir: "n3"` ile işaretli; A seçeneğinin modeli mutasyon (M151) olarak durur — program A'ya geçerse fark "BİLİNEN SINIR kalktı" diye okunur | J9 |
+
+### 14.3 Önceki güncellemelerle çelişen yerler (yeni KARAR geçer)
+- **Güncelleme 8 yorum 5** ("dosyada olmayan işin geç teslimi §7a 19 'Bu Ay'a girmez") → **KALKTI** (J1 "geri yüklenmiş / şirket silinmiş olsa da" + J5 "her teslim edilen denemeyi"); M138 eski kuralı tutar.
+- **§2 C değişmezi "Bu Ay teslim = Teslim + Okundu İŞ sayısı"** (§7a 19'un kâhin okuması) → J5 ile DENEME sayısı; değişmez artık yalnız her işin tek iletisi olduğu senaryolarda eşitlik, öbürlerinde Teslim + Okundu ≤ Σ "Bu Ay" ≤ Meta'daki ileti.
+- **Meta Bekletti'deki iletiye gelen teslim** eski kâhinde YOK SAYILIYORDU (iş durum makinesinde değildi; ne R3 ne "Bu Ay") → J2 ile iş kapanır (Y9-6).
+- **"131049 sonrası teslim"**: Meta Bekletti 2. denemesi gittikten SONRA 1. iletinin teslimi eski kâhinde yalnız R3'e giriyor, "Bu Ay"a girmiyordu (iş zaten Teslim) → J5 ile 2 sayılır.
+- **Güncelleme 8 yorum 4** (dosyasız failed → Başarısız) → J3 ile TEYİT ve genişleme (wamid'i bilinen kabul de; Y9-8).
+- **Aşılmış belirsiz denemenin geç bildirimi** eski kâhinde düşüyordu → Y9-5.
+- K3/K7 ekran durumu `secenek` (KÂHİN SUSUYOR 7) DEĞİŞMEDİ: J1 "iş yeniden açılmaz" sayımı söyler, ekran adını söylemez.
+
+### 14.4 KULLANICIYA SORULMALI / KÂHİN SUSUYOR (kodlanmadı — ana oturuma)
+- **S9-1 ★ — KAPANDI (kullanıcı 07:07 "Gitmesin" + 07:11 kapsam; §14.10–14.11, J10):** onaylı Yine de Gönder ile yeniden gönderime alınmış ama HENÜZ GİTMEMİŞ işin ESKİ (aşılmış) denemesinin teslimi gelirse yeni deneme gider mi? A: gitmez (J2 düzeni / G0 3 "aldıysa elenir"); B: gider (kullanıcı "iki kez gidebilir" onayını verdi). Kâhin iş durumuna dokunmaz (bugünkü düzen: gider); SENARYO YOK (kâhinde bekleme anı sıfıra yakın).
+- **S9-2 — KAPANDI (kullanıcı 07:07 + 07:11; J11):** Tüm Hareketler'de {{3}} dönem metni (hareketli ve hareketsiz cari) plan/kararlarda yok (ICERIK-08); J8'in "iletideki dönem"i bunu varsayar → hareketsiz cari için J8 senaryosuz.
+- **S9-3 — KAPANDI (güncelleme 9b: tek okuma, Y9c-7; M149 kalktı, M157 eski birleşimi tutar):** J8 kişiye özel dönemin iki okuması birlikte (Y9-15). Program tek okuma kullanıyorsa ayrışan senaryo OKUMA FARKIDIR.
+- **S9-4 (bilgi):** J6 "en çok 5 dk"nın ölçüsü (bildirimin ilk görülmesinden mi, bekleyen yanıtın başından mı) — kime kaç kez değil (gecikme/kayıp); senaryolar bu sınıra yaklaşmaz.
+- **S9-5 (bilgi):** J7 onarım bekleyen kabulün BAŞKA şirkette yeni gönderimi engelleyip engellemediği ve öbür ret nedenleriyle sırası; senaryo yalnız tek şirket, öbür ret nedeni yokken.
+- **S9-6 (bilgi):** J8 çapraz eşlikte 7 gün penceresi (Y9-17, G6 düzeni) ile G0 (3) "şüphede aynı dönem" 7 günden eski durumda çatışabilir; senaryosuz.
+
+### 14.5 Kodlama sırasında eklenen kâhin ayrıntıları (programa bakılmadan; 14.2'nin uzantısı)
+- **Y9-16 ek:** Tüm Hareketler kişi için bir ayın dönemiyse (kanon), kendi gününde o aya eşit özel aralıkla da (G2 2. yarısı) aynı dönem (J8-06). Son 3 Ay'a kanon verilmez (J8 yalnız Tüm Hareketler'i söyler).
+- **Y9-5 ek:** aşılmış denemenin iş kimliğiyle öğrenilen kabulü programın bildiği kabullere girer (iş çıktısında `kabul` sayısı +1; `kabul ≤ meta_ileti ≤ post` değişmezi korunur).
+- **Y9-11 ek:** "yanıt beklenirken" = program açıkken HERHANGİ bir işin Meta yanıtı bekleniyor (`gec_kabul` penceresi); tanınmayan bildirimin "ilk görülmesi" (wamid, durum, Meta zamanı) anahtarıyla.
+- **Girdi biçimi:** `meta_davranis.kanca` anahtarı iş de olabilir (`"T1/B"`; önceki öncelik: iş → cari → `*`) — aynı kişinin farklı işlerindeki ilk iletileri ayırmak için; eski senaryolarda böyle anahtar yok.
+- **İşçi:** şirket dosyası yazılamıyor (`dosya_yazilamaz`) ya da şirket geçici açılamıyorken (`sirket_acilamaz`) o şirketin işçisi istek göndermez (§6 W2 "Gönderiliyor istekten önce yazılır"); senaryolarda o sırada başka iş yok.
+
+### 14.6 Senaryolar (29) ve mutasyonlar (17)
+| Karar | Senaryo | Sınır | Mutasyon (yakalayan) |
+|---|---|---|---|
+| J1 | J1-01 Meta Bekletti iken duraklatılmış işe teslim → kapanır, Devam Et göndermez · J1-02 Süresi Doldu → 4. gün teslim → "Daha Önce Gönderildi", "Bu Ay" Kasım · J1-03 silinmiş şirket: geç teslim (ortak WABA "Bu Ay" 2) + geç failed, 6 × 200 · J1-04 aşılmış belirsiz geç teslim → "Bu Ay" 2 · J1-05 aşılmış belirsiz geç teslim, Yine de Gönder Başarısız → "Daha Önce Gönderildi" (eski: Sonucu Belirsiz) · J1-06 Meta Bekletti ret + geç teslim → yeniden deneme "Daha Önce Gönderildi" | silinmiş şirket, ay dönümü | M137 (J1-01), M138 + M146 (J1-03), M152 (J1-04) |
+| J2 | J2-01 Meta Bekletti + teslim → Teslim Edildi, POST 1, PDF silinir · J2-02 read → Okundu | 24 sa | M139 (J2-01) |
+| J3 | J3-01 yedeğe dönüş sonrası defterdeki kabule geç failed → gider · J3-02 sıfırlama sonrası geç failed · J3-03 aşılmış belirsizin geç failed'ı + Yine de Gönder Başarısız → gider (eski: Sonucu Belirsiz) · J3-04 eski denemenin failed'ı şu anki kabulü bozmaz | geri yükleme, sıfırlama | M140 (J3-01), M153 (J3-04), M152 (J3-03 de) |
+| J4 | J4-01 Meta Bekletti 2. denemesinden 73 sa (80. sa Gönderildi, 98. sa Süresi Doldu) · J4-02 Yine de Gönder kabulünden 73 sa | 73 sa | M141 (J4-01) |
+| J5 | J5-01 bekletme sonrası iki teslim → 2 (BİLİNEN SINIR) · J5-02 01.11 01:00 (UTC 31.10) teslim → Ekim 1 + Kasım 1 | gece yarısı yerel ≠ UTC | M142 (J5-01) |
+| J6 | J6-01 gecikmeli yanıt: A'nın 2 bildirimi + başka aracın bildirimi 503, yinelenince 200 (3 × 200, 3 × 503), son durum tek bildirimle aynı · J6-02 şirket geçici açılamaz (2 × 200, 1 × 503) · J6-03 bildirim kaydedilemez | 5 dk penceresine yaklaşılmaz | M143 (J6-01), M144 (J6-02), M145 (J6-03, J7-02) |
+| J7 | J7-01 onarım bekleyen kabul → yeni gönderim BAŞLAMAZ ("onarim_bekleyen_kabul"); onarım + yeniden açılış sonrası A "Daha Önce Gönderildi", C gider · J7-02 onarım sırasında gelen bildirim yinelenir, tek ileti | yeniden açılış | M147 (J7-01) |
+| J8 | J8-01 Tüm (01.11–05.11) ↔ aynı gün Bu Ay · J8-02 Tüm (01.10–31.10, ilk–son hareket) ↔ aynı gün Geçen Ay · J8-03 03.11 Tüm kanon → 05.11 Bu Ay · J8-04 Tüm bekleyen ↔ Bu Ay "Zaten Kuyrukta" · J8-05 31.10 23:30 Tüm → 01.11 00:30 Geçen Ay · J8-06 03.11 özel (Kasım kanonu) → 05.11 Tüm | ay sonu, gece yarısı yerel ≠ UTC, 2 gün | M148 (J8-01), M149 (J8-02), M150 (J8-03), M123 (J8-05 de) |
+| J9 | J9-01 Meta Bekletti → İptal → ikinci iş duraklatılmış → geç teslim → Devam Et ile 2. ileti · J9-02 failed → ikinci iş → geç teslim → 2. ileti (ikisi `bilinen_sinir: n3`) | — | M151 (J9-01; A seçeneği) |
+
+**Eski kâhinle (9086b097, ayrı `git archive` kopyası) yeni 29 senaryo:** 21'i FARKLI, 8'i AYNI. AYNI olanlar zaten böyleydi: J1-02, J1-06 (K3/§7a 17), J3-02 (sıfırlamada iş dosyada), J3-04 (eski kâhin
+eski denemenin failed'ını düşürüyordu — iş yine Gönderildi kalıyordu), J4-01/J4-02 (TTL zaten son kabulden), **J9-01/J9-02 (n3 bugünkü davranış — eski kâhin de 2 ileti
+bekliyordu)**. FARKLI'ların 6'sı yalnız yeni girdi türünden (J1-03 `sirket_sil`, J6-01 `gec_kabul`, J6-02/03, J7-01/02 yeni olaylar — eski kâhin tanımıyor); 15'i kural farkı
+(J1-01, J1-04, J1-05, J2-01, J2-02, J3-01, J3-03, J5-01, J5-02, J8-01…06). Karşılaştırmada eski kopyaya YALNIZ iş anahtarlı kanca planı satırı taşındı (girdi biçimi, kural değil).
+Kanıt `docs/kanit/2026-11-01/248-kahin9-eski-kahinle-yeni-senaryolar.txt`.
+
+### 14.7 Değişen eski beklentiler (244 eski senaryonun TAM model sonucu, `git show 9086b097:…/senaryolar.json` ile)
+**4 senaryo değişti, hepsinde YALNIZ `bu_ay`; elle beklenenlerin hiçbiri değişmedi (244/244 elle = model):**
+| Senaryo | Eski → yeni | Neden (KARAR) |
+|---|---|---|
+| E4-01-son-3-ay-sonraki-teslim-7-gun | `bu_ay.W1` {2026-10: 1} → {2026-10: 1, 2026-11: 1} | J5: aynı işin iki teslim edilen denemesi (Y1 30.10, Y3 06.11) ayrı sayılır |
+| E4-02-tum-hareketler-sonraki-teslim-7-gun | aynı | J5 |
+| H3-01-geri-yukleme-dosyasiz-gec-kabul | `bu_ay.W1.2026-10.teslim` 1 → 2 | J1 + J5: dosyada olmayan işin geç teslimi "Bu Ay"a girer (güncelleme 8 yorum 5 kalktı) |
+| H3-02-geri-yukleme-meta-bekletti-gec-teslim | `bu_ay` {} → {W1: {2026-10: 1}} | J1 + J5 (aynı) |
+Öbür 240 senaryonun tam sonucu bayt bayt aynı. Kanıt `docs/kanit/2026-11-01/248-kahin9-eski-244-fark.txt`.
+
+### 14.8 Sürücü için (S-18 … S-26; programa karşı koşmadan önce gereken yeni eşlemeler)
+- **S-18 iş anahtarlı kanca planı:** `meta_davranis.kanca["T1/B"]` → sahte Meta kuralı o işin iletisine (opaque = programın iş kimliği) bağlanmalı; öncelik iş → cari → `*`.
+- **S-19 `gec_kabul`:** `{"gec_kabul": "+10s"}` → sahte Meta `{gecikmeMs: 10000}` ama süre PROGRAMIN zaman aşımından KISA olmalı (D0: zaman aşımı bilinmiyor; programın değeri okunup senaryo süresi altında kaldığı doğrulanmalı — değilse senaryo GEÇERSİZ, fark sayılmaz). Kanca bu sırada (yanıttan ÖNCE) programa ulaşmalı.
+- **S-20 kanca yanıt sayımı:** `kanca_yanit_cikti` senaryolarında sahte Meta'nın programa yaptığı İMZALI kanca POST'larının HTTP kodları sayılır (`{"200": n, "503": m}`); bağlantı kurulamayan / program kapalı teslimler ve imzasız olaylar sayılmaz. `kanca_kuyrugu` olayı = sahte Meta kuyruğunu işlet (`/__sahte/kanca/kuyruk`).
+- **S-21 `sahte_kanca` + `imzali: true`:** başka aracın bildirimi — sahte Meta'nın İMZALI ama bilinmeyen wamid'li, opaque'sız olayı (`kanca/ham` imzalı).
+- **S-22 `sirket_sil {sirket}`:** programda şirketi kalıcı sil (Şirketi Sil); sonra öbür şirkette (aynı WABA) "Bu Ay" okunur; silinen şirketin toplu işleri / işleri sonuçtan düşer (`toplular`, `isler` yalnız kalan şirket); `meta.post` dosyadaki işlerden (bilinen ihlal `post_toplam`).
+- **S-23 `sirket_acilamaz {sirket, acik}`:** şirket dosyasını geçici açılamaz yap (ör. başka süreçte özel kilit) ve geri al; **`bildirim_yazilamaz {acik}`:** bildirim kaydı yazılamaz (ör. bildirim/defter dosyası yazma kilidi); **`dosya_yazilamaz {sirket, acik}`:** şirket dosyası YAZMAYA kapalı ama makine defteri yazılabilir (J7). Sürücü her birinin gerçekten oluştuğunu (programın yanıtı/günlüğü) okumalı — oluşmadıysa senaryo GEÇERSİZ.
+- **S-24 J7 okunacak:** yeni gönderim başlatma yanıtının nedeni → `baslamadi.<etiket> = "onarim_bekleyen_kabul"` (programın Türkçe nedeni eşlenir); onarımdan sonra `kapat` / `ac`.
+- **S-25 `bilinen_sinir`:** `n3` / `J5` işaretli senaryoda fark çıkarsa önce "BİLİNEN SINIR kalktı mı" diye okunur (J9-01/02: POST 1 çıkarsa program A seçeneğine geçmiş demektir — hata değil, ana oturuma).
+- **S-26 J8:** dönem `"tum"` + hareket tarihleri 1'i / ay sonu olan cariler (P, Q, S); program "kişiye özel dönem"i tek okumayla hesaplıyorsa J8-01 ya da J8-02'den biri ayrışır → OKUMA FARKI (14.4 S9-3).
+- Gözlemler: iş durumları (kontrol anlarında), `meta.post`, `bu_ay` (WABA × ay), `elenen` / `olusmadi` / `onceki_uyari`, `yeniden`, `baslamadi`, `kanca_yanitlari`, `isler.*.medya_silme`.
+
+### 14.9 Kanıt ve DENENMEYEN
+- Kendi testi **296/296** (F mutasyon **153/153**; yeni I7: BİLİNEN SINIR işaretleri + kanca yanıt sayıları); senaryolar **273/273** elle = model; kanıt `docs/kanit/2026-11-01/248-kahin9-*`.
+- DENENMEYEN: programa karşı sürücü koşusu (görev gereği; S-18…S-26 eşlemeleri yazılmadı); S9-1 (bekleyen Yine de Gönder + eski denemenin teslimi); hareketsiz cari J8 (S9-2); J6 5 dk sınırı (S9-4);
+  J7 başka şirkete etkisi / öbür ret nedenleriyle sırası (S9-5); J8 7 günden eski çapraz eşlik (S9-6); gerçek "Şirket Verisini Sıfırla"nın işleri silmesi (S-13); sahte Meta sunucusu testleri
+  YENİDEN KOŞULMADI (sahte-meta/ değişmedi).
+
+### 14.10 Güncelleme 9b — S9-1 ve S9-2 kullanıcı kararları (KARAR 01.11.2026 07:07 UTC) — yorumlar (kodlamadan ve karşılaştırmadan ÖNCE)
+Kaynak: CLAUDE.md "Açık iş" KARAR 07:07 UTC (AYNEN `kahin.KARARLAR` J10 = S9-1 "Gitmesin", J11 = S9-2 "İlk hareket – gönderim günü"). Program kodu görülmedi.
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y9b-1 | İşteki Yine de Gönder ile yeniden gönderime alınmış, yeni denemesi HENÜZ İSTEK OLARAK GİTMEMİŞ iş (Bekliyor / Sınır Nedeniyle Bekliyor / Duraklatıldı / Lisans Nedeniyle Durdu / açılışta sorulan) için eski (aşılmış) denemenin imzalı delivered/read bildirimi gelirse yeni deneme GİTMEZ: iş Teslim Edildi (read → Okundu) olur — J2 Y9-6 düzeni (PDF silinir, "Bu Ay" o deneme için +1), sonra "Daha Önce Gönderildi". Eski denemenin "sent"i (kabul) ya da failed'ı (almadı, J3) işi kapatmaz — yeni deneme gider | J10 (S9-1) + G0 (3) |
+| Y9b-2 | **İLKEYLE G0 (3)** (kullanıcı kararı değil, aynı kural): Başarısızları Yeniden Dene ile yeniden gönderime alınmış işte de eski (Başarısız sayılmış) denemenin geç teslimi gelirse yeniden deneme GİTMEZ (J1 "teslim her durumda" + ilke 3 "aldıysa elenir") | J1 + G0 (3) |
+| Y9b-3 | Tüm Hareketler {{3}} = "<ilk hareket> – <gönderim günü>"; ilk hareket = carinin EN ESKİ hareket tarihi; gönderim günü = iletinin GERÇEKTEN gönderildiği yerel gün (G1 metnindeki "gönderim günü" anlamında — toplu işin açıldığı gün değil; günlük sınırla ertesi güne kayan kişinin metni ertesi günü yazar). Hareketsiz cari "<gönderim günü> – <gönderim günü>". ICERIK-08'in `plan_susuyor` yaprağı KALKAR. PDF içeriği DEĞİŞMEZ (bütün hesap, devir 0; S9-2 yalnız {{3}}'ü söyler) | J11 (S9-2) + G1 |
+| Y9b-4 | S9-3 yeniden: J8 "kişiye özel dönem" = iletideki dönem (J8 "hareketsiz carinin dönemi iletideki dönem" + S9-2) = ilk hareket – gün → TEK OKUMA; Y9-15'in "ilk – son hareket" okuması DÜŞER (J8-02'nin beklentisi değişir: Q'nun dönemi 01.10–05.11 ≠ Geçen Ay → gider). Kalan tek ayrım "gün": eşlikte G1 "toplu işin açıldığı gün", iletide S9-2 "gönderim günü"; ikisi ayrı düşerse (sınırla ertesi gün) bir denemenin dönemi İKİ gün ucuyla da eşleşir — **İLKEYLE G0 (3)** şüphede aynı dönem. Yeni toplu işin kendi bağlamı açılış günüyle (gönderim günü henüz yok) | J8 + J11 + G1 + G0 (3) |
+| Y9b-5 | Hareketsiz cari artık eşleşir: dönemi (gün, gün); ayın 1'inde o günün Bu Ay'ına eşit → o ayın dönemi (Y9-16 kanonu); özel aralık (gün – gün) ile G6 eşliği; 7 gün penceresi (Y9-17) aynen. Y9-18 ve 14.4 S9-2 KAPANDI | J8 + J11 |
+
+### 14.11 Güncelleme 9b eki — S9-1 kapsamı ve S9-2 günü (KARAR 01.11.2026 07:11 UTC) — yorumlar (kodlamadan ve karşılaştırmadan ÖNCE)
+Kaynak: CLAUDE.md KARAR 07:11 UTC (AYNEN `kahin.KARARLAR` J10 ve J11'e eklendi) + ana oturumun iletisi ("iş 'Atlandı — Daha Önce Gönderildi', Bu Ay değişmez" — bu ayrıntı
+CLAUDE.md satırında YOK, yalnız iletide; ana oturum teyit etsin). **14.10'un Y9b-2'si, Y9b-3'ün "gerçekten gönderildiği gün" kısmı ve Y9b-4'ün gün birleşimi bu kararla DÜŞTÜ.**
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y9c-1 | S9-1 yalnız BELİRSİZLİK ONAYLARINI kapsar: (a) Sonucu Belirsiz işteki Yine de Gönder (asıl işte belirsiz kalan denemeye verilen dahil — G0-02 yolu) iş üzerinde "belirsizlik onayı" izi bırakır. Yeni ileti henüz istek olarak gitmemişken o işin ESKİ bir iletisinin imzalı delivered/read bildirimi gelirse yeni ileti GİTMEZ: iş **Atlandı**, atlanma nedeni **daha_once_gonderildi**; PDF silinir (teslim kesin durum, §11 S3) | J10 (07:11 a) + ileti |
+| Y9c-2 | (c) Başarısızları Yeniden Dene YALNIZ (a) zincirindeki işte kapsanır (iş daha önce belirsizlik onayıyla gönderildiyse iz yeniden denemeye taşınır). Zincir dışındaki düz yeniden denemede eski iletinin geç teslimi yeni iletiyi DURDURMAZ — ikinci kopya gider (J1 gereği teslim yine sayılır: R3, "Bu Ay") | J10 (07:11 c) |
+| Y9c-3 | (b) Yeni gönderimde R3 "Daha Önce Gönderildi" uyarısına rağmen bilerek seçilen Yine de Gönder KAPSANMAZ: önceki işin iletisi bu yeni iş beklerken teslim edilse de yeni ileti gider (ikinci kopya — kullanıcının bilerek verdiği karar; J9 n3 ile karışmaz: n3'te uyarı yoktu) | J10 (07:11 b) |
+| Y9c-4 | "Bu Ay değişmez" (yalnız iletide) = ATLANAN yeni ileti hiçbir şey saymaz; eski iletinin teslimi J5 ("her teslim edilen denemeyi sayar", kullanıcı kararı) gereği SAYILIR. Öbür okuma (eski teslim de sayılmaz) J5 ile çelişir → kâhin J5'i uygular; ana oturum teyit etsin | J5 + ileti |
+| Y9c-5 | S9-2 günü: "gönderim günü" = gönderimin (toplu işin) AÇILDIĞI, ekstre ve bakiyenin hazırlandığı gün; gönderim sınırla ertesi güne kaysa da {{3}} açılış gününde kalır. Yeniden deneme / Yine de Gönder asıl işin açılış gününü taşır (K4 + G1). Tüm Hareketler {{3}} = "<ilk hareket> – <açılış günü>", hareketsiz "<açılış günü> – <açılış günü>" | J11 (07:11) + G1 + K4 |
+| Y9c-6 | "Metin PDF ile aynı": Tüm Hareketler PDF'inin dönem uçları da {{3}} ile aynı (`pdf.donem_bas` = ilk hareket / hareketsizde açılış günü, `pdf.donem_son` = açılış günü; eskiden None). Devir 0 ve hareketler "bütün hesap" olarak DEĞİŞMEZ (açılış gününden SONRA tarihli hareketin PDF'e girip girmediği karar metninde yok — senaryolarda böyle hareket yok; bilgi) | J11 (07:11 "metin PDF ile aynı") |
+| Y9c-7 | J8 eşliği: kişiye özel dönem = iletideki dönem = ilk hareket – AÇILIŞ günü → TEK okuma, gün birleşimi YOK (G1 ile de aynı gün). S9-3 KAPANDI | J8 + J11 + G1 |
+| Y9c-8 | KARAR "ekstre ve bakiyenin hazırlandığı gün" der; kâhin içerik okumasını §7a 1 gereği (veri GÖNDERİM ANINDA okunur — ICERIK-09, KISI-01, ICERIK-12) DEĞİŞTİRMEDİ; yalnız {{3}}/PDF dönem günü açılış günü. Program içeriği açılışta donduruyorsa ICERIK-09 ailesi ayrışır — bu §7.4 madde 15'teki bilinen fark (T2-6 baş mimar "içerik ilk hazırlıkta donar"); bilgi, ana oturuma | §7a 1 + J11 |
+
+### 14.12 Güncelleme 9b sonuçları (senaryolar, mutasyonlar, değişen beklentiler, sürücü, kanıt)
+**Senaryolar (8):**
+| Karar | Senaryo | Mutasyon (yakalayan) |
+|---|---|---|
+| J10 (a) | J10-01 işteki Yine de Gönder SINIRDA bekliyor, eski iletinin teslimi → Atlandı (daha_once_gonderildi), POST 1, "Bu Ay" 2 (eski teslim J5 ile sayılır) · J10-02 Yine de Gönder + hemen Duraklat → Atlandı, Devam Et göndermez | M154 (J10-01; J10-02 de) |
+| J10 (c) | J10-03 (a) zinciri: belirsiz → Yine de Gönder Başarısız → 1. iletinin geç failed'ı → Başarısızları Yeniden Dene duraklatıldı → 1. iletinin teslimi → yeniden deneme GİTMEZ (Atlandı) · J10-04 düz yeniden deneme (onay izi yok) → eski teslime rağmen GİDER (2 ileti) | M154 (J10-03), M160 (J10-04) |
+| J10 (b) | J10-05 T1 kabul (teslimsiz) → T2'de R3 Yine de Gönder, duraklatıldı → T1 teslim → T2/B GİDER (ikinci kopya) | M161 (J10-05) |
+| J11 | J11-01 05.11 23:30 Tüm, sınır 1: R ertesi gün gider ama {{3}} ve PDF "15.10.2026 – 05.11.2026" (açılış günü) · J11-02 hareketsiz: 01.11 Tüm "01.11.2026 – 01.11.2026" → 03.11 Bu Ay elenir; 05.11 Tüm "05.11.2026 – 05.11.2026" → Bu Ay gider, özel 05.11–05.11 elenir · J11-03 ertesi güne kayan U: 07.11 özel 01.11–06.11 GİDER, özel 01.11–05.11 elenir | M155, M158 (J11-01), M156 (J11-02), M159 (J11-03), M157 (J8-02), M162 (ICERIK-08) |
+
+**Mutasyon:** 161/161 (M149 kalktı — güncelleme 9b'de doğru model oldu; yeni M154–M162).
+
+**Değişen beklentiler** (tam model sonucu; kanıt `docs/kanit/2026-11-01/248-kahin9b-fark-*.txt`):
+- J11 (S9-2 + 07:11) — Tüm Hareketler `degiskenler[2]` `{"plan_susuyor"}` → "<ilk hareket> – <açılış günü>" ve `pdf.donem_bas/donem_son` None → aynı tarihler: **ICERIK-08** (elle de: "10.09.2026 – 30.10.2026", PDF 2026-09-10 / 2026-10-30), **K1-05** (elle de: T2/Y PDF 2026-01-15 / 2026-10-31), K1-06, K2-02, D3-02, E4-02, G6-02, G6-04 (yalnız tam sonuç), güncelleme 9'un J8-01, J8-03, J8-04, J8-05 (yalnız tam sonuç).
+- S9-3 tek okuma (Y9c-7) — **J8-02**: Q artık ELENMEZ (dönemi 01.10–05.11 ≠ Geçen Ay); elle değişti (elenen {} , T2 iki iş, POST Q 2).
+- Güncelleme 9'dan beri değişmeyen: E4-01 (J5), H3-01/H3-02 (J1 + J5) §14.7'deki gibi. Öbür eski senaryoların tam sonucu bayt bayt aynı (9086b097'ye göre 244'ün 11'i, da86a2df'ye göre 273'ün 13'ü değişti).
+
+**Sürücü için (S-27 … S-31):**
+- **S-27 (J10 a/c):** işteki Yine de Gönder / Başarısızları Yeniden Dene'den HEMEN sonra (aynı anda) Duraklat ya da günlük üst sınırla bekletme; 1. iletinin gecikmeli imzalı kancası (iş anahtarlı plan, S-18). Okunacak: iş durumu "Atlandı" + atlanma nedeni "Daha Önce Gönderildi" → `daha_once_gonderildi`; POST sayısı; Devam Et sonrası yeni POST yok.
+- **S-28 (J10 c):** 1. iletiye önce `failed` sonra `delivered` (aynı wamid) kancası; programın yeniden denemeyi kabul ettiği (alınan) okunur.
+- **S-29 (J10 b):** T2 başlatmada R3 uyarısında "Yine de Gönder" (`onceki: "gonder"`) + aynı anda Duraklat; T1'in teslimi; Devam Et → T2/B POST'u.
+- **S-30 (J11):** Tüm Hareketler ileti değişkeni {{3}} ve PDF'teki dönem metni okunur (iki tarih); günlük sınırla ertesi güne kayan kişide de açılış günü beklenir. PDF'te "bütün hesap" (devir 0, hareket sayısı) aynen.
+- **S-31 (J11 hareketsiz):** hareketi olmayan cari kurulur (`hareketler: []`); sahte saat 01.11 / 03.11 / 05.11.
+
+**KÂHİN SUSUYOR / bilgi (9b):** Y9c-4 ("Bu Ay değişmez" — eski teslim J5 ile sayılır; ana oturum teyit), Y9c-6 (açılıştan sonra tarihli hareketin Tüm Hareketler PDF'ine girip girmediği),
+Y9c-8 (içerik okuma anı §7a 1 ↔ KARAR "ekstre ve bakiyenin hazırlandığı gün"; ICERIK-09 ailesi). DENENMEYEN: programa karşı sürücü koşusu.
+
+**Kanıt:** kendi testi **304/304** (F mutasyon **161/161**), `TZ=UTC` ve `TZ=Europe/Istanbul`; senaryolar 281/281 elle = model; `docs/kanit/2026-11-01/248-kahin9b-*`.
