@@ -267,6 +267,11 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     deliveryOf: db.prepare("SELECT at FROM attempt_deliveries WHERE job_id = ? AND attempt = ?"),
     firstDelivery: db.prepare("SELECT attempt, at FROM attempt_deliveries WHERE job_id = ? ORDER BY rowid LIMIT 1"),
     legacyDeliveryAt: db.prepare("SELECT at FROM deliveries WHERE job_id = ?"),
+    // İş W (KULLANICI KARARI S9-1): "Yine de Gönder" KAYNAK ZİNCİRİ (anyway_links özyineli + şirket dosyasındaki inherit_of zinciri ?2 [JSON dizi]) — kendisi hariç,
+    // teslimi olan ilk iş.
+    chainDelivered: db.prepare(`WITH RECURSIVE chain(id) AS (SELECT ?1 UNION SELECT value FROM json_each(?2) UNION SELECT al.source_job_id FROM anyway_links al JOIN chain c ON al.job_id = c.id)
+      SELECT c.id AS jobId, COALESCE((SELECT MIN(a.at) FROM attempt_deliveries a WHERE a.job_id = c.id), (SELECT d.at FROM deliveries d WHERE d.job_id = c.id)) AS at
+      FROM chain c WHERE c.id <> ?1 AND COALESCE((SELECT MIN(a.at) FROM attempt_deliveries a WHERE a.job_id = c.id), (SELECT d.at FROM deliveries d WHERE d.job_id = c.id)) IS NOT NULL LIMIT 1`),
     // T2-3/4
     hookEvent: db.prepare("INSERT INTO hook_events (waba_id, path_hash, verify_hash, base, state, reason, error, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"),
     hookLast: db.prepare("SELECT * FROM hook_events WHERE waba_id = ? ORDER BY seq DESC LIMIT 1"),
@@ -382,14 +387,19 @@ export function openWaLedger({ dir, log = console, fault = null }) {
         const legacy = q.deliveredJob.get(String(row.jobId)) ? previous.at(-1) : null;
         return legacy ? { attempt: legacy.attempt, outcome: "delivered", wamid: legacy.wamid || "", at: q.legacyDeliveryAt.get(String(row.jobId))?.at || legacy.at || "" } : null;
       };
-      const delivered = deliveredOf();
+      // İş W (KULLANICI KARARI S9-1, 01.11.2026; ilke 3): "Yine de Gönder" (belirsizlik onayı) zincirinin KAYNAĞINDAN teslim geldiyse yeni ileti GİTMEZ.
+      const sourceDeliveredOf = () => {
+        const hit = q.chainDelivered.get(String(row.jobId), JSON.stringify(Array.isArray(row.sources) ? row.sources.map(String) : []));
+        return hit ? { attempt: null, outcome: "source-delivered", sourceJobId: hit.jobId, wamid: "", at: hit.at } : null;
+      };
+      const delivered = deliveredOf() || sourceDeliveredOf();
       if (delivered) return { ok: false, previous: delivered };
       const blocking = previous.find(open);
       if (blocking) return { ok: false, previous: blocking };
       guard("claim", row);
       db.exec("BEGIN IMMEDIATE");
       try {
-        const deliveredNow = deliveredOf();
+        const deliveredNow = deliveredOf() || sourceDeliveredOf();
         if (deliveredNow) {
           db.exec("ROLLBACK");
           return { ok: false, previous: deliveredNow };

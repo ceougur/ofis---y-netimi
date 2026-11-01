@@ -692,7 +692,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // options.inherit (T1 P6): "Yine de Gönder"in kaynağı olan Sonucu Belirsiz iş — yeni iş onun dondurulmuş içeriğini ve Meta'daki PDF'ini devralır (sendAnyway).
   // options.period (dar kontrol 4 ORTA-1): asıl toplu işin kayıtlı dönemi ve "Yine de Gönder" kararı { from, to, preset, sendAgainAfter } (retryFailed / sendAnyway);
   // yalnız iç çağrı — rota createBatch(user, body) ile çağırır, gövdedeki "period" / "sendAgainAfter" / "send_again_after" alanları okunmaz.
-  async function createBatch(user, body, { inherit = null, period = null } = {}) {
+  async function createBatch(user, body, { inherit = null, period = null, chain = [] } = {}) {
     const record = preconditions();
     const requestId = typeof body.requestId === "string" && /^[A-Za-z0-9_-]{6,100}$/.test(body.requestId) ? body.requestId : "";
     const requestKey = requestId ? `${user.id}|${requestId}` : null;
@@ -746,10 +746,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         store.run("UPDATE wa_jobs SET inherit_of = ? WHERE batch_id = ? AND account_id = ? AND state = 'pending'", inherit.id, batchId, inherit.account_id);
         inheritContent(batchId, inherit.id, at);
       }
+      // İş W (S9-1 c): yeniden denemede zincir bağı (yalnız bağ).
+      for (const source of chain) store.run("UPDATE wa_jobs SET inherit_of = ? WHERE batch_id = ? AND account_id = ? AND state = 'pending'", source.id, batchId, source.account_id);
     });
-    if (inherit) {
-      const target = store.get("SELECT id FROM wa_jobs WHERE batch_id = ? AND inherit_of = ?", batchId, inherit.id);
-      if (target) ledger.anywayLink({ jobId: target.id, sourceJobId: inherit.id, at });
+    for (const source of [...(inherit ? [inherit] : []), ...chain]) {
+      const target = store.get("SELECT id FROM wa_jobs WHERE batch_id = ? AND inherit_of = ?", batchId, source.id);
+      if (target) ledger.anywayLink({ jobId: target.id, sourceJobId: source.id, at });
     }
     audit(user, "whatsapp.batch.created", batchId, { kind, period: plotted.period, total: summary.total, sendable: summary.sendable, skipped: summary.skipped });
     notify(batchId);
@@ -823,7 +825,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const row = editable(id);
     const ids = store.all("SELECT account_id AS id FROM wa_jobs WHERE batch_id = ? AND state = 'failed' ORDER BY rowid", row.id).map(item => item.id);
     if (!ids.length) fail(400, "Bu gönderimde yeniden denenecek başarısız ileti yok.", "whatsapp-nothing");
-    return createBatch(user, { kind: row.kind, ids, requestId: body.requestId }, { period: { ...periodOfRow(row), retry: true } });
+    // İş W (KULLANICI KARARI S9-1 (c)): "Yine de Gönder" zincirindeki (inherit_of dolu) başarısız işin yeniden denemesi zincir bağını TAŞIR — kaynağın geç teslimi bu işi de
+    // durdurur (içerik devralınmaz; yalnız bağ). Zincir dışı yeniden deneme değişmez.
+    const chain = store.all("SELECT id, account_id FROM wa_jobs WHERE batch_id = ? AND state = 'failed' AND inherit_of <> '' ORDER BY rowid", row.id);
+    return createBatch(user, { kind: row.kind, ids, requestId: body.requestId }, { period: { ...periodOfRow(row), retry: true }, chain });
   }
   // T1 P6 (S3 A + §7a 15; BAŞ MİMAR KARARI): "Yine de Gönder" AYNI iletiyi yeniden gönderir — yeni iş belirsiz işin dondurulmuş değişkenlerini ve (29 gün geçerliyse)
   // Meta'daki PDF'ini devralır: PDF yeniden yüklenmez, iki ileti de aynı içeriği taşır (ikisi birden ulaşsa da çelişmez). PDF'in TEK sahibi artık yeni iştir: belirsiz
@@ -1224,7 +1229,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       const keyDay = keyDayOfBatch(batch);
       // İş Q1: "Tüm Hareketler"de talebin anahtar kümesine kişinin dönemi (ilk hareket – dönem sonu; iletideki metinle aynı kaynak) girer.
       const first = firstOfAll(batchPeriod, account?.ledger || []);
-      claim = ledger.claim({ jobId: job.id, attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, batchPeriod, keyDay), periodKeys: periodKeysOf(batch.kind, batchPeriod, keyDay, { first }), at: iso() });
+      claim = ledger.claim({ jobId: job.id, sources: sourceChainOf(job), attempt, batchId: batch.id, companyId, wabaId: batch.waba_id, phone, accountId: job.account_id, kind: batch.kind, periodKey: periodKeyOf(batch.kind, batchPeriod, keyDay), periodKeys: periodKeysOf(batch.kind, batchPeriod, keyDay, { first }), at: iso() });
     } catch (error) {
       // Defter yazılamadı (disk dolu, kilit): istek GÖNDERİLMEZ, iş bekler. Kilitse sonraki arka plan turları deftere yazmayı denemez (İş P1 işareti).
       if (isLockError(error)) {
@@ -1238,6 +1243,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       return { did: true };
     }
     if (!claim.ok) {
+      // İş W (KULLANICI KARARI S9-1): "Yine de Gönder" zincirinin kaynağı teslim edildi — bu işin iletisi GİTMEZ: Atlandı, neden "Daha Önce Gönderildi" (Teslim Edildi DEĞİL;
+      // bu işin iletisi gitmedi). Talep yazılmadı → deneme numarası ve önceki denemenin wamid'i geri (geç teslimi gelirse K1′ satırı Teslim Edildi yapar). Bu Ay değişmez.
+      if (claim.previous.outcome === "source-delivered") {
+        updateJob(job.id, { state: "skipped", skip_reason: "Daha Önce Gönderildi", attempt: job.attempt || 0, wamid: job.wamid || null, sending_at: job.sending_at || null, closed_at: iso(), next_at: null });
+        finishIfDone(batch.id);
+        notify(batch.id);
+        return { did: true };
+      }
       // İş V4 (dar kontrol 16 n9; ilke 3): işin teslimi defterde (geç teslim dahil) — kişi aldı; ikinci kez gönderilmez, iş Teslim Edildi.
       if (claim.previous.outcome === "delivered") {
         const at = claim.previous.at || iso();
@@ -1687,6 +1700,12 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const free = wamid && !store.get("SELECT 1 AS x FROM wa_jobs WHERE wamid = ? AND id <> ?", wamid, jobId);
     updateJob(jobId, { state: "delivered", attempt, ...(free ? { wamid } : {}), accepted_at: ledger.acceptanceAt?.(jobId, attempt) || at, sent_at: at, delivered_at: at, closed_at: iso(), next_at: null, error_code: null, error_text: "" });
     return true;
+  }
+  // İş W: işin şirket dosyasındaki "Yine de Gönder" kaynak zinciri (inherit_of; taşınan veride defter bağı yoksa da). Defter claim özyineli anyway_links'i ayrıca yürür.
+  function sourceChainOf(job) {
+    const out = [];
+    for (let cur = job?.inherit_of || ""; cur && out.length < 20 && !out.includes(cur); cur = jobRow(cur)?.inherit_of || "") out.push(cur);
+    return out;
   }
   // ---------- İş U6: defter onarımı ----------
   function repairList() {
