@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkUfix-mutasyon-mU7-sent-temizlemez-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-u/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-u/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "66b948c4afa690751993c926578a4017ab2d8590",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 80,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T03:33:54.388Z",
+  "sure_sn": 54.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 67,
+    "gecen": 66,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T14-sent imzalı iş kimliği · Sonucu Belirsiz → sent: Gönderildi, belirsizlik metni ve hata kodu temiz (U7; K7 sent kolu)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:684:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkUfix-mutasyon-mU7-sent-temizlemez-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "d1fda39de03ce18a6fa940b167d7aa365d3386f18f76459b33a6915343c0f4ff",
+  "ham_cikti_bayt": 25786
+}

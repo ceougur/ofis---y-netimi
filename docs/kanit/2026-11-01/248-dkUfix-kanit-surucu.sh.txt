@@ -1,0 +1,38 @@
+#!/bin/bash
+# İş U kanıt sürücüsü: eski kod ad4db62b (ayrı archive kopyası) + mutasyonlar (HEAD kopyası) + geri dönüş + ölçüm — iki TZ, her koşu tools/kanit.mjs kos ile.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos
+SP=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad
+W=/home/user/wt-t2fix-248
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+T="whatsapp-t-durum-karar-tablosu-248.test.mjs whatsapp-u5-teslim-denemesi-gocu-248.test.mjs"
+kos() {
+  local ad=$1 kok=$2; shift 2
+  local files=(); for f in "$@"; do files+=("$kok/test/$f"); done
+  for tz in UTC Europe/Istanbul; do
+    local out=$K/kos-$ad-${tz//\//_}.out
+    TZ=$tz node tools/kanit.mjs kos "$ad-${tz//\//_}" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 "${files[@]}" > $out 2>&1
+    echo "$ad $tz çıkış=$? $(grep '\[kanit\]' $out | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-100)"
+    grep -E "^    not ok|^  not ok" $out | cut -c1-110 | sed 's/^/      /'
+  done
+}
+echo "== ESKİ KOD ad4db62b"
+kok=$SP/u5-eski-ad4db62b
+for f in $T; do cp $W/test/$f $kok/test/$f; done
+rm -rf -- "$kok/test/fixtures/whatsapp-defter-ad4db62b"; cp -r $W/test/fixtures/whatsapp-defter-ad4db62b $kok/test/fixtures/
+kos 248-dkUfix-eski-ad4db62b $kok $T
+echo "== GERİ DÖNÜŞ (yeni defter eski kodla)"
+TZ=UTC node tools/kanit.mjs kos 248-dkUfix-u5-geri-donus -- node --disable-warning=ExperimentalWarning $K/u5-geri-donus.mjs $W $kok > $K/kos-geri.out 2>&1; echo "geri dönüş çıkış=$? $(grep '\[kanit\]' $K/kos-geri.out | tail -1 | cut -c1-140)"; grep '"ok"' $K/kos-geri.out
+echo "== ÖLÇÜM (200.000 wa_jobs; yeni / eski)"
+TZ=UTC node tools/kanit.mjs kos 248-dkUfix-u6-olcum-yeni -- node --disable-warning=ExperimentalWarning $K/u6-olcum.mjs $W > $K/kos-olcum-yeni.out 2>&1; echo "ölçüm yeni çıkış=$?"
+TZ=UTC node tools/kanit.mjs kos 248-dkUfix-u6-olcum-eski-ad4db62b -- node --disable-warning=ExperimentalWarning $K/u6-olcum.mjs $kok > $K/kos-olcum-eski.out 2>&1; echo "ölçüm eski çıkış=$?"
+echo "== MUTASYONLAR"
+mk=$K/mut-u
+rm -rf -- "${mk:?}"; mkdir -p $mk && git -C $W archive HEAD | tar -x -C $mk && rm -rf -- "$mk/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $mk/node_modules
+for m in $(python3 $K/mut-u.py --list); do
+  rm -rf -- "$mk/server" && git -C $W archive HEAD server | tar -x -C $mk
+  python3 $K/mut-u.py $mk $m || continue
+  kos "248-dkUfix-mutasyon-$m" $mk $T
+done
+rm -rf -- "${mk:?}"
+echo BITTI
