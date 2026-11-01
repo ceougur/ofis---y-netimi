@@ -1,0 +1,191 @@
+TAP version 13
+# Subtest: 2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen)
+    # Subtest: eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı
+    not ok 1 - eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı
+      ---
+      duration_ms: 813.019392
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/eski-b2e7bf19/test/whatsapp-onizleme-olcek-248.test.mjs:93:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        cari servisinde waFacts yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/eski-b2e7bf19/test/whatsapp-onizleme-olcek-248.test.mjs:97:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: önizlemenin eleme nedenleri sınıf tanımından; önizleme ve açma kişi başı tam kart OKUMAZ, gönderim anı okur; 'Zaten Kuyrukta' tek sorgu (süren VE duraklatılmış iş)
+    not ok 2 - önizlemenin eleme nedenleri sınıf tanımından; önizleme ve açma kişi başı tam kart OKUMAZ, gönderim anı okur; 'Zaten Kuyrukta' tek sorgu (süren VE duraklatılmış iş)
+      ---
+      duration_ms: 706.103072
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/eski-b2e7bf19/test/whatsapp-onizleme-olcek-248.test.mjs:126:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        önizleme kişi başı okuyor (beklenen her önizlemede tam kart 0, "Zaten Kuyrukta" sorgusu 1): [{"etiket":"{\"preset\":\"lastMonth\"}","tamKartOkuma":16,"kuyrukSorgusu":10},{"etiket":"{\"preset\":\"thisMonth\"}","tamKartOkuma":16,"kuyrukSorgusu":10},{"etiket":"{\"preset\":\"last3\"}","tamKartOkuma":16,"kuyrukSorgusu":10},{"etiket":"{\"preset\":\"all\"}","tamKartOkuma":16,"kuyrukSorgusu":10},{"etiket":"{\"from\":\"2026-11-01\",\"to\":\"2026-11-30\"}","tamKartOkuma":16,"kuyrukSorgusu":10},{"etiket":"reminder","tamKartOkuma":16,"kuyrukSorgusu":2}]
+        + actual - expected
+        
+          [
+            {
+              etiket: '{"preset":"lastMonth"}',
+        +     kuyrukSorgusu: 10,
+        +     tamKartOkuma: 16
+        -     kuyrukSorgusu: 1,
+        -     tamKartOkuma: 0
+            },
+            {
+              etiket: '{"preset":"thisMonth"}',
+        +     kuyrukSorgusu: 10,
+        +     tamKartOkuma: 16
+        -     kuyrukSorgusu: 1,
+        -     tamKartOkuma: 0
+            },
+            {
+              etiket: '{"preset":"last3"}',
+        +     kuyrukSorgusu: 10,
+        +     tamKartOkuma: 16
+        -     kuyrukSorgusu: 1,
+        -     tamKartOkuma: 0
+            },
+            {
+              etiket: '{"preset":"all"}',
+        +     kuyrukSorgusu: 10,
+        +     tamKartOkuma: 16
+        -     kuyrukSorgusu: 1,
+        -     tamKartOkuma: 0
+            },
+            {
+              etiket: '{"from":"2026-11-01","to":"2026-11-30"}',
+        +     kuyrukSorgusu: 10,
+        +     tamKartOkuma: 16
+        -     kuyrukSorgusu: 1,
+        -     tamKartOkuma: 0
+            },
+            {
+              etiket: 'reminder',
+        +     kuyrukSorgusu: 2,
+        +     tamKartOkuma: 16
+        -     kuyrukSorgusu: 1,
+        -     tamKartOkuma: 0
+            }
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          etiket: '{"preset":"lastMonth"}'
+          tamKartOkuma: 0
+          kuyrukSorgusu: 1
+        1:
+          etiket: '{"preset":"thisMonth"}'
+          tamKartOkuma: 0
+          kuyrukSorgusu: 1
+        2:
+          etiket: '{"preset":"last3"}'
+          tamKartOkuma: 0
+          kuyrukSorgusu: 1
+        3:
+          etiket: '{"preset":"all"}'
+          tamKartOkuma: 0
+          kuyrukSorgusu: 1
+        4:
+          etiket: '{"from":"2026-11-01","to":"2026-11-30"}'
+          tamKartOkuma: 0
+          kuyrukSorgusu: 1
+        5:
+          etiket: 'reminder'
+          tamKartOkuma: 0
+          kuyrukSorgusu: 1
+      actual:
+        0:
+          etiket: '{"preset":"lastMonth"}'
+          tamKartOkuma: 16
+          kuyrukSorgusu: 10
+        1:
+          etiket: '{"preset":"thisMonth"}'
+          tamKartOkuma: 16
+          kuyrukSorgusu: 10
+        2:
+          etiket: '{"preset":"last3"}'
+          tamKartOkuma: 16
+          kuyrukSorgusu: 10
+        3:
+          etiket: '{"preset":"all"}'
+          tamKartOkuma: 16
+          kuyrukSorgusu: 10
+        4:
+          etiket: '{"from":"2026-11-01","to":"2026-11-30"}'
+          tamKartOkuma: 16
+          kuyrukSorgusu: 10
+        5:
+          etiket: 'reminder'
+          tamKartOkuma: 16
+          kuyrukSorgusu: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/eski-b2e7bf19/test/whatsapp-onizleme-olcek-248.test.mjs:173:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen
+    not ok 3 - makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen
+      ---
+      duration_ms: 731.006532
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/eski-b2e7bf19/test/whatsapp-onizleme-olcek-248.test.mjs:197:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        R3 (satır) sorgusu claim_keys'i her anahtarla ayrı yokluyor: SEARCH k USING COVERING INDEX sqlite_autoindex_claim_keys_1 (job_id=? AND attempt=? AND period_key=?)
+        + actual - expected
+        
+        + [
+        +   'SEARCH k USING COVERING INDEX sqlite_autoindex_claim_keys_1 (job_id=? AND attempt=? AND period_key=?)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'SEARCH k USING COVERING INDEX sqlite_autoindex_claim_keys_1 (job_id=? AND attempt=? AND period_key=?)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/eski-b2e7bf19/test/whatsapp-onizleme-olcek-248.test.mjs:217:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - 2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen)
+  ---
+  duration_ms: 2251.944868
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/eski-b2e7bf19/test/whatsapp-onizleme-olcek-248.test.mjs:92:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2778.39633

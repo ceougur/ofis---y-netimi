@@ -1,0 +1,24 @@
+import { readFileSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
+const src = readFileSync("/home/user/wt-perf-248/server/lib/whatsapp/defter.mjs", "utf8");
+const m = /const SENT_BEFORE_SQL = \(outer, tail\) => `([\s\S]*?)`;/.exec(src);
+const sql = (o, t) => m[1].replace("${outer}", o).replace("${tail}", t);
+const EK = "(SELECT group_concat(k2.period_key, char(31)) FROM claim_keys k2 WHERE k2.job_id = c.job_id AND k2.attempt = c.attempt) AS extra_keys,";
+if (!m[1].includes(EK)) throw new Error("ek sütun metni bulunamadı");
+const varyant = m[1].replace("AND k.period_key IN (SELECT value FROM json_each(?))", "AND +k.period_key IN (SELECT value FROM json_each(?))");
+const db = new DatabaseSync(process.argv[2] + "/whatsapp-gonderim.sqlite", { readOnly: true });
+const since = new Date(Date.parse("2026-11-02T07:00:00Z") - 7 * 86400000).toISOString();
+const own = JSON.stringify(Array.from({ length: 2000 }, (_, i) => `aralik|2025-${String(1 + (i % 12)).padStart(2, "0")}-${String(1 + (i % 28)).padStart(2, "0")}|2026-11-02`));
+const sinceOld = "2025-01-01T00:00:00.000Z"; // pencere geniş: geçmişin tamamı eşleşmeye aday
+for (const [ad, s] of [["dar pencere", since], ["geniş pencere", sinceOld]]) {
+  const o1 = db.prepare(sql("SELECT accountId, at, period_key AS ownKey, extra_keys AS extraKeys", ""));
+  const o2 = db.prepare(varyant.replace("${outer}", "SELECT accountId, at, period_key AS ownKey, extra_keys AS extraKeys").replace("${tail}", ""));
+  const keys = JSON.stringify(["secim|all", "ay|2026-02", "aralik|2026-02-01|2026-02-28"]);
+  for (const [k, st] of [["özgün", o1], ["varyant", o2]]) {
+    for (const [kad, kk] of [["2000 kişi anahtarı", own], ["genel anahtarlar", keys]]) {
+      const t = performance.now();
+      const rows = st.all("sirket-001", "statement", kk, kk, s, "", s);
+      console.log(ad, k, kad, Math.round(performance.now() - t), "ms", rows.length, "satır", rows.length ? JSON.stringify(rows[0]).slice(0, 120) : "");
+    }
+  }
+}

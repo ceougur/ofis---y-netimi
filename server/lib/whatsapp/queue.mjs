@@ -363,7 +363,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // ---------- Toplu iş açma ----------
   function selection(user, body) {
     const service = accounts();
-    if (!service?.list || !service?.detail) fail(503, "Cari modülü hazır değil.", "whatsapp-accounts");
+    if (!service?.list || !service?.waFacts) fail(503, "Cari modülü hazır değil.", "whatsapp-accounts");
     let ids;
     if (body.all === true) {
       const text = value => (typeof value === "string" ? value.trim() : "");
@@ -378,9 +378,19 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // §7a 9: aynı cari + aynı şablon + aynı dönem için bekleyen / gönderilmekte iş (süren ya da duraklatılmış toplu işte) — iki kullanıcı, iki sekme.
   // Dönem eşliği donem.mjs queueKeysOf'tan (T2-1: tek yer). ★ soru 4 (özel aralık ↔ hazır seçim): yeni gönderimin kümesi BUGÜNE, süren işinki AÇILDIĞI GÜNE göre.
   // dates (İş Q1): carinin hareket tarihleri (cari ekstresinin sırası) — "Tüm Hareketler"in kişiye özel dönemi (ilk hareket – dönem sonu) iki yanda da.
-  const queued = (accountId, kind, period, day = today(), dates = []) => {
+  // İş Z (2.4.8, T9 ORTA): adaylar plan() başında BİR sorguyla — süren / duraklatılmış toplu işlerin bu türdeki açık işleri, cariye göre (queuedRowsOf); kişi başı sorgu
+  // yoktur. plan() eşzamanlıdır (arada await yok): satır kümesi kişi başı sorgunun göreceğiyle aynıdır; eşleşme kuralı aşağıda aynen.
+  const queuedRowsOf = kind => {
+    const out = new Map();
+    for (const row of store.all(`SELECT j.id, j.account_id AS accountId, b.period_from, b.period_to, b.preset, b.created_at, b.key_day FROM wa_batches b JOIN wa_jobs j ON j.batch_id = b.id WHERE b.kind = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")})`, kind, ...OPEN_JOB)) {
+      if (!out.has(row.accountId)) out.set(row.accountId, []);
+      out.get(row.accountId).push(row);
+    }
+    return out;
+  };
+  const queued = (rows, kind, period, day = today(), dates = []) => {
+    if (!rows?.length) return null;
     const want = queueKeysOf(kind, period, day, { first: firstOfAll(period, dates) });
-    const rows = store.all(`SELECT j.id, b.period_from, b.period_to, b.preset, b.created_at, b.key_day FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.account_id = ? AND b.kind = ? AND b.state IN ('running', 'paused') AND j.state IN (${OPEN_JOB.map(() => "?").join(",")})`, accountId, kind, ...OPEN_JOB);
     return rows.find(row => {
       const rowPeriod = { from: row.period_from, to: row.period_to, preset: row.preset };
       return sameKeys(want, queueKeysOf(kind, rowPeriod, keyDayOfBatch({ ...row, kind }), { first: firstOfAll(rowPeriod, dates) }));
@@ -514,7 +524,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (!loaded.has(id)) {
         let account = null;
         try {
-          account = accounts().detail(id, user);
+          // İş Z (T9 ORTA): tam kart (detail) yerine kartın eleme çekirdeği (routes/accounts.mjs waFacts; alanlar detail ile birebir aynı).
+          account = accounts().waFacts(id, user);
         } catch {
           account = null;
         }
@@ -550,6 +561,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (unsettled) dropSettledSources(unsettled);
     const people = [];
     let uncertainOpen = 0;
+    const queuedRows = queuedRowsOf(kind);
     for (const id of ids) {
       const account = load(id);
       if (!account) {
@@ -561,7 +573,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       // KULLANICI KARARI (31.10.2026, ek soru 2/4 "a"): birden çok eleme nedeninde TEK neden, sıra HER YERDE (yeni toplu iş, Başarısızları Yeniden Dene, işteki Yine de
       // Gönder'in açtığı iş): "Zaten Kuyrukta" → "Sonucu Belirsiz" → "Daha Önce Gönderildi". İlk ikisiyle elenen kişi R3 uyarısına (sayı / liste: sentBefore) GİRMEZ;
       // R3'te "Yine de Gönder" seçilse de ona gitmez (belirsizi göndermenin tek yolu işteki Yine de Gönder).
-      if (!person.skip && queued(account.id, kind, period, keyDay, datesOf(id))) person.skip = "Zaten Kuyrukta";
+      if (!person.skip && queued(queuedRows.get(account.id), kind, period, keyDay, datesOf(id))) person.skip = "Zaten Kuyrukta";
       if (!person.skip && unsettled?.has(account.id)) {
         // Dar kontrol 7 DÜŞÜK-1: "Yine de Gönder" yalnız iş şirket dosyasında hâlâ Sonucu Belirsiz ise vardır (geri yüklemeden sonra iş dosyadan gider, defterde kalır).
         const open = unsettled.get(account.id).some(jobId => store.get("SELECT 1 AS found FROM wa_jobs WHERE id = ? AND state = 'uncertain'", jobId));

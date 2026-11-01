@@ -1,0 +1,14 @@
+// İŞ Z profil eki: makine defterinin R3 sorgusu (sentBefore) kişiye özel anahtar sayısına göre süre. Yalnız okur (kendi kopyam).
+import { openWaLedger } from "/home/user/wt-perf-248/server/lib/whatsapp/defter.mjs";
+const dir = process.argv[2];
+const ledger = openWaLedger({ dir, log: { warn() {}, info() {} } });
+const companyId = process.argv[3] || "sirket-001";
+const since = new Date(Date.parse("2026-11-02T07:00:00Z") - 7 * 86400000).toISOString();
+for (const n of [0, 10, 100, 500, 1000, 2000]) {
+  const accountKeys = n ? new Map(Array.from({ length: n }, (_, i) => [`acc-${i}`, [`aralik|2025-${String(1 + (i % 12)).padStart(2, "0")}-${String(1 + (i % 28)).padStart(2, "0")}|2026-11-02`]])) : null;
+  const t = performance.now();
+  const out = ledger.sentBefore({ companyId, kind: "statement", periodKeys: ["secim|all"], since, after: "", rolling: since, accountKeys });
+  const t2 = performance.now();
+  const un = ledger.unsettledBefore({ companyId, kind: "statement", periodKeys: ["secim|all"], since, rolling: since, accountKeys });
+  console.log(`anahtar ${n}: sentBefore ${Math.round(t2 - t)} ms (${out.size}), unsettledBefore ${Math.round(performance.now() - t2)} ms (${un.size})`);
+}

@@ -1,0 +1,55 @@
+İş Z eşitlik çıktıları (büyük, depoya alınmadı; scratchpad isz-7d2f5a). sha256 + bayt:
+36318bede1fe0ec50da12d6f2672612d9c16a84eb7d05556c139704a88b7533d  esit-A-eski.json
+df36fc57f3b209549016e4032ff3a7edd515b480793c7d7dc33c13a413950b0b  esit-A-yeni.json
+2bfb6d170fb2acc61ee2430b7a92d37c84faa9fce0d3b5632f5e561685b4ee7d  esit-B1-eski.json
+10361fdf17d63477f0f728519069bc139b8a7640c4cad6cdbcf82a6ecdb6e584  esit-B1-yeni.json
+ed5f50256f4347d25b47642c7f415dad382454a94e1928c364f91a31f8c382a6  esit-B2-eski.json
+70a3ae0de0b9a9bf292c261367986389d05aa017df979961b5284f9fe3a25b32  esit-B2-yeni.json
+3857bc1482de7d606ff77e7b09144531751ae197ed240226cebc9b25978c4c2f  kart-eski.json
+9bc52068300bb9a907c33dcfcaafa5d030a57bbf33ae9c1f6fa5e21f08f54505  kart-yeni.json
+98279dafec1773ed45bd9201a4ef7391dc6c0f965e8ba28bd84a196244bbb9b8  bel-B-2025-11-19-eski.json
+8ebcf6bc94e36b57caa84c9333c959e43a8315281ef9047ad9e0bde61702f42f  bel-B-2025-11-19-yeni.json
+2c8f1921086fb49aac53cb2e36675a72600310c140a56949280ffc125f9a424a  bel-B-2025-12-22-eski.json
+d32c604e84c99a5d03395d25e8196be9aa5efb54f031f756a14ccd7c7a83699f  bel-B-2025-12-22-yeni.json
+87006d6601633f3ce340206e500fe9f9f47b693effc63cdc92ff06af128b6adf  bel-B-2026-01-24-eski.json
+ca4d4e944f2a49211744f250894896d5765288c89e3a1fb781fbf07d666b99ac  bel-B-2026-01-24-yeni.json
+ec16d3b9c03e63281107c3584acf11ac9bbe592cbc391ae0ef91db09abfd0e9f  bel-B-2026-11-02-eski.json
+ad640b90c24ddb9568bbff5bce4d953b692b127b5b381b997a6cbde89c388d5b  bel-B-2026-11-02-yeni.json
+83fd87fb5f4b33f65d138491d276338bf518613883045af34511c86566c5ce35  bel-C-2025-11-19-eski.json
+fc95824e44639b5742063bbeeb6b75e74839ce7b442726bd6a8072453e98214b  bel-C-2025-11-19-yeni.json
+44e5d7243adcdc4192d5d3423f13e34c3c31c4e221fd8dfeaa7776d20d784b5b  bel-C-2025-12-22-eski.json
+23daea81e02b603c2b02db11a506374f698fbe94012a343314d01800146623c2  bel-C-2025-12-22-yeni.json
+5ca305ec9c033a354d1256ed6127ea1bb4e002c62fdccea3e64aa17c682b5e73  bel-C-2026-01-24-eski.json
+af3dce0889c96a41e201f63b948cd3ae2d2a039b766e5fa07f0daa32c4e15502  bel-C-2026-01-24-yeni.json
+5db8c34ab3c12f6cefecb42c5d9c847752b93388e7905d7837c0322bdc4b7b15  bel-C-2026-11-02-eski.json
+11c0d99b7310189d50a2b3a438e69c03e7e7c7ed21a78576d936972c814e000a  bel-C-2026-11-02-yeni.json
+137425 bel-B-2025-11-19-eski.json
+137382 bel-B-2025-11-19-yeni.json
+137425 bel-B-2025-12-22-eski.json
+137382 bel-B-2025-12-22-yeni.json
+137387 bel-B-2026-01-24-eski.json
+137344 bel-B-2026-01-24-yeni.json
+134903 bel-B-2026-11-02-eski.json
+134860 bel-B-2026-11-02-yeni.json
+137425 bel-C-2025-11-19-eski.json
+137382 bel-C-2025-11-19-yeni.json
+137425 bel-C-2025-12-22-eski.json
+137382 bel-C-2025-12-22-yeni.json
+137387 bel-C-2026-01-24-eski.json
+137344 bel-C-2026-01-24-yeni.json
+134903 bel-C-2026-11-02-eski.json
+134860 bel-C-2026-11-02-yeni.json
+20975247 esit-A-eski.json
+20975204 esit-A-yeni.json
+21451946 esit-B1-eski.json
+21451903 esit-B1-yeni.json
+22615628 esit-B2-eski.json
+22615585 esit-B2-yeni.json
+57712861 kart-eski.json
+57712818 kart-yeni.json
+
+Veri hazırlığı (esitlik-hazirla.mjs) sınıf sayıları:
+A (taban-2910 göç + hazırlık):
+{"001":{"pasif":15,"istemiyor":15,"silinmis":15,"gecersizTelefon":10,"bosTelefon":10,"yurtDisi":5,"sabitHat":5,"ayniTelefon":2,"hareketsiz":5,"ileriTarihli":3,"tasinanToplu":0},"002":{"pasif":15,"istemiyor":15,"silinmis":15,"gecersizTelefon":10,"bosTelefon":10,"yurtDisi":5,"sabitHat":5,"ayniTelefon":2,"hareketsiz":5,"ileriTarihli":0,"tasinanToplu":0}}
+B (gecmis-40 + hazırlık): 001 pasif 15, istemiyor 15, silinmiş 15, geçersiz 10, boş 10, yurt dışı 5, sabit hat 5, aynı telefon 2, hareketsiz 5, ileri tarihli 3, taşınan toplu iş 8; 002 aynı (ileri tarihli 0)
+C = B + belirsiz/başarısız işlerin 10 toplu işi başka defterde (tasi-belirsiz.mjs)

@@ -1,0 +1,28 @@
+#!/bin/bash
+# İş Z bitiş sürücüsü: WhatsApp dar listesi (önceki ajanların 94 dosyası + yeni test + mobil özet 2) + cari kartını kullanan testler (26; ders 10) — UTC ve
+# Europe/Istanbul; 5 WhatsApp e2e; süre önce / sonra (T9 verisi taban-2910 ve gecmis-40: eski ×1, yeni ×2). Her koşu flock + tools/kanit.mjs kos.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a
+SP=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad
+W=/home/user/wt-perf-248
+ESKI=$K/eski-b2e7bf19
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+export PLAYWRIGHT_BROWSERS_PATH=$SP/w1-248-q7m3/pw
+LISTE="$(cat $K/dar-liste.txt $K/cari-liste.txt | tr '\n' ' ')"
+son() { echo "$(date -u +%H:%M:%S) $1 çıkış=$2 $(grep '\[kanit\]' $3 | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-120)"; grep -E "^not ok|^    not ok|^  not ok" $3 | cut -c1-160 | sed 's/^/      /' | head -20; }
+for tz in UTC Europe/Istanbul; do
+  t=${tz//\//_}; out=$K/bitis-dar-$t.out
+  TZ=$tz flock /tmp/destekofis-olcum.lock node tools/kanit.mjs kos "248-isz-dar-$t" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=600000 $LISTE > $out 2>&1; son "dar+cari $tz" $? $out
+done
+for e in senaryo-whatsapp senaryo-whatsapp-ayar-248 senaryo-whatsapp-donem-248 senaryo-whatsapp-gonder-248 senaryo-whatsapp-sablon-248; do
+  out=$K/bitis-e2e-$e.out
+  flock /tmp/destekofis-olcum.lock node tools/kanit.mjs kos "248-isz-e2e-$e" -- node --disable-warning=ExperimentalWarning test/e2e/$e.mjs > $out 2>&1; son "e2e $e" $? $out
+done
+for veri in taban-2910 gecmis-40; do
+  for kos in eski-1 yeni-1 yeni-2; do
+    kok=$W; [ ${kos%-*} = eski ] && kok=$ESKI
+    out=$K/olcum-$veri-$kos.out
+    ISZ_COMMIT=b2e7bf19 flock /tmp/destekofis-olcum.lock node tools/kanit.mjs kos "248-isz-olcum-$veri-$kos" -- node $kok/test/isz-248/olcum.mjs $K/$veri $K/is-olcum $K/olcum-$veri-$kos.json > $out 2>&1; son "ölçüm $veri $kos" $? $out
+  done
+done
+echo "BITIS-BITTI $(date -u +%H:%M:%S)"

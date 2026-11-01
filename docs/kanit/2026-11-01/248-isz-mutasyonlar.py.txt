@@ -1,0 +1,15 @@
+import sys
+kok, m = sys.argv[1], sys.argv[2]
+M = {
+ "M1": ("server/routes/accounts.mjs", "return { ...account, plans: planList.map(planSummaryOf), ledger: ledger.lines, totals: ledger.totals };", "return { ...account, waOptOut: 0, plans: planList.map(planSummaryOf), ledger: ledger.lines, totals: ledger.totals };"),
+ "M2": ("server/routes/accounts.mjs", "return { ...account, plans: planList.map(planSummaryOf), ledger: ledger.lines, totals: ledger.totals };", "return { ...account, plans: [], ledger: ledger.lines, totals: ledger.totals };"),
+ "M3": ("server/lib/whatsapp/queue.mjs", "AND j.state IN (${OPEN_JOB.map(() => \"?\").join(\",\")})`, kind, ...OPEN_JOB)) {", "AND j.state IN (${OPEN_JOB.filter(s => s !== \"paused\").map(() => \"?\").join(\",\")})`, kind, ...OPEN_JOB.filter(s => s !== \"paused\"))) {"),
+ "M4": ("server/lib/whatsapp/defter.mjs", "AND +k.period_key IN (SELECT value FROM json_each(?))))) c", "AND k.period_key IN (SELECT value FROM json_each(?))))) c"),
+ "M5": ("server/routes/accounts.mjs", "coversBalance: Boolean(plan.coversBalance) });", "coversBalance: false });"),
+}
+f, a, b = M[m]
+p = f"{kok}/{f}"
+s = open(p, encoding="utf8").read()
+assert s.count(a) == 1, (m, s.count(a))
+open(p, "w", encoding="utf8").write(s.replace(a, b))
+print(m, "uygulandı:", f)

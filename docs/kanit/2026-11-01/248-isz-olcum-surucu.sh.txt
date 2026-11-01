@@ -1,0 +1,15 @@
+#!/bin/bash
+# İş Z: süre ölçümü (yöntem düzeltmesinden sonra hepsi yeniden): T9 verisi taban-2910 ve gecmis-40, eski ×1 + yeni ×2; flock + kanit.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a
+W=/home/user/wt-perf-248
+ESKI=$K/eski-b2e7bf19
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+son() { echo "$(date -u +%H:%M:%S) $1 çıkış=$2 $(grep '\[kanit\]' $3 | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-120)"; grep -E "^not ok" $3 | cut -c1-160 | sed 's/^/      /' | head -20; }
+for adim in taban-2910:eski-1 taban-2910:yeni-1 taban-2910:yeni-2 gecmis-40:eski-1 gecmis-40:yeni-1 gecmis-40:yeni-2; do
+  veri=${adim%%:*}; kos=${adim#*:}
+  kok=$W; [ ${kos%-*} = eski ] && kok=$ESKI
+  out=$K/olcum-$veri-$kos.out
+  ISZ_COMMIT=b2e7bf19 flock /tmp/destekofis-olcum.lock node tools/kanit.mjs kos "248-isz-olcum-$veri-$kos" -- node $kok/test/isz-248/olcum.mjs $K/$veri $K/is-olcum $K/olcum-$veri-$kos.json > $out 2>&1; son "ölçüm $veri $kos" $? $out
+done
+echo "OLCUM-BITTI $(date -u +%H:%M:%S)"

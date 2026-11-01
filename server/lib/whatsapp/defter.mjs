@@ -121,12 +121,15 @@ const SCHEMA = `
   CREATE TRIGGER IF NOT EXISTS deliveries_no_delete BEFORE DELETE ON deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
 `;
 // R3 sorgusu (aşağıdaki q.sentBefore açıklaması). outer / tail: gruplanmış (cari → son an) ya da İş Q1'in satır satır biçimi (eşleşen anahtarlarla).
+// İş Z (2.4.8, T9 ORTA; yalnız sorgu PLANI, sonuç aynı): claim_keys üyeliğinde `+k.period_key` — tekli + değeri ve harmanlamayı değiştirmez (SQLite: "no-op"), yalnız
+// (job_id, attempt, period_key=?) dizin yoklamasını kapatır. Yoksa "Tüm Hareketler"in kişiye özel ~2.000 anahtarı HER talepte birer birer yoklanıyordu
+// (72.000 talepte 1,7 sn → 0,3 sn, aynı satırlar).
 const SENT_BEFORE_SQL = (outer, tail) => `${outer} FROM (SELECT c.account_id AS accountId, c.batch_id AS batch_id, c.job_id AS job_id, c.attempt AS attempt, c.period_key AS period_key, c.at AS claim_at,
         (SELECT group_concat(k2.period_key, char(31)) FROM claim_keys k2 WHERE k2.job_id = c.job_id AND k2.attempt = c.attempt) AS extra_keys,
         COALESCE((SELECT o.at FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt AND o.outcome = 'accepted'),
           (SELECT l.at FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt), a.at) AS at
       FROM accepts a JOIN claims c ON c.job_id = a.job_id AND c.attempt = (SELECT MAX(c2.attempt) FROM claims c2 WHERE c2.job_id = a.job_id)
-      WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND k.period_key IN (SELECT value FROM json_each(?))))) c
+      WHERE c.company_id = ? AND c.kind = ? AND (c.period_key IN (SELECT value FROM json_each(?)) OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.job_id AND k.attempt = c.attempt AND +k.period_key IN (SELECT value FROM json_each(?))))) c
       WHERE c.at >= ? AND c.claim_at > ?
         AND (c.period_key NOT IN ('secim|last3', 'secim|all') OR c.at >= ?)
         AND ((NOT EXISTS (SELECT 1 FROM failures f WHERE f.job_id = c.job_id AND f.attempt = c.attempt)
@@ -169,6 +172,8 @@ const keyedMatch = (accountKeys, row) => {
   return mine.some(key => theirs.includes(key));
 };
 export const DAY_MS = 86_400_000;
+// YALNIZ TESTLER İÇİN (İş Z, 2.4.8): R3 sorgusunun metni — test/whatsapp-onizleme-olcek-248.test.mjs sorgu planını (EXPLAIN QUERY PLAN) denetler. Program kullanmaz.
+export const SENT_BEFORE_SQL_YALNIZ_TEST = SENT_BEFORE_SQL;
 
 /**
  * @param {{ dir: string, log?: object, fault?: (op: string, row?: object) => boolean }} options fault: testlerde kesinti (true → o yazım düşer; "disk dolu")
