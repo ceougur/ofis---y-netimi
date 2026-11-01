@@ -7,7 +7,7 @@
 // K7 başarılı geçişte hata alanları temizlenir (§7a 32) · K8 toparlamanın "uncertain"ı sonraki kabulü yutmaz · eşgüçlülük (aynı bildirim ×2/×3, 503 sonrası yineleme).
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5); sahte saat (ders 13); dosya TZ=UTC ve TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
-import { cpSync, existsSync, mkdtempSync, readdirSync, renameSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -585,6 +585,26 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
       removeTestDir(root);
     }
   });
+  it("T34s taşıma (defter yok) · satır Sonucu Belirsiz · İMZALI iş kimliğiyle delivered → satır yolu: Teslim Edildi (defter işi bilmiyor — U2 istisnası; V6 mE)", { timeout: 120_000 }, async () => {
+    const root = mkdtempSync(path.join(tmpdir(), "destekofis-t34s-"));
+    const dataDir = path.join(root, "data");
+    let s = await harness({ dataDir });
+    try {
+      const { batchId, job, wamid } = await uncertain(s);
+      await s.close();
+      s = null;
+      const moved = path.join(root, "tasindi");
+      cpSync(dataDir, moved, { recursive: true });
+      for (const name of readdirSync(moved)) if (name.startsWith("whatsapp-gonderim.sqlite")) rmSync(path.join(moved, name), { force: true });
+      s = await harness({ dataDir: moved, account: false });
+      assert.equal((await s.job(batchId)).state, "uncertain", "ön koşul: taşınan satır belirsiz");
+      assert.equal(s.apply([st(s, wamid, "delivered", { biz_opaque_callback_data: job.id })], true).applied, 1);
+      assert.equal((await s.job(batchId)).state, "delivered");
+    } finally {
+      await s?.close();
+      removeTestDir(root);
+    }
+  });
 
   // ---------- istek Meta'dayken (T16 / T35) ----------
   it("T16 imzalı bildirim istek Meta'dayken işi ilerletir; yanıt 'Meta Kabul Etti' ezmez; tek ileti", async () => {
@@ -862,6 +882,8 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
         assert.equal(s.ctx.messages().length, 1, "ön koşul: tek ileti");
         assert.equal(s.apply([st(s, job.wamid, "delivered")]).applied, 1, "1. iletinin geç teslimi");
         s.ctx.clock.advance(10 * 60_000);
+        await s.ctx.wa.scheduler.runOnce(); // yalnız işçi turu (bakım YOK — V2'nin bakım ayağı V4'ü örtmesin)
+        assert.equal((await s.job(batchId)).state, "delivered", "işçi talep açmadan işi Teslim Edildi yaptı");
         await s.ctx.drain();
         assert.equal(s.ctx.messages().length, 1, "ikinci ileti gitmedi");
         assert.equal((await s.job(batchId)).state, "delivered");
@@ -1390,6 +1412,32 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       } finally {
         lock.exec("ROLLBACK");
         lock.close();
+      }
+      assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200);
+      assert.equal((await s.job(batchId)).state, "delivered");
+    } finally {
+      await s.close().catch(() => {});
+    }
+  });
+  it("T-Kbozuk şirket açılmamışken veri dosyası BOZUK (veri tabanı değil) → 503 (geçici; düzeltilince uygulanır); dosya düzelince yineleme 200 ve Teslim (V1 ii)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness({ second: true });
+    try {
+      const batchId = await s.batch();
+      await s.ctx.drain();
+      const job = await s.job(batchId);
+      const putBack = hideCompanyFile(s); // asıl dosya kenara; yerine bozuk dosya
+      const root = path.join(s.ctx.server.app.config.dataDir, "sirketler");
+      const file = resolveDbPath(path.join(root, readdirSync(root)[0]));
+      writeFileSync(file, "bu bir veri tabanı değil — bozuk dosya ".repeat(200));
+      try {
+        const res = await s.post([st(s, job.wamid, "delivered")]);
+        assert.equal(res.status, 503, `bozuk dosya geçicidir → 503 (geldi ${res.status} ${res.text})`);
+        assert.equal(s.deliveredSql(job.id), false, "yalnız defter yolu YOK");
+      } finally {
+        s.ctx.server.app.context.closeCompany(s.company.id);
+        rmSync(file, { force: true });
+        for (const suffix of ["-wal", "-shm"]) rmSync(file + suffix, { force: true });
+        putBack();
       }
       assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200);
       assert.equal((await s.job(batchId)).state, "delivered");
