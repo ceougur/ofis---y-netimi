@@ -71,6 +71,9 @@ const { durumGovdesi } = KENDI_TESTI ? {} : await import("./sahte-meta/kanca.mjs
 const { HttpError } = KENDI_TESTI ? {} : await import("../../../server/lib/http.mjs");
 // S-19: programın ÜRETİMDEKİ Meta istek zaman aşımı (testte whatsappTimeoutMs küçültülür; gecikmeli kabulün geçerliliği üretim değerine göre).
 const { TIMEOUT_MS: META_ZAMAN_ASIMI_MS } = KENDI_TESTI ? { TIMEOUT_MS: 15_000 } : await import("../../../server/lib/whatsapp/meta-graph.mjs");
+// S-23 (T1 resmî koşu 01.11.2026): programın yazma kilidi İŞARETİ gerçek saatle (Date.now) bu kadar sürer (server/lib/write-lock.mjs, arayüz sabiti). Sürücünün benzetim saati
+// kilit kalktıktan sonra hızla ilerler; gerçekte iki saat aynıdır → kilit bırakıldıktan sonra gerçek saat de benzetim saatinin ilerlediği kadar (en çok işaret süresi) ilerletilir.
+const { LOCK_BACKOFF_MS: KILIT_ISARETI_MS } = KENDI_TESTI ? { LOCK_BACKOFF_MS: 30_000 } : await import("../../../server/lib/write-lock.mjs");
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const KAHIN = path.join(HERE, "kahin", "kahin.py");
@@ -147,6 +150,21 @@ function govdeDegiskenleri(istekler, isKimlikleri) {
 // (outcomes accepted ya da öğrenilen wamid) YOK. dosyaIsleri: [{id, attempt, wamid, state}], defterKabul: Set("<iş>|<deneme>").
 function defterdeEksikKabul(dosyaIsleri, defterKabul) {
   return (dosyaIsleri || []).filter(j => j.wamid && ["accepted", "sent", "delivered", "read"].includes(j.state) && !defterKabul.has(`${j.id}|${j.attempt}`)).map(j => j.id);
+}
+// S-23 gerçek saat: kilit bırakıldıktan sonra benzetim saati simGecenMs ilerledi, gerçek saat gercekGecenMs; programın gerçek saatli kilit işareti (isaretMs) için gerçek
+// saat en çok min(simGecen, işaret + 0,5 sn) kadar ilerlemiş olmalı. Dönüş: beklenecek ms (0 = yetişti).
+function gercekSaatBeklemesi(simGecenMs, gercekGecenMs, isaretMs) {
+  if (!(simGecenMs > 0)) return 0;
+  return Math.max(0, Math.min(simGecenMs, isaretMs + 500) - Math.max(0, gercekGecenMs));
+}
+// S-K iş çıktısı: kâhin işinin (etiket/cari) telefonu — iş gönderime girdiyse ve SON program işi "Atlandı" ise telefon yalnız işte daha önce Meta'ya giden deneme varsa
+// (J10: Yine de Gönder / yeniden deneme eski iletinin teslimiyle Atlandı) yazılır; hiç gönderilmeden kuyrukta Atlandı (İstemiyor …) telefonsuz kalır.
+function isTelefonu(liste) {
+  const son = liste.at(-1).job;
+  const gonderimeGirdi = liste.some(x => x.job.attempt > 0 || ["limited", "held"].includes(x.job.state) || x.job.params?.length);
+  if (!gonderimeGirdi) return null;
+  if (son.state === "skipped" && !liste.some(x => x.job.attempt > 0)) return null;
+  return son.phone || null;
 }
 // S-22: programda 001 (kök) şirket silinemez; senaryo kök etikete bağlı şirketi siliyorsa kök, silinmeyen ilk etikete bağlanır (etiket eşlemesi; anlam kök olmaya bağlı değil).
 function kokSec(etiketler, silinecekler) {
@@ -426,6 +444,7 @@ async function kos(sen, uc, secenek) {
   const sonuc = { baslamadi: {}, elenen: {}, olusmadi: [], ayni_istek: {}, onceki_uyari: {}, kontroller: {}, yeniden: {}, listeler: {} };
   const yedekler = {}; // S-5: kâhin yedek adı → programın yedek dosyası adı
   const kilitler = new Map(); // S-23: süren arıza kilitleri
+  let kilitSonrasi = null; // S-23 gerçek saat: son kilit bırakılışı { sim, gercek }
   const arizaGozlem = []; // S-23: kilidin gerçekten durduğu / bırakıldığı (programdan bağımsız sınama)
   const gecersiz = []; // senaryo GEÇERSİZ nedenleri (arıza oluşmadı vb.; fark sayılmaz)
   const listeDurum = {}; // S-6: kâhin liste adı → { ids (ekranda birikmiş, imleç için), from, to }
@@ -785,7 +804,12 @@ async function kos(sen, uc, secenek) {
   // Ayıklama dökümü (--dokum): olaylar başladıktan sonra sürücünün programa yaptığı her istek ve yanıtı (ham).
   let apiKaydi = null;
   const api = async (istemci, yontem, url, govde) => {
-    const r = await (yontem === "GET" ? istemci.get(url) : yontem === "DELETE" ? istemci.del(url) : yontem === "PUT" ? istemci.put(url, govde) : istemci.post(url, govde));
+    // S-22 (T1 resmî koşu 01.11.2026): DELETE gövdesiz gidiyordu — programın Şirketi Sil ucu onay kodunu ve parolayı GÖVDEDEN okur (arayüz admin.js de gövdeyle yollar).
+    const silGovdeli = async () => {
+      const y = await istemci.raw("DELETE", url, { body: JSON.stringify(govde), headers: { "content-type": "application/json" } });
+      return { status: y.status, data: y.data ?? y.buffer.toString("utf8") };
+    };
+    const r = await (yontem === "GET" ? istemci.get(url) : yontem === "DELETE" ? (govde === undefined || mut("S22-silme-govdesiz") ? istemci.del(url) : silGovdeli()) : yontem === "PUT" ? istemci.put(url, govde) : istemci.post(url, govde));
     if (apiKaydi && !(yontem === "GET" && /\/whatsapp\/batches\/[^/?]+$/.test(url))) {
       const maskeli = govde && typeof govde === "object" && "password" in govde ? { ...govde, password: "<gizli>" } : govde ?? null;
       apiKaydi.push({ t: trIso(simdi), yontem, url, govde: maskeli, status: r.status, yanit: JSON.stringify(r.data ?? null).slice(0, 4000) });
@@ -1451,6 +1475,7 @@ async function kos(sen, uc, secenek) {
           }
           kilitKapat(k.d);
           kilitler.delete(anahtar);
+          kilitSonrasi = { sim: simdi, gercek: Date.now() };
           const birakti = !kilitliMi(k.dosya);
           arizaGozlem.push({ tur, sirket: o.sirket || null, t: trIso(simdi), birakildi: birakti });
           notlar.push(`ARIZA (S-23): ${tur} ${o.sirket || ""} bitti — kilit ${birakti ? "bırakıldı" : "HÂLÂ DURUYOR"}`);
@@ -1462,7 +1487,18 @@ async function kos(sen, uc, secenek) {
 
     // ---- zaman döngüsü (kâhinin adim_isle sırası: olaylar → kancalar → bakım → işçi → kontroller) ----
     let bekleme = null; // programın bildirdiği bekleme (ms, mutlak)
+    // S-23 gerçek saat (T1 resmî koşu 01.11.2026): programın kilit işareti Date.now ile KILIT_ISARETI_MS sürer; kilit kalktıktan sonra benzetim saati ilerledikçe gerçek saat
+    // de (en çok işaret süresi kadar) ilerletilir — yoksa program kilidin hâlâ sürdüğünü sanır (işçi ve kanca 503), gerçekte olmayan bir durum. Tutma (S-19) içinde yapılmaz:
+    // programın Meta yanıtı beklerken gerçek zaman aşımı sayar (senaryolarda tutma içinde kilit bırakılmıyor; BİLİNEN SINIR).
+    const gercekSaatYetis = async () => {
+      if (!kilitSonrasi || mut("S23-gercek-saat-yetismez")) return;
+      const simGecen = simdi - kilitSonrasi.sim;
+      const bekle = gercekSaatBeklemesi(simGecen, Date.now() - kilitSonrasi.gercek, KILIT_ISARETI_MS);
+      if (bekle > 0) await new Promise(r => setTimeout(r, bekle));
+      if (simGecen >= KILIT_ISARETI_MS + 500) kilitSonrasi = null;
+    };
     for (let tur = 0; tur < 5_000_000; tur += 1) {
+      await gercekSaatYetis();
       const ol = siradaki();
       for (const x of ol.filter(x => x.t <= simdi && x.o.tur !== "kontrol")) {
         olaylar.splice(olaylar.indexOf(x), 1);
@@ -1591,7 +1627,9 @@ async function kos(sen, uc, secenek) {
       const sablon = son.batch.template;
       const sonMedya = [...liste].reverse().map(x => [...medyaIs].filter(([, j]) => j === x.job.id).map(([m]) => m).at(-1)).find(Boolean) || null;
       const durum = isDurumu(son.job, son.batch);
-      const gonderimeGirdi = liste.some(x => x.job.attempt > 0 || ["limited", "held"].includes(x.job.state) || x.job.params?.length);
+      const telefon = mut("SJ10-atlanan-telefonsuz")
+        ? liste.some(x => x.job.attempt > 0 || ["limited", "held"].includes(x.job.state) || x.job.params?.length) && son.job.state !== "skipped" ? son.job.phone || null : null
+        : isTelefonu(liste);
       const atlandiGonderimde = son.job.state === "skipped";
       const c = g.cariler.find(x => x.id === cari);
       let dosya = null;
@@ -1603,7 +1641,7 @@ async function kos(sen, uc, secenek) {
       }
       isSonucu[anahtar] = {
         durum,
-        telefon: gonderimeGirdi && !atlandiGonderimde ? son.job.phone || null : null,
+        telefon,
         sablon,
         degiskenler: gidenDegiskenler || (icerikli ? icerikli.job.params : null),
         pdf: sablon === "destekofis_ekstre" && sonMedya ? pdfOku(sonMedya) : null,
@@ -1901,6 +1939,16 @@ if (secenek.kendiTesti) {
   const dosyaIsleri = [{ id: "j1", attempt: 1, wamid: "w1", state: "accepted" }, { id: "j2", attempt: 1, wamid: "w2", state: "delivered" }, { id: "j3", attempt: 1, wamid: "", state: "sending" }, { id: "j4", attempt: 2, wamid: "w4", state: "sent" }];
   bak("S-23 J7 defterde kabulü olmayan kabul edilmiş deneme bulunur", esit(defterdeEksikKabul(dosyaIsleri, new Set(["j2|1", "j4|1"])), ["j1", "j4"]));
   bak("S-23 J7 hepsi defterdeyse eksik yok", esit(defterdeEksikKabul(dosyaIsleri, new Set(["j1|1", "j2|1", "j4|2"])), []));
+  // S-23 gerçek saat (T1 resmî koşu): kilit sonrası beklenecek gerçek süre
+  bak("S-23 gerçek saat: benzetim 5 dk, gerçek 1 sn → işaret + 0,5 sn'ye dek beklenir", gercekSaatBeklemesi(300_000, 1_000, 30_000) === 29_500);
+  bak("S-23 gerçek saat: benzetim 5 sn ilerledi → yalnız 5 sn'ye dek", gercekSaatBeklemesi(5_000, 1_000, 30_000) === 4_000);
+  bak("S-23 gerçek saat: benzetim ilerlemedi → bekleme yok", gercekSaatBeklemesi(0, 0, 30_000) === 0);
+  bak("S-23 gerçek saat: gerçek saat zaten yetişti → bekleme yok", gercekSaatBeklemesi(300_000, 40_000, 30_000) === 0);
+  // İş telefonu (J10): gönderilmiş işte sonradan Atlandı → telefon; hiç gönderilmeden Atlandı → yok
+  const j = (o) => ({ job: { attempt: 0, state: "pending", phone: "+905330000000", params: [], errorCode: null, ...o } });
+  bak("İş telefonu: gönderilmiş deneme + son iş Atlandı → telefon", isTelefonu([j({ attempt: 1, state: "delivered" }), j({ state: "skipped" })]) === "+905330000000");
+  bak("İş telefonu: hiç gönderilmeden Atlandı → yok", isTelefonu([j({ state: "skipped" })]) === null);
+  bak("İş telefonu: gönderimde → telefon", isTelefonu([j({ attempt: 1, state: "sent" })]) === "+905330000000");
   // S-32
   const istek = (is, texts) => ({ islem: "messages", govde: { biz_opaque_callback_data: is, template: { components: [{ type: "header", parameters: [{ type: "document" }] }, { type: "body", parameters: texts.map(t => ({ type: "text", text: t })) }] } } });
   const istekler = [istek("j1", ["A", "Firma", "01.10.2026 – 31.10.2026", "1.000,00 TL"]), istek("j2", ["B"]), istek("j1b", ["A", "Firma", "01.10.2026 – 31.10.2026", "2.000,00 TL"])];
@@ -2024,6 +2072,7 @@ const MUTASYONLAR = [
   ["SK-kabul-meta-iletisinden", "CIFT-03*", "S-K kabul = programa ulaşan yanıt / imzalı çözüm (Meta'daki her ileti değil)"],
   ["SK-kabul-kanca-cozumu-yok", "CIFT-01*,CIFT-04*", "S-K imzalı durum bildirimiyle çözülen belirsiz ileti kabul sayılır"],
   ["S16-hata-kodu-yalniz-son-is", "E3-02*,F2-02*", "ayıklama düzeltmesi: kâhin işinin hata kodu önceki denemeden taşınır (başarıya dek)"],
+  ["SJ10-atlanan-telefonsuz", "J10-02*,J10-03*", "iş telefonu: gönderilmiş işte sonradan Atlandı (T1 resmî koşu düzeltmesi)"],
   ["S16-iptal-nedeni-okunmaz", "K2-02*", "ayıklama düzeltmesi: iptal edilen toplu işin önceki duraklatma nedeni"],
   ["S12-yine-hedef-yok-sayilir", "G0-02*", "S-12 Yine de Gönder hedef asil → asıl toplu işteki iş"],
   ["S13-sifirla-geri-yukleme-benzetimi", "G4-01*,G4-02*", "S-13 sıfırla → programın gerçek Şirket Verisini Sıfırla ucu"],
@@ -2037,7 +2086,9 @@ const MUTASYONLAR = [
   ["S20-imzasiz-da-sayilir", "J6-01*,J6-02*,J6-03*,J1-03*", "S-20 kanca yanıt sayımı yalnız imzalı bildirim"],
   ["S20-503-sayilmaz", "J6-01*,J6-02*,J6-03*", "S-20 kanca yanıt sayımı 503'ü de sayar"],
   ["S22-sirket-silinmez", "J1-03*", "S-22 sirket_sil → programın Şirketi Sil ucu"],
+  ["S22-silme-govdesiz", "J1-03*", "S-22 Şirketi Sil onay kodu + parola GÖVDEDE (T1 resmî koşu düzeltmesi)"],
   ["S23-kilit-uygulanmaz", "J6-02*,J6-03*,J7-01*,J7-02*", "S-23 arıza olayları dosya kilidiyle oluşur (J7: gönderim defteri, 9d)"],
+  ["S23-gercek-saat-yetismez", "J6-02*,J6-03*,J7-02*", "S-23 kilit sonrası gerçek saat (programın kilit işareti Date.now ile; T1 resmî koşu düzeltmesi)"],
   ["S24-onarim-eslenmez", "J7-01*,J7-02*", "S-24 onarım bekleyen kabul reddi → onarim_bekleyen_kabul (9d: J7 artık geçerli, gec_kabul 10 sn)"],
   ["S30-tum-araligi-okunmaz", "J11-01*,J11-02*,ICERIK-08*,J12-02*", "S-30 Tüm Hareketler PDF dönemi okunur"],
   ["S32-degiskenler-programdan", "ICERIK-09*,J12-01*,J12-03*", "S-32 değişkenler Meta'ya gidenden"],
