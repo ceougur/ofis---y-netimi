@@ -263,6 +263,10 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       UNION ALL SELECT d.billable FROM deliveries d WHERE d.waba_id = ?1 AND d.at >= ?2 AND d.at < ?3 AND NOT EXISTS (SELECT 1 FROM attempt_deliveries a WHERE a.job_id = d.job_id AND a.at = d.at))`),
     deliverAttempt: db.prepare("INSERT OR IGNORE INTO attempt_deliveries (job_id, attempt, company_id, waba_id, billable, at) VALUES (?, ?, ?, ?, ?, ?)"),
     deliveredAttempt: db.prepare("SELECT 1 AS x FROM attempt_deliveries WHERE job_id = ? AND attempt = ?"),
+    // İş V2 / V4: denemenin teslim anı; işin ilk teslimi (deneme başına satır, yoksa eski iş başına satır).
+    deliveryOf: db.prepare("SELECT at FROM attempt_deliveries WHERE job_id = ? AND attempt = ?"),
+    firstDelivery: db.prepare("SELECT attempt, at FROM attempt_deliveries WHERE job_id = ? ORDER BY rowid LIMIT 1"),
+    legacyDeliveryAt: db.prepare("SELECT at FROM deliveries WHERE job_id = ?"),
     // T2-3/4
     hookEvent: db.prepare("INSERT INTO hook_events (waba_id, path_hash, verify_hash, base, state, reason, error, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"),
     hookLast: db.prepare("SELECT * FROM hook_events WHERE waba_id = ? ORDER BY seq DESC LIMIT 1"),
@@ -371,11 +375,25 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       const previous = q.attempts.all(String(row.jobId)).map(item => ({ attempt: item.attempt, outcome: item.outcome || null, wamid: item.wamid || "", at: item.at || "" }));
       // "failed" (gitmedi / teslim edilemedi) ve "released" (131049: Meta 24 saat sonra yeniden denenmesini istedi) yeni denemeyi engellemez.
       const open = item => item.outcome !== "failed" && item.outcome !== "released";
+      // İş V4 (dar kontrol 16 n9; ilke 3 + K1′): işin TESLİMİ varsa (geç teslim dahil) yeni deneme açılmaz — kişi aldı; aynı iş ikinci kez gönderilmez.
+      const deliveredOf = () => {
+        const first = q.firstDelivery.get(String(row.jobId));
+        if (first) return { attempt: first.attempt, outcome: "delivered", wamid: q.acceptedWamid.get(String(row.jobId), Number(first.attempt))?.wamid || "", at: first.at };
+        const legacy = q.deliveredJob.get(String(row.jobId)) ? previous.at(-1) : null;
+        return legacy ? { attempt: legacy.attempt, outcome: "delivered", wamid: legacy.wamid || "", at: q.legacyDeliveryAt.get(String(row.jobId))?.at || legacy.at || "" } : null;
+      };
+      const delivered = deliveredOf();
+      if (delivered) return { ok: false, previous: delivered };
       const blocking = previous.find(open);
       if (blocking) return { ok: false, previous: blocking };
       guard("claim", row);
       db.exec("BEGIN IMMEDIATE");
       try {
+        const deliveredNow = deliveredOf();
+        if (deliveredNow) {
+          db.exec("ROLLBACK");
+          return { ok: false, previous: deliveredNow };
+        }
         const again = q.attempts.all(String(row.jobId)).find(open);
         if (again) {
           db.exec("ROLLBACK");
@@ -579,6 +597,25 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     deliveredJob: jobId => Boolean(jobId && q.deliveredJob.get(String(jobId))),
     /** İş U5: bu DENEMENİN teslimi defterde var mı (aynı denemenin yinelenen teslimi etkisiz; başka denemenin teslimi ayrı sayılır). */
     deliveredAttempt: (jobId, attempt) => Boolean(jobId && q.deliveredAttempt.get(String(jobId), Number(attempt))),
+    /** İş V2: denemenin teslim anı (deneme başına teslim satırı); yoksa null. */
+    deliveryOf: (jobId, attempt) => q.deliveryOf.get(String(jobId), Number(attempt))?.at || null,
+    /**
+     * İş V1 (dar kontrol 16 n2) — "yalnız defter" sonucunun TEK kuralı (K4; queue.applyLedgerOnly ve kanca ledgerOnly aynı yerden): delivered / read → o DENEMEYE teslim
+     * (yinelenen etkisiz); failed (131026, 131049 dahil — yalnız defter yolunda yeniden deneme yok) → yalnız işin SON denemesiyse, iş teslim edilmemişse ve son sonuç
+     * teslim edilemedi / bırakıldı değilse teslim edilemedi. Dönüş: "applied" | "ignored" | "error" (yazılamadı — çağıran 503).
+     */
+    ledgerOnlyResult({ jobId, attempt, companyId, wabaId, value, billable = true, at }) {
+      if (["delivered", "read"].includes(value)) {
+        if (q.deliveredAttempt.get(String(jobId), Number(attempt))) return "ignored";
+        return this.delivered({ jobId, attempt, companyId, wabaId, billable, at }) ? "applied" : "error";
+      }
+      if (value === "failed") {
+        const last = this.attempts(jobId).at(-1);
+        if (!last || Number(last.attempt) !== Number(attempt) || q.deliveredJob.get(String(jobId)) || ["failed", "released"].includes(last.outcome)) return "ignored";
+        return this.deliveryFailed({ jobId, attempt, at }) ? "applied" : "error";
+      }
+      return "ignored";
+    },
     /** İş U6: denemenin outcomes satırı (failures / releases değil — yalnız eşzamanlı / toparlama sonucu); yoksa null. */
     outcomeOf: (jobId, attempt) => q.outcomeOf.get(String(jobId), Number(attempt))?.outcome || null,
     /**

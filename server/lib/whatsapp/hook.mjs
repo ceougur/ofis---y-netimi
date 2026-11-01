@@ -61,7 +61,9 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
   // şirketin WABA'sı kancanınkiyle aynı olmalı (aşağıda); Yol 2'de imzasız bildirim yine yazılmaz (aynı kurallar). İş U6 (dar kontrol 15): kabulü deftere yazılamamış
   // işin wamid'i de dosyada aranır (queue.movedOwnerOfWamid). Şirket GEÇİCİ olarak açılamıyorsa (geri yükleme / açılış sürüyor, kilit) lookup.busy işaretlenir →
   // sahibi bulunamayan bildirim 503 alır (Meta yeniden dener); KALICI açılamama (veri dosyası yok, bozuk kayıt) atlanır.
-  const temporary = error => Boolean(error?.retryAfter || error?.extra?.retryAfter) || isLockError(error); // HttpError(503, …, { retryAfter }) — app.mjs appFor busyCompanies
+  // İş V1 (dar kontrol 16 n2/n11): KALICI yalnız sürüp giden veri dosyası yokluğu (app.mjs appFor COMPANY_DATA_MISSING) — öbür her açılış hatası (geri yükleme / Ayır
+  // sürüyor [busyCompanies], kilit, disk dolu, G/Ç, bozuk dosya, "Ayır" gerektiren kayıt) GEÇİCİ: 503, Meta yeniden dener.
+  const temporary = error => error?.code !== "COMPANY_DATA_MISSING";
   function movedOwnerOf(wamid, lookup) {
     if (!wamid) return null;
     for (const company of companies() || []) {
@@ -75,29 +77,26 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     }
     return null;
   }
-  // İş U (K1′ "teslim her yolda sayılır" + onaylı koşul (a)): şirket SİLİNMİŞ ya da veri dosyası KALICI olarak açılamıyorsa delivered / read yalnız deftere (o denemeye)
-  // yazılır — Bu Ay sayar; Meta 7 gün yeniden denemeye itilmez (200). Öbür türler etkisiz.
+  // İş U (K1′ + onaylı koşul (a)) + İş V1 (dar kontrol 16 n2): şirket SİLİNMİŞ ya da veri dosyası KALICI olarak yoksa durum yalnız deftere yazılır — K4 kuralı defterin
+  // TEK yardımcısında (ledgerOnlyResult; queue.applyLedgerOnly ile aynı): D/R o denemeye teslim, F (131049 dahil) son denemeye teslim edilemedi. 200 (Meta 7 gün yeniden
+  // denemeye itilmez); yazılamazsa 503.
   function ledgerOnly(items, owner, signed, out) {
     for (const { status } of items) {
       const value = String(status?.status || "").toLowerCase();
-      if (!["delivered", "read"].includes(value)) {
-        out.ignored += 1;
-        continue;
-      }
       const wamid = String(status?.id || "").slice(0, 200);
       const opaque = signed ? String(status?.biz_opaque_callback_data || "").slice(0, 120) : "";
       const lastOf = opaque ? hooks.attempts?.(opaque)?.at(-1) : null;
       const target = hooks.attemptOfWamid?.(wamid) || (lastOf ? { jobId: opaque, attempt: lastOf.attempt } : null);
-      if (!target || hooks.deliveredAttempt?.(target.jobId, target.attempt)) {
+      if (!target || !["delivered", "read", "failed"].includes(value)) {
         out.ignored += 1;
         continue;
       }
       const at = Number(status?.timestamp) > 0 ? new Date(Number(status.timestamp) * 1000).toISOString() : now().toISOString();
       const billable = status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing ? status.pricing.billable !== false : true;
-      if (!hooks.delivered({ jobId: target.jobId, attempt: target.attempt, companyId: owner.companyId, wabaId: owner.wabaId, billable, at })) {
-        throw Object.assign(new Error("WhatsApp gönderim defterine yazılamadı (teslim)"), { code: "WA_LEDGER_WRITE" });
-      }
-      out.applied += 1;
+      const result = hooks.ledgerOnlyResult({ jobId: target.jobId, attempt: target.attempt, companyId: owner.companyId, wabaId: owner.wabaId, value, billable, at });
+      if (result === "error") throw Object.assign(new Error("WhatsApp gönderim defterine yazılamadı"), { code: "WA_LEDGER_WRITE" });
+      if (result === "applied") out.applied += 1;
+      else out.ignored += 1;
     }
   }
   async function handle(req, res) {

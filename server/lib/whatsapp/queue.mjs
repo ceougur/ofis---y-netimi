@@ -87,6 +87,13 @@ const fail = (status, message, code, extra = {}) => {
 const isUniqueWamidError = error => (Number(error?.errcode) === 2067 || /UNIQUE constraint failed/i.test(String(error?.message || ""))) && /wamid/i.test(String(error?.message || ""));
 // İş U6: eşzamanlı kabulü DEFTERE yazılamamış işler (şirket dosyası ayarı; göç yok) — defter onarımı (repairPending) bunları deftere taşır.
 const LEDGER_REPAIR_KEY = "whatsapp.ledgerRepair";
+// İş V5 (dar kontrol 16 n4): talep yazılamadığında toplu iş nedeninin Türkçe metni (kod adı ekrana çıkmaz; günlükte durur).
+const ledgerTroubleOf = error => {
+  if (error?.code === "WA_LEDGER_REPAIR") return error.lock ? "gönderim defteri başka bir program tarafından kullanılıyor" : "önceki bir iletinin kabulü gönderim defterine yazılamadı";
+  if (isLockError(error)) return "gönderim defteri başka bir program tarafından kullanılıyor";
+  if (error?.code === "ENOSPC" || (Number(error?.errcode) & 0xff) === 13) return "disk dolu; gönderim defteri yazılamadı";
+  return "gönderim defteri yazılamadı";
+};
 const parse = (value, fallback) => {
   try {
     const parsed = JSON.parse(value || "null");
@@ -630,8 +637,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       if (error instanceof MetaGraphError) throw metaHttp(error);
       throw error;
     }
-    repairPending(); // İş U6: ekranda doğru eleme (onarılamazsa gönderim başlatılamaz — createBatch)
-    return { ...summarize(plan(user, body), record, limitInfo, template), startBlock: startBlock(), ack: ackView() };
+    // İş U6: ekranda doğru eleme. İş V3: onarılamazsa (defter kilitli: kısa sınama, bekleme yok) başlatma engeli nedeniyle — gönderim başlatılamaz.
+    const repaired = repairPending();
+    return { ...summarize(plan(user, body), record, limitInfo, template), startBlock: startBlock() || (repaired ? null : repairBlock()), ack: ackView() };
   }
   function summarize(plotted, record, limitInfo, template) {
     const sendable = plotted.people.filter(person => !person.skip);
@@ -707,7 +715,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (again) return { batch: batchView(again), reused: true };
     preconditions();
     // İş U6: deftere taşınmamış kabul varken R3 kişiyi göremez → gönderim başlatılmaz.
-    if (!repairPending()) fail(503, "WhatsApp gönderim defterine önceki bir kabul kaydı yazılamadı (disk dolu ya da dosya kilitli olabilir); biraz sonra yeniden deneyin. Gönderim başlatılmadı.", "whatsapp-ledger");
+    if (!repairPending()) fail(503, repairBlock().message, "whatsapp-ledger");
     const plotted = plan(user, body, period, { anyway: Boolean(inherit) });
     const summary = summarize(plotted, record, limitInfo, template);
     // §7a 31: bütün seçilenler elenince toplu iş kaydı OLUŞMAZ; nedenler yanıtta ve İLETİDE (dar kontrol 5 ORTA-1: istemci yalnız iletiyi gösterir).
@@ -1211,7 +1219,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     try {
       injected("ledger-claim", job);
       // İş U6: ikinci iletinin tek kapısı — önce deftere taşınmamış kabuller onarılır; onarılamazsa talep yazılmaz (iş bekler).
-      if (!repairPending()) throw Object.assign(new Error("önceki kabul deftere taşınamadı"), { code: "WA_LEDGER_REPAIR" });
+      if (!repairPending()) throw Object.assign(new Error("önceki kabul deftere taşınamadı"), { code: "WA_LEDGER_REPAIR", lock: repairState.lock });
       const batchPeriod = { from: batch.period_from, to: batch.period_to, preset: batch.preset };
       const keyDay = keyDayOfBatch(batch);
       // İş Q1: "Tüm Hareketler"de talebin anahtar kümesine kişinin dönemi (ilk hareket – dönem sonu; iletideki metinle aynı kaynak) girer.
@@ -1224,11 +1232,21 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         syncLockNote(); // İş R3: ekranda defter cümlesi
       }
       updateJob(job.id, { state: "pending", attempt: job.attempt || 0, sending_at: null, next_at: iso(nowMs() + JOB_BACKOFF_MS[0]) });
-      trouble(batchRow(batch.id), `gönderim defteri yazılamadı (${error.code || error.message})`);
+      // İş V5 (dar kontrol 16 n4): sorun BU BİLGİSAYARDA (Meta değil) — Türkçe neden, kod adı yalnız günlükte.
+      trouble(batchRow(batch.id), ledgerTroubleOf(error), { local: true });
       log.warn?.(`WhatsApp gönderim defteri yazılamadı (${job.id}): ${error.message}`);
       return { did: true };
     }
     if (!claim.ok) {
+      // İş V4 (dar kontrol 16 n9; ilke 3): işin teslimi defterde (geç teslim dahil) — kişi aldı; ikinci kez gönderilmez, iş Teslim Edildi.
+      if (claim.previous.outcome === "delivered") {
+        const at = claim.previous.at || iso();
+        const wamid = claim.previous.wamid && !store.get("SELECT 1 AS x FROM wa_jobs WHERE wamid = ? AND id <> ?", claim.previous.wamid, job.id) ? claim.previous.wamid : null;
+        updateJob(job.id, { state: "delivered", attempt: claim.previous.attempt, wamid, sent_at: at, delivered_at: at, closed_at: iso(), next_at: null, error_code: null, error_text: "" });
+        finishIfDone(batch.id);
+        notify(batch.id);
+        return { did: true };
+      }
       // Önceki deneme kabul edilmiş ya da sonucu belirsiz: ikinci kez gönderilmez.
       const accepted = claim.previous.outcome === "accepted";
       // İş R4: accepted_at = SON kabul edilen denemenin anı (defterdeki o denemenin kabulü; önceki denemenin eski değeri değil).
@@ -1468,6 +1486,11 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   function settleSending(jobs) {
     const out = { sendingToPending: 0, sendingToAccepted: 0, sendingToUncertain: 0 };
     for (const job of jobs) {
+      // İş V2 (dar kontrol 16 n1b): denemenin teslimi defterde varsa (istek sürerken geri yükleme + sonra gelen teslim) Teslim Edildi.
+      if (settleDelivered(job.id, Number(job.attempt))) {
+        out.sendingToDelivered = (out.sendingToDelivered || 0) + 1;
+        continue;
+      }
       const attempt = ledger.attempts(job.id).find(item => item.attempt === job.attempt);
       if (!attempt && movedHere(job.batch_id)) {
         // İş Q3 (dar kontrol 10 DÜŞÜK-3; ilke 2 + 5): toplu iş bu bilgisayarın defterinde açılmamış (veri başka bilgisayardan / defteri silinmiş kurulumdan geldi) →
@@ -1549,6 +1572,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     if (Number.isFinite(seen) && nowMs() - seen <= HOOK_ALIVE_MS) {
       for (const row of store.all("SELECT j.id, j.attempt, j.accepted_at, b.waba_id, b.template FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL")) {
         if (Date.parse(row.accepted_at) + ttlMs(row.waba_id, row.template) + HOUR >= nowMs()) continue;
+        // İş V2: defterde bu denemenin teslimi varsa (kancanın yalnız defter yolu / geri yükleme) Süresi Doldu DEĞİL — Teslim Edildi; teslim edilemedi yazılmaz.
+        if (settleDelivered(row.id, Number(row.attempt))) continue;
         updateJob(row.id, { state: "expired", closed_at: iso() });
         // KULLANICI KARARI P3 = SAYILMAZ (31.10.2026): Meta teslim edemedi → defterde "teslim edilemedi" (Başarısız gibi): "Daha Önce Gönderildi" (R3) saymaz, çift
         // gönderim kilidi çözülür. Meta sonradan "delivered" bildirirse R3 yine sayar (defter deliveries; lib/whatsapp/defter.mjs sentBefore).
@@ -1644,12 +1669,24 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   function settleUncertainFromLedger() {
     for (const job of store.all("SELECT id, attempt FROM wa_jobs WHERE state = 'uncertain' AND wamid IS NULL")) {
       const attempt = Number(job.attempt);
+      // İş V2 (dar kontrol 16 n1; İLKEYLE ilke 3): satırın denemesinin TESLİMİ defterde varsa Teslim Edildi (defterdeki anla) — son deneme olması gerekmez (K1′).
+      if (settleDelivered(job.id, attempt)) continue;
       const last = ledger.attempts(job.id).at(-1);
       if (!last || last.attempt !== attempt || ["failed", "released"].includes(last.outcome)) continue;
       const wamid = ledger.acceptedWamid?.(job.id, attempt);
       if (!wamid || store.get("SELECT 1 AS x FROM wa_jobs WHERE wamid = ?", wamid)) continue;
       updateJob(job.id, { state: "accepted", wamid, accepted_at: ledger.acceptanceAt?.(job.id, attempt) || iso(), error_code: null, error_text: "" });
     }
+  }
+  // İş V2: denemenin teslimi defterde varsa satır Teslim Edildi (delivered_at = defterdeki an; wamid kabul wamid'i). Yeniden açma yok (kapanış durumu), defter yazımı yok
+  // (Bu Ay zaten sayılmış — eşgüçlü). Dönüş: yazıldı mı.
+  function settleDelivered(jobId, attempt) {
+    const at = ledger.deliveryOf?.(jobId, attempt);
+    if (!at) return false;
+    const wamid = ledger.acceptedWamid?.(jobId, attempt);
+    const free = wamid && !store.get("SELECT 1 AS x FROM wa_jobs WHERE wamid = ? AND id <> ?", wamid, jobId);
+    updateJob(jobId, { state: "delivered", attempt, ...(free ? { wamid } : {}), accepted_at: ledger.acceptanceAt?.(jobId, attempt) || at, sent_at: at, delivered_at: at, closed_at: iso(), next_at: null, error_code: null, error_text: "" });
+    return true;
   }
   // ---------- İş U6: defter onarımı ----------
   function repairList() {
@@ -1660,10 +1697,27 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const list = repairList();
     if (!list.includes(String(jobId))) store.setSetting(LEDGER_REPAIR_KEY, JSON.stringify([...list, String(jobId)]));
   }
-  /** Onarım listesindeki işlerin dosyadaki kabulünü (deneme, wamid, accepted_at) deftere yazar. Dönüş: liste boşaldı mı (boşsa maliyet tek ayar okuması). */
+  // İş V3: son onarım denemesi defter KİLİDİNE mi takıldı (ekrandaki neden ve toplu iş nedeni için).
+  const repairState = { lock: false };
+  /** İş V3 (dar kontrol 16 n5): onarılamadığında önizleme / yeni gönderim nedeni — kilitte kilit notuyla AYNI cümle (Y1). */
+  function repairBlock() {
+    return repairState.lock
+      ? { code: "whatsapp-ledger-locked", message: LOCK_NOTES.ledger }
+      : { code: "whatsapp-ledger-repair", message: "WhatsApp gönderim defterine önceki bir iletinin kabulü yazılamadı (disk dolu olabilir); gönderim bekliyor." };
+  }
+  /**
+   * Onarım listesindeki işlerin dosyadaki kabulünü (deneme, wamid, accepted_at) deftere yazar. Dönüş: liste boşaldı mı (boşsa maliyet tek ayar okuması).
+   * İş V3: yazmadan ÖNCE defter kısa sınanır (writeLock.guard → probeWritable: busy_timeout kısa, sonra geri alınır; işlem içinde çağrılmaz) — kilitliyse 10 sn
+   * beklemeden false (bütün çağıranlar: bakım, talep, önizleme, yeni gönderim).
+   */
   function repairPending() {
     const list = repairList();
+    repairState.lock = false;
     if (!list.length) return true;
+    if (writeLock && !writeLock.guard(LEDGER_LOCK_KEY, ledger)) {
+      repairState.lock = true;
+      return false;
+    }
     const left = [];
     for (const id of list) {
       const row = jobRow(id);
@@ -1764,15 +1818,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // K4: satır o denemeyi BİLMİYOR (yok — sıfırlama; geri yüklenmiş / durdurulmuş eski satır) → yalnız defter. D/R → teslim (Süresi Doldu / teslim edilemedi sonrası da — P3;
   // A2); F (131026, 131049 dahil — yeniden deneme yok) → teslim edilemedi, teslimden sonra yok sayılır (§7a 18). İmzalı ve imzasız. Eşgüçlü.
   function applyLedgerOnly(owned, status, value, at) {
-    if (["delivered", "read"].includes(value)) {
-      if (ledger.deliveredAttempt?.(owned.jobId, owned.attempt)) return false;
-      return ledgerMust(ledger.delivered({ jobId: owned.jobId, attempt: owned.attempt, companyId, wabaId: owned.wabaId, billable: billableOf(status, true), at }), "teslim");
-    }
-    if (value === "failed") {
-      if (ledger.deliveredJob?.(owned.jobId) || ["failed", "released"].includes(owned.last.outcome)) return false;
-      return ledgerMust(ledger.deliveryFailed({ jobId: owned.jobId, attempt: owned.attempt, at }), "teslim edilemedi");
-    }
-    return false;
+    // İş V1: kural defterin tek yardımcısında (kancanın kalıcı açılamama yolu da aynısını çağırır).
+    const result = ledger.ledgerOnlyResult({ jobId: owned.jobId, attempt: owned.attempt, companyId, wabaId: owned.wabaId, value, billable: billableOf(status, true), at });
+    ledgerMust(result !== "error", value === "failed" ? "teslim edilemedi" : "teslim");
+    return result === "applied";
   }
   // K5 / Q4 (dar kontrol 10 DÜŞÜK-4): iş dosyada YOK, wamid defterde BAĞSIZ, İMZALI bildirim + iş kimliği: defterdeki sonucu belli olmayan SON deneme kapatılır (wamid öğrenilir
   // + kabul; D/R → teslim, F → teslim edilemedi). İmzasız bu yolu açmaz (P5).

@@ -568,7 +568,8 @@ export function createApp(overrides = {}) {
       const file = resolveDbPath(dirs.dataDir);
       if (!existsSync(file)) {
         const fresh = existsSync(dirs.dataDir) && readdirSync(dirs.dataDir).length === 0 && !store.setting(openedKey, "");
-        if (!fresh) throw new Error(`veri dosyası bulunamadı: ${file}`);
+        // İş V1 (dar kontrol 16): sürüp giden yokluk — kancanın "kalıcı açılamama" ayrımı bu koda bakar (geri yükleme / Ayır sırasında busyCompanies önce yanıt verir).
+        if (!fresh) throw Object.assign(new Error(`veri dosyası bulunamadı: ${file}`), { code: "COMPANY_DATA_MISSING" });
       }
       mkdirSync(dirs.dataDir, { recursive: true });
       child = createApp({
