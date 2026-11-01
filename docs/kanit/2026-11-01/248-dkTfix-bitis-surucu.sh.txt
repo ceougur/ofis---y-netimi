@@ -1,0 +1,21 @@
+#!/bin/bash
+# İş T bitiş: WhatsApp dar listesi (93 dosya, karar tablosu dahil) iki TZ + P1 komşuları UTC + 5 WhatsApp e2e — her koşu tools/kanit.mjs kos ile.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos
+W=/home/user/wt-t2fix-248
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+export PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-q7m3/pw
+DAR=$(cat $K/dar-liste.txt)
+P1="test/dataset.test.mjs test/sheets-yedek.test.mjs test/banka-220-pos-kuyruk.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-pos-moduller.test.mjs test/chat-archive.test.mjs test/chat.test.mjs test/documents.test.mjs test/sessions.test.mjs test/banka-210-gg-tarama.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-kapi.test.mjs test/tunel-saat-247.test.mjs $(ls test/mobil-*.test.mjs | tr '\n' ' ') test/backup.test.mjs test/migrations.test.mjs"
+son() { echo "$1 çıkış=$2 $(grep '\[kanit\]' $3 | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-110)"; grep -E "^not ok|^    not ok|^  not ok" $3 | cut -c1-140 | sed 's/^/      /'; }
+for tz in UTC Europe/Istanbul; do
+  out=$K/bitis-dar-${tz//\//_}.out
+  TZ=$tz node tools/kanit.mjs kos "248-dkTfix-dar-${tz//\//_}" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $DAR > $out 2>&1; son "dar $tz" $? $out
+done
+out=$K/bitis-p1.out
+TZ=UTC node tools/kanit.mjs kos "248-dkTfix-p1-komsular-UTC" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $P1 > $out 2>&1; son "P1 komşuları UTC" $? $out
+for e in senaryo-whatsapp senaryo-whatsapp-ayar-248 senaryo-whatsapp-donem-248 senaryo-whatsapp-gonder-248 senaryo-whatsapp-sablon-248; do
+  out=$K/bitis-e2e-$e.out
+  node tools/kanit.mjs kos "248-dkTfix-e2e-$e" -- node --disable-warning=ExperimentalWarning test/e2e/$e.mjs > $out 2>&1; son "e2e $e" $? $out
+done
+echo BITTI

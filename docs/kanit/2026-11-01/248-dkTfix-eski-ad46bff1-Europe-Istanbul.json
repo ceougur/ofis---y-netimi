@@ -1,0 +1,93 @@
+{
+  "ad": "248-dkTfix-eski-ad46bff1-Europe-Istanbul",
+  "komut": "bash -c cd '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1' && TZ=Europe/Istanbul node --test --test-concurrency=1 test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": "c0f22f4a4d713f597fae0f1ae7bbac4cfa96b55f",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T01:00:34.506Z",
+  "sure_sn": 28.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 30,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T12 delivered (imzasız) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:267:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T12 delivered (imzalı) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:267:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T14 imzalı iş kimliği · Sonucu Belirsiz (bağsız) → Teslim Edildi; belirsizlik metni temizlenir (A4, c1b); accepted_at bildirimin anı (öğrenilen wamid)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:296:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T20 Süresi Doldu → sıfırlama → geç delivered (imzasız) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:347:5",
+      "hata": "Expected values to be strictly equal: · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T20 Süresi Doldu → sıfırlama → geç delivered (imzalı) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:347:5",
+      "hata": "Expected values to be strictly equal: · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T24 Süresi Doldu → geri yükleme → geç delivered (imzasız) → teslim sayılır (A2, c2b)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:416:5",
+      "hata": "Expected values to be strictly equal: · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T24 Süresi Doldu → geri yükleme → geç delivered (imzalı) → teslim sayılır (A2, c2b)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:416:5",
+      "hata": "Expected values to be strictly equal: · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T25 imzalı · geri yüklenen satır ESKİ denemede Sonucu Belirsiz (iş kimliği adayı) · son denemenin wamid'ine failed → T23 ile aynı (A1, c5)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:428:3",
+      "hata": "imzalı geç failed defterde uygulandı (geldi {\"applied\":0,\"ignored\":1,\"unknown\":0}) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T30 eski (131049 bırakılmış) denemenin geç teslimi, satır geri yüklemeyle ESKİ denemede → teslim sayılır (A8, K11:00)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:456:3",
+      "hata": "eski denemenin geç teslimi uygulandı · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T35 istek Meta'dayken toparlama denemeye 'uncertain' yazdı → yanıt gelince kabul öğrenilir (A7, K8); sonraki imzasız delivered uygulanır; Daha Önce",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:584:3",
+      "hata": "kabul defterde öğrenildi (wamid bağlı) · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T17 imzasız bildirim yanıt işlenmeden gelir (istek Meta'da) → 503; yanıt işlenince yineleme 200 ve uygulanır; bekleyen istek yokken / pencere (5 dk) dışında tanınmayan → 200; pencere içinde yabancı ileti de 503 (BİLİNEN SINIR)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:630:3",
+      "hata": "yanıtı beklenen istek varken tanınmayan bildirim 503 (geldi 200 {\"ok\":true}) · 200 !== 503 (beklenen 503, gelen 200)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0c ön sınamadan SONRA dosya yazımı kilide takılır → 503, defter önce yazıldı; Meta'nın yinelemesi tamamlar, Bu Ay 1 (eşgüçlü)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:657:3",
+      "hata": "yazım kilitte 503 (geldi 200 {\"ok\":true}) · 200 !== 503 (beklenen 503, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkTfix-eski-ad46bff1-Europe-Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "145d8204ec564af91125e99d187289f7f5fd059d8f6b66a2e1507a15ed4c427d",
+  "ham_cikti_bayt": 26109
+}

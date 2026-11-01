@@ -1,0 +1,54 @@
+# İş T mutasyonları: python3 mut.py <kök> <ad>. Her (dosya, eski, yeni) eski metin dosyada TAM BİR kez geçmeli.
+import sys
+Q = "server/lib/whatsapp/queue.mjs"
+D = "server/lib/whatsapp/defter.mjs"
+H = "server/lib/whatsapp/hook.mjs"
+M = {
+  # A1: imzalı iş kimliği adayı defterdeki sahipten ÖNCE
+  "mA1-imzali-aday-once": [(Q, "    if (fileJob) return { route: \"row\", job: fileJob };\n    const owned = ledgerOwnerOf(wamid);",
+    "    if (fileJob) return { route: \"row\", job: fileJob };\n    if (signed) {\n      const c0 = jobRow(String(status?.biz_opaque_callback_data || \"\").slice(0, 120));\n      if (c0 && [\"uncertain\", \"sending\"].includes(c0.state) && !c0.wamid) return { route: \"row\", job: c0 };\n    }\n    const owned = ledgerOwnerOf(wamid);")],
+  # A2: yalnız defter yolunda teslim edilemedi (Süresi Doldu) geç teslimi engeller
+  "mA2-teslim-edilemedi-engeller": [(Q, "      if (ledger.deliveredJob?.(owned.jobId)) return false;\n      return ledgerMust(ledger.delivered(",
+    "      if (ledger.deliveredJob?.(owned.jobId) || owned.last.outcome === \"failed\") return false;\n      return ledgerMust(ledger.delivered(")],
+  # A3: accepted_at bildirimin anı
+  "mA3-kabul-ani-bildirim": [(Q, "fields.accepted_at = ledger.acceptanceAt?.(job.id, job.attempt) || at;", "fields.accepted_at = at;")],
+  # A4: başarılı geçişte hata alanları temizlenmez
+  "mA4-hata-temizlenmez": [(Q, "      if ([\"sent\", \"delivered\", \"read\"].includes(fields.state)) Object.assign(fields, { error_code: null, error_text: \"\" });\n", "")],
+  # A5: dosya yazımındaki kilit yutulur (200, yarım)
+  "mA5-kilit-yutulur": [(Q, "        if (isLockError(error) || error?.code === \"ERR_INVALID_STATE\") throw error;\n", "")],
+  # A5: defter teslimi dosyadan SONRA
+  "mA5-defter-sonra": [
+    (Q, "      if ([\"delivered\", \"read\"].includes(fields.state)) ledgerMust(ledger.delivered({ jobId: job.id, companyId, wabaId,", "      const lateLedger = () => [\"delivered\", \"read\"].includes(fields.state) && ledgerMust(ledger.delivered({ jobId: job.id, companyId, wabaId,"),
+    (Q, "      out.applied += 1;\n      notify(job.batch_id);", "      lateLedger();\n      out.applied += 1;\n      notify(job.batch_id);")],
+  # A6: bekleyen talep sınanmaz (hep 200)
+  "mA6-bekleyen-sinanmaz": [(H, "    if (unowned && hooks.pendingClaims?.(", "    if (false && unowned && hooks.pendingClaims?.(")],
+  # A6: pencere sınırsız
+  "mA6-pencere-sinirsiz": [(H, "new Date(now().getTime() - PENDING_MS).toISOString()", "new Date(0).toISOString()")],
+  # A7: toparlamanın uncertain'ı sonraki kabulü yutar (öğrenilmez)
+  "mA7-ogrenilmez": [(D, "          if (row.wamid && q.outcomeOf.get(String(row.jobId), Number(row.attempt))?.outcome === \"uncertain\") q.learnWamid.run(", "          if (false && row.wamid && q.outcomeOf.get(String(row.jobId), Number(row.attempt))?.outcome === \"uncertain\") q.learnWamid.run(")],
+  # A8: eski denemenin geç teslimi satır eski denemedeyken sayılmaz
+  "mA8-eski-satir-sayilmaz": [(Q, "    if (![\"delivered\", \"read\"].includes(value) || owned.own?.outcome !== \"released\") return false;",
+    "    if (![\"delivered\", \"read\"].includes(value) || owned.own?.outcome !== \"released\" || (owned.row && Number(owned.row.attempt) < Number(owned.attempt))) return false;")],
+  # Yol sırası 1: "satır sonucu bilmiyor" denetimi yalnız-defter yolundan SONRA (erişilmez)
+  "mYol-bilmiyor-sonra": [(Q, "      if (owned.knows) return { route: \"row\", job: owned.row, owned };\n      if (owned.row && Number(owned.row.attempt) > Number(owned.attempt)) return { route: \"none\" };\n      return { route: \"ledger\", owned };",
+    "      if (owned.row && Number(owned.row.attempt) > Number(owned.attempt)) return { route: \"none\" };\n      return { route: \"ledger\", owned };\n      if (owned.knows) return { route: \"row\", job: owned.row, owned };")],
+  # Yol sırası 2: dosyadaki wamid defterdeki sahipten SONRA
+  "mYol-dosya-sonra": [
+    (Q, "    if (fileJob) return { route: \"row\", job: fileJob };\n    const owned = ledgerOwnerOf(wamid);\n    if (owned) {", "    const owned = ledgerOwnerOf(wamid);\n    if (owned) {"),
+    (Q, "      return { route: \"ledger\", owned };\n    }\n    if (signed) {", "      return { route: \"ledger\", owned };\n    }\n    if (fileJob) return { route: \"row\", job: fileJob };\n    if (signed) {")],
+  # Yol sırası 3: eski deneme denetimi "bilmiyor"dan SONRA
+  "mYol-eski-sonra": [(Q, "      if (!owned.isLast) return { route: \"old\", owned };\n      if (owned.knows) return { route: \"row\", job: owned.row, owned };",
+    "      if (owned.knows) return { route: \"row\", job: owned.row, owned };\n      if (owned.row && Number(owned.row.attempt) > Number(owned.attempt)) return { route: \"none\" };\n      if (!owned.isLast) return { route: \"old\", owned };")],
+}
+if sys.argv[1] == "--list":
+    print("\n".join(M)); sys.exit(0)
+root, name = sys.argv[1], sys.argv[2]
+for path, old, new in M[name]:
+    p = f"{root}/{path}"
+    s = open(p).read()
+    n = s.count(old)
+    if n != 1:
+        sys.exit(f"{name}: {path} eski metin {n} kez")
+    s = s.replace(old, new)
+    open(p, "w").write(s)
+print(f"{name}: uygulandı")

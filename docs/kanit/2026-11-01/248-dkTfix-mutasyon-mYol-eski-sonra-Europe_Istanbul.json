@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkTfix-mutasyon-mYol-eski-sonra-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut/test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": "b8c8ea63179a94f3395f9d0e150542a477bd5425",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 58,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T01:14:58.900Z",
+  "sure_sn": 27.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 41,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T28/T29 131049 → 2. deneme kabul (satır daha yeni denemede) → 1. denemenin delivered'ı deftere teslim (L3), failed'ı yok sayılır; satır değişmez",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:482:3",
+      "hata": "eski deneme geç teslim sayılır · 0 !== 1 (beklenen 1, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkTfix-mutasyon-mYol-eski-sonra-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "45e0282050d53371f3d8ecc3b12ea7a5bd86104eac630fc4baa41668ebd00e75",
+  "ham_cikti_bayt": 14771
+}

@@ -1,0 +1,529 @@
+TAP version 13
+# (node:16084) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test)
+    # Subtest: T1 sent (imzasız) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+    ok 1 - T1 sent (imzasız) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+      ---
+      duration_ms: 681.314373
+      type: 'test'
+      ...
+    # Subtest: T2 delivered (imzasız) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+    ok 2 - T2 delivered (imzasız) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+      ---
+      duration_ms: 480.333173
+      type: 'test'
+      ...
+    # Subtest: T1 sent (imzalı) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+    ok 3 - T1 sent (imzalı) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+      ---
+      duration_ms: 497.678027
+      type: 'test'
+      ...
+    # Subtest: T2 delivered (imzalı) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+    ok 4 - T2 delivered (imzalı) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+      ---
+      duration_ms: 490.902203
+      type: 'test'
+      ...
+    # Subtest: T3 read · teslimden sonra okundu; ×3 yinelenen → Bu Ay 1 (eşgüçlü)
+    ok 5 - T3 read · teslimden sonra okundu; ×3 yinelenen → Bu Ay 1 (eşgüçlü)
+      ---
+      duration_ms: 410.561071
+      type: 'test'
+      ...
+    # Subtest: T4 failed 131026 · B1 · S2 → Başarısız + teslim edilemedi; gönderilecek
+    ok 6 - T4 failed 131026 · B1 · S2 → Başarısız + teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 380.754161
+      type: 'test'
+      ...
+    # Subtest: T5/T6 failed 131049 · ilk kez Meta Bekletti (Zaten Kuyrukta); 2. denemenin 131049'u Başarısız
+    ok 7 - T5/T6 failed 131049 · ilk kez Meta Bekletti (Zaten Kuyrukta); 2. denemenin 131049'u Başarısız
+      ---
+      duration_ms: 462.817244
+      type: 'test'
+      ...
+    # Subtest: T7 failed teslimden sonra yok sayılır (§7a 18)
+    ok 8 - T7 failed teslimden sonra yok sayılır (§7a 18)
+      ---
+      duration_ms: 423.684802
+      type: 'test'
+      ...
+    # Subtest: T8 Süresi Doldu → geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce (P3)
+    ok 9 - T8 Süresi Doldu → geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce (P3)
+      ---
+      duration_ms: 470.133669
+      type: 'test'
+      ...
+    # Subtest: T9 Meta Bekletti → İptal Et → kendi wamid'ine geç delivered → Teslim Edildi (K10:10)
+    ok 10 - T9 Meta Bekletti → İptal Et → kendi wamid'ine geç delivered → Teslim Edildi (K10:10)
+      ---
+      duration_ms: 398.906192
+      type: 'test'
+      ...
+    # Subtest: T10 Başarısız işe yinelenen failed → yok sayılır
+    ok 11 - T10 Başarısız işe yinelenen failed → yok sayılır
+      ---
+      duration_ms: 432.037415
+      type: 'test'
+      ...
+    # Subtest: T12 delivered (imzasız) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+    not ok 12 - T12 delivered (imzasız) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+      ---
+      duration_ms: 473.806497
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:267:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'delivered',
+        +   '2026-11-04T07:01:00.000Z',
+        -   '2026-11-03T07:00:00.000Z',
+            ''
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'delivered'
+        1: '2026-11-03T07:00:00.000Z'
+        2: ''
+      actual:
+        0: 'delivered'
+        1: '2026-11-04T07:01:00.000Z'
+        2: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:276:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T12 failed (imzasız) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+    ok 13 - T12 failed (imzasız) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+      ---
+      duration_ms: 485.237482
+      type: 'test'
+      ...
+    # Subtest: T12 delivered (imzalı) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+    not ok 14 - T12 delivered (imzalı) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+      ---
+      duration_ms: 409.347141
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:267:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'delivered',
+        +   '2026-11-04T07:01:00.000Z',
+        -   '2026-11-03T07:00:00.000Z',
+            ''
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'delivered'
+        1: '2026-11-03T07:00:00.000Z'
+        2: ''
+      actual:
+        0: 'delivered'
+        1: '2026-11-04T07:01:00.000Z'
+        2: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:276:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T12 failed (imzalı) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+    ok 15 - T12 failed (imzalı) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+      ---
+      duration_ms: 404.688171
+      type: 'test'
+      ...
+    # Subtest: T14 imzalı iş kimliği · Sonucu Belirsiz (bağsız) → Teslim Edildi; belirsizlik metni temizlenir (A4, c1b); accepted_at bildirimin anı (öğrenilen wamid)
+    not ok 16 - T14 imzalı iş kimliği · Sonucu Belirsiz (bağsız) → Teslim Edildi; belirsizlik metni temizlenir (A4, c1b); accepted_at bildirimin anı (öğrenilen wamid)
+      ---
+      duration_ms: 416.403328
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:296:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'delivered',
+        +   "Meta'ya ulaşılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); sonuç bilinmiyor. (socket hang up)",
+        -   '',
+            '2026-11-03T07:01:00.000Z'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'delivered'
+        1: ''
+        2: '2026-11-03T07:01:00.000Z'
+      actual:
+        0: 'delivered'
+        1: "Meta'ya ulaşılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); sonuç bilinmiyor. (socket hang up)"
+        2: '2026-11-03T07:01:00.000Z'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:304:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T15 imzasız · Sonucu Belirsiz (bağsız) → tanınmaz (P5); kişi Sonucu Belirsiz
+    ok 17 - T15 imzasız · Sonucu Belirsiz (bağsız) → tanınmaz (P5); kişi Sonucu Belirsiz
+      ---
+      duration_ms: 402.453742
+      type: 'test'
+      ...
+    # Subtest: T18 delivered (imzasız) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+    ok 18 - T18 delivered (imzasız) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+      ---
+      duration_ms: 523.684358
+      type: 'test'
+      ...
+    # Subtest: T19 failed 131049 (imzasız) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+    ok 19 - T19 failed 131049 (imzasız) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 594.978182
+      type: 'test'
+      ...
+    # Subtest: T20 Süresi Doldu → sıfırlama → geç delivered (imzasız) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+    not ok 20 - T20 Süresi Doldu → sıfırlama → geç delivered (imzasız) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+      ---
+      duration_ms: 559.631293
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:347:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:354:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T18 delivered (imzalı) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+    ok 21 - T18 delivered (imzalı) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+      ---
+      duration_ms: 558.629493
+      type: 'test'
+      ...
+    # Subtest: T19 failed 131049 (imzalı) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+    ok 22 - T19 failed 131049 (imzalı) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 545.898035
+      type: 'test'
+      ...
+    # Subtest: T20 Süresi Doldu → sıfırlama → geç delivered (imzalı) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+    not ok 23 - T20 Süresi Doldu → sıfırlama → geç delivered (imzalı) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+      ---
+      duration_ms: 516.264628
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:347:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:354:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T21 sıfırlama → delivered → failed yok sayılır (§7a 18)
+    ok 24 - T21 sıfırlama → delivered → failed yok sayılır (§7a 18)
+      ---
+      duration_ms: 554.992016
+      type: 'test'
+      ...
+    # Subtest: T22 delivered (imzasız) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+    ok 25 - T22 delivered (imzasız) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+      ---
+      duration_ms: 782.955238
+      type: 'test'
+      ...
+    # Subtest: T23 failed (imzasız) · geri yükleme → teslim edilemedi; gönderilecek
+    ok 26 - T23 failed (imzasız) · geri yükleme → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 734.218837
+      type: 'test'
+      ...
+    # Subtest: T24 Süresi Doldu → geri yükleme → geç delivered (imzasız) → teslim sayılır (A2, c2b)
+    not ok 27 - T24 Süresi Doldu → geri yükleme → geç delivered (imzasız) → teslim sayılır (A2, c2b)
+      ---
+      duration_ms: 812.827029
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:416:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:420:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T22 delivered (imzalı) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+    ok 28 - T22 delivered (imzalı) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+      ---
+      duration_ms: 832.977778
+      type: 'test'
+      ...
+    # Subtest: T23 failed (imzalı) · geri yükleme → teslim edilemedi; gönderilecek
+    ok 29 - T23 failed (imzalı) · geri yükleme → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 795.576187
+      type: 'test'
+      ...
+    # Subtest: T24 Süresi Doldu → geri yükleme → geç delivered (imzalı) → teslim sayılır (A2, c2b)
+    not ok 30 - T24 Süresi Doldu → geri yükleme → geç delivered (imzalı) → teslim sayılır (A2, c2b)
+      ---
+      duration_ms: 735.562662
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:416:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:420:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T25 imzalı · geri yüklenen satır ESKİ denemede Sonucu Belirsiz (iş kimliği adayı) · son denemenin wamid'ine failed → T23 ile aynı (A1, c5)
+    not ok 31 - T25 imzalı · geri yüklenen satır ESKİ denemede Sonucu Belirsiz (iş kimliği adayı) · son denemenin wamid'ine failed → T23 ile aynı (A1, c5)
+      ---
+      duration_ms: 877.399067
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:428:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        imzalı geç failed defterde uygulandı (geldi {"applied":0,"ignored":1,"unknown":0})
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:449:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T30 eski (131049 bırakılmış) denemenin geç teslimi, satır geri yüklemeyle ESKİ denemede → teslim sayılır (A8, K11:00)
+    not ok 32 - T30 eski (131049 bırakılmış) denemenin geç teslimi, satır geri yüklemeyle ESKİ denemede → teslim sayılır (A8, K11:00)
+      ---
+      duration_ms: 834.665108
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:456:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski denemenin geç teslimi uygulandı
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:473:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T28/T29 131049 → 2. deneme kabul (satır daha yeni denemede) → 1. denemenin delivered'ı deftere teslim (L3), failed'ı yok sayılır; satır değişmez
+    ok 33 - T28/T29 131049 → 2. deneme kabul (satır daha yeni denemede) → 1. denemenin delivered'ı deftere teslim (L3), failed'ı yok sayılır; satır değişmez
+      ---
+      duration_ms: 441.466917
+      type: 'test'
+      ...
+    # Subtest: T26/T27 imzalı iş kimliğiyle öğrenilmiş (B2) → sıfırlama → imzasız delivered → yalnız defter teslim; failed sonra yok sayılır
+    ok 34 - T26/T27 imzalı iş kimliğiyle öğrenilmiş (B2) → sıfırlama → imzasız delivered → yalnız defter teslim; failed sonra yok sayılır
+      ---
+      duration_ms: 504.085699
+      type: 'test'
+      ...
+    # Subtest: T31/T32 bağsız + sıfırlama: imzalı iş kimliği → Q4 (teslim); imzasız → tanınmaz (P5)
+    ok 35 - T31/T32 bağsız + sıfırlama: imzalı iş kimliği → Q4 (teslim); imzasız → tanınmaz (P5)
+      ---
+      duration_ms: 455.407485
+      type: 'test'
+      ...
+    # Subtest: T33 başka şirketin wamid'i bu şirkette etkisiz (K9)
+    ok 36 - T33 başka şirketin wamid'i bu şirkette etkisiz (K9)
+      ---
+      duration_ms: 554.877432
+      type: 'test'
+      ...
+    # Subtest: T34 taşıma (defter yok): dosyadaki wamid'le delivered → Teslim Edildi, yeni defterde Bu Ay 1
+    ok 37 - T34 taşıma (defter yok): dosyadaki wamid'le delivered → Teslim Edildi, yeni defterde Bu Ay 1
+      ---
+      duration_ms: 533.762873
+      type: 'test'
+      ...
+    # Subtest: T16 imzalı bildirim istek Meta'dayken işi ilerletir; yanıt 'Meta Kabul Etti' ezmez; tek ileti
+    ok 38 - T16 imzalı bildirim istek Meta'dayken işi ilerletir; yanıt 'Meta Kabul Etti' ezmez; tek ileti
+      ---
+      duration_ms: 1185.325503
+      type: 'test'
+      ...
+    # Subtest: T35 istek Meta'dayken toparlama denemeye 'uncertain' yazdı → yanıt gelince kabul öğrenilir (A7, K8); sonraki imzasız delivered uygulanır; Daha Önce
+    not ok 39 - T35 istek Meta'dayken toparlama denemeye 'uncertain' yazdı → yanıt gelince kabul öğrenilir (A7, K8); sonraki imzasız delivered uygulanır; Daha Önce
+      ---
+      duration_ms: 1175.388318
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:584:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kabul defterde öğrenildi (wamid bağlı)
+        + actual - expected
+        
+        + undefined
+        - 'waj-ab08d5eb-c524-410a-af33-c2f859dbfcf5'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'waj-ab08d5eb-c524-410a-af33-c2f859dbfcf5'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:600:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..39
+not ok 1 - 2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test)
+  ---
+  duration_ms: 22837.064915
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:132:1'
+  failureType: 'subtestsFailed'
+  error: '10 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)
+    # Subtest: T17 imzasız bildirim yanıt işlenmeden gelir (istek Meta'da) → 503; yanıt işlenince yineleme 200 ve uygulanır; bekleyen istek yokken / pencere (5 dk) dışında tanınmayan → 200; pencere içinde yabancı ileti de 503 (BİLİNEN SINIR)
+    not ok 1 - T17 imzasız bildirim yanıt işlenmeden gelir (istek Meta'da) → 503; yanıt işlenince yineleme 200 ve uygulanır; bekleyen istek yokken / pencere (5 dk) dışında tanınmayan → 200; pencere içinde yabancı ileti de 503 (BİLİNEN SINIR)
+      ---
+      duration_ms: 1598.309205
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:630:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yanıtı beklenen istek varken tanınmayan bildirim 503 (geldi 200 {"ok":true})
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:641:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T-K0c ön sınamadan SONRA dosya yazımı kilide takılır → 503, defter önce yazıldı; Meta'nın yinelemesi tamamlar, Bu Ay 1 (eşgüçlü)
+    not ok 2 - T-K0c ön sınamadan SONRA dosya yazımı kilide takılır → 503, defter önce yazıldı; Meta'nın yinelemesi tamamlar, Bu Ay 1 (eşgüçlü)
+      ---
+      duration_ms: 387.219693
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:657:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yazım kilitte 503 (geldi 200 {"ok":true})
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:673:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T-K0a/b ön sınamada şirket dosyası ya da defter kilitli → 503, yazım yok
+    ok 3 - T-K0a/b ön sınamada şirket dosyası ya da defter kilitli → 503, yazım yok
+      ---
+      duration_ms: 2971.197541
+      type: 'test'
+      ...
+    1..3
+not ok 2 - 2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)
+  ---
+  duration_ms: 4957.21385
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkT-eski-ad46bff1/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:629:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 42
+# suites 2
+# pass 30
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 28174.58101
