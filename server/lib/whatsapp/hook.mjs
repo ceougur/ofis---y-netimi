@@ -58,19 +58,47 @@ async function readBody(req, max) {
 export function createWhatsappHook({ hooks, companyOf, companies = () => [], appFor, verifyMark = () => ({ ok: true, signed: false }), log = console, maxBytes = HOOK_MAX_BYTES, now = () => new Date() }) {
   // T1 ayıklaması İş M (soru 8 / K7 + "KİME KAÇ KEZ" ilkesi (5)): başka bilgisayardan TAŞINAN veride bildirimin sahibi bu makinenin defterinde yoktur; o zaman wamid
   // şirket dosyalarında, yalnız BU DEFTERDE AÇILMAMIŞ toplu işlerin işlerinde aranır (queue.movedOwnerOfWamid; aynı bilgisayardaki veride karar defterindir). Sahip
-  // şirketin WABA'sı kancanınkiyle aynı olmalı (aşağıda); Yol 2'de imzasız bildirim yine yazılmaz (aynı kurallar). Şirket açılamıyorsa o şirket atlanır.
-  function movedOwnerOf(wamid) {
+  // şirketin WABA'sı kancanınkiyle aynı olmalı (aşağıda); Yol 2'de imzasız bildirim yine yazılmaz (aynı kurallar). İş U6 (dar kontrol 15): kabulü deftere yazılamamış
+  // işin wamid'i de dosyada aranır (queue.movedOwnerOfWamid). Şirket GEÇİCİ olarak açılamıyorsa (geri yükleme / açılış sürüyor, kilit) lookup.busy işaretlenir →
+  // sahibi bulunamayan bildirim 503 alır (Meta yeniden dener); KALICI açılamama (veri dosyası yok, bozuk kayıt) atlanır.
+  const temporary = error => Boolean(error?.retryAfter) || isLockError(error);
+  function movedOwnerOf(wamid, lookup) {
     if (!wamid) return null;
     for (const company of companies() || []) {
       if (!company) continue;
       try {
         const found = appFor(company)?.context?.whatsapp?.queue?.movedOwnerOfWamid?.(wamid);
         if (found) return { companyId: company.id, wabaId: found.wabaId };
-      } catch {
-        // şirket şu an açılamıyor (geri yükleme): bu şirkette aranmaz; bildirim tanınmazsa Meta yeniden dener (aşağıdaki 503 yolu yalnız sahibi bilinen şirkette)
+      } catch (error) {
+        if (temporary(error)) lookup.busy = true;
       }
     }
     return null;
+  }
+  // İş U (K1′ "teslim her yolda sayılır" + onaylı koşul (a)): şirket SİLİNMİŞ ya da veri dosyası KALICI olarak açılamıyorsa delivered / read yalnız deftere (o denemeye)
+  // yazılır — Bu Ay sayar; Meta 7 gün yeniden denemeye itilmez (200). Öbür türler etkisiz.
+  function ledgerOnly(items, owner, signed, out) {
+    for (const { status } of items) {
+      const value = String(status?.status || "").toLowerCase();
+      if (!["delivered", "read"].includes(value)) {
+        out.ignored += 1;
+        continue;
+      }
+      const wamid = String(status?.id || "").slice(0, 200);
+      const opaque = signed ? String(status?.biz_opaque_callback_data || "").slice(0, 120) : "";
+      const lastOf = opaque ? hooks.attempts?.(opaque)?.at(-1) : null;
+      const target = hooks.attemptOfWamid?.(wamid) || (lastOf ? { jobId: opaque, attempt: lastOf.attempt } : null);
+      if (!target || hooks.deliveredAttempt?.(target.jobId, target.attempt)) {
+        out.ignored += 1;
+        continue;
+      }
+      const at = Number(status?.timestamp) > 0 ? new Date(Number(status.timestamp) * 1000).toISOString() : now().toISOString();
+      const billable = status?.pricing && typeof status.pricing === "object" && "billable" in status.pricing ? status.pricing.billable !== false : true;
+      if (!hooks.delivered({ jobId: target.jobId, attempt: target.attempt, companyId: owner.companyId, wabaId: owner.wabaId, billable, at })) {
+        throw Object.assign(new Error("WhatsApp gönderim defterine yazılamadı (teslim)"), { code: "WA_LEDGER_WRITE" });
+      }
+      out.applied += 1;
+    }
   }
   async function handle(req, res) {
     const url = new URL(String(req.url || "/"), "http://kanca.invalid");
@@ -105,20 +133,21 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     const groups = new Map(); // şirket → [{ phoneNumberId, statuses[] }]
     const out = { applied: 0, ignored: 0, unknown: 0 };
     let unowned = 0; // İş T A6: hiçbir şirkette sahibi bulunamayan bildirim
+    const lookup = { busy: false }; // İş U6: dosya araması sırasında geçici olarak açılamayan şirket var mı
     for (const entry of Array.isArray(payload?.entry) ? payload.entry : []) {
       for (const change of Array.isArray(entry?.changes) ? entry.changes : []) {
         if (change?.field !== META_D0.hookEnvelope.field || !Array.isArray(change?.value?.statuses)) continue; // D0-18
         const phoneNumberId = String(change.value.metadata?.phone_number_id || "");
         for (const status of change.value.statuses) {
           const wamid = String(status?.id || "").slice(0, 200);
-          const owner = hooks.companyOfWamid(wamid) || (signed ? hooks.companyOfJob(String(status?.biz_opaque_callback_data || "").slice(0, 120)) : null) || movedOwnerOf(wamid);
+          const owner = hooks.companyOfWamid(wamid) || (signed ? hooks.companyOfJob(String(status?.biz_opaque_callback_data || "").slice(0, 120)) : null) || movedOwnerOf(wamid, lookup);
           if (!owner || owner.wabaId !== hook.wabaId) {
             out.unknown += 1;
             if (!owner) unowned += 1;
             continue;
           }
           const list = groups.get(owner.companyId) || [];
-          list.push({ phoneNumberId, status });
+          list.push({ phoneNumberId, status, owner });
           groups.set(owner.companyId, list);
         }
       }
@@ -127,15 +156,19 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     for (const [companyId, items] of groups) {
       const company = companyOf(companyId);
       if (!company) {
-        out.unknown += items.length;
+        ledgerOnly(items, items[0].owner, signed, out); // İş U (a): silinmiş şirket → yalnız defter
         continue;
       }
       let app;
       try {
         app = appFor(company);
       } catch (error) {
-        // Geri yükleme / silme sürüyor: Meta bildirimi yeniden dener (200 dışı yanıtta 7 güne kadar; uygulanmış olanlar yinelenince etkisizdir).
-        return failure(res, error?.status === 503 ? 503 : 500, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
+        // Geri yükleme / açılış sürüyor (geçici): Meta bildirimi yeniden dener (200 dışı yanıtta 7 güne kadar; uygulanmış olanlar yinelenince etkisizdir).
+        if (temporary(error)) return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
+        // İş U (a): KALICI açılamama (veri dosyası yok / bozuk kayıt) → yalnız defter, 200.
+        log.warn?.(`WhatsApp durum bildirimi: şirket açılamadı (${error?.message}); yalnız defter yazıldı.`);
+        ledgerOnly(items, items[0].owner, signed, out);
+        continue;
       }
       // 2.4.8 İş P3: şirket dosyası kilitliyse (kısa sınama / arka plan işareti; lib/write-lock.mjs) durumlar 10 sn beklemeden yazılmaz → 503, Meta yeniden dener
       // (uygulanmış durumlar yinelenince etkisiz). İmza / işaret / WABA denetimleri yukarıda, aynen.
@@ -163,6 +196,10 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     // PENDING_MS içinde) varsa bildirim o isteğin olabilir (Meta durumu yanıttan önce yollayabilir) → 503, Meta yeniden dener; yanıt işlenince tanınır. Pencere SINIRLI:
     // daha eski sonuçsuz talep toparlamada "Sonucu Belirsiz" olur; pencere dışında ya da bekleyen talep yokken 200 (yabancı iletiler — aynı WABA'yı başka araçla kullanan
     // müşteri — Meta'yı sonsuz yeniden denemeye itmez). BİLİNEN SINIR: pencere içinde yabancı iletilerin durumları da 503 alır; sayısı günlüğe yazılır.
+    if (unowned && lookup.busy) {
+      log.warn?.(`WhatsApp durum bildirimi: ${unowned} bildirim tanınmadı, bir şirket şu an açılamıyor → 503 (Meta yeniden deneyecek).`);
+      return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
+    }
     if (unowned && hooks.pendingClaims?.(hook.wabaId, new Date(now().getTime() - PENDING_MS).toISOString()) > 0) {
       log.warn?.(`WhatsApp durum bildirimi: ${unowned} bildirim tanınmadı, yanıtı beklenen istek var → 503 (Meta yeniden deneyecek).`);
       return failure(res, 503, "whatsapp-hook-pending", "Bildirim henüz eşleşmedi; yeniden denenecek.");

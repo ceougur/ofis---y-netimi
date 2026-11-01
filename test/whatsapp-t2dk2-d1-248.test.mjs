@@ -2,6 +2,7 @@
 // yazımından ÖNCE yeniden açıyordu; dosya yazımı (iş → Meta Bekletti) düşünce defter kalıcı "canlı", dosya "Tamamlandı" / iş "Meta Kabul Etti" kalıyordu; Meta aynı
 // bildirimi yineleyince reopenBatch false (zaten açık) → iş Meta Bekletti yerine BAŞARISIZ (tek yeniden deneme hakkı kayboldu).
 // Beklenen: dosya yazımı (iş + toplu iş) tek işlem; düşerse defterdeki yeniden açma telafi edilir; reopenBatch aynı toplu iş zaten yeniden açıksa true (idempotent).
+// İş U3 (dar kontrol 15): düşen dosya yazımı artık yukarı gider (kanca 500, Meta yineler) — testte assert.throws.
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5) + programın durum bildirimi çekirdeği; disk dolu = şirket dosyasının yazım işlevi
 // (store.run) yalnız "iş → Meta Bekletti" yazımında bir kez hata atar (ders 20: ön koşul zorla) + sahte saat (ders 13).
 import assert from "node:assert/strict";
@@ -49,7 +50,8 @@ describe("2.4.8 T2 dar kontrol 2 DÜŞÜK-1 — 131049'da dosya yazımı düşü
     const restore = failHeldWriteOnce(ctx);
     try {
       const problems = [];
-      ctx.statuses([status()]);
+      // İş U3 (dar kontrol 15 b3; BİLEREK DEĞİŞEN beklenti, ders 28): dosya yazımındaki disk dolu artık YUTULMAZ — yukarı gider (kanca 500, Meta yineler).
+      assert.throws(() => ctx.statuses([status()]), /disk is full/, "disk dolu yukarı gider");
       restore();
       let d = await ctx.detail(id);
       if (d.state !== "done" || d.jobs[0].state !== "accepted") problems.push(`ön koşul: dosya yazımı düştü, dosya değişmemeliydi (toplu iş ${d.state}, iş ${d.jobs[0].state})`);
@@ -77,7 +79,7 @@ describe("2.4.8 T2 dar kontrol 2 DÜŞÜK-1 — 131049'da dosya yazımı düşü
     const stopBatch = ledger.stopBatch;
     ledger.stopBatch = () => false; // defter yazılamıyor (disk dolu) — telafi düşer
     try {
-      ctx.statuses([status()]);
+      assert.throws(() => ctx.statuses([status()]), /disk is full/, "İş U3: disk dolu yukarı gider (kanca 500, Meta yineler)");
       restore();
       ledger.stopBatch = stopBatch;
       assert.equal((await ctx.detail(id)).jobs[0].state, "accepted", "ön koşul: dosya yazımı düştü");
@@ -110,11 +112,8 @@ describe("2.4.8 T2 dar kontrol 2 DÜŞÜK-1 — 131049'da dosya yazımı düşü
     };
     try {
       const problems = [];
-      try {
-        ctx.statuses([status()]);
-      } catch (error) {
-        problems.push(`bildirim işleyicisi hata fırlattı: ${error.message}`);
-      }
+      // İş U3 (BİLEREK DEĞİŞEN beklenti, ders 28): yazım hatası yutulmaz, yukarı gider (kanca 500 → Meta yineler); önceki beklenti "hata fırlatmaz"dı.
+      assert.throws(() => ctx.statuses([status()]), /disk is full/, "disk dolu yukarı gider");
       store.run = run;
       let d = await ctx.detail(id);
       if (d.jobs[0].state === "held" && d.state === "done") problems.push("iş Meta Bekletti ama toplu iş Tamamlandı kaldı (iş hiç yürütülmez)");

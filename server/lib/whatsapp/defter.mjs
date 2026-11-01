@@ -92,6 +92,13 @@ const SCHEMA = `
   CREATE TRIGGER IF NOT EXISTS hook_seen_no_update BEFORE UPDATE ON hook_seen BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS hook_seen_no_delete BEFORE DELETE ON hook_seen BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE INDEX IF NOT EXISTS idx_deliveries_company ON deliveries(company_id, at);
+  -- 2.4.8 İş U5 (dar kontrol 15 b7; §7a 19 "Bu Ay" = TESLİM EDİLEN ileti, Meta her teslimi ücretlendirir): deneme başına teslim. deliveries iş başına kalır (R3 / unsettled
+  -- "kişi aldı mı"); Bu Ay bu tablodan + bu tabloda satırı OLMAYAN eski deliveries satırlarından sayılır (göç yok: tablo açılışta eklenir, eski satırlar dönüştürülmez).
+  CREATE TABLE IF NOT EXISTS attempt_deliveries (job_id TEXT NOT NULL, attempt INTEGER NOT NULL, company_id TEXT NOT NULL, waba_id TEXT NOT NULL, billable INTEGER NOT NULL DEFAULT 1, at TEXT NOT NULL, PRIMARY KEY (job_id, attempt)) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_attempt_deliveries_company ON attempt_deliveries(company_id, at);
+  CREATE INDEX IF NOT EXISTS idx_attempt_deliveries_waba ON attempt_deliveries(waba_id, at);
+  CREATE TRIGGER IF NOT EXISTS attempt_deliveries_no_update BEFORE UPDATE ON attempt_deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
+  CREATE TRIGGER IF NOT EXISTS attempt_deliveries_no_delete BEFORE DELETE ON attempt_deliveries BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS batch_events_no_update BEFORE UPDATE ON batch_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS batch_events_no_delete BEFORE DELETE ON batch_events BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
   CREATE TRIGGER IF NOT EXISTS batch_log_no_update BEFORE UPDATE ON batch_log BEGIN SELECT RAISE(ABORT, 'gönderim defteri yalnız eklenir'); END;
@@ -246,8 +253,16 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     holdOf: db.prepare("SELECT MAX(until) AS until FROM holds WHERE waba_id = ? AND until > ?"),
     accepted: db.prepare("SELECT COUNT(*) AS n FROM accepts WHERE company_id = ? AND at >= ? AND at < ?"),
     acceptedWaba: db.prepare("SELECT COUNT(*) AS n FROM accepts WHERE waba_id = ? AND at >= ? AND at < ?"),
-    delivered: db.prepare("SELECT COUNT(*) AS n, COALESCE(SUM(billable), 0) AS billable FROM deliveries WHERE company_id = ? AND at >= ? AND at < ?"),
-    deliveredWaba: db.prepare("SELECT COUNT(*) AS n, COALESCE(SUM(billable), 0) AS billable FROM deliveries WHERE waba_id = ? AND at >= ? AND at < ?"),
+    // İş U5: deneme başına teslim + deneme satırı olmayan eski (iş başına) teslimler — aynı teslim iki kez sayılmaz: deliveries satırı ile o teslimin deneme satırı
+    // aynı çağrıda AYNI anla (at) yazılır; eşleşen deneme satırı olan deliveries satırı sayılmaz.
+    delivered: db.prepare(`SELECT COUNT(*) AS n, COALESCE(SUM(billable), 0) AS billable FROM (
+      SELECT billable FROM attempt_deliveries WHERE company_id = ?1 AND at >= ?2 AND at < ?3
+      UNION ALL SELECT d.billable FROM deliveries d WHERE d.company_id = ?1 AND d.at >= ?2 AND d.at < ?3 AND NOT EXISTS (SELECT 1 FROM attempt_deliveries a WHERE a.job_id = d.job_id AND a.at = d.at))`),
+    deliveredWaba: db.prepare(`SELECT COUNT(*) AS n, COALESCE(SUM(billable), 0) AS billable FROM (
+      SELECT billable FROM attempt_deliveries WHERE waba_id = ?1 AND at >= ?2 AND at < ?3
+      UNION ALL SELECT d.billable FROM deliveries d WHERE d.waba_id = ?1 AND d.at >= ?2 AND d.at < ?3 AND NOT EXISTS (SELECT 1 FROM attempt_deliveries a WHERE a.job_id = d.job_id AND a.at = d.at))`),
+    deliverAttempt: db.prepare("INSERT OR IGNORE INTO attempt_deliveries (job_id, attempt, company_id, waba_id, billable, at) VALUES (?, ?, ?, ?, ?, ?)"),
+    deliveredAttempt: db.prepare("SELECT 1 AS x FROM attempt_deliveries WHERE job_id = ? AND attempt = ?"),
     // T2-3/4
     hookEvent: db.prepare("INSERT INTO hook_events (waba_id, path_hash, verify_hash, base, state, reason, error, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"),
     hookLast: db.prepare("SELECT * FROM hook_events WHERE waba_id = ? ORDER BY seq DESC LIMIT 1"),
@@ -269,6 +284,8 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       AND NOT EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt)`),
     acceptanceAt: db.prepare(`SELECT COALESCE((SELECT o.at FROM outcomes o WHERE o.job_id = ?1 AND o.attempt = ?2 AND o.outcome = 'accepted'),
       (SELECT l.at FROM learned_wamids l WHERE l.job_id = ?1 AND l.attempt = ?2)) AS at`),
+    acceptedWamid: db.prepare(`SELECT COALESCE((SELECT o.wamid FROM outcomes o WHERE o.job_id = ?1 AND o.attempt = ?2 AND o.outcome = 'accepted' AND o.wamid <> ''),
+      (SELECT l.wamid FROM learned_wamids l WHERE l.job_id = ?1 AND l.attempt = ?2)) AS wamid`),
     anywayLink: db.prepare("INSERT OR IGNORE INTO anyway_links (job_id, source_job_id, at) VALUES (?, ?, ?)"),
   };
   const hookView = row => {
@@ -458,6 +475,8 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       try {
         guard("deliver", row);
         q.deliver.run(String(row.jobId), String(row.companyId), String(row.wabaId), row.billable === false ? 0 : 1, String(row.at));
+        // İş U5: deneme başına (Bu Ay). Ayrı yazım; düşerse false → çağıran 503 (ledgerMust), yineleme tamamlar (ikisi de INSERT OR IGNORE).
+        if (Number.isInteger(Number(row.attempt)) && Number(row.attempt) > 0) q.deliverAttempt.run(String(row.jobId), Number(row.attempt), String(row.companyId), String(row.wabaId), row.billable === false ? 0 : 1, String(row.at));
         return true;
       } catch (error) {
         log.warn?.(`WhatsApp gönderim defteri: ${row.jobId} teslimi yazılamadı (${error.message}).`);
@@ -558,6 +577,10 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     probeWritable: (ms = 150) => probeWritableDb(db, ms),
     /** İş Q4: işin teslimi defterde var mı (teslimden sonra gelen "failed" yok sayılır). */
     deliveredJob: jobId => Boolean(jobId && q.deliveredJob.get(String(jobId))),
+    /** İş U5: bu DENEMENİN teslimi defterde var mı (aynı denemenin yinelenen teslimi etkisiz; başka denemenin teslimi ayrı sayılır). */
+    deliveredAttempt: (jobId, attempt) => Boolean(jobId && q.deliveredAttempt.get(String(jobId), Number(attempt))),
+    /** İş U6: denemenin outcomes satırı (failures / releases değil — yalnız eşzamanlı / toparlama sonucu); yoksa null. */
+    outcomeOf: (jobId, attempt) => q.outcomeOf.get(String(jobId), Number(attempt))?.outcome || null,
     /**
      * T2 dar kontrol ORTA-2 / dar kontrol 2 ORTA-A: wamid'in ait olduğu deneme (Meta'nın kabul ettiği deneme; wamid her denemede yenidir) — eşzamanlı kabulden
      * (outcomes) ya da sonradan öğrenilenden (learned_wamids). Bildirim yalnız o denemeye yazılır.
@@ -567,6 +590,8 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     pendingClaims: (wabaId, since) => Number(q.pendingClaim.get(String(wabaId), String(since))?.n || 0),
     /** İş T K6 (R4/Q5): denemenin defterdeki kabul anı — eşzamanlı kabul (outcomes accepted), yoksa öğrenilen wamid'in anı; yoksa null. */
     acceptanceAt: (jobId, attempt) => q.acceptanceAt.get(String(jobId), Number(attempt))?.at || null,
+    /** İş U4: denemenin Meta'nın kabul ettiği wamid'i (eşzamanlı kabul ya da sonradan öğrenilen); yoksa null. */
+    acceptedWamid: (jobId, attempt) => q.acceptedWamid.get(String(jobId), Number(attempt))?.wamid || null,
     // ---------- Aylık sayım ----------
     monthCounts({ companyId, wabaId = "", from, to }) {
       const company = { accepted: q.accepted.get(String(companyId), from, to).n, ...(row => ({ delivered: row.n, billable: row.billable }))(q.delivered.get(String(companyId), from, to)) };
