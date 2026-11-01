@@ -833,3 +833,14 @@ Ana oturum: bu karar §7a 1'in "içerik gönderim anında okunur" yorumunun ekst
 - **Sürücü (S-32):** ekstre içeriği (Meta'ya giden değişkenler + PDF) kuyrukta giren hareketten, ertesi güne kaymadan ve Yine de Gönder'den etkilenmez; `cari.hareket_ekle` olayı programa kuyruktayken girilir. Hatırlatma değişkenleri gönderim anında (ICERIK-12 aynen).
 - **Bilgi (ana oturum):** Y9d-2 — Ödeme Hatırlatma'nın gönderim anında okunması sürdü (karar ekstre / PDF der).
 - **Kanıt:** kendi testi **307/307** (F **163/163**), `TZ=UTC` ve `TZ=Europe/Istanbul`; senaryolar 284/284.
+
+### 14.15 Güncelleme 9d — J7 yorum DÜZELTMESİ + J7 senaryo düzeneği (kodlamadan ve karşılaştırmadan ÖNCE)
+Kaynak: kullanıcıya 01.11.2026 06:28'de onaya sunulan ve AYNEN onaylanan liste metninin 7. maddesi (ana oturum iletisi; `kahin.KARARLAR` J7'ye eklendi): "Gönderim defteri
+onarılmadan yeni gönderim başlamaz. Meta'nın kabulü deftere yazılamadıysa yeni gönderim düğmesi pasif kalır ve ekranda nedeni yazar. Böylece ikinci ileti gitmez."
+CLAUDE.md'deki "defterde onarım bekleyen kabul varken" bunun özetidir.
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y9e-1 | **Y9-14 DÜŞTÜ** (ters okumaydı: "defterde var, şirket dosyasına yazılamadı"). "Onarım bekleyen kabul" = Meta'nın kabul ettiği (şirket dosyasında iş Meta Kabul Etti olabilir) ama kabulün GÖNDERİM DEFTERİNE yazılamadığı deneme. Kâhinde yeni olay `defter_yazilamaz {acik}` (makine düzeyindeki gönderim defteri yazılamıyor); Meta yanıtı geldiğinde açıksa iş dosyada Meta Kabul Etti olur, denemenin kabulü defterde EKSİK kalır (onarım bekler). Eski `dosya_yazilamaz` olayı ve onun onarım yolu KALKTI | liste metni madde 7 |
+| Y9e-2 | Onarım bekleyen kabul varken yeni toplu gönderim BAŞLAMAZ, neden `onarim_bekleyen_kabul` (aynen); onarım = defter yeniden yazılabilir olunca eksik kabul deftere yazılır; onarımdan sonra yeni gönderim başlar ve aynı kişi aynı dönemde "Daha Önce Gönderildi" (ikinci ileti gitmez) | liste metni madde 7 |
+| Y9e-3 | Defter yazılamazken gelen bildirim kaydedilemez → 503 (J6 a; Meta yineler); işçi yeni istek göndermez (§6 W2 "Gönderiliyor istekten önce yazılır" — talep deftere yazılamaz) | J6 + §6 W2 |
+| Y9e-4 | Senaryo düzeneği (kural değil): `gec_kabul` gecikmesi programın Meta istek zaman aşımının (15 sn — sürücü README S-19 kuralı) ALTINDA olmalı; J7 senaryoları +10 sn'ye indirildi (J7-01/J7-02'nin +20 sn'si GEÇERSİZ sayılıyordu) | ana oturum + sürücü |
