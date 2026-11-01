@@ -1,0 +1,46 @@
+// KULLANICI KARARI S9-1 okuması: "Yine de Gönder" (Sonucu Belirsiz kaynak) onaylandı, yeni ileti henüz gitmeden kaynak işin eski iletisinin teslimi gelirse program ne yapıyor?
+// Türler: kuyrukta | duraklatilmis | bekletti (yeni iş 1. denemede kabul + 131049 → 24 sa sonra 2. deneme bekliyor). Kaynağın teslimi İMZALI bildirimle (iş kimliği) gelir.
+// Kullanım: node s9-1-yine-de-gonder.mjs <kod kökü> <tür>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, kind] = process.argv.slice(2);
+const { PNID, URLS, startWa } = await import(pathToFileURL(path.join(root, "test/whatsapp-248-ortak.mjs")).href);
+const localIso = (y, m, d, h = 10) => new Date(y, m - 1, d, h, 0, 0, 0).toISOString();
+const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+const out = { kod: path.basename(root), tur: kind };
+try {
+  const ts = () => String(Math.floor(ctx.clock().getTime() / 1000));
+  const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
+  const b1 = (await ctx.batch({ kind: "statement", ids: [p.id], preset: "thisMonth" })).data.data.batch.id;
+  ctx.fake.state.dropAfter = /\/messages$/;
+  await ctx.drain();
+  ctx.fake.state.dropAfter = null;
+  const j1 = (await ctx.jobs(b1))[0];
+  const w1 = ctx.messages().at(-1).wamid;
+  out.kaynak = `${j1.state}`;
+  ctx.clock.advance(60_000);
+  const any = await ctx.api.post(`/api/workspace/whatsapp/jobs/${j1.id}/send-anyway`, { confirm: true });
+  out.yineDeGonder = any.status;
+  const b2 = any.data.data.batch.id;
+  if (kind === "duraklatilmis") out.duraklat = (await ctx.api.post(`${URLS.batches}/${b2}/pause`, {})).status;
+  if (kind === "bekletti") {
+    await ctx.drain();
+    const j2 = (await ctx.jobs(b2))[0];
+    ctx.clock.advance(60_000);
+    ctx.statuses([{ id: j2.wamid, status: "failed", timestamp: ts(), recipient_id: "905334445566", errors: [{ code: 131049, title: "x" }] }]);
+    out.yeniIsBekletti = (await ctx.jobs(b2))[0].state;
+  }
+  out.iletiKaynakTeslimindenOnce = ctx.messages().length;
+  ctx.clock.advance(60_000);
+  out.kaynakTeslim = ctx.statuses([{ id: w1, status: "delivered", timestamp: ts(), recipient_id: "905334445566", biz_opaque_callback_data: j1.id }], { signed: true });
+  out.kaynakSonra = (await ctx.jobs(b1))[0].state;
+  if (kind === "duraklatilmis") out.devam = (await ctx.api.post(`${URLS.batches}/${b2}/resume`, {})).status;
+  ctx.clock.advance(kind === "bekletti" ? 24 * 3_600_000 + 60_000 : 60_000);
+  await ctx.drain();
+  out.yeniIs = (await ctx.jobs(b2))[0].state;
+  out.iletiSonunda = ctx.messages().length;
+  out.S9_1_uyar = kind === "bekletti" ? out.iletiSonunda === out.iletiKaynakTeslimindenOnce : out.iletiSonunda === 1;
+} finally {
+  await ctx.close();
+}
+console.log(JSON.stringify(out));
