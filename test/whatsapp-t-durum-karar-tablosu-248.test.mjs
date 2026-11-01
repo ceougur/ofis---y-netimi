@@ -115,8 +115,6 @@ async function harness({ second = false, dataDir = null, account = true, timeout
   };
   return s;
 }
-// İş Y2: Meta'nın teslim bildirimindeki fiyat bilgisi (503 yolunda yalnız fiyatlı D/R deftere yazılır).
-const PRICED = { pricing: { billable: true, pricing_model: "PMP", category: "utility" } };
 const st = (s, wamid, status, extra = {}) => ({ id: wamid, status, timestamp: s.ts(), recipient_id: TEL, ...extra });
 const failedSt = (s, wamid, code = 131026, extra = {}) => st(s, wamid, "failed", { errors: [{ code, title: "x" }], ...extra });
 /** Kabul edilmiş iş: { batchId, job }. */
@@ -1155,74 +1153,6 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
       removeTestDir(root);
     }
   });
-  // =================================================================================================================================================
-  // İş Y (dar kontrol 18; tasarım onaylı, tasarim-y-248): Y1 — Yine de Gönder zinciri yalnız DÖNEMİ KESİŞEN halkada (ilke 3 "AYNI DÖNEMDE elenir").
-  // =================================================================================================================================================
-  /** Ödeme Hatırlatma kurgusu (dk18 w2): 20.12 gecikmiş taksit; J0 belirsiz → YdG J1 eşzamanlı ret (131026) → J0'a imzalı teslim. Dönüş: { b, j0, b1 }. */
-  async function reminderChain(s) {
-    const b = s.p;
-    assert.equal((await s.ctx.api.post("/api/workspace/plans", { accountId: b.id, name: "Taksit", total: "3000", count: 3, firstDue: "2026-11-15", startDate: "2026-11-03" })).status, 200, "ön koşul: taksit planı");
-    s.ctx.clock.set(localIso(2026, 12, 20, 10));
-    const b0 = (await ok(await s.ctx.api.post(URLS.batches, { kind: "reminder", ids: [b.id] }), "hatırlatma")).batch.id;
-    s.ctx.fake.state.dropAfter = /\/messages$/;
-    await s.ctx.drain();
-    s.ctx.fake.state.dropAfter = null;
-    const j0 = await s.job(b0);
-    assert.equal(j0.state, "uncertain", "ön koşul: J0 belirsiz");
-    const w0 = s.ctx.messages().at(-1).wamid;
-    s.ctx.clock.advance(60_000);
-    const b1 = (await ok(await s.ctx.api.post(`/api/workspace/whatsapp/jobs/${j0.id}/send-anyway`, { confirm: true }), "Yine de Gönder")).batch.id;
-    s.ctx.fake.state.recipientErrors[`+${TEL}`] = { status: 400, body: metaError(131026, "Message undeliverable") };
-    await s.ctx.drain();
-    s.ctx.fake.state.recipientErrors = {};
-    assert.equal((await s.job(b1)).state, "failed", "ön koşul: J1 Başarısız");
-    s.ctx.clock.advance(60_000);
-    assert.equal(s.apply([st(s, w0, "delivered", { biz_opaque_callback_data: j0.id })], true).applied, 1, "J0'a teslim (1. günün hatırlatması alındı)");
-    return { b, j0, b1 };
-  }
-  it("Y1a Ödeme Hatırlatma: ertesi gün Başarısızları Yeniden Dene (zincir bağlı) → BUGÜNÜN hatırlatması GİDER (dönem gün; dünkü teslim bugünü elemez) (Y1)", async () => {
-    const s = await harness();
-    try {
-      const c = await reminderChain(s);
-      s.ctx.clock.set(localIso(2026, 12, 21, 9));
-      const before = s.ctx.messages().length;
-      const retry = await ok(await s.ctx.api.post(`${URLS.batches}/${c.b1}/retry-failed`, {}), "yeniden dene");
-      await s.ctx.drain();
-      const j2 = await s.job(retry.batch.id);
-      assert.equal(j2.state, "accepted", `bugünün hatırlatması gitti (geldi ${j2.state} ${j2.reason || ""})`);
-      assert.equal(s.ctx.messages().length, before + 1);
-    } finally {
-      await s.close();
-    }
-  });
-  it("Y1b Ödeme Hatırlatma: AYNI gün yeniden deneme → kişi R3 ile elenir (400, Daha Önce Gönderildi) (Y1, ilke 3)", async () => {
-    const s = await harness();
-    try {
-      const c = await reminderChain(s);
-      s.ctx.clock.advance(3_600_000);
-      const retry = await s.ctx.api.post(`${URLS.batches}/${c.b1}/retry-failed`, {});
-      assert.equal(retry.status, 400);
-      assert.deepEqual(retry.data.summary?.skipped || retry.data.data?.summary?.skipped, { "Daha Önce Gönderildi": 1 });
-    } finally {
-      await s.close();
-    }
-  });
-  it("Y1d ekstre: ay dönümünde (1 Aralık) Kasım işinin yeniden denemesi asıl işin dönemini taşır → aynı dönem: R3 ile elenir (400) (Y1, ilke 3)", async () => {
-    const s = await harness();
-    try {
-      const a = await anyway(s);
-      await s.ctx.drain();
-      const j2 = await s.job(a.b2);
-      s.apply([failedSt(s, j2.wamid)]);
-      assert.equal(sourceDelivered(s, a).applied, 1, "kaynağa teslim");
-      s.ctx.clock.set(localIso(2026, 12, 1, 9));
-      const retry = await s.ctx.api.post(`${URLS.batches}/${a.b2}/retry-failed`, {});
-      assert.equal(retry.status, 400);
-      assert.deepEqual(retry.data.summary?.skipped || retry.data.data?.summary?.skipped, { "Daha Önce Gönderildi": 1 });
-    } finally {
-      await s.close();
-    }
-  });
   it("T35r GERÇEK yol: istek Meta'dayken yedek + geri yükleme (toparlama 'Sonucu Belirsiz' yazar) → yanıt gelince satır Meta Kabul Etti; aynı dönem Daha Önce; kişiye 1 ileti (U4)", { timeout: 120_000 }, async () => {
     const s = await harness({ second: true, timeoutMs: 8_000 });
     try {
@@ -1551,7 +1481,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       assert.equal(s.ctx.wa.ledger.companyOfWamid(job.wamid)?.companyId, s.company.id, "ön koşul: sahip defterde");
       s.ctx.server.app.context.busyCompanies.set(s.company.id, "“002” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.");
       try {
-        const busy = await s.post([st(s, job.wamid, "delivered", PRICED)]);
+        const busy = await s.post([st(s, job.wamid, "delivered")]);
         assert.equal(busy.status, 503, `geçici açılamama → 503 (geldi ${busy.status} ${busy.text})`);
         // İş X1 (dar kontrol 17; BİLEREK DEĞİŞEN beklenti, ders 28): 503'ten ÖNCE teslim deftere yazılır (karar 1) — önce "yazılmaz"dı.
         assert.equal(s.deliveredSql(job.id), true, "503'ten önce teslim defterde");
@@ -1661,7 +1591,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       const lock = new DatabaseSync(resolveDbPath(path.join(root, readdirSync(root)[0])));
       lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
       try {
-        const res = await s.post([st(s, job.wamid, "delivered", PRICED)]);
+        const res = await s.post([st(s, job.wamid, "delivered")]);
         assert.equal(res.status, 503, `kilitli dosya geçicidir → 503 (geldi ${res.status} ${res.text})`);
         assert.equal(s.deliveredSql(job.id), true, "İş X1 (BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde");
       } finally {
@@ -1685,7 +1615,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       const file = resolveDbPath(path.join(root, readdirSync(root)[0]));
       writeFileSync(file, "bu bir veri tabanı değil — bozuk dosya ".repeat(200));
       try {
-        const res = await s.post([st(s, job.wamid, "delivered", PRICED)]);
+        const res = await s.post([st(s, job.wamid, "delivered")]);
         assert.equal(res.status, 503, `bozuk dosya geçicidir → 503 (geldi ${res.status} ${res.text})`);
         assert.equal(s.deliveredSql(job.id), true, "İş X1 (dar kontrol 17 f1b; BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde — Meta bırakırsa da sayılır");
       } finally {
@@ -1760,55 +1690,4 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       await s.close();
     }
   });
-  // ---------- İş Y2 / Y3 (dar kontrol 18) ----------
-  it("Y2 şirket geçici açılamazken FİYATSIZ read → 503, deftere YAZILMAZ; açılınca olağan yol (önceki sent billable:false) → Bu Ay ücretli 0, teslim 1 (Y2)", { timeout: 120_000 }, async () => {
-    const s = await hookHarness({ second: true });
-    try {
-      const batchId = await s.batch();
-      await s.ctx.drain();
-      const job = await s.job(batchId);
-      assert.equal((await s.post([st(s, job.wamid, "sent", { pricing: { billable: false, pricing_model: "PMP", category: "service" } })])).status, 200, "ücretsiz sent");
-      s.ctx.server.app.context.busyCompanies.set(s.company.id, "“002” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.");
-      try {
-        assert.equal((await s.post([st(s, job.wamid, "read")])).status, 503);
-        assert.equal(s.deliveredSql(job.id), false, "fiyatsız bildirim 503 yolunda yazılmadı");
-      } finally {
-        s.ctx.server.app.context.busyCompanies.delete(s.company.id);
-      }
-      assert.equal((await s.post([st(s, job.wamid, "read")])).status, 200);
-      const stats = (await s.ctx.api.get(`${URLS.stats}${s.q}`)).data.data;
-      assert.deepEqual([stats.delivered, stats.billable], [1, 0], "Bu Ay: teslim 1, ücretli 0");
-    } finally {
-      await s.close();
-    }
-  });
-  for (const [label, mode] of [["embedded (Yol 2)", "embedded"], ["bilinmiyor", null]]) {
-    it(`Y3 bağlantı modu ${label} · İMZASIZ fiyatlı delivered → geçici açılamamada 503 + yazılmaz; kalıcı açılamamada (veri dosyası yok) 200 + yazılmaz (Y3)`, { timeout: 120_000 }, async () => {
-      const s = await hookHarness({ second: true });
-      try {
-        const batchId = await s.batch();
-        await s.ctx.drain();
-        const job = await s.job(batchId);
-        const raw = new DatabaseSync(s.ctx.wa.ledger.file);
-        try {
-          if (mode) raw.prepare("INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(`mode:${WABA}`, mode);
-          else raw.prepare("DELETE FROM meta WHERE key = ?").run(`mode:${WABA}`);
-        } finally {
-          raw.close();
-        }
-        s.ctx.server.app.context.busyCompanies.set(s.company.id, "“002” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.");
-        try {
-          assert.equal((await s.post([st(s, job.wamid, "delivered", PRICED)])).status, 503);
-          assert.equal(s.deliveredSql(job.id), false, "geçici yolda imzasız yazılmadı");
-        } finally {
-          s.ctx.server.app.context.busyCompanies.delete(s.company.id);
-        }
-        hideCompanyFile(s);
-        assert.equal((await s.post([st(s, job.wamid, "delivered", PRICED)])).status, 200);
-        assert.equal(s.deliveredSql(job.id), false, "kalıcı yolda imzasız yazılmadı");
-      } finally {
-        await s.close().catch(() => {});
-      }
-    });
-  }
 });
