@@ -14,7 +14,7 @@
 //   GET  ?hub.mode=subscribe&hub.verify_token=…&hub.challenge=… → 200 challenge (düz metin) | 403
 //   POST { object, entry[].changes[] { field: "messages", value: { metadata.phone_number_id, statuses[] } } } → 200 (durumlar yazılır; gelen ileti / öbür alanlar
 //        SAKLANMAZ — kapsam dışı)
-import { PROBE_CLOSED } from "../db.mjs";
+import { PROBE_CLOSED, isLockError } from "../db.mjs";
 import { HOOK_PATH, sha256 } from "./connection.mjs";
 import { META_D0 } from "./meta-graph.mjs";
 
@@ -32,6 +32,8 @@ function reply(res, status, body, type = "application/json; charset=utf-8") {
   res.end(text);
 }
 const failure = (res, status, code, error) => reply(res, status, { ok: false, code, error });
+// İş T A6: sahibi bulunamayan bildirime 503 dönülen pencere — talebi bu kadar yeni olup sonucu yazılmamış istek varken (istek zaman aşımı + toparlama payı).
+const PENDING_MS = 5 * 60_000;
 
 async function readBody(req, max) {
   const declared = Number(req.headers["content-length"] || 0);
@@ -102,6 +104,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     // Durumlar şirkete göre toplanır (wamid → kabulü yazan şirket; imzalı olayda iş kimliği → talebi yazan şirket). Aynı WABA'nın olayı değilse düşer.
     const groups = new Map(); // şirket → [{ phoneNumberId, statuses[] }]
     const out = { applied: 0, ignored: 0, unknown: 0 };
+    let unowned = 0; // İş T A6: hiçbir şirkette sahibi bulunamayan bildirim
     for (const entry of Array.isArray(payload?.entry) ? payload.entry : []) {
       for (const change of Array.isArray(entry?.changes) ? entry.changes : []) {
         if (change?.field !== META_D0.hookEnvelope.field || !Array.isArray(change?.value?.statuses)) continue; // D0-18
@@ -111,6 +114,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
           const owner = hooks.companyOfWamid(wamid) || (signed ? hooks.companyOfJob(String(status?.biz_opaque_callback_data || "").slice(0, 120)) : null) || movedOwnerOf(wamid);
           if (!owner || owner.wabaId !== hook.wabaId) {
             out.unknown += 1;
+            if (!owner) unowned += 1;
             continue;
           }
           const list = groups.get(owner.companyId) || [];
@@ -155,6 +159,14 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
     }
     // Yol 2 bağlantısında imzasız bildirim yazılmaz; hiçbir şey yazılmadıysa 401 (kapıcı imzayı doğrulamadı).
     if (unsigned && !out.applied) return failure(res, 401, "whatsapp-hook-signature", "Meta imzası doğrulanmadı.");
+    // İş T A6 (K5 istisnası; İ2 "almış olabilir → kayıp yok"): sahibi bulunamayan bildirim varken bu WABA'da yanıtı henüz işlenmemiş istek (talep var, sonuç yok, son
+    // PENDING_MS içinde) varsa bildirim o isteğin olabilir (Meta durumu yanıttan önce yollayabilir) → 503, Meta yeniden dener; yanıt işlenince tanınır. Pencere SINIRLI:
+    // daha eski sonuçsuz talep toparlamada "Sonucu Belirsiz" olur; pencere dışında ya da bekleyen talep yokken 200 (yabancı iletiler — aynı WABA'yı başka araçla kullanan
+    // müşteri — Meta'yı sonsuz yeniden denemeye itmez). BİLİNEN SINIR: pencere içinde yabancı iletilerin durumları da 503 alır; sayısı günlüğe yazılır.
+    if (unowned && hooks.pendingClaims?.(hook.wabaId, new Date(now().getTime() - PENDING_MS).toISOString()) > 0) {
+      log.warn?.(`WhatsApp durum bildirimi: ${unowned} bildirim tanınmadı, yanıtı beklenen istek var → 503 (Meta yeniden deneyecek).`);
+      return failure(res, 503, "whatsapp-hook-pending", "Bildirim henüz eşleşmedi; yeniden denenecek.");
+    }
     if (out.applied || out.unknown) log.info?.(`WhatsApp durum bildirimi: ${out.applied} yazıldı, ${out.unknown} tanınmadı, ${out.ignored} değişmedi.`);
     return reply(res, 200, { ok: true });
   }
@@ -163,6 +175,11 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
       try {
         await handle(req, res);
       } catch (error) {
+        // İş T A5 (K0): yazım sırasında kilit / defter yazılamadı / kapanan şirket → 503 (Meta yeniden dener; yazımlar eşgüçlü). Öbür hata 500 (o da yeniden denenir).
+        if (isLockError(error) || error?.code === "WA_LEDGER_WRITE" || error?.code === "ERR_INVALID_STATE") {
+          log.warn?.(`WhatsApp durum bildirimi yazılamadı (${error?.code || error?.message}); 503 — Meta yeniden deneyecek.`);
+          return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
+        }
         log.error?.("WhatsApp durum bildirimi işlenemedi", error);
         failure(res, 500, "whatsapp-hook-error", "Bildirim işlenemedi; yeniden denenecek.");
       }

@@ -5,6 +5,7 @@
 // ileti yok; satır daha YENİ denemedeyse eski denemenin "failed"ı hiçbir şey yapmaz; teslimden sonraki "failed" yok sayılır.
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5); sahte saat (ders 13); dosya TZ=UTC ve TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
+import { DatabaseSync } from "node:sqlite";
 import { describe, it } from "node:test";
 import { ADMIN_PASSWORD } from "./helpers.mjs";
 import { PNID, TOKEN, URLS, WABA, startWa } from "./whatsapp-248-ortak.mjs";
@@ -138,7 +139,8 @@ describe("2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim", () => 
     });
   }
 
-  it("(b) imzasız delivered → iş Teslim Edildi, accepted_at bildirimin anı (R4), Bu Ay 1", { timeout: 120_000 }, async () => {
+  // İş T A3 (K6; ders 28 — BİLEREK DEĞİŞEN BEKLENTİ, önce "accepted_at bildirimin anı"): satır kolunda accepted_at o denemenin DEFTERDEKİ kabul anı (R4 ile tek kural).
+  it("(b) imzasız delivered → iş Teslim Edildi, accepted_at defterdeki kabul anı (R4/K6), Bu Ay 1", { timeout: 120_000 }, async () => {
     let fail = true;
     const ctx = await startWa({ now: { time: localIso(2026, 11, 3, 10), fixed: true }, whatsappFault: point => fail && point === "db-accept" });
     try {
@@ -148,10 +150,17 @@ describe("2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim", () => 
       fail = false;
       const wamid = ctx.messages().at(-1).wamid;
       ctx.clock.advance(60_000);
-      const at = new Date(Math.floor(ctx.clock().getTime() / 1000) * 1000).toISOString();
+      const reader = new DatabaseSync(ctx.wa.ledger.file, { readOnly: true });
+      let acceptedAt;
+      try {
+        acceptedAt = reader.prepare("SELECT at FROM outcomes WHERE outcome = 'accepted' AND wamid = ?").get(wamid)?.at;
+      } finally {
+        reader.close();
+      }
+      assert.ok(acceptedAt, "ön koşul: defterde eşzamanlı kabul");
       assert.equal(ctx.statuses([{ id: wamid, status: "delivered", timestamp: ts(ctx), recipient_id: "905334445566" }]).applied, 1, "uygulandı");
       const after = (await ctx.jobs(o.batch.id))[0];
-      assert.deepEqual([after.state, after.acceptedAt], ["delivered", at]);
+      assert.deepEqual([after.state, after.acceptedAt], ["delivered", acceptedAt], "accepted_at defterdeki kabul anı (bildirimin anı değil)");
       assert.equal((await ctx.api.get(URLS.stats)).data.data.delivered, 1, "Bu Ay 1");
     } finally {
       await ctx.close();

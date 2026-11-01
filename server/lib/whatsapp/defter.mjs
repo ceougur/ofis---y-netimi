@@ -263,6 +263,12 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     attemptOfWamid: db.prepare(`SELECT job_id AS jobId, attempt FROM outcomes WHERE wamid = ?1 AND wamid <> ''
       UNION ALL SELECT job_id, attempt FROM learned_wamids WHERE wamid = ?1 AND wamid <> '' LIMIT 1`),
     learnWamid: db.prepare("INSERT OR IGNORE INTO learned_wamids (job_id, attempt, wamid, at) VALUES (?, ?, ?, ?)"),
+    outcomeOf: db.prepare("SELECT outcome FROM outcomes WHERE job_id = ? AND attempt = ?"),
+    pendingClaim: db.prepare(`SELECT COUNT(*) AS n FROM claims c WHERE c.waba_id = ? AND c.at >= ?
+      AND NOT EXISTS (SELECT 1 FROM outcomes o WHERE o.job_id = c.job_id AND o.attempt = c.attempt)
+      AND NOT EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt)`),
+    acceptanceAt: db.prepare(`SELECT COALESCE((SELECT o.at FROM outcomes o WHERE o.job_id = ?1 AND o.attempt = ?2 AND o.outcome = 'accepted'),
+      (SELECT l.at FROM learned_wamids l WHERE l.job_id = ?1 AND l.attempt = ?2)) AS at`),
     anywayLink: db.prepare("INSERT OR IGNORE INTO anyway_links (job_id, source_job_id, at) VALUES (?, ?, ?)"),
   };
   const hookView = row => {
@@ -376,7 +382,12 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       try {
         guard("outcome", row);
         q.outcome.run(String(row.jobId), Number(row.attempt), row.outcome, String(row.wamid || ""), String(row.at));
-        if (row.outcome === "accepted") q.accept.run(String(row.jobId), String(row.companyId), String(row.wabaId), String(row.at));
+        if (row.outcome === "accepted") {
+          q.accept.run(String(row.jobId), String(row.companyId), String(row.wabaId), String(row.at));
+          // İş T A7 (K8): istek Meta'dayken açılış toparlaması (geri yükleme / yeniden açılış) bu denemeye "uncertain" yazdıysa sonradan gelen eşzamanlı KABUL kaybolmaz —
+          // wamid o denemeye öğrenilmiş olarak bağlanır (deneme "aldı" sayılır; durum bildirimleri bu denemeye uygulanır).
+          if (row.wamid && q.outcomeOf.get(String(row.jobId), Number(row.attempt))?.outcome === "uncertain") q.learnWamid.run(String(row.jobId), Number(row.attempt), String(row.wamid), String(row.at));
+        }
         return true;
       } catch (error) {
         log.warn?.(`WhatsApp gönderim defteri: ${row.jobId} sonucu (${row.outcome}) yazılamadı (${error.message}).`);
@@ -552,6 +563,10 @@ export function openWaLedger({ dir, log = console, fault = null }) {
      * (outcomes) ya da sonradan öğrenilenden (learned_wamids). Bildirim yalnız o denemeye yazılır.
      */
     attemptOfWamid: wamid => (wamid ? q.attemptOfWamid.get(String(wamid)) || null : null),
+    /** İş T A6 (K5 istisnası): bu WABA'da `since`'ten beri talebi olup sonucu henüz yazılmamış (istek Meta'da / yanıt işlenmedi) deneme sayısı. */
+    pendingClaims: (wabaId, since) => Number(q.pendingClaim.get(String(wabaId), String(since))?.n || 0),
+    /** İş T K6 (R4/Q5): denemenin defterdeki kabul anı — eşzamanlı kabul (outcomes accepted), yoksa öğrenilen wamid'in anı; yoksa null. */
+    acceptanceAt: (jobId, attempt) => q.acceptanceAt.get(String(jobId), Number(attempt))?.at || null,
     // ---------- Aylık sayım ----------
     monthCounts({ companyId, wabaId = "", from, to }) {
       const company = { accepted: q.accepted.get(String(companyId), from, to).n, ...(row => ({ delivered: row.n, billable: row.billable }))(q.delivered.get(String(companyId), from, to)) };

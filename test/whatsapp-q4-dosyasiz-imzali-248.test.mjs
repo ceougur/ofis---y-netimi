@@ -57,7 +57,9 @@ describe("2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu bell
       if (b.status === 200) await ctx.drain();
       assert.equal(ctx.messages().filter(item => item.to === P_TEL).length, sent, "yeni gönderim kişiye ikinci ileti göndermedi");
       const dup = ctx.statuses([{ id: wamid, status: "read", timestamp: ts(), recipient_id: "905334445566", biz_opaque_callback_data: jobId }], { signed: true });
-      assert.equal(dup.unknown + dup.applied, 1, "yinelenen / sonraki bildirim hata vermez");
+      // İş T (K1, yinelenen bildirim etkisiz; beklenti bilerek değişti — önce "unknown ya da applied 1"): teslimden sonraki "read" defteri değiştirmez, "değişmedi" sayılır.
+      assert.equal(dup.applied, 0, `yinelenen / sonraki bildirim etkisiz (geldi ${JSON.stringify(dup)})`);
+      assert.equal((await ctx.api.get("/api/workspace/whatsapp/stats")).data.data.delivered, 1, "Bu Ay 1 kalır");
       // §7a 18: teslimden SONRA gelen "failed" yok sayılır (defterde teslim edilemedi yazılmaz).
       const lateFail = ctx.statuses([{ id: wamid, status: "failed", timestamp: ts(), recipient_id: "905334445566", biz_opaque_callback_data: jobId, errors: [{ code: 131026, title: "x" }] }], { signed: true });
       assert.equal(lateFail.applied, 0, `teslimden sonra gelen failed uygulanmaz (geldi ${JSON.stringify(lateFail)})`);
