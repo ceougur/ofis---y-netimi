@@ -1,0 +1,54 @@
+#!/bin/bash
+# İş V kanıt sürücüsü: eski kod dc467f1c (ayrı archive kopyası; tablo + e2e gönder) + mutasyonlar (HEAD kopyası) + ölçüm + bitiş — her koşu tools/kanit.mjs kos ile.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos
+SP=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad
+W=/home/user/wt-t2fix-248
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+export PLAYWRIGHT_BROWSERS_PATH=$SP/w1-248-q7m3/pw
+T="whatsapp-t-durum-karar-tablosu-248.test.mjs whatsapp-u5-teslim-denemesi-gocu-248.test.mjs"
+kos() {
+  local ad=$1 kok=$2; shift 2
+  local files=(); for f in "$@"; do files+=("$kok/test/$f"); done
+  for tz in UTC Europe/Istanbul; do
+    local out=$K/kos-$ad-${tz//\//_}.out
+    TZ=$tz node tools/kanit.mjs kos "$ad-${tz//\//_}" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 "${files[@]}" > $out 2>&1
+    echo "$ad $tz çıkış=$? $(grep '\[kanit\]' $out | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-100)"
+    grep -E "^    not ok|^  not ok" $out | cut -c1-110 | sed 's/^/      /'
+  done
+}
+son() { echo "$1 çıkış=$2 $(grep '\[kanit\]' $3 | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-110)"; grep -E "^not ok|^    not ok|^  not ok|✗" $3 | cut -c1-160 | sed 's/^/      /' | head -20; }
+echo "== ESKİ KOD dc467f1c"
+kok=$SP/v-eski-dc467f1c
+rm -rf -- "${kok:?}"; mkdir -p $kok
+git -C $W archive dc467f1c | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules
+for f in $T e2e/senaryo-whatsapp-gonder-248.mjs; do cp $W/test/$f $kok/test/$f; done
+kos 248-dkVfix-eski-dc467f1c $kok $T
+out=$K/kos-v-eski-e2e.out
+node tools/kanit.mjs kos "248-dkVfix-eski-dc467f1c-e2e-senaryo-whatsapp-gonder-248" -- node --disable-warning=ExperimentalWarning $kok/test/e2e/senaryo-whatsapp-gonder-248.mjs > $out 2>&1; son "eski e2e gönder" $? $out
+echo "== ÖLÇÜM (200.000 wa_jobs)"
+TZ=UTC node tools/kanit.mjs kos 248-dkVfix-u6-olcum-yeni -- node --disable-warning=ExperimentalWarning $K/u6-olcum.mjs $W > $K/kos-v-olcum.out 2>&1; echo "ölçüm çıkış=$? $(grep bakimTuruMs $K/kos-v-olcum.out)"
+rm -rf -- "${kok:?}"
+echo "== MUTASYONLAR"
+mk=$K/mut-v
+rm -rf -- "${mk:?}"; mkdir -p $mk && git -C $W archive HEAD | tar -x -C $mk && rm -rf -- "$mk/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $mk/node_modules
+for m in $(python3 $K/mut-v.py --list); do
+  rm -rf -- "$mk/server" && git -C $W archive HEAD server | tar -x -C $mk
+  python3 $K/mut-v.py $mk $m || continue
+  kos "248-dkVfix-mutasyon-$m" $mk $T
+done
+rm -rf -- "${mk:?}"
+echo "== BİTİŞ"
+DAR=$(cat $K/dar-liste.txt)
+P1="test/dataset.test.mjs test/sheets-yedek.test.mjs test/banka-220-pos-kuyruk.test.mjs test/banka-220-pos-valor.test.mjs test/banka-220-pos-moduller.test.mjs test/chat-archive.test.mjs test/chat.test.mjs test/documents.test.mjs test/sessions.test.mjs test/banka-210-gg-tarama.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-kapi.test.mjs test/tunel-saat-247.test.mjs $(ls test/mobil-*.test.mjs | tr '\n' ' ') test/backup.test.mjs test/migrations.test.mjs"
+for tz in UTC Europe/Istanbul; do
+  out=$K/v-bitis-dar-${tz//\//_}.out
+  TZ=$tz node tools/kanit.mjs kos "248-dkVfix-dar-${tz//\//_}" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $DAR > $out 2>&1; son "dar $tz" $? $out
+done
+out=$K/v-bitis-p1.out
+TZ=UTC node tools/kanit.mjs kos "248-dkVfix-p1-komsular-UTC" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $P1 > $out 2>&1; son "P1 komşuları UTC" $? $out
+for e in senaryo-whatsapp senaryo-whatsapp-ayar-248 senaryo-whatsapp-donem-248 senaryo-whatsapp-gonder-248 senaryo-whatsapp-sablon-248; do
+  out=$K/v-bitis-e2e-$e.out
+  node tools/kanit.mjs kos "248-dkVfix-e2e-$e" -- node --disable-warning=ExperimentalWarning test/e2e/$e.mjs > $out 2>&1; son "e2e $e" $? $out
+done
+echo BITTI
