@@ -812,3 +812,15 @@ CLAUDE.md satırında YOK, yalnız iletide; ana oturum teyit etsin). **14.10'un 
 Y9c-8 (içerik okuma anı §7a 1 ↔ KARAR "ekstre ve bakiyenin hazırlandığı gün"; ICERIK-09 ailesi). DENENMEYEN: programa karşı sürücü koşusu.
 
 **Kanıt:** kendi testi **304/304** (F mutasyon **161/161**), `TZ=UTC` ve `TZ=Europe/Istanbul`; senaryolar 281/281 elle = model; `docs/kanit/2026-11-01/248-kahin9b-*`.
+
+### 14.13 Güncelleme 9c — ekstre içeriği açılışta hazırlanır (KARAR 01.11.2026 07:11 seçenek metni) — yorumlar (kodlamadan ve karşılaştırmadan ÖNCE)
+Kaynak: kullanıcının 07:11'de seçtiği seçeneğin metni AYNEN (ana oturum iletisi; `kahin.KARARLAR` J12): "'Gönderim günü' = gönderimin açıldığı, ekstrenin ve bakiyenin hazırlandığı gün.
+İleti metni PDF'teki dönem ve bakiyeyle aynı kalır (ekstre tarihi = düzenleme tarihi, yaygın uygulama)." — sorunun metni "Ekstre PDF'i ve bakiye açılış gününde hazırlanıyor".
+Ana oturum: bu karar §7a 1'in "içerik gönderim anında okunur" yorumunun ekstre için YERİNE geçer.
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y9d-1 | Ekstre İÇERİĞİ — {{1}} cari adı, {{2}} firma, {{3}} dönem, {{4}} bakiye, PDF (cari adı, dönem, devir, hareketler, dönem sonu bakiyesi), dosya adı — toplu işin AÇILIŞINDA hazırlanır; gönderim ertesi güne kaysa, kuyrukta hareket girse, Başarısızları Yeniden Dene / Yine de Gönder ile yeniden gönderilse de DEĞİŞMEZ (aynı iş = aynı ekstre; K4). ICERIK-09'un beklentisi değişir (kuyrukta giren hareket ekstreye girmez) | J12 + K4 |
+| Y9d-2 | §7a 1'in öbür kısmı DEĞİŞMEZ: telefon ve eleme denetimleri (İstemiyor / silinmiş / pasif / E.164'e çevrilemeyen → Atlandı, §7a 2) GÖNDERİM ANINDA (KISI-01, KISI-09/10/15). Ödeme Hatırlatma (PDF'siz: vade, gecikmiş toplam, güncel bakiye) gönderim anında okunmaya devam eder (ICERIK-12) — karar metni ekstreyi ve PDF'i söylüyor; bilgi, ana oturum teyit etsin | §7a 1, §7a 2 + J12 |
+| Y9d-3 | Y9c-6 ÇÖZÜLDÜ: Tüm Hareketler içeriği açılış gününe kadar (≤ açılış günü) tarihli hareketler; açılış gününden SONRA tarihli hareket PDF'e, hareket sayısına ve bakiyeye GİRMEZ (dönem = ilk hareket – açılış günü + §7a 22 "dönem sonundan sonraki hareket girmez"); devir 0 | J11 + J12 + §7a 22 |
+| Y9d-4 | Y9c-4 teyit (ana oturum): atlanan yeni ileti sayılmaz, eski iletinin teslimi J5 ile sayılır; "Atlandı" / "Bu Ay değişmez" adlandırması BAŞ MİMAR KARARI | ana oturum |
+| Y9d-5 | Kâhin iç düzeni: içerik `baslat`'ta hesaplanır (eski M58'in içerik yarısı artık doğru model); M58 bundan sonra yalnız "telefon başlatmada okunur"; yeni M163 = eski düzen (ekstre içeriği gönderim anında) | J12 |
