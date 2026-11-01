@@ -7,12 +7,13 @@
 // K7 başarılı geçişte hata alanları temizlenir (§7a 32) · K8 toparlamanın "uncertain"ı sonraki kabulü yutmaz · eşgüçlülük (aynı bildirim ×2/×3, 503 sonrası yineleme).
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5); sahte saat (ders 13); dosya TZ=UTC ve TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
-import { cpSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readdirSync, renameSync, rmSync } from "node:fs";
 import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { describe, it } from "node:test";
+import { resolveDbPath } from "../server/lib/db-path.mjs";
 import { ADMIN_PASSWORD, removeTestDir } from "./helpers.mjs";
 import { PNID, TOKEN, URLS, WABA, startWa } from "./whatsapp-248-ortak.mjs";
 
@@ -33,9 +34,22 @@ async function ok(res, label) {
  * Düzenek: second = true → ikinci şirket (geri yükleme hemen uygulanır), aksi hâlde ana şirket. fault: { on } — "db-accept" kesintisi (kabul dosyaya yazılamaz).
  * Dönüş: s = { ctx, q, p, body, queue(), apply(list, signed), row(id), last(id), lastAt(id), delivered(id), buAy(), skip(), batch(), backup(), restore(), reset() }.
  */
-async function harness({ second = false, dataDir = null, account = true } = {}) {
+async function harness({ second = false, dataDir = null, account = true, timeoutMs = 0 } = {}) {
   const fault = { on: false };
-  const ctx = await startWa({ maxCompanies: 2, now: NOW, ...(dataDir ? { dataDir } : {}), whatsappFault: point => fault.on && point === "db-accept" });
+  // İş U6: defter kesintisi — eşzamanlı KABUL defterin outcomes'una yazılamaz (disk dolu / kilit benzetimi; whatsappLedgerFault).
+  const ledgerFault = { on: false, times: Infinity };
+  const ctx = await startWa({
+    maxCompanies: 2,
+    now: NOW,
+    ...(dataDir ? { dataDir } : {}),
+    ...(timeoutMs ? { whatsappTimeoutMs: timeoutMs } : {}),
+    whatsappFault: point => fault.on && point === "db-accept",
+    whatsappLedgerFault: (op, row) => {
+      if (!ledgerFault.on || op !== "outcome" || row?.outcome !== "accepted" || ledgerFault.times <= 0) return false;
+      ledgerFault.times -= 1;
+      return true;
+    },
+  });
   const queues = new Map();
   const sch = ctx.server.app.whatsapp.scheduler;
   const reg = sch.register.bind(sch);
@@ -58,6 +72,7 @@ async function harness({ second = false, dataDir = null, account = true } = {}) 
   const s = {
     ctx,
     fault,
+    ledgerFault,
     company,
     q,
     p,
@@ -594,21 +609,190 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
       }
       // Açılış toparlamasının yaptığı (geri yükleme / yeniden açılış — istek sürerken): talepli, sonuçsuz denemeye "uncertain".
       s.ctx.server.app.whatsapp.ledger.outcome({ jobId: job.id, attempt: job.attempt, outcome: "uncertain", at: s.isoNow(), companyId: "sirket-001", wabaId: WABA });
+      s.ctx.store.run("UPDATE wa_jobs SET state = 'uncertain', error_text = ? WHERE id = ?", "Gönderim sırasında program kapandı; iletinin Meta'ya ulaşıp ulaşmadığı bilinmiyor.", job.id);
       await turn;
       s.ctx.fake.state.delayMs = 0;
       const wamid = s.ctx.messages().at(-1).wamid;
       assert.equal(s.ctx.server.app.whatsapp.ledger.attemptOfWamid(wamid)?.jobId, job.id, "kabul defterde öğrenildi (wamid bağlı)");
+      const row = await s.job(batchId);
+      assert.deepEqual([row.state, row.wamid, row.reason || ""], ["accepted", wamid, ""], "İş U4: satır da Meta Kabul Etti (belirsizlik metni temiz)");
       assert.equal(s.apply([st(s, wamid, "delivered")]).applied, 1, "sonraki bildirim tanındı");
       assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
     } finally {
       await s.close();
     }
   });
+
+  // =================================================================================================================================================
+  // İş U (dar kontrol 15; tasarim-u-248, onaylı): K1′ "TESLİM HER YOLDA SAYILIR" + U1–U7 hücreleri.
+  // =================================================================================================================================================
+  for (const value of ["delivered", "read"]) {
+    it(`T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç ${value} → ${value === "read" ? "Okundu" : "Teslim Edildi"}, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)`, async () => {
+      const s = await harness();
+      try {
+        const { batchId, job } = await accepted(s);
+        s.apply([failedSt(s, job.wamid, 131049)]);
+        assert.equal((await s.job(batchId)).state, "held", "ön koşul: Meta Bekletti");
+        assert.equal(s.apply([st(s, job.wamid, value)]).applied, 1, "geç teslim uygulandı");
+        assert.equal(s.apply([st(s, job.wamid, value)]).applied, 0, "yinelenen etkisiz");
+        assert.equal((await s.job(batchId)).state, value);
+        assert.equal(await s.buAy(), 1, "Bu Ay 1");
+        assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
+        s.ctx.clock.advance(DAY + 60_000);
+        await s.ctx.drain();
+        assert.equal(s.ctx.messages().length, 1, "24 saat sonra yeniden deneme yok");
+        assert.equal((await s.job(batchId)).state, value, "iş yeniden açılmadı");
+      } finally {
+        await s.close();
+      }
+    });
+    it(`T11 Başarısız (131026) · ${value} → ${value === "read" ? "Okundu" : "Teslim Edildi"}, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)`, async () => {
+      const s = await harness();
+      try {
+        const { batchId, job } = await accepted(s);
+        s.apply([failedSt(s, job.wamid)]);
+        assert.equal((await s.job(batchId)).state, "failed", "ön koşul: Başarısız");
+        assert.equal(s.apply([st(s, job.wamid, value)]).applied, 1);
+        assert.equal(s.apply([st(s, job.wamid, value)]).applied, 0, "yinelenen etkisiz");
+        const after = await s.job(batchId);
+        assert.deepEqual([after.state, after.reason || ""], [value, ""], "teslim, hata metni temiz");
+        assert.equal(await s.buAy(), 1);
+        assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
+        s.ctx.clock.advance(DAY);
+        await s.ctx.drain();
+        assert.equal(s.ctx.messages().length, 1, "iş yeniden açılmaz");
+      } finally {
+        await s.close();
+      }
+    });
+  }
+  it("T8x Süresi Doldu · delivered ×2 → Bu Ay 1, iş yeniden açılmaz (K1′ koşul c)", async () => {
+    const s = await harness();
+    try {
+      const { batchId, job } = await accepted(s);
+      await expire(s, job.wamid);
+      assert.equal((await s.job(batchId)).state, "expired", "ön koşul: Süresi Doldu");
+      assert.equal(s.apply([st(s, job.wamid, "delivered")]).applied, 1);
+      assert.equal(s.apply([st(s, job.wamid, "delivered")]).applied, 0, "yinelenen etkisiz");
+      assert.equal(await s.buAy(), 1);
+      await s.ctx.drain();
+      assert.equal(s.ctx.messages().length, 1);
+    } finally {
+      await s.close();
+    }
+  });
+  it("T14-sent imzalı iş kimliği · Sonucu Belirsiz → sent: Gönderildi, belirsizlik metni ve hata kodu temiz (U7; K7 sent kolu)", async () => {
+    const s = await harness();
+    try {
+      const { batchId, job, wamid } = await uncertain(s);
+      assert.ok((await s.job(batchId)).reason, "ön koşul: belirsizlik metni");
+      assert.equal(s.apply([st(s, wamid, "sent", { biz_opaque_callback_data: job.id })], true).applied, 1);
+      const after = await s.job(batchId);
+      assert.deepEqual([after.state, after.reason || "", after.errorCode ?? null], ["sent", "", null]);
+    } finally {
+      await s.close();
+    }
+  });
+  for (const value of ["delivered", "failed"]) {
+    it(`T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · ${value} → yalnız defter SON denemeye; satır değişmez (U2)`, { timeout: 120_000 }, async () => {
+      const s = await harness({ second: true });
+      try {
+        const batchId = await s.batch();
+        s.ctx.fake.state.dropAfter = /\/messages$/;
+        await s.ctx.drain();
+        s.ctx.fake.state.dropAfter = null;
+        const j1 = await s.job(batchId);
+        assert.equal(j1.state, "uncertain", "ön koşul: 1. deneme belirsiz");
+        const backup = await s.backup();
+        const w1 = s.ctx.messages().at(-1).wamid;
+        s.ctx.clock.advance(60_000);
+        await s.job(batchId);
+        s.apply([failedSt(s, w1, 131049, { biz_opaque_callback_data: j1.id })], true);
+        assert.equal((await s.job(batchId)).state, "held", "ön koşul: Meta Bekletti (1. denemenin wamid'i öğrenildi)");
+        s.ctx.clock.advance(DAY + 60_000);
+        s.ctx.fake.state.dropAfter = /\/messages$/;
+        await s.ctx.drain();
+        s.ctx.fake.state.dropAfter = null;
+        const j2 = await s.job(batchId);
+        assert.deepEqual([j2.attempt, j2.state], [2, "uncertain"], "ön koşul: 2. deneme belirsiz");
+        const w2 = s.ctx.messages().at(-1).wamid;
+        await s.restore(backup);
+        const stale = await s.job(batchId);
+        assert.deepEqual([stale.attempt, stale.state], [1, "uncertain"], "ön koşul: geri yüklenen satır 1. denemede");
+        const event = value === "failed" ? failedSt(s, w2, 131026, { biz_opaque_callback_data: j1.id }) : st(s, w2, "delivered", { biz_opaque_callback_data: j1.id });
+        assert.equal(s.apply([event], true).applied, 1, "son denemeye uygulandı");
+        assert.equal(s.apply([event], true).applied, 0, "yinelenen etkisiz");
+        const after = await s.job(batchId);
+        assert.deepEqual([after.attempt, after.state], [1, "uncertain"], "satır değişmez");
+        const attempts = s.ctx.wa.ledger.attempts(j1.id).map(item => `${item.attempt}:${item.outcome}`);
+        assert.equal(attempts[0], "1:released", "1. deneme dokunulmadı");
+        assert.equal(s.ctx.wa.ledger.attemptOfWamid(w2)?.attempt, 2, "wamid SON denemeye öğrenildi");
+        if (value === "failed") {
+          assert.equal(attempts[1], "2:failed");
+          assert.deepEqual(await s.skip(), ["gönderilecek"]);
+        } else {
+          assert.equal(s.ctx.wa.ledger.deliveredAttempt(j1.id, 2), true);
+          assert.equal(await s.buAy(), 1);
+          assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
+        }
+      } finally {
+        await s.close();
+      }
+    });
+  }
+  for (const order of ["eski-once", "yeni-once"]) {
+    it(`T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (${order}) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)`, async () => {
+      const s = await harness();
+      try {
+        const { batchId, job } = await accepted(s);
+        s.apply([failedSt(s, job.wamid, 131049)]);
+        s.ctx.clock.advance(DAY + 60_000);
+        await s.ctx.drain();
+        const second = await s.job(batchId);
+        assert.deepEqual([second.attempt, second.state], [2, "accepted"], "ön koşul: 2. deneme kabul");
+        const events = [st(s, job.wamid, "delivered"), st(s, second.wamid, "delivered")];
+        for (const event of order === "eski-once" ? events : events.reverse()) assert.equal(s.apply([event]).applied, 1);
+        for (const event of events) assert.equal(s.apply([event]).applied, 0, "yinelenen etkisiz");
+        assert.equal(await s.buAy(), 2, "Bu Ay iki teslim");
+        assert.equal((await s.job(batchId)).state, "delivered");
+        assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
+      } finally {
+        await s.close();
+      }
+    });
+  }
+  it("T35r GERÇEK yol: istek Meta'dayken yedek + geri yükleme (toparlama 'Sonucu Belirsiz' yazar) → yanıt gelince satır Meta Kabul Etti; aynı dönem Daha Önce; kişiye 1 ileti (U4)", { timeout: 120_000 }, async () => {
+    const s = await harness({ second: true, timeoutMs: 8_000 });
+    try {
+      const batchId = await s.batch();
+      s.ctx.fake.state.delayMs = 2_500;
+      const turn = s.ctx.wa.scheduler.runOnce();
+      for (let i = 0; i < 400 && !s.ctx.fake.requests.some(item => item.path.endsWith("/messages")); i += 1) await wait(10);
+      assert.ok(s.ctx.fake.requests.some(item => item.path.endsWith("/messages")), "ön koşul: ileti isteği Meta'da");
+      const backup = await s.backup();
+      await s.restore(backup);
+      const mid = await s.job(batchId);
+      assert.equal(mid.state, "uncertain", `ön koşul: toparlama Sonucu Belirsiz yazdı (geldi ${mid.state})`);
+      await turn;
+      s.ctx.fake.state.delayMs = 0;
+      // Yanıtı ESKİ örnek işledi (defter A7 kabulü öğrendi); yeni örneğin satırı bakım turunda defterden çözülür.
+      await s.ctx.wa.scheduler.maintain();
+      const after = await s.job(batchId);
+      assert.deepEqual([after.state, Boolean(after.wamid), after.reason || ""], ["accepted", true, ""], "satır Meta Kabul Etti");
+      assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
+      assert.equal(s.ctx.messages().length, 1);
+      assert.equal(s.apply([st(s, after.wamid, "delivered")]).applied, 1);
+      assert.equal(await s.buAy(), 1);
+    } finally {
+      s.ctx.fake.state.delayMs = 0;
+      await s.close();
+    }
+  });
 });
 
 // ---------- kanca üzerinden: T17 (A6) ve K0 (kilit, A5) ----------
-async function hookHarness() {
-  const s = await harness();
+async function hookHarness(options = {}) {
+  const s = await harness(options);
   const remote = await s.ctx.server.app.listenRemote(0, "127.0.0.1");
   s.ctx.server.app.mobileRemote.setPublicUrl("http://ofis-t.destekofis.test");
   await s.ctx.server.app.context.whatsapp.connection.registerHook(null, "http://ofis-t.destekofis.test");
@@ -764,4 +948,163 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       await s.close();
     }
   });
+  // ---------- İş U (dar kontrol 15) ----------
+  for (const [label, errcode, message] of [["SQLITE_READONLY (salt okunur)", 8, "attempt to write a readonly database"], ["SQLITE_FULL (disk dolu)", 13, "database or disk is full"]]) {
+    it(`T-K0g dosya yazımında KİLİT DIŞI hata — ${label} → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)`, { timeout: 120_000 }, async () => {
+      const s = await hookHarness();
+      try {
+        const { batchId, job } = await accepted(s);
+        const store = s.ctx.store;
+        const run = store.run;
+        let hit = false;
+        store.run = (sql, ...args) => {
+          if (!hit && /^UPDATE wa_jobs SET/.test(sql) && args.includes("delivered")) {
+            hit = true;
+            throw Object.assign(new Error(message), { code: "ERR_SQLITE_ERROR", errcode });
+          }
+          return run.call(store, sql, ...args);
+        };
+        try {
+          const first = await s.post([st(s, job.wamid, "delivered")]);
+          assert.equal(first.status, 500, `kilit dışı yazım hatası yutulmaz → 500 (geldi ${first.status} ${first.text})`);
+        } finally {
+          store.run = run;
+        }
+        assert.ok(hit, "ön koşul: hata uygulandı");
+        assert.equal((await s.job(batchId)).state, "accepted", "dosya yazılamadı");
+        assert.equal(s.delivered(job.id), true, "defter önce yazıldı");
+        for (let i = 0; i < 2; i += 1) assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200);
+        assert.equal((await s.job(batchId)).state, "delivered");
+        assert.equal(await s.buAy(), 1);
+      } finally {
+        await s.close();
+      }
+    });
+  }
+  it("T-K0g′ dosya yazımında wamid tekil çakışması (SQLITE_CONSTRAINT_UNIQUE) → yalnız bu yutulur: 200, satır değişmez (U3)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness();
+    try {
+      const { batchId, job } = await accepted(s);
+      const store = s.ctx.store;
+      const run = store.run;
+      let hit = false;
+      store.run = (sql, ...args) => {
+        if (!hit && /^UPDATE wa_jobs SET/.test(sql) && args.includes("delivered")) {
+          hit = true;
+          throw Object.assign(new Error("UNIQUE constraint failed: wa_jobs.wamid"), { code: "ERR_SQLITE_ERROR", errcode: 2067 });
+        }
+        return run.call(store, sql, ...args);
+      };
+      try {
+        assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200);
+      } finally {
+        store.run = run;
+      }
+      assert.ok(hit, "ön koşul: çakışma uygulandı");
+      assert.equal((await s.job(batchId)).state, "accepted", "olay düştü (satır değişmedi)");
+    } finally {
+      await s.close();
+    }
+  });
+  it("T36 eşzamanlı kabul DEFTERE yazılamadı (dosyada Meta Kabul Etti + wamid) → onarılamazken gönderim başlatılmaz (503), imzasız teslim 6 dk sonra da tanınır; defter düzelince onarım: Daha Önce Gönderildi, kişiye 1 ileti (U6)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness();
+    try {
+      s.ledgerFault.on = true;
+      const batchId = await s.batch();
+      await s.ctx.drain();
+      const job = await s.job(batchId);
+      assert.deepEqual([job.state, Boolean(job.wamid)], ["accepted", true], "ön koşul: dosyada kabul");
+      assert.equal(s.ctx.wa.ledger.outcomeOf(job.id, 1), null, "ön koşul: defterde sonuç yok");
+      const blocked = await s.ctx.api.post(URLS.batches, s.body);
+      assert.equal(blocked.status, 503, `onarılamazken yeni gönderim başlatılmaz (geldi ${blocked.status} ${JSON.stringify(blocked.data)})`);
+      s.ctx.clock.advance(6 * 60_000);
+      const hook = await s.post([st(s, job.wamid, "delivered")]);
+      assert.equal(hook.status, 200, `imzasız teslim tanındı (geldi ${hook.status} ${hook.text})`);
+      assert.equal((await s.job(batchId)).state, "delivered");
+      assert.equal(await s.buAy(), 1);
+      s.ledgerFault.on = false;
+      await s.ctx.drain(); // bakım: onarım
+      assert.equal(s.ctx.wa.ledger.outcomeOf(job.id, 1), "accepted", "defter onarıldı");
+      assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
+      assert.equal((await s.ctx.api.post(URLS.batches, s.body)).status, 400, "yeni gönderim kişiyi eler");
+      await s.ctx.drain();
+      assert.equal(s.ctx.messages().length, 1, "kişiye 1 ileti");
+    } finally {
+      await s.close();
+    }
+  });
+  it("T36c talepten ÖNCE onarım: 1. kişinin kabulü deftere yazılamadı → defter düzelene dek 2. kişiye gönderilmez; düzelince ikisi de tek ileti (U6)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness();
+    try {
+      const a = await ok(await s.ctx.api.post("/api/workspace/accounts", { name: "Ayşe Yılmaz", phone: "0532 111 22 33", openingBalance: "500" }), "cari 2");
+      const batchId = (await ok(await s.ctx.api.post(URLS.batches, { kind: "statement", ids: [s.p.id, a.id], preset: "thisMonth" }), "toplu iş")).batch.id;
+      s.ledgerFault.on = true;
+      await s.ctx.wa.scheduler.runOnce();
+      assert.equal(s.ctx.messages().length, 1, "ön koşul: 1. kişi gönderildi");
+      for (let i = 0; i < 3; i += 1) {
+        s.ctx.clock.advance(5 * 60_000);
+        await s.ctx.wa.scheduler.runOnce();
+      }
+      assert.equal(s.ctx.messages().length, 1, "onarılamazken 2. kişiye talep yazılmadı");
+      s.ledgerFault.on = false;
+      s.ctx.clock.advance(5 * 60_000);
+      await s.ctx.drain();
+      assert.equal(s.ctx.messages().length, 2, "defter düzelince 2. kişi");
+      const jobs = (await s.ctx.api.get(`${URLS.batches}/${batchId}`)).data.data.jobs;
+      for (const job of jobs) assert.equal(s.ctx.wa.ledger.outcomeOf(job.id, job.attempt), "accepted", "ikisi de defterde kabul");
+    } finally {
+      await s.close();
+    }
+  });
+  it("T-K0h sahibi yalnız dosyada bulunan wamid (U6 onarım listesi) · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503; açılınca 200 ve uygulanır (U6)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness({ second: true });
+    try {
+      s.ledgerFault.on = true;
+      const batchId = await s.batch();
+      await s.ctx.drain();
+      const job = await s.job(batchId);
+      assert.deepEqual([job.state, s.ctx.wa.ledger.companyOfWamid(job.wamid)], ["accepted", null], "ön koşul: sahip yalnız dosyada");
+      s.ctx.server.app.context.busyCompanies.set(s.company.id, "“002” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.");
+      try {
+        const busy = await s.post([st(s, job.wamid, "delivered")]);
+        assert.equal(busy.status, 503, `geçici açılamama → 503 (geldi ${busy.status} ${busy.text})`);
+      } finally {
+        s.ctx.server.app.context.busyCompanies.delete(s.company.id);
+      }
+      assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200);
+      assert.equal((await s.job(batchId)).state, "delivered");
+    } finally {
+      s.ledgerFault.on = false;
+      await s.close();
+    }
+  });
+  for (const kind of ["silinmiş", "veri dosyası yok"]) {
+    it(`T-Ksil şirket ${kind} (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)`, { timeout: 120_000 }, async () => {
+      const s = await hookHarness({ second: true });
+      try {
+        const batchId = await s.batch();
+        await s.ctx.drain();
+        const job = await s.job(batchId);
+        assert.equal(job.state, "accepted", "ön koşul: kabul");
+        if (kind === "silinmiş") {
+          const del = await s.ctx.api.raw("DELETE", `/api/companies/${s.company.id}`, { body: JSON.stringify({ confirm: s.company.code, password: ADMIN_PASSWORD }), headers: { "content-type": "application/json" } });
+          assert.equal(del.status, 200, `ön koşul: şirket silindi (geldi ${del.status})`);
+        } else {
+          s.ctx.server.app.context.closeCompany(s.company.id);
+          const root = path.join(s.ctx.server.app.config.dataDir, "sirketler");
+          const dirs = readdirSync(root);
+          assert.equal(dirs.length, 1, "ön koşul: tek ek şirket klasörü");
+          const file = resolveDbPath(path.join(root, dirs[0]));
+          assert.ok(existsSync(file), "ön koşul: veri dosyası var");
+          for (const suffix of ["", "-wal", "-shm"]) if (existsSync(file + suffix)) renameSync(file + suffix, `${file + suffix}.yok`);
+        }
+        const res = await s.post([st(s, job.wamid, "delivered")]);
+        assert.equal(res.status, 200, `kalıcı açılamama → 200 (geldi ${res.status} ${res.text})`);
+        assert.equal(s.ctx.wa.ledger.deliveredAttempt(job.id, 1), true, "defterde teslim");
+        assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200, "yinelenen 200");
+      } finally {
+        await s.close().catch(() => {});
+      }
+    });
+  }
 });
