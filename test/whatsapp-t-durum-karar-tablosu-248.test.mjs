@@ -676,6 +676,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       }
       assert.ok(hit, "ön koşul: kilit uygulandı");
       assert.equal((await s.job(batchId)).state, "accepted", "dosya yazılamadı");
+      assert.equal(s.delivered(job.id), true, "defter dosyadan ÖNCE yazıldı (A5): yarım yazımda teslim defterde");
       for (let i = 0; i < 2; i += 1) assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200, "yineleme 200");
       assert.equal((await s.job(batchId)).state, "delivered");
       assert.equal(await s.buAy(), 1, "Bu Ay 1 (iki kez değil)");
