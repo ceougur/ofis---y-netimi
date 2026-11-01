@@ -172,13 +172,16 @@ describe("2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (da
       for (const anahtar of ["olagan", "olagan2", "hareketsiz", "ileri", "ayniA"]) assert.equal(h[c[anahtar].id], "Gecikmiş Borç Yok", `${anahtar} hatırlatmada`);
       assert.deepEqual(sayim, sayim.map(({ etiket }) => ({ etiket, tamKartOkuma: 0, kuyrukSorgusu: 1 })), `önizleme kişi başı okuyor (beklenen her önizlemede tam kart 0, "Zaten Kuyrukta" sorgusu 1): ${JSON.stringify(sayim)}`);
       // Açma: tam kart okunmaz; açılan işin kişileri "Zaten Kuyrukta" olur — süren de duraklatılmış da (§7a 9).
-      const acilan = await ctx.batch({ kind: "statement", ids: [c.olagan.id, c.ayniA.id], preset: "thisMonth", requestId: "isz-test-1" });
+      const acilan = await ctx.batch({ kind: "statement", ids: [c.olagan.id, c.ayniA.id, c.taksitli.id], preset: "thisMonth", requestId: "isz-test-1" });
       assert.equal(acilan.status, 200, JSON.stringify(acilan.data).slice(0, 300));
       assert.equal(kartOkuma, 0, `toplu iş açma kişi başı tam cari kartı okudu: ${kartOkuma} çağrı (beklenen 0)`);
       let n = await nedenler({ kind: "statement", ids, preset: "thisMonth" });
       assert.equal(n[c.olagan.id], "Zaten Kuyrukta");
       assert.equal(n[c.ayniA.id], "Zaten Kuyrukta");
       assert.equal(n[c.olagan2.id], "");
+      // Dar kontrol 20 DÜŞÜK-1: "Zaten Kuyrukta" yalnız AYNI türdeki işe bakar — süren EKSTRE işindeki gecikmiş borçlu kişi Ödeme Hatırlatma'da elenmez (tür süzgeci).
+      const hatirlatma = await nedenler({ kind: "reminder", ids });
+      assert.equal(hatirlatma[c.taksitli.id], "", `süren ekstre işindeki kişi Ödeme Hatırlatma'da elendi: ${hatirlatma[c.taksitli.id]}`);
       assert.equal((await ctx.api.post(`${URLS.batches}/${acilan.data.data.batch.id}/pause`, {})).status, 200);
       n = await nedenler({ kind: "statement", ids, from: "2026-12-01", to: "2026-12-22" });
       assert.equal(n[c.olagan.id], "Zaten Kuyrukta", "duraklatılmış işteki kişi 'Zaten Kuyrukta' değil (S1b: Özel = Bu Ay)");
