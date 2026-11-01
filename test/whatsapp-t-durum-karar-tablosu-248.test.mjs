@@ -34,18 +34,20 @@ async function ok(res, label) {
  * Düzenek: second = true → ikinci şirket (geri yükleme hemen uygulanır), aksi hâlde ana şirket. fault: { on } — "db-accept" kesintisi (kabul dosyaya yazılamaz).
  * Dönüş: s = { ctx, q, p, body, queue(), apply(list, signed), row(id), last(id), lastAt(id), delivered(id), buAy(), skip(), batch(), backup(), restore(), reset() }.
  */
-async function harness({ second = false, dataDir = null, account = true, timeoutMs = 0 } = {}) {
+async function harness({ second = false, dataDir = null, account = true, timeoutMs = 0, lockBackoffMs = null } = {}) {
   const fault = { on: false };
   // İş U6: defter kesintisi — eşzamanlı KABUL defterin outcomes'una yazılamaz (disk dolu / kilit benzetimi; whatsappLedgerFault).
-  const ledgerFault = { on: false, times: Infinity };
+  const ledgerFault = { on: false, times: Infinity, match: null }; // match(op, row): İş V4 talep kesintisi (op "claim")
   const ctx = await startWa({
     maxCompanies: 2,
     now: NOW,
     ...(dataDir ? { dataDir } : {}),
     ...(timeoutMs ? { whatsappTimeoutMs: timeoutMs } : {}),
+    ...(lockBackoffMs !== null ? { __testWriteLockBackoffMs: lockBackoffMs } : {}),
     whatsappFault: point => fault.on && point === "db-accept",
     whatsappLedgerFault: (op, row) => {
-      if (!ledgerFault.on || op !== "outcome" || row?.outcome !== "accepted" || ledgerFault.times <= 0) return false;
+      const hit = ledgerFault.match ? ledgerFault.match(op, row) : op === "outcome" && row?.outcome === "accepted";
+      if (!ledgerFault.on || !hit || ledgerFault.times <= 0) return false;
       ledgerFault.times -= 1;
       return true;
     },
@@ -733,8 +735,9 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
         const event = value === "failed" ? failedSt(s, w2, 131026, { biz_opaque_callback_data: j1.id }) : st(s, w2, "delivered", { biz_opaque_callback_data: j1.id });
         assert.equal(s.apply([event], true).applied, 1, "son denemeye uygulandı");
         assert.equal(s.apply([event], true).applied, 0, "yinelenen etkisiz");
+        await s.ctx.wa.scheduler.maintain(); // İş V6 (mA): bakım turu da satırı değiştirmez (satırın denemesi defterin son denemesi değil)
         const after = await s.job(batchId);
-        assert.deepEqual([after.attempt, after.state], [1, "uncertain"], "satır değişmez");
+        assert.deepEqual([after.attempt, after.state], [1, "uncertain"], "satır değişmez (bakımdan sonra da)");
         const attempts = s.ctx.wa.ledger.attempts(j1.id).map(item => `${item.attempt}:${item.outcome}`);
         assert.equal(attempts[0], "1:released", "1. deneme dokunulmadı");
         assert.equal(s.ctx.wa.ledger.attemptOfWamid(w2)?.attempt, 2, "wamid SON denemeye öğrenildi");
@@ -773,6 +776,177 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
       }
     });
   }
+  // =================================================================================================================================================
+  // İş V (dar kontrol 16; tasarim-v-248, onaylı): defterdeki TESLİM her yerde okunur (V2), teslimi olan işe talep yok (V4), dişsiz testlerin hücreleri (V6).
+  // =================================================================================================================================================
+  it("T-uncertain-failed belirsiz → yedek → imzalı failed (satır Başarısız; defter teslim edilemedi + öğrenilen wamid) → geri yükleme → bakım: satır Meta Kabul Etti YAPILMAZ; gönderilecek (V6 mB)", { timeout: 120_000 }, async () => {
+    const s = await harness({ second: true });
+    try {
+      const { batchId, job, wamid } = await uncertain(s);
+      const backup = await s.backup();
+      await s.job(batchId);
+      assert.equal(s.apply([failedSt(s, wamid, 131026, { biz_opaque_callback_data: job.id })], true).applied, 1);
+      assert.equal((await s.job(batchId)).state, "failed", "ön koşul: Başarısız");
+      await s.restore(backup);
+      assert.equal((await s.job(batchId)).state, "uncertain", "ön koşul: geri yüklenen satır belirsiz");
+      await s.ctx.wa.scheduler.maintain();
+      assert.notEqual((await s.job(batchId)).state, "accepted", "teslim edilemeyen deneme Meta Kabul Etti yazılmaz");
+      assert.deepEqual(await s.skip(), ["gönderilecek"]);
+    } finally {
+      await s.close();
+    }
+  });
+  it("T-settle-D belirsiz → yedek → imzalı delivered (Teslim) → geri yükleme → bakım: satır Teslim Edildi (defterdeki anla); +31 gün bakım değişmez, teslim edilemedi yazılmaz; Bu Ay 1 (V2, n1)", { timeout: 120_000 }, async () => {
+    const s = await harness({ second: true });
+    try {
+      const { batchId, job, wamid } = await uncertain(s);
+      const backup = await s.backup();
+      await s.job(batchId);
+      const at = s.isoNow();
+      assert.equal(s.apply([st(s, wamid, "delivered", { biz_opaque_callback_data: job.id })], true).applied, 1);
+      await s.restore(backup);
+      assert.equal((await s.job(batchId)).state, "uncertain", "ön koşul: geri yüklenen satır belirsiz");
+      await s.ctx.wa.scheduler.maintain();
+      const settled = await s.job(batchId);
+      assert.deepEqual([settled.state, settled.reason || ""], ["delivered", ""], "Teslim Edildi");
+      assert.equal(settled.deliveredAt, at, "teslim anı defterdeki an");
+      assert.equal(await s.buAy(), 1, "Bu Ay 1 (çift sayım yok)");
+      await s.ctx.wa.scheduler.maintain();
+      assert.equal(await s.buAy(), 1, "ikinci bakım da çift saymaz");
+      await expire(s, wamid);
+      s.ctx.clock.advance(31 * DAY);
+      await s.ctx.wa.scheduler.maintain();
+      assert.equal((await s.job(batchId)).state, "delivered", "süre dolumu Teslim Edildi'ye dokunmaz");
+      assert.equal(s.ledgerSql("SELECT COUNT(*) AS n FROM failures WHERE job_id = ?", job.id).n, 0, "teslim edilemedi yazılmadı");
+    } finally {
+      await s.close();
+    }
+  });
+  it("T-settleSending-D istek Meta'dayken yedek (satır Gönderiliyor) → kabul → delivered → geri yükleme → açılış toparlaması: Teslim Edildi (V2, n1b)", { timeout: 120_000 }, async () => {
+    const s = await harness({ second: true, timeoutMs: 8_000 });
+    try {
+      const batchId = await s.batch();
+      s.ctx.fake.state.delayMs = 2_500;
+      const turn = s.ctx.wa.scheduler.runOnce();
+      for (let i = 0; i < 400 && !s.ctx.fake.requests.some(item => item.path.endsWith("/messages")); i += 1) await wait(10);
+      const backup = await s.backup();
+      await turn;
+      s.ctx.fake.state.delayMs = 0;
+      const job = await s.job(batchId);
+      assert.equal(job.state, "accepted", "ön koşul: kabul");
+      assert.equal(s.apply([st(s, job.wamid, "delivered")]).applied, 1);
+      await s.restore(backup);
+      const after = await s.job(batchId);
+      assert.equal(after.state, "delivered", `açılış toparlaması teslimi gördü (geldi ${after.state})`);
+      assert.equal(await s.buAy(), 1);
+      assert.equal(s.ctx.messages().length, 1);
+    } finally {
+      s.ctx.fake.state.delayMs = 0;
+      await s.close();
+    }
+  });
+  for (const kind of ["cift-sinir", "talep-yazilamadi"]) {
+    it(`T-bekletti-2.deneme-düştü (${kind}) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)`, async () => {
+      const s = await harness();
+      try {
+        const { batchId, job } = await accepted(s);
+        s.apply([failedSt(s, job.wamid, 131049)]);
+        s.ctx.clock.advance(DAY + 60_000);
+        if (kind === "cift-sinir") s.ctx.fake.state.recipientErrors[`+${TEL}`] = { status: 400, body: metaError(131056, "Pair rate limit hit") };
+        else Object.assign(s.ledgerFault, { on: true, match: op => op === "claim" });
+        await s.ctx.wa.scheduler.runOnce();
+        s.ctx.fake.state.recipientErrors = {};
+        Object.assign(s.ledgerFault, { on: false, match: null });
+        const mid = await s.job(batchId);
+        assert.ok(["pending", "limited"].includes(mid.state), `ön koşul: 2. deneme ileti göndermeden düştü, iş açık (geldi ${mid.state})`);
+        assert.equal(s.ctx.messages().length, 1, "ön koşul: tek ileti");
+        assert.equal(s.apply([st(s, job.wamid, "delivered")]).applied, 1, "1. iletinin geç teslimi");
+        s.ctx.clock.advance(10 * 60_000);
+        await s.ctx.drain();
+        assert.equal(s.ctx.messages().length, 1, "ikinci ileti gitmedi");
+        assert.equal((await s.job(batchId)).state, "delivered");
+        assert.equal(await s.buAy(), 1);
+      } finally {
+        await s.close();
+      }
+    });
+  }
+  it("T36-önizleme kabul deftere yazılamadı → sorun kalkar → BAKIM YOKKEN önizleme onarır: Daha Önce Gönderildi (V6 mF, n12)", async () => {
+    const s = await harness();
+    try {
+      s.ledgerFault.on = true;
+      const batchId = await s.batch();
+      await s.ctx.wa.scheduler.runOnce();
+      assert.equal((await s.job(batchId)).state, "accepted", "ön koşul: dosyada kabul");
+      assert.equal(s.outcomeSql((await s.job(batchId)).id, 1), null, "ön koşul: defterde sonuç yok");
+      s.ledgerFault.on = false;
+      assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"], "önizleme onardı");
+    } finally {
+      await s.close();
+    }
+  });
+  it("T36-kilit onarım listesi dolu + defter BAŞKA SÜREÇTE kilitli → önizleme ve yeni gönderim BEKLEMEZ (< 1,5 sn); neden kilit notuyla aynı cümle; kilit kalkınca önizleme onarır (V3, n5)", { timeout: 120_000 }, async () => {
+    const s = await harness({ lockBackoffMs: 200 });
+    try {
+      s.ledgerFault.on = true;
+      const batchId = await s.batch();
+      await s.ctx.wa.scheduler.runOnce();
+      s.ledgerFault.on = false;
+      assert.equal(s.outcomeSql((await s.job(batchId)).id, 1), null, "ön koşul: defterde sonuç yok (onarım listesinde)");
+      const NOTE = "WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.";
+      const lock = new DatabaseSync(s.ctx.wa.ledger.file);
+      lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
+      try {
+        for (let i = 0; i < 2; i += 1) {
+          const t0 = Date.now();
+          const res = await s.ctx.api.post(URLS.preview, s.body);
+          const ms = Date.now() - t0;
+          assert.equal(res.status, 200);
+          assert.ok(ms < 1_500, `önizleme beklemedi (${ms} ms)`);
+          assert.equal(res.data.data.startBlock?.message, NOTE, "başlatma engeli kilit notuyla aynı cümle");
+        }
+        const t0 = Date.now();
+        const start = await s.ctx.api.post(URLS.batches, s.body);
+        assert.ok(Date.now() - t0 < 1_500, "yeni gönderim beklemedi");
+        assert.deepEqual([start.status, start.data.error], [503, NOTE]);
+      } finally {
+        lock.exec("ROLLBACK");
+        lock.close();
+      }
+      await wait(300); // işaret süresi (testte 200 ms)
+      const res = await s.ctx.api.post(URLS.preview, s.body);
+      assert.equal(res.data.data.startBlock ?? null, null, "kilit kalkınca engel yok");
+      assert.deepEqual(skipOf(res.data.data), ["Daha Önce Gönderildi"]);
+    } finally {
+      await s.close();
+    }
+  });
+  it("T-local-neden kabul defteri yazılamazken toplu iş: 'bu bilgisayarda yürütülemedi' nedeniyle duraklar; kod adı / internet cümlesi yok (V5, n4)", async () => {
+    const s = await harness();
+    try {
+      const ids = [s.p.id];
+      for (const [name, phone] of [["Ayşe Yılmaz", "0532 111 22 33"], ["Can Demir", "0532 111 22 34"], ["Deniz Ak", "0532 111 22 35"], ["Ece Tan", "0532 111 22 36"], ["Fikret Er", "0532 111 22 37"], ["Gül Su", "0532 111 22 38"]]) {
+        ids.push((await ok(await s.ctx.api.post("/api/workspace/accounts", { name, phone, openingBalance: "100" }), "cari")).id);
+      }
+      const batchId = (await ok(await s.ctx.api.post(URLS.batches, { kind: "statement", ids, preset: "thisMonth" }), "toplu iş")).batch.id;
+      s.ledgerFault.on = true;
+      for (let i = 0; i < 30; i += 1) {
+        await s.ctx.wa.scheduler.runOnce();
+        s.ctx.clock.advance(5 * 60_000);
+        if ((await s.ctx.api.get(`${URLS.batches}/${batchId}`)).data.data.state === "paused") break;
+      }
+      const batch = (await s.ctx.api.get(`${URLS.batches}/${batchId}`)).data.data;
+      assert.equal(batch.state, "paused", "ön koşul: toplu iş durdu");
+      assert.equal(s.ctx.messages().length, 1, "onarılamazken ikinci kişiye gönderilmedi");
+      assert.equal(batch.pauseCode, "local");
+      assert.match(batch.pauseReason, /bu bilgisayarda yürütülemedi/);
+      assert.match(batch.pauseReason, /önceki bir iletinin kabulü gönderim defterine yazılamadı/);
+      assert.doesNotMatch(batch.pauseReason, /WA_LEDGER|ENOSPC|İnternet|Meta'ya/);
+    } finally {
+      s.ledgerFault.on = false;
+      await s.close();
+    }
+  });
   it("T35r GERÇEK yol: istek Meta'dayken yedek + geri yükleme (toparlama 'Sonucu Belirsiz' yazar) → yanıt gelince satır Meta Kabul Etti; aynı dönem Daha Önce; kişiye 1 ileti (U4)", { timeout: 120_000 }, async () => {
     const s = await harness({ second: true, timeoutMs: 8_000 });
     try {
@@ -1142,4 +1316,105 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       }
     });
   }
+  // ---------- İş V (dar kontrol 16) ----------
+  /** İkinci şirketin veri dosyasını yerinden alır (kalıcı yokluk); dönüş: geri koyan işlev. */
+  const hideCompanyFile = s => {
+    s.ctx.server.app.context.closeCompany(s.company.id);
+    const root = path.join(s.ctx.server.app.config.dataDir, "sirketler");
+    const file = resolveDbPath(path.join(root, readdirSync(root)[0]));
+    const moved = [];
+    for (const suffix of ["", "-wal", "-shm"]) {
+      if (existsSync(file + suffix)) {
+        renameSync(file + suffix, `${file + suffix}.yok`);
+        moved.push(file + suffix);
+      }
+    }
+    assert.ok(moved.length, "ön koşul: veri dosyası yerinden alındı");
+    return () => {
+      for (const name of moved) renameSync(`${name}.yok`, name);
+    };
+  };
+  for (const code of [131026, 131049]) {
+    it(`T-Ksil-F${code === 131049 ? "49" : ""} veri dosyası YOK (kalıcı) · imzasız failed ${code} → 200 + defterde teslim edilemedi; dosya geri gelince kişi "gönderilecek" (V1 i, K4)`, { timeout: 120_000 }, async () => {
+      const s = await hookHarness({ second: true });
+      try {
+        const batchId = await s.batch();
+        await s.ctx.drain();
+        const job = await s.job(batchId);
+        assert.equal(job.state, "accepted", "ön koşul: kabul");
+        const putBack = hideCompanyFile(s);
+        const res = await s.post([failedSt(s, job.wamid, code)]);
+        assert.equal(res.status, 200, `kalıcı açılamama → 200 (geldi ${res.status} ${res.text})`);
+        assert.equal(s.ledgerSql("SELECT COUNT(*) AS n FROM failures WHERE job_id = ? AND attempt = 1", job.id).n, 1, "defterde teslim edilemedi");
+        putBack();
+        assert.deepEqual(await s.skip(), ["gönderilecek"], "kesin almadı → sayılmaz (ilke 1)");
+      } finally {
+        await s.close().catch(() => {});
+      }
+    });
+  }
+  it("T-Ksil-D+geri veri dosyası YOK · delivered → 200 + defter teslim; dosya geri gelince Daha Önce, Bu Ay 1; süre dolumu satırı Teslim Edildi yapar (Süresi Doldu / teslim edilemedi YOK) (V1 + V2)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness({ second: true });
+    try {
+      const batchId = await s.batch();
+      await s.ctx.drain();
+      const job = await s.job(batchId);
+      const putBack = hideCompanyFile(s);
+      assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200);
+      putBack();
+      assert.equal((await s.job(batchId)).state, "accepted", "ön koşul: dosya geri geldi, satır Meta Kabul Etti");
+      assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
+      assert.equal(await s.buAy(), 1);
+      await expire(s, job.wamid);
+      assert.equal((await s.job(batchId)).state, "delivered", "süre dolumu teslimi gördü");
+      assert.equal(s.ledgerSql("SELECT COUNT(*) AS n FROM failures WHERE job_id = ?", job.id).n, 0, "teslim edilemedi yazılmadı");
+      assert.equal(await s.buAy(), 1, "Bu Ay çift saymaz");
+    } finally {
+      await s.close().catch(() => {});
+    }
+  });
+  it("T-Kgecici şirket açılmamışken veri dosyası BAŞKA SÜREÇTE kilitli → 503 (geçici); kilit kalkınca yineleme 200 ve Teslim Edildi (V1 ii, V6 mD)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness({ second: true });
+    try {
+      const batchId = await s.batch();
+      await s.ctx.drain();
+      const job = await s.job(batchId);
+      s.ctx.server.app.context.closeCompany(s.company.id);
+      const root = path.join(s.ctx.server.app.config.dataDir, "sirketler");
+      const lock = new DatabaseSync(resolveDbPath(path.join(root, readdirSync(root)[0])));
+      lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
+      try {
+        const res = await s.post([st(s, job.wamid, "delivered")]);
+        assert.equal(res.status, 503, `kilitli dosya geçicidir → 503 (geldi ${res.status} ${res.text})`);
+        assert.equal(s.deliveredSql(job.id), false, "yalnız defter yolu YOK");
+      } finally {
+        lock.exec("ROLLBACK");
+        lock.close();
+      }
+      assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200);
+      assert.equal((await s.job(batchId)).state, "delivered");
+    } finally {
+      await s.close().catch(() => {});
+    }
+  });
+  it("T-restore-F geri yükleme SÜRERKEN (busyCompanies) gelen failed → 503 → yineleme 200: Başarısız, gönderilecek (onaylı koşul a)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness({ second: true });
+    try {
+      const batchId = await s.batch();
+      await s.ctx.drain();
+      const job = await s.job(batchId);
+      s.ctx.server.app.context.busyCompanies.set(s.company.id, "“002” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.");
+      try {
+        assert.equal((await s.post([failedSt(s, job.wamid)])).status, 503);
+        assert.equal(s.ledgerSql("SELECT COUNT(*) AS n FROM failures WHERE job_id = ?", job.id).n, 0, "geri yükleme sürerken yazım yok");
+      } finally {
+        s.ctx.server.app.context.busyCompanies.delete(s.company.id);
+      }
+      assert.equal((await s.post([failedSt(s, job.wamid)])).status, 200);
+      assert.equal((await s.job(batchId)).state, "failed");
+      assert.deepEqual(await s.skip(), ["gönderilecek"]);
+    } finally {
+      await s.close();
+    }
+  });
 });

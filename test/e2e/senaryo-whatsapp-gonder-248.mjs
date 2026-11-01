@@ -772,6 +772,43 @@ await step("G8e makine defteri başka programda kilitli: süren gönderimde deft
   await closeAll();
 });
 
+await step("G8f İş V3: önceki bir kabul deftere taşınamamışken defter başka programda kilitli → önizleme beklemez, Gönder pasif + kilit cümlesi; kilit kalkınca kalkar", async () => {
+  const pendingJob = db("SELECT id FROM wa_jobs WHERE wamid IS NOT NULL ORDER BY rowid LIMIT 1")?.id;
+  ok(Boolean(pendingJob), "ön koşul: kabul edilmiş bir iş");
+  ctx.store.setSetting("whatsapp.ledgerRepair", JSON.stringify([pendingJob])); // onarım listesinde bir iş (defterde kabulü zaten var — kilit kalkınca liste boşalır)
+  const { DatabaseSync } = await import("node:sqlite");
+  let lock = new DatabaseSync(ctx.wa.ledger.file);
+  const NOTE = "WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.";
+  try {
+    lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
+    const t0 = Date.now();
+    await openWhatsapp();
+    await waitPreview();
+    const ms = Date.now() - t0;
+    ok(ms < 8_000, `önizleme defter kilidini beklemedi (${ms} ms; kilit beklemesi 10 sn)`);
+    ok(await sendDisabled(), "Gönder PASİF");
+    ok((await why()) === NOTE, `nedeni görünür yazı, kilit notuyla aynı cümle (görülen: ${await why()})`);
+    await page.locator(`${TOP} [data-wa-api-why]`).scrollIntoViewIfNeeded().catch(() => null); // ekran görüntüsünde neden görünsün
+    await shot("12h-onarim-defter-kilidi");
+    lock.exec("ROLLBACK");
+    lock.close();
+    lock = null;
+    await page.waitForTimeout(2_200);
+    await openWhatsapp();
+    await waitPreview();
+    ok((await why()) !== NOTE, `kilit kalkınca neden kalktı (görülen: ${await why() || "—"})`);
+    ok(!db("SELECT value FROM settings WHERE key = 'whatsapp.ledgerRepair' AND value <> ''"), "onarım listesi boşaldı");
+  } finally {
+    try {
+      lock?.exec("ROLLBACK");
+      lock?.close();
+    } catch {
+      // kilit zaten kalktı
+    }
+  }
+  await closeAll();
+});
+
 await step("G9 WhatsApp Web ile Gönder (wa.me) bağlantı varken de çalışır", async () => {
   const before = db("SELECT COUNT(*) AS n FROM message_sends WHERE status = 'sent'").n;
   await openWhatsapp();
