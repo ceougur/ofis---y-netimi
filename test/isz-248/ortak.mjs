@@ -6,7 +6,7 @@
 // + sahte lisans servisi + AYRI SÜREÇTE sahte Meta Graph (sahte-meta-cocuk.mjs). Dış istek YOK (ders 30: HUKUK_LICENSE_URL ölü adres; Meta / Cloudflare / lisans yerel sahte).
 // Durum bildirimleri (Meta'nın kancası) GERÇEK yoldan gelir: sahte "Meta" → kapıcı (Host: ofisin adresi) → tünel → programın uzak dinleyicisi → /wa/kanca/<gizli yol>.
 // Saat sahte (config.now; ders 13, 22): verilen andan akar ya da durur. Veri: verilen klasörün TAZE KOPYASI (önce/sonra aynı veri — ders 15).
-import { fork } from "node:child_process";
+import { execSync, fork } from "node:child_process";
 import { cpSync, rmSync, statSync, existsSync, readdirSync } from "node:fs";
 import http from "node:http";
 import path from "node:path";
@@ -18,6 +18,14 @@ import { startKapi } from "../kapi-yerel.mjs";
 import { PNID, TOKEN, WABA } from "../whatsapp-248-ortak.mjs";
 
 export const KOK = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+// İş Z: koşulan kodun sürümü — git deposunda HEAD; eski kodun arşiv kopyasında (git yok) ISZ_COMMIT ortam değişkeni.
+export const surum = () => {
+  try {
+    return execSync("git rev-parse HEAD", { cwd: KOK, stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+  } catch {
+    return process.env.ISZ_COMMIT || "bilinmiyor";
+  }
+};
 export const PASS = "Olcek-210-Yonetici!";
 export const STAFF_PASS = "Olcek-210-Personel!";
 const MACHINE = "0123456789abcdef0123456789abcdef";

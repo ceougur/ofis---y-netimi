@@ -6,14 +6,13 @@
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { execSync } from "node:child_process";
-import { KOK, kurulum, log } from "./ortak.mjs";
+import { KOK, surum, kurulum, log } from "./ortak.mjs";
 import { PNID, TOKEN, WABA } from "../whatsapp-248-ortak.mjs";
 
 const [VERI, IS, CIKTI, SAAT, KIP = "gecmis"] = process.argv.slice(2);
 if (!VERI || !IS || !CIKTI || !SAAT) throw new Error("kullanım: esitlik-kos.mjs <veri> <iş> <json> <saat> [kip]");
 const W = "/api/workspace/whatsapp";
-const sonuc = { kok: KOK, commit: execSync("git rev-parse HEAD", { cwd: KOK }).toString().trim(), veri: VERI, saat: SAAT, kip: KIP, adimlar: [] };
+const sonuc = { kok: KOK, commit: surum(), veri: VERI, saat: SAAT, kip: KIP, adimlar: [] };
 
 // Kimlik normalleştirme: rastgele toplu iş / iş kimlikleri ve sahte Meta wamid'leri ilk görülme sırasıyla adlandırılır (iki koşuda aynı sırayla görünürler).
 const takma = new Map();

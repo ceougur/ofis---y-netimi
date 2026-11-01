@@ -4,8 +4,7 @@
 // Ürün kodu değişmez; eski kod kopyasında ve yeni kodda aynı betik. Kullanım: node test/isz-248/olcum.mjs <veri> <iş> <json> [saat]
 import { writeFileSync } from "node:fs";
 import { monitorEventLoopDelay } from "node:perf_hooks";
-import { execSync } from "node:child_process";
-import { KOK, PASS, kurulum, log } from "./ortak.mjs";
+import { KOK, surum, PASS, kurulum, log } from "./ortak.mjs";
 
 const [VERI, IS, CIKTI, SAAT = "2026-11-02T10:00:00+03:00"] = process.argv.slice(2);
 if (!VERI || !IS || !CIKTI) throw new Error("kullanım: olcum.mjs <veri> <iş> <json> [saat]");
@@ -15,7 +14,7 @@ const denetle = (ad, kosul, ayrinti = "") => {
   denetimler.push({ ad, ok: Boolean(kosul), ayrinti });
   console.log(`${kosul ? "ok" : "not ok"} ${denetimler.length} - ${ad}${ayrinti ? ` (${ayrinti})` : ""}`);
 };
-const sonuc = { commit: execSync("git rev-parse HEAD", { cwd: KOK }).toString().trim(), node: process.version, veri: VERI, saat: SAAT, basladi: new Date().toISOString(), onizleme: {}, baslatma: {} };
+const sonuc = { commit: surum(), node: process.version, veri: VERI, saat: SAAT, basladi: new Date().toISOString(), onizleme: {}, baslatma: {} };
 const ctx = await kurulum({ veri: VERI, is: IS, saat: { time: SAAT, fixed: true }, isci: "manual", aralik: 0, tier: "TIER_10K", onEk: `olc${Date.now().toString(36)}` });
 try {
   const { admin, at } = ctx;

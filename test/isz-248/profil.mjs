@@ -6,8 +6,7 @@
 import { writeFileSync } from "node:fs";
 import { Session } from "node:inspector/promises";
 import { monitorEventLoopDelay } from "node:perf_hooks";
-import { execSync } from "node:child_process";
-import { KOK, kurulum, log } from "./ortak.mjs";
+import { KOK, surum, kurulum, log } from "./ortak.mjs";
 
 const [VERI, IS, CIKTI, KISI = "2000", DURUMLAR = "lastMonth,thisMonth,last3,all,reminder,tumu"] = process.argv.slice(2);
 if (!VERI || !IS || !CIKTI) throw new Error("kullanım: profil.mjs <veri> <iş> <json> [kişi] [durumlar]");
@@ -42,7 +41,7 @@ function kapsayici(prof) {
 }
 
 const ctx = await kurulum({ veri: VERI, is: IS, saat: { time: "2026-11-02T10:00:00+03:00", fixed: true }, isci: "manual", aralik: 0, tier: "TIER_2K", onEk: `isz${Date.now().toString(36)}` });
-const sonuc = { commit: execSync("git rev-parse HEAD", { cwd: KOK }).toString().trim(), node: process.version, veri: VERI, kisi: Number(KISI), basladi: new Date().toISOString(), durumlar: {} };
+const sonuc = { commit: surum(), node: process.version, veri: VERI, kisi: Number(KISI), basladi: new Date().toISOString(), durumlar: {} };
 const session = new Session();
 session.connect();
 await session.post("Profiler.enable");
