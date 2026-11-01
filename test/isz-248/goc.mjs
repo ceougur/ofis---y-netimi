@@ -7,5 +7,11 @@ const [VERI, IS, SAAT] = process.argv.slice(2);
 if (!VERI || !IS || !SAAT) throw new Error("kullanım: goc.mjs <veri> <iş> <saat>");
 const ctx = await kurulum({ veri: VERI, is: IS, saat: { time: SAAT, fixed: true }, isci: "manual", aralik: 0, tier: "TIER_10K", onEk: `goc${Date.now().toString(36)}` });
 log("açılış (göç dahil) ms", ctx.acilisMs);
+// Öbür şirketlerin dosyası ilk erişimde açılır (göç o an): her şirkete bir okuma.
+for (const sirket of ctx.sirketler) {
+  const r = await ctx.admin.get(`/api/workspace/accounts?status=all&limit=1&hofCompany=${encodeURIComponent(sirket.id)}`);
+  log(`şirket ${sirket.code} açıldı`, r.status);
+  if (r.status !== 200) throw new Error(`şirket ${sirket.code}: ${r.status}`);
+}
 await ctx.kapat();
 log("kapandı", IS);
