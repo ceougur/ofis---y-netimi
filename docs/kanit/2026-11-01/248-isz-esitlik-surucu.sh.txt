@@ -1,0 +1,40 @@
+#!/bin/bash
+# İş Z eşitlik sürücüsü: ESKİ (b2e7bf19 arşiv kopyası) ↔ YENİ (wt-perf-248 HEAD) — büyük veri eşitliği (3 veri × ~72 adım), cari kartı (3.014 + 614 kart),
+# defter R3 SQL eşitliği. Her ağır koşu flock /tmp/destekofis-olcum.lock ile (ders 15); karşılaştırmalar tools/kanit.mjs kos ile kanıta.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a
+W=/home/user/wt-perf-248
+ESKI=$K/eski-b2e7bf19
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+kos() { # ad kök veri saat kip
+  local ad=$1 kok=$2 veri=$3 saat=$4 kip=$5
+  ISZ_COMMIT=b2e7bf19 flock /tmp/destekofis-olcum.lock node $kok/test/isz-248/esitlik-kos.mjs $veri $K/is-esit $K/esit-$ad.json $saat $kip > $K/esit-$ad.out 2>&1
+  echo "$(date -u +%H:%M:%S) esitlik-kos $ad çıkış=$? $(grep -c '' $K/esit-$ad.out) satır; $(tail -1 $K/esit-$ad.out | cut -c1-120)"
+}
+kos A-yeni $W $K/esitlik-A 2026-11-02T10:00:00+03:00 taban
+kos A-eski $ESKI $K/esitlik-A 2026-11-02T10:00:00+03:00 taban
+kos B1-yeni $W $K/esitlik-B 2026-11-02T10:00:00+03:00 gecmis
+kos B1-eski $ESKI $K/esitlik-B 2026-11-02T10:00:00+03:00 gecmis
+kos B2-yeni $W $K/esitlik-B 2026-03-26T10:00:00+03:00 gecmis
+# Defter SQL eşitliği (B2 yeni koşusunun sonundaki defter: geçmiş + bu koşunun talepleri) — is-esit bir sonraki koşuda silinir, önce kopyası alınır.
+cp $K/is-esit/data/whatsapp-gonderim.sqlite $K/defter-B2-sonu.sqlite
+kos B2-eski $ESKI $K/esitlik-B 2026-03-26T10:00:00+03:00 gecmis
+node tools/kanit.mjs kos 248-isz-esitlik-buyuk-veri -- node test/isz-248/esitlik-karsilastir.mjs $K/esit-A-eski.json $K/esit-A-yeni.json $K/esit-B1-eski.json $K/esit-B1-yeni.json $K/esit-B2-eski.json $K/esit-B2-yeni.json > $K/karsilastir-buyuk.out 2>&1
+echo "$(date -u +%H:%M:%S) karşılaştırma büyük veri çıkış=$? $(grep '\[kanit\]' $K/karsilastir-buyuk.out | tail -1 | cut -c1-170)"
+grep "^not ok" $K/karsilastir-buyuk.out | head -10 | cut -c1-300
+# Cari kartı: taban-2910 (T9 verisi, göç açılışta), iki şirketin bütün carileri.
+for taraf in eski yeni; do
+  kok=$W; [ $taraf = eski ] && kok=$ESKI
+  ISZ_COMMIT=b2e7bf19 flock /tmp/destekofis-olcum.lock node $kok/test/isz-248/cari-karti-kos.mjs $K/taban-2910 $K/is-kart $K/kart-$taraf.json 2026-11-02T10:00:00+03:00 > $K/kart-$taraf.out 2>&1
+  echo "$(date -u +%H:%M:%S) cari kartı $taraf çıkış=$? $(grep -v -i warning $K/kart-$taraf.out | tail -3 | tr '\n' ' ' | cut -c1-200)"
+done
+node tools/kanit.mjs kos 248-isz-cari-karti-esitlik -- node test/isz-248/esitlik-karsilastir.mjs $K/kart-eski.json $K/kart-yeni.json > $K/karsilastir-kart.out 2>&1
+echo "$(date -u +%H:%M:%S) karşılaştırma cari kartı çıkış=$? $(grep '\[kanit\]' $K/karsilastir-kart.out | tail -1 | cut -c1-170)"
+grep "^not ok" $K/karsilastir-kart.out | head -5 | cut -c1-300
+for d in esitlik-B-ham:$K/esitlik-B/data/whatsapp-gonderim.sqlite B2-sonu:$K/defter-B2-sonu.sqlite; do
+  ad=${d%%:*}; f=${d#*:}
+  flock /tmp/destekofis-olcum.lock node tools/kanit.mjs kos 248-isz-defter-sql-esitlik-$ad -- node test/isz-248/defter-sql-esitlik.mjs $f $ESKI/server/lib/whatsapp/defter.mjs $K/defter-sql-$ad.json > $K/defter-sql-$ad.out 2>&1
+  echo "$(date -u +%H:%M:%S) defter SQL $ad çıkış=$? $(grep '\[kanit\]' $K/defter-sql-$ad.out | tail -1 | cut -c1-170)"
+  grep -v -i warning $K/defter-sql-$ad.out | grep '^{' | cut -c1-300
+done
+echo "ESITLIK-BITTI $(date -u +%H:%M:%S)"

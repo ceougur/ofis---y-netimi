@@ -1,0 +1,38 @@
+{
+  "ad": "248-isz-mutasyon-M4-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=240000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/mut-M4-3908c155/test/whatsapp-onizleme-olcek-248.test.mjs",
+  "commit": "3908c155892dcc20ac0419e672ed4ba573996c68",
+  "dal": "is/perf-248",
+  "kirli": 0,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T17:13:16.540Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 2,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen) › makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen",
+      "konum": "test/whatsapp-onizleme-olcek-248.test.mjs:197:3",
+      "hata": "R3 (satır) sorgusu claim_keys'i her anahtarla ayrı yokluyor: SEARCH k USING COVERING INDEX sqlite_autoindex_claim_keys_1 (job_id=? AND attempt=? AND period_key=?) · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-isz-mutasyon-M4-UTC.log",
+  "klasor": "/home/user/wt-perf-248",
+  "ham_cikti_sha256": "45e54303cb4136efd1aab1e03b50f11e6ebbfd2b21f71b5cd32285e2d85271cd",
+  "ham_cikti_bayt": 3242
+}

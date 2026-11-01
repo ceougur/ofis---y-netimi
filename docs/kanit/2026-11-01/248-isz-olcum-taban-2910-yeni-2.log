@@ -1,0 +1,32 @@
+(node:14508) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 1 - başka kullanıcı (ayrı süreç) girişi (200)
+19:40:16 önizleme ekstreGecenAy [{"ms":1042,"dongu":850,"baska":837,"baskaIstek":4,"gonderilecek":2000},{"ms":1067,"dongu":787,"baska":861,"baskaIstek":4,"gonderilecek":2000}]
+ok 2 - önizleme ekstreGecenAy: 200 ([200,200])
+19:40:20 önizleme ekstreBuAy [{"ms":733,"dongu":540,"baska":529,"baskaIstek":4,"gonderilecek":2000},{"ms":901,"dongu":716,"baska":698,"baskaIstek":4,"gonderilecek":2000}]
+ok 3 - önizleme ekstreBuAy: 200 ([200,200])
+19:40:24 önizleme ekstreSon3Ay [{"ms":922,"dongu":658,"baska":716,"baskaIstek":4,"gonderilecek":2000},{"ms":987,"dongu":774,"baska":784,"baskaIstek":4,"gonderilecek":2000}]
+ok 4 - önizleme ekstreSon3Ay: 200 ([200,200])
+19:40:28 önizleme ekstreTumHareketler [{"ms":851,"dongu":606,"baska":647,"baskaIstek":4,"gonderilecek":2000},{"ms":758,"dongu":586,"baska":554,"baskaIstek":4,"gonderilecek":2000}]
+ok 5 - önizleme ekstreTumHareketler: 200 ([200,200])
+19:40:32 önizleme ekstreOzelAralik [{"ms":737,"dongu":558,"baska":533,"baskaIstek":4,"gonderilecek":2000},{"ms":681,"dongu":509,"baska":478,"baskaIstek":4,"gonderilecek":2000}]
+ok 6 - önizleme ekstreOzelAralik: 200 ([200,200])
+19:40:36 önizleme hatirlatma [{"ms":756,"dongu":585,"baska":554,"baskaIstek":4,"gonderilecek":8},{"ms":705,"dongu":540,"baska":501,"baskaIstek":4,"gonderilecek":8}]
+ok 7 - önizleme hatirlatma: 200 ([200,200])
+19:40:41 önizleme tumunuSecGecenAy [{"ms":1326,"dongu":1119,"baska":1122,"baskaIstek":4,"gonderilecek":3012},{"ms":1146,"dongu":969,"baska":943,"baskaIstek":4,"gonderilecek":3012}]
+ok 8 - önizleme tumunuSecGecenAy: 200 ([200,200])
+19:40:43 başlatma ekstreGecenAy2000 {"ms":804,"dongu":620,"baska":601,"baskaIstek":4,"toplam":2000,"gonderilecek":2000}
+ok 9 - başlatma ekstreGecenAy2000: 200 ve iş açıldı (200 )
+ok 10 - başlatma ekstreGecenAy2000: iptal
+19:40:45 başlatma tumunuSec3014 {"ms":1478,"dongu":1312,"baska":1274,"baskaIstek":4,"toplam":3014,"gonderilecek":3012}
+ok 11 - başlatma tumunuSec3014: 200 ve iş açıldı (200 )
+ok 12 - başlatma tumunuSec3014: iptal
+1..12
+# tests 12
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

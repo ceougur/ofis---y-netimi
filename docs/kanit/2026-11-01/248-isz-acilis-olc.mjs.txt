@@ -1,0 +1,21 @@
+// İŞ Z profil eki (A yolu): openingEntryOf sorgusunun biçimleri — plan, süre (bütün cariler) ve SONUÇ EŞİTLİĞİ. Yalnız okur (kendi kopyam).
+import { DatabaseSync } from "node:sqlite";
+import { isDeepStrictEqual } from "node:util";
+const db = new DatabaseSync(process.argv[2], { readOnly: true });
+const COL = "SELECT id, kind, date, due_date AS dueDate, expected_date AS expectedDate FROM account_entries";
+const V = {
+  ozgun: `${COL} WHERE account_id = ? AND is_opening = 1 AND source = '' AND kind IN ('debt', 'credit') ORDER BY rowid LIMIT 1`,
+  arti: `${COL} WHERE account_id = ? AND is_opening = 1 AND +source = '' AND kind IN ('debt', 'credit') ORDER BY rowid LIMIT 1`,
+  indexedBy: `${COL} INDEXED BY idx_account_entries_account WHERE account_id = ? AND is_opening = 1 AND source = '' AND kind IN ('debt', 'credit') ORDER BY rowid LIMIT 1`,
+};
+const ids = db.prepare("SELECT id FROM accounts ORDER BY id").all().map(r => r.id);
+const sonuc = {};
+for (const [ad, sql] of Object.entries(V)) {
+  console.log(ad, "plan:", db.prepare(`EXPLAIN QUERY PLAN ${sql}`).all("x").map(r => r.detail).join(" | "));
+  const st = db.prepare(sql);
+  const t = performance.now();
+  sonuc[ad] = ids.map(id => st.get(id) || null);
+  const ms = performance.now() - t;
+  console.log(`  ${ids.length} cari: ${Math.round(ms)} ms (cari başına ${(ms / ids.length).toFixed(3)} ms), açılışı olan ${sonuc[ad].filter(Boolean).length}`);
+}
+console.log("arti ≡ ozgun:", isDeepStrictEqual(sonuc.arti, sonuc.ozgun), " indexedBy ≡ ozgun:", isDeepStrictEqual(sonuc.indexedBy, sonuc.ozgun));
