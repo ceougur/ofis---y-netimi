@@ -23,7 +23,11 @@ KARARLAR'da, yorumlar README §14 (kodlamadan önce yazıldı): teslim her durum
 silinmiş şirket) DENEMEYE yazılır ve R3'te sayılır; Meta Bekletti'deki ileti teslim edilince iş kapanır (2. deneme gitmez); geç failed her durumda "almadı";
 Süresi Doldu son kabul edilen denemeden; "Bu Ay" teslim edilen DENEME sayısı; kanca yanıt katmanı (503: bildirim kaydedilemez / şirket geçici açılamaz /
 yanıt beklenirken tanınmayan ≤ 5 dk; öbürü 200); onarım bekleyen kabul varken yeni gönderim başlamaz; Tüm Hareketler'in kişiye özel dönemi o günün
-Bu Ay / Geçen Ay'ına eşitse aynı dönem (iki okuma birlikte, İLKEYLE G0 3); n3 (kuyruktaki ikinci iş birincinin geç tesliminden sonra da gider) BİLİNEN SINIR.
+Bu Ay / Geçen Ay'ına eşitse aynı dönem; n3 (kuyruktaki ikinci iş birincinin geç tesliminden sonra da gider) BİLİNEN SINIR.
+GÜNCELLEME 9b (01.11.2026 07:07 + 07:11 UTC, J10/J11): S9-1 "Gitmesin" yalnız belirsizlik onaylarında — Sonucu Belirsiz işteki Yine de Gönder (ve o zincirdeki
+Başarısızları Yeniden Dene) bekleyen işte eski iletinin teslimi gelirse yeni ileti gitmez, iş "Atlandı — Daha Önce Gönderildi"; düz yeniden deneme ve R3 Yine de Gönder
+kapsanmaz (ikinci kopya gider). S9-2 — Tüm Hareketler {{3}} ve PDF dönemi = ilk hareket – AÇILIŞ günü (hareketsiz: açılış – açılış); J8 kişiye özel dönem TEK okuma
+(ilk – açılış günü) — README §14.10–14.11.
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -114,7 +118,8 @@ DURDURULABILIR = {BEKLIYOR, SINIR, BEKLEME_131049, HAZIRLANIYOR, DURAKLATILDI, S
 KUYRUKTA = {BEKLIYOR, HAZIRLANIYOR, GONDERILIYOR, SINIR, DURAKLATILDI, BEKLEME_131049, LISANS, SORULUYOR}  # §7a 9 (+10)
 # Kâhin güncellemesi 3 (D1, kullanıcı "b"): Sonucu Belirsiz artık "Zaten Kuyrukta" DEĞİL — yeni toplu işte ayrı "Sonucu Belirsiz" elemesi (eski yorum 3 düştü)
 KAPANDI_TESLIMSIZ = {BASARISIZ, IPTAL, DURDU_GERI_YUKLEME, TASINAN}
-BEKLETTI_BEKLEYEN = {BEKLEME_131049, DURAKLATILDI, LISANS, SORULUYOR, BEKLIYOR, SINIR}   # J2 + Y9-7: Meta Bekletti iletisi henüz yeniden gönderilmemiş   # K3/K7: teslim olmadan kapanan iş (geç teslim gelirse "Daha Önce Gönderildi" sayılır)
+BEKLETTI_BEKLEYEN = {BEKLEME_131049, DURAKLATILDI, LISANS, SORULUYOR, BEKLIYOR, SINIR}   # J2 + Y9-7: Meta Bekletti iletisi henüz yeniden gönderilmemiş
+YENIDEN_BEKLEYEN = {BEKLIYOR, SINIR, DURAKLATILDI, LISANS, SORULUYOR, HAZIRLANIYOR}       # J10 (Y9c-1/2): yeni denemesi henüz istek olarak gitmemiş iş   # K3/K7: teslim olmadan kapanan iş (geç teslim gelirse "Daha Önce Gönderildi" sayılır)
 PDF_SUSUYOR = {IPTAL, DURDU_GERI_YUKLEME, TASINAN}    # §11 S3 yalnız teslim / başarısız / süresi doldu'yu sayar → bu durumlarda PDF silinmesi PLAN SUSUYOR
 
 # Plan §6 W2 + §7a 12 hata sınıfları
@@ -300,11 +305,20 @@ MUTASYONLAR = {
     "M146": "J6: silinmiş (kalıcı) şirketin bildirimine 503 (Meta boşuna yineler; teslim yazılmaz)",
     "M147": "J7: defterde onarım bekleyen kabul varken yeni gönderim başlar",
     "M148": "J8: Tüm Hareketler'in kişiye özel dönemi Bu Ay / Geçen Ay ile hiç eşleşmez",
-    "M149": "J8: kişiye özel dönem yalnız (ilk hareket – o gün) okuması (G0 3 birleşimi yok)",
     "M150": "J8: Tüm Hareketler'de 'o günün Bu Ay'ı' kanonu yok (yalnız Bu Ay / Geçen Ay gönderiminin kendi günündeki tarih eşliği)",
     "M151": "J9 (n3 A seçeneği): gönderimden hemen önce R3 bir kez daha denetlenir — BİLİNEN SINIR senaryosunda yakalanmalı",
     "M152": "J1 + Y9-5: dosyadaki işin aşılmış (Yine de Gönder ile geride kalmış) belirsiz denemesine iş kimliğiyle gelen geç bildirim düşer (eski kâhin)",
     "M153": "J3 + Y9-5: eski denemenin geç failed'ı işin ŞU ANKİ (kabul edilmiş) denemesini Başarısız yapar",
+    # ---- kâhin güncellemesi 9b (01.11.2026 07:07 + 07:11 UTC, J10 = S9-1, J11 = S9-2; M149 kalktı — S9-3 tek okuma artık doğru model) ----
+    "M154": "J10 (S9-1 a): Sonucu Belirsiz işteki Yine de Gönder bekleyen işte eski iletinin teslimi yeni iletiyi durdurmaz",
+    "M155": "J11 (S9-2): Tüm Hareketler {{3}} bitişi son hareket tarihi (açılış günü değil)",
+    "M156": "J11 + J8: hareketsiz caride Tüm Hareketler'in dönemi yok (eşleşmez — eski Y9-18)",
+    "M157": "J11 + S9-3: kişiye özel dönemin 'ilk – son hareket' okuması da eşleşir (S9-2 öncesi birleşim)",
+    "M158": "J11 (07:11): Tüm Hareketler {{3}} bitişi iletinin GERÇEKTEN gönderildiği gün (açılış günü değil)",
+    "M159": "J11 + Y9c-7: Tüm Hareketler eşliğine gerçek gönderim günü de girer (düşen Y9b-4 birleşimi)",
+    "M160": "J10 (07:11 c): belirsizlik zinciri dışındaki düz Başarısızları Yeniden Dene de durdurulur (düşen Y9b-2 İLKEYLE)",
+    "M161": "J10 (07:11 b): R3 uyarısına rağmen bilerek seçilen Yine de Gönder de önceki işin teslimiyle durdurulur",
+    "M162": "J11 (07:11 'metin PDF ile aynı'): Tüm Hareketler PDF'inde dönem uçları yok (eski: None)",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -434,6 +448,17 @@ KARARLAR = {
            "metin": ["n3 (kuyruktaki ikinci iş, birincinin geç teslimiyle 2 ileti) → BİLİNEN SINIR, 2.5.0 (ders 45).",
                      "aynı kişi + aynı dönem için kuyruktaki İKİNCİ iş, birincinin geç teslimi geldikten sonra da gidiyor (2 ileti; eski kodda da). A: gönderimden hemen "
                      "önce R3 bir kez daha (Yine de Gönder kararları korunur). B (incelemeci önerisi, ders 45): bugünkü gibi; BİLİNEN SINIR, 2.5.0."]},
+    "J10": {"kaynak_turu": "kullanıcı (KARAR 01.11.2026 07:07 + 07:11 UTC, S9-1 ve kapsamı, aynen); 'Atlandı — Daha Önce Gönderildi / Bu Ay değişmez' ana oturum iletisi (README §14.11)",
+            "metin": ["S9-1 (kime kaç kez) \"Gitmesin\" — Yine de Gönder onaylanmış ama yeni ileti henüz gitmemişken eski iletinin teslimi gelirse yeni ileti GİTMEZ "
+                      "(ilke 3; belirsizlik kalktı).",
+                      "KARAR (kullanıcı, 01.11.2026 07:11 UTC): S9-1 KAPSAMI \"Yalnız belirsizlik onayları\" — (a) Sonucu Belirsiz işteki Yine de Gönder kapsanır; (c) Başarısızları "
+                      "Yeniden Dene yalnız (a) zincirinden gelen yeniden denemede kapsanır; (b) yeni gönderimde \"Daha Önce Gönderildi\" uyarısına rağmen bilerek seçilen Yine de "
+                      "Gönder KAPSANMAZ (ikinci kopya gider).",
+                      "ana oturum iletisi (CLAUDE.md'de yok): iş \"Atlandı — Daha Önce Gönderildi\", Bu Ay değişmez"]},
+    "J11": {"kaynak_turu": "kullanıcı (KARAR 01.11.2026 07:07 + 07:11 UTC, S9-2 ve günü, aynen)",
+            "metin": ["S9-2 \"İlk hareket – gönderim günü\" — Tüm Hareketler ekstresinin dönem metni ({3}) ilk hareket tarihi – gönderim günü; hareketsiz caride gönderim "
+                      "günü – gönderim günü.",
+                      "S9-2 GÜNÜ \"Ekstrenin hazırlandığı gün\" — \"gönderim günü\" = gönderimin açıldığı, ekstre ve bakiyenin hazırlandığı gün (kod değişmez; metin PDF ile aynı)."]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -583,13 +608,13 @@ def donem_coz(donem, t, tz, sablon="ekstre", mut=()):
 
 def tum_tarihleri(cari_, bugun, mut=()):
     """G6: "Tüm Hareketler"in o günkü tarihleri = kişinin İLK hareketi – o gün (baş mimar KAYIT'ı; karar metninde yok — README §12); hareketi yoksa yok.
-    J8 (README §14 Y9-15, İLKEYLE G0 3): "kişiye özel dönem"in öbür okuması (ilk hareket – son hareket) de BİRLİKTE (M149 yalnız ilk okuma).
-    Hareketsiz cari: "iletideki dönem" kâhinde bilinmiyor (ICERIK-08 plan_susuyor) → tarih yok (Y9-18)."""
+    J8 + J11 (README §14.10 Y9b-4): kişiye özel dönem = iletideki dönem = ilk hareket – gün (TEK okuma; M157 eski "ilk – son hareket" okumasını ekler).
+    Hareketsiz cari (Y9b-5): gün – gün (M156 eski: tarih yok)."""
     tarihler_ = [h["tarih"] for h in cari_.get("hareketler", [])]
     if not tarihler_:
-        return ()
+        return () if "M156" in mut else ((bugun, bugun),)
     oku = [(min(tarihler_), bugun)]
-    if "M149" not in mut and (min(tarihler_), max(tarihler_)) not in oku:
+    if "M157" in mut and (min(tarihler_), max(tarihler_)) not in oku:
         oku.append((min(tarihler_), max(tarihler_)))
     return tuple(oku)
 
@@ -1166,6 +1191,7 @@ class Benzetim:
                 kaynak = tuple(r for r in j.kayitlar if self.kayitlar[r]["son_durum"] == BELIRSIZ)   # H1: aşılan Sonucu Belirsiz deneme(ler)
                 self.tasi(j, tp, t)
                 j.yine_kaynak = kaynak
+                j.belirsiz_onay = True                                          # J10 (07:11 a): belirsizlik onayı izi (yeniden denemeye taşınır — c)
                 tp.durum = "aktif"; tp.bas = 0
                 sonuc["alinan"].append(j.cari)
         if o.get("etiket"):
@@ -1335,8 +1361,17 @@ class Benzetim:
                     devir = Decimal("0")
             sonu = devir + sum((d for _, d in donem_h), Decimal("0"))
             mesaj_bakiye = sum((d for _, d in hareketler), Decimal("0")) if "M34" in self.mut else sonu
+            if d_bas is None:                                   # J11 (S9-2 + 07:11, Y9c-5/6): {{3}} ve PDF = ilk hareket – AÇILIŞ günü; hareketsiz: açılış – açılış
+                gun = tarih(t, self.tz) if "M158" in self.mut else tarih(tp.t, self.tz)
+                ilk = min((h["tarih"] for h in c["hareketler"]), default=gun)
+                bitis = max((h["tarih"] for h in c["hareketler"]), default=gun) if "M155" in self.mut else gun
+                metin3 = donem_metni(ilk, bitis, self.mut)
+                if "M162" not in self.mut:
+                    bas, son = ilk, bitis                       # "metin PDF ile aynı" (devir 0 ve hareketler bütün hesap — değişmedi)
+            else:
+                metin3 = donem_metni(bas, son, self.mut)
             return {
-                "degiskenler": [ad, firma, donem_metni(bas, son, self.mut), para(mesaj_bakiye, self.mut)],   # §7a 23: {{4}} dönem sonu bakiyesi
+                "degiskenler": [ad, firma, metin3, para(mesaj_bakiye, self.mut)],   # §7a 23: {{4}} dönem sonu bakiyesi
                 "pdf": {"cari_ad": ad, "donem_bas": bas, "donem_son": son, "devir": str(kurus(devir)),
                         "hareket_sayisi": len(donem_h), "donem_sonu_bakiye": str(kurus(sonu))},
                 "dosya_adi": {"on_ek": f"Ekstre {tam_ad} " if isinstance(ad, str) else {"kisaltilabilir": f"Ekstre {tam_ad}"}, "son_ek": ".pdf"},
@@ -1457,6 +1492,12 @@ class Benzetim:
                 if oda is None or oda > t:
                     self.durum(j, SINIR, t); j.next_at = oda if oda is not None else t + GUN
                     continue
+                if "M161" in self.mut and tp.send_again and not j.yeniden:      # J10 b'nin tersi (R3 Yine de Gönder de durdurulur)
+                    ctx = (j.anahtar_donem, j.tarih_donem, j.kanon_donem, j.tarihler_donem)
+                    if any(r.get("teslim") and r.get("teslim_t", 0) > tp.t and self.eslesir(r, j.cari, tp.sablon, ctx, tp.sirket, t)
+                           for r, _d, _i in self.gorunen_kayitlar()):
+                        self.atla(j, DAHA_ONCE, t)
+                        continue
                 if "M151" in self.mut and not tp.send_again and not j.yeniden:   # J9 A seçeneği (bugün YOK — n3 BİLİNEN SINIR)
                     ctx = (j.anahtar_donem, j.tarih_donem, j.kanon_donem, j.tarihler_donem)
                     if self.onceden_gonderildi(j.cari, tp.sablon, ctx, tp.sirket, t) is not None:
@@ -1666,6 +1707,13 @@ class Benzetim:
         if "M122" in self.mut and tp.sablon == "ekstre":
             c2 = donem_coz(tp.donem, ts, self.tz, tp.sablon, self.mut)
             _a, tarih_, kanon_, tarihler_ = self.kisi_ctx(c2, j.cari)
+        if j.anahtar_donem == ("secim", "tum") and "M159" in self.mut:
+            # M159 (düşen Y9b-4): eşliğe gerçek gönderim günü de girer — Y9c-7: dönem açılış günüyle (TEK okuma)
+            gun = tarih(ts, self.tz)
+            ek = tum_tarihleri(self.cariler[j.cari], gun, self.mut)
+            tarihler_ = tuple(dict.fromkeys(tuple(tarihler_ or ()) + ek))
+            if kanon_ is None and "M148" not in self.mut and "M150" not in self.mut:
+                kanon_ = tum_kanon(ek, gun)
         self.kayitlar[rid] = {"sirket": j.sirket, "cari": j.cari, "sablon": tp.sablon, "anahtar": j.anahtar_donem, "tarih": tarih_, "kanon": kanon_, "tarihler": tarihler_, "t": ts, "is": j.anahtar,
                               "kabul": False, "teslim": False, "son_durum": GONDERILIYOR, "kaynaklar": j.yine_kaynak}
         self.defter.add(rid); j.kayitlar.append(rid); j.son_kayit = rid
@@ -1906,9 +1954,18 @@ class Benzetim:
                 self.durum(j, TESLIM if durum == "delivered" else OKUNDU, t)
                 self.teslim_yaz(j, olay_t); self.kesinlesti(j, t)
             return
+        if (teslim_olayi and rec is not None and j.son_kayit is None and rid in j.kayitlar and j.durum in YENIDEN_BEKLEYEN
+                and "M154" not in self.mut and (getattr(j, "belirsiz_onay", False) or "M160" in self.mut)):
+            # J10 (S9-1 "Gitmesin" + 07:11 kapsam, Y9c-1/2): belirsizlik onayıyla (ya da o zincirdeki yeniden denemeyle) bekleyen işin ESKİ iletisi teslim
+            # edildi → yeni ileti GİTMEZ; iş "Atlandı — Daha Önce Gönderildi"; eski teslim J5 gereği sayılır (Y9c-4), PDF silinir
+            self.deneme_teslim(rec, olay_t)
+            if "M50" not in self.mut:
+                j.kod = None                                 # §7a 32
+            self.atla(j, DAHA_ONCE, t)
+            self.teslim_yaz(j, olay_t); self.kesinlesti(j, t)
+            return
         if j.durum not in SIRA:
-            # J1 (Y9-2/5): iş başka durumdayken gelen teslim YALNIZ denemeye yazılır (iş durumuna dokunulmaz — S9-1 KULLANICIYA SORULMALI);
-            # eski denemenin failed'ı o denemeyi Başarısız yapar (J3)
+            # J1 (Y9-2/5): iş başka durumdayken gelen teslim YALNIZ denemeye yazılır; eski denemenin failed'ı o denemeyi Başarısız yapar (J3)
             if teslim_olayi and rec is not None and "M152" not in self.mut:
                 self.deneme_teslim(rec, olay_t)
             elif durum == "failed" and not guncel:
