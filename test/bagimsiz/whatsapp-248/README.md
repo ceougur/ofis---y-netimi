@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (163 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) ve 2'si J12'nin (M163–M164) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164) ve 1'i J7 düzeltmesinin (M165) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -745,11 +745,11 @@ Kanıt `docs/kanit/2026-11-01/248-kahin9-eski-kahinle-yeni-senaryolar.txt`.
 
 ### 14.8 Sürücü için (S-18 … S-26; programa karşı koşmadan önce gereken yeni eşlemeler)
 - **S-18 iş anahtarlı kanca planı:** `meta_davranis.kanca["T1/B"]` → sahte Meta kuralı o işin iletisine (opaque = programın iş kimliği) bağlanmalı; öncelik iş → cari → `*`.
-- **S-19 `gec_kabul`:** `{"gec_kabul": "+10s"}` → sahte Meta `{gecikmeMs: 10000}` ama süre PROGRAMIN zaman aşımından KISA olmalı (D0: zaman aşımı bilinmiyor; programın değeri okunup senaryo süresi altında kaldığı doğrulanmalı — değilse senaryo GEÇERSİZ, fark sayılmaz). Kanca bu sırada (yanıttan ÖNCE) programa ulaşmalı.
+- **S-19 `gec_kabul`:** `{"gec_kabul": "+10s"}` → sahte Meta `{gecikmeMs: 10000}` ama süre PROGRAMIN zaman aşımından KISA olmalı — **gecikme < 15 sn** (programın Meta istek zaman aşımı 15 sn; 9d) (D0: zaman aşımı bilinmiyor; programın değeri okunup senaryo süresi altında kaldığı doğrulanmalı — değilse senaryo GEÇERSİZ, fark sayılmaz). Kanca bu sırada (yanıttan ÖNCE) programa ulaşmalı.
 - **S-20 kanca yanıt sayımı:** `kanca_yanit_cikti` senaryolarında sahte Meta'nın programa yaptığı İMZALI kanca POST'larının HTTP kodları sayılır (`{"200": n, "503": m}`); bağlantı kurulamayan / program kapalı teslimler ve imzasız olaylar sayılmaz. `kanca_kuyrugu` olayı = sahte Meta kuyruğunu işlet (`/__sahte/kanca/kuyruk`).
 - **S-21 `sahte_kanca` + `imzali: true`:** başka aracın bildirimi — sahte Meta'nın İMZALI ama bilinmeyen wamid'li, opaque'sız olayı (`kanca/ham` imzalı).
 - **S-22 `sirket_sil {sirket}`:** programda şirketi kalıcı sil (Şirketi Sil); sonra öbür şirkette (aynı WABA) "Bu Ay" okunur; silinen şirketin toplu işleri / işleri sonuçtan düşer (`toplular`, `isler` yalnız kalan şirket); `meta.post` dosyadaki işlerden (bilinen ihlal `post_toplam`).
-- **S-23 `sirket_acilamaz {sirket, acik}`:** şirket dosyasını geçici açılamaz yap (ör. başka süreçte özel kilit) ve geri al; **`bildirim_yazilamaz {acik}`:** bildirim kaydı yazılamaz (ör. bildirim/defter dosyası yazma kilidi); **`dosya_yazilamaz {sirket, acik}`:** şirket dosyası YAZMAYA kapalı ama makine defteri yazılabilir (J7). Sürücü her birinin gerçekten oluştuğunu (programın yanıtı/günlüğü) okumalı — oluşmadıysa senaryo GEÇERSİZ.
+- **S-23 `sirket_acilamaz {sirket, acik}`:** şirket dosyasını geçici açılamaz yap (ör. başka süreçte özel kilit) ve geri al; **`bildirim_yazilamaz {acik}`:** bildirim kaydı yazılamaz (ör. bildirim/defter dosyası yazma kilidi); ~~`dosya_yazilamaz {sirket, acik}`~~ (9d'de KALKTI) → **`defter_yazilamaz {acik}`:** GÖNDERİM DEFTERİ (makine düzeyi) yazmaya kapalı, şirket dosyası yazılabilir (J7, §14.15). Sürücü her birinin gerçekten oluştuğunu (programın yanıtı/günlüğü) okumalı — oluşmadıysa senaryo GEÇERSİZ.
 - **S-24 J7 okunacak:** yeni gönderim başlatma yanıtının nedeni → `baslamadi.<etiket> = "onarim_bekleyen_kabul"` (programın Türkçe nedeni eşlenir); onarımdan sonra `kapat` / `ac`.
 - **S-25 `bilinen_sinir`:** `n3` / `J5` işaretli senaryoda fark çıkarsa önce "BİLİNEN SINIR kalktı mı" diye okunur (J9-01/02: POST 1 çıkarsa program A seçeneğine geçmiş demektir — hata değil, ana oturuma).
 - **S-26 J8:** dönem `"tum"` + hareket tarihleri 1'i / ay sonu olan cariler (P, Q, S); program "kişiye özel dönem"i tek okumayla hesaplıyorsa J8-01 ya da J8-02'den biri ayrışır → OKUMA FARKI (14.4 S9-3).
@@ -833,3 +833,26 @@ Ana oturum: bu karar §7a 1'in "içerik gönderim anında okunur" yorumunun ekst
 - **Sürücü (S-32):** ekstre içeriği (Meta'ya giden değişkenler + PDF) kuyrukta giren hareketten, ertesi güne kaymadan ve Yine de Gönder'den etkilenmez; `cari.hareket_ekle` olayı programa kuyruktayken girilir. Hatırlatma değişkenleri gönderim anında (ICERIK-12 aynen).
 - **Bilgi (ana oturum):** Y9d-2 — Ödeme Hatırlatma'nın gönderim anında okunması sürdü (karar ekstre / PDF der).
 - **Kanıt:** kendi testi **307/307** (F **163/163**), `TZ=UTC` ve `TZ=Europe/Istanbul`; senaryolar 284/284.
+
+### 14.15 Güncelleme 9d — J7 yorum DÜZELTMESİ + J7 senaryo düzeneği (kodlamadan ve karşılaştırmadan ÖNCE)
+Kaynak: kullanıcıya 01.11.2026 06:28'de onaya sunulan ve AYNEN onaylanan liste metninin 7. maddesi (ana oturum iletisi; `kahin.KARARLAR` J7'ye eklendi): "Gönderim defteri
+onarılmadan yeni gönderim başlamaz. Meta'nın kabulü deftere yazılamadıysa yeni gönderim düğmesi pasif kalır ve ekranda nedeni yazar. Böylece ikinci ileti gitmez."
+CLAUDE.md'deki "defterde onarım bekleyen kabul varken" bunun özetidir.
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y9e-1 | **Y9-14 DÜŞTÜ** (ters okumaydı: "defterde var, şirket dosyasına yazılamadı"). "Onarım bekleyen kabul" = Meta'nın kabul ettiği (şirket dosyasında iş Meta Kabul Etti olabilir) ama kabulün GÖNDERİM DEFTERİNE yazılamadığı deneme. Kâhinde yeni olay `defter_yazilamaz {acik}` (makine düzeyindeki gönderim defteri yazılamıyor); Meta yanıtı geldiğinde açıksa iş dosyada Meta Kabul Etti olur, denemenin kabulü defterde EKSİK kalır (onarım bekler). Eski `dosya_yazilamaz` olayı ve onun onarım yolu KALKTI | liste metni madde 7 |
+| Y9e-2 | Onarım bekleyen kabul varken yeni toplu gönderim BAŞLAMAZ, neden `onarim_bekleyen_kabul` (aynen); onarım = defter yeniden yazılabilir olunca eksik kabul deftere yazılır; onarımdan sonra yeni gönderim başlar ve aynı kişi aynı dönemde "Daha Önce Gönderildi" (ikinci ileti gitmez) | liste metni madde 7 |
+| Y9e-3 | Defter yazılamazken gelen bildirim kaydedilemez → 503 (J6 a; Meta yineler); işçi yeni istek göndermez (§6 W2 "Gönderiliyor istekten önce yazılır" — talep deftere yazılamaz) | J6 + §6 W2 |
+| Y9e-4 | Senaryo düzeneği (kural değil): `gec_kabul` gecikmesi programın Meta istek zaman aşımının (15 sn — sürücü README S-19 kuralı) ALTINDA olmalı; J7 senaryoları +10 sn'ye indirildi (J7-01/J7-02'nin +20 sn'si GEÇERSİZ sayılıyordu) | ana oturum + sürücü |
+
+### 14.16 Güncelleme 9d sonuçları
+- **Kâhinde:** `dosya_yazilamaz` olayı, `onar()` ve işin "Gönderiliyor'da onarım" yolu KALKTI; yerine `defter_yazilamaz {acik}`: Meta yanıtı gelince iş dosyada Meta Kabul Etti, denemede `onarim`
+  işareti (kabul defterde eksik); işaret varken yeni gönderim `onarim_bekleyen_kabul` ile başlamaz; defter yazılabilir olunca işaret kalkar; defter yazılamazken bildirim 503 ve
+  işçi istek göndermez. 14.2 Y9-11'deki "(şirketin dosyası yazılamıyorsa da)" ve 14.5 "İşçi" maddesindeki `dosya_yazilamaz` bu güncellemeyle geçersiz.
+- **Senaryolar:** J7-01 ve J7-02 yeni düzenekte (`defter_yazilamaz` +7 sn → +5 dk; `gec_kabul` +10 sn < 15 sn). Beklenen sonuçları AYNI; J7-02'ye kanca yanıt sayımı eklendi
+  ({"200": 4, "503": 2} — onarım sırasında A'nın 2 bildirimi 503, yinelenince 200; C'nin 2 bildirimi 200). Öbür 282 senaryonun girdisi ve beklenen sonucu AYNI
+  (`docs/kanit/2026-11-01/248-kahin9d-fark-9c.txt`; araç `248-kahin9-araclar/fark_json.py` — eski girdi yeni kâhinde koşulamadığı için adla karşılaştırır).
+- **Mutasyon:** M165 (defter yazılabilir olunca onarım yapılmaz) ← J7-01; M147 ← J7-01; toplam **164/164**.
+- **Sürücü:** S-19 "gecikme < 15 sn"; S-23 `defter_yazilamaz` = gönderim defteri (makine düzeyi) yazma kilidi, şirket dosyası yazılabilir; programın kabulü deftere yazamadığı
+  (günlük / yanıt) okunmalı, oluşmadıysa senaryo GEÇERSİZ. S-24 aynen (neden `onarim_bekleyen_kabul`, onarımdan sonra kapat / aç).
+- **Kanıt:** kendi testi **307/307** (F **164/164**), `TZ=UTC` ve `TZ=Europe/Istanbul`; `docs/kanit/2026-11-01/248-kahin9d-*`.

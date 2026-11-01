@@ -31,6 +31,8 @@ kapsanmaz (ikinci kopya gider). S9-2 — Tüm Hareketler {{3}} ve PDF dönemi = 
 GÜNCELLEME 9c (07:11 seçenek metni, J12): ekstre İÇERİĞİ (ad, firma, {{3}}, bakiye, PDF, dosya adı) toplu işin AÇILIŞINDA hazırlanır, gönderim ertesi güne kaysa /
 kuyrukta hareket girse / yeniden gönderilse de değişmez (§7a 1'in ekstre yorumunun yerine); telefon, eleme denetimleri ve Ödeme Hatırlatma gönderim anında;
 Tüm Hareketler'e açılış gününden sonra tarihli hareket girmez — README §14.13.
+GÜNCELLEME 9d (liste metni madde 7): J7 "onarım bekleyen kabul" = Meta kabul etti ama kabul GÖNDERİM DEFTERİNE yazılamadı (`defter_yazilamaz`); onarım = defter yeniden
+yazılabilir olunca; eski "defterde var, şirket dosyasına yazılamadı" okuması (dosya_yazilamaz) KALKTI — README §14.15.
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -105,7 +107,7 @@ BELIRSIZ_NEDEN = "sonucu_belirsiz"                    # K6: yeniden denemede ele
 ONERI_IS = "isteki_yine_de_gonder"                    # K6: iş dosyada dururken eleme iletisi yalnız "işteki Yine de Gönder"i önerir
 ONERI_YENI = "yeni_gonderim"                          # K6: iş dosyada yoksa (geri yükleme sonrası) "yeni gönderim başlatın"
 R3_PENCERE = 7 * 24 * 60 * 60 * 1000                  # K1: Son 3 Ay / Tüm Hareketler "son 7 gün içinde aynı seçim" (kâhin yorumu 16: kayan 7 × 24 saat)
-ONARIM = "onarim_bekleyen_kabul"                      # J7: defterde onarım bekleyen kabul varken yeni gönderim başlamaz (baslamadi nedeni)
+ONARIM = "onarim_bekleyen_kabul"                      # J7 (Y9e-1/2): kabulü gönderim defterine yazılamamış deneme varken yeni gönderim başlamaz (baslamadi nedeni)
 TANINMAYAN_503 = 5 * 60 * 1000                        # J6: yanıt beklenirken tanınmayan bildirime en çok 5 dk 503
 SAYFA = 30                                            # K8: Gönderimler listesi 30'ar
 SECIMLER = ("bu_ay", "gecen_ay", "son_3_ay", "tum")   # K1: hazır dönem seçimleri (özel aralık = {"bas", "son"})
@@ -325,6 +327,8 @@ MUTASYONLAR = {
     # ---- kâhin güncellemesi 9c (07:11 seçenek metni, J12) ----
     "M163": "J12: ekstre içeriği GÖNDERİM ANINDA okunur (§7a 1'in eski ekstre yorumu; açılışta hazırlanmaz)",
     "M164": "J12 + Y9d-3: Tüm Hareketler içeriğine açılış gününden sonra tarihli hareket girer (eski 'bütün hesap')",
+    # ---- kâhin güncellemesi 9d (J7 düzeltmesi, liste metni madde 7) ----
+    "M165": "J7 (Y9e-2): defter yeniden yazılabilir olunca eksik kabul onarılmaz (yeni gönderim düğmesi pasif kalır)",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -447,7 +451,9 @@ KARARLAR = {
            "metin": ["(6) Meta'ya 503 \"sonra tekrar dene\": bildirim kaydedilemezse, şirket geçici açılamazken, yanıt beklenirken tanınmayan bildirime en çok 5 dk "
                      "(aynı numarayı başka araçla kullananda o aracın bildirimleri de)"]},
     "J7": {"kaynak_turu": "kullanıcı (KARAR 01.11.2026 06:28 UTC madde 7, aynen)",
-           "metin": ["(7) defterde onarım bekleyen kabul varken yeni gönderim başlamaz, düğme pasif + neden"]},
+           "metin": ["(7) defterde onarım bekleyen kabul varken yeni gönderim başlamaz, düğme pasif + neden",
+                     "06:28'de onaya sunulan ve AYNEN onaylanan liste metni madde 7 (ana oturum iletisi): Gönderim defteri onarılmadan yeni gönderim başlamaz. Meta'nın kabulü "
+                     "deftere yazılamadıysa yeni gönderim düğmesi pasif kalır ve ekranda nedeni yazar. Böylece ikinci ileti gitmez."]},
     "J8": {"kaynak_turu": "kullanıcı (KARAR 01.11.2026 06:28 UTC madde 8, aynen); 'kişiye özel dönem'in iki okuması BİRLİKTE — kâhin, İLKEYLE G0 (3) (README §14 Y9-15)",
            "metin": ["(8) dönem eşliği: Tüm Hareketler'in kişiye özel dönemi o günün Bu Ay/Geçen Ay'ıyla aynıysa aynı dönem; hareketsiz carinin dönemi iletideki dönem."]},
     "J9": {"kaynak_turu": "kullanıcı (KARAR 01.11.2026 05:58 UTC 'Şimdi durdur' + 'Bilinen sınır', aynen; senaryo tanımı iş listesi n3 sorusu)",
@@ -783,7 +789,7 @@ class Benzetim:
         self.bitis = zaman_ayristir(sen["bitis"], self.T0) if sen.get("bitis") else self.T0 + 10 * GUN
         self.cokme = None
         # kâhin güncellemesi 9: kanca yanıt katmanı (J6), silinmiş şirket (J1/J3), onarım bekleyen kabul (J7)
-        self.bildirim_yazilamaz = False; self.acilamaz = set(); self.dosya_kilit = set(); self.silinen = set()
+        self.bildirim_yazilamaz = False; self.acilamaz = set(); self.defter_kilit = False; self.silinen = set()
         self.kanca_yanit = {"200": 0, "503": 0}; self.tanin_ilk = {}; self.yanit_bekleyen = set(); self.ic_sira = 10 ** 6
         self.kanca_cikti = bool(sen.get("kanca_yanit_cikti"))
         self.kontroller = {}; self.baslamadi = {}; self.elenen = {}
@@ -925,13 +931,11 @@ class Benzetim:
             (self.acilamaz.add if o["acik"] else self.acilamaz.discard)(o["sirket"])
         elif tur == "bildirim_yazilamaz":                               # J6: bildirim kaydedilemiyor (503)
             self.bildirim_yazilamaz = bool(o["acik"])
-        elif tur == "dosya_yazilamaz":                                  # J7 (Y9-14): şirket dosyası yazılamıyor; kapanınca onarım
-            sirket = o.get("sirket", "A")
-            if o["acik"]:
-                self.dosya_kilit.add(sirket)
-            else:
-                self.dosya_kilit.discard(sirket)
-                self.onar(sirket)
+        elif tur == "defter_yazilamaz":                                 # J7 (Y9e-1): gönderim defteri (makine düzeyi) yazılamıyor; kapanınca onarım
+            self.defter_kilit = bool(o["acik"])
+            if not self.defter_kilit and "M165" not in self.mut:
+                for rec in self.kayitlar.values():
+                    rec.pop("onarim", None)                             # Y9e-2: eksik kabul deftere yazıldı
         elif tur == "_yanit":                                           # J6/J7: gecikmeli Meta yanıtı (iç olay)
             self.yanit_gel(o, t)
         elif tur == "meta_basamak":
@@ -962,8 +966,6 @@ class Benzetim:
         self.sifirla_bas()
         for tp in self.toplular.values():
             for j in tp.isler:
-                if j.durum == GONDERILIYOR and getattr(j, "onarim", None):
-                    continue                       # J7: kabul defterde, dosyaya yazılmayı bekliyor (onarım) — belirsiz değil
                 if j.durum == GONDERILIYOR:        # §6 W2: yanıtsız istek (program kapandı) → Sonucu Belirsiz; §7a 10 toplu iş sürer
                     self.durum(j, BELIRSIZ, t); j.belirsiz_t = t
                 elif j.durum == HAZIRLANIYOR:
@@ -1272,8 +1274,8 @@ class Benzetim:
             neden = "onay_yok"
         elif "M8" not in self.mut and (st.get("durum") != "APPROVED" or st.get("kategori") != "UTILITY"):
             neden = "sablon_uygun_degil"
-        elif "M147" not in self.mut and any(getattr(x, "onarim", None) for x in self.isler.values()):
-            neden = ONARIM                                                  # J7: defterde onarım bekleyen kabul (Y9-14; sıranın sonunda)
+        elif "M147" not in self.mut and any(r.get("onarim") for r in self.kayitlar.values()):
+            neden = ONARIM                                                  # J7 (Y9e-2): kabulü deftere yazılamamış deneme (sıranın sonunda)
         if neden:
             self.baslamadi[etiket] = neden
             return
@@ -1405,7 +1407,7 @@ class Benzetim:
 
     def engelli(self, tp):
         """§6 W2 "Gönderiliyor istekten ÖNCE yazılır": şirket dosyası yazılamıyor (J7) ya da şirket geçici açılamıyorsa (J6) o şirketin işçisi istek göndermez."""
-        return tp.sirket in self.dosya_kilit or tp.sirket in self.acilamaz
+        return self.defter_kilit or tp.sirket in self.acilamaz          # Y9e-3: talep deftere yazılamıyorsa istek gitmez
 
     def isci_zamani(self):
         en = None
@@ -1841,7 +1843,7 @@ class Benzetim:
     def kanca_kodu(self, t, wamid, ek, durum):
         """J6 (Y9-11) → (HTTP kodu, işlenir mi): 503 = bildirim kaydedilemez / şirketi geçici açılamaz / şirket dosyası yazılamaz / yanıt beklenirken tanınmayan
         (ilk görülmesinden ≤ 5 dk); öbürü 200 (silinmiş — kalıcı — şirket dahil). M144 / M145: 200 verilir ama bildirim kaydedilemez → kaybolur."""
-        if self.bildirim_yazilamaz:
+        if self.bildirim_yazilamaz or self.defter_kilit:                  # Y9e-3: defter yazılamazken bildirim de kaydedilemez
             return (200, False) if "M145" in self.mut else (503, False)
         sirket = self.bildirim_sirketi(wamid, ek)
         if sirket is not None:
@@ -1849,8 +1851,6 @@ class Benzetim:
                 return (503, False) if "M146" in self.mut else (200, True)
             if sirket in self.acilamaz:
                 return (200, False) if "M144" in self.mut else (503, False)
-            if sirket in self.dosya_kilit:                   # bildirim şirket dosyasına kaydedilemez
-                return (200, False) if "M145" in self.mut else (503, False)
         if self.yanit_bekleyen and "M143" not in self.mut and not self.taniniyor(wamid, ek):
             ilk = self.tanin_ilk.setdefault((wamid, durum, ek.get("olay_t")), t)
             if t - ilk <= TANINMAYAN_503:
@@ -1858,31 +1858,17 @@ class Benzetim:
         return (200, True)
 
     def yanit_gel(self, o, t):
-        """J6/J7: gecikmeli Meta yanıtı geldi. Program kapanmışsa yanıt kayboldu (açılışta Sonucu Belirsiz). Şirket dosyası yazılamıyorsa kabul YALNIZ makine
-        defterine yazılır → onarım bekleyen kabul (Y9-14; iş dosyada Gönderiliyor kalır)."""
+        """J6/J7: gecikmeli Meta yanıtı geldi. Program kapanmışsa yanıt kayboldu (açılışta Sonucu Belirsiz). Gönderim defteri yazılamıyorsa iş dosyada Meta Kabul Etti
+        olur ama kabul defterde eksik kalır → onarım bekleyen kabul (Y9e-1)."""
         self.yanit_bekleyen.discard(o["is"])
         j = self.isler.get(o["is"])
         if j is None or not self.acik or j.durum != GONDERILIYOR or j.son_kayit != o["rid"]:
             return
-        if j.sirket in self.dosya_kilit:
-            rec = self.kayitlar[o["rid"]]
-            rec["kabul"] = True; rec["son_durum"] = KABUL; self.wamid_kayit[o["wamid"]] = o["rid"]
-            p = self.pencere.setdefault(self.wabalar[j.sirket], {})
-            p[j.telefon] = max(p.get(j.telefon, 0), t)        # sınır penceresi makine düzeyinde (defter)
-            j.onarim = (o["wamid"], t)
-            return
         tp = self.toplular[j.toplu]
         self.programa_kabul(j, o["wamid"], t)
         tp.gecici = 0; j.gecici_deneme = 0
-
-    def onar(self, sirket):
-        """J7: dosya yeniden yazılabilir → defterdeki kabul işe yazılır (iş Meta Kabul Etti)."""
-        for j in self.isler.values():
-            if j.sirket == sirket and getattr(j, "onarim", None):
-                wamid, kt = j.onarim
-                j.onarim = None
-                if j.durum == GONDERILIYOR:
-                    self.programa_kabul(j, wamid, kt)
+        if self.defter_kilit:                                # J7 (Y9e-1): iş dosyada Meta Kabul Etti, kabul gönderim defterine YAZILAMADI → onarım bekler
+            self.kayitlar[o["rid"]]["onarim"] = True
 
     def sirket_sil(self, sirket):
         """Y9-4: şirket kalıcı silinir — toplu işleri ve işleri şirket dosyasıyla gider; makine defteri, "Bu Ay", sınır penceresi, Meta'daki iletiler kalır."""

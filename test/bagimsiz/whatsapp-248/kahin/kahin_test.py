@@ -376,6 +376,7 @@ MUTASYON_IPUCU = {
     "M159": "J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir", "M160": "J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider",
     "M161": "J10-05-b-r3-yine-de-gonder-onceki-teslim-ikinci-kopya-gider", "M162": "ICERIK-08-tum-hareketler",
     "M163": "ICERIK-09-kuyrukta-bakiye-degisti", "M164": "J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez",
+    "M165": "J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz",
 }
 
 
