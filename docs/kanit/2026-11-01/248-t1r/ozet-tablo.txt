@@ -1,0 +1,585 @@
+## Sayılar (değişke başına)
+imz-IST-h: toplam 284 | EŞ 25 | yalnız gösterim 190 | AYRIŞIK 68 | GEÇERSİZ 0 | HATA 1 | bilinen_sinir etiketli 4
+imz-IST-y: toplam 284 | EŞ 25 | yalnız gösterim 190 | AYRIŞIK 68 | GEÇERSİZ 0 | HATA 1 | bilinen_sinir etiketli 4
+imz-UTC-h: toplam 284 | EŞ 22 | yalnız gösterim 183 | AYRIŞIK 78 | GEÇERSİZ 0 | HATA 1 | bilinen_sinir etiketli 4
+imz-UTC-y: toplam 284 | EŞ 22 | yalnız gösterim 183 | AYRIŞIK 78 | GEÇERSİZ 0 | HATA 1 | bilinen_sinir etiketli 4
+yol1-IST: toplam 284 | EŞ 25 | yalnız gösterim 186 | AYRIŞIK 72 | GEÇERSİZ 0 | HATA 1 | bilinen_sinir etiketli 4
+yol2-IST: toplam 284 | EŞ 25 | yalnız gösterim 190 | AYRIŞIK 68 | GEÇERSİZ 0 | HATA 1 | bilinen_sinir etiketli 4
+yol1-UTC: toplam 284 | EŞ 22 | yalnız gösterim 179 | AYRIŞIK 82 | GEÇERSİZ 0 | HATA 1 | bilinen_sinir etiketli 4
+yol2-UTC: toplam 284 | EŞ 22 | yalnız gösterim 183 | AYRIŞIK 78 | GEÇERSİZ 0 | HATA 1 | bilinen_sinir etiketli 4
+
+## Ayrışan / geçersiz / hatalı senaryolar (değişke başına durum)
+CIFT-01-zaman-asimi-meta-aldi: g g g g X g X g  (eski: g g g g X g - -)
+CIFT-02-yanitsiz-yine-de-gonder: X X X X X X X X  (eski: X X X X X X - -)
+CIFT-04-cokme-istek-ulasti: g g g g X g X g  (eski: g g g g X g - -)
+CIFT-09-basarisizlari-yeniden-dene: X X X X X X X X  (eski: X X X X X X - -)
+CIFT-13-veri-tasindi: X X X X X X X X  (eski: X X X X X X - -)
+CIFT-16-daha-once-suresi-doldu: X X X X X X X X  (eski: X X X X X X - -)
+KAYIP-05-meta-ulasilamaz: X X X X X X X X  (eski: X X X X X X - -)
+KAYIP-06-meta-ulasilamaz-uc-kisi: X X X X X X X X  (eski: X X X X X X - -)
+ICERIK-04-turkce-emoji-satir-sonu: X X X X X X X X  (eski: X X X X X X - -)
+ICERIK-08-tum-hareketler: X X X X X X X X  (eski: g g g g g g - -)
+ICERIK-09-kuyrukta-bakiye-degisti: X X X X X X X X  (eski: g g g g g g - -)
+ICERIK-10-ttl-sonrasi-teslim: X X X X X X X X  (eski: X X X X X X - -)
+ALICI-131049-iki-kez: X X X X X X X X  (eski: X X X X X X - -)
+SINIR-05-pencerede-sayili-alici: X X X X X X X X  (eski: X X X X X X - -)
+GUV-09-sahte-gercek-wamid: X X X X X X X X  (eski: X X X X X X - -)
+GUV-10-yetki-ve-baglanti-sirasi: X X X X X X X X  (eski: X X X X X X - -)
+GUV-11-yetki-lisans-onay-sirasi: X X X X X X X X  (eski: X X X X X X - -)
+TARIH-02-ttl-sonu: X X X X X X X X  (eski: X X X X X X - -)
+TARIH-03b-kancasiz-yol-calisiyor: X X X X X X X X  (eski: X X X X X X - -)
+K1-04-zaten-kuyrukta-ay-donumu: g g X X g g X X  (eski: g g X X g g - -)
+K1-05-son-3-ay-7-gun: X X X X X X X X  (eski: g g g g g g - -)
+K1-06-tum-hareketler-7-gun: X X X X X X X X  (eski: g g g g g g - -)
+K1-07-hatirlatma-ayni-yerel-gun: g g X X g g X X  (eski: g g X X g g - -)
+K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra: X X X X X X X X  (eski: g g g g g g - -)
+K5-03-sonra-programin-saatine-gore: g g g g X g X g  (eski: g g g g X g - -)
+K6-01-yeniden-denemesi-belirsiz-elenir: X X X X X X X X  (eski: X X X X X X - -)
+K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: X X X X X X X X  (eski: X X X X X X - -)
+K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil: X X X X X X X X  (eski: X X X X X X - -)
+K8-02-tarih-suzgeci-yerel-gun: = = X X = = X X  (eski: = = X X = = - -)
+K8-03-suzgec-ile-sayfalama: = = X X = = X X  (eski: = = X X = = - -)
+D3-02-yine-de-gonder-7-gun-yeni-gonderimden: X X X X X X X X  (eski: g g g g g g - -)
+D4-03-yil-donumu-ozel-aralik-zaten-kuyrukta: g g X X g g X X  (eski: g g X X g g - -)
+D6-03-asilmis-belirsiz-son-3-ay-7-gun: X X X X X X X X  (eski: X X X X X X - -)
+D7-02-geri-yukleme-ay-donumu-defterdeki-kabul: = = X X = = X X  (eski: = = X X = = - -)
+D8-01-tasinan-veride-dosyadaki-ileti-sayilir: X X X X X X X X  (eski: X X X X X X - -)
+D8-02-tasinan-veride-yine-de-gonder: X X X X X X X X  (eski: X X X X X X - -)
+E1-01-dosyada-ve-defterde-belirsiz: X X X X X X X X  (eski: X X X X X X - -)
+E2-03-yeniden-denemede-kuyrukta-once-belirsiz: X X X X X X X X  (eski: X X X X X X - -)
+E3-01-hatirlatma-belirsiz-ayni-yerel-gun: g g X X g g X X  (eski: g g X X g g - -)
+E4-02-tum-hareketler-sonraki-teslim-7-gun: X X X X X X X X  (eski: g g g g g g - -)
+F2-01-hatirlatma-yeniden-deneme-ertesi-gun: g g X X g g X X  (eski: g g X X g g - -)
+G2-03-gece-yarisi-bu-ay-yerel-gun: g g X X g g X X  (eski: g g X X g g - -)
+G3-03-tasinan-teslim-son-3-ay-7-gun: X X X X X X X X  (eski: X X X X X X - -)
+G3-04-tasinan-asil-isin-yine-de-gonder-siniri: X X X X X X X X  (eski: X X X X X X - -)
+G4-01-sifirlama-meta-bekletti-sayilmaz: X X X X X X X X  (eski: X X X X X X - -)
+G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir: X X X X X X X X  (eski: X X X X X X - -)
+G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir: X X X X X X X X  (eski: X X X X X X - -)
+G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim: g g g g X g X g  (eski: X X X X X X - -)
+G6-01-son-3-ay-ozel-aralik-7-gun: X X X X X X X X  (eski: X X X X X X - -)
+G6-02-ozel-aralik-tum-hareketler-kisiye-gore: X X X X X X X X  (eski: X X X X X X - -)
+G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi: g g X X g g X X  (eski: g g X X g g - -)
+G6-04-tum-hareketler-belirsiz-ozel-aralik: X X X X X X X X  (eski: X X X X X X - -)
+G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu: X X X X X X X X  (eski: X X X X X X - -)
+H2-02-tasima-gonderiliyor-gec-kanca: X X X X X X X X  (eski: - - - - - - - -)
+H3-01-geri-yukleme-dosyasiz-gec-kabul: X X X X X X X X  (eski: - - - - - - - -)
+J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir: X X X X X X X X  (eski: - - - - - - - -)
+J1-02-suresi-doldu-sonra-teslim-daha-once: X X X X X X X X  (eski: - - - - - - - -)
+J1-03-silinmis-sirket-gec-bildirim: H H H H H H H H  (eski: - - - - - - - -)
+J1-04-asilmis-belirsiz-gec-teslim-iki-deneme: X X X X X X X X  (eski: - - - - - - - -)
+J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz: X X X X X X X X  (eski: - - - - - - - -)
+J3-02-sifirlama-sonrasi-gec-failed-yeniden-gonderilir: X X X X X X X X  (eski: - - - - - - - -)
+J3-03-asilmis-belirsiz-gec-failed-kisi-almadi: X X X X X X X X  (eski: - - - - - - - -)
+J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz: X X X X X X X X  (eski: - - - - - - - -)
+J4-01-suresi-doldu-son-kabulden-meta-bekletti: X X X X X X X X  (eski: - - - - - - - -)
+J4-02-suresi-doldu-son-kabulden-yine-de-gonder: X X X X X X X X  (eski: - - - - - - - -)
+J6-01-yanit-beklenirken-taninmayan-503-yineleme: X X X X X X X X  (eski: - - - - - - - -)
+J6-02-sirket-gecici-acilamaz-503: X X X X X X X X  (eski: - - - - - - - -)
+J6-03-bildirim-kaydedilemez-503: X X X X X X X X  (eski: - - - - - - - -)
+J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti: X X X X X X X X  (eski: - - - - - - - -)
+J8-01-tum-hareketler-bu-ay-ayni-gun: X X X X X X X X  (eski: - - - - - - - -)
+J8-02-tum-hareketler-gecen-ay-ayni-gun: X X X X X X X X  (eski: - - - - - - - -)
+J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay: X X X X X X X X  (eski: - - - - - - - -)
+J8-04-tum-hareketler-bekleyen-bu-ay-zaten-kuyrukta: X X X X X X X X  (eski: - - - - - - - -)
+J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi: X X X X X X X X  (eski: - - - - - - - -)
+J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez: X X X X X X X X  (eski: - - - - - - - -)
+J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez: X X X X X X X X  (eski: - - - - - - - -)
+J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez: X X X X X X X X  (eski: - - - - - - - -)
+J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider: X X X X X X X X  (eski: - - - - - - - -)
+J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun: X X X X X X X X  (eski: - - - - - - - -)
+J11-02-hareketsiz-cari-metni-ve-eslik: X X X X X X X X  (eski: - - - - - - - -)
+J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir: X X X X X X X X  (eski: - - - - - - - -)
+J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez: X X X X X X X X  (eski: - - - - - - - -)
+J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket: X X X X X X X X  (eski: - - - - - - - -)
+
+## Ayrışma imzaları (ilk ayrışan değişke)
+### CIFT-01-zaman-asimi-meta-aldi [yol1-IST] 8 madde
+    durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+    meta.kabul.A: beklenen 1, program 0
+    meta.medya_silme.A: beklenen 1, program 0
+    meta.toplam_kabul_program: beklenen 1, program 0
+    bu_ay.W1: beklenen nesne, program '<YOK>'
+    isler.T1/A.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+    isler.T1/A.kabul: beklenen 1, program 0
+    isler.T1/A.medya_silme: beklenen 1, program 0
+### CIFT-02-yanitsiz-yine-de-gonder [imz-IST-h] 1 madde
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+### CIFT-04-cokme-istek-ulasti [yol1-IST] 9 madde
+    durum_sayilari.Teslim Edildi: beklenen 3, program 2
+    meta.kabul.B: beklenen 1, program 0
+    meta.medya_silme.B: beklenen 1, program 0
+    meta.toplam_kabul_program: beklenen 3, program 2
+    bu_ay.W1.2026-10.teslim: beklenen 3, program 2
+    bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0027', program '0.0018'
+    isler.T1/B.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+    isler.T1/B.kabul: beklenen 1, program 0
+### CIFT-09-basarisizlari-yeniden-dene [imz-IST-h] 1 madde
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+### CIFT-13-veri-tasindi [imz-IST-h] 1 madde
+    bu_ay.W1: beklenen nesne, program '<YOK>'
+### CIFT-16-daha-once-suresi-doldu [imz-IST-h] 18 madde
+    olusmadi: beklenen [], program ['T2']
+    toplular.T2: beklenen nesne, program '<YOK>'
+    durum_sayilari.Süresi Doldu: beklenen 2, program '<YOK>'
+    meta.post.A: beklenen 2, program 1
+    meta.kabul.A: beklenen 2, program 1
+    meta.meta_ileti.A: beklenen 2, program 1
+    meta.medya_yukleme.A: beklenen 2, program 1
+    meta.medya_silme.A: beklenen 2, program 0
+### KAYIP-05-meta-ulasilamaz [imz-IST-h] 26 madde
+    toplular.T1: beklenen nesne, program '<YOK>'
+    durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+    meta.post.A: beklenen 1, program '<YOK>'
+    meta.kabul.A: beklenen 1, program '<YOK>'
+    meta.meta_ileti.A: beklenen 1, program '<YOK>'
+    meta.medya_yukleme.A: beklenen 1, program '<YOK>'
+    meta.medya_silme.A: beklenen 1, program '<YOK>'
+    meta.toplam_post: beklenen 1, program 0
+### KAYIP-06-meta-ulasilamaz-uc-kisi [imz-IST-h] 39 madde
+    toplular.T1: beklenen nesne, program '<YOK>'
+    durum_sayilari.Teslim Edildi: beklenen 3, program '<YOK>'
+    meta.post.A: beklenen 1, program '<YOK>'
+    meta.post.B: beklenen 1, program '<YOK>'
+    meta.post.C: beklenen 1, program '<YOK>'
+    meta.kabul.A: beklenen 1, program '<YOK>'
+    meta.kabul.B: beklenen 1, program '<YOK>'
+    meta.kabul.C: beklenen 1, program '<YOK>'
+### ICERIK-04-turkce-emoji-satir-sonu [imz-IST-h] 2 madde
+    isler.T1/S.pdf.cari_ad: beklenen 'Şükrü Öğüt 😀 Çağ', program 'ŞükrüÖğüt   Çağ'
+    isler.T1/S.dosya_adi.on_ek: beklenen 'Ekstre Şükrü Öğüt 😀 Çağ ', program 'Ekstre Şükrü Öğüt 😀   Çağ 01.10.2026-31.10.2026'
+### ICERIK-08-tum-hareketler [imz-IST-h] 2 madde
+    isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+    isler.T1/A.pdf.donem_son: beklenen '2026-10-30', program None
+### ICERIK-09-kuyrukta-bakiye-degisti [imz-IST-h] 3 madde
+    isler.T2/B.degiskenler: beklenen ['Mehmet Kaya', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '2.000,00 TL'], program ['Mehmet Kaya', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '3.000,00 TL']
+    isler.T2/B.pdf.hareket_sayisi: beklenen 1, program 2
+    isler.T2/B.pdf.donem_sonu_bakiye: beklenen '2000.00', program '3000.00'
+### ICERIK-10-ttl-sonrasi-teslim [imz-IST-h] 3 madde
+    kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    kontroller.K2.medya_silme: beklenen 1, program 0
+    kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+### ALICI-131049-iki-kez [imz-IST-h] 1 madde
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+### SINIR-05-pencerede-sayili-alici [imz-IST-h] 1 madde
+    kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 1
+### GUV-09-sahte-gercek-wamid [imz-IST-h] 5 madde
+    durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    kontroller.K1.durum_sayilari.Gönderildi: beklenen 1, program '<YOK>'
+    kontroller.K1.medya_silme: beklenen 0, program 1
+    kontroller.K1.isler.T1/A: beklenen 'Gönderildi', program 'Teslim Edildi'
+    isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Teslim Edildi'
+### GUV-10-yetki-ve-baglanti-sirasi [imz-IST-h] 2 madde
+    baslamadi.T1: beklenen 'bagli_degil', program 'lisans_salt_okunur'
+    baslamadi.T2: beklenen 'bagli_degil', program 'lisans_salt_okunur'
+### GUV-11-yetki-lisans-onay-sirasi [imz-IST-h] 1 madde
+    baslamadi.T1: beklenen 'yetki_yok', program 'lisans_salt_okunur'
+### TARIH-02-ttl-sonu [imz-IST-h] 7 madde
+    durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    meta.medya_silme.A: beklenen 1, program 0
+    kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    kontroller.K2.medya_silme: beklenen 1, program 0
+    kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+    isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+    isler.T1/A.medya_silme: beklenen 1, program 0
+### TARIH-03b-kancasiz-yol-calisiyor [imz-IST-h] 7 madde
+    durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    meta.medya_silme.A: beklenen 1, program 0
+    kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    kontroller.K2.medya_silme: beklenen 2, program 1
+    kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Meta Kabul Etti'
+    isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Meta Kabul Etti'
+    isler.T1/A.medya_silme: beklenen 1, program 0
+### K1-04-zaten-kuyrukta-ay-donumu [imz-UTC-h] 19 madde
+    elenen.T2: beklenen nesne, program '<YOK>'
+    olusmadi: beklenen ['T2'], program []
+    durum_sayilari.Teslim Edildi: beklenen 2, program 3
+    meta.post.B: beklenen 1, program 2
+    meta.kabul.B: beklenen 1, program 2
+    meta.meta_ileti.B: beklenen 1, program 2
+    meta.medya_yukleme.B: beklenen 1, program 2
+    meta.medya_silme.B: beklenen 1, program 2
+### K1-05-son-3-ay-7-gun [imz-IST-h] 2 madde
+    isler.T2/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+    isler.T2/Y.pdf.donem_son: beklenen '2026-10-31', program None
+### K1-06-tum-hareketler-7-gun [imz-IST-h] 4 madde
+    isler.T1/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+    isler.T1/Y.pdf.donem_son: beklenen '2026-10-30', program None
+    isler.T3/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+    isler.T3/Y.pdf.donem_son: beklenen '2026-11-07', program None
+### K1-07-hatirlatma-ayni-yerel-gun [imz-UTC-h] 18 madde
+    olusmadi: beklenen ['T2'], program ['T2', 'T3']
+    onceki_uyari.T4.son: beklenen '2026-10-31', program '2026-10-30'
+    toplular.T3: beklenen nesne, program '<YOK>'
+    durum_sayilari.Teslim Edildi: beklenen 3, program 2
+    meta.post.H: beklenen 3, program 2
+    meta.kabul.H: beklenen 3, program 2
+    meta.meta_ileti.H: beklenen 3, program 2
+    meta.toplam_post: beklenen 3, program 2
+### K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra [imz-IST-h] 4 madde
+    isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+    isler.T1/A.pdf.donem_son: beklenen '2026-10-30', program None
+    isler.T3/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+    isler.T3/Y.pdf.donem_son: beklenen '2026-11-08', program None
+### K5-03-sonra-programin-saatine-gore [yol1-IST] 11 madde
+    durum_sayilari.Teslim Edildi: beklenen 2, program 1
+    meta.kabul.A: beklenen 2, program 1
+    meta.medya_silme.A: beklenen 3, program 2
+    meta.toplam_kabul_program: beklenen 2, program 1
+    bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+    bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+    yeniden.Y1.elenen.A: beklenen 'daha_once_gonderildi', program 'sonucu_belirsiz'
+    yeniden.Y1.oneri: beklenen None, program 'isteki_yine_de_gonder'
+### K6-01-yeniden-denemesi-belirsiz-elenir [imz-IST-h] 1 madde
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+### K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi [imz-IST-h] 1 madde
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+### K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil [imz-IST-h] 1 madde
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+### K8-02-tarih-suzgeci-yerel-gun [imz-UTC-h] 3 madde
+    listeler.L1.etiketler: beklenen ['T4', 'T3', 'T2'], program ['T5', 'T4', 'T3']
+    listeler.L2.etiketler: beklenen ['T4', 'T3', 'T2', 'T1'], program ['T5', 'T4', 'T3', 'T2', 'T1']
+    listeler.L3.etiketler: beklenen ['T5'], program []
+### K8-03-suzgec-ile-sayfalama [imz-UTC-h] 4 madde
+    listeler.L1.etiketler: beklenen ['T33', 'T32', 'T31', 'T30', 'T29', 'T28', 'T27', 'T26', 'T25', 'T24', 'T23', 'T22', 'T21', 'T20', 'T19', 'T18', 'T17', 'T16', 'T15', 'T14', 'T13', 'T12', 'T11', 'T10', 'T09', 'T08', 'T07', 'T06', 'T05', 'T04'], program ['T35', 
+    listeler.L1.daha_fazla: beklenen True, program False
+    listeler.L2.etiketler: beklenen ['T03', 'T02', 'T01'], program []
+    listeler.L3.etiketler: beklenen ['T35', 'T34'], program []
+### D3-02-yine-de-gonder-7-gun-yeni-gonderimden [imz-IST-h] 4 madde
+    isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+    isler.T1/A.pdf.donem_son: beklenen '2026-10-30', program None
+    isler.T2/A.pdf.donem_bas: beklenen '2026-09-10', program None
+    isler.T2/A.pdf.donem_son: beklenen '2026-11-07', program None
+### D4-03-yil-donumu-ozel-aralik-zaten-kuyrukta [imz-UTC-h] 15 madde
+    elenen.T2: beklenen nesne, program '<YOK>'
+    olusmadi: beklenen ['T2'], program []
+    durum_sayilari.Teslim Edildi: beklenen 2, program 3
+    meta.post.B: beklenen 1, program 2
+    meta.kabul.B: beklenen 1, program 2
+    meta.meta_ileti.B: beklenen 1, program 2
+    meta.medya_yukleme.B: beklenen 1, program 2
+    meta.medya_silme.B: beklenen 1, program 2
+### D6-03-asilmis-belirsiz-son-3-ay-7-gun [imz-IST-h] 1 madde
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+### D7-02-geri-yukleme-ay-donumu-defterdeki-kabul [imz-UTC-h] 7 madde
+    elenen.T2: beklenen nesne, program '<YOK>'
+    olusmadi: beklenen ['T2'], program []
+    onceki_uyari.T2: beklenen nesne, program '<YOK>'
+    meta.toplam_post: beklenen 1, program 2
+    meta.toplam_kabul_program: beklenen 1, program 2
+    meta.toplam_meta_ileti: beklenen 1, program 2
+    meta.toplam_medya_yukleme: beklenen 1, program 2
+### D8-01-tasinan-veride-dosyadaki-ileti-sayilir [imz-IST-h] 1 madde
+    bu_ay.W1: beklenen nesne, program '<YOK>'
+### D8-02-tasinan-veride-yine-de-gonder [imz-IST-h] 2 madde
+    bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+    bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+### E1-01-dosyada-ve-defterde-belirsiz [imz-IST-h] 1 madde
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+### E2-03-yeniden-denemede-kuyrukta-once-belirsiz [imz-IST-h] 4 madde
+    kontroller.K1.isler.T2/A: beklenen 'Sınır Nedeniyle Bekliyor', program 'Teslim Edildi'
+    kontroller.K1.isler.T2/B: beklenen 'Teslim Edildi', program 'Sınır Nedeniyle Bekliyor'
+    yeniden.Y1.elenen.A: beklenen 'zaten_kuyrukta', program 'sonucu_belirsiz'
+    yeniden.Y1.oneri: beklenen None, program 'yeni_gonderim'
+### E3-01-hatirlatma-belirsiz-ayni-yerel-gun [imz-UTC-h] 16 madde
+    olusmadi: beklenen ['T2'], program ['T2', 'T3']
+    toplular.T3: beklenen nesne, program '<YOK>'
+    durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+    meta.post.H: beklenen 2, program 1
+    meta.kabul.H: beklenen 1, program 0
+    meta.meta_ileti.H: beklenen 1, program 0
+    meta.toplam_post: beklenen 2, program 1
+    meta.toplam_kabul_program: beklenen 1, program 0
+### E4-02-tum-hareketler-sonraki-teslim-7-gun [imz-IST-h] 2 madde
+    isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+    isler.T1/A.pdf.donem_son: beklenen '2026-10-30', program None
+### F2-01-hatirlatma-yeniden-deneme-ertesi-gun [imz-UTC-h] 19 madde
+    durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+    meta.post.H: beklenen 3, program 2
+    meta.kabul.H: beklenen 1, program 0
+    meta.meta_ileti.H: beklenen 1, program 0
+    meta.toplam_post: beklenen 3, program 2
+    meta.toplam_kabul_program: beklenen 1, program 0
+    meta.toplam_meta_ileti: beklenen 1, program 0
+    kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+### G2-03-gece-yarisi-bu-ay-yerel-gun [imz-UTC-h] 15 madde
+    olusmadi: beklenen ['T2'], program ['T2', 'T3']
+    toplular.T3: beklenen nesne, program '<YOK>'
+    durum_sayilari.Teslim Edildi: beklenen 2, program 1
+    meta.post.A: beklenen 2, program 1
+    meta.kabul.A: beklenen 2, program 1
+    meta.meta_ileti.A: beklenen 2, program 1
+    meta.medya_yukleme.A: beklenen 2, program 1
+    meta.medya_silme.A: beklenen 2, program 1
+### G3-03-tasinan-teslim-son-3-ay-7-gun [imz-IST-h] 1 madde
+    bu_ay.W1.2026-10: beklenen nesne, program '<YOK>'
+### G3-04-tasinan-asil-isin-yine-de-gonder-siniri [imz-IST-h] 2 madde
+    bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+    bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+### G4-01-sifirlama-meta-bekletti-sayilmaz [imz-IST-h] 14 madde
+    toplular.T1: beklenen nesne, program '<YOK>'
+    durum_sayilari.Durduruldu (Geri Yükleme): beklenen 1, program '<YOK>'
+    meta.post.A: beklenen 2, program 1
+    meta.kabul.A: beklenen 2, program 1
+    meta.meta_ileti.A: beklenen 2, program 1
+    meta.medya_yukleme.A: beklenen 2, program 1
+    kontroller.K1.durum_sayilari.Durduruldu (Geri Yükleme): beklenen 1, program '<YOK>'
+    kontroller.K1.toplular.T1: beklenen 'aktif', program '<YOK>'
+### G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir [imz-IST-h] 8 madde
+    toplular.T1: beklenen nesne, program '<YOK>'
+    durum_sayilari: beklenen şunlardan biri (karar susuyor) [{'Durduruldu (Geri Yükleme)': 1}, {'Teslim Edildi': 1}], program {}
+    meta.post.A: beklenen 1, program '<YOK>'
+    meta.kabul.A: beklenen 1, program '<YOK>'
+    meta.meta_ileti.A: beklenen 1, program '<YOK>'
+    meta.medya_yukleme.A: beklenen 1, program '<YOK>'
+    meta.medya_silme.A: beklenen 1, program '<YOK>'
+    isler.T1/A: beklenen nesne, program '<YOK>'
+### G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir [imz-IST-h] 1 madde
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+### G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim [yol1-IST] 10 madde
+    elenen.T2.A: beklenen 'daha_once_gonderildi', program 'sonucu_belirsiz'
+    onceki_uyari.T2: beklenen nesne, program '<YOK>'
+    durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+    meta.kabul.A: beklenen 2, program 1
+    meta.medya_silme.A: beklenen 1, program 0
+    meta.toplam_kabul_program: beklenen 2, program 1
+    bu_ay.W1: beklenen nesne, program '<YOK>'
+    isler.T1/A.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+### G6-01-son-3-ay-ozel-aralik-7-gun [imz-IST-h] 5 madde
+    elenen.T2: beklenen nesne, program '<YOK>'
+    olusmadi: beklenen ['T2'], program ['T3']
+    onceki_uyari.T2: beklenen nesne, program '<YOK>'
+    toplular.T3: beklenen nesne, program '<YOK>'
+    isler.T3/Y: beklenen nesne, program '<YOK>'
+### G6-02-ozel-aralik-tum-hareketler-kisiye-gore [imz-IST-h] 2 madde
+    isler.T2/Z.pdf.donem_bas: beklenen '2026-02-10', program None
+    isler.T2/Z.pdf.donem_son: beklenen '2026-10-30', program None
+### G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi [imz-UTC-h] 15 madde
+    elenen.T2: beklenen nesne, program '<YOK>'
+    olusmadi: beklenen ['T2'], program []
+    durum_sayilari.Teslim Edildi: beklenen 2, program 3
+    meta.post.Y: beklenen 1, program 2
+    meta.kabul.Y: beklenen 1, program 2
+    meta.meta_ileti.Y: beklenen 1, program 2
+    meta.medya_yukleme.Y: beklenen 1, program 2
+    meta.medya_silme.Y: beklenen 1, program 2
+### G6-04-tum-hareketler-belirsiz-ozel-aralik [imz-IST-h] 2 madde
+    isler.T1/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+    isler.T1/Y.pdf.donem_son: beklenen '2026-10-30', program None
+### G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu [imz-IST-h] 15 madde
+    elenen.T2: beklenen nesne, program '<YOK>'
+    olusmadi: beklenen ['T2'], program []
+    onceki_uyari.T2: beklenen nesne, program '<YOK>'
+    durum_sayilari.Teslim Edildi: beklenen 1, program 2
+    meta.post.Y: beklenen 2, program 3
+    meta.kabul.Y: beklenen 1, program 2
+    meta.meta_ileti.Y: beklenen 1, program 2
+    meta.medya_yukleme.Y: beklenen 2, program 3
+### H2-02-tasima-gonderiliyor-gec-kanca [imz-IST-h] 10 madde
+    elenen.T2.B: beklenen 'daha_once_gonderildi', program 'sonucu_belirsiz'
+    onceki_uyari.T2: beklenen nesne, program '<YOK>'
+    durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+    meta.kabul.B: beklenen 1, program 0
+    meta.medya_silme.B: beklenen 1, program 0
+    meta.toplam_kabul_program: beklenen 1, program 0
+    bu_ay.W1: beklenen nesne, program '<YOK>'
+    isler.T1/B.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+### H3-01-geri-yukleme-dosyasiz-gec-kabul [imz-IST-h] 1 madde
+    meta.toplam_kabul_program: beklenen 1, program 2
+### J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir [imz-IST-h] 2 madde
+    kontroller.K1.durum_sayilari.Duraklatıldı: beklenen 1, program '<YOK>'
+    kontroller.K1.isler.T1/A: beklenen 'Duraklatıldı', program 'Meta Bekletti (24 Saat Sonra Yeniden)'
+### J1-02-suresi-doldu-sonra-teslim-daha-once [imz-IST-h] 3 madde
+    kontroller.K1.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    kontroller.K1.medya_silme: beklenen 2, program 1
+    kontroller.K1.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+### J1-03-silinmis-sirket-gec-bildirim [imz-IST-h] 1 madde
+    Error: şirket sil A: 400 {"ok":false,"error":"Onay için şirket kodunu (002) ya da adını yazın.","code":"confirm"}
+    at olayIsle (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t1r-0435ed69/test/bagimsiz/whatsapp-248/surucu.mj
+### J1-04-asilmis-belirsiz-gec-teslim-iki-deneme [imz-IST-h] 2 madde
+    meta.toplam_kabul_program: beklenen 1, program 2
+    kontroller.K1.toplam_kabul: beklenen 1, program 2
+### J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz [imz-IST-h] 1 madde
+    meta.toplam_kabul_program: beklenen 1, program 2
+### J3-02-sifirlama-sonrasi-gec-failed-yeniden-gonderilir [imz-IST-h] 15 madde
+    toplular.T1: beklenen nesne, program '<YOK>'
+    durum_sayilari.Başarısız: beklenen 1, program '<YOK>'
+    meta.post.B: beklenen 2, program 1
+    meta.kabul.B: beklenen 2, program 1
+    meta.meta_ileti.B: beklenen 2, program 1
+    meta.medya_yukleme.B: beklenen 2, program 1
+    meta.medya_silme.B: beklenen 2, program 1
+    kontroller.K1.durum_sayilari.Başarısız: beklenen 1, program '<YOK>'
+### J3-03-asilmis-belirsiz-gec-failed-kisi-almadi [imz-IST-h] 2 madde
+    meta.toplam_kabul_program: beklenen 2, program 3
+    kontroller.K1.toplam_kabul: beklenen 2, program 3
+### J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz [imz-IST-h] 3 madde
+    meta.toplam_kabul_program: beklenen 1, program 2
+    kontroller.K1.toplam_kabul: beklenen 1, program 2
+    kontroller.K2.toplam_kabul: beklenen 1, program 2
+### J4-01-suresi-doldu-son-kabulden-meta-bekletti [imz-IST-h] 7 madde
+    durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    meta.medya_silme.A: beklenen 1, program 0
+    kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    kontroller.K2.medya_silme: beklenen 2, program 1
+    kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+    isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+    isler.T1/A.medya_silme: beklenen 1, program 0
+### J4-02-suresi-doldu-son-kabulden-yine-de-gonder [imz-IST-h] 7 madde
+    durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    meta.medya_silme.B: beklenen 1, program 0
+    kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+    kontroller.K2.medya_silme: beklenen 2, program 1
+    kontroller.K2.isler.T1/B: beklenen 'Süresi Doldu', program 'Gönderildi'
+    isler.T1/B.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+    isler.T1/B.medya_silme: beklenen 1, program 0
+### J6-01-yanit-beklenirken-taninmayan-503-yineleme [imz-IST-h] 1 madde
+    kanca_yanitlari.503: beklenen 3, program 0
+### J6-02-sirket-gecici-acilamaz-503 [imz-IST-h] 10 madde
+    durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+    meta.medya_silme.A: beklenen 1, program 0
+    kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+    kontroller.K2.medya_silme: beklenen 1, program 0
+    kontroller.K2.isler.T1/A: beklenen 'Teslim Edildi', program 'Gönderildi'
+    bu_ay.W1: beklenen nesne, program '<YOK>'
+    kanca_yanitlari.200: beklenen 2, program 1
+    kanca_yanitlari.503: beklenen 1, program 2
+### J6-03-bildirim-kaydedilemez-503 [imz-IST-h] 3 madde
+    meta.medya_silme.A: beklenen 1, program 0
+    kontroller.K2.medya_silme: beklenen 1, program 0
+    isler.T1/A.medya_silme: beklenen 1, program 0
+### J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti [imz-IST-h] 31 madde
+    durum_sayilari.Teslim Edildi: beklenen 2, program 1
+    meta.post.C: beklenen 1, program 0
+    meta.kabul.C: beklenen 1, program 0
+    meta.meta_ileti.C: beklenen 1, program 0
+    meta.medya_yukleme.C: beklenen 1, program 0
+    meta.medya_silme.A: beklenen 1, program 0
+    meta.medya_silme.C: beklenen 1, program 0
+    meta.toplam_post: beklenen 2, program 1
+### J8-01-tum-hareketler-bu-ay-ayni-gun [imz-IST-h] 4 madde
+    isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+    isler.T1/P.pdf.donem_son: beklenen '2026-11-05', program None
+    isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+    isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+### J8-02-tum-hareketler-gecen-ay-ayni-gun [imz-IST-h] 4 madde
+    isler.T1/Q.pdf.donem_bas: beklenen '2026-10-01', program None
+    isler.T1/Q.pdf.donem_son: beklenen '2026-11-05', program None
+    isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+    isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+### J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay [imz-IST-h] 2 madde
+    isler.T1/S.pdf.donem_bas: beklenen '2026-11-01', program None
+    isler.T1/S.pdf.donem_son: beklenen '2026-11-03', program None
+### J8-04-tum-hareketler-bekleyen-bu-ay-zaten-kuyrukta [imz-IST-h] 4 madde
+    isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+    isler.T1/P.pdf.donem_son: beklenen '2026-11-05', program None
+    isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+    isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+### J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi [imz-IST-h] 2 madde
+    isler.T1/Q.pdf.donem_bas: beklenen '2026-10-01', program None
+    isler.T1/Q.pdf.donem_son: beklenen '2026-10-31', program None
+### J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez [imz-IST-h] 27 madde
+    durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+    durum_sayilari.Teslim Edildi: beklenen 1, program 2
+    meta.post.B: beklenen 1, program 2
+    meta.kabul.B: beklenen 1, program 2
+    meta.meta_ileti.B: beklenen 1, program 2
+    meta.toplam_post: beklenen 2, program 3
+    meta.toplam_kabul_program: beklenen 1, program 3
+    meta.toplam_meta_ileti: beklenen 2, program 3
+### J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez [imz-IST-h] 10 madde
+    meta.toplam_kabul_program: beklenen 0, program 1
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+    kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+    kontroller.K2.toplam_kabul: beklenen 0, program 1
+    kontroller.K2.pencere_farkli_alici.W1: beklenen 0, program 1
+    kontroller.K2.medya_silme: beklenen 1, program 0
+    kontroller.K2.isler.T1/B: beklenen 'Atlandı', program 'Duraklatıldı'
+    kontroller.K3.toplam_kabul: beklenen 0, program 1
+### J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez [imz-IST-h] 14 madde
+    meta.medya_yukleme.B: beklenen 1, program 2
+    meta.medya_silme.B: beklenen 1, program 2
+    meta.toplam_kabul_program: beklenen 0, program 1
+    meta.toplam_medya_yukleme: beklenen 1, program 2
+    kontroller.K1.toplam_kabul: beklenen 0, program 1
+    kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+    kontroller.K2.toplam_kabul: beklenen 0, program 1
+    kontroller.K2.isler.T1/B: beklenen 'Atlandı', program 'Duraklatıldı'
+### J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider [imz-IST-h] 1 madde
+    kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+### J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun [imz-IST-h] 4 madde
+    isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+    isler.T1/P.pdf.donem_son: beklenen '2026-11-05', program None
+    isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+    isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+### J11-02-hareketsiz-cari-metni-ve-eslik [imz-IST-h] 4 madde
+    isler.T1/N1.pdf.donem_bas: beklenen '2026-11-01', program None
+    isler.T1/N1.pdf.donem_son: beklenen '2026-11-01', program None
+    isler.T3/N2.pdf.donem_bas: beklenen '2026-11-05', program None
+    isler.T3/N2.pdf.donem_son: beklenen '2026-11-05', program None
+### J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir [imz-IST-h] 4 madde
+    isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+    isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+    isler.T1/U.pdf.donem_bas: beklenen '2026-11-01', program None
+    isler.T1/U.pdf.donem_son: beklenen '2026-11-05', program None
+### J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez [imz-IST-h] 4 madde
+    isler.T1/F2.pdf.donem_bas: beklenen '2026-10-05', program None
+    isler.T1/F2.pdf.donem_son: beklenen '2026-10-30', program None
+    isler.T1/G2.pdf.donem_bas: beklenen '2026-10-30', program None
+    isler.T1/G2.pdf.donem_son: beklenen '2026-10-30', program None
+### J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket [imz-IST-h] 4 madde
+    isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+    isler.T1/P.pdf.donem_son: beklenen '2026-11-05', program None
+    isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+    isler.T1/R.pdf.donem_son: beklenen '2026-11-05', program None
+
+## Uç / saat dilimi / kip farkları (davranış farkı listesi farklı olanlar)
+imz-IST-h ↔ imz-IST-y: 0 senaryo
+imz-UTC-h ↔ imz-UTC-y: 0 senaryo
+imz-IST-h ↔ imz-UTC-h: 11 senaryo: K1-04-zaten-kuyrukta-ay-donumu, K1-07-hatirlatma-ayni-yerel-gun, K8-02-tarih-suzgeci-yerel-gun, K8-03-suzgec-ile-sayfalama, D4-03-yil-donumu-ozel-aralik-zaten-kuyrukta, D7-02-geri-yukleme-ay-donumu-defterdeki-kabul, E3-01-hatirlatma-belirsiz-ayni-yerel-gun, F2-01-hatirlatma-yeniden-deneme-ertesi-gun, G2-03-gece-yarisi-bu-ay-yerel-gun, G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi, J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi
+imz-IST-h ↔ yol1-IST: 13 senaryo: CIFT-01-zaman-asimi-meta-aldi, CIFT-04-cokme-istek-ulasti, K5-03-sonra-programin-saatine-gore, G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim, H3-01-geri-yukleme-dosyasiz-gec-kabul, J1-04-asilmis-belirsiz-gec-teslim-iki-deneme, J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz, J3-03-asilmis-belirsiz-gec-failed-kisi-almadi, J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz, J6-01-yanit-beklenirken-taninmayan-503-yineleme, J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez, J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez, J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez
+imz-IST-h ↔ yol2-IST: 1 senaryo: GUV-09-sahte-gercek-wamid
+imz-UTC-h ↔ yol1-UTC: 13 senaryo: CIFT-01-zaman-asimi-meta-aldi, CIFT-04-cokme-istek-ulasti, K5-03-sonra-programin-saatine-gore, G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim, H3-01-geri-yukleme-dosyasiz-gec-kabul, J1-04-asilmis-belirsiz-gec-teslim-iki-deneme, J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz, J3-03-asilmis-belirsiz-gec-failed-kisi-almadi, J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz, J6-01-yanit-beklenirken-taninmayan-503-yineleme, J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez, J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez, J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez
+imz-UTC-h ↔ yol2-UTC: 1 senaryo: GUV-09-sahte-gercek-wamid
+yol1-IST ↔ yol1-UTC: 11 senaryo: K1-04-zaten-kuyrukta-ay-donumu, K1-07-hatirlatma-ayni-yerel-gun, K8-02-tarih-suzgeci-yerel-gun, K8-03-suzgec-ile-sayfalama, D4-03-yil-donumu-ozel-aralik-zaten-kuyrukta, D7-02-geri-yukleme-ay-donumu-defterdeki-kabul, E3-01-hatirlatma-belirsiz-ayni-yerel-gun, F2-01-hatirlatma-yeniden-deneme-ertesi-gun, G2-03-gece-yarisi-bu-ay-yerel-gun, G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi, J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi
+yol2-IST ↔ yol2-UTC: 11 senaryo: K1-04-zaten-kuyrukta-ay-donumu, K1-07-hatirlatma-ayni-yerel-gun, K8-02-tarih-suzgeci-yerel-gun, K8-03-suzgec-ile-sayfalama, D4-03-yil-donumu-ozel-aralik-zaten-kuyrukta, D7-02-geri-yukleme-ay-donumu-defterdeki-kabul, E3-01-hatirlatma-belirsiz-ayni-yerel-gun, F2-01-hatirlatma-yeniden-deneme-ertesi-gun, G2-03-gece-yarisi-bu-ay-yerel-gun, G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi, J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi
+
+## Önceki resmî koşuya göre (imz-IST-h)
+ICERIK-08-tum-hareketler: önce EŞ-g → şimdi AYRIŞIK
+ICERIK-09-kuyrukta-bakiye-degisti: önce EŞ-g → şimdi AYRIŞIK
+K1-05-son-3-ay-7-gun: önce EŞ-g → şimdi AYRIŞIK
+K1-06-tum-hareketler-7-gun: önce EŞ-g → şimdi AYRIŞIK
+K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra: önce EŞ-g → şimdi AYRIŞIK
+D3-02-yine-de-gonder-7-gun-yeni-gonderimden: önce EŞ-g → şimdi AYRIŞIK
+E4-02-tum-hareketler-sonraki-teslim-7-gun: önce EŞ-g → şimdi AYRIŞIK
+G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim: önce AYRIŞIK → şimdi EŞ-g
+H2-02-tasima-gonderiliyor-gec-kanca: önce YENİ → şimdi AYRIŞIK
+H3-01-geri-yukleme-dosyasiz-gec-kabul: önce YENİ → şimdi AYRIŞIK
+J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir: önce YENİ → şimdi AYRIŞIK
+J1-02-suresi-doldu-sonra-teslim-daha-once: önce YENİ → şimdi AYRIŞIK
+J1-03-silinmis-sirket-gec-bildirim: önce YENİ → şimdi HATA
+J1-04-asilmis-belirsiz-gec-teslim-iki-deneme: önce YENİ → şimdi AYRIŞIK
+J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz: önce YENİ → şimdi AYRIŞIK
+J3-02-sifirlama-sonrasi-gec-failed-yeniden-gonderilir: önce YENİ → şimdi AYRIŞIK
+J3-03-asilmis-belirsiz-gec-failed-kisi-almadi: önce YENİ → şimdi AYRIŞIK
+J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz: önce YENİ → şimdi AYRIŞIK
+J4-01-suresi-doldu-son-kabulden-meta-bekletti: önce YENİ → şimdi AYRIŞIK
+J4-02-suresi-doldu-son-kabulden-yine-de-gonder: önce YENİ → şimdi AYRIŞIK
+J6-01-yanit-beklenirken-taninmayan-503-yineleme: önce YENİ → şimdi AYRIŞIK
+J6-02-sirket-gecici-acilamaz-503: önce YENİ → şimdi AYRIŞIK
+J6-03-bildirim-kaydedilemez-503: önce YENİ → şimdi AYRIŞIK
+J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti: önce YENİ → şimdi AYRIŞIK
+J8-01-tum-hareketler-bu-ay-ayni-gun: önce YENİ → şimdi AYRIŞIK
+J8-02-tum-hareketler-gecen-ay-ayni-gun: önce YENİ → şimdi AYRIŞIK
+J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay: önce YENİ → şimdi AYRIŞIK
+J8-04-tum-hareketler-bekleyen-bu-ay-zaten-kuyrukta: önce YENİ → şimdi AYRIŞIK
+J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi: önce YENİ → şimdi AYRIŞIK
+J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez: önce YENİ → şimdi AYRIŞIK
+J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez: önce YENİ → şimdi AYRIŞIK
+J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez: önce YENİ → şimdi AYRIŞIK
+J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider: önce YENİ → şimdi AYRIŞIK
+J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun: önce YENİ → şimdi AYRIŞIK
+J11-02-hareketsiz-cari-metni-ve-eslik: önce YENİ → şimdi AYRIŞIK
+J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir: önce YENİ → şimdi AYRIŞIK
+J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez: önce YENİ → şimdi AYRIŞIK
+J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket: önce YENİ → şimdi AYRIŞIK

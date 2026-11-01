@@ -1,0 +1,68 @@
+{
+  "ad": "248-t1r-ek-mutasyon",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t1r-0435ed69/test/bagimsiz/whatsapp-248/surucu.mjs --mutasyon-denetimi --tz Europe/Istanbul --cikti docs/kanit/2026-11-01/248-t1r-ek",
+  "commit": "f05f0b1910dbe5d59282ad0e96ba0ba0b01fdf09",
+  "dal": "is/surucu2-248",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T10:08:22.460Z",
+  "sure_sn": 900.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 47,
+    "gecen": 40,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "mutasyon S6-devam-suzgeci-devralmaz (S-6 devam süzgeci devralır) DİŞSİZ: hiçbir hedefte ayrışma yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mutasyon S11-medya-silme-son-deneme-yok (S-11 iç denetim: yalnız SON denemenin PDF'i) DİŞSİZ: hiçbir hedefte ayrışma yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mutasyon S19-gec-kabul-bekletilmez (S-19 gecikmeli kabul: yanıt tutulur, arada kanca/olay programa ulaşır) DİŞSİZ: hiçbir hedefte ayrışma yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mutasyon S20-imzasiz-da-sayilir (S-20 kanca yanıt sayımı yalnız imzalı bildirim) DİŞSİZ: hiçbir hedefte ayrışma yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mutasyon S22-silme-govdesiz (S-22 Şirketi Sil onay kodu + parola GÖVDEDE (T1 resmî koşu düzeltmesi)) DİŞSİZ: hiçbir hedefte ayrışma yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mutasyon S30-tum-araligi-okunmaz (S-30 Tüm Hareketler PDF dönemi okunur) DİŞSİZ: hiçbir hedefte ayrışma yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mutasyon S32-degiskenler-programdan (S-32 değişkenler Meta'ya gidenden) DİŞSİZ: hiçbir hedefte ayrışma yok",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t1r-ek-mutasyon.log",
+  "klasor": "/home/user/wt-surucu2-248",
+  "ham_cikti_sha256": "4543d7ee402913e7c39e68562a1ef9b48caedf9a607ae5d9e9e09aa6f98e6b2c",
+  "ham_cikti_bayt": 31291
+}

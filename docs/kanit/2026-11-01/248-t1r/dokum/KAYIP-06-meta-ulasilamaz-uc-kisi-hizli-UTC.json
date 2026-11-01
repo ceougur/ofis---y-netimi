@@ -1,0 +1,112 @@
+{
+ "senaryo": "KAYIP-06-meta-ulasilamaz-uc-kisi",
+ "uc": "hizli",
+ "tz": "UTC",
+ "bitis": "2026-10-30T12:00:00+03:00",
+ "notlar": [
+  "KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)"
+ ],
+ "program_api": [
+  {
+   "t": "2026-10-30T10:00:00+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "statement",
+    "ids": [
+     "account-49c6eed1-4832-4aa5-bf00-cd622c6ab432",
+     "account-38d87178-7c78-4c9a-b06b-67608bdd0bce",
+     "account-b8ce2a3c-962e-49ef-9550-0e2eae47c23d"
+    ],
+    "from": "2026-10-01",
+    "to": "2026-10-31"
+   },
+   "status": 502,
+   "yanit": "{\"ok\":false,\"error\":\"Meta'ya ulaşılamıyor; gönderim başlatılmadı. Bağlantı gelince yeniden başlatın.\",\"code\":\"whatsapp-meta-unreachable\",\"meta\":{\"code\":null,\"subcode\":null,\"httpStatus\":0,\"title\":\"Meta'ya ulaşılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); sonuç bilinmiyor.\",\"details\":\"ECONNREFUSED\",\"retry\":\"unknown\",\"kind\":\"network\",\"reason\":\"network\"}}"
+  },
+  {
+   "t": "2026-10-30T12:00:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-09",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-09\",\"configured\":true,\"wabaId\":\"800000000000001\",\"delivered\":0,\"billable\":0,\"accepted\":0,\"approxUsd\":0,\"unitUsd\":0.0009,\"company\":{\"delivered\":0,\"billable\":0,\"accepted\":0},\"note\":\"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır.\"}}"
+  },
+  {
+   "t": "2026-10-30T12:00:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-10",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-10\",\"configured\":true,\"wabaId\":\"800000000000001\",\"delivered\":0,\"billable\":0,\"accepted\":0,\"approxUsd\":0,\"unitUsd\":0.0009,\"company\":{\"delivered\":0,\"billable\":0,\"accepted\":0},\"note\":\"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır.\"}}"
+  }
+ ],
+ "toplular": {},
+ "cari_eslemesi": {
+  "A": "account-49c6eed1-4832-4aa5-bf00-cd622c6ab432",
+  "B": "account-38d87178-7c78-4c9a-b06b-67608bdd0bce",
+  "C": "account-b8ce2a3c-962e-49ef-9550-0e2eae47c23d"
+ },
+ "defter": {
+  "accepts": [],
+  "anyway_links": [],
+  "attempt_deliveries": [],
+  "batch_events": [],
+  "batch_log": [],
+  "claim_keys": [],
+  "claims": [],
+  "deliveries": [],
+  "failures": [],
+  "holds": [],
+  "hook_events": [
+   {
+    "seq": 1,
+    "waba_id": "800000000000001",
+    "path_hash": "b3e28ea2e3c3a9e566183fff00c5fea66b14dfdb43f504c289b6718405c04d15",
+    "verify_hash": "019ef594b10684cfe2132e38dde8ed5c7bec0266d811d3a68658f2299720fa98",
+    "base": "http://ofis.localhost:46081",
+    "state": "pending",
+    "reason": "manual",
+    "error": "",
+    "at": "2026-10-30T07:00:00.000Z"
+   },
+   {
+    "seq": 2,
+    "waba_id": "800000000000001",
+    "path_hash": "b3e28ea2e3c3a9e566183fff00c5fea66b14dfdb43f504c289b6718405c04d15",
+    "verify_hash": "019ef594b10684cfe2132e38dde8ed5c7bec0266d811d3a68658f2299720fa98",
+    "base": "http://ofis.localhost:46081",
+    "state": "active",
+    "reason": "manual",
+    "error": "",
+    "at": "2026-10-30T07:00:00.000Z"
+   }
+  ],
+  "hook_seen": [],
+  "learned_wamids": [],
+  "meta": [
+   {
+    "key": "ledgerId",
+    "value": "wal-700f23eb-433b-4caa-8c7f-eca8b18daa5d"
+   }
+  ],
+  "outcomes": [],
+  "releases": []
+ },
+ "sahte_meta": {
+  "istekler": [],
+  "mesajlar": [],
+  "kancalar": [],
+  "sayilar": {
+   "mesajIstegi": {},
+   "kabul": {},
+   "toplamMesajIstegi": 0,
+   "toplamKabul": 0,
+   "medyaYukleme": 0,
+   "medyaKabul": 0,
+   "medyaSilme": 0,
+   "koptu": 0
+  }
+ },
+ "alici_kanca_kaydi": []
+}
