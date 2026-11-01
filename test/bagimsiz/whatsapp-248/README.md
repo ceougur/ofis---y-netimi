@@ -12,8 +12,8 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 244 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
-   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13).
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 273 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
 araştırma belgesi, Meta belge sayfaları (send-messages, document-messages, media, template-media, components, template-management, template-categorization,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (136 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (153 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 17'si J1–J9'un (M137–M153) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -36,7 +36,7 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 34) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 18 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 244 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 273 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -706,3 +706,57 @@ gidiyor … yalnız Meta'nın failed/131049 sonrası geç teslimiyle"; A/B seçe
 - **S9-4 (bilgi):** J6 "en çok 5 dk"nın ölçüsü (bildirimin ilk görülmesinden mi, bekleyen yanıtın başından mı) — kime kaç kez değil (gecikme/kayıp); senaryolar bu sınıra yaklaşmaz.
 - **S9-5 (bilgi):** J7 onarım bekleyen kabulün BAŞKA şirkette yeni gönderimi engelleyip engellemediği ve öbür ret nedenleriyle sırası; senaryo yalnız tek şirket, öbür ret nedeni yokken.
 - **S9-6 (bilgi):** J8 çapraz eşlikte 7 gün penceresi (Y9-17, G6 düzeni) ile G0 (3) "şüphede aynı dönem" 7 günden eski durumda çatışabilir; senaryosuz.
+
+### 14.5 Kodlama sırasında eklenen kâhin ayrıntıları (programa bakılmadan; 14.2'nin uzantısı)
+- **Y9-16 ek:** Tüm Hareketler kişi için bir ayın dönemiyse (kanon), kendi gününde o aya eşit özel aralıkla da (G2 2. yarısı) aynı dönem (J8-06). Son 3 Ay'a kanon verilmez (J8 yalnız Tüm Hareketler'i söyler).
+- **Y9-5 ek:** aşılmış denemenin iş kimliğiyle öğrenilen kabulü programın bildiği kabullere girer (iş çıktısında `kabul` sayısı +1; `kabul ≤ meta_ileti ≤ post` değişmezi korunur).
+- **Y9-11 ek:** "yanıt beklenirken" = program açıkken HERHANGİ bir işin Meta yanıtı bekleniyor (`gec_kabul` penceresi); tanınmayan bildirimin "ilk görülmesi" (wamid, durum, Meta zamanı) anahtarıyla.
+- **Girdi biçimi:** `meta_davranis.kanca` anahtarı iş de olabilir (`"T1/B"`; önceki öncelik: iş → cari → `*`) — aynı kişinin farklı işlerindeki ilk iletileri ayırmak için; eski senaryolarda böyle anahtar yok.
+- **İşçi:** şirket dosyası yazılamıyor (`dosya_yazilamaz`) ya da şirket geçici açılamıyorken (`sirket_acilamaz`) o şirketin işçisi istek göndermez (§6 W2 "Gönderiliyor istekten önce yazılır"); senaryolarda o sırada başka iş yok.
+
+### 14.6 Senaryolar (29) ve mutasyonlar (17)
+| Karar | Senaryo | Sınır | Mutasyon (yakalayan) |
+|---|---|---|---|
+| J1 | J1-01 Meta Bekletti iken duraklatılmış işe teslim → kapanır, Devam Et göndermez · J1-02 Süresi Doldu → 4. gün teslim → "Daha Önce Gönderildi", "Bu Ay" Kasım · J1-03 silinmiş şirket: geç teslim (ortak WABA "Bu Ay" 2) + geç failed, 6 × 200 · J1-04 aşılmış belirsiz geç teslim → "Bu Ay" 2 · J1-05 aşılmış belirsiz geç teslim, Yine de Gönder Başarısız → "Daha Önce Gönderildi" (eski: Sonucu Belirsiz) · J1-06 Meta Bekletti ret + geç teslim → yeniden deneme "Daha Önce Gönderildi" | silinmiş şirket, ay dönümü | M137 (J1-01), M138 + M146 (J1-03), M152 (J1-04) |
+| J2 | J2-01 Meta Bekletti + teslim → Teslim Edildi, POST 1, PDF silinir · J2-02 read → Okundu | 24 sa | M139 (J2-01) |
+| J3 | J3-01 yedeğe dönüş sonrası defterdeki kabule geç failed → gider · J3-02 sıfırlama sonrası geç failed · J3-03 aşılmış belirsizin geç failed'ı + Yine de Gönder Başarısız → gider (eski: Sonucu Belirsiz) · J3-04 eski denemenin failed'ı şu anki kabulü bozmaz | geri yükleme, sıfırlama | M140 (J3-01), M153 (J3-04), M152 (J3-03 de) |
+| J4 | J4-01 Meta Bekletti 2. denemesinden 73 sa (80. sa Gönderildi, 98. sa Süresi Doldu) · J4-02 Yine de Gönder kabulünden 73 sa | 73 sa | M141 (J4-01) |
+| J5 | J5-01 bekletme sonrası iki teslim → 2 (BİLİNEN SINIR) · J5-02 01.11 01:00 (UTC 31.10) teslim → Ekim 1 + Kasım 1 | gece yarısı yerel ≠ UTC | M142 (J5-01) |
+| J6 | J6-01 gecikmeli yanıt: A'nın 2 bildirimi + başka aracın bildirimi 503, yinelenince 200 (3 × 200, 3 × 503), son durum tek bildirimle aynı · J6-02 şirket geçici açılamaz (2 × 200, 1 × 503) · J6-03 bildirim kaydedilemez | 5 dk penceresine yaklaşılmaz | M143 (J6-01), M144 (J6-02), M145 (J6-03, J7-02) |
+| J7 | J7-01 onarım bekleyen kabul → yeni gönderim BAŞLAMAZ ("onarim_bekleyen_kabul"); onarım + yeniden açılış sonrası A "Daha Önce Gönderildi", C gider · J7-02 onarım sırasında gelen bildirim yinelenir, tek ileti | yeniden açılış | M147 (J7-01) |
+| J8 | J8-01 Tüm (01.11–05.11) ↔ aynı gün Bu Ay · J8-02 Tüm (01.10–31.10, ilk–son hareket) ↔ aynı gün Geçen Ay · J8-03 03.11 Tüm kanon → 05.11 Bu Ay · J8-04 Tüm bekleyen ↔ Bu Ay "Zaten Kuyrukta" · J8-05 31.10 23:30 Tüm → 01.11 00:30 Geçen Ay · J8-06 03.11 özel (Kasım kanonu) → 05.11 Tüm | ay sonu, gece yarısı yerel ≠ UTC, 2 gün | M148 (J8-01), M149 (J8-02), M150 (J8-03), M123 (J8-05 de) |
+| J9 | J9-01 Meta Bekletti → İptal → ikinci iş duraklatılmış → geç teslim → Devam Et ile 2. ileti · J9-02 failed → ikinci iş → geç teslim → 2. ileti (ikisi `bilinen_sinir: n3`) | — | M151 (J9-01; A seçeneği) |
+
+**Eski kâhinle (9086b097, ayrı `git archive` kopyası) yeni 29 senaryo:** 21'i FARKLI, 8'i AYNI. AYNI olanlar zaten böyleydi: J1-02, J1-06 (K3/§7a 17), J3-02 (sıfırlamada iş dosyada), J3-04 (eski kâhin
+eski denemenin failed'ını düşürüyordu — iş yine Gönderildi kalıyordu), J4-01/J4-02 (TTL zaten son kabulden), **J9-01/J9-02 (n3 bugünkü davranış — eski kâhin de 2 ileti
+bekliyordu)**. FARKLI'ların 6'sı yalnız yeni girdi türünden (J1-03 `sirket_sil`, J6-01 `gec_kabul`, J6-02/03, J7-01/02 yeni olaylar — eski kâhin tanımıyor); 15'i kural farkı
+(J1-01, J1-04, J1-05, J2-01, J2-02, J3-01, J3-03, J5-01, J5-02, J8-01…06). Karşılaştırmada eski kopyaya YALNIZ iş anahtarlı kanca planı satırı taşındı (girdi biçimi, kural değil).
+Kanıt `docs/kanit/2026-11-01/248-kahin9-eski-kahinle-yeni-senaryolar.txt`.
+
+### 14.7 Değişen eski beklentiler (244 eski senaryonun TAM model sonucu, `git show 9086b097:…/senaryolar.json` ile)
+**4 senaryo değişti, hepsinde YALNIZ `bu_ay`; elle beklenenlerin hiçbiri değişmedi (244/244 elle = model):**
+| Senaryo | Eski → yeni | Neden (KARAR) |
+|---|---|---|
+| E4-01-son-3-ay-sonraki-teslim-7-gun | `bu_ay.W1` {2026-10: 1} → {2026-10: 1, 2026-11: 1} | J5: aynı işin iki teslim edilen denemesi (Y1 30.10, Y3 06.11) ayrı sayılır |
+| E4-02-tum-hareketler-sonraki-teslim-7-gun | aynı | J5 |
+| H3-01-geri-yukleme-dosyasiz-gec-kabul | `bu_ay.W1.2026-10.teslim` 1 → 2 | J1 + J5: dosyada olmayan işin geç teslimi "Bu Ay"a girer (güncelleme 8 yorum 5 kalktı) |
+| H3-02-geri-yukleme-meta-bekletti-gec-teslim | `bu_ay` {} → {W1: {2026-10: 1}} | J1 + J5 (aynı) |
+Öbür 240 senaryonun tam sonucu bayt bayt aynı. Kanıt `docs/kanit/2026-11-01/248-kahin9-eski-244-fark.txt`.
+
+### 14.8 Sürücü için (S-18 … S-26; programa karşı koşmadan önce gereken yeni eşlemeler)
+- **S-18 iş anahtarlı kanca planı:** `meta_davranis.kanca["T1/B"]` → sahte Meta kuralı o işin iletisine (opaque = programın iş kimliği) bağlanmalı; öncelik iş → cari → `*`.
+- **S-19 `gec_kabul`:** `{"gec_kabul": "+10s"}` → sahte Meta `{gecikmeMs: 10000}` ama süre PROGRAMIN zaman aşımından KISA olmalı (D0: zaman aşımı bilinmiyor; programın değeri okunup senaryo süresi altında kaldığı doğrulanmalı — değilse senaryo GEÇERSİZ, fark sayılmaz). Kanca bu sırada (yanıttan ÖNCE) programa ulaşmalı.
+- **S-20 kanca yanıt sayımı:** `kanca_yanit_cikti` senaryolarında sahte Meta'nın programa yaptığı İMZALI kanca POST'larının HTTP kodları sayılır (`{"200": n, "503": m}`); bağlantı kurulamayan / program kapalı teslimler ve imzasız olaylar sayılmaz. `kanca_kuyrugu` olayı = sahte Meta kuyruğunu işlet (`/__sahte/kanca/kuyruk`).
+- **S-21 `sahte_kanca` + `imzali: true`:** başka aracın bildirimi — sahte Meta'nın İMZALI ama bilinmeyen wamid'li, opaque'sız olayı (`kanca/ham` imzalı).
+- **S-22 `sirket_sil {sirket}`:** programda şirketi kalıcı sil (Şirketi Sil); sonra öbür şirkette (aynı WABA) "Bu Ay" okunur; silinen şirketin toplu işleri / işleri sonuçtan düşer (`toplular`, `isler` yalnız kalan şirket); `meta.post` dosyadaki işlerden (bilinen ihlal `post_toplam`).
+- **S-23 `sirket_acilamaz {sirket, acik}`:** şirket dosyasını geçici açılamaz yap (ör. başka süreçte özel kilit) ve geri al; **`bildirim_yazilamaz {acik}`:** bildirim kaydı yazılamaz (ör. bildirim/defter dosyası yazma kilidi); **`dosya_yazilamaz {sirket, acik}`:** şirket dosyası YAZMAYA kapalı ama makine defteri yazılabilir (J7). Sürücü her birinin gerçekten oluştuğunu (programın yanıtı/günlüğü) okumalı — oluşmadıysa senaryo GEÇERSİZ.
+- **S-24 J7 okunacak:** yeni gönderim başlatma yanıtının nedeni → `baslamadi.<etiket> = "onarim_bekleyen_kabul"` (programın Türkçe nedeni eşlenir); onarımdan sonra `kapat` / `ac`.
+- **S-25 `bilinen_sinir`:** `n3` / `J5` işaretli senaryoda fark çıkarsa önce "BİLİNEN SINIR kalktı mı" diye okunur (J9-01/02: POST 1 çıkarsa program A seçeneğine geçmiş demektir — hata değil, ana oturuma).
+- **S-26 J8:** dönem `"tum"` + hareket tarihleri 1'i / ay sonu olan cariler (P, Q, S); program "kişiye özel dönem"i tek okumayla hesaplıyorsa J8-01 ya da J8-02'den biri ayrışır → OKUMA FARKI (14.4 S9-3).
+- Gözlemler: iş durumları (kontrol anlarında), `meta.post`, `bu_ay` (WABA × ay), `elenen` / `olusmadi` / `onceki_uyari`, `yeniden`, `baslamadi`, `kanca_yanitlari`, `isler.*.medya_silme`.
+
+### 14.9 Kanıt ve DENENMEYEN
+- Kendi testi **296/296** (F mutasyon **153/153**; yeni I7: BİLİNEN SINIR işaretleri + kanca yanıt sayıları); senaryolar **273/273** elle = model; kanıt `docs/kanit/2026-11-01/248-kahin9-*`.
+- DENENMEYEN: programa karşı sürücü koşusu (görev gereği; S-18…S-26 eşlemeleri yazılmadı); S9-1 (bekleyen Yine de Gönder + eski denemenin teslimi); hareketsiz cari J8 (S9-2); J6 5 dk sınırı (S9-4);
+  J7 başka şirkete etkisi / öbür ret nedenleriyle sırası (S9-5); J8 7 günden eski çapraz eşlik (S9-6); gerçek "Şirket Verisini Sıfırla"nın işleri silmesi (S-13); sahte Meta sunucusu testleri
+  YENİDEN KOŞULMADI (sahte-meta/ değişmedi).
