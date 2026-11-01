@@ -1064,6 +1064,8 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       await s.ctx.drain();
       const job = await s.job(batchId);
       assert.deepEqual([job.state, s.ctx.wa.ledger.companyOfWamid(job.wamid)], ["accepted", null], "ön koşul: sahip yalnız dosyada");
+      s.ctx.clock.advance(6 * 60_000); // A6 penceresi (bekleyen talep 503'ü) dışında — 503'ü yalnız "şirket meşgul" kuralı verebilir
+      assert.equal((await s.post([st(s, "wamid.YABANCI9", "delivered")])).status, 200, "ön koşul: pencere dışında, meşgul şirket yokken yabancı ileti 200");
       s.ctx.server.app.context.busyCompanies.set(s.company.id, "“002” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.");
       try {
         const busy = await s.post([st(s, job.wamid, "delivered")]);
@@ -1075,6 +1077,27 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       assert.equal((await s.job(batchId)).state, "delivered");
     } finally {
       s.ledgerFault.on = false;
+      await s.close();
+    }
+  });
+  it("T-K0h2 sahibi DEFTERDE bilinen wamid · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503, yalnız defter YAZILMAZ; açılınca 200 ve satır Teslim (U6 koşul a)", { timeout: 120_000 }, async () => {
+    const s = await hookHarness({ second: true });
+    try {
+      const batchId = await s.batch();
+      await s.ctx.drain();
+      const job = await s.job(batchId);
+      assert.equal(s.ctx.wa.ledger.companyOfWamid(job.wamid)?.companyId, s.company.id, "ön koşul: sahip defterde");
+      s.ctx.server.app.context.busyCompanies.set(s.company.id, "“002” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.");
+      try {
+        const busy = await s.post([st(s, job.wamid, "delivered")]);
+        assert.equal(busy.status, 503, `geçici açılamama → 503 (geldi ${busy.status} ${busy.text})`);
+        assert.equal(s.ctx.wa.ledger.deliveredAttempt(job.id, 1), false, "geçicide yalnız defter yolu YOK");
+      } finally {
+        s.ctx.server.app.context.busyCompanies.delete(s.company.id);
+      }
+      assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200);
+      assert.equal((await s.job(batchId)).state, "delivered");
+    } finally {
       await s.close();
     }
   });

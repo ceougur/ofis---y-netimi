@@ -61,7 +61,7 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
   // şirketin WABA'sı kancanınkiyle aynı olmalı (aşağıda); Yol 2'de imzasız bildirim yine yazılmaz (aynı kurallar). İş U6 (dar kontrol 15): kabulü deftere yazılamamış
   // işin wamid'i de dosyada aranır (queue.movedOwnerOfWamid). Şirket GEÇİCİ olarak açılamıyorsa (geri yükleme / açılış sürüyor, kilit) lookup.busy işaretlenir →
   // sahibi bulunamayan bildirim 503 alır (Meta yeniden dener); KALICI açılamama (veri dosyası yok, bozuk kayıt) atlanır.
-  const temporary = error => Boolean(error?.retryAfter) || isLockError(error);
+  const temporary = error => Boolean(error?.retryAfter || error?.extra?.retryAfter) || isLockError(error); // HttpError(503, …, { retryAfter }) — app.mjs appFor busyCompanies
   function movedOwnerOf(wamid, lookup) {
     if (!wamid) return null;
     for (const company of companies() || []) {
