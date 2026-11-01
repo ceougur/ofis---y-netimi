@@ -143,6 +143,11 @@ function govdeDegiskenleri(istekler, isKimlikleri) {
   const govdeParam = son?.govde?.template?.components?.find(c => String(c.type).toLowerCase() === "body")?.parameters;
   return Array.isArray(govdeParam) ? govdeParam.map(x => x.text ?? null) : null;
 }
+// S-23/S-24 (J7, 9d): onarım bekleyen kabul gözlemi — şirket dosyasında Meta'nın kabul ettiği (wamid'li, Meta Kabul Etti ve sonrası) deneme, gönderim defterinde kabulü
+// (outcomes accepted ya da öğrenilen wamid) YOK. dosyaIsleri: [{id, attempt, wamid, state}], defterKabul: Set("<iş>|<deneme>").
+function defterdeEksikKabul(dosyaIsleri, defterKabul) {
+  return (dosyaIsleri || []).filter(j => j.wamid && ["accepted", "sent", "delivered", "read"].includes(j.state) && !defterKabul.has(`${j.id}|${j.attempt}`)).map(j => j.id);
+}
 // S-22: programda 001 (kök) şirket silinemez; senaryo kök etikete bağlı şirketi siliyorsa kök, silinmeyen ilk etikete bağlanır (etiket eşlemesi; anlam kök olmaya bağlı değil).
 function kokSec(etiketler, silinecekler) {
   const sil = new Set(silinecekler);
@@ -156,7 +161,10 @@ function baslamaNedeni(status, kod, ileti) {
   if (kod === "LICENSE_READ_ONLY") return "lisans_salt_okunur";
   if (kod === "whatsapp-ack-required") return "onay_yok";
   if (/^whatsapp-template-/.test(kod || "")) return "sablon_uygun_degil";
-  if (kod === "whatsapp-ledger-repair" || (kod === "whatsapp-ledger" && /kabul/i.test(String(ileti || "")))) return "onarim_bekleyen_kabul";
+  // Programda "whatsapp-ledger" kodlu 503 iki yerden gelir: bekleyen onarım deftere taşınamadı (ileti "…kabulü yazılamadı…; gönderim bekliyor." ya da defter kilit
+  // notu "…gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.") → onarım bekleyen kabul; defter açılamadı ("…Gönderim başlatılmadı.") → değil.
+  const metin = String(ileti || "");
+  if (kod === "whatsapp-ledger-repair" || (kod === "whatsapp-ledger" && /kabulü yazılamadı|gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor/i.test(metin))) return "onarim_bekleyen_kabul";
   return `?${status} ${kod || ""}`;
 }
 // S-23: arıza benzetimi — programın dosyasına DIŞ bir bağlantıdan yazma kilidi (BEGIN IMMEDIATE; WAL'de okuyucular sürer). Kilidin gerçekten durduğu programdan
@@ -958,7 +966,7 @@ async function kos(sen, uc, secenek) {
     const siradaki = () => olaylar.filter(x => x.t !== null).sort((a, b) => a.t - b.t || a.i - b.i);
     // S-19: gecikmeli kabulde yanıt tutulurken (program Meta'nın yanıtını beklerken) sahte saat "bitis"e dek ilerler; aradaki kancalar ve YALNIZ dış olaylar (sahte /
     // başka aracın bildirimi, arıza aç/kapa) işlenir — programın kendi eylemleri (başlat, duraklat…) yanıt bekleyen işçinin dışında kalır, sonraya.
-    const TUTMADA = new Set(["sahte_kanca", "sirket_acilamaz", "bildirim_yazilamaz", "dosya_yazilamaz"]);
+    const TUTMADA = new Set(["sahte_kanca", "sirket_acilamaz", "bildirim_yazilamaz", "dosya_yazilamaz", "defter_yazilamaz"]);
     tutmaIsle = async bitis => {
       for (;;) {
         const ol = siradaki().find(x => TUTMADA.has(x.o.tur) && x.t <= bitis);
@@ -1404,11 +1412,13 @@ async function kos(sen, uc, secenek) {
         notlar.push(`ŞİRKET SİLİNDİ (S-22): ${s} (${sirketKodu[s]}); yedek ${r.data?.data?.backup ? "alındı" : "yok"}`);
         return;
       }
-      if (tur === "sirket_acilamaz" || tur === "bildirim_yazilamaz" || tur === "dosya_yazilamaz") {
+      if (tur === "sirket_acilamaz" || tur === "bildirim_yazilamaz" || tur === "dosya_yazilamaz" || tur === "defter_yazilamaz") {
         // S-23 (README §14.8): arıza benzetimi — dış bağlantıdan yazma kilidi. dosya_yazilamaz / sirket_acilamaz: şirket dosyası; bildirim_yazilamaz: makine defteri
         // (bildirimin yazıldığı yer). "Açılamaz" programın açık şirketinde yazılamazlıkla benzetilir (çıktı yalnız 200/503 sayar; EŞLEME BELİRSİZ notu).
-        const anahtar = tur === "bildirim_yazilamaz" ? "defter" : `${tur}:${o.sirket || "A"}`;
-        const dosya = tur === "bildirim_yazilamaz" ? path.join(dataDir, "whatsapp-gonderim.sqlite") : sirketDosyasi(o.sirket || "A");
+        // defter_yazilamaz (9d, J7): GÖNDERİM DEFTERİ (makine düzeyi) yazma kilidi, şirket dosyası yazılabilir.
+        const defterde = tur === "bildirim_yazilamaz" || tur === "defter_yazilamaz";
+        const anahtar = defterde ? `defter:${tur}` : `${tur}:${o.sirket || "A"}`;
+        const dosya = defterde ? path.join(dataDir, "whatsapp-gonderim.sqlite") : sirketDosyasi(o.sirket || "A");
         if (mut("S23-kilit-uygulanmaz")) return void notlar.push(`MUTASYON: ${tur} uygulanmadı`);
         if (o.acik) {
           if (kilitler.has(anahtar)) return;
@@ -1420,16 +1430,30 @@ async function kos(sen, uc, secenek) {
         } else {
           const k = kilitler.get(anahtar);
           if (!k) return void notlar.push(`ARIZA (S-23): ${tur} kapatılacak kilit yok`);
+          if (tur === "defter_yazilamaz") {
+            // J7 (S-23/S-24): kilit KALKMADAN önce programın kabulü deftere yazamadığı okunur (şirket dosyasında kabul, defterde yok). Görülmezse senaryo GEÇERSİZ.
+            const eksik = [];
+            const defterKabul = new Set();
+            const dd = new DatabaseSync(path.join(dataDir, "whatsapp-gonderim.sqlite"), { readOnly: true });
+            try {
+              for (const r of dd.prepare("SELECT job_id, attempt FROM outcomes WHERE outcome = 'accepted'").all()) defterKabul.add(`${r.job_id}|${r.attempt}`);
+              const ogrenilen = dd.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'learned_wamids'").get();
+              if (ogrenilen) for (const r of dd.prepare("SELECT job_id, attempt FROM learned_wamids").all()) defterKabul.add(`${r.job_id}|${r.attempt}`);
+            } finally {
+              dd.close();
+            }
+            for (const sk of sirketler.filter(x => !silinenSirketler.has(x))) {
+              eksik.push(...defterdeEksikKabul(db(sk)?.all("SELECT id, attempt, wamid, state FROM wa_jobs") || [], defterKabul));
+            }
+            arizaGozlem.push({ tur, t: trIso(simdi), defterde_eksik_kabul: eksik.length });
+            notlar.push(`J7 gözlem (S-23): kilit kalkmadan önce kabulü deftere yazılamamış deneme ${eksik.length}`);
+            if (!eksik.length && !mut("S23-kilit-uygulanmaz")) gecersiz.push("defter_yazilamaz: programın kabulü deftere yazamadığı görülmedi (onarım bekleyen kabul oluşmadı)");
+          }
           kilitKapat(k.d);
           kilitler.delete(anahtar);
           const birakti = !kilitliMi(k.dosya);
           arizaGozlem.push({ tur, sirket: o.sirket || null, t: trIso(simdi), birakildi: birakti });
           notlar.push(`ARIZA (S-23): ${tur} ${o.sirket || ""} bitti — kilit ${birakti ? "bırakıldı" : "HÂLÂ DURUYOR"}`);
-          if (tur === "dosya_yazilamaz") {
-            // J7 gözlemi: Meta'nın kabul ettiği ama şirket dosyasına yazılamamış iş (dosyada Gönderiliyor, defterde kabul) gerçekten oluştu mu.
-            const gonderiliyor = db(o.sirket || "A")?.all("SELECT id FROM wa_jobs WHERE state = 'sending'") || [];
-            notlar.push(`J7 gözlem: kilit kalkarken dosyada "Gönderiliyor" iş ${gonderiliyor.length}`);
-          }
         }
         return;
       }
@@ -1857,7 +1881,8 @@ if (secenek.kendiTesti) {
   // S-24 + başlatma reddi tablosu
   bak("S-24 defter onarımı → onarim_bekleyen_kabul", baslamaNedeni(503, "whatsapp-ledger-repair", "") === "onarim_bekleyen_kabul");
   bak("S-24 kabul iletili whatsapp-ledger → onarim_bekleyen_kabul", baslamaNedeni(503, "whatsapp-ledger", "WhatsApp gönderim defterine önceki bir iletinin kabulü yazılamadı") === "onarim_bekleyen_kabul");
-  bak("S-24 disk dolu whatsapp-ledger onarım değil", baslamaNedeni(503, "whatsapp-ledger", "defterine yazılamadı (ENOSPC); disk dolu") === "?503 whatsapp-ledger");
+  bak("S-24 kilit notlu whatsapp-ledger (onarım deftere taşınamadı) → onarim_bekleyen_kabul", baslamaNedeni(503, "whatsapp-ledger", "WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.") === "onarim_bekleyen_kabul");
+  bak("S-24 defter açılamadı (disk dolu) onarım değil", baslamaNedeni(503, "whatsapp-ledger", "WhatsApp gönderim defterine yazılamadı (ENOSPC); disk dolu olabilir. Gönderim başlatılmadı.") === "?503 whatsapp-ledger");
   bak("başlatma reddi: lisans", baslamaNedeni(403, "LICENSE_READ_ONLY", "") === "lisans_salt_okunur");
   // S-7/S-9/S-11 eleme nedenleri
   bak("eleme nedenleri tablosu", atlamaKodu("Daha Önce Gönderildi") === "daha_once_gonderildi" && atlamaKodu("Sonucu Belirsiz", "yeniden") === "sonucu_belirsiz" && atlamaKodu("Zaten Kuyrukta", "yine") === "zaten_kuyrukta" && atlamaKodu("Bilinmeyen") === "?Bilinmeyen");
@@ -1872,6 +1897,10 @@ if (secenek.kendiTesti) {
   ekstreMut = "S30-tum-araligi-okunmaz";
   bak("S-30 mutasyonu çıktıyı değiştirir (dişi)", ekstreOku(pdf("Tüm Hareketler · 15.01.2026 – 30.10.2026")).donem_bas === null);
   ekstreMut = null;
+  // S-23/S-24 (J7, 9d)
+  const dosyaIsleri = [{ id: "j1", attempt: 1, wamid: "w1", state: "accepted" }, { id: "j2", attempt: 1, wamid: "w2", state: "delivered" }, { id: "j3", attempt: 1, wamid: "", state: "sending" }, { id: "j4", attempt: 2, wamid: "w4", state: "sent" }];
+  bak("S-23 J7 defterde kabulü olmayan kabul edilmiş deneme bulunur", esit(defterdeEksikKabul(dosyaIsleri, new Set(["j2|1", "j4|1"])), ["j1", "j4"]));
+  bak("S-23 J7 hepsi defterdeyse eksik yok", esit(defterdeEksikKabul(dosyaIsleri, new Set(["j1|1", "j2|1", "j4|2"])), []));
   // S-32
   const istek = (is, texts) => ({ islem: "messages", govde: { biz_opaque_callback_data: is, template: { components: [{ type: "header", parameters: [{ type: "document" }] }, { type: "body", parameters: texts.map(t => ({ type: "text", text: t })) }] } } });
   const istekler = [istek("j1", ["A", "Firma", "01.10.2026 – 31.10.2026", "1.000,00 TL"]), istek("j2", ["B"]), istek("j1b", ["A", "Firma", "01.10.2026 – 31.10.2026", "2.000,00 TL"])];
@@ -2008,8 +2037,8 @@ const MUTASYONLAR = [
   ["S20-imzasiz-da-sayilir", "J6-01*,J6-02*,J6-03*,J1-03*", "S-20 kanca yanıt sayımı yalnız imzalı bildirim"],
   ["S20-503-sayilmaz", "J6-01*,J6-02*,J6-03*", "S-20 kanca yanıt sayımı 503'ü de sayar"],
   ["S22-sirket-silinmez", "J1-03*", "S-22 sirket_sil → programın Şirketi Sil ucu"],
-  ["S23-kilit-uygulanmaz", "J6-02*,J6-03*,J7-01*,J7-02*", "S-23 arıza olayları dosya kilidiyle oluşur"],
-  ["S24-onarim-eslenmez", "J7-01*", "S-24 onarım bekleyen kabul reddi → onarim_bekleyen_kabul"],
+  ["S23-kilit-uygulanmaz", "J6-02*,J6-03*,J7-01*,J7-02*", "S-23 arıza olayları dosya kilidiyle oluşur (J7: gönderim defteri, 9d)"],
+  ["S24-onarim-eslenmez", "J7-01*,J7-02*", "S-24 onarım bekleyen kabul reddi → onarim_bekleyen_kabul (9d: J7 artık geçerli, gec_kabul 10 sn)"],
   ["S30-tum-araligi-okunmaz", "J11-01*,J11-02*,ICERIK-08*,J12-02*", "S-30 Tüm Hareketler PDF dönemi okunur"],
   ["S32-degiskenler-programdan", "ICERIK-09*,J12-01*,J12-03*", "S-32 değişkenler Meta'ya gidenden"],
 ];
