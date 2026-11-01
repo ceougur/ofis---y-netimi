@@ -84,7 +84,11 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       pinSealed: typeof raw.pinSealed === "string" ? raw.pinSealed : "",
     };
   }
-  const write = (record, userId = null) => store.setSetting(SETTING_KEY, JSON.stringify(record), userId);
+  // İş Y3: bağlantı modu makine defterine de (şirket dosyası açılamazken kanca imzasız bildirimin Yol 1'e mi Yol 2'ye mi ait olduğunu bilsin).
+  const write = (record, userId = null) => {
+    store.setSetting(SETTING_KEY, JSON.stringify(record), userId);
+    hooks?.noteMode?.(record?.wabaId, record?.mode === "embedded" ? "embedded" : "manual");
+  };
 
   // İstemciye giden görünüm: tokenSealed YOK; yalnız kayıtlı mı ve bu bilgisayarda açılabiliyor mu.
   function view({ writable = true } = {}) {
@@ -457,6 +461,8 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
    */
   async function ensureHook(publicUrl, { force = false } = {}) {
     const record = read();
+    // İş Y3: önceden kaydedilmiş bağlantının modu (bakım turu saatte bir çağırır) — makine defterinde yoksa yazılır.
+    if (record) hooks?.noteMode?.(record.wabaId, record.mode === "embedded" ? "embedded" : "manual");
     if (!record?.tokenSealed || !config.whatsappGraphUrl) return { skipped: "no-connection" };
     if (!hooks) return { skipped: "no-ledger" };
     const base = hookBase(publicUrl);

@@ -83,6 +83,12 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
   // TEK yardımcısında (ledgerOnlyResult; queue.applyLedgerOnly ile aynı): D/R o denemeye teslim, F (131049 dahil) son denemeye teslim edilemedi. 200 (Meta 7 gün yeniden
   // denemeye itilmez); yazılamazsa 503.
   function ledgerOnly(items, owner, signed, out) {
+    // İş Y3 (dar kontrol 18): imzasız bildirim yalnız WABA'nın modu makine defterinde "manual" (Yol 1) ise yazılır — Yol 2'de (embedded) olağan yol 401 verir; mod
+    // bilinmiyorsa yazılmaz (yanlış iletiyi saymaktansa Meta'nın yinelemesi).
+    if (!signed && hooks.modeOf?.(owner.wabaId) !== "manual") {
+      out.ignored += items.length;
+      return;
+    }
     for (const { status } of items) {
       const value = String(status?.status || "").toLowerCase();
       const wamid = String(status?.id || "").slice(0, 200);
@@ -167,7 +173,10 @@ export function createWhatsappHook({ hooks, companyOf, companies = () => [], app
         // Geri yükleme / açılış sürüyor, kilit, bozuk dosya …: 503, Meta bildirimi yeniden dener (200 dışı yanıtta 7 güne kadar; uygulanmış olanlar yinelenince etkisizdir).
         // İş X1 (dar kontrol 17 f1b): 503'ten ÖNCE delivered / read deftere (o denemeye; eşgüçlü) — Meta bırakırsa da teslim sayılır; failed şirket açılınca uygulanır.
         if (!permanent(error)) {
-          ledgerOnly(items.filter(item => ["delivered", "read"].includes(String(item.status?.status || "").toLowerCase())), items[0].owner, signed, { applied: 0, ignored: 0, unknown: 0 });
+          // İş Y2 (dar kontrol 18): yalnız fiyat bilgisi (pricing.billable) TAŞIYAN D/R — fiyatsız bildirim Bu Ay ücretli sayısını yanlış artırmasın (defter yalnız eklenir;
+          // sonraki olağan yazım düzeltemez); fiyatsız olan şirket açılınca Meta'nın yinelemesiyle olağan yoldan yazılır.
+          const priced = item => item.status?.pricing && typeof item.status.pricing === "object" && "billable" in item.status.pricing;
+          ledgerOnly(items.filter(item => ["delivered", "read"].includes(String(item.status?.status || "").toLowerCase()) && priced(item)), items[0].owner, signed, { applied: 0, ignored: 0, unknown: 0 });
           return failure(res, 503, "whatsapp-hook-busy", "Şirket şu anda açılamıyor; bildirim yeniden denenecek.");
         }
         // İş U (a) + V1: KALICI açılamama (sürüp giden veri dosyası yokluğu) → yalnız defter, 200.

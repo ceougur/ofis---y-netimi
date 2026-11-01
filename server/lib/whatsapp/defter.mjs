@@ -269,9 +269,18 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     legacyDeliveryAt: db.prepare("SELECT at FROM deliveries WHERE job_id = ?"),
     // İş W (KULLANICI KARARI S9-1): "Yine de Gönder" KAYNAK ZİNCİRİ (anyway_links özyineli + şirket dosyasındaki inherit_of zinciri ?2 [JSON dizi]) — kendisi hariç,
     // teslimi olan ilk iş.
+    // İş Y1 (dar kontrol 18; ilke 3 "AYNI DÖNEMDE elenir"): yalnız DÖNEMİ KESİŞEN halka — halkanın talep anahtarları (claims.period_key / claim_keys) bu talebin anahtarlarıyla
+    // (?3, JSON dizi) kesişmeli; halkanın bu defterde talebi yoksa (taşınan veri) "şüphede aynı dönem" sayılır.
     chainDelivered: db.prepare(`WITH RECURSIVE chain(id) AS (SELECT ?1 UNION SELECT value FROM json_each(?2) UNION SELECT al.source_job_id FROM anyway_links al JOIN chain c ON al.job_id = c.id)
       SELECT c.id AS jobId, COALESCE((SELECT MIN(a.at) FROM attempt_deliveries a WHERE a.job_id = c.id), (SELECT d.at FROM deliveries d WHERE d.job_id = c.id)) AS at
-      FROM chain c WHERE c.id <> ?1 AND COALESCE((SELECT MIN(a.at) FROM attempt_deliveries a WHERE a.job_id = c.id), (SELECT d.at FROM deliveries d WHERE d.job_id = c.id)) IS NOT NULL LIMIT 1`),
+      FROM chain c WHERE c.id <> ?1 AND COALESCE((SELECT MIN(a.at) FROM attempt_deliveries a WHERE a.job_id = c.id), (SELECT d.at FROM deliveries d WHERE d.job_id = c.id)) IS NOT NULL
+        AND (NOT EXISTS (SELECT 1 FROM claims x WHERE x.job_id = c.id)
+          OR EXISTS (SELECT 1 FROM claims x WHERE x.job_id = c.id AND x.period_key IN (SELECT value FROM json_each(?3)))
+          OR EXISTS (SELECT 1 FROM claim_keys k WHERE k.job_id = c.id AND k.period_key IN (SELECT value FROM json_each(?3))))
+      LIMIT 1`),
+    // İş Y3: WABA'nın bağlantı modu (manual = Yol 1 / embedded = Yol 2) — şirket dosyası açılamazken kancanın imzasız bildirimi yazıp yazmayacağı buna bakar.
+    modeSet: db.prepare("INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value"),
+    modeGet: db.prepare("SELECT value FROM meta WHERE key = ?"),
     // T2-3/4
     hookEvent: db.prepare("INSERT INTO hook_events (waba_id, path_hash, verify_hash, base, state, reason, error, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"),
     hookLast: db.prepare("SELECT * FROM hook_events WHERE waba_id = ? ORDER BY seq DESC LIMIT 1"),
@@ -389,7 +398,8 @@ export function openWaLedger({ dir, log = console, fault = null }) {
       };
       // İş W (KULLANICI KARARI S9-1, 01.11.2026; ilke 3): "Yine de Gönder" (belirsizlik onayı) zincirinin KAYNAĞINDAN teslim geldiyse yeni ileti GİTMEZ.
       const sourceDeliveredOf = () => {
-        const hit = q.chainDelivered.get(String(row.jobId), JSON.stringify(Array.isArray(row.sources) ? row.sources.map(String) : []));
+        const keys = [...new Set([row.periodKey, ...(Array.isArray(row.periodKeys) ? row.periodKeys : [])].filter(Boolean).map(String))];
+        const hit = q.chainDelivered.get(String(row.jobId), JSON.stringify(Array.isArray(row.sources) ? row.sources.map(String) : []), JSON.stringify(keys));
         return hit ? { attempt: null, outcome: "source-delivered", sourceJobId: hit.jobId, wamid: "", at: hit.at } : null;
       };
       const delivered = deliveredOf() || sourceDeliveredOf();
@@ -607,6 +617,17 @@ export function openWaLedger({ dir, log = console, fault = null }) {
     deliveredJob: jobId => Boolean(jobId && q.deliveredJob.get(String(jobId))),
     /** İş U5: bu DENEMENİN teslimi defterde var mı (aynı denemenin yinelenen teslimi etkisiz; başka denemenin teslimi ayrı sayılır). */
     deliveredAttempt: (jobId, attempt) => Boolean(jobId && q.deliveredAttempt.get(String(jobId), Number(attempt))),
+    /** İş Y3: WABA'nın bağlantı modunu kaydeder / okur ("manual" | "embedded" | null — bilinmiyor). Hata fırlatmaz. */
+    noteMode(wabaId, mode) {
+      try {
+        if (wabaId && ["manual", "embedded"].includes(mode) && q.modeGet.get(`mode:${wabaId}`)?.value !== mode) q.modeSet.run(`mode:${wabaId}`, mode);
+        return true;
+      } catch (error) {
+        log.warn?.(`WhatsApp gönderim defteri: bağlantı modu yazılamadı (${error.message}).`);
+        return false;
+      }
+    },
+    modeOf: wabaId => (wabaId ? q.modeGet.get(`mode:${wabaId}`)?.value || null : null),
     /** İş V2: denemenin teslim anı (deneme başına teslim satırı); yoksa null. */
     deliveryOf: (jobId, attempt) => q.deliveryOf.get(String(jobId), Number(attempt))?.at || null,
     /**
