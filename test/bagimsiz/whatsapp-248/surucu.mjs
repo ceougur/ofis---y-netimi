@@ -137,6 +137,12 @@ function gecKabulMs(y) {
 }
 // S-19 geçerliliği: gecikme programın üretimdeki zaman aşımından KISA olmalı (README §14.8); değilse senaryo GEÇERSİZ (fark sayılmaz).
 const gecKabulGecersiz = (ms, zamanAsimiMs) => (ms === null ? null : ms >= zamanAsimiMs ? `gec_kabul ${ms} ms ≥ programın Meta zaman aşımı ${zamanAsimiMs} ms` : null);
+// S-32: bir kâhin işinin (program işleri kümesi) Meta'ya GİDEN son ileti isteğindeki gövde değişkenleri; istek yoksa null.
+function govdeDegiskenleri(istekler, isKimlikleri) {
+  const son = (istekler || []).filter(i => i.islem === "messages" && isKimlikleri.has(i.govde?.biz_opaque_callback_data)).at(-1);
+  const govdeParam = son?.govde?.template?.components?.find(c => String(c.type).toLowerCase() === "body")?.parameters;
+  return Array.isArray(govdeParam) ? govdeParam.map(x => x.text ?? null) : null;
+}
 // S-22: programda 001 (kök) şirket silinemez; senaryo kök etikete bağlı şirketi siliyorsa kök, silinmeyen ilk etikete bağlanır (etiket eşlemesi; anlam kök olmaya bağlı değil).
 function kokSec(etiketler, silinecekler) {
   const sil = new Set(silinecekler);
@@ -197,6 +203,7 @@ function argumanlar(argv) {
     else if (a === "--mutasyon") o.mutasyon = argv[++i];
     else if (a === "--mutasyon-denetimi") o.mutasyonDenetimi = true;
     else if (a === "--dokum") o.dokum = argv[++i];
+    else if (a === "--kendi-testi") o.kendiTesti = true;
     else throw new Error(`bilinmeyen seçenek: ${a}`);
   }
   if (!["hizli", "yavas", "ikisi"].includes(o.uc)) throw new Error("--uc hizli|yavas|ikisi");
@@ -309,7 +316,7 @@ async function kos(sen, uc, secenek) {
   const davranis = g.meta_davranis || {};
   const sirketlerHam = [...new Set(["A", ...Object.keys(firmalar), ...g.cariler.map(c => c.sirket || "A"), ...g.olaylar.filter(o => o.tur === "baslat").map(o => o.sirket || "A")])];
   // S-22: kök (001) etiketi — silinecek şirket kök olamaz (program 409); KOK = programın 001'ine bağlanan kâhin etiketi.
-  const KOK = mut("S22-kok-esleme-yok") ? "A" : kokSec(sirketlerHam, g.olaylar.filter(o => o.tur === "sirket_sil").map(o => o.sirket || "A"));
+  const KOK = kokSec(sirketlerHam, g.olaylar.filter(o => o.tur === "sirket_sil").map(o => o.sirket || "A"));
   if (!KOK) throw new Error("EŞLEME BELİRSİZ: bütün şirketler siliniyor (001 silinemez)");
   const sirketler = [KOK, ...sirketlerHam.filter(x => x !== KOK)];
   const silinenSirketler = new Set();
@@ -705,7 +712,7 @@ async function kos(sen, uc, secenek) {
     }
     kancaKaydi.push({ t: simdi, http: yanit.ok ? yanit.status : 0, isaret, wamidler, imzali });
     // S-20: programa ULAŞAN İMZALI (Meta'nın) bildirimin HTTP yanıtı sayılır; kapıcıda 503 (program/tünel kapalı) ve imzasız olay sayılmaz.
-    if ((imzali || mut("S20-imzasiz-da-sayilir")) && yanit.ok) kancaYanit[String(yanit.status)] = (kancaYanit[String(yanit.status)] || 0) + 1;
+    if ((imzali || mut("S20-imzasiz-da-sayilir")) && yanit.ok && !(mut("S20-503-sayilmaz") && yanit.status === 503)) kancaYanit[String(yanit.status)] = (kancaYanit[String(yanit.status)] || 0) + 1;
     res.writeHead(yanit.ok ? yanit.status : 502);
     res.end(yanit.ok ? yanit.body : undefined);
   }
@@ -1530,6 +1537,7 @@ async function kos(sen, uc, secenek) {
       if (m.silindi) medyaSilme.set(isId, (medyaSilme.get(isId) || 0) + 1);
     }
     degismez.silinmis_medyayla_gonderim = kayit.gecersizMedyaDenemeleri.length;
+    ekstreMut = MUTASYON;
     const pdfOku = medyaId => {
       const m = meta.meta.medyalar.get(String(medyaId));
       if (!m) return null;
@@ -1551,6 +1559,8 @@ async function kos(sen, uc, secenek) {
     for (const [anahtar, liste] of [...isler].sort(([a], [b]) => (a < b ? -1 : 1))) {
       const son = liste.at(-1);
       const icerikli = [...liste].reverse().find(x => x.job.params?.length) || null;
+      // S-32 (README §14.14): ekstre/hatırlatma değişkenleri Meta'ya GİDEN son ileti isteğinden (gövde parametreleri); hiç gitmediyse programın iş kaydı (G3).
+      const gidenDegiskenler = mut("S32-degiskenler-programdan") ? null : govdeDegiskenleri(kayit.istekler, new Set(liste.map(x => x.job.id)));
       const say = harita => liste.reduce((s, x) => s + (harita.get(x.job.id) || 0), 0);
       const cari = anahtar.split("/")[1];
       const etiket = anahtar.split("/")[0];
@@ -1571,7 +1581,7 @@ async function kos(sen, uc, secenek) {
         durum,
         telefon: gonderimeGirdi && !atlandiGonderimde ? son.job.phone || null : null,
         sablon,
-        degiskenler: icerikli ? icerikli.job.params : null,
+        degiskenler: gidenDegiskenler || (icerikli ? icerikli.job.params : null),
         pdf: sablon === "destekofis_ekstre" && sonMedya ? pdfOku(sonMedya) : null,
         dosya_adi: sablon === "destekofis_ekstre" ? dosya : null,
         hata_kodu: hataKodu(liste),
@@ -1713,12 +1723,14 @@ const isoGun = gun => {
   const m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(gun || "");
   return m ? `${m[3]}-${m[2]}-${m[1]}` : null;
 };
+let ekstreMut = null; // S-8: ekstreOku saf olduğu için mutasyon adı buradan
 function ekstreOku(metin) {
   const s = String(metin).split("\n").map(x => x.trim()).filter(Boolean);
   const ad = s.find(x => x.startsWith("Cari Ekstre · "))?.slice("Cari Ekstre · ".length) ?? null;
   const donemSatiri = s.find(x => /^Cari No /.test(x)) || "";
   const aralik = /(\d{2}\.\d{2}\.\d{4})\s+–\s+(\d{2}\.\d{2}\.\d{4})/.exec(donemSatiri);
-  const tum = /Tüm Hareketler/i.test(donemSatiri);
+  // S-30 (J11): Tüm Hareketler PDF'i de dönem aralığı taşır (ilk hareket – açılış günü); aralık varsa okunur, yoksa null (+ tanı satırı).
+  const tum = /Tüm Hareketler/i.test(donemSatiri) && (!aralik || ekstreMut === "S30-tum-araligi-okunmaz");
   const isaretli = metin2 => {
     const n = sayi(metin2);
     if (n === null) return null;
@@ -1819,6 +1831,93 @@ const NORMALLESTIRMELER = [
 
 // ---------- ana ----------
 const secenek = argumanlar(process.argv.slice(2));
+// ---------- kendi testi (programsız; saf eşleme işlevleri + arıza kilidi benzetimi) ----------
+if (secenek.kendiTesti) {
+  const sonuc = [];
+  const bak = (ad, kosul, ayrinti = "") => sonuc.push({ ad, ok: Boolean(kosul), ayrinti });
+  const esit = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  // S-18
+  const plan = { "T1/B": [["sent", "+1s"]], B: { 1: [["failed", "+2s"]] }, "*": [["delivered", "+3s"]] };
+  bak("S-18 iş anahtarı önce", esit(kancaPlaniSec(plan, "T1/B", "B", 1), [["sent", "+1s"]]));
+  bak("S-18 iş anahtarı yoksa cari, n'inci ileti", esit(kancaPlaniSec(plan, "T2/B", "B", 1), [["failed", "+2s"]]));
+  bak("S-18 carinin n'inci planı yoksa boş", esit(kancaPlaniSec(plan, "T2/B", "B", 2), []));
+  bak("S-18 iş ve cari yoksa *", esit(kancaPlaniSec(plan, "T1/C", "C", 1), [["delivered", "+3s"]]));
+  // S-19
+  bak("S-19 gec_kabul +10s", gecKabulMs({ gec_kabul: "+10s" }) === 10000);
+  bak("S-19 gec_kabul +1m30s", gecKabulMs({ gec_kabul: "+1m30s" }) === 90000);
+  bak("S-19 öbür yanıtlar gecikmeli değil", gecKabulMs("kabul") === null && gecKabulMs({ hata: 131026 }) === null);
+  bak("S-19 10 sn < 15 sn geçerli", gecKabulGecersiz(10000, 15000) === null);
+  bak("S-19 20 sn ≥ 15 sn GEÇERSİZ", typeof gecKabulGecersiz(20000, 15000) === "string");
+  bak("S-19 sınırda (= zaman aşımı) GEÇERSİZ", typeof gecKabulGecersiz(15000, 15000) === "string");
+  // S-22
+  bak("S-22 A silinirse kök B", kokSec(["A", "B"], ["A"]) === "B");
+  bak("S-22 silme yoksa kök A", kokSec(["A", "B"], []) === "A");
+  bak("S-22 B silinirse kök A", kokSec(["A", "B"], ["B"]) === "A");
+  bak("S-22 tek şirket siliniyorsa eşlenemez", kokSec(["A"], ["A"]) === null);
+  // S-24 + başlatma reddi tablosu
+  bak("S-24 defter onarımı → onarim_bekleyen_kabul", baslamaNedeni(503, "whatsapp-ledger-repair", "") === "onarim_bekleyen_kabul");
+  bak("S-24 kabul iletili whatsapp-ledger → onarim_bekleyen_kabul", baslamaNedeni(503, "whatsapp-ledger", "WhatsApp gönderim defterine önceki bir iletinin kabulü yazılamadı") === "onarim_bekleyen_kabul");
+  bak("S-24 disk dolu whatsapp-ledger onarım değil", baslamaNedeni(503, "whatsapp-ledger", "defterine yazılamadı (ENOSPC); disk dolu") === "?503 whatsapp-ledger");
+  bak("başlatma reddi: lisans", baslamaNedeni(403, "LICENSE_READ_ONLY", "") === "lisans_salt_okunur");
+  // S-7/S-9/S-11 eleme nedenleri
+  bak("eleme nedenleri tablosu", atlamaKodu("Daha Önce Gönderildi") === "daha_once_gonderildi" && atlamaKodu("Sonucu Belirsiz", "yeniden") === "sonucu_belirsiz" && atlamaKodu("Zaten Kuyrukta", "yine") === "zaten_kuyrukta" && atlamaKodu("Bilinmeyen") === "?Bilinmeyen");
+  // S-30
+  const pdf = donem => ["Cari Ekstre · Ayşe Yılmaz", `Cari No 1 · ${donem} · Deneme`, "Tarih", "Dönem başı bakiye", "1.000,00 B", "05.10.2026", "Satış", "500,00", "31.10.2026", "TOPLAM", "Dönem Sonu Bakiye", "1.500,00 Borçlu"].join("\n");
+  const normal = ekstreOku(pdf("01.10.2026 – 31.10.2026"));
+  bak("S-30 özel aralık", normal.donem_bas === "2026-10-01" && normal.donem_son === "2026-10-31" && normal.devir === "1000.00" && normal.donem_sonu_bakiye === "1500.00", JSON.stringify(normal));
+  const tumAralik = ekstreOku(pdf("Tüm Hareketler · 15.01.2026 – 30.10.2026"));
+  bak("S-30 Tüm Hareketler aralığı okunur", tumAralik.donem_bas === "2026-01-15" && tumAralik.donem_son === "2026-10-30", JSON.stringify(tumAralik));
+  const tumAraliksiz = ekstreOku(pdf("Tüm Hareketler"));
+  bak("S-30 aralıksız Tüm Hareketler null + tanı", tumAraliksiz.donem_bas === null && tumAraliksiz.donem_son === null && Boolean(tumAraliksiz._donem_satiri));
+  ekstreMut = "S30-tum-araligi-okunmaz";
+  bak("S-30 mutasyonu çıktıyı değiştirir (dişi)", ekstreOku(pdf("Tüm Hareketler · 15.01.2026 – 30.10.2026")).donem_bas === null);
+  ekstreMut = null;
+  // S-32
+  const istek = (is, texts) => ({ islem: "messages", govde: { biz_opaque_callback_data: is, template: { components: [{ type: "header", parameters: [{ type: "document" }] }, { type: "body", parameters: texts.map(t => ({ type: "text", text: t })) }] } } });
+  const istekler = [istek("j1", ["A", "Firma", "01.10.2026 – 31.10.2026", "1.000,00 TL"]), istek("j2", ["B"]), istek("j1b", ["A", "Firma", "01.10.2026 – 31.10.2026", "2.000,00 TL"])];
+  bak("S-32 işin SON giden isteği", esit(govdeDegiskenleri(istekler, new Set(["j1", "j1b"])), ["A", "Firma", "01.10.2026 – 31.10.2026", "2.000,00 TL"]));
+  bak("S-32 hiç gitmediyse null", govdeDegiskenleri(istekler, new Set(["j9"])) === null);
+  // S-23 kilit benzetimi (geçici sqlite; yalnız kendi tam yolu silinir)
+  const kd = fs.mkdtempSync(path.join(os.tmpdir(), "surucu-kendi-testi-"));
+  try {
+    const dosya = path.join(kd, "deneme.sqlite");
+    const d0 = new DatabaseSync(dosya);
+    d0.exec("PRAGMA journal_mode = WAL; CREATE TABLE t (x INTEGER)");
+    d0.close();
+    bak("S-23 kilitsiz dosya yazılabilir", kilitliMi(dosya) === false);
+    const k = kilitAc(dosya);
+    bak("S-23 kilit doğrulanır", kilitliMi(dosya) === true);
+    const yazan = new DatabaseSync(dosya);
+    let yazamadi = false;
+    try {
+      yazan.exec("PRAGMA busy_timeout = 0");
+      yazan.exec("INSERT INTO t VALUES (1)");
+    } catch (error) {
+      yazamadi = /busy|locked/i.test(String(error.message));
+    }
+    let okudu = false;
+    try {
+      okudu = yazan.prepare("SELECT COUNT(*) AS n FROM t").get().n === 0;
+    } catch {
+      okudu = false;
+    }
+    yazan.close();
+    bak("S-23 kilitliyken başka bağlantı yazamaz", yazamadi);
+    bak("S-23 kilitliyken okuma sürer (WAL)", okudu);
+    kilitKapat(k);
+    bak("S-23 kilit bırakılınca yazılabilir", kilitliMi(dosya) === false);
+  } finally {
+    fs.rmSync(kd, { recursive: true, force: true });
+  }
+  console.log("TAP version 13");
+  sonuc.forEach((x, i) => console.log(`${x.ok ? "ok" : "not ok"} ${i + 1} - ${x.ad}${x.ok || !x.ayrinti ? "" : ` # ${x.ayrinti}`}`));
+  const basarisiz = sonuc.filter(x => !x.ok).length;
+  console.log(`1..${sonuc.length}`);
+  console.log(`# tests ${sonuc.length}`);
+  console.log(`# pass ${sonuc.length - basarisiz}`);
+  console.log(`# fail ${basarisiz}`);
+  process.exit(basarisiz ? 1 : 0);
+}
 const veri = JSON.parse(fs.readFileSync(SENARYOLAR, "utf8"));
 const secici = desen => {
   const istenen = desen.split(",").map(s => s.trim()).filter(Boolean);
@@ -1826,10 +1925,25 @@ const secici = desen => {
 };
 const tzAdi = String(process.env.TZ).replace(/[^A-Za-z0-9]+/g, "-");
 
+// S-19 ön denetimi: senaryonun gecikmeli kabulü programın üretimdeki Meta zaman aşımından kısa mı (değilse GEÇERSİZ; koşulmaz, fark sayılmaz).
+function senaryoGecersizligi(sen) {
+  const nedenler = [];
+  for (const v of Object.values(sen.girdi.meta_davranis?.mesaj || {})) {
+    for (const y of Array.isArray(v) ? v : [v]) {
+      const neden = gecKabulGecersiz(gecKabulMs(y), META_ZAMAN_ASIMI_MS);
+      if (neden) nedenler.push(neden);
+    }
+  }
+  return nedenler;
+}
 async function kosVeKarsilastir(sen, uc) {
   const baslangic = Date.now();
+  const bilinen_sinir = sen.girdi.bilinen_sinir || null; // S-25: fark çıkarsa önce "BİLİNEN SINIR kalktı mı" diye okunur
+  const onGecersiz = senaryoGecersizligi(sen);
+  if (onGecersiz.length) return { ad: sen.ad, uc, kip: secenek.kip, tz: process.env.TZ, mutasyon: MUTASYON, gecersiz: onGecersiz, bilinen_sinir, farklar: [], davranis_farki: [], sure_ms: 0 };
   try {
     const r = await kos(sen, uc, secenek);
+    if (r.gecersiz?.length) return { ad: sen.ad, uc, kip: secenek.kip, tz: process.env.TZ, mutasyon: MUTASYON, gecersiz: r.gecersiz, bilinen_sinir, farklar: [], davranis_farki: [], notlar: r.notlar, sure_ms: Date.now() - baslangic, program: r.cikti };
     const farklar = karsilastir(sen.beklenen, r.cikti);
     const siniflar = {};
     let kalanFark = farklar;
@@ -1845,7 +1959,7 @@ async function kosVeKarsilastir(sen, uc) {
         if (!kalanFark.length) break;
       }
     }
-    return { ad: sen.ad, uc, kip: secenek.kip, tz: process.env.TZ, mutasyon: MUTASYON, farklar, davranis_farki: kalanFark, siniflar, notlar: r.notlar, ceviriler: r.ceviriler, kanca_istegi: r.kancalar, bitis: r.bitis, sure_ms: Date.now() - baslangic, program: r.cikti };
+    return { ad: sen.ad, uc, kip: secenek.kip, tz: process.env.TZ, mutasyon: MUTASYON, bilinen_sinir, farklar, davranis_farki: kalanFark, siniflar, notlar: r.notlar, ceviriler: r.ceviriler, kanca_istegi: r.kancalar, bitis: r.bitis, sure_ms: Date.now() - baslangic, program: r.cikti };
   } catch (error) {
     return { ad: sen.ad, uc, kip: secenek.kip, tz: process.env.TZ, mutasyon: MUTASYON, hata: String(error.stack || error), farklar: ["SÜRÜCÜ HATASI"], sure_ms: Date.now() - baslangic };
   }
@@ -1889,12 +2003,22 @@ const MUTASYONLAR = [
   ["S15-ozel-aralik-bitisi-kaydir", "G6-01*,G6-02*,G6-04*,G6-05*,K1-10*", "S-15 özel aralık bas/son olduğu gibi (hazır seçimle aynı senaryoda)"],
   ["S16-dosyasiz-kanca-iletilmez", "H3-01*,H3-02*", "S-16 iş dosyada yokken gelen (geciktirilmiş) imzalı kanca programa iletilir"],
   ["S17-tasima-cokme-diskine-uygulanmaz", "H2-01*,H2-02*", "S-17 çökme → taşıma (program kapalı) → açılış: taşıma çökme diskine uygulanır"],
+  ["S18-is-anahtari-yok-sayilir", "J1-04*,J3-01*,J9-01*,J10-01*", "S-18 kanca planında iş anahtarı (T1/B) önce"],
+  ["S19-gec-kabul-bekletilmez", "J6-01*", "S-19 gecikmeli kabul: yanıt tutulur, arada kanca/olay programa ulaşır"],
+  ["S20-imzasiz-da-sayilir", "J6-01*,J6-02*,J6-03*,J1-03*", "S-20 kanca yanıt sayımı yalnız imzalı bildirim"],
+  ["S20-503-sayilmaz", "J6-01*,J6-02*,J6-03*", "S-20 kanca yanıt sayımı 503'ü de sayar"],
+  ["S22-sirket-silinmez", "J1-03*", "S-22 sirket_sil → programın Şirketi Sil ucu"],
+  ["S23-kilit-uygulanmaz", "J6-02*,J6-03*,J7-01*,J7-02*", "S-23 arıza olayları dosya kilidiyle oluşur"],
+  ["S24-onarim-eslenmez", "J7-01*", "S-24 onarım bekleyen kabul reddi → onarim_bekleyen_kabul"],
+  ["S30-tum-araligi-okunmaz", "J11-01*,J11-02*,ICERIK-08*,J12-02*", "S-30 Tüm Hareketler PDF dönemi okunur"],
+  ["S32-degiskenler-programdan", "ICERIK-09*,J12-01*,J12-03*", "S-32 değişkenler Meta'ya gidenden"],
 ];
 
 const sonuclar = [];
 let n = 0;
 let gecen = 0;
 let kalan = 0;
+let atlanan = 0;
 console.log("TAP version 13");
 console.log(`# saat dilimi ${process.env.TZ}`);
 if (secenek.mutasyonDenetimi) {
@@ -1912,7 +2036,7 @@ if (secenek.mutasyonDenetimi) {
         const a = await kosVeKarsilastir(sen, "hizli");
         const b = await kosVeKarsilastir(sen, "hizli");
         if (!esit(sirala(a.farklar), sirala(b.farklar))) kararsiz.add(sen.ad);
-        taban.set(sen.ad, { farklar: sirala(a.farklar), hata: a.hata || b.hata || null });
+        taban.set(sen.ad, { farklar: sirala(a.farklar), hata: a.hata || b.hata || null, gecersiz: a.gecersiz || null });
         sonuclar.push({ ...a, rol: "taban-1" }, { ...b, rol: "taban-2" });
       }
       MUTASYON = ad;
@@ -1921,8 +2045,8 @@ if (secenek.mutasyonDenetimi) {
       const t = taban.get(sen.ad);
       const yeni = sirala(m.farklar).filter(f => !t.farklar.includes(f));
       const kayan = t.farklar.filter(f => !m.farklar.includes(f));
-      const yakaladi = !kararsiz.has(sen.ad) && !t.hata && !m.hata && (yeni.length > 0 || kayan.length > 0);
-      ayrinti.push({ senaryo: sen.ad, yakaladi, yeni_fark: yeni.length, kaybolan_fark: kayan.length, ornek: yeni.slice(0, 3), kararsiz_taban: kararsiz.has(sen.ad), hata: m.hata || t.hata || null });
+      const yakaladi = !kararsiz.has(sen.ad) && !t.hata && !m.hata && !t.gecersiz && !m.gecersiz && (yeni.length > 0 || kayan.length > 0);
+      ayrinti.push({ senaryo: sen.ad, yakaladi, yeni_fark: yeni.length, kaybolan_fark: kayan.length, ornek: yeni.slice(0, 3), kararsiz_taban: kararsiz.has(sen.ad), hata: m.hata || t.hata || null, gecersiz: t.gecersiz || m.gecersiz || null });
       sonuclar.push({ ...m, rol: "mutasyon" });
     }
     n += 1;
@@ -1947,13 +2071,17 @@ if (secenek.mutasyonDenetimi) {
       const kayit = await kosVeKarsilastir(sen, uc);
       sonuclar.push(kayit);
       const siniflama = Object.entries(kayit.siniflar || {}).map(([k, v]) => `${k} ${v.length}`).join(", ");
-      if (!kayit.farklar.length) {
+      const sinirEki = kayit.bilinen_sinir ? ` [BİLİNEN SINIR ${Object.keys(kayit.bilinen_sinir).join("/")} — fark varsa: sınır kalktı mı? (S-25)]` : "";
+      if (kayit.gecersiz?.length) {
+        atlanan += 1;
+        console.log(`ok ${n} - ${sen.ad} [${uc}] # SKIP GEÇERSİZ: ${kayit.gecersiz.join("; ")}`);
+      } else if (!kayit.farklar.length) {
         gecen += 1;
-        console.log(`ok ${n} - ${sen.ad} [${uc}]`);
+        console.log(`ok ${n} - ${sen.ad} [${uc}]${sinirEki}`);
       } else {
         kalan += 1;
         const davranis = kayit.davranis_farki || kayit.farklar;
-        console.log(`not ok ${n} - ${sen.ad} [${uc}] (${kayit.farklar.length} fark; davranış farkı ${davranis.length}${siniflama ? `; gösterim: ${siniflama}` : ""})`);
+        console.log(`not ok ${n} - ${sen.ad} [${uc}] (${kayit.farklar.length} fark; davranış farkı ${davranis.length}${siniflama ? `; gösterim: ${siniflama}` : ""})${sinirEki}`);
         for (const f of davranis.slice(0, secenek.ayrinti ? 1000 : 12)) console.log(`  # ${f}`);
         if (kayit.hata) console.log(`  # ${kayit.hata.split("\n").slice(0, 4).join(" | ")}`);
       }
@@ -1970,4 +2098,5 @@ console.log(`1..${n}`);
 console.log(`# tests ${n}`);
 console.log(`# pass ${gecen}`);
 console.log(`# fail ${kalan}`);
+console.log(`# skipped ${atlanan}`);
 process.exitCode = kalan ? 1 : 0;
