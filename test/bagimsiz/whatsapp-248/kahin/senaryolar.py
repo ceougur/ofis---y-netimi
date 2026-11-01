@@ -9,7 +9,8 @@ kâhin güncellemesi 6: G0 genel ilke + G1–G5 — başlıklar G0…G5, 16 sena
 kâhin güncellemesi 7: G6 (baş mimar, G0 3 İLKEYLE) — başlık G6, 5 senaryo;
 kâhin güncellemesi 8: H1 (kullanıcı) + H2–H4 (baş mimar, G0 İLKEYLE) — başlıklar H1…H4, 8 senaryo;
 kâhin güncellemesi 9: 01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9 — başlıklar J1…J9, 29 senaryo;
-kâhin güncellemesi 9b: S9-1 (+ kapsam a/b/c) J10, S9-2 (+ gün) J11 — 8 senaryo).
+kâhin güncellemesi 9b: S9-1 (+ kapsam a/b/c) J10, S9-2 (+ gün) J11 — 8 senaryo;
+kâhin güncellemesi 9c: ekstre içeriği açılışta hazırlanır J12 — 3 senaryo).
 
 Her senaryo: GİRDİ (cariler, seçim, saat, sahte Meta davranışı, olaylar) + ELLE yazılmış beklenen (yalnız plandan, kâhinin modelinden
 bağımsız hesaplanmış anahtar sayılar). `python3 -I senaryolar.py` modeli koşar; elle beklenen ile model AYNI değilse dosya YAZILMAZ,
@@ -447,9 +448,10 @@ S("ICERIK-08-tum-hareketler", "YANLIŞ İÇERİK", "'Tüm Hareketler' = bütün 
    "isler.T1/A.degiskenler": ["Ayşe Yılmaz", FIRMA, "10.09.2026 – 30.10.2026", "1.250,00 TL"]},
   meta_davranis={"kanca": {"*": K_STD}})
 
-S("ICERIK-09-kuyrukta-bakiye-degisti", "YANLIŞ İÇERİK", "Sınırda beklerken cariye hareket girdi: metin ve PDF gönderim anında AYNI okumadan", "§6 W2 (metin = PDF), §7a 1",
+S("ICERIK-09-kuyrukta-bakiye-degisti", "YANLIŞ İÇERİK", "Sınırda beklerken cariye hareket girdi: ekstre (metin + PDF) toplu işin AÇILIŞINDA hazırlandığı gibi gider (güncelleme 9c, J12; eskiden gönderim anında)",
+  "§6 W2 (metin = PDF), J12 (§7a 1'in ekstre yorumunun yerine)",
   [A(), B()], [baslat("+0s", "T1", "A"), baslat("+1s", "T2", "B"), olay("+1h", "cari", id="B", hareket_ekle={"tarih": "2026-10-30", "borc": 1000, "alacak": 0})],
-  {"isler.T2/B.degiskenler": ["Mehmet Kaya", FIRMA, DON, "3.000,00 TL"], "isler.T2/B.pdf.donem_sonu_bakiye": "3000.00", "isler.T2/B.pdf.hareket_sayisi": 2},
+  {"isler.T2/B.degiskenler": ["Mehmet Kaya", FIRMA, DON, "2.000,00 TL"], "isler.T2/B.pdf.donem_sonu_bakiye": "2000.00", "isler.T2/B.pdf.hareket_sayisi": 1},
   ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
 
 S("ICERIK-10-ttl-sonrasi-teslim", "YANLIŞ İÇERİK", "Teslim kancası TTL + 1 sa'ten sonra geldi: önce Süresi Doldu, sonra gerçek bilgi Teslim Edildi; ay = teslim zamanı (Kasım)",
@@ -1967,6 +1969,35 @@ S("J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir", "J11", "05.11 23:30 T�
    baslat("+1d11h", "T3", "U", donem={"bas": "2026-11-01", "son": "2026-11-05"})],
   {"isler.T1/U.degiskenler": ["Ufuk Kasım", FIRMA, "01.11.2026 – 05.11.2026", "40,00 TL"], "toplular.T2.is_sayisi": 1, "olusmadi": ["T3"],
    "elenen": {"T3": {"U": "daha_once_gonderildi"}}, "meta.post": {"R": 1, "U": 2}},
+  baslangic="2026-11-05T23:30:00+03:00", ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
+
+
+# ======================================================================== KÂHİN GÜNCELLEMESİ 9c (07:11 seçenek metni): J12 — ekstre içeriği açılışta hazırlanır
+S("J12-01-yine-de-gonder-ekstre-icerigi-acilistaki-gibi", "J12", "B Sonucu Belirsiz (Meta almadı); kuyrukta B'ye 1.000 TL hareket girdi; işteki Yine de Gönder AÇILIŞTA hazırlanan ekstreyi gönderir (2.000,00 TL)",
+  "J12 (Y9d-1: yeniden gönderilse de değişmez) + K4", [B()],
+  [baslat("+0s", "T1", "B"), olay("+30m", "cari", id="B", hareket_ekle={"tarih": "2026-10-30", "borc": 1000, "alacak": 0}),
+   olay("+1h", "yine_de_gonder", toplu="T1", cari="B", etiket="G1")],
+  {"yeniden": {"G1": yeniden(alinan="B")}, "isler.T1/B.durum": "Teslim Edildi", "isler.T1/B.degiskenler": ["Mehmet Kaya", FIRMA, DON, "2.000,00 TL"],
+   "isler.T1/B.pdf": {"cari_ad": "Mehmet Kaya", "donem_bas": "2026-10-01", "donem_son": "2026-10-31", "devir": "0.00", "hareket_sayisi": 1, "donem_sonu_bakiye": "2000.00"},
+   "meta.post": {"B": 2}},
+  meta_davranis={"mesaj": {"B": ["yanitsiz_red", "kabul"]}, "kanca": {"*": K_STD}})
+
+S("J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez", "J12", "30.10 Tüm Hareketler: F2'nin 15.11 tarihli hareketi ekstreye girmez (05.10–30.10, 300,00 TL); yalnız ileri tarihli hareketi olan G2 hareketsiz gibi (30.10–30.10, 0,00 TL)",
+  "J12 + J11 (Y9d-3; Y9c-6 çözüldü)",
+  [cari("F2", "Ferhat İleri", "0550 111 22 33", [("2026-10-05", 300, 0), ("2026-11-15", 500, 0)]), cari("G2", "Gül İleri", "0550 222 33 44", [("2026-11-20", 90, 0)])],
+  [baslat("+0s", "T1", ["F2", "G2"], donem="tum")],
+  {"isler.T1/F2.degiskenler": ["Ferhat İleri", FIRMA, "05.10.2026 – 30.10.2026", "300,00 TL"],
+   "isler.T1/F2.pdf": {"cari_ad": "Ferhat İleri", "donem_bas": "2026-10-05", "donem_son": "2026-10-30", "devir": "0.00", "hareket_sayisi": 1, "donem_sonu_bakiye": "300.00"},
+   "isler.T1/G2.degiskenler": ["Gül İleri", FIRMA, "30.10.2026 – 30.10.2026", "0,00 TL"],
+   "isler.T1/G2.pdf": {"cari_ad": "Gül İleri", "donem_bas": "2026-10-30", "donem_son": "2026-10-30", "devir": "0.00", "hareket_sayisi": 0, "donem_sonu_bakiye": "0.00"}},
+  meta_davranis={"kanca": {"*": K_STD}})
+
+S("J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket", "J12", "05.11 23:30 Tüm sınır 1: R ertesi gün gider; 06.11'de R'ye hareket girdi — ekstre açılıştaki gibi (15.10–05.11, 70,00 TL, 1 hareket)",
+  "J12 (Y9d-1, Y9d-3) + J11", [P_(), R_()],
+  [baslat("+0s", "T1", "PR", donem="tum"), olay("+10h30m", "cari", id="R", hareket_ekle={"tarih": "2026-11-06", "borc": 25, "alacak": 0}), kontrol("+11h", "K1")],
+  {"kontroller.K1.isler": {"T1/P": "Teslim Edildi", "T1/R": "Sınır Nedeniyle Bekliyor"}, "isler.T1/R.durum": "Teslim Edildi",
+   "isler.T1/R.degiskenler": ["Rana Ortada", FIRMA, "15.10.2026 – 05.11.2026", "70,00 TL"],
+   "isler.T1/R.pdf": {"cari_ad": "Rana Ortada", "donem_bas": "2026-10-15", "donem_son": "2026-11-05", "devir": "0.00", "hareket_sayisi": 1, "donem_sonu_bakiye": "70.00"}},
   baslangic="2026-11-05T23:30:00+03:00", ayar={"gunluk_ust_sinir": 1}, meta_davranis={"kanca": {"*": K_STD}})
 
 

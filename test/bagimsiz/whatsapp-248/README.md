@@ -12,8 +12,8 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 281 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
-   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14) + 8 **güncelleme 9b** (S9-1 / S9-2 kararları J10–J11; §14.10–14.12).
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 284 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14) + 8 **güncelleme 9b** (S9-1 / S9-2 kararları J10–J11; §14.10–14.12) + 3 **güncelleme 9c** (ekstre içeriği açılışta, J12; §14.13–14.14).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
 araştırma belgesi, Meta belge sayfaları (send-messages, document-messages, media, template-media, components, template-management, template-categorization,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (161 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) ve 9'u J10–J11'in (M154–M162) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (163 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) ve 2'si J12'nin (M163–M164) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -36,7 +36,7 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 34) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 18 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 281 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 284 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -824,3 +824,12 @@ Ana oturum: bu karar §7a 1'in "içerik gönderim anında okunur" yorumunun ekst
 | Y9d-3 | Y9c-6 ÇÖZÜLDÜ: Tüm Hareketler içeriği açılış gününe kadar (≤ açılış günü) tarihli hareketler; açılış gününden SONRA tarihli hareket PDF'e, hareket sayısına ve bakiyeye GİRMEZ (dönem = ilk hareket – açılış günü + §7a 22 "dönem sonundan sonraki hareket girmez"); devir 0 | J11 + J12 + §7a 22 |
 | Y9d-4 | Y9c-4 teyit (ana oturum): atlanan yeni ileti sayılmaz, eski iletinin teslimi J5 ile sayılır; "Atlandı" / "Bu Ay değişmez" adlandırması BAŞ MİMAR KARARI | ana oturum |
 | Y9d-5 | Kâhin iç düzeni: içerik `baslat`'ta hesaplanır (eski M58'in içerik yarısı artık doğru model); M58 bundan sonra yalnız "telefon başlatmada okunur"; yeni M163 = eski düzen (ekstre içeriği gönderim anında) | J12 |
+
+### 14.14 Güncelleme 9c sonuçları
+- **Kâhinde:** ekstre içeriği `baslat`'ta hazırlanır (`hazir`), işe ilk işçi ziyaretinde yazılır ve bir daha okunmaz (gönderilmemiş işin çıktısı eskisi gibi boş kalır — sürücü içeriği Meta'ya gidenden okur); telefon ve eleme her gönderimde; hatırlatma gönderim anında; Tüm Hareketler içeriği ve kişiye özel dönem ≤ açılış günü tarihli hareketlerle.
+- **Senaryolar (3):** J12-01 Yine de Gönder açılıştaki ekstreyi gönderir (kuyrukta giren 1.000 TL girmez; 2.000,00 TL) · J12-02 Tüm Hareketler: açılıştan sonra tarihli hareket girmez (05.10–30.10, 300,00 TL); yalnız ileri tarihli hareketi olan cari hareketsiz gibi (30.10–30.10, 0,00 TL) · J12-03 sınırla ertesi gün + kuyrukta hareket → açılıştaki gibi.
+- **Mutasyonlar (2):** M163 (ekstre içeriği gönderim anında — eski §7a 1 yorumu) ← ICERIK-09; M164 (açılıştan sonra tarihli hareket girer) ← J12-02. M58 artık "telefon başlatmada" (← KISI-01). Toplam **163/163**.
+- **Değişen beklentiler:** yalnız **ICERIK-09** (elle de): T2/B {{4}} "3.000,00 TL" → "2.000,00 TL", PDF dönem sonu 3000.00 → 2000.00, hareket sayısı 2 → 1 (J12). 9b'nin öbür 280 senaryosunun tam sonucu bayt bayt aynı; 9086b097'ye göre 244 eski senaryonun 12'si değişti (§14.7 + §14.12 + ICERIK-09). Kanıt `docs/kanit/2026-11-01/248-kahin9c-*`.
+- **Sürücü (S-32):** ekstre içeriği (Meta'ya giden değişkenler + PDF) kuyrukta giren hareketten, ertesi güne kaymadan ve Yine de Gönder'den etkilenmez; `cari.hareket_ekle` olayı programa kuyruktayken girilir. Hatırlatma değişkenleri gönderim anında (ICERIK-12 aynen).
+- **Bilgi (ana oturum):** Y9d-2 — Ödeme Hatırlatma'nın gönderim anında okunması sürdü (karar ekstre / PDF der).
+- **Kanıt:** kendi testi **307/307** (F **163/163**), `TZ=UTC` ve `TZ=Europe/Istanbul`; senaryolar 284/284.
