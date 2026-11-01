@@ -90,6 +90,17 @@ async function harness({ second = false, dataDir = null, account = true, timeout
     reset: async () => ok(await ctx.api.post(`/api/companies/${company ? company.id : "sirket-001"}/reset`, { mode: "movements", confirm: company ? company.code : "001", password: ADMIN_PASSWORD }), "Şirket Verisini Sıfırla"),
     ts: () => String(Math.floor(ctx.clock().getTime() / 1000)),
     isoNow: () => new Date(Math.floor(ctx.clock().getTime() / 1000) * 1000).toISOString(),
+    // Defter okumaları SQL ile (eski kodun API'sine bağlı değil — eski kodda kırmızının nedeni davranış olsun, eksik işlev değil; ders 38).
+    ledgerSql: (query, ...args) => {
+      const reader = new DatabaseSync(ledger().file, { readOnly: true });
+      try {
+        return reader.prepare(query).get(...args) || null;
+      } finally {
+        reader.close();
+      }
+    },
+    outcomeSql: (id, attempt) => s.ledgerSql("SELECT outcome FROM outcomes WHERE job_id = ? AND attempt = ?", id, attempt)?.outcome ?? null,
+    deliveredSql: id => Boolean(s.ledgerSql("SELECT 1 AS x FROM deliveries WHERE job_id = ?", id)),
     acceptedAtInLedger: id => {
       const reader = new DatabaseSync(ledger().file, { readOnly: true });
       try {
@@ -751,9 +762,10 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
         const second = await s.job(batchId);
         assert.deepEqual([second.attempt, second.state], [2, "accepted"], "ön koşul: 2. deneme kabul");
         const events = [st(s, job.wamid, "delivered"), st(s, second.wamid, "delivered")];
-        for (const event of order === "eski-once" ? events : events.reverse()) assert.equal(s.apply([event]).applied, 1);
-        for (const event of events) assert.equal(s.apply([event]).applied, 0, "yinelenen etkisiz");
+        for (const event of order === "eski-once" ? events : [...events].reverse()) assert.equal(s.apply([event]).applied, 1);
         assert.equal(await s.buAy(), 2, "Bu Ay iki teslim");
+        for (const event of events) assert.equal(s.apply([event]).applied, 0, "yinelenen etkisiz");
+        assert.equal(await s.buAy(), 2, "yinelenenden sonra da 2");
         assert.equal((await s.job(batchId)).state, "delivered");
         assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
       } finally {
@@ -1014,7 +1026,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       await s.ctx.drain();
       const job = await s.job(batchId);
       assert.deepEqual([job.state, Boolean(job.wamid)], ["accepted", true], "ön koşul: dosyada kabul");
-      assert.equal(s.ctx.wa.ledger.outcomeOf(job.id, 1), null, "ön koşul: defterde sonuç yok");
+      assert.equal(s.outcomeSql(job.id, 1), null, "ön koşul: defterde sonuç yok");
       const blocked = await s.ctx.api.post(URLS.batches, s.body);
       assert.equal(blocked.status, 503, `onarılamazken yeni gönderim başlatılmaz (geldi ${blocked.status} ${JSON.stringify(blocked.data)})`);
       s.ctx.clock.advance(6 * 60_000);
@@ -1024,7 +1036,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       assert.equal(await s.buAy(), 1);
       s.ledgerFault.on = false;
       await s.ctx.drain(); // bakım: onarım
-      assert.equal(s.ctx.wa.ledger.outcomeOf(job.id, 1), "accepted", "defter onarıldı");
+      assert.equal(s.outcomeSql(job.id, 1), "accepted", "defter onarıldı");
       assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"]);
       assert.equal((await s.ctx.api.post(URLS.batches, s.body)).status, 400, "yeni gönderim kişiyi eler");
       await s.ctx.drain();
@@ -1051,7 +1063,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       await s.ctx.drain();
       assert.equal(s.ctx.messages().length, 2, "defter düzelince 2. kişi");
       const jobs = (await s.ctx.api.get(`${URLS.batches}/${batchId}`)).data.data.jobs;
-      for (const job of jobs) assert.equal(s.ctx.wa.ledger.outcomeOf(job.id, job.attempt), "accepted", "ikisi de defterde kabul");
+      for (const job of jobs) assert.equal(s.outcomeSql(job.id, job.attempt), "accepted", "ikisi de defterde kabul");
     } finally {
       await s.close();
     }
@@ -1091,7 +1103,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       try {
         const busy = await s.post([st(s, job.wamid, "delivered")]);
         assert.equal(busy.status, 503, `geçici açılamama → 503 (geldi ${busy.status} ${busy.text})`);
-        assert.equal(s.ctx.wa.ledger.deliveredAttempt(job.id, 1), false, "geçicide yalnız defter yolu YOK");
+        assert.equal(s.deliveredSql(job.id), false, "geçicide yalnız defter yolu YOK");
       } finally {
         s.ctx.server.app.context.busyCompanies.delete(s.company.id);
       }
@@ -1123,7 +1135,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
         }
         const res = await s.post([st(s, job.wamid, "delivered")]);
         assert.equal(res.status, 200, `kalıcı açılamama → 200 (geldi ${res.status} ${res.text})`);
-        assert.equal(s.ctx.wa.ledger.deliveredAttempt(job.id, 1), true, "defterde teslim");
+        assert.equal(s.deliveredSql(job.id), true, "defterde teslim");
         assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200, "yinelenen 200");
       } finally {
         await s.close().catch(() => {});

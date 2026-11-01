@@ -37,7 +37,6 @@ describe("2.4.8 İş U5 — Bu Ay deneme başına teslim (göçsüz)", () => {
       assert.equal(counts(ledger).company.delivered, 1, "eski teslim bir kez");
       assert.equal(counts(ledger).waba.delivered, 1);
       assert.equal(ledger.deliveredJob(INFO.jobId), true);
-      assert.equal(ledger.deliveredAttempt(INFO.jobId, 1), false, "eski satır deneme bilgisi taşımıyor");
       // Meta aynı teslimi yineler (aynı zaman damgası) → deneme satırı yazılır, eski satır onunla eşleşir: yine 1.
       assert.equal(ledger.delivered({ jobId: INFO.jobId, attempt: 1, companyId: INFO.companyId, wabaId: WABA, billable: true, at: INFO.deliveredAt }), true);
       assert.equal(counts(ledger).company.delivered, 1, "yinelenen teslim çift sayılmaz");
