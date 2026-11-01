@@ -1,0 +1,32 @@
+{
+  "ad": "248-kahin9-kendi-testi",
+  "komut": "python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py",
+  "commit": "da86a2df8d1781f7b12b993030374c1c36376775",
+  "dal": "is/kahin2-248",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T07:02:53.760Z",
+  "sure_sn": 16.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 296,
+    "gecen": 296,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-kahin9-kendi-testi.log",
+  "klasor": "/home/user/wt-kahin2-248",
+  "ham_cikti_sha256": "ba182e9e4b061d195c5cccaa9686944b8319bcc40fa647f9e6c54323df611891",
+  "ham_cikti_bayt": 60185
+}
