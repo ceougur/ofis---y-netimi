@@ -261,7 +261,8 @@
   "J7": {
    "kaynak_turu": "kullanıcı (KARAR 01.11.2026 06:28 UTC madde 7, aynen)",
    "metin": [
-    "(7) defterde onarım bekleyen kabul varken yeni gönderim başlamaz, düğme pasif + neden"
+    "(7) defterde onarım bekleyen kabul varken yeni gönderim başlamaz, düğme pasif + neden",
+    "06:28'de onaya sunulan ve AYNEN onaylanan liste metni madde 7 (ana oturum iletisi): Gönderim defteri onarılmadan yeni gönderim başlamaz. Meta'nın kabulü deftere yazılamadıysa yeni gönderim düğmesi pasif kalır ve ekranda nedeni yazar. Böylece ikinci ileti gitmez."
    ]
   },
   "J8": {
@@ -103491,8 +103492,8 @@
   {
    "ad": "J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz",
    "baslik": "J7",
-   "aciklama": "Meta yanıtı geldiğinde şirket dosyası yazılamıyor → kabul defterde onarım bekliyor: yeni gönderim BAŞLAMAZ (neden); onarım + yeniden açılıştan sonra A 'Daha Önce Gönderildi', C gider",
-   "kaynak": "J7 (Y9-14)",
+   "aciklama": "Meta yanıtı geldiğinde GÖNDERİM DEFTERİ yazılamıyor → iş dosyada Meta Kabul Etti ama kabul defterde eksik (onarım bekliyor): yeni gönderim BAŞLAMAZ (neden); defter onarılıp program yeniden açılınca A 'Daha Önce Gönderildi', C gider",
+   "kaynak": "J7 (liste metni madde 7, Y9e-1/2 — 9d düzeltmesi)",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -103552,9 +103553,8 @@
       }
      },
      {
-      "t": "+10s",
-      "tur": "dosya_yazilamaz",
-      "sirket": "A",
+      "t": "+7s",
+      "tur": "defter_yazilamaz",
       "acik": true
      },
      {
@@ -103572,8 +103572,7 @@
      },
      {
       "t": "+5m",
-      "tur": "dosya_yazilamaz",
-      "sirket": "A",
+      "tur": "defter_yazilamaz",
       "acik": false
      },
      {
@@ -103608,7 +103607,7 @@
      "mesaj": {
       "A": [
        {
-        "gec_kabul": "+20s"
+        "gec_kabul": "+10s"
        }
       ]
      },
@@ -103849,8 +103848,8 @@
   {
    "ad": "J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti",
    "baslik": "J7",
-   "aciklama": "Onarım beklerken gelen bildirim kaydedilemez (Meta yineler); onarımdan sonra A Teslim Edildi, tek ileti; yeni gönderim onarımdan sonra başlar",
-   "kaynak": "J7 + J6 (Y9-14; son durum yanıt okumasından bağımsız)",
+   "aciklama": "Defter onarım beklerken gelen bildirim kaydedilemez (503, Meta yineler); defter onarılınca A Teslim Edildi, tek ileti; yeni gönderim onarımdan sonra başlar",
+   "kaynak": "J7 (liste metni madde 7) + J6 (Y9e-3)",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -103910,9 +103909,8 @@
       }
      },
      {
-      "t": "+10s",
-      "tur": "dosya_yazilamaz",
-      "sirket": "A",
+      "t": "+7s",
+      "tur": "defter_yazilamaz",
       "acik": true
      },
      {
@@ -103930,8 +103928,7 @@
      },
      {
       "t": "+5m",
-      "tur": "dosya_yazilamaz",
-      "sirket": "A",
+      "tur": "defter_yazilamaz",
       "acik": false
      },
      {
@@ -103957,11 +103954,12 @@
       "ad": "K1"
      }
     ],
+    "kanca_yanit_cikti": true,
     "meta_davranis": {
      "mesaj": {
       "A": [
        {
-        "gec_kabul": "+20s"
+        "gec_kabul": "+10s"
        }
       ]
      },
@@ -104013,6 +104011,10 @@
          "yaklasik_usd": "0.0018"
         }
        }
+      },
+      "kanca_yanitlari": {
+       "200": 4,
+       "503": 2
       }
      }
     }
@@ -104107,6 +104109,10 @@
        "artisiz_numaraya_gonderim": 0,
        "lisanssiz_gonderim": 0,
        "duraklatilmis_toplu_gonderim": 0
+      },
+      "kanca_yanitlari": {
+       "200": 4,
+       "503": 2
       },
       "isler": {
        "T1/A": {

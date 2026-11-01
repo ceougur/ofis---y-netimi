@@ -1636,7 +1636,7 @@ S("H4-01-r3-son-gonderim-son-kabul-gece-yarisi", "H4", "31.10 00:30 (UTC'de 30.1
 # ======================================================================== KÂHİN GÜNCELLEMESİ 9 (01.11.2026): J1–J8 (KARAR 06:28 UTC) + J9 n3 BİLİNEN SINIR (KARAR 05:58 UTC)
 # Elle beklenen YALNIZ karar metninden ve README §14 yorumlarından (kodlamadan önce yazıldı). Yeni girdiler: "kanca" planında anahtar iş de olabilir ("T1/B");
 # mesaj yanıtı {"gec_kabul": "+10s"} (Meta kabul eder, HTTP yanıtı zaman aşımından önce gecikmeli gelir); olaylar sirket_sil {sirket}, sirket_acilamaz {sirket, acik},
-# bildirim_yazilamaz {acik}, dosya_yazilamaz {sirket, acik}; senaryo alanları kanca_yanit_cikti (çıktıda kanca_yanitlari) ve bilinen_sinir (BİLİNEN SINIR işareti).
+# bildirim_yazilamaz {acik}, defter_yazilamaz {acik} (9d; eski dosya_yazilamaz kalktı); senaryo alanları kanca_yanit_cikti (çıktıda kanca_yanitlari) ve bilinen_sinir (BİLİNEN SINIR işareti).
 YANLIZ_KS = [["sent", "+1s"]]
 SIL_IHLAL = {"post_toplam": {"neden": "silinen şirketin / dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden"}}
 BS_J5 = {"J5": "kişiye 2 ileti (Meta Bekletti 1. iletisi 2. deneme gittikten sonra teslim) — J5 metninde BİLİNEN SINIR, önlenemez"}
@@ -1812,22 +1812,22 @@ S("J6-03-bildirim-kaydedilemez-503", "J6", "Bildirim kaydedilemezken gelen tesli
   kanca_yanit_cikti=True, meta_davranis={"kanca": {"A": [["sent", "+1s"], ["delivered", "+1m"]]}})
 
 # ---- J7: onarım bekleyen kabul varken yeni gönderim başlamaz ----
-S("J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz", "J7", "Meta yanıtı geldiğinde şirket dosyası yazılamıyor → kabul defterde onarım bekliyor: yeni gönderim BAŞLAMAZ (neden); onarım + yeniden açılıştan sonra A 'Daha Önce Gönderildi', C gider",
-  "J7 (Y9-14)", [A(), C()],
-  [baslat("+0s", "T1", "A"), olay("+10s", "dosya_yazilamaz", sirket="A", acik=True), baslat("+1m", "T2", "C"), olay("+5m", "dosya_yazilamaz", sirket="A", acik=False),
+S("J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz", "J7", "Meta yanıtı geldiğinde GÖNDERİM DEFTERİ yazılamıyor → iş dosyada Meta Kabul Etti ama kabul defterde eksik (onarım bekliyor): yeni gönderim BAŞLAMAZ (neden); defter onarılıp program yeniden açılınca A 'Daha Önce Gönderildi', C gider",
+  "J7 (liste metni madde 7, Y9e-1/2 — 9d düzeltmesi)", [A(), C()],
+  [baslat("+0s", "T1", "A"), olay("+7s", "defter_yazilamaz", acik=True), baslat("+1m", "T2", "C"), olay("+5m", "defter_yazilamaz", acik=False),
    olay("+6m", "kapat"), olay("+7m", "ac"), baslat("+11m", "T3", "AC"), kontrol("+12m", "K1")],
   {"baslamadi": {"T2": "onarim_bekleyen_kabul"}, "elenen": {"T3": {"A": "daha_once_gonderildi"}}, "onceki_uyari": {"T3": {"sayi": 1, "son": "2026-10-30"}},
    "toplular.T3.is_sayisi": 1, "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T3/C": "Teslim Edildi"}, "meta.post": {"A": 1, "C": 1},
    "bu_ay": {"W1": {"2026-10": ay_kova(2)}}},
-  meta_davranis={"mesaj": {"A": [{"gec_kabul": "+20s"}]}, "kanca": {"A": [["sent", "+1s", {"varis": "+10m"}], ["delivered", "+5s", {"varis": "+10m"}]], "C": K_STD}})
+  meta_davranis={"mesaj": {"A": [{"gec_kabul": "+10s"}]}, "kanca": {"A": [["sent", "+1s", {"varis": "+10m"}], ["delivered", "+5s", {"varis": "+10m"}]], "C": K_STD}})
 
-S("J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti", "J7", "Onarım beklerken gelen bildirim kaydedilemez (Meta yineler); onarımdan sonra A Teslim Edildi, tek ileti; yeni gönderim onarımdan sonra başlar",
-  "J7 + J6 (Y9-14; son durum yanıt okumasından bağımsız)", [A(), C()],
-  [baslat("+0s", "T1", "A"), olay("+10s", "dosya_yazilamaz", sirket="A", acik=True), baslat("+3m", "T2", "C"), olay("+5m", "dosya_yazilamaz", sirket="A", acik=False),
+S("J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti", "J7", "Defter onarım beklerken gelen bildirim kaydedilemez (503, Meta yineler); defter onarılınca A Teslim Edildi, tek ileti; yeni gönderim onarımdan sonra başlar",
+  "J7 (liste metni madde 7) + J6 (Y9e-3)", [A(), C()],
+  [baslat("+0s", "T1", "A"), olay("+7s", "defter_yazilamaz", acik=True), baslat("+3m", "T2", "C"), olay("+5m", "defter_yazilamaz", acik=False),
    olay("+6m", "kanca_kuyrugu"), baslat("+7m", "T3", "C"), kontrol("+8m", "K1")],
   {"baslamadi": {"T2": "onarim_bekleyen_kabul"}, "isler.T1/A.durum": "Teslim Edildi", "toplular.T3.is_sayisi": 1, "meta.post": {"A": 1, "C": 1},
-   "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T3/C": "Teslim Edildi"}, "bu_ay": {"W1": {"2026-10": ay_kova(2)}}},
-  meta_davranis={"mesaj": {"A": [{"gec_kabul": "+20s"}]}, "kanca": {"A": [["sent", "+1m"], ["delivered", "+2m"]], "C": K_STD}})
+   "kontroller.K1.isler": {"T1/A": "Teslim Edildi", "T3/C": "Teslim Edildi"}, "bu_ay": {"W1": {"2026-10": ay_kova(2)}}, "kanca_yanitlari": {"200": 4, "503": 2}},
+  kanca_yanit_cikti=True, meta_davranis={"mesaj": {"A": [{"gec_kabul": "+10s"}]}, "kanca": {"A": [["sent", "+1m"], ["delivered", "+2m"]], "C": K_STD}})
 
 # ---- J8: Tüm Hareketler'in kişiye özel dönemi ↔ o günün Bu Ay / Geçen Ay'ı ----
 S("J8-01-tum-hareketler-bu-ay-ayni-gun", "J8", "05.11 Tüm Hareketler: P'nin dönemi 01.11–05.11 (= o günün Bu Ay'ı) → aynı gün Bu Ay'da 'Daha Önce Gönderildi'; R (15.10–) gider",
