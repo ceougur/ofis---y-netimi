@@ -969,6 +969,190 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
       await s.close();
     }
   });
+  // =================================================================================================================================================
+  // İş W (KULLANICI KARARI S9-1, 01.11.2026; tasarim-w-248, onaylı): "Yine de Gönder" (belirsizlik onayı) zincirinin KAYNAĞINDAN teslim gelirse yeni ileti GİTMEZ —
+  // iş "Atlandı" (neden "Daha Önce Gönderildi"); defter / Bu Ay değişmez. Kapsam: Sonucu Belirsiz işteki Yine de Gönder ve onun zincirinden gelen Başarısızları Yeniden
+  // Dene; yeni gönderimde R3'e rağmen bilerek seçilen Yine de Gönder KAPSANMAZ (ikinci kopya gider).
+  // =================================================================================================================================================
+  /** Kaynak iş Sonucu Belirsiz → işteki Yine de Gönder (onaylı). Dönüş: { j1, w1, b2 }. */
+  async function anyway(s, source = null) {
+    const base = source || (await uncertain(s));
+    const res = await s.ctx.api.post(`/api/workspace/whatsapp/jobs/${base.job.id}/send-anyway${s.q}`, { confirm: true });
+    assert.equal(res.status, 200, `ön koşul: Yine de Gönder (${res.status} ${JSON.stringify(res.data)})`);
+    return { j1: base.job, w1: base.wamid, b1: base.batchId, b2: res.data.data.batch.id };
+  }
+  const sourceDelivered = (s, a, value = "delivered") => s.apply([st(s, a.w1, value, { biz_opaque_callback_data: a.j1.id })], true);
+  for (const [cell, value, mode] of [["W1 kuyrukta", "delivered", "queue"], ["W2 duraklatılmış → Devam Et", "delivered", "paused"], ["W4 kaynağa read (D'siz)", "read", "queue"]]) {
+    it(`${cell} · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)`, async () => {
+      const s = await harness();
+      try {
+        const a = await anyway(s);
+        if (mode === "paused") assert.equal((await s.ctx.api.post(`${URLS.batches}/${a.b2}/pause`, {})).status, 200);
+        assert.equal(sourceDelivered(s, a, value).applied, 1, "kaynağın teslimi uygulandı");
+        if (mode === "paused") assert.equal((await s.ctx.api.post(`${URLS.batches}/${a.b2}/resume`, {})).status, 200);
+        s.ctx.clock.advance(60_000);
+        await s.ctx.wa.scheduler.runOnce();
+        const j2 = await s.job(a.b2);
+        assert.deepEqual([j2.state, j2.reason, j2.stateLabel], ["skipped", "Daha Önce Gönderildi", "Atlandı"], "yeni iş Atlandı — Daha Önce Gönderildi");
+        await s.ctx.drain();
+        assert.equal(s.ctx.messages().length, 1, "yeni ileti gitmedi");
+        assert.equal(await s.buAy(), 1, "Bu Ay değişmez");
+        assert.equal(s.ledgerSql("SELECT COUNT(*) AS n FROM claims WHERE job_id = ?", j2.id).n, 0, "talep yazılmadı");
+      } finally {
+        await s.close();
+      }
+    });
+  }
+  it("W3 yeni iş 1. denemede kabul + 131049 (Meta Bekletti) → kaynağa teslim → 24 sa: 2. deneme YOK, iş Atlandı; ileti 2 (yeni işin 1. iletisi önlenemezdi) (S9-1)", async () => {
+    const s = await harness();
+    try {
+      const a = await anyway(s);
+      await s.ctx.drain();
+      const j2 = await s.job(a.b2);
+      assert.equal(j2.state, "accepted", "ön koşul: yeni iş kabul");
+      s.ctx.clock.advance(60_000);
+      s.apply([failedSt(s, j2.wamid, 131049)]);
+      assert.equal((await s.job(a.b2)).state, "held", "ön koşul: Meta Bekletti");
+      assert.equal(sourceDelivered(s, a).applied, 1);
+      s.ctx.clock.advance(DAY + 60_000);
+      await s.ctx.drain();
+      const after = await s.job(a.b2);
+      assert.deepEqual([after.state, after.reason], ["skipped", "Daha Önce Gönderildi"]);
+      assert.equal(s.ctx.messages().length, 2, "2. deneme gitmedi");
+      assert.equal(s.ledgerSql("SELECT COUNT(*) AS n FROM claims WHERE job_id = ?", j2.id).n, 1, "yalnız 1. denemenin talebi");
+    } finally {
+      await s.close();
+    }
+  });
+  it("W5 zincir derinliği 2: J1 belirsiz → YdG J2 belirsiz → YdG J3 kuyrukta → J1'e teslim → J3 Atlandı (S9-1)", async () => {
+    const s = await harness();
+    try {
+      const a = await anyway(s);
+      s.ctx.fake.state.dropAfter = /\/messages$/;
+      await s.ctx.drain();
+      s.ctx.fake.state.dropAfter = null;
+      const j2 = await s.job(a.b2);
+      assert.equal(j2.state, "uncertain", "ön koşul: J2 belirsiz");
+      s.ctx.clock.advance(60_000);
+      const res = await s.ctx.api.post(`/api/workspace/whatsapp/jobs/${j2.id}/send-anyway`, { confirm: true });
+      assert.equal(res.status, 200);
+      const b3 = res.data.data.batch.id;
+      assert.equal(sourceDelivered(s, a).applied, 1, "J1'e teslim");
+      s.ctx.clock.advance(60_000);
+      await s.ctx.drain();
+      assert.deepEqual([(await s.job(b3)).state, (await s.job(b3)).reason], ["skipped", "Daha Önce Gönderildi"]);
+      assert.equal(s.ctx.messages().length, 2, "J1 ve J2; J3 gitmedi");
+    } finally {
+      await s.close();
+    }
+  });
+  it("W6 kaynağa failed (teslim edilemedi) → yeni iş GİDER (ilke 1) (S9-1)", async () => {
+    const s = await harness();
+    try {
+      const a = await anyway(s);
+      assert.equal(s.apply([failedSt(s, a.w1, 131026, { biz_opaque_callback_data: a.j1.id })], true).applied, 1);
+      await s.ctx.drain();
+      assert.equal((await s.job(a.b2)).state, "accepted");
+      assert.equal(s.ctx.messages().length, 2);
+    } finally {
+      await s.close();
+    }
+  });
+  it("W7 kaynağın teslimi yeni ileti GİTTİKTEN sonra gelir → ileti 2 (önlenemez; BİLİNEN SINIR); yeni iş kendi durumunda", async () => {
+    const s = await harness();
+    try {
+      const a = await anyway(s);
+      await s.ctx.drain();
+      assert.equal(sourceDelivered(s, a).applied, 1);
+      await s.ctx.drain();
+      assert.equal((await s.job(a.b2)).state, "accepted");
+      assert.equal(s.ctx.messages().length, 2);
+    } finally {
+      await s.close();
+    }
+  });
+  it("W8 kaynağın teslimi ×2 → eşgüçlü: yeni iş Atlandı, Bu Ay 1 (S9-1)", async () => {
+    const s = await harness();
+    try {
+      const a = await anyway(s);
+      assert.equal(sourceDelivered(s, a).applied, 1);
+      assert.equal(sourceDelivered(s, a).applied, 0, "yinelenen etkisiz");
+      await s.ctx.drain();
+      assert.equal((await s.job(a.b2)).state, "skipped");
+      assert.equal(await s.buAy(), 1);
+    } finally {
+      await s.close();
+    }
+  });
+  it("W9 başka kişinin kaynağı teslim edildi → bu kişinin Yine de Gönder işi GİDER (kapsam: zincir)", async () => {
+    const s = await harness();
+    try {
+      const a = await anyway(s); // Burak: J1 belirsiz → J2 kuyrukta
+      const other = await ok(await s.ctx.api.post("/api/workspace/accounts", { name: "Ayşe Yılmaz", phone: "0532 111 22 33", openingBalance: "500" }), "cari 2");
+      const bOther = (await ok(await s.ctx.api.post(URLS.batches, { kind: "statement", ids: [other.id], preset: "thisMonth" }), "toplu iş 2")).batch.id;
+      await s.ctx.wa.scheduler.runOnce(); // sıradaki işler: J2 (Burak) ya da Ayşe — ikisi de gider
+      await s.ctx.drain();
+      const jo = await s.job(bOther);
+      assert.equal(s.apply([st(s, jo.wamid, "delivered")]).applied, 1, "başka kişinin teslimi");
+      assert.equal((await s.job(a.b2)).state, "accepted", "Burak'ın Yine de Gönder işi gitti");
+    } finally {
+      await s.close();
+    }
+  });
+  it("W-b yeni gönderimde R3'e rağmen BİLEREK seçilen Yine de Gönder KAPSANMAZ: önceki iletinin teslimi sonradan gelse de ikinci kopya gider (S9-1 b)", async () => {
+    const s = await harness();
+    try {
+      const { job } = await accepted(s);
+      assert.deepEqual(await s.skip(), ["Daha Önce Gönderildi"], "ön koşul: R3");
+      const b2 = (await ok(await s.ctx.api.post(URLS.batches, { ...s.body, sendAgain: true }), "Yine de Gönder (R3)")).batch.id;
+      assert.equal(s.apply([st(s, job.wamid, "delivered")]).applied, 1, "önceki iletinin teslimi");
+      await s.ctx.drain();
+      assert.equal((await s.job(b2)).state, "accepted", "ikinci kopya gitti");
+      assert.equal(s.ctx.messages().length, 2);
+    } finally {
+      await s.close();
+    }
+  });
+  it("W-c1 aynı bilgisayar: YdG J2 Başarısız → Başarısızları Yeniden Dene kaynak J1 belirsizken kişiyi ELER (KARAR 31.10 08:00 'A') — üçüncü ileti yolu yok (S9-1 c, önceden var)", async () => {
+    const s = await harness();
+    try {
+      const a = await anyway(s);
+      await s.ctx.drain();
+      const j2 = await s.job(a.b2);
+      s.apply([failedSt(s, j2.wamid)]);
+      const retry = await s.ctx.api.post(`${URLS.batches}/${a.b2}/retry-failed`, {});
+      assert.equal(retry.status, 400);
+      assert.deepEqual(retry.data.summary?.skipped || retry.data.data?.summary?.skipped, { "Sonucu Belirsiz": 1 });
+      assert.equal(s.ctx.messages().length, 2);
+    } finally {
+      await s.close();
+    }
+  });
+  it("W-c2 taşınan veride de (defter yok) YdG zincirindeki Başarısız işin yeniden denemesi kaynak belirsizken kişiyi ELER — zincir bağının taşınması (savunma) ulaşılamaz yolda (S9-1 c)", { timeout: 120_000 }, async () => {
+    const root = mkdtempSync(path.join(tmpdir(), "destekofis-wc2-"));
+    const dataDir = path.join(root, "data");
+    let s = await harness({ dataDir });
+    try {
+      const a = await anyway(s);
+      await s.ctx.drain();
+      const j2 = await s.job(a.b2);
+      s.apply([failedSt(s, j2.wamid)]);
+      assert.equal((await s.job(a.b2)).state, "failed", "ön koşul: J2 Başarısız");
+      await s.close();
+      s = null;
+      const moved = path.join(root, "tasindi");
+      cpSync(dataDir, moved, { recursive: true });
+      for (const name of readdirSync(moved)) if (name.startsWith("whatsapp-gonderim.sqlite")) rmSync(path.join(moved, name), { force: true });
+      s = await harness({ dataDir: moved, account: false });
+      const retry = await s.ctx.api.post(`${URLS.batches}/${a.b2}/retry-failed`, {});
+      assert.equal(retry.status, 400, "taşınan veride de elenir");
+      assert.deepEqual(retry.data.summary?.skipped || retry.data.data?.summary?.skipped, { "Sonucu Belirsiz": 1 });
+      assert.equal(s.ctx.messages().length, 0);
+    } finally {
+      await s?.close();
+      removeTestDir(root);
+    }
+  });
   it("T35r GERÇEK yol: istek Meta'dayken yedek + geri yükleme (toparlama 'Sonucu Belirsiz' yazar) → yanıt gelince satır Meta Kabul Etti; aynı dönem Daha Önce; kişiye 1 ileti (U4)", { timeout: 120_000 }, async () => {
     const s = await harness({ second: true, timeoutMs: 8_000 });
     try {
