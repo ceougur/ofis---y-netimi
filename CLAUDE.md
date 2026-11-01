@@ -247,6 +247,15 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     yazılır ve kullanıcıya onaylatılır; kâhin bu ilkeyle kurulur. Son aday aşamasında yeni kural GİRMEZ (ilkeyle de olsa); çok seyrek çift işlem yolları BİLİNEN SINIR olarak sonraki sürüme.
     (31.10.2026, kullanıcı "ekle": 2.4.8'de kurallar son adayda tek tek verildi — 15 soru, dar kontrol 3→10 = 8 tur; baş mimarın dondurmadan sonra İLKEYLE eklediği L5 dk10 DÜŞÜK-1'i doğurdu.)
 46. DÜZELTME AJANI TUR BAŞINA YENİ BAŞLAR. Aynı düzeltme ajanı art arda turlarda sürdürülmez (bağlam şişer, sıkıştırılır, önceki turun nedenleri kaybolur, her yama komşusunu bozar); her düzeltme turu temiz bağlamlı yeni ajanla, tasarım notu + önceki turların karar/kanıt özetiyle başlar. Dış servise bağlı ve durum tutan çekirdekte (WhatsApp gönderim/bildirim, e-Belge gönderimi, ödeme) düzeltme ajanının eforu xhigh. Aynı aileden iki dar kontrol üst üste gerileme verirse kullanıcıya hemen sorulur. (01.11.2026, kullanıcı "modeli mi düşük tutuyoruz, bu kadar gerileme olmazdı" → "böyle yapalım ve kısır döngüye girmeyelim": 2.4.8'de tek düzeltme ajanı İş J–Y'yi ~760 bin tokenle yürüttü; dk17 4, dk18 3 gerileme.)
+47. TOPLU İŞTE ÖĞE BAŞINA AĞIR OKUMA YOK; YENİ TOPLU YOL BÜYÜK VERİDE ERKEN ÖLÇÜLÜR. Liste, rapor, önizleme ya da toplu iş hazırlayan kod öğe başına ağır okuma yapmaz (tam cari kartı,
+    bütün hareketlerin JS nesnesine çevrilmesi, öğe başına alt sorgu); yalnız gereken alanlar toplu SQL ile okunur, toplam/devir SQL'de hesaplanır. SQLite eşzamanlı çalışır: tek ağır istek
+    olay döngüsünü kilitler, ofisteki BÜTÜN kullanıcılar bekler → ölçümde yanıt süresinin yanında "olay döngüsü en çok" süresi de okunur. Yeni toplu/rapor yolu planda hacim bütçesiyle yazılır
+    (ör. 2.000 cari ≤ 2 sn) ve son adayı beklemeden, geliştirme sırasında bir kez programın kendi ürettiği büyük veride ölçülür; dar kontrol ve gözden geçirme bu deseni ayrıca arar. Hız
+    düzeltmesi: davranış aynen — eşdeğerlik testi (eski ↔ yeni çıktı birebir) + aynı veri kopyasıyla önce/sonra ölçüm (ders 15); atomik yazma yolunda (ör. "Zaten Kuyrukta" denetimi + iş
+    açma) olay döngüsüne sıra verilmez (eşzamanlı iki istek denetimi birlikte geçer). (01.11.2026, kullanıcı "daha önceki sürümde de böyle bir kod değişikliği ile süreyi kısaltmıştık; bu
+    konuyu da derslere taşıyalım": 2.1.0'da (11.10) banka raporları her açılışta bütün para satırlarını JS'e çeviriyordu — 100.000 satırda 10 kişide p95 12 sn, olay döngüsü 6 sn; SQL toplamla
+    düzeltildi. 2.4.8'de (01.11) WhatsApp önizleme/başlatma her cari için tam kart okuyordu — 2.000 caride 23–26 sn, olay döngüsü kilitli (İş Z); elle toplu gönderim alıcı listesi 2.4.7'den beri
+    aynı desen (2.4.9). İkisi de ancak son adayın ölçek testinde görüldü.)
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
