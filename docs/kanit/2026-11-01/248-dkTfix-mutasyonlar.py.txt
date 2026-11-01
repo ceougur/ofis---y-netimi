@@ -29,6 +29,8 @@ M = {
   # A8: eski denemenin geç teslimi satır eski denemedeyken sayılmaz
   "mA8-eski-satir-sayilmaz": [(Q, "    if (![\"delivered\", \"read\"].includes(value) || owned.own?.outcome !== \"released\") return false;",
     "    if (![\"delivered\", \"read\"].includes(value) || owned.own?.outcome !== \"released\" || (owned.row && Number(owned.row.attempt) < Number(owned.attempt))) return false;")],
+  # Ek: defter yazımı zorunlu değil (ledgerMust etkisiz) — yazım ortasında defter başarısızlığı yutulur
+  "mLedgerMust-etkisiz": [(Q, "    if (ok) return true;\n    throw Object.assign(new Error(`WhatsApp gönderim defterine yazılamadı", "    if (ok || true) return true;\n    throw Object.assign(new Error(`WhatsApp gönderim defterine yazılamadı")],
   # Yol sırası 1: "satır sonucu bilmiyor" denetimi yalnız-defter yolundan SONRA (erişilmez)
   "mYol-bilmiyor-sonra": [(Q, "      if (owned.knows) return { route: \"row\", job: owned.row, owned };\n      if (owned.row && Number(owned.row.attempt) > Number(owned.attempt)) return { route: \"none\" };\n      return { route: \"ledger\", owned };",
     "      if (owned.row && Number(owned.row.attempt) > Number(owned.attempt)) return { route: \"none\" };\n      return { route: \"ledger\", owned };\n      if (owned.knows) return { route: \"row\", job: owned.row, owned };")],
