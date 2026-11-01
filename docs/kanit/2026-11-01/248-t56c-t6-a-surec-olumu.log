@@ -1,0 +1,87 @@
+TAP version 13
+# \# T6a {"seed":1,"K":11,"extra":381,"olumAni":{"mesajIstek":11,"medyaIstek":12,"metaIsledi":11},"olumdeDurumlar":{"accepted":11,"preparing":1},"sonDurum":"done","sonDurumlar":{"accepted":12},"metaIsledi":12,"mesajIstek":12,"medyaYukleme":13,"belirsizIletisiz":0,"belirsizIletili":0,"ihlal":[],"metadaKalanPdf":13,"sahipsizPdf":1}
+# Subtest: T6 (a) — toplu gönderimin ortasında SIGKILL → yeniden açılış: çift yok, kayıp yok, Sonucu Belirsiz doğru
+    # Subtest: tohum 1
+    ok 1 - tohum 1
+      ---
+      duration_ms: 8419.605916
+      type: 'test'
+      ...
+# \# T6a {"seed":2,"K":3,"extra":193,"olumAni":{"mesajIstek":3,"medyaIstek":3,"metaIsledi":3},"olumdeDurumlar":{"accepted":3,"pending":9},"sonDurum":"done","sonDurumlar":{"accepted":12},"metaIsledi":12,"mesajIstek":12,"medyaYukleme":12,"belirsizIletisiz":0,"belirsizIletili":0,"ihlal":[],"metadaKalanPdf":12,"sahipsizPdf":0}
+    # Subtest: tohum 2
+    ok 2 - tohum 2
+      ---
+      duration_ms: 8057.655216
+      type: 'test'
+      ...
+# \# T6a {"seed":3,"K":6,"extra":5,"olumAni":{"mesajIstek":6,"medyaIstek":6,"metaIsledi":5},"olumdeDurumlar":{"accepted":5,"pending":6,"sending":1},"sonDurum":"done","sonDurumlar":{"accepted":11,"uncertain":1},"metaIsledi":12,"mesajIstek":12,"medyaYukleme":12,"belirsizIletisiz":0,"belirsizIletili":1,"ihlal":[],"metadaKalanPdf":12,"sahipsizPdf":0}
+    # Subtest: tohum 3
+    ok 3 - tohum 3
+      ---
+      duration_ms: 7860.934738
+      type: 'test'
+      ...
+# \# T6a {"seed":4,"K":10,"extra":217,"olumAni":{"mesajIstek":10,"medyaIstek":10,"metaIsledi":10},"olumdeDurumlar":{"accepted":10,"pending":2},"sonDurum":"done","sonDurumlar":{"accepted":12},"metaIsledi":12,"mesajIstek":12,"medyaYukleme":12,"belirsizIletisiz":0,"belirsizIletili":0,"ihlal":[],"metadaKalanPdf":12,"sahipsizPdf":0}
+    # Subtest: tohum 4
+    ok 4 - tohum 4
+      ---
+      duration_ms: 8237.801277
+      type: 'test'
+      ...
+# \# T6a {"seed":5,"K":1,"extra":30,"olumAni":{"mesajIstek":1,"medyaIstek":1,"metaIsledi":0},"olumdeDurumlar":{"pending":11,"sending":1},"sonDurum":"done","sonDurumlar":{"accepted":11,"uncertain":1},"metaIsledi":12,"mesajIstek":12,"medyaYukleme":12,"belirsizIletisiz":0,"belirsizIletili":1,"ihlal":[],"metadaKalanPdf":12,"sahipsizPdf":0}
+    # Subtest: tohum 5
+    ok 5 - tohum 5
+      ---
+      duration_ms: 7806.549152
+      type: 'test'
+      ...
+# \# T6a {"seed":6,"K":5,"extra":242,"olumAni":{"mesajIstek":5,"medyaIstek":5,"metaIsledi":5},"olumdeDurumlar":{"accepted":5,"pending":7},"sonDurum":"done","sonDurumlar":{"accepted":12},"metaIsledi":12,"mesajIstek":12,"medyaYukleme":12,"belirsizIletisiz":0,"belirsizIletili":0,"ihlal":[],"metadaKalanPdf":12,"sahipsizPdf":0}
+    # Subtest: tohum 6
+    ok 6 - tohum 6
+      ---
+      duration_ms: 7974.890578
+      type: 'test'
+      ...
+# \# T6a {"seed":7,"K":8,"extra":54,"olumAni":{"mesajIstek":8,"medyaIstek":8,"metaIsledi":7},"olumdeDurumlar":{"accepted":7,"pending":4,"sending":1},"sonDurum":"done","sonDurumlar":{"accepted":11,"uncertain":1},"metaIsledi":12,"mesajIstek":12,"medyaYukleme":12,"belirsizIletisiz":0,"belirsizIletili":1,"ihlal":[],"metadaKalanPdf":12,"sahipsizPdf":0}
+    # Subtest: tohum 7
+    ok 7 - tohum 7
+      ---
+      duration_ms: 7952.712956
+      type: 'test'
+      ...
+# \# T6a {"seed":8,"K":0,"extra":266,"olumAni":{"mesajIstek":1,"medyaIstek":1,"metaIsledi":1},"olumdeDurumlar":{"accepted":1,"pending":11},"sonDurum":"done","sonDurumlar":{"accepted":12},"metaIsledi":12,"mesajIstek":12,"medyaYukleme":12,"belirsizIletisiz":0,"belirsizIletili":0,"ihlal":[],"metadaKalanPdf":12,"sahipsizPdf":0}
+    # Subtest: tohum 8
+    ok 8 - tohum 8
+      ---
+      duration_ms: 7884.008276
+      type: 'test'
+      ...
+# \# T6a {"seed":9,"K":3,"extra":78,"olumAni":{"mesajIstek":3,"medyaIstek":3,"metaIsledi":2},"olumdeDurumlar":{"accepted":2,"pending":9,"sending":1},"sonDurum":"done","sonDurumlar":{"accepted":11,"uncertain":1},"metaIsledi":12,"mesajIstek":12,"medyaYukleme":12,"belirsizIletisiz":0,"belirsizIletili":1,"ihlal":[],"metadaKalanPdf":12,"sahipsizPdf":0}
+    # Subtest: tohum 9
+    ok 9 - tohum 9
+      ---
+      duration_ms: 7841.438357
+      type: 'test'
+      ...
+# \# T6a {"seed":10,"K":7,"extra":290,"olumAni":{"mesajIstek":7,"medyaIstek":8,"metaIsledi":7},"olumdeDurumlar":{"accepted":7,"pending":4,"preparing":1},"sonDurum":"done","sonDurumlar":{"accepted":12},"metaIsledi":12,"mesajIstek":12,"medyaYukleme":13,"belirsizIletisiz":0,"belirsizIletili":0,"ihlal":[],"metadaKalanPdf":13,"sahipsizPdf":1}
+    # Subtest: tohum 10
+    ok 10 - tohum 10
+      ---
+      duration_ms: 8075.202947
+      type: 'test'
+      ...
+    1..10
+ok 1 - T6 (a) — toplu gönderimin ortasında SIGKILL → yeniden açılış: çift yok, kayıp yok, Sonucu Belirsiz doğru
+  ---
+  duration_ms: 80113.135684
+  type: 'suite'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 95456.080268

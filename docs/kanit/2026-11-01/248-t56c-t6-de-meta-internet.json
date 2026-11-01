@@ -1,0 +1,32 @@
+{
+  "ad": "248-t56c-t6-de-meta-internet",
+  "komut": "node --no-warnings --test --test-concurrency=1 test/t6-248/de-meta-internet.mjs",
+  "commit": "8bef668242b4eb0741d4d1678293bc5100ee077b",
+  "dal": "is/t56c-248",
+  "kirli": 0,
+  "izlenmeyen": 62,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T10:57:46.557Z",
+  "sure_sn": 192.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t56c-t6-de-meta-internet.log",
+  "klasor": "/home/user/wt-t56c-248",
+  "ham_cikti_sha256": "3e90eb1a5797988508711c96d8ff74f1314112ccaa01b004a121dd249f6d1e2b",
+  "ham_cikti_bayt": 5291
+}

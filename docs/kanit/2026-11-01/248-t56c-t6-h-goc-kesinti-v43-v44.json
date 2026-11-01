@@ -1,0 +1,32 @@
+{
+  "ad": "248-t56c-t6-h-goc-kesinti-v43-v44",
+  "komut": "node --no-warnings --test --test-concurrency=1 test/t6-248/h-goc-kesinti-v44.mjs",
+  "commit": "8bef668242b4eb0741d4d1678293bc5100ee077b",
+  "dal": "is/t56c-248",
+  "kirli": 0,
+  "izlenmeyen": 64,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T11:01:29.520Z",
+  "sure_sn": 103.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t56c-t6-h-goc-kesinti-v43-v44.log",
+  "klasor": "/home/user/wt-t56c-248",
+  "ham_cikti_sha256": "167a61008293d17d284e55ca1fecdb2172242ab5f24729069129e39c2004519c",
+  "ham_cikti_bayt": 8092
+}

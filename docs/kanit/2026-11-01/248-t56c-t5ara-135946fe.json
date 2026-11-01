@@ -1,0 +1,78 @@
+{
+  "ad": "248-t56c-t5ara-135946fe",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t56c-9b41e7/arac/ara-kos.mjs 135946fe /home/user/wt-t56c-248",
+  "commit": "862d7fa5108ce86215f9591d416635adb5d5c991",
+  "dal": "is/t56c-248",
+  "kirli": 0,
+  "izlenmeyen": 29,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T10:48:33.965Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 30,
+    "gecen": 21,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "135946fe eski iş satırları göçten sonra aynı durumda (10) — {\"oldRows\":[{\"id\":\"waj-20eddcf8-c5d3-4cb0-9eab-b604c2cc3972\",\"state\":\"uncertain\"},{\"id\":\"waj-31b9d056-2ebe-411e-bd29-3d8b1db6cc20\",\"state\":\"pending\"},{\"id\":\"waj-40a049bd-afc5-422e-bd87-6b7f928afe1f\",\"state\":\"accepted\"},{\"id\":\"waj-72a53e47-1",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe önce (eski kod) Yeniden Dene + Yine de Gönder kuyruktayken Ekstre \"Bu Ay\": G4, G5, G8 Zaten Kuyrukta — {\"G4\":\"\",\"G5\":\"\",\"G8\":\"Zaten Kuyrukta\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe sonra (aday) Ekstre \"Bu Ay\": G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta, G4/G6/G7/G9 gönderilir (G5: gönderilir) — {\"badE\":[\"G0=\",\"G1=\",\"G2=\",\"G3=\"],\"skipped\":{\"Zaten Kuyrukta\":1}}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe sonra (aday) özel aralık 01.11–03.11 = o günün \"Bu Ay\"ı → G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta (karar \"b\"; göçmüş defterde claim_keys satırı tablo yok) — {\"badOz\":[\"G0=\",\"G1=\",\"G2=\",\"G3=\"],\"skipped\":{\"Zaten Kuyrukta\":1}}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe sonra (aday) bekleyenler sürülünce yalnız G4–G8'e birer ileti (4; çift 0, G0–G3/G9'a 0) — {\"drained\":[\"+905542000014\",\"+905542000016\",\"+905542000017\",\"+905542000018\"],\"expDrain\":[\"+905542000014\",\"+905542000015\",\"+905542000016\",\"+905542000017\",\"+905542000018\"]}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe sonra (aday) sürülünce Bu Ay: teslim 1 (1), Meta Kabul Etti 9 (10) — {\"status\":200,\"delivered\":1,\"accepted\":9,\"billable\":1}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe sonra (aday) sürüldükten sonra Ekstre \"Bu Ay\": G0–G5, G8 Daha Önce Gönderildi (G5: Yine de Gönder kabul edildi → İş Q2 kararı A), G6/G7/G9 gönderilir — {\"badSur\":[\"G0=\",\"G1=\",\"G2=\",\"G3=\",\"G4=Zaten Kuyrukta\",\"G5=\",\"G8=Zaten Kuyrukta\"],\"skipped\":{\"Zaten Kuyrukta\":2}}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe önce = sonra: ekstre — [{\"k\":\"Ara Şema G0\",\"once\":{\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T06:00:00.000Z\"},\"sonra\":{\"skip\":\"\",\"sentBefore\":null}},{\"k\":\"Ara Şema G1\",\"once\":{\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T06:00:00.000Z\"},\"sonra\":{\"skip\":\"\",\"sentBefore\":",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "135946fe önce = sonra: kuyruk — [{\"k\":\"Ara Şema G0\",\"once\":{\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T06:00:00.000Z\"},\"sonra\":{\"skip\":\"\",\"sentBefore\":null}},{\"k\":\"Ara Şema G1\",\"once\":{\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T06:00:00.000Z\"},\"sonra\":{\"skip\":\"\",\"sentBefore\":",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t56c-t5ara-135946fe.log",
+  "klasor": "/home/user/wt-t56c-248",
+  "ham_cikti_sha256": "b35b0407e10d9e7e37063bf2cb7cc438bea7904903541605e9b8e64d8096d2e3",
+  "ham_cikti_bayt": 8564
+}

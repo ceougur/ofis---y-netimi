@@ -1,0 +1,41 @@
+TAP version 13
+# \# T6hv v43 verisi: {"ok":true,"version":43,"batchId":"wab-9e632752-45ed-433d-a270-496562873972","status":[200,200,200],"body":null,"isler":[{"state":"pending","n":5}]}
+# \# T6hv1 [{"delay":40,"olduruldu":"SIGKILL","hazirdi":false,"surum":43,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5},{"delay":140,"olduruldu":"SIGKILL","hazirdi":false,"surum":43,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5},{"delay":240,"olduruldu":"SIGKILL","hazirdi":false,"surum":43,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5},{"delay":340,"olduruldu":"SIGKILL","hazirdi":false,"surum":43,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5},{"delay":440,"olduruldu":"SIGKILL","hazirdi":false,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5},{"delay":540,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5},{"delay":640,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5},{"delay":740,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":4},{"delay":840,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5},{"delay":940,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":4},{"delay":1040,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":3},{"delay":1140,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":3},{"delay":1240,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":3},{"delay":1340,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":2},{"delay":1440,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":1},{"delay":1540,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":1},{"delay":1640,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":1},{"delay":1740,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":0},{"delay":1840,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":0},{"delay":1940,"olduruldu":"SIGKILL","hazirdi":true,"surum":44,"butunluk":"ok","sutunlar":"prepared_at,pdf_blob,inherit_of,send_again_after,key_day","isSatiri":5,"acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":0}]
+# \# T6hv1 öldürme sonrası sürüm dağılımı: {"v43":4,"v44":16}
+# \# T6hv1 alıcı başına (20 kopya toplamı): {"+905540000000":20,"+905540000001":20,"+905540000002":20,"+905540000003":20,"+905540000004":20}
+# Subtest: T6 (h, T56c) — göç sırasında kesinti (v43 → v44)
+    # Subtest: h1: Aday 2 açılırken 20 farklı anda SIGKILL → her seferinde v43..v44 tam sürüm (ara yok), bütünlük ok; tam açılışta v44 ve bekleyen gönderim bir kez
+    ok 1 - h1: Aday 2 açılırken 20 farklı anda SIGKILL → her seferinde v43..v44 tam sürüm (ara yok), bütünlük ok; tam açılışta v44 ve bekleyen gönderim bir kez
+      ---
+      duration_ms: 39436.097132
+      type: 'test'
+      ...
+# \# T6hv2 {"olumSonrasiSurum":43,"olumSonrasiSutun":false,"butunluk":"ok","acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5}
+    # Subtest: h2 ZORLA: v44'in ALTER'ı işlem içinde yazıldı, COMMIT'ten önce süreç öldü → Aday 2 temiz v44'e geçer, bekleyen gönderim bir kez
+    ok 2 - h2 ZORLA: v44'in ALTER'ı işlem içinde yazıldı, COMMIT'ten önce süreç öldü → Aday 2 temiz v44'e geçer, bekleyen gönderim bir kez
+      ---
+      duration_ms: 1318.810812
+      type: 'test'
+      ...
+# \# T6hv3 {"doluyken":"açılmadı: çocuk hazır (): 45000 ms içinde olmadı","doluSonrasiSurum":43,"doluSonrasiSutunlar":"prepared_at,pdf_blob,send_again_after,key_day","butunluk":"ok","acilistaSurum":44,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5}
+    # Subtest: h3: göç sırasında disk DOLU (tmpfs) → program açılmaz/açık hata, dosya v43..v44 tam sürüm ve sağlam; yer açılınca v44, gönderim bir kez
+    ok 3 - h3: göç sırasında disk DOLU (tmpfs) → program açılmaz/açık hata, dosya v43..v44 tam sürüm ve sağlam; yer açılınca v44, gönderim bir kez
+      ---
+      duration_ms: 46247.679488
+      type: 'test'
+      ...
+    1..3
+ok 1 - T6 (h, T56c) — göç sırasında kesinti (v43 → v44)
+  ---
+  duration_ms: 87963.311088
+  type: 'suite'
+  ...
+1..1
+# tests 3
+# suites 1
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 103308.329162

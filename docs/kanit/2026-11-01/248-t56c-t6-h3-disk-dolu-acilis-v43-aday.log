@@ -1,0 +1,9 @@
+# v40 verisi: {"ok":true,"version":43,"batchId":"wab-565155cf-5d7d-4b25-9755-e85de40e68dc","status":[200,200,200],"body":null}
+# ham {"root":"/home/user/wt-t56c-248","cikti":"çıktı","code":1,"signal":null,"ms":329,"hazir":false,"son":"sk I/O error at openDatabase (file:///home/user/wt-t56c-248/server/lib/db.mjs:11:21) at createApp (file:///home/user/wt-t56c-248/server/app.mjs:120:14) at startTestServer (file:///home/user/wt-t56c-248/test/helpers.mjs:14:15) at file:///home/user/wt-t56c-248/test/t6-248/cocuk.mjs:11:22 at ModuleJob.run (node:internal/modules/esm/module_job:343:25) at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26) at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) { code: 'ERR_SQLITE_ERROR', errcode: 4874, errstr: 'disk I/O error' } Node.js v22.22.0 "}
+# {"root":"/home/user/wt-t56c-248","cikti":"çıktı","code":1,"signal":null,"ms":329,"hazir":false,"son":"sk I/O error at openDatabase (file:///home/user/wt-t56c-248/server/lib/db.mjs:11:21) at createApp (file:///home/user/wt-t56c-248/server/app.mjs:120:14) at startTestServer (file:///home/user/wt-t56c-248/test/helpers.mjs:14:15) at file:///home/user/wt-t56c-248/test/t6-248/cocuk.mjs:11:22 at ModuleJob.run (node:internal/modules/esm/module_job:343:25) at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26) at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) { code: 'ERR_SQLITE_ERROR', errcode: 4874, errstr: 'disk I/O error' } Node.js v22.22.0 ","surum":43,"butunluk":"ok"}
+# tests 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

@@ -1,0 +1,13 @@
+// Tanı: göçmüş v43 verisinde bekleyen işler drain ile neden "sending"de kalıyor (ara.mjs olc ile aynı açılış)
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const [kok, veri, connect] = process.argv.slice(2);
+const { startWa } = await import(pathToFileURL(path.join(kok, "test/whatsapp-248-ortak.mjs")).href);
+const ctx = await startWa({ dataDir: path.join(veri, "data"), backupDir: path.join(veri, "backups"), now: { time: "2026-11-03T10:00:00+03:00", fixed: true }, whatsappWorker: "manual", whatsappGapMs: 0, whatsappTimeoutMs: 800, connect: connect === "1", ack: false });
+const q = () => ctx.store.all("SELECT a.name n, j.state s, j.sending_at sa, j.wamid w FROM wa_jobs j JOIN accounts a ON a.id = j.account_id ORDER BY a.name, j.rowid").map(r => `${r.n.slice(-2)}:${r.s}${r.w ? "+w" : ""}`).join(" ");
+console.log("açılış", q());
+if (process.env.SENT0) ctx.fake.state.sent = Number(process.env.SENT0);
+const n = await ctx.drain();
+console.log("drain", n, "mesaj", ctx.fake.state.messages.map(m => m.to).join(","), "istekler", ctx.fake.requests.map(r => `${r.method} ${r.path} ${r.status ?? ""}`).slice(0, 30).join(" | "));
+console.log("sonra", q());
+await ctx.close();

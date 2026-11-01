@@ -1,0 +1,10 @@
+#!/bin/bash
+# kullanım: t6-kos.sh <kanıt adı> <betik> [ek ortam: AD=DEĞER …] — Aday 2 (wt-t56c-248), T6 betikleri, kanit.mjs kos ile
+S=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t56c-9b41e7/t6
+R=/home/user/wt-t56c-248
+ad=$1; betik=$2; shift 2
+cd "$R" || exit 9
+env "$@" T6_KOK=$S/kok TMPDIR=$S/tmp HUKUK_LICENSE_URL=http://127.0.0.1:9 node tools/kanit.mjs kos "248-t56c-t6-$ad" --sure 60 -- node --no-warnings --test --test-concurrency=1 ${T6_DESEN:+--test-name-pattern="$T6_DESEN"} "$betik" > "$S/$ad.out" 2>&1
+code=$?
+echo "$ad cikis $code"; grep -E "^# (tests|pass|fail)" "$S/$ad.out" | tr '\n' ' '; echo
+exit $code

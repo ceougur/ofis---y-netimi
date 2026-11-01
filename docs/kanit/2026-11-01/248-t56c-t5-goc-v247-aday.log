@@ -1,0 +1,37 @@
+[10:36:28] göç + ölçü: önce şema {"sirket-001":39,"sirket-e47580f6-0400-4fd6-bac5-0cdb5f010eb4":39}; 001 açılışı (göç dahil) 643 ms; ilk erişim {"001":5,"002":188}; yeni yedek 001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-11-01T10-35-52-379Z-pre-migration-v44.sqlite, 002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-11-01T10-36-19-972Z-pre-migration-v44.sqlite
+  ✓ 001 şema 39 → 44
+  ✓ 001 bütünlük ok
+  ✓ 001 göç öncesi yedek pre-migration-v44
+  ✓ 001 yeni tablolar yalnız v40 tabloları (wa_batches, wa_jobs); eski tablo düşmedi
+  ✓ 001 WhatsApp tabloları boş (göç toplu gönderim/iş yaratmaz: wa_batches=0, wa_jobs=0)
+  ✓ 001 mobil tabloları ve e-Belge sayacı izi önce = sonra (mobile_access 0→0, mobile_codes 0→0, mobile_devices 0→0, mobile_sessions 0→0, edoc_usage 349→349, edoc_usage_meta 1→1)
+  ✓ 001 eski tabloların satır sayıları aynı (değişenler: yok)
+  ✓ 002 şema 39 → 44
+  ✓ 002 bütünlük ok
+  ✓ 002 göç öncesi yedek pre-migration-v44
+  ✓ 002 yeni tablolar yalnız v40 tabloları (wa_batches, wa_jobs); eski tablo düşmedi
+  ✓ 002 WhatsApp tabloları boş (göç toplu gönderim/iş yaratmaz: wa_batches=0, wa_jobs=0)
+  ✓ 002 mobil tabloları ve e-Belge sayacı izi önce = sonra (mobile_access 0→0, mobile_codes 0→0, mobile_devices 0→0, mobile_sessions 0→0, edoc_usage 129→129, edoc_usage_meta 1→1)
+  ✓ 002 eski tabloların satır sayıları aynı (değişenler: yok)
+  ✓ sirket-001 accounts.wa_opt_out kolonu (v40; INTEGER NOT NULL 1 DEFAULT 0); 3221 carinin "WhatsApp Mesajı İstemiyor" işaretli olanı 0
+  ✓ sirket-e47580f6-0400-4fd6-bac5-0cdb5f010eb4 accounts.wa_opt_out kolonu (v40; INTEGER NOT NULL 1 DEFAULT 0); 936 carinin "WhatsApp Mesajı İstemiyor" işaretli olanı 0
+  ✓ sirket-001 wa_jobs.prepared_at (TEXT NOT NULL 0 DEFAULT null)
+  ✓ sirket-001 wa_jobs.pdf_blob (BLOB NOT NULL 0 DEFAULT null)
+  ✓ sirket-001 wa_jobs.inherit_of (TEXT NOT NULL 1 DEFAULT '')
+  ✓ sirket-001 wa_batches.send_again_after (TEXT NOT NULL 1 DEFAULT '')
+  ✓ sirket-001 wa_batches.key_day (TEXT NOT NULL 1 DEFAULT '')
+  ✓ sirket-001 makine defteri tabloları şirket dosyasında YOK (learned_wamids, claim_keys, claims)
+  ✓ sirket-e47580f6-0400-4fd6-bac5-0cdb5f010eb4 wa_jobs.prepared_at (TEXT NOT NULL 0 DEFAULT null)
+  ✓ sirket-e47580f6-0400-4fd6-bac5-0cdb5f010eb4 wa_jobs.pdf_blob (BLOB NOT NULL 0 DEFAULT null)
+  ✓ sirket-e47580f6-0400-4fd6-bac5-0cdb5f010eb4 wa_jobs.inherit_of (TEXT NOT NULL 1 DEFAULT '')
+  ✓ sirket-e47580f6-0400-4fd6-bac5-0cdb5f010eb4 wa_batches.send_again_after (TEXT NOT NULL 1 DEFAULT '')
+  ✓ sirket-e47580f6-0400-4fd6-bac5-0cdb5f010eb4 wa_batches.key_day (TEXT NOT NULL 1 DEFAULT '')
+  ✓ sirket-e47580f6-0400-4fd6-bac5-0cdb5f010eb4 makine defteri tabloları şirket dosyasında YOK (learned_wamids, claim_keys, claims)
+  ✓ makine defteri (data/whatsapp-gonderim.sqlite) learned_wamids + claim_keys + attempt_deliveries + anyway_links var, satırlar {"meta":1,"batch_events":0,"batch_log":0,"sqlite_sequence":0,"claims":0,"claim_keys":0,"outcomes":0,"failures":0,"releases":0,"accepts":0,"holds":0,"deliveries":0,"hook_events":0,"hook_seen":0,"anyway_links":0,"learned_wamids":0,"attempt_deliveries":0}
+# göç: 2 şirket
+# tests 29
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
