@@ -1506,7 +1506,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
           const del = await s.ctx.api.raw("DELETE", `/api/companies/${s.company.id}`, { body: JSON.stringify({ confirm: s.company.code, password: ADMIN_PASSWORD }), headers: { "content-type": "application/json" } });
           assert.equal(del.status, 200, `ön koşul: şirket silindi (geldi ${del.status})`);
         } else {
-          s.ctx.server.app.context.closeCompany(s.company.id);
+          await s.ctx.server.app.context.closeCompany(s.company.id);
           const root = path.join(s.ctx.server.app.config.dataDir, "sirketler");
           const dirs = readdirSync(root);
           assert.equal(dirs.length, 1, "ön koşul: tek ek şirket klasörü");
@@ -1525,8 +1525,8 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
   }
   // ---------- İş V (dar kontrol 16) ----------
   /** İkinci şirketin veri dosyasını yerinden alır (kalıcı yokluk); dönüş: geri koyan işlev. */
-  const hideCompanyFile = s => {
-    s.ctx.server.app.context.closeCompany(s.company.id);
+  const hideCompanyFile = async s => {
+    await s.ctx.server.app.context.closeCompany(s.company.id);
     const root = path.join(s.ctx.server.app.config.dataDir, "sirketler");
     const file = resolveDbPath(path.join(root, readdirSync(root)[0]));
     const moved = [];
@@ -1549,7 +1549,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
         await s.ctx.drain();
         const job = await s.job(batchId);
         assert.equal(job.state, "accepted", "ön koşul: kabul");
-        const putBack = hideCompanyFile(s);
+        const putBack = await hideCompanyFile(s);
         const res = await s.post([failedSt(s, job.wamid, code)]);
         assert.equal(res.status, 200, `kalıcı açılamama → 200 (geldi ${res.status} ${res.text})`);
         assert.equal(s.ledgerSql("SELECT COUNT(*) AS n FROM failures WHERE job_id = ? AND attempt = 1", job.id).n, 1, "defterde teslim edilemedi");
@@ -1566,7 +1566,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       const batchId = await s.batch();
       await s.ctx.drain();
       const job = await s.job(batchId);
-      const putBack = hideCompanyFile(s);
+      const putBack = await hideCompanyFile(s);
       assert.equal((await s.post([st(s, job.wamid, "delivered")])).status, 200);
       putBack();
       assert.equal((await s.job(batchId)).state, "accepted", "ön koşul: dosya geri geldi, satır Meta Kabul Etti");
@@ -1586,7 +1586,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       const batchId = await s.batch();
       await s.ctx.drain();
       const job = await s.job(batchId);
-      s.ctx.server.app.context.closeCompany(s.company.id);
+      await s.ctx.server.app.context.closeCompany(s.company.id);
       const root = path.join(s.ctx.server.app.config.dataDir, "sirketler");
       const lock = new DatabaseSync(resolveDbPath(path.join(root, readdirSync(root)[0])));
       lock.exec("PRAGMA busy_timeout = 1000; BEGIN EXCLUSIVE");
@@ -1610,7 +1610,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       const batchId = await s.batch();
       await s.ctx.drain();
       const job = await s.job(batchId);
-      const putBack = hideCompanyFile(s); // asıl dosya kenara; yerine bozuk dosya
+      const putBack = await hideCompanyFile(s); // asıl dosya kenara; yerine bozuk dosya
       const root = path.join(s.ctx.server.app.config.dataDir, "sirketler");
       const file = resolveDbPath(path.join(root, readdirSync(root)[0]));
       writeFileSync(file, "bu bir veri tabanı değil — bozuk dosya ".repeat(200));
@@ -1619,7 +1619,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
         assert.equal(res.status, 503, `bozuk dosya geçicidir → 503 (geldi ${res.status} ${res.text})`);
         assert.equal(s.deliveredSql(job.id), true, "İş X1 (dar kontrol 17 f1b; BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde — Meta bırakırsa da sayılır");
       } finally {
-        s.ctx.server.app.context.closeCompany(s.company.id);
+        await s.ctx.server.app.context.closeCompany(s.company.id);
         rmSync(file, { force: true });
         for (const suffix of ["-wal", "-shm"]) rmSync(file + suffix, { force: true });
         putBack();
@@ -1637,7 +1637,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
       const batchId = await s.batch();
       await s.ctx.drain();
       assert.equal((await s.job(batchId)).state, "accepted", "ön koşul: kabul (talep sonuçlu)");
-      const putBack = hideCompanyFile(s);
+      const putBack = await hideCompanyFile(s);
       const root = path.join(s.ctx.server.app.config.dataDir, "sirketler");
       const file = resolveDbPath(path.join(root, readdirSync(root)[0]));
       writeFileSync(file, "bu bir veri tabanı değil — bozuk dosya ".repeat(200));
@@ -1649,7 +1649,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
           s.ctx.clock.advance(10 * 60_000);
         }
       } finally {
-        s.ctx.server.app.context.closeCompany(s.company.id);
+        await s.ctx.server.app.context.closeCompany(s.company.id);
         rmSync(file, { force: true });
         for (const suffix of ["-wal", "-shm"]) rmSync(file + suffix, { force: true });
         putBack();
@@ -1661,7 +1661,7 @@ describe("2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)", 
   it("T-dosya-yok-ekran 002'nin veri dosyası YOK → olağan ekran isteği 503 iletisi Türkçe neden + dosya yolu; kod adı (COMPANY_DATA_MISSING) yok (İş X2, dar kontrol 17 f2; ders 10)", { timeout: 120_000 }, async () => {
     const s = await hookHarness({ second: true });
     try {
-      hideCompanyFile(s);
+      await hideCompanyFile(s);
       const res = await s.ctx.api.get(`/api/workspace/accounts${s.q}`);
       assert.equal(res.status, 503);
       assert.match(String(res.data.error || ""), /veri dosyası bulunamadı/);
