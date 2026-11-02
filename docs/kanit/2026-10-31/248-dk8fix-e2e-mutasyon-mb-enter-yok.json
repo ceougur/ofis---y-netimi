@@ -1,0 +1,43 @@
+{
+  "ad": "248-dk8fix-e2e-mutasyon-mb-enter-yok",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/e2e/senaryo-whatsapp-gonder-248.mjs",
+  "commit": "e43f871944cce4e4aff1f0225d1e5473d72531ee",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 48,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T10:34:22.178Z",
+  "sure_sn": 84.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 166,
+    "gecen": 164,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Enter ile yarım tarih uygulandı (istekler [], 30 satır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.click: Timeout 20000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk8fix-e2e-mutasyon-mb-enter-yok.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "8643742baafa0d084580a0f133709196ca5729e89ca36c7ef56bdc2188518870",
+  "ham_cikti_bayt": 11337
+}

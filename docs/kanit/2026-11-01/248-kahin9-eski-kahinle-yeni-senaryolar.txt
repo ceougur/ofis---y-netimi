@@ -1,0 +1,33 @@
+# Kâhin güncellemesi 9 — yeni 29 senaryo (J1–J9) ESKİ kâhinle (9086b097, git archive kopyası; YALNIZ iş anahtarlı kanca planı girdi satırı taşındı)
+# komut: git archive 9086b097 test/bagimsiz/whatsapp-248/kahin/kahin.py | tar -x -C ESKI; cp test/bagimsiz/whatsapp-248/kahin/senaryolar.py ESKI/test/bagimsiz/whatsapp-248/kahin/; ESKI kahin.py meta_ileti: "liste = plan.get(j.anahtar, plan.get(j.cari, plan.get(\"*\", [])))" (yalnız girdi biçimi); python3 -I docs/kanit/2026-11-01/248-kahin9-araclar/eski_kos.py ESKI/test/bagimsiz/whatsapp-248/kahin   (senaryolar.py da86a2df)
+FARKLI J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir  ← * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi"} ≠ model {"T1/A": "Duraklatıldı"}
+AYNI   J1-02-suresi-doldu-sonra-teslim-daha-once
+FARKLI J1-03-silinmis-sirket-gec-bildirim  ← : sirket_sil
+FARKLI J1-04-asilmis-belirsiz-gec-teslim-iki-deneme  ← * [{}…] bu_ay: elle {"W1": {"2026-10": {"teslim": 2, "yaklasik_usd": "0.0018"}}} ≠ model {"W1": {"2026-10": {"teslim": 1, "yaklasik_usd": "0.0009"}}}
+FARKLI J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz  ← * [{}…] isler.T1/B.durum: elle {"secenek": ["Başarısız", "Teslim Edildi"], "susuyor": "teslimsiz kapanan işe (Başarısız/İptal/Durduruldu/Taşınan) geç gelen teslimin ekran
+AYNI   J1-06-meta-bekletti-ret-gec-teslim-yeniden-acilmaz
+FARKLI J2-01-meta-bekletti-teslim-is-kapanir  ← * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi"} ≠ model {"T1/A": "Meta Bekletti (24 Saat Sonra Yeniden)"}
+FARKLI J2-02-meta-bekletti-okundu-is-kapanir  ← * [{}…] kontroller.K1.isler: elle {"T1/A": "Okundu", "T1/B": "Teslim Edildi"} ≠ model {"T1/A": "Meta Bekletti (24 Saat Sonra Yeniden)", "T1/B": "Teslim Edildi"}
+FARKLI J3-01-geri-yukleme-sonrasi-gec-failed-yeniden-gonderilir  ← * [{}…] olusmadi: elle ["T2"] ≠ model ["T2", "T3"]
+AYNI   J3-02-sifirlama-sonrasi-gec-failed-yeniden-gonderilir
+FARKLI J3-03-asilmis-belirsiz-gec-failed-kisi-almadi  ← * [{}…] elenen: elle {} ≠ model {"T2": {"B": "sonucu_belirsiz"}}
+AYNI   J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz
+AYNI   J4-01-suresi-doldu-son-kabulden-meta-bekletti
+AYNI   J4-02-suresi-doldu-son-kabulden-yine-de-gonder
+FARKLI J5-01-bekletme-sonrasi-iki-teslim  ← * [{}…] bu_ay: elle {"W1": {"2026-10": {"teslim": 2, "yaklasik_usd": "0.0018"}}} ≠ model {"W1": {"2026-10": {"teslim": 1, "yaklasik_usd": "0.0009"}}}
+FARKLI J5-02-iki-teslim-ay-donumu-yerel  ← * [{}…] bu_ay: elle {"W1": {"2026-10": {"teslim": 1, "yaklasik_usd": "0.0009"}, "2026-11": {"teslim": 1, "yaklasik_usd": "0.0009"}}} ≠ model {"W1": {"2026-10": {"teslim":
+FARKLI J6-01-yanit-beklenirken-taninmayan-503-yineleme  ← * [{}…] isler.T1/A.durum: elle "Teslim Edildi" ≠ model "Başarısız"
+FARKLI J6-02-sirket-gecici-acilamaz-503  ← ay: sirket_acilamaz
+FARKLI J6-03-bildirim-kaydedilemez-503  ← lay: bildirim_yazilamaz
+FARKLI J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz  ← z
+FARKLI J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti  ← amaz
+FARKLI J8-01-tum-hareketler-bu-ay-ayni-gun  ← * [{}…] elenen: elle {"T2": {"P": "daha_once_gonderildi"}} ≠ model {}
+FARKLI J8-02-tum-hareketler-gecen-ay-ayni-gun  ← * [{}…] elenen: elle {"T2": {"Q": "daha_once_gonderildi"}} ≠ model {}
+FARKLI J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay  ← * [{}…] olusmadi: elle ["T2"] ≠ model []
+FARKLI J8-04-tum-hareketler-bekleyen-bu-ay-zaten-kuyrukta  ← * [{}…] olusmadi: elle ["T2"] ≠ model []
+FARKLI J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi  ← * [{}…] olusmadi: elle ["T2"] ≠ model []
+FARKLI J8-06-ozel-aralik-kanon-sonra-tum-hareketler  ← * [{}…] olusmadi: elle ["T2"] ≠ model []
+AYNI   J9-01-n3-iptal-sonrasi-ikinci-is-gec-teslim-iki-ileti
+AYNI   J9-02-n3-basarisiz-sonrasi-ikinci-is-gec-teslim-iki-ileti
+21 yeni senaryo eski kâhinde farklı
+# çıkış 0

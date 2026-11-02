@@ -8,6 +8,8 @@
 //   A3 Kendime Deneme Gönder: numara yazılır, Enter → bildirim; Meta'ya "+905…" ve hello_world; kartta Son Deneme.
 //   A4 Bilgileri Değiştir: kimlikler dolu, belirteç alanı boş (kayıtlı belirteç korunur); yanlış belirteç → "Sınama Başarısız" + Türkçe neden;
 //      doğru belirteçle yeniden "Bağlı".
+//   A4b (T2 dar kontrol D3) Bildirim Yolu satırı: uzaktan adres yokken "Kayıtlı Değil"; Bağlantıyı Sına → "Çalışıyor"; Çakışma'da (başka bilgisayar, zorla) neden
+//       yazısı + Bağlantıyı Sına Meta'daki adresi bu bilgisayara geri alır.
 //   A5 Bağlantıyı Kaldır (onay penceresi) → "Bağlı Değil"; ayar satırı silindi.
 //   A6 yetkisiz (Personel): Yönetim açılmaz; API 403.
 //   2.4.8 W7 TAŞINAMAZ BAĞLANTI (bağımsız gözden geçirme ORTA; ikinci program + YEREL kapıcı https://kapi.destekofis.test + sahte Facebook SDK / Meta penceresi —
@@ -281,6 +283,38 @@ await step("A4 Bilgileri Değiştir: kimlikler dolu, belirteç boş; yanlış be
   await noToken("yeniden bağlandıktan sonra");
 });
 
+// T2 dar kontrol D3: durum bildirimi yolu kartta görünür (Kayıtlı Değil → Çalışıyor; Çakışma'da ne yapılacağı yazılı, Bağlantıyı Sına bu bilgisayarı seçer).
+await step("A4b Bildirim Yolu: uzaktan adres yokken Kayıtlı Değil → Bağlantıyı Sına ile Çalışıyor; Çakışma'da neden yazısı, Bağlantıyı Sına düzeltir", async () => {
+  if (!ok((await page.locator('[data-wa-fact="hook"]').count()) === 1, "kartta Bildirim Yolu satırı var")) return;
+  ok((await fact("hook")).startsWith("Kayıtlı Değil"), `uzaktan adres yokken: ${await fact("hook")}`);
+  server.app.mobileRemote.setPublicUrl("http://ofisx.destekofis.test");
+  await page.click('[data-wa-action="test"]');
+  await page.waitForFunction(() => /^Çalışıyor/.test(document.querySelector('[data-wa-fact="hook"] dd')?.textContent.trim() || ""), null, { timeout: 15000 });
+  ok(/^Çalışıyor · .+ tarihinde kaydedildi$/.test(await fact("hook")), `Bağlantıyı Sına sonrası: ${await fact("hook")}`);
+  const ours = fake.state.override;
+  ok(/^http:\/\/ofisx\.destekofis\.test\/wa\/kanca\//.test(String(ours)), "Meta'ya bu ofisin adresi kaydedildi");
+  ok((await page.locator("[data-wa-hook-why]").count()) === 0, "çalışırken neden yazısı yok");
+  // Ön koşul (zorla): aynı WhatsApp hesabı başka bir bilgisayarda bağlandı — Meta'daki adres onunki; program iki kez farklı görünce "Çakışma" yazar
+  // (algılama test/whatsapp-t2-3-248.test.mjs'te; burada yalnız ekranın gösterdiği ve Bağlantıyı Sına'nın düzelttiği denetlenir).
+  fake.state.override = "https://baska-ofis.destekofis.net/wa/kanca/baskasinin-yolu";
+  const ledger = server.app.whatsapp.ledger;
+  const hook = ledger.hookOf(WABA);
+  ledger.hookEvent({ ...hook, state: "conflict", error: "Meta'daki durum bildirimi adresi bu bilgisayarınkinden farklı.", at: new Date().toISOString() });
+  await page.reload();
+  await page.waitForSelector('[data-wa-fact="hook"]');
+  ok((await fact("hook")).startsWith("Çakışma"), `çakışmada: ${await fact("hook")}`);
+  const why = (await page.textContent("[data-wa-hook-why]").catch(() => "")) || "";
+  ok(/başka bir bilgisayarda da bağlı/.test(why) && /Bağlantıyı Sına'ya basın/.test(why), `ne yapılacağı yazılı: ${why.slice(0, 120)}`);
+  ok(await page.isEnabled('[data-wa-action="test"]'), "Bağlantıyı Sına etkin");
+  await shot("05b-bildirim-cakisma");
+  await page.click('[data-wa-action="test"]');
+  await page.waitForFunction(() => /^Çalışıyor/.test(document.querySelector('[data-wa-fact="hook"] dd')?.textContent.trim() || ""), null, { timeout: 15000 });
+  // Yeniden kayıt yeni gizli yolla yapılır (eski yol öbür bilgisayarın eline geçmiş olabilir): adres bu ofisin, yol yeni.
+  ok(/^http:\/\/ofisx\.destekofis\.test\/wa\/kanca\//.test(String(fake.state.override)) && fake.state.override !== ours, `Bağlantıyı Sına Meta'daki adresi bu bilgisayara geri aldı (yeni gizli yol)`);
+  ok((await page.locator("[data-wa-hook-why]").count()) === 0, "çakışma yazısı kalktı");
+  server.app.mobileRemote.setPublicUrl("");
+});
+
 await step("A5 Bağlantıyı Kaldır (onaylı) → Bağlı Değil; ayar satırı silindi", async () => {
   await page.click('[data-wa-action="remove"]');
   const modal = await topModal();
@@ -391,6 +425,9 @@ await step("A8 TAŞINAN BAĞLANTI (pencereyi açan yok): ileti, düğme pasif, S
   ok((await statusOf(tab)) === W7.yalniz, `ileti: ${await statusOf(tab)}`);
   await tab.waitForTimeout(1500);
   ok(await tab.isDisabled("#wa-bagla"), "Facebook ile Devam Et pasif");
+  // T3 UI/UX ORTA-3: pasif düğme pasif GÖRÜNÜR (soluk + yasak imleç); CSP gevşetilmeden (sayfanın nonce'lu stili).
+  const gorunus = await tab.$eval("#wa-bagla", node => ({ opacity: Number(getComputedStyle(node).opacity), cursor: getComputedStyle(node).cursor }));
+  ok(gorunus.opacity <= 0.6 && gorunus.cursor === "not-allowed", `pasif görünüm: opaklık ${gorunus.opacity}, imleç ${gorunus.cursor}`);
   ok(await tab.isHidden("#wa-hedef"), "firma adı gösterilmedi");
   ok(!sdkLoads.includes("tasinan"), "Facebook SDK yüklenmedi (Meta akışı başlamadı)");
   ok(kapiIstekleri("/wa/bagla/dogrula") === before[0] && kapiIstekleri("/wa/bagla/kod") === before[1], "kapıcıya doğrulama / kod isteği gitmedi");

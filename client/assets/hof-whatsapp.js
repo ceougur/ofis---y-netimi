@@ -107,17 +107,29 @@
     const textFor = person => (kind === "statement" ? person.statement : render(state.template, person, state.data.office));
     const eligible = () => state.data.recipients.filter(item => item.valid && (!state.onlyDebtors || item.balance > 0.005));
 
+    // Gönderime Başla'yı pasif bırakan neden (görünür yazı; Otomatik Gönder'deki data-wa-api-why düzeni).
+    const startBlock = (valid, fitting) => {
+      if (!state.data.recipients.length) return "Seçilen carilerde alıcı yok.";
+      if (!valid.length) return "Gönderilebilecek kişi yok: seçilen carilerin numarası yok ya da hatalı, cari WhatsApp mesajı istemiyor ya da pasif.";
+      if (!fitting.length) return "Borçlu cari yok; \"Yalnız Borçlu Carilere Gönder\" işaretini kaldırın.";
+      return "Gönderilecek kişi seçilmedi; listeden en az bir kişi işaretleyin.";
+    };
+
     // ---------- 1) Hazırlık ----------
     function prepare() {
       const list = state.data.recipients;
       const valid = list.filter(item => item.valid);
-      const invalid = list.filter(item => !item.valid);
+      // "WhatsApp Mesajı İstemiyor" ayrı sayılır (Otomatik Gönder'in eleme adlarıyla aynı); "Numarası Yok / Hatalı" yalnız telefon sorunu.
+      // Pasif cari de ayrı sayılır (KARAR S-PC A; Otomatik Gönder'deki "Pasif Cari" adıyla). Sıra kuyruğunkiyle aynı: önce İstemiyor, sonra Pasif.
+      const optedOut = list.filter(item => !item.valid && item.optOut);
+      const passive = list.filter(item => !item.valid && !item.optOut && item.passive);
+      const invalid = list.filter(item => !item.valid && !item.optOut && !item.passive);
       const picked = eligible().filter(item => state.picked.has(item.id));
       const person = list.find(item => item.id === state.preview) || valid[0];
       const fits = item => item.valid && (!state.onlyDebtors || item.balance > 0.005);
       const row = item => `<tr class="${fits(item) ? "" : "is-muted"}${item.id === state.preview ? " is-current" : ""}" data-preview="${esc(item.id)}"><td class="hof-acc-check"><input type="checkbox" data-pick="${esc(item.id)}" ${fits(item) ? "" : "disabled"} ${state.picked.has(item.id) && fits(item) ? "checked" : ""} aria-label="${esc(item.name)} gönder"></td><td><b>${esc(item.name)}</b><small>${item.phone ? esc(item.phone) : ""}${item.valid ? "" : `${item.phone ? " · " : ""}${esc(item.reason)}`}${item.valid && state.onlyDebtors && !(item.balance > 0.005) ? " · borcu yok" : ""}${item.lastSend ? ` · son gönderim ${esc(day(item.lastSend.at.slice(0, 10)))}` : ""}</small></td><td class="num">${esc(money(Math.abs(item.balance)))}<small>${item.balance > 0.005 ? "Borçlu" : item.balance < -0.005 ? "Alacaklı" : "Kapalı"}</small></td></tr>`;
       root.innerHTML = `
-        <div class="hof-wa-head"><div><strong>${list.length}</strong><span>Cari</span></div><div><strong>${valid.length}</strong><span>Geçerli Numara</span></div><div class="${invalid.length ? "is-warn" : ""}"><strong>${invalid.length}</strong><span>Numarası Yok / Hatalı</span></div><div><strong>${picked.length}</strong><span>Gönderilecek</span></div></div>
+        <div class="hof-wa-head"><div><strong>${list.length}</strong><span>Cari</span></div><div><strong>${valid.length}</strong><span>Geçerli Numara</span></div><div class="${invalid.length ? "is-warn" : ""}" data-wa-invalid><strong>${invalid.length}</strong><span>Numarası Yok / Hatalı</span></div>${optedOut.length ? `<div data-wa-optout-count><strong>${optedOut.length}</strong><span>WhatsApp Mesajı İstemiyor</span></div>` : ""}${passive.length ? `<div data-wa-passive-count><strong>${passive.length}</strong><span>Pasif Cari</span></div>` : ""}<div><strong>${picked.length}</strong><span>Gönderilecek</span></div></div>
         <div class="hof-wa-grid">
           <div class="hof-wa-left">
             ${kind === "statement"
@@ -134,7 +146,8 @@
             <p class="hof-edit-meta">Gönderim sırasında her kişinin mesajı WhatsApp'ta hazır açılır; siz <b>Gönder</b>'e basarsınız. Mesaj kişiye göre değiştirilebilir. ${kind === "statement" ? "Ekstrenin PDF'ini aynı sohbete ekleyebilirsiniz." : ""}</p>
           </div>
         </div>
-        <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-close>Vazgeç</button><button type="button" class="hof-button" data-start ${picked.length ? "" : "disabled"}>Gönderime Başla (${picked.length} Kişi)</button></div>`;
+        <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-close>Vazgeç</button><button type="button" class="hof-button" data-start ${picked.length ? "" : "disabled"}>Gönderime Başla (${picked.length} Kişi)</button></div>
+        ${picked.length ? "" : `<p class="hof-wa-api-why" data-start-why>${esc(startBlock(valid, eligible()))}</p>`}`;
     }
 
     // ---------- 2) Gönderim sırası ----------

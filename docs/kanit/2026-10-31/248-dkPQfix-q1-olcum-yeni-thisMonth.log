@@ -1,0 +1,3 @@
+(node:27524) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"preset":"thisMonth","jobs":202000,"n":8,"medianMs":1195,"minMs":1078,"maxMs":1252,"skipped":{"Daha Önce Gönderildi":250,"Zaten Kuyrukta":1750},"sendable":0}

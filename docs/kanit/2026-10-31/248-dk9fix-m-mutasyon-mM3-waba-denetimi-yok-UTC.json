@@ -1,0 +1,32 @@
+{
+  "ad": "248-dk9fix-m-mutasyon-mM3-waba-denetimi-yok-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=120000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk9-m-kanca-tasinan-248.test.mjs",
+  "commit": "d56c1f40f1400fb08aa7426e9dabf3b5dbde9968",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 95,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T13:48:32.433Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk9fix-m-mutasyon-mM3-waba-denetimi-yok-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "5f77c5fc5183229c9412797ea45cc5fd72bee3c87b12e4daefa53ec4a63ee81d",
+  "ham_cikti_bayt": 1171
+}

@@ -1,0 +1,371 @@
+{
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "node": "v22.22.0",
+  "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-40",
+  "saat": "2026-11-02T10:00:00+03:00",
+  "basladi": "2026-11-01T16:16:39.127Z",
+  "veriSayimi": {
+    "defter": {
+      "claims": 72155,
+      "claim_keys": 72167,
+      "outcomes": 72155,
+      "accepts": 72028,
+      "deliveries": 70689,
+      "attempt_deliveries": 70689,
+      "learned_wamids": 0,
+      "anyway_links": 12,
+      "batch_events": 115,
+      "batch_log": 0,
+      "hook_seen": 51
+    },
+    "sirket001": {
+      "wa_batches": 58,
+      "wa_jobs": 80126,
+      "accounts": 3014,
+      "account_entries": 57227,
+      "money_lines": null
+    },
+    "zincir": {
+      "inheritOfDolu": 12
+    }
+  },
+  "dosyalarOnce": {
+    "destekofis.sqlite": 455335936,
+    "destekofis.sqlite-shm": 32768,
+    "destekofis.sqlite-wal": 0,
+    "e-belge-kullanim.sqlite": 16384,
+    "sirketler/002/destekofis.sqlite": 24350720,
+    "sirketler/002/destekofis.sqlite-shm": 32768,
+    "sirketler/002/destekofis.sqlite-wal": 144232,
+    "whatsapp-gonderim.sqlite": 109785088,
+    "whatsapp-gonderim.sqlite-shm": 32768,
+    "whatsapp-gonderim.sqlite-wal": 0
+  },
+  "acilisMs": 6309,
+  "bakimTuru": {
+    "n": 5,
+    "p50": 176,
+    "p95": 182,
+    "enCok": 182
+  },
+  "probeWritable": {
+    "n": 200,
+    "p50": 0,
+    "p95": 0,
+    "enCok": 0,
+    "son": true
+  },
+  "gonderimler": {
+    "ilk30": {
+      "n": 5,
+      "p50": 7,
+      "p95": 10,
+      "enCok": 10
+    },
+    "dahaFazla": {
+      "n": 2,
+      "p50": 2,
+      "p95": 6,
+      "enCok": 6
+    },
+    "sayfa": 2,
+    "satir": 58,
+    "tarihSuzgeci": {
+      "birAy": {
+        "n": 5,
+        "p50": 3,
+        "p95": 4,
+        "enCok": 4,
+        "satir": 8,
+        "durum": 200
+      },
+      "birGun": {
+        "n": 5,
+        "p50": 2,
+        "p95": 3,
+        "enCok": 3,
+        "satir": 0,
+        "durum": 200
+      },
+      "yalnizBaslangic": {
+        "n": 5,
+        "p50": 2,
+        "p95": 2,
+        "enCok": 2,
+        "satir": 0,
+        "durum": 200
+      },
+      "yalnizBitis": {
+        "n": 5,
+        "p50": 5,
+        "p95": 5,
+        "enCok": 5,
+        "satir": 25,
+        "durum": 200
+      }
+    },
+    "eskiAyrinti": {
+      "n": 5,
+      "p50": 53,
+      "p95": 56,
+      "enCok": 56,
+      "is": 2000,
+      "bayt": 1405996
+    }
+  },
+  "buAySayimi": {
+    "buAy": {
+      "n": 10,
+      "p50": 16,
+      "p95": 17,
+      "enCok": 17,
+      "deger": 0
+    },
+    "gecenAy": {
+      "n": 10,
+      "p50": 46,
+      "p95": 49,
+      "enCok": 49,
+      "deger": 8683
+    }
+  },
+  "onizleme": {
+    "ekstreGecenAy": {
+      "n": 2,
+      "p50": 24915,
+      "p95": 25767,
+      "enCok": 25767,
+      "durum": 200,
+      "gonderilecek": 2000,
+      "elenen": {},
+      "dahaOnce": {
+        "count": 0,
+        "last": null,
+        "included": 0
+      }
+    },
+    "ekstreBuAy": {
+      "n": 2,
+      "p50": 24780,
+      "p95": 25821,
+      "enCok": 25821,
+      "durum": 200,
+      "gonderilecek": 2000,
+      "elenen": {},
+      "dahaOnce": {
+        "count": 0,
+        "last": null,
+        "included": 0
+      }
+    },
+    "ekstreTumHareketler": {
+      "n": 2,
+      "p50": 26927,
+      "p95": 27776,
+      "enCok": 27776,
+      "durum": 200,
+      "gonderilecek": 2000,
+      "elenen": {},
+      "dahaOnce": {
+        "count": 0,
+        "last": null,
+        "included": 0
+      }
+    }
+  },
+  "esZamanliOnizleme": {
+    "ms": 25902,
+    "durum": 200,
+    "yoklayici": {
+      "n": 75,
+      "p50": 53,
+      "p95": 77,
+      "enCok": 25773,
+      "durumlar": {
+        "200": 75
+      }
+    }
+  },
+  "baslatma": {
+    "ms": 27605,
+    "durum": 200,
+    "yoklayici": {
+      "n": 68,
+      "p50": 54,
+      "p95": 84,
+      "enCok": 27426,
+      "durumlar": {
+        "200": 68
+      }
+    }
+  },
+  "yeniIs": {
+    "yurutulen": 2000,
+    "isBasina": {
+      "n": 2000,
+      "p50": 34,
+      "p95": 49,
+      "enCok": 915
+    },
+    "kanca": {
+      "n": 400,
+      "p50": 12,
+      "p95": 16,
+      "enCok": 45,
+      "kodlar": {
+        "200": 736
+      }
+    },
+    "durumlar": {
+      "delivered": 2000
+    }
+  },
+  "eskiIletiKanca": {
+    "n": 300,
+    "p50": 5,
+    "p95": 10,
+    "enCok": 22,
+    "kodlar": {
+      "200": 300
+    },
+    "adet": 300
+  },
+  "bakimTuruSonra": {
+    "n": 3,
+    "p50": 151,
+    "p95": 170,
+    "enCok": 170
+  },
+  "masaustu": {
+    "durumlar": {
+      "cariListesi:200": 218,
+      "cariKarti:200": 218,
+      "cariWhatsappGecmisi:200": 218,
+      "waGonderimler:200": 218,
+      "waGonderimDurumu:200": 218,
+      "waBuAy:200": 218
+    },
+    "olayDongusu": {
+      "p99ms": 219,
+      "enCokMs": 262
+    },
+    "uclar": {
+      "cariListesi": {
+        "n": 218,
+        "p50": 173,
+        "p95": 223,
+        "enCok": 262
+      },
+      "cariKarti": {
+        "n": 218,
+        "p50": 15,
+        "p95": 122,
+        "enCok": 259
+      },
+      "cariWhatsappGecmisi": {
+        "n": 218,
+        "p50": 2,
+        "p95": 3,
+        "enCok": 8
+      },
+      "waGonderimler": {
+        "n": 218,
+        "p50": 6,
+        "p95": 9,
+        "enCok": 15
+      },
+      "waGonderimDurumu": {
+        "n": 218,
+        "p50": 28,
+        "p95": 40,
+        "enCok": 48
+      },
+      "waBuAy": {
+        "n": 218,
+        "p50": 23,
+        "p95": 34,
+        "enCok": 40
+      }
+    }
+  },
+  "bellek": {
+    "rssEnCokMb": 593.4,
+    "rssSonMb": 593.1
+  },
+  "dosyalarSonra": {
+    "destekofis.sqlite": 455335936,
+    "e-belge-kullanim.sqlite": 16384,
+    "sirketler/002/destekofis.sqlite": 24350720,
+    "sirketler/002/destekofis.sqlite-shm": 32768,
+    "sirketler/002/destekofis.sqlite-wal": 144232,
+    "whatsapp-gonderim.sqlite": 112992256
+  },
+  "denetimler": [
+    {
+      "ad": "defter yazılabilir (probeWritable)",
+      "ok": true,
+      "ayrinti": "true"
+    },
+    {
+      "ad": "Gönderimler ilk 30: 200 + en çok 30 satır",
+      "ok": true,
+      "ayrinti": "200 30"
+    },
+    {
+      "ad": "Daha Fazla Göster sonuna kadar: bütün gönderimler bir kez",
+      "ok": true,
+      "ayrinti": "58 / 58"
+    },
+    {
+      "ad": "tarih süzgeçleri 200",
+      "ok": true,
+      "ayrinti": "{\"birAy\":8,\"birGun\":0,\"yalnizBaslangic\":0,\"yalnizBitis\":25}"
+    },
+    {
+      "ad": "Bu Ay sayımı 200",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yoklayıcı girişi (olcek10)",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "önizlemeler 200",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yeni toplu iş açıldı (Yine de Gönder ile)",
+      "ok": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yeni işin bütün kişileri teslim edildi",
+      "ok": true,
+      "ayrinti": "{\"delivered\":2000}"
+    },
+    {
+      "ad": "kanca istekleri 200",
+      "ok": true,
+      "ayrinti": "{\"200\":436}"
+    },
+    {
+      "ad": "eski iletilere geç bildirim 200",
+      "ok": true,
+      "ayrinti": "{\"200\":300}"
+    },
+    {
+      "ad": "olcek10 girişi",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "masaüstü uçları 200",
+      "ok": true,
+      "ayrinti": "{\"cariListesi:200\":218,\"cariKarti:200\":218,\"cariWhatsappGecmisi:200\":218,\"waGonderimler:200\":218,\"waGonderimDurumu:200\":218,\"waBuAy:200\":218}"
+    }
+  ],
+  "bitti": "2026-11-01T16:23:49.190Z"
+}

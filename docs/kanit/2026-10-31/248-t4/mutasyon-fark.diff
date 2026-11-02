@@ -1,0 +1,8 @@
+314c314
+<     if (account.status === "passive") return { skip: "Pasif Cari", phone };
+---
+>     if (false) return { skip: "Pasif Cari", phone };
+1296c1296
+<     const trNow = new Date(nowMs() + 3 * HOUR).toISOString().slice(0, 7);
+---
+>     const trNow = new Date(nowMs()).toISOString().slice(0, 7);

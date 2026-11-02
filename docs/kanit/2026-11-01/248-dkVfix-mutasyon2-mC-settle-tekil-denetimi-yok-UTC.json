@@ -1,0 +1,32 @@
+{
+  "ad": "248-dkVfix-mutasyon2-mC-settle-tekil-denetimi-yok-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-v2/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-v2/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "1717c2512341e1166ce795292c8326afd4a6cd86",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 112,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T06:50:16.250Z",
+  "sure_sn": 75.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 83,
+    "gecen": 83,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkVfix-mutasyon2-mC-settle-tekil-denetimi-yok-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "863410d2d01aaf9fc089d4653c56d8b93ffcae2e1fe8569d2317de79bd2ff721",
+  "ham_cikti_bayt": 31364
+}

@@ -1,0 +1,29 @@
+# İş W mutasyonları: python3 mut-w.py <kök> <ad>. Eski metin dosyada TAM BİR kez geçmeli.
+import sys
+Q = "server/lib/whatsapp/queue.mjs"
+D = "server/lib/whatsapp/defter.mjs"
+M = {
+  "mW-zincir-denetimi-yok": [(D, "      const delivered = deliveredOf() || sourceDeliveredOf();", "      const delivered = deliveredOf();"), (D, "        const deliveredNow = deliveredOf() || sourceDeliveredOf();", "        const deliveredNow = deliveredOf();")],
+  "mW-zincir-tek-halka": [(D, " UNION SELECT al.source_job_id FROM anyway_links al JOIN chain c ON al.job_id = c.id)", ")"), (Q, "    for (let cur = job?.inherit_of || \"\"; cur && out.length < 20 && !out.includes(cur); cur = jobRow(cur)?.inherit_of || \"\") out.push(cur);", "    if (job?.inherit_of) out.push(job.inherit_of);")],
+  "mW-teslim-edildi-yazar": [(Q, 'updateJob(job.id, { state: "skipped", skip_reason: "Daha Önce Gönderildi", attempt: job.attempt || 0,', 'updateJob(job.id, { state: "delivered", skip_reason: "", attempt: job.attempt || 0,')],
+  "mW-islem-ici-denetim-yok": [(D, "        const deliveredNow = deliveredOf() || sourceDeliveredOf();", "        const deliveredNow = deliveredOf();")],
+  "mW-retry-bag-yok": [(Q, "      for (const source of chain) store.run(", "      for (const source of []) store.run(")],
+  "mX1-arama-mesgul-genis": ["server/lib/whatsapp/hook.mjs", "        if (transient(error)) lookup.busy = true;", "        lookup.busy = true;"],
+  "mX1-503-once-teslim-yok": ["server/lib/whatsapp/hook.mjs", "          ledgerOnly(items.filter(item => [\"delivered\", \"read\"].includes(String(item.status?.status || \"\").toLowerCase())), items[0].owner, signed, { applied: 0, ignored: 0, unknown: 0 });\n", ""],
+  "mX2-kod-adi": ["server/app.mjs", "{ dataMissing: true });", "{ code: \"COMPANY_DATA_MISSING\", dataMissing: true });"],
+  "mX3-isarete-bak": [Q, "    const probed = ledger.probeWritable?.();", "    const probed = writeLock && !writeLock.guard(LEDGER_LOCK_KEY, ledger) ? false : true;"],
+}
+for k in [k for k in M if k.startswith("mX")]:
+    M[k] = [tuple(M[k])]
+if sys.argv[1] == "--list":
+    print("\n".join(M)); sys.exit(0)
+root, name = sys.argv[1], sys.argv[2]
+for path, old, new in M[name]:
+    p = f"{root}/{path}"
+    s = open(p).read()
+    n = s.count(old)
+    if n != 1:
+        sys.exit(f"{name}: {path} eski metin {n} kez")
+    s = s.replace(old, new)
+    open(p, "w").write(s)
+print(f"{name}: uygulandı")

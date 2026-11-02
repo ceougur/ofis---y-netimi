@@ -1,0 +1,309 @@
+TAP version 13
+# Subtest: 2.4.8 WhatsApp Gönderimleri — Daha Fazla Göster (imleç) ve tarih süzgeci
+    # Subtest: İlk 30, sonraki 30, son 5 (en yeni önce; aynı anda açılanlar sonra açılan önce); sonrası boş
+    not ok 1 - İlk 30, sonraki 30, son 5 (en yeni önce; aynı anda açılanlar sonra açılan önce); sonrası boş
+      ---
+      duration_ms: 12.214965
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-liste-a77085cd/offset/test/whatsapp-gonderim-listesi-248.test.mjs:55:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        son 5 (bir fazla istenince daha eskisi yok)
+        + actual - expected
+        
+          [
+        +   'wab-85722212-5bb2-474d-a590-8e980ffd813a',
+        +   'wab-85d52291-10a9-4fe8-a5b5-528f49a623e5',
+        +   'wab-bbb7c2aa-84d4-4cd7-b42c-b9aded2bc3e8',
+        +   'wab-14ddb094-022f-4051-b758-b3316efd2644',
+        +   'wab-bc428e54-2255-4edf-a8ee-fdbe9d927179',
+        +   'wab-fa8c3947-7fc6-4d29-99cf-21236332df13',
+        +   'wab-08843f30-046f-464d-81be-a4f820310bdf',
+        +   'wab-86c58f8a-0e73-40ac-a6f6-17dba2bbf175',
+        +   'wab-df770748-0244-4dab-a38b-20b540276bd9',
+        +   'wab-5ce1998c-5748-4751-a571-6ae32fe04d9d',
+        +   'wab-04b1326c-ef49-49ba-a01f-d5d61d2b9ed8',
+        +   'wab-94434a87-21bf-4987-9099-677cd116dff6',
+        +   'wab-bbb44ad2-4c92-400c-8f62-d870cac70b75',
+        +   'wab-c0648ab9-f072-495f-af4c-1891eda2e726',
+        +   'wab-f12070ad-4fe5-490e-b250-c4547d52ddbe',
+        +   'wab-c1694117-b931-4338-b178-2939d052c293',
+        +   'wab-0b98a13c-8d48-448b-9da7-fb3cfc6af239',
+        +   'wab-1ca6c4b1-ad5f-4c32-81bb-0510d9ad1e88',
+        +   'wab-6219b661-7221-4d0f-8bca-5a6a7d3e742e',
+        +   'wab-b95ad5be-b8f2-41b0-95b0-8cc61c8dbc62',
+        +   'wab-cf7f6535-7d16-4f84-b227-560b6675c640',
+        +   'wab-46d97067-d22c-4938-9cd4-5854e86f0737',
+        +   'wab-d84a8b93-9af5-4492-9cc8-23cf6c2e4488',
+        +   'wab-e858ceff-d62f-4a43-910c-7e63b13e62bf',
+        +   'wab-6bf3037b-772f-4459-a629-4c8ec1bd1089',
+        +   'wab-8875e975-70f2-4210-97c5-dfdaf68bf9d7',
+        +   'wab-779c4232-2493-4f2c-96b4-7aa3a89f3933',
+        +   'wab-3b2f2cca-4a86-41cf-bdc0-2f1aec296275',
+        +   'wab-2a07ff32-6596-4d88-8971-7dc9e3db233a',
+        +   'wab-e089e231-3c91-476a-bb5a-85fe4152abbb',
+            'wab-230946e9-5c28-4acd-a6e7-88c2ad1a4383',
+        -   'wab-6f3be203-1330-45b6-9054-30531872dd83',
+        -   'wab-f3673843-ad9d-4054-bca6-642f6330590b',
+        -   'wab-7e5bab3f-8f90-435f-95b5-3f087542e1cc',
+        -   'wab-a0f0e3c7-ba7b-47ba-8b1b-20b00ffa0ea8'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'wab-230946e9-5c28-4acd-a6e7-88c2ad1a4383'
+        1: 'wab-6f3be203-1330-45b6-9054-30531872dd83'
+        2: 'wab-f3673843-ad9d-4054-bca6-642f6330590b'
+        3: 'wab-7e5bab3f-8f90-435f-95b5-3f087542e1cc'
+        4: 'wab-a0f0e3c7-ba7b-47ba-8b1b-20b00ffa0ea8'
+      actual:
+        0: 'wab-85722212-5bb2-474d-a590-8e980ffd813a'
+        1: 'wab-85d52291-10a9-4fe8-a5b5-528f49a623e5'
+        2: 'wab-bbb7c2aa-84d4-4cd7-b42c-b9aded2bc3e8'
+        3: 'wab-14ddb094-022f-4051-b758-b3316efd2644'
+        4: 'wab-bc428e54-2255-4edf-a8ee-fdbe9d927179'
+        5: 'wab-fa8c3947-7fc6-4d29-99cf-21236332df13'
+        6: 'wab-08843f30-046f-464d-81be-a4f820310bdf'
+        7: 'wab-86c58f8a-0e73-40ac-a6f6-17dba2bbf175'
+        8: 'wab-df770748-0244-4dab-a38b-20b540276bd9'
+        9: 'wab-5ce1998c-5748-4751-a571-6ae32fe04d9d'
+        10: 'wab-04b1326c-ef49-49ba-a01f-d5d61d2b9ed8'
+        11: 'wab-94434a87-21bf-4987-9099-677cd116dff6'
+        12: 'wab-bbb44ad2-4c92-400c-8f62-d870cac70b75'
+        13: 'wab-c0648ab9-f072-495f-af4c-1891eda2e726'
+        14: 'wab-f12070ad-4fe5-490e-b250-c4547d52ddbe'
+        15: 'wab-c1694117-b931-4338-b178-2939d052c293'
+        16: 'wab-0b98a13c-8d48-448b-9da7-fb3cfc6af239'
+        17: 'wab-1ca6c4b1-ad5f-4c32-81bb-0510d9ad1e88'
+        18: 'wab-6219b661-7221-4d0f-8bca-5a6a7d3e742e'
+        19: 'wab-b95ad5be-b8f2-41b0-95b0-8cc61c8dbc62'
+        20: 'wab-cf7f6535-7d16-4f84-b227-560b6675c640'
+        21: 'wab-46d97067-d22c-4938-9cd4-5854e86f0737'
+        22: 'wab-d84a8b93-9af5-4492-9cc8-23cf6c2e4488'
+        23: 'wab-e858ceff-d62f-4a43-910c-7e63b13e62bf'
+        24: 'wab-6bf3037b-772f-4459-a629-4c8ec1bd1089'
+        25: 'wab-8875e975-70f2-4210-97c5-dfdaf68bf9d7'
+        26: 'wab-779c4232-2493-4f2c-96b4-7aa3a89f3933'
+        27: 'wab-3b2f2cca-4a86-41cf-bdc0-2f1aec296275'
+        28: 'wab-2a07ff32-6596-4d88-8971-7dc9e3db233a'
+        29: 'wab-e089e231-3c91-476a-bb5a-85fe4152abbb'
+        30: 'wab-230946e9-5c28-4acd-a6e7-88c2ad1a4383'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-liste-a77085cd/offset/test/whatsapp-gonderim-listesi-248.test.mjs:62:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: İmleç kararlılığı: ilk sayfa okunduktan sonra yeni gönderim gelse de ikinci sayfa kaymaz
+    not ok 2 - İmleç kararlılığı: ilk sayfa okunduktan sonra yeni gönderim gelse de ikinci sayfa kaymaz
+      ---
+      duration_ms: 26.479326
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-liste-a77085cd/offset/test/whatsapp-gonderim-listesi-248.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        araya giren yeni gönderim ikinci sayfayı kaydırmaz (tekrar ya da atlama yok)
+        + actual - expected
+        ... Skipped lines
+        
+          [
+        +   'wab-fd8c14ee-40bb-4182-8756-bf132ac9acb6',
+            'wab-85722212-5bb2-474d-a590-8e980ffd813a',
+            'wab-85d52291-10a9-4fe8-a5b5-528f49a623e5',
+            'wab-bbb7c2aa-84d4-4cd7-b42c-b9aded2bc3e8',
+            'wab-14ddb094-022f-4051-b758-b3316efd2644',
+            'wab-bc428e54-2255-4edf-a8ee-fdbe9d927179',
+        ...
+            'wab-2a07ff32-6596-4d88-8971-7dc9e3db233a',
+        -   'wab-e089e231-3c91-476a-bb5a-85fe4152abbb'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'wab-85722212-5bb2-474d-a590-8e980ffd813a'
+        1: 'wab-85d52291-10a9-4fe8-a5b5-528f49a623e5'
+        2: 'wab-bbb7c2aa-84d4-4cd7-b42c-b9aded2bc3e8'
+        3: 'wab-14ddb094-022f-4051-b758-b3316efd2644'
+        4: 'wab-bc428e54-2255-4edf-a8ee-fdbe9d927179'
+        5: 'wab-fa8c3947-7fc6-4d29-99cf-21236332df13'
+        6: 'wab-08843f30-046f-464d-81be-a4f820310bdf'
+        7: 'wab-86c58f8a-0e73-40ac-a6f6-17dba2bbf175'
+        8: 'wab-df770748-0244-4dab-a38b-20b540276bd9'
+        9: 'wab-5ce1998c-5748-4751-a571-6ae32fe04d9d'
+        10: 'wab-04b1326c-ef49-49ba-a01f-d5d61d2b9ed8'
+        11: 'wab-94434a87-21bf-4987-9099-677cd116dff6'
+        12: 'wab-bbb44ad2-4c92-400c-8f62-d870cac70b75'
+        13: 'wab-c0648ab9-f072-495f-af4c-1891eda2e726'
+        14: 'wab-f12070ad-4fe5-490e-b250-c4547d52ddbe'
+        15: 'wab-c1694117-b931-4338-b178-2939d052c293'
+        16: 'wab-0b98a13c-8d48-448b-9da7-fb3cfc6af239'
+        17: 'wab-1ca6c4b1-ad5f-4c32-81bb-0510d9ad1e88'
+        18: 'wab-6219b661-7221-4d0f-8bca-5a6a7d3e742e'
+        19: 'wab-b95ad5be-b8f2-41b0-95b0-8cc61c8dbc62'
+        20: 'wab-cf7f6535-7d16-4f84-b227-560b6675c640'
+        21: 'wab-46d97067-d22c-4938-9cd4-5854e86f0737'
+        22: 'wab-d84a8b93-9af5-4492-9cc8-23cf6c2e4488'
+        23: 'wab-e858ceff-d62f-4a43-910c-7e63b13e62bf'
+        24: 'wab-6bf3037b-772f-4459-a629-4c8ec1bd1089'
+        25: 'wab-8875e975-70f2-4210-97c5-dfdaf68bf9d7'
+        26: 'wab-779c4232-2493-4f2c-96b4-7aa3a89f3933'
+        27: 'wab-3b2f2cca-4a86-41cf-bdc0-2f1aec296275'
+        28: 'wab-2a07ff32-6596-4d88-8971-7dc9e3db233a'
+        29: 'wab-e089e231-3c91-476a-bb5a-85fe4152abbb'
+      actual:
+        0: 'wab-fd8c14ee-40bb-4182-8756-bf132ac9acb6'
+        1: 'wab-85722212-5bb2-474d-a590-8e980ffd813a'
+        2: 'wab-85d52291-10a9-4fe8-a5b5-528f49a623e5'
+        3: 'wab-bbb7c2aa-84d4-4cd7-b42c-b9aded2bc3e8'
+        4: 'wab-14ddb094-022f-4051-b758-b3316efd2644'
+        5: 'wab-bc428e54-2255-4edf-a8ee-fdbe9d927179'
+        6: 'wab-fa8c3947-7fc6-4d29-99cf-21236332df13'
+        7: 'wab-08843f30-046f-464d-81be-a4f820310bdf'
+        8: 'wab-86c58f8a-0e73-40ac-a6f6-17dba2bbf175'
+        9: 'wab-df770748-0244-4dab-a38b-20b540276bd9'
+        10: 'wab-5ce1998c-5748-4751-a571-6ae32fe04d9d'
+        11: 'wab-04b1326c-ef49-49ba-a01f-d5d61d2b9ed8'
+        12: 'wab-94434a87-21bf-4987-9099-677cd116dff6'
+        13: 'wab-bbb44ad2-4c92-400c-8f62-d870cac70b75'
+        14: 'wab-c0648ab9-f072-495f-af4c-1891eda2e726'
+        15: 'wab-f12070ad-4fe5-490e-b250-c4547d52ddbe'
+        16: 'wab-c1694117-b931-4338-b178-2939d052c293'
+        17: 'wab-0b98a13c-8d48-448b-9da7-fb3cfc6af239'
+        18: 'wab-1ca6c4b1-ad5f-4c32-81bb-0510d9ad1e88'
+        19: 'wab-6219b661-7221-4d0f-8bca-5a6a7d3e742e'
+        20: 'wab-b95ad5be-b8f2-41b0-95b0-8cc61c8dbc62'
+        21: 'wab-cf7f6535-7d16-4f84-b227-560b6675c640'
+        22: 'wab-46d97067-d22c-4938-9cd4-5854e86f0737'
+        23: 'wab-d84a8b93-9af5-4492-9cc8-23cf6c2e4488'
+        24: 'wab-e858ceff-d62f-4a43-910c-7e63b13e62bf'
+        25: 'wab-6bf3037b-772f-4459-a629-4c8ec1bd1089'
+        26: 'wab-8875e975-70f2-4210-97c5-dfdaf68bf9d7'
+        27: 'wab-779c4232-2493-4f2c-96b4-7aa3a89f3933'
+        28: 'wab-3b2f2cca-4a86-41cf-bdc0-2f1aec296275'
+        29: 'wab-2a07ff32-6596-4d88-8971-7dc9e3db233a'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-liste-a77085cd/offset/test/whatsapp-gonderim-listesi-248.test.mjs:71:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tarih süzgeci: yerel gün, iki uç dahil (23:59:59 ve 00:00:00), ayın 1'i; süzgeç + imleç birlikte; boş gün
+    not ok 3 - Tarih süzgeci: yerel gün, iki uç dahil (23:59:59 ve 00:00:00), ayın 1'i; süzgeç + imleç birlikte; boş gün
+      ---
+      duration_ms: 22.314617
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-liste-a77085cd/offset/test/whatsapp-gonderim-listesi-248.test.mjs:75:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        süzgeçli sonraki sayfa (süzgeç dışına taşmaz)
+        + actual - expected
+        
+          [
+        +   'wab-fa8c3947-7fc6-4d29-99cf-21236332df13',
+            'wab-08843f30-046f-464d-81be-a4f820310bdf',
+            'wab-86c58f8a-0e73-40ac-a6f6-17dba2bbf175',
+            'wab-df770748-0244-4dab-a38b-20b540276bd9',
+            'wab-5ce1998c-5748-4751-a571-6ae32fe04d9d',
+            'wab-04b1326c-ef49-49ba-a01f-d5d61d2b9ed8',
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'wab-08843f30-046f-464d-81be-a4f820310bdf'
+        1: 'wab-86c58f8a-0e73-40ac-a6f6-17dba2bbf175'
+        2: 'wab-df770748-0244-4dab-a38b-20b540276bd9'
+        3: 'wab-5ce1998c-5748-4751-a571-6ae32fe04d9d'
+        4: 'wab-04b1326c-ef49-49ba-a01f-d5d61d2b9ed8'
+        5: 'wab-94434a87-21bf-4987-9099-677cd116dff6'
+        6: 'wab-bbb44ad2-4c92-400c-8f62-d870cac70b75'
+        7: 'wab-c0648ab9-f072-495f-af4c-1891eda2e726'
+        8: 'wab-f12070ad-4fe5-490e-b250-c4547d52ddbe'
+        9: 'wab-c1694117-b931-4338-b178-2939d052c293'
+        10: 'wab-0b98a13c-8d48-448b-9da7-fb3cfc6af239'
+        11: 'wab-1ca6c4b1-ad5f-4c32-81bb-0510d9ad1e88'
+        12: 'wab-6219b661-7221-4d0f-8bca-5a6a7d3e742e'
+        13: 'wab-b95ad5be-b8f2-41b0-95b0-8cc61c8dbc62'
+        14: 'wab-cf7f6535-7d16-4f84-b227-560b6675c640'
+        15: 'wab-46d97067-d22c-4938-9cd4-5854e86f0737'
+        16: 'wab-d84a8b93-9af5-4492-9cc8-23cf6c2e4488'
+        17: 'wab-e858ceff-d62f-4a43-910c-7e63b13e62bf'
+        18: 'wab-6bf3037b-772f-4459-a629-4c8ec1bd1089'
+        19: 'wab-8875e975-70f2-4210-97c5-dfdaf68bf9d7'
+        20: 'wab-779c4232-2493-4f2c-96b4-7aa3a89f3933'
+        21: 'wab-3b2f2cca-4a86-41cf-bdc0-2f1aec296275'
+        22: 'wab-2a07ff32-6596-4d88-8971-7dc9e3db233a'
+        23: 'wab-e089e231-3c91-476a-bb5a-85fe4152abbb'
+        24: 'wab-230946e9-5c28-4acd-a6e7-88c2ad1a4383'
+        25: 'wab-6f3be203-1330-45b6-9054-30531872dd83'
+        26: 'wab-f3673843-ad9d-4054-bca6-642f6330590b'
+        27: 'wab-7e5bab3f-8f90-435f-95b5-3f087542e1cc'
+        28: 'wab-a0f0e3c7-ba7b-47ba-8b1b-20b00ffa0ea8'
+      actual:
+        0: 'wab-fa8c3947-7fc6-4d29-99cf-21236332df13'
+        1: 'wab-08843f30-046f-464d-81be-a4f820310bdf'
+        2: 'wab-86c58f8a-0e73-40ac-a6f6-17dba2bbf175'
+        3: 'wab-df770748-0244-4dab-a38b-20b540276bd9'
+        4: 'wab-5ce1998c-5748-4751-a571-6ae32fe04d9d'
+        5: 'wab-04b1326c-ef49-49ba-a01f-d5d61d2b9ed8'
+        6: 'wab-94434a87-21bf-4987-9099-677cd116dff6'
+        7: 'wab-bbb44ad2-4c92-400c-8f62-d870cac70b75'
+        8: 'wab-c0648ab9-f072-495f-af4c-1891eda2e726'
+        9: 'wab-f12070ad-4fe5-490e-b250-c4547d52ddbe'
+        10: 'wab-c1694117-b931-4338-b178-2939d052c293'
+        11: 'wab-0b98a13c-8d48-448b-9da7-fb3cfc6af239'
+        12: 'wab-1ca6c4b1-ad5f-4c32-81bb-0510d9ad1e88'
+        13: 'wab-6219b661-7221-4d0f-8bca-5a6a7d3e742e'
+        14: 'wab-b95ad5be-b8f2-41b0-95b0-8cc61c8dbc62'
+        15: 'wab-cf7f6535-7d16-4f84-b227-560b6675c640'
+        16: 'wab-46d97067-d22c-4938-9cd4-5854e86f0737'
+        17: 'wab-d84a8b93-9af5-4492-9cc8-23cf6c2e4488'
+        18: 'wab-e858ceff-d62f-4a43-910c-7e63b13e62bf'
+        19: 'wab-6bf3037b-772f-4459-a629-4c8ec1bd1089'
+        20: 'wab-8875e975-70f2-4210-97c5-dfdaf68bf9d7'
+        21: 'wab-779c4232-2493-4f2c-96b4-7aa3a89f3933'
+        22: 'wab-3b2f2cca-4a86-41cf-bdc0-2f1aec296275'
+        23: 'wab-2a07ff32-6596-4d88-8971-7dc9e3db233a'
+        24: 'wab-e089e231-3c91-476a-bb5a-85fe4152abbb'
+        25: 'wab-230946e9-5c28-4acd-a6e7-88c2ad1a4383'
+        26: 'wab-6f3be203-1330-45b6-9054-30531872dd83'
+        27: 'wab-f3673843-ad9d-4054-bca6-642f6330590b'
+        28: 'wab-7e5bab3f-8f90-435f-95b5-3f087542e1cc'
+        29: 'wab-a0f0e3c7-ba7b-47ba-8b1b-20b00ffa0ea8'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-liste-a77085cd/offset/test/whatsapp-gonderim-listesi-248.test.mjs:85:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Dış girdi: geçersiz aralık / tarih / imleç 400 + Türkçe ileti; limit en çok 200, sayı değilse 50
+    ok 4 - Dış girdi: geçersiz aralık / tarih / imleç 400 + Türkçe ileti; limit en çok 200, sayı değilse 50
+      ---
+      duration_ms: 19.313848
+      type: 'test'
+      ...
+    1..4
+not ok 1 - 2.4.8 WhatsApp Gönderimleri — Daha Fazla Göster (imleç) ve tarih süzgeci
+  ---
+  duration_ms: 2040.439628
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk6fix-248-liste-a77085cd/offset/test/whatsapp-gonderim-listesi-248.test.mjs:37:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2458.84507

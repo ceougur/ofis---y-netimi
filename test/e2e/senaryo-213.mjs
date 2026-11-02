@@ -161,7 +161,7 @@ try {
     await admin.click(`${top} [data-answer="yes"]`);
     await admin.waitForSelector(`${top} [data-send]`);
     ok(/1 \/ 2/.test(await topText()), "ilerleme 1 / 2");
-    ok(await admin.$(`${top} a[href$="/ekstre.pdf"]`), "Ekstre PDF bağlantısı");
+    ok(await admin.$(`${top} a[href*="/ekstre.pdf?"]`), "Ekstre PDF bağlantısı");
     ok(await admin.$eval(`${top} input[data-pdf]`, node => node.checked), "v2.0.14: 'Ekstre PDF'ini kendiliğinden indir' varsayılan açık");
     await shot(admin, "whatsapp-sira-1");
     const firstName = await admin.$eval(`${top} .hof-wa-person strong`, node => node.textContent.trim());
@@ -175,7 +175,8 @@ try {
     const windowCompany = await admin.evaluate(() => window.HOF.companyId);
     ok(pdfUrl.pathname.endsWith("/ekstre.pdf") && pdfUrl.searchParams.get("download") === "1", `ekstre PDF'i indirme adresi: ${pdfUrl.pathname}${pdfUrl.search}`);
     ok(pdfUrl.searchParams.get("hofCompany") === windowCompany, `ekstre PDF'i pencerenin şirketinden indi (${windowCompany})`);
-    ok(disposition.includes(encodeURIComponent(`Cari-ekstre ${firstName}.pdf`)), `ekstre PDF'i kişinin adıyla kendiliğinden indi: ${decodeURIComponent(disposition.split("''")[1] || disposition)}`);
+    // 2.4.8 W3: dosya adı dönemli ("Ekstre <Ad> <dönem>.pdf"; Tüm Hareketler → "baslangic-<bugün>", sunucunun statement-pdf.mjs düzeni).
+    ok(/^Ekstre .+ baslangic-\d{2}\.\d{2}\.\d{4}\.pdf$/.test(decodeURIComponent(disposition.split("''")[1] || "")) && decodeURIComponent(disposition.split("''")[1] || "").startsWith(`Ekstre ${firstName} `), `ekstre PDF'i kişinin adıyla kendiliğinden indi: ${decodeURIComponent(disposition.split("''")[1] || disposition)}`);
     await admin.waitForSelector(`${top} [data-prev]:not([disabled])`);
     ok(/2 \/ 2/.test(await topText()), "ilerleme 2 / 2");
     await admin.click(`${top} [data-send]`);

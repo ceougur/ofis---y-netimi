@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkPQfix-eski-P3-afa3fc01-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-P3-afa3fc01/test/whatsapp-w9-kanca-248.test.mjs",
+  "commit": "8faf4ca60d96b7654d631a355710a84e5d77343d",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 19,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T19:39:13.853Z",
+  "sure_sn": 14,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 7,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kapıcı geçirir), kilit kalkınca yazılır › kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi",
+      "konum": "test/whatsapp-w9-kanca-248.test.mjs:450:3",
+      "hata": "kilitte 503 (geldi 500 {\"ok\":false,\"code\":\"whatsapp-hook-error\",\"error\":\"Bildirim işlenemedi; yeniden denenecek.\"}) · 500 !== 503 (beklenen 503, gelen 500)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-eski-P3-afa3fc01-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "bfb43069974f9f8a8b8eec948461a84f39c23fc363407379878bccab4d786f69",
+  "ham_cikti_bayt": 6395
+}

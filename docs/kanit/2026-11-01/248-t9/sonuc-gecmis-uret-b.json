@@ -1,0 +1,136 @@
+{
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "node": "v22.22.0",
+  "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-a",
+  "toplam": {
+    "toplu": 7,
+    "is": 12000,
+    "metaIleti": 8683,
+    "kancaOlay": 212,
+    "kancaDurum": 20857,
+    "kancaHata": 0,
+    "yenidenDene": 1,
+    "yineDeGonder": 0
+  },
+  "bas": 34,
+  "adet": 6,
+  "kisi": 2000,
+  "basladi": "2026-11-01T15:56:41.466Z",
+  "gonderimler": [
+    {
+      "sira": 35,
+      "gun": "2026-03-07",
+      "tur": "statement",
+      "donem": "all",
+      "acmaMs": 30850,
+      "yurutulen": 2000,
+      "isBasinaMs": 37.1,
+      "durumlar": {
+        "read": 823,
+        "delivered": 1177
+      },
+      "sureSn": 133
+    },
+    {
+      "sira": 36,
+      "gun": "2026-03-10",
+      "tur": "statement",
+      "donem": "lastMonth",
+      "acmaMs": 31279,
+      "yurutulen": 2000,
+      "isBasinaMs": 37.6,
+      "durumlar": {
+        "delivered": 1191,
+        "read": 809
+      },
+      "sureSn": 133
+    },
+    {
+      "sira": 37,
+      "gun": "2026-03-14",
+      "tur": "statement",
+      "donem": "thisMonth",
+      "acmaMs": 28799,
+      "yurutulen": 1339,
+      "isBasinaMs": 35.4,
+      "durumlar": {
+        "read": 508,
+        "delivered": 831,
+        "skipped": 661
+      },
+      "sureSn": 94
+    },
+    {
+      "sira": 38,
+      "gun": "2026-03-18",
+      "tur": "statement",
+      "donem": "last3",
+      "acmaMs": 28801,
+      "yurutulen": 2000,
+      "isBasinaMs": 36.2,
+      "durumlar": {
+        "read": 798,
+        "delivered": 1202
+      },
+      "sureSn": 127
+    },
+    {
+      "sira": 39,
+      "gun": "2026-03-21",
+      "tur": "statement",
+      "donem": "özel",
+      "acmaMs": 27580,
+      "yurutulen": 1339,
+      "isBasinaMs": 31.5,
+      "durumlar": {
+        "read": 540,
+        "delivered": 785,
+        "failed": 14,
+        "skipped": 661
+      },
+      "yenidenDene": "wab-4755ba59-4af5-463b-a73d-931bf6b25a5f",
+      "sureSn": 89
+    },
+    {
+      "sira": 40,
+      "gun": "2026-03-25",
+      "tur": "reminder",
+      "donem": "",
+      "acmaMs": 26540,
+      "yurutulen": 5,
+      "isBasinaMs": 79.7,
+      "durumlar": {
+        "skipped": 1995,
+        "read": 3,
+        "delivered": 2
+      },
+      "sureSn": 27
+    }
+  ],
+  "dosyalar": {
+    "destekofis.sqlite": 455335936,
+    "e-belge-kullanim.sqlite": 16384,
+    "sirketler/002/destekofis.sqlite": 24350720,
+    "sirketler/002/destekofis.sqlite-shm": 32768,
+    "sirketler/002/destekofis.sqlite-wal": 144232,
+    "whatsapp-gonderim.sqlite": 109785088
+  },
+  "denetimler": [
+    {
+      "ad": "6 gönderim açıldı",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kanca istekleri hatasız",
+      "ok": true,
+      "ayrinti": "0"
+    },
+    {
+      "ad": "yeniden deneme ve Yine de Gönder zinciri üretildi",
+      "ok": false,
+      "ayrinti": "{\"toplu\":7,\"is\":12000,\"metaIleti\":8683,\"kancaOlay\":212,\"kancaDurum\":20857,\"kancaHata\":0,\"yenidenDene\":1,\"yineDeGonder\":0}"
+    }
+  ],
+  "bitti": "2026-11-01T16:06:54.172Z"
+}

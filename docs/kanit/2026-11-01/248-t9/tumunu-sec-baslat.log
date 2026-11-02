@@ -1,0 +1,18 @@
+(node:20687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20697) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+14:02:38 önizleme (Tümünü Seç) {"durum":200,"ms":44022,"gonderilecek":3012}
+ok 1 - önizleme 200
+14:03:20 başlatma (30 sn iptalli) {"durum":0,"ms":41498,"zamanAsimi":true}
+14:03:20 sonra {"acilanIs":1,"kisi":3014,"sonrakiIstekMs":7}
+ok 2 - istemci zaman aşımına rağmen sunucu toplu işi açtı (ölçülen davranış) (zaman aşımı true, açılan 1)
+14:03:20 yeniden basma {"durum":200,"isSayisi":1}
+ok 3 - aynı istek kimliğiyle yeniden basma ikinci iş açmaz (1)
+1..3
+# tests 3
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

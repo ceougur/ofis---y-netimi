@@ -1,0 +1,6 @@
+// İŞ Z: veri C = veri B + belirsiz işlerin toplu işleri "başka bilgisayarın defterinde açılmış" (taşınan veri yolu: movedUnsettled / movedSentBefore).
+import { DatabaseSync } from "node:sqlite";
+const db = new DatabaseSync(process.argv[2]);
+const r = db.prepare("UPDATE wa_batches SET ledger_id = 'isz-tasinan-belirsiz' WHERE id IN (SELECT DISTINCT batch_id FROM wa_jobs WHERE state IN ('uncertain', 'failed'))").run();
+console.log("taşınan toplu iş:", r.changes);
+db.close();

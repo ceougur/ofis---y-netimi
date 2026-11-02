@@ -1,0 +1,93 @@
+{
+  "ad": "248-dkWXfix-eski-ccafaf47-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "2a72ed571a4ef0d442ef41f0603790498f9c5384",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T07:34:32.507Z",
+  "sure_sn": 79.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 97,
+    "gecen": 85,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T36-kilit onarım listesi dolu + defter BAŞKA SÜREÇTE kilitli → önizleme ve yeni gönderim BEKLEMEZ (< 1,5 sn); neden kilit notuyla aynı cümle; kilit kalkınca BEKLEMEDEN önizleme onarır (V3, n5; X3: üretim işaret süresiyle — bayat işaret yok)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:910:3",
+      "hata": "kilit kalkınca engel yok · + actual - expected · + { (beklenen ~, gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › W1 kuyrukta · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:986:5",
+      "hata": "yeni iş Atlandı — Daha Önce Gönderildi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › W2 duraklatılmış → Devam Et · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:986:5",
+      "hata": "yeni iş Atlandı — Daha Önce Gönderildi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › W4 kaynağa read (D'siz) · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:986:5",
+      "hata": "yeni iş Atlandı — Daha Önce Gönderildi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › W3 yeni iş 1. denemede kabul + 131049 (Meta Bekletti) → kaynağa teslim → 24 sa: 2. deneme YOK, iş Atlandı; ileti 2 (yeni işin 1. iletisi önlenemezdi) (S9-1)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1006:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › W5 zincir derinliği 2: J1 belirsiz → YdG J2 belirsiz → YdG J3 kuyrukta → J1'e teslim → J3 Atlandı (S9-1)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1027:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › W8 kaynağın teslimi ×2 → eşgüçlü: yeni iş Atlandı, Bu Ay 1 (S9-1)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1074:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'accepted' (beklenen skipped, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0h2 sahibi DEFTERDE bilinen wamid · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503, yalnız defter YAZILMAZ; açılınca 200 ve satır Teslim (U6 koşul a)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1475:3",
+      "hata": "503'ten önce teslim defterde · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Kgecici şirket açılmamışken veri dosyası BAŞKA SÜREÇTE kilitli → 503 (geçici); kilit kalkınca yineleme 200 ve Teslim Edildi (V1 ii, V6 mD)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1583:3",
+      "hata": "İş X1 (BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Kbozuk şirket açılmamışken veri dosyası BOZUK (veri tabanı değil) → 503 (geçici; düzeltilince uygulanır); dosya düzelince yineleme 200 ve Teslim (V1 ii)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1607:3",
+      "hata": "İş X1 (dar kontrol 17 f1b; BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde — Meta bırakırsa da sayılır · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Kbozuk-yabancı 002'nin veri dosyası BOZUK + tanınmayan (sahibi bulunamayan) bildirim, A6 penceresi dışında → 200 (süresiz 503 yok; İş X1, dar kontrol 17 f1)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1634:3",
+      "hata": "tanınmayan bildirim 200 (geldi 503 {\"ok\":false,\"code\":\"whatsapp-hook-busy\",\"error\":\"Şirket şu anda açılamıyor; bildirim yeniden denenecek.\"}) · 503 !== 200 (beklenen 200, gelen 503)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-dosya-yok-ekran 002'nin veri dosyası YOK → olağan ekran isteği 503 iletisi Türkçe neden + dosya yolu; kod adı (COMPANY_DATA_MISSING) yok (İş X2, dar kontrol 17 f2; ders 10)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1661:3",
+      "hata": "The input did not match the regular expression /veri dosyası bulunamadı/. Input: · \"“002 · Deneme Şirketi” şirketinin verisi açılamadı (COMPANY_DATA_MISSING). Sol üstten başka şirkete geçin; yönetici Yönetim → Yedekler'den geri yükleyebilir.\" (beklenen , gelen “002 · Deneme Şirketi” şirketinin verisi açılamadı (COMPANY_DATA_MISSING). Sol üstten başka şirkete geçin; yönetici Yönetim → Yedekler'den geri yükleyebilir.)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkWXfix-eski-ccafaf47-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "5c42ee0bec138256316d9a950801fb091779794ade46dbace1d7af2f45114504",
+  "ham_cikti_bayt": 50130
+}

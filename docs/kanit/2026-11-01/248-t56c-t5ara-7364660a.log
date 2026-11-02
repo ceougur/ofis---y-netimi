@@ -1,0 +1,41 @@
+# 7364660a: üretim {"ok":true,"version":40,"batches":{"B1":"wab-7f5192e3-2124-4eb2-98a4-788402c3738c","B4":"wab-75c49777-08cc-4eb3-b1de-487a171a1569","B1b":"wab-a33ce9b8-e160-4fff-87d9-7aede6ffd0bb","B2":"wab-a4b6b1cf-f1eb-47a8-a583-a0074253bca1","B3":"wab-9baf0d3e-600e-4745-abd9-d31c501a0911"},"states":{"Ara Şema G0":"delivered/done","Ara Şema G1":"accepted/done","Ara Şema G2":"accepted/done","Ara Şema G3":"accepted/done","Ara Şema G4":"failed/done","Ara Şema G5":"uncertain/done","Ara Şema G6":"pending/running","Ara Şema G7":"pending/running","Ara Şema G8":"pending/running","Ara Şema G9":"accepted/done"},"delivered":"wamid.SAHTE0001","meta":{"messages":6,"to":["+905542000010","+905542000011","+905542000012","+905542000013","+905542000019","+905542000015"]}}
+  ✓ 7364660a eski kod kendi API'siyle veri üretti (şema v40; işler {"Ara Şema G0":"delivered/done","Ara Şema G1":"accepted/done","Ara Şema G2":"accepted/done","Ara Şema G3":"accepted/done","Ara Şema G4":"failed/done","Ara Şema G5":"uncertain/done","Ara Şema G6":"pending/running","Ara Şema G7":"pending/running","Ara Şema G8":"pending/running","Ara Şema G9":"accepted/done"})
+  ✓ 7364660a göç v40 → v44 (beklenen 44), bütünlük ok
+  ✓ 7364660a eklenen sütunlar yalnız beklenenler: wa_batches +[send_again_after,key_day] (beklenen [send_again_after,key_day]), wa_jobs +[prepared_at,pdf_blob,inherit_of] (beklenen [prepared_at,pdf_blob,inherit_of])
+  ✓ 7364660a şirket dosyasında tablo farkı yok (eklenen , düşen )
+  ✗ 7364660a eski iş satırları göçten sonra aynı durumda (10) — {"oldRows":[{"id":"waj-23f10001-bb0d-482b-b610-c9677b866876","state":"pending"},{"id":"waj-307239db-9438-4715-98b3-818c984d50bb","state":"pending"},{"id":"waj-33897676-7b98-4997-b698-96e8ec727c11","state":"failed"},{"id":"waj-5811dea3-21ec-4946-8576-41a1bee4be0c","state":"accepted"},{"id":"waj-63ee41b2-0ab1-430a-86ef-06408fe94dc7","state":"pending"},{"id":"waj-7ab830b8-8eb4-411d-b354-29918f69214e","state":"delivered"},{"id":"waj-9f3c1ba3-90bf-472b-8a47-b63444d1e6e1","state":"uncertain"},{"id":"waj-9fb36cf4-7acb-4e7c-8871-96cbdc2265c5","state":"accepted"},{"id":"waj-d759d539-ec43-43d6-b62c-659c8f67fa79","state":"accepted"},{"id":"waj-fe9c518b-500e-4fc8-b93c-49444218346d","state":"accepted"}],"migRows":[{"id":"waj-23f10001-bb0d-482b-b610-c9677b866876","state":"sending"},{"id":"waj-307239db-9438-4715-98b3-818c984d50bb","state":"sending"},{"id":"waj-33897676-7b98-4997-b698-96e8ec727c11","state":"failed"},{"id":"waj-5811dea3-21ec-4946-8576-41a1bee4be0c","state":"accepted"},{"id":"waj-63ee41b2-0ab1-430a-86ef-06408fe94dc7","state":"sending"},{"id":"waj-7ab830b8-8eb4-411d-b354-29918f69214e","state":"delivered"},{"id":"waj-9f3c1ba3-90bf-472b-8a47-b63444d1e6e1","state":"uncertain"},{"id":"waj-9fb36cf4-7acb-4e7c-8871-96cbdc2265c5","state":"accepted"},{"id":"waj-d759d539-ec43-43d6-b62c-659c8f67fa79","state":"accepted"},{"id":"waj-fe9c518b-500e-4fc8-b93c-49444218346d","state":"accepted"}]}
+  ✓ 7364660a göçmüş toplu işlerde key_day = '' ve send_again_after = '' (eski davranış; 5 iş)
+  ✓ 7364660a makine defteri: eklenen tablolar [anyway_links,attempt_deliveries,batch_log,claim_keys,hook_events,hook_seen,learned_wamids,releases,sqlite_sequence] (learned_wamids, claim_keys, attempt_deliveries, anyway_links şirket dosyasında DEĞİL, defterde var); eski satırlar korunur (claims 7 → ≥, accepts 5 → ≥)
+  ✓ 7364660a önce (eski kod) Ekstre "Bu Ay": G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta, G4/G6/G7/G9 gönderilir (G5: gönderilir)
+  ✓ 7364660a önce (eski kod) Ödeme Hatırlatma: G9 Daha Önce Gönderildi (bugün), G6/G7 Zaten Kuyrukta, öbürleri Gecikmiş Borç Yok
+  ✓ 7364660a önce (eski kod) Başarısızları Yeniden Dene (B1): yalnız G4 yeni iş (["Ara Şema G4:pending"])
+  ✓ 7364660a önce (eski kod) Yine de Gönder (G5 belirsiz): onaysız 409, onaylı 200 → G5 yeni iş (["Ara Şema G5:pending"])
+  ✓ 7364660a önce (eski kod) Yeniden Dene + Yine de Gönder kuyruktayken Ekstre "Bu Ay": G4, G5, G8 Zaten Kuyrukta
+  ✗ 7364660a sonra (aday) Ekstre "Bu Ay": G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta, G4/G6/G7/G9 gönderilir (G5: gönderilir) — {"badE":["G0=","G1=","G2=","G3="],"skipped":{"Zaten Kuyrukta":1}}
+  ✓ 7364660a sonra (aday) Ödeme Hatırlatma: G9 Daha Önce Gönderildi (bugün), G6/G7 Zaten Kuyrukta, öbürleri Gecikmiş Borç Yok
+  ✓ 7364660a sonra (aday) Başarısızları Yeniden Dene (B1): yalnız G4 yeni iş (["Ara Şema G4:pending"])
+  ✓ 7364660a sonra (aday) Yine de Gönder (G5 belirsiz): onaysız 409, onaylı 200 → G5 yeni iş (["Ara Şema G5:pending"])
+  ✓ 7364660a sonra (aday) Yeniden Dene + Yine de Gönder kuyruktayken Ekstre "Bu Ay": G4, G5, G8 Zaten Kuyrukta
+  ✗ 7364660a sonra (aday) özel aralık 01.11–03.11 = o günün "Bu Ay"ı → G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta (karar "b"; göçmüş defterde claim_keys satırı tablo yok) — {"badOz":["G0=","G1=","G2=","G3="],"skipped":{"Zaten Kuyrukta":1}}
+  ✓ 7364660a eski defterde attempt_deliveries yok, anyway_links yok → adayda ikisi de var; attempt_deliveries satırı 0 (göç dönüştürmez; olc yalnız kabul alır)
+  ✓ 7364660a sonra (aday) Bu Ay: teslim 1 (beklenen 1, eski deliveries satırından), Meta Kabul Etti 5 (beklenen 5)
+  ✓ 7364660a sonra (aday) bekleyenler sürülünce yalnız G4–G8'e birer ileti (5; çift 0, G0–G3/G9'a 0)
+  ✓ 7364660a sonra (aday) sürülünce Bu Ay: teslim 1 (1), Meta Kabul Etti 10 (10)
+  ✗ 7364660a sonra (aday) sürüldükten sonra Ekstre "Bu Ay": G0–G5, G8 Daha Önce Gönderildi (G5: Yine de Gönder kabul edildi → İş Q2 kararı A), G6/G7/G9 gönderilir — {"badSur":["G0=","G1=","G2=","G3=","G4=Zaten Kuyrukta","G5=Zaten Kuyrukta","G8=Zaten Kuyrukta"],"skipped":{"Zaten Kuyrukta":3}}
+  ✓ 7364660a önce = sonra: sürülen alıcılar (eski kod 5)
+# 7364660a bilgi: Bu Ay önce (eski kod) {"status":200,"delivered":1,"accepted":5,"billable":1} → sürülünce {"status":200,"delivered":1,"accepted":10,"billable":1}; sonra (aday) {"status":200,"delivered":1,"accepted":5,"billable":1} → {"status":200,"delivered":1,"accepted":10,"billable":1}
+# 7364660a bilgi: sürüldükten sonra ekstre eski kodda {"Daha Önce Gönderildi":4,"Zaten Kuyrukta":3} / adayda {"Zaten Kuyrukta":3}
+  ✗ 7364660a önce = sonra: ekstre — [{"k":"Ara Şema G0","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G1","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G2","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G3","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}}]
+  ✓ 7364660a önce = sonra: hat
+  ✓ 7364660a önce = sonra: retry
+  ✓ 7364660a önce = sonra: anyway
+  ✗ 7364660a önce = sonra: kuyruk — [{"k":"Ara Şema G0","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G1","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G2","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}},{"k":"Ara Şema G3","once":{"skip":"Daha Önce Gönderildi","sentBefore":"2026-11-03T06:00:00.000Z"},"sonra":{"skip":"","sentBefore":null}}]
+  ✓ 7364660a önce = sonra: durum
+# 7364660a bilgi: özel aralık 01.11–03.11 eski kodda {"Daha Önce Gönderildi":4,"Zaten Kuyrukta":1} / adayda {"Zaten Kuyrukta":1} (eşlik kararı "b" 82e4e07e ile geldi; v42'den önceki kodda yok)
+# 7364660a bilgi: yeni işlerin key_day / send_again_after (aday): [{"rk":"user-7747a40b-e0b8-42c0-85cf-a7704bb4ee62|t56b-ara-retry-0001","keyDay":"2026-11-03","again":""},{"rk":"user-7747a40b-e0b8-42c0-85cf-a7704bb4ee62|t56b-ara-anyway-0001","keyDay":"2026-11-03","again":""}]
+# tests 30
+# pass 24
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0

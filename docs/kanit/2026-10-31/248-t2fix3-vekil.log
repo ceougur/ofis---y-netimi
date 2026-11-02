@@ -1,0 +1,680 @@
+TAP version 13
+# Subtest: D1/D2: adres bekçisi (izin listesi)
+    # Subtest: gerçek kipte yalnız EDM test ortamının iki servisi (WSDL sorguları dahil) ve yerel adres; kuru kipte yalnız yerel
+    ok 1 - gerçek kipte yalnız EDM test ortamının iki servisi (WSDL sorguları dahil) ve yerel adres; kuru kipte yalnız yerel
+      ---
+      duration_ms: 1.276387
+      type: 'test'
+      ...
+    # Subtest: canlı EDM ve her varyantı reddedilir (büyük harf, port, yol, http, alt alan adı, kimlikli adres, portal, başka ana bilgisayar)
+    ok 2 - canlı EDM ve her varyantı reddedilir (büyük harf, port, yol, http, alt alan adı, kimlikli adres, portal, başka ana bilgisayar)
+      ---
+      duration_ms: 0.492187
+      type: 'test'
+      ...
+    # Subtest: bekçi izinsiz isteği AĞA ÇIKARMADAN düşürür; program bunu 'EDM'ye ulaşılamadı' (kesin ulaşmadı) sayar — belirsiz gönderim değil
+    ok 3 - bekçi izinsiz isteği AĞA ÇIKARMADAN düşürür; program bunu 'EDM'ye ulaşılamadı' (kesin ulaşmadı) sayar — belirsiz gönderim değil
+      ---
+      duration_ms: 5.248864
+      type: 'test'
+      ...
+    # Subtest: D2: oturum açıkken GÖNDERİM isteği (yan etkili, yinelenmeyen işlem) bekçiye takılınca da 'kesin ulaşmadı' — 'Sonucu Belirsiz' değil
+    ok 4 - D2: oturum açıkken GÖNDERİM isteği (yan etkili, yinelenmeyen işlem) bekçiye takılınca da 'kesin ulaşmadı' — 'Sonucu Belirsiz' değil
+      ---
+      duration_ms: 49.368162
+      type: 'test'
+      ...
+    1..4
+ok 1 - D1/D2: adres bekçisi (izin listesi)
+  ---
+  duration_ms: 57.579007
+  type: 'suite'
+  ...
+# Subtest: D4/D6: maskeleme ve üretim bayrakları
+    # Subtest: maskeci kullanıcı adını ve parolayı (uzunu önce) her yerde siler
+    ok 1 - maskeci kullanıcı adını ve parolayı (uzunu önce) her yerde siler
+      ---
+      duration_ms: 0.43803
+      type: 'test'
+      ...
+    # Subtest: düzenek bayrakları server/server.mjs'ten okur: e-Belge, canlı ve e-SMM açık (yorum satırlarındaki örnekler sayılmaz)
+    ok 2 - düzenek bayrakları server/server.mjs'ten okur: e-Belge, canlı ve e-SMM açık (yorum satırlarındaki örnekler sayılmaz)
+      ---
+      duration_ms: 0.808467
+      type: 'test'
+      ...
+    1..2
+ok 2 - D4/D6: maskeleme ve üretim bayrakları
+  ---
+  duration_ms: 1.4743
+  type: 'suite'
+  ...
+# Subtest: D8: resmî PDF'te düzenleyenin unvanı
+    # Subtest: e-SMM'de VKN'li düzenleyende BİLGİ (denetim değil); e-SMM'de TCKN'li düzenleyende ve e-Arşiv / e-Fatura'da denetim
+    ok 1 - e-SMM'de VKN'li düzenleyende BİLGİ (denetim değil); e-SMM'de TCKN'li düzenleyende ve e-Arşiv / e-Fatura'da denetim
+      ---
+      duration_ms: 0.359904
+      type: 'test'
+      ...
+    1..1
+ok 3 - D8: resmî PDF'te düzenleyenin unvanı
+  ---
+  duration_ms: 0.584153
+  type: 'suite'
+  ...
+# Subtest: Kuru koşu (sahte EDM): betik uçtan uca
+    # Subtest: bütün adımlar geçer; 5 e-SMM + 2 e-Arşiv gönderilir, 1 iptal; OZET kullanıcıya numaraları ve test portalını verir; kimlik bilgisi hiçbir dosyada ve ekranda yok
+    ok 1 - bütün adımlar geçer; 5 e-SMM + 2 e-Arşiv gönderilir, 1 iptal; OZET kullanıcıya numaraları ve test portalını verir; kimlik bilgisi hiçbir dosyada ve ekranda yok
+      ---
+      duration_ms: 1536.65324
+      type: 'test'
+      ...
+    # Subtest: D3: parola yanlışsa betik giriş adımında HEMEN durur — tek Login, yeniden deneme yok, başka hiçbir EDM isteği yok; çıkış 2
+    ok 2 - D3: parola yanlışsa betik giriş adımında HEMEN durur — tek Login, yeniden deneme yok, başka hiçbir EDM isteği yok; çıkış 2
+      ---
+      duration_ms: 809.210297
+      type: 'test'
+      ...
+    # Subtest: D5/D7: önceki özetin üzerine --uzerine-yaz olmadan yazılmaz; kimlik bilgisi yoksa hiçbir istek yapılmaz (çıkış 4)
+    ok 3 - D5/D7: önceki özetin üzerine --uzerine-yaz olmadan yazılmaz; kimlik bilgisi yoksa hiçbir istek yapılmaz (çıkış 4)
+      ---
+      duration_ms: 969.459435
+      type: 'test'
+      ...
+    1..3
+ok 4 - Kuru koşu (sahte EDM): betik uçtan uca
+  ---
+  duration_ms: 3315.657989
+  type: 'suite'
+  ...
+# Subtest: --eszamanli: yardımcılar
+    # Subtest: ardisikNumara boşluğu ve tekrarı bulur; soapIslemi işlem adını gövdeden okur
+    ok 1 - ardisikNumara boşluğu ve tekrarı bulur; soapIslemi işlem adını gövdeden okur
+      ---
+      duration_ms: 1.053472
+      type: 'test'
+      ...
+    # Subtest: izleyici en çok eşzamanlı isteği ve işlem sayısını yazar, hatayı aynen yükseltir
+    ok 2 - izleyici en çok eşzamanlı isteği ve işlem sayısını yazar, hatayı aynen yükseltir
+      ---
+      duration_ms: 6.946097
+      type: 'test'
+      ...
+    # Subtest: bağımsız okuyucu (programın EDM istemcisinden ayrı): kendi girişi, GetSMM YALNIZ ETTN ile, EDM'nin kaydındaki numarayı okur; olmayan ETTN 0 kayıt; yanlış parola giriş hatası
+    ok 3 - bağımsız okuyucu (programın EDM istemcisinden ayrı): kendi girişi, GetSMM YALNIZ ETTN ile, EDM'nin kaydındaki numarayı okur; olmayan ETTN 0 kayıt; yanlış parola giriş hatası
+      ---
+      duration_ms: 23.590412
+      type: 'test'
+      ...
+    1..3
+ok 5 - --eszamanli: yardımcılar
+  ---
+  duration_ms: 31.956072
+  type: 'suite'
+  ...
+# Subtest: --eszamanli: kuru koşu (sahte EDM)
+    # Subtest: zorla araya girme: bütün adımlar geçer, ön koşul GERÇEKTEN oluştu (sahte EDM'de ≥ 10 SendSMM aynı anda, önbellek soğuk); giriş tek uçuş (Login 1, N4); 30 belge, TES ardışık; OZET tablosu; kimlik bilgisi yok
+    ok 1 - zorla araya girme: bütün adımlar geçer, ön koşul GERÇEKTEN oluştu (sahte EDM'de ≥ 10 SendSMM aynı anda, önbellek soğuk); giriş tek uçuş (Login 1, N4); 30 belge, TES ardışık; OZET tablosu; kimlik bilgisi yok
+      ---
+      duration_ms: 11266.507692
+      type: 'test'
+      ...
+    # Subtest: N4 EDM davranışları (gerçek EDM'de görülen eşzamanlı giriş reddi; tek oturumlu EDM): tek uçuş girişle 20/20 iletilir, çakışan giriş yok, çıkış 0
+    ok 2 - N4 EDM davranışları (gerçek EDM'de görülen eşzamanlı giriş reddi; tek oturumlu EDM): tek uçuş girişle 20/20 iletilir, çakışan giriş yok, çıkış 0
+      ---
+      duration_ms: 22641.888648
+      type: 'test'
+      ...
+    # Subtest: testin dişi: sahte EDM'ye enjekte edilen her hata düzeneği KIRMIZI yapar, neden iletide (kayıp, çift kayıt, yanlış durum, askı)
+    ok 3 - testin dişi: sahte EDM'ye enjekte edilen her hata düzeneği KIRMIZI yapar, neden iletide (kayıp, çift kayıt, yanlış durum, askı)
+      ---
+      duration_ms: 18160.100839
+      type: 'test'
+      ...
+    # Subtest: hata enjeksiyonu / zorla / kısa zaman aşımı gerçek kipte ya da --eszamanli'siz reddedilir; hiçbir istek yapılmaz, çıktı klasörü açılmaz (çıkış 4)
+    ok 4 - hata enjeksiyonu / zorla / kısa zaman aşımı gerçek kipte ya da --eszamanli'siz reddedilir; hiçbir istek yapılmaz, çıktı klasörü açılmaz (çıkış 4)
+      ---
+      duration_ms: 264.445286
+      type: 'test'
+      ...
+    1..4
+ok 6 - --eszamanli: kuru koşu (sahte EDM)
+  ---
+  duration_ms: 52333.290065
+  type: 'suite'
+  ...
+# Subtest: EDM gerçek test sözleşmesi (WSDL): program her işlemin isteğini sözleşmeye uygun kurar
+    # Subtest: sözleşme dosyası okunur: SOAP 1.1, tempuri.org, programın kullandığı 8 işlem var
+    ok 1 - sözleşme dosyası okunur: SOAP 1.1, tempuri.org, programın kullandığı 8 işlem var
+      ---
+      duration_ms: 45.856895
+      type: 'test'
+      ...
+    # Subtest: Mükellef Sorgula (CheckUser): yalnız USER/IDENTIFIER gider (EDM'nin C\# istemcisi gibi); yanıttaki DOCUMENTTYPE ve ALIAS_REMOVAL_TIME okunur
+    ok 2 - Mükellef Sorgula (CheckUser): yalnız USER/IDENTIFIER gider (EDM'nin C\# istemcisi gibi); yanıttaki DOCUMENTTYPE ve ALIAS_REMOVAL_TIME okunur
+      ---
+      duration_ms: 18.389426
+      type: 'test'
+      ...
+    # Subtest: e-Fatura ve e-Arşiv gönderimi, durum sorgusu, e-Arşiv iptali, gelen kutusu ve okundu işareti sözleşmeye uygun kurulur
+    ok 3 - e-Fatura ve e-Arşiv gönderimi, durum sorgusu, e-Arşiv iptali, gelen kutusu ve okundu işareti sözleşmeye uygun kurulur
+      ---
+      duration_ms: 18.596896
+      type: 'test'
+      ...
+    1..3
+ok 7 - EDM gerçek test sözleşmesi (WSDL): program her işlemin isteğini sözleşmeye uygun kurar
+  ---
+  duration_ms: 83.960376
+  type: 'suite'
+  ...
+# Subtest: EDM girişi reddedilince ileti seçili ortamın hesabına yönlendirir (2.4.1)
+    # Subtest: Canlı Ortam: ileti EDM'nin canlı hesabını ister; Durum satırına da aynı ileti yazılır
+    ok 1 - Canlı Ortam: ileti EDM'nin canlı hesabını ister; Durum satırına da aynı ileti yazılır
+      ---
+      duration_ms: 32.871476
+      type: 'test'
+      ...
+    # Subtest: Test Ortamı: ileti EDM'nin test hesabını ister
+    ok 2 - Test Ortamı: ileti EDM'nin test hesabını ister
+      ---
+      duration_ms: 16.231023
+      type: 'test'
+      ...
+    # Subtest: Giriş doğruysa ileti eklenmez; başka bir EDM reddi (giriş dışı) yönlendirme almaz
+    ok 3 - Giriş doğruysa ileti eklenmez; başka bir EDM reddi (giriş dışı) yönlendirme almaz
+      ---
+      duration_ms: 15.680228
+      type: 'test'
+      ...
+    1..3
+ok 8 - EDM girişi reddedilince ileti seçili ortamın hesabına yönlendirir (2.4.1)
+  ---
+  duration_ms: 539.32951
+  type: 'suite'
+  ...
+# Subtest: N4 tek uçuş giriş: soğuk önbellek, eşzamanlı çağrılar
+    # Subtest: T1 e-SMM: 20 eşzamanlı gönderim TEK giriş yapar, 20'si iletilir
+    ok 1 - T1 e-SMM: 20 eşzamanlı gönderim TEK giriş yapar, 20'si iletilir
+      ---
+      duration_ms: 270.586073
+      type: 'test'
+      ...
+    # Subtest: T1 numara öncesi erişim denetimi (ensureSession) × 20 eşzamanlı: tek giriş, hepsi başarılı
+    ok 2 - T1 numara öncesi erişim denetimi (ensureSession) × 20 eşzamanlı: tek giriş, hepsi başarılı
+      ---
+      duration_ms: 168.047319
+      type: 'test'
+      ...
+    # Subtest: T1 e-Fatura (aynı taşıma katmanı): 20 eşzamanlı mükellef sorgusu tek giriş yapar
+    ok 3 - T1 e-Fatura (aynı taşıma katmanı): 20 eşzamanlı mükellef sorgusu tek giriş yapar
+      ---
+      duration_ms: 189.927767
+      type: 'test'
+      ...
+    # Subtest: T10 (gerçek EDM'de görülen): başka giriş sürerken gelen giriş reddedilir — tek uçuşla 20 gönderimin hiçbiri reddedilmez
+    ok 4 - T10 (gerçek EDM'de görülen): başka giriş sürerken gelen giriş reddedilir — tek uçuşla 20 gönderimin hiçbiri reddedilmez
+      ---
+      duration_ms: 194.576034
+      type: 'test'
+      ...
+    1..4
+ok 9 - N4 tek uçuş giriş: soğuk önbellek, eşzamanlı çağrılar
+  ---
+  duration_ms: 824.781576
+  type: 'suite'
+  ...
+# Subtest: N4: başarısız, askıda ve farklı anahtarlı giriş
+    # Subtest: T2/T3 giriş reddedilince 5 bekleyenin HEPSİ aynı hatayı alır (tek Login, stage login); kayıt silinir, SONRAKİ çağrı yeniden dener
+    ok 1 - T2/T3 giriş reddedilince 5 bekleyenin HEPSİ aynı hatayı alır (tek Login, stage login); kayıt silinir, SONRAKİ çağrı yeniden dener
+      ---
+      duration_ms: 313.970695
+      type: 'test'
+      ...
+    # Subtest: T5 giriş askıda kalır: zaman aşımı BÜTÜN bekleyenlere döner (tek deneme), sonra yeni giriş başlar ve başarılı olur
+    ok 2 - T5 giriş askıda kalır: zaman aşımı BÜTÜN bekleyenlere döner (tek deneme), sonra yeni giriş başlar ve başarılı olur
+      ---
+      duration_ms: 409.393346
+      type: 'test'
+      ...
+    # Subtest: T4 (koruma) giriş sürerken parola değişir: yeni parolanın çağrısı eskisinin girişini BEKLEMEZ — iki ayrı giriş, her biri kendi sonucu
+    ok 3 - T4 (koruma) giriş sürerken parola değişir: yeni parolanın çağrısı eskisinin girişini BEKLEMEZ — iki ayrı giriş, her biri kendi sonucu
+      ---
+      duration_ms: 164.062834
+      type: 'test'
+      ...
+    1..3
+ok 10 - N4: başarısız, askıda ve farklı anahtarlı giriş
+  ---
+  duration_ms: 888.039397
+  type: 'suite'
+  ...
+# Subtest: N4: oturum düşünce yeniden giriş, Bağlantıyı Test Et, önbellek boşaltma
+    # Subtest: T6/T7 tek oturumlu EDM, oturum EDM'de düştü: 20 eşzamanlı gönderim TEK yeniden giriş yapar (daha yeni oturum girişsiz kullanılır), 20'si iletilir
+    ok 1 - T6/T7 tek oturumlu EDM, oturum EDM'de düştü: 20 eşzamanlı gönderim TEK yeniden giriş yapar (daha yeni oturum girişsiz kullanılır), 20'si iletilir
+      ---
+      duration_ms: 358.497411
+      type: 'test'
+      ...
+    # Subtest: T7 eski oturumla düşen istek, önbellekte DAHA YENİ geçerli oturum varken onu girişsiz kullanır (koşulsuz silip yeniden girmez)
+    ok 2 - T7 eski oturumla düşen istek, önbellekte DAHA YENİ geçerli oturum varken onu girişsiz kullanır (koşulsuz silip yeniden girmez)
+      ---
+      duration_ms: 626.612615
+      type: 'test'
+      ...
+    # Subtest: T8 Bağlantıyı Test Et ile gönderim aynı anda (soğuk): tek giriş, ikisi de başarılı
+    ok 3 - T8 Bağlantıyı Test Et ile gönderim aynı anda (soğuk): tek giriş, ikisi de başarılı
+      ---
+      duration_ms: 320.377891
+      type: 'test'
+      ...
+    # Subtest: T9 (koruma) resetEdmCaches bekleyen girişi de temizler: sonraki çağrı askıdaki girişi beklemez
+    ok 4 - T9 (koruma) resetEdmCaches bekleyen girişi de temizler: sonraki çağrı askıdaki girişi beklemez
+      ---
+      duration_ms: 3011.248738
+      type: 'test'
+      ...
+    1..4
+ok 11 - N4: oturum düşünce yeniden giriş, Bağlantıyı Test Et, önbellek boşaltma
+  ---
+  duration_ms: 4317.319174
+  type: 'suite'
+  ...
+# Subtest: 2.4.7 E2: e-Fatura/e-Arşiv servisinin her işleminde APPLICATION_NAME destekofis30, CHANNEL_NAME DestekOfis
+ok 12 - 2.4.7 E2: e-Fatura/e-Arşiv servisinin her işleminde APPLICATION_NAME destekofis30, CHANNEL_NAME DestekOfis
+  ---
+  duration_ms: 33.666508
+  type: 'test'
+  ...
+# Subtest: 2.4.7 E2: e-SMM servisinin her işleminde APPLICATION_NAME destekofis30, CHANNEL_NAME DestekOfis
+ok 13 - 2.4.7 E2: e-SMM servisinin her işleminde APPLICATION_NAME destekofis30, CHANNEL_NAME DestekOfis
+  ---
+  duration_ms: 4.619468
+  type: 'test'
+  ...
+# Subtest: 2.4.7 E1: uygulama adı seçenekle değiştirilemez (eski appName / applicationName yok sayılır); kanal adı channelName ile
+ok 14 - 2.4.7 E1: uygulama adı seçenekle değiştirilemez (eski appName / applicationName yok sayılır); kanal adı channelName ile
+  ---
+  duration_ms: 1.065533
+  type: 'test'
+  ...
+# Subtest: gg243 dar kontrol 3: vekil sunucu hatası kesin ulaşmadı (B-1), imleçten önce kaydedilen belge (B-2)
+    # Subtest: B-1 birim: proxy-unreachable / proxy-refused / proxy-auth → integrator-unreachable (vekil iletisi, çift nokta yok); proxy-request belirsiz kalır
+    ok 1 - B-1 birim: proxy-unreachable / proxy-refused / proxy-auth → integrator-unreachable (vekil iletisi, çift nokta yok); proxy-request belirsiz kalır
+      ---
+      duration_ms: 79.026909
+      type: 'test'
+      ...
+    # Subtest: B-1: taze oturum varken vekil kapalı → Kaydet ve Gönder numara VERMEZ (bırakır), ileti vekili söyler; üç vekil kodu için de
+    ok 2 - B-1: taze oturum varken vekil kapalı → Kaydet ve Gönder numara VERMEZ (bırakır), ileti vekili söyler; üç vekil kodu için de
+      ---
+      duration_ms: 810.919879
+      type: 'test'
+      ...
+    # Subtest: B-1: taze oturum varken vekil kapalı → Tümünü Gönder numara vermez, tur durur; vekil gelince sırayla gider
+    ok 3 - B-1: taze oturum varken vekil kapalı → Tümünü Gönder numara vermez, tur durur; vekil gelince sırayla gider
+      ---
+      duration_ms: 586.683904
+      type: 'test'
+      ...
+    # Subtest: B-2: tur sürerken imleçten önce kaydedilen belge sonrakileri doğru iletiyle bekletir (rerun); yeni basışta hepsi tarih sırasıyla gider
+    ok 4 - B-2: tur sürerken imleçten önce kaydedilen belge sonrakileri doğru iletiyle bekletir (rerun); yeni basışta hepsi tarih sırasıyla gider
+      ---
+      duration_ms: 1513.528815
+      type: 'test'
+      ...
+    1..4
+ok 15 - gg243 dar kontrol 3: vekil sunucu hatası kesin ulaşmadı (B-1), imleçten önce kaydedilen belge (B-2)
+  ---
+  duration_ms: 3046.268946
+  type: 'suite'
+  ...
+# Subtest: sürüm karşılaştırma
+    # Subtest: anlamsal sürüm kurallarına uyar
+    ok 1 - anlamsal sürüm kurallarına uyar
+      ---
+      duration_ms: 1.08856
+      type: 'test'
+      ...
+    1..1
+ok 16 - sürüm karşılaştırma
+  ---
+  duration_ms: 1.967549
+  type: 'suite'
+  ...
+# Subtest: imzalı güncelleme bildirgesi
+    # Subtest: güvenilen anahtarla imzalı bildirgeyi kabul eder
+    ok 1 - güvenilen anahtarla imzalı bildirgeyi kabul eder
+      ---
+      duration_ms: 2.566516
+      type: 'test'
+      ...
+    # Subtest: değiştirilmiş içerik, bilinmeyen anahtar ve sahte kimlik reddedilir
+    ok 2 - değiştirilmiş içerik, bilinmeyen anahtar ve sahte kimlik reddedilir
+      ---
+      duration_ms: 2.00182
+      type: 'test'
+      ...
+    # Subtest: geçersiz bildirge alanları reddedilir
+    ok 3 - geçersiz bildirge alanları reddedilir
+      ---
+      duration_ms: 2.003429
+      type: 'test'
+      ...
+    # Subtest: uyumluluk: eski sürüm, kanal, en düşük sürüm, çalışma zamanı ve başlatıcı
+    ok 4 - uyumluluk: eski sürüm, kanal, en düşük sürüm, çalışma zamanı ve başlatıcı
+      ---
+      duration_ms: 1.371482
+      type: 'test'
+      ...
+    # Subtest: ürüne gömülü anahtar geçerli bir Ed25519 açık anahtarıdır
+    ok 5 - ürüne gömülü anahtar geçerli bir Ed25519 açık anahtarıdır
+      ---
+      duration_ms: 0.674107
+      type: 'test'
+      ...
+    # Subtest: sürüm notları CHANGELOG'dan çıkarılır
+    ok 6 - sürüm notları CHANGELOG'dan çıkarılır
+      ---
+      duration_ms: 1.243506
+      type: 'test'
+      ...
+    1..6
+ok 17 - imzalı güncelleme bildirgesi
+  ---
+  duration_ms: 10.673315
+  type: 'suite'
+  ...
+# Subtest: güncelleyici (sahte GitHub ile)
+    # Subtest: kararlı kanalda en yeni kararlı sürümü bulur; ön sürümü yalnızca beta kanalı görür
+    ok 1 - kararlı kanalda en yeni kararlı sürümü bulur; ön sürümü yalnızca beta kanalı görür
+      ---
+      duration_ms: 71.803561
+      type: 'test'
+      ...
+    # Subtest: indirir, özeti doğrular ve paketi app\\<sürüm> olarak açar
+    ok 2 - indirir, özeti doğrular ve paketi app\\<sürüm> olarak açar
+      ---
+      duration_ms: 220.465618
+      type: 'test'
+      ...
+    # Subtest: kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)
+    ok 3 - kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)
+      ---
+      duration_ms: 218.620483
+      type: 'test'
+      ...
+    # Subtest: paket özeti tutmazsa hiçbir şey kurulmaz
+    ok 4 - paket özeti tutmazsa hiçbir şey kurulmaz
+      ---
+      duration_ms: 61.833751
+      type: 'test'
+      ...
+    # Subtest: yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz
+    ok 5 - yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz
+      ---
+      duration_ms: 768.244929
+      type: 'test'
+      ...
+    # Subtest: daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir
+    ok 6 - daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir
+      ---
+      duration_ms: 25.802317
+      type: 'test'
+      ...
+    # Subtest: ağ hatası yeniden denenebilir, olmayan depo denenemez olarak bildirilir
+    ok 7 - ağ hatası yeniden denenebilir, olmayan depo denenemez olarak bildirilir
+      ---
+      duration_ms: 84.723098
+      type: 'test'
+      ...
+    # Subtest: imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir
+    ok 8 - imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir
+      ---
+      duration_ms: 179.357912
+      type: 'test'
+      ...
+    # Subtest: paket içindeki sürüm bildirgeyle aynı değilse veya dosya eksikse açılmaz
+    ok 9 - paket içindeki sürüm bildirgeyle aynı değilse veya dosya eksikse açılmaz
+      ---
+      duration_ms: 2.852922
+      type: 'test'
+      ...
+    1..9
+ok 18 - güncelleyici (sahte GitHub ile)
+  ---
+  duration_ms: 3369.93687
+  type: 'suite'
+  ...
+# Subtest: kurulum düzeni yardımcıları
+    # Subtest: current.json atomik yazılır; eski sürümler ve yarım klasörler temizlenir
+    ok 1 - current.json atomik yazılır; eski sürümler ve yarım klasörler temizlenir
+      ---
+      duration_ms: 3.265938
+      type: 'test'
+      ...
+    1..1
+ok 19 - kurulum düzeni yardımcıları
+  ---
+  duration_ms: 3.423455
+  type: 'suite'
+  ...
+# Subtest: Vekil parolası şifreli saklanır
+    # Subtest: kaydedilen dosyada parola açık metin yok; mühürlü alan var; okununca parolalı adres geri gelir
+    ok 1 - kaydedilen dosyada parola açık metin yok; mühürlü alan var; okununca parolalı adres geri gelir
+      ---
+      duration_ms: 6.388888
+      type: 'test'
+      ...
+    # Subtest: Vekil Sunucu Kullanma / Otomatik seçilse de saklanan adresin parolası açık metin yazılmaz
+    ok 2 - Vekil Sunucu Kullanma / Otomatik seçilse de saklanan adresin parolası açık metin yazılmaz
+      ---
+      duration_ms: 2.61599
+      type: 'test'
+      ...
+    # Subtest: göç: 2.4.3 biçimli açık metin dosya aynen okunur; ilk kayıtta mühürlenir, ayar bozulmaz
+    ok 3 - göç: 2.4.3 biçimli açık metin dosya aynen okunur; ilk kayıtta mühürlenir, ayar bozulmaz
+      ---
+      duration_ms: 2.224534
+      type: 'test'
+      ...
+    # Subtest: göç: migrateNetworkSettings eski dosyayı mühürler (servis yöneticisinin açılışı); parolasız ya da zaten mühürlü dosyaya dokunmaz
+    ok 4 - göç: migrateNetworkSettings eski dosyayı mühürler (servis yöneticisinin açılışı); parolasız ya da zaten mühürlü dosyaya dokunmaz
+      ---
+      duration_ms: 2.856506
+      type: 'test'
+      ...
+    # Subtest: anahtar kaybolursa (dosya başka bilgisayara taşınmış) Elle ayarı ve adres bozulmaz, yalnız parola yeniden girilir; okuma anahtar üretmez
+    ok 5 - anahtar kaybolursa (dosya başka bilgisayara taşınmış) Elle ayarı ve adres bozulmaz, yalnız parola yeniden girilir; okuma anahtar üretmez
+      ---
+      duration_ms: 2.428026
+      type: 'test'
+      ...
+    # Subtest: servis yöneticisi açılışta eski dosyayı mühürler (kaynak denetimi)
+    ok 6 - servis yöneticisi açılışta eski dosyayı mühürler (kaynak denetimi)
+      ---
+      duration_ms: 0.776331
+      type: 'test'
+      ...
+    1..6
+ok 20 - Vekil parolası şifreli saklanır
+  ---
+  duration_ms: 18.463972
+  type: 'suite'
+  ...
+# Subtest: Mühürlü parola vekil kimlik doğrulamasında kullanılır
+    # Subtest: mühürlü dosyayla (ve eski açık metin dosyayla) istek vekilden kimlikli geçer
+    ok 1 - mühürlü dosyayla (ve eski açık metin dosyayla) istek vekilden kimlikli geçer
+      ---
+      duration_ms: 27.133355
+      type: 'test'
+      ...
+    1..1
+ok 21 - Mühürlü parola vekil kimlik doğrulamasında kullanılır
+  ---
+  duration_ms: 38.557362
+  type: 'suite'
+  ...
+# Subtest: Vekil sunucu: program uçları ve EDM trafiği
+    # Subtest: Ağ Bağlantısı ayarı: varsayılan Otomatik; elle adres kaydedilir; parola ekrana ve işlem kaydına çıkmaz, boş bırakılınca korunur
+    ok 1 - Ağ Bağlantısı ayarı: varsayılan Otomatik; elle adres kaydedilir; parola ekrana ve işlem kaydına çıkmaz, boş bırakılınca korunur
+      ---
+      duration_ms: 36.149014
+      type: 'test'
+      ...
+    # Subtest: Yetkisiz kullanıcı ağ ayarını göremez ve değiştiremez
+    ok 2 - Yetkisiz kullanıcı ağ ayarını göremez ve değiştiremez
+      ---
+      duration_ms: 152.256291
+      type: 'test'
+      ...
+    # Subtest: EDM: Bağlantıyı Test Et istekleri vekil sunucudan geçer; vekil kapatılınca aynı adrese ulaşılamaz
+    ok 3 - EDM: Bağlantıyı Test Et istekleri vekil sunucudan geçer; vekil kapatılınca aynı adrese ulaşılamaz
+      ---
+      duration_ms: 81.597726
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Dene: kaydedilmiş ayarla güncelleme sunucusuna gidilir, yol ve süre yazılır
+    ok 4 - Bağlantıyı Dene: kaydedilmiş ayarla güncelleme sunucusuna gidilir, yol ve süre yazılır
+      ---
+      duration_ms: 311.600885
+      type: 'test'
+      ...
+    # Subtest: İkinci şirket aynı (makine geneli) ayarı görür
+    ok 5 - İkinci şirket aynı (makine geneli) ayarı görür
+      ---
+      duration_ms: 195.736293
+      type: 'test'
+      ...
+    1..5
+ok 22 - Vekil sunucu: program uçları ve EDM trafiği
+  ---
+  duration_ms: 1230.261549
+  type: 'suite'
+  ...
+# Subtest: Vekil sunucu: bağlantılar (kaynak denetimi)
+    # Subtest: servis yöneticisi güncelleyiciye vekil fetch'i verir ve uygulamaya aynı ayar dosyasını geçirir
+    ok 1 - servis yöneticisi güncelleyiciye vekil fetch'i verir ve uygulamaya aynı ayar dosyasını geçirir
+      ---
+      duration_ms: 0.913226
+      type: 'test'
+      ...
+    # Subtest: lisans, E-Tablolar ve entegratör programın (vekil) fetch'ini kullanır
+    ok 2 - lisans, E-Tablolar ve entegratör programın (vekil) fetch'ini kullanır
+      ---
+      duration_ms: 3.911284
+      type: 'test'
+      ...
+    1..2
+ok 23 - Vekil sunucu: bağlantılar (kaynak denetimi)
+  ---
+  duration_ms: 5.425935
+  type: 'suite'
+  ...
+# Subtest: Vekil sunucu ayarının çözümü
+    # Subtest: Windows WinHTTP ikili ayarı okunur; doğrudan bağlantı bayrağında vekil yok
+    ok 1 - Windows WinHTTP ikili ayarı okunur; doğrudan bağlantı bayrağında vekil yok
+      ---
+      duration_ms: 1.7109
+      type: 'test'
+      ...
+    # Subtest: adres biçimleri: düz, şemalı, kimlikli, WinHTTP protokol listesi; SOCKS ve bozuk adres yok sayılır
+    ok 2 - adres biçimleri: düz, şemalı, kimlikli, WinHTTP protokol listesi; SOCKS ve bozuk adres yok sayılır
+      ---
+      duration_ms: 0.648021
+      type: 'test'
+      ...
+    # Subtest: yerel adresler her zaman doğrudan; <local>, *.alan, önek ve tam ad kuralları
+    ok 3 - yerel adresler her zaman doğrudan; <local>, *.alan, önek ve tam ad kuralları
+      ---
+      duration_ms: 0.312945
+      type: 'test'
+      ...
+    # Subtest: sıra: program ayarı (elle / kullanma) > ortam değişkeni > Windows > doğrudan
+    ok 4 - sıra: program ayarı (elle / kullanma) > ortam değişkeni > Windows > doğrudan
+      ---
+      duration_ms: 3.143919
+      type: 'test'
+      ...
+    # Subtest: Windows: netsh winhttp ile kurulan makine geneli vekil kayıt defterinden okunur
+    ok 5 - Windows: netsh winhttp ile kurulan makine geneli vekil kayıt defterinden okunur
+      ---
+      duration_ms: 0.34272
+      type: 'test'
+      ...
+    # Subtest: Windows kayıt defteri dakikada bir okunur (her istekte değil)
+    ok 6 - Windows kayıt defteri dakikada bir okunur (her istekte değil)
+      ---
+      duration_ms: 0.39284
+      type: 'test'
+      ...
+    1..6
+ok 24 - Vekil sunucu ayarının çözümü
+  ---
+  duration_ms: 7.588397
+  type: 'suite'
+  ...
+# Subtest: Vekil sunucu üzerinden istek (sahte vekil + TLS tüneli)
+    # Subtest: HTTPS: CONNECT tüneli + TLS; yöntem, yol, gövde ve çoklu başlık geçer; vekil yalnız ana bilgisayar:port görür
+    ok 1 - HTTPS: CONNECT tüneli + TLS; yöntem, yol, gövde ve çoklu başlık geçer; vekil yalnız ana bilgisayar:port görür
+      ---
+      duration_ms: 27.273578
+      type: 'test'
+      ...
+    # Subtest: HTTPS yönlendirme vekil üzerinden izlenir
+    ok 2 - HTTPS yönlendirme vekil üzerinden izlenir
+      ---
+      duration_ms: 19.019092
+      type: 'test'
+      ...
+    # Subtest: HTTP: istek tam adresle vekile gider
+    ok 3 - HTTP: istek tam adresle vekile gider
+      ---
+      duration_ms: 5.999142
+      type: 'test'
+      ...
+    # Subtest: kimliksiz vekil 407 → açık Türkçe ileti (HTTPS ve HTTP)
+    ok 4 - kimliksiz vekil 407 → açık Türkçe ileti (HTTPS ve HTTP)
+      ---
+      duration_ms: 5.03381
+      type: 'test'
+      ...
+    # Subtest: vekil reddederse (403) ve vekile ulaşılamazsa açık ileti
+    ok 5 - vekil reddederse (403) ve vekile ulaşılamazsa açık ileti
+      ---
+      duration_ms: 3.070275
+      type: 'test'
+      ...
+    # Subtest: yerel adres ve bypass listesindeki ad vekile hiç gitmez
+    ok 6 - yerel adres ve bypass listesindeki ad vekile hiç gitmez
+      ---
+      duration_ms: 18.635209
+      type: 'test'
+      ...
+    # Subtest: vekil ayarı yoksa istek doğrudan gider (davranış değişmez)
+    ok 7 - vekil ayarı yoksa istek doğrudan gider (davranış değişmez)
+      ---
+      duration_ms: 2.316066
+      type: 'test'
+      ...
+    # Subtest: iptal sinyali: tünel kurulurken iptal edilen istek AbortError ile düşer
+    ok 8 - iptal sinyali: tünel kurulurken iptal edilen istek AbortError ile düşer
+      ---
+      duration_ms: 0.537452
+      type: 'test'
+      ...
+    1..8
+ok 25 - Vekil sunucu üzerinden istek (sahte vekil + TLS tüneli)
+  ---
+  duration_ms: 106.841497
+  type: 'suite'
+  ...
+1..25
+# tests 86
+# suites 22
+# pass 86
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 71976.188901

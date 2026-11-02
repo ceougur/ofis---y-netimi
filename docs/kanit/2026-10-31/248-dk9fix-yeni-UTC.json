@@ -1,0 +1,32 @@
+{
+  "ad": "248-dk9fix-yeni-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=120000 /home/user/wt-t2fix-248/test/whatsapp-dk9-acilis-gunu-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk9-ilke-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk8-g-ek-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk8-g-son-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk8-h-ozel-aralik-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk8-i-tasinan-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk5-yine-de-gonder-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-dk4-yeniden-dene-248.test.mjs",
+  "commit": "7172dd2f9cdd98bb3826c3150042f01d57feba79",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T13:06:50.357Z",
+  "sure_sn": 42.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 61,
+    "gecen": 61,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk9fix-yeni-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "c0c66aadd96c36eb1403c8dada860445b49d70629aaf259a98d22053251ec605",
+  "ham_cikti_bayt": 29175
+}

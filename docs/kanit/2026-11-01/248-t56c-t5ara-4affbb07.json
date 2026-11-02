@@ -1,0 +1,58 @@
+{
+  "ad": "248-t56c-t5ara-4affbb07",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t56c-9b41e7/arac/ara-kos.mjs 4affbb07 /home/user/wt-t56c-248",
+  "commit": "862d7fa5108ce86215f9591d416635adb5d5c991",
+  "dal": "is/t56c-248",
+  "kirli": 0,
+  "izlenmeyen": 33,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T10:48:40.140Z",
+  "sure_sn": 3.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 30,
+    "gecen": 25,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "4affbb07 eski iş satırları göçten sonra aynı durumda (10) — {\"oldRows\":[{\"id\":\"waj-200f41bf-d5a2-4c3c-abd7-d52ce3b4bdb1\",\"state\":\"accepted\"},{\"id\":\"waj-2d8dae16-5eb3-4699-a925-159b21643e55\",\"state\":\"failed\"},{\"id\":\"waj-58b2fbea-d14d-443d-a783-0933e8481ca5\",\"state\":\"pending\"},{\"id\":\"waj-9d099cc5-50a4",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "4affbb07 göçmüş toplu işlerde key_day = '' ve send_again_after = '' (eski davranış; 5 iş) — [{\"rk\":\"user-f345d6f6-14cd-4854-a1d5-bb7c7b8dd288|t56b-ara-b1-0001\",\"again\":\"\",\"keyDay\":\"2026-11-03\"},{\"rk\":\"user-f345d6f6-14cd-4854-a1d5-bb7c7b8dd288|t56b-ara-b4-0001\",\"again\":\"\",\"keyDay\":\"\"},{\"rk\":\"user-f34",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "4affbb07 sonra (aday) bekleyenler sürülünce yalnız G4–G8'e birer ileti (4; çift 0, G0–G3/G9'a 0) — {\"drained\":[\"+905542000014\",\"+905542000016\",\"+905542000017\",\"+905542000018\"],\"expDrain\":[\"+905542000014\",\"+905542000015\",\"+905542000016\",\"+905542000017\",\"+905542000018\"]}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "4affbb07 sonra (aday) sürülünce Bu Ay: teslim 1 (1), Meta Kabul Etti 9 (10) — {\"status\":200,\"delivered\":1,\"accepted\":9,\"billable\":1}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "4affbb07 sonra (aday) sürüldükten sonra Ekstre \"Bu Ay\": G0–G5, G8 Daha Önce Gönderildi (G5: Yine de Gönder kabul edildi → İş Q2 kararı A), G6/G7/G9 gönderilir — {\"badSur\":[\"G4=Zaten Kuyrukta\",\"G5=Sonucu Belirsiz\",\"G8=Zaten Kuyrukta\"],\"skipped\":{\"Daha Önce Gönderildi\":4,\"Zaten Kuyrukta\":2,\"Sonucu Bel",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t56c-t5ara-4affbb07.log",
+  "klasor": "/home/user/wt-t56c-248",
+  "ham_cikti_sha256": "c303360b08556b95a4bafec88781d416ee86e9fcb8a00a5d5f7f008c4371f6bd",
+  "ham_cikti_bayt": 7677
+}

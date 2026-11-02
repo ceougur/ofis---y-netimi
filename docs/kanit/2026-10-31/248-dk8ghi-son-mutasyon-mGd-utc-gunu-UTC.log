@@ -1,0 +1,42 @@
+TAP version 13
+# Subtest: 2.4.8 İş G son 1/2 — işteki Yine de Gönder başka denemenin Sonucu Belirsiz'iyle elenmez; süren iş varken Zaten Kuyrukta
+    # Subtest: iki belirsiz iş X ve Y (Y = X'in Yine de Gönder'i): X'te yeniden Yine de Gönder gider (Y'nin ve aşılmış X'in belirsizliği elemez)
+    ok 1 - iki belirsiz iş X ve Y (Y = X'in Yine de Gönder'i): X'te yeniden Yine de Gönder gider (Y'nin ve aşılmış X'in belirsizliği elemez)
+      ---
+      duration_ms: 759.185097
+      type: 'test'
+      ...
+    # Subtest: iki belirsiz iş X ve Y: Y'nin Yine de Gönder'i sırada beklerken X'in Yine de Gönder'i 'Zaten Kuyrukta' (R3 sayısına girmez)
+    ok 2 - iki belirsiz iş X ve Y: Y'nin Yine de Gönder'i sırada beklerken X'in Yine de Gönder'i 'Zaten Kuyrukta' (R3 sayısına girmez)
+      ---
+      duration_ms: 433.748642
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.4.8 İş G son 1/2 — işteki Yine de Gönder başka denemenin Sonucu Belirsiz'iyle elenmez; süren iş varken Zaten Kuyrukta
+  ---
+  duration_ms: 1194.797344
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G son 2/2 — hatırlatmanın yeniden denemesinde 'aynı gün' yeniden denemenin yerel günü
+    # Subtest: asıl hatırlatma 20.12 10:00 Başarısız; 21.12 23:30 yeniden deneme belirsiz → 21.12 23:50 yeniden deneme 'Sonucu Belirsiz'; 22.12 00:10 gider
+    ok 1 - asıl hatırlatma 20.12 10:00 Başarısız; 21.12 23:30 yeniden deneme belirsiz → 21.12 23:50 yeniden deneme 'Sonucu Belirsiz'; 22.12 00:10 gider
+      ---
+      duration_ms: 491.788293
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.8 İş G son 2/2 — hatırlatmanın yeniden denemesinde 'aynı gün' yeniden denemenin yerel günü
+  ---
+  duration_ms: 492.073331
+  type: 'suite'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2060.066137

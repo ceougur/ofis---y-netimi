@@ -256,6 +256,13 @@ function tunnel(proxyUrl, target, signal) {
   });
 }
 
+/**
+ * 2.4.8 T6-E2: init.fresh — { tracked, connected } (lib/whatsapp/meta-graph.mjs ileti isteği). İstek havuzdaki (keep-alive) soketi KULLANMAZ; bağlantı (https'te hedefle
+ * TLS el sıkışması) kurulunca connected = true. Gövde ancak bağlantı kurulduktan sonra hedefe gider (öncesinde soketin yazma tamponunda bekler): bağlantı kurulmadan
+ * düşen istek hedefe HİÇ ulaşmamıştır. tracked = true: bu katman işareti tutuyor (tutmayan fetch'te — testlerin sahte fetch'i — işaret false kalır, eski kural geçer).
+ */
+const freshMark = init => (init?.fresh && typeof init.fresh === "object" ? init.fresh : null);
+
 async function viaProxy(target, init, proxyText, { tlsOptions = {} } = {}) {
   const proxyUrl = new URL(proxyText);
   const method = String(init.method || "GET").toUpperCase();
@@ -264,11 +271,14 @@ async function viaProxy(target, init, proxyText, { tlsOptions = {} } = {}) {
   if (body && headers["content-length"] === undefined) headers["content-length"] = String(body.length);
   const signal = init.signal;
   if (signal?.aborted) throw abortError(signal);
+  const mark = freshMark(init);
   let request;
   if (target.protocol === "http:") {
     const auth = proxyAuth(proxyUrl);
     request = http.request({ host: proxyUrl.hostname, port: Number(proxyUrl.port) || 80, method, path: target.href, headers: { host: target.host, ...headers, ...(auth ? { "proxy-authorization": auth } : {}) }, agent: false });
   } else {
+    // Vekil üzerinden https: hedefle TLS kurulana dek gövde vekile de gitmez (T6-E2 işareti).
+    if (mark) mark.tracked = true;
     const socket = await tunnel(proxyUrl, target, signal);
     request = https.request({
       host: target.hostname,
@@ -277,16 +287,55 @@ async function viaProxy(target, init, proxyText, { tlsOptions = {} } = {}) {
       path: `${target.pathname}${target.search}`,
       headers: { host: target.host, ...headers },
       // agent verilmez: agent:false olunca Node yeni bir Agent açar ve createConnection'ı yok sayıp hedefi DNS'te arar (ENOTFOUND).
-      createConnection: () => tls.connect({ socket, servername: target.hostname, ...tlsOptions }),
+      createConnection: () => {
+        const secure = tls.connect({ socket, servername: target.hostname, ...tlsOptions });
+        if (mark) secure.once("secureConnect", () => (mark.connected = true));
+        return secure;
+      },
     });
   }
+  return exchange(request, { target, method, body, signal, proxied: true });
+}
+
+/** T6-E2: doğrudan (vekilsiz) tek kullanımlık bağlantıyla istek — havuz yok (agent: false); bağlantı kurulunca init.fresh.connected = true. Yönlendirme izlenmez. */
+async function directFresh(target, init, { tlsOptions = {} } = {}) {
+  const method = String(init.method || "GET").toUpperCase();
+  const headers = headerObject(init.headers);
+  const body = bodyBuffer(init.body);
+  if (body && headers["content-length"] === undefined) headers["content-length"] = String(body.length);
+  const signal = init.signal;
+  if (signal?.aborted) throw abortError(signal);
+  const mark = freshMark(init);
+  if (mark) mark.tracked = true;
+  const secure = target.protocol === "https:";
+  const request = (secure ? https : http).request({
+    host: target.hostname.replace(/^\[|\]$/g, ""),
+    port: Number(target.port) || (secure ? 443 : 80),
+    method,
+    path: `${target.pathname}${target.search}`,
+    headers: { host: target.host, ...headers },
+    agent: false,
+    ...(secure ? tlsOptions : {}),
+  });
+  request.once("socket", socket => {
+    const ready = () => {
+      if (mark) mark.connected = true;
+    };
+    if (secure) socket.once("secureConnect", ready);
+    else if (socket.connecting) socket.once("connect", ready);
+    else ready();
+  });
+  return exchange(request, { target, method, body, signal, proxied: false });
+}
+
+function exchange(request, { target, method, body, signal, proxied }) {
   return new Promise((resolve, reject) => {
     const onAbort = () => request.destroy(abortError(signal));
     signal?.addEventListener("abort", onAbort, { once: true });
     request.once("response", response => {
       // İptal sinyali gövde bitene dek geçerli kalır (güncelleme paketi indirmesindeki süre sınırı gövdeyi de keser).
       response.once("close", () => signal?.removeEventListener("abort", onAbort));
-      if (target.protocol === "http:" && response.statusCode === 407) {
+      if (proxied && target.protocol === "http:" && response.statusCode === 407) {
         response.resume();
         return reject(new ProxyError("Vekil sunucu kimlik doğrulaması istiyor (407). Vekil Sunucu adresine kullanıcı adı ve parolayı yazın (http://kullanici:parola@sunucu:port).", { code: "proxy-auth" }));
       }
@@ -298,7 +347,9 @@ async function viaProxy(target, init, proxyText, { tlsOptions = {} } = {}) {
     });
     request.once("error", error => {
       signal?.removeEventListener("abort", onAbort);
-      reject(signal?.aborted ? abortError(signal) : error instanceof ProxyError ? error : new ProxyError(`Vekil sunucu üzerinden istek kurulamadı: ${error.code || error.message}`, { code: "proxy-request" }));
+      if (signal?.aborted) return reject(abortError(signal));
+      if (!proxied || error instanceof ProxyError) return reject(error);
+      reject(new ProxyError(`Vekil sunucu üzerinden istek kurulamadı: ${error.code || error.message}`, { code: "proxy-request" }));
     });
     if (body) request.write(body);
     request.end();
@@ -313,7 +364,10 @@ export function createProxyFetch({ resolve = () => resolveProxy(), baseFetch = (
   return async function proxyFetch(input, init = {}) {
     const first = new URL(typeof input === "string" || input instanceof URL ? String(input) : input.url);
     const state = resolve();
-    if (!state?.proxy || isBypassed(first.hostname, state.bypass) || !/^https?:$/.test(first.protocol)) return baseFetch(input, init);
+    if (!state?.proxy || isBypassed(first.hostname, state.bypass) || !/^https?:$/.test(first.protocol)) {
+      // T6-E2: tek kullanımlık bağlantı istendi (WhatsApp ileti isteği) — havuzdaki, kesintide ölmüş olabilecek soket kullanılmaz.
+      return freshMark(init) && /^https?:$/.test(first.protocol) ? directFresh(first, init, { tlsOptions }) : baseFetch(input, init);
+    }
     let target = first;
     let options = { ...init };
     for (let hop = 0; hop <= 10; hop += 1) {

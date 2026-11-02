@@ -3,6 +3,9 @@
 //   2. Cari Listesi: Toplam Borç (Anlaşılan) · Toplam Alacak (Ödenen) · Kalan
 //   3. dönemli raporlar ilk açılışta "Bu Yıl" (Bu Ay ayın başında eski kayıtları gizliyordu)
 //   8. Excel'den yüklenen "Ödenen" (açılış) tahsilat raporlarının TOPLAMINA dahil, ayrı kolonda görünür
+// Saat (ders 13, 22): İLK içe aktarım — süreç saati yerel bugün 06:00'dan akar; TODAY yüklemede bir kez okunur, sunucu gerçek saatli açılır.
+// Önceden koşu gece yarısına rastlayınca kırmızıydı (zorla: node test/gece-yarisi-zorla.mjs test/rapor-220.test.mjs 2).
+import "./fixtures/surec-saati-sabah.mjs";
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { inflateSync } from "node:zlib";

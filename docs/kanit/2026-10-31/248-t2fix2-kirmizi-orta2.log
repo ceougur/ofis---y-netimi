@@ -1,0 +1,117 @@
+# komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-t2dk-orta2-248.test.mjs
+# kod: c44d7724 (git archive kopyası, ders 23); test dosyası: is/t2fix-248 ORTA-2 commit'indeki hâli
+# platform: Linux node v22.22.0; tarih: 2026-10-31T01:07:46Z
+TAP version 13
+# Subtest: 2.4.8 T2 dar kontrol ORTA-2 — eski denemenin wamid'i yeni denemeye yazılmaz; belirsiz yeni deneme imzalı kancayla çözülür
+    # Subtest: yeni denemede işteki wamid boşaltılır
+    not ok 1 - yeni denemede işteki wamid boşaltılır
+      ---
+      duration_ms: 641.701809
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta2-248.test.mjs:42:3'
+      failureType: 'testCodeFailure'
+      error: "Sonucu Belirsiz 2. denemede 1. denemenin wamid'i işte kalmamalı"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'wamid.SAHTE0001'
+      actual: 'wamid.SAHTE0001'
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta2-248.test.mjs:45:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 1. denemenin yinelenen 131049 bildirimi (imzasız): iş Sonucu Belirsiz kalır, defterde 2. denemenin kilidi çözülmez, aynı dönem yeniden gitmez
+    not ok 2 - 1. denemenin yinelenen 131049 bildirimi (imzasız): iş Sonucu Belirsiz kalır, defterde 2. denemenin kilidi çözülmez, aynı dönem yeniden gitmez
+      ---
+      duration_ms: 384.818234
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta2-248.test.mjs:51:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        1. denemenin bildirimi 2. denemeye yazılmamalı (geldi failed)
+        + actual - expected
+        
+        + 'failed'
+        - 'uncertain'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'uncertain'
+      actual: 'failed'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta2-248.test.mjs:56:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 1. denemenin İMZALI bildirimi (iş kimliğiyle) da 2. denemeye yazılmaz
+    not ok 3 - 1. denemenin İMZALI bildirimi (iş kimliğiyle) da 2. denemeye yazılmaz
+      ---
+      duration_ms: 382.708362
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta2-248.test.mjs:70:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski wamid'li imzalı bildirim 2. denemeye yazılmamalı (geldi failed)
+        + actual - expected
+        
+        + 'failed'
+        - 'uncertain'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'uncertain'
+      actual: 'failed'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta2-248.test.mjs:75:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Sonucu Belirsiz 2. deneme, kendi wamid'iyle gelen İMZALI bildirimle (iş kimliği) çözülür
+    not ok 4 - Sonucu Belirsiz 2. deneme, kendi wamid'iyle gelen İMZALI bildirimle (iş kimliği) çözülür
+      ---
+      duration_ms: 401.987452
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta2-248.test.mjs:81:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        imzalı bildirim belirsiz 2. denemeyi çözmeli (geldi uncertain; {"applied":0,"ignored":0,"unknown":1})
+        + actual - expected
+        
+        + 'uncertain'
+        - 'delivered'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'delivered'
+      actual: 'uncertain'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta2-248.test.mjs:86:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - 2.4.8 T2 dar kontrol ORTA-2 — eski denemenin wamid'i yeni denemeye yazılmaz; belirsiz yeni deneme imzalı kancayla çözülür
+  ---
+  duration_ms: 1812.962717
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2dk-orta2-248.test.mjs:41:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2202.557983
+# çıkış kodu: 1

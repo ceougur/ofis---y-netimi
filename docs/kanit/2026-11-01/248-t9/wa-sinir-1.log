@@ -1,0 +1,45 @@
+(node:16228) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16238) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+12:14:30 açılış (göç dahil) ms 5948
+ok 1 - Muhasebe personeli (olcek10) girişi
+ok 2 - 2000 telefonlu cari var (3012 telefonlu)
+12:14:30 B) önizleme
+12:15:16 önizleme ekstreGecenAy [{"durum":200,"ms":22441,"olayDongusuEnCokMs":22431,"toplam":2000,"gonderilecek":2000,"elenen":{},"yanitBayt":260473},{"durum":200,"ms":22647,"olayDongusuEnCokMs":22649,"toplam":2000,"gonderilecek":2000,"elenen":{},"yanitBayt":260473}]
+ok 3 - önizleme ekstreGecenAy: 200 ([200,200])
+12:16:00 önizleme ekstreBuAy [{"durum":200,"ms":23208,"olayDongusuEnCokMs":23203,"toplam":2000,"gonderilecek":2000,"elenen":{},"yanitBayt":260473},{"durum":200,"ms":21696,"olayDongusuEnCokMs":0,"toplam":2000,"gonderilecek":2000,"elenen":{},"yanitBayt":260473}]
+ok 4 - önizleme ekstreBuAy: 200 ([200,200])
+12:16:44 önizleme ekstreSon3Ay [{"durum":200,"ms":21541,"olayDongusuEnCokMs":21542,"toplam":2000,"gonderilecek":2000,"elenen":{},"yanitBayt":260469},{"durum":200,"ms":21840,"olayDongusuEnCokMs":21794,"toplam":2000,"gonderilecek":2000,"elenen":{},"yanitBayt":260469}]
+ok 5 - önizleme ekstreSon3Ay: 200 ([200,200])
+12:17:30 önizleme ekstreTumHareketler [{"durum":200,"ms":24207,"olayDongusuEnCokMs":24193,"toplam":2000,"gonderilecek":2000,"elenen":{},"yanitBayt":260457},{"durum":200,"ms":21913,"olayDongusuEnCokMs":21911,"toplam":2000,"gonderilecek":2000,"elenen":{},"yanitBayt":260457}]
+ok 6 - önizleme ekstreTumHareketler: 200 ([200,200])
+12:18:16 önizleme ekstreOzelAralik [{"durum":200,"ms":22737,"olayDongusuEnCokMs":0,"toplam":2000,"gonderilecek":2000,"elenen":{},"yanitBayt":260464},{"durum":200,"ms":22898,"olayDongusuEnCokMs":22901,"toplam":2000,"gonderilecek":2000,"elenen":{},"yanitBayt":260464}]
+ok 7 - önizleme ekstreOzelAralik: 200 ([200,200])
+12:19:01 önizleme hatirlatma [{"durum":200,"ms":22662,"olayDongusuEnCokMs":0,"toplam":2000,"gonderilecek":8,"elenen":{"Gecikmiş Borç Yok":1992},"yanitBayt":298319},{"durum":200,"ms":23082,"olayDongusuEnCokMs":23085,"toplam":2000,"gonderilecek":8,"elenen":{"Gecikmiş Borç Yok":1992},"yanitBayt":298319}]
+ok 8 - önizleme hatirlatma: 200 ([200,200])
+12:20:09 önizleme tumunuSecGecenAy [{"durum":200,"ms":33866,"olayDongusuEnCokMs":33856,"toplam":3014,"gonderilecek":3012,"elenen":{"Telefon yok":2},"yanitBayt":392293},{"durum":200,"ms":33833,"olayDongusuEnCokMs":33823,"toplam":3014,"gonderilecek":3012,"elenen":{"Telefon yok":2},"yanitBayt":392293}]
+ok 9 - önizleme tumunuSecGecenAy: 200 ([200,200])
+12:20:09 C) başlatma
+12:20:32 başlatma {"durum":200,"ms":23332,"olayDongusuEnCokMs":23337,"toplam":{"pending":2000,"preparing":0,"sending":0,"accepted":0,"sent":0,"delivered":0,"read":0,"failed":0,"uncertain":0,"limited":0,"held":0,"paused":0,"canceled":0,"expired":0,"skipped":0,"stopped":0}} 
+ok 10 - toplu iş açıldı (200)
+12:20:40 kanca yanıtı 401 {"ok":false,"code":"whatsapp-hook-mark","error":"İstek kapıcıdan gelmedi."}
+12:20:41 kanca yanıtı 401 {"ok":false,"code":"whatsapp-hook-mark","error":"İstek kapıcıdan gelmedi."}
+12:20:41 kanca yanıtı 401 {"ok":false,"code":"whatsapp-hook-mark","error":"İstek kapıcıdan gelmedi."}
+12:20:41 pencere {"pencere":1,"saat":"2026-11-02T07:00:00.000Z","yurutulen":251,"ms":8125,"isBasinaMs":32.4,"sayim":{"batch":"running","durumlar":{"accepted":250,"limited":1750},"jobs":2000},"meta":{"gonderilen":250,"medya":250,"rss":111095808}}
+12:20:48 kanca yanıtı 401 {"ok":false,"code":"whatsapp-hook-mark","error":"İstek kapıcıdan gelmedi."}
+12:20:48 kanca yanıtı 401 {"ok":false,"code":"whatsapp-hook-mark","error":"İstek kapıcıdan gelmedi."}
+12:20:48 kanca yanıtı 401 {"ok":false,"code":"whatsapp-hook-mark","error":"İstek kapıcıdan gelmedi."}
+12:20:48 pencere {"pencere":2,"saat":"2026-11-03T07:01:00.000Z","yurutulen":251,"ms":7144,"isBasinaMs":28.5,"sayim":{"batch":"running","durumlar":{"accepted":500,"limited":1500},"jobs":2000},"meta":{"gonderilen":500,"medya":500,"rss":132780032}}
+ok 11 - 1. pencere: en çok 250 kişiye gitti (Meta'ya giden 250, kabul/teslim 250)
+ok 12 - 1. pencere: kalanlar Sınır Nedeniyle Bekliyor ({"accepted":250,"limited":1750})
+ok 13 - 2. pencere (24 sa sonra): iş kendiliğinden sürdü, toplam en çok 500 (Meta'ya giden 500)
+12:20:48 son durum {"batch":"running","isler":{"accepted":500,"limited":1500},"meta":{"gonderilen":500,"medya":500,"rss":132911104}}
+12:20:48 bellek {"rssEnCokMb":695.7,"rssSonMb":294.5,"heapEnCokMb":496.4,"ornek":23}
+1..13
+# tests 13
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

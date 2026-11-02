@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkVfix-mutasyon-mV2-sure-dolumu-teslimi-gormez-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-v/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-v/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "41a60c47704cfd840a8e7cbdfc4667d91118bd81",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 52,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T05:57:45.918Z",
+  "sure_sn": 73.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 81,
+    "gecen": 80,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil-D+geri veri dosyası YOK · delivered → 200 + defter teslim; dosya geri gelince Daha Önce, Bu Ay 1; süre dolumu satırı Teslim Edildi yapar (Süresi Doldu / teslim edilemedi YOK) (V1 + V2)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1356:3",
+      "hata": "süre dolumu teslimi gördü · + actual - expected · + 'expired' (beklenen delivered, gelen expired)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkVfix-mutasyon-mV2-sure-dolumu-teslimi-gormez-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "10b065977f6ee4767b1da2fff8bad3ed757ccfa9d8712bd550000325bf2823c7",
+  "ham_cikti_bayt": 31655
+}

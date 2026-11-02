@@ -70,6 +70,9 @@ export async function startTestServer(options = {}) {
     ...(options.whatsappGapMs !== undefined ? { whatsappGapMs: options.whatsappGapMs } : {}),
     ...(options.whatsappFault ? { whatsappFault: options.whatsappFault } : {}),
     ...(options.whatsappLedgerFault ? { whatsappLedgerFault: options.whatsappLedgerFault } : {}),
+    // 2.4.8 İş P1 (lib/write-lock.mjs): arka plan kilit sınaması / işaret süresi — yalnız test oluşturucusundan (üretim yapılandırması bu alanları taşımaz).
+    ...(options.__testWriteLockProbe === false ? { __testWriteLockProbe: false } : {}),
+    ...(Number.isFinite(options.__testWriteLockBackoffMs) ? { __testWriteLockBackoffMs: options.__testWriteLockBackoffMs } : {}),
     ...(options.log ? { log: options.log } : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.

@@ -1,0 +1,7 @@
+{"defter":"/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/esitlik-B/data/whatsapp-gonderim.sqlite","anahtar":293,"sirketTur":2,"karsilastirma":504,"eslesenSatirToplam":180868,"fark":0,"ilkFarklar":[],"eskiMs":54827,"yeniMs":48756}
+ok 1 - R3 sorgusu eski ↔ yeni: 504 parametre kümesi, 180868 satır, fark 0
+# tests 1
+# pass 1
+# fail 0
+(node:11208) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

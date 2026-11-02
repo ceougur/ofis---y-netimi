@@ -1,0 +1,32 @@
+{
+  "ad": "248-tamkapi/ci-kahin-tutar",
+  "komut": "npm run test:kahin-tutar",
+  "commit": "054f72f9b173cac5bdaabd6986cbde45fa3cab4d",
+  "dal": "is/aday2-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T21:49:04.636Z",
+  "sure_sn": 7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3559,
+    "gecen": 3559,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-tamkapi/ci-kahin-tutar.log",
+  "klasor": "/home/user/wt-aday2-248",
+  "ham_cikti_sha256": "7426afcdd865c17b294225a3a2a2814fd2607da233a719835871e1a8caf0ff29",
+  "ham_cikti_bayt": 996
+}

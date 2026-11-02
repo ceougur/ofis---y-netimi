@@ -1,0 +1,20 @@
+# Zincir v2.4.4 → v2.4.7 → 2.4.8: her halkada (o sürümün GERÇEK koduyla) temel sayılar — m30-olgular companyFacts çıktısından.
+import json, sys, importlib.util
+cikti = sys.argv[1]
+spec = importlib.util.spec_from_file_location("ot", sys.argv[2])
+src = open(sys.argv[2]).read()
+# ozet-tablo.py'deki row() ve tl'yi yeniden kullan (yalnız işlev tanımları)
+ns = {}
+exec(src[src.index("tl = "):src.index('print("| Olgu')], ns)
+row = ns["row"]
+A = json.load(open(f"{cikti}/zb-v2.4.4.json"))
+B = json.load(open(f"{cikti}/zb-v2.4.7.json"))
+C = json.load(open(f"{cikti}/zb-guncel.json"))
+print("| Olgu | Şirket | v2.4.4 (kaynak) | v2.4.7 (adım 1) | 2.4.8 49395f77 (adım 2) | Sonuç |")
+print("|---|---|---|---|---|---|")
+for code in A["companies"]:
+    a, b, c = row(A["companies"][code]), row(B["companies"][code]), row(C["companies"][code])
+    for k in a:
+        print(f"| {k} | {code} | {a[k]} | {b[k]} | {c[k]} | {'aynı' if a[k] == b[k] == c[k] else 'FARK'} |")
+users = lambda X: {u: (v["role"], len(v["permissions"])) for u, v in X["install"]["users"].items()}
+print(f"| Kullanıcı (rol, etkin yetki sayısı) | ortak | {users(A)} | {users(B)} | {users(C)} | {'aynı' if users(A) == users(B) == users(C) else 'FARK'} |")

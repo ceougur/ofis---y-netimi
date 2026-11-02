@@ -1,0 +1,14 @@
+  ✓ eski defter tabloları 14; adayda eklenen ["anyway_links","attempt_deliveries"]
+  ✓ eski satırlar korunur (accepts 5→5, batch_events 8→8, batch_log 0→0, claim_keys 6→6, claims 7→7, deliveries 1→1, failures 0→0, holds 0→0, hook_events 0→0, hook_seen 0→0, learned_wamids 0→0, meta 1→1, outcomes 7→7, releases 0→0, sqlite_sequence 0→0)
+  ✓ açılışta Bu Ay teslim 1 (beklenen 1: G0'ın eski deliveries satırı), kabul 5 (5)
+  ✓ G0'a yinelenen delivered (aynı an, sonraki an) + read: Bu Ay teslim 1 (beklenen 1 — aynı deneme bir kez); attempt_deliveries 1
+  ✓ G1 (yalnız kabul) şimdi teslim: Bu Ay teslim 2 (beklenen 2), G1 iş durumu delivered
+  ✓ R3 sürer: G0, G1 Daha Önce Gönderildi (Daha Önce Gönderildi, Daha Önce Gönderildi)
+  ✓ bildirimler ileti GÖNDERTMEZ, sürülünce G0/G1'e ileti 0 (giden: ["+905542000016","+905542000017","+905542000018"])
+# defter sonra: {"accepts":8,"anyway_links":0,"attempt_deliveries":2,"batch_events":8,"batch_log":0,"claim_keys":7,"claims":10,"deliveries":2,"failures":0,"holds":0,"hook_events":0,"hook_seen":0,"learned_wamids":0,"meta":1,"outcomes":10,"releases":0,"sqlite_sequence":0}
+# tests 7
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

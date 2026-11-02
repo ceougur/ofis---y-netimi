@@ -1,0 +1,373 @@
+{
+ "version": 41,
+ "previews": {
+  "ekstre-buay": {
+   "status": 200,
+   "sendable": 5,
+   "skipped": {
+    "Daha Önce Gönderildi": 4,
+    "Zaten Kuyrukta": 1
+   },
+   "alreadySent": {
+    "count": 4,
+    "last": "2026-11-03T06:00:00.000Z",
+    "included": 0
+   },
+   "people": {
+    "Ara Şema G0": {
+     "skip": "Daha Önce Gönderildi",
+     "sentBefore": "2026-11-03T06:00:00.000Z"
+    },
+    "Ara Şema G1": {
+     "skip": "Daha Önce Gönderildi",
+     "sentBefore": "2026-11-03T06:00:00.000Z"
+    },
+    "Ara Şema G2": {
+     "skip": "Daha Önce Gönderildi",
+     "sentBefore": "2026-11-03T06:00:00.000Z"
+    },
+    "Ara Şema G3": {
+     "skip": "Daha Önce Gönderildi",
+     "sentBefore": "2026-11-03T06:00:00.000Z"
+    },
+    "Ara Şema G4": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G5": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G6": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G7": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G8": {
+     "skip": "Zaten Kuyrukta",
+     "sentBefore": null
+    },
+    "Ara Şema G9": {
+     "skip": "",
+     "sentBefore": null
+    }
+   }
+  },
+  "hatirlatma": {
+   "status": 200,
+   "sendable": 0,
+   "skipped": {
+    "Gecikmiş Borç Yok": 7,
+    "Zaten Kuyrukta": 2,
+    "Daha Önce Gönderildi": 1
+   },
+   "alreadySent": {
+    "count": 1,
+    "last": "2026-11-03T06:00:00.000Z",
+    "included": 0
+   },
+   "people": {
+    "Ara Şema G0": {
+     "skip": "Gecikmiş Borç Yok",
+     "sentBefore": null
+    },
+    "Ara Şema G1": {
+     "skip": "Gecikmiş Borç Yok",
+     "sentBefore": null
+    },
+    "Ara Şema G2": {
+     "skip": "Gecikmiş Borç Yok",
+     "sentBefore": null
+    },
+    "Ara Şema G3": {
+     "skip": "Gecikmiş Borç Yok",
+     "sentBefore": null
+    },
+    "Ara Şema G4": {
+     "skip": "Gecikmiş Borç Yok",
+     "sentBefore": null
+    },
+    "Ara Şema G5": {
+     "skip": "Gecikmiş Borç Yok",
+     "sentBefore": null
+    },
+    "Ara Şema G6": {
+     "skip": "Zaten Kuyrukta",
+     "sentBefore": null
+    },
+    "Ara Şema G7": {
+     "skip": "Zaten Kuyrukta",
+     "sentBefore": null
+    },
+    "Ara Şema G8": {
+     "skip": "Gecikmiş Borç Yok",
+     "sentBefore": null
+    },
+    "Ara Şema G9": {
+     "skip": "Daha Önce Gönderildi",
+     "sentBefore": "2026-11-03T06:00:00.000Z"
+    }
+   }
+  },
+  "ekstre-ozel-1kasim-3kasim": {
+   "status": 200,
+   "sendable": 10,
+   "skipped": {},
+   "alreadySent": {
+    "count": 0,
+    "last": null,
+    "included": 0
+   },
+   "people": {
+    "Ara Şema G0": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G1": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G2": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G3": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G4": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G5": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G6": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G7": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G8": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G9": {
+     "skip": "",
+     "sentBefore": null
+    }
+   }
+  }
+ },
+ "retry": {
+  "status": 200,
+  "code": null,
+  "jobs": [
+   "Ara Şema G4:pending"
+  ],
+  "message": null
+ },
+ "anyway": {
+  "onaysiz": 409,
+  "onaysizKod": "whatsapp-confirm-required",
+  "status": 200,
+  "jobs": [
+   "Ara Şema G5:pending"
+  ],
+  "message": null
+ },
+ "after": {
+  "ekstre-buay-kuyrukla": {
+   "skipped": {
+    "Daha Önce Gönderildi": 4,
+    "Zaten Kuyrukta": 1
+   },
+   "people": {
+    "Ara Şema G0": {
+     "skip": "Daha Önce Gönderildi",
+     "sentBefore": "2026-11-03T06:00:00.000Z"
+    },
+    "Ara Şema G1": {
+     "skip": "Daha Önce Gönderildi",
+     "sentBefore": "2026-11-03T06:00:00.000Z"
+    },
+    "Ara Şema G2": {
+     "skip": "Daha Önce Gönderildi",
+     "sentBefore": "2026-11-03T06:00:00.000Z"
+    },
+    "Ara Şema G3": {
+     "skip": "Daha Önce Gönderildi",
+     "sentBefore": "2026-11-03T06:00:00.000Z"
+    },
+    "Ara Şema G4": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G5": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G6": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G7": {
+     "skip": "",
+     "sentBefore": null
+    },
+    "Ara Şema G8": {
+     "skip": "Zaten Kuyrukta",
+     "sentBefore": null
+    },
+    "Ara Şema G9": {
+     "skip": "",
+     "sentBefore": null
+    }
+   }
+  }
+ },
+ "batchStates": {
+  "t56b-ara-b1-": {
+   "state": "done",
+   "jobs": [
+    "Ara Şema G0:delivered",
+    "Ara Şema G1:accepted",
+    "Ara Şema G2:accepted",
+    "Ara Şema G3:accepted",
+    "Ara Şema G4:failed(İleti alıcıya iletilemedi (numara WhatsApp kullanmıyor, WhatsApp'ın koşullarını kabul etmemiş ya da WhatsApp'ı çok eski). (Meta hata kodu 131026: Message undeliverable))"
+   ]
+  },
+  "t56b-ara-b1b-": {
+   "state": "done",
+   "jobs": [
+    "Ara Şema G5:uncertain(Meta'ya ulaşılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); sonuç bilinmiyor. (socket hang up))"
+   ]
+  },
+  "t56b-ara-b2-": {
+   "state": "running",
+   "jobs": [
+    "Ara Şema G6:pending",
+    "Ara Şema G7:pending"
+   ]
+  },
+  "t56b-ara-b3-": {
+   "state": "running",
+   "jobs": [
+    "Ara Şema G8:pending"
+   ]
+  },
+  "t56b-ara-b4-": {
+   "state": "done",
+   "jobs": [
+    "Ara Şema G9:accepted"
+   ]
+  }
+ },
+ "cols": {
+  "wa_batches": [
+   "id",
+   "kind",
+   "period_from",
+   "period_to",
+   "preset",
+   "template",
+   "lang",
+   "phone_number_id",
+   "waba_id",
+   "ledger_id",
+   "company_id",
+   "state",
+   "pause_reason",
+   "pause_code",
+   "request_key",
+   "retry_at",
+   "troubles",
+   "offline_tries",
+   "created_by",
+   "created_at",
+   "updated_at",
+   "finished_at"
+  ],
+  "wa_jobs": [
+   "id",
+   "batch_id",
+   "account_id",
+   "account_name",
+   "phone_e164",
+   "template",
+   "lang",
+   "params_json",
+   "pdf_name",
+   "period_from",
+   "period_to",
+   "state",
+   "skip_reason",
+   "media_id",
+   "media_at",
+   "media_deleted_at",
+   "media_delete_tries",
+   "wamid",
+   "attempt",
+   "temp_tries",
+   "error_code",
+   "error_text",
+   "next_at",
+   "retry_131049",
+   "sending_at",
+   "accepted_at",
+   "sent_at",
+   "delivered_at",
+   "read_at",
+   "failed_at",
+   "closed_at",
+   "billable",
+   "created_at",
+   "updated_at",
+   "prepared_at",
+   "pdf_blob"
+  ]
+ },
+ "newCols": [
+  {
+   "rk": "user-b8f96571-28df-489e-bf96-edb00f0a7b23|t56b-ara-b1-0001",
+   "keyDay": "(yok)",
+   "again": "(yok)"
+  },
+  {
+   "rk": "user-b8f96571-28df-489e-bf96-edb00f0a7b23|t56b-ara-b4-0001",
+   "keyDay": "(yok)",
+   "again": "(yok)"
+  },
+  {
+   "rk": "user-b8f96571-28df-489e-bf96-edb00f0a7b23|t56b-ara-b1b-0001",
+   "keyDay": "(yok)",
+   "again": "(yok)"
+  },
+  {
+   "rk": "user-b8f96571-28df-489e-bf96-edb00f0a7b23|t56b-ara-b2-0001",
+   "keyDay": "(yok)",
+   "again": "(yok)"
+  },
+  {
+   "rk": "user-b8f96571-28df-489e-bf96-edb00f0a7b23|t56b-ara-b3-0001",
+   "keyDay": "(yok)",
+   "again": "(yok)"
+  },
+  {
+   "rk": "user-b8f96571-28df-489e-bf96-edb00f0a7b23|t56b-ara-retry-0001",
+   "keyDay": "(yok)",
+   "again": "(yok)"
+  },
+  {
+   "rk": "user-b8f96571-28df-489e-bf96-edb00f0a7b23|t56b-ara-anyway-0001",
+   "keyDay": "(yok)",
+   "again": "(yok)"
+  }
+ ]
+}

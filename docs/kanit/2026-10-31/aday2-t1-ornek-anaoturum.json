@@ -1,0 +1,93 @@
+{
+  "ad": "aday2-t1-ornek-anaoturum",
+  "komut": "node --no-warnings test/bagimsiz/whatsapp-248/surucu.mjs --uc hizli --kip imzali --tz Europe/Istanbul --senaryo K7-05*,D1-01*,D4-01*,G1-01*,G3-01*,E2-01*,F1-01*,K5-01*,CIFT-01*,G6-02*,G5-02*,SINIR-05* --cikti /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/anaoturum-t1-ornek/cikti",
+  "commit": "e5d74a9075362a8e0af52aebdc27ae8defac2582",
+  "dal": "is/aday2-248",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T17:52:00.665Z",
+  "sure_sn": 14.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 0,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "CIFT-01-zaman-asimi-meta-aldi [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "SINIR-05-pencerede-sayili-alici [hizli] (4 fark; davranış farkı 1; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "K7-05-tasima-meta-bekletti-gec-teslim-sayilir [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 1, G2-toplu-gosterim 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "K5-01-karar-yeniden-denemeye-tasinir [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D1-01-belirsiz-yeni-toplu-iste-elenir [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D4-01-ozel-aralik-ayni-gun-bu-ay [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "E2-01-yeni-is-uclu-cakisma [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G3-01-tasinan-belirsiz-yeni-iste-eler [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G6-02-ozel-aralik-tum-hareketler-kisiye-gore [hizli] (18 fark; davranış farkı 15; gösterim: G1-borclu-eki 3, G4-liste-icinde-ozel-yaprak 1)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/aday2-t1-ornek-anaoturum.log",
+  "klasor": "/home/user/wt-aday2-248",
+  "ham_cikti_sha256": "d95811d3c3d6a16379a6228b372fa1a460be2947bca8163e57e2cc4de338bf0d",
+  "ham_cikti_bayt": 2301
+}

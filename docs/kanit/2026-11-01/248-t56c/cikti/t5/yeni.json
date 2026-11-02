@@ -1,0 +1,296 @@
+{
+ "checks": [
+  {
+   "name": "001 göçten sonra: yeni e-Arşiv (200) + bekleyen 4 → Tümünü Gönder 5 sonuç, kalan 0; EDM'nin kabul ettiği 5 (benzersiz 5) = sayaç 2026-11 test artışı 0 → 5; öbür ay/ortam 107 → 107",
+   "ok": true,
+   "detail": {
+    "results": [
+     {
+      "id": "invoice-e7184b08-572a-45d6-8e3a-ce244c15bc78",
+      "ok": true,
+      "number": "TEA2026431917155",
+      "status": "sent"
+     },
+     {
+      "id": "invoice-1cc69dcb-c009-4c8a-850b-36fd0365307d",
+      "ok": true,
+      "number": "TEA2026431917156",
+      "status": "sent"
+     },
+     {
+      "id": "invoice-dd3f421d-0a4c-4513-abcb-9d3311961c7c",
+      "ok": true,
+      "number": "TEA2026431917157",
+      "status": "sent"
+     },
+     {
+      "id": "invoice-144cb9e9-b976-435e-b24a-8f4f5cab17a4",
+      "ok": true,
+      "number": "TEA2026431917158",
+      "status": "sent"
+     },
+     {
+      "id": "invoice-bebd26d9-0921-4f54-b453-a3e54bd5a1bb",
+      "ok": true,
+      "number": "TEA2026431917159",
+      "status": "sent"
+     }
+    ],
+    "window": [
+     {
+      "month": "2026-09",
+      "env": "live",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-09",
+      "env": "test",
+      "efatura": 7,
+      "earsiv": 49,
+      "esmm": 0
+     },
+     {
+      "month": "2026-10",
+      "env": "live",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-10",
+      "env": "test",
+      "efatura": 11,
+      "earsiv": 40,
+      "esmm": 0
+     },
+     {
+      "month": "2026-11",
+      "env": "live",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-11",
+      "env": "test",
+      "efatura": 0,
+      "earsiv": 5,
+      "esmm": 0
+     }
+    ],
+    "before": [
+     {
+      "month": "2026-09",
+      "env": "live",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-09",
+      "env": "test",
+      "efatura": 7,
+      "earsiv": 49,
+      "esmm": 0
+     },
+     {
+      "month": "2026-10",
+      "env": "live",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-10",
+      "env": "test",
+      "efatura": 11,
+      "earsiv": 40,
+      "esmm": 0
+     },
+     {
+      "month": "2026-11",
+      "env": "live",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     },
+     {
+      "month": "2026-11",
+      "env": "test",
+      "efatura": 0,
+      "earsiv": 0,
+      "esmm": 0
+     }
+    ],
+    "edmSent": [
+     "TEA2026431917155",
+     "TEA2026431917156",
+     "TEA2026431917157",
+     "TEA2026431917158",
+     "TEA2026431917159"
+    ]
+   }
+  },
+  {
+   "name": "002 sayacı 001'in gönderiminden etkilenmez (47 → 47)",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "uzaktan erişim dinleyicisi açıldı (http://127.0.0.1:45973)",
+   "ok": true,
+   "detail": {
+    "base": "http://127.0.0.1:45973",
+    "legacy": false
+   }
+  },
+  {
+   "name": "göçmüş veride eşli cihaz yok (kullanılan 0 / sınır 3, lisans true)",
+   "ok": true,
+   "detail": {
+    "devices0": {
+     "limit": 3,
+     "used": 0,
+     "full": false,
+     "licenseOk": true,
+     "mobileRight": {
+      "durum": "gecerli",
+      "acik": true,
+      "kalanGun": null,
+      "ileti": ""
+     },
+     "kapiSilindi": null,
+     "remoteUrl": "",
+     "codeMinutes": 5,
+     "users": [
+      {
+       "id": "user-6f84c3f7-2264-4188-9dbb-0911b35cb0ec",
+       "username": "ayse",
+       "name": "Ayşe Fatura",
+       "role": "personel",
+       "active": true,
+       "remote": false
+      },
+      {
+       "id": "user-d3c9af6e-71d7-45c9-946c-cd7f390942d0",
+       "username": "mehmet",
+       "name": "Mehmet Muhasebe",
+       "role": "muhasebe",
+       "active": true,
+       "remote": false
+      },
+      {
+       "id": "user-84f145f7-c03f-4631-8d3d-dd9a1fcdec00",
+       "username": "admin",
+       "name": "Ofis yöneticisi",
+       "role": "admin",
+       "active": true,
+       "remote": false
+      },
+      {
+       "id": "user-2283960e-a653-4728-a306-65876e30b927",
+       "username": "zeynep",
+       "name": "Zeynep Tahsilat",
+       "role": "personel",
+       "active": true,
+       "remote": false
+      }
+     ],
+     "devices": [],
+     "ozet": {
+      "enabled": false,
+      "ofis": "",
+      "publicUrl": "",
+      "son": null,
+      "bekleyen": false,
+      "saat": null
+     }
+    }
+   }
+  },
+  {
+   "name": "admin: Uzaktan Bağlanabilir 200, karekod 200, eşleme 200, uzak giriş 200",
+   "ok": true,
+   "detail": {
+    "code": {
+     "code": "NXbxgkG-iKnmL84NJAXXeg",
+     "url": "",
+     "expiresAt": "2026-11-01T10:43:47.659Z",
+     "minutes": 5,
+     "user": {
+      "id": "user-84f145f7-c03f-4631-8d3d-dd9a1fcdec00",
+      "name": "Ofis yöneticisi"
+     },
+     "qr": ""
+    },
+    "pair": "{\"ok\":true,\"data\":{\"device\":{\"id\":\"dev-8f0f6ecc-37bf-4373-a9e1-f3a81d9fbdae\",\"name\":\"Göç Telefonu 1\",\"kind\":\"telefon\"},\"user\":{\"name\":\"Ofis yöneticisi\",\"username\":\"admin\"}}}",
+    "login": "{\"ok\":true,\"data\":{\"user\":{\"name\":\"Ofis yöneticisi\",\"username\":\"admin\"},\"device\":{\"id\":\"dev-8f0f6ecc-37bf-4373-a9e1-f3a81d9fbdae\",\"name\":\"Göç Telefonu 1\"}}}"
+   }
+  },
+  {
+   "name": "telefondan oturum (200) iki şirketi görür (001, 002)",
+   "ok": true,
+   "detail": {
+    "data": "{\"ok\":true,\"data\":{\"user\":{\"id\":\"user-84f145f7-c03f-4631-8d3d-dd9a1fcdec00\",\"username\":\"admin\",\"name\":\"Ofis yöneticisi\",\"roleLabel\":\"\",\"mustChangePassword\":false},\"office\":{\"name\":\"Merkez Ticaret ve Danışmanlık A.Ş.\"},\"companies\":[{\"id\":\"sirket-001\",\"code\":\"001\",\"name\":\"Merkez Ticaret ve Danışmanlık A.Ş.\",\"current\":true},{\"id\":\"sirket-e47580f6-0400-4fd6-bac5-0cdb5f010eb4\",\"code\":\"002\",\"name\":\"Yıld"
+   }
+  },
+  {
+   "name": "001 telefondaki Kasa = masaüstü Kasa, hareket listesi hariç (göçmüş veri; 200)",
+   "ok": true,
+   "detail": {
+    "far": 200,
+    "code": ""
+   }
+  },
+  {
+   "name": "001 telefondaki cari kartı = masaüstü (Mehmet Işık, bakiye 3600)",
+   "ok": true,
+   "detail": {
+    "far": 200,
+    "code": ""
+   }
+  },
+  {
+   "name": "002 telefondaki Kasa = masaüstü Kasa, hareket listesi hariç (göçmüş veri; 200)",
+   "ok": true,
+   "detail": {
+    "far": 200,
+    "code": ""
+   }
+  },
+  {
+   "name": "002 telefondaki cari kartı = masaüstü (Mehmet Uğurlu, bakiye 9978.8)",
+   "ok": true,
+   "detail": {
+    "far": 200,
+    "code": ""
+   }
+  },
+  {
+   "name": "3 cihaz sınırı (program başına): 2. ve 3. eşleme 200 (200, 200); 4. karekod/eşleme reddedilir (409/0)",
+   "ok": true,
+   "detail": {
+    "p4code": "{\"ok\":false,\"error\":\"Eşli cihaz sınırı dolu. Yeni cihaz için Yönetim → Mobil Cihazlar'dan önce birini silin.\",\"code\":\"remote-limit\"}",
+    "p4pair": "kod yok"
+   }
+  },
+  {
+   "name": "cihazlar ortak katmanda: 001 3, 002 0 (002'nin tablosu boş kalır)",
+   "ok": true,
+   "detail": {
+    "files": [
+     [
+      "sirket-001",
+      3
+     ],
+     [
+      "sirket-e47580f6-0400-4fd6-bac5-0cdb5f010eb4",
+      0
+     ]
+    ]
+   }
+  }
+ ]
+}

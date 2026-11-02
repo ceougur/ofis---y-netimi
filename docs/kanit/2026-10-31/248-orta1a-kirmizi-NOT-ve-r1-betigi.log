@@ -1,0 +1,29 @@
+# 248-orta1a kırmızı kanıt düzeni (ders 7, 23, 25, 38)
+# kopyalar: git archive <commit> | tar -x → /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/orta1a-248-253d4d63/<ad>; test/whatsapp-t2-1-248.test.mjs her kopyada 1f264264'teki hâli; node_modules sembolik bağ
+# kanit.mjs git dışı kopyada koştuğu için json 'commit' alanı boş: eski-135946fe = donem.mjs 'ay|<preset>|<ay>' (dar kontrol 3 ORTA-1'in kodu); eski-c44d7724 = T2-1 öncesi (from|to anahtarı, DÜŞÜK-T dişi); mutasyon-1f264264 = 1f264264 + statementKey yeniden 'ay|${preset}|<ay>'
+# TZ: -utc = TZ=UTC, -ist = TZ=Europe/Istanbul; HUKUK_LICENSE_URL=http://127.0.0.1:9
+
+## incelemeci betiği dk3-248-k7q2m/betik/r1-ay-sonu-bu-ay-gecen-ay.mjs — yeni-1f264264
+(node:3022) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+31.10 'Bu Ay' dönemi: {"from":"2026-10-01","to":"2026-10-31","preset":"thisMonth"}
+31.10 işler: Ayşe Yılmaz:accepted, Burak Kaya:limited
+01.11 'Geçen Ay' dönemi: {"from":"2026-10-01","to":"2026-10-31","preset":"lastMonth"}
+01.11 'Geçen Ay' önizleme: [{"ad":"Ayşe Yılmaz","eleme":"Daha Önce Gönderildi","sentBefore":"2026-10-31T07:00:00.000Z"},{"ad":"Burak Kaya","eleme":"Zaten Kuyrukta","sentBefore":null}]
+01.11 'Geçen Ay' toplu iş açma: 400
+Ayşe'ya giden ekstre sayısı: 1; gövde değişkenleri: ["Ayşe Yılmaz","Örnek Ticaret","01.10.2026 – 31.10.2026","1.250,00 TL (Borçlu)"] Ekstre Ayşe Yılmaz 01.10.2026-31.10.2026.pdf
+Burak'ya giden ekstre sayısı: 1; gövde değişkenleri: ["Burak Kaya","Örnek Ticaret","01.10.2026 – 31.10.2026","800,00 TL (Borçlu)"] Ekstre Burak Kaya 01.10.2026-31.10.2026.pdf
+# çıkış 0
+
+## incelemeci betiği dk3-248-k7q2m/betik/r1-ay-sonu-bu-ay-gecen-ay.mjs — eski-135946fe
+(node:3030) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+31.10 'Bu Ay' dönemi: {"from":"2026-10-01","to":"2026-10-31","preset":"thisMonth"}
+31.10 işler: Ayşe Yılmaz:accepted, Burak Kaya:limited
+01.11 'Geçen Ay' dönemi: {"from":"2026-10-01","to":"2026-10-31","preset":"lastMonth"}
+01.11 'Geçen Ay' önizleme: [{"ad":"Ayşe Yılmaz","eleme":"gönderilecek","sentBefore":null},{"ad":"Burak Kaya","eleme":"gönderilecek","sentBefore":null}]
+01.11 'Geçen Ay' toplu iş açma: 200
+Ayşe'ya giden ekstre sayısı: 2; gövde değişkenleri: ["Ayşe Yılmaz","Örnek Ticaret","01.10.2026 – 31.10.2026","1.250,00 TL (Borçlu)"] Ekstre Ayşe Yılmaz 01.10.2026-31.10.2026.pdf | ["Ayşe Yılmaz","Örnek Ticaret","01.10.2026 – 31.10.2026","1.250,00 TL (Borçlu)"] Ekstre Ayşe Yılmaz 01.10.2026-31.10.2026.pdf
+Burak'ya giden ekstre sayısı: 2; gövde değişkenleri: ["Burak Kaya","Örnek Ticaret","01.10.2026 – 31.10.2026","800,00 TL (Borçlu)"] Ekstre Burak Kaya 01.10.2026-31.10.2026.pdf | ["Burak Kaya","Örnek Ticaret","01.10.2026 – 31.10.2026","800,00 TL (Borçlu)"] Ekstre Burak Kaya 01.10.2026-31.10.2026.pdf
+# çıkış 0
+

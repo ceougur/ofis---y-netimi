@@ -1,0 +1,54 @@
+TAP version 13
+# saat dilimi UTC
+not ok 1 - J1-03-silinmis-sirket-gec-bildirim [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 3, program 2
+not ok 2 - J6-01-yanit-beklenirken-taninmayan-503-yineleme [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # kanca_yanitlari.503: beklenen 3, program 0
+not ok 3 - J6-02-sirket-gecici-acilamaz-503 [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 4 - J6-03-bildirim-kaydedilemez-503 [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 5 - J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 6 - J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 7 - J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez [hizli] (29 fark; davranış farkı 27; gösterim: G1-borclu-eki 2)
+  # durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # meta.post.B: beklenen 1, program 2
+  # meta.kabul.B: beklenen 1, program 2
+  # meta.meta_ileti.B: beklenen 1, program 2
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 1, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+  # kontroller.K1.isler.T1/A: beklenen 'Teslim Edildi', program 'Sınır Nedeniyle Bekliyor'
+  # kontroller.K1.isler.T1/B: beklenen 'Sınır Nedeniyle Bekliyor', program 'Teslim Edildi'
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.toplam_kabul: beklenen 1, program 2
+not ok 8 - J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez [hizli] (10 fark; davranış farkı 9; gösterim: G1-borclu-eki 1)
+  # meta.toplam_kabul_program: beklenen 0, program 1
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.toplam_kabul: beklenen 0, program 1
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 0, program 1
+  # kontroller.K2.medya_silme: beklenen 1, program 0
+  # kontroller.K2.isler.T1/B: beklenen 'Atlandı', program 'Duraklatıldı'
+  # kontroller.K3.toplam_kabul: beklenen 0, program 1
+  # kontroller.K3.pencere_farkli_alici.W1: beklenen 0, program 1
+not ok 9 - J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez [hizli] (14 fark; davranış farkı 13; gösterim: G1-borclu-eki 1)
+  # meta.medya_yukleme.B: beklenen 1, program 2
+  # meta.medya_silme.B: beklenen 1, program 2
+  # meta.toplam_kabul_program: beklenen 0, program 1
+  # meta.toplam_medya_yukleme: beklenen 1, program 2
+  # kontroller.K1.toplam_kabul: beklenen 0, program 1
+  # kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  # kontroller.K2.toplam_kabul: beklenen 0, program 1
+  # kontroller.K2.isler.T1/B: beklenen 'Atlandı', program 'Duraklatıldı'
+  # kontroller.K3.toplam_kabul: beklenen 0, program 1
+  # kontroller.K3.medya_silme: beklenen 1, program 2
+  # isler.T1/B.hata_kodu: beklenen None, program 131026
+  # isler.T1/B.medya_yukleme: beklenen 1, program 2
+not ok 10 - J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+not ok 11 - J10-05-b-r3-yine-de-gonder-onceki-teslim-ikinci-kopya-gider [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+1..11
+# tests 11
+# pass 0
+# fail 11
+# skipped 0

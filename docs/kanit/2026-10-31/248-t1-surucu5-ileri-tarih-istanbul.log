@@ -1,0 +1,88 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+not ok 1 - ICERIK-02-devir-ve-donem-uclari [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 2 - ICERIK-02-devir-ve-donem-uclari [yavas] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 3 - D4-01-ozel-aralik-ayni-gun-bu-ay [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+not ok 4 - D4-01-ozel-aralik-ayni-gun-bu-ay [yavas] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+not ok 5 - G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem [hizli] (18 fark; davranış farkı 16; gösterim: G1-borclu-eki 2)
+  # elenen.T2.B: beklenen 'daha_once_gonderildi', program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2.sayi: beklenen 2, program 1
+  # onceki_uyari.T2.son: beklenen '2026-10-16', program '2026-10-15'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.B: beklenen 1, program 2
+  # meta.kabul.B: beklenen 1, program 2
+  # meta.meta_ileti.B: beklenen 1, program 2
+  # meta.medya_yukleme.B: beklenen 1, program 2
+  # meta.medya_silme.B: beklenen 1, program 2
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+not ok 6 - G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem [yavas] (18 fark; davranış farkı 16; gösterim: G1-borclu-eki 2)
+  # elenen.T2.B: beklenen 'daha_once_gonderildi', program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2.sayi: beklenen 2, program 1
+  # onceki_uyari.T2.son: beklenen '2026-10-16', program '2026-10-15'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.B: beklenen 1, program 2
+  # meta.kabul.B: beklenen 1, program 2
+  # meta.meta_ileti.B: beklenen 1, program 2
+  # meta.medya_yukleme.B: beklenen 1, program 2
+  # meta.medya_silme.B: beklenen 1, program 2
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+not ok 7 - G1-02-bu-ay-sinirla-ertesi-gun-ayni-donem [hizli] (17 fark; davranış farkı 15; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.B: beklenen 1, program 2
+  # meta.kabul.B: beklenen 1, program 2
+  # meta.meta_ileti.B: beklenen 1, program 2
+  # meta.medya_yukleme.B: beklenen 1, program 2
+  # meta.medya_silme.B: beklenen 1, program 2
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+not ok 8 - G1-02-bu-ay-sinirla-ertesi-gun-ayni-donem [yavas] (17 fark; davranış farkı 15; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.B: beklenen 1, program 2
+  # meta.kabul.B: beklenen 1, program 2
+  # meta.meta_ileti.B: beklenen 1, program 2
+  # meta.medya_yukleme.B: beklenen 1, program 2
+  # meta.medya_silme.B: beklenen 1, program 2
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+not ok 9 - G1-03-yeniden-deneme-ertesi-gun-asil-isin-gunu [hizli] (16 fark; davranış farkı 15; gösterim: G1-borclu-eki 1)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # meta.post.A: beklenen 2, program 3
+  # meta.kabul.A: beklenen 1, program 2
+  # meta.meta_ileti.A: beklenen 1, program 2
+  # meta.medya_yukleme.A: beklenen 2, program 3
+  # meta.medya_silme.A: beklenen 2, program 3
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 1, program 2
+  # meta.toplam_meta_ileti: beklenen 1, program 2
+not ok 10 - G1-03-yeniden-deneme-ertesi-gun-asil-isin-gunu [yavas] (16 fark; davranış farkı 15; gösterim: G1-borclu-eki 1)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # meta.post.A: beklenen 2, program 3
+  # meta.kabul.A: beklenen 1, program 2
+  # meta.meta_ileti.A: beklenen 1, program 2
+  # meta.medya_yukleme.A: beklenen 2, program 3
+  # meta.medya_silme.A: beklenen 2, program 3
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 1, program 2
+  # meta.toplam_meta_ileti: beklenen 1, program 2
+1..10
+# tests 10
+# pass 0
+# fail 10

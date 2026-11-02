@@ -1,0 +1,171 @@
+TAP version 13
+# Subtest: 2.4.8 dar kontrol 6 — Başarısızları Yeniden Dene Sonucu Belirsiz kalan kişiyi eler
+    # Subtest: İki kez Yeniden Dene (asıl iş kararsız): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+    not ok 1 - İki kez Yeniden Dene (asıl iş kararsız): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+      ---
+      duration_ms: 648.195499
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:63:5'
+      failureType: 'testCodeFailure'
+      error: 'R2 (ikinci Yeniden Dene): ne yapılacağı iletide (geldi "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki "Yine de Gönder"i kullanın ya da yeni gönderim başlatın.")'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki "Yine de Gönder"i kullanın ya da yeni gönderim başlatın.'
+      operator: 'match'
+      stack: |-
+        assertUncertainSkip (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:29:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:74:9)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: İki kez Yeniden Dene (asıl iş 'Yine de Gönder' ile): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+    not ok 2 - İki kez Yeniden Dene (asıl iş 'Yine de Gönder' ile): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+      ---
+      duration_ms: 450.198934
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:63:5'
+      failureType: 'testCodeFailure'
+      error: 'R2 (ikinci Yeniden Dene): ne yapılacağı iletide (geldi "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki "Yine de Gönder"i kullanın ya da yeni gönderim başlatın.")'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki "Yine de Gönder"i kullanın ya da yeni gönderim başlatın.'
+      operator: 'match'
+      stack: |-
+        assertUncertainSkip (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:29:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:74:9)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Başka iş: M'den sonra yeni gönderim (O) B için Sonucu Belirsiz → M'nin Yeniden Dene'si 'Sonucu Belirsiz'; yeni gönderimin önizlemesi DEĞİŞMEDİ (B gönderilecek)
+    not ok 3 - Başka iş: M'den sonra yeni gönderim (O) B için Sonucu Belirsiz → M'nin Yeniden Dene'si 'Sonucu Belirsiz'; yeni gönderimin önizlemesi DEĞİŞMEDİ (B gönderilecek)
+      ---
+      duration_ms: 407.442136
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:90:3'
+      failureType: 'testCodeFailure'
+      error: `M'nin Yeniden Dene'si: ne yapılacağı iletide (geldi "Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki "Yine de Gönder"i kullanın ya da yeni gönderim başlatın.")`
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki "Yine de Gönder"i kullanın ya da yeni gönderim başlatın.'
+      operator: 'match'
+      stack: |-
+        assertUncertainSkip (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:29:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:100:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Belirsiz çözülünce: kanca 'failed' (P3 teslim edilemedi) → Yeniden Dene gider; kanca 'delivered' → 'Daha Önce Gönderildi' (R3 önceliği değişmedi)
+    ok 4 - Belirsiz çözülünce: kanca 'failed' (P3 teslim edilemedi) → Yeniden Dene gider; kanca 'delivered' → 'Daha Önce Gönderildi' (R3 önceliği değişmedi)
+      ---
+      duration_ms: 852.609436
+      type: 'test'
+      ...
+    # Subtest: T2-1 dönem eşliği: başka dönemin (Bu Ay) Sonucu Belirsiz iletisi Geçen Ay işinin Yeniden Dene'sini ELEMEZ
+    ok 5 - T2-1 dönem eşliği: başka dönemin (Bu Ay) Sonucu Belirsiz iletisi Geçen Ay işinin Yeniden Dene'sini ELEMEZ
+      ---
+      duration_ms: 400.266108
+      type: 'test'
+      ...
+    1..5
+not ok 1 - 2.4.8 dar kontrol 6 — Başarısızları Yeniden Dene Sonucu Belirsiz kalan kişiyi eler
+  ---
+  duration_ms: 2760.311417
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs:61:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 dar kontrol 7 DÜŞÜK-1 — geri yüklemeden sonra Sonucu Belirsiz elemesinin iletisi var olmayan 'Yine de Gönder'i göstermez
+    # Subtest: A Başarısız → yedek → R1 Sonucu Belirsiz → geri yükleme (R1 dosyadan gider) → A'nın Yeniden Dene'si: 'Sonucu Belirsiz' + yalnız 'yeni gönderim başlatın'; yeni gönderim gider
+    ok 1 - A Başarısız → yedek → R1 Sonucu Belirsiz → geri yükleme (R1 dosyadan gider) → A'nın Yeniden Dene'si: 'Sonucu Belirsiz' + yalnız 'yeni gönderim başlatın'; yeni gönderim gider
+      ---
+      duration_ms: 987.525494
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.8 dar kontrol 7 DÜŞÜK-1 — geri yüklemeden sonra Sonucu Belirsiz elemesinin iletisi var olmayan 'Yine de Gönder'i göstermez
+  ---
+  duration_ms: 988.540838
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 8 İş A — geri yükleme / taşıma ile durmuş Meta Bekletti 'Daha Önce Gönderildi' sayılmaz; geç teslim sayılır
+    # Subtest: Meta Bekletti → yedek → geri yükleme (İptal Et yok): toplu iş 'Durduruldu (Geri Yükleme)', P 'gönderilecek' ve yeni gönderim gider
+    ok 1 - Meta Bekletti → yedek → geri yükleme (İptal Et yok): toplu iş 'Durduruldu (Geri Yükleme)', P 'gönderilecek' ve yeni gönderim gider
+      ---
+      duration_ms: 1036.012686
+      type: 'test'
+      ...
+    # Subtest: Meta Bekletti → yedek → geri yükleme → 1. denemenin wamid'ine geç 'delivered': uygulanır, P 'Daha Önce Gönderildi', Bu Ay 1
+    ok 2 - Meta Bekletti → yedek → geri yükleme → 1. denemenin wamid'ine geç 'delivered': uygulanır, P 'Daha Önce Gönderildi', Bu Ay 1
+      ---
+      duration_ms: 712.817918
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-5: Meta Bekletti → yedek → İptal Et → iptalden ÖNCEKİ yedeğin geri yüklenmesi → geç 'delivered' uygulanır ve P sayılır
+    ok 3 - DÜŞÜK-5: Meta Bekletti → yedek → İptal Et → iptalden ÖNCEKİ yedeğin geri yüklenmesi → geç 'delivered' uygulanır ve P sayılır
+      ---
+      duration_ms: 745.330017
+      type: 'test'
+      ...
+    # Subtest: Taşıma (doğrulama ★6): Meta Bekletti iş olan veri gönderim defteri OLMADAN başka bilgisayara taşınınca 'Taşınan Veri — Durduruldu' ve P 'gönderilecek'
+    ok 4 - Taşıma (doğrulama ★6): Meta Bekletti iş olan veri gönderim defteri OLMADAN başka bilgisayara taşınınca 'Taşınan Veri — Durduruldu' ve P 'gönderilecek'
+      ---
+      duration_ms: 511.018109
+      type: 'test'
+      ...
+    1..4
+ok 3 - 2.4.8 dar kontrol 8 İş A — geri yükleme / taşıma ile durmuş Meta Bekletti 'Daha Önce Gönderildi' sayılmaz; geç teslim sayılır
+  ---
+  duration_ms: 3006.728102
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 8 DÜŞÜK-1 — Meta Bekletti'den sonra 2. deneme reddedildi; 1. denemenin wamid'ine geç teslim sayılır
+    # Subtest: geç 'delivered' uygulanır: P 'Daha Önce Gönderildi', Bu Ay 1, yeni gönderim gitmez; iş Başarısız kalır
+    ok 1 - geç 'delivered' uygulanır: P 'Daha Önce Gönderildi', Bu Ay 1, yeni gönderim gitmez; iş Başarısız kalır
+      ---
+      duration_ms: 583.021945
+      type: 'test'
+      ...
+    # Subtest: teslim dışı durum ('sent', 'failed') ve başka şirketin kuyruğu teslim YAZMAZ
+    ok 2 - teslim dışı durum ('sent', 'failed') ve başka şirketin kuyruğu teslim YAZMAZ
+      ---
+      duration_ms: 638.515075
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.4.8 dar kontrol 8 DÜŞÜK-1 — Meta Bekletti'den sonra 2. deneme reddedildi; 1. denemenin wamid'ine geç teslim sayılır
+  ---
+  duration_ms: 1222.77838
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 8 DÜŞÜK-4 (sunucu) — aynı toplu işte iki Meta Bekletti: 2. denemede kabul edilen sayılır, İptal Et ile duran sayılmaz
+    # Subtest: P 2. denemede Meta Kabul Etti, Q Meta Bekletti'de beklerken İptal Et → P 'Daha Önce Gönderildi', Q 'gönderilecek'
+    ok 1 - P 2. denemede Meta Kabul Etti, Q Meta Bekletti'de beklerken İptal Et → P 'Daha Önce Gönderildi', Q 'gönderilecek'
+      ---
+      duration_ms: 684.710966
+      type: 'test'
+      ...
+    1..1
+ok 5 - 2.4.8 dar kontrol 8 DÜŞÜK-4 (sunucu) — aynı toplu işte iki Meta Bekletti: 2. denemede kabul edilen sayılır, İptal Et ile duran sayılmaz
+  ---
+  duration_ms: 686.26085
+  type: 'suite'
+  ...
+1..5
+# tests 13
+# suites 5
+# pass 10
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10610.52337

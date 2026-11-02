@@ -1,0 +1,32 @@
+{
+  "ad": "248-dkUfix-e2e-senaryo-whatsapp-gonder-248",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-gonder-248.mjs",
+  "commit": "91254c6f9bc66d67a8022632a30453936bdeaefe",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 114,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T04:10:18.677Z",
+  "sure_sn": 94.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 181,
+    "gecen": 181,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkUfix-e2e-senaryo-whatsapp-gonder-248.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "c06d006da31d308278082f4c8a867a3a4c9a660926657ba01f6b9b39af56f96e",
+  "ham_cikti_bayt": 12498
+}

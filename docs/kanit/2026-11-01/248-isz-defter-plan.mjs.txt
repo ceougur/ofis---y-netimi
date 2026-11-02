@@ -1,0 +1,11 @@
+import { readFileSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
+const src = readFileSync("/home/user/wt-perf-248/server/lib/whatsapp/defter.mjs", "utf8");
+const m = /const SENT_BEFORE_SQL = \(outer, tail\) => `([\s\S]*?)`;/.exec(src);
+const sql = (o, t) => m[1].replace("${outer}", o).replace("${tail}", t);
+const db = new DatabaseSync(process.argv[2] + "/whatsapp-gonderim.sqlite", { readOnly: true });
+for (const [ad, o, t] of [["grup", "SELECT accountId, MAX(at) AS last", "GROUP BY accountId"], ["satir", "SELECT accountId, at, period_key AS ownKey, extra_keys AS extraKeys", ""]]) {
+  console.log("==", ad);
+  for (const r of db.prepare("EXPLAIN QUERY PLAN " + sql(o, t)).all("sirket-001", "statement", "[]", "[]", "", "", "")) console.log(" ", r.id, r.parent, r.detail);
+}
+console.log(db.prepare("SELECT COUNT(*) n FROM accepts").get(), db.prepare("SELECT COUNT(*) n FROM claims").get(), db.prepare("SELECT COUNT(*) n FROM claim_keys").get());

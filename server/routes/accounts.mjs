@@ -131,6 +131,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       accountId,
     );
 
+  // Cari kartındaki taksit kartı özeti (detail ve waFacts AYNI eşlemeyle; İş Z 2.4.8).
+  const planSummaryOf = plan => ({ id: plan.id, name: plan.name, refNo: plan.refNo, status: plan.status, state: plan.state, totals: plan.totals, next: plan.next, itemCount: plan.itemCount, registeredOn: plan.registeredOn, total: plan.total, coversBalance: Boolean(plan.coversBalance) });
+
   // withRemaining (2.4.5 madde 6): false → borç kayıtlarının Kalan'ı hesaplanmaz (fatura kapaması yalnız defteri ister; aynı kapama iki kez koşmasın).
   function detail(id, user, { withRemaining = true } = {}) {
     const account = accountRow(id);
@@ -165,7 +168,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       ...account,
       typeLabel: ACCOUNT_TYPES[account.type] || "",
       entries,
-      plans: planList.map(plan => ({ id: plan.id, name: plan.name, refNo: plan.refNo, status: plan.status, state: plan.state, totals: plan.totals, next: plan.next, itemCount: plan.itemCount, registeredOn: plan.registeredOn, total: plan.total, coversBalance: Boolean(plan.coversBalance) })),
+      plans: planList.map(planSummaryOf),
       ledger: ledger.lines,
       totals: ledger.totals,
       side: balanceSide(ledger.totals.balance),
@@ -182,6 +185,18 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       // fatura kapamasının defter okuması withRemaining: false ile gelir).
       refundables: withRemaining ? refundablesOf(account.id) : [],
     };
+  }
+
+  // İş Z (2.4.8, T9 ORTA: 2.000 carili şirkette WhatsApp önizlemesi ~23 sn, olay döngüsü kilitli): WhatsApp toplu gönderiminin önizleme / açma okuması
+  // (lib/whatsapp/queue.mjs plan()). Cari kartının (detail) AYNI çekirdeği — accountRow (silinmiş / olmayan cari 404), entriesOf, plans().forAccount, accountLedger —
+  // aynı girdiyle; kartın yalnız ekrana ait ekleri (açılış satırı, geri ödenecek iadeler, fatura kalanları, silme engeli, şüpheli özeti, satır işaretleri) okunmaz.
+  // Eleme alanları (ad, telefon, durum, waOptOut, totals.overdue, kartların status / next, hareket tarihleri ve sırası) detail() ile birebir aynıdır
+  // (test/whatsapp-onizleme-olcek-248.test.mjs). Gönderim anı (queue.mjs işçisi) tam kartı okur.
+  function waFacts(id, user) {
+    const account = accountRow(id);
+    const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
+    const ledger = accountLedger(entriesOf(account.id), planList);
+    return { ...account, plans: planList.map(planSummaryOf), ledger: ledger.lines, totals: ledger.totals };
   }
 
   // Liste: hareket toplamları tek sorguda, taksit özetleri tek geçişte (5 bin caride de hızlı).
@@ -1900,5 +1915,5 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked, invoiceLink, dueItems, openDueItems, dueFingerprint };
+  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, posEntry, doubtfulEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, waFacts, list, allLedgers, assertUnlocked, invoiceLink, dueItems, openDueItems, dueFingerprint };
 }

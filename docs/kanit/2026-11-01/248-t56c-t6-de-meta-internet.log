@@ -1,0 +1,52 @@
+TAP version 13
+# \# T6d {"izlek":[{"sn":0,"tag":"Sürüyor|pending:8"},{"sn":0,"tag":"Sürüyor|preparing:1,pending:7"},{"sn":0,"tag":"Bağlantı Bekleniyor|pending:8"},{"sn":30,"tag":"Bağlantı Bekleniyor|preparing:1,pending:7"},{"sn":30,"tag":"Sürüyor|pending:8"},{"sn":31,"tag":"Sürüyor|pending:7,preparing:1"},{"sn":31,"tag":"Sürüyor|pending:7,uncertain:1"},{"sn":32,"tag":"Sürüyor|pending:6,uncertain:1,preparing:1"},{"sn":32,"tag":"Sürüyor|pending:7,uncertain:1"},{"sn":33,"tag":"Sürüyor|pending:6,uncertain:1,preparing:1"},{"sn":33,"tag":"Sürüyor|pending:6,uncertain:2"},{"sn":34,"tag":"Sürüyor|pending:5,uncertain:2,failed:1"},{"sn":35,"tag":"Sürüyor|pending:4,uncertain:2,failed:1,preparing:1"},{"sn":35,"tag":"Sürüyor|pending:4,uncertain:2,failed:1,accepted:1"},{"sn":36,"tag":"Sürüyor|pending:3,uncertain:2,failed:1,accepted:1,preparing:1"},{"sn":36,"tag":"Sürüyor|pending:3,uncertain:2,failed:1,accepted:2"},{"sn":37,"tag":"Sürüyor|pending:2,uncertain:2,failed:1,accepted:3"},{"sn":60,"tag":"Sürüyor|sending:1,uncertain:2,pending:1,failed:1,accepted:3"},{"sn":60,"tag":"Sürüyor|accepted:4,uncertain:2,pending:1,failed:1"},{"sn":62,"tag":"Sürüyor|accepted:4,uncertain:2,sending:1,failed:1"},{"sn":62,"tag":"Tamamlandı|accepted:5,uncertain:2,failed:1"}],"toplu":"Tamamlandı","isler":[{"ad":"0","durum":"accepted","kod":null,"neden":"","ileti":1},{"ad":"1","durum":"uncertain","kod":null,"neden":"Meta'dan okunamayan yanıt geldi (HTTP 500); sonuç bilinmiyor.","ileti":0},{"ad":"2","durum":"accepted","kod":null,"neden":"","ileti":1},{"ad":"3","durum":"uncertain","kod":null,"neden":"Meta'ya ulaşılamadı (internet bağlantısını ve vekil sunucu ayarını denetleyin); sonuç bili","ileti":0},{"ad":"4","durum":"failed","kod":131026,"neden":"İleti alıcıya iletilemedi (numara WhatsApp kullanmıyor, WhatsApp'ın koşullarını kabul etme","ileti":0},{"ad":"5","durum":"accepted","kod":null,"neden":"","ileti":1},{"ad":"6","durum":"accepted","kod":null,"neden":"","ileti":1},{"ad":"7","durum":"accepted","kod":null,"neden":"","ileti":1}],"iletiIstegi":10,"metaIsledi":5,"medya":9}
+# Subtest: T6 (d) Meta 5xx / 429 / kopma — gerçek süreç
+    # Subtest: d: PDF yüklemesi 503 (gövdesiz), ileti 500 (kod 2), 500 (HTML), 429 (130429), bağlantı kopması, 400 (131026) → çift yok, belirsizler gönderilmez
+    ok 1 - d: PDF yüklemesi 503 (gövdesiz), ileti 500 (kod 2), 500 (HTML), 429 (130429), bağlantı kopması, 400 (131026) → çift yok, belirsizler gönderilmez
+      ---
+      duration_ms: 63325.687319
+      type: 'test'
+      ...
+    1..1
+ok 1 - T6 (d) Meta 5xx / 429 / kopma — gerçek süreç
+  ---
+  duration_ms: 63326.98299
+  type: 'suite'
+  ...
+# \# T6e1 {"baslatma":{"status":502,"code":"whatsapp-meta-unreachable","error":"Meta'ya ulaşılamıyor; gönderim başlatılmadı. Bağlantı gelince yeniden başlatın."},"kesintide":{"toplu":"Bağlantı Bekleniyor","neden":"Bağlantı Bekleniyor: Meta'ya ulaşılamıyor (Meta 3 saniyede yanıt vermedi; sonuç bilinmiyor.). İnternet bağlantısı dönünce gönderim kendiliği","isler":{"pending":4},"metaIsledi":0},"son":{"toplu":"Tamamlandı","isler":["accepted","accepted","accepted","accepted"],"aliciBasina":{"+905531008100":1,"+905531008101":1,"+905531008102":1,"+905531008103":1}}}
+# Subtest: T6 (e) internet yok — R1
+    # Subtest: e1: ekstre gönderilirken internet kesildi (yeni bağlantı kurulamıyor, eski soket yok) → 'Bağlantı Bekleniyor', Başarısız yok; dönünce kendiliğinden biter
+    ok 1 - e1: ekstre gönderilirken internet kesildi (yeni bağlantı kurulamıyor, eski soket yok) → 'Bağlantı Bekleniyor', Başarısız yok; dönünce kendiliğinden biter
+      ---
+      duration_ms: 43469.89051
+      type: 'test'
+      ...
+# \# T6e2 {"kind":"reminder","kesintiAniCanliSoket":2,"kesintide":{"toplu":"Bağlantı Bekleniyor","isler":["accepted","pending","pending"]},"son":{"toplu":"Tamamlandı","isler":["accepted","accepted","accepted"],"aliciBasina":{"+905531008200":1,"+905531008201":1,"+905531008202":1},"iletiIstegi":3,"sureSn":29},"belirsizIletisiz":0}
+    # Subtest: e2 ZORLA (reminder): kesinti iki ileti ARASINA, havuzdaki soket canlıyken (≤4 sn) → ilk istek ne oluyor
+    ok 2 - e2 ZORLA (reminder): kesinti iki ileti ARASINA, havuzdaki soket canlıyken (≤4 sn) → ilk istek ne oluyor
+      ---
+      duration_ms: 33797.677767
+      type: 'test'
+      ...
+# \# T6e2 {"kind":"statement","kesintiAniCanliSoket":2,"kesintide":{"toplu":"Bağlantı Bekleniyor","isler":["accepted","pending","pending"]},"son":{"toplu":"Tamamlandı","isler":["accepted","accepted","accepted"],"aliciBasina":{"+905531008250":1,"+905531008251":1,"+905531008252":1},"iletiIstegi":3,"sureSn":31},"belirsizIletisiz":0}
+    # Subtest: e2 ZORLA (statement): kesinti iki ileti ARASINA, havuzdaki soket canlıyken (≤4 sn) → ilk istek ne oluyor
+    ok 3 - e2 ZORLA (statement): kesinti iki ileti ARASINA, havuzdaki soket canlıyken (≤4 sn) → ilk istek ne oluyor
+      ---
+      duration_ms: 36469.989163
+      type: 'test'
+      ...
+    1..3
+ok 2 - T6 (e) internet yok — R1
+  ---
+  duration_ms: 113738.319623
+  type: 'suite'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 192415.26678

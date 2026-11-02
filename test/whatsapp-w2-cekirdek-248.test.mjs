@@ -409,6 +409,12 @@ describe("2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 3
       assert.equal(paused.state, "paused");
       assert.equal(paused.pauseCode, "meta-unreachable");
       assert.equal(ctx.messageRequests().length, 4 + 5, "beşinci geçici hatada durdu");
+      // §7a 13 (beklenti 2.4.8 T1 P4'te plana göre bilerek güncellendi; önceden 5. hatayı alan iş de Duraklatıldı oluyordu): beşinci hatayı ALAN iş Başarısız
+      // (kodlu), bekleyen Duraklatıldı.
+      const held = byName(paused.jobs);
+      assert.equal(held["Ard Arda 1"].state, "failed", JSON.stringify(held["Ard Arda 1"]));
+      assert.equal(held["Ard Arda 1"].errorCode, 130429);
+      assert.equal(held["Ard Arda 2"].state, "paused");
       // Kod 2 (geçici kesinti) → bekler, sonra BİR kez gider; hata kodu temizlenir (§7a 32).
       ctx.fake.state.failQueue = [{ match: /\/messages$/, status: 503, body: metaError(2, "Service temporarily unavailable") }];
       await ctx.api.post(`${URLS.batches}/${id2}/resume`, {});
@@ -417,11 +423,12 @@ describe("2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 3
         ctx.clock.advance(16 * MIN);
       }
       const done = byName((await ctx.detail(id2)).jobs);
-      assert.equal(done["Ard Arda 1"].state, "accepted", JSON.stringify(done["Ard Arda 1"]));
-      assert.equal(done["Ard Arda 1"].errorCode, null, "başarılı işin hata kodu temizlendi");
-      assert.equal(done["Ard Arda 1"].reason, "");
-      assert.equal(done["Ard Arda 2"].state, "accepted");
-      assert.equal(sentTo(ctx, toPhone("5400000002")), 1);
+      assert.equal(done["Ard Arda 1"].state, "failed", "Başarısız iş Devam Et'te yeniden gönderilmez");
+      assert.equal(done["Ard Arda 2"].state, "accepted", JSON.stringify(done["Ard Arda 2"]));
+      assert.equal(done["Ard Arda 2"].errorCode, null, "başarılı işin hata kodu temizlendi");
+      assert.equal(done["Ard Arda 2"].reason, "");
+      assert.equal(sentTo(ctx, toPhone("5400000002")), 0);
+      assert.equal(sentTo(ctx, toPhone("5400000003")), 1);
       // Gövdesiz 5xx: Meta işledi mi bilinmez → belirsiz.
       const d = await ctx.account("Gövdesiz", "0540 000 00 04", 10);
       ctx.fake.state.failQueue = [{ match: /\/messages$/, status: 502, raw: "<html>Bad Gateway</html>" }];

@@ -1,0 +1,53 @@
+{
+  "ad": "248-t56c-t5ara-83100a79",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t56c-9b41e7/arac/ara-kos.mjs 83100a79 /home/user/wt-t56c-248",
+  "commit": "862d7fa5108ce86215f9591d416635adb5d5c991",
+  "dal": "is/t56c-248",
+  "kirli": 0,
+  "izlenmeyen": 31,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T10:48:36.969Z",
+  "sure_sn": 3.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 30,
+    "gecen": 26,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "83100a79 eski iş satırları göçten sonra aynı durumda (10) — {\"oldRows\":[{\"id\":\"waj-00a5dc76-4eaa-417d-8d29-b15f574775dc\",\"state\":\"delivered\"},{\"id\":\"waj-4036aa62-cfdc-4719-851a-8d1ee1ae6bd9\",\"state\":\"accepted\"},{\"id\":\"waj-4ed49e97-67ab-4925-8ce3-4fc987791457\",\"state\":\"accepted\"},{\"id\":\"waj-8e518a62-",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "83100a79 sonra (aday) bekleyenler sürülünce yalnız G4–G8'e birer ileti (4; çift 0, G0–G3/G9'a 0) — {\"drained\":[\"+905542000014\",\"+905542000016\",\"+905542000017\",\"+905542000018\"],\"expDrain\":[\"+905542000014\",\"+905542000015\",\"+905542000016\",\"+905542000017\",\"+905542000018\"]}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "83100a79 sonra (aday) sürülünce Bu Ay: teslim 1 (1), Meta Kabul Etti 9 (10) — {\"status\":200,\"delivered\":1,\"accepted\":9,\"billable\":1}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "83100a79 sonra (aday) sürüldükten sonra Ekstre \"Bu Ay\": G0–G5, G8 Daha Önce Gönderildi (G5: Yine de Gönder kabul edildi → İş Q2 kararı A), G6/G7/G9 gönderilir — {\"badSur\":[\"G4=Zaten Kuyrukta\",\"G5=Sonucu Belirsiz\",\"G8=Zaten Kuyrukta\"],\"skipped\":{\"Daha Önce Gönderildi\":4,\"Zaten Kuyrukta\":2,\"Sonucu Bel",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t56c-t5ara-83100a79.log",
+  "klasor": "/home/user/wt-t56c-248",
+  "ham_cikti_sha256": "c225a73da4fc44d4ebf7e509a72c18f38200a254e27b694da4f67b6e9c53f72b",
+  "ham_cikti_bayt": 7199
+}

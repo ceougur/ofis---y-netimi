@@ -1,0 +1,73 @@
+{
+  "ad": "248-dkPQfix-eski-Q2-4affbb07-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q2-4affbb07/test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q2-4affbb07/test/whatsapp-dk4-yeniden-dene-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q2-4affbb07/test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q2-4affbb07/test/whatsapp-dk8-g-ek-248.test.mjs",
+  "commit": "8faf4ca60d96b7654d631a355710a84e5d77343d",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 41,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T19:41:14.579Z",
+  "sure_sn": 15.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 26,
+    "gecen": 18,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 dar kontrol 4 — Yeniden Dene / Yine de Gönder asıl toplu işin dönemini taşır › Yine de Gönder (Bu Ay, Sonucu Belirsiz): yeni iş asıl işin dönemini taşır; ertesi gün 'Bu Ay' → 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-dk4-yeniden-dene-248.test.mjs:103:3",
+      "hata": "İş Q2: Yine de Gönder işi kabul edildi → Daha Önce Gönderildi (kaynak belirsiz elemez) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 4 — Yeniden Dene / Yine de Gönder asıl toplu işin dönemini taşır › Geçen Ay: Başarısızları Yeniden Dene ve Yine de Gönder 'Geçen Ay' dönemini taşır; ertesi gün 'Geçen Ay' iki kişide 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-dk4-yeniden-dene-248.test.mjs:130:3",
+      "hata": "İş Q2: Yine de Gönder işi kabul edildi → Daha Önce Gönderildi · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş G (★ soru 1) — Sonucu Belirsiz kalmış kişi yeni toplu işte de elenir › Onaylı yol açık: işteki Yine de Gönder gider (Meta Kabul Etti); sonraki yeni gönderim 'Daha Önce Gönderildi', R3'te Yine de Gönder seçimiyle gönderilecek",
+      "konum": "test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs:63:3",
+      "hata": "{}: İş Q2 — kabul edilen Yine de Gönder işinin kaynağı elemez; kişi R3'te (Daha Önce Gönderildi) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'Sonucu Belirsiz' ile elemez › genel (b2): J belirsiz → K kabul + teslim → yeni gönderim 'Daha Önce Gönderildi'; R3'te Yine de Gönder ile gider (çıkmaz yok); bağ dosyada ve defterde",
+      "konum": "test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs:58:3",
+      "hata": "no such column: inherit_of"
+    },
+    {
+      "ad": "2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'Sonucu Belirsiz' ile elemez › Meta Bekletti kipi (b2 bekletti): J'nin 131049 sonrası 2. denemesi belirsiz → K kabul → 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs:82:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'Sonucu Belirsiz' ile elemez › zincir: J belirsiz → K belirsiz → K'nin Yine de Gönder'i L kabul → J ve K elemez, 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs:129:3",
+      "hata": "zincirin bütün kaynakları elemez · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'Sonucu Belirsiz' ile elemez › yalnız defterdeki bağ (dosyadaki bağ yok — eski yedek): kaynak yine elemez; yalnız dosyadaki bağ (taşınan veri, defter yok): kaynak elemez",
+      "konum": "test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs:145:3",
+      "hata": "no such column: inherit_of"
+    },
+    {
+      "ad": "2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'Sonucu Belirsiz' ile elemez › göç v44: v43 dosyası (inherit_of yok) açılınca sütun eklenir, eski satırlar bağsız (''); göç yarıda kalmış dosya (sütun var, sürüm 43) yeniden açılır",
+      "konum": "test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs:169:3",
+      "hata": "no such column: \"inherit_of\""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-eski-Q2-4affbb07-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "93ac418718b4f9504553e1c8b41964808f658b9b472fde3598c8aca5a980d351",
+  "ham_cikti_bayt": 21119
+}

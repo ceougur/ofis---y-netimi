@@ -1,0 +1,32 @@
+{
+  "ad": "248-t56c-t6-a-surec-olumu",
+  "komut": "node --no-warnings --test --test-concurrency=1 test/t6-248/a-surec-olumu.mjs",
+  "commit": "862d7fa5108ce86215f9591d416635adb5d5c991",
+  "dal": "is/t56c-248",
+  "kirli": 0,
+  "izlenmeyen": 55,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T10:52:20.988Z",
+  "sure_sn": 95.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 10,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t56c-t6-a-surec-olumu.log",
+  "klasor": "/home/user/wt-t56c-248",
+  "ham_cikti_sha256": "f4c01ffc7286fe9bb65ff40c0197dad1b2042c74f9becd05dc55ac3fe1cc3b07",
+  "ham_cikti_bayt": 4931
+}

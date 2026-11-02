@@ -1,0 +1,12 @@
+[23:09:04]   001: şema 39, bütünlük ok
+[23:09:04]   002: şema 39, bütünlük ok
+[23:09:04] ölçüldü v2.4.7: açılış 731 ms; cari 001=3223 002=935
+# ölçü: 2 şirket; yevmiye okunamayan yok
+# tests 2
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+[kanit] 248-t5-olcu-v247-taban: GEÇTİ · çıkış 0 · 2/2 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 49395f7 +8 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0

@@ -78,7 +78,7 @@ export function statementText({ office, account, lines, range, next, overdue }) 
   return out.join("\n");
 }
 
-export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null, mobileSyncOf = () => null }) {
+export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null, mobileSyncOf = () => null, writeLock = null }) {
   const today = () => {
     const d = clock();
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -122,6 +122,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
       const phone = waNumber(account.phone);
       // 2.4.8 W2: "WhatsApp Mesajı İstemiyor" işaretli cari elle (wa.me) toplu/tekli gönderimde de seçilemez (BAŞ MİMAR KARARI; Sohbeti Aç serbest).
       if (Number(account.waOptOut) === 1) Object.assign(phone, { valid: false, reason: "WhatsApp Mesajı İstemiyor" });
+      // KARAR S-PC A (30.10.2026, 5 dk yetkisi): Otomatik Gönder'deki gibi pasif cari de elenir; neden adı kuyrukla aynı (lib/whatsapp/queue.mjs eligibility sırası).
+      else if (account.status === "passive") Object.assign(phone, { valid: false, reason: "Pasif Cari" });
       const plans = (account.plans || []).filter(plan => plan.status === "active");
       const next = plans.map(plan => plan.next).filter(Boolean).sort((a, b) => (a.dueDate < b.dueDate ? -1 : 1))[0] || null;
       const overdue = { count: account.totals.overdueCount || 0, amount: roundMoney(account.totals.overdue || 0) };
@@ -137,6 +139,7 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
         valid: phone.valid,
         reason: phone.reason,
         optOut: Number(account.waOptOut) === 1,
+        passive: account.status === "passive",
         balance: account.totals.balance,
         next: next ? { dueDate: next.dueDate, amount: roundMoney(next.remaining ?? next.amount ?? 0) } : null,
         overdue,
@@ -178,8 +181,9 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   });
 
   // ---------- 2.4.8 W1: WhatsApp Business API bağlantısı ----------
-  // onChange (W2/W9): ortak katmanın kaydı (tünel kuralı, durum bildiriminin şirketi) — lib/whatsapp/hub.mjs.
-  const connection = createWhatsappConnection({ store, config, audit, now: clock, onChange: summary => whatsapp?.registry?.set(companyId, summary) });
+  // onChange (W2/W9): ortak katmanın kaydı (tünel kuralı) — lib/whatsapp/hub.mjs. T2-3/4: durum bildirimi adresinin kaydı WABA düzeyinde, makine defterinde
+  // (whatsapp.ledger; şirket dosyasının dışında — geri yükleme / sıfırlama bozmaz); publicUrl: Bağlantıyı Sına kanca adresini Meta'dakiyle karşılaştırır.
+  const connection = createWhatsappConnection({ store, config, audit, now: clock, onChange: summary => whatsapp?.registry?.set(companyId, summary), hooks: whatsapp?.ledger || null, publicUrl: () => mobileRemote?.publicUrl?.() || "" });
   const writable = () => !license || license.writable();
   const view = () => connection.view({ writable: writable() });
   router.get("/api/workspace/whatsapp/connection", async ({ req, res }) => {
@@ -251,7 +255,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   });
 
   // ---------- 2.4.8 W5: bilgilendirme şablonları (routes/whatsapp-sablon.mjs) ----------
-  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection });
+  // T2-5: şablona yazılan teslim süresi gönderim ayarından (kuyruk aşağıda kurulur; istek anında okunur).
+  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection, ttlHours: () => queue?.settings?.().ttlHours });
 
   // ---------- 2.4.8 W4: gönderim ekranının durumu ----------
   router.get("/api/workspace/whatsapp/sending-status", async ({ req, res }) => {
@@ -308,6 +313,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     fault: config.whatsappFault || null,
     // W9: durum bildirimi adresinin tabanı = ofisin uzaktan (telefon) adresi (tünel açılınca hazır; lib/tunnel/manager.mjs).
     hookUrl: () => mobileRemote?.publicUrl?.() || "",
+    // 2.4.8 İş P1/P2: şirket dosyası kilidi (lib/write-lock.mjs; app.mjs context.writeLock).
+    writeLock,
   });
   const sendUser = req => auth.requirePermission(req, "whatsapp.send");
   router.get("/api/workspace/whatsapp/ack", async ({ req, res }) => {
@@ -343,7 +350,8 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   });
   router.get("/api/workspace/whatsapp/batches", async ({ req, res, url }) => {
     sendUser(req);
-    ok(res, queue.list({ limit: Number(url.searchParams.get("limit")) || 50 }));
+    const param = name => String(url.searchParams.get(name) || "").slice(0, 100);
+    ok(res, queue.list({ limit: Number(url.searchParams.get("limit")) || 50, before: param("before"), from: param("from"), to: param("to") }));
   });
   router.get("/api/workspace/whatsapp/batches/:id", async ({ req, res, params }) => {
     sendUser(req);

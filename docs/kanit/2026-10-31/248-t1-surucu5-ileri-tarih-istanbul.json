@@ -1,0 +1,83 @@
+{
+  "ad": "248-t1-surucu5-ileri-tarih-istanbul",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-8d08ff2a/test/bagimsiz/whatsapp-248/surucu.mjs --senaryo ICERIK-02*,D4-01*,G1-01*,G1-02*,G1-03* --uc ikisi --tz Europe/Istanbul --cikti docs/kanit/2026-10-31/248-t1-surucu5-ileri-tarih",
+  "commit": "c0959e730afa611da0d22d390683193052fbc3f8",
+  "dal": "is/surucu2-248",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T13:40:40.927Z",
+  "sure_sn": 11.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 0,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ICERIK-02-devir-ve-donem-uclari [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ICERIK-02-devir-ve-donem-uclari [yavas] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D4-01-ozel-aralik-ayni-gun-bu-ay [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D4-01-ozel-aralik-ayni-gun-bu-ay [yavas] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem [hizli] (18 fark; davranış farkı 16; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem [yavas] (18 fark; davranış farkı 16; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G1-02-bu-ay-sinirla-ertesi-gun-ayni-donem [hizli] (17 fark; davranış farkı 15; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G1-02-bu-ay-sinirla-ertesi-gun-ayni-donem [yavas] (17 fark; davranış farkı 15; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G1-03-yeniden-deneme-ertesi-gun-asil-isin-gunu [hizli] (16 fark; davranış farkı 15; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "G1-03-yeniden-deneme-ertesi-gun-asil-isin-gunu [yavas] (16 fark; davranış farkı 15; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t1-surucu5-ileri-tarih-istanbul.log",
+  "klasor": "/home/user/wt-surucu2-248",
+  "ham_cikti_sha256": "23aa291e58bcfdd0d33b8399a26841df8b58acfb323684bf89fa1767c1dd2187",
+  "ham_cikti_bayt": 4836
+}

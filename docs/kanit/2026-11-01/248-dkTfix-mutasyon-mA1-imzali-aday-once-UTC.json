@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkTfix-mutasyon-mA1-imzali-aday-once-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut/test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": "b8c8ea63179a94f3395f9d0e150542a477bd5425",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T01:02:53.990Z",
+  "sure_sn": 27.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 41,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T25 imzalı · geri yüklenen satır ESKİ denemede Sonucu Belirsiz (iş kimliği adayı) · son denemenin wamid'ine failed → T23 ile aynı (A1, c5)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:428:3",
+      "hata": "imzalı geç failed defterde uygulandı (geldi {\"applied\":0,\"ignored\":1,\"unknown\":0}) · 0 !== 1 (beklenen 1, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkTfix-mutasyon-mA1-imzali-aday-once-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "13f557517bfdadb5d2cbd182e5f3c9164cce12e2f2dfe32b98c2f4f41dc03a35",
+  "ham_cikti_bayt": 14825
+}

@@ -1,0 +1,9 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+ok 1 - J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz [hizli] # SKIP GEÇERSİZ: defter_yazilamaz: programın kabulü deftere yazamadığı görülmedi (onarım bekleyen kabul oluşmadı)
+ok 2 - J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti [hizli] # SKIP GEÇERSİZ: defter_yazilamaz: programın kabulü deftere yazamadığı görülmedi (onarım bekleyen kabul oluşmadı)
+1..2
+# tests 2
+# pass 0
+# fail 0
+# skipped 2

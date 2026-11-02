@@ -1,0 +1,37 @@
+İŞ Z — profil ekleri (01.11.2026 ~16:45–17:00 UTC, b2e7bf19, 4 çekirdek Linux, Node v22.22.0; her biri flock /tmp/destekofis-olcum.lock altında, kendi veri kopyamda, salt okuma)
+Veri: T9'un taban-2910 (3.014 cari, 57.227 cari hareketi) ve gecmis-40 (+ 58 toplu iş, 80.126 iş satırı, defterde 72.155 talep / 72.167 claim_keys) kopyaları.
+
+1) Önizleme profili (V8 profilcisi, işlev başına kapsayıcı süre): 248-isz-profil-taban-b2e7bf19.json, 248-isz-profil-gecmis40-b2e7bf19.json
+   (komut: node test/isz-248/profil.mjs <veri> <iş> <json> 2000; 2.000 telefonlu cari, saat 2026-11-02T10:00+03:00 sabit)
+
+2) defter-olc.mjs.txt — makine defterinin R3 sorgusu (sentBefore) kişiye özel anahtar sayısına göre (gecmis-40 defteri, "Tüm Hareketler", pencere 7 gün):
+anahtar 0: sentBefore 383 ms (0), unsettledBefore 12 ms (0)
+anahtar 10: sentBefore 852 ms (0), unsettledBefore 19 ms (0)
+anahtar 100: sentBefore 2077 ms (0), unsettledBefore 23 ms (0)
+anahtar 500: sentBefore 1994 ms (0), unsettledBefore 22 ms (0)
+anahtar 1000: sentBefore 2096 ms (0), unsettledBefore 18 ms (0)
+anahtar 2000: sentBefore 2081 ms (0), unsettledBefore 29 ms (0)
+
+3) defter-plan.mjs.txt — EXPLAIN QUERY PLAN (özgün): "SEARCH k USING COVERING INDEX sqlite_autoindex_claim_keys_1 (job_id=? AND attempt=? AND period_key=?)" — IN listesi
+   (json_each) her claim satırında listedeki her anahtarla ayrı yoklanıyor.
+
+4) defter-varyant.mjs.txt (extra_keys dış seçime: KAZANÇ YOK) ve defter-varyant2.mjs.txt (`+k.period_key`: KAZANÇ VAR), satır sayıları aynı:
+dar pencere özgün 2000 kişi anahtarı 1660 ms 0 satır
+dar pencere özgün genel anahtarlar 558 ms 0 satır
+dar pencere varyant 2000 kişi anahtarı 267 ms 0 satır
+dar pencere varyant genel anahtarlar 455 ms 0 satır
+geniş pencere özgün 2000 kişi anahtarı 1741 ms 0 satır
+geniş pencere özgün genel anahtarlar 650 ms 16000 satır
+geniş pencere varyant 2000 kişi anahtarı 302 ms 0 satır
+geniş pencere varyant genel anahtarlar 559 ms 16000 satır
+   (satır satır eşitlik ayrıca: 248-isz-defter-sql-esitlik-*.json)
+
+5) acilis-olc.mjs.txt — (A) yolu (ana oturumun isteğiyle değerlendirildi; KARAR 2.4.9, bu işte KOD YOK): openingEntryOf biçimleri, 3.014 carinin tamamı:
+ozgun plan: SEARCH account_entries USING INDEX idx_account_entries_source (source=?) | USE TEMP B-TREE FOR ORDER BY
+  3014 cari: 30027 ms (cari başına 9.963 ms), açılışı olan 0
+arti plan: SEARCH account_entries USING INDEX idx_account_entries_account (account_id=?) | USE TEMP B-TREE FOR ORDER BY
+  3014 cari: 118 ms (cari başına 0.039 ms), açılışı olan 0
+indexedBy plan: SEARCH account_entries USING INDEX idx_account_entries_account (account_id=?) | USE TEMP B-TREE FOR ORDER BY
+  3014 cari: 117 ms (cari başına 0.039 ms), açılışı olan 0
+arti ≡ ozgun: true  indexedBy ≡ ozgun: true
+   NOT: bu veride açılış satırı olan cari yok (0) → eşitlik yalnız "boş" sonuçta gösterildi; 2.4.9'da açılışlı veriyle yeniden ölçülmeli.

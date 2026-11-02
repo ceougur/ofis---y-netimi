@@ -1,0 +1,88 @@
+{
+  "ad": "248-t1r-ek-imzali-utc-etkilenen",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t1r-0435ed69/test/bagimsiz/whatsapp-248/surucu.mjs --senaryo J1-03*,J6-0*,J7-0*,J10-0* --uc hizli --kip imzali --tz UTC --cikti docs/kanit/2026-11-01/248-t1r-ek --dokum /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t1r-0435ed69-dokum-ek",
+  "commit": "f05f0b1910dbe5d59282ad0e96ba0ba0b01fdf09",
+  "dal": "is/surucu2-248",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T10:04:04.811Z",
+  "sure_sn": 173.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 0,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "J1-03-silinmis-sirket-gec-bildirim [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J6-01-yanit-beklenirken-taninmayan-503-yineleme [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J6-02-sirket-gecici-acilamaz-503 [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J6-03-bildirim-kaydedilemez-503 [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez [hizli] (29 fark; davranış farkı 27; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez [hizli] (10 fark; davranış farkı 9; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez [hizli] (14 fark; davranış farkı 13; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J10-05-b-r3-yine-de-gonder-onceki-teslim-ikinci-kopya-gider [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t1r-ek-imzali-utc-etkilenen.log",
+  "klasor": "/home/user/wt-surucu2-248",
+  "ham_cikti_sha256": "6b6f2b6ab4ba6201e2a7d1cf33d3d0a40460168f1648537cd881bdd00cde6290",
+  "ham_cikti_bayt": 3567
+}

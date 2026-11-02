@@ -1,0 +1,121 @@
+✓ A el hesabı: CAM 100X100 Oval (%18, %20, ÷200)
+✓ A el hesabı: MİKA 170 2S2Ç (%13, %15, ÷170)
+✓ A el hesabı: CAM 130 1S1Ç ÷120 (tutarsızlık 1)
+✓ A el hesabı: CAM 130 1S2Ç elle CM (tutarsızlık 4): sonuç %20 Maliyet, CM elle yansır
+✓ A el hesabı: MİKA 150 1S1Ç ÷120 (tutarsızlık 2)
+✓ A el hesabı: MİKA 120 1S2Ç (%16, ÷120)
+✓ A el hesabı: MİKA 100X100 Oval (%11, %15, ÷200)
+✓ A el hesabı: yan panel: toplam (liste) → masraf %15 → genel → «%20» etiketli %15 (tutarsızlık 11), bölme yok
+✓ A yan panelde bölme adımı yok
+✓ A boş kart: her hesap 0, girdiler boş
+✓ A el hesabı: negatif girdi Excel gibi
+✓ A el hesabı: satır ekle: 1×7 ARA'ya girer
+✓ A el hesabı: satır sil: silinen satır toplamda yok
+✓ A el hesabı: ✎ aynı ad iki satırda: ikisi de sayılır
+✓ A el hesabı: oran değiştir (%10, %0): etiket değişmez
+✓ A oran değişince etiket aynı (V9)
+✓ A bölen 0 (tanımsız): bölme boş + SIFIRA_BOLME, öbür adımlar aynı
+✓ A bölen 0 (ret): istek reddedilir, bölen 200 ve sonuç 0,177 kalır
+✓ A Kaydetmeden Çık: soru var, son kayıtlı hâl döner; değişmemiş kartta soru yok
+✓ A Çık → Kaydet: değerler kalır
+✓ A gramaj: s2 3 Kğ / 120; s1 elle 2 Kğ / 80; eklenen 3 Kğ / 30; toplam 8 Kğ / 230
+✓ A 2024 2 Sabit 2 Açılır: B6 = B5+, B7 = B6+ (zincir), B8 = B5+ (çapa), E = D+; boş fark 0
+✓ A 2024 1 Sabit 2 Çalışır: taban sütunu zincir 510/520/530/540, I20 = 515
+✓ A 2024 Yan Panel: J = H + Δ6 (1050), K = J + Δ3 (1080)
+✓ A 2019 2 Sabit 2 Açılır: her sütun kendi zinciri, 13. satır 220/320/420/520
+✓ A 2019 Köşe Girişli: I5 elle 7, I6 = 17, I14 = 97, H14 = 300, 130*130 satırı elle (1)
+✓ A 2019 Oval: B29 = 190, B30 elle 9, C30 = C29 + Δ1 = 200
+✓ A bilgi satırı (Parlak Profil Farkı 999) parlak sütununu değiştirmez
+✓ B formül sayımı = FORMÜL TABLOSU §1 (sekme ve kalıp başına; toplam 554)
+✓ B cam/100x100-oval-kabin: oran 18/20, bölen 200 (§2)
+✓ B cam/100x100-oval-kabin: adım sırası sabit
+✓ B cam/100x100-kose-kabin: oran 18/20, bölen 200 (§2)
+✓ B cam/100x100-kose-kabin: adım sırası sabit
+✓ B cam/170-2s2c-h182: oran 18/20, bölen 170 (§2)
+✓ B cam/170-2s2c-h182: adım sırası sabit
+✓ B cam/130-1s1c-h182-kabin: oran 18/20, bölen 120 (§2)
+✓ B cam/130-1s1c-h182-kabin: adım sırası sabit
+✓ B cam/130-1s2c-h182-kabin: oran 18/20, bölen ELLE (§2)
+✓ B cam/130-1s2c-h182-kabin: adım sırası sabit
+✓ B mika/100x100-oval-kabin: oran 11/15, bölen 200 (§2)
+✓ B mika/100x100-oval-kabin: adım sırası sabit
+✓ B mika/100x100-kose-kabin: oran 11/15, bölen 200 (§2)
+✓ B mika/100x100-kose-kabin: adım sırası sabit
+✓ B mika/170-2s2c-h182: oran 13/15, bölen 170 (§2)
+✓ B mika/170-2s2c-h182: adım sırası sabit
+✓ B mika/150-1s1c-h182-kabin: oran 17/15, bölen 120 (§2)
+✓ B mika/150-1s1c-h182-kabin: adım sırası sabit
+✓ B mika/120-1s2c-h182-kabin: oran 16/15, bölen 120 (§2)
+✓ B mika/120-1s2c-h182-kabin: adım sırası sabit
+✓ B mika/80-lik-yan-panel: oran 15/15, bölen None (§2)
+✓ B mika/80-lik-yan-panel: adım sırası sabit
+✓ B kart sayısı: 10 maliyet + yan panel + gramaj + 12 matris + 4 bilgi
+✓ B elle hücreler = tutarsızlık 4, 6, 7, 8, 9 (H25, R20, I5, H15:K15, B30)
+✓ B 2024'te taban yalnız ilk satırın ilk hücresi; 2019'da ilk satırın 4 hücresi
+✓ B fark sembolleri: 2024'te 16, 2019'da 2 (§4)
+✓ B matris başvuruları yalnız aynı satır / bir üst satır / ilk satır; 2019'da yalnız üst satır; 2024 renk sütunları §4 özetindeki gibi
+✓ B 2024 taban sütunu: yalnız 2 Sabit 2 Açılır B7 ve 1 Sabit 2 Çalışır H20:H23 bir üst satıra bağlı (tutarsızlık 21)
+✓ B 2024 siyah sütunu: 2S2A / 1S1Ç / Köşe ilk satır Δ1 sonra Δ5; öbürleri hep Δ1 (tutarsızlık 13)
+✓ B sekme ve kart adlarında marka / yıl yok
+✓ B matrislerde döngü yok
+✓ C kabul dili ve tohum
+✓ C kabul.json tohumdan aynen yeniden üretiliyor (CRLF'den bağımsız, ayrıştırılmış karşılaştırma)
+✓ C her kart türü için zorunlu senaryo aileleri var (boş, tek satır, ekle, sil, ✎, oran/bölen, bölen 0, negatif/ondalık/büyük, Kaydet→aç)
+✓ C arayüz katmanı: canlı hesap, Çık sorusu var/yok, Kaydetmeden Çık
+✓ C kâhin kendisiyle: 45540 denetim, 0 fark
+✓ D mutasyon yakalandı: ara-son-satir-yok — ARA son satırı toplamaz (2301 fark; aileler ad-degistir, bolen-degistir, bolen-sifir, canli, cik, dolu)
+✓ D mutasyon yakalandı: yuzde-oran2 — yüzde adımı 2. oranı kullanır (1889 fark; aileler ad-degistir, bolen-degistir, bolen-sifir, buyuk, canli, cik)
+✓ D mutasyon yakalandı: toplama-yuzdesiz — toplama adımı yüzdeyi eklemez (1589 fark; aileler ad-degistir, bolen-degistir, bolen-sifir, buyuk, canli, cik)
+✓ D mutasyon yakalandı: yuzde-ekle-carpan — yüzde ekle (T × q/100) + T yerine T × q/100 (1198 fark; aileler ad-degistir, bolen-degistir, bolen-sifir, buyuk, canli, cik)
+✓ D mutasyon yakalandı: bolme-yanlis-kaynak — bölme yüzde ekle yerine toplamayı böler (678 fark; aileler ad-degistir, bolen-degistir, bolen-sifir, buyuk, canli, cik)
+✓ D mutasyon yakalandı: kurus-yuvarla-tutar — satır tutarı kuruşa yuvarlanır (Excel yuvarlamaz) (4031 fark; aileler ad-degistir, bolen-degistir, bolen-sifir, buyuk, canli, cik)
+✓ D mutasyon yakalandı: kurus-yuvarla-ara — ARA kuruşa yuvarlanır (2337 fark; aileler ad-degistir, bolen-degistir, bolen-sifir, canli, cik, dolu)
+✓ D mutasyon yakalandı: cam5-cm-hesapla — CAM 130 1S2Ç CM maliyeti elle değil ÷120 hesaplanır (36 fark; aileler ad-degistir, bos, buyuk, dolu, elle, kaydet-yeniden-ac)
+✓ D mutasyon yakalandı: cam4-bolen-130 — CAM 130 1S1Ç bölen 130'a 'düzeltilir' (105 fark; aileler ad-degistir, bolen-degistir, bolen-sifir, bos, buyuk, dolu)
+✓ D mutasyon yakalandı: mika9-bolen-150 — MİKA 150 1S1Ç bölen 150'ye 'düzeltilir' (105 fark; aileler ad-degistir, bolen-degistir, bolen-sifir, bos, buyuk, dolu)
+✓ D mutasyon yakalandı: yan-panel-oran-20 — yan panel 2. oranı etiketteki %20'ye 'düzeltilir' (102 fark; aileler ad-degistir, bos, buyuk, canli, cik, dolu)
+✓ D mutasyon yakalandı: oran-ortak — oran değişikliği sekmedeki öbür kartlara da yazılır (61 fark; aileler yalitim)
+✓ D mutasyon yakalandı: bolen-ortak — bölen değişikliği sekmedeki öbür kartlara da yazılır (21 fark; aileler yalitim)
+✓ D mutasyon yakalandı: ortak-malzeme-fiyati — aynı adlı malzemenin fiyatı sekmedeki bütün kartlarda ortak (1151 fark; aileler sekme, yalitim)
+✓ D mutasyon yakalandı: eklenen-satir-ara-disi — eklenen satır ARA'ya girmez (320 fark; aileler satir-ekle, satir-sil, sil-ayni-adla-ekle)
+✓ D mutasyon yakalandı: silinen-satir-sayilir — silinen satır toplamda kalır (258 fark; aileler satir-sil, sil-ayni-adla-ekle)
+✓ D mutasyon yakalandı: ad-ile-birlestir — aynı adlı satırlardan yalnız ilki sayılır (64 fark; aileler ad-degistir)
+✓ D mutasyon yakalandı: bos-null — boş kartta hesaplanan değerler 0 yerine boş (null) (202 fark; aileler bos, satir-sil)
+✓ D mutasyon yakalandı: gramaj-r20-hesapla — gramaj R20 elle değil Boy × Br. Gramaj (129 fark; aileler ad-degistir, buyuk, canli, cik, dolu, elle)
+✓ D mutasyon yakalandı: gramaj-giden-mt — gramaj Giden Kğ = Giden Mt × Br. Gramaj (746 fark; aileler ad-degistir, buyuk, canli, cik, dolu, giden-mt)
+✓ D mutasyon yakalandı: gramaj-eklenen-toplam-disi — eklenen gramaj satırı toplamlara girmez (2 fark; aileler satir-ekle)
+✓ D mutasyon yakalandı: gramaj-toplam-elle-yok — elle Giden Kğ toplama girmez (31 fark; aileler ad-degistir, buyuk, canli, cik, dolu, elle)
+✓ D mutasyon yakalandı: matris-b7-capa — liste-1 2 Sabit 2 Açılır B7 = B5 + fark (zincir yerine çapa) (81 fark; aileler ad-degistir, bilgi, canli, cik, fark-degistir, hucre-basina)
+✓ D mutasyon yakalandı: matris-h-zincir-capa — liste-1 1 Sabit 2 Çalışır H21:H23 ilk satıra bağlanır (zincir yerine çapa) (144 fark; aileler ad-degistir, bilgi, fark-degistir, hucre-basina, kaydet-yeniden-ac, sembol)
+✓ D mutasyon yakalandı: matris-tesettur-tabandan — liste-1 tesettür sütunu parlak yerine tabandan türetilir (646 fark; aileler ad-degistir, bilgi, canli, cik, fark-degistir, hucre-basina)
+✓ D mutasyon yakalandı: matris-fark-ilk-satir — liste-1 siyah sütununda bütün satırlar ilk satırın farkını kullanır (335 fark; aileler ad-degistir, bilgi, canli, cik, fark-degistir, hucre-basina)
+✓ D mutasyon yakalandı: matris-yan-panel-parlak-c3 — liste-1 Seri Yan Panel parlak sütunu kendi farkı yerine 2 Sabit 2 Açılır'ın ilk parlak farkını kullanır (216 fark; aileler ad-degistir, bilgi, fark-degistir, hucre-basina, kaydet-yeniden-ac, sembol)
+✓ D mutasyon yakalandı: matris-elle-zincir — liste-2 elle hücreleri (I5, H15:K15, B30) üst satırdan hesaplanır (253 fark; aileler ad-degistir, bilgi, elle, fark-degistir, hucre-basina, kaydet-yeniden-ac)
+✓ D mutasyon yakalandı: matris-bos-fark-null — boş fark 0 yerine boş (hücre hesaplanmaz) (800 fark; aileler bos, taban)
+✓ D mutasyon yakalandı: fark-sembole-bagli — fark hücre başına değil sembol başına (ilk hücrenin farkı) okunur (343 fark; aileler hucre-basina)
+✓ D mutasyon yakalandı: bilgi-bagli — liste-1 'Parlak Profil Farkı' bilgi satırı parlak sütununun farkı olarak okunur (96 fark; aileler bilgi)
+✓ D mutasyon yakalandı: bolen-sifir-sonsuz — bölen 0 kabul edilir ve sonsuz (ya da 0) gösterilir (126 fark; aileler bolen-sifir)
+✓ D mutasyon yakalandı: kaydet-yuvarla-girdi — Kaydet girdileri 2 basamağa yuvarlar (1190 fark; aileler buyuk, cik, elle, kaydet-yeniden-ac, ondalik, uc-degerler)
+✓ D mutasyon yakalandı: cik-soru-yok — kaydedilmemiş değişiklikle Çık'ta soru sorulmaz (246 fark; aileler cik)
+✓ D mutasyon yakalandı: cik-kaydetmeden-kaydeder — 'Kaydetmeden Çık' yine de kaydeder (77 fark; aileler cik)
+✓ D mutasyon yakalandı: oran-etiket-bagli — oran değişince etiket kendiliğinden değişir (31 fark; aileler canli, elle, oran-degistir, yalitim)
+✓ D mutasyon yakalandı: yeniden-baslat-kayip — program yeniden başlayınca son Kaydet kaybolur (25 fark; aileler yeniden-baslat)
+mutasyon: 37/37 yakalandı
+✓ D eşdeğer işlem sırası (ARA × (p/100), T × (1 + q/100)) fark sayılmaz
+✓ D kuruş altı (0,004) sapma yakalanır
+✓ E program yokken BELİRSİZ: çıkış 3, 'program yok', 'geçti' özeti yok (ders 4)
+✓ E sahte uyarlayıcı --kendi-testi olmadan reddedilir (BELİRSİZ, 3)
+✓ E sahte uyarlayıcı (kâhinin kendisi) --kendi-testi: çıkış 0, N/N denetim geçti
+✓ E bozuk program (bos-null): çıkış 1, ✗ satırı, G < N
+✓ E arayüz katmanı koşulmadıysa BELİRSİZ (3)
+✓ E --katman api açıkça seçilince: çıkış 0, seçilmeyen sayısı yazılı
+✓ E KARAR beyanı yoksa ilgili senaryolar koşulmaz → BELİRSİZ (3)
+✓ E bozuk JSON yanıtı BELİRSİZ (3)
+✓ E uyarlayıcı düşerse BELİRSİZ (3), hata satırı gösterilir
+✓ F sentetik döküm: 1308 denetim, 0 fark (araç tesisatı)
+✓ F bölen 200 → 201 yapı farkı olarak yakalanır
+✓ F yan panel sonucu (E41) +1 değer farkı olarak yakalanır
+✓ F elle hücre (R20) formül olursa kapsam / elle farkı
+✓ F 2019 I5 formül olursa yakalanır
+✓ F 2024 B7 kaynağı B6 → B5 yapı farkı
+119/119 denetim geçti

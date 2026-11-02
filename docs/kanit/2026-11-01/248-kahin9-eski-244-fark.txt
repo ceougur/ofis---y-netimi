@@ -1,0 +1,13 @@
+# Kâhin güncellemesi 9 — eski 244 senaryonun TAM model sonucu: eski = git show 9086b097:test/bagimsiz/whatsapp-248/kahin/senaryolar.json, yeni = da86a2df kâhini
+# komut: git show 9086b097:test/bagimsiz/whatsapp-248/kahin/senaryolar.json > eski.json && python3 -I docs/kanit/2026-11-01/248-kahin9-araclar/fark.py test/bagimsiz/whatsapp-248/kahin eski.json   (kâhin da86a2df)
+DEĞİŞTİ E4-01-son-3-ay-sonraki-teslim-7-gun
+    [0].sonuc.bu_ay.W1.2026-11 : "<YOK>" → {"teslim": 1, "yaklasik_usd": "0.0009"}
+DEĞİŞTİ E4-02-tum-hareketler-sonraki-teslim-7-gun
+    [0].sonuc.bu_ay.W1.2026-11 : "<YOK>" → {"teslim": 1, "yaklasik_usd": "0.0009"}
+DEĞİŞTİ H3-01-geri-yukleme-dosyasiz-gec-kabul
+    [0].sonuc.bu_ay.W1.2026-10.teslim : 1 → 2
+    [0].sonuc.bu_ay.W1.2026-10.yaklasik_usd : "0.0009" → "0.0018"
+DEĞİŞTİ H3-02-geri-yukleme-meta-bekletti-gec-teslim
+    [0].sonuc.bu_ay.W1 : "<YOK>" → {"2026-10": {"teslim": 1, "yaklasik_usd": "0.0009"}}
+4 / 244 eski senaryonun tam sonucu değişti
+# çıkış 0

@@ -1,0 +1,52 @@
+// T56c: ESKİ makine defteri (attempt_deliveries / anyway_links YOK; v42 83100a79 / v43 4affbb07 kodunun yazdığı) adayda açılır →
+// tablolar oluşur, eski satırlar korunur; eski teslim (deliveries, deneme satırı yok) "Bu Ay"da BİR kez; aynı denemenin yinelenen/sonraki durum bildirimi
+// (delivered tekrar, read) sayıyı artırmaz; yeni teslim +1. Beklenen plan §7a 19 + KULLANICI KARARI 01.11 06:28 (5) "her teslim edilen denemeyi sayar" (deneme başına bir).
+//   node defter-eski.mjs <aday kökü> <taban kopyası (eski kodun ürettiği veri; değiştirilir)>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { DatabaseSync } from "node:sqlite";
+if (process.env.HUKUK_LICENSE_URL !== "http://127.0.0.1:9") throw new Error("ders 30");
+const [kok, veri] = process.argv.slice(2);
+const ledgerFile = path.join(veri, "data", "whatsapp-gonderim.sqlite");
+const ro = fn => { const db = new DatabaseSync(ledgerFile, { readOnly: true }); try { return fn(db); } finally { db.close(); } };
+const tables = () => ro(db => db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name").all().map(r => r.name));
+const countsOf = () => ro(db => Object.fromEntries(tables().map(t => [t, db.prepare(`SELECT count(*) AS n FROM "${t}"`).get().n])));
+const before = { tables: tables(), counts: countsOf() };
+const { startWa } = await import(pathToFileURL(path.join(kok, "test/whatsapp-248-ortak.mjs")).href);
+const ctx = await startWa({ dataDir: path.join(veri, "data"), backupDir: path.join(veri, "backups"), now: { time: "2026-11-03T10:00:00+03:00", fixed: true }, whatsappWorker: "manual", whatsappGapMs: 0, whatsappTimeoutMs: 800, connect: false, ack: false });
+ctx.fake.state.sent = 1000; // ARAÇ: yeni sahte Meta süreci wamid sayacını eski wamid'lerin üstünden başlatır (gerçek Meta wamid'i yeniden vermez)
+const checks = [];
+const check = (name, ok, d) => { checks.push(ok); console.log(`  ${ok ? "✓" : "✗"} ${name}${ok ? "" : ` — ${JSON.stringify(d ?? {}).slice(0, 900)}`}`); };
+const st = async () => (await ctx.api.get("/api/workspace/whatsapp/stats?month=2026-11")).data.data;
+const ts = iso => String(Math.floor(Date.parse(iso) / 1000));
+try {
+  const after = { tables: tables(), counts: countsOf() };
+  check(`eski defter tabloları ${JSON.stringify(before.tables.filter(t => !["sqlite_sequence"].includes(t)).length)}; adayda eklenen ${JSON.stringify(after.tables.filter(t => !before.tables.includes(t)))}`, ["attempt_deliveries", "anyway_links"].every(t => !before.tables.includes(t) && after.tables.includes(t)), { before: before.tables, after: after.tables });
+  check(`eski satırlar korunur (${Object.entries(before.counts).map(([t, n]) => `${t} ${n}→${after.counts[t]}`).join(", ")})`, Object.entries(before.counts).every(([t, n]) => after.counts[t] >= n));
+  const job = name => ctx.store.get("SELECT j.id, j.wamid, j.phone_e164 AS phone, j.state FROM wa_jobs j JOIN accounts a ON a.id = j.account_id WHERE a.name = ? ORDER BY j.rowid LIMIT 1", name);
+  const g0 = job("Ara Şema G0"), g1 = job("Ara Şema G1");
+  const s0 = await st();
+  check(`açılışta Bu Ay teslim ${s0.delivered} (beklenen 1: G0'ın eski deliveries satırı), kabul ${s0.accepted} (5)`, s0.delivered === 1 && s0.accepted === 5, s0);
+  ctx.statuses([{ id: g0.wamid, status: "delivered", timestamp: ts("2026-11-03T09:01:00+03:00"), recipient_id: g0.phone.slice(1) }]);
+  ctx.statuses([{ id: g0.wamid, status: "read", timestamp: ts("2026-11-03T09:30:00+03:00"), recipient_id: g0.phone.slice(1) }]);
+  ctx.statuses([{ id: g0.wamid, status: "delivered", timestamp: ts("2026-11-03T09:45:00+03:00"), recipient_id: g0.phone.slice(1) }]);
+  const s1 = await st();
+  const ad1 = ro(db => db.prepare("SELECT job_id, attempt, at FROM attempt_deliveries").all());
+  check(`G0'a yinelenen delivered (aynı an, sonraki an) + read: Bu Ay teslim ${s1.delivered} (beklenen 1 — aynı deneme bir kez); attempt_deliveries ${ad1.length}`, s1.delivered === 1, { s1, ad1 });
+  ctx.statuses([{ id: g1.wamid, status: "delivered", timestamp: ts("2026-11-03T09:50:00+03:00"), recipient_id: g1.phone.slice(1) }]);
+  const s2 = await st();
+  check(`G1 (yalnız kabul) şimdi teslim: Bu Ay teslim ${s2.delivered} (beklenen 2), G1 iş durumu ${job("Ara Şema G1").state}`, s2.delivered === 2 && job("Ara Şema G1").state === "delivered", s2);
+  const pv = await ctx.api.post("/api/workspace/whatsapp/batches/preview", { kind: "statement", all: true, status: "all", preset: "thisMonth" });
+  const skip = Object.fromEntries((pv.data.data.people || []).map(p => [p.name || p.accountName, p.skip || ""]));
+  check(`R3 sürer: G0, G1 Daha Önce Gönderildi (${skip["Ara Şema G0"]}, ${skip["Ara Şema G1"]})`, skip["Ara Şema G0"] === "Daha Önce Gönderildi" && skip["Ara Şema G1"] === "Daha Önce Gönderildi", skip);
+  const before2 = ctx.fake.state.messages.length;
+  await ctx.drain();
+  check(`bildirimler ileti GÖNDERTMEZ, sürülünce G0/G1'e ileti 0 (giden: ${JSON.stringify(ctx.fake.state.messages.slice(before2).map(m => m.to))})`, !ctx.fake.state.messages.slice(before2).some(m => [g0.phone, g1.phone].includes(m.to)));
+} finally {
+  await ctx.close();
+}
+const reopenCounts = countsOf();
+console.log(`# defter sonra: ${JSON.stringify(reopenCounts)}`);
+const fail = checks.filter(x => !x).length;
+console.log(`# tests ${checks.length}\n# pass ${checks.length - fail}\n# fail ${fail}\n# cancelled 0\n# skipped 0\n# todo 0`);
+process.exitCode = fail ? 1 : 0;

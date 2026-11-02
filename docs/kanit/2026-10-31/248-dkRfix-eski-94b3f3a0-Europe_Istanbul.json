@@ -1,0 +1,133 @@
+{
+  "ad": "248-dkRfix-eski-94b3f3a0-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/eski-94b3f3a0/test/kapanis-zamanlayici-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/eski-94b3f3a0/test/write-lock-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/eski-94b3f3a0/test/whatsapp-dk14-isci-kapanis-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/eski-94b3f3a0/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/eski-94b3f3a0/test/whatsapp-q5-son-kabul-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/eski-94b3f3a0/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/eski-94b3f3a0/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs",
+  "commit": "0213f1e80a41bfb7fa46f3cfd6b1cf5dc66c8682",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T22:33:25.231Z",
+  "sure_sn": 76.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 45,
+    "gecen": 25,
+    "basarisiz": 20,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş R1 — kapanan şirketin yeniden deneme zamanlayıcıları süreci düşürmez › belge temizliği kilitte yeniden denemeye kaldı → uygulama kapanır → zamanlayıcı ateşlenmez, yakalanmamış istisna yok",
+      "konum": "test/kapanis-zamanlayici-248.test.mjs:47:3",
+      "hata": "database is not open"
+    },
+    {
+      "ad": "2.4.8 İş R1 — kapanan şirketin yeniden deneme zamanlayıcıları süreci düşürmez › sohbet arşivi kilitte yeniden denemeye kaldı → uygulama kapanır → yakalanmamış istisna yok",
+      "konum": "test/kapanis-zamanlayici-248.test.mjs:64:3",
+      "hata": "database is not open"
+    },
+    {
+      "ad": "2.4.8 İş R1 — kapanan şirketin yeniden deneme zamanlayıcıları süreci düşürmez › iki şirket: 002'nin belge temizliği kilitte → 002 silinir → ortak süreçte yakalanmamış istisna yok, ortak katman yanıt verir",
+      "konum": "test/kapanis-zamanlayici-248.test.mjs:82:3",
+      "hata": "database is not open"
+    },
+    {
+      "ad": "2.4.8 İş R3 — makine defteri kilidinde ekranda neden › kalıcı defter kilidi: ayrıntı + liste + canlı olay defter cümlesi; 6 turda not sürekli, toplu iş Sürüyor, ileti yok; kilit kalkınca not kalkar, tek ileti",
+      "konum": "test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:202:3",
+      "hata": "her turda Sürüyor + defter cümlesi (ayrıntı ve liste) (geldi [[\"running\",null,null],[\"running\",null,null],[\"running\",null,null],[\"running\",null,null],[\"running\",null,null],[\"running\",null,null]]) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş R3 — makine defteri kilidinde ekranda neden › iki kilit birden → şirket cümlesi (defter önce kilitlenmiş olsa da); Duraklatıldı işte not yok",
+      "konum": "test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:238:3",
+      "hata": "defter kilidi: süren işte defter cümlesi, duraklatılmışta yok · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş R3 — makine defteri kilidinde ekranda neden › defter kilidi tur İÇİNDE (talep anında) başlar → iş Bekliyor, not defter cümlesi (şirket cümlesi değil)",
+      "konum": "test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:261:3",
+      "hata": "iş Bekliyor + defter cümlesi (geldi [\"pending\",null]) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş R2 — kapanan / sınaması fırlatan şirket işçi turunu düşürmez › bir şirketin sınaması fırlatır (kapalı veri tabanı) → tur reddedilmez, öbür şirketin bakımı ve işi yürür",
+      "konum": "test/whatsapp-dk14-isci-kapanis-248.test.mjs:30:3",
+      "hata": "database is not open"
+    },
+    {
+      "ad": "2.4.8 İş R2 — kapanan / sınaması fırlatan şirket işçi turunu düşürmez › 001'in bakımı beklerken 002 kuyruktan çıkar (silinir) → 002 o turda hiç sınanmaz, 001'in işi aynı turda yürür",
+      "konum": "test/whatsapp-dk14-isci-kapanis-248.test.mjs:43:3",
+      "hata": "database is not open"
+    },
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › R6 hareketsiz cari: Tüm Hareketler (iletide 03.11 – 03.11) → 05.11 özel 03.11–03.11 'Daha Önce Gönderildi'; ters yön: özel 03.11–03.11 → aynı gün Tüm 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:122:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › R5 A: 'Bu Ay' 02.11'de gitti → 03.11 Tüm Hareketler (P'nin dönemi 01.11–03.11 = o günün Bu Ay'ı) 'Daha Önce Gönderildi'; Q (02.11–03.11) gönderilecek",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:208:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › R5 A2: Tüm Hareketler 02.11'de gitti (P: 01.11–02.11 = o günün Bu Ay'ı) → 03.11 'Bu Ay' P 'Daha Önce Gönderildi'; Q (02.11–02.11) gönderilecek",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:219:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › R5 Zaten Kuyrukta iki yön: Bu Ay işi sırada → Tüm (P) 'Zaten Kuyrukta'; Tüm işi sırada → ertesi gün Bu Ay (P) 'Zaten Kuyrukta'",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:230:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › R7: kabul → sıfırla → imzalı failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:126:7",
+      "hata": "geç failed uygulandı (geldi {\"applied\":0,\"ignored\":0,\"unknown\":1}) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › R7: kabul → sıfırla → imzasız failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:126:7",
+      "hata": "geç failed uygulandı (geldi {\"applied\":0,\"ignored\":0,\"unknown\":1}) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › R7: kabul → sıfırla → imzalı failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:126:7",
+      "hata": "geç failed uygulandı (geldi {\"applied\":0,\"ignored\":0,\"unknown\":1}) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › R7: kabul → sıfırla → imzasız failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:126:7",
+      "hata": "geç failed uygulandı (geldi {\"applied\":0,\"ignored\":0,\"unknown\":1}) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş Q5 — 'Daha Önce Gönderildi' tarihi son kabul edilen denemenin anı › R4: 2. deneme imzalı bildirimle çözülünce aynı bilgisayar VE taşınan veri (defter yok) 'Daha Önce Gönderildi', aynı tarih (2. denemenin anı)",
+      "konum": "test/whatsapp-q5-son-kabul-248.test.mjs:107:3",
+      "hata": "dosyada accepted_at 2. denemenin anı · + actual - expected · + '2026-11-03T07:00:00.000Z' (beklenen 2026-11-04T07:06:00.000Z, gelen 2026-11-03T07:00:00.000Z)"
+    },
+    {
+      "ad": "2.4.8 İş Q5 — 'Daha Önce Gönderildi' tarihi son kabul edilen denemenin anı › R8: 2. deneme imzalı 'sent' ile çözüldü → 'Süresi Doldu' 2. denemenin anından ölçülür (1. denemenin TTL'i dolunca iş beklemede kalır)",
+      "konum": "test/whatsapp-q5-son-kabul-248.test.mjs:133:3",
+      "hata": "1. denemenin süresi doldu diye iş Süresi Doldu yapılmadı · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.8 İş Q5 — 'Daha Önce Gönderildi' tarihi son kabul edilen denemenin anı › R4: 2. denemenin kabulü dosyaya yazılamadı (Gönderiliyor'da kaldı) → bakım defterdeki kabulle çözer; accepted_at 2. denemenin defterdeki kabul anı",
+      "konum": "test/whatsapp-q5-son-kabul-248.test.mjs:153:3",
+      "hata": "ön koşul: defterde 2. denemenin kabulü ([{\"attempt\":1,\"outcome\":\"released\",\"wamid\":\"wamid.SAHTE0001\"},{\"attempt\":2,\"outcome\":\"accepted\",\"wamid\":\"wamid.SAHTE0002\"}], 1. 2026-11-03T07:00:00.000Z)"
+    },
+    {
+      "ad": "2.4.8 İş P1 — store.probeWritable ve yazım kilidi işareti › İş R1: kapalı bağlantıda kısa sınama fırlatmaz, 'closed' döner; guard yazılamaz der ama İŞARET KOYMAZ (kapanma kilit değildir)",
+      "konum": "test/write-lock-248.test.mjs:107:3",
+      "hata": "database is not open"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkRfix-eski-94b3f3a0-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "e08600f8875eb68f497659a6222ca0c5c309c6a0409c33d956ee3ce0f1c44557",
+  "ham_cikti_bayt": 45280
+}

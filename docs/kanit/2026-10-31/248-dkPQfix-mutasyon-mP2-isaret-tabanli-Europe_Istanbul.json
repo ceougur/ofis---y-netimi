@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkPQfix-mutasyon-mP2-isaret-tabanli-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs",
+  "commit": "51cfb7516659bf0f7afa563fb88fa56e29262fad",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 193,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T21:04:38.315Z",
+  "sure_sn": 9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş P2 — kilitte ekranda neden › işçi kilidi görünce süren toplu işin ayrıntısında ve listede not; konunca ve kalkınca canlı olay; kilit kalkıp işaret süresi dolunca not kalkar; duraklatılmış işte not yok",
+      "konum": "test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:126:3",
+      "hata": "işaret süresi dolunca da (işçi yeniden sınayana dek) not durur · + actual - expected · + null (beklenen Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor., gelen ~)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-mutasyon-mP2-isaret-tabanli-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "bb3226dd040bb03a2727f78c2e8b96a7c605fc3222fcd3c98194878aff4f0ae5",
+  "ham_cikti_bayt": 3621
+}

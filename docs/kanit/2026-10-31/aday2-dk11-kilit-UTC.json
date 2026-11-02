@@ -1,0 +1,32 @@
+{
+  "ad": "aday2-dk11-kilit-UTC",
+  "komut": "node --test --test-concurrency=1 --test-timeout=300000 test/whatsapp-dk11-kilit-248.test.mjs test/t6-b*.test.mjs test/whatsapp-w2-surec-olumu-248.test.mjs",
+  "commit": "d66c0691d00f25d3b99a2bdaa6630dc9e89b1878",
+  "dal": "is/aday2-248",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T17:07:29.163Z",
+  "sure_sn": 24.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/aday2-dk11-kilit-UTC.log",
+  "klasor": "/home/user/wt-aday2-248",
+  "ham_cikti_sha256": "aaf9fd40958c85fa598bb9f3b8b2976e9ea1faa5860260a98c7c0ddfefc6685c",
+  "ham_cikti_bayt": 2051
+}

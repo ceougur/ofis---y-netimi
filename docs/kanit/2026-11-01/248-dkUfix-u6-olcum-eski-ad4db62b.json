@@ -1,0 +1,32 @@
+{
+  "ad": "248-dkUfix-u6-olcum-eski-ad4db62b",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/u6-olcum.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/u5-eski-ad4db62b",
+  "commit": "66b948c4afa690751993c926578a4017ab2d8590",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T03:00:17.862Z",
+  "sure_sn": 4.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkUfix-u6-olcum-eski-ad4db62b.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "c5494ba5b3b91bd7604d244d1280e4c8d308652883c82cba97f0bb00ef7aebf9",
+  "ham_cikti_bayt": 681
+}

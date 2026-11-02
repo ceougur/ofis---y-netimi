@@ -1,0 +1,41 @@
+# 83100a79: üretim {"ok":true,"version":42,"batches":{"B1":"wab-321ac3b5-6c03-4b86-8c1b-e170c8eb42a3","B4":"wab-68935712-4c08-4023-a4bf-2f48f19e74d8","B1b":"wab-d0a03c47-cf5f-469e-8e59-5f6ef4e0adc9","B2":"wab-37c912ca-1770-475a-ba5a-0ed22a668e43","B3":"wab-98c06de2-afb7-462c-b3f0-960266a26002"},"states":{"Ara Şema G0":"delivered/done","Ara Şema G1":"accepted/done","Ara Şema G2":"accepted/done","Ara Şema G3":"accepted/done","Ara Şema G4":"failed/done","Ara Şema G5":"uncertain/done","Ara Şema G6":"pending/running","Ara Şema G7":"pending/running","Ara Şema G8":"pending/running","Ara Şema G9":"accepted/done"},"delivered":"wamid.SAHTE0001","meta":{"messages":6,"to":["+905542000010","+905542000011","+905542000012","+905542000013","+905542000019","+905542000015"]}}
+  ✓ 83100a79 eski kod kendi API'siyle veri üretti (şema v42; işler {"Ara Şema G0":"delivered/done","Ara Şema G1":"accepted/done","Ara Şema G2":"accepted/done","Ara Şema G3":"accepted/done","Ara Şema G4":"failed/done","Ara Şema G5":"uncertain/done","Ara Şema G6":"pending/running","Ara Şema G7":"pending/running","Ara Şema G8":"pending/running","Ara Şema G9":"accepted/done"})
+  ✓ 83100a79 göç v42 → v44 (beklenen 44), bütünlük ok
+  ✓ 83100a79 eklenen sütunlar yalnız beklenenler: wa_batches +[key_day] (beklenen [key_day]), wa_jobs +[inherit_of] (beklenen [inherit_of])
+  ✓ 83100a79 şirket dosyasında tablo farkı yok (eklenen , düşen )
+  ✗ 83100a79 eski iş satırları göçten sonra aynı durumda (10) — {"oldRows":[{"id":"waj-00a5dc76-4eaa-417d-8d29-b15f574775dc","state":"delivered"},{"id":"waj-4036aa62-cfdc-4719-851a-8d1ee1ae6bd9","state":"accepted"},{"id":"waj-4ed49e97-67ab-4925-8ce3-4fc987791457","state":"accepted"},{"id":"waj-8e518a62-0e86-4028-a6ac-57c598fa97bf","state":"accepted"},{"id":"waj-c5275a79-a203-49f7-a17d-85701188089a","state":"pending"},{"id":"waj-d21ac568-3321-4814-829a-ffadc25e5c8f","state":"pending"},{"id":"waj-d233347a-c8db-43e4-8240-6c89a4988fa6","state":"failed"},{"id":"waj-dabcccb1-d2db-4e0b-a134-a4c61e285a3a","state":"pending"},{"id":"waj-e458069f-57b1-466e-923d-fb9f2f2c9972","state":"uncertain"},{"id":"waj-ebaee6aa-046c-416d-a144-27566294bfeb","state":"accepted"}],"migRows":[{"id":"waj-00a5dc76-4eaa-417d-8d29-b15f574775dc","state":"delivered"},{"id":"waj-4036aa62-cfdc-4719-851a-8d1ee1ae6bd9","state":"accepted"},{"id":"waj-4ed49e97-67ab-4925-8ce3-4fc987791457","state":"accepted"},{"id":"waj-8e518a62-0e86-4028-a6ac-57c598fa97bf","state":"accepted"},{"id":"waj-c5275a79-a203-49f7-a17d-85701188089a","state":"sending"},{"id":"waj-d21ac568-3321-4814-829a-ffadc25e5c8f","state":"sending"},{"id":"waj-d233347a-c8db-43e4-8240-6c89a4988fa6","state":"failed"},{"id":"waj-dabcccb1-d2db-4e0b-a134-a4c61e285a3a","state":"sending"},{"id":"waj-e458069f-57b1-466e-923d-fb9f2f2c9972","state":"uncertain"},{"id":"waj-ebaee6aa-046c-416d-a144-27566294bfeb","state":"accepted"}]}
+  ✓ 83100a79 göçmüş toplu işlerde key_day = '' ve send_again_after = '' (eski davranış; 5 iş)
+  ✓ 83100a79 makine defteri: eklenen tablolar [anyway_links,attempt_deliveries] (learned_wamids, claim_keys, attempt_deliveries, anyway_links şirket dosyasında DEĞİL, defterde var); eski satırlar korunur (claims 7 → ≥, accepts 5 → ≥)
+  ✓ 83100a79 önce (eski kod) Ekstre "Bu Ay": G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta, G4/G6/G7/G9 gönderilir (G5: Sonucu Belirsiz)
+  ✓ 83100a79 önce (eski kod) Ödeme Hatırlatma: G9 Daha Önce Gönderildi (bugün), G6/G7 Zaten Kuyrukta, öbürleri Gecikmiş Borç Yok
+  ✓ 83100a79 önce (eski kod) Başarısızları Yeniden Dene (B1): yalnız G4 yeni iş (["Ara Şema G4:pending"])
+  ✓ 83100a79 önce (eski kod) Yine de Gönder (G5 belirsiz): onaysız 409, onaylı 200 → G5 yeni iş (["Ara Şema G5:pending"])
+  ✓ 83100a79 önce (eski kod) Yeniden Dene + Yine de Gönder kuyruktayken Ekstre "Bu Ay": G4, G5, G8 Zaten Kuyrukta
+  ✓ 83100a79 sonra (aday) Ekstre "Bu Ay": G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta, G4/G6/G7/G9 gönderilir (G5: Sonucu Belirsiz)
+  ✓ 83100a79 sonra (aday) Ödeme Hatırlatma: G9 Daha Önce Gönderildi (bugün), G6/G7 Zaten Kuyrukta, öbürleri Gecikmiş Borç Yok
+  ✓ 83100a79 sonra (aday) Başarısızları Yeniden Dene (B1): yalnız G4 yeni iş (["Ara Şema G4:pending"])
+  ✓ 83100a79 sonra (aday) Yine de Gönder (G5 belirsiz): onaysız 409, onaylı 200 → G5 yeni iş (["Ara Şema G5:pending"])
+  ✓ 83100a79 sonra (aday) Yeniden Dene + Yine de Gönder kuyruktayken Ekstre "Bu Ay": G4, G5, G8 Zaten Kuyrukta
+  ✓ 83100a79 sonra (aday) özel aralık 01.11–03.11 = o günün "Bu Ay"ı → G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta (karar "b"; göçmüş defterde claim_keys satırı 0)
+  ✓ 83100a79 eski defterde attempt_deliveries yok, anyway_links yok → adayda ikisi de var; attempt_deliveries satırı 0 (göç dönüştürmez; olc yalnız kabul alır)
+  ✓ 83100a79 sonra (aday) Bu Ay: teslim 1 (beklenen 1, eski deliveries satırından), Meta Kabul Etti 5 (beklenen 5)
+  ✗ 83100a79 sonra (aday) bekleyenler sürülünce yalnız G4–G8'e birer ileti (4; çift 0, G0–G3/G9'a 0) — {"drained":["+905542000014","+905542000016","+905542000017","+905542000018"],"expDrain":["+905542000014","+905542000015","+905542000016","+905542000017","+905542000018"]}
+  ✗ 83100a79 sonra (aday) sürülünce Bu Ay: teslim 1 (1), Meta Kabul Etti 9 (10) — {"status":200,"delivered":1,"accepted":9,"billable":1}
+  ✗ 83100a79 sonra (aday) sürüldükten sonra Ekstre "Bu Ay": G0–G5, G8 Daha Önce Gönderildi (G5: Yine de Gönder kabul edildi → İş Q2 kararı A), G6/G7/G9 gönderilir — {"badSur":["G4=Zaten Kuyrukta","G5=Sonucu Belirsiz","G8=Zaten Kuyrukta"],"skipped":{"Daha Önce Gönderildi":4,"Zaten Kuyrukta":2,"Sonucu Belirsiz":1}}
+  ✓ 83100a79 önce = sonra: sürülen alıcılar (eski kod 4)
+# 83100a79 bilgi: Bu Ay önce (eski kod) {"status":200,"delivered":1,"accepted":5,"billable":1} → sürülünce {"status":200,"delivered":1,"accepted":9,"billable":1}; sonra (aday) {"status":200,"delivered":1,"accepted":5,"billable":1} → {"status":200,"delivered":1,"accepted":9,"billable":1}
+# 83100a79 bilgi: sürüldükten sonra ekstre eski kodda {"Daha Önce Gönderildi":4,"Zaten Kuyrukta":2,"Sonucu Belirsiz":1} / adayda {"Daha Önce Gönderildi":4,"Zaten Kuyrukta":2,"Sonucu Belirsiz":1}
+  ✓ 83100a79 önce = sonra: ekstre
+  ✓ 83100a79 önce = sonra: hat
+  ✓ 83100a79 önce = sonra: retry
+  ✓ 83100a79 önce = sonra: anyway
+  ✓ 83100a79 önce = sonra: kuyruk
+  ✓ 83100a79 önce = sonra: durum
+# 83100a79 bilgi: özel aralık 01.11–03.11 eski kodda {"Daha Önce Gönderildi":4,"Sonucu Belirsiz":1,"Zaten Kuyrukta":1} / adayda {"Daha Önce Gönderildi":4,"Sonucu Belirsiz":1,"Zaten Kuyrukta":1} (eşlik kararı "b" 82e4e07e ile geldi; v42'den önceki kodda yok)
+# 83100a79 bilgi: yeni işlerin key_day / send_again_after (aday): [{"rk":"user-b6cddece-c349-4ab5-a93d-2c171c5583ad|t56b-ara-retry-0001","keyDay":"2026-11-03","again":""},{"rk":"user-b6cddece-c349-4ab5-a93d-2c171c5583ad|t56b-ara-anyway-0001","keyDay":"2026-11-03","again":""}]
+# tests 30
+# pass 26
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0

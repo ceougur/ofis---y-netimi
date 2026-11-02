@@ -1,0 +1,32 @@
+{
+  "ad": "248-dk8ghi-son-yeni-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /home/user/wt-t2fix-248/test/whatsapp-dk8-g-son-248.test.mjs",
+  "commit": "31ac920eb98461ea2a338f879f347f28a5489bfe",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 74,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T11:48:55.872Z",
+  "sure_sn": 2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk8ghi-son-yeni-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "b63ef2f19b74ca14c19a84f24f4e9f771aa65a34459e8182b223e3e66e762f80",
+  "ham_cikti_bayt": 1868
+}

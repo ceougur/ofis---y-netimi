@@ -1,0 +1,43 @@
+{
+  "ad": "248-dkTfix-ek-mutasyon-mLedgerMust-etkisiz-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/ek-mut/test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": "e5d8baf77a9ace82d0ffec2d7890317f308fec1c",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T01:42:12.470Z",
+  "sure_sn": 38.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 45,
+    "gecen": 43,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0d defter teslimi yazılamadı (false) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 1, accepted_at değişmez)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:719:5",
+      "hata": "defter yazılamadı → 503 (geldi 200 {\"ok\":true}) · 200 !== 503 (beklenen 503, gelen 200)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0f yazım ortasında GERÇEK defter kilidi (ön sınamadan sonra, ayrı bağlantı) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 1, accepted_at değişmez)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:719:5",
+      "hata": "defter yazılamadı → 503 (geldi 200 {\"ok\":true}) · 200 !== 503 (beklenen 503, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkTfix-ek-mutasyon-mLedgerMust-etkisiz-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "b035406f1d0425eec5043f1d46bce6d4bc428fa2d3b5cd54041269e6998aa148",
+  "ham_cikti_bayt": 17120
+}
