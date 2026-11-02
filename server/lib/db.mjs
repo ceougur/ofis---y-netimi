@@ -6,10 +6,21 @@ export const BUSY_TIMEOUT_MS = 10_000;
 
 export function openDatabase(dbPath, { readOnly = false } = {}) {
   const db = readOnly ? new DatabaseSync(dbPath, { readOnly: true }) : new DatabaseSync(dbPath);
-  // WAL + synchronous FULL (v2.0.6): her COMMIT diske işlenir; elektrik kesilse de tamamlanmış işlem kaybolmaz, yarım
-  // işlem kalmaz (geri alınır). Yerel ofis programında yazma sıklığı düşük; güvenlik hız maliyetine değer.
-  if (!readOnly) db.exec("PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;");
-  db.exec(`PRAGMA foreign_keys = ON; PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS};`);
+  try {
+    // WAL + synchronous FULL (v2.0.6): her COMMIT diske işlenir; elektrik kesilse de tamamlanmış işlem kaybolmaz, yarım
+    // işlem kalmaz (geri alınır). Yerel ofis programında yazma sıklığı düşük; güvenlik hız maliyetine değer.
+    if (!readOnly) db.exec("PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;");
+    db.exec(`PRAGMA foreign_keys = ON; PRAGMA busy_timeout = ${BUSY_TIMEOUT_MS};`);
+  } catch (error) {
+    // 2.4.8 (CI #944 Windows): bozuk dosyada (SQLITE_NOTADB) PRAGMA düşerse bağlantı kapatılır; yoksa dosya süreç kapanana kadar açık
+    // kalır — Windows'ta bozuk şirket dosyası silinemez / geri yüklemede değiştirilemez, her yeniden açma denemesi bir tutamak daha sızdırır.
+    try {
+      db.close();
+    } catch {
+      // kapatma hatası asıl hatayı ezmez (ders 21)
+    }
+    throw error;
+  }
   return db;
 }
 

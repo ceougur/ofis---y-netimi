@@ -1,0 +1,161 @@
+TAP version 13
+# (node:10936) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: yedek alırken kesinti ve disk dolu
+    # Subtest: yarıda kesilen yedek (.yaziliyor) listelenmez, geri yüklenemez; bir saatten eskisi sonraki yedekte temizlenir, tazesi kalır
+    ok 1 - yarıda kesilen yedek (.yaziliyor) listelenmez, geri yüklenemez; bir saatten eskisi sonraki yedekte temizlenir, tazesi kalır
+      ---
+      duration_ms: 102.187718
+      type: 'test'
+      ...
+    # Subtest: disk dolu (VACUUM INTO yarıda): açık hata, yarım dosya kalmaz, listede yeni yedek yok, canlı veri aynı
+    ok 2 - disk dolu (VACUUM INTO yarıda): açık hata, yarım dosya kalmaz, listede yeni yedek yok, canlı veri aynı
+      ---
+      duration_ms: 197.76497
+      type: 'test'
+      ...
+    1..2
+ok 1 - yedek alırken kesinti ve disk dolu
+  ---
+  duration_ms: 984.407013
+  type: 'suite'
+  ...
+# Subtest: geri yükleme ortasında hata: şirketin canlı verisi bozulmaz
+    # Subtest: kopyalama adımı hata verir (EIO): 500, veri aynı
+    ok 1 - kopyalama adımı hata verir (EIO): 500, veri aynı
+      ---
+      duration_ms: 130.426287
+      type: 'test'
+      ...
+    # Subtest: dosya değiştirme adımı hata verir (EBUSY: Windows'ta dosya başka programda açık): 500, veri aynı
+    ok 2 - dosya değiştirme adımı hata verir (EBUSY: Windows'ta dosya başka programda açık): 500, veri aynı
+      ---
+      duration_ms: 320.761212
+      type: 'test'
+      ...
+    # Subtest: hata geçince aynı geri yükleme çalışır; veri yedek anına döner
+    ok 3 - hata geçince aynı geri yükleme çalışır; veri yedek anına döner
+      ---
+      duration_ms: 317.361009
+      type: 'test'
+      ...
+    # Subtest: 001'in hazırlanan geri yüklemesi açılışta kopyalanamazsa sunucu mevcut veriyle açılır; sonuç ekranda
+    ok 4 - 001'in hazırlanan geri yüklemesi açılışta kopyalanamazsa sunucu mevcut veriyle açılır; sonuç ekranda
+      ---
+      duration_ms: 369.458932
+      type: 'test'
+      ...
+    1..4
+ok 2 - geri yükleme ortasında hata: şirketin canlı verisi bozulmaz
+  ---
+  duration_ms: 2242.200262
+  type: 'suite'
+  ...
+# Subtest: meşgul şirket: aynı anda ikinci işlem 409, veri isteği 503; hiçbir istek başka şirketin verisini görmez
+    # Subtest: geri yükleme sürerken (meşgul) geri yükleme, ad, sıfırlama, silme 409; veri isteği 503
+    ok 1 - geri yükleme sürerken (meşgul) geri yükleme, ad, sıfırlama, silme 409; veri isteği 503
+      ---
+      duration_ms: 111.78739
+      type: 'test'
+      ...
+    # Subtest: aynı şirkete aynı anda iki geri yükleme ve okuma: biri uygulanır, öbürü 409 ya da sırayla; okuma hiçbir zaman 001'in verisini görmez
+    ok 2 - aynı şirkete aynı anda iki geri yükleme ve okuma: biri uygulanır, öbürü 409 ya da sırayla; okuma hiçbir zaman 001'in verisini görmez
+      ---
+      duration_ms: 869.324939
+      type: 'test'
+      ...
+    1..2
+ok 3 - meşgul şirket: aynı anda ikinci işlem 409, veri isteği 503; hiçbir istek başka şirketin verisini görmez
+  ---
+  duration_ms: 1385.114845
+  type: 'suite'
+  ...
+# Subtest: kilitli, eksik ya da bozuk veri dosyası: 503 company-unavailable, 001'e düşmez, boş şirket açılmaz
+    # Subtest: başka program dosyayı kilitlemiş (SQLite özel kilit): 503; kilit kalkınca açılır
+    ok 1 - başka program dosyayı kilitlemiş (SQLite özel kilit): 503; kilit kalkınca açılır
+      ---
+      duration_ms: 166.786018
+      type: 'test'
+      ...
+    # Subtest: veri dosyası bozuk (veri tabanı değil): 503
+    ok 2 - veri dosyası bozuk (veri tabanı değil): 503
+      ---
+      duration_ms: 156.791013
+      type: 'test'
+      ...
+    # Subtest: veri dosyası silinmiş: 503 (boş şirket AÇILMAZ); yedekten geri yüklenince veri döner
+    ok 3 - veri dosyası silinmiş: 503 (boş şirket AÇILMAZ); yedekten geri yüklenince veri döner
+      ---
+      duration_ms: 417.781517
+      type: 'test'
+      ...
+    # Subtest: veri klasörü tamamen silinmiş: 503; yedekten geri yüklenince veri döner
+    ok 4 - veri klasörü tamamen silinmiş: 503; yedekten geri yüklenince veri döner
+      ---
+      duration_ms: 218.312016
+      type: 'test'
+      ...
+    # Subtest: yeni açılan şirket (boş klasör) yine açılır
+    ok 5 - yeni açılan şirket (boş klasör) yine açılır
+      ---
+      duration_ms: 429.124769
+      type: 'test'
+      ...
+    1..5
+ok 4 - kilitli, eksik ya da bozuk veri dosyası: 503 company-unavailable, 001'e düşmez, boş şirket açılmaz
+  ---
+  duration_ms: 1778.685061
+  type: 'suite'
+  ...
+# Subtest: şirket listesi (sirketler.json) bozuk, boş ya da yarım yazılmış
+    # Subtest: bozuk JSON: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+    ok 1 - bozuk JSON: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+      ---
+      duration_ms: 590.995175
+      type: 'test'
+      ...
+    # Subtest: boş dosya: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+    ok 2 - boş dosya: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+      ---
+      duration_ms: 503.799477
+      type: 'test'
+      ...
+    # Subtest: boş liste: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+    ok 3 - boş liste: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+      ---
+      duration_ms: 477.086847
+      type: 'test'
+      ...
+    # Subtest: yarım kalmış kayıt (sirketler.json.tmp) asıl listeyi bozmaz
+    ok 4 - yarım kalmış kayıt (sirketler.json.tmp) asıl listeyi bozmaz
+      ---
+      duration_ms: 435.34456
+      type: 'test'
+      ...
+    # Subtest: bozuk sirketler.json: 002 ve sonraki şirketler kaybolmaz (veri klasörleri diskte duruyor)
+    ok 5 - bozuk sirketler.json: 002 ve sonraki şirketler kaybolmaz (veri klasörleri diskte duruyor)
+      ---
+      duration_ms: 518.07835
+      type: 'test'
+      ...
+    1..5
+ok 5 - şirket listesi (sirketler.json) bozuk, boş ya da yarım yazılmış
+  ---
+  duration_ms: 2525.996732
+  type: 'suite'
+  ...
+# Subtest: yedek adı süzgeci: .yaziliyor, -wal, .geri-yukleme yedek sayılmaz
+ok 6 - yedek adı süzgeci: .yaziliyor, -wal, .geri-yukleme yedek sayılmaz
+  ---
+  duration_ms: 0.275544
+  type: 'test'
+  ...
+1..6
+# tests 19
+# suites 5
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9499.904914
