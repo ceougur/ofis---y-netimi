@@ -256,6 +256,11 @@ Yeni bir test hatası yaşanınca buraya madde eklenir (kaynağıyla). Liste bir
     konuyu da derslere taşıyalım": 2.1.0'da (11.10) banka raporları her açılışta bütün para satırlarını JS'e çeviriyordu — 100.000 satırda 10 kişide p95 12 sn, olay döngüsü 6 sn; SQL toplamla
     düzeltildi. 2.4.8'de (01.11) WhatsApp önizleme/başlatma her cari için tam kart okuyordu — 2.000 caride 23–26 sn, olay döngüsü kilitli (İş Z); elle toplu gönderim alıcı listesi 2.4.7'den beri
     aynı desen (2.4.9). İkisi de ancak son adayın ölçek testinde görüldü.)
+48. DOSYAYA DOKUNAN TEST WINDOWS'TA ERKEN KOŞAR. Dosyayı silen / yeniden adlandıran / kilitleyen / bozan yeni test (ve bunu yapan ürün yolu) son adayı beklemeden, yazıldığı
+    gün çalışma dalına itilip GitHub CI'nin Windows işlerinde görülür; ayrı iş dallarında CI yok, yerel kapı yalnız Linux — Linux açık dosyanın silinmesine/adının değişmesine
+    izin verir, Windows vermez. "Program açmayı denedi → sonra dosya değiştirildi" sırası (bozuk/kilitli dosyadan kurtarma) ayrıca denenir; açılış hata verince bağlantı kapanıyor mu
+    Linux'ta /proc/self/fd ile ölçülür. (02.11.2026, kullanıcı "bu hatalar en başından beri varsa neden daha önce çıkmadı": CI #943/#944 Windows'ta İş V/X'in 01.11'de eklenen 7 hücresi —
+    5'i testte beklenmeyen async closeCompany, 2'si 1.x'ten beri üründe openDatabase'in bozuk dosyada bağlantıyı kapatmaması; 31.10 08:31'den beri çalışma dalında CI koşmamıştı.)
 ### Verimlilik (kullanıcı, 12.10.2026: "geçmişte yaptığın hatalardan aldığın dersleri göz önüne al; gereksiz zaman ve kullanım limitimi
 harcayacak işlemlerden uzak dur!")
 - Dersler 1–24 her işte uygulanır; ama kanıt için GEREKEN kadar koşulur, fazlası değil: geliştirme sırasında yalnız değişen alanın testleri;
