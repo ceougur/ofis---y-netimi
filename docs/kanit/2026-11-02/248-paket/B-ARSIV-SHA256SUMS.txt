@@ -1,0 +1,6 @@
+cdc9495f9dc16d382f4a01918db4bb974c9080ff0f8a5cda68e1577f0376847a  DestekOfis-2.4.8-Arsiv-Belgeler-Kaynak-Denetim.zip
+7aac96dea00b246729900cd4280237898f3dac30846f4b1d9ac55022244ab600  DestekOfis-2.4.8-Arsiv-Kaynak.bundle.parca0
+4f7e2d49dd035ea36690aaca00c98799c10262f41c1ff53753ae02c91af89f78  DestekOfis-2.4.8-Arsiv-Kaynak.bundle.parca1
+5270780cd3d4f029ae3fd1af0673cd707411e390b96ee6c3e5e235a3ec530157  DestekOfis-2.4.8-Arsiv-Kaynak.bundle.parca2
+bca7fc8444fd5bf4e5780eb424226954bf61bd2d23ed3d6409baf7e849964786  DestekOfis-2.4.8-Arsiv-Kaynak.bundle.parca3
+2a0befa2dad95d6b5afbf3f659f46439a78b8c7d13ccfbefa79f6cf720f47c94  DestekOfis-2.4.8-Arsiv-Kaynak.bundle.parca4
