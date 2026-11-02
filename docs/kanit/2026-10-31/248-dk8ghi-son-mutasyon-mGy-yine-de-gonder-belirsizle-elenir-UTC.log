@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: 2.4.8 İş G son 1/2 — işteki Yine de Gönder başka denemenin Sonucu Belirsiz'iyle elenmez; süren iş varken Zaten Kuyrukta
+    # Subtest: iki belirsiz iş X ve Y (Y = X'in Yine de Gönder'i): X'te yeniden Yine de Gönder gider (Y'nin ve aşılmış X'in belirsizliği elemez)
+    not ok 1 - iki belirsiz iş X ve Y (Y = X'in Yine de Gönder'i): X'te yeniden Yine de Gönder gider (Y'nin ve aşılmış X'in belirsizliği elemez)
+      ---
+      duration_ms: 590.262606
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        belirsiz kalacak gönderim: 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki \"Yine de Gönder\"i kullanın.","code":"whatsapp-nothing","summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-03","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":0,"skipped":{"Sonucu Belirsiz":1},"alreadySent":{"count":0,"last":null,"included":0},"people":[{"id":"account-d0e082c6-febd-48e6-a7c4-fd1a70e6e906","name":"Burak Kaya","phone":"+905334445566","skip":"Sonucu Belirsiz"}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":1,"left":249,"later":0,"holdUntil":null},"seconds":0}}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        ok (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:23:10)
+        uncertainVia (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:29:19)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async twoUncertain (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:73:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:82:21)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: iki belirsiz iş X ve Y: Y'nin Yine de Gönder'i sırada beklerken X'in Yine de Gönder'i 'Zaten Kuyrukta' (R3 sayısına girmez)
+    not ok 2 - iki belirsiz iş X ve Y: Y'nin Yine de Gönder'i sırada beklerken X'in Yine de Gönder'i 'Zaten Kuyrukta' (R3 sayısına girmez)
+      ---
+      duration_ms: 397.183206
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:92:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        belirsiz kalacak gönderim: 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki \"Yine de Gönder\"i kullanın.","code":"whatsapp-nothing","summary":{"kind":"statement","period":{"from":"2026-11-01","to":"2026-11-03","preset":"thisMonth"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":0,"skipped":{"Sonucu Belirsiz":1},"alreadySent":{"count":0,"last":null,"included":0},"people":[{"id":"account-51fcc1b4-4f5d-4f91-8d5c-dc44d3fcada6","name":"Burak Kaya","phone":"+905334445566","skip":"Sonucu Belirsiz"}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":1,"left":249,"later":0,"holdUntil":null},"seconds":0}}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        ok (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:23:10)
+        uncertainVia (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:29:19)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async twoUncertain (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:73:15)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:95:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 İş G son 1/2 — işteki Yine de Gönder başka denemenin Sonucu Belirsiz'iyle elenmez; süren iş varken Zaten Kuyrukta
+  ---
+  duration_ms: 989.209068
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-son-248.test.mjs:66:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 İş G son 2/2 — hatırlatmanın yeniden denemesinde 'aynı gün' yeniden denemenin yerel günü
+    # Subtest: asıl hatırlatma 20.12 10:00 Başarısız; 21.12 23:30 yeniden deneme belirsiz → 21.12 23:50 yeniden deneme 'Sonucu Belirsiz'; 22.12 00:10 gider
+    ok 1 - asıl hatırlatma 20.12 10:00 Başarısız; 21.12 23:30 yeniden deneme belirsiz → 21.12 23:50 yeniden deneme 'Sonucu Belirsiz'; 22.12 00:10 gider
+      ---
+      duration_ms: 444.171234
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.8 İş G son 2/2 — hatırlatmanın yeniden denemesinde 'aynı gün' yeniden denemenin yerel günü
+  ---
+  duration_ms: 444.477106
+  type: 'suite'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 1
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1810.622382

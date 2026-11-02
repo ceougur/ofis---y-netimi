@@ -1,0 +1,180 @@
+TAP version 13
+# saat dilimi UTC
+not ok 1 - G0-01-sonraki-denemesi-teslimsiz-durdu-yeniden-gider [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 2 - G0-01-sonraki-denemesi-teslimsiz-durdu-yeniden-gider [yavas] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 3 - G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 4 - G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder [yavas] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 5 - G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: cari B: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (dates:future:account_entries).","code":"gate-equivalence","failures":[{"code":"dates:future:account_entries","name":"İleri tarihli hareket (Cari Hareketleri)","ok":false,"count":1,"gateCount":1}],"de |     at kos (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-8d08ff2a/test/bagimsiz/whatsapp-248/surucu.mjs:768:39) |     at process.processTicksAndRejections (node:internal/process/task_queues:105:5) |     at async kosVeKarsilastir (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-8d08ff2a/test/bagimsiz/whatsapp-248/surucu.mjs:1597:15)
+not ok 6 - G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem [yavas] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: cari B: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (dates:future:account_entries).","code":"gate-equivalence","failures":[{"code":"dates:future:account_entries","name":"İleri tarihli hareket (Cari Hareketleri)","ok":false,"count":1,"gateCount":1}],"de |     at kos (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-8d08ff2a/test/bagimsiz/whatsapp-248/surucu.mjs:768:39) |     at process.processTicksAndRejections (node:internal/process/task_queues:105:5) |     at async kosVeKarsilastir (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-8d08ff2a/test/bagimsiz/whatsapp-248/surucu.mjs:1597:15)
+not ok 7 - G1-02-bu-ay-sinirla-ertesi-gun-ayni-donem [hizli] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: cari B: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (dates:future:account_entries).","code":"gate-equivalence","failures":[{"code":"dates:future:account_entries","name":"İleri tarihli hareket (Cari Hareketleri)","ok":false,"count":1,"gateCount":1}],"de |     at kos (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-8d08ff2a/test/bagimsiz/whatsapp-248/surucu.mjs:768:39) |     at process.processTicksAndRejections (node:internal/process/task_queues:105:5) |     at async kosVeKarsilastir (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-8d08ff2a/test/bagimsiz/whatsapp-248/surucu.mjs:1597:15)
+not ok 8 - G1-02-bu-ay-sinirla-ertesi-gun-ayni-donem [yavas] (1 fark; davranış farkı 1)
+  # SÜRÜCÜ HATASI
+  # Error: cari B: 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (dates:future:account_entries).","code":"gate-equivalence","failures":[{"code":"dates:future:account_entries","name":"İleri tarihli hareket (Cari Hareketleri)","ok":false,"count":1,"gateCount":1}],"de |     at kos (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-8d08ff2a/test/bagimsiz/whatsapp-248/surucu.mjs:768:39) |     at process.processTicksAndRejections (node:internal/process/task_queues:105:5) |     at async kosVeKarsilastir (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-8d08ff2a/test/bagimsiz/whatsapp-248/surucu.mjs:1597:15)
+not ok 9 - G1-03-yeniden-deneme-ertesi-gun-asil-isin-gunu [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 10 - G1-03-yeniden-deneme-ertesi-gun-asil-isin-gunu [yavas] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+not ok 11 - G2-01-bu-ay-0311-ozel-0511 [hizli] (17 fark; davranış farkı 15; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.A: beklenen 2, program 3
+  # meta.kabul.A: beklenen 2, program 3
+  # meta.meta_ileti.A: beklenen 2, program 3
+  # meta.medya_yukleme.A: beklenen 2, program 3
+  # meta.medya_silme.A: beklenen 2, program 3
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+not ok 12 - G2-01-bu-ay-0311-ozel-0511 [yavas] (17 fark; davranış farkı 15; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # onceki_uyari.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 3
+  # meta.post.A: beklenen 2, program 3
+  # meta.kabul.A: beklenen 2, program 3
+  # meta.meta_ileti.A: beklenen 2, program 3
+  # meta.medya_yukleme.A: beklenen 2, program 3
+  # meta.medya_silme.A: beklenen 2, program 3
+  # meta.toplam_post: beklenen 2, program 3
+  # meta.toplam_kabul_program: beklenen 2, program 3
+  # meta.toplam_meta_ileti: beklenen 2, program 3
+not ok 13 - G2-02-iki-ozel-aralik-kendi-gunlerinde-bu-ay [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 14 - G2-02-iki-ozel-aralik-kendi-gunlerinde-bu-ay [yavas] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 15 - G2-03-gece-yarisi-bu-ay-yerel-gun [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+not ok 16 - G2-03-gece-yarisi-bu-ay-yerel-gun [yavas] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 1)
+not ok 17 - G3-01-tasinan-belirsiz-yeni-iste-eler [hizli] (12 fark; davranış farkı 11; gösterim: G1-borclu-eki 1)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # meta.medya_yukleme.A: beklenen 1, program 2
+  # meta.toplam_medya_yukleme: beklenen 1, program 2
+  # kontroller.K1.isler.T1/A: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+  # yeniden.G1.alinan: beklenen ['A'], program []
+  # isler.T1/A.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+  # isler.T1/A.post: beklenen 2, program 1
+  # isler.T1/A.kabul: beklenen 1, program 0
+  # isler.T1/A.meta_ileti: beklenen 1, program 0
+  # isler.T1/A.medya_silme: beklenen 1, program 0
+not ok 18 - G3-01-tasinan-belirsiz-yeni-iste-eler [yavas] (12 fark; davranış farkı 11; gösterim: G1-borclu-eki 1)
+  # elenen.T2: beklenen nesne, program '<YOK>'
+  # olusmadi: beklenen ['T2'], program []
+  # meta.medya_yukleme.A: beklenen 1, program 2
+  # meta.toplam_medya_yukleme: beklenen 1, program 2
+  # kontroller.K1.isler.T1/A: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+  # yeniden.G1.alinan: beklenen ['A'], program []
+  # isler.T1/A.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+  # isler.T1/A.post: beklenen 2, program 1
+  # isler.T1/A.kabul: beklenen 1, program 0
+  # isler.T1/A.meta_ileti: beklenen 1, program 0
+  # isler.T1/A.medya_silme: beklenen 1, program 0
+not ok 19 - G3-02-tasinan-belirsiz-yeniden-denemede-eler [hizli] (8 fark; davranış farkı 7; gösterim: G1-borclu-eki 1)
+  # meta.medya_yukleme.A: beklenen 2, program 3
+  # meta.toplam_medya_yukleme: beklenen 2, program 3
+  # yeniden.G1.alinan: beklenen ['A'], program []
+  # yeniden.Y2.elenen.A: beklenen 'sonucu_belirsiz', program '<YOK>'
+  # yeniden.Y2.alinan: beklenen [], program ['A']
+  # yeniden.Y2.oneri: beklenen 'isteki_yine_de_gonder', program None
+  # isler.T1/A.medya_yukleme: beklenen 2, program 3
+not ok 20 - G3-02-tasinan-belirsiz-yeniden-denemede-eler [yavas] (8 fark; davranış farkı 7; gösterim: G1-borclu-eki 1)
+  # meta.medya_yukleme.A: beklenen 2, program 3
+  # meta.toplam_medya_yukleme: beklenen 2, program 3
+  # yeniden.G1.alinan: beklenen ['A'], program []
+  # yeniden.Y2.elenen.A: beklenen 'sonucu_belirsiz', program '<YOK>'
+  # yeniden.Y2.alinan: beklenen [], program ['A']
+  # yeniden.Y2.oneri: beklenen 'isteki_yine_de_gonder', program None
+  # isler.T1/A.medya_yukleme: beklenen 2, program 3
+not ok 21 - G3-03-tasinan-teslim-son-3-ay-7-gun [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)
+  # bu_ay.W1.2026-10: beklenen nesne, program '<YOK>'
+not ok 22 - G3-03-tasinan-teslim-son-3-ay-7-gun [yavas] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)
+  # bu_ay.W1.2026-10: beklenen nesne, program '<YOK>'
+not ok 23 - G3-04-tasinan-asil-isin-yine-de-gonder-siniri [hizli] (4 fark; davranış farkı 2; gösterim: G1-borclu-eki 2)
+  # bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+  # bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+not ok 24 - G3-04-tasinan-asil-isin-yine-de-gonder-siniri [yavas] (4 fark; davranış farkı 2; gösterim: G1-borclu-eki 2)
+  # bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+  # bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+not ok 25 - G4-01-sifirlama-meta-bekletti-sayilmaz [hizli] (23 fark; davranış farkı 23)
+  # olusmadi: beklenen [], program ['T2']
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # toplular.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Durduruldu (Geri Yükleme): beklenen 1, program '<YOK>'
+  # durum_sayilari.Meta Bekletti (24 Saat Sonra Yeniden): beklenen 1, program '<YOK>'
+  # meta.post.A: beklenen 2, program '<YOK>'
+  # meta.kabul.A: beklenen 2, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 2, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 2, program '<YOK>'
+  # meta.toplam_post: beklenen 2, program 1
+  # meta.toplam_kabul_program: beklenen 2, program 1
+  # meta.toplam_meta_ileti: beklenen 2, program 1
+not ok 26 - G4-01-sifirlama-meta-bekletti-sayilmaz [yavas] (23 fark; davranış farkı 23)
+  # olusmadi: beklenen [], program ['T2']
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # toplular.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Durduruldu (Geri Yükleme): beklenen 1, program '<YOK>'
+  # durum_sayilari.Meta Bekletti (24 Saat Sonra Yeniden): beklenen 1, program '<YOK>'
+  # meta.post.A: beklenen 2, program '<YOK>'
+  # meta.kabul.A: beklenen 2, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 2, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 2, program '<YOK>'
+  # meta.toplam_post: beklenen 2, program 1
+  # meta.toplam_kabul_program: beklenen 2, program 1
+  # meta.toplam_meta_ileti: beklenen 2, program 1
+not ok 27 - G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir [hizli] (9 fark; davranış farkı 9)
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # durum_sayilari: beklenen şunlardan biri (karar susuyor) [{'Durduruldu (Geri Yükleme)': 1}, {'Teslim Edildi': 1}], program {}
+  # meta.post.A: beklenen 1, program '<YOK>'
+  # meta.kabul.A: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 1, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 1, program '<YOK>'
+  # meta.medya_silme.A: beklenen 1, program '<YOK>'
+  # bu_ay.W1: beklenen nesne, program '<YOK>'
+  # isler.T1/A: beklenen nesne, program '<YOK>'
+not ok 28 - G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir [yavas] (9 fark; davranış farkı 9)
+  # toplular.T1: beklenen nesne, program '<YOK>'
+  # durum_sayilari: beklenen şunlardan biri (karar susuyor) [{'Durduruldu (Geri Yükleme)': 1}, {'Teslim Edildi': 1}], program {}
+  # meta.post.A: beklenen 1, program '<YOK>'
+  # meta.kabul.A: beklenen 1, program '<YOK>'
+  # meta.meta_ileti.A: beklenen 1, program '<YOK>'
+  # meta.medya_yukleme.A: beklenen 1, program '<YOK>'
+  # meta.medya_silme.A: beklenen 1, program '<YOK>'
+  # bu_ay.W1: beklenen nesne, program '<YOK>'
+  # isler.T1/A: beklenen nesne, program '<YOK>'
+not ok 29 - G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir [hizli] (23 fark; davranış farkı 22; gösterim: G1-borclu-eki 1)
+  # elenen.T2.A: beklenen 'sonucu_belirsiz', program 'daha_once_gonderildi'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # meta.post.A: beklenen 3, program 2
+  # meta.kabul.A: beklenen 2, program 1
+  # meta.meta_ileti.A: beklenen 2, program 1
+  # meta.medya_silme.A: beklenen 1, program 0
+  # meta.toplam_post: beklenen 3, program 2
+  # meta.toplam_kabul_program: beklenen 2, program 1
+  # meta.toplam_meta_ileti: beklenen 2, program 1
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # kontroller.K2.toplam_post: beklenen 3, program 2
+not ok 30 - G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir [yavas] (23 fark; davranış farkı 22; gösterim: G1-borclu-eki 1)
+  # elenen.T2.A: beklenen 'sonucu_belirsiz', program 'daha_once_gonderildi'
+  # durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # meta.post.A: beklenen 3, program 2
+  # meta.kabul.A: beklenen 2, program 1
+  # meta.meta_ileti.A: beklenen 2, program 1
+  # meta.medya_silme.A: beklenen 1, program 0
+  # meta.toplam_post: beklenen 3, program 2
+  # meta.toplam_kabul_program: beklenen 2, program 1
+  # meta.toplam_meta_ileti: beklenen 2, program 1
+  # kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+  # kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # kontroller.K2.toplam_post: beklenen 3, program 2
+not ok 31 - G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # onceki_uyari.T2.son: beklenen '2026-10-31', program '2026-10-30'
+not ok 32 - G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim [yavas] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)
+  # onceki_uyari.T2.son: beklenen '2026-10-31', program '2026-10-30'
+1..32
+# tests 32
+# pass 0
+# fail 32

@@ -1,0 +1,22 @@
+
+■ A1 sekme ve boş durum: "Bağlı Değil", Elle Bağla
+  ✗ adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.
+
+■ A2 Elle Bağla: Tab ile insan hızında yazım → Kaydet ve Sına → Bağlı; belirteç ekranda ve yanıtlarda yok
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ A3 Kendime Deneme Gönder: numara + Enter → Meta'ya +90 ile hello_world; kartta Son Deneme
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ A4 Bilgileri Değiştir: kimlikler dolu, belirteç boş; yanlış belirteç → Sınama Başarısız; doğru belirteç → Bağlı
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ A5 Bağlantıyı Kaldır (onaylı) → Bağlı Değil; ayar satırı silindi
+  ✗ adım yarıda kaldı: page.click: Timeout 15000ms exceeded.
+
+■ A6 yetkisiz (Personel): Yönetim açılmaz, WhatsApp bağlantı API'si 403
+  ✓ Yönetim paneli personelde kapalı
+  ✗ API 403 (404)
+  ✓ sayfa hatası yok (—)
+
+2 geçti, 6 kaldı

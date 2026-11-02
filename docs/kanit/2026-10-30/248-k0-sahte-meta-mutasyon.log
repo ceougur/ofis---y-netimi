@@ -1,0 +1,19 @@
+YAKALANDI '+' yoksa ülke kodu EKLENMEZ ← 2 kırmızı: teslimNumarasi: + varsa yalnız rakamlar; + yoksa işletme ülke kodu başa eklenir (belge tablosu) | + olmadan gönderim: işletme numarasının ülke kodu eklenir (yan
+YAKALANDI PAUSED şablon 132015 yerine 132001 ← 1 kırmızı: şablon yok / PENDING → 132001, PAUSED → 132015, DISABLED → 132016; değişken sayısı → 132000
+YAKALANDI koptu:'sonra' iletiyi kaydetmez ← 1 kırmızı: kural koptu:'sonra' → ileti KABUL edildi ama yanıt gelmez (çift gönderim tuzağı); 'once' → kabul yok
+YAKALANDI pricing her durumda ← 1 kırmızı: kanca gövdesi belge biçiminde: sent (fiyatsız) → delivered (pricing utility/regular) → read (fiyatsız); opaque geri gelir; imza (D0)
+YAKALANDI sınır FARKLI alıcı yerine kabul sayar ← 1 kırmızı: gönderim sınırı (D0 kodu): kayan 24 saatte FARKLI alıcı; aynı alıcıya yeniden yer tutmaz; 24 sa sonra açılır
+YAKALANDI kanca kuyruğu 7 günde düşmez ← 1 kırmızı: kanca 200 dışı → Meta kuyruğu; sonraki işlemede teslim; 7 günü geçen düşer (belge: 7 güne kadar yeniden deneme)
+YAKALANDI medya 30 gün ömrü yok ← 1 kırmızı: medya GET (url/mime/sha256/boyut), indirme belirteç ister, DELETE success, ikinci DELETE ve süresi dolmuş GET hata
+YAKALANDI aynı ad + dil şablonu ikinci kez açılır ← 1 kırmızı: şablon oluşturma: ad kuralı 100, aynı ad+dil 100/2388024, alt satır > 60 → 2388040, sondaki değişken 2388299
+YAKALANDI imza yanlış anahtarla ← 1 kırmızı: kanca gövdesi belge biçiminde: sent (fiyatsız) → delivered (pricing utility/regular) → read (fiyatsız); opaque geri gelir; imza (D0)
+YAKALANDI kayıt 72 saatte 11 deneme ← 1 kırmızı: register: 72 saatte 10 deneme, 11. → 133016; yanlış PIN 133005; birlikte kullanımda deregister reddi (D0)
+YAKALANDI değişken sayısı denetimi yok ← 1 kırmızı: şablon yok / PENDING → 132001, PAUSED → 132015, DISABLED → 132016; değişken sayısı → 132000
+YAKALANDI silinmiş medyayla gönderim kabul ← 1 kırmızı: silinmiş ya da 30 günü geçmiş medya kimliğiyle gönderim reddedilir (D0: 131053) ve ayrıca kaydedilir
+YAKALANDI varlık erişimi denetimi yok (code 200) ← 1 kırmızı: belirteç: yok (POST) 190, süresi dolmuş 190/401, iptal 0, ileti izni yok 10, varlık erişimi yok 200/403
+YAKALANDI ES kodu ikinci kez kullanılabilir ← 1 kırmızı: oauth/access_token: kod → iş belirteci; ikinci kullanım ve 30 sn sonrası ret; yanlış gizli anahtar ret
+YAKALANDI messaging_limit_tier kabul edilir ← 1 kırmızı: numara: whatsapp_business_manager_messaging_limit TIER_250; messaging_limit_tier reddedilir (kaldırıldı); webhook_configuration
+YAKALANDI belirteç sızıntısı denetimi yok ← 1 kırmızı: belirteç sızıntısı: belirteç gövdede/sorguda görülürse kayda düşer (Authorization başlığı sayılmaz)
+YAKALANDI alt satır 60 sınırı yok ← 1 kırmızı: şablon oluşturma: ad kuralı 100, aynı ad+dil 100/2388024, alt satır > 60 → 2388040, sondaki değişken 2388299
+YAKALANDI UTILITY → MARKETING kararı uygulanmaz ← 1 kırmızı: belge başlıklı şablon: Resumable Upload tutamağı şart (D0 akışı); Meta UTILITY isteneni MARKETING onaylayabilir
+18/18 denetim geçti

@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.4.8 — WhatsApp Otomatik Gönderim ve İyileştirmeler
+
+- Yeni: WhatsApp ile otomatik gönderim — Yönetim → WhatsApp'ta işletmenizin Meta (WhatsApp Business API) bağlantısı; carilere toplu ekstre (PDF ile) ve ödeme hatırlatması; aynı dönemin ekstresi aynı kişiye ikinci kez gitmez; WhatsApp Gönderimleri ekranında durum izleme; caride "WhatsApp Mesajı İstemiyor".
+- İyileştirmeler: iPhone'da eşleme ana ekran simgesinden, ücretli lisans bitince telefondan 30 gün salt okunur kullanım, Excel / Sheets yüklemesinde bağlantı koparsa çift kayıt açılmaz. Ayrıntı: docs/2.4.8-DEGISIKLIKLER.md.
+
 ## 2.4.7 — Mobil Sürüm ve İyileştirmeler
 
 - Yeni: telefondan kullanım — Yönetim → Mobil Cihazlar'da karekodla eşleme; cari, kasa, banka, stok ve raporlar telefonda; telefondan tahsilat, ödeme ve stok girişi; ofisteki bilgisayar kapalıyken son özet; en çok 3 cihaz.

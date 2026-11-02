@@ -1,0 +1,38 @@
+{
+  "ad": "248-t9/gecmis-uret-1",
+  "komut": "node test/t9-248/wa-gecmis-uret.mjs --veri /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/taban-2910 --is /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-1 --json /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-uret-1.json --bas 0 --adet 34",
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "dal": "is/t9-248",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T14:07:36.669Z",
+  "sure_sn": 1078.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "üretim hatasız bitti (toplu iş açılamadı: 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Gecikmiş Borç Yok: 2000).\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"reminder\",\"period\":{\"from\":\"\",\"to\":\"\",\"preset\":\"\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_odeme_hatirlatma\",\"language\":\"tr\",\"status\":\"APPR)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t9/gecmis-uret-1.log",
+  "klasor": "/home/user/wt-t9-248",
+  "ham_cikti_sha256": "1405c7a9714448684c5ee9133a4ccf2b09e17a6168ddb3cc4ace711540d600ee",
+  "ham_cikti_bayt": 2198
+}

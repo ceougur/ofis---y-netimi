@@ -1,0 +1,543 @@
+{
+ "senaryo": "K1-07-hatirlatma-ayni-yerel-gun",
+ "uc": "hizli",
+ "tz": "UTC",
+ "bitis": "2026-11-03T01:15:00+03:00",
+ "notlar": [
+  "KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)"
+ ],
+ "program_api": [
+  {
+   "t": "2026-10-30T23:50:00+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "reminder",
+    "ids": [
+     "account-9443be72-0c08-401c-86ba-17177c5cc2dc"
+    ]
+   },
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"batch\":{\"id\":\"wab-6d84d660-5ac3-4813-8e8a-56ed40d214d5\",\"kind\":\"reminder\",\"kindLabel\":\"Ödeme Hatırlatma\",\"template\":\"destekofis_odeme_hatirlatma\",\"period\":{\"from\":\"\",\"to\":\"\",\"preset\":\"\"},\"state\":\"running\",\"stateLabel\":\"Sürüyor\",\"waitingUntil\":null,\"pauseReason\":\"\",\"pauseCode\":\"\",\"createdAt\":\"2026-10-30T20:50:00.000Z\",\"createdByName\":\"Ofis yöneticisi\",\"finishedAt\":null,\"total\":1,\"counts\":{\"pending\":1,\"preparing\":0,\"sending\":0,\"accepted\":0,\"sent\":0,\"delivered\":0,\"read\":0,\"failed\":0,\"uncertain\":0,\"limited\":0,\"held\":0,\"paused\":0,\"canceled\":0,\"expired\":0,\"skipped\":0,\"stopped\":0}},\"summary\":{\"kind\":\"reminder\",\"period\":{\"from\":\"\",\"to\":\"\",\"preset\":\"\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_odeme_hatirlatma\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":1,\"skipped\":{},\"alreadySent\":{\"count\":0,\"last\":null,\"included\":0},\"people\":[{\"id\":\"account-9443be72-0c08-401c-86ba-17177c5cc2dc\",\"name\":\"Hande Vade\",\"phone\":\"+905398889900\",\"skip\":\"\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":0,\"left\":250,\"later\":0,\"holdUntil\":null},\"seconds\":1},\"reused\":false}}"
+  },
+  {
+   "t": "2026-10-30T23:55:00+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "reminder",
+    "ids": [
+     "account-9443be72-0c08-401c-86ba-17177c5cc2dc"
+    ]
+   },
+   "status": 400,
+   "yanit": "{\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bugün daha önce ödeme hatırlatması gönderildi; yeniden göndermek için yeni gönderimde \\\"Yine de Gönder\\\" seçin.\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"reminder\",\"period\":{\"from\":\"\",\"to\":\"\",\"preset\":\"\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_odeme_hatirlatma\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Daha Önce Gönderildi\":1},\"alreadySent\":{\"count\":1,\"last\":\"2026-10-30T20:50:00.500Z\",\"included\":0},\"people\":[{\"id\":\"account-9443be72-0c08-401c-86ba-17177c5cc2dc\",\"name\":\"Hande Vade\",\"phone\":\"+905398889900\",\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-10-30T20:50:00.500Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":0}}"
+  },
+  {
+   "t": "2026-10-31T00:10:00+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "reminder",
+    "ids": [
+     "account-9443be72-0c08-401c-86ba-17177c5cc2dc"
+    ]
+   },
+   "status": 400,
+   "yanit": "{\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bugün daha önce ödeme hatırlatması gönderildi; yeniden göndermek için yeni gönderimde \\\"Yine de Gönder\\\" seçin.\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"reminder\",\"period\":{\"from\":\"\",\"to\":\"\",\"preset\":\"\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_odeme_hatirlatma\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Daha Önce Gönderildi\":1},\"alreadySent\":{\"count\":1,\"last\":\"2026-10-30T20:50:00.500Z\",\"included\":0},\"people\":[{\"id\":\"account-9443be72-0c08-401c-86ba-17177c5cc2dc\",\"name\":\"Hande Vade\",\"phone\":\"+905398889900\",\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-10-30T20:50:00.500Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":0}}"
+  },
+  {
+   "t": "2026-10-31T00:15:00+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "reminder",
+    "ids": [
+     "account-9443be72-0c08-401c-86ba-17177c5cc2dc"
+    ],
+    "sendAgain": true
+   },
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"batch\":{\"id\":\"wab-469d73d5-c2e1-4939-a824-48cfe2fc05ef\",\"kind\":\"reminder\",\"kindLabel\":\"Ödeme Hatırlatma\",\"template\":\"destekofis_odeme_hatirlatma\",\"period\":{\"from\":\"\",\"to\":\"\",\"preset\":\"\"},\"state\":\"running\",\"stateLabel\":\"Sürüyor\",\"waitingUntil\":null,\"pauseReason\":\"\",\"pauseCode\":\"\",\"createdAt\":\"2026-10-30T21:15:00.000Z\",\"createdByName\":\"Ofis yöneticisi\",\"finishedAt\":null,\"total\":1,\"counts\":{\"pending\":1,\"preparing\":0,\"sending\":0,\"accepted\":0,\"sent\":0,\"delivered\":0,\"read\":0,\"failed\":0,\"uncertain\":0,\"limited\":0,\"held\":0,\"paused\":0,\"canceled\":0,\"expired\":0,\"skipped\":0,\"stopped\":0}},\"summary\":{\"kind\":\"reminder\",\"period\":{\"from\":\"\",\"to\":\"\",\"preset\":\"\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_odeme_hatirlatma\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":1,\"skipped\":{},\"alreadySent\":{\"count\":1,\"last\":\"2026-10-30T20:50:00.500Z\",\"included\":1},\"people\":[{\"id\":\"account-9443be72-0c08-401c-86ba-17177c5cc2dc\",\"name\":\"Hande Vade\",\"phone\":\"+905398889900\",\"skip\":\"\",\"sentBefore\":\"2026-10-30T20:50:00.500Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":1},\"reused\":false}}"
+  },
+  {
+   "t": "2026-11-03T01:15:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-09",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-09\",\"configured\":true,\"wabaId\":\"800000000000001\",\"delivered\":0,\"billable\":0,\"accepted\":0,\"approxUsd\":0,\"unitUsd\":0.0009,\"company\":{\"delivered\":0,\"billable\":0,\"accepted\":0},\"note\":\"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır.\"}}"
+  },
+  {
+   "t": "2026-11-03T01:15:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-10",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-10\",\"configured\":true,\"wabaId\":\"800000000000001\",\"delivered\":2,\"billable\":2,\"accepted\":2,\"approxUsd\":0.0018,\"unitUsd\":0.0009,\"company\":{\"delivered\":2,\"billable\":2,\"accepted\":2},\"note\":\"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır.\"}}"
+  },
+  {
+   "t": "2026-11-03T01:15:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-11",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-11\",\"configured\":true,\"wabaId\":\"800000000000001\",\"delivered\":0,\"billable\":0,\"accepted\":0,\"approxUsd\":0,\"unitUsd\":0.0009,\"company\":{\"delivered\":0,\"billable\":0,\"accepted\":0},\"note\":\"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır.\"}}"
+  }
+ ],
+ "toplular": {
+  "T1": [
+   {
+    "id": "wab-6d84d660-5ac3-4813-8e8a-56ed40d214d5",
+    "kind": "reminder",
+    "kindLabel": "Ödeme Hatırlatma",
+    "template": "destekofis_odeme_hatirlatma",
+    "period": {
+     "from": "",
+     "to": "",
+     "preset": ""
+    },
+    "state": "done",
+    "stateLabel": "Tamamlandı",
+    "waitingUntil": null,
+    "pauseReason": "",
+    "pauseCode": "",
+    "createdAt": "2026-10-30T20:50:00.000Z",
+    "createdByName": "Ofis yöneticisi",
+    "finishedAt": "2026-10-30T20:50:00.500Z",
+    "total": 1,
+    "counts": {
+     "pending": 0,
+     "preparing": 0,
+     "sending": 0,
+     "accepted": 0,
+     "sent": 0,
+     "delivered": 1,
+     "read": 0,
+     "failed": 0,
+     "uncertain": 0,
+     "limited": 0,
+     "held": 0,
+     "paused": 0,
+     "canceled": 0,
+     "expired": 0,
+     "skipped": 0,
+     "stopped": 0
+    },
+    "jobs": [
+     {
+      "cari": "H",
+      "id": "waj-69454618-bedc-4136-abc5-4b218cdb85f8",
+      "accountId": "account-9443be72-0c08-401c-86ba-17177c5cc2dc",
+      "accountName": "Hande Vade",
+      "phone": "+905398889900",
+      "state": "delivered",
+      "stateLabel": "Teslim Edildi",
+      "reason": "",
+      "errorCode": null,
+      "attempt": 1,
+      "nextAt": null,
+      "pdfName": "",
+      "params": [
+       "Hande Vade",
+       "Deneme Ticaret Ltd. Şti.",
+       "20.10.2026",
+       "300,00 TL",
+       "300,00 TL (Borçlu)"
+      ],
+      "wamid": "wamid.SFvjR5Xnu0tzoKDzjiwz+CxZO7N7cbhQ",
+      "acceptedAt": "2026-10-30T20:50:00.500Z",
+      "sentAt": "2026-10-30T20:50:01.000Z",
+      "deliveredAt": "2026-10-30T20:50:05.000Z",
+      "readAt": null,
+      "failedAt": null,
+      "billable": true,
+      "mediaDeleted": false
+     }
+    ]
+   }
+  ],
+  "T4": [
+   {
+    "id": "wab-469d73d5-c2e1-4939-a824-48cfe2fc05ef",
+    "kind": "reminder",
+    "kindLabel": "Ödeme Hatırlatma",
+    "template": "destekofis_odeme_hatirlatma",
+    "period": {
+     "from": "",
+     "to": "",
+     "preset": ""
+    },
+    "state": "done",
+    "stateLabel": "Tamamlandı",
+    "waitingUntil": null,
+    "pauseReason": "",
+    "pauseCode": "",
+    "createdAt": "2026-10-30T21:15:00.000Z",
+    "createdByName": "Ofis yöneticisi",
+    "finishedAt": "2026-10-30T21:15:00.500Z",
+    "total": 1,
+    "counts": {
+     "pending": 0,
+     "preparing": 0,
+     "sending": 0,
+     "accepted": 0,
+     "sent": 0,
+     "delivered": 1,
+     "read": 0,
+     "failed": 0,
+     "uncertain": 0,
+     "limited": 0,
+     "held": 0,
+     "paused": 0,
+     "canceled": 0,
+     "expired": 0,
+     "skipped": 0,
+     "stopped": 0
+    },
+    "jobs": [
+     {
+      "cari": "H",
+      "id": "waj-474d8a48-ba02-4b95-9f0c-a758074c6408",
+      "accountId": "account-9443be72-0c08-401c-86ba-17177c5cc2dc",
+      "accountName": "Hande Vade",
+      "phone": "+905398889900",
+      "state": "delivered",
+      "stateLabel": "Teslim Edildi",
+      "reason": "",
+      "errorCode": null,
+      "attempt": 1,
+      "nextAt": null,
+      "pdfName": "",
+      "params": [
+       "Hande Vade",
+       "Deneme Ticaret Ltd. Şti.",
+       "20.10.2026",
+       "300,00 TL",
+       "300,00 TL (Borçlu)"
+      ],
+      "wamid": "wamid.LPOHXTZQ+jmcIhG/1KPGfC4FMN2oABhi",
+      "acceptedAt": "2026-10-30T21:15:00.500Z",
+      "sentAt": "2026-10-30T21:15:01.000Z",
+      "deliveredAt": "2026-10-30T21:15:05.000Z",
+      "readAt": null,
+      "failedAt": null,
+      "billable": true,
+      "mediaDeleted": false
+     }
+    ]
+   }
+  ]
+ },
+ "cari_eslemesi": {
+  "H": "account-9443be72-0c08-401c-86ba-17177c5cc2dc"
+ },
+ "defter": {
+  "accepts": [
+   {
+    "job_id": "waj-69454618-bedc-4136-abc5-4b218cdb85f8",
+    "company_id": "sirket-001",
+    "waba_id": "800000000000001",
+    "at": "2026-10-30T20:50:00.500Z"
+   },
+   {
+    "job_id": "waj-474d8a48-ba02-4b95-9f0c-a758074c6408",
+    "company_id": "sirket-001",
+    "waba_id": "800000000000001",
+    "at": "2026-10-30T21:15:00.500Z"
+   }
+  ],
+  "batch_events": [
+   {
+    "batch_id": "wab-6d84d660-5ac3-4813-8e8a-56ed40d214d5",
+    "company_id": "sirket-001",
+    "event": "open",
+    "reason": "",
+    "at": "2026-10-30T20:50:00.000Z"
+   },
+   {
+    "batch_id": "wab-6d84d660-5ac3-4813-8e8a-56ed40d214d5",
+    "company_id": "sirket-001",
+    "event": "stop",
+    "reason": "done",
+    "at": "2026-10-30T20:50:00.500Z"
+   },
+   {
+    "batch_id": "wab-469d73d5-c2e1-4939-a824-48cfe2fc05ef",
+    "company_id": "sirket-001",
+    "event": "open",
+    "reason": "",
+    "at": "2026-10-30T21:15:00.000Z"
+   },
+   {
+    "batch_id": "wab-469d73d5-c2e1-4939-a824-48cfe2fc05ef",
+    "company_id": "sirket-001",
+    "event": "stop",
+    "reason": "done",
+    "at": "2026-10-30T21:15:00.500Z"
+   }
+  ],
+  "batch_log": [],
+  "claim_keys": [],
+  "claims": [
+   {
+    "job_id": "waj-69454618-bedc-4136-abc5-4b218cdb85f8",
+    "attempt": 1,
+    "batch_id": "wab-6d84d660-5ac3-4813-8e8a-56ed40d214d5",
+    "company_id": "sirket-001",
+    "waba_id": "800000000000001",
+    "phone": "+905398889900",
+    "account_id": "account-9443be72-0c08-401c-86ba-17177c5cc2dc",
+    "kind": "reminder",
+    "period_key": "gun|2026-10-30",
+    "at": "2026-10-30T20:50:00.000Z"
+   },
+   {
+    "job_id": "waj-474d8a48-ba02-4b95-9f0c-a758074c6408",
+    "attempt": 1,
+    "batch_id": "wab-469d73d5-c2e1-4939-a824-48cfe2fc05ef",
+    "company_id": "sirket-001",
+    "waba_id": "800000000000001",
+    "phone": "+905398889900",
+    "account_id": "account-9443be72-0c08-401c-86ba-17177c5cc2dc",
+    "kind": "reminder",
+    "period_key": "gun|2026-10-30",
+    "at": "2026-10-30T21:15:00.000Z"
+   }
+  ],
+  "deliveries": [
+   {
+    "job_id": "waj-69454618-bedc-4136-abc5-4b218cdb85f8",
+    "company_id": "sirket-001",
+    "waba_id": "800000000000001",
+    "billable": 1,
+    "at": "2026-10-30T20:50:05.000Z"
+   },
+   {
+    "job_id": "waj-474d8a48-ba02-4b95-9f0c-a758074c6408",
+    "company_id": "sirket-001",
+    "waba_id": "800000000000001",
+    "billable": 1,
+    "at": "2026-10-30T21:15:05.000Z"
+   }
+  ],
+  "failures": [],
+  "holds": [],
+  "hook_events": [
+   {
+    "seq": 1,
+    "waba_id": "800000000000001",
+    "path_hash": "f5766ed85aeb90a6461d6f42889fa4fb0330cb3636e972dd4d753d39b97515c8",
+    "verify_hash": "cbfddae010b8872a2b26e2af7e29d8feb27e760a418d5bfa7b027bdb772f2787",
+    "base": "http://ofis.localhost:40615",
+    "state": "pending",
+    "reason": "manual",
+    "error": "",
+    "at": "2026-10-30T20:50:00.000Z"
+   },
+   {
+    "seq": 2,
+    "waba_id": "800000000000001",
+    "path_hash": "f5766ed85aeb90a6461d6f42889fa4fb0330cb3636e972dd4d753d39b97515c8",
+    "verify_hash": "cbfddae010b8872a2b26e2af7e29d8feb27e760a418d5bfa7b027bdb772f2787",
+    "base": "http://ofis.localhost:40615",
+    "state": "active",
+    "reason": "manual",
+    "error": "",
+    "at": "2026-10-30T20:50:00.000Z"
+   }
+  ],
+  "hook_seen": [
+   {
+    "waba_id": "800000000000001",
+    "hour": "2026-10-30T20",
+    "at": "2026-10-30T20:50:01.500Z"
+   },
+   {
+    "waba_id": "800000000000001",
+    "hour": "2026-10-30T21",
+    "at": "2026-10-30T21:15:01.500Z"
+   }
+  ],
+  "learned_wamids": [],
+  "meta": [
+   {
+    "key": "ledgerId",
+    "value": "wal-5774c0b0-aa2c-4ecc-88b0-6b40d432dbae"
+   }
+  ],
+  "outcomes": [
+   {
+    "job_id": "waj-69454618-bedc-4136-abc5-4b218cdb85f8",
+    "attempt": 1,
+    "outcome": "accepted",
+    "wamid": "wamid.SFvjR5Xnu0tzoKDzjiwz+CxZO7N7cbhQ",
+    "at": "2026-10-30T20:50:00.500Z"
+   },
+   {
+    "job_id": "waj-474d8a48-ba02-4b95-9f0c-a758074c6408",
+    "attempt": 1,
+    "outcome": "accepted",
+    "wamid": "wamid.LPOHXTZQ+jmcIhG/1KPGfC4FMN2oABhi",
+    "at": "2026-10-30T21:15:00.500Z"
+   }
+  ],
+  "releases": []
+ },
+ "sahte_meta": {
+  "istekler": [
+   {
+    "sira": 7,
+    "t": "2026-10-30T23:50:00+03:00",
+    "yontem": "POST",
+    "islem": "messages",
+    "hedef": "905398889900",
+    "deneme": 1,
+    "http": 200,
+    "sonuc": "yanit",
+    "is": "waj-69454618-bedc-4136-abc5-4b218cdb85f8",
+    "yanit": {
+     "messaging_product": "whatsapp",
+     "contacts": [
+      {
+       "input": "+905398889900",
+       "wa_id": "905398889900"
+      }
+     ],
+     "messages": [
+      {
+       "id": "wamid.SFvjR5Xnu0tzoKDzjiwz+CxZO7N7cbhQ"
+      }
+     ]
+    }
+   },
+   {
+    "sira": 14,
+    "t": "2026-10-31T00:15:00+03:00",
+    "yontem": "POST",
+    "islem": "messages",
+    "hedef": "905398889900",
+    "deneme": 2,
+    "http": 200,
+    "sonuc": "yanit",
+    "is": "waj-474d8a48-ba02-4b95-9f0c-a758074c6408",
+    "yanit": {
+     "messaging_product": "whatsapp",
+     "contacts": [
+      {
+       "input": "+905398889900",
+       "wa_id": "905398889900"
+      }
+     ],
+     "messages": [
+      {
+       "id": "wamid.LPOHXTZQ+jmcIhG/1KPGfC4FMN2oABhi"
+      }
+     ]
+    }
+   }
+  ],
+  "mesajlar": [
+   {
+    "wamid": "wamid.SFvjR5Xnu0tzoKDzjiwz+CxZO7N7cbhQ",
+    "to": "+905398889900",
+    "kabul": "2026-10-30T23:50:00+03:00",
+    "is": "waj-69454618-bedc-4136-abc5-4b218cdb85f8",
+    "medya": null
+   },
+   {
+    "wamid": "wamid.LPOHXTZQ+jmcIhG/1KPGfC4FMN2oABhi",
+    "to": "+905398889900",
+    "kabul": "2026-10-31T00:15:00+03:00",
+    "is": "waj-474d8a48-ba02-4b95-9f0c-a758074c6408",
+    "medya": null
+   }
+  ],
+  "kancalar": [
+   {
+    "t": "2026-10-30T23:50:01+03:00",
+    "wamid": "wamid.SFvjR5Xnu0tzoKDzjiwz+CxZO7N7cbhQ",
+    "durum": "sent",
+    "http": 200,
+    "basarili": true,
+    "hata": null,
+    "url": "http://ofis.localhost:40615/wa/kanca/<gizli>"
+   },
+   {
+    "t": "2026-10-30T23:50:05+03:00",
+    "wamid": "wamid.SFvjR5Xnu0tzoKDzjiwz+CxZO7N7cbhQ",
+    "durum": "delivered",
+    "http": 200,
+    "basarili": true,
+    "hata": null,
+    "url": "http://ofis.localhost:40615/wa/kanca/<gizli>"
+   },
+   {
+    "t": "2026-10-31T00:15:01+03:00",
+    "wamid": "wamid.LPOHXTZQ+jmcIhG/1KPGfC4FMN2oABhi",
+    "durum": "sent",
+    "http": 200,
+    "basarili": true,
+    "hata": null,
+    "url": "http://ofis.localhost:40615/wa/kanca/<gizli>"
+   },
+   {
+    "t": "2026-10-31T00:15:05+03:00",
+    "wamid": "wamid.LPOHXTZQ+jmcIhG/1KPGfC4FMN2oABhi",
+    "durum": "delivered",
+    "http": 200,
+    "basarili": true,
+    "hata": null,
+    "url": "http://ofis.localhost:40615/wa/kanca/<gizli>"
+   }
+  ],
+  "sayilar": {
+   "mesajIstegi": {
+    "905398889900": 2
+   },
+   "kabul": {
+    "905398889900": 2
+   },
+   "toplamMesajIstegi": 2,
+   "toplamKabul": 2,
+   "medyaYukleme": 0,
+   "medyaKabul": 0,
+   "medyaSilme": 0,
+   "koptu": 0
+  }
+ },
+ "alici_kanca_kaydi": [
+  {
+   "t": 1793393401500,
+   "http": 200,
+   "isaret": "wa1",
+   "wamidler": [
+    "wamid.SFvjR5Xnu0tzoKDzjiwz+CxZO7N7cbhQ"
+   ]
+  },
+  {
+   "t": 1793393405500,
+   "http": 200,
+   "isaret": "wa1",
+   "wamidler": [
+    "wamid.SFvjR5Xnu0tzoKDzjiwz+CxZO7N7cbhQ"
+   ]
+  },
+  {
+   "t": 1793394901500,
+   "http": 200,
+   "isaret": "wa1",
+   "wamidler": [
+    "wamid.LPOHXTZQ+jmcIhG/1KPGfC4FMN2oABhi"
+   ]
+  },
+  {
+   "t": 1793394905500,
+   "http": 200,
+   "isaret": "wa1",
+   "wamidler": [
+    "wamid.LPOHXTZQ+jmcIhG/1KPGfC4FMN2oABhi"
+   ]
+  }
+ ]
+}

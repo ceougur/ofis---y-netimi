@@ -1,0 +1,32 @@
+{
+  "ad": "248-i1-komsu-senaryo-pil-karti-245",
+  "komut": "npm run test:senaryo-pil-karti-245",
+  "commit": "4bca574c2865059c45ca4570efa261a1f9ffe5f1",
+  "dal": "is/ithal-248",
+  "kirli": 10,
+  "izlenmeyen": 36,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T18:08:04.862Z",
+  "sure_sn": 38.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 85,
+    "gecen": 85,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-i1-komsu-senaryo-pil-karti-245.log",
+  "klasor": "/home/user/wt-ithal-248",
+  "ham_cikti_sha256": "5ca29cab681dd4ad41cb697bda241c9c8afecda2dde914692b7f89ee41c5d1ef",
+  "ham_cikti_bayt": 7549
+}

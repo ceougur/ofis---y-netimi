@@ -365,7 +365,7 @@
     const active = account.status === "active";
     HOF.swap(root, `<div class="hof-plan-head">
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
-          <div class="hof-plan-title"><h3>${account.refNo ? `<span class="hof-plan-refno" title="Cari No">No ${esc(account.refNo)}</span>` : ""}${esc(account.name)} ${typeBadge(account.type)}${active ? "" : badgeMuted("Pasif")}${doubtfulBadge(account.doubtful)}</h3><small>${esc(whereText(account) || "Grupsuz")}${account.phone ? ` · ${esc(account.phone)}` : ""}</small></div></div>
+          <div class="hof-plan-title"><h3>${account.refNo ? `<span class="hof-plan-refno" title="Cari No">No ${esc(account.refNo)}</span>` : ""}${esc(account.name)} ${typeBadge(account.type)}${active ? "" : badgeMuted("Pasif")}${doubtfulBadge(account.doubtful)}${Number(account.waOptOut) === 1 ? ` <span class="hof-plan-badge is-muted" data-wa-optout title="Toplu WhatsApp gönderimine katılmaz">WhatsApp İstemiyor</span>` : ""}</h3><small>${esc(whereText(account) || "Grupsuz")}${account.phone ? ` · ${esc(account.phone)}` : ""}</small></div></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Cari işlemleri">
           <span class="hof-plan-toolgroup">${collect ? '<button type="button" class="hof-button hof-button-small" data-entry="in">+ Tahsilat</button>' : ""}${manage ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="debt" title="Cari size borçlanır">Borç Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="credit" title="Siz cariye borçlanırsınız">Alacak Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="out" title="Cariye para verildi (Kasa, banka hesabı ya da kredi kartı)">− Ödeme</button>' : ""}${canPlan() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="newPlan" title="Bu cariye taksit kartı aç">+ Taksit Planı</button>' : ""}</span>
           <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(account), "card", "Cari Ekstre - PDF") : ""}${HOF.can("overview.view") && HOF.reportCenter ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="detailStatement" title="Fatura kalemleri, belge no ve ödeme yoluyla ekstre (Raporlar; ekranda, PDF ve Excel)">Ayrıntılı Ekstre</button>' : ""}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
@@ -842,6 +842,8 @@
             ]),
         // 2.4.5 madde 6: Düzenle'de açılış bakiyesi satırı varsa onun tarihleri (tutarı ve yönü Hareketler'deki satırın Düzelt'inden).
         ...(openingEntry ? dueFields({ due: "openingDueDate", expected: "openingExpectedDate", dueLabel: "Açılış Bakiyesi Vade Tarihi", expectedLabel: "Açılış Bakiyesi Beklenen Ödeme Tarihi", values: openingEntry }) : []),
+        // 2.4.8 W2: toplu WhatsApp gönderiminden (otomatik ve elle) çıkarır; formun sonunda (Tab sırası öbür alanlarda değişmez).
+        { name: "waOptOut", label: "WhatsApp Mesajı İstemiyor", type: "checkbox", value: Number(account?.waOptOut) === 1, help: "İşaretli cariye WhatsApp ile ekstre ve ödeme hatırlatması gönderilmez." },
       ], options),
       submitLabel: account ? "Kaydet" : "Cariyi Aç",
       onOpen: dialog => {
@@ -963,7 +965,7 @@
             if (!go) return true;
           }
         }
-        const payload = { ...taxPayload(data), name: data.name, type: data.type, refNo: data.refNo, registeredOn: data.registeredOn, phone: data.phone, email: data.email, address: data.address, note: data.note, fields: fieldsBox ? fieldsBox.read() : [], caseKey: data.caseKey || "", caseSource: data.caseSource || "", caseTitle: data.caseKey ? data.caseTitle : "", ...(office().groupBody ? office().groupBody(data) : {}) };
+        const payload = { ...taxPayload(data), name: data.name, type: data.type, refNo: data.refNo, registeredOn: data.registeredOn, phone: data.phone, email: data.email, address: data.address, note: data.note, fields: fieldsBox ? fieldsBox.read() : [], caseKey: data.caseKey || "", caseSource: data.caseSource || "", caseTitle: data.caseKey ? data.caseTitle : "", ...(office().groupBody ? office().groupBody(data) : {}), ...("waOptOut" in data ? { waOptOut: data.waOptOut === true } : {}) };
         if (!account) Object.assign(payload, { openingBalance: data.openingBalance, openingSide: data.openingSide || "auto", openingDueDate: data.openingDueDate || "", openingExpectedDate: data.openingExpectedDate || "" });
         else if (openingEntry) Object.assign(payload, { openingDueDate: data.openingDueDate || "", openingExpectedDate: data.openingExpectedDate || "" });
         let result;
@@ -1548,6 +1550,9 @@
   };
   function mappingForm({ fileName, matrix, preview }) {
     const sample = matrix[preview.headerAt + 1] || [];
+    // 2.4.8 I1: yüklemenin istek kimliği eşleme penceresi açılınca üretilir; yanıt kaybolup yeniden "Carileri Oluştur"a basılınca aynı kimlik gider, sunucu
+    // carileri ve açılış bakiyelerini ikinci kez yazmaz, ilk yüklemenin raporunu döndürür (replayed). Yeni pencere yeni kimliktir.
+    const requestId = HOF.requestId();
     let form = null;
     HOF.formModal({
       title: "Excel’den Cari Yükle: Kolonları Eşle",
@@ -1586,7 +1591,7 @@
         });
         if (!Object.values(roles).includes("name")) throw new Error("Ad Soyad / Unvan kolonunu seçin.");
         const typeMap = form ? typeChoices(form) : {};
-        const result = await HOF.api("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, typeMap, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName } });
+        const result = await HOF.importApi("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, typeMap, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName }, requestId });
         view.status = "all";
         view.mode = "list";
         if (!modal) open();
@@ -1603,7 +1608,7 @@
         // v2.0.22: türü belirsiz (iki tür birden / tanınmayan) satırlar varsayılan türle açıldıysa satır numaralarıyla söylenir.
         if (result.typeDefaultedTotal) parts.push(`${result.typeDefaultedTotal} carinin türü belirsizdi, ${TYPES[data.type] || "Müşteri"} olarak açıldı (satır ${result.typeDefaulted.slice(0, 8).map(item => item.row).join(", ")}${result.typeDefaultedTotal > 8 ? "…" : ""})`);
         const skipped = result.skipped.length ? ` ${result.skippedTotal || result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
-        HOF.toast(`${parts.join(", ")}.${skipped}`, { type: result.created || result.updated ? "success" : "error", timeout: result.typeDefaultedTotal ? 20000 : 10000 });
+        HOF.toast(`${result.replayed ? "Bu yükleme zaten kaydedildi; ikinci kez yazılmadı. İlk yükleme: " : ""}${parts.join(", ")}.${skipped}`, { type: result.replayed ? "info" : result.created || result.updated ? "success" : "error", timeout: result.typeDefaultedTotal ? 20000 : 10000 });
       },
     });
   }

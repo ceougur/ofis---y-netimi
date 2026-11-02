@@ -1,0 +1,73 @@
+{
+  "ad": "248-dkYfix-mutasyon-mY3-mod-kaydi-yok-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-y/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-y/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "dc5522081235af4d449ac7da604cb06e9a8e8ffd",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T09:18:44.885Z",
+  "sure_sn": 88.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 103,
+    "gecen": 95,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0h2 sahibi DEFTERDE bilinen wamid · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503, yalnız defter YAZILMAZ; açılınca 200 ve satır Teslim (U6 koşul a)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1545:3",
+      "hata": "503'ten önce teslim defterde · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil şirket silinmiş (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1568:5",
+      "hata": "defterde teslim · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil şirket veri dosyası yok (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1568:5",
+      "hata": "defterde teslim · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil-F veri dosyası YOK (kalıcı) · imzasız failed 131026 → 200 + defterde teslim edilemedi; dosya geri gelince kişi \"gönderilecek\" (V1 i, K4)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1615:5",
+      "hata": "defterde teslim edilemedi · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil-F49 veri dosyası YOK (kalıcı) · imzasız failed 131049 → 200 + defterde teslim edilemedi; dosya geri gelince kişi \"gönderilecek\" (V1 i, K4)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1615:5",
+      "hata": "defterde teslim edilemedi · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil-D+geri veri dosyası YOK · delivered → 200 + defter teslim; dosya geri gelince Daha Önce, Bu Ay 1; süre dolumu satırı Teslim Edildi yapar (Süresi Doldu / teslim edilemedi YOK) (V1 + V2)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1633:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Kgecici şirket açılmamışken veri dosyası BAŞKA SÜREÇTE kilitli → 503 (geçici); kilit kalkınca yineleme 200 ve Teslim Edildi (V1 ii, V6 mD)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1653:3",
+      "hata": "İş X1 (BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Kbozuk şirket açılmamışken veri dosyası BOZUK (veri tabanı değil) → 503 (geçici; düzeltilince uygulanır); dosya düzelince yineleme 200 ve Teslim (V1 ii)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1677:3",
+      "hata": "İş X1 (dar kontrol 17 f1b; BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde — Meta bırakırsa da sayılır · false !== true (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkYfix-mutasyon-mY3-mod-kaydi-yok-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "483f805cdf320cb01ab8423388ff513658b6f517d332fab4bbb4bf8f21482fd7",
+  "ham_cikti_bayt": 46460
+}

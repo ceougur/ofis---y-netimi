@@ -1,0 +1,32 @@
+{
+  "ad": "248-kapi-yineleme-dar-2",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/mobil-kapi-lisans-yineleme-248.test.mjs test/mobil-lisans-hosgoru-248.test.mjs test/mobil-ozet-247.test.mjs test/kapi-247.test.mjs test/kapi-lisans-hosgoru-248.test.mjs test/whatsapp-w7-bagla-248.test.mjs test/mobil-247.test.mjs test/mobil-deneme-bitis-247.test.mjs test/mobil-eslesme-247.test.mjs test/mobil-gg247-b2.test.mjs test/mobil-gg247-b2b.test.mjs test/mobil-gg247-b5.test.mjs test/mobil-kapi-lisans-yineleme-248.test.mjs test/mobil-karekod-248.test.mjs test/mobil-lisans-hosgoru-248.test.mjs test/mobil-ofis-kaydi-247.test.mjs test/mobil-ozet-247.test.mjs test/mobil-ozet-olcek-247.test.mjs test/mobil-yazma-247.test.mjs test/kapi-247.test.mjs test/kapi-donen-ofis-247.test.mjs test/kapi-gg247-b1.test.mjs test/kapi-gg247-b3.test.mjs test/kapi-gg247-b4.test.mjs test/kapi-lisans-hosgoru-248.test.mjs test/kapi-para-245.test.mjs test/kapi-temizlik-yarisi-248.test.mjs test/kapi-tunel-247.test.mjs test/kapi-tunel-uctan-uca-247.test.mjs test/kapi-uyari-245.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "a4666583f437fe70dcf2352e5da89cbff64828d2",
+  "dal": "is/kapi-248",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T20:42:21.393Z",
+  "sure_sn": 64,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 253,
+    "gecen": 253,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-kapi-yineleme-dar-2.log",
+  "klasor": "/home/user/wt-kapi-248",
+  "ham_cikti_sha256": "9d0b16459f8a90c70377beb43b2798e663c9a77689d8d78f0a85735ecb2dbf91",
+  "ham_cikti_bayt": 100293
+}

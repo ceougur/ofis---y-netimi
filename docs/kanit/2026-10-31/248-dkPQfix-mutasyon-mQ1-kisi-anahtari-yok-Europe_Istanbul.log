@@ -1,0 +1,281 @@
+TAP version 13
+# Subtest: 2.4.8 İş L5 — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri = özel aralık → aynı dönem (7 gün penceresiyle)
+    # Subtest: 03.11 Son 3 Ay gönderildi → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 (8 gün) 'gönderilecek'; tarihleri farklı özel aralık ayrı
+    ok 1 - 03.11 Son 3 Ay gönderildi → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 (8 gün) 'gönderilecek'; tarihleri farklı özel aralık ayrı
+      ---
+      duration_ms: 593.0141
+      type: 'test'
+      ...
+    # Subtest: ters yön: 03.11 özel 01.09–03.11 gönderildi → aynı gün Son 3 Ay 'Daha Önce Gönderildi'; 05.11 Son 3 Ay (01.09–05.11) ayrı
+    ok 2 - ters yön: 03.11 özel 01.09–03.11 gönderildi → aynı gün Son 3 Ay 'Daha Önce Gönderildi'; 05.11 Son 3 Ay (01.09–05.11) ayrı
+      ---
+      duration_ms: 477.986098
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta (iki yön): 03.11 Son 3 Ay işi sırada → 05.11 özel 01.09–03.11 'Zaten Kuyrukta'; 03.11 özel işi sırada → aynı gün Son 3 Ay 'Zaten Kuyrukta'
+    ok 3 - Zaten Kuyrukta (iki yön): 03.11 Son 3 Ay işi sırada → 05.11 özel 01.09–03.11 'Zaten Kuyrukta'; 03.11 özel işi sırada → aynı gün Son 3 Ay 'Zaten Kuyrukta'
+      ---
+      duration_ms: 838.011883
+      type: 'test'
+      ...
+    # Subtest: Sonucu Belirsiz: 03.11 Son 3 Ay belirsiz → 05.11 özel 01.09–03.11 'Sonucu Belirsiz'; 11.11 (8 gün) elemez
+    ok 4 - Sonucu Belirsiz: 03.11 Son 3 Ay belirsiz → 05.11 özel 01.09–03.11 'Sonucu Belirsiz'; 11.11 (8 gün) elemez
+      ---
+      duration_ms: 372.249217
+      type: 'test'
+      ...
+    # Subtest: taşınan veri: 03.11 Son 3 Ay kabul → defter olmadan taşındı → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 'gönderilecek'
+    ok 5 - taşınan veri: 03.11 Son 3 Ay kabul → defter olmadan taşındı → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 'gönderilecek'
+      ---
+      duration_ms: 527.851055
+      type: 'test'
+      ...
+    1..5
+ok 1 - 2.4.8 İş L5 — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri = özel aralık → aynı dönem (7 gün penceresiyle)
+  ---
+  duration_ms: 2810.675534
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem
+    # Subtest: 03.11 Tüm Hareketler P ve Q'ya → 05.11 özel 15.10–03.11: P 'Daha Önce Gönderildi' (iletideki dönem), Q 'gönderilecek' (Q'nun dönemi 20.10–03.11); 11.11 pencere dışı
+    not ok 1 - 03.11 Tüm Hareketler P ve Q'ya → 05.11 özel 15.10–03.11: P 'Daha Önce Gönderildi' (iletideki dönem), Q 'gönderilecek' (Q'nun dönemi 20.10–03.11); 11.11 pencere dışı
+      ---
+      duration_ms: 629.14097
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:49:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kişi başına eşlik
+        + actual - expected
+        
+          [
+        -   'Daha Önce Gönderildi',
+            'gönderilecek',
+        +   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Daha Önce Gönderildi'
+        1: 'gönderilecek'
+      actual:
+        0: 'gönderilecek'
+        1: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:56:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: ters yön: 05.11 özel 15.10–05.11 P'ye gönderildi → aynı gün Tüm Hareketler 'Daha Önce Gönderildi' (Q gönderilecek); 06.11 Tüm (15.10–06.11) ayrı
+    not ok 2 - ters yön: 05.11 özel 15.10–05.11 P'ye gönderildi → aynı gün Tüm Hareketler 'Daha Önce Gönderildi' (Q gönderilecek); 06.11 Tüm (15.10–06.11) ayrı
+      ---
+      duration_ms: 402.030096
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:65:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı tarihler → aynı dönem, yalnız P
+        + actual - expected
+        
+          [
+        -   'Daha Önce Gönderildi',
+            'gönderilecek',
+        +   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Daha Önce Gönderildi'
+        1: 'gönderilecek'
+      actual:
+        0: 'gönderilecek'
+        1: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:71:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: b1b: aynı gün (Excel yükleme günü) açılmış 3 cariye 03.11 Tüm → 05.11 özel 15.10–03.11 toplu: üçü de elenir, ikinci ileti yok (önce 6 ileti)
+    not ok 3 - b1b: aynı gün (Excel yükleme günü) açılmış 3 cariye 03.11 Tüm → 05.11 özel 15.10–03.11 toplu: üçü de elenir, ikinci ileti yok (önce 6 ileti)
+      ---
+      duration_ms: 430.05771
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        toplu iş açılmaz (geldi 200 {"ok":true,"data":{"batch":{"id":"wab-a664e77e-e3d5-4549-a1c4-0a398ea3e5ae","kind":"statement","kindLabel":"Ekstre","template":"destekofis_ekstre","period":{"from":"2026-10-15","to":"2026-11-03","preset":""},"state":"running","stateLabel":"Sürüyor","waitingUntil":null,"pauseReason":"","pauseCode":"","lockNote":null,"createdAt":"2026-11-05T07:00:00.000Z","createdByName":"Ofis yöneticisi","finishedAt":null,"total":3,"counts":{"pending":3,"preparing":0,"sending":0,"accepted":0,"sent":0,"delivered":0,"read":0,"failed":0,"uncertain":0,"limited":0,"held":0,"paused":0,"canceled":0,"expired":0,"skipped":0,"stopped":0}},"summary":{"kind":"statement","period":{"from":"2026-10-15","to":"2026-11-03","preset":""},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":3,"sendable":3,"skipped":{},"alreadySent":{"count":0,"last":null,"included":0},"people":[{"id":"account-6834ff9f-71b2-4f73-824e-270aec41faa2","name":"Burak Kaya","phone":"+905334445566","skip":""},{"id":"account-ae3542c0-8203-4f72-80ec-184cc0419b19","name":"Ayşe Yılmaz","phone":"+905321112233","skip":""},{"id":"account-d32189ad-e7ca-4987-a267-cc04199c52ab","name":"Can Demir","phone":"+905352223344","skip":""}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":0,"left":250,"later":0,"holdUntil":null},"seconds":3},"reused":false}})
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:88:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: hareketsiz cari eşleşmez: Tüm Hareketler (iletide 03.11 – 03.11) → 05.11 özel 03.11–03.11 'gönderilecek'
+    ok 4 - hareketsiz cari eşleşmez: Tüm Hareketler (iletide 03.11 – 03.11) → 05.11 özel 03.11–03.11 'gönderilecek'
+      ---
+      duration_ms: 387.797522
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta: Tüm işi sırada → aynı tarihli özel aralık 'Zaten Kuyrukta' (Q gönderilecek)
+    not ok 5 - Zaten Kuyrukta: Tüm işi sırada → aynı tarihli özel aralık 'Zaten Kuyrukta' (Q gönderilecek)
+      ---
+      duration_ms: 411.95239
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        -   'Zaten Kuyrukta',
+            'gönderilecek',
+        +   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Zaten Kuyrukta'
+        1: 'gönderilecek'
+      actual:
+        0: 'gönderilecek'
+        1: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:116:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Zaten Kuyrukta ters yön: özel 15.10–03.11 işi sırada → aynı gün Tüm 'Zaten Kuyrukta' (Q gönderilecek)
+    not ok 6 - Zaten Kuyrukta ters yön: özel 15.10–03.11 işi sırada → aynı gün Tüm 'Zaten Kuyrukta' (Q gönderilecek)
+      ---
+      duration_ms: 414.520692
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:122:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        -   'Zaten Kuyrukta',
+            'gönderilecek',
+        +   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Zaten Kuyrukta'
+        1: 'gönderilecek'
+      actual:
+        0: 'gönderilecek'
+        1: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:126:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Sonucu Belirsiz: Tüm belirsiz → ertesi gün aynı tarihli özel aralık 'Sonucu Belirsiz' (Q gönderilecek)
+    not ok 7 - Sonucu Belirsiz: Tüm belirsiz → ertesi gün aynı tarihli özel aralık 'Sonucu Belirsiz' (Q gönderilecek)
+      ---
+      duration_ms: 394.499431
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:132:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        -   'Sonucu Belirsiz',
+            'gönderilecek',
+        +   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Sonucu Belirsiz'
+        1: 'gönderilecek'
+      actual:
+        0: 'gönderilecek'
+        1: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:137:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: taşınan veri (defter yok): eski bilgisayarda 03.11 Tüm P'ye kabul → yeni bilgisayarda 05.11 özel 15.10–03.11 'Daha Önce Gönderildi', Q 'gönderilecek'
+    not ok 8 - taşınan veri (defter yok): eski bilgisayarda 03.11 Tüm P'ye kabul → yeni bilgisayarda 05.11 özel 15.10–03.11 'Daha Önce Gönderildi', Q 'gönderilecek'
+      ---
+      duration_ms: 531.044019
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:143:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        -   'Daha Önce Gönderildi',
+            'gönderilecek',
+        +   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Daha Önce Gönderildi'
+        1: 'gönderilecek'
+      actual:
+        0: 'gönderilecek'
+        1: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:156:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 2 - 2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem
+  ---
+  duration_ms: 3603.178497
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:48:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 13
+# suites 2
+# pass 6
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7175.591296

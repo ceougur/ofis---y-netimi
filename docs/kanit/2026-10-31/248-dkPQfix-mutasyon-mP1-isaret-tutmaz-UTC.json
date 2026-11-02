@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkPQfix-mutasyon-mP1-isaret-tutmaz-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/write-lock-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-w9-kanca-248.test.mjs",
+  "commit": "5157413e158769650f51096903ed654362fbe42b",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 163,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T20:31:54.448Z",
+  "sure_sn": 17.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 17,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş P1 — store.probeWritable ve yazım kilidi işareti › createWriteLock: kilitte işaretler ve işaret süresi boyunca yeniden sınamaz; süre dolunca kalkar; sınama null ise yazılabilir sayar",
+      "konum": "test/write-lock-248.test.mjs:71:3",
+      "hata": "mark() işaretler · true !== false (beklenen false, gelen true)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-mutasyon-mP1-isaret-tutmaz-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "e780c4718d23cb118c38888ebe56a3cb43db794db5c004efc2bff3eb8d5d553b",
+  "ham_cikti_bayt": 10174
+}

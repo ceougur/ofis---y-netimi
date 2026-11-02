@@ -1,0 +1,303 @@
+TAP version 13
+# Subtest: M3 kapıcı — program uçları: ofis anahtarı, yeniden oynatma, lisans imzası
+    # Subtest: ilk kayıt ofis anahtarını bağlar; aynı kimlik BAŞKA anahtarla reddedilir (kapi-ofis-anahtari)
+    ok 1 - ilk kayıt ofis anahtarını bağlar; aynı kimlik BAŞKA anahtarla reddedilir (kapi-ofis-anahtari)
+      ---
+      duration_ms: 42.408705
+      type: 'test'
+      ...
+    # Subtest: imza bozuk → kapi-imza; zaman ±5 dk dışında → kapi-zaman ve kapıcının saati döner
+    ok 2 - imza bozuk → kapi-imza; zaman ±5 dk dışında → kapi-zaman ve kapıcının saati döner
+      ---
+      duration_ms: 17.286667
+      type: 'test'
+      ...
+    # Subtest: eski kaydın yeniden oynatılması silinmiş cihazı GERİ GETİREMEZ (kapi-sira)
+    ok 3 - eski kaydın yeniden oynatılması silinmiş cihazı GERİ GETİREMEZ (kapi-sira)
+      ---
+      duration_ms: 23.696554
+      type: 'test'
+      ...
+    # Subtest: başka anahtarla imzalanmış lisans belirteci kabul edilmez (kapi-lisans)
+    ok 4 - başka anahtarla imzalanmış lisans belirteci kabul edilmez (kapi-lisans)
+      ---
+      duration_ms: 7.045622
+      type: 'test'
+      ...
+    1..4
+ok 1 - M3 kapıcı — program uçları: ofis anahtarı, yeniden oynatma, lisans imzası
+  ---
+  duration_ms: 92.172041
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — eşli cihaz sınırı kapıcıda da (K13), P5 ve silme
+    # Subtest: 3 cihaz varken 4. ekleme kapıcıda reddedilir; lisans 2'ye düşünce mevcut 3 sürer (P5), yeni ekleme reddedilir, silme her durumda geçer
+    ok 1 - 3 cihaz varken 4. ekleme kapıcıda reddedilir; lisans 2'ye düşünce mevcut 3 sürer (P5), yeni ekleme reddedilir, silme her durumda geçer
+      ---
+      duration_ms: 60.185276
+      type: 'test'
+      ...
+    # Subtest: engelli lisansla kayıt: belirteç saklanır (okumalar hemen kapanır), kapi-lisans döner, cihaz EKLENMEZ
+    ok 2 - engelli lisansla kayıt: belirteç saklanır (okumalar hemen kapanır), kapi-lisans döner, cihaz EKLENMEZ
+      ---
+      duration_ms: 30.565501
+      type: 'test'
+      ...
+    1..2
+ok 2 - M3 kapıcı — eşli cihaz sınırı kapıcıda da (K13), P5 ve silme
+  ---
+  duration_ms: 91.411576
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — özet yükleme: sıra, boyut, sınırlar
+    # Subtest: sıra kesin artar; aynı ya da eski sıra (yeniden oynatma) reddedilir; silindikten sonra eski yükleme geri getirilemez
+    ok 1 - sıra kesin artar; aynı ya da eski sıra (yeniden oynatma) reddedilir; silindikten sonra eski yükleme geri getirilemez
+      ---
+      duration_ms: 38.726502
+      type: 'test'
+      ...
+    # Subtest: başka ofisin gövdesi, iç imzası bozuk özet ve 8 MB üstü reddedilir
+    ok 2 - başka ofisin gövdesi, iç imzası bozuk özet ve 8 MB üstü reddedilir
+      ---
+      duration_ms: 124.497732
+      type: 'test'
+      ...
+    # Subtest: günlük yükleme sınırı (ofis başına 200) ve İstanbul gün dönümünde sıfırlanır; dakikada 30'dan fazlası reddedilir
+    ok 3 - günlük yükleme sınırı (ofis başına 200) ve İstanbul gün dönümünde sıfırlanır; dakikada 30'dan fazlası reddedilir
+      ---
+      duration_ms: 1145.997589
+      type: 'test'
+      ...
+    1..3
+ok 3 - M3 kapıcı — özet yükleme: sıra, boyut, sınırlar
+  ---
+  duration_ms: 1310.136449
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — cihazın özet okuması (imza, cihaz listesi, P9, K14)
+    # Subtest: eşli cihaz imzalı istekle özeti alır (gövde değişmeden); etag ile 304; cihaz listede yoksa / başka ofisinse kapi-cihaz
+    ok 1 - eşli cihaz imzalı istekle özeti alır (gövde değişmeden); etag ile 304; cihaz listede yoksa / başka ofisinse kapi-cihaz
+      ---
+      duration_ms: 21.16942
+      type: 'test'
+      ...
+    # Subtest: imza başka cihazın anahtarıyla → kapi-imza; saat kayması → kapi-zaman (kapıcı saatini döner)
+    ok 2 - imza başka cihazın anahtarıyla → kapi-imza; saat kayması → kapi-zaman (kapıcı saatini döner)
+      ---
+      duration_ms: 12.993112
+      type: 'test'
+      ...
+    # Subtest: P9: lisans servisine ulaşılamazken belirteç 59:59 dk → okunur; 60:00 dk → kapi-lisans-dogrulanamadi (fail-closed); servis dönünce açılır
+    ok 3 - P9: lisans servisine ulaşılamazken belirteç 59:59 dk → okunur; 60:00 dk → kapi-lisans-dogrulanamadi (fail-closed); servis dönünce açılır
+      ---
+      duration_ms: 26.93675
+      type: 'test'
+      ...
+    # Subtest: belirteç 30 dk'dan eskiyse ve servis erişilebilirse kapıcı yeniler; engellenen lisans 1 saat dolmadan yansır
+    ok 4 - belirteç 30 dk'dan eskiyse ve servis erişilebilirse kapıcı yeniler; engellenen lisans 1 saat dolmadan yansır
+      ---
+      duration_ms: 26.521762
+      type: 'test'
+      ...
+    # Subtest: süresi biten lisans bitiş ANINDA kapanır; özet yoksa kapi-ozet-yok
+    ok 5 - süresi biten lisans bitiş ANINDA kapanır; özet yoksa kapi-ozet-yok
+      ---
+      duration_ms: 64.697745
+      type: 'test'
+      ...
+    # Subtest: cihaz özete YAZAMAZ: cihaz + lisans geçince kapi-yazma (K22); cihaz yoksa önce kapi-cihaz
+    ok 6 - cihaz özete YAZAMAZ: cihaz + lisans geçince kapi-yazma (K22); cihaz yoksa önce kapi-cihaz
+      ---
+      duration_ms: 34.988289
+      type: 'test'
+      ...
+    1..6
+ok 4 - M3 kapıcı — cihazın özet okuması (imza, cihaz listesi, P9, K14)
+  ---
+  duration_ms: 188.035885
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — canlı bağlantı kapısı (ofisin telefon adresi → tünel)
+    # Subtest: cihazsız yalnız sayfa dosyası ve eşleme geçer; mobil uç cihazsız kapi-cihaz
+    ok 1 - cihazsız yalnız sayfa dosyası ve eşleme geçer; mobil uç cihazsız kapi-cihaz
+      ---
+      duration_ms: 21.04496
+      type: 'test'
+      ...
+    # Subtest: listede olmayan cihaz çerezi → kapi-cihaz (iletilmez); eşli cihaz → iletilir, işaret programın doğrulayacağı biçimde, istemcinin işaret taklidi ezilir
+    ok 2 - listede olmayan cihaz çerezi → kapi-cihaz (iletilmez); eşli cihaz → iletilir, işaret programın doğrulayacağı biçimde, istemcinin işaret taklidi ezilir
+      ---
+      duration_ms: 19.247097
+      type: 'test'
+      ...
+    # Subtest: yasak yollar tünele GİTMEZ (kapi-yol): program API'si, kodlanmış/çift kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi
+    ok 3 - yasak yollar tünele GİTMEZ (kapi-yol): program API'si, kodlanmış/çift kodlanmış .., ters bölü, çift bölü, büyük harf, önek hilesi
+      ---
+      duration_ms: 34.295697
+      type: 'test'
+      ...
+    # Subtest: tünel kapalıyken kapi-ofis-kapali (503); lisans 1 saattir doğrulanamıyorsa iletilmez
+    ok 4 - tünel kapalıyken kapi-ofis-kapali (503); lisans 1 saattir doğrulanamıyorsa iletilmez
+      ---
+      duration_ms: 14.409742
+      type: 'test'
+      ...
+    # Subtest: m. ve tanınmayan alt ad karşılama sayfası verir; programın yükleme ucu ofis adresinde de imzasız geçmez
+    ok 5 - m. ve tanınmayan alt ad karşılama sayfası verir; programın yükleme ucu ofis adresinde de imzasız geçmez
+      ---
+      duration_ms: 9.093672
+      type: 'test'
+      ...
+    1..5
+ok 5 - M3 kapıcı — canlı bağlantı kapısı (ofisin telefon adresi → tünel)
+  ---
+  duration_ms: 99.137229
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — lisans servisi izolasyonu (ders 30)
+    # Subtest: LISANS_URL yoksa kapıcı hiçbir lisans isteği yapmaz; varsa yalnız verilen işleve (gerçek servise değil)
+    ok 1 - LISANS_URL yoksa kapıcı hiçbir lisans isteği yapmaz; varsa yalnız verilen işleve (gerçek servise değil)
+      ---
+      duration_ms: 17.993561
+      type: 'test'
+      ...
+    1..1
+ok 6 - M3 kapıcı — lisans servisi izolasyonu (ders 30)
+  ---
+  duration_ms: 18.183869
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — yol kuralı programla aynı (M2 lib/mobile-remote.mjs remotePathProblem ↔ kapi-protokol yolSorunu)
+    # Subtest: iki uygulama aynı sonucu verir (kâhinin bütün istek yolları + ek kalıplar)
+    ok 1 - iki uygulama aynı sonucu verir (kâhinin bütün istek yolları + ek kalıplar)
+      ---
+      duration_ms: 79.294972
+      type: 'test'
+      ...
+    1..1
+ok 7 - M3 kapıcı — yol kuralı programla aynı (M2 lib/mobile-remote.mjs remotePathProblem ↔ kapi-protokol yolSorunu)
+  ---
+  duration_ms: 79.401759
+  type: 'suite'
+  ...
+# Subtest: M3 kapıcı — dağıtım yapılandırması (bulut/kapi/wrangler.toml)
+    # Subtest: lisans açık anahtarları programınkiyle aynı; gizli değer dosyada yok; R2 bağlaması OZET; ofis alanı destekofis.net
+    ok 1 - lisans açık anahtarları programınkiyle aynı; gizli değer dosyada yok; R2 bağlaması OZET; ofis alanı destekofis.net
+      ---
+      duration_ms: 0.834245
+      type: 'test'
+      ...
+    1..1
+ok 8 - M3 kapıcı — dağıtım yapılandırması (bulut/kapi/wrangler.toml)
+  ---
+  duration_ms: 0.932445
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M3 kapıcı — tarayıcıya Türkçe hata sayfası, mobil istemciye JSON
+    # Subtest: karekod / adres çubuğu: tünel kapalıyken (bağlantı hatası, Cloudflare 530 ve HTML 502) 503 + "Ofis Sunucusuna Ulaşılamıyor" sayfası
+    ok 1 - karekod / adres çubuğu: tünel kapalıyken (bağlantı hatası, Cloudflare 530 ve HTML 502) 503 + "Ofis Sunucusuna Ulaşılamıyor" sayfası
+      ---
+      duration_ms: 31.879545
+      type: 'test'
+      ...
+    # Subtest: Sec-Fetch başlığı göndermeyen eski tarayıcı (Accept text/html) da sayfa alır; HEAD gövdesiz
+    ok 2 - Sec-Fetch başlığı göndermeyen eski tarayıcı (Accept text/html) da sayfa alır; HEAD gövdesiz
+      ---
+      duration_ms: 17.776721
+      type: 'test'
+      ...
+    # Subtest: mobil istemcinin fetch'i (app.js) ve başlıksız istek JSON almaya devam eder: kapi-ofis-kapali 503 aynen
+    ok 3 - mobil istemcinin fetch'i (app.js) ve başlıksız istek JSON almaya devam eder: kapi-ofis-kapali 503 aynen
+      ---
+      duration_ms: 20.216979
+      type: 'test'
+      ...
+    # Subtest: öbür kapıcı hataları da sayfa olur: eşli olmayan cihaz (401 Cihaz Eşli Değil), kayıtsız ofis (404 Ofis Bulunamadı); çerez silme başlığı korunur
+    ok 4 - öbür kapıcı hataları da sayfa olur: eşli olmayan cihaz (401 Cihaz Eşli Değil), kayıtsız ofis (404 Ofis Bulunamadı); çerez silme başlığı korunur
+      ---
+      duration_ms: 7.111498
+      type: 'test'
+      ...
+    1..4
+ok 9 - 2.4.8 M3 kapıcı — tarayıcıya Türkçe hata sayfası, mobil istemciye JSON
+  ---
+  duration_ms: 77.414077
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M1 — tünel durum göstergesi bağlantıyı connIndex başına sayar (cloudflared'in kendi /ready sayacı gibi)
+    # Subtest: 0. dört bağlantı kurulunca Bağlı, 4 (açılış satırları sayılmaz)
+    ok 1 - 0. dört bağlantı kurulunca Bağlı, 4 (açılış satırları sayılmaz)
+      ---
+      duration_ms: 472.182798
+      type: 'test'
+      ...
+    # Subtest: 1. ZORLA ÜRETME: tek bağlantı (connIndex=2) iki kez yeniden denenip kurulamıyor, öbür üçü ayakta → Bağlı, 3 ("Bağlantı koptu" DEĞİL)
+    ok 2 - 1. ZORLA ÜRETME: tek bağlantı (connIndex=2) iki kez yeniden denenip kurulamıyor, öbür üçü ayakta → Bağlı, 3 ("Bağlantı koptu" DEĞİL)
+      ---
+      duration_ms: 686.985836
+      type: 'test'
+      ...
+    # Subtest: 2. ZORLA ÜRETME: dört bağlantı sırayla birer kez kopup geri geliyor (kısa ağ dalgalanması) → Bağlı, 4
+    ok 3 - 2. ZORLA ÜRETME: dört bağlantı sırayla birer kez kopup geri geliyor (kısa ağ dalgalanması) → Bağlı, 4
+      ---
+      duration_ms: 434.329999
+      type: 'test'
+      ...
+    # Subtest: 3. ZORLA ÜRETME: dört bağlantı da düzgün kapanıyor (Unregistered + Retrying), hiçbiri dönmüyor → Bağlanıyor, 0 ("Bağlı" DEĞİL); biri dönünce Bağlı, 1
+    ok 4 - 3. ZORLA ÜRETME: dört bağlantı da düzgün kapanıyor (Unregistered + Retrying), hiçbiri dönmüyor → Bağlanıyor, 0 ("Bağlı" DEĞİL); biri dönünce Bağlı, 1
+      ---
+      duration_ms: 847.63971
+      type: 'test'
+      ...
+    # Subtest: 4. http2 yolu: "Lost connection with the edge" + Retrying + Connection terminated tek kopuştur → Bağlı, 3
+    ok 5 - 4. http2 yolu: "Lost connection with the edge" + Retrying + Connection terminated tek kopuştur → Bağlı, 3
+      ---
+      duration_ms: 480.229862
+      type: 'test'
+      ...
+    # Subtest: 5. gerçek kopuş gizlenmez: dört bağlantı da düşüp yeniden deneniyor → Bağlanıyor (Bağlantı koptu), 0; biri dönünce Bağlı, 1
+    ok 6 - 5. gerçek kopuş gizlenmez: dört bağlantı da düşüp yeniden deneniyor → Bağlanıyor (Bağlantı koptu), 0; biri dönünce Bağlı, 1
+      ---
+      duration_ms: 707.458635
+      type: 'test'
+      ...
+    # Subtest: 6. süreç çöküp yeniden başlayınca eski bağlantılar sayılmaz: ilk süreçte 4, yenisinde 1 → Bağlı, 1
+    ok 7 - 6. süreç çöküp yeniden başlayınca eski bağlantılar sayılmaz: ilk süreçte 4, yenisinde 1 → Bağlı, 1
+      ---
+      duration_ms: 1533.771551
+      type: 'test'
+      ...
+    1..7
+ok 10 - 2.4.8 M1 — tünel durum göstergesi bağlantıyı connIndex başına sayar (cloudflared'in kendi /ready sayacı gibi)
+  ---
+  duration_ms: 5165.231381
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M2 — cloudflared çıktısı program veri klasöründe günlük dosyasına (sınırlı, döndürmeli, gizli bilgi yok)
+    # Subtest: 7. satırlar <veri>/bilesenler/cloudflared/cloudflared.log'a yazılır; belirteç ve kimlik bilgisi YAZILMAZ
+    ok 1 - 7. satırlar <veri>/bilesenler/cloudflared/cloudflared.log'a yazılır; belirteç ve kimlik bilgisi YAZILMAZ
+      ---
+      duration_ms: 416.960448
+      type: 'test'
+      ...
+    # Subtest: 8. dosya sınırı aşınca bir önceki dosyaya döner (cloudflared.log.1); en çok iki dosya, her biri sınırın altında, son satır güncel dosyada
+    ok 2 - 8. dosya sınırı aşınca bir önceki dosyaya döner (cloudflared.log.1); en çok iki dosya, her biri sınırın altında, son satır güncel dosyada
+      ---
+      duration_ms: 415.113566
+      type: 'test'
+      ...
+    1..2
+ok 11 - 2.4.8 M2 — cloudflared çıktısı program veri klasöründe günlük dosyasına (sınırlı, döndürmeli, gizli bilgi yok)
+  ---
+  duration_ms: 833.021064
+  type: 'suite'
+  ...
+1..11
+# tests 36
+# suites 11
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11096.910735

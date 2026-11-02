@@ -1,0 +1,32 @@
+{
+  "ad": "248-dk11fix-yeni-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=180000 /home/user/wt-t2fix-248/test/whatsapp-dk11-kilit-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-t6-b-248.test.mjs /home/user/wt-t2fix-248/test/whatsapp-w2-surec-olumu-248.test.mjs",
+  "commit": "135ce3f301f12786e976b9e754c6553dabb689c9",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T16:45:49.425Z",
+  "sure_sn": 25.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk11fix-yeni-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "d81f9895991be1311a5e85bfb91a8c12736c27dfeaf89993cc8b3d7b3440ee3e",
+  "ham_cikti_bayt": 2852
+}

@@ -1,0 +1,88 @@
+{
+  "ad": "248-m45-kirmizi-e2e-iphone",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/e2e/senaryo-mobil-iphone-248.mjs",
+  "commit": "e7c7338d478c0afe55f7c4946b618380f44a60ea",
+  "dal": "is/mobil2-248",
+  "kirli": 18,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T18:08:06.781Z",
+  "sure_sn": 92,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 27,
+    "gecen": 16,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "yönlendirme sayfası görünür (Ana Ekrana Ekleyin)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cihazı Eşleştir formu görünmez (eşleme yapılmaz)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "üç adım:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Cihaz Eşli Değil ekranında Karekodu Okut düğmesi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.textContent: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Safari'de eşli olmayan sayfa → Ana Ekrana Ekleyin yönlendirmesi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Son Özeti Göster kullanıcı adının ÜSTÜNDE (not y=672.390625–805.15625, alan y=297.015625)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "uyarıda Son Özeti Göster cümlesi: Ofis sunucusuna ulaşılamıyor. Bu cihazda son özet açılabilir (salt okunur).Son Özeti Göster",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "giriş hatası cümleyi söyler: Ofis sunucusuyla bağlantı kurulamadı. Sunucunun açık olduğunu denetleyin.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-m45-kirmizi-e2e-iphone.log",
+  "klasor": "/home/user/wt-mobil2-248",
+  "ham_cikti_sha256": "51bac6ff69073f4267a9c1d4c9a9855b1fc521059ab28ee0a60955681de7364e",
+  "ham_cikti_bayt": 2255
+}

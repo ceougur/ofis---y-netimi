@@ -82,6 +82,10 @@ const shot = async (page, name) => {
 const openCash = async page => {
   await page.click('#hof-sidecard [data-action="cash"]');
   await page.waitForSelector(`${top} [data-list] table, ${top} [data-list] .hof-empty`, { timeout: 15000 });
+  // Ders 13 (01.11.2026, T10 tam kapı: ayın 1'inde kırmızı): Kasa penceresi "Bu Ay" ile açılır; testin "5 gün önce"si ayın ilk 5 gününde geçen aya düşer ve
+  // satır görünmez. Satırlar dönemden bağımsız okunsun diye "Tümü" seçilir (yeni liste yanıtı beklenir).
+  await Promise.all([page.waitForResponse(res => res.url().includes("/api/workspace/cash?")), page.click(`${top} [data-period="all"]`)]);
+  await page.waitForFunction(sel => document.querySelector(sel)?.getAttribute("aria-pressed") === "true", `${top} [data-period="all"]`);
   await page.waitForTimeout(500);
 };
 const typeHuman = async (page, selector, value) => {

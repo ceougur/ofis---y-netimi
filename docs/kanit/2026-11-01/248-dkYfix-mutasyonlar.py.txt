@@ -1,0 +1,25 @@
+# İş Y mutasyonları: python3 mut-y.py <kök> <ad>. Eski metin dosyada TAM BİR kez geçmeli.
+import sys
+D = "server/lib/whatsapp/defter.mjs"
+H = "server/lib/whatsapp/hook.mjs"
+C = "server/lib/whatsapp/connection.mjs"
+M = {
+  "mY1-kesisim-yok": [(D, """        AND (NOT EXISTS (SELECT 1 FROM claims x WHERE x.job_id = c.id)
+          OR EXISTS""", """        AND (1 = 1
+          OR EXISTS""")],
+  "mY2-fiyatsiz-yazar": [(H, '&& priced(item)), items[0].owner', '), items[0].owner')],
+  "mY3-imzasiz-yazar": [(H, '    if (!signed && hooks.modeOf?.(owner.wabaId) !== "manual") {', '    if (false) {')],
+  "mY3-mod-kaydi-yok": [(C, '    hooks?.noteMode?.(record?.wabaId, record?.mode === "embedded" ? "embedded" : "manual");\n', ''), (C, '    if (record) hooks?.noteMode?.(record.wabaId, record.mode === "embedded" ? "embedded" : "manual");\n', '')],
+}
+if sys.argv[1] == "--list":
+    print("\n".join(M)); sys.exit(0)
+root, name = sys.argv[1], sys.argv[2]
+for path, old, new in M[name]:
+    p = f"{root}/{path}"
+    s = open(p).read()
+    n = s.count(old)
+    if n != 1:
+        sys.exit(f"{name}: {path} eski metin {n} kez")
+    s = s.replace(old, new)
+    open(p, "w").write(s)
+print(f"{name}: uygulandı")

@@ -1,0 +1,308 @@
+{
+ "checks": [
+  {
+   "name": "001 şema 39 → 43",
+   "ok": true,
+   "detail": {
+    "version": 43
+   }
+  },
+  {
+   "name": "001 bütünlük ok",
+   "ok": true,
+   "detail": {
+    "integrity": "ok"
+   }
+  },
+  {
+   "name": "001 göç öncesi yedek pre-migration-v43",
+   "ok": true,
+   "detail": {
+    "newBackups": [
+     "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-31T15-33-20-136Z-pre-migration-v43.sqlite",
+     "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-31T15-33-49-762Z-pre-migration-v43.sqlite"
+    ]
+   }
+  },
+  {
+   "name": "001 yeni tablolar yalnız v40 tabloları (wa_batches, wa_jobs); eski tablo düşmedi",
+   "ok": true,
+   "detail": {
+    "added": [
+     "wa_batches",
+     "wa_jobs"
+    ],
+    "dropped": []
+   }
+  },
+  {
+   "name": "001 WhatsApp tabloları boş (göç toplu gönderim/iş yaratmaz: wa_batches=0, wa_jobs=0)",
+   "ok": true,
+   "detail": {
+    "wa_batches": 0,
+    "wa_jobs": 0
+   }
+  },
+  {
+   "name": "001 mobil tabloları ve e-Belge sayacı izi önce = sonra (mobile_access 0→0, mobile_codes 0→0, mobile_devices 0→0, mobile_sessions 0→0, edoc_usage 349→349, edoc_usage_meta 1→1)",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "001 eski tabloların satır sayıları aynı (değişenler: yok)",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "002 şema 39 → 43",
+   "ok": true,
+   "detail": {
+    "version": 43
+   }
+  },
+  {
+   "name": "002 bütünlük ok",
+   "ok": true,
+   "detail": {
+    "integrity": "ok"
+   }
+  },
+  {
+   "name": "002 göç öncesi yedek pre-migration-v43",
+   "ok": true,
+   "detail": {
+    "newBackups": [
+     "001 - Merkez Ticaret ve Danışmanlık A.Ş/destekofis-001-2026-10-31T15-33-20-136Z-pre-migration-v43.sqlite",
+     "002 - Yıldız Mali Müşavirlik ve Danışmanlık Ltd. Şti/destekofis-002-2026-10-31T15-33-49-762Z-pre-migration-v43.sqlite"
+    ]
+   }
+  },
+  {
+   "name": "002 yeni tablolar yalnız v40 tabloları (wa_batches, wa_jobs); eski tablo düşmedi",
+   "ok": true,
+   "detail": {
+    "added": [
+     "wa_batches",
+     "wa_jobs"
+    ],
+    "dropped": []
+   }
+  },
+  {
+   "name": "002 WhatsApp tabloları boş (göç toplu gönderim/iş yaratmaz: wa_batches=0, wa_jobs=0)",
+   "ok": true,
+   "detail": {
+    "wa_batches": 0,
+    "wa_jobs": 0
+   }
+  },
+  {
+   "name": "002 mobil tabloları ve e-Belge sayacı izi önce = sonra (mobile_access 0→0, mobile_codes 0→0, mobile_devices 0→0, mobile_sessions 0→0, edoc_usage 129→129, edoc_usage_meta 1→1)",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "002 eski tabloların satır sayıları aynı (değişenler: yok)",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "sirket-001 accounts.wa_opt_out kolonu (v40; INTEGER NOT NULL 1 DEFAULT 0); 3221 carinin \"WhatsApp Mesajı İstemiyor\" işaretli olanı 0",
+   "ok": true,
+   "detail": {
+    "col": {
+     "cid": 39,
+     "name": "wa_opt_out",
+     "type": "INTEGER",
+     "notnull": 1,
+     "dflt_value": "0",
+     "pk": 0
+    },
+    "n": 3221,
+    "opt": 0
+   }
+  },
+  {
+   "name": "sirket-861c8ed4-e977-4b33-ac9d-74dbe80b47ae accounts.wa_opt_out kolonu (v40; INTEGER NOT NULL 1 DEFAULT 0); 936 carinin \"WhatsApp Mesajı İstemiyor\" işaretli olanı 0",
+   "ok": true,
+   "detail": {
+    "col": {
+     "cid": 39,
+     "name": "wa_opt_out",
+     "type": "INTEGER",
+     "notnull": 1,
+     "dflt_value": "0",
+     "pk": 0
+    },
+    "n": 936,
+    "opt": 0
+   }
+  },
+  {
+   "name": "sirket-001 wa_jobs.prepared_at (TEXT NOT NULL 0 DEFAULT null)",
+   "ok": true,
+   "detail": {
+    "col": {
+     "cid": 34,
+     "name": "prepared_at",
+     "type": "TEXT",
+     "notnull": 0,
+     "dflt_value": null,
+     "pk": 0
+    }
+   }
+  },
+  {
+   "name": "sirket-001 wa_jobs.pdf_blob (BLOB NOT NULL 0 DEFAULT null)",
+   "ok": true,
+   "detail": {
+    "col": {
+     "cid": 35,
+     "name": "pdf_blob",
+     "type": "BLOB",
+     "notnull": 0,
+     "dflt_value": null,
+     "pk": 0
+    }
+   }
+  },
+  {
+   "name": "sirket-001 wa_batches.send_again_after (TEXT NOT NULL 1 DEFAULT '')",
+   "ok": true,
+   "detail": {
+    "col": {
+     "cid": 22,
+     "name": "send_again_after",
+     "type": "TEXT",
+     "notnull": 1,
+     "dflt_value": "''",
+     "pk": 0
+    }
+   }
+  },
+  {
+   "name": "sirket-001 wa_batches.key_day (TEXT NOT NULL 1 DEFAULT '')",
+   "ok": true,
+   "detail": {
+    "col": {
+     "cid": 23,
+     "name": "key_day",
+     "type": "TEXT",
+     "notnull": 1,
+     "dflt_value": "''",
+     "pk": 0
+    }
+   }
+  },
+  {
+   "name": "sirket-001 makine defteri tabloları şirket dosyasında YOK (learned_wamids, claim_keys, claims)",
+   "ok": true,
+   "detail": {
+    "tbl": []
+   }
+  },
+  {
+   "name": "sirket-861c8ed4-e977-4b33-ac9d-74dbe80b47ae wa_jobs.prepared_at (TEXT NOT NULL 0 DEFAULT null)",
+   "ok": true,
+   "detail": {
+    "col": {
+     "cid": 34,
+     "name": "prepared_at",
+     "type": "TEXT",
+     "notnull": 0,
+     "dflt_value": null,
+     "pk": 0
+    }
+   }
+  },
+  {
+   "name": "sirket-861c8ed4-e977-4b33-ac9d-74dbe80b47ae wa_jobs.pdf_blob (BLOB NOT NULL 0 DEFAULT null)",
+   "ok": true,
+   "detail": {
+    "col": {
+     "cid": 35,
+     "name": "pdf_blob",
+     "type": "BLOB",
+     "notnull": 0,
+     "dflt_value": null,
+     "pk": 0
+    }
+   }
+  },
+  {
+   "name": "sirket-861c8ed4-e977-4b33-ac9d-74dbe80b47ae wa_batches.send_again_after (TEXT NOT NULL 1 DEFAULT '')",
+   "ok": true,
+   "detail": {
+    "col": {
+     "cid": 22,
+     "name": "send_again_after",
+     "type": "TEXT",
+     "notnull": 1,
+     "dflt_value": "''",
+     "pk": 0
+    }
+   }
+  },
+  {
+   "name": "sirket-861c8ed4-e977-4b33-ac9d-74dbe80b47ae wa_batches.key_day (TEXT NOT NULL 1 DEFAULT '')",
+   "ok": true,
+   "detail": {
+    "col": {
+     "cid": 23,
+     "name": "key_day",
+     "type": "TEXT",
+     "notnull": 1,
+     "dflt_value": "''",
+     "pk": 0
+    }
+   }
+  },
+  {
+   "name": "sirket-861c8ed4-e977-4b33-ac9d-74dbe80b47ae makine defteri tabloları şirket dosyasında YOK (learned_wamids, claim_keys, claims)",
+   "ok": true,
+   "detail": {
+    "tbl": []
+   }
+  },
+  {
+   "name": "makine defteri (data/whatsapp-gonderim.sqlite) learned_wamids + claim_keys var, satırlar {\"meta\":1,\"batch_events\":0,\"batch_log\":0,\"sqlite_sequence\":0,\"claims\":0,\"claim_keys\":0,\"outcomes\":0,\"failures\":0,\"releases\":0,\"accepts\":0,\"holds\":0,\"deliveries\":0,\"hook_events\":0,\"hook_seen\":0,\"learned_wamids\":0}",
+   "ok": true,
+   "detail": {
+    "lt": [
+     "meta",
+     "batch_events",
+     "batch_log",
+     "sqlite_sequence",
+     "claims",
+     "claim_keys",
+     "outcomes",
+     "failures",
+     "releases",
+     "accepts",
+     "holds",
+     "deliveries",
+     "hook_events",
+     "hook_seen",
+     "learned_wamids"
+    ],
+    "counts": {
+     "meta": 1,
+     "batch_events": 0,
+     "batch_log": 0,
+     "sqlite_sequence": 0,
+     "claims": 0,
+     "claim_keys": 0,
+     "outcomes": 0,
+     "failures": 0,
+     "releases": 0,
+     "accepts": 0,
+     "holds": 0,
+     "deliveries": 0,
+     "hook_events": 0,
+     "hook_seen": 0,
+     "learned_wamids": 0
+    }
+   }
+  }
+ ]
+}

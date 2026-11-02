@@ -1,0 +1,32 @@
+{
+  "ad": "248-g5-w9-yesil-komsu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-w9-kanca-248.test.mjs test/kapi-247.test.mjs test/kapi-donen-ofis-247.test.mjs test/kapi-gg247-b1.test.mjs test/kapi-gg247-b3.test.mjs test/kapi-gg247-b4.test.mjs test/kapi-tunel-247.test.mjs test/kapi-tunel-uctan-uca-247.test.mjs test/mobil-247.test.mjs test/mobil-deneme-bitis-247.test.mjs test/mobil-eslesme-247.test.mjs test/mobil-gg247-b2.test.mjs test/mobil-gg247-b2b.test.mjs test/mobil-gg247-b5.test.mjs test/mobil-ofis-kaydi-247.test.mjs test/mobil-ozet-247.test.mjs test/mobil-yazma-247.test.mjs test/tunel-durum-248.test.mjs test/tunel-indirici-247.test.mjs test/tunel-saat-247.test.mjs test/tunel-surec-247.test.mjs test/tunel-yapilandirma-247.test.mjs test/tunel-yonetici-247.test.mjs test/whatsapp-w1-baglanti.test.mjs test/whatsapp-213.test.mjs test/whatsapp-meta-graph.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "86e6d66b93c4f041cbb33d195a32bf803aa22e4b",
+  "dal": "is/cekirdek-248",
+  "kirli": 9,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T15:41:23.323Z",
+  "sure_sn": 96.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 263,
+    "gecen": 263,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-w9-yesil-komsu.log",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "276d3ced18a94335e95d17b2c2f72bf786a86cc303f0bdfd0dc8220431cf7a05",
+  "ham_cikti_bayt": 99706
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "248-dkTfix-tablo-UTC",
+  "komut": "node --test --test-concurrency=1 test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": "708897da09b39bc9d6f2ca28b1113dc08386098b",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T00:57:35.007Z",
+  "sure_sn": 27.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 42,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkTfix-tablo-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "d0ab1b23ab62f141226b80d002247e96972150ff0e43381a89f1bbba698e5372",
+  "ham_cikti_bayt": 13857
+}

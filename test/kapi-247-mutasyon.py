@@ -11,7 +11,8 @@ MUTS = [
     ("MK1 cihaz imzası denetlenmez (özet okuma)", K, '    if (!(await ecdsaDogrula(cihaz.anahtar, mesaj.cihaz(request.method, yol, id, ms), request.headers.get("x-do-imza") || ""))) at("kapi-imza");\n', ''),
     ("MK2 cihaz listesi denetlenmez (kimlik ne olursa ilk cihaz)", K, 'const cihaz = CIHAZ_KIMLIGI.test(id) ? (meta?.cihazlar || []).find(c => c.id === id) : null;', 'const cihaz = (meta?.cihazlar || [])[0];'),
     ("MK3 P9 yok (lisans bilgisi süresiz kabul)", K, 'if (!en || now() - en.issuedAt >= K.lisansTazeMs) return { durum: "dogrulanamadi", iddia: en };', 'if (!en) return { durum: "dogrulanamadi", iddia: en };'),
-    ("MK4 lisans engeli ve bitişi görülmez", K, 'return { durum: lisansGecerli(en, now()) ? "gecerli" : "gecersiz", iddia: en };', 'return { durum: "gecerli", iddia: en };'),
+    # 2.4.8 L1: görünüm mobil kullanım hakkından (kapi-protokol mobilHakki; hoşgörü dahil) — satır değişti, mutasyon aynı anlamda.
+    ("MK4 lisans engeli ve bitişi görülmez", K, 'return { durum: hak.durum === "gecerli" ? "gecerli" : hak.acik ? "hosgoru" : "gecersiz", iddia: en, hak };', 'return { durum: "gecerli", iddia: en, hak };'),
     ("MK5 kapıcıda cihaz sınırı yok (K13)", K, '    else if (eklenen.length && temiz.length > sinir) cihazHatasi = "kapi-sinir";\n', ''),
     ("MK6 özet sırası denetlenmez (yeniden oynatma)", K, '    if (govde.sira <= oncekiSira) at("kapi-sira");\n', ''),
     ("MK7 kayıt zamanı denetlenmez (silinmiş cihaz geri gelir)", K, '    if (mevcut && ms <= mevcut.veri.sonKayit) at("kapi-sira");\n', ''),

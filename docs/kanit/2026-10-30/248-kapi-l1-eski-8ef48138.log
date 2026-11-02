@@ -1,0 +1,576 @@
+TAP version 13
+# Subtest: 2.4.8 L1 — mobil kullanım hakkı kuralı (kapi-protokol; program ve kapıcı aynı işlev)
+    # Subtest: ücretli lisans: 7 gün kala uyarı, bitişte 30 gün hoşgörü (29. günün sonunda 1 gün), 30. günün sonunda kapanır; gece yarısı sınırları
+    not ok 1 - ücretli lisans: 7 gün kala uyarı, bitişte 30 gün hoşgörü (29. günün sonunda 1 gün), 30. günün sonunda kapanır; gece yarısı sınırları
+      ---
+      duration_ms: 2.946319
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:188:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kapi-protokol mobilHakki yok (2.4.8 L1)
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:190:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: deneme bitişte HEMEN kapanır (hoşgörü yok); engelli hemen kapanır; silme anı: bitiş + 30 gün, engel + 30 gün (erken olanı)
+    not ok 2 - deneme bitişte HEMEN kapanır (hoşgörü yok); engelli hemen kapanır; silme anı: bitiş + 30 gün, engel + 30 gün (erken olanı)
+      ---
+      duration_ms: 0.441528
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:205:3'
+      failureType: 'testCodeFailure'
+      error: 'mobilHakki is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:208:34)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..2
+not ok 1 - 2.4.8 L1 — mobil kullanım hakkı kuralı (kapi-protokol; program ve kapıcı aynı işlev)
+  ---
+  duration_ms: 5.038932
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:187:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 L1 — kapıcı: hoşgörüde son özet, canlı kapı ve tünel açık; yeni cihaz eklenmez; sonunda kapanır
+    # Subtest: ücretli lisans: 7 gün kala özette uyarı; bitişten 30 gün salt okunur (özet + canlı + tünel), 30. günün sonunda kapanır ve ileti 'sona erdi'
+    not ok 1 - ücretli lisans: 7 gün kala özette uyarı; bitişten 30 gün salt okunur (özet + canlı + tünel), 30. günün sonunda kapanır ve ileti 'sona erdi'
+      ---
+      duration_ms: 93.656956
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:224:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        7 gün kala telefon uyarısı (son özet yanıtında)
+        + actual - expected
+        
+        + ''
+        - 'Lisansınız 7 gün sonra bitiyor.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Lisansınız 7 gün sonra bitiyor.'
+      actual: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:230:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: deneme bitişte hemen kapanır (özet, canlı, tünel); engelli lisans hemen kapanır — iletiler hakkın durumuna göre
+    not ok 2 - deneme bitişte hemen kapanır (özet, canlı, tünel); engelli lisans hemen kapanır — iletiler hakkın durumuna göre
+      ---
+      duration_ms: 37.033469
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:246:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        deneme bitiş anında kapanır
+        + actual - expected
+        
+          [
+            403,
+        +   'Lisans geçerli değil; uzaktan erişim kapalı.'
+        -   'Deneme süreniz bitti; mobil kullanım kapalı. Lisans alınca yeniden açılır.'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 403
+        1: 'Deneme süreniz bitti; mobil kullanım kapalı. Lisans alınca yeniden açılır.'
+      actual:
+        0: 403
+        1: 'Lisans geçerli değil; uzaktan erişim kapalı.'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:253:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: hoşgörüde mevcut cihazlar sürer, YENİ cihaz eklenmez; lisansı geçersiz YENİ ofis kapıcıya yazılmaz
+    not ok 3 - hoşgörüde mevcut cihazlar sürer, YENİ cihaz eklenmez; lisansı geçersiz YENİ ofis kapıcıya yazılmaz
+      ---
+      duration_ms: 35.319395
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:262:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hoşgörüde aynı cihaz listesiyle kayıt kabul
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:266:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - 2.4.8 L1 — kapıcı: hoşgörüde son özet, canlı kapı ve tünel açık; yeni cihaz eklenmez; sonunda kapanır
+  ---
+  duration_ms: 166.744864
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:223:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama
+    # Subtest: deneme: bitişten 30 gün geçmeden SİLİNMEZ; 30. günde ofis kaydı, özet, tünel, DNS silinir; geçerli lisanslı komşu ofise dokunulmaz
+    not ok 1 - deneme: bitişten 30 gün geçmeden SİLİNMEZ; 30. günde ofis kaydı, özet, tünel, DNS silinir; geçerli lisanslı komşu ofise dokunulmaz
+      ---
+      duration_ms: 0.976651
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:280:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kapıcıda zamanlanmış temizlik yok (2.4.8 L1)
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:282:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: ücretli lisans: hoşgörünün son anında kayıt durur, 30. günün sonundaki ilk turda HEMEN silinir; telefon 'eşli değil' değil kayıt yok görür
+    not ok 2 - ücretli lisans: hoşgörünün son anında kayıt durur, 30. günün sonundaki ilk turda HEMEN silinir; telefon 'eşli değil' değil kayıt yok görür
+      ---
+      duration_ms: 18.074878
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:300:3'
+      failureType: 'testCodeFailure'
+      error: 'kapi.temizlik is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        Object.temizlik (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:177:26)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:304:31)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: engel: ilk tur engeli kaydeder; engelden 29 gün sonra durur, 30 gün sonra silinir; engel kalkarsa (lisans açıldı) kayıt silinmez
+    not ok 3 - engel: ilk tur engeli kaydeder; engelden 29 gün sonra durur, 30 gün sonra silinir; engel kalkarsa (lisans açıldı) kayıt silinmez
+      ---
+      duration_ms: 32.940217
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:312:3'
+      failureType: 'testCodeFailure'
+      error: 'kapi.temizlik is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        Object.temizlik (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:177:26)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:320:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: lisans yenilendiyse (servis yeni bitiş verdi) saklı belirteç 30 günden eski olsa da SİLİNMEZ; servise ulaşılamıyorsa hiçbir şey silinmez
+    not ok 4 - lisans yenilendiyse (servis yeni bitiş verdi) saklı belirteç 30 günden eski olsa da SİLİNMEZ; servise ulaşılamıyorsa hiçbir şey silinmez
+      ---
+      duration_ms: 28.774499
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:333:3'
+      failureType: 'testCodeFailure'
+      error: 'kapi.temizlik is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        Object.temizlik (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:177:26)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:340:31)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Cloudflare yanıt vermezse silme yarıda kalır (işaret kalır), sonraki turda tamamlanır
+    not ok 5 - Cloudflare yanıt vermezse silme yarıda kalır (işaret kalır), sonraki turda tamamlanır
+      ---
+      duration_ms: 22.648292
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:350:3'
+      failureType: 'testCodeFailure'
+      error: 'kapi.temizlik is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        Object.temizlik (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:177:26)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:355:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ZORLA: silme sürerken program yenilenen lisansla kaydolursa ofis kaydı SİLİNMEZ (iz yazılmaz), telefon çalışmayı sürdürür
+    not ok 6 - ZORLA: silme sürerken program yenilenen lisansla kaydolursa ofis kaydı SİLİNMEZ (iz yazılmaz), telefon çalışmayı sürdürür
+      ---
+      duration_ms: 25.061399
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:365:3'
+      failureType: 'testCodeFailure'
+      error: 'kapi.temizlik is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        Object.temizlik (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:177:26)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:373:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: silinmiş kayıt GERİ GELMEZ: lisans alınınca aynı kimlik cihazsız açılır ve 'silindi' bildirilir; geçersiz lisansla kayıt açılmaz; başka anahtar alamaz
+    not ok 7 - silinmiş kayıt GERİ GELMEZ: lisans alınınca aynı kimlik cihazsız açılır ve 'silindi' bildirilir; geçersiz lisansla kayıt açılmaz; başka anahtar alamaz
+      ---
+      duration_ms: 20.934532
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:388:3'
+      failureType: 'testCodeFailure'
+      error: 'kapi.temizlik is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        Object.temizlik (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:177:26)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:392:31)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tur sınırı: dış istek bütçesi aşılınca kalanlar sonraki tura kalır; birkaç turda hepsi silinir, geçerli ofisler kalır
+    not ok 8 - tur sınırı: dış istek bütçesi aşılınca kalanlar sonraki tura kalır; birkaç turda hepsi silinir, geçerli ofisler kalır
+      ---
+      duration_ms: 174.812144
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:408:3'
+      failureType: 'testCodeFailure'
+      error: 'kapi.temizlik is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        Object.temizlik (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:177:26)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:414:24)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 3 - 2.4.8 L1 — kapıcının zamanlanmış temizliği (Worker Cron): silme zamanı, güvenli sıra, başka ofise dokunmama
+  ---
+  duration_ms: 325.503096
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:279:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 L1 — dağıtım yapılandırması
+    # Subtest: wrangler.toml saatte bir zamanlanmış tur tanımlar; Worker scheduled işleyicisi var
+    not ok 1 - wrangler.toml saatte bir zamanlanmış tur tanımlar; Worker scheduled işleyicisi var
+      ---
+      duration_ms: 2.050218
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:426:3'
+      failureType: 'testCodeFailure'
+      error: 'saatlik cron'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        # DestekOfis mobil kapıcı — Cloudflare Worker yapılandırması (2.4.7 M3; docs/mobil/M3-TASARIM.md §5, dağıtım adımları teslim raporunda).
+        # GİZLİ DEĞER YOK: KAPI_LISANS_ANAHTARI `wrangler secret put KAPI_LISANS_ANAHTARI` ile verilir (lisans servisinin Vercel ortam değişkeniyle aynı değer).
+        # account_id: CLOUDFLARE_ACCOUNT_ID ortam değişkeninden (dosyaya yazılmaz).
+        name = "destekofis-kapi"
+        main = "kapi.mjs"
+        compatibility_date = "2026-10-01"
+        workers_dev = false
+        
+        # kapi. = programın yükleme uçları; m. = karşılama; *.destekofis.net = ofislerin telefon adresi (<ofis>.destekofis.net; DNS kaydını M4 açar, turuncu bulut).
+        # Kök ad ve www Vercel'de ve DNS only (gri bulut) olduğundan bu rotaya girmez.
+        routes = [
+          { pattern = "kapi.destekofis.net", custom_domain = true },
+          { pattern = "m.destekofis.net", custom_domain = true },
+          { pattern = "*.destekofis.net/*", zone_name = "destekofis.net" },
+        ]
+        
+        # Kovadaki anahtarlar: ofis/<ofis>/meta.json + ozet.json (M3), makine/<makine>.json (lisans makinesi → TEK ofis + hız sayaçları; bağımsız gözden geçirme B3,
+        # bulut/kapi/makine.mjs), sayac/yeni-ofis/<gün>.json (günlük yeni ofis tavanı; günde bir küçük nesne — istenirse kovaya "sayac/" için 30 günlük silme kuralı).
+        [[r2_buckets]]
+        binding = "OZET"
+        bucket_name = "destekofis-ozet"
+        
+        [vars]
+        OFIS_ALANI = "destekofis.net"
+        # 2.4.7 M4 (docs/mobil/M4-TASARIM.md §8): tünel ve DNS kaydını açan Cloudflare hesabı + destekofis.net bölgesi (kimlik, gizli değil). Belirteç gizli: CF_API_TOKEN
+        # (Account → Cloudflare Tunnel: Edit; Zone destekofis.net → DNS: Edit) panelden ya da `wrangler secret put CF_API_TOKEN` ile.
+        CF_ACCOUNT_ID = "671317dfe7772cf20920c6b09b04de83"
+        CF_ZONE_ID = "a4521bf58a43349c69a0fdafb985bc83"
+        LISANS_URL = "https://destek-ofis.vercel.app/api/lisans"
+        # server/lib/license-keys.mjs TRUSTED_LICENSE_KEYS ile aynı (test/kapi-247.test.mjs denetler).
+        LISANS_ANAHTARLARI = '{"destekofis-lisans-2026-1":"MCowBQYDK2VwAyEAZRdIMB11WVitpkoOEgCZDF/ULwhcsQ2mUuv9fl8Td7c="}'
+        
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:429:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - 2.4.8 L1 — dağıtım yapılandırması
+  ---
+  duration_ms: 2.232883
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/kapi-lisans-hosgoru-248.test.mjs:425:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 L1 — program: ücretli lisans bitince mobil 30 gün salt okunur, uyarılar, sonunda kapanır
+    # Subtest: 7 gün kala telefonda ve Yönetim → Mobil Cihazlar'da uyarı; bitişte masaüstü salt okunur ama telefon girer (salt okunur), 30. günün sonunda kapanır
+    not ok 1 - 7 gün kala telefonda ve Yönetim → Mobil Cihazlar'da uyarı; bitişte masaüstü salt okunur ama telefon girer (salt okunur), 30. günün sonunda kapanır
+      ---
+      duration_ms: 2.542877
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/mobil-lisans-hosgoru-248.test.mjs:81:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        lib/license.mjs mobileRightOf yok (2.4.8 L1)
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/mobil-lisans-hosgoru-248.test.mjs:82:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: deneme: bitiş anında telefon kapanır (ileti 'Deneme süreniz bitti'); kapıcı kaydı silinince program eşlemeleri kaldırır, lisansla yeniden eşleme açık iletiyle
+    not ok 2 - deneme: bitiş anında telefon kapanır (ileti 'Deneme süreniz bitti'); kapıcı kaydı silinince program eşlemeleri kaldırır, lisansla yeniden eşleme açık iletiyle
+      ---
+      duration_ms: 799.623927
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/mobil-lisans-hosgoru-248.test.mjs:119:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        deneme bitti: {"status":403,"code":"kapi-lisans","error":"Lisans geçerli değil; uzaktan erişim kapalı.","hak":null,"sirket":""}
+        + actual - expected
+        
+          [
+            403,
+            'kapi-lisans',
+        +   'Lisans geçerli değil; uzaktan erişim kapalı.'
+        -   'Deneme süreniz bitti; mobil kullanım kapalı. Lisans alınca yeniden açılır.'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 403
+        1: 'kapi-lisans'
+        2: 'Deneme süreniz bitti; mobil kullanım kapalı. Lisans alınca yeniden açılır.'
+      actual:
+        0: 403
+        1: 'kapi-lisans'
+        2: 'Lisans geçerli değil; uzaktan erişim kapalı.'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/mobil-lisans-hosgoru-248.test.mjs:126:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 5 - 2.4.8 L1 — program: ücretli lisans bitince mobil 30 gün salt okunur, uyarılar, sonunda kapanır
+  ---
+  duration_ms: 804.322628
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/mobil-lisans-hosgoru-248.test.mjs:80:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared
+    # Subtest: 1. kimse uzaktan bağlanamazken: tünel Kapalı (Eşli cihaz yok), kapıcıya başvurulmaz, süreç yok
+    ok 1 - 1. kimse uzaktan bağlanamazken: tünel Kapalı (Eşli cihaz yok), kapıcıya başvurulmaz, süreç yok
+      ---
+      duration_ms: 406.320964
+      type: 'test'
+      ...
+    # Subtest: 2. Uzaktan Bağlanabilir işaretlenince adres önceden hazırlanır (kapıcıya bir başvuru), süreç YİNE başlamaz
+    ok 2 - 2. Uzaktan Bağlanabilir işaretlenince adres önceden hazırlanır (kapıcıya bir başvuru), süreç YİNE başlamaz
+      ---
+      duration_ms: 355.273097
+      type: 'test'
+      ...
+    # Subtest: 3. karekod oluşturulunca tünel kendiliğinden açılır → Bağlı; yapılandırma YALNIZ uzak dinleyiciye bağlı, ana port asla
+    ok 3 - 3. karekod oluşturulunca tünel kendiliğinden açılır → Bağlı; yapılandırma YALNIZ uzak dinleyiciye bağlı, ana port asla
+      ---
+      duration_ms: 151.445736
+      type: 'test'
+      ...
+    # Subtest: 4. tünelden giren istek uzak kapıdan geçer: /mobil/ açık, programın öbür uçları 404 (remote-path); eşleme çerezi Secure
+    ok 4 - 4. tünelden giren istek uzak kapıdan geçer: /mobil/ açık, programın öbür uçları 404 (remote-path); eşleme çerezi Secure
+      ---
+      duration_ms: 108.30696
+      type: 'test'
+      ...
+    # Subtest: 5. cihaz silinince (bekleyen karekod da yok) tünel kapanır, süreç gider; yeni karekodla yeniden açılır
+    ok 5 - 5. cihaz silinince (bekleyen karekod da yok) tünel kapanır, süreç gider; yeni karekodla yeniden açılır
+      ---
+      duration_ms: 285.954759
+      type: 'test'
+      ...
+    # Subtest: 6. lisans salt okunur olunca tünel kapanır (neden: lisans); lisans dönünce yeniden açılır
+    ok 6 - 6. lisans salt okunur olunca tünel kapanır (neden: lisans); lisans dönünce yeniden açılır
+      ---
+      duration_ms: 269.405202
+      type: 'test'
+      ...
+    # Subtest: 6b. ücretli lisansın 30 günlük hoşgörüsünde tünel açık kalır; hoşgörü bitince ve süresi dolmuş denemede kapanır
+    not ok 7 - 6b. ücretli lisansın 30 günlük hoşgörüsünde tünel açık kalır; hoşgörü bitince ve süresi dolmuş denemede kapanır
+      ---
+      duration_ms: 406.071504
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/tunel-yonetici-l1.test.mjs:194:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hoşgörüde (bitişten 1 gün sonra) tünel bağlı kalmalı: {"state":"off","label":"Kapalı","reason":"Lisans geçerli değil; uzaktan bağlantı kapalı.","since":"2026-10-30T19:15:39.977Z","connections":0,"publicUrl":"https://oabcdefghijklmnop.destekofis.net","retryInSeconds":null,"version":"test"}
+        
+        'off' !== 'connected'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'connected'
+      actual: 'off'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/tunel-yonetici-l1.test.mjs:203:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 7. bağlayıcı çökerse yeniden başlatılır (Bağlanıyor → Bağlı)
+    not ok 8 - 7. bağlayıcı çökerse yeniden başlatılır (Bağlanıyor → Bağlı)
+      ---
+      duration_ms: 0.96216
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/tunel-yonetici-l1.test.mjs:218:3'
+      failureType: 'testCodeFailure'
+      error: 'The "pid" argument must be of type number. Received null'
+      code: 'ERR_INVALID_ARG_TYPE'
+      name: 'TypeError'
+      stack: |-
+        process.kill (node:internal/process/per_thread:263:13)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/tunel-yonetici-l1.test.mjs:220:13)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 8. durum ucu yalnız yöneticiye açık; belirteç / yerel port dönmez
+    ok 9 - 8. durum ucu yalnız yöneticiye açık; belirteç / yerel port dönmez
+      ---
+      duration_ms: 131.69412
+      type: 'test'
+      ...
+    # Subtest: 9. program kapanınca bağlayıcı yetim kalmaz (süreç ve kimlik dosyası gider)
+    ok 10 - 9. program kapanınca bağlayıcı yetim kalmaz (süreç ve kimlik dosyası gider)
+      ---
+      duration_ms: 122.855086
+      type: 'test'
+      ...
+    1..10
+not ok 6 - M4 tünel yöneticisi — gerçek program, sahte kapıcı ve sahte cloudflared
+  ---
+  duration_ms: 2712.219674
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-248-4a7ffd63/eski-8ef48138/test/tunel-yonetici-l1.test.mjs:54:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: M4 tünel yöneticisi — doğrulanamayan dosya ve test kurulumu
+    # Subtest: indirilen dosyanın özeti tutmazsa süreç HİÇ başlamaz, kapıcıya başvurulmaz; durum Kapalı + neden
+    ok 1 - indirilen dosyanın özeti tutmazsa süreç HİÇ başlamaz, kapıcıya başvurulmaz; durum Kapalı + neden
+      ---
+      duration_ms: 495.274265
+      type: 'test'
+      ...
+    # Subtest: test kurulumu (lisans adresi yerel döngü, kapıcı adresi verilmemiş) gerçek kapıcıya ASLA gitmez (ders 30): tünel 'bu kurulumda kapalı'
+    ok 2 - test kurulumu (lisans adresi yerel döngü, kapıcı adresi verilmemiş) gerçek kapıcıya ASLA gitmez (ders 30): tünel 'bu kurulumda kapalı'
+      ---
+      duration_ms: 880.714445
+      type: 'test'
+      ...
+    1..2
+ok 7 - M4 tünel yöneticisi — doğrulanamayan dosya ve test kurulumu
+  ---
+  duration_ms: 1376.66422
+  type: 'suite'
+  ...
+1..7
+# tests 28
+# suites 7
+# pass 10
+# fail 18
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9984.719783

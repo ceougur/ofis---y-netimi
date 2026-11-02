@@ -1,0 +1,53 @@
+{
+  "ad": "248-dkRfix-mutasyon-mR7-yok-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs",
+  "commit": "0213f1e80a41bfb7fa46f3cfd6b1cf5dc66c8682",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 50,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T22:42:51.538Z",
+  "sure_sn": 5.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 5,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › R7: kabul → sıfırla → imzalı failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:126:7",
+      "hata": "geç failed uygulandı (geldi {\"applied\":0,\"ignored\":0,\"unknown\":1}) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › R7: kabul → sıfırla → imzasız failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:126:7",
+      "hata": "geç failed uygulandı (geldi {\"applied\":0,\"ignored\":0,\"unknown\":1}) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › R7: kabul → sıfırla → imzalı failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:126:7",
+      "hata": "geç failed uygulandı (geldi {\"applied\":0,\"ignored\":0,\"unknown\":1}) · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır › R7: kabul → sıfırla → imzasız failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider",
+      "konum": "test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:126:7",
+      "hata": "geç failed uygulandı (geldi {\"applied\":0,\"ignored\":0,\"unknown\":1}) · 0 !== 1 (beklenen 1, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkRfix-mutasyon-mR7-yok-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "3a478675d8fbec1649bec5ce8c3adcf79bda4e3047edb5c69b6239b5d48f6dd4",
+  "ham_cikti_bayt": 7001
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "248-l1-kahin-kendi-testi",
+  "komut": "python3 -I test/bagimsiz/mobil-erisim/kahin_test.py",
+  "commit": "009674a1ff8eca4db1f33876b2845ce1d8588364",
+  "dal": "is/kahin-l1-248",
+  "kirli": 5,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T21:03:14.788Z",
+  "sure_sn": 204.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 150,
+    "gecen": 150,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "test/bagimsiz/mobil-erisim/kanit/2026-10-30/248-l1-kahin-kendi-testi.log",
+  "klasor": "/home/user/wt-kahin-l1-248",
+  "ham_cikti_sha256": "547b60089139a67810c4bbd6beb72d45096260abc0aad705028bc3617f19baa4",
+  "ham_cikti_bayt": 10507
+}

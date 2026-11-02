@@ -1,0 +1,32 @@
+{
+  "ad": "248-t1r-ek-s19-j7",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t1r-0435ed69/test/bagimsiz/whatsapp-248/surucu.mjs --mutasyon S19-gec-kabul-bekletilmez --senaryo J7-01*,J7-02* --uc hizli --kip imzali --tz Europe/Istanbul --cikti docs/kanit/2026-11-01/248-t1r-ek",
+  "commit": "f05f0b1910dbe5d59282ad0e96ba0ba0b01fdf09",
+  "dal": "is/surucu2-248",
+  "kirli": 0,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T10:06:58.673Z",
+  "sure_sn": 83.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 2
+  },
+  "hukum": "GEÇTİ",
+  "neden": "2 atlanan/todo",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-t1r-ek-s19-j7.log",
+  "klasor": "/home/user/wt-surucu2-248",
+  "ham_cikti_sha256": "5d7df4dc02def348b539897386a685f3d32f3e2eed04f3a7c194b2a473870744",
+  "ham_cikti_bayt": 471
+}

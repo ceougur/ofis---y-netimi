@@ -1,0 +1,104 @@
+TAP version 13
+# Subtest: 2.4.8 İş R1 — kapanan şirketin yeniden deneme zamanlayıcıları süreci düşürmez
+    # Subtest: belge temizliği kilitte yeniden denemeye kaldı → uygulama kapanır → zamanlayıcı ateşlenmez, yakalanmamış istisna yok
+    ok 1 - belge temizliği kilitte yeniden denemeye kaldı → uygulama kapanır → zamanlayıcı ateşlenmez, yakalanmamış istisna yok
+      ---
+      duration_ms: 7318.990615
+      type: 'test'
+      ...
+    # Subtest: sohbet arşivi kilitte yeniden denemeye kaldı → uygulama kapanır → yakalanmamış istisna yok
+    not ok 2 - sohbet arşivi kilitte yeniden denemeye kaldı → uygulama kapanır → yakalanmamış istisna yok
+      ---
+      duration_ms: 22207.372278
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/kapanis-zamanlayici-248.test.mjs:64:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kapanmış örnekte sohbet arşivi yeniden denemesi ateşlenmedi
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/kapanis-zamanlayici-248.test.mjs:79:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket: 002'nin belge temizliği kilitte → 002 silinir → ortak süreçte yakalanmamış istisna yok, ortak katman yanıt verir
+    ok 3 - iki şirket: 002'nin belge temizliği kilitte → 002 silinir → ortak süreçte yakalanmamış istisna yok, ortak katman yanıt verir
+      ---
+      duration_ms: 7625.13123
+      type: 'test'
+      ...
+    # Subtest: geri yüklemeden sonra yeni uygulama örneğinin kilit işareti eskisinden bağımsız: yeni gönderim hemen gider, ekranda kilit notu yok
+    ok 4 - geri yüklemeden sonra yeni uygulama örneğinin kilit işareti eskisinden bağımsız: yeni gönderim hemen gider, ekranda kilit notu yok
+      ---
+      duration_ms: 1109.286464
+      type: 'test'
+      ...
+    1..4
+not ok 1 - 2.4.8 İş R1 — kapanan şirketin yeniden deneme zamanlayıcıları süreci düşürmez
+  ---
+  duration_ms: 38262.447543
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/kapanis-zamanlayici-248.test.mjs:46:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 İş P1 — store.probeWritable ve yazım kilidi işareti
+    # Subtest: kilitsizde true, busy_timeout 10 sn kalır
+    ok 1 - kilitsizde true, busy_timeout 10 sn kalır
+      ---
+      duration_ms: 7.366643
+      type: 'test'
+      ...
+    # Subtest: başka bağlantı kilitliyken ≤ 0,5 sn içinde false; busy_timeout yine 10 sn
+    ok 2 - başka bağlantı kilitliyken ≤ 0,5 sn içinde false; busy_timeout yine 10 sn
+      ---
+      duration_ms: 159.730732
+      type: 'test'
+      ...
+    # Subtest: işlem içindeyken sınanmaz (null) ve işlem bozulmaz
+    ok 3 - işlem içindeyken sınanmaz (null) ve işlem bozulmaz
+      ---
+      duration_ms: 6.49761
+      type: 'test'
+      ...
+    # Subtest: createWriteLock: kilitte işaretler ve işaret süresi boyunca yeniden sınamaz; süre dolunca kalkar; sınama null ise yazılabilir sayar
+    ok 4 - createWriteLock: kilitte işaretler ve işaret süresi boyunca yeniden sınamaz; süre dolunca kalkar; sınama null ise yazılabilir sayar
+      ---
+      duration_ms: 0.453207
+      type: 'test'
+      ...
+    # Subtest: POS valör kuyruğu: yazılamıyorken tur runQueue çağırmaz
+    ok 5 - POS valör kuyruğu: yazılamıyorken tur runQueue çağırmaz
+      ---
+      duration_ms: 5.956681
+      type: 'test'
+      ...
+    # Subtest: İş R1: kapalı bağlantıda kısa sınama fırlatmaz, 'closed' döner; guard yazılamaz der ama İŞARET KOYMAZ (kapanma kilit değildir)
+    ok 6 - İş R1: kapalı bağlantıda kısa sınama fırlatmaz, 'closed' döner; guard yazılamaz der ama İŞARET KOYMAZ (kapanma kilit değildir)
+      ---
+      duration_ms: 8.969152
+      type: 'test'
+      ...
+    1..6
+ok 2 - 2.4.8 İş P1 — store.probeWritable ve yazım kilidi işareti
+  ---
+  duration_ms: 190.389688
+  type: 'suite'
+  ...
+1..2
+# tests 10
+# suites 2
+# pass 9
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39302.532305

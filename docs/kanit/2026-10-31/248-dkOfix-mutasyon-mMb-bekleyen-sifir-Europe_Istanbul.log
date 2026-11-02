@@ -1,0 +1,89 @@
+TAP version 13
+# Subtest: 2.4.8 İş N — şirket dosyası kilitliyken işçi turu olay döngüsünü busy_timeout'tan uzun tutmaz
+    # Subtest: kilitli dosyada her tur ≤ 12 sn (önce bakım + iş ~40 sn), ileti gitmez; kilit kalkınca iş gider, çift ileti yok, toplu iş Tamamlandı
+    ok 1 - kilitli dosyada her tur ≤ 12 sn (önce bakım + iş ~40 sn), ileti gitmez; kilit kalkınca iş gider, çift ileti yok, toplu iş Tamamlandı
+      ---
+      duration_ms: 20736.324313
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.4.8 İş N — şirket dosyası kilitliyken işçi turu olay döngüsünü busy_timeout'tan uzun tutmaz
+  ---
+  duration_ms: 20737.888934
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş O — kilitli dosyada bakım turu ve bellekteki 'art arda' sayacı
+    # Subtest: O1: teslim edilmiş iletinin PDF'i silinmemişken dosya kilitli → bakım ≤ 12 sn (önce ~30 sn); kilit kalkınca kayıt yazılır, Meta'ya ikinci silme isteği gitmez
+    ok 1 - O1: teslim edilmiş iletinin PDF'i silinmemişken dosya kilitli → bakım ≤ 12 sn (önce ~30 sn); kilit kalkınca kayıt yazılır, Meta'ya ikinci silme isteği gitmez
+      ---
+      duration_ms: 10651.338038
+      type: 'test'
+      ...
+    # Subtest: O2: kilitte sayaç birikti → Duraklat → Devam Et → tek disk dolu hatası toplu işi DURAKLATMAZ (art arda 1)
+    ok 2 - O2: kilitte sayaç birikti → Duraklat → Devam Et → tek disk dolu hatası toplu işi DURAKLATMAZ (art arda 1)
+      ---
+      duration_ms: 40662.535781
+      type: 'test'
+      ...
+    # Subtest: O3a: kilitte biriken 4 + kilit kalkınca tek disk dolu hatası = art arda 5 → Duraklatıldı (bellekteki sayaç dosyaya geçer)
+    not ok 3 - O3a: kilitte biriken 4 + kilit kalkınca tek disk dolu hatası = art arda 5 → Duraklatıldı (bellekteki sayaç dosyaya geçer)
+      ---
+      duration_ms: 40629.171089
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk12-kilit-bakim-sayac-248.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        art arda 5 → Duraklatıldı (geldi {"state":"running","troubles":1,"pause_code":""})
+        + actual - expected
+        
+          [
+        +   'running',
+        +   1,
+        +   ''
+        -   'paused',
+        -   5,
+        -   'local'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'paused'
+        1: 5
+        2: 'local'
+      actual:
+        0: 'running'
+        1: 1
+        2: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk12-kilit-bakim-sayac-248.test.mjs:134:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: O3b: kilitte biriken 4 → kilit kalkınca bir iş BAŞARIYLA gider (sayaç sıfırlanır) → sonraki tek disk dolu hatası art arda 1
+    ok 4 - O3b: kilitte biriken 4 → kilit kalkınca bir iş BAŞARIYLA gider (sayaç sıfırlanır) → sonraki tek disk dolu hatası art arda 1
+      ---
+      duration_ms: 40666.950562
+      type: 'test'
+      ...
+    1..4
+not ok 2 - 2.4.8 İş O — kilitli dosyada bakım turu ve bellekteki 'art arda' sayacı
+  ---
+  duration_ms: 132611.709048
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk12-kilit-bakim-sayac-248.test.mjs:71:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 154235.280222

@@ -1,0 +1,63 @@
+{
+  "ad": "248-m/m1-m2-eski-e9602add",
+  "komut": "node --test --test-concurrency=1 test/tunel-durum-248.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T12:49:13.193Z",
+  "sure_sn": 20.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 3,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 M1 — tünel durum göstergesi bağlantıyı connIndex başına sayar (cloudflared'in kendi /ready sayacı gibi) › 1. ZORLA ÜRETME: tek bağlantı (connIndex=2) iki kez yeniden denenip kurulamıyor, öbür üçü ayakta → Bağlı, 3 (\"Bağlantı koptu\" DEĞİL)",
+      "konum": "test/tunel-durum-248.test.mjs:122:3",
+      "hata": "üç bağlantı ayaktayken \"Bağlantı koptu; yeniden kuruluyor.\" yazmamalı; gelen {\"state\":\"connecting\",\"connections\":0,\"reason\":\"Bağlantı koptu; yeniden kuruluyor.\"} (beklenen Bağlantı koptu; yeniden kuruluyor., gelen Bağlantı koptu; yeniden kuruluyor.)"
+    },
+    {
+      "ad": "2.4.8 M1 — tünel durum göstergesi bağlantıyı connIndex başına sayar (cloudflared'in kendi /ready sayacı gibi) › 2. ZORLA ÜRETME: dört bağlantı sırayla birer kez kopup geri geliyor (kısa ağ dalgalanması) → Bağlı, 4",
+      "konum": "test/tunel-durum-248.test.mjs:134:3",
+      "hata": "beklenen: Bağlı, 4 bağlantı; gelen: {\"state\":\"connected\",\"connections\":1,\"reason\":\"\"} · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 M1 — tünel durum göstergesi bağlantıyı connIndex başına sayar (cloudflared'in kendi /ready sayacı gibi) › 3. ZORLA ÜRETME: dört bağlantı da düzgün kapanıyor (Unregistered + Retrying), hiçbiri dönmüyor → Bağlanıyor, 0 (\"Bağlı\" DEĞİL); biri dönünce Bağlı, 1",
+      "konum": "test/tunel-durum-248.test.mjs:141:3",
+      "hata": "dört bağlantı da kapalıyken \"Bağlı\" yazmamalı; gelen {\"state\":\"connected\",\"connections\":3,\"reason\":\"\"} · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 M1 — tünel durum göstergesi bağlantıyı connIndex başına sayar (cloudflared'in kendi /ready sayacı gibi) › 4. http2 yolu: \"Lost connection with the edge\" + Retrying + Connection terminated tek kopuştur → Bağlı, 3",
+      "konum": "test/tunel-durum-248.test.mjs:151:3",
+      "hata": "beklenen: Bağlı, 3 bağlantı; gelen: {\"state\":\"connected\",\"connections\":1,\"reason\":\"\"} · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 M2 — cloudflared çıktısı program veri klasöründe günlük dosyasına (sınırlı, döndürmeli, gizli bilgi yok) › 7. satırlar <veri>/bilesenler/cloudflared/cloudflared.log'a yazılır; belirteç ve kimlik bilgisi YAZILMAZ",
+      "konum": "test/tunel-durum-248.test.mjs:173:3",
+      "hata": "günlük dosyası yok: /tmp/m1-tunel-durum-6RI7D7/bilesen/cloudflared.log (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 M2 — cloudflared çıktısı program veri klasöründe günlük dosyasına (sınırlı, döndürmeli, gizli bilgi yok) › 8. dosya sınırı aşınca bir önceki dosyaya döner (cloudflared.log.1); en çok iki dosya, her biri sınırın altında, son satır güncel dosyada",
+      "konum": "test/tunel-durum-248.test.mjs:187:3",
+      "hata": "günlük dosyası yok: /tmp/m1-tunel-durum-nt6u7d/bilesen/cloudflared.log (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/wt-mobil-248/docs/kanit/2026-10-30/248-m/m1-m2-eski-e9602add.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mobil-248-eski-e9602add",
+  "ham_cikti_sha256": "beb2d042aeb5d7226983f652f5fabb830f8c35d018556d874f8b02d7aecf4641",
+  "ham_cikti_bayt": 12394
+}

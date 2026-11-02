@@ -113,3 +113,10 @@ export function createPhone(base, { name = "Test Telefonu", kind = "telefon", ho
   };
   return phone;
 }
+
+/**
+ * 2.4.8 M4 (KARAR M4): iPhone'da eşleme ana ekran SİMGESİNİN içinde yapılır (Safari sekmesi yalnız "Ana Ekrana Ekle → Karekodu Okut" der, kodu tüketmez). Karekod adresini
+ * doğrudan açıp eşleyen e2e'lerin iPhone bağlamı simge sayılır: navigator.standalone = true (iOS Safari'nin ana ekran uygulamasındaki değeri). Simgenin kendi kamera yolu
+ * test/e2e/senaryo-mobil-iphone-248.mjs'te.
+ */
+export const iosSimge = context => context.addInitScript(() => Object.defineProperty(Navigator.prototype, "standalone", { configurable: true, get: () => true }));

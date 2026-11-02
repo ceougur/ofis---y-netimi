@@ -1,0 +1,82 @@
+# komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-t6-b-248.test.mjs
+# kod: c44d7724 (git archive kopyası, ders 23); test dosyası: is/t2fix-248 T6-B1 eşik commit'indeki hâli
+# platform: Linux node v22.22.0; tarih: 2026-10-31T02:13:16Z
+TAP version 13
+# Subtest: 2.4.8 T6-B1 / T6-B2 — Meta dışı hata (yazım, disk dolu) yolunda bekleme, PDF temizliği, takılı iş
+    # Subtest: B2: yalnız PDF kimliğinin yazımı düşüyor — 20 turda tek yükleme ve Meta'da sahipsiz PDF yok; bekleme 30 sn → 2 dk; yazım düzelince tek ileti
+    not ok 1 - B2: yalnız PDF kimliğinin yazımı düşüyor — 20 turda tek yükleme ve Meta'da sahipsiz PDF yok; bekleme 30 sn → 2 dk; yazım düzelince tek ileti
+      ---
+      duration_ms: 725.256885
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t6-b-248.test.mjs:18:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        20 turda Meta'ya 20 PDF yüklendi (beklemesiz yeniden deneme olmamalı)
+        
+        20 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 20
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t6-b-248.test.mjs:31:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: B1: disk ilk PDF yüklemesi Meta'dayken doluyor — dolu diskte meşgul döngü yok; yer açılınca 'Hazırlanıyor'da kalan iş bakım turunda döner, herkes bir kez alır
+    not ok 2 - B1: disk ilk PDF yüklemesi Meta'dayken doluyor — dolu diskte meşgul döngü yok; yer açılınca 'Hazırlanıyor'da kalan iş bakım turunda döner, herkes bir kez alır
+      ---
+      duration_ms: 471.341356
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t6-b-248.test.mjs:55:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'dolu diskte işçi beklemesiz yeniden denedi: 20 turda 20 kez iş yürüttü (yazılamayan 21 yazım)',
+        +   "kimliği yazılamayan PDF Meta'da kaldı (1)",
+        +   'yer açılınca takılı iş kaldı: preparing (toplu iş running)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'dolu diskte işçi beklemesiz yeniden denedi: 20 turda 20 kez iş yürüttü (yazılamayan 21 yazım)'
+        1: "kimliği yazılamayan PDF Meta'da kaldı (1)"
+        2: 'yer açılınca takılı iş kaldı: preparing (toplu iş running)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t6-b-248.test.mjs:106:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 T6-B1 / T6-B2 — Meta dışı hata (yazım, disk dolu) yolunda bekleme, PDF temizliği, takılı iş
+  ---
+  duration_ms: 1198.032083
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t6-b-248.test.mjs:17:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1566.75287
+# çıkış kodu: 1

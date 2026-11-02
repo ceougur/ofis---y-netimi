@@ -1,0 +1,29 @@
+// İş U5 göç fikstürü: 2.4.8 geliştirme kodu ad4db62b'nin GERÇEK koduyla (API'den) üretilmiş WhatsApp gönderim defteri — kabul + teslim (iş başına deliveries, attempt_deliveries YOK).
+// Kullanım: node u5-defter-uret.mjs <eski kod kökü> <çıktı klasörü>
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
+const [root, out] = process.argv.slice(2);
+const { startWa } = await import(pathToFileURL(path.join(root, "test/whatsapp-248-ortak.mjs")).href);
+const dataDir = mkdtempSync(path.join(tmpdir(), "u5-defter-"));
+const localIso = (y, m, d, h = 10) => new Date(y, m - 1, d, h, 0, 0, 0).toISOString();
+const ctx = await startWa({ dataDir, now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+const p = await ctx.account("Burak Kaya", "0533 444 55 66", 800);
+const res = await ctx.batch({ kind: "statement", ids: [p.id], preset: "thisMonth" });
+await ctx.drain();
+const job = (await ctx.jobs(res.data.data.batch.id))[0];
+ctx.clock.advance(60_000);
+const ts = String(Math.floor(ctx.clock().getTime() / 1000));
+const applied = ctx.statuses([{ id: job.wamid, status: "delivered", timestamp: ts, recipient_id: "905334445566" }]);
+const stats = (await ctx.api.get("/api/workspace/whatsapp/stats")).data.data;
+const ledgerFile = ctx.wa.ledger.file;
+await ctx.close();
+mkdirSync(out, { recursive: true });
+const db = new DatabaseSync(ledgerFile);
+db.exec(`VACUUM INTO '${path.join(out, "whatsapp-gonderim.sqlite").replace(/'/g, "''")}'`);
+db.close();
+const info = { kod: "ad4db62b", jobId: job.id, attempt: job.attempt, wamid: job.wamid, deliveredAt: new Date(Number(ts) * 1000).toISOString(), companyId: "sirket-001", buAy: stats.delivered, uygulandi: applied };
+writeFileSync(path.join(out, "bilgi.json"), JSON.stringify(info, null, 1) + "\n");
+console.log(JSON.stringify(info));

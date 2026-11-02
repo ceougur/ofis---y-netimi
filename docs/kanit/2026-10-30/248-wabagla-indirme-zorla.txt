@@ -1,0 +1,4 @@
+Ders 20 zorlama (30.10.2026, worktree c4e8aa2d + App ID düzeltmesi; betik 248-wabagla-indirme-zorla.mjs.txt; komut: node <betik> <kök> 20):
+COOP same-origin-allow-popups (yeni admin.html) · 20 deneme · ana sayfada 20 · açılır sayfada 0 · hiç 0
+COOP same-origin (deney kopyası, ADMIN_OPENER_POLICY geri alınmış) · 20 deneme · ana sayfada 20 · açılır sayfada 0 · hiç 0
+Sonuç: senaryo-whatsapp-sablon-248 B5'teki tek kırmızı (248-wabagla-e2e-whatsapp-sablon, indirme olayı 15 sn'de gelmedi) COOP değişikliğiyle açıklanmıyor; nedeni bulunamadı (o sırada makinede başka ajanın sürücüsü %90 CPU). Yeniden koşular: elle 2/2, kanıt aracıyla 248-wabagla-e2e-whatsapp-sablon-2 45/45; taban 0f1c4a2a 1/1, deney 1/1.

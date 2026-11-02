@@ -1,0 +1,69 @@
+TAP version 13
+# Subtest: 2.4.8 dar kontrol 7 DÜŞÜK-2 — Sonucu Belirsiz elemesinin 7 günlük penceresi (Son 3 Ay / Tüm Hareketler)
+    # Subtest: Son 3 Ay: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+    not ok 1 - Son 3 Ay: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+      ---
+      duration_ms: 562.128217
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-son3-pencere-248.test.mjs:23:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        8. gün: pencere dışı, gitmeli (geldi 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki \"Yine de Gönder\"i kullanın ya da yeni gönderim başlatın.","code":"whatsapp-nothing","summary":{"kind":"statement","period":{"from":"2026-09-01","to":"2026-11-03","preset":"last3"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":0,"skipped":{"Sonucu Belirsiz":1},"alreadySent":{"count":0,"last":null,"included":0},"people":[{"id":"account-12fa5667-46dd-478b-99e1-118e624d1392","name":"Burak Kaya","phone":"+905334445566","skip":"Sonucu Belirsiz"}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":0,"left":250,"later":0,"holdUntil":null},"seconds":0}})
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-son3-pencere-248.test.mjs:45:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Tüm Hareketler: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+    not ok 2 - Tüm Hareketler: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+      ---
+      duration_ms: 409.476664
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-son3-pencere-248.test.mjs:23:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        8. gün: pencere dışı, gitmeli (geldi 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için işteki \"Yine de Gönder\"i kullanın ya da yeni gönderim başlatın.","code":"whatsapp-nothing","summary":{"kind":"statement","period":{"from":"","to":"2026-11-03","preset":"all"},"template":{"ok":true,"template":{"name":"destekofis_ekstre","language":"tr","status":"APPROVED","category":"UTILITY"}},"total":1,"sendable":0,"skipped":{"Sonucu Belirsiz":1},"alreadySent":{"count":0,"last":null,"included":0},"people":[{"id":"account-84a1206f-474f-432c-95d4-759eb4a7ba0e","name":"Burak Kaya","phone":"+905334445566","skip":"Sonucu Belirsiz"}],"limit":{"limit":250,"tier":"TIER_250","cap":null,"used":0,"left":250,"later":0,"holdUntil":null},"seconds":0}})
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-son3-pencere-248.test.mjs:45:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 dar kontrol 7 DÜŞÜK-2 — Sonucu Belirsiz elemesinin 7 günlük penceresi (Son 3 Ay / Tüm Hareketler)
+  ---
+  duration_ms: 973.23884
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-son3-pencere-248.test.mjs:21:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1323.741476

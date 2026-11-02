@@ -1,0 +1,68 @@
+{
+  "ad": "248-dk5fix-kirmizi-d5661876-UTC",
+  "komut": "node --test test/whatsapp-dk5-yine-de-gonder-248.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T07:15:37.678Z",
+  "sure_sn": 4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 1,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır › Başarısızları Yeniden Dene: asıl iş 'Yine de Gönder' ile açılmış → B'ye gider (toplam 2 ekstre); yeniden deneme işi aynı kararı taşır",
+      "konum": "test/whatsapp-dk5-yine-de-gonder-248.test.mjs:62:3",
+      "hata": "Başarısızları Yeniden Dene: 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-04\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Daha Önce Gönderildi\":1},\"alreadySent\":{\"count\":1,\"last\":\"2026-11-03T10:00:00.000Z\",\"included\":0},\"people\":[{\"id\":\"account-557a41af-3e58-42d0-af28-7a1ab02f978f\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T10:00:00.000Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":0,\"left\":250,\"later\":0,\"holdUntil\":null},\"seconds\":0}} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır › Aynı an (sahte saat durur): asıl iş ilk ekstreyle aynı anda açılsa da kararı geçerli — Başarısızları Yeniden Dene B'ye gider",
+      "konum": "test/whatsapp-dk5-yine-de-gonder-248.test.mjs:79:3",
+      "hata": "Başarısızları Yeniden Dene: 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-03\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Daha Önce Gönderildi\":1},\"alreadySent\":{\"count\":1,\"last\":\"2026-11-03T10:00:00.000Z\",\"included\":0},\"people\":[{\"id\":\"account-5e285dba-6503-4a8b-ba62-ab802f95ae23\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T10:00:00.000Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":0}} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır › Sonucu Belirsiz → işteki Yine de Gönder: asıl iş 'Yine de Gönder' ile açılmış → yeni iş açılır, Meta'ya üçüncü ileti isteği gider",
+      "konum": "test/whatsapp-dk5-yine-de-gonder-248.test.mjs:99:3",
+      "hata": "Yine de Gönder (işte): 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-04\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Daha Önce Gönderildi\":1},\"alreadySent\":{\"count\":1,\"last\":\"2026-11-03T10:00:00.000Z\",\"included\":0},\"people\":[{\"id\":\"account-fafe8505-10de-4b9b-924b-94fff9f939fb\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T10:00:00.000Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":0}} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır › Sınır: asıl iş açıldıktan SONRA başka bir işle B'ye aynı dönem gitti → Başarısızları Yeniden Dene ve işteki Yine de Gönder 'Daha Önce Gönderildi' (iletide neden), çift ileti yok; gövde sınırı zorlayamaz",
+      "konum": "test/whatsapp-dk5-yine-de-gonder-248.test.mjs:115:3",
+      "hata": "Başarısızları Yeniden Dene: neden İLETİDE görünmeli (geldi \"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).\") (beklenen , gelen Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).)"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır › Sınır (Sonucu Belirsiz): asıl iş açıldıktan SONRA başka bir işle B'ye gitti → işteki Yine de Gönder 'Daha Önce Gönderildi', gövde zorlayamaz",
+      "konum": "test/whatsapp-dk5-yine-de-gonder-248.test.mjs:137:3",
+      "hata": "Yine de Gönder (işte; gövde zorluyor): neden İLETİDE görünmeli (geldi \"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).\") (beklenen , gelen Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).)"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır › Dış istek: asıl iş 'Yine de Gönder' OLMADAN açıldıysa gövdedeki sendAgain / sendAgainAfter / since yeniden denemeye karar vermez; yeni gönderimde de yalnız sendAgain sayılır",
+      "konum": "test/whatsapp-dk5-yine-de-gonder-248.test.mjs:155:3",
+      "hata": "Başarısızları Yeniden Dene (gövde sendAgain zorluyor): neden İLETİDE görünmeli (geldi \"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).\") (beklenen , gelen Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).)"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır › Ödeme Hatırlatma (aynı gün kuralı): asıl hatırlatma 'Yine de Gönder' ile → B Başarısız → Yeniden Dene gider; aynı gün yeni hatırlatma 'Daha Önce Gönderildi' (iletide 'bugün'), ertesi gün serbest",
+      "konum": "test/whatsapp-dk5-yine-de-gonder-248.test.mjs:178:3",
+      "hata": "aynı gün ikinci hatırlatma (karar yok): neden İLETİDE görünmeli (geldi \"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).\") (beklenen , gelen Gönderilebilecek kişi yok (seçilenlerin hepsi elendi).)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk5fix-kirmizi-d5661876-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk5fix-248-1df1dcce/eski",
+  "ham_cikti_sha256": "574810e63e5c8f2947b4ac8262b80e5e5b19a8e362e06a3686191bc2109f5ddd",
+  "ham_cikti_bayt": 14488
+}

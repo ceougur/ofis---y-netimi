@@ -23,7 +23,9 @@ export function kapiBasvurusu({ client = null, gateUrl = "", config = {}, store,
       } catch (error) {
         const sync = mobileSync();
         if (!["kapi-ofis-yok", "kapi-zaman"].includes(error?.gateCode) || !sync?.kayitGonder) throw error;
-        await sync.kayitGonder().catch(() => null);
+        // Kapıcı yanıt verdi (ofis yok / saat) → kaydın artan hata beklemesi aşılır (kapıcı ulaşılabilir; eski ağ hatası tüneli bekletmesin); kapi-lisans penceresi
+        // aynen. Yineleme sıklığını tünel yöneticisinin kendi beklemesi (manager.mjs RETRY, 30 sn → 10 dk) sınırlar.
+        await sync.kayitGonder({ hataBeklemesiz: true }).catch(() => null);
         return istemci.provision();
       }
     },
@@ -33,7 +35,7 @@ export function kapiBasvurusu({ client = null, gateUrl = "", config = {}, store,
 /**
  * @returns {object|null} tünel yöneticisi (başlatılmış) ya da null
  */
-export function attachTunnel({ option, config, store, license, mobileRemote, mobileSync = () => null, listenRemote, forbiddenPorts, log, env = process.env }) {
+export function attachTunnel({ option, config, store, license, mobileRemote, mobileSync = () => null, extraDemand = () => false, listenRemote, forbiddenPorts, log, env = process.env }) {
   const opts = option && typeof option === "object" ? option : {};
   const gateUrl = opts.gateUrl || config.mobileKapiUrl || "";
   const enabled = env.HUKUK_TUNNEL !== "0" && opts.enabled !== false && Boolean(opts.gate || gateUrl);
@@ -51,6 +53,8 @@ export function attachTunnel({ option, config, store, license, mobileRemote, mob
     asset: opts.asset || null,
     ensureBinary: opts.ensureBinary,
     runner: opts.runner || null,
+    // 2.4.8 W9: eşli cihaz / karekod dışında tüneli isteyen (WhatsApp bağlı — durum bildirimi kapıcıdan tünel üzerinden gelir).
+    extraDemand: opts.extraDemand || extraDemand,
     enabled,
     tickMs: opts.tickMs ?? 5_000,
     firstTickMs: opts.firstTickMs ?? 3_000,

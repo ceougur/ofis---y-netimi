@@ -1,0 +1,61 @@
+// T56c (T56b aracından; yollar wt-t56c-248) ders 6/20: göç sırasında disk dolu — program ne yapıyor (çıkış mı, asılı mı, ne yazıyor)? Aday 1 (bfa93b6d kopyası) ↔ Aday 2 (çalışma ağacı) aynı v40 verisiyle.
+//   T6_KOK=… node h3-zorla.mjs <eski v40 kodu> <kod kökü 1> [<kod kökü 2> …]   (her kod kökü için ayrı tmpfs; yalnız kendi pid'imiz öldürülür — ders 36)
+import { spawn } from "node:child_process";
+import { closeSync, cpSync, openSync, unlinkSync, writeSync } from "node:fs";
+import path from "node:path";
+import { DEAD_LICENSE_URL, KOK, companyDb, fakeMeta, freshDir, mountTmpfs, query, rmrf, wait } from "/home/user/wt-t56c-248/test/t6-248/ortak.mjs";
+
+const [eski, ...roots] = process.argv.slice(2);
+const fake = await fakeMeta();
+const template = freshDir("h3z-v40");
+const gen = await new Promise(resolve => {
+  const child = spawn(process.execPath, ["--no-warnings", "/home/user/wt-t56c-248/test/t6-248/h-eski-uret.mjs", eski, path.join(template, "data"), path.join(template, "backups"), fake.url, "5"], { env: { ...process.env, HUKUK_LICENSE_URL: DEAD_LICENSE_URL, TMPDIR: path.join(KOK, "tmp") }, stdio: ["ignore", "pipe", "pipe"] });
+  let out = "";
+  child.stdout.on("data", c => (out += c));
+  child.stderr.on("data", c => (out += c));
+  child.once("exit", () => resolve(out));
+});
+console.log(`# v40 verisi: ${gen.trim().split("\n").pop().slice(0, 200)}`);
+const results = [];
+for (const root of roots) {
+  const dir = freshDir("h3z");
+  const mount = path.join(dir, "m");
+  const umount = mountTmpfs(mount, "24m");
+  try {
+    cpSync(template, mount, { recursive: true });
+    const fd = openSync(path.join(mount, "dolgu.bin"), "a");
+    for (const size of [1 << 20, 4096, 512]) {
+      try { for (;;) writeSync(fd, Buffer.alloc(size)); } catch (error) { if (error.code !== "ENOSPC") throw error; }
+    }
+    closeSync(fd);
+    const arg = { dataDir: path.join(mount, "data"), backupDir: path.join(mount, "backups"), graphUrl: fake.url, timeoutMs: 3000, gapMs: 200, now: "2026-11-03T10:00:00+03:00" };
+    const t0 = Date.now();
+    const child = spawn(process.execPath, ["--no-warnings", path.join(root, "test/t6-248/cocuk.mjs"), JSON.stringify(arg)], { env: { ...process.env, HUKUK_LICENSE_URL: DEAD_LICENSE_URL, TMPDIR: path.join(KOK, "tmp") }, stdio: ["ignore", "pipe", "pipe"] });
+    let out = "";
+    child.stdout.on("data", c => (out += c));
+    child.stderr.on("data", c => (out += c));
+    const exited = new Promise(resolve => child.once("exit", (code, signal) => resolve({ code, signal, ms: Date.now() - t0 })));
+    const end = await Promise.race([exited, wait(150_000).then(() => null)]);
+    let r;
+    if (end) r = { root, cikti: "çıktı", ...end };
+    else {
+      child.kill("SIGKILL");
+      r = { root, cikti: "150 sn içinde çıkmadı (asılı) → SIGKILL", ...(await exited) };
+    }
+    r.hazir = /"ready":true/.test(out);
+    r.son = out.replace(/\s+/g, " ").slice(-600);
+    console.log(`# ham ${JSON.stringify(r)}`);
+    unlinkSync(path.join(mount, "dolgu.bin")); // salt okunur okuma da WAL/shm için yer ister (araç; ilk koşu "disk I/O error")
+    r.surum = query(companyDb(path.join(mount, "data")), "PRAGMA user_version")[0].user_version;
+    r.butunluk = query(companyDb(path.join(mount, "data")), "PRAGMA integrity_check")[0].integrity_check;
+    results.push(r);
+    console.log(`# ${JSON.stringify(r)}`);
+  } finally {
+    umount();
+    rmrf(dir);
+  }
+}
+rmrf(template);
+await fake.close();
+const fail = results.filter(r => r.butunluk !== "ok").length;
+console.log(`# tests ${results.length}\n# pass ${results.length - fail}\n# fail ${fail}\n# cancelled 0\n# skipped 0\n# todo 0`);

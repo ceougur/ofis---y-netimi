@@ -1,0 +1,32 @@
+{
+  "ad": "248-dkRfix-e2e-senaryo-whatsapp",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp.mjs",
+  "commit": "bf5915c4c0251991cb18ca268d14a695b878a5fe",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 78,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T23:02:58.152Z",
+  "sure_sn": 172.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 45,
+    "gecen": 45,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkRfix-e2e-senaryo-whatsapp.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "5c270f0e4334abea1f6e56b9aaa537069533d3e501430a0d3b57f9d99db1a85f",
+  "ham_cikti_bayt": 3480
+}

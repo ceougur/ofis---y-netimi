@@ -1,0 +1,329 @@
+TAP version 13
+# K1 zincir: durumu değişen belge 12; karşılaştırılan yanıt 550; senet katlaması (2.2.0 İz 4.2) 0 yanıt, ekranla karşılaştırılan dosya 0; Nakit Akışı faturasız kalem (2.4.3 MM5) 264
+# Subtest: altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+    # Subtest: zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+    ok 1 - zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+      ---
+      duration_ms: 19260.185949
+      type: 'test'
+      ...
+# K1 motor: durumu değişen belge 8; karşılaştırılan yanıt 154; senet katlaması (2.2.0 İz 4.2, toplam) 8 yanıt, ekranla karşılaştırılan dosya 8; Nakit Akışı faturasız kalem (2.4.3 MM5) 288
+    # Subtest: v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+    ok 2 - v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+      ---
+      duration_ms: 6904.706317
+      type: 'test'
+      ...
+    1..2
+ok 1 - altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+  ---
+  duration_ms: 26166.429498
+  type: 'suite'
+  ...
+# Subtest: altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder
+    # Subtest: aynı sayılar başka satır kırılımıyla ve kesiksiz özet tutarıyla: aynı
+    ok 1 - aynı sayılar başka satır kırılımıyla ve kesiksiz özet tutarıyla: aynı
+      ---
+      duration_ms: 0.543526
+      type: 'test'
+      ...
+    # Subtest: tablo tutarının son rakamı değişirse fark
+    ok 2 - tablo tutarının son rakamı değişirse fark
+      ---
+      duration_ms: 0.398439
+      type: 'test'
+      ...
+    # Subtest: kesik özet tutarı yeni tutarın öneki değilse fark; kesiğin devamına metin giremez
+    ok 3 - kesik özet tutarı yeni tutarın öneki değilse fark; kesiğin devamına metin giremez
+      ---
+      duration_ms: 0.275832
+      type: 'test'
+      ...
+    # Subtest: araya sözcük girerse ya da sözcük değişirse fark; Rapor Merkezi dışındaki PDF bu kurala girmez
+    ok 4 - araya sözcük girerse ya da sözcük değişirse fark; Rapor Merkezi dışındaki PDF bu kurala girmez
+      ---
+      duration_ms: 0.220483
+      type: 'test'
+      ...
+    1..4
+ok 2 - altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder
+  ---
+  duration_ms: 1.944636
+  type: 'suite'
+  ...
+# Subtest: B8 — carinin defter bakiyesi: SQL toplamı = yevmiye (iki yolun eşdeğerliği)
+    # Subtest: rastgele mutabakat motoru (eşik 0: her cari SQL yolunda, eşdeğerlik denetimi açık): her işlem tutarlı, süzgeç bulgusu yok, her cari eşit
+    ok 1 - rastgele mutabakat motoru (eşik 0: her cari SQL yolunda, eşdeğerlik denetimi açık): her işlem tutarlı, süzgeç bulgusu yok, her cari eşit
+      ---
+      duration_ms: 14422.174464
+      type: 'test'
+      ...
+    # Subtest: gerçek 2.0.26 verisi (her şirket): her carinin SQL toplamı = yevmiye
+    ok 2 - gerçek 2.0.26 verisi (her şirket): her carinin SQL toplamı = yevmiye
+      ---
+      duration_ms: 523.755748
+      type: 'test'
+      ...
+    1..2
+ok 3 - B8 — carinin defter bakiyesi: SQL toplamı = yevmiye (iki yolun eşdeğerliği)
+  ---
+  duration_ms: 14947.340871
+  type: 'suite'
+  ...
+# Subtest: B8 — çok hareketli cari: süzgeç süresi carinin geçmişiyle büyümez
+    # Subtest: 2.100 satırlı cari: tahsilat süzgeç yolunda, yevmiye maddesi kurulmadan (SQL); bozuk fatura tutarı 409 ve party:accounts
+    ok 1 - 2.100 satırlı cari: tahsilat süzgeç yolunda, yevmiye maddesi kurulmadan (SQL); bozuk fatura tutarı 409 ve party:accounts
+      ---
+      duration_ms: 695.065925
+      type: 'test'
+      ...
+    1..1
+ok 4 - B8 — çok hareketli cari: süzgeç süresi carinin geçmişiyle büyümez
+  ---
+  duration_ms: 695.485623
+  type: 'suite'
+  ...
+# Subtest: GG2 — Alt Hesap Mizanı ve Genel Bakış tek kaynaktan (Ana Defter kurulmadan) = eski yol
+    # Subtest: tüm zamanlar ve üç dönem: alt hesaplar, borç/alacak/bakiye ve ana hesaplar Ana Defter'le kuruşu kuruşuna aynı
+    ok 1 - tüm zamanlar ve üç dönem: alt hesaplar, borç/alacak/bakiye ve ana hesaplar Ana Defter'le kuruşu kuruşuna aynı
+      ---
+      duration_ms: 23.688974
+      type: 'test'
+      ...
+    # Subtest: Genel Bakış ve Hesaplar: bütün para satırlarının gruplanmasıyla bulunan değerlerle aynı
+    ok 2 - Genel Bakış ve Hesaplar: bütün para satırlarının gruplanmasıyla bulunan değerlerle aynı
+      ---
+      duration_ms: 9.570192
+      type: 'test'
+      ...
+    1..2
+ok 5 - GG2 — Alt Hesap Mizanı ve Genel Bakış tek kaynaktan (Ana Defter kurulmadan) = eski yol
+  ---
+  duration_ms: 7211.608225
+  type: 'suite'
+  ...
+# Subtest: GG2 — hareketsiz hesabın türü değişince kapı süzgeçte kalır
+    # Subtest: Vadesiz → Ticari (satırsız açılış): süzgeç yolu; hareketli hesapta tür değişmez (409)
+    ok 1 - Vadesiz → Ticari (satırsız açılış): süzgeç yolu; hareketli hesapta tür değişmez (409)
+      ---
+      duration_ms: 72.45047
+      type: 'test'
+      ...
+    1..1
+ok 6 - GG2 — hareketsiz hesabın türü değişince kapı süzgeçte kalır
+  ---
+  duration_ms: 458.462816
+  type: 'suite'
+  ...
+# Subtest: GG2 — ölçüm aracı yeni olay kimliğiyle çalışır (küçük hacim)
+    # Subtest: tools/banka-hareket-olcum.mjs --hedef 3000 --gun 15 --tekrar 1: hatasız biter, Banka penceresinin bütün uçlarını ölçer
+    ok 1 - tools/banka-hareket-olcum.mjs --hedef 3000 --gun 15 --tekrar 1: hatasız biter, Banka penceresinin bütün uçlarını ölçer
+      ---
+      duration_ms: 3035.051059
+      type: 'test'
+      ...
+    1..1
+ok 7 - GG2 — ölçüm aracı yeni olay kimliğiyle çalışır (küçük hacim)
+  ---
+  duration_ms: 3035.264562
+  type: 'suite'
+  ...
+# Subtest: GG2 — Banka Fişi kaydında hesabın bütün satırları yeniden toplanmaz (K7), toplam doğru kalır
+    # Subtest: fiş, fiş, okuma: tam toplam sorgusu yok; Ters Kaydet'te tam toplam; bakiyeler bağımsız hesapla aynı; eksi bakiye yine sorulur
+    ok 1 - fiş, fiş, okuma: tam toplam sorgusu yok; Ters Kaydet'te tam toplam; bakiyeler bağımsız hesapla aynı; eksi bakiye yine sorulur
+      ---
+      duration_ms: 478.586063
+      type: 'test'
+      ...
+    1..1
+ok 8 - GG2 — Banka Fişi kaydında hesabın bütün satırları yeniden toplanmaz (K7), toplam doğru kalır
+  ---
+  duration_ms: 1244.447939
+  type: 'suite'
+  ...
+# Subtest: kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+    # Subtest: Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+    ok 1 - Banka Bakiye/Hareket/Masraf, Banka ve POS, Kasa, Alt Hesap Mizanı — eski yolda yeni moneyLines çağrısı 0
+      ---
+      duration_ms: 875.359401
+      type: 'test'
+      ...
+    1..1
+ok 9 - kâhin ayrı mı (bağımsız inceleme H7): eski yol hiçbir raporda yeni moneyLines'ı çağırmaz
+  ---
+  duration_ms: 876.667839
+  type: 'suite'
+  ...
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 4.085198
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 15171.51695
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 5197
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 564.990242
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 732.879161
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1516.554631
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5448, moneyLines denetimi 493
+    1..5
+ok 10 - hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 27609.443831
+  type: 'suite'
+  ...
+# Subtest: hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+    # Subtest: veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+    ok 1 - veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalışmaz)
+      ---
+      duration_ms: 5.096495
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+    ok 2 - Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş parçacığında)
+      ---
+      duration_ms: 13391.284487
+      type: 'test'
+      ...
+    # rapor karşılaştırması 670 (iş parçacığında 111), karşılaştırılan satır 4964
+    # Subtest: moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+    ok 3 - moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+      ---
+      duration_ms: 403.501229
+      type: 'test'
+      ...
+    # moneyLines denetimi 493
+    # Subtest: cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+    ok 4 - cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+      ---
+      duration_ms: 724.415206
+      type: 'test'
+      ...
+    # cari arama denetimi 189
+    # Subtest: saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+    ok 5 - saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine birebir
+      ---
+      duration_ms: 1710.192956
+      type: 'test'
+      ...
+    # +15 gün: rapor karşılaştırması 559, satır 5145, moneyLines denetimi 493
+    1..5
+ok 11 - hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+  ---
+  duration_ms: 28008.880036
+  type: 'suite'
+  ...
+# Subtest: POS komisyonu (plan §4.3) — bağımsız BigInt modeli
+    # Subtest: plan tablosu: 10.000 @ %2,5 → BSMV Dahil 250 (BSMV 11,90) / 9.750; BSMV Hariç 262,50; KDV Hariç 300 / 9.700; KDV Dahil 250 (matrah 208,33, KDV 41,67); Yok 250
+    ok 1 - plan tablosu: 10.000 @ %2,5 → BSMV Dahil 250 (BSMV 11,90) / 9.750; BSMV Hariç 262,50; KDV Hariç 300 / 9.700; KDV Dahil 250 (matrah 208,33, KDV 41,67); Yok 250
+      ---
+      duration_ms: 1.664413
+      type: 'test'
+      ...
+    # Subtest: 20.000 rastgele (tutar, oran, sabit ücret, kip): kesinti ve dahil vergi modelle aynı
+    ok 2 - 20.000 rastgele (tutar, oran, sabit ücret, kip): kesinti ve dahil vergi modelle aynı
+      ---
+      duration_ms: 62.483016
+      type: 'test'
+      ...
+    1..2
+ok 12 - POS komisyonu (plan §4.3) — bağımsız BigInt modeli
+  ---
+  duration_ms: 65.182294
+  type: 'suite'
+  ...
+# Subtest: Valör takvimi ve bölüşüm (plan §4.2, §4.5)
+    # Subtest: 12.000 / 3 taksit / her ay (08.10.2026) → 09.11, 08.12, 08.01.2027; 4.000 brüt, 140 kom, 3.860 net; tek seferde → tek kalem (oran satırındaki gün)
+    ok 1 - 12.000 / 3 taksit / her ay (08.10.2026) → 09.11, 08.12, 08.01.2027; 4.000 brüt, 140 kom, 3.860 net; tek seferde → tek kalem (oran satırındaki gün)
+      ---
+      duration_ms: 2.967866
+      type: 'test'
+      ...
+    # Subtest: blokeli 30 takvim günü: 08.10 → 07.11 Cumartesi → 09.11 (blocked)
+    ok 2 - blokeli 30 takvim günü: 08.10 → 07.11 Cumartesi → 09.11 (blocked)
+      ---
+      duration_ms: 0.274701
+      type: 'test'
+      ...
+    # Subtest: rastgele brüt ve taksit: brüt eşit (artık son), komisyon brüt ağırlıklı (aşağı, artık son); toplamlar korunur
+    ok 3 - rastgele brüt ve taksit: brüt eşit (artık son), komisyon brüt ağırlıklı (aşağı, artık son); toplamlar korunur
+      ---
+      duration_ms: 99.305215
+      type: 'test'
+      ...
+    1..3
+ok 13 - Valör takvimi ve bölüşüm (plan §4.2, §4.5)
+  ---
+  duration_ms: 102.914432
+  type: 'suite'
+  ...
+# Subtest: Kısmi iade dağıtımı ve gün fişi tutarları (plan §4.6, §4.4)
+    # Subtest: sondan başa: kapasite [4.000, 4.000] (2. ve 3. kalem), iade 5.000 → 3. kaleme 4.000, 2. kaleme 1.000; Oransal kom. iadesi round(420 × 5.000 / 12.000) = 175 → 140 + 35
+    ok 1 - sondan başa: kapasite [4.000, 4.000] (2. ve 3. kalem), iade 5.000 → 3. kaleme 4.000, 2. kaleme 1.000; Oransal kom. iadesi round(420 × 5.000 / 12.000) = 175 → 140 + 35
+      ---
+      duration_ms: 1.122375
+      type: 'test'
+      ...
+    # Subtest: bekleyen kalem yetmezse artanı iade valörüne; İade Edilmez → komisyon iadesi 0; Tam → sabit ücret dahil
+    ok 2 - bekleyen kalem yetmezse artanı iade valörüne; İade Edilmez → komisyon iadesi 0; Tam → sabit ücret dahil
+      ---
+      duration_ms: 0.665034
+      type: 'test'
+      ...
+    # Subtest: gün fişi: 10.000 satış + 10.000 iade (İade Edilmez) → banka −250; 10 TL + 15 TL ücret → −5; KDV kipinde 108'de kalmayan kesinti bankadan
+    ok 3 - gün fişi: 10.000 satış + 10.000 iade (İade Edilmez) → banka −250; 10 TL + 15 TL ücret → −5; KDV kipinde 108'de kalmayan kesinti bankadan
+      ---
+      duration_ms: 0.827195
+      type: 'test'
+      ...
+    1..3
+ok 14 - Kısmi iade dağıtımı ve gün fişi tutarları (plan §4.6, §4.4)
+  ---
+  duration_ms: 3.187109
+  type: 'suite'
+  ...
+# Subtest: fatura hesabı: program = bağımsız model
+    # Subtest: 30.000 rastgele fatura (KDV dahil/hariç, satır ve genel iskonto, tevkifat, stopaj, döviz)
+    ok 1 - 30.000 rastgele fatura (KDV dahil/hariç, satır ve genel iskonto, tevkifat, stopaj, döviz)
+      ---
+      duration_ms: 760.262137
+      type: 'test'
+      ...
+    1..1
+ok 15 - fatura hesabı: program = bağımsız model
+  ---
+  duration_ms: 761.569844
+  type: 'suite'
+  ...
+1..15
+# tests 34
+# suites 15
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 113246.30653

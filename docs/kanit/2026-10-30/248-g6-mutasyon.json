@@ -1,0 +1,32 @@
+{
+  "ad": "248-g6-mutasyon",
+  "komut": "node docs/kanit/2026-10-30/248-g6-betikler/mutasyon.mjs /home/user/wt-sablon-248 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g6-248-k3v9/mutasyon-kopya",
+  "commit": "a99e12b26d54dd22a074a2fdbb55ce81ec41fd7b",
+  "dal": "is/sablon-248",
+  "kirli": 0,
+  "izlenmeyen": 24,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T14:50:56.280Z",
+  "sure_sn": 28.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g6-mutasyon.log",
+  "klasor": "/home/user/wt-sablon-248",
+  "ham_cikti_sha256": "be4dfbc1c7c4e47025d2aed436e3047b486f89a22beb4f7cab3a5ba02624bd5d",
+  "ham_cikti_bayt": 4173
+}

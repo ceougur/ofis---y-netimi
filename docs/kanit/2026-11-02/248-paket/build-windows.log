@@ -1,0 +1,13 @@
+
+> destekofis@2.4.8 build:windows
+> node tools/build-windows.mjs
+
+DestekOfis 2.4.8 — Windows paketi
+• Uygulama dosyaları hazırlanıyor
+• Çalışma zamanı: Node.js ve nssm
+  node.exe 24.21.0 (nodejs.org (SHA-256 doğrulandı), sha256 ba4e6d110e8c1592…)
+• İstemci başlatıcısı derleniyor (Go, windows/amd64)
+  DestekOfis.exe 6.1 MB
+• Kurulum dosyası derleniyor (Inno Setup)
+
+✓ dist/DestekOfis-Kurulum-2.4.8.exe · 35.8 MB · sha256 092c0b5c6151d8f0ddc0a94174d61890c0b731795b9cfef6ad94fbc4bd6e4954

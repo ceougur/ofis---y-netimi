@@ -296,3 +296,7 @@ Her biri yerli programların (Logo, Mikro, Netsis, Wolvox) yaygın uygulaması v
    değişmez (ayrı iş). D0'da: alış hareketlerinde birim maliyetin (`unitCost`, routes/stock.mjs:692–701) güvenilir saklandığı doğrulanır.
 5. **Vergi karşılığı ve yıl sonu düzeltmeleri** (691/370, amortisman, reeskont, kur farkı, KKEG): program YAPMAZ — ön muhasebe programlarında
    yaygın uygulama; mali müşavir resmî defterde yapar. 590/591 vergi ÖNCESİ dönem sonucudur; Devir Raporu bunu açıkça yazar.
+
+## Ek — Açılış kayıtları düzeni (2.5.0; 30.10.2026)
+
+KARAR → 2.5.0 (kullanıcı, 30.10.2026 ~19:10 UTC: "bunu devirle beraber 2.5.0'da yapalım, o sürüm için planladığımız muhasebe çekirdeğini de eklemeyi düşünüyorum zaten"): AÇILIŞ KAYITLARI DÜZENİ 2.5.0'da devir + muhasebe çekirdeğiyle — (1) açılış çekleri gelir/gidere yazılmaz (bugün carisiz/açılış portföyü alınan 101/602, verilen 770/103: server/routes/ledger.mjs build() 602/770 eşlemesi); (2) bütün açılışların (cari, kasa, banka, taksit, stok, çek) karşı hesabı 500 Sermaye DEĞİL — geçici "Eşleştirilecek Açılış Bakiyeleri" (server/lib/general-ledger.mjs CHART 500 "Açılış ve Devir Bakiyeleri"); (3) açılış bilançosuyla eşleştirme + öz sermaye (500/570/580) dağıtımı; karşı hesap belirlenemezse "tamamlanmamış açılış" bekler. Dayanak (kullanıcının VUK listesi, baş mimar mali müşavir incelemesiyle ilkede AYNI sonuç): VUK 3/B, 174, 182–186, 192. 2.4.8'de bu konuda kod DEĞİŞMEZ.

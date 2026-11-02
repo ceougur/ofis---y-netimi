@@ -1,0 +1,18 @@
+== D01 (24/37)
+    8 BULGU      2026-11-03T00:00:00 mobil_cihazlar_oku: program=kabul uyari='Lisansınız 7 gün sonra bitiyor.' esli={'A': 1} | kahin=['kabul'] uyari=['lisans 7 gün sonra bitiyor'] esli=[{'A': 1}]
+    7 BULGU      2026-11-03T00:00:00 giris: program=kabul uyari='Lisansınız 7 gün sonra bitiyor.' esli=None | kahin=['kabul'] uyari=['lisans 7 gün sonra bitiyor'] esli=[{'A': 1}]
+    9 BULGU      2026-11-06T12:00:00 giris: program=kabul uyari='Lisansınız 4 gün sonra bitiyor.' esli=None | kahin=['kabul'] uyari=['lisans 3 gün sonra bitiyor', 'lisans 4 gün sonra bitiyor'] esli=[{'A': 1}]
+   39 BULGU      2026-11-08T10:00:00 giris: program=kabul uyari='Lisansınız 2 gün sonra bitiyor.' esli=None | kahin=['kabul'] uyari=['lisans 1 gün sonra bitiyor', 'lisans 2 gün sonra bitiyor'] esli=[{'A': 1}]
+   40 BULGU      2026-11-08T10:00:10 istek: program=ret:yazma_yasak uyari=None esli=None | kahin=['kabul'] uyari=['(yok)', 'lisans 1 gün sonra bitiyor', 'lisans 2 gün sonra bitiyor'] esli=[{'A': 1}]
+   12 BULGU      2026-11-09T23:59:59 giris: program=kabul uyari='Lisansınız 1 gün sonra bitiyor.' esli=None | kahin=['kabul'] uyari=['lisans 0 gün sonra bitiyor', 'lisans 1 gün sonra bitiyor'] esli=[{'A': 1}]
+   15 İNCELE     2026-11-10T00:00:15 istek: program=ret:yazma_yasak uyari=None esli=None | kahin=['ret:salt_okunur'] uyari=['(herhangi)'] esli=[{'A': 1}]
+   20 İNCELE     2026-12-10T00:00:00 giris: program=ret:lisans_gecersiz uyari='Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin.' esli=None | kahin=['ret:cihaz_yok'] uyari=['Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin'] esli=[{'A': 0}, {'A': 1}]
+   21 BULGU      2026-12-10T23:59:59 giris: program=ret:cihaz_yok uyari=None esli=None | kahin=['ret:cihaz_yok'] uyari=['Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin'] esli=[{'A': 0}, {'A': 1}]
+   22 BULGU      2026-12-11T00:00:00 giris: program=ret:cihaz_yok uyari=None esli=None | kahin=['ret:cihaz_yok'] uyari=['Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin'] esli=[{'A': 0}, {'A': 1}]
+   24 BULGU      2026-12-11T12:00:10 mobil_cihazlar_oku: program=kabul uyari='Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin.' esli={'A': 1} | kahin=['kabul'] uyari=['(yok)', 'Lisans geçerli değil; uzaktan erişim kapalı', 'Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin'] esli=[{'A': 0}]
+   26 BULGU      2026-12-11T12:00:30 ozet_oku: program=ret:cihaz_yok uyari=None esli=None | kahin=['ret:cihaz_yok'] uyari=['Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin'] esli=[{'A': 0}]
+   28 İNCELE     2026-12-11T12:01:00 esle: program=ret:cihaz_yok uyari=None esli={'A': 0} | kahin=['ret:lisans_gecersiz'] uyari=None esli=[{'A': 0}]
+== L06 (10/13)
+    5 BULGU      2026-11-07T00:00:00 mobil_cihazlar_oku: program=kabul uyari='Lisansınız 5 gün sonra bitiyor.' esli={'A': 1} | kahin=['kabul'] uyari=['lisans 5 gün sonra bitiyor'] esli=[{'A': 1}]
+    8 BULGU      2026-11-13T00:00:10 ozet_oku: program=kabul uyari='Lisansınız 5 gün sonra bitiyor.' esli=None | kahin=['kabul'] uyari=['(yok)', 'Lisansınız bitti; mobil kullanım hakkınız 28 gün sonra sona erecek', 'Lisansınız bitti; mobil kullanım hakkınız 29 gün sonra sona erecek'] esli=[{'A': 1}]
+   12 İNCELE     2026-12-14T00:00:10 ozet_oku: program=ret:lisans_gecersiz uyari='Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin.' esli=None | kahin=['ret:cihaz_yok'] uyari=['Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin'] esli=[{'A': 0}, {'A': 1}]

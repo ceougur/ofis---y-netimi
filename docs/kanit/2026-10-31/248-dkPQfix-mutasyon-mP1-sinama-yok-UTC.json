@@ -1,0 +1,53 @@
+{
+  "ad": "248-dkPQfix-mutasyon-mP1-sinama-yok-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/write-lock-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-w9-kanca-248.test.mjs",
+  "commit": "5157413e158769650f51096903ed654362fbe42b",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 163,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T20:28:35.611Z",
+  "sure_sn": 81.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 14,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş P1 — kilitli şirket dosyasında arka plan işleri olay döngüsünü tutmaz › kilitliyken işçi turları ≤ 1 sn (önce ~10 sn), ileti gitmez; kilit kalkınca (işaret süresi sonra) iş gider, çift ileti yok",
+      "konum": "test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:22:3",
+      "hata": "kilitliyken her işçi turu ≤ 1 sn (turlar [10025,10028,2] ms) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş P1 — kilitli şirket dosyasında arka plan işleri olay döngüsünü tutmaz › c2: makine defteri (whatsapp-gonderim.sqlite) kilitliyken de işçi turları ≤ 1 sn, ileti gitmez; kilit kalkınca iş gider, çift ileti yok",
+      "konum": "test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:60:3",
+      "hata": "defter kilitliyken her işçi turu ≤ 1 sn (turlar [10108,1,0] ms) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kapıcı geçirir), kilit kalkınca yazılır › şirket dosyası kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi",
+      "konum": "test/whatsapp-w9-kanca-248.test.mjs:452:3",
+      "hata": "kilitte 503 (geldi 500 {\"ok\":false,\"code\":\"whatsapp-hook-error\",\"error\":\"Bildirim işlenemedi; yeniden denenecek.\"}) · 500 !== 503 (beklenen 503, gelen 500)"
+    },
+    {
+      "ad": "2.4.8 İş P1 — store.probeWritable ve yazım kilidi işareti › createWriteLock: kilitte işaretler ve işaret süresi boyunca yeniden sınamaz; süre dolunca kalkar; sınama null ise yazılabilir sayar",
+      "konum": "test/write-lock-248.test.mjs:71:3",
+      "hata": "kilitli · true !== false (beklenen false, gelen true)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-mutasyon-mP1-sinama-yok-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "a1d545a81b6595a10d7660ee284e013d980d61f9f649177aef3782dbd36259a1",
+  "ham_cikti_bayt": 13281
+}

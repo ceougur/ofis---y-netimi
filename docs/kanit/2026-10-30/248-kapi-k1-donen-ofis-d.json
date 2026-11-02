@@ -1,0 +1,32 @@
+{
+  "ad": "248-kapi-k1-donen-ofis-d",
+  "komut": "node --disable-warning=ExperimentalWarning --test docs/kanit/2026-10-29/k1b-donen-ofis/donen-ofis.test.mjs",
+  "commit": "ac5ca55164225441b2fc0f20510f3ae8a0efe91f",
+  "dal": "is/kapi-248",
+  "kirli": 8,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:30:24.866Z",
+  "sure_sn": 0.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-kapi-k1-donen-ofis-d.log",
+  "klasor": "/home/user/wt-kapi-248",
+  "ham_cikti_sha256": "4d8df39b42d458f2c84d836a45f03bf7982088f59527bdddb47ffc45474a4d06",
+  "ham_cikti_bayt": 3199
+}

@@ -1,0 +1,100 @@
+TAP version 13
+# (node:1341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W4 — gönderim ekranının durumu (sending-status)
+    # Subtest: bağlantı yok → configured false (pencere bugünkü wa.me yolunu açar); bağlı ama sınanmamış → neden; sınandı + şablon denetlendi → hazır; yetkisiz kişi canSend false; gizli değer yok; Meta'ya istek yok
+    not ok 1 - bağlantı yok → configured false (pencere bugünkü wa.me yolunu açar); bağlı ama sınanmamış → neden; sınandı + şablon denetlendi → hazır; yetkisiz kişi canSend false; gizli değer yok; Meta'ya istek yok
+      ---
+      duration_ms: 580.373482
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w4-248-k9x2/w4-eski-6c0711bc/test/whatsapp-w4-gonderim-248.test.mjs:18:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w4-248-k9x2/w4-eski-6c0711bc/test/whatsapp-w4-gonderim-248.test.mjs:23:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: salt okunur lisans: durum okunur, writable false (ekran Gönder'i nedeniyle pasif bırakır)
+    not ok 2 - salt okunur lisans: durum okunur, writable false (ekran Gönder'i nedeniyle pasif bırakır)
+      ---
+      duration_ms: 467.892156
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w4-248-k9x2/w4-eski-6c0711bc/test/whatsapp-w4-gonderim-248.test.mjs:78:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'configured')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w4-248-k9x2/w4-eski-6c0711bc/test/whatsapp-w4-gonderim-248.test.mjs:86:27)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 W4 — gönderim ekranının durumu (sending-status)
+  ---
+  duration_ms: 1049.621064
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w4-248-k9x2/w4-eski-6c0711bc/test/whatsapp-w4-gonderim-248.test.mjs:17:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W4 — önizleme onaydan önce; gönderim onaysız başlamaz
+    # Subtest: onaysız: önizleme 200 + startBlock (onay), kişiler sayılır; toplu iş 409 ve kayıt yok; firma adı yoksa startBlock firma adı; onaylı + firma adı → startBlock null
+    not ok 1 - onaysız: önizleme 200 + startBlock (onay), kişiler sayılır; toplu iş 409 ve kayıt yok; firma adı yoksa startBlock firma adı; onaylı + firma adı → startBlock null
+      ---
+      duration_ms: 406.960211
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w4-248-k9x2/w4-eski-6c0711bc/test/whatsapp-w4-gonderim-248.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Gönderimden önce Yönetim → WhatsApp'ta \"Aydınlatma metnimi okudum, carilerime ulaştıracağım.\" onayını işaretleyin.","code":"whatsapp-ack-required"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w4-248-k9x2/w4-eski-6c0711bc/test/whatsapp-w4-gonderim-248.test.mjs:108:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - 2.4.8 W4 — önizleme onaydan önce; gönderim onaysız başlamaz
+  ---
+  duration_ms: 407.379282
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w4-248-k9x2/w4-eski-6c0711bc/test/whatsapp-w4-gonderim-248.test.mjs:100:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1834.147891

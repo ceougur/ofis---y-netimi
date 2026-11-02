@@ -1,0 +1,32 @@
+{
+  "ad": "248-t6/t8-izolasyon-ve-kaynak",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/lisans-servisi-izolasyonu.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "29c6514be42ca2bcc6afe002ebfe374eda50122f",
+  "dal": "is/t6-248",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T01:02:59.680Z",
+  "sure_sn": 3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t6/t8-izolasyon-ve-kaynak.log",
+  "klasor": "/home/user/wt-t6-248",
+  "ham_cikti_sha256": "d590a0cf25f27edd366c90bfdde725b84bc89a89773976a3fb71f1fd978a31ff",
+  "ham_cikti_bayt": 6134
+}

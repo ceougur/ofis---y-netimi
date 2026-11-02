@@ -85,6 +85,9 @@ import { mobileSyncFromConfig } from "./lib/mobile-sync.mjs";
 import { registerMobileAdminRoutes } from "./routes/mobile-admin.mjs";
 import { registerMobileTunnelRoutes } from "./routes/mobile-tunnel.mjs";
 import { attachTunnel } from "./lib/tunnel/attach.mjs";
+import { createWhatsappHub } from "./lib/whatsapp/hub.mjs";
+import { createWhatsappHook, isHookRequest } from "./lib/whatsapp/hook.mjs";
+import { createWriteLock } from "./lib/write-lock.mjs";
 
 function ensureInitialAdmin(store, config, log) {
   if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", config.adminUsername)) return;
@@ -191,7 +194,15 @@ export function createApp(overrides = {}) {
   }
   // Geri yüklenen ya da silinen şirket o sırada açılmaz; istek 503 ile "birkaç saniye sonra" der.
   const busyCompanies = hub ? hub.busyCompanies : new Map();
-  const backups = hub ? hub.backups : createCompanyBackups({ registry: companies, dataDir: config.dataDir, keep: config.backupKeep, log, withDb: withCompanyDb, busy: busyCompanies, closeCompany: id => closeCompany(id), usageRowsFor: () => usageLedger.allRows(), onRestored: company => syncUsageOf(company) });
+  // 2.4.8 W2: geri yüklenen şirketin süren WhatsApp toplu gönderimleri defterde durdurulur (şirket yeniden açılınca DB'de de "Durduruldu").
+  const backups = hub ? hub.backups : createCompanyBackups({ registry: companies, dataDir: config.dataDir, keep: config.backupKeep, log, withDb: withCompanyDb, busy: busyCompanies, closeCompany: id => closeCompany(id), usageRowsFor: () => usageLedger.allRows(), onRestored: company => {
+    try {
+      whatsapp?.ledger.stopCompany(company.id, "restored", new Date(config.now()).toISOString());
+    } catch (error) {
+      log.warn?.(`WhatsApp gönderimleri geri yüklemeden sonra durdurulamadı (${error.message}).`);
+    }
+    syncUsageOf(company);
+  } });
   if (!hub) {
     try {
       backups.migrate();
@@ -200,6 +211,10 @@ export function createApp(overrides = {}) {
     }
   }
   const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity(), now: config.now });
+  // 2.4.8 W2 (lib/whatsapp/hub.mjs): WhatsApp gönderim defteri (makine düzeyi, ana veri klasöründe), tek işçi ve bağlantı kaydı — ortak katmanda tek örnek.
+  const whatsapp = hub ? hub.whatsapp : createWhatsappHub({ dataDir: config.dataDir, log, gapMs: config.whatsappGapMs, manual: config.whatsappWorker === "manual", fault: config.whatsappLedgerFault });
+  // 001 yedekten geri yüklendiyse (açılışta uygulandı) eski toplu gönderimler defterde durdurulur: geri yüklenen veri eski işleri diriltmez (plan §6 W2).
+  if (!hub && stagedRestore?.ok) whatsapp.ledger.stopCompany(companyId, "restored", new Date(config.now()).toISOString());
   // 2.4.7 E4 (S4): açılışta bütün şirketlerin izi kullanım defterine aktarılır (önceki çalışmada deftere eklenemeyen satır tamamlanır).
   if (!hub) syncUsageAll();
   // 2.0.21 öncesinden gelen şirketler (gözden geçirme bulgusu): veri dosyası olan her şirket "açılmış" sayılır; dosyası
@@ -245,6 +260,9 @@ export function createApp(overrides = {}) {
   // (cari, kasa, fatura, sıfırlama…) iletilmez: her şirket kendi verisinin olayını kendi kanalında yayınlar.
   const unbridgeHubEvents = hub?.events ? hub.events.tap((event, data, target) => isSharedEvent(event, data) && events.publish(event, data, target)) : null;
   const chat = createChat({ store, events, audit, roles: access });
+  // 2.4.8 İş P1 (lib/write-lock.mjs): arka plan işleri kilitli şirket dosyasına yazmayı denemez (olay döngüsü tutulmaz). __testWriteLock* yalnız test oluşturucusundan.
+  const writeLock = createWriteLock({ probe: overrides.__testWriteLockProbe !== false, ...(Number.isFinite(overrides.__testWriteLockBackoffMs) ? { backoffMs: overrides.__testWriteLockBackoffMs } : {}) });
+  const canWriteInBackground = () => writeLock.guard(companyId, store);
   // 30 günden eski sohbet mesajları veri klasöründeki mesaj-arsivi/ klasörüne taşınır (v2.0.2).
   const chatArchive = createChatArchive({ store, dir: path.join(config.dataDir, "mesaj-arsivi"), log });
   // Lisans (Faz 3): süresi dolan, engellenen veya doğrulanamayan kurulum salt okunur çalışır. Veri eşitlemesi de
@@ -266,7 +284,8 @@ export function createApp(overrides = {}) {
     bank,
     autoSync: config.datasetAutoSync,
     tickMs: config.datasetTickMs,
-    canWrite: () => !license || license.writable(),
+    // İş P1: zamanlanmış eşitleme kilitli dosyada o tur atlanır (kullanıcının "Şimdi Eşitle"si bu denetimden geçmez).
+    canWrite: () => (!license || license.writable()) && canWriteInBackground(),
   });
   clientState.useDataset(() => dataset.info());
   // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
@@ -320,6 +339,8 @@ export function createApp(overrides = {}) {
   };
   const context = {
     closeLive,
+    writeLock,
+    canWriteInBackground,
     config, log, store, bank, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, companies, companyId, company: () => companies.get(companyId),
     // İş saati (v2.1.0; lib/clock.mjs): modüller "bugün"ü ve zaman damgalarını buradan okur (config.now; testlerde sahte saat).
     now: config.now,
@@ -415,6 +436,8 @@ export function createApp(overrides = {}) {
   context.integrity.scanMinutes = INTEGRITY_SCAN_MINUTES;
   // Gözden geçirme B7: tarama ayrı iş parçacığında (salt okunur bağlantı); veri, gün ve kilit değişmediyse atlanır.
   context.integrity.scanTimer = overrides.integrityScan === false ? null : setInterval(() => {
+    // İş P1: tarama sapma bulursa integrity_log'a yazar — kilitli dosyada o tur atlanır.
+    if (!canWriteInBackground()) return;
     context.integrity.scanInBackground().catch(error => log.error?.("Mutabakat taraması çalışmadı", error));
   }, INTEGRITY_SCAN_MINUTES * 60_000);
   context.integrity.scanTimer?.unref?.();
@@ -422,11 +445,22 @@ export function createApp(overrides = {}) {
   // (b) 15 dakikada bir (unref; kapanışta durur); (f) "Şimdi Aktar" ve (g) dönem kilidi öncesi uçlarda; (d) ortak katmanda günde bir: bu süreçte
   // açılmamış şirketin veri dosyasında vadesi gelmiş POS kalemi varsa şirket açılır (açılış kendi kuyruğunu çalıştırır). Gün dönümü (c) 15
   // dakikalık turla karşılanır (karar). Kuyruk açılışı beklemez (setImmediate).
-  const posQueue = createPosQueue({ pos: () => context.bankAccounts?.pos, log });
+  const posQueue = createPosQueue({ pos: () => context.bankAccounts?.pos, log, canWrite: canWriteInBackground });
   context.posQueue = posQueue;
   if (hub && overrides.posQueue !== false) setImmediate(() => posQueue.start());
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
-  registerWhatsappRoutes(router, { ...context, accounts: () => context.accounts });
+  // 2.4.8 W2: WhatsApp Business API gönderim kuyruğu bu şirketin; işçi ortak katmanda tek (whatsapp.scheduler). Açılışta yarım kalan işler defterden çözülür.
+  context.whatsapp = registerWhatsappRoutes(router, { ...context, whatsapp, accounts: () => context.accounts, mobileSyncOf: () => context.mobileSync });
+  if (context.whatsapp.queue) {
+    try {
+      const recovered = context.whatsapp.queue.recover();
+      if (Object.values(recovered).some(Boolean)) log.info?.(`WhatsApp gönderim kuyruğu açılışta toparlandı: ${JSON.stringify(recovered)}`);
+    } catch (error) {
+      log.error?.("WhatsApp gönderim kuyruğu açılışta toparlanamadı", error);
+    }
+    whatsapp.registry.set(companyId, context.whatsapp.connection.summary());
+    whatsapp.scheduler.register(companyId, context.whatsapp.queue);
+  }
   // ANLIK DURUM (v2.0.7): Kasa, Cari, Stok ve Çek/Senet'in kendi hesaplarını okur (tek kaynak); raporlar.
   // Vade takip ve nakit akışı (v2.0.9) tablolardaki ödeme günlerini de okur (tüm veri oturumları; routes/reports.mjs).
   context.overview = registerOverviewRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, tables: () => context.tableReports, doubtful: () => context.doubtful });
@@ -534,7 +568,9 @@ export function createApp(overrides = {}) {
       const file = resolveDbPath(dirs.dataDir);
       if (!existsSync(file)) {
         const fresh = existsSync(dirs.dataDir) && readdirSync(dirs.dataDir).length === 0 && !store.setting(openedKey, "");
-        if (!fresh) throw new Error(`veri dosyası bulunamadı: ${file}`);
+        // İş V1 (dar kontrol 16) + X2 (dar kontrol 17): sürüp giden yokluk — kancanın "kalıcı açılamama" ayrımı bu alana bakar (geri yükleme / Ayır sırasında
+        // busyCompanies önce yanıt verir). İşaret `code`'a KONMAZ: ekran iletisi (dispatch) code'u gösterir, Türkçe neden + dosya yolu kalsın.
+        if (!fresh) throw Object.assign(new Error(`veri dosyası bulunamadı: ${file}`), { dataMissing: true });
       }
       mkdirSync(dirs.dataDir, { recursive: true });
       child = createApp({
@@ -552,7 +588,7 @@ export function createApp(overrides = {}) {
         scheduleBackups: false,
         // Şirketler aynı iş saatini paylaşır (sahte saatte de: hub'ın saati ilerleyince 002'nin de ilerler).
         now: config.now,
-        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events, closeLive, usageLedger, mobileRemote: context.mobileRemote, mobileSync: context.mobileSync },
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, requestRestart, closeCompany, events, closeLive, usageLedger, mobileRemote: context.mobileRemote, mobileSync: context.mobileSync, whatsapp },
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
@@ -615,7 +651,9 @@ export function createApp(overrides = {}) {
     return dispatchApp(req, res);
   };
   // 2.4.7 M3 (lib/mobile-sync.mjs; docs/mobil/M3-TASARIM.md): şifreli özet üreticisi + kapıcıya yükleyici (ortak katmanda tek örnek; kapıcı adresi yoksa dış istek yok).
-  context.mobileSync = hub ? hub.mobileSync : mobileSyncFromConfig({ store, license, mobileRemote: context.mobileRemote, dispatch, config, log });
+  context.mobileSync = hub ? hub.mobileSync : mobileSyncFromConfig({ store, license, mobileRemote: context.mobileRemote, dispatch, config, log, canWrite: canWriteInBackground });
+  // 2.4.8 L1 kâhin F1: lisans durumu değişince kapıcıya hemen bildirilir (engelin başlangıcı kapıcıda o an; lib/mobile-sync.mjs lisansDegisti).
+  if (!hub) events.tap(event => event === "license.changed" && context.mobileSync?.lisansDegisti?.());
   const dispatchApp = (req, res) => {
     if (hub) return scoped(req, res);
     const pathname = (req.url || "/").split("?")[0];
@@ -688,7 +726,12 @@ export function createApp(overrides = {}) {
   server.requestTimeout = 5 * 60_000;
   // 2.4.7 M2: uzaktan erişim dinleyicisi (yalnız ortak katmanda; app.listenRemote ile açılır — M4'te tünel yalnız buraya bağlanır). Gelen her istek UZAKTIR:
   // cihaz → lisans → yol → uzak oturum kapısından (lib/mobile-remote.mjs) sonra olağan dağıtıcıya gider.
+  // 2.4.8 W9: WhatsApp durum bildirimi (kapıcının cihazsız geçirdiği /wa/kanca/<gizli yol>; lib/whatsapp/hook.mjs) mobil uzak oturum kapısından ÖNCE işlenir.
+  const whatsappHook = hub
+    ? null
+    : createWhatsappHook({ hooks: whatsapp.ledger, companyOf: id => companies.get(id), companies: () => companies.list(), appFor: company => appFor(company), verifyMark: req => context.mobileSync.kancaIsareti(req), log, now: () => new Date(config.now()) });
   const remoteServer = hub ? null : createServer((req, res) => {
+    if (isHookRequest(req)) return void whatsappHook.handle(req, res);
     context.mobileSync.izle(req, res); // 2.4.7 M3
     context.mobileRemote.handle(req, res, dispatch).catch(error => {
       log.error("Beklenmeyen uzak istek hatası", error);
@@ -731,6 +774,35 @@ export function createApp(overrides = {}) {
     }
   }
 
+  // 2.4.8 W2/W9: bütün şirketlerin WhatsApp bağlantı özeti (tünel kuralı, durum bildiriminin şirketi) — açık olmayanın dosyası kısa süreli salt okunur.
+  function scanWhatsappCompanies() {
+    if (hub) return;
+    whatsapp.registry.scan(companies.list().filter(company => company && company.id !== companyId && !children.has(company.id)), company =>
+      withCompanyDb(company, temp => {
+        try {
+          return temp.prepare("SELECT value FROM settings WHERE key = 'whatsapp.meta'").get()?.value ?? null;
+        } catch {
+          return null;
+        }
+      }) ?? null,
+    );
+  }
+  if (!hub) scanWhatsappCompanies();
+  function openWhatsappCompanies() {
+    if (hub || closed) return;
+    for (const id of whatsapp.ledger.liveCompanies()) {
+      if (id === companyId || children.has(id)) continue;
+      const company = companies.get(id);
+      if (!company) continue;
+      try {
+        appFor(company);
+        log.info?.(`Süren WhatsApp gönderimi için şirket açıldı: ${company.code} · ${company.name}`);
+      } catch (error) {
+        log.warn?.(`WhatsApp gönderimi için ${company.code} açılamadı (${error.message})`);
+      }
+    }
+  }
+
   // Otomatik yedek (v2.0.20): ortak katmanda tek zamanlayıcı BÜTÜN şirketleri yedekler — bu açılışta hiç açılmamış şirket
   // de (veri tabanı kısa süreliğine salt okunur açılır); her şirket kendi klasörüne.
   const stopBackups = config.scheduleBackups && !hub
@@ -742,6 +814,8 @@ export function createApp(overrides = {}) {
   if (overrides.alertScheduler !== false) alertScheduler.start();
   auth.purgeExpiredSessions();
   const sessionTimer = setInterval(() => {
+    // İş P1: kilitli dosyada oturum temizliği o tur atlanır (saatte bir yeniden).
+    if (!canWriteInBackground()) return;
     auth.purgeExpiredSessions();
     if (!hub) {
       try {
@@ -753,7 +827,20 @@ export function createApp(overrides = {}) {
   }, 3_600_000);
   sessionTimer.unref();
   // Sohbet arşivi: açılıştan kısa süre sonra ve 6 saatte bir (v2.0.2).
+  let archiveRetried = false;
+  let archiveRetry = null; // İş R1: yeniden deneme zamanlayıcısı tutulur, close() siler
   const archiveChat = () => {
+    archiveRetry = null;
+    if (closed) return; // İş R1: kapanmış örnekte arşiv çalışmaz
+    // İş P1: kilitli dosyada arşiv o tur atlanır (6 saatte bir yeniden; açılış turu kilitteyse 30 sn sonra bir kez daha denenir).
+    if (!canWriteInBackground()) {
+      if (!archiveRetried) {
+        archiveRetried = true;
+        archiveRetry = setTimeout(archiveChat, writeLock.backoffMs);
+        archiveRetry.unref?.();
+      }
+      return;
+    }
     try {
       chatArchive.run();
     } catch (error) {
@@ -787,7 +874,9 @@ export function createApp(overrides = {}) {
   // eşleşmeler, planlı işlemler, iş kuyruğu, istek kimlikleri) hareketle silinir; hesap ve POS kartları ile komisyon oranları kart
   // gibi ("Tümünü Sıfırla"da) silinir. Kur (fx_rates) ve banka tatilleri başvuru verisidir: silinmez. İşlem No sayacı "meta." önekiyle
   // korunur (sıfırlamadan sonra numara yeniden kullanılmaz).
-  const MOVEMENT_TABLES = ["cash_entries", "payments", "account_entries", "stock_moves", "invoice_offsets", "invoice_repeats", "invoice_lines", "invoices", "einvoice_inbox", "plan_entries", "plan_items", "plan_imports", "plans", "cheque_events", "cheques", "integrity_log", "message_sends", "trash", "audit_events",
+  // 2.4.8 W2: WhatsApp Business API gönderimleri (wa_batches, wa_jobs) mesaj geçmişi gibi hareketle silinir; süren toplu gönderim makine defterinde de durdurulur
+  // (sıfırlanan şirkette eski iş dirilmez; 24 saat sayacı ve aylık sayım defterde kalır).
+  const MOVEMENT_TABLES = ["cash_entries", "payments", "account_entries", "stock_moves", "invoice_offsets", "invoice_repeats", "invoice_lines", "invoices", "einvoice_inbox", "plan_entries", "plan_items", "plan_imports", "plans", "cheque_events", "cheques", "integrity_log", "message_sends", "wa_jobs", "wa_batches", "trash", "audit_events",
     "fin_events", "bank_lines", "pos_sales", "pos_items", "cheque_collections", "bank_statements", "bank_statement_lines", "bank_matches", "bank_plans", "bank_jobs", "request_keys", "ledger_snapshots",
     // 2.3.0 İz 1 (plan §3.11b/4 "Şirket Verisini Sıfırla listeleri"): şüpheli alacak kayıtları ve karşılıkları hareketle silinir.
     "doubtful_receivables", "doubtful_provisions"];
@@ -853,6 +942,11 @@ export function createApp(overrides = {}) {
       if (has("fin_events")) markLegacyRows(store, { now: config.now });
       audit(user, "company.reset", companyId, { mode, resetNumbers, backup: backup?.name || "", counts, unlocked });
     }));
+    try {
+      whatsapp.ledger.stopCompany(companyId, "reset", new Date(config.now()).toISOString());
+    } catch (error) {
+      log.warn?.(`WhatsApp gönderimleri sıfırlamada durdurulamadı (${error.message}).`);
+    }
     // Kapı tabanı yeniden ölçülür (kilit kalktı, eski satırlar silindi; dönem kilidi değişikliğindeki gibi).
     context.integrity?.start?.();
     try {
@@ -903,6 +997,7 @@ export function createApp(overrides = {}) {
     },
     mobileRemote: context.mobileRemote,
     mobileSync: context.mobileSync, // 2.4.7 M3
+    whatsapp, // 2.4.8 W2: defter, işçi, bağlantı kaydı (testler ve araçlar)
     // Uzaktan erişim dinleyicisi (2.4.7 M2): yalnız yerel döngü adresinde (tünel istemcisi aynı bilgisayardan bağlanır); ofis ağına açılmaz.
     listenRemote(port = 0, host = "127.0.0.1") {
       if (!remoteServer) return Promise.reject(new Error("Uzaktan erişim dinleyicisi yalnız ortak katmanda açılır."));
@@ -921,6 +1016,11 @@ export function createApp(overrides = {}) {
         server.listen(port, host, () => {
           server.off("error", reject);
           if (!hub) context.mobileSync.start(); // 2.4.7 M3: özet zamanlayıcısı + kapıcıya açılış kaydı
+          // 2.4.8 W2: WhatsApp işçisi; süren toplu gönderimi olan (defterde canlı) şirketler açılır — kendi kuyruklarını işçiye kaydederler.
+          if (!hub) {
+            whatsapp.scheduler.start();
+            setImmediate(openWhatsappCompanies);
+          }
           if (!hub && overrides.posQueue !== false) {
             posQueue.start();
             setImmediate(posDueCompanies);
@@ -936,6 +1036,9 @@ export function createApp(overrides = {}) {
       closed = true;
       if (!hub) await context.mobileSync.flush().catch(error => log.warn?.(`Mobil özet kapanışta yüklenemedi: ${error?.message || error}`)); // 2.4.7 M3: son hâl
       await context.tunnel?.stop();
+      // 2.4.8 W2: bu şirketin kuyruğu işçiden çıkar; ortak katman işçiyi (süren isteğin bitmesini bekleyerek) ve defteri kapatır.
+      whatsapp.scheduler.unregister(companyId);
+      if (!hub) await whatsapp.scheduler.stop();
       posQueue.stop();
       clearInterval(posHubTimer);
       stopBackups();
@@ -943,6 +1046,7 @@ export function createApp(overrides = {}) {
       clearInterval(context.integrity?.scanTimer);
       clearTimeout(archiveStart);
       clearInterval(archiveTimer);
+      clearTimeout(archiveRetry);
       alertScheduler.stop();
       // Oturum sınırlayıcı ve lisans ortak katmanın: şirket örneği kapanırken (geri yükleme, silme) durdurulmaz
       // (v2.0.17'de şirket silinince ilk şirketin lisans denetimi de duruyordu).
@@ -966,10 +1070,12 @@ export function createApp(overrides = {}) {
       await reportRunner?.close({ reason });
       for (const child of children.values()) await child.close();
       if (!hub) usageLedger.close();
+      if (!hub) whatsapp.ledger.close();
       db.close();
     },
   };
   // 2.4.7 M4: canlı bağlantı (tünel) — yalnız ortak katmanda; M3 kapıcı adresi (config.mobileKapiUrl) varken ya da testte `tunnel` seçeneğiyle; lib/tunnel/attach.mjs.
-  context.tunnel = hub ? null : attachTunnel({ option: overrides.tunnel, config, store, license, mobileRemote: context.mobileRemote, mobileSync: () => context.mobileSync, listenRemote: () => (remoteServer.listening ? Promise.resolve(remoteServer.address()) : app.listenRemote(0, "127.0.0.1")), forbiddenPorts: () => [config.port, config.publicPort, server.address()?.port].filter(Number.isInteger), log });
+  // 2.4.8 W9 (plan §6 W9, S1 A): tünel WhatsApp bağlıyken de açık (durum bildirimi kapıcıdan tünel üzerinden gelir) — "Ne zaman açık" kuralının genişlemesi.
+  context.tunnel = hub ? null : attachTunnel({ option: overrides.tunnel, config, store, license, mobileRemote: context.mobileRemote, mobileSync: () => context.mobileSync, extraDemand: () => whatsapp.registry.anyConfigured(), listenRemote: () => (remoteServer.listening ? Promise.resolve(remoteServer.address()) : app.listenRemote(0, "127.0.0.1")), forbiddenPorts: () => [config.port, config.publicPort, server.address()?.port].filter(Number.isInteger), log });
   return app;
 }

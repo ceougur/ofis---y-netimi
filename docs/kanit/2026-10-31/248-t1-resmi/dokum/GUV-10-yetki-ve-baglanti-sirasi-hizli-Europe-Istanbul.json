@@ -1,0 +1,99 @@
+{
+ "senaryo": "GUV-10-yetki-ve-baglanti-sirasi",
+ "uc": "hizli",
+ "tz": "Europe/Istanbul",
+ "bitis": "2026-10-30T10:01:00+03:00",
+ "notlar": [
+  "UYARI: W1 için programın kanca kaydı Meta'da yok (http://ofis.localhost:33351/varsayilan-kanca)"
+ ],
+ "program_api": [
+  {
+   "t": "2026-10-30T10:00:00+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "statement",
+    "ids": [
+     "account-d7e89eb9-25ab-42b2-9f3c-9ab552bd1d62"
+    ],
+    "from": "2026-10-01",
+    "to": "2026-10-31"
+   },
+   "status": 403,
+   "yanit": "{\"ok\":false,\"error\":\"Lisans geçerli değil. Program salt okunur çalışıyor; bu işlem yapılamaz.\",\"code\":\"LICENSE_READ_ONLY\"}"
+  },
+  {
+   "t": "2026-10-30T10:01:00+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "statement",
+    "ids": [
+     "account-dacbb2fb-466a-4cba-ad58-56cfd8c8248c"
+    ],
+    "from": "2026-10-01",
+    "to": "2026-10-31"
+   },
+   "status": 403,
+   "yanit": "{\"ok\":false,\"error\":\"Lisans geçerli değil. Program salt okunur çalışıyor; bu işlem yapılamaz.\",\"code\":\"LICENSE_READ_ONLY\"}"
+  },
+  {
+   "t": "2026-10-30T10:01:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-09",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-09\",\"configured\":false,\"delivered\":0,\"billable\":0,\"accepted\":0,\"approxUsd\":0,\"unitUsd\":0.0009}}"
+  },
+  {
+   "t": "2026-10-30T10:01:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-10",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-10\",\"configured\":false,\"delivered\":0,\"billable\":0,\"accepted\":0,\"approxUsd\":0,\"unitUsd\":0.0009}}"
+  }
+ ],
+ "toplular": {},
+ "cari_eslemesi": {
+  "A": "account-d7e89eb9-25ab-42b2-9f3c-9ab552bd1d62",
+  "B": "account-dacbb2fb-466a-4cba-ad58-56cfd8c8248c"
+ },
+ "defter": {
+  "accepts": [],
+  "batch_events": [],
+  "batch_log": [],
+  "claim_keys": [],
+  "claims": [],
+  "deliveries": [],
+  "failures": [],
+  "holds": [],
+  "hook_events": [],
+  "hook_seen": [],
+  "learned_wamids": [],
+  "meta": [
+   {
+    "key": "ledgerId",
+    "value": "wal-9218c393-341e-41f2-a28e-647bec8a5b8e"
+   }
+  ],
+  "outcomes": [],
+  "releases": []
+ },
+ "sahte_meta": {
+  "istekler": [],
+  "mesajlar": [],
+  "kancalar": [],
+  "sayilar": {
+   "mesajIstegi": {},
+   "kabul": {},
+   "toplamMesajIstegi": 0,
+   "toplamKabul": 0,
+   "medyaYukleme": 0,
+   "medyaKabul": 0,
+   "medyaSilme": 0,
+   "koptu": 0
+  }
+ },
+ "alici_kanca_kaydi": []
+}

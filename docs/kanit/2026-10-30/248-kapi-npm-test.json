@@ -1,0 +1,32 @@
+{
+  "ad": "248-kapi-npm-test",
+  "komut": "npm test",
+  "commit": "b5deb22115921e0d101514aa848e7dab10f7b11a",
+  "dal": "is/kapi-248",
+  "kirli": 0,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:53:17.294Z",
+  "sure_sn": 1976,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4082,
+    "gecen": 4082,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-kapi-npm-test.log.gz",
+  "klasor": "/home/user/wt-kapi-248",
+  "ham_cikti_sha256": "02f3ad94cc3b3016a1412fcec1ab6f7d5c5c38c39f59dd47dd3cd1ea5ee8ce43",
+  "ham_cikti_bayt": 1488310
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "248-k0-sabit-sahte-meta-mutasyon",
+  "komut": "node test/bagimsiz/whatsapp-248/sahte-meta/mutasyon.mjs",
+  "commit": "7a5bdcad2f2a5313841c4ea2c0308813de06fd90",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 7,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T14:56:23.935Z",
+  "sure_sn": 204.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 18,
+    "gecen": 18,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-k0-sabit-sahte-meta-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "a0126f2088fc56c8a55ce5b5c7d04b177957d3a86db7b556897189cb6f34cd94",
+  "ham_cikti_bayt": 3304
+}

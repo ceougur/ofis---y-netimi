@@ -1,0 +1,36 @@
+# İş V mutasyonları (dar kontrol 16 dişsiz mA–mG güncel koda uyarlanmış + V1–V5): python3 mut-v.py <kök> <ad>. Eski metin dosyada TAM BİR kez geçmeli.
+import sys
+Q = "server/lib/whatsapp/queue.mjs"
+D = "server/lib/whatsapp/defter.mjs"
+H = "server/lib/whatsapp/hook.mjs"
+M = {
+  "mA-settle-deneme-denetimi-yok": [(Q, 'if (!last || last.attempt !== attempt || ["failed", "released"].includes(last.outcome)) continue;', 'if (!last || ["failed", "released"].includes(last.outcome)) continue;')],
+  "mB-settle-sonuc-denetimi-yok": [(Q, 'if (!last || last.attempt !== attempt || ["failed", "released"].includes(last.outcome)) continue;', 'if (!last || last.attempt !== attempt) continue;')],
+  "mC-settle-tekil-denetimi-yok": [(Q, 'if (!wamid || store.get("SELECT 1 AS x FROM wa_jobs WHERE wamid = ?", wamid)) continue;', 'if (!wamid) continue;')],
+  "mD-kanca-kilit-gecici-degil": [(H, '  const temporary = error => error?.code !== "COMPANY_DATA_MISSING";', '  const temporary = error => Boolean(error?.retryAfter || error?.extra?.retryAfter);')],
+  "mE-u2-tasinan-satir-yolu-yok": [(Q, 'if (!last || Number(candidate.attempt) === Number(last.attempt)) return { route: "row", job: candidate };', 'if (last && Number(candidate.attempt) === Number(last.attempt)) return { route: "row", job: candidate };')],
+  "mF-onizleme-onarim-yok": [(Q, "    const repaired = repairPending();", "    const repaired = true;")],
+  "mG-u4-kabul-ani-simdi": [(Q, 'if (mine) updateJob(job.id, { state: "accepted", wamid: sent.wamid, accepted_at: ledger.acceptanceAt?.(job.id, attempt) || iso(),', 'if (mine) updateJob(job.id, { state: "accepted", wamid: sent.wamid, accepted_at: iso(),')],
+  "mV1-failed-yazilmaz": [(D, '      if (value === "failed") {\n        const last = this.attempts(jobId).at(-1);', '      if (value === "failed" && false) {\n        const last = this.attempts(jobId).at(-1);')],
+  "mV1-kalici-genis": [(H, '  const temporary = error => error?.code !== "COMPANY_DATA_MISSING";', '  const temporary = error => Boolean(error?.retryAfter || error?.extra?.retryAfter) || isLockError(error);')],
+  "mV2-settle-teslimi-gormez": [(Q, "      if (settleDelivered(job.id, attempt)) continue;\n      const last = ledger.attempts(job.id).at(-1);", "      const last = ledger.attempts(job.id).at(-1);")],
+  "mV2-toparlama-teslimi-gormez": [(Q, "      if (settleDelivered(job.id, Number(job.attempt))) {\n        out.sendingToDelivered", "      if (false) {\n        out.sendingToDelivered")],
+  "mV2-sure-dolumu-teslimi-gormez": [(Q, "        if (settleDelivered(row.id, Number(row.attempt))) continue;\n        updateJob(row.id, { state: \"expired\"", "        updateJob(row.id, { state: \"expired\"")],
+  "mV3-kisa-sinama-yok": [(Q, "    if (writeLock && !writeLock.guard(LEDGER_LOCK_KEY, ledger)) {\n      repairState.lock = true;", "    if (false) {\n      repairState.lock = true;")],
+  "mV3-onizleme-engeli-yok": [(Q, "startBlock: startBlock() || (repaired ? null : repairBlock()),", "startBlock: startBlock(),")],
+  "mV4-talep-teslimi-gormez": [(D, "      const delivered = deliveredOf();\n      if (delivered) return { ok: false, previous: delivered };", "      const delivered = null;\n      if (delivered) return { ok: false, previous: delivered };"), (D, "        const deliveredNow = deliveredOf();", "        const deliveredNow = null;")],
+  "mV4-dal-teslimi-yazmaz": [(Q, '      if (claim.previous.outcome === "delivered") {\n        const at', '      if (claim.previous.outcome === "delivered" && false) {\n        const at')],
+  "mV5-uzak-neden": [(Q, "      trouble(batchRow(batch.id), ledgerTroubleOf(error), { local: true });", "      trouble(batchRow(batch.id), `gönderim defteri yazılamadı (${error.code || error.message})`);")],
+}
+if sys.argv[1] == "--list":
+    print("\n".join(M)); sys.exit(0)
+root, name = sys.argv[1], sys.argv[2]
+for path, old, new in M[name]:
+    p = f"{root}/{path}"
+    s = open(p).read()
+    n = s.count(old)
+    if n != 1:
+        sys.exit(f"{name}: {path} eski metin {n} kez")
+    s = s.replace(old, new)
+    open(p, "w").write(s)
+print(f"{name}: uygulandı")

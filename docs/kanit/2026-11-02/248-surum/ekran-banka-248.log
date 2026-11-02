@@ -1,0 +1,51 @@
+(node:29770) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ k28-banka-sihirbaz
+✓ k29-banka-eski-hareketler
+✓ k37-banka-hesabi-atanmamis
+✓ k31-banka-masraf
+✓ k32-banka-transfer
+✓ k33-banka-islem-karti
+✓ k34-banka-hesap-secimi
+✓ k08-kasa
+✓ k35-banka-eksi-bakiye
+✗ dogrulanmadi page.click: Timeout 30000ms exceeded.
+✗ kart page.click: Timeout 30000ms exceeded.
+✗ kredi page.click: Timeout 30000ms exceeded.
+✗ genel-bakis page.click: Timeout 30000ms exceeded.
+✓ k10-anlik-durum
+✓ k36-banka-raporu
+✗ planli-ikinci-kart page.waitForSelector: Timeout 8000ms exceeded.
+✓ k40-banka-yetkiler
+2026-11-02T00:27:56.239Z [WARN] Mutabakat taraması: kapının görmediği 2 yeni sapma (İleri tarihli hareket (Cari Hareketleri); İleri tarihli hareket (Finansal İşlemler)).
+metinler: /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surum248-metin-x7k2/metinler.json 26 ekran
+✓ tarayıcı sahte günde (08.10.2026)
+✓ ileri tarihli eski havale yazıldı (200), saat yeniden 08.10.2026
+✓ sihirbaz kapatılınca Genel Bakış'ta Kurulumu Tamamla
+✓ sihirbaz adımları: 1 Hesap ve Açılış › 2 Eski Hareketleri Aktar › 3 Bitti
+✓ sihirbaz düğmeleri: × | Bu Adımı Atla | Kaydet ve Yeni Hesap Ekle | Kaydet ve İlerle
+✓ sihirbaz önizlemesinde tarihi gelmemiş satır
+✓ eski hareketler adımında Devir Kapanışı kutusu
+✓ Kurulum Tamamlandı
+✓ Ziraat 102.500 (100.000 + 03.10 havalesi 2.500), Garanti 50.000 (102500, 50000)
+✓ Hesabı Atanmamış: Tarihi Gelince Atanabilir + Seçilenleri Bu Hesaba Ata
+✓ masraf önizlemesi: Gider ₺10,00 · BSMV ₺0,50 · Bankadan Çıkan ₺10,50 · Hesap 770 · Genel Giderler ve Alış Faturaları
+✓ transfer önizlemesi: Alıcıya Giren ₺20.000,00 · Ücret ₺5,25 (₺5,00 + BSMV ₺0,25) · Gönderenden Çıkan ₺20.005,25
+✓ İşlem Kartı düğmeleri: ← Hareketler | Ters Kaydet | Düzelt | Açıklamayı Düzelt
+✓ Nakit seçiliyken Banka Hesabı alanı yok
+✓ Banka Hesabı seçenekleri: Hesap Seçin | Ziraat Bankası · Ana TL Hesabı (ZIR-TL) — ₺82.484,25 | Garanti BBVA · Ana TL Hesabı (GAR-TL) — ₺70.000,00 | Hesapsız (Açılıştan Önce)
+✓ Kasa düğmeleri: Kasa Dökümü - PDF | + Tahsilat | − Ödeme | Bankadan Kasaya Aktar | Kasadan Bankaya Yatır | Vergi Ödemesi | Açılış Bakiyesi
+✓ Eksi Bakiye sorusu: × ONAY Eksi Bakiye Garanti BBVA · Ana TL Hesabı hesabında 73.000,00 TL var; bu işlemle bakiye 80.000,00 TL azalır ve −7.000,00 TL olur (eksi bakiye). Yine de ka
+✓ soru düğmeleri: Vazgeç | Yine de Kaydet
+✓ Kredi Hesabı açıldı ({"id":"bacc-5c139eb6-9a92-4600-945b-799e45d3373b","code":"ZIR-KREDI","gl":"300","glSub":"300.01","kind":"loan","kindLabe)
+✓ ANLIK DURUM kutusu: Gerçek Banka
+✗ Banka raporları: Banka Bakiye Raporu, Banka Hareket Raporu, Banka Masraf Raporu, Alt Hesap Mizanı, Tahsildeki Çek ve Senetler, POS Ödeme Takvimi, Faturası Beklenen Komisyonlar, POS Satış Raporu, POS Komisyon Raporu, Günlük Banka Raporu, Aylık Banka Raporu, Banka Bazında Bakiye, Para Birimi Bazında Bakiye, Bankalar Arası Transfer Raporu, Kasa ve Banka Transfer Raporu, Cari ve Banka Hareketleri, Fatura ve Banka Hareketleri, Taksit ve Banka Hareketleri, Banka ve POS Hareketleri, Banka Nakit Akış Raporu
+✓ Nakit Akış: Bugünkü Nakit ve Banka
+✓ Planlı İşlemler'de Gerçekleştir
+✓ ikinci kredi kartı (200)
+✓ Hesaplar: bağsız kartta Öneri ve Bağla
+✓ örnek kullanıcı (200)
+✗ Banka yetkileri (Banka ve POS): Banka Görüntüleme, Banka Raporları, Banka Hesabı Tanımlama ve Açılış, Banka Hareketi Girme ve Bankadan Çıkış, Banka Hareketi Silme, İptal ve Ters Kayıt, Transfer Yapma, POS Tanımlama, Komisyon Oranlarını Değiştirme, Banka Ayarları
+sayfa hataları: yok
+başarısız adımlar: dogrulanmadi: page.click: Timeout 30000ms exceeded. | kart: page.click: Timeout 30000ms exceeded. | kredi: page.click: Timeout 30000ms exceeded. | genel-bakis: page.click: Timeout 30000ms exceeded. | denetim: Banka raporları: Banka Bakiye Raporu, Banka Hareket Raporu, Banka Masraf Raporu, Alt Hesap Mizanı, Tahsildeki Çek ve Senetler, POS Ödeme Takvimi, Faturası Beklenen Komisyonlar, POS Satış Raporu, POS Komisyon Raporu, Günlük Banka Raporu, Aylık Banka Raporu, Banka Bazında Bakiye, Para Birimi Bazında Bakiye, Bankalar Arası Transfer Raporu, Kasa ve Banka Transfer Raporu, Cari ve Banka Hareketleri, Fatura ve Banka Hareketleri, Taksit ve Banka Hareketleri, Banka ve POS Hareketleri, Banka Nakit Akış Raporu | planli-ikinci-kart: page.waitForSelector: Timeout 8000ms exceeded. | denetim: Banka yetkileri (Banka ve POS): Banka Görüntüleme, Banka Raporları, Banka Hesabı Tanımlama ve Açılış, Banka Hareketi Girme ve Bankadan Çıkış, Banka Hareketi Silme, İptal ve Ters Kayıt, Transfer Yapma, POS Tanımlama, Komisyon Oranlarını Değiştirme, Banka Ayarları
+37 denetim geçti, 7 başarısız

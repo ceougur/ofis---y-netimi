@@ -66,6 +66,32 @@ export function sahteR2() {
       sayac.A += 1;
       nesneler.delete(key);
     },
+    /** 2.4.8 L1: R2 list (Workers): prefix, delimiter (delimitedPrefixes), limit, cursor (sıradaki anahtar), startAfter (bu anahtardan sonrası), truncated.
+     * Anahtar sırası sözlük sırası. */
+    async list({ prefix = "", delimiter = "", limit = 1000, cursor = "", startAfter = "" } = {}) {
+      sayac.A += 1;
+      const anahtarlar = [...nesneler.keys()].filter(key => key.startsWith(prefix) && (!startAfter || key > startAfter)).sort();
+      const ogeler = [];
+      const goruldu = new Set();
+      for (const key of anahtarlar) {
+        const kalan = key.slice(prefix.length);
+        const i = delimiter ? kalan.indexOf(delimiter) : -1;
+        const oge = i >= 0 ? { onek: prefix + kalan.slice(0, i + delimiter.length) } : { key };
+        const ad = oge.onek || oge.key;
+        if (goruldu.has(ad)) continue;
+        goruldu.add(ad);
+        ogeler.push(oge);
+      }
+      const bas = cursor ? ogeler.findIndex(oge => (oge.onek || oge.key) > cursor) : 0;
+      const sayfa = bas < 0 ? [] : ogeler.slice(bas, bas + limit);
+      const truncated = bas >= 0 && bas + limit < ogeler.length;
+      return {
+        objects: sayfa.filter(oge => oge.key).map(oge => nesne(oge.key, nesneler.get(oge.key), false)),
+        delimitedPrefixes: sayfa.filter(oge => oge.onek).map(oge => oge.onek),
+        truncated,
+        ...(truncated ? { cursor: sayfa.at(-1).onek || sayfa.at(-1).key } : {}),
+      };
+    },
   };
 }
 
@@ -129,13 +155,15 @@ export async function kokeneIlet(request, taban) {
  * @param {boolean} [o.tls] ayrıca https dinleyicisi (Chromium için; kendinden imzalı)
  * @param {object} [o.trustedKeys] lisans açık anahtarları (varsayılan programınkiler)
  * @param {Function} [o.fetchOrigin] canlı istek iletimi (varsayılan: tunel() ile verilen tabana; uçtan uca testte sahte Cloudflare kenarı)
+ * @param {object} [o.ekEnv] 2.4.8 W7: ek Worker ayarları (WA_UYGULAMA_KIMLIGI, WA_KURULUM_KIMLIGI, WA_UYGULAMA_SIRRI, WA_GRAPH_URL …)
+ * @param {typeof fetch} [o.waFetch] 2.4.8 W7: kapıcının Meta'ya kod değişimi isteği (sahte Meta; verilmezse istek reddedilir)
  */
-export async function startKapi({ now = () => Date.now(), lisansFetch = null, alan = "destekofis.test", tls = false, trustedKeys = TRUSTED_LICENSE_KEYS, fetchOrigin = null } = {}) {
+export async function startKapi({ now = () => Date.now(), lisansFetch = null, alan = "destekofis.test", tls = false, trustedKeys = TRUSTED_LICENSE_KEYS, fetchOrigin = null, ekEnv = {}, waFetch = null } = {}) {
   const r2 = sahteR2();
   const onbellek = sahteOnbellek();
   const kokenler = new Map();
   const gunluk = [];
-  const env = { OZET: r2, LISANS_ANAHTARLARI: JSON.stringify(trustedKeys), OFIS_ALANI: alan, ...(lisansFetch ? { LISANS_URL: "https://lisans.kapi.test/api/lisans", KAPI_LISANS_ANAHTARI: "test-kapi-anahtari" } : {}) };
+  const env = { OZET: r2, LISANS_ANAHTARLARI: JSON.stringify(trustedKeys), OFIS_ALANI: alan, ...(lisansFetch ? { LISANS_URL: "https://lisans.kapi.test/api/lisans", KAPI_LISANS_ANAHTARI: "test-kapi-anahtari" } : {}), ...ekEnv };
   const kapi = createKapi({
     now,
     fetchOrigin: fetchOrigin || tunelIlet(kokenler),
@@ -143,6 +171,9 @@ export async function startKapi({ now = () => Date.now(), lisansFetch = null, al
       throw new TypeError("lisans servisi yok");
     }),
     onbellek,
+    waFetch: waFetch || (async () => {
+      throw new TypeError("Meta yok (test)");
+    }),
   });
   const isle = tlsMi => async (req, res) => {
     const parcalar = [];

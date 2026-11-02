@@ -1,0 +1,20 @@
+(node:20956) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20966) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+14:09:35 gönderim 1/100 {"sira":1,"gun":"2025-11-03","tur":"statement","donem":"lastMonth","acmaMs":30648,"yurutulen":2000,"isBasinaMs":37.5,"durumlar":{"delivered":1203,"read":797},"sureSn":110} RSS 615.3 MB {"toplu":1,"is":2000,"metaIleti":0,"kancaOlay":48,"kancaDurum":4797,"kancaHata":0,"yenidenDene":0,"yineDeGonder":0}
+14:19:00 gönderim 6/100 {"sira":6,"gun":"2025-11-21","tur":"statement","donem":"lastMonth","acmaMs":32407,"yurutulen":2000,"isBasinaMs":39.5,"durumlar":{"delivered":1242,"read":758},"sureSn":119} RSS 707.6 MB {"toplu":10,"is":12000,"metaIleti":0,"kancaOlay":294,"kancaDurum":28774,"kancaHata":0,"yenidenDene":1,"yineDeGonder":3}
+(node:20956) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+14:25:34 HATA Error: toplu iş açılamadı: 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Gecikmiş Borç Yok: 2000).","code":"whatsapp-nothing","summary":{"kind":"reminder","period":{"from":"","to":"","preset":""},"template":{"ok":true,"template":{"name":"destekofis_odeme_hatirlatma","language":"tr","status":"APPR
+    at ac (file:///home/user/wt-t9-248/test/t9-248/wa-gecmis-uret.mjs:54:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///home/user/wt-t9-248/test/t9-248/wa-gecmis-uret.mjs:73:19
+not ok 1 - üretim hatasız bitti (toplu iş açılamadı: 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Gecikmiş Borç Yok: 2000).","code":"whatsapp-nothing","summary":{"kind":"reminder","period":{"from":"","to":"","preset":""},"template":{"ok":true,"template":{"name":"destekofis_odeme_hatirlatma","language":"tr","status":"APPR)
+1..1
+# tests 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0

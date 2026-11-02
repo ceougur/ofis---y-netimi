@@ -1,0 +1,98 @@
+{
+  "ad": "248-m45-kirmizi-birim",
+  "komut": "node --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/mobil-karekod-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/m45-248-k9x2/m45-eski-e7c7338d/test/kapi-247.test.mjs",
+  "commit": "e7c7338d478c0afe55f7c4946b618380f44a60ea",
+  "dal": "is/mobil2-248",
+  "kirli": 18,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T17:40:59.805Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 40,
+    "gecen": 27,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 M3 kapıcı — tarayıcıya Türkçe hata sayfası, mobil istemciye JSON › 2.4.8 M4/M5: ofis kapalı sayfası Son Özeti Göster'i söyler; karşılama sayfası iPhone'u Ana Ekrana Ekle → Karekodu Okut'a yönlendirir",
+      "konum": "test/kapi-247.test.mjs:485:3",
+      "hata": "ipucu \"Son Özeti Göster\" demeli: <!doctype html><html lang=\"tr\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Ofis Sunucusuna Ulaşılamıyor — DestekOfis Mobil</title><body style=\"font-family:system-ui,sans-serif;padding:24px;max-width:520px;margin:auto;color:#102a36;line-height:1.5\"><h1 style=\"font-size:22px\">Ofis Sunucusuna Ulaşılamıyor</h1><p>Ofis sunucusuna ulaşılamıyor (kapalı ya da internete bağlı değil).</p><p>Ofisteki bilgisayar kapalı, DestekOfis çalışmıyor ya da ofisin internet bağlantısı kesik olabilir.</p><p>Birkaç dakika sonra sayfayı yenileyin. Telefonunuz eşliyse ana ekrandaki DestekOfis simgesinden açtığınızda son yüklenen özeti görebilirsiniz.</p><p><a href=\"\" style=\"display:inline-block;padding:10px 18px;border-radius:8px;background:#0f6a8b;color:#fff;text-decoration:none\">Yeniden Dene</a></p><p style=\"font-size:12px;color:#5b6b73\">Hata kodu: kapi-ofis-ka (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 M4 iOS / simge algılaması (client/mobil/karekod.js) › iPhone ve iPad (masaüstü imzası + dokunmatik) iOS; Android ve masaüstü değil",
+      "konum": "test/mobil-karekod-248.test.mjs:46:3",
+      "hata": "client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 M4 iOS / simge algılaması (client/mobil/karekod.js) › tarayıcı sekmesi ↔ ana ekran simgesi: navigator.standalone ya da display-mode: standalone",
+      "konum": "test/mobil-karekod-248.test.mjs:54:3",
+      "hata": "client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 M4 karekod metninden eşleme kodu — yalnız bu ofisin adresi › bu ofisin eşleme adresi → kod",
+      "konum": "test/mobil-karekod-248.test.mjs:71:3",
+      "hata": "client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 M4 karekod metninden eşleme kodu — yalnız bu ofisin adresi › başka ofisin adresi → 'başka bir ofisin' iletisi; biçimsiz / başka site / yol → 'eşleme karekodu değil'",
+      "konum": "test/mobil-karekod-248.test.mjs:76:3",
+      "hata": "client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 M4 karekod metninden eşleme kodu — yalnız bu ofisin adresi › kamera hataları açık ileti verir (izin reddi ayrı)",
+      "konum": "test/mobil-karekod-248.test.mjs:86:3",
+      "hata": "client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 M4 karekod çözücü (client/mobil/vendor/jsqr-1.4.0.js; Apache 2.0) › çözücü npm jsqr@1.4.0 dist/jsQR.js ile bayt bayt aynı (yalnız ES modülü sarmalı); lisans ve kaynak dosya başında, lisans metni yanında",
+      "konum": "test/mobil-karekod-248.test.mjs:97:3",
+      "hata": "client/mobil/vendor/jsqr-1.4.0.js yok (karekod çözücü depoda değil) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 M4 karekod çözücü (client/mobil/vendor/jsqr-1.4.0.js; Apache 2.0) › programın kendi karekodu (Yönetim → Mobil Cihazlar adresi) piksellerden okunur → aynı eşleme kodu",
+      "konum": "test/mobil-karekod-248.test.mjs:112:3",
+      "hata": "client/mobil/karekod.js yüklenemedi (ERR_MODULE_NOT_FOUND) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 M4 sunucu: kamera izni yalnız mobil sayfada; kabuk karekod.js'i taşır › /mobil/ belgesi camera=(self) (ofis ağı + uzak dinleyici); masaüstü ve öbür yanıtlar camera=()",
+      "konum": "test/mobil-karekod-248.test.mjs:148:3",
+      "hata": "http://127.0.0.1:43749/mobil/: simgede Karekodu Okut için kamera kendi kökenine açık olmalı (gelen \"camera=(), microphone=(), geolocation=(), payment=()\") (beklenen , gelen camera=(), microphone=(), geolocation=(), payment=())"
+    },
+    {
+      "ad": "2.4.8 M4 sunucu: kamera izni yalnız mobil sayfada; kabuk karekod.js'i taşır › hizmet çalışanı karekod.js'i kabukta tutar (app.js'in durağan içe aktarması; sunucu kapalıyken sayfa açılır)",
+      "konum": "test/mobil-karekod-248.test.mjs:168:3",
+      "hata": "sw.js ASSETS karekod.js içermeli (beklenen , gelen |-)"
+    },
+    {
+      "ad": "2.4.8 M4/M5 ekran ve kılavuz metinleri › M4: yönlendirme sayfası üç adım, eşleme yok; simgede Karekodu Okut + yeni karekod notu",
+      "konum": "test/mobil-karekod-248.test.mjs:177:3",
+      "hata": "ios-guide paneli yok (beklenen true, gelen )"
+    },
+    {
+      "ad": "2.4.8 M4/M5 ekran ve kılavuz metinleri › M5: Son Özeti Göster giriş formunun alanlarından ÖNCE; uyarı cümlesi",
+      "konum": "test/mobil-karekod-248.test.mjs:187:3",
+      "hata": "Son Özeti Göster kullanıcı adı alanının ÜSTÜNDE olmalı (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 M4/M5 ekran ve kılavuz metinleri › kılavuz: iPhone'da Ana Ekrana Ekle → simgede Karekodu Okut; Android bugünkü gibi",
+      "konum": "test/mobil-karekod-248.test.mjs:195:3",
+      "hata": "The input did not match the regular expression /<b>iPhone ve iPad:<\\/b>[^\\n]*<b>Ana Ekrana Ekle<\\/b>[^\\n]*<b>Karekodu Okut<\\/b>/. Input: · '<!doctype html>\\n' + · '<html lang=\"tr\">\\n' + (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-m45-kirmizi-birim.log",
+  "klasor": "/home/user/wt-mobil2-248",
+  "ham_cikti_sha256": "074762526e6333af30e14326e1d4c79661c992c480b7e03a49c2714dc87a0225",
+  "ham_cikti_bayt": 138344
+}

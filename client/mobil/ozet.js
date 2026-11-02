@@ -84,7 +84,15 @@ export async function loadSummary() {
     } catch {
       throw Error("İnternet bağlantısı yok; son özet de alınamadı.");
     }
-    if (resp.ok) return await openSummary(await resp.text(), keys);
+    if (resp.ok) {
+      // 2.4.8 L1: kapıcının mobil hak uyarısı (son 7 gün / hoşgörü; sunucu kapalıyken de) — özetin içindeki eski oturum bilgisi yerine.
+      try {
+        offline.hakIleti = decodeURIComponent(resp.headers.get("x-do-mobil-ileti") || "");
+      } catch {
+        offline.hakIleti = "";
+      }
+      return await openSummary(await resp.text(), keys);
+    }
     let data = {};
     try {
       data = await resp.json();
@@ -118,6 +126,7 @@ export function enter(veri) {
   offline.veri = veri;
   offline.uretim = veri.uretim || "";
   d.setAuth(veri.oturum);
+  d.hakNotu?.(offline.hakIleti || "");
   d.state.writesEnabled = false; // 2.4.7 M5 birleşimi: sunucu kapalıyken kayıt girilmez — oturumdan kalan yazma hakkı çevrimdışı görünümde düğme göstermesin
   const when = fmtTime(offline.uretim);
   el("offline-banner").textContent = `Ofis sunucusuna ulaşılamıyor. Son güncelleme: ${when} — bilgiler salt okunurdur; yenilemek için ↻.`;
@@ -132,7 +141,8 @@ export function leave() {
   offline.uretim = "";
   el("offline-banner")?.classList.add("hidden");
 }
-// Oturum sürerken sunucu kapanırsa son özete kendiliğinden geçilir (yalnız okuma). Açılışta ise kullanıcı "Son Özeti Göster"e basar (bilinçli adım).
+// Oturum sürerken sunucu kapanırsa son özete kendiliğinden geçilir (yalnız okuma). Açılışta ise kullanıcı "Son Özeti Göster"e basar (bilinçli adım; 2.4.8 M5:
+// düğme formun üstünde, kendiliğinden açılma yok — kullanıcı kararı).
 export async function tryOffline(path, body) {
   if (body !== undefined || !d.state.user) return NO_OFFLINE;
   let veri = null;
@@ -181,8 +191,13 @@ function data(full) {
 export function assertOnline() {
   if (offline.veri) throw Error("Ofis sunucusu kapalıyken PDF ve Excel alınamaz.");
 }
+// 2.4.8 M5 (kullanıcı kararı): "Son Özeti Göster" giriş formunun ÜSTÜNDE ve belirgin; ulaşılamıyor uyarısı da bu cümleyi söyler. Kendiliğinden açılmaz.
+export const OFFLINE_HINT = "Son Özeti Göster'e basarak son yüklenen bilgileri görebilirsiniz.";
+/** Bu cihazda son özet açılabiliyorsa düğmeyi gösterir; gösterdiyse true. */
 export async function offer() {
-  if (await summaryKeys()) el("offline-note")?.classList.remove("hidden");
+  const has = Boolean(await summaryKeys());
+  if (has) el("offline-note")?.classList.remove("hidden");
+  return has;
 }
 // Yenile (↻) çevrimdışında: önce canlıyı dener, olmazsa yeni özeti alır.
 export async function refresh(startSession) {
@@ -204,9 +219,12 @@ export async function refresh(startSession) {
       d.setPage(d.state.page);
     } else {
       d.loggedOut();
-      el("login-error").textContent = hata?.message || "Son özet alınamadı.";
+      const ileti = hata?.message || "Son özet alınamadı.";
+      el("login-error").textContent = ileti;
       el("login-error").classList.remove("hidden");
-      offer();
+      offer().then(has => {
+        if (has && hata?.unreachable) el("login-error").textContent = `${ileti} ${OFFLINE_HINT}`;
+      });
     }
   }
 }

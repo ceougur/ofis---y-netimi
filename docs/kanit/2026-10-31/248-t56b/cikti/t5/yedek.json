@@ -1,0 +1,260 @@
+{
+ "names": {
+  "002": "destekofis-002-2026-10-31T15-32-15-327Z-manuel.sqlite",
+  "001": "destekofis-001-2026-10-31T15-32-14-988Z-manuel.sqlite"
+ },
+ "checks": [
+  {
+   "name": "001 aday yedeği destekofis-001-2026-10-31T15-37-30-615Z-manuel.sqlite alındı; ara çalışma yazıldı (Kasa 200, cari 200; değişen bölümler accounts,trial,trialTotals,reconciliation,cash,reports)",
+   "ok": true,
+   "detail": {
+    "cash": {
+     "id": "cash-95c353c8-2ba9-4ba4-841c-36d6e778bc89"
+    },
+    "acc": {
+     "id": "account-94bc2a5f-70e2-4e13-922e-1dd5eaa70968",
+     "refNo": "3212",
+     "type": "customer",
+     "name": "Göç Yedek Carisi 001",
+     "phone": "",
+     "email": "",
+     "address": "",
+     "registeredOn": "2026-10-31",
+     "groupId": null,
+     "subgroupId": null,
+     "note": "",
+     "caseKey": "",
+     "caseSource": "",
+     "caseTitle": "",
+     "status": "active",
+     "taxNo": "",
+     "taxOffice": "",
+     "mersisNo": "",
+     "tradeRegistry": "",
+     "partyKind": "",
+     "firstName": "",
+     "familyName": "",
+     "city": "",
+     "district": "",
+     "postalCode": "",
+     "country": "",
+     "website": "",
+     "iban": "",
+     "dueDays": 0,
+     "eInvoice": 0,
+     "eAlias": "",
+     "eProfile": "",
+     "waOptOut": 0,
+     "createdBy": "user-4359e66e-8906-498d-8404-ca4f223da798",
+     "createdAt": "2026-10-31T17:00:00.287Z",
+     "updatedAt": "2026-10-31T17:00:00.287Z",
+     "actorName": "Ofis yöneticisi",
+     "groupName": "",
+     "subgroupName": "",
+     "fields": [],
+     "typeLabel": "Müşteri",
+     "entries": [],
+     "plans": [],
+     "ledger": [],
+     "totals": {
+      "debit": 0,
+      "credit": 0,
+      "balance": 0,
+      "collected": 0,
+      "planTotal": 0,
+      "planRemaining": 0,
+      "overdue": 0,
+      "overdueCount": 0
+     },
+     "side": "zero",
+     "canManage": true,
+     "canCollect": true,
+     "doubtful": {
+      "count": 0,
+      "openCount": 0,
+      "openMinor": 0,
+      "provisionMinor": 0,
+      "collectedMinor": 0,
+      "writtenOffMinor": 0,
+      "releasedMinor": 0
+     },
+     "canDoubtful": true,
+     "deleteBlock": "",
+     "openingEntryId": "",
+     "refundables": []
+    }
+   }
+  },
+  {
+   "name": "001 aday yedeği geri yüklendi: olgular yedek anıyla aynı (0 bölüm farklı)",
+   "ok": true,
+   "detail": {
+    "d": []
+   }
+  },
+  {
+   "name": "001 geri yüklemeden sonra yeniden çalışma 200 (200); Mutabakat Testi sapma 0 (yedek anında 0)",
+   "ok": true,
+   "detail": {
+    "again": {
+     "id": "cash-ade55405-0ae5-4720-bbfa-19d4741be413"
+    },
+    "failures": []
+   }
+  },
+  {
+   "name": "001 aday yedeğinin geri yüklenmesinden sonra eşli telefon oturumu sürer (200)",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "002 aday yedeği destekofis-002-2026-10-31T15-38-54-748Z-manuel.sqlite alındı; ara çalışma yazıldı (Kasa 200, cari 200; değişen bölümler accounts,trial,trialTotals,reconciliation,cash,reports)",
+   "ok": true,
+   "detail": {
+    "cash": {
+     "id": "cash-a22dac17-ff90-4eaa-9f26-115c577594fb"
+    },
+    "acc": {
+     "id": "account-e65f6d61-0c90-4bae-ae10-f3c5245a7291",
+     "refNo": "927",
+     "type": "customer",
+     "name": "Göç Yedek Carisi 002",
+     "phone": "",
+     "email": "",
+     "address": "",
+     "registeredOn": "2026-10-31",
+     "groupId": null,
+     "subgroupId": null,
+     "note": "",
+     "caseKey": "",
+     "caseSource": "",
+     "caseTitle": "",
+     "status": "active",
+     "taxNo": "",
+     "taxOffice": "",
+     "mersisNo": "",
+     "tradeRegistry": "",
+     "partyKind": "",
+     "firstName": "",
+     "familyName": "",
+     "city": "",
+     "district": "",
+     "postalCode": "",
+     "country": "",
+     "website": "",
+     "iban": "",
+     "dueDays": 0,
+     "eInvoice": 0,
+     "eAlias": "",
+     "eProfile": "",
+     "waOptOut": 0,
+     "createdBy": "user-4359e66e-8906-498d-8404-ca4f223da798",
+     "createdAt": "2026-10-31T17:01:06.651Z",
+     "updatedAt": "2026-10-31T17:01:06.651Z",
+     "actorName": "Ofis yöneticisi",
+     "groupName": "",
+     "subgroupName": "",
+     "fields": [],
+     "typeLabel": "Müşteri",
+     "entries": [],
+     "plans": [],
+     "ledger": [],
+     "totals": {
+      "debit": 0,
+      "credit": 0,
+      "balance": 0,
+      "collected": 0,
+      "planTotal": 0,
+      "planRemaining": 0,
+      "overdue": 0,
+      "overdueCount": 0
+     },
+     "side": "zero",
+     "canManage": true,
+     "canCollect": true,
+     "doubtful": {
+      "count": 0,
+      "openCount": 0,
+      "openMinor": 0,
+      "provisionMinor": 0,
+      "collectedMinor": 0,
+      "writtenOffMinor": 0,
+      "releasedMinor": 0
+     },
+     "canDoubtful": true,
+     "deleteBlock": "",
+     "openingEntryId": "",
+     "refundables": []
+    }
+   }
+  },
+  {
+   "name": "002 aday yedeği geri yüklendi: olgular yedek anıyla aynı (0 bölüm farklı)",
+   "ok": true,
+   "detail": {
+    "d": []
+   }
+  },
+  {
+   "name": "002 geri yüklemeden sonra yeniden çalışma 200 (200); Mutabakat Testi sapma 0 (yedek anında 0)",
+   "ok": true,
+   "detail": {
+    "again": {
+     "id": "cash-9b097166-6e6f-4062-851b-3723902da201"
+    },
+    "failures": []
+   }
+  },
+  {
+   "name": "002 aday yedeğinin geri yüklenmesinden sonra eşli telefon oturumu sürer (200)",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "aday: eşleme (200) + uzak giriş (200) geri yüklemeden önce",
+   "ok": true,
+   "detail": {
+    "pair": 200,
+    "login": 200
+   }
+  },
+  {
+   "name": "001 geri yüklenen eski yedek (destekofis-001-2026-10-31T15-32-14-988Z-manuel.sqlite) adayda şema 43 (eski sürümde 39), bütünlük ok",
+   "ok": true,
+   "detail": {
+    "neu": 43,
+    "old": 39
+   }
+  },
+  {
+   "name": "001 aynı eski yedek: v2.4.7'nın gösterdiği = adayın gösterdiği (para, cari, mizan, Kasa, banka, çek, fatura, taksit, stok, raporlar; farklı bölüm: yok)",
+   "ok": true,
+   "detail": {
+    "d": "[]"
+   }
+  },
+  {
+   "name": "002 geri yüklenen eski yedek (destekofis-002-2026-10-31T15-32-15-327Z-manuel.sqlite) adayda şema 43 (eski sürümde 39), bütünlük ok",
+   "ok": true,
+   "detail": {
+    "neu": 43,
+    "old": 39
+   }
+  },
+  {
+   "name": "002 aynı eski yedek: v2.4.7'nın gösterdiği = adayın gösterdiği (para, cari, mizan, Kasa, banka, çek, fatura, taksit, stok, raporlar; farklı bölüm: yok)",
+   "ok": true,
+   "detail": {
+    "d": "[]"
+   }
+  },
+  {
+   "name": "001'in eski (v2.4.7) yedeği geri yüklendikten sonra eşli cihaz ortak katmanda kalır (1 cihaz) ve telefon oturumu sürer (200)",
+   "ok": true,
+   "detail": {
+    "devs": "{\"limit\":3,\"used\":1,\"full\":false,\"licenseOk\":true,\"mobileRight\":{\"durum\":\"gecerli\",\"acik\":true,\"kalanGun\":null,\"ileti\":\"\"},\"kapiSilindi\":null,\"remoteUrl\":\"\",\"codeMinutes\":5,\"users\":[{\"id\":\"user-c6ddcef0-4873-4ce4-b110-c2533f2dff31\",\"username\":\"ayse\",\"name\":\"Ayşe Fatura\",\"role\":\"personel\",\"active\":true,\"remote\":false},{\"id\":\"user-8c566c49-5898-4562-a48a-53b53d92782c\",\"username\":\"mehmet\",\"name\":\"Meh",
+    "session": 200
+   }
+  }
+ ]
+}

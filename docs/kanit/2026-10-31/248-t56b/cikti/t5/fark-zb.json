@@ -1,0 +1,1492 @@
+{
+ "day": "2026-10-31",
+ "before": {
+  "version": "v2.4.7",
+  "commit": "151b7119d84da84e7844d8d3b9d972e3a7a25ccd"
+ },
+ "after": {
+  "version": "aday",
+  "commit": null
+ },
+ "rows": [
+  {
+   "company": "*",
+   "area": "şirket listesi",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 2
+   }
+  },
+  {
+   "company": "*",
+   "area": "kullanıcı ayse",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "permissions": 18
+   }
+  },
+  {
+   "company": "*",
+   "area": "kullanıcı mehmet",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "permissions": 40
+   }
+  },
+  {
+   "company": "*",
+   "area": "kullanıcı admin",
+   "klass": "BULGU",
+   "decision": "",
+   "detail": {
+    "role": [
+     "admin",
+     "admin"
+    ],
+    "gained": [
+     "whatsapp.send"
+    ],
+    "lost": []
+   }
+  },
+  {
+   "company": "*",
+   "area": "kullanıcı zeynep",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "permissions": 6
+   }
+  },
+  {
+   "company": "*",
+   "area": "roller",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "001",
+   "area": "cari bakiyeleri (tek tek)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 3209,
+    "sum": 1177370622
+   }
+  },
+  {
+   "company": "001",
+   "area": "mizan (her hesap)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "accounts": 22
+   }
+  },
+  {
+   "company": "001",
+   "area": "mizan toplamı",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "debit": 5238650979,
+    "credit": 5238650979,
+    "difference": 0
+   }
+  },
+  {
+   "company": "001",
+   "area": "defter mutabakatı",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "checks": 16
+   }
+  },
+  {
+   "company": "001",
+   "area": "Mutabakat Testi sapmaları",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "failures": 0
+   }
+  },
+  {
+   "company": "001",
+   "area": "Mutabakat Testi denetimleri",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "ok": 87,
+    "newOk": []
+   }
+  },
+  {
+   "company": "001",
+   "area": "dönem kilidi",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "lockedUntil": "2026-05-03"
+   }
+  },
+  {
+   "company": "001",
+   "area": "Kasa (toplam, yol başına, satırlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "totals": {
+     "in": 8218172.09,
+     "out": 3647600.54,
+     "balance": 4570571.55
+    },
+    "rows": 2025
+   }
+  },
+  {
+   "company": "001",
+   "area": "banka hesapları (tek tek)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "accounts": 2
+   }
+  },
+  {
+   "company": "001",
+   "area": "Banka özeti",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "001",
+   "area": "çek/senet (tek tek: durum, tutar, cari, fatura)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 366,
+    "byStatus": {
+     "portfolio": 34,
+     "pending": 2,
+     "collected": 126,
+     "bounced": 71,
+     "endorsed": 86,
+     "paid": 47
+    }
+   }
+  },
+  {
+   "company": "001",
+   "area": "taksit kartları (tek tek)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 231
+   }
+  },
+  {
+   "company": "001",
+   "area": "taksit toplamları",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "total": 382425500,
+    "paid": 17510000,
+    "remaining": 364915500,
+    "overdue": 279672427,
+    "overdueCount": 946,
+    "month": 44614585,
+    "count": 231
+   }
+  },
+  {
+   "company": "001",
+   "area": "stok (tek tek)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 40
+   }
+  },
+  {
+   "company": "001",
+   "area": "KDV mahsup fişleri",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 12
+   }
+  },
+  {
+   "company": "001",
+   "area": "tablo (veri oturumu)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "hasData": true,
+    "label": "MUSTERILER.xlsx",
+    "rowCount": 10240,
+    "tabs": [
+     "Borçlular",
+     "Ödeme Sözleri",
+     "Taksitler",
+     "Servis Ücretleri",
+     "Aidatlar"
+    ]
+   }
+  },
+  {
+   "company": "001",
+   "area": "şüpheli alacaklar",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "001",
+   "area": "Gönderilecekler",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 4
+   }
+  },
+  {
+   "company": "001",
+   "area": "seri adları",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "paper": "FIS",
+    "earsiv": "EAR",
+    "efatura": "EFT",
+    "smm": "SMM",
+    "esmm": "ESM",
+    "internal": "IAD"
+   }
+  },
+  {
+   "company": "001",
+   "area": "Silinenler (çöp kutusu)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 15,
+    "byKind": {
+     "invoice": 15
+    },
+    "faturaSilinen": 18,
+    "faturaSilinenNumarasiCanlida": 0
+   }
+  },
+  {
+   "company": "001",
+   "area": "geri yükleme uyarısı (30b; göçte yok)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "001",
+   "area": "cari kartları (hareketler, defter, toplamlar; yeni alanlar hariç)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 3209
+   }
+  },
+  {
+   "company": "001",
+   "area": "cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan)",
+   "klass": "BELGELİ",
+   "decision": "K6.4 eski satırlarda Vade / Beklenen boş; K6.2 Kalan yalnız elle borç / alacak / açılışta, 0 ≤ Kalan ≤ tutar",
+   "detail": {
+    "after": {
+     "dueDate": 0,
+     "expectedDate": 0,
+     "remaining": 787,
+     "remainingOutOfRange": [],
+     "entries": 3417
+    },
+    "before": {
+     "dueDate": 0,
+     "expectedDate": 0,
+     "remaining": 787,
+     "remainingOutOfRange": [],
+     "entries": 3417
+    }
+   }
+  },
+  {
+   "company": "001",
+   "area": "Yevmiye (bütün satırlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "satir": [
+     10543,
+     10543
+    ],
+    "gun": 287,
+    "kumesiDegisenGun": [],
+    "kumesiDegisenGunSayisi": 0,
+    "sirasiDegisenGun": 0,
+    "kuralaUymayanGunSonra": [],
+    "kuralaUymayanGunSonraSayisi": 0,
+    "kuralaUymayanGunOnce": 0,
+    "islemSiniflari": {
+     "Satış faturası": "belge",
+     "Alış faturası": "belge",
+     "Stok açılışı": "diğer",
+     "Kasa açılışı": "diğer",
+     "Cari (borç yaz)": "diğer",
+     "Çek / Senet": "diğer",
+     "Banka fişi": "diğer",
+     "Satıştan iade faturası": "belge",
+     "Taksit kartı": "diğer",
+     "Kasa": "diğer",
+     "Cari tahsilat": "para",
+     "Cari ödeme": "para",
+     "Taksit tahsilatı": "para",
+     "Serbest meslek makbuzu": "belge",
+     "Kayıt tahsilatı": "para",
+     "Kasa ↔ Banka": "diğer",
+     "Bankaya Tahsile Ver": "para",
+     "Çek / senet tahsili": "para",
+     "Stok (peşin satış)": "diğer",
+     "Çek / senet ödemesi": "para",
+     "KDV Mahsup Fişi": "diğer",
+     "Vergi Ödemesi": "para",
+     "Alıştan iade faturası": "belge"
+    },
+    "header": [
+     [
+      "Tarih",
+      "İşlem",
+      "Açıklama",
+      "Hesap",
+      "Borç",
+      "Alacak"
+     ],
+     [
+      "Tarih",
+      "İşlem",
+      "Açıklama",
+      "Hesap",
+      "Borç",
+      "Alacak"
+     ]
+    ]
+   }
+  },
+  {
+   "company": "001",
+   "area": "faturalar (tür, durum, numara, ETTN, tarih, cari, profil, e-Belge durumu, tutar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 1171,
+    "byProfile": {
+     "EARSIVFATURA": 272,
+     "KAGIT": 830,
+     "TEMELFATURA": 69
+    },
+    "byEStatus": {
+     "waiting": 5,
+     "none": 807,
+     "sent": 331,
+     "withdrawn": 23,
+     "cancelled": 5
+    }
+   }
+  },
+  {
+   "company": "001",
+   "area": "faturaların ödeme durumu",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "001",
+   "area": "ANLIK DURUM",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "001",
+   "area": "e-Belge kartları (İptal Et / Gönder / Bırak düğmeleri)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "cards": 1171,
+    "iptalKapandi": 0,
+    "sureIcindeAcikKalan": 15
+   }
+  },
+  {
+   "company": "001",
+   "area": "sıradaki numara · paper",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "FIS2026000000284",
+    "givenMax": 283,
+    "givenLiveMax": 283
+   }
+  },
+  {
+   "company": "001",
+   "area": "sıradaki numara · earsiv",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "EAR2026000000001",
+    "givenMax": 0,
+    "givenLiveMax": 0
+   }
+  },
+  {
+   "company": "001",
+   "area": "sıradaki numara · efatura",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "EFT2026000000001",
+    "givenMax": 0,
+    "givenLiveMax": 0
+   }
+  },
+  {
+   "company": "001",
+   "area": "sıradaki numara · smm",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "SMM2026000000086",
+    "givenMax": 85,
+    "givenLiveMax": 84
+   }
+  },
+  {
+   "company": "001",
+   "area": "sıradaki numara · esmm",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "ESM2026000000001",
+    "givenMax": 0,
+    "givenLiveMax": 0
+   }
+  },
+  {
+   "company": "001",
+   "area": "sıradaki numara · internal",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "IAD2026000000020",
+    "givenMax": 19,
+    "givenLiveMax": 19
+   }
+  },
+  {
+   "company": "001",
+   "area": "rapor merkezi (öbür raporlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "equalReports": 62
+   }
+  },
+  {
+   "company": "001",
+   "area": "Tablo Raporları · cari-ekstre (rakamlar, satırlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "firstDiff": null,
+    "cashOnlyRows": 0
+   }
+  },
+  {
+   "company": "001",
+   "area": "Tablo Raporları · vade-takip (rakamlar, satırlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "firstDiff": null,
+    "cashOnlyRows": 0
+   }
+  },
+  {
+   "company": "001",
+   "area": "Tablo Raporları · nakit-akis (rakamlar, satırlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "firstDiff": null,
+    "cashOnlyRows": 0
+   }
+  },
+  {
+   "company": "001",
+   "area": "Tahsilat Takvimi / zil (kalemler, son tarihler)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "before": {
+     "plan": 1073,
+     "cheque": 11,
+     "invoice": 732
+    },
+    "after": {
+     "plan": 1073,
+     "cheque": 11,
+     "invoice": 732
+    },
+    "removed": 0,
+    "removedMinor": 0,
+    "deadlines": [
+     0,
+     0
+    ],
+    "sources": [
+     0,
+     0
+    ],
+    "dormant": [
+     0,
+     0
+    ],
+    "notes": [
+     0,
+     0
+    ],
+    "firstDiff": null
+   }
+  },
+  {
+   "company": "001",
+   "area": "Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu)",
+   "klass": "BELGELİ",
+   "decision": "K4.1 \"Tablo\" seçeneği kalktı, tablo kalemi yok (madde 4; toplam düşer)",
+   "detail": {
+    "tabloIleGiris": {
+     "in": 660312.87,
+     "out": 7700,
+     "net": 652612.87
+    },
+    "tablosuz244": {
+     "in": 660312.87,
+     "out": 7700,
+     "net": 652612.87
+    },
+    "sonra": {
+     "in": 660312.87,
+     "out": 7700,
+     "net": 652612.87
+    },
+    "tabloPayiMinor": 0,
+    "satir": [
+     187,
+     187,
+     187
+    ],
+    "firstDiff": null
+   }
+  },
+  {
+   "company": "001",
+   "area": "Anlık Durum · Vade Takip (kaynak başına)",
+   "klass": "BELGELİ",
+   "decision": "K4.1 tablo ve ödeme sözü kaynağı yok; öbür kaynaklar birebir; toplam farkı = o iki kaynak (madde 4); cari vadesi kaynağı (K6.3) eski veride boş",
+   "detail": {
+    "gone": [],
+    "added": [],
+    "bad": [],
+    "removed": {
+     "count": 0,
+     "inMinor": 0
+    },
+    "totals": [
+     {
+      "in": {
+       "overdue": {
+        "count": 1577,
+        "amount": 9851383.34
+       },
+       "today": {
+        "count": 0,
+        "amount": 0
+       },
+       "upcoming": {
+        "count": 184,
+        "amount": 655841.31
+       },
+       "total": {
+        "count": 1761,
+        "amount": 10507224.65
+       }
+      },
+      "out": {
+       "overdue": {
+        "count": 102,
+        "amount": 897740.85
+       },
+       "today": {
+        "count": 0,
+        "amount": 0
+       },
+       "upcoming": {
+        "count": 1,
+        "amount": 7700
+       },
+       "total": {
+        "count": 103,
+        "amount": 905440.85
+       }
+      },
+      "noAmount": 0,
+      "count": 1864,
+      "net": 9601783.8
+     },
+     {
+      "in": {
+       "overdue": {
+        "count": 1577,
+        "amount": 9851383.34
+       },
+       "today": {
+        "count": 0,
+        "amount": 0
+       },
+       "upcoming": {
+        "count": 184,
+        "amount": 655841.31
+       },
+       "total": {
+        "count": 1761,
+        "amount": 10507224.65
+       }
+      },
+      "out": {
+       "overdue": {
+        "count": 102,
+        "amount": 897740.85
+       },
+       "today": {
+        "count": 0,
+        "amount": 0
+       },
+       "upcoming": {
+        "count": 1,
+        "amount": 7700
+       },
+       "total": {
+        "count": 103,
+        "amount": 905440.85
+       }
+      },
+      "noAmount": 0,
+      "count": 1864,
+      "net": 9601783.8
+     }
+    ]
+   }
+  },
+  {
+   "company": "002",
+   "area": "cari bakiyeleri (tek tek)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 927,
+    "sum": 547945892
+   }
+  },
+  {
+   "company": "002",
+   "area": "mizan (her hesap)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "accounts": 22
+   }
+  },
+  {
+   "company": "002",
+   "area": "mizan toplamı",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "debit": 3261234707,
+    "credit": 3261234707,
+    "difference": 0
+   }
+  },
+  {
+   "company": "002",
+   "area": "defter mutabakatı",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "checks": 16
+   }
+  },
+  {
+   "company": "002",
+   "area": "Mutabakat Testi sapmaları",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "failures": 0
+   }
+  },
+  {
+   "company": "002",
+   "area": "Mutabakat Testi denetimleri",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "ok": 87,
+    "newOk": []
+   }
+  },
+  {
+   "company": "002",
+   "area": "dönem kilidi",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "lockedUntil": ""
+   }
+  },
+  {
+   "company": "002",
+   "area": "Kasa (toplam, yol başına, satırlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "totals": {
+     "in": 4473764.04,
+     "out": 1904898.07,
+     "balance": 2568865.97
+    },
+    "rows": 866
+   }
+  },
+  {
+   "company": "002",
+   "area": "banka hesapları (tek tek)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "accounts": 2
+   }
+  },
+  {
+   "company": "002",
+   "area": "Banka özeti",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "002",
+   "area": "çek/senet (tek tek: durum, tutar, cari, fatura)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 171,
+    "byStatus": {
+     "portfolio": 14,
+     "pending": 2,
+     "endorsed": 42,
+     "paid": 19,
+     "collected": 58,
+     "bounced": 36
+    }
+   }
+  },
+  {
+   "company": "002",
+   "area": "taksit kartları (tek tek)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 100
+   }
+  },
+  {
+   "company": "002",
+   "area": "taksit toplamları",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "total": 172202140,
+    "paid": 6150000,
+    "remaining": 166052140,
+    "overdue": 123755627,
+    "overdueCount": 369,
+    "month": 16849263,
+    "count": 100
+   }
+  },
+  {
+   "company": "002",
+   "area": "stok (tek tek)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 40
+   }
+  },
+  {
+   "company": "002",
+   "area": "KDV mahsup fişleri",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 12
+   }
+  },
+  {
+   "company": "002",
+   "area": "tablo (veri oturumu)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "hasData": true,
+    "label": "MUSTERILER.xlsx",
+    "rowCount": 1780,
+    "tabs": [
+     "Borçlular",
+     "Ödeme Sözleri",
+     "Taksitler",
+     "Servis Ücretleri",
+     "Aidatlar"
+    ]
+   }
+  },
+  {
+   "company": "002",
+   "area": "şüpheli alacaklar",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "002",
+   "area": "Gönderilecekler",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 1
+   }
+  },
+  {
+   "company": "002",
+   "area": "seri adları",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "paper": "FIS",
+    "earsiv": "EAR",
+    "efatura": "EFT",
+    "smm": "SMM",
+    "esmm": "ESM",
+    "internal": "IAD"
+   }
+  },
+  {
+   "company": "002",
+   "area": "Silinenler (çöp kutusu)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 15,
+    "byKind": {
+     "invoice": 15
+    },
+    "faturaSilinen": 23,
+    "faturaSilinenNumarasiCanlida": 0
+   }
+  },
+  {
+   "company": "002",
+   "area": "geri yükleme uyarısı (30b; göçte yok)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "002",
+   "area": "cari kartları (hareketler, defter, toplamlar; yeni alanlar hariç)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 927
+   }
+  },
+  {
+   "company": "002",
+   "area": "cari hareketlerinin yeni alanları (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan)",
+   "klass": "BELGELİ",
+   "decision": "K6.4 eski satırlarda Vade / Beklenen boş; K6.2 Kalan yalnız elle borç / alacak / açılışta, 0 ≤ Kalan ≤ tutar",
+   "detail": {
+    "after": {
+     "dueDate": 0,
+     "expectedDate": 0,
+     "remaining": 197,
+     "remainingOutOfRange": [],
+     "entries": 1458
+    },
+    "before": {
+     "dueDate": 0,
+     "expectedDate": 0,
+     "remaining": 197,
+     "remainingOutOfRange": [],
+     "entries": 1458
+    }
+   }
+  },
+  {
+   "company": "002",
+   "area": "Yevmiye (bütün satırlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "satir": [
+     4735,
+     4735
+    ],
+    "gun": 287,
+    "kumesiDegisenGun": [],
+    "kumesiDegisenGunSayisi": 0,
+    "sirasiDegisenGun": 0,
+    "kuralaUymayanGunSonra": [],
+    "kuralaUymayanGunSonraSayisi": 0,
+    "kuralaUymayanGunOnce": 0,
+    "islemSiniflari": {
+     "Serbest meslek makbuzu": "belge",
+     "Satış faturası": "belge",
+     "Stok açılışı": "diğer",
+     "Kasa açılışı": "diğer",
+     "Cari (borç yaz)": "diğer",
+     "Cari tahsilat": "para",
+     "Banka fişi": "diğer",
+     "Satıştan iade faturası": "belge",
+     "Alış faturası": "belge",
+     "Taksit kartı": "diğer",
+     "Çek / Senet": "diğer",
+     "Cari ödeme": "para",
+     "Kasa ↔ Banka": "diğer",
+     "Taksit tahsilatı": "para",
+     "Stok (peşin satış)": "diğer",
+     "Kayıt tahsilatı": "para",
+     "Kasa": "diğer",
+     "Çek / senet ödemesi": "para",
+     "KDV Mahsup Fişi": "diğer",
+     "Vergi Ödemesi": "para",
+     "Bankaya Tahsile Ver": "para",
+     "Çek / senet tahsili": "para",
+     "Alıştan iade faturası": "belge"
+    },
+    "header": [
+     [
+      "Tarih",
+      "İşlem",
+      "Açıklama",
+      "Hesap",
+      "Borç",
+      "Alacak"
+     ],
+     [
+      "Tarih",
+      "İşlem",
+      "Açıklama",
+      "Hesap",
+      "Borç",
+      "Alacak"
+     ]
+    ]
+   }
+  },
+  {
+   "company": "002",
+   "area": "faturalar (tür, durum, numara, ETTN, tarih, cari, profil, e-Belge durumu, tutar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "count": 628,
+    "byProfile": {
+     "TEMELFATURA": 33,
+     "EARSIVFATURA": 123,
+     "KAGIT": 472
+    },
+    "byEStatus": {
+     "waiting": 1,
+     "sent": 150,
+     "none": 464,
+     "cancelled": 5,
+     "withdrawn": 8
+    }
+   }
+  },
+  {
+   "company": "002",
+   "area": "faturaların ödeme durumu",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "002",
+   "area": "ANLIK DURUM",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {}
+  },
+  {
+   "company": "002",
+   "area": "e-Belge kartları (İptal Et / Gönder / Bırak düğmeleri)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "cards": 628,
+    "iptalKapandi": 0,
+    "sureIcindeAcikKalan": 5
+   }
+  },
+  {
+   "company": "002",
+   "area": "sıradaki numara · paper",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "FIS2026000000131",
+    "givenMax": 130,
+    "givenLiveMax": 130
+   }
+  },
+  {
+   "company": "002",
+   "area": "sıradaki numara · earsiv",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "EAR2026000000001",
+    "givenMax": 0,
+    "givenLiveMax": 0
+   }
+  },
+  {
+   "company": "002",
+   "area": "sıradaki numara · efatura",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "EFT2026000000001",
+    "givenMax": 0,
+    "givenLiveMax": 0
+   }
+  },
+  {
+   "company": "002",
+   "area": "sıradaki numara · smm",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "SMM2026000000114",
+    "givenMax": 113,
+    "givenLiveMax": 112
+   }
+  },
+  {
+   "company": "002",
+   "area": "sıradaki numara · esmm",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "ESM2026000000001",
+    "givenMax": 0,
+    "givenLiveMax": 0
+   }
+  },
+  {
+   "company": "002",
+   "area": "sıradaki numara · internal",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "next": "IAD2026000000009",
+    "givenMax": 8,
+    "givenLiveMax": 8
+   }
+  },
+  {
+   "company": "002",
+   "area": "rapor merkezi (öbür raporlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "equalReports": 62
+   }
+  },
+  {
+   "company": "002",
+   "area": "Tablo Raporları · cari-ekstre (rakamlar, satırlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "firstDiff": null,
+    "cashOnlyRows": 0
+   }
+  },
+  {
+   "company": "002",
+   "area": "Tablo Raporları · vade-takip (rakamlar, satırlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "firstDiff": null,
+    "cashOnlyRows": 0
+   }
+  },
+  {
+   "company": "002",
+   "area": "Tablo Raporları · nakit-akis (rakamlar, satırlar)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "firstDiff": null,
+    "cashOnlyRows": 0
+   }
+  },
+  {
+   "company": "002",
+   "area": "Tahsilat Takvimi / zil (kalemler, son tarihler)",
+   "klass": "EŞİT",
+   "decision": "",
+   "detail": {
+    "before": {
+     "plan": 406,
+     "cheque": 5,
+     "invoice": 424
+    },
+    "after": {
+     "plan": 406,
+     "cheque": 5,
+     "invoice": 424
+    },
+    "removed": 0,
+    "removedMinor": 0,
+    "deadlines": [
+     0,
+     0
+    ],
+    "sources": [
+     0,
+     0
+    ],
+    "dormant": [
+     0,
+     0
+    ],
+    "notes": [
+     0,
+     0
+    ],
+    "firstDiff": null
+   }
+  },
+  {
+   "company": "002",
+   "area": "Nakit Akış Projeksiyonu (= 2.4.4'ün tablosuz projeksiyonu)",
+   "klass": "BELGELİ",
+   "decision": "K4.1 \"Tablo\" seçeneği kalktı, tablo kalemi yok (madde 4; toplam düşer)",
+   "detail": {
+    "tabloIleGiris": {
+     "in": 224759.51,
+     "out": 2800,
+     "net": 221959.51
+    },
+    "tablosuz244": {
+     "in": 224759.51,
+     "out": 2800,
+     "net": 221959.51
+    },
+    "sonra": {
+     "in": 224759.51,
+     "out": 2800,
+     "net": 221959.51
+    },
+    "tabloPayiMinor": 0,
+    "satir": [
+     70,
+     70,
+     70
+    ],
+    "firstDiff": null
+   }
+  },
+  {
+   "company": "002",
+   "area": "Anlık Durum · Vade Takip (kaynak başına)",
+   "klass": "BELGELİ",
+   "decision": "K4.1 tablo ve ödeme sözü kaynağı yok; öbür kaynaklar birebir; toplam farkı = o iki kaynak (madde 4); cari vadesi kaynağı (K6.3) eski veride boş",
+   "detail": {
+    "gone": [],
+    "added": [],
+    "bad": [],
+    "removed": {
+     "count": 0,
+     "inMinor": 0
+    },
+    "totals": [
+     {
+      "in": {
+       "overdue": {
+        "count": 743,
+        "amount": 5034008.3
+       },
+       "today": {
+        "count": 2,
+        "amount": 19333.17
+       },
+       "upcoming": {
+        "count": 64,
+        "amount": 196207.32
+       },
+       "total": {
+        "count": 809,
+        "amount": 5249548.79
+       }
+      },
+      "out": {
+       "overdue": {
+        "count": 50,
+        "amount": 582432.8
+       },
+       "today": {
+        "count": 0,
+        "amount": 0
+       },
+       "upcoming": {
+        "count": 2,
+        "amount": 2800
+       },
+       "total": {
+        "count": 52,
+        "amount": 585232.8
+       }
+      },
+      "noAmount": 0,
+      "count": 861,
+      "net": 4664315.99
+     },
+     {
+      "in": {
+       "overdue": {
+        "count": 743,
+        "amount": 5034008.3
+       },
+       "today": {
+        "count": 2,
+        "amount": 19333.17
+       },
+       "upcoming": {
+        "count": 64,
+        "amount": 196207.32
+       },
+       "total": {
+        "count": 809,
+        "amount": 5249548.79
+       }
+      },
+      "out": {
+       "overdue": {
+        "count": 50,
+        "amount": 582432.8
+       },
+       "today": {
+        "count": 0,
+        "amount": 0
+       },
+       "upcoming": {
+        "count": 2,
+        "amount": 2800
+       },
+       "total": {
+        "count": 52,
+        "amount": 585232.8
+       }
+      },
+      "noAmount": 0,
+      "count": 861,
+      "net": 4664315.99
+     }
+    ]
+   }
+  },
+  {
+   "company": "001",
+   "area": "veri dosyası: şema sürümü",
+   "klass": "BULGU",
+   "decision": "göç v33 (K6.4)",
+   "detail": {
+    "before": 39,
+    "after": 43,
+    "integrity": "ok"
+   }
+  },
+  {
+   "company": "001",
+   "area": "veri dosyası: tablolar, kolonlar ve satır sayıları",
+   "klass": "BULGU",
+   "decision": "K6.4 account_entries + due_date, expected_date (boş)",
+   "detail": {
+    "newTables": [
+     "wa_batches",
+     "wa_jobs"
+    ],
+    "lostTables": [],
+    "addedColumns": [],
+    "lostColumns": [],
+    "filled": {
+     "due_date": 0,
+     "expected_date": 0
+    },
+    "counts": []
+   }
+  },
+  {
+   "company": "002",
+   "area": "veri dosyası: şema sürümü",
+   "klass": "BULGU",
+   "decision": "göç v33 (K6.4)",
+   "detail": {
+    "before": 39,
+    "after": 43,
+    "integrity": "ok"
+   }
+  },
+  {
+   "company": "002",
+   "area": "veri dosyası: tablolar, kolonlar ve satır sayıları",
+   "klass": "BULGU",
+   "decision": "K6.4 account_entries + due_date, expected_date (boş)",
+   "detail": {
+    "newTables": [
+     "wa_batches",
+     "wa_jobs"
+    ],
+    "lostTables": [],
+    "addedColumns": [],
+    "lostColumns": [],
+    "filled": {
+     "due_date": 0,
+     "expected_date": 0
+    },
+    "counts": []
+   }
+  }
+ ],
+ "bulgu": [
+  {
+   "company": "*",
+   "area": "kullanıcı admin",
+   "klass": "BULGU",
+   "decision": "",
+   "detail": {
+    "role": [
+     "admin",
+     "admin"
+    ],
+    "gained": [
+     "whatsapp.send"
+    ],
+    "lost": []
+   }
+  },
+  {
+   "company": "001",
+   "area": "veri dosyası: şema sürümü",
+   "klass": "BULGU",
+   "decision": "göç v33 (K6.4)",
+   "detail": {
+    "before": 39,
+    "after": 43,
+    "integrity": "ok"
+   }
+  },
+  {
+   "company": "001",
+   "area": "veri dosyası: tablolar, kolonlar ve satır sayıları",
+   "klass": "BULGU",
+   "decision": "K6.4 account_entries + due_date, expected_date (boş)",
+   "detail": {
+    "newTables": [
+     "wa_batches",
+     "wa_jobs"
+    ],
+    "lostTables": [],
+    "addedColumns": [],
+    "lostColumns": [],
+    "filled": {
+     "due_date": 0,
+     "expected_date": 0
+    },
+    "counts": []
+   }
+  },
+  {
+   "company": "002",
+   "area": "veri dosyası: şema sürümü",
+   "klass": "BULGU",
+   "decision": "göç v33 (K6.4)",
+   "detail": {
+    "before": 39,
+    "after": 43,
+    "integrity": "ok"
+   }
+  },
+  {
+   "company": "002",
+   "area": "veri dosyası: tablolar, kolonlar ve satır sayıları",
+   "klass": "BULGU",
+   "decision": "K6.4 account_entries + due_date, expected_date (boş)",
+   "detail": {
+    "newTables": [
+     "wa_batches",
+     "wa_jobs"
+    ],
+    "lostTables": [],
+    "addedColumns": [],
+    "lostColumns": [],
+    "filled": {
+     "due_date": 0,
+     "expected_date": 0
+    },
+    "counts": []
+   }
+  }
+ ],
+ "summaryLines": [
+  "fark: 92 olgu · EŞİT 81 · BELGELİ 6 · BULGU 5",
+  "  BULGU * kullanıcı admin: {\"role\":[\"admin\",\"admin\"],\"gained\":[\"whatsapp.send\"],\"lost\":[]}",
+  "  BULGU 001 veri dosyası: şema sürümü: {\"before\":39,\"after\":43,\"integrity\":\"ok\"}",
+  "  BULGU 001 veri dosyası: tablolar, kolonlar ve satır sayıları: {\"newTables\":[\"wa_batches\",\"wa_jobs\"],\"lostTables\":[],\"addedColumns\":[],\"lostColumns\":[],\"filled\":{\"due_date\":0,\"expected_date\":0},\"counts\":[]}",
+  "  BULGU 002 veri dosyası: şema sürümü: {\"before\":39,\"after\":43,\"integrity\":\"ok\"}",
+  "  BULGU 002 veri dosyası: tablolar, kolonlar ve satır sayıları: {\"newTables\":[\"wa_batches\",\"wa_jobs\"],\"lostTables\":[],\"addedColumns\":[],\"lostColumns\":[],\"filled\":{\"due_date\":0,\"expected_date\":0},\"counts\":[]}"
+ ]
+}

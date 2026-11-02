@@ -1,0 +1,20 @@
+# Güncelleme 9d — 9c (2766a54b) ↔ 9d (2cdafd8a) senaryolar.json adla karşılaştırma
+# komut: git show 2766a54b:test/bagimsiz/whatsapp-248/kahin/senaryolar.json > g9c.json && python3 -I docs/kanit/2026-11-01/248-kahin9-araclar/fark_json.py g9c.json test/bagimsiz/whatsapp-248/kahin/senaryolar.json
+DEĞİŞTİ J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz
+    girdi.meta_davranis.mesaj.A[0].gec_kabul : "+20s" → "+10s"
+    girdi.olaylar[1].sirket : "A" → "<YOK>"
+    girdi.olaylar[1].t : "+10s" → "+7s"
+    girdi.olaylar[1].tur : "dosya_yazilamaz" → "defter_yazilamaz"
+    girdi.olaylar[3].sirket : "A" → "<YOK>"
+    girdi.olaylar[3].tur : "dosya_yazilamaz" → "defter_yazilamaz"
+DEĞİŞTİ J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti
+    girdi.kanca_yanit_cikti : "<YOK>" → true
+    girdi.meta_davranis.mesaj.A[0].gec_kabul : "+20s" → "+10s"
+    girdi.olaylar[1].sirket : "A" → "<YOK>"
+    girdi.olaylar[1].t : "+10s" → "+7s"
+    girdi.olaylar[1].tur : "dosya_yazilamaz" → "defter_yazilamaz"
+    girdi.olaylar[3].sirket : "A" → "<YOK>"
+    girdi.olaylar[3].tur : "dosya_yazilamaz" → "defter_yazilamaz"
+    beklenen[0].sonuc.kanca_yanitlari : "<YOK>" → {"200": 4, "503": 2}
+2 / 284 senaryo değişti (girdi ya da beklenen)
+# çıkış 0

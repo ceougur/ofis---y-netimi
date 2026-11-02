@@ -1,0 +1,30 @@
+▶ TOPLAM satırı kuralları (footerRow)
+  ✔ para ve sayı kolonlarını toplar; yürüyen bakiye, birim fiyat, oran boş; etiket ilk metin kolonunda (2.203869ms)
+  ✔ miktar yalnız tek birimde toplanır; yön karışıkken (footerUniform) toplam yok; false kapatır; üstüne yazma (0.794613ms)
+✔ TOPLAM satırı kuralları (footerRow) (3.904409ms)
+▶ Kullanıcının senaryosu: 10 müşteri × 10.000, ilk taksitler ödenmiş
+  ✔ programda tahsil: Cari Listesi 100.000 / 10.000 / 90.000; TOPLAM satırları; Taksit Kartları ve Mizan aynı (454.766499ms)
+  ✔ Excel'den yüklenen 'Ödenen' (açılış): Cari Bazında Tahsilat ve Taksit Tahsilatları toplamına dahil (72.881555ms)
+✔ Kullanıcının senaryosu: 10 müşteri × 10.000, ilk taksitler ödenmiş (953.466939ms)
+TOPLAM yok: supheli-alacaklar(0), stok-hareketleri(4), fatura-iade(0), kdv-ozeti(2), ba-bs(0), gider-raporu(0), stopaj-tevkifat(0), acik-faturalar(2), cek-portfoy(2), cek-hareketleri(2), geciken-taksitler(0), banka-bakiye(0), banka-hareket(0), banka-masraf(0), tahsildeki-cekler(0), pos-odeme-takvimi(0), faturasi-beklenen-komisyonlar(0), pos-satis(0), pos-komisyon(0), banka-gunluk(0), banka-aylik(0), banka-bazinda-bakiye(0), para-birimi-bazinda-bakiye(0), bankalar-arasi-transfer(0), kasa-banka-transfer(0), cari-banka-hareketleri(0), fatura-banka-hareketleri(0), taksit-banka-hareketleri(0), banka-pos-hareketleri(1), banka-nakit-akis(1), defter-mutabakati(64), mutabakat-gunlugu(0), kayit-tahsilatlari(0), notlar(0), gorevler(0), belgeler(0), tablo-verisi(0), islem-gecmisi(63)
+▶ Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır
+  ✔ her raporda TOPLAM (varsa) satır toplamına eşit; ekran = PDF = Excel (525.105772ms)
+  ✔ Tüm Zamanlar: çek portföyü ve taksit vadelerinde ileri vadeler de gelir; Aylık Kasa ilk hareketten başlar (6.099833ms)
+  ✔ yön karışık raporlarda (çek portföyü, açık faturalar) TOPLAM yalnız tek yön süzülünce; stokta farklı birim toplanmaz (9.43449ms)
+  ✔ katalog: dönemli raporlar Bu Yıl ile açılır (vade listesi Bu Ay, Ba-Bs Geçen Ay kalır) (2.597566ms)
+  ✔ Raporlar → Cari Ekstre (Mizan) PDF ve Excel'inde TOPLAM; Excel'de süzgeç dışında (12.266425ms)
+✔ Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır (1076.104938ms)
+ℹ tests 9
+ℹ suites 3
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2039.722658
+
+[dış saat] başlangıç günü 2026-10-31 → bitiş günü 2026-11-01: ön koşul GERÇEKLEŞTİ
+(node:31753) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[zorla] test/rapor-220.test.mjs · gece yarısına 1.1 sn · ön koşul GERÇEKLEŞTİ · test YEŞİL

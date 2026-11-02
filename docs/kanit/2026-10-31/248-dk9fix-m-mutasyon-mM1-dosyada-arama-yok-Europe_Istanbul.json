@@ -1,0 +1,43 @@
+{
+  "ad": "248-dk9fix-m-mutasyon-mM1-dosyada-arama-yok-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=120000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/mut/test/whatsapp-dk9-m-kanca-tasinan-248.test.mjs",
+  "commit": "d56c1f40f1400fb08aa7426e9dabf3b5dbde9968",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 89,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T13:48:23.746Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş M — taşınan veride geç teslim bildirimi yeni bilgisayarda yazılır (K7-05) › 11:30 imzasız 'delivered' (A'nın 1. denemesi) → 200, A Teslim Edildi, Bu Ay 1; 12:00 yeni gönderimde A 'Daha Önce Gönderildi'; 002'nin işi değişmez",
+      "konum": "test/whatsapp-dk9-m-kanca-tasinan-248.test.mjs:105:3",
+      "hata": "A'nın işi Teslim Edildi (taşınan verideki kendi wamid'iyle) · + actual - expected · + 'stopped' (beklenen delivered, gelen stopped)"
+    },
+    {
+      "ad": "2.4.8 İş M — taşınan veride geç teslim bildirimi yeni bilgisayarda yazılır (K7-05) › iki şirket: 002'nin wamid'iyle gelen bildirim yalnız 002'ye yazılır (001'in işi değişmez); bilinmeyen wamid hiçbir şeye yazılmaz",
+      "konum": "test/whatsapp-dk9-m-kanca-tasinan-248.test.mjs:128:3",
+      "hata": "002'nin işi Teslim Edildi · + actual - expected · + 'stopped' (beklenen delivered, gelen stopped)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk9fix-m-mutasyon-mM1-dosyada-arama-yok-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "7af7469f2fb9e8e5ddded604be8558666723184e0999f6e65b0b51ed66add3f6",
+  "ham_cikti_bayt": 3411
+}

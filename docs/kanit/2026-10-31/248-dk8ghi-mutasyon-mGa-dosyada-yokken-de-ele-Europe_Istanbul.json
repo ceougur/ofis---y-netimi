@@ -1,0 +1,43 @@
+{
+  "ad": "248-dk8ghi-mutasyon-mGa-dosyada-yokken-de-ele-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-ek-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-h-ozel-aralik-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-i-tasinan-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk4-yeniden-dene-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk5-yine-de-gonder-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs",
+  "commit": "608b50889b6c48f3a0ebb451a891b5dd332ac290",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 58,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T11:38:08.110Z",
+  "sure_sn": 27.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 47,
+    "gecen": 45,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 dar kontrol 7 DÜŞÜK-1 — geri yüklemeden sonra Sonucu Belirsiz elemesinin iletisi var olmayan 'Yine de Gönder'i göstermez › A Başarısız → yedek → R1 Sonucu Belirsiz → geri yükleme (R1 dosyadan gider) → A'nın Yeniden Dene'si: 'Sonucu Belirsiz' + yalnız 'yeni gönderim başlatın'; yeni gönderim gider",
+      "konum": "test/whatsapp-dk7-belirsiz-ileti-248.test.mjs:23:3",
+      "hata": "yeni gönderim: 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Sonucu Belirsiz: 1). Bu kişilerin önceki iletisinin sonucu belirsiz (ileti iki kez gidebilir); göndermek için yeni gönderim başlatın.\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-03\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Sonucu Belirsiz\":1},\"alreadySent\":{\"count\":0,\"last\":null,\"included\":0},\"people\":[{\"id\":\"account-c0ef2450-d2da-45f8-a498-fa12b5b3fe98\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"Sonucu Belirsiz\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":0}} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 İş G ek 1/4 — yalnız defterde kalan belirsiz deneme yeni toplu işte elemez › geri yükleme: belirsiz iş dosyadan gider → yeni gönderim önizlemesi 'gönderilecek', açılır ve gider; Başarısızları Yeniden Dene yine 'Sonucu Belirsiz'",
+      "konum": "test/whatsapp-dk8-g-ek-248.test.mjs:71:3",
+      "hata": "yalnız defterde kalan belirsiz deneme yeni gönderimi ELEMEZ (ek soru 1/4) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk8ghi-mutasyon-mGa-dosyada-yokken-de-ele-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "20b682d38e956221d8310024dbcaf75d7c7430b288bbc5c64de1233b34a63fa8",
+  "ham_cikti_bayt": 25091
+}

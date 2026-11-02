@@ -1,0 +1,38 @@
+{
+  "ad": "248-mz-mutasyon-anahtar-yalniz-seri",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/mutabakat-yil-donumu.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T12:44:47.411Z",
+  "sure_sn": 40.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 1,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027) › tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı",
+      "konum": "test/mutabakat-yil-donumu.test.mjs:48:3",
+      "hata": "[ · { · \"at\": \"işlem 384 (fatura-hatasi, 2027-01-08)\", (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt-mz-248/docs/kanit/2026-10-30/248-mz-mutasyon-anahtar-yalniz-seri.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mz-248-ba722fb2/mutasyon-anahtar-seri",
+  "ham_cikti_sha256": "740789664718867ff23b2a0137db80febf072b33a4df33aa6840a044112c0e77",
+  "ham_cikti_bayt": 4681
+}

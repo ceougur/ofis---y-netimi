@@ -1,0 +1,68 @@
+{
+  "ad": "248-g5-w9-kirmizi-w3-86e6d66b",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/w3-commit-agaci/test/whatsapp-w9-kanca-248.test.mjs",
+  "commit": "86e6d66b93c4f041cbb33d195a32bf803aa22e4b",
+  "dal": "is/cekirdek-248",
+  "kirli": 8,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T15:40:07.127Z",
+  "sure_sn": 3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 0,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 W9 — kanca adresinin kaydı ve doğrulaması (Meta → kapıcı → tünel → program) › bakım turu adresi Meta'ya KENDİLİĞİNDEN kaydeder (bir kez); GET doğrulaması kapıcıdan geçer; yanlış belirteç 403, bilinmeyen gizli yol 404; düşen kayıt saatte bir yeniden; görünümde gizli değer YOK",
+      "konum": "test/whatsapp-w9-kanca-248.test.mjs:149:3",
+      "hata": "Cannot read properties of undefined (reading 'state')"
+    },
+    {
+      "ad": "2.4.8 W9 — durum bildirimi (POST): imza, belirsizin çözümü, yinelenen / sırasız olay › imzasız (Yol 1) olay yalnız kaydındaki wamid'i yazar; Sonucu Belirsiz iş imzasız olayla ÇÖZÜLMEZ, yanlış imzayla çözülmez, DestekOfis sırrıyla imzalı + iş kimliğiyle çözülür; bilinmeyen / başka numaranın olayı düşer; gelen ileti saklanmaz; kapıcı Meta'nın başlıklarını geçirmez",
+      "konum": "test/whatsapp-w9-kanca-248.test.mjs:199:3",
+      "hata": "{\"ok\":false,\"code\":\"kapi-cihaz\",\"error\":\"Bu cihaz eşli değil ya da eşlemesi kaldırıldı. Yöneticinizden Yönetim → Mobil Cihazlar'da yeni karekod isteyin.\"} · 401 !== 200 (beklenen 200, gelen 401)"
+    },
+    {
+      "ad": "2.4.8 W9 — durum bildirimi (POST): imza, belirsizin çözümü, yinelenen / sırasız olay › Yol 2 (WhatsApp'ı Bağla) bağlantısında imzasız bildirim REDDEDİLİR (401), DestekOfis sırrıyla imzalı kabul edilir",
+      "konum": "test/whatsapp-w9-kanca-248.test.mjs:262:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'kapi-cihaz' (beklenen whatsapp-hook-signature, gelen kapi-cihaz)"
+    },
+    {
+      "ad": "2.4.8 W9 — kapıcı geçişinin sınırları ve tüneli atlatma › tünel yok → 503 kapi-ofis-kapali (Meta yeniden dener); gövde 3 MB üstü 413; işaretsiz / sahte işaretli doğrudan istek 401; programın Set-Cookie'si Meta'ya dönmez",
+      "konum": "test/whatsapp-w9-kanca-248.test.mjs:293:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'remote-kapi' (beklenen whatsapp-hook-mark, gelen remote-kapi)"
+    },
+    {
+      "ad": "2.4.8 W9 — kapıcı geçişinin sınırları ve tüneli atlatma › kapi.<alan>/wa/meta (uygulamanın varsayılan kanca ucu): doğrulama belirteciyle GET, DestekOfis sırrıyla imzalı POST 200 (saklanmaz); imzasız / yanlış / sır tanımsız reddedilir",
+      "konum": "test/whatsapp-w9-kanca-248.test.mjs:325:3",
+      "hata": "belirteç tanımsız · 200 !== 403 (beklenen 403, gelen 200)"
+    },
+    {
+      "ad": "2.4.8 W9 — tünel kuralı: WhatsApp bağlıyken de açık (plan §6 W9, S1 A) › eşli cihaz ve karekod YOKKEN: WhatsApp bağlı → tünel açılır; bağlı değil → kapalı (başvuru da yok); salt okunur lisansta WhatsApp bağlı olsa da kapalı",
+      "konum": "test/whatsapp-w9-kanca-248.test.mjs:380:3",
+      "hata": "kapıcıya başvuruldu · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 W9 — tünel kuralı: WhatsApp bağlıyken de açık (plan §6 W9, S1 A) › programda: belirteçli WhatsApp bağlantısı kaydedilince tünel yöneticisi tüneli ister; bağlantı kaldırılınca istemez (app.mjs → registry.anyConfigured)",
+      "konum": "test/whatsapp-w9-kanca-248.test.mjs:413:3",
+      "hata": "WhatsApp bağlandı → tünel istendi · 0 !== 1 (beklenen 1, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-w9-kirmizi-w3-86e6d66b.log",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "840ad9466ec0eb4c58660a934e8c04eb6936038cf8ca08542b2ff3ea9416b31d",
+  "ham_cikti_bayt": 12038
+}

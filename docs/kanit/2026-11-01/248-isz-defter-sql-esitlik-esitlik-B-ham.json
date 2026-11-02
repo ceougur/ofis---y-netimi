@@ -1,0 +1,32 @@
+{
+  "ad": "248-isz-defter-sql-esitlik-esitlik-B-ham",
+  "komut": "node test/isz-248/defter-sql-esitlik.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/esitlik-B/data/whatsapp-gonderim.sqlite /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/eski-b2e7bf19/server/lib/whatsapp/defter.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/defter-sql-esitlik-B-ham.json",
+  "commit": "dd3025d3aa8d67b8cc2e64b2a456b990175e4ebc",
+  "dal": "is/perf-248",
+  "kirli": 0,
+  "izlenmeyen": 41,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T19:03:21.817Z",
+  "sure_sn": 103.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-isz-defter-sql-esitlik-esitlik-B-ham.log",
+  "klasor": "/home/user/wt-perf-248",
+  "ham_cikti_sha256": "17f846bcab840afca1c9c2e1ba53c943f8dcda7ae70d2120c0fd2386c05e8c99",
+  "ham_cikti_bayt": 543
+}

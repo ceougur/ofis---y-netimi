@@ -1,0 +1,38 @@
+{
+  "ad": "248-t56b-t6-h-goc-kesinti-v42-v43",
+  "komut": "node --no-warnings --test --test-concurrency=1 test/t6-248/h-goc-kesinti-v43.mjs",
+  "commit": "21ea0474a9e07670fcbc9afa81048e0046e164e1",
+  "dal": "is/t56b-248",
+  "kirli": 0,
+  "izlenmeyen": 49,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T16:13:29.278Z",
+  "sure_sn": 107.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 2,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "T6 (h, T56b) — göç sırasında kesinti (v42 → v43) › h3: göç sırasında disk DOLU (tmpfs) → program açılmaz/açık hata, dosya v42..v43 tam sürüm ve sağlam; yer açılınca v43, gönderim bir kez",
+      "konum": "test/t6-248/h-goc-kesinti-v43.mjs:147:3",
+      "hata": "ara durum yok · + actual - expected · + 'prepared_at,pdf_blob,send_again_after,key_day' (beklenen prepared_at,pdf_blob,send_again_after, gelen prepared_at,pdf_blob,send_again_after,key_day)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t56b-t6-h-goc-kesinti-v42-v43.log",
+  "klasor": "/home/user/wt-t56b-248",
+  "ham_cikti_sha256": "0e114e73157a07ad00c9302b0e1b596f3489a24023a80ab296f6db6c7a5a1ffe",
+  "ham_cikti_bayt": 8910
+}

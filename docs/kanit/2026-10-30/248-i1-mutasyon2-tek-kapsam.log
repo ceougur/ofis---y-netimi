@@ -1,0 +1,259 @@
+TAP version 13
+# Subtest: 2.4.8 I1 içe aktarma istek kimliği (tek sunucu)
+    # Subtest: Cari: aynı kimlik + aynı dosya (yanıt kayboldu, yeniden basıldı) → 3 cari, açılış bakiyesi bir kez (cari + 120 + yevmiye); ikinci yanıt ilk rapor (replayed)
+    not ok 1 - Cari: aynı kimlik + aynı dosya (yanıt kayboldu, yeniden basıldı) → 3 cari, açılış bakiyesi bir kez (cari + 120 + yevmiye); ikinci yanıt ilk rapor (replayed)
+      ---
+      duration_ms: 65.580925
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'import'
+        - 'account.import'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'account.import'
+      actual: 'import'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:134:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Çek / Senet (Cariye işle): aynı kimlik + aynı dosya → 3 evrak, carinin borcu bir kez 1.500 düşer, 101 +1.750 bir kez; ikinci yanıt ilk rapor
+    not ok 2 - Çek / Senet (Cariye işle): aynı kimlik + aynı dosya → 3 evrak, carinin borcu bir kez 1.500 düşer, 101 +1.750 bir kez; ikinci yanıt ilk rapor
+      ---
+      duration_ms: 68.525748
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:144:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'import'
+        - 'cheque.import'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'cheque.import'
+      actual: 'import'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:163:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Stok: aynı kimlik + aynı dosya → 2 ürün, açılış stoku bir kez; ikinci yanıt ilk yüklemenin bildirimi (önceden '0 ürün açıldı, 2 satır atlandı')
+    not ok 3 - Stok: aynı kimlik + aynı dosya → 2 ürün, açılış stoku bir kez; ikinci yanıt ilk yüklemenin bildirimi (önceden '0 ürün açıldı, 2 satır atlandı')
+      ---
+      duration_ms: 20.16891
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:167:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'import'
+        - 'stock.import'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'stock.import'
+      actual: 'import'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:180:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Taksit: aynı kimlik + aynı dosya → 2 kart, tek aktarım kaydı (Geri Al aynı); ikinci yanıt ilk rapor (önceden '0 kart, 2 satır atlandı')
+    not ok 4 - Taksit: aynı kimlik + aynı dosya → 2 kart, tek aktarım kaydı (Geri Al aynı); ikinci yanıt ilk rapor (önceden '0 kart, 2 satır atlandı')
+      ---
+      duration_ms: 52.053786
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:183:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'import'
+        - 'plan.import'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'plan.import'
+      actual: 'import'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:196:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: aynı anda iki kopya (aynı kimlik, Promise.all) → cari ve çek bir kez; biri yeni, öbürü replayed
+    ok 5 - aynı anda iki kopya (aynı kimlik, Promise.all) → cari ve çek bir kez; biri yeni, öbürü replayed
+      ---
+      duration_ms: 54.896601
+      type: 'test'
+      ...
+    # Subtest: taksit: işlemden önceki bekleme (tablo dizini; bağlı Sheets'in ilk eşitlemesi) iki kopyayı iç içe geçirir → yine tek yükleme, biri replayed (denetim işlemin içinde)
+    ok 6 - taksit: işlemden önceki bekleme (tablo dizini; bağlı Sheets'in ilk eşitlemesi) iki kopyayı iç içe geçirir → yine tek yükleme, biri replayed (denetim işlemin içinde)
+      ---
+      duration_ms: 424.189175
+      type: 'test'
+      ...
+    # Subtest: aynı kimlik + farklı içerik (seçenek ya da eşleme değişti) → 409 request-id-reused, hiçbir şey yazılmaz, 409 ilk raporu sızdırmaz
+    ok 7 - aynı kimlik + farklı içerik (seçenek ya da eşleme değişti) → 409 request-id-reused, hiçbir şey yazılmaz, 409 ilk raporu sızdırmaz
+      ---
+      duration_ms: 93.402713
+      type: 'test'
+      ...
+    # Subtest: aynı kimlik başka içe aktarmada ayrı kapsamdır (cari yüklemesinin kimliği çek yüklemesini engellemez, sonucu sızmaz)
+    not ok 8 - aynı kimlik başka içe aktarmada ayrı kapsamdır (cari yüklemesinin kimliği çek yüklemesini engellemez, sonucu sızmaz)
+      ---
+      duration_ms: 15.63161
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:268:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı kimlikle çek yüklemesi: 409 {"ok":false,"error":"Bu yükleme penceresinden farklı içerikle (dosya, kolon eşlemesi ya da seçenek değişmiş) bir yükleme zaten kaydedildi; ikinci kez yazılmadı. Yeniden yüklemek için pencereyi kapatıp dosyayı yeniden seçin.","code":"request-id-reused"} Bu yükleme penceresinden farklı içerikle (dosya, kolon eşlemesi ya da seçenek değişmiş) bir yükleme zaten kaydedildi; ikinci kez yazılmadı. Yeniden yüklemek için pencereyi kapatıp dosyayı yeniden seçin.
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:273:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kimliksiz istek (eski istemci) bugünkü gibi işlenir: aynı dosya iki kez → no'suz / telefonsuz satırlar yeniden açılır (koruma yalnız kimlikli istemcide)
+    ok 9 - kimliksiz istek (eski istemci) bugünkü gibi işlenir: aynı dosya iki kez → no'suz / telefonsuz satırlar yeniden açılır (koruma yalnız kimlikli istemcide)
+      ---
+      duration_ms: 93.945217
+      type: 'test'
+      ...
+    # Subtest: biçimsiz kimlik → 400 request-id-invalid, yazım yok; reddedilen istek (400 'Tutar kolonunu seçin') kimlik bırakmaz, düzeltilip aynı kimlikle kaydedilir
+    ok 10 - biçimsiz kimlik → 400 request-id-invalid, yazım yok; reddedilen istek (400 'Tutar kolonunu seçin') kimlik bırakmaz, düzeltilip aynı kimlikle kaydedilir
+      ---
+      duration_ms: 36.926337
+      type: 'test'
+      ...
+    # Subtest: kayıtlar silindikten sonra aynı kimlikle yeniden gönderim yeniden açmaz (ilk rapor döner; silinen geri gelmez)
+    ok 11 - kayıtlar silindikten sonra aynı kimlikle yeniden gönderim yeniden açmaz (ilk rapor döner; silinen geri gelmez)
+      ---
+      duration_ms: 77.604402
+      type: 'test'
+      ...
+    # Subtest: başka kullanıcının aynı kimliği ayrıdır (sonuç sızmaz)
+    ok 12 - başka kullanıcının aynı kimliği ayrıdır (sonuç sızmaz)
+      ---
+      duration_ms: 122.990843
+      type: 'test'
+      ...
+    1..12
+not ok 1 - 2.4.8 I1 içe aktarma istek kimliği (tek sunucu)
+  ---
+  duration_ms: 1545.509056
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:100:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 I1 içe aktarma istek kimliği: yeniden başlatma ve şirketler
+    # Subtest: sunucu yeniden başlasa da aynı kimlik → ilk rapor, farklı içerik → 409; iki şirket ayrı (001'in kimliği 002'de yeni yükleme)
+    ok 1 - sunucu yeniden başlasa da aynı kimlik → ilk rapor, farklı içerik → 409; iki şirket ayrı (001'in kimliği 002'de yeni yükleme)
+      ---
+      duration_ms: 307.43317
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.8 I1 içe aktarma istek kimliği: yeniden başlatma ve şirketler
+  ---
+  duration_ms: 614.884445
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 I1 içe aktarma ortasında SIGKILL: satırlar, cari / yevmiye etkisi, işlem geçmişi ve kimlik kaydı ya birlikte ya hiç
+    # Subtest: çek yüklemesi (Cariye işle), üçüncü evrak yazılırken (ortada) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+    ok 1 - çek yüklemesi (Cariye işle), üçüncü evrak yazılırken (ortada) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+      ---
+      duration_ms: 943.255407
+      type: 'test'
+      ...
+    # Subtest: çek yüklemesi (Cariye işle), kimlik kaydı yazılırken (en son yazım) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+    not ok 2 - çek yüklemesi (Cariye işle), kimlik kaydı yazılırken (en son yazım) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+      ---
+      duration_ms: 10949.74024
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:435:5'
+      failureType: 'testCodeFailure'
+      error: "yükleme dondurma noktasına (request_keys: NEW.scope = 'cheque.import') ulaşmalı"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        crashDuring (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:417:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:439:37)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: cari yüklemesi (açılış bakiyeli), kimlik kaydı yazılırken kesinti → cari, açılış, yevmiye, kimlik yok; aynı kimlikle yeniden deneme bir kez işler
+    not ok 3 - cari yüklemesi (açılış bakiyeli), kimlik kaydı yazılırken kesinti → cari, açılış, yevmiye, kimlik yok; aynı kimlikle yeniden deneme bir kez işler
+      ---
+      duration_ms: 10872.024381
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:472:3'
+      failureType: 'testCodeFailure'
+      error: "yükleme dondurma noktasına (request_keys: NEW.scope = 'account.import') ulaşmalı"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        crashDuring (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:417:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:476:25)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - 2.4.8 I1 içe aktarma ortasında SIGKILL: satırlar, cari / yevmiye etkisi, işlem geçmişi ve kimlik kaydı ya birlikte ya hiç
+  ---
+  duration_ms: 22780.097228
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/i1-248-k4r9/i1-mut-taban/test/ice-aktarma-istek-kimligi-248.test.mjs:421:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 16
+# suites 3
+# pass 9
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25316.045684

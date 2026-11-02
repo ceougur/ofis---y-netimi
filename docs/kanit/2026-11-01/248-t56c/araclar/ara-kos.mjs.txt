@@ -1,0 +1,124 @@
+// T56c sürücü (T56b'den uyarlandı): 2.4.8 içi ara şema (eski commit'in GERÇEK kodu, `git archive` kopyası) → Aday 2 (v44). Ölçüm aracı; ürün koduna dokunmaz.
+//   node ara-kos.mjs <eskiCommit> <adayKök>
+// 1) eski kod uret (kendi API'si) → taban; 2) taban → once (ESKİ kod olc) ; 3) taban → sonra (ADAY açar = göç, olc); 4) beklenen + önce = sonra denetimleri.
+import { execFileSync } from "node:child_process";
+import { cpSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { DatabaseSync } from "node:sqlite";
+
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.dirname(HERE);
+const [commit, aday] = process.argv.slice(2);
+const eski = path.join(ROOT, `eski-${commit}`);
+const work = path.join(ROOT, `is-${commit}`);
+rmSync(work, { recursive: true, force: true });
+mkdirSync(work, { recursive: true });
+const env = { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", TMPDIR: path.join(ROOT, "tmp") };
+const run = (...args) => execFileSync(process.execPath, ["--no-warnings", path.join(HERE, "ara.mjs"), ...args], { env, encoding: "utf8", maxBuffer: 64 << 20 });
+const ro = (file, fn) => { const db = new DatabaseSync(file, { readOnly: true }); try { return fn(db); } finally { db.close(); } };
+const companyFile = dir => path.join(dir, "data", "destekofis.sqlite");
+const ledgerFile = dir => path.join(dir, "data", "whatsapp-gonderim.sqlite");
+const tables = file => ro(file, db => db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name").all().map(r => r.name));
+const counts = file => ro(file, db => Object.fromEntries(tables(file).map(t => [t, db.prepare(`SELECT count(*) AS n FROM "${t}"`).get().n])));
+const checks = [];
+const check = (name, ok, detail) => { checks.push({ name, ok: Boolean(ok) }); console.log(`  ${ok ? "✓" : "✗"} ${name}${ok ? "" : ` — ${JSON.stringify(detail ?? {}).slice(0, 1500)}`}`); };
+
+const base = path.join(work, "taban");
+const gen = JSON.parse(run("uret", eski, base).trim().split("\n").pop());
+console.log(`# ${commit}: üretim ${JSON.stringify(gen)}`);
+const vOld = ro(companyFile(base), db => db.prepare("PRAGMA user_version").get().user_version);
+const ledgerBefore = { tables: tables(ledgerFile(base)), counts: counts(ledgerFile(base)) };
+check(`${commit} eski kod kendi API'siyle veri üretti (şema v${vOld}; işler ${JSON.stringify(gen.states)})`, gen.ok && [40, 41, 42, 43].includes(vOld) && gen.meta.messages === 6, gen);
+
+const once = path.join(work, "once");
+const sonra = path.join(work, "sonra");
+cpSync(base, once, { recursive: true });
+cpSync(base, sonra, { recursive: true });
+run("olc", eski, once, path.join(work, "once.json"));
+run("olc", aday, sonra, path.join(work, "sonra.json"));
+const A = JSON.parse(readFileSync(path.join(work, "once.json"), "utf8"));
+const B = JSON.parse(readFileSync(path.join(work, "sonra.json"), "utf8"));
+
+// --- göç ---
+const vNew = ro(companyFile(sonra), db => db.prepare("PRAGMA user_version").get().user_version);
+const integrity = ro(companyFile(sonra), db => db.prepare("PRAGMA integrity_check").get().integrity_check);
+check(`${commit} göç v${vOld} → v${vNew} (beklenen 44), bütünlük ${integrity}`, vNew === 44 && integrity === "ok");
+const colsOf = (file, t) => ro(file, db => db.prepare(`PRAGMA table_info(${t})`).all().map(c => c.name));
+const baseCols = { wa_batches: colsOf(companyFile(base), "wa_batches"), wa_jobs: colsOf(companyFile(base), "wa_jobs") };
+const addB = colsOf(companyFile(sonra), "wa_batches").filter(c => !baseCols.wa_batches.includes(c));
+const addJ = colsOf(companyFile(sonra), "wa_jobs").filter(c => !baseCols.wa_jobs.includes(c));
+const expB = ["send_again_after", "key_day"].filter(c => !baseCols.wa_batches.includes(c));
+const expJ = ["prepared_at", "pdf_blob", "inherit_of"].filter(c => !baseCols.wa_jobs.includes(c));
+check(`${commit} eklenen sütunlar yalnız beklenenler: wa_batches +[${addB}] (beklenen [${expB}]), wa_jobs +[${addJ}] (beklenen [${expJ}])`, JSON.stringify(addB) === JSON.stringify(expB) && JSON.stringify(addJ) === JSON.stringify(expJ));
+const tb = tables(companyFile(base)), ts = tables(companyFile(sonra));
+check(`${commit} şirket dosyasında tablo farkı yok (eklenen ${ts.filter(t => !tb.includes(t))}, düşen ${tb.filter(t => !ts.includes(t))})`, ts.filter(t => !tb.includes(t)).length === 0 && tb.filter(t => !ts.includes(t)).length === 0);
+const oldRows = ro(companyFile(base), db => db.prepare("SELECT id, state FROM wa_jobs ORDER BY id").all());
+// T56c: olc artık bekleyenleri sürer → göç sonrası durum, adayın açılışında (sürmeden önce) okunur (B.openJobs).
+const migRows = B.openJobs.filter(r => oldRows.some(o => o.id === r.id));
+check(`${commit} eski iş satırları göçten sonra aynı durumda (${oldRows.length})`, JSON.stringify(oldRows) === JSON.stringify(migRows), { oldRows, migRows });
+const oldBatchCols = ro(companyFile(sonra), db => db.prepare("SELECT request_key AS rk, send_again_after AS again, key_day AS keyDay FROM wa_batches WHERE request_key LIKE '%t56b-ara-b%' ORDER BY rowid").all());
+// T56c: eski kodda sütun VARSA (v42 send_again_after, v43 key_day) değeri göçte DEĞİŞMEZ (eski kodun yazdığı kalır); yoksa göç '' ile ekler (eski davranış).
+const baseVal = (col, rk) => baseCols.wa_batches.includes(col) ? ro(companyFile(base), db => db.prepare(`SELECT ${col} AS v FROM wa_batches WHERE request_key = ?`).get(rk)?.v) : "";
+const badBatch = oldBatchCols.filter(r => r.again !== baseVal("send_again_after", r.rk) || r.keyDay !== baseVal("key_day", r.rk));
+check(`${commit} göçmüş toplu işlerde key_day / send_again_after eski koddaki değer ('' = sütun yoktu; ${oldBatchCols.length} iş; key_day eski kodda ${baseCols.wa_batches.includes("key_day") ? "VAR" : "yok"})`, oldBatchCols.length === 5 && !badBatch.length, { oldBatchCols, badBatch });
+const ledgerAfter = { tables: tables(ledgerFile(sonra)), counts: counts(ledgerFile(sonra)) };
+const ledgerAdded = ledgerAfter.tables.filter(t => !ledgerBefore.tables.includes(t));
+check(`${commit} makine defteri: eklenen tablolar [${ledgerAdded}] (learned_wamids, claim_keys, attempt_deliveries, anyway_links şirket dosyasında DEĞİL, defterde var); eski satırlar korunur (claims ${ledgerBefore.counts.claims} → ≥, accepts ${ledgerBefore.counts.accepts} → ≥)`,
+  ["learned_wamids", "claim_keys", "attempt_deliveries", "anyway_links"].every(t => ledgerAfter.tables.includes(t)) && !["learned_wamids", "claim_keys", "attempt_deliveries", "anyway_links"].some(t => ts.includes(t))
+  && Object.entries(ledgerBefore.counts).every(([t, n]) => (ledgerAfter.counts[t] ?? -1) >= n), { ledgerBefore, ledgerAfter });
+
+// --- beklenen (plan kuralları + girilen veri) ---
+const G = i => `Ara Şema G${i}`;
+const skipOf = (p, i) => p.people?.[G(i)]?.skip ?? "(yok)";
+const expectEkstre = { 0: "Daha Önce Gönderildi", 1: "Daha Önce Gönderildi", 2: "Daha Önce Gönderildi", 3: "Daha Önce Gönderildi", 4: "", 6: "", 7: "", 8: "Zaten Kuyrukta", 9: "" };
+const expectHat = { 0: "Gecikmiş Borç Yok", 1: "Gecikmiş Borç Yok", 2: "Gecikmiş Borç Yok", 3: "Gecikmiş Borç Yok", 4: "Gecikmiş Borç Yok", 5: "Gecikmiş Borç Yok", 6: "Zaten Kuyrukta", 7: "Zaten Kuyrukta", 8: "Gecikmiş Borç Yok", 9: "Daha Önce Gönderildi" };
+for (const [side, X] of [["önce (eski kod)", A], ["sonra (aday)", B]]) {
+  const e = X.previews["ekstre-buay"], h = X.previews.hatirlatma;
+  const badE = Object.entries(expectEkstre).filter(([i, s]) => skipOf(e, i) !== s).map(([i]) => `G${i}=${skipOf(e, i)}`);
+  check(`${commit} ${side} Ekstre "Bu Ay": G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta, G4/G6/G7/G9 gönderilir (G5: ${skipOf(e, 5) || "gönderilir"})`, e.status === 200 && !badE.length, { badE, skipped: e.skipped });
+  const badH = Object.entries(expectHat).filter(([i, s]) => skipOf(h, i) !== s).map(([i]) => `G${i}=${skipOf(h, i)}`);
+  check(`${commit} ${side} Ödeme Hatırlatma: G9 Daha Önce Gönderildi (bugün), G6/G7 Zaten Kuyrukta, öbürleri Gecikmiş Borç Yok`, h.status === 200 && !badH.length, { badH, skipped: h.skipped });
+  check(`${commit} ${side} Başarısızları Yeniden Dene (B1): yalnız G4 yeni iş (${JSON.stringify(X.retry.jobs)})`, X.retry.status === 200 && X.retry.jobs.length === 1 && X.retry.jobs[0].startsWith(`${G(4)}:pending`), X.retry);
+  check(`${commit} ${side} Yine de Gönder (G5 belirsiz): onaysız ${X.anyway.onaysiz}, onaylı ${X.anyway.status} → G5 yeni iş (${JSON.stringify(X.anyway.jobs)})`, X.anyway.onaysiz === 409 && X.anyway.status === 200 && X.anyway.jobs.length === 1 && X.anyway.jobs[0].startsWith(`${G(5)}:pending`), X.anyway);
+  const k = X.after["ekstre-buay-kuyrukla"];
+  check(`${commit} ${side} Yeniden Dene + Yine de Gönder kuyruktayken Ekstre "Bu Ay": G4, G5, G8 Zaten Kuyrukta`, [4, 5, 8].every(i => skipOf(k, i) === "Zaten Kuyrukta"), { G4: skipOf(k, 4), G5: skipOf(k, 5), G8: skipOf(k, 8) });
+}
+// Özel aralık 01.11–03.11 (o günün "Bu Ay"ı): adayda KULLANICI KARARI "b" (★ soru 4, 31.10.2026 ~11:10 UTC) → "Bu Ay" ile aynı dönem — göçmüş (claim_keys'siz) talepte de.
+const oz = B.previews["ekstre-ozel-1kasim-3kasim"];
+const badOz = Object.entries(expectEkstre).filter(([i, s]) => skipOf(oz, i) !== s).map(([i]) => `G${i}=${skipOf(oz, i)}`);
+check(`${commit} sonra (aday) özel aralık 01.11–03.11 = o günün "Bu Ay"ı → G0–G3 Daha Önce Gönderildi, G8 Zaten Kuyrukta (karar "b"; göçmüş defterde claim_keys satırı ${ledgerBefore.counts.claim_keys ?? "tablo yok"})`, oz.status === 200 && !badOz.length, { badOz, skipped: oz.skipped });
+
+// --- T56c: eski defter (attempt_deliveries / anyway_links yok) → Bu Ay sayısı, bekleyenler bir kez, sürüldükten sonra R3 ---
+const hadAD = ledgerBefore.tables.includes("attempt_deliveries");
+check(`${commit} eski defterde attempt_deliveries ${hadAD ? "VAR" : "yok"}, anyway_links ${ledgerBefore.tables.includes("anyway_links") ? "VAR" : "yok"} → adayda ikisi de var; attempt_deliveries satırı ${ledgerAfter.counts.attempt_deliveries} (göç dönüştürmez; olc yalnız kabul alır)`,
+  ledgerAfter.tables.includes("attempt_deliveries") && ledgerAfter.tables.includes("anyway_links") && (hadAD || ledgerAfter.counts.attempt_deliveries === 0), { before: ledgerBefore, after: ledgerAfter });
+// Beklenen (girilen veriden): teslim 1 (G0), Meta Kabul Etti 5 (G0–G3 + G9); sürülünce +5 kabul (G4 yeniden deneme, G5 Yine de Gönder, G6/G7 hatırlatma, G8 ekstre), teslim 1 kalır.
+const e164 = i => `+9055420000${10 + i}`;
+const expDrain = [4, 5, 6, 7, 8].map(e164).sort();
+check(`${commit} sonra (aday) Bu Ay: teslim ${B.stats.delivered} (beklenen 1, eski deliveries satırından), Meta Kabul Etti ${B.stats.accepted} (beklenen 5)`, B.stats.status === 200 && B.stats.delivered === 1 && B.stats.accepted === 5, B.stats);
+check(`${commit} sonra (aday) bekleyenler sürülünce yalnız G4–G8'e birer ileti (${B.drained.length}; çift 0, G0–G3/G9'a 0)`, JSON.stringify(B.drained) === JSON.stringify(expDrain), { drained: B.drained, expDrain });
+check(`${commit} sonra (aday) sürülünce Bu Ay: teslim ${B.statsAfter.delivered} (1), Meta Kabul Etti ${B.statsAfter.accepted} (10)`, B.statsAfter.status === 200 && B.statsAfter.delivered === 1 && B.statsAfter.accepted === 10, B.statsAfter);
+const ks = B.after["ekstre-buay-surulunce"];
+const expSur = { 0: "Daha Önce Gönderildi", 1: "Daha Önce Gönderildi", 2: "Daha Önce Gönderildi", 3: "Daha Önce Gönderildi", 4: "Daha Önce Gönderildi", 5: "Daha Önce Gönderildi", 6: "", 7: "", 8: "Daha Önce Gönderildi", 9: "" };
+const badSur = Object.entries(expSur).filter(([i, s]) => skipOf(ks, i) !== s).map(([i]) => `G${i}=${skipOf(ks, i)}`);
+check(`${commit} sonra (aday) sürüldükten sonra Ekstre "Bu Ay": G0–G5, G8 Daha Önce Gönderildi (G5: Yine de Gönder kabul edildi → İş Q2 kararı A), G6/G7/G9 gönderilir`, !badSur.length, { badSur, skipped: ks?.skipped });
+check(`${commit} önce = sonra: sürülen alıcılar (eski kod ${A.drained?.length})`, JSON.stringify(A.drained) === JSON.stringify(B.drained), { once: A.drained, sonra: B.drained });
+console.log(`# ${commit} bilgi: Bu Ay önce (eski kod) ${JSON.stringify(A.stats)} → sürülünce ${JSON.stringify(A.statsAfter)}; sonra (aday) ${JSON.stringify(B.stats)} → ${JSON.stringify(B.statsAfter)}`);
+console.log(`# ${commit} bilgi: sürüldükten sonra ekstre eski kodda ${JSON.stringify(A.after["ekstre-buay-surulunce"]?.skipped)} / adayda ${JSON.stringify(ks?.skipped)}`);
+
+// --- önce = sonra (aynı veri; kural değişikliği varsa adıyla yazılır) ---
+const norm = X => ({ ekstre: X.previews["ekstre-buay"].people, hat: X.previews.hatirlatma.people, retry: X.retry.jobs, anyway: X.anyway.jobs, kuyruk: X.after["ekstre-buay-kuyrukla"].people, durum: X.batchStates });
+const na = norm(A), nb = norm(B);
+for (const key of Object.keys(na)) {
+  const same = JSON.stringify(na[key]) === JSON.stringify(nb[key]);
+  const diff = same ? null : Object.keys({ ...na[key], ...nb[key] }).filter(k => JSON.stringify(na[key]?.[k]) !== JSON.stringify(nb[key]?.[k])).map(k => ({ k, once: na[key]?.[k], sonra: nb[key]?.[k] }));
+  check(`${commit} önce = sonra: ${key}`, same, diff);
+}
+const ozA = A.previews["ekstre-ozel-1kasim-3kasim"];
+console.log(`# ${commit} bilgi: özel aralık 01.11–03.11 eski kodda ${JSON.stringify(ozA.skipped)} / adayda ${JSON.stringify(oz.skipped)} (eşlik kararı "b" 82e4e07e ile geldi; v42'den önceki kodda yok)`);
+console.log(`# ${commit} bilgi: yeni işlerin key_day / send_again_after (aday): ${JSON.stringify(B.newCols.filter(r => !/t56b-ara-b/.test(r.rk || "")))}`);
+const fail = checks.filter(c => !c.ok).length;
+console.log(`# tests ${checks.length}\n# pass ${checks.length - fail}\n# fail ${fail}\n# cancelled 0\n# skipped 0\n# todo 0`);
+if (!process.env.T56C_SAKLA) rmSync(work, { recursive: true, force: true });
+process.exitCode = fail ? 1 : 0;

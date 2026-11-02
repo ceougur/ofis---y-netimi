@@ -1,0 +1,23 @@
+(node:28910) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+D01: 37 olay, 2 sn
+L06: 13 olay, 1 sn
+TAP version 13
+not ok 1 - D01 (29/37; 8 fark)
+  # BULGU {"no":8,"olay":"mobil_cihazlar_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":7,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":9,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":39,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":40,"olay":"istek","program":"ret:yazma_yasak","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":12,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # İNCELE {"no":15,"olay":"istek","program":"ret:yazma_yasak","kahin":["ret:salt_okunur"],"ipucu":[]}
+  # BULGU {"no":24,"olay":"mobil_cihazlar_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+not ok 2 - L06 (11/13; 2 fark)
+  # BULGU {"no":5,"olay":"mobil_cihazlar_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":8,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+# birlesim kod_sure=5;yeni_kod_eskiyi=iptal_eder;sinir_dolunca=reddet;uretimde_sinir=denetler;sinir_dusunce=mevcutlar_kalir;cihaz_kullanici=yalniz_eslenen;oturum_bosta=15;oturum_mutlak=12;lisans_onbellek=1;ozet_yas_siniri=yok;deneme_siniri=5;deneme_anahtari=kullanici;kilit_dk=15;otuz_gun=sure;hosgoruda_esleme=reddet;erken_yenileme=esleme_doner;kapanis_iletisi=kapicidan
+# olay eşleşen 40/50 (programda üretilebilen 40/50) · BULGU 9 · İNCELE 1 · M3_KAPICI 0 · DENENMEYEN 0
+# çıktı /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/l1kahin-d01
+# tests 2
+# pass 0
+# fail 2

@@ -128,7 +128,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   // ---------- Bağımsız model ----------
   // deleted: Silinenler'deki cari hareketleri (Yargıç K2: geri yükleme K7'den ve dönem kilidinden geçer).
   const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [], deleted: [], payments: [], posLines: [], posSales: [] };
-  const report = { seed, operations: 0, byKind: {}, rejectedAsExpected: 0, rejections: {}, mismatches: [], checks: 0, reportChecks: 0, integrityMs: [], timeline: { from: D0, to: T }, locks: [] };
+  const report = { seed, operations: 0, byKind: {}, rejectedAsExpected: 0, rejections: {}, mismatches: [], checks: 0, reportChecks: 0, integrityMs: [], timeline: { from: D0, to: T }, locks: [], yilDonumu: { kronolojiOncekiYilRet: 0, kronolojiOncekiYilKabul: 0 } };
   const count = kind => (report.byKind[kind] = (report.byKind[kind] || 0) + 1);
   const accounts = [];
   const items = [];
@@ -676,7 +676,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const INFLOW = new Set(["sale", "smm", "purchase_return"]);
   const PARTY_SIGN = { sale: 1, smm: 1, purchase_return: 1, purchase: -1, sale_return: -1 };
   const counters = { purchase: 0, serial: 0, ret: 0 };
-  const lastSeries = { paper: "", smm: "", internal: "" };
+  // Sıra-tarih kuralı (kronoloji) seri + YIL içindedir: numara her yıl 1'den başlar ve program son belgeyi aynı serinin aynı yılında arar
+  // (önceden yazılı kural docs/FATURA-QA-RAPORU.md N5 "Geçen yıl: kesilir (ayrı yıl serisi) — kronoloji yıl içinde"; program lastIssued
+  // `WHERE series = ? AND year = ?`, yıl = belge tarihinin yılı). 2.4.8 MZ: anahtar önceden yalnız seriydi — zaman çizelgesi 1 Ocak'ı kesince
+  // motor geçen yıl tarihli belgeye yanlış "chronology" bekliyordu (ürün doğru; test/mutabakat-yil-donumu.test.mjs).
+  const lastSeries = new Map(); // "seri|yıl" → o yılın serisindeki en geç belge tarihi
+  const seriesKey = (series, day) => `${series}|${day.slice(0, 4)}`;
+  const lastOf = (series, day) => lastSeries.get(seriesKey(series, day)) || "";
+  const latestOf = series => [...lastSeries].filter(([key]) => key.split("|")[0] === series).reduce((max, [, date]) => (date > max ? date : max), "");
   const seriesOf = (kind, numbered) => (kind === "smm" ? "smm" : kind === "sale_return" ? (numbered ? "" : "internal") : kind === "purchase" ? "" : "paper");
   const issuedInvoices = (filter = () => true) => [...M.invoices.values()].filter(x => x.status === "issued" && filter(x));
   const linePayload = l => ({ itemId: l.itemId || "", name: l.name, qty: l.qty / 1000, unitPrice: l.price4 / 10000, discountRate: l.disc, vatRate: l.vat, withholdingCode: l.whCode || "", expenseCode: l.expenseCode || "" });
@@ -768,7 +775,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   // (kalem sırası), Kasa eksiye (çıkışlar). null: kabul edilmeli.
   function invoiceRejection({ kind, day, lines, pay, force, cashForce, number, accountId, series, bankBlocked = false }) {
     if (!open(day)) return ["period-locked"];
-    if (series && lastSeries[series] && lastSeries[series] > day) return ["chronology"];
+    if (series && lastOf(series, day) > day) return ["chronology"];
     if (number && issuedInvoices(x => x.kind === kind && x.accountId === accountId && x.number === number).length) return ["invoice-duplicate"];
     if (["sale", "purchase_return"].includes(kind) && !force) {
       const need = new Map();
@@ -847,7 +854,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       // Modelin kestiği kartı program kesmemiş olabilir → o kartta program değeri model + bu kesinti kadar yukarıda olabilir (over).
       for (const [pl, cut] of inv.coverCuts) pl.over = (pl.over || 0) + cut;
     }
-    if (series) lastSeries[series] = day > lastSeries[series] ? day : lastSeries[series];
+    if (series && day > lastOf(series, day)) lastSeries.set(seriesKey(series, day), day);
     M.invoices.set(inv.id, inv);
     if (kind === "sale_return" && originalId) syncOwn(M.plans.get(M.invoices.get(originalId)?.planId));
     return inv;
@@ -1874,9 +1881,17 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
           return post({ kind: "purchase", accountId: twin.accountId, number: twin.number, lines: purchaseLines(1).map(linePayload), payment: { rest: "open" } }, ["invoice-duplicate"]);
         }
         if (which === "kronoloji") {
-          if (!lastSeries.paper) return;
-          const d = addDays(lastSeries.paper, -R.int(1, 10));
+          const latest = latestOf("paper");
+          if (!latest) return;
+          const d = addDays(latest, -R.int(1, 10));
           if (!open(d) || d < D0) return;
+          // d geçen yıla düştüyse program o yılın serisine bakar (N5): orada d'den geç belge varsa yine "chronology"; yoksa belge DOĞRU olarak
+          // geçen yılın serisinden kesilir — saha hatası değildir, denenmez (2.4.8 MZ; ürün tarafı test/fatura-244-numara-tarih-onay.test.mjs "3 yıl
+          // dönümü"). Sayaçlar yıl dönümü testinin ön koşul kanıtıdır (ders 20).
+          if (d.slice(0, 4) !== latest.slice(0, 4)) {
+            if (!(lastOf("paper", d) > d)) return void (report.yilDonumu.kronolojiOncekiYilKabul += 1);
+            report.yilDonumu.kronolojiOncekiYilRet += 1;
+          }
           return post({ issueDate: d }, ["chronology"]);
         }
         if (which === "iptal-iki-kez") {
@@ -2099,7 +2114,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (room <= 0) return;
         // %20: borç bakiyesini (− zaten şüphelideki) aşan tutar → 400 doubtful-exceeds-balance; hiçbir şey yazılmaz.
         const over = R.chance(0.2);
-        const amount = over ? room + moneyCents(1, 100) : R.chance(0.5) ? room : moneyCents(1, Math.max(1, Math.floor(room / 100)));
+        // 2.4.8 (MZ yan bulgu): moneyCents(1, b) en çok b·100 + 99 kuruş verir → kalan < 1 TL (ya da kuruş kısmı küçük) iken tutar kalanı aşıyordu;
+        // program doğru reddediyordu, motor başarı bekliyordu (tohum 12, işlem 1130). Kırpma rastgele çekimleri DEĞİŞTİRMEZ (moneyCents yine çağrılır).
+        const amount = over ? room + moneyCents(1, 100) : R.chance(0.5) ? room : Math.min(room, moneyCents(1, Math.max(1, Math.floor(room / 100))));
         const reason = R.pick(["lawsuit", "enforcement", "other"]);
         const r = await api("POST", `/api/workspace/accounts/${c.id}/doubtful`, { amount: tl(amount), date: day, reason, note: `Şüpheli ${reason}` });
         if (!open(day)) return expectReject(r, "period-locked", kind);
@@ -2117,7 +2134,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const s = dm.records.get(rec.id);
         const room = s.remaining - s.provision;
         const over = R.chance(0.2) || room <= 0;
-        const amount = over ? room + moneyCents(1, 100) : R.chance(0.5) ? room : moneyCents(1, Math.max(1, Math.floor(room / 100)));
+        // 2.4.8 (MZ yan bulgu): moneyCents(1, b) en çok b·100 + 99 kuruş verir → kalan < 1 TL (ya da kuruş kısmı küçük) iken tutar kalanı aşıyordu;
+        // program doğru reddediyordu, motor başarı bekliyordu (tohum 12, işlem 1130). Kırpma rastgele çekimleri DEĞİŞTİRMEZ (moneyCents yine çağrılır).
+        const amount = over ? room + moneyCents(1, 100) : R.chance(0.5) ? room : Math.min(room, moneyCents(1, Math.max(1, Math.floor(room / 100))));
         const r = await api("POST", `/api/workspace/accounts/${rec.party}/doubtful/${rec.id}/provision`, { amount: tl(amount), date: day, note: "Karşılık" });
         if (!open(day)) return expectReject(r, "period-locked", kind);
         if (over) return expectReject(r, "doubtful-provision-exceeds", `${kind}/aşım`);

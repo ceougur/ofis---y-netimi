@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: 2.4.8 — kapıcı 'kapi-lisans' dönerken program kaydı her turda yinelemez (Cloudflare günlük istek kotası)
+    # Subtest: 1 saatlik pencerede tek kayıt isteği; pencere bitince bir kez daha; belirteç değişince ve zorla hemen
+    not ok 1 - 1 saatlik pencerede tek kayıt isteği; pencere bitince bir kez daha; belirteç değişince ve zorla hemen
+      ---
+      duration_ms: 1472.040779
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-yineleme-eski-009674a1-q8r2/test/mobil-kapi-lisans-yineleme-248.test.mjs:70:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        1 saatte kapıcıya giden kayıt isteği: 120 (beklenen 1; her tur yineleniyorsa ~120 → günde ~2.880 Worker isteği)
+        
+        120 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 120
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-yineleme-eski-009674a1-q8r2/test/mobil-kapi-lisans-yineleme-248.test.mjs:89:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.4.8 — kapıcı 'kapi-lisans' dönerken program kaydı her turda yinelemez (Cloudflare günlük istek kotası)
+  ---
+  duration_ms: 1473.736388
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kapi-yineleme-eski-009674a1-q8r2/test/mobil-kapi-lisans-yineleme-248.test.mjs:69:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1896.051311

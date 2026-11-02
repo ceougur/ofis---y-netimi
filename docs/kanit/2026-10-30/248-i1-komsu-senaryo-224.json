@@ -1,0 +1,32 @@
+{
+  "ad": "248-i1-komsu-senaryo-224",
+  "komut": "npm run test:senaryo-224",
+  "commit": "4bca574c2865059c45ca4570efa261a1f9ffe5f1",
+  "dal": "is/ithal-248",
+  "kirli": 10,
+  "izlenmeyen": 32,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T18:06:11.517Z",
+  "sure_sn": 80.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 69,
+    "gecen": 69,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-i1-komsu-senaryo-224.log",
+  "klasor": "/home/user/wt-ithal-248",
+  "ham_cikti_sha256": "ae281c04ab7e16ddb915dc48e87196f28059037c71fabba3cc302489cddff076",
+  "ham_cikti_bayt": 6763
+}

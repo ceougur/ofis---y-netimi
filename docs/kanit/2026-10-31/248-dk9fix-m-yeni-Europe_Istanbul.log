@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: 2.4.8 İş M — taşınan veride geç teslim bildirimi yeni bilgisayarda yazılır (K7-05)
+    # Subtest: 11:30 imzasız 'delivered' (A'nın 1. denemesi) → 200, A Teslim Edildi, Bu Ay 1; 12:00 yeni gönderimde A 'Daha Önce Gönderildi'; 002'nin işi değişmez
+    ok 1 - 11:30 imzasız 'delivered' (A'nın 1. denemesi) → 200, A Teslim Edildi, Bu Ay 1; 12:00 yeni gönderimde A 'Daha Önce Gönderildi'; 002'nin işi değişmez
+      ---
+      duration_ms: 1113.995216
+      type: 'test'
+      ...
+    # Subtest: iki şirket: 002'nin wamid'iyle gelen bildirim yalnız 002'ye yazılır (001'in işi değişmez); bilinmeyen wamid hiçbir şeye yazılmaz
+    ok 2 - iki şirket: 002'nin wamid'iyle gelen bildirim yalnız 002'ye yazılır (001'in işi değişmez); bilinmeyen wamid hiçbir şeye yazılmaz
+      ---
+      duration_ms: 968.646359
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.4.8 İş M — taşınan veride geç teslim bildirimi yeni bilgisayarda yazılır (K7-05)
+  ---
+  duration_ms: 2083.936397
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2453.467191

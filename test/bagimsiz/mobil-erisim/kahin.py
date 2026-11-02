@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""DestekOfis 2.4.7 — mobil uzaktan erişim (M2 + M3/M4 erişim denetimi) temiz oda kâhini.
+"""DestekOfis 2.4.7 — mobil uzaktan erişim (M2 + M3/M4 erişim denetimi) temiz oda kâhini; 2.4.8 L1 (lisans hoşgörüsü,
+uyarılar, kapıcı kaydının silinmesi) eklendi.
 
 Programın kodu GÖRÜLMEDEN, yalnız karar metninden yazıldı (CLAUDE.md ders 5, KANIT KURALI 2). Kurallar ve
 varsayımlar README.md'de (K…, V…); metnin sustuğu her nokta PARAMETRE'dir (P…), karar kullanıcıdadır (ders 40, 43).
@@ -38,7 +39,13 @@ PARAMETRELER = {
     "deneme_siniri": {"degerler": [5, 10], "oneri": 5},                               # P11 ardışık yanlış parola
     "deneme_anahtari": {"degerler": ["kullanici", "cihaz"], "oneri": "kullanici"},    # P12
     "kilit_dk": {"degerler": [15, 30], "oneri": 15},                                  # P13
+    # 2.4.8 L1 (KARAR L1 30.10.2026 + CLAUDE.md 29.10 "ESKİ: KARAR → 2.4.7"); metnin sustuğu yerler:
+    "otuz_gun": {"degerler": ["sure", "gun_sonu", "gun_sonu_dahil"], "oneri": "sure"},             # P14 "30 gün" sayımı
+    "hosgoruda_esleme": {"degerler": ["reddet", "kabul"], "oneri": "reddet"},                      # P15
+    "erken_yenileme": {"degerler": ["esleme_doner", "yeniden_esleme"], "oneri": "esleme_doner"},   # P16
+    "kapanis_iletisi": {"degerler": ["kapicidan", "uygulamada"], "oneri": "kapicidan"},            # P17
 }
+OTUZ_YONTEM = PARAMETRELER["otuz_gun"]["degerler"]
 PARAM_SIRASI = list(PARAMETRELER)
 
 OZET_BOLUMLERI = ("anlik_durum", "cari", "kasa", "stok", "taksit")  # PRO-UZAKTAN-GORUNTULEME.md "Mimari" 1
@@ -48,8 +55,48 @@ RET_SINIFLARI = (
     "cihaz_yok", "sinir_asimi", "lisans_gecersiz", "lisans_dogrulanamadi", "yol_yasak", "sunucu_kapali",
     "oturum_gecersiz", "yetki_yok", "sirket_yok", "yazma_yasak", "ozet_yok", "ozet_eski", "kod_gecersiz",
     "sinir_dolu", "uzaktan_izni_yok", "parola_yanlis", "deneme_siniri", "cihaz_baska_kullanici",
+    "salt_okunur",  # 2.4.8 L1: lisans bitti, salt okunur (yazma kapalı)
 )
 KABUL = "kabul"
+
+# 2.4.8 L1 uyarı metinleri — karar metninden BİREBİR (CLAUDE.md 29.10 "UYARI: …"; 2.4.7 iletisi aynı maddeden).
+YOK = "(yok)"            # uyarı yok
+HER = "(herhangi)"       # denetlenmez
+U0_ONEK = "Lisans geçerli değil; uzaktan erişim kapalı"  # 2.4.7 iletisi (metinde "…" ile; önek olarak aranır)
+U3 = "Mobil kullanım hakkınız sona erdi; lisansınızı yenileyin"
+
+
+def U1(x):
+    return f"lisans {x} gün sonra bitiyor"
+
+
+def U2(n):
+    return f"Lisansınız bitti; mobil kullanım hakkınız {n} gün sonra sona erecek"
+
+
+def _norm(m):
+    return " ".join(str(m).split()).rstrip(".…").strip()
+
+
+def uyari_uyar(gozlenen, kume):
+    """Programın gösterdiği uyarı (yoksa None) kâhinin kabul kümesinde mi? Metin aynen geçmeli; yalnız ilk harfin
+    büyük/küçüğü ve sondaki nokta serbest. U0 önektir (metinde '…')."""
+    if HER in kume:
+        return True
+    if gozlenen is None or _norm(gozlenen) == "":
+        return YOK in kume
+    g = _norm(gozlenen)
+    for k in kume:
+        if k in (YOK, HER):
+            continue
+        if k == U0_ONEK:
+            if g.startswith(k):
+                return True
+            continue
+        for aday in (k, k[:1].swapcase() + k[1:], ("L" + k[1:]) if k[:1] == "l" else k):
+            if aday in g:
+                return True
+    return False
 
 
 def oneri_birlesimi():
@@ -159,7 +206,8 @@ EKSI_SONSUZ = -(10 ** 12)
 
 
 def lisans_kaydi(ham, eski=None):
-    kayit = dict(eski) if eski else {"durum": "gecerli", "bitis": None, "cihaz_siniri": 3, "plan": "standart"}
+    kayit = dict(eski) if eski else {"durum": "gecerli", "bitis": None, "cihaz_siniri": 3, "plan": "standart",
+                                     "engel_t": None}
     for k, v in (ham or {}).items():
         if k == "durum":
             if v not in ("gecerli", "engelli"):
@@ -171,6 +219,8 @@ def lisans_kaydi(ham, eski=None):
             if v not in ("standart", "pro", "deneme"):
                 raise GirdiHatasi(f"lisans planı: {v!r}")
             kayit["plan"] = v  # K8: mobil herkese, Pro kilidi yok → plan sonucu değiştirmez
+        elif k == "engel_t":
+            raise GirdiHatasi("engel_t girdi değildir (lisans_degis anından türetilir)")
         elif k == "cihaz_siniri":
             if not isinstance(v, int) or isinstance(v, bool) or v < 0:
                 raise GirdiHatasi(f"cihaz_siniri: {v!r}")
@@ -180,16 +230,75 @@ def lisans_kaydi(ham, eski=None):
     return kayit
 
 
-def lisans_gecerli(kayit, t, mut=None):
-    if mut == "M18":
-        return kayit["durum"] == "gecerli"
-    if mut == "M19":
-        return kayit["bitis"] is None or t < kayit["bitis"]
+GUN_SN = 86400
+
+
+def tr_gun(sn):
+    return datetime.fromtimestamp(sn, TR).date()
+
+
+def tr_gece(gun):
+    return int(datetime(gun.year, gun.month, gun.day, tzinfo=TR).timestamp())
+
+
+def otuz_gun_sonu(bas, yontem, mut=None):
+    """P14: "30 gün" nerede biter. sure = bas + 30×24 saat ("toplam 30 gün"); gun_sonu = bas'ın İstanbul günü sayılmaz,
+    30. günün sonu (gün + 31, 00:00); gun_sonu_dahil = bas'ın günü 1. gün (gün + 30, 00:00)."""
+    if yontem == "sure":
+        son = bas + 30 * GUN_SN
+    else:
+        son = tr_gece(tr_gun(bas) + timedelta(days=31 if yontem == "gun_sonu" else 30))
+    if mut == "M62":
+        son += GUN_SN
+    if mut == "M73":
+        son -= GUN_SN
+    return son
+
+
+def gun_sayilari(hedef, t):
+    """Uyarıdaki gün sayısı (V22): aşağı yuvarlama, yukarı yuvarlama, İstanbul takvim günü farkı — hepsi kabul."""
+    fark = hedef - t
+    return sorted({fark // GUN_SN, -((-fark) // GUN_SN), (tr_gun(hedef) - tr_gun(t)).days})
+
+
+def _durum_tek(kayit, t, yontem, mut=None):
+    """Mobilin lisans durumu (KARAR L1): ("tam", bitis) | ("hosgoru", kapanis) | ("kapali", neden)."""
     if mut == "M57" and kayit.get("plan") != "pro":
-        return False
-    if mut == "M51":
-        return kayit["durum"] == "gecerli" and (kayit["bitis"] is None or t <= kayit["bitis"])
-    return kayit["durum"] == "gecerli" and (kayit["bitis"] is None or t < kayit["bitis"])
+        return ("kapali", "pro")
+    engelli = kayit["durum"] == "engelli" and mut != "M18"
+    B = kayit["bitis"]
+    if mut == "M19" or B is None:
+        bitti = False
+    else:
+        bitti = t > B if mut == "M51" else t >= B
+    ucretli = kayit["plan"] != "deneme" or mut == "M59"
+    if engelli:
+        if mut == "M60" and kayit.get("engel_t") is not None:
+            son = otuz_gun_sonu(kayit["engel_t"], yontem, mut)
+            if t < son:
+                return ("hosgoru", son)
+        return ("kapali", "engelli")
+    if not bitti:
+        return ("tam", B)
+    if not ucretli or mut == "M58":
+        return ("kapali", "deneme")
+    son = otuz_gun_sonu(B, yontem, mut)
+    if t < son:
+        return ("hosgoru", son)
+    return ("kapali", "ucretli")
+
+
+def mobil_durum(kayit, t, P, mut=None):
+    """P14 yalnız sonucu değiştiriyorsa okunur (karar ağacı küçük kalır)."""
+    s = [_durum_tek(kayit, t, y, mut) for y in OTUZ_YONTEM]
+    if all(x == s[0] for x in s):
+        return s[0]
+    return _durum_tek(kayit, t, P["otuz_gun"], mut)
+
+
+def lisans_gecerli(kayit, t, mut=None):
+    """Masaüstü (program) için lisans geçerli mi: yalnız "tam" (hoşgörü masaüstünde salt okunurdur)."""
+    return _durum_tek(kayit, t, "sure", mut)[0] == "tam"
 
 
 class Baglam:
@@ -198,7 +307,10 @@ class Baglam:
         self.lisans = {}       # ofis -> [(t, kayit)]  (kayıt t'den itibaren geçerli)
         self.program_denetim = {}
         for ofis, o in baslangic["ofisler"].items():
-            self.lisans[ofis] = [(EKSI_SONSUZ, lisans_kaydi(o.get("lisans")))]
+            ilk = lisans_kaydi(o.get("lisans"))
+            if ilk["durum"] == "engelli":
+                raise GirdiHatasi(f"{ofis}: başlangıçta engelli lisans verilmez (engel anı bilinmez; V32)")
+            self.lisans[ofis] = [(EKSI_SONSUZ, ilk)]
             self.program_denetim[ofis] = EKSI_SONSUZ
         erisim = baslangic.get("lisans_servisi", "var")
         if erisim not in ("var", "yok"):
@@ -225,12 +337,12 @@ class Baglam:
         """Kapıcının t anında kullanabileceği lisans kayıtları (V9): önbellek en çok TTL eski; tazeleme yalnız servis
         erişilebilirken. Servis şu an erişilemezse 'doğrulanamadı' da olasıdır; penceresinde hiç erişim yoksa yalnız o.
         P9 yalnız sonucu değiştiriyorsa okunur (karar ağacı küçük kalır)."""
-        secenek = [self._kapici(ofis, t, s) for s in PARAMETRELER["lisans_onbellek"]["degerler"]]
+        secenek = [self._kapici(ofis, t, s, P) for s in PARAMETRELER["lisans_onbellek"]["degerler"]]
         if all(x == secenek[0] for x in secenek):
             return secenek[0]
-        return self._kapici(ofis, t, P["lisans_onbellek"])
+        return self._kapici(ofis, t, P["lisans_onbellek"], P)
 
-    def _kapici(self, ofis, t, ttl_saat):
+    def _kapici(self, ofis, t, ttl_saat, P):
         ttl = ttl_saat * 3600
         lo, hi = t - ttl + 1, t
         if self.mut == "M17":
@@ -243,12 +355,47 @@ class Baglam:
                         adaylar.append(kayit)
         if self.mut == "M20" and adaylar:
             adaylar = [adaylar[0]]  # en eski kayda takılır
-        sonuc = [("ok" if lisans_gecerli(k, t, self.mut) else "ret:lisans_gecersiz", k) for k in adaylar]
+        sonuc = []
+        for k in adaylar:
+            d = mobil_durum(k, t, P, self.mut)[0]
+            sonuc.append(({"tam": "ok", "hosgoru": "hosgoru"}.get(d, "ret:lisans_gecersiz"), k))
         if (not self.erisilebilir(t) or not sonuc) and self.mut != "M21":
             sonuc.append(("ret:lisans_dogrulanamadi", None))
         if not sonuc:  # M21: erişim yoksa da kabul ("fail-open")
             sonuc.append(("ok", self.lisans[ofis][-1][1]))
         return sonuc
+
+    def pencere_kayitlari(self, ofis, t):
+        """Kapıcının t anında bilebileceği bütün kayıtlar (en uzun önbellek penceresi; servis erişimine bakılmaz —
+        silme kararında belirsizlik 'belki' olur, V27)."""
+        ttl = max(PARAMETRELER["lisans_onbellek"]["degerler"]) * 3600
+        lo = t - ttl + 1
+        sonuc = []
+        for a, b, kayit in self._dilimler(self.lisans[ofis]):
+            if max(a, lo) <= min(b, t) and kayit not in sonuc:
+                sonuc.append(kayit)
+        return sonuc
+
+    def kayit_basi(self, ofis, kayit, t):
+        """Kapıcının gördüğü kaydın t'ye kadarki en son başlangıç anı (yenileme anı)."""
+        bas = None
+        for a, _, k in self._dilimler(self.lisans[ofis]):
+            if a <= t and k == kayit:
+                bas = a
+        return EKSI_SONSUZ if bas is None else bas
+
+    def kapanma_oldu(self, ofis, t0, t1, mut=None):
+        """Gerçek lisans tarihçesinde [t0, t1] içinde mobil KAPALI an (engel ya da deneme bitişi) oldu mu (P16)."""
+        for a, b, kayit in self._dilimler(self.lisans[ofis]):
+            lo, hi = max(a, t0), min(b, t1)
+            if lo > hi:
+                continue
+            if kayit["durum"] == "engelli" and mut != "M18":
+                return True
+            B = kayit["bitis"]
+            if B is not None and (kayit["plan"] == "deneme" or mut == "M58") and max(lo, B) <= hi and mut != "M59":
+                return True
+        return False
 
     def program_adaylari(self, ofis, t):
         """Programın kendi lisans görünümü: son elle denetimden (Lisansı Şimdi Denetle) bu yana herhangi bir kayıt."""
@@ -303,6 +450,9 @@ def yeni_dunya(baslangic):
             "sirketler": sorted(sirketler), "kullanicilar": kullanicilar, "sunucu": sunucu,
             "kodlar": {}, "cihazlar": {}, "oturumlar": {}, "deneme": {}, "ozet": [YOK_ZAMAN],
             "ozet_gorunum": None,
+            # 2.4.8 L1: kapıcı kaydı silindi mi; programın listesinde gecikmeli görünebilecek silinmiş cihaz sayısı (V28);
+            # lisans yüzünden silinen cihazlar (kapanış iletisi için)
+            "silindi": False, "bayat": 0, "l1_silinen": [],
         }
     return d
 
@@ -352,7 +502,9 @@ def aktif_cihazlar(ofis_d):
 # ---------------------------------------------------------------------------------------------------------------
 OLAY_SINIFI = {
     "lisans_degis": 0, "lisans_servisi": 0, "program_lisans_denetle": 0, "sunucu": 0, "bekle": 0,
-    "kullanici_degis": 1, "cihaz_sil": 1, "karekod_uret": 1, "ozet_yukle": 1,
+    "kapici_temizlik": 0,
+    "kullanici_degis": 1, "cihaz_sil": 1, "karekod_uret": 1, "ozet_yukle": 1, "mobil_cihazlar_oku": 1,
+    "masaustu_yazma": 1,
     "esle": 2, "kapici_dogrudan_kayit": 2,
     "giris": 3,
     "istek": 4, "ozet_oku": 4, "ozet_yaz": 4,
@@ -373,6 +525,9 @@ OLAY_ALANLARI = {
     "istek": {"ofis", "cihaz", "yol", "oturum", "sirket", "yetki", "yazma", "gorunen_adres", "basliklar"},
     "ozet_oku": {"ofis", "cihaz"},
     "ozet_yaz": {"ofis", "cihaz"},
+    "kapici_temizlik": set(),
+    "mobil_cihazlar_oku": {"ofis", "yapan"},
+    "masaustu_yazma": {"ofis", "yapan"},
 }
 ORTAK_ALANLAR = {"no", "t", "olay", "grup", "not"}
 ZORUNLU = {
@@ -382,6 +537,7 @@ ZORUNLU = {
     "ozet_yukle": {"ofis"}, "esle": {"ofis", "kod", "cihaz"}, "kapici_dogrudan_kayit": {"ofis", "cihaz", "kullanici"},
     "giris": {"ofis", "cihaz", "kullanici", "parola", "oturum"}, "istek": {"ofis", "cihaz", "yol"},
     "ozet_oku": {"ofis", "cihaz"}, "ozet_yaz": {"ofis", "cihaz"},
+    "kapici_temizlik": set(), "mobil_cihazlar_oku": {"ofis", "yapan"}, "masaustu_yazma": {"ofis", "yapan"},
 }
 
 
@@ -484,35 +640,111 @@ class Model:
 
     def yeniden_uret(self, od, t, kapici):
         """Cihaz/yetki değişince özet yeniden yazılır (Eylül: anahtar yenilenir); veri anı yenilenebilir de (V12)."""
-        if any(v == "ok" for v, _ in kapici):
+        if any(v in ("ok", "hosgoru") for v, _ in kapici):
             od["ozet"] = sorted(set(od["ozet"]) | {t})
 
     def kapici_girisi(self, w, e, t, lisans_atla=False, cihaz_atla=False):
-        """Kapıcı: cihaz → lisans → sınır aşımı (K14, K15, P5). Dönen: [(ret, None) | ("gec", kayit)]."""
+        """Kapıcı: cihaz → lisans → sınır aşımı (K14, K15, P5). Dönen: [(ret|"gec"|"gec_hosgoru", kayit, dusur)].
+        dusur: P16 'yeniden_esleme'de kapanıştan önce eşlenmiş cihaz, lisans yeniden geçerli görününce düşer."""
         od = w[e["ofis"]]
         c = od["cihazlar"].get(e["cihaz"])
         if not cihaz_atla and (c is None or (not c["aktif"] and not self.m("M10"))):
-            return [("ret:cihaz_yok", None)]
+            return [("ret:cihaz_yok", None, False)]
         if lisans_atla:
             adaylar = [("ok", self.ctx.gercek_son(e["ofis"]))]
         else:
             adaylar = self.ctx.kapici_adaylari(e["ofis"], t, self.P)
         sonuc = []
         for v, kayit in adaylar:
-            if v != "ok":
-                r = (v, None)
+            if v not in ("ok", "hosgoru"):
+                r = (v, kayit, False)
+            elif c is not None and c["aktif"] and \
+                    self.ctx.kapanma_oldu(e["ofis"], c["t"], self.ctx.kayit_basi(e["ofis"], kayit, t) - 1, self.mut) \
+                    and self._erken_yenileme() == "yeniden_esleme":
+                r = ("ret:cihaz_yok", None, True)
             else:
-                r = ("gec", kayit)
+                r = ("gec" if v == "ok" else "gec_hosgoru", kayit, False)
+            if r[0] in ("gec", "gec_hosgoru"):
                 aktif = aktif_cihazlar(od)
                 if c is not None and c["aktif"] and len(aktif) > kayit["cihaz_siniri"]:
                     durur = self.P["sinir_dusunce"] == "en_yeniler_durur"
                     if self.m("M42"):
                         durur = not durur
                     if durur and aktif.index(e["cihaz"]) >= kayit["cihaz_siniri"]:
-                        r = ("ret:sinir_asimi", None)
+                        r = ("ret:sinir_asimi", None, False)
             if r not in sonuc:
                 sonuc.append(r)
         return sonuc
+
+    def _erken_yenileme(self):
+        v = self.P["erken_yenileme"]
+        if self.m("M70"):
+            v = "yeniden_esleme" if v == "esleme_doner" else "esleme_doner"
+        return v
+
+    def _hosgoruda_esleme(self):
+        v = self.P["hosgoruda_esleme"]
+        if self.m("M69"):
+            v = "kabul" if v == "reddet" else "reddet"
+        return v
+
+    # ---------------------------------------------------------------- 2.4.8 L1 uyarıları
+    def uyari_kabul(self, kayit, t, yer):
+        """Kabul edilen istekte gösterilebilecek uyarılar. yer: giris (telefon girişi; zorunlu yer, V24), diger (özet,
+        canlı istek: ikisi de olur), masaustu (Yönetim → Mobil Cihazlar; 7 gün notu zorunlu, öbürleri ikisi de olur)."""
+        if kayit is None:
+            return {HER}
+        durum = mobil_durum(kayit, t, self.P, self.mut)
+        ucretli = kayit["plan"] != "deneme"
+        if durum[0] == "tam":
+            B = durum[1]
+            if B is None:
+                return {YOK}
+            kume = {(U1(x) if x <= 7 else YOK) for x in gun_sayilari(B, t)}
+            if self.m("M67"):
+                kume = {YOK}
+            if not ucretli or yer == "diger":
+                kume |= {YOK}
+            return kume
+        if durum[0] == "hosgoru":
+            if self.m("M66"):
+                kume = {U2(x) for x in gun_sayilari(t, kayit["bitis"] or t)}
+            elif self.m("M68"):
+                kume = {U3}
+            else:
+                kume = {U2(n) for n in gun_sayilari(durum[1], t)}
+            if yer != "giris":
+                kume |= {YOK}
+            return kume
+        return {U0_ONEK, U3, YOK} if yer == "masaustu" else {HER}
+
+    def kapanis_kumesi(self, kayit, t, silinmis):
+        """Lisans yüzünden reddedilen telefon isteğindeki ileti (P17)."""
+        if kayit is None:
+            return {HER}
+        durum = mobil_durum(kayit, t, self.P, self.mut)
+        if durum[0] != "kapali":
+            return {HER}
+        v = self.P["kapanis_iletisi"]
+        if self.m("M72"):
+            v = "uygulamada" if v == "kapicidan" else "kapicidan"
+        if v == "uygulamada":
+            return {HER}
+        if durum[1] == "ucretli":
+            return {U3}
+        if silinmis:
+            return {HER}
+        return {U0_ONEK, U3}
+
+    def _ret_uyari(self, w, e, t, r, kayit):
+        if r == "ret:lisans_gecersiz":
+            return self.kapanis_kumesi(kayit, t, False)
+        if r == "ret:cihaz_yok" and e["cihaz"] in w[e["ofis"]]["l1_silinen"]:
+            kume = set()
+            for _, k in self.ctx.kapici_adaylari(e["ofis"], t, self.P):
+                kume |= self.kapanis_kumesi(k, t, True)
+            return kume or {HER}
+        return {HER}
 
     # ---------------------------------------------------------------- program (yerel) olayları
     def o_karekod_uret(self, w, e, t):
@@ -542,8 +774,8 @@ class Model:
                 dolu_secenek = sorted({n >= s for s in sinirlar})
         # Programın kendi lisans denetimi kâhinde belirsizdir (V11): geçersiz görünümde ret de kabul de olur.
         lisans_ret = any(not lisans_gecerli(r, t) for r in self.ctx.program_adaylari(e["ofis"], t))
-        if lisans_ret:
-            sonuc.append(({"ret:lisans_gecersiz"}, {}, copy.deepcopy(w)))
+        if lisans_ret:  # V11 + V25: hoşgörüde masaüstü salt okunur — ret sınıfı ikisi de olur
+            sonuc.append(({"ret:lisans_gecersiz", "ret:salt_okunur"}, {}, copy.deepcopy(w)))
         for dolu in dolu_secenek:
             w2 = copy.deepcopy(w) if (len(dolu_secenek) > 1 or lisans_ret) else w
             if dolu:
@@ -609,12 +841,16 @@ class Model:
             raise GirdiHatasi(f"olay {e['no']}: sunucu kapalıyken program özet yükleyemez")
         adaylar = self.ctx.kapici_adaylari(e["ofis"], t, self.P)
         sonuc = []
-        retler = {v for v, _ in adaylar if v != "ok"}
+        retler = {v for v, _ in adaylar if v not in ("ok", "hosgoru")}
+        if any(v == "hosgoru" for v, _ in adaylar):
+            retler |= {"ret:lisans_gecersiz", "ret:salt_okunur"}  # V26: hoşgörüde özet yükleme ikisi de olur
+        kabul_var = any(v in ("ok", "hosgoru") for v, _ in adaylar)
         if retler:
-            sonuc.append((retler, {}, copy.deepcopy(w) if len(retler) < len(adaylar) else w))
-        if any(v == "ok" for v, _ in adaylar):
+            sonuc.append((retler, {}, copy.deepcopy(w) if kabul_var else w))
+        if kabul_var:
             od["ozet"] = [t]
             od["ozet_gorunum"] = {u: gorunum(od, u) for u in sorted(od["kullanicilar"])}
+            od["bayat"] = 0
             sonuc.append(({KABUL}, {}, w))
         return sonuc
 
@@ -657,7 +893,10 @@ class Model:
         for v, kayit in adaylar:
             w2 = copy.deepcopy(w) if len(adaylar) > 1 else w
             od = w2[e["ofis"]]
-            if v != "ok":
+            if v == "hosgoru" and self._hosgoruda_esleme() == "reddet":
+                sonuc.append(({"ret:lisans_gecersiz", "ret:salt_okunur"}, {}, w2))  # P15
+                continue
+            if v not in ("ok", "hosgoru"):
                 sonuc.append(({v}, {}, w2))
                 continue
             if od["sunucu"] != "acik" and not self.m("M44"):
@@ -691,6 +930,8 @@ class Model:
                 continue
             if not self.m("M02"):
                 kod["durum"] = "kullanildi"
+            od["bayat"] = 0
+            od["silindi"] = False
             sonuc.extend(r)
         return sonuc
 
@@ -702,7 +943,10 @@ class Model:
         adaylar = self.ctx.kapici_adaylari(e["ofis"], t, self.P)
         for v, kayit in adaylar:
             w2 = copy.deepcopy(w) if len(adaylar) > 1 else w
-            if v != "ok":
+            if v == "hosgoru" and self._hosgoruda_esleme() == "reddet":
+                sonuc.append(({"ret:lisans_gecersiz", "ret:salt_okunur"}, {}, w2))  # P15
+                continue
+            if v not in ("ok", "hosgoru"):
                 sonuc.append(({v}, {}, w2))
                 continue
             if self.m("M46"):
@@ -726,11 +970,13 @@ class Model:
             raise GirdiHatasi(f"olay {e['no']}: bilinmeyen kullanıcı {e['kullanici']!r}")
         sonuc = []
         gecis = self.kapici_girisi(w, e, t)
-        for r, kayit in gecis:
+        for r, kayit, dus in gecis:
             w2 = copy.deepcopy(w) if len(gecis) > 1 else w
             od = w2[e["ofis"]]
-            if r != "gec":
-                sonuc.append(({r}, {}, w2))
+            if dus:
+                self.cihaz_kaldir(od, e["cihaz"])
+            if r not in ("gec", "gec_hosgoru"):
+                sonuc.append(({r}, {"uyari": self._ret_uyari(w2, e, t, r, kayit)}, w2))
                 continue
             if od["sunucu"] != "acik":
                 sonuc.append(({"ret:sunucu_kapali"}, {}, w2))
@@ -783,7 +1029,14 @@ class Model:
                     s["durum"] = "belirsiz"
             od["oturumlar"][e["oturum"]] = {"cihaz": e["cihaz"], "kullanici": e["kullanici"], "bas": t, "son": t,
                                             "durum": "acik"}
-            sonuc.append(({KABUL}, {}, w2))
+            sonuc.append(({KABUL}, {"uyari": self.uyari_kabul(kayit, t, "giris")}, w2))
+        return self._uyari_tamamla(sonuc)
+
+    @staticmethod
+    def _uyari_tamamla(sonuc):
+        """Uyarısı yazılmamış (lisans dışı) retlerde ileti denetlenmez."""
+        for _, ek, _ in sonuc:
+            ek.setdefault("uyari", {HER})
         return sonuc
 
     def _oturum_gecerli(self, od, e, t):
@@ -812,11 +1065,13 @@ class Model:
             cihaz_atla = s is not None and s["durum"] != "bitti" and s["cihaz"] == e["cihaz"]
         sonuc = []
         gecis = self.kapici_girisi(w, e, t, cihaz_atla=cihaz_atla)
-        for r, kayit in gecis:
+        for r, kayit, dus in gecis:
             w2 = copy.deepcopy(w) if len(gecis) > 1 else w
             od = w2[e["ofis"]]
-            if r != "gec":
-                sonuc.append(({r}, {}, w2))
+            if dus:
+                self.cihaz_kaldir(od, e["cihaz"])
+            if r not in ("gec", "gec_hosgoru"):
+                sonuc.append(({r}, {"uyari": self._ret_uyari(w2, e, t, r, kayit)}, w2))
                 continue
             yol = e["yol"]
             if self.m("M22"):
@@ -838,7 +1093,7 @@ class Model:
                     sonuc.append(({"ret:sunucu_kapali"}, {}, w2))
                 continue
             if yol_statik(yol) and e.get("yetki") is None and e.get("sirket") is None:
-                sonuc.append(({KABUL}, {}, w2))
+                sonuc.append(({KABUL}, {"uyari": self.uyari_kabul(kayit, t, "diger")}, w2))
                 continue
             durum = self._oturum_gecerli(od, e, t)
             if durum == "gecersiz":
@@ -864,20 +1119,33 @@ class Model:
             if not yetkili(od, k, e.get("yetki"), self.mut):
                 sonuc.append(({"ret:yetki_yok"}, {}, w2))
                 continue
-            sonuc.append(({KABUL}, {}, w2))
-        return sonuc
+            if r == "gec_hosgoru" and e.get("yazma") and not self.m("M61"):
+                sonuc.append(({"ret:salt_okunur"}, {}, w2))  # KARAR L1: hoşgörüde mobil salt okunur (V29)
+                continue
+            sonuc.append(({KABUL}, {"uyari": self.uyari_kabul(kayit, t, "diger")}, w2))
+        return self._uyari_tamamla(sonuc)
 
     def o_ozet_oku(self, w, e, t):
+        gecis = self.kapici_girisi(w, e, t, lisans_atla=self.m("M39"))
+        sonuc = []
+        for r, kayit, dus in gecis:
+            w2 = copy.deepcopy(w) if len(gecis) > 1 else w
+            od = w2[e["ofis"]]
+            if dus:
+                self.cihaz_kaldir(od, e["cihaz"])
+            if r not in ("gec", "gec_hosgoru"):
+                sonuc.append(({r}, {"uyari": self._ret_uyari(w2, e, t, r, kayit)}, w2))
+                continue
+            sonuc.append(self._ozet_oku_tek(w2, e, t, kayit))
+        return sonuc
+
+    def _ozet_oku_tek(self, w, e, t, kayit):
         od = w[e["ofis"]]
         sonuc_kume = set()
         zamanlar = set()
-        for r, kayit in self.kapici_girisi(w, e, t, lisans_atla=self.m("M39")):
-            if r != "gec":
-                sonuc_kume.add(r)
-                continue
+        if True:
             if self.m("M37") and od["sunucu"] != "acik":
-                sonuc_kume.add("ret:sunucu_kapali")
-                continue
+                return ({"ret:sunucu_kapali"}, {"uyari": {HER}}, w)
             for d in od["ozet"]:
                 if d == YOK_ZAMAN:
                     sonuc_kume.add("ret:ozet_yok")
@@ -891,7 +1159,7 @@ class Model:
                         continue
                 sonuc_kume.add(KABUL)
                 zamanlar.add(d)
-        ek = {}
+        ek = {"uyari": self.uyari_kabul(kayit, t, "diger") | ({HER} if sonuc_kume - {KABUL} else set())}
         if KABUL in sonuc_kume:
             kullanici = od["cihazlar"][e["cihaz"]]["kullanici"]
             simdi = gorunum(od, "yon" if self.m("M56") and "yon" in od["kullanicilar"] else kullanici, self.mut)
@@ -900,13 +1168,13 @@ class Model:
             en_cok = simdi
             if self.m("M41") and od["ozet_gorunum"] is not None:
                 en_cok = onceki
-            ek = {"ozet_zamani": sorted(iso(z) for z in zamanlar), "gorunur": {"en_az": en_az, "en_cok": en_cok}}
-        return [(sonuc_kume, ek, w)]
+            ek.update({"ozet_zamani": sorted(iso(z) for z in zamanlar), "gorunur": {"en_az": en_az, "en_cok": en_cok}})
+        return (sonuc_kume, ek, w)
 
     def o_ozet_yaz(self, w, e, t):
         sonuc_kume = set()
-        for r, kayit in self.kapici_girisi(w, e, t):
-            if r != "gec":
+        for r, kayit, _ in self.kapici_girisi(w, e, t):
+            if r not in ("gec", "gec_hosgoru"):
                 sonuc_kume.add(r)
             else:
                 sonuc_kume.add(KABUL if self.m("M40") else "ret:yazma_yasak")
@@ -926,7 +1194,44 @@ class Model:
         return [({KABUL}, {}, w)]
 
     def o_program_lisans_denetle(self, w, e, t):
+        w[e["ofis"]]["bayat"] = 0  # program silinen kaydı en geç burada öğrenir (V28)
         return [({KABUL}, {}, w)]
+
+    def o_kapici_temizlik(self, w, e, t):
+        return [({KABUL}, {}, w)]  # silme _silme_dallari'nda (temizlik=True)
+
+    def o_mobil_cihazlar_oku(self, w, e, t):
+        """Yönetim → Mobil Cihazlar (masaüstü): eşli sayısı + uyarı (programın lisans görünümü, V10)."""
+        od = w[e["ofis"]]
+        if od["sunucu"] != "acik":
+            return [({"ret:sunucu_kapali"}, {}, w)]
+        y = od["kullanicilar"].get(e["yapan"])
+        if y is None:
+            raise GirdiHatasi(f"olay {e['no']}: bilinmeyen yapan {e['yapan']!r}")
+        if y["rol"] != "yonetici":
+            return [({"ret:yetki_yok"}, {}, w)]
+        kume = set()
+        for k in self.ctx.program_adaylari(e["ofis"], t):
+            kume |= self.uyari_kabul(k, t, "masaustu")
+        return [({KABUL}, {"uyari": kume}, w)]
+
+    def o_masaustu_yazma(self, w, e, t):
+        """Masaüstünde bir yazma işlemi (KARAR L1 / 29.10: ücretli lisans bitince masaüstü salt okunur; V31)."""
+        od = w[e["ofis"]]
+        if od["sunucu"] != "acik":
+            return [({"ret:sunucu_kapali"}, {}, w)]
+        if e["yapan"] not in od["kullanicilar"]:
+            raise GirdiHatasi(f"olay {e['no']}: bilinmeyen yapan {e['yapan']!r}")
+        kume = set()
+        for k in self.ctx.program_adaylari(e["ofis"], t):
+            if lisans_gecerli(k, t, self.mut):
+                kume.add(KABUL)
+            elif k["durum"] == "gecerli" and k["plan"] != "deneme":
+                hos = _durum_tek(k, t, "sure", self.mut)[0] == "hosgoru"
+                kume.add(KABUL if (self.m("M71") and hos) else "ret:salt_okunur")
+            else:
+                kume |= {KABUL, "ret:salt_okunur", "ret:lisans_gecersiz"}  # deneme/engelli: metin söylemiyor
+        return [(kume, {}, w)]
 
     def o_lisans_degis(self, w, e, t):
         if self.m("M43"):
@@ -945,7 +1250,13 @@ class Model:
         tur = e["olay"]
         if tur == "lisans_degis":
             tarihce = self.ctx.lisans[e["ofis"]]
-            tarihce.append((t, lisans_kaydi(e["lisans"], tarihce[-1][1])))
+            onceki = tarihce[-1][1]
+            yeni = lisans_kaydi(e["lisans"], onceki)
+            if yeni["durum"] == "engelli":
+                yeni["engel_t"] = onceki["engel_t"] if onceki["durum"] == "engelli" else t
+            else:
+                yeni["engel_t"] = None
+            tarihce.append((t, yeni))
         elif tur == "lisans_servisi":
             self.ctx.erisim.append((t, e["erisim"] == "var"))
         elif tur == "program_lisans_denetle":
@@ -955,7 +1266,89 @@ class Model:
     AZAMI_DUNYA = 256
 
     def _isle(self, w, e, t):
-        return getattr(self, "o_" + e["olay"])(w, e, t)
+        sonuc = []
+        for w2 in self._silme_dallari(w, e, t):
+            sonuc.extend(getattr(self, "o_" + e["olay"])(w2, e, t))
+        return sonuc
+
+    # ---------------------------------------------------------------- 2.4.8 L1 kapıcı kaydının silinmesi
+    def _silme_tek(self, kayit, t, yontem, temizlik):
+        """Bir lisans kaydına göre kapıcı kaydı: "kesin" | "belki" | "hayir" (V27)."""
+        d = _durum_tek(kayit, t, yontem, self.mut)
+        if d[0] != "kapali" or d[1] == "pro":
+            return "hayir"
+        if d[1] == "ucretli":
+            return "hayir" if self.m("M63") else "kesin"  # KARAR L1: 30. gün sonunda kayıt HEMEN silinir
+        if self.m("M64"):
+            return "hayir"
+        if self.m("M65"):
+            return "kesin"
+        B = kayit["bitis"]
+        sonlar = []
+        if kayit["durum"] == "engelli" and kayit.get("engel_t") is not None and not self.m("M18"):
+            sonlar.append(otuz_gun_sonu(kayit["engel_t"], yontem, self.mut))
+            if B is not None and t >= B and kayit["plan"] != "deneme":
+                sonlar.append(otuz_gun_sonu(B, yontem, self.mut))  # engel + ücretli bitiş birlikte
+        if B is not None and t >= B and (kayit["plan"] == "deneme" or self.m("M58")):
+            sonlar.append(otuz_gun_sonu(B, yontem, self.mut))
+        if not sonlar:
+            return "hayir"
+        if t < min(sonlar):
+            return "hayir"
+        return "kesin" if (temizlik and t >= max(sonlar)) else "belki"
+
+    def _silme_karari(self, ofis, t, temizlik):
+        kararlar = set()
+        for kayit in self.ctx.pencere_kayitlari(ofis, t):
+            s = [self._silme_tek(kayit, t, y, temizlik) for y in OTUZ_YONTEM]
+            kararlar.add(s[0] if all(x == s[0] for x in s) else self._silme_tek(kayit, t, self.P["otuz_gun"], temizlik))
+        if kararlar == {"hayir"}:
+            return "hayir"
+        if kararlar == {"kesin"}:
+            return "kesin"
+        return "belki"
+
+    def _kaydi_sil(self, od):
+        """Kapıcıdaki mobil kaydı (ofis, cihazlar, özet, tünel, DNS) silinir; program listesi en geç sonraki denetimde
+        boşalır (V28: arada eski sayı da görünebilir)."""
+        aktif = aktif_cihazlar(od)
+        for cid in aktif:
+            self.cihaz_kaldir(od, cid)
+        od["l1_silinen"] = sorted(set(od["l1_silinen"]) | set(aktif))
+        od["bayat"] += len(aktif)
+        od["ozet"] = [YOK_ZAMAN]
+        od["ozet_gorunum"] = None
+        od["silindi"] = True
+
+    def _silme_dallari(self, w, e, t):
+        if "ofis" in e:
+            ofisler = [e["ofis"]]
+        elif e["olay"] == "kapici_temizlik":
+            ofisler = sorted(w)
+        else:
+            return [w]
+        dunyalar = [w]
+        for ofis in ofisler:
+            karar = self._silme_karari(ofis, t, e["olay"] == "kapici_temizlik")
+            yeni = []
+            for x in dunyalar:
+                od = x[ofis]
+                if karar == "hayir":
+                    if od["silindi"] or od["l1_silinen"]:
+                        od["silindi"] = False
+                        od["l1_silinen"] = []
+                    yeni.append(x)
+                elif od["silindi"]:
+                    yeni.append(x)
+                elif karar == "kesin":
+                    self._kaydi_sil(od)
+                    yeni.append(x)
+                else:
+                    x2 = copy.deepcopy(x)
+                    self._kaydi_sil(x2[ofis])
+                    yeni.extend([x, x2])
+            dunyalar = yeni
+        return dunyalar
 
     def _sira_kos(self, w, uyeler):
         if not uyeler:
@@ -972,15 +1365,26 @@ class Model:
     def _esli(w):
         return {ofis: len(aktif_cihazlar(od)) for ofis, od in sorted(w.items())}
 
+    @staticmethod
+    def _esli_secenekleri(w):
+        """V28: silinen kayıttan sonra program listesi bir süre eski sayıyı da gösterebilir."""
+        secenek = [{}]
+        for ofis, od in sorted(w.items()):
+            n = len(aktif_cihazlar(od))
+            degerler = [n, n + od["bayat"]] if od["bayat"] else [n]
+            secenek = [{**s, ofis: v} for s in secenek for v in degerler]
+        return secenek
+
     def _ozetle(self, kayitlar):
         """kayitlar: [(sonuclar, ek, dunya)] → olay çıktısı."""
-        sonuc, esli, dusen, zamanlar = set(), [], [], set()
+        sonuc, esli, dusen, zamanlar, uyari = set(), [], [], set(), set()
         en_az, en_cok = None, {}
         for s, ek, w in kayitlar:
             sonuc |= s
-            e_ = self._esli(w)
-            if e_ not in esli:
-                esli.append(e_)
+            uyari |= set(ek.get("uyari", ()))
+            for e_ in self._esli_secenekleri(w):
+                if e_ not in esli:
+                    esli.append(e_)
             if "dusen" in ek and ek["dusen"] not in dusen:
                 dusen.append(ek["dusen"])
             if "gorunur" in ek:
@@ -996,6 +1400,8 @@ class Model:
         cikti = {"sonuc": sorted(sonuc), "esli": sorted(esli, key=lambda x: json.dumps(x, sort_keys=True))}
         if dusen:
             cikti["dusen"] = sorted(dusen)
+        if uyari:
+            cikti["uyari"] = sorted(uyari)
         if KABUL in sonuc and en_az is not None:
             cikti["ozet_zamani"] = sorted(zamanlar)
             cikti["gorunur"] = {"en_az": en_az, "en_cok": en_cok}
@@ -1085,7 +1491,7 @@ class Model:
                         gz = gozlem.get(str(x["no"]))
                         if gz is None:
                             continue
-                        if not gozlem_uyar(gz, s[x["no"]], ek[x["no"]], self._esli(w)):
+                        if not gozlem_uyar(gz, s[x["no"]], ek[x["no"]], self._esli_secenekleri(w)):
                             tamam = False
                             break
                     if tamam:
@@ -1113,11 +1519,13 @@ class Model:
         return {"olaylar": {str(k): v for k, v in sorted(olaylar.items())}, "gruplar": gruplar, "farklar": farklar}
 
 
-def gozlem_uyar(gz, sonuclar, ek, esli):
+def gozlem_uyar(gz, sonuclar, ek, esli_secenek):
     if gz.get("sonuc") not in sonuclar:
         return False
-    if "esli" in gz and gz["esli"] != {k: esli[k] for k in gz["esli"] if k in esli}:
+    if "esli" in gz and not any(gz["esli"] == {k: es[k] for k in gz["esli"] if k in es} for es in esli_secenek):
         return False
+    if "uyari" in ek and not uyari_uyar(gz.get("uyari"), ek["uyari"]):
+        return False  # ders 4: programın çıktısında uyarı yoksa "uyarı yok" sayılır; zorunlu uyarıda FARK
     if "dusen" in gz and sorted(gz["dusen"]) != sorted(ek.get("dusen", [])):
         return False
     if gz.get("sonuc") == KABUL and "gorunur" in ek:

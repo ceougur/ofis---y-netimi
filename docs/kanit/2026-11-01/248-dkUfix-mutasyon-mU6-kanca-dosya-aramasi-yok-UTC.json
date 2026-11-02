@@ -1,0 +1,43 @@
+{
+  "ad": "248-dkUfix-mutasyon-mU6-kanca-dosya-aramasi-yok-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-u/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-u/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "66b948c4afa690751993c926578a4017ab2d8590",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 62,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T03:25:31.275Z",
+  "sure_sn": 54.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 67,
+    "gecen": 65,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T36 eşzamanlı kabul DEFTERE yazılamadı (dosyada Meta Kabul Etti + wamid) → onarılamazken gönderim başlatılmaz (503), imzasız teslim 6 dk sonra da tanınır; defter düzelince onarım: Daha Önce Gönderildi, kişiye 1 ileti (U6)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1009:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'accepted' (beklenen delivered, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0h sahibi yalnız dosyada bulunan wamid (U6 onarım listesi) · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503; açılınca 200 ve uygulanır (U6)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1059:3",
+      "hata": "Expected values to be strictly equal: · 503 !== 200 (beklenen 200, gelen 503)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkUfix-mutasyon-mU6-kanca-dosya-aramasi-yok-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "1dbbb36bda7dceb1607ceb8c7e1287ffc623b3d5418c4dbecd29d089daef4cac",
+  "ham_cikti_bayt": 26269
+}

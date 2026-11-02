@@ -1,0 +1,71 @@
+▶ TOPLAM satırı kuralları (footerRow)
+  ✔ para ve sayı kolonlarını toplar; yürüyen bakiye, birim fiyat, oran boş; etiket ilk metin kolonunda (2.226924ms)
+  ✔ miktar yalnız tek birimde toplanır; yön karışıkken (footerUniform) toplam yok; false kapatır; üstüne yazma (0.716307ms)
+✔ TOPLAM satırı kuralları (footerRow) (3.902203ms)
+▶ Kullanıcının senaryosu: 10 müşteri × 10.000, ilk taksitler ödenmiş
+  ✔ programda tahsil: Cari Listesi 100.000 / 10.000 / 90.000; TOPLAM satırları; Taksit Kartları ve Mizan aynı (406.454994ms)
+  ✔ Excel'den yüklenen 'Ödenen' (açılış): Cari Bazında Tahsilat ve Taksit Tahsilatları toplamına dahil (78.289333ms)
+✔ Kullanıcının senaryosu: 10 müşteri × 10.000, ilk taksitler ödenmiş (900.997181ms)
+▶ Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır
+  ✖ her raporda TOPLAM (varsa) satır toplamına eşit; ekran = PDF = Excel
+  ✖ Tüm Zamanlar: çek portföyü ve taksit vadelerinde ileri vadeler de gelir; Aylık Kasa ilk hareketten başlar
+  ✖ yön karışık raporlarda (çek portföyü, açık faturalar) TOPLAM yalnız tek yön süzülünce; stokta farklı birim toplanmaz
+  ✖ katalog: dönemli raporlar Bu Yıl ile açılır (vade listesi Bu Ay, Ba-Bs Geçen Ay kalır)
+  ✖ Raporlar → Cari Ekstre (Mizan) PDF ve Excel'inde TOPLAM; Excel'de süzgeç dışında
+✖ Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır (413.026939ms)
+ℹ tests 9
+ℹ suites 3
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 5
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1325.352227
+
+✖ failing tests:
+
+test at test/rapor-220.test.mjs:177:3
+✖ her raporda TOPLAM (varsa) satır toplamına eşit; ekran = PDF = Excel
+  'test did not finish before its parent and was cancelled'
+
+test at test/rapor-220.test.mjs:219:3
+✖ Tüm Zamanlar: çek portföyü ve taksit vadelerinde ileri vadeler de gelir; Aylık Kasa ilk hareketten başlar
+  'test did not finish before its parent and was cancelled'
+
+test at test/rapor-220.test.mjs:228:3
+✖ yön karışık raporlarda (çek portföyü, açık faturalar) TOPLAM yalnız tek yön süzülünce; stokta farklı birim toplanmaz
+  'test did not finish before its parent and was cancelled'
+
+test at test/rapor-220.test.mjs:240:3
+✖ katalog: dönemli raporlar Bu Yıl ile açılır (vade listesi Bu Ay, Ba-Bs Geçen Ay kalır)
+  'test did not finish before its parent and was cancelled'
+
+test at test/rapor-220.test.mjs:248:3
+✖ Raporlar → Cari Ekstre (Mizan) PDF ve Excel'inde TOPLAM; Excel'de süzgeç dışında
+  'test did not finish before its parent and was cancelled'
+
+test at test/rapor-220.test.mjs:149:1
+✖ Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır (413.026939ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  400 !== 200
+  
+      at SuiteContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/altin248-eski-6e1f1b68/test/rapor-220.test.mjs:160:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestHook.run (node:internal/test_runner/test:1054:7)
+      at async Suite.runHook (node:internal/test_runner/test:965:9)
+      at async Suite.run (node:internal/test_runner/test:1436:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 400,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+[dış saat] başlangıç günü 2026-10-31 → bitiş günü 2026-11-01: ön koşul GERÇEKLEŞTİ
+(node:31638) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[zorla] test/rapor-220.test.mjs · gece yarısına 1.1 sn · ön koşul GERÇEKLEŞTİ · test KIRMIZI (çıkış 1)

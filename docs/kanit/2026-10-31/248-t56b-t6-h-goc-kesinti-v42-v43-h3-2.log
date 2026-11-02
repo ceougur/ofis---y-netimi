@@ -1,0 +1,25 @@
+TAP version 13
+# \# T6hv v42 verisi: {"ok":true,"version":42,"batchId":"wab-86cb02fa-6a9a-4b22-bc1f-70e3f040314b","status":[200,200,200],"body":null,"isler":[{"state":"pending","n":5}]}
+# \# T6hv3 {"doluyken":"açılmadı: çocuk hazır (): 45000 ms içinde olmadı","doluSonrasiSurum":42,"doluSonrasiSutunlar":"prepared_at,pdf_blob,send_again_after","butunluk":"ok","acilistaSurum":43,"acilistaSutunlar":true,"toplu":"done","isler":"accepted,accepted,accepted,accepted,accepted","giden":5}
+# Subtest: T6 (h, T56b) — göç sırasında kesinti (v42 → v43)
+    # Subtest: h3: göç sırasında disk DOLU (tmpfs) → program açılmaz/açık hata, dosya v42..v43 tam sürüm ve sağlam; yer açılınca v43, gönderim bir kez
+    ok 1 - h3: göç sırasında disk DOLU (tmpfs) → program açılmaz/açık hata, dosya v42..v43 tam sürüm ve sağlam; yer açılınca v43, gönderim bir kez
+      ---
+      duration_ms: 46320.573199
+      type: 'test'
+      ...
+    1..1
+ok 1 - T6 (h, T56b) — göç sırasında kesinti (v42 → v43)
+  ---
+  duration_ms: 47349.701924
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 62769.743417

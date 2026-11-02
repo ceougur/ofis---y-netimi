@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkSfix-mutasyon-mS1-kabul-ezer-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/mut/test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s248-k7m4/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs",
+  "commit": "f374d8b121be29b077c8e3fd719bfac4ea677994",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 28,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T23:49:56.508Z",
+  "sure_sn": 14.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 18,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim › koşul (a): istek Meta'dayken imzalı bildirim işi Teslim Edildi yaptı → yanıt gelince 'Meta Kabul Etti' EZMEZ, çift ileti yok",
+      "konum": "test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs:161:3",
+      "hata": "durum geriye gitmedi (Meta Kabul Etti ezmedi) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkSfix-mutasyon-mS1-kabul-ezer-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "b13ed3727b181af74135206b9cc11cbcc231d6a6d49e5efd1656123edaeecbb2",
+  "ham_cikti_bayt": 8467
+}

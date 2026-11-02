@@ -1,0 +1,38 @@
+{
+  "ad": "248-isz-mutasyon-M5-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=240000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/mut-M5-3908c155/test/whatsapp-onizleme-olcek-248.test.mjs",
+  "commit": "3908c155892dcc20ac0419e672ed4ba573996c68",
+  "dal": "is/perf-248",
+  "kirli": 0,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T17:13:19.944Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 2,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen) › eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı",
+      "konum": "test/whatsapp-onizleme-olcek-248.test.mjs:93:3",
+      "hata": "kapsayan: cari kartındaki taksit özeti kartın ayrıntısıyla aynı değil · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-isz-mutasyon-M5-UTC.log",
+  "klasor": "/home/user/wt-perf-248",
+  "ham_cikti_sha256": "809e325ee0ebbc35f0b729a69caac867e6bfb49f52db4ed0bc3fb0fd0fa28cca",
+  "ham_cikti_bayt": 4604
+}

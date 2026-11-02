@@ -1,0 +1,24 @@
+#!/bin/bash
+# İş Z hedefli eşitlik: "Sonucu Belirsiz" + taşınan veri yolları — veri B (geçmiş, bu defter) ve C (B + belirsiz / başarısız işlerin toplu işleri başka defterde)
+# × 4 saat (2026-11-02; 2025-12-22 özel aralık; 2026-01-24 Son 3 Ay penceresi; 2025-11-19 Tüm penceresi) × eski / yeni. flock + kanit.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a
+W=/home/user/wt-perf-248
+ESKI=$K/eski-b2e7bf19
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+ciftler=()
+for veri in B C; do
+  for saat in 2026-11-02T10:00:00+03:00 2025-12-22T10:00:00+03:00 2026-01-24T10:00:00+03:00 2025-11-19T10:00:00+03:00; do
+    g=${saat:0:10}
+    for taraf in eski yeni; do
+      kok=$W; [ $taraf = eski ] && kok=$ESKI
+      ISZ_COMMIT=b2e7bf19 flock /tmp/destekofis-olcum.lock node $kok/test/isz-248/esitlik-belirsiz-kos.mjs $K/esitlik-$veri $K/is-bel $K/bel-$veri-$g-$taraf.json $saat $veri > $K/bel-$veri-$g-$taraf.out 2>&1
+      echo "$(date -u +%H:%M:%S) belirsiz $veri $g $taraf çıkış=$? $(grep -v -i warning $K/bel-$veri-$g-$taraf.out | tail -1 | cut -c1-120)"
+    done
+    ciftler+=($K/bel-$veri-$g-eski.json $K/bel-$veri-$g-yeni.json)
+  done
+done
+node tools/kanit.mjs kos 248-isz-esitlik-belirsiz-tasinan -- node test/isz-248/esitlik-karsilastir.mjs "${ciftler[@]}" > $K/karsilastir-belirsiz.out 2>&1
+echo "$(date -u +%H:%M:%S) karşılaştırma belirsiz çıkış=$? $(grep '\[kanit\]' $K/karsilastir-belirsiz.out | tail -1 | cut -c1-170)"
+grep "^not ok" $K/karsilastir-belirsiz.out | head -10 | cut -c1-300
+echo "BELIRSIZ-BITTI $(date -u +%H:%M:%S)"

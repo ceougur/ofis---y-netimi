@@ -1,0 +1,53 @@
+{
+  "ad": "248-wabagla-appid-e2e-eski-c4e8aa2d",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-ayar-248.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T21:18:54.413Z",
+  "sure_sn": 81.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 77,
+    "gecen": 73,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Uygulama Kimliği kapıcıdan geldi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "örnek PDF App ID ile yüklendi (0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ekstre şablonu Meta'ya gönderildi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Şablonlar kartı olmayan düğmeye yönlendirmiyor",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/wt-wabagla-248/docs/kanit/2026-10-30/248-wabagla-appid-e2e-eski-c4e8aa2d.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wabagla-appid-eski-c4e8aa2d-m3q8",
+  "ham_cikti_sha256": "7df03fc19271b2560036f9044978dbc6f4b78c53b55b56a1c808c9b96ad913e2",
+  "ham_cikti_bayt": 5149
+}

@@ -17,6 +17,7 @@ import { createReportHeader } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // v2.0.26 (G6): toplu aktarımda bir satırın iç işlemini geri alıp nedeniyle atlamak için (kapanmış dönem).
@@ -1071,9 +1072,13 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       },
     };
   }
+  // 2.4.8 I1: kalıcı istek kimliği (lib/import-request.mjs; kapsam "plan.import"): yanıt kaybolup yeniden "Kartları Oluştur"a basılınca yükleme ikinci kez
+  // işlenmez, ilk yüklemenin raporu döner (replayed; aktarım kimliği ve Geri Al aynı). Denetim ve kayıt yüklemenin işleminde (tablo dizini okuması işlemden önce).
+  const imports = createImportRequests({ store, now: clock });
   router.post("/api/workspace/plans/import", async ({ req, res }) => {
     const user = auth.requirePermission(req, "plans.manage");
     const body = await readJson(req, { limit: 20_000_000 });
+    const ticket = imports.ticket(req, body, user, IMPORT_SCOPES.plans);
     const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = Math.max(0, Math.trunc(Number(body.headerAt) || 0));
     const roles = body.roles && typeof body.roles === "object" ? body.roles : {};
@@ -1100,7 +1105,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const source = currentSource();
     const importId = newId("import");
     const undo = { plans: [], openings: [], links: [], accounts: [], accountLinks: [], payments: [], groups: [], source };
-    store.tx(() => {
+    const replayed = store.tx(() => {
+      const prior = imports.replay(ticket);
+      if (prior) return prior;
       // Sıra No kolonu yoksa ya da hücre boşsa numara mevcut en büyük numaradan devam eder.
       let autoRef = Number(nextRef()) - 1;
       const groupsBefore = new Set(store.all("SELECT id FROM plan_groups").map(row => row.id));
@@ -1195,7 +1202,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         store.run("INSERT INTO plan_imports (id, kind, source, title, summary_json, undo_json, created_by, created_at) VALUES (?, 'excel', ?, ?, ?, ?, ?, ?)", importId, source, `Excel: ${limited(body.fileName, 150, "Dosya adı") || "dosya"}`, JSON.stringify(summary), JSON.stringify(undo), user.id, now());
       }
       audit(user, "plan.imported", "import", { created: report.created, skipped: report.skipped.length, groups: report.groups, records: report.records, opening: report.opening, shape: report.shape, importId: report.importId, file: limited(body.fileName, 200, "Dosya adı") });
+      imports.remember(ticket, report);
+      return null;
     });
+    if (replayed) return ok(res, replayed);
     changed(user, { groups: true });
     changed(user, { kind: "accounts" });
     if (report.records) changed(user, { kind: "dues", datasetKey: source });

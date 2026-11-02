@@ -1,0 +1,45 @@
+
+> destekofis@2.4.7 test:senaryo-whatsapp-donem-248
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-donem-248.mjs
+
+
+■ Giriş
+  ✓ yönetici girdi
+
+■ D1 Geçen Ay: metin ve 'Cari Ekstre - PDF' aynı dönem, aynı bakiye
+  ✓ baloncuk: güncel bakiye 850,00 TL (Güncel bakiye: 850,00 TL (borcunuz))
+  ✓ baloncukta dönem 01.10.2026 – 31.10.2026
+  ✓ PDF bağlantısı dönemli (/api/workspace/accounts/account-325e9005-1250-441f-8589-3781d10e3dbf/ekstre.pdf?donem=1&from=2026-10-01&to=2026-10-31)
+  ✓ PDF indi
+  ✓ PDF dönemi 01.10.2026 – 31.10.2026
+  ✓ dönem uçlarındaki hareketler PDF'te
+  ✓ dönem dışı (Kasım) hareket PDF'te YOK
+  ✓ PDF dönem sonu bakiyesi 850,00 TL (metinle aynı)
+  ✓ devir 1.000,00 TL
+
+■ D2 WhatsApp'ta Aç: kişinin adıyla inen PDF dönemli ve D1'le aynı
+  ✓ indirme bağlantısının dosya adı: Ekstre Dönem Kişisi 01.10.2026-31.10.2026.pdf
+  ✓ indirme bağlantısı dönemli
+  ✓ indirilen PDF bağlantıdaki dönemli PDF'le BAYT BAYT aynı
+  ✓ WhatsApp sohbeti kişinin numarasıyla açıldı
+
+■ D3 Tüm Hareketler: PDF bugüne kadar, bakiye metindekiyle aynı
+  ✓ baloncuk: 890,00 TL
+  ✓ PDF: Tüm Hareketler · 03.11.2026 tarihine kadar
+  ✓ bütün hareketler
+  ✓ PDF bakiyesi 890,00 TL (metinle aynı)
+
+■ D4 WhatsApp Mesajı İstemiyor: formda Tab + Boşluk, kartta rozet, pencerede seçilemez
+  ✓ başlangıçta işaretsiz
+  ✓ alan adı: WhatsApp Mesajı İstemiyor
+  ✓ Tab ile kutuya gelindi
+  ✓ Boşluk ile işaretlendi
+  ✓ veri tabanında işaret 1
+  ✓ kartta rozet
+  ✓ özet: 1 Cari 0 Geçerli Numara 1 Numarası Yok / Hatalı 0 Gönderilecek
+  ✓ satırda neden yazılı
+  ✓ kişi seçilemez
+  ✓ Gönderime Başla pasif
+  ✓ sayfa hatası yok (—)
+
+29 geçti, 0 kaldı

@@ -1,0 +1,32 @@
+{
+  "ad": "248-g5-birlesik-e2e-senaryo-whatsapp",
+  "komut": "npm run test:senaryo-whatsapp",
+  "commit": "9ba71958078289c31165b68ed198eb3893e9de27",
+  "dal": "is/cekirdek-248",
+  "kirli": 0,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T17:16:13.243Z",
+  "sure_sn": 176.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 45,
+    "gecen": 45,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-birlesik-e2e-senaryo-whatsapp.log",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "6e43672e3d948fd68cd285f1e6e16552e1a96b08cd34d996de232c1c569516ee",
+  "ham_cikti_bayt": 3597
+}

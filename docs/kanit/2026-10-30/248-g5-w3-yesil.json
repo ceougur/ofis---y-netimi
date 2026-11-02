@@ -1,0 +1,32 @@
+{
+  "ad": "248-g5-w3-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-w3-ekstre-248.test.mjs test/whatsapp-213.test.mjs test/whatsapp-w1-baglanti.test.mjs",
+  "commit": "e3538ee4c4e259e5dec817a6563298fe4b7fc7d9",
+  "dal": "is/cekirdek-248",
+  "kirli": 6,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T15:30:37.724Z",
+  "sure_sn": 10.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-w3-yesil.log",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "c0fc639764126f26481e8a71c94a5bf820556303a417623a2a7e5ea473867113",
+  "ham_cikti_bayt": 9397
+}

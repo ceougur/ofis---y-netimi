@@ -1,0 +1,187 @@
+(node:27284) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+U01: 9 olay, 1 sn
+U02: 8 olay, 1 sn
+U03: 6 olay, 1 sn
+U04: 4 olay, 1 sn
+U05: 4 olay, 1 sn
+U06: 14 olay, 1 sn
+U07: 17 olay, 3 sn
+U08: 17 olay, 1 sn
+U09: 14 olay, 2 sn
+U10: 18 olay, 1 sn
+U11: 7 olay, 1 sn
+U12: 10 olay, 1 sn
+U13: 18 olay, 1 sn
+U14: 9 olay, 1 sn
+U15: 26 olay, 1 sn
+U16: 14 olay, 2 sn
+U17: 23 olay, 2 sn
+U18: 42 olay, 2 sn
+U19: 22 olay, 1 sn
+U20: 9 olay, 1 sn
+U21: 7 olay, 1 sn
+U22: 10 olay, 1 sn
+U23: 5 olay, 1 sn
+U24: 56 olay, 2 sn
+U25: 10 olay, 1 sn
+U26: 12 olay, 1 sn
+U27: 8 olay, 1 sn
+U28: 8 olay, 1 sn
+U29: 14 olay, 1 sn
+U30: 6 olay, 1 sn
+U31: 3 olay, 1 sn
+U32: 7 olay, 1 sn
+U33: 5 olay, 1 sn
+L01: 35 olay, 2 sn
+L02: 19 olay, 2 sn
+L03: 20 olay, 2 sn
+L04: 28 olay, 3 sn
+L05: 20 olay, 3 sn
+L06: 13 olay, 2 sn
+R1: 651 olay, 23 sn
+R2: 591 olay, 19 sn
+R3: 628 olay, 20 sn
+TAP version 13
+ok 1 - U01 (9/9)
+ok 2 - U02 (8/8)
+ok 3 - U03 (6/6)
+ok 4 - U04 (4/4)
+ok 5 - U05 (4/4)
+ok 6 - U06 (14/14)
+ok 7 - U07 (17/17)
+ok 8 - U08 (17/17)
+ok 9 - U09 (14/14)
+not ok 10 - U10 (10/18; 8 fark)
+  # BULGU {"no":4,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":5,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":6,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":7,"olay":"istek","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":8,"olay":"giris","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":13,"olay":"ozet_oku","program":"kabul","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":14,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":15,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+not ok 11 - U11 (4/7; 3 fark)
+  # BULGU {"no":5,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":6,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":7,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+ok 12 - U12 (10/10)
+ok 13 - U13 (18/19; 1 DENENMEYEN)
+ok 14 - U14 (9/9)
+ok 15 - U15 (26/26)
+ok 16 - U16 (14/14)
+ok 17 - U17 (23/23)
+ok 18 - U18 (42/43; 1 DENENMEYEN)
+ok 19 - U19 (22/24; 2 DENENMEYEN)
+ok 20 - U20 (9/9)
+not ok 21 - U21 (3/7; 4 fark)
+  # BULGU {"no":4,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":5,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":6,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":8,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+ok 22 - U22 (10/10)
+ok 23 - U23 (5/5)
+ok 24 - U24 (56/56)
+ok 25 - U25 (10/10)
+ok 26 - U26 (12/12)
+ok 27 - U27 (8/8)
+  # M3_KAPICI U28 {"no":7,"olay":"cihaz_sil","program":"kabul","kahin":["kabul"],"ipucu":["kapıcıya doğrudan kayıt (M3, DENENMEYEN) sonrası zincir: kâhinin dünyasında programda olmayan cihaz var"]}
+ok 28 - U28 (7/8; 1 DENENMEYEN)
+ok 29 - U29 (14/14)
+ok 30 - U30 (6/6)
+ok 31 - U31 (3/3)
+ok 32 - U32 (7/7)
+ok 33 - U33 (5/5)
+not ok 34 - L01 (24/35; 11 fark)
+  # BULGU {"no":8,"olay":"mobil_cihazlar_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":7,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":9,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":12,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # İNCELE {"no":15,"olay":"istek","program":"ret:yazma_yasak","kahin":["ret:salt_okunur"],"ipucu":[]}
+  # BULGU {"no":20,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":21,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":22,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":24,"olay":"mobil_cihazlar_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":26,"olay":"ozet_oku","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # İNCELE {"no":28,"olay":"esle","program":"ret:cihaz_yok","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+not ok 35 - L02 (13/19; 6 fark)
+  # BULGU {"no":6,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":7,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":16,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":17,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":18,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":19,"olay":"ozet_oku","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+not ok 36 - L03 (18/21; 2 fark)
+  # BULGU {"no":17,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":24,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+not ok 37 - L04 (18/28; 10 fark)
+  # BULGU {"no":7,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":8,"olay":"mobil_cihazlar_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":9,"olay":"giris","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":10,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":11,"olay":"istek","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":12,"olay":"giris","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":13,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":17,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":20,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":28,"olay":"mobil_cihazlar_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+not ok 38 - L05 (14/20; 6 fark)
+  # BULGU {"no":9,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":10,"olay":"giris","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":25,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":28,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":29,"olay":"giris","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":13,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+not ok 39 - L06 (10/13; 3 fark)
+  # BULGU {"no":5,"olay":"mobil_cihazlar_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":8,"olay":"ozet_oku","program":"kabul","kahin":["kabul"],"ipucu":[]}
+  # BULGU {"no":12,"olay":"ozet_oku","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # M3_KAPICI R1 {"no":605,"olay":"ozet_oku","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":["kapıcıya doğrudan kayıt (M3, DENENMEYEN) sonrası zincir: kâhinin dünyasında programda olmayan cihaz var"]}
+  # M3_KAPICI R1 {"no":606,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":["kapıcıya doğrudan kayıt (M3, DENENMEYEN) sonrası zincir: kâhinin dünyasında programda olmayan cihaz var"]}
+not ok 40 - R1 (628/677; 21 fark)
+  # BULGU {"no":10,"olay":"ozet_oku","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":11,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":173,"olay":"ozet_oku","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":174,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":380,"olay":"ozet_oku","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":381,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":552,"olay":"ozet_oku","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":553,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":292,"olay":"ozet_oku","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":293,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":449,"olay":"ozet_oku","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+  # BULGU {"no":450,"olay":"giris","program":"ret:cihaz_yok","kahin":["ret:cihaz_yok"],"ipucu":[]}
+not ok 41 - R2 (565/612; 26 fark)
+  # BULGU {"no":555,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":79,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":556,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":80,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":407,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":408,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":557,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":81,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":409,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":421,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":100,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":422,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+not ok 42 - R3 (599/637; 29 fark)
+  # BULGU {"no":39,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":40,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":41,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":387,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":388,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":389,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":528,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":529,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":530,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":232,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":233,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["ret:lisans_gecersiz"],"ipucu":[]}
+  # BULGU {"no":437,"olay":"ozet_oku","program":"ret:lisans_gecersiz","kahin":["kabul","ret:lisans_gecersiz"],"ipucu":[]}
+# birlesim kod_sure=5;yeni_kod_eskiyi=iptal_eder;sinir_dolunca=reddet;uretimde_sinir=denetler;sinir_dusunce=mevcutlar_kalir;cihaz_kullanici=yalniz_eslenen;oturum_bosta=15;oturum_mutlak=12;lisans_onbellek=1;ozet_yas_siniri=yok;deneme_siniri=5;deneme_anahtari=kullanici;kilit_dk=15;otuz_gun=sure;hosgoruda_esleme=reddet;erken_yenileme=esleme_doner;kapanis_iletisi=kapicidan
+# olay eşleşen 2315/2508 (programda üretilebilen 2315/2444) · BULGU 127 · İNCELE 2 · M3_KAPICI 3 · DENENMEYEN 61
+# DENENMEYEN 36 × DENENMEYEN: mobil yazma M5'te (bu işte /api/mobil/ yazma 405)
+# DENENMEYEN 25 × DENENMEYEN: mobilde Kasa raporu yok (M1 beyaz listesi, v0.3 MOBILE_REPORT_IDS)
+# çıktı /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/l1kahin-f2
+# tests 42
+# pass 30
+# fail 12

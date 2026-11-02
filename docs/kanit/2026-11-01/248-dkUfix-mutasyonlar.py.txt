@@ -1,0 +1,39 @@
+# İş U mutasyonları: python3 mut-u.py <kök> <ad>. Her (dosya, eski, yeni) eski metin dosyada TAM BİR kez geçmeli.
+import sys
+Q = "server/lib/whatsapp/queue.mjs"
+D = "server/lib/whatsapp/defter.mjs"
+H = "server/lib/whatsapp/hook.mjs"
+LEG = "\n      UNION ALL SELECT d.billable FROM deliveries d WHERE d.company_id = ?1 AND d.at >= ?2 AND d.at < ?3 AND NOT EXISTS (SELECT 1 FROM attempt_deliveries a WHERE a.job_id = d.job_id AND a.at = d.at))`),"
+M = {
+  "mU1-bekletti-yok-sayilir": [(Q, "        if (![\"delivered\", \"read\"].includes(current)) Object.assign(fields, { state: \"delivered\",", "        if (![\"delivered\", \"read\", \"held\"].includes(current)) Object.assign(fields, { state: \"delivered\",")],
+  "mK1-basarisiz-sonrasi-yok": [(Q, "        if (![\"delivered\", \"read\"].includes(current)) Object.assign(fields, { state: \"delivered\",", "        if (![\"delivered\", \"read\", \"failed\"].includes(current)) Object.assign(fields, { state: \"delivered\",")],
+  "mU2-aday-son-deneme-denetimi-yok": [(Q, "        if (!last || Number(candidate.attempt) === Number(last.attempt)) return { route: \"row\", job: candidate };", "        return { route: \"row\", job: candidate };")],
+  "mU2-q4-satir-engeli": [(Q, "    if (row && !(Number(row.attempt) < Number(last.attempt))) return false;", "    if (row) return false;")],
+  "mU3-hepsi-yutulur": [(Q, "        if (!isUniqueWamidError(error)) throw error;", "        if (isLockError(error) || error?.code === \"ERR_INVALID_STATE\") throw error;")],
+  "mU4-yalniz-sending": [(Q, "(current.state === \"sending\" || (current.state === \"uncertain\" && !current.wamid))", "current.state === \"sending\"")],
+  "mU4-bakim-cozmez": [(Q, "    settleUncertainFromLedger(); // İş U4", "    // settleUncertainFromLedger(); // İş U4")],
+  "mU5-is-basina-teslim": [(D, "        if (Number.isInteger(Number(row.attempt)) && Number(row.attempt) > 0) q.deliverAttempt.run(", "        if (false) q.deliverAttempt.run(")],
+  "mU5-eski-satir-sayilmaz": [(D, LEG, ")`),")],
+  "mU5-cift-sayar": [(D, " AND d.at < ?3 AND NOT EXISTS (SELECT 1 FROM attempt_deliveries a WHERE a.job_id = d.job_id AND a.at = d.at))`),\n    deliveredWaba", " AND d.at < ?3)`),\n    deliveredWaba")],
+  "mU6-onarim-yok": [(Q, "    const list = repairList();\n    if (!list.length) return true;", "    const list = repairList();\n    return true;")],
+  "mU6-talepten-once-onarim-yok": [(Q, "      if (!repairPending()) throw Object.assign(new Error(\"önceki kabul deftere taşınamadı\"), { code: \"WA_LEDGER_REPAIR\" });\n", "")],
+  "mU6-yeni-gonderim-engeli-yok": [(Q, "    if (!repairPending()) fail(503, \"WhatsApp gönderim defterine önceki bir kabul kaydı", "    if (false) fail(503, \"WhatsApp gönderim defterine önceki bir kabul kaydı")],
+  "mU6-kanca-dosya-aramasi-yok": [(Q, "    return row.ledgerId !== ledger.id || repairList().includes(row.id) ? { wabaId: row.wabaId } : null;", "    return row.ledgerId !== ledger.id ? { wabaId: row.wabaId } : null;")],
+  "mU6-mesgul-200": [(H, "    if (unowned && lookup.busy) {", "    if (false && unowned && lookup.busy) {")],
+  "mU6-kalici-503": [(H, "        if (temporary(error)) return failure(res, 503,", "        if (true) return failure(res, 503,")],
+  "mU6-gecici-kalici-sayilir": [(H, "  const temporary = error => Boolean(error?.retryAfter || error?.extra?.retryAfter) || isLockError(error);", "  const temporary = error => false;")],
+  "mU6-silinmis-yazilmaz": [(H, "        ledgerOnly(items, items[0].owner, signed, out); // İş U (a): silinmiş şirket → yalnız defter", "        out.unknown += items.length;")],
+  "mU7-sent-temizlemez": [(Q, "      if ([\"sent\", \"delivered\", \"read\"].includes(fields.state)) Object.assign(fields, { error_code: null, error_text: \"\" });", "      if ([\"delivered\", \"read\"].includes(fields.state)) Object.assign(fields, { error_code: null, error_text: \"\" });")],
+}
+if sys.argv[1] == "--list":
+    print("\n".join(M)); sys.exit(0)
+root, name = sys.argv[1], sys.argv[2]
+for path, old, new in M[name]:
+    p = f"{root}/{path}"
+    s = open(p).read()
+    n = s.count(old)
+    if n != 1:
+        sys.exit(f"{name}: {path} eski metin {n} kez")
+    s = s.replace(old, new)
+    open(p, "w").write(s)
+print(f"{name}: uygulandı")

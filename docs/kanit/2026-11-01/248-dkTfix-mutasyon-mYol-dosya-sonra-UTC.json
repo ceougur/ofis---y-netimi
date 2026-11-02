@@ -1,0 +1,103 @@
+{
+  "ad": "248-dkTfix-mutasyon-mYol-dosya-sonra-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut/test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": "b8c8ea63179a94f3395f9d0e150542a477bd5425",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 52,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T01:13:32.141Z",
+  "sure_sn": 28,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 42,
+    "gecen": 28,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T1 sent (imzasız) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:136:5",
+      "hata": "Expected values to be strictly equal: · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T2 delivered (imzasız) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:148:5",
+      "hata": "hata alanları temiz · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T1 sent (imzalı) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:136:5",
+      "hata": "Expected values to be strictly equal: · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T2 delivered (imzalı) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:148:5",
+      "hata": "hata alanları temiz · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T3 read · teslimden sonra okundu; ×3 yinelenen → Bu Ay 1 (eşgüçlü)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:172:3",
+      "hata": "Expected values to be strictly equal: · 'accepted' !== 'read' (beklenen read, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T4 failed 131026 · B1 · S2 → Başarısız + teslim edilemedi; gönderilecek",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:184:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'accepted' (beklenen failed, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T5/T6 failed 131049 · ilk kez Meta Bekletti (Zaten Kuyrukta); 2. denemenin 131049'u Başarısız",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:196:3",
+      "hata": "Expected values to be strictly equal: · 'accepted' !== 'held' (beklenen held, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T7 failed teslimden sonra yok sayılır (§7a 18)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:214:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'accepted' (beklenen delivered, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T8 Süresi Doldu → geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce (P3)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:226:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'expired' (beklenen delivered, gelen expired)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T9 Meta Bekletti → İptal Et → kendi wamid'ine geç delivered → Teslim Edildi (K10:10)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:240:3",
+      "hata": "iptal: 409 {\"ok\":false,\"error\":\"Bu gönderim zaten bitmiş.\",\"code\":\"whatsapp-batch-state\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T30 eski (131049 bırakılmış) denemenin geç teslimi, satır geri yüklemeyle ESKİ denemede → teslim sayılır (A8, K11:00)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:456:3",
+      "hata": "ön koşul: Meta Bekletti · 'accepted' !== 'held' (beklenen held, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T28/T29 131049 → 2. deneme kabul (satır daha yeni denemede) → 1. denemenin delivered'ı deftere teslim (L3), failed'ı yok sayılır; satır değişmez",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:482:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T17 imzasız bildirim yanıt işlenmeden gelir (istek Meta'da) → 503; yanıt işlenince yineleme 200 ve uygulanır; bekleyen istek yokken / pencere (5 dk) dışında tanınmayan → 200; pencere içinde yabancı ileti de 503 (BİLİNEN SINIR)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:630:3",
+      "hata": "yinelenen bildirim uygulandı · + actual - expected · + 'accepted' (beklenen delivered, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-K0c ön sınamadan SONRA dosya yazımı kilide takılır → 503, defter önce yazıldı; Meta'nın yinelemesi tamamlar, Bu Ay 1 (eşgüçlü)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:657:3",
+      "hata": "yazım kilitte 503 (geldi 200 {\"ok\":true}) · 200 !== 503 (beklenen 503, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkTfix-mutasyon-mYol-dosya-sonra-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "c725e2da51831c4cdfa9fe654f21b95e6e7b8aa78d3507a0bf935025ffed4679",
+  "ham_cikti_bayt": 27366
+}

@@ -1,0 +1,15 @@
+# v40 verisi: {"ok":true,"version":40,"batchId":"wab-e8ac6895-dd38-4478-a6b8-2603743b8155","status":[200,200,200],"body":null}
+file:///home/user/wt-t56b-248/test/t6-248/ortak.mjs:130
+    return db.prepare(sql).all(...args);
+                           ^
+
+Error: disk I/O error
+    at query (file:///home/user/wt-t56b-248/test/t6-248/ortak.mjs:130:28)
+    at file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t56b-t6/arac/h3-zorla.mjs:47:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  code: 'ERR_SQLITE_ERROR',
+  errcode: 4874,
+  errstr: 'disk I/O error'
+}
+
+Node.js v22.22.0

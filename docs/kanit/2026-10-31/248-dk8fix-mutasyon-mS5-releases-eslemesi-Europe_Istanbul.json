@@ -1,0 +1,38 @@
+{
+  "ad": "248-dk8fix-mutasyon-mS5-releases-eslemesi-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk8-gec-teslim-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk8-iki-bekletti-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8fix-248-d1e9d184/mut/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs",
+  "commit": "1674786f87c31851d0596f3ef903389cdfb1be44",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 26,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T10:15:47.526Z",
+  "sure_sn": 10.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 12,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 dar kontrol 8 DÜŞÜK-4 (sunucu) — aynı toplu işte iki Meta Bekletti: 2. denemede kabul edilen sayılır, İptal Et ile duran sayılmaz › P 2. denemede Meta Kabul Etti, Q Meta Bekletti'de beklerken İptal Et → P 'Daha Önce Gönderildi', Q 'gönderilecek'",
+      "konum": "test/whatsapp-dk8-iki-bekletti-248.test.mjs:30:3",
+      "hata": "P sayılır (son denemesi kabul), Q sayılmaz (son denemesi bırakıldı + iptal): {\"+905334445566\":\"gönderilecek\",\"+905335556677\":\"gönderilecek\"} · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk8fix-mutasyon-mS5-releases-eslemesi-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "67527c8984a5ff8be917bdfb1d7b819985ac60c78710df1cf74e6acc93dfa548",
+  "ham_cikti_bayt": 8387
+}

@@ -1,0 +1,31 @@
+TAP version 13
+# \# T6c {"label":"c1","kilitAniIleti":2,"kilitteIleti":0,"kilitteMesajIstegi":2,"yanitSuresiMs":{"enCok":9312,"ortanca":9062,"basarisiz":0,"adet":4},"kilitteGunluk":["[WARN] WhatsApp işi yürütülemedi (waj-f9f320a2-938b-4035-8ad8-b53b25416e2d; şirket dosyası kilitli); 30 sn sonra yeniden denenecek.","[WARN] Belge temizliği yapılamadı Error: database is locked","[WARN] WhatsApp işi yürütülemedi (waj-809793ee-4858-457e-8fc1-83bf598aeb19; şirket dosyası kilitli); 30 sn sonra yeniden denenecek."],"kilitteDurumlar":{"accepted":2,"pending":4},"son":{"toplu":"Tamamlandı","neden":"","isler":["accepted","accepted","accepted","accepted","accepted","accepted"],"aliciBasina":[1,1,1,1,1,1]}}
+# Subtest: T6 (c) — kilitli dosya
+    # Subtest: c1: şirket dosyası gönderim sürerken 25 sn kilitli
+    ok 1 - c1: şirket dosyası gönderim sürerken 25 sn kilitli
+      ---
+      duration_ms: 62861.725549
+      type: 'test'
+      ...
+# \# T6c {"label":"c2","kilitAniIleti":2,"kilitteIleti":0,"kilitteMesajIstegi":2,"yanitSuresiMs":{"enCok":10035,"ortanca":9449,"basarisiz":0,"adet":3},"kilitteGunluk":["[WARN] WhatsApp gönderim defteri: waj-55a062fc-79d6-4f3d-90f7-754798931a23 sonucu (accepted) yazılamadı (database is locked).","[WARN] WhatsApp gönderim defteri yazılamadı (waj-e0619292-ce90-4ada-80fe-2e4d096c746b): database is locked","[WARN] WhatsApp gönderim defteri yazılamadı (waj-500a138e-12d4-4a51-8665-e291452fd162): database is locked"],"kilitteDurumlar":{"accepted":2,"pending":3,"sending":1},"son":{"toplu":"Tamamlandı","neden":"","isler":["accepted","accepted","accepted","accepted","accepted","accepted"],"aliciBasina":[1,1,1,1,1,1]}}
+    # Subtest: c2: makine defteri (whatsapp-gonderim.sqlite) gönderim sürerken 25 sn kilitli → kilitteyken ileti GİTMEZ
+    ok 2 - c2: makine defteri (whatsapp-gonderim.sqlite) gönderim sürerken 25 sn kilitli → kilitteyken ileti GİTMEZ
+      ---
+      duration_ms: 63128.375415
+      type: 'test'
+      ...
+    1..2
+ok 1 - T6 (c) — kilitli dosya
+  ---
+  duration_ms: 125991.80115
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 141404.201664

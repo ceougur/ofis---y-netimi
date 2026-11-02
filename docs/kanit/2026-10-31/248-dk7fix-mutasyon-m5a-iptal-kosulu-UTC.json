@@ -1,0 +1,43 @@
+{
+  "ad": "248-dk7fix-mutasyon-m5a-iptal-kosulu-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-bekletti-iptal-248.test.mjs",
+  "commit": "3a41a5e2266f01ed7163d86eb197b472dd6961cc",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T09:11:39.044Z",
+  "sure_sn": 2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 2,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş 5 — Meta Bekletti iş iptal edilince kişi 'Daha Önce Gönderildi' sayılmaz; geç teslimde sayılır › Tamamlandı → 131049 ile yeniden açılmış toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider",
+      "konum": "test/whatsapp-dk7-bekletti-iptal-248.test.mjs:54:5",
+      "hata": "iptal edilen Meta Bekletti teslim edilmedi → P 'Daha Önce Gönderildi' DEĞİL · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş 5 — Meta Bekletti iş iptal edilince kişi 'Daha Önce Gönderildi' sayılmaz; geç teslimde sayılır › Sürüyor (yeniden açılmamış) toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider",
+      "konum": "test/whatsapp-dk7-bekletti-iptal-248.test.mjs:54:5",
+      "hata": "iptal edilen Meta Bekletti teslim edilmedi → P 'Daha Önce Gönderildi' DEĞİL · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk7fix-mutasyon-m5a-iptal-kosulu-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "4115271451b25b466202b2ba8ba982209558ad7d043f3d5876ca99ffb90f330a",
+  "ham_cikti_bayt": 4244
+}

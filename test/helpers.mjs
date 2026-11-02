@@ -61,6 +61,19 @@ export async function startTestServer(options = {}) {
     // 2.4.7 M4: tünel yöneticisinin test bağlantıları (sahte cloudflared runner, zamanlama, bileşen klasörü; lib/tunnel/attach.mjs). Gate verilmezse gerçek
     // kapıcı istemcisi mobileKapiUrl'e (yalnız YEREL sahte kapıcı) gider.
     ...(options.tunnel ? { tunnel: options.tunnel } : {}),
+    // 2.4.8 W1: Meta WhatsApp Cloud API adresi — yalnız YEREL sahte Graph sunucusu (test/whatsapp-sahte-graph.mjs; ders 30, test/whatsapp-meta-izolasyon.test.mjs).
+    // Verilmezse adres boştur, WhatsApp API'ye istek gitmez. whatsappTimeoutMs: Meta zaman aşımı (üretimde 15 sn). log: günlüğü yakalayan testler (belirteç izi).
+    ...(options.whatsappGraphUrl ? { whatsappGraphUrl: options.whatsappGraphUrl } : {}),
+    ...(options.whatsappTimeoutMs ? { whatsappTimeoutMs: options.whatsappTimeoutMs } : {}),
+    // 2.4.8 W2: gönderim işçisi testlerde ELLE sürülür (zamanlayıcı yarışı yok — ders 20); kendi zamanlayıcısını sınayan test whatsappWorker: "auto" verir.
+    whatsappWorker: options.whatsappWorker ?? "manual",
+    ...(options.whatsappGapMs !== undefined ? { whatsappGapMs: options.whatsappGapMs } : {}),
+    ...(options.whatsappFault ? { whatsappFault: options.whatsappFault } : {}),
+    ...(options.whatsappLedgerFault ? { whatsappLedgerFault: options.whatsappLedgerFault } : {}),
+    // 2.4.8 İş P1 (lib/write-lock.mjs): arka plan kilit sınaması / işaret süresi — yalnız test oluşturucusundan (üretim yapılandırması bu alanları taşımaz).
+    ...(options.__testWriteLockProbe === false ? { __testWriteLockProbe: false } : {}),
+    ...(Number.isFinite(options.__testWriteLockBackoffMs) ? { __testWriteLockBackoffMs: options.__testWriteLockBackoffMs } : {}),
+    ...(options.log ? { log: options.log } : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.
     moneyStrict: options.moneyStrict ?? true,

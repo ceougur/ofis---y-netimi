@@ -25,7 +25,7 @@ export const KAPI_HIZ = Object.freeze({
   tunelSaatlik: 30,
   // Makine başına günde ofis değişimi (ilk kayıt dahil: yeniden kurulum yeni ofis kimliği üretir). Her değişim eski tüneli ve DNS kaydını siler.
   ofisDegisimGunluk: 10,
-  // Kapıcı genelinde günde YENİ ofis kimliği (DNS kotası ve R2 nesneleri; ücretsiz Cloudflare alanında 200 DNS kaydı sınırı).
+  // Kapıcı genelinde günde YENİ ofis tüneli + DNS kaydı (2.4.8 K1 (c): kayıttan tünel açılışına taşındı; ücretsiz Cloudflare alanında 200 DNS kaydı sınırı).
   yeniOfisGunluk: 50,
   // Makine nesnesinde en çok kaç devre dışı ofis temizlik bekler; tek çağrıda en çok kaç tanesi işlenir.
   bekleyenAzami: 20,
@@ -79,8 +79,9 @@ export function silinenBirlestir(yeniler, eskiler = [], guncel = []) {
 }
 
 /**
- * Kapıcı genelinde günlük YENİ ofis sayacı. denetle: tavandaysa hiçbir şeyi değiştirmeden 429 (makine eşlemesinden ÖNCE); say: kabul edilen yeni ofisi sayar
- * (eşlemeden SONRA; reddedilen kayıt tavanı tüketmez). Eşzamanlı kayıtlar tavanı birkaç adet aşabilir (sayaç koşullu yazılır, denetim ayrı okumadır).
+ * Kapıcı genelinde günlük YENİ ofis tüneli sayacı (2.4.8 K1 (c): tünel ucu yeni tünel + DNS kaydı açarken; kayıt sayılmaz). denetle: tavandaysa hiçbir şeyi
+ * değiştirmeden 429 (tünel açılmadan ÖNCE); say: açılan tüneli sayar (açıldıktan SONRA; reddedilen başvuru tavanı tüketmez). Eşzamanlı başvurular tavanı birkaç
+ * adet aşabilir (sayaç koşullu yazılır, denetim ayrı okumadır).
  */
 export async function yeniOfisDenetle(env, simdi) {
   const n = Number((await oku(env, yeniOfisAnahtari(trGunu(simdi))))?.veri?.n || 0);
@@ -203,8 +204,12 @@ export async function bekleyenleriIsle(env, makine, { simdi, temizle = null }) {
       continue;
     }
     if (kapandi !== "kapali" || !temizle) continue;
+    // 2.4.8 K1 (a) (2.4.7 dar kontrol 2 BULGU 3): her Cloudflare silmesinden HEMEN önce makine eşlemesi yeniden okunur — temizlik sürerken x geri dönüp makineyi
+    // devraldıysa (son kaydolan kazanır) etkin ofisin tüneli / DNS kaydı silinmez; x bekleyenden çıkar (artık güncel ofis).
+    const devam = async () => (await makineOku(env, makine))?.ofis !== x;
     try {
-      if (await temizle(x)) biten.push(x);
+      if (await temizle(x, devam)) biten.push(x);
+      else if (!(await devam())) biten.push(x);
     } catch {
       // Cloudflare yanıt vermedi: bekleyende kalır, sonraki kayıt / tünel başvurusunda yeniden denenir.
     }

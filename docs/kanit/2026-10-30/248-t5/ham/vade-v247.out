@@ -1,0 +1,10 @@
+[23:07:59] vade verildi (v2.4.7 kendi ucu): {"puts":113,"sirket-001:kilitliRet":384,"sirket-001:vadeBeklenen":3,"sirket-001:vade":8,"sirket-001:elleBorc":799,"sirket-b96e3278-1a73-4a99-894a-0aef6e0cd8fa:vadeBeklenen":28,"sirket-b96e3278-1a73-4a99-894a-0aef6e0cd8fa:vade":74,"sirket-b96e3278-1a73-4a99-894a-0aef6e0cd8fa:elleBorc":212}
+# 113 PUT (Vade / Beklenen) 200; kilitli dönem reddi ayrı sayıldı: {"sirket-001:kilitliRet":384}
+# tests 113
+# pass 113
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+[kanit] 248-t5-vade-v247: GEÇTİ · çıkış 0 · 113/113 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 49395f7 +2 izlenmeyen · linux 6.18.44-fc-v185 x64 · Node v22.22.0

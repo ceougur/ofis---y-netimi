@@ -1,0 +1,88 @@
+{
+  "ad": "248-dk9fix-eski-8d08ff2a-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=120000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk9-acilis-gunu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk9-ilke-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk8-g-ek-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk8-g-son-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk8-h-ozel-aralik-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk8-i-tasinan-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk5-yine-de-gonder-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk9fix-248-9dbc87d5/eski/test/whatsapp-dk4-yeniden-dene-248.test.mjs",
+  "commit": "7172dd2f9cdd98bb3826c3150042f01d57feba79",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T13:05:28.270Z",
+  "sure_sn": 40.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 61,
+    "gecen": 50,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 dar kontrol 9 ORTA-1 — toplu işin dönem anahtarı açıldığı güne göre (★ soru 4) › günlük sınır: 03.11'de açılan özel 01.11–03.11 işinde ertesi günlere kalan B de 10.11'de 'Bu Ay' ile 'Daha Önce Gönderildi'; ikinci ekstre gitmez",
+      "konum": "test/whatsapp-dk9-acilis-gunu-248.test.mjs:52:3",
+      "hata": "iki kişi de aynı dönem (B'nin gönderim günü değil, işin açılış günü) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 9 ORTA-1 — toplu işin dönem anahtarı açıldığı güne göre (★ soru 4) › Meta Bekletti: 03.11 23:30 özel 01.11–03.11 → 131049 → 2. deneme 04.11 23:45'te kabul → 10.11 'Bu Ay' 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-dk9-acilis-gunu-248.test.mjs:72:3",
+      "hata": "2. denemenin anahtar kümesi de açılış gününe göre · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 dar kontrol 9 ORTA-1 — toplu işin dönem anahtarı açıldığı güne göre (★ soru 4) › taşınan veri: aynı çok günlü gönderim başka bilgisayara (defter olmadan) taşınınca 10.11'de 'Bu Ay' iki kişide 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-dk9-acilis-gunu-248.test.mjs:95:3",
+      "hata": "taşınan veride de açılış günü · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş J (dk9 soru 1/7) — yeniden denemede özel aralığın 'o gün'ü asıl işin günü › 03.11 23:30 asıl iş özel 01.11–03.11, P Başarısız → 04.11 P'ye 'Bu Ay' gitti → 05.11 00:30 asıl işin Yeniden Dene'si P'yi 'Daha Önce Gönderildi' ile eler",
+      "konum": "test/whatsapp-dk9-ilke-248.test.mjs:54:3",
+      "hata": "asıl işin günü (03.11 = Bu Ay) → aynı dönem (geldi 200 undefined) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş J (dk9 soru 1/7) — yeniden denemede özel aralığın 'o gün'ü asıl işin günü › Yine de Gönder: 03.11 23:30 özel 01.11–03.11 belirsiz → 05.11 00:30 işteki Yine de Gönder kabul → belirsiz çözülünce 10.11 'Bu Ay' 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-dk9-ilke-248.test.mjs:74:3",
+      "hata": "Yine de Gönder'in işi asıl işin gününü (03.11) taşır · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş L1 (S1a) — hazır seçimin o günkü tarihleri de dönem kümesinde › 03.11 'Bu Ay' gönderildi → 05.11 özel 01.11–03.11 'Daha Önce Gönderildi'; 03.11 Bu Ay işi beklerken 05.11 özel 01.11–03.11 'Zaten Kuyrukta'",
+      "konum": "test/whatsapp-dk9-ilke-248.test.mjs:96:3",
+      "hata": "03.11 Bu Ay'ın tarihleri = özel aralık → aynı dönem · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş L1 (S1a) — hazır seçimin o günkü tarihleri de dönem kümesinde › 03.11 'Geçen Ay' (Ekim) gönderildi → 15.12'de özel 01.10–31.10 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-dk9-ilke-248.test.mjs:115:3",
+      "hata": "Geçen Ay'ın tarihleri = özel aralık · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş L2 (S2) — taşınan veride dosyadaki Sonucu Belirsiz eler; onaylı yol açık › kaynakta P Sonucu Belirsiz (Bu Ay) + asıl işte Başarısız → taşınan veride yeni gönderim ve Yeniden Dene 'Sonucu Belirsiz' (onaylı yol iletide); işteki Yine de Gönder gider",
+      "konum": "test/whatsapp-dk9-ilke-248.test.mjs:129:3",
+      "hata": "dosyadaki belirsiz iş eler · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş L3 (S3) — Şirket Verisini Sıfırla ile duran Meta Bekletti sayılmaz; geç teslim sayılır › P Meta Bekletti → Şirket Verisini Sıfırla (Yalnız Hareketler; cari kalır) → P 'gönderilecek'; 1. denemenin geç 'delivered'ı → 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-dk9-ilke-248.test.mjs:161:3",
+      "hata": "teslim edilmemiş, sıfırlamayla duran Meta Bekletti sayılmaz · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş L4 (S4) — Meta Bekletti sonrası 2. deneme belirsizse 'Sonucu Belirsiz' › P kabul → 131049 → 24 saat sonra 2. deneme belirsiz → yeni gönderim 'Sonucu Belirsiz' (onaylı yol iletide); 1. denemenin geç teslimi → 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-dk9-ilke-248.test.mjs:182:3",
+      "hata": "2. denemenin belirsizliği 1. denemenin kabulüyle gizlenmez · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş L4 (S4) — Meta Bekletti sonrası 2. deneme belirsizse 'Sonucu Belirsiz' › onaylı yol: 2. deneme belirsizken işteki Yine de Gönder gider",
+      "konum": "test/whatsapp-dk9-ilke-248.test.mjs:207:3",
+      "hata": "gönderim: 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde \\\"Yine de Gönder\\\" seçin.\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-03\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Daha Önce Gönderildi\":1},\"alreadySent\":{\"count\":1,\"last\":\"2026-11-03T10:00:00.000Z\",\"included\":0},\"people\":[{\"id\":\"account-7b97c937-1e61-4388-885a-26661b8f08c1\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T10:00:00.000Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":0}} · 400 !== 200 (beklenen 200, gelen 400)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk9fix-eski-8d08ff2a-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "3ed3031ff234ad7ffa4551257f37d94e1e0ca6fd21e61a092d4df2474ce19f2c",
+  "ham_cikti_bayt": 44097
+}

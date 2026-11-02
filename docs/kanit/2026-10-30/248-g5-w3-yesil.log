@@ -1,0 +1,190 @@
+TAP version 13
+# Subtest: WhatsApp numara ve ekstre metni
+    # Subtest: Türkiye cep numaralarını wa.me biçimine çevirir; sabit hattı ve eksik numarayı ayırır
+    ok 1 - Türkiye cep numaralarını wa.me biçimine çevirir; sabit hattı ve eksik numarayı ayırır
+      ---
+      duration_ms: 2.03215
+      type: 'test'
+      ...
+    # Subtest: ekstre metni devir, dönem hareketleri ve güncel bakiyeyi verir
+    ok 2 - ekstre metni devir, dönem hareketleri ve güncel bakiyeyi verir
+      ---
+      duration_ms: 0.84252
+      type: 'test'
+      ...
+    1..2
+ok 1 - WhatsApp numara ve ekstre metni
+  ---
+  duration_ms: 3.905968
+  type: 'suite'
+  ...
+# Subtest: WhatsApp gönderim API'si
+    # Subtest: seçilen carilere kişiye özel ekstre hazırlar; numarası geçersiz olanı nedeniyle ayırır
+    ok 1 - seçilen carilere kişiye özel ekstre hazırlar; numarası geçersiz olanı nedeniyle ayırır
+      ---
+      duration_ms: 11.217012
+      type: 'test'
+      ...
+    # Subtest: süzgeçteki carilerin hepsi (all) seçilebilir; seçim yoksa hata verir
+    ok 2 - süzgeçteki carilerin hepsi (all) seçilebilir; seçim yoksa hata verir
+      ---
+      duration_ms: 10.306077
+      type: 'test'
+      ...
+    # Subtest: gönderim ve atlama cari kartının geçmişine yazılır; son gönderim alıcı listesinde görünür
+    ok 3 - gönderim ve atlama cari kartının geçmişine yazılır; son gönderim alıcı listesinde görünür
+      ---
+      duration_ms: 20.739054
+      type: 'test'
+      ...
+    1..3
+ok 2 - WhatsApp gönderim API'si
+  ---
+  duration_ms: 582.389248
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+    # Subtest: bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+    ok 1 - bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+      ---
+      duration_ms: 369.636097
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+    ok 2 - Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+      ---
+      duration_ms: 24.452726
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+    ok 3 - Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+      ---
+      duration_ms: 8.355065
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+    ok 4 - Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+      ---
+      duration_ms: 16.959136
+      type: 'test'
+      ...
+    # Subtest: Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+    ok 5 - Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+      ---
+      duration_ms: 3372.678948
+      type: 'test'
+      ...
+    # Subtest: Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+    ok 6 - Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+      ---
+      duration_ms: 63.324605
+      type: 'test'
+      ...
+    # Subtest: gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+    ok 7 - gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+      ---
+      duration_ms: 134.183814
+      type: 'test'
+      ...
+    # Subtest: iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+    ok 8 - iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+      ---
+      duration_ms: 389.183191
+      type: 'test'
+      ...
+    # Subtest: yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+    ok 9 - yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+      ---
+      duration_ms: 62.444614
+      type: 'test'
+      ...
+    # Subtest: belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+    ok 10 - belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+      ---
+      duration_ms: 116.727496
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+    ok 11 - Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+      ---
+      duration_ms: 44.748817
+      type: 'test'
+      ...
+    1..11
+ok 3 - 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+  ---
+  duration_ms: 5130.235625
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+    # Subtest: salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+    ok 1 - salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+      ---
+      duration_ms: 496.176775
+      type: 'test'
+      ...
+    # Subtest: Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+    ok 2 - Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+      ---
+      duration_ms: 404.438541
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+  ---
+  duration_ms: 901.03178
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+    # Subtest: wa.me 'Cari Ekstre - PDF' seçilen dönemi basar (Geçen Ay: devir 1.000, Ekim hareketleri, dönem sonu 850); metindeki güncel bakiyeyle aynı; ANLIK DURUM ekstresiyle BAYT BAYT aynı
+    ok 1 - wa.me 'Cari Ekstre - PDF' seçilen dönemi basar (Geçen Ay: devir 1.000, Ekim hareketleri, dönem sonu 850); metindeki güncel bakiyeyle aynı; ANLIK DURUM ekstresiyle BAYT BAYT aynı
+      ---
+      duration_ms: 661.652245
+      type: 'test'
+      ...
+    # Subtest: 'Tüm Hareketler' bugüne kadar: ileri tarihli hareket metne de PDF'e de girmez (§7a 22); Bu Ay ayın 1'inde tek gün
+    ok 2 - 'Tüm Hareketler' bugüne kadar: ileri tarihli hareket metne de PDF'e de girmez (§7a 22); Bu Ay ayın 1'inde tek gün
+      ---
+      duration_ms: 499.551232
+      type: 'test'
+      ...
+    # Subtest: WhatsApp Business API'ye yüklenen PDF, wa.me yolunun aynı dönem PDF'iyle BAYT BAYT aynı; iletinin {{3}} ve {{4}}'ü PDF'le aynı
+    ok 3 - WhatsApp Business API'ye yüklenen PDF, wa.me yolunun aynı dönem PDF'iyle BAYT BAYT aynı; iletinin {{3}} ve {{4}}'ü PDF'le aynı
+      ---
+      duration_ms: 472.543032
+      type: 'test'
+      ...
+    1..3
+ok 5 - 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+  ---
+  duration_ms: 1635.78276
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+    # Subtest: kesin durumdan sonra (Teslim Edildi / Okundu / Başarısız / Süresi Doldu) PDF Meta'dan silinir; Meta Kabul Etti / Sonucu Belirsiz / Meta Bekletti'de silinmez; zaten silinmişse silinmiş sayılır
+    ok 1 - kesin durumdan sonra (Teslim Edildi / Okundu / Başarısız / Süresi Doldu) PDF Meta'dan silinir; Meta Kabul Etti / Sonucu Belirsiz / Meta Bekletti'de silinmez; zaten silinmişse silinmiş sayılır
+      ---
+      duration_ms: 780.608922
+      type: 'test'
+      ...
+    # Subtest: yeniden denemede medya geçerliyse AYNISI kullanılır, 30 günü geçmişse yeniden yüklenir (§7a 15)
+    ok 2 - yeniden denemede medya geçerliyse AYNISI kullanılır, 30 günü geçmişse yeniden yüklenir (§7a 15)
+      ---
+      duration_ms: 542.785029
+      type: 'test'
+      ...
+    1..2
+ok 6 - 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+  ---
+  duration_ms: 1323.901731
+  type: 'suite'
+  ...
+1..6
+# tests 23
+# suites 6
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10743.880722

@@ -1,0 +1,83 @@
+{
+  "ad": "248-wabagla-eski-b5deb221",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-w7-tasinma-248.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T21:11:35.824Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 0,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 W7 taşınamaz bağlantı (A) — kapıcı: sır özeti, sırsız / yanlış sırlı / ikinci kullanım reddi › TAŞINAN BAĞLANTI: saldırganın oturum adresiyle (sır yok) kod değişimi, iptal ve doğrulama yapılamaz; Meta'ya istek gitmez, oturum bozulmaz",
+      "konum": "test/whatsapp-w7-tasinma-248.test.mjs:118:3",
+      "hata": "taşınan bağlantı kod değişimi YAPTI (kurbanın belirteci saldırganın anahtarına şifrelenir): 200  {\"durum\":\"hazir\"} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W7 taşınamaz bağlantı (A) — kapıcı: sır özeti, sırsız / yanlış sırlı / ikinci kullanım reddi › YANLIŞ SIR: başka oturumun sırrı ve rastgele sır reddedilir; doğru sırla doğrulama firma adını verir, değişim olur",
+      "konum": "test/whatsapp-w7-tasinma-248.test.mjs:137:3",
+      "hata": "başka oturumun sırrı kabul edildi: 200  {\"durum\":\"hazir\"} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W7 taşınamaz bağlantı (A) — kapıcı: sır özeti, sırsız / yanlış sırlı / ikinci kullanım reddi › SIR TEK KULLANIMLIK: değişimden sonra aynı sırla ikinci kod / iptal / doğrulama 409; teslimden sonra oturum yok; iptalden sonra da kod yok",
+      "konum": "test/whatsapp-w7-tasinma-248.test.mjs:160:3",
+      "hata": "ön koşul: doğru sırla doğrulama (sırrı tüketmez): 200  <!doctype html><html lang=\"tr\"><meta charset=\"utf-8\"><meta n · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W7 taşınamaz bağlantı (A) — kapıcı: sır özeti, sırsız / yanlış sırlı / ikinci kullanım reddi › kapıcı sırrı SAKLAMAZ (yalnız SHA-256 özeti); sır özeti olmayan oturum açılmaz; firma adından denetim / yön karakterleri çıkar",
+      "konum": "test/whatsapp-w7-tasinma-248.test.mjs:181:3",
+      "hata": "sır özeti olmadan oturum açıldı (sayfa taşınabilir kalır): 200  {\"oturum\":\"wpxErSfV98OWmkz-XQzGv7ViNi_gXftr0RCnbkgNNy0\",\"adres\":\"https://kapi.destekofis.test/wa/bagla#o=wpxErSfV98OWmkz-XQzGv7ViNi_gXftr0RCnbkgNNy0\",\"sureSn\":600} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W7 taşınamaz bağlantı (A) — kapıcı: sır özeti, sırsız / yanlış sırlı / ikinci kullanım reddi › sayfa: firma adı yalnız textContent ile (HTML yorumlanmaz), SDK sır doğrulanmadan yüklenmez, çerçeveye alınamaz, COOP yok, sır adreste yok",
+      "konum": "test/whatsapp-w7-tasinma-248.test.mjs:196:3",
+      "hata": "doğrulama firma adını JSON metin olarak verir: 200  <!doctype html><html lang=\"tr\"><meta charset=\"utf-8\"><meta n · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W7 taşınamaz bağlantı (B) — köken kuralı: sayfa, program ve ekran aynı › kapıcı sayfasının yerelKoken'i, programın isLocalOrigin'i ve ekranın kopyası aynı tabloyu verir",
+      "konum": "test/whatsapp-w7-tasinma-248.test.mjs:260:3",
+      "hata": "kapıcı sayfasında yerelKoken kuralı yok (sır her kökenden kabul edilir) (beklenen true, gelen ~)"
+    },
+    {
+      "ad": "2.4.8 W7 taşınamaz bağlantı (C) — program: sır ekrana (adrese değil), kapıcıya özet; uzak / genel adresten oturum açılmaz › yerel adresten: yanıtta tek kullanımlık sır (43 karakter) var, adreste yok; kapıcıya yalnız özeti ve firma adı gider; sır işlem geçmişine girmez",
+      "konum": "test/whatsapp-w7-tasinma-248.test.mjs:315:3",
+      "hata": "127.0.0.1:42035: yanıtta tek kullanımlık sır yok ([\"session\",\"url\",\"seconds\"]) (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W7 taşınamaz bağlantı (C) — program: sır ekrana (adrese değil), kapıcıya özet; uzak / genel adresten oturum açılmaz › uzak / genel adresten (tünel adı, genel ad, tek etiketli ad): 409 'WhatsApp'ı Bağla işlemi ofisteki bilgisayardan yapılır'; kapıcıda oturum açılmaz",
+      "konum": "test/whatsapp-w7-tasinma-248.test.mjs:337:3",
+      "hata": "o5rxbrt4ejchw464e.destekofis.net: {\"ok\":true,\"data\":{\"session\":\"kK0QeY2VW3IeS5jdOBpUWbTXIwWVhipjvxi-aBV6kjI\",\"url\":\"https://kapi.destekofis.test/wa/bagla#o=kK0QeY2VW3IeS5jdOBpUWbTXIwWVhipjvxi-aBV6kjI\",\"seconds\":600}} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W7 taşınamaz bağlantı (C) — program: sır ekrana (adrese değil), kapıcıya özet; uzak / genel adresten oturum açılmaz › Yönetim sayfası Cross-Origin-Opener-Policy: same-origin-allow-popups (bağlama penceresiyle bağ); öbür sayfalar same-origin kalır",
+      "konum": "test/whatsapp-w7-tasinma-248.test.mjs:355:3",
+      "hata": "admin.html same-origin ile pencereyle bağı keser: program pencereyi 'kapandı' sanar, sır verilemez · + actual - expected · + 'same-origin' (beklenen same-origin-allow-popups, gelen same-origin)"
+    },
+    {
+      "ad": "ileti sabitleri: kapıcının taşınan bağlantı iletisi ve programın yerel adres iletisi",
+      "konum": "test/whatsapp-w7-tasinma-248.test.mjs:373:1",
+      "hata": "kapıcıda taşınan bağlantı iletisi yok · + actual - expected · + undefined"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/wt-wabagla-248/docs/kanit/2026-10-30/248-wabagla-eski-b5deb221.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wabagla-eski-b5deb221-r7k2",
+  "ham_cikti_sha256": "98efae71f7a32809c215e3578c771e445055ba2a98978de4d1da5643fecf7232",
+  "ham_cikti_bayt": 16560
+}

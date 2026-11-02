@@ -1,0 +1,38 @@
+{
+  "ad": "248-dk11fix-eski-ab51984e-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=180000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk11-eski-e156f8f0/test/whatsapp-dk11-kilit-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk11-eski-e156f8f0/test/whatsapp-t6-b-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk11-eski-e156f8f0/test/whatsapp-w2-surec-olumu-248.test.mjs",
+  "commit": "135ce3f301f12786e976b9e754c6553dabb689c9",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T16:44:17.341Z",
+  "sure_sn": 46.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 4,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş N — şirket dosyası kilitliyken işçi turu olay döngüsünü busy_timeout'tan uzun tutmaz › kilitli dosyada her tur ≤ 12 sn (önce bakım + iş ~40 sn), ileti gitmez; kilit kalkınca iş gider, çift ileti yok, toplu iş Tamamlandı",
+      "konum": "test/whatsapp-dk11-kilit-248.test.mjs:15:3",
+      "hata": "kilitli dosyada 1. tur olay döngüsünü en çok ~10 sn (busy_timeout) tutar (turlar [40211,1] ms) (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk11fix-eski-ab51984e-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "820fa8805a8d595aefeefb2dc1a396a71c9f19532324087d20b6e4515eec5138",
+  "ham_cikti_bayt": 4041
+}

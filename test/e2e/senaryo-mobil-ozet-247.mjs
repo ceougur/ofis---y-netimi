@@ -20,7 +20,7 @@ import { permissionsFor, isGrantable } from "../../server/lib/permissions.mjs";
 import { ADMIN_PASSWORD, createClient, startTestServer } from "../helpers.mjs";
 import { lisansAnahtari } from "../kapi-ortak.mjs";
 import { startKapi } from "../kapi-yerel.mjs";
-import { rawRequest } from "../mobil-uzak-ortak.mjs";
+import { iosSimge, rawRequest } from "../mobil-uzak-ortak.mjs";
 
 const shots = process.env.EKRAN_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-mobil-ozet-247");
 mkdirSync(shots, { recursive: true });
@@ -116,6 +116,7 @@ const browser = await chromium.launch({
 });
 const newPhone = async () => {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, userAgent: IPHONE, isMobile: true, hasTouch: true, deviceScaleFactor: 2, ignoreHTTPSErrors: true });
+  await iosSimge(context); // 2.4.8 M4: iPhone eşlemesi ana ekran simgesinde
   const page = await context.newPage();
   page.on("pageerror", error => pageErrors.push(`telefon: ${error.message}`));
   page.setDefaultTimeout(20000);

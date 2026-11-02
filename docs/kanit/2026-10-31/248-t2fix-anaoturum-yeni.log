@@ -1,0 +1,170 @@
+TAP version 13
+# (node:9860) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T2-1 = A — 'Daha Önce Gönderildi' / 'Zaten Kuyrukta' dönem eşliği
+    # Subtest: Bu Ay, ertesi gün aynı seçim: gönderilmiş kişi 'Daha Önce Gönderildi', bekleyen kişi 'Zaten Kuyrukta' → yeni toplu iş açılmaz; her kişiye BİR ekstre
+    ok 1 - Bu Ay, ertesi gün aynı seçim: gönderilmiş kişi 'Daha Önce Gönderildi', bekleyen kişi 'Zaten Kuyrukta' → yeni toplu iş açılmaz; her kişiye BİR ekstre
+      ---
+      duration_ms: 751.699232
+      type: 'test'
+      ...
+    # Subtest: Bu Ay: ay içinde sonraki bir günde 'Daha Önce Gönderildi' (son gönderim tarihiyle); ay dönümünde yeni ay → gönderilir
+    ok 2 - Bu Ay: ay içinde sonraki bir günde 'Daha Önce Gönderildi' (son gönderim tarihiyle); ay dönümünde yeni ay → gönderilir
+      ---
+      duration_ms: 431.366391
+      type: 'test'
+      ...
+    # Subtest: Geçen Ay: aynı ay içinde yeniden seçilince 'Daha Önce Gönderildi'; sonraki ayda 'Geçen Ay' başka takvim ayı → gönderilir
+    ok 3 - Geçen Ay: aynı ay içinde yeniden seçilince 'Daha Önce Gönderildi'; sonraki ayda 'Geçen Ay' başka takvim ayı → gönderilir
+      ---
+      duration_ms: 365.690599
+      type: 'test'
+      ...
+    # Subtest: 'Bu Ay' ile 'Geçen Ay' aynı takvim ayını gösterse de farklı SEÇİM → ayrı dönem (BAŞ MİMAR YORUMU: kural 'aynı dönem seçimi' der)
+    ok 4 - 'Bu Ay' ile 'Geçen Ay' aynı takvim ayını gösterse de farklı SEÇİM → ayrı dönem (BAŞ MİMAR YORUMU: kural 'aynı dönem seçimi' der)
+      ---
+      duration_ms: 348.478602
+      type: 'test'
+      ...
+    # Subtest: Son 3 Ay: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+    ok 5 - Son 3 Ay: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+      ---
+      duration_ms: 367.218695
+      type: 'test'
+      ...
+    # Subtest: Tüm Hareketler: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+    ok 6 - Tüm Hareketler: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+      ---
+      duration_ms: 359.022209
+      type: 'test'
+      ...
+    # Subtest: Özel tarih aralığı: başlangıç ve bitiş birebir aynıysa 'Daha Önce Gönderildi', biri farklıysa gönderilir
+    ok 7 - Özel tarih aralığı: başlangıç ve bitiş birebir aynıysa 'Daha Önce Gönderildi', biri farklıysa gönderilir
+      ---
+      duration_ms: 359.861975
+      type: 'test'
+      ...
+    1..7
+ok 1 - 2.4.8 T2-1 = A — 'Daha Önce Gönderildi' / 'Zaten Kuyrukta' dönem eşliği
+  ---
+  duration_ms: 2984.989814
+  type: 'suite'
+  ...
+# (node:9861) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T1 P3 = SAYILMAZ — Süresi Doldu (ve Başarısız) 'Daha Önce Gönderildi' sayılmaz; kişiye ulaşan sayılır
+    # Subtest: Süresi Doldu kişi aynı dönem için yeni toplu işte GÖNDERİLECEK; yeni toplu iş açılır ve ileti bir kez daha gider
+    ok 1 - Süresi Doldu kişi aynı dönem için yeni toplu işte GÖNDERİLECEK; yeni toplu iş açılır ve ileti bir kez daha gider
+      ---
+      duration_ms: 627.895648
+      type: 'test'
+      ...
+    # Subtest: Süresi Doldu'dan sonra Meta geç 'delivered' bildirirse ileti ulaşmıştır → 'Daha Önce Gönderildi'
+    ok 2 - Süresi Doldu'dan sonra Meta geç 'delivered' bildirirse ileti ulaşmıştır → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 522.236378
+      type: 'test'
+      ...
+    # Subtest: Başarısız (kanca: teslim edilemedi 131026) → gönderilecek (mevcut davranış korunur); Teslim Edildi → 'Daha Önce Gönderildi'
+    ok 3 - Başarısız (kanca: teslim edilemedi 131026) → gönderilecek (mevcut davranış korunur); Teslim Edildi → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 849.673492
+      type: 'test'
+      ...
+    1..3
+ok 2 - 2.4.8 T1 P3 = SAYILMAZ — Süresi Doldu (ve Başarısız) 'Daha Önce Gönderildi' sayılmaz; kişiye ulaşan sayılır
+  ---
+  duration_ms: 2001.373378
+  type: 'suite'
+  ...
+# (node:9862) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T2 dar kontrol 2 ORTA-A — kancadan öğrenilen wamid defterde ait olduğu denemeye bağlanır; yinelenen eski bildirim yeni denemeye yazılmaz
+    # Subtest: belirsiz 1. deneme → imzalı W1 131049 → belirsiz 2. deneme → W1'in yinelenen imzalı 131049'u: iş Sonucu Belirsiz kalır, kilit çözülmez, üçüncü ileti yok
+    ok 1 - belirsiz 1. deneme → imzalı W1 131049 → belirsiz 2. deneme → W1'in yinelenen imzalı 131049'u: iş Sonucu Belirsiz kalır, kilit çözülmez, üçüncü ileti yok
+      ---
+      duration_ms: 641.777995
+      type: 'test'
+      ...
+    # Subtest: öğrenilen wamid'in kendi bildirimi (teslim) yine çalışır; bildirim yönlendirmesi (şirket) öğrenilen wamid'den de bulunur
+    ok 2 - öğrenilen wamid'in kendi bildirimi (teslim) yine çalışır; bildirim yönlendirmesi (şirket) öğrenilen wamid'den de bulunur
+      ---
+      duration_ms: 438.967445
+      type: 'test'
+      ...
+    1..2
+ok 3 - 2.4.8 T2 dar kontrol 2 ORTA-A — kancadan öğrenilen wamid defterde ait olduğu denemeye bağlanır; yinelenen eski bildirim yeni denemeye yazılmaz
+  ---
+  duration_ms: 1081.995717
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2 dar kontrol 2 ORTA-B — ileti isteğinin sınıflaması GERÇEK TLS ile: gövde gittiyse belirsiz, gitmediyse gönderilmedi
+    # Subtest: doğrudan: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+    ok 1 - doğrudan: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+      ---
+      duration_ms: 33.514507
+      type: 'test'
+      ...
+    # Subtest: vekil üzerinden: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+    ok 2 - vekil üzerinden: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+      ---
+      duration_ms: 10.727496
+      type: 'test'
+      ...
+    # Subtest: doğrudan: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+    ok 3 - doğrudan: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+      ---
+      duration_ms: 802.180738
+      type: 'test'
+      ...
+    # Subtest: vekil üzerinden: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+    ok 4 - vekil üzerinden: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+      ---
+      duration_ms: 804.639983
+      type: 'test'
+      ...
+    # Subtest: doğrudan: TCP kabul edildi, TLS hiç kurulmadı (zaman aşımı) → gönderilmedi
+    ok 5 - doğrudan: TCP kabul edildi, TLS hiç kurulmadı (zaman aşımı) → gönderilmedi
+      ---
+      duration_ms: 502.796386
+      type: 'test'
+      ...
+    # Subtest: doğrudan: sertifika doğrulanamadı → gönderilmedi, sunucuya gövde gitmedi
+    ok 6 - doğrudan: sertifika doğrulanamadı → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 6.746971
+      type: 'test'
+      ...
+    # Subtest: vekil: CONNECT 200, hedefle TLS kurulmadan kopma → gönderilmedi, sunucuya gövde gitmedi
+    ok 7 - vekil: CONNECT 200, hedefle TLS kurulmadan kopma → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 6.991375
+      type: 'test'
+      ...
+    # Subtest: vekil: CONNECT reddedildi (502) → gönderilmedi, sunucuya gövde gitmedi
+    ok 8 - vekil: CONNECT reddedildi (502) → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 3.308636
+      type: 'test'
+      ...
+    # Subtest: vekil: sertifika doğrulanamadı (vekil TLS denetimi / yanlış kök) → gönderilmedi, sunucuya gövde gitmedi
+    ok 9 - vekil: sertifika doğrulanamadı (vekil TLS denetimi / yanlış kök) → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 8.360797
+      type: 'test'
+      ...
+    1..9
+ok 4 - 2.4.8 T2 dar kontrol 2 ORTA-B — ileti isteğinin sınıflaması GERÇEK TLS ile: gövde gittiyse belirsiz, gitmediyse gönderilmedi
+  ---
+  duration_ms: 2184.70511
+  type: 'suite'
+  ...
+1..4
+# tests 21
+# suites 4
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3731.748234

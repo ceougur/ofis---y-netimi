@@ -1,0 +1,43 @@
+{
+  "ad": "248-t1-surucu2-icerik03-utc-duzeltme",
+  "komut": "node --no-warnings /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/surucu2-prog-608b5088/test/bagimsiz/whatsapp-248/surucu.mjs --senaryo ICERIK-03-yil-donumu --uc ikisi --tz UTC --cikti docs/kanit/2026-10-31/248-t1-surucu2-icerik03",
+  "commit": "ae63375303f568c10d2f48bbe1fe407a33ae06f9",
+  "dal": "is/surucu2-248",
+  "kirli": 0,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T12:15:05.392Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ICERIK-03-yil-donumu [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ICERIK-03-yil-donumu [yavas] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t1-surucu2-icerik03-utc-duzeltme.log",
+  "klasor": "/home/user/wt-surucu2-248",
+  "ham_cikti_sha256": "c0d07a9f7823c94d26e23d95bf9eedf577ae4bc738cb7faf116b2cf4ae7d5971",
+  "ham_cikti_bayt": 262
+}

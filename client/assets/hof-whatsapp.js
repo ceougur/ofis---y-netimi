@@ -59,11 +59,14 @@
     state.wa = win || null;
     return Boolean(win) || !("open" in window) || true;
   };
-  const statementPdf = person => `/api/workspace/accounts/${encodeURIComponent(person.id)}/ekstre.pdf`;
-  const downloadPdf = person => {
+  // 2.4.8 W3 (plan §6 W3, S5): PDF pencerede seçilen DÖNEMLE (metindeki dönem ve bakiyeyle aynı; sunucunun hazırlık yanıtındaki range). Önceden bütün
+  // hareketleri basıyordu. Dosya adı sunucunun dönemli ekstre adıyla aynı düzende ("Ekstre <Ad> <dönem>.pdf").
+  const pdfDay = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
+  const statementPdf = (person, range = {}, extra = "") => `/api/workspace/accounts/${encodeURIComponent(person.id)}/ekstre.pdf?${new URLSearchParams({ donem: "1", from: range.from || "", to: range.to || "" })}${extra}`;
+  const downloadPdf = (person, range = {}) => {
     const a = document.createElement("a");
-    a.href = `${statementPdf(person)}?download=1`;
-    a.download = `Cari-ekstre ${person.name}.pdf`;
+    a.href = statementPdf(person, range, "&download=1");
+    a.download = `Ekstre ${person.name} ${range.from ? pdfDay(range.from) : "baslangic"}-${range.to ? pdfDay(range.to) : "bugun"}.pdf`;
     a.rel = "noopener";
     document.body.appendChild(a);
     a.click();
@@ -77,12 +80,17 @@
     if (!HOF.can("accounts.view")) return HOF.toast("WhatsApp gönderimi için cari görme yetkisi gerekir.", { type: "error" });
     const state = { kind, preset: "thisMonth", templateId: TEMPLATES[0].id, template: TEMPLATES[0].text, onlyDebtors: false, data: null, picked: new Set(), preview: "", queue: [], at: 0, sent: 0, skipped: 0, auto: readPref("auto", true), pdf: kind === "statement" && readPref("pdf", true), armed: false, wa: null, batchId: `wa-${Date.now().toString(36)}` };
     let stopAuto = null;
+    let apiPanel = null;
     const modal = HOF.modal({
       title: kind === "statement" ? "WhatsApp ile Ekstre Gönder" : "WhatsApp ile Mesaj Gönder",
       eyebrow: title || "CARİ",
       size: "wide",
-      body: '<div class="hof-wa" data-wa><p class="hof-empty">Alıcılar hazırlanıyor…</p></div>',
-      onClose: () => stopAuto?.(),
+      // 2.4.8 W4: WhatsApp Business API bağlantısı kuruluysa üstte iki yol (hof-whatsapp-api.js); bağlantı yoksa pencere bugünkü gibi (yalnız [data-wa]).
+      body: '<div class="hof-wa-paths" data-wa-paths role="tablist" aria-label="Gönderim Yolu" hidden></div><div class="hof-wa-api" data-wa-api hidden></div><div class="hof-wa" data-wa><p class="hof-empty">Alıcılar hazırlanıyor…</p></div>',
+      onClose: () => {
+        stopAuto?.();
+        apiPanel?.stop();
+      },
     });
     const root = modal.dialog.querySelector("[data-wa]");
     const load = async () => {
@@ -99,17 +107,29 @@
     const textFor = person => (kind === "statement" ? person.statement : render(state.template, person, state.data.office));
     const eligible = () => state.data.recipients.filter(item => item.valid && (!state.onlyDebtors || item.balance > 0.005));
 
+    // Gönderime Başla'yı pasif bırakan neden (görünür yazı; Otomatik Gönder'deki data-wa-api-why düzeni).
+    const startBlock = (valid, fitting) => {
+      if (!state.data.recipients.length) return "Seçilen carilerde alıcı yok.";
+      if (!valid.length) return "Gönderilebilecek kişi yok: seçilen carilerin numarası yok ya da hatalı, cari WhatsApp mesajı istemiyor ya da pasif.";
+      if (!fitting.length) return "Borçlu cari yok; \"Yalnız Borçlu Carilere Gönder\" işaretini kaldırın.";
+      return "Gönderilecek kişi seçilmedi; listeden en az bir kişi işaretleyin.";
+    };
+
     // ---------- 1) Hazırlık ----------
     function prepare() {
       const list = state.data.recipients;
       const valid = list.filter(item => item.valid);
-      const invalid = list.filter(item => !item.valid);
+      // "WhatsApp Mesajı İstemiyor" ayrı sayılır (Otomatik Gönder'in eleme adlarıyla aynı); "Numarası Yok / Hatalı" yalnız telefon sorunu.
+      // Pasif cari de ayrı sayılır (KARAR S-PC A; Otomatik Gönder'deki "Pasif Cari" adıyla). Sıra kuyruğunkiyle aynı: önce İstemiyor, sonra Pasif.
+      const optedOut = list.filter(item => !item.valid && item.optOut);
+      const passive = list.filter(item => !item.valid && !item.optOut && item.passive);
+      const invalid = list.filter(item => !item.valid && !item.optOut && !item.passive);
       const picked = eligible().filter(item => state.picked.has(item.id));
       const person = list.find(item => item.id === state.preview) || valid[0];
       const fits = item => item.valid && (!state.onlyDebtors || item.balance > 0.005);
       const row = item => `<tr class="${fits(item) ? "" : "is-muted"}${item.id === state.preview ? " is-current" : ""}" data-preview="${esc(item.id)}"><td class="hof-acc-check"><input type="checkbox" data-pick="${esc(item.id)}" ${fits(item) ? "" : "disabled"} ${state.picked.has(item.id) && fits(item) ? "checked" : ""} aria-label="${esc(item.name)} gönder"></td><td><b>${esc(item.name)}</b><small>${item.phone ? esc(item.phone) : ""}${item.valid ? "" : `${item.phone ? " · " : ""}${esc(item.reason)}`}${item.valid && state.onlyDebtors && !(item.balance > 0.005) ? " · borcu yok" : ""}${item.lastSend ? ` · son gönderim ${esc(day(item.lastSend.at.slice(0, 10)))}` : ""}</small></td><td class="num">${esc(money(Math.abs(item.balance)))}<small>${item.balance > 0.005 ? "Borçlu" : item.balance < -0.005 ? "Alacaklı" : "Kapalı"}</small></td></tr>`;
       root.innerHTML = `
-        <div class="hof-wa-head"><div><strong>${list.length}</strong><span>Cari</span></div><div><strong>${valid.length}</strong><span>Geçerli Numara</span></div><div class="${invalid.length ? "is-warn" : ""}"><strong>${invalid.length}</strong><span>Numarası Yok / Hatalı</span></div><div><strong>${picked.length}</strong><span>Gönderilecek</span></div></div>
+        <div class="hof-wa-head"><div><strong>${list.length}</strong><span>Cari</span></div><div><strong>${valid.length}</strong><span>Geçerli Numara</span></div><div class="${invalid.length ? "is-warn" : ""}" data-wa-invalid><strong>${invalid.length}</strong><span>Numarası Yok / Hatalı</span></div>${optedOut.length ? `<div data-wa-optout-count><strong>${optedOut.length}</strong><span>WhatsApp Mesajı İstemiyor</span></div>` : ""}${passive.length ? `<div data-wa-passive-count><strong>${passive.length}</strong><span>Pasif Cari</span></div>` : ""}<div><strong>${picked.length}</strong><span>Gönderilecek</span></div></div>
         <div class="hof-wa-grid">
           <div class="hof-wa-left">
             ${kind === "statement"
@@ -126,7 +146,8 @@
             <p class="hof-edit-meta">Gönderim sırasında her kişinin mesajı WhatsApp'ta hazır açılır; siz <b>Gönder</b>'e basarsınız. Mesaj kişiye göre değiştirilebilir. ${kind === "statement" ? "Ekstrenin PDF'ini aynı sohbete ekleyebilirsiniz." : ""}</p>
           </div>
         </div>
-        <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-close>Vazgeç</button><button type="button" class="hof-button" data-start ${picked.length ? "" : "disabled"}>Gönderime Başla (${picked.length} Kişi)</button></div>`;
+        <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-close>Vazgeç</button><button type="button" class="hof-button" data-start ${picked.length ? "" : "disabled"}>Gönderime Başla (${picked.length} Kişi)</button></div>
+        ${picked.length ? "" : `<p class="hof-wa-api-why" data-start-why>${esc(startBlock(valid, eligible()))}</p>`}`;
     }
 
     // ---------- 2) Gönderim sırası ----------
@@ -152,7 +173,7 @@
           <button type="button" class="hof-button hof-button-ghost" data-prev ${state.at ? "" : "disabled"}>← Önceki</button>
           <button type="button" class="hof-button hof-button-ghost" data-skip>Atla</button>
           <button type="button" class="hof-button hof-button-ghost" data-copy>Metni Kopyala</button>
-          ${kind === "statement" ? HOF.outputButton({ kind: "pdf", href: statementPdf(person), label: "Cari Ekstre - PDF", tip: "Bu kişinin cari ekstresi PDF olarak açılır", attrs: 'target="_blank" rel="noopener"' }) : ""}
+          ${kind === "statement" ? HOF.outputButton({ kind: "pdf", href: statementPdf(person, state.data.range), label: "Cari Ekstre - PDF", tip: "Bu kişinin seçilen dönemdeki cari ekstresi PDF olarak açılır", attrs: 'target="_blank" rel="noopener"' }) : ""}
           <button type="button" class="hof-button hof-whatsapp" data-send>${state.armed && state.auto ? "Şimdi Aç" : "WhatsApp'ta Aç ve Sıradakine Geç"}</button>
         </div>
         <div class="hof-wa-auto">
@@ -168,7 +189,7 @@
       const current = root.querySelector("[data-current]");
       if (current) person.text = current.value;
       openChat(state, person);
-      if (kind === "statement" && state.pdf) downloadPdf(person);
+      if (kind === "statement" && state.pdf) downloadPdf(person, state.data.range);
       log(person, "sent", person.text);
       state.sent += 1;
       state.at += 1;
@@ -286,7 +307,62 @@
         }
       }
     });
-    load();
+    // ---------- 2.4.8 W4: yol seçimi (Otomatik Gönder / WhatsApp Web ile Gönder) ----------
+    // Bugünkü wa.me yolu KALDIRILMAZ: bağlantı varken de ikinci sekmede aynen çalışır (Otomatik Sıra, kişi adıyla PDF, dönem). Otomatik yol öndedir ve
+    // kullanılabiliyorsa (yetki, lisans, sınanmış bağlantı, şablon son denetimde hazır) varsayılandır; kullanılamıyorsa sekmede nedeni görünür.
+    const paths = modal.dialog.querySelector("[data-wa-paths]");
+    const apiRoot = modal.dialog.querySelector("[data-wa-api]");
+    const titleNode = modal.dialog.querySelector(".hof-modal-title");
+    const baseTitle = titleNode?.textContent || "";
+    let manualLoaded = false;
+    const showPath = which => {
+      for (const tab of paths.querySelectorAll("[data-wa-path]")) {
+        const on = tab.dataset.waPath === which;
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+        tab.classList.toggle("is-active", on);
+        tab.tabIndex = on ? 0 : -1;
+      }
+      apiRoot.hidden = which !== "api";
+      root.hidden = which !== "manual";
+      if (titleNode) titleNode.textContent = which === "api" ? "WhatsApp ile Otomatik Gönder" : baseTitle;
+      if (which === "api" && !apiPanel) apiPanel = HOF.whatsappApi.mount(apiRoot, { kind: kind === "statement" ? "statement" : "reminder", selection, info: apiInfo, onDone });
+      if (which === "manual" && !manualLoaded) {
+        manualLoaded = true;
+        load();
+      }
+    };
+    let apiInfo = null;
+    const begin = async () => {
+      apiInfo = HOF.whatsappApi ? await HOF.whatsappApi.status() : null;
+      if (!apiInfo?.configured) {
+        manualLoaded = true;
+        return load();
+      }
+      const apiKind = kind === "statement" ? "statement" : "reminder";
+      const block = HOF.whatsappApi.usageBlock(apiInfo);
+      paths.innerHTML = `<button type="button" role="tab" class="hof-wa-path" data-wa-path="api"><b>Otomatik Gönder</b><small>${block ? esc(block) : "WhatsApp Business API: seçin, Gönder'e basın; iletiler ve PDF kendiliğinden gider"}</small></button>
+        <button type="button" role="tab" class="hof-wa-path" data-wa-path="manual"><b>WhatsApp Web ile Gönder</b><small>Kendi WhatsApp'ınızla tek tek: her kişide Gönder'e siz basarsınız</small></button>`;
+      paths.hidden = false;
+      showPath(HOF.whatsappApi.ready(apiInfo, apiKind) ? "api" : "manual");
+    };
+    modal.dialog.addEventListener("click", event => {
+      const tab = event.target.closest("[data-wa-path]");
+      if (tab && paths.contains(tab)) showPath(tab.dataset.waPath);
+    });
+    paths.addEventListener("keydown", event => {
+      if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+      const tabs = [...paths.querySelectorAll("[data-wa-path]")];
+      const at = tabs.indexOf(document.activeElement);
+      if (at < 0) return;
+      event.preventDefault();
+      const next = tabs[(at + (event.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      next.focus();
+      showPath(next.dataset.waPath);
+    });
+    apiRoot.addEventListener("click", event => {
+      if (event.target.closest("[data-wa-api-close]")) modal.close();
+    });
+    begin();
   }
 
   // Tek cari: ekstre, mesaj ya da doğrudan sohbet.
@@ -304,7 +380,12 @@
       .then(rows => {
         const box = chooser.dialog.querySelector("[data-history]");
         if (!box || !rows?.length) return;
-        box.innerHTML = `<p class="hof-wa-label">Son Gönderimler</p><ul>${rows.slice(0, 5).map(row => `<li>${esc(HOF.formatDate(row.at))} · ${row.kind === "statement" ? "Ekstre" : "Mesaj"}${row.status === "skipped" ? " (atlandı)" : ""}${row.actorName ? ` · ${esc(row.actorName)}` : ""}</li>`).join("")}</ul>`;
+        // 2.4.8 W4 (plan §6 W4): yol (Otomatik / Elle), durum ve neden — otomatik satırlar sunucunun durum etiketiyle (wa_jobs).
+        const kindText = row => (row.kind === "statement" ? "Ekstre" : row.kind === "reminder" ? "Ödeme Hatırlatma" : "Mesaj");
+        const line = row => row.channel === "api"
+          ? `${esc(HOF.formatDate(row.at))} · ${kindText(row)} · Otomatik · ${esc(row.stateLabel || "")}${row.reason ? ` (${esc(row.reason)})` : ""}${row.actorName ? ` · ${esc(row.actorName)}` : ""}`
+          : `${esc(HOF.formatDate(row.at))} · ${kindText(row)} · Elle${row.status === "skipped" ? " (atlandı)" : ""}${row.actorName ? ` · ${esc(row.actorName)}` : ""}`;
+        box.innerHTML = `<p class="hof-wa-label">Son Gönderimler</p><ul>${rows.slice(0, 5).map(row => `<li data-wa-history="${esc(row.channel || "manual")}">${line(row)}</li>`).join("")}</ul>`;
       })
       .catch(() => {});
     chooser.dialog.addEventListener("click", event => {

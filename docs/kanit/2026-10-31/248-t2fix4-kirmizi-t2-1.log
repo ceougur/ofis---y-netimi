@@ -1,0 +1,177 @@
+# komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-t2-1-248.test.mjs
+# kod: c44d7724 (git archive kopyası, ders 23; donem.mjs o zamandan beri değişmemişti); test dosyası: is/t2fix-248 T2-1 = A commit'indeki hâli
+# platform: Linux node v22.22.0; tarih: 2026-10-31T03:13:31Z
+TAP version 13
+# Subtest: 2.4.8 T2-1 = A — 'Daha Önce Gönderildi' / 'Zaten Kuyrukta' dönem eşliği
+    # Subtest: Bu Ay, ertesi gün aynı seçim: gönderilmiş kişi 'Daha Önce Gönderildi', bekleyen kişi 'Zaten Kuyrukta' → yeni toplu iş açılmaz; her kişiye BİR ekstre
+    not ok 1 - Bu Ay, ertesi gün aynı seçim: gönderilmiş kişi 'Daha Önce Gönderildi', bekleyen kişi 'Zaten Kuyrukta' → yeni toplu iş açılmaz; her kişiye BİR ekstre
+      ---
+      duration_ms: 591.475527
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2-1-248.test.mjs:35:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ertesi gün aynı 'Bu Ay' seçimi aynı dönem sayılmalı (geldi {"Ayşe Yılmaz":"gönderilecek","Burak Kaya":"gönderilecek"})
+        + actual - expected
+        
+          {
+        +   'Ayşe Yılmaz': 'gönderilecek',
+        +   'Burak Kaya': 'gönderilecek'
+        -   'Ayşe Yılmaz': 'Daha Önce Gönderildi',
+        -   'Burak Kaya': 'Zaten Kuyrukta'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        Ayşe Yılmaz: 'Daha Önce Gönderildi'
+        Burak Kaya: 'Zaten Kuyrukta'
+      actual:
+        Ayşe Yılmaz: 'gönderilecek'
+        Burak Kaya: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2-1-248.test.mjs:49:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Bu Ay: ay içinde sonraki bir günde 'Daha Önce Gönderildi' (son gönderim tarihiyle); ay dönümünde yeni ay → gönderilir
+    not ok 2 - Bu Ay: ay içinde sonraki bir günde 'Daha Önce Gönderildi' (son gönderim tarihiyle); ay dönümünde yeni ay → gönderilir
+      ---
+      duration_ms: 410.00626
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2-1-248.test.mjs:64:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ertesi gün (aynı ay)
+        + actual - expected
+        
+          {
+        +   sentBefore: null,
+        +   skip: 'gönderilecek'
+        -   sentBefore: '2026-11-03T06:00:00.000Z',
+        -   skip: 'Daha Önce Gönderildi'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        skip: 'Daha Önce Gönderildi'
+        sentBefore: '2026-11-03T06:00:00.000Z'
+      actual:
+        skip: 'gönderilecek'
+        sentBefore: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2-1-248.test.mjs:71:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Geçen Ay: aynı ay içinde yeniden seçilince 'Daha Önce Gönderildi'; sonraki ayda 'Geçen Ay' başka takvim ayı → gönderilir
+    ok 3 - Geçen Ay: aynı ay içinde yeniden seçilince 'Daha Önce Gönderildi'; sonraki ayda 'Geçen Ay' başka takvim ayı → gönderilir
+      ---
+      duration_ms: 377.718001
+      type: 'test'
+      ...
+    # Subtest: 'Bu Ay' ile 'Geçen Ay' aynı takvim ayını gösterse de farklı SEÇİM → ayrı dönem (BAŞ MİMAR YORUMU: kural 'aynı dönem seçimi' der)
+    ok 4 - 'Bu Ay' ile 'Geçen Ay' aynı takvim ayını gösterse de farklı SEÇİM → ayrı dönem (BAŞ MİMAR YORUMU: kural 'aynı dönem seçimi' der)
+      ---
+      duration_ms: 362.93134
+      type: 'test'
+      ...
+    # Subtest: Son 3 Ay: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+    not ok 5 - Son 3 Ay: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+      ---
+      duration_ms: 370.045429
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2-1-248.test.mjs:109:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        6. gün (son 7 gün içinde)
+        + actual - expected
+        
+          {
+        +   sentBefore: null,
+        +   skip: 'gönderilecek'
+        -   sentBefore: '2026-11-03T06:00:00.000Z',
+        -   skip: 'Daha Önce Gönderildi'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        skip: 'Daha Önce Gönderildi'
+        sentBefore: '2026-11-03T06:00:00.000Z'
+      actual:
+        skip: 'gönderilecek'
+        sentBefore: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2-1-248.test.mjs:116:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tüm Hareketler: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+    not ok 6 - Tüm Hareketler: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+      ---
+      duration_ms: 364.279521
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2-1-248.test.mjs:109:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        6. gün (son 7 gün içinde)
+        + actual - expected
+        
+          {
+        +   sentBefore: null,
+        +   skip: 'gönderilecek'
+        -   sentBefore: '2026-11-03T06:00:00.000Z',
+        -   skip: 'Daha Önce Gönderildi'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        skip: 'Daha Önce Gönderildi'
+        sentBefore: '2026-11-03T06:00:00.000Z'
+      actual:
+        skip: 'gönderilecek'
+        sentBefore: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2-1-248.test.mjs:116:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Özel tarih aralığı: başlangıç ve bitiş birebir aynıysa 'Daha Önce Gönderildi', biri farklıysa gönderilir
+    ok 7 - Özel tarih aralığı: başlangıç ve bitiş birebir aynıysa 'Daha Önce Gönderildi', biri farklıysa gönderilir
+      ---
+      duration_ms: 363.192802
+      type: 'test'
+      ...
+    1..7
+not ok 1 - 2.4.8 T2-1 = A — 'Daha Önce Gönderildi' / 'Zaten Kuyrukta' dönem eşliği
+  ---
+  duration_ms: 2841.502461
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t2fix2-eski-c44d7724-q8m/test/whatsapp-t2-1-248.test.mjs:34:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 3
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3284.648028
+# çıkış kodu: 1

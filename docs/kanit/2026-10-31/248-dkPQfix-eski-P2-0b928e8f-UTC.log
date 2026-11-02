@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: 2.4.8 İş P1 — kilitli şirket dosyasında arka plan işleri olay döngüsünü tutmaz
+    # Subtest: kilitliyken işçi turları ≤ 1 sn (önce ~10 sn), ileti gitmez; kilit kalkınca (işaret süresi sonra) iş gider, çift ileti yok
+    ok 1 - kilitliyken işçi turları ≤ 1 sn (önce ~10 sn), ileti gitmez; kilit kalkınca (işaret süresi sonra) iş gider, çift ileti yok
+      ---
+      duration_ms: 2574.627805
+      type: 'test'
+      ...
+    # Subtest: c2: makine defteri (whatsapp-gonderim.sqlite) kilitliyken de işçi turları ≤ 1 sn, ileti gitmez; kilit kalkınca iş gider, çift ileti yok
+    not ok 2 - c2: makine defteri (whatsapp-gonderim.sqlite) kilitliyken de işçi turları ≤ 1 sn, ileti gitmez; kilit kalkınca iş gider, çift ileti yok
+      ---
+      duration_ms: 11596.903278
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-P2-0b928e8f/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:60:3'
+      failureType: 'testCodeFailure'
+      error: 'defter kilitliyken her işçi turu ≤ 1 sn (turlar [10064,2,1] ms)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-P2-0b928e8f/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:78:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kullanıcı yazımı bugünkü beklemeyi korur: arka plan sınamasından SONRA dosya ayrı iş parçacığında 2 sn kilitliyken cari açma bekler ve 200 alır
+    ok 3 - kullanıcı yazımı bugünkü beklemeyi korur: arka plan sınamasından SONRA dosya ayrı iş parçacığında 2 sn kilitliyken cari açma bekler ve 200 alır
+      ---
+      duration_ms: 2454.540014
+      type: 'test'
+      ...
+    1..3
+not ok 1 - 2.4.8 İş P1 — kilitli şirket dosyasında arka plan işleri olay döngüsünü tutmaz
+  ---
+  duration_ms: 16627.936626
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-P2-0b928e8f/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:21:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 İş P2 — kilitte ekranda neden
+    # Subtest: işçi kilidi görünce süren toplu işin ayrıntısında ve listede not; konunca ve kalkınca canlı olay; kilit kalkıp işaret süresi dolunca not kalkar; duraklatılmış işte not yok
+    not ok 1 - işçi kilidi görünce süren toplu işin ayrıntısında ve listede not; konunca ve kalkınca canlı olay; kilit kalkıp işaret süresi dolunca not kalkar; duraklatılmış işte not yok
+      ---
+      duration_ms: 645.517777
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-P2-0b928e8f/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:126:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        süren işin ayrıntısında not
+        + actual - expected
+        
+        + undefined
+        - 'Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Şirket dosyası başka bir program tarafından kullanılıyor; gönderim bekliyor.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-P2-0b928e8f/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:149:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - 2.4.8 İş P2 — kilitte ekranda neden
+  ---
+  duration_ms: 646.244056
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-P2-0b928e8f/test/whatsapp-dk13-arka-plan-kilit-248.test.mjs:125:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17725.418484

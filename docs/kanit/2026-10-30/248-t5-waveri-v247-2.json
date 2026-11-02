@@ -1,0 +1,32 @@
+{
+  "ad": "248-t5-waveri-v247-2",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t5-248-20261030T2301/arac/goc248.mjs waveri --repo /home/user/wt-t5-248 --kok /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t5-248-20261030T2301/kok",
+  "commit": "49395f775a91c8bc93572a43806895bdbdc7b515",
+  "dal": "is/t5-248",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T23:08:13.300Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 30,
+    "gecen": 30,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-t5-waveri-v247-2.log",
+  "klasor": "/home/user/wt-t5-248",
+  "ham_cikti_sha256": "9b490b5ec5c1a4c705b0c4548b250a7d415cb35d05cfab04e4f088f4b530d8dc",
+  "ham_cikti_bayt": 174
+}

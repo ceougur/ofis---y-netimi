@@ -1,0 +1,38 @@
+{
+  "ad": "248-dkOfix-mutasyon-mMc-basarida-silinmez-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk11-kilit-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/mut/test/whatsapp-dk12-kilit-bakim-sayac-248.test.mjs",
+  "commit": "8faf4ca60d96b7654d631a355710a84e5d77343d",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 63,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T20:03:00.263Z",
+  "sure_sn": 154,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 4,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş O — kilitli dosyada bakım turu ve bellekteki 'art arda' sayacı › O3b: kilitte biriken 4 → kilit kalkınca bir iş BAŞARIYLA gider (sayaç sıfırlanır) → sonraki tek disk dolu hatası art arda 1",
+      "konum": "test/whatsapp-dk12-kilit-bakim-sayac-248.test.mjs:140:3",
+      "hata": "başarıdan sonra tek hata: art arda 1 (geldi {\"state\":\"paused\",\"troubles\":5,\"pause_code\":\"local\"}) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkOfix-mutasyon-mMc-basarida-silinmez-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "aef39c1d9499383383eff733c72f065b206c01a906a16f1e9392a2bed81c35a6",
+  "ham_cikti_bayt": 3878
+}

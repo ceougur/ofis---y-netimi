@@ -1,0 +1,176 @@
+TAP version 13
+# Subtest: 2.4.8 I1 içe aktarma istek kimliği (tek sunucu)
+    # Subtest: Cari: aynı kimlik + aynı dosya (yanıt kayboldu, yeniden basıldı) → 3 cari, açılış bakiyesi bir kez (cari + 120 + yevmiye); ikinci yanıt ilk rapor (replayed)
+    ok 1 - Cari: aynı kimlik + aynı dosya (yanıt kayboldu, yeniden basıldı) → 3 cari, açılış bakiyesi bir kez (cari + 120 + yevmiye); ikinci yanıt ilk rapor (replayed)
+      ---
+      duration_ms: 80.799978
+      type: 'test'
+      ...
+    # Subtest: Çek / Senet (Cariye işle): aynı kimlik + aynı dosya → 3 evrak, carinin borcu bir kez 1.500 düşer, 101 +1.750 bir kez; ikinci yanıt ilk rapor
+    ok 2 - Çek / Senet (Cariye işle): aynı kimlik + aynı dosya → 3 evrak, carinin borcu bir kez 1.500 düşer, 101 +1.750 bir kez; ikinci yanıt ilk rapor
+      ---
+      duration_ms: 86.394303
+      type: 'test'
+      ...
+    # Subtest: Stok: aynı kimlik + aynı dosya → 2 ürün, açılış stoku bir kez; ikinci yanıt ilk yüklemenin bildirimi (önceden '0 ürün açıldı, 2 satır atlandı')
+    ok 3 - Stok: aynı kimlik + aynı dosya → 2 ürün, açılış stoku bir kez; ikinci yanıt ilk yüklemenin bildirimi (önceden '0 ürün açıldı, 2 satır atlandı')
+      ---
+      duration_ms: 22.554671
+      type: 'test'
+      ...
+    # Subtest: Taksit: aynı kimlik + aynı dosya → 2 kart, tek aktarım kaydı (Geri Al aynı); ikinci yanıt ilk rapor (önceden '0 kart, 2 satır atlandı')
+    ok 4 - Taksit: aynı kimlik + aynı dosya → 2 kart, tek aktarım kaydı (Geri Al aynı); ikinci yanıt ilk rapor (önceden '0 kart, 2 satır atlandı')
+      ---
+      duration_ms: 50.191014
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki kopya (aynı kimlik, Promise.all) → cari ve çek bir kez; biri yeni, öbürü replayed
+    ok 5 - aynı anda iki kopya (aynı kimlik, Promise.all) → cari ve çek bir kez; biri yeni, öbürü replayed
+      ---
+      duration_ms: 52.813756
+      type: 'test'
+      ...
+    # Subtest: taksit: işlemden önceki bekleme (tablo dizini; bağlı Sheets'in ilk eşitlemesi) iki kopyayı iç içe geçirir → yine tek yükleme, biri replayed (denetim işlemin içinde)
+    ok 6 - taksit: işlemden önceki bekleme (tablo dizini; bağlı Sheets'in ilk eşitlemesi) iki kopyayı iç içe geçirir → yine tek yükleme, biri replayed (denetim işlemin içinde)
+      ---
+      duration_ms: 427.283774
+      type: 'test'
+      ...
+    # Subtest: aynı kimlik + farklı içerik (seçenek ya da eşleme değişti) → 409 request-id-reused, hiçbir şey yazılmaz; ileti ilk yüklemenin sayılarını söyler, yeniden yüklemeye yönlendirmez
+    ok 7 - aynı kimlik + farklı içerik (seçenek ya da eşleme değişti) → 409 request-id-reused, hiçbir şey yazılmaz; ileti ilk yüklemenin sayılarını söyler, yeniden yüklemeye yönlendirmez
+      ---
+      duration_ms: 79.972316
+      type: 'test'
+      ...
+    # Subtest: çek 409 önerisi izlenir: cariye işlenmemiş yükleme silinip “Bağlanan carilere de işle” ile yeniden yüklenince 3 evrak, 2 cari hareketi (bir kez)
+    ok 8 - çek 409 önerisi izlenir: cariye işlenmemiş yükleme silinip “Bağlanan carilere de işle” ile yeniden yüklenince 3 evrak, 2 cari hareketi (bir kez)
+      ---
+      duration_ms: 77.528652
+      type: 'test'
+      ...
+    # Subtest: aynı kimlik başka içe aktarmada ayrı kapsamdır (cari yüklemesinin kimliği çek yüklemesini engellemez, sonucu sızmaz)
+    ok 9 - aynı kimlik başka içe aktarmada ayrı kapsamdır (cari yüklemesinin kimliği çek yüklemesini engellemez, sonucu sızmaz)
+      ---
+      duration_ms: 63.410973
+      type: 'test'
+      ...
+    # Subtest: kimliksiz istek (eski istemci) bugünkü gibi işlenir: aynı dosya iki kez → no'suz / telefonsuz satırlar yeniden açılır (koruma yalnız kimlikli istemcide)
+    ok 10 - kimliksiz istek (eski istemci) bugünkü gibi işlenir: aynı dosya iki kez → no'suz / telefonsuz satırlar yeniden açılır (koruma yalnız kimlikli istemcide)
+      ---
+      duration_ms: 115.651411
+      type: 'test'
+      ...
+    # Subtest: biçimsiz kimlik → 400 request-id-invalid, yazım yok; reddedilen istek (400 'Tutar kolonunu seçin') kimlik bırakmaz, düzeltilip aynı kimlikle kaydedilir
+    ok 11 - biçimsiz kimlik → 400 request-id-invalid, yazım yok; reddedilen istek (400 'Tutar kolonunu seçin') kimlik bırakmaz, düzeltilip aynı kimlikle kaydedilir
+      ---
+      duration_ms: 31.756743
+      type: 'test'
+      ...
+    # Subtest: kayıtlar silindikten sonra aynı kimlikle yeniden gönderim yeniden açmaz (ilk rapor döner; silinen geri gelmez)
+    ok 12 - kayıtlar silindikten sonra aynı kimlikle yeniden gönderim yeniden açmaz (ilk rapor döner; silinen geri gelmez)
+      ---
+      duration_ms: 79.666597
+      type: 'test'
+      ...
+    # Subtest: başka kullanıcının aynı kimliği ayrıdır (sonuç sızmaz)
+    ok 13 - başka kullanıcının aynı kimliği ayrıdır (sonuç sızmaz)
+      ---
+      duration_ms: 124.598132
+      type: 'test'
+      ...
+    1..13
+ok 1 - 2.4.8 I1 içe aktarma istek kimliği (tek sunucu)
+  ---
+  duration_ms: 1781.273546
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 I1 içe aktarma istek kimliği: yeniden başlatma ve şirketler
+    # Subtest: sunucu yeniden başlasa da aynı kimlik → ilk rapor, farklı içerik → 409; iki şirket ayrı (001'in kimliği 002'de yeni yükleme)
+    ok 1 - sunucu yeniden başlasa da aynı kimlik → ilk rapor, farklı içerik → 409; iki şirket ayrı (001'in kimliği 002'de yeni yükleme)
+      ---
+      duration_ms: 409.504111
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.8 I1 içe aktarma istek kimliği: yeniden başlatma ve şirketler
+  ---
+  duration_ms: 734.59006
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 I1 içe aktarma ortasında SIGKILL: satırlar, cari / yevmiye etkisi, işlem geçmişi ve kimlik kaydı ya birlikte ya hiç
+    # Subtest: çek yüklemesi (Cariye işle), üçüncü evrak yazılırken (ortada) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+    ok 1 - çek yüklemesi (Cariye işle), üçüncü evrak yazılırken (ortada) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+      ---
+      duration_ms: 955.489898
+      type: 'test'
+      ...
+    # Subtest: çek yüklemesi (Cariye işle), kimlik kaydı yazılırken (en son yazım) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+    ok 2 - çek yüklemesi (Cariye işle), kimlik kaydı yazılırken (en son yazım) kesinti → hiçbir parça yok; aynı kimlikle yeniden deneme bir kez işler, bir daha replayed
+      ---
+      duration_ms: 1055.045627
+      type: 'test'
+      ...
+    # Subtest: cari yüklemesi (açılış bakiyeli), kimlik kaydı yazılırken kesinti → cari, açılış, yevmiye, kimlik yok; aynı kimlikle yeniden deneme bir kez işler
+    ok 3 - cari yüklemesi (açılış bakiyeli), kimlik kaydı yazılırken kesinti → cari, açılış, yevmiye, kimlik yok; aynı kimlikle yeniden deneme bir kez işler
+      ---
+      duration_ms: 929.266314
+      type: 'test'
+      ...
+    1..3
+ok 3 - 2.4.8 I1 içe aktarma ortasında SIGKILL: satırlar, cari / yevmiye etkisi, işlem geçmişi ve kimlik kaydı ya birlikte ya hiç
+  ---
+  duration_ms: 2947.511553
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 89.585472
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 7.115978
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.696847
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 4.474743
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 3.558612
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 38.959199
+      type: 'test'
+      ...
+    1..6
+ok 4 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 147.773294
+  type: 'suite'
+  ...
+1..4
+# tests 23
+# suites 4
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6059.936588

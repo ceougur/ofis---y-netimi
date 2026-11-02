@@ -1,0 +1,111 @@
+TAP version 13
+# Subtest: 2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır
+    # Subtest: imzalı 'delivered' → kişi 'Daha Önce Gönderildi', Bu Ay Gönderilen 1; yeni gönderim kişiye ikinci ileti göndermez
+    not ok 1 - imzalı 'delivered' → kişi 'Daha Önce Gönderildi', Bu Ay Gönderilen 1; yeni gönderim kişiye ikinci ileti göndermez
+      ---
+      duration_ms: 744.604227
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:40:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        teslimden sonra gelen failed uygulanmaz (geldi {"applied":1,"ignored":0,"unknown":0})
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:63:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: imzalı 'failed' → teslim edilemedi: kişi elenmez, yeni gönderim gider
+    ok 2 - imzalı 'failed' → teslim edilemedi: kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 566.086917
+      type: 'test'
+      ...
+    # Subtest: İMZASIZ 'delivered' (P5 aynen) → düşer; kişi 'Daha Önce Gönderildi' sayılmaz
+    ok 3 - İMZASIZ 'delivered' (P5 aynen) → düşer; kişi 'Daha Önce Gönderildi' sayılmaz
+      ---
+      duration_ms: 575.048291
+      type: 'test'
+      ...
+    # Subtest: komşu: KABUL edilmiş iletinin işi sıfırlamayla silindikten sonra gelen geç 'delivered' (wamid defterde) Bu Ay Gönderilen'e yazılır; kişi yine Daha Önce Gönderildi
+    ok 4 - komşu: KABUL edilmiş iletinin işi sıfırlamayla silindikten sonra gelen geç 'delivered' (wamid defterde) Bu Ay Gönderilen'e yazılır; kişi yine Daha Önce Gönderildi
+      ---
+      duration_ms: 523.433584
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzalı failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 5 - R7: kabul → sıfırla → imzalı failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 590.261758
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzasız failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 6 - R7: kabul → sıfırla → imzasız failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 621.836484
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzalı failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 7 - R7: kabul → sıfırla → imzalı failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 591.572281
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzasız failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 8 - R7: kabul → sıfırla → imzasız failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 674.009117
+      type: 'test'
+      ...
+    # Subtest: R7 gerileme: teslimden sonra gelen failed (iş dosyada yok) yok sayılır; kişi Daha Önce Gönderildi kalır
+    not ok 9 - R7 gerileme: teslimden sonra gelen failed (iş dosyada yok) yok sayılır; kişi Daha Önce Gönderildi kalır
+      ---
+      duration_ms: 593.636817
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        teslimden sonra failed uygulanmaz (geldi {"applied":1,"ignored":0,"unknown":0})
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:166:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 1 - 2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır
+  ---
+  duration_ms: 5483.418101
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r248-x9k2/mut/test/whatsapp-q4-dosyasiz-imzali-248.test.mjs:39:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 7
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5912.140925

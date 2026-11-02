@@ -1,0 +1,178 @@
+TAP version 13
+# Subtest: 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+    # Subtest: wa.me 'Cari Ekstre - PDF' seçilen dönemi basar (Geçen Ay: devir 1.000, Ekim hareketleri, dönem sonu 850); metindeki güncel bakiyeyle aynı; ANLIK DURUM ekstresiyle BAYT BAYT aynı
+    not ok 1 - wa.me 'Cari Ekstre - PDF' seçilen dönemi basar (Geçen Ay: devir 1.000, Ekim hareketleri, dönem sonu 850); metindeki güncel bakiyeyle aynı; ANLIK DURUM ekstresiyle BAYT BAYT aynı
+      ---
+      duration_ms: 524.838442
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:33:3'
+      failureType: 'testCodeFailure'
+      error: "dönem dışı hareket PDF'e girmez"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        Örnek Ticaret
+        Cari Ekstre · Dönem Kişisi
+        Cari No 1 · Müşteri · 0532 777 88 99
+        Oluşturma: 01.11.2026 07:00
+        Hazırlayan: Ofis yöneticisi
+        Borç Toplamı
+        1.240,00 TL
+        Alacak Toplamı
+        350,00 TL
+        Bakiye
+        890,00 TL borçlu
+        Tarih
+        İşlem
+        Açıklama
+        Borç
+        Alacak
+        Bakiye
+        01.09.2026
+        Borç
+        Açılış bakiyesi
+        1.000,00 TL
+        1.000,00 TL borçlu
+        01.10.2026
+        Borç
+        Ekim ilk gün
+        200,00 TL
+        1.200,00 TL borçlu
+        31.10.2026
+        Tahsilat · Makbuz 1
+        Ekim son gün
+        350,00 TL
+        850,00 TL borçlu
+        01.11.2026
+        Borç
+        Kasım ilk gün
+        40,00 TL
+        890,00 TL borçlu
+        TOPLAM
+        1.240,00 TL
+        350,00 TL
+        890,00 TL borçlu
+        Örnek Ticaret · Cari Ekstre · Dönem Kişisi
+        Sayfa 1 / 1
+      operator: 'doesNotMatch'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:46:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 'Tüm Hareketler' bugüne kadar: ileri tarihli hareket metne de PDF'e de girmez (§7a 22); Bu Ay ayın 1'inde tek gün
+    not ok 2 - 'Tüm Hareketler' bugüne kadar: ileri tarihli hareket metne de PDF'e de girmez (§7a 22); Bu Ay ayın 1'inde tek gün
+      ---
+      duration_ms: 444.696782
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:69:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            from: '',
+        +   to: ''
+        -   to: '2026-11-01'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        from: ''
+        to: '2026-11-01'
+      actual:
+        from: ''
+        to: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:75:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WhatsApp Business API'ye yüklenen PDF, wa.me yolunun aynı dönem PDF'iyle BAYT BAYT aynı; iletinin {{3}} ve {{4}}'ü PDF'le aynı
+    not ok 3 - WhatsApp Business API'ye yüklenen PDF, wa.me yolunun aynı dönem PDF'iyle BAYT BAYT aynı; iletinin {{3}} ve {{4}}'ü PDF'le aynı
+      ---
+      duration_ms: 389.896256
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:89:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+  ---
+  duration_ms: 1362.18899
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:32:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+    # Subtest: kesin durumdan sonra (Teslim Edildi / Okundu / Başarısız / Süresi Doldu) PDF Meta'dan silinir; Meta Kabul Etti / Sonucu Belirsiz / Meta Bekletti'de silinmez; zaten silinmişse silinmiş sayılır
+    not ok 1 - kesin durumdan sonra (Teslim Edildi / Okundu / Başarısız / Süresi Doldu) PDF Meta'dan silinir; Meta Kabul Etti / Sonucu Belirsiz / Meta Bekletti'de silinmez; zaten silinmişse silinmiş sayılır
+      ---
+      duration_ms: 391.018241
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:108:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:109:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yeniden denemede medya geçerliyse AYNISI kullanılır, 30 günü geçmişse yeniden yüklenir (§7a 15)
+    not ok 2 - yeniden denemede medya geçerliyse AYNISI kullanılır, 30 günü geçmişse yeniden yüklenir (§7a 15)
+      ---
+      duration_ms: 337.630421
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:146:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:147:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+  ---
+  duration_ms: 729.216802
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w3-ekstre-248.test.mjs:107:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2536.431269

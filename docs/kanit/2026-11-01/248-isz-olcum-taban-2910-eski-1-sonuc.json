@@ -1,0 +1,270 @@
+{
+ "commit": "b2e7bf19",
+ "node": "v22.22.0",
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/isz-7d2f5a/taban-2910",
+ "saat": "2026-11-02T10:00:00+03:00",
+ "basladi": "2026-11-01T19:30:40.550Z",
+ "onizleme": {
+  "ekstreGecenAy": [
+   {
+    "durum": 200,
+    "ms": 26194,
+    "olayDongusuEnCokMs": 25993,
+    "baskaKullaniciEnCokMs": 25991,
+    "baskaKullaniciP50Ms": 201,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 2000
+   },
+   {
+    "durum": 200,
+    "ms": 26040,
+    "olayDongusuEnCokMs": 25862,
+    "baskaKullaniciEnCokMs": 25836,
+    "baskaKullaniciP50Ms": 235,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 2000
+   }
+  ],
+  "ekstreBuAy": [
+   {
+    "durum": 200,
+    "ms": 27343,
+    "olayDongusuEnCokMs": 27173,
+    "baskaKullaniciEnCokMs": 27140,
+    "baskaKullaniciP50Ms": 202,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 2000
+   },
+   {
+    "durum": 200,
+    "ms": 28328,
+    "olayDongusuEnCokMs": 28135,
+    "baskaKullaniciEnCokMs": 28125,
+    "baskaKullaniciP50Ms": 189,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 2000
+   }
+  ],
+  "ekstreSon3Ay": [
+   {
+    "durum": 200,
+    "ms": 28438,
+    "olayDongusuEnCokMs": 28206,
+    "baskaKullaniciEnCokMs": 28234,
+    "baskaKullaniciP50Ms": 219,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 2000
+   },
+   {
+    "durum": 200,
+    "ms": 30791,
+    "olayDongusuEnCokMs": 30589,
+    "baskaKullaniciEnCokMs": 30587,
+    "baskaKullaniciP50Ms": 243,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 2000
+   }
+  ],
+  "ekstreTumHareketler": [
+   {
+    "durum": 200,
+    "ms": 28871,
+    "olayDongusuEnCokMs": 28641,
+    "baskaKullaniciEnCokMs": 28668,
+    "baskaKullaniciP50Ms": 246,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 2000
+   },
+   {
+    "durum": 200,
+    "ms": 29741,
+    "olayDongusuEnCokMs": 29566,
+    "baskaKullaniciEnCokMs": 29534,
+    "baskaKullaniciP50Ms": 250,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 2000
+   }
+  ],
+  "ekstreOzelAralik": [
+   {
+    "durum": 200,
+    "ms": 28884,
+    "olayDongusuEnCokMs": 28716,
+    "baskaKullaniciEnCokMs": 28682,
+    "baskaKullaniciP50Ms": 222,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 2000
+   },
+   {
+    "durum": 200,
+    "ms": 27208,
+    "olayDongusuEnCokMs": 26962,
+    "baskaKullaniciEnCokMs": 27003,
+    "baskaKullaniciP50Ms": 225,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 2000
+   }
+  ],
+  "hatirlatma": [
+   {
+    "durum": 200,
+    "ms": 28513,
+    "olayDongusuEnCokMs": 28308,
+    "baskaKullaniciEnCokMs": 28310,
+    "baskaKullaniciP50Ms": 248,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 8
+   },
+   {
+    "durum": 200,
+    "ms": 29053,
+    "olayDongusuEnCokMs": 28824,
+    "baskaKullaniciEnCokMs": 28850,
+    "baskaKullaniciP50Ms": 231,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 2000,
+    "gonderilecek": 8
+   }
+  ],
+  "tumunuSecGecenAy": [
+   {
+    "durum": 200,
+    "ms": 40019,
+    "olayDongusuEnCokMs": 39831,
+    "baskaKullaniciEnCokMs": 39814,
+    "baskaKullaniciP50Ms": 185,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 3014,
+    "gonderilecek": 3012
+   },
+   {
+    "durum": 200,
+    "ms": 40620,
+    "olayDongusuEnCokMs": 40406,
+    "baskaKullaniciEnCokMs": 40416,
+    "baskaKullaniciP50Ms": 230,
+    "baskaKullaniciIstek": 4,
+    "baskaKullaniciHata": 0,
+    "toplam": 3014,
+    "gonderilecek": 3012
+   }
+  ]
+ },
+ "baslatma": {
+  "ekstreGecenAy2000": {
+   "durum": 200,
+   "ms": 28301,
+   "olayDongusuEnCokMs": 28071,
+   "baskaKullaniciEnCokMs": 28099,
+   "baskaKullaniciP50Ms": 182,
+   "baskaKullaniciIstek": 4,
+   "baskaKullaniciHata": 0,
+   "toplam": 2000,
+   "gonderilecek": 2000,
+   "id": "wab-f8e4e1a0-a788-4dbf-837d-03d8d50962c5"
+  },
+  "tumunuSec3014": {
+   "durum": 200,
+   "ms": 44982,
+   "olayDongusuEnCokMs": 44756,
+   "baskaKullaniciEnCokMs": 44784,
+   "baskaKullaniciP50Ms": 199,
+   "baskaKullaniciIstek": 4,
+   "baskaKullaniciHata": 0,
+   "toplam": 3014,
+   "gonderilecek": 3012,
+   "id": "wab-4ff35655-c7ba-4078-9cd8-0a56fc6546b0"
+  }
+ },
+ "cariSayisi": {
+  "toplam": 3014,
+  "secilen": 2000
+ },
+ "bitti": "2026-11-01T19:39:20.978Z",
+ "denetimler": [
+  {
+   "ad": "başka kullanıcı (ayrı süreç) girişi",
+   "ok": true,
+   "ayrinti": "200"
+  },
+  {
+   "ad": "önizleme ekstreGecenAy: 200",
+   "ok": true,
+   "ayrinti": "[200,200]"
+  },
+  {
+   "ad": "önizleme ekstreBuAy: 200",
+   "ok": true,
+   "ayrinti": "[200,200]"
+  },
+  {
+   "ad": "önizleme ekstreSon3Ay: 200",
+   "ok": true,
+   "ayrinti": "[200,200]"
+  },
+  {
+   "ad": "önizleme ekstreTumHareketler: 200",
+   "ok": true,
+   "ayrinti": "[200,200]"
+  },
+  {
+   "ad": "önizleme ekstreOzelAralik: 200",
+   "ok": true,
+   "ayrinti": "[200,200]"
+  },
+  {
+   "ad": "önizleme hatirlatma: 200",
+   "ok": true,
+   "ayrinti": "[200,200]"
+  },
+  {
+   "ad": "önizleme tumunuSecGecenAy: 200",
+   "ok": true,
+   "ayrinti": "[200,200]"
+  },
+  {
+   "ad": "başlatma ekstreGecenAy2000: 200 ve iş açıldı",
+   "ok": true,
+   "ayrinti": "200 "
+  },
+  {
+   "ad": "başlatma ekstreGecenAy2000: iptal",
+   "ok": true,
+   "ayrinti": ""
+  },
+  {
+   "ad": "başlatma tumunuSec3014: 200 ve iş açıldı",
+   "ok": true,
+   "ayrinti": "200 "
+  },
+  {
+   "ad": "başlatma tumunuSec3014: iptal",
+   "ok": true,
+   "ayrinti": ""
+  }
+ ]
+}

@@ -20,6 +20,7 @@ import { createReportHeader } from "../lib/report-header.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => {
@@ -488,6 +489,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
 
   // ---------- Yazma ----------
   const banking = bankForm(bankModule);
+  const imports = createImportRequests({ store, now: clock });
   // 2.4.7 (M5 kâhininin yan bulgusu; plan §3.10/1 "bütün kapsamlar buraya"): evrak girişi de kalıcı istek kimliği alır (x-hof-request ya da gövdede
   // requestId; öbür para uçlarıyla aynı bank.post düzeni, kapsam "cheque.create"). Aynı kimlik + aynı içerik → ikinci evrak açılmaz, ilk evrakın kartı
   // döner (replayed); farklı içerik → 409 request-id-reused; yalnız başarılı sonuç saklanır (cheque-duplicate sorusundan sonra allowDuplicate'li yeniden
@@ -763,9 +765,12 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const roles = body.roles && typeof body.roles === "object" ? body.roles : inferRolesByValues(headers, rows, mapChequeHeaders(headers), "cheque");
     ok(res, { headerAt, headers, roles, rows: matrix.length - headerAt - 1, gate: validateRows(headers, rows, roles, "cheque", { headerAt }) });
   });
+  // 2.4.8 I1: kalıcı istek kimliği (lib/import-request.mjs; kapsam "cheque.import"): yanıt kaybolup yeniden "Portföye Al"a basılınca no'suz evrak ve
+  // "Cariye işle"nin cari / yevmiye etkisi ikinci kez yazılmaz, ilk yüklemenin raporu döner (replayed). Denetim ve kayıt yüklemenin işleminde.
   router.post("/api/workspace/cheques/import", async ({ req, res }) => {
     const user = auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req, { limit: 40_000_000 });
+    const ticket = imports.ticket(req, body, user, IMPORT_SCOPES.cheques);
     const matrix = matrixText(body.matrix); // 31e: sayı hücresi Türkçe ondalık metin (money.mjs cellText)
     const headerAt = Math.max(0, Math.trunc(Number(body.headerAt) || 0));
     const headers = (matrix[headerAt] || []).map(sanitizeCell);
@@ -798,7 +803,9 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       return accountByName.get(key);
     };
     const seen = new Set();
-    store.tx(() => {
+    const replayed = store.tx(() => {
+      const prior = imports.replay(ticket);
+      if (prior) return prior;
       rows.forEach((row, index) => {
         if (!Array.isArray(row) || !row.some(value => sanitizeCell(value))) return;
         const amount = parseAmount(cell(row, col.amount));
@@ -834,7 +841,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         if (created.effects.length) report.posted += 1;
       });
       audit(user, "cheque.imported", "import", { created: report.created, skipped: report.skippedTotal, post, file: limited(body.fileName, 200, "Dosya adı") });
+      imports.remember(ticket, report);
+      return null;
     });
+    if (replayed) return ok(res, replayed);
     publish(user, { kind: "cheques" });
     if (post && report.posted) publish(user, { kind: "accounts" });
     ok(res, report);

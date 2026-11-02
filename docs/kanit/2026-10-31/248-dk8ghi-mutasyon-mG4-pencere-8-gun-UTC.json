@@ -1,0 +1,43 @@
+{
+  "ad": "248-dk8ghi-mutasyon-mG4-pencere-8-gun-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-g-ek-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-h-ozel-aralik-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk8-i-tasinan-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk4-yeniden-dene-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk5-yine-de-gonder-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk8ghi-248-9511a619/mut/test/whatsapp-dk7-belirsiz-ileti-248.test.mjs",
+  "commit": "608b50889b6c48f3a0ebb451a891b5dd332ac290",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 54,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T11:36:42.608Z",
+  "sure_sn": 28.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 47,
+    "gecen": 45,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş G ek 4/4 — Son 3 Ay Başarısızları Yeniden Dene: sonraki kabul 7 gün içindeyse elenir, eskiyse gider › asıl Son 3 Ay işinde P Başarısız → başka işle kabul → 7 gün 1 saat sonra Yeniden Dene: gider",
+      "konum": "test/whatsapp-dk8-g-ek-248.test.mjs:240:5",
+      "hata": "7 günden eski kabul elemez (geldi 400 {\"ok\":false,\"error\":\"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde \\\"Yine de Gönder\\\" seçin.\",\"code\":\"whatsapp-nothing\",\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-09-01\",\"to\":\"2026-11-03\",\"preset\":\"last3\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":1,\"sendable\":0,\"skipped\":{\"Daha Önce Gönderildi\":1},\"alreadySent\":{\"count\":1,\"last\":\"2026-11-03T11:00:00.000Z\",\"included\":0},\"people\":[{\"id\":\"account-a0d389a2-fb3c-40b0-b8e3-cea442e8c289\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"Daha Önce Gönderildi\",\"sentBefore\":\"2026-11-03T11:00:00.000Z\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":0,\"left\":250,\"later\":0,\"holdUntil\":null},\"seconds\":0}}) · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 İş G (★ soru 1) — Sonucu Belirsiz kalmış kişi yeni toplu işte de elenir › Dönem eşliği: başka dönem (Geçen Ay) elenmez; Son 3 Ay'da belirsiz deneme 7 günden eskiyse elenmez, içindeyse elenir",
+      "konum": "test/whatsapp-dk8-g-yeni-belirsiz-248.test.mjs:83:3",
+      "hata": "Son 3 Ay: 7 günden eski belirsiz deneme elemez (gönderim anından) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk8ghi-mutasyon-mG4-pencere-8-gun-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "51c4981021051c1b2412ba33a38fc075f46f44d91d65360c56858c8c4257e1af",
+  "ham_cikti_bayt": 24818
+}

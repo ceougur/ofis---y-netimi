@@ -22,6 +22,10 @@
 // Nakit Akış ve Vade Takip'in fatura kalemleri) bilerek değiştirdi. Birebir karşılaştırma K1 öncesi kapamayla yapılır (createApp legacyClosing:
 // test/guvenilirlik/kapama-k1-oncesi.mjs, dondurulmuş kopya). Üçüncü kopya güncel kuralla açılır: fatura kapamasına bağlı üç görünüm dışındaki
 // her yanıt yine 2.0.26 ile aynı; ödeme durumu değişen her fatura iadesi olan bir carinin, taksitliyse açığı kartın kalanı (kapama-k1-fark.mjs).
+// Saat (ders 13, 22): İLK içe aktarım — süreç saati yerel bugün 06:00'dan akar (v2.0.26 aynı süreçte açılır, config.now'u yok). Önceden TODAY
+// gerçek saatle yüklemede bir kez okunuyordu; dosya gece yarısından önce yüklenip motor sonra başlayınca motor faturaları yeni günle yazıyor,
+// "bugün" tarihli fatura kronoloji reddi alıyordu (CI #941 df238b99 Windows Node 24; zorla: test/banka-210-altin-gece-yarisi.mjs).
+import { processClock } from "./fixtures/surec-saati-sabah.mjs";
 import assert from "node:assert/strict";
 import { cpSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -493,6 +497,8 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
         // k8:false (kalan 0 olan karta tahsilat 2.0.26'da 200 döner; motor 409 beklememeli).
         const report = await runReconciliation({ client: admin.client, seed: 210, operations: 260, verifyEvery: 100_000, reportEvery: 100_000, burst: 8, span: 120, bank: false, k8: false });
         assert.ok(report.operations >= 260, JSON.stringify(report.byKind));
+        // Motorun "bugün"ü (sunucunun ledger/lock today) testin TODAY'i ile aynı olmalı: aşağıdaki elle adımlar ve karşılaştırmalar o güne yazılır.
+        assert.equal(report.timeline.to, TODAY, `motorun günü ${report.timeline.to}, testin günü ${TODAY} (süreç saati ${new Date(processClock.now()).toISOString()})`);
         // Görünürlük kuralları için v2.0.26'nın kendi API'siyle: tahsilatı olan cari ve taksit kartı silinir, peşinli fatura iptal edilir,
         // stokta havaleyle peşin satış (tek kaynak bunları 2.0.26'daki modül tanımları gibi düşürmeli / tutmalı).
         const ok = async (label, promise) => {

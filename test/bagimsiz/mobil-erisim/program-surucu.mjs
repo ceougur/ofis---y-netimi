@@ -52,8 +52,55 @@ const classify = response => {
   return cls ? `ret:${cls}` : `ret:tanınmadı_${response.status}_${response.code || "kodsuz"}`;
 };
 const DOWN = "ret:sunucu_kapali";
-const MAINTENANCE = new Set(["lisans_degis", "lisans_servisi", "program_lisans_denetle", "sunucu", "bekle"]);
-const CLASS = { lisans_degis: 0, lisans_servisi: 0, program_lisans_denetle: 0, sunucu: 0, bekle: 0, kullanici_degis: 1, cihaz_sil: 1, karekod_uret: 1, ozet_yukle: 1, esle: 2, kapici_dogrudan_kayit: 2, giris: 3, istek: 4, ozet_oku: 4, ozet_yaz: 4 };
+const MAINTENANCE = new Set(["lisans_degis", "lisans_servisi", "program_lisans_denetle", "sunucu", "bekle", "kapici_temizlik"]);
+const CLASS = { lisans_degis: 0, lisans_servisi: 0, program_lisans_denetle: 0, sunucu: 0, bekle: 0, kapici_temizlik: 0, kullanici_degis: 1, cihaz_sil: 1, karekod_uret: 1, ozet_yukle: 1, mobil_cihazlar_oku: 1, masaustu_yazma: 1, esle: 2, kapici_dogrudan_kayit: 2, giris: 3, istek: 4, ozet_oku: 4, ozet_yaz: 4 };
+// 2.4.8 L1 (kâhin güncellemesi a348f472'den SONRA, karşılaştırmadan ÖNCE yazıldı — ders 5, 40):
+//  - deneme lisansı → belirteç kind "trial" (docs: `kind` "trial" | "license"); ücretli → "license".
+//  - yazma isteğinde (mobil yazma, masaustu_yazma) LICENSE_READ_ONLY → salt_okunur.
+//  - uyarı gözlemi: yanıt nesnesinin TAMAMI (gövde, başlıklar) lisans iletisi kalıbıyla taranır; ilk eşleşen metin `uyari`, yoksa null.
+//    Alan adı bilinmiyor (program kodu okunmadı) — bu yüzden kalıp taraması; kalıp karardaki metinlerin çekirdeği.
+//  - kapici_temizlik → yerel kapıcının temizlik işi (kapi.kapi.temizlik(env)); mobil_cihazlar_oku → GET /api/admin/mobile/devices;
+//    masaustu_yazma → yerel yönetici oturumuyla POST /api/admin/users (sıradan bir yazma).
+//  - saatte bir lisans denetimi: sahte saat sabit olduğundan programın kendi zamanlayıcısı işlemez; üretimde program internet varken lisansı
+//    düzenli denetler. Sahte saat son denetimden ≥ 1 saat ilerlediyse (ve servis erişilebilirse) olaydan önce bir denetim yapılır.
+const L1_KALIP = /gün sonra bitiyor|sona erecek|sona erdi|Lisans geçerli değil|uzaktan erişim kapalı/i;
+const uyariOf = kok => {
+  const gorulen = new Set();
+  const tara = (x, derinlik) => {
+    if (x == null || derinlik > 8) return null;
+    if (typeof x === "string") {
+      if (/^\s*[[{]/.test(x)) {
+        try { return tara(JSON.parse(x), derinlik + 1); } catch { /* JSON değil */ }
+      }
+      return x.length <= 300 && L1_KALIP.test(x) ? x : null; // ileti metni kısadır; statik dosya gövdesi (/mobil/…) taranmaz
+    }
+    if (typeof x !== "object" || gorulen.has(x)) return null;
+    gorulen.add(x);
+    if (typeof x.get === "function" && typeof x.forEach === "function" && !Array.isArray(x)) {
+      let bulunan = null;
+      try { x.forEach(v => { if (!bulunan) bulunan = tara(v, derinlik + 1); }); } catch { /* başlık nesnesi değil */ }
+      if (bulunan) return bulunan;
+    }
+    for (const v of Array.isArray(x) ? x : Object.values(x)) {
+      const bulunan = tara(v, derinlik + 1);
+      if (bulunan) return bulunan;
+    }
+    return null;
+  };
+  return tara(kok, 0);
+};
+// Tanı için (karşılaştırılmaz): reddedilen yanıtın ileti metni (error / message / ileti alanı).
+const iletiOf = kok => {
+  const bul = x => {
+    if (typeof x === "string" && /^\s*[[{]/.test(x)) { try { return bul(JSON.parse(x)); } catch { return null; } }
+    if (!x || typeof x !== "object") return null;
+    for (const k of ["error", "message", "ileti"]) if (typeof x[k] === "string") return x[k];
+    for (const v of Object.values(x)) { const b = bul(v); if (b) return b; }
+    return null;
+  };
+  try { return bul(kok); } catch { return null; }
+};
+const classifyYazma = response => (response.code === "LICENSE_READ_ONLY" ? "ret:salt_okunur" : classify(response));
 const NOT_IN_PROGRAM = { ozet_yukle: "DENENMEYEN: şifreli özet (R2) M3'te", ozet_oku: "DENENMEYEN: şifreli özet (R2) M3'te", ozet_yaz: "DENENMEYEN: kapıcı/özet M3'te", kapici_dogrudan_kayit: "DENENMEYEN: kapıcı (Worker) M3'te" };
 
 // Saat: ofsetsiz saat TR (UTC+3; kâhin V1).
@@ -99,7 +146,7 @@ async function runScenario(sen, root) {
     const rec = office.record;
     const at = new Date(clock.ms()).toISOString();
     const token = signToken({
-      schema: 1, product: "DestekOfis", type: "license-token", kind: "license", status: rec.durum === "engelli" ? "blocked" : "active", licenseId: `LIS-KAHIN-${office.name}`,
+      schema: 1, product: "DestekOfis", type: "license-token", kind: rec.plan === "deneme" ? "trial" : "license", status: rec.durum === "engelli" ? "blocked" : "active", licenseId: `LIS-KAHIN-${office.name}`,
       customer: `Ofis ${office.name}`, machine: office.machine, issuedAt: at, startsAt: at, expiresAt: rec.bitis ? new Date(ms(rec.bitis)).toISOString() : null, offline: false, message: "",
       ...(Number.isInteger(rec.cihaz_siniri) ? { mobileDevices: rec.cihaz_siniri } : {}),
     }, KEY.pem, "kahin-surucu-1");
@@ -107,7 +154,7 @@ async function runScenario(sen, root) {
     void init;
     return { status: 200, json: async () => ({ ok: true, token }) };
   };
-  const m3 = await m3Kur({ clock, offices, fetchFor, trustedKeys: TRUSTED }); // 2.4.7 M3
+  const m3 = await m3Kur({ clock, offices, fetchFor, trustedKeys: TRUSTED, uyariOf, iletiOf }); // 2.4.7 M3 (+ 2.4.8 L1 uyarı gözlemi)
 
   async function boot(office) {
     office.server = await startTestServer({
@@ -131,7 +178,10 @@ async function runScenario(sen, root) {
   }
   const userIds = async office => Object.fromEntries((await (await clientOf(office, "admin")).get("/api/admin/users")).data.data.map(u => [u.username, u.id]));
   const checkLicense = async office => {
-    if (office.up && (world.online || office.forceOnline)) await office.server.app.license.check().catch(() => {});
+    if (office.up && (world.online || office.forceOnline)) {
+      await office.server.app.license.check().catch(() => {});
+      office.sonDenetim = clock.ms();
+    }
   };
   const grantsFor = user => {
     const wanted = (user.yetkiler || []).map(y => GRANT_OF[y]).filter(Boolean);
@@ -217,6 +267,9 @@ async function runScenario(sen, root) {
       case "program_lisans_denetle":
         await checkLicense(office);
         return;
+      case "kapici_temizlik":
+        await m3.kapi.kapi.temizlik(m3.kapi.env);
+        return;
       case "sunucu":
         if (e.durum === "kapali" && office.up) {
           await office.server.close();
@@ -235,6 +288,16 @@ async function runScenario(sen, root) {
       return;
     }
     if (!office.up && !m3.kapidan(e)) return record(DOWN);
+    if (e.olay === "mobil_cihazlar_oku") {
+      const response = await (await clientOf(office, e.yapan)).get("/api/admin/mobile/devices");
+      return record(classify({ status: response.status, code: response.data?.code }), { esli: response.status === 200 ? { [office.name]: response.data.data.used } : undefined, uyari: uyariOf(response.data) });
+    }
+    if (e.olay === "masaustu_yazma") {
+      const client = await clientOf(office, e.yapan);
+      const response = await client.post("/api/workspace/accounts", { name: `Kâhin Cari ${e.no}`, type: "customer", registeredOn: new Date(clock.ms()).toISOString().slice(0, 10) });
+      const yonetim = await client.post("/api/admin/users", { username: `yaz${e.no}`, name: `yaz${e.no}`, role: "personel", password: PASSWORD, mustChangePassword: false });
+      return record(classifyYazma({ status: response.status, code: response.data?.code }), { ileti: iletiOf(response.data), yonetim_yazma: classifyYazma({ status: yonetim.status, code: yonetim.data?.code }) });
+    }
     if (e.olay === "karekod_uret") {
       const client = await clientOf(office, e.yapan);
       const response = await client.post("/api/admin/mobile/codes", { userId: office.ids[e.kullanici] });
@@ -282,7 +345,15 @@ async function runScenario(sen, root) {
       target.base = office.remoteBase;
       const response = await target.login(e.kullanici, e.parola === "dogru" ? PASSWORD : WRONG, { headers: extraHeaders(e) });
       if (response.status === 200) sessions.set(e.oturum, target.jar.get(REMOTE_SESSION_COOKIE));
-      return record(classify(response));
+      let uyari = uyariOf(response);
+      if (!uyari && response.status === 200) {
+        // 2.4.8 L1: telefon girişten sonra oturum bilgisini okur; giriş anında gösterilen uyarı ikisinden birinde olabilir.
+        const device = target.jar.get(DEVICE_COOKIE);
+        const session = target.jar.get(REMOTE_SESSION_COOKIE);
+        const cookie = [device ? `${DEVICE_COOKIE}=${device}` : "", session ? `${REMOTE_SESSION_COOKIE}=${session}` : ""].filter(Boolean).join("; ");
+        uyari = uyariOf(await rawRequest(office.remoteBase, "GET", "/api/mobil/session", { headers: { ...(cookie ? { cookie } : {}), ...extraHeaders(e) } }));
+      }
+      return record(classify(response), { uyari, ileti: response.status === 200 ? undefined : iletiOf(response) });
     }
     if (e.olay === "istek") {
       const entry = phones.get(e.cihaz);
@@ -300,7 +371,7 @@ async function runScenario(sen, root) {
         notes[String(e.no)] = `${UNMAPPED_YETKI[e.yetki]} (program: ${classify(response)})`;
         return;
       }
-      return record(classify(response));
+      return record(e.yazma ? classifyYazma(response) : classify(response), { uyari: uyariOf(response), ileti: response.status >= 300 ? iletiOf(response) : undefined });
     }
     throw new Error(`bilinmeyen olay ${e.olay}`);
   }
@@ -313,6 +384,7 @@ async function runScenario(sen, root) {
       const group = e.grup ? sorted.filter(x => x.grup === e.grup) : [e];
       for (const x of group) done.add(x.no);
       clock.set(ms(e.t));
+      if (!MAINTENANCE.has(e.olay)) for (const o of Object.values(offices)) if (o.up && world.online && clock.ms() - (o.sonDenetim || 0) >= 3_600_000) await checkLicense(o); // 2.4.8 L1
       await Promise.all(group.map(x => run(x)));
       await m3.bekle(); // 2.4.7 M3: güvenlik yüklemeleri (eşleme, silme, yetki) bir sonraki olaydan önce biter
     }
@@ -354,7 +426,7 @@ async function main() {
   const only = opt("--senaryo") ? new Set(opt("--senaryo").split(",")) : null;
   const outDir = path.resolve(opt("--cikti") || mkdtempSync(path.join(tmpdir(), "m2-kahin-")));
   mkdirSync(outDir, { recursive: true });
-  const kabulPath = path.join(HERE, "kabul.json");
+  const kabulPath = opt("--kabul") ? path.resolve(opt("--kabul")) : path.join(HERE, "kabul.json"); // --kabul: tanı koşusu için başka kabul dosyası
   const kabul = JSON.parse(readFileSync(kabulPath, "utf8"));
   const root = mkdtempSync(path.join(tmpdir(), "m2-kahin-veri-"));
   const program = {};

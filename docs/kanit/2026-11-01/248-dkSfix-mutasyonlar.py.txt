@@ -1,0 +1,26 @@
+# İş S mutasyonları: python3 mut.py <kök> <ad>. Her (dosya, eski, yeni) eski metin dosyada TAM BİR kez geçmeli.
+import sys
+Q = "server/lib/whatsapp/queue.mjs"
+M = {
+  "mS1-satir-kolu-yok": [(Q, "      if (!job && owned?.knows) job = owned.row;\n", "")],
+  "mS1-defter-kolu-yok": [(Q, "        else if (lateResultOfUnknownAttempt(owned, status, value, at)) out.applied += 1;\n", "")],
+  "mS1-teslim-kolu-yok": [(Q, "    if ([\"delivered\", \"read\"].includes(value)) {\n      const billable = status?.pricing && typeof status.pricing === \"object\" && \"billable\" in status.pricing ? status.pricing.billable !== false : true;\n      return ledger.delivered({ jobId: owned.jobId", "    if (false) {\n      const billable = true;\n      return ledger.delivered({ jobId: owned.jobId")],
+  "mS1-teslim-sonrasi-failed": [(Q, "      if (ledger.deliveredJob?.(owned.jobId)) return false;\n      return ledger.deliveryFailed({ jobId: owned.jobId", "      return ledger.deliveryFailed({ jobId: owned.jobId")],
+  "mS1-yeni-deneme-korumasi-yok": [(Q, "    if (!last || last.attempt !== owner.attempt) return null;\n", "    if (!last) return null;\n"),
+                                   (Q, "    if (owned.row && Number(owned.row.attempt) > Number(owned.attempt)) return false;\n", ""),
+                                   (Q, "    const knows = Boolean(row) && Number(row.attempt) === Number(owner.attempt) &&", "    const knows = Boolean(row) &&"),
+                                   (Q, "      if (owner && (owner.jobId !== job.id || owner.attempt !== job.attempt)) {", "      if (owner && owner.jobId !== job.id) {")],
+  "mS1-kabul-ezer": [(Q, "      if (current?.state === \"sending\" && Number(current.attempt) === attempt) updateJob(", "      if (true) updateJob(")],
+  "mR4-toparlamada-eski": [(Q, "accepted_at: attempt.at || job.sending_at || iso()", "accepted_at: job.accepted_at || job.sending_at || iso()")],
+}
+if sys.argv[1] == "--list":
+    print("\n".join(M)); sys.exit(0)
+root, name = sys.argv[1], sys.argv[2]
+for path, old, new in M[name]:
+    p = f"{root}/{path}"
+    s = open(p).read()
+    n = s.count(old)
+    if n != 1:
+        sys.exit(f"{name}: {path} eski metin {n} kez")
+    open(p, "w").write(s.replace(old, new))
+print(f"{name}: uygulandı")

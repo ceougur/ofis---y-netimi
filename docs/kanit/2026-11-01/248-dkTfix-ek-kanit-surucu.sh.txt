@@ -1,0 +1,32 @@
+#!/bin/bash
+# İş T eki kanıt sürücüsü: eski kod ad46bff1 (ayrı kopya) + mLedgerMust-etkisiz mutasyonu (HEAD kopyası) + tablo/q4/s1 iki TZ.
+K=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos
+W=/home/user/wt-t2fix-248
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+T=whatsapp-t-durum-karar-tablosu-248.test.mjs
+kos() {
+  local ad=$1 kok=$2; shift 2
+  local files=(); for f in "$@"; do files+=("$kok/test/$f"); done
+  for tz in UTC Europe/Istanbul; do
+    local out=$K/kos-$ad-${tz//\//_}.out
+    TZ=$tz node tools/kanit.mjs kos "$ad-${tz//\//_}" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 "${files[@]}" > $out 2>&1
+    echo "$ad $tz çıkış=$? $(grep '\[kanit\]' $out | tail -1 | sed -E 's/\[kanit\] [^:]*: //' | cut -c1-100)"
+    grep -E "^    not ok|^  not ok" $out | cut -c1-120 | sed 's/^/      /'
+  done
+}
+echo "== ESKİ KOD ad46bff1"
+kok=$K/ek-eski-ad46bff1
+rm -rf -- "${kok:?}"; mkdir -p $kok
+git -C $W archive ad46bff1 | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules
+cp $W/test/$T $kok/test/$T
+kos 248-dkTfix-ek-eski-ad46bff1 $kok $T
+rm -rf -- "${kok:?}"
+echo "== MUTASYON"
+kok=$K/ek-mut
+rm -rf -- "${kok:?}"; mkdir -p $kok && git -C $W archive HEAD | tar -x -C $kok && rm -rf -- "$kok/docs/kanit" && ln -s /home/user/ofis---y-netimi/node_modules $kok/node_modules
+python3 $K/mut.py $kok mLedgerMust-etkisiz && kos 248-dkTfix-ek-mutasyon-mLedgerMust-etkisiz $kok $T
+rm -rf -- "${kok:?}"
+echo "== YENİ KOD (tablo + q4 + s1)"
+kos 248-dkTfix-ek-dar $W $T whatsapp-q4-dosyasiz-imzali-248.test.mjs whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs
+echo BITTI

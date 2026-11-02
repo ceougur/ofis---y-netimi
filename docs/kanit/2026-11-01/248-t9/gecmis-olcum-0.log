@@ -1,0 +1,37 @@
+16:23:49 veri {"defter":"dosya yok (göç öncesi veri)","sirket001":{"wa_batches":null,"wa_jobs":null,"accounts":3014,"account_entries":57227,"money_lines":null},"zincir":"wa_jobs yok (göç öncesi veri)"} {"destekofis.sqlite":194072576,"destekofis.sqlite-shm":32768,"destekofis.sqlite-wal":0,"e-belge-kullanim.sqlite":16384,"sirketler/002/destekofis.sqlite":24350720,"sirketler/002/destekofis.sqlite-shm":32768,"sirketler/002/destekofis.sqlite-wal":0}
+(node:25559) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25621) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+16:23:57 açılış ms 6800
+16:23:57 bakım {"n":5,"p50":1,"p95":2,"enCok":2} probe {"n":200,"p50":0,"p95":0,"enCok":0,"son":true}
+ok 1 - defter yazılabilir (probeWritable) (true)
+ok 2 - Gönderimler ilk 30: 200 + en çok 30 satır (200 0)
+ok 3 - Daha Fazla Göster sonuna kadar: bütün gönderimler bir kez (0 / 0)
+ok 4 - tarih süzgeçleri 200 ({"birAy":0,"birGun":0,"yalnizBaslangic":0,"yalnizBitis":0})
+16:23:57 gönderimler {"ilk30":{"n":5,"p50":2,"p95":4,"enCok":4},"dahaFazla":{"n":0,"p50":null,"p95":null,"enCok":null},"sayfa":0,"satir":0,"tarihSuzgeci":{"birAy":{"n":5,"p50":2,"p95":2,"enCok":2,"satir":0,"durum":200},"birGun":{"n":5,"p50":1,"p95":2,"enCok":2,"satir":0,"durum":200},"yalnizBaslangic":{"n":5,"p50":1,"p95":1,"enCok":1,"satir":0,"durum":200},"yalnizBitis":{"n":5,"p50":2,"p95":2,"enCok":2,"satir":0,"durum":200}},"eskiAyrinti":"eski gönderim yok"}
+16:23:58 bu ay {"buAy":{"n":10,"p50":2,"p95":4,"enCok":4,"deger":0},"gecenAy":{"n":10,"p50":1,"p95":1,"enCok":1,"deger":0}}
+ok 5 - Bu Ay sayımı 200
+16:24:51 önizleme ekstreGecenAy {"n":2,"p50":26271,"p95":26629,"enCok":26629,"durum":200,"gonderilecek":2000,"elenen":{},"dahaOnce":{"count":0,"last":null,"included":0}}
+16:25:43 önizleme ekstreBuAy {"n":2,"p50":25532,"p95":27041,"enCok":27041,"durum":200,"gonderilecek":2000,"elenen":{},"dahaOnce":{"count":0,"last":null,"included":0}}
+16:26:37 önizleme ekstreTumHareketler {"n":2,"p50":27094,"p95":27121,"enCok":27121,"durum":200,"gonderilecek":2000,"elenen":{},"dahaOnce":{"count":0,"last":null,"included":0}}
+ok 6 - yoklayıcı girişi (olcek10)
+16:27:23 eş zamanlı önizleme {"ms":26585,"durum":200,"yoklayici":{"n":72,"p50":57,"p95":83,"enCok":26381,"durumlar":{"200":72}}}
+ok 7 - önizlemeler 200
+16:28:08 başlatma {"ms":28419,"durum":200,"yoklayici":{"n":65,"p50":55,"p95":83,"enCok":28258,"durumlar":{"200":65}}}
+ok 8 - yeni toplu iş açıldı (Yine de Gönder ile) (200)
+16:29:24 yeni iş {"yurutulen":2000,"isBasina":{"n":2000,"p50":33,"p95":45,"enCok":252},"kanca":{"n":400,"p50":5,"p95":8,"enCok":16,"kodlar":{"200":436}}}
+ok 9 - yeni işin bütün kişileri teslim edildi ({"delivered":2000})
+ok 10 - kanca istekleri 200 ({"200":436})
+16:29:24 eski ileti kanca {"n":0,"p50":null,"p95":null,"enCok":null,"kodlar":{},"adet":0}
+16:29:24 eski ileti yok (boş geçmiş) — geç bildirim ölçümü yok
+ok 11 - olcek10 girişi
+16:30:24 masaüstü {"durumlar":{"cariListesi:200":258,"cariKarti:200":258,"cariWhatsappGecmisi:200":258,"waGonderimler:200":258,"waGonderimDurumu:200":258,"waBuAy:200":258},"olayDongusu":{"p99ms":250,"enCokMs":271},"uclar":{"cariListesi":{"n":258,"p50":180,"p95":241,"enCok":270},"cariKarti":{"n":258,"p50":17,"p95":104,"enCok":191},"cariWhatsappGecmisi":{"n":258,"p50":2,"p95":2,"enCok":7},"waGonderimler":{"n":258,"p50":2,"p95":2,"enCok":7},"waGonderimDurumu":{"n":258,"p50":5,"p95":8,"enCok":16},"waBuAy":{"n":258,"p50":5,"p95":7,"enCok":10}}}
+ok 12 - masaüstü uçları 200 ({"cariListesi:200":258,"cariKarti:200":258,"cariWhatsappGecmisi:200":258,"waGonderimler:200":258,"waGonderimDurumu:200":258,"waBuAy:200":258})
+1..12
+# tests 12
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

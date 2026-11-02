@@ -1,0 +1,32 @@
+{
+  "ad": "248-mz-kanit-platform-lisans",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/kanit-araci.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "97aab4eadf795ae54416ecc299268c9854f0b5b2",
+  "dal": "is/mz-248",
+  "kirli": 1,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T12:46:29.394Z",
+  "sure_sn": 3.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 61,
+    "gecen": 61,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-mz-kanit-platform-lisans.log",
+  "klasor": "/home/user/wt-mz-248",
+  "ham_cikti_sha256": "90a690075e5b5ea410802c6e479198adbff5fd4a7c1d74d4899b352ba77e87e8",
+  "ham_cikti_bayt": 17531
+}

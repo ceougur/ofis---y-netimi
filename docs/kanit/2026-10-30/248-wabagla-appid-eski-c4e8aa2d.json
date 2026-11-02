@@ -1,0 +1,43 @@
+{
+  "ad": "248-wabagla-appid-eski-c4e8aa2d",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-w7-appid-248.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T21:18:45.504Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 W7 — WhatsApp'ı Bağla: App ID kapıcıdan gelir, Ekstre şablonu açılır › bağlanınca App ID kaydedilir; Şablonları Denetle ve Oluştur: örnek PDF /<App ID>/uploads ile yüklenir, Ekstre ve Ödeme Hatırlatma Meta'ya gönderilir",
+      "konum": "test/whatsapp-w7-appid-248.test.mjs:80:3",
+      "hata": "kapıcı belirteçle birlikte App ID vermedi: [\"durum\",\"sifreli\",\"wabaId\",\"phoneNumberId\",\"olay\"] · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.8 W7 — WhatsApp'ı Bağla: App ID kapıcıdan gelir, Ekstre şablonu açılır › kapıcı App ID vermezse (eski kapıcı / eksik ayar): Ekstre açılmaz, yükleme denenmez; neden bu kipe uygun — 'Bilgileri Değiştir'e (bu kipte yok) göndermez",
+      "konum": "test/whatsapp-w7-appid-248.test.mjs:102:3",
+      "hata": "WhatsApp'ı Bağla kipinde olmayan düğmeye yönlendiriyor: Ekstre şablonunun örnek PDF'i Meta'ya yüklenirken Uygulama Kimliği (App ID) gerekir; Bilgileri Değiştir ile Meta uygulama panelindeki App ID'yi girin, sonra Şablonları Denetle ve Oluştur'a basın. (beklenen , gelen Ekstre şablonunun örnek PDF'i Meta'ya yüklenirken Uygulama Kimliği (App ID) gerekir; Bilgileri Değiştir ile Meta uygulama panelindeki App ID'yi girin, sonra Şablonları Denetle ve Oluştur'a basın.)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/wt-wabagla-248/docs/kanit/2026-10-30/248-wabagla-appid-eski-c4e8aa2d.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wabagla-appid-eski-c4e8aa2d-m3q8",
+  "ham_cikti_sha256": "0416e3b4c2b4a831b69f2a5635f2d958ed22c412174a7874c87b28995aa1d25e",
+  "ham_cikti_bayt": 3794
+}

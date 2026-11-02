@@ -32,6 +32,49 @@ const stable = value => {
 };
 export const bodyHash = body => createHash("sha256").update(stable(body)).digest("hex");
 
+// 2.4.8 I1 (Excel / Sheets içe aktarması): bodyHash'in büyük gövde eşi — AYNI özet (aynı dizgi parça parça özetlenir), ama 250.000 satırlık
+// matrisin tamamı tek dizgide kurulmaz (bodyHash 250 bin × 15 hücrede ~2,9 sn ve yüzlerce MB ara dizgi; bu ~1,3 sn, ~130 MB). Eşitlik
+// test/ice-aktarma-istek-kimligi-248.test.mjs'te denetlenir; VOLATILE kuralı ve anahtar sırası bodyHash'inkiyle aynı.
+export const streamBodyHash = body => {
+  const hash = createHash("sha256");
+  let buffer = "";
+  const put = piece => {
+    buffer += piece;
+    if (buffer.length >= 65_536) {
+      hash.update(buffer);
+      buffer = "";
+    }
+  };
+  const walk = value => {
+    if (Array.isArray(value)) {
+      put("[");
+      for (let index = 0; index < value.length; index += 1) {
+        if (index) put(",");
+        walk(value[index]);
+      }
+      put("]");
+      return;
+    }
+    if (value && typeof value === "object") {
+      put("{");
+      const keys = Object.keys(value)
+        .filter(key => !VOLATILE.has(key))
+        .sort();
+      keys.forEach((key, index) => {
+        if (index) put(",");
+        put(`${JSON.stringify(key)}:`);
+        walk(value[key]);
+      });
+      put("}");
+      return;
+    }
+    put(`${JSON.stringify(value ?? null)}`);
+  };
+  walk(body);
+  hash.update(buffer);
+  return hash.digest("hex");
+};
+
 const DAY_MS = 86_400_000;
 const formatKey = (user, scope, requestId) => {
   const id = String(requestId || "").trim();

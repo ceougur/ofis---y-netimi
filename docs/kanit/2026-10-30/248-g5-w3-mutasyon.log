@@ -1,0 +1,8 @@
+M0 bozulmamış kopya: YEŞİL (# tests 5 · # pass 5 · # fail 0)
+W3-M1 kesinleşen iletinin PDF'i Meta'dan silinmez (S3 A): YAKALANDI (# tests 5 · # pass 4 · # fail 1) not ok 2 - 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+W3-M2 'Meta Bekletti'deki iletinin PDF'i de silinir (§7a 14): YAKALANDI (# tests 5 · # pass 4 · # fail 1) not ok 2 - 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+W3-M3 wa.me PDF'i dönemi uygulamaz (bütün hareketler): YAKALANDI (# tests 5 · # pass 2 · # fail 3) not ok 1 - 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+W3-M4 iletinin bakiyesi PDF'in dönem sonu yerine güncel bakiye (metin ≠ PDF): YAKALANDI (# tests 5 · # pass 4 · # fail 1) not ok 1 - 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+W3-M5 medya hiç yeniden kullanılmaz (her denemede yeni yükleme): YAKALANDI (# tests 5 · # pass 4 · # fail 1) not ok 2 - 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+W3-M6 'Tüm Hareketler' bugünle sınırlanmaz (ileri tarihli hareket girer): YAKALANDI (# tests 5 · # pass 4 · # fail 1) not ok 1 - 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+7 geçti, 0 kaldı

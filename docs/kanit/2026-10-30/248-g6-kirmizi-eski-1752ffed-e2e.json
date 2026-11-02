@@ -1,0 +1,78 @@
+{
+  "ad": "248-g6-kirmizi-eski-1752ffed-e2e",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g6-248-k3v9/g6-248-eski-1752ffed/test/e2e/senaryo-whatsapp-sablon-248.mjs",
+  "commit": "998d467866ae9be0cb9d884473ae1494123d15f7",
+  "dal": "is/sablon-248",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T14:09:52.439Z",
+  "sure_sn": 65.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 14,
+    "gecen": 5,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForSelector: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.waitForFunction: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: Cannot convert undefined or null to object",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "GET 403",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "POST 403",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "aydınlatma metni 403",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "aydınlatma PDF 403",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "adım yarıda kaldı: page.textContent: Timeout 15000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g6-kirmizi-eski-1752ffed-e2e.log",
+  "klasor": "/home/user/wt-sablon-248",
+  "ham_cikti_sha256": "32c4ffdfe29d9c241cf079588babbdd8bc2f89db4c3f903990c47c9f051d041b",
+  "ham_cikti_bayt": 1278
+}

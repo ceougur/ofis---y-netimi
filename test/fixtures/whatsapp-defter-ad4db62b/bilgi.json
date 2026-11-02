@@ -1,0 +1,14 @@
+{
+ "kod": "ad4db62b",
+ "jobId": "waj-96ec0759-d9cb-4603-a407-80e2973a9582",
+ "attempt": 1,
+ "wamid": "wamid.SAHTE0001",
+ "deliveredAt": "2026-11-03T10:01:00.000Z",
+ "companyId": "sirket-001",
+ "buAy": 1,
+ "uygulandi": {
+  "applied": 1,
+  "ignored": 0,
+  "unknown": 0
+ }
+}

@@ -1,0 +1,73 @@
+# komut: HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-t6-e2-tls-248.test.mjs
+# kod: 8e884c2c (git archive kopyası) — kod doğruydu (sonda 9/9 DOĞRU), bulgu eksik testti: beklenen 9/9 YEŞİL
+TAP version 13
+# Subtest: 2.4.8 T2 dar kontrol 2 ORTA-B — ileti isteğinin sınıflaması GERÇEK TLS ile: gövde gittiyse belirsiz, gitmediyse gönderilmedi
+    # Subtest: doğrudan: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+    ok 1 - doğrudan: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+      ---
+      duration_ms: 36.498609
+      type: 'test'
+      ...
+    # Subtest: vekil üzerinden: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+    ok 2 - vekil üzerinden: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+      ---
+      duration_ms: 10.669183
+      type: 'test'
+      ...
+    # Subtest: doğrudan: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+    ok 3 - doğrudan: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+      ---
+      duration_ms: 802.568676
+      type: 'test'
+      ...
+    # Subtest: vekil üzerinden: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+    ok 4 - vekil üzerinden: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+      ---
+      duration_ms: 803.331959
+      type: 'test'
+      ...
+    # Subtest: doğrudan: TCP kabul edildi, TLS hiç kurulmadı (zaman aşımı) → gönderilmedi
+    ok 5 - doğrudan: TCP kabul edildi, TLS hiç kurulmadı (zaman aşımı) → gönderilmedi
+      ---
+      duration_ms: 503.058322
+      type: 'test'
+      ...
+    # Subtest: doğrudan: sertifika doğrulanamadı → gönderilmedi, sunucuya gövde gitmedi
+    ok 6 - doğrudan: sertifika doğrulanamadı → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 7.09755
+      type: 'test'
+      ...
+    # Subtest: vekil: CONNECT 200, hedefle TLS kurulmadan kopma → gönderilmedi, sunucuya gövde gitmedi
+    ok 7 - vekil: CONNECT 200, hedefle TLS kurulmadan kopma → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 7.379811
+      type: 'test'
+      ...
+    # Subtest: vekil: CONNECT reddedildi (502) → gönderilmedi, sunucuya gövde gitmedi
+    ok 8 - vekil: CONNECT reddedildi (502) → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 3.034247
+      type: 'test'
+      ...
+    # Subtest: vekil: sertifika doğrulanamadı (vekil TLS denetimi / yanlış kök) → gönderilmedi, sunucuya gövde gitmedi
+    ok 9 - vekil: sertifika doğrulanamadı (vekil TLS denetimi / yanlış kök) → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 6.443485
+      type: 'test'
+      ...
+    1..9
+ok 1 - 2.4.8 T2 dar kontrol 2 ORTA-B — ileti isteğinin sınıflaması GERÇEK TLS ile: gövde gittiyse belirsiz, gitmediyse gönderilmedi
+  ---
+  duration_ms: 2185.86831
+  type: 'suite'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2274.024639

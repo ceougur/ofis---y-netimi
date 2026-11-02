@@ -1,0 +1,56 @@
+TAP version 13
+# (node:10923) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: A1 — Kurulum Sihirbazı ortasında SIGKILL (elektrik kesintisi)
+    # Subtest: işlem geçmişi yazılırken kesinti → bağ, Devir Kapanışı, kurulum kaydı, istek kaydı yok; aynı istek kimliğiyle yeniden çalışır; İşlem No boşluksuz
+    ok 1 - işlem geçmişi yazılırken kesinti → bağ, Devir Kapanışı, kurulum kaydı, istek kaydı yok; aynı istek kimliğiyle yeniden çalışır; İşlem No boşluksuz
+      ---
+      duration_ms: 1518.044688
+      type: 'test'
+      ...
+    1..1
+ok 1 - A1 — Kurulum Sihirbazı ortasında SIGKILL (elektrik kesintisi)
+  ---
+  duration_ms: 1532.184964
+  type: 'suite'
+  ...
+# Subtest: A2–A5 — banka verili iki şirkette disk dolu, geri yükleme arızası, kilitli dosya ve yedek tatbikatı
+    # Subtest: A2: 001'in yedeği alınırken disk dolu → 500 açık hata, yarım dosya yok; 001 ve 002'nin banka verisi aynı; yer açılınca yedek alınır
+    ok 1 - A2: 001'in yedeği alınırken disk dolu → 500 açık hata, yarım dosya yok; 001 ve 002'nin banka verisi aynı; yer açılınca yedek alınır
+      ---
+      duration_ms: 145.017516
+      type: 'test'
+      ...
+    # Subtest: A3: 002'nin geri yüklemesinde EIO ve EBUSY → 500, banka verisi aynı; hata geçince geri yükleme yedek anına döner
+    ok 2 - A3: 002'nin geri yüklemesinde EIO ve EBUSY → 500, banka verisi aynı; hata geçince geri yükleme yedek anına döner
+      ---
+      duration_ms: 738.322582
+      type: 'test'
+      ...
+    # Subtest: A4: 002'nin veri dosyası başka programca kilitli → banka uçları 503 company-unavailable (001'e düşmez); kilit kalkınca bakiyeler aynı
+    ok 3 - A4: 002'nin veri dosyası başka programca kilitli → banka uçları 503 company-unavailable (001'e düşmez); kilit kalkınca bakiyeler aynı
+      ---
+      duration_ms: 157.706993
+      type: 'test'
+      ...
+    # Subtest: A5: yedek tatbikatı (002, hesaba bağlı veri): yedek → çalış → geri yükle → sayılar → yeniden çalış → yedek → geri yükle
+    ok 4 - A5: yedek tatbikatı (002, hesaba bağlı veri): yedek → çalış → geri yükle → sayılar → yeniden çalış → yedek → geri yükle
+      ---
+      duration_ms: 704.083219
+      type: 'test'
+      ...
+    1..4
+ok 2 - A2–A5 — banka verili iki şirkette disk dolu, geri yükleme arızası, kilitli dosya ve yedek tatbikatı
+  ---
+  duration_ms: 3319.373844
+  type: 'suite'
+  ...
+1..2
+# tests 5
+# suites 2
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5398.814088

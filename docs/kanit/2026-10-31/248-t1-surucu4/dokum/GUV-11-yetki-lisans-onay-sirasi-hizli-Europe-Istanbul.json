@@ -1,0 +1,122 @@
+{
+ "senaryo": "GUV-11-yetki-lisans-onay-sirasi",
+ "uc": "hizli",
+ "tz": "Europe/Istanbul",
+ "bitis": "2026-10-30T10:01:00+03:00",
+ "notlar": [
+  "KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)"
+ ],
+ "program_api": [
+  {
+   "t": "2026-10-30T10:00:00+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "statement",
+    "ids": [
+     "account-e04a920a-b7b1-44c2-9664-45978e7915e8"
+    ],
+    "from": "2026-10-01",
+    "to": "2026-10-31"
+   },
+   "status": 403,
+   "yanit": "{\"ok\":false,\"error\":\"Lisans geçerli değil. Program salt okunur çalışıyor; bu işlem yapılamaz.\",\"code\":\"LICENSE_READ_ONLY\"}"
+  },
+  {
+   "t": "2026-10-30T10:01:00+03:00",
+   "yontem": "POST",
+   "url": "/api/workspace/whatsapp/batches",
+   "govde": {
+    "kind": "statement",
+    "ids": [
+     "account-730cf46b-660e-44d9-b4a9-f5ab9d5bde8e"
+    ],
+    "from": "2026-10-01",
+    "to": "2026-10-31"
+   },
+   "status": 403,
+   "yanit": "{\"ok\":false,\"error\":\"Lisans geçerli değil. Program salt okunur çalışıyor; bu işlem yapılamaz.\",\"code\":\"LICENSE_READ_ONLY\"}"
+  },
+  {
+   "t": "2026-10-30T10:01:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-09",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-09\",\"configured\":true,\"wabaId\":\"800000000000001\",\"delivered\":0,\"billable\":0,\"accepted\":0,\"approxUsd\":0,\"unitUsd\":0.0009,\"company\":{\"delivered\":0,\"billable\":0,\"accepted\":0},\"note\":\"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır.\"}}"
+  },
+  {
+   "t": "2026-10-30T10:01:00+03:00",
+   "yontem": "GET",
+   "url": "/api/workspace/whatsapp/stats?month=2026-10",
+   "govde": null,
+   "status": 200,
+   "yanit": "{\"ok\":true,\"data\":{\"month\":\"2026-10\",\"configured\":true,\"wabaId\":\"800000000000001\",\"delivered\":0,\"billable\":0,\"accepted\":0,\"approxUsd\":0,\"unitUsd\":0.0009,\"company\":{\"delivered\":0,\"billable\":0,\"accepted\":0},\"note\":\"Teslim edilen ileti sayısıdır (ay: Türkiye saatiyle teslim zamanı; aynı WhatsApp hesabını kullanan bütün şirketler). Yaklaşık ücret ücretli teslim × 0,0009 USD; Meta faturası esastır.\"}}"
+  }
+ ],
+ "toplular": {},
+ "cari_eslemesi": {
+  "A": "account-e04a920a-b7b1-44c2-9664-45978e7915e8",
+  "B": "account-730cf46b-660e-44d9-b4a9-f5ab9d5bde8e"
+ },
+ "defter": {
+  "accepts": [],
+  "batch_events": [],
+  "batch_log": [],
+  "claim_keys": [],
+  "claims": [],
+  "deliveries": [],
+  "failures": [],
+  "holds": [],
+  "hook_events": [
+   {
+    "seq": 1,
+    "waba_id": "800000000000001",
+    "path_hash": "dcaf336633b8ec906708d344d4a15f32f6e4cc6e60fcc3685cf76b00a40c6306",
+    "verify_hash": "f6d257029315d12dea1b21562806132b66dbeeb7d81a63f6e2d144feef2d7442",
+    "base": "http://ofis.localhost:38367",
+    "state": "pending",
+    "reason": "manual",
+    "error": "",
+    "at": "2026-10-30T07:00:00.000Z"
+   },
+   {
+    "seq": 2,
+    "waba_id": "800000000000001",
+    "path_hash": "dcaf336633b8ec906708d344d4a15f32f6e4cc6e60fcc3685cf76b00a40c6306",
+    "verify_hash": "f6d257029315d12dea1b21562806132b66dbeeb7d81a63f6e2d144feef2d7442",
+    "base": "http://ofis.localhost:38367",
+    "state": "active",
+    "reason": "manual",
+    "error": "",
+    "at": "2026-10-30T07:00:00.000Z"
+   }
+  ],
+  "hook_seen": [],
+  "learned_wamids": [],
+  "meta": [
+   {
+    "key": "ledgerId",
+    "value": "wal-06fe4f39-faf7-42a1-a909-12603fac6092"
+   }
+  ],
+  "outcomes": [],
+  "releases": []
+ },
+ "sahte_meta": {
+  "istekler": [],
+  "mesajlar": [],
+  "kancalar": [],
+  "sayilar": {
+   "mesajIstegi": {},
+   "kabul": {},
+   "toplamMesajIstegi": 0,
+   "toplamKabul": 0,
+   "medyaYukleme": 0,
+   "medyaKabul": 0,
+   "medyaSilme": 0,
+   "koptu": 0
+  }
+ },
+ "alici_kanca_kaydi": []
+}

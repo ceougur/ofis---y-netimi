@@ -1,0 +1,68 @@
+{
+  "ad": "248-dkPQfix-eski-Q1-781b24eb-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q1-781b24eb/test/whatsapp-q1-tum-kisi-donemi-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q1-781b24eb/test/whatsapp-dk10-son3-ozel-248.test.mjs",
+  "commit": "7550b93a430b5a6222efc9002e754897f5aaf263",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 151,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T20:15:27.632Z",
+  "sure_sn": 8.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 7,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › 03.11 Tüm Hareketler P ve Q'ya → 05.11 özel 15.10–03.11: P 'Daha Önce Gönderildi' (iletideki dönem), Q 'gönderilecek' (Q'nun dönemi 20.10–03.11); 11.11 pencere dışı",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:49:3",
+      "hata": "kişi başına eşlik · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › ters yön: 05.11 özel 15.10–05.11 P'ye gönderildi → aynı gün Tüm Hareketler 'Daha Önce Gönderildi' (Q gönderilecek); 06.11 Tüm (15.10–06.11) ayrı",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:65:3",
+      "hata": "aynı tarihler → aynı dönem, yalnız P · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › b1b: aynı gün (Excel yükleme günü) açılmış 3 cariye 03.11 Tüm → 05.11 özel 15.10–03.11 toplu: üçü de elenir, ikinci ileti yok (önce 6 ileti)",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:100:3",
+      "hata": "toplu iş açılmaz (geldi 200 {\"ok\":true,\"data\":{\"batch\":{\"id\":\"wab-d340b0cd-c5f1-4d43-97d6-25c8b3f0ff14\",\"kind\":\"statement\",\"kindLabel\":\"Ekstre\",\"template\":\"destekofis_ekstre\",\"period\":{\"from\":\"2026-10-15\",\"to\":\"2026-11-03\",\"preset\":\"\"},\"state\":\"running\",\"stateLabel\":\"Sürüyor\",\"waitingUntil\":null,\"pauseReason\":\"\",\"pauseCode\":\"\",\"lockNote\":null,\"createdAt\":\"2026-11-05T10:00:00.000Z\",\"createdByName\":\"Ofis yöneticisi\",\"finishedAt\":null,\"total\":3,\"counts\":{\"pending\":3,\"preparing\":0,\"sending\":0,\"accepted\":0,\"sent\":0,\"delivered\":0,\"read\":0,\"failed\":0,\"uncertain\":0,\"limited\":0,\"held\":0,\"paused\":0,\"canceled\":0,\"expired\":0,\"skipped\":0,\"stopped\":0}},\"summary\":{\"kind\":\"statement\",\"period\":{\"from\":\"2026-10-15\",\"to\":\"2026-11-03\",\"preset\":\"\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":3,\"sendable\":3,\"skipped\":{},\"alreadySent\":{\"count\":0,\"last\":null,\"included\":0},\"people\":[{\"id\":\"account-0c988add-a408-4972-bd26-8e711c8c80c0\",\"name\":\"Burak Kaya\",\"phone\":\"+905334445566\",\"skip\":\"\"},{\"id\":\"account-773a4ef8-a0a6-4616-9dbe-dc4a5b916271\",\"name\":\"Ayşe Yılmaz\",\"phone\":\"+905321112233\",\"skip\":\"\"},{\"id\":\"account-0ab8c3d9-d493-41bd-aef6-6db47c8c6414\",\"name\":\"Can Demir\",\"phone\":\"+905352223344\",\"skip\":\"\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":0,\"left\":250,\"later\":0,\"holdUntil\":null},\"seconds\":3},\"reused\":false}}) · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › Zaten Kuyrukta: Tüm işi sırada → aynı tarihli özel aralık 'Zaten Kuyrukta' (Q gönderilecek)",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:133:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › Zaten Kuyrukta ters yön: özel 15.10–03.11 işi sırada → aynı gün Tüm 'Zaten Kuyrukta' (Q gönderilecek)",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:143:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › Sonucu Belirsiz: Tüm belirsiz → ertesi gün aynı tarihli özel aralık 'Sonucu Belirsiz' (Q gönderilecek)",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:153:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem › taşınan veri (defter yok): eski bilgisayarda 03.11 Tüm P'ye kabul → yeni bilgisayarda 05.11 özel 15.10–03.11 'Daha Önce Gönderildi', Q 'gönderilecek'",
+      "konum": "test/whatsapp-q1-tum-kisi-donemi-248.test.mjs:164:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dkPQfix-eski-Q1-781b24eb-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "5f47feb691d706ec98fdae0bd0e5dccd40a29863826ecbcecdfabbbd69f63eeb",
+  "ham_cikti_bayt": 15450
+}

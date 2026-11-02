@@ -1,0 +1,333 @@
+{
+  "tarih": "2026-11-01T12:09:18.076Z",
+  "commit": "b2e7bf190b60e67e05131856e3b7958bc2224b13",
+  "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/taban-2910/data",
+  "olcumSn": 60,
+  "node": "v22.22.0",
+  "cariListesi": 500,
+  "A_ozetsiz": {
+    "durumlar": {
+      "200": 1100
+    },
+    "olayDongusu": {
+      "p99ms": 225,
+      "enCokMs": 240
+    },
+    "uclar": {
+      "cariListesi": {
+        "n": 220,
+        "p50": 169,
+        "p95": 224,
+        "enCok": 243
+      },
+      "cariArama": {
+        "n": 220,
+        "p50": 49,
+        "p95": 73,
+        "enCok": 93
+      },
+      "cariKarti": {
+        "n": 220,
+        "p50": 16,
+        "p95": 113,
+        "enCok": 189
+      },
+      "bankaHareketleri": {
+        "n": 220,
+        "p50": 7,
+        "p95": 10,
+        "enCok": 18
+      },
+      "stok": {
+        "n": 220,
+        "p50": 3,
+        "p95": 4,
+        "enCok": 7
+      }
+    }
+  },
+  "B1_tekKullanici": [
+    {
+      "ok": true,
+      "kod": "",
+      "ms": 3256,
+      "bayt": 450400,
+      "kullanici": 1,
+      "cihaz": 1,
+      "olayDongusuEnCokMs": 850
+    },
+    {
+      "ok": true,
+      "kod": "",
+      "ms": 2850,
+      "bayt": 450400,
+      "kullanici": 1,
+      "cihaz": 1,
+      "olayDongusuEnCokMs": 805
+    },
+    {
+      "ok": true,
+      "kod": "",
+      "ms": 2896,
+      "bayt": 450400,
+      "kullanici": 1,
+      "cihaz": 1,
+      "olayDongusuEnCokMs": 731
+    }
+  ],
+  "B3_ucKullanici": [
+    {
+      "ok": true,
+      "kod": "",
+      "ms": 8512,
+      "bayt": 1348580,
+      "kullanici": 3,
+      "cihaz": 3,
+      "olayDongusuEnCokMs": 955
+    },
+    {
+      "ok": true,
+      "kod": "",
+      "ms": 8294,
+      "bayt": 1348580,
+      "kullanici": 3,
+      "cihaz": 3,
+      "olayDongusuEnCokMs": 837
+    },
+    {
+      "ok": true,
+      "kod": "",
+      "ms": 8304,
+      "bayt": 1348580,
+      "kullanici": 3,
+      "cihaz": 3,
+      "olayDongusuEnCokMs": 833
+    }
+  ],
+  "C_ozetSirasinda": {
+    "durumlar": {
+      "200": 650
+    },
+    "olayDongusu": {
+      "p99ms": 376,
+      "enCokMs": 1197
+    },
+    "uclar": {
+      "cariListesi": {
+        "n": 130,
+        "p50": 185,
+        "p95": 291,
+        "enCok": 485
+      },
+      "cariArama": {
+        "n": 130,
+        "p50": 64,
+        "p95": 202,
+        "enCok": 905
+      },
+      "cariKarti": {
+        "n": 130,
+        "p50": 36,
+        "p95": 313,
+        "enCok": 1576
+      },
+      "bankaHareketleri": {
+        "n": 130,
+        "p50": 17,
+        "p95": 101,
+        "enCok": 218
+      },
+      "stok": {
+        "n": 130,
+        "p50": 9,
+        "p95": 256,
+        "enCok": 928
+      }
+    },
+    "ozetSayisi": 3
+  },
+  "D_telefon": [
+    {
+      "kullanici": "admin",
+      "ozetOkumaCozmeMs": 67,
+      "ozetDurum": 200,
+      "ozetKod": "",
+      "ozetBayt": 1348580,
+      "ozetSirketSayisi": 0,
+      "kirpildi": false,
+      "canliGirisMs": 73,
+      "canli": {
+        "/api/mobil/session": {
+          "durum": 200,
+          "ms": 6
+        },
+        "/api/mobil/overview": {
+          "durum": 200,
+          "ms": 68
+        },
+        "/api/mobil/cash": {
+          "durum": 200,
+          "ms": 1074
+        },
+        "/api/workspace/accounts": {
+          "durum": 404,
+          "ms": 4
+        },
+        "/api/mobil/accounts/account-1cfba6d6-30c8-4d04-93e6-75a5b6feb4d8": {
+          "durum": 200,
+          "ms": 246
+        }
+      }
+    },
+    {
+      "kullanici": "olcek01",
+      "ozetOkumaCozmeMs": 48,
+      "ozetDurum": 200,
+      "ozetKod": "",
+      "ozetBayt": 1348580,
+      "ozetSirketSayisi": 0,
+      "kirpildi": false,
+      "canliGirisMs": 67,
+      "canli": {
+        "/api/mobil/session": {
+          "durum": 200,
+          "ms": 7
+        },
+        "/api/mobil/overview": {
+          "durum": 403,
+          "ms": 6
+        },
+        "/api/mobil/cash": {
+          "durum": 200,
+          "ms": 894
+        },
+        "/api/workspace/accounts": {
+          "durum": 404,
+          "ms": 17
+        },
+        "/api/mobil/accounts/account-1cfba6d6-30c8-4d04-93e6-75a5b6feb4d8": {
+          "durum": 200,
+          "ms": 148
+        }
+      }
+    },
+    {
+      "kullanici": "olcek02",
+      "ozetOkumaCozmeMs": 48,
+      "ozetDurum": 200,
+      "ozetKod": "",
+      "ozetBayt": 1348580,
+      "ozetSirketSayisi": 0,
+      "kirpildi": false,
+      "canliGirisMs": 60,
+      "canli": {
+        "/api/mobil/session": {
+          "durum": 200,
+          "ms": 5
+        },
+        "/api/mobil/overview": {
+          "durum": 403,
+          "ms": 5
+        },
+        "/api/mobil/cash": {
+          "durum": 200,
+          "ms": 807
+        },
+        "/api/workspace/accounts": {
+          "durum": 404,
+          "ms": 4
+        },
+        "/api/mobil/accounts/account-1cfba6d6-30c8-4d04-93e6-75a5b6feb4d8": {
+          "durum": 200,
+          "ms": 149
+        }
+      }
+    }
+  ],
+  "E_bolumler": {
+    "001": {
+      "/api/mobil/cash": {
+        "durum": 200,
+        "bayt": 341,
+        "ms": 778
+      },
+      "/api/mobil/bank": {
+        "durum": 200,
+        "bayt": 1060,
+        "ms": 319
+      },
+      "/api/mobil/bank/accounts": {
+        "durum": 200,
+        "bayt": 4225,
+        "ms": 222
+      },
+      "/api/mobil/plans": {
+        "durum": 200,
+        "bayt": 186,
+        "ms": 9
+      },
+      "/api/mobil/overview": {
+        "durum": 200,
+        "bayt": 1512,
+        "ms": 44
+      },
+      "/api/workspace/accounts?limit=500": {
+        "durum": 404,
+        "bayt": 81,
+        "ms": 4
+      },
+      "/api/workspace/stock?limit=500": {
+        "durum": 404,
+        "bayt": 81,
+        "ms": 3
+      },
+      "/api/mobil/accounts/:id x50 (001 carileri)": {
+        "toplamBayt": 1509076,
+        "enCokBayt": 115857,
+        "toplamMs": 1474
+      }
+    },
+    "002": {
+      "/api/mobil/cash": {
+        "durum": 200,
+        "bayt": 328,
+        "ms": 91
+      },
+      "/api/mobil/bank": {
+        "durum": 200,
+        "bayt": 1045,
+        "ms": 16
+      },
+      "/api/mobil/bank/accounts": {
+        "durum": 200,
+        "bayt": 4161,
+        "ms": 7
+      },
+      "/api/mobil/plans": {
+        "durum": 200,
+        "bayt": 144,
+        "ms": 10
+      },
+      "/api/mobil/overview": {
+        "durum": 200,
+        "bayt": 1393,
+        "ms": 12
+      },
+      "/api/workspace/accounts?limit=500": {
+        "durum": 404,
+        "bayt": 81,
+        "ms": 4
+      },
+      "/api/workspace/stock?limit=500": {
+        "durum": 404,
+        "bayt": 81,
+        "ms": 3
+      },
+      "/api/mobil/accounts/:id x50 (001 carileri)": {
+        "toplamBayt": 3000,
+        "enCokBayt": 60,
+        "toplamMs": 227
+      }
+    }
+  }
+}

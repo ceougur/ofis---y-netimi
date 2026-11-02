@@ -1,0 +1,32 @@
+{
+  "ad": "248-i1-ana-yeniden",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/ice-aktarma-istek-kimligi-248.test.mjs test/ice-aktarma-ozet-248.test.mjs test/cek-istek-kimligi-247.test.mjs",
+  "commit": "4982bf30d63c508128062c3155e512f6a10e564a",
+  "dal": "is/ithal-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T18:56:52.275Z",
+  "sure_sn": 5.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 29,
+    "gecen": 29,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-i1-ana-yeniden.log",
+  "klasor": "/home/user/wt-ithal-248",
+  "ham_cikti_sha256": "7b529f0cd4bd69d3af14c8e8ab1f302d84ef044872b63395ad060ce81ebc8d3e",
+  "ham_cikti_bayt": 12042
+}

@@ -1,0 +1,6 @@
+db-bozuk-dosya-tutamak-248 cikis=0
+backup cikis=0
+yedek-220-inceleme cikis=0
+banka-210-ariza cikis=0
+guvenilirlik-221-ariza cikis=0
+whatsapp-t-durum-karar-tablosu-248 cikis=0

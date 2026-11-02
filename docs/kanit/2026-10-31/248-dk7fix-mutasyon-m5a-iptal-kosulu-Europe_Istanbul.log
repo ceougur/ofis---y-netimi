@@ -1,0 +1,93 @@
+TAP version 13
+# Subtest: 2.4.8 İş 5 — Meta Bekletti iş iptal edilince kişi 'Daha Önce Gönderildi' sayılmaz; geç teslimde sayılır
+    # Subtest: Tamamlandı → 131049 ile yeniden açılmış toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+    not ok 1 - Tamamlandı → 131049 ile yeniden açılmış toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+      ---
+      duration_ms: 606.438085
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:54:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        iptal edilen Meta Bekletti teslim edilmedi → P 'Daha Önce Gönderildi' DEĞİL
+        + actual - expected
+        
+          [
+        +   'Daha Önce Gönderildi'
+        -   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'gönderilecek'
+      actual:
+        0: 'Daha Önce Gönderildi'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:62:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Sürüyor (yeniden açılmamış) toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+    not ok 2 - Sürüyor (yeniden açılmamış) toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+      ---
+      duration_ms: 417.068479
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:54:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        iptal edilen Meta Bekletti teslim edilmedi → P 'Daha Önce Gönderildi' DEĞİL
+        + actual - expected
+        
+          [
+        +   'Daha Önce Gönderildi'
+        -   'gönderilecek'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'gönderilecek'
+      actual:
+        0: 'Daha Önce Gönderildi'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:62:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: İptalden sonra geç 'delivered' (1. denemenin wamid'i) → P 'Daha Önce Gönderildi' (geç teslim sayılır)
+    ok 3 - İptalden sonra geç 'delivered' (1. denemenin wamid'i) → P 'Daha Önce Gönderildi' (geç teslim sayılır)
+      ---
+      duration_ms: 438.608228
+      type: 'test'
+      ...
+    # Subtest: Değişmeyen: Meta Bekletti beklerken (iptal yok) yeni gönderimde P 'Zaten Kuyrukta'; Yine de Gönder'de de
+    ok 4 - Değişmeyen: Meta Bekletti beklerken (iptal yok) yeni gönderimde P 'Zaten Kuyrukta'; Yine de Gönder'de de
+      ---
+      duration_ms: 349.333229
+      type: 'test'
+      ...
+    1..4
+not ok 1 - 2.4.8 İş 5 — Meta Bekletti iş iptal edilince kişi 'Daha Önce Gönderildi' sayılmaz; geç teslimde sayılır
+  ---
+  duration_ms: 1812.91535
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dk7fix-248-0a5d7c41/mut/test/whatsapp-dk7-bekletti-iptal-248.test.mjs:52:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 2
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2206.766004

@@ -1,0 +1,143 @@
+{
+  "ad": "248-w1-kirmizi-eski-e9602add-birim",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/test/whatsapp-w1-baglanti.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/test/whatsapp-meta-izolasyon.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/test/whatsapp-meta-graph.test.mjs",
+  "commit": "e9602add7dea524a0c8348913ac125d5195fffc0",
+  "dal": "is/w1-248",
+  "kirli": 13,
+  "izlenmeyen": 23,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T13:07:38.068Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 1,
+    "basarisiz": 22,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 22 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 W1 — Meta istemcisi › istek: sürüm sabiti + belirteç yalnız başlıkta; adres sorgusunda ve gövdede yok; yönlendirme izlenmez (manual)",
+      "konum": "test/whatsapp-meta-graph.test.mjs:13:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/server/lib/whatsapp/meta-graph.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/test/whatsapp-meta-graph.test.mjs"
+    },
+    {
+      "ad": "2.4.8 W1 — Meta istemcisi › belirteç açılamazsa (boş) ve kimlik adres karakteri taşırsa istek yapılmaz",
+      "konum": "test/whatsapp-meta-graph.test.mjs:26:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/server/lib/whatsapp/meta-graph.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/test/whatsapp-meta-graph.test.mjs"
+    },
+    {
+      "ad": "2.4.8 W1 — Meta istemcisi › Meta hata gövdesi: Türkçe başlık + kod + yeniden deneme sınıfı; Meta metni belirteci yankılasa da iletide yok",
+      "konum": "test/whatsapp-meta-graph.test.mjs:36:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/server/lib/whatsapp/meta-graph.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/test/whatsapp-meta-graph.test.mjs"
+    },
+    {
+      "ad": "2.4.8 W1 — Meta istemcisi › ağ hatası, zaman aşımı, gövdesiz 5xx, 3xx yönlendirme → sonuç bilinmiyor (retry unknown)",
+      "konum": "test/whatsapp-meta-graph.test.mjs:49:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/server/lib/whatsapp/meta-graph.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/test/whatsapp-meta-graph.test.mjs"
+    },
+    {
+      "ad": "2.4.8 W1 — Meta istemcisi › sayfalama: `after` imleciyle yapılandırılmış adrese; yanıttaki mutlak paging.next adresine gidilmez; en çok 3 sayfa",
+      "konum": "test/whatsapp-meta-graph.test.mjs:70:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/server/lib/whatsapp/meta-graph.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/test/whatsapp-meta-graph.test.mjs"
+    },
+    {
+      "ad": "2.4.8 W1 — Meta istemcisi › hata sınıfları (plan §6 W2) ve sınır basamağı / kalite metinleri",
+      "konum": "test/whatsapp-meta-graph.test.mjs:91:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/server/lib/whatsapp/meta-graph.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/test/whatsapp-meta-graph.test.mjs"
+    },
+    {
+      "ad": "yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş",
+      "konum": "test/whatsapp-meta-izolasyon.test.mjs:42:1",
+      "hata": "aynı süreçte açılan program (createApp, bayraksız): adres boş · undefined !== ''"
+    },
+    {
+      "ad": "Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz",
+      "konum": "test/whatsapp-meta-izolasyon.test.mjs:63:1",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/server/lib/whatsapp/meta-graph.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w1-248-eski-e9602add/test/whatsapp-meta-izolasyon.test.mjs"
+    },
+    {
+      "ad": "ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez",
+      "konum": "test/whatsapp-meta-izolasyon.test.mjs:102:1",
+      "hata": "Expected values to be strictly equal: · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:54:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:80:3",
+      "hata": "{\"wabaId\":\"102290129340398\",\"token\":\"SAHTE-W1-belirtec-Gizli_0123456789-abcdefAB → 400 · 404 !== 400 (beklenen 400, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:101:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:125:3",
+      "hata": "{\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:152:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 502 (beklenen 502, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:203:3",
+      "hata": "sabit hat · 404 !== 400 (beklenen 400, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:248:3",
+      "hata": "{\"ok\":false,\"error\":\"Verilebilecek yetki tanınmadı. Kullanıcı, sistem ve lisans yönetimi ile ANLIK DURUM kartı yalnız yönetici rolündedir.\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:261:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:276:3",
+      "hata": "yedek bağlantı satırını taşır (mühürlü) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:294:3",
+      "hata": "secret.key veri klasöründe (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla) › Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:319:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum › salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:336:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum › Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz",
+      "konum": "test/whatsapp-w1-baglanti.test.mjs:374:3",
+      "hata": "Cannot read properties of undefined (reading 'graphAvailable')"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-w1-kirmizi-eski-e9602add-birim.log",
+  "klasor": "/home/user/wt-w1-248",
+  "ham_cikti_sha256": "92521cdbd28f3de307111408a3b7cf90ee384eff5989522b7d905fa58a31972a",
+  "ham_cikti_bayt": 31099
+}

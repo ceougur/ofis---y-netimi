@@ -1,0 +1,32 @@
+{
+  "ad": "248-tamkapi/ci-kahin-ebelge-model",
+  "komut": "python3 test/bagimsiz/ebelge/test_model.py",
+  "commit": "054f72f9b173cac5bdaabd6986cbde45fa3cab4d",
+  "dal": "is/aday2-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T21:49:11.791Z",
+  "sure_sn": 2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 114,
+    "gecen": 114,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-tamkapi/ci-kahin-ebelge-model.log",
+  "klasor": "/home/user/wt-aday2-248",
+  "ham_cikti_sha256": "fbcfbd7b367b024e1a6dcc4b838a962bf81900a7d94515c159833f737d99f062",
+  "ham_cikti_bayt": 246
+}

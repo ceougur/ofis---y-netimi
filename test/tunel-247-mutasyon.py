@@ -17,7 +17,7 @@ MUTS = [
     ("M5 gövdedeki ofis = yoldaki ofis denetimi kalktı", "bulut/kapi/tunel.mjs",
      'if (govde?.v !== 1 || govde.ofis !== ofis || meta.ofis !== ofis) at("kapi-istek");', 'if (govde?.v !== 1) at("kapi-istek");', ["test/kapi-tunel-247.test.mjs"]),
     ("M6 kapıcı lisans denetimi kalktı", "bulut/kapi/tunel.mjs",
-     'if (gorunum?.durum !== "gecerli") at("kapi-lisans");', '', ["test/kapi-tunel-247.test.mjs"]),
+     'if (gorunum?.durum !== "gecerli" && gorunum?.durum !== "hosgoru") at("kapi-lisans");', '', ["test/kapi-tunel-247.test.mjs"]),
     ("M6b kapıcı zaman payı denetimi kalktı", "bulut/kapi/tunel.mjs",
      'if (!Number.isSafeInteger(ms) || Math.abs(now() - ms) > K.zamanPayiMs) at("kapi-zaman", { zaman: now() });', '', ["test/kapi-tunel-247.test.mjs"]),
     ("M7 eşli cihaz yokken de tünel açık", "server/lib/tunnel/manager.mjs",

@@ -1,0 +1,32 @@
+{
+  "ad": "db-bozuk-tutamak-yeni",
+  "komut": "node --test test/db-bozuk-dosya-tutamak-248.test.mjs",
+  "commit": "9533b7b943949b8248a90c754380a161aa66f4be",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-02T02:53:03.912Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-02/db-bozuk-tutamak-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "c7c0f912454a946cce400f7c46ab188806a0b35f7e88524c363c0dafc324edec",
+  "ham_cikti_bayt": 1244
+}

@@ -17,7 +17,8 @@ MUTS = [
     ("MU10 imza denetlenmez", 'server/lib/mobile-remote.mjs', 'if (!proofValid(device, body)) throw fail(401, "remote-proof");', ''),
     ("MU11 izin kalkınca cihaz düşmez", 'server/lib/mobile-remote.mjs', 'if (!remote) revoked = revokeUserDevices(user.id, "permission", admin);', ''),
     ("MU12 geri yükleme ortak katmanı mobil tabloları taşımaz", 'server/lib/company-backups.mjs', ', "mobile_access", "mobile_codes", "mobile_devices", "mobile_sessions"]', ']'),
-    ("MU13 lisans denetlenmez", 'server/lib/mobile-remote.mjs', '      if (!licenseOk()) return reject(req, res, fail(403, "remote-license"));', ''),
+    # 2.4.8 L1: kapı mobil kullanım hakkına göre (eşleme yazılabilir lisans) — satır değişti, mutasyon aynı anlamda.
+    ("MU13 lisans denetlenmez", 'server/lib/mobile-remote.mjs', '      if (isPair ? !licenseOk() : !accessOk()) return reject(req, res, licenseFail());', ''),
     ("MU14 uzak istek yerel sayılır (clientIp)", 'server/lib/http.mjs', '  if (isRemoteRequest(req)) return "uzak";\n', ''),
     ("MU15 şirket denetimi mobil katmanda yok", 'server/app.mjs', '      if (viewer && !companies.canAccess(viewer, target.id)) return send(', '      if (false && viewer && !companies.canAccess(viewer, target.id)) return send('),
 ]

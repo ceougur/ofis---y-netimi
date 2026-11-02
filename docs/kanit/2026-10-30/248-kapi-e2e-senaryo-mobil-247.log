@@ -1,0 +1,100 @@
+Masaüstü: Kasa 3279.75, Banka 12370678.9, 2 cari, 1 ürün
+
+■ T1 telefon ana adresi açar → mobil görünüm; bilgisayar masaüstünü görür
+  ✓ adres /mobil/ (/mobil/)
+  ✓ başlık “DestekOfis Mobil”
+  ✓ masaüstü ekranı yok
+  ✓ bilgisayar ana adreste kalır
+  ✓ bilgisayarda masaüstü sayfası
+
+■ T2 giriş → Özet sayıları = masaüstü API'si
+  ✓ Nakit Kasa ₺3.279,75 = ₺3.279,75
+  ✓ Kasa beklenen 3.000 − 120,25 + 400 (carinin nakit tahsilatı)
+  ✓ Banka ₺12.370.678,90 = ₺12.370.678,90
+  ✓ Cari Kayıtları 2 = 2
+  ✓ Stok Ürünleri 1 = 1
+  ✓ alt menü Özet, Cari, Finans, Stok, Raporlar
+  ✓ alt menü tek satır, ekranın altında (yükseklik 63)
+  ✓ şirket seçili
+  ✓ Özet kartları: 4 tutar tek satırda ve tam (₺3.279,75, ₺12.370.678,90, 2, 1)
+  ✓ Özet: yatay taşma yok (390 ≤ 390)
+
+■ T3 Cari: liste, arama, cari kartı, Cari Ekstre PDF
+  ✓ 2 cari (2)
+  ✓ Ali bakiyesi ₺850,50Bakiye = ₺850,50
+  ✓ Ali beklenen 1.250,50 − 400
+  ✓ Cari listesi bakiyeleri: 2 tutar tek satırda ve tam (₺850,50, ₺0,00)
+  ✓ Cari listesi: yatay taşma yok (390 ≤ 390)
+  ✓ arama “Veli” → Veli Toptan
+  ✓ arama temizlenince 2 cari
+  ✓ cari kartı bakiyesi ₺850,50
+  ✓ son hareketler 2 = 2
+  ✓ Cari kartı tutarları: 3 tutar tek satırda ve tam (₺850,50, ₺400,00, ₺1.250,50)
+  ✓ Cari kartı: yatay taşma yok (390 ≤ 390)
+  ✓ Cari Ekstre PDF indi (Cari-Ekstre.pdf, %PDF)
+  ✓ Listeye Dön
+
+■ T4 Finans: Nakit Kasa, Banka ve hesap satırı = API
+  ✓ Nakit Kasa ₺3.279,75
+  ✓ Banka ₺12.370.678,90
+  ✓ hesap satırı ₺25.000,00 = ₺25.000,00
+  ✓ Banka beklenen açılışlar 25.000 + 12.345.678,90
+  ✓ Finans tutarları: 4 tutar tek satırda ve tam (₺3.279,75, ₺12.370.678,90, ₺25.000,00, ₺12.345.678,90)
+  ✓ Finans: yatay taşma yok (390 ≤ 390)
+
+■ T5 Stok: miktar = API; stok kartı hareketleri
+  ✓ Kurşun Kalem 33 AdetMiktar (API 33; beklenen 40 − 7)
+  ✓ stok kartı 33 Adet
+  ✓ hareketler −7 Adet, +40 Adet
+  ✓ Stok kartı miktarları: 3 tutar tek satırda ve tam (33 Adet, −7 Adet, +40 Adet)
+  ✓ Stok kartı: yatay taşma yok (390 ≤ 390)
+
+■ T6 Raporlar: izinli 10 rapor; Cari Listesi = API; PDF ve Excel; Cari Ekstre cari seçerek
+  ✓ 10 rapor (10: mizan, cari-listesi, cari-ekstre, cari-hareketleri, cari-tahsilat, alacak-yaslandirma, taksit-kartlari, taksit-vadeleri, geciken-taksitler, taksit-tahsilatlari)
+  ✓ fatura / vergi raporları yok
+  ✓ Rapor kataloğu: yatay taşma yok (390 ≤ 390)
+  ✓ rapor satırları API ile aynı (2)
+  ✓ TOPLAM satırı (1)
+  ✓ Cari Listesi raporu: yatay taşma yok (390 ≤ 390)
+  ✓ rapor PDF indi (DestekOfis-cari-listesi.pdf)
+  ✓ rapor Excel indi (DestekOfis-cari-listesi.xlsx)
+  ✓ Cari Ekstre satırları 3 = 3
+  ✓ Cari Ekstre raporu: yatay taşma yok (390 ≤ 390)
+
+■ T7 eski yazma yolları kapalı: v0.3 kayıt formu yok, yazma düğmeleri yalnız M5 formu; demo metni yok
+  ✓ demo / test onayı metni yok
+  ✓ yazma düğmeleri yalnız M5 formu (Tahsilat Gir, Ödeme Gir)
+  ✓ v0.3 kayıt formu yok
+  ✓ tarayıcıdan yazma isteği 405 (405)
+  ✓ veri tabanında hareket sayısı değişmedi
+
+■ T8 iki şirket: 002 boş; veri girilince Yenile; 001'e dönüş
+  ✓ 002 Nakit Kasa ₺0,00
+  ✓ 002 Cari Kayıtları 0
+  ✓ 002 cari listesi boş ipucu
+  ✓ 002 Yenile → Ayşe Demir
+  ✓ 002 cari listesi (büyük bakiye): 1 tutar tek satırda ve tam (₺12.345.678,90)
+  ✓ Ayşe Demir bakiyesi ₺12.345.678,90
+  ✓ 002 cari kartı (büyük bakiye): 2 tutar tek satırda ve tam (₺12.345.678,90, ₺12.345.678,90)
+  ✓ 002 cari kartı: yatay taşma yok (390 ≤ 390)
+  ✓ 002 Nakit Kasa ₺12.345.678,90 = ₺12.345.678,90
+  ✓ 002 Özet kartları (büyük Kasa): 4 tutar tek satırda ve tam (₺12.345.678,90, ₺0,00, 1, 0)
+  ✓ 001'e dönüş: Nakit Kasa ₺3.279,75
+  ✓ 001'e dönüş: 2 cari
+
+■ T9 çıkış (üst çubuk) → giriş ekranı; oturum kapandı
+  ✓ giriş ekranı
+  ✓ oturum kapandı (401)
+
+■ T10 yetkisiz kullanıcı (Personel): Kasa / Banka / Raporlar görünmez
+  ✓ Nakit Kasa Yetki Yok
+  ✓ Banka Yetki Yok
+  ✓ Cari Kayıtları 2
+  ✓ şirket seçicide yalnız 001
+  ✓ Finans: Bu işlem için yetkiniz yok. | Bu işlem için yetkiniz yok.
+  ✓ Kasa tutarı gösterilmez
+  ✓ Raporlar: Bu işlem için yetkiniz yok.
+  ✓ rapor listesi yok
+  ✓ sayfa hatası yok (—)
+
+77 geçti, 0 kaldı

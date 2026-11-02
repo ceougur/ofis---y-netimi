@@ -1,0 +1,72 @@
+TAP version 13
+# Subtest: 2.4.8 İş Q5 — 'Daha Önce Gönderildi' tarihi son kabul edilen denemenin anı
+    # Subtest: 131049 → 24 saat sonra 2. deneme kabul → önizlemede tarih 2. denemenin kabul anı (1. değil); kişi yine elenir
+    not ok 1 - 131049 → 24 saat sonra 2. deneme kabul → önizlemede tarih 2. denemenin kabul anı (1. değil); kişi yine elenir
+      ---
+      duration_ms: 679.793266
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q5-af481bab/test/whatsapp-q5-son-kabul-248.test.mjs:19:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tarih 2. denemenin kabul anı (beklenen 2026-11-04T07:02:00.000Z, 1. deneme 2026-11-03T07:00:00.000Z, geldi 2026-11-03T07:00:00.000Z)
+        + actual - expected
+        
+        + '2026-11-03T07:00:00.000Z'
+        - '2026-11-04T07:02:00.000Z'
+                    ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2026-11-04T07:02:00.000Z'
+      actual: '2026-11-03T07:00:00.000Z'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q5-af481bab/test/whatsapp-q5-son-kabul-248.test.mjs:43:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Son 3 Ay (7 günlük pencere): 1. kabul 7 günden eski, 2. deneme 7 gün içinde kabul → kişi 'Daha Önce Gönderildi' (taşınan verideki iş satırı yolu ile aynı)
+    not ok 2 - Son 3 Ay (7 günlük pencere): 1. kabul 7 günden eski, 2. deneme 7 gün içinde kabul → kişi 'Daha Önce Gönderildi' (taşınan verideki iş satırı yolu ile aynı)
+      ---
+      duration_ms: 545.699764
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q5-af481bab/test/whatsapp-q5-son-kabul-248.test.mjs:51:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kişi 7 gün içinde ileti aldı → Daha Önce Gönderildi (geldi {"count":0,"last":null,"included":0})
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q5-af481bab/test/whatsapp-q5-son-kabul-248.test.mjs:71:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.8 İş Q5 — 'Daha Önce Gönderildi' tarihi son kabul edilen denemenin anı
+  ---
+  duration_ms: 1227.080381
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dkPQ-248-r7x2/eski-Q5-af481bab/test/whatsapp-q5-son-kabul-248.test.mjs:18:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1636.474119

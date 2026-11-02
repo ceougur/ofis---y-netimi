@@ -1,0 +1,83 @@
+{
+  "ad": "248-dkVfix-eski2-dc467f1c-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/v-eski2-dc467f1c/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/v-eski2-dc467f1c/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "1717c2512341e1166ce795292c8326afd4a6cd86",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 98,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T06:41:19.896Z",
+  "sure_sn": 83.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 83,
+    "gecen": 73,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T-settle-D belirsiz → yedek → imzalı delivered (Teslim) → geri yükleme → bakım: satır Teslim Edildi (defterdeki anla); +31 gün bakım değişmez, teslim edilemedi yazılmaz; Bu Ay 1 (V2, n1)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:819:3",
+      "hata": "Teslim Edildi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T-settleSending-D istek Meta'dayken yedek (satır Gönderiliyor) → kabul → delivered → geri yükleme → açılış toparlaması: Teslim Edildi (V2, n1b)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:845:3",
+      "hata": "açılış toparlaması teslimi gördü (geldi accepted) · + actual - expected · + 'accepted' (beklenen delivered, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T-bekletti-2.deneme-düştü (cift-sinir) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:869:5",
+      "hata": "işçi talep açmadan işi Teslim Edildi yaptı · + actual - expected · + 'accepted' (beklenen delivered, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T-bekletti-2.deneme-düştü (talep-yazilamadi) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:869:5",
+      "hata": "işçi talep açmadan işi Teslim Edildi yaptı · + actual - expected · + 'accepted' (beklenen delivered, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T36-kilit onarım listesi dolu + defter BAŞKA SÜREÇTE kilitli → önizleme ve yeni gönderim BEKLEMEZ (< 1,5 sn); neden kilit notuyla aynı cümle; kilit kalkınca önizleme onarır (V3, n5)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:910:3",
+      "hata": "önizleme beklemedi (10028 ms) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T-local-neden kabul defteri yazılamazken toplu iş: 'bu bilgisayarda yürütülemedi' nedeniyle duraklar; kod adı / internet cümlesi yok (V5, n4)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:946:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'meta-unreachable' (beklenen local, gelen meta-unreachable)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil-F veri dosyası YOK (kalıcı) · imzasız failed 131026 → 200 + defterde teslim edilemedi; dosya geri gelince kişi \"gönderilecek\" (V1 i, K4)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1360:5",
+      "hata": "defterde teslim edilemedi · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil-F49 veri dosyası YOK (kalıcı) · imzasız failed 131049 → 200 + defterde teslim edilemedi; dosya geri gelince kişi \"gönderilecek\" (V1 i, K4)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1360:5",
+      "hata": "defterde teslim edilemedi · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil-D+geri veri dosyası YOK · delivered → 200 + defter teslim; dosya geri gelince Daha Önce, Bu Ay 1; süre dolumu satırı Teslim Edildi yapar (Süresi Doldu / teslim edilemedi YOK) (V1 + V2)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1378:3",
+      "hata": "süre dolumu teslimi gördü · + actual - expected · + 'expired' (beklenen delivered, gelen expired)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Kbozuk şirket açılmamışken veri dosyası BOZUK (veri tabanı değil) → 503 (geçici; düzeltilince uygulanır); dosya düzelince yineleme 200 ve Teslim (V1 ii)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1422:3",
+      "hata": "bozuk dosya geçicidir → 503 (geldi 200 {\"ok\":true}) · 200 !== 503 (beklenen 503, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkVfix-eski2-dc467f1c-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "be2708b424aefe57f561e3afd1e3a64015274882ce59cd8a5cf3c5861ed4df7d",
+  "ham_cikti_bayt": 40913
+}

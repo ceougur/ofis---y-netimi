@@ -1,0 +1,43 @@
+{
+  "ad": "248-t6/b-disk-dolu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/t6-248/b-disk-dolu.mjs",
+  "commit": "bfa93b6d5b0df3b1e592fd09e6370e723b42e0eb",
+  "dal": "is/t6-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T01:05:19.530Z",
+  "sure_sn": 137.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 1,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "T6 (b) — disk dolu › b1 GERÇEK tmpfs: ilk PDF yüklemesi Meta'dayken disk doldu → çift ileti yok; yer açılınca biter",
+      "konum": "test/t6-248/b-disk-dolu.mjs:98:3",
+      "hata": "BULGU T6-B1: yer açıldıktan sonra toplu iş bitmedi; takılı iş: [\"preparing\",\"accepted\",\"accepted\",\"accepted\"] · + actual - expected · + 'toplu iş bitti: 90000 ms içinde olmadı'"
+    },
+    {
+      "ad": "T6 (b) — disk dolu › b3 ZORLA: PDF yüklendikten SONRAKİ yazım (media_id) düşüyor → kaç tur, kaç PDF yüklendi (T2 kuşkusu)",
+      "konum": "test/t6-248/b-disk-dolu.mjs:146:3",
+      "hata": "BULGU T6-B2: 20 turda 20 PDF yüklendi, Meta'da 20 sahipsiz PDF kaldı (iş pending, bekleme yok) (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-31/248-t6/b-disk-dolu.log",
+  "klasor": "/home/user/wt-t6-248",
+  "ham_cikti_sha256": "43407b3d317d48c4b8b2ff705b268a27bbcc5f6110840b84accdc0711cd055ea",
+  "ham_cikti_bayt": 5302
+}

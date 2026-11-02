@@ -1,0 +1,49 @@
+(node:1861) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+FARKLI Ayşe Fark Yılmaz · buAy · JSON
+  eski: {"ok":true,"data":{"from":"2026-11-01","to":"2026-11-30","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer","phone":"0532 000 11 22"},"opening":1099.5,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"debt","date":"2026-11-01","at":"2026-11-20T11:30:00.0
+  yeni: {"ok":true,"data":{"from":"2026-11-01","to":"2026-11-30","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer"},"opening":1099.5,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"debt","date":"2026-11-01","at":"2026-11-20T11:30:00.000Z","label":"Borç","sour
+FARKLI Ayşe Fark Yılmaz · gecenAy · JSON
+  eski: {"ok":true,"data":{"from":"2026-10-01","to":"2026-10-31","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer","phone":"0532 000 11 22"},"opening":1250,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"debt","date":"2026-10-01","at":"2026-11-20T11:30:00.000
+  yeni: {"ok":true,"data":{"from":"2026-10-01","to":"2026-10-31","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer"},"opening":1250,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"debt","date":"2026-10-01","at":"2026-11-20T11:30:00.000Z","label":"Borç","source
+FARKLI Ayşe Fark Yılmaz · bosDonem · JSON
+  eski: {"ok":true,"data":{"from":"2026-06-01","to":"2026-06-30","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer","phone":"0532 000 11 22"},"opening":0,"lines":[],"debit":0,"credit":0,"closing":0,"side":"zero"}}
+  yeni: {"ok":true,"data":{"from":"2026-06-01","to":"2026-06-30","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer"},"opening":0,"lines":[],"debit":0,"credit":0,"closing":0,"side":"zero"}}
+FARKLI Ayşe Fark Yılmaz · tekGun · JSON
+  eski: {"ok":true,"data":{"from":"2026-10-31","to":"2026-10-31","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer","phone":"0532 000 11 22"},"opening":1550,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"in","date":"2026-10-31","at":"2026-11-20T11:30:00.000Z"
+  yeni: {"ok":true,"data":{"from":"2026-10-31","to":"2026-10-31","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer"},"opening":1550,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"in","date":"2026-10-31","at":"2026-11-20T11:30:00.000Z","label":"Tahsilat","sour
+FARKLI Ayşe Fark Yılmaz · elle · JSON
+  eski: {"ok":true,"data":{"from":"2026-10-01","to":"2026-11-20","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer","phone":"0532 000 11 22"},"opening":1250,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"debt","date":"2026-10-01","at":"2026-11-20T11:30:00.000
+  yeni: {"ok":true,"data":{"from":"2026-10-01","to":"2026-11-20","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer"},"opening":1250,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"debt","date":"2026-10-01","at":"2026-11-20T11:30:00.000Z","label":"Borç","source
+FARKLI Ayşe Fark Yılmaz · tumZamanlar · JSON
+  eski: {"ok":true,"data":{"from":"1976-01-01","to":"2026-11-20","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer","phone":"0532 000 11 22"},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"debt","date":"2026-09-01","at":"2026-11-20T11:30:00.000Z",
+  yeni: {"ok":true,"data":{"from":"1976-01-01","to":"2026-11-20","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer"},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"debt","date":"2026-09-01","at":"2026-11-20T11:30:00.000Z","label":"Borç","sourceId"
+FARKLI Ayşe Fark Yılmaz · buYil · JSON
+  eski: {"ok":true,"data":{"from":"2026-01-01","to":"2026-12-31","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer","phone":"0532 000 11 22"},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"debt","date":"2026-09-01","at":"2026-11-20T11:30:00.000Z",
+  yeni: {"ok":true,"data":{"from":"2026-01-01","to":"2026-12-31","account":{"id":"account-<uuid>","refNo":"1","name":"Ayşe Fark Yılmaz","type":"customer"},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"debt","date":"2026-09-01","at":"2026-11-20T11:30:00.000Z","label":"Borç","sourceId"
+FARKLI Tedarikçi Fark Ltd · buAy · JSON
+  eski: {"ok":true,"data":{"from":"2026-11-01","to":"2026-11-30","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier","phone":""},"opening":-800,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"out","date":"2026-11-02","at":"2026-11-20T11:30:00.000Z","label":"Ö
+  yeni: {"ok":true,"data":{"from":"2026-11-01","to":"2026-11-30","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier"},"opening":-800,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"out","date":"2026-11-02","at":"2026-11-20T11:30:00.000Z","label":"Ödeme","sour
+FARKLI Tedarikçi Fark Ltd · gecenAy · JSON
+  eski: {"ok":true,"data":{"from":"2026-10-01","to":"2026-10-31","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier","phone":""},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"credit","date":"2026-10-05","at":"2026-11-20T11:30:00.000Z","label":"A
+  yeni: {"ok":true,"data":{"from":"2026-10-01","to":"2026-10-31","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier"},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"credit","date":"2026-10-05","at":"2026-11-20T11:30:00.000Z","label":"Alacak","sou
+FARKLI Tedarikçi Fark Ltd · bosDonem · JSON
+  eski: {"ok":true,"data":{"from":"2026-06-01","to":"2026-06-30","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier","phone":""},"opening":0,"lines":[],"debit":0,"credit":0,"closing":0,"side":"zero"}}
+  yeni: {"ok":true,"data":{"from":"2026-06-01","to":"2026-06-30","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier"},"opening":0,"lines":[],"debit":0,"credit":0,"closing":0,"side":"zero"}}
+FARKLI Tedarikçi Fark Ltd · tekGun · JSON
+  eski: {"ok":true,"data":{"from":"2026-10-31","to":"2026-10-31","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier","phone":""},"opening":-800,"lines":[],"debit":0,"credit":0,"closing":-800,"side":"creditor"}}
+  yeni: {"ok":true,"data":{"from":"2026-10-31","to":"2026-10-31","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier"},"opening":-800,"lines":[],"debit":0,"credit":0,"closing":-800,"side":"creditor"}}
+FARKLI Tedarikçi Fark Ltd · elle · JSON
+  eski: {"ok":true,"data":{"from":"2026-10-01","to":"2026-11-20","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier","phone":""},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"credit","date":"2026-10-05","at":"2026-11-20T11:30:00.000Z","label":"A
+  yeni: {"ok":true,"data":{"from":"2026-10-01","to":"2026-11-20","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier"},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"credit","date":"2026-10-05","at":"2026-11-20T11:30:00.000Z","label":"Alacak","sou
+FARKLI Tedarikçi Fark Ltd · tumZamanlar · JSON
+  eski: {"ok":true,"data":{"from":"1976-01-01","to":"2026-11-20","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier","phone":""},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"credit","date":"2026-10-05","at":"2026-11-20T11:30:00.000Z","label":"A
+  yeni: {"ok":true,"data":{"from":"1976-01-01","to":"2026-11-20","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier"},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"credit","date":"2026-10-05","at":"2026-11-20T11:30:00.000Z","label":"Alacak","sou
+FARKLI Tedarikçi Fark Ltd · buYil · JSON
+  eski: {"ok":true,"data":{"from":"2026-01-01","to":"2026-12-31","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier","phone":""},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"credit","date":"2026-10-05","at":"2026-11-20T11:30:00.000Z","label":"A
+  yeni: {"ok":true,"data":{"from":"2026-01-01","to":"2026-12-31","account":{"id":"account-<uuid>","refNo":"2","name":"Tedarikçi Fark Ltd","type":"supplier"},"opening":0,"lines":[{"id":"aentry-<uuid>","origin":"account","kind":"credit","date":"2026-10-05","at":"2026-11-20T11:30:00.000Z","label":"Alacak","sou
+örnek Ayşe Fark Yılmaz · buAy · PDF: 200 attachment; filename="Ekstre Ayse Fark Yilmaz 01.11.2026-30.11.2026.pdf"; filename*=UTF-8''Ekstre%20Ay%C5%9Fe%20Fark%20Y%C4%B1lmaz%2001.11.2026-30.11.2026.pdf 35d71e1c75954cc7
+örnek Ayşe Fark Yılmaz · buAy · Excel: 200 attachment; filename="Ekstre Ayse Fark Yilmaz 01.11.2026-30.11.2026.xlsx"; filename*=UTF-8''Ekstre%20Ay%C5%9Fe%20Fark%20Y%C4%B1lmaz%2001.11.2026-30.11.2026.xlsx aa2c54dd9c2f8286
+örnek Ayşe Fark Yılmaz · gecenAy · PDF: 200 attachment; filename="Ekstre Ayse Fark Yilmaz 01.10.2026-31.10.2026.pdf"; filename*=UTF-8''Ekstre%20Ay%C5%9Fe%20Fark%20Y%C4%B1lmaz%2001.10.2026-31.10.2026.pdf 3b77b986f37fe998
+örnek Ayşe Fark Yılmaz · gecenAy · Excel: 200 attachment; filename="Ekstre Ayse Fark Yilmaz 01.10.2026-31.10.2026.xlsx"; filename*=UTF-8''Ekstre%20Ay%C5%9Fe%20Fark%20Y%C4%B1lmaz%2001.10.2026-31.10.2026.xlsx 522f357a7252f2b0
+29 geçti, 14 kaldı (aynı 29, farklı 14)

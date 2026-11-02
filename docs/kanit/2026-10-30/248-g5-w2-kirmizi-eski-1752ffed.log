@@ -1,0 +1,632 @@
+TAP version 13
+# Subtest: 2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 29, 31)
+    # Subtest: ret sırası bağlı değil → yetki → lisans → onay → şablon; firma adı yok; şablon onaysız / Pazarlama'da → 409, Meta'ya ileti gitmez, toplu iş kaydı oluşmaz
+    not ok 1 - ret sırası bağlı değil → yetki → lisans → onay → şablon; firma adı yok; şablon onaysız / Pazarlama'da → 409, Meta'ya ileti gitmez, toplu iş kaydı oluşmaz
+      ---
+      duration_ms: 611.078974
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:27:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        404 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:36:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 29, 31)
+  ---
+  duration_ms: 613.125182
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:26:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi
+    # Subtest: ekstre: belge başlıklı şablon (PDF + 4 değişken, '+' ile); sabit hat ve yurt dışı ELENMEZ, aynı numaralı iki cariye iki ileti; numarasız / WhatsApp Mesajı İstemiyor elenir; sıra = seçim sırası
+    not ok 1 - ekstre: belge başlıklı şablon (PDF + 4 değişken, '+' ile); sabit hat ve yurt dışı ELENMEZ, aynı numaralı iki cariye iki ileti; numarasız / WhatsApp Mesajı İstemiyor elenir; sıra = seçim sırası
+      ---
+      duration_ms: 355.29254
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:87:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ödeme hatırlatma (§7a 20): {{3}} en eski gecikmiş vade, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; gecikmiş borcu olmayan elenir
+    not ok 2 - ödeme hatırlatma (§7a 20): {{3}} en eski gecikmiş vade, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; gecikmiş borcu olmayan elenir
+      ---
+      duration_ms: 340.841032
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:150:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi
+  ---
+  duration_ms: 696.878908
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:85:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W2 — çift gönderim yok (§7a 9, 10)
+    # Subtest: aynı istek kimliği → tek toplu iş; bekleyen iş varken aynı cari + şablon + dönem 'Zaten Kuyrukta' (iki sekme / iki kullanıcı); bittikten sonra 'Daha Önce Gönderildi' (R3: varsayılan Bunları Çıkar, sendAgain ile Yine de Gönder)
+    not ok 1 - aynı istek kimliği → tek toplu iş; bekleyen iş varken aynı cari + şablon + dönem 'Zaten Kuyrukta' (iki sekme / iki kullanıcı); bittikten sonra 'Daha Önce Gönderildi' (R3: varsayılan Bunları Çıkar, sendAgain ile Yine de Gönder)
+      ---
+      duration_ms: 307.393639
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:189:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:190:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: zaman aşımı / bağlantı kopması → Sonucu Belirsiz, kendiliğinden yeniden GÖNDERİLMEZ, toplu iş SÜRER; Yine de Gönder onay ister
+    not ok 2 - zaman aşımı / bağlantı kopması → Sonucu Belirsiz, kendiliğinden yeniden GÖNDERİLMEZ, toplu iş SÜRER; Yine de Gönder onay ister
+      ---
+      duration_ms: 377.191303
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:236:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:237:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kabul yazımı düştü (disk dolu): iş 'Gönderiliyor'da kalır, defterdeki kabulle çözülür; program yeniden açılınca da İKİNCİ ileti yok
+    not ok 3 - kabul yazımı düştü (disk dolu): iş 'Gönderiliyor'da kalır, defterdeki kabulle çözülür; program yeniden açılınca da İKİNCİ ileti yok
+      ---
+      duration_ms: 329.302749
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:277:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:280:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - 2.4.8 W2 — çift gönderim yok (§7a 9, 10)
+  ---
+  duration_ms: 1014.772743
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:188:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+    # Subtest: 190 (belirteç) → hatayı alan iş Başarısız (kodlu), toplu iş duraklar, bekleyenler Duraklatıldı, sonraki kişilere istek gitmez; Devam Et ile sürer
+    not ok 1 - 190 (belirteç) → hatayı alan iş Başarısız (kodlu), toplu iş duraklar, bekleyenler Duraklatıldı, sonraki kişilere istek gitmez; Devam Et ile sürer
+      ---
+      duration_ms: 321.089862
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:310:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:311:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 131026 (alıcı) ve tanınmayan kod → o iş Başarısız (kodlu), toplu iş sürer; Başarısızları Yeniden Dene yalnız onları YENİ işle gönderir
+    not ok 2 - 131026 (alıcı) ve tanınmayan kod → o iş Başarısız (kodlu), toplu iş sürer; Başarısızları Yeniden Dene yalnız onları YENİ işle gönderir
+      ---
+      duration_ms: 362.988367
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:342:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:343:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: geçici (130429): iş 30 sn → 2 dk → 15 dk bekler, 3 denemeden sonra Başarısız; toplu işte art arda 5 geçici → duraklar; kod 2 → bekleyip BİR kez; başarılı işin hata kodu temizlenir
+    not ok 3 - geçici (130429): iş 30 sn → 2 dk → 15 dk bekler, 3 denemeden sonra Başarısız; toplu işte art arda 5 geçici → duraklar; kod 2 → bekleyip BİR kez; başarılı işin hata kodu temizlenir
+      ---
+      duration_ms: 353.423509
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:373:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:374:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: R1: Meta'ya HİÇ ulaşılamıyor (internet yok) → iş Başarısız SAYILMAZ, deneme sayacı artmaz; toplu iş 'Bağlantı Bekleniyor' (Devam Et gerekmez), kaç tur sürerse sürsün duraklamaz; bağlantı dönünce kendiliğinden BİR kez gider
+    not ok 4 - R1: Meta'ya HİÇ ulaşılamıyor (internet yok) → iş Başarısız SAYILMAZ, deneme sayacı artmaz; toplu iş 'Bağlantı Bekleniyor' (Devam Et gerekmez), kaç tur sürerse sürsün duraklamaz; bağlantı dönünce kendiliğinden BİR kez gider
+      ---
+      duration_ms: 320.604548
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:431:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:432:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 131056 → o kişi 1 dk sonra; 131049 → 'Meta Bekletti (24 Saat Sonra Yeniden)', aynı medyayla bir kez, yine düşerse Başarısız (§7a 14)
+    not ok 5 - 131056 → o kişi 1 dk sonra; 131049 → 'Meta Bekletti (24 Saat Sonra Yeniden)', aynı medyayla bir kez, yine düşerse Başarısız (§7a 14)
+      ---
+      duration_ms: 365.512301
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:501:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:502:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: R2: şablon gönderim sürerken Pazarlama'ya alınırsa en geç 10 dakikada ve HER 100 İLETİDE yeniden okunur (§7a 27 revizyonu): toplu iş durur, ileti gitmez
+    not ok 6 - R2: şablon gönderim sürerken Pazarlama'ya alınırsa en geç 10 dakikada ve HER 100 İLETİDE yeniden okunur (§7a 27 revizyonu): toplu iş durur, ileti gitmez
+      ---
+      duration_ms: 377.75221
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:537:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:538:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 4 - 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+  ---
+  duration_ms: 2102.378778
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:309:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+    # Subtest: sınır = min(Meta basamağı, elle sınır); fazlası 'Sınır Nedeniyle Bekliyor', pencere (en eski + 24 sa) açılınca sürer; gece yarısında SIFIRLANMAZ; pencerede sayılmış kişi GEÇER
+    not ok 1 - sınır = min(Meta basamağı, elle sınır); fazlası 'Sınır Nedeniyle Bekliyor', pencere (en eski + 24 sa) açılınca sürer; gece yarısında SIFIRLANMAZ; pencerede sayılmış kişi GEÇER
+      ---
+      duration_ms: 310.819516
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:577:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:579:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Meta basamağı TIER_2K ise elle sınır yoksa 2.000; Meta sınır kodu (131048, D0-10) → aynı WABA'nın BÜTÜN işleri 24 saat bekler
+    not ok 2 - Meta basamağı TIER_2K ise elle sınır yoksa 2.000; Meta sınır kodu (131048, D0-10) → aynı WABA'nın BÜTÜN işleri 24 saat bekler
+      ---
+      duration_ms: 395.262354
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:634:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:635:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket AYNI portföyü (WABA) kullanınca sayaç ortak: 001'in gönderdiği kişiler 002'nin sınırından düşer; aynı numaralı kişi yer tutmaz
+    not ok 3 - iki şirket AYNI portföyü (WABA) kullanınca sayaç ortak: 001'in gönderdiği kişiler 002'nin sınırından düşer; aynı numaralı kişi yer tutmaz
+      ---
+      duration_ms: 400.824163
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:660:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:661:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 5 - 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+  ---
+  duration_ms: 1107.572923
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs:576:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL)
+    # Subtest: ileti isteği Meta'dayken süreç öldü → yeniden açılışta Sonucu Belirsiz; kendiliğinden ikinci istek YOK
+    not ok 1 - ileti isteği Meta'dayken süreç öldü → yeniden açılışta Sonucu Belirsiz; kendiliğinden ikinci istek YOK
+      ---
+      duration_ms: 1044.824252
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-surec-olumu-248.test.mjs:62:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ready":true,"status":404,"batchId":null}
+        
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        killDuring (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-surec-olumu-248.test.mjs:44:12)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-surec-olumu-248.test.mjs:63:57)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: PDF Meta'ya yüklenirken süreç öldü → yeniden açılışta iş Bekliyor; ileti BİR kez gider (yarım medya 30 günde Meta'da düşer)
+    not ok 2 - PDF Meta'ya yüklenirken süreç öldü → yeniden açılışta iş Bekliyor; ileti BİR kez gider (yarım medya 30 günde Meta'da düşer)
+      ---
+      duration_ms: 1166.453493
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-surec-olumu-248.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ready":true,"status":404,"batchId":null}
+        
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        killDuring (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-surec-olumu-248.test.mjs:44:12)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-surec-olumu-248.test.mjs:87:57)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 6 - 2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL)
+  ---
+  duration_ms: 2212.977089
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-surec-olumu-248.test.mjs:61:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+    # Subtest: kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez
+    not ok 1 - kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez
+      ---
+      duration_ms: 666.956691
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:24:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:25:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 7 - 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+  ---
+  duration_ms: 669.411737
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:23:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+    # Subtest: 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış
+    not ok 1 - 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış
+      ---
+      duration_ms: 320.042284
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:73:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:74:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ
+    not ok 2 - 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ
+      ---
+      duration_ms: 369.272265
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:128:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:129:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ
+    not ok 3 - 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ
+      ---
+      duration_ms: 369.249298
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:162:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:166:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'
+    not ok 4 - şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'
+      ---
+      duration_ms: 360.584204
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:196:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:201:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur
+    not ok 5 - Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur
+      ---
+      duration_ms: 374.323737
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:242:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:243:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'
+    not ok 6 - 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'
+      ---
+      duration_ms: 292.168707
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:268:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:271:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)
+    not ok 7 - salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)
+      ---
+      duration_ms: 295.059968
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:320:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:322:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 8 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+  ---
+  duration_ms: 2382.246981
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:72:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+    # Subtest: sayı = TESLİM edilen, ay = teslim zamanı (Türkiye saati), kapsam WABA; 31 Aralık 23:59 kabul / 1 Ocak 00:01 teslim Ocak'a sayılır; sayaç yıl dönümünde sıfırlanmaz
+    not ok 1 - sayı = TESLİM edilen, ay = teslim zamanı (Türkiye saati), kapsam WABA; 31 Aralık 23:59 kabul / 1 Ocak 00:01 teslim Ocak'a sayılır; sayaç yıl dönümünde sıfırlanmaz
+      ---
+      duration_ms: 338.781647
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:366:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:367:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır
+    not ok 2 - durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır
+      ---
+      duration_ms: 394.61902
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:400:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:401:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: işçi (gerçek zamanlayıcı): iki iş ASLA aynı anda yürümez, iletiler arası en az gapMs; şirketler dönüşümlü
+    not ok 3 - işçi (gerçek zamanlayıcı): iki iş ASLA aynı anda yürümez, iletiler arası en az gapMs; şirketler dönüşümlü
+      ---
+      duration_ms: 1.632221
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:431:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot find module '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/server/lib/whatsapp/scheduler.mjs' imported from /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs"
+      code: 'ERR_MODULE_NOT_FOUND'
+      stack: |-
+        finalizeResolution (node:internal/modules/esm/resolve:274:11)
+        moduleResolve (node:internal/modules/esm/resolve:859:10)
+        defaultResolve (node:internal/modules/esm/resolve:983:11)
+        #cachedDefaultResolve (node:internal/modules/esm/loader:731:20)
+        ModuleLoader.resolve (node:internal/modules/esm/loader:708:38)
+        ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:310:38)
+        onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:664:36)
+        TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+        ModuleLoader.import (node:internal/modules/esm/loader:663:21)
+        defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:222:31)
+      ...
+    1..3
+not ok 9 - 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+  ---
+  duration_ms: 735.902101
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:365:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W2 — belirteç hiçbir çıktıya sızmaz
+    # Subtest: toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz
+    not ok 1 - toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz
+      ---
+      duration_ms: 349.786293
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:471:3'
+      failureType: 'testCodeFailure'
+      error: 'onay yazılamadı: 404 {"ok":false,"error":"Endpoint bulunamadı."}'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        startWa (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-248-ortak.mjs:40:37)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:474:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 10 - 2.4.8 W2 — belirteç hiçbir çıktıya sızmaz
+  ---
+  duration_ms: 350.284428
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs:470:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..10
+# tests 29
+# suites 10
+# pass 0
+# fail 29
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13253.27132

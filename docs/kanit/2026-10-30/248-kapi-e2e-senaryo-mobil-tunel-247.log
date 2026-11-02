@@ -1,0 +1,25 @@
+
+■ T1 kimse uzaktan bağlanamazken: Uzaktan Bağlantı Kapalı, neden yazılı
+  ✓ kart başlığı Uzaktan Bağlantı (yazım düzeni)
+  ✓ durum Kapalı: Kapalı — Eşli cihaz yok; karekod oluşturulunca bağlantı kendiliğinden açılır.
+  ✓ neden görünür yazı
+  ✓ ofis adresi henüz yok
+  ✓ kapıcıya başvurulmadı
+  ✓ satır durum kartının altında
+
+■ T2 Uzaktan Bağlanabilir işaretlenir → ofis adresi hazırlanır, durum yine Kapalı
+  ✓ adres: Ofis adresi: https://oabcdefghijklmnop.destekofis.net
+  ✓ süreç başlamadı (Kapalı)
+  ✓ kapıcıya bir başvuru (1)
+
+■ T3 Karekod Oluştur → karekod tünel adresini taşır; satır kendiliğinden Bağlı
+  ✓ karekod: https://oabcdefghijklmnop.destekofis.net/mobil/#eslesme=…
+  ✓ durum Bağlı: BağlıOfis adresi: https://oabcdefghijklmnop.destekofis.net
+  ✓ bağlıyken neden yazısı yok
+
+■ T4 lisans salt okunur → Kapalı (neden: lisans); dönünce Bağlı
+  ✓ neden: Kapalı — Lisans geçerli değil; uzaktan bağlantı kapalı.Ofis adresi: https://oabcdefghijklmnop.destekofis.net
+  ✓ lisans dönünce Bağlı
+  ✓ sayfa hatası yok (—)
+
+15 geçti, 0 kaldı

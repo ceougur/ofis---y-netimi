@@ -1,0 +1,32 @@
+{
+  "ad": "248-crlf-tasinma",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-w7-tasinma-248.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "cd4a584ad5d731e037433223d74e34b89e604a1a",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T23:56:32.905Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 16,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-crlf-tasinma.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "8775d348bbb0482a63eea5e4be7af0fe2b8645820609d5b1c70ef30036f87380",
+  "ham_cikti_bayt": 6486
+}

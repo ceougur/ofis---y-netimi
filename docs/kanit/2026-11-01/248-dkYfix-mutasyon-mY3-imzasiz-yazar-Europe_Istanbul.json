@@ -1,0 +1,43 @@
+{
+  "ad": "248-dkYfix-mutasyon-mY3-imzasiz-yazar-Europe_Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-y/test/whatsapp-t-durum-karar-tablosu-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t248-kos/mut-y/test/whatsapp-u5-teslim-denemesi-gocu-248.test.mjs",
+  "commit": "dc5522081235af4d449ac7da604cb06e9a8e8ffd",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T09:15:49.359Z",
+  "sure_sn": 88.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 103,
+    "gecen": 101,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › Y3 bağlantı modu embedded (Yol 2) · İMZASIZ fiyatlı delivered → geçici açılamamada 503 + yazılmaz; kalıcı açılamamada (veri dosyası yok) 200 + yazılmaz (Y3)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1786:5",
+      "hata": "geçici yolda imzasız yazılmadı · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › Y3 bağlantı modu bilinmiyor · İMZASIZ fiyatlı delivered → geçici açılamamada 503 + yazılmaz; kalıcı açılamamada (veri dosyası yok) 200 + yazılmaz (Y3)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1786:5",
+      "hata": "geçici yolda imzasız yazılmadı · true !== false (beklenen false, gelen true)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-01/248-dkYfix-mutasyon-mY3-imzasiz-yazar-Europe_Istanbul.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "9a4448643dc89b1f21935f9d585cdfb0e1b84e16e4c79bb8001ea371d0e63728",
+  "ham_cikti_bayt": 41257
+}

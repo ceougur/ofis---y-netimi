@@ -1,0 +1,32 @@
+{
+  "ad": "248-spc-e2e-senaryo-whatsapp",
+  "komut": "npm run test:senaryo-whatsapp",
+  "commit": "37444ada4c87adc4372ae61e4b24a488436ba9b4",
+  "dal": "is/t3-248",
+  "kirli": 3,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T23:30:00.595Z",
+  "sure_sn": 165.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 45,
+    "gecen": 45,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-spc-e2e-senaryo-whatsapp.log",
+  "klasor": "/home/user/wt-t3-248",
+  "ham_cikti_sha256": "d8cbc848bdf956953aa0fd2983fb67ef1038834c9df3e731a6a4447e39ab04a4",
+  "ham_cikti_bayt": 3598
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "248-kapi-l1-mutasyon",
+  "komut": "python3 -I test/kapi-248-mutasyon.py",
+  "commit": "8ef4813858215f2c1fa3f5693d123e18ff7f6a9c",
+  "dal": "is/kapi-248",
+  "kirli": 21,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T19:21:56.416Z",
+  "sure_sn": 63.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 17,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-kapi-l1-mutasyon.log",
+  "klasor": "/home/user/wt-kapi-248",
+  "ham_cikti_sha256": "88c65a03c8011a34dd90a5555edb84eeaa34c035ab24dabcfe3164963576ffd7",
+  "ham_cikti_bayt": 6487
+}

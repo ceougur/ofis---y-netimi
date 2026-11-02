@@ -1,0 +1,156 @@
+TAP version 13
+ok 1 - A girdi: bilinmeyen olay
+ok 2 - A girdi: bilinmeyen alan
+ok 3 - A girdi: eksik alan
+ok 4 - A girdi: geçersiz saat
+ok 5 - A girdi: bilinmeyen ofis
+ok 6 - A girdi: olay no tekrar
+ok 7 - A girdi: karekod etiketi tekrar
+ok 8 - A girdi: cihaz kimliği tekrar
+ok 9 - A girdi: parola değeri
+ok 10 - A girdi: grup farklı anda
+ok 11 - A girdi: bakım olayı grupta
+ok 12 - A girdi: sunucu kapalıyken özet yükleme
+ok 13 - A girdi: bilinmeyen kullanıcı
+ok 14 - A girdi: lisans alanı
+ok 15 - A girdi: ofis alanı
+ok 16 - A girdi: 2020 öncesi saat
+ok 17 - A girdi: sınır belirsiz (lisans değişti, program denetlemedi)
+ok 18 - A girdi: başlangıçta engelli lisans (V32)
+ok 19 - A girdi: engel_t girdi değildir
+ok 20 - A girdi: kapıcı temizliğinde ofis alanı
+ok 21 - A girdi: mobil_cihazlar_oku yapan yok
+ok 22 - A girdi: geçerli taban
+ok 23 - B elle U01 (9 olay, 1 yaprak)
+ok 24 - B elle U02 (8 olay, 3 yaprak)
+ok 25 - B elle U03 (6 olay, 3 yaprak)
+ok 26 - B elle U04 (4 olay, 1 yaprak)
+ok 27 - B elle U05 (4 olay, 2 yaprak)
+ok 28 - B elle U06 (14 olay, 3 yaprak)
+ok 29 - B elle U07 (17 olay, 3 yaprak)
+ok 30 - B elle U08 (17 olay, 1 yaprak)
+ok 31 - B elle U09 (14 olay, 1 yaprak)
+ok 32 - B elle U10 (19 olay, 8 yaprak)
+ok 33 - B elle U11 (9 olay, 8 yaprak)
+ok 34 - B elle U12 (12 olay, 2 yaprak)
+ok 35 - B elle U13 (21 olay, 3 yaprak)
+ok 36 - B elle U14 (11 olay, 2 yaprak)
+ok 37 - B elle U15 (26 olay, 1 yaprak)
+ok 38 - B elle U16 (14 olay, 6 yaprak)
+ok 39 - B elle U17 (23 olay, 6 yaprak)
+ok 40 - B elle U18 (43 olay, 1 yaprak)
+ok 41 - B elle U19 (24 olay, 1 yaprak)
+ok 42 - B elle U20 (9 olay, 2 yaprak)
+ok 43 - B elle U21 (8 olay, 4 yaprak)
+ok 44 - B elle U22 (10 olay, 2 yaprak)
+ok 45 - B elle U23 (5 olay, 1 yaprak)
+ok 46 - B elle U24 (56 olay, 2 yaprak)
+ok 47 - B elle U25 (10 olay, 2 yaprak)
+ok 48 - B elle U26 (12 olay, 1 yaprak)
+ok 49 - B elle U27 (8 olay, 1 yaprak)
+ok 50 - B elle U28 (8 olay, 2 yaprak)
+ok 51 - B elle U29 (18 olay, 6 yaprak)
+ok 52 - B elle U30 (6 olay, 1 yaprak)
+ok 53 - B elle U31 (5 olay, 1 yaprak)
+ok 54 - B elle U32 (7 olay, 1 yaprak)
+ok 55 - B elle U33 (5 olay, 1 yaprak)
+ok 56 - B elle L01 (38 olay, 6 yaprak)
+ok 57 - B elle L02 (19 olay, 6 yaprak)
+ok 58 - B elle L03 (25 olay, 6 yaprak)
+ok 59 - B elle L04 (36 olay, 12 yaprak)
+ok 60 - B elle L05 (29 olay, 6 yaprak)
+ok 61 - B elle L06 (13 olay, 6 yaprak)
+ok 62 - C üretici R1 (739 olay, 30 birleşim)
+ok 63 - C üretici R2 (660 olay, 30 birleşim)
+ok 64 - C üretici R3 (687 olay, 30 birleşim)
+ok 65 - D1 olay listesinin sırası sonucu değiştirmez (sıra: an → sınıf → no)
+ok 66 - D2 tünel isteğinde görünen adres / X-Forwarded-For sonucu değiştirmez
+ok 67 - D3 iki ofisin verisi karışmaz (O6 çıkarılınca O1–O5 aynı)
+ok 68 - D4 hiçbir anda program başına 3'ten fazla eşli cihaz yok
+ok 69 - D5 görünür alt sınır ⊆ üst sınır (yetkisiz şirket/bölüm üst sınırda yok)
+ok 70 - D6 mobil 24 saatten uzun süredir KAPALIYKEN (L1: hoşgörü bitti / deneme bitti / engel; her P14 sayımında) hiçbir uzak istek kabul edilmez
+ok 71 - D7 sunucu kapalıyken canlı istek, giriş ve eşleme kabul edilmez
+ok 72 - D8 kabul edilen her tünel isteği /mobil/ ya da /api/mobil/ altında
+ok 73 - D9 silinen cihazın sonraki hiçbir isteği kabul edilmez
+ok 74 - D10 ücretli lisans bittikten sonra (yenilenene dek) hiçbir mobil yazma kabul edilmez (L1 salt okunur)
+ok 75 - E hesapla komutu
+ok 76 - E karsilastir: modelin kendi çıktısı (24 senaryo) → çıkış 0
+ok 77 - E karsilastir: tek olay farkı → çıkış 1 ve FARK satırı
+ok 78 - E karsilastir: programın çıktısında olmayan olay FARK sayılır (ders 4)
+ok 79 - E gözlemle süzme: tutarlı yol kabul, tutarsız yol (tab1 eşlendi ama tel1 okudu) FARK
+ok 80 - F M01 karekod süresi denetlenmez: 46 fark (öneri birleşiminde 21); ayrıca 3 senaryo girdi hatası verdi
+ok 81 - F M02 karekod tek kullanımlık değil: 152 fark (öneri birleşiminde 152)
+ok 82 - F M03 karekod süresi dolduğu an hâlâ geçerli: 2 fark (öneri birleşiminde 1); ayrıca 3 senaryo girdi hatası verdi
+ok 83 - F M04 başka ofisin karekodu kabul edilir: 6 fark (öneri birleşiminde 6)
+ok 84 - F M05 yeni karekod eskiyi iptal (P2) ters: 40 fark (öneri birleşiminde 38)
+ok 85 - F M06 cihaz sınırı yok: 260 fark (öneri birleşiminde 230)
+ok 86 - F M07 sınır şirket başına sayılır: 200 fark (öneri birleşiminde 178)
+ok 87 - F M08 sınır kullanıcı başına sayılır: 260 fark (öneri birleşiminde 230)
+ok 88 - F M09 sınır dolunca davranışı (P3) ters: 251 fark (öneri birleşiminde 208)
+ok 89 - F M10 silinen cihaz kapıcıdan geçer: 322 fark (öneri birleşiminde 120)
+ok 90 - F M11 silinince oturum sürer ve kapıcı oturumu görünce cihazı denetlemez: 25 fark (öneri birleşiminde 17)
+ok 91 - F M12 silinen cihaz yer tutar: 1515 fark (öneri birleşiminde 1511)
+ok 92 - F M13 izin kaldırılınca cihazlar ve kodlar düşmez: 147 fark (öneri birleşiminde 142)
+ok 93 - F M14 karekodu yönetici olmayan da üretir: 5 fark (öneri birleşiminde 2)
+ok 94 - F M15 uzaktan izni olmayana karekod üretilir: 17 fark (öneri birleşiminde 16)
+ok 95 - F M16 üretimde sınır denetimi (P4) ters: 36 fark (öneri birleşiminde 26)
+ok 96 - F M17 kapıcı lisans önbelleği sonsuza dek: 442 fark (öneri birleşiminde 63); ayrıca 3 senaryo girdi hatası verdi
+ok 97 - F M18 lisans engeli görülmez: 324 fark (öneri birleşiminde 114)
+ok 98 - F M19 lisans bitiş tarihi denetlenmez: 1439 fark (öneri birleşiminde 820)
+ok 99 - F M20 kapıcı en eski lisans kaydına takılır (yenileme görülmez): 52 fark (öneri birleşiminde 30)
+ok 100 - F M21 lisans servisine ulaşılamazken kabul (fail-open): 12 fark (öneri birleşiminde 12)
+ok 101 - F M22 yol öneki bölüm sınırında değil (/api/mobilx geçer): 45 fark (öneri birleşiminde 40)
+ok 102 - F M23 yol çözülmeden denetlenir (kodlanmış .. geçer): 18 fark (öneri birleşiminde 18)
+ok 103 - F M24 yöneticinin ayrıcalığı yok: 95 fark (öneri birleşiminde 60)
+ok 104 - F M25 şirket kutusu işaretsiz kullanıcı bütün şirketleri görür: 23 fark (öneri birleşiminde 12)
+ok 105 - F M26 Anlık Durum yönetici dışına açık: 6 fark (öneri birleşiminde 6)
+ok 106 - F M27 127.0.0.1 görünen tünel isteği yerel sayılır (deneme sınırı yok): 25 fark (öneri birleşiminde 25)
+ok 107 - F M28 kurtarma kodu yolu tünelde açık: 13 fark (öneri birleşiminde 3)
+ok 108 - F M29 başarılı giriş deneme sayacını sıfırlamaz: 16 fark (öneri birleşiminde 4)
+ok 109 - F M30 kilitliyken doğru parola kabul: 22 fark (öneri birleşiminde 13)
+ok 110 - F M31 deneme anahtarı (P12) ters: 4 fark (öneri birleşiminde 1)
+ok 111 - F M32 oturum boşta süresi denetlenmez: 55 fark (öneri birleşiminde 55)
+ok 112 - F M33 oturum mutlak ömrü denetlenmez: 21 fark (öneri birleşiminde 21)
+ok 113 - F M34 oturum cihaza bağlı değil: 2 fark (öneri birleşiminde 1)
+ok 114 - F M35 cihaz-kullanıcı bağı (P6) ters: 6 fark (öneri birleşiminde 3)
+ok 115 - F M36 sunucu kapalıyken yazma kabul: 19 fark (öneri birleşiminde 17)
+ok 116 - F M37 sunucu kapalıyken özet okunamaz: 61 fark (öneri birleşiminde 45)
+ok 117 - F M38 özet yaş sınırı (P10) ters: 48 fark (öneri birleşiminde 46)
+ok 118 - F M39 özet okumada lisans denetlenmez: 328 fark (öneri birleşiminde 99)
+ok 119 - F M40 cihaz özete yazabilir: 26 fark (öneri birleşiminde 19)
+ok 120 - F M41 yetki değişince eski görünüm görünür: 3 fark (öneri birleşiminde 3)
+ok 121 - F M42 sınır düşünce davranışı (P5) ters: 10 fark (öneri birleşiminde 2)
+ok 122 - F M43 lisans bitince eşlemeler silinir: 230 fark (öneri birleşiminde 193)
+ok 123 - F M44 eşleme sunucu kapalıyken kabul: 12 fark (öneri birleşiminde 7)
+ok 124 - F M45 aynı saniyede eşlenenler sayılmaz (yarış): 135 fark (öneri birleşiminde 127)
+ok 125 - F M46 kapıcı doğrudan kayıtta sınırı denetlemez: 29 fark (öneri birleşiminde 29)
+ok 126 - F M47 olmayan şirket (003) denetlenmez: 39 fark (öneri birleşiminde 39)
+ok 127 - F M48 kilit süresi (P13) ters: 14 fark (öneri birleşiminde 11)
+ok 128 - F M49 ret önceliği: yol cihazdan önce: 1 fark (öneri birleşiminde 1)
+ok 129 - F M51 lisans bitiş anı dahil geçerli: 40 fark (öneri birleşiminde 5)
+ok 130 - F M52 boşta süresi dolduğu an hâlâ geçerli: 1 fark (öneri birleşiminde 1)
+ok 131 - F M53 deneme kilidi hiç bitmez: 16 fark (öneri birleşiminde 11)
+ok 132 - F M54 yeniden başlatmada oturum kesin düşer (belirsizlik daraltılır): 3 fark (öneri birleşiminde 1)
+ok 133 - F M56 özet görünümü cihazın kullanıcısı yerine yöneticinin: 76 fark (öneri birleşiminde 49)
+ok 134 - F M57 Pro kilidi: Standart lisansta mobil kapalı (26.10 kararına aykırı): 3915 fark (öneri birleşiminde 3733)
+ok 135 - F M58 hoşgörü yok: ücretli lisans da bitişte hemen kapanır (2.4.7 kuralı): 1213 fark (öneri birleşiminde 305); ayrıca 1 senaryo girdi hatası verdi
+ok 136 - F M59 deneme de 30 gün hoşgörü alır: 1083 fark (öneri birleşiminde 91)
+ok 137 - F M60 engellenen lisans da 30 gün hoşgörü alır: 248 fark (öneri birleşiminde 75)
+ok 138 - F M61 hoşgörüde mobil yazma kabul (salt okunur değil): 16 fark (öneri birleşiminde 6)
+ok 139 - F M62 hoşgörü bir gün uzun (31. gün açık): 451 fark (öneri birleşiminde 40)
+ok 140 - F M63 ücretli kayıt hoşgörü sonunda silinmez (yenilenince eski cihaz döner): 461 fark (öneri birleşiminde 323)
+ok 141 - F M64 deneme/engelli kaydı hiç silinmez: 237 fark (öneri birleşiminde 40)
+ok 142 - F M65 deneme/engelli kaydı 30 gün beklenmeden kapanışta silinir: 512 fark (öneri birleşiminde 299)
+ok 143 - F M66 hoşgörü iletisinde kalan gün yerine geçen gün: 136 fark (öneri birleşiminde 22)
+ok 144 - F M67 7 gün kala notu yok: 108 fark (öneri birleşiminde 15)
+ok 145 - F M68 hoşgörüde 'sona erdi' iletisi: 136 fark (öneri birleşiminde 22)
+ok 146 - F M69 hoşgörüde yeni eşleme (P15) ters: 24 fark (öneri birleşiminde 4)
+ok 147 - F M70 erken yenileme (P16) ters: 248 fark (öneri birleşiminde 103)
+ok 148 - F M71 masaüstü hoşgörüde yazabilir: 6 fark (öneri birleşiminde 1)
+ok 149 - F M72 kapanış iletisi (P17) ters: 186 fark (öneri birleşiminde 23)
+ok 150 - F M73 hoşgörü bir gün kısa (29. günün sonunda kapanır): 219 fark (öneri birleşiminde 34)
+# mutasyon 71/71 yakalandı; öneri birleşiminde 71/71
+1..150
+# tests 150
+# pass 150
+# fail 0

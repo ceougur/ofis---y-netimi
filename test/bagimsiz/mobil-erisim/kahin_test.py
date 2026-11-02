@@ -89,6 +89,23 @@ MUTASYONLAR = {
     "M54": "yeniden başlatmada oturum kesin düşer (belirsizlik daraltılır)",
     "M56": "özet görünümü cihazın kullanıcısı yerine yöneticinin",
     "M57": "Pro kilidi: Standart lisansta mobil kapalı (26.10 kararına aykırı)",
+    # 2.4.8 L1
+    "M58": "hoşgörü yok: ücretli lisans da bitişte hemen kapanır (2.4.7 kuralı)",
+    "M59": "deneme de 30 gün hoşgörü alır",
+    "M60": "engellenen lisans da 30 gün hoşgörü alır",
+    "M61": "hoşgörüde mobil yazma kabul (salt okunur değil)",
+    "M62": "hoşgörü bir gün uzun (31. gün açık)",
+    "M63": "ücretli kayıt hoşgörü sonunda silinmez (yenilenince eski cihaz döner)",
+    "M64": "deneme/engelli kaydı hiç silinmez",
+    "M65": "deneme/engelli kaydı 30 gün beklenmeden kapanışta silinir",
+    "M66": "hoşgörü iletisinde kalan gün yerine geçen gün",
+    "M67": "7 gün kala notu yok",
+    "M68": "hoşgörüde 'sona erdi' iletisi",
+    "M69": "hoşgörüde yeni eşleme (P15) ters",
+    "M70": "erken yenileme (P16) ters",
+    "M71": "masaüstü hoşgörüde yazabilir",
+    "M72": "kapanış iletisi (P17) ters",
+    "M73": "hoşgörü bir gün kısa (29. günün sonunda kapanır)",
 }
 
 sonuclar = []
@@ -146,6 +163,12 @@ def a_girdi():
     sb.kod(120 + 25 * S.SA, "zeynep", "K3", bek="kabul")
     sb.esle(120 + 25 * S.SA + 30, "K3", "tel3", bek="kabul")
     durumlar.append(("sınır belirsiz (lisans değişti, program denetlemedi)", sb.senaryo(), True))
+    bozuk("başlangıçta engelli lisans (V32)", lambda s: s["baslangic"]["ofisler"]["A"].__setitem__("lisans", {"durum": "engelli"}))
+    bozuk("engel_t girdi değildir", lambda s: s["baslangic"]["ofisler"]["A"].__setitem__("lisans", {"engel_t": 1}))
+    bozuk("kapıcı temizliğinde ofis alanı", lambda s: s["olaylar"].append(
+        {"no": 94, "t": "2026-11-02T11:00:00+03:00", "olay": "kapici_temizlik", "ofis": "A"}))
+    bozuk("mobil_cihazlar_oku yapan yok", lambda s: s["olaylar"].append(
+        {"no": 95, "t": "2026-11-02T11:00:00+03:00", "olay": "mobil_cihazlar_oku", "ofis": "A"}))
     durumlar.append(("geçerli taban", taban(), False))
     for ad, s, hata_bekleniyor in durumlar:
         try:
@@ -231,7 +254,7 @@ def d_degismezler():
         for no, o in b.items():
             x = a[no]
             esli_a = [{k: v for k, v in d.items() if k != "O6"} for d in x["esli"]]
-            if o["sonuc"] != x["sonuc"] or sorted(map(json.dumps, esli_a)) != sorted(map(json.dumps, o["esli"])):
+            if o["sonuc"] != x["sonuc"] or set(map(json.dumps, esli_a)) != set(map(json.dumps, o["esli"])):
                 fark.append(f"{s.ad}/{no}")
     tap("D3 iki ofisin verisi karışmaz (O6 çıkarılınca O1–O5 aynı)", not fark, fark[:10])
     # D4–D9 bütün yapraklarda
@@ -258,10 +281,36 @@ def d_degismezler():
             d9.extend(_silme_degismezi(s, sen, c))
     tap("D4 hiçbir anda program başına 3'ten fazla eşli cihaz yok", not d4, d4[:10])
     tap("D5 görünür alt sınır ⊆ üst sınır (yetkisiz şirket/bölüm üst sınırda yok)", not d5, d5[:10])
-    tap("D6 lisans 24 saatten uzun süredir geçersizken hiçbir uzak istek kabul edilmez", not d6, d6[:10])
+    tap("D6 mobil 24 saatten uzun süredir KAPALIYKEN (L1: hoşgörü bitti / deneme bitti / engel; her P14 sayımında) hiçbir "
+        "uzak istek kabul edilmez", not d6, d6[:10])
     tap("D7 sunucu kapalıyken canlı istek, giriş ve eşleme kabul edilmez", not d7, d7[:10])
     tap("D8 kabul edilen her tünel isteği /mobil/ ya da /api/mobil/ altında", not d8, d8[:10])
     tap("D9 silinen cihazın sonraki hiçbir isteği kabul edilmez", not d9, d9[:10])
+    d10 = []
+    for s in hepsi:
+        sen = s.senaryo()
+        for a, c in S.yapraklar(s, mut=BOZUK):
+            d10.extend(_salt_okunur_degismezi(s, sen, c))
+    tap("D10 ücretli lisans bittikten sonra (yenilenene dek) hiçbir mobil yazma kabul edilmez (L1 salt okunur)", not d10,
+        d10[:10])
+
+
+def _salt_okunur_degismezi(s, sen, c):
+    sorun = []
+    gecmis = {o: [(K.EKSI_SONSUZ, K.lisans_kaydi(v.get("lisans")))] for o, v in sen["baslangic"]["ofisler"].items()}
+    for e in sorted(sen["olaylar"], key=lambda e: K.zaman(e["t"])):
+        if e["olay"] == "lisans_degis":
+            gecmis[e["ofis"]].append((K.zaman(e["t"]), K.lisans_kaydi(e["lisans"], gecmis[e["ofis"]][-1][1])))
+    for e in sen["olaylar"]:
+        if e["olay"] != "istek" or not e.get("yazma"):
+            continue
+        t = K.zaman(e["t"])
+        pencere = [k for a, k in gecmis[e["ofis"]] if t - 24 * 3600 - 1 < a <= t]
+        once = [k for a, k in gecmis[e["ofis"]] if a <= t - 24 * 3600 - 1][-1:]
+        bitmis = all(k["bitis"] is not None and t >= k["bitis"] for k in once + pencere)
+        if bitmis and "kabul" in c["olaylar"][str(e["no"])]["sonuc"]:
+            sorun.append(f"{s.ad}/{e['no']}")
+    return sorun
 
 
 CIHAZ_OLAYLARI = ("ozet_oku", "ozet_yaz", "istek", "giris", "esle", "kapici_dogrudan_kayit")
@@ -279,7 +328,7 @@ def _lisans_degismezi(s, sen, c):
         t = K.zaman(e["t"])
         kayitlar = [k for a, k in gecmis[e["ofis"]] if a <= t - 24 * 3600 - 1]
         sonraki = [k for a, k in gecmis[e["ofis"]] if t - 24 * 3600 - 1 < a <= t]
-        hep_gecersiz = all(not K.lisans_gecerli(k, t) for k in kayitlar[-1:] + sonraki)
+        hep_gecersiz = all(all(K._durum_tek(k, t, y)[0] == "kapali" for y in K.OTUZ_YONTEM) for k in kayitlar[-1:] + sonraki)
         if hep_gecersiz and "kabul" in c["olaylar"][str(e["no"])]["sonuc"]:
             sorun.append(f"{s.ad}/{e['no']}")
     return sorun
@@ -321,6 +370,10 @@ def _program_ciktisi(sen):
         if len(o["sonuc"]) != 1 or len(o["esli"]) != 1:
             return None
         g = {"sonuc": o["sonuc"][0], "esli": o["esli"][0]}
+        if "uyari" in o and K.HER not in o["uyari"]:
+            if len(o["uyari"]) != 1:
+                return None
+            g["uyari"] = None if o["uyari"][0] == K.YOK else o["uyari"][0]
         if "gorunur" in o and o["gorunur"]["en_az"] == o["gorunur"]["en_cok"]:
             g["gorunur"] = o["gorunur"]["en_cok"]
             if len(o["ozet_zamani"]) == 1:

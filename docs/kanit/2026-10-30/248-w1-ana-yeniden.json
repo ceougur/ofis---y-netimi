@@ -1,0 +1,32 @@
+{
+  "ad": "248-w1-ana-yeniden",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/whatsapp-w1-baglanti.test.mjs test/whatsapp-meta-izolasyon.test.mjs test/whatsapp-meta-graph.test.mjs test/edoc-uretim.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/ci-kapi-listesi.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "612a73a5b4591d9731e7007563b4b61387294839",
+  "dal": "is/w1-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T13:41:46.960Z",
+  "sure_sn": 7.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 45,
+    "gecen": 45,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-30/248-w1-ana-yeniden.log",
+  "klasor": "/home/user/wt-w1-248",
+  "ham_cikti_sha256": "395db786650da4ca673b3e69cf808d3710a155fab9a5d656be74cd94187f718d",
+  "ham_cikti_bayt": 15969
+}

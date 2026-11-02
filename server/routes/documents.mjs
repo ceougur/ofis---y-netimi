@@ -10,10 +10,26 @@ import { canUser } from "../lib/permissions.mjs";
 
 const KINDS_VIEWABLE = new Set(["application/pdf", "image/jpeg", "image/png", "image/gif", "image/webp"]);
 
-export function registerDocumentRoutes(router, { store, auth, audit, events, config, log, dataset = null }) {
+export function registerDocumentRoutes(router, { store, auth, audit, events, config, log, dataset = null, canWriteInBackground = () => true, writeLock = null }) {
   const files = createDocumentStore({ dir: path.join(config.dataDir, "belgeler"), log });
   // Açılışta eski silinmiş belgeleri ve sahipsiz dosyaları temizler (arka planda, açılışı bekletmez).
-  const purgeTimer = setTimeout(() => files.purge(store), 5_000);
+  // 2.4.8 İş P1: şirket dosyası kilitliyse temizlik o an atlanır ve kilit işareti süresi sonra yeniden denenir (en çok 3 kez).
+  // İş R1: yeniden deneme zamanlayıcısı tutulur; stop() (şirket kapanışı) ikisini de siler ve kapanmış örnekte temizlik hiç çalışmaz.
+  let stopped = false;
+  let retryTimer = null;
+  const purgeLater = (tries = 0) => {
+    retryTimer = null;
+    if (stopped) return;
+    if (!canWriteInBackground()) {
+      if (tries < 3) {
+        retryTimer = setTimeout(() => purgeLater(tries + 1), writeLock?.backoffMs || 30_000);
+        retryTimer.unref?.();
+      }
+      return;
+    }
+    files.purge(store);
+  };
+  const purgeTimer = setTimeout(() => purgeLater(), 5_000);
   purgeTimer.unref?.();
   const now = () => new Date().toISOString();
   const changed = (user, caseKey) => events?.publish("workspace.changed", { kind: "documents", caseKey, actorId: user.id, actorName: user.display_name }, { except: user.id });
@@ -142,5 +158,13 @@ export function registerDocumentRoutes(router, { store, auth, audit, events, con
 
   // Silinenler (v2.0.2): 30 gün içinde silinen belge, dosyası duruyorsa geri yüklenir.
   const hasFile = row => Boolean(files.read(row.sha256));
-  return { stop: () => clearTimeout(purgeTimer), hasFile, notify: changed };
+  return {
+    stop: () => {
+      stopped = true;
+      clearTimeout(purgeTimer);
+      clearTimeout(retryTimer);
+    },
+    hasFile,
+    notify: changed,
+  };
 }

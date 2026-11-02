@@ -1,0 +1,43 @@
+{
+  "ad": "248-mz-kirmizi-eski-motor-97aab4ea",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/mutabakat-yil-donumu.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T12:43:42.095Z",
+  "sure_sn": 37.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027) › tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı",
+      "konum": "test/mutabakat-yil-donumu.test.mjs:48:3",
+      "hata": "[ · { · \"at\": \"işlem 384 (fatura-hatasi, 2027-01-08)\", (beklenen , gelen )"
+    },
+    {
+      "ad": "mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027) › tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı",
+      "konum": "test/mutabakat-yil-donumu.test.mjs:52:3",
+      "hata": "ön koşul oluşmadı (Ret): undefined — tohumu yeniden seçin (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/wt-mz-248/docs/kanit/2026-10-30/248-mz-kirmizi-eski-motor-97aab4ea.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/mz-248-ba722fb2/eski-97aab4ea",
+  "ham_cikti_sha256": "be55d7b8cee8e207382a820a6f2c18f94b05231cbc64b26a3c4975cf2e3073bc",
+  "ham_cikti_bayt": 5479
+}

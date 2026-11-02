@@ -1,0 +1,158 @@
+{
+  "ad": "248-g5-w2-kirmizi-eski-1752ffed",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-cekirdek-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-veri-248.test.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/g5-248-k7q2/eski-1752ffed/test/whatsapp-w2-surec-olumu-248.test.mjs",
+  "commit": "1752ffedaeac666b0d31784e2f7c42d3fbc23dd2",
+  "dal": "is/cekirdek-248",
+  "kirli": 16,
+  "izlenmeyen": 31,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-30T15:28:41.759Z",
+  "sure_sn": 13.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 29,
+    "gecen": 0,
+    "basarisiz": 29,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 29 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 29, 31) › ret sırası bağlı değil → yetki → lisans → onay → şablon; firma adı yok; şablon onaysız / Pazarlama'da → 409, Meta'ya ileti gitmez, toplu iş kaydı oluşmaz",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:27:3",
+      "hata": "Expected values to be strictly equal: · 404 !== 409 (beklenen 409, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi › ekstre: belge başlıklı şablon (PDF + 4 değişken, '+' ile); sabit hat ve yurt dışı ELENMEZ, aynı numaralı iki cariye iki ileti; numarasız / WhatsApp Mesajı İstemiyor elenir; sıra = seçim sırası",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:86:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi › ödeme hatırlatma (§7a 20): {{3}} en eski gecikmiş vade, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; gecikmiş borcu olmayan elenir",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:149:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — çift gönderim yok (§7a 9, 10) › aynı istek kimliği → tek toplu iş; bekleyen iş varken aynı cari + şablon + dönem 'Zaten Kuyrukta' (iki sekme / iki kullanıcı); bittikten sonra 'Daha Önce Gönderildi' (R3: varsayılan Bunları Çıkar, sendAgain ile Yine de Gönder)",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:189:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — çift gönderim yok (§7a 9, 10) › zaman aşımı / bağlantı kopması → Sonucu Belirsiz, kendiliğinden yeniden GÖNDERİLMEZ, toplu iş SÜRER; Yine de Gönder onay ister",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:236:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — çift gönderim yok (§7a 9, 10) › kabul yazımı düştü (disk dolu): iş 'Gönderiliyor'da kalır, defterdeki kabulle çözülür; program yeniden açılınca da İKİNCİ ileti yok",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:277:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32) › 190 (belirteç) → hatayı alan iş Başarısız (kodlu), toplu iş duraklar, bekleyenler Duraklatıldı, sonraki kişilere istek gitmez; Devam Et ile sürer",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:310:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32) › 131026 (alıcı) ve tanınmayan kod → o iş Başarısız (kodlu), toplu iş sürer; Başarısızları Yeniden Dene yalnız onları YENİ işle gönderir",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:342:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32) › geçici (130429): iş 30 sn → 2 dk → 15 dk bekler, 3 denemeden sonra Başarısız; toplu işte art arda 5 geçici → duraklar; kod 2 → bekleyip BİR kez; başarılı işin hata kodu temizlenir",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:373:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32) › R1: Meta'ya HİÇ ulaşılamıyor (internet yok) → iş Başarısız SAYILMAZ, deneme sayacı artmaz; toplu iş 'Bağlantı Bekleniyor' (Devam Et gerekmez), kaç tur sürerse sürsün duraklamaz; bağlantı dönünce kendiliğinden BİR kez gider",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:431:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32) › 131056 → o kişi 1 dk sonra; 131049 → 'Meta Bekletti (24 Saat Sonra Yeniden)', aynı medyayla bir kez, yine düşerse Başarısız (§7a 14)",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:501:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32) › R2: şablon gönderim sürerken Pazarlama'ya alınırsa en geç 10 dakikada ve HER 100 İLETİDE yeniden okunur (§7a 27 revizyonu): toplu iş durur, ileti gitmez",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:537:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30) › sınır = min(Meta basamağı, elle sınır); fazlası 'Sınır Nedeniyle Bekliyor', pencere (en eski + 24 sa) açılınca sürer; gece yarısında SIFIRLANMAZ; pencerede sayılmış kişi GEÇER",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:577:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30) › Meta basamağı TIER_2K ise elle sınır yoksa 2.000; Meta sınır kodu (131048, D0-10) → aynı WABA'nın BÜTÜN işleri 24 saat bekler",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:634:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30) › iki şirket AYNI portföyü (WABA) kullanınca sayaç ortak: 001'in gönderdiği kişiler 002'nin sınırından düşer; aynı numaralı kişi yer tutmaz",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:660:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL) › ileti isteği Meta'dayken süreç öldü → yeniden açılışta Sonucu Belirsiz; kendiliğinden ikinci istek YOK",
+      "konum": "test/whatsapp-w2-surec-olumu-248.test.mjs:62:3",
+      "hata": "{\"ready\":true,\"status\":404,\"batchId\":null} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL) › PDF Meta'ya yüklenirken süreç öldü → yeniden açılışta iş Bekliyor; ileti BİR kez gider (yarım medya 30 günde Meta'da düşer)",
+      "konum": "test/whatsapp-w2-surec-olumu-248.test.mjs:86:3",
+      "hata": "{\"ready\":true,\"status\":404,\"batchId\":null} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2) › kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez",
+      "konum": "test/whatsapp-w2-veri-248.test.mjs:24:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26) › 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış",
+      "konum": "test/whatsapp-w2-veri-248.test.mjs:73:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26) › 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ",
+      "konum": "test/whatsapp-w2-veri-248.test.mjs:128:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26) › 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ",
+      "konum": "test/whatsapp-w2-veri-248.test.mjs:162:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26) › şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'",
+      "konum": "test/whatsapp-w2-veri-248.test.mjs:196:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26) › Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur",
+      "konum": "test/whatsapp-w2-veri-248.test.mjs:242:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26) › 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'",
+      "konum": "test/whatsapp-w2-veri-248.test.mjs:268:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    },
+    {
+      "ad": "2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26) › salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)",
+      "konum": "test/whatsapp-w2-veri-248.test.mjs:320:3",
+      "hata": "onay yazılamadı: 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-30/248-g5-w2-kirmizi-eski-1752ffed.log",
+  "klasor": "/home/user/wt-cekirdek-248",
+  "ham_cikti_sha256": "8a13fe4c02d832c60dac54b8c3d110a4c9c7cf2f7be1d832e7c53dca399ed655",
+  "ham_cikti_bayt": 45307
+}

@@ -1,0 +1,896 @@
+TAP version 13
+# Subtest: 2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test)
+    # Subtest: T1 sent (imzasız) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+    ok 1 - T1 sent (imzasız) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+      ---
+      duration_ms: 541.59402
+      type: 'test'
+      ...
+    # Subtest: T2 delivered (imzasız) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+    ok 2 - T2 delivered (imzasız) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+      ---
+      duration_ms: 397.795893
+      type: 'test'
+      ...
+    # Subtest: T1 sent (imzalı) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+    ok 3 - T1 sent (imzalı) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+      ---
+      duration_ms: 385.718817
+      type: 'test'
+      ...
+    # Subtest: T2 delivered (imzalı) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+    ok 4 - T2 delivered (imzalı) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+      ---
+      duration_ms: 354.405857
+      type: 'test'
+      ...
+    # Subtest: T3 read · teslimden sonra okundu; ×3 yinelenen → Bu Ay 1 (eşgüçlü)
+    ok 5 - T3 read · teslimden sonra okundu; ×3 yinelenen → Bu Ay 1 (eşgüçlü)
+      ---
+      duration_ms: 334.973907
+      type: 'test'
+      ...
+    # Subtest: T4 failed 131026 · B1 · S2 → Başarısız + teslim edilemedi; gönderilecek
+    ok 6 - T4 failed 131026 · B1 · S2 → Başarısız + teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 330.759675
+      type: 'test'
+      ...
+    # Subtest: T5/T6 failed 131049 · ilk kez Meta Bekletti (Zaten Kuyrukta); 2. denemenin 131049'u Başarısız
+    ok 7 - T5/T6 failed 131049 · ilk kez Meta Bekletti (Zaten Kuyrukta); 2. denemenin 131049'u Başarısız
+      ---
+      duration_ms: 354.436157
+      type: 'test'
+      ...
+    # Subtest: T7 failed teslimden sonra yok sayılır (§7a 18)
+    ok 8 - T7 failed teslimden sonra yok sayılır (§7a 18)
+      ---
+      duration_ms: 389.941982
+      type: 'test'
+      ...
+    # Subtest: T8 Süresi Doldu → geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce (P3)
+    ok 9 - T8 Süresi Doldu → geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce (P3)
+      ---
+      duration_ms: 364.388402
+      type: 'test'
+      ...
+    # Subtest: T9 Meta Bekletti → İptal Et → kendi wamid'ine geç delivered → Teslim Edildi (K10:10)
+    ok 10 - T9 Meta Bekletti → İptal Et → kendi wamid'ine geç delivered → Teslim Edildi (K10:10)
+      ---
+      duration_ms: 338.416693
+      type: 'test'
+      ...
+    # Subtest: T10 Başarısız işe yinelenen failed → yok sayılır
+    ok 11 - T10 Başarısız işe yinelenen failed → yok sayılır
+      ---
+      duration_ms: 334.059237
+      type: 'test'
+      ...
+    # Subtest: T12 delivered (imzasız) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+    ok 12 - T12 delivered (imzasız) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+      ---
+      duration_ms: 408.498872
+      type: 'test'
+      ...
+    # Subtest: T12 failed (imzasız) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+    ok 13 - T12 failed (imzasız) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+      ---
+      duration_ms: 341.244626
+      type: 'test'
+      ...
+    # Subtest: T12 delivered (imzalı) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+    ok 14 - T12 delivered (imzalı) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+      ---
+      duration_ms: 331.355752
+      type: 'test'
+      ...
+    # Subtest: T12 failed (imzalı) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+    ok 15 - T12 failed (imzalı) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+      ---
+      duration_ms: 349.703069
+      type: 'test'
+      ...
+    # Subtest: T14 imzalı iş kimliği · Sonucu Belirsiz (bağsız) → Teslim Edildi; belirsizlik metni temizlenir (A4, c1b); accepted_at bildirimin anı (öğrenilen wamid)
+    ok 16 - T14 imzalı iş kimliği · Sonucu Belirsiz (bağsız) → Teslim Edildi; belirsizlik metni temizlenir (A4, c1b); accepted_at bildirimin anı (öğrenilen wamid)
+      ---
+      duration_ms: 323.7336
+      type: 'test'
+      ...
+    # Subtest: T15 imzasız · Sonucu Belirsiz (bağsız) → tanınmaz (P5); kişi Sonucu Belirsiz
+    ok 17 - T15 imzasız · Sonucu Belirsiz (bağsız) → tanınmaz (P5); kişi Sonucu Belirsiz
+      ---
+      duration_ms: 370.48191
+      type: 'test'
+      ...
+    # Subtest: T18 delivered (imzasız) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+    ok 18 - T18 delivered (imzasız) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+      ---
+      duration_ms: 460.353853
+      type: 'test'
+      ...
+    # Subtest: T19 failed 131049 (imzasız) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+    ok 19 - T19 failed 131049 (imzasız) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 462.761422
+      type: 'test'
+      ...
+    # Subtest: T20 Süresi Doldu → sıfırlama → geç delivered (imzasız) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+    ok 20 - T20 Süresi Doldu → sıfırlama → geç delivered (imzasız) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+      ---
+      duration_ms: 454.686079
+      type: 'test'
+      ...
+    # Subtest: T18 delivered (imzalı) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+    ok 21 - T18 delivered (imzalı) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+      ---
+      duration_ms: 456.668083
+      type: 'test'
+      ...
+    # Subtest: T19 failed 131049 (imzalı) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+    ok 22 - T19 failed 131049 (imzalı) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 486.512498
+      type: 'test'
+      ...
+    # Subtest: T20 Süresi Doldu → sıfırlama → geç delivered (imzalı) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+    ok 23 - T20 Süresi Doldu → sıfırlama → geç delivered (imzalı) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+      ---
+      duration_ms: 479.659349
+      type: 'test'
+      ...
+    # Subtest: T21 sıfırlama → delivered → failed yok sayılır (§7a 18)
+    ok 24 - T21 sıfırlama → delivered → failed yok sayılır (§7a 18)
+      ---
+      duration_ms: 521.302161
+      type: 'test'
+      ...
+    # Subtest: T22 delivered (imzasız) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+    ok 25 - T22 delivered (imzasız) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+      ---
+      duration_ms: 726.004903
+      type: 'test'
+      ...
+    # Subtest: T23 failed (imzasız) · geri yükleme → teslim edilemedi; gönderilecek
+    ok 26 - T23 failed (imzasız) · geri yükleme → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 728.119505
+      type: 'test'
+      ...
+    # Subtest: T24 Süresi Doldu → geri yükleme → geç delivered (imzasız) → teslim sayılır (A2, c2b)
+    ok 27 - T24 Süresi Doldu → geri yükleme → geç delivered (imzasız) → teslim sayılır (A2, c2b)
+      ---
+      duration_ms: 738.171017
+      type: 'test'
+      ...
+    # Subtest: T22 delivered (imzalı) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+    ok 28 - T22 delivered (imzalı) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+      ---
+      duration_ms: 781.333919
+      type: 'test'
+      ...
+    # Subtest: T23 failed (imzalı) · geri yükleme → teslim edilemedi; gönderilecek
+    ok 29 - T23 failed (imzalı) · geri yükleme → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 716.218916
+      type: 'test'
+      ...
+    # Subtest: T24 Süresi Doldu → geri yükleme → geç delivered (imzalı) → teslim sayılır (A2, c2b)
+    ok 30 - T24 Süresi Doldu → geri yükleme → geç delivered (imzalı) → teslim sayılır (A2, c2b)
+      ---
+      duration_ms: 711.211276
+      type: 'test'
+      ...
+    # Subtest: T25 imzalı · geri yüklenen satır ESKİ denemede Sonucu Belirsiz (iş kimliği adayı) · son denemenin wamid'ine failed → T23 ile aynı (A1, c5)
+    ok 31 - T25 imzalı · geri yüklenen satır ESKİ denemede Sonucu Belirsiz (iş kimliği adayı) · son denemenin wamid'ine failed → T23 ile aynı (A1, c5)
+      ---
+      duration_ms: 741.254965
+      type: 'test'
+      ...
+    # Subtest: T30 eski (131049 bırakılmış) denemenin geç teslimi, satır geri yüklemeyle ESKİ denemede → teslim sayılır (A8, K11:00)
+    ok 32 - T30 eski (131049 bırakılmış) denemenin geç teslimi, satır geri yüklemeyle ESKİ denemede → teslim sayılır (A8, K11:00)
+      ---
+      duration_ms: 754.197463
+      type: 'test'
+      ...
+    # Subtest: T28/T29 131049 → 2. deneme kabul (satır daha yeni denemede) → 1. denemenin delivered'ı deftere teslim (L3), failed'ı yok sayılır; satır değişmez
+    ok 33 - T28/T29 131049 → 2. deneme kabul (satır daha yeni denemede) → 1. denemenin delivered'ı deftere teslim (L3), failed'ı yok sayılır; satır değişmez
+      ---
+      duration_ms: 350.419931
+      type: 'test'
+      ...
+    # Subtest: T26/T27 imzalı iş kimliğiyle öğrenilmiş (B2) → sıfırlama → imzasız delivered → yalnız defter teslim; failed sonra yok sayılır
+    ok 34 - T26/T27 imzalı iş kimliğiyle öğrenilmiş (B2) → sıfırlama → imzasız delivered → yalnız defter teslim; failed sonra yok sayılır
+      ---
+      duration_ms: 458.842869
+      type: 'test'
+      ...
+    # Subtest: T31/T32 bağsız + sıfırlama: imzalı iş kimliği → Q4 (teslim); imzasız → tanınmaz (P5)
+    ok 35 - T31/T32 bağsız + sıfırlama: imzalı iş kimliği → Q4 (teslim); imzasız → tanınmaz (P5)
+      ---
+      duration_ms: 430.335878
+      type: 'test'
+      ...
+    # Subtest: T33 başka şirketin wamid'i bu şirkette etkisiz (K9)
+    ok 36 - T33 başka şirketin wamid'i bu şirkette etkisiz (K9)
+      ---
+      duration_ms: 546.557735
+      type: 'test'
+      ...
+    # Subtest: T34 taşıma (defter yok): dosyadaki wamid'le delivered → Teslim Edildi, yeni defterde Bu Ay 1
+    ok 37 - T34 taşıma (defter yok): dosyadaki wamid'le delivered → Teslim Edildi, yeni defterde Bu Ay 1
+      ---
+      duration_ms: 476.655859
+      type: 'test'
+      ...
+    # Subtest: T34s taşıma (defter yok) · satır Sonucu Belirsiz · İMZALI iş kimliğiyle delivered → satır yolu: Teslim Edildi (defter işi bilmiyor — U2 istisnası; V6 mE)
+    ok 38 - T34s taşıma (defter yok) · satır Sonucu Belirsiz · İMZALI iş kimliğiyle delivered → satır yolu: Teslim Edildi (defter işi bilmiyor — U2 istisnası; V6 mE)
+      ---
+      duration_ms: 494.961929
+      type: 'test'
+      ...
+    # Subtest: T16 imzalı bildirim istek Meta'dayken işi ilerletir; yanıt 'Meta Kabul Etti' ezmez; tek ileti
+    ok 39 - T16 imzalı bildirim istek Meta'dayken işi ilerletir; yanıt 'Meta Kabul Etti' ezmez; tek ileti
+      ---
+      duration_ms: 1162.793982
+      type: 'test'
+      ...
+    # Subtest: T35 istek Meta'dayken toparlama denemeye 'uncertain' yazdı → yanıt gelince kabul öğrenilir (A7, K8); sonraki imzasız delivered uygulanır; Daha Önce
+    ok 40 - T35 istek Meta'dayken toparlama denemeye 'uncertain' yazdı → yanıt gelince kabul öğrenilir (A7, K8); sonraki imzasız delivered uygulanır; Daha Önce
+      ---
+      duration_ms: 1220.010266
+      type: 'test'
+      ...
+    # Subtest: T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)
+    ok 41 - T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)
+      ---
+      duration_ms: 455.334997
+      type: 'test'
+      ...
+    # Subtest: T11 Başarısız (131026) · delivered → Teslim Edildi, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)
+    ok 42 - T11 Başarısız (131026) · delivered → Teslim Edildi, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)
+      ---
+      duration_ms: 375.632617
+      type: 'test'
+      ...
+    # Subtest: T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç read → Okundu, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)
+    ok 43 - T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç read → Okundu, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)
+      ---
+      duration_ms: 406.913252
+      type: 'test'
+      ...
+    # Subtest: T11 Başarısız (131026) · read → Okundu, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)
+    ok 44 - T11 Başarısız (131026) · read → Okundu, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)
+      ---
+      duration_ms: 370.549425
+      type: 'test'
+      ...
+    # Subtest: T8x Süresi Doldu · delivered ×2 → Bu Ay 1, iş yeniden açılmaz (K1′ koşul c)
+    ok 45 - T8x Süresi Doldu · delivered ×2 → Bu Ay 1, iş yeniden açılmaz (K1′ koşul c)
+      ---
+      duration_ms: 345.990141
+      type: 'test'
+      ...
+    # Subtest: T14-sent imzalı iş kimliği · Sonucu Belirsiz → sent: Gönderildi, belirsizlik metni ve hata kodu temiz (U7; K7 sent kolu)
+    ok 46 - T14-sent imzalı iş kimliği · Sonucu Belirsiz → sent: Gönderildi, belirsizlik metni ve hata kodu temiz (U7; K7 sent kolu)
+      ---
+      duration_ms: 327.339533
+      type: 'test'
+      ...
+    # Subtest: T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · delivered → yalnız defter SON denemeye; satır değişmez (U2)
+    ok 47 - T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · delivered → yalnız defter SON denemeye; satır değişmez (U2)
+      ---
+      duration_ms: 715.648862
+      type: 'test'
+      ...
+    # Subtest: T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · failed → yalnız defter SON denemeye; satır değişmez (U2)
+    ok 48 - T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · failed → yalnız defter SON denemeye; satır değişmez (U2)
+      ---
+      duration_ms: 675.726317
+      type: 'test'
+      ...
+    # Subtest: T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (eski-once) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)
+    ok 49 - T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (eski-once) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)
+      ---
+      duration_ms: 426.206658
+      type: 'test'
+      ...
+    # Subtest: T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (yeni-once) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)
+    ok 50 - T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (yeni-once) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)
+      ---
+      duration_ms: 362.231693
+      type: 'test'
+      ...
+    # Subtest: T-uncertain-failed belirsiz → yedek → imzalı failed (satır Başarısız; defter teslim edilemedi + öğrenilen wamid) → geri yükleme → bakım: satır Meta Kabul Etti YAPILMAZ; gönderilecek (V6 mB)
+    ok 51 - T-uncertain-failed belirsiz → yedek → imzalı failed (satır Başarısız; defter teslim edilemedi + öğrenilen wamid) → geri yükleme → bakım: satır Meta Kabul Etti YAPILMAZ; gönderilecek (V6 mB)
+      ---
+      duration_ms: 659.684928
+      type: 'test'
+      ...
+    # Subtest: T-settle-D belirsiz → yedek → imzalı delivered (Teslim) → geri yükleme → bakım: satır Teslim Edildi (defterdeki anla); +31 gün bakım değişmez, teslim edilemedi yazılmaz; Bu Ay 1 (V2, n1)
+    ok 52 - T-settle-D belirsiz → yedek → imzalı delivered (Teslim) → geri yükleme → bakım: satır Teslim Edildi (defterdeki anla); +31 gün bakım değişmez, teslim edilemedi yazılmaz; Bu Ay 1 (V2, n1)
+      ---
+      duration_ms: 719.544602
+      type: 'test'
+      ...
+    # Subtest: T-settleSending-D istek Meta'dayken yedek (satır Gönderiliyor) → kabul → delivered → geri yükleme → açılış toparlaması: Teslim Edildi (V2, n1b)
+    ok 53 - T-settleSending-D istek Meta'dayken yedek (satır Gönderiliyor) → kabul → delivered → geri yükleme → açılış toparlaması: Teslim Edildi (V2, n1b)
+      ---
+      duration_ms: 5633.000495
+      type: 'test'
+      ...
+    # Subtest: T-bekletti-2.deneme-düştü (cift-sinir) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)
+    ok 54 - T-bekletti-2.deneme-düştü (cift-sinir) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)
+      ---
+      duration_ms: 396.365291
+      type: 'test'
+      ...
+    # Subtest: T-bekletti-2.deneme-düştü (talep-yazilamadi) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)
+    ok 55 - T-bekletti-2.deneme-düştü (talep-yazilamadi) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)
+      ---
+      duration_ms: 353.959412
+      type: 'test'
+      ...
+    # Subtest: T36-önizleme kabul deftere yazılamadı → sorun kalkar → BAKIM YOKKEN önizleme onarır: Daha Önce Gönderildi (V6 mF, n12)
+    ok 56 - T36-önizleme kabul deftere yazılamadı → sorun kalkar → BAKIM YOKKEN önizleme onarır: Daha Önce Gönderildi (V6 mF, n12)
+      ---
+      duration_ms: 334.159448
+      type: 'test'
+      ...
+    # Subtest: T36-kilit onarım listesi dolu + defter BAŞKA SÜREÇTE kilitli → önizleme ve yeni gönderim BEKLEMEZ (< 1,5 sn); neden kilit notuyla aynı cümle; kilit kalkınca BEKLEMEDEN önizleme onarır (V3, n5; X3: üretim işaret süresiyle — bayat işaret yok)
+    not ok 57 - T36-kilit onarım listesi dolu + defter BAŞKA SÜREÇTE kilitli → önizleme ve yeni gönderim BEKLEMEZ (< 1,5 sn); neden kilit notuyla aynı cümle; kilit kalkınca BEKLEMEDEN önizleme onarır (V3, n5; X3: üretim işaret süresiyle — bayat işaret yok)
+      ---
+      duration_ms: 506.349414
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:910:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kilit kalkınca engel yok
+        + actual - expected
+        
+        + {
+        +   code: 'whatsapp-ledger-locked',
+        +   message: 'WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.'
+        + }
+        - null
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      actual:
+        code: 'whatsapp-ledger-locked'
+        message: 'WhatsApp gönderim defteri başka bir program tarafından kullanılıyor; gönderim bekliyor.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:940:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T-local-neden kabul defteri yazılamazken toplu iş: 'bu bilgisayarda yürütülemedi' nedeniyle duraklar; kod adı / internet cümlesi yok (V5, n4)
+    ok 58 - T-local-neden kabul defteri yazılamazken toplu iş: 'bu bilgisayarda yürütülemedi' nedeniyle duraklar; kod adı / internet cümlesi yok (V5, n4)
+      ---
+      duration_ms: 467.381698
+      type: 'test'
+      ...
+    # Subtest: W1 kuyrukta · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+    not ok 59 - W1 kuyrukta · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+      ---
+      duration_ms: 378.02081
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:986:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni iş Atlandı — Daha Önce Gönderildi
+        + actual - expected
+        
+          [
+        +   'accepted',
+        +   '',
+        +   'Meta Kabul Etti'
+        -   'skipped',
+        -   'Daha Önce Gönderildi',
+        -   'Atlandı'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'skipped'
+        1: 'Daha Önce Gönderildi'
+        2: 'Atlandı'
+      actual:
+        0: 'accepted'
+        1: ''
+        2: 'Meta Kabul Etti'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:996:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: W2 duraklatılmış → Devam Et · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+    not ok 60 - W2 duraklatılmış → Devam Et · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+      ---
+      duration_ms: 368.124976
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:986:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni iş Atlandı — Daha Önce Gönderildi
+        + actual - expected
+        
+          [
+        +   'accepted',
+        +   '',
+        +   'Meta Kabul Etti'
+        -   'skipped',
+        -   'Daha Önce Gönderildi',
+        -   'Atlandı'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'skipped'
+        1: 'Daha Önce Gönderildi'
+        2: 'Atlandı'
+      actual:
+        0: 'accepted'
+        1: ''
+        2: 'Meta Kabul Etti'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:996:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: W4 kaynağa read (D'siz) · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+    not ok 61 - W4 kaynağa read (D'siz) · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+      ---
+      duration_ms: 350.637741
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:986:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni iş Atlandı — Daha Önce Gönderildi
+        + actual - expected
+        
+          [
+        +   'accepted',
+        +   '',
+        +   'Meta Kabul Etti'
+        -   'skipped',
+        -   'Daha Önce Gönderildi',
+        -   'Atlandı'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'skipped'
+        1: 'Daha Önce Gönderildi'
+        2: 'Atlandı'
+      actual:
+        0: 'accepted'
+        1: ''
+        2: 'Meta Kabul Etti'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:996:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: W3 yeni iş 1. denemede kabul + 131049 (Meta Bekletti) → kaynağa teslim → 24 sa: 2. deneme YOK, iş Atlandı; ileti 2 (yeni işin 1. iletisi önlenemezdi) (S9-1)
+    not ok 62 - W3 yeni iş 1. denemede kabul + 131049 (Meta Bekletti) → kaynağa teslim → 24 sa: 2. deneme YOK, iş Atlandı; ileti 2 (yeni işin 1. iletisi önlenemezdi) (S9-1)
+      ---
+      duration_ms: 383.640941
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1006:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'accepted',
+        +   ''
+        -   'skipped',
+        -   'Daha Önce Gönderildi'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'skipped'
+        1: 'Daha Önce Gönderildi'
+      actual:
+        0: 'accepted'
+        1: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1020:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: W5 zincir derinliği 2: J1 belirsiz → YdG J2 belirsiz → YdG J3 kuyrukta → J1'e teslim → J3 Atlandı (S9-1)
+    not ok 63 - W5 zincir derinliği 2: J1 belirsiz → YdG J2 belirsiz → YdG J3 kuyrukta → J1'e teslim → J3 Atlandı (S9-1)
+      ---
+      duration_ms: 422.735898
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1027:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'accepted',
+        +   ''
+        -   'skipped',
+        -   'Daha Önce Gönderildi'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'skipped'
+        1: 'Daha Önce Gönderildi'
+      actual:
+        0: 'accepted'
+        1: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1043:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: W6 kaynağa failed (teslim edilemedi) → yeni iş GİDER (ilke 1) (S9-1)
+    ok 64 - W6 kaynağa failed (teslim edilemedi) → yeni iş GİDER (ilke 1) (S9-1)
+      ---
+      duration_ms: 371.03366
+      type: 'test'
+      ...
+    # Subtest: W7 kaynağın teslimi yeni ileti GİTTİKTEN sonra gelir → ileti 2 (önlenemez; BİLİNEN SINIR); yeni iş kendi durumunda
+    ok 65 - W7 kaynağın teslimi yeni ileti GİTTİKTEN sonra gelir → ileti 2 (önlenemez; BİLİNEN SINIR); yeni iş kendi durumunda
+      ---
+      duration_ms: 389.716028
+      type: 'test'
+      ...
+    # Subtest: W8 kaynağın teslimi ×2 → eşgüçlü: yeni iş Atlandı, Bu Ay 1 (S9-1)
+    not ok 66 - W8 kaynağın teslimi ×2 → eşgüçlü: yeni iş Atlandı, Bu Ay 1 (S9-1)
+      ---
+      duration_ms: 363.440325
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1074:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'accepted'
+        - 'skipped'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'skipped'
+      actual: 'accepted'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1081:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: W9 başka kişinin kaynağı teslim edildi → bu kişinin Yine de Gönder işi GİDER (kapsam: zincir)
+    ok 67 - W9 başka kişinin kaynağı teslim edildi → bu kişinin Yine de Gönder işi GİDER (kapsam: zincir)
+      ---
+      duration_ms: 393.90494
+      type: 'test'
+      ...
+    # Subtest: W-b yeni gönderimde R3'e rağmen BİLEREK seçilen Yine de Gönder KAPSANMAZ: önceki iletinin teslimi sonradan gelse de ikinci kopya gider (S9-1 b)
+    ok 68 - W-b yeni gönderimde R3'e rağmen BİLEREK seçilen Yine de Gönder KAPSANMAZ: önceki iletinin teslimi sonradan gelse de ikinci kopya gider (S9-1 b)
+      ---
+      duration_ms: 380.611511
+      type: 'test'
+      ...
+    # Subtest: W-c1 aynı bilgisayar: YdG J2 Başarısız → Başarısızları Yeniden Dene kaynak J1 belirsizken kişiyi ELER (KARAR 31.10 08:00 'A') — üçüncü ileti yolu yok (S9-1 c, önceden var)
+    ok 69 - W-c1 aynı bilgisayar: YdG J2 Başarısız → Başarısızları Yeniden Dene kaynak J1 belirsizken kişiyi ELER (KARAR 31.10 08:00 'A') — üçüncü ileti yolu yok (S9-1 c, önceden var)
+      ---
+      duration_ms: 371.263147
+      type: 'test'
+      ...
+    # Subtest: W-c2 taşınan veride de (defter yok) YdG zincirindeki Başarısız işin yeniden denemesi kaynak belirsizken kişiyi ELER — zincir bağının taşınması (savunma) ulaşılamaz yolda (S9-1 c)
+    ok 70 - W-c2 taşınan veride de (defter yok) YdG zincirindeki Başarısız işin yeniden denemesi kaynak belirsizken kişiyi ELER — zincir bağının taşınması (savunma) ulaşılamaz yolda (S9-1 c)
+      ---
+      duration_ms: 557.607695
+      type: 'test'
+      ...
+    # Subtest: T35r GERÇEK yol: istek Meta'dayken yedek + geri yükleme (toparlama 'Sonucu Belirsiz' yazar) → yanıt gelince satır Meta Kabul Etti; aynı dönem Daha Önce; kişiye 1 ileti (U4)
+    ok 71 - T35r GERÇEK yol: istek Meta'dayken yedek + geri yükleme (toparlama 'Sonucu Belirsiz' yazar) → yanıt gelince satır Meta Kabul Etti; aynı dönem Daha Önce; kişiye 1 ileti (U4)
+      ---
+      duration_ms: 5528.870156
+      type: 'test'
+      ...
+    1..71
+not ok 1 - 2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test)
+  ---
+  duration_ms: 44408.706261
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:160:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)
+    # Subtest: T17 imzasız bildirim yanıt işlenmeden gelir (istek Meta'da) → 503; yanıt işlenince yineleme 200 ve uygulanır; bekleyen istek yokken / pencere (5 dk) dışında tanınmayan → 200; pencere içinde yabancı ileti de 503 (BİLİNEN SINIR)
+    ok 1 - T17 imzasız bildirim yanıt işlenmeden gelir (istek Meta'da) → 503; yanıt işlenince yineleme 200 ve uygulanır; bekleyen istek yokken / pencere (5 dk) dışında tanınmayan → 200; pencere içinde yabancı ileti de 503 (BİLİNEN SINIR)
+      ---
+      duration_ms: 1578.003218
+      type: 'test'
+      ...
+    # Subtest: T-K0c ön sınamadan SONRA dosya yazımı kilide takılır → 503, defter önce yazıldı; Meta'nın yinelemesi tamamlar, Bu Ay 1 (eşgüçlü)
+    ok 2 - T-K0c ön sınamadan SONRA dosya yazımı kilide takılır → 503, defter önce yazıldı; Meta'nın yinelemesi tamamlar, Bu Ay 1 (eşgüçlü)
+      ---
+      duration_ms: 356.003292
+      type: 'test'
+      ...
+    # Subtest: T-K0d defter teslimi yazılamadı (false) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 1, accepted_at değişmez)
+    ok 3 - T-K0d defter teslimi yazılamadı (false) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 1, accepted_at değişmez)
+      ---
+      duration_ms: 346.84464
+      type: 'test'
+      ...
+    # Subtest: T-K0e defter teslim edilemedi yazımı fırlatır (kilit) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 0, accepted_at değişmez)
+    ok 4 - T-K0e defter teslim edilemedi yazımı fırlatır (kilit) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 0, accepted_at değişmez)
+      ---
+      duration_ms: 370.938845
+      type: 'test'
+      ...
+    # Subtest: T-K0f yazım ortasında GERÇEK defter kilidi (ön sınamadan sonra, ayrı bağlantı) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 1, accepted_at değişmez)
+    ok 5 - T-K0f yazım ortasında GERÇEK defter kilidi (ön sınamadan sonra, ayrı bağlantı) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 1, accepted_at değişmez)
+      ---
+      duration_ms: 10417.322418
+      type: 'test'
+      ...
+    # Subtest: T-K0a/b ön sınamada şirket dosyası ya da defter kilitli → 503, yazım yok
+    ok 6 - T-K0a/b ön sınamada şirket dosyası ya da defter kilitli → 503, yazım yok
+      ---
+      duration_ms: 2889.680649
+      type: 'test'
+      ...
+    # Subtest: T-K0g dosya yazımında KİLİT DIŞI hata — SQLITE_READONLY (salt okunur) → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)
+    ok 7 - T-K0g dosya yazımında KİLİT DIŞI hata — SQLITE_READONLY (salt okunur) → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)
+      ---
+      duration_ms: 405.172565
+      type: 'test'
+      ...
+    # Subtest: T-K0g dosya yazımında KİLİT DIŞI hata — SQLITE_FULL (disk dolu) → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)
+    ok 8 - T-K0g dosya yazımında KİLİT DIŞI hata — SQLITE_FULL (disk dolu) → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)
+      ---
+      duration_ms: 345.804466
+      type: 'test'
+      ...
+    # Subtest: T-K0g′ dosya yazımında wamid tekil çakışması (SQLITE_CONSTRAINT_UNIQUE) → yalnız bu yutulur: 200, satır değişmez (U3)
+    ok 9 - T-K0g′ dosya yazımında wamid tekil çakışması (SQLITE_CONSTRAINT_UNIQUE) → yalnız bu yutulur: 200, satır değişmez (U3)
+      ---
+      duration_ms: 348.193813
+      type: 'test'
+      ...
+    # Subtest: T36 eşzamanlı kabul DEFTERE yazılamadı (dosyada Meta Kabul Etti + wamid) → onarılamazken gönderim başlatılmaz (503), imzasız teslim 6 dk sonra da tanınır; defter düzelince onarım: Daha Önce Gönderildi, kişiye 1 ileti (U6)
+    ok 10 - T36 eşzamanlı kabul DEFTERE yazılamadı (dosyada Meta Kabul Etti + wamid) → onarılamazken gönderim başlatılmaz (503), imzasız teslim 6 dk sonra da tanınır; defter düzelince onarım: Daha Önce Gönderildi, kişiye 1 ileti (U6)
+      ---
+      duration_ms: 403.505582
+      type: 'test'
+      ...
+    # Subtest: T36c talepten ÖNCE onarım: 1. kişinin kabulü deftere yazılamadı → defter düzelene dek 2. kişiye gönderilmez; düzelince ikisi de tek ileti (U6)
+    ok 11 - T36c talepten ÖNCE onarım: 1. kişinin kabulü deftere yazılamadı → defter düzelene dek 2. kişiye gönderilmez; düzelince ikisi de tek ileti (U6)
+      ---
+      duration_ms: 418.503269
+      type: 'test'
+      ...
+    # Subtest: T-K0h sahibi yalnız dosyada bulunan wamid (U6 onarım listesi) · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503; açılınca 200 ve uygulanır (U6)
+    ok 12 - T-K0h sahibi yalnız dosyada bulunan wamid (U6 onarım listesi) · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503; açılınca 200 ve uygulanır (U6)
+      ---
+      duration_ms: 550.0167
+      type: 'test'
+      ...
+    # Subtest: T-K0h2 sahibi DEFTERDE bilinen wamid · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503, yalnız defter YAZILMAZ; açılınca 200 ve satır Teslim (U6 koşul a)
+    not ok 13 - T-K0h2 sahibi DEFTERDE bilinen wamid · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503, yalnız defter YAZILMAZ; açılınca 200 ve satır Teslim (U6 koşul a)
+      ---
+      duration_ms: 629.036114
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1475:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        503'ten önce teslim defterde
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1487:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T-Ksil şirket silinmiş (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)
+    ok 14 - T-Ksil şirket silinmiş (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)
+      ---
+      duration_ms: 626.060659
+      type: 'test'
+      ...
+    # Subtest: T-Ksil şirket veri dosyası yok (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)
+    ok 15 - T-Ksil şirket veri dosyası yok (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)
+      ---
+      duration_ms: 607.102241
+      type: 'test'
+      ...
+    # Subtest: T-Ksil-F veri dosyası YOK (kalıcı) · imzasız failed 131026 → 200 + defterde teslim edilemedi; dosya geri gelince kişi "gönderilecek" (V1 i, K4)
+    ok 16 - T-Ksil-F veri dosyası YOK (kalıcı) · imzasız failed 131026 → 200 + defterde teslim edilemedi; dosya geri gelince kişi "gönderilecek" (V1 i, K4)
+      ---
+      duration_ms: 728.396377
+      type: 'test'
+      ...
+    # Subtest: T-Ksil-F49 veri dosyası YOK (kalıcı) · imzasız failed 131049 → 200 + defterde teslim edilemedi; dosya geri gelince kişi "gönderilecek" (V1 i, K4)
+    ok 17 - T-Ksil-F49 veri dosyası YOK (kalıcı) · imzasız failed 131049 → 200 + defterde teslim edilemedi; dosya geri gelince kişi "gönderilecek" (V1 i, K4)
+      ---
+      duration_ms: 645.972366
+      type: 'test'
+      ...
+    # Subtest: T-Ksil-D+geri veri dosyası YOK · delivered → 200 + defter teslim; dosya geri gelince Daha Önce, Bu Ay 1; süre dolumu satırı Teslim Edildi yapar (Süresi Doldu / teslim edilemedi YOK) (V1 + V2)
+    ok 18 - T-Ksil-D+geri veri dosyası YOK · delivered → 200 + defter teslim; dosya geri gelince Daha Önce, Bu Ay 1; süre dolumu satırı Teslim Edildi yapar (Süresi Doldu / teslim edilemedi YOK) (V1 + V2)
+      ---
+      duration_ms: 678.052206
+      type: 'test'
+      ...
+    # Subtest: T-Kgecici şirket açılmamışken veri dosyası BAŞKA SÜREÇTE kilitli → 503 (geçici); kilit kalkınca yineleme 200 ve Teslim Edildi (V1 ii, V6 mD)
+    not ok 19 - T-Kgecici şirket açılmamışken veri dosyası BAŞKA SÜREÇTE kilitli → 503 (geçici); kilit kalkınca yineleme 200 ve Teslim Edildi (V1 ii, V6 mD)
+      ---
+      duration_ms: 10511.161026
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1583:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        İş X1 (BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1596:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T-Kbozuk şirket açılmamışken veri dosyası BOZUK (veri tabanı değil) → 503 (geçici; düzeltilince uygulanır); dosya düzelince yineleme 200 ve Teslim (V1 ii)
+    not ok 20 - T-Kbozuk şirket açılmamışken veri dosyası BOZUK (veri tabanı değil) → 503 (geçici; düzeltilince uygulanır); dosya düzelince yineleme 200 ve Teslim (V1 ii)
+      ---
+      duration_ms: 563.284178
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1607:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        İş X1 (dar kontrol 17 f1b; BİLEREK DEĞİŞEN beklenti): 503'ten önce teslim defterde — Meta bırakırsa da sayılır
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1620:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T-Kbozuk-yabancı 002'nin veri dosyası BOZUK + tanınmayan (sahibi bulunamayan) bildirim, A6 penceresi dışında → 200 (süresiz 503 yok; İş X1, dar kontrol 17 f1)
+    not ok 21 - T-Kbozuk-yabancı 002'nin veri dosyası BOZUK + tanınmayan (sahibi bulunamayan) bildirim, A6 penceresi dışında → 200 (süresiz 503 yok; İş X1, dar kontrol 17 f1)
+      ---
+      duration_ms: 513.141104
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1634:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tanınmayan bildirim 200 (geldi 503 {"ok":false,"code":"whatsapp-hook-busy","error":"Şirket şu anda açılamıyor; bildirim yeniden denenecek."})
+        
+        503 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 503
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1648:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T-dosya-yok-ekran 002'nin veri dosyası YOK → olağan ekran isteği 503 iletisi Türkçe neden + dosya yolu; kod adı (COMPANY_DATA_MISSING) yok (İş X2, dar kontrol 17 f2; ders 10)
+    not ok 22 - T-dosya-yok-ekran 002'nin veri dosyası YOK → olağan ekran isteği 503 iletisi Türkçe neden + dosya yolu; kod adı (COMPANY_DATA_MISSING) yok (İş X2, dar kontrol 17 f2; ders 10)
+      ---
+      duration_ms: 524.738693
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1661:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /veri dosyası bulunamadı/. Input:
+        
+        "“002 · Deneme Şirketi” şirketinin verisi açılamadı (COMPANY_DATA_MISSING). Sol üstten başka şirkete geçin; yönetici Yönetim → Yedekler'den geri yükleyebilir."
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "“002 · Deneme Şirketi” şirketinin verisi açılamadı (COMPANY_DATA_MISSING). Sol üstten başka şirkete geçin; yönetici Yönetim → Yedekler'den geri yükleyebilir."
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1667:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T-restore-F geri yükleme SÜRERKEN (busyCompanies) gelen failed → 503 → yineleme 200: Başarısız, gönderilecek (onaylı koşul a)
+    ok 23 - T-restore-F geri yükleme SÜRERKEN (busyCompanies) gelen failed → 503 → yineleme 200: Başarısız, gönderilecek (onaylı koşul a)
+      ---
+      duration_ms: 550.924708
+      type: 'test'
+      ...
+    1..23
+not ok 2 - 2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)
+  ---
+  duration_ms: 35010.18203
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wx-eski-ccafaf47/test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1205:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 İş U5 — Bu Ay deneme başına teslim (göçsüz)
+    # Subtest: ad4db62b'nin gerçek defteri yeni kodla açılır: eski teslim 1 kez; aynı teslimin (aynı an) yinelenmesi çift saymaz; 2. denemenin teslimi ayrı (2)
+    ok 1 - ad4db62b'nin gerçek defteri yeni kodla açılır: eski teslim 1 kez; aynı teslimin (aynı an) yinelenmesi çift saymaz; 2. denemenin teslimi ayrı (2)
+      ---
+      duration_ms: 15.491646
+      type: 'test'
+      ...
+    # Subtest: yarıda kalmış şema (attempt_deliveries var, dizin / tetikleyici yok) açılışta tamamlanır; sayım doğru; yalnız eklenir
+    ok 2 - yarıda kalmış şema (attempt_deliveries var, dizin / tetikleyici yok) açılışta tamamlanır; sayım doğru; yalnız eklenir
+      ---
+      duration_ms: 11.724589
+      type: 'test'
+      ...
+    # Subtest: yeni defter: iki denemenin teslimi Bu Ay 2, iş başına 'kişi aldı' tek; aynı denemenin yinelenen teslimi etkisiz
+    ok 3 - yeni defter: iki denemenin teslimi Bu Ay 2, iş başına 'kişi aldı' tek; aynı denemenin yinelenen teslimi etkisiz
+      ---
+      duration_ms: 30.659854
+      type: 'test'
+      ...
+    1..3
+ok 3 - 2.4.8 İş U5 — Bu Ay deneme başına teslim (göçsüz)
+  ---
+  duration_ms: 58.978419
+  type: 'suite'
+  ...
+1..3
+# tests 97
+# suites 3
+# pass 85
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 80224.189087

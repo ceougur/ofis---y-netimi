@@ -1,0 +1,32 @@
+{
+  "ad": "248-dk6fix-belirsiz-yeni-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-dk6-belirsiz-yeniden-dene-248.test.mjs",
+  "commit": "535ab0fdd9bddc667c99f670b47f3445c3921fd0",
+  "dal": "is/t2fix-248",
+  "kirli": 0,
+  "izlenmeyen": 26,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-31T08:10:24.887Z",
+  "sure_sn": 3.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-31/248-dk6fix-belirsiz-yeni-UTC.log",
+  "klasor": "/home/user/wt-t2fix-248",
+  "ham_cikti_sha256": "9ddf3093137db6d115423b102c0718d8bb31509f9c4a4ceaaf183b90dec04a75",
+  "ham_cikti_bayt": 2443
+}
