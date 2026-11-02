@@ -1,0 +1,32 @@
+{
+  "ad": "248-tamkapi/dis-kahin-maliyet-tam",
+  "komut": "python3 -I test/bagimsiz/maliyet/kos.py",
+  "commit": "cdb0653563c5e05523eb8f90db4c326d783e1484",
+  "dal": "is/aday2-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T23:29:55.046Z",
+  "sure_sn": 511.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 43758,
+    "gecen": 43758,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-tamkapi/dis-kahin-maliyet-tam.log",
+  "klasor": "/home/user/wt-aday2-248",
+  "ham_cikti_sha256": "a699d68cca35ac6f14b45e27ec94b4b5abdb0a5d30fb8b9d204b4447c1bc2dea",
+  "ham_cikti_bayt": 310
+}

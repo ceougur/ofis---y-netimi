@@ -1,0 +1,363 @@
+{
+ "U07-11048-ilk-olay": {
+  "yapay": false,
+  "not_sayisi": 1,
+  "ornek": [
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-05T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U08-iptal-sonrasi-yeniden-gonderim": {
+  "yapay": false,
+  "not_sayisi": 1,
+  "ornek": [
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-11-02T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U18-kabul-sonrasi-gurultu": {
+  "yapay": false,
+  "not_sayisi": 2,
+  "ornek": [
+   {
+    "olay": "yeniden_deneme_kabul",
+    "zaman": "2026-10-06T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-07T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U19-iki-kullanici-ayni-saniye": {
+  "yapay": false,
+  "not_sayisi": 1,
+  "ornek": [
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-05T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U21-eski-surumde-kabul-edilmis": {
+  "yapay": false,
+  "not_sayisi": 1,
+  "ornek": [
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-01T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U28-yedekten-geri-yukleme": {
+  "yapay": false,
+  "not_sayisi": 3,
+  "ornek": [
+   {
+    "olay": "yedekten_geri_yuklendi",
+    "zaman": "2026-10-06T09:00:00+03:00",
+    "sirket": "001",
+    "neden": "2.4.7 öncesi yedek (eşleşen yedek_alindi yok): belgeler günlükten, iz boş, defter değişmez"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-07T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-08T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000002",
+    "sirket": "001",
+    "neden": "üretilemez: belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   }
+  ]
+ },
+ "U31-ettn-buyuk-kucuk-harf": {
+  "yapay": false,
+  "not_sayisi": 1,
+  "ornek": [
+   {
+    "olay": "yeniden_deneme_kabul",
+    "zaman": "2026-10-06T10:00:00+03:00",
+    "ettn": " abcdef01-2345-4678-9abc-def012345678 ",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "U32-cok-gurultu": {
+  "yapay": false,
+  "not_sayisi": 23,
+  "ornek": [
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-03T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-04T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-05T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-06T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-07T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   },
+   {
+    "olay": "iptal",
+    "zaman": "2026-11-08T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   }
+  ]
+ },
+ "U34-ortam-degisti-kesinlesme": {
+  "yapay": false,
+  "not_sayisi": 1,
+  "ornek": [
+   {
+    "olay": "belirsiz_kesinlesti_kabul",
+    "zaman": "2026-10-06T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: gönderilmemiş belgede Durum Sorgula yok"
+   }
+  ]
+ },
+ "U35-sirket-capraz-kesinlesme": {
+  "yapay": true,
+  "not_sayisi": 1,
+  "ornek": [
+   {
+    "olay": "belirsiz_kesinlesti_kabul",
+    "zaman": "2026-10-06T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "002",
+    "neden": "üretilemez: gönderilmemiş belgede Durum Sorgula yok"
+   }
+  ]
+ },
+ "U44-bulunamadi-sonra-yeni-deneme-olmadan-kabul": {
+  "yapay": false,
+  "not_sayisi": 1,
+  "ornek": [
+   {
+    "olay": "belirsiz_kesinlesti_kabul",
+    "zaman": "2026-10-05T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000001",
+    "sirket": "001",
+    "neden": "üretilemez: gönderilmemiş belgede Durum Sorgula yok"
+   }
+  ]
+ },
+ "U48-eski-yedekte-defter-kopyasi-yok": {
+  "yapay": true,
+  "not_sayisi": 2,
+  "ornek": [
+   {
+    "olay": "yedekten_geri_yuklendi",
+    "zaman": "2026-10-02T09:00:00+03:00",
+    "sirket": "001",
+    "neden": "2.4.7 öncesi yedek (eşleşen yedek_alindi yok): belgeler günlükten, iz boş, defter değişmez"
+   },
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-04T10:00:00+03:00",
+    "ettn": "00000000-0000-4000-8000-000000000006",
+    "sirket": "001",
+    "neden": "üretilemez: belge programda yok (iptal / silindi / sıfırlandı / yedekte yok)"
+   }
+  ]
+ },
+ "R1-rastgele-500-belge": {
+  "yapay": false,
+  "not_sayisi": 78,
+  "ornek": [
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-10T23:06:03+03:00",
+    "ettn": "f82a45be-1f8e-4843-8816-328e368a2c95",
+    "sirket": "002",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-14T17:12:26+03:00",
+    "ettn": "13d507f2-88a8-42e8-ac29-c07ea5dbd9cb",
+    "sirket": "003",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-14T22:57:47+03:00",
+    "ettn": "933bad5e-2a3d-4f0d-97a9-2bdf9a037570",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-18T08:14:45+03:00",
+    "ettn": "e6c3f339-1a2b-4f1f-b1fd-42a29755d4c1",
+    "sirket": "002",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-23T01:06:26+03:00",
+    "ettn": "f9e5b17a-5fd9-4426-8779-298aa8debbc2",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-25T07:47:28+03:00",
+    "ettn": "23e153e4-a3b2-4218-bd92-ee036f6b73f0",
+    "sirket": "003",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "R2-rastgele-500-belge": {
+  "yapay": false,
+  "not_sayisi": 80,
+  "ornek": [
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-03T20:49:37+03:00",
+    "ettn": "11d1f861-b834-400b-be44-63dbfb4748f0",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-09T09:06:30+03:00",
+    "ettn": "6e616e18-81cc-448b-a8c5-3a32cf50b477",
+    "sirket": "003",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-30T04:28:42+03:00",
+    "ettn": "fd1750fd-ae6d-43f2-a53f-82d5e94f499e",
+    "sirket": "002",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-30T11:31:46+03:00",
+    "ettn": "8e22ef7f-7f5a-4b17-a888-788f69268b41",
+    "sirket": "003",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-31T22:33:41+03:00",
+    "ettn": "b578f0be-02c2-4924-bf4a-9aae56269a35",
+    "sirket": "003",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-11-01T01:58:35+03:00",
+    "ettn": "76c47262-4ee3-407d-963b-e8a02fb3b726",
+    "sirket": "002",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ },
+ "R3-rastgele-500-belge": {
+  "yapay": false,
+  "not_sayisi": 72,
+  "ornek": [
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-06T02:04:18+03:00",
+    "ettn": "0095fd1f-7073-43e5-b47c-d4874e9dcf7a",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-15T10:59:32+03:00",
+    "ettn": "1db906ef-ddcd-4e2c-92df-fa73117381c9",
+    "sirket": "002",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-10-23T04:48:39Z",
+    "ettn": "c6b6439b-384e-47b7-b463-94717d2a5ea4",
+    "sirket": "002",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-25T18:20:24+03:00",
+    "ettn": "8279bdf8-2243-41eb-9cee-edf32809da96",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "gonder_kabul",
+    "zaman": "2026-10-30T23:22:44+03:00",
+    "ettn": "39d45687-3d05-4b75-a82e-f80b065137c5",
+    "sirket": "001",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   },
+   {
+    "olay": "zaten_gonderilmis_11048",
+    "zaman": "2026-11-01T00:15:43+03:00",
+    "ettn": "ae3af842-e264-4e3e-9475-5e2e9ff4d80f",
+    "sirket": "002",
+    "neden": "üretilemez: iletilmiş belge yeniden gönderilmez (409)"
+   }
+  ]
+ }
+}

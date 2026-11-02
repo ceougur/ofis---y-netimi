@@ -1,0 +1,32 @@
+{
+  "ad": "248-tamkapi/ci-e2e-gg244-esmm-gonder",
+  "komut": "npm run test:gg244-esmm-gonder",
+  "commit": "cdb0653563c5e05523eb8f90db4c326d783e1484",
+  "dal": "is/aday2-248",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-01T23:01:38.642Z",
+  "sure_sn": 74.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 66,
+    "gecen": 66,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-01/248-tamkapi/ci-e2e-gg244-esmm-gonder.log",
+  "klasor": "/home/user/wt-aday2-248",
+  "ham_cikti_sha256": "ae502dfa879e27b361ed6eed3edb2fd051eec19fe600e319a2077aaaa9ded74c",
+  "ham_cikti_bayt": 8661
+}
