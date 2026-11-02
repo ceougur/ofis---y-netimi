@@ -1,0 +1,32 @@
+{
+  "ad": "248-surum/birim-surum-kilavuz-kapi",
+  "komut": "node --test test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/kilavuz-pdf-surum.test.mjs test/kilavuz-surum.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "843ddf939815967246027d0b9745d0d1bf1542ce",
+  "dal": "is/surum-248",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v185 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-02T00:28:57.263Z",
+  "sure_sn": 2.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 75,
+    "gecen": 75,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-02/248-surum/birim-surum-kilavuz-kapi.log",
+  "klasor": "/home/user/wt-surum-248",
+  "ham_cikti_sha256": "ac967bfc8f9e42cf7a53bf08239376570e5f2b809dcb2cdf0d11630f4e9dcad7",
+  "ham_cikti_bayt": 21903
+}
