@@ -100,7 +100,12 @@ const closeAll = async (stepName, expect) => {
 };
 // Ekranın görünen metni + açılır liste seçenekleri + düğmelerin title'ı (pasif düğme nedeni) — kılavuzdaki adlar bunlarla karşılaştırılır.
 const texts = {};
+// Ders 39/20 (CI #970 "✗ 8: + Giriş"): pencerenin içeriği "is-visible" sınıfından ÖNCE hazır olabilir (sınıf bir kare sonra gelir). İçeriği bekleyip hemen
+// okuyan grab, açılmakta olan pencereyi `${modal}` / `top` ile bulamaz: ya boş metin ya da ALTTAKİ pencerenin metni okunur. Okumadan önce açık her
+// pencerenin is-visible aldığı (kapanmakta olanların da DOM'dan çıktığı) beklenir; beklenmezse adım hatayla düşer (sessiz boş metin yok).
+const settled = () => page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop")].every(node => node.classList.contains("is-visible")), null, { timeout: 8000 });
 const grab = async (name, selector = top) => {
+  await settled();
   const value = await page.$$eval(selector, list => list.map(n => [n.innerText, ...[...n.querySelectorAll("option")].map(o => o.textContent), ...[...n.querySelectorAll("[title]")].map(o => o.getAttribute("title"))].join("\n")).join("\n")).catch(() => "");
   texts[name] = (texts[name] ? `${texts[name]}\n` : "") + value;
 };
@@ -470,6 +475,20 @@ await step("kart", async () => {
   await closeAll("kart-limit", "soru-var");
   const after = (await accountsNow()).find(account => account.id === KART.id);
   check(after.balanceMinor === -250_000, `kart borcu 2.500 (limit aşan ödeme yazılmadı): ${after.balanceMinor / 100}`);
+  // 2.4.9 K-1 (P1 / P1-b): tedarikçinin + Tahsilat formunda yol POS → "Kredi Kartına İade" kutusu görünür. Kaydedilmez (yalnız ekran adı).
+  await page.click('#hof-sidecard [data-action="accounts"]');
+  await page.waitForSelector(`.hof-accounts-modal tr[data-account="${akaryakit.id}"]`, { timeout: 10000 });
+  await page.click(`.hof-accounts-modal tr[data-account="${akaryakit.id}"]`);
+  await page.waitForSelector('.hof-accounts-modal [data-entry="in"]', { timeout: 10000 });
+  await page.click('.hof-accounts-modal [data-entry="in"]');
+  const rf = `${top} .hof-form`;
+  await page.waitForSelector(`${rf} select[name="method"]`, { timeout: 8000 });
+  await page.selectOption(`${rf} select[name="method"]`, "card");
+  await page.waitForSelector(`${rf} input[name="cardRefund"]`, { state: "visible", timeout: 8000 });
+  check((await textOf(rf)).includes("Kredi Kartına İade"), "tedarikçi tahsilatında yol POS: Kredi Kartına İade kutusu");
+  await grab("tedarikci-kart-iade");
+  // soru-yok: yalnız Tahsilat Yolu betikle seçildi (selectOption, isTrusted değil); tutar girilmedi.
+  await closeAll("tedarikci-kart-iade", "soru-yok");
   // Stok alımı (+ Giriş): "Kredi Kartı" → Kurumsal Kart; "Havale / EFT" → Banka Hesabı (iki hesap: seçim). Kaydedilmez (yalnız ekran adları).
   const item = data(await api("/api/workspace/stock", { name: "Motor Yağı", unit: "Lt", unitPrice: "420", openingQty: "0", openingDate: "2026-10-01" }));
   await page.evaluate(id => window.HOF.stock.open(id), item.id || item.item?.id);
