@@ -1,0 +1,99 @@
+TAP version 13
+# Subtest: 2.4.9 B2 — elle toplu WhatsApp alıcı listesi kartın eleme çekirdeğiyle (davranış aynen)
+    # Subtest: YAPI: alıcı listesi kişi başı tam cari kartı (accounts.detail) okumaz — her dönemde, ekstre ve mesajda, seçili ve 'Tümüne'
+    not ok 1 - YAPI: alıcı listesi kişi başı tam cari kartı (accounts.detail) okumaz — her dönemde, ekstre ve mesajda, seçili ve 'Tümüne'
+      ---
+      duration_ms: 1112.661281
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/eski-e3f74093/test/whatsapp-elle-alici-249.test.mjs:111:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        alıcı listesi kişi başı tam cari kartı okuyor: 113 çağrı (beklenen 0) — [{"govde":"statement thisMonth seçili","alici":15,"tamKartOkuma":17},{"govde":"statement lastMonth seçili","alici":15,"tamKartOkuma":17},{"govde":"statement last3 seçili","alici":15,"tamKartOkuma":17},{"govde":"statement all seçili","alici":15,"tamKartOkuma":17},{"govde":"message  seçili","alici":15,"tamKartOkuma":17},{"govde":"statement thisMonth Tümüne","alici":15,"tamKartOkuma":15},{"govde":"message  Tümüne","alici":13,"tamKartOkuma":13}]
+        
+        113 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 113
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/eski-e3f74093/test/whatsapp-elle-alici-249.test.mjs:137:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: YAPI: ekstre metni hazırlanırken tutar başına yeni biçimleyici (Intl.NumberFormat) kurulmaz — taksit kartı olmayan hareketli carilerde 0
+    not ok 2 - YAPI: ekstre metni hazırlanırken tutar başına yeni biçimleyici (Intl.NumberFormat) kurulmaz — taksit kartı olmayan hareketli carilerde 0
+      ---
+      duration_ms: 714.408079
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/eski-e3f74093/test/whatsapp-elle-alici-249.test.mjs:146:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ekstre metni her tutarda yeni biçimleyici kuruyor: 8 (beklenen 0)
+        
+        8 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 8
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/eski-e3f74093/test/whatsapp-elle-alici-249.test.mjs:170:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: KÂHİN = SINIF TANIMI: geçerlilik/neden, silinmiş ve olmayan cari, bakiye, sıradaki taksit, gecikmiş, son tahsilat, son gönderim, ekstre metni (devir, dönem, ileri tarih)
+    ok 3 - KÂHİN = SINIF TANIMI: geçerlilik/neden, silinmiş ve olmayan cari, bakiye, sıradaki taksit, gecikmiş, son tahsilat, son gönderim, ekstre metni (devir, dönem, ileri tarih)
+      ---
+      duration_ms: 765.642315
+      type: 'test'
+      ...
+    # Subtest: ÇEKİRDEK ↔ KART: her cari sınıfında alıcı listesinin okuduğu alanlar (bakiye, gecikmiş, kartlar, defter satırları) waFacts ↔ detail birebir aynı
+    ok 4 - ÇEKİRDEK ↔ KART: her cari sınıfında alıcı listesinin okuduğu alanlar (bakiye, gecikmiş, kartlar, defter satırları) waFacts ↔ detail birebir aynı
+      ---
+      duration_ms: 860.366353
+      type: 'test'
+      ...
+    # Subtest: BİLİNÇLİ TEK FARK (§13 b, İLKEYLE): kartın bir ekran eki (fatura kalanları) hata verirse kişi alıcı listesinden sessizce DÜŞMEZ, kendi bakiyesiyle görünür
+    not ok 5 - BİLİNÇLİ TEK FARK (§13 b, İLKEYLE): kartın bir ekran eki (fatura kalanları) hata verirse kişi alıcı listesinden sessizce DÜŞMEZ, kendi bakiyesiyle görünür
+      ---
+      duration_ms: 629.908196
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/eski-e3f74093/test/whatsapp-elle-alici-249.test.mjs:264:3'
+      failureType: 'testCodeFailure'
+      error: 'ekran eki hata verince kişi alıcı listesinden sessizce düşüyor (beklenen: listede, kendi bakiyesiyle — ilke 4 çıkmaz yok)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/eski-e3f74093/test/whatsapp-elle-alici-249.test.mjs:281:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - 2.4.9 B2 — elle toplu WhatsApp alıcı listesi kartın eleme çekirdeğiyle (davranış aynen)
+  ---
+  duration_ms: 4085.691753
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/eski-e3f74093/test/whatsapp-elle-alici-249.test.mjs:110:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 2
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4507.578436

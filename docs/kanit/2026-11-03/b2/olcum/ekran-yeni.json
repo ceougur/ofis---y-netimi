@@ -1,0 +1,47 @@
+{
+ "commit": "a9f0b84a4b753ab8495e8db13c33a53bdff08d3d",
+ "node": "v22.22.0",
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/hazir-taban",
+ "saat": "2026-11-03T15:00:00+03:00",
+ "basladi": "2026-11-03T20:00:14.099Z",
+ "tekrar": [
+  {
+   "yol": "Otomatik + WhatsApp Web",
+   "dugme": "Süzgeçteki 2986 cariye ekstre",
+   "acilisMs": 200,
+   "targetsIlk": {
+    "durum": 200,
+    "ms": -1
+   },
+   "satir": 2986,
+   "head": "2986 Cari 2948 Geçerli Numara 13 Numarası Yok / Hatalı 25 WhatsApp Mesajı İstemiyor 2948 Gönderilecek",
+   "yeniden": {
+    "yalnizBorcluMs": 532,
+    "yalnizBorcluGeriMs": 431,
+    "tekKisiMs": 335,
+    "hepsiniSecMs": 353
+   },
+   "donemDegisimMs": 1838
+  },
+  {
+   "yol": "Otomatik + WhatsApp Web",
+   "dugme": "Süzgeçteki 2986 cariye ekstre",
+   "acilisMs": 145,
+   "targetsIlk": {
+    "durum": 200,
+    "ms": -1
+   },
+   "satir": 2986,
+   "head": "2986 Cari 2948 Geçerli Numara 13 Numarası Yok / Hatalı 25 WhatsApp Mesajı İstemiyor 2948 Gönderilecek",
+   "yeniden": {
+    "yalnizBorcluMs": 421,
+    "yalnizBorcluGeriMs": 454,
+    "tekKisiMs": 475,
+    "hepsiniSecMs": 411
+   },
+   "donemDegisimMs": 1767
+  }
+ ],
+ "sayfaHatasi": [],
+ "bitti": "2026-11-03T20:00:38.528Z"
+}

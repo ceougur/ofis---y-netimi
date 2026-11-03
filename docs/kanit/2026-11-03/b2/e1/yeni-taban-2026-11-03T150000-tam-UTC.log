@@ -1,0 +1,26 @@
+18:35:45 Ekstre Bu Ay (seçili) 200 alıcı 1987 729 ms
+18:35:46 Ekstre Geçen Ay (seçili) 200 alıcı 1987 710 ms
+18:35:47 Ekstre Son 3 Ay (seçili) 200 alıcı 1987 723 ms
+18:35:47 Ekstre Tüm Hareketler (seçili) 200 alıcı 1987 735 ms
+18:35:48 Mesaj (seçili) 200 alıcı 1987 682 ms
+18:35:49 Tümüne Ekstre Bu Ay (etkin) 200 alıcı 2986 1196 ms
+18:35:50 Tümüne Mesaj (pasif) 200 alıcı 35 178 ms
+18:35:51 Tümüne Ekstre Tüm Hareketler (tümü) 200 alıcı 3021 1331 ms
+18:35:51 Tümüne Mesaj bakiye=debtor 200 alıcı 10 185 ms
+18:35:52 Tümüne Mesaj bakiye=creditor 200 alıcı 3006 1103 ms
+18:35:53 Tümüne Mesaj bakiye=zero 200 alıcı 5 208 ms
+18:35:54 Tümüne Mesaj bakiye=nonzero 200 alıcı 3016 1103 ms
+18:35:54 Tümüne Mesaj bakiye=overdue 200 alıcı 310 374 ms
+18:35:54 Tümüne Ekstre grup 200 alıcı 60 241 ms
+18:35:54 Tümüne Ekstre grup + alt grup 200 alıcı 30 207 ms
+18:35:55 Tümüne Mesaj arama 'B2' 200 alıcı 67 222 ms
+18:35:55 Tümüne Mesaj tür tedarikçi 200 alıcı 432 344 ms
+18:35:56 Tümüne Ekstre Geçen Ay (100 hariç) 200 alıcı 2921 1240 ms
+18:35:56 Tek kişi (cari kartı yolu) 200 alıcı 1 17 ms
+18:35:56 Silinmiş + olmayan + geçerli karışık 200 alıcı 3 7 ms
+18:35:58 5.000 kimlik (sınırda) 200 alıcı 3021 1262 ms
+18:35:58 5.001 kimlik (sınır aşımı) 400 {"ok":false,"error":"Tek seferde en çok 5000 cariye gönderilebilir; süzgeçle daraltın."} 31 ms
+18:35:58 Boş seçim 400 {"ok":false,"error":"Gönderilecek carileri seçin."} 2 ms
+18:35:59 Şirket 2 Tümüne Ekstre Bu Ay (tümü) 200 alıcı 621 210 ms
+18:35:59 Şirket 2 Mesaj (seçili + silinmiş) 200 alıcı 621 253 ms
+18:35:59 yazıldı /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/e1/yeni-taban-2026-11-03T150000-tam-UTC.json 25 adım

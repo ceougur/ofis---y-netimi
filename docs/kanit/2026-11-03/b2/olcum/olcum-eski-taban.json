@@ -1,0 +1,170 @@
+{
+ "commit": "e3f74093",
+ "node": "v22.22.0",
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/hazir-taban",
+ "set": "taban",
+ "saat": "2026-11-03T15:00:00+03:00",
+ "basladi": "2026-11-03T19:00:29.991Z",
+ "olcum": {
+  "ekstreBuAy2000": [
+   {
+    "durum": 200,
+    "ms": 24870,
+    "olayDongusuEnCokMs": 24594,
+    "baskaEnCokMs": 24651,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   },
+   {
+    "durum": 200,
+    "ms": 25124,
+    "olayDongusuEnCokMs": 24911,
+    "baskaEnCokMs": 24910,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   }
+  ],
+  "ekstreGecenAy2000": [
+   {
+    "durum": 200,
+    "ms": 28658,
+    "olayDongusuEnCokMs": 28371,
+    "baskaEnCokMs": 28427,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   },
+   {
+    "durum": 200,
+    "ms": 26094,
+    "olayDongusuEnCokMs": 25752,
+    "baskaEnCokMs": 25874,
+    "baskaIstek": 3,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   }
+  ],
+  "ekstreSon3Ay2000": [
+   {
+    "durum": 200,
+    "ms": 26691,
+    "olayDongusuEnCokMs": 26496,
+    "baskaEnCokMs": 26468,
+    "baskaIstek": 3,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   },
+   {
+    "durum": 200,
+    "ms": 24436,
+    "olayDongusuEnCokMs": 24244,
+    "baskaEnCokMs": 24220,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   }
+  ],
+  "ekstreTum2000": [
+   {
+    "durum": 200,
+    "ms": 25657,
+    "olayDongusuEnCokMs": 25401,
+    "baskaEnCokMs": 25402,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   },
+   {
+    "durum": 200,
+    "ms": 26275,
+    "olayDongusuEnCokMs": 26005,
+    "baskaEnCokMs": 26041,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   }
+  ],
+  "mesaj2000": [
+   {
+    "durum": 200,
+    "ms": 26380,
+    "olayDongusuEnCokMs": 26126,
+    "baskaEnCokMs": 26167,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   },
+   {
+    "durum": 200,
+    "ms": 25281,
+    "olayDongusuEnCokMs": 25087,
+    "baskaEnCokMs": 25063,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   }
+  ],
+  "tumuneEkstreHepsi": [
+   {
+    "durum": 200,
+    "ms": 38921,
+    "olayDongusuEnCokMs": 38694,
+    "baskaEnCokMs": 38711,
+    "baskaIstek": 3,
+    "baskaHata": 0,
+    "alici": 3021,
+    "gecerli": 2948
+   },
+   {
+    "durum": 200,
+    "ms": 38902,
+    "olayDongusuEnCokMs": 38694,
+    "baskaEnCokMs": 38725,
+    "baskaIstek": 3,
+    "baskaHata": 0,
+    "alici": 3021,
+    "gecerli": 2948
+   }
+  ],
+  "tumuneMesajAktif": [
+   {
+    "durum": 200,
+    "ms": 37513,
+    "olayDongusuEnCokMs": 37301,
+    "baskaEnCokMs": 37296,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2986,
+    "gecerli": 2948
+   },
+   {
+    "durum": 200,
+    "ms": 36394,
+    "olayDongusuEnCokMs": 36183,
+    "baskaEnCokMs": 36179,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2986,
+    "gecerli": 2948
+   }
+  ]
+ },
+ "cariSayisi": {
+  "toplam": 3021,
+  "telefonlu": 3014,
+  "secilen": 2000
+ },
+ "bitti": "2026-11-03T19:07:44.967Z"
+}

@@ -1,0 +1,24 @@
+{
+ "commit": "e3f74093",
+ "node": "v22.22.0",
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/hazir-taban",
+ "saat": "2026-11-03T15:00:00+03:00",
+ "basladi": "2026-11-03T20:01:29.745Z",
+ "tekrar": [
+  {
+   "yol": "Otomatik + WhatsApp Web (WhatsApp Web kendiliğinden seçili)",
+   "dugme": "Süzgeçteki 2986 cariye ekstre",
+   "acilisMs": 36404,
+   "targets": [
+    {
+     "durum": "düştü",
+     "hata": "net::ERR_ABORTED",
+     "ms": 0
+    }
+   ],
+   "istemciHatasi": "Sunucu zamanında yanıt vermedi."
+  }
+ ],
+ "sayfaHatasi": [],
+ "bitti": "2026-11-03T20:02:18.381Z"
+}

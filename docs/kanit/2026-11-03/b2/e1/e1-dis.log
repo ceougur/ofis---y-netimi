@@ -1,0 +1,31 @@
+ok 1 - [UTC 2026-11-03T15:00:00 tam] aynı koşul (saat, saat dilimi, veri, 25 ↔ 25 adım; eski e3f74093 ↔ yeni a9f0b84a4b753ab8495e8db13c33a53bdff08d3d)
+not ok 2 - [UTC 2026-11-03T15:00:00 tam] Ekstre Bu Ay (seçili) (alıcı 1987, geçerli 1914, pasif 35, istemiyor 30, sıradaki taksit 310, gecikmiş 310, son tahsilat 1980, son gönderim 1980, ekstreli 1987, devirli 1980; eski 24712 ms ↔ yeni 715 ms) İLK FARK ilk farklı kişi #0 account-1cfba6d6-30c8-4d04-93e6-75a5b6feb4d8:c06e0a3d0fbb806fdade ≠ account-1cfba6d6-30c8-4d04-93e6-75a5b6feb4d8:eeeaaa8ecce2420049df
+ok 3 - [UTC 2026-11-03T15:00:00 tam] Ekstre Geçen Ay (seçili) (alıcı 1987, geçerli 1914, pasif 35, istemiyor 30, sıradaki taksit 310, gecikmiş 310, son tahsilat 1980, son gönderim 1980, ekstreli 1987, devirli 1980; eski 23375 ms ↔ yeni 717 ms)
+ok 4 - [UTC 2026-11-03T15:00:00 tam] Ekstre Son 3 Ay (seçili) (alıcı 1987, geçerli 1914, pasif 35, istemiyor 30, sıradaki taksit 310, gecikmiş 310, son tahsilat 1980, son gönderim 1980, ekstreli 1987, devirli 1980; eski 22401 ms ↔ yeni 754 ms)
+ok 5 - [UTC 2026-11-03T15:00:00 tam] Ekstre Tüm Hareketler (seçili) (alıcı 1987, geçerli 1914, pasif 35, istemiyor 30, sıradaki taksit 310, gecikmiş 310, son tahsilat 1980, son gönderim 1980, ekstreli 1987, devirli 0; eski 24502 ms ↔ yeni 885 ms)
+ok 6 - [UTC 2026-11-03T15:00:00 tam] Mesaj (seçili) (alıcı 1987, geçerli 1914, pasif 35, istemiyor 30, sıradaki taksit 310, gecikmiş 310, son tahsilat 1980, son gönderim 1980, ekstreli 0, devirli 0; eski 22294 ms ↔ yeni 686 ms)
+ok 7 - [UTC 2026-11-03T15:00:00 tam] Tümüne Ekstre Bu Ay (etkin) (alıcı 2986, geçerli 2948, pasif 0, istemiyor 25, sıradaki taksit 308, gecikmiş 308, son tahsilat 2979, son gönderim 1965, ekstreli 2986, devirli 2979; eski 40317 ms ↔ yeni 1401 ms)
+ok 8 - [UTC 2026-11-03T15:00:00 tam] Tümüne Mesaj (pasif) (alıcı 35, geçerli 0, pasif 35, istemiyor 5, sıradaki taksit 2, gecikmiş 2, son tahsilat 35, son gönderim 35, ekstreli 0, devirli 0; eski 724 ms ↔ yeni 245 ms)
+ok 9 - [UTC 2026-11-03T15:00:00 tam] Tümüne Ekstre Tüm Hareketler (tümü) (alıcı 3021, geçerli 2948, pasif 35, istemiyor 30, sıradaki taksit 310, gecikmiş 310, son tahsilat 3014, son gönderim 2000, ekstreli 3021, devirli 0; eski 37359 ms ↔ yeni 1361 ms)
+ok 10 - [UTC 2026-11-03T15:00:00 tam] Tümüne Mesaj bakiye=debtor (alıcı 10, geçerli 8, pasif 2, istemiyor 0, sıradaki taksit 8, gecikmiş 8, son tahsilat 8, son gönderim 8, ekstreli 0, devirli 0; eski 585 ms ↔ yeni 184 ms)
+ok 11 - [UTC 2026-11-03T15:00:00 tam] Tümüne Mesaj bakiye=creditor (alıcı 3006, geçerli 2935, pasif 33, istemiyor 30, sıradaki taksit 302, gecikmiş 302, son tahsilat 3006, son gönderim 1992, ekstreli 0, devirli 0; eski 34994 ms ↔ yeni 1022 ms)
+ok 12 - [UTC 2026-11-03T15:00:00 tam] Tümüne Mesaj bakiye=zero (alıcı 5, geçerli 5, pasif 0, istemiyor 0, sıradaki taksit 0, gecikmiş 0, son tahsilat 0, son gönderim 0, ekstreli 0, devirli 0; eski 274 ms ↔ yeni 204 ms)
+ok 13 - [UTC 2026-11-03T15:00:00 tam] Tümüne Mesaj bakiye=nonzero (alıcı 3016, geçerli 2943, pasif 35, istemiyor 30, sıradaki taksit 310, gecikmiş 310, son tahsilat 3014, son gönderim 2000, ekstreli 0, devirli 0; eski 35469 ms ↔ yeni 1170 ms)
+ok 14 - [UTC 2026-11-03T15:00:00 tam] Tümüne Mesaj bakiye=overdue (alıcı 310, geçerli 308, pasif 2, istemiyor 0, sıradaki taksit 310, gecikmiş 310, son tahsilat 310, son gönderim 310, ekstreli 0, devirli 0; eski 4114 ms ↔ yeni 455 ms)
+ok 15 - [UTC 2026-11-03T15:00:00 tam] Tümüne Ekstre grup (alıcı 60, geçerli 60, pasif 0, istemiyor 0, sıradaki taksit 0, gecikmiş 0, son tahsilat 60, son gönderim 60, ekstreli 60, devirli 60; eski 942 ms ↔ yeni 268 ms)
+ok 16 - [UTC 2026-11-03T15:00:00 tam] Tümüne Ekstre grup + alt grup (alıcı 30, geçerli 30, pasif 0, istemiyor 0, sıradaki taksit 0, gecikmiş 0, son tahsilat 30, son gönderim 30, ekstreli 30, devirli 30; eski 570 ms ↔ yeni 220 ms)
+ok 17 - [UTC 2026-11-03T15:00:00 tam] Tümüne Mesaj arama 'B2' (alıcı 67, geçerli 67, pasif 0, istemiyor 0, sıradaki taksit 0, gecikmiş 0, son tahsilat 60, son gönderim 60, ekstreli 0, devirli 0; eski 956 ms ↔ yeni 235 ms)
+ok 18 - [UTC 2026-11-03T15:00:00 tam] Tümüne Mesaj tür tedarikçi (alıcı 432, geçerli 420, pasif 5, istemiyor 4, sıradaki taksit 42, gecikmiş 42, son tahsilat 432, son gönderim 287, ekstreli 0, devirli 0; eski 5541 ms ↔ yeni 332 ms)
+ok 19 - [UTC 2026-11-03T15:00:00 tam] Tümüne Ekstre Geçen Ay (100 hariç) (alıcı 2921, geçerli 2921, pasif 0, istemiyor 0, sıradaki taksit 300, gecikmiş 300, son tahsilat 2914, son gönderim 1900, ekstreli 2921, devirli 2914; eski 34736 ms ↔ yeni 1256 ms)
+ok 20 - [UTC 2026-11-03T15:00:00 tam] Tek kişi (cari kartı yolu) (alıcı 1, geçerli 1, pasif 0, istemiyor 0, sıradaki taksit 1, gecikmiş 1, son tahsilat 1, son gönderim 1, ekstreli 1, devirli 0; eski 27 ms ↔ yeni 14 ms)
+ok 21 - [UTC 2026-11-03T15:00:00 tam] Silinmiş + olmayan + geçerli karışık (alıcı 3, geçerli 1, pasif 1, istemiyor 1, sıradaki taksit 1, gecikmiş 1, son tahsilat 3, son gönderim 3, ekstreli 3, devirli 3; eski 176 ms ↔ yeni 9 ms)
+ok 22 - [UTC 2026-11-03T15:00:00 tam] 5.000 kimlik (sınırda) (alıcı 3021, geçerli 2948, pasif 35, istemiyor 30, sıradaki taksit 310, gecikmiş 310, son tahsilat 3014, son gönderim 2000, ekstreli 3021, devirli 3014; eski 39391 ms ↔ yeni 1029 ms)
+ok 23 - [UTC 2026-11-03T15:00:00 tam] 5.001 kimlik (sınır aşımı) (durum 400: "Tek seferde en çok 5000 cariye gönderilebilir; süzgeçle daraltın.")
+ok 24 - [UTC 2026-11-03T15:00:00 tam] Boş seçim (durum 400: "Gönderilecek carileri seçin.")
+ok 25 - [UTC 2026-11-03T15:00:00 tam] Şirket 2 Tümüne Ekstre Bu Ay (tümü) (alıcı 621, geçerli 607, pasif 7, istemiyor 6, sıradaki taksit 62, gecikmiş 62, son tahsilat 603, son gönderim 400, ekstreli 621, devirli 606; eski 1451 ms ↔ yeni 165 ms)
+ok 26 - [UTC 2026-11-03T15:00:00 tam] Şirket 2 Mesaj (seçili + silinmiş) (alıcı 621, geçerli 607, pasif 7, istemiyor 6, sıradaki taksit 62, gecikmiş 62, son tahsilat 603, son gönderim 400, ekstreli 0, devirli 0; eski 1140 ms ↔ yeni 154 ms)
+ok 27 - [UTC 2026-11-03T15:00:00 tam] sınıflar dişli (seçili Bu Ay): hepsi > 0; nedenler {"Pasif Cari":30,"WhatsApp Mesajı İstemiyor":30,"Numara biçimi tanınmadı":5,"Telefon yok":5,"Sabit hat (WhatsApp cep numarası değil)":3}
+1..27
+# tests 27
+# pass 26
+# fail 1

@@ -1,0 +1,60 @@
+{
+ "commit": "e3f74093",
+ "node": "v22.22.0",
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/hazir-bes-bin",
+ "set": "bes-bin",
+ "saat": "2026-11-03T15:00:00+03:00",
+ "basladi": "2026-11-03T19:12:05.137Z",
+ "olcum": {
+  "tumuneEkstreHepsi5000": [
+   {
+    "durum": 200,
+    "ms": 66927,
+    "olayDongusuEnCokMs": 66858,
+    "baskaEnCokMs": 66660,
+    "baskaIstek": 4,
+    "baskaHata": 1,
+    "alici": 5000,
+    "gecerli": 4927
+   },
+   {
+    "durum": 200,
+    "ms": 68938,
+    "olayDongusuEnCokMs": 68879,
+    "baskaEnCokMs": 68679,
+    "baskaIstek": 4,
+    "baskaHata": 1,
+    "alici": 5000,
+    "gecerli": 4927
+   }
+  ],
+  "tumuneMesajHepsi5000": [
+   {
+    "durum": 200,
+    "ms": 67656,
+    "olayDongusuEnCokMs": 67575,
+    "baskaEnCokMs": 67372,
+    "baskaIstek": 3,
+    "baskaHata": 1,
+    "alici": 5000,
+    "gecerli": 4927
+   },
+   {
+    "durum": 200,
+    "ms": 68737,
+    "olayDongusuEnCokMs": 68716,
+    "baskaEnCokMs": 68515,
+    "baskaIstek": 4,
+    "baskaHata": 1,
+    "alici": 5000,
+    "gecerli": 4927
+   }
+  ]
+ },
+ "cariSayisi": {
+  "toplam": 5000,
+  "telefonlu": 4993,
+  "secilen": 2000
+ },
+ "bitti": "2026-11-03T19:16:50.517Z"
+}

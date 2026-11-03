@@ -1,0 +1,48 @@
+{
+  "ad": "b2/eski-e3f74093-whatsapp-elle-alici-249",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/whatsapp-elle-alici-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:26:04.563Z",
+  "sure_sn": 4.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 2,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 B2 — elle toplu WhatsApp alıcı listesi kartın eleme çekirdeğiyle (davranış aynen) › YAPI: alıcı listesi kişi başı tam cari kartı (accounts.detail) okumaz — her dönemde, ekstre ve mesajda, seçili ve 'Tümüne'",
+      "konum": "test/whatsapp-elle-alici-249.test.mjs:111:3",
+      "hata": "alıcı listesi kişi başı tam cari kartı okuyor: 113 çağrı (beklenen 0) — [{\"govde\":\"statement thisMonth seçili\",\"alici\":15,\"tamKartOkuma\":17},{\"govde\":\"statement lastMonth seçili\",\"alici\":15,\"tamKartOkuma\":17},{\"govde\":\"statement last3 seçili\",\"alici\":15,\"tamKartOkuma\":17},{\"govde\":\"statement all seçili\",\"alici\":15,\"tamKartOkuma\":17},{\"govde\":\"message  seçili\",\"alici\":15,\"tamKartOkuma\":17},{\"govde\":\"statement thisMonth Tümüne\",\"alici\":15,\"tamKartOkuma\":15},{\"govde\":\"message  Tümüne\",\"alici\":13,\"tamKartOkuma\":13}] · 113 !== 0 (beklenen 0, gelen 113)"
+    },
+    {
+      "ad": "2.4.9 B2 — elle toplu WhatsApp alıcı listesi kartın eleme çekirdeğiyle (davranış aynen) › YAPI: ekstre metni hazırlanırken tutar başına yeni biçimleyici (Intl.NumberFormat) kurulmaz — taksit kartı olmayan hareketli carilerde 0",
+      "konum": "test/whatsapp-elle-alici-249.test.mjs:146:3",
+      "hata": "ekstre metni her tutarda yeni biçimleyici kuruyor: 8 (beklenen 0) · 8 !== 0 (beklenen 0, gelen 8)"
+    },
+    {
+      "ad": "2.4.9 B2 — elle toplu WhatsApp alıcı listesi kartın eleme çekirdeğiyle (davranış aynen) › BİLİNÇLİ TEK FARK (§13 b, İLKEYLE): kartın bir ekran eki (fatura kalanları) hata verirse kişi alıcı listesinden sessizce DÜŞMEZ, kendi bakiyesiyle görünür",
+      "konum": "test/whatsapp-elle-alici-249.test.mjs:264:3",
+      "hata": "ekran eki hata verince kişi alıcı listesinden sessizce düşüyor (beklenen: listede, kendi bakiyesiyle — ilke 4 çıkmaz yok)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a95435e4eb1b4db61/docs/kanit/2026-11-03/b2/eski-e3f74093-whatsapp-elle-alici-249.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/eski-e3f74093",
+  "ham_cikti_sha256": "cffd3ebad0fdd71e28d510173984bc43578a591de8350289423391b8f0da89fb",
+  "ham_cikti_bayt": 5911
+}

@@ -1,0 +1,22 @@
+# --- taban (cari {"toplam":3021,"telefonlu":3014,"secilen":2000}; yeni a9f0b84a4b753ab8495e8db13c33a53bdff08d3d, eski e3f74093)
+ok 1 - taban ekstreBuAy2000 alıcı 2000: ESKİ 24870/24594/24651 ; 25124/24911/24910 | YENİ 1002/799/788 ; 969/754/816 | bütçe ≤ 2000 ms
+ok 2 - taban ekstreGecenAy2000 alıcı 2000: ESKİ 28658/28371/28427 ; 26094/25752/25874 | YENİ 971/719/747 ; 1108/824/886 | bütçe ≤ 2000 ms
+ok 3 - taban ekstreSon3Ay2000 alıcı 2000: ESKİ 26691/26496/26468 ; 24436/24244/24220 | YENİ 834/636/615 ; 848/652/632 | bütçe ≤ 2000 ms
+ok 4 - taban ekstreTum2000 alıcı 2000: ESKİ 25657/25401/25402 ; 26275/26005/26041 | YENİ 985/769/748 ; 1012/781/785 | bütçe ≤ 2000 ms
+ok 5 - taban mesaj2000 alıcı 2000: ESKİ 26380/26126/26167 ; 25281/25087/25063 | YENİ 845/625/637 ; 769/564/560 | bütçe ≤ 2000 ms
+ok 6 - taban tumuneEkstreHepsi alıcı 3021: ESKİ 38921/38694/38711 ; 38902/38694/38725 | YENİ 1543/1234/1315 ; 1404/1136/1182 | bütçe ≤ 3000 ms
+ok 7 - taban tumuneMesajAktif alıcı 2986: ESKİ 37513/37301/37296 ; 36394/36183/36179 | YENİ 1223/1031/1007 ; 1280/1086/1076 | bütçe ≤ 3000 ms
+# --- bes-bin (cari {"toplam":5000,"telefonlu":4993,"secilen":2000}; yeni a9f0b84a4b753ab8495e8db13c33a53bdff08d3d, eski e3f74093)
+ok 8 - bes-bin tumuneEkstreHepsi5000 alıcı 5000: ESKİ 66927/66858/66660 ; 68938/68879/68679 | YENİ 2389/1933/2121 ; 2015/1549/1709 | bütçe ≤ 5000 ms
+ok 9 - bes-bin tumuneMesajHepsi5000 alıcı 5000: ESKİ 67656/67575/67372 ; 68737/68716/68515 | YENİ 1784/1455/1543 ; 1809/1538/1589 | bütçe ≤ 5000 ms
+# --- gecmis (cari {"toplam":3021,"telefonlu":3014,"secilen":2000}; yeni a9f0b84a4b753ab8495e8db13c33a53bdff08d3d, eski e3f74093)
+ok 10 - gecmis ekstreBuAy2000 alıcı 2000: ESKİ 27308/27032/27087 ; 27142/26883/26918 | YENİ 809/631/594 ; 913/716/698 | bütçe ≤ 2500 ms
+ok 11 - gecmis ekstreTum2000 alıcı 2000: ESKİ 29960/29713/29703 ; 25290/24883/25103 | YENİ 1054/841/824 ; 1130/876/905 | bütçe ≤ 2500 ms
+ok 12 - gecmis mesaj2000 alıcı 2000: ESKİ 23823/23550/23613 ; 22119/21929/21940 | YENİ 950/741/738 ; 882/672/712 | bütçe ≤ 2500 ms
+# --- iade (cari {"toplam":4021,"telefonlu":4014,"secilen":2000}; yeni a9f0b84a4b753ab8495e8db13c33a53bdff08d3d, eski e3f74093)
+not ok 13 - iade ekstreBuAy2000 alıcı 2000: ESKİ 44996/44765/44777 | YENİ 10916/10543/10688 ; 10565/10212/10335 | bütçe ≤ 2000 ms AŞIM 2/2
+not ok 14 - iade tumuneEkstreHepsi alıcı 4021: ESKİ 107923/107858/107656 | YENİ 18882/18564/18656 ; 19411/19048/19104 | bütçe ≤ 3000 ms AŞIM 2/2
+1..14
+# tests 14
+# pass 12
+# fail 2

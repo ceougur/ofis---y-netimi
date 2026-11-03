@@ -1,0 +1,43 @@
+{
+  "ad": "b2/olcum/olcum-tablo",
+  "komut": "node test/b2-249/olcum-tablo.mjs docs/kanit/2026-11-03/b2/olcum",
+  "commit": "a9f0b84a4b753ab8495e8db13c33a53bdff08d3d",
+  "dal": "worktree-agent-a95435e4eb1b4db61",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:27:11.596Z",
+  "sure_sn": 0,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 12,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "iade ekstreBuAy2000 alıcı 2000: ESKİ 44996/44765/44777 | YENİ 10916/10543/10688 ; 10565/10212/10335 | bütçe ≤ 2000 ms AŞIM 2/2",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "iade tumuneEkstreHepsi alıcı 4021: ESKİ 107923/107858/107656 | YENİ 18882/18564/18656 ; 19411/19048/19104 | bütçe ≤ 3000 ms AŞIM 2/2",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/b2/olcum/olcum-tablo.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a95435e4eb1b4db61",
+  "ham_cikti_sha256": "1d1bbbc6625d23871ace2f5ec8b001d093ad7c66c7dfcac112df27a233e99226",
+  "ham_cikti_bayt": 2610
+}
