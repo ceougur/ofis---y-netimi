@@ -1,0 +1,43 @@
+{
+  "ad": "b3/mutasyon-M5",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-b3-buyume-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-b3-goc-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:01:36.492Z",
+  "sure_sn": 48,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 12,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok › T5 Şirket Verisini Sıfırla (Tüm Hareketleri Sil), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır",
+      "konum": "test/whatsapp-b3-pdf-249.test.mjs:130:5",
+      "hata": "sıfırlama PDF'i de sildi (bakım beklenmeden) · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok › T5 Şirket Verisini Sıfırla (Tümünü Sıfırla), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır",
+      "konum": "test/whatsapp-b3-pdf-249.test.mjs:130:5",
+      "hata": "sıfırlama PDF'i de sildi (bakım beklenmeden) · 1 !== 0 (beklenen 0, gelen 1)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a972c155e62a73ec3/docs/kanit/2026-11-03/b3/mutasyon-M5.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M5-f71e1e8b",
+  "ham_cikti_sha256": "3b9a256da366a62f967f842b8e909f9e329b91668a00fc03cf095d17b6604c5f",
+  "ham_cikti_bayt": 8796
+}

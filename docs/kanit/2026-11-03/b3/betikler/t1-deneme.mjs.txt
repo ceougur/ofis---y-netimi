@@ -1,0 +1,39 @@
+// B3 T1 ön denemesi (not defteri; depoya girmez): kod kökü argümanla (eski kopya ya da worktree). Tur başına sayfa / boşluk sayıları.
+// Kullanım: HUKUK_LICENSE_URL=http://127.0.0.1:9 node t1-deneme.mjs <kod kökü> <kişi> <tur>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, kisi = "200", tur = "10"] = process.argv.slice(2);
+if (process.env.HUKUK_LICENSE_URL !== "http://127.0.0.1:9") throw new Error("ders 30");
+const { startWa } = await import(pathToFileURL(path.join(root, "test/whatsapp-248-ortak.mjs")).href);
+const ctx = await startWa();
+ctx.fake.state.tier = "TIER_2K";
+const ids = [];
+const t0 = performance.now();
+for (let i = 0; i < Number(kisi); i += 1) ids.push((await ctx.account(`Büyüme ${i}`, `0554 100 ${String(Math.floor(i / 100)).padStart(2, "0")} ${String(i % 100).padStart(2, "0")}`, 100 + i)).id);
+console.log("cari", Math.round(performance.now() - t0), "ms");
+const st = () => {
+  const g = sql => ctx.store.get(sql);
+  const w = g("SELECT COUNT(*) AS sayfa, SUM(pgsize) AS bayt, SUM(unused) AS bos, SUM(payload) AS yuk FROM dbstat WHERE name = 'wa_jobs'");
+  let p = null;
+  try {
+    p = g("SELECT COUNT(*) AS sayfa, SUM(pgsize) AS bayt, SUM(unused) AS bos FROM dbstat WHERE name = 'wa_job_pdfs'");
+  } catch {
+    p = null;
+  }
+  return { page: g("PRAGMA page_count").page_count, free: g("PRAGMA freelist_count").freelist_count, w, p, jobs: g("SELECT COUNT(*) AS n FROM wa_jobs").n, pdfRows: (() => { try { return g("SELECT COUNT(*) AS n FROM wa_job_pdfs").n; } catch { return null; } })(), blob: g("SELECT COUNT(*) AS n, COALESCE(SUM(LENGTH(pdf_blob)),0) AS b FROM wa_jobs WHERE pdf_blob IS NOT NULL") };
+};
+let onceki = st();
+console.log("baş", JSON.stringify(onceki));
+for (let t = 1; t <= Number(tur); t += 1) {
+  const r = await ctx.batch({ kind: "statement", ids, preset: "thisMonth", sendAgain: true });
+  if (r.status !== 200) throw new Error(`${r.status} ${JSON.stringify(r.data).slice(0, 300)}`);
+  const a = performance.now();
+  const n = await ctx.drain({ max: 100_000 });
+  const ms = performance.now() - a;
+  const s = st();
+  const sizes = ctx.fake.requests.filter(x => x.method === "POST" && /\/media$/.test(x.path) && x.media).slice(-3).map(x => x.media.size || ctx.fake.state.media.get(x.media.id)?.data?.length);
+  console.log(`tur ${t}: iş ${n} ${Math.round(ms / Math.max(1, n))} ms/iş; sayfa +${s.page - onceki.page} (${s.page}); boş liste ${s.free}; wa_jobs bayt ${s.w.bayt} boş ${s.w.bos} yük ${s.w.yuk}; pdf tablo ${JSON.stringify(s.p)} satır ${s.pdfRows}; blob ${JSON.stringify(s.blob)}; pdf boyu ${JSON.stringify(sizes)}`);
+  onceki = s;
+  ctx.clock.advance(60_000);
+}
+await ctx.close();

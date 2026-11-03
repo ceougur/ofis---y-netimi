@@ -1,0 +1,22 @@
+// B3 mutasyonları (not defteri): ayrı kopyada (git archive) tek bir hatayı enjekte eder; değişiklik gerçekten uygulandı mı denetler.
+// Kullanım: node mutasyon.mjs <kopya kökü> <M1..M7>
+import { readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+const [root, id] = process.argv.slice(2);
+const MUT = {
+  M1: ["server/lib/whatsapp/queue.mjs", /\n\s*store\.run\(`DELETE FROM wa_job_pdfs WHERE NOT EXISTS[^\n]*\n/, "\n", "bakım DELETE kaldırıldı"],
+  M2: ["server/lib/whatsapp/queue.mjs", "      store.tx(() => {\n        updateJob(job.id, { prepared_at: preparedAt", "      (fn => fn())(() => {\n        updateJob(job.id, { prepared_at: preparedAt", "prepare() store.tx kaldırıldı"],
+  M3: ["server/lib/migrations.mjs", /\n\s*store\.run\("INSERT OR IGNORE INTO wa_job_pdfs[^\n]*\n/, "\n", "göçte INSERT kaldırıldı"],
+  M4: ["server/lib/whatsapp/queue.mjs", "AND j.state IN (${OPEN_JOB.map(() => \"?\").join(\",\")}))`, ...OPEN_JOB);", "AND j.state <> 'accepted')`);", "bakımda OPEN_JOB yerine state <> 'accepted'"],
+  M5: ["server/app.mjs", "\"message_sends\", \"wa_job_pdfs\", \"wa_jobs\"", "\"message_sends\", \"wa_jobs\"", "MOVEMENT_TABLES'tan wa_job_pdfs çıkarıldı"],
+  M6: ["server/lib/whatsapp/queue.mjs", "let pdf = frozenPdf ? Buffer.from(frozenPdf) : null;", "let pdf = null;", "prepare() dondurulmuş PDF'i okumuyor"],
+  M7: ["server/lib/migrations.mjs", /\n\s*store\.run\("UPDATE wa_jobs SET pdf_blob = NULL WHERE pdf_blob IS NOT NULL"\);\n/, "\n", "göçte pdf_blob boşaltma kaldırıldı"],
+};
+const [rel, from, to, label] = MUT[id] || [];
+if (!rel) throw new Error(`bilinmeyen mutasyon ${id}`);
+const file = path.join(root, rel);
+const before = readFileSync(file, "utf8");
+const after = before.replace(from, to);
+if (after === before) throw new Error(`${id}: mutasyon uygulanamadı (${label})`);
+writeFileSync(file, after);
+console.log(`${id}: ${label} (${rel}, ${before.length - after.length} karakter fark)`);

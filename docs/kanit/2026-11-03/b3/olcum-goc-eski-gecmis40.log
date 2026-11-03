@@ -1,0 +1,13 @@
+20:06:15 statik {"dosyaMb":434.2,"surum":44,"sayfaBoyu":4096,"sayfa":111166,"bosListe":11636,"bosListeMb":45.5,"wa_jobs":{"sayfa":44995,"mb":175.8,"bosMb":124.8,"yukMb":49.7},"wa_job_pdfs":null,"tumDosya":{"mb":388.8,"bosMb":144,"yukMb":234.4},"isSatiri":80126,"satirdaPdf":{"n":1,"b":33320},"pdfTablosu":null,"sayimMs":407,"vacuumInto":{"ms":1118,"mb":259.8}}
+20:06:16 göç {"from":44,"to":44,"applied":[],"toplamMs":1,"adimlar":[],"yedek":null} {"dosyaMb":434.2,"surum":44,"sayfaBoyu":4096,"sayfa":111166,"bosListe":11636,"bosListeMb":45.5,"wa_jobs":{"sayfa":44995,"mb":175.8,"bosMb":124.8,"yukMb":49.7},"wa_job_pdfs":null,"tumDosya":{"mb":388.8,"bosMb":144,"yukMb":234.4},"isSatiri":80126,"satirdaPdf":{"n":1,"b":33320},"pdfTablosu":null}
+20:06:24 açılış {"ms":6194,"olayDongusuEnCokMs":6224.3,"surum":44} bakım [{"ms":217,"olayDongusuEnCokMs":14.3},{"ms":189,"olayDongusuEnCokMs":16},{"ms":206,"olayDongusuEnCokMs":12.1},{"ms":203,"olayDongusuEnCokMs":12.3},{"ms":177,"olayDongusuEnCokMs":11.8}]
+ok 1 - statik sayım
+ok 2 - açılış ve 5 bakım turu
+ok 3 - göç koştu
+1..3
+# tests 3
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

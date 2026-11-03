@@ -1,0 +1,48 @@
+{
+  "ad": "b3/mutasyon-M6",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-b3-buyume-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-b3-goc-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:02:25.811Z",
+  "sure_sn": 43,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 11,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45) › T3 güncelleme: yeni programla açılınca PDF'ler wa_job_pdfs'e AYNI baytlarla taşınır, satır boşalır; bakım kesinleşeni siler; 31 gün sonra Devam Et AYNI PDF'i gönderir; ikinci açılışta göç yok",
+      "konum": "test/whatsapp-b3-goc-249.test.mjs:117:3",
+      "hata": "Meta'ya bir kez A'nın v2.4.8'de dondurulmuş PDF'i (sha aynı) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok › T2 eşdeğerlik: 131056 → Bağlantı Bekleniyor → Duraklat → 31 gün → Devam Et (arada bakım turları, tahsilat): PDF iki kez yüklenir, BAYT BAYT aynı; ileti ilk hazırlığın bakiyesiyle",
+      "konum": "test/whatsapp-b3-pdf-249.test.mjs:59:3",
+      "hata": "yeniden yüklenen PDF ilk hazırlıktakiyle BAYT BAYT aynı (dondurulmuş) · + actual - expected · + '379bf763d410774024c7ba048d43a462b91ce4ed06958deb0f62023026c637d2' (beklenen 59ff10937b8da8a9a34e81c12c934399d667191ad58e4acea0d588cfb4631987, gelen 379bf763d410774024c7ba048d43a462b91ce4ed06958deb0f62023026c637d2)"
+    },
+    {
+      "ad": "2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok › T9 iki şirket: 001'in Duraklatıldı işinin PDF'i 002'nin gönderimi + bakımından etkilenmez; 002'nin PDF'i kendi dosyasında, kabulden sonra silinir; 31 gün sonra 001 AYNI baytları gönderir",
+      "konum": "test/whatsapp-b3-pdf-249.test.mjs:242:3",
+      "hata": "001 dondurulmuş baytları gönderdi · + actual - expected · + 'f7750a9eeb17ec01dc11a31bf9919c03f3d746b7b85653a2737fdfc97b4f17e0' (beklenen 59ff10937b8da8a9a34e81c12c934399d667191ad58e4acea0d588cfb4631987, gelen f7750a9eeb17ec01dc11a31bf9919c03f3d746b7b85653a2737fdfc97b4f17e0)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a972c155e62a73ec3/docs/kanit/2026-11-03/b3/mutasyon-M6.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M6-f71e1e8b",
+  "ham_cikti_sha256": "ac66235fd898b1723838d858078db119cd458aa33630d8699f7cd1a79553279a",
+  "ham_cikti_bayt": 11225
+}

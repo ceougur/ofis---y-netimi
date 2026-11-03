@@ -1,0 +1,75 @@
+{
+  "commit": "git yok (/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093)",
+  "kok": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093",
+  "node": "v22.22.0",
+  "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-olcum/once",
+  "goc": false,
+  "basladi": "2026-11-03T20:00:39.116Z",
+  "statik": {
+    "dosyaMb": 274.7,
+    "surum": 44,
+    "sayfaBoyu": 4096,
+    "sayfa": 70327,
+    "bosListe": 13124,
+    "bosListeMb": 51.3,
+    "wa_jobs": {
+      "sayfa": 8008,
+      "mb": 31.3,
+      "bosMb": 18,
+      "yukMb": 13
+    },
+    "wa_job_pdfs": null,
+    "tumDosya": {
+      "mb": 223.4,
+      "bosMb": 34.8,
+      "yukMb": 180.3
+    },
+    "isSatiri": 20023,
+    "satirdaPdf": {
+      "n": 0,
+      "b": 0
+    },
+    "pdfTablosu": null,
+    "sayimMs": 164,
+    "vacuumInto": {
+      "ms": 977,
+      "mb": 197.5
+    }
+  },
+  "acilis": {
+    "ms": 5830,
+    "olayDongusuEnCokMs": 5859.4,
+    "surum": 44
+  },
+  "bakim": [
+    {
+      "ms": 200,
+      "olayDongusuEnCokMs": 19
+    },
+    {
+      "ms": 154,
+      "olayDongusuEnCokMs": 14.6
+    },
+    {
+      "ms": 198,
+      "olayDongusuEnCokMs": 20.2
+    },
+    {
+      "ms": 169,
+      "olayDongusuEnCokMs": 14.3
+    },
+    {
+      "ms": 144,
+      "olayDongusuEnCokMs": 15.2
+    }
+  ],
+  "acilisSonrasiDosyalar": {
+    "destekofis.sqlite": 274.7,
+    "e-belge-kullanim.sqlite": 0,
+    "sirketler/002/destekofis.sqlite": 23.3,
+    "sirketler/002/destekofis.sqlite-shm": 0,
+    "sirketler/002/destekofis.sqlite-wal": 0,
+    "whatsapp-gonderim.sqlite": 29.1
+  },
+  "bitti": "2026-11-03T20:00:49.673Z"
+}

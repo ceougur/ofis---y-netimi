@@ -1,0 +1,2163 @@
+TAP version 13
+# \# B3 T1 ölçüm: [[1,1664,122880,14287,0],[2,52,241664,24337,0],[3,49,356352,30307,0],[4,45,475136,40357,0],[5,45,593920,50407,0],[6,50,708608,56377,0],[7,43,827392,66427,0],[8,52,946176,76477,0],[9,51,1060864,82447,0],[10,44,1179648,92497,0]]
+# Subtest: 2.4.9 B3 T1 — toplu gönderimler şirket dosyasında kalıcı boşluk bırakmaz
+    # Subtest: 10 tur × 200 ekstre (kabul + bakım): wa_jobs sayfa içi boş ≤ %10, bakımdan sonra wa_job_pdfs 0, tur başına sayfa artışı sabit
+    ok 1 - 10 tur × 200 ekstre (kabul + bakım): wa_jobs sayfa içi boş ≤ %10, bakımdan sonra wa_job_pdfs 0, tur başına sayfa artışı sabit
+      ---
+      duration_ms: 31901.555627
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.4.9 B3 T1 — toplu gönderimler şirket dosyasında kalıcı boşluk bırakmaz
+  ---
+  duration_ms: 31902.874341
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45)
+    # Subtest: fikstür v2.4.8'in ürettiği gibi: 002 v44, A Duraklatıldı + B kabul (bakımsız) PDF'leri satırda, C'nin PDF'i silinmiş; yedekte aynısı
+    ok 1 - fikstür v2.4.8'in ürettiği gibi: 002 v44, A Duraklatıldı + B kabul (bakımsız) PDF'leri satırda, C'nin PDF'i silinmiş; yedekte aynısı
+      ---
+      duration_ms: 26.175633
+      type: 'test'
+      ...
+    # Subtest: T3 güncelleme: yeni programla açılınca PDF'ler wa_job_pdfs'e AYNI baytlarla taşınır, satır boşalır; bakım kesinleşeni siler; 31 gün sonra Devam Et AYNI PDF'i gönderir; ikinci açılışta göç yok
+    not ok 2 - T3 güncelleme: yeni programla açılınca PDF'ler wa_job_pdfs'e AYNI baytlarla taşınır, satır boşalır; bakım kesinleşeni siler; 31 gün sonra Devam Et AYNI PDF'i gönderir; ikinci açılışta göç yok
+      ---
+      duration_ms: 397.532166
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b/test/whatsapp-b3-goc-249.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        wa_jobs.pdf_blob boşaltıldı
+        
+        2 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b/test/whatsapp-b3-goc-249.test.mjs:126:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3 yarıda kalmış göç: tablo var + bir PDF taşınmış ama şema 44 (kesinti) → yeniden açılış göçü tamamlar; taşınmış satır korunur, eksik eklenir
+    not ok 3 - T3 yarıda kalmış göç: tablo var + bir PDF taşınmış ama şema 44 (kesinti) → yeniden açılış göçü tamamlar; taşınmış satır korunur, eksik eklenir
+      ---
+      duration_ms: 248.700688
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b/test/whatsapp-b3-goc-249.test.mjs:155:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        2 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b/test/whatsapp-b3-goc-249.test.mjs:168:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geri yükleme: v2.4.8'de alınmış yedek (v44, A'nın PDF'i satırda) yeni programa geri yüklenince göç v45 yedek dosyasında koşar; eski toplu iş durur (§7a 26), bakım PDF'leri siler, ileti gitmez
+    not ok 4 - T4 geri yükleme: v2.4.8'de alınmış yedek (v44, A'nın PDF'i satırda) yeni programa geri yüklenince göç v45 yedek dosyasında koşar; eski toplu iş durur (§7a 26), bakım PDF'leri siler, ileti gitmez
+      ---
+      duration_ms: 424.296892
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b/test/whatsapp-b3-goc-249.test.mjs:175:3'
+      failureType: 'testCodeFailure'
+      error: 'ön koşul: canlıda PDF kalmadı ({}, satırda 2)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b/test/whatsapp-b3-goc-249.test.mjs:186:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 Ayır: paylaşılan 002 dosyası ayrılınca kopya (VACUUM INTO) wa_job_pdfs'i aynı baytlarla taşır
+    ok 5 - T4 Ayır: paylaşılan 002 dosyası ayrılınca kopya (VACUUM INTO) wa_job_pdfs'i aynı baytlarla taşır
+      ---
+      duration_ms: 768.072825
+      type: 'test'
+      ...
+    1..5
+not ok 2 - 2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45)
+  ---
+  duration_ms: 1866.661713
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b/test/whatsapp-b3-goc-249.test.mjs:99:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok
+    # Subtest: T2 eşdeğerlik: 131056 → Bağlantı Bekleniyor → Duraklat → 31 gün → Devam Et (arada bakım turları, tahsilat): PDF iki kez yüklenir, BAYT BAYT aynı; ileti ilk hazırlığın bakiyesiyle
+    ok 1 - T2 eşdeğerlik: 131056 → Bağlantı Bekleniyor → Duraklat → 31 gün → Devam Et (arada bakım turları, tahsilat): PDF iki kez yüklenir, BAYT BAYT aynı; ileti ilk hazırlığın bakiyesiyle
+      ---
+      duration_ms: 671.492834
+      type: 'test'
+      ...
+    # Subtest: T2b yaşam döngüsü: A 131056 (Bekliyor), B 131026 (Başarısız), C kabul → bakım yalnız A'nınkini tutar; Duraklat'ta durur; İptal Et → bakım siler (eski kodla aynı sayılar)
+    ok 2 - T2b yaşam döngüsü: A 131056 (Bekliyor), B 131026 (Başarısız), C kabul → bakım yalnız A'nınkini tutar; Duraklat'ta durur; İptal Et → bakım siler (eski kodla aynı sayılar)
+      ---
+      duration_ms: 511.382625
+      type: 'test'
+      ...
+    # Subtest: T5 Şirket Verisini Sıfırla (Tüm Hareketleri Sil), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+    ok 3 - T5 Şirket Verisini Sıfırla (Tüm Hareketleri Sil), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+      ---
+      duration_ms: 519.335234
+      type: 'test'
+      ...
+    # Subtest: T5 Şirket Verisini Sıfırla (Tümünü Sıfırla), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+    ok 4 - T5 Şirket Verisini Sıfırla (Tümünü Sıfırla), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+      ---
+      duration_ms: 555.450488
+      type: 'test'
+      ...
+    # Subtest: T6 yarıda kesilme: PDF yazımı (disk dolu) düşerse işin satırı da geri alınır — prepared_at boş, değişken yok; sonraki tur temiz hazırlar, PDF bir kez gider
+    ok 5 - T6 yarıda kesilme: PDF yazımı (disk dolu) düşerse işin satırı da geri alınır — prepared_at boş, değişken yok; sonraki tur temiz hazırlar, PDF bir kez gider
+      ---
+      duration_ms: 418.678875
+      type: 'test'
+      ...
+    # Subtest: T7 kilit: bakımın PDF silmesi kilide takılınca tur bırakılır (İş N / O1), iş ve defter değişmez; kilit kalkınca sonraki bakım siler
+    ok 6 - T7 kilit: bakımın PDF silmesi kilide takılınca tur bırakılır (İş N / O1), iş ve defter değişmez; kilit kalkınca sonraki bakım siler
+      ---
+      duration_ms: 431.675213
+      type: 'test'
+      ...
+    # Subtest: T8 kaynak tarama: wa_jobs.pdf_blob yalnız göç dosyasında anılır (yazım da okuma da yok; CRLF bilen)
+    not ok 7 - T8 kaynak tarama: wa_jobs.pdf_blob yalnız göç dosyasında anılır (yazım da okuma da yok; CRLF bilen)
+      ---
+      duration_ms: 76.568413
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b/test/whatsapp-b3-pdf-249.test.mjs:220:3'
+      failureType: 'testCodeFailure'
+      error: "göç v45 PDF'i taşır ve sütunu boşaltır"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        // Veritabanı şema sürümleme. PRAGMA user_version = uygulanan son göç numarası.
+        // Kural: göçler mümkün olduğunca EKLEYİCİ olur (sütun/tablo/indeks ekleme, veri normalleştirme). Bir göç mevcut
+        // kayıtları yeniden anahtarlıyorsa (göç 4) geri dönüş, güncelleme öncesi alınan tam yedeğe dönülerek yapılır:
+        // güncelleme düzeni yeni sürüm açılamazsa şema sürümü değiştiği için veritabanını kendiliğinden yedekten geri yükler.
+        import { randomUUID } from "node:crypto";
+        import { createBackup } from "./backup.mjs";
+        import { migrateBankGrants } from "./bank/grants.mjs";
+        import { systemClock } from "./clock.mjs";
+        import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
+        import { rowHash, rowIdentities } from "./dataset-identity.mjs";
+        import { parseJson } from "./http.mjs";
+        import { isFullDate } from "./insight/validators.mjs";
+        import { mergeFloor } from "./number-floor.mjs";
+        import { verifyPassword } from "./passwords.mjs";
+        import { unitLabel } from "./units.mjs";
+        
+        const columnExists = (store, table, column) => store.all(`PRAGMA table_info(${table})`).some(item => item.name === column);
+        const addColumn = (store, table, column, definition) => {
+          if (!columnExists(store, table, column)) store.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+        };
+        
+        export const MIGRATIONS = [
+          {
+            version: 1,
+            name: "v1.0.0 temel şema",
+            up(store) {
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS users (
+                  id TEXT PRIMARY KEY,
+                  username TEXT NOT NULL UNIQUE,
+                  display_name TEXT NOT NULL,
+                  role TEXT NOT NULL CHECK(role IN ('admin','avukat','personel','muhasebe')),
+                  password_hash TEXT NOT NULL,
+                  active INTEGER NOT NULL DEFAULT 1,
+                  created_at TEXT NOT NULL,
+                  updated_at TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS sessions (
+                  token_hash TEXT PRIMARY KEY,
+                  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                  expires_at TEXT NOT NULL,
+                  created_at TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS records (
+                  id TEXT PRIMARY KEY,
+                  source_name TEXT NOT NULL,
+                  case_key TEXT NOT NULL,
+                  values_json TEXT NOT NULL,
+                  version INTEGER NOT NULL DEFAULT 1,
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_at TEXT NOT NULL,
+                  UNIQUE(source_name, case_key)
+                );
+                CREATE TABLE IF NOT EXISTS overrides (
+                  id TEXT PRIMARY KEY,
+                  source_name TEXT NOT NULL,
+                  case_key TEXT NOT NULL,
+                  field TEXT NOT NULL,
+                  value TEXT NOT NULL,
+                  version INTEGER NOT NULL DEFAULT 1,
+                  updated_by TEXT NOT NULL,
+                  updated_at TEXT NOT NULL,
+                  UNIQUE(source_name, case_key, field)
+                );
+                CREATE TABLE IF NOT EXISTS deleted_records (
+                  id TEXT PRIMARY KEY,
+                  source_name TEXT NOT NULL,
+                  case_key TEXT NOT NULL,
+                  deleted_by TEXT NOT NULL,
+                  deleted_at TEXT NOT NULL,
+                  UNIQUE(source_name, case_key)
+                );
+                CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY, case_key TEXT NOT NULL, note TEXT NOT NULL, created_by TEXT NOT NULL, created_at TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS phones (id TEXT PRIMARY KEY, case_key TEXT NOT NULL, phone TEXT NOT NULL, label TEXT NOT NULL, created_by TEXT NOT NULL, created_at TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS payments (id TEXT PRIMARY KEY, case_key TEXT NOT NULL, amount REAL NOT NULL, date TEXT NOT NULL, note TEXT NOT NULL, created_by TEXT NOT NULL, created_at TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS liens (id TEXT PRIMARY KEY, case_key TEXT NOT NULL, title TEXT NOT NULL, placed_at TEXT NOT NULL, expires_at TEXT NOT NULL, status TEXT NOT NULL, created_by TEXT NOT NULL, created_at TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS tasks (id TEXT PRIMARY KEY, title TEXT NOT NULL, case_key TEXT NOT NULL, assignee TEXT NOT NULL, due_date TEXT NOT NULL, priority TEXT NOT NULL, status TEXT NOT NULL, created_by TEXT NOT NULL, created_at TEXT NOT NULL, completed_at TEXT, completed_by TEXT);
+                CREATE TABLE IF NOT EXISTS messages (id TEXT PRIMARY KEY, recipient TEXT NOT NULL, message TEXT NOT NULL, case_key TEXT NOT NULL, created_by TEXT NOT NULL, created_at TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS audit_events (id TEXT PRIMARY KEY, type TEXT NOT NULL, entity_id TEXT NOT NULL, actor_id TEXT NOT NULL, actor_name TEXT NOT NULL, payload_json TEXT NOT NULL, created_at TEXT NOT NULL);
+                CREATE INDEX IF NOT EXISTS idx_audit_created_at ON audit_events(created_at);
+                CREATE INDEX IF NOT EXISTS idx_records_source ON records(source_name);
+              `);
+            },
+          },
+          {
+            version: 2,
+            name: "v1.1.0 güvenlik, merkezi notlar ve Excel kaynakları",
+            up(store) {
+              addColumn(store, "users", "must_change_password", "INTEGER NOT NULL DEFAULT 0");
+              addColumn(store, "users", "last_login_at", "TEXT");
+              addColumn(store, "users", "password_changed_at", "TEXT");
+              addColumn(store, "settings", "updated_by", "TEXT");
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS case_notes (
+                  case_key TEXT PRIMARY KEY,
+                  note TEXT NOT NULL,
+                  version INTEGER NOT NULL DEFAULT 1,
+                  updated_by TEXT NOT NULL,
+                  updated_at TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS source_snapshots (
+                  id TEXT PRIMARY KEY,
+                  source_key TEXT NOT NULL UNIQUE,
+                  file_name TEXT NOT NULL,
+                  tabs_json TEXT NOT NULL,
+                  rows_json TEXT NOT NULL,
+                  row_count INTEGER NOT NULL,
+                  size_bytes INTEGER NOT NULL,
+                  uploaded_by TEXT NOT NULL,
+                  uploaded_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_case_notes_updated ON case_notes(updated_at);
+                CREATE INDEX IF NOT EXISTS idx_notes_case ON notes(case_key);
+                CREATE INDEX IF NOT EXISTS idx_phones_case ON phones(case_key);
+                CREATE INDEX IF NOT EXISTS idx_payments_case ON payments(case_key);
+                CREATE INDEX IF NOT EXISTS idx_liens_case ON liens(case_key);
+                CREATE INDEX IF NOT EXISTS idx_liens_status_expires ON liens(status, expires_at);
+                CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
+                CREATE INDEX IF NOT EXISTS idx_overrides_source_case ON overrides(source_name, case_key);
+                CREATE INDEX IF NOT EXISTS idx_deleted_source ON deleted_records(source_name);
+                CREATE INDEX IF NOT EXISTS idx_messages_created ON messages(created_at);
+                CREATE INDEX IF NOT EXISTS idx_audit_actor ON audit_events(actor_id);
+                CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
+                CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
+              `);
+              // Hâlâ varsayılan parolayı kullanan yöneticiler ilk girişte parola değiştirmek zorunda kalır.
+              for (const user of store.all("SELECT id, password_hash FROM users WHERE role = 'admin'")) {
+                if (verifyPassword(DEFAULT_ADMIN_PASSWORD, user.password_hash)) store.run("UPDATE users SET must_change_password = 1 WHERE id = ?", user.id);
+              }
+              // v1.0.0 tamamlanan görevlerde görünen adı saklıyordu; artık kullanıcı kimliği saklanır.
+              store.exec(`
+                UPDATE tasks SET completed_by = (SELECT u.id FROM users u WHERE u.display_name = tasks.completed_by LIMIT 1)
+                WHERE completed_by IS NOT NULL AND completed_by NOT LIKE 'user-%'
+                  AND EXISTS (SELECT 1 FROM users u WHERE u.display_name = tasks.completed_by);
+              `);
+            },
+          },
+          {
+            version: 3,
+            name: "v1.4.0 ofis içi sohbet",
+            up(store) {
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS chat_conversations (
+                  id TEXT PRIMARY KEY,
+                  kind TEXT NOT NULL CHECK (kind IN ('office', 'direct')),
+                  direct_key TEXT UNIQUE,
+                  title TEXT,
+                  created_at TEXT NOT NULL,
+                  last_message_at TEXT
+                );
+                CREATE TABLE IF NOT EXISTS chat_members (
+                  conversation_id TEXT NOT NULL,
+                  user_id TEXT NOT NULL,
+                  joined_at TEXT NOT NULL,
+                  last_read_at TEXT,
+                  PRIMARY KEY (conversation_id, user_id)
+                );
+                CREATE TABLE IF NOT EXISTS chat_messages (
+                  id TEXT PRIMARY KEY,
+                  conversation_id TEXT NOT NULL,
+                  sender_id TEXT NOT NULL,
+                  body TEXT NOT NULL,
+                  case_key TEXT,
+                  created_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_chat_messages_conversation ON chat_messages(conversation_id, created_at);
+                CREATE INDEX IF NOT EXISTS idx_chat_members_user ON chat_members(user_id);
+              `);
+              const timestamp = new Date().toISOString();
+              store.run("INSERT OR IGNORE INTO chat_conversations (id, kind, title, created_at) VALUES ('conversation-office', 'office', 'Ofis geneli', ?)", timestamp);
+              // Adla kişi bulma (bu göçe sabitlenmiş kopya): önce görünen ad (aktif hesaplar öncelikli), yoksa kullanıcı adı;
+              // birden çok aday varsa (eski kurulumlarda aynı adlı iki hesap olabilir) kimse seçilmez.
+              const fold = value => String(value ?? "").normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("tr-TR");
+              const users = store.all("SELECT id, username, display_name, active FROM users");
+              const resolve = value => {
+                const wanted = fold(value);
+                if (!wanted) return null;
+                const single = list => (list.length === 1 ? list[0].id : null);
+                const byName = users.filter(user => fold(user.display_name) === wanted);
+                if (byName.length) return single(byName.filter(user => user.active).length ? byName.filter(user => user.active) : byName);
+                return single(users.filter(user => fold(user.username) === wanted));
+              };
+              // Görevin kime atandığı artık kullanıcı kimliğiyle de tutulur: ad değişse de görev kişide kalır ve başkası
+              // adını değiştirerek o görevi göremez. Kişiye bağlanamayan (serbest yazılmış) görevlerde ad eşleşmesi sürer.
+              addColumn(store, "tasks", "assignee_id", "TEXT");
+              for (const task of store.all("SELECT id, assignee FROM tasks WHERE assignee_id IS NULL")) {
+                const assigneeId = resolve(task.assignee);
+                if (assigneeId) store.run("UPDATE tasks SET assignee_id = ? WHERE id = ?", assigneeId, task.id);
+              }
+              store.exec("CREATE INDEX IF NOT EXISTS idx_tasks_assignee ON tasks(assignee_id)");
+              // Eski "Mesajlar" kayıtları sohbete taşınır: alıcı adı tek bir kullanıcıya denk geliyorsa özel yazışmaya,
+              // gelmiyorsa (veya belirsizse) "→ ad:" önekiyle ofis kanalına; eski ekranda da herkes görüyordu.
+              // Eski tablo silinmez (geri dönüşte eski sürüm onu okur).
+              const directs = new Map();
+              for (const row of store.all("SELECT * FROM messages ORDER BY created_at")) {
+                const target = resolve(row.recipient);
+                let conversationId = "conversation-office";
+                let body = row.message;
+                if (target && target !== row.created_by) {
+                  const key = [row.created_by, target].sort().join("|");
+                  conversationId = directs.get(key) || store.get("SELECT id FROM chat_conversations WHERE direct_key = ?", key)?.id;
+                  if (!conversationId) {
+                    conversationId = `conversation-${randomUUID()}`;
+                    store.run("INSERT INTO chat_conversations (id, kind, direct_key, title, created_at) VALUES (?, 'direct', ?, NULL, ?)", conversationId, key, row.created_at);
+                    for (const member of [row.created_by, target]) store.run("INSERT OR IGNORE INTO chat_members (conversation_id, user_id, joined_at, last_read_at) VALUES (?, ?, ?, ?)", conversationId, member, row.created_at, timestamp);
+                  }
+                  directs.set(key, conversationId);
+                } else if (!target && fold(row.recipient)) {
+                  body = `→ ${String(row.recipient).trim()}: ${row.message}`;
+                }
+                store.run("INSERT OR IGNORE INTO chat_messages (id, conversation_id, sender_id, body, case_key, created_at) VALUES (?, ?, ?, ?, ?, ?)", `chat-${row.id}`, conversationId, row.created_by, body, row.case_key || null, row.created_at);
+                store.run("UPDATE chat_conversations SET last_message_at = ? WHERE id = ? AND (last_message_at IS NULL OR last_message_at < ?)", row.created_at, conversationId, row.created_at);
+              }
+              // Taşınan eski mesajlar okunmuş sayılır; güncellemeden sonra rozet patlaması olmaz.
+              for (const user of users) store.run("INSERT OR IGNORE INTO chat_members (conversation_id, user_id, joined_at, last_read_at) VALUES ('conversation-office', ?, ?, ?)", user.id, timestamp, timestamp);
+            },
+          },
+          {
+            version: 4,
+            name: "v1.5.0 kalıcı çalışma verisi",
+            up(store) {
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS dataset_rows (
+                  dataset_key TEXT NOT NULL,
+                  row_id TEXT NOT NULL,
+                  case_key TEXT NOT NULL,
+                  tab TEXT NOT NULL DEFAULT '',
+                  position INTEGER NOT NULL,
+                  values_json TEXT NOT NULL,
+                  row_hash TEXT NOT NULL,
+                  origin TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_at TEXT NOT NULL,
+                  missing_since TEXT,
+                  PRIMARY KEY (dataset_key, row_id)
+                );
+                CREATE INDEX IF NOT EXISTS idx_dataset_rows_position ON dataset_rows(dataset_key, position);
+                CREATE INDEX IF NOT EXISTS idx_dataset_rows_case ON dataset_rows(dataset_key, case_key);
+                CREATE TABLE IF NOT EXISTS dataset_imports (
+                  id TEXT PRIMARY KEY,
+                  dataset_key TEXT NOT NULL,
+                  kind TEXT NOT NULL,
+                  mode TEXT NOT NULL,
+                  label TEXT NOT NULL DEFAULT '',
+                  source_url TEXT,
+                  row_count INTEGER NOT NULL DEFAULT 0,
+                  added INTEGER NOT NULL DEFAULT 0,
+                  updated INTEGER NOT NULL DEFAULT 0,
+                  unchanged INTEGER NOT NULL DEFAULT 0,
+                  removed INTEGER NOT NULL DEFAULT 0,
+                  missing INTEGER NOT NULL DEFAULT 0,
+                  backup_name TEXT,
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_dataset_imports_created ON dataset_imports(dataset_key, created_at);
+              `);
+              // Etkin kaynak (Excel dosyası veya Google Sheets bağlantısı) kalıcı çalışma verisine dönüşür. Ofisin o kaynaktaki
+              // düzeltmeleri, silmeleri ve yeni kayıtları artık dosya adına/bağlantıya değil çalışma verisine bağlıdır.
+              const key = "dataset://ofis";
+              const active = String(store.get("SELECT value FROM settings WHERE key = 'client.sheetUrl'")?.value || "").trim();
+              if (!active) return;
+              const timestamp = new Date().toISOString();
+              for (const table of ["overrides", "deleted_records", "records"]) store.run(`UPDATE ${table} SET source_name = ? WHERE source_name = ?`, key, active);
+              const setSetting = (name, value) =>
+                store.run("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", name, String(value), timestamp);
+              const logImport = (kind, label, url, rows, by) =>
+                store.run(
+                  "INSERT INTO dataset_imports (id, dataset_key, kind, mode, label, source_url, row_count, added, created_by, created_at) VALUES (?, ?, ?, 'migration', ?, ?, ?, ?, ?, ?)",
+                  `import-${randomUUID()}`, key, kind, label, url, rows, rows, by || "system", timestamp,
+                );
+              if (active.startsWith("excel://")) {
+                const snapshot = store.get("SELECT file_name, rows_json, uploaded_by, uploaded_at FROM source_snapshots WHERE source_key = ?", active);
+                if (!snapshot) return;
+                const rows = parseJson(snapshot.rows_json, []).filter(row => row && typeof row === "object" && !Array.isArray(row));
+                const identities = rowIdentities(rows);
+                rows.forEach((values, index) => {
+                  const identity = identities[index];
+                  store.run(
+                    "INSERT OR IGNORE INTO dataset_rows (dataset_key, row_id, case_key, tab, position, values_json, row_hash, origin, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'excel', ?, ?)",
+                    key, identity.id, identity.caseKey, identity.tab, index, JSON.stringify(values), rowHash(values), snapshot.uploaded_at || timestamp, timestamp,
+                  );
+                });
+                setSetting("dataset.label", snapshot.file_name);
+                setSetting("dataset.changedAt", snapshot.uploaded_at || timestamp);
+                logImport("excel", snapshot.file_name, null, rows.length, snapshot.uploaded_by);
+              } else if (/^https?:\/\//i.test(active)) {
+                // Sheet'in satırları göç sırasında okunamaz (internet gerekir); sunucu açılınca ilk eşitlemede kaydedilir.
+                setSetting("dataset.linkedSheetUrl", active);
+                setSetting("dataset.needsInitialSync", "1");
+                setSetting("dataset.label", "Google Sheets");
+                logImport("sheets", "Google Sheets", active, 0, "system");
+              }
+            },
+          },
+          {
+            version: 5,
+            name: "v2.0.1 kasa, tahsilat düzeltmeleri, dosya belgeleri ve serbest sayfalar",
+            up(store) {
+              // Yalnızca ekleyici: 2.0.0 bu şemayla da çalışır (yeni tabloyu ve kolonları kullanmaz).
+              const columns = new Set(store.all("PRAGMA table_info(payments)").map(column => column.name));
+              if (!columns.has("case_title")) store.exec("ALTER TABLE payments ADD COLUMN case_title TEXT NOT NULL DEFAULT ''");
+              if (!columns.has("updated_by")) store.exec("ALTER TABLE payments ADD COLUMN updated_by TEXT");
+              if (!columns.has("updated_at")) store.exec("ALTER TABLE payments ADD COLUMN updated_at TEXT");
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS cash_entries (
+                  id TEXT PRIMARY KEY,
+                  kind TEXT NOT NULL CHECK (kind IN ('in', 'out')),
+                  amount REAL NOT NULL,
+                  date TEXT NOT NULL,
+                  description TEXT NOT NULL DEFAULT '',
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_by TEXT,
+                  updated_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_cash_entries_date ON cash_entries(date, created_at);
+                CREATE INDEX IF NOT EXISTS idx_payments_date ON payments(date, created_at);
+                -- Kayda eklenen belgeler: dosyanın kendisi veri klasöründe (belgeler/), içerik özetiyle saklanır.
+                CREATE TABLE IF NOT EXISTS case_documents (
+                  id TEXT PRIMARY KEY,
+                  case_key TEXT NOT NULL,
+                  case_title TEXT NOT NULL DEFAULT '',
+                  name TEXT NOT NULL,
+                  kind TEXT NOT NULL,
+                  mime TEXT NOT NULL,
+                  size INTEGER NOT NULL,
+                  sha256 TEXT NOT NULL,
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  deleted_by TEXT,
+                  deleted_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_case_documents_case ON case_documents(case_key, created_at);
+                CREATE INDEX IF NOT EXISTS idx_case_documents_sha ON case_documents(sha256);
+                -- Serbest sayfalar: kullanıcının programda kurduğu Excel benzeri sekmeler (veri oturumuna özel).
+                CREATE TABLE IF NOT EXISTS free_sheets (
+                  id TEXT PRIMARY KEY,
+                  dataset_key TEXT NOT NULL,
+                  name TEXT NOT NULL,
+                  position INTEGER NOT NULL,
+                  columns_json TEXT NOT NULL,
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_by TEXT,
+                  updated_at TEXT NOT NULL,
+                  deleted_by TEXT,
+                  deleted_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_free_sheets_key ON free_sheets(dataset_key, position);
+                CREATE TABLE IF NOT EXISTS free_rows (
+                  id TEXT PRIMARY KEY,
+                  sheet_id TEXT NOT NULL,
+                  position INTEGER NOT NULL,
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_free_rows_sheet ON free_rows(sheet_id, position);
+                CREATE TABLE IF NOT EXISTS free_cells (
+                  row_id TEXT NOT NULL,
+                  col_id TEXT NOT NULL,
+                  sheet_id TEXT NOT NULL,
+                  raw TEXT NOT NULL,
+                  updated_by TEXT NOT NULL,
+                  updated_at TEXT NOT NULL,
+                  PRIMARY KEY (row_id, col_id)
+                );
+                CREATE INDEX IF NOT EXISTS idx_free_cells_sheet ON free_cells(sheet_id);
+                CREATE TABLE IF NOT EXISTS free_history (
+                  id TEXT PRIMARY KEY,
+                  sheet_id TEXT NOT NULL,
+                  label TEXT NOT NULL,
+                  snapshot_json TEXT NOT NULL,
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_free_history_sheet ON free_history(sheet_id, created_at);
+              `);
+            },
+          },
+          {
+            version: 6,
+            name: "v2.0.2 silinenler (geri yükleme)",
+            up(store) {
+              // Tamamen silinen verinin (tahsilat, kasa hareketi, serbest sayfa satırı/kolonu) geri yüklenebilmesi için silinirken
+              // içeriği burada saklanır. Yumuşak silinenler (tablo satırı, belge, serbest sayfa) kendi tablolarından okunur.
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS trash (
+                  id TEXT PRIMARY KEY,
+                  kind TEXT NOT NULL,
+                  ref TEXT NOT NULL,
+                  dataset_key TEXT NOT NULL DEFAULT '',
+                  title TEXT NOT NULL DEFAULT '',
+                  detail TEXT NOT NULL DEFAULT '',
+                  payload_json TEXT NOT NULL DEFAULT '{}',
+                  deleted_by TEXT NOT NULL DEFAULT '',
+                  deleted_at TEXT NOT NULL,
+                  restored_by TEXT,
+                  restored_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_trash_open ON trash(restored_at, deleted_at);
+              `);
+              // 2.0.1'de silinmiş ve hâlâ yerine konmamış tahsilat ve kasa hareketleri değişiklik geçmişinden alınır.
+              const events = store.all("SELECT id, type, entity_id, actor_id, payload_json, created_at FROM audit_events WHERE type IN ('case.payment.deleted', 'cash.entry.deleted') ORDER BY created_at");
+              const seen = new Set();
+              for (const event of events.reverse()) {
+                if (seen.has(event.entity_id)) continue;
+                seen.add(event.entity_id);
+                let payload = {};
+                try {
+                  payload = JSON.parse(event.payload_json) || {};
+                } catch {
+                  continue;
+                }
+                const amount = Number(payload.amount);
+                if (!Number.isFinite(amount) || amount <= 0 || !payload.date) continue;
+                if (event.type === "case.payment.deleted") {
+                  if (store.get("SELECT 1 AS found FROM payments WHERE id = ?", event.entity_id)) continue;
+                  const data = { id: event.entity_id, caseKey: payload.caseKey || "", caseTitle: payload.caseTitle || "", amount, date: payload.date, note: payload.note || "", createdBy: payload.createdBy || event.actor_id, createdAt: payload.createdAt || event.created_at };
+                  store.run("INSERT INTO trash (id, kind, ref, title, detail, payload_json, deleted_by, deleted_at) VALUES (?, 'payment', ?, ?, ?, ?, ?, ?)", `trash-${event.id}`, event.entity_id, data.caseTitle || data.caseKey || "Tahsilat", data.note, JSON.stringify(data), event.actor_id, event.created_at);
+                } else {
+                  if (store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", event.entity_id)) continue;
+                  if (!["in", "out"].includes(payload.kind)) continue;
+                  const data = { id: event.entity_id, kind: payload.kind, amount, date: payload.date, description: payload.description || "", createdBy: payload.createdBy || event.actor_id, createdAt: payload.createdAt || event.created_at };
+                  store.run("INSERT INTO trash (id, kind, ref, title, detail, payload_json, deleted_by, deleted_at) VALUES (?, 'cash', ?, ?, '', ?, ?, ?)", `trash-${event.id}`, event.entity_id, data.description || "Kasa hareketi", JSON.stringify(data), event.actor_id, event.created_at);
+                }
+              }
+            },
+          },
+          {
+            version: 7,
+            name: "v2.0.4 taksit modülü",
+            up(store) {
+              // Yalnızca ekleyici: 2.0.3 bu şemayla da çalışır (yeni tabloları kullanmaz).
+              // Gruplar tek tabloda: parent_id boş olan "grup" (ör. servis plakası "42 C 1070", site adı), dolu olan onun
+              // "alt grubu" (güzergâh "15 Temmuz", blok "A Blok"). Taksit kartı ikisine de bağlanabilir.
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS plan_groups (
+                  id TEXT PRIMARY KEY,
+                  parent_id TEXT,
+                  name TEXT NOT NULL,
+                  position INTEGER NOT NULL DEFAULT 0,
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_plan_groups_parent ON plan_groups(parent_id, position);
+                CREATE TABLE IF NOT EXISTS plans (
+                  id TEXT PRIMARY KEY,
+                  group_id TEXT,
+                  subgroup_id TEXT,
+                  name TEXT NOT NULL,
+                  note TEXT NOT NULL DEFAULT '',
+                  phone TEXT NOT NULL DEFAULT '',
+                  total REAL NOT NULL DEFAULT 0,
+                  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'closed')),
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_by TEXT,
+                  updated_at TEXT NOT NULL,
+                  deleted_by TEXT,
+                  deleted_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_plans_group ON plans(group_id, subgroup_id);
+                CREATE INDEX IF NOT EXISTS idx_plans_deleted ON plans(deleted_at);
+                -- Taksitler: vade ve tutar. Ödenen tutar saklanmaz; hareketlerden hesaplanır (tahsilat sil/düzelt bozmaz).
+                CREATE TABLE IF NOT EXISTS plan_items (
+                  id TEXT PRIMARY KEY,
+                  plan_id TEXT NOT NULL,
+                  seq INTEGER NOT NULL,
+                  due_date TEXT NOT NULL,
+                  amount REAL NOT NULL,
+                  note TEXT NOT NULL DEFAULT '',
+                  created_at TEXT NOT NULL,
+                  updated_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_plan_items_plan ON plan_items(plan_id, due_date, seq);
+                -- Hareketler: tahsilat (in) ve ödeme/iade (out). item_id doluysa o taksite sayılır, boşsa en eski açık taksite.
+                CREATE TABLE IF NOT EXISTS plan_entries (
+                  id TEXT PRIMARY KEY,
+                  plan_id TEXT NOT NULL,
+                  item_id TEXT,
+                  kind TEXT NOT NULL CHECK (kind IN ('in', 'out')),
+                  amount REAL NOT NULL,
+                  date TEXT NOT NULL,
+                  note TEXT NOT NULL DEFAULT '',
+                  receipt_no INTEGER,
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_by TEXT,
+                  updated_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_plan_entries_plan ON plan_entries(plan_id, date, created_at);
+                CREATE INDEX IF NOT EXISTS idx_plan_entries_date ON plan_entries(date, created_at);
+              `);
+            },
+          },
+          {
+            version: 8,
+            name: "v2.0.5 taksit kartında sıra no",
+            up(store) {
+              // Excel'deki "S.N / Sıra No" kolonu kartın sıra numarası olur; listede ilk kolon ve varsayılan sıralama.
+              // Yalnızca ekleyici: 2.0.4 bu kolonu okumaz.
+              addColumn(store, "plans", "ref_no", "TEXT NOT NULL DEFAULT ''");
+              // Var olan kartlara açılış sırasıyla numara verilir (Excel'den yüklenenler dosyadaki sırayla açılmıştır).
+              const plans = store.all("SELECT id FROM plans WHERE ref_no = '' ORDER BY created_at, rowid");
+              plans.forEach((plan, index) => store.run("UPDATE plans SET ref_no = ? WHERE id = ?", String(index + 1), plan.id));
+            },
+          },
+          {
+            version: 9,
+            name: "v2.0.6 taksit kartında kayıt tarihi",
+            up(store) {
+              // Kişinin kaydedildiği gün (Excel'deki "Kayıt tarihi" kolonu ya da programda kartın açıldığı gün). Yalnızca ekleyici.
+              addColumn(store, "plans", "registered_on", "TEXT NOT NULL DEFAULT ''");
+              store.exec("UPDATE plans SET registered_on = substr(created_at, 1, 10) WHERE registered_on = ''");
+            },
+          },
+          {
+            version: 10,
+            name: "v2.0.6 kolon adına yazılmış tarihleri geri al",
+            up(store) {
+              // Detay kartında başlığın yanındaki kalem kolonun ADINI değiştirir; değer sanılıp oraya yazılan tarih ("30.09.2026")
+              // başlığı bozar, hücre boş kalır. Böyle adlar asıl adına döner; yöneticiye bir kez gösterilir (ui.columns.fixed),
+              // işlem geçmişine yazılır. Yalnızca görünen ad değişir: veri, düzeltmeler ve uyarılar kolonun asıl adıyla çalışır.
+              const timestamp = new Date().toISOString();
+              const upsert = (key, value) =>
+                store.run("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", key, value, timestamp);
+              for (const row of store.all("SELECT key, value FROM settings WHERE key = 'ui.columns' OR key LIKE 'ui.columns@%'")) {
+                const aliases = parseJson(row.value, {});
+                if (!aliases || typeof aliases !== "object" || Array.isArray(aliases)) continue;
+                const fixed = Object.entries(aliases).filter(([, alias]) => isFullDate(alias)).map(([column, value]) => ({ column, value, at: timestamp }));
+                if (!fixed.length) continue;
+                for (const item of fixed) delete aliases[item.column];
+                upsert(row.key, JSON.stringify(aliases));
+                const noticeKey = `ui.columns.fixed${row.key.slice("ui.columns".length)}`;
+                const previous = parseJson(store.get("SELECT value FROM settings WHERE key = ?", noticeKey)?.value, []);
+                upsert(noticeKey, JSON.stringify([...(Array.isArray(previous) ? previous : []), ...fixed].slice(-50)));
+                for (const item of fixed) {
+                  store.run(
+                    "INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'profile.column', ?, 'system', 'Güncelleme', ?, ?)",
+                    `event-${randomUUID()}`, item.column, JSON.stringify({ column: item.column, value: "", previous: item.value, reason: "Tarih kolon adı olamaz; asıl adına döndürüldü." }), timestamp,
+                  );
+                }
+              }
+            },
+          },
+          {
+            version: 11,
+            name: "v2.0.6 taksit kartı tablodaki kayda bağlanır",
+            up(store) {
+              // Kart, bir veri oturumundaki kayda (Excel satırı) bağlanabilir: kişinin kartında taksitler, tahsilat ve kalan görünür,
+              // karttan girilen tahsilat taksitten düşer. Yalnızca ekleyici; bağsız kartlar olduğu gibi çalışır.
+              addColumn(store, "plans", "case_key", "TEXT NOT NULL DEFAULT ''");
+              addColumn(store, "plans", "case_source", "TEXT NOT NULL DEFAULT ''");
+              addColumn(store, "plans", "case_title", "TEXT NOT NULL DEFAULT ''");
+              store.exec("CREATE INDEX IF NOT EXISTS idx_plans_case ON plans(case_source, case_key)");
+            },
+          },
+          {
+            version: 12,
+            name: "v2.0.6 cari ve stok modülleri",
+            up(store) {
+              // Cari (müşteri/tedarikçi) kartı merkezdedir: taksit kartları bir cariye bağlıdır (plans.account_id). Stok, Kasa
+              // mantığıyla giriş/çıkış hareketleri tutar; parası Kasa'ya ya da cariye yazılabilir. Yalnızca ekleyici: 2.0.5
+              // bu şemayla da açılır (yeni tabloları kullanmaz).
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS accounts (
+                  id TEXT PRIMARY KEY,
+                  ref_no TEXT NOT NULL DEFAULT '',
+                  type TEXT NOT NULL DEFAULT 'customer' CHECK (type IN ('customer', 'supplier', 'other')),
+                  name TEXT NOT NULL,
+                  phone TEXT NOT NULL DEFAULT '',
+                  email TEXT NOT NULL DEFAULT '',
+                  address TEXT NOT NULL DEFAULT '',
+                  registered_on TEXT NOT NULL DEFAULT '',
+                  group_id TEXT,
+                  subgroup_id TEXT,
+                  note TEXT NOT NULL DEFAULT '',
+                  fields_json TEXT NOT NULL DEFAULT '[]',
+                  case_key TEXT NOT NULL DEFAULT '',
+                  case_source TEXT NOT NULL DEFAULT '',
+                  case_title TEXT NOT NULL DEFAULT '',
+                  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'passive')),
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_by TEXT,
+                  updated_at TEXT NOT NULL,
+                  deleted_by TEXT,
+                  deleted_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_accounts_deleted ON accounts(deleted_at);
+                CREATE INDEX IF NOT EXISTS idx_accounts_case ON accounts(case_source, case_key);
+                CREATE INDEX IF NOT EXISTS idx_accounts_group ON accounts(group_id, subgroup_id);
+                -- Binlerce satırlık Excel/Sheets alımında eşleşme aramaları (ad, Cari No, ürün adı/kodu) indeksten okunur.
+                CREATE INDEX IF NOT EXISTS idx_accounts_name ON accounts(name COLLATE NOCASE);
+                CREATE INDEX IF NOT EXISTS idx_accounts_ref ON accounts(ref_no);
+                -- Cari hareketleri: borç (debt), alacak (credit), tahsilat (in → Kasa'ya giriş), ödeme (out → Kasa'dan çıkış).
+                -- source = 'stock' olan satır bir stok hareketinden gelir (source_id = stock_moves.id) ve oradan düzeltilir.
+                CREATE TABLE IF NOT EXISTS account_entries (
+                  id TEXT PRIMARY KEY,
+                  account_id TEXT NOT NULL,
+                  kind TEXT NOT NULL CHECK (kind IN ('debt', 'credit', 'in', 'out')),
+                  amount REAL NOT NULL,
+                  date TEXT NOT NULL,
+                  note TEXT NOT NULL DEFAULT '',
+                  receipt_no INTEGER,
+                  source TEXT NOT NULL DEFAULT '',
+                  source_id TEXT NOT NULL DEFAULT '',
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_by TEXT,
+                  updated_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_account_entries_account ON account_entries(account_id, date, created_at);
+                CREATE INDEX IF NOT EXISTS idx_account_entries_source ON account_entries(source, source_id);
+                CREATE TABLE IF NOT EXISTS stock_items (
+                  id TEXT PRIMARY KEY,
+                  code TEXT NOT NULL DEFAULT '',
+                  name TEXT NOT NULL,
+                  unit TEXT NOT NULL DEFAULT 'Adet',
+                  category TEXT NOT NULL DEFAULT '',
+                  min_qty REAL NOT NULL DEFAULT 0,
+                  unit_price REAL NOT NULL DEFAULT 0,
+                  note TEXT NOT NULL DEFAULT '',
+                  fields_json TEXT NOT NULL DEFAULT '[]',
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_by TEXT,
+                  updated_at TEXT NOT NULL,
+                  deleted_by TEXT,
+                  deleted_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_stock_items_deleted ON stock_items(deleted_at);
+                CREATE INDEX IF NOT EXISTS idx_stock_items_name ON stock_items(name COLLATE NOCASE, unit COLLATE NOCASE);
+                CREATE INDEX IF NOT EXISTS idx_stock_items_code ON stock_items(code);
+                -- Stok hareketleri: giriş (in) / çıkış (out). pay: 'none' (yalnız miktar), 'cash' (Kasa'dan ödendi / Kasa'ya
+                -- tahsil edildi), 'account' (cariye yazıldı; account_entries.source_id bu hareketi gösterir).
+                CREATE TABLE IF NOT EXISTS stock_moves (
+                  id TEXT PRIMARY KEY,
+                  item_id TEXT NOT NULL,
+                  kind TEXT NOT NULL CHECK (kind IN ('in', 'out')),
+                  qty REAL NOT NULL,
+                  unit_price REAL NOT NULL DEFAULT 0,
+                  amount REAL NOT NULL DEFAULT 0,
+                  date TEXT NOT NULL,
+                  note TEXT NOT NULL DEFAULT '',
+                  pay TEXT NOT NULL DEFAULT 'none' CHECK (pay IN ('none', 'cash', 'account')),
+                  account_id TEXT NOT NULL DEFAULT '',
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_by TEXT,
+                  updated_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_stock_moves_item ON stock_moves(item_id, date, created_at);
+                CREATE INDEX IF NOT EXISTS idx_stock_moves_date ON stock_moves(date, created_at);
+              `);
+              addColumn(store, "plans", "account_id", "TEXT NOT NULL DEFAULT ''");
+              store.exec("CREATE INDEX IF NOT EXISTS idx_plans_account ON plans(account_id)");
+              // Mevcut taksit kartları cariye dönüştürülür. Karışma olmasın diye yalnızca kesin eşleşmeler birleşir: aynı
+              // tablodaki kayda bağlı kartlar ya da aynı ad + aynı telefon (en az 7 hane). Diğer her kart kendi carisini alır.
+              const digits = value => String(value || "").replace(/\D/g, "");
+              const fold = value => String(value || "").toLocaleLowerCase("tr-TR").replace(/\s+/g, " ").trim();
+              const plans = store.all(
+                "SELECT id, ref_no AS refNo, registered_on AS registeredOn, case_key AS caseKey, case_source AS caseSource, case_title AS caseTitle, group_id AS groupId, subgroup_id AS subgroupId, name, note, phone, created_by AS createdBy, created_at AS createdAt FROM plans WHERE account_id = '' ORDER BY created_at, rowid",
+              );
+              const byKey = new Map();
+              let seq = (store.get("SELECT COUNT(*) AS n FROM accounts")?.n || 0);
+              const timestamp = new Date().toISOString();
+              for (const plan of plans) {
+                const phone = digits(plan.phone);
+                const key = plan.caseKey ? `case|${plan.caseSource}|${plan.caseKey}` : phone.length >= 7 ? `phone|${fold(plan.name)}|${phone}` : `plan|${plan.id}`;
+                let accountId = byKey.get(key);
+                if (!accountId) {
+                  accountId = `account-${randomUUID()}`;
+                  seq += 1;
+                  store.run(
+                    "INSERT INTO accounts (id, ref_no, type, name, phone, registered_on, group_id, subgroup_id, note, case_key, case_source, case_title, status, created_by, created_at, updated_at) VALUES (?, ?, 'customer', ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+                    accountId, String(seq), plan.name, plan.phone || "", plan.registeredOn || String(plan.createdAt || timestamp).slice(0, 10), plan.groupId, plan.subgroupId, plan.note || "", plan.caseKey || "", plan.caseSource || "", plan.caseTitle || "", plan.createdBy || "system", plan.createdAt || timestamp, timestamp,
+                  );
+                  byKey.set(key, accountId);
+                }
+                store.run("UPDATE plans SET account_id = ? WHERE id = ?", accountId, plan.id);
+              }
+            },
+          },
+          {
+            version: 13,
+            name: "v2.0.7 çek/senet portföyü, hizmet kalemi",
+            up(store) {
+              // Çek ve senet (v2.0.7). direction: 'in' = alınan (müşteriden, portföye girer), 'out' = verilen (kendi çekimiz/senedimiz).
+              // Durum: alınan → portfolio (portföyde) → collected (tahsil edildi) | endorsed (ciro edildi) | bounced (karşılıksız);
+              //        verilen → pending (ödenecek) → paid (ödendi).
+              // Her durum değişikliği cheque_events'e bir satır yazar; satırın defter etkileri (cari hareketi, taksit tahsilatı)
+              // aynı işlem bloğunda açılır ve effects_json'da tutulur. "Geri al" son olayın etkilerini birebir geri çevirir.
+              // Kasa'ya yalnız tahsil (collect) ve ödeme (pay) olayları düşer; çek alınınca/verilince Kasa değişmez.
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS cheques (
+                  id TEXT PRIMARY KEY,
+                  direction TEXT NOT NULL CHECK (direction IN ('in', 'out')),
+                  instrument TEXT NOT NULL CHECK (instrument IN ('cheque', 'note')),
+                  serial_no TEXT NOT NULL DEFAULT '',
+                  bank TEXT NOT NULL DEFAULT '',
+                  drawer TEXT NOT NULL DEFAULT '',
+                  account_id TEXT NOT NULL DEFAULT '',
+                  plan_id TEXT NOT NULL DEFAULT '',
+                  amount REAL NOT NULL CHECK (amount > 0),
+                  issue_date TEXT NOT NULL,
+                  due_date TEXT NOT NULL,
+                  status TEXT NOT NULL CHECK (status IN ('portfolio', 'endorsed', 'collected', 'bounced', 'pending', 'paid')),
+                  status_date TEXT NOT NULL DEFAULT '',
+                  endorse_account_id TEXT NOT NULL DEFAULT '',
+                  note TEXT NOT NULL DEFAULT '',
+                  fields_json TEXT NOT NULL DEFAULT '[]',
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_by TEXT,
+                  updated_at TEXT NOT NULL,
+                  deleted_by TEXT,
+                  deleted_at TEXT
+                );
+                -- Vade sorguları (nakit akışı, bugün/7 gün, gecikmiş) ve durum süzgeci indeksten okunur.
+                CREATE INDEX IF NOT EXISTS idx_cheques_open ON cheques(deleted_at, status, due_date);
+                CREATE INDEX IF NOT EXISTS idx_cheques_due ON cheques(due_date);
+                CREATE INDEX IF NOT EXISTS idx_cheques_account ON cheques(account_id);
+                CREATE INDEX IF NOT EXISTS idx_cheques_serial ON cheques(serial_no);
+                CREATE TABLE IF NOT EXISTS cheque_events (
+                  id TEXT PRIMARY KEY,
+                  cheque_id TEXT NOT NULL,
+                  kind TEXT NOT NULL CHECK (kind IN ('receive', 'issue', 'collect', 'endorse', 'pay', 'bounce')),
+                  date TEXT NOT NULL,
+                  amount REAL NOT NULL,
+                  account_id TEXT NOT NULL DEFAULT '',
+                  from_status TEXT NOT NULL DEFAULT '',
+                  to_status TEXT NOT NULL,
+                  note TEXT NOT NULL DEFAULT '',
+                  effects_json TEXT NOT NULL DEFAULT '[]',
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_cheque_events_cheque ON cheque_events(cheque_id, created_at);
+                CREATE INDEX IF NOT EXISTS idx_cheque_events_kind ON cheque_events(kind, date);
+              `);
+              // Taksite çekle yapılan tahsilat: kartta tahsilat olarak görünür, Kasa'ya çek tahsil edilince düşer (çift sayılmaz).
+              addColumn(store, "plan_entries", "cheque_id", "TEXT NOT NULL DEFAULT ''");
+              store.exec("CREATE INDEX IF NOT EXISTS idx_plan_entries_cheque ON plan_entries(cheque_id)");
+              // Stok kartı türü: 'product' (stok tutulur) ya da 'service' (hizmet; miktar/kritik seviye izlenmez).
+              addColumn(store, "stock_items", "kind", "TEXT NOT NULL DEFAULT 'product'");
+              // Kişiye özel ek yetkiler (ör. ANLIK DURUM ve raporlar): yönetici her zaman görür, başkasına tek tek verir.
+              addColumn(store, "users", "grants_json", "TEXT NOT NULL DEFAULT '[]'");
+            },
+          },
+          {
+            version: 14,
+            name: "v2.0.8 tablodan taksit kartına aktarma, açılış bakiyesi",
+            up(store) {
+              // Yalnız ekleyici: mevcut hiçbir satır değişmez.
+              // Açılış (devir) kaydı: Excel'de programa girmeden önce ödenmiş kısım. Taksiti kapatır, carinin bakiyesine sayılır;
+              // Kasa'ya girmez (o para bu programın kasasından geçmedi), makbuzu olmaz.
+              addColumn(store, "plan_entries", "opening", "INTEGER NOT NULL DEFAULT 0");
+              // Kartı açan aktarım (tablodan ya da Excel'den): aktarım geri alınınca yalnız o aktarımın kartları kalkar.
+              addColumn(store, "plans", "import_id", "TEXT NOT NULL DEFAULT ''");
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS plan_imports (
+                  id TEXT PRIMARY KEY,
+                  kind TEXT NOT NULL CHECK (kind IN ('table', 'excel')),
+                  source TEXT NOT NULL DEFAULT '',
+                  title TEXT NOT NULL DEFAULT '',
+                  summary_json TEXT NOT NULL DEFAULT '{}',
+                  undo_json TEXT NOT NULL DEFAULT '{}',
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  undone_by TEXT,
+                  undone_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_plan_imports_created ON plan_imports(created_at);
+                -- Kayda bağlı kartlar: takvim, kişinin kartı ve aktarma "bu kaydın kartı var mı?" diye sorar.
+                CREATE INDEX IF NOT EXISTS idx_plans_case ON plans(case_key, case_source);
+                CREATE INDEX IF NOT EXISTS idx_plans_import ON plans(import_id);
+              `);
+            },
+          },
+          {
+            version: 15,
+            name: "v2.0.10 özel roller, kişiye özel yetki, kullanıcı silme",
+            up(store) {
+              // Yalnız ekleyici. users.role sütununun CHECK kısıtı (4 yerleşik rol) tabloyu yeniden kurmamak için korunur:
+              // özel rol atanan kullanıcıda role = 'personel' kalır, role_key rolün kimliğini taşır (lib/access.mjs).
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS roles (
+                  id TEXT PRIMARY KEY,
+                  name TEXT NOT NULL,
+                  description TEXT NOT NULL DEFAULT '',
+                  permissions_json TEXT NOT NULL DEFAULT '[]',
+                  created_by TEXT NOT NULL DEFAULT '',
+                  created_at TEXT NOT NULL,
+                  updated_at TEXT NOT NULL
+                );
+              `);
+              addColumn(store, "users", "role_key", "TEXT");
+              // Kullanıcı silme (geçmiş korunur): satır kalır, giriş kapanır; kullanıcı adı ve görünen ad yeniden kullanılabilsin
+              // diye silinen hesapta değiştirilir, asılları geri alma için saklanır.
+              addColumn(store, "users", "deleted_at", "TEXT");
+              addColumn(store, "users", "deleted_by", "TEXT");
+              addColumn(store, "users", "deleted_username", "TEXT");
+              addColumn(store, "users", "deleted_name", "TEXT");
+              // Kişiye özel yetki: v2.0.7 dizisi ["overview.view"] → { add: [...], remove: [] }. "overview.view" artık yalnız
+              // Raporlar penceresini açar; ANLIK DURUM kartı yalnız yöneticide (overview.card).
+              for (const user of store.all("SELECT id, grants_json AS grantsJson FROM users")) {
+                let value = [];
+                try {
+                  value = JSON.parse(user.grantsJson || "[]");
+                } catch {
+                  value = [];
+                }
+                if (!Array.isArray(value)) continue;
+                store.run("UPDATE users SET grants_json = ? WHERE id = ?", JSON.stringify({ add: value.filter(item => typeof item === "string"), remove: [] }), user.id);
+              }
+            },
+          },
+          {
+            version: 16,
+            name: "v2.0.11 stok birimlerinin tek yazımı",
+            up(store) {
+              // "adet" / "ADET" / "Adet" aynı birimdir: hepsi "Adet" olur (liste, rapor, PDF ve Excel aynı yazar). Yalnız
+              // birim sütunu değişir; ürün, hareket ve tutarlar olduğu gibi kalır.
+              if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'stock_items'")) return;
+              for (const item of store.all("SELECT id, unit FROM stock_items")) {
+                const next = unitLabel(item.unit);
+                if (next !== item.unit) store.run("UPDATE stock_items SET unit = ? WHERE id = ?", next, item.id);
+              }
+            },
+          },
+          {
+            version: 17,
+            name: "v2.0.13 mevcut borcu taksitlendirme, satış iadesi, satış fiyatı, WhatsApp gönderim kaydı, mutabakat günlüğü",
+            up(store) {
+              // Yalnız ekleyici: mevcut hiçbir satır değişmez.
+              // Mevcut borcu taksitlendiren kart: carinin borcu zaten yazılı (veresiye satış, açılış, borç yaz); kart yalnız
+              // vadeleri tutar, carinin defterine ikinci kez borç yazmaz. Tahsilatları borçtan düşer.
+              addColumn(store, "plans", "covers_balance", "INTEGER NOT NULL DEFAULT 0");
+              // Kartın kapatıldığı gün: vazgeçilen kalan ana defterde bu tarihte yazılır (dönem kilidiyle uyumlu).
+              addColumn(store, "plans", "closed_at", "TEXT");
+              // Stok hareketinin nedeni: '' (alım / satış / kullanım) ya da 'return' (müşteri iadesi: satıştan dönen mal).
+              addColumn(store, "stock_moves", "reason", "TEXT NOT NULL DEFAULT ''");
+              // Ürünün satış fiyatı (birim fiyat = alış/maliyet). Çıkış formu satış fiyatıyla açılır; brüt kâr hesaplanır.
+              addColumn(store, "stock_items", "sale_price", "REAL NOT NULL DEFAULT 0");
+              // Ödeme / tahsilat yolu: nakit (Kasa), bank (havale/EFT), card (kredi kartı). Eski hareketler nakit sayılır.
+              for (const table of ["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"]) {
+                if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table)) addColumn(store, table, "method", "TEXT NOT NULL DEFAULT 'cash'");
+              }
+              // WhatsApp gönderim kaydı: tek ya da toplu ekstre/mesaj; kime, ne zaman, kimin gönderdiği (cari kartında görünür).
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS message_sends (
+                  id TEXT PRIMARY KEY,
+                  batch_id TEXT NOT NULL,
+                  account_id TEXT NOT NULL,
+                  kind TEXT NOT NULL CHECK (kind IN ('statement', 'message')),
+                  phone TEXT NOT NULL DEFAULT '',
+                  body TEXT NOT NULL DEFAULT '',
+                  status TEXT NOT NULL DEFAULT 'sent' CHECK (status IN ('sent', 'skipped')),
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_message_sends_account ON message_sends(account_id, created_at);
+                CREATE INDEX IF NOT EXISTS idx_message_sends_batch ON message_sends(batch_id);
+                -- Mutabakat günlüğü: alt defter ile ana defter arasında sapma yaratacağı için geri alınan (ROLLBACK) işlemler
+                -- ve açılışta bulunan eski sapmalar. Kayıt silinmez; yönetici Raporlar > Ana Defter'den görür.
+                CREATE TABLE IF NOT EXISTS integrity_log (
+                  id TEXT PRIMARY KEY,
+                  at TEXT NOT NULL,
+                  action TEXT NOT NULL CHECK (action IN ('rolled-back', 'baseline')),
+                  tables TEXT NOT NULL DEFAULT '',
+                  summary TEXT NOT NULL DEFAULT '',
+                  detail_json TEXT NOT NULL DEFAULT '[]'
+                );
+                CREATE INDEX IF NOT EXISTS idx_integrity_log_at ON integrity_log(at);
+              `);
+            },
+          },
+          {
+            version: 18,
+            name: "v2.0.15 fatura modülü (satış, alış, iadeler; e-Fatura / e-Arşiv / UBL-TR), carinin vergi kimliği ve adresi",
+            up(store) {
+              // Yalnız ekleyici: mevcut hiçbir satır değişmez; eski sürüm aynı veritabanıyla açılır (yeni tabloları okumaz).
+              // Carinin fatura kimliği (UBL-TR Party): VKN (10) / TCKN (11), vergi dairesi, MERSİS, ticaret sicil no, tüzel/gerçek
+              // kişi, gerçek kişide ad ve soyad (e-Belgede ayrı yazılır), adres (il, ilçe, posta kodu, ülke), web sitesi, IBAN,
+              // varsayılan vade günü; GİB e-Fatura mükellefi mi (e-Fatura mı e-Arşiv mi kesileceğini belirler), posta kutusu
+              // etiketi ve senaryosu (Temel / Ticari).
+              for (const [column, definition] of [
+                ["tax_no", "TEXT NOT NULL DEFAULT ''"],
+                ["tax_office", "TEXT NOT NULL DEFAULT ''"],
+                ["mersis_no", "TEXT NOT NULL DEFAULT ''"],
+                ["trade_registry", "TEXT NOT NULL DEFAULT ''"],
+                ["party_kind", "TEXT NOT NULL DEFAULT ''"],
+                ["first_name", "TEXT NOT NULL DEFAULT ''"],
+                ["family_name", "TEXT NOT NULL DEFAULT ''"],
+                ["city", "TEXT NOT NULL DEFAULT ''"],
+                ["district", "TEXT NOT NULL DEFAULT ''"],
+                ["postal_code", "TEXT NOT NULL DEFAULT ''"],
+                ["country", "TEXT NOT NULL DEFAULT ''"],
+                ["website", "TEXT NOT NULL DEFAULT ''"],
+                ["iban", "TEXT NOT NULL DEFAULT ''"],
+                ["due_days", "INTEGER NOT NULL DEFAULT 0"],
+                ["e_invoice", "INTEGER NOT NULL DEFAULT 0"],
+                ["e_alias", "TEXT NOT NULL DEFAULT ''"],
+                ["e_profile", "TEXT NOT NULL DEFAULT ''"],
+              ]) addColumn(store, "accounts", column, definition);
+              store.exec("CREATE INDEX IF NOT EXISTS idx_accounts_tax_no ON accounts(tax_no) WHERE tax_no <> ''");
+              // Faturadan doğan alt defter satırları faturaya bağlıdır (iptal ve mutabakat bu bağla yapılır). Çek cirosu da bir
+              // olaydır: faturayla ciro edilen çekin olayı faturaya bağlanır (iptalde yalnız o olay geri alınır).
+              addColumn(store, "stock_moves", "invoice_id", "TEXT NOT NULL DEFAULT ''");
+              addColumn(store, "cheques", "invoice_id", "TEXT NOT NULL DEFAULT ''");
+              addColumn(store, "cheque_events", "invoice_id", "TEXT NOT NULL DEFAULT ''");
+              addColumn(store, "plans", "invoice_id", "TEXT NOT NULL DEFAULT ''");
+              store.exec(`
+                -- Fatura başlığı. Tutarlar belgenin para biriminde kalemlerin toplamıdır (kuruşa yuvarlanmış); try_* deftere
+                -- (cari, Kasa, Ana Defter) yazılan TL karşılıklarıdır. Mutabakat kapısı her işlemde başlık = kalemler ve
+                -- defter = try_* eşitliğini denetler. party_json / seller_json: kesildiği andaki alıcı ve satıcı bilgisi (yasal
+                -- belge sonradan cari kartı değişse de değişmez; e-Belge ve PDF bu bilgiden üretilir).
+                -- Durum: draft (taslak / proforma: deftere dokunmaz, numarası yoktur), issued (kesildi), cancelled (iptal: numara
+                -- korunur, defter etkileri geri alınmıştır).
+                CREATE TABLE IF NOT EXISTS invoices (
+                  id TEXT PRIMARY KEY,
+                  kind TEXT NOT NULL CHECK (kind IN ('sale', 'purchase', 'sale_return', 'purchase_return', 'smm')),
+                  scenario TEXT NOT NULL DEFAULT '',
+                  status TEXT NOT NULL DEFAULT 'issued' CHECK (status IN ('draft', 'issued', 'cancelled')),
+                  series TEXT NOT NULL DEFAULT '',
+                  year INTEGER NOT NULL DEFAULT 0,
+                  seq INTEGER NOT NULL DEFAULT 0,
+                  number TEXT NOT NULL DEFAULT '',
+                  ettn TEXT NOT NULL,
+                  issue_date TEXT NOT NULL,
+                  issue_time TEXT NOT NULL DEFAULT '',
+                  account_id TEXT NOT NULL,
+                  party_json TEXT NOT NULL DEFAULT '{}',
+                  seller_json TEXT NOT NULL DEFAULT '{}',
+                  profile TEXT NOT NULL DEFAULT 'KAGIT' CHECK (profile IN ('KAGIT', 'TEMELFATURA', 'TICARIFATURA', 'EARSIVFATURA', 'ESMM')),
+                  type_code TEXT NOT NULL DEFAULT 'SATIS',
+                  currency TEXT NOT NULL DEFAULT 'TRY',
+                  rate REAL NOT NULL DEFAULT 1,
+                  prices_include_vat INTEGER NOT NULL DEFAULT 0,
+                  discount_rate REAL NOT NULL DEFAULT 0,
+                  stoppage_rate REAL NOT NULL DEFAULT 0,
+                  base_total REAL NOT NULL DEFAULT 0,
+                  discount_total REAL NOT NULL DEFAULT 0,
+                  net_total REAL NOT NULL DEFAULT 0,
+                  goods_net REAL NOT NULL DEFAULT 0,
+                  service_net REAL NOT NULL DEFAULT 0,
+                  vat_total REAL NOT NULL DEFAULT 0,
+                  withheld_total REAL NOT NULL DEFAULT 0,
+                  stoppage_total REAL NOT NULL DEFAULT 0,
+                  gross_total REAL NOT NULL DEFAULT 0,
+                  payable_total REAL NOT NULL DEFAULT 0,
+                  try_net REAL NOT NULL DEFAULT 0,
+                  try_vat REAL NOT NULL DEFAULT 0,
+                  try_withheld REAL NOT NULL DEFAULT 0,
+                  try_stoppage REAL NOT NULL DEFAULT 0,
+                  try_payable REAL NOT NULL DEFAULT 0,
+                  gl_json TEXT NOT NULL DEFAULT '[]',
+                  payment_json TEXT NOT NULL DEFAULT '{}',
+                  due_date TEXT NOT NULL DEFAULT '',
+                  plan_id TEXT NOT NULL DEFAULT '',
+                  original_id TEXT NOT NULL DEFAULT '',
+                  order_no TEXT NOT NULL DEFAULT '',
+                  order_date TEXT NOT NULL DEFAULT '',
+                  despatch_no TEXT NOT NULL DEFAULT '',
+                  despatch_date TEXT NOT NULL DEFAULT '',
+                  paper_no TEXT NOT NULL DEFAULT '',
+                  note TEXT NOT NULL DEFAULT '',
+                  e_status TEXT NOT NULL DEFAULT 'none',
+                  -- Sonra gönderilecek (waiting) ya da listeden silinen (withdrawn) belgenin gönderileceği e-Belge türü.
+                  e_profile TEXT NOT NULL DEFAULT '',
+                  e_adapter TEXT NOT NULL DEFAULT '',
+                  e_message TEXT NOT NULL DEFAULT '',
+                  e_at TEXT NOT NULL DEFAULT '',
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_by TEXT,
+                  updated_at TEXT NOT NULL,
+                  issued_by TEXT,
+                  issued_at TEXT,
+                  cancelled_by TEXT,
+                  cancelled_at TEXT,
+                  cancel_reason TEXT NOT NULL DEFAULT ''
+                );
+                CREATE INDEX IF NOT EXISTS idx_invoices_date ON invoices(issue_date, issue_time);
+                CREATE INDEX IF NOT EXISTS idx_invoices_account ON invoices(account_id, issue_date);
+                CREATE INDEX IF NOT EXISTS idx_invoices_original ON invoices(original_id);
+                CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status, kind);
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_ettn ON invoices(ettn);
+                -- Kendi verdiğimiz numara seri + yıl + sıra ile tektir (GİB: 3 karakter seri + 4 hane yıl + 9 hane sıra = 16);
+                -- karşı tarafın belgesi (alış faturası, müşterinin kestiği iade faturası) aynı caride iki kez girilemez.
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_own_no ON invoices(series, year, seq) WHERE seq > 0;
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_party_no ON invoices(account_id, kind, number) WHERE seq = 0 AND status = 'issued' AND number <> '';
+                -- Kalem. Tutarlar belgenin para biriminde (kuruşa yuvarlanmış). gl_account: kalemin ana defter hesabı (600 satış,
+                -- 610 iade, 153 ticari mal, 770/760 gider, 255 demirbaş); expense_code: gider türü (alışta stoksuz kalem).
+                -- origin_line_id: iade kaleminin asıl faturadaki kalemi (iade edilebilir miktar bununla sınırlanır).
+                CREATE TABLE IF NOT EXISTS invoice_lines (
+                  id TEXT PRIMARY KEY,
+                  invoice_id TEXT NOT NULL,
+                  seq INTEGER NOT NULL,
+                  item_id TEXT NOT NULL DEFAULT '',
+                  goods INTEGER NOT NULL DEFAULT 0,
+                  code TEXT NOT NULL DEFAULT '',
+                  name TEXT NOT NULL,
+                  description TEXT NOT NULL DEFAULT '',
+                  unit TEXT NOT NULL DEFAULT 'Adet',
+                  qty REAL NOT NULL CHECK (qty > 0),
+                  unit_price REAL NOT NULL DEFAULT 0,
+                  discount_rate REAL NOT NULL DEFAULT 0,
+                  base REAL NOT NULL DEFAULT 0,
+                  discount REAL NOT NULL DEFAULT 0,
+                  net REAL NOT NULL DEFAULT 0,
+                  vat_rate REAL NOT NULL DEFAULT 0,
+                  vat REAL NOT NULL DEFAULT 0,
+                  withholding_code TEXT NOT NULL DEFAULT '',
+                  withholding_num INTEGER NOT NULL DEFAULT 0,
+                  withholding_den INTEGER NOT NULL DEFAULT 0,
+                  withheld REAL NOT NULL DEFAULT 0,
+                  exemption_code TEXT NOT NULL DEFAULT '',
+                  gross REAL NOT NULL DEFAULT 0,
+                  payable REAL NOT NULL DEFAULT 0,
+                  gl_account TEXT NOT NULL DEFAULT '600',
+                  expense_code TEXT NOT NULL DEFAULT '',
+                  unit_cost REAL NOT NULL DEFAULT 0,
+                  origin_line_id TEXT NOT NULL DEFAULT '',
+                  move_id TEXT NOT NULL DEFAULT ''
+                );
+                CREATE INDEX IF NOT EXISTS idx_invoice_lines_invoice ON invoice_lines(invoice_id, seq);
+                CREATE INDEX IF NOT EXISTS idx_invoice_lines_item ON invoice_lines(item_id);
+                CREATE INDEX IF NOT EXISTS idx_invoice_lines_origin ON invoice_lines(origin_line_id);
+                CREATE INDEX IF NOT EXISTS idx_stock_moves_invoice ON stock_moves(invoice_id);
+                -- Entegratörden gelen e-Faturalar (bize kesilenler). Alış faturası olarak alınınca invoice_id bağlanır; tek
+                -- belge iki kez alınamaz (uuid tekil). e-Belge bağlantısı kapalıyken tablo boş kalır.
+                CREATE TABLE IF NOT EXISTS einvoice_inbox (
+                  id TEXT PRIMARY KEY,
+                  uuid TEXT NOT NULL,
+                  number TEXT NOT NULL DEFAULT '',
+                  sender_vkn TEXT NOT NULL DEFAULT '',
+                  sender_name TEXT NOT NULL DEFAULT '',
+                  issue_date TEXT NOT NULL DEFAULT '',
+                  payable REAL NOT NULL DEFAULT 0,
+                  currency TEXT NOT NULL DEFAULT 'TRY',
+                  profile TEXT NOT NULL DEFAULT '',
+                  type_code TEXT NOT NULL DEFAULT '',
+                  status TEXT NOT NULL DEFAULT '',
+                  xml TEXT NOT NULL DEFAULT '',
+                  state TEXT NOT NULL DEFAULT 'new' CHECK (state IN ('new', 'imported', 'ignored')),
+                  invoice_id TEXT NOT NULL DEFAULT '',
+                  fetched_by TEXT,
+                  fetched_at TEXT NOT NULL,
+                  updated_at TEXT
+                );
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_einvoice_inbox_uuid ON einvoice_inbox(uuid);
+                CREATE INDEX IF NOT EXISTS idx_cheques_invoice ON cheques(invoice_id);
+                CREATE INDEX IF NOT EXISTS idx_plans_invoice ON plans(invoice_id);
+                CREATE INDEX IF NOT EXISTS idx_cheque_events_invoice ON cheque_events(invoice_id);
+                -- Tekrarlayan fatura (abonelik, kira, aidat): şablon faturadan her N ayda bir TASLAK hazırlanır; kullanıcı
+                -- kontrol edip keser (kendiliğinden deftere yazılmaz).
+                CREATE TABLE IF NOT EXISTS invoice_repeats (
+                  id TEXT PRIMARY KEY,
+                  template_id TEXT NOT NULL,
+                  every_months INTEGER NOT NULL DEFAULT 1 CHECK (every_months BETWEEN 1 AND 12),
+                  next_date TEXT NOT NULL,
+                  until_date TEXT NOT NULL DEFAULT '',
+                  active INTEGER NOT NULL DEFAULT 1,
+                  made INTEGER NOT NULL DEFAULT 0,
+                  last_invoice_id TEXT NOT NULL DEFAULT '',
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL,
+                  updated_at TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_invoice_repeats_template ON invoice_repeats(template_id);
+              `);
+            },
+          },
+          {
+            version: 19,
+            name: "v2.0.17 Kasa ↔ Banka transferi; fatura kapama bağı ve mahsup fişi",
+            up(store) {
+              // Yalnız ekleyici. Transfer: nakit tarafı (method = cash) ve banka tarafı (method = bank) aynı transfer_id'yi
+              // taşır; biri düzeltilince/silinince öbürü de. Eski sürüm sütunu görmezden gelir.
+              addColumn(store, "cash_entries", "transfer_id", "TEXT NOT NULL DEFAULT ''");
+              store.exec("CREATE INDEX IF NOT EXISTS idx_cash_entries_transfer ON cash_entries(transfer_id)");
+              // Cari kartından girilen tahsilat/ödeme "Kapatılacak Fatura" ile bağlanabilir (boş = otomatik, en eski açık fatura).
+              addColumn(store, "account_entries", "invoice_id", "TEXT NOT NULL DEFAULT ''");
+              store.exec("CREATE INDEX IF NOT EXISTS idx_account_entries_invoice ON account_entries(invoice_id)");
+              // Mahsup fişi: bir faturayı aynı carinin karşı yöndeki faturasıyla ya da cari satırıyla (Alacak/Borç Yaz, açılış)
+              // kapatır. Cari bakiyesini değiştirmez (bakiye zaten net); yalnız fatura kapamasını belirler.
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS invoice_offsets (
+                  id TEXT PRIMARY KEY,
+                  account_id TEXT NOT NULL,
+                  invoice_id TEXT NOT NULL,
+                  counter_type TEXT NOT NULL CHECK (counter_type IN ('invoice', 'entry')),
+                  counter_id TEXT NOT NULL,
+                  amount REAL NOT NULL,
+                  date TEXT NOT NULL,
+                  note TEXT NOT NULL DEFAULT '',
+                  created_by TEXT NOT NULL,
+                  created_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_invoice_offsets_account ON invoice_offsets(account_id);
+                CREATE INDEX IF NOT EXISTS idx_invoice_offsets_invoice ON invoice_offsets(invoice_id);
+                CREATE INDEX IF NOT EXISTS idx_invoice_offsets_counter ON invoice_offsets(counter_id);
+              `);
+            },
+          },
+          {
+            version: 20,
+            name: "v2.1.0 banka ve POS çekirdeği: işlem başlığı (İşlem No), banka fişi, hesap ve POS kartları, ekstre, kur, tatil, kalıcı istek kimliği; para satırlarına hesap ve işlem bağı; banka yetki göçü",
+            up(store, { company = null, now = systemClock } = {}) {
+              // docs/BANKA-MODULU-PLAN.md §5.2–§5.4, §9.1, §10.2. YALNIZ EKLEYİCİ (K11): hiçbir mevcut satır değişmez (yeni kolonların
+              // varsayılanı boş/sıfır; eski satırlar "Hesabı Atanmamış" kovasında kalır). İzinli tek değişiklikler: meta.schema.v20At damgası
+              // ve ortak katmanda (001) özel rollere/kişilere banka yetkisi EKLENMESİ. Eski sürüm (2.0.26) aynı dosyayı açar: yeni tabloları
+              // ve kolonları okumaz (§10.6'daki açılış onarımı bunu ayrıca ele alır).
+              store.raw("migration.v20", () => {
+                store.exec(BANK_SCHEMA_V20);
+                // Mutabakat günlüğüne tam tarama ('scan') ve açılış onarımı ('repair') kayıtları (§3.11, §10.6): CHECK genişler; satırlar ve
+                // rowid'ler aynı kalır (eski sürüm yalnız 'rolled-back' / 'baseline' yazar, yeni CHECK'i geçer).
+                widenIntegrityLog(store);
+                for (const table of ["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"]) {
+                  if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table)) continue;
+                  // fin_ref: banka hesabı / POS / kurumsal kart kimliği ('' = Hesabı Atanmamış); event_id: İşlem No'lu işlem başlığı.
+                  addColumn(store, table, "fin_ref", "TEXT NOT NULL DEFAULT ''");
+                  addColumn(store, table, "event_id", "TEXT NOT NULL DEFAULT ''");
+                  store.exec(`CREATE INDEX IF NOT EXISTS idx_${table}_fin_ref ON ${table}(fin_ref, date) WHERE fin_ref <> ''`);
+                  store.exec(`CREATE INDEX IF NOT EXISTS idx_${table}_event_id ON ${table}(event_id) WHERE event_id <> ''`);
+                }
+                // Döviz hesabına cari tahsilatı/ödemesi (13b): satırın döviz tutarı (sent), kuru (×10^6) ve kurun kaynağı. Tablo STRICT
+                // değil; fx_minor'ın tamsayı olduğunu kapı (bank:refs) denetler.
+                if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) {
+                  addColumn(store, "account_entries", "fx_currency", "TEXT NOT NULL DEFAULT ''");
+                  addColumn(store, "account_entries", "fx_minor", "INTEGER NOT NULL DEFAULT 0");
+                  addColumn(store, "account_entries", "fx_rate_e6", "INTEGER NOT NULL DEFAULT 0");
+                  addColumn(store, "account_entries", "fx_source", "TEXT NOT NULL DEFAULT ''");
+                }
+                // Fatura kurunun kaynağı (TCMB / elle); boş = eski fatura.
+                if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoices'")) addColumn(store, "invoices", "rate_source", "TEXT NOT NULL DEFAULT ''");
+                // Mutabakat kapısı (§3.11, dilim 5): dokunulan stok hareketine bağlı fatura kalemi indeksle bulunur (yalnız indeks; satır değişmez).
+                if (store.all("PRAGMA table_info(invoice_lines)").some(column => column.name === "move_id")) store.exec("CREATE INDEX IF NOT EXISTS idx_invoice_lines_move ON invoice_lines(move_id) WHERE move_id <> ''");
+                // Aşama 4: İşlem Kartı'nın işlem geçmişi (işlem başlığına göre; yalnız indeks).
+                ensureBankSchema(store);
+                // Yetki göçü yalnız ortak katmanda (001): şirketlerin kullanıcı tablosu ortak katmandan aynalanır. Şirketi bilinmeyen çağrı
+                // (yedeğin geri yüklenmesi) ortak katman sayılır; şirket kopyasında da çalışsa zararsızdır (aynalama üstüne yazar).
+                if (!company || company.id === "sirket-001") migrateBankGrants(store);
+                if (!store.get("SELECT 1 AS found FROM settings WHERE key = 'meta.schema.v20At'")) {
+                  const at = now().toISOString();
+                  store.run("INSERT INTO settings (key, value, updated_at) VALUES ('meta.schema.v20At', ?, ?)", at, at);
+                }
+              });
+            },
+          },
+          {
+            version: 21,
+            name: "v2.2.0 banka hesabı işaretleri (Kredi Kartı / Çek / Senet / POS Kullan), kredi kartının bağlı bankası ve son 4 hanesi, verilen çek/senedin banka hesabı",
+            up(store) {
+              // docs/2.2.0-IS-LISTESI.md İz 2 (2.2, 2.3, 2.5, 2.6). YALNIZ EKLEYİCİ: yeni kolonların varsayılanı kapalı/boş; hiçbir mevcut satır değişmez
+              // (eski hesaplarda işaretler kapalı, eski kartlar bağsız — "aynı adlı bankaya bağla" yalnız ÖNERİ, kendiliğinden bağlanmaz; eski çeklerin
+              // "Banka / Şube" metni olduğu gibi kalır). Para kolonu yok: Ana Defter ve mutabakat bu kolonları okumaz. Eski sürüm (2.1.0) aynı dosyayı
+              // açar; açık kolon listesiyle yazdığı için yeni kolonlar varsayılanıyla kalır.
+              store.raw("migration.v21", () => {
+                if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'bank_accounts'")) {
+                  // parent_id: kurumsal kredi kartının bağlı olduğu (borcunu ödeyen) banka hesabı ('' = bağsız; 2.1.0'da açılmış kartlar).
+                  addColumn(store, "bank_accounts", "parent_id", "TEXT NOT NULL DEFAULT ''");
+                  // card_last4: kartın son 4 hanesi (kart numarasının tamamı saklanmaz; plan §9.2/10).
+                  addColumn(store, "bank_accounts", "card_last4", "TEXT NOT NULL DEFAULT ''");
+                  for (const flag of ["use_card", "use_cheque", "use_note", "use_pos"]) addColumn(store, "bank_accounts", flag, "INTEGER NOT NULL DEFAULT 0");
+                  store.exec("CREATE INDEX IF NOT EXISTS idx_bank_accounts_parent ON bank_accounts(parent_id) WHERE parent_id <> ''");
+                }
+                if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheques'")) {
+                  // Verilen çekin Çek Hesabı / verilen senedin ödeme hesabı önerisi ('' = yok; alınan evrakta hep boş).
+                  addColumn(store, "cheques", "bank_account_id", "TEXT NOT NULL DEFAULT ''");
+                  store.exec("CREATE INDEX IF NOT EXISTS idx_cheques_bank_account ON cheques(bank_account_id) WHERE bank_account_id <> ''");
+                }
+              });
+            },
+          },
+          {
+            version: 22,
+            name: "v2.2.0 Kasa açılışı işareti (Kasa → Açılış Bakiyesi ile yazılan satır)",
+            up(store) {
+              // Yargıç 2.2.0 Y2/Y3: Kasa açılışı (B 100 / A 500) açıklama metninden ("Açılış …") değil, bu işaretten tanınır. YALNIZ EKLEYİCİ: eski
+              // satırların hepsi 0 (sıradan Kasa girişi, 649) kalır — "Açılış …" açıklamalı eski girişler kendiliğinden açılışa çevrilmez, kapanmış
+              // dönemin mizanı değişmez. İşareti yalnız Kasa → Açılış Bakiyesi ucu yazar (routes/cash.mjs). Eski sürüm (2.1.0) kolonu okumaz.
+              store.raw("migration.v22", () => {
+                if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cash_entries'")) return;
+                addColumn(store, "cash_entries", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+              });
+            },
+          },
+          {
+            version: 23,
+            name: "v2.3.0 Şüpheli Ticari Alacaklar (128/129): kayıt ve karşılık tabloları",
+            up(store) {
+              // docs/BANKA-MODULU-PLAN.md §3.11b; lib/bank/doubtful.mjs. YALNIZ EKLEYİCİ: iki yeni tablo; hiçbir mevcut satır ve kolon değişmez. Eski
+              // sürüm (2.2.0) aynı dosyayı açar, tabloları okumaz (kaydı yoksa Ana Defter aynı). Kilit izi: şüpheli kaydı olmayan veride göç öncesiyle
+              // birebir aynı (lib/integrity.mjs LOCK_SQL doubtful_* since "2.3.0").
+              store.raw("migration.v23", () => store.exec(DOUBTFUL_SCHEMA_V23));
+            },
+          },
+          {
+            version: 24,
+            name: "v2.3.0 Fatura Ayarları eski banka listesi → hesap kartında IBAN Faturada Gösterilsin (bir kez)",
+            up(store) {
+              // İz 3.4 (plan §8.9 E2.16 / #31): banka hesabı açıldıktan sonra fatura yalnız "IBAN Faturada Gösterilsin" işaretli hesapları basar; eski liste
+              // (invoice.settings seller.banks) yalnız sihirbaz önerisidir. Mevcut kurulumda iş kesilmesin: hiçbir hesap işaretli değilse eski listedeki
+              // IBAN'ı taşıyan hesaplar bir kez işaretlenir (yalnız işaret; para/defter değişmez). İşaretli hesap varsa kullanıcı seçimine dokunulmaz.
+              store.raw("migration.v24", () => {
+                if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'bank_accounts'")) return;
+                if (store.get("SELECT 1 AS found FROM bank_accounts WHERE show_on_invoice = 1 AND deleted_at IS NULL LIMIT 1")) return;
+                const settings = parseJson(store.get("SELECT value FROM settings WHERE key = 'invoice.settings'")?.value, {});
+                const ibans = (Array.isArray(settings?.seller?.banks) ? settings.seller.banks : []).map(bank => String(bank?.iban || "").replace(/\s+/g, "").toUpperCase()).filter(Boolean);
+                if (!ibans.length) return;
+                store.run(`UPDATE bank_accounts SET show_on_invoice = 1 WHERE deleted_at IS NULL AND iban <> '' AND upper(replace(iban, ' ', '')) IN (SELECT value FROM json_each(?))`, JSON.stringify(ibans));
+              });
+            },
+          },
+          {
+            version: 25,
+            name: "v2.3.0 işlem geçmişi düzeltme izi: not, telefon ve haciz satırlarında düzelten/düzeltme zamanı",
+            up(store) {
+              // 2.3.0 İz 5.6 (müşteri talebi 6): kayıt detay kartındaki not / telefon / haciz satırları düzeltilip silinebilir; düzeltme izi
+              // tahsilattaki gibi (updated_by/updated_at). YALNIZ EKLEYİCİ: boş kolon; eski sürüm aynı dosyayı okur.
+              store.raw("migration.v25", () => {
+                for (const table of ["notes", "phones", "liens"]) {
+                  addColumn(store, table, "updated_by", "TEXT");
+                  addColumn(store, table, "updated_at", "TEXT");
+                }
+              });
+            },
+          },
+          {
+            version: 26,
+            name: "v2.3.0 cari tahsilatında 'Normal Cari Hesaba İşle' işareti (şüpheliden düşmez)",
+            up(store) {
+              // Ürün sahibi kararı 15.10.2026 (plan §3.11b/2): şüpheli kaydı açık müşteride tahsilat varsayılan şüpheliden düşer; kullanıcı
+              // "Normal Cari Hesaba İşle" derse satır 120'de kalır (doubtful_skip = 1). YALNIZ EKLEYİCİ: varsayılan 0 → eski satırlar bugünkü gibi
+              // şüpheliden düşer; eski sürüm (2.2.0) aynı dosyayı okur, kolonu görmez. Kilit izi account_entries kolon listesini okumaz.
+              store.raw("migration.v26", () => addColumn(store, "account_entries", "doubtful_skip", "INTEGER NOT NULL DEFAULT 0"));
+            },
+          },
+          {
+            version: 27,
+            name: "v2.4.0 fatura kaleminde Seri No / Lot No (isteğe bağlı)",
+            up(store) {
+              // İz 7.4 (Wolvox karşılaştırması, kullanıcı kararı 16.10.2026 "isteğe bağlı olarak olsun"): kalemde iki serbest metin; e-Belgede
+              // cac:Item/cac:ItemInstance. YALNIZ EKLEYİCİ: varsayılan boş; eski sürüm aynı dosyayı okur, kolonları görmez; kilit izi ve mutabakat
+              // kapısı invoice_lines'ın bu kolonlarını okumaz (para alanı değil).
+              store.raw("migration.v27", () => {
+                addColumn(store, "invoice_lines", "serial_no", "TEXT NOT NULL DEFAULT ''");
+                addColumn(store, "invoice_lines", "lot_no", "TEXT NOT NULL DEFAULT ''");
+              });
+            },
+          },
+          {
+            version: 28,
+            name: "v2.4.3 stok kartında KDV oranı (isteğe bağlı)",
+            up(store) {
+              // Fatura hız testi H8 (17.10.2026): KDV oranı stok kartında yoktu, her kalemde elle seçiliyordu. Faturada ürün seçilince kalemin KDV'si karttan
+              // önerilir (kullanıcı değiştirebilir). YALNIZ EKLEYİCİ: varsayılan NULL = tanımsız (bugünkü davranış: formun varsayılan oranı); eski sürüm aynı
+              // dosyayı okur, kolonu görmez; mutabakat kapısı stock_items'ın yalnız kind / deleted_at'ine bakar (para alanı değil).
+              store.raw("migration.v28", () => addColumn(store, "stock_items", "vat_rate", "REAL"));
+            },
+          },
+          {
+            version: 29,
+            name: "v2.4.3 iade e-Belgesinde asıl faturanın e-Belge referansı",
+            up(store) {
+              // Dar kontrol 2 (MM1, mali müşavir): kâğıt (16 karakter olmayan) numaralı asıl faturanın iadesi e-Belge olarak kesilemiyordu (GİB şematronu
+              // BillingReference/ID uzunluğu 16). İade formunda "İade Edilen Belge No (e-Belge Referansı)": asıl numara 16 karakter değilse tamamlanmış değer
+              // önerilir, kullanıcı onaylar; asıl kayıt değişmez. YALNIZ EKLEYİCİ: varsayılan boş = asıl faturanın numarası (bugünkü davranış); eski sürüm aynı
+              // dosyayı okur, kolonu görmez; mutabakat kapısı ve kilit izi invoices'ın bu kolonunu okumaz (para alanı değil).
+              store.raw("migration.v29", () => {
+                if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoices'")) addColumn(store, "invoices", "return_ref", "TEXT NOT NULL DEFAULT ''");
+              });
+            },
+          },
+          {
+            version: 30,
+            name: "v2.4.3 defter: stok açılışı işareti (B 153 / A 500), Kasa'dan vergi ödemesi, KDV mahsup fişi",
+            up(store) {
+              // Uzman mali müşavir MM4 (kullanıcı kararı 18.10.2026): ürün kartındaki açılış stoku ve Excel'den ürün yüklemedeki miktar (elde olan stok; para
+              // yazılmaz) Ana Defter'e açılış fişi olarak girer: B 153 / A 500 (miktar × birim fiyat) — Kasa, banka, cari ve taksit açılışlarıyla aynı karşı hesap.
+              // Açılış İŞARETTEN tanınır (Kasa açılışı göç 22 gibi; Yargıç 2.2.0 Y2/Y3: metinden değil). Kullanıcı kararı gereği ESKİ verideki açılışlar da
+              // mizana gelir: programın kendi yazdığı açılış hareketleri (giriş, yalnız miktar, faturasız, iadesiz; açıklaması programın yazdığı "Açılış stoku" ya
+              // da "Açılış stoku (Excel)") bir kez işaretlenir. Kilit izi (LOCK_SQL stock_moves) kolonu okumaz: iz değişmez; kapanmış dönemin mizanında 153 / 500
+              // açılış kadar değişir (bilinçli, kullanıcı kararı). Eski sürüm (2.4.2) kolonu görmez; açtığı yeni açılış işaretsiz kalır.
+              store.raw("migration.v30", () => {
+                if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'stock_moves'")) return;
+                addColumn(store, "stock_moves", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+                const invoiceCol = store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "invoice_id") ? "AND invoice_id = ''" : "";
+                const reasonCol = store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "reason") ? "AND reason = ''" : "";
+                store.run(`UPDATE stock_moves SET is_opening = 1 WHERE kind = 'in' AND pay = 'none' ${invoiceCol} ${reasonCol} AND note IN ('Açılış stoku', 'Açılış stoku (Excel)')`);
+              });
+              // MM3 (kullanıcı kararı 18.10.2026): Vergi Ödemesi ve KDV Mahsup Fişi. YALNIZ EKLEYİCİ: Kasa'dan nakit vergi ödemesinin satırı (cash_entries)
+              // vergi türünü ve gecikme zammını taşır (tax_json; boş = sıradan Kasa çıkışı, 770 — eski satırlar değişmez). KDV mahsup fişleri ayrı tabloda
+              // (para satırı değil; yevmiye B 391 / A 191 / A 190 / A 360 ya da B 190 — lib/general-ledger.mjs). Eski sürüm kolonu ve tabloyu görmez.
+              store.raw("migration.v30.tax", () => {
+                if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cash_entries'")) addColumn(store, "cash_entries", "tax_json", "TEXT NOT NULL DEFAULT ''");
+                store.exec(VAT_OFFSETS_SCHEMA_V29);
+              });
+            },
+          },
+          {
+            version: 31,
+            name: "v2.4.4 Personel Özlük (çalışan kartları; para dışı)",
+            up(store) {
+              // Kullanıcı kararı 21.10.2026 (Personel Raporu → Çalışanlar / Ayrılanlar; routes/staff.mjs): şirketin çalışan kartları. YALNIZ EKLEYİCİ: yeni tablo;
+              // eski sürüm (2.4.3) aynı dosyayı okur, tabloyu görmez. Para tablosu DEĞİL: maaş yalnız bilgi (Kasa, Banka, cari ve Ana Defter okumaz; mutabakat
+              // kapısı ve kilit izi bu tabloya bakmaz). Kişisel veri (KVKK): değerler yalnız bu tabloda; işlem geçmişine alan ADI yazılır, değer yazılmaz.
+              store.exec(STAFF_SCHEMA_V31);
+            },
+          },
+          {
+            version: 32,
+            name: "v2.4.4 seriden ayrılmış ve silinmiş belgelerin kâğıt / fiş numaraları (bir kez tarama)",
+            up(store, { now = systemClock } = {}) {
+              // Karar 22.10.2026 (verilmiş kâğıt / fiş numarası bir daha kullanılmaz; routes/invoices.mjs numberFloor). Para tablosu DEĞİL: yalnız bir ayar satırı
+              // yazılır (invoice.numberFloor); faturalar, kilit izi ve mutabakat kapısı değişmez. Eski sürüm (2.4.3) ayarı okumaz. Geri yüklenen eski yedekte de
+              // koşar (company-backups.mjs geri yüklemede göçleri uygular); işaret veri tabanının şema sürümüdür (PRAGMA user_version).
+              store.raw("migration.v32", () => scanPaperFloors(store, { now }));
+            },
+          },
+          {
+            version: 33,
+            name: "v2.4.5 cari borç kaydında Vade Tarihi ve Beklenen Ödeme Tarihi",
+            up(store) {
+              // 2.4.5 madde 6 (BAŞ MİMAR KARARI K6.4): elle Borç / Alacak kaydının ve Açılış Bakiyesi'nin isteğe bağlı Vade Tarihi (due_date) ve Beklenen Ödeme
+              // Tarihi (expected_date), YYYY-MM-DD, boş = yok. YALNIZ EKLEYİCİ: eski satırlar boş kalır; eski sürüm (2.4.4) kolonları görmez. Bilgi alanıdır: tutar,
+              // bakiye, Kasa ve Ana Defter okumaz (lib/bank/money-lines.mjs FREE_COLUMNS); takvim / zil / Vade Takip kalemi doğurur (routes/accounts.mjs dueItems).
+              store.raw("migration.v33", () => {
+                addColumn(store, "account_entries", "due_date", "TEXT NOT NULL DEFAULT ''");
+                addColumn(store, "account_entries", "expected_date", "TEXT NOT NULL DEFAULT ''");
+              });
+            },
+          },
+          {
+            version: 34,
+            name: "v2.4.6 Maliyet Hesap Kartı (Duşakabin Üretimi; para dışı)",
+            up(store) {
+              // 2.4.6 madde 1 (kullanıcı kararları 24–25.10.2026; lib/maliyet/*, routes/maliyet.mjs): Stok penceresindeki Maliyet Hesap Kartı'nın sekmeleri, kartları,
+              // satırları, adımları (etiket + oran / bölen / elle değer), matris hücreleri (taban / fark) ve adları. YALNIZ EKLEYİCİ: yeni tablolar; eski sürüm (2.4.5)
+              // aynı dosyayı okur, tabloları görmez. Para tablosu DEĞİL: hiçbir yere bağlı değil (Kasa, Banka, cari, stok, fatura, Ana Defter okumaz; mutabakat kapısı ve
+              // kilit izi bakmaz). Şablon kod içinde; tablolar BOŞ kurulur, sektör "Duşakabin Üretimi" iken ilk açılışta şablon bir kez yazılır.
+              store.exec(MALIYET_SCHEMA_V34);
+            },
+          },
+          {
+            version: 35,
+            name: "v2.4.6 cari Açılış Bakiyesi satırının işareti (is_opening)",
+            up(store) {
+              // 2.4.6 madde 12 (2.4.5 K6.5 (2)): Açılış Bakiyesi satırı açıklamasıyla ("Açılış bakiyesi") değil kolonla tanınır (routes/accounts.mjs openingEntryOf);
+              // kullanıcı açıklamayı değiştirince de açılış kalır. Mevcut satırlar 2.4.5'in kuralıyla işaretlenir: carinin elle (source '') Borç / Alacak satırlarından
+              // açıklaması "Açılış bakiyesi" olan İLK satır (rowid). Para alanı DEĞİL: tutar, yön, tarih, bakiye, Kasa ve Ana Defter değişmez; eski sürüm (2.4.5)
+              // kolonu görmez. Cari başına en çok bir işaret.
+              store.raw("migration.v35", () => {
+                if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+                addColumn(store, "account_entries", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+                store.run(
+                  `UPDATE account_entries SET is_opening = 1 WHERE id IN (
+                     SELECT (SELECT e.id FROM account_entries e WHERE e.account_id = a.account_id AND e.source = '' AND e.kind IN ('debt', 'credit') AND e.note = ? ORDER BY e.rowid LIMIT 1)
+                     FROM (SELECT DISTINCT account_id FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND note = ?) a)`,
+                  OPENING_ENTRY_NOTE,
+                  OPENING_ENTRY_NOTE,
+                );
+              });
+            },
+          },
+          // v34 ve v35 2.4.6'da başka işlere ayrıldı (Maliyet Hesap Kartı, Açılış işareti). DİKKAT: göçler sürüm numarasına göre süzülür (runMigrations: version >
+          // user_version); v34 / v35 bu dosyaya v36'dan SONRA girerse v36'ya geçmiş veri tabanında hiç koşmaz → üçü aynı adayda (ya da öncekiler önce) birleşir.
+          {
+            version: 36,
+            name: "v2.4.6 iade geri ödemesi bağı (cari Ödeme / Tahsilat → iade)",
+            up(store) {
+              // 2.4.6 madde 9 (DB1; v2.1.0 R1 düzeni): cari kartından girilen Ödeme / Tahsilat'ın geri ödediği iade — satıştan / alıştan iade faturasının kimliği
+              // (invoices.id) ya da faturasız stok iadesinin hareket kimliği (stock_moves.id); boş = bağsız. YALNIZ EKLEYİCİ: eski satırlar boş (bağsız) kalır, eski
+              // sürüm (2.4.5) kolonu görmez. Para alanı DEĞİL: tutar, yön, tarih, yol, bakiye, Kasa ve Ana Defter okumaz (lib/bank/money-lines.mjs FREE_COLUMNS);
+              // yalnız fatura / borç kapaması okur (lib/invoice-settle.mjs: geri ödeme iadenin alacağıyla kapanan yükümlülüktür).
+              store.raw("migration.v36", () => {
+                if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+                addColumn(store, "account_entries", "refund_of", "TEXT NOT NULL DEFAULT ''");
+              });
+            },
+          },
+          {
+            version: 37,
+            name: "v2.4.7 e-Belge kullanım sayacının şirket izi (EDM iş ortaklığı; para dışı)",
+            up(store, { now = systemClock } = {}) {
+              // 2.4.7 E4 (EDM iş ortaklığı B1; kural lib/einvoice/kullanim.mjs; kullanıcı kararları S1–S5, 27.10.2026). Sayacın ASLI şirket dosyasının DIŞINDA,
+              // kurulum düzeyindeki kullanım defteridir (lib/einvoice/kullanim-defteri.mjs; S4: Yedekten Geri Yükle ve Şirket Verisini Sıfırla etkilemez). Bu tablo
+              // yalnız İZdir: sayılan gönderim durum yazımıyla AYNI işlemde buraya, işlemden sonra deftere yazılır; deftere yazım düşerse açılışta / kullanım
+              // özetinde izden tamamlanır (defterin birincil anahtarı çift sayımı önler). Şirket + ETTN + ortam başına bir satır. YALNIZ EKLEYİCİ: boş kurulur
+              // (geriye dönük doldurma YOK); eski sürüm (2.4.6) tabloyu görmez. Güncelleme ve silme tetikleyiciyle reddedilir. Para tablosu DEĞİL.
+              // edoc_usage_meta.since: sayacın bu dosyada başladığı an — bundan önceki belirsiz gönderimin sonradan kesinleşmesi sayılmaz (eski APPLICATION_NAME).
+              // settings'e DEĞİL ayrı tabloya (eski sürüm verisinin göçü mevcut satırları ve ayarları değiştirmez — test/guvenilirlik/goc-v20.mjs); ilk yazım kalır.
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS edoc_usage (
+                  ettn TEXT NOT NULL, env TEXT NOT NULL CHECK (env IN ('test', 'live')), kind TEXT NOT NULL CHECK (kind IN ('efatura', 'earsiv', 'esmm')),
+                  month TEXT NOT NULL CHECK (length(month) = 7), invoice_id TEXT NOT NULL DEFAULT '', source TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL,
+                  PRIMARY KEY (ettn, env)
+                ) STRICT;
+                CREATE INDEX IF NOT EXISTS idx_edoc_usage_month ON edoc_usage(month, env, kind);
+                CREATE TRIGGER IF NOT EXISTS edoc_usage_no_update BEFORE UPDATE ON edoc_usage BEGIN SELECT RAISE(ABORT, 'edoc_usage yalnız eklenir'); END;
+                CREATE TRIGGER IF NOT EXISTS edoc_usage_no_delete BEFORE DELETE ON edoc_usage BEGIN SELECT RAISE(ABORT, 'edoc_usage yalnız eklenir'); END;
+                CREATE TABLE IF NOT EXISTS edoc_usage_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL) STRICT;
+              `);
+              store.run("INSERT OR IGNORE INTO edoc_usage_meta (key, value) VALUES ('since', ?)", (typeof now === "function" ? now() : new Date()).toISOString());
+            },
+          },
+          {
+            version: 38,
+            name: "v2.4.7 mobil cihaz eşleme ve uzak oturumlar (ortak katman; para dışı)",
+            up(store) {
+              // 2.4.7 M2 (docs/mobil/M2-TASARIM.md; lib/mobile-remote.mjs; kullanıcı kararları 26.10.2026 + P1–P13 29.10.2026). Program başına (iki şirket birlikte)
+              // sayılan eşli uzaktan cihazlar ORTAK KATMANDA (001'in veri tabanı; kullanıcılar ve oturumların yanında) kullanılır; şirket dosyalarında tablolar boş
+              // kalır. Yedekten Geri Yükle'de canlı hâl kalır (company-backups.mjs COMMON_TABLES: silinmiş cihaz eski yedekle geri gelmez); Şirket Verisini Sıfırla
+              // dokunmaz. YALNIZ EKLEYİCİ: yeni tablolar; mevcut tablo ve satır değişmez, eski sürüm (2.4.6) tabloları görmez. Kod/sır/oturum belirteci düz
+              // metin olarak YAZILMAZ (SHA-256 karması). Zamanlar ISO metni (uzaktan erişim saati, config.remoteNow).
+              // mobile_access: "Uzaktan Bağlanabilir" izni (kullanıcı başına; satır yoksa izin yok). mobile_codes: tek kullanımlık eşleme karekodları.
+              // mobile_devices: eşli cihazlar (revoked_at dolu = silinmiş; sayılmaz, giremez). mobile_sessions: cihaza bağlı uzak oturumlar (yerel sessions'tan ayrı).
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS mobile_access (
+                  user_id TEXT PRIMARY KEY, remote INTEGER NOT NULL DEFAULT 0 CHECK (remote IN (0, 1)), updated_at TEXT NOT NULL, updated_by TEXT NOT NULL DEFAULT ''
+                ) STRICT;
+                CREATE TABLE IF NOT EXISTS mobile_codes (
+                  code_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, created_by TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL, expires_at TEXT NOT NULL,
+                  state TEXT NOT NULL DEFAULT 'active' CHECK (state IN ('active', 'used', 'revoked')), used_at TEXT, device_id TEXT
+                ) STRICT;
+                CREATE INDEX IF NOT EXISTS idx_mobile_codes_user ON mobile_codes(user_id, state);
+                CREATE TABLE IF NOT EXISTS mobile_devices (
+                  id TEXT PRIMARY KEY, user_id TEXT NOT NULL, name TEXT NOT NULL, kind TEXT NOT NULL, secret_hash TEXT NOT NULL, public_key TEXT NOT NULL,
+                  created_at TEXT NOT NULL, created_by TEXT NOT NULL DEFAULT '', last_seen_at TEXT, revoked_at TEXT, revoked_by TEXT, revoke_reason TEXT
+                ) STRICT;
+                CREATE INDEX IF NOT EXISTS idx_mobile_devices_user ON mobile_devices(user_id, revoked_at);
+                CREATE TABLE IF NOT EXISTS mobile_sessions (
+                  token_hash TEXT PRIMARY KEY, device_id TEXT NOT NULL, user_id TEXT NOT NULL, created_at TEXT NOT NULL, last_seen_at TEXT NOT NULL, expires_at TEXT NOT NULL
+                ) STRICT;
+                CREATE INDEX IF NOT EXISTS idx_mobile_sessions_device ON mobile_sessions(device_id);
+                CREATE INDEX IF NOT EXISTS idx_mobile_sessions_user ON mobile_sessions(user_id);
+              `);
+            },
+          },
+          {
+            version: 39,
+            name: "v2.4.7 mobil şifreli özet: cihazın şifreleme anahtarı (ortak katman; para dışı)",
+            up(store) {
+              // 2.4.7 M3 (docs/mobil/M3-TASARIM.md; lib/mobile-ozet.mjs): eşlemede telefonun ürettiği, dışa aktarılamaz ECDH P-256 şifreleme anahtarının AÇIK kısmı
+              // (JWK). Şifreli özetin veri anahtarı bu anahtara sarılır. YALNIZ EKLEYİCİ: tek sütun; M2 ile eşlenmiş (anahtarsız) cihaz özeti açamaz, yeniden eşlenir.
+              addColumn(store, "mobile_devices", "enc_key", "TEXT");
+            },
+          },
+          {
+            version: 40,
+            name: "v2.4.8 WhatsApp Business API gönderim kuyruğu + WhatsApp Mesajı İstemiyor (para dışı)",
+            up(store) {
+              // 2.4.8 W2 (docs/erp/WHATSAPP-API-PLANI-2.4.8.md §6 W2; lib/whatsapp/queue.mjs): toplu gönderim (wa_batches) ve kişi başına iş (wa_jobs). Şirket
+              // dosyasında; yalnız ekleyici (yeni tablolar + accounts'a bir sütun). message_sends (wa.me yolu, 2.0.13) DOKUNULMAZ — CHECK kısıtı yeni durumları almaz;
+              // cari kartının geçmişi ikisini birleştirir. İletinin METNİ saklanmaz: değişken değerleri (params_json) + PDF adı (plan §5). Çift gönderimin ve
+              // 24 saat sınırının kaydı şirket dosyasının DIŞINDA, makine düzeyindeki defterde (lib/whatsapp/defter.mjs): geri yükleme sayacı azaltmaz, eski işleri diriltmez.
+              // accounts.wa_opt_out: "WhatsApp Mesajı İstemiyor" (1 = toplu gönderimden çıkar; bilgi alanı, defteri değiştirmez — lib/db.mjs INFO_COLUMNS).
+              store.exec(`
+                CREATE TABLE IF NOT EXISTS wa_batches (
+                  id TEXT PRIMARY KEY, kind TEXT NOT NULL CHECK (kind IN ('statement', 'reminder')), period_from TEXT NOT NULL DEFAULT '', period_to TEXT NOT NULL DEFAULT '',
+                  preset TEXT NOT NULL DEFAULT '', template TEXT NOT NULL, lang TEXT NOT NULL DEFAULT '', phone_number_id TEXT NOT NULL, waba_id TEXT NOT NULL,
+                  ledger_id TEXT NOT NULL DEFAULT '', company_id TEXT NOT NULL DEFAULT '',
+                  state TEXT NOT NULL DEFAULT 'running' CHECK (state IN ('running', 'paused', 'done', 'canceled', 'stopped')),
+                  pause_reason TEXT NOT NULL DEFAULT '', pause_code TEXT NOT NULL DEFAULT '', request_key TEXT, retry_at TEXT, troubles INTEGER NOT NULL DEFAULT 0, offline_tries INTEGER NOT NULL DEFAULT 0,
+                  created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, finished_at TEXT
+                ) STRICT;
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_wa_batches_request ON wa_batches(request_key) WHERE request_key IS NOT NULL;
+                CREATE INDEX IF NOT EXISTS idx_wa_batches_state ON wa_batches(state, created_at);
+                CREATE TABLE IF NOT EXISTS wa_jobs (
+                  id TEXT PRIMARY KEY, batch_id TEXT NOT NULL, account_id TEXT NOT NULL, account_name TEXT NOT NULL DEFAULT '', phone_e164 TEXT NOT NULL DEFAULT '',
+                  template TEXT NOT NULL, lang TEXT NOT NULL DEFAULT '', params_json TEXT NOT NULL DEFAULT '[]', pdf_name TEXT NOT NULL DEFAULT '',
+                  period_from TEXT NOT NULL DEFAULT '', period_to TEXT NOT NULL DEFAULT '',
+                  state TEXT NOT NULL CHECK (state IN ('pending', 'preparing', 'sending', 'accepted', 'sent', 'delivered', 'read', 'failed', 'uncertain', 'limited', 'held', 'paused', 'canceled', 'expired', 'skipped', 'stopped')),
+                  skip_reason TEXT NOT NULL DEFAULT '', media_id TEXT, media_at TEXT, media_deleted_at TEXT, media_delete_tries INTEGER NOT NULL DEFAULT 0, wamid TEXT,
+                  attempt INTEGER NOT NULL DEFAULT 0, temp_tries INTEGER NOT NULL DEFAULT 0, error_code INTEGER, error_text TEXT NOT NULL DEFAULT '', next_at TEXT, retry_131049 INTEGER NOT NULL DEFAULT 0,
+                  sending_at TEXT, accepted_at TEXT, sent_at TEXT, delivered_at TEXT, read_at TEXT, failed_at TEXT, closed_at TEXT, billable INTEGER,
+                  created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+                  UNIQUE (batch_id, account_id)
+                ) STRICT;
+                CREATE INDEX IF NOT EXISTS idx_wa_jobs_batch ON wa_jobs(batch_id, state);
+                CREATE INDEX IF NOT EXISTS idx_wa_jobs_state ON wa_jobs(state, next_at);
+                CREATE INDEX IF NOT EXISTS idx_wa_jobs_account ON wa_jobs(account_id, created_at);
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_wa_jobs_wamid ON wa_jobs(wamid) WHERE wamid IS NOT NULL;
+              `);
+              addColumn(store, "accounts", "wa_opt_out", "INTEGER NOT NULL DEFAULT 0");
+            },
+          },
+          {
+            version: 41,
+            name: "v2.4.8 WhatsApp: iletinin dondurulmuş içeriği (para dışı)",
+            up(store) {
+              // 2.4.8 T2-6 (bağımsız gözden geçirme r3; plan §7a 1 "metin = PDF", §7a 14–15 "yeniden denemede aynı medya"): iş İLK HAZIRLANDIĞINDA değişkenler (params_json)
+              // ve ekstre PDF'i tek anlık görüntüden üretilip dondurulur; her yeniden deneme aynı metni ve aynı PDF'i kullanır, Meta'daki kopya silinmiş / süresi
+              // dolmuşsa aynı baytlardan yeniden yüklenir. prepared_at: dondurma anı. pdf_blob: PDF'in kendisi — YALNIZ iş açıkken (Bekliyor / Sınırda / Duraklatıldı …)
+              // tutulur; iş Meta'ya kabul edilince ya da kesinleşince bakım turu siler (plan §5: iletinin içeriği saklanmaz; yalnız değişkenler + PDF adı kalır).
+              // 2.4.9 B3 (v45): PDF artık wa_job_pdfs tablosunda; bu sütun yalnız göç için durur (her zaman NULL).
+              addColumn(store, "wa_jobs", "prepared_at", "TEXT");
+              addColumn(store, "wa_jobs", "pdf_blob", "BLOB");
+            },
+          },
+          {
+            version: 42,
+            name: "v2.4.8 WhatsApp: toplu işin \"Yine de Gönder\" kararı yeniden denemeye taşınır (para dışı)",
+            up(store) {
+              // 2.4.8 dar kontrol 5 ORTA-1 (KULLANICI KARARI 31.10.2026 "a şıkkı"; lib/whatsapp/queue.mjs plan): kullanıcı R3 sorusunda "Yine de Gönder" dediyse bu karar
+              // "Başarısızları Yeniden Dene"ye ve işteki "Yine de Gönder"e taşınır; yalnız ASIL işin açılışından ÖNCEKİ kabuller yok sayılır. send_again_after: '' = karar yok
+              // (eski satırlar dahil — bugünkü davranış); dolu = asıl işin açılış anı (ISO). Yeniden denemenin yeniden denemesi aynı anı devralır (zincirde sınır kaymaz).
+              // YALNIZ EKLEYİCİ: tek sütun.
+              addColumn(store, "wa_batches", "send_again_after", "TEXT NOT NULL DEFAULT ''");
+            },
+          },
+          {
+            version: 43,
+            name: "v2.4.8 WhatsApp: toplu işin dönem günü (özel aralık ↔ hazır seçim eşliği) yeniden denemeye taşınır (para dışı)",
+            up(store) {
+              // 2.4.8 dar kontrol 9 İş J (KULLANICI KARARI 31.10.2026 dk9 soru 1/7 "a"; lib/whatsapp/queue.mjs keyDayOfBatch): ekstrede özel aralığın "o gün"ü toplu işin
+              // AÇILDIĞI yerel gündür; Başarısızları Yeniden Dene / işteki Yine de Gönder'in açtığı işte ASIL işin günü (dönem gibi taşınır). key_day: '' = açılış günü
+              // (created_at; eski satırlar dahil — bugünkü davranış); dolu = YYYY-AA-GG. YALNIZ EKLEYİCİ: tek sütun.
+              addColumn(store, "wa_batches", "key_day", "TEXT NOT NULL DEFAULT ''");
+            },
+          },
+          {
+            version: 44,
+            name: "v2.4.8 WhatsApp: işteki \"Yine de Gönder\" işinin kaynağı (para dışı)",
+            up(store) {
+              // 2.4.8 İş Q2 (dar kontrol 10 DÜŞÜK-2; KULLANICI KARARI A; "KİME KAÇ KEZ" ilkesi 4 + 5; lib/whatsapp/queue.mjs createBatch / plan): işteki "Yine de Gönder"in açtığı
+              // iş, kaynağı olan Sonucu Belirsiz işin kimliğini taşır. Bu iş (ya da onun "Yine de Gönder" zinciri) Meta'ca kabul / teslim edilince kaynak artık "Sonucu Belirsiz"
+              // elemesi yapmaz (kişi "Daha Önce Gönderildi"ye düşer; R3 sorusu yolu açık — çıkmaz yok). Taşınan veride de aynı kural (bağ şirket dosyasında). inherit_of: '' = bağ
+              // yok (eski satırlar dahil — bugünkü davranış). YALNIZ EKLEYİCİ: tek sütun.
+              addColumn(store, "wa_jobs", "inherit_of", "TEXT NOT NULL DEFAULT ''");
+            },
+          },
+          {
+            version: 45,
+            name: "v2.4.9 WhatsApp: işin dondurulmuş PDF'i ayrı tabloda (para dışı)",
+            up(store) {
+              // 2.4.9 B3 (docs/2.4.9-tasarim/B3-B4.md §B3-3 A; lib/whatsapp/queue.mjs prepare / bakım): dondurulmuş ekstre PDF'i (~33 KB) işin KENDİ satırında (wa_jobs.pdf_blob, v41)
+              // duruyordu; bakım turu kesinleşen işte NULL yapınca satırın yaprak sayfadaki yerel kısmı (~0,5–4 KB) kalıcı boşluk olarak kalıyordu (T9: 40 gönderimde wa_jobs'ta 125 MB).
+              // Artık PDF wa_job_pdfs'te (iş açıkken bir satır); kesinleşince SATIR SİLİNİR, sayfaları sonraki gönderimde yeniden kullanılır. Davranış aynı (ilk hazırlıkta donar, her
+              // yeniden deneme aynı baytları gönderir). YALNIZ EKLEYİCİ + taşıma: NULL olmayan HER pdf_blob taşınır (durum süzgeci yok — kesinleşmiş işin PDF'ini ilk bakım turu siler,
+              // eski kodla aynı yaşam döngüsü), sonra sütun boşaltılır. wa_jobs.pdf_blob sütunu KALIR (her zaman NULL; DROP COLUMN tabloyu yeniden yazar). Yabancı anahtar YOK (yetimi
+              // bakım, hepsini sıfırlama siler). Otomatik VACUUM YOK (BAŞ MİMAR KARARI B3-4): eski boşluk yedekte (VACUUM INTO) zaten yok.
+              store.exec("CREATE TABLE IF NOT EXISTS wa_job_pdfs (job_id TEXT PRIMARY KEY, pdf BLOB NOT NULL, created_at TEXT NOT NULL) STRICT");
+              if (!columnExists(store, "wa_jobs", "pdf_blob")) return;
+              store.run("INSERT OR IGNORE INTO wa_job_pdfs (job_id, pdf, created_at) SELECT id, pdf_blob, COALESCE(prepared_at, updated_at) FROM wa_jobs WHERE pdf_blob IS NOT NULL");
+            },
+          },
+        ];
+        // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
+        const OPENING_ENTRY_NOTE = "Açılış bakiyesi";
+        
+        // 2.4.6 Maliyet Hesap Kartı: sayılar ham (REAL; yuvarlanmaz), boş = NULL. Satır tablosu zincir (ad = malzeme, birim, miktar, fiyat), gramaj (ad = parça,
+        // birim = cins, giden_mt … alis_ft, elle = Giden Kğ girdisi) ve bilgi (degerler_json) kartlarınca paylaşılır. rev: iyimser eşzamanlılık sürümü.
+        const MALIYET_SCHEMA_V34 = `
+          CREATE TABLE IF NOT EXISTS maliyet_sekmeler (
+            kod TEXT PRIMARY KEY, ad TEXT NOT NULL, sira INTEGER NOT NULL, rev INTEGER NOT NULL DEFAULT 1, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE TABLE IF NOT EXISTS maliyet_kartlar (
+            kod TEXT PRIMARY KEY, sekme TEXT NOT NULL, tur TEXT NOT NULL, ad TEXT NOT NULL, sira INTEGER NOT NULL, rev INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE TABLE IF NOT EXISTS maliyet_satirlar (
+            kart TEXT NOT NULL, id TEXT NOT NULL, sira INTEGER NOT NULL, ad TEXT NOT NULL DEFAULT '', birim TEXT NOT NULL DEFAULT '',
+            miktar REAL, fiyat REAL, giden_mt REAL, boy REAL, br_gramaj REAL, giden_kg REAL, alis_ft REAL, elle INTEGER NOT NULL DEFAULT 0,
+            degerler_json TEXT NOT NULL DEFAULT '[]', PRIMARY KEY (kart, id)
+          ) STRICT;
+          CREATE TABLE IF NOT EXISTS maliyet_adimlar (
+            kart TEXT NOT NULL, kod TEXT NOT NULL, etiket TEXT NOT NULL DEFAULT '', deger REAL, PRIMARY KEY (kart, kod)
+          ) STRICT;
+          CREATE TABLE IF NOT EXISTS maliyet_hucreler (
+            kart TEXT NOT NULL, hucre TEXT NOT NULL, deger REAL, PRIMARY KEY (kart, hucre)
+          ) STRICT;
+          CREATE TABLE IF NOT EXISTS maliyet_basliklar (
+            kart TEXT NOT NULL, kod TEXT NOT NULL, ad TEXT NOT NULL DEFAULT '', PRIMARY KEY (kart, kod)
+          ) STRICT;
+        `;
+        
+        // 2.4.4 (karar 22.10.2026): 2.4.0–2.4.3'te "Müşteri Fişi Olarak Bırak" ile Müşteri Fişi serisinden numara alıp sonra e-Belge olarak gönderilen belgenin
+        // numarası seriden ayrılınca hiçbir yere kaydedilmiyordu (seride duran belgelerin MAX(seq)'i görmez) → güncellemeden sonra ilk bırakmada / kâğıt kayıtta
+        // yeniden verilirdi. Bir kezlik tarama: firmanın kâğıt serilerine (Fatura Ayarları → Kâğıt Fatura / Müşteri Fişi ve Serbest Meslek Makbuzu serisi; ayar
+        // yoksa FIS / SMM) ait, programın biçimindeki (seri + yıl + 9 hane) numaralardan o seride DURMAYAN (taşınmış) belgelerde kalanlar:
+        //   - Kâğıt Fatura No (numberForSend fiş numarasını, alan boşsa, buraya taşır);
+        //   - işlem geçmişi "invoice.withdrawn" (alan önceden doluysa numara yalnız orada; 2.4.0'dan beri yazılır) — belge hâlâ varsa ve artık o numarada değilse;
+        //   - (E6) Silinenler'de duran, geri yüklenmemiş belgenin kendi numarası (kâğıt / fiş / iç seri; aşağıda).
+        // Seri + yıl başına en büyük sıra (numarası, o belgenin tarihi) routes/invoices.mjs'in numberFloor kaydına yazılır; kayıt yalnız YÜKSELİR (idempotent:
+        // ikinci tarama bir şey değiştirmez). Biçim dışı ("EL-55", eksik hane) ya da başka seriye ait (e-Belge serisi, eski kâğıt serisi) elle yazılmış numara sayılmaz.
+        const FLOOR_KEY = "invoice.numberFloor"; // routes/invoices.mjs FLOOR_KEY ile aynı
+        const PROGRAM_NUMBER = /^([A-Z0-9]{3})(\d{4})(\d{9})$/;
+        export function scanPaperFloors(store, { now = systemClock } = {}) {
+          const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
+          if (!has("invoices") || !has("settings")) return { raised: [] };
+          const settings = parseJson(store.get("SELECT value FROM settings WHERE key = 'invoice.settings'")?.value, {}) || {};
+          const paper = new Set([settings.series?.paper || "FIS", settings.series?.smm || "SMM"]);
+          const best = new Map();
+          const consider = (value, row) => {
+            const match = PROGRAM_NUMBER.exec(String(value || "").trim());
+            if (!match || !paper.has(match[1]) || row.series === match[1]) return; // biçim dışı, başka seri ya da belge o seride duruyor (MAX(seq) sayar)
+            const seq = Number(match[3]);
+            if (!(seq > 0)) return;
+            const key = `${match[1]}${Number(match[2])}`;
+            best.set(key, mergeFloor(best.get(key) || null, { seq, number: match[0], issueDate: row.issueDate }));
+          };
+          for (const row of store.all("SELECT series, number, paper_no AS paperNo, issue_date AS issueDate FROM invoices WHERE paper_no <> ''")) consider(row.paperNo, row);
+          if (has("audit_events")) {
+            const trail = store.all("SELECT a.payload_json AS payload, i.series, i.number, i.issue_date AS issueDate FROM audit_events a JOIN invoices i ON i.id = a.entity_id WHERE a.type = 'invoice.withdrawn'");
+            for (const row of trail) {
+              const number = parseJson(row.payload, {})?.number;
+              if (number && number !== row.number) consider(number, row);
+            }
+          }
+          // 2.4.4 E6 (eleştirmen 31d; karar 22.10.2026): silinen belgenin numarası da kullanılmış sayılır (routes/invoices.mjs deleteInvoice → reserveNumber).
+          // 2.4.0–2.4.3'te silinip Silinenler'de DURAN (geri yüklenmemiş) belge seride olmadığından MAX(seq) onu görmez → güncellemeden sonra numarası yeniden
+          // verilir, belge geri yüklenince iki belgede aynı numara olurdu. Kaynak belgenin silindiği andaki kendi satırı (seri, yıl, sıra; programın verdiği
+          // numara, seq > 0). Seriler programın e-Belge DIŞI serileri (paperSeriesSet ile aynı: Fiş ve Kâğıt Belge, Serbest Meslek Makbuzu, İç İade; ayar yoksa
+          // FIS / SMM / IAD). 2.4.3'te zaten yeniden verilmiş numara olduğu gibi kalır (geri yükleme reddedilir — routes/invoices.mjs restoreDeleted).
+          if (has("trash")) {
+            const deletedSeries = new Set([settings.series?.paper || "FIS", settings.series?.smm || "SMM", settings.series?.internal || "IAD"]);
+            for (const item of store.all("SELECT payload_json AS payload FROM trash WHERE kind = 'invoice' AND restored_at IS NULL")) {
+              const raw = parseJson(item.payload, {})?.invoice;
+              const seq = Number(raw?.seq);
+              if (!raw || !(seq > 0) || !raw.number || !deletedSeries.has(raw.series)) continue;
+              const key = `${raw.series}${Number(raw.year)}`;
+              best.set(key, mergeFloor(best.get(key) || null, { seq, number: raw.number, issueDate: raw.issue_date, deleted: true }));
+            }
+          }
+          // r31e N1 (23.10.2026): kayıt lib/number-floor.mjs mergeFloor'la birleşir — en büyük numara (numara tabanı) + en büyük SİLİNMEMİŞ numara (kept; sıra-tarih
+          // tabanı silinen belgenin tarihini saymaz). Önceden en büyüğü Silinenler'deki belgeyse taşınan numaranın tarihi kayboluyordu. v32 yayımlanmış hiçbir
+          // sürümde yok (v2.4.3 şeması 30): yeni şema sürümü gerekmez; aday yapılarının yazdığı kept'siz kayıt okunur (keptOf: silinmişse tarih bağlamaz).
+          const floors = parseJson(store.get("SELECT value FROM settings WHERE key = ?", FLOOR_KEY)?.value, {}) || {};
+          const raised = [];
+          for (const [key, entry] of best) {
+            let merged = floors[key] || null;
+            for (const part of [entry, ...(entry.deleted && entry.kept ? [entry.kept] : [])]) merged = mergeFloor(merged, { ...part, deleted: part === entry && entry.deleted === true });
+            if (JSON.stringify(merged) !== JSON.stringify(floors[key] ?? null)) raised.push(key);
+            floors[key] = merged;
+          }
+          if (!raised.length) return { raised };
+          store.run("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", FLOOR_KEY, JSON.stringify(floors), now().toISOString());
+          return { raised };
+        }
+        
+        // 2.4.4 Personel Özlük: tarihler YYYY-AA-GG ('' = yazılmadı); maaş kuruş; fotoğraf JPEG data URL (en çok 120 KB; '' = yok). İşten ayrılış tarihi
+        // yazılıysa kart Ayrılanlar'dadır.
+        const STAFF_SCHEMA_V31 = `
+          CREATE TABLE IF NOT EXISTS staff_members (
+            id TEXT PRIMARY KEY, full_name TEXT NOT NULL, birth_date TEXT NOT NULL DEFAULT '', tc_no TEXT NOT NULL DEFAULT '', address TEXT NOT NULL DEFAULT '',
+            position TEXT NOT NULL DEFAULT '', salary_minor INTEGER NOT NULL DEFAULT 0 CHECK (salary_minor >= 0), bank_name TEXT NOT NULL DEFAULT '', iban TEXT NOT NULL DEFAULT '',
+            hire_date TEXT NOT NULL DEFAULT '', leave_date TEXT NOT NULL DEFAULT '', used_leave_days INTEGER NOT NULL DEFAULT 0 CHECK (used_leave_days >= 0),
+            email TEXT NOT NULL DEFAULT '', phone TEXT NOT NULL DEFAULT '', education TEXT NOT NULL DEFAULT '', specialty TEXT NOT NULL DEFAULT '', photo TEXT NOT NULL DEFAULT '',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE INDEX IF NOT EXISTS idx_staff_members_name ON staff_members(full_name);
+        `;
+        
+        // 2.3.0 İz 1: şüpheli alacak kaydı (cari, tarih, tutar, neden, karşılıksız evrak; open → released | cancelled; İşlem No'lu başlık) ve karşılık
+        // (kayıt başına; active | cancelled). Değersiz Alacak satırı account_entries'tedir (source 'doubtful', source_id = kayıt).
+        const DOUBTFUL_SCHEMA_V23 = `
+          CREATE TABLE IF NOT EXISTS doubtful_receivables (
+            id TEXT PRIMARY KEY, account_id TEXT NOT NULL, date TEXT NOT NULL,
+            amount_minor INTEGER NOT NULL CHECK (amount_minor > 0),
+            reason TEXT NOT NULL DEFAULT 'other', note TEXT NOT NULL DEFAULT '', cheque_id TEXT NOT NULL DEFAULT '',
+            status TEXT NOT NULL DEFAULT 'open', closed_date TEXT NOT NULL DEFAULT '',
+            event_id TEXT NOT NULL, close_event_id TEXT NOT NULL DEFAULT '',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE INDEX IF NOT EXISTS idx_doubtful_receivables_account ON doubtful_receivables(account_id, date);
+        
+          CREATE TABLE IF NOT EXISTS doubtful_provisions (
+            id TEXT PRIMARY KEY, doubtful_id TEXT NOT NULL, date TEXT NOT NULL,
+            amount_minor INTEGER NOT NULL CHECK (amount_minor > 0), note TEXT NOT NULL DEFAULT '',
+            status TEXT NOT NULL DEFAULT 'active', event_id TEXT NOT NULL,
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE INDEX IF NOT EXISTS idx_doubtful_provisions_record ON doubtful_provisions(doubtful_id, date);
+        `;
+        
+        // 2.4.3 MM3: KDV mahsup fişi (ay başına en çok bir etkin). Tutarlar kuruş; out = ayın 391 (hesaplanan, alacak neti), in = ayın 191 (indirilecek, borç neti),
+        // carry_in = kullanılan önceki devreden (190), carry_out = yeni devreden (190), payable = ödenecek KDV (360). Geri alma: status 'reversed' (yevmiyede ters kayıt).
+        const VAT_OFFSETS_SCHEMA_V29 = `
+          CREATE TABLE IF NOT EXISTS vat_offsets (
+            id TEXT PRIMARY KEY, month TEXT NOT NULL, date TEXT NOT NULL,
+            out_minor INTEGER NOT NULL DEFAULT 0, in_minor INTEGER NOT NULL DEFAULT 0, carry_in_minor INTEGER NOT NULL DEFAULT 0,
+            carry_out_minor INTEGER NOT NULL DEFAULT 0, payable_minor INTEGER NOT NULL DEFAULT 0,
+            status TEXT NOT NULL DEFAULT 'active', note TEXT NOT NULL DEFAULT '',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, reversed_by TEXT, reversed_at TEXT
+          ) STRICT;
+          CREATE INDEX IF NOT EXISTS idx_vat_offsets_month ON vat_offsets(month, status);
+        `;
+        
+        function widenIntegrityLog(store) {
+          const row = store.get("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'integrity_log'");
+          if (!row || String(row.sql).includes("'scan'")) return;
+          const columns = store.all("PRAGMA table_info(integrity_log)").map(column => column.name);
+          if (columns.join(",") !== "id,at,action,tables,summary,detail_json") throw new Error(`integrity_log beklenmeyen kolonlar: ${columns.join(", ")}`);
+          store.exec(`
+            CREATE TABLE integrity_log_v20 (
+              id TEXT PRIMARY KEY,
+              at TEXT NOT NULL,
+              action TEXT NOT NULL CHECK (action IN ('rolled-back', 'baseline', 'scan', 'repair')),
+              tables TEXT NOT NULL DEFAULT '',
+              summary TEXT NOT NULL DEFAULT '',
+              detail_json TEXT NOT NULL DEFAULT '[]'
+            );
+            INSERT INTO integrity_log_v20 (rowid, id, at, action, tables, summary, detail_json) SELECT rowid, id, at, action, tables, summary, detail_json FROM integrity_log ORDER BY rowid;
+            DROP TABLE integrity_log;
+            ALTER TABLE integrity_log_v20 RENAME TO integrity_log;
+            CREATE INDEX IF NOT EXISTS idx_integrity_log_at ON integrity_log(at);
+          `);
+        }
+        
+        // v20 (§5.2): hepsi STRICT (tutar INTEGER kuruş, oran INTEGER ppm, kur INTEGER ×10^6; kesirli ya da metin tutar yazılamaz);
+        // yabancı anahtar yok (bağlar mutabakat kapısında denetlenir); tür ve durum kolonlarında CHECK yok, CHECK yalnız değişmeyecek
+        // kurallarda (işaret, yön/taraf, kart son 4 hanesi, rol); tekil indeksler yalnız ETKİN satıra uygulanır (iptal/silinmiş satırda
+        // aynı değer serbest). Zaman kolonları: created_by, created_at, updated_by, updated_at.
+        const BANK_SCHEMA_V20 = `
+          -- İşlem başlığı + kapının doğruladığı salt okuma kopyası (para kaynağı DEĞİL; sayfalama ve süzgeç dizini). İşlem No: BNK-yıl-sıra.
+          CREATE TABLE IF NOT EXISTS fin_events (
+            id TEXT PRIMARY KEY, year INTEGER NOT NULL, seq INTEGER NOT NULL, no TEXT NOT NULL,
+            type TEXT NOT NULL,
+            date TEXT NOT NULL, value_date TEXT NOT NULL DEFAULT '',
+            status TEXT NOT NULL DEFAULT 'active',
+            reversal_of TEXT NOT NULL DEFAULT '', reversed_by TEXT NOT NULL DEFAULT '',
+            origin TEXT NOT NULL DEFAULT 'manual',
+            origin_key TEXT NOT NULL DEFAULT '', channel TEXT NOT NULL DEFAULT '',
+            src_table TEXT NOT NULL DEFAULT '', src_id TEXT NOT NULL DEFAULT '',
+            bank_ref TEXT NOT NULL DEFAULT '', counter_ref TEXT NOT NULL DEFAULT '', pos_id TEXT NOT NULL DEFAULT '',
+            direction TEXT NOT NULL DEFAULT '',
+            amount_minor INTEGER NOT NULL DEFAULT 0 CHECK (amount_minor >= 0),
+            try_minor INTEGER NOT NULL DEFAULT 0 CHECK (try_minor >= 0), currency TEXT NOT NULL DEFAULT 'TRY',
+            method TEXT NOT NULL DEFAULT '', party_id TEXT NOT NULL DEFAULT '',
+            invoice_id TEXT NOT NULL DEFAULT '', plan_id TEXT NOT NULL DEFAULT '', cheque_id TEXT NOT NULL DEFAULT '',
+            description TEXT NOT NULL DEFAULT '', reference TEXT NOT NULL DEFAULT '', external_id TEXT NOT NULL DEFAULT '',
+            counter_name TEXT NOT NULL DEFAULT '', counter_iban TEXT NOT NULL DEFAULT '', request_key TEXT NOT NULL DEFAULT '',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_fin_events_year_seq ON fin_events(year, seq);
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_fin_events_no ON fin_events(no);
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_fin_events_origin_key ON fin_events(origin_key) WHERE origin_key <> '' AND status = 'active';
+          CREATE INDEX IF NOT EXISTS idx_fin_events_bank ON fin_events(bank_ref, date, id);
+          CREATE INDEX IF NOT EXISTS idx_fin_events_counter ON fin_events(counter_ref, date, id) WHERE counter_ref <> '';
+          CREATE INDEX IF NOT EXISTS idx_fin_events_party ON fin_events(party_id, date);
+          CREATE INDEX IF NOT EXISTS idx_fin_events_status ON fin_events(status, date);
+          CREATE INDEX IF NOT EXISTS idx_fin_events_pos ON fin_events(pos_id, date) WHERE pos_id <> '';
+          CREATE INDEX IF NOT EXISTS idx_fin_events_invoice ON fin_events(invoice_id) WHERE invoice_id <> '';
+          CREATE INDEX IF NOT EXISTS idx_fin_events_plan ON fin_events(plan_id) WHERE plan_id <> '';
+          CREATE INDEX IF NOT EXISTS idx_fin_events_cheque ON fin_events(cheque_id) WHERE cheque_id <> '';
+          CREATE INDEX IF NOT EXISTS idx_fin_events_src ON fin_events(src_table, src_id);
+          CREATE INDEX IF NOT EXISTS idx_fin_events_type ON fin_events(type, date);
+          -- Aşama 4: Banka Fişi satırının tarihi (fin_events.date) kimlikten tablo satırı okunmadan (tarih süzgeçli bakiye).
+          CREATE INDEX IF NOT EXISTS idx_fin_events_id_date ON fin_events(id, date);
+          -- Aşama 4: hesabın açılış fişleri (açılış kuralı kapısı, hesap kartı): hesabın bütün olayları dolaşılmadan (1.000.000 harekette ~0,8 sn).
+          CREATE INDEX IF NOT EXISTS idx_fin_events_opening ON fin_events(bank_ref) WHERE type = 'opening';
+        
+          -- Banka Fişi satırı; THP kodu yazım anında çözülür ve saklanır.
+          CREATE TABLE IF NOT EXISTS bank_lines (
+            id TEXT PRIMARY KEY, event_id TEXT NOT NULL, seq INTEGER NOT NULL,
+            role TEXT NOT NULL,
+            gl TEXT NOT NULL, sub TEXT NOT NULL DEFAULT '', ref TEXT NOT NULL DEFAULT '',
+            side TEXT NOT NULL CHECK (side IN ('D', 'C')), try_minor INTEGER NOT NULL CHECK (try_minor > 0),
+            currency TEXT NOT NULL DEFAULT 'TRY', fx_minor INTEGER NOT NULL DEFAULT 0 CHECK (fx_minor >= 0),
+            rate_e6 INTEGER NOT NULL DEFAULT 1000000 CHECK (rate_e6 > 0), rate_source TEXT NOT NULL DEFAULT '',
+            memo TEXT NOT NULL DEFAULT ''
+          ) STRICT;
+          CREATE INDEX IF NOT EXISTS idx_bank_lines_event ON bank_lines(event_id);
+          -- Aşama 4: (ref, event_id) + rol, taraf ve kuruş: hesabın bakiyesi (moneyLines total) tablo satırı okunmadan toplanır (1.000.000 satırda ölçüm).
+          CREATE INDEX IF NOT EXISTS idx_bank_lines_ref ON bank_lines(ref, event_id, role, side, try_minor);
+          CREATE INDEX IF NOT EXISTS idx_bank_lines_gl ON bank_lines(gl, sub);
+        
+          CREATE TABLE IF NOT EXISTS bank_accounts (
+            id TEXT PRIMARY KEY, code TEXT NOT NULL, gl TEXT NOT NULL, gl_sub TEXT NOT NULL,
+            kind TEXT NOT NULL, bank_name TEXT NOT NULL, name TEXT NOT NULL, currency TEXT NOT NULL DEFAULT 'TRY',
+            iban TEXT NOT NULL DEFAULT '', account_no TEXT NOT NULL DEFAULT '', branch_name TEXT NOT NULL DEFAULT '',
+            branch_code TEXT NOT NULL DEFAULT '', swift TEXT NOT NULL DEFAULT '', holder TEXT NOT NULL DEFAULT '',
+            description TEXT NOT NULL DEFAULT '', opening_date TEXT NOT NULL,
+            balance_confirmed INTEGER NOT NULL DEFAULT 0 CHECK (balance_confirmed IN (0, 1)),
+            credit_limit_minor INTEGER NOT NULL DEFAULT 0 CHECK (credit_limit_minor >= 0),
+            negative_policy TEXT NOT NULL DEFAULT '', statement_day INTEGER NOT NULL DEFAULT 0, due_day INTEGER NOT NULL DEFAULT 0,
+            show_on_invoice INTEGER NOT NULL DEFAULT 0, statement_template_json TEXT NOT NULL DEFAULT '{}',
+            integration TEXT NOT NULL DEFAULT 'manual', status TEXT NOT NULL DEFAULT 'active', position INTEGER NOT NULL DEFAULT 0,
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT, deleted_by TEXT, deleted_at TEXT
+          ) STRICT;
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_accounts_gl_sub ON bank_accounts(gl_sub);
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_accounts_code ON bank_accounts(code) WHERE deleted_at IS NULL;
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_accounts_iban ON bank_accounts(iban) WHERE iban <> '' AND deleted_at IS NULL;
+        
+          CREATE TABLE IF NOT EXISTS pos_terminals (
+            id TEXT PRIMARY KEY, code TEXT NOT NULL, gl_sub TEXT NOT NULL, name TEXT NOT NULL, bank_name TEXT NOT NULL DEFAULT '',
+            bank_account_id TEXT NOT NULL, kind TEXT NOT NULL, provider_kind TEXT NOT NULL DEFAULT 'bank',
+            merchant_no TEXT NOT NULL DEFAULT '', terminal_no TEXT NOT NULL DEFAULT '', currency TEXT NOT NULL DEFAULT 'TRY',
+            valor_rule TEXT NOT NULL DEFAULT 'business', valor_days INTEGER NOT NULL DEFAULT 1,
+            provision_days INTEGER NOT NULL DEFAULT 0, block_days INTEGER NOT NULL DEFAULT 0, installment_payout TEXT NOT NULL DEFAULT 'monthly',
+            tax_kind TEXT NOT NULL DEFAULT 'bsmv', tax_mode TEXT NOT NULL DEFAULT 'included', tax_ppm INTEGER NOT NULL DEFAULT 50000,
+            provider_account_id TEXT NOT NULL DEFAULT '', refund_commission TEXT NOT NULL DEFAULT 'none',
+            settle_mode TEXT NOT NULL DEFAULT 'inherit', fixed_fee_minor INTEGER NOT NULL DEFAULT 0 CHECK (fixed_fee_minor >= 0),
+            integration TEXT NOT NULL DEFAULT 'manual', status TEXT NOT NULL DEFAULT 'active', description TEXT NOT NULL DEFAULT '',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT, deleted_by TEXT, deleted_at TEXT
+          ) STRICT;
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_pos_terminals_gl_sub ON pos_terminals(gl_sub);
+        
+          CREATE TABLE IF NOT EXISTS pos_rates (
+            id TEXT PRIMARY KEY, pos_id TEXT NOT NULL,
+            installments INTEGER NOT NULL CHECK (installments BETWEEN 1 AND 36),
+            rate_ppm INTEGER NOT NULL CHECK (rate_ppm BETWEEN 0 AND 1000000), valor_days INTEGER, valid_from TEXT NOT NULL,
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL
+          ) STRICT;
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_pos_rates_key ON pos_rates(pos_id, installments, valid_from);
+        
+          CREATE TABLE IF NOT EXISTS pos_sales (
+            id TEXT PRIMARY KEY, event_id TEXT NOT NULL, pos_id TEXT NOT NULL, kind TEXT NOT NULL,
+            src TEXT NOT NULL DEFAULT 'module',
+            origin_id TEXT NOT NULL DEFAULT '',
+            date TEXT NOT NULL, installments INTEGER NOT NULL DEFAULT 1, rate_ppm INTEGER NOT NULL, tax_kind TEXT NOT NULL,
+            tax_mode TEXT NOT NULL, tax_ppm INTEGER NOT NULL, fixed_minor INTEGER NOT NULL DEFAULT 0, refund_commission TEXT NOT NULL,
+            payout TEXT NOT NULL, block_days INTEGER NOT NULL DEFAULT 0,
+            bank_account_id TEXT NOT NULL, provider_account_id TEXT NOT NULL DEFAULT '',
+            gross_minor INTEGER NOT NULL CHECK (gross_minor > 0), commission_minor INTEGER NOT NULL DEFAULT 0 CHECK (commission_minor >= 0),
+            tax_minor INTEGER NOT NULL DEFAULT 0 CHECK (tax_minor >= 0), net_minor INTEGER NOT NULL CHECK (net_minor >= 0),
+            commission_refund_minor INTEGER NOT NULL DEFAULT 0 CHECK (commission_refund_minor >= 0), blocked INTEGER NOT NULL DEFAULT 0,
+            auth_code TEXT NOT NULL DEFAULT '',
+            card_last4 TEXT NOT NULL DEFAULT '' CHECK (card_last4 = '' OR (length(card_last4) = 4 AND card_last4 GLOB '[0-9][0-9][0-9][0-9]')),
+            status TEXT NOT NULL DEFAULT 'active',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_pos_sales_event ON pos_sales(event_id) WHERE kind = 'sale' AND status = 'active';
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_pos_sales_auth ON pos_sales(pos_id, auth_code, date) WHERE auth_code <> '' AND status = 'active';
+          CREATE INDEX IF NOT EXISTS idx_pos_sales_origin ON pos_sales(origin_id);
+        
+          CREATE TABLE IF NOT EXISTS pos_items (
+            id TEXT PRIMARY KEY, sale_id TEXT NOT NULL, pos_id TEXT NOT NULL, seq INTEGER NOT NULL,
+            role TEXT NOT NULL CHECK (role IN ('sale', 'refund', 'fee')), value_date TEXT NOT NULL, blocked INTEGER NOT NULL DEFAULT 0,
+            gross_minor INTEGER NOT NULL CHECK (gross_minor >= 0), commission_minor INTEGER NOT NULL DEFAULT 0 CHECK (commission_minor >= 0),
+            tax_minor INTEGER NOT NULL DEFAULT 0 CHECK (tax_minor >= 0), fee_minor INTEGER NOT NULL DEFAULT 0 CHECK (fee_minor >= 0),
+            net_minor INTEGER NOT NULL CHECK (net_minor >= 0), planned_net_minor INTEGER NOT NULL,
+            status TEXT NOT NULL DEFAULT 'pending', event_id TEXT NOT NULL DEFAULT '', settled_on TEXT NOT NULL DEFAULT '',
+            late INTEGER NOT NULL DEFAULT 0, settle_error TEXT NOT NULL DEFAULT '',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE INDEX IF NOT EXISTS idx_pos_items_status ON pos_items(status, value_date);
+          CREATE INDEX IF NOT EXISTS idx_pos_items_sale ON pos_items(sale_id);
+        
+          -- Bankaya Tahsile Ver / Bankadan Geri Al'ın tek izi (fin_events ile); cheque_events'e satır yazılmaz, cheques.status değişmez.
+          CREATE TABLE IF NOT EXISTS cheque_collections (
+            id TEXT PRIMARY KEY, cheque_id TEXT NOT NULL, bank_account_id TEXT NOT NULL,
+            given_date TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending',
+            closed_date TEXT NOT NULL DEFAULT '', event_id TEXT NOT NULL, close_event_id TEXT NOT NULL DEFAULT '',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_cheque_collections_pending ON cheque_collections(cheque_id) WHERE status = 'pending';
+          CREATE INDEX IF NOT EXISTS idx_cheque_collections_cheque ON cheque_collections(cheque_id);
+        
+          CREATE TABLE IF NOT EXISTS bank_jobs (
+            id TEXT PRIMARY KEY, kind TEXT NOT NULL,
+            due_date TEXT NOT NULL, ref TEXT NOT NULL DEFAULT '', payload_json TEXT NOT NULL DEFAULT '{}',
+            status TEXT NOT NULL DEFAULT 'pending', done_ref TEXT NOT NULL DEFAULT '', error TEXT NOT NULL DEFAULT '',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_jobs_pending ON bank_jobs(kind, ref) WHERE status = 'pending';
+          CREATE INDEX IF NOT EXISTS idx_bank_jobs_due ON bank_jobs(status, due_date);
+        
+          CREATE TABLE IF NOT EXISTS fx_rates (
+            date TEXT NOT NULL, currency TEXT NOT NULL, kind TEXT NOT NULL,
+            rate_e6 INTEGER NOT NULL CHECK (rate_e6 > 0), unit INTEGER NOT NULL DEFAULT 1, source TEXT NOT NULL,
+            fetched_at TEXT NOT NULL, created_by TEXT NOT NULL DEFAULT '',
+            PRIMARY KEY (date, currency, kind, source)
+          ) STRICT, WITHOUT ROWID;
+        
+          CREATE TABLE IF NOT EXISTS bank_holidays (
+            date TEXT PRIMARY KEY, kind TEXT NOT NULL, name TEXT NOT NULL DEFAULT '',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL
+          ) STRICT, WITHOUT ROWID;
+        
+          CREATE TABLE IF NOT EXISTS bank_statements (
+            id TEXT PRIMARY KEY, bank_account_id TEXT NOT NULL, source TEXT NOT NULL DEFAULT 'file',
+            file_name TEXT NOT NULL DEFAULT '', file_sha256 TEXT NOT NULL DEFAULT '', format TEXT NOT NULL DEFAULT '',
+            period_from TEXT NOT NULL DEFAULT '', period_to TEXT NOT NULL DEFAULT '',
+            opening_minor INTEGER, closing_minor INTEGER, line_count INTEGER NOT NULL DEFAULT 0, duplicate_count INTEGER NOT NULL DEFAULT 0,
+            status TEXT NOT NULL DEFAULT 'active',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_statements_file ON bank_statements(bank_account_id, file_sha256) WHERE file_sha256 <> '' AND status = 'active';
+        
+          CREATE TABLE IF NOT EXISTS bank_statement_lines (
+            id TEXT PRIMARY KEY, statement_id TEXT NOT NULL, bank_account_id TEXT NOT NULL,
+            line_no INTEGER NOT NULL, date TEXT NOT NULL, value_date TEXT NOT NULL DEFAULT '', direction TEXT NOT NULL CHECK (direction IN ('in', 'out')),
+            amount_minor INTEGER NOT NULL CHECK (amount_minor > 0), balance_minor INTEGER, description TEXT NOT NULL DEFAULT '',
+            reference TEXT NOT NULL DEFAULT '', counter_iban TEXT NOT NULL DEFAULT '', counter_name TEXT NOT NULL DEFAULT '',
+            external_id TEXT NOT NULL DEFAULT '', fingerprint TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'unmatched',
+            score INTEGER NOT NULL DEFAULT 0, suggestion_json TEXT NOT NULL DEFAULT '[]',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE INDEX IF NOT EXISTS idx_bank_statement_lines_account ON bank_statement_lines(bank_account_id, status, date);
+          -- Parmak izi tekil değil ("Mükerrer Değil" ile aynı gün aynı tutarda iki gerçek EFT girilebilir).
+          CREATE INDEX IF NOT EXISTS idx_bank_statement_lines_fingerprint ON bank_statement_lines(bank_account_id, fingerprint);
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_statement_lines_external ON bank_statement_lines(bank_account_id, external_id) WHERE external_id <> '';
+        
+          CREATE TABLE IF NOT EXISTS bank_matches (
+            id TEXT PRIMARY KEY, line_id TEXT NOT NULL, bank_account_id TEXT NOT NULL,
+            event_id TEXT NOT NULL, amount_minor INTEGER NOT NULL CHECK (amount_minor > 0), digest TEXT NOT NULL,
+            kind TEXT NOT NULL, score INTEGER NOT NULL DEFAULT 0, created_by TEXT NOT NULL, created_at TEXT NOT NULL,
+            undone_by TEXT, undone_at TEXT, undo_reason TEXT NOT NULL DEFAULT ''
+          ) STRICT;
+          CREATE INDEX IF NOT EXISTS idx_bank_matches_event ON bank_matches(event_id) WHERE undone_at IS NULL;
+          CREATE INDEX IF NOT EXISTS idx_bank_matches_line ON bank_matches(line_id);
+        
+          CREATE TABLE IF NOT EXISTS bank_plans (
+            id TEXT PRIMARY KEY, kind TEXT NOT NULL, bank_account_id TEXT NOT NULL,
+            to_account_id TEXT NOT NULL DEFAULT '', party_id TEXT NOT NULL DEFAULT '', amount_minor INTEGER NOT NULL CHECK (amount_minor > 0),
+            currency TEXT NOT NULL DEFAULT 'TRY', planned_date TEXT NOT NULL, repeat TEXT NOT NULL DEFAULT 'none',
+            description TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'planned', done_event_id TEXT NOT NULL DEFAULT '',
+            -- Aşama 4: fiş türünün ek alanları (masraf türü, vergi kipi, stopaj, hesap; tekrarlı planın ay günü).
+            payload_json TEXT NOT NULL DEFAULT '{}',
+            created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+          ) STRICT;
+          CREATE INDEX IF NOT EXISTS idx_bank_plans_due ON bank_plans(status, planned_date);
+        
+          -- Kalıcı istek kimliği (§3.10/1): anahtar = kullanıcı|kapsam|kimlik; yazımla aynı işlemde; 30 günden eskiler budanır.
+          CREATE TABLE IF NOT EXISTS request_keys (
+            key TEXT PRIMARY KEY, scope TEXT NOT NULL, user_id TEXT NOT NULL,
+            body_hash TEXT NOT NULL, ref_id TEXT NOT NULL, created_at TEXT NOT NULL
+          ) STRICT;
+          CREATE INDEX IF NOT EXISTS idx_request_keys_created ON request_keys(created_at);
+        `;
+        
+        export const LATEST_VERSION = MIGRATIONS.at(-1).version;
+        
+        /**
+         * v20'nin Aşama 4 eklemeleri (yalnız ekleyici; idempotent): İşlem Kartı'nın işlem geçmişi indeksi, Planlı İşlemlerin ek alanı ve vade indeksi.
+         * 2.1.0 yayımlanmadan önce bu dalda v20'ye geçmiş geliştirme dosyaları da açılışta tamamlanır (runMigrations her açılışta çağırır).
+         */
+        export function ensureBankSchema(store) {
+          const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
+          if (has("audit_events")) store.exec("CREATE INDEX IF NOT EXISTS idx_audit_entity ON audit_events(entity_id)");
+          // Hesap bakiyesinin kapsayan indeksleri (Aşama 4 ölçümü): eski biçimli (ref, event_id) indeks yenisiyle değişir.
+          if (has("bank_lines") && store.all("PRAGMA index_info(idx_bank_lines_ref)").length !== 5) {
+            store.exec("DROP INDEX IF EXISTS idx_bank_lines_ref; CREATE INDEX idx_bank_lines_ref ON bank_lines(ref, event_id, role, side, try_minor)");
+          }
+          if (has("fin_events")) store.exec("CREATE INDEX IF NOT EXISTS idx_fin_events_id_date ON fin_events(id, date); CREATE INDEX IF NOT EXISTS idx_fin_events_opening ON fin_events(bank_ref) WHERE type = 'opening'");
+          if (has("bank_plans")) {
+            addColumn(store, "bank_plans", "payload_json", "TEXT NOT NULL DEFAULT '{}'");
+            store.exec("CREATE INDEX IF NOT EXISTS idx_bank_plans_due ON bank_plans(status, planned_date)");
+          }
+        }
+        
+        // now: iş saati (config.now) — göç damgaları (meta.schema.v20At) sahte saatte de iş gününü taşır.
+        export function runMigrations(store, { backupDir, keep = 30, log, company = null, now = systemClock } = {}) {
+          const current = store.get("PRAGMA user_version").user_version;
+          const pending = MIGRATIONS.filter(item => item.version > current);
+          if (!pending.length) {
+            if (current >= 20) store.raw("migration.v20.ensure", () => ensureBankSchema(store));
+            return { from: current, to: current, applied: [], backup: null };
+          }
+          const hasData = Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'users'"));
+          let backup = null;
+          if (hasData && backupDir) {
+            // Göçten önce mutlaka tam yedek: bir sorun olursa bu dosyaya dönülür. (v2.0.20: şirketin klasörüne, kodlu adla.)
+            backup = createBackup(store.db, backupDir, { label: `pre-migration-v${pending.at(-1).version}`, keep, company });
+            log?.info(`Göç öncesi yedek alındı: ${backup.name}`);
+          }
+          for (const migration of pending) {
+            store.tx(() => {
+              migration.up(store, { company, now });
+              store.exec(`PRAGMA user_version = ${migration.version}`);
+            });
+            log?.info(`Veritabanı göçü uygulandı: ${migration.version} (${migration.name})`);
+          }
+          return { from: current, to: LATEST_VERSION, applied: pending.map(item => item.version), backup };
+        }
+        
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b/test/whatsapp-b3-pdf-249.test.mjs:239:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T9 iki şirket: 001'in Duraklatıldı işinin PDF'i 002'nin gönderimi + bakımından etkilenmez; 002'nin PDF'i kendi dosyasında, kabulden sonra silinir; 31 gün sonra 001 AYNI baytları gönderir
+    ok 8 - T9 iki şirket: 001'in Duraklatıldı işinin PDF'i 002'nin gönderimi + bakımından etkilenmez; 002'nin PDF'i kendi dosyasında, kabulden sonra silinir; 31 gün sonra 001 AYNI baytları gönderir
+      ---
+      duration_ms: 776.966656
+      type: 'test'
+      ...
+    1..8
+not ok 3 - 2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok
+  ---
+  duration_ms: 3963.753046
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b/test/whatsapp-b3-pdf-249.test.mjs:58:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 14
+# suites 3
+# pass 10
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39068.161025

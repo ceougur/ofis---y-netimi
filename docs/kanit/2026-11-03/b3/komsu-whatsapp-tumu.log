@@ -1,0 +1,3415 @@
+TAP version 13
+# Subtest: WhatsApp numara ve ekstre metni
+    # Subtest: Türkiye cep numaralarını wa.me biçimine çevirir; sabit hattı ve eksik numarayı ayırır
+    ok 1 - Türkiye cep numaralarını wa.me biçimine çevirir; sabit hattı ve eksik numarayı ayırır
+      ---
+      duration_ms: 1.622583
+      type: 'test'
+      ...
+    # Subtest: ekstre metni devir, dönem hareketleri ve güncel bakiyeyi verir
+    ok 2 - ekstre metni devir, dönem hareketleri ve güncel bakiyeyi verir
+      ---
+      duration_ms: 0.934335
+      type: 'test'
+      ...
+    1..2
+ok 1 - WhatsApp numara ve ekstre metni
+  ---
+  duration_ms: 3.774429
+  type: 'suite'
+  ...
+# Subtest: WhatsApp gönderim API'si
+    # Subtest: seçilen carilere kişiye özel ekstre hazırlar; numarası geçersiz olanı nedeniyle ayırır
+    ok 1 - seçilen carilere kişiye özel ekstre hazırlar; numarası geçersiz olanı nedeniyle ayırır
+      ---
+      duration_ms: 16.621582
+      type: 'test'
+      ...
+    # Subtest: süzgeçteki carilerin hepsi (all) seçilebilir; seçim yoksa hata verir
+    ok 2 - süzgeçteki carilerin hepsi (all) seçilebilir; seçim yoksa hata verir
+      ---
+      duration_ms: 15.58747
+      type: 'test'
+      ...
+    # Subtest: gönderim ve atlama cari kartının geçmişine yazılır; son gönderim alıcı listesinde görünür
+    ok 3 - gönderim ve atlama cari kartının geçmişine yazılır; son gönderim alıcı listesinde görünür
+      ---
+      duration_ms: 28.439139
+      type: 'test'
+      ...
+    1..3
+ok 2 - WhatsApp gönderim API'si
+  ---
+  duration_ms: 696.486277
+  type: 'suite'
+  ...
+# \# B3 T1 ölçüm: [[1,1664,122880,14287,0],[2,47,241664,24337,0],[3,48,356352,30307,0],[4,44,475136,40357,0],[5,43,593920,50407,0],[6,54,708608,56377,0],[7,42,827392,66427,0],[8,47,946176,76477,0],[9,59,1060864,82447,0],[10,47,1179648,92497,0]]
+# Subtest: 2.4.9 B3 T1 — toplu gönderimler şirket dosyasında kalıcı boşluk bırakmaz
+    # Subtest: 10 tur × 200 ekstre (kabul + bakım): wa_jobs sayfa içi boş ≤ %10, bakımdan sonra wa_job_pdfs 0, tur başına sayfa artışı sabit
+    ok 1 - 10 tur × 200 ekstre (kabul + bakım): wa_jobs sayfa içi boş ≤ %10, bakımdan sonra wa_job_pdfs 0, tur başına sayfa artışı sabit
+      ---
+      duration_ms: 34330.425727
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.4.9 B3 T1 — toplu gönderimler şirket dosyasında kalıcı boşluk bırakmaz
+  ---
+  duration_ms: 34332.109562
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45)
+    # Subtest: fikstür v2.4.8'in ürettiği gibi: 002 v44, A Duraklatıldı + B kabul (bakımsız) PDF'leri satırda, C'nin PDF'i silinmiş; yedekte aynısı
+    ok 1 - fikstür v2.4.8'in ürettiği gibi: 002 v44, A Duraklatıldı + B kabul (bakımsız) PDF'leri satırda, C'nin PDF'i silinmiş; yedekte aynısı
+      ---
+      duration_ms: 27.260729
+      type: 'test'
+      ...
+    # Subtest: T3 güncelleme: yeni programla açılınca PDF'ler wa_job_pdfs'e AYNI baytlarla taşınır, satır boşalır; bakım kesinleşeni siler; 31 gün sonra Devam Et AYNI PDF'i gönderir; ikinci açılışta göç yok
+    ok 2 - T3 güncelleme: yeni programla açılınca PDF'ler wa_job_pdfs'e AYNI baytlarla taşınır, satır boşalır; bakım kesinleşeni siler; 31 gün sonra Devam Et AYNI PDF'i gönderir; ikinci açılışta göç yok
+      ---
+      duration_ms: 629.949049
+      type: 'test'
+      ...
+    # Subtest: T3 yarıda kalmış göç: tablo var + bir PDF taşınmış ama şema 44 (kesinti) → yeniden açılış göçü tamamlar; taşınmış satır korunur, eksik eklenir
+    ok 3 - T3 yarıda kalmış göç: tablo var + bir PDF taşınmış ama şema 44 (kesinti) → yeniden açılış göçü tamamlar; taşınmış satır korunur, eksik eklenir
+      ---
+      duration_ms: 230.213882
+      type: 'test'
+      ...
+    # Subtest: T4 geri yükleme: v2.4.8'de alınmış yedek (v44, A'nın PDF'i satırda) yeni programa geri yüklenince göç v45 yedek dosyasında koşar; eski toplu iş durur (§7a 26), bakım PDF'leri siler, ileti gitmez
+    ok 4 - T4 geri yükleme: v2.4.8'de alınmış yedek (v44, A'nın PDF'i satırda) yeni programa geri yüklenince göç v45 yedek dosyasında koşar; eski toplu iş durur (§7a 26), bakım PDF'leri siler, ileti gitmez
+      ---
+      duration_ms: 445.891224
+      type: 'test'
+      ...
+    # Subtest: T4 Ayır: paylaşılan 002 dosyası ayrılınca kopya (VACUUM INTO) wa_job_pdfs'i aynı baytlarla taşır
+    ok 5 - T4 Ayır: paylaşılan 002 dosyası ayrılınca kopya (VACUUM INTO) wa_job_pdfs'i aynı baytlarla taşır
+      ---
+      duration_ms: 425.011137
+      type: 'test'
+      ...
+    1..5
+ok 4 - 2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45)
+  ---
+  duration_ms: 1760.324901
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok
+    # Subtest: T2 eşdeğerlik: 131056 → Bağlantı Bekleniyor → Duraklat → 31 gün → Devam Et (arada bakım turları, tahsilat): PDF iki kez yüklenir, BAYT BAYT aynı; ileti ilk hazırlığın bakiyesiyle
+    ok 1 - T2 eşdeğerlik: 131056 → Bağlantı Bekleniyor → Duraklat → 31 gün → Devam Et (arada bakım turları, tahsilat): PDF iki kez yüklenir, BAYT BAYT aynı; ileti ilk hazırlığın bakiyesiyle
+      ---
+      duration_ms: 664.229946
+      type: 'test'
+      ...
+    # Subtest: T2b yaşam döngüsü: A 131056 (Bekliyor), B 131026 (Başarısız), C kabul → bakım yalnız A'nınkini tutar; Duraklat'ta durur; İptal Et → bakım siler (eski kodla aynı sayılar)
+    ok 2 - T2b yaşam döngüsü: A 131056 (Bekliyor), B 131026 (Başarısız), C kabul → bakım yalnız A'nınkini tutar; Duraklat'ta durur; İptal Et → bakım siler (eski kodla aynı sayılar)
+      ---
+      duration_ms: 532.779476
+      type: 'test'
+      ...
+    # Subtest: T5 Şirket Verisini Sıfırla (Tüm Hareketleri Sil), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+    ok 3 - T5 Şirket Verisini Sıfırla (Tüm Hareketleri Sil), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+      ---
+      duration_ms: 546.127927
+      type: 'test'
+      ...
+    # Subtest: T5 Şirket Verisini Sıfırla (Tümünü Sıfırla), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+    ok 4 - T5 Şirket Verisini Sıfırla (Tümünü Sıfırla), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+      ---
+      duration_ms: 591.096745
+      type: 'test'
+      ...
+    # Subtest: T6 yarıda kesilme: PDF yazımı (disk dolu) düşerse işin satırı da geri alınır — prepared_at boş, değişken yok; sonraki tur temiz hazırlar, PDF bir kez gider
+    ok 5 - T6 yarıda kesilme: PDF yazımı (disk dolu) düşerse işin satırı da geri alınır — prepared_at boş, değişken yok; sonraki tur temiz hazırlar, PDF bir kez gider
+      ---
+      duration_ms: 442.487807
+      type: 'test'
+      ...
+    # Subtest: T7 kilit: bakımın PDF silmesi kilide takılınca tur bırakılır (İş N / O1), iş ve defter değişmez; kilit kalkınca sonraki bakım siler
+    ok 6 - T7 kilit: bakımın PDF silmesi kilide takılınca tur bırakılır (İş N / O1), iş ve defter değişmez; kilit kalkınca sonraki bakım siler
+      ---
+      duration_ms: 397.261091
+      type: 'test'
+      ...
+    # Subtest: T8 kaynak tarama: wa_jobs.pdf_blob yalnız göç dosyasında anılır (yazım da okuma da yok; CRLF bilen)
+    ok 7 - T8 kaynak tarama: wa_jobs.pdf_blob yalnız göç dosyasında anılır (yazım da okuma da yok; CRLF bilen)
+      ---
+      duration_ms: 83.565989
+      type: 'test'
+      ...
+    # Subtest: T9 iki şirket: 001'in Duraklatıldı işinin PDF'i 002'nin gönderimi + bakımından etkilenmez; 002'nin PDF'i kendi dosyasında, kabulden sonra silinir; 31 gün sonra 001 AYNI baytları gönderir
+    ok 8 - T9 iki şirket: 001'in Duraklatıldı işinin PDF'i 002'nin gönderimi + bakımından etkilenmez; 002'nin PDF'i kendi dosyasında, kabulden sonra silinir; 31 gün sonra 001 AYNI baytları gönderir
+      ---
+      duration_ms: 861.402515
+      type: 'test'
+      ...
+    1..8
+ok 5 - 2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok
+  ---
+  duration_ms: 4120.919743
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş L5 — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri = özel aralık → aynı dönem (7 gün penceresiyle)
+    # Subtest: 03.11 Son 3 Ay gönderildi → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 (8 gün) 'gönderilecek'; tarihleri farklı özel aralık ayrı
+    ok 1 - 03.11 Son 3 Ay gönderildi → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 (8 gün) 'gönderilecek'; tarihleri farklı özel aralık ayrı
+      ---
+      duration_ms: 745.780397
+      type: 'test'
+      ...
+    # Subtest: ters yön: 03.11 özel 01.09–03.11 gönderildi → aynı gün Son 3 Ay 'Daha Önce Gönderildi'; 05.11 Son 3 Ay (01.09–05.11) ayrı
+    ok 2 - ters yön: 03.11 özel 01.09–03.11 gönderildi → aynı gün Son 3 Ay 'Daha Önce Gönderildi'; 05.11 Son 3 Ay (01.09–05.11) ayrı
+      ---
+      duration_ms: 493.807459
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta (iki yön): 03.11 Son 3 Ay işi sırada → 05.11 özel 01.09–03.11 'Zaten Kuyrukta'; 03.11 özel işi sırada → aynı gün Son 3 Ay 'Zaten Kuyrukta'
+    ok 3 - Zaten Kuyrukta (iki yön): 03.11 Son 3 Ay işi sırada → 05.11 özel 01.09–03.11 'Zaten Kuyrukta'; 03.11 özel işi sırada → aynı gün Son 3 Ay 'Zaten Kuyrukta'
+      ---
+      duration_ms: 825.195971
+      type: 'test'
+      ...
+    # Subtest: Sonucu Belirsiz: 03.11 Son 3 Ay belirsiz → 05.11 özel 01.09–03.11 'Sonucu Belirsiz'; 11.11 (8 gün) elemez
+    ok 4 - Sonucu Belirsiz: 03.11 Son 3 Ay belirsiz → 05.11 özel 01.09–03.11 'Sonucu Belirsiz'; 11.11 (8 gün) elemez
+      ---
+      duration_ms: 515.275552
+      type: 'test'
+      ...
+    # Subtest: taşınan veri: 03.11 Son 3 Ay kabul → defter olmadan taşındı → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 'gönderilecek'
+    ok 5 - taşınan veri: 03.11 Son 3 Ay kabul → defter olmadan taşındı → 05.11 özel 01.09–03.11 'Daha Önce Gönderildi'; 11.11 'gönderilecek'
+      ---
+      duration_ms: 641.320847
+      type: 'test'
+      ...
+    1..5
+ok 6 - 2.4.8 İş L5 — Son 3 Ay / Tüm Hareketler'in o günkü tarihleri = özel aralık → aynı dönem (7 gün penceresiyle)
+  ---
+  duration_ms: 3223.01386
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş N — şirket dosyası kilitliyken işçi turu olay döngüsünü busy_timeout'tan uzun tutmaz
+    # Subtest: kilitli dosyada her tur ≤ 12 sn (önce bakım + iş ~40 sn), ileti gitmez; kilit kalkınca iş gider, çift ileti yok, toplu iş Tamamlandı
+    ok 1 - kilitli dosyada her tur ≤ 12 sn (önce bakım + iş ~40 sn), ileti gitmez; kilit kalkınca iş gider, çift ileti yok, toplu iş Tamamlandı
+      ---
+      duration_ms: 20857.951233
+      type: 'test'
+      ...
+    1..1
+ok 7 - 2.4.8 İş N — şirket dosyası kilitliyken işçi turu olay döngüsünü busy_timeout'tan uzun tutmaz
+  ---
+  duration_ms: 20858.944836
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş O — kilitli dosyada bakım turu ve bellekteki 'art arda' sayacı
+    # Subtest: O1: teslim edilmiş iletinin PDF'i silinmemişken dosya kilitli → bakım ≤ 12 sn (önce ~30 sn); kilit kalkınca kayıt yazılır, Meta'ya ikinci silme isteği gitmez
+    ok 1 - O1: teslim edilmiş iletinin PDF'i silinmemişken dosya kilitli → bakım ≤ 12 sn (önce ~30 sn); kilit kalkınca kayıt yazılır, Meta'ya ikinci silme isteği gitmez
+      ---
+      duration_ms: 10696.938149
+      type: 'test'
+      ...
+    # Subtest: O2: kilitte sayaç birikti → Duraklat → Devam Et → tek disk dolu hatası toplu işi DURAKLATMAZ (art arda 1)
+    ok 2 - O2: kilitte sayaç birikti → Duraklat → Devam Et → tek disk dolu hatası toplu işi DURAKLATMAZ (art arda 1)
+      ---
+      duration_ms: 40914.64239
+      type: 'test'
+      ...
+    # Subtest: O3a: kilitte biriken 4 + kilit kalkınca tek disk dolu hatası = art arda 5 → Duraklatıldı (bellekteki sayaç dosyaya geçer)
+    ok 3 - O3a: kilitte biriken 4 + kilit kalkınca tek disk dolu hatası = art arda 5 → Duraklatıldı (bellekteki sayaç dosyaya geçer)
+      ---
+      duration_ms: 40817.411699
+      type: 'test'
+      ...
+    # Subtest: O3b: kilitte biriken 4 → kilit kalkınca bir iş BAŞARIYLA gider (sayaç sıfırlanır) → sonraki tek disk dolu hatası art arda 1
+    ok 4 - O3b: kilitte biriken 4 → kilit kalkınca bir iş BAŞARIYLA gider (sayaç sıfırlanır) → sonraki tek disk dolu hatası art arda 1
+      ---
+      duration_ms: 40918.965579
+      type: 'test'
+      ...
+    1..4
+ok 8 - 2.4.8 İş O — kilitli dosyada bakım turu ve bellekteki 'art arda' sayacı
+  ---
+  duration_ms: 133349.718648
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş P1 — kilitli şirket dosyasında arka plan işleri olay döngüsünü tutmaz
+    # Subtest: kilitliyken işçi turları ≤ 1 sn (önce ~10 sn), ileti gitmez; kilit kalkınca (işaret süresi sonra) iş gider, çift ileti yok
+    ok 1 - kilitliyken işçi turları ≤ 1 sn (önce ~10 sn), ileti gitmez; kilit kalkınca (işaret süresi sonra) iş gider, çift ileti yok
+      ---
+      duration_ms: 2731.999642
+      type: 'test'
+      ...
+    # Subtest: c2: makine defteri (whatsapp-gonderim.sqlite) kilitliyken de işçi turları ≤ 1 sn, ileti gitmez; kilit kalkınca iş gider, çift ileti yok
+    ok 2 - c2: makine defteri (whatsapp-gonderim.sqlite) kilitliyken de işçi turları ≤ 1 sn, ileti gitmez; kilit kalkınca iş gider, çift ileti yok
+      ---
+      duration_ms: 2587.43058
+      type: 'test'
+      ...
+    # Subtest: kullanıcı yazımı bugünkü beklemeyi korur: arka plan sınamasından SONRA dosya ayrı iş parçacığında 2 sn kilitliyken cari açma bekler ve 200 alır
+    ok 3 - kullanıcı yazımı bugünkü beklemeyi korur: arka plan sınamasından SONRA dosya ayrı iş parçacığında 2 sn kilitliyken cari açma bekler ve 200 alır
+      ---
+      duration_ms: 2572.984284
+      type: 'test'
+      ...
+    1..3
+ok 9 - 2.4.8 İş P1 — kilitli şirket dosyasında arka plan işleri olay döngüsünü tutmaz
+  ---
+  duration_ms: 7893.87371
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş P2 — kilitte ekranda neden
+    # Subtest: işçi kilidi görünce süren toplu işin ayrıntısında ve listede not; konunca ve kalkınca canlı olay; kilit kalkıp işaret süresi dolunca not kalkar; duraklatılmış işte not yok
+    ok 1 - işçi kilidi görünce süren toplu işin ayrıntısında ve listede not; konunca ve kalkınca canlı olay; kilit kalkıp işaret süresi dolunca not kalkar; duraklatılmış işte not yok
+      ---
+      duration_ms: 1952.178532
+      type: 'test'
+      ...
+    1..1
+ok 10 - 2.4.8 İş P2 — kilitte ekranda neden
+  ---
+  duration_ms: 1952.439727
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş R3 — makine defteri kilidinde ekranda neden
+    # Subtest: kalıcı defter kilidi: ayrıntı + liste + canlı olay defter cümlesi; 6 turda not sürekli, toplu iş Sürüyor, ileti yok; kilit kalkınca not kalkar, tek ileti
+    ok 1 - kalıcı defter kilidi: ayrıntı + liste + canlı olay defter cümlesi; 6 turda not sürekli, toplu iş Sürüyor, ileti yok; kilit kalkınca not kalkar, tek ileti
+      ---
+      duration_ms: 3873.303193
+      type: 'test'
+      ...
+    # Subtest: iki kilit birden → şirket cümlesi (defter önce kilitlenmiş olsa da); Duraklatıldı işte not yok
+    ok 2 - iki kilit birden → şirket cümlesi (defter önce kilitlenmiş olsa da); Duraklatıldı işte not yok
+      ---
+      duration_ms: 812.762336
+      type: 'test'
+      ...
+    # Subtest: defter kilidi tur İÇİNDE (talep anında) başlar → iş Bekliyor, not defter cümlesi (şirket cümlesi değil)
+    ok 3 - defter kilidi tur İÇİNDE (talep anında) başlar → iş Bekliyor, not defter cümlesi (şirket cümlesi değil)
+      ---
+      duration_ms: 10578.494618
+      type: 'test'
+      ...
+    1..3
+ok 11 - 2.4.8 İş R3 — makine defteri kilidinde ekranda neden
+  ---
+  duration_ms: 15265.211488
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş R2 — kapanan / sınaması fırlatan şirket işçi turunu düşürmez
+    # Subtest: bir şirketin sınaması fırlatır (kapalı veri tabanı) → tur reddedilmez, öbür şirketin bakımı ve işi yürür
+    ok 1 - bir şirketin sınaması fırlatır (kapalı veri tabanı) → tur reddedilmez, öbür şirketin bakımı ve işi yürür
+      ---
+      duration_ms: 6.33642
+      type: 'test'
+      ...
+    # Subtest: 001'in bakımı beklerken 002 kuyruktan çıkar (silinir) → 002 o turda hiç sınanmaz, 001'in işi aynı turda yürür
+    ok 2 - 001'in bakımı beklerken 002 kuyruktan çıkar (silinir) → 002 o turda hiç sınanmaz, 001'in işi aynı turda yürür
+      ---
+      duration_ms: 9.374774
+      type: 'test'
+      ...
+    1..2
+ok 12 - 2.4.8 İş R2 — kapanan / sınaması fırlatan şirket işçi turunu düşürmez
+  ---
+  duration_ms: 17.082859
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 4 — Yeniden Dene / Yine de Gönder asıl toplu işin dönemini taşır
+    # Subtest: Bu Ay: B Başarısız → Başarısızları Yeniden Dene → kabul; aynı gün ve ertesi gün 'Bu Ay' iki kişide 'Daha Önce Gönderildi', ikinci iş açılmaz, kişi başına BİR ekstre
+    ok 1 - Bu Ay: B Başarısız → Başarısızları Yeniden Dene → kabul; aynı gün ve ertesi gün 'Bu Ay' iki kişide 'Daha Önce Gönderildi', ikinci iş açılmaz, kişi başına BİR ekstre
+      ---
+      duration_ms: 1202.280114
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta: yeniden deneme işi sınırda beklerken ertesi gün 'Bu Ay' → B 'Zaten Kuyrukta', ikinci iş açılmaz; sınırdan sonra B'ye BİR ekstre
+    ok 2 - Zaten Kuyrukta: yeniden deneme işi sınırda beklerken ertesi gün 'Bu Ay' → B 'Zaten Kuyrukta', ikinci iş açılmaz; sınırdan sonra B'ye BİR ekstre
+      ---
+      duration_ms: 1009.206224
+      type: 'test'
+      ...
+    # Subtest: Yine de Gönder (Bu Ay, Sonucu Belirsiz): yeni iş asıl işin dönemini taşır; ertesi gün 'Bu Ay' → 'Daha Önce Gönderildi'
+    ok 3 - Yine de Gönder (Bu Ay, Sonucu Belirsiz): yeni iş asıl işin dönemini taşır; ertesi gün 'Bu Ay' → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 717.15253
+      type: 'test'
+      ...
+    # Subtest: Geçen Ay: Başarısızları Yeniden Dene ve Yine de Gönder 'Geçen Ay' dönemini taşır; ertesi gün 'Geçen Ay' iki kişide 'Daha Önce Gönderildi'
+    ok 4 - Geçen Ay: Başarısızları Yeniden Dene ve Yine de Gönder 'Geçen Ay' dönemini taşır; ertesi gün 'Geçen Ay' iki kişide 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 1018.759416
+      type: 'test'
+      ...
+    # Subtest: Tüm Hareketler: Başarısızları Yeniden Dene 200 (dönem korunur), ileti gider; 2 gün sonra aynı seçim 'Daha Önce Gönderildi'
+    ok 5 - Tüm Hareketler: Başarısızları Yeniden Dene 200 (dönem korunur), ileti gider; 2 gün sonra aynı seçim 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 577.738617
+      type: 'test'
+      ...
+    # Subtest: Son 3 Ay: Başarısızları Yeniden Dene 200 (dönem korunur), ileti gider; 2 gün sonra aynı seçim 'Daha Önce Gönderildi'
+    ok 6 - Son 3 Ay: Başarısızları Yeniden Dene 200 (dönem korunur), ileti gider; 2 gün sonra aynı seçim 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 837.641642
+      type: 'test'
+      ...
+    # Subtest: Tüm Hareketler (Sonucu Belirsiz): Yine de Gönder 200, ileti gider (önceden 400 'Dönemin başlangıç ve bitiş tarihini seçin.')
+    ok 7 - Tüm Hareketler (Sonucu Belirsiz): Yine de Gönder 200, ileti gider (önceden 400 'Dönemin başlangıç ve bitiş tarihini seçin.')
+      ---
+      duration_ms: 900.285871
+      type: 'test'
+      ...
+    # Subtest: Dış istek dönemi gövdeyle veremez: toplu iş ve yeniden deneme gövdesindeki 'period' okunmaz
+    ok 8 - Dış istek dönemi gövdeyle veremez: toplu iş ve yeniden deneme gövdesindeki 'period' okunmaz
+      ---
+      duration_ms: 941.529118
+      type: 'test'
+      ...
+    1..8
+ok 13 - 2.4.8 dar kontrol 4 — Yeniden Dene / Yine de Gönder asıl toplu işin dönemini taşır
+  ---
+  duration_ms: 7206.518919
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır
+    # Subtest: Başarısızları Yeniden Dene: asıl iş 'Yine de Gönder' ile açılmış → B'ye gider (toplam 2 ekstre); yeniden deneme işi aynı kararı taşır
+    ok 1 - Başarısızları Yeniden Dene: asıl iş 'Yine de Gönder' ile açılmış → B'ye gider (toplam 2 ekstre); yeniden deneme işi aynı kararı taşır
+      ---
+      duration_ms: 1445.723754
+      type: 'test'
+      ...
+    # Subtest: Aynı an (sahte saat durur): asıl iş ilk ekstreyle aynı anda açılsa da kararı geçerli — Başarısızları Yeniden Dene B'ye gider
+    ok 2 - Aynı an (sahte saat durur): asıl iş ilk ekstreyle aynı anda açılsa da kararı geçerli — Başarısızları Yeniden Dene B'ye gider
+      ---
+      duration_ms: 1022.685212
+      type: 'test'
+      ...
+    # Subtest: Sonucu Belirsiz → işteki Yine de Gönder: asıl iş 'Yine de Gönder' ile açılmış → yeni iş açılır, Meta'ya üçüncü ileti isteği gider
+    ok 3 - Sonucu Belirsiz → işteki Yine de Gönder: asıl iş 'Yine de Gönder' ile açılmış → yeni iş açılır, Meta'ya üçüncü ileti isteği gider
+      ---
+      duration_ms: 754.776868
+      type: 'test'
+      ...
+    # Subtest: Sınır: asıl iş açıldıktan SONRA başka bir işle B'ye aynı dönem gitti → Başarısızları Yeniden Dene ve işteki Yine de Gönder 'Daha Önce Gönderildi' (iletide neden), çift ileti yok; gövde sınırı zorlayamaz
+    ok 4 - Sınır: asıl iş açıldıktan SONRA başka bir işle B'ye aynı dönem gitti → Başarısızları Yeniden Dene ve işteki Yine de Gönder 'Daha Önce Gönderildi' (iletide neden), çift ileti yok; gövde sınırı zorlayamaz
+      ---
+      duration_ms: 826.630221
+      type: 'test'
+      ...
+    # Subtest: Sınır (Sonucu Belirsiz): asıl iş açıldıktan SONRA başka bir işle B'ye gitti → işteki Yine de Gönder 'Daha Önce Gönderildi', gövde zorlayamaz
+    ok 5 - Sınır (Sonucu Belirsiz): asıl iş açıldıktan SONRA başka bir işle B'ye gitti → işteki Yine de Gönder 'Daha Önce Gönderildi', gövde zorlayamaz
+      ---
+      duration_ms: 811.857309
+      type: 'test'
+      ...
+    # Subtest: Dış istek: asıl iş 'Yine de Gönder' OLMADAN açıldıysa gövdedeki sendAgain / sendAgainAfter / since yeniden denemeye karar vermez; yeni gönderimde de yalnız sendAgain sayılır
+    ok 6 - Dış istek: asıl iş 'Yine de Gönder' OLMADAN açıldıysa gövdedeki sendAgain / sendAgainAfter / since yeniden denemeye karar vermez; yeni gönderimde de yalnız sendAgain sayılır
+      ---
+      duration_ms: 733.980985
+      type: 'test'
+      ...
+    # Subtest: Ödeme Hatırlatma (aynı gün kuralı): asıl hatırlatma 'Yine de Gönder' ile → B Başarısız → Yeniden Dene gider; aynı gün yeni hatırlatma 'Daha Önce Gönderildi' (iletide 'bugün'), ertesi gün serbest
+    ok 7 - Ödeme Hatırlatma (aynı gün kuralı): asıl hatırlatma 'Yine de Gönder' ile → B Başarısız → Yeniden Dene gider; aynı gün yeni hatırlatma 'Daha Önce Gönderildi' (iletide 'bugün'), ertesi gün serbest
+      ---
+      duration_ms: 859.444118
+      type: 'test'
+      ...
+    # Subtest: Ay dönümü: 31.10 'Bu Ay' (Ekim) işi 01.11'de yeniden denenince dönem 01.10–31.10, {{3}} ve PDF Ekim; 01.11 'Geçen Ay' → Daha Önce Gönderildi, 'Bu Ay' → gönderilecek
+    ok 8 - Ay dönümü: 31.10 'Bu Ay' (Ekim) işi 01.11'de yeniden denenince dönem 01.10–31.10, {{3}} ve PDF Ekim; 01.11 'Geçen Ay' → Daha Önce Gönderildi, 'Bu Ay' → gönderilecek
+      ---
+      duration_ms: 1138.964031
+      type: 'test'
+      ...
+    1..8
+ok 14 - 2.4.8 dar kontrol 5 — asıl işin 'Yine de Gönder' kararı yeniden denemeye taşınır
+  ---
+  duration_ms: 7596.539175
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 6 — Başarısızları Yeniden Dene Sonucu Belirsiz kalan kişiyi eler
+    # Subtest: İki kez Yeniden Dene (asıl iş kararsız): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+    ok 1 - İki kez Yeniden Dene (asıl iş kararsız): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+      ---
+      duration_ms: 1175.498748
+      type: 'test'
+      ...
+    # Subtest: İki kez Yeniden Dene (asıl iş 'Yine de Gönder' ile): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+    ok 2 - İki kez Yeniden Dene (asıl iş 'Yine de Gönder' ile): R1 Sonucu Belirsiz → R2 'Sonucu Belirsiz' ile elenir (iletide neden); işteki Yine de Gönder onaysız 409, onayla gider
+      ---
+      duration_ms: 809.332367
+      type: 'test'
+      ...
+    # Subtest: Başka iş: M'den sonra yeni gönderim (O) B için Sonucu Belirsiz → M'nin Yeniden Dene'si 'Sonucu Belirsiz'; yeni gönderimin önizlemesinde de B 'Sonucu Belirsiz' (★ soru 1)
+    ok 3 - Başka iş: M'den sonra yeni gönderim (O) B için Sonucu Belirsiz → M'nin Yeniden Dene'si 'Sonucu Belirsiz'; yeni gönderimin önizlemesinde de B 'Sonucu Belirsiz' (★ soru 1)
+      ---
+      duration_ms: 853.122617
+      type: 'test'
+      ...
+    # Subtest: Belirsiz çözülünce: kanca 'failed' (P3 teslim edilemedi) → Yeniden Dene gider; kanca 'delivered' → 'Daha Önce Gönderildi' (R3 önceliği değişmedi)
+    ok 4 - Belirsiz çözülünce: kanca 'failed' (P3 teslim edilemedi) → Yeniden Dene gider; kanca 'delivered' → 'Daha Önce Gönderildi' (R3 önceliği değişmedi)
+      ---
+      duration_ms: 1516.657608
+      type: 'test'
+      ...
+    # Subtest: T2-1 dönem eşliği: başka dönemin (Bu Ay) Sonucu Belirsiz iletisi Geçen Ay işinin Yeniden Dene'sini ELEMEZ
+    ok 5 - T2-1 dönem eşliği: başka dönemin (Bu Ay) Sonucu Belirsiz iletisi Geçen Ay işinin Yeniden Dene'sini ELEMEZ
+      ---
+      duration_ms: 715.673667
+      type: 'test'
+      ...
+    1..5
+ok 15 - 2.4.8 dar kontrol 6 — Başarısızları Yeniden Dene Sonucu Belirsiz kalan kişiyi eler
+  ---
+  duration_ms: 5072.19952
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 6 — Yine de Gönder sınırı Meta saatine bağlı değil
+    # Subtest: Meta saati 2 dk geride: asıl işten 1 dk SONRA giden (Sonucu Belirsiz → imzalı 'delivered' kancası) ileti asıl işin yeniden denemesini 'Daha Önce Gönderildi' ile eler; B'ye toplam 2 ekstre
+    ok 1 - Meta saati 2 dk geride: asıl işten 1 dk SONRA giden (Sonucu Belirsiz → imzalı 'delivered' kancası) ileti asıl işin yeniden denemesini 'Daha Önce Gönderildi' ile eler; B'ye toplam 2 ekstre
+      ---
+      duration_ms: 1544.351874
+      type: 'test'
+      ...
+    # Subtest: Meta saati 30 dk geride: asıl işten 1 dk SONRA giden (Sonucu Belirsiz → imzalı 'delivered' kancası) ileti asıl işin yeniden denemesini 'Daha Önce Gönderildi' ile eler; B'ye toplam 2 ekstre
+    ok 2 - Meta saati 30 dk geride: asıl işten 1 dk SONRA giden (Sonucu Belirsiz → imzalı 'delivered' kancası) ileti asıl işin yeniden denemesini 'Daha Önce Gönderildi' ile eler; B'ye toplam 2 ekstre
+      ---
+      duration_ms: 1151.999474
+      type: 'test'
+      ...
+    1..2
+ok 16 - 2.4.8 dar kontrol 6 — Yine de Gönder sınırı Meta saatine bağlı değil
+  ---
+  duration_ms: 2697.568082
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 7 ORTA-1 — Meta Bekletti işin 2. denemesi reddedilince kişi 'Daha Önce Gönderildi' sayılmaz (P3)
+    # Subtest: M yolu: O kabul → M (Yine de Gönder) Başarısız → O 131049 → O'nun 2. denemesi eşzamanlı ret → M'nin Yeniden Dene'si P'ye gider; yeni gönderimde P elenmez
+    ok 1 - M yolu: O kabul → M (Yine de Gönder) Başarısız → O 131049 → O'nun 2. denemesi eşzamanlı ret → M'nin Yeniden Dene'si P'ye gider; yeni gönderimde P elenmez
+      ---
+      duration_ms: 1736.185014
+      type: 'test'
+      ...
+    # Subtest: O yolu: O kabul → O 131049 → O'nun 2. denemesi eşzamanlı ret → O'nun kendi Yeniden Dene'si P'ye gider
+    ok 2 - O yolu: O kabul → O 131049 → O'nun 2. denemesi eşzamanlı ret → O'nun kendi Yeniden Dene'si P'ye gider
+      ---
+      duration_ms: 846.4976
+      type: 'test'
+      ...
+    # Subtest: Komşu (ders 10): O'nun 2. denemesi kabul → yeni gönderimde P 'Daha Önce Gönderildi' (R3 değişmedi)
+    ok 3 - Komşu (ders 10): O'nun 2. denemesi kabul → yeni gönderimde P 'Daha Önce Gönderildi' (R3 değişmedi)
+      ---
+      duration_ms: 1253.469678
+      type: 'test'
+      ...
+    # Subtest: Komşu (ders 10): O'nun 2. denemesi kabul + teslim → yeni gönderimde P 'Daha Önce Gönderildi' (R3 değişmedi)
+    ok 4 - Komşu (ders 10): O'nun 2. denemesi kabul + teslim → yeni gönderimde P 'Daha Önce Gönderildi' (R3 değişmedi)
+      ---
+      duration_ms: 786.187955
+      type: 'test'
+      ...
+    1..4
+ok 17 - 2.4.8 dar kontrol 7 ORTA-1 — Meta Bekletti işin 2. denemesi reddedilince kişi 'Daha Önce Gönderildi' sayılmaz (P3)
+  ---
+  duration_ms: 4623.715487
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş 5 — Meta Bekletti iş iptal edilince kişi 'Daha Önce Gönderildi' sayılmaz; geç teslimde sayılır
+    # Subtest: Tamamlandı → 131049 ile yeniden açılmış toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+    ok 1 - Tamamlandı → 131049 ile yeniden açılmış toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+      ---
+      duration_ms: 1792.102414
+      type: 'test'
+      ...
+    # Subtest: Sürüyor (yeniden açılmamış) toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+    ok 2 - Sürüyor (yeniden açılmamış) toplu iş: Meta Bekletti → İptal Et → yeni gönderimde P gönderilecek ve gider
+      ---
+      duration_ms: 1459.583228
+      type: 'test'
+      ...
+    # Subtest: İptalden sonra geç 'delivered' (1. denemenin wamid'i) → P 'Daha Önce Gönderildi' (geç teslim sayılır)
+    ok 3 - İptalden sonra geç 'delivered' (1. denemenin wamid'i) → P 'Daha Önce Gönderildi' (geç teslim sayılır)
+      ---
+      duration_ms: 948.727568
+      type: 'test'
+      ...
+    # Subtest: Değişmeyen: Meta Bekletti beklerken (iptal yok) yeni gönderimde P 'Zaten Kuyrukta'; Yine de Gönder'de de
+    ok 4 - Değişmeyen: Meta Bekletti beklerken (iptal yok) yeni gönderimde P 'Zaten Kuyrukta'; Yine de Gönder'de de
+      ---
+      duration_ms: 1299.843965
+      type: 'test'
+      ...
+    1..4
+ok 18 - 2.4.8 İş 5 — Meta Bekletti iş iptal edilince kişi 'Daha Önce Gönderildi' sayılmaz; geç teslimde sayılır
+  ---
+  duration_ms: 5501.81216
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 7 DÜŞÜK-1 — geri yüklemeden sonra Sonucu Belirsiz elemesinin iletisi var olmayan 'Yine de Gönder'i göstermez
+    # Subtest: A Başarısız → yedek → R1 Sonucu Belirsiz → geri yükleme (R1 dosyadan gider) → A'nın Yeniden Dene'si: 'Sonucu Belirsiz' + yalnız 'yeni gönderim başlatın'; yeni gönderim gider
+    ok 1 - A Başarısız → yedek → R1 Sonucu Belirsiz → geri yükleme (R1 dosyadan gider) → A'nın Yeniden Dene'si: 'Sonucu Belirsiz' + yalnız 'yeni gönderim başlatın'; yeni gönderim gider
+      ---
+      duration_ms: 2054.996676
+      type: 'test'
+      ...
+    1..1
+ok 19 - 2.4.8 dar kontrol 7 DÜŞÜK-1 — geri yüklemeden sonra Sonucu Belirsiz elemesinin iletisi var olmayan 'Yine de Gönder'i göstermez
+  ---
+  duration_ms: 2056.318332
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 7 DÜŞÜK-2 — Sonucu Belirsiz elemesinin 7 günlük penceresi (Son 3 Ay / Tüm Hareketler)
+    # Subtest: Son 3 Ay: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+    ok 1 - Son 3 Ay: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+      ---
+      duration_ms: 1405.480206
+      type: 'test'
+      ...
+    # Subtest: Tüm Hareketler: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+    ok 2 - Tüm Hareketler: R1 Sonucu Belirsiz → 6. gün Yeniden Dene 'Sonucu Belirsiz' ile elenir → 8. gün gider
+      ---
+      duration_ms: 1125.009032
+      type: 'test'
+      ...
+    1..2
+ok 20 - 2.4.8 dar kontrol 7 DÜŞÜK-2 — Sonucu Belirsiz elemesinin 7 günlük penceresi (Son 3 Ay / Tüm Hareketler)
+  ---
+  duration_ms: 2531.817006
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 8 İş A — geri yükleme / taşıma ile durmuş Meta Bekletti 'Daha Önce Gönderildi' sayılmaz; geç teslim sayılır
+    # Subtest: Meta Bekletti → yedek → geri yükleme (İptal Et yok): toplu iş 'Durduruldu (Geri Yükleme)', P 'gönderilecek' ve yeni gönderim gider
+    ok 1 - Meta Bekletti → yedek → geri yükleme (İptal Et yok): toplu iş 'Durduruldu (Geri Yükleme)', P 'gönderilecek' ve yeni gönderim gider
+      ---
+      duration_ms: 2171.321463
+      type: 'test'
+      ...
+    # Subtest: Meta Bekletti → yedek → geri yükleme → 1. denemenin wamid'ine geç 'delivered': uygulanır, P 'Daha Önce Gönderildi', Bu Ay 1
+    ok 2 - Meta Bekletti → yedek → geri yükleme → 1. denemenin wamid'ine geç 'delivered': uygulanır, P 'Daha Önce Gönderildi', Bu Ay 1
+      ---
+      duration_ms: 1793.923117
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-5: Meta Bekletti → yedek → İptal Et → iptalden ÖNCEKİ yedeğin geri yüklenmesi → geç 'delivered' uygulanır ve P sayılır
+    ok 3 - DÜŞÜK-5: Meta Bekletti → yedek → İptal Et → iptalden ÖNCEKİ yedeğin geri yüklenmesi → geç 'delivered' uygulanır ve P sayılır
+      ---
+      duration_ms: 2087.563816
+      type: 'test'
+      ...
+    # Subtest: Taşıma (doğrulama ★6): Meta Bekletti iş olan veri gönderim defteri OLMADAN başka bilgisayara taşınınca 'Taşınan Veri — Durduruldu' ve P 'gönderilecek'
+    ok 4 - Taşıma (doğrulama ★6): Meta Bekletti iş olan veri gönderim defteri OLMADAN başka bilgisayara taşınınca 'Taşınan Veri — Durduruldu' ve P 'gönderilecek'
+      ---
+      duration_ms: 1400.12722
+      type: 'test'
+      ...
+    1..4
+ok 21 - 2.4.8 dar kontrol 8 İş A — geri yükleme / taşıma ile durmuş Meta Bekletti 'Daha Önce Gönderildi' sayılmaz; geç teslim sayılır
+  ---
+  duration_ms: 7454.710956
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G ek 1/4 — yalnız defterde kalan belirsiz deneme yeni toplu işte elemez
+    # Subtest: geri yükleme: belirsiz iş dosyadan gider → yeni gönderim önizlemesi 'gönderilecek', açılır ve gider; Başarısızları Yeniden Dene yine 'Sonucu Belirsiz'
+    ok 1 - geri yükleme: belirsiz iş dosyadan gider → yeni gönderim önizlemesi 'gönderilecek', açılır ve gider; Başarısızları Yeniden Dene yine 'Sonucu Belirsiz'
+      ---
+      duration_ms: 2137.914248
+      type: 'test'
+      ...
+    1..1
+ok 22 - 2.4.8 İş G ek 1/4 — yalnız defterde kalan belirsiz deneme yeni toplu işte elemez
+  ---
+  duration_ms: 2138.956993
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G ek 2/4 — çakışan eleme nedenleri: Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi
+    # Subtest: yeni toplu iş: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz', R3 sayısına girmez; R3'te Yine de Gönder seçilse de gitmez
+    ok 1 - yeni toplu iş: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz', R3 sayısına girmez; R3'te Yine de Gönder seçilse de gitmez
+      ---
+      duration_ms: 1011.631454
+      type: 'test'
+      ...
+    # Subtest: yeni toplu iş: R3 + Zaten Kuyrukta → 'Zaten Kuyrukta' (R3 sayısına girmez); Zaten Kuyrukta + Sonucu Belirsiz (+ R3) → 'Zaten Kuyrukta'; işteki Yine de Gönder'in açtığı iş de aynı sıra
+    ok 2 - yeni toplu iş: R3 + Zaten Kuyrukta → 'Zaten Kuyrukta' (R3 sayısına girmez); Zaten Kuyrukta + Sonucu Belirsiz (+ R3) → 'Zaten Kuyrukta'; işteki Yine de Gönder'in açtığı iş de aynı sıra
+      ---
+      duration_ms: 1127.923428
+      type: 'test'
+      ...
+    # Subtest: Başarısızları Yeniden Dene: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz' (R3 sayısına girmez)
+    ok 3 - Başarısızları Yeniden Dene: R3 + Sonucu Belirsiz → 'Sonucu Belirsiz' (R3 sayısına girmez)
+      ---
+      duration_ms: 925.368771
+      type: 'test'
+      ...
+    # Subtest: Başarısızları Yeniden Dene: Zaten Kuyrukta + Sonucu Belirsiz → 'Zaten Kuyrukta'
+    ok 4 - Başarısızları Yeniden Dene: Zaten Kuyrukta + Sonucu Belirsiz → 'Zaten Kuyrukta'
+      ---
+      duration_ms: 1132.289534
+      type: 'test'
+      ...
+    1..4
+ok 23 - 2.4.8 İş G ek 2/4 — çakışan eleme nedenleri: Zaten Kuyrukta → Sonucu Belirsiz → Daha Önce Gönderildi
+  ---
+  duration_ms: 4197.993801
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G ek 3/4 — Ödeme Hatırlatma'da Sonucu Belirsiz eşliği aynı YEREL gün (gece yarısı)
+    # Subtest: yeni toplu iş: 23:30'da belirsiz kalan hatırlatma 23:50'de (aynı yerel gün) yeni hatırlatmayı eler, 00:10'da (ertesi yerel gün) elemez
+    ok 1 - yeni toplu iş: 23:30'da belirsiz kalan hatırlatma 23:50'de (aynı yerel gün) yeni hatırlatmayı eler, 00:10'da (ertesi yerel gün) elemez
+      ---
+      duration_ms: 762.351281
+      type: 'test'
+      ...
+    # Subtest: Başarısızları Yeniden Dene: 23:30'da belirsiz kalan yeniden deneme 23:50'de ikinci yeniden denemeyi eler, 00:10'da elemez (gider)
+    ok 2 - Başarısızları Yeniden Dene: 23:30'da belirsiz kalan yeniden deneme 23:50'de ikinci yeniden denemeyi eler, 00:10'da elemez (gider)
+      ---
+      duration_ms: 1367.317784
+      type: 'test'
+      ...
+    1..2
+ok 24 - 2.4.8 İş G ek 3/4 — Ödeme Hatırlatma'da Sonucu Belirsiz eşliği aynı YEREL gün (gece yarısı)
+  ---
+  duration_ms: 2130.13192
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G ek 4/4 — Son 3 Ay Başarısızları Yeniden Dene: sonraki kabul 7 gün içindeyse elenir, eskiyse gider
+    # Subtest: asıl Son 3 Ay işinde P Başarısız → başka işle kabul → 6 gün 23 saat sonra Yeniden Dene: Daha Önce Gönderildi
+    ok 1 - asıl Son 3 Ay işinde P Başarısız → başka işle kabul → 6 gün 23 saat sonra Yeniden Dene: Daha Önce Gönderildi
+      ---
+      duration_ms: 981.511705
+      type: 'test'
+      ...
+    # Subtest: asıl Son 3 Ay işinde P Başarısız → başka işle kabul → 7 gün 1 saat sonra Yeniden Dene: gider
+    ok 2 - asıl Son 3 Ay işinde P Başarısız → başka işle kabul → 7 gün 1 saat sonra Yeniden Dene: gider
+      ---
+      duration_ms: 1021.576909
+      type: 'test'
+      ...
+    1..2
+ok 25 - 2.4.8 İş G ek 4/4 — Son 3 Ay Başarısızları Yeniden Dene: sonraki kabul 7 gün içindeyse elenir, eskiyse gider
+  ---
+  duration_ms: 2003.536745
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G son 1/2 — işteki Yine de Gönder başka denemenin Sonucu Belirsiz'iyle elenmez; süren iş varken Zaten Kuyrukta
+    # Subtest: iki belirsiz iş X ve Y (Y = X'in Yine de Gönder'i): X'te yeniden Yine de Gönder gider (Y'nin ve aşılmış X'in belirsizliği elemez)
+    ok 1 - iki belirsiz iş X ve Y (Y = X'in Yine de Gönder'i): X'te yeniden Yine de Gönder gider (Y'nin ve aşılmış X'in belirsizliği elemez)
+      ---
+      duration_ms: 1604.269781
+      type: 'test'
+      ...
+    # Subtest: iki belirsiz iş X ve Y: Y'nin Yine de Gönder'i sırada beklerken X'in Yine de Gönder'i 'Zaten Kuyrukta' (R3 sayısına girmez)
+    ok 2 - iki belirsiz iş X ve Y: Y'nin Yine de Gönder'i sırada beklerken X'in Yine de Gönder'i 'Zaten Kuyrukta' (R3 sayısına girmez)
+      ---
+      duration_ms: 1109.241399
+      type: 'test'
+      ...
+    1..2
+ok 26 - 2.4.8 İş G son 1/2 — işteki Yine de Gönder başka denemenin Sonucu Belirsiz'iyle elenmez; süren iş varken Zaten Kuyrukta
+  ---
+  duration_ms: 2714.854259
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G son 2/2 — hatırlatmanın yeniden denemesinde 'aynı gün' yeniden denemenin yerel günü
+    # Subtest: asıl hatırlatma 20.12 10:00 Başarısız; 21.12 23:30 yeniden deneme belirsiz → 21.12 23:50 yeniden deneme 'Sonucu Belirsiz'; 22.12 00:10 gider
+    ok 1 - asıl hatırlatma 20.12 10:00 Başarısız; 21.12 23:30 yeniden deneme belirsiz → 21.12 23:50 yeniden deneme 'Sonucu Belirsiz'; 22.12 00:10 gider
+      ---
+      duration_ms: 1093.209104
+      type: 'test'
+      ...
+    1..1
+ok 27 - 2.4.8 İş G son 2/2 — hatırlatmanın yeniden denemesinde 'aynı gün' yeniden denemenin yerel günü
+  ---
+  duration_ms: 1093.438005
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş G (★ soru 1) — Sonucu Belirsiz kalmış kişi yeni toplu işte de elenir
+    # Subtest: Bu Ay: önceki yeni gönderim Sonucu Belirsiz → aynı dönemde yeni gönderim (önizleme, açma, 'Yine de Gönder' seçimiyle de) P'yi 'Sonucu Belirsiz' ile eler
+    ok 1 - Bu Ay: önceki yeni gönderim Sonucu Belirsiz → aynı dönemde yeni gönderim (önizleme, açma, 'Yine de Gönder' seçimiyle de) P'yi 'Sonucu Belirsiz' ile eler
+      ---
+      duration_ms: 1532.007262
+      type: 'test'
+      ...
+    # Subtest: Onaylı yol açık: işteki Yine de Gönder gider (Meta Kabul Etti); sonraki yeni gönderim 'Daha Önce Gönderildi', R3'te Yine de Gönder seçimiyle gönderilecek
+    ok 2 - Onaylı yol açık: işteki Yine de Gönder gider (Meta Kabul Etti); sonraki yeni gönderim 'Daha Önce Gönderildi', R3'te Yine de Gönder seçimiyle gönderilecek
+      ---
+      duration_ms: 1412.901032
+      type: 'test'
+      ...
+    # Subtest: Dönem eşliği: başka dönem (Geçen Ay) elenmez; Son 3 Ay'da belirsiz deneme 7 günden eskiyse elenmez, içindeyse elenir
+    ok 3 - Dönem eşliği: başka dönem (Geçen Ay) elenmez; Son 3 Ay'da belirsiz deneme 7 günden eskiyse elenmez, içindeyse elenir
+      ---
+      duration_ms: 1232.692634
+      type: 'test'
+      ...
+    1..3
+ok 28 - 2.4.8 İş G (★ soru 1) — Sonucu Belirsiz kalmış kişi yeni toplu işte de elenir
+  ---
+  duration_ms: 4179.121532
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 8 DÜŞÜK-1 — Meta Bekletti'den sonra 2. deneme reddedildi; 1. denemenin wamid'ine geç teslim sayılır
+    # Subtest: geç 'delivered' uygulanır: P 'Daha Önce Gönderildi', Bu Ay 1, yeni gönderim gitmez; iş Başarısız kalır
+    ok 1 - geç 'delivered' uygulanır: P 'Daha Önce Gönderildi', Bu Ay 1, yeni gönderim gitmez; iş Başarısız kalır
+      ---
+      duration_ms: 1428.582576
+      type: 'test'
+      ...
+    # Subtest: teslim dışı durum ('sent', 'failed') ve başka şirketin kuyruğu teslim YAZMAZ
+    ok 2 - teslim dışı durum ('sent', 'failed') ve başka şirketin kuyruğu teslim YAZMAZ
+      ---
+      duration_ms: 1629.906157
+      type: 'test'
+      ...
+    1..2
+ok 29 - 2.4.8 dar kontrol 8 DÜŞÜK-1 — Meta Bekletti'den sonra 2. deneme reddedildi; 1. denemenin wamid'ine geç teslim sayılır
+  ---
+  duration_ms: 3059.970068
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş H (★ soru 4) — özel aralık o günün hazır seçimine birebir eşitse aynı dönem
+    # Subtest: Bu Ay (03.11) gönderildi → aynı gün özel 01.11–03.11 'Daha Önce Gönderildi'; özel 01.11–02.11 ayrı dönem
+    ok 1 - Bu Ay (03.11) gönderildi → aynı gün özel 01.11–03.11 'Daha Önce Gönderildi'; özel 01.11–02.11 ayrı dönem
+      ---
+      duration_ms: 1101.91613
+      type: 'test'
+      ...
+    # Subtest: Geçen Ay (03.11 → Ekim) gönderildi → özel 01.10–31.10 'Daha Önce Gönderildi'; özel 01.10–30.10 ayrı dönem
+    ok 2 - Geçen Ay (03.11 → Ekim) gönderildi → özel 01.10–31.10 'Daha Önce Gönderildi'; özel 01.10–30.10 ayrı dönem
+      ---
+      duration_ms: 911.92969
+      type: 'test'
+      ...
+    # Subtest: Önce özel aralık: 03.11'de özel 01.11–03.11 (o gün Bu Ay) gönderildi → 05.11'de Bu Ay 'Daha Önce Gönderildi'; aynı özel aralık yine aynı dönem (gerileme)
+    ok 3 - Önce özel aralık: 03.11'de özel 01.11–03.11 (o gün Bu Ay) gönderildi → 05.11'de Bu Ay 'Daha Önce Gönderildi'; aynı özel aralık yine aynı dönem (gerileme)
+      ---
+      duration_ms: 681.950863
+      type: 'test'
+      ...
+    # Subtest: Önce özel aralık, o gün hazır seçime EŞİT DEĞİL: 05.11'de özel 01.11–03.11 gönderildi → Bu Ay ayrı dönem (gönderilecek)
+    ok 4 - Önce özel aralık, o gün hazır seçime EŞİT DEĞİL: 05.11'de özel 01.11–03.11 gönderildi → Bu Ay ayrı dönem (gönderilecek)
+      ---
+      duration_ms: 627.860768
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta: 03.11'de açılan özel 01.11–03.11 işi sırada beklerken 04.11'de Bu Ay 'Zaten Kuyrukta' (süren işin günü açıldığı gün); Bu Ay işi beklerken özel eşit 'Zaten Kuyrukta'
+    ok 5 - Zaten Kuyrukta: 03.11'de açılan özel 01.11–03.11 işi sırada beklerken 04.11'de Bu Ay 'Zaten Kuyrukta' (süren işin günü açıldığı gün); Bu Ay işi beklerken özel eşit 'Zaten Kuyrukta'
+      ---
+      duration_ms: 1697.343353
+      type: 'test'
+      ...
+    # Subtest: Ay sonu ve yıl dönümü: 30.11'de Bu Ay = 01.11–30.11; 05.01.2027'de Geçen Ay = Aralık 2026
+    ok 6 - Ay sonu ve yıl dönümü: 30.11'de Bu Ay = 01.11–30.11; 05.01.2027'de Geçen Ay = Aralık 2026
+      ---
+      duration_ms: 1741.679241
+      type: 'test'
+      ...
+    # Subtest: Sonucu Belirsiz elemesi de aynı eşlikle (komşu): özel 01.11–03.11 (o gün Bu Ay) belirsiz kaldı → Bu Ay yeni gönderimde 'Sonucu Belirsiz'
+    ok 7 - Sonucu Belirsiz elemesi de aynı eşlikle (komşu): özel 01.11–03.11 (o gün Bu Ay) belirsiz kaldı → Bu Ay yeni gönderimde 'Sonucu Belirsiz'
+      ---
+      duration_ms: 893.791585
+      type: 'test'
+      ...
+    1..7
+ok 30 - 2.4.8 İş H (★ soru 4) — özel aralık o günün hazır seçimine birebir eşitse aynı dönem
+  ---
+  duration_ms: 7658.633559
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş I (★ soru 8) — taşınan veride dosyadaki kabul / teslim R3'te sayılır
+    # Subtest: Bu Ay: kaynakta P 'accepted' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+    ok 1 - Bu Ay: kaynakta P 'accepted' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+      ---
+      duration_ms: 1710.636722
+      type: 'test'
+      ...
+    # Subtest: Bu Ay: kaynakta P 'delivered' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+    ok 2 - Bu Ay: kaynakta P 'delivered' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+      ---
+      duration_ms: 1373.417258
+      type: 'test'
+      ...
+    # Subtest: Bu Ay: kaynakta P 'read' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+    ok 3 - Bu Ay: kaynakta P 'read' → taşınan veride (defter yok) yeni gönderimde P 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider
+      ---
+      duration_ms: 937.106711
+      type: 'test'
+      ...
+    # Subtest: Sayılmayanlar: kaynakta Başarısız (131026) ya da Meta Bekletti (taşınınca Durduruldu) olan ileti taşınan veride sayılmaz
+    ok 4 - Sayılmayanlar: kaynakta Başarısız (131026) ya da Meta Bekletti (taşınınca Durduruldu) olan ileti taşınan veride sayılmaz
+      ---
+      duration_ms: 1333.478263
+      type: 'test'
+      ...
+    # Subtest: Son 3 Ay: dosyadaki kabul 7 günden eskiyse taşınan veride sayılmaz, 7 gün içindeyse sayılır (R3 penceresi)
+    ok 5 - Son 3 Ay: dosyadaki kabul 7 günden eskiyse taşınan veride sayılmaz, 7 gün içindeyse sayılır (R3 penceresi)
+      ---
+      duration_ms: 1971.467397
+      type: 'test'
+      ...
+    # Subtest: Aynı bilgisayar (gerileme, çift sayım yok): kabul edilen ileti defterden bir kez sayılır, alreadySent 1
+    ok 6 - Aynı bilgisayar (gerileme, çift sayım yok): kabul edilen ileti defterden bir kez sayılır, alreadySent 1
+      ---
+      duration_ms: 798.381784
+      type: 'test'
+      ...
+    1..6
+ok 31 - 2.4.8 İş I (★ soru 8) — taşınan veride dosyadaki kabul / teslim R3'te sayılır
+  ---
+  duration_ms: 8126.593808
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 8 DÜŞÜK-4 (sunucu) — aynı toplu işte iki Meta Bekletti: 2. denemede kabul edilen sayılır, İptal Et ile duran sayılmaz
+    # Subtest: P 2. denemede Meta Kabul Etti, Q Meta Bekletti'de beklerken İptal Et → P 'Daha Önce Gönderildi', Q 'gönderilecek'
+    ok 1 - P 2. denemede Meta Kabul Etti, Q Meta Bekletti'de beklerken İptal Et → P 'Daha Önce Gönderildi', Q 'gönderilecek'
+      ---
+      duration_ms: 986.097665
+      type: 'test'
+      ...
+    1..1
+ok 32 - 2.4.8 dar kontrol 8 DÜŞÜK-4 (sunucu) — aynı toplu işte iki Meta Bekletti: 2. denemede kabul edilen sayılır, İptal Et ile duran sayılmaz
+  ---
+  duration_ms: 987.19501
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 dar kontrol 9 ORTA-1 — toplu işin dönem anahtarı açıldığı güne göre (★ soru 4)
+    # Subtest: günlük sınır: 03.11'de açılan özel 01.11–03.11 işinde ertesi günlere kalan B de 10.11'de 'Bu Ay' ile 'Daha Önce Gönderildi'; ikinci ekstre gitmez
+    ok 1 - günlük sınır: 03.11'de açılan özel 01.11–03.11 işinde ertesi günlere kalan B de 10.11'de 'Bu Ay' ile 'Daha Önce Gönderildi'; ikinci ekstre gitmez
+      ---
+      duration_ms: 1237.709263
+      type: 'test'
+      ...
+    # Subtest: Meta Bekletti: 03.11 23:30 özel 01.11–03.11 → 131049 → 2. deneme 04.11 23:45'te kabul → 10.11 'Bu Ay' 'Daha Önce Gönderildi'
+    ok 2 - Meta Bekletti: 03.11 23:30 özel 01.11–03.11 → 131049 → 2. deneme 04.11 23:45'te kabul → 10.11 'Bu Ay' 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 1006.355136
+      type: 'test'
+      ...
+    # Subtest: taşınan veri: aynı çok günlü gönderim başka bilgisayara (defter olmadan) taşınınca 10.11'de 'Bu Ay' iki kişide 'Daha Önce Gönderildi'
+    ok 3 - taşınan veri: aynı çok günlü gönderim başka bilgisayara (defter olmadan) taşınınca 10.11'de 'Bu Ay' iki kişide 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 1705.215011
+      type: 'test'
+      ...
+    1..3
+ok 33 - 2.4.8 dar kontrol 9 ORTA-1 — toplu işin dönem anahtarı açıldığı güne göre (★ soru 4)
+  ---
+  duration_ms: 3950.918146
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş J (dk9 soru 1/7) — yeniden denemede özel aralığın 'o gün'ü asıl işin günü
+    # Subtest: 03.11 23:30 asıl iş özel 01.11–03.11, P Başarısız → 04.11 P'ye 'Bu Ay' gitti → 05.11 00:30 asıl işin Yeniden Dene'si P'yi 'Daha Önce Gönderildi' ile eler
+    ok 1 - 03.11 23:30 asıl iş özel 01.11–03.11, P Başarısız → 04.11 P'ye 'Bu Ay' gitti → 05.11 00:30 asıl işin Yeniden Dene'si P'yi 'Daha Önce Gönderildi' ile eler
+      ---
+      duration_ms: 933.807671
+      type: 'test'
+      ...
+    # Subtest: Yine de Gönder: 03.11 23:30 özel 01.11–03.11 belirsiz → 05.11 00:30 işteki Yine de Gönder kabul → belirsiz çözülünce 10.11 'Bu Ay' 'Daha Önce Gönderildi'
+    ok 2 - Yine de Gönder: 03.11 23:30 özel 01.11–03.11 belirsiz → 05.11 00:30 işteki Yine de Gönder kabul → belirsiz çözülünce 10.11 'Bu Ay' 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 1118.387393
+      type: 'test'
+      ...
+    1..2
+ok 34 - 2.4.8 İş J (dk9 soru 1/7) — yeniden denemede özel aralığın 'o gün'ü asıl işin günü
+  ---
+  duration_ms: 2061.274117
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş L1 (S1a) — hazır seçimin o günkü tarihleri de dönem kümesinde
+    # Subtest: 03.11 'Bu Ay' gönderildi → 05.11 özel 01.11–03.11 'Daha Önce Gönderildi'; 03.11 Bu Ay işi beklerken 05.11 özel 01.11–03.11 'Zaten Kuyrukta'
+    ok 1 - 03.11 'Bu Ay' gönderildi → 05.11 özel 01.11–03.11 'Daha Önce Gönderildi'; 03.11 Bu Ay işi beklerken 05.11 özel 01.11–03.11 'Zaten Kuyrukta'
+      ---
+      duration_ms: 1155.30571
+      type: 'test'
+      ...
+    # Subtest: 03.11 'Geçen Ay' (Ekim) gönderildi → 15.12'de özel 01.10–31.10 'Daha Önce Gönderildi'
+    ok 2 - 03.11 'Geçen Ay' (Ekim) gönderildi → 15.12'de özel 01.10–31.10 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 833.37739
+      type: 'test'
+      ...
+    1..2
+ok 35 - 2.4.8 İş L1 (S1a) — hazır seçimin o günkü tarihleri de dönem kümesinde
+  ---
+  duration_ms: 1989.158247
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş L2 (S2) — taşınan veride dosyadaki Sonucu Belirsiz eler; onaylı yol açık
+    # Subtest: kaynakta P Sonucu Belirsiz (Bu Ay) + asıl işte Başarısız → taşınan veride yeni gönderim ve Yeniden Dene 'Sonucu Belirsiz' (onaylı yol iletide); işteki Yine de Gönder gider
+    ok 1 - kaynakta P Sonucu Belirsiz (Bu Ay) + asıl işte Başarısız → taşınan veride yeni gönderim ve Yeniden Dene 'Sonucu Belirsiz' (onaylı yol iletide); işteki Yine de Gönder gider
+      ---
+      duration_ms: 1472.219855
+      type: 'test'
+      ...
+    1..1
+ok 36 - 2.4.8 İş L2 (S2) — taşınan veride dosyadaki Sonucu Belirsiz eler; onaylı yol açık
+  ---
+  duration_ms: 1472.455959
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş L3 (S3) — Şirket Verisini Sıfırla ile duran Meta Bekletti sayılmaz; geç teslim sayılır
+    # Subtest: P Meta Bekletti → Şirket Verisini Sıfırla (Yalnız Hareketler; cari kalır) → P 'gönderilecek'; 1. denemenin geç 'delivered'ı → 'Daha Önce Gönderildi'
+    ok 1 - P Meta Bekletti → Şirket Verisini Sıfırla (Yalnız Hareketler; cari kalır) → P 'gönderilecek'; 1. denemenin geç 'delivered'ı → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 930.675747
+      type: 'test'
+      ...
+    1..1
+ok 37 - 2.4.8 İş L3 (S3) — Şirket Verisini Sıfırla ile duran Meta Bekletti sayılmaz; geç teslim sayılır
+  ---
+  duration_ms: 931.068346
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş L4 (S4) — Meta Bekletti sonrası 2. deneme belirsizse 'Sonucu Belirsiz'
+    # Subtest: P kabul → 131049 → 24 saat sonra 2. deneme belirsiz → yeni gönderim 'Sonucu Belirsiz' (onaylı yol iletide); 1. denemenin geç teslimi → 'Daha Önce Gönderildi'
+    ok 1 - P kabul → 131049 → 24 saat sonra 2. deneme belirsiz → yeni gönderim 'Sonucu Belirsiz' (onaylı yol iletide); 1. denemenin geç teslimi → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 798.292496
+      type: 'test'
+      ...
+    # Subtest: onaylı yol: 2. deneme belirsizken işteki Yine de Gönder gider
+    ok 2 - onaylı yol: 2. deneme belirsizken işteki Yine de Gönder gider
+      ---
+      duration_ms: 757.963621
+      type: 'test'
+      ...
+    1..2
+ok 38 - 2.4.8 İş L4 (S4) — Meta Bekletti sonrası 2. deneme belirsizse 'Sonucu Belirsiz'
+  ---
+  duration_ms: 1556.649046
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş M — taşınan veride geç teslim bildirimi yeni bilgisayarda yazılır (K7-05)
+    # Subtest: 11:30 imzasız 'delivered' (A'nın 1. denemesi) → 200, A Teslim Edildi, Bu Ay 1; 12:00 yeni gönderimde A 'Daha Önce Gönderildi'; 002'nin işi değişmez
+    ok 1 - 11:30 imzasız 'delivered' (A'nın 1. denemesi) → 200, A Teslim Edildi, Bu Ay 1; 12:00 yeni gönderimde A 'Daha Önce Gönderildi'; 002'nin işi değişmez
+      ---
+      duration_ms: 2517.44786
+      type: 'test'
+      ...
+    # Subtest: iki şirket: 002'nin wamid'iyle gelen bildirim yalnız 002'ye yazılır (001'in işi değişmez); bilinmeyen wamid hiçbir şeye yazılmaz
+    ok 2 - iki şirket: 002'nin wamid'iyle gelen bildirim yalnız 002'ye yazılır (001'in işi değişmez); bilinmeyen wamid hiçbir şeye yazılmaz
+      ---
+      duration_ms: 1857.837751
+      type: 'test'
+      ...
+    1..2
+ok 39 - 2.4.8 İş M — taşınan veride geç teslim bildirimi yeni bilgisayarda yazılır (K7-05)
+  ---
+  duration_ms: 4376.903887
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 WhatsApp Gönderimleri — Daha Fazla Göster (imleç) ve tarih süzgeci
+    # Subtest: İlk 30, sonraki 30, son 5 (en yeni önce; aynı anda açılanlar sonra açılan önce); sonrası boş
+    ok 1 - İlk 30, sonraki 30, son 5 (en yeni önce; aynı anda açılanlar sonra açılan önce); sonrası boş
+      ---
+      duration_ms: 11.991151
+      type: 'test'
+      ...
+    # Subtest: İmleç kararlılığı: ilk sayfa okunduktan sonra yeni gönderim gelse de ikinci sayfa kaymaz
+    ok 2 - İmleç kararlılığı: ilk sayfa okunduktan sonra yeni gönderim gelse de ikinci sayfa kaymaz
+      ---
+      duration_ms: 33.741975
+      type: 'test'
+      ...
+    # Subtest: Tarih süzgeci: yerel gün, iki uç dahil (23:59:59 ve 00:00:00), ayın 1'i; süzgeç + imleç birlikte; boş gün
+    ok 3 - Tarih süzgeci: yerel gün, iki uç dahil (23:59:59 ve 00:00:00), ayın 1'i; süzgeç + imleç birlikte; boş gün
+      ---
+      duration_ms: 18.365085
+      type: 'test'
+      ...
+    # Subtest: Dış girdi: geçersiz aralık / tarih / imleç 400 + Türkçe ileti; limit en çok 200, sayı değilse 50
+    ok 4 - Dış girdi: geçersiz aralık / tarih / imleç 400 + Türkçe ileti; limit en çok 200, sayı değilse 50
+      ---
+      duration_ms: 24.956883
+      type: 'test'
+      ...
+    1..4
+ok 40 - 2.4.8 WhatsApp Gönderimleri — Daha Fazla Göster (imleç) ve tarih süzgeci
+  ---
+  duration_ms: 4109.893983
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — Meta istemcisi
+    # Subtest: istek: sürüm sabiti + belirteç yalnız başlıkta; adres sorgusunda ve gövdede yok; yönlendirme izlenmez (manual)
+    ok 1 - istek: sürüm sabiti + belirteç yalnız başlıkta; adres sorgusunda ve gövdede yok; yönlendirme izlenmez (manual)
+      ---
+      duration_ms: 62.171826
+      type: 'test'
+      ...
+    # Subtest: belirteç açılamazsa (boş) ve kimlik adres karakteri taşırsa istek yapılmaz
+    ok 2 - belirteç açılamazsa (boş) ve kimlik adres karakteri taşırsa istek yapılmaz
+      ---
+      duration_ms: 1.158221
+      type: 'test'
+      ...
+    # Subtest: Meta hata gövdesi: Türkçe başlık + kod + yeniden deneme sınıfı; Meta metni belirteci yankılasa da iletide yok
+    ok 3 - Meta hata gövdesi: Türkçe başlık + kod + yeniden deneme sınıfı; Meta metni belirteci yankılasa da iletide yok
+      ---
+      duration_ms: 1.550234
+      type: 'test'
+      ...
+    # Subtest: ağ hatası, zaman aşımı, gövdesiz 5xx, 3xx yönlendirme → sonuç bilinmiyor (retry unknown)
+    ok 4 - ağ hatası, zaman aşımı, gövdesiz 5xx, 3xx yönlendirme → sonuç bilinmiyor (retry unknown)
+      ---
+      duration_ms: 86.660888
+      type: 'test'
+      ...
+    # Subtest: sayfalama: `after` imleciyle yapılandırılmış adrese; yanıttaki mutlak paging.next adresine gidilmez; en çok 3 sayfa
+    ok 5 - sayfalama: `after` imleciyle yapılandırılmış adrese; yanıttaki mutlak paging.next adresine gidilmez; en çok 3 sayfa
+      ---
+      duration_ms: 6.789736
+      type: 'test'
+      ...
+    # Subtest: hata sınıfları (plan §6 W2) ve sınır basamağı / kalite metinleri
+    ok 6 - hata sınıfları (plan §6 W2) ve sınır basamağı / kalite metinleri
+      ---
+      duration_ms: 33.476623
+      type: 'test'
+      ...
+    1..6
+ok 41 - 2.4.8 W1 — Meta istemcisi
+  ---
+  duration_ms: 193.253165
+  type: 'suite'
+  ...
+# Subtest: yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+ok 42 - yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+  ---
+  duration_ms: 129.536529
+  type: 'test'
+  ...
+# Subtest: Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz
+ok 43 - Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz
+  ---
+  duration_ms: 2.336229
+  type: 'test'
+  ...
+# Subtest: kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+ok 44 - kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+  ---
+  duration_ms: 209.629419
+  type: 'test'
+  ...
+# Subtest: ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez
+ok 45 - ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez
+  ---
+  duration_ms: 1126.681877
+  type: 'test'
+  ...
+# Subtest: 2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen)
+    # Subtest: eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı
+    ok 1 - eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı
+      ---
+      duration_ms: 1461.463154
+      type: 'test'
+      ...
+    # Subtest: önizlemenin eleme nedenleri sınıf tanımından; önizleme ve açma kişi başı tam kart OKUMAZ, gönderim anı okur; 'Zaten Kuyrukta' tek sorgu (süren VE duraklatılmış iş)
+    ok 2 - önizlemenin eleme nedenleri sınıf tanımından; önizleme ve açma kişi başı tam kart OKUMAZ, gönderim anı okur; 'Zaten Kuyrukta' tek sorgu (süren VE duraklatılmış iş)
+      ---
+      duration_ms: 1289.469392
+      type: 'test'
+      ...
+    # Subtest: makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen
+    ok 3 - makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen
+      ---
+      duration_ms: 1210.62479
+      type: 'test'
+      ...
+    1..3
+ok 46 - 2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen)
+  ---
+  duration_ms: 3963.023848
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem
+    # Subtest: 03.11 Tüm Hareketler P ve Q'ya → 05.11 özel 15.10–03.11: P 'Daha Önce Gönderildi' (iletideki dönem), Q 'gönderilecek' (Q'nun dönemi 20.10–03.11); 11.11 pencere dışı
+    ok 1 - 03.11 Tüm Hareketler P ve Q'ya → 05.11 özel 15.10–03.11: P 'Daha Önce Gönderildi' (iletideki dönem), Q 'gönderilecek' (Q'nun dönemi 20.10–03.11); 11.11 pencere dışı
+      ---
+      duration_ms: 1061.801966
+      type: 'test'
+      ...
+    # Subtest: ters yön: 05.11 özel 15.10–05.11 P'ye gönderildi → aynı gün Tüm Hareketler 'Daha Önce Gönderildi' (Q gönderilecek); 06.11 Tüm (15.10–06.11) ayrı
+    ok 2 - ters yön: 05.11 özel 15.10–05.11 P'ye gönderildi → aynı gün Tüm Hareketler 'Daha Önce Gönderildi' (Q gönderilecek); 06.11 Tüm (15.10–06.11) ayrı
+      ---
+      duration_ms: 747.851979
+      type: 'test'
+      ...
+    # Subtest: kişi başına süzme: Q'ya P'nin Tüm dönemiyle aynı tarihli özel aralık (15.10–05.11) gitti / belirsiz kaldı → 05.11 Tüm Hareketler'de Q elenmez (Q'nun dönemi 20.10–05.11)
+    ok 3 - kişi başına süzme: Q'ya P'nin Tüm dönemiyle aynı tarihli özel aralık (15.10–05.11) gitti / belirsiz kaldı → 05.11 Tüm Hareketler'de Q elenmez (Q'nun dönemi 20.10–05.11)
+      ---
+      duration_ms: 1325.929101
+      type: 'test'
+      ...
+    # Subtest: b1b: aynı gün (Excel yükleme günü) açılmış 3 cariye 03.11 Tüm → 05.11 özel 15.10–03.11 toplu: üçü de elenir, ikinci ileti yok (önce 6 ileti)
+    ok 4 - b1b: aynı gün (Excel yükleme günü) açılmış 3 cariye 03.11 Tüm → 05.11 özel 15.10–03.11 toplu: üçü de elenir, ikinci ileti yok (önce 6 ileti)
+      ---
+      duration_ms: 994.403412
+      type: 'test'
+      ...
+    # Subtest: R6 hareketsiz cari: Tüm Hareketler (iletide 03.11 – 03.11) → 05.11 özel 03.11–03.11 'Daha Önce Gönderildi'; ters yön: özel 03.11–03.11 → aynı gün Tüm 'Daha Önce Gönderildi'
+    ok 5 - R6 hareketsiz cari: Tüm Hareketler (iletide 03.11 – 03.11) → 05.11 özel 03.11–03.11 'Daha Önce Gönderildi'; ters yön: özel 03.11–03.11 → aynı gün Tüm 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 1519.879747
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta: Tüm işi sırada → aynı tarihli özel aralık 'Zaten Kuyrukta' (Q gönderilecek)
+    ok 6 - Zaten Kuyrukta: Tüm işi sırada → aynı tarihli özel aralık 'Zaten Kuyrukta' (Q gönderilecek)
+      ---
+      duration_ms: 837.959682
+      type: 'test'
+      ...
+    # Subtest: Zaten Kuyrukta ters yön: özel 15.10–03.11 işi sırada → aynı gün Tüm 'Zaten Kuyrukta' (Q gönderilecek)
+    ok 7 - Zaten Kuyrukta ters yön: özel 15.10–03.11 işi sırada → aynı gün Tüm 'Zaten Kuyrukta' (Q gönderilecek)
+      ---
+      duration_ms: 861.458918
+      type: 'test'
+      ...
+    # Subtest: Sonucu Belirsiz: Tüm belirsiz → ertesi gün aynı tarihli özel aralık 'Sonucu Belirsiz' (Q gönderilecek)
+    ok 8 - Sonucu Belirsiz: Tüm belirsiz → ertesi gün aynı tarihli özel aralık 'Sonucu Belirsiz' (Q gönderilecek)
+      ---
+      duration_ms: 603.447193
+      type: 'test'
+      ...
+    # Subtest: taşınan veri (defter yok): eski bilgisayarda 03.11 Tüm P'ye kabul → yeni bilgisayarda 05.11 özel 15.10–03.11 'Daha Önce Gönderildi', Q 'gönderilecek'
+    ok 9 - taşınan veri (defter yok): eski bilgisayarda 03.11 Tüm P'ye kabul → yeni bilgisayarda 05.11 özel 15.10–03.11 'Daha Önce Gönderildi', Q 'gönderilecek'
+      ---
+      duration_ms: 1324.625853
+      type: 'test'
+      ...
+    # Subtest: R5 A: 'Bu Ay' 02.11'de gitti → 03.11 Tüm Hareketler (P'nin dönemi 01.11–03.11 = o günün Bu Ay'ı) 'Daha Önce Gönderildi'; Q (02.11–03.11) gönderilecek
+    ok 10 - R5 A: 'Bu Ay' 02.11'de gitti → 03.11 Tüm Hareketler (P'nin dönemi 01.11–03.11 = o günün Bu Ay'ı) 'Daha Önce Gönderildi'; Q (02.11–03.11) gönderilecek
+      ---
+      duration_ms: 784.142962
+      type: 'test'
+      ...
+    # Subtest: R5 A2: Tüm Hareketler 02.11'de gitti (P: 01.11–02.11 = o günün Bu Ay'ı) → 03.11 'Bu Ay' P 'Daha Önce Gönderildi'; Q (02.11–02.11) gönderilecek
+    ok 11 - R5 A2: Tüm Hareketler 02.11'de gitti (P: 01.11–02.11 = o günün Bu Ay'ı) → 03.11 'Bu Ay' P 'Daha Önce Gönderildi'; Q (02.11–02.11) gönderilecek
+      ---
+      duration_ms: 588.516031
+      type: 'test'
+      ...
+    # Subtest: R5 Zaten Kuyrukta iki yön: Bu Ay işi sırada → Tüm (P) 'Zaten Kuyrukta'; Tüm işi sırada → ertesi gün Bu Ay (P) 'Zaten Kuyrukta'
+    ok 12 - R5 Zaten Kuyrukta iki yön: Bu Ay işi sırada → Tüm (P) 'Zaten Kuyrukta'; Tüm işi sırada → ertesi gün Bu Ay (P) 'Zaten Kuyrukta'
+      ---
+      duration_ms: 1534.617688
+      type: 'test'
+      ...
+    1..12
+ok 47 - 2.4.8 İş Q1 — 'Tüm Hareketler'in kişiye özel dönemi (ilk hareket – o gün) aynı tarihli özel aralıkla aynı dönem
+  ---
+  duration_ms: 12189.690824
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'Sonucu Belirsiz' ile elemez
+    # Subtest: genel (b2): J belirsiz → K kabul + teslim → yeni gönderim 'Daha Önce Gönderildi'; R3'te Yine de Gönder ile gider (çıkmaz yok); bağ dosyada ve defterde
+    ok 1 - genel (b2): J belirsiz → K kabul + teslim → yeni gönderim 'Daha Önce Gönderildi'; R3'te Yine de Gönder ile gider (çıkmaz yok); bağ dosyada ve defterde
+      ---
+      duration_ms: 1192.646241
+      type: 'test'
+      ...
+    # Subtest: Meta Bekletti kipi (b2 bekletti): J'nin 131049 sonrası 2. denemesi belirsiz → K kabul → 'Daha Önce Gönderildi'
+    ok 2 - Meta Bekletti kipi (b2 bekletti): J'nin 131049 sonrası 2. denemesi belirsiz → K kabul → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 675.408542
+      type: 'test'
+      ...
+    # Subtest: gerileme: Yine de Gönder işi Başarısız → kaynak yine 'Sonucu Belirsiz' ile eler; Yine de Gönder işi belirsiz → eler
+    ok 3 - gerileme: Yine de Gönder işi Başarısız → kaynak yine 'Sonucu Belirsiz' ile eler; Yine de Gönder işi belirsiz → eler
+      ---
+      duration_ms: 921.168802
+      type: 'test'
+      ...
+    # Subtest: zincir: J belirsiz → K belirsiz → K'nin Yine de Gönder'i L kabul → J ve K elemez, 'Daha Önce Gönderildi'
+    ok 4 - zincir: J belirsiz → K belirsiz → K'nin Yine de Gönder'i L kabul → J ve K elemez, 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 491.027506
+      type: 'test'
+      ...
+    # Subtest: yalnız defterdeki bağ (dosyadaki bağ yok — eski yedek): kaynak yine elemez; yalnız dosyadaki bağ (taşınan veri, defter yok): kaynak elemez
+    ok 5 - yalnız defterdeki bağ (dosyadaki bağ yok — eski yedek): kaynak yine elemez; yalnız dosyadaki bağ (taşınan veri, defter yok): kaynak elemez
+      ---
+      duration_ms: 673.972775
+      type: 'test'
+      ...
+    # Subtest: göç v44: v43 dosyası (inherit_of yok) açılınca sütun eklenir, eski satırlar bağsız (''); göç yarıda kalmış dosya (sütun var, sürüm 43) yeniden açılır
+    ok 6 - göç v44: v43 dosyası (inherit_of yok) açılınca sütun eklenir, eski satırlar bağsız (''); göç yarıda kalmış dosya (sütun var, sürüm 43) yeniden açılır
+      ---
+      duration_ms: 798.177589
+      type: 'test'
+      ...
+    1..6
+ok 48 - 2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'Sonucu Belirsiz' ile elemez
+  ---
+  duration_ms: 4754.084153
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş Q3 — taşınan veride Gönderiliyor'da kalmış iş Sonucu Belirsiz
+    # Subtest: istek Meta'dayken süreç öldü, veri defter olmadan taşındı → iş Sonucu Belirsiz (deneme 1); yeni gönderim kişiyi eler (ikinci istek yok); Yine de Gönder gider
+    ok 1 - istek Meta'dayken süreç öldü, veri defter olmadan taşındı → iş Sonucu Belirsiz (deneme 1); yeni gönderim kişiyi eler (ikinci istek yok); Yine de Gönder gider
+      ---
+      duration_ms: 1631.915401
+      type: 'test'
+      ...
+    1..1
+ok 49 - 2.4.8 İş Q3 — taşınan veride Gönderiliyor'da kalmış iş Sonucu Belirsiz
+  ---
+  duration_ms: 1633.379781
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır
+    # Subtest: imzalı 'delivered' → kişi 'Daha Önce Gönderildi', Bu Ay Gönderilen 1; yeni gönderim kişiye ikinci ileti göndermez
+    ok 1 - imzalı 'delivered' → kişi 'Daha Önce Gönderildi', Bu Ay Gönderilen 1; yeni gönderim kişiye ikinci ileti göndermez
+      ---
+      duration_ms: 1038.898486
+      type: 'test'
+      ...
+    # Subtest: imzalı 'failed' → teslim edilemedi: kişi elenmez, yeni gönderim gider
+    ok 2 - imzalı 'failed' → teslim edilemedi: kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 1189.475496
+      type: 'test'
+      ...
+    # Subtest: İMZASIZ 'delivered' (P5 aynen) → düşer; kişi 'Daha Önce Gönderildi' sayılmaz
+    ok 3 - İMZASIZ 'delivered' (P5 aynen) → düşer; kişi 'Daha Önce Gönderildi' sayılmaz
+      ---
+      duration_ms: 1020.803889
+      type: 'test'
+      ...
+    # Subtest: komşu: KABUL edilmiş iletinin işi sıfırlamayla silindikten sonra gelen geç 'delivered' (wamid defterde) Bu Ay Gönderilen'e yazılır; kişi yine Daha Önce Gönderildi
+    ok 4 - komşu: KABUL edilmiş iletinin işi sıfırlamayla silindikten sonra gelen geç 'delivered' (wamid defterde) Bu Ay Gönderilen'e yazılır; kişi yine Daha Önce Gönderildi
+      ---
+      duration_ms: 725.009268
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzalı failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 5 - R7: kabul → sıfırla → imzalı failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 720.826964
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzasız failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 6 - R7: kabul → sıfırla → imzasız failed 131026 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 976.335115
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzalı failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 7 - R7: kabul → sıfırla → imzalı failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 1015.552309
+      type: 'test'
+      ...
+    # Subtest: R7: kabul → sıfırla → imzasız failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+    ok 8 - R7: kabul → sıfırla → imzasız failed 131049 → teslim edilemedi, kişi elenmez, yeni gönderim gider
+      ---
+      duration_ms: 889.677332
+      type: 'test'
+      ...
+    # Subtest: R7 gerileme: teslimden sonra gelen failed (iş dosyada yok) yok sayılır; kişi Daha Önce Gönderildi kalır
+    ok 9 - R7 gerileme: teslimden sonra gelen failed (iş dosyada yok) yok sayılır; kişi Daha Önce Gönderildi kalır
+      ---
+      duration_ms: 804.143108
+      type: 'test'
+      ...
+    1..9
+ok 50 - 2.4.8 İş Q4 — iş dosyada yokken imzalı geç bildirim sonucu belli olmayan son denemeyi kapatır
+  ---
+  duration_ms: 8383.005138
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş Q5 — 'Daha Önce Gönderildi' tarihi son kabul edilen denemenin anı
+    # Subtest: 131049 → 24 saat sonra 2. deneme kabul → önizlemede tarih 2. denemenin kabul anı (1. değil); kişi yine elenir
+    ok 1 - 131049 → 24 saat sonra 2. deneme kabul → önizlemede tarih 2. denemenin kabul anı (1. değil); kişi yine elenir
+      ---
+      duration_ms: 747.03779
+      type: 'test'
+      ...
+    # Subtest: Son 3 Ay (7 günlük pencere): 1. kabul 7 günden eski, 2. deneme 7 gün içinde kabul → kişi 'Daha Önce Gönderildi' (taşınan verideki iş satırı yolu ile aynı)
+    ok 2 - Son 3 Ay (7 günlük pencere): 1. kabul 7 günden eski, 2. deneme 7 gün içinde kabul → kişi 'Daha Önce Gönderildi' (taşınan verideki iş satırı yolu ile aynı)
+      ---
+      duration_ms: 641.488359
+      type: 'test'
+      ...
+    # Subtest: R4: 2. deneme imzalı bildirimle çözülünce aynı bilgisayar VE taşınan veri (defter yok) 'Daha Önce Gönderildi', aynı tarih (2. denemenin anı)
+    ok 3 - R4: 2. deneme imzalı bildirimle çözülünce aynı bilgisayar VE taşınan veri (defter yok) 'Daha Önce Gönderildi', aynı tarih (2. denemenin anı)
+      ---
+      duration_ms: 814.001934
+      type: 'test'
+      ...
+    # Subtest: R8: 2. deneme imzalı 'sent' ile çözüldü → 'Süresi Doldu' 2. denemenin anından ölçülür (1. denemenin TTL'i dolunca iş beklemede kalır)
+    ok 4 - R8: 2. deneme imzalı 'sent' ile çözüldü → 'Süresi Doldu' 2. denemenin anından ölçülür (1. denemenin TTL'i dolunca iş beklemede kalır)
+      ---
+      duration_ms: 988.00926
+      type: 'test'
+      ...
+    # Subtest: R4: 2. denemenin kabulü dosyaya yazılamadı (Gönderiliyor'da kaldı) → bakım defterdeki kabulle çözer; accepted_at 2. denemenin defterdeki kabul anı
+    ok 5 - R4: 2. denemenin kabulü dosyaya yazılamadı (Gönderiliyor'da kaldı) → bakım defterdeki kabulle çözer; accepted_at 2. denemenin defterdeki kabul anı
+      ---
+      duration_ms: 759.065951
+      type: 'test'
+      ...
+    1..5
+ok 51 - 2.4.8 İş Q5 — 'Daha Önce Gönderildi' tarihi son kabul edilen denemenin anı
+  ---
+  duration_ms: 3951.453963
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim
+    # Subtest: (a) yedek iş Bekliyor'dayken → kabul → geri yükleme → imzasız failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+    ok 1 - (a) yedek iş Bekliyor'dayken → kabul → geri yükleme → imzasız failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+      ---
+      duration_ms: 1898.812461
+      type: 'test'
+      ...
+    # Subtest: (a) yedek iş Bekliyor'dayken → kabul → geri yükleme → imzalı failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+    ok 2 - (a) yedek iş Bekliyor'dayken → kabul → geri yükleme → imzalı failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+      ---
+      duration_ms: 1255.18925
+      type: 'test'
+      ...
+    # Subtest: (a2) yedek Meta Bekletti'deyken → kabul → geri yükleme → imzasız failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+    ok 3 - (a2) yedek Meta Bekletti'deyken → kabul → geri yükleme → imzasız failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+      ---
+      duration_ms: 1652.386451
+      type: 'test'
+      ...
+    # Subtest: (a2) yedek Meta Bekletti'deyken → kabul → geri yükleme → imzalı failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+    ok 4 - (a2) yedek Meta Bekletti'deyken → kabul → geri yükleme → imzalı failed → teslim edilemedi, kişi elenmez, eski satır değişmez
+      ---
+      duration_ms: 1571.639029
+      type: 'test'
+      ...
+    # Subtest: (a) delivered imzasız → Bu Ay Gönderilen 1, kişi Daha Önce Gönderildi; sonra gelen failed yok sayılır (§7a 18)
+    ok 5 - (a) delivered imzasız → Bu Ay Gönderilen 1, kişi Daha Önce Gönderildi; sonra gelen failed yok sayılır (§7a 18)
+      ---
+      duration_ms: 1308.147539
+      type: 'test'
+      ...
+    # Subtest: (b) aynı bilgisayar: kabul dosyaya yazılamadı (Gönderiliyor) → imzasız failed 131026 → iş Başarısız, kişi elenmez; bakım sonra Meta Kabul Etti YAPMAZ
+    ok 6 - (b) aynı bilgisayar: kabul dosyaya yazılamadı (Gönderiliyor) → imzasız failed 131026 → iş Başarısız, kişi elenmez; bakım sonra Meta Kabul Etti YAPMAZ
+      ---
+      duration_ms: 501.59693
+      type: 'test'
+      ...
+    # Subtest: (b) aynı bilgisayar: kabul dosyaya yazılamadı (Gönderiliyor) → imzalı failed 131026 → iş Başarısız, kişi elenmez; bakım sonra Meta Kabul Etti YAPMAZ
+    ok 7 - (b) aynı bilgisayar: kabul dosyaya yazılamadı (Gönderiliyor) → imzalı failed 131026 → iş Başarısız, kişi elenmez; bakım sonra Meta Kabul Etti YAPMAZ
+      ---
+      duration_ms: 753.454598
+      type: 'test'
+      ...
+    # Subtest: (b) imzasız delivered → iş Teslim Edildi, accepted_at defterdeki kabul anı (R4/K6), Bu Ay 1
+    ok 8 - (b) imzasız delivered → iş Teslim Edildi, accepted_at defterdeki kabul anı (R4/K6), Bu Ay 1
+      ---
+      duration_ms: 893.813333
+      type: 'test'
+      ...
+    # Subtest: koşul (a): istek Meta'dayken imzalı bildirim işi Teslim Edildi yaptı → yanıt gelince 'Meta Kabul Etti' EZMEZ, çift ileti yok
+    ok 9 - koşul (a): istek Meta'dayken imzalı bildirim işi Teslim Edildi yaptı → yanıt gelince 'Meta Kabul Etti' EZMEZ, çift ileti yok
+      ---
+      duration_ms: 1704.644567
+      type: 'test'
+      ...
+    # Subtest: koşul (b): satır daha YENİ denemedeyse eski denemenin failed'ı hiçbir şey yapmaz (131049 → 2. deneme istek Meta'da)
+    ok 10 - koşul (b): satır daha YENİ denemedeyse eski denemenin failed'ı hiçbir şey yapmaz (131049 → 2. deneme istek Meta'da)
+      ---
+      duration_ms: 1584.866107
+      type: 'test'
+      ...
+    1..10
+ok 52 - 2.4.8 İş S1 — satır o denemeyi bilmiyorken geç bildirim
+  ---
+  duration_ms: 13126.79578
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test)
+    # Subtest: T1 sent (imzasız) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+    ok 1 - T1 sent (imzasız) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+      ---
+      duration_ms: 1239.332027
+      type: 'test'
+      ...
+    # Subtest: T2 delivered (imzasız) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+    ok 2 - T2 delivered (imzasız) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+      ---
+      duration_ms: 802.343268
+      type: 'test'
+      ...
+    # Subtest: T1 sent (imzalı) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+    ok 3 - T1 sent (imzalı) · B1 · Meta Kabul Etti → Gönderildi; defter değişmez; Daha Önce Gönderildi
+      ---
+      duration_ms: 668.972956
+      type: 'test'
+      ...
+    # Subtest: T2 delivered (imzalı) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+    ok 4 - T2 delivered (imzalı) · B1 · önceki denemenin hata metni temizlenir (A4, §7a 32); Bu Ay 1; Daha Önce
+      ---
+      duration_ms: 1078.398108
+      type: 'test'
+      ...
+    # Subtest: T3 read · teslimden sonra okundu; ×3 yinelenen → Bu Ay 1 (eşgüçlü)
+    ok 5 - T3 read · teslimden sonra okundu; ×3 yinelenen → Bu Ay 1 (eşgüçlü)
+      ---
+      duration_ms: 1036.268322
+      type: 'test'
+      ...
+    # Subtest: T4 failed 131026 · B1 · S2 → Başarısız + teslim edilemedi; gönderilecek
+    ok 6 - T4 failed 131026 · B1 · S2 → Başarısız + teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 717.069591
+      type: 'test'
+      ...
+    # Subtest: T5/T6 failed 131049 · ilk kez Meta Bekletti (Zaten Kuyrukta); 2. denemenin 131049'u Başarısız
+    ok 7 - T5/T6 failed 131049 · ilk kez Meta Bekletti (Zaten Kuyrukta); 2. denemenin 131049'u Başarısız
+      ---
+      duration_ms: 457.706798
+      type: 'test'
+      ...
+    # Subtest: T7 failed teslimden sonra yok sayılır (§7a 18)
+    ok 8 - T7 failed teslimden sonra yok sayılır (§7a 18)
+      ---
+      duration_ms: 362.604202
+      type: 'test'
+      ...
+    # Subtest: T8 Süresi Doldu → geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce (P3)
+    ok 9 - T8 Süresi Doldu → geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce (P3)
+      ---
+      duration_ms: 426.599225
+      type: 'test'
+      ...
+    # Subtest: T9 Meta Bekletti → İptal Et → kendi wamid'ine geç delivered → Teslim Edildi (K10:10)
+    ok 10 - T9 Meta Bekletti → İptal Et → kendi wamid'ine geç delivered → Teslim Edildi (K10:10)
+      ---
+      duration_ms: 460.048271
+      type: 'test'
+      ...
+    # Subtest: T10 Başarısız işe yinelenen failed → yok sayılır
+    ok 11 - T10 Başarısız işe yinelenen failed → yok sayılır
+      ---
+      duration_ms: 432.214765
+      type: 'test'
+      ...
+    # Subtest: T12 delivered (imzasız) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+    ok 12 - T12 delivered (imzasız) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+      ---
+      duration_ms: 492.768727
+      type: 'test'
+      ...
+    # Subtest: T12 failed (imzasız) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+    ok 13 - T12 failed (imzasız) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+      ---
+      duration_ms: 797.255246
+      type: 'test'
+      ...
+    # Subtest: T12 delivered (imzalı) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+    ok 14 - T12 delivered (imzalı) · B1 · kabul dosyaya yazılamadı (S1) → Teslim Edildi, accepted_at defterdeki kabul anı (A3), hata alanı temiz; ×2 Bu Ay 1
+      ---
+      duration_ms: 426.012413
+      type: 'test'
+      ...
+    # Subtest: T12 failed (imzalı) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+    ok 15 - T12 failed (imzalı) · S1 → Başarısız + teslim edilemedi; bakım sonra Meta Kabul Etti YAPMAZ; gönderilecek
+      ---
+      duration_ms: 619.217774
+      type: 'test'
+      ...
+    # Subtest: T14 imzalı iş kimliği · Sonucu Belirsiz (bağsız) → Teslim Edildi; belirsizlik metni temizlenir (A4, c1b); accepted_at bildirimin anı (öğrenilen wamid)
+    ok 16 - T14 imzalı iş kimliği · Sonucu Belirsiz (bağsız) → Teslim Edildi; belirsizlik metni temizlenir (A4, c1b); accepted_at bildirimin anı (öğrenilen wamid)
+      ---
+      duration_ms: 496.960169
+      type: 'test'
+      ...
+    # Subtest: T15 imzasız · Sonucu Belirsiz (bağsız) → tanınmaz (P5); kişi Sonucu Belirsiz
+    ok 17 - T15 imzasız · Sonucu Belirsiz (bağsız) → tanınmaz (P5); kişi Sonucu Belirsiz
+      ---
+      duration_ms: 439.339261
+      type: 'test'
+      ...
+    # Subtest: T18 delivered (imzasız) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+    ok 18 - T18 delivered (imzasız) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+      ---
+      duration_ms: 625.920762
+      type: 'test'
+      ...
+    # Subtest: T19 failed 131049 (imzasız) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+    ok 19 - T19 failed 131049 (imzasız) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 547.325812
+      type: 'test'
+      ...
+    # Subtest: T20 Süresi Doldu → sıfırlama → geç delivered (imzasız) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+    ok 20 - T20 Süresi Doldu → sıfırlama → geç delivered (imzasız) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+      ---
+      duration_ms: 710.212866
+      type: 'test'
+      ...
+    # Subtest: T18 delivered (imzalı) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+    ok 21 - T18 delivered (imzalı) · B1 · sıfırlama → yalnız defter teslim; Bu Ay 1; Daha Önce; ×2 eşgüçlü
+      ---
+      duration_ms: 602.431632
+      type: 'test'
+      ...
+    # Subtest: T19 failed 131049 (imzalı) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+    ok 22 - T19 failed 131049 (imzalı) · B1 · sıfırlama → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 562.825779
+      type: 'test'
+      ...
+    # Subtest: T20 Süresi Doldu → sıfırlama → geç delivered (imzalı) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+    ok 23 - T20 Süresi Doldu → sıfırlama → geç delivered (imzalı) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)
+      ---
+      duration_ms: 572.499395
+      type: 'test'
+      ...
+    # Subtest: T21 sıfırlama → delivered → failed yok sayılır (§7a 18)
+    ok 24 - T21 sıfırlama → delivered → failed yok sayılır (§7a 18)
+      ---
+      duration_ms: 528.302264
+      type: 'test'
+      ...
+    # Subtest: T22 delivered (imzasız) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+    ok 25 - T22 delivered (imzasız) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+      ---
+      duration_ms: 782.251738
+      type: 'test'
+      ...
+    # Subtest: T23 failed (imzasız) · geri yükleme → teslim edilemedi; gönderilecek
+    ok 26 - T23 failed (imzasız) · geri yükleme → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 939.763574
+      type: 'test'
+      ...
+    # Subtest: T24 Süresi Doldu → geri yükleme → geç delivered (imzasız) → teslim sayılır (A2, c2b)
+    ok 27 - T24 Süresi Doldu → geri yükleme → geç delivered (imzasız) → teslim sayılır (A2, c2b)
+      ---
+      duration_ms: 901.430124
+      type: 'test'
+      ...
+    # Subtest: T22 delivered (imzalı) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+    ok 28 - T22 delivered (imzalı) · geri yükleme → yalnız defter teslim; satır değişmez; Daha Önce
+      ---
+      duration_ms: 841.33808
+      type: 'test'
+      ...
+    # Subtest: T23 failed (imzalı) · geri yükleme → teslim edilemedi; gönderilecek
+    ok 29 - T23 failed (imzalı) · geri yükleme → teslim edilemedi; gönderilecek
+      ---
+      duration_ms: 983.233379
+      type: 'test'
+      ...
+    # Subtest: T24 Süresi Doldu → geri yükleme → geç delivered (imzalı) → teslim sayılır (A2, c2b)
+    ok 30 - T24 Süresi Doldu → geri yükleme → geç delivered (imzalı) → teslim sayılır (A2, c2b)
+      ---
+      duration_ms: 980.687229
+      type: 'test'
+      ...
+    # Subtest: T25 imzalı · geri yüklenen satır ESKİ denemede Sonucu Belirsiz (iş kimliği adayı) · son denemenin wamid'ine failed → T23 ile aynı (A1, c5)
+    ok 31 - T25 imzalı · geri yüklenen satır ESKİ denemede Sonucu Belirsiz (iş kimliği adayı) · son denemenin wamid'ine failed → T23 ile aynı (A1, c5)
+      ---
+      duration_ms: 926.547841
+      type: 'test'
+      ...
+    # Subtest: T30 eski (131049 bırakılmış) denemenin geç teslimi, satır geri yüklemeyle ESKİ denemede → teslim sayılır (A8, K11:00)
+    ok 32 - T30 eski (131049 bırakılmış) denemenin geç teslimi, satır geri yüklemeyle ESKİ denemede → teslim sayılır (A8, K11:00)
+      ---
+      duration_ms: 808.435741
+      type: 'test'
+      ...
+    # Subtest: T28/T29 131049 → 2. deneme kabul (satır daha yeni denemede) → 1. denemenin delivered'ı deftere teslim (L3), failed'ı yok sayılır; satır değişmez
+    ok 33 - T28/T29 131049 → 2. deneme kabul (satır daha yeni denemede) → 1. denemenin delivered'ı deftere teslim (L3), failed'ı yok sayılır; satır değişmez
+      ---
+      duration_ms: 391.927456
+      type: 'test'
+      ...
+    # Subtest: T26/T27 imzalı iş kimliğiyle öğrenilmiş (B2) → sıfırlama → imzasız delivered → yalnız defter teslim; failed sonra yok sayılır
+    ok 34 - T26/T27 imzalı iş kimliğiyle öğrenilmiş (B2) → sıfırlama → imzasız delivered → yalnız defter teslim; failed sonra yok sayılır
+      ---
+      duration_ms: 514.423166
+      type: 'test'
+      ...
+    # Subtest: T31/T32 bağsız + sıfırlama: imzalı iş kimliği → Q4 (teslim); imzasız → tanınmaz (P5)
+    ok 35 - T31/T32 bağsız + sıfırlama: imzalı iş kimliği → Q4 (teslim); imzasız → tanınmaz (P5)
+      ---
+      duration_ms: 494.137758
+      type: 'test'
+      ...
+    # Subtest: T33 başka şirketin wamid'i bu şirkette etkisiz (K9)
+    ok 36 - T33 başka şirketin wamid'i bu şirkette etkisiz (K9)
+      ---
+      duration_ms: 615.358698
+      type: 'test'
+      ...
+    # Subtest: T34 taşıma (defter yok): dosyadaki wamid'le delivered → Teslim Edildi, yeni defterde Bu Ay 1
+    ok 37 - T34 taşıma (defter yok): dosyadaki wamid'le delivered → Teslim Edildi, yeni defterde Bu Ay 1
+      ---
+      duration_ms: 611.64771
+      type: 'test'
+      ...
+    # Subtest: T34s taşıma (defter yok) · satır Sonucu Belirsiz · İMZALI iş kimliğiyle delivered → satır yolu: Teslim Edildi (defter işi bilmiyor — U2 istisnası; V6 mE)
+    ok 38 - T34s taşıma (defter yok) · satır Sonucu Belirsiz · İMZALI iş kimliğiyle delivered → satır yolu: Teslim Edildi (defter işi bilmiyor — U2 istisnası; V6 mE)
+      ---
+      duration_ms: 534.01987
+      type: 'test'
+      ...
+    # Subtest: T16 imzalı bildirim istek Meta'dayken işi ilerletir; yanıt 'Meta Kabul Etti' ezmez; tek ileti
+    ok 39 - T16 imzalı bildirim istek Meta'dayken işi ilerletir; yanıt 'Meta Kabul Etti' ezmez; tek ileti
+      ---
+      duration_ms: 1193.815992
+      type: 'test'
+      ...
+    # Subtest: T35 istek Meta'dayken toparlama denemeye 'uncertain' yazdı → yanıt gelince kabul öğrenilir (A7, K8); sonraki imzasız delivered uygulanır; Daha Önce
+    ok 40 - T35 istek Meta'dayken toparlama denemeye 'uncertain' yazdı → yanıt gelince kabul öğrenilir (A7, K8); sonraki imzasız delivered uygulanır; Daha Önce
+      ---
+      duration_ms: 1219.070653
+      type: 'test'
+      ...
+    # Subtest: T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)
+    ok 41 - T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)
+      ---
+      duration_ms: 428.409145
+      type: 'test'
+      ...
+    # Subtest: T11 Başarısız (131026) · delivered → Teslim Edildi, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)
+    ok 42 - T11 Başarısız (131026) · delivered → Teslim Edildi, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)
+      ---
+      duration_ms: 403.298035
+      type: 'test'
+      ...
+    # Subtest: T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç read → Okundu, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)
+    ok 43 - T9b Meta Bekletti (iptal YOK) · kendi wamid'ine geç read → Okundu, Bu Ay 1, Daha Önce; yinelenen etkisiz; 24 sa sonra ikinci ileti YOK (U1, K1′)
+      ---
+      duration_ms: 468.851158
+      type: 'test'
+      ...
+    # Subtest: T11 Başarısız (131026) · read → Okundu, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)
+    ok 44 - T11 Başarısız (131026) · read → Okundu, Bu Ay 1, Daha Önce; ×2 etkisiz; iş yeniden açılmaz (K1′; eskiden ulaşılamaz sayılan hücre)
+      ---
+      duration_ms: 454.586967
+      type: 'test'
+      ...
+    # Subtest: T8x Süresi Doldu · delivered ×2 → Bu Ay 1, iş yeniden açılmaz (K1′ koşul c)
+    ok 45 - T8x Süresi Doldu · delivered ×2 → Bu Ay 1, iş yeniden açılmaz (K1′ koşul c)
+      ---
+      duration_ms: 461.311724
+      type: 'test'
+      ...
+    # Subtest: T14-sent imzalı iş kimliği · Sonucu Belirsiz → sent: Gönderildi, belirsizlik metni ve hata kodu temiz (U7; K7 sent kolu)
+    ok 46 - T14-sent imzalı iş kimliği · Sonucu Belirsiz → sent: Gönderildi, belirsizlik metni ve hata kodu temiz (U7; K7 sent kolu)
+      ---
+      duration_ms: 436.857689
+      type: 'test'
+      ...
+    # Subtest: T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · delivered → yalnız defter SON denemeye; satır değişmez (U2)
+    ok 47 - T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · delivered → yalnız defter SON denemeye; satır değişmez (U2)
+      ---
+      duration_ms: 1060.976714
+      type: 'test'
+      ...
+    # Subtest: T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · failed → yalnız defter SON denemeye; satır değişmez (U2)
+    ok 48 - T25b imzalı · geri yüklenen satır ESKİ denemede (1) belirsiz, son deneme (2) de belirsiz (wamid defterde yok) · failed → yalnız defter SON denemeye; satır değişmez (U2)
+      ---
+      duration_ms: 893.128804
+      type: 'test'
+      ...
+    # Subtest: T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (eski-once) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)
+    ok 49 - T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (eski-once) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)
+      ---
+      duration_ms: 501.058744
+      type: 'test'
+      ...
+    # Subtest: T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (yeni-once) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)
+    ok 50 - T28b 131049 → 2. deneme kabul · İKİ deneme de teslim (yeni-once) → Bu Ay 2 (deneme başına), Daha Önce (kişi bir kez), satır 2. denemede Teslim (U5)
+      ---
+      duration_ms: 478.955628
+      type: 'test'
+      ...
+    # Subtest: T-uncertain-failed belirsiz → yedek → imzalı failed (satır Başarısız; defter teslim edilemedi + öğrenilen wamid) → geri yükleme → bakım: satır Meta Kabul Etti YAPILMAZ; gönderilecek (V6 mB)
+    ok 51 - T-uncertain-failed belirsiz → yedek → imzalı failed (satır Başarısız; defter teslim edilemedi + öğrenilen wamid) → geri yükleme → bakım: satır Meta Kabul Etti YAPILMAZ; gönderilecek (V6 mB)
+      ---
+      duration_ms: 900.137806
+      type: 'test'
+      ...
+    # Subtest: T-settle-D belirsiz → yedek → imzalı delivered (Teslim) → geri yükleme → bakım: satır Teslim Edildi (defterdeki anla); +31 gün bakım değişmez, teslim edilemedi yazılmaz; Bu Ay 1 (V2, n1)
+    ok 52 - T-settle-D belirsiz → yedek → imzalı delivered (Teslim) → geri yükleme → bakım: satır Teslim Edildi (defterdeki anla); +31 gün bakım değişmez, teslim edilemedi yazılmaz; Bu Ay 1 (V2, n1)
+      ---
+      duration_ms: 941.898236
+      type: 'test'
+      ...
+    # Subtest: T-settleSending-D istek Meta'dayken yedek (satır Gönderiliyor) → kabul → delivered → geri yükleme → açılış toparlaması: Teslim Edildi (V2, n1b)
+    ok 53 - T-settleSending-D istek Meta'dayken yedek (satır Gönderiliyor) → kabul → delivered → geri yükleme → açılış toparlaması: Teslim Edildi (V2, n1b)
+      ---
+      duration_ms: 5831.802923
+      type: 'test'
+      ...
+    # Subtest: T-bekletti-2.deneme-düştü (cift-sinir) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)
+    ok 54 - T-bekletti-2.deneme-düştü (cift-sinir) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)
+      ---
+      duration_ms: 476.858883
+      type: 'test'
+      ...
+    # Subtest: T-bekletti-2.deneme-düştü (talep-yazilamadi) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)
+    ok 55 - T-bekletti-2.deneme-düştü (talep-yazilamadi) 131049 → 24 sa → 2. deneme ileti göndermeden düşer → 1. iletinin geç teslimi → sonraki tur talep AÇMAZ, iş Teslim Edildi; kişiye 1 ileti, Bu Ay 1 (V4, n9)
+      ---
+      duration_ms: 441.044935
+      type: 'test'
+      ...
+    # Subtest: T36-önizleme kabul deftere yazılamadı → sorun kalkar → BAKIM YOKKEN önizleme onarır: Daha Önce Gönderildi (V6 mF, n12)
+    ok 56 - T36-önizleme kabul deftere yazılamadı → sorun kalkar → BAKIM YOKKEN önizleme onarır: Daha Önce Gönderildi (V6 mF, n12)
+      ---
+      duration_ms: 384.046406
+      type: 'test'
+      ...
+    # Subtest: T36-kilit onarım listesi dolu + defter BAŞKA SÜREÇTE kilitli → önizleme ve yeni gönderim BEKLEMEZ (< 1,5 sn); neden kilit notuyla aynı cümle; kilit kalkınca BEKLEMEDEN önizleme onarır (V3, n5; X3: üretim işaret süresiyle — bayat işaret yok)
+    ok 57 - T36-kilit onarım listesi dolu + defter BAŞKA SÜREÇTE kilitli → önizleme ve yeni gönderim BEKLEMEZ (< 1,5 sn); neden kilit notuyla aynı cümle; kilit kalkınca BEKLEMEDEN önizleme onarır (V3, n5; X3: üretim işaret süresiyle — bayat işaret yok)
+      ---
+      duration_ms: 914.65292
+      type: 'test'
+      ...
+    # Subtest: T-local-neden kabul defteri yazılamazken toplu iş: 'bu bilgisayarda yürütülemedi' nedeniyle duraklar; kod adı / internet cümlesi yok (V5, n4)
+    ok 58 - T-local-neden kabul defteri yazılamazken toplu iş: 'bu bilgisayarda yürütülemedi' nedeniyle duraklar; kod adı / internet cümlesi yok (V5, n4)
+      ---
+      duration_ms: 526.699348
+      type: 'test'
+      ...
+    # Subtest: W1 kuyrukta · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+    ok 59 - W1 kuyrukta · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+      ---
+      duration_ms: 608.914562
+      type: 'test'
+      ...
+    # Subtest: W2 duraklatılmış → Devam Et · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+    ok 60 - W2 duraklatılmış → Devam Et · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+      ---
+      duration_ms: 473.919446
+      type: 'test'
+      ...
+    # Subtest: W4 kaynağa read (D'siz) · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+    ok 61 - W4 kaynağa read (D'siz) · kaynağın teslimi yeni ileti gitmeden gelir → yeni iş Atlandı — Daha Önce Gönderildi; ileti 1, Bu Ay 1 (S9-1)
+      ---
+      duration_ms: 480.180496
+      type: 'test'
+      ...
+    # Subtest: W3 yeni iş 1. denemede kabul + 131049 (Meta Bekletti) → kaynağa teslim → 24 sa: 2. deneme YOK, iş Atlandı; ileti 2 (yeni işin 1. iletisi önlenemezdi) (S9-1)
+    ok 62 - W3 yeni iş 1. denemede kabul + 131049 (Meta Bekletti) → kaynağa teslim → 24 sa: 2. deneme YOK, iş Atlandı; ileti 2 (yeni işin 1. iletisi önlenemezdi) (S9-1)
+      ---
+      duration_ms: 467.327065
+      type: 'test'
+      ...
+    # Subtest: W5 zincir derinliği 2: J1 belirsiz → YdG J2 belirsiz → YdG J3 kuyrukta → J1'e teslim → J3 Atlandı (S9-1)
+    ok 63 - W5 zincir derinliği 2: J1 belirsiz → YdG J2 belirsiz → YdG J3 kuyrukta → J1'e teslim → J3 Atlandı (S9-1)
+      ---
+      duration_ms: 604.579796
+      type: 'test'
+      ...
+    # Subtest: W6 kaynağa failed (teslim edilemedi) → yeni iş GİDER (ilke 1) (S9-1)
+    ok 64 - W6 kaynağa failed (teslim edilemedi) → yeni iş GİDER (ilke 1) (S9-1)
+      ---
+      duration_ms: 549.614434
+      type: 'test'
+      ...
+    # Subtest: W7 kaynağın teslimi yeni ileti GİTTİKTEN sonra gelir → ileti 2 (önlenemez; BİLİNEN SINIR); yeni iş kendi durumunda
+    ok 65 - W7 kaynağın teslimi yeni ileti GİTTİKTEN sonra gelir → ileti 2 (önlenemez; BİLİNEN SINIR); yeni iş kendi durumunda
+      ---
+      duration_ms: 661.587879
+      type: 'test'
+      ...
+    # Subtest: W8 kaynağın teslimi ×2 → eşgüçlü: yeni iş Atlandı, Bu Ay 1 (S9-1)
+    ok 66 - W8 kaynağın teslimi ×2 → eşgüçlü: yeni iş Atlandı, Bu Ay 1 (S9-1)
+      ---
+      duration_ms: 751.225592
+      type: 'test'
+      ...
+    # Subtest: W9 başka kişinin kaynağı teslim edildi → bu kişinin Yine de Gönder işi GİDER (kapsam: zincir)
+    ok 67 - W9 başka kişinin kaynağı teslim edildi → bu kişinin Yine de Gönder işi GİDER (kapsam: zincir)
+      ---
+      duration_ms: 719.841962
+      type: 'test'
+      ...
+    # Subtest: W-b yeni gönderimde R3'e rağmen BİLEREK seçilen Yine de Gönder KAPSANMAZ: önceki iletinin teslimi sonradan gelse de ikinci kopya gider (S9-1 b)
+    ok 68 - W-b yeni gönderimde R3'e rağmen BİLEREK seçilen Yine de Gönder KAPSANMAZ: önceki iletinin teslimi sonradan gelse de ikinci kopya gider (S9-1 b)
+      ---
+      duration_ms: 530.979438
+      type: 'test'
+      ...
+    # Subtest: W-c1 aynı bilgisayar: YdG J2 Başarısız → Başarısızları Yeniden Dene kaynak J1 belirsizken kişiyi ELER (KARAR 31.10 08:00 'A') — üçüncü ileti yolu yok (S9-1 c, önceden var)
+    ok 69 - W-c1 aynı bilgisayar: YdG J2 Başarısız → Başarısızları Yeniden Dene kaynak J1 belirsizken kişiyi ELER (KARAR 31.10 08:00 'A') — üçüncü ileti yolu yok (S9-1 c, önceden var)
+      ---
+      duration_ms: 474.611068
+      type: 'test'
+      ...
+    # Subtest: W-c2 taşınan veride de (defter yok) YdG zincirindeki Başarısız işin yeniden denemesi kaynak belirsizken kişiyi ELER — zincir bağının taşınması (savunma) ulaşılamaz yolda (S9-1 c)
+    ok 70 - W-c2 taşınan veride de (defter yok) YdG zincirindeki Başarısız işin yeniden denemesi kaynak belirsizken kişiyi ELER — zincir bağının taşınması (savunma) ulaşılamaz yolda (S9-1 c)
+      ---
+      duration_ms: 721.922659
+      type: 'test'
+      ...
+    # Subtest: T35r GERÇEK yol: istek Meta'dayken yedek + geri yükleme (toparlama 'Sonucu Belirsiz' yazar) → yanıt gelince satır Meta Kabul Etti; aynı dönem Daha Önce; kişiye 1 ileti (U4)
+    ok 71 - T35r GERÇEK yol: istek Meta'dayken yedek + geri yükleme (toparlama 'Sonucu Belirsiz' yazar) → yanıt gelince satır Meta Kabul Etti; aynı dönem Daha Önce; kişiye 1 ileti (U4)
+      ---
+      duration_ms: 5828.521164
+      type: 'test'
+      ...
+    1..71
+ok 53 - 2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test)
+  ---
+  duration_ms: 56726.54804
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)
+    # Subtest: T17 imzasız bildirim yanıt işlenmeden gelir (istek Meta'da) → 503; yanıt işlenince yineleme 200 ve uygulanır; bekleyen istek yokken / pencere (5 dk) dışında tanınmayan → 200; pencere içinde yabancı ileti de 503 (BİLİNEN SINIR)
+    ok 1 - T17 imzasız bildirim yanıt işlenmeden gelir (istek Meta'da) → 503; yanıt işlenince yineleme 200 ve uygulanır; bekleyen istek yokken / pencere (5 dk) dışında tanınmayan → 200; pencere içinde yabancı ileti de 503 (BİLİNEN SINIR)
+      ---
+      duration_ms: 1797.932488
+      type: 'test'
+      ...
+    # Subtest: T-K0c ön sınamadan SONRA dosya yazımı kilide takılır → 503, defter önce yazıldı; Meta'nın yinelemesi tamamlar, Bu Ay 1 (eşgüçlü)
+    ok 2 - T-K0c ön sınamadan SONRA dosya yazımı kilide takılır → 503, defter önce yazıldı; Meta'nın yinelemesi tamamlar, Bu Ay 1 (eşgüçlü)
+      ---
+      duration_ms: 1134.844183
+      type: 'test'
+      ...
+    # Subtest: T-K0d defter teslimi yazılamadı (false) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 1, accepted_at değişmez)
+    ok 3 - T-K0d defter teslimi yazılamadı (false) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 1, accepted_at değişmez)
+      ---
+      duration_ms: 796.805072
+      type: 'test'
+      ...
+    # Subtest: T-K0e defter teslim edilemedi yazımı fırlatır (kilit) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 0, accepted_at değişmez)
+    ok 4 - T-K0e defter teslim edilemedi yazımı fırlatır (kilit) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 0, accepted_at değişmez)
+      ---
+      duration_ms: 744.336947
+      type: 'test'
+      ...
+    # Subtest: T-K0f yazım ortasında GERÇEK defter kilidi (ön sınamadan sonra, ayrı bağlantı) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 1, accepted_at değişmez)
+    ok 5 - T-K0f yazım ortasında GERÇEK defter kilidi (ön sınamadan sonra, ayrı bağlantı) → 503, dosya satırı değişmez; Meta'nın yinelemesi (×2) tamamlar — tek yazımla aynı (Bu Ay 1, accepted_at değişmez)
+      ---
+      duration_ms: 10834.070111
+      type: 'test'
+      ...
+    # Subtest: T-K0a/b ön sınamada şirket dosyası ya da defter kilitli → 503, yazım yok
+    ok 6 - T-K0a/b ön sınamada şirket dosyası ya da defter kilitli → 503, yazım yok
+      ---
+      duration_ms: 3231.783155
+      type: 'test'
+      ...
+    # Subtest: T-K0g dosya yazımında KİLİT DIŞI hata — SQLITE_READONLY (salt okunur) → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)
+    ok 7 - T-K0g dosya yazımında KİLİT DIŞI hata — SQLITE_READONLY (salt okunur) → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)
+      ---
+      duration_ms: 1033.965678
+      type: 'test'
+      ...
+    # Subtest: T-K0g dosya yazımında KİLİT DIŞI hata — SQLITE_FULL (disk dolu) → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)
+    ok 8 - T-K0g dosya yazımında KİLİT DIŞI hata — SQLITE_FULL (disk dolu) → kanca 500 (Meta yineler), defter önce yazıldı; yineleme tamamlar, Bu Ay 1 (U3)
+      ---
+      duration_ms: 1012.314125
+      type: 'test'
+      ...
+    # Subtest: T-K0g′ dosya yazımında wamid tekil çakışması (SQLITE_CONSTRAINT_UNIQUE) → yalnız bu yutulur: 200, satır değişmez (U3)
+    ok 9 - T-K0g′ dosya yazımında wamid tekil çakışması (SQLITE_CONSTRAINT_UNIQUE) → yalnız bu yutulur: 200, satır değişmez (U3)
+      ---
+      duration_ms: 877.205763
+      type: 'test'
+      ...
+    # Subtest: T36 eşzamanlı kabul DEFTERE yazılamadı (dosyada Meta Kabul Etti + wamid) → onarılamazken gönderim başlatılmaz (503), imzasız teslim 6 dk sonra da tanınır; defter düzelince onarım: Daha Önce Gönderildi, kişiye 1 ileti (U6)
+    ok 10 - T36 eşzamanlı kabul DEFTERE yazılamadı (dosyada Meta Kabul Etti + wamid) → onarılamazken gönderim başlatılmaz (503), imzasız teslim 6 dk sonra da tanınır; defter düzelince onarım: Daha Önce Gönderildi, kişiye 1 ileti (U6)
+      ---
+      duration_ms: 687.160625
+      type: 'test'
+      ...
+    # Subtest: T36c talepten ÖNCE onarım: 1. kişinin kabulü deftere yazılamadı → defter düzelene dek 2. kişiye gönderilmez; düzelince ikisi de tek ileti (U6)
+    ok 11 - T36c talepten ÖNCE onarım: 1. kişinin kabulü deftere yazılamadı → defter düzelene dek 2. kişiye gönderilmez; düzelince ikisi de tek ileti (U6)
+      ---
+      duration_ms: 793.929593
+      type: 'test'
+      ...
+    # Subtest: T-K0h sahibi yalnız dosyada bulunan wamid (U6 onarım listesi) · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503; açılınca 200 ve uygulanır (U6)
+    ok 12 - T-K0h sahibi yalnız dosyada bulunan wamid (U6 onarım listesi) · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503; açılınca 200 ve uygulanır (U6)
+      ---
+      duration_ms: 1069.482908
+      type: 'test'
+      ...
+    # Subtest: T-K0h2 sahibi DEFTERDE bilinen wamid · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503, yalnız defter YAZILMAZ; açılınca 200 ve satır Teslim (U6 koşul a)
+    ok 13 - T-K0h2 sahibi DEFTERDE bilinen wamid · şirket GEÇİCİ açılamıyor (geri yükleme sürüyor) → 503, yalnız defter YAZILMAZ; açılınca 200 ve satır Teslim (U6 koşul a)
+      ---
+      duration_ms: 880.636469
+      type: 'test'
+      ...
+    # Subtest: T-Ksil şirket silinmiş (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)
+    ok 14 - T-Ksil şirket silinmiş (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)
+      ---
+      duration_ms: 1109.953844
+      type: 'test'
+      ...
+    # Subtest: T-Ksil şirket veri dosyası yok (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)
+    ok 15 - T-Ksil şirket veri dosyası yok (KALICI) · wamid'ine delivered → 200 + yalnız defter teslim (o deneme); yinelenen etkisiz (onaylı koşul a)
+      ---
+      duration_ms: 1318.413844
+      type: 'test'
+      ...
+    # Subtest: T-Ksil-F veri dosyası YOK (kalıcı) · imzasız failed 131026 → 200 + defterde teslim edilemedi; dosya geri gelince kişi "gönderilecek" (V1 i, K4)
+    ok 16 - T-Ksil-F veri dosyası YOK (kalıcı) · imzasız failed 131026 → 200 + defterde teslim edilemedi; dosya geri gelince kişi "gönderilecek" (V1 i, K4)
+      ---
+      duration_ms: 1068.345208
+      type: 'test'
+      ...
+    # Subtest: T-Ksil-F49 veri dosyası YOK (kalıcı) · imzasız failed 131049 → 200 + defterde teslim edilemedi; dosya geri gelince kişi "gönderilecek" (V1 i, K4)
+    ok 17 - T-Ksil-F49 veri dosyası YOK (kalıcı) · imzasız failed 131049 → 200 + defterde teslim edilemedi; dosya geri gelince kişi "gönderilecek" (V1 i, K4)
+      ---
+      duration_ms: 980.195254
+      type: 'test'
+      ...
+    # Subtest: T-Ksil-D+geri veri dosyası YOK · delivered → 200 + defter teslim; dosya geri gelince Daha Önce, Bu Ay 1; süre dolumu satırı Teslim Edildi yapar (Süresi Doldu / teslim edilemedi YOK) (V1 + V2)
+    ok 18 - T-Ksil-D+geri veri dosyası YOK · delivered → 200 + defter teslim; dosya geri gelince Daha Önce, Bu Ay 1; süre dolumu satırı Teslim Edildi yapar (Süresi Doldu / teslim edilemedi YOK) (V1 + V2)
+      ---
+      duration_ms: 1409.082051
+      type: 'test'
+      ...
+    # Subtest: T-Kgecici şirket açılmamışken veri dosyası BAŞKA SÜREÇTE kilitli → 503 (geçici); kilit kalkınca yineleme 200 ve Teslim Edildi (V1 ii, V6 mD)
+    ok 19 - T-Kgecici şirket açılmamışken veri dosyası BAŞKA SÜREÇTE kilitli → 503 (geçici); kilit kalkınca yineleme 200 ve Teslim Edildi (V1 ii, V6 mD)
+      ---
+      duration_ms: 11549.530989
+      type: 'test'
+      ...
+    # Subtest: T-Kbozuk şirket açılmamışken veri dosyası BOZUK (veri tabanı değil) → 503 (geçici; düzeltilince uygulanır); dosya düzelince yineleme 200 ve Teslim (V1 ii)
+    ok 20 - T-Kbozuk şirket açılmamışken veri dosyası BOZUK (veri tabanı değil) → 503 (geçici; düzeltilince uygulanır); dosya düzelince yineleme 200 ve Teslim (V1 ii)
+      ---
+      duration_ms: 1022.229698
+      type: 'test'
+      ...
+    # Subtest: T-Kbozuk-yabancı 002'nin veri dosyası BOZUK + tanınmayan (sahibi bulunamayan) bildirim, A6 penceresi dışında → 200 (süresiz 503 yok; İş X1, dar kontrol 17 f1)
+    ok 21 - T-Kbozuk-yabancı 002'nin veri dosyası BOZUK + tanınmayan (sahibi bulunamayan) bildirim, A6 penceresi dışında → 200 (süresiz 503 yok; İş X1, dar kontrol 17 f1)
+      ---
+      duration_ms: 1325.25052
+      type: 'test'
+      ...
+    # Subtest: T-dosya-yok-ekran 002'nin veri dosyası YOK → olağan ekran isteği 503 iletisi Türkçe neden + dosya yolu; kod adı (COMPANY_DATA_MISSING) yok (İş X2, dar kontrol 17 f2; ders 10)
+    ok 22 - T-dosya-yok-ekran 002'nin veri dosyası YOK → olağan ekran isteği 503 iletisi Türkçe neden + dosya yolu; kod adı (COMPANY_DATA_MISSING) yok (İş X2, dar kontrol 17 f2; ders 10)
+      ---
+      duration_ms: 814.296862
+      type: 'test'
+      ...
+    # Subtest: T-restore-F geri yükleme SÜRERKEN (busyCompanies) gelen failed → 503 → yineleme 200: Başarısız, gönderilecek (onaylı koşul a)
+    ok 23 - T-restore-F geri yükleme SÜRERKEN (busyCompanies) gelen failed → 503 → yineleme 200: Başarısız, gönderilecek (onaylı koşul a)
+      ---
+      duration_ms: 1131.617123
+      type: 'test'
+      ...
+    1..23
+ok 54 - 2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6)
+  ---
+  duration_ms: 46626.548233
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T1 B2 — kancayla gelen 131049: Meta Bekletti (24 Saat Sonra Yeniden), aynı medya, bir kez
+    # Subtest: ilk 131049 → Meta Bekletti; PDF silinmez; 24 saat dolmadan gitmez; sonra AYNI medyayla bir kez gider, teslimde hata kodu temizlenir
+    ok 1 - ilk 131049 → Meta Bekletti; PDF silinmez; 24 saat dolmadan gitmez; sonra AYNI medyayla bir kez gider, teslimde hata kodu temizlenir
+      ---
+      duration_ms: 1006.761382
+      type: 'test'
+      ...
+    # Subtest: ikinci 131049 → Başarısız (kodlu); kesin durumda PDF Meta'dan silinir; üçüncü gönderim olmaz
+    ok 2 - ikinci 131049 → Başarısız (kodlu); kesin durumda PDF Meta'dan silinir; üçüncü gönderim olmaz
+      ---
+      duration_ms: 843.793804
+      type: 'test'
+      ...
+    1..2
+ok 55 - 2.4.8 T1 B2 — kancayla gelen 131049: Meta Bekletti (24 Saat Sonra Yeniden), aynı medya, bir kez
+  ---
+  duration_ms: 1851.69167
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T1 B3–B5 — sınırda bekleyen toplu iş de denetlenir
+    # Subtest: B3: lisans salt okunura düşünce bekleyen toplu iş 'Lisans Nedeniyle Durdu'; lisans dönünce KENDİLİĞİNDEN sürmez, Devam Et ile sürer
+    ok 1 - B3: lisans salt okunura düşünce bekleyen toplu iş 'Lisans Nedeniyle Durdu'; lisans dönünce KENDİLİĞİNDEN sürmez, Devam Et ile sürer
+      ---
+      duration_ms: 1153.095446
+      type: 'test'
+      ...
+    # Subtest: B4: Meta sınır basamağı yükselince 6 saat içinde okunur ve sınırda bekleyenler (24 saati beklemeden) gider
+    ok 2 - B4: Meta sınır basamağı yükselince 6 saat içinde okunur ve sınırda bekleyenler (24 saati beklemeden) gider
+      ---
+      duration_ms: 857.691586
+      type: 'test'
+      ...
+    # Subtest: B5: bekleyen toplu işte şablon Pazarlama'ya alınınca en geç 10 dakikada toplu iş DURUR (bekleyenler Duraklatıldı, neden görünür)
+    ok 3 - B5: bekleyen toplu işte şablon Pazarlama'ya alınınca en geç 10 dakikada toplu iş DURUR (bekleyenler Duraklatıldı, neden görünür)
+      ---
+      duration_ms: 654.439081
+      type: 'test'
+      ...
+    1..3
+ok 56 - 2.4.8 T1 B3–B5 — sınırda bekleyen toplu iş de denetlenir
+  ---
+  duration_ms: 2667.324362
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T1 P2 — başlatmada Meta'ya ulaşılamıyor: açık ileti, kayıt yok
+    # Subtest: Meta'ya ulaşılamıyor → 502 'gönderim başlatılmadı'; wa_batches / wa_jobs / defter boş; bağlantı dönünce başlar
+    ok 1 - Meta'ya ulaşılamıyor → 502 'gönderim başlatılmadı'; wa_batches / wa_jobs / defter boş; bağlantı dönünce başlar
+      ---
+      duration_ms: 1197.464559
+      type: 'test'
+      ...
+    1..1
+ok 57 - 2.4.8 T1 P2 — başlatmada Meta'ya ulaşılamıyor: açık ileti, kayıt yok
+  ---
+  duration_ms: 1202.044727
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T1 P4 — art arda 5 geçici hata: hatayı alan iş Başarısız, bekleyenler Duraklatıldı
+    # Subtest: A, B, C her ileti isteğinde 131016: A(1) B(2) C(3) → 30 sn → A(4) B(5) → toplu iş duraklar; B Başarısız (131016), A ve C Duraklatıldı; B'nin PDF'i silinir
+    ok 1 - A, B, C her ileti isteğinde 131016: A(1) B(2) C(3) → 30 sn → A(4) B(5) → toplu iş duraklar; B Başarısız (131016), A ve C Duraklatıldı; B'nin PDF'i silinir
+      ---
+      duration_ms: 1141.797103
+      type: 'test'
+      ...
+    1..1
+ok 58 - 2.4.8 T1 P4 — art arda 5 geçici hata: hatayı alan iş Başarısız, bekleyenler Duraklatıldı
+  ---
+  duration_ms: 1143.038561
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T1 P6 — Yine de Gönder belirsiz işin PDF'ini devralır; PDF bir kez yüklenir, bir kez silinir
+    # Subtest: yanıtsız ileti → Sonucu Belirsiz → Yine de Gönder: aynı medya ve aynı değişkenler; yeni iş teslim edilince PDF Meta'dan bir kez silinir
+    ok 1 - yanıtsız ileti → Sonucu Belirsiz → Yine de Gönder: aynı medya ve aynı değişkenler; yeni iş teslim edilince PDF Meta'dan bir kez silinir
+      ---
+      duration_ms: 1290.60289
+      type: 'test'
+      ...
+    1..1
+ok 59 - 2.4.8 T1 P6 — Yine de Gönder belirsiz işin PDF'ini devralır; PDF bir kez yüklenir, bir kez silinir
+  ---
+  duration_ms: 1292.030694
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2-1 = A — 'Daha Önce Gönderildi' / 'Zaten Kuyrukta' dönem eşliği
+    # Subtest: Bu Ay, ertesi gün aynı seçim: gönderilmiş kişi 'Daha Önce Gönderildi', bekleyen kişi 'Zaten Kuyrukta' → yeni toplu iş açılmaz; her kişiye BİR ekstre
+    ok 1 - Bu Ay, ertesi gün aynı seçim: gönderilmiş kişi 'Daha Önce Gönderildi', bekleyen kişi 'Zaten Kuyrukta' → yeni toplu iş açılmaz; her kişiye BİR ekstre
+      ---
+      duration_ms: 911.799012
+      type: 'test'
+      ...
+    # Subtest: Bu Ay: ay içinde sonraki bir günde 'Daha Önce Gönderildi' (son gönderim tarihiyle); ay dönümünde yeni ay → gönderilir
+    ok 2 - Bu Ay: ay içinde sonraki bir günde 'Daha Önce Gönderildi' (son gönderim tarihiyle); ay dönümünde yeni ay → gönderilir
+      ---
+      duration_ms: 764.40032
+      type: 'test'
+      ...
+    # Subtest: Geçen Ay: aynı ay içinde yeniden seçilince 'Daha Önce Gönderildi'; sonraki ayda 'Geçen Ay' başka takvim ayı → gönderilir
+    ok 3 - Geçen Ay: aynı ay içinde yeniden seçilince 'Daha Önce Gönderildi'; sonraki ayda 'Geçen Ay' başka takvim ayı → gönderilir
+      ---
+      duration_ms: 1077.795827
+      type: 'test'
+      ...
+    # Subtest: 'Bu Ay' (yarım ay, 1–3 Kasım) ile Aralık'taki 'Geçen Ay' (Kasım) aynı takvim ayı → 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider (KULLANICI KARARI 31.10 'a')
+    ok 4 - 'Bu Ay' (yarım ay, 1–3 Kasım) ile Aralık'taki 'Geçen Ay' (Kasım) aynı takvim ayı → 'Daha Önce Gönderildi'; 'Yine de Gönder' ile gider (KULLANICI KARARI 31.10 'a')
+      ---
+      duration_ms: 994.235591
+      type: 'test'
+      ...
+    # Subtest: ay sonu 31.10 'Bu Ay' → 01.11 'Geçen Ay': aynı takvim ayı → 'Daha Önce Gönderildi' / 'Zaten Kuyrukta'; ikinci iş açılmaz, kişi başına BİR ekstre
+    ok 5 - ay sonu 31.10 'Bu Ay' → 01.11 'Geçen Ay': aynı takvim ayı → 'Daha Önce Gönderildi' / 'Zaten Kuyrukta'; ikinci iş açılmaz, kişi başına BİR ekstre
+      ---
+      duration_ms: 852.346897
+      type: 'test'
+      ...
+    # Subtest: yıl dönümü 31.12 'Bu Ay' → 01.01 'Geçen Ay': aynı takvim ayı → 'Daha Önce Gönderildi' / 'Zaten Kuyrukta'; ikinci iş açılmaz, kişi başına BİR ekstre
+    ok 6 - yıl dönümü 31.12 'Bu Ay' → 01.01 'Geçen Ay': aynı takvim ayı → 'Daha Önce Gönderildi' / 'Zaten Kuyrukta'; ikinci iş açılmaz, kişi başına BİR ekstre
+      ---
+      duration_ms: 464.976256
+      type: 'test'
+      ...
+    # Subtest: Son 3 Ay: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+    ok 7 - Son 3 Ay: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+      ---
+      duration_ms: 631.830534
+      type: 'test'
+      ...
+    # Subtest: Tüm Hareketler: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+    ok 8 - Tüm Hareketler: aynı seçim 6. gün 'Daha Önce Gönderildi', 8. gün gönderilir
+      ---
+      duration_ms: 871.027811
+      type: 'test'
+      ...
+    # Subtest: Özel tarih aralığı: başlangıç ve bitiş birebir aynıysa 'Daha Önce Gönderildi', biri farklıysa gönderilir
+    ok 9 - Özel tarih aralığı: başlangıç ve bitiş birebir aynıysa 'Daha Önce Gönderildi', biri farklıysa gönderilir
+      ---
+      duration_ms: 580.830675
+      type: 'test'
+      ...
+    1..9
+ok 60 - 2.4.8 T2-1 = A — 'Daha Önce Gönderildi' / 'Zaten Kuyrukta' dönem eşliği
+  ---
+  duration_ms: 7151.821647
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2-2 — İptal / Duraklat Meta isteği sürerken basılınca ileti GİTMEZ
+    # Subtest: PDF yüklenirken İptal Et: ileti gitmez, iş 'İptal' kalır (Gönderiliyor'a dönmez), yüklenen PDF Meta'dan silinir
+    ok 1 - PDF yüklenirken İptal Et: ileti gitmez, iş 'İptal' kalır (Gönderiliyor'a dönmez), yüklenen PDF Meta'dan silinir
+      ---
+      duration_ms: 1196.219143
+      type: 'test'
+      ...
+    # Subtest: PDF yüklenirken Duraklat: ileti gitmez, iş 'Duraklatıldı'; Devam Et ile AYNI PDF'le bir kez gider
+    ok 2 - PDF yüklenirken Duraklat: ileti gitmez, iş 'Duraklatıldı'; Devam Et ile AYNI PDF'le bir kez gider
+      ---
+      duration_ms: 1175.252474
+      type: 'test'
+      ...
+    # Subtest: şablon okuması sürerken İptal Et ya da Duraklat: ileti gitmez, PDF yüklenmez; iş durumu kullanıcının seçtiği kalır
+    ok 3 - şablon okuması sürerken İptal Et ya da Duraklat: ileti gitmez, PDF yüklenmez; iş durumu kullanıcının seçtiği kalır
+      ---
+      duration_ms: 1759.10755
+      type: 'test'
+      ...
+    # Subtest: PDF yüklenirken İptal Et ve yükleme Meta hatasıyla düşerse: iş 'İptal' kalır (Başarısız / Bekliyor'a dönmez)
+    ok 4 - PDF yüklenirken İptal Et ve yükleme Meta hatasıyla düşerse: iş 'İptal' kalır (Başarısız / Bekliyor'a dönmez)
+      ---
+      duration_ms: 502.795017
+      type: 'test'
+      ...
+    1..4
+ok 61 - 2.4.8 T2-2 — İptal / Duraklat Meta isteği sürerken basılınca ileti GİTMEZ
+  ---
+  duration_ms: 4634.901746
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2-3 — aynı WABA'yı kullanan iki şirketin ikisinin de durum bildirimi kendi işine
+    # Subtest: bakım turu WABA başına TEK kayıt yapar; iki şirketten giden iletinin teslim bildirimi (tek istekte) her birinin kendi işine yazılır; bilinmeyen wamid düşer
+    ok 1 - bakım turu WABA başına TEK kayıt yapar; iki şirketten giden iletinin teslim bildirimi (tek istekte) her birinin kendi işine yazılır; bilinmeyen wamid düşer
+      ---
+      duration_ms: 1188.592312
+      type: 'test'
+      ...
+    1..1
+ok 62 - 2.4.8 T2-3 — aynı WABA'yı kullanan iki şirketin ikisinin de durum bildirimi kendi işine
+  ---
+  duration_ms: 1189.574666
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2-4 — geri yükleme / sıfırlama durum bildirimi yolunu bozmaz; Meta'daki adres denetlenir
+    # Subtest: yedek → Yeniden Kaydet → yedekten geri yükle: Meta'nın KAYITLI adresine gelen bildirim kabul edilir (404 değil) ve işe yazılır; Şirket Verisini Sıfırla da bozmaz
+    ok 1 - yedek → Yeniden Kaydet → yedekten geri yükle: Meta'nın KAYITLI adresine gelen bildirim kabul edilir (404 değil) ve işe yazılır; Şirket Verisini Sıfırla da bozmaz
+      ---
+      duration_ms: 1557.870795
+      type: 'test'
+      ...
+    # Subtest: Meta'daki adres değiştirilince bakım turu fark eder ve yeniden kaydeder; 24 saat içinde yine değişirse (iki kurulum çekişmesi) 'Çakışma' der, Bağlantıyı Sına bu bilgisayarı seçer
+    ok 2 - Meta'daki adres değiştirilince bakım turu fark eder ve yeniden kaydeder; 24 saat içinde yine değişirse (iki kurulum çekişmesi) 'Çakışma' der, Bağlantıyı Sına bu bilgisayarı seçer
+      ---
+      duration_ms: 770.935227
+      type: 'test'
+      ...
+    1..2
+ok 63 - 2.4.8 T2-4 — geri yükleme / sıfırlama durum bildirimi yolunu bozmaz; Meta'daki adres denetlenir
+  ---
+  duration_ms: 2330.110792
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2-5 — şablonun teslim süresi (TTL) Meta'ya gider
+    # Subtest: program şablonları AÇARKEN teslim süresini (3 gün = 259.200 sn) gönderir; sahte Meta kaydeder; ikinci denetim yeniden göndermez
+    ok 1 - program şablonları AÇARKEN teslim süresini (3 gün = 259.200 sn) gönderir; sahte Meta kaydeder; ikinci denetim yeniden göndermez
+      ---
+      duration_ms: 632.533067
+      type: 'test'
+      ...
+    # Subtest: teslim süresi ayarı değişince (48 saat) mevcut şablonlar GÜNCELLENİRKEN yeni değer gönderilir (yalnız TTL alanı); aynı değer bir daha gitmez
+    ok 2 - teslim süresi ayarı değişince (48 saat) mevcut şablonlar GÜNCELLENİRKEN yeni değer gönderilir (yalnız TTL alanı); aynı değer bir daha gitmez
+      ---
+      duration_ms: 474.621332
+      type: 'test'
+      ...
+    # Subtest: şablon Meta'da önceden (teslim süresiz) açılmışsa ilk denetimde teslim süresi güncellenir
+    ok 3 - şablon Meta'da önceden (teslim süresiz) açılmışsa ilk denetimde teslim süresi güncellenir
+      ---
+      duration_ms: 451.192493
+      type: 'test'
+      ...
+    # Subtest: Meta teslim süresini reddederse (D0) şablon YİNE açılır (Meta varsayılanı), kartta uyarı çıkar; reddedilen değer her denetimde yinelenmez
+    ok 4 - Meta teslim süresini reddederse (D0) şablon YİNE açılır (Meta varsayılanı), kartta uyarı çıkar; reddedilen değer her denetimde yinelenmez
+      ---
+      duration_ms: 389.923655
+      type: 'test'
+      ...
+    1..4
+ok 64 - 2.4.8 T2-5 — şablonun teslim süresi (TTL) Meta'ya gider
+  ---
+  duration_ms: 1950.040671
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2-5 güvenli taraf — Süresi Doldu ve PDF silme Meta'nın KABUL ETTİĞİ teslim süresine bağlı
+    # Subtest: Meta 259.200 sn'yi (3 gün) REDDEDER: iş 73. saatte Süresi Doldu OLMAZ, PDF silinmez; kartta uyarı; 30 gün + 1 saatte Süresi Doldu + PDF silinir
+    ok 1 - Meta 259.200 sn'yi (3 gün) REDDEDER: iş 73. saatte Süresi Doldu OLMAZ, PDF silinmez; kartta uyarı; 30 gün + 1 saatte Süresi Doldu + PDF silinir
+      ---
+      duration_ms: 750.859096
+      type: 'test'
+      ...
+    # Subtest: Meta TTL'i reddetti ve bildirim yolu 7 günden beri sessiz: iş Gönderildi'de kalır (§7a 16), PDF yine 30 gün + 1 saatte silinir (Meta artık teslim etmeye çalışmaz)
+    ok 2 - Meta TTL'i reddetti ve bildirim yolu 7 günden beri sessiz: iş Gönderildi'de kalır (§7a 16), PDF yine 30 gün + 1 saatte silinir (Meta artık teslim etmeye çalışmaz)
+      ---
+      duration_ms: 531.614885
+      type: 'test'
+      ...
+    # Subtest: Meta 43.200 sn'yi (12 saat) KABUL EDER: 13. saatte Süresi Doldu + PDF silinir (12 saat 30 dk'da henüz değil)
+    ok 3 - Meta 43.200 sn'yi (12 saat) KABUL EDER: 13. saatte Süresi Doldu + PDF silinir (12 saat 30 dk'da henüz değil)
+      ---
+      duration_ms: 452.819967
+      type: 'test'
+      ...
+    # Subtest: Meta 259.200 sn'yi KABUL EDER: eskisi gibi 73. saatte Süresi Doldu + PDF silinir (72 saat 30 dk'da henüz değil)
+    ok 4 - Meta 259.200 sn'yi KABUL EDER: eskisi gibi 73. saatte Süresi Doldu + PDF silinir (72 saat 30 dk'da henüz değil)
+      ---
+      duration_ms: 440.404298
+      type: 'test'
+      ...
+    1..4
+ok 65 - 2.4.8 T2-5 güvenli taraf — Süresi Doldu ve PDF silme Meta'nın KABUL ETTİĞİ teslim süresine bağlı
+  ---
+  duration_ms: 2177.637502
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2-6 — yeniden denemede ileti metni ile ekteki PDF AYNI anlık görüntüden
+    # Subtest: 131056 → 1 dk sonra yeniden deneme: arada tahsilat girilse de ileti ve PDF ilk hazırlıktaki bakiyeyi (1.250,00) taşır; PDF bir kez yüklenir
+    ok 1 - 131056 → 1 dk sonra yeniden deneme: arada tahsilat girilse de ileti ve PDF ilk hazırlıktaki bakiyeyi (1.250,00) taşır; PDF bir kez yüklenir
+      ---
+      duration_ms: 748.913233
+      type: 'test'
+      ...
+    # Subtest: Duraklat → 31 gün → Devam Et: Meta'daki kopyanın süresi dolmuş; AYNI PDF baytları yeniden yüklenir, ileti aynı bakiyeyle gider; kesinleşince dondurulmuş PDF silinir
+    ok 2 - Duraklat → 31 gün → Devam Et: Meta'daki kopyanın süresi dolmuş; AYNI PDF baytları yeniden yüklenir, ileti aynı bakiyeyle gider; kesinleşince dondurulmuş PDF silinir
+      ---
+      duration_ms: 519.997824
+      type: 'test'
+      ...
+    # Subtest: ödeme hatırlatması: yeniden denemede değişkenler (vade, gecikmiş toplam, bakiye) ilk hazırlıktakiyle AYNI
+    ok 3 - ödeme hatırlatması: yeniden denemede değişkenler (vade, gecikmiş toplam, bakiye) ilk hazırlıktakiyle AYNI
+      ---
+      duration_ms: 444.779807
+      type: 'test'
+      ...
+    1..3
+ok 66 - 2.4.8 T2-6 — yeniden denemede ileti metni ile ekteki PDF AYNI anlık görüntüden
+  ---
+  duration_ms: 1715.529116
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2-7 — içeriği değiştirilmiş şablonla gönderim yapılmaz (sunucuda; ekranla aynı kural)
+    # Subtest: planın metniyle aynı şablon gönderir; içeriği değiştirilmiş şablonla toplu gönderim BAŞLAMAZ (409 + neden), önizleme nedeni söyler, kart da 'Gönderime Hazır Değil'
+    ok 1 - planın metniyle aynı şablon gönderir; içeriği değiştirilmiş şablonla toplu gönderim BAŞLAMAZ (409 + neden), önizleme nedeni söyler, kart da 'Gönderime Hazır Değil'
+      ---
+      duration_ms: 716.473841
+      type: 'test'
+      ...
+    # Subtest: gönderim SÜRERKEN içerik değişirse (R2: en geç 10 dk'da yeniden okunur) toplu iş DURUR, neden görünür; kalanlara gitmez
+    ok 2 - gönderim SÜRERKEN içerik değişirse (R2: en geç 10 dk'da yeniden okunur) toplu iş DURUR, neden görünür; kalanlara gitmez
+      ---
+      duration_ms: 680.789085
+      type: 'test'
+      ...
+    1..2
+ok 67 - 2.4.8 T2-7 — içeriği değiştirilmiş şablonla gönderim yapılmaz (sunucuda; ekranla aynı kural)
+  ---
+  duration_ms: 1398.612576
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2-8 — Gönderim Onayı kaldırılınca hiçbir ileti gitmez
+    # Subtest: duraklatılmış iş onaysız Devam Et ile SÜRDÜRÜLMEZ (409 + neden); onay yeniden işaretlenince sürer
+    ok 1 - duraklatılmış iş onaysız Devam Et ile SÜRDÜRÜLMEZ (409 + neden); onay yeniden işaretlenince sürer
+      ---
+      duration_ms: 871.702728
+      type: 'test'
+      ...
+    # Subtest: süren toplu iş onay kaldırılınca ilk adımında DURAKLAR (Duraklatıldı + neden), bekleyenlere gitmez; onay + Devam Et ile sürer
+    ok 2 - süren toplu iş onay kaldırılınca ilk adımında DURAKLAR (Duraklatıldı + neden), bekleyenlere gitmez; onay + Devam Et ile sürer
+      ---
+      duration_ms: 660.329825
+      type: 'test'
+      ...
+    # Subtest: firma adı silinince süren iş duraklar (iletinin değişkeni boş gitmez); Devam Et firma adı yazılana dek reddedilir
+    ok 3 - firma adı silinince süren iş duraklar (iletinin değişkeni boş gitmez); Devam Et firma adı yazılana dek reddedilir
+      ---
+      duration_ms: 577.090764
+      type: 'test'
+      ...
+    1..3
+ok 68 - 2.4.8 T2-8 — Gönderim Onayı kaldırılınca hiçbir ileti gitmez
+  ---
+  duration_ms: 2110.719037
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T1 P3 = SAYILMAZ — Süresi Doldu (ve Başarısız) 'Daha Önce Gönderildi' sayılmaz; kişiye ulaşan sayılır
+    # Subtest: Süresi Doldu kişi aynı dönem için yeni toplu işte GÖNDERİLECEK; yeni toplu iş açılır ve ileti bir kez daha gider
+    ok 1 - Süresi Doldu kişi aynı dönem için yeni toplu işte GÖNDERİLECEK; yeni toplu iş açılır ve ileti bir kez daha gider
+      ---
+      duration_ms: 783.906877
+      type: 'test'
+      ...
+    # Subtest: Süresi Doldu'dan sonra Meta geç 'delivered' bildirirse ileti ulaşmıştır → 'Daha Önce Gönderildi'
+    ok 2 - Süresi Doldu'dan sonra Meta geç 'delivered' bildirirse ileti ulaşmıştır → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 475.768415
+      type: 'test'
+      ...
+    # Subtest: Başarısız (kanca: teslim edilemedi 131026) → gönderilecek (mevcut davranış korunur); Teslim Edildi → 'Daha Önce Gönderildi'
+    ok 3 - Başarısız (kanca: teslim edilemedi 131026) → gönderilecek (mevcut davranış korunur); Teslim Edildi → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 884.414779
+      type: 'test'
+      ...
+    1..3
+ok 69 - 2.4.8 T1 P3 = SAYILMAZ — Süresi Doldu (ve Başarısız) 'Daha Önce Gönderildi' sayılmaz; kişiye ulaşan sayılır
+  ---
+  duration_ms: 2145.934131
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2 dar kontrol D1 — istek sürerken İptal Et + Meta duraklatma sınıfı hata: toplu iş İptal kalır
+    # Subtest: İptal Et basıldı, istek 131031 ile döndü → toplu iş İptal; Devam Et reddedilir; başka ileti gitmez
+    ok 1 - İptal Et basıldı, istek 131031 ile döndü → toplu iş İptal; Devam Et reddedilir; başka ileti gitmez
+      ---
+      duration_ms: 674.054711
+      type: 'test'
+      ...
+    # Subtest: İptal Et basıldı, istek 190 ile döndü → toplu iş İptal; Devam Et reddedilir; başka ileti gitmez
+    ok 2 - İptal Et basıldı, istek 190 ile döndü → toplu iş İptal; Devam Et reddedilir; başka ileti gitmez
+      ---
+      duration_ms: 512.147551
+      type: 'test'
+      ...
+    1..2
+ok 70 - 2.4.8 T2 dar kontrol D1 — istek sürerken İptal Et + Meta duraklatma sınıfı hata: toplu iş İptal kalır
+  ---
+  duration_ms: 1187.337144
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2 dar kontrol D2 — Meta Bekletti iş + WABA sınır beklemesi: boş döngü yok, satırlar her turda yeniden yazılmaz
+    # Subtest: işçi boş döngüye girmez; bekleme bitince Meta Bekletti iş bir kez gider
+    ok 1 - işçi boş döngüye girmez; bekleme bitince Meta Bekletti iş bir kez gider
+      ---
+      duration_ms: 664.704845
+      type: 'test'
+      ...
+    # Subtest: her turda sınırda bekleyen 40 iş yeniden yazılmaz; Meta'ya ileti gitmez
+    ok 2 - her turda sınırda bekleyen 40 iş yeniden yazılmaz; Meta'ya ileti gitmez
+      ---
+      duration_ms: 935.236798
+      type: 'test'
+      ...
+    1..2
+ok 71 - 2.4.8 T2 dar kontrol D2 — Meta Bekletti iş + WABA sınır beklemesi: boş döngü yok, satırlar her turda yeniden yazılmaz
+  ---
+  duration_ms: 1600.958772
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2 dar kontrol ORTA-1 — 131049 ile yeniden açılan toplu iş defterde de canlı; sonraki durdurma / iptal kaydedilir
+    # Subtest: defter: yeniden açılan toplu iş canlı; iptal edilince defterde 'canceled'
+    ok 1 - defter: yeniden açılan toplu iş canlı; iptal edilince defterde 'canceled'
+      ---
+      duration_ms: 669.518756
+      type: 'test'
+      ...
+    # Subtest: (a) yeniden denemede geçici Meta hatası (131000): toplu iş 'Durduruldu' OLMAZ, iş beklemeden sonra gider
+    ok 2 - (a) yeniden denemede geçici Meta hatası (131000): toplu iş 'Durduruldu' OLMAZ, iş beklemeden sonra gider
+      ---
+      duration_ms: 435.644191
+      type: 'test'
+      ...
+    # Subtest: (b) Duraklat → Devam Et kabul edilir
+    ok 3 - (b) Duraklat → Devam Et kabul edilir
+      ---
+      duration_ms: 417.088688
+      type: 'test'
+      ...
+    # Subtest: (c) Gönderim Onayı kaldırılıp yeniden işaretlenince Devam Et kabul edilir
+    ok 4 - (c) Gönderim Onayı kaldırılıp yeniden işaretlenince Devam Et kabul edilir
+      ---
+      duration_ms: 382.42632
+      type: 'test'
+      ...
+    # Subtest: (d) İptal Et → dosya iptalden önceki hâline dönerse (geri yükleme benzetimi): açılış toparlaması toplu işi durdurur, iptal edilen ileti GİTMEZ
+    ok 5 - (d) İptal Et → dosya iptalden önceki hâline dönerse (geri yükleme benzetimi): açılış toparlaması toplu işi durdurur, iptal edilen ileti GİTMEZ
+      ---
+      duration_ms: 387.458505
+      type: 'test'
+      ...
+    # Subtest: GERÇEK yedek → İptal Et → yedekten geri yükle (ikinci şirket, gerçek kanca): iptal edilen ileti geri yüklemeden sonra GİTMEZ
+    ok 6 - GERÇEK yedek → İptal Et → yedekten geri yükle (ikinci şirket, gerçek kanca): iptal edilen ileti geri yüklemeden sonra GİTMEZ
+      ---
+      duration_ms: 850.202254
+      type: 'test'
+      ...
+    1..6
+ok 72 - 2.4.8 T2 dar kontrol ORTA-1 — 131049 ile yeniden açılan toplu iş defterde de canlı; sonraki durdurma / iptal kaydedilir
+  ---
+  duration_ms: 3144.467759
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2 dar kontrol ORTA-2 — eski denemenin wamid'i yeni denemeye yazılmaz; belirsiz yeni deneme imzalı kancayla çözülür
+    # Subtest: yeni denemede işteki wamid boşaltılır
+    ok 1 - yeni denemede işteki wamid boşaltılır
+      ---
+      duration_ms: 680.435217
+      type: 'test'
+      ...
+    # Subtest: 1. denemenin yinelenen 131049 bildirimi (imzasız): iş Sonucu Belirsiz kalır, defterde 2. denemenin kilidi çözülmez, aynı dönem yeniden gitmez
+    ok 2 - 1. denemenin yinelenen 131049 bildirimi (imzasız): iş Sonucu Belirsiz kalır, defterde 2. denemenin kilidi çözülmez, aynı dönem yeniden gitmez
+      ---
+      duration_ms: 794.35793
+      type: 'test'
+      ...
+    # Subtest: 1. denemenin İMZALI bildirimi (iş kimliğiyle) da 2. denemeye yazılmaz
+    ok 3 - 1. denemenin İMZALI bildirimi (iş kimliğiyle) da 2. denemeye yazılmaz
+      ---
+      duration_ms: 562.191438
+      type: 'test'
+      ...
+    # Subtest: Sonucu Belirsiz 2. deneme, kendi wamid'iyle gelen İMZALI bildirimle (iş kimliği) çözülür
+    ok 4 - Sonucu Belirsiz 2. deneme, kendi wamid'iyle gelen İMZALI bildirimle (iş kimliği) çözülür
+      ---
+      duration_ms: 667.032133
+      type: 'test'
+      ...
+    1..4
+ok 73 - 2.4.8 T2 dar kontrol ORTA-2 — eski denemenin wamid'i yeni denemeye yazılmaz; belirsiz yeni deneme imzalı kancayla çözülür
+  ---
+  duration_ms: 2705.394739
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2 dar kontrol 2 ORTA-A — kancadan öğrenilen wamid defterde ait olduğu denemeye bağlanır; yinelenen eski bildirim yeni denemeye yazılmaz
+    # Subtest: belirsiz 1. deneme → imzalı W1 131049 → belirsiz 2. deneme → W1'in yinelenen imzalı 131049'u: iş Sonucu Belirsiz kalır, kilit çözülmez, üçüncü ileti yok
+    ok 1 - belirsiz 1. deneme → imzalı W1 131049 → belirsiz 2. deneme → W1'in yinelenen imzalı 131049'u: iş Sonucu Belirsiz kalır, kilit çözülmez, üçüncü ileti yok
+      ---
+      duration_ms: 1092.820176
+      type: 'test'
+      ...
+    # Subtest: öğrenilen wamid'in kendi bildirimi (teslim) yine çalışır; bildirim yönlendirmesi (şirket) öğrenilen wamid'den de bulunur
+    ok 2 - öğrenilen wamid'in kendi bildirimi (teslim) yine çalışır; bildirim yönlendirmesi (şirket) öğrenilen wamid'den de bulunur
+      ---
+      duration_ms: 530.56539
+      type: 'test'
+      ...
+    1..2
+ok 74 - 2.4.8 T2 dar kontrol 2 ORTA-A — kancadan öğrenilen wamid defterde ait olduğu denemeye bağlanır; yinelenen eski bildirim yeni denemeye yazılmaz
+  ---
+  duration_ms: 1624.660339
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2 dar kontrol 2 DÜŞÜK-1 — 131049'da dosya yazımı düşünce defter yetim kalmaz; yinelenen bildirim yine Meta Bekletti yapar
+    # Subtest: dosya yazımı düştü → defter dosyayla aynı (Tamamlandı, canlı değil); Meta bildirimi yineleyince iş Meta Bekletti, 24 saat sonra bir kez gider
+    ok 1 - dosya yazımı düştü → defter dosyayla aynı (Tamamlandı, canlı değil); Meta bildirimi yineleyince iş Meta Bekletti, 24 saat sonra bir kez gider
+      ---
+      duration_ms: 790.472659
+      type: 'test'
+      ...
+    # Subtest: telafi de yazılamadı (defter yetim kaldı) → yinelenen bildirimde yeniden açma idempotent: iş Meta Bekletti, Başarısız değil
+    ok 2 - telafi de yazılamadı (defter yetim kaldı) → yinelenen bildirimde yeniden açma idempotent: iş Meta Bekletti, Başarısız değil
+      ---
+      duration_ms: 725.893073
+      type: 'test'
+      ...
+    # Subtest: dosya yazımının İKİNCİ yarısı (toplu iş → Sürüyor) düştü → iş de yazılmaz (tek işlem); yinelenen bildirimde Meta Bekletti, 24 saat sonra bir kez gider
+    ok 3 - dosya yazımının İKİNCİ yarısı (toplu iş → Sürüyor) düştü → iş de yazılmaz (tek işlem); yinelenen bildirimde Meta Bekletti, 24 saat sonra bir kez gider
+      ---
+      duration_ms: 688.060867
+      type: 'test'
+      ...
+    # Subtest: yazım düşmeden: Tamamlandı toplu işte 131049 → iş Meta Bekletti ve toplu iş Sürüyor aynı anda (tek işlem)
+    ok 4 - yazım düşmeden: Tamamlandı toplu işte 131049 → iş Meta Bekletti ve toplu iş Sürüyor aynı anda (tek işlem)
+      ---
+      duration_ms: 491.719728
+      type: 'test'
+      ...
+    1..4
+ok 75 - 2.4.8 T2 dar kontrol 2 DÜŞÜK-1 — 131049'da dosya yazımı düşünce defter yetim kalmaz; yinelenen bildirim yine Meta Bekletti yapar
+  ---
+  duration_ms: 2697.756659
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T6-B1 / T6-B2 — Meta dışı hata (yazım, disk dolu) yolunda bekleme, PDF temizliği, takılı iş
+    # Subtest: B2: yalnız PDF kimliğinin yazımı düşüyor — 20 turda tek yükleme ve Meta'da sahipsiz PDF yok; bekleme 30 sn → 2 dk; yazım düzelince tek ileti
+    ok 1 - B2: yalnız PDF kimliğinin yazımı düşüyor — 20 turda tek yükleme ve Meta'da sahipsiz PDF yok; bekleme 30 sn → 2 dk; yazım düzelince tek ileti
+      ---
+      duration_ms: 759.10601
+      type: 'test'
+      ...
+    # Subtest: B1: disk ilk PDF yüklemesi Meta'dayken doluyor — dolu diskte meşgul döngü yok; yer açılınca 'Hazırlanıyor'da kalan iş bakım turunda döner, herkes bir kez alır
+    ok 2 - B1: disk ilk PDF yüklemesi Meta'dayken doluyor — dolu diskte meşgul döngü yok; yer açılınca 'Hazırlanıyor'da kalan iş bakım turunda döner, herkes bir kez alır
+      ---
+      duration_ms: 605.719106
+      type: 'test'
+      ...
+    1..2
+ok 76 - 2.4.8 T6-B1 / T6-B2 — Meta dışı hata (yazım, disk dolu) yolunda bekleme, PDF temizliği, takılı iş
+  ---
+  duration_ms: 1366.142317
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T6-E2 — ileti isteği havuzdaki eski soketi kullanmaz; bağlantı kurulamayan istek 'gönderilmedi' (R1)
+    # Subtest: ödeme hatırlatması: kesinti iki ileti ARASINDA (havuzdaki soket canlıyken) → Bağlantı Bekleniyor, Sonucu Belirsiz yok; dönünce kendiliğinden gider, çift 0
+    ok 1 - ödeme hatırlatması: kesinti iki ileti ARASINDA (havuzdaki soket canlıyken) → Bağlantı Bekleniyor, Sonucu Belirsiz yok; dönünce kendiliğinden gider, çift 0
+      ---
+      duration_ms: 750.834327
+      type: 'test'
+      ...
+    # Subtest: bağlantı kurulamadan süre doldu (sunucu TCP'yi kabul eder, TLS hiç kurulmaz) → 'Meta'ya hiç ulaşmadı'; bağlantı kurulduktan sonra yanıtsızlık → belirsiz
+    ok 2 - bağlantı kurulamadan süre doldu (sunucu TCP'yi kabul eder, TLS hiç kurulmaz) → 'Meta'ya hiç ulaşmadı'; bağlantı kurulduktan sonra yanıtsızlık → belirsiz
+      ---
+      duration_ms: 1208.040393
+      type: 'test'
+      ...
+    1..2
+ok 77 - 2.4.8 T6-E2 — ileti isteği havuzdaki eski soketi kullanmaz; bağlantı kurulamayan istek 'gönderilmedi' (R1)
+  ---
+  duration_ms: 1960.036438
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2 dar kontrol 2 ORTA-B — ileti isteğinin sınıflaması GERÇEK TLS ile: gövde gittiyse belirsiz, gitmediyse gönderilmedi
+    # Subtest: doğrudan: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+    ok 1 - doğrudan: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+      ---
+      duration_ms: 65.300265
+      type: 'test'
+      ...
+    # Subtest: vekil üzerinden: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+    ok 2 - vekil üzerinden: TLS kuruldu, gövde gitti, yanıt vermeden kopma → belirsiz
+      ---
+      duration_ms: 17.031508
+      type: 'test'
+      ...
+    # Subtest: doğrudan: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+    ok 3 - doğrudan: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+      ---
+      duration_ms: 802.933217
+      type: 'test'
+      ...
+    # Subtest: vekil üzerinden: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+    ok 4 - vekil üzerinden: TLS kuruldu, gövde gitti, yanıt yok (zaman aşımı) → belirsiz
+      ---
+      duration_ms: 811.656039
+      type: 'test'
+      ...
+    # Subtest: doğrudan: TCP kabul edildi, TLS hiç kurulmadı (zaman aşımı) → gönderilmedi
+    ok 5 - doğrudan: TCP kabul edildi, TLS hiç kurulmadı (zaman aşımı) → gönderilmedi
+      ---
+      duration_ms: 505.440297
+      type: 'test'
+      ...
+    # Subtest: doğrudan: sertifika doğrulanamadı → gönderilmedi, sunucuya gövde gitmedi
+    ok 6 - doğrudan: sertifika doğrulanamadı → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 10.53892
+      type: 'test'
+      ...
+    # Subtest: vekil: CONNECT 200, hedefle TLS kurulmadan kopma → gönderilmedi, sunucuya gövde gitmedi
+    ok 7 - vekil: CONNECT 200, hedefle TLS kurulmadan kopma → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 13.142874
+      type: 'test'
+      ...
+    # Subtest: vekil: CONNECT reddedildi (502) → gönderilmedi, sunucuya gövde gitmedi
+    ok 8 - vekil: CONNECT reddedildi (502) → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 9.222412
+      type: 'test'
+      ...
+    # Subtest: vekil: sertifika doğrulanamadı (vekil TLS denetimi / yanlış kök) → gönderilmedi, sunucuya gövde gitmedi
+    ok 9 - vekil: sertifika doğrulanamadı (vekil TLS denetimi / yanlış kök) → gönderilmedi, sunucuya gövde gitmedi
+      ---
+      duration_ms: 14.697373
+      type: 'test'
+      ...
+    1..9
+ok 78 - 2.4.8 T2 dar kontrol 2 ORTA-B — ileti isteğinin sınıflaması GERÇEK TLS ile: gövde gittiyse belirsiz, gitmediyse gönderilmedi
+  ---
+  duration_ms: 2257.809429
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş U5 — Bu Ay deneme başına teslim (göçsüz)
+    # Subtest: ad4db62b'nin gerçek defteri yeni kodla açılır: eski teslim 1 kez; aynı teslimin (aynı an) yinelenmesi çift saymaz; 2. denemenin teslimi ayrı (2)
+    ok 1 - ad4db62b'nin gerçek defteri yeni kodla açılır: eski teslim 1 kez; aynı teslimin (aynı an) yinelenmesi çift saymaz; 2. denemenin teslimi ayrı (2)
+      ---
+      duration_ms: 50.789683
+      type: 'test'
+      ...
+    # Subtest: yarıda kalmış şema (attempt_deliveries var, dizin / tetikleyici yok) açılışta tamamlanır; sayım doğru; yalnız eklenir
+    ok 2 - yarıda kalmış şema (attempt_deliveries var, dizin / tetikleyici yok) açılışta tamamlanır; sayım doğru; yalnız eklenir
+      ---
+      duration_ms: 12.392493
+      type: 'test'
+      ...
+    # Subtest: yeni defter: iki denemenin teslimi Bu Ay 2, iş başına 'kişi aldı' tek; aynı denemenin yinelenen teslimi etkisiz
+    ok 3 - yeni defter: iki denemenin teslimi Bu Ay 2, iş başına 'kişi aldı' tek; aynı denemenin yinelenen teslimi etkisiz
+      ---
+      duration_ms: 121.401491
+      type: 'test'
+      ...
+    1..3
+ok 79 - 2.4.8 İş U5 — Bu Ay deneme başına teslim (göçsüz)
+  ---
+  duration_ms: 185.736502
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+    # Subtest: bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+    ok 1 - bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+      ---
+      duration_ms: 442.960958
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+    ok 2 - Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+      ---
+      duration_ms: 19.996686
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+    ok 3 - Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+      ---
+      duration_ms: 10.204178
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+    ok 4 - Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+      ---
+      duration_ms: 18.0258
+      type: 'test'
+      ...
+    # Subtest: Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+    ok 5 - Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+      ---
+      duration_ms: 3368.664407
+      type: 'test'
+      ...
+    # Subtest: Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+    ok 6 - Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+      ---
+      duration_ms: 59.420823
+      type: 'test'
+      ...
+    # Subtest: gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+    ok 7 - gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+      ---
+      duration_ms: 148.518646
+      type: 'test'
+      ...
+    # Subtest: iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+    ok 8 - iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+      ---
+      duration_ms: 440.998014
+      type: 'test'
+      ...
+    # Subtest: yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+    ok 9 - yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+      ---
+      duration_ms: 62.177595
+      type: 'test'
+      ...
+    # Subtest: belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+    ok 10 - belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+      ---
+      duration_ms: 240.049971
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+    ok 11 - Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+      ---
+      duration_ms: 55.560236
+      type: 'test'
+      ...
+    1..11
+ok 80 - 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+  ---
+  duration_ms: 5578.082367
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+    # Subtest: salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+    ok 1 - salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+      ---
+      duration_ms: 1674.127437
+      type: 'test'
+      ...
+    # Subtest: Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+    ok 2 - Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+      ---
+      duration_ms: 547.226844
+      type: 'test'
+      ...
+    1..2
+ok 81 - 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+  ---
+  duration_ms: 2221.707244
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 29, 31)
+    # Subtest: ret sırası bağlı değil → yetki → lisans → onay → şablon; firma adı yok; şablon onaysız / Pazarlama'da → 409, Meta'ya ileti gitmez, toplu iş kaydı oluşmaz
+    ok 1 - ret sırası bağlı değil → yetki → lisans → onay → şablon; firma adı yok; şablon onaysız / Pazarlama'da → 409, Meta'ya ileti gitmez, toplu iş kaydı oluşmaz
+      ---
+      duration_ms: 1349.936625
+      type: 'test'
+      ...
+    1..1
+ok 82 - 2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 29, 31)
+  ---
+  duration_ms: 1351.200161
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi
+    # Subtest: ekstre: belge başlıklı şablon (PDF + 4 değişken, '+' ile); sabit hat ve yurt dışı ELENMEZ, aynı numaralı iki cariye iki ileti; numarasız / WhatsApp Mesajı İstemiyor elenir; sıra = seçim sırası
+    ok 1 - ekstre: belge başlıklı şablon (PDF + 4 değişken, '+' ile); sabit hat ve yurt dışı ELENMEZ, aynı numaralı iki cariye iki ileti; numarasız / WhatsApp Mesajı İstemiyor elenir; sıra = seçim sırası
+      ---
+      duration_ms: 1020.13803
+      type: 'test'
+      ...
+    # Subtest: ödeme hatırlatma (§7a 20): {{3}} en eski gecikmiş vade, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; gecikmiş borcu olmayan elenir
+    ok 2 - ödeme hatırlatma (§7a 20): {{3}} en eski gecikmiş vade, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; gecikmiş borcu olmayan elenir
+      ---
+      duration_ms: 815.42371
+      type: 'test'
+      ...
+    1..2
+ok 83 - 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi
+  ---
+  duration_ms: 1836.118849
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — çift gönderim yok (§7a 9, 10)
+    # Subtest: aynı istek kimliği → tek toplu iş; bekleyen iş varken aynı cari + şablon + dönem 'Zaten Kuyrukta' (iki sekme / iki kullanıcı); bittikten sonra 'Daha Önce Gönderildi' (R3: varsayılan Bunları Çıkar, sendAgain ile Yine de Gönder)
+    ok 1 - aynı istek kimliği → tek toplu iş; bekleyen iş varken aynı cari + şablon + dönem 'Zaten Kuyrukta' (iki sekme / iki kullanıcı); bittikten sonra 'Daha Önce Gönderildi' (R3: varsayılan Bunları Çıkar, sendAgain ile Yine de Gönder)
+      ---
+      duration_ms: 964.437965
+      type: 'test'
+      ...
+    # Subtest: zaman aşımı / bağlantı kopması → Sonucu Belirsiz, kendiliğinden yeniden GÖNDERİLMEZ, toplu iş SÜRER; Yine de Gönder onay ister
+    ok 2 - zaman aşımı / bağlantı kopması → Sonucu Belirsiz, kendiliğinden yeniden GÖNDERİLMEZ, toplu iş SÜRER; Yine de Gönder onay ister
+      ---
+      duration_ms: 1836.013254
+      type: 'test'
+      ...
+    # Subtest: kabul yazımı düştü (disk dolu): iş 'Gönderiliyor'da kalır, defterdeki kabulle çözülür; program yeniden açılınca da İKİNCİ ileti yok
+    ok 3 - kabul yazımı düştü (disk dolu): iş 'Gönderiliyor'da kalır, defterdeki kabulle çözülür; program yeniden açılınca da İKİNCİ ileti yok
+      ---
+      duration_ms: 1227.893282
+      type: 'test'
+      ...
+    1..3
+ok 84 - 2.4.8 W2 — çift gönderim yok (§7a 9, 10)
+  ---
+  duration_ms: 4029.202157
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+    # Subtest: 190 (belirteç) → hatayı alan iş Başarısız (kodlu), toplu iş duraklar, bekleyenler Duraklatıldı, sonraki kişilere istek gitmez; Devam Et ile sürer
+    ok 1 - 190 (belirteç) → hatayı alan iş Başarısız (kodlu), toplu iş duraklar, bekleyenler Duraklatıldı, sonraki kişilere istek gitmez; Devam Et ile sürer
+      ---
+      duration_ms: 1407.803262
+      type: 'test'
+      ...
+    # Subtest: 131026 (alıcı) ve tanınmayan kod → o iş Başarısız (kodlu), toplu iş sürer; Başarısızları Yeniden Dene yalnız onları YENİ işle gönderir
+    ok 2 - 131026 (alıcı) ve tanınmayan kod → o iş Başarısız (kodlu), toplu iş sürer; Başarısızları Yeniden Dene yalnız onları YENİ işle gönderir
+      ---
+      duration_ms: 1285.46664
+      type: 'test'
+      ...
+    # Subtest: geçici (130429): iş 30 sn → 2 dk → 15 dk bekler, 3 denemeden sonra Başarısız; toplu işte art arda 5 geçici → duraklar; kod 2 → bekleyip BİR kez; başarılı işin hata kodu temizlenir
+    ok 3 - geçici (130429): iş 30 sn → 2 dk → 15 dk bekler, 3 denemeden sonra Başarısız; toplu işte art arda 5 geçici → duraklar; kod 2 → bekleyip BİR kez; başarılı işin hata kodu temizlenir
+      ---
+      duration_ms: 1776.582954
+      type: 'test'
+      ...
+    # Subtest: R1: Meta'ya HİÇ ulaşılamıyor (internet yok) → iş Başarısız SAYILMAZ, deneme sayacı artmaz; toplu iş 'Bağlantı Bekleniyor' (Devam Et gerekmez), kaç tur sürerse sürsün duraklamaz; bağlantı dönünce kendiliğinden BİR kez gider
+    ok 4 - R1: Meta'ya HİÇ ulaşılamıyor (internet yok) → iş Başarısız SAYILMAZ, deneme sayacı artmaz; toplu iş 'Bağlantı Bekleniyor' (Devam Et gerekmez), kaç tur sürerse sürsün duraklamaz; bağlantı dönünce kendiliğinden BİR kez gider
+      ---
+      duration_ms: 1054.426152
+      type: 'test'
+      ...
+    # Subtest: 131056 → o kişi 1 dk sonra; 131049 → 'Meta Bekletti (24 Saat Sonra Yeniden)', aynı medyayla bir kez, yine düşerse Başarısız (§7a 14)
+    ok 5 - 131056 → o kişi 1 dk sonra; 131049 → 'Meta Bekletti (24 Saat Sonra Yeniden)', aynı medyayla bir kez, yine düşerse Başarısız (§7a 14)
+      ---
+      duration_ms: 940.684924
+      type: 'test'
+      ...
+    # Subtest: R2: şablon gönderim sürerken Pazarlama'ya alınırsa en geç 10 dakikada ve HER 100 İLETİDE yeniden okunur (§7a 27 revizyonu): toplu iş durur, ileti gitmez
+    ok 6 - R2: şablon gönderim sürerken Pazarlama'ya alınırsa en geç 10 dakikada ve HER 100 İLETİDE yeniden okunur (§7a 27 revizyonu): toplu iş durur, ileti gitmez
+      ---
+      duration_ms: 6296.092037
+      type: 'test'
+      ...
+    1..6
+ok 85 - 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+  ---
+  duration_ms: 12762.153259
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+    # Subtest: sınır = min(Meta basamağı, elle sınır); fazlası 'Sınır Nedeniyle Bekliyor', pencere (en eski + 24 sa) açılınca sürer; gece yarısında SIFIRLANMAZ; pencerede sayılmış kişi GEÇER
+    ok 1 - sınır = min(Meta basamağı, elle sınır); fazlası 'Sınır Nedeniyle Bekliyor', pencere (en eski + 24 sa) açılınca sürer; gece yarısında SIFIRLANMAZ; pencerede sayılmış kişi GEÇER
+      ---
+      duration_ms: 867.22732
+      type: 'test'
+      ...
+    # Subtest: Meta basamağı TIER_2K ise elle sınır yoksa 2.000; Meta sınır kodu (131048, D0-10) → aynı WABA'nın BÜTÜN işleri 24 saat bekler
+    ok 2 - Meta basamağı TIER_2K ise elle sınır yoksa 2.000; Meta sınır kodu (131048, D0-10) → aynı WABA'nın BÜTÜN işleri 24 saat bekler
+      ---
+      duration_ms: 812.317107
+      type: 'test'
+      ...
+    # Subtest: iki şirket AYNI portföyü (WABA) kullanınca sayaç ortak: 001'in gönderdiği kişiler 002'nin sınırından düşer; aynı numaralı kişi yer tutmaz
+    ok 3 - iki şirket AYNI portföyü (WABA) kullanınca sayaç ortak: 001'in gönderdiği kişiler 002'nin sınırından düşer; aynı numaralı kişi yer tutmaz
+      ---
+      duration_ms: 835.381131
+      type: 'test'
+      ...
+    1..3
+ok 86 - 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+  ---
+  duration_ms: 2515.3438
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL)
+    # Subtest: ileti isteği Meta'dayken süreç öldü → yeniden açılışta Sonucu Belirsiz; kendiliğinden ikinci istek YOK
+    ok 1 - ileti isteği Meta'dayken süreç öldü → yeniden açılışta Sonucu Belirsiz; kendiliğinden ikinci istek YOK
+      ---
+      duration_ms: 1535.031313
+      type: 'test'
+      ...
+    # Subtest: PDF Meta'ya yüklenirken süreç öldü → yeniden açılışta iş Bekliyor; ileti BİR kez gider (yarım medya 30 günde Meta'da düşer)
+    ok 2 - PDF Meta'ya yüklenirken süreç öldü → yeniden açılışta iş Bekliyor; ileti BİR kez gider (yarım medya 30 günde Meta'da düşer)
+      ---
+      duration_ms: 1617.658984
+      type: 'test'
+      ...
+    1..2
+ok 87 - 2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL)
+  ---
+  duration_ms: 3154.086783
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+    # Subtest: kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez
+    ok 1 - kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez
+      ---
+      duration_ms: 843.233142
+      type: 'test'
+      ...
+    1..1
+ok 88 - 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+  ---
+  duration_ms: 844.357837
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+    # Subtest: 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış
+    ok 1 - 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış
+      ---
+      duration_ms: 1137.344132
+      type: 'test'
+      ...
+    # Subtest: 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ
+    ok 2 - 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ
+      ---
+      duration_ms: 1119.223167
+      type: 'test'
+      ...
+    # Subtest: 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ
+    ok 3 - 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ
+      ---
+      duration_ms: 792.425223
+      type: 'test'
+      ...
+    # Subtest: şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'
+    ok 4 - şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'
+      ---
+      duration_ms: 706.718482
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur
+    ok 5 - Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur
+      ---
+      duration_ms: 527.780909
+      type: 'test'
+      ...
+    # Subtest: 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'
+    ok 6 - 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'
+      ---
+      duration_ms: 849.051396
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)
+    ok 7 - salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)
+      ---
+      duration_ms: 809.320973
+      type: 'test'
+      ...
+    1..7
+ok 89 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+  ---
+  duration_ms: 5943.043919
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+    # Subtest: sayı = TESLİM edilen, ay = teslim zamanı (Türkiye saati), kapsam WABA; 31 Aralık 23:59 kabul / 1 Ocak 00:01 teslim Ocak'a sayılır; sayaç yıl dönümünde sıfırlanmaz
+    ok 1 - sayı = TESLİM edilen, ay = teslim zamanı (Türkiye saati), kapsam WABA; 31 Aralık 23:59 kabul / 1 Ocak 00:01 teslim Ocak'a sayılır; sayaç yıl dönümünde sıfırlanmaz
+      ---
+      duration_ms: 629.65639
+      type: 'test'
+      ...
+    # Subtest: durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır
+    ok 2 - durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır
+      ---
+      duration_ms: 656.441144
+      type: 'test'
+      ...
+    # Subtest: işçi (gerçek zamanlayıcı): iki iş ASLA aynı anda yürümez, iletiler arası en az gapMs; şirketler dönüşümlü
+    ok 3 - işçi (gerçek zamanlayıcı): iki iş ASLA aynı anda yürümez, iletiler arası en az gapMs; şirketler dönüşümlü
+      ---
+      duration_ms: 845.178886
+      type: 'test'
+      ...
+    1..3
+ok 90 - 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+  ---
+  duration_ms: 2131.728387
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — belirteç hiçbir çıktıya sızmaz
+    # Subtest: toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz
+    ok 1 - toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz
+      ---
+      duration_ms: 748.91993
+      type: 'test'
+      ...
+    1..1
+ok 91 - 2.4.8 W2 — belirteç hiçbir çıktıya sızmaz
+  ---
+  duration_ms: 749.208346
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+    # Subtest: wa.me 'Cari Ekstre - PDF' seçilen dönemi basar (Geçen Ay: devir 1.000, Ekim hareketleri, dönem sonu 850); metindeki güncel bakiyeyle aynı; ANLIK DURUM ekstresiyle BAYT BAYT aynı
+    ok 1 - wa.me 'Cari Ekstre - PDF' seçilen dönemi basar (Geçen Ay: devir 1.000, Ekim hareketleri, dönem sonu 850); metindeki güncel bakiyeyle aynı; ANLIK DURUM ekstresiyle BAYT BAYT aynı
+      ---
+      duration_ms: 835.533697
+      type: 'test'
+      ...
+    # Subtest: 'Tüm Hareketler' bugüne kadar: ileri tarihli hareket metne de PDF'e de girmez (§7a 22); Bu Ay ayın 1'inde tek gün
+    ok 2 - 'Tüm Hareketler' bugüne kadar: ileri tarihli hareket metne de PDF'e de girmez (§7a 22); Bu Ay ayın 1'inde tek gün
+      ---
+      duration_ms: 482.575546
+      type: 'test'
+      ...
+    # Subtest: WhatsApp Business API'ye yüklenen PDF, wa.me yolunun aynı dönem PDF'iyle BAYT BAYT aynı; iletinin {{3}} ve {{4}}'ü PDF'le aynı
+    ok 3 - WhatsApp Business API'ye yüklenen PDF, wa.me yolunun aynı dönem PDF'iyle BAYT BAYT aynı; iletinin {{3}} ve {{4}}'ü PDF'le aynı
+      ---
+      duration_ms: 609.559779
+      type: 'test'
+      ...
+    1..3
+ok 92 - 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+  ---
+  duration_ms: 1928.914818
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+    # Subtest: kesin durumdan sonra (Teslim Edildi / Okundu / Başarısız / Süresi Doldu) PDF Meta'dan silinir; Meta Kabul Etti / Sonucu Belirsiz / Meta Bekletti'de silinmez; zaten silinmişse silinmiş sayılır
+    ok 1 - kesin durumdan sonra (Teslim Edildi / Okundu / Başarısız / Süresi Doldu) PDF Meta'dan silinir; Meta Kabul Etti / Sonucu Belirsiz / Meta Bekletti'de silinmez; zaten silinmişse silinmiş sayılır
+      ---
+      duration_ms: 757.579618
+      type: 'test'
+      ...
+    # Subtest: yeniden denemede medya geçerliyse AYNISI kullanılır, 30 günü geçmişse yeniden yüklenir (§7a 15)
+    ok 2 - yeniden denemede medya geçerliyse AYNISI kullanılır, 30 günü geçmişse yeniden yüklenir (§7a 15)
+      ---
+      duration_ms: 1265.611605
+      type: 'test'
+      ...
+    1..2
+ok 93 - 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+  ---
+  duration_ms: 2023.571098
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W4 — gönderim ekranının durumu (sending-status)
+    # Subtest: bağlantı yok → configured false (pencere bugünkü wa.me yolunu açar); bağlı ama sınanmamış → neden; sınandı + şablon denetlendi → hazır; yetkisiz kişi canSend false; gizli değer yok; Meta'ya istek yok
+    ok 1 - bağlantı yok → configured false (pencere bugünkü wa.me yolunu açar); bağlı ama sınanmamış → neden; sınandı + şablon denetlendi → hazır; yetkisiz kişi canSend false; gizli değer yok; Meta'ya istek yok
+      ---
+      duration_ms: 977.260492
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: durum okunur, writable false (ekran Gönder'i nedeniyle pasif bırakır)
+    ok 2 - salt okunur lisans: durum okunur, writable false (ekran Gönder'i nedeniyle pasif bırakır)
+      ---
+      duration_ms: 816.780815
+      type: 'test'
+      ...
+    1..2
+ok 94 - 2.4.8 W4 — gönderim ekranının durumu (sending-status)
+  ---
+  duration_ms: 1796.99949
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W4 — önizleme onaydan önce; gönderim onaysız başlamaz
+    # Subtest: onaysız: önizleme 200 + startBlock (onay), kişiler sayılır; toplu iş 409 ve kayıt yok; firma adı yoksa startBlock firma adı; onaylı + firma adı → startBlock null
+    ok 1 - onaysız: önizleme 200 + startBlock (onay), kişiler sayılır; toplu iş 409 ve kayıt yok; firma adı yoksa startBlock firma adı; onaylı + firma adı → startBlock null
+      ---
+      duration_ms: 839.443529
+      type: 'test'
+      ...
+    1..1
+ok 95 - 2.4.8 W4 — önizleme onaydan önce; gönderim onaysız başlamaz
+  ---
+  duration_ms: 840.029792
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W5 — WhatsApp bilgilendirme şablonları
+    # Subtest: şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+    ok 1 - şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+      ---
+      duration_ms: 13.458526
+      type: 'test'
+      ...
+    # Subtest: bağlantı yokken denetim 409, Meta'ya istek yok; yetkisiz kullanıcı GET / POST 403
+    ok 2 - bağlantı yokken denetim 409, Meta'ya istek yok; yetkisiz kullanıcı GET / POST 403
+      ---
+      duration_ms: 134.319648
+      type: 'test'
+      ...
+    # Subtest: App ID yokken: Ödeme Hatırlatma açılır (UTILITY, plandaki gövde, örnek değerler); Ekstre açılmaz, nedeni Uygulama Kimliği; yükleme yok
+    ok 3 - App ID yokken: Ödeme Hatırlatma açılır (UTILITY, plandaki gövde, örnek değerler); Ekstre açılmaz, nedeni Uygulama Kimliği; yükleme yok
+      ---
+      duration_ms: 30.59776
+      type: 'test'
+      ...
+    # Subtest: App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denetim yeni şablon açmaz
+    ok 4 - App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denetim yeni şablon açmaz
+      ---
+      duration_ms: 80.987588
+      type: 'test'
+      ...
+    # Subtest: durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içeriği değiştirilmiş
+    ok 5 - durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içeriği değiştirilmiş
+      ---
+      duration_ms: 71.907126
+      type: 'test'
+      ...
+    # Subtest: GET görünümü Meta'ya gitmez ve son denetimi gösterir; başka WABA'ya geçince eski sonuç bayat sayılır (Denetlenmedi)
+    ok 6 - GET görünümü Meta'ya gitmez ve son denetimi gösterir; başka WABA'ya geçince eski sonuç bayat sayılır (Denetlenmedi)
+      ---
+      duration_ms: 39.594076
+      type: 'test'
+      ...
+    # Subtest: Meta ayrıntı alanlarını tanımazsa (100) temel alanlarla bir kez yeniden okunur; listede görünmeyen şablon için 2388024 'zaten var' sayılır
+    ok 7 - Meta ayrıntı alanlarını tanımazsa (100) temel alanlarla bir kez yeniden okunur; listede görünmeyen şablon için 2388024 'zaten var' sayılır
+      ---
+      duration_ms: 48.11674
+      type: 'test'
+      ...
+    # Subtest: Meta belirteci reddederse 502 + Türkçe neden, son hata kaydedilir; yanıtta / kayıtta / işlem geçmişinde / günlükte belirteç yok
+    ok 8 - Meta belirteci reddederse 502 + Türkçe neden, son hata kaydedilir; yanıtta / kayıtta / işlem geçmişinde / günlükte belirteç yok
+      ---
+      duration_ms: 14.044374
+      type: 'test'
+      ...
+    # Subtest: Meta istemcisi kampanya / pazarlama şablonu açmaz: kategori UTILITY değilse istek gönderilmez
+    ok 9 - Meta istemcisi kampanya / pazarlama şablonu açmaz: kategori UTILITY değilse istek gönderilmez
+      ---
+      duration_ms: 1.470858
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: görünüm okunur, denetim 403 LICENSE_READ_ONLY, Meta'ya istek yok
+    ok 10 - salt okunur lisans: görünüm okunur, denetim 403 LICENSE_READ_ONLY, Meta'ya istek yok
+      ---
+      duration_ms: 871.463893
+      type: 'test'
+      ...
+    1..10
+ok 96 - 2.4.8 W5 — WhatsApp bilgilendirme şablonları
+  ---
+  duration_ms: 1855.503676
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W6 — Aydınlatma Metni Hazırla
+    # Subtest: firma bilgisi eksikken: eksikler adıyla, metinde köşeli ayraçlı yer tutucu; 'undefined' / 'null' yok
+    ok 1 - firma bilgisi eksikken: eksikler adıyla, metinde köşeli ayraçlı yer tutucu; 'undefined' / 'null' yok
+      ---
+      duration_ms: 15.522062
+      type: 'test'
+      ...
+    # Subtest: firma bilgileriyle: KVKK md. 10 öğeleri, md. 11'in dokuz bendi, Meta + yurt dışı (md. 9), veri işleyen, 30 gün; eksik yok
+    ok 2 - firma bilgileriyle: KVKK md. 10 öğeleri, md. 11'in dokuz bendi, Meta + yurt dışı (md. 9), veri işleyen, 30 gün; eksik yok
+      ---
+      duration_ms: 20.85208
+      type: 'test'
+      ...
+    # Subtest: PDF: indirme, application/pdf, dosya adı firma adıyla; metin PDF'te de aynı (başlık, firma, md. 9, ğ bendi, sayfa numarası)
+    ok 3 - PDF: indirme, application/pdf, dosya adı firma adıyla; metin PDF'te de aynı (başlık, firma, md. 9, ğ bendi, sayfa numarası)
+      ---
+      duration_ms: 60.494974
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı (Personel) metni ve PDF'i alamaz (403)
+    ok 4 - yetkisiz kullanıcı (Personel) metni ve PDF'i alamaz (403)
+      ---
+      duration_ms: 152.028536
+      type: 'test'
+      ...
+    1..4
+ok 97 - 2.4.8 W6 — Aydınlatma Metni Hazırla
+  ---
+  duration_ms: 1054.237033
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 — WhatsApp'ı Bağla: App ID kapıcıdan gelir, Ekstre şablonu açılır
+    # Subtest: bağlanınca App ID kaydedilir; Şablonları Denetle ve Oluştur: örnek PDF /<App ID>/uploads ile yüklenir, Ekstre ve Ödeme Hatırlatma Meta'ya gönderilir
+    ok 1 - bağlanınca App ID kaydedilir; Şablonları Denetle ve Oluştur: örnek PDF /<App ID>/uploads ile yüklenir, Ekstre ve Ödeme Hatırlatma Meta'ya gönderilir
+      ---
+      duration_ms: 685.711905
+      type: 'test'
+      ...
+    # Subtest: kapıcı App ID vermezse (eski kapıcı / eksik ayar): Ekstre açılmaz, yükleme denenmez; neden bu kipe uygun — 'Bilgileri Değiştir'e (bu kipte yok) göndermez
+    ok 2 - kapıcı App ID vermezse (eski kapıcı / eksik ayar): Ekstre açılmaz, yükleme denenmez; neden bu kipe uygun — 'Bilgileri Değiştir'e (bu kipte yok) göndermez
+      ---
+      duration_ms: 701.522777
+      type: 'test'
+      ...
+    1..2
+ok 98 - 2.4.8 W7 — WhatsApp'ı Bağla: App ID kapıcıdan gelir, Ekstre şablonu açılır
+  ---
+  duration_ms: 1388.649974
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim
+    # Subtest: Meta onayı (kapıcı ayarı) yokken: oturum açılmaz, açık Türkçe ileti; sayfa Facebook SDK'sını yüklemez ve aynı iletiyi gösterir
+    ok 1 - Meta onayı (kapıcı ayarı) yokken: oturum açılmaz, açık Türkçe ileti; sayfa Facebook SDK'sını yüklemez ve aynı iletiyi gösterir
+      ---
+      duration_ms: 65.001036
+      type: 'test'
+      ...
+    # Subtest: uçtan uca: oturum (imzalı) → sayfa (App ID + config_id var, App Secret YOK) → kod → Meta'ya değişim (sır yalnız bu istekte) → şifreli teslim bir kez; R2'de düz belirteç yok
+    ok 2 - uçtan uca: oturum (imzalı) → sayfa (App ID + config_id var, App Secret YOK) → kod → Meta'ya değişim (sır yalnız bu istekte) → şifreli teslim bir kez; R2'de düz belirteç yok
+      ---
+      duration_ms: 25.627034
+      type: 'test'
+      ...
+    # Subtest: kod değişimi İMZASIZ olamaz: imzasız / başka anahtarla oturum ve teslim 401; başka ofis bu oturumun belirtecini alamaz; kod iki kez kullanılamaz
+    ok 3 - kod değişimi İMZASIZ olamaz: imzasız / başka anahtarla oturum ve teslim 401; başka ofis bu oturumun belirtecini alamaz; kod iki kez kullanılamaz
+      ---
+      duration_ms: 29.975196
+      type: 'test'
+      ...
+    # Subtest: Meta değişimi reddederse açık ileti (sır ve kod iletiden ayıklanır); oturum 'hata' olarak programa bir kez verilir
+    ok 4 - Meta değişimi reddederse açık ileti (sır ve kod iletiden ayıklanır); oturum 'hata' olarak programa bir kez verilir
+      ---
+      duration_ms: 15.618221
+      type: 'test'
+      ...
+    # Subtest: oturum en çok 10 dk: süresi geçince kod ve teslim 410; zamanlanmış tur artığı siler; lisansı biten ofis oturum açamaz
+    ok 5 - oturum en çok 10 dk: süresi geçince kod ve teslim 410; zamanlanmış tur artığı siler; lisansı biten ofis oturum açamaz
+      ---
+      duration_ms: 25.915592
+      type: 'test'
+      ...
+    1..5
+ok 99 - 2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim
+  ---
+  duration_ms: 163.433826
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç kapıcıdan şifreli gelir, 'embedded' kipinde mühürlenir; Meta adımları
+    # Subtest: birlikte kullanım: Bağla → kapıcı sayfası → kod → program belirteci alır, 'embedded' kipinde mühürler, eşitlemeyi başlatır ve sınar; belirteç ve App Secret yanıtta / veri tabanında / işlem geçmişinde YOK
+    ok 1 - birlikte kullanım: Bağla → kapıcı sayfası → kod → program belirteci alır, 'embedded' kipinde mühürler, eşitlemeyi başlatır ve sınar; belirteç ve App Secret yanıtta / veri tabanında / işlem geçmişinde YOK
+      ---
+      duration_ms: 642.569394
+      type: 'test'
+      ...
+    # Subtest: birlikte kullanım değilse numara Cloud API'ye kaydedilir (6 haneli PIN, ekranda yok)
+    ok 2 - birlikte kullanım değilse numara Cloud API'ye kaydedilir (6 haneli PIN, ekranda yok)
+      ---
+      duration_ms: 537.546178
+      type: 'test'
+      ...
+    # Subtest: Tech Provider onayı yokken (kapıcı Meta ayarı yok): düğme açık, ileti 'Bu bağlantı DestekOfis'in Meta onayından sonra çalışır; şimdilik Elle Bağla.'; Meta reddederse aynı ileti + Meta'nın yanıtı
+    ok 3 - Tech Provider onayı yokken (kapıcı Meta ayarı yok): düğme açık, ileti 'Bu bağlantı DestekOfis'in Meta onayından sonra çalışır; şimdilik Elle Bağla.'; Meta reddederse aynı ileti + Meta'nın yanıtı
+      ---
+      duration_ms: 1896.403386
+      type: 'test'
+      ...
+    1..3
+ok 100 - 2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç kapıcıdan şifreli gelir, 'embedded' kipinde mühürlenir; Meta adımları
+  ---
+  duration_ms: 3077.273104
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 taşınamaz bağlantı (A) — kapıcı: sır özeti, sırsız / yanlış sırlı / ikinci kullanım reddi
+    # Subtest: TAŞINAN BAĞLANTI: saldırganın oturum adresiyle (sır yok) kod değişimi, iptal ve doğrulama yapılamaz; Meta'ya istek gitmez, oturum bozulmaz
+    ok 1 - TAŞINAN BAĞLANTI: saldırganın oturum adresiyle (sır yok) kod değişimi, iptal ve doğrulama yapılamaz; Meta'ya istek gitmez, oturum bozulmaz
+      ---
+      duration_ms: 75.70789
+      type: 'test'
+      ...
+    # Subtest: YANLIŞ SIR: başka oturumun sırrı ve rastgele sır reddedilir; doğru sırla doğrulama firma adını verir, değişim olur
+    ok 2 - YANLIŞ SIR: başka oturumun sırrı ve rastgele sır reddedilir; doğru sırla doğrulama firma adını verir, değişim olur
+      ---
+      duration_ms: 34.103816
+      type: 'test'
+      ...
+    # Subtest: SIR TEK KULLANIMLIK: değişimden sonra aynı sırla ikinci kod / iptal / doğrulama 409; teslimden sonra oturum yok; iptalden sonra da kod yok
+    ok 3 - SIR TEK KULLANIMLIK: değişimden sonra aynı sırla ikinci kod / iptal / doğrulama 409; teslimden sonra oturum yok; iptalden sonra da kod yok
+      ---
+      duration_ms: 34.599656
+      type: 'test'
+      ...
+    # Subtest: kapıcı sırrı SAKLAMAZ (yalnız SHA-256 özeti); sır özeti olmayan oturum açılmaz; firma adından denetim / yön karakterleri çıkar
+    ok 4 - kapıcı sırrı SAKLAMAZ (yalnız SHA-256 özeti); sır özeti olmayan oturum açılmaz; firma adından denetim / yön karakterleri çıkar
+      ---
+      duration_ms: 11.596278
+      type: 'test'
+      ...
+    # Subtest: sayfa: firma adı yalnız textContent ile (HTML yorumlanmaz), SDK sır doğrulanmadan yüklenmez, çerçeveye alınamaz, COOP yok, sır adreste yok
+    ok 5 - sayfa: firma adı yalnız textContent ile (HTML yorumlanmaz), SDK sır doğrulanmadan yüklenmez, çerçeveye alınamaz, COOP yok, sır adreste yok
+      ---
+      duration_ms: 8.784731
+      type: 'test'
+      ...
+    1..5
+ok 101 - 2.4.8 W7 taşınamaz bağlantı (A) — kapıcı: sır özeti, sırsız / yanlış sırlı / ikinci kullanım reddi
+  ---
+  duration_ms: 166.342428
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 taşınamaz bağlantı (B) — köken kuralı: sayfa, program ve ekran aynı
+    # Subtest: kapıcı sayfasının yerelKoken'i, programın isLocalOrigin'i ve ekranın kopyası aynı tabloyu verir
+    ok 1 - kapıcı sayfasının yerelKoken'i, programın isLocalOrigin'i ve ekranın kopyası aynı tabloyu verir
+      ---
+      duration_ms: 2.544999
+      type: 'test'
+      ...
+    1..1
+ok 102 - 2.4.8 W7 taşınamaz bağlantı (B) — köken kuralı: sayfa, program ve ekran aynı
+  ---
+  duration_ms: 2.675262
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 taşınamaz bağlantı (C) — program: sır ekrana (adrese değil), kapıcıya özet; uzak / genel adresten oturum açılmaz
+    # Subtest: yerel adresten: yanıtta tek kullanımlık sır (43 karakter) var, adreste yok; kapıcıya yalnız özeti ve firma adı gider; sır işlem geçmişine girmez
+    ok 1 - yerel adresten: yanıtta tek kullanımlık sır (43 karakter) var, adreste yok; kapıcıya yalnız özeti ve firma adı gider; sır işlem geçmişine girmez
+      ---
+      duration_ms: 677.706892
+      type: 'test'
+      ...
+    # Subtest: uzak / genel adresten (tünel adı, genel ad, tek etiketli ad): 409 'WhatsApp'ı Bağla işlemi ofisteki bilgisayardan yapılır'; kapıcıda oturum açılmaz
+    ok 2 - uzak / genel adresten (tünel adı, genel ad, tek etiketli ad): 409 'WhatsApp'ı Bağla işlemi ofisteki bilgisayardan yapılır'; kapıcıda oturum açılmaz
+      ---
+      duration_ms: 630.540533
+      type: 'test'
+      ...
+    # Subtest: Yönetim sayfası Cross-Origin-Opener-Policy: same-origin-allow-popups (bağlama penceresiyle bağ); öbür sayfalar same-origin kalır
+    ok 3 - Yönetim sayfası Cross-Origin-Opener-Policy: same-origin-allow-popups (bağlama penceresiyle bağ); öbür sayfalar same-origin kalır
+      ---
+      duration_ms: 648.304833
+      type: 'test'
+      ...
+    1..3
+ok 103 - 2.4.8 W7 taşınamaz bağlantı (C) — program: sır ekrana (adrese değil), kapıcıya özet; uzak / genel adresten oturum açılmaz
+  ---
+  duration_ms: 1957.304305
+  type: 'suite'
+  ...
+# Subtest: ileti sabitleri: kapıcının taşınan bağlantı iletisi ve programın yerel adres iletisi
+ok 104 - ileti sabitleri: kapıcının taşınan bağlantı iletisi ve programın yerel adres iletisi
+  ---
+  duration_ms: 0.273563
+  type: 'test'
+  ...
+# Subtest: 2.4.8 W9 — kanca adresinin kaydı ve doğrulaması (Meta → kapıcı → tünel → program)
+    # Subtest: bakım turu adresi Meta'ya KENDİLİĞİNDEN kaydeder (bir kez); GET doğrulaması kapıcıdan geçer; yanlış belirteç 403, bilinmeyen gizli yol 404; düşen kayıt saatte bir yeniden; görünümde gizli değer YOK
+    ok 1 - bakım turu adresi Meta'ya KENDİLİĞİNDEN kaydeder (bir kez); GET doğrulaması kapıcıdan geçer; yanlış belirteç 403, bilinmeyen gizli yol 404; düşen kayıt saatte bir yeniden; görünümde gizli değer YOK
+      ---
+      duration_ms: 709.580553
+      type: 'test'
+      ...
+    1..1
+ok 105 - 2.4.8 W9 — kanca adresinin kaydı ve doğrulaması (Meta → kapıcı → tünel → program)
+  ---
+  duration_ms: 710.81408
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W9 — durum bildirimi (POST): imza, belirsizin çözümü, yinelenen / sırasız olay
+    # Subtest: imzasız (Yol 1) olay yalnız kaydındaki wamid'i yazar; Sonucu Belirsiz iş imzasız olayla ÇÖZÜLMEZ, yanlış imzayla çözülmez, DestekOfis sırrıyla imzalı + iş kimliğiyle çözülür; bilinmeyen / başka numaranın olayı düşer; gelen ileti saklanmaz; kapıcı Meta'nın başlıklarını geçirmez
+    ok 1 - imzasız (Yol 1) olay yalnız kaydındaki wamid'i yazar; Sonucu Belirsiz iş imzasız olayla ÇÖZÜLMEZ, yanlış imzayla çözülmez, DestekOfis sırrıyla imzalı + iş kimliğiyle çözülür; bilinmeyen / başka numaranın olayı düşer; gelen ileti saklanmaz; kapıcı Meta'nın başlıklarını geçirmez
+      ---
+      duration_ms: 900.769743
+      type: 'test'
+      ...
+    # Subtest: Yol 2 (WhatsApp'ı Bağla) bağlantısında imzasız bildirim REDDEDİLİR (401), DestekOfis sırrıyla imzalı kabul edilir
+    ok 2 - Yol 2 (WhatsApp'ı Bağla) bağlantısında imzasız bildirim REDDEDİLİR (401), DestekOfis sırrıyla imzalı kabul edilir
+      ---
+      duration_ms: 791.805221
+      type: 'test'
+      ...
+    1..2
+ok 106 - 2.4.8 W9 — durum bildirimi (POST): imza, belirsizin çözümü, yinelenen / sırasız olay
+  ---
+  duration_ms: 1693.06181
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W9 — kapıcı geçişinin sınırları ve tüneli atlatma
+    # Subtest: tünel yok → 503 kapi-ofis-kapali (Meta yeniden dener); gövde 3 MB üstü 413; işaretsiz / sahte işaretli doğrudan istek 401; programın Set-Cookie'si Meta'ya dönmez
+    ok 1 - tünel yok → 503 kapi-ofis-kapali (Meta yeniden dener); gövde 3 MB üstü 413; işaretsiz / sahte işaretli doğrudan istek 401; programın Set-Cookie'si Meta'ya dönmez
+      ---
+      duration_ms: 958.509369
+      type: 'test'
+      ...
+    # Subtest: kapi.<alan>/wa/meta (uygulamanın varsayılan kanca ucu): doğrulama belirteciyle GET, DestekOfis sırrıyla imzalı POST 200 (saklanmaz); imzasız / yanlış / sır tanımsız reddedilir
+    ok 2 - kapi.<alan>/wa/meta (uygulamanın varsayılan kanca ucu): doğrulama belirteciyle GET, DestekOfis sırrıyla imzalı POST 200 (saklanmaz); imzasız / yanlış / sır tanımsız reddedilir
+      ---
+      duration_ms: 16.820225
+      type: 'test'
+      ...
+    1..2
+ok 107 - 2.4.8 W9 — kapıcı geçişinin sınırları ve tüneli atlatma
+  ---
+  duration_ms: 975.643221
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W9 — tünel kuralı: WhatsApp bağlıyken de açık (plan §6 W9, S1 A)
+    # Subtest: eşli cihaz ve karekod YOKKEN: WhatsApp bağlı → tünel açılır; bağlı değil → kapalı (başvuru da yok); salt okunur lisansta WhatsApp bağlı olsa da kapalı
+    ok 1 - eşli cihaz ve karekod YOKKEN: WhatsApp bağlı → tünel açılır; bağlı değil → kapalı (başvuru da yok); salt okunur lisansta WhatsApp bağlı olsa da kapalı
+      ---
+      duration_ms: 121.929529
+      type: 'test'
+      ...
+    # Subtest: programda: belirteçli WhatsApp bağlantısı kaydedilince tünel yöneticisi tüneli ister; bağlantı kaldırılınca istemez (app.mjs → registry.anyConfigured)
+    ok 2 - programda: belirteçli WhatsApp bağlantısı kaydedilince tünel yöneticisi tüneli ister; bağlantı kaldırılınca istemez (app.mjs → registry.anyConfigured)
+      ---
+      duration_ms: 788.890425
+      type: 'test'
+      ...
+    1..2
+ok 108 - 2.4.8 W9 — tünel kuralı: WhatsApp bağlıyken de açık (plan §6 W9, S1 A)
+  ---
+  duration_ms: 911.569383
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kapıcı geçirir), kilit kalkınca yazılır
+    # Subtest: şirket dosyası kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi
+    ok 1 - şirket dosyası kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi
+      ---
+      duration_ms: 1297.005585
+      type: 'test'
+      ...
+    # Subtest: makine defteri kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi
+    ok 2 - makine defteri kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi
+      ---
+      duration_ms: 1181.48695
+      type: 'test'
+      ...
+    1..2
+ok 109 - 2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kapıcı geçirir), kilit kalkınca yazılır
+  ---
+  duration_ms: 2481.659566
+  type: 'suite'
+  ...
+1..109
+# tests 446
+# suites 104
+# pass 446
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 638954.606234

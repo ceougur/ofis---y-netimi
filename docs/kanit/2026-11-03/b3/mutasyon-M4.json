@@ -1,0 +1,43 @@
+{
+  "ad": "b3/mutasyon-M4",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-b3-buyume-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-b3-goc-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:00:34.771Z",
+  "sure_sn": 42,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 12,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45) › T4 geri yükleme: v2.4.8'de alınmış yedek (v44, A'nın PDF'i satırda) yeni programa geri yüklenince göç v45 yedek dosyasında koşar; eski toplu iş durur (§7a 26), bakım PDF'leri siler, ileti gitmez",
+      "konum": "test/whatsapp-b3-goc-249.test.mjs:175:3",
+      "hata": "bakım: durdurulan / kesinleşen işlerin PDF'i silindi · + actual - expected · + { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok › T2b yaşam döngüsü: A 131056 (Bekliyor), B 131026 (Başarısız), C kabul → bakım yalnız A'nınkini tutar; Duraklat'ta durur; İptal Et → bakım siler (eski kodla aynı sayılar)",
+      "konum": "test/whatsapp-b3-pdf-249.test.mjs:102:3",
+      "hata": "bakım: Başarısız (B) ve kabul (C) silindi, açık A kaldı · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a972c155e62a73ec3/docs/kanit/2026-11-03/b3/mutasyon-M4.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M4-f71e1e8b",
+  "ham_cikti_sha256": "f7cca4b5dc60f32980b419de8b24a6465c1031035b2f0679e523cdf0c6828d85",
+  "ham_cikti_bayt": 9657
+}

@@ -1,0 +1,17 @@
+#!/bin/bash
+# B3 mutasyon koşusu (not defteri): her mutasyon için f71e1e8b'nin AYRI kopyası (git archive; ders 23/25), mutasyon uygulanır, yeni test dosyaları koşulur.
+# Kayıt: worktree docs/kanit/<gün>/b3/mutasyon-<M>.{json,log} (kanit.mjs kos; beklenen hüküm BAŞARISIZ). Kopya iş bitince tam yoluyla silinir (ders 36).
+WT=/home/user/ofis---y-netimi/.claude/worktrees/agent-a972c155e62a73ec3
+SP=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad
+for M in "$@"; do
+  D="$SP/b3a972-mut-$M-f71e1e8b"
+  if [ -e "$D" ]; then echo "$D zaten var"; exit 1; fi
+  mkdir -p "$D" || exit 1
+  git -C "$WT" archive f71e1e8b -- server client bulut test vendor package.json | tar -x -C "$D" || exit 1
+  node "$SP/b3a972-betik/mutasyon.mjs" "$D" "$M" || exit 1
+  (cd "$D" && KANIT_DIR="$WT/docs/kanit" HUKUK_LICENSE_URL=http://127.0.0.1:9 timeout 1200 node "$WT/tools/kanit.mjs" kos "b3/mutasyon-$M" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-b3-buyume-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-b3-goc-249.test.mjs > "$SP/b3a972-betik/mutasyon-$M.out" 2>&1)
+  echo "$M çıkış $?"
+  grep -E "^  ✖" "$SP/b3a972-betik/mutasyon-$M.out" | cut -c1-110
+  tail -1 "$SP/b3a972-betik/mutasyon-$M.out"
+  rm -rf "$D"
+done
