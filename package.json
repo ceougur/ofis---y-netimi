@@ -48,6 +48,7 @@
     "test:senaryo-defter-243": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-defter-243.mjs",
     "test:senaryo-banka-220": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-220.mjs",
     "test:senaryo-pos-220": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-pos-220.mjs",
+    "test:kilavuz-metin": "node --disable-warning=ExperimentalWarning docs/kilavuz/ekran-banka.mjs --denetim",
     "test:senaryo-tahsile-ver-220": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-tahsile-ver-220.mjs",
     "test:senaryo-k8-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-k8-230.mjs",
     "test:senaryo-iz32-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz32-230.mjs",

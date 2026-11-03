@@ -2,12 +2,18 @@
 // sunucuda, sahte saatle (08.10.2026 Perşembe 12:00; sunucu config.now + tarayıcı saati aynı gün). Örnek şirket verisi uydurmadır;
 // müşteri verisi kullanılmaz. Her adım ekrandan yapılır (sihirbaz, masraf, transfer, cari tahsilatı, Kasa ile Banka Arası); yalnız
 // başlangıç kayıtları (cari, eski havale, nakit tahsilat) API'den girilir.
-// Kullanım: node docs/kilavuz/ekran-banka.mjs [çıktı klasörü] [yalnız-bunlar,virgülle]
+// Kullanım: node docs/kilavuz/ekran-banka.mjs [çıktı klasörü] [yalnız-bunlar,virgülle]   (kılavuz görselleri yenilenirken; varsayılan docs/kilavuz/ekran)
+//          node docs/kilavuz/ekran-banka.mjs --denetim   (npm run test:kilavuz-metin; CI e2e işi): görseller ve metinler GEÇİCİ klasöre yazılır
+//          (docs/kilavuz/ekran'a dokunulmaz), sonra metin-denetle.mjs aynı metinlerle koşar; özet satırları ikisinin toplamıdır.
 // EKRAN_METIN=<dosya.json> verilirse her ekranın görünen metni (düğme, sekme, alan, seçenek adları) o dosyaya yazılır: kılavuzdaki adlar
 // bu metinlerle birebir karşılaştırılır (docs/kilavuz/metin-denetle.mjs).
+// 2.4.9 B4: pencere kapatma test/e2e/esc-kapat.mjs escClose ile (2.4.3 "Kaydedilmemiş Değişiklik" sorusu "Kaydetmeden Kapat"la yanıtlanır); her
+// kapatmada beklenti yazılır (soru-var: elle doldurulmuş, kaydedilmemiş form; soru-yok: temiz form ya da kayıttan sonra) ve yanıtlanan her soru
+// sonda listelenir, ayrıntısı (neden, dokunulmuş alanlar) ESC_KAPAT_GUNLUK günlüğünde (ders 34). En üstteki pencere :nth-last-child(1 of …) ile
+// (ders 39). Banka rapor adları, rapor grubu sırası ve Banka yetkileri kılavuz metninden okunur (2.1.0'dan kalan sabit 4 rapor / 7 yetki kalktı).
 // Sonra: node docs/kilavuz/pdf-uret.mjs docs/kilavuz DestekOfis-Kullanim-Kilavuzu && cp docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf client/kilavuz/
 import { createRequire } from "node:module";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -16,14 +22,26 @@ const R = path.resolve(HERE, "..", "..");
 const S = path.join(HERE, "ornek");
 const { chromium } = createRequire(`${R}/`)("playwright");
 const { createApp } = await import(`${R}/server/app.mjs`);
-const { installPageClock } = await import(`${R}/test/helpers.mjs`);
-const OUT = process.argv[2] || `${R}/docs/kilavuz/ekran`;
-const ONLY = process.argv[3] ? new Set(process.argv[3].split(",")) : null;
-mkdirSync(OUT, { recursive: true });
+const { installPageClock, moveClock } = await import(`${R}/test/helpers.mjs`);
+const { escClose } = await import(`${R}/test/e2e/esc-kapat.mjs`);
+const { denetle, yazdir } = await import(`${R}/docs/kilavuz/metin-denetle.mjs`);
+const DENETIM = process.argv[2] === "--denetim";
+const STARTED = new Date().toISOString();
 const root = mkdtempSync(path.join(tmpdir(), "kilavuz-banka-"));
+const OUT = DENETIM ? path.join(root, "ekran") : process.argv[2] || `${R}/docs/kilavuz/ekran`;
+const ONLY = !DENETIM && process.argv[3] ? new Set(process.argv[3].split(",")) : null;
+mkdirSync(OUT, { recursive: true });
+// Ders 34: yanıtlanan her "Kaydedilmemiş Değişiklik" sorusu escClose'un günlüğüne (pencere başlığı, neden, dokunulmuş alanlar) yazılır.
+if (DENETIM && !process.env.ESC_KAPAT_GUNLUK) process.env.ESC_KAPAT_GUNLUK = path.join(root, "esc-kapat.jsonl");
+// Beklentiler kılavuz metninden (kâhin = kılavuz, ürün çıktısı değil — ders 5, 40): bölüm 8 madde başlarının <i> / <b> adları.
+const KILAVUZ = readFileSync(path.join(HERE, "DestekOfis-Kullanim-Kilavuzu.html"), "utf8");
+const plain = value => value.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+const kilavuzItem = prefix => [...KILAVUZ.matchAll(/<li>([\s\S]*?)<\/li>/g)].map(match => match[1]).find(item => plain(item).startsWith(prefix)) || "";
+const tagged = (item, tag) => [...item.matchAll(new RegExp(`<${tag}>(.*?)</${tag}>`, "g"))].map(match => plain(match[1]));
 const PASS = "Kilavuz-Admin-2026";
 const NOW = "2026-10-08T12:00:00+03:00";
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "b"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "7f3a91c24be05d6e8a1b2c3d4e5f6072" } });
+// HUKUK_LICENSE_URL ölü adres: program gerçek lisans servisine ulaşmaz (ders 30).
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "b"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "7f3a91c24be05d6e8a1b2c3d4e5f6072" } });
 const { port } = await app.listen(0, "127.0.0.1");
 const base = `http://127.0.0.1:${port}`;
 // LANG: tarih kutuları Türkçe biçimde (gg.aa.yyyy) görünsün.
@@ -35,6 +53,8 @@ await installPageClock(page, app.config.now);
 const errors = [];
 const failed = [];
 const checks = [];
+// Koşu sırasında görülen ürün bulguları (denetimi düşürmez; sonda "BULGU" satırı olarak yazılır, ana oturum karar verir).
+const findings = [];
 page.on("pageerror", e => errors.push(e.message));
 
 /** Geçerli Türkiye IBAN'ı (mod 97); örnek hesap numaraları uydurmadır. */
@@ -47,7 +67,9 @@ function trIban(bankCode, account) {
 const ZIRAAT_IBAN = trIban(10, 1234567);
 const GARANTI_IBAN = trIban(62, 7654321);
 const modal = ".hof-modal-backdrop.is-visible";
-const top = `${modal}:last-of-type`;
+// Ders 39: en üstteki pencere konuma (:last-of-type) bağlanmaz; pencereden sonra body'ye eklenen bir div (bildirim kabı) onu boşa düşürür.
+const top = `${modal}:nth-last-child(1 of ${modal})`;
+const inv = `${modal} .hof-invoices-modal`;
 const bankWin = ".hof-bank-modal";
 const wiz = ".hof-bank-wiz-modal";
 const want = name => !ONLY || ONLY.has(name);
@@ -60,8 +82,22 @@ const pad = (r, p = 4) => ({ x: Math.max(0, r.x - p), y: Math.max(0, r.y - p), w
 const api = (url, body, method = body ? "POST" : "GET") => page.evaluate(async ([url, body, method]) => { const r = await fetch(url, { method, headers: { "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined }); return { status: r.status, ...(await r.json().catch(() => ({}))) }; }, [url, body, method]);
 const data = r => (r && typeof r.data === "object" && r.data ? r.data : r);
 const textOf = selector => page.$eval(selector, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
-const closeTop = async () => { await page.keyboard.press("Escape"); await page.waitForTimeout(350); };
-const closeAll = async () => { for (let i = 0; i < 5 && await page.$(modal); i += 1) await closeTop(); };
+// Pencere kapatma (Esc): soru çıkarsa escClose "Kaydetmeden Kapat" der. expect: "soru-var" | "soru-yok" | "" (beklenti yok: yalnız hatadan sonra).
+const answered = [];
+const closeTop = async (stepName, expect, label = expect) => {
+  const asked = await escClose(page, { expect, step: stepName });
+  if (asked) answered.push(`${stepName} (beklenti ${label || "yok"})`);
+  await page.waitForTimeout(350);
+  return asked;
+};
+/** Açık pencerelerin hepsini kapatır; expect bütün kapatma dizisi için: soru-var → en az bir soru, soru-yok → hiç soru. */
+const closeAll = async (stepName, expect) => {
+  let asked = 0;
+  for (let i = 0; i < 6 && await page.$(modal); i += 1) if (await closeTop(stepName, "", expect ? `${expect}, kapatma dizisi` : "")) asked += 1;
+  if (await page.$(modal)) throw new Error(`closeAll: pencere kapanmadı (${stepName})`);
+  if (expect === "soru-yok" && asked) throw new Error(`closeAll: "Kaydedilmemiş Değişiklik" sorusu çıkmamalıydı (${stepName})`);
+  if (expect === "soru-var" && !asked) throw new Error(`closeAll: "Kaydedilmemiş Değişiklik" sorusu çıkmalıydı (${stepName})`);
+};
 // Ekranın görünen metni + açılır liste seçenekleri + düğmelerin title'ı (pasif düğme nedeni) — kılavuzdaki adlar bunlarla karşılaştırılır.
 const texts = {};
 const grab = async (name, selector = top) => {
@@ -69,7 +105,7 @@ const grab = async (name, selector = top) => {
   texts[name] = (texts[name] ? `${texts[name]}\n` : "") + value;
 };
 const check = (cond, what) => { checks.push(`${cond ? "✓" : "✗"} ${what}`); if (!cond) failed.push(`denetim: ${what}`); };
-const step = async (name, fn) => { try { await fn(); } catch (error) { failed.push(`${name}: ${error.message.split("\n")[0]}`); console.log("✗", name, error.message.split("\n")[0]); await page.screenshot({ path: path.join(tmpdir(), `kilavuz-banka-hata-${name}.png`) }).catch(() => {}); await closeAll().catch(() => {}); } };
+const step = async (name, fn) => { try { await fn(); } catch (error) { failed.push(`${name}: ${error.message.split("\n")[0]}`); console.log("✗", name, error.message.split("\n")[0]); await page.screenshot({ path: path.join(DENETIM ? OUT : tmpdir(), `kilavuz-banka-hata-${name}.png`) }).catch(() => {}); await closeAll(name, "").catch(() => {}); } };
 const openBank = async () => {
   await page.click('#hof-sidecard [data-action="bank"]');
   await page.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 15000 });
@@ -191,7 +227,7 @@ await step("eski-hareketler", async () => {
   check(text.includes("Tarihi Gelince Atanabilir") && text.includes("Seçilenleri Bu Hesaba Ata"), "Hesabı Atanmamış: Tarihi Gelince Atanabilir + Seçilenleri Bu Hesaba Ata");
   await grab("hesabi-atanmamis", bankWin);
   await shot("k37-banka-hesabi-atanmamis", { clip: pad(await topBox()) });
-  await closeAll();
+  await closeAll("eski-hareketler", "soru-yok");
 });
 
 // 4) Banka Masrafı (BSMV Dahil) ekrandan.
@@ -212,7 +248,7 @@ await step("masraf", async () => {
   await page.waitForSelector('form.hof-bank-voucher [name="amount"]', { timeout: 8000 });
   await page.waitForTimeout(300);
   await grab("faiz");
-  await closeTop();
+  await closeTop("masraf", "soru-yok");
 });
 
 // 5) Bankalar Arası Transfer (ücretli) ekrandan; sonra İşlem Kartı.
@@ -243,7 +279,7 @@ await step("transfer", async () => {
   await grab("islem-karti", bankWin);
   await tab("movements");
   await grab("hareketler", bankWin);
-  await closeAll();
+  await closeAll("transfer", "soru-yok");
 });
 
 // 6) Cari kartından havale tahsilatı: Havale / EFT seçilince Banka Hesabı alanı (iki hesap: seçim zorunlu).
@@ -270,7 +306,7 @@ await step("cari-tahsilat", async () => {
   await page.click(`${form} button[type="submit"]`);
   await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible input[name="amount"]'), null, { timeout: 10000 });
   await page.waitForTimeout(600);
-  await closeAll();
+  await closeAll("cari-tahsilat", "soru-yok");
 });
 
 // 7) Kasa: Kasadan Bankaya Yatır (Garanti) ekrandan; Kasa penceresi (yalnız nakit).
@@ -308,7 +344,17 @@ await step("kasa", async () => {
   await grab("eksi-bakiye");
   await page.click(`${top} [data-answer="no"]`);
   await page.waitForTimeout(600);
-  await closeAll();
+  // Vazgeç'ten sonra elle doldurulmuş "Bankadan Kasaya Aktar" formu açık kalır (kaydedilmedi): Esc → soru MEŞRU (2.4.3; B4-2 K1).
+  check(Boolean(await page.$(`${top} .hof-form select[name="bankAccountId"]`)), "Vazgeç'ten sonra Bankadan Kasaya Aktar formu açık (yazılmadı)");
+  await closeTop("kasa-eksi-bakiye-vazgec", "soru-var");
+  // 2.4.3: Kasa → Vergi Ödemesi formu (Gecikme Zammı / Faizi); kaydedilmez, temiz form sorusuz kapanır.
+  await page.click(`${modal} [data-tax]`);
+  await page.waitForSelector(`${top} .hof-form [name="lateAmount"]`, { timeout: 8000 });
+  await page.waitForTimeout(300);
+  await grab("vergi-odemesi");
+  check((await textOf(top)).includes("Gecikme Zammı / Faizi"), "Kasa → Vergi Ödemesi: Gecikme Zammı / Faizi alanı");
+  await closeTop("vergi-odemesi", "soru-yok");
+  await closeAll("kasa", "soru-yok");
 });
 
 // 7b) Kredi Kartı (v2.2.0): Yeni Hesap türlerinde kart yok; kart banka hesabının İÇİNDEN eklenir (Düzenle → Kredi Kartı Kullan → + Kredi Kartı
@@ -322,7 +368,7 @@ await step("dogrulanmadi", async () => {
   await tab("accounts");
   await grab("hesaplar-dogrulanmadi", bankWin);
   check((await textOf(bankWin)).includes("Açılış Bakiyesi Doğrulanmadı"), "Hesaplar: Açılış Bakiyesi Doğrulanmadı");
-  await closeAll();
+  await closeAll("dogrulanmadi", "soru-yok");
   const removed = await api(`/api/workspace/bank/accounts/${extra.id}`, null, "DELETE");
   check(removed.status === 200, `geçici hesap silindi (${removed.status})`);
 });
@@ -337,7 +383,8 @@ await step("kart", async () => {
   await page.selectOption(`${top} .hof-form select[name="method"]`, "card");
   await page.waitForSelector(`${top} .hof-form [data-bank-define="card"]`, { timeout: 8000 });
   await grab("kart-tanimla");
-  await closeAll();
+  // soru-yok: formda yalnız Ödeme Yolu betikle seçildi (page.selectOption olayı isTrusted değil → hof-core "dokunulmuş" saymaz); tutar girilmedi.
+  await closeAll("kart-tanimla", "soru-yok");
   await openBank();
   await tab("accounts");
   await grab("hesaplar", bankWin);
@@ -347,7 +394,7 @@ await step("kart", async () => {
   const kinds = await page.$$eval(`${form} select[name="kind"] option`, nodes => nodes.map(node => node.textContent.trim()));
   check(kinds.join("|") === "Vadesiz|Ticari|Vadeli|Kredi Hesabı|Diğer", `Hesap Türü seçenekleri (kart yok): ${kinds.join(", ")}`);
   await grab("yeni-hesap-vadesiz");
-  await closeAll();
+  await closeAll("yeni-hesap-vadesiz", "soru-yok");
   // Garanti → Düzenle → Kredi Kartı Kullan → + Kredi Kartı Ekle.
   await openBank();
   await tab("accounts");
@@ -379,7 +426,7 @@ await step("kart", async () => {
   await page.click(`${card} button[type="submit"]`);
   await page.waitForSelector(card, { state: "detached", timeout: 10000 });
   await page.waitForTimeout(700);
-  await closeAll();
+  await closeAll("kart-ekle", "soru-yok");
   KART = (await accountsNow()).find(account => account.kind === "card");
   check(Boolean(KART) && KART.parentId === GARANTI.id && KART.cardLast4 === "4821", "kredi kartı Garanti'nin altında açıldı (son 4 hane 4821)");
   // Cari − Ödeme → Kredi Kartı → Kredi Kartı alanı (tek kartta kendiliğinden).
@@ -409,7 +456,7 @@ await step("kart", async () => {
   await page.click(`${f} button[type="submit"]`);
   await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible input[name="amount"]'), null, { timeout: 10000 });
   await page.waitForTimeout(600);
-  await closeAll();
+  await closeAll("cari-odeme-kart", "soru-yok");
   // Kart limitini aşan ödeme: Eksi Bakiye sorusu (limit dahil kullanılabilir tutar yazılır); Vazgeç → yazılmaz.
   f = await pay("50.000");
   await page.click(`${f} button[type="submit"]`);
@@ -420,7 +467,7 @@ await step("kart", async () => {
   await grab("kart-limit");
   await page.click(`${top} [data-answer="no"]`);
   await page.waitForTimeout(600);
-  await closeAll();
+  await closeAll("kart-limit", "soru-var");
   const after = (await accountsNow()).find(account => account.id === KART.id);
   check(after.balanceMinor === -250_000, `kart borcu 2.500 (limit aşan ödeme yazılmadı): ${after.balanceMinor / 100}`);
   // Stok alımı (+ Giriş): "Kredi Kartı" → Kurumsal Kart; "Havale / EFT" → Banka Hesabı (iki hesap: seçim). Kaydedilmez (yalnız ekran adları).
@@ -437,7 +484,8 @@ await step("kart", async () => {
   await page.selectOption(`${sf} select[name="pay"]`, "bank");
   await page.waitForSelector(`${sf} [data-bank-pick]:not([data-bank-pick="card"]):not([hidden]) select[name="bankAccountId"]`, { timeout: 8000 });
   await grab("stok-giris");
-  await closeAll();
+  // soru-yok: yalnız Ödeme yolu betikle seçildi (selectOption, isTrusted değil); miktar / tutar girilmedi.
+  await closeAll("stok-giris", "soru-yok");
   // Hesap Detayı → + Kart Borcu Ödemesi (Ziraat'ten 1.000).
   await openBank();
   await tab("accounts");
@@ -450,7 +498,7 @@ await step("kart", async () => {
   await fillVoucher({ accountId: ZIRAAT.id, amount: "1.000", description: "Kart borcu ödemesi" });
   await grab("kart-borcu-odemesi");
   await saveVoucher();
-  await closeAll();
+  await closeAll("kart-borcu-odemesi", "soru-yok");
   const paid = (await accountsNow()).find(account => account.id === KART.id);
   check(paid.balanceMinor === -150_000, `kart borcu 1.500 kaldı: ${paid.balanceMinor / 100}`);
 });
@@ -473,7 +521,7 @@ await step("kredi", async () => {
   await fillVoucher({ accountId: GARANTI.id, amount: "50.000", description: "İşletme kredisi kullanımı" });
   await grab("kredi-islemi");
   await saveVoucher();
-  await closeAll();
+  await closeAll("kredi", "soru-yok");
   const now = await accountsNow();
   check(now.find(account => account.id === loanId)?.balanceMinor === -5_000_000, `kredi borcu 50.000: ${now.find(account => account.id === loanId)?.balanceMinor / 100}`);
 });
@@ -499,7 +547,7 @@ await step("genel-bakis", async () => {
   await tab("settings");
   await page.waitForSelector(`${bankWin} .hof-bank-set`, { timeout: 8000 });
   await grab("ayarlar", bankWin);
-  await closeAll();
+  await closeAll("genel-bakis", "soru-yok");
 });
 
 // 9) ANLIK DURUM (Nakit Kasa ve Gerçek Banka ayrı kutularda).
@@ -524,7 +572,21 @@ await step("rapor", async () => {
   await page.click(`${modal} .hof-rep-tab[data-tab="all"]`);
   await page.waitForSelector(`${modal} [data-rc-list] [data-report="banka-bakiye"]`, { timeout: 15000 });
   const items = await page.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
-  check(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı", `Banka raporları: ${items.join(", ")}`);
+  // Beklenen KILAVUZDAN (8. bölüm "Raporlar → Tüm Raporlar → Banka:" maddesinin <i> adları; "Günlük" ve "Aylık Banka Raporu" gibi ortak ekli adlar
+  // parça olarak yazılır → her kılavuz adı Banka grubundaki bir rapor adının içinde geçmeli). Grupta olup kılavuzda geçmeyen rapor BİLGİ satırıdır.
+  const guideReports = tagged(kilavuzItem("Raporlar → Tüm Raporlar → Banka:"), "i");
+  check(guideReports.length >= 10, `kılavuzda Banka rapor adları okundu (${guideReports.length})`);
+  const absent = guideReports.filter(name => !items.some(item => item.includes(name)));
+  check(items.length > 0 && absent.length === 0, `kılavuzdaki her Banka rapor adı Banka grubunda (${guideReports.length} ad, ekranda ${items.length} rapor)${absent.length ? ` — ekranda YOK: ${absent.join(", ")}` : ""}`);
+  const unlisted = items.filter(item => !guideReports.some(name => item.includes(name)));
+  console.log(`bilgi: Banka grubunda olup kılavuzda geçmeyen rapor: ${unlisted.length ? unlisted.join(", ") : "yok"}`);
+  // Rapor grubu sırası kılavuzdaki "Cari · Kasa · …" listesiyle aynı.
+  const order = tagged(kilavuzItem("Raporlar → Tüm Raporlar → Banka:"), "b").find(text => text.includes(" · "))?.split(" · ").map(text => text.trim()) || [];
+  const groups = await page.$$eval(`${modal} .hof-rc-group`, nodes => nodes.map(node => node.querySelector("p")?.textContent.trim() || ""));
+  const at = order.map(name => groups.findIndex(label => label.endsWith(name)));
+  // Grup adları ekranda büyük harfle (CSS) gösterilebilir; innerText onu büyütür → adlar DOM metniyle (textContent) ayrıca kaydedilir.
+  texts["rapor-gruplari"] = groups.join("\n");
+  check(order.length >= 5 && at.every((index, i) => index >= 0 && (i === 0 || index > at[i - 1])), `rapor grubu sırası kılavuzdaki gibi (${order.join(" · ")}); ekranda: ${groups.join(" · ")}`);
   await page.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
   await page.waitForSelector(`${modal} [data-rc-main] .hof-rc-summary`, { timeout: 15000 });
   await page.waitForTimeout(1500);
@@ -546,7 +608,7 @@ await step("rapor", async () => {
     await grab("nakit-akis", modal);
     check((await textOf(modal)).includes("Bugünkü Nakit ve Banka"), "Nakit Akış: Bugünkü Nakit ve Banka");
   } else check(false, "Nakit Akış sekmesi bulunamadı");
-  await closeAll();
+  await closeAll("rapor", "soru-yok");
   await page.setViewportSize({ width: 1360, height: 900 });
 });
 
@@ -574,7 +636,7 @@ await step("planli-ikinci-kart", async () => {
   await page.waitForTimeout(500);
   await grab("planli-liste", bankWin);
   check((await textOf(bankWin)).includes("Gerçekleştir"), "Planlı İşlemler'de Gerçekleştir");
-  await closeAll();
+  await closeAll("planli-liste", "soru-yok");
   // İkinci kart, 2.1.0'dan kalma gibi bankaya bağsız (API): Hesaplar'da altında "Öneri: Ziraat Bankası …" ve "Bağla".
   const second = await api("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Şirket Kartı 2", kind: "card", creditLimit: "10.000", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
   check(second.status === 200, `ikinci kredi kartı (${second.status})`);
@@ -582,7 +644,7 @@ await step("planli-ikinci-kart", async () => {
   await tab("accounts");
   await grab("hesaplar-kart-onerisi", bankWin);
   check((await textOf(bankWin)).includes("Öneri") && (await textOf(bankWin)).includes("Bağla"), "Hesaplar: bağsız kartta Öneri ve Bağla");
-  await closeAll();
+  await closeAll("hesaplar-kart-onerisi", "soru-yok");
   await page.click('#hof-sidecard [data-action="accounts"]');
   await page.waitForSelector(`.hof-accounts-modal tr[data-account="${akaryakit.id}"]`, { timeout: 10000 });
   await page.click(`.hof-accounts-modal tr[data-account="${akaryakit.id}"]`);
@@ -594,7 +656,122 @@ await step("planli-ikinci-kart", async () => {
   await page.waitForSelector(`${f} [data-bank-pick="card"]:not([hidden]) select[name="cardAccountId"]`, { timeout: 8000 });
   await grab("cari-odeme-iki-kart");
   check((await textOf(`${f} [data-bank-pick="card"]`)).includes("Kredi Kartı"), "iki kartta Kredi Kartı seçimi");
-  await closeAll();
+  // soru-yok: yalnız Ödeme Yolu betikle seçildi (selectOption, isTrusted değil); tutar girilmedi.
+  await closeAll("cari-odeme-iki-kart", "soru-yok");
+});
+
+// 10c) POS ile Tahsilat (2.2.0; kılavuz 8. bölüm "POS ile Tahsilat"): Ziraat → Düzenle → POS Kullan → + POS Ekle (ekrandan); cari tahsilatında yol POS
+// (POS Taksit Sayısı) → Banka → POS → POS Ödeme Takvimi (Şimdi Aktar) ve POS İşlemleri → İptal Et (aynı gün); satış faturasında "+ POS", satıştan iade
+// faturasında "+ POS İadesi" (iade kaydedilmez). Akış test/e2e/senaryo-pos-220.mjs'ten uyarlandı; ekran görüntüsü çekilmez (yalnız metin).
+await step("pos", async () => {
+  // Saat 21.10.2026: adım 2'deki 20.10 tarihli havale, program AÇIKKEN saat oynatılarak yazıldı; kapı onu açılış tabanında görmediği için "yeni"
+  // ileri tarihli hareket sayar ve tam kapıdan geçen yazmaları (POS Ekle) 409 ile geri alır (gerçek eski sürüm verisinde satır açılışta vardır →
+  // taban). Tarih geçince satır ileri tarihli değildir; POS adımları bu günde yapılır (yalnız ekran metni okunur).
+  await moveClock(app.config.now, page, "2026-10-21T12:00:00+03:00");
+  await page.goto(`${base}/`);
+  await page.waitForSelector("#hof-sidecard", { timeout: 20000 });
+  check((await page.evaluate(() => window.HOF.localToday())) === "2026-10-21", "POS adımı: sunucu ve tarayıcı 21.10.2026");
+  await openBank();
+  await tab("accounts");
+  await page.click(`${bankWin} .hof-bank-accounts tbody tr[data-account="${ZIRAAT.id}"]`);
+  await page.waitForSelector(`${bankWin} [data-act="edit"]`, { timeout: 8000 });
+  await page.click(`${bankWin} [data-act="edit"]`);
+  await page.waitForSelector(`${top} .hof-form input[name="usePos"]`, { timeout: 8000 });
+  await page.check(`${top} .hof-form input[name="usePos"]`);
+  await page.click(`${top} .hof-form button[type="submit"]`);
+  await page.waitForSelector(`${bankWin} [data-bank-pos="${ZIRAAT.id}"] [data-pos-act="add"]`, { timeout: 10000 });
+  await page.waitForTimeout(400);
+  await grab("hesap-pos", bankWin);
+  await page.click(`${bankWin} [data-bank-pos="${ZIRAAT.id}"] [data-pos-act="add"]`);
+  const form = `${top} .hof-form`;
+  await page.waitForSelector(`${form} input[name="name"]`, { timeout: 8000 });
+  await page.waitForTimeout(300);
+  await grab("pos-ekle");
+  await page.fill(`${form} input[name="name"]`, "Ziraat Fiziki POS");
+  await page.fill(`${form} input[name="valorDays"]`, "1");
+  await page.fill(`${top} [data-rate-row]:nth-child(1) [data-rate="rate"]`, "2,5");
+  await page.click(`${form} button[type="submit"]`);
+  await page.waitForSelector(`${form} input[name="valorDays"]`, { state: "detached", timeout: 10000 }).catch(async () => { throw new Error(`POS Ekle kaydedilmedi: ${await textOf(`${top} .hof-form-error`) || await textOf(top)}`.slice(0, 300)); });
+  await page.waitForTimeout(800);
+  const posList = data(await api("/api/workspace/bank/pos")).pos || [];
+  check(posList.length === 1 && posList[0].bankAccountId === ZIRAAT.id, `POS Ziraat'e bağlı açıldı (${posList.length})`);
+  await closeAll("pos-ekle", "soru-yok");
+  // Cari tahsilatında yol POS: POS Taksit Sayısı; kaydedilir (sonra İptal Et ile geri alınır).
+  await page.click('#hof-sidecard [data-action="accounts"]');
+  await page.waitForSelector(`.hof-accounts-modal tr[data-account="${koleji.id}"]`, { timeout: 10000 });
+  await page.click(`.hof-accounts-modal tr[data-account="${koleji.id}"]`);
+  await page.waitForSelector('.hof-accounts-modal [data-entry="in"]', { timeout: 10000 });
+  await page.click('.hof-accounts-modal [data-entry="in"]');
+  const f = `${top} .hof-form`;
+  await page.waitForSelector(`${f} input[name="amount"]`, { timeout: 8000 });
+  await page.fill(`${f} input[name="amount"]`, "500");
+  await page.selectOption(`${f} select[name="method"]`, "card");
+  await page.waitForSelector(`${f} [data-pos-pick]:not([hidden]) select[name="posInstallments"]`, { timeout: 8000 });
+  await page.waitForTimeout(600);
+  await grab("cari-tahsilat-pos");
+  // BULGU (2.4.9 B4, ürün; düzeltilmedi — ana oturuma): şirkette kredi kartı varken MÜŞTERİ carisinin tahsilatında yol POS seçilince formda zorunlu
+  // "Kredi Kartı" seçimi de çıkıyor (hof-bank.js syncPickers: "Kredi Kartına İade" kutusu müşteride yok → kart seçicisi açık kalıyor); iki kartta
+  // "Kart Seçin" boş → kayıt "Kredi Kartı alanı boş bırakılamaz" ile reddedilir. Bu durumda tahsilat API'den girilir (İptal Et için bir POS işlemi
+  // gerekir) ve BULGU sonda yazılır; düzelince ekran yolu kendiliğinden koşar.
+  const cardPick = await page.$(`${f} [data-bank-pick="card"]:not([hidden]) select[name="cardAccountId"]`);
+  if (cardPick) {
+    findings.push(`cari (müşteri) tahsilatında yol POS: formda zorunlu "Kredi Kartı" seçimi çıkıyor (${(await textOf(`${f} [data-bank-pick="card"]`)).slice(0, 120)})`);
+    await closeAll("cari-tahsilat-pos-bulgu", "soru-var");
+    const posted = await api(`/api/workspace/accounts/${koleji.id}/entries`, { kind: "in", amount: "500", method: "card", posId: posList[0]?.id, posInstallments: 1, date: "2026-10-21", note: "POS tahsilatı (API)" });
+    check(posted.status === 200, `cari POS tahsilatı (API) ${posted.status} ${posted.error || posted.message || ""}`);
+  } else {
+    await page.click(`${f} button[type="submit"]`);
+    await page.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible input[name="amount"]'), null, { timeout: 10000 }).catch(async () => { throw new Error(`POS tahsilatı kaydedilmedi: ${await textOf(`${top} .hof-form-error`) || (await textOf(top)).slice(-200)}`.slice(0, 300)); });
+    await page.waitForTimeout(600);
+    await closeAll("cari-tahsilat-pos", "soru-yok");
+  }
+  const sale = (data(await api("/api/workspace/bank/pos/sales?kind=sale")).sales || []).find(item => item.party?.id === koleji.id && item.status === "active");
+  check(Boolean(sale), "cari POS tahsilatı POS işlemi olarak yazıldı");
+  // Banka → POS: POS Ödeme Takvimi (Şimdi Aktar) ve POS İşlemleri (İptal Et).
+  await openBank();
+  await tab("pos");
+  await grab("pos-sekme", bankWin);
+  await page.click(`${bankWin} [data-pos-sub="calendar"]`);
+  await page.waitForTimeout(900);
+  await grab("pos-takvim", bankWin);
+  check(Boolean(await page.$(`${bankWin} [data-pos-act="settle"]`)), "POS Ödeme Takvimi'nde Şimdi Aktar");
+  await page.click(`${bankWin} [data-pos-sub="sales"]`);
+  await page.waitForTimeout(900);
+  await grab("pos-islemleri", bankWin);
+  if (sale) {
+    const row = `${bankWin} tr[data-pos-sale="${sale.id}"]`;
+    await page.waitForSelector(`${row} [data-pos-act="void"]:not([disabled])`, { timeout: 8000 });
+    await page.click(`${row} [data-pos-act="void"]`);
+    await page.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+    await grab("pos-iptal-sorusu");
+    await page.click(`${top} [data-answer="yes"]`);
+    await page.waitForTimeout(1500);
+    const after = (data(await api("/api/workspace/bank/pos/sales?kind=sale&status=")).sales || []).find(item => item.id === sale.id);
+    check(after?.status === "void", `POS İşlemleri → İptal Et: durum ${after?.status}`);
+  }
+  await closeAll("pos-islemleri", "soru-yok");
+  // Satış faturası: "+ POS"; satıştan iade: "+ POS İadesi". Asıl satış API'den (açık hesap); formlar kaydedilmez, elle dokunulmadığı için sorusuz kapanır.
+  const item = data(await api("/api/workspace/stock", { kind: "goods", code: "SRV-1", name: "Servis Kartı", unit: "Adet", openingQty: "20", openingDate: "2026-10-01" }));
+  const saleInvoice = data(await api("/api/workspace/invoices", { kind: "sale", accountId: koleji.id, issueDate: "2026-10-08", pricesIncludeVat: true, lines: [{ itemId: item.id || item.item?.id, name: "Servis Kartı", qty: 2, unitPrice: 1000, discountRate: 0, vatRate: 20 }], payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true }));
+  const invoiceId = saleInvoice?.id || saleInvoice?.invoice?.id;
+  check(Boolean(invoiceId), `asıl satış faturası (API) ${JSON.stringify(saleInvoice).slice(0, 100)}`);
+  await page.click("#hof-sidecard [data-action=invoices]");
+  await page.waitForSelector(`${inv} [data-act="new"]`, { timeout: 15000 });
+  await page.click(`${inv} [data-act="new"]`);
+  await page.click(`${inv} [data-scenario="goods_sale"]`);
+  await page.waitForSelector(`${inv} [data-lines]`, { timeout: 10000 });
+  await page.waitForTimeout(600);
+  await grab("fatura-satis", inv);
+  check(Boolean(await page.$(`${inv} [data-act="pay-add-cash"][data-method="card"]`)) && (await textOf(`${inv} [data-act="pay-add-cash"][data-method="card"]`)) === "+ POS", "Satış faturasında + POS");
+  await closeAll("fatura-satis", "soru-yok");
+  await page.evaluate(id => window.HOF.invoices.openDoc(id), invoiceId);
+  await page.waitForSelector(`${inv} [data-act="return"]`, { timeout: 10000 });
+  await page.click(`${inv} [data-act="return"]`);
+  await page.waitForSelector(`${inv} [data-l="0"][data-f="qty"]`, { timeout: 10000 });
+  await page.waitForTimeout(800);
+  await grab("fatura-iade", inv);
+  check((await textOf(`${inv} [data-act="pay-add-cash"][data-method="card"]`)) === "+ POS İadesi", "Satıştan iade faturasında + POS İadesi");
+  await closeAll("fatura-iade", "soru-yok");
 });
 
 // 11) Yönetim → Kullanıcılar → Yetkiler: Banka yetkileri (personel rolündeki örnek kullanıcı); Sistem → Eksi Bakiye Denetimi (Nakit Kasa).
@@ -615,7 +792,13 @@ await step("yetkiler", async () => {
   await grab("yonetim-kullanicilar", "#adm-users");
   const legend = (await group.locator("legend span").textContent()).trim();
   const items = await group.locator(".adm-perm-text b").allTextContents();
-  check(items.length === 7 && !items.some(item => /POS|Ekstre|Mutabakat|Komisyon/.test(item)), `Banka yetkileri (${legend}): ${items.join(", ")}`);
+  // Beklenen KILAVUZDAN (8. bölüm "Kimler kullanır:" maddesindeki <i> yetki adları): ekrandaki grup = kılavuzdaki liste (sırasız, eksiksiz, fazlasız).
+  const guidePerms = tagged(kilavuzItem("Kimler kullanır:"), "i");
+  const shown = items.map(item => item.trim());
+  const missingPerms = guidePerms.filter(name => !shown.includes(name));
+  const extraPerms = shown.filter(name => !guidePerms.includes(name));
+  check(guidePerms.length >= 5 && missingPerms.length === 0 && extraPerms.length === 0, `Banka yetkileri (${legend}) = kılavuzdaki ${guidePerms.length} ad: ${shown.join(", ")}${missingPerms.length ? ` — ekranda YOK: ${missingPerms.join(", ")}` : ""}${extraPerms.length ? ` — kılavuzda YOK: ${extraPerms.join(", ")}` : ""}`);
+  check(legend.endsWith(kilavuzItem("Kimler kullanır:").match(/Yetkiler → ([^<]+)<\/b>/)?.[1]?.trim() || "?"), `yetki grubu adı kılavuzdaki gibi (${legend})`);
   await group.scrollIntoViewIfNeeded();
   if (want("k40-banka-yetkiler")) { await group.screenshot({ path: `${OUT}/k40-banka-yetkiler.jpg`, type: "jpeg", quality: 84 }); shots += 1; console.log("✓ k40-banka-yetkiler"); }
   await page.click('.adm-tabs [data-tab="system"]').catch(() => {});
@@ -627,9 +810,30 @@ if (process.env.EKRAN_METIN) { writeFileSync(process.env.EKRAN_METIN, JSON.strin
 for (const line of checks) console.log(line);
 console.log("sayfa hataları:", errors.length ? errors.join(" | ") : "yok");
 console.log("başarısız adımlar:", failed.length ? failed.join(" | ") : "yok");
-// Özet (tools/kanit.mjs tanır): denetimler + çekilen ekranlar; başarısız adım ve sayfa hatası başarısız sayılır.
-console.log(`${checks.filter(line => line.startsWith("✓")).length + shots} denetim geçti, ${failed.length + errors.length} başarısız`);
+for (const item of findings) console.log(`BULGU (ürün): ${item}`);
+// Ders 34: yanıtlanan her "Kaydedilmemiş Değişiklik" sorusu (adım + beklenti; neden ve dokunulmuş alanlar escClose günlüğünden).
+console.log(`yanıtlanan sorular ("Kaydetmeden Kapat"): ${answered.length}`);
+const escLog = (() => { try { return readFileSync(process.env.ESC_KAPAT_GUNLUK || "", "utf8").split(/\r?\n/).filter(Boolean).map(line => JSON.parse(line)).filter(item => item.senaryo === "ekran-banka.mjs" && item.at >= STARTED); } catch { return []; } })();
+for (const [i, line] of answered.entries()) {
+  const info = escLog[i]?.adim && line.startsWith(escLog[i].adim) ? escLog[i] : null;
+  console.log(`  ? ${line}${info ? ` — pencere "${info.title}", neden ${info.neden}, dokunulmuş: ${(info.touched || []).map(field => `${field.name}=${field.value}`).join(", ") || "-"}` : ""}`);
+}
+const ekranGecen = checks.filter(line => line.startsWith("✓")).length + shots;
+const ekranBasarisiz = failed.length + errors.length;
 await browser.close();
 await app.close();
+if (DENETIM) {
+  // Kılavuz ad denetimi aynı metinlerle (metin-denetle.mjs); özet satırı ikisinin toplamı (tools/kanit.mjs node:test biçimini okur).
+  const result = denetle(texts);
+  yazdir(result, { ozet: false });
+  console.log(`ekran-banka: ${ekranGecen} denetim geçti, ${ekranBasarisiz} başarısız · metin-denetle: ${result.checked.length}/${result.checked.length + result.missing.length} ad ekranda`);
+  console.log(`# tests ${ekranGecen + ekranBasarisiz + result.checked.length + result.missing.length}`);
+  console.log(`# pass ${ekranGecen + result.checked.length}`);
+  console.log(`# fail ${ekranBasarisiz + result.missing.length}`);
+  if (result.missing.length) process.exitCode = 1;
+} else {
+  // Özet (tools/kanit.mjs tanır): denetimler + çekilen ekranlar; başarısız adım ve sayfa hatası başarısız sayılır.
+  console.log(`${ekranGecen} denetim geçti, ${ekranBasarisiz} başarısız`);
+}
 rmSync(root, { recursive: true, force: true });
 if (failed.length || errors.length) process.exitCode = 1;
