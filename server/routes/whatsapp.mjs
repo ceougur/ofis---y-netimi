@@ -23,7 +23,8 @@
 // 2.4.8 W2 (plan §6 W2; lib/whatsapp/queue.mjs): gönderim çekirdeği — toplu gönderim (Ekstre + PDF / Ödeme Hatırlatma), yetki whatsapp.send.
 //   GET  /api/workspace/whatsapp/ack                         bir kez onay ("Aydınlatma metnimi okudum, carilerime ulaştıracağım.") — whatsapp.send
 //   PUT  /api/workspace/whatsapp/ack                         { ack: true | false } — yalnız yönetici (system.manage)
-//   GET|PUT /api/workspace/whatsapp/sending-settings         { dailyCap (elle günlük sınır, boş = Meta), ttlHours (S2 A: 72) } — system.manage
+//   GET|PUT /api/workspace/whatsapp/sending-settings         { dailyCap (elle günlük sınır, boş = Meta) } — system.manage; ttlHours → 400 (2.4.9 W-T: teslim süresi
+//                                                           Meta'nın varsayılanı 30 gün, değiştirilemez)
 //   POST /api/workspace/whatsapp/batches/preview             önizleme: kişiler, atlama nedenleri, bugünkü sınırdan kalan, yarına kalacak (Meta'ya yalnız okuma)
 //   POST /api/workspace/whatsapp/batches                     { kind: statement|reminder, ids | all + süzgeçler, preset | from + to, requestId, repeat }
 //   GET  /api/workspace/whatsapp/batches                     son toplu gönderimler; GET …/batches/:id ayrıntı + işler
@@ -255,8 +256,10 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   });
 
   // ---------- 2.4.8 W5: bilgilendirme şablonları (routes/whatsapp-sablon.mjs) ----------
-  // T2-5: şablona yazılan teslim süresi gönderim ayarından (kuyruk aşağıda kurulur; istek anında okunur).
-  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection, ttlHours: () => queue?.settings?.().ttlHours });
+  // 2.4.9 W-T: şablona teslim süresi yazılmaz (ayar yok). W-2: Şablonları Denetle bitince gönderim yolunun o WABA için şablon önbelleği temizlenir — ortak işçinin
+  // bütün kuyruklarında (aynı WABA'yı kullanan öbür şirket dahil); işçi yoksa bu şirketin kuyruğunda (kuyruk aşağıda kurulur; çağrı anında okunur).
+  const forgetTemplates = wabaId => (whatsapp?.scheduler?.forgetTemplates ? whatsapp.scheduler.forgetTemplates(wabaId) : queue?.forgetTemplates?.(wabaId));
+  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection, onChecked: forgetTemplates });
 
   // ---------- 2.4.8 W4: gönderim ekranının durumu ----------
   router.get("/api/workspace/whatsapp/sending-status", async ({ req, res }) => {

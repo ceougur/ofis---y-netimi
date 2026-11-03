@@ -12,8 +12,9 @@ import { systemClock } from "../lib/clock.mjs";
 import { buildPrivacyNotice, privacyNoticePdf } from "../lib/whatsapp/aydinlatma-metni.mjs";
 import { createWhatsappTemplates } from "../lib/whatsapp/templates.mjs";
 
-export function registerWhatsappTemplateRoutes(router, { store, auth, audit, config = {}, license = null, now = systemClock, connection, ttlHours }) {
-  const templates = createWhatsappTemplates({ store, config, audit, connection, now, ttlHours });
+export function registerWhatsappTemplateRoutes(router, { store, auth, audit, config = {}, license = null, now = systemClock, connection, onChecked = null }) {
+  // onChecked (2.4.9 W-2): Şablonları Denetle bitince gönderim yolunun şablon önbelleğini temizler (routes/whatsapp.mjs).
+  const templates = createWhatsappTemplates({ store, config, audit, connection, now, onChecked });
   const writable = () => !license || license.writable();
   router.get("/api/workspace/whatsapp/templates", async ({ req, res }) => {
     auth.requirePermission(req, "system.manage");

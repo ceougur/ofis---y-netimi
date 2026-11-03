@@ -10,9 +10,12 @@
 //   T7c 31 Aralık → 1 Ocak: 31.12 23:50 "Bu Ay" = 01.12–31.12; 01.01.2027 00:10 "Bu Ay" = 01.01.2027 – 01.01.2027, "Geçen Ay" = 01.12.2026 – 31.12.2026 (yıl geçişi);
 //       iletinin {{3}} ve PDF dönemi Aralık 2026, Ocak hareketi yok, bakiye 31.12 sonu; "Bu Ay" sayacı 0, 2026-12 sayacı korunur. Ekranda (tarayıcı saati = sunucu)
 //       iki yolun dönem metni.
-//   T7d TTL: (1) Meta TTL'yi listede bildiriyor (259200 sn = 3 gün; S2 A): kabulden 73 sa − 1 dk "Meta Kabul Etti", 73 sa + 1 dk "Süresi Doldu" + PDF Meta'dan silinir;
-//       (2) Meta TTL'yi bildirmiyor (K0 sahte Meta'nın kendi davranışı) ve (3) Meta TTL'yi reddediyor (100): 73 sa'te süresi DOLMAZ, PDF silinmez; 30 gün + 1 sa
-//       sonra (kanca yolu son 7 günde çalışıyorken) "Süresi Doldu"; (4) kanca yolu 7 günden eski: süresi hiç dolmaz ("Meta Kabul Etti"de kalır, §7a 16).
+//   T7d TTL — 2.4.9 W-T, BEKLENTİ BİLEREK GÜNCELLENDİ (KULLANICI KARARI 03.11.2026 ~18:45 UTC; docs/2.4.9-tasarim/W-whatsapp-sablon.md §15, §10): program şablona
+//       teslim süresi YAZMAZ; "Süresi Doldu" = Meta listesinin bildirdiği değer, yoksa 30 gün (+1 sa). (1) Meta TTL'yi listede bildiriyor (şablonun Meta'daki kendi
+//       değeri 43200 sn = 12 saat, ör. WhatsApp Yöneticisi'nde): kabulden 13 sa − 1 dk "Meta Kabul Etti", 13 sa + 1 dk "Süresi Doldu" + PDF Meta'dan silinir;
+//       (2) Meta TTL'yi bildirmiyor (K0 sahte Meta'nın kendi davranışı) ve (3) Meta TTL alanını reddeden hesap (100; program alanı göndermediği için şablon yine açılır,
+//       kartta uyarı YOK): 13 sa ve 73 sa'te süresi DOLMAZ, PDF silinmez; 30 gün + 1 sa sonra (kanca yolu son 7 günde çalışıyorken) "Süresi Doldu";
+//       (4) kanca yolu 7 günden eski: süresi hiç dolmaz ("Meta Kabul Etti"de kalır, §7a 16).
 //   T7e ders 22: koşu başında ve sonunda gerçek gün (Türkiye) okunur; değiştiyse sonuç GEÇERSİZ (çıkış 2).
 // Çıkış: "N geçti, M kaldı" (kaldıysa 1).
 // Gerçek kurulum Türkiye saatinde çalışır (ders 14): sunucunun "bugün"ü yerel gündür; bu koşucu UTC olsa da TZ Europe/Istanbul.
@@ -64,7 +67,9 @@ const step = async (title, fn) => {
   }
 };
 
-/** Program + sahte Meta; ttl: "listed" (Meta listede 259200 bildirir) | "silent" (bildirmez) | "rejected" (açmada TTL alanını 100 ile reddeder). */
+// 2.4.9 W-T: Meta'nın şablona kayıtlı teslim süresi (programın yazdığı değil — program yazmaz): 12 saat.
+const LISTED_TTL = 43_200;
+/** Program + sahte Meta; ttl: "listed" (Meta listede LISTED_TTL bildirir) | "silent" (bildirmez) | "rejected" (açmada TTL alanını 100 ile reddeder). */
 async function kur({ start, ttl = "silent" }) {
   const root = mkdtempSync(path.join(tmpdir(), "senaryo-tarih-248-"));
   const meta = await sahteMetaBaslat({
@@ -79,12 +84,13 @@ async function kur({ start, ttl = "silent" }) {
   });
   meta.saat(at(start));
   if (ttl === "listed") {
-    // Gerçek Meta'nın TTL'yi listede bildirdiği varsayımı (D0-W5-9): açarken gelen message_send_ttl_seconds saklanır, istenirse listede döner.
+    // Gerçek Meta'nın TTL'yi listede bildirdiği varsayımı (D0-W5-9): şablonun Meta'daki teslim süresi (LISTED_TTL; açma isteğinde alan YOK — 2.4.9 W-T) istenirse
+    // listede döner.
     const create = meta.meta.sablonOlustur.bind(meta.meta);
     meta.meta.sablonOlustur = async (req, sorgu, waba, govde) => {
       const r = await create(req, sorgu, waba, govde);
       const made = meta.meta.sablonlar.find(s => s.id === r.govde?.id);
-      if (made && Number.isInteger(govde?.message_send_ttl_seconds)) made.ttl = govde.message_send_ttl_seconds;
+      if (made) made.ttl = LISTED_TTL;
       return r;
     };
     const shape = meta.meta.sablonNesnesi.bind(meta.meta);
@@ -288,7 +294,12 @@ const ttlCase = async (label, ttl, { hookAlive = true } = {}) => {
   try {
     const items = T.tpl.items || [];
     const ekstre = items.find(i => i.name === "destekofis_ekstre");
-    if (ttl === "rejected") ok((ekstre?.warnings || []).some(w => /teslim süresini kabul etmedi/.test(w)), `${label}: şablon kartında TTL reddi uyarısı (${(ekstre?.warnings || []).join(" | ").slice(0, 90)})`);
+    if (ttl === "rejected") {
+      // 2.4.9 W-T: program teslim süresi göndermez → TTL alanını reddeden hesapta şablon yine tek istekte açılır, kartta TTL uyarısı ve kırmızı işlem YOK.
+      const posts = T.meta.meta.istekler.filter(i => i.islem === "templates_post" && i.yol.includes(WABA));
+      ok(posts.length === 2 && posts.every(p => !("message_send_ttl_seconds" in (p.govde || {}))), `${label}: iki şablon TTL alanı olmadan tek istekte açıldı (${posts.length} açma)`);
+      ok(!(ekstre?.warnings || []).some(w => /teslim süresi/i.test(w)) && !(T.tpl.actions || []).some(a => !a.ok), `${label}: şablon kartında TTL uyarısı / kırmızı işlem yok (${(ekstre?.warnings || []).join(" | ").slice(0, 90)})`);
+    }
     const a = (await T.account("Süre Kişi", "0535 800 00 01", 100)).id;
     const b = (await T.account("Canlı Kanca", "0535 800 00 02", 100)).id;
     const t0 = at("2026-11-03T10:00:00+03:00");
@@ -306,18 +317,21 @@ const ttlCase = async (label, ttl, { hookAlive = true } = {}) => {
       const m = T.media(mine.medyaId);
       return { state: job?.state, deleted: Boolean(m?.silindi), why };
     };
-    const r72 = await check(t0 + 73 * HOUR - MIN, "73 sa − 1 dk");
-    const r73 = await check(t0 + 73 * HOUR + MIN, "73 sa + 1 dk");
+    // Meta'nın bildirdiği 12 saat + 1 saat (2.4.9 W-T; önceden programın yazdığı 72 saat + 1 saat).
+    const r12 = await check(t0 + 13 * HOUR - MIN, "13 sa − 1 dk");
+    const r13 = await check(t0 + 13 * HOUR + MIN, "13 sa + 1 dk");
     if (ttl === "listed" && !hookAlive) {
-      ok(r73.state === "accepted" && !r73.deleted, `${label}: kanca yolu hiç çalışmadı → ${r73.why} Meta Kabul Etti'de kalır, PDF silinmez (§7a 16) (${r73.state}, silindi ${r73.deleted})`);
+      ok(r13.state === "accepted" && !r13.deleted, `${label}: kanca yolu hiç çalışmadı → ${r13.why} Meta Kabul Etti'de kalır, PDF silinmez (§7a 16) (${r13.state}, silindi ${r13.deleted})`);
       return;
     }
     if (ttl === "listed") {
-      ok(r72.state === "accepted" && !r72.deleted, `${label}: ${r72.why} Meta Kabul Etti, PDF Meta'da (${r72.state}, silindi ${r72.deleted})`);
-      ok(r73.state === "expired" && r73.deleted, `${label}: ${r73.why} Süresi Doldu + PDF Meta'dan silindi (${r73.state}, silindi ${r73.deleted})`);
+      ok(r12.state === "accepted" && !r12.deleted, `${label}: ${r12.why} Meta Kabul Etti, PDF Meta'da (${r12.state}, silindi ${r12.deleted})`);
+      ok(r13.state === "expired" && r13.deleted, `${label}: ${r13.why} Süresi Doldu + PDF Meta'dan silindi (${r13.state}, silindi ${r13.deleted})`);
       return;
     }
-    ok(r73.state === "accepted" && !r73.deleted, `${label}: ${r73.why} süresi DOLMAZ, PDF silinmez — Meta 30 gün dener (${r73.state}, silindi ${r73.deleted})`);
+    ok(r13.state === "accepted" && !r13.deleted, `${label}: ${r13.why} süresi DOLMAZ, PDF silinmez — Meta 30 gün dener (${r13.state}, silindi ${r13.deleted})`);
+    const r73 = await check(t0 + 73 * HOUR + MIN, "73 sa + 1 dk");
+    ok(r73.state === "accepted" && !r73.deleted, `${label}: ${r73.why} süresi DOLMAZ (eski 72 saatlik kural yok), PDF silinmez (${r73.state}, silindi ${r73.deleted})`);
     const r30a = await check(t0 + 30 * DAY + HOUR - MIN, "30 gün + 1 sa − 1 dk");
     const r30b = await check(t0 + 30 * DAY + HOUR + MIN, "30 gün + 1 sa + 1 dk");
     if (hookAlive) {
@@ -334,9 +348,9 @@ const ttlCase = async (label, ttl, { hookAlive = true } = {}) => {
     await T.close();
   }
 };
-await step("T7d-1 TTL Meta'da 3 gün (listede 259200): 73 saatte Süresi Doldu + PDF silinir", () => ttlCase("TTL bildirildi", "listed"));
+await step("T7d-1 TTL Meta'da 12 saat (listede 43200; program yazmaz): 13 saatte Süresi Doldu + PDF silinir", () => ttlCase("TTL bildirildi", "listed"));
 await step("T7d-2 TTL Meta'dan okunamıyor (K0 sahte Meta varsayılanı): 30 gün kuralı", () => ttlCase("TTL bildirilmedi", "silent"));
-await step("T7d-3 TTL Meta reddetti (100): kartta uyarı, 30 gün kuralı", () => ttlCase("TTL reddedildi", "rejected"));
+await step("T7d-3 TTL alanını reddeden hesap (100): program göndermez, şablon açılır, kartta uyarı yok, 30 gün kuralı", () => ttlCase("TTL reddeden hesap", "rejected"));
 await step("T7d-4 kanca yolu ölü (hiç bildirim yok): süre dolmaz", () => ttlCase("Kanca yok", "listed", { hookAlive: false }));
 
 const DAY_AT_END = trDay();

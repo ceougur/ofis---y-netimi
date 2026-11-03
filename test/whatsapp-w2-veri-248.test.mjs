@@ -400,8 +400,10 @@ describe("2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolu
   it("durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır", async () => {
     const ctx = await startWa();
     try {
-      // T2-5 güvenli taraf (beklenti bilerek güncellendi): "Süresi Doldu" Meta'nın KABUL ETTİĞİ teslim süresine bağlıdır — şablon denetimi Meta'daki şablonlara 3 gün
-      // yazar, Meta kaydeder ve listede gösterir (bilinmezse 30 gün; test/whatsapp-t2-5b-248.test.mjs).
+      // T2-5 güvenli taraf (beklenti bilerek güncellendi): "Süresi Doldu" Meta'nın teslim süresine bağlıdır (bilinmezse 30 gün; test/whatsapp-t2-5b-248.test.mjs).
+      // 2.4.9 W-T — ön koşul bilerek güncellendi (KULLANICI KARARI 03.11.2026, docs/2.4.9-tasarim/W-whatsapp-sablon.md §15): program şablona teslim süresi YAZMAZ;
+      // Meta 3 günü listede BİLDİRİR (sahte Meta), şablon denetimi okur.
+      for (const tpl of ctx.fake.state.templates) if (tpl.name.startsWith("destekofis_")) tpl.message_send_ttl_seconds = 259_200;
       assert.equal((await ctx.api.post("/api/workspace/whatsapp/templates/ensure", {})).status, 200);
       const a = await ctx.account("TTL Bildirimsiz", "0556 000 00 01", 10);
       const id = (await ctx.batch({ kind: "statement", ids: [a.id], preset: "thisMonth" })).data.data.batch.id;

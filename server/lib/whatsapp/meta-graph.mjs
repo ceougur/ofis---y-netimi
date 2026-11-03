@@ -62,11 +62,11 @@ export const META_D0 = Object.freeze({
   // 131056: aynı kişiye kısa sürede çok ileti → o iş 1 dk sonra. 131049: ekosistem sağlığı → "Meta Bekletti (24 Saat Sonra Yeniden)", en çok bir kez (madde 14).
   pairRateCode: 131056,
   ecosystemCode: 131049,
-  // D0-11: İleti ömrü (TTL) ileti isteğinde değil ŞABLONDA tanımlanır (message_send_ttl_seconds; şablonları W5 açar). Program kendi "Süresi Doldu"
-  // kararını iç kuralla verir (plan §7a madde 16): durum bildirimi yolu çalışıyorsa (son 7 günde en az bir bildirim geldi) teslim olmayan ileti TTL
-  // (S2 A: 3 gün) + 1 saatte "Süresi Doldu"; bildirim yolu yoksa "Meta Kabul Etti"de kalır. Şablona TTL'yi programın kendisi yazar (T2-5): D0-W5-8. Bu değer
-  // YALNIZ şablona yazılan istektir; "Süresi Doldu" ve PDF silme Meta'nın KABUL ETTİĞİ değere bağlıdır (D0-W5-9; bilinmezse 30 gün).
-  defaultTtlHours: 72,
+  // D0-11: İleti ömrü (TTL) ileti isteğinde değil ŞABLONDA tanımlanır (message_send_ttl_seconds). Program kendi "Süresi Doldu" kararını iç kuralla verir
+  // (plan §7a madde 16): durum bildirimi yolu çalışıyorsa (son 7 günde en az bir bildirim geldi) teslim olmayan ileti TTL + 1 saatte "Süresi Doldu"; bildirim
+  // yolu yoksa "Meta Kabul Etti"de kalır. 2.4.9 W-T (KULLANICI KARARI 03.11.2026, docs/2.4.9-tasarim/W-whatsapp-sablon.md §15): Meta'nın utility şablonda
+  // izin verdiği en uzun özel süre 12 saat çıkınca teslim süresi = Meta'nın varsayılanı 30 gün; program şablona TTL YAZMAZ (açarken de, onaylı şablonda da),
+  // ayarı da yoktur. TTL = Meta'nın şablon listesinde bildirdiği değer, yoksa 30 gün (D0-W5-9; templates.mjs deliveryTtlSeconds).
   // D0-12: Medya yükleme (POST /<PHONE_NUMBER_ID>/media, multipart: messaging_product, type, file) yanıtı { id }; silme (DELETE /<MEDIA_ID>) { success: true }.
   // Zaten silinmiş / süresi dolmuş medyanın silinmesi hata kodu 100 (ya da HTTP 404) döner varsayımı → program "silinmiş" sayar.
   // D0-13: TESLİM EDİLMİŞ iletinin medyasını silmek alıcının telefonundaki belgeyi ETKİLEMEZ (WhatsApp belgeyi teslimde kendi sunucusundan iletir;
@@ -107,7 +107,8 @@ const META_ERRORS = Object.freeze({
   3: PERMISSION,
   10: PERMISSION,
   131005: PERMISSION,
-  100: { title: "Meta isteği tanımadı: Telefon Numarası Kimliği (Phone Number ID) ya da WhatsApp Business Hesap Kimliği (WABA ID) yanlış olabilir.", retry: "never", kind: "request" },
+  // 2.4.9 W-4: 100'ün başlığı isteğin türüne göre metaTitle'da seçilir; buradaki işlemden bağımsız genel başlıktır (durum bildirimindeki hata, op'suz istek).
+  100: { title: "Meta isteği geçersiz buldu.", retry: "never", kind: "request" },
   33: { title: "Bu telefon numarası Meta'da silinmiş.", retry: "never", kind: "account" },
   368: { title: "WhatsApp Business hesabı Meta tarafından kısıtlandı ya da kapatıldı (ilke ihlali). WhatsApp Yöneticisi'nden denetleyin.", retry: "never", kind: "account" },
   131031: { title: "WhatsApp Business hesabı Meta tarafından kısıtlandı ya da kapatıldı. WhatsApp Yöneticisi'nden denetleyin.", retry: "never", kind: "account" },
@@ -159,6 +160,30 @@ export function classifyMetaCode(code) {
   return { title: "", retry: "unknown", kind: "unknown" };
 }
 
+// 2.4.9 W-4 (docs/2.4.9-tasarim/W-whatsapp-sablon.md §6): Meta 100'ü ("Invalid parameter") kimlik yanlışlığından başka nedenlerle de verir — aboneliksiz
+// bildirim adresi kaydı (ELLE KABUL BULGUSU 3), ileti ya da şablon açma isteğinde geçersiz değer. Başlık isteğin türüne (op) göre seçilir; YALNIZ başlık:
+// hata sınıfı (kind / retry) classifyMetaCode'dan AYNEN gelir (şablon denetiminin durma kuralı ve kuyruğun Başarısız / duraklatma kararı değişmez).
+// Sıra: alt kod 33 (nesne yok / erişim yok) → kimlik; sonra op; hint (Meta'nın arındırılmış iletisi) yalnız subscribe'da kalıpla okunur.
+const META_100_IDS = "Meta bu kimlikle bir kayıt bulamadı ya da belirtecin bu kayda erişimi yok: Telefon Numarası Kimliği (Phone Number ID), WhatsApp Business Hesap Kimliği (WABA ID) ya da Uygulama Kimliği (App ID) yanlış olabilir.";
+const META_100_BY_OP = Object.freeze({
+  "template-create": "Meta şablon açma isteğindeki bir değeri kabul etmedi; şablon açılmadı. DestekOfis desteğine başvurun.",
+  subscribe: "Meta bildirim adresi kaydını kabul etmedi (geçersiz değer).",
+  send: "Meta ileti isteğindeki bir değeri kabul etmedi (ör. alıcı numarası ya da şablon değişkeni).",
+  lookup: "Meta okuma isteğini kabul etmedi; Telefon Numarası Kimliği (Phone Number ID) ya da WhatsApp Business Hesap Kimliği (WABA ID) yanlış olabilir.",
+});
+const META_100_UNSUBSCRIBED =
+  "Meta bildirim adresini kaydetmedi: uygulamanızın bu WhatsApp Business hesabına aboneliği ve uygulama düzeyi webhook ayarı tamamlanmamış. Kullanım Kılavuzu'ndaki Elle Bağla ön koşullarını tamamlayıp Bağlantıyı Sına'ya basın.";
+const TEMPLATE_EXISTS_SUBCODE = 2388024;
+/** Meta hata kodunun ekrandaki başlığı; 100 dışında classifyMetaCode(code).title. op: istek türü (lookup, send, template-create, subscribe, …). */
+export function metaTitle(code, { op = "", subcode = null, hint = "" } = {}) {
+  const known = classifyMetaCode(code);
+  if (Number(code) !== 100) return known.title;
+  if (Number(subcode) === 33) return META_100_IDS;
+  if (op === "subscribe" && /must be subscribed|subscribed to receive/i.test(String(hint || ""))) return META_100_UNSUBSCRIBED;
+  if (op === "template-create" && Number(subcode) === TEMPLATE_EXISTS_SUBCODE) return known.title;
+  return META_100_BY_OP[op] || known.title;
+}
+
 // Meta'nın verdiği metinden belirteci (ve belirtecin 8 karakterden uzun her parçasını değil, TAMAMINI) siler; kısaltır.
 const clip = (value, max) => {
   const text = String(value ?? "").replace(/\s+/g, " ").trim();
@@ -208,7 +233,8 @@ export function graphBaseOk(baseUrl) {
 export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalThis.fetch(...args), openToken = () => "", timeoutMs = TIMEOUT_MS } = {}) {
   const base = String(baseUrl || "").replace(/\/+$/, "");
 
-  async function request(method, parts, { query = {}, body = null, form = null, fresh = false } = {}) {
+  // op (2.4.9 W-4): isteğin türü — yalnız hata 100'ün başlığını seçer (metaTitle); hata sınıfını değiştirmez.
+  async function request(method, parts, { query = {}, body = null, form = null, fresh = false, op = "" } = {}) {
     if (!base) throw new MetaGraphError({ title: "Bu kurulumda WhatsApp Business API'ye bağlanılamaz (Meta adresi tanımlı değil).", reason: "graph-off", kind: "config", retry: "never" });
     if (!graphBaseOk(base)) throw new MetaGraphError({ title: "WhatsApp Business API adresi geçersiz (https olmalı).", reason: "graph-off", kind: "config", retry: "never" });
     for (const part of parts) if (!/^[A-Za-z0-9_]+$/.test(String(part))) throw new MetaGraphError({ title: "Meta isteğinin adresi geçersiz.", reason: "request", kind: "request", retry: "never" });
@@ -269,11 +295,12 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     if (failure && typeof failure === "object") {
       const known = classifyMetaCode(failure.code);
       const details = clip(redact(failure.error_data?.details || failure.message || "", token), 200);
+      const subcode = Number.isFinite(Number(failure.error_subcode)) ? Number(failure.error_subcode) : null;
       throw new MetaGraphError({
         code: Number.isFinite(Number(failure.code)) ? Number(failure.code) : null,
-        subcode: Number.isFinite(Number(failure.error_subcode)) ? Number(failure.error_subcode) : null,
+        subcode,
         httpStatus: status,
-        title: known.title,
+        title: metaTitle(failure.code, { op, subcode, hint: redact(`${failure.message || ""} ${failure.error_data?.details || ""}`, token) }),
         details,
         fbtraceId: clip(failure.fbtrace_id, 60),
         retry: known.retry,
@@ -293,7 +320,7 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     const out = [];
     let after = "";
     for (let page = 0; page < META_D0.maxPages; page += 1) {
-      const json = await request("GET", parts, { query: { ...query, limit: META_D0.pageLimit, after } });
+      const json = await request("GET", parts, { query: { ...query, limit: META_D0.pageLimit, after }, op: "lookup" });
       if (Array.isArray(json.data)) out.push(...json.data);
       const next = json.paging?.next && json.paging?.cursors?.after ? String(json.paging.cursors.after) : "";
       if (!next || next === after) return { items: out, complete: true };
@@ -309,7 +336,7 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     phoneNumbers: wabaId => list([wabaId, "phone_numbers"]),
     // Numaranın gönderim sınırı basamağı (messaging-limits: ?fields=whatsapp_business_manager_messaging_limit).
     phoneLimit: async phoneNumberId => {
-      const json = await request("GET", [phoneNumberId], { query: { fields: "whatsapp_business_manager_messaging_limit" } });
+      const json = await request("GET", [phoneNumberId], { query: { fields: "whatsapp_business_manager_messaging_limit" }, op: "lookup" });
       return String(json.whatsapp_business_manager_messaging_limit || "");
     },
     // Şablonlar (template-management: ?fields=name,category,status; dil de istenir).
@@ -321,7 +348,7 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
       if (Array.isArray(components) && components.length) template.components = components;
       const message = { messaging_product: "whatsapp", recipient_type: "individual", to, type: "template", template };
       if (bizOpaque) message.biz_opaque_callback_data = String(bizOpaque).slice(0, META_D0.bizOpaqueMax);
-      const json = await request("POST", [phoneNumberId, "messages"], { body: message, fresh: true });
+      const json = await request("POST", [phoneNumberId, "messages"], { body: message, fresh: true, op: "send" });
       const id = String(json.messages?.[0]?.id || "");
       if (!id) throw new MetaGraphError({ title: "Meta yanıtında ileti kimliği yok; iletinin gidip gitmediği bilinmiyor.", httpStatus: 200, reason: "body", kind: "network", retry: "unknown" });
       return { wamid: id, waId: String(json.contacts?.[0]?.wa_id || ""), pacing: String(json.messages?.[0]?.message_status || "") };
@@ -333,7 +360,7 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
       form.append("messaging_product", "whatsapp");
       form.append("type", mime);
       form.append("file", new Blob([data], { type: mime }), filename || "belge.pdf");
-      const json = await request("POST", [phoneNumberId, "media"], { form });
+      const json = await request("POST", [phoneNumberId, "media"], { form, op: "media-upload" });
       const id = String(json.id || "");
       if (!/^[A-Za-z0-9_]+$/.test(id)) throw new MetaGraphError({ title: "Meta medya yükleme yanıtında dosya kimliği yok.", httpStatus: 200, reason: "body", kind: "network", retry: "unknown" });
       return id;
@@ -341,7 +368,7 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     // Kesin durumdan sonra (S3 A). Zaten silinmiş medya (D0-12) başarı sayılır: { deleted: true, gone }.
     deleteMedia: async mediaId => {
       try {
-        await request("DELETE", [mediaId]);
+        await request("DELETE", [mediaId], { op: "media-delete" });
         return { deleted: true, gone: false };
       } catch (error) {
         if (error instanceof MetaGraphError && (META_D0.mediaGoneCodes.includes(error.code) || (error.code == null && error.httpStatus === 404))) return { deleted: true, gone: true };
@@ -350,24 +377,24 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     },
     // ---------- 2.4.8 W9: durum bildirimi aboneliği (plan §3 C, D0-17) ----------
     subscribeApp: async (wabaId, { callbackUri, verifyToken }) => {
-      const json = await request("POST", [wabaId, "subscribed_apps"], { body: { override_callback_uri: callbackUri, verify_token: verifyToken } });
+      const json = await request("POST", [wabaId, "subscribed_apps"], { body: { override_callback_uri: callbackUri, verify_token: verifyToken }, op: "subscribe" });
       return json.success === true || json.success === "true";
     },
     // T2-3/4 (D0-17b): Meta'da KAYITLI adres — GET /<WABA_ID>/subscribed_apps → { data: [{ whatsapp_business_api_data: { id, link, name }, override_callback_uri? }] }
     // (webhooks/override "Get Messaging account alternate callback" örnek yanıtı). Alternatif adres yoksa alan gelmez. Dönüş: [{ appId, overrideUri }].
     subscribedApps: async wabaId => {
-      const json = await request("GET", [wabaId, "subscribed_apps"]);
+      const json = await request("GET", [wabaId, "subscribed_apps"], { op: "lookup" });
       return (Array.isArray(json.data) ? json.data : []).map(item => ({ appId: String(item?.whatsapp_business_api_data?.id || ""), overrideUri: typeof item?.override_callback_uri === "string" ? item.override_callback_uri : "" }));
     },
     // ---------- 2.4.8 W7: "WhatsApp'ı Bağla" sonrası Meta adımları (plan §2.8; D0 — META_D0_W7) ----------
     // Birlikte kullanım DEĞİLSE numara Cloud API'ye kaydedilir (iki adımlı doğrulama PIN'i programca üretilir).
     registerPhone: async (phoneNumberId, pin) => {
-      const json = await request("POST", [phoneNumberId, "register"], { body: { messaging_product: "whatsapp", pin } });
+      const json = await request("POST", [phoneNumberId, "register"], { body: { messaging_product: "whatsapp", pin }, op: "register" });
       return json.success === true || json.success === "true";
     },
     // Birlikte kullanımda bağlantıdan sonra 24 saat içinde kişi ve geçmiş eşitlemesi başlatılmalı (yoksa Meta müşteriyi çıkarır). İçerik programda SAKLANMAZ.
     startSync: async (phoneNumberId, syncType) => {
-      const json = await request("POST", [phoneNumberId, "smb_app_data"], { body: { messaging_product: "whatsapp", sync_type: syncType } });
+      const json = await request("POST", [phoneNumberId, "smb_app_data"], { body: { messaging_product: "whatsapp", sync_type: syncType }, op: "sync" });
       return json.success === true || json.success === "true" || Boolean(json.request_id);
     },
   };
@@ -444,18 +471,13 @@ export const META_D0_W5 = Object.freeze({
   maxUploadBytes: 5_000_000,
   // Şablon adı kuralı (template-management: ^[a-z0-9_]+$, en çok 512).
   templateName: /^[a-z0-9_]{1,512}$/,
-  // D0-W5-8 (T2-5; S2 A "utility TTL 3 gün"): iletinin ömrü (TTL) ŞABLONDA `message_send_ttl_seconds` (saniye) alanıyla verilir — açarken (POST /<WABA>/message_templates)
-  // ve düzenlerken (POST /<TEMPLATE_ID>; template-management "yalnız kategori, components ya da time-to-live düzenlenebilir", düzenlenebilen durumlar APPROVED /
-  // REJECTED / PAUSED; onaylı şablonda 24 saatte 1, 30 günde 10 düzenleme; düzenlemeden sonra Meta yeniden onaylar). Alan adı send-messages "Customizing TTL for
-  // templates" bağlantısından (time-to-live sayfası yerelde yok); utility şablonda İZİNLİ ARALIK OKUNMADI. Program ayardaki teslim süresini (varsayılan 72 saat)
-  // gönderir; Meta alanı ya da değeri reddederse (100) şablon BİR KEZ TTL'siz açılır (Meta varsayılanı 30 gün) ve kartta uyarı çıkar — gönderim kapanmaz.
-  // Şablon listesi bu alanı istemez (tanınmayan alan bütün ayrıntılı listeyi temel alanlara düşürür — D0-W5-5): uygulanan değer programın kaydında tutulur.
+  // D0-W5-8: iletinin ömrü (TTL) ŞABLONDA `message_send_ttl_seconds` (saniye) alanıdır. 2.4.9 W-T (KULLANICI KARARI 03.11.2026; docs/2.4.9-tasarim/W-whatsapp-sablon.md
+  // §15): program bu alanı GÖNDERMEZ — şablon açma isteğinde yok, onaylı şablonun düzenlemesi (POST /<TEMPLATE_ID>) yok; Meta'nın varsayılanı (30 gün) geçerlidir.
+  // (03.11.2026 gerçek Meta 259.200 sn'yi hem açmada hem onaylı şablonun düzenlemesinde 100 ile reddetti; utility'de izinli özel aralık en çok 12 saat.)
   ttlField: "message_send_ttl_seconds",
-  ttlEditable: Object.freeze(["APPROVED", "REJECTED", "PAUSED"]),
-  // D0-W5-9 (T2-5 güvenli taraf): Meta'nın KABUL ETTİĞİ teslim süresi şablon listesinde message_send_ttl_seconds alanından (istenirse) ya da şablon açma yanıtında aynı
-  // alandan okunur — ikisi de belgede okunmadı. Program "Süresi Doldu" anını ve PDF silmeyi YALNIZ Meta'nın bildirdiği değere bağlar; değer gelmezse / reddedildiyse
-  // Meta'nın varsayılanı (30 gün; send-messages "Default TTL") geçerli sayılır. Liste bu alanı tanımazsa (100) bir kez TTL'siz ayrıntılı alanlara düşülür
-  // (components kaybolmasın), sonra temel alanlara.
+  // D0-W5-9: Meta'nın şablona KAYITLI teslim süresi (ör. WhatsApp Yöneticisi'nde ayarlanmışsa) şablon listesinde message_send_ttl_seconds alanından okunur (istenirse;
+  // belgede okunmadı). Program "Süresi Doldu" anını ve PDF silmeyi bu değere bağlar; gelmezse Meta'nın varsayılanı (30 gün; send-messages "Default TTL"). Liste bu
+  // alanı tanımazsa (100) bir kez TTL'siz ayrıntılı alanlara düşülür (components kaybolmasın), sonra temel alanlara.
   ttlDetailFields: "name,language,status,category,quality_score,rejected_reason,components,message_send_ttl_seconds",
 });
 // Meta'nın varsayılan ileti ömrü (send-messages "Default TTL: All messages except authentication templates: 30 days") — teslim süresi okunamazsa.
@@ -466,7 +488,7 @@ export const META_DEFAULT_TTL_SECONDS = 30 * 24 * 3600;
 export const PROGRAM_TEMPLATE_CATEGORY = "UTILITY";
 
 /**
- * createMetaTemplates({ baseUrl, fetchImpl, openToken, timeoutMs }) → { details, createTemplate, editTemplateTtl, resumableUpload }.
+ * createMetaTemplates({ baseUrl, fetchImpl, openToken, timeoutMs }) → { details, createTemplate, resumableUpload }.
  * Seçenekler createMetaGraph ile aynıdır; belirteç yine yalnız istek anında açılır.
  */
 export function createMetaTemplates(options = {}) {
@@ -488,7 +510,7 @@ export function createMetaTemplates(options = {}) {
       let after = "";
       try {
         for (let page = 0; page < META_D0.maxPages; page += 1) {
-          const json = await graph.request("GET", [wabaId, "message_templates"], { query: { fields, limit: META_D0.pageLimit, after } });
+          const json = await graph.request("GET", [wabaId, "message_templates"], { query: { fields, limit: META_D0.pageLimit, after }, op: "lookup" });
           if (Array.isArray(json.data)) items.push(...json.data);
           const next = json.paging?.next && json.paging?.cursors?.after ? String(json.paging.cursors.after) : "";
           if (!next || next === after) return { items, complete: true, fields: fallback ? "basic" : "detail" };
@@ -509,26 +531,14 @@ export function createMetaTemplates(options = {}) {
     }
   }
 
-  // Şablon açma (template-management "Create templates"): yalnız UTILITY ve geçerli ad; yoksa istek yapılmaz.
-  // ttlSeconds (T2-5, D0-W5-8): verilirse istekte message_send_ttl_seconds.
-  async function createTemplate(wabaId, { name, language, category, components, ttlSeconds = null } = {}) {
+  // Şablon açma (template-management "Create templates"): yalnız UTILITY ve geçerli ad; yoksa istek yapılmaz. Gövde yalnız ad, dil, kategori ve içerik —
+  // teslim süresi (message_send_ttl_seconds) GÖNDERİLMEZ (2.4.9 W-T, D0-W5-8); şablonun teslim süresi düzenlenmez (düzenleme işlevi yok).
+  async function createTemplate(wabaId, { name, language, category, components } = {}) {
     if (category !== PROGRAM_TEMPLATE_CATEGORY) throw refuse("Program yalnız bilgilendirme (Utility) şablonu açar; pazarlama ya da başka türde şablon açılmaz.");
     if (!META_D0_W5.templateName.test(String(name || ""))) throw refuse("Şablon adı geçersiz (yalnız küçük harf, rakam ve alt çizgi).");
     if (!Array.isArray(components) || !components.length) throw refuse("Şablonun içeriği boş.");
-    const body = { name, language, category, components };
-    if (Number.isInteger(ttlSeconds) && ttlSeconds > 0) body[META_D0_W5.ttlField] = ttlSeconds;
-    const json = await graph.request("POST", [wabaId, "message_templates"], { body });
-    // D0-W5-9: yanıt teslim süresini yansıtırsa Meta'nın kabul ettiği değer odur (yansıtmazsa null — kabul edildiği BİLİNMEZ).
-    const echoed = Number(json[META_D0_W5.ttlField]);
-    return { id: String(json.id || ""), status: String(json.status || ""), category: String(json.category || ""), ttlSeconds: Number.isInteger(echoed) && echoed > 0 ? echoed : null };
-  }
-
-  // Mevcut şablonun teslim süresini günceller (T2-5, D0-W5-8): yalnız TTL alanı gönderilir (components / kategori DEĞİŞMEZ).
-  async function editTemplateTtl(templateId, ttlSeconds) {
-    if (!META_D0.idPattern.test(String(templateId || ""))) throw refuse("Şablon kimliği geçersiz.");
-    if (!Number.isInteger(ttlSeconds) || ttlSeconds <= 0) throw refuse("Teslim süresi geçersiz.");
-    const json = await graph.request("POST", [String(templateId)], { body: { [META_D0_W5.ttlField]: ttlSeconds } });
-    return json.success === true || json.success === "true";
+    const json = await graph.request("POST", [wabaId, "message_templates"], { body: { name, language, category, components }, op: "template-create" });
+    return { id: String(json.id || ""), status: String(json.status || ""), category: String(json.category || "") };
   }
 
   // Resumable Upload (D0-W5-2…4): dosya baytları → şablon örneği tanıtıcısı (header_handle).
@@ -537,7 +547,7 @@ export function createMetaTemplates(options = {}) {
     const data = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes || []);
     if (!data.length || data.length > META_D0_W5.maxUploadBytes) throw refuse("Yüklenecek örnek dosya boş ya da çok büyük.");
     if (!/^[a-z]+\/[a-z0-9.+-]+$/.test(String(fileType || ""))) throw refuse("Yüklenecek dosyanın türü geçersiz.");
-    const session = await graph.request("POST", [appId, "uploads"], { query: { file_name: String(fileName || "ornek.pdf").slice(0, 120), file_length: data.length, file_type: fileType } });
+    const session = await graph.request("POST", [appId, "uploads"], { query: { file_name: String(fileName || "ornek.pdf").slice(0, 120), file_length: data.length, file_type: fileType }, op: "app-upload" });
     const id = String(session.id || "");
     if (!META_D0_W5.uploadSessionPattern.test(id)) throw new MetaGraphError({ title: "Meta yükleme oturumunun kimliği tanınmadı; örnek dosya yüklenmedi.", httpStatus: 200, reason: "body", kind: "network", retry: "unknown" });
     const json = await uploadBytes(id, data);
@@ -590,11 +600,12 @@ export function createMetaTemplates(options = {}) {
     const failure = json && typeof json === "object" ? json.error : null;
     if (failure && typeof failure === "object") {
       const known = classifyMetaCode(failure.code);
+      const subcode = Number.isFinite(Number(failure.error_subcode)) ? Number(failure.error_subcode) : null;
       throw new MetaGraphError({
         code: Number.isFinite(Number(failure.code)) ? Number(failure.code) : null,
-        subcode: Number.isFinite(Number(failure.error_subcode)) ? Number(failure.error_subcode) : null,
+        subcode,
         httpStatus: status,
-        title: known.title,
+        title: metaTitle(failure.code, { op: "app-upload", subcode }),
         details: clip(redact(failure.error_data?.details || failure.message || "", token), 200),
         fbtraceId: clip(failure.fbtrace_id, 60),
         retry: known.retry,
@@ -606,5 +617,5 @@ export function createMetaTemplates(options = {}) {
     return json;
   }
 
-  return { details, createTemplate, editTemplateTtl, resumableUpload };
+  return { details, createTemplate, resumableUpload };
 }

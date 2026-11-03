@@ -15,7 +15,7 @@
 // modülde yalnız istek anında açılır (meta-graph.mjs); kayda, işlem geçmişine ve ekrana girmez.
 import { HttpError } from "../http.mjs";
 import { tablePdf } from "../report-pdf.mjs";
-import { META_D0, META_D0_W5, META_DEFAULT_TTL_SECONDS, MetaGraphError, PROGRAM_TEMPLATE_CATEGORY, createMetaTemplates } from "./meta-graph.mjs";
+import { META_D0_W5, META_DEFAULT_TTL_SECONDS, MetaGraphError, PROGRAM_TEMPLATE_CATEGORY, createMetaTemplates } from "./meta-graph.mjs";
 
 export const TEMPLATES_KEY = "whatsapp.templates";
 // Ekstre şablonunun alt satırı (plan §1; Meta alt satır sınırı 60 karakter — templates/components "Footer").
@@ -115,20 +115,17 @@ function contentMatches(def, found) {
 }
 
 /**
- * T2-5 güvenli taraf: bu WABA'daki programın şablonu için META'NIN KABUL ETTİĞİ ileti ömrü (saniye) — gönderim çekirdeği "Süresi Doldu" anını ve PDF'in Meta'dan
- * silinmesini buna bağlar (ayardaki değere DEĞİL). Kaynak: son şablon denetiminde Meta'nın listesindeki message_send_ttl_seconds ya da şablon açma yanıtının
- * yansıttığı değer (D0-W5-9). İkisi de yoksa / Meta reddettiyse / kayıt başka hesabınsa Meta'nın varsayılanı (30 gün): Meta'nın hâlâ teslim etmeye çalıştığı
- * iletinin PDF'i önceden silinmez.
+ * Bu WABA'daki programın şablonunun ileti ömrü (saniye) — gönderim çekirdeği "Süresi Doldu" anını ve PDF'in Meta'dan silinmesini buna bağlar. 2.4.9 W-T (KULLANICI
+ * KARARI 03.11.2026, docs/2.4.9-tasarim/W-whatsapp-sablon.md §15): program şablona teslim süresi yazmaz; değer = son şablon okumasında Meta'nın listede BİLDİRDİĞİ
+ * message_send_ttl_seconds (D0-W5-9), yoksa / kayıt başka hesabınsa Meta'nın varsayılanı 30 gün. 2.4.8'in kayıtlı TTL ret / düzenleme / "açma yanıtı yansıttı"
+ * kayıtları (raw.ttl) OKUNMAZ.
  */
 export function deliveryTtlSeconds(store, wabaId, name) {
   const raw = parse(store.setting(TEMPLATES_KEY, ""));
   if (!raw || raw.v !== 1 || raw.wabaId !== wabaId) return META_DEFAULT_TTL_SECONDS;
   const meta = (raw.items || []).find(item => item?.name === name)?.meta || null;
   const listed = Number(meta?.[META_D0_W5.ttlField]);
-  if (Number.isInteger(listed) && listed > 0) return listed;
-  const record = meta?.id ? raw.ttl?.[meta.id] : null;
-  if (record && !record.rejected && Number.isInteger(record.echoed) && record.echoed > 0) return record.echoed;
-  return META_DEFAULT_TTL_SECONDS;
+  return Number.isInteger(listed) && listed > 0 ? listed : META_DEFAULT_TTL_SECONDS;
 }
 
 /** Şablonla gönderim yapılabilir mi: yalnız APPROVED + UTILITY (ve içerik değiştirilmemiş). W2 gönderim çekirdeği bu işlevi kullanır. */
@@ -179,8 +176,9 @@ export function describeTemplate(def, found) {
   return item;
 }
 
-// T2-5 güvenli taraf: Meta teslim süresini reddettiyse kartın uyarısı ve şablon açma işleminin notu.
-export const TTL_REJECTED_TEXT = "Meta teslim süresini kabul etmedi; Meta 30 güne kadar teslim etmeyi dener.";
+// 2.4.8 T2-5'in şablon açma iletisine eklediği not. 2.4.9 W-6: program teslim süresi göndermediği için yeni kayıtta yok; 2.4.8'den kalan kayıtta kart bu notu
+// (ve TTL düzenleme işlemlerini) göstermez.
+const LEGACY_TTL_NOTE = " Meta teslim süresini kabul etmedi; Meta 30 güne kadar teslim etmeyi dener.";
 const findExact = (items, def) => (Array.isArray(items) ? items.find(item => item?.name === def.name && String(item.language || "") === def.language) : null) || null;
 
 const NOT_APPROVED = Object.freeze({
@@ -228,19 +226,64 @@ const fail = (status, message, code, extra = {}) => {
   throw new HttpError(status, message, { code, ...extra });
 };
 
+// Meta'daki kaydın yalnız gereken alanları saklanır (components dahil; belirteç yok).
+const keep = found =>
+  found
+    ? {
+        id: String(found.id || ""),
+        name: String(found.name || ""),
+        language: String(found.language || ""),
+        status: String(found.status || ""),
+        category: String(found.category || ""),
+        ...(found.quality_score !== undefined ? { quality_score: found.quality_score } : {}),
+        ...(found.rejected_reason !== undefined ? { rejected_reason: String(found.rejected_reason || "") } : {}),
+        ...(Array.isArray(found.components) ? { components: found.components } : {}),
+        // D0-W5-9: Meta'nın kayıtlı teslim süresi (liste veriyorsa).
+        ...(Number.isInteger(Number(found[META_D0_W5.ttlField])) && Number(found[META_D0_W5.ttlField]) > 0 ? { [META_D0_W5.ttlField]: Number(found[META_D0_W5.ttlField]) } : {}),
+      }
+    : null;
+
 /**
- * createWhatsappTemplates({ store, config, audit, connection, now }) — bu şirketin şablonları.
- * connection: lib/whatsapp/connection.mjs nesnesi (read() ve metaOptions(); bağlantı kaydına yazılmaz).
+ * 2.4.9 W-2b (ANA OTURUM ONAYI 03.11.2026; docs/2.4.9-tasarim/W-whatsapp-sablon.md §5.2, §15): gönderim çekirdeğinin (önizleme / başlatma) Meta'dan TAZE okuduğu
+ * şablon listesi, son "Şablonları Denetle" kaydının YALNIZ items[].meta alanlarını günceller — Yönetim kartı ve gönderim penceresinin varsayılan sekmesi
+ * (sending-status) onaydan hemen sonra Denetle'ye basmadan doğru görünür. Değişim yeri yalnız burası. Kurallar:
+ *   - yalnız aynı WABA'nın kaydı varsa (kayıt yoksa yeni kayıt AÇILMAZ — Denetle'nin işi); son denetim zamanı (at), işlemler, hata, kişi korunur;
+ *   - yalnız listede (aynı ad + dil) bulunan şablon güncellenir; listede olmayanın kaydı korunur (liste eksik / sayfalı olabilir);
+ *   - okuma (readAt) kayıttaki son denetimden ya da son not edilen okumadan ESKİYSE yazılmaz (Denetle sürerken başlamış önizleme yeni sonucu ezmez);
+ *   - oku-değiştir-yaz arada bekleme olmadan (aynı olay döngüsü adımında). Salt okunur lisansta çağıran çağırmaz (gönderim çekirdeği writable()).
+ * Dönüş: yazıldıysa true.
  */
-export function createWhatsappTemplates({ store, config = {}, audit = () => {}, connection, now = () => new Date(), ttlHours = () => META_D0.defaultTtlHours }) {
+export function noteListing(store, record, listing, { readAt } = {}) {
+  const raw = parse(store.setting(TEMPLATES_KEY, ""));
+  if (!raw || raw.v !== 1 || !record?.wabaId || raw.wabaId !== record.wabaId || !Array.isArray(listing?.items)) return false;
+  const readMs = Date.parse(readAt || "");
+  const newest = Math.max(Date.parse(raw.at || "") || -Infinity, Date.parse(raw.listedAt || "") || -Infinity);
+  if (!Number.isFinite(readMs) || newest > readMs) return false;
+  const previous = Array.isArray(raw.items) ? raw.items : [];
+  let changed = false;
+  const items = TEMPLATE_DEFS.map(def => {
+    const before = previous.find(item => item?.name === def.name) || { name: def.name, meta: null };
+    const found = findExact(listing.items, def);
+    if (!found) return before;
+    const meta = keep(found);
+    if (JSON.stringify(meta) === JSON.stringify(before.meta)) return before;
+    changed = true;
+    return { ...before, name: def.name, meta };
+  });
+  if (!changed) return false;
+  store.setSetting(TEMPLATES_KEY, JSON.stringify({ ...raw, items, listedAt: new Date(readMs).toISOString() }), null);
+  return true;
+}
+
+/**
+ * createWhatsappTemplates({ store, config, audit, connection, now, onChecked }) — bu şirketin şablonları.
+ * connection: lib/whatsapp/connection.mjs nesnesi (read() ve metaOptions(); bağlantı kaydına yazılmaz).
+ * onChecked(wabaId) (2.4.9 W-2): Şablonları Denetle her bittiğinde (Meta okuması düşse de) — gönderim çekirdeğinin o WABA için tuttuğu şablon önbelleği
+ * temizlenir (routes/whatsapp.mjs → scheduler.forgetTemplates: aynı WABA'yı kullanan bütün şirketlerin kuyrukları).
+ */
+export function createWhatsappTemplates({ store, config = {}, audit = () => {}, connection, now = () => new Date(), onChecked = null }) {
   const iso = () => now().toISOString();
   let busy = false;
-  // T2-5 (S2 A): şablona yazılan teslim süresi = gönderim ayarındaki teslim süresi (saat; varsayılan 72). D0-W5-8.
-  const ttlHoursNow = () => {
-    const value = Number(ttlHours?.());
-    return Number.isInteger(value) && value >= 1 && value <= 720 ? value : META_D0.defaultTtlHours;
-  };
-  const TTL_RETRY_MS = 24 * 3_600_000; // Meta: onaylı şablon 24 saatte bir düzenlenir
 
   // Meta istemcisi: denetimler ve belirtecin açılması bağlantı modülünde (connection.metaOptions); belirteç yalnız istek anında açılır.
   const apiFor = record => createMetaTemplates(connection.metaOptions(record));
@@ -252,6 +295,7 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
   }
 
   // Ekran görünümü (Meta'ya istek YOK). Kayıt başka hesaba (WABA) aitse bayattır: satırlar "Denetlenmedi".
+  // 2.4.9 W-6: 2.4.8'den kalan teslim süresi kayıtları (ttl: ret / düzenleme) okunmaz; kartta TTL uyarısı, TTL düzenleme işlemi ve açma iletisindeki TTL notu görünmez.
   function view() {
     const record = connection.read();
     const last = stored();
@@ -259,12 +303,11 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
     const items = TEMPLATE_DEFS.map(def => {
       const saved = fresh ? (last.items || []).find(item => item?.name === def.name) : null;
       if (!saved) return { ...describeTemplate(def, null), statusLabel: "Denetlenmedi", checked: false };
-      const item = describeTemplate(def, saved.meta || null);
-      // T2-5: Meta teslim süresini kabul etmediyse (D0-W5-8) uyarı; gönderimi engellemez.
-      const ttl = item.id ? last.ttl?.[item.id] : null;
-      if (ttl?.rejected) item.warnings.push(TTL_REJECTED_TEXT);
-      return item;
+      return describeTemplate(def, saved.meta || null);
     });
+    const actions = fresh
+      ? (last.actions || []).filter(action => action && !action.ttl).map(action => (typeof action.message === "string" && action.message.endsWith(LEGACY_TTL_NOTE) ? { ...action, message: action.message.slice(0, -LEGACY_TTL_NOTE.length) } : action))
+      : [];
     return {
       configured: Boolean(record),
       graphAvailable: Boolean(config.whatsappGraphUrl),
@@ -273,33 +316,18 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
       checkedByName: fresh ? last.byName || "" : "",
       complete: fresh ? last.complete !== false : true,
       lastError: fresh && last.error ? last.error : null,
-      actions: fresh ? last.actions || [] : [],
+      actions,
       items,
       usable: Object.fromEntries(items.map(item => [item.kind, item.usable])),
       definitions: TEMPLATE_DEFS.map(def => ({ kind: def.kind, name: def.name, label: def.label, language: def.language, category: def.category, header: def.header, body: def.body, footer: def.footer })),
     };
   }
 
-  // Meta'daki kaydın yalnız gereken alanları saklanır (components dahil; belirteç yok).
-  const keep = found =>
-    found
-      ? {
-          id: String(found.id || ""),
-          name: String(found.name || ""),
-          language: String(found.language || ""),
-          status: String(found.status || ""),
-          category: String(found.category || ""),
-          ...(found.quality_score !== undefined ? { quality_score: found.quality_score } : {}),
-          ...(found.rejected_reason !== undefined ? { rejected_reason: String(found.rejected_reason || "") } : {}),
-          ...(Array.isArray(found.components) ? { components: found.components } : {}),
-          // D0-W5-9: Meta'nın kayıtlı teslim süresi (liste veriyorsa).
-          ...(Number.isInteger(Number(found[META_D0_W5.ttlField])) && Number(found[META_D0_W5.ttlField]) > 0 ? { [META_D0_W5.ttlField]: Number(found[META_D0_W5.ttlField]) } : {}),
-        }
-      : null;
-
   // ---------- Şablonları Denetle ve Oluştur ----------
   // 1) liste → 2) olmayan şablon açılır (ekstre: önce örnek PDF Resumable Upload ile; App ID yoksa açılmaz, nedeni yazılır) → 3) açıldıysa liste
   // yeniden okunur. Bir şablonun açılamaması öbürünü durdurmaz; belirteç / yetki / hesap hatası ikisini de durdurur.
+  // 2.4.9 W-T / W-6 (KULLANICI KARARI 03.11.2026, §15): teslim süresi GÖNDERİLMEZ (açma isteğinde alan yok, TTL'siz yeniden açma yok) ve onaylı şablon
+  // DÜZENLENMEZ — Meta'nın varsayılanı 30 gün; kendiliğinden denetim (Elle Bağla kaydı, WhatsApp'ı Bağla) ile düğme aynı kural.
   async function ensure(user) {
     const record = connection.read();
     if (!record) fail(409, "WhatsApp Business API bağlantısı yok; önce Elle Bağla ile bilgileri girin.", "whatsapp-not-configured");
@@ -307,16 +335,12 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
     if (busy) fail(409, "Şablon denetimi sürüyor; sonucunu bekleyin.", "whatsapp-templates-busy");
     busy = true;
     try {
-      // T2-5: şablonlara uygulanan teslim süresinin kaydı (şablon kimliği → { seconds, at, ok, rejected }); Meta listesi bu alanı vermez (D0-W5-8).
-      const previousTtl = stored()?.wabaId === record.wabaId ? stored().ttl || {} : {};
-      const ttl = { ...previousTtl };
-      const ttlSeconds = ttlHoursNow() * 3600;
       let listing;
       try {
         listing = await api.details(record.wabaId);
       } catch (error) {
         if (!(error instanceof MetaGraphError)) throw error;
-        save(record, user, { items: stored()?.wabaId === record.wabaId ? stored().items : [], actions: [], complete: false, error: { at: iso(), message: error.message, meta: error.toJSON() }, ttl: previousTtl });
+        save(record, user, { items: stored()?.wabaId === record.wabaId ? stored().items : [], actions: [], complete: false, error: { at: iso(), message: error.message, meta: error.toJSON() } });
         audit(user, "whatsapp.templates.checked", "whatsapp", { ok: false, code: error.code, reason: error.reason });
         throw metaFailure(error);
       }
@@ -333,21 +357,9 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
         }
         try {
           const handle = def.header === "DOCUMENT" ? await api.resumableUpload(record.appId, { fileName: SAMPLE_PDF_NAME, fileType: "application/pdf", bytes: samplePdf() }) : "";
-          const spec = { name: def.name, language: def.language, category: def.category, components: templateComponents(def, handle) };
-          // T2-5 (S2 A): teslim süresi şablonla birlikte. Meta alanı / değeri reddederse (100; 2388024 "zaten var" değil) BİR KEZ TTL'siz açılır (D0-W5-8).
-          let made;
-          let ttlRejected = null;
-          try {
-            made = await api.createTemplate(record.wabaId, { ...spec, ttlSeconds });
-          } catch (error) {
-            if (!(error instanceof MetaGraphError) || error.code !== 100 || error.subcode === 2388024) throw error;
-            ttlRejected = error;
-            made = await api.createTemplate(record.wabaId, spec);
-          }
-          // echoed: Meta yanıtında teslim süresini aynen yansıttı (kabul edilen değer BİLİNİR — D0-W5-9).
-          if (made.id) ttl[made.id] = { seconds: ttlSeconds, at: iso(), ok: !ttlRejected, ...(ttlRejected ? { rejected: true } : {}), ...(!ttlRejected && made.ttlSeconds ? { echoed: made.ttlSeconds } : {}) };
+          const made = await api.createTemplate(record.wabaId, { name: def.name, language: def.language, category: def.category, components: templateComponents(def, handle) });
           created.set(def.name, { id: made.id, name: def.name, language: def.language, status: made.status || "PENDING", category: made.category || def.category, components: templateComponents(def, handle) });
-          actions.push({ name: def.name, label: def.label, ok: true, created: true, message: `${def.label} şablonu Meta'ya gönderildi; Meta onayı bekleniyor.${ttlRejected ? ` ${TTL_REJECTED_TEXT}` : ""}` });
+          actions.push({ name: def.name, label: def.label, ok: true, created: true, message: `${def.label} şablonu Meta'ya gönderildi; Meta onayı bekleniyor.` });
         } catch (error) {
           if (!(error instanceof MetaGraphError)) throw error;
           if (error.code === 100 && error.subcode === 2388024) {
@@ -359,28 +371,7 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
           if (["token", "permission", "account", "config"].includes(error.kind)) stop = true;
         }
       }
-      // T2-5: zaten açık şablonun teslim süresi programın ayarından farklıysa (kayıtta yok / ayar değişti) Meta'da güncellenir — yalnız TTL alanı; Meta'nın
-      // düzenlemeye izin verdiği durumlarda; düşerse 24 saat beklenir (onaylı şablon 24 saatte bir düzenlenir); Meta değeri reddettiyse aynı değer yinelenmez.
-      if (!stop) {
-        for (const def of TEMPLATE_DEFS) {
-          const found = findExact(listing.items, def);
-          const id = String(found?.id || "");
-          if (!id || created.has(def.name) || !META_D0_W5.ttlEditable.includes(upper(found.status))) continue;
-          const last = ttl[id];
-          const lastAt = Date.parse(last?.at || "");
-          if (last && last.seconds === ttlSeconds && (last.ok || last.rejected || (Number.isFinite(lastAt) && now().getTime() - lastAt < TTL_RETRY_MS))) continue;
-          try {
-            await api.editTemplateTtl(id, ttlSeconds);
-            ttl[id] = { seconds: ttlSeconds, at: iso(), ok: true };
-            actions.push({ name: def.name, label: def.label, ok: true, ttl: true, message: `${def.label} şablonunun teslim süresi Meta'da ${ttlSeconds / 3600} saat olarak ayarlandı.` });
-          } catch (error) {
-            if (!(error instanceof MetaGraphError)) throw error;
-            ttl[id] = { seconds: ttlSeconds, at: iso(), ok: false, ...(error.code === 100 ? { rejected: true } : {}) };
-            actions.push({ name: def.name, label: def.label, ok: false, ttl: true, code: error.code ?? error.reason, message: `${def.label} şablonunun teslim süresi Meta'da ayarlanamadı: ${error.message}` });
-          }
-        }
-      }
-      // Açma ya da teslim süresi düzenlemesi olduysa liste yeniden okunur (Meta'nın kayıtlı teslim süresi dahil — D0-W5-9).
+      // Açma olduysa liste yeniden okunur (Meta'nın kayıtlı teslim süresi dahil — D0-W5-9).
       if (actions.some(action => action.ok)) {
         try {
           listing = await api.details(record.wabaId);
@@ -390,7 +381,7 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
         }
       }
       const items = TEMPLATE_DEFS.map(def => ({ name: def.name, meta: keep(findExact(listing.items, def) || created.get(def.name) || null) }));
-      save(record, user, { items, actions, complete: listing.complete !== false, error: null, ttl });
+      save(record, user, { items, actions, complete: listing.complete !== false, error: null });
       audit(user, "whatsapp.templates.checked", "whatsapp", {
         ok: true,
         created: actions.filter(action => action.created).map(action => action.name),
@@ -399,12 +390,20 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
       });
       return view();
     } finally {
+      // 2.4.9 W-2: gönderim yolunun şablon önbelleği (10 dk / 100 ileti) temizlenir — süren toplu iş bir sonraki adımda şablonu Meta'dan TAZE okur (kart
+      // "gönderilmez" derken önbellekle sürmez). Meta okuması düşse de (zararsız: yalnız bir okuma fazla). Temizlik hatası denetimin sonucunu değiştirmez.
+      try {
+        onChecked?.(record.wabaId);
+      } catch {
+        // önbellek temizlenemedi: R2 aralığı (en geç 10 dk) yine geçerli
+      }
       busy = false;
     }
   }
 
-  function save(record, user, { items, actions, complete, error, ttl = {} }) {
-    store.setSetting(TEMPLATES_KEY, JSON.stringify({ v: 1, at: iso(), wabaId: record.wabaId, phoneNumberId: record.phoneNumberId, by: user?.id || "", byName: user?.display_name || user?.name || "", items, actions, complete, error, ttl }), user?.id || null);
+  // 2.4.9 W-6: yeni kayıtta teslim süresi kaydı (ttl) YOK; 2.4.8'in kaydı okunmaz.
+  function save(record, user, { items, actions, complete, error }) {
+    store.setSetting(TEMPLATES_KEY, JSON.stringify({ v: 1, at: iso(), wabaId: record.wabaId, phoneNumberId: record.phoneNumberId, by: user?.id || "", byName: user?.display_name || user?.name || "", items, actions, complete, error }), user?.id || null);
   }
 
   return { view, ensure };

@@ -6,6 +6,8 @@
 //   B1 bağlantı (App ID'siz) → Şablonları Denetle ve Oluştur: Ödeme Hatırlatma açılır (Onay Bekliyor), Ekstre açılmaz — neden Uygulama Kimliği.
 //   B2 Bilgileri Değiştir: App ID Tab ile → Kaydet ve Sına → Ekstre kendiliğinden açılır (örnek PDF yüklendi, KVKK alt satırı, UTILITY).
 //   B3 Meta Ekstre'yi Pazarlama'ya aldı, Hatırlatma onaylandı → klavyeyle Denetle: Hatırlatma "Onaylandı / Evet"; Ekstre "Hayır" + açık uyarı.
+//   2.4.9 W-T / W-6 (KULLANICI KARARI 03.11.2026; docs/2.4.9-tasarim/W-whatsapp-sablon.md §15): B2'de açma isteğinde teslim süresi alanı YOK; B3'te onaylı şablona
+//      teslim süresi düzenlemesi gitmez; B3b 2.4.8'den kalan TTL kaydı (ret + kırmızı "teslim süresi Meta'da ayarlanamadı" işlemi) kartta GÖRÜNMEZ.
 //   B4 yetkisiz (Personel): şablon ve aydınlatma metni API'si 403.
 //   B5 Aydınlatma Metni Hazırla (klavyeyle açılır): firma bilgileri metinde, eksik e-posta adıyla söylenir; Kopyala → panodaki metin = API metni;
 //      Aydınlatma Metni - PDF → %PDF, dosya adı firma adıyla, istek şirket parametreli; Esc ile kapanır (soru yok).
@@ -145,6 +147,7 @@ await step("B2 Bilgileri Değiştir: App ID Tab ile → Kaydet ve Sına → Ekst
   ok(parts.HEADER?.format === "DOCUMENT" && fake.state.handles.has(parts.HEADER?.example?.header_handle?.[0]), "BELGE başlığı + yükleme tanıtıcısı");
   ok(parts.BODY?.text === EKSTRE_BODY, "gövde plandaki metin");
   ok(parts.FOOTER?.text === KVKK_FOOTER, "KVKK alt satırı");
+  ok(post && !Object.hasOwn(post.body, "message_send_ttl_seconds"), `açma isteğinde teslim süresi yok — Meta varsayılanı 30 gün (2.4.9 W-T) (geldi ${post?.body?.message_send_ttl_seconds})`);
   ok(templatePosts().length === 1, "Ödeme Hatırlatma yeniden açılmadı");
   const row = JSON.parse(server.app.store.get("SELECT value FROM settings WHERE key = 'whatsapp.meta'").value);
   ok(row.appId === APP, "veri tabanında App ID yazılan");
@@ -166,7 +169,27 @@ await step("B3 Meta Ekstre'yi Pazarlama'ya aldı, Hatırlatma onaylandı → kla
   ok(/Pazarlama/.test(warning) && /gönderim YAPMAZ/.test(warning) && /yeniden inceleme/.test(warning), `uyarı görünür: ${warning.slice(0, 80)}`);
   ok(await page.isVisible('[data-wa-tpl-notes="destekofis_ekstre"] [data-wa-tpl-warning]'), "uyarı ekranda görünür");
   ok(templatePosts().length === 0, "yeniden şablon açılmadı");
+  ok(fake.requests.filter(item => item.method === "POST" && /^\/9\d+$/.test(item.path)).length === 0, "onaylı şablona teslim süresi düzenlemesi gitmedi (2.4.9 W-T)");
   await shot("04-pazarlama-uyarisi");
+});
+
+await step("B3b 2.4.8'den kalan teslim süresi kaydı (ret + kırmızı TTL işlemi): kartta TTL uyarısı ve TTL işlemi GÖRÜNMEZ (2.4.9 W-6)", async () => {
+  const key = "whatsapp.templates";
+  const record = JSON.parse(server.app.store.get("SELECT value FROM settings WHERE key = ?", key).value);
+  const ids = Object.fromEntries((record.items || []).map(item => [item.name, item.meta?.id]));
+  record.ttl = { [ids.destekofis_odeme_hatirlatma]: { seconds: 259200, at: record.at, ok: false, rejected: true }, [ids.destekofis_ekstre]: { seconds: 259200, at: record.at, ok: true, echoed: 259200 } };
+  record.actions = [
+    ...(record.actions || []),
+    { name: "destekofis_odeme_hatirlatma", label: "Ödeme Hatırlatma", ok: false, ttl: true, code: 100, message: "Ödeme Hatırlatma şablonunun teslim süresi Meta'da ayarlanamadı: Meta isteği tanımadı: Telefon Numarası Kimliği (Phone Number ID) ya da WhatsApp Business Hesap Kimliği (WABA ID) yanlış olabilir. (Meta hata kodu 100: Invalid parameter: message_send_ttl_seconds)" },
+  ];
+  server.app.store.setSetting(key, JSON.stringify(record));
+  await page.reload();
+  await page.waitForSelector('[data-wa-tpl="destekofis_odeme_hatirlatma"] [data-wa-tpl-status]');
+  const card = await text("#adm-wa-templates");
+  ok(!/teslim süresi/i.test(card), `kartta teslim süresi uyarısı / işlemi yok${/teslim süresi/i.test(card) ? ` (görünen: ${card.match(/[^.]*teslim süresi[^.]*/i)?.[0]?.slice(0, 90)})` : ""}`);
+  ok(!/Phone Number ID/.test(card), "kartta kimlik suçlayan kırmızı ileti yok");
+  ok((await cell("destekofis_odeme_hatirlatma", "status")) === "Onaylandı" && (await cell("destekofis_odeme_hatirlatma", "usable")) === "Evet", "Hatırlatma Onaylandı / Evet (kayıt okunuyor)");
+  await shot("04b-eski-ttl-kaydi");
 });
 
 await step("B4 yetkisiz (Personel): şablon API'si 403", async () => {

@@ -26,7 +26,7 @@ import { e164Of, waPresetRange } from "./alici.mjs";
 import { allPeriodStartOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
-import { deliveryTtlSeconds, sendingVerdict } from "./templates.mjs";
+import { deliveryTtlSeconds, noteListing, sendingVerdict } from "./templates.mjs";
 
 export const TEMPLATE_NAMES = Object.freeze({ statement: "destekofis_ekstre", reminder: "destekofis_odeme_hatirlatma" });
 export const KIND_LABELS = Object.freeze({ statement: "Ekstre", reminder: "Ödeme Hatırlatma" });
@@ -167,11 +167,11 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       return false;
     }
   };
+  // 2.4.9 W-T (KULLANICI KARARI 03.11.2026): gönderim ayarında teslim süresi (ttlHours) YOK — Meta'nın varsayılanı 30 gün; 2.4.8'in kayıtlı değeri okunmaz.
   const settings = () => {
     const raw = parse(store.setting(SENDING_KEY, ""), {}) || {};
-    const ttl = Number(raw.ttlHours);
     const cap = Number(raw.dailyCap);
-    return { ttlHours: Number.isInteger(ttl) && ttl >= 1 && ttl <= 720 ? ttl : META_D0.defaultTtlHours, dailyCap: Number.isInteger(cap) && cap > 0 ? cap : null };
+    return { dailyCap: Number.isInteger(cap) && cap > 0 ? cap : null };
   };
   const ack = () => {
     const raw = parse(store.setting(ACK_KEY, ""), null);
@@ -324,17 +324,32 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
 
   // ---------- Meta denetimleri (şablon + sınır basamağı) ----------
   const templateCache = new Map(); // `${waba}|${name}` → { at, result }
+  const templateEpoch = new Map(); // waba → Şablonları Denetle sayacı (2.4.9 W-2: Denetle'den önce başlamış okuma önbelleğe yazılmaz)
   const tierCache = new Map(); // waba → { at, limit, tier }
   // T2-7: karar ekrandaki "Gönderime Hazır" ile AYNI kuralla, tek yerde (lib/whatsapp/templates.mjs sendingVerdict: durum, kategori VE içerik).
   const judgeTemplate = (items, name) => sendingVerdict(items, name);
   // Şablon listesi Şablonlar kartıyla AYNI okumayla (createMetaTemplates.details: içerik dahil ayrıntılı alanlar; alan reddinde temel alanlara bir kez düşer).
-  async function checkTemplate(record, name, { force = false } = {}) {
+  // note (2.4.9 W-2b): önizleme ve başlatmanın taze okuması şablon kaydına da yazılır (templates.mjs noteListing: Yönetim kartı + pencerenin varsayılan sekmesi);
+  // salt okunur lisansta yazılmaz.
+  async function checkTemplate(record, name, { force = false, note = false } = {}) {
     const key = `${record.wabaId}|${name}`;
     const cached = templateCache.get(key);
     if (!force && cached && nowMs() - cached.at < TEMPLATE_CHECK_MS && nowMs() >= cached.at && cached.sent < TEMPLATE_CHECK_EVERY) return cached.result;
+    const epoch = templateEpoch.get(record.wabaId) || 0;
+    const readAt = iso();
     const listing = await createMetaTemplates(connection.metaOptions(record)).details(record.wabaId);
     const result = judgeTemplate(listing.items, name);
+    // W-2: okuma sürerken Şablonları Denetle bittiyse (forgetTemplates) bu okuma Denetle'ninkinden eskidir — önbelleğe ve şablon kaydına YAZILMAZ (karar yalnız bu
+    // adım için; sonraki adım yeniden okur). Zorla üretildi: test/whatsapp-w2-onbellek-249.test.mjs "SÜRERKEN".
+    if ((templateEpoch.get(record.wabaId) || 0) !== epoch) return result;
     templateCache.set(key, { at: nowMs(), result, sent: 0 });
+    if (note && writable()) {
+      try {
+        noteListing(store, record, listing, { readAt });
+      } catch (error) {
+        log.warn?.(`WhatsApp şablon kaydı önizlemeden güncellenemedi: ${error?.message || error}`);
+      }
+    }
     return result;
   }
   async function dailyLimit(graph, record, { force = false } = {}) {
@@ -643,7 +658,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let limitInfo;
     let template;
     try {
-      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true });
+      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true, note: true });
       limitInfo = await dailyLimit(graph, record, { force: true });
     } catch (error) {
       if (error instanceof MetaGraphError) throw metaHttp(error);
@@ -715,7 +730,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let template;
     let limitInfo;
     try {
-      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true });
+      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true, note: true });
       if (template.ok) limitInfo = await dailyLimit(graph, record, { force: true });
     } catch (error) {
       if (error instanceof MetaGraphError) throw metaHttp(error, { starting: true });
@@ -1006,6 +1021,22 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // Bekleniyor"daki toplu işte Meta okunmaz (R1). Okuma düşerse en erken 1 dk sonra yeniden. Dönüş: { acted, waitMs } (en yakın denetim anı).
   const WATCH_RETRY_MS = 60_000;
   const watchTried = new Map(); // `${waba}|${şablon}` / `tier|${waba}` → son deneme (ms)
+  // 2.4.9 W-2 (ANA OTURUM ONAYI 03.11.2026; docs/2.4.9-tasarim/W-whatsapp-sablon.md §5): "Şablonları Denetle ve Oluştur" bitince (templates.mjs ensure → routes/whatsapp.mjs
+  // → scheduler.forgetTemplates: aynı WABA'yı kullanan BÜTÜN şirketlerin kuyrukları) bu WABA'nın şablon kararları unutulur — süren toplu işin sonraki adımı şablonu
+  // Meta'dan TAZE okur (kart "gönderilmez" derken önbellekle 10 dk / 100 ileti sürmez). Sınır basamağı (tier|…) önbelleğine dokunulmaz. Dönüş: silinen karar sayısı.
+  function forgetTemplates(wabaId) {
+    const prefix = `${String(wabaId || "")}|`;
+    if (prefix === "|") return 0;
+    templateEpoch.set(String(wabaId), (templateEpoch.get(String(wabaId)) || 0) + 1);
+    let forgotten = 0;
+    for (const key of [...templateCache.keys()]) {
+      if (!key.startsWith(prefix)) continue;
+      templateCache.delete(key);
+      forgotten += 1;
+    }
+    for (const key of [...watchTried.keys()]) if (key.startsWith(prefix)) watchTried.delete(key);
+    return forgotten;
+  }
   async function watch() {
     let acted = false;
     let soon = null;
@@ -1586,8 +1617,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const seenWaba = Date.parse(ledger.hookSeenAt?.(connection.read()?.wabaId || "") || "");
     const seenHere = Date.parse(store.setting(HOOK_SEEN_KEY, "") || "");
     const seen = Math.max(Number.isFinite(seenWaba) ? seenWaba : -Infinity, Number.isFinite(seenHere) ? seenHere : -Infinity);
-    // T2-5 güvenli taraf: TTL = META'NIN KABUL ETTİĞİ ileti ömrü (lib/whatsapp/templates.mjs deliveryTtlSeconds; okunamazsa / reddedildiyse Meta'nın varsayılanı 30 gün) —
-    // ayardaki değer değil: Meta'nın hâlâ teslim etmeye çalıştığı iletiyi "Süresi Doldu" saymaz, PDF'ini önceden silmez.
+    // TTL = Meta'nın şablon listesinde bildirdiği ileti ömrü, yoksa Meta'nın varsayılanı 30 gün (lib/whatsapp/templates.mjs deliveryTtlSeconds; 2.4.9 W-T: program
+    // şablona TTL yazmaz) — Meta'nın hâlâ teslim etmeye çalıştığı iletiyi "Süresi Doldu" saymaz, PDF'ini önceden silmez.
     const ttlOf = new Map();
     const ttlMs = (wabaId, name) => {
       const key = `${wabaId}|${name}`;
@@ -2017,7 +2048,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     };
   }
 
-  // ---------- Ayarlar (bir kez onay, sınır, TTL) ----------
+  // ---------- Ayarlar (bir kez onay, sınır) ----------
   function setAck(user, value) {
     if (value === true) store.setSetting(ACK_KEY, JSON.stringify({ version: ACK_VERSION, text: ACK_TEXT, at: iso(), by: user.id, byName: user.display_name || user.username || "" }), user.id);
     else store.run("DELETE FROM settings WHERE key = ?", ACK_KEY);
@@ -2029,16 +2060,13 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return { text: ACK_TEXT, version: ACK_VERSION, acknowledged: Boolean(current), at: current?.at || null, byName: current?.byName || "" };
   };
   function setSending(user, body = {}) {
+    // 2.4.9 W-T (KULLANICI KARARI 03.11.2026): teslim süresi değiştirilemez; istek bütünüyle reddedilir (birlikte gelen alan da yazılmaz).
+    if (Object.hasOwn(body, "ttlHours")) fail(400, "Teslim süresi Meta'nın varsayılanıdır (30 gün); değiştirilemez.", "whatsapp-invalid", { field: "ttlHours" });
     const next = { ...settings() };
     if (Object.hasOwn(body, "dailyCap")) {
       const cap = body.dailyCap === null || body.dailyCap === "" ? null : Number(body.dailyCap);
       if (cap !== null && (!Number.isInteger(cap) || cap < 1 || cap > 1_000_000)) fail(400, "Günlük sınır 1 ile 1.000.000 arasında tam sayı olmalı (boş = Meta'nın sınırı).", "whatsapp-invalid", { field: "dailyCap" });
       next.dailyCap = cap;
-    }
-    if (Object.hasOwn(body, "ttlHours")) {
-      const ttl = Number(body.ttlHours);
-      if (!Number.isInteger(ttl) || ttl < 1 || ttl > 720) fail(400, "Teslim süresi 1 ile 720 saat arasında olmalı.", "whatsapp-invalid", { field: "ttlHours" });
-      next.ttlHours = ttl;
     }
     store.setSetting(SENDING_KEY, JSON.stringify(next), user.id);
     audit(user, "whatsapp.sending.saved", "whatsapp", next);
@@ -2064,5 +2092,5 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     writeLock?.mark(companyId);
     syncLockNote();
   };
-  return { canWrite, markLocked, connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate };
+  return { canWrite, markLocked, connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate, forgetTemplates };
 }

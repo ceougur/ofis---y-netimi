@@ -148,9 +148,12 @@ async function uncertain(s) {
   s.ctx.clock.advance(60_000);
   return { batchId, job, wamid: s.ctx.messages().at(-1).wamid };
 }
-/** Süresi Doldu (bildirim yolu çalışıyor — "sent" geldi —, teslim gelmedi, Meta'nın kabul ettiği 3 günlük ömür + 1 sa; t2-p3 düzeneği). */
+/** Süresi Doldu (bildirim yolu çalışıyor — "sent" geldi —, teslim gelmedi, Meta'nın bildirdiği 3 günlük ömür + 1 sa; t2-p3 düzeneği). */
 async function expire(s, wamid) {
-  await ok(await s.ctx.api.post(`/api/workspace/whatsapp/templates/ensure${s.q}`, {}), "şablonlar (Meta'nın kabul ettiği ömür)");
+  // 2.4.9 W-T — ön koşul bilerek güncellendi (KULLANICI KARARI 03.11.2026, docs/2.4.9-tasarim/W-whatsapp-sablon.md §15): program şablona teslim süresi YAZMAZ;
+  // "Süresi Doldu" Meta'nın listede BİLDİRDİĞİ değere bağlıdır. Bu tablo süre değil durum kuralını sınar: Meta 3 günü listede bildirir, Denetle onu okur.
+  for (const tpl of s.ctx.fake.state.templates) if (tpl.name.startsWith("destekofis_")) tpl.message_send_ttl_seconds = 259_200;
+  await ok(await s.ctx.api.post(`/api/workspace/whatsapp/templates/ensure${s.q}`, {}), "şablonlar (Meta'nın bildirdiği ömür)");
   for (const tpl of s.ctx.fake.state.templates) tpl.status = "APPROVED";
   s.apply([st(s, wamid, "sent")]);
   s.ctx.clock.advance(74 * HOUR);

@@ -2,7 +2,7 @@
 // (R3) SAYILMAZ — R3 yalnız kişiye ulaşmış ya da ulaşması süren sonuçları sayar (Meta Kabul Etti, Gönderildi, Teslim Edildi, Okundu); Süresi Doldu ve Başarısız gibi
 // kişiye ulaşmamış sonuçlar hariç. Önceden süresi dolan kişi aynı dönem için yeni toplu işte "Daha Önce Gönderildi" diye eleniyordu (K0 kâhini CIFT-16: yeni toplu iş
 // oluşmadı). Süresi dolduktan sonra Meta geç "delivered" bildirirse ileti kişiye ulaşmıştır → yine "Daha Önce Gönderildi".
-// Düzenek: gerçek program (şablonları kendisi açar; Meta 3 günlük teslim süresini kabul eder) + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5) + programın durum
+// Düzenek: gerçek program (şablonları kendisi açar; Meta listede 3 günlük teslim süresi bildirir — 2.4.9 W-T ön koşulu) + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5) + programın durum
 // bildirimi çekirdeği + sahte saat (ders 13). Bildirim yolu çalışıyor (bir "sent" bildirimi) — süre dolumu yalnız o zaman yazılır (§7a 16).
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
@@ -23,7 +23,13 @@ async function sentOnce() {
   try {
     assert.equal((await ctx.api.put(URLS.conn, { phoneNumberId: PNID, wabaId: WABA, appId: APP, token: TOKEN })).status, 200);
     assert.equal((await ctx.api.post(ENSURE, {})).status, 200);
-    for (const tpl of fake.state.templates) tpl.status = "APPROVED";
+    // 2.4.9 W-T — ön koşul bilerek güncellendi (KULLANICI KARARI 03.11.2026, docs/2.4.9-tasarim/W-whatsapp-sablon.md §15): program şablona teslim süresi YAZMAZ;
+    // "Süresi Doldu" Meta'nın listede BİLDİRDİĞİ değere bağlıdır. Bu test P3 kuralını sınar (süre değil): Meta 3 günü listede bildirir, Denetle onu okur.
+    for (const tpl of fake.state.templates) {
+      tpl.status = "APPROVED";
+      if (tpl.name.startsWith("destekofis_")) tpl.message_send_ttl_seconds = 259_200;
+    }
+    assert.equal((await ctx.api.post(ENSURE, {})).status, 200);
     const a = await ctx.account("Ayşe Yılmaz", "0532 111 22 33", 1250);
     const body = { kind: "statement", ids: [a.id], preset: "thisMonth" };
     const res = await ctx.batch(body);
@@ -45,7 +51,7 @@ const previewSkip = async (ctx, body) => {
   return res.data.data.people[0].skip || "gönderilecek";
 };
 const expire = async (ctx, job) => {
-  ctx.clock.advance(74 * HOUR); // Meta'nın kabul ettiği 3 günlük teslim süresi + 1 saat geçti
+  ctx.clock.advance(74 * HOUR); // Meta'nın bildirdiği 3 günlük teslim süresi + 1 saat geçti
   await ctx.drain();
   assert.equal((await ctx.jobs(job.batch_id || job.batchId)).find(row => row.id === job.id)?.state, "expired", "ön koşul: iş Süresi Doldu");
 };

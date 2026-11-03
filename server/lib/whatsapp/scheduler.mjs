@@ -120,6 +120,19 @@ export function createWaScheduler({ gapMs = 1000, idleMs = 30_000, maintainMs = 
     kick() {
       if (!running) schedule(50);
     },
+    // 2.4.9 W-2: Şablonları Denetle bitince o WABA'nın şablon kararları BÜTÜN kayıtlı kuyruklarda unutulur (aynı WhatsApp hesabını kullanan ikinci şirketin süren
+    // işi de sonraki adımda taze okur). Bir kuyruğun hatası öbürlerini durdurmaz. Dönüş: silinen karar sayısı.
+    forgetTemplates(wabaId) {
+      let forgotten = 0;
+      for (const [key, queue] of [...queues.entries()]) {
+        try {
+          forgotten += Number(queue.forgetTemplates?.(wabaId)) || 0;
+        } catch (error) {
+          log.warn?.(`WhatsApp işçisi: şirket (${key}) şablon önbelleği temizlenemedi (${error?.message || error}).`);
+        }
+      }
+      return forgotten;
+    },
     runOnce,
     /** Testler: yürütülebilir iş kalmayana dek (en çok max tur). Dönüş: yürütülen iş sayısı. */
     async drain({ max = 10_000, maintain = true } = {}) {
