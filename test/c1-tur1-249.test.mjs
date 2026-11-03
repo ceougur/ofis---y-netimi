@@ -6,6 +6,7 @@
 //   DÜŞÜK-3: Silinenler'deki cari notu "Hareketleriyle Cari listesine geri döner; Kasa yeniden hesaplanır." C1'den sonra yanlış (silinen cari hareketsiz).
 //   ORTA (taksit kartı yarışı): kart isteğin başında okunuyor, gövde beklenirken (await readJson) kart silinirse tahsilat / iade / tahsilat düzeltmesi /
 //     taksit ekleme / taksit düzeltmesi SİLİNMİŞ KARTA yazılıyordu (yanıt 404, kayıt yazılmış). Düzeltme: yazım işleminin içinde kart yeniden denetlenir.
+//   Madde 4 (aynı desen, stok hareketi): ürün gövde beklenirken silinirse satış / düzeltme silinmiş ürüne yazılıyordu (yanıt 404) — S1–S3.
 // Kâhin: beklenen sayılar girilen kayıtların ELLE sayımıdır; eşdeğerlik denetimi düzeltmeden ÖNCEKİ tanımın (eaf6b988) SQL'idir (program kodundan değil).
 // Eski kodda (eaf6b988) beklenen kırmızılar (ders 38): Y1–Y4 "silinmiş karta yazılmamalı" (satır yazılmış, yanıt 404); D3 not eski metin; E2 masraf
 // başlığı POS kaydı yüzünden sayılır (1); E3 fatura listesi hareket sayacını çalıştırır (>0). E1 (eşdeğerlik) eski kodda da yeşildir (tanım aynı).
@@ -165,6 +166,75 @@ describe("2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken k
     const item = trash.find(row => row.id === `account:${account.id}`);
     assert.ok(item, "silinen cari Silinenler'de");
     assert.equal(item.note, "Cari listesine geri döner.", `not: “${item.note}”`);
+  });
+});
+
+// C1 TUR 1 madde 4 (KARAR "stok hareketi / kart kalemleri aynı desen → C1 TUR 1"): stok hareketinde silinmiş CARİ yarışı kapalı (400 "Seçilen cari
+// bulunamadı", hiçbir şey yazılmaz — docs/kanit/2026-11-03/c1-tur1/yoklama-madde4); ama ÜRÜN gövde beklenirken silinince satış / düzeltme yazılıyor,
+// yanıt 404 "Ürün bulunamadı" (yazımdan SONRA detail() düşüyor) — kullanıcı "olmadı" sanıp yineler → cariye çift borç / Kasa'ya çift giriş. Aynı desen:
+// ürün isteğin başında okunur (itemRow), await readJson, yazım. Eski kodda (eaf6b988) beklenen kırmızı: S1/S2 "silinmiş ürüne yazılmamalı".
+describe("2.4.9 C1 TUR 1 — stok hareketi yarışı (zorla): gövde yoldayken ürün silinirse hiçbir şey yazılmaz (404)", () => {
+  let ctx;
+  before(async () => {
+    ctx = await boot({ now: NOW });
+    await must("kurulum", ctx.api.post("/api/workspace/bank/setup/dismiss", {}));
+  });
+  after(async () => ctx?.server.close());
+  const STOCK = "/api/workspace/stock";
+  const newItem = name => must(`ürün ${name}`, ctx.api.post(STOCK, { name, unit: "Adet", unitPrice: 10, openingQty: "10" }));
+  const itemDeletedAt = id => ctx.store.get("SELECT deleted_at AS d FROM stock_items WHERE id = ?", id)?.d ?? "YOK";
+  const movesOf = itemId => ctx.store.all("SELECT kind, qty, amount, pay, account_id AS accountId FROM stock_moves WHERE item_id = ? ORDER BY rowid", itemId).map(row => ({ kind: row.kind, qty: Number(row.qty), amount: Number(row.amount), pay: row.pay, accountId: row.accountId }));
+  const entriesOf = accountId => ctx.store.all("SELECT kind, amount, source FROM account_entries WHERE account_id = ? ORDER BY rowid", accountId).map(row => ({ kind: row.kind, amount: Number(row.amount), source: row.source }));
+  const eventCount = () => ctx.store.get("SELECT COUNT(*) AS n FROM fin_events").n;
+  const assertItemRaceRefused = (label, item, { reply, removed }, facts, before) => {
+    assert.equal(removed?.status, 200, `${label}: ön koşul — ürün gövde beklenirken silindi (${removed?.status} ${JSON.stringify(removed?.data || removed?.error?.message || "").slice(0, 160)})`);
+    assert.ok(itemDeletedAt(item.id) && itemDeletedAt(item.id) !== "YOK", `${label}: ön koşul — ürün silinmiş`);
+    const after = facts();
+    assert.deepEqual(after, before, `${label}: silinmiş ürüne yazılmamalı (kayıtlar aynen) — önce ${JSON.stringify(before)}, sonra ${JSON.stringify(after)}`);
+    assert.equal(reply.status, 404, `${label}: yazım reddedilir — ${reply.text.slice(0, 160)}`);
+    assert.match(reply.text, /Ürün bulunamadı/, `${label}: mevcut hata biçimi`);
+  };
+
+  it("S1 stok satışı (POST …/moves; açık hesap ve peşin): silinmiş ürüne hareket, cari borcu, Kasa girişi yazılmaz", async () => {
+    const outcomes = [];
+    await check(outcomes, "açık hesap satış", async () => {
+      const account = await must("cari", ctx.api.post(ACC, { name: "S1 Açık Hesap Müşteri", type: "customer", registeredOn: "2026-09-01" }));
+      const item = await newItem("S1 Açık Hesap Ürünü");
+      const facts = () => ({ moves: movesOf(item.id), entries: entriesOf(account.id), events: eventCount() });
+      const before = facts();
+      const race = await raceWrite(ctx, { method: "POST", path: `${STOCK}/${item.id}/moves`, body: { kind: "out", qty: 1, unitPrice: 50, pay: "account", accountId: account.id, date: TODAY }, during: () => ctx.api.del(`${STOCK}/${item.id}`) });
+      assertItemRaceRefused("açık hesap satış", item, race, facts, before);
+    });
+    await check(outcomes, "peşin satış (nakit)", async () => {
+      const item = await newItem("S1 Peşin Ürünü");
+      const facts = () => ({ moves: movesOf(item.id), events: eventCount() });
+      const before = facts();
+      const cash = await cashOf(ctx.api);
+      const race = await raceWrite(ctx, { method: "POST", path: `${STOCK}/${item.id}/moves`, body: { kind: "out", qty: 1, unitPrice: 70, pay: "cash", method: "cash", date: TODAY }, during: () => ctx.api.del(`${STOCK}/${item.id}`) });
+      assertItemRaceRefused("peşin satış", item, race, facts, before);
+      assert.equal(await cashOf(ctx.api), cash, "peşin satış: Kasa değişmez");
+    });
+    verdict("S1", outcomes);
+  });
+
+  it("S2 stok hareketi düzeltme (PUT …/moves/:id): silinmiş ürünün hareketi ve cari borcu değişmez", async () => {
+    const account = await must("cari", ctx.api.post(ACC, { name: "S2 Düzeltme Müşterisi", type: "customer", registeredOn: "2026-09-01" }));
+    const item = await newItem("S2 Düzeltme Ürünü");
+    const made = await must("satış", ctx.api.post(`${STOCK}/${item.id}/moves`, { kind: "out", qty: 1, unitPrice: 50, pay: "account", accountId: account.id, date: TODAY }));
+    const facts = () => ({ moves: movesOf(item.id), entries: entriesOf(account.id), events: eventCount() });
+    const before = facts();
+    assert.deepEqual(before.entries, [{ kind: "debt", amount: 50, source: "stock" }], "ön koşul: satış cariye borç yazdı");
+    const race = await raceWrite(ctx, { method: "PUT", path: `${STOCK}/${item.id}/moves/${made.moveId}`, body: { unitPrice: 70 }, during: () => ctx.api.del(`${STOCK}/${item.id}`) });
+    assertItemRaceRefused("stok düzeltme", item, race, facts, before);
+  });
+
+  it("S3 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)", async () => {
+    const account = await must("cari", ctx.api.post(ACC, { name: "S3 Olağan Müşteri", type: "customer", registeredOn: "2026-09-01" }));
+    const item = await newItem("S3 Olağan Ürün");
+    const made = await must("satış", ctx.api.post(`${STOCK}/${item.id}/moves`, { kind: "out", qty: 1, unitPrice: 50, pay: "account", accountId: account.id, date: TODAY }));
+    await must("düzelt", ctx.api.put(`${STOCK}/${item.id}/moves/${made.moveId}`, { unitPrice: 70 }));
+    assert.deepEqual(entriesOf(account.id), [{ kind: "debt", amount: 70, source: "stock" }]);
+    assert.deepEqual(movesOf(item.id).filter(row => row.kind === "out").map(row => row.amount), [70]);
   });
 });
 
