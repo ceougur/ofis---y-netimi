@@ -281,6 +281,36 @@ describe("2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (ba
     await must("tahsilatı geri yükle", ctx.api.post("/api/admin/trash/restore", { id: item.id }));
   });
 
+  it("T7 yarıda kesilme (§8/8): Geri Al ikinci carinin hareket sayımında kesilirse hiçbir şey değişmez (kartlar, cariler, aktarım); kesinti kalkınca Geri Al tamamlanır", async () => {
+    const matrix = [["Ad Soyad", "Toplam", "Taksit Sayısı", "İlk Vade"], ["T7K Bir", "600", "2", "01.11.2026"], ["T7K İki", "600", "2", "01.11.2026"]];
+    const result = await must("Excel'den taksit yükle", ctx.api.post("/api/workspace/plans/import", { matrix, headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue" }, fileName: "c1-kesinti.xlsx", linkRecords: false }));
+    const facts = () => ({
+      plans: ctx.store.get("SELECT COUNT(*) AS n FROM plans WHERE import_id = ?", result.importId).n,
+      accounts: ctx.store.get("SELECT COUNT(*) AS n FROM accounts WHERE name IN ('T7K Bir', 'T7K İki')").n,
+      undone: ctx.store.get("SELECT undone_at AS u FROM plan_imports WHERE id = ?", result.importId).u,
+    });
+    const before = facts();
+    assert.deepEqual(before, { plans: 2, accounts: 2, undone: null });
+    const get = ctx.store.get;
+    let calls = 0;
+    ctx.store.get = function cut(sql, ...args) {
+      if (String(sql).includes("AS allEntries") && (calls += 1) === 2) throw new Error("kesinti (test): ikinci carinin sayımı");
+      return get.call(this, sql, ...args);
+    };
+    let cut;
+    try {
+      cut = await ctx.api.post(`/api/workspace/plans/imports/${result.importId}/undo`, {});
+    } finally {
+      ctx.store.get = get;
+    }
+    assert.equal(calls >= 2, true, "ön koşul: kesinti Geri Al'ın içinde gerçekten oluştu");
+    assert.equal(cut.status, 500, `kesilen Geri Al başarılı sayılmaz: ${cut.status}`);
+    assert.deepEqual(facts(), before, "hep ya da hiç: kartlar, cariler ve aktarım aynen");
+    const done = await must("geri al (kesintisiz)", ctx.api.post(`/api/workspace/plans/imports/${result.importId}/undo`, {}));
+    assert.deepEqual([done.accounts, done.accountsKept], [2, 0]);
+    assert.deepEqual({ ...facts(), undone: Boolean(facts().undone) }, { plans: 0, accounts: 0, undone: true });
+  });
+
   it("T8 yarış (§9, zorla): tahsilatın gövdesi yoldayken hareketsiz cari silinirse tahsilat YAZILMAZ (404), Kasa değişmez", async () => {
     const victim = await newAccount(ctx, "T8 Yarış Carisi");
     const cashBefore = await cashOf(ctx.api);
