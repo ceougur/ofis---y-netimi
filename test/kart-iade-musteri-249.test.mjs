@@ -7,6 +7,15 @@
 // Eski kodda (a5a3fcb8) kırmızı hücreler ve beklenen nedenleri: P1-b — müşteriye kartla ödeme yokken POST 200 (karta yazılır); DÜŞÜK-1 — satır kartta kalır (tek POS) /
 // 400 pos-not-for-payment (2 POS); ters yön (komşu) — tek kartta POS satırı karta çevrilince satır POS'ta kalır. Tedarikçi / Diğer hücresi ve "alan yok → bağ sürer"
 // eski kodda da yeşil (gerileme koruması). Sahte saat 08.10.2026 (ders 13); sunucu süreç içinde, lisans zamanlayıcısı kapalı (ders 30).
+// P1 TUR 2 (P1 tur 1 dar kontrolü, 03.11.2026; docs/2.4.9-IS-LISTESI.md "P1 TUR 1 DAR KONTROL") — düzeltmede (PUT) kart iadesi kuralları POST'la aynı:
+//   DÜŞÜK-1 (tur 1 gerilemesi) etkin Kredi Kartı yokken (0 kart ya da tek kart pasif) PUT cardRefund:true → 400 bank-account-invalid (Yargıç 2.3.0 #6; önceden satır
+//           sessizce hesapsıza — 108 — yazılıyordu). Var olan kart iadesi satırı korunur (pasif kartta açıklama düzeltmesi 200, kartı aynı).
+//   DÜŞÜK-2 (03.11 yetkisiyle BAŞ MİMAR KARARI) "var olan satırlar korunur" yalnız VAR OLAN kart iadesi satırları: iade olmayan satır müşteride iadeye çevrilirken
+//           POST'un card-refund-no-payment denetimi aynen (kartla ödemesi yoksa 400); var olan iade satırının tutar / tarih / kart düzeltmesi serbest.
+//   TEST-1  yalnız POS İadesi (POS'a bağlı çıkış; cari formundan ve Banka → POS İşlemleri'nden) olan müşteride bayrak false, POST 400 (mutasyon mA: bayrak
+//           sorgusu Kredi Kartı hesabı yerine "hesaba bağlı her çıkış").
+//   TEST-2  iade → POS çevirmesinde POS ayrıntısı (taksit, provizyon no, son 4 hane) GÖVDEDEN yazılır (mutasyon mB: PUT önceki satıra göre karar verir).
+// Eski kodda (20ca225a) beklenen kırmızılar: DÜŞÜK-1 hücreleri 200 + satır hesapsız; DÜŞÜK-2 hücresi 200 + satır karta. TEST-1 / TEST-2 eski kodda yeşil (doğru davranış).
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { BANK, TODAY, balanceOf, bootBank, expectStatus, kurus, must, openAcceptanceAccounts, openPos, posCheck, ziraatPos } from "./banka-220-pos-ortak.mjs";
@@ -31,6 +40,8 @@ async function world({ cards = 2, poses = 1 } = {}) {
 const row = (w, id) => w.ctx.store.get("SELECT id, kind, amount, method, fin_ref AS finRef, event_id AS eventId FROM account_entries WHERE id = ?", id);
 const rowsOf = (w, accountId) => w.ctx.store.all("SELECT id, kind, amount, method, fin_ref AS finRef FROM account_entries WHERE account_id = ? ORDER BY rowid", accountId);
 const activeSales = (w, eventId) => w.ctx.store.all("SELECT pos_id AS posId, kind, gross_minor AS gross FROM pos_sales WHERE event_id = ? AND status = 'active'", eventId).map(sale => ({ ...sale }));
+const saleDetail = (w, eventId) => w.ctx.store.all("SELECT pos_id AS posId, kind, gross_minor AS gross, installments, auth_code AS authCode, card_last4 AS cardLast4 FROM pos_sales WHERE event_id = ? AND status = 'active'", eventId).map(sale => ({ ...sale }));
+const setStatus = (w, accountId, status) => must(`hesap ${status}`, w.api.post(`${BANK}/accounts/${accountId}/status`, { status }));
 const flagOf = async (w, accountId) => (await must("cari", w.api.get(`${ACC}/${accountId}`))).hasCardPayment;
 const detailEntry = async (w, accountId, entryId) => (await must("cari", w.api.get(`${ACC}/${accountId}`))).entries.find(entry => entry.id === entryId);
 const entry = (w, accountId, body) => w.api.post(`${ACC}/${accountId}/entries`, { date: TODAY, ...body });
@@ -207,6 +218,152 @@ describe("DÜŞÜK-1 — var olan Kredi Kartına İade satırında kutu kaldır�
       assert.deepEqual(activeSales(w, r.eventId), [], "etkin POS satışı kalmadı");
       assert.equal(await balanceOf(w.api, w.kk1.id), kurus(70), "KART1 alacak +70");
       await posCheck(w.api, "ters yön");
+    } finally {
+      await w.ctx.server.close();
+    }
+  });
+});
+
+describe("P1 tur 2 — düzeltmede (PUT) kart iadesi kuralları POST'la aynı (dar kontrol DÜŞÜK-1 / DÜŞÜK-2, TEST-1 / TEST-2)", () => {
+  it("DÜŞÜK-1 0 kart: POS ve Nakit tahsilatı PUT cardRefund:true → 400 bank-account-invalid, satır yerinde (POS / Nakit), POS satışı sürer; POST da 400", async () => {
+    const w = await world({ cards: 0 });
+    try {
+      const sale = await must("POS tahsilatı 70", entry(w, w.sup.id, { kind: "in", method: "card", amount: "70" }));
+      const cashIn = await must("Nakit tahsilat 50", entry(w, w.sup.id, { kind: "in", method: "cash", amount: "50" }));
+      const eventId = row(w, sale.entryId).eventId;
+      assert.deepEqual(activeSales(w, eventId), [{ posId: w.pos.id, kind: "sale", gross: kurus(70) }], "ön koşul: etkin POS satışı 70");
+      const pending = await posPending(w);
+      const cash = await cashOf(w);
+      const res = await edit(w, w.sup.id, sale.entryId, { kind: "in", method: "card", amount: "70,00", cardRefund: true });
+      expectStatus(res, 400, "bank-account-invalid", "0 kart: POS satırı Kredi Kartına İade'ye");
+      assert.match(res.error || "", /Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir/);
+      const r = row(w, sale.entryId);
+      assert.deepEqual([r.method, r.amount, r.finRef], ["card", 70, w.pos.id], "satır POS'ta kaldı (hesapsıza yazılmadı)");
+      assert.deepEqual(activeSales(w, r.eventId), [{ posId: w.pos.id, kind: "sale", gross: kurus(70) }], "POS satışı sürüyor");
+      assert.equal(await posPending(w), pending, "POS Bekleyen değişmedi");
+      const res2 = await edit(w, w.sup.id, cashIn.entryId, { kind: "in", method: "card", amount: "50", cardRefund: true });
+      expectStatus(res2, 400, "bank-account-invalid", "0 kart: Nakit satırı Kredi Kartına İade'ye");
+      assert.deepEqual([row(w, cashIn.entryId).method, row(w, cashIn.entryId).finRef], ["cash", ""], "satır Nakit kaldı");
+      assert.equal(await cashOf(w), cash, "Kasa değişmedi");
+      // POST aynı kural (Yargıç 2.3.0 #6) — gerileme koruması.
+      expectStatus(await entry(w, w.sup.id, { kind: "in", method: "card", amount: "30", cardRefund: true }), 400, "bank-account-invalid", "0 kart: yeni Kredi Kartına İade");
+      // Kutusuz düzeltme (alan yok / false) eskisi gibi 200: POS'ta kalır.
+      await must("POS satırı açıklama (alan yok)", edit(w, w.sup.id, sale.entryId, { kind: "in", method: "card", amount: "70", note: "düzeltme" }));
+      await must("POS satırı cardRefund:false", edit(w, w.sup.id, sale.entryId, { kind: "in", method: "card", amount: "70", cardRefund: false }));
+      assert.equal(row(w, sale.entryId).finRef, w.pos.id, "kutusuz düzeltmede satır POS'ta");
+      await posCheck(w.api, "tur 2 DÜŞÜK-1 0 kart");
+    } finally {
+      await w.ctx.server.close();
+    }
+  });
+
+  it("DÜŞÜK-1 tek kart pasif: POS satırı PUT cardRefund:true → 400 bank-account-invalid; var olan iade satırı korunur (açıklama düzeltmesi 200, kartı aynı; tutar değişikliği pasif kartta 400)", async () => {
+    const w = await world({ cards: 1 });
+    try {
+      const back = await must("iade 80 (KART1)", entry(w, w.sup.id, { kind: "in", method: "card", amount: "80", cardRefund: true }));
+      assert.equal(row(w, back.entryId).finRef, w.kk1.id, "ön koşul: iade KART1'de");
+      const sale = await must("POS tahsilatı 60", entry(w, w.sup.id, { kind: "in", method: "card", amount: "60" }));
+      await setStatus(w, w.kk1.id, "passive");
+      const kk1 = await balanceOf(w.api, w.kk1.id);
+      const res = await edit(w, w.sup.id, sale.entryId, { kind: "in", method: "card", amount: "60,00", cardRefund: true });
+      expectStatus(res, 400, "bank-account-invalid", "tek kart pasif: POS satırı Kredi Kartına İade'ye");
+      const r = row(w, sale.entryId);
+      assert.deepEqual([r.method, r.finRef], ["card", w.pos.id], "satır POS'ta kaldı (hesapsıza yazılmadı)");
+      assert.deepEqual(activeSales(w, r.eventId), [{ posId: w.pos.id, kind: "sale", gross: kurus(60) }], "POS satışı sürüyor");
+      expectStatus(await entry(w, w.sup.id, { kind: "in", method: "card", amount: "20", cardRefund: true }), 400, "bank-account-invalid", "tek kart pasif: yeni Kredi Kartına İade");
+      // Var olan iade satırı: parası değişmeyen düzeltme (açıklama) satırın kendi kartında kalır — korunur.
+      await must("pasif kartta açıklama düzeltmesi", edit(w, w.sup.id, back.entryId, { kind: "in", method: "card", amount: "80", cardRefund: true, note: "pasif kartta açıklama" }));
+      const kept = w.ctx.store.get("SELECT amount, fin_ref AS finRef, note FROM account_entries WHERE id = ?", back.entryId);
+      assert.deepEqual([kept.amount, kept.finRef, kept.note], [80, w.kk1.id, "pasif kartta açıklama"], "iade satırı KART1'de, açıklama düzeldi");
+      // Parası değişirse pasif hesabın kuralı (Yargıç Y1) — 400, satır aynı.
+      expectStatus(await edit(w, w.sup.id, back.entryId, { kind: "in", method: "card", amount: "70", cardRefund: true }), 400, "bank-account-invalid", "pasif kartta tutar değişikliği");
+      assert.deepEqual([row(w, back.entryId).amount, row(w, back.entryId).finRef], [80, w.kk1.id], "iade satırı 80, KART1");
+      assert.equal(await balanceOf(w.api, w.kk1.id), kk1, "KART1 değişmedi");
+      await setStatus(w, w.kk1.id, "active");
+      await posCheck(w.api, "tur 2 DÜŞÜK-1 pasif kart");
+    } finally {
+      await w.ctx.server.close();
+    }
+  });
+
+  it("DÜŞÜK-2 müşteri: iade olmayan satır (POS / Nakit) PUT ile Kredi Kartına İade'ye — kartla ödemesi yoksa 400 card-refund-no-payment, varsa 200; var olan iade satırının tutar / tarih / kart düzeltmesi serbest; tedarikçi serbest", async () => {
+    const w = await world();
+    try {
+      // ABC #1: kartla ödemesi yok.
+      const sale = await must("ABC #1 POS tahsilatı 90", entry(w, w.abc.id, { kind: "in", method: "card", amount: "90" }));
+      const cashIn = await must("ABC #1 Nakit tahsilat 40", entry(w, w.abc.id, { kind: "in", method: "cash", amount: "40" }));
+      const kk = [await balanceOf(w.api, w.kk1.id), await balanceOf(w.api, w.kk2.id)];
+      const res = await edit(w, w.abc.id, sale.entryId, { kind: "in", method: "card", amount: "90,00", cardRefund: true, bankAccountId: w.kk1.id });
+      expectStatus(res, 400, "card-refund-no-payment", "ABC #1: POS satırı Kredi Kartına İade'ye (kartla ödeme yok)");
+      assert.match(res.error || "", /kredi kartıyla yapılmış bir ödeme yok/);
+      const r = row(w, sale.entryId);
+      assert.deepEqual([r.method, r.finRef], ["card", w.pos.id], "satır POS'ta kaldı");
+      assert.deepEqual(activeSales(w, r.eventId), [{ posId: w.pos.id, kind: "sale", gross: kurus(90) }], "POS satışı sürüyor");
+      expectStatus(await edit(w, w.abc.id, cashIn.entryId, { kind: "in", method: "card", amount: "40", cardRefund: true, bankAccountId: w.kk1.id }), 400, "card-refund-no-payment", "ABC #1: Nakit satırı Kredi Kartına İade'ye");
+      assert.deepEqual([row(w, cashIn.entryId).method, row(w, cashIn.entryId).finRef], ["cash", ""], "satır Nakit kaldı");
+      assert.deepEqual([await balanceOf(w.api, w.kk1.id), await balanceOf(w.api, w.kk2.id)], kk, "kartlar değişmedi");
+      // ABC #2: kartla Ödeme 300 (KART1) → POS satırı iadeye çevrilebilir (200, KART2, POS satışı geçersiz).
+      const paid = await cardPay(w, w.abc2.id, "300", w.kk1.id);
+      const sale2 = await must("ABC #2 POS tahsilatı 90", entry(w, w.abc2.id, { kind: "in", method: "card", amount: "90", similarOk: true }));
+      await must("ABC #2 POS → Kredi Kartına İade", edit(w, w.abc2.id, sale2.entryId, { kind: "in", method: "card", amount: "90", cardRefund: true, bankAccountId: w.kk2.id }));
+      assert.equal(row(w, sale2.entryId).finRef, w.kk2.id, "ABC #2: satır KART2'de");
+      assert.deepEqual(activeSales(w, row(w, sale2.entryId).eventId), [], "ABC #2: etkin POS satışı kalmadı");
+      const back = await must("ABC #2 iade 120 (KART2)", entry(w, w.abc2.id, { kind: "in", method: "card", amount: "120", cardRefund: true, bankAccountId: w.kk2.id }));
+      // Kartla ödeme silinir: var olan iade satırları serbestçe düzeltilir; iade olmayan yeni satır artık çevrilemez.
+      await must("kartla ödemeyi sil", w.api.del(`${ACC}/${w.abc2.id}/entries/${paid.entryId}`));
+      assert.equal(await flagOf(w, w.abc2.id), false, "ABC #2: ödeme silindi → hasCardPayment false");
+      await must("iade 120 → 110, 07.10, KART1", edit(w, w.abc2.id, back.entryId, { kind: "in", method: "card", amount: "110", date: "2026-10-07", cardRefund: true, bankAccountId: w.kk1.id }));
+      const moved = w.ctx.store.get("SELECT amount, date, fin_ref AS finRef FROM account_entries WHERE id = ?", back.entryId);
+      assert.deepEqual([moved.amount, moved.date, moved.finRef], [110, "2026-10-07", w.kk1.id], "var olan iade satırı: tutar, tarih, kart düzeldi");
+      await must("çevrilmiş iade 90 → 85 (alan yok)", edit(w, w.abc2.id, sale2.entryId, { kind: "in", method: "card", amount: "85" }));
+      assert.deepEqual([row(w, sale2.entryId).amount, row(w, sale2.entryId).finRef], [85, w.kk2.id], "çevrilmiş iade satırı 85, KART2");
+      const sale3 = await must("ABC #2 POS tahsilatı 25", entry(w, w.abc2.id, { kind: "in", method: "card", amount: "25" }));
+      expectStatus(await edit(w, w.abc2.id, sale3.entryId, { kind: "in", method: "card", amount: "25", cardRefund: true, bankAccountId: w.kk1.id }), 400, "card-refund-no-payment", "ABC #2 ödeme silindikten sonra POS satırı iadeye");
+      assert.equal(row(w, sale3.entryId).finRef, w.pos.id, "ABC #2: yeni POS satırı POS'ta");
+      // Tedarikçi: kartla ödeme olmadan da çevrilir (kural yalnız müşteride).
+      const supSale = await must("tedarikçi POS tahsilatı 45", entry(w, w.sup.id, { kind: "in", method: "card", amount: "45" }));
+      await must("tedarikçi POS → Kredi Kartına İade", edit(w, w.sup.id, supSale.entryId, { kind: "in", method: "card", amount: "45", cardRefund: true, bankAccountId: w.kk1.id }));
+      assert.equal(row(w, supSale.entryId).finRef, w.kk1.id, "tedarikçi: satır KART1'de");
+      await posCheck(w.api, "tur 2 DÜŞÜK-2");
+    } finally {
+      await w.ctx.server.close();
+    }
+  });
+
+  it("TEST-1 yalnız POS İadesi (cari formundan ve Banka → POS İşlemleri'nden; POS'a bağlı çıkış) olan müşteride hasCardPayment false, Kredi Kartına İade POST 400", async () => {
+    const w = await world();
+    try {
+      const sale = await must("POS tahsilatı 200", entry(w, w.abc.id, { kind: "in", method: "card", amount: "200" }));
+      const saleId = w.ctx.store.get("SELECT id FROM pos_sales WHERE event_id = ? AND status = 'active' AND kind = 'sale'", row(w, sale.entryId).eventId)?.id;
+      assert.ok(saleId, "ön koşul: POS satışı");
+      await must("cari POS İadesi 50", entry(w, w.abc.id, { kind: "out", method: "card", amount: "50", posRefund: true, posRefundOf: saleId }));
+      await must("Banka → POS İşlemleri → İade 30", w.api.post(`${BANK}/pos/sales/${saleId}/refund`, { amount: "30", date: TODAY }));
+      const outs = rowsOf(w, w.abc.id).filter(item => item.kind === "out");
+      assert.deepEqual(outs.map(item => [item.method, item.amount, item.finRef]), [["card", 50, w.pos.id], ["card", 30, w.pos.id]], "ön koşul: iki POS İadesi, POS'a bağlı çıkış");
+      assert.equal(await flagOf(w, w.abc.id), false, "yalnız POS İadesi → hasCardPayment false");
+      const kk = [await balanceOf(w.api, w.kk1.id), await balanceOf(w.api, w.kk2.id)];
+      const res = await entry(w, w.abc.id, { kind: "in", method: "card", amount: "40", cardRefund: true, bankAccountId: w.kk1.id });
+      expectStatus(res, 400, "card-refund-no-payment", "yalnız POS İadesi olan müşteriye Kredi Kartına İade");
+      assert.equal(rowsOf(w, w.abc.id).filter(item => item.kind === "in").length, 1, "yeni satır yok");
+      assert.deepEqual([await balanceOf(w.api, w.kk1.id), await balanceOf(w.api, w.kk2.id)], kk, "kartlar değişmedi");
+      await posCheck(w.api, "tur 2 TEST-1");
+    } finally {
+      await w.ctx.server.close();
+    }
+  });
+
+  it("TEST-2 iade → POS çevirmesinde POS ayrıntısı gövdeden: taksit 3, provizyon no 123456, son 4 hane 4242 (tedarikçi ve kartla ödemeli müşteri)", async () => {
+    const w = await world();
+    try {
+      await cardPay(w, w.abc.id, "200", w.kk1.id);
+      for (const [party, auth] of [[w.sup, "123456"], [w.abc, "123457"]]) {
+        const back = await must(`${party.name} iade 150`, entry(w, party.id, { kind: "in", method: "card", amount: "150", cardRefund: true, bankAccountId: w.kk2.id, similarOk: true }));
+        await must(`${party.name} iade → POS`, edit(w, party.id, back.entryId, { kind: "in", method: "card", amount: "150", cardRefund: false, posInstallments: "3", authCode: auth, cardLast4: "4242" }));
+        const r = row(w, back.entryId);
+        assert.equal(r.finRef, w.pos.id, `${party.name}: satır POS'ta`);
+        assert.deepEqual(saleDetail(w, r.eventId), [{ posId: w.pos.id, kind: "sale", gross: kurus(150), installments: 3, authCode: auth, cardLast4: "4242" }], `${party.name}: POS satışı gövdedeki taksit / provizyon / son 4 haneyle`);
+      }
+      await posCheck(w.api, "tur 2 TEST-2");
     } finally {
       await w.ctx.server.close();
     }

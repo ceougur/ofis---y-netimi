@@ -23,6 +23,10 @@
 //   T10   Banka → POS → POS İşlemleri → İade 100 (T1 satışı) → 200, iade 10000, POS Bekleyen −100.
 //   T14   (2 kart; DÜŞÜK-1, 2 POS) ikinci POS eklenir; kartla ödemeli müşterinin iade satırı ✎ kutu kaldırılır, POS2 seçilir → PUT 200, satır POS2'de (önceden
 //         400 "POS yalnız tahsilatta ve POS iadesinde kullanılır…").
+//   T16   (0 kart; P1 tur 2 DÜŞÜK-1) tedarikçinin T7 POS satırı ✎ "Kredi Kartına İade" işaretlenir → PUT 400 "Kredi Kartına İade için etkin bir kredi kartı hesabı
+//         gerekir", form açık kalır, satır POS'ta, POS satışı ve POS Bekleyen aynı (önceden 200: satır sessizce hesapsıza — 108 — yazılıyordu).
+//   T15   (P1 tur 2 TEST-1) üçüncü müşteri "Deniz Ltd.": POS tahsilatı 200 + cari POS İadesi 50 (POS'a bağlı çıkış) → hasCardPayment false, + Tahsilat'ta kutu yok,
+//         API'den Kredi Kartına İade 400 card-refund-no-payment.
 // Her adımda yanıt kodu + gövde, veri tabanındaki satır (hangi hesap), bakiyeler (cari, kartlar, POS Bekleyen, Kasa) ve Mutabakat Testi (ders 3).
 // Pencere seçicisi en üstteki görünür pencere (ders 39); pencere kapatma escClose ile, soru beklentisiyle (ders 34). Sahte saat 08.10.2026 (ders 13);
 // lisans servisi ölü adres (ders 30). Çalıştırma: npm run test:senaryo-pos-kart-249 — çıkış: "N geçti, M kaldı" (kaldıysa 1).
@@ -425,6 +429,35 @@ async function phase(CARDS) {
       await closeAll(r.open ? "" : "soru-yok", "T7 sonrası");
     });
 
+    if (CARDS === 0)
+      await step("T16 (P1 tur 2 DÜŞÜK-1) 0 kart: tedarikçinin POS satırı ✎ Kredi Kartına İade işaretlenir → 400, satır POS'ta", async () => {
+        const row = entries(ctx.sup.id).find(e => e.kind === "in" && e.method === "card" && e.finRef === ctx.pos.id && Math.abs(e.amount - 50) < 0.001);
+        ok(Boolean(row), `düzeltilecek T7 satırı: ${JSON.stringify(row && { ...row, hesap: refName(row.finRef) })}`);
+        if (!row) return;
+        const salesBefore = activeSalesOf(row.id);
+        const before = await balances();
+        await openEdit(ctx.sup.id, row.id);
+        const f0 = await formState();
+        ok(f0.refundBox === "görünür" && f0.refundChecked === false && f0.pos === "görünür", `kutu görünür, işaretsiz; POS alanı görünür (${f0.refundBox}, ${f0.refundChecked}, ${f0.pos})`);
+        await page.click(`${form} input[name="cardRefund"]`);
+        await pause(500);
+        const f = await formState();
+        ok(f.refundChecked === true && f.cardPicker === "görünür" && f.defineCard, `işaretli: kart seçicisi "Kredi Kartı Tanımla" (${f.cardPicker}: “${f.cardText.slice(0, 60)}”)`);
+        const r = await submit("T16 kaydet");
+        ok(r.status === 400 && r.res?.method === "PUT" && /Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir/.test(r.res?.body || "") && /bank-account-invalid/.test(r.res?.body || ""), `PUT 400 bank-account-invalid: ${why(r)}`);
+        ok(r.sent.cardRefund === true, `gövde cardRefund true: ${JSON.stringify(r.sent)}`);
+        ok(r.open && /Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir/.test(r.formError), `form açık, hata yazısı: “${r.formError}”`);
+        const now = entryRow(row.id);
+        ok(now.method === "card" && Math.abs(now.amount - 50) < 0.001 && now.finRef === ctx.pos.id, `satır POS'ta kaldı (hesapsıza yazılmadı): ${JSON.stringify({ ...now, hesap: refName(now.finRef) })}`);
+        const salesAfter = activeSalesOf(row.id);
+        ok(salesAfter.length === 1 && salesAfter[0].gross === 5000 && salesAfter[0].id === salesBefore[0]?.id, `POS satışı aynı (5000): ${JSON.stringify(salesAfter)}`);
+        const after = await balances();
+        ok(after.posBekleyen === before.posBekleyen && Math.abs(after.tedarikci - before.tedarikci) < 0.001 && after.kasa === before.kasa, `POS Bekleyen (${after.posBekleyen}), tedarikçi bakiyesi (${after.tedarikci}) ve Kasa aynı`);
+        await integrity("T16");
+        if (r.open) await dropDraft("T16 (reddedildi, kaydedilmedi)");
+        else await closeAll("", "T16 sonrası (beklenmeyen kayıt)");
+      });
+
     let legacyRow = null;
     if (CARDS > 0)
       await step("T5 müşteride eski \"Kredi Kartına İade\" satırının düzeltmesi ✎ 120 → 110 (gerileme koruması)", async () => {
@@ -632,6 +665,30 @@ async function phase(CARDS) {
       ok(after.kart1 === before.bal.kart1 && after.kart2 === before.bal.kart2 && after.kasa === before.bal.kasa, "kartlar ve Kasa değişmedi");
       await integrity("T10");
       await closeAll(r.open ? "" : "soru-yok", "T10 sonrası");
+    });
+
+    await step("T15 (P1 tur 2 TEST-1) yalnız POS İadesi olan müşteri: + Tahsilat'ta Kredi Kartına İade kutusu yok, API'den 400", async () => {
+      ctx.deniz = await must("müşteri 3", api.post("/api/workspace/accounts", { name: "Deniz Ltd.", type: "customer", registeredOn: "2026-10-01" }));
+      await must("POS tahsilatı 200", api.post(`/api/workspace/accounts/${ctx.deniz.id}/entries`, { kind: "in", method: "card", amount: "200", date: TODAY, posId: ctx.pos.id, authCode: `T15K${CARDS}` }));
+      const sale = posRows().find(p => p.authCode === `T15K${CARDS}` && p.kind === "sale" && p.status === "active");
+      ok(Boolean(sale), `POS satışı: ${JSON.stringify(sale)}`);
+      if (!sale) return;
+      await must("cari POS İadesi 50", api.post(`/api/workspace/accounts/${ctx.deniz.id}/entries`, { kind: "out", method: "card", amount: "50", date: TODAY, posRefund: true, posRefundOf: sale.id }));
+      const outs = entries(ctx.deniz.id).filter(e => e.kind === "out");
+      ok(outs.length === 1 && outs[0].method === "card" && outs[0].finRef === ctx.pos.id, `POS İadesi POS'a bağlı çıkış: ${JSON.stringify(outs.map(e => ({ ...e, hesap: refName(e.finRef) })))}`);
+      const flag = (await must("müşteri 3", api.get(`/api/workspace/accounts/${ctx.deniz.id}`))).hasCardPayment;
+      ok(flag === false, `yalnız POS İadesi → hasCardPayment false (${flag})`);
+      await openEntry(ctx.deniz.id, "in");
+      await typeInto(`${form} input[name="amount"]`, "40");
+      await chooseMethod("card");
+      const f = await formState();
+      ok(f.refundBox === "yok" && f.cardPicker === "yok" && f.pos === "görünür", `kutu ve kart seçicisi yok, POS alanı var (${f.refundBox}, ${f.cardPicker}, ${f.pos})`);
+      await shot("t15-form");
+      await dropDraft("T15 (kaydedilmedi)");
+      const n = entries(ctx.deniz.id).length;
+      const res = await api.post(`/api/workspace/accounts/${ctx.deniz.id}/entries`, { kind: "in", method: "card", amount: "40", date: TODAY, cardRefund: true, ...(ctx.kk1 ? { bankAccountId: ctx.kk1.id } : {}) });
+      ok(res.status === 400 && JSON.stringify(res.data).includes("card-refund-no-payment") && entries(ctx.deniz.id).length === n, `API'den Kredi Kartına İade 400 card-refund-no-payment, satır yok: ${res.status} ${JSON.stringify(res.data).slice(0, 160)}`);
+      await integrity("T15");
     });
 
     if (CARDS === 2)
