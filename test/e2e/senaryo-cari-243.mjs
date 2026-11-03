@@ -380,6 +380,8 @@ try {
     await shot(page, "c1-5-yaris-cari-silinemez");
     if (blocked) await page.click(`${last} [data-answer="no"]`);
     await page.waitForFunction(() => Boolean(document.querySelector('.hof-accounts-modal [data-act="delete"]')?.disabled), null, { timeout: 8000 }).catch(() => null);
+    // Pencere kapanma geçişi bitince (yalnız Cari penceresi kalınca) ekran okunur.
+    await page.waitForFunction(() => document.querySelectorAll(".hof-modal-backdrop").length === 1, null, { timeout: 8000 }).catch(() => null);
     const cash3 = await kasa();
     ok((await deleteDisabled()) === true && c1Accounts()[1].deletedAt === null && cash3 === cash2, `Vazgeç: kart yenilendi, Sil pasif; cari duruyor; Kasa ${cash3} (değişmedi)`);
     await shot(page, "c1-6-kart-yenilendi");
