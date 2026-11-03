@@ -1,0 +1,43 @@
+{
+  "ad": "c1-tur1/olcum-karsilastirma",
+  "komut": "node docs/kanit/2026-11-03/c1-tur1/olcum-karsilastir.mjs docs/kanit/2026-11-03/c1-tur1",
+  "commit": "fe5bcf2705c89b4bbdbe35c6cc4e37fecb02a789",
+  "dal": "worktree-agent-aaf6108593c8ff041",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T21:48:18.871Z",
+  "sure_sn": 0,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 14,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "tur 1: bankaKarti p50 79.4 ms ≤ C1 öncesi 57.14 ms + 5 ms (fark 22.26 ms)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tur 2: bankaKarti p50 68.11 ms ≤ C1 öncesi 49.66 ms + 5 ms (fark 18.45 ms)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/c1-tur1/olcum-karsilastirma.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aaf6108593c8ff041",
+  "ham_cikti_sha256": "bc104584e20cbb2958256e1499e44fa5b44d4820691b0cec72d4a0207ad6c38e",
+  "ham_cikti_bayt": 2969
+}

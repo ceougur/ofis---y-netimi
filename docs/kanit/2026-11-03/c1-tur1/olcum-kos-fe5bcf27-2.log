@@ -1,0 +1,11 @@
+(node:8969) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+21:42:53 A banka carisi kartı (600 masraf fişi + 600 fatura) süre {"n":10,"p50":68.11,"p95":80.94,"enCok":80.94} döngü en çok 64.61
+21:42:54 B fatura listesi (Alış) süre {"n":10,"p50":59.81,"p95":72.06,"enCok":72.06} döngü en çok 66.97
+21:42:55 B2 fatura listesi (hepsi) süre {"n":10,"p50":46.75,"p95":75.4,"enCok":75.4} döngü en çok 70.47
+21:42:55 C POS İptal İadeli cari kartı süre {"n":10,"p50":4.78,"p95":4.99,"enCok":4.99} döngü en çok 3.7
+21:42:56 D POS müşterisi kartı (100 POS tahsilatı) süre {"n":10,"p50":6.6,"p95":8.86,"enCok":8.86} döngü en çok 7.23
+21:42:56 yazıldı /home/user/ofis---y-netimi/.claude/worktrees/agent-aaf6108593c8ff041/docs/kanit/2026-11-03/c1-tur1/olcum-sonuc-fe5bcf27-2.json
+# tests 1
+# pass 1
+# fail 0

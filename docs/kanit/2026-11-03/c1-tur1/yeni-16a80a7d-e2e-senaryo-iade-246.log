@@ -1,0 +1,36 @@
+  ✓ ön koşul (DB1): bağsız düzende B 200 açık (iade B'yi kapattı)
+
+■ S1 Stok → Tedarikçiye İade (Açık Hesap), insan hızı + Tab
+  ✓ ürün kartında “↪ Tedarikçiye İade” düğmesi
+  ✓ form başlığı: Tedarikçiye İade
+  ✓ İade Yolu seçenekleri (kart yok): Yalnız Miktar (para iadesi yok) | Nakit (tedarikçi geri ödedi) | Havale / EFT (tedarikçi geri ödedi) | Açık Hesap (tedarikçiye borcumuzdan düş)
+  ✓ Tab → İade Birim Fiyatı
+  ✓ Tab → İade Yolu
+  ✓ İade Yolu klavyeyle “Açık Hesap (tedarikçiye borcumuzdan düş)”
+  ✓ Tab → Tedarikçi Carisi seçicisi
+  ✓ Enter ile tedarikçi seçildi
+  ✓ veri tabanı: {"id":"smove-42c8ceb0-a813-4d5d-a326-401f5249da7e","kind":"out","reason":"preturn","pay":"account","qty":2,"amount":200,"accountId":"account-0cfa9b05-305b-4d73-8fe5-3abfdc47805e","note":"kusurlu parti"}
+  ✓ tedarikçide Borç satırı: {"kind":"debt","amount":200,"note":"Alış iadesi: Cam Panel E246 2 Adet × 100,00 TL · kusurlu parti"}
+  ✓ stok 2 azaldı
+  ✓ alış faturası P: 500 → 300 açık (bağsız ödeme, en eski)
+  ✓ ürün kartının hareketlerinde “Tedarikçiye İade”
+
+■ S2 Tedarikçi kartı → Tahsilat → Geri Ödenen İade
+  ✓ Kapatılacak Fatura seçenekleri: [["","Otomatik (En Eski Açık Fatura)"],["smove-42c8ceb0-a813-4d5d-a326-401f5249da7e","İade Geri Ödemesi · Alış İadesi (Faturasız) · Cam Panel E246 · 03.11.2026 · ₺200,00 · kalan ₺200,00"]]
+  ✓ veri tabanı: {"kind":"in","amount":200,"refundOf":"smove-42c8ceb0-a813-4d5d-a326-401f5249da7e","invoiceId":""}
+  ✓ iade geri ödendi: P 500 açık
+
+■ S3 Müşteri kartı → Ödeme → Geri Ödenen İade (DB1)
+  ✓ müşteriye Ödeme'de Kapatılacak Fatura: Otomatik + iade (["","smove-d429c7d9-35ca-4c0a-aa5c-c147857a125e"])
+  ✓ Tab ile Kapatılacak Fatura
+  ✓ Kapatılacak Fatura klavyeyle: İade Geri Ödemesi (faturasız Satış İadesi)
+  ✓ veri tabanı: {"kind":"out","amount":300,"refundOf":"smove-d429c7d9-35ca-4c0a-aa5c-c147857a125e","invoiceId":""}
+  ✓ B 500 açık (DB1 öncesi 200)
+  ✓ hareketlerde “İadeye Bağlı” etiketi
+  ✓ takvim / zil: [["account",300],["invoice",500]]
+
+■ S4 bakiye
+  ✓ müşteri 800 (800), tedarikçi -500 (−500)
+  ✓ sayfa hatası yok: 
+
+26 geçti, 0 kaldı

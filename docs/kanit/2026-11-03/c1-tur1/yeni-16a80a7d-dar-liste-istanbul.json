@@ -1,0 +1,32 @@
+{
+  "ad": "c1-tur1/yeni-16a80a7d-dar-liste-istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/c1-tur1-249.test.mjs test/cari-hareket-249.test.mjs test/cari-243.test.mjs test/cari-bilgi-222.test.mjs test/cari-tur-222.test.mjs test/cari-vade-245.test.mjs test/plan-case-link.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/banka-210-post-statik.test.mjs test/static.test.mjs test/kapama-tek-gecis-245.test.mjs test/fatura-liste-243-fark.test.mjs test/trash.test.mjs test/mobil-yazma-247.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/ci-kapi-listesi.test.mjs test/accounts-stock.test.mjs test/eksi-stok-217.test.mjs test/stok-alis-iadesi-246.test.mjs test/gg243-dar3-stok.test.mjs test/hakem-k4-yineleme-sirasi.test.mjs test/banka-210-post.test.mjs test/banka-210-kapi-plan.test.mjs test/mobil-247.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/defter-243-stok-acilis.test.mjs",
+  "commit": "16a80a7d2e5b8824e3b191efc3bf38de7b0740b3",
+  "dal": "worktree-agent-aaf6108593c8ff041",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T22:33:17.470Z",
+  "sure_sn": 59.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 288,
+    "gecen": 288,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/c1-tur1/yeni-16a80a7d-dar-liste-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aaf6108593c8ff041",
+  "ham_cikti_sha256": "301fa57bf9cefc627644e1c8bebf83affaf90df00eb512d7d7e66dc1bcbe9571",
+  "ham_cikti_bayt": 99725
+}

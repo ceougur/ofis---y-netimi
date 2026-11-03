@@ -1,0 +1,105 @@
+{
+ "etiket": "35e90e47",
+ "kod": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1-7f3a91/eski-35e90e47",
+ "acilisMs": 3978,
+ "node": "v22.22.0",
+ "yuk": [
+  4.96,
+  4.88,
+  4.76
+ ],
+ "veri": {
+  "posSales": 100000,
+  "masrafBasligi": 600,
+  "bankaFaturasi": 600,
+  "iptalIadesi": 3,
+  "cari": 24,
+  "cariSatiri": 3200,
+  "finEvents": 3208
+ },
+ "N": 10,
+ "evreler": {
+  "bankaKarti": {
+   "sure": {
+    "n": 10,
+    "p50": 49.66,
+    "p95": 75.44,
+    "enCok": 75.44
+   },
+   "donguEnCok": 63.99,
+   "deleteBlock": "Bu carinin 600 faturası var; faturası olan cari silinemez. Cariyi pasife alın."
+  },
+  "faturaListesiAlis": {
+   "sure": {
+    "n": 10,
+    "p50": 40.39,
+    "p95": 57.72,
+    "enCok": 57.72
+   },
+   "donguEnCok": 54.04,
+   "satir": 0,
+   "toplam": 600
+  },
+  "faturaListesiHepsi": {
+   "sure": {
+    "n": 10,
+    "p50": 47.4,
+    "p95": 66.32,
+    "enCok": 66.32
+   },
+   "donguEnCok": 61.68,
+   "toplam": 600
+  },
+  "iptalIadeliKart": {
+   "sure": {
+    "n": 10,
+    "p50": 3.74,
+    "p95": 6.33,
+    "enCok": 6.33
+   },
+   "donguEnCok": 5.37,
+   "deleteBlock": ""
+  },
+  "posMusteriKarti": {
+   "sure": {
+    "n": 10,
+    "p50": 6.63,
+    "p95": 10.38,
+    "enCok": 10.38
+   },
+   "donguEnCok": 8.47,
+   "deleteBlock": "Bu carinin banka hesabına bağlı 100 hareketi var; cari silinirse banka hesabının bakiyesi değişirdi. Cariyi pasife alın (hareketleri korunur)."
+  }
+ },
+ "esdegerlik": {
+  "kart": {
+   "account-0ce6ec6a-3670-44ea-8a81-7bea1a218549": "f6c9f852e5785b2a",
+   "account-10a1540a-665c-45d3-8224-b568a74d3075": "9be03f1848274890",
+   "account-24ad5b3a-6388-4584-9896-009db51e06fc": "bc05b98b6f4ccfd9",
+   "account-2e5ef20b-0601-462a-9e0a-44f273c0a863": "27a79d24324a74be",
+   "account-2e8c7f00-1701-4a5c-8b9a-4f25158b769b": "acc0d20ba9aa313b",
+   "account-33d2679f-f488-46db-90b3-19c40977e273": "c3606f2ec300085d",
+   "account-388ef858-748d-460f-94aa-4e86b49c0193": "a1faf583bb5575ff",
+   "account-584c1ce3-bcb1-4b2c-a798-feefc39427c4": "7efdcfe5c97b5a4d",
+   "account-632461fd-0ba2-4f9f-98da-7d11baf18e69": "ece5397f607d3e32",
+   "account-63482272-8e55-4c06-b173-757d556cabfb": "92623e629c7f40c2",
+   "account-68f4ee18-7f98-4d2e-9596-0a7500cc649f": "73b5888ef9c5cb75",
+   "account-80c36ec8-70d8-4e48-a13b-5cbdcbf10bac": "dc868fbe0c5b8c61",
+   "account-87904c8b-20be-406c-bbe7-d13cd84623f8": "678266fc0b4c0082",
+   "account-96a92a5f-0227-4fd5-a49b-10cab2dc8641": "a58a6c6a0937c469",
+   "account-9d7e80c7-6f3b-460b-b18c-74eb9a6fb84e": "f44867d84eea7bf5",
+   "account-a1a43a77-f70c-4aa1-a072-7a003ab899fb": "6415b200413650d0",
+   "account-a6282a14-a751-4ab4-96de-156613cf5d25": "26b95c1a0dfd64e3",
+   "account-b745d2c5-1d30-499e-bc8f-cde97622eba4": "93ece5363d060a67",
+   "account-c15ed49c-fcfe-4cec-8fd5-23032a72f0eb": "5273fe479ddd6adc",
+   "account-c6ece751-83a1-40ff-8ea9-44152737bb40": "ebb69ef1d349d8fe",
+   "account-cfac8474-2ede-4c2a-b4b0-5746a09ca32d": "af325f2339f7a6c5",
+   "account-d945da52-1567-4e28-84d5-4305b5f5116c": "0e1a04878e5969bf",
+   "account-de96ec83-8bab-42cf-b357-3526cf179cd0": "5c9923f54699d237",
+   "account-fa98ddcc-62f9-4272-909b-6f12e7001f36": "a8d16a2b83c8934a"
+  },
+  "sayac": {},
+  "faturaListesiAlis": "563a9cc5e932a56b",
+  "faturaListesiHepsi": "563a9cc5e932a56b"
+ }
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "c1-tur1/olcum-kos-sayac-ayrinti-35e90e47-2",
+  "komut": "flock /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum.lock node docs/kanit/2026-11-03/c1-tur1/olcum-sayac-ayrinti.mjs --kod /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1-7f3a91/eski-35e90e47 --taban /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1-7f3a91/veri-taban --is /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1-7f3a91/is-sayac-35e90e47-2 --json /home/user/ofis---y-netimi/.claude/worktrees/agent-aaf6108593c8ff041/docs/kanit/2026-11-03/c1-tur1/olcum-sayac-ayrinti-35e90e47-2.json --n 30",
+  "commit": "fe5bcf2705c89b4bbdbe35c6cc4e37fecb02a789",
+  "dal": "worktree-agent-aaf6108593c8ff041",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T21:50:34.291Z",
+  "sure_sn": 7.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/c1-tur1/olcum-kos-sayac-ayrinti-35e90e47-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aaf6108593c8ff041",
+  "ham_cikti_sha256": "461be4e0846447e2e6ab86f17c8aaf863d36ee94a5c958e113d908f438b00043",
+  "ham_cikti_bayt": 2575
+}

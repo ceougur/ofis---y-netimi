@@ -1,0 +1,131 @@
+[
+ {
+  "durum": "(a) stok satışı (açık hesap) + cari silinir",
+  "reply": {
+   "status": 400,
+   "text": "{\"ok\":false,\"error\":\"Seçilen cari bulunamadı; silinmiş olabilir.\"}"
+  },
+  "removed": {
+   "status": 200,
+   "error": ""
+  },
+  "cariSatirlari": [],
+  "stokHareketleri": []
+ },
+ {
+  "durum": "(b) stok düzeltme (cari değişir) + yeni cari silinir",
+  "reply": {
+   "status": 400,
+   "text": "{\"ok\":false,\"error\":\"Seçilen cari bulunamadı; silinmiş olabilir.\"}"
+  },
+  "removed": {
+   "status": 200,
+   "error": ""
+  },
+  "yeniCariSatirlari": [],
+  "asilCariSatirlari": [
+   {
+    "kind": "debt",
+    "amount": 50,
+    "source": "stock"
+   }
+  ]
+ },
+ {
+  "durum": "(c) stok satışı taksitli + cari silinir",
+  "reply": {
+   "status": 400,
+   "text": "{\"ok\":false,\"error\":\"Seçilen cari bulunamadı; silinmiş olabilir.\"}"
+  },
+  "removed": {
+   "status": 200,
+   "error": ""
+  },
+  "kartlar": [],
+  "cariSatirlari": []
+ },
+ {
+  "durum": "(d) KOMŞU: stok düzeltme + hareket silinir",
+  "reply": {
+   "status": 409,
+   "text": "{\"ok\":false,\"error\":\"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Stok hareketi silinmiş cari satırı). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.\",\"code\":\"ledger-integrity"
+  },
+  "removed": {
+   "status": 200,
+   "error": ""
+  },
+  "cariSatirlari": [],
+  "hareket": [],
+  "silinenlerde": []
+ },
+ {
+  "durum": "(e) KOMŞU: stok satışı + ürün silinir",
+  "reply": {
+   "status": 404,
+   "text": "{\"ok\":false,\"error\":\"Ürün bulunamadı. Silinmiş olabilir.\"}"
+  },
+  "removed": {
+   "status": 200,
+   "error": ""
+  },
+  "cariSatirlari": [
+   {
+    "kind": "debt",
+    "amount": 1,
+    "source": ""
+   },
+   {
+    "kind": "debt",
+    "amount": 50,
+    "source": "stock"
+   }
+  ],
+  "urun": [
+   {
+    "deletedAt": "2026-10-08T09:00:02.940Z"
+   }
+  ]
+ },
+ {
+  "durum": "(f) KOMŞU: kart tahsilatı düzeltme + tahsilat silinir",
+  "reply": {
+   "status": 200,
+   "text": "{\"ok\":true,\"data\":{\"id\":\"plan-1d269b42-7d90-446f-8112-b31a17f6e9d4\",\"accountId\":\"account-a22006bf-2233-4b0b-b534-36a8351690b8\",\"refNo\":\"1\",\"registeredOn\":\"2026-10-08\",\"caseKey\":\"\",\"caseSource\":\"\",\"cas"
+  },
+  "removed": {
+   "status": 200,
+   "error": ""
+  },
+  "tahsilatlar": [],
+  "kasaOnce": 100,
+  "kasaSonra": 0,
+  "olaylar": [
+   {
+    "status": "cancelled",
+    "amountMinor": 10000
+   }
+  ]
+ },
+ {
+  "durum": "(g) KOMŞU: taksit düzeltme + taksit silinir",
+  "reply": {
+   "status": 200,
+   "text": "{\"ok\":true,\"data\":{\"id\":\"plan-2a146dcd-8dda-4864-8732-49608dd3bb5c\",\"accountId\":\"account-a08e931a-3623-4761-9793-59abb943f919\",\"refNo\":\"2\",\"registeredOn\":\"2026-10-08\",\"caseKey\":\"\",\"caseSource\":\"\",\"cas"
+  },
+  "removed": {
+   "status": 200,
+   "error": ""
+  },
+  "taksitler": [
+   {
+    "seq": 2,
+    "amount": 300
+   }
+  ]
+ },
+ {
+  "durum": "mutabakat (sonda)",
+  "ok": true,
+  "failures": "[]"
+ }
+]

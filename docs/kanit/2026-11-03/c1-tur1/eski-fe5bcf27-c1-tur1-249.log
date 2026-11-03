@@ -1,0 +1,205 @@
+TAP version 13
+# Subtest: 2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404)
+    # Subtest: Y1 kart tahsilatı ve iadesi (POST …/entries; mobil taksit tahsilatı da bu uç): silinmiş karta satır, makbuz numarası, işlem başlığı yazılmaz; Kasa aynı
+    ok 1 - Y1 kart tahsilatı ve iadesi (POST …/entries; mobil taksit tahsilatı da bu uç): silinmiş karta satır, makbuz numarası, işlem başlığı yazılmaz; Kasa aynı
+      ---
+      duration_ms: 754.343466
+      type: 'test'
+      ...
+    # Subtest: Y2 kart tahsilatını düzeltme (PUT …/entries/:id): silinmiş kartın tahsilatı değişmez
+    ok 2 - Y2 kart tahsilatını düzeltme (PUT …/entries/:id): silinmiş kartın tahsilatı değişmez
+      ---
+      duration_ms: 355.256736
+      type: 'test'
+      ...
+    # Subtest: Y3 taksit ekleme (POST …/items): silinmiş karta taksit eklenmez
+    ok 3 - Y3 taksit ekleme (POST …/items): silinmiş karta taksit eklenmez
+      ---
+      duration_ms: 331.518336
+      type: 'test'
+      ...
+    # Subtest: Y4 taksit düzeltme (PUT …/items/:id): silinmiş kartın taksiti değişmez
+    ok 4 - Y4 taksit düzeltme (PUT …/items/:id): silinmiş kartın taksiti değişmez
+      ---
+      duration_ms: 331.605405
+      type: 'test'
+      ...
+    # Subtest: Y5 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+    ok 5 - Y5 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+      ---
+      duration_ms: 102.690671
+      type: 'test'
+      ...
+    # Subtest: D3 Silinenler'deki (hareketsiz) cari notu: "Cari listesine geri döner." — hareket ve Kasa anılmaz
+    ok 6 - D3 Silinenler'deki (hareketsiz) cari notu: "Cari listesine geri döner." — hareket ve Kasa anılmaz
+      ---
+      duration_ms: 22.063419
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404)
+  ---
+  duration_ms: 2314.494996
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 TUR 1 — stok hareketi yarışı (zorla): gövde yoldayken ürün silinirse hiçbir şey yazılmaz (404)
+    # Subtest: S1 stok satışı (POST …/moves; açık hesap ve peşin): silinmiş ürüne hareket, cari borcu, Kasa girişi yazılmaz
+    not ok 1 - S1 stok satışı (POST …/moves; açık hesap ve peşin): silinmiş ürüne hareket, cari borcu, Kasa girişi yazılmaz
+      ---
+      duration_ms: 678.245633
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1b-4e7d/kod-fe5bcf27/test/c1-tur1-249.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        S1: 2/2 durum kırmızı
+        ✗ açık hesap satış: açık hesap satış: silinmiş ürüne yazılmamalı (kayıtlar aynen) — önce {"moves":[{"kind":"in","qty":10,"amount":0,"pay":"none","accountId":""}],"entries":[],"events":0}, sonra {"moves":[{"kind":"in","qty":10,"amount":0,"pay":"none","accountId":""},{"kind":"out","qty":1,"amount":50,"pay":"account","accountId":"account-88b428b6-38e9-44a8-adce-b1dc4f0ca9e2"}],"entries":[{"kind":"debt","amount":50,"source":"stock"}],"events":0}
+        ✗ peşin satış (nakit): peşin satış: silinmiş ürüne yazılmamalı (kayıtlar aynen) — önce {"moves":[{"kind":"in","qty":10,"amount":0,"pay":"none","accountId":""}],"events":0}, sonra {"moves":[{"kind":"in","qty":10,"amount":0,"pay":"none","accountId":""},{"kind":"out","qty":1,"amount":70,"pay":"cash","accountId":""}],"events":1}
+        
+        2 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        verdict (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1b-4e7d/kod-fe5bcf27/test/c1-tur1-249.test.mjs:38:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1b-4e7d/kod-fe5bcf27/test/c1-tur1-249.test.mjs:217:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S2 stok hareketi düzeltme (PUT …/moves/:id): silinmiş ürünün hareketi ve cari borcu değişmez
+    not ok 2 - S2 stok hareketi düzeltme (PUT …/moves/:id): silinmiş ürünün hareketi ve cari borcu değişmez
+      ---
+      duration_ms: 359.372692
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1b-4e7d/kod-fe5bcf27/test/c1-tur1-249.test.mjs:220:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        stok düzeltme: silinmiş ürüne yazılmamalı (kayıtlar aynen) — önce {"moves":[{"kind":"in","qty":10,"amount":0,"pay":"none","accountId":""},{"kind":"out","qty":1,"amount":50,"pay":"account","accountId":"account-79022079-fd26-4d9d-b053-476ce48e087b"}],"entries":[{"kind":"debt","amount":50,"source":"stock"}],"events":1}, sonra {"moves":[{"kind":"in","qty":10,"amount":0,"pay":"none","accountId":""},{"kind":"out","qty":1,"amount":70,"pay":"account","accountId":"account-79022079-fd26-4d9d-b053-476ce48e087b"}],"entries":[{"kind":"debt","amount":70,"source":"stock"}],"events":1}
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            entries: [
+              {
+        +       amount: 70,
+        -       amount: 50,
+                kind: 'debt',
+                source: 'stock'
+              }
+            ],
+            events: 1,
+        ...
+                accountId: 'account-79022079-fd26-4d9d-b053-476ce48e087b',
+        +       amount: 70,
+        -       amount: 50,
+                kind: 'out',
+                pay: 'account',
+                qty: 1
+              }
+            ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        moves:
+          0:
+            kind: 'in'
+            qty: 10
+            amount: 0
+            pay: 'none'
+            accountId: ''
+          1:
+            kind: 'out'
+            qty: 1
+            amount: 50
+            pay: 'account'
+            accountId: 'account-79022079-fd26-4d9d-b053-476ce48e087b'
+        entries:
+          0:
+            kind: 'debt'
+            amount: 50
+            source: 'stock'
+        events: 1
+      actual:
+        moves:
+          0:
+            kind: 'in'
+            qty: 10
+            amount: 0
+            pay: 'none'
+            accountId: ''
+          1:
+            kind: 'out'
+            qty: 1
+            amount: 70
+            pay: 'account'
+            accountId: 'account-79022079-fd26-4d9d-b053-476ce48e087b'
+        entries:
+          0:
+            kind: 'debt'
+            amount: 70
+            source: 'stock'
+        events: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertItemRaceRefused (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1b-4e7d/kod-fe5bcf27/test/c1-tur1-249.test.mjs:193:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1b-4e7d/kod-fe5bcf27/test/c1-tur1-249.test.mjs:228:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S3 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+    ok 3 - S3 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+      ---
+      duration_ms: 42.421107
+      type: 'test'
+      ...
+    1..3
+not ok 2 - 2.4.9 C1 TUR 1 — stok hareketi yarışı (zorla): gövde yoldayken ürün silinirse hiçbir şey yazılmaz (404)
+  ---
+  duration_ms: 1387.189792
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1b-4e7d/kod-fe5bcf27/test/c1-tur1-249.test.mjs:176:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 C1 TUR 1 — hareket sayacı H14 (banka fişi): POS kaydı yalnız POS İptal İadesi fişinde aranır; fatura kapaması silme engelini hesaplamaz
+    # Subtest: E1 eşdeğerlik: her carinin banka fişi sayısı düzeltmeden önceki tanımla birebir aynı (POS İptal İadesi fişli cari, masraf fişli banka carisi dahil)
+    ok 1 - E1 eşdeğerlik: her carinin banka fişi sayısı düzeltmeden önceki tanımla birebir aynı (POS İptal İadesi fişli cari, masraf fişli banka carisi dahil)
+      ---
+      duration_ms: 1.942433
+      type: 'test'
+      ...
+    # Subtest: E3 fatura listesi (ödeme durumu: cari defteri, withRemaining: false) hareket sayacını çalıştırmaz; cari kartının Sil nedeni aynen
+    ok 2 - E3 fatura listesi (ödeme durumu: cari defteri, withRemaining: false) hareket sayacını çalıştırmaz; cari kartının Sil nedeni aynen
+      ---
+      duration_ms: 8.180988
+      type: 'test'
+      ...
+    # Subtest: E2 satırsız KDV'li masraf başlığı POS kaydına bakılmadan sayılmaz (tarama yalnız POS İptal İadesi fişinde — ders 47); son test: ham satır
+    ok 3 - E2 satırsız KDV'li masraf başlığı POS kaydına bakılmadan sayılmaz (tarama yalnız POS İptal İadesi fişinde — ders 47); son test: ham satır
+      ---
+      duration_ms: 1.139997
+      type: 'test'
+      ...
+    1..3
+ok 3 - 2.4.9 C1 TUR 1 — hareket sayacı H14 (banka fişi): POS kaydı yalnız POS İptal İadesi fişinde aranır; fatura kapaması silme engelini hesaplamaz
+  ---
+  duration_ms: 654.220952
+  type: 'suite'
+  ...
+1..3
+# tests 12
+# suites 3
+# pass 10
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4708.602803

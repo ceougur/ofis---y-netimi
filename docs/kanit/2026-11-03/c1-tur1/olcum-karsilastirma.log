@@ -1,0 +1,33 @@
+| Evre | Tur | 35e90e47 (C1 öncesi) p50 / en çok / döngü | eaf6b988 (C1) p50 / en çok / döngü | fe5bcf27 (tur 1) p50 / en çok / döngü |
+|---|---|---|---|---|
+| Banka carisi kartı (600 masraf + 600 fatura) | 1 | 57.14 / 86.52 / 55.24 ms | 8025.9 / 8576.84 / 8553.46 ms | 79.4 / 126.79 / 115.24 ms |
+| Banka carisi kartı (600 masraf + 600 fatura) | 2 | 49.66 / 75.44 / 63.99 ms | 8188.57 / 8884.22 / 8816.27 ms | 68.11 / 80.94 / 64.61 ms |
+| Fatura listesi (Alış) | 1 | 47.86 / 69.22 / 63.34 ms | 8635.99 / 9484.79 / 9477.69 ms | 45.44 / 71.55 / 65.84 ms |
+| Fatura listesi (Alış) | 2 | 40.39 / 57.72 / 54.04 ms | 7528.2 / 8267.99 / 8252.45 ms | 59.81 / 72.06 / 66.97 ms |
+| Fatura listesi (hepsi) | 1 | 55.23 / 129.91 / 113.52 ms | 8309.11 / 9255.62 / 9237.21 ms | 44.33 / 75.99 / 71.41 ms |
+| Fatura listesi (hepsi) | 2 | 47.4 / 66.32 / 61.68 ms | 6642.24 / 7460 / 7456.45 ms | 46.75 / 75.4 / 70.47 ms |
+| POS İptal İadeli cari kartı | 1 | 4.12 / 9.7 / 8.61 ms | 4.96 / 9.74 / 11.03 ms | 4.38 / 9.58 / 6.73 ms |
+| POS İptal İadeli cari kartı | 2 | 3.74 / 6.33 / 5.37 ms | 4.03 / 5.76 / 4.85 ms | 4.78 / 4.99 / 3.7 ms |
+| POS müşterisi kartı (100 POS tahsilatı) | 1 | 8.38 / 16.22 / 8.87 ms | 9.31 / 16.79 / 14.43 ms | 8.26 / 20.12 / 13.98 ms |
+| POS müşterisi kartı (100 POS tahsilatı) | 2 | 6.63 / 10.38 / 8.47 ms | 6.45 / 13.33 / 7.84 ms | 6.6 / 8.86 / 7.23 ms |
+tur 1 yük (1/5/15 dk): 35e 3.61,3.93,4.38 · eaf 3.82,3.96,4.39 · fe5 5.34,5.02,4.75; sayaç bütün cariler eaf 7905.92 ms / fe5 7.57 ms; kalıcı silme sayımı eaf 7417.61 / fe5 7.71 ms
+✓ tur 1: aynı cari kümesi (24)
+✓ tur 1: her carinin kart çıktısı eaf6b988 ↔ fe5bcf27 birebir (fark: 0)
+✓ tur 1: hareket sayacının çıktısı (her cari, bütün sayaçlar) eaf6b988 ↔ fe5bcf27 birebir
+✓ tur 1: POS İptal İadesi fişli 3 cari banka fişi sayılıyor (gelen 3)
+✓ tur 1: fatura listeleri birebir
+✗ tur 1: bankaKarti p50 79.4 ms ≤ C1 öncesi 57.14 ms + 5 ms (fark 22.26 ms)
+✓ tur 1: iptalIadeliKart p50 4.38 ms ≤ C1 öncesi 4.12 ms + 5 ms (fark 0.26 ms)
+✓ tur 1: posMusteriKarti p50 8.26 ms ≤ C1 öncesi 8.38 ms + 5 ms (fark -0.12 ms)
+tur 2 yük (1/5/15 dk): 35e 4.96,4.88,4.76 · eaf 4.8,4.92,4.72 · fe5 5.12,4.98,4.74; sayaç bütün cariler eaf 6819.79 ms / fe5 7.91 ms; kalıcı silme sayımı eaf 6575.9 / fe5 8.36 ms
+✓ tur 2: aynı cari kümesi (24)
+✓ tur 2: her carinin kart çıktısı eaf6b988 ↔ fe5bcf27 birebir (fark: 0)
+✓ tur 2: hareket sayacının çıktısı (her cari, bütün sayaçlar) eaf6b988 ↔ fe5bcf27 birebir
+✓ tur 2: POS İptal İadesi fişli 3 cari banka fişi sayılıyor (gelen 3)
+✓ tur 2: fatura listeleri birebir
+✗ tur 2: bankaKarti p50 68.11 ms ≤ C1 öncesi 49.66 ms + 5 ms (fark 18.45 ms)
+✓ tur 2: iptalIadeliKart p50 4.78 ms ≤ C1 öncesi 3.74 ms + 5 ms (fark 1.04 ms)
+✓ tur 2: posMusteriKarti p50 6.6 ms ≤ C1 öncesi 6.63 ms + 5 ms (fark -0.03 ms)
+# tests 16
+# pass 14
+# fail 2

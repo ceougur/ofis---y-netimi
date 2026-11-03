@@ -1,0 +1,43 @@
+{
+  "ad": "c1-tur1/eski-fe5bcf27-c1-tur1-249",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/c1-tur1-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T22:26:39.114Z",
+  "sure_sn": 4.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 10,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 C1 TUR 1 — stok hareketi yarışı (zorla): gövde yoldayken ürün silinirse hiçbir şey yazılmaz (404) › S1 stok satışı (POST …/moves; açık hesap ve peşin): silinmiş ürüne hareket, cari borcu, Kasa girişi yazılmaz",
+      "konum": "test/c1-tur1-249.test.mjs:198:3",
+      "hata": "S1: 2/2 durum kırmızı · ✗ açık hesap satış: açık hesap satış: silinmiş ürüne yazılmamalı (kayıtlar aynen) — önce {\"moves\":[{\"kind\":\"in\",\"qty\":10,\"amount\":0,\"pay\":\"none\",\"accountId\":\"\"}],\"entries\":[],\"events\":0}, sonra {\"moves\":[{\"kind\":\"in\",\"qty\":10,\"amount\":0,\"pay\":\"none\",\"accountId\":\"\"},{\"kind\":\"out\",\"qty\":1,\"amount\":50,\"pay\":\"account\",\"accountId\":\"account-88b428b6-38e9-44a8-adce-b1dc4f0ca9e2\"}],\"entries\":[{\"kind\":\"debt\",\"amount\":50,\"source\":\"stock\"}],\"events\":0} · ✗ peşin satış (nakit): peşin satış: silinmiş ürüne yazılmamalı (kayıtlar aynen) — önce {\"moves\":[{\"kind\":\"in\",\"qty\":10,\"amount\":0,\"pay\":\"none\",\"accountId\":\"\"}],\"events\":0}, sonra {\"moves\":[{\"kind\":\"in\",\"qty\":10,\"amount\":0,\"pay\":\"none\",\"accountId\":\"\"},{\"kind\":\"out\",\"qty\":1,\"amount\":70,\"pay\":\"cash\",\"accountId\":\"\"}],\"events\":1} (beklenen 0, gelen 2)"
+    },
+    {
+      "ad": "2.4.9 C1 TUR 1 — stok hareketi yarışı (zorla): gövde yoldayken ürün silinirse hiçbir şey yazılmaz (404) › S2 stok hareketi düzeltme (PUT …/moves/:id): silinmiş ürünün hareketi ve cari borcu değişmez",
+      "konum": "test/c1-tur1-249.test.mjs:220:3",
+      "hata": "stok düzeltme: silinmiş ürüne yazılmamalı (kayıtlar aynen) — önce {\"moves\":[{\"kind\":\"in\",\"qty\":10,\"amount\":0,\"pay\":\"none\",\"accountId\":\"\"},{\"kind\":\"out\",\"qty\":1,\"amount\":50,\"pay\":\"account\",\"accountId\":\"account-79022079-fd26-4d9d-b053-476ce48e087b\"}],\"entries\":[{\"kind\":\"debt\",\"amount\":50,\"source\":\"stock\"}],\"events\":1}, sonra {\"moves\":[{\"kind\":\"in\",\"qty\":10,\"amount\":0,\"pay\":\"none\",\"accountId\":\"\"},{\"kind\":\"out\",\"qty\":1,\"amount\":70,\"pay\":\"account\",\"accountId\":\"account-79022079-fd26-4d9d-b053-476ce48e087b\"}],\"entries\":[{\"kind\":\"debt\",\"amount\":70,\"source\":\"stock\"}],\"events\":1} · + actual - expected · ... Skipped lines"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/c1-tur1/eski-fe5bcf27-c1-tur1-249.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1b-4e7d/kod-fe5bcf27",
+  "ham_cikti_sha256": "8c6cfef7e37c7ecdf9eccea17cdd6027759e0a008c8df567d9f710c3333f08ea",
+  "ham_cikti_bayt": 9973
+}
