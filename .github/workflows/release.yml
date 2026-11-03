@@ -48,6 +48,7 @@ jobs:
       - run: npm run test:senaryo-224
       - run: npm run test:senaryo-225
       - run: npm run test:senaryo-225-uyari
+      - run: npm run test:senaryo-yedeksiz-sil-249
       - run: npm run test:senaryo-226
       - run: npm run test:senaryo-iz1-sayfa
       - run: npm run test:senaryo-iz1-kasa-acilis

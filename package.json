@@ -37,6 +37,7 @@
     "test:senaryo-224": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-224.mjs",
     "test:senaryo-225": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-225.mjs",
     "test:senaryo-225-uyari": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-225-uyari.mjs",
+    "test:senaryo-yedeksiz-sil-249": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-yedeksiz-sil-249.mjs",
     "test:senaryo-226": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-226.mjs",
     "test:senaryo-iz1-sayfa": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz1-sayfa.mjs",
     "test:senaryo-iz1-kasa-acilis": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz1-kasa-acilis.mjs",
