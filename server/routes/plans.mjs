@@ -189,6 +189,13 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (!plan) throw new HttpError(404, "Taksit kartı bulunamadı. Silinmiş olabilir.");
     return plan;
   };
+  // 2.4.9 C1 TUR 1 (C1 dar kontrol ORTA; cari yazımındaki desen — routes/accounts.mjs addEntry): kart isteğin başında okunur; gövde beklenirken (await readJson)
+  // kart silinirse tahsilat / iade / tahsilat düzeltmesi / taksit ekleme / taksit düzeltmesi SİLİNMİŞ KARTA yazılıyordu (yanıt 404, kayıt yazılmış). Yazım
+  // işleminin İÇİNDE (store.tx / bank.post prepare) kart yeniden denetlenir: silinmişse 404, hiçbir şey yazılmaz. Otomatik Dağıt ve kart düzenleme işlemin
+  // içinde detail() → planRow ile zaten geri alınır.
+  const assertPlanLive = planId => {
+    planRow(planId);
+  };
   const shape = (plan, user) => {
     const items = itemsOf(plan.id);
     const entries = entriesOf(plan.id);
@@ -722,6 +729,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (count >= MAX_ITEMS) throw new HttpError(400, `Bir kartta en fazla ${MAX_ITEMS} taksit olabilir.`);
     const id = newId("item");
     store.tx(() => {
+      assertPlanLive(plan.id);
       const seq = (store.get("SELECT COALESCE(MAX(seq), 0) AS s FROM plan_items WHERE plan_id = ?", plan.id)?.s || 0) + 1;
       const stamp = now();
       store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", id, plan.id, seq, input.dueDate, input.amount, input.note, stamp, stamp);
@@ -737,6 +745,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const input = itemInput({ ...previous, ...(await readJson(req)) }, plan);
     if (!(input.amount > 0)) throw new HttpError(400, "Taksit tutarı sıfırdan büyük olmalı.");
     store.tx(() => {
+      assertPlanLive(plan.id);
       store.run("UPDATE plan_items SET due_date = ?, amount = ?, note = ?, updated_at = ? WHERE id = ?", input.dueDate, input.amount, input.note, now(), previous.id);
       audit(user, "plan.item.updated", previous.id, { planId: plan.id, previous, ...input });
     });
@@ -864,6 +873,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       // SONRA, işlemin içinde. Önceden önce çalışıyordu: kartın net tahsilatını ve Kasa'yı 0'a indiren iadenin yinelemesi 400 "iade tahsil
       // edilenden fazla" ya da 409 "Kasa eksiye düşer" alıyordu.
       prepare: () => {
+        assertPlanLive(plan.id);
         // K8 (2.3.0): tahsilatta kartın kalanı işlemin içinde yeniden okunur (plan-paid / plan-overpay / installment-paid; Benzer İşlem'den önce).
         if (input.kind === "in") return assertRoom(user, plan.id, input.amount, { itemId: input.itemId, overpay: body.overpay === true, op: "create" });
         assertNetPaid(plan.id, -input.amount);
@@ -913,6 +923,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       body: { ...body, entryId: previous.id },
       // K8 (2.3.0, plan §3.10/3 update): yalnız tutarı BÜYÜYEN tahsilat düzeltmesinde kartın kalanı (bu satır hariç) işlemin içinde yeniden okunur.
       prepare: () => {
+        assertPlanLive(plan.id);
         if (previous.kind === "in" && !previous.opening && toMinor(input.amount) > toMinor(Number(previous.amount) || 0)) assertRoom(user, plan.id, input.amount, { overpay: body.overpay === true, exceptId: previous.id, op: "update" });
       },
       write: () => {

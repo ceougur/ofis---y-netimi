@@ -9,7 +9,7 @@
 // (routes/plan-transfer.mjs) bu fonksiyonu çağırır; ikinci bir "hareket" sorgusu yazılmaz (ders 10).
 // Hız (ders 47): tek SQL, her alt sorgu indeksli (account_entries(account_id…), invoices(account_id…), invoice_offsets(account_id), plans(account_id),
 // cheques(account_id) + endorse_account_id taraması (bugünkü sayımla aynı), doubtful_receivables(account_id…), fin_events(party_id…) + bank_lines(event_id) /
-// pos_sales(event_id) — ikincisi yalnız carinin taraf olduğu modülsüz fiş varsa). Silinenler'in JSON taraması yalnız includeDeleted (nadir kalıcı silme)
+// pos_sales(event_id) — ikincisi yalnız carinin POS İptal İadesi fişi varsa; bkz. vouchersSql). Silinenler'in JSON taraması yalnız includeDeleted (nadir kalıcı silme)
 // yolunda; toplu kalıcı silme openTrashAccounts ile bir kez tarar.
 
 const TABLES = ["account_entries", "invoices", "invoice_offsets", "plans", "cheques", "doubtful_receivables", "fin_events", "bank_lines", "pos_sales", "trash"];
@@ -30,11 +30,15 @@ const PARTS = [
 // H14 (İLKEYLE; not §2): carinin tarafı olduğu, modül satırı olmayan banka fişi (src_table '') — tutarı fiş satırında (bank_lines) ya da POS kaydında
 // (pos_sales.event_id: POS İptal İadesi fişinin tutarı satırda değil iade kaydındadır — pos.mjs cancelRefund; fatura silinince carinin başka izi kalmaz).
 // Satırsız ve POS kaydısız başlık (iptal edilmiş modül kopyası, KDV'li masraf fişinin başlığı — tutarı faturasında) tutar taşımaz → sayılmaz.
+// C1 TUR 1 (dar kontrol ORTA-1, ders 47): POS kaydı YALNIZ POS İptal İadesi fişinin (pos_cancel_refund) tutar taşıyıcısıdır — öbür POS kayıtlarının olayı
+// modül olayıdır (src_table dolu; pos.mjs reconcile/posRowOf), İptal İadesi kaydının başlığı pos_cancel_refund'dur (pos.mjs mutabakatı). pos_sales.event_id
+// indeksi kısmidir (yalnız etkin satış): önceden her satırsız başlıkta (ör. 600 KDV'li masraf fişi) pos_sales baştan taranıyordu — 100.000 POS kaydında cari
+// kartı 3–5 ms → 4,6–4,9 sn. Tarama artık yalnız İptal İadesi fişinde; sonuç doğru veride aynıdır (test/c1-tur1-249.test.mjs E1, eşdeğerlik kanıtı).
 function vouchersSql(have) {
   if (!have.has("fin_events")) return "0";
   const carriers = [
     have.has("bank_lines") ? "EXISTS (SELECT 1 FROM bank_lines l WHERE l.event_id = e.id)" : "",
-    have.has("pos_sales") ? "EXISTS (SELECT 1 FROM pos_sales s WHERE s.event_id = e.id)" : "",
+    have.has("pos_sales") ? "(+e.type = 'pos_cancel_refund' AND EXISTS (SELECT 1 FROM pos_sales s WHERE s.event_id = e.id))" : "",
   ].filter(Boolean);
   return carriers.length ? `(SELECT COUNT(*) FROM fin_events e WHERE e.party_id = ?1 AND +e.src_table = '' AND (${carriers.join(" OR ")}))` : "0";
 }

@@ -145,7 +145,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // Cari kartındaki taksit kartı özeti (detail ve waFacts AYNI eşlemeyle; İş Z 2.4.8).
   const planSummaryOf = plan => ({ id: plan.id, name: plan.name, refNo: plan.refNo, status: plan.status, state: plan.state, totals: plan.totals, next: plan.next, itemCount: plan.itemCount, registeredOn: plan.registeredOn, total: plan.total, coversBalance: Boolean(plan.coversBalance) });
 
-  // withRemaining (2.4.5 madde 6): false → borç kayıtlarının Kalan'ı hesaplanmaz (fatura kapaması yalnız defteri ister; aynı kapama iki kez koşmasın).
+  // withRemaining (2.4.5 madde 6): false → borç kayıtlarının Kalan'ı hesaplanmaz (fatura kapaması yalnız defteri ister; aynı kapama iki kez koşmasın);
+  // geri ödenecek iadeler ve silme engeli (2.4.9 C1 TUR 1) de okunmaz.
   function detail(id, user, { withRemaining = true } = {}) {
     const account = accountRow(id);
     const manage = canUser(user, "accounts.manage");
@@ -191,7 +192,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       doubtful: doubtfulSummary,
       canDoubtful: manage && canUser(user, "accounts.doubtful"),
       // 2.4.3 (keşif A5): silinemeyen caride Sil pasif, nedeni kartta yazılı (silme ucuyla aynı denetim).
-      deleteBlock: manage ? deleteBlock(account)?.message || "" : "",
+      // 2.4.9 C1 TUR 1 (dar kontrol ORTA-1, ders 47): fatura kapamasının defter okuması (withRemaining: false; cari başına, fatura listesinde) silme
+      // engelini — hareket sayacını — hesaplamaz; yalnız kart görünümünde (refundables ile aynı kural).
+      deleteBlock: manage && withRemaining ? deleteBlock(account)?.message || "" : "",
       // 2.4.5 madde 6: Açılış Bakiyesi satırı (Düzenle formundaki açılış Vade Tarihi / Beklenen Ödeme Tarihi; PUT openingDueDate / openingExpectedDate).
       openingEntryId: openingEntryOf(account.id)?.id || "",
       // 2.4.6 madde 9 (DB1): Ödeme / Tahsilat formunun "Geri Ödenen İade" seçenekleri (geri ödenmemiş kalanı olan iadeler; yalnız kart görünümünde —
@@ -1840,7 +1843,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       deletedAt: item.deletedAt,
       actorName: item.actorName,
       restorable: true,
-      note: "Hareketleriyle Cari listesine geri döner; Kasa yeniden hesaplanır.",
+      // 2.4.9 C1 TUR 1 (dar kontrol DÜŞÜK-3): hareketi olan cari silinmez; silinen cari hareketsizdir — not hareket ve Kasa anmaz.
+      note: "Cari listesine geri döner.",
     }));
   function restoreDeleted(user, id) {
     const account = store.get("SELECT id, name FROM accounts WHERE id = ? AND deleted_at IS NOT NULL", id);
