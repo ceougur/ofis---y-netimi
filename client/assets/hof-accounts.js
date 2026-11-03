@@ -1036,6 +1036,10 @@
     // v2.1.0 Aşama 5: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
     const requestId = HOF.requestId();
     const money_ = type === "in" || type === "out";
+    // 2.4.9 P1: "Kredi Kartına İade" kutusunun koşulu bir kez; alan da kart seçicisi de bu değerden. 2.4.3 C13 kutuyu müşteride kaldırdı, kart seçicisi her
+    // tahsilatta kaldı: kutusuz formda seçici yol Kredi Kartı iken açılıyordu (2+ kartta zorunlu "Kredi Kartı", seçilince sunucu 400; 0/1 kartta yanlış
+    // "Kredi Kartı Tanımla" / "kredi kartına yazılır"). Müşteride kart yolu POS'tur (plan §4.6); eski cardRefund satırının düzeltmesinde kutu ve seçici kalır.
+    const refundBox = type === "in" && Boolean(HOF.bank?.attachPicker) && (account.type !== "customer" || entry?.cardRefund === true);
     HOF.formModal({
       title: entry ? ENTRY_EDIT_LABEL[type] : ENTRY_LABEL[type],
       // 2.4.3 (keşif A1/A21): aynı adlı cariler karışmasın — başlıkta Cari No ve telefon (kayıt kartından açılan tahsilat hangi cariye yazılacak).
@@ -1049,7 +1053,7 @@
           : []),
         // 2.3.0 (İz 3.2; plan §4.6 "alıştan iade, ödeme iadesi (giriş) → Kredi Kartı; POS satışı oluşmaz, 309 düşer"): tahsilatta Kredi Kartı yolu POS'tur;
         // tedarikçi parayı firmanın kredi kartına iade ettiyse bu kutu işaretlenir → POS alanı yerine kredi kartı seçicisi (yalnız yol Kredi Kartı iken görünür).
-        ...(type === "in" && HOF.bank?.attachPicker && (account.type !== "customer" || entry?.cardRefund === true) ? [{ name: "cardRefund", label: "Kredi Kartına İade (tedarikçi parayı firmanın kredi kartına iade etti; POS tahsilatı değil)", type: "checkbox", value: entry?.cardRefund === true }] : []),
+        ...(refundBox ? [{ name: "cardRefund", label: "Kredi Kartına İade (tedarikçi parayı firmanın kredi kartına iade etti; POS tahsilatı değil)", type: "checkbox", value: entry?.cardRefund === true }] : []),
         // Karar 15.10.2026 (plan §3.11b/2): şüpheli kaydı AÇIK müşteride tahsilat varsayılan şüpheliden düşer; bu kutu işaretlenirse satır normal
         // cari hesapta (120) kalır. Yalnız müşteri + açık şüpheli varken görünür; fatura peşini ve Kapatılacak Fatura bağlı tahsilat zaten normaldir.
         ...(type === "in" && account.type === "customer" && (account.doubtful?.openMinor || 0) > 0 ? [{ name: "doubtfulSkip", label: "Normal Cari Hesaba İşle (şüpheli alacaktan düşmez; satır 120 Alıcılar'da kalır)", type: "checkbox", value: entry?.doubtfulSkip === true }] : []),
@@ -1066,7 +1070,7 @@
       onOpen: dialog => {
         if (type === "debt" || type === "credit") wireDueMin(dialog, "date", ["dueDate", "expectedDate"]);
         // K2 (plan §3.7 #3, §8.9): ödemede "Kredi Kartı" seçilince Kurumsal Kart (tahsilatta kart yolu POS'tur; seçici yok).
-        const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : type === "in" ? { value: entry?.cardRefund === true ? entry.finRef || "" : "", keepLabel: "" } : null;
+        const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : refundBox ? { value: entry?.cardRefund === true ? entry.finRef || "" : "", keepLabel: "" } : null;
         // 2.7: seçicide bakiye — tahsilat hesaba girer, ödeme çıkar (kartla ödeme kart borcunu artırır); düzeltmede eski tutar bakiyede (original).
         const original = entry && (entry.method === "bank" || entry.method === "card") && entry.finRef ? { ref: entry.finRef, amount: entry.amount, date: entry.date } : null;
         // 2.2.0 (İz 3.2): tahsilatta kart yolu POS'tur — POS, POS Taksit Sayısı, Provizyon No, Kartın Son 4 Hanesi ve önizleme (düzeltmede satırın
