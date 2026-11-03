@@ -1,0 +1,32 @@
+{
+  "ad": "ci-kirmizi/genel-denetimler-Istanbul",
+  "komut": "node --test test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/ci-kapi-listesi.test.mjs test/whatsapp-meta-izolasyon.test.mjs",
+  "commit": "87b28e3e73b9344b56ab0669f4bb3bc6ed703a3b",
+  "dal": "worktree-agent-a19808dcd3cac5196",
+  "kirli": 3,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T22:08:01.287Z",
+  "sure_sn": 1.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 25,
+    "gecen": 25,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/ci-kirmizi/genel-denetimler-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a19808dcd3cac5196",
+  "ham_cikti_sha256": "8c09e40762f3e980c1ad805a1c65ceb6dbec5a5a45e6ecb18212bae179b22cc7",
+  "ham_cikti_bayt": 8012
+}

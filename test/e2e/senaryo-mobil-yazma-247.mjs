@@ -95,7 +95,13 @@ const fill = async (name, value, target = page) => {
   await typeSlow(value, target);
   await target.keyboard.press("Tab");
 };
-const submit = async (target = page) => target.click('.yz-sheet [data-yz="submit"]');
+// Kaydet'ten ÖNCE ekrandaki eski bildirimler kaldırılır: CI #963 (521be1b9) Y9 — eşlemenin "Cihaz eşlendi…" bildirimi (5 sn yaşar) ekrandayken toastText'in
+// waitForSelector(".toast") beklemesi hemen dönüyor, kaydın bildirimi sunucu yanıtından önce okunuyordu ("✗ kaydedildi", kayıt yine yazılmıştı). Zorla:
+// HOF_BILDIRIM_ZORLA=yavas HOF_BILDIRIM_ZORLA_BAGLAM=2 --import ./test/e2e/bildirim-yaris-zorla.mjs (ders 20). Kaydet'ten sonra gelen her bildirim okunur.
+const submit = async (target = page) => {
+  await clearToasts(target);
+  await target.click('.yz-sheet [data-yz="submit"]');
+};
 const toastText = async (target = page) => {
   await target.waitForSelector(".toast", { timeout: 8000 });
   return (await target.$$eval(".toast", items => items.map(item => item.textContent.trim()))).join(" | ");

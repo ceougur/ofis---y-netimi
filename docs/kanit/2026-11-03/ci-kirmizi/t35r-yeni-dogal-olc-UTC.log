@@ -1,0 +1,7 @@
+# T35r yarış denemesi: 5 deneme, kip olc, TZ UTC, çalışma klasörü /home/user/ofis---y-netimi/.claude/worktrees/agent-a19808dcd3cac5196
+deneme 1: çıkış 0 · YEŞİL · ileti isteği → geri yükleme bitti 122 ms (ön koşul OLUŞMADI) · Meta yanıtı ara okumadan SONRA
+deneme 2: çıkış 0 · YEŞİL · ileti isteği → geri yükleme bitti 123 ms (ön koşul OLUŞMADI) · Meta yanıtı ara okumadan SONRA
+deneme 3: çıkış 0 · YEŞİL · ileti isteği → geri yükleme bitti 236 ms (ön koşul OLUŞMADI) · Meta yanıtı ara okumadan SONRA
+deneme 4: çıkış 0 · YEŞİL · ileti isteği → geri yükleme bitti 139 ms (ön koşul OLUŞMADI) · Meta yanıtı ara okumadan SONRA
+deneme 5: çıkış 0 · YEŞİL · ileti isteği → geri yükleme bitti 172 ms (ön koşul OLUŞMADI) · Meta yanıtı ara okumadan SONRA
+# özet: 5/5 yeşil, 0 kırmızı; ön koşul oluşan deneme 0/5

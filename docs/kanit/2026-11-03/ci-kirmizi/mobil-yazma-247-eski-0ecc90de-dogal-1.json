@@ -1,0 +1,32 @@
+{
+  "ad": "ci-kirmizi/mobil-yazma-247-eski-0ecc90de-dogal-1",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mobil-yazma-247.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T22:09:57.547Z",
+  "sure_sn": 18.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 74,
+    "gecen": 74,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a19808dcd3cac5196/docs/kanit/2026-11-03/ci-kirmizi/mobil-yazma-247-eski-0ecc90de-dogal-1.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cik-q7m3/eski-0ecc90de",
+  "ham_cikti_sha256": "05031ddedd6a811ee548ad42bf680dfd49f0f5929294b44e5d7fe9851ffd0061",
+  "ham_cikti_bayt": 6004
+}

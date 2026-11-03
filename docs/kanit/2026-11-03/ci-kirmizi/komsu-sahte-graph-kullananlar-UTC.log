@@ -1,0 +1,942 @@
+TAP version 13
+# (node:3641) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 İş Q3 — taşınan veride Gönderiliyor'da kalmış iş Sonucu Belirsiz
+    # Subtest: istek Meta'dayken süreç öldü, veri defter olmadan taşındı → iş Sonucu Belirsiz (deneme 1); yeni gönderim kişiyi eler (ikinci istek yok); Yine de Gönder gider
+    ok 1 - istek Meta'dayken süreç öldü, veri defter olmadan taşındı → iş Sonucu Belirsiz (deneme 1); yeni gönderim kişiyi eler (ikinci istek yok); Yine de Gönder gider
+      ---
+      duration_ms: 1404.880448
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.4.8 İş Q3 — taşınan veride Gönderiliyor'da kalmış iş Sonucu Belirsiz
+  ---
+  duration_ms: 1405.772529
+  type: 'suite'
+  ...
+# (node:3642) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T2-5 → 2.4.9 W-T — şablonun teslim süresi (TTL) Meta'ya GİTMEZ (Meta varsayılanı 30 gün)
+    # Subtest: program şablonları AÇARKEN teslim süresi göndermez; Meta'daki şablonda TTL yok; ikinci denetim açmaz / düzenlemez
+    ok 1 - program şablonları AÇARKEN teslim süresi göndermez; Meta'daki şablonda TTL yok; ikinci denetim açmaz / düzenlemez
+      ---
+      duration_ms: 605.808749
+      type: 'test'
+      ...
+    # Subtest: teslim süresi ayarı (ttlHours: 48) REDDEDİLİR (400); onaylı şablonlar denetimde düzenlenmez
+    ok 2 - teslim süresi ayarı (ttlHours: 48) REDDEDİLİR (400); onaylı şablonlar denetimde düzenlenmez
+      ---
+      duration_ms: 434.976131
+      type: 'test'
+      ...
+    # Subtest: şablon Meta'da önceden (teslim süresiz) açılmışsa ilk denetimde DÜZENLENMEZ (Meta varsayılanı kalır)
+    ok 3 - şablon Meta'da önceden (teslim süresiz) açılmışsa ilk denetimde DÜZENLENMEZ (Meta varsayılanı kalır)
+      ---
+      duration_ms: 413.320291
+      type: 'test'
+      ...
+    # Subtest: Meta 12 saatten uzun teslim süresini reddeden hesapta (gerçek Meta gibi) şablon TEK istekte açılır; kartta teslim süresi uyarısı yok; denetim yinelenince istek yok
+    ok 4 - Meta 12 saatten uzun teslim süresini reddeden hesapta (gerçek Meta gibi) şablon TEK istekte açılır; kartta teslim süresi uyarısı yok; denetim yinelenince istek yok
+      ---
+      duration_ms: 494.520345
+      type: 'test'
+      ...
+    1..4
+ok 2 - 2.4.8 T2-5 → 2.4.9 W-T — şablonun teslim süresi (TTL) Meta'ya GİTMEZ (Meta varsayılanı 30 gün)
+  ---
+  duration_ms: 1950.107645
+  type: 'suite'
+  ...
+# (node:3648) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T2-5 güvenli taraf → 2.4.9 W-T — Süresi Doldu ve PDF silme Meta'nın teslim süresine (yoksa 30 güne) bağlı
+    # Subtest: Meta listesi teslim süresi BİLDİRMİYOR (Meta varsayılanı): iş 73. saatte Süresi Doldu OLMAZ, PDF silinmez; kartta uyarı yok; 30 gün + 1 saatte Süresi Doldu + PDF silinir
+    ok 1 - Meta listesi teslim süresi BİLDİRMİYOR (Meta varsayılanı): iş 73. saatte Süresi Doldu OLMAZ, PDF silinmez; kartta uyarı yok; 30 gün + 1 saatte Süresi Doldu + PDF silinir
+      ---
+      duration_ms: 718.110911
+      type: 'test'
+      ...
+    # Subtest: Meta varsayılanı (30 gün) ve bildirim yolu 7 günden beri sessiz: iş Gönderildi'de kalır (§7a 16), PDF yine 30 gün + 1 saatte silinir (Meta artık teslim etmeye çalışmaz)
+    ok 2 - Meta varsayılanı (30 gün) ve bildirim yolu 7 günden beri sessiz: iş Gönderildi'de kalır (§7a 16), PDF yine 30 gün + 1 saatte silinir (Meta artık teslim etmeye çalışmaz)
+      ---
+      duration_ms: 495.554904
+      type: 'test'
+      ...
+    # Subtest: Meta listede 43.200 sn (12 saat) BİLDİRİR (WhatsApp Yöneticisi'nde ayarlı): 13. saatte Süresi Doldu + PDF silinir (12 saat 30 dk'da henüz değil)
+    ok 3 - Meta listede 43.200 sn (12 saat) BİLDİRİR (WhatsApp Yöneticisi'nde ayarlı): 13. saatte Süresi Doldu + PDF silinir (12 saat 30 dk'da henüz değil)
+      ---
+      duration_ms: 493.913761
+      type: 'test'
+      ...
+    # Subtest: Meta listede 259.200 sn BİLDİRİR (2.4.8'de 72 saatle açılmış eski şablon; §15 'liste değeri geçerli'): 73. saatte Süresi Doldu + PDF silinir (72 saat 30 dk'da henüz değil)
+    ok 4 - Meta listede 259.200 sn BİLDİRİR (2.4.8'de 72 saatle açılmış eski şablon; §15 'liste değeri geçerli'): 73. saatte Süresi Doldu + PDF silinir (72 saat 30 dk'da henüz değil)
+      ---
+      duration_ms: 451.040734
+      type: 'test'
+      ...
+    1..4
+ok 3 - 2.4.8 T2-5 güvenli taraf → 2.4.9 W-T — Süresi Doldu ve PDF silme Meta'nın teslim süresine (yoksa 30 güne) bağlı
+  ---
+  duration_ms: 2160.971505
+  type: 'suite'
+  ...
+# (node:3673) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T1 P3 = SAYILMAZ — Süresi Doldu (ve Başarısız) 'Daha Önce Gönderildi' sayılmaz; kişiye ulaşan sayılır
+    # Subtest: Süresi Doldu kişi aynı dönem için yeni toplu işte GÖNDERİLECEK; yeni toplu iş açılır ve ileti bir kez daha gider
+    ok 1 - Süresi Doldu kişi aynı dönem için yeni toplu işte GÖNDERİLECEK; yeni toplu iş açılır ve ileti bir kez daha gider
+      ---
+      duration_ms: 735.103069
+      type: 'test'
+      ...
+    # Subtest: Süresi Doldu'dan sonra Meta geç 'delivered' bildirirse ileti ulaşmıştır → 'Daha Önce Gönderildi'
+    ok 2 - Süresi Doldu'dan sonra Meta geç 'delivered' bildirirse ileti ulaşmıştır → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 574.790531
+      type: 'test'
+      ...
+    # Subtest: Başarısız (kanca: teslim edilemedi 131026) → gönderilecek (mevcut davranış korunur); Teslim Edildi → 'Daha Önce Gönderildi'
+    ok 3 - Başarısız (kanca: teslim edilemedi 131026) → gönderilecek (mevcut davranış korunur); Teslim Edildi → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 983.979203
+      type: 'test'
+      ...
+    1..3
+ok 4 - 2.4.8 T1 P3 = SAYILMAZ — Süresi Doldu (ve Başarısız) 'Daha Önce Gönderildi' sayılmaz; kişiye ulaşan sayılır
+  ---
+  duration_ms: 2295.202414
+  type: 'suite'
+  ...
+# (node:3681) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T6-E2 — ileti isteği havuzdaki eski soketi kullanmaz; bağlantı kurulamayan istek 'gönderilmedi' (R1)
+    # Subtest: ödeme hatırlatması: kesinti iki ileti ARASINDA (havuzdaki soket canlıyken) → Bağlantı Bekleniyor, Sonucu Belirsiz yok; dönünce kendiliğinden gider, çift 0
+    ok 1 - ödeme hatırlatması: kesinti iki ileti ARASINDA (havuzdaki soket canlıyken) → Bağlantı Bekleniyor, Sonucu Belirsiz yok; dönünce kendiliğinden gider, çift 0
+      ---
+      duration_ms: 777.832936
+      type: 'test'
+      ...
+    # Subtest: bağlantı kurulamadan süre doldu (sunucu TCP'yi kabul eder, TLS hiç kurulmaz) → 'Meta'ya hiç ulaşmadı'; bağlantı kurulduktan sonra yanıtsızlık → belirsiz
+    ok 2 - bağlantı kurulamadan süre doldu (sunucu TCP'yi kabul eder, TLS hiç kurulmaz) → 'Meta'ya hiç ulaşmadı'; bağlantı kurulduktan sonra yanıtsızlık → belirsiz
+      ---
+      duration_ms: 1204.813205
+      type: 'test'
+      ...
+    1..2
+ok 5 - 2.4.8 T6-E2 — ileti isteği havuzdaki eski soketi kullanmaz; bağlantı kurulamayan istek 'gönderilmedi' (R1)
+  ---
+  duration_ms: 1983.731067
+  type: 'suite'
+  ...
+# (node:3689) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+    # Subtest: bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+    ok 1 - bağlantı yokken: görünüm boş, Sına / Deneme 409; yetki yalnız yöneticide (whatsapp.send yerleşik rollerden yalnız admin)
+      ---
+      duration_ms: 528.130286
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+    ok 2 - Elle Bağla doğrulaması: zorunlu alanlar, yalnız rakam kimlik, boşluklu belirteç, ilk kayıtta belirteç şart
+      ---
+      duration_ms: 16.369712
+      type: 'test'
+      ...
+    # Subtest: Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+    ok 3 - Elle Bağla kaydı: belirteç şifreli saklanır; yanıtta yalnız 'kayıtlı' işareti (son karakterler de yok); işlem geçmişinde belirteç yok
+      ---
+      duration_ms: 6.122981
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+    ok 4 - Bağlantıyı Sına: numara bu WABA'da, görünen ad, kalite, sınır basamağı, deneme şablonu; istekler sürüm sabitiyle ve belirteç yalnız başlıkta
+      ---
+      duration_ms: 13.086692
+      type: 'test'
+      ...
+    # Subtest: Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+    ok 5 - Sına hataları: süresi dolmuş belirteç (Meta metni belirteci yankılasa bile), yanlış kimlik, numara başka hesapta, zaman aşımı, gövdesiz 500
+      ---
+      duration_ms: 3350.810016
+      type: 'test'
+      ...
+    # Subtest: Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+    ok 6 - Kendime Deneme Gönder: hello_world dili listeden, numara '+90' ile; 15 sn içinde ikinci deneme 429; geçersiz numara 400; şablon yoksa Meta'ya ileti gitmez
+      ---
+      duration_ms: 39.903961
+      type: 'test'
+      ...
+    # Subtest: gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+    ok 7 - gönderim yetkisi kişiye verilse de bağlantı/deneme yöneticiye özgü (system.manage); yönetici yetkiyi kişiye ekleyip kaldırabilir
+      ---
+      duration_ms: 166.553285
+      type: 'test'
+      ...
+    # Subtest: iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+    ok 8 - iki şirket: bağlantı şirket başına (002 bağlı değil); Şirket Verisini Sıfırla bağlantıyı korur
+      ---
+      duration_ms: 381.544169
+      type: 'test'
+      ...
+    # Subtest: yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+    ok 9 - yedek dosyasında belirteç açık metin olarak yok; secret.key yedek klasörüne girmez; günlükte belirteç yok
+      ---
+      duration_ms: 47.040449
+      type: 'test'
+      ...
+    # Subtest: belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+    ok 10 - belirteç bu bilgisayarda açılamıyor (veri başka bilgisayara taşınmış: secret.key farklı) → Sına 409, Meta'ya istek yok; Bağlantıyı Kaldır
+      ---
+      duration_ms: 107.163354
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+    ok 11 - Bağlantıyı Kaldır: ayar satırı silinir, işlem geçmişine yazılır; kaynakta mühürlü belirteci yalnız bağlantı modülü okur
+      ---
+      duration_ms: 1930.981676
+      type: 'test'
+      ...
+    1..11
+ok 6 - 2.4.8 W1 — WhatsApp Business API bağlantısı (Elle Bağla)
+  ---
+  duration_ms: 7118.083983
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+    # Subtest: salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+    ok 1 - salt okunur lisans: görünüm okunur (writable false); kaydet / sına / deneme / kaldır 403 LICENSE_READ_ONLY; whatsapp.send ekrandan düşer; ayar değişmez
+      ---
+      duration_ms: 936.246846
+      type: 'test'
+      ...
+    # Subtest: Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+    ok 2 - Meta adresi verilmemiş kurulum (testlerin varsayılanı): kaydetmek olur, Sına / Deneme 409 whatsapp-graph-off ve HİÇBİR dış istek yapılmaz
+      ---
+      duration_ms: 717.982368
+      type: 'test'
+      ...
+    1..2
+ok 7 - 2.4.8 W1 — salt okunur lisans ve Meta adresi kapalı kurulum
+  ---
+  duration_ms: 1654.544071
+  type: 'suite'
+  ...
+# (node:3726) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 29, 31)
+    # Subtest: ret sırası bağlı değil → yetki → lisans → onay → şablon; firma adı yok; şablon onaysız / Pazarlama'da → 409, Meta'ya ileti gitmez, toplu iş kaydı oluşmaz
+    ok 1 - ret sırası bağlı değil → yetki → lisans → onay → şablon; firma adı yok; şablon onaysız / Pazarlama'da → 409, Meta'ya ileti gitmez, toplu iş kaydı oluşmaz
+      ---
+      duration_ms: 611.404979
+      type: 'test'
+      ...
+    1..1
+ok 8 - 2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 29, 31)
+  ---
+  duration_ms: 612.538872
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi
+    # Subtest: ekstre: belge başlıklı şablon (PDF + 4 değişken, '+' ile); sabit hat ve yurt dışı ELENMEZ, aynı numaralı iki cariye iki ileti; numarasız / WhatsApp Mesajı İstemiyor elenir; sıra = seçim sırası
+    ok 1 - ekstre: belge başlıklı şablon (PDF + 4 değişken, '+' ile); sabit hat ve yurt dışı ELENMEZ, aynı numaralı iki cariye iki ileti; numarasız / WhatsApp Mesajı İstemiyor elenir; sıra = seçim sırası
+      ---
+      duration_ms: 532.014331
+      type: 'test'
+      ...
+    # Subtest: ödeme hatırlatma (§7a 20): {{3}} en eski gecikmiş vade, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; gecikmiş borcu olmayan elenir
+    ok 2 - ödeme hatırlatma (§7a 20): {{3}} en eski gecikmiş vade, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; gecikmiş borcu olmayan elenir
+      ---
+      duration_ms: 389.158805
+      type: 'test'
+      ...
+    1..2
+ok 9 - 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi
+  ---
+  duration_ms: 921.556398
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — çift gönderim yok (§7a 9, 10)
+    # Subtest: aynı istek kimliği → tek toplu iş; bekleyen iş varken aynı cari + şablon + dönem 'Zaten Kuyrukta' (iki sekme / iki kullanıcı); bittikten sonra 'Daha Önce Gönderildi' (R3: varsayılan Bunları Çıkar, sendAgain ile Yine de Gönder)
+    ok 1 - aynı istek kimliği → tek toplu iş; bekleyen iş varken aynı cari + şablon + dönem 'Zaten Kuyrukta' (iki sekme / iki kullanıcı); bittikten sonra 'Daha Önce Gönderildi' (R3: varsayılan Bunları Çıkar, sendAgain ile Yine de Gönder)
+      ---
+      duration_ms: 608.417461
+      type: 'test'
+      ...
+    # Subtest: zaman aşımı / bağlantı kopması → Sonucu Belirsiz, kendiliğinden yeniden GÖNDERİLMEZ, toplu iş SÜRER; Yine de Gönder onay ister
+    ok 2 - zaman aşımı / bağlantı kopması → Sonucu Belirsiz, kendiliğinden yeniden GÖNDERİLMEZ, toplu iş SÜRER; Yine de Gönder onay ister
+      ---
+      duration_ms: 3074.038038
+      type: 'test'
+      ...
+    # Subtest: kabul yazımı düştü (disk dolu): iş 'Gönderiliyor'da kalır, defterdeki kabulle çözülür; program yeniden açılınca da İKİNCİ ileti yok
+    ok 3 - kabul yazımı düştü (disk dolu): iş 'Gönderiliyor'da kalır, defterdeki kabulle çözülür; program yeniden açılınca da İKİNCİ ileti yok
+      ---
+      duration_ms: 940.187947
+      type: 'test'
+      ...
+    1..3
+ok 10 - 2.4.8 W2 — çift gönderim yok (§7a 9, 10)
+  ---
+  duration_ms: 4623.240358
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+    # Subtest: 190 (belirteç) → hatayı alan iş Başarısız (kodlu), toplu iş duraklar, bekleyenler Duraklatıldı, sonraki kişilere istek gitmez; Devam Et ile sürer
+    ok 1 - 190 (belirteç) → hatayı alan iş Başarısız (kodlu), toplu iş duraklar, bekleyenler Duraklatıldı, sonraki kişilere istek gitmez; Devam Et ile sürer
+      ---
+      duration_ms: 1074.244857
+      type: 'test'
+      ...
+    # Subtest: 131026 (alıcı) ve tanınmayan kod → o iş Başarısız (kodlu), toplu iş sürer; Başarısızları Yeniden Dene yalnız onları YENİ işle gönderir
+    ok 2 - 131026 (alıcı) ve tanınmayan kod → o iş Başarısız (kodlu), toplu iş sürer; Başarısızları Yeniden Dene yalnız onları YENİ işle gönderir
+      ---
+      duration_ms: 3489.645688
+      type: 'test'
+      ...
+    # Subtest: geçici (130429): iş 30 sn → 2 dk → 15 dk bekler, 3 denemeden sonra Başarısız; toplu işte art arda 5 geçici → duraklar; kod 2 → bekleyip BİR kez; başarılı işin hata kodu temizlenir
+    ok 3 - geçici (130429): iş 30 sn → 2 dk → 15 dk bekler, 3 denemeden sonra Başarısız; toplu işte art arda 5 geçici → duraklar; kod 2 → bekleyip BİR kez; başarılı işin hata kodu temizlenir
+      ---
+      duration_ms: 780.130544
+      type: 'test'
+      ...
+    # Subtest: R1: Meta'ya HİÇ ulaşılamıyor (internet yok) → iş Başarısız SAYILMAZ, deneme sayacı artmaz; toplu iş 'Bağlantı Bekleniyor' (Devam Et gerekmez), kaç tur sürerse sürsün duraklamaz; bağlantı dönünce kendiliğinden BİR kez gider
+    ok 4 - R1: Meta'ya HİÇ ulaşılamıyor (internet yok) → iş Başarısız SAYILMAZ, deneme sayacı artmaz; toplu iş 'Bağlantı Bekleniyor' (Devam Et gerekmez), kaç tur sürerse sürsün duraklamaz; bağlantı dönünce kendiliğinden BİR kez gider
+      ---
+      duration_ms: 795.201406
+      type: 'test'
+      ...
+    # Subtest: 131056 → o kişi 1 dk sonra; 131049 → 'Meta Bekletti (24 Saat Sonra Yeniden)', aynı medyayla bir kez, yine düşerse Başarısız (§7a 14)
+    ok 5 - 131056 → o kişi 1 dk sonra; 131049 → 'Meta Bekletti (24 Saat Sonra Yeniden)', aynı medyayla bir kez, yine düşerse Başarısız (§7a 14)
+      ---
+      duration_ms: 677.571218
+      type: 'test'
+      ...
+    # Subtest: R2: şablon gönderim sürerken Pazarlama'ya alınırsa en geç 10 dakikada ve HER 100 İLETİDE yeniden okunur (§7a 27 revizyonu): toplu iş durur, ileti gitmez
+    ok 6 - R2: şablon gönderim sürerken Pazarlama'ya alınırsa en geç 10 dakikada ve HER 100 İLETİDE yeniden okunur (§7a 27 revizyonu): toplu iş durur, ileti gitmez
+      ---
+      duration_ms: 3626.579947
+      type: 'test'
+      ...
+    1..6
+ok 11 - 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+  ---
+  duration_ms: 10444.063222
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+    # Subtest: sınır = min(Meta basamağı, elle sınır); fazlası 'Sınır Nedeniyle Bekliyor', pencere (en eski + 24 sa) açılınca sürer; gece yarısında SIFIRLANMAZ; pencerede sayılmış kişi GEÇER
+    ok 1 - sınır = min(Meta basamağı, elle sınır); fazlası 'Sınır Nedeniyle Bekliyor', pencere (en eski + 24 sa) açılınca sürer; gece yarısında SIFIRLANMAZ; pencerede sayılmış kişi GEÇER
+      ---
+      duration_ms: 705.357683
+      type: 'test'
+      ...
+    # Subtest: Meta basamağı TIER_2K ise elle sınır yoksa 2.000; Meta sınır kodu (131048, D0-10) → aynı WABA'nın BÜTÜN işleri 24 saat bekler
+    ok 2 - Meta basamağı TIER_2K ise elle sınır yoksa 2.000; Meta sınır kodu (131048, D0-10) → aynı WABA'nın BÜTÜN işleri 24 saat bekler
+      ---
+      duration_ms: 511.730478
+      type: 'test'
+      ...
+    # Subtest: iki şirket AYNI portföyü (WABA) kullanınca sayaç ortak: 001'in gönderdiği kişiler 002'nin sınırından düşer; aynı numaralı kişi yer tutmaz
+    ok 3 - iki şirket AYNI portföyü (WABA) kullanınca sayaç ortak: 001'in gönderdiği kişiler 002'nin sınırından düşer; aynı numaralı kişi yer tutmaz
+      ---
+      duration_ms: 640.785793
+      type: 'test'
+      ...
+    1..3
+ok 12 - 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+  ---
+  duration_ms: 1858.228406
+  type: 'suite'
+  ...
+# (node:3734) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler
+    # Subtest: süren toplu iş, Meta şablonu Pazarlama'ya aldı, kullanıcı Denetle'ye bastı: saat ilerlemeden sonraki adımda iş DURUR (template-marketing), yeni ileti gitmez
+    ok 1 - süren toplu iş, Meta şablonu Pazarlama'ya aldı, kullanıcı Denetle'ye bastı: saat ilerlemeden sonraki adımda iş DURUR (template-marketing), yeni ileti gitmez
+      ---
+      duration_ms: 522.953117
+      type: 'test'
+      ...
+    # Subtest: Denetle'nin Meta okuması düşse de (502) önbellek temizlenir: sonraki adım şablonu taze okur, Pazarlama'yı görüp durur
+    ok 2 - Denetle'nin Meta okuması düşse de (502) önbellek temizlenir: sonraki adım şablonu taze okur, Pazarlama'yı görüp durur
+      ---
+      duration_ms: 409.089796
+      type: 'test'
+      ...
+    # Subtest: işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)
+    ok 3 - işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)
+      ---
+      duration_ms: 489.938636
+      type: 'test'
+      ...
+    # Subtest: iki şirket AYNI WhatsApp hesabında: 002'de süren iş, 001'de Denetle → 002'nin işi de sonraki adımda durur (giden 1)
+    ok 4 - iki şirket AYNI WhatsApp hesabında: 002'de süren iş, 001'de Denetle → 002'nin işi de sonraki adımda durur (giden 1)
+      ---
+      duration_ms: 881.844919
+      type: 'test'
+      ...
+    1..4
+ok 13 - 2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler
+  ---
+  duration_ms: 2305.268079
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller
+    # Subtest: Denetle'de 'Onay Bekliyor' → Meta onayladı → önizleme (taze okuma): kart 'Onaylandı / Evet', pencere Otomatik Gönder; Denetle'ye basılmadı, son denetim zamanı değişmedi
+    ok 1 - Denetle'de 'Onay Bekliyor' → Meta onayladı → önizleme (taze okuma): kart 'Onaylandı / Evet', pencere Otomatik Gönder; Denetle'ye basılmadı, son denetim zamanı değişmedi
+      ---
+      duration_ms: 536.232044
+      type: 'test'
+      ...
+    # Subtest: noteListing (tek değişim yeri): yalnız aynı WABA'nın kaydında, yalnız listede bulunan şablonun Meta alanlarını yazar; kayıttan daha eski okuma ve başka WABA yazmaz
+    ok 2 - noteListing (tek değişim yeri): yalnız aynı WABA'nın kaydında, yalnız listede bulunan şablonun Meta alanlarını yazar; kayıttan daha eski okuma ve başka WABA yazmaz
+      ---
+      duration_ms: 1.751394
+      type: 'test'
+      ...
+    # Subtest: önizlemenin taze okuması teslim süresini kayda YAZMAZ: Meta listesi süreyi sonradan kısaltınca (12 sa) önceden kabul edilmiş iş Süresi Doldu OLMAZ, aynı dönemde ikinci ekstre gitmez
+    ok 3 - önizlemenin taze okuması teslim süresini kayda YAZMAZ: Meta listesi süreyi sonradan kısaltınca (12 sa) önceden kabul edilmiş iş Süresi Doldu OLMAZ, aynı dönemde ikinci ekstre gitmez
+      ---
+      duration_ms: 2285.614489
+      type: 'test'
+      ...
+    1..3
+ok 14 - 2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller
+  ---
+  duration_ms: 2824.091905
+  type: 'suite'
+  ...
+# (node:3783) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL)
+    # Subtest: ileti isteği Meta'dayken süreç öldü → yeniden açılışta Sonucu Belirsiz; kendiliğinden ikinci istek YOK
+    ok 1 - ileti isteği Meta'dayken süreç öldü → yeniden açılışta Sonucu Belirsiz; kendiliğinden ikinci istek YOK
+      ---
+      duration_ms: 1544.728075
+      type: 'test'
+      ...
+    # Subtest: PDF Meta'ya yüklenirken süreç öldü → yeniden açılışta iş Bekliyor; ileti BİR kez gider (yarım medya 30 günde Meta'da düşer)
+    ok 2 - PDF Meta'ya yüklenirken süreç öldü → yeniden açılışta iş Bekliyor; ileti BİR kez gider (yarım medya 30 günde Meta'da düşer)
+      ---
+      duration_ms: 3633.28296
+      type: 'test'
+      ...
+    1..2
+ok 15 - 2.4.8 W2 — gönderim ortasında süreç ölümü (SIGKILL)
+  ---
+  duration_ms: 5178.994843
+  type: 'suite'
+  ...
+# (node:3806) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W4 — gönderim ekranının durumu (sending-status)
+    # Subtest: bağlantı yok → configured false (pencere bugünkü wa.me yolunu açar); bağlı ama sınanmamış → neden; sınandı + şablon denetlendi → hazır; yetkisiz kişi canSend false; gizli değer yok; Meta'ya istek yok
+    ok 1 - bağlantı yok → configured false (pencere bugünkü wa.me yolunu açar); bağlı ama sınanmamış → neden; sınandı + şablon denetlendi → hazır; yetkisiz kişi canSend false; gizli değer yok; Meta'ya istek yok
+      ---
+      duration_ms: 3272.213445
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: durum okunur, writable false (ekran Gönder'i nedeniyle pasif bırakır)
+    ok 2 - salt okunur lisans: durum okunur, writable false (ekran Gönder'i nedeniyle pasif bırakır)
+      ---
+      duration_ms: 541.194615
+      type: 'test'
+      ...
+    1..2
+ok 16 - 2.4.8 W4 — gönderim ekranının durumu (sending-status)
+  ---
+  duration_ms: 3814.50619
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W4 — önizleme onaydan önce; gönderim onaysız başlamaz
+    # Subtest: onaysız: önizleme 200 + startBlock (onay), kişiler sayılır; toplu iş 409 ve kayıt yok; firma adı yoksa startBlock firma adı; onaylı + firma adı → startBlock null
+    ok 1 - onaysız: önizleme 200 + startBlock (onay), kişiler sayılır; toplu iş 409 ve kayıt yok; firma adı yoksa startBlock firma adı; onaylı + firma adı → startBlock null
+      ---
+      duration_ms: 555.777817
+      type: 'test'
+      ...
+    1..1
+ok 17 - 2.4.8 W4 — önizleme onaydan önce; gönderim onaysız başlamaz
+  ---
+  duration_ms: 555.973911
+  type: 'suite'
+  ...
+# (node:3831) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 W-4 — hata 100 iletisi işleme göre (gerçek program, sahte Meta)
+    # Subtest: şablon açma isteği 100 (2388024 değil): işlem iletisi 'şablon açma isteğindeki bir değeri kabul etmedi', kimlik suçlanmaz; şablon tek istekte denenir
+    ok 1 - şablon açma isteği 100 (2388024 değil): işlem iletisi 'şablon açma isteğindeki bir değeri kabul etmedi', kimlik suçlanmaz; şablon tek istekte denenir
+      ---
+      duration_ms: 878.722239
+      type: 'test'
+      ...
+    # Subtest: bildirim adresi kaydı 100 'must be subscribed' (ELLE KABUL BULGUSU 3): 'Meta bildirim adresini kaydetmedi … abonelik … Elle Bağla ön koşulları'; kartta Kaydedilemedi nedeni aynı
+    ok 2 - bildirim adresi kaydı 100 'must be subscribed' (ELLE KABUL BULGUSU 3): 'Meta bildirim adresini kaydetmedi … abonelik … Elle Bağla ön koşulları'; kartta Kaydedilemedi nedeni aynı
+      ---
+      duration_ms: 593.917063
+      type: 'test'
+      ...
+    # Subtest: bildirim adresi kaydı başka 100: 'Meta bildirim adresi kaydını kabul etmedi (geçersiz değer)'
+    ok 3 - bildirim adresi kaydı başka 100: 'Meta bildirim adresi kaydını kabul etmedi (geçersiz değer)'
+      ---
+      duration_ms: 493.639361
+      type: 'test'
+      ...
+    # Subtest: ileti isteği 100 (alt kodsuz): iş Başarısız, neden 'ileti isteğindeki bir değeri kabul etmedi'; toplu iş sürer (sınıf değişmedi)
+    ok 4 - ileti isteği 100 (alt kodsuz): iş Başarısız, neden 'ileti isteğindeki bir değeri kabul etmedi'; toplu iş sürer (sınıf değişmedi)
+      ---
+      duration_ms: 612.103953
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Sına: numara listesi okuması 100 (alt kodsuz) → 'Meta okuma isteğini kabul etmedi; … yanlış olabilir'
+    ok 5 - Bağlantıyı Sına: numara listesi okuması 100 (alt kodsuz) → 'Meta okuma isteğini kabul etmedi; … yanlış olabilir'
+      ---
+      duration_ms: 544.423235
+      type: 'test'
+      ...
+    # Subtest: gerileme koruması — yanlış WABA (100 + alt kod 33): ileti kimlikleri söyler, /yanlış olabilir/ (test/whatsapp-w1-baglanti.test.mjs ile aynı beklenti)
+    ok 6 - gerileme koruması — yanlış WABA (100 + alt kod 33): ileti kimlikleri söyler, /yanlış olabilir/ (test/whatsapp-w1-baglanti.test.mjs ile aynı beklenti)
+      ---
+      duration_ms: 477.988289
+      type: 'test'
+      ...
+    1..6
+ok 18 - 2.4.9 W-4 — hata 100 iletisi işleme göre (gerçek program, sahte Meta)
+  ---
+  duration_ms: 3602.388765
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-4 değişmez — hata sınıfı (kind / retry) işlemden bağımsız
+    # Subtest: 100 (alt kodsuz / 33 / 2388024) her işlemde: kind request, retry never, kod ve alt kod korunur; ileti 'Meta hata kodu 100' ile biter
+    ok 1 - 100 (alt kodsuz / 33 / 2388024) her işlemde: kind request, retry never, kod ve alt kod korunur; ileti 'Meta hata kodu 100' ile biter
+      ---
+      duration_ms: 15.752789
+      type: 'test'
+      ...
+    # Subtest: 100 + alt kod 33 HER işlemde (abonelik iletili olsa da) kimlik başlığı: Phone Number ID, WABA ID ya da App ID; işleme özgü başlık 33'ün önüne geçmez
+    ok 2 - 100 + alt kod 33 HER işlemde (abonelik iletili olsa da) kimlik başlığı: Phone Number ID, WABA ID ya da App ID; işleme özgü başlık 33'ün önüne geçmez
+      ---
+      duration_ms: 2.894031
+      type: 'test'
+      ...
+    # Subtest: 100 dışı kodlarda başlık ve sınıf classifyMetaCode'la aynı (190, 131026, 131000, 132001, 1, bilinmeyen 987654)
+    ok 3 - 100 dışı kodlarda başlık ve sınıf classifyMetaCode'la aynı (190, 131026, 131000, 132001, 1, bilinmeyen 987654)
+      ---
+      duration_ms: 19.33095
+      type: 'test'
+      ...
+    1..3
+ok 19 - 2.4.9 W-4 değişmez — hata sınıfı (kind / retry) işlemden bağımsız
+  ---
+  duration_ms: 38.441384
+  type: 'suite'
+  ...
+# (node:3866) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W5 — WhatsApp bilgilendirme şablonları
+    # Subtest: şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+    ok 1 - şablon metinleri plandakiyle birebir: yalnız 2 şablon, dil tr, UTILITY; ekstrede BELGE başlığı ve KVKK alt satırı (≤ 60 karakter)
+      ---
+      duration_ms: 25.816651
+      type: 'test'
+      ...
+    # Subtest: bağlantı yokken denetim 409, Meta'ya istek yok; yetkisiz kullanıcı GET / POST 403
+    ok 2 - bağlantı yokken denetim 409, Meta'ya istek yok; yetkisiz kullanıcı GET / POST 403
+      ---
+      duration_ms: 130.082483
+      type: 'test'
+      ...
+    # Subtest: App ID yokken: Ödeme Hatırlatma açılır (UTILITY, plandaki gövde, örnek değerler); Ekstre açılmaz, nedeni Uygulama Kimliği; yükleme yok
+    ok 3 - App ID yokken: Ödeme Hatırlatma açılır (UTILITY, plandaki gövde, örnek değerler); Ekstre açılmaz, nedeni Uygulama Kimliği; yükleme yok
+      ---
+      duration_ms: 20.679747
+      type: 'test'
+      ...
+    # Subtest: App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denetim yeni şablon açmaz
+    ok 4 - App ID girilince: örnek PDF Resumable Upload ile (OAuth başlığı, file_offset 0, %PDF), Ekstre BELGE başlığı + tanıtıcı + KVKK alt satırıyla açılır; ikinci denetim yeni şablon açmaz
+      ---
+      duration_ms: 61.486406
+      type: 'test'
+      ...
+    # Subtest: durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içeriği değiştirilmiş
+    ok 5 - durumlar: APPROVED + UTILITY gönderime hazır; Meta MARKETING'e aldıysa açık uyarı ve gönderime hazır DEĞİL; REJECTED (neden), PAUSED, DISABLED, kalite RED, içeriği değiştirilmiş
+      ---
+      duration_ms: 33.611618
+      type: 'test'
+      ...
+    # Subtest: GET görünümü Meta'ya gitmez ve son denetimi gösterir; başka WABA'ya geçince eski sonuç bayat sayılır (Denetlenmedi)
+    ok 6 - GET görünümü Meta'ya gitmez ve son denetimi gösterir; başka WABA'ya geçince eski sonuç bayat sayılır (Denetlenmedi)
+      ---
+      duration_ms: 21.142309
+      type: 'test'
+      ...
+    # Subtest: Meta ayrıntı alanlarını tanımazsa (100) temel alanlarla bir kez yeniden okunur; listede görünmeyen şablon için 2388024 'zaten var' sayılır
+    ok 7 - Meta ayrıntı alanlarını tanımazsa (100) temel alanlarla bir kez yeniden okunur; listede görünmeyen şablon için 2388024 'zaten var' sayılır
+      ---
+      duration_ms: 65.221294
+      type: 'test'
+      ...
+    # Subtest: Meta belirteci reddederse 502 + Türkçe neden, son hata kaydedilir; yanıtta / kayıtta / işlem geçmişinde / günlükte belirteç yok
+    ok 8 - Meta belirteci reddederse 502 + Türkçe neden, son hata kaydedilir; yanıtta / kayıtta / işlem geçmişinde / günlükte belirteç yok
+      ---
+      duration_ms: 10.315216
+      type: 'test'
+      ...
+    # Subtest: Meta istemcisi kampanya / pazarlama şablonu açmaz: kategori UTILITY değilse istek gönderilmez
+    ok 9 - Meta istemcisi kampanya / pazarlama şablonu açmaz: kategori UTILITY değilse istek gönderilmez
+      ---
+      duration_ms: 1.19868
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: görünüm okunur, denetim 403 LICENSE_READ_ONLY, Meta'ya istek yok
+    ok 10 - salt okunur lisans: görünüm okunur, denetim 403 LICENSE_READ_ONLY, Meta'ya istek yok
+      ---
+      duration_ms: 717.537733
+      type: 'test'
+      ...
+    1..10
+ok 20 - 2.4.8 W5 — WhatsApp bilgilendirme şablonları
+  ---
+  duration_ms: 1640.351302
+  type: 'suite'
+  ...
+# (node:3895) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W7 — WhatsApp'ı Bağla: App ID kapıcıdan gelir, Ekstre şablonu açılır
+    # Subtest: bağlanınca App ID kaydedilir; Şablonları Denetle ve Oluştur: örnek PDF /<App ID>/uploads ile yüklenir, Ekstre ve Ödeme Hatırlatma Meta'ya gönderilir
+    ok 1 - bağlanınca App ID kaydedilir; Şablonları Denetle ve Oluştur: örnek PDF /<App ID>/uploads ile yüklenir, Ekstre ve Ödeme Hatırlatma Meta'ya gönderilir
+      ---
+      duration_ms: 915.873256
+      type: 'test'
+      ...
+    # Subtest: kapıcı App ID vermezse (eski kapıcı / eksik ayar): Ekstre açılmaz, yükleme denenmez; neden bu kipe uygun — 'Bilgileri Değiştir'e (bu kipte yok) göndermez
+    ok 2 - kapıcı App ID vermezse (eski kapıcı / eksik ayar): Ekstre açılmaz, yükleme denenmez; neden bu kipe uygun — 'Bilgileri Değiştir'e (bu kipte yok) göndermez
+      ---
+      duration_ms: 449.971714
+      type: 'test'
+      ...
+    1..2
+ok 21 - 2.4.8 W7 — WhatsApp'ı Bağla: App ID kapıcıdan gelir, Ekstre şablonu açılır
+  ---
+  duration_ms: 1366.823134
+  type: 'suite'
+  ...
+# (node:3914) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim
+    # Subtest: Meta onayı (kapıcı ayarı) yokken: oturum açılmaz, açık Türkçe ileti; sayfa Facebook SDK'sını yüklemez ve aynı iletiyi gösterir
+    ok 1 - Meta onayı (kapıcı ayarı) yokken: oturum açılmaz, açık Türkçe ileti; sayfa Facebook SDK'sını yüklemez ve aynı iletiyi gösterir
+      ---
+      duration_ms: 76.45098
+      type: 'test'
+      ...
+    # Subtest: uçtan uca: oturum (imzalı) → sayfa (App ID + config_id var, App Secret YOK) → kod → Meta'ya değişim (sır yalnız bu istekte) → şifreli teslim bir kez; R2'de düz belirteç yok
+    ok 2 - uçtan uca: oturum (imzalı) → sayfa (App ID + config_id var, App Secret YOK) → kod → Meta'ya değişim (sır yalnız bu istekte) → şifreli teslim bir kez; R2'de düz belirteç yok
+      ---
+      duration_ms: 30.135289
+      type: 'test'
+      ...
+    # Subtest: kod değişimi İMZASIZ olamaz: imzasız / başka anahtarla oturum ve teslim 401; başka ofis bu oturumun belirtecini alamaz; kod iki kez kullanılamaz
+    ok 3 - kod değişimi İMZASIZ olamaz: imzasız / başka anahtarla oturum ve teslim 401; başka ofis bu oturumun belirtecini alamaz; kod iki kez kullanılamaz
+      ---
+      duration_ms: 18.189776
+      type: 'test'
+      ...
+    # Subtest: Meta değişimi reddederse açık ileti (sır ve kod iletiden ayıklanır); oturum 'hata' olarak programa bir kez verilir
+    ok 4 - Meta değişimi reddederse açık ileti (sır ve kod iletiden ayıklanır); oturum 'hata' olarak programa bir kez verilir
+      ---
+      duration_ms: 9.241711
+      type: 'test'
+      ...
+    # Subtest: oturum en çok 10 dk: süresi geçince kod ve teslim 410; zamanlanmış tur artığı siler; lisansı biten ofis oturum açamaz
+    ok 5 - oturum en çok 10 dk: süresi geçince kod ve teslim 410; zamanlanmış tur artığı siler; lisansı biten ofis oturum açamaz
+      ---
+      duration_ms: 16.628385
+      type: 'test'
+      ...
+    1..5
+ok 22 - 2.4.8 W7 (A) — kapıcı: bağlama sayfası, kod → belirteç değişimi (App Secret yalnız kapıcıda), şifreli teslim
+  ---
+  duration_ms: 151.837943
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç kapıcıdan şifreli gelir, 'embedded' kipinde mühürlenir; Meta adımları
+    # Subtest: birlikte kullanım: Bağla → kapıcı sayfası → kod → program belirteci alır, 'embedded' kipinde mühürler, eşitlemeyi başlatır ve sınar; belirteç ve App Secret yanıtta / veri tabanında / işlem geçmişinde YOK
+    ok 1 - birlikte kullanım: Bağla → kapıcı sayfası → kod → program belirteci alır, 'embedded' kipinde mühürler, eşitlemeyi başlatır ve sınar; belirteç ve App Secret yanıtta / veri tabanında / işlem geçmişinde YOK
+      ---
+      duration_ms: 707.913636
+      type: 'test'
+      ...
+    # Subtest: birlikte kullanım değilse numara Cloud API'ye kaydedilir (6 haneli PIN, ekranda yok)
+    ok 2 - birlikte kullanım değilse numara Cloud API'ye kaydedilir (6 haneli PIN, ekranda yok)
+      ---
+      duration_ms: 482.608288
+      type: 'test'
+      ...
+    # Subtest: Tech Provider onayı yokken (kapıcı Meta ayarı yok): düğme açık, ileti 'Bu bağlantı DestekOfis'in Meta onayından sonra çalışır; şimdilik Elle Bağla.'; Meta reddederse aynı ileti + Meta'nın yanıtı
+    ok 3 - Tech Provider onayı yokken (kapıcı Meta ayarı yok): düğme açık, ileti 'Bu bağlantı DestekOfis'in Meta onayından sonra çalışır; şimdilik Elle Bağla.'; Meta reddederse aynı ileti + Meta'nın yanıtı
+      ---
+      duration_ms: 1159.023182
+      type: 'test'
+      ...
+    1..3
+ok 23 - 2.4.8 W7 (B) — program: WhatsApp'ı Bağla düz açık; belirteç kapıcıdan şifreli gelir, 'embedded' kipinde mühürlenir; Meta adımları
+  ---
+  duration_ms: 2350.071294
+  type: 'suite'
+  ...
+# (node:3935) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W7 taşınamaz bağlantı (A) — kapıcı: sır özeti, sırsız / yanlış sırlı / ikinci kullanım reddi
+    # Subtest: TAŞINAN BAĞLANTI: saldırganın oturum adresiyle (sır yok) kod değişimi, iptal ve doğrulama yapılamaz; Meta'ya istek gitmez, oturum bozulmaz
+    ok 1 - TAŞINAN BAĞLANTI: saldırganın oturum adresiyle (sır yok) kod değişimi, iptal ve doğrulama yapılamaz; Meta'ya istek gitmez, oturum bozulmaz
+      ---
+      duration_ms: 49.822789
+      type: 'test'
+      ...
+    # Subtest: YANLIŞ SIR: başka oturumun sırrı ve rastgele sır reddedilir; doğru sırla doğrulama firma adını verir, değişim olur
+    ok 2 - YANLIŞ SIR: başka oturumun sırrı ve rastgele sır reddedilir; doğru sırla doğrulama firma adını verir, değişim olur
+      ---
+      duration_ms: 32.356983
+      type: 'test'
+      ...
+    # Subtest: SIR TEK KULLANIMLIK: değişimden sonra aynı sırla ikinci kod / iptal / doğrulama 409; teslimden sonra oturum yok; iptalden sonra da kod yok
+    ok 3 - SIR TEK KULLANIMLIK: değişimden sonra aynı sırla ikinci kod / iptal / doğrulama 409; teslimden sonra oturum yok; iptalden sonra da kod yok
+      ---
+      duration_ms: 23.370794
+      type: 'test'
+      ...
+    # Subtest: kapıcı sırrı SAKLAMAZ (yalnız SHA-256 özeti); sır özeti olmayan oturum açılmaz; firma adından denetim / yön karakterleri çıkar
+    ok 4 - kapıcı sırrı SAKLAMAZ (yalnız SHA-256 özeti); sır özeti olmayan oturum açılmaz; firma adından denetim / yön karakterleri çıkar
+      ---
+      duration_ms: 8.43727
+      type: 'test'
+      ...
+    # Subtest: sayfa: firma adı yalnız textContent ile (HTML yorumlanmaz), SDK sır doğrulanmadan yüklenmez, çerçeveye alınamaz, COOP yok, sır adreste yok
+    ok 5 - sayfa: firma adı yalnız textContent ile (HTML yorumlanmaz), SDK sır doğrulanmadan yüklenmez, çerçeveye alınamaz, COOP yok, sır adreste yok
+      ---
+      duration_ms: 7.402205
+      type: 'test'
+      ...
+    1..5
+ok 24 - 2.4.8 W7 taşınamaz bağlantı (A) — kapıcı: sır özeti, sırsız / yanlış sırlı / ikinci kullanım reddi
+  ---
+  duration_ms: 122.563079
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 taşınamaz bağlantı (B) — köken kuralı: sayfa, program ve ekran aynı
+    # Subtest: kapıcı sayfasının yerelKoken'i, programın isLocalOrigin'i ve ekranın kopyası aynı tabloyu verir
+    ok 1 - kapıcı sayfasının yerelKoken'i, programın isLocalOrigin'i ve ekranın kopyası aynı tabloyu verir
+      ---
+      duration_ms: 3.50703
+      type: 'test'
+      ...
+    1..1
+ok 25 - 2.4.8 W7 taşınamaz bağlantı (B) — köken kuralı: sayfa, program ve ekran aynı
+  ---
+  duration_ms: 3.621827
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W7 taşınamaz bağlantı (C) — program: sır ekrana (adrese değil), kapıcıya özet; uzak / genel adresten oturum açılmaz
+    # Subtest: yerel adresten: yanıtta tek kullanımlık sır (43 karakter) var, adreste yok; kapıcıya yalnız özeti ve firma adı gider; sır işlem geçmişine girmez
+    ok 1 - yerel adresten: yanıtta tek kullanımlık sır (43 karakter) var, adreste yok; kapıcıya yalnız özeti ve firma adı gider; sır işlem geçmişine girmez
+      ---
+      duration_ms: 575.169142
+      type: 'test'
+      ...
+    # Subtest: uzak / genel adresten (tünel adı, genel ad, tek etiketli ad): 409 'WhatsApp'ı Bağla işlemi ofisteki bilgisayardan yapılır'; kapıcıda oturum açılmaz
+    ok 2 - uzak / genel adresten (tünel adı, genel ad, tek etiketli ad): 409 'WhatsApp'ı Bağla işlemi ofisteki bilgisayardan yapılır'; kapıcıda oturum açılmaz
+      ---
+      duration_ms: 400.038955
+      type: 'test'
+      ...
+    # Subtest: Yönetim sayfası Cross-Origin-Opener-Policy: same-origin-allow-popups (bağlama penceresiyle bağ); öbür sayfalar same-origin kalır
+    ok 3 - Yönetim sayfası Cross-Origin-Opener-Policy: same-origin-allow-popups (bağlama penceresiyle bağ); öbür sayfalar same-origin kalır
+      ---
+      duration_ms: 379.25127
+      type: 'test'
+      ...
+    1..3
+ok 26 - 2.4.8 W7 taşınamaz bağlantı (C) — program: sır ekrana (adrese değil), kapıcıya özet; uzak / genel adresten oturum açılmaz
+  ---
+  duration_ms: 1355.13442
+  type: 'suite'
+  ...
+# Subtest: ileti sabitleri: kapıcının taşınan bağlantı iletisi ve programın yerel adres iletisi
+ok 27 - ileti sabitleri: kapıcının taşınan bağlantı iletisi ve programın yerel adres iletisi
+  ---
+  duration_ms: 0.194043
+  type: 'test'
+  ...
+# (node:4024) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W9 — kanca adresinin kaydı ve doğrulaması (Meta → kapıcı → tünel → program)
+    # Subtest: bakım turu adresi Meta'ya KENDİLİĞİNDEN kaydeder (bir kez); GET doğrulaması kapıcıdan geçer; yanlış belirteç 403, bilinmeyen gizli yol 404; düşen kayıt saatte bir yeniden; görünümde gizli değer YOK
+    ok 1 - bakım turu adresi Meta'ya KENDİLİĞİNDEN kaydeder (bir kez); GET doğrulaması kapıcıdan geçer; yanlış belirteç 403, bilinmeyen gizli yol 404; düşen kayıt saatte bir yeniden; görünümde gizli değer YOK
+      ---
+      duration_ms: 566.868588
+      type: 'test'
+      ...
+    1..1
+ok 28 - 2.4.8 W9 — kanca adresinin kaydı ve doğrulaması (Meta → kapıcı → tünel → program)
+  ---
+  duration_ms: 567.83156
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W9 — durum bildirimi (POST): imza, belirsizin çözümü, yinelenen / sırasız olay
+    # Subtest: imzasız (Yol 1) olay yalnız kaydındaki wamid'i yazar; Sonucu Belirsiz iş imzasız olayla ÇÖZÜLMEZ, yanlış imzayla çözülmez, DestekOfis sırrıyla imzalı + iş kimliğiyle çözülür; bilinmeyen / başka numaranın olayı düşer; gelen ileti saklanmaz; kapıcı Meta'nın başlıklarını geçirmez
+    ok 1 - imzasız (Yol 1) olay yalnız kaydındaki wamid'i yazar; Sonucu Belirsiz iş imzasız olayla ÇÖZÜLMEZ, yanlış imzayla çözülmez, DestekOfis sırrıyla imzalı + iş kimliğiyle çözülür; bilinmeyen / başka numaranın olayı düşer; gelen ileti saklanmaz; kapıcı Meta'nın başlıklarını geçirmez
+      ---
+      duration_ms: 575.924238
+      type: 'test'
+      ...
+    # Subtest: Yol 2 (WhatsApp'ı Bağla) bağlantısında imzasız bildirim REDDEDİLİR (401), DestekOfis sırrıyla imzalı kabul edilir
+    ok 2 - Yol 2 (WhatsApp'ı Bağla) bağlantısında imzasız bildirim REDDEDİLİR (401), DestekOfis sırrıyla imzalı kabul edilir
+      ---
+      duration_ms: 415.956018
+      type: 'test'
+      ...
+    1..2
+ok 29 - 2.4.8 W9 — durum bildirimi (POST): imza, belirsizin çözümü, yinelenen / sırasız olay
+  ---
+  duration_ms: 992.235565
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W9 — kapıcı geçişinin sınırları ve tüneli atlatma
+    # Subtest: tünel yok → 503 kapi-ofis-kapali (Meta yeniden dener); gövde 3 MB üstü 413; işaretsiz / sahte işaretli doğrudan istek 401; programın Set-Cookie'si Meta'ya dönmez
+    ok 1 - tünel yok → 503 kapi-ofis-kapali (Meta yeniden dener); gövde 3 MB üstü 413; işaretsiz / sahte işaretli doğrudan istek 401; programın Set-Cookie'si Meta'ya dönmez
+      ---
+      duration_ms: 381.113442
+      type: 'test'
+      ...
+    # Subtest: kapi.<alan>/wa/meta (uygulamanın varsayılan kanca ucu): doğrulama belirteciyle GET, DestekOfis sırrıyla imzalı POST 200 (saklanmaz); imzasız / yanlış / sır tanımsız reddedilir
+    ok 2 - kapi.<alan>/wa/meta (uygulamanın varsayılan kanca ucu): doğrulama belirteciyle GET, DestekOfis sırrıyla imzalı POST 200 (saklanmaz); imzasız / yanlış / sır tanımsız reddedilir
+      ---
+      duration_ms: 11.603298
+      type: 'test'
+      ...
+    1..2
+ok 30 - 2.4.8 W9 — kapıcı geçişinin sınırları ve tüneli atlatma
+  ---
+  duration_ms: 392.99731
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W9 — tünel kuralı: WhatsApp bağlıyken de açık (plan §6 W9, S1 A)
+    # Subtest: eşli cihaz ve karekod YOKKEN: WhatsApp bağlı → tünel açılır; bağlı değil → kapalı (başvuru da yok); salt okunur lisansta WhatsApp bağlı olsa da kapalı
+    ok 1 - eşli cihaz ve karekod YOKKEN: WhatsApp bağlı → tünel açılır; bağlı değil → kapalı (başvuru da yok); salt okunur lisansta WhatsApp bağlı olsa da kapalı
+      ---
+      duration_ms: 111.298317
+      type: 'test'
+      ...
+    # Subtest: programda: belirteçli WhatsApp bağlantısı kaydedilince tünel yöneticisi tüneli ister; bağlantı kaldırılınca istemez (app.mjs → registry.anyConfigured)
+    ok 2 - programda: belirteçli WhatsApp bağlantısı kaydedilince tünel yöneticisi tüneli ister; bağlantı kaldırılınca istemez (app.mjs → registry.anyConfigured)
+      ---
+      duration_ms: 485.914087
+      type: 'test'
+      ...
+    1..2
+ok 31 - 2.4.8 W9 — tünel kuralı: WhatsApp bağlıyken de açık (plan §6 W9, S1 A)
+  ---
+  duration_ms: 597.790383
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kapıcı geçirir), kilit kalkınca yazılır
+    # Subtest: şirket dosyası kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi
+    ok 1 - şirket dosyası kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi
+      ---
+      duration_ms: 1009.325474
+      type: 'test'
+      ...
+    # Subtest: makine defteri kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi
+    ok 2 - makine defteri kilitte kapıcı üzerinden POST ≤ 2 sn içinde 503, iş değişmez; kilit kalkınca 200 ve Teslim Edildi
+      ---
+      duration_ms: 901.579256
+      type: 'test'
+      ...
+    1..2
+ok 32 - 2.4.8 İş P3 — kilitli şirket dosyasında durum bildirimi 503 (kapıcı geçirir), kilit kalkınca yazılır
+  ---
+  duration_ms: 1911.331871
+  type: 'suite'
+  ...
+# (node:4032) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 W-T — program şablon teslim süresi (TTL) GÖNDERMEZ, DÜZENLEMEZ; ttlHours kalktı
+    # Subtest: şablon AÇILIRKEN istekte teslim süresi alanı YOK (iki şablon, tek istekte açılır); onaydan sonra Denetle hiçbir şablonu açmaz / düzenlemez
+    ok 1 - şablon AÇILIRKEN istekte teslim süresi alanı YOK (iki şablon, tek istekte açılır); onaydan sonra Denetle hiçbir şablonu açmaz / düzenlemez
+      ---
+      duration_ms: 515.662084
+      type: 'test'
+      ...
+    # Subtest: şablonlar Meta'da ZATEN ONAYLI, bu şirkette kayıt yok (başka şirket / bilgisayar / yeniden bağlama): Denetle (kendiliğinden ve düğmeyle) teslim süresi DÜZENLEMEZ, kartta kırmızı ileti yok
+    ok 2 - şablonlar Meta'da ZATEN ONAYLI, bu şirkette kayıt yok (başka şirket / bilgisayar / yeniden bağlama): Denetle (kendiliğinden ve düğmeyle) teslim süresi DÜZENLEMEZ, kartta kırmızı ileti yok
+      ---
+      duration_ms: 324.596118
+      type: 'test'
+      ...
+    # Subtest: PUT …/sending-settings { ttlHours } → 400 (alan ttlHours, "Teslim süresi Meta'nın varsayılanıdır (30 gün); değiştirilemez."); GET'te ttlHours yok; günlük sınır ayarı çalışır
+    ok 3 - PUT …/sending-settings { ttlHours } → 400 (alan ttlHours, "Teslim süresi Meta'nın varsayılanıdır (30 gün); değiştirilemez."); GET'te ttlHours yok; günlük sınır ayarı çalışır
+      ---
+      duration_ms: 425.447618
+      type: 'test'
+      ...
+    # Subtest: 2.4.8'den kalan kayıtlı ttlHours (12) okunmaz: GET'te yok, şablon açma isteğinde teslim süresi yok; günlük sınır kaydı eski alanı siler
+    ok 4 - 2.4.8'den kalan kayıtlı ttlHours (12) okunmaz: GET'te yok, şablon açma isteğinde teslim süresi yok; günlük sınır kaydı eski alanı siler
+      ---
+      duration_ms: 425.099262
+      type: 'test'
+      ...
+    1..4
+ok 33 - 2.4.9 W-T — program şablon teslim süresi (TTL) GÖNDERMEZ, DÜZENLEMEZ; ttlHours kalktı
+  ---
+  duration_ms: 1691.988215
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-T — Süresi Doldu ve PDF silme: Meta'nın bildirdiği değer, yoksa 30 gün + 1 saat
+    # Subtest: program şablonları açtı, Meta listesi teslim süresi bildirmiyor: 73. saatte de 13. saatte de Süresi Doldu YOK; 30 gün + 1 sa − 1 dk Gönderildi, + 1 dk Süresi Doldu + PDF silindi
+    ok 1 - program şablonları açtı, Meta listesi teslim süresi bildirmiyor: 73. saatte de 13. saatte de Süresi Doldu YOK; 30 gün + 1 sa − 1 dk Gönderildi, + 1 dk Süresi Doldu + PDF silindi
+      ---
+      duration_ms: 490.068768
+      type: 'test'
+      ...
+    # Subtest: Meta listesi teslim süresini BİLDİRİYORSA (WhatsApp Yöneticisi'nde 12 saat) o geçerli: program değeri değiştirmez; 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silindi
+    ok 2 - Meta listesi teslim süresini BİLDİRİYORSA (WhatsApp Yöneticisi'nde 12 saat) o geçerli: program değeri değiştirmez; 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silindi
+      ---
+      duration_ms: 465.364388
+      type: 'test'
+      ...
+    1..2
+ok 34 - 2.4.9 W-T — Süresi Doldu ve PDF silme: Meta'nın bildirdiği değer, yoksa 30 gün + 1 saat
+  ---
+  duration_ms: 955.901329
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-6 — 2.4.8'den kalan TTL kayıtları okunmaz, kartta gösterilmez
+    # Subtest: kartta (GET …/templates) eski TTL reddi uyarısı ve TTL düzenleme işlemi YOK; TTL notu açma iletisinden düşer; başka uyarı / işlem korunur
+    ok 1 - kartta (GET …/templates) eski TTL reddi uyarısı ve TTL düzenleme işlemi YOK; TTL notu açma iletisinden düşer; başka uyarı / işlem korunur
+      ---
+      duration_ms: 299.080811
+      type: 'test'
+      ...
+    # Subtest: eski kayıttaki 'Meta 72 saati yansıttı' bilgisi okunmaz (liste bildirmiyor): 73. saatte Süresi Doldu YOK; 30 gün + 1 sa + 1 dk Süresi Doldu
+    ok 2 - eski kayıttaki 'Meta 72 saati yansıttı' bilgisi okunmaz (liste bildirmiyor): 73. saatte Süresi Doldu YOK; 30 gün + 1 sa + 1 dk Süresi Doldu
+      ---
+      duration_ms: 379.652856
+      type: 'test'
+      ...
+    1..2
+ok 35 - 2.4.9 W-6 — 2.4.8'den kalan TTL kayıtları okunmaz, kartta gösterilmez
+  ---
+  duration_ms: 679.132027
+  type: 'suite'
+  ...
+1..35
+# tests 110
+# suites 34
+# pass 110
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 30295.116825

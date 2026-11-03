@@ -31,6 +31,8 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
     failNext: null,
     failQueue: [],
     delayMs: 0,
+    hold: null,
+    held: 0,
     echoToken: false,
     sent: 0,
     media: new Map(),
@@ -103,6 +105,17 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
       };
       if (state.delayMs) await new Promise(resolve => setTimeout(resolve, state.delayMs));
       const line = `${req.method} ${entry.path}`;
+      // 2.4.9 (CI #959 T35r, ders 20): hold { match, promise } — eşleşen istek (başarılı yanıt dahil) test sözü çözene dek KAPIDA tutulur, sonra olağan
+      // işlenir; "istek Meta'dayken" ön koşulu makine hızına bağlı sabit gecikmeyle (delayMs) değil kapıyla kurulur. state.held: kapıda bekleyen istek sayısı.
+      if (state.hold && state.hold.match.test(line)) {
+        const gate = state.hold;
+        state.held = (state.held || 0) + 1;
+        try {
+          await gate.promise;
+        } finally {
+          state.held -= 1;
+        }
+      }
       if (state.hang && state.hang.test(line)) return; // yanıt hiç gelmez (istemci zaman aşımı)
       const queued = state.failQueue.findIndex(item => !item.match || item.match.test(line));
       if (queued >= 0) {

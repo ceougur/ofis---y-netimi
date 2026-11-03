@@ -1158,19 +1158,27 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
     }
   });
   it("T35r GERÇEK yol: istek Meta'dayken yedek + geri yükleme (toparlama 'Sonucu Belirsiz' yazar) → yanıt gelince satır Meta Kabul Etti; aynı dönem Daha Önce; kişiye 1 ileti (U4)", { timeout: 120_000 }, async () => {
-    const s = await harness({ second: true, timeoutMs: 8_000 });
+    // CI #959 (0ecc90de) Windows Node 22 (03.11.2026, ders 20): eski düzenek yanıtı sabit 2,5 sn geciktiriyordu; yedek + geri yükleme yavaş makinede bundan
+    // uzun sürünce Meta yanıtı şirket yeniden açılmadan geldi, defter kabulü öğrendi, toparlama "accepted" yazdı (ürün doğru; ön koşul kurulmadı). Zorla:
+    // test/whatsapp-t35r-yaris-zorla.mjs. Artık yanıt KAPIDA tutulur (sahte Graph hold), geri yükleme ve ara okuma bitince bırakılır; program zaman aşımı
+    // kapıdan uzun (60 sn), bekleme kapıyla biter — süreye bağlı değil.
+    const s = await harness({ second: true, timeoutMs: 60_000 });
+    let release = () => {};
     try {
       const batchId = await s.batch();
-      s.ctx.fake.state.delayMs = 2_500;
+      s.ctx.fake.state.hold = { match: /^POST \/\d+\/messages$/, promise: new Promise(resolve => (release = resolve)) };
       const turn = s.ctx.wa.scheduler.runOnce();
-      for (let i = 0; i < 400 && !s.ctx.fake.requests.some(item => item.path.endsWith("/messages")); i += 1) await wait(10);
-      assert.ok(s.ctx.fake.requests.some(item => item.path.endsWith("/messages")), "ön koşul: ileti isteği Meta'da");
+      for (let i = 0; i < 2_000 && !s.ctx.fake.state.held; i += 1) await wait(10);
+      assert.equal(s.ctx.fake.state.held, 1, "ön koşul: ileti isteği Meta'da (yanıt kapıda)");
       const backup = await s.backup();
       await s.restore(backup);
       const mid = await s.job(batchId);
+      assert.equal(s.ctx.fake.state.held, 1, "ön koşul: geri yükleme ve ara okuma boyunca Meta yanıtı henüz gelmedi");
       assert.equal(mid.state, "uncertain", `ön koşul: toparlama Sonucu Belirsiz yazdı (geldi ${mid.state})`);
+      s.ctx.fake.state.hold = null;
+      release();
       await turn;
-      s.ctx.fake.state.delayMs = 0;
+      assert.equal(s.ctx.fake.state.held, 0, "Meta yanıtı bırakıldı");
       // Yanıtı ESKİ örnek işledi (defter A7 kabulü öğrendi); yeni örneğin satırı bakım turunda defterden çözülür.
       await s.ctx.wa.scheduler.maintain();
       const after = await s.job(batchId);
@@ -1180,7 +1188,8 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
       assert.equal(s.apply([st(s, after.wamid, "delivered")]).applied, 1);
       assert.equal(await s.buAy(), 1);
     } finally {
-      s.ctx.fake.state.delayMs = 0;
+      s.ctx.fake.state.hold = null;
+      release();
       await s.close();
     }
   });

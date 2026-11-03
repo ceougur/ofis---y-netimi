@@ -1,0 +1,160 @@
+
+■ Y1 karekod bağlantısıyla eşleme + giriş (uzak dinleyici) → Genel Bakış; kayıt girişi açık
+[bildirim-zorla] +2313 ms sayfa1 istek /api/mobil/eslesme acik-bildirim 0
+[bildirim-zorla] +2315 ms sayfa1 yanit 200 /api/mobil/eslesme
+[bildirim-zorla] +2327 ms sayfa1 eklendi(2187): Cihaz eşlendi. Kullanıcı adınız ve parolanızla girin.
+[bildirim-zorla] +3518 ms sayfa1 yanit 200 /api/mobil/session/login
+[bildirim-zorla] +3519 ms sayfa1 istek /api/mobil/session/login acik-bildirim 1
+  ✓ telefon uzak adreste (http://127.0.0.1:43409)
+  ✓ Genel Bakış: kayıt girişi açık notu
+
+■ Y2 Tahsilat Gir (nakit 1.200): en eski fatura kapanır, bakiye 300, Kasa +1.200; tarih sunucunun günü
+  ✓ başlangıç bakiyesi ₺1.500,00
+  ✓ bilgi notu: fatura seçilmez (FIFO)
+  ✓ formda fatura ve tarih alanı yok (S1, S6)
+  ✓ ödeme yolları Nakit, Havale / EFT, POS (çek / senet yok — S2)
+  ✓ Tahsilat formu: yatay taşma yok (390 ≤ 390)
+[bildirim-zorla] +4589 ms sayfa1 yanit 200 /api/mobil/accounts/account-7b2a0b93-ba14-407f-9258-6ec866110a43/tahsilat
+[bildirim-zorla] +4590 ms sayfa1 eklendi(4449): Tahsilat kaydedildi (Makbuz No 1).
+[bildirim-zorla] +4593 ms sayfa1 istek /api/mobil/accounts/account-7b2a0b93-ba14-407f-9258-6ec866110a43/tahsilat acik-bildirim 2
+  ✓ bildirim: Cihaz eşlendi. Kullanıcı adınız ve parolanızla girin. | Tahsilat kaydedildi (Makbuz No 1).
+  ✓ ekranda bakiye ₺300,00
+  ✓ veri tabanı: [{"kind":"in","amount":1200,"date":"2026-10-31","method":"cash","invoiceId":"","createdBy":"user-3a8aa9c6-4ddb-4b91-919e-83aefa89cf0c"}]
+  ✓ FIFO: F1 açık 0, F2 açık 300
+  ✓ Kasa 200 → 1400
+[bildirim-zorla] +4722 ms sayfa1 kalkti(4583): Cihaz eşlendi. Kullanıcı adınız ve parolanızla girin.
+[bildirim-zorla] +4722 ms sayfa1 kalkti(4583): Tahsilat kaydedildi (Makbuz No 1).
+
+■ Y2b Havale / EFT (iki banka hesabı): seçici görünür, İkinci TL Hesabı seçilir → yalnız o hesap +250; Kasa değişmez; bakiye 50
+  ✓ Nakit seçiliyken banka seçicisi gizli
+  ✓ Havale / EFT seçilince Banka Hesabı seçicisi görünür
+  ✓ seçicide iki hesap (2)
+  ✓ Havale formu: yatay taşma yok (390 ≤ 390)
+[bildirim-zorla] +5150 ms sayfa1 istek /api/mobil/accounts/account-7b2a0b93-ba14-407f-9258-6ec866110a43/tahsilat acik-bildirim 0
+[bildirim-zorla] +5150 ms sayfa1 yanit 200 /api/mobil/accounts/account-7b2a0b93-ba14-407f-9258-6ec866110a43/tahsilat
+[bildirim-zorla] +5153 ms sayfa1 eklendi(5010): Tahsilat kaydedildi (Makbuz No 2).
+  ✓ bildirim: Tahsilat kaydedildi (Makbuz No 2).
+  ✓ ekranda bakiye ₺50,00
+  ✓ veri tabanı: {"kind":"in","amount":250,"date":"2026-10-31","method":"bank","invoiceId":"","createdBy":"user-3a8aa9c6-4ddb-4b91-919e-83aefa89cf0c"}
+  ✓ yalnız seçilen hesap +250 (İkinci 1000 → 1250, Ana 1000 → 1000)
+  ✓ Kasa değişmedi (1400 → 1400)
+  ✓ FIFO: F2 açık 50
+[bildirim-zorla] +5203 ms sayfa1 kalkti(5065): Tahsilat kaydedildi (Makbuz No 2).
+
+■ Y3 Ödeme Gir: Kasa yetmez → soru → Yine de Kaydet → tek kayıt (aynı istek kimliği)
+  ✓ ödeme yolları Nakit, Havale / EFT, Kredi Kartı
+  ✓ D3 Ödeme notu işleme uyar: Ödeme carinin hesabına Borç olarak yazılır; fatura seçilmez. Kayıt bugünün tarihiyle (ofis sunucusunun günü) yazılır.
+[bildirim-zorla] +5926 ms sayfa1 istek /api/mobil/accounts/account-139d2180-f13c-4247-b755-2b28bdaaa22c/odeme acik-bildirim 0
+[bildirim-zorla] +5934 ms sayfa1 yanit 409 /api/mobil/accounts/account-139d2180-f13c-4247-b755-2b28bdaaa22c/odeme
+  ✓ soru: Nakit kasada 1.400,00 TL var; 5.000,00 TL çıkış bakiyeyi -3.600,00 TL eksiye düşürür.Yine 
+  ✓ soru sırasında kayıt yok
+[bildirim-zorla] +6111 ms sayfa1 yanit 200 /api/mobil/accounts/account-139d2180-f13c-4247-b755-2b28bdaaa22c/odeme
+[bildirim-zorla] +6116 ms sayfa1 eklendi(5972): Ödeme kaydedildi.
+[bildirim-zorla] +6116 ms sayfa1 istek /api/mobil/accounts/account-139d2180-f13c-4247-b755-2b28bdaaa22c/odeme acik-bildirim 1
+  ✓ Yine de Kaydet → kaydedildi
+  ✓ veri tabanı: [{"kind":"out","amount":5000,"date":"2026-10-31","method":"cash","invoiceId":"","createdBy":"user-3a8aa9c6-4ddb-4b91-919e-83aefa89cf0c"}]
+  ✓ tek istek kimliği (soru + onay aynı istek)
+  ✓ Kasa 1400 → -3600
+[bildirim-zorla] +6132 ms sayfa1 kalkti(5993): Ödeme kaydedildi.
+
+■ Y4 taksit kartına tahsilat: 100 → kalan 200; 250 → soru → Fazlasını Avans Yaz → kalan 0, fazla 50; cari −50
+  ✓ Tahsilat Yeri: — Seçin — | Cari Hesabına (En Eski Borç) | Taksit Kartı · Mehmet Taksit · Kalan ₺300,00
+  ✓ D7 Tahsilat Yeri boş (seçilmemiş) gelir
+  ✓ D3 not: önce Tahsilat Yeri seçilir
+  ✓ D7 seçmeden Kaydet → uyarı: Tahsilat Yeri'ni seçin: taksit kartına ya da Cari Hesabına (En Eski Borç).
+  ✓ D7 seçmeden kayıt açılmadı, form açık
+  ✓ D3 Cari Hesabına seçilince not: Tahsilat carinin en eski açık borcunu kapatır; fatura seçilmez. Kayıt bugünün tarihiyle (ofis sunucusunun günü) yazılır.
+  ✓ D3 Taksit Kartı seçilince not: Tutar seçilen taksit kartının en eski açık taksidinden başlayarak düşer; kalanı aşan tutar için “Fazlasını Avans Yaz” sorulur. Kayıt bugünün tarihiyle (ofis sunucusunun günü) yazılır.
+[bildirim-zorla] +7287 ms sayfa1 istek /api/mobil/plans/plan-95e57f5f-ebde-4a45-a7e6-db5a5f8942a4/tahsilat acik-bildirim 0
+[bildirim-zorla] +7288 ms sayfa1 yanit 200 /api/mobil/plans/plan-95e57f5f-ebde-4a45-a7e6-db5a5f8942a4/tahsilat
+[bildirim-zorla] +7297 ms sayfa1 eklendi(7155): Tahsilat kaydedildi (Makbuz No 3).
+  ✓ kart tahsilatı kaydedildi
+[bildirim-zorla] +7309 ms sayfa1 kalkti(7171): Tahsilat kaydedildi (Makbuz No 3).
+  ✓ kart: ödenen 100, kalan 200
+[bildirim-zorla] +7610 ms sayfa1 istek /api/mobil/plans/plan-95e57f5f-ebde-4a45-a7e6-db5a5f8942a4/tahsilat acik-bildirim 0
+[bildirim-zorla] +7615 ms sayfa1 yanit 409 /api/mobil/plans/plan-95e57f5f-ebde-4a45-a7e6-db5a5f8942a4/tahsilat
+  ✓ soru: Fazlasını Avans Yaz
+[bildirim-zorla] +7709 ms sayfa1 yanit 200 /api/mobil/plans/plan-95e57f5f-ebde-4a45-a7e6-db5a5f8942a4/tahsilat
+[bildirim-zorla] +7710 ms sayfa1 istek /api/mobil/plans/plan-95e57f5f-ebde-4a45-a7e6-db5a5f8942a4/tahsilat acik-bildirim 0
+[bildirim-zorla] +7723 ms sayfa1 eklendi(7579): Tahsilat kaydedildi (Makbuz No 4).
+  ✓ avansla kaydedildi
+  ✓ kart: kalan 0, fazla 50
+  ✓ cari bakiye -50 (fazlası avans)
+[bildirim-zorla] +7744 ms sayfa1 kalkti(7606): Tahsilat kaydedildi (Makbuz No 4).
+  ✓ son hareketler 4 satır = ekstre 4
+  ✓ taksit tahsilatı ₺100,00 telefonda görünür
+  ✓ taksit tahsilatı ₺250,00 telefonda görünür
+  ✓ ham tür/ISO tarih yok: Taksit Tahsilatı31.10.2026Alacak ₺250,00 | Taksit Tahsilatı31.10.2026Alacak ₺100,00 | Taksit Planı (mevcut borç) · Mehmet Taksit · 3 taksit · 300,00 TL borç taksitlendirildi01.10.2026Borç ₺0,00 | Borç · Açılış bakiyesi01.10.2026Borç ₺300,00
+
+■ Y4b kayıt modülü ilk açılışta yüklenemezse (sunucu kapalıyken açılan sayfa) sonraki kayıt açılışında düğmeler gelir — yeniden yükleme gerekmez
+  ✓ ön koşul: modül yüklenemedi, düğme yok (service worker denetiminde: false)
+  ✓ sunucu dönünce (modül yüklenebilir) Tahsilat Gir / Ödeme Gir yeniden yüklemesiz gelir
+
+■ Y5 Stok Girişi 5 → miktar 15; parasız (Kasa değişmez)
+  ✓ not: yalnız giriş (S8)
+[bildirim-zorla] +9918 ms sayfa1 istek /api/mobil/stock/stock-2f79fa35-81e8-431d-a246-aaf39bafdb28/giris acik-bildirim 0
+[bildirim-zorla] +9921 ms sayfa1 yanit 200 /api/mobil/stock/stock-2f79fa35-81e8-431d-a246-aaf39bafdb28/giris
+[bildirim-zorla] +9928 ms sayfa1 eklendi(10299): Stok girişi kaydedildi.
+  ✓ stok girişi kaydedildi
+  ✓ ekranda miktar 15 Adet
+  ✓ veri tabanı: {"kind":"in","qty":5,"pay":"none","amount":0}
+  ✓ Kasa değişmedi
+[bildirim-zorla] +9956 ms sayfa1 kalkti(10332): Stok girişi kaydedildi.
+
+■ Y6a bağlantı sunucuya ulaşmadan kopar → Sonucu Belirsiz → Yeniden Gönder → tek kayıt
+[bildirim-zorla] +10573 ms sayfa1 istek /api/mobil/accounts/account-3c7a8a27-2fdb-414b-8413-55347bd17408/tahsilat acik-bildirim 0
+  ✓ formda: bağlantı koptu
+  ✓ istek ulaşmadı: kayıt yok
+  ✓ Sonucu Belirsiz İşlemler'de Yeniden Gönder
+[bildirim-zorla] +10823 ms sayfa1 yanit 200 /api/mobil/accounts/account-3c7a8a27-2fdb-414b-8413-55347bd17408/tahsilat
+[bildirim-zorla] +10827 ms sayfa1 eklendi(11200): Tahsilat kaydedildi (Makbuz No 5).
+[bildirim-zorla] +10827 ms sayfa1 istek /api/mobil/accounts/account-3c7a8a27-2fdb-414b-8413-55347bd17408/tahsilat acik-bildirim 1
+  ✓ yeniden gönderim kaydedildi
+  ✓ tek kayıt (1)
+  ✓ belirsiz liste boşaldı
+[bildirim-zorla] +10840 ms sayfa1 kalkti(11216): Tahsilat kaydedildi (Makbuz No 5).
+
+■ Y6b sunucu yazar, yanıt kaybolur → Yeniden Gönder → 'zaten kaydedilmişti'; yine tek kayıt
+[bildirim-zorla] +11442 ms sayfa1 istek /api/mobil/accounts/account-3c7a8a27-2fdb-414b-8413-55347bd17408/tahsilat acik-bildirim 0
+  ✓ sunucu yazdı (2. kayıt)
+[bildirim-zorla] +11523 ms sayfa1 istek /api/mobil/accounts/account-3c7a8a27-2fdb-414b-8413-55347bd17408/tahsilat acik-bildirim 0
+[bildirim-zorla] +11531 ms sayfa1 yanit 200 /api/mobil/accounts/account-3c7a8a27-2fdb-414b-8413-55347bd17408/tahsilat
+[bildirim-zorla] +11535 ms sayfa1 eklendi(11909): Bu işlem zaten kaydedilmişti; yeni kayıt açılmadı.
+  ✓ yeniden gönderim: zaten kaydedilmişti
+  ✓ ikinci kayıt açılmadı (2)
+[bildirim-zorla] +11555 ms sayfa1 kalkti(11931): Bu işlem zaten kaydedilmişti; yeni kayıt açılmadı.
+
+■ Y7 gece yarısı: 23:5x'te ulaşmayan istek 00:01'de yeniden gönderilir → kayıt 01.11.2026 tarihli (sunucunun günü)
+[bildirim-zorla] +12139 ms sayfa1 istek /api/mobil/accounts/account-3c7a8a27-2fdb-414b-8413-55347bd17408/tahsilat acik-bildirim 0
+[bildirim-zorla] +12283 ms sayfa1 yanit 200 /api/mobil/accounts/account-3c7a8a27-2fdb-414b-8413-55347bd17408/tahsilat
+[bildirim-zorla] +12284 ms sayfa1 istek /api/mobil/accounts/account-3c7a8a27-2fdb-414b-8413-55347bd17408/tahsilat acik-bildirim 0
+[bildirim-zorla] +12287 ms sayfa1 eklendi(12661): Tahsilat kaydedildi (Makbuz No 7).
+  ✓ kaydedildi
+  ✓ kayıt {"kind":"in","amount":25,"date":"2026-11-01","method":"cash","invoiceId":"","createdBy":"user-3a8aa9c6-4ddb-4b91-919e-83aefa89cf0c"}
+[bildirim-zorla] +12304 ms sayfa1 kalkti(12680): Tahsilat kaydedildi (Makbuz No 7).
+
+■ Y8 24 saat: belirsiz istek 25 saat sonra yeniden gönderilmez; Listeden Kaldır
+[bildirim-zorla] +12887 ms sayfa1 istek /api/mobil/accounts/account-3c7a8a27-2fdb-414b-8413-55347bd17408/tahsilat acik-bildirim 0
+[bildirim-zorla] +14207 ms sayfa1 yanit 200 /api/mobil/session/login
+[bildirim-zorla] +14210 ms sayfa1 istek /api/mobil/session/login acik-bildirim 0
+  ✓ Yeniden Gönder düğmesi yok
+  ✓ neden yazılı: Sonucu Belirsiz İşlemler (1)Tahsilat Gir · Veli Kesinti · 15 TL24 saati geçti; yeniden gönderilmez. Cari hareketlerinden
+  ✓ listeden kaldırıldı
+  ✓ kayıt açılmadı
+
+■ Y9 personel telefonu: yalnız Tahsilat Gir (Ödeme Gir yok); kayıt personelin adına
+[bildirim-zorla] +14444 ms baglam2: mobil yazma yanıtı 1200 ms gecikecek
+[bildirim-zorla] +15593 ms sayfa2 istek /api/mobil/eslesme acik-bildirim 0
+[bildirim-zorla] +15600 ms sayfa2 yanit 200 /api/mobil/eslesme
+[bildirim-zorla] +15608 ms sayfa2 eklendi(2176): Cihaz eşlendi. Kullanıcı adınız ve parolanızla girin.
+[bildirim-zorla] +17453 ms sayfa2 istek /api/mobil/session/login acik-bildirim 1
+[bildirim-zorla] +17505 ms sayfa2 yanit 200 /api/mobil/session/login
+  ✓ personel düğmeleri: Tahsilat Gir
+[bildirim-zorla] +18175 ms yanit 1200 ms geciktiriliyor /api/mobil/accounts/account-7b2a0b93-ba14-407f-9258-6ec866110a43/tahsilat
+[bildirim-zorla] +18176 ms sayfa2 istek /api/mobil/accounts/account-7b2a0b93-ba14-407f-9258-6ec866110a43/tahsilat acik-bildirim 1
+  ✗ personel tahsilatı kaydedildi
+  ✓ kaydı giren personel (true)
+  ✓ Personel cari kartı: yatay taşma yok (390 ≤ 390)
+  ✓ sayfa hatası yok (—)
+
+73 geçti, 1 kaldı

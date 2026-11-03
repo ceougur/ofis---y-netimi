@@ -1,0 +1,32 @@
+{
+  "ad": "ci-kirmizi/komsu-sahte-graph-kullananlar-UTC",
+  "komut": "node --test test/whatsapp-q3-tasinan-gonderiliyor-248.test.mjs test/whatsapp-t2-5-248.test.mjs test/whatsapp-t2-5b-248.test.mjs test/whatsapp-t2-p3-248.test.mjs test/whatsapp-t6-e2-248.test.mjs test/whatsapp-w1-baglanti.test.mjs test/whatsapp-w2-cekirdek-248.test.mjs test/whatsapp-w2-onbellek-249.test.mjs test/whatsapp-w2-surec-olumu-248.test.mjs test/whatsapp-w4-gonderim-248.test.mjs test/whatsapp-w4-hata100-249.test.mjs test/whatsapp-w5-sablon.test.mjs test/whatsapp-w7-appid-248.test.mjs test/whatsapp-w7-bagla-248.test.mjs test/whatsapp-w7-tasinma-248.test.mjs test/whatsapp-w9-kanca-248.test.mjs test/whatsapp-wt-ttl-249.test.mjs",
+  "commit": "87b28e3e73b9344b56ab0669f4bb3bc6ed703a3b",
+  "dal": "worktree-agent-a19808dcd3cac5196",
+  "kirli": 3,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T22:22:33.935Z",
+  "sure_sn": 30.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 110,
+    "gecen": 110,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/ci-kirmizi/komsu-sahte-graph-kullananlar-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a19808dcd3cac5196",
+  "ham_cikti_sha256": "162669a0a844507f14061dc2fced69ff211eb42183afcbed28d257283a9aba87",
+  "ham_cikti_bayt": 56239
+}

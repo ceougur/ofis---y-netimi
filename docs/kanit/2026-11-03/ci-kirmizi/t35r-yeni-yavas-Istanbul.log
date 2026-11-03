@@ -1,0 +1,5 @@
+# T35r yarış denemesi: 3 deneme, kip yavas (geri yükleme kopyası +9000 ms), TZ Europe/Istanbul, çalışma klasörü /home/user/ofis---y-netimi/.claude/worktrees/agent-a19808dcd3cac5196
+deneme 1: çıkış 0 · YEŞİL · ileti isteği → geri yükleme bitti 9151 ms (ön koşul OLUŞTU) · Meta yanıtı ara okumadan SONRA
+deneme 2: çıkış 0 · YEŞİL · ileti isteği → geri yükleme bitti 9140 ms (ön koşul OLUŞTU) · Meta yanıtı ara okumadan SONRA
+deneme 3: çıkış 0 · YEŞİL · ileti isteği → geri yükleme bitti 9140 ms (ön koşul OLUŞTU) · Meta yanıtı ara okumadan SONRA
+# özet: 3/3 yeşil, 0 kırmızı; ön koşul oluşan deneme 3/3

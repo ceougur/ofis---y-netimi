@@ -1,0 +1,32 @@
+{
+  "ad": "ci-kirmizi/mobil-yazma-247-yeni-yavas-1",
+  "komut": "node --disable-warning=ExperimentalWarning --import ./test/e2e/bildirim-yaris-zorla.mjs test/e2e/senaryo-mobil-yazma-247.mjs",
+  "commit": "87b28e3e73b9344b56ab0669f4bb3bc6ed703a3b",
+  "dal": "worktree-agent-a19808dcd3cac5196",
+  "kirli": 3,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T22:12:47.730Z",
+  "sure_sn": 20.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 74,
+    "gecen": 74,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/ci-kirmizi/mobil-yazma-247-yeni-yavas-1.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a19808dcd3cac5196",
+  "ham_cikti_sha256": "7e60a0bab91ec87b7976f020e49e4ba80665dd18d876ad0aaacdac807672c065",
+  "ham_cikti_bayt": 12296
+}
