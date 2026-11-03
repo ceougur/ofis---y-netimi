@@ -987,11 +987,22 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const isCardAccount = id => Boolean(id && store.get("SELECT 1 AS found FROM bank_accounts WHERE id = ? AND kind = 'card'", id));
   // 2.4.9 P1 tur 1 (dar kontrol DÜŞÜK-1): ekran kutu formdayken işaretsizse cardRefund: false gönderir → önceki satıra bakılmaz (kart iadesi POS'a / başka yola
   // çevrilir; önceden "Hareket düzeltildi" deyip satır kartta kalıyordu). Alan hiç yoksa (eski istemci, mobil) önceki satırın bağı sürer.
-  const cardRefundOf = (body, previous = null) => body?.cardRefund === true || (body?.cardRefund !== false && Boolean(previous && previous.kind === "in" && previous.method === "card" && isCardAccount(previous.finRef)));
-  // 2.4.9 P1-b: müşteride yeni "Kredi Kartına İade" (POST) yalnız bu cariye kartla Ödeme varken; düzeltmede (PUT) var olan satırlar korunur (kullanıcı kararı).
+  // Var olan "Kredi Kartına İade" satırı: giriş + kart yolu + bağı bir Kredi Kartı hesabı (cari ayrıntısındaki cardRefund işaretiyle aynı tanım).
+  const wasCardRefund = previous => Boolean(previous && previous.kind === "in" && previous.method === "card" && isCardAccount(previous.finRef));
+  const cardRefundOf = (body, previous = null) => body?.cardRefund === true || (body?.cardRefund !== false && wasCardRefund(previous));
+  // 2.4.9 P1-b: müşteride yeni "Kredi Kartına İade" (POST) yalnız bu cariye kartla Ödeme varken; düzeltmede (PUT) var olan kart iadesi satırları korunur
+  // (kullanıcı kararı). P1 tur 2 (tur 1 dar kontrol DÜŞÜK-2; 03.11 yetkisiyle BAŞ MİMAR KARARI): "korunur" yalnız VAR OLAN iade satırlarını kapsar — PUT iade
+  // olmayan satırı (POS, Nakit, Havale) iadeye çevirirken bu denetim aynen uygulanır (çağıran: PUT, wasCardRefund değilse).
   const assertCardRefundRoom = (account, input, body) => {
     if (account.type === "customer" && input.kind === "in" && input.method === "card" && body?.cardRefund === true && !hasCardPaymentOf(account.id))
       throw new HttpError(400, "Bu müşteriye kredi kartıyla yapılmış bir ödeme yok; Kredi Kartına İade girilemez. Müşteriden kartla alınan para POS tahsilatıdır: \"Kredi Kartına İade\" işaretini kaldırın.", { code: "card-refund-no-payment", field: "cardRefund" });
+  };
+  // Yargıç 2.3.0 #6 (15.10.2026): "Kredi Kartına İade" (cardRefund) kart hesabı ister; tanımlı etkin kart yoksa 108.00'a sessiz yazım yok (400). P1 tur 2 (tur 1 dar
+  // kontrol DÜŞÜK-1): düzeltmede (PUT) de aynı — tur 1'in "kart yolunun anlamı değişince yeni kayıt gibi bağla" kuralıyla POS / Nakit satırı iadeye çevrilirken
+  // etkin kart yoksa (0 kart ya da tek kart pasif) satır sessizce hesapsıza yazılıyordu. Var olan kart iadesi satırı buraya boş bağla gelmez: pickRef önceki kart
+  // bağını korur ya da (parası değişince) pasif hesap / açılış kuralıyla kendi 400/409'unu verir — satır korunur.
+  const assertCardTarget = (input, body, finRef) => {
+    if (input.kind === "in" && input.method === "card" && body?.cardRefund === true && !finRef) throw new HttpError(400, "Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir; tanımlı kart yoksa Banka → Hesaplar'dan ekleyin ya da yolu değiştirin.", { code: "bank-account-invalid", field: "bankAccountId" });
   };
   // Kart yolunun anlamı (plan §4.6 "alan belge türüne göre"): çıkış = kartla ödeme (309) — "POS İadesi" değilse; giriş = POS — "Kredi Kartına İade" değilse.
   const corporateOf = (input, body, previous = null) => (input.kind === "out" ? !posRefundOf(body, previous) : input.kind === "in" && input.method === "card" && cardRefundOf(body, previous));
@@ -1008,8 +1019,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     assertCardRefundRoom(account, input, body);
     const finRef = refOf(input, body);
     requireBankOut(user, input.kind, finRef);
-    // Yargıç 2.3.0 #6 (15.10.2026): "Kredi Kartına İade" (cardRefund) kart hesabı ister; tanımlı etkin kart yoksa 108.00'a sessiz yazım yok (400).
-    if (input.kind === "in" && input.method === "card" && body.cardRefund === true && !finRef) throw new HttpError(400, "Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir; tanımlı kart yoksa Banka → Hesaplar'dan ekleyin ya da yolu değiştirin.", { code: "bank-account-invalid", field: "bankAccountId" });
+    assertCardTarget(input, body, finRef);
     const k7 = negativeOf([finRef], input.date, negativeForced(body));
     const created = bank.post({
       user,
@@ -1050,7 +1060,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
     assertOffsetFree(previous, input);
     assertNormalRoom(account, input, previous);
+    // 2.4.9 P1 tur 2: kart iadesi kuralları POST'la aynı — iade olmayan satır müşteride iadeye çevrilirken kartla ödeme denetimi (DÜŞÜK-2), etkin kart
+    // yoksa 400 (DÜŞÜK-1). Var olan iade satırının tutar / tarih / kart düzeltmesi serbest.
+    if (!wasCardRefund(previous)) assertCardRefundRoom(account, input, body);
     const finRef = refOf(input, body, previous);
+    assertCardTarget(input, body, finRef);
     if (finRef !== previous.finRef) requireBankOut(user, input.kind, finRef);
     const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
