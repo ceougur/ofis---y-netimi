@@ -106,6 +106,11 @@ const INTEGRITY_SCAN_MINUTES = 15;
 export function createApp(overrides = {}) {
   const config = loadConfig(overrides);
   const log = overrides.log || createLogger(config.logLevel);
+  // 2.4.9 B1 (YALNIZ TEST — test/createapp-acilis-geri-alma-249.test.mjs; __testWriteLockProbe emsali): açılışın verilen aşamasında kesinti. Yalnız programdan
+  // (test oluşturucusu) verilir, ortam / ayar dosyasından okunmaz; verilmezse sıfır maliyet. Çocuk örnek `...overrides` ile aynı kancayı alır (companyId ile ayrılır).
+  const openFault = stage => {
+    if (overrides.__testOpenFault?.(stage, overrides.companyId || ROOT_COMPANY_ID)) throw new Error(`test: açılış kesintisi ${stage}`);
+  };
   const startedAt = new Date().toISOString();
   mkdirSync(config.dataDir, { recursive: true });
   mkdirSync(config.backupDir, { recursive: true });
@@ -118,6 +123,7 @@ export function createApp(overrides = {}) {
   const stagedRestore = hub ? null : applyStagedRestore({ dataDir: config.dataDir, backupRoot: config.backupDir, dbPath: config.dbPath, keep: config.backupKeep, log });
 
   const db = openDatabase(config.dbPath);
+  openFault("after-open");
   const store = createStore(db);
   // Şirket kayıt defteri yalnız hub'da; çocuklar hub'ınkini görür. (v2.0.20: göçlerden önce kurulur; göç öncesi yedek de
   // şirketin kendi yedek klasörüne gider.)
@@ -211,6 +217,7 @@ export function createApp(overrides = {}) {
     }
   }
   const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity(), now: config.now });
+  openFault("after-migrations");
   // 2.4.8 W2 (lib/whatsapp/hub.mjs): WhatsApp gönderim defteri (makine düzeyi, ana veri klasöründe), tek işçi ve bağlantı kaydı — ortak katmanda tek örnek.
   const whatsapp = hub ? hub.whatsapp : createWhatsappHub({ dataDir: config.dataDir, log, gapMs: config.whatsappGapMs, manual: config.whatsappWorker === "manual", fault: config.whatsappLedgerFault });
   // 001 yedekten geri yüklendiyse (açılışta uygulandı) eski toplu gönderimler defterde durdurulur: geri yüklenen veri eski işleri diriltmez (plan §6 W2).
@@ -231,6 +238,7 @@ export function createApp(overrides = {}) {
   }
   if (!hub) ensureInitialAdmin(store, config, log);
   else mirrorUsers(hub.store, store);
+  openFault("after-users");
   // Gözden geçirme D5 (K4): eski sürümün (2.0.25/2.0.26) rol ya da kişi kaydında sildiği banka yetkileri ortak katmanın her açılışında geri
   // gelir (yalnız işaretsiz rol/kişi; yalnız EKLER, bugünkü yetkilerden). Çalışmasa da program açılır.
   if (!hub) {
@@ -319,6 +327,7 @@ export function createApp(overrides = {}) {
     license.init();
   }
   dataset.start();
+  openFault("after-dataset");
   // Sunucunun yeniden başlatılması (001 geri yüklemesi): servis yöneticisi altında server.mjs bağlar; yoksa false.
   let restartHandler = null;
   const requestRestart = reason => {
@@ -441,6 +450,7 @@ export function createApp(overrides = {}) {
     context.integrity.scanInBackground().catch(error => log.error?.("Mutabakat taraması çalışmadı", error));
   }, INTEGRITY_SCAN_MINUTES * 60_000);
   context.integrity.scanTimer?.unref?.();
+  openFault("after-integrity");
   // POS valör kuyruğu (2.2.0, plan §4.4/2): (a) açılışta bir tur — ilk şirkette dinlemeye başladıktan sonra (listen), şirket örneğinde açılınca;
   // (b) 15 dakikada bir (unref; kapanışta durur); (f) "Şimdi Aktar" ve (g) dönem kilidi öncesi uçlarda; (d) ortak katmanda günde bir: bu süreçte
   // açılmamış şirketin veri dosyasında vadesi gelmiş POS kalemi varsa şirket açılır (açılış kendi kuyruğunu çalıştırır). Gün dönümü (c) 15
@@ -461,6 +471,7 @@ export function createApp(overrides = {}) {
     whatsapp.registry.set(companyId, context.whatsapp.connection.summary());
     whatsapp.scheduler.register(companyId, context.whatsapp.queue);
   }
+  openFault("after-register");
   // ANLIK DURUM (v2.0.7): Kasa, Cari, Stok ve Çek/Senet'in kendi hesaplarını okur (tek kaynak); raporlar.
   // Vade takip ve nakit akışı (v2.0.9) tablolardaki ödeme günlerini de okur (tüm veri oturumları; routes/reports.mjs).
   context.overview = registerOverviewRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, tables: () => context.tableReports, doubtful: () => context.doubtful });
@@ -1077,5 +1088,6 @@ export function createApp(overrides = {}) {
   // 2.4.7 M4: canlı bağlantı (tünel) — yalnız ortak katmanda; M3 kapıcı adresi (config.mobileKapiUrl) varken ya da testte `tunnel` seçeneğiyle; lib/tunnel/attach.mjs.
   // 2.4.8 W9 (plan §6 W9, S1 A): tünel WhatsApp bağlıyken de açık (durum bildirimi kapıcıdan tünel üzerinden gelir) — "Ne zaman açık" kuralının genişlemesi.
   context.tunnel = hub ? null : attachTunnel({ option: overrides.tunnel, config, store, license, mobileRemote: context.mobileRemote, mobileSync: () => context.mobileSync, extraDemand: () => whatsapp.registry.anyConfigured(), listenRemote: () => (remoteServer.listening ? Promise.resolve(remoteServer.address()) : app.listenRemote(0, "127.0.0.1")), forbiddenPorts: () => [config.port, config.publicPort, server.address()?.port].filter(Number.isInteger), log });
+  openFault("after-app");
   return app;
 }
