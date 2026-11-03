@@ -1644,8 +1644,25 @@
       // Ana oturum kararı (31f ek): geri alınamaz eylem — Veriyi Sıfırla ve Kullanıcıyı Sil gibi kırmızı; onay akışı aynı.
       onOpen: dialog => dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger"),
       onSubmit: async values => {
-        const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}`, { method: "DELETE", body: { confirm: values.confirm, password: values.password } });
-        HOF.toast(`“${item.code} · ${item.name}” silindi. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });
+        const url = `/api/companies/${encodeURIComponent(item.id)}`;
+        let result;
+        try {
+          result = await HOF.api(url, { method: "DELETE", body: { confirm: values.confirm, password: values.password } });
+        } catch (error) {
+          // 2.4.9 S1 (kullanıcı kararı 03.11.2026): veri dosyası bozuk şirkette yedek alınamaz; ikinci, açık onayla yedeksiz silinir (aynı kod ve parola).
+          // Vazgeçilirse ilk pencere açık kalır, nedeni altta yazar.
+          if (error?.data?.code !== "backup-failed") throw error;
+          const reason = error.data.reason || error.message;
+          const yes = await HOF.confirm({
+            title: `Yedeksiz Sil · ${item.code} · ${item.name}`,
+            message: `Yedek alınamadı (${reason}). Veri klasörü yine silinen-sirketler altına taşınır, geri getirilebilir. Şirket yedek alınmadan silinsin mi?`,
+            confirmLabel: "Yedeksiz Sil",
+            danger: true,
+          });
+          if (!yes) throw error;
+          result = await HOF.api(url, { method: "DELETE", body: { confirm: values.confirm, password: values.password, withoutBackup: true } });
+        }
+        HOF.toast(result.withoutBackup ? `“${item.code} · ${item.name}” yedek alınmadan silindi; veri klasörü silinen-sirketler altında.` : `“${item.code} · ${item.name}” silindi. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });
         loadCompanies();
       },
     });
