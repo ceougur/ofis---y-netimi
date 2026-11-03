@@ -39,13 +39,6 @@ function vouchersSql(have) {
   return carriers.length ? `(SELECT COUNT(*) FROM fin_events e WHERE e.party_id = ?1 AND +e.src_table = '' AND (${carriers.join(" OR ")}))` : "0";
 }
 
-/**
- * Carinin hareketleri. Dönüş: { total, counts: { entries, stock, invoices, offsets, plans, cheques, doubtful, vouchers }, deleted? }.
- * total > 0 → cari hareketlidir (silinmez). Tablo yoksa (göç öncesi test kurgusu) o sayaç 0.
- * entries: elle cari satırı (tahsilat/ödeme, Borç/Alacak Yaz, açılış) + banka kaynaklı satır + kaynağı bulunamayan (yetim) satır.
- * includeDeleted (yalnız kalıcı silme): silinmiş taksit kartı ve çek/senet, iptal edilmiş şüpheli kaydı ve bu cariyi taşıyan açık Silinenler öğesi
- * (cari hareketi, fatura, stok hareketi, şüpheli alacak) da sayılır — geri dönüşsüz silmede bağlı iz yetim kalmasın (§11 Y2).
- */
 // Açık Silinenler öğesinin taşıdığı cari: cari hareketi / stok hareketi / şüpheli alacak yükünde accountId, fatura yükünde invoice.account_id.
 const TRASH_MATCH = "(json_extract(payload_json, '$.accountId') = ?1 OR json_extract(payload_json, '$.invoice.account_id') = ?1)";
 /**
@@ -61,6 +54,13 @@ export function openTrashAccounts(store) {
   return index;
 }
 
+/**
+ * Carinin hareketleri. Dönüş: { total, counts: { entries, stock, invoices, offsets, plans, cheques, doubtful, vouchers }, deleted? }.
+ * total > 0 → cari hareketlidir (silinmez). Tablo yoksa (göç öncesi test kurgusu) o sayaç 0.
+ * entries: elle cari satırı (tahsilat/ödeme, Borç/Alacak Yaz, açılış) + banka kaynaklı satır + kaynağı bulunamayan (yetim) satır.
+ * includeDeleted (yalnız kalıcı silme): silinmiş taksit kartı ve çek/senet, iptal edilmiş şüpheli kaydı ve bu cariyi taşıyan açık Silinenler öğesi
+ * (cari hareketi, fatura, stok hareketi, şüpheli alacak) da sayılır — geri dönüşsüz silmede bağlı iz yetim kalmasın (§11 Y2). trashIndex: openTrashAccounts.
+ */
 export function accountMovements(store, accountId, { includeDeleted = false, trashIndex = null } = {}) {
   const id = String(accountId || "");
   const have = new Set(store.all(TABLE_SQL, ...TABLES).map(row => row.name));
