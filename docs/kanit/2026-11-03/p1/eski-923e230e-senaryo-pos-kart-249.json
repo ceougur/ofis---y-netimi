@@ -1,0 +1,158 @@
+{
+  "ad": "p1/eski-923e230e-senaryo-pos-kart-249",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1-kod-ac15eb6c/eski-923e230e/test/e2e/senaryo-pos-kart-249.mjs",
+  "commit": "cb1762f44a5d4d819336a8ff86a170db0ec47dca",
+  "dal": "worktree-agent-ac15eb6ca2403aece",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:34:39.790Z",
+  "sure_sn": 114.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 210,
+    "gecen": 182,
+    "basarisiz": 28,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 28 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "müşteri POS tahsilatında kredi kartı seçicisi yok (görünür: “Kredi Kartı Tanımla Tanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır.”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "\"Kredi Kartı Tanımla\" yazmıyor (T4): “Kredi Kartı Tanımla Tanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ilk ve son POS'ta kart seçicisi yok (görünür / görünür)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Havale / EFT'de POS alanı gizli (gizli), kart seçicisi yok (gizli)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "düzeltme formunda kart seçicisi / kutu / kart metni yok (görünür, yok: “Kredi Kartı Tanımla Tanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır.”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "müşteri POS tahsilatında kredi kartı seçicisi yok (görünür: “Ziraat Bankası · World kredi kartına yazılır. Kart (08.10.2026): Borç ₺0,00 · İşlemden Sonra: Alacak ₺500,00 · Kart Limiti: ₺50.000,00”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "\"… kredi kartına yazılır\" yazmıyor (T3): “Ziraat Bankası · World kredi kartına yazılır. Kart (08.10.2026): Borç ₺0,00 · İşlemden Sonra: Alacak ₺500,00 · Kart Limiti: ₺50.000,00”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ilk ve son POS'ta kart seçicisi yok (görünür / görünür)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Havale / EFT'de POS alanı gizli (gizli), kart seçicisi yok (gizli)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "düzeltme formunda kart seçicisi / kutu / kart metni yok (görünür, yok: “Ziraat Bankası · World kredi kartına yazılır. Kart (08.10.2026): Borç ₺0,00 · İşlemden Sonra: Alacak ₺700,00 · Kart Limiti: ₺50.000,00”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "müşteri POS tahsilatında kredi kartı seçicisi yok (görünür: “Kredi Kartı * Kart Seçin Ziraat Bankası · World (ZIR-KART) — Borç ₺0,00 Ziraat Bankası · Bonus (ZIR-KART-2) — Borç ₺0,00 Hesapsız (Açılıştan Önce)”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "T1 kaydedildi (yanıt 200, form kapandı): istek yok, form hatası “\"Kredi Kartı\" alanı boş bırakılamaz.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "veri tabanında 1 satır: []",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "POS satışı 50000 kuruş: []",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "POS Bekleyen +500 (0 → 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "müşteri bakiyesi −500 (0 → 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ilk ve son POS'ta kart seçicisi yok (görünür / görünür)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Havale / EFT'de POS alanı gizli (gizli), kart seçicisi yok (gizli)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "T9 kaydedildi: istek yok, form hatası “\"Kredi Kartı\" alanı boş bırakılamaz.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gövde: hesap alanı yok, POS alanları var — {}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satır POS'a 250: []",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "POS satışı +1 (0 → 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "düzeltme formunda kart seçicisi / kutu / kart metni yok (görünür, yok: “Kredi Kartı * Kart Seçin Ziraat Bankası · World (ZIR-KART) — Borç ₺0,00 Ziraat Bankası · Bonus (ZIR-KART-2) — Borç ₺0,00 Hesapsız (Açılıştan Önce)”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "T2 düzeltildi:  istek yok, form hatası “\"Kredi Kartı\" alanı boş bırakılamaz.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satır 650 POS'ta: {\"id\":\"aentry-b24b542b-ad3d-4290-8cc0-d51d533e9cf7\",\"kind\":\"in\",\"amount\":700,\"method\":\"card\",\"finRef\":\"pos-118a43b3-3190-4dee-a7da-9f5bfa04f9e1\",\"hesap\":\"POS\"}",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/p1/eski-923e230e-senaryo-pos-kart-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac15eb6ca2403aece",
+  "ham_cikti_sha256": "1dfba7a78c5e6eaf04cfb93923920c4722206a3786a06b0a914b64a0d8dcffde",
+  "ham_cikti_bayt": 31133
+}
