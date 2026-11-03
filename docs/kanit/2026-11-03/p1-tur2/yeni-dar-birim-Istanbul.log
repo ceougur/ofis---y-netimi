@@ -1,0 +1,729 @@
+TAP version 13
+# Subtest: Aşama 5 — kabul 5–12: ABC Ltd. faturası Ziraat'e havaleyle tahsil edilir
+    # Subtest: B1: iki hesapta hesap seçmeden havale → 400 bank-account-required (alan bankAccountId); hiçbir şey yazılmaz
+    ok 1 - B1: iki hesapta hesap seçmeden havale → 400 bank-account-required (alan bankAccountId); hiçbir şey yazılmaz
+      ---
+      duration_ms: 7.325666
+      type: 'test'
+      ...
+    # Subtest: kabul 9–12: Tahsilat 20.000 Havale/EFT Ziraat → Ziraat 120.000, ABC 0, fatura Ödendi; Kasa 0
+    ok 2 - kabul 9–12: Tahsilat 20.000 Havale/EFT Ziraat → Ziraat 120.000, ABC 0, fatura Ödendi; Kasa 0
+      ---
+      duration_ms: 86.054137
+      type: 'test'
+      ...
+    # Subtest: B4: aynı istek kimliğiyle ikinci gönderim → tek satır, replayed
+    ok 3 - B4: aynı istek kimliğiyle ikinci gönderim → tek satır, replayed
+      ---
+      duration_ms: 12.839004
+      type: 'test'
+      ...
+    # Subtest: B5: farklı kimlik, aynı gün/tutar/hesap/cari → 409 bank-similar (önceki İşlem No ile); similarOk → 200
+    ok 4 - B5: farklı kimlik, aynı gün/tutar/hesap/cari → 409 bank-similar (önceki İşlem No ile); similarOk → 200
+      ---
+      duration_ms: 37.109363
+      type: 'test'
+      ...
+    # Subtest: B6–B7: iki nakit tahsilat aynı gün aynı tutar → ikisi 200; aynı adlı iki cariye aynı havale → ikisi 200, bakiyeler ayrı
+    ok 5 - B6–B7: iki nakit tahsilat aynı gün aynı tutar → ikisi 200; aynı adlı iki cariye aynı havale → ikisi 200, bakiyeler ayrı
+      ---
+      duration_ms: 110.656049
+      type: 'test'
+      ...
+    # Subtest: B3: nakit tahsilatta gönderilen hesap kimliği yok sayılır (Kasa'da, hesapta değil)
+    ok 6 - B3: nakit tahsilatta gönderilen hesap kimliği yok sayılır (Kasa'da, hesapta değil)
+      ---
+      duration_ms: 23.169863
+      type: 'test'
+      ...
+    1..6
+ok 1 - Aşama 5 — kabul 5–12: ABC Ltd. faturası Ziraat'e havaleyle tahsil edilir
+  ---
+  duration_ms: 854.648557
+  type: 'suite'
+  ...
+# Subtest: Aşama 5 — hesap kuralları: tek hesap, pasif, döviz, açılış ve Devir Kapanışı sınırı
+    # Subtest: B2: tek uygun hesapta seçim yapılmasa da satır o hesaba bağlanır
+    ok 1 - B2: tek uygun hesapta seçim yapılmasa da satır o hesaba bağlanır
+      ---
+      duration_ms: 16.747721
+      type: 'test'
+      ...
+    # Subtest: B9: açılıştan önceki tarih → 409 bank-before-opening; Devir Kapanışı sınırından önce → 409 bank-carry-closed
+    ok 2 - B9: açılıştan önceki tarih → 409 bank-before-opening; Devir Kapanışı sınırından önce → 409 bank-carry-closed
+      ---
+      duration_ms: 56.029814
+      type: 'test'
+      ...
+    # Subtest: B8: pasif hesap 400, döviz hesabı 400 bank-currency, olmayan hesap 404
+    ok 3 - B8: pasif hesap 400, döviz hesabı 400 bank-currency, olmayan hesap 404
+      ---
+      duration_ms: 43.763018
+      type: 'test'
+      ...
+    1..3
+ok 2 - Aşama 5 — hesap kuralları: tek hesap, pasif, döviz, açılış ve Devir Kapanışı sınırı
+  ---
+  duration_ms: 461.669552
+  type: 'suite'
+  ...
+# Subtest: Aşama 5 — K7 eksi bakiye, eşzamanlı ödeme, düzeltme ve silme
+    # Subtest: B10: Uyar → 409 cash-negative, negativeOk → 200; Engelle → 409 cash-blocked (negativeOk da geçmez)
+    ok 1 - B10: Uyar → 409 cash-negative, negativeOk → 200; Engelle → 409 cash-blocked (negativeOk da geçmez)
+      ---
+      duration_ms: 55.645735
+      type: 'test'
+      ...
+    # Subtest: B11: Engelle'de aynı hesaptan aynı anda iki ödeme (60.000 + 60.000, farklı cariler) → biri 200, öbürü 409 cash-blocked
+    ok 2 - B11: Engelle'de aynı hesaptan aynı anda iki ödeme (60.000 + 60.000, farklı cariler) → biri 200, öbürü 409 cash-blocked
+      ---
+      duration_ms: 36.27863
+      type: 'test'
+      ...
+    # Subtest: B16: düzeltmede hesap Ziraat → Garanti taşınır; Engelle'deki hesaba taşıyıp eksiye düşürmek 409
+    ok 3 - B16: düzeltmede hesap Ziraat → Garanti taşınır; Engelle'deki hesaba taşıyıp eksiye düşürmek 409
+      ---
+      duration_ms: 96.938411
+      type: 'test'
+      ...
+    # Subtest: B14: Ziraat'e bağlı tahsilatı sil → Silinenler'den geri yükle → aynı fin_ref, olay etkin
+    ok 4 - B14: Ziraat'e bağlı tahsilatı sil → Silinenler'den geri yükle → aynı fin_ref, olay etkin
+      ---
+      duration_ms: 95.122293
+      type: 'test'
+      ...
+    # Subtest: B17: banka bağlı hareketi olan cari silinmez (409 account-has-movements — 2.4.9 C1 tek kod; önceden account-bank-linked); Pasife Al 200
+    ok 5 - B17: banka bağlı hareketi olan cari silinmez (409 account-has-movements — 2.4.9 C1 tek kod; önceden account-bank-linked); Pasife Al 200
+      ---
+      duration_ms: 23.668045
+      type: 'test'
+      ...
+    1..5
+ok 3 - Aşama 5 — K7 eksi bakiye, eşzamanlı ödeme, düzeltme ve silme
+  ---
+  duration_ms: 697.697071
+  type: 'suite'
+  ...
+# Subtest: Aşama 5 — eski bağsız satır, yetki (K4), Banka'dan gelen ve eşleşmiş satır, saklı toplam
+    # Subtest: B15: iki hesap varken eski bağsız satırın açıklaması düzelir (200, bağsız kalır); tutarı değişirse 400 hesap seç
+    ok 1 - B15: iki hesap varken eski bağsız satırın açıklaması düzelir (200, bağsız kalır); tutarı değişirse 400 hesap seç
+      ---
+      duration_ms: 80.18479
+      type: 'test'
+      ...
+    # Subtest: B12: personel ödeme 403; kendi havale tahsilatını siler / nakde çevirir / hesabını değiştirir 403; açıklama 200
+    ok 2 - B12: personel ödeme 403; kendi havale tahsilatını siler / nakde çevirir / hesabını değiştirir 403; açıklama 200
+      ---
+      duration_ms: 57.942763
+      type: 'test'
+      ...
+    # Subtest: B13: bank.move'u kaldırılmış muhasebe bankadan ödeme yapamaz (403); nakit ödeme yapar (200)
+    ok 3 - B13: bank.move'u kaldırılmış muhasebe bankadan ödeme yapamaz (403); nakit ödeme yapar (200)
+      ---
+      duration_ms: 17.744952
+      type: 'test'
+      ...
+    # Subtest: B18–B19: Banka'dan gelen (source='bank') satır cari kartından değişmez; ekstreyle eşleşmiş satır düzeltilmez/silinmez (409)
+    ok 4 - B18–B19: Banka'dan gelen (source='bank') satır cari kartından değişmez; ekstreyle eşleşmiş satır düzeltilmez/silinmez (409)
+      ---
+      duration_ms: 26.938153
+      type: 'test'
+      ...
+    1..4
+ok 4 - Aşama 5 — eski bağsız satır, yetki (K4), Banka'dan gelen ve eşleşmiş satır, saklı toplam
+  ---
+  duration_ms: 818.595315
+  type: 'suite'
+  ...
+# Subtest: Aşama 5 — B20: cari havalesinden sonra hesap kartı bütün satırları yeniden toplamaz (money.prime)
+    # Subtest: havale, okuma: tam toplam sorgusu yok; bakiye bağımsız hesapla aynı
+    ok 1 - havale, okuma: tam toplam sorgusu yok; bakiye bağımsız hesapla aynı
+      ---
+      duration_ms: 52.120228
+      type: 'test'
+      ...
+    1..1
+ok 5 - Aşama 5 — B20: cari havalesinden sonra hesap kartı bütün satırları yeniden toplamaz (money.prime)
+  ---
+  duration_ms: 360.742015
+  type: 'suite'
+  ...
+# Subtest: Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi
+    # Subtest: POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)
+    ok 1 - POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)
+      ---
+      duration_ms: 8.518003
+      type: 'test'
+      ...
+    # Subtest: satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok
+    ok 2 - satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok
+      ---
+      duration_ms: 82.217041
+      type: 'test'
+      ...
+    # Subtest: Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250
+    ok 3 - Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250
+      ---
+      duration_ms: 54.850405
+      type: 'test'
+      ...
+    1..3
+ok 6 - Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi
+  ---
+  duration_ms: 767.180078
+  type: 'suite'
+  ...
+# Subtest: §4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10
+    # Subtest: komisyon faturası 600
+    ok 1 - komisyon faturası 600
+      ---
+      duration_ms: 578.113547
+      type: 'test'
+      ...
+    # Subtest: komisyon faturası 610
+    ok 2 - komisyon faturası 610
+      ---
+      duration_ms: 555.897075
+      type: 'test'
+      ...
+    1..2
+ok 7 - §4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10
+  ---
+  duration_ms: 1134.553274
+  type: 'suite'
+  ...
+# Subtest: Komisyon iadesi > kesinti olan ay → taslak açılmaz, "İade Alacağı" (Aşama 11 Nasıl Bozarım)
+    # Subtest: Eylül satışı + kesinti 300 (faturalandı); Ekim'de tam iade (İadede Komisyon: Tam) → Ekim neti −300: taslak yok, İade Alacağı
+    ok 1 - Eylül satışı + kesinti 300 (faturalandı); Ekim'de tam iade (İadede Komisyon: Tam) → Ekim neti −300: taslak yok, İade Alacağı
+      ---
+      duration_ms: 490.393833
+      type: 'test'
+      ...
+    1..1
+ok 8 - Komisyon iadesi > kesinti olan ay → taslak açılmaz, "İade Alacağı" (Aşama 11 Nasıl Bozarım)
+  ---
+  duration_ms: 490.889123
+  type: 'suite'
+  ...
+# Subtest: Yargıç Y6: kilitli ayın komisyon taslağı ilk açık günle açılır ve olduğu gibi kaydedilir
+    # Subtest: Eylül satışı 10.000 (%2,5 KDV Hariç) → kesinti 300; Eylül kilitli → taslak 01.10, 300 = 250 + 50; Kaydet 200; 191 = 50; sağlayıcı 0
+    ok 1 - Eylül satışı 10.000 (%2,5 KDV Hariç) → kesinti 300; Eylül kilitli → taslak 01.10, 300 = 250 + 50; Kaydet 200; 191 = 50; sağlayıcı 0
+      ---
+      duration_ms: 511.909683
+      type: 'test'
+      ...
+    1..1
+ok 9 - Yargıç Y6: kilitli ayın komisyon taslağı ilk açık günle açılır ve olduğu gibi kaydedilir
+  ---
+  duration_ms: 512.388926
+  type: 'suite'
+  ...
+# Subtest: POS modül yolları: kayıt, taksit, stok; iade yolları
+    # Subtest: kayıt tahsilatı POS 3 Taksit → satış (3 kalem, %3,5); sil → void (valörden önce, komisyonsuz)
+    ok 1 - kayıt tahsilatı POS 3 Taksit → satış (3 kalem, %3,5); sil → void (valörden önce, komisyonsuz)
+      ---
+      duration_ms: 63.363954
+      type: 'test'
+      ...
+    # Subtest: taksit kartı tahsilatı POS → satış; taksit iadesi kart yoluyla → POS İadesi (asıl satış karttan bulunur)
+    ok 2 - taksit kartı tahsilatı POS → satış; taksit iadesi kart yoluyla → POS İadesi (asıl satış karttan bulunur)
+      ---
+      duration_ms: 71.554378
+      type: 'test'
+      ...
+    # Subtest: stok peşin satış POS → satış; stok müşteri iadesi kart yoluyla (asıl işlemle) → POS İadesi
+    ok 3 - stok peşin satış POS → satış; stok müşteri iadesi kart yoluyla (asıl işlemle) → POS İadesi
+      ---
+      duration_ms: 56.299969
+      type: 'test'
+      ...
+    # Subtest: cari POS İadesi (Banka → POS İşlemleri → İade) asıl satışa bağlı; Kaynaksız (Eski Satış) iadesi asıl satış olmadan
+    ok 4 - cari POS İadesi (Banka → POS İşlemleri → İade) asıl satışa bağlı; Kaynaksız (Eski Satış) iadesi asıl satış olmadan
+      ---
+      duration_ms: 68.93329
+      type: 'test'
+      ...
+    # Subtest: ANLIK DURUM: POS Bekleyen (Net) = özet; Nakit Akış'ta POS kaynakları valör gününde net
+    ok 5 - ANLIK DURUM: POS Bekleyen (Net) = özet; Nakit Akış'ta POS kaynakları valör gününde net
+      ---
+      duration_ms: 21.878184
+      type: 'test'
+      ...
+    1..5
+ok 10 - POS modül yolları: kayıt, taksit, stok; iade yolları
+  ---
+  duration_ms: 801.027691
+  type: 'suite'
+  ...
+# Subtest: Blokeli POS (Ek 4): 30 takvim günü bloke → valör 07.11 Cumartesi → 09.11; ayrı kategori
+    # Subtest: bloke kalem Blokeli POS'ta; ANLIK DURUM POS Bekleyen'e değil Blokeli POS'a
+    ok 1 - bloke kalem Blokeli POS'ta; ANLIK DURUM POS Bekleyen'e değil Blokeli POS'a
+      ---
+      duration_ms: 487.473259
+      type: 'test'
+      ...
+    1..1
+ok 11 - Blokeli POS (Ek 4): 30 takvim günü bloke → valör 07.11 Cumartesi → 09.11; ayrı kategori
+  ---
+  duration_ms: 487.967484
+  type: 'suite'
+  ...
+# Subtest: Yetkiler (plan §9.1) ve şirket ayrımı
+    # Subtest: personel: POS listesi 403, POS açma 403; muhasebe: açar; POS tahsilatı personel için tahsilat yetkisiyle
+    ok 1 - personel: POS listesi 403, POS açma 403; muhasebe: açar; POS tahsilatı personel için tahsilat yetkisiyle
+      ---
+      duration_ms: 626.340871
+      type: 'test'
+      ...
+    1..1
+ok 12 - Yetkiler (plan §9.1) ve şirket ayrımı
+  ---
+  duration_ms: 626.829021
+  type: 'suite'
+  ...
+# Subtest: İş günü: hafta sonu, arife ve bayram, ay sonu taksiti (plan §4.5 örnekleri)
+    # Subtest: 02.10.2026 Cuma + 2 iş günü = 06.10.2026 Salı; 27.10.2026 + 2 iş günü = 30.10.2026 (28.10 yarım gün, 29.10 tatil)
+    ok 1 - 02.10.2026 Cuma + 2 iş günü = 06.10.2026 Salı; 27.10.2026 + 2 iş günü = 30.10.2026 (28.10 yarım gün, 29.10 tatil)
+      ---
+      duration_ms: 601.244242
+      type: 'test'
+      ...
+    # Subtest: ay sonu taksiti: 31.01.2028 3 taksit → 29.02.2028 (artık yıl), 31.03.2028, 02.05.2028 (30.04 Pazar, 01.05 tatil)
+    ok 2 - ay sonu taksiti: 31.01.2028 3 taksit → 29.02.2028 (artık yıl), 31.03.2028, 02.05.2028 (30.04 Pazar, 01.05 tatil)
+      ---
+      duration_ms: 400.954791
+      type: 'test'
+      ...
+    1..2
+ok 13 - İş günü: hafta sonu, arife ve bayram, ay sonu taksiti (plan §4.5 örnekleri)
+  ---
+  duration_ms: 1003.256064
+  type: 'suite'
+  ...
+# Subtest: Valör kuyruğu: sunucu kapalıyken geçen valör, iki tetik aynı anda, kilit (Gecikmeli Aktarım, bekleyen uyarısı), onay kipi
+    # Subtest: sunucu kapalıyken geçen valör → açılışta her gün kendi tarihiyle (12.10 ve 13.10 ayrı gün fişleri)
+    ok 1 - sunucu kapalıyken geçen valör → açılışta her gün kendi tarihiyle (12.10 ve 13.10 ayrı gün fişleri)
+      ---
+      duration_ms: 542.387156
+      type: 'test'
+      ...
+    # Subtest: iki tetik aynı anda (iki "Şimdi Aktar") → tek gün fişi
+    ok 2 - iki tetik aynı anda (iki "Şimdi Aktar") → tek gün fişi
+      ---
+      duration_ms: 438.687602
+      type: 'test'
+      ...
+    # Subtest: kilit konarken valörü gelmiş bekleyen → 409 bank-pending-before-lock + liste; Yine de Kilitle → fiş kilit + 1'e Gecikmeli Aktarım (late); kilit + 1 bugünden sonraysa bekler
+    ok 3 - kilit konarken valörü gelmiş bekleyen → 409 bank-pending-before-lock + liste; Yine de Kilitle → fiş kilit + 1'e Gecikmeli Aktarım (late); kilit + 1 bugünden sonraysa bekler
+      ---
+      duration_ms: 516.259697
+      type: 'test'
+      ...
+    # Subtest: onay kipi (Elle Onay): valör gelince kuyruk yazmaz (Onay Bekleyen); onayda gerçek tarih 13.10 ve net 9.740 → fark 10 BSMV kipinde 653'e (653 = 260)
+    ok 4 - onay kipi (Elle Onay): valör gelince kuyruk yazmaz (Onay Bekleyen); onayda gerçek tarih 13.10 ve net 9.740 → fark 10 BSMV kipinde 653'e (653 = 260)
+      ---
+      duration_ms: 416.036
+      type: 'test'
+      ...
+    1..4
+ok 14 - Valör kuyruğu: sunucu kapalıyken geçen valör, iki tetik aynı anda, kilit (Gecikmeli Aktarım, bekleyen uyarısı), onay kipi
+  ---
+  duration_ms: 1914.034755
+  type: 'suite'
+  ...
+# Subtest: İade, komisyon tahsili ve net eksi (plan §4.6)
+    # Subtest: iade > satış → 409 pos-refund-exceeds; iade satıştan önce → 400; asıl işlem seçilmeden (birden çok aday) → 400 pos-refund-origin
+    ok 1 - iade > satış → 409 pos-refund-exceeds; iade satıştan önce → 400; asıl işlem seçilmeden (birden çok aday) → 400 pos-refund-origin
+      ---
+      duration_ms: 427.233048
+      type: 'test'
+      ...
+    # Subtest: tam iade valörden önce (İade Edilmez) → 12.10 banka −250, 653 = 250; Komisyon Tahsili Bekleyen 250
+    ok 2 - tam iade valörden önce (İade Edilmez) → 12.10 banka −250, 653 = 250; Komisyon Tahsili Bekleyen 250
+      ---
+      duration_ms: 450.201528
+      type: 'test'
+      ...
+    # Subtest: valörden sonra kısmi iade 3.000: İade Edilmez → iade valöründe banka −3.000; Oransal → −2.925 ve 653 −75 (plan §4.6 tablosu)
+    ok 3 - valörden sonra kısmi iade 3.000: İade Edilmez → iade valöründe banka −3.000; Oransal → −2.925 ve 653 −75 (plan §4.6 tablosu)
+      ---
+      duration_ms: 876.823778
+      type: 'test'
+      ...
+    # Subtest: valörden önce kısmi iade 3.000 (Oransal): bekleyen kalem net 6.825 (kom. 175); valörde banka +6.825
+    ok 4 - valörden önce kısmi iade 3.000 (Oransal): bekleyen kalem net 6.825 (kom. 175); valörde banka +6.825
+      ---
+      duration_ms: 437.079602
+      type: 'test'
+      ...
+    # Subtest: 10 TL satış + 15 TL sabit ücret (oran %0) → banka −5
+    ok 5 - 10 TL satış + 15 TL sabit ücret (oran %0) → banka −5
+      ---
+      duration_ms: 458.21387
+      type: 'test'
+      ...
+    1..5
+ok 15 - İade, komisyon tahsili ve net eksi (plan §4.6)
+  ---
+  duration_ms: 2650.675415
+  type: 'suite'
+  ...
+# Subtest: Taksitli kısmi iade (3 taksit, 1'i bankaya geçmiş, Oransal) — bağımsız BigInt modeli
+    # Subtest: 12.000 / %3,5 / 3 taksit; 13.11'de 5.000 iade → gün netleri ve banka toplamı modelle aynı
+    ok 1 - 12.000 / %3,5 / 3 taksit; 13.11'de 5.000 iade → gün netleri ve banka toplamı modelle aynı
+      ---
+      duration_ms: 493.58982
+      type: 'test'
+      ...
+    1..1
+ok 16 - Taksitli kısmi iade (3 taksit, 1'i bankaya geçmiş, Oransal) — bağımsız BigInt modeli
+  ---
+  duration_ms: 493.808161
+  type: 'suite'
+  ...
+# Subtest: Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)
+    # Subtest: valörden sonra tutar düzelt → bank.replan (gün fişi ters + r2); eşleşmişse 409 pos-settled
+    ok 1 - valörden sonra tutar düzelt → bank.replan (gün fişi ters + r2); eşleşmişse 409 pos-settled
+      ---
+      duration_ms: 426.037919
+      type: 'test'
+      ...
+    # Subtest: POS'lu satırı sil (valörden önce void) → valör geçsin → geri yükle: asıl valörüyle etkin, gün fişi asıl valör tarihiyle
+    ok 2 - POS'lu satırı sil (valörden önce void) → valör geçsin → geri yükle: asıl valörüyle etkin, gün fişi asıl valör tarihiyle
+      ---
+      duration_ms: 432.068804
+      type: 'test'
+      ...
+    # Subtest: aynı provizyonla yeni satış → eskisini geri yükle → 409 pos-auth-duplicate
+    ok 3 - aynı provizyonla yeni satış → eskisini geri yükle → 409 pos-auth-duplicate
+      ---
+      duration_ms: 454.678307
+      type: 'test'
+      ...
+    # Subtest: POS'lu faturayı aynı provizyonla 6 kez düzelt (peşin satırı silinip yeniden yazılır) → her düzeltme 200; tek etkin satış, eskiler void
+    ok 4 - POS'lu faturayı aynı provizyonla 6 kez düzelt (peşin satırı silinip yeniden yazılır) → her düzeltme 200; tek etkin satış, eskiler void
+      ---
+      duration_ms: 543.421227
+      type: 'test'
+      ...
+    # Subtest: iki POS satırlı faturada yanlış girilen provizyonları düzelt: 2. satırı sil, 1. satıra 2.'nin provizyonu + 3 Taksit → 200; tek etkin satış (BBB2, 3 taksit)
+    ok 5 - iki POS satırlı faturada yanlış girilen provizyonları düzelt: 2. satırı sil, 1. satıra 2.'nin provizyonu + 3 Taksit → 200; tek etkin satış (BBB2, 3 taksit)
+      ---
+      duration_ms: 470.390759
+      type: 'test'
+      ...
+    # Subtest: POS'lu faturayı aynı gün iptal → void, komisyon 0; ertesi gün taksitli faturayı iptal → İptal İadesi: 3 Komisyon Tahsili 140, 108.01 = 0, POS Bekleyen (Net) −420
+    ok 6 - POS'lu faturayı aynı gün iptal → void, komisyon 0; ertesi gün taksitli faturayı iptal → İptal İadesi: 3 Komisyon Tahsili 140, 108.01 = 0, POS Bekleyen (Net) −420
+      ---
+      duration_ms: 463.805757
+      type: 'test'
+      ...
+    # Subtest: bankaya geçmiş ve eşleşmiş POS'lu faturayı iptal (Müşteriye İade Edildi) → 200, iade kalemi, eski fiş ve eşleşme değişmez; Kayıt Hatası → 409 pos-settled
+    ok 7 - bankaya geçmiş ve eşleşmiş POS'lu faturayı iptal (Müşteriye İade Edildi) → 200, iade kalemi, eski fiş ve eşleşme değişmez; Kayıt Hatası → 409 pos-settled
+      ---
+      duration_ms: 506.14516
+      type: 'test'
+      ...
+    1..7
+ok 17 - Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)
+  ---
+  duration_ms: 3297.379717
+  type: 'suite'
+  ...
+# Subtest: A — fatura İptal / Sil penceresinin POS İşlemi seçimi (Müşteriye İade Edildi / Kayıt Hatası) toplu yollarda ve liste bayrağı (plan §3.8 Fatura, §4.6)
+    # Subtest: bankaya geçmiş ve eşleşmiş POS'lu faturalar: toplu iptal Kayıt Hatası → yalnız o belge 409 pos-settled; Müşteriye İade Edildi → İptal İadesi; toplu silme Kayıt Hatası → 409
+    ok 1 - bankaya geçmiş ve eşleşmiş POS'lu faturalar: toplu iptal Kayıt Hatası → yalnız o belge 409 pos-settled; Müşteriye İade Edildi → İptal İadesi; toplu silme Kayıt Hatası → 409
+      ---
+      duration_ms: 705.296758
+      type: 'test'
+      ...
+    # Subtest: liste ve kart: POS peşinli satış faturasında posCash true (pencere POS İşlemi seçimini yalnız bunlarda gösterir); nakit faturada ve alışta false
+    ok 2 - liste ve kart: POS peşinli satış faturasında posCash true (pencere POS İşlemi seçimini yalnız bunlarda gösterir); nakit faturada ve alışta false
+      ---
+      duration_ms: 468.482166
+      type: 'test'
+      ...
+    1..2
+ok 18 - A — fatura İptal / Sil penceresinin POS İşlemi seçimi (Müşteriye İade Edildi / Kayıt Hatası) toplu yollarda ve liste bayrağı (plan §3.8 Fatura, §4.6)
+  ---
+  duration_ms: 1174.900861
+  type: 'suite'
+  ...
+# Subtest: B — alan belge türüne göre: cari ÖDEME İADESİ kredi kartına (tedarikçi parayı kartımıza iade etti) → Kredi Kartı, POS oluşmaz, 309 düşer
+    # Subtest: giriş + kart + cardRefund → satır kart hesabına (fin_ref = kart), POS kaydı yok, kart borcu 600 → 360, 309.NN −360; tek kartta kart kendiliğinden; posId verilirse 400
+    ok 1 - giriş + kart + cardRefund → satır kart hesabına (fin_ref = kart), POS kaydı yok, kart borcu 600 → 360, 309.NN −360; tek kartta kart kendiliğinden; posId verilirse 400
+      ---
+      duration_ms: 469.497248
+      type: 'test'
+      ...
+    # Subtest: cardRefund olmadan giriş + kart POS'tur (kart hesabı verilirse 400 bank-account-invalid; verilmezse POS satışı); düzeltmede kart bağı korunur (tutar 240 → 300)
+    ok 2 - cardRefund olmadan giriş + kart POS'tur (kart hesabı verilirse 400 bank-account-invalid; verilmezse POS satışı); düzeltmede kart bağı korunur (tutar 240 → 300)
+      ---
+      duration_ms: 554.94984
+      type: 'test'
+      ...
+    1..2
+ok 19 - B — alan belge türüne göre: cari ÖDEME İADESİ kredi kartına (tedarikçi parayı kartımıza iade etti) → Kredi Kartı, POS oluşmaz, 309 düşer
+  ---
+  duration_ms: 1024.976842
+  type: 'suite'
+  ...
+# Subtest: C — alan belge türüne göre: ALIŞTAN İADE karta, POS tanımlıyken → Kredi Kartı (309 düşer), POS satışı oluşmaz (eşleme 93)
+    # Subtest: alış 600 kartla → KK −600; alıştan iade 240 kartla → KK −360, pos_sales boş, 108.01 = 0; satıştan iade aynı POS'ta POS İadesi (karşılaştırma)
+    ok 1 - alış 600 kartla → KK −600; alıştan iade 240 kartla → KK −360, pos_sales boş, 108.01 = 0; satıştan iade aynı POS'ta POS İadesi (karşılaştırma)
+      ---
+      duration_ms: 505.571916
+      type: 'test'
+      ...
+    1..1
+ok 20 - C — alan belge türüne göre: ALIŞTAN İADE karta, POS tanımlıyken → Kredi Kartı (309 düşer), POS satışı oluşmaz (eşleme 93)
+  ---
+  duration_ms: 505.823391
+  type: 'suite'
+  ...
+# Subtest: D — Kayıt Hatası Silme (§4.6 tablo 3): valörden önce void; bankaya geçmişse bank.replan (eşleşmemiş, açık dönem) ya da 409 pos-settled
+    # Subtest: iki satış aynı gün fişinde bankaya geçti → B'yi Kayıt Hatası ile iptal: gün fişi ters kaydedilir, A'nın kalemi yeni fişle (r2) yeniden geçer, banka A'nın neti kadar; B void, komisyon doğmaz
+    ok 1 - iki satış aynı gün fişinde bankaya geçti → B'yi Kayıt Hatası ile iptal: gün fişi ters kaydedilir, A'nın kalemi yeni fişle (r2) yeniden geçer, banka A'nın neti kadar; B void, komisyon doğmaz
+      ---
+      duration_ms: 468.050862
+      type: 'test'
+      ...
+    # Subtest: gün fişi kapatılmış (kilitli) dönemdeyken Kayıt Hatası: faturanın kendi tarihi de kilitte → 409 (dönem kilidi); hiçbir şey değişmez; kilit kalkınca replan
+    ok 2 - gün fişi kapatılmış (kilitli) dönemdeyken Kayıt Hatası: faturanın kendi tarihi de kilitte → 409 (dönem kilidi); hiçbir şey değişmez; kilit kalkınca replan
+      ---
+      duration_ms: 481.888461
+      type: 'test'
+      ...
+    1..2
+ok 21 - D — Kayıt Hatası Silme (§4.6 tablo 3): valörden önce void; bankaya geçmişse bank.replan (eşleşmemiş, açık dönem) ya da 409 pos-settled
+  ---
+  duration_ms: 950.533339
+  type: 'suite'
+  ...
+# Subtest: E — düzeltme (§4.6): bekleyen satışta tutar değişimi tek etkin kayıt; yol/hesap değişiminde eski olay iptal, yeni olay
+    # Subtest: cari POS tahsilatı 1.000 → 1.500: tek etkin satış 1.500 (kalemler yeniden), eski void, provizyon korunur; → nakit: satış void, 108.01 = 0; → yeniden POS: yeni satış
+    ok 1 - cari POS tahsilatı 1.000 → 1.500: tek etkin satış 1.500 (kalemler yeniden), eski void, provizyon korunur; → nakit: satış void, 108.01 = 0; → yeniden POS: yeni satış
+      ---
+      duration_ms: 454.868645
+      type: 'test'
+      ...
+    1..1
+ok 22 - E — düzeltme (§4.6): bekleyen satışta tutar değişimi tek etkin kayıt; yol/hesap değişiminde eski olay iptal, yeni olay
+  ---
+  duration_ms: 455.192425
+  type: 'suite'
+  ...
+# Subtest: F — iade kuralları (§4.6): Σ iade (İptal İadesi dahil) ≤ satış; 3 ondalık; iade silme ve geri yükleme (ders 10 komşuları)
+    # Subtest: 10.000 satış: iade 3.000 + 4.000 → İptal İadesi kalan 3.000 (Σ 10.000); iptal edilmiş satışa yeni iade → 404; iade tutarı 3 ondalık → 400
+    ok 1 - 10.000 satış: iade 3.000 + 4.000 → İptal İadesi kalan 3.000 (Σ 10.000); iptal edilmiş satışa yeni iade → 404; iade tutarı 3 ondalık → 400
+      ---
+      duration_ms: 520.687459
+      type: 'test'
+      ...
+    # Subtest: valörden sonra kısmi iade (İade Edilmez) → iade valöründe banka −3.000; sonra İptal İadesi kalan 7.000 (iadeler yalnız modülden silinmişse)
+    ok 2 - valörden sonra kısmi iade (İade Edilmez) → iade valöründe banka −3.000; sonra İptal İadesi kalan 7.000 (iadeler yalnız modülden silinmişse)
+      ---
+      duration_ms: 512.896193
+      type: 'test'
+      ...
+    1..2
+ok 23 - F — iade kuralları (§4.6): Σ iade (İptal İadesi dahil) ≤ satış; 3 ondalık; iade silme ve geri yükleme (ders 10 komşuları)
+  ---
+  duration_ms: 1033.851754
+  type: 'suite'
+  ...
+# Subtest: G — bağ türü verisi (eşleme 290; Fatura ve Banka Hareketleri raporu bunu okur): Peşin · Kapatılacak Fatura · Otomatik (en eski) · Komisyon Kesintisi (Bağlı)
+    # Subtest: peşin satır source=invoice+invoice_id; Kapatılacak Fatura seçilen tahsilat invoice_id dolu, kapatan 'Bağlı'; bağsız tahsilat 'Otomatik (en eski)'; komisyon kesintisi source=bank → komisyon faturasına bağlı
+    ok 1 - peşin satır source=invoice+invoice_id; Kapatılacak Fatura seçilen tahsilat invoice_id dolu, kapatan 'Bağlı'; bağsız tahsilat 'Otomatik (en eski)'; komisyon kesintisi source=bank → komisyon faturasına bağlı
+      ---
+      duration_ms: 551.647538
+      type: 'test'
+      ...
+    1..1
+ok 24 - G — bağ türü verisi (eşleme 290; Fatura ve Banka Hareketleri raporu bunu okur): Peşin · Kapatılacak Fatura · Otomatik (en eski) · Komisyon Kesintisi (Bağlı)
+  ---
+  duration_ms: 551.873559
+  type: 'suite'
+  ...
+# Subtest: H — net eksiye düşerse, KDV kipi (§4.6 E1.06): Komisyon Tahsili kalemi valörde sağlayıcı carisine out/bank satırı → B 320 / A 102.x (653 değil)
+    # Subtest: KDV Hariç POS (%2,5 + KDV = 300), 10.000 satış + aynı gün tam iade (İade Edilmez) → valörde (12.10) Ziraat −300, sağlayıcı carisine out/bank 300 (fin_ref = Ziraat), 320 borçlanır, 653 = 0
+    ok 1 - KDV Hariç POS (%2,5 + KDV = 300), 10.000 satış + aynı gün tam iade (İade Edilmez) → valörde (12.10) Ziraat −300, sağlayıcı carisine out/bank 300 (fin_ref = Ziraat), 320 borçlanır, 653 = 0
+      ---
+      duration_ms: 443.1242
+      type: 'test'
+      ...
+    1..1
+ok 25 - H — net eksiye düşerse, KDV kipi (§4.6 E1.06): Komisyon Tahsili kalemi valörde sağlayıcı carisine out/bank satırı → B 320 / A 102.x (653 değil)
+  ---
+  duration_ms: 443.369303
+  type: 'suite'
+  ...
+# Subtest: P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026)
+    # Subtest: kartla ödemesi olmayan müşteri: POST cardRefund 400 card-refund-no-payment, satır yok, kart değişmez; nakit / havale / POS hareketi bayrak açmaz (false)
+    ok 1 - kartla ödemesi olmayan müşteri: POST cardRefund 400 card-refund-no-payment, satır yok, kart değişmez; nakit / havale / POS hareketi bayrak açmaz (false)
+      ---
+      duration_ms: 802.548738
+      type: 'test'
+      ...
+    # Subtest: müşteriye kartla Ödeme 400 (KART1) → Kredi Kartına İade 500 (ödemeden büyük, üst sınır yok) seçilen KART2'ye, POS satışı yok; aynı adlı ikinci müşteride 400; bayrak cari bazında
+    ok 2 - müşteriye kartla Ödeme 400 (KART1) → Kredi Kartına İade 500 (ödemeden büyük, üst sınır yok) seçilen KART2'ye, POS satışı yok; aynı adlı ikinci müşteride 400; bayrak cari bazında
+      ---
+      duration_ms: 528.706349
+      type: 'test'
+      ...
+    # Subtest: silinmemiş: kartla ödeme silinince yeni Kredi Kartına İade 400 ve bayrak false; var olan iade satırının düzeltmesi (PUT, alan yok ya da cardRefund true) 200 ve kartta kalır
+    ok 3 - silinmemiş: kartla ödeme silinince yeni Kredi Kartına İade 400 ve bayrak false; var olan iade satırının düzeltmesi (PUT, alan yok ya da cardRefund true) 200 ve kartta kalır
+      ---
+      duration_ms: 531.523495
+      type: 'test'
+      ...
+    # Subtest: tedarikçi ve Diğer türü cari: kartla ödeme olmadan da Kredi Kartına İade 200, tek kart kendiliğinden (değişmedi — gerileme koruması)
+    ok 4 - tedarikçi ve Diğer türü cari: kartla ödeme olmadan da Kredi Kartına İade 200, tek kart kendiliğinden (değişmedi — gerileme koruması)
+      ---
+      duration_ms: 461.09976
+      type: 'test'
+      ...
+    1..4
+ok 26 - P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026)
+  ---
+  duration_ms: 2325.409701
+  type: 'suite'
+  ...
+# Subtest: DÜŞÜK-1 — var olan Kredi Kartına İade satırında kutu kaldırılınca (cardRefund: false) düzeltme uygulanır
+    # Subtest: tek POS: tedarikçi ve kartla ödemeli müşteri — PUT cardRefund:false, tutar aynı → satır POS'a, etkin POS satışı, kart etkisi geri, POS Bekleyen +
+    ok 1 - tek POS: tedarikçi ve kartla ödemeli müşteri — PUT cardRefund:false, tutar aynı → satır POS'a, etkin POS satışı, kart etkisi geri, POS Bekleyen +
+      ---
+      duration_ms: 586.190692
+      type: 'test'
+      ...
+    # Subtest: 2 POS: PUT cardRefund:false + posId POS2 → 200, satır POS2'de (önceden 400 pos-not-for-payment: "POS yalnız tahsilatta ve POS iadesinde kullanılır…")
+    ok 2 - 2 POS: PUT cardRefund:false + posId POS2 → 200, satır POS2'de (önceden 400 pos-not-for-payment: "POS yalnız tahsilatta ve POS iadesinde kullanılır…")
+      ---
+      duration_ms: 559.468009
+      type: 'test'
+      ...
+    # Subtest: alan gönderilmezse (eski istemci) önceki kart bağı sürer; cardRefund:false + Nakit → nakit satır, Kasa +, kart etkisi geri
+    ok 3 - alan gönderilmezse (eski istemci) önceki kart bağı sürer; cardRefund:false + Nakit → nakit satır, Kasa +, kart etkisi geri
+      ---
+      duration_ms: 588.690679
+      type: 'test'
+      ...
+    # Subtest: ters yön (komşu): tek kartta POS tahsilatı satırı Kredi Kartına İade'ye çevrilince (kart kimliği yok, tutar aynı) satır kartta; POS satışı geçersiz
+    ok 4 - ters yön (komşu): tek kartta POS tahsilatı satırı Kredi Kartına İade'ye çevrilince (kart kimliği yok, tutar aynı) satır kartta; POS satışı geçersiz
+      ---
+      duration_ms: 452.923099
+      type: 'test'
+      ...
+    1..4
+ok 27 - DÜŞÜK-1 — var olan Kredi Kartına İade satırında kutu kaldırılınca (cardRefund: false) düzeltme uygulanır
+  ---
+  duration_ms: 2188.071276
+  type: 'suite'
+  ...
+# Subtest: P1 tur 2 — düzeltmede (PUT) kart iadesi kuralları POST'la aynı (dar kontrol DÜŞÜK-1 / DÜŞÜK-2, TEST-1 / TEST-2)
+    # Subtest: DÜŞÜK-1 0 kart: POS ve Nakit tahsilatı PUT cardRefund:true → 400 bank-account-invalid, satır yerinde (POS / Nakit), POS satışı sürer; POST da 400
+    ok 1 - DÜŞÜK-1 0 kart: POS ve Nakit tahsilatı PUT cardRefund:true → 400 bank-account-invalid, satır yerinde (POS / Nakit), POS satışı sürer; POST da 400
+      ---
+      duration_ms: 548.902059
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 tek kart pasif: POS satırı PUT cardRefund:true → 400 bank-account-invalid; var olan iade satırı korunur (açıklama düzeltmesi 200, kartı aynı; tutar değişikliği pasif kartta 400)
+    ok 2 - DÜŞÜK-1 tek kart pasif: POS satırı PUT cardRefund:true → 400 bank-account-invalid; var olan iade satırı korunur (açıklama düzeltmesi 200, kartı aynı; tutar değişikliği pasif kartta 400)
+      ---
+      duration_ms: 533.962851
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-2 müşteri: iade olmayan satır (POS / Nakit) PUT ile Kredi Kartına İade'ye — kartla ödemesi yoksa 400 card-refund-no-payment, varsa 200; var olan iade satırının tutar / tarih / kart düzeltmesi serbest; tedarikçi serbest
+    ok 3 - DÜŞÜK-2 müşteri: iade olmayan satır (POS / Nakit) PUT ile Kredi Kartına İade'ye — kartla ödemesi yoksa 400 card-refund-no-payment, varsa 200; var olan iade satırının tutar / tarih / kart düzeltmesi serbest; tedarikçi serbest
+      ---
+      duration_ms: 734.678447
+      type: 'test'
+      ...
+    # Subtest: TEST-1 yalnız POS İadesi (cari formundan ve Banka → POS İşlemleri'nden; POS'a bağlı çıkış) olan müşteride hasCardPayment false, Kredi Kartına İade POST 400
+    ok 4 - TEST-1 yalnız POS İadesi (cari formundan ve Banka → POS İşlemleri'nden; POS'a bağlı çıkış) olan müşteride hasCardPayment false, Kredi Kartına İade POST 400
+      ---
+      duration_ms: 595.413291
+      type: 'test'
+      ...
+    # Subtest: TEST-2 iade → POS çevirmesinde POS ayrıntısı gövdeden: taksit 3, provizyon no 123456, son 4 hane 4242 (tedarikçi ve kartla ödemeli müşteri)
+    ok 5 - TEST-2 iade → POS çevirmesinde POS ayrıntısı gövdeden: taksit 3, provizyon no 123456, son 4 hane 4242 (tedarikçi ve kartla ödemeli müşteri)
+      ---
+      duration_ms: 546.432008
+      type: 'test'
+      ...
+    1..5
+ok 28 - P1 tur 2 — düzeltmede (PUT) kart iadesi kuralları POST'la aynı (dar kontrol DÜŞÜK-1 / DÜŞÜK-2, TEST-1 / TEST-2)
+  ---
+  duration_ms: 2960.104767
+  type: 'suite'
+  ...
+# Subtest: 2.3.0 yargıç bulguları — Şüpheli Alacaklar
+    # Subtest: Y2: al 01.10 1.000 → karşılık 07.10 1.000 → tahsilat 05.10 600 (geriye tarihli): 129 = −400 (≤ kalan 400), 644 600; değersiz 400 → 129 = 0, 659 = 0
+    ok 1 - Y2: al 01.10 1.000 → karşılık 07.10 1.000 → tahsilat 05.10 600 (geriye tarihli): 129 = −400 (≤ kalan 400), 644 600; değersiz 400 → 129 = 0, 659 = 0
+      ---
+      duration_ms: 187.980721
+      type: 'test'
+      ...
+    # Subtest: Y3: değersiz yazılmış kayda değersiz satırından önceye düşen tahsilat → kapı 409 (doubtful:records); 120, 659 ve Kasa değişmez
+    ok 2 - Y3: değersiz yazılmış kayda değersiz satırından önceye düşen tahsilat → kapı 409 (doubtful:records); 120, 659 ve Kasa değişmez
+      ---
+      duration_ms: 160.494738
+      type: 'test'
+      ...
+    # Subtest: Y4: borç 10.000 → al 10.000 (05.10) → tahsilat 8.000 (07.10) → sil → geri yükle 200; 128 = 2.000, Mutabakat tamam
+    ok 3 - Y4: borç 10.000 → al 10.000 (05.10) → tahsilat 8.000 (07.10) → sil → geri yükle 200; 128 = 2.000, Mutabakat tamam
+      ---
+      duration_ms: 121.441724
+      type: 'test'
+      ...
+    # Subtest: Y4b: 120'yi eksiye düşürecek geri yükleme 409 doubtful-exceeds-balance (anlamlı metin), kayıt Silinenler'de kalır
+    ok 4 - Y4b: 120'yi eksiye düşürecek geri yükleme 409 doubtful-exceeds-balance (anlamlı metin), kayıt Silinenler'de kalır
+      ---
+      duration_ms: 91.85987
+      type: 'test'
+      ...
+    # Subtest: Y5: açık şüpheli kaydı olan müşteri tedarikçiye çevrilemez (409 account-doubtful-open); bilgi düzeltmesi (ad) serbest
+    ok 5 - Y5: açık şüpheli kaydı olan müşteri tedarikçiye çevrilemez (409 account-doubtful-open); bilgi düzeltmesi (ad) serbest
+      ---
+      duration_ms: 57.305133
+      type: 'test'
+      ...
+    # Subtest: Y6: Kredi Kartına İade (cardRefund) tanımlı kart yokken 400 bank-account-invalid; satır yazılmaz
+    ok 6 - Y6: Kredi Kartına İade (cardRefund) tanımlı kart yokken 400 bank-account-invalid; satır yazılmaz
+      ---
+      duration_ms: 23.522105
+      type: 'test'
+      ...
+    # Subtest: Y7: GET /api/workspace/doubtful — muhasebe (Şüpheli Alacak İşlemleri) 200, personel 403; yönetici 200
+    ok 7 - Y7: GET /api/workspace/doubtful — muhasebe (Şüpheli Alacak İşlemleri) 200, personel 403; yönetici 200
+      ---
+      duration_ms: 233.978045
+      type: 'test'
+      ...
+    # Subtest: Y8a: kayıt tarihi carinin ilk borç hareketinden önce olamaz (400 doubtful-before-debt); borcu olmayan caride de 400
+    ok 8 - Y8a: kayıt tarihi carinin ilk borç hareketinden önce olamaz (400 doubtful-before-debt); borcu olmayan caride de 400
+      ---
+      duration_ms: 56.320795
+      type: 'test'
+      ...
+    # Subtest: Y8b: çıkarılmış kayda çıkarma gününden önceye düşen tahsilat → kapı 409 (başlık ≠ çıkarılan olurdu); başlık = yevmiye kalır
+    ok 9 - Y8b: çıkarılmış kayda çıkarma gününden önceye düşen tahsilat → kapı 409 (başlık ≠ çıkarılan olurdu); başlık = yevmiye kalır
+      ---
+      duration_ms: 103.059665
+      type: 'test'
+      ...
+    1..9
+ok 29 - 2.3.0 yargıç bulguları — Şüpheli Alacaklar
+  ---
+  duration_ms: 1516.017138
+  type: 'suite'
+  ...
+1..29
+# tests 86
+# suites 29
+# pass 86
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 35011.493789
