@@ -1365,7 +1365,23 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // v2.0.24: iadelerin Mevcut Borç kartlarından düştüğü tutar (iade belgesinde payment_json.coverCuts; iptal/silinen iade
   // sayılmaz). Kartın kapsamı açıldığı andaki tutarla kurulur (lib/accounts.mjs coverTotal): iadenin kapattığı borç kartın
   // payından düşer; küçülen tutar başka (daha eski) bir faturayı kapsamdan çıkarıp aynı borcu iki kez saydırmaz.
+  // 2.4.9 R2 (ders 47): forAccount (cari kartı, kartın WhatsApp çekirdeği waFacts) her çağrıda bütün iadeleri tarıyordu — 1.001 iadeli şirkette 2.000 kişilik
+  // elle alıcı listesi 10,9 sn, olay döngüsü ~10 sn. Tarama KURALI AYNEN (scanReturnCuts); sonuç veri tabanına bir yazma olana kadar saklanır: total_changes()
+  // bu bağlantının her INSERT/UPDATE/DELETE'inde (store dışı db.prepare/exec dahil) artar, data_version başka bir bağlantının kesinleşen yazmasında değişir
+  // (fatura listesi settleKey, stok rozeti alerts, banka toplamları money-lines ile aynı kural). Veri tabanı işleminin İÇİNDE saklı değer ne okunur ne yazılır
+  // (geri alınan işlemde total_changes azalmaz — GG2): işlem içinde her çağrı eskisi gibi tarar. Saklanan Map salt okunurdur (çağıranlar yalnız get eder).
+  // Kart kimliğiyle SQL'de süzmek (instr) denendi, yetmedi: çağrı başına 1,56 ms (tam tarama 2,64 ms) — 1.310 kartlı caride ~2 sn.
+  let cutsCache = { stamp: "", cuts: null };
   function returnCuts() {
+    if (store.inTransaction || typeof store.changeCounters !== "function") return scanReturnCuts();
+    const counters = store.changeCounters();
+    const stamp = `${counters.total}|${counters.version}`;
+    if (cutsCache.cuts && cutsCache.stamp === stamp) return cutsCache.cuts;
+    const cuts = scanReturnCuts();
+    cutsCache = { stamp, cuts };
+    return cuts;
+  }
+  function scanReturnCuts() {
     const out = new Map();
     for (const row of store.all("SELECT payment_json AS j FROM invoices WHERE kind = 'sale_return' AND status = 'issued' AND payment_json LIKE '%coverCuts%'")) {
       let cuts = {};
