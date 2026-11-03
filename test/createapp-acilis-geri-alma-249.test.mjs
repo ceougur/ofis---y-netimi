@@ -275,15 +275,18 @@ describe("2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık ka
     }
   });
 
-  it("T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır", { timeout: 120_000 }, async () => {
+  it("T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince sonraki açılış göçleri yeniden koşar", { timeout: 120_000 }, async () => {
     const s = await twoCompanies();
     try {
-      // wa_jobs görünüme çevrilir (inherit_of sütunu yok) ve user_version 43'e iner: göç 44 addColumn → "Cannot add a column to a view" (göç işlemi geri alınır).
+      // wa_jobs görünüme çevrilir (inherit_of sütunu yok) ve user_version SABİT 43'e iner (v44 = wa_jobs.inherit_of; "son göç - 1" DEĞİL — sonraki sürüm yeni
+      // göç ekleyince test kırılmasın, 2.4.9 B1 dar kontrol DÜŞÜK-1): göç 44 addColumn → "Cannot add a column to a view" (göç işlemi geri alınır; v45+ hiç koşmaz).
+      const BEFORE_V44 = 43;
       const c = new DatabaseSync(s.file);
       const latest = c.prepare("PRAGMA user_version").get().user_version;
       try {
+        assert.ok(latest > BEFORE_V44, `ön koşul: şirket dosyası en az v44'te (${latest})`);
         const cols = c.prepare("PRAGMA table_info(wa_jobs)").all().map(col => col.name).filter(name => name !== "inherit_of");
-        c.exec(`ALTER TABLE wa_jobs RENAME TO wa_jobs_b1; CREATE VIEW wa_jobs AS SELECT ${cols.join(", ")} FROM wa_jobs_b1; PRAGMA user_version = ${latest - 1};`);
+        c.exec(`ALTER TABLE wa_jobs RENAME TO wa_jobs_b1; CREATE VIEW wa_jobs AS SELECT ${cols.join(", ")} FROM wa_jobs_b1; PRAGMA user_version = ${BEFORE_V44};`);
       } finally {
         c.close();
       }
@@ -293,17 +296,26 @@ describe("2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık ka
       expectMovable(problems, s.file, "göç düştükten sonra");
       assert.equal(res.status, 503, `göç düşünce 503 (${bodyOf(res)})`);
       assert.match(bodyOf(res), /açılamadı/);
-      assert.equal(userVersion(s.file), latest - 1, "göç işlemi geri alındı: user_version değişmedi");
+      assert.equal(userVersion(s.file), BEFORE_V44, "göç işlemi geri alındı: user_version değişmedi");
       assert.ok(findFiles(s.server.backupDir, new RegExp(`pre-migration-v${latest}`)).length >= 1, "göç öncesi yedek alındı");
       const fix = new DatabaseSync(s.file);
       try {
-        fix.exec(`DROP VIEW wa_jobs; ALTER TABLE wa_jobs_b1 RENAME TO wa_jobs; PRAGMA user_version = ${latest};`);
+        // Yalnız tablo geri gelir (inherit_of yok); sürüm 43'te KALIR → sonraki açılış göç 44'ten sona kadar göçleri kendisi yeniden koşar (tasarım §5.1).
+        fix.exec("DROP VIEW wa_jobs; ALTER TABLE wa_jobs_b1 RENAME TO wa_jobs;");
       } finally {
         fix.close();
       }
       const again = await s.get();
       if (again.status !== 200) problems.push(`düzelince açılmadı (${again.status} ${bodyOf(again)})`);
       await s.server.app.context.closeCompany(s.company.id);
+      const migrated = userVersion(s.file);
+      if (migrated !== latest) problems.push(`sonraki açılış göçleri yeniden koşmadı: user_version ${migrated}, beklenen ${latest}`);
+      const fixed = new DatabaseSync(s.file, { readOnly: true });
+      try {
+        if (!fixed.prepare("PRAGMA table_info(wa_jobs)").all().some(col => col.name === "inherit_of")) problems.push("göç 44 yeniden koşmadı: wa_jobs.inherit_of yok");
+      } finally {
+        fixed.close();
+      }
       expectNoHandles(problems, s.file, "düzelip kapanınca");
       assert.deepEqual(problems, []);
     } finally {
@@ -580,6 +592,61 @@ describe("2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık ka
       }
     });
   }
+
+  // 2.4.9 B1 dar kontrol DÜŞÜK-2: yukarıdaki hub hücreleri lisans / yedek / tünel zamanlayıcılarını KAPALI açar (hubApp) → bunların geri alınmasını ölçmez.
+  // Bu hücre üretime yakın seçeneklerle açar (otomatik yedek, lisans zamanlayıcıları + uygulama + otomatik deneme, sahte kapıcı + sahte cloudflared tünel,
+  // WhatsApp işçisi otomatik, rapor iş parçacığı). Gerçek lisans servisine ULAŞMAZ (ders 30): ölü adres + reddeden fetchImpl. Kaynak: dar kontrol betiği p2-hub-uretim.
+  it("T11 hub (001) after-app düşer, ÜRETİME YAKIN seçenekler (yedek + lisans + tünel zamanlayıcıları açık) → yetim zamanlayıcı yok; kapalı bağlantıya çarpan iş yok; dosyalar serbest", { timeout: 120_000 }, async () => {
+    const root = mkdtempSync(path.join(tmpdir(), "b1-t11u-"));
+    const dataDir = path.join(root, "data");
+    const fake = path.join(REPO, "test", "fixtures", "sahte-cloudflared.mjs");
+    const gate = { provision: async () => ({ tunnelId: "12345678-1234-4234-8234-123456789abc", hostname: "oabc.destekofis.net", publicUrl: "https://oabc.destekofis.net", token: "sahte" }) };
+    const options = (logs, extra = {}) => ({
+      dataDir,
+      backupDir: path.join(root, "backups"),
+      log: captureLog(logs),
+      scheduleBackups: true,
+      backupOnStartDelayMs: 50,
+      env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "1", HUKUK_LICENSE_URL: DEAD_LICENSE_URL },
+      license: { enforce: true, autoTrial: true, machineId: MACHINE, services: [DEAD_LICENSE_URL], fetchImpl: async () => { throw new TypeError("fetch failed"); } },
+      startLicenseTimers: true,
+      whatsappWorker: "auto",
+      reportWorker: true,
+      tunnel: { gate, runner: { command: process.execPath, argsPrefix: [fake, "--sahte-log", path.join(root, "cf.log"), "--sahte-mod", "bagli"], identity: fake }, tickMs: 50, firstTickMs: 10, stopGraceMs: 0, root: path.join(root, "bilesen") },
+      ...extra,
+    });
+    const files = () => [resolveDbPath(dataDir), path.join(dataDir, USAGE_LEDGER_FILE), path.join(dataDir, WA_LEDGER_FILE)];
+    const problems = [];
+    try {
+      const warm = createApp(options([])); // önce sağlam açılış: dosyalar var, düşen açılış göç yapmaz
+      await warm.close();
+      const logs = [];
+      const timers = trackTimers();
+      let left;
+      try {
+        assert.throws(() => createApp(options(logs, { __testOpenFault: (s, id) => s === "after-app" && id === ROOT })), /test: açılış kesintisi after-app/);
+        for (const file of files()) expectNoHandles(problems, file, "001 after-app (üretime yakın) düştükten sonra");
+        await sleep(2_000); // yedek 50 ms, tünel ilk adım 10 ms: geri alınmayan zamanlayıcı bu sürede kapalı bağlantıya çarpar
+      } finally {
+        left = timers.stop();
+      }
+      if (left.length) problems.push(`001 after-app (üretime yakın): ${left.length} yetim zamanlayıcı kaldı: ${left.join(" | ")}`);
+      const closedHits = logs.filter(line => /database is not open|statement has been finalized/i.test(line));
+      if (closedHits.length) problems.push(`001 after-app (üretime yakın): kapalı bağlantıya çarpan iş günlükte (${closedHits.length}): ${closedHits.join(" | ")}`);
+      for (const file of files()) expectMovable(problems, file, "001 after-app (üretime yakın)");
+      const second = createApp(options([]));
+      await second.close();
+      for (const file of files()) expectNoHandles(problems, file, "ikinci createApp kapanınca");
+      try {
+        rmSync(root, { recursive: true });
+      } catch (error) {
+        problems.push(`geçici klasör silinemedi (${error.code || error.message}) — açık tutamak`);
+      }
+      assert.deepEqual(problems, []);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
 
   for (const [label, ledgerFile, breakLedger] of [
     ["e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer)", USAGE_LEDGER_FILE, file => {
