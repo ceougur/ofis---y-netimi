@@ -1,0 +1,32 @@
+{
+  "ad": "s1/yeni-e2e",
+  "komut": "npm run test:senaryo-yedeksiz-sil-249",
+  "commit": "967c706a245a7d487204164b1a5aa7f03d0186b8",
+  "dal": "worktree-agent-a219b5cd00c8e6739",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:39:37.282Z",
+  "sure_sn": 13.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 26,
+    "gecen": 26,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/s1/yeni-e2e.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a219b5cd00c8e6739",
+  "ham_cikti_sha256": "750c5f3548e9eef2220be37d9376978a34b27ef6236c5a3fae141685ba75c590",
+  "ham_cikti_bayt": 3712
+}

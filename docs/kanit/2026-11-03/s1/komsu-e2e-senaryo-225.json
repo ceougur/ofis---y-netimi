@@ -1,0 +1,32 @@
+{
+  "ad": "s1/komsu-e2e-senaryo-225",
+  "komut": "npm run test:senaryo-225",
+  "commit": "967c706a245a7d487204164b1a5aa7f03d0186b8",
+  "dal": "worktree-agent-a219b5cd00c8e6739",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:40:52.147Z",
+  "sure_sn": 37.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 55,
+    "gecen": 55,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/s1/komsu-e2e-senaryo-225.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a219b5cd00c8e6739",
+  "ham_cikti_sha256": "30b736a0e5a595c758eaa55dae2646cb701842a271148c014f2ba2d3b6c9c941",
+  "ham_cikti_bayt": 5084
+}
