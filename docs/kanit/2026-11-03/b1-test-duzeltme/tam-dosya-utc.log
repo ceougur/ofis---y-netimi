@@ -1,0 +1,157 @@
+TAP version 13
+# (node:23134) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+    # Subtest: T0 new DatabaseSync kurucusu düşer (olmayan dizin) → Node tutamak bırakmaz
+    ok 1 - T0 new DatabaseSync kurucusu düşer (olmayan dizin) → Node tutamak bırakmaz
+      ---
+      duration_ms: 2.731539
+      type: 'test'
+      ...
+    # Subtest: T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir
+    ok 2 - T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir
+      ---
+      duration_ms: 1000.036661
+      type: 'test'
+      ...
+    # Subtest: T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; "(deleted)" tutamak 0
+    ok 3 - T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; "(deleted)" tutamak 0
+      ---
+      duration_ms: 960.49387
+      type: 'test'
+      ...
+    # Subtest: T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince sonraki açılış göçleri yeniden koşar
+    ok 4 - T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince sonraki açılış göçleri yeniden koşar
+      ---
+      duration_ms: 872.339172
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 5 - T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2705.66386
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 6 - T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2672.275992
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 7 - T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2703.480436
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 8 - T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2824.42429
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 9 - T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2821.492165
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 10 - T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2705.299944
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 11 - T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2679.627402
+      type: 'test'
+      ...
+    # Subtest: T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0
+    ok 12 - T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0
+      ---
+      duration_ms: 10845.305328
+      type: 'test'
+      ...
+    # Subtest: T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı
+    ok 13 - T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı
+      ---
+      duration_ms: 607.894164
+      type: 'test'
+      ...
+    # Subtest: T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)
+    ok 14 - T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)
+      ---
+      duration_ms: 736.119564
+      type: 'test'
+      ...
+    # Subtest: T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı
+    ok 15 - T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı
+      ---
+      duration_ms: 719.103137
+      type: 'test'
+      ...
+    # Subtest: T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0
+    ok 16 - T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0
+      ---
+      duration_ms: 1021.045136
+      type: 'test'
+      ...
+    # Subtest: T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır
+    ok 17 - T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır
+      ---
+      duration_ms: 603.337079
+      type: 'test'
+      ...
+    # Subtest: T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+    ok 18 - T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+      ---
+      duration_ms: 994.181991
+      type: 'test'
+      ...
+    # Subtest: T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+    ok 19 - T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+      ---
+      duration_ms: 968.326358
+      type: 'test'
+      ...
+    # Subtest: T11 hub (001) after-app düşer, ÜRETİME YAKIN seçenekler (yedek + lisans + tünel zamanlayıcıları açık) → yetim zamanlayıcı yok; kapalı bağlantıya çarpan iş yok; dosyalar serbest
+    ok 20 - T11 hub (001) after-app düşer, ÜRETİME YAKIN seçenekler (yedek + lisans + tünel zamanlayıcıları açık) → yetim zamanlayıcı yok; kapalı bağlantıya çarpan iş yok; dosyalar serbest
+      ---
+      duration_ms: 2503.911844
+      type: 'test'
+      ...
+    # Subtest: T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+    ok 21 - T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+      ---
+      duration_ms: 479.364393
+      type: 'test'
+      ...
+    # Subtest: T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+    ok 22 - T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+      ---
+      duration_ms: 438.03929
+      type: 'test'
+      ...
+    # Subtest: T12 sağlam açılış: kanca verilmiş ama düşmüyor → davranış aynen; 002 kapanınca ve sunucu kapanınca tutamak 0
+    ok 23 - T12 sağlam açılış: kanca verilmiş ama düşmüyor → davranış aynen; 002 kapanınca ve sunucu kapanınca tutamak 0
+      ---
+      duration_ms: 665.490367
+      type: 'test'
+      ...
+    1..23
+ok 1 - 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+  ---
+  duration_ms: 42533.569259
+  type: 'suite'
+  ...
+1..1
+# tests 23
+# suites 1
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 42988.276254

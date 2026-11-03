@@ -1,0 +1,38 @@
+{
+  "ad": "b1-test-duzeltme/dis2-mutasyon-geri-alma-yok-t11",
+  "komut": "node --test --test-name-pattern=T11 test/createapp-acilis-geri-alma-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:28:53.785Z",
+  "sure_sn": 5.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 4,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T11 hub (001) after-app düşer, ÜRETİME YAKIN seçenekler (yedek + lisans + tünel zamanlayıcıları açık) → yetim zamanlayıcı yok; kapalı bağlantıya çarpan iş yok; dosyalar serbest",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:599:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a43173a9fa42c4392/docs/kanit/2026-11-03/b1-test-duzeltme/dis2-mutasyon-geri-alma-yok-t11.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1td-mut-7846c6f8",
+  "ham_cikti_sha256": "ed0f121e743412d3627e503b2f3be703bed22d44347d50ea1ca821d3fc7de1c6",
+  "ham_cikti_bayt": 5154
+}
