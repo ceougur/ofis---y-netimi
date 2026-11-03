@@ -601,7 +601,7 @@ describe("2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık ka
     const dataDir = path.join(root, "data");
     const fake = path.join(REPO, "test", "fixtures", "sahte-cloudflared.mjs");
     const gate = { provision: async () => ({ tunnelId: "12345678-1234-4234-8234-123456789abc", hostname: "oabc.destekofis.net", publicUrl: "https://oabc.destekofis.net", token: "sahte" }) };
-    const options = (logs, extra = {}) => ({
+    const baseOptions = (logs, extra = {}) => ({
       dataDir,
       backupDir: path.join(root, "backups"),
       log: captureLog(logs),
@@ -618,13 +618,13 @@ describe("2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık ka
     const files = () => [resolveDbPath(dataDir), path.join(dataDir, USAGE_LEDGER_FILE), path.join(dataDir, WA_LEDGER_FILE)];
     const problems = [];
     try {
-      const warm = createApp(options([])); // önce sağlam açılış: dosyalar var, düşen açılış göç yapmaz
+      const warm = createApp(baseOptions([])); // önce sağlam açılış: dosyalar var, düşen açılış göç yapmaz
       await warm.close();
       const logs = [];
       const timers = trackTimers();
       let left;
       try {
-        assert.throws(() => createApp(options(logs, { __testOpenFault: (s, id) => s === "after-app" && id === ROOT })), /test: açılış kesintisi after-app/);
+        assert.throws(() => createApp(baseOptions(logs, { __testOpenFault: (s, id) => s === "after-app" && id === ROOT })), /test: açılış kesintisi after-app/);
         for (const file of files()) expectNoHandles(problems, file, "001 after-app (üretime yakın) düştükten sonra");
         await sleep(2_000); // yedek 50 ms, tünel ilk adım 10 ms: geri alınmayan zamanlayıcı bu sürede kapalı bağlantıya çarpar
       } finally {
@@ -634,7 +634,7 @@ describe("2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık ka
       const closedHits = logs.filter(line => /database is not open|statement has been finalized/i.test(line));
       if (closedHits.length) problems.push(`001 after-app (üretime yakın): kapalı bağlantıya çarpan iş günlükte (${closedHits.length}): ${closedHits.join(" | ")}`);
       for (const file of files()) expectMovable(problems, file, "001 after-app (üretime yakın)");
-      const second = createApp(options([]));
+      const second = createApp(baseOptions([]));
       await second.close();
       for (const file of files()) expectNoHandles(problems, file, "ikinci createApp kapanınca");
       try {
