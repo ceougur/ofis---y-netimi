@@ -1,0 +1,336 @@
+TAP version 13
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 2.028231
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.487926
+      type: 'test'
+      ...
+    1..2
+ok 1 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 3.448414
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 1.135214
+      type: 'test'
+      ...
+    1..1
+ok 2 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 1.268302
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 3.289226
+      type: 'test'
+      ...
+    1..1
+ok 3 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 3.427117
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 4 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 25.563399
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 5 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 146.756475
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 6 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.282574
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 7 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.589482
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 8 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.412432
+  type: 'test'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.778734
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 269.147694
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 188.152726
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 220.731351
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 709.836686
+      type: 'test'
+      ...
+    1..5
+ok 9 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 1390.240065
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 94.58634
+      type: 'test'
+      ...
+    1..1
+ok 10 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 94.822726
+  type: 'suite'
+  ...
+# (node:17599) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+ok 11 - yapılandırma: Meta adresi yalnız üretim girişinde gerçek; testte varsayılan boş; ayrı süreçte (HUKUK_LICENSE_URL ölü adres) boş
+  ---
+  duration_ms: 240.297123
+  type: 'test'
+  ...
+# Subtest: Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz
+ok 12 - Meta istemcisi yalnız https ya da yerel adrese istek atar; adres boşsa fetch çağrılmaz
+  ---
+  duration_ms: 5.914093
+  type: 'test'
+  ...
+# Subtest: kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+ok 13 - kaynak taraması: test/, tools/ ve iş akışlarında Meta adresi yok; whatsappGraphUrl ve HUKUK_WHATSAPP_GRAPH_URL yalnız yerel
+  ---
+  duration_ms: 371.55784
+  type: 'test'
+  ...
+# Subtest: ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez
+ok 14 - ayrı süreçte açılan gerçek program (server/server.mjs, HUKUK_LICENSE_URL ölü adres): Meta adresi boş (graphAvailable false), Meta'ya istek gidemez
+  ---
+  duration_ms: 1760.949188
+  type: 'test'
+  ...
+# (node:17608) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şablonları Denetle'ye basılmadan da uygulanır
+    # Subtest: Denetle YOK, Meta ekstre şablonunda 12 sa bildirir: toplu işin taze okumasıyla bilinir — 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silinir; aynı dönemde yeniden gönderilebilir (P3)
+    ok 1 - Denetle YOK, Meta ekstre şablonunda 12 sa bildirir: toplu işin taze okumasıyla bilinir — 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silinir; aynı dönemde yeniden gönderilebilir (P3)
+      ---
+      duration_ms: 1269.226557
+      type: 'test'
+      ...
+    # Subtest: Denetle YOK: kabulde süre bildirilmiyor (30 gün) → 14. saatte Meta 12 sa bildirir → önizleme taze okur: önceki iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi'; sonra kabul edilen iş 12 sa'le Süresi Doldu
+    ok 2 - Denetle YOK: kabulde süre bildirilmiyor (30 gün) → 14. saatte Meta 12 sa bildirir → önizleme taze okur: önceki iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi'; sonra kabul edilen iş 12 sa'le Süresi Doldu
+      ---
+      duration_ms: 693.391984
+      type: 'test'
+      ...
+    # Subtest: Denetle YOK, süren toplu iş: başta 12 sa, 1. iş kabul → Meta süreyi 30 güne uzatır → 11 dk sonra 2. iş (süren işin yeniden okuması) → 1. işin kabulünden 13 sa + 1 dk: hiçbir iş Süresi Doldu DEĞİL, günlükte 30 gün
+    ok 3 - Denetle YOK, süren toplu iş: başta 12 sa, 1. iş kabul → Meta süreyi 30 güne uzatır → 11 dk sonra 2. iş (süren işin yeniden okuması) → 1. işin kabulünden 13 sa + 1 dk: hiçbir iş Süresi Doldu DEĞİL, günlükte 30 gün
+      ---
+      duration_ms: 535.461617
+      type: 'test'
+      ...
+    1..3
+ok 15 - 2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şablonları Denetle'ye basılmadan da uygulanır
+  ---
+  duration_ms: 2500.215898
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu)
+    # Subtest: p3 Denetle yolu: kabul → 14 sa → Meta listesi 12 sa bildirir → Şablonları Denetle → bakım: iş Süresi Doldu OLMAZ, PDF silinmez; kişi 'Daha Önce Gönderildi', aynı dönemde 2. ileti gitmez; 'Yine de Gönder' açık
+    ok 1 - p3 Denetle yolu: kabul → 14 sa → Meta listesi 12 sa bildirir → Şablonları Denetle → bakım: iş Süresi Doldu OLMAZ, PDF silinmez; kişi 'Daha Önce Gönderildi', aynı dönemde 2. ileti gitmez; 'Yine de Gönder' açık
+      ---
+      duration_ms: 563.82709
+      type: 'test'
+      ...
+    # Subtest: Denetle'den SONRA kabul edilen iş yeni süreyle (12 sa) ölçülür; önceki iş 30 gün + 1 sa'te Süresi Doldu + PDF silinir
+    ok 2 - Denetle'den SONRA kabul edilen iş yeni süreyle (12 sa) ölçülür; önceki iş 30 gün + 1 sa'te Süresi Doldu + PDF silinir
+      ---
+      duration_ms: 488.780526
+      type: 'test'
+      ...
+    # Subtest: süre iki kez KISALIRSA (30 gün → 1 gün → 12 sa): her iş kendi kabul anındaki süreyle — ilk değişimden önceki 30 gün, aradaki 1 gün
+    ok 3 - süre iki kez KISALIRSA (30 gün → 1 gün → 12 sa): her iş kendi kabul anındaki süreyle — ilk değişimden önceki 30 gün, aradaki 1 gün
+      ---
+      duration_ms: 521.833809
+      type: 'test'
+      ...
+    # Subtest: süre UZARSA (KULLANICI KARARI 03.11 ~21:00 UTC: uzun süre): 12 sa'le kabul edilen iş, süre 30 güne çıkınca 30 günle; sonra 6 saate kısalsa da 30 günle; yeni iş 6 sa'le
+    ok 4 - süre UZARSA (KULLANICI KARARI 03.11 ~21:00 UTC: uzun süre): 12 sa'le kabul edilen iş, süre 30 güne çıkınca 30 günle; sonra 6 saate kısalsa da 30 günle; yeni iş 6 sa'le
+      ---
+      duration_ms: 433.540717
+      type: 'test'
+      ...
+    # Subtest: 2.4.8'den gelen veri (kabul anında süre bilinmiyor; şablon kaydında 12 sa): iş 30 günle; sonraki Denetle'den sonra kabul edilen iş 12 sa'le
+    ok 5 - 2.4.8'den gelen veri (kabul anında süre bilinmiyor; şablon kaydında 12 sa): iş 30 günle; sonraki Denetle'den sonra kabul edilen iş 12 sa'le
+      ---
+      duration_ms: 487.336263
+      type: 'test'
+      ...
+    # Subtest: iki şirket AYNI WhatsApp hesabında: 002'de kabul edilmiş iş; süre kısalınca önce 001'de, sonra 002'de Denetle → 002'nin işi Süresi Doldu OLMAZ, 002'de kişiye tek ekstre
+    ok 6 - iki şirket AYNI WhatsApp hesabında: 002'de kabul edilmiş iş; süre kısalınca önce 001'de, sonra 002'de Denetle → 002'nin işi Süresi Doldu OLMAZ, 002'de kişiye tek ekstre
+      ---
+      duration_ms: 817.477301
+      type: 'test'
+      ...
+    # Subtest: geri yüklenen yedek (002): kabul → süre 12 saate kısaldı + Denetle → yedek → geri yükleme → bakım: iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi', 2. ileti gitmez
+    ok 7 - geri yüklenen yedek (002): kabul → süre 12 saate kısaldı + Denetle → yedek → geri yükleme → bakım: iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi', 2. ileti gitmez
+      ---
+      duration_ms: 879.356226
+      type: 'test'
+      ...
+    # Subtest: ay sonu / gece yarısı: 31.10 20:00 kabul (Ekim ekstresi) → 01.11 09:30 süre 12 saate kısaldı + Denetle → iş Süresi Doldu OLMAZ; 'Geçen Ay' önizlemesi 'Daha Önce Gönderildi', 2. Ekim ekstresi gitmez
+    ok 8 - ay sonu / gece yarısı: 31.10 20:00 kabul (Ekim ekstresi) → 01.11 09:30 süre 12 saate kısaldı + Denetle → iş Süresi Doldu OLMAZ; 'Geçen Ay' önizlemesi 'Daha Önce Gönderildi', 2. Ekim ekstresi gitmez
+      ---
+      duration_ms: 526.593048
+      type: 'test'
+      ...
+    1..8
+ok 16 - 2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu)
+  ---
+  duration_ms: 4720.285721
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük
+    # Subtest: günlük yok / başka hesabın günlüğü: kabul anında süre bilinmiyor → 30 gün
+    ok 1 - günlük yok / başka hesabın günlüğü: kabul anında süre bilinmiyor → 30 gün
+      ---
+      duration_ms: 0.81061
+      type: 'test'
+      ...
+    # Subtest: değişim anı D: D'de ve sonra kabul → yeni süre; D'den önce → 30 gün; kabul anı verilmezse günlükteki son değer
+    ok 2 - değişim anı D: D'de ve sonra kabul → yeni süre; D'den önce → 30 gün; kabul anı verilmezse günlükteki son değer
+      ---
+      duration_ms: 0.365641
+      type: 'test'
+      ...
+    # Subtest: zincir (30 gün → 1 gün → 12 sa) ve uzama (12 sa → 30 gün → 6 sa): kabul anındaki ile sonradan görülen en uzun
+    ok 3 - zincir (30 gün → 1 gün → 12 sa) ve uzama (12 sa → 30 gün → 6 sa): kabul anındaki ile sonradan görülen en uzun
+      ---
+      duration_ms: 0.66532
+      type: 'test'
+      ...
+    # Subtest: bozuk günlük (sırasız an / eksik değer): bilinmiyor → 30 gün
+    ok 4 - bozuk günlük (sırasız an / eksik değer): bilinmiyor → 30 gün
+      ---
+      duration_ms: 0.350969
+      type: 'test'
+      ...
+    # Subtest: noteDeliveryTtl: yalnız değer değişince yazar; geç dönen eski okuma yazmaz; başka hesapta günlük o hesapla yeniden başlar; en çok 12 değişim (düşen en eski: 30 gün)
+    ok 5 - noteDeliveryTtl: yalnız değer değişince yazar; geç dönen eski okuma yazmaz; başka hesapta günlük o hesapla yeniden başlar; en çok 12 değişim (düşen en eski: 30 gün)
+      ---
+      duration_ms: 1.440101
+      type: 'test'
+      ...
+    1..5
+ok 17 - 2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük
+  ---
+  duration_ms: 4.076094
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-KÖK — bakım turu teslim süresi bilgisini satır başına okumaz (ders 47)
+    # Subtest: 40 kabul edilmiş iş, bildirim yolu canlı: bir bakım turundaki ayar okumaları iş sayısıyla artmaz
+    ok 1 - 40 kabul edilmiş iş, bildirim yolu canlı: bir bakım turundaki ayar okumaları iş sayısıyla artmaz
+      ---
+      duration_ms: 1686.276687
+      type: 'test'
+      ...
+    1..1
+ok 18 - 2.4.9 W-KÖK — bakım turu teslim süresi bilgisini satır başına okumaz (ders 47)
+  ---
+  duration_ms: 1686.558747
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 184.770034
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 9.128675
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 3.661
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 7.030403
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 5.597181
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 80.025562
+      type: 'test'
+      ...
+    1..6
+ok 19 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 291.906187
+  type: 'suite'
+  ...
+1..19
+# tests 42
+# suites 10
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10283.480115
