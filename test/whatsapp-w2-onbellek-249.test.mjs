@@ -11,6 +11,8 @@ import { PNID, TOKEN, URLS, WABA, startWa } from "./whatsapp-248-ortak.mjs";
 
 const APP = "1505264761663625";
 const MIN = 60_000;
+const HOUR = 60 * MIN;
+const TTL_FIELD = "message_send_ttl_seconds";
 const ENSURE = "/api/workspace/whatsapp/templates/ensure";
 const TEMPLATES = "/api/workspace/whatsapp/templates";
 const STATUS = "/api/workspace/whatsapp/sending-status";
@@ -72,21 +74,36 @@ describe("2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini 
   });
 
   it("işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)", async () => {
-    const ctx = await startWa();
+    // 2.4.9 W düzeltme turu 1 (dar kontrol W DÜŞÜK-2; ders 20, 38): işçinin eski okuması sabit bir beklemeyle (300 ms) değil KAPIYLA tutulur — Denetle dönene dek
+    // Meta'dan yanıt gelmez. Önceki biçimde Denetle 300 ms'yi aşınca (yavaş makine) eski okuma Denetle'den önce dönüyor, dönem (templateEpoch) koruması hiç
+    // sınanmadan hücre yeşil kalıyordu. İstemci zaman aşımı kapıdan uzun (10 sn): işçinin isteği kapıda beklerken düşmez.
+    const ctx = await startWa({ whatsappTimeoutMs: 10_000 });
+    let release = () => {};
     try {
       const id = await runningBatch(ctx);
       ctx.clock.advance(11 * MIN); // önbellek (10 dk) doldu: işçinin sonraki adımı şablonu Meta'dan okur
-      // İşçinin okuması Meta'ya Pazarlama'dan ÖNCE varır (eski liste: onaylı, Utility) ama yanıtı Denetle bittikten sonra döner.
+      // İşçinin okuması Meta'ya Pazarlama'dan ÖNCE varır (eski liste: onaylı, Utility); yanıtı Denetle döndükten SONRA kapı açılınca gelir.
       const old = { data: ctx.fake.state.templates.map(item => ({ ...item })), paging: { cursors: { before: "QVFIUb", after: "QVFIUa" } } };
-      ctx.fake.state.failQueue.push({ match: /^GET \/\d+\/message_templates$/, status: 200, body: old, waitMs: 300 });
+      const gate = new Promise(resolve => {
+        release = resolve;
+      });
+      ctx.fake.state.failQueue.push({ match: /^GET \/\d+\/message_templates$/, status: 200, body: old, gate });
       const readsBefore = lists(ctx.fake).length;
-      const worker = ctx.wa.scheduler.runOnce();
+      let workerDone = false;
+      const worker = ctx.wa.scheduler.runOnce().finally(() => {
+        workerDone = true;
+      });
       for (let i = 0; i < 200 && lists(ctx.fake).length === readsBefore; i += 1) await new Promise(resolve => setTimeout(resolve, 5));
       assert.equal(lists(ctx.fake).length, readsBefore + 1, "ön koşul: işçinin şablon okuması Meta'da bekliyor");
       ekstre(ctx.fake).category = "MARKETING";
+      // Denetle işçiyi bekleseydi (kilit) test asılı kalmasın: 5 sn sonra kapı açılır, aşağıdaki ön koşul kırmızı olur.
+      const guard = setTimeout(() => release(), 5_000);
       const checked = await ctx.api.post(ENSURE, {});
+      clearTimeout(guard);
+      assert.equal(workerDone, false, "ön koşul (yarış): Denetle döndüğünde işçinin eski okuması hâlâ Meta'da bekliyor");
       assert.equal(checked.status, 200, JSON.stringify(checked.data));
       assert.equal(checked.data.data.items.find(item => item.name === "destekofis_ekstre").usable, false, "ön koşul: Denetle Pazarlama'yı gördü (kart 'gönderilmez')");
+      release(); // eski liste şimdi döner
       await worker; // eski okumayla süren adım (ileti 2 — Denetle'den önce başlamış iş)
       await ctx.drain();
       const batch = await batchOf(ctx, id);
@@ -94,6 +111,7 @@ describe("2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini 
       assert.equal(batch.state, "paused", `toplu iş duraklamalı (geldi ${batch.state})`);
       assert.equal(batch.pauseCode, "template-marketing");
     } finally {
+      release();
       await ctx.close();
     }
   });
@@ -193,5 +211,64 @@ describe("2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim 
     const older = { items: [{ ...listing.items[0], status: "PAUSED" }], complete: true };
     assert.equal(mod.noteListing(store, record, older, { readAt: "2026-11-03T08:30:00.000Z" }), false);
     assert.equal(read().items[0].meta.status, "APPROVED");
+    // 2.4.9 W düzeltme turu 1 (dar kontrol W DÜŞÜK-1, karar (a)): teslim süresi alanı (message_send_ttl_seconds) önizlemeden YAZILMAZ — kayıttaki değer (son
+    // Şablonları Denetle'nin okuduğu) korunur; durum / kategori / içerik yine güncellenir. Kayıtta süre yoksa eklenmez, varsa değişmez ve silinmez.
+    put(base);
+    const withTtl = { items: [{ ...listing.items[0], [TTL_FIELD]: 43_200 }], complete: true };
+    assert.equal(mod.noteListing(store, record, withTtl, { readAt: "2026-11-03T09:00:00.000Z" }), true, "durum değişti (PENDING → APPROVED): kayıt güncellenir");
+    assert.equal(read().items[0].meta.status, "APPROVED");
+    assert.equal(Object.hasOwn(read().items[0].meta, TTL_FIELD), false, `önizleme teslim süresini kayda eklememeli (geldi ${read().items[0].meta[TTL_FIELD]})`);
+    const denetlenmis = { ...base, items: [{ name: "destekofis_ekstre", meta: { ...base.items[0].meta, [TTL_FIELD]: 259_200 } }, base.items[1]] };
+    put(denetlenmis);
+    assert.equal(mod.noteListing(store, record, withTtl, { readAt: "2026-11-03T09:00:00.000Z" }), true);
+    assert.equal(read().items[0].meta.status, "APPROVED");
+    assert.equal(read().items[0].meta[TTL_FIELD], 259_200, "Denetle'nin kaydettiği teslim süresi önizlemeyle değişmez");
+    put({ ...denetlenmis, items: [{ name: "destekofis_ekstre", meta: { ...denetlenmis.items[0].meta, status: "APPROVED" } }, base.items[1]] });
+    assert.equal(mod.noteListing(store, record, withTtl, { readAt: "2026-11-03T09:00:00.000Z" }), false, "yalnız teslim süresi farklıysa kayıt yazılmaz");
+    assert.equal(mod.noteListing(store, record, listing, { readAt: "2026-11-03T09:00:00.000Z" }), false, "liste süre bildirmiyorsa kayıttaki süre silinmez");
+    assert.equal(read().items[0].meta[TTL_FIELD], 259_200);
+  });
+
+  it("önizlemenin taze okuması teslim süresini kayda YAZMAZ: Meta listesi süreyi sonradan kısaltınca (12 sa) önceden kabul edilmiş iş Süresi Doldu OLMAZ, aynı dönemde ikinci ekstre gitmez", async () => {
+    // 2.4.9 W düzeltme turu 1 — dar kontrol W DÜŞÜK-1 (p3 senaryosu, YALNIZ önizleme yolu), KARAR (a): noteListing teslim süresi alanını yazmaz; açık 2.4.8 düzeyine döner,
+    // yeni kural yok. BİLİNEN SINIR (değişmedi, bilerek sınanmaz): kullanıcı burada "Şablonları Denetle ve Oluştur"a basarsa Denetle Meta'nın bildirdiği 12 saati
+    // 2.4.8'deki gibi kayda yazar, bakım bu işi geriye dönük Süresi Doldu yapar ve aynı dönemde ikinci ekstre gidebilir (dar kontrol W p3 "denetle" yolu: eski ve
+    // yeni kodda 2 ileti). Kök kural (iş kabul anındaki süre — ilke 2 yönünde) → C / 2.5.0.
+    const ctx = await startWa();
+    try {
+      assert.equal((await ctx.api.post(ENSURE, {})).status, 200, "ön koşul: Şablonları Denetle (liste teslim süresi bildirmiyor: 30 gün)");
+      const a = await ctx.account("Ayşe Yılmaz", "0532 111 22 33", 1250);
+      const body = { kind: "statement", ids: [a.id], preset: "thisMonth" };
+      const first = await ctx.batch(body);
+      assert.equal(first.status, 200, JSON.stringify(first.data));
+      await ctx.drain();
+      const job = (await ctx.jobs(first.data.data.batch.id))[0];
+      assert.equal(job.state, "accepted", `ön koşul: ekstre Meta'ya kabul edildi (geldi ${job.state})`);
+      ctx.statuses([{ id: job.wamid, status: "sent", timestamp: String(Math.floor(ctx.clock.ms() / 1000)) }]); // bildirim yolu canlı (son 7 gün kuralı)
+      assert.equal(ctx.messages().length, 1);
+      ctx.clock.advance(14 * HOUR);
+      for (const tpl of ctx.fake.state.templates) if (tpl.name.startsWith("destekofis_")) tpl[TTL_FIELD] = 43_200; // müşteri WhatsApp Yöneticisi'nde 12 saat yaptı
+      const readsBefore = lists(ctx.fake).length;
+      const p1 = await ctx.api.post(URLS.preview, body);
+      assert.equal(p1.status, 200, JSON.stringify(p1.data));
+      assert.equal(lists(ctx.fake).length, readsBefore + 1, "ön koşul: önizleme şablon listesini Meta'dan TAZE okudu (W-2b yolu)");
+      assert.equal(p1.data.data.people[0].skip, "Daha Önce Gönderildi");
+      await ctx.drain(); // bakım: süre dolumu
+      const after = (await ctx.jobs(first.data.data.batch.id))[0];
+      assert.notEqual(after.state, "expired", "önceden kabul edilmiş iş önizlemeden sonra geriye dönük Süresi Doldu olmamalı (kayıttaki süre 30 gün)");
+      assert.equal(after.state, "sent");
+      const saved = JSON.parse(ctx.store.setting("whatsapp.templates", "{}")).items.find(item => item.name === "destekofis_ekstre").meta;
+      assert.equal(saved.status, "APPROVED");
+      assert.equal(Object.hasOwn(saved, TTL_FIELD), false, `önizleme teslim süresini kayda yazmamalı (geldi ${saved[TTL_FIELD]})`);
+      const p2 = await ctx.api.post(URLS.preview, body);
+      assert.equal(p2.status, 200, JSON.stringify(p2.data));
+      assert.equal(p2.data.data.people[0].skip, "Daha Önce Gönderildi", "aynı dönemde kişi yine elenir (ilke 3)");
+      const second = await ctx.batch({ ...body, requestId: "w-tur1-ikinci" });
+      assert.equal(second.status, 400, `ikinci toplu iş başlamamalı (geldi ${second.status} ${JSON.stringify(second.data).slice(0, 200)})`);
+      await ctx.drain();
+      assert.equal(ctx.messages().length, 1, `aynı dönemde kişiye tek ekstre (giden ${ctx.messages().length})`);
+    } finally {
+      await ctx.close();
+    }
   });
 });

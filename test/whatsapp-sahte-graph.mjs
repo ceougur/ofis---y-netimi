@@ -109,6 +109,9 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
         const [failure] = state.failQueue.splice(queued, 1);
         // 2.4.9 W-2: waitMs — bu yanıt (geliş anında seçilir, gecikmeyle döner): okuma sürerken başka isteğin bitmesini kurmak için.
         if (failure.waitMs) await new Promise(resolve => setTimeout(resolve, failure.waitMs));
+        // 2.4.9 W düzeltme turu 1 (dar kontrol W DÜŞÜK-2): gate — yanıt, test bu sözü (Promise) çözene dek KAPIDA tutulur; yarışın ön koşulu makine hızına bağlı
+        // sabit beklemeyle değil kapıyla kurulur (ders 20).
+        if (failure.gate) await failure.gate;
         if (failure.destroy) return req.socket.destroy();
         return reply(failure.status || 400, failure.body || null, failure.raw ?? null);
       }
