@@ -1,0 +1,32 @@
+{
+  "ad": "w-ana-oturum-yeni",
+  "komut": "node --test test/whatsapp-wt-ttl-249.test.mjs test/whatsapp-w2-onbellek-249.test.mjs test/whatsapp-w4-hata100-249.test.mjs test/whatsapp-t2-5-248.test.mjs test/whatsapp-t2-5b-248.test.mjs",
+  "commit": "7da5f8ffbe30192e38b234e9051415220ec13393",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:28:33.395Z",
+  "sure_sn": 8.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 31,
+    "gecen": 31,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/w-ana-oturum-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "b4ee3067cabfb04ec8cc5d7e9bcd6095bdd7644f8ca7e5fa508641989ee72ac1",
+  "ham_cikti_bayt": 15924
+}
