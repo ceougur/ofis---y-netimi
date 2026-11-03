@@ -1348,14 +1348,15 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
 
   // Meta'daki PDF kopyası yeniden kullanılabilir mi (§7a 15): kimliği var, 29 günü dolmadı, silinmedi.
   const mediaUsable = job => Boolean(job.media_id && job.media_at && !job.media_deleted_at && nowMs() - Date.parse(job.media_at) <= MEDIA_REUSE_MS);
-  // T2-6 (bağımsız gözden geçirme r3): değişkenler ve PDF İLK HAZIRLIKTA AYNI cari okumasından üretilir ve DONDURULUR (prepared_at, params_json, pdf_name,
-  // pdf_blob — göç v41); her yeniden deneme (131056, geçici hata, Bağlantı Bekleniyor, 131049, Duraklat → Devam Et) aynı metni ve aynı PDF'i gönderir (metin = PDF,
-  // §7a 1; aynı medya, §7a 14–15). Meta'daki kopya geçerliyse (29 gün, silinmemiş) aynısı, değilse dondurulmuş baytlar yeniden yüklenir. Uygunluk (İstemiyor, pasif,
-  // silinmiş, telefon; hatırlatmada gecikmiş borç) her denemede GÜNCEL okunur (§7a 2): içerik donar, gönderilip gönderilmeyeceği donmaz.
+  // T2-6 (bağımsız gözden geçirme r3): değişkenler ve PDF İLK HAZIRLIKTA AYNI cari okumasından üretilir ve DONDURULUR (prepared_at, params_json, pdf_name — göç v41;
+  // PDF'in baytları wa_job_pdfs — 2.4.9 B3, göç v45); her yeniden deneme (131056, geçici hata, Bağlantı Bekleniyor, 131049, Duraklat → Devam Et) aynı metni ve aynı PDF'i
+  // gönderir (metin = PDF, §7a 1; aynı medya, §7a 14–15). Meta'daki kopya geçerliyse (29 gün, silinmemiş) aynısı, değilse dondurulmuş baytlar yeniden yüklenir. Uygunluk
+  // (İstemiyor, pasif, silinmiş, telefon; hatırlatmada gecikmiş borç) her denemede GÜNCEL okunur (§7a 2): içerik donar, gönderilip gönderilmeyeceği donmaz.
   async function prepare(batch, job, graph, record, account, user) {
     if (batch.kind !== "statement" && !overdueOf(account, today())) return { skip: "Gecikmiş Borç Yok" };
     let params = job.prepared_at ? parse(job.params_json, null) : null;
-    let pdf = job.prepared_at && job.pdf_blob ? Buffer.from(job.pdf_blob) : null;
+    const frozenPdf = job.prepared_at ? store.get("SELECT pdf FROM wa_job_pdfs WHERE job_id = ?", job.id)?.pdf : null;
+    let pdf = frozenPdf ? Buffer.from(frozenPdf) : null;
     let filename = job.pdf_name || "";
     // Dondurulmuş PDF baytları iş Meta'ya kabul edilince silinir (bakım); 131049 / Yine de Gönder sonrası yeniden denemede Meta'daki kopya geçerliyse o yeter.
     const frozen = Array.isArray(params) && params.length > 0 && (batch.kind !== "statement" || Boolean(filename && (pdf?.length || mediaUsable(job))));
@@ -1376,7 +1377,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         pdf = null;
       }
       // Yeni anlık görüntü: önceki bir denemenin Meta'daki kopyası (varsa) bu içeriğe ait sayılmaz → yeniden yüklenir.
-      updateJob(job.id, { prepared_at: iso(), params_json: JSON.stringify(params), pdf_name: filename, pdf_blob: pdf, ...(job.media_id ? { media_id: null, media_at: null } : {}) });
+      // 2.4.9 B3: işin satırı ve PDF'i TEK işlemde (eski tek UPDATE'in eşdeğeri — ya ikisi ya hiçbiri; yarısı yazılsa yeni değişkenler eski PDF'le donabilirdi).
+      // Hatırlatmada (PDF yok) satır yok.
+      const preparedAt = iso();
+      store.tx(() => {
+        updateJob(job.id, { prepared_at: preparedAt, params_json: JSON.stringify(params), pdf_name: filename, ...(job.media_id ? { media_id: null, media_at: null } : {}) });
+        if (pdf) store.run("INSERT OR REPLACE INTO wa_job_pdfs (job_id, pdf, created_at) VALUES (?, ?, ?)", job.id, pdf, preparedAt);
+        else store.run("DELETE FROM wa_job_pdfs WHERE job_id = ?", job.id);
+      });
       job = jobRow(job.id);
     }
     let document = null;
@@ -1682,8 +1690,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         }
       }
     }
-    // T2-6 + plan §5: dondurulmuş PDF (pdf_blob) yalnız iş açıkken (yeniden denenebilirken) tutulur; kabul edilen / kesinleşen işte silinir (değişkenler ve PDF adı kalır).
-    store.run(`UPDATE wa_jobs SET pdf_blob = NULL WHERE pdf_blob IS NOT NULL AND state NOT IN (${OPEN_JOB.map(() => "?").join(",")})`, ...OPEN_JOB);
+    // T2-6 + plan §5: dondurulmuş PDF yalnız iş açıkken (yeniden denenebilirken) tutulur; kabul edilen / kesinleşen işte silinir (değişkenler ve PDF adı kalır).
+    // 2.4.9 B3: PDF ayrı tabloda (wa_job_pdfs, göç v45) — SATIR silinir (sayfaları sonraki gönderimde yeniden kullanılır; işin satırında kalıcı boşluk kalmaz); işi
+    // silinmiş yetim satır da gider. Tarama küçük tabloda (açık işlerin PDF'leri), iş satırı birincil anahtarla okunur.
+    store.run(`DELETE FROM wa_job_pdfs WHERE NOT EXISTS (SELECT 1 FROM wa_jobs j WHERE j.id = wa_job_pdfs.job_id AND j.state IN (${OPEN_JOB.map(() => "?").join(",")}))`, ...OPEN_JOB);
     // Kabul yazımı düşmüş (disk dolu) ve 5 dakikadır "Gönderiliyor"da kalan iş (tek işçi; istek 15 sn'de biter): açılıştaki kuralla defterden çözülür.
     const stuck = store.all("SELECT * FROM wa_jobs WHERE state = 'sending' AND sending_at < ?", iso(nowMs() - 5 * 60_000));
     if (stuck.length) out.repaired = settleSending(stuck);
