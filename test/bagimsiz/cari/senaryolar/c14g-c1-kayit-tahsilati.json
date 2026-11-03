@@ -1,0 +1,21 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c14g-c1-kayit-tahsilati",
+ "aciklama": "2.4.9 C1.3 (§2.1 İLKEYLE): kayda bağlı carinin kendisinde hareket yok, kaydın (tablonun) eski kayıt tahsilatı var → kayıt tahsilatı cariye değil kayda bağlıdır, cari silinir; kayıt tahsilatı Kasa'da ve Tablodaki Kişiler'de kalır. Aynı tablodaki öbür kaydın carisinde cari tahsilatı var → silinemez.",
+ "dayanak": "KARARLAR.md §12 C1.3, C1.1, C1.2 (BAŞ MİMAR §2.1 İLKEYLE 'payments cariye bağlı değil'; KULLANICI KARAR A + İLKE)",
+ "bugun": "2026-06-15",
+ "anahtar": {"legacyCasePayments": true},
+ "adimlar": [
+  {"id": "t", "islem": "tablo_yukle", "sekmeler": [{"ad": "İcra", "tur": "icra", "kayitlar": [
+   {"no": "2026/1", "isim": "Kemal Kaya", "alacak": "5000", "kalan": "5000"},
+   {"no": "2026/2", "isim": "Leyla Ak", "alacak": "3000", "kalan": "3000"}]}]},
+  {"id": "c-k", "islem": "cari_ac", "ad": "K", "isim": "Kemal Kaya", "kayit": "2026/1", "tarih": "2026-06-01"},
+  {"id": "c-l", "islem": "cari_ac", "ad": "L", "isim": "Leyla Ak", "kayit": "2026/2", "tarih": "2026-06-01"},
+  {"id": "p1", "islem": "kayit_tahsilat", "kayit": "2026/1", "tutar": "700", "tarih": "2026-06-10"},
+  {"id": "t-l", "islem": "tahsilat", "cari": "L", "tutar": "200", "tarih": "2026-06-11"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "sil-k", "islem": "cari_sil", "cari": "K"},
+  {"id": "sil-l", "islem": "cari_sil", "cari": "L"},
+  {"id": "k2", "islem": "kontrol"}
+ ]
+}

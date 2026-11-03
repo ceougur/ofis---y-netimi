@@ -1,0 +1,24 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c14e-c1-pasife-al",
+ "aciklama": "2.4.9 C1.9: hareketli cari Pasife Al ile pasife alınır — bakiye, Kasa ve Kasa raporu aynı kalır; pasif hareketli cari de silinemez (409); pasife alınan hareketsiz cari silinir; tedarikçiye ödemesi olan cari pasife alınınca da Kasa çıkışı yerinde kalır.",
+ "dayanak": "KARARLAR.md §12 C1.9, C1.1, C1.2 (BAŞ MİMAR §5 G1; KULLANICI KARAR A 'Pasife Al önerir')",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "c-p1", "islem": "cari_ac", "ad": "P1", "isim": "Pınar Pasif", "tarih": "2026-06-01"},
+  {"id": "c-p2", "islem": "cari_ac", "ad": "P2", "isim": "Polat Boş", "tarih": "2026-06-01"},
+  {"id": "c-p3", "islem": "cari_ac", "ad": "P3", "isim": "Pelin Öde", "tur": "tedarikci", "tarih": "2026-06-01"},
+  {"id": "b-p1", "islem": "borc", "cari": "P1", "tutar": "1200", "tarih": "2026-06-03"},
+  {"id": "t-p1", "islem": "tahsilat", "cari": "P1", "tutar": "500", "tarih": "2026-06-05"},
+  {"id": "o-p3", "islem": "odeme", "cari": "P3", "tutar": "300", "tarih": "2026-06-06"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "pa-p1", "islem": "pasife_al", "cari": "P1"},
+  {"id": "pa-p2", "islem": "pasife_al", "cari": "P2"},
+  {"id": "pa-p3", "islem": "pasife_al", "cari": "P3"},
+  {"id": "k2", "islem": "kontrol"},
+  {"id": "sil-p1", "islem": "cari_sil", "cari": "P1"},
+  {"id": "sil-p3", "islem": "cari_sil", "cari": "P3"},
+  {"id": "sil-p2", "islem": "cari_sil", "cari": "P2"},
+  {"id": "k3", "islem": "kontrol"}
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c14c-c1-silinmis-cariye-yazim",
+ "aciklama": "2.4.9 C1.6: silinmiş (hareketsiz) cariye tahsilat, ödeme, Borç Yaz, Alacak Yaz, fatura, alınan çek, taksit kartı, cari hesaba stok satışı ve satış iadesi yazılamaz; başka carinin çeki silinmiş tedarikçiye ciro edilemez — hiçbir satır yazılmaz, Kasa ve öbür cariler aynı; cari Silinenler'den geri gelince hâlâ hareketsizdir ve yeniden silinebilir.",
+ "dayanak": "KARARLAR.md §12 C1.6, C1.2, C1.7 (BAŞ MİMAR §13 değişmez 'silinmiş caride para hareketi olmaz'; KULLANICI KARAR A)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "c-d", "islem": "cari_ac", "ad": "D", "isim": "Duru Silinen", "tarih": "2026-06-01"},
+  {"id": "c-x", "islem": "cari_ac", "ad": "X", "isim": "Kerem Çek", "tarih": "2026-06-01"},
+  {"id": "c-t", "islem": "cari_ac", "ad": "T", "isim": "Tülin Tedarik", "tur": "tedarikci", "tarih": "2026-06-01"},
+  {"id": "ex", "islem": "evrak", "ad": "EX", "cari": "X", "tur": "cek", "tutar": "300", "tarih": "2026-06-03"},
+  {"id": "tx", "islem": "tahsilat", "cari": "X", "tutar": "150", "tarih": "2026-06-03"},
+  {"id": "k0", "islem": "kontrol"},
+  {"id": "sil-d", "islem": "cari_sil", "cari": "D"},
+  {"id": "sil-t", "islem": "cari_sil", "cari": "T"},
+  {"id": "w-tah", "islem": "tahsilat", "cari": "D", "tutar": "100", "tarih": "2026-06-10"},
+  {"id": "w-ode", "islem": "odeme", "cari": "D", "tutar": "50", "tarih": "2026-06-10"},
+  {"id": "w-bor", "islem": "borc", "cari": "D", "tutar": "300", "tarih": "2026-06-10"},
+  {"id": "w-ala", "islem": "alacak", "cari": "D", "tutar": "200", "tarih": "2026-06-10"},
+  {"id": "w-fat", "islem": "fatura", "ad": "FD", "cari": "D", "tutar": "500", "tarih": "2026-06-10"},
+  {"id": "w-evr", "islem": "evrak", "ad": "ED", "cari": "D", "tur": "cek", "tutar": "400", "tarih": "2026-06-10"},
+  {"id": "w-kar", "islem": "kart_ac", "ad": "KD", "cari": "D", "tutar": "600", "taksit": 2, "ilkVade": "2026-07-10", "mevcut": false, "tarih": "2026-06-10"},
+  {"id": "w-sto", "islem": "stok_satis_hesap", "cari": "D", "tutar": "150", "tarih": "2026-06-10"},
+  {"id": "w-sti", "islem": "stok_iade", "cari": "D", "tutar": "80", "tarih": "2026-06-10"},
+  {"id": "w-cir", "islem": "ciro", "evrak": "EX", "cari": "T", "tarih": "2026-06-10"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "cg-d", "islem": "cari_geri_yukle", "cari": "D"},
+  {"id": "k2", "islem": "kontrol"},
+  {"id": "sil-d-2", "islem": "cari_sil", "cari": "D"},
+  {"id": "k3", "islem": "kontrol"}
+ ]
+}
