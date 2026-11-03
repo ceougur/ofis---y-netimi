@@ -1,0 +1,63 @@
+{
+  "ad": "w/eski-e3f74093-w2-onbellek",
+  "komut": "node --test --test-reporter=tap test/whatsapp-w2-onbellek-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:55:55.827Z",
+  "sure_sn": 4.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 0,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler › süren toplu iş, Meta şablonu Pazarlama'ya aldı, kullanıcı Denetle'ye bastı: saat ilerlemeden sonraki adımda iş DURUR (template-marketing), yeni ileti gitmez",
+      "konum": "test/whatsapp-w2-onbellek-249.test.mjs:37:3",
+      "hata": "Denetle'den sonra yeni ileti gitmemeli (giden 3) · 3 !== 1 (beklenen 1, gelen 3)"
+    },
+    {
+      "ad": "2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler › Denetle'nin Meta okuması düşse de (502) önbellek temizlenir: sonraki adım şablonu taze okur, Pazarlama'yı görüp durur",
+      "konum": "test/whatsapp-w2-onbellek-249.test.mjs:56:3",
+      "hata": "yeni ileti gitmemeli (giden 3) · 3 !== 1 (beklenen 1, gelen 3)"
+    },
+    {
+      "ad": "2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler › işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)",
+      "konum": "test/whatsapp-w2-onbellek-249.test.mjs:74:3",
+      "hata": "Denetle'den sonra başlayan adımlar ileti göndermemeli (giden 3) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler › iki şirket AYNI WhatsApp hesabında: 002'de süren iş, 001'de Denetle → 002'nin işi de sonraki adımda durur (giden 1)",
+      "konum": "test/whatsapp-w2-onbellek-249.test.mjs:101:3",
+      "hata": "002'nin işinden yeni ileti gitmemeli (giden 3) · 3 !== 1 (beklenen 1, gelen 3)"
+    },
+    {
+      "ad": "2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller › Denetle'de 'Onay Bekliyor' → Meta onayladı → önizleme (taze okuma): kart 'Onaylandı / Evet', pencere Otomatik Gönder; Denetle'ye basılmadı, son denetim zamanı değişmedi",
+      "konum": "test/whatsapp-w2-onbellek-249.test.mjs:126:3",
+      "hata": "gönderim penceresi Otomatik Gönder ile açılmalı (geldi {\"name\":\"destekofis_ekstre\",\"usable\":false,\"statusLabel\":\"Onay Bekliyor\"}) · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller › noteListing (tek değişim yeri): yalnız aynı WABA'nın kaydında, yalnız listede bulunan şablonun Meta alanlarını yazar; kayıttan daha eski okuma ve başka WABA yazmaz",
+      "konum": "test/whatsapp-w2-onbellek-249.test.mjs:160:3",
+      "hata": "templates.mjs noteListing dışa açılmalı · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ac7daa9bc89dacc8b/docs/kanit/2026-11-03/w/eski-e3f74093-w2-onbellek.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093",
+  "ham_cikti_sha256": "b6284f4a6f5fbcdf37681394a1d9d14b9cb1f0fb93e459a73077ea9e4206323d",
+  "ham_cikti_bayt": 9233
+}

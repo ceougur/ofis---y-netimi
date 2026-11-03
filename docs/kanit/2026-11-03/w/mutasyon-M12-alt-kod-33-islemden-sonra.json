@@ -1,0 +1,43 @@
+{
+  "ad": "w/mutasyon-M12-alt-kod-33-islemden-sonra",
+  "komut": "node --test --test-reporter=tap test/whatsapp-w4-hata100-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:12:55.353Z",
+  "sure_sn": 5.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 7,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 W-4 — hata 100 iletisi işleme göre (gerçek program, sahte Meta) › bildirim adresi kaydı 100 'must be subscribed' (ELLE KABUL BULGUSU 3): 'Meta bildirim adresini kaydetmedi … abonelik … Elle Bağla ön koşulları'; kartta Kaydedilemedi nedeni aynı",
+      "konum": "test/whatsapp-w4-hata100-249.test.mjs:41:3",
+      "hata": "Meta bildirim adresi kaydını kabul etmedi (geçersiz değer). (Meta hata kodu 100: (#100) Before override the current callback uri, your app must be subscribed to receive messages for WhatsApp Business Account) (beklenen , gelen Meta bildirim adresi kaydını kabul etmedi (geçersiz değer). (Meta hata kodu 100: (#100) Before override the current callback uri, your app must be subscribed to receive messages for WhatsApp Business Account))"
+    },
+    {
+      "ad": "2.4.9 W-4 değişmez — hata sınıfı (kind / retry) işlemden bağımsız › 100 + alt kod 33 HER işlemde (abonelik iletili olsa da) kimlik başlığı: Phone Number ID, WABA ID ya da App ID; işleme özgü başlık 33'ün önüne geçmez",
+      "konum": "test/whatsapp-w4-hata100-249.test.mjs:173:3",
+      "hata": "phoneNumbers: Meta okuma isteğini kabul etmedi; Telefon Numarası Kimliği (Phone Number ID) ya da WhatsApp Business Hesap Kimliği (WABA ID) yanlış olabilir. (beklenen , gelen Meta okuma isteğini kabul etmedi; Telefon Numarası Kimliği (Phone Number ID) ya da WhatsApp Business Hesap Kimliği (WABA ID) yanlış olabilir.)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ac7daa9bc89dacc8b/docs/kanit/2026-11-03/w/mutasyon-M12-alt-kod-33-islemden-sonra.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2",
+  "ham_cikti_sha256": "a688dba02cb249eff871fa37d866b820af448c95022593cfae87ed6882b7334c",
+  "ham_cikti_bayt": 6930
+}

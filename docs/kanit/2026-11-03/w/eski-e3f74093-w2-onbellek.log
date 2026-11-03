@@ -1,0 +1,174 @@
+TAP version 13
+# (node:17949) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler
+    # Subtest: süren toplu iş, Meta şablonu Pazarlama'ya aldı, kullanıcı Denetle'ye bastı: saat ilerlemeden sonraki adımda iş DURUR (template-marketing), yeni ileti gitmez
+    not ok 1 - süren toplu iş, Meta şablonu Pazarlama'ya aldı, kullanıcı Denetle'ye bastı: saat ilerlemeden sonraki adımda iş DURUR (template-marketing), yeni ileti gitmez
+      ---
+      duration_ms: 848.052528
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:37:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Denetle'den sonra yeni ileti gitmemeli (giden 3)
+        
+        3 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:48:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Denetle'nin Meta okuması düşse de (502) önbellek temizlenir: sonraki adım şablonu taze okur, Pazarlama'yı görüp durur
+    not ok 2 - Denetle'nin Meta okuması düşse de (502) önbellek temizlenir: sonraki adım şablonu taze okur, Pazarlama'yı görüp durur
+      ---
+      duration_ms: 727.864641
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:56:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni ileti gitmemeli (giden 3)
+        
+        3 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:66:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)
+    not ok 3 - işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)
+      ---
+      duration_ms: 885.428994
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:74:3'
+      failureType: 'testCodeFailure'
+      error: "Denetle'den sonra başlayan adımlar ileti göndermemeli (giden 3)"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:93:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket AYNI WhatsApp hesabında: 002'de süren iş, 001'de Denetle → 002'nin işi de sonraki adımda durur (giden 1)
+    not ok 4 - iki şirket AYNI WhatsApp hesabında: 002'de süren iş, 001'de Denetle → 002'nin işi de sonraki adımda durur (giden 1)
+      ---
+      duration_ms: 856.939804
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002'nin işinden yeni ileti gitmemeli (giden 3)
+        
+        3 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:116:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - 2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler
+  ---
+  duration_ms: 3320.063246
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:36:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller
+    # Subtest: Denetle'de 'Onay Bekliyor' → Meta onayladı → önizleme (taze okuma): kart 'Onaylandı / Evet', pencere Otomatik Gönder; Denetle'ye basılmadı, son denetim zamanı değişmedi
+    not ok 1 - Denetle'de 'Onay Bekliyor' → Meta onayladı → önizleme (taze okuma): kart 'Onaylandı / Evet', pencere Otomatik Gönder; Denetle'ye basılmadı, son denetim zamanı değişmedi
+      ---
+      duration_ms: 681.154715
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:126:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        gönderim penceresi Otomatik Gönder ile açılmalı (geldi {"name":"destekofis_ekstre","usable":false,"statusLabel":"Onay Bekliyor"})
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:145:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: noteListing (tek değişim yeri): yalnız aynı WABA'nın kaydında, yalnız listede bulunan şablonun Meta alanlarını yazar; kayıttan daha eski okuma ve başka WABA yazmaz
+    not ok 2 - noteListing (tek değişim yeri): yalnız aynı WABA'nın kaydında, yalnız listede bulunan şablonun Meta alanlarını yazar; kayıttan daha eski okuma ve başka WABA yazmaz
+      ---
+      duration_ms: 1.223618
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:160:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        templates.mjs noteListing dışa açılmalı
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:162:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller
+  ---
+  duration_ms: 682.733096
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-eski-e3f74093/test/whatsapp-w2-onbellek-249.test.mjs:125:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4445.709391

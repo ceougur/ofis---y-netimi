@@ -1,0 +1,38 @@
+{
+  "ad": "w/mutasyon-M02-ttlHours-kabul",
+  "komut": "node --test --test-reporter=tap test/whatsapp-wt-ttl-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:12:05.295Z",
+  "sure_sn": 5.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 7,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 W-T — program şablon teslim süresi (TTL) GÖNDERMEZ, DÜZENLEMEZ; ttlHours kalktı › PUT …/sending-settings { ttlHours } → 400 (alan ttlHours, \"Teslim süresi Meta'nın varsayılanıdır (30 gün); değiştirilemez.\"); GET'te ttlHours yok; günlük sınır ayarı çalışır",
+      "konum": "test/whatsapp-wt-ttl-249.test.mjs:103:3",
+      "hata": "teslim süresi değiştirilemez (geldi 200 {\"ok\":true,\"data\":{\"dailyCap\":null}}) · 200 !== 400 (beklenen 400, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ac7daa9bc89dacc8b/docs/kanit/2026-11-03/w/mutasyon-M02-ttlHours-kabul.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2",
+  "ham_cikti_sha256": "ece20966806c4ed479c31b4be132d9c5a8024a5c8f03caec1d94c0ec78d16299",
+  "ham_cikti_bayt": 5702
+}

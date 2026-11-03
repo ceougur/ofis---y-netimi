@@ -1,0 +1,38 @@
+{
+  "ad": "w/mutasyon-M15-eski-ttlHours-okunur",
+  "komut": "node --test --test-reporter=tap test/whatsapp-wt-ttl-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:13:10.721Z",
+  "sure_sn": 5.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 7,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 W-T — program şablon teslim süresi (TTL) GÖNDERMEZ, DÜZENLEMEZ; ttlHours kalktı › 2.4.8'den kalan kayıtlı ttlHours (12) okunmaz: GET'te yok, şablon açma isteğinde teslim süresi yok; günlük sınır kaydı eski alanı siler",
+      "konum": "test/whatsapp-wt-ttl-249.test.mjs:125:3",
+      "hata": "eski kayıtlı ttlHours okunmamalı (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ac7daa9bc89dacc8b/docs/kanit/2026-11-03/w/mutasyon-M15-eski-ttlHours-okunur.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2",
+  "ham_cikti_sha256": "7fc21bb471570d81422db5b7ae9e92ab41e8a3bac18af81637c9ff49568951e8",
+  "ham_cikti_bayt": 5600
+}
