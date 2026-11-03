@@ -3188,9 +3188,11 @@
     if (!body) return body;
     // 2.3.0 (İz 3.2): tahsilat formunda "Kredi Kartına İade" kutusu — işaretli değilse kart seçicisinin (gizli) değeri gönderilmez (kart yolu POS'tur);
     // işaretliyse POS alanları gönderilmez. Kutusu olmayan formlar (ödeme) eskisi gibi.
+    // 2.4.9 P1 tur 1 (dar kontrol DÜŞÜK-1): kutu formda ve işaretsizse cardRefund: false gönderilir — sunucu önceki satırın kart bağına bakmaz (var olan Kredi
+    // Kartına İade satırında kutu kaldırılınca düzeltme POS'a / başka yola uygulanır; önceden alan düşüyor, satır kartta kalıyordu).
     const refundToggle = "cardRefund" in body;
     const cardRefund = body.cardRefund === true;
-    if (refundToggle && !cardRefund) delete body.cardRefund;
+    if (refundToggle && !cardRefund) body.cardRefund = false;
     const cardId = refundToggle && !cardRefund ? "" : body.cardAccountId;
     delete body.cardAccountId;
     if (method === "card" && cardId) body.bankAccountId = cardId;

@@ -131,6 +131,16 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
        FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? ORDER BY e.date, e.created_at, e.rowid`,
       accountId,
     );
+  // 2.4.9 P1-b (kullanıcı kararı 03.11.2026): müşteride "Kredi Kartına İade" yalnız bu cariye kredi kartıyla yapılmış, silinmemiş bir Ödeme varken (ekrandaki
+  // kutu cari ayrıntısının hasCardPayment bayrağıyla, POST aynı denetimle). Kartla ödeme = çıkış + kart yolu + bağı bir Kredi Kartı hesabı (POS iadesi POS'a
+  // bağlıdır; hesapsız kart satırı fatura / stok POS iadesinden ayırt edilemez, sayılmaz). Tek sorgu (idx_account_entries_account), öğe başına okuma yok.
+  const hasCardPaymentOf = accountId => {
+    try {
+      return Boolean(store.get("SELECT 1 AS found FROM account_entries e JOIN bank_accounts b ON b.id = e.fin_ref AND b.kind = 'card' WHERE e.account_id = ? AND e.kind = 'out' AND e.method = 'card' LIMIT 1", accountId));
+    } catch {
+      return false; // banka tabloları yoksa (göç öncesi veri)
+    }
+  };
 
   // Cari kartındaki taksit kartı özeti (detail ve waFacts AYNI eşlemeyle; İş Z 2.4.8).
   const planSummaryOf = plan => ({ id: plan.id, name: plan.name, refNo: plan.refNo, status: plan.status, state: plan.state, totals: plan.totals, next: plan.next, itemCount: plan.itemCount, registeredOn: plan.registeredOn, total: plan.total, coversBalance: Boolean(plan.coversBalance) });
@@ -175,6 +185,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       side: balanceSide(ledger.totals.balance),
       canManage: manage,
       canCollect: canUser(user, "accounts.collect"),
+      // 2.4.9 P1-b: bu cariye kredi kartıyla yapılmış Ödeme var mı (müşteride Tahsilat formunun "Kredi Kartına İade" kutusu bununla görünür).
+      hasCardPayment: hasCardPaymentOf(account.id),
       // 2.3.0 İz 1 (plan §3.11b/5 "cari kartında Şüpheli Alacak bilgisi"): açık şüpheli, karşılık, tahsil edilen, değersiz yazılan (kuruş).
       doubtful: doubtfulSummary,
       canDoubtful: manage && canUser(user, "accounts.doubtful"),
@@ -957,10 +969,15 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const refOf = (input, body, previous = null) => {
     const module = banking();
     if (!module || !isMoney(input.kind)) return "";
-    const changed = !previous || previous.method !== input.method || Math.abs(roundMoney(previous.amount) - roundMoney(input.amount)) > 0.004 || previous.date !== input.date;
+    const corporate = corporateOf(input, body, previous);
+    // 2.4.9 P1 tur 1: kart yolunun ANLAMI değişirse (Kredi Kartına İade ↔ POS tahsilatı) satır yeni kayıt gibi bağlanır — önceki bağ öbür ailenin hesabıdır
+    // (kart ↔ POS), korunmaz; tek POS / tek kart kendiliğinden, birden çoksa seçim istenir. Önceden kutu kaldırılınca tutar aynıysa satır hesapsız kalırdı.
+    const flipped = Boolean(previous && previous.method === "card" && input.method === "card" && corporateOf({ kind: previous.kind, method: "card" }, {}, previous) !== corporate);
+    const prior = flipped ? null : previous;
+    const changed = !prior || prior.method !== input.method || Math.abs(roundMoney(prior.amount) - roundMoney(input.amount)) > 0.004 || prior.date !== input.date;
     // K2 (plan §3.7 #3, §4.6): cari ödemesinde kart yolu firmanın kartıyla ödemedir (309); tahsilatta POS (2.2.0). Cari "POS İadesi"
     // (posRefund / posRefundOf / posSourceless) çıkış olsa da POS'tur (plan §4.6 "alan belge türüne göre seçilir").
-    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed, corporate: corporateOf(input, body, previous), posId: body.posId, posRefundOf: body.posRefundOf });
+    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous: prior, changed, corporate, posId: body.posId, posRefundOf: body.posRefundOf });
   };
   // 2.2.0: cari "POS İadesi" — kart yolunda müşteriye POS'tan iade (POS'a bağlı önceki satır da öyledir).
   const posRefundOf = (body, previous = null) =>
@@ -968,7 +985,14 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // 2.3.0 (İz 3.2; plan §4.6 "ödeme iadesi (giriş) → Kurumsal Kart, POS satışı oluşmaz, 309 düşer"): cari "Kredi Kartına İade" — tedarikçi parayı
   // firmanın kredi kartına iade etti (cardRefund). Giriş olsa da kart yolu POS değil Kredi Kartı hesabıdır; karta bağlı önceki satır da öyledir.
   const isCardAccount = id => Boolean(id && store.get("SELECT 1 AS found FROM bank_accounts WHERE id = ? AND kind = 'card'", id));
-  const cardRefundOf = (body, previous = null) => body?.cardRefund === true || Boolean(previous && previous.kind === "in" && previous.method === "card" && isCardAccount(previous.finRef));
+  // 2.4.9 P1 tur 1 (dar kontrol DÜŞÜK-1): ekran kutu formdayken işaretsizse cardRefund: false gönderir → önceki satıra bakılmaz (kart iadesi POS'a / başka yola
+  // çevrilir; önceden "Hareket düzeltildi" deyip satır kartta kalıyordu). Alan hiç yoksa (eski istemci, mobil) önceki satırın bağı sürer.
+  const cardRefundOf = (body, previous = null) => body?.cardRefund === true || (body?.cardRefund !== false && Boolean(previous && previous.kind === "in" && previous.method === "card" && isCardAccount(previous.finRef)));
+  // 2.4.9 P1-b: müşteride yeni "Kredi Kartına İade" (POST) yalnız bu cariye kartla Ödeme varken; düzeltmede (PUT) var olan satırlar korunur (kullanıcı kararı).
+  const assertCardRefundRoom = (account, input, body) => {
+    if (account.type === "customer" && input.kind === "in" && input.method === "card" && body?.cardRefund === true && !hasCardPaymentOf(account.id))
+      throw new HttpError(400, "Bu müşteriye kredi kartıyla yapılmış bir ödeme yok; Kredi Kartına İade girilemez. Müşteriden kartla alınan para POS tahsilatıdır: \"Kredi Kartına İade\" işaretini kaldırın.", { code: "card-refund-no-payment", field: "cardRefund" });
+  };
   // Kart yolunun anlamı (plan §4.6 "alan belge türüne göre"): çıkış = kartla ödeme (309) — "POS İadesi" değilse; giriş = POS — "Kredi Kartına İade" değilse.
   const corporateOf = (input, body, previous = null) => (input.kind === "out" ? !posRefundOf(body, previous) : input.kind === "in" && input.method === "card" && cardRefundOf(body, previous));
   const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
@@ -981,6 +1005,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const input = entryInput(body, account.id);
     requireKindRight(user, input.kind);
     assertNormalRoom(account, input);
+    assertCardRefundRoom(account, input, body);
     const finRef = refOf(input, body);
     requireBankOut(user, input.kind, finRef);
     // Yargıç 2.3.0 #6 (15.10.2026): "Kredi Kartına İade" (cardRefund) kart hesabı ister; tanımlı etkin kart yoksa 108.00'a sessiz yazım yok (400).
