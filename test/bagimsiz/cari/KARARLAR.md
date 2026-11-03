@@ -880,3 +880,25 @@ Mutasyon taraması `/3` dosyalarını üç kural setiyle (2.4.9 + 2.4.6 + 2.4.5)
   C1.4 + C1.7 ve C1.8 üzerinden kurar.
 - Excel / Sheets yeniden yükleme, toplu işlem, birleştirme (tasarım §5: cari kaldırmıyor / yok), Şirket Verisini Sıfırla (bilerek hariç), yedekten geri yükleme, kilitli dönem, yetkisiz kullanıcının silmesi,
   mobil yazma (ayrı kâhin), eşzamanlı silme + tahsilat yarışı (C1.6), Silinenler'de kalıcı silme (yok).
+
+### C11e SORU (ders 43 — karar metni susuyor; kâhin bu yolu KURMAZ, kural yazılmadı)
+- **S-Y2k — Aktarım kartına DOĞRUDAN taksit tahsilatı girildikten sonra Geri Al:** B1.6 yalnız "taşınan tahsilatlar cariye taksit dışı döner" der; aktarımdan SONRA karta doğrudan girilen tahsilat
+  (H12 "taksit kartı ve tahsilatları") için ne olacağı yazılı değil — tahsilat Kasa'dadır, aktarımın açtığı cari Geri Al'da kalıcı kalkarsa nakit sahipsiz kalır (müşteri bulgusunun ailesi).
+  **A (öneri):** Geri Al reddedilir (önce kart tahsilatları kaldırılır ya da kart tek tek silinir) — veri kaybı yok, hareket görmüş belge geri alınmaz (Logo / Mikro: işlem görmüş fiş geri
+  alınmaz). **B:** Geri Al yürür, kart tahsilatı cariye taksit dışı tahsilat olarak döner, cari hareketli olduğu için KALIR (C1.10). **Gözlem (kural değil; not defteri `kahin-cari-249-gozlem/`, b02874ba):**
+  program bugün 409 `touched` ile reddediyor (kart, cari, Kasa yerinde) — yani A. Karar A gelirse kâhine `c14f` adımı olarak eklenir.
+
+### C13e Sonuç — b02874ba kodu (C1 kodlanmış; kâhin f1291f02; kanıt `docs/kanit/2026-11-03/kahin-cari/`)
+- **Taban (eski kâhin, değişmeden):** `taban-b02874ba-eski-kahin` 39 senaryo, 7.408/7.408, 141 mutant yakalandı.
+- **Yeni kâhin, bütün varsayılan çağrı (elle 54 + rastgele ux18 / s1 tohum 1–2 × 60 + mutasyon):** `kahin-249-f1291f02-program-b02874ba` 46 senaryo, **8.698/8.698, 0 fark** (yalnız 7 BİLİNEN b3y),
+  okuma hatası 0; "2.4.9 kararıyla değişen beklenti" 630 denetim / 8 senaryo; **166 mutantın hepsi yakalandı** (yeni 150–174 dahil). Yeni senaryolar: c14a 424, c14b 257, c14c 91, c14d 107,
+  c14e 87, c14f 249, c14g 74 denetim — hepsi tuttu.
+- **C1 öncesi kodda (35e90e47, ayrı kopya `git archive`; ders 7, 23, 38):** `kirmizi-c14-eski-kod-35e90e47-kahin-f1291f02` c14a–g + b5: 1.323 denetim, **318 fark** — 297'si "2.4.9 kararıyla değişen"
+  sınıfta (hareketli cari siliniyor: `durum` program "ok" · kâhin "ret", `http` 200 · 409, kart `var` / `bakiye` yok; Geri Al'da tahsilatlı / taslak faturalı aktarım carisi kalkıyor). SINIF DIŞI 21:
+  hepsi müşteri bulgusunun belirtisi — silinen hareketli carinin nakdi `kasa`, `kasaRapor:*`, `mizan:100` / `mizan:120`'den düşüyor (2.4.6 kâhini Kasa düşüşünü hiç modellemediği için sınıfa girmez)
+  ve `sil-m4` (eski Geri Al Silinenler'de tahsilatı olan carisi kalıcı sildi; sonra Sil 404). **c14c eski kodda da yeşil (91/91):** silinmiş cariye SIRALI yazım C1'den önce de reddediliyordu;
+  C1'in düzelttiği eşzamanlı yarış sıralı kâhinde kurulamaz (DENENMEYEN) — c14c'nin dişi mutant 155 / 174.
+- **Eşdeğerlik:** `esdeger-249-f1291f02` (betik `esdeger-249.sh`) — `--kural 2.4.6` / `2.4.5` / `--legacy` çıktıları eski modelle 159/159 bayt bayt aynı + üretici 6/6; c14 dışındaki elle ve rastgele
+  senaryolarda 2.4.9 = 2.4.6, tek fark b5 (`cari_sil`'li: `silinenlerde`, durum etiketi).
+- **Komşu testler (kara kutu):** ekstre-ayrinti-245, mobil-yazma-247, platform-tasinabilirlik, lisans-servisi-izolasyonu, ci-kapi-listesi 42/42. Mobil yazma kâhininin `kabul.json`'u
+  (`cari_model_sha256`) yeniden üretildi: kabul kümesi bayt bayt aynı, yalnız sha satırı değişti (mobil kâhin cari kâhinini `kural 2.4.6` ile kullanır — eşdeğerlik yukarıda).

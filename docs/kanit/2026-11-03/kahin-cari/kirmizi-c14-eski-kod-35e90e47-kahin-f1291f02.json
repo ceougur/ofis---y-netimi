@@ -1,0 +1,158 @@
+{
+  "ad": "kahin-cari/kirmizi-c14-eski-kod-35e90e47-kahin-f1291f02",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs test/bagimsiz/cari/senaryolar/c14a-c1-hareket-turleri.json test/bagimsiz/cari/senaryolar/c14b-c1-silinenler-ve-geri-yukleme.json test/bagimsiz/cari/senaryolar/c14c-c1-silinmis-cariye-yazim.json test/bagimsiz/cari/senaryolar/c14d-c1-ayni-ad.json test/bagimsiz/cari/senaryolar/c14e-c1-pasife-al.json test/bagimsiz/cari/senaryolar/c14f-c1-geri-al-y2.json test/bagimsiz/cari/senaryolar/c14g-c1-kayit-tahsilati.json test/bagimsiz/cari/senaryolar/b5-u1-nihai-tuketici.json --mutasyonsuz --cikti /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/kahin-cari-249-eski-35e90e47-cikti",
+  "commit": "f1291f0298ccc9f3d7702287003e9e31d8d6a784",
+  "dal": "is/kahin-cari-249",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T21:11:23.965Z",
+  "sure_sn": 12.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 1323,
+    "gecen": 1005,
+    "basarisiz": 318,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 318 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] adim:sil-ha:durum: program \"ok\" · kâhin \"ret\" (C1.1 KARAR A + İLKE: hareketi olan cari silinemez → Pasife Al (hareket: H2))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-ha:http: program 200 · kâhin 409 (C1 (iş listesi): hareketli cari silme isteği 409)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-ha:kod: program \"okunamadı\" · kâhin \"account-has-movements\" (C1 tasarım §5 Y1 (onay §13): ret kodu account-has-movements)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] adim:sil-ha:pasifeAl: program \"okunamadı\" · kâhin true (C1.1 KARAR A 'program Pasife Al önerir' — öneri ret iletisinde (deleteBlock ile aynı yer; okuma, İNCELE))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:sil-hac:durum: program \"ok\" · kâhin \"ret\" (C1.1 KARAR A + İLKE: hareketi olan cari silinemez → Pasife Al (hareket: H3))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-hac:http: program 200 · kâhin 409 (C1 (iş listesi): hareketli cari silme isteği 409)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-hac:kod: program \"okunamadı\" · kâhin \"account-has-movements\" (C1 tasarım §5 Y1 (onay §13): ret kodu account-has-movements)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] adim:sil-hac:pasifeAl: program \"okunamadı\" · kâhin true (C1.1 KARAR A 'program Pasife Al önerir' — öneri ret iletisinde (deleteBlock ile aynı yer; okuma, İNCELE))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:sil-hb:durum: program \"ok\" · kâhin \"ret\" (C1.1 KARAR A + İLKE: hareketi olan cari silinemez → Pasife Al (hareket: H2))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-hb:http: program 200 · kâhin 409 (C1 (iş listesi): hareketli cari silme isteği 409)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-hb:kod: program \"okunamadı\" · kâhin \"account-has-movements\" (C1 tasarım §5 Y1 (onay §13): ret kodu account-has-movements)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] adim:sil-hb:pasifeAl: program \"okunamadı\" · kâhin true (C1.1 KARAR A 'program Pasife Al önerir' — öneri ret iletisinde (deleteBlock ile aynı yer; okuma, İNCELE))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-hc:kod: program \"yok\" · kâhin \"account-has-movements\" (C1 tasarım §5 Y1 (onay §13): ret kodu account-has-movements)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] adim:sil-hc:pasifeAl: program false · kâhin true (C1.1 KARAR A 'program Pasife Al önerir' — öneri ret iletisinde (deleteBlock ile aynı yer; okuma, İNCELE))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-he2:kod: program \"yok\" · kâhin \"account-has-movements\" (C1 tasarım §5 Y1 (onay §13): ret kodu account-has-movements)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] adim:sil-he2:pasifeAl: program false · kâhin true (C1.1 KARAR A 'program Pasife Al önerir' — öneri ret iletisinde (deleteBlock ile aynı yer; okuma, İNCELE))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-he:kod: program \"yok\" · kâhin \"account-has-movements\" (C1 tasarım §5 Y1 (onay §13): ret kodu account-has-movements)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] adim:sil-he:pasifeAl: program false · kâhin true (C1.1 KARAR A 'program Pasife Al önerir' — öneri ret iletisinde (deleteBlock ile aynı yer; okuma, İNCELE))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-hf:kod: program \"account-has-invoices\" · kâhin \"account-has-movements\" (C1 tasarım §5 Y1 (onay §13): ret kodu account-has-movements)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:sil-hfi:durum: program \"ok\" · kâhin \"ret\" (C1.1 KARAR A + İLKE: hareketi olan cari silinemez → Pasife Al (hareket: H9))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-hfi:http: program 200 · kâhin 409 (C1 (iş listesi): hareketli cari silme isteği 409)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-hfi:kod: program \"okunamadı\" · kâhin \"account-has-movements\" (C1 tasarım §5 Y1 (onay §13): ret kodu account-has-movements)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[İNCELE YAYGIN] adim:sil-hfi:pasifeAl: program \"okunamadı\" · kâhin true (C1.1 KARAR A 'program Pasife Al önerir' — öneri ret iletisinde (deleteBlock ile aynı yer; okuma, İNCELE))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] adim:sil-hft:durum: program \"ok\" · kâhin \"ret\" (C1.1 KARAR A + İLKE: hareketi olan cari silinemez → Pasife Al (hareket: H9))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] adim:sil-hft:http: program 200 · kâhin 409 (C1 (iş listesi): hareketli cari silme isteği 409)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/kahin-cari/kirmizi-c14-eski-kod-35e90e47-kahin-f1291f02.log",
+  "klasor": "/home/user/wt-kahin-cari-249",
+  "ham_cikti_sha256": "373c5d88380e2264b312e65f1da2eb9ea5db56d7130647e1ceec9c818ccdf084",
+  "ham_cikti_bayt": 49879
+}
