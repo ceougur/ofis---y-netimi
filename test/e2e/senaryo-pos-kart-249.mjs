@@ -11,9 +11,18 @@
 //   T8    tedarikçi − Ödeme Kredi Kartı 300 → 0 kart: hesapsız; 1: kart 1; 2: seçilen kart 2 (kart borcu +300).
 //   T6    tedarikçi + Tahsilat "Kredi Kartına İade" 100 → 0 kart: 400 (kart gerekir), satır yok; 1/2: seçilen kart, POS satışı yok, kart borcu −100.
 //   T7    tedarikçi + Tahsilat, kutu işaretsiz 50 → POS.
-//   T5    (1 ve 2 kart; gerileme koruması) müşteride eski "Kredi Kartına İade" satırı (2.3.0–2.4.2'de girilebiliyordu; API ile) ✎ 120 → 110: kutu işaretli,
-//         kart seçici görünür (2 kartta satırın kartı seçili), kayıt aynı karta, kart etkisi 110/120.
+//   T5    (1 ve 2 kart; gerileme koruması) müşteride eski "Kredi Kartına İade" satırı ✎ 120 → 110: kutu işaretli, kart seçici görünür (2 kartta satırın
+//         kartı seçili), gönderilen gövdede cardRefund true (2 kartta seçilen kart; dar kontrol DÜŞÜK-2), kayıt aynı karta, kart etkisi 110/120. Satır API ile
+//         kartla ödeme varken girilir, ödeme sonra silinir (2.4.9 P1-b: yeni iade yalnız kartla ödemeli müşteride) — kutu satırdan ötürü kalır; yeni Tahsilat'ta yok.
+//   T12   (P1 tur 1, DÜŞÜK-1) aynı satır ✎ kutu kaldırılır → PUT 200, gövde cardRefund false + POS alanları; satır POS'a, etkin POS satışı 110, kart etkisi geri,
+//         POS Bekleyen +110, cari bakiyesi aynı, bildirim "Hareket düzeltildi"; yeniden açılınca kutu yok.
+//   T11   (P1-b, kullanıcı kararı 03.11.2026) aynı adlı ikinci müşteri "ABC Ltd." (ayrı Cari No): − Ödeme Kredi Kartı 400 → + Tahsilat'ta kutu görünür (1/2 kart; 0 kartta
+//         ödeme hesapsızdır, kutu yok); işaretlenince kart seçicisi (2 kartta zorunlu, Bonus seçilir), açıklama "Müşteri parayı kredi kartımıza iade etti";
+//         150 → 200, satır seçilen karta, POS satışı yok, kart borcu −150, POS Bekleyen ve Kasa aynı. Birinci "ABC Ltd."de aynı anda kutu yok.
+//   T13   (DÜŞÜK-1) T11 satırı ✎ kutu kaldırılır + yol Nakit → satır nakit, Kasa +150, kart etkisi geri.
 //   T10   Banka → POS → POS İşlemleri → İade 100 (T1 satışı) → 200, iade 10000, POS Bekleyen −100.
+//   T14   (2 kart; DÜŞÜK-1, 2 POS) ikinci POS eklenir; kartla ödemeli müşterinin iade satırı ✎ kutu kaldırılır, POS2 seçilir → PUT 200, satır POS2'de (önceden
+//         400 "POS yalnız tahsilatta ve POS iadesinde kullanılır…").
 // Her adımda yanıt kodu + gövde, veri tabanındaki satır (hangi hesap), bakiyeler (cari, kartlar, POS Bekleyen, Kasa) ve Mutabakat Testi (ders 3).
 // Pencere seçicisi en üstteki görünür pencere (ders 39); pencere kapatma escClose ile, soru beklentisiyle (ders 34). Sahte saat 08.10.2026 (ders 13);
 // lisans servisi ölü adres (ders 30). Çalıştırma: npm run test:senaryo-pos-kart-249 — çıkış: "N geçti, M kaldı" (kaldıysa 1).
@@ -86,13 +95,16 @@ async function phase(CARDS) {
   const entries = accountId => app.store.all("SELECT id, kind, amount, method, fin_ref AS finRef FROM account_entries WHERE account_id = ? ORDER BY rowid", accountId);
   const entryRow = id => app.store.get("SELECT id, kind, amount, method, fin_ref AS finRef FROM account_entries WHERE id = ?", id);
   const posRows = () => app.store.all("SELECT id, event_id AS eventId, pos_id AS posId, kind, gross_minor AS gross, auth_code AS authCode, status FROM pos_sales ORDER BY rowid");
-  const refName = id => (!id ? "(hesapsız)" : id === ctx.pos?.id ? "POS" : id === ctx.kk1?.id ? "KART1" : id === ctx.kk2?.id ? "KART2" : id === ctx.ziraat?.id ? "ZIRAAT" : id);
+  const refName = id => (!id ? "(hesapsız)" : id === ctx.pos?.id ? "POS" : id === ctx.pos2?.id ? "POS2" : id === ctx.kk1?.id ? "KART1" : id === ctx.kk2?.id ? "KART2" : id === ctx.ziraat?.id ? "ZIRAAT" : id);
+  const eventOf = id => app.store.get("SELECT event_id AS eventId FROM account_entries WHERE id = ?", id)?.eventId || "";
+  const activeSalesOf = id => posRows().filter(p => p.eventId && p.eventId === eventOf(id) && p.status === "active");
   const balanceOf = async id => (id ? (await must("hesap", api.get(`${BANK}/accounts/${id}`))).balanceMinor : null);
   const balances = async () => {
     const summary = await must("banka özeti", api.get(`${BANK}/summary`));
     const cash = await must("Kasa", api.get("/api/workspace/cash"));
     return {
       musteri: (await must("müşteri", api.get(`/api/workspace/accounts/${ctx.abc.id}`))).totals.balance,
+      musteri2: (await must("müşteri 2", api.get(`/api/workspace/accounts/${ctx.abc2.id}`))).totals.balance,
       tedarikci: (await must("tedarikçi", api.get(`/api/workspace/accounts/${ctx.sup.id}`))).totals.balance,
       kart1: await balanceOf(ctx.kk1?.id),
       kart2: await balanceOf(ctx.kk2?.id),
@@ -138,6 +150,15 @@ async function phase(CARDS) {
     await page.selectOption(`${form} select[name="method"]`, value);
     await pause(800);
   };
+  // Kaydedilmeyen form (yalnız bakılan): klavyeyle yazılan tutar kullanıcı girdisidir → "Kaydedilmemiş Değişiklik" sorusu beklenir, "Kaydetmeden Kapat" (ders 34).
+  // Esc'ten önce tutar alanına tıklanır: açık kalan yol listesini (select) kapatan Esc pencereyi kapatmayı boşa düşürmesin.
+  const dropDraft = async label => {
+    await page.click(`${form} input[name="amount"]`);
+    await pause(200);
+    await escClose(page, { expect: "soru-var", step: label });
+    await pause(300);
+    await closeAll("soru-yok", `${label} sonrası`);
+  };
   // Formun kart / POS alanlarının durumu (görünür = ekranda ve gizli bir atanın içinde değil).
   const formState = () =>
     page.evaluate(f => {
@@ -181,12 +202,21 @@ async function phase(CARDS) {
     return { res, status: res?.status ?? 0, sent, formError, open: Boolean(await page.$(form)) };
   };
   const why = r => (r.res ? `${r.status} ${r.res.body.slice(0, 160)}` : `istek yok, form hatası “${r.formError}”`);
+  // 2.4.9 P1 tur 1: son bildirim (kaydedince "… kaydedildi" / "Hareket düzeltildi. Bakiye …").
+  // Önceki bildirimlerin metni saklanır; kaydetten sonra yalnız YENİ ya da yinelenen (aynı metin, "×2" sayacı artan — HOF.toast ikiz bildirimi yeniden
+  // açmaz, sayacını artırır) bildirim okunur. Değişmeyen eski bildirim sayılmaz.
+  const markToasts = () => page.$$eval("#hof-toasts .hof-toast", nodes => nodes.forEach(node => (node.dataset.eski = node.textContent))).catch(() => null);
+  const newToast = () => page.$$eval("#hof-toasts .hof-toast", nodes => (nodes.filter(node => node.dataset.eski !== node.textContent).at(-1)?.textContent || "").replace(/\s+/g, " ").trim()).catch(() => "");
+  const eyebrow = () => textOf(`${top} .hof-eyebrow`);
+  const moneyText = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.abs(value));
 
   try {
     await api.login("admin", PASS);
     await must("sihirbazı kapat", api.post(`${BANK}/setup/dismiss`, {}));
     ctx.abc = await must("müşteri", api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-10-01" }));
     ctx.sup = await must("tedarikçi", api.post("/api/workspace/accounts", { name: "Toptancı A.Ş.", type: "supplier", registeredOn: "2026-10-01" }));
+    // 2.4.9 P1-b: aynı adlı ikinci müşteri (kartla ödeme yalnız buna yapılır; kutu cari bazında).
+    ctx.abc2 = await must("müşteri 2", api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-10-01" }));
     ctx.ziraat = await must("Ziraat", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", usePos: true, useCard: true, opening: { date: "2026-10-01", amount: "100.000", confirmed: true } }));
     ctx.pos = (await must("POS", api.post(`${BANK}/pos`, { name: "Ziraat Fiziki POS", bankAccountId: ctx.ziraat.id, kind: "physical", providerKind: "bank", tax: "bsmv_incl", valorRule: "business", valorDays: 2, installmentPayout: "monthly", provisionDays: 0, refundCommission: "none", merchantNo: "123456789", terminalNo: "T001", validFrom: "2026-10-01", rates: [{ installments: 1, rate: "2,5" }] }))).pos;
     if (CARDS >= 1) ctx.kk1 = await must("kart 1", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "World", kind: "card", parentId: ctx.ziraat.id, creditLimit: "50.000", opening: { date: "2026-10-01", amount: "0", confirmed: true } }));
@@ -395,16 +425,31 @@ async function phase(CARDS) {
       await closeAll(r.open ? "" : "soru-yok", "T7 sonrası");
     });
 
+    let legacyRow = null;
     if (CARDS > 0)
       await step("T5 müşteride eski \"Kredi Kartına İade\" satırının düzeltmesi ✎ 120 → 110 (gerileme koruması)", async () => {
         const b0 = await balances();
+        // 2.4.9 P1-b: yeni iade yalnız kartla ödemeli müşteride → önce kartla Ödeme 50, iade 120, sonra ödeme silinir (satır "eski" kalır: kutu satırdan ötürü).
+        const paid = await must("kartla Ödeme 50", api.post(`/api/workspace/accounts/${ctx.abc.id}/entries`, { kind: "out", method: "card", amount: "50", date: TODAY, ...(CARDS === 2 ? { bankAccountId: ctx.kk2.id } : {}) }));
         const created = await api.post(`/api/workspace/accounts/${ctx.abc.id}/entries`, { kind: "in", method: "card", amount: "120", date: TODAY, cardRefund: true, ...(CARDS === 2 ? { bankAccountId: ctx.kk2.id } : {}) });
         ok(created.status === 200, `API ile müşteriye Kredi Kartına İade 120: ${created.status} ${JSON.stringify(created.data).slice(0, 120)}`);
+        const del = await api.del(`/api/workspace/accounts/${ctx.abc.id}/entries/${paid.entryId}`);
+        ok(del.status === 200, `kartla ödeme silindi: ${del.status}`);
+        ok((await must("müşteri", api.get(`/api/workspace/accounts/${ctx.abc.id}`))).hasCardPayment === false, "ödeme silinince hasCardPayment false");
         const row = entries(ctx.abc.id).find(e => Math.abs(e.amount - 120) < 0.001);
+        legacyRow = row || null;
         ok(row && row.finRef === cardOf.id, `satır ${refName(cardOf.id)}: ${JSON.stringify(row && { ...row, hesap: refName(row.finRef) })}`);
         const b1 = await balances();
         const effect120 = b1[cardKey] - b0[cardKey];
-        ok(Math.abs(effect120) === 12000, `${cardKey} 120 değişti (${b0[cardKey]} → ${b1[cardKey]})`);
+        ok(effect120 === 12000, `${cardKey} 120 değişti (ödeme silindi; ${b0[cardKey]} → ${b1[cardKey]})`);
+        ctx.refundEffect = effect120;
+        // Yeni Tahsilat: kartla ödeme yok → kutu yok (eski iade satırı kutuyu yalnız kendi düzeltmesinde getirir).
+        await openEntry(ctx.abc.id, "in");
+        await typeInto(`${form} input[name="amount"]`, "10");
+        await chooseMethod("card");
+        const fNew = await formState();
+        ok(fNew.refundBox === "yok" && fNew.cardPicker === "yok" && fNew.pos === "görünür", `yeni Tahsilat'ta kutu ve kart seçicisi yok, POS alanı var (${fNew.refundBox}, ${fNew.cardPicker}, ${fNew.pos})`);
+        await dropDraft("T5 yeni Tahsilat (kaydedilmedi)");
         await openEdit(ctx.abc.id, row.id);
         const f = await formState();
         ok(f.refundBox === "görünür" && f.refundChecked === true, `kutu görünür ve işaretli (${f.refundBox}, ${f.refundChecked})`);
@@ -413,13 +458,153 @@ async function phase(CARDS) {
         await typeInto(`${form} input[name="amount"]`, "110");
         const r = await submit("T5 kaydet");
         ok(r.status === 200 && !r.open, `T5 düzeltildi: ${why(r)}`);
+        // Dar kontrol DÜŞÜK-2: gönderilen gövde de okunur — kutu işaretli, 2 kartta seçilen kart, POS alanı yok.
+        ok(r.sent.cardRefund === true && !("posInstallments" in r.sent) && !("posId" in r.sent), `gövde cardRefund true, POS alanı yok: ${JSON.stringify(r.sent)}`);
+        if (CARDS === 2) ok(r.sent.bankAccountId === ctx.kk2.id, `gövdede seçilen kart (${refName(r.sent.bankAccountId)})`);
+        else ok(!("bankAccountId" in r.sent), `tek kartta gövdede kart kimliği yok (satırın bağı sürer): ${JSON.stringify(r.sent)}`);
         const now = entryRow(row.id);
         ok(Math.abs(now.amount - 110) < 0.001 && now.finRef === cardOf.id, `satır 110, ${refName(cardOf.id)}: ${JSON.stringify({ ...now, hesap: refName(now.finRef) })}`);
         const b2 = await balances();
         ok(b2[cardKey] - b0[cardKey] === Math.round((effect120 * 110) / 120), `${cardKey} etkisi 110 (${b0[cardKey]} → ${b2[cardKey]})`);
         ok(b2.posBekleyen === b1.posBekleyen, "POS Bekleyen değişmedi");
+        ctx.cardBeforeLegacy = b0[cardKey];
         await integrity("T5");
         await closeAll(r.open ? "" : "soru-yok", "T5 sonrası");
+      });
+
+    if (CARDS > 0)
+      await step("T12 (DÜŞÜK-1) eski Kredi Kartına İade satırı ✎ kutu kaldırılır → POS tahsilatı", async () => {
+        ok(Boolean(legacyRow), `düzeltilecek satır: ${legacyRow?.id || "yok"}`);
+        if (!legacyRow) return;
+        const before = { bal: await balances(), pos: posRows().length };
+        await openEdit(ctx.abc.id, legacyRow.id);
+        const f0 = await formState();
+        ok(f0.refundBox === "görünür" && f0.refundChecked === true, `kutu görünür ve işaretli (${f0.refundBox}, ${f0.refundChecked})`);
+        await page.click(`${form} input[name="cardRefund"]`);
+        await pause(600);
+        const f = await formState();
+        ok(f.refundChecked === false && f.cardPicker !== "görünür" && f.pos === "görünür" && /Ziraat Fiziki POS POS'una yazılır/.test(f.posText), `kutu kaldırıldı: kart seçicisi gizli, POS alanı görünür (${f.cardPicker}, ${f.pos}: “${f.posText.slice(0, 50)}”)`);
+        ok(/seçilen POS'a yazılır/.test(f.help), `açıklama POS'a göre: “${f.help.slice(0, 70)}”`);
+        await shot("t12-form");
+        await markToasts();
+        const r = await submit("T12 kaydet");
+        ok(r.status === 200 && !r.open && r.res?.method === "PUT", `T12 düzeltildi: ${r.res?.method || ""} ${why(r)}`);
+        ok(r.sent.cardRefund === false && r.sent.posInstallments === "1" && !("bankAccountId" in r.sent) && !("cardAccountId" in r.sent), `gövde cardRefund false, POS alanları var, kart kimliği yok: ${JSON.stringify(r.sent)}`);
+        const now = entryRow(legacyRow.id);
+        ok(now.method === "card" && Math.abs(now.amount - 110) < 0.001 && now.finRef === ctx.pos.id, `satır 110 POS'ta: ${JSON.stringify({ ...now, hesap: refName(now.finRef) })}`);
+        const sales = activeSalesOf(legacyRow.id);
+        ok(sales.length === 1 && sales[0].kind === "sale" && sales[0].gross === 11000 && sales[0].posId === ctx.pos.id, `etkin POS satışı 11000: ${JSON.stringify(sales)}`);
+        const after = await balances();
+        ok(after[cardKey] === ctx.cardBeforeLegacy, `${cardKey} iade etkisi geri alındı (${before.bal[cardKey]} → ${after[cardKey]}; iadeden önce ${ctx.cardBeforeLegacy})`);
+        ok(after.posBekleyen - before.bal.posBekleyen === 11000, `POS Bekleyen +110 (${before.bal.posBekleyen} → ${after.posBekleyen})`);
+        ok(Math.abs(after.musteri - before.bal.musteri) < 0.001, `müşteri bakiyesi aynı (${before.bal.musteri} → ${after.musteri})`);
+        ok(after.kasa === before.bal.kasa, `Kasa değişmedi (${after.kasa})`);
+        const toast = await newToast();
+        ok(/Hareket düzeltildi/.test(toast) && toast.includes(moneyText(after.musteri)), `bildirim: “${toast}”`);
+        await integrity("T12");
+        await closeAll(r.open ? "" : "soru-yok", "T12 sonrası");
+        await openEdit(ctx.abc.id, legacyRow.id);
+        const f2 = await formState();
+        ok(f2.refundBox === "yok" && f2.cardPicker === "yok" && f2.pos === "görünür", `yeniden açılınca kutu yok, POS alanı var (${f2.refundBox}, ${f2.cardPicker}, ${f2.pos})`);
+        await closeAll("soru-yok", "T12 yeniden açılış");
+      });
+
+    let p1bRow = null;
+    await step("T11 (P1-b) aynı adlı ikinci müşteriye − Ödeme Kredi Kartı 400, sonra + Tahsilat Kredi Kartına İade 150", async () => {
+      await openEntry(ctx.abc2.id, "out");
+      ok((await eyebrow()).includes(`No ${ctx.abc2.refNo}`), `pencere başlığında ikinci müşterinin Cari No'su: “${await eyebrow()}”`);
+      await typeInto(`${form} input[name="amount"]`, "400");
+      await chooseMethod("card");
+      if (CARDS === 2) {
+        await page.selectOption(`${form} select[name="cardAccountId"]`, ctx.kk1.id);
+        await pause(400);
+      }
+      const b0 = await balances();
+      const rp = await submit("T11 ödeme kaydet");
+      ok(rp.status === 200 && !rp.open, `kartla Ödeme kaydedildi: ${why(rp)}`);
+      const paidRow = entries(ctx.abc2.id).find(e => e.kind === "out");
+      const payCard = CARDS > 0 ? ctx.kk1 : null;
+      ok(paidRow && paidRow.method === "card" && (paidRow.finRef || "") === (payCard?.id || ""), `ödeme satırı ${refName(payCard?.id || "")}: ${JSON.stringify(paidRow && { ...paidRow, hesap: refName(paidRow.finRef) })}`);
+      const flag = (await must("müşteri 2", api.get(`/api/workspace/accounts/${ctx.abc2.id}`))).hasCardPayment;
+      ok(flag === CARDS > 0, `hasCardPayment ${flag} (${CARDS === 0 ? "0 kartta ödeme hesapsız: sayılmaz" : "kartla ödeme var"})`);
+      await closeAll(rp.open ? "" : "soru-yok", "T11 ödeme sonrası");
+      await openEntry(ctx.abc2.id, "in");
+      await typeInto(`${form} input[name="amount"]`, "150");
+      await chooseMethod("card");
+      const f0 = await formState();
+      if (CARDS === 0) {
+        ok(f0.refundBox === "yok" && f0.cardPicker === "yok" && f0.pos === "görünür", `0 kart: kutu yok (hesapsız ödeme sayılmaz), POS alanı var (${f0.refundBox}, ${f0.cardPicker}, ${f0.pos})`);
+        await dropDraft("T11 0 kart (kaydedilmedi)");
+        return;
+      }
+      ok(f0.refundBox === "görünür" && f0.refundChecked === false && f0.cardPicker !== "görünür" && f0.pos === "görünür", `kartla ödemeli müşteride kutu görünür, işaretsiz; kart seçicisi gizli, POS alanı görünür (${f0.refundBox}, ${f0.refundChecked}, ${f0.cardPicker}, ${f0.pos})`);
+      const label = await page.$eval(`${form} input[name="cardRefund"]`, n => (n.closest("label")?.innerText || "").replace(/\s+/g, " ").trim()).catch(() => "");
+      ok(/Kredi Kartına İade/.test(label) && /müşteri parayı/.test(label) && !/tedarikçi/.test(label), `kutu etiketi müşteriye göre: “${label}”`);
+      await page.click(`${form} input[name="cardRefund"]`);
+      await pause(600);
+      const f = await formState();
+      ok(f.cardPicker === "görünür" && f.pos !== "görünür", `işaretli: kart seçicisi görünür, POS alanı gizli (${f.cardPicker}, ${f.pos})`);
+      ok(/Müşteri parayı kredi kartımıza iade etti/.test(f.help), `açıklama: “${f.help.slice(0, 80)}”`);
+      if (CARDS === 2) {
+        ok(f.cardRequired === true, "2 kart: kart seçimi zorunlu");
+        await page.selectOption(`${form} select[name="cardAccountId"]`, ctx.kk2.id);
+        await pause(400);
+      }
+      await shot("t11-form");
+      const before = { pos: posRows().length, bal: await balances() };
+      const r = await submit("T11 iade kaydet");
+      ok(r.status === 200 && !r.open, `T11 kaydedildi: ${why(r)}`);
+      ok(r.sent.cardRefund === true && !("posInstallments" in r.sent) && !("posId" in r.sent), `gövde cardRefund true, POS alanı yok: ${JSON.stringify(r.sent)}`);
+      if (CARDS === 2) ok(r.sent.bankAccountId === ctx.kk2.id, `gövdede seçilen kart (${refName(r.sent.bankAccountId)})`);
+      const fresh = entries(ctx.abc2.id).filter(e => e.kind === "in");
+      p1bRow = fresh[0] || null;
+      ok(fresh.length === 1 && fresh[0].method === "card" && Math.abs(fresh[0].amount - 150) < 0.001 && fresh[0].finRef === cardOf.id, `satır ${refName(cardOf.id)}: ${JSON.stringify(fresh.map(e => ({ ...e, hesap: refName(e.finRef) })))}`);
+      ok(posRows().length === before.pos, `POS satışı oluşmadı (${before.pos} → ${posRows().length})`);
+      const after = await balances();
+      ok(after[cardKey] - before.bal[cardKey] === 15000, `${cardKey} borcu 150 azaldı (${before.bal[cardKey]} → ${after[cardKey]})`);
+      ok(CARDS === 1 || after.kart1 === before.bal.kart1, `kart1 (ödemenin kartı) değişmedi (${before.bal.kart1} → ${after.kart1})`);
+      ok(Math.abs(after.musteri2 - (before.bal.musteri2 - 150)) < 0.001, `ikinci müşterinin bakiyesi −150 (${before.bal.musteri2} → ${after.musteri2})`);
+      ok(after.posBekleyen === before.bal.posBekleyen && after.kasa === before.bal.kasa, "POS Bekleyen ve Kasa değişmedi");
+      ok(Math.abs(after.musteri - b0.musteri) < 0.001, `birinci müşterinin bakiyesi değişmedi (${b0.musteri} → ${after.musteri})`);
+      await integrity("T11");
+      await closeAll(r.open ? "" : "soru-yok", "T11 sonrası");
+      // Birinci "ABC Ltd." (kartla ödemesi yok): kutu yok.
+      await openEntry(ctx.abc.id, "in");
+      ok((await eyebrow()).includes(`No ${ctx.abc.refNo}`), `birinci müşteri: “${await eyebrow()}”`);
+      await typeInto(`${form} input[name="amount"]`, "10");
+      await chooseMethod("card");
+      const fFirst = await formState();
+      ok(fFirst.refundBox === "yok" && fFirst.cardPicker === "yok", `birinci müşteride kutu ve kart seçicisi yok (${fFirst.refundBox}, ${fFirst.cardPicker})`);
+      await dropDraft("T11 birinci müşteri (kaydedilmedi)");
+    });
+
+    if (CARDS > 0)
+      await step("T13 (DÜŞÜK-1) T11 iadesi ✎ kutu kaldırılır, yol Nakit → nakit tahsilat", async () => {
+        ok(Boolean(p1bRow), `düzeltilecek satır: ${p1bRow?.id || "yok"}`);
+        if (!p1bRow) return;
+        const before = await balances();
+        await openEdit(ctx.abc2.id, p1bRow.id);
+        const f0 = await formState();
+        ok(f0.refundBox === "görünür" && f0.refundChecked === true, `kutu görünür ve işaretli (${f0.refundBox}, ${f0.refundChecked})`);
+        await page.click(`${form} input[name="cardRefund"]`);
+        await pause(400);
+        await chooseMethod("cash");
+        const f = await formState();
+        ok(f.refundBox === "gizli" && f.cardPicker !== "görünür" && f.pos !== "görünür", `Nakit: kutu, kart seçicisi ve POS alanı gizli (${f.refundBox}, ${f.cardPicker}, ${f.pos})`);
+        await markToasts();
+        const r = await submit("T13 kaydet");
+        ok(r.status === 200 && !r.open && r.res?.method === "PUT", `T13 düzeltildi: ${r.res?.method || ""} ${why(r)}`);
+        ok(r.sent.method === "cash" && r.sent.cardRefund === false && !("bankAccountId" in r.sent) && !("posInstallments" in r.sent), `gövde: Nakit, cardRefund false, hesap / POS alanı yok — ${JSON.stringify(r.sent)}`);
+        const now = entryRow(p1bRow.id);
+        ok(now.method === "cash" && !now.finRef && Math.abs(now.amount - 150) < 0.001, `satır nakit 150: ${JSON.stringify({ ...now, hesap: refName(now.finRef) })}`);
+        const after = await balances();
+        ok(Math.abs(after.kasa - before.kasa - 150) < 0.001, `Kasa +150 (${before.kasa} → ${after.kasa})`);
+        ok(after[cardKey] - before[cardKey] === -15000, `${cardKey} iade etkisi geri alındı (${before[cardKey]} → ${after[cardKey]})`);
+        ok(Math.abs(after.musteri2 - before.musteri2) < 0.001 && after.posBekleyen === before.posBekleyen, `ikinci müşterinin bakiyesi (${after.musteri2}) ve POS Bekleyen aynı`);
+        const toast = await newToast();
+        ok(/Hareket düzeltildi/.test(toast), `bildirim: “${toast}”`);
+        await integrity("T13");
+        await closeAll(r.open ? "" : "soru-yok", "T13 sonrası");
       });
 
     await step("T10 Banka → POS → POS İşlemleri → İade 100 (T1 satışı)", async () => {
@@ -449,11 +634,42 @@ async function phase(CARDS) {
       await closeAll(r.open ? "" : "soru-yok", "T10 sonrası");
     });
 
+    if (CARDS === 2)
+      await step("T14 (DÜŞÜK-1, 2 POS) kartla ödemeli müşterinin Kredi Kartına İade satırı ✎ kutu kaldırılır, POS2 seçilir", async () => {
+        ctx.pos2 = (await must("POS 2", api.post(`${BANK}/pos`, { name: "Ziraat Sanal POS", bankAccountId: ctx.ziraat.id, kind: "physical", providerKind: "bank", tax: "bsmv_incl", valorRule: "business", valorDays: 2, installmentPayout: "monthly", provisionDays: 0, refundCommission: "none", merchantNo: "123456789", terminalNo: "T002", validFrom: "2026-10-01", rates: [{ installments: 1, rate: "2,5" }] }))).pos;
+        const created = await must("iade 90", api.post(`/api/workspace/accounts/${ctx.abc2.id}/entries`, { kind: "in", method: "card", amount: "90", date: TODAY, cardRefund: true, bankAccountId: ctx.kk2.id }));
+        const row = entryRow(created.entryId);
+        ok(row?.finRef === ctx.kk2.id, `satır KART2: ${JSON.stringify(row && { ...row, hesap: refName(row.finRef) })}`);
+        const before = await balances();
+        await openEdit(ctx.abc2.id, created.entryId);
+        await page.click(`${form} input[name="cardRefund"]`);
+        await pause(600);
+        const f = await formState();
+        ok(f.pos === "görünür" && (await page.$(`${form} select[name="posId"]`)) !== null, `kutu kaldırıldı: POS seçici görünür (${f.pos}: “${f.posText.slice(0, 60)}”)`);
+        await page.selectOption(`${form} select[name="posId"]`, ctx.pos2.id);
+        await pause(500);
+        const r = await submit("T14 kaydet");
+        ok(r.status === 200 && !r.open && r.res?.method === "PUT", `T14 düzeltildi: ${r.res?.method || ""} ${why(r)}`);
+        ok(r.sent.cardRefund === false && r.sent.posId === ctx.pos2.id && !("bankAccountId" in r.sent), `gövde cardRefund false, posId POS2: ${JSON.stringify(r.sent)}`);
+        const now = entryRow(created.entryId);
+        ok(now.finRef === ctx.pos2.id && Math.abs(now.amount - 90) < 0.001, `satır POS2'de: ${JSON.stringify({ ...now, hesap: refName(now.finRef) })}`);
+        const sales = activeSalesOf(created.entryId);
+        ok(sales.length === 1 && sales[0].posId === ctx.pos2.id && sales[0].gross === 9000, `POS2'de etkin satış 9000: ${JSON.stringify(sales)}`);
+        const after = await balances();
+        ok(after.kart2 - before.kart2 === -9000, `kart2 iade etkisi geri alındı (${before.kart2} → ${after.kart2})`);
+        ok(after.posBekleyen - before.posBekleyen === 9000, `POS Bekleyen +90 (${before.posBekleyen} → ${after.posBekleyen})`);
+        await integrity("T14");
+        await closeAll(r.open ? "" : "soru-yok", "T14 sonrası");
+      });
+
     const final = await balances();
     console.log(`\n  · [${CARDS} kart] son bakiyeler: ${JSON.stringify(final)}`);
     console.log(`  · [${CARDS} kart] müşteri satırları: ${JSON.stringify(entries(ctx.abc.id).map(e => [e.kind, e.amount, e.method, refName(e.finRef)]))}`);
     console.log(`  · [${CARDS} kart] tedarikçi satırları: ${JSON.stringify(entries(ctx.sup.id).map(e => [e.kind, e.amount, e.method, refName(e.finRef)]))}`);
-    ok(final.kasa === 0, `Kasa 0 (POS / kart Kasa'ya girmez): ${final.kasa}`);
+    console.log(`  · [${CARDS} kart] ikinci müşteri satırları: ${JSON.stringify(entries(ctx.abc2.id).map(e => [e.kind, e.amount, e.method, refName(e.finRef)]))}`);
+    // POS / kart Kasa'ya girmez; yalnız T13'ün Nakit'e çevrilen 150'si (1/2 kart).
+    const kasaWant = CARDS > 0 ? 150 : 0;
+    ok(Math.abs(final.kasa - kasaWant) < 0.001, `Kasa ${kasaWant} (POS / kart Kasa'ya girmez; T13 Nakit 150): ${final.kasa}`);
     await context.close();
   } catch (error) {
     failed += 1;
