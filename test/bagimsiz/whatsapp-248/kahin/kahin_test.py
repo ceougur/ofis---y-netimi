@@ -377,6 +377,8 @@ MUTASYON_IPUCU = {
     "M161": "J10-05-b-r3-yine-de-gonder-onceki-teslim-ikinci-kopya-gider", "M162": "ICERIK-08-tum-hareketler",
     "M163": "ICERIK-09-kuyrukta-bakiye-degisti", "M164": "J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez",
     "M165": "J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz",
+    "M7": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz", "M166": "W1-03-meta-bildirir-12-sa-sablon-basina", "M167": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz",
+    "M168": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz", "M169": "W1-03-meta-bildirir-12-sa-sablon-basina", "M170": "W2-01-kabulde-bilinmiyor-sonra-12-sa",
 }
 
 
@@ -528,11 +530,11 @@ def _i1():
     return h
 
 
-@test("I karar izlenebilirliği: K1–K8, D1–D8, E1–E4, N6 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
+@test("I karar izlenebilirliği: K1–K8, D1–D8, E1–E4, N6 … J12, W1 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)")
 def _i2():
     h = []
     for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5", "G6", "H1", "H2", "H3", "H4",
-              "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11", "J12"):
+              "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11", "J12", "W1", "W2"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -575,7 +577,7 @@ def _i4():
         if isinstance(o, list):
             return [y for i, v in enumerate(o) for y in gez(v, f"{yol}[{i}]")]
         return []
-    eski = [s for s in TUM if not (len(s["baslik"]) in (2, 3) and s["baslik"][0] in "KDENFGHJ" and s["baslik"][1:].isdigit())]
+    eski = [s for s in TUM if not (len(s["baslik"]) in (2, 3) and s["baslik"][0] in "KDENFGHJW" and s["baslik"][1:].isdigit())]
     for s in eski:
         r = beklenen(s)[0]["sonuc"]
         if gez(r) or "yeniden" in r or "listeler" in r:

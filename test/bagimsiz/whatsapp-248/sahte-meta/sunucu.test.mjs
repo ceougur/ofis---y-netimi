@@ -421,6 +421,22 @@ test("şablon listesi: fields + status süzgeci, quality_score {score,date}, say
   } finally { await s.kapat(); }
 });
 
+test("şablon teslim süresi (message_send_ttl_seconds, D0): yalnız tanımlıysa listede ve tek okumada görünür; tanımsızsa alan yok (kâhin güncellemesi 10)", async () => {
+  const s = await sahteMetaBaslat({ senaryo: { sablonlar: [{ ...EKSTRE, message_send_ttl_seconds: 43200 }, HATIRLATMA] } });
+  try {
+    const liste = await graph(s, `/v26.0/${WABA}/message_templates?fields=name,status,category,message_send_ttl_seconds`);
+    const e = liste.govde.data.find(x => x.name === "destekofis_ekstre");
+    const h = liste.govde.data.find(x => x.name === "destekofis_odeme_hatirlatma");
+    assert.equal(e.message_send_ttl_seconds, 43200);
+    assert.equal("message_send_ttl_seconds" in h, false);
+    const tek = await graph(s, `/v26.0/${e.id}?fields=message_send_ttl_seconds`);
+    assert.deepEqual(tek.govde, { message_send_ttl_seconds: 43200, id: e.id });
+    const alansiz = await graph(s, `/v26.0/${WABA}/message_templates`);
+    assert.equal(alansiz.govde.data.find(x => x.name === "destekofis_ekstre").message_send_ttl_seconds, 43200);
+    assert.equal("message_send_ttl_seconds" in alansiz.govde.data.find(x => x.name === "destekofis_odeme_hatirlatma"), false);
+  } finally { await s.kapat(); }
+});
+
 test("şablon silme: ada göre; onaylı silinen ad 30 gün açılamaz (D0 kod); DISABLED silinemez; düzenleme sınırları", async () => {
   const s = await kur();
   try {

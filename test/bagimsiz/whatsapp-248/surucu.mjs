@@ -361,6 +361,12 @@ async function kos(sen, uc, secenek) {
     destekofis_odeme_hatirlatma: { durum: "APPROVED", kategori: "UTILITY" },
     ...JSON.parse(JSON.stringify(meta0.sablonlar || {})),
   };
+  // S-33 (kâhin güncellemesi 10, W1 — KULLANICI KARARI 03.11.2026, README §15): teslim süresi = Meta'nın şablon listesinde bildirdiği değer (senaryo
+  // meta.sablonlar.<ad>.teslim_suresi_sn → sahte Meta message_send_ttl_seconds), yoksa 30 gün; 2.4.8'in 72 sa'i OKUNMAZ. Sürücü bunları yalnız bakım turunun
+  // "Süresi Doldu"yu yazabileceği saat anları için kullanır (aşağıda ttlAdaylari).
+  // W2 (W-KÖK): senaryo süreyi sonradan değiştirebilir (meta_sablon teslim_suresi_sn) — olaylardaki değerler de aday.
+  const ttlSureleri = [...new Set([30 * GUN, ...[...Object.values(sablonDurum), ...(g.olaylar || []).filter(o => o.tur === "meta_sablon")]
+    .map(st => Number(st?.teslim_suresi_sn) * SN).filter(x => Number.isFinite(x) && x > 0)])];
 
   // ---- sahte Meta ----
   const basamak = BASAMAK_ADI[meta0.basamak ?? 250] || "TIER_250";
@@ -369,7 +375,8 @@ async function kos(sen, uc, secenek) {
     const ekle = (name, components) => {
       const st = sablonDurum[name] || {};
       if (!st.durum) return;
-      out.push({ waba: wabaId, name, language: "tr", status: st.durum, category: st.kategori || "UTILITY", components });
+      const ttl = st.teslim_suresi_sn && !mut("SW-teslim-suresi-verilmez") ? { message_send_ttl_seconds: st.teslim_suresi_sn } : {}; // S-33
+      out.push({ waba: wabaId, name, language: "tr", status: st.durum, category: st.kategori || "UTILITY", components, ...ttl });
     };
     ekle("destekofis_ekstre", [
       { type: "HEADER", format: "DOCUMENT" },
@@ -875,6 +882,12 @@ async function kos(sen, uc, secenek) {
         if (r.status !== 200 && ayar.bagli) throw new Error(`onay ${s}: ${r.status} ${JSON.stringify(r.data)}`);
       }
       if (ayar.gunluk_ust_sinir && !mut("S14-gunluk-sinir-yok-sayilir")) await sart(`sınır ${s}`, api(A, "PUT", ekle("/api/workspace/whatsapp/sending-settings", s), { dailyCap: ayar.gunluk_ust_sinir }));
+      if (ayar.eski_ttl_saat) {
+        // S-33: 2.4.8'den kalan teslim süresi ayarı (ttlHours). Karar §15: "PUT …/sending-settings ttlHours → 400"; kâhin ayarı OKUMAZ. Program ayarı kabul ederse (200) ve
+        // kullanırsa fark W1-01'de görülür. 2.4.8'in GERÇEK kodunun yazdığı kaydı bu sürücü üretmez (DENENMEYEN, README §15).
+        const r = await api(A, "PUT", ekle("/api/workspace/whatsapp/sending-settings", s), { ttlHours: ayar.eski_ttl_saat });
+        notlar.push(`S-33 eski teslim süresi ayarı ttlHours=${ayar.eski_ttl_saat} (${s}) → HTTP ${r.status}${r.status === 400 ? " (karar §15: 400 beklenir)" : " — KARAR §15 400 diyor"}`);
+      }
     }
     // ---- kullanıcılar ----
     for (const [ad, yetki] of Object.entries(kullanicilar)) {
@@ -1246,11 +1259,14 @@ async function kos(sen, uc, secenek) {
         return;
       }
       if (tur === "meta_sablon") {
-        sablonDurum[o.ad] = { ...(sablonDurum[o.ad] || {}), ...(o.durum !== undefined ? { durum: o.durum } : {}), ...(o.kategori !== undefined ? { kategori: o.kategori } : {}) };
+        sablonDurum[o.ad] = { ...(sablonDurum[o.ad] || {}), ...(o.durum !== undefined ? { durum: o.durum } : {}), ...(o.kategori !== undefined ? { kategori: o.kategori } : {}),
+          ...(o.teslim_suresi_sn !== undefined ? { teslim_suresi_sn: o.teslim_suresi_sn } : {}) };
         for (const s of meta.meta.sablonlar.filter(x => x.name === o.ad && !x.silindi)) {
           if (o.durum) s.status = o.durum;
           if (o.durum === null) s.silindi = true;
           if (o.kategori) s.category = o.kategori;
+          // S-33 / W2 (W-KÖK): Meta listesindeki teslim süresi değişir (null = artık bildirmez)
+          if (o.teslim_suresi_sn !== undefined && !mut("SW-teslim-suresi-verilmez")) s.message_send_ttl_seconds = o.teslim_suresi_sn ?? undefined;
         }
         return;
       }
@@ -1546,12 +1562,17 @@ async function kos(sen, uc, secenek) {
           }
         }
         if (program) {
-          // Kabul edilen iletinin TTL anı (bakım turu "Süresi Doldu"yu bu anda yazabilsin).
-          const ttlSaat = 72;
+          // Kabul edilen iletinin TTL anı (bakım turu "Süresi Doldu"yu bu anda yazabilsin). S-33 (kâhin güncellemesi 10): süre kâhinin kuralından (ttlSureleri:
+          // Meta'nın bildirdiği değer(ler) + 30 gün; 2.4.8'in 72 sa'i değil). İşin şablonunu sürücü okumadığı için her olası süre için aday konur; payın iki okuması
+          // (README §15 S10-1) için süre ve süre + 1 sa. Fazla aday yalnız bakım turunu bir kez daha koşturur (kâhinin beklentisini değiştirmez).
           for (const s of sirketler) {
             for (const row of db(s)?.all("SELECT accepted_at AS at FROM wa_jobs WHERE state IN ('accepted', 'sent') AND accepted_at IS NOT NULL") || []) {
-              const t = Date.parse(row.at) + (ttlSaat + 1) * SA + 1;
-              if (t > simdi && !ttlAdaylari.includes(t)) ttlAdaylari.push(t);
+              for (const sure of ttlSureleri) {
+                for (const pay of [0, SA]) {
+                  const t = Date.parse(row.at) + sure + pay + 1;
+                  if (t > simdi && !ttlAdaylari.includes(t)) ttlAdaylari.push(t);
+                }
+              }
             }
           }
         }
@@ -1578,6 +1599,14 @@ async function kos(sen, uc, secenek) {
     const okuma = await goruntu();
     const isler = isleriTopla(okuma);
     const kayit = meta.kayit();
+    {
+      // S-33 tanı (kâhin güncellemesi 10; YALNIZ not, karşılaştırmaya girmez): programın Meta şablon okumalarında istediği alanlar ve teslim süresi gönderen istek sayısı
+      // (karar §15: program TTL GÖNDERMEZ / DÜZENLEMEZ; "Süresi Doldu" Meta listesinin bildirdiği değerle).
+      const sablonOkuma = kayit.istekler.filter(i => i.yontem === "GET" && (/message_templates/.test(i.yol || "") || /^templates/.test(i.islem || "")));
+      const alanlar = [...new Set(sablonOkuma.map(i => i.sorgu?.fields || "(fields yok)"))];
+      const ttlGonderen = kayit.istekler.filter(i => i.yontem === "POST" && i.govde && typeof i.govde === "object" && "message_send_ttl_seconds" in i.govde).length;
+      notlar.push(`S-33 şablon okuması ${sablonOkuma.length}; istenen alanlar: ${alanlar.join(" | ") || "—"}; teslim süresi gönderen istek: ${ttlGonderen}`);
+    }
     const istekIs = new Map(); // iş kimliği → ileti isteği sayısı
     for (const i of kayit.istekler.filter(x => x.islem === "messages")) {
       const id = i.govde?.biz_opaque_callback_data;
@@ -2092,6 +2121,7 @@ const MUTASYONLAR = [
   ["S24-onarim-eslenmez", "J7-01*,J7-02*", "S-24 onarım bekleyen kabul reddi → onarim_bekleyen_kabul (9d: J7 artık geçerli, gec_kabul 10 sn)"],
   ["S30-tum-araligi-okunmaz", "J11-01*,J11-02*,ICERIK-08*,J12-02*", "S-30 Tüm Hareketler PDF dönemi okunur"],
   ["S32-degiskenler-programdan", "ICERIK-09*,J12-01*,J12-03*", "S-32 değişkenler Meta'ya gidenden"],
+  ["SW-teslim-suresi-verilmez", "W1-03*,TARIH-02*,W2-02*", "S-33 Meta'nın şablon listesindeki teslim süresi (teslim_suresi_sn → message_send_ttl_seconds) sahte Meta'ya verilir"],
 ];
 
 const sonuclar = [];

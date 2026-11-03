@@ -33,6 +33,9 @@ kuyrukta hareket girse / yeniden gönderilse de değişmez (§7a 1'in ekstre yor
 Tüm Hareketler'e açılış gününden sonra tarihli hareket girmez — README §14.13.
 GÜNCELLEME 9d (liste metni madde 7): J7 "onarım bekleyen kabul" = Meta kabul etti ama kabul GÖNDERİM DEFTERİNE yazılamadı (`defter_yazilamaz`); onarım = defter yeniden
 yazılabilir olunca; eski "defterde var, şirket dosyasına yazılamadı" okuması (dosya_yazilamaz) KALKTI — README §14.15.
+GÜNCELLEME 10 (2.4.9 W, KULLANICI KARARI 03.11.2026, W1): teslim süresi = Meta'nın şablon listesinde o şablon için bildirdiği değer (teslim_suresi_sn), yoksa
+30 gün (+1 sa payı; son kabul edilen denemeden, J4; W2 W-KÖK: süre KABUL ANINDAKİ değer); 2.4.8'in 72 sa ayarı okunmaz; Meta API medyayı 30 günde kendisi siler (Meta'da silme sayısı yalnız 30 günü
+dolmamış medyayı sayar, 30 günden eski medya yeniden kullanılmaz) — README §15.
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -135,8 +138,10 @@ GECICI = {131000, 131016, 130429, 80007, 4, 131057, 1, 2, 133004}   # §7a 12, 1
 SINIR_KODLARI = {131048}                                                       # §7a 12 → madde 30
 GECICI_DIZI = (30 * SN, 2 * DK, 15 * DK)                                        # §7a 15: 30 sn → 2 dk → 15 dk, sonra Başarısız
 ICERIK_SABLON = {"ekstre": "destekofis_ekstre", "hatirlatma": "destekofis_odeme_hatirlatma"}
-TTL = 72 * SA          # §11 S2 A
-TTL_PAYI = 1 * SA      # §6 W2
+TTL_VARSAYILAN = 30 * GUN   # W1 (KULLANICI KARARI 03.11.2026, W §15): Meta listesinde değer yoksa 30 gün (Meta varsayılanı; program TTL göndermez/düzenlemez)
+TTL_ESKI_248 = 72 * SA      # 2.4.8'in teslim süresi (§11 S2 A "3 gün"; ttlHours 72) — 2.4.9'da OKUNMAZ (yalnız M7, W1 Y10-4)
+TTL_PAYI = 1 * SA           # §6 W2 + §7a 16 "TTL + 1 sa"; W §15 "(+1 sa)" (Y10-2)
+MEDYA_OMRU = 30 * GUN       # Meta belgesi: API medya kimliği 30 gün (sahte Meta medyaOmruMs) — Y10-7
 KANCA_OMRU = 7 * GUN   # Meta: 7 güne kadar yeniden deneme; §7a 16 "son 7 günde en az bir kanca"
 UCRET_USD = Decimal("0.0009")
 
@@ -161,7 +166,7 @@ MUTASYONLAR = {
     "M4": "PDF (medya) kesinleşmeden, kabulde silinir",
     "M5": "aynı cari iki kez seçilince iki iş",
     "M6": "sınır kayan 24 saat yerine takvim günü",
-    "M7": "TTL 3 gün yerine 30 gün",
+    "M7": "W1 (Y10-4): Meta bildirmezse 2.4.8'in 72 sa teslim süresi (ttlHours / eski varsayılan) kullanılır — 30 gün yerine (eski M7'nin TERSİ)",
     "M8": "şablon durumu/kategorisi başlatmada denetlenmez",
     "M9": "5 ardışık geçici hatada duraklamaz",
     "M10": "hesap/şablon hatası toplu işi duraklatmaz",
@@ -329,6 +334,12 @@ MUTASYONLAR = {
     "M164": "J12 + Y9d-3: Tüm Hareketler içeriğine açılış gününden sonra tarihli hareket girer (eski 'bütün hesap')",
     # ---- kâhin güncellemesi 9d (J7 düzeltmesi, liste metni madde 7) ----
     "M165": "J7 (Y9e-2): defter yeniden yazılabilir olunca eksik kabul onarılmaz (yeni gönderim düğmesi pasif kalır)",
+    # ---- kâhin güncellemesi 10 (2.4.9 W, KULLANICI KARARI 03.11.2026: teslim süresi 30 gün) ----
+    "M166": "W1 (Y10-1): Meta'nın şablon listesinde bildirdiği teslim süresi yok sayılır (hep 30 gün)",
+    "M167": "W1 (Y10-2): 1 saatlik pay yok — Süresi Doldu tam süre dolunca (30. günde)",
+    "M168": "W1 (Y10-7): Meta medyayı 30 günde silmez — 30 günden eski PDF'in kesinleşmede silinmesi Meta'da sayılır",
+    "M169": "W1 (Y10-8): bir şablonda bildirilen teslim süresi bütün şablonlara uygulanır (şablon başına değil)",
+    "M170": "W2 (W-KÖK, Y10-10): teslim süresi kabul anındaki değerden değil Meta'nın GÜNCEL listesinden (sonradan kısalan süre önceden kabul edilmiş işe uygulanır)",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -475,6 +486,21 @@ KARARLAR = {
             "metin": ["'Gönderim günü' = gönderimin açıldığı, ekstrenin ve bakiyenin hazırlandığı gün. İleti metni PDF'teki dönem ve bakiyeyle aynı kalır (ekstre tarihi = "
                       "düzenleme tarihi, yaygın uygulama).",
                       "sorunun metni: \"Ekstre PDF'i ve bakiye açılış gününde hazırlanıyor\""]},
+    "W1": {"kaynak_turu": "kullanıcı (KARAR 03.11.2026 ~18:45 UTC, W SORU T0) + ana oturum onayı (~18:50 UTC) — docs/2.4.9-IS-LISTESI.md ve "
+                          "docs/2.4.9-tasarim/W-whatsapp-sablon.md §15, AYNEN; J4 metnindeki \"(3 gün)\"ün YERİNE",
+           "metin": ["KULLANICI KARARI (03.11 ~18:45 UTC, W SORU T0): Meta'nın utility'de izin verdiği en uzun özel süre 12 SAAT çıktı → kullanıcı \"30 gün (Meta varsayılanı)\" "
+                     "seçti; SORU 1 A DEĞİŞTİ: program TTL göndermez/düzenlemez, ttlHours (72) kalkar, Süresi Doldu = Meta'nın bildirdiği değer yoksa 30 gün. T1, T2 düştü.",
+                     "KULLANICI (AskUserQuestion, 03.11; SORU T0, 12 saatlik üst sınır öğrenildikten sonra KARAR 03.11 SORU 1 A'yı DEĞİŞTİRDİ): TESLİM SÜRESİ = 30 GÜN (Meta "
+                     "varsayılanı). Program şablon açarken TTL GÖNDERMEZ, onaylı şablonun TTL'ini DÜZENLEMEZ. SORU T1 ve T2 bu kararla DÜŞER (30 günde bildirim kaçma "
+                     "penceresi pratikte yok, §7).",
+                     "\"Süresi Doldu\" ve PDF silme: Meta listesinin bildirdiği değer varsa o, yoksa 30 gün (+1 sa) […]. Kayıtlı eski TTL ret/düzenleme kayıtları okunmaz, "
+                     "zarar vermez; eski kurulumlarda 72 sa ile açılmış şablon varsa (Meta reddettiği için yok) liste değeri geçerli.",
+                     "W kâhini (kahin.py TTL = 72 sa) KODU GÖRMEYEN ayrı ajanla karar metninden 30 güne güncellenir (ders 5, 40) — kod ajanı kâhine dokunmaz."]},
+    "W2": {"kaynak_turu": "kullanıcı (03.11.2026 ~20:05 UTC, \"2.5.0 bırakmasak büyük bir iş mi?\" → W-KÖK 2.4.9'A ALINDI) — docs/2.4.9-IS-LISTESI.md son satır, AYNEN; "
+                          "İLKEYLE (ilke 2); program henüz uygulamıyor (ana oturum iletisi: ayrışma beklenir)",
+           "metin": ["KULLANICI (03.11 ~20:05 UTC, \"2.5.0 bırakmasak büyük bir iş mi?\") → W-KÖK 2.4.9'A ALINDI: iş KABUL ANINDAKİ teslim süresiyle değerlendirilir (Meta "
+                     "listesindeki süre sonradan kısalırsa önceden kabul edilmiş iş eski süreyle; o an süre bilinmiyorsa 30 gün) — İLKEYLE (ilke 2 \"almış olabilirse "
+                     "elenir\"), yeni soru yok."]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -730,6 +756,7 @@ class Is:
         self.anahtar = anahtar; self.toplu = toplu; self.cari = cari; self.sirket = sirket
         self.durum = BEKLIYOR; self.telefon = None; self.icerik = None; self.next_at = 0
         self.post = 0; self.medyalar = []; self.silinen_n = 0; self.wamidler = []   # silme yalnız kesinleşmede → önek
+        self.medya_t = []; self.silme_n = 0  # Y10-7: medya yükleme anları; Meta'da GERÇEKTEN silinen (30 günü dolmamış) medya sayısı
         self.kod = None; self.deneme_49 = 0; self.teslim_t = None; self.kabul_t = None
         self.belirsiz_t = None; self.elendi_neden = None; self.meta_sayi = 0; self.gecici_deneme = 0
         # kâhin güncellemesi 2
@@ -942,7 +969,7 @@ class Benzetim:
             self.meta["basamak"] = o["basamak"]
         elif tur == "meta_sablon":
             st = self.meta["sablonlar"].setdefault(o["ad"], {"durum": None, "kategori": None})
-            for k in ("durum", "kategori"):
+            for k in ("durum", "kategori", "teslim_suresi_sn"):        # W2: Meta listesindeki teslim süresi değişebilir (None = bildirmez)
                 if k in o:
                     st[k] = o[k]
         elif tur == "meta_kapali":
@@ -1557,7 +1584,8 @@ class Benzetim:
         j.son_kayit = None                                  # önceki deneme kesinleşti; bu gönderim yeni deneme
         self.durum(j, HAZIRLANIYOR, t)
         if tp.sablon == "ekstre":                           # §2.3 / W3; §7a 15: geçerli medya yeniden kullanılır
-            canli = len(j.medyalar) > j.silinen_n or ("M36" in self.mut and j.medyalar)
+            canli = (len(j.medyalar) > j.silinen_n and (not j.medya_t or t - j.medya_t[-1] <= MEDYA_OMRU or "M168" in self.mut)) \
+                or ("M36" in self.mut and j.medyalar)       # Y10-7: Meta 30 günde siler → 30 günden eski medya geçerli değil
             if not canli:
                 while True:
                     if self.meta["kapali"]:
@@ -1565,7 +1593,7 @@ class Benzetim:
                     self.medya_toplam += 1
                     y = self.meta_yanit_medya()
                     if y == "kabul":
-                        j.medyalar.append(f"m:{j.anahtar}#{len(j.medyalar) + 1}")
+                        j.medyalar.append(f"m:{j.anahtar}#{len(j.medyalar) + 1}"); j.medya_t.append(t)
                         break
                     if y == "yanitsiz":                     # §6 W2: yeniden yüklenir; §7a 15: medya yükleme hataları "5 art arda"ya sayılır
                         tp.gecici += 1
@@ -1765,6 +1793,7 @@ class Benzetim:
         waba = self.wabalar[tp.sirket]
         j.wamidler.append(wamid); self.wamid_is[wamid] = j
         j.kabul_t = ts
+        j.ttl_kabul = self.ttl_listeden(j)                   # W2 (W-KÖK): bu kabulün teslim süresi = kabul anındaki değer (yoksa 30 gün)
         if getattr(j, "ilk_kabul_t", None) is None:
             j.ilk_kabul_t = ts                               # yalnız M141 (J4'ün tersi) kullanır
         if j.son_kayit is not None:
@@ -2029,14 +2058,38 @@ class Benzetim:
             self.teslim_kaydi.append((j, olay_t))
 
     def kesinlesti(self, j, t):
-        """§11 S3 A: kesinleşince PDF Meta'dan silinir (her medya bir kez)."""
+        """§11 S3 A: kesinleşince PDF Meta'dan silinir (her medya bir kez). Y10-7: Meta API medya kimliğini 30 günde kendisi siler — 30 günü dolmuş medyanın
+        silinmesi Meta'da bir şey silmez (çıktıdaki medya_silme = Meta'da silinen); silinen_n programın sildiği/geçersiz saydığı önektir (değişmez denetimleri)."""
+        for i in range(j.silinen_n, len(j.medyalar)):
+            yuklenme = j.medya_t[i] if i < len(j.medya_t) else t
+            if "M168" in self.mut or t - yuklenme <= MEDYA_OMRU:
+                j.silme_n += 1
         j.silinen_n = len(j.medyalar)
 
     # ---- TTL, basamak ve şablon okuma ---------------------------------------------------------------------------------------
+    def ttl_suresi(self, j):
+        """W2 (W-KÖK, KULLANICI 03.11.2026 ~20:05 UTC) Y10-10/11: iş KABUL ANINDAKİ teslim süresiyle değerlendirilir (programa_kabul'de işe yazılır); M170 güncel listeden."""
+        if "M170" in self.mut or getattr(j, "ttl_kabul", None) is None:
+            return self.ttl_listeden(j)
+        return j.ttl_kabul
+
+    def ttl_listeden(self, j):
+        """W1 (KULLANICI KARARI 03.11.2026, W §15) Y10-1/4/8: Meta'nın şablon listesinde O ŞABLON için O AN bildirdiği teslim süresi (teslim_suresi_sn = Meta
+        message_send_ttl_seconds), yoksa 30 gün. 2.4.8'in 72 sa ayarı (ayar.eski_ttl_saat / eski varsayılan) OKUNMAZ (yalnız M7)."""
+        ad = ICERIK_SABLON[self.toplular[j.toplu].sablon] if j.toplu in self.toplular else None
+        sn = (self.meta["sablonlar"].get(ad) or {}).get("teslim_suresi_sn") if ad else None
+        if "M169" in self.mut and not sn:
+            sn = next((v.get("teslim_suresi_sn") for _, v in sorted(self.meta["sablonlar"].items()) if v and v.get("teslim_suresi_sn")), None)
+        if sn and "M166" not in self.mut:
+            return int(sn) * SN
+        if "M7" in self.mut:
+            return int(self.ayar.get("eski_ttl_saat") or 72) * SA
+        return TTL_VARSAYILAN
+
     def ttl_son(self, j):
-        """§6 W2 + S2 A; J4: Meta'nın SON kabul ettiği denemeden (her kabulde kabul_t yenilenir; M141 ilk kabulden)."""
+        """§6 W2 + §7a 16 + W1 (Y10-2): süre + 1 sa payı; J4: Meta'nın SON kabul ettiği denemeden (her kabulde kabul_t yenilenir; M141 ilk kabulden)."""
         taban = j.ilk_kabul_t if ("M141" in self.mut and getattr(j, "ilk_kabul_t", None) is not None) else j.kabul_t
-        return taban + (30 * GUN if "M7" in self.mut else TTL) + TTL_PAYI
+        return taban + self.ttl_suresi(j) + (0 if "M167" in self.mut else TTL_PAYI)
 
     def yol_calisiyor(self, j, t):
         """§7a 16: bağlantıda son 7 günde en az bir (imzalı) kanca geldiyse kanca yolu çalışıyor."""
@@ -2165,7 +2218,7 @@ class Benzetim:
             "toplam_post": sum(self.post_hedef.values()),
             "toplam_kabul": len(self.kabul_kaydi),
             "pencere_farkli_alici": {w: len(self.pencere_kumesi(w, t)) for w in sorted(set(self.wabalar.values()))},
-            "medya_silme": {"plan_susuyor": self.PDF_SILME_SUSUYOR} if susan else sum(j.silinen_n for j in self.isler.values()),
+            "medya_silme": {"plan_susuyor": self.PDF_SILME_SUSUYOR} if susan else sum(j.silme_n for j in self.isler.values()),
             "toplular": {e: self.toplular[e].durum for e in self.toplu_sira},
         }
         if not self.ozet:
@@ -2183,7 +2236,7 @@ class Benzetim:
                 "dosya_adi": j.icerik["dosya_adi"] if j.icerik else None,
                 "hata_kodu": {"secenek": [j.kod, None], "susuyor": self.GEC_TESLIM_SUSUYOR} if (gec and j.kod is not None) else j.kod,
                 "post": j.post, "kabul": len(j.wamidler), "meta_ileti": j.meta_sayi,
-                "medya_yukleme": len(j.medyalar), "medya_silme": {"plan_susuyor": self.PDF_SILME_SUSUYOR} if self.pdf_susuyor(j) else j.silinen_n,
+                "medya_yukleme": len(j.medyalar), "medya_silme": {"plan_susuyor": self.PDF_SILME_SUSUYOR} if self.pdf_susuyor(j) else j.silme_n,
                 "atlanma_nedeni": j.elendi_neden,
             }
 
@@ -2192,7 +2245,7 @@ class Benzetim:
             for j in self.isler.values():
                 o[j.cari] = o.get(j.cari, 0) + alan(j)
             return dict(sorted(o.items()))
-        medya_silme = topla(lambda j: j.silinen_n)
+        medya_silme = topla(lambda j: j.silme_n)
         for j in self.isler.values():
             if self.pdf_susuyor(j):
                 medya_silme[j.cari] = {"plan_susuyor": self.PDF_SILME_SUSUYOR}
