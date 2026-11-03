@@ -1,0 +1,36 @@
+{
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/hazir-iade",
+ "saat": "2026-11-02T11:00:00+03:00",
+ "tamam": {
+  "iadeIptal": 50,
+  "iadeSil": 50,
+  "iadeDuzenle": 50,
+  "tasimaHedefi": 30,
+  "kartTasima": 30,
+  "kartSil": 20,
+  "cesitCari": 200,
+  "satis": 220,
+  "kart": 420,
+  "iade": 240,
+  "taslakIade": 50,
+  "yenidenCari": 20,
+  "iadeIptal2": 20
+ },
+ "reddedilen": {},
+ "iadeliCari": 1000,
+ "cariSayisi": 4271,
+ "iade": {
+  "toplam": 1270,
+  "kesinlesmis": 1147,
+  "iptal": 73,
+  "taslak": 50,
+  "coverCutsli": 1021,
+  "ikiKartliBelge": 101
+ },
+ "kart": {
+  "etkin": 1935,
+  "silinmis": 37,
+  "kartliCari": 1510
+ },
+ "bitti": "2026-11-03T20:54:31.736Z"
+}

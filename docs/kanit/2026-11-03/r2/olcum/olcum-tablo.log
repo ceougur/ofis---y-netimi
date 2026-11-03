@@ -1,0 +1,14 @@
+# --- olcum (cari {"toplam":4021,"telefonlu":4014,"secilen":2000}; yeni 7839d2a7c0dfd4f8e9fbfcb1eb833e28dac87ac4, eski e6ee52a8)
+#     yük (load average 1/5/15 dk, önce → sonra): eski 5.02, 4.95, 4.72 → 4.61, 4.85, 4.71 | yeni 4.61, 4.85, 4.71 → 5.06, 4.94, 4.74
+ok 1 - ekstreBuAy2000 kalem 2000: ESKİ 10876/10593/10656 ; 12304/11843/12075 | YENİ 1386/945/1141 ; 1295/1016/1075 | bütçe ≤ 2000 ms
+ok 2 - tumuneEkstreHepsi kalem 4021: ESKİ 21296/21002/21047 ; 21305/21023/21076 | YENİ 1850/1550/1609 ; 2021/1633/1784 | bütçe ≤ 3000 ms
+# --- olcum-ek (cari {"toplam":4021,"telefonlu":4014,"iadeCarisi":1000}; yeni 7839d2a7c0dfd4f8e9fbfcb1eb833e28dac87ac4, eski e6ee52a8)
+#     yük (load average 1/5/15 dk, önce → sonra): eski 5.06, 4.94, 4.74 → 4.68, 4.82, 4.73 | yeni 4.68, 4.82, 4.73 → 5.13, 4.90, 4.76
+ok 3 - targetsSon2000 kalem 2000: ESKİ 10349/9980/10133 ; 10352/10021/10139 | YENİ 804/555/589 ; 787/519/619 | bütçe ≤ 2000 ms
+ok 4 - onizlemeSon2000 kalem 2000: ESKİ 9960/9710/9757 ; 10288/10056/10085 | YENİ 765/524/563 ; 641/426/438 | bütçe ≤ 2000 ms
+ok 5 - onizlemeTumune kalem 4014: ESKİ 18106/17825/17887 ; 19303/18997/19097 | YENİ 1288/1033/1080 ; 1461/1211/1257 | bütçe ≤ 3000 ms
+ok 6 - cariKarti200 kalem 200: ESKİ 16272/334/368 (istek p50 36.6, en çok 381.4) ; 16030/339/377 (istek p50 35.8, en çok 381.2) | YENİ 14147/392/360 (istek p50 30.2, en çok 395.5) ; 13247/313/329 (istek p50 28.5, en çok 392.6) | bütçe yok (bilgi)
+1..6
+# tests 6
+# pass 6
+# fail 0

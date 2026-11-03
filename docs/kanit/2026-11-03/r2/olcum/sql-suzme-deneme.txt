@@ -1,0 +1,11 @@
+[Object: null prototype] { n: 2261 } [Object: null prototype] { n: 1030 } [Object: null prototype] { n: 1552 } [Object: null prototype] { n: 1310 } [Object: null prototype] { L: 147.2514563106796, M: 247 }
+[Object: null prototype] {
+  j: '{"cash":[{"amount":2325.95,"method":"bank","lineKey":"i0"}],"cheques":[],"endorse":[],"mode":"none","installments":null,"rest":0,"coverCuts":{"plan-087b7675-2879-45dd-aa35-b692c60f5d2c":4793.62}}'
+}
+ters bölülü iade [Object: null prototype] { n: 0 }
+plan eski: SEARCH invoices USING INDEX idx_invoices_status (status=? AND kind=?)
+plan yeni: SEARCH invoices USING INDEX idx_invoices_status (status=? AND kind=?) | CORRELATED SCALAR SUBQUERY 1 | SCAN w VIRTUAL TABLE INDEX 1:
+eski tam tarama+parse ms/çağrı 3.642
+yeni süzgeçli ms/çağrı 1.785 kartlı cari 1310 satır 1001
+tek instr ms/çağrı 1.419 satır 1000
+yalnız indeks sayımı ms/çağrı 0.039

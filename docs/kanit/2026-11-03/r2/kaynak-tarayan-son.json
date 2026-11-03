@@ -1,0 +1,32 @@
+{
+  "ad": "r2/kaynak-tarayan-son",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/banka-210-post-statik.test.mjs",
+  "commit": "7839d2a7c0dfd4f8e9fbfcb1eb833e28dac87ac4",
+  "dal": "worktree-agent-aa56c65749221d09d",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T21:48:57.438Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/r2/kaynak-tarayan-son.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa56c65749221d09d",
+  "ham_cikti_sha256": "324b63a1fff7cf1216bb4e871188b206b11e25ec573f9c75aff391bfcdf791ce",
+  "ham_cikti_bayt": 6628
+}
