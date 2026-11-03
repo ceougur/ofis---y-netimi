@@ -243,6 +243,8 @@ describe("A3 — kilitli dönemde hareketi olan cari: silme, geri yükleme, tür
   const acc = {};
   const account = async (label, type = "customer") => must(`cari ${label}`, ctx.api.post("/api/workspace/accounts", { name: `A3 ${label}`, type, registeredOn: "2025-01-01" }));
   const entry = (id, body) => must("cari hareketi", ctx.api.post(`/api/workspace/accounts/${id}/entries`, body));
+  // 2.4.9 C1: hareketli cari artık hiç silinmez; v2.0.6–v2.4.8'de silinmiş hareketli cari (eski sürüm verisi) store dışı yumuşak silmeyle kurulur.
+  const oldDelete = id => ctx.db.prepare("UPDATE accounts SET deleted_at = ?, deleted_by = 'eski-surum' WHERE id = ?").run(new Date().toISOString(), id);
   before(async () => {
     ctx = await boot();
     // Her test kendi carisiyle (eski kodda bir testin yanlışlıkla başarılı silmesi sonrakini zincirleme kırmasın).
@@ -256,9 +258,9 @@ describe("A3 — kilitli dönemde hareketi olan cari: silme, geri yükleme, tür
     }
     acc.gone = await account("Silinmiş");
     await entry(acc.gone.id, { kind: "credit", amount: "250", date: LOCKED_DAY, note: "Alacak yaz" });
-    await must("sil (kilitten önce)", ctx.api.del(`/api/workspace/accounts/${acc.gone.id}`));
+    oldDelete(acc.gone.id);
+    // 2.4.9 C1: kilitliyken silinen cari hareketsizdir (hareketli cari kilit olsa da olmasa da silinmez).
     acc.free = await account("Açık Dönem");
-    await entry(acc.free.id, { kind: "debt", amount: "100", date: OPEN_DAY });
     acc.free2 = await account("Açık Dönem 2");
     await entry(acc.free2.id, { kind: "debt", amount: "100", date: OPEN_DAY });
     acc.guard = await account("Nakit Tahsilatlı");
@@ -267,8 +269,8 @@ describe("A3 — kilitli dönemde hareketi olan cari: silme, geri yükleme, tür
   });
   after(async () => ctx.server.close());
 
-  it("nasıl bozarım: kilitli dönemde yalnız Borç Yaz satırı olan cariyi sil → 409 period-locked", async () => {
-    await refusedWith("sil", ctx.api.del(`/api/workspace/accounts/${acc.debt.id}`), 409, "period-locked");
+  it("nasıl bozarım: kilitli dönemde yalnız Borç Yaz satırı olan cariyi sil → 409 account-has-movements (2.4.9 C1; önceden period-locked)", async () => {
+    await refusedWith("sil", ctx.api.del(`/api/workspace/accounts/${acc.debt.id}`), 409, "account-has-movements");
     assert.equal(ctx.store.get("SELECT deleted_at FROM accounts WHERE id = ?", acc.debt.id).deleted_at, null);
   });
   it("nasıl bozarım: kilitli dönemde hareketi olan carinin türünü Müşteri'den Tedarikçi'ye çevir → 409 period-locked", async () => {
@@ -280,8 +282,8 @@ describe("A3 — kilitli dönemde hareketi olan cari: silme, geri yükleme, tür
     assert.equal(updated.name, "A3 Yalnız Borç Yaz (düzeltildi)");
     assert.equal(updated.type, "customer");
   });
-  it("nasıl bozarım: kilitli dönemde parası (tahsilatı) olan cariyi sil → 409 period-locked", async () => {
-    await refusedWith("sil", ctx.api.del(`/api/workspace/accounts/${acc.paid.id}`), 409, "period-locked");
+  it("nasıl bozarım: kilitli dönemde parası (tahsilatı) olan cariyi sil → 409 account-has-movements (2.4.9 C1; önceden period-locked)", async () => {
+    await refusedWith("sil", ctx.api.del(`/api/workspace/accounts/${acc.paid.id}`), 409, "account-has-movements");
   });
   it("nasıl bozarım: kilitli dönem satırı olan silinmiş cariyi geri yükle → 409 period-locked", async () => {
     await refusedWith("geri yükle", ctx.api.post("/api/admin/trash/restore", { id: `account:${acc.gone.id}` }), 409, "period-locked");
@@ -294,27 +296,30 @@ describe("A3 — kilitli dönemde hareketi olan cari: silme, geri yükleme, tür
     const row = store.get("SELECT type, deleted_at AS deletedAt FROM accounts WHERE id = ?", acc.debtSql.id);
     assert.deepEqual({ ...row }, { type: "customer", deletedAt: null });
   });
-  it("çalışıyor mu: kilitli dönemde satırı olmayan cari silinir ve türü değişir (200)", async () => {
+  it("çalışıyor mu: kilitli dönemde hareketsiz cari silinir; açık dönemde hareketli carinin türü değişir (200)", async () => {
     await must("sil", ctx.api.del(`/api/workspace/accounts/${acc.free.id}`));
     const changed = await must("tür", ctx.api.put(`/api/workspace/accounts/${acc.free2.id}`, { type: "supplier" }));
     assert.equal(changed.type, "supplier");
     await integrityOk(ctx.api, "açık dönem carileri");
   });
-  it("nasıl bozarım: Kasa'yı eksiye düşüren cari silme Uyar'da 409 cash-negative; onaylanırsa 200", async () => {
+  it("nasıl bozarım: Kasa'yı eksiye düşürecek nakit tahsilatlı cari silinmez — 409 account-has-movements (cashForce'la da); Kasa aynı (2.4.9 C1; önceden cash-negative + onaylı 200, Kasa −800)", async () => {
     await drainCash(ctx.api, 200);
-    await refusedWith("sil", ctx.api.del(`/api/workspace/accounts/${acc.guard.id}`), 409, "cash-negative");
+    await refusedWith("sil", ctx.api.del(`/api/workspace/accounts/${acc.guard.id}`), 409, "account-has-movements");
+    await refusedWith("onaylı sil", ctx.api.del(`/api/workspace/accounts/${acc.guard.id}?cashForce=1`), 409, "account-has-movements");
     assert.equal(ctx.store.get("SELECT deleted_at FROM accounts WHERE id = ?", acc.guard.id).deleted_at, null);
-    await must("onaylı sil", ctx.api.del(`/api/workspace/accounts/${acc.guard.id}?cashForce=1`));
-    assert.equal(await cashBalance(ctx.api), -800);
-    await integrityOk(ctx.api, "cari silme sonrası");
+    assert.equal(await cashBalance(ctx.api), 200, "Kasa değişmedi");
+    await integrityOk(ctx.api, "cari silme denemesi sonrası");
   });
-  it("çalışıyor mu: kilit kaldırılınca kilitli günlü cari silinir ve geri yüklenir; sayılar aynı", async () => {
+  it("çalışıyor mu: kilit kaldırılınca da hareketli cari silinmez; eski sürümde silinmiş kilitli günlü cari geri yüklenir; sayılar aynı", async () => {
     await setLock(ctx.api, "");
     const before = await byMethod(ctx.api);
-    await must("sil", ctx.api.del(`/api/workspace/accounts/${acc.paid2.id}?cashForce=1`));
+    await refusedWith("sil", ctx.api.del(`/api/workspace/accounts/${acc.paid2.id}?cashForce=1`), 409, "account-has-movements");
+    assert.deepEqual(await byMethod(ctx.api), before, "silme denemesi sayıları değiştirmedi");
+    oldDelete(acc.paid2.id);
+    assert.notDeepEqual(await byMethod(ctx.api), before, "eski sürümde silinmiş carinin tahsilatı Kasa'da görünmez");
     await must("geri yükle", ctx.api.post("/api/admin/trash/restore", { id: `account:${acc.paid2.id}` }));
     assert.deepEqual(await byMethod(ctx.api), before);
-    await integrityOk(ctx.api, "kilit açıkken sil/geri yükle");
+    await integrityOk(ctx.api, "kilit açıkken eski silinmiş cariyi geri yükle");
   });
 });
 

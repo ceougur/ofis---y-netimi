@@ -205,12 +205,13 @@ describe("Şüpheli — istek kimliği, eşzamanlılık, aynı adlı cari, yetki
     const acc = await customer(ctx.api, "Silinemez Ltd.");
     await debt(ctx.api, acc.id, 1000, "2026-10-01");
     const { record } = await must("al", take(ctx.api, acc.id, { amount: 1000, date: "2026-10-02", reason: "other" }));
-    expectStatus(await ctx.api.del(`${ACC}/${acc.id}`), 409, "account-doubtful-open", "açık şüpheli kaydı olan cari");
+    // 2.4.9 C1: cari silmede tek kod account-has-movements (önceden account-doubtful-open; tür değişikliğindeki account-doubtful-open değişmez).
+    expectStatus(await ctx.api.del(`${ACC}/${acc.id}`), 409, "account-has-movements", "açık şüpheli kaydı olan cari");
     const data = await must("değersiz", writeOff(ctx.api, acc.id, record.id, { amount: 1000, date: "2026-10-03" }));
     const entryId = data.record.writeOffs[0].entryId;
     expectStatus(await ctx.api.del(`${ACC}/${acc.id}/entries/${entryId}`), 409, "doubtful-linked", "değersiz satırı sil");
     expectStatus(await ctx.api.put(`${ACC}/${acc.id}/entries/${entryId}`, { amount: 5 }), 409, "doubtful-linked", "değersiz satırı düzelt");
-    expectStatus(await ctx.api.del(`${ACC}/${acc.id}`), 409, "account-doubtful-open", "kapanmış ama kaydı olan cari silinmez (defter izi)");
+    expectStatus(await ctx.api.del(`${ACC}/${acc.id}`), 409, "account-has-movements", "kapanmış ama kaydı olan cari silinmez (defter izi)");
     await integrityOk(ctx.api, "W");
   });
 });

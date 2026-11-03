@@ -233,7 +233,12 @@ describe("moneyLines — nasıl bozarım", () => {
     const { api, store } = ctx;
     const extra = await must("cari", api.post("/api/workspace/accounts", { name: "Silinecek Cari", type: "customer", registeredOn: TODAY }));
     await must("tahsilat", api.post(`/api/workspace/accounts/${extra.id}/entries`, { kind: "in", amount: "55", date: TODAY, method: "cash" }));
-    await must("cari sil", api.del(`/api/workspace/accounts/${extra.id}?cashForce=1`));
+    // 2.4.9 C1: tahsilatı olan cari silinmez (409 account-has-movements); eski sürümde (v2.0.6–v2.4.8) silinmiş böyle bir cari store dışı yumuşak silmeyle
+    // kurulur — Kasa / özet / Ana Defter birlikte düşürür (S3 A: eski veriye dokunulmaz).
+    const refused = await api.del(`/api/workspace/accounts/${extra.id}?cashForce=1`);
+    assert.equal(refused.status, 409);
+    assert.equal(refused.code, "account-has-movements");
+    rawRun(ctx.db, "UPDATE accounts SET deleted_at = ?, deleted_by = 'eski-surum' WHERE id = ?", new Date().toISOString(), extra.id);
     await must("kart sil", api.del(`/api/workspace/plans/${data.plan.id}?cashForce=1`));
     const all = await must("Kasa (tüm yollar)", api.get("/api/workspace/cash?method=all"));
     const overview = await must("ANLIK DURUM", api.get("/api/workspace/overview"));

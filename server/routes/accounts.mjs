@@ -25,6 +25,7 @@ import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { ANONYMOUS_TCKN, RETAIL_NAME, classifyTaxId, isRetailName, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
+import { accountMovements, movementBlockText } from "../lib/account-movements.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -642,17 +643,17 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     if (money || followed) changed(user, { kind: "plans" });
     ok(res, result);
   });
-  router.delete("/api/workspace/accounts/:id", async ({ req, res, params, url }) => {
+  router.delete("/api/workspace/accounts/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.manage");
     const account = accountRow(params.id);
-    // 2.4.3 (keşif A5): silme engelleri tek yerde (deleteBlock) — cari kartı Sil düğmesini aynı nedenle pasif gösterir.
-    const block = deleteBlock(account);
-    if (block) throw new HttpError(block.status || 409, block.message, block.extra);
-    // Silinen carinin tahsilat/ödemeleri Kasa'dan ve bankadan düşer: eksi bakiye denetimi (Uyar/Engelle) toplam etkiyle sorar.
-    cash?.guardRemove?.(store.all("SELECT kind, amount, method, date FROM account_entries WHERE account_id = ? AND kind IN ('in', 'out') AND source = ''", account.id), url.searchParams.get("cashForce") === "1", "Bu cari silinince tahsilat ve ödemeleriyle birlikte");
     store.tx(() => {
-      // Yumuşak silme: hareketleri yerinde durur (Kasa'dan düşer); yönetim panelindeki Silinenler'den geri gelir.
-      store.run("UPDATE accounts SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), account.id);
+      // 2.4.3 (keşif A5): silme engelleri tek yerde (deleteBlock) — cari kartı Sil düğmesini aynı nedenle pasif gösterir.
+      // 2.4.9 C1: hareketi olan cari silinmez (409 account-has-movements); denetim yazımla AYNI işlemde.
+      const block = deleteBlock(account);
+      if (block) throw new HttpError(block.status || 409, block.message, block.extra);
+      // Yumuşak silme yalnız hareketsiz caride: Kasa, banka ve defter değişmez (eski "Kasa'dan düşer" sorusu — cash.guardRemove — gereksiz; ?cashForce=1
+      // yok sayılır). Yönetim panelindeki Silinenler'den geri gelir.
+      store.run("UPDATE accounts SET deleted_by = ?, deleted_at = ? WHERE id = ? AND deleted_at IS NULL", user.id, now(), account.id);
       audit(user, "account.deleted", account.id, { name: account.name });
     });
     touched(user, account);
@@ -679,34 +680,24 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   }
   /**
    * 2.4.3 (keşif A5): cari silinemiyorsa nedeni ({ message, extra }), silinebiliyorsa null. Silme ucu bununla 409 verir; cari kartı (detail)
-   * aynı nedeni deleteBlock olarak taşır, Sil düğmesi pasif ve nedeni görünür yazılır (fatura kartındaki kural). Sıra eski denetim sırasıdır.
+   * aynı nedeni deleteBlock olarak taşır, Sil düğmesi pasif ve nedeni görünür yazılır (fatura kartındaki kural).
+   * 2.4.9 C1 (KARAR 03.11.2026 ~11:45 A + İLKE ~11:50; S1–S3 A): HAREKETİ OLAN CARİ SİLİNMEZ. Tek tanım lib/account-movements.mjs (tahsilat/ödeme, Borç/Alacak
+   * Yaz, açılış, stok satırı, fatura — taslak/iptal dahil —, mahsup, taksit kartı, çek/senet, şüpheli alacak, banka fişi); tek kod account-has-movements
+   * (BAŞ MİMAR YORUMU Y1: silmedeki eski account-has-invoices / account-bank-linked / account-doubtful-open / period-locked kalktı). İleti Pasife Al önerir;
+   * eski "önce kartları / stok hareketlerini silin" yönlendirmesi yok (gerçek işlem cariyi silmek için silinmez).
    */
   function deleteBlock(account) {
-    const planCount = plans()?.countForAccount ? plans().countForAccount(account.id) : 0;
-    if (planCount) return { message: `Bu carinin ${planCount} taksit kartı var. Önce kartları silin ya da başka cariye taşıyın; kapatılan kartlar da sayılır.` };
-    const stockLinked = store.get(
-      "SELECT COUNT(*) AS n FROM account_entries e JOIN stock_moves m ON m.id = e.source_id JOIN stock_items i ON i.id = m.item_id WHERE e.account_id = ? AND e.source = 'stock' AND i.deleted_at IS NULL",
-      account.id,
-    ).n;
-    if (stockLinked) return { message: `Bu cariye yazılmış ${stockLinked} stok hareketi var. Önce stok hareketlerini düzeltin.` };
-    const chequeLinked = cheques()?.countForAccount ? cheques().countForAccount(account.id) : 0;
-    if (chequeLinked) return { message: `Bu cariye bağlı ${chequeLinked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka cariye taşıyın.` };
-    // v2.0.15: faturası olan cari silinmez (fatura yasal belgedir; Logo/Netsis'teki gibi hareketli cari silinemez).
-    const invoiceCount = store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name = 'invoices'").n ? store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status = 'issued'", account.id).n : 0;
-    if (invoiceCount) return { message: `Bu carinin ${invoiceCount} faturası var; faturası olan cari silinemez. Cariyi pasife alın.`, extra: { code: "account-has-invoices" } };
-    // v2.1.0 Aşama 5 (plan §3.8 "Cari kartı"): banka hesabına bağlı hareketi olan cari silinmez (silinirse hareket banka hesabından düşer,
-    // banka bakiyesi bankadakinden ayrılırdı). Pasife Al önerilir.
-    const bankLinked = store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ? AND fin_ref <> ''", account.id).n;
-    if (bankLinked) return { message: `Bu carinin banka hesabına bağlı ${bankLinked} hareketi var; cari silinirse banka hesabının bakiyesi değişirdi. Cariyi pasife alın (hareketleri korunur).`, extra: { code: "account-bank-linked", count: bankLinked } };
-    // 2.3.0 İz 1 (plan §3.11b): şüpheli alacak kaydı olan cari silinmez (kayıt ve 128 satırları defterden düşerdi).
-    // v2.0.26 (A3): kapanmış dönemde hareketi olan cari silinmez (silinen carinin satırları defterden düşer).
-    for (const check of [() => doubtful()?.assertNone?.(account.id, "silinemez"), () => assertUnlocked(account.id, "silinemez")]) {
-      try {
-        check();
-      } catch (error) {
-        if (error instanceof HttpError) return { message: error.message, extra: error.extra, status: error.status };
-        throw error;
-      }
+    const found = accountMovements(store, account.id);
+    if (found.total > 0) {
+      const passive = account.status === "passive";
+      return { message: movementBlockText(found.counts, { passive }), extra: { code: "account-has-movements", counts: found.counts, passive } };
+    }
+    // Savunma (yeni kuralda erişilmez: kilitli dönem denetiminin baktığı satırlar ve kartlar yukarıda zaten hareket sayılır).
+    try {
+      assertUnlocked(account.id, "silinemez");
+    } catch (error) {
+      if (error instanceof HttpError) return { message: error.message, extra: error.extra, status: error.status };
+      throw error;
     }
     return null;
   }
@@ -723,6 +714,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return current + 1;
   };
   function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null, doubtfulSkip = false, dueDate = "", expectedDate = "", opening = false, refundOf = "" }) {
+    // 2.4.9 C1 (§9, BAŞ MİMAR KARARI): silinmiş cariye hareket yazılmaz — cari YAZIM ANINDA (çağıranın işlemi içinde) yeniden denetlenir. Önceden cari
+    // isteğin başında okunuyordu; gövde beklenirken (await readJson) cari silinirse tahsilat silinmiş cariye yazılıyor, Kasa'da görünmüyordu (yanıt 404).
+    // Bütün addEntry yazıcıları (tahsilat/ödeme, Borç/Alacak, açılış, stok, fatura, şüpheli, POS iadesi) buradan geçer; 404 işlemi geri alır.
+    if (!exists(accountId)) throw new HttpError(404, "Cari bulunamadı. Silinmiş olabilir.");
     // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
     period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");

@@ -367,9 +367,13 @@ describe("2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi,
     const acc = await account("Silinen Cari");
     const debt = await entry(acc, { kind: "debt", amount: "55", date: day(-2), dueDate: day(1) });
     const before_ = await card(acc);
-    // Hareketi olan cari silinebilsin diye (tahsilatsız borç): silme engeli varsa nedeni yazar.
+    // 2.4.9 C1: vadeli borcu olan cari silinmez (409 account-has-movements, Sil'in nedeni kartta); eski sürümde (v2.0.6–v2.4.8) silinmiş böyle bir cari
+    // store dışı yumuşak silmeyle kurulur — kalemi görünmez, geri yüklenince döner (S3 A).
     const removed = await api.del(`/api/workspace/accounts/${acc.id}`);
-    if (removed.status !== 200) return assert.fail(`cari silinemedi: ${JSON.stringify(removed.data).slice(0, 200)} (${before_.deleteBlock})`);
+    assert.equal(removed.status, 409, `hareketli cari silinmez: ${JSON.stringify(removed.data).slice(0, 200)}`);
+    assert.equal((removed.data?.data || removed.data)?.code, "account-has-movements");
+    assert.match(before_.deleteBlock, /hareketi var: 1 cari hareketi/);
+    server.app.db.prepare("UPDATE accounts SET deleted_at = ?, deleted_by = 'eski-surum' WHERE id = ?").run(NOW, acc.id);
     assert.equal((await accountItems()).some(row => row.entryId === debt.id), false, "silinmiş carinin kalemi yok");
     const trash = await must("Silinenler", api.get("/api/admin/trash"));
     await must("cariyi geri yükle", api.post("/api/admin/trash/restore", { id: trash.find(row => row.kind === "account" && row.title === acc.name).id }));

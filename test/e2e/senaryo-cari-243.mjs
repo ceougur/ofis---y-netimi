@@ -237,7 +237,8 @@ try {
     await page.waitForSelector(`${accWin} [data-act="delete"]`);
     const disabled = await page.$eval(`${accWin} [data-act="delete"]`, node => node.disabled);
     const why = await textOf(page, `${accWin} [data-delete-block]`);
-    ok(disabled && /taksit kartı var/.test(why), `Sil pasif (${disabled}); neden: “${why}”`);
+    // 2.4.9 C1: tek ileti — "Bu carinin hareketi var: 1 cari hareketi, 1 taksit kartı. … Pasife Al …" (önceden "… taksit kartı var").
+    ok(disabled && /1 taksit kartı/.test(why) && /Pasife Al/.test(why), `Sil pasif (${disabled}); neden: “${why}”`);
     const card = await textOf(page, `${accWin} .hof-plans-kpis`);
     ok(/Taksitten Kalan \(bakiyeye dahil\)/.test(card), `kart göstergesi: “${card.slice(0, 160)}”`);
     await shot(page, "a5-sil-pasif");
@@ -295,6 +296,8 @@ try {
     await typeSlow(page, "750");
     await page.keyboard.press("Enter");
     await page.waitForFunction(() => Boolean(document.querySelector('.hof-accounts-modal [data-act="delete"]')?.disabled), null, { timeout: 8000 }).catch(() => null);
+    // Tahsilat formu kapanınca (yalnız Cari penceresi açık) ekran okunur.
+    await page.waitForFunction(sel => document.querySelectorAll(sel).length === 1, modal, { timeout: 8000 }).catch(() => null);
     const cash1 = await kasa();
     ok(entriesOf(first.id).paid === 750 && cash1 === cash0 + 750, `tahsilat carinin defterinde ve Kasa'da (Kasa ${cash0} → ${cash1})`);
 
@@ -359,6 +362,8 @@ try {
     await adminPage.close();
 
     // 6) Kart açıkken başka yerden (API: başka kullanıcı / telefon) tahsilat girildi → Sil → sunucu 409 → "Cari Silinemez" + Pasife Al; Vazgeç → kart yenilenir.
+    // Önceki adımların bildirimleri (ör. "Cari silindi.") ekran görüntüsünü karıştırmasın diye kaldırılır.
+    await page.evaluate(() => document.querySelectorAll(".hof-toast").forEach(node => node.remove()));
     await page.evaluate(id => window.HOF.accounts.open(id), second.id);
     await page.waitForSelector(`${accWin} [data-act="delete"]`);
     await page.waitForTimeout(400);

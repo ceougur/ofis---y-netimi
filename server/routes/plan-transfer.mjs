@@ -25,6 +25,7 @@ import { toMinor } from "../lib/minor.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { FREEZE_CLOSE, SkippedRow } from "./plans.mjs";
+import { accountMovements, openTrashAccounts } from "../lib/account-movements.mjs";
 import { systemClock } from "../lib/clock.mjs";
 
 const SETTLED_KEY = "dues.settled";
@@ -691,8 +692,12 @@ export function registerPlanTransfer(router, { store, bank, auth, audit, events,
       }
       for (const link of undo.accountLinks || []) store.run("UPDATE accounts SET case_key = '', case_source = '', case_title = '', updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ?", user.id, now(), link.accountId, link.caseKey);
       // Aktarımın açtığı cari: başka hareketi, kartı ya da evrakı yoksa kaldırılır; varsa kalır.
+      // 2.4.9 C1 (§5 Y2): "hareket" cari silmeyle AYNI tanımdan (lib/account-movements.mjs); kalıcı silme geri dönüşsüz olduğu için Silinenler'deki bağ da
+      // sayılır (includeDeleted; BAŞ MİMAR YORUMU Y2). Önceden yalnız cari satırı + kart + çek sayılıyor, taslak/iptal fatura, mahsup, şüpheli, banka fişi ve
+      // Silinenler'deki hareket carisiz (yetim) kalıyordu.
+      const trashIndex = (undo.accounts || []).length ? openTrashAccounts(store) : null;
       for (const accountId of undo.accounts || []) {
-        const used = store.get("SELECT (SELECT COUNT(*) FROM account_entries WHERE account_id = ?) + (SELECT COUNT(*) FROM plans WHERE account_id = ?) + (SELECT COUNT(*) FROM cheques WHERE account_id = ? OR endorse_account_id = ?) AS n", accountId, accountId, accountId, accountId).n;
+        const used = accountMovements(store, accountId, { includeDeleted: true, trashIndex }).total;
         if (used) report.accountsKept += 1;
         else {
           store.run("DELETE FROM accounts WHERE id = ?", accountId);

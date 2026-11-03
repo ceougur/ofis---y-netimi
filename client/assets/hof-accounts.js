@@ -1388,7 +1388,8 @@
   async function deleteAccount(account) {
     // 2.4.3 (keşif A5): silinemeyen caride düğme pasiftir; yine de basılırsa (eski görünüm) onay sorulmadan nedeni söylenir.
     if (account.deleteBlock) return HOF.toast(account.deleteBlock, { type: "error" });
-    const ok = await HOF.confirm({ title: "Cariyi Sil", message: `“${account.name}” silinecek. Hareketleri Kasa’dan düşer. ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
+    // 2.4.9 C1: yalnız hareketsiz cari silinir (Kasa ve bakiye değişmez; eski "Hareketleri Kasa’dan düşer" kalktı).
+    const ok = await HOF.confirm({ title: "Cariyi Sil", message: `“${account.name}” silinecek (hareketi yok). ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`, { method: "DELETE" });
@@ -1399,11 +1400,14 @@
       loadList();
       HOF.emit("accounts-changed", {});
     } catch (error) {
-      // v2.1.0 Aşama 5: banka hesabına bağlı hareketi ya da faturası olan cari silinmez; nedeni söylenir, Pasife Al önerilir.
-      if (["account-bank-linked", "account-has-invoices"].includes(error?.data?.code) && account.status !== "passive") {
-        const passive = await HOF.confirm({ title: "Cari Silinemez", message: error.message, confirmLabel: "Pasife Al", cancelLabel: "Vazgeç" });
-        if (passive) await setStatus(account, "passive");
-        return;
+      // 2.4.9 C1: kart açıkken başka biri (ya da telefon) bu cariye hareket girdiyse sunucu 409 account-has-movements verir: nedeni söylenir, Pasife Al
+      // önerilir (cari pasifse yalnız neden); kart yenilenir (Sil pasif, neden kartta yazılı).
+      if (error?.data?.code === "account-has-movements") {
+        if (account.status !== "passive") {
+          const passive = await HOF.confirm({ title: "Cari Silinemez", message: error.message, confirmLabel: "Pasife Al", cancelLabel: "Vazgeç" });
+          if (passive) return setStatus(account, "passive");
+        } else HOF.toast(error.message, { type: "error" });
+        return loadAccount(account.id, { quiet: true }).catch(() => null);
       }
       HOF.toastError(error);
     }

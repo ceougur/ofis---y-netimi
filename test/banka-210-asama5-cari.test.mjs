@@ -18,7 +18,7 @@
 //   B14 Sil → Silinenler'den geri yükle → bağ kopar mı? (aynı fin_ref, olay etkin)
 //   B15 İki hesap tanımlıyken hesapsız ESKİ satırın açıklamasını düzelt (200, bağsız kalır); tutarını değiştir (400 hesap seç)
 //   B16 Düzeltmede hesabı Ziraat → Garanti taşı (iki hesap da doğru); Engelle'deki hesaba taşıyıp eksiye düşür (409)
-//   B17 Banka bağlı hareketi olan cariyi sil (409 account-bank-linked → Pasife Al 200)
+//   B17 Banka bağlı hareketi olan cariyi sil (409 account-has-movements — 2.4.9 C1 tek kod, önceden account-bank-linked → Pasife Al 200)
 //   B18 Banka penceresinden gelen (source='bank') cari satırını cari kartından düzelt/sil (409)
 //   B19 Eşleşmiş (ekstre) satırı düzelt/sil (409 bank-reconciled)
 //   B20 Yazımdan sonra hesap kartı bütün satırları yeniden toplar mı? (money.prime: tam toplam sorgusu yok)
@@ -222,9 +222,9 @@ describe("Aşama 5 — K7 eksi bakiye, eşzamanlı ödeme, düzeltme ve silme", 
     await integrityOk(ctx.api, "B14");
   });
 
-  it("B17: banka bağlı hareketi olan cari silinmez (409 account-bank-linked); Pasife Al 200", async () => {
+  it("B17: banka bağlı hareketi olan cari silinmez (409 account-has-movements — 2.4.9 C1 tek kod; önceden account-bank-linked); Pasife Al 200", async () => {
     const linked = await ctx.api.del(`/api/workspace/accounts/${xyz.id}`);
-    expectStatus(linked, 409, "account-bank-linked", "bağlı cari");
+    expectStatus(linked, 409, "account-has-movements", "bağlı cari");
     assert.ok(ctx.store.get("SELECT 1 AS f FROM accounts WHERE id = ? AND deleted_at IS NULL", xyz.id), "cari duruyor");
     await must("Pasife Al", ctx.api.put(`/api/workspace/accounts/${xyz.id}`, { status: "passive" }));
     await integrityOk(ctx.api, "B17");

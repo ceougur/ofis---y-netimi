@@ -245,25 +245,36 @@ describe("2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (ba
     assert.equal((await client.del(`${ACC}/${many.id}`)).status, 403, "yetkisiz silme 403 (değişmez)");
   });
 
-  it("T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız gerçekten boşsa kalıcı silinir (taslak fatura ve Silinenler'deki tahsilat cariyi tutar)", async () => {
-    const matrix = [["Ad Soyad", "Toplam", "Taksit Sayısı", "İlk Vade"], ["T7 Taslaklı", "900", "3", "01.11.2026"], ["T7 Silinenli", "900", "3", "01.11.2026"], ["T7 Boş", "900", "3", "01.11.2026"]];
+  it("T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız gerçekten boşsa kalıcı silinir (taslak fatura, Silinenler'deki tahsilat ve fatura cariyi tutar)", async () => {
+    const matrix = [["Ad Soyad", "Toplam", "Taksit Sayısı", "İlk Vade"], ["T7 Taslaklı", "900", "3", "01.11.2026"], ["T7 Silinenli", "900", "3", "01.11.2026"], ["T7 Faturası Silinenli", "900", "3", "01.11.2026"], ["T7 Boş", "900", "3", "01.11.2026"]];
     const result = await must("Excel'den taksit yükle", ctx.api.post("/api/workspace/plans/import", { matrix, headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue" }, fileName: "c1-taksit.xlsx", linkRecords: false }));
-    assert.equal(result.created, 3);
+    assert.equal(result.created, 4);
     const idOf = name => ctx.store.get("SELECT id FROM accounts WHERE name = ? AND deleted_at IS NULL", name)?.id;
     const drafted = idOf("T7 Taslaklı");
     const trashed = idOf("T7 Silinenli");
+    const trashedInvoice = idOf("T7 Faturası Silinenli");
     const empty = idOf("T7 Boş");
-    assert.ok(drafted && trashed && empty, "aktarım üç cari açtı");
+    assert.ok(drafted && trashed && trashedInvoice && empty, "aktarım dört cari açtı");
     const draft = await must("taslak", ctx.api.post("/api/workspace/invoices", { status: "draft", scenario: "service_sale", accountId: drafted, lines: [LINE] }));
     const made = await entry(ctx, trashed, { kind: "in", amount: "40" });
     await must("tahsilatı sil", ctx.api.del(`${ACC}/${trashed}/entries/${made.entryId}?cashForce=1`));
+    const gone = await must("taslak (silinecek)", ctx.api.post("/api/workspace/invoices", { status: "draft", scenario: "service_sale", accountId: trashedInvoice, lines: [LINE] }));
+    await must("taslağı sil", ctx.api.del(`/api/workspace/invoices/${gone.id}?reason=C1`));
     const undone = await must("geri al", ctx.api.post(`/api/workspace/plans/imports/${result.importId}/undo`, {}));
-    assert.equal(undone.accountsKept, 2, `taslaklı ve Silinenler'de tahsilatı olan cari kalır: ${JSON.stringify(undone)}`);
+    assert.equal(undone.accountsKept, 3, `taslaklı, Silinenler'de tahsilatı ve faturası olan cari kalır: ${JSON.stringify(undone)}`);
     assert.equal(undone.accounts, 1, "yalnız boş cari kalıcı silinir");
     assert.ok(ctx.store.get("SELECT 1 AS f FROM accounts WHERE id = ?", drafted), "taslaklı cari duruyor");
     assert.ok(ctx.store.get("SELECT 1 AS f FROM accounts WHERE id = ?", trashed), "Silinenler'deki tahsilatın carisi duruyor");
+    assert.ok(ctx.store.get("SELECT 1 AS f FROM accounts WHERE id = ?", trashedInvoice), "Silinenler'deki faturanın carisi duruyor");
     assert.equal(ctx.store.get("SELECT 1 AS f FROM accounts WHERE id = ?", empty), undefined, "boş cari kalıcı silindi");
     assert.equal(ctx.store.get("SELECT COUNT(*) AS n FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id WHERE i.id = ? AND a.id IS NULL", draft.id).n, 0, "taslak fatura yetim kalmadı");
+    // Toplu kalıcı silmenin tek geçişli Silinenler dizini (openTrashAccounts) cari başına sorguyla aynı sonucu verir (ders 47 hız düzeltmesi: davranış aynen).
+    const { accountMovements, openTrashAccounts } = await import("../server/lib/account-movements.mjs");
+    const trashIndex = openTrashAccounts(ctx.store);
+    for (const id of [drafted, trashed, trashedInvoice, empty]) assert.deepEqual(accountMovements(ctx.store, id, { includeDeleted: true, trashIndex }), accountMovements(ctx.store, id, { includeDeleted: true }), `dizinli ve dizinsiz sayım aynı (${id})`);
+    assert.equal(accountMovements(ctx.store, trashed, { includeDeleted: true }).deleted.trash, 1, "Silinenler'deki tahsilat kalıcı silmede sayılır");
+    assert.equal(accountMovements(ctx.store, trashedInvoice, { includeDeleted: true }).deleted.trash, 1, "Silinenler'deki fatura kalıcı silmede sayılır");
+    assert.equal(accountMovements(ctx.store, trashedInvoice).total, 0, "S1 A: Silinenler'deki fatura cari silmede sayılmaz");
     const trash = await must("Silinenler", ctx.api.get("/api/admin/trash"));
     const item = trash.find(row => row.kind === "account-entry" && row.title === "T7 Silinenli");
     assert.ok(item, "tahsilat Silinenler'de");
