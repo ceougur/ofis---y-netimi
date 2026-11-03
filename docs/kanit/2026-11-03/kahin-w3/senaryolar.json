@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-w3/senaryolar",
+  "komut": "python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py",
+  "commit": "3d58afe2821e3915c25a7b97ee1aaa4a21f6c434",
+  "dal": "is/kahin-w2-249",
+  "kirli": 4,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:35:19.874Z",
+  "sure_sn": 4.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 292,
+    "gecen": 292,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/kahin-w3/senaryolar.log",
+  "klasor": "/home/user/wt-kahin-w2-249",
+  "ham_cikti_sha256": "097dddb95ee75d809a6e6cb3dbf0591e9203131c6fab8d1e5957f18942148dd5",
+  "ham_cikti_bayt": 533
+}

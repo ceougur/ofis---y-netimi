@@ -12,7 +12,7 @@ kâhin güncellemesi 9: 01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3
 kâhin güncellemesi 9b: S9-1 (+ kapsam a/b/c) J10, S9-2 (+ gün) J11 — 8 senaryo;
 kâhin güncellemesi 9c: ekstre içeriği açılışta hazırlanır J12 — 3 senaryo;
 kâhin güncellemesi 10: 2.4.9 W KULLANICI KARARI 03.11.2026 teslim süresi 30 gün (Meta bildirirse o) W1 — başlık W1, 5 senaryo; 9 eski senaryonun düzeneği/beklentisi;
-  W-KÖK (03.11 ~20:05 UTC) iş kabul anındaki süreyle W2 — başlık W2, 2 senaryo).
+  W-KÖK (03.11 ~20:05 UTC) iş kabul anındaki süreyle W2 — başlık W2, 2 senaryo; S10-6 kararı max(kabul, güncel) W3 — başlık W3, 1 senaryo).
 
 Her senaryo: GİRDİ (cariler, seçim, saat, sahte Meta davranışı, olaylar) + ELLE yazılmış beklenen (yalnız plandan, kâhinin modelinden
 bağımsız hesaplanmış anahtar sayılar). `python3 -I senaryolar.py` modeli koşar; elle beklenen ile model AYNI değilse dosya YAZILMAZ,
@@ -2070,11 +2070,11 @@ S("W1-05-varsayilan-30-gun-meta-bekletti-son-kabulden", "W1",
 
 
 # ---- W2 (W-KÖK, KULLANICI 03.11.2026 ~20:05 UTC): iş KABUL ANINDAKİ teslim süresiyle değerlendirilir; o an bilinmiyorsa 30 gün (İLKEYLE 2). Program henüz uygulamıyor
-# (ana oturum) → sürücü koşusunda bu iki senaryonun ayrışması BEKLENİR. Uzama (12 sa → 30 gün) iki okumalı: SENARYOSUZ (README §15.3 S10-6).
+# (ana oturum) → sürücü koşusunda bu iki senaryonun ayrışması BEKLENİR. Uzama (12 sa → 30 gün): S10-6 KULLANICI KARARI W3 (aşağıda W3-01, README §15.7).
 S("W2-01-kabulde-bilinmiyor-sonra-12-sa", "W2",
   "Kabul anında Meta listede süre bildirmez (30 gün); 14 sa sonra liste 12 sa bildirir: A Süresi Doldu OLMAZ (Gönderildi kalır), 16. saatte aynı dönem 'Daha Önce Gönderildi' "
   "(ikinci ileti gitmez), uyarıda 'Yine de Gönder' ile gider; liste değiştikten sonra kabul edilen C yeni süreyle (12 sa) Süresi Doldu",
-  "W2 (Y10-10/11/12) + W1 + R3 + ilke (2), (4)", [A(), B(), C()],
+  "W2 (Y10-10/11/12) + W1 + R3 + ilke (2), (4) + W3", [A(), B(), C()],
   [baslat("+0s", "T1", "AB"), olay("+14h", "meta_sablon", ad="destekofis_ekstre", teslim_suresi_sn=43200), kontrol("+15h", "K1"),
    baslat("+16h", "T2", "A"), baslat("+16h1m", "T3", "A", onceki="gonder"), baslat("+16h2m", "T4", "C"), kontrol("+30h", "K2")],
   {"kontroller.K1.isler": {"T1/A": "Gönderildi", "T1/B": "Teslim Edildi"},
@@ -2087,7 +2087,7 @@ S("W2-01-kabulde-bilinmiyor-sonra-12-sa", "W2",
 S("W2-02-kabulde-30-gun-sonra-12-sa-kisalir", "W2",
   "Kabul anında Meta listede 30 gün bildirir; 20 sa sonra 12 sa'e kısalır: önceden kabul edilmiş A eski süreyle (30 gün) — 21. saatte Gönderildi, 22. saatte aynı dönem "
   "'Daha Önce Gönderildi'; kısalmadan sonra kabul edilen C 12 + 1 sa'ten sonra Süresi Doldu",
-  "W2 (Y10-10/12) + W1 + R3", [A(), B(), C()],
+  "W2 (Y10-10/12) + W1 + R3 + W3", [A(), B(), C()],
   [baslat("+0s", "T1", "AB"), olay("+20h", "meta_sablon", ad="destekofis_ekstre", teslim_suresi_sn=43200), kontrol("+21h", "K1"),
    baslat("+22h", "T2", "A"), baslat("+22h1m", "T3", "C"), kontrol("+36h", "K2")],
   {"kontroller.K1.isler": {"T1/A": "Gönderildi", "T1/B": "Teslim Edildi"},
@@ -2096,6 +2096,22 @@ S("W2-02-kabulde-30-gun-sonra-12-sa-kisalir", "W2",
    "isler.T1/A.durum": "Gönderildi", "meta.post": {"A": 1, "B": 1, "C": 1}},
   meta={"sablonlar": {"destekofis_ekstre": {"durum": "APPROVED", "kategori": "UTILITY", "teslim_suresi_sn": 2592000}}},
   meta_davranis={"kanca": {"T1/A": YANLIZ_KS, "T3/C": YANLIZ_KS, "A": K_STD, "B": K_STD}})
+
+
+# ---- W3 (S10-6 KULLANICI KARARI 03.11.2026 ~21:00 UTC): süre kabulden sonra UZARSA önceden kabul edilmiş iş UZUN süreyle; etkin süre = max(kabul anındaki, güncel).
+# Program henüz uygulamıyor (ana oturum) — programa karşı koşuda ayrışma BEKLENİR.
+S("W3-01-kabulde-12-sa-sonra-30-gun-uzar", "W3",
+  "Kabul anında Meta listede 12 sa bildirir; 6. saatte liste 30 gün'e uzar: önceden kabul edilmiş A uzun süreyle — 14. saatte Süresi Doldu YOK (Gönderildi), 15. saatte aynı "
+  "dönem 'Daha Önce Gönderildi' (ikinci ileti gitmez), uyarıda 'Yine de Gönder' ile gider",
+  "W3 (Y10-14) + W2 + W1 + R3 + ilke (2), (4)", [A(), B()],
+  [baslat("+0s", "T1", "AB"), olay("+6h", "meta_sablon", ad="destekofis_ekstre", teslim_suresi_sn=2592000), kontrol("+14h", "K1"),
+   baslat("+15h", "T2", "A"), baslat("+15h1m", "T3", "A", onceki="gonder"), kontrol("+2d", "K2")],
+  {"kontroller.K1.isler": {"T1/A": "Gönderildi", "T1/B": "Teslim Edildi"},
+   "elenen": {"T2": {"A": "daha_once_gonderildi"}}, "olusmadi": ["T2"],
+   "onceki_uyari": {"T2": {"sayi": 1, "son": "2026-10-30"}, "T3": {"sayi": 1, "son": "2026-10-30"}},
+   "kontroller.K2.isler": {"T1/A": "Gönderildi", "T1/B": "Teslim Edildi", "T3/A": "Teslim Edildi"},
+   "isler.T1/A.durum": "Gönderildi", "isler.T1/A.medya_silme": 0, "meta.post": {"A": 2, "B": 1}},
+  meta=META_12SA, meta_davranis={"kanca": {"T1/A": YANLIZ_KS, "A": K_STD, "B": K_STD}})
 
 
 # ======================================================================== üretim / denetim

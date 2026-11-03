@@ -34,7 +34,7 @@ Tüm Hareketler'e açılış gününden sonra tarihli hareket girmez — README 
 GÜNCELLEME 9d (liste metni madde 7): J7 "onarım bekleyen kabul" = Meta kabul etti ama kabul GÖNDERİM DEFTERİNE yazılamadı (`defter_yazilamaz`); onarım = defter yeniden
 yazılabilir olunca; eski "defterde var, şirket dosyasına yazılamadı" okuması (dosya_yazilamaz) KALKTI — README §14.15.
 GÜNCELLEME 10 (2.4.9 W, KULLANICI KARARI 03.11.2026, W1): teslim süresi = Meta'nın şablon listesinde o şablon için bildirdiği değer (teslim_suresi_sn), yoksa
-30 gün (+1 sa payı; son kabul edilen denemeden, J4; W2 W-KÖK: süre KABUL ANINDAKİ değer); 2.4.8'in 72 sa ayarı okunmaz; Meta API medyayı 30 günde kendisi siler (Meta'da silme sayısı yalnız 30 günü
+30 gün (+1 sa payı; son kabul edilen denemeden, J4; W2 W-KÖK + W3: etkin süre = max(KABUL ANINDAKİ, güncel)); 2.4.8'in 72 sa ayarı okunmaz; Meta API medyayı 30 günde kendisi siler (Meta'da silme sayısı yalnız 30 günü
 dolmamış medyayı sayar, 30 günden eski medya yeniden kullanılmaz) — README §15.
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
@@ -340,6 +340,7 @@ MUTASYONLAR = {
     "M168": "W1 (Y10-7): Meta medyayı 30 günde silmez — 30 günden eski PDF'in kesinleşmede silinmesi Meta'da sayılır",
     "M169": "W1 (Y10-8): bir şablonda bildirilen teslim süresi bütün şablonlara uygulanır (şablon başına değil)",
     "M170": "W2 (W-KÖK, Y10-10): teslim süresi kabul anındaki değerden değil Meta'nın GÜNCEL listesinden (sonradan kısalan süre önceden kabul edilmiş işe uygulanır)",
+    "M171": "W3 (S10-6, Y10-14): yalnız kabul anındaki süre — sonradan UZAYAN süre önceden kabul edilmiş işe uygulanmaz (max yok; S10-6'nın A okuması)",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -501,6 +502,9 @@ KARARLAR = {
            "metin": ["KULLANICI (03.11 ~20:05 UTC, \"2.5.0 bırakmasak büyük bir iş mi?\") → W-KÖK 2.4.9'A ALINDI: iş KABUL ANINDAKİ teslim süresiyle değerlendirilir (Meta "
                      "listesindeki süre sonradan kısalırsa önceden kabul edilmiş iş eski süreyle; o an süre bilinmiyorsa 30 gün) — İLKEYLE (ilke 2 \"almış olabilirse "
                      "elenir\"), yeni soru yok."]},
+    "W3": {"kaynak_turu": "kullanıcı (03.11.2026 ~21:00 UTC, AskUserQuestion; kâhinin S10-6 sorusu) — docs/2.4.9-IS-LISTESI.md son satır, AYNEN; program henüz uygulamıyor",
+           "metin": ["KULLANICI KARARI (03.11 ~21:00 UTC, AskUserQuestion; kâhinin S10-6 sorusu): süre kabulden sonra UZARSA önceden kabul edilmiş iş UZUN süreyle (30 gün) "
+                     "değerlendirilir → etkin süre = max(kabul anındaki, güncel); kabulde bilinmiyorsa 30 gün. W-KÖK ajanına ve kâhine iletildi."]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -2068,10 +2072,14 @@ class Benzetim:
 
     # ---- TTL, basamak ve şablon okuma ---------------------------------------------------------------------------------------
     def ttl_suresi(self, j):
-        """W2 (W-KÖK, KULLANICI 03.11.2026 ~20:05 UTC) Y10-10/11: iş KABUL ANINDAKİ teslim süresiyle değerlendirilir (programa_kabul'de işe yazılır); M170 güncel listeden."""
+        """W2 (W-KÖK, KULLANICI 03.11.2026 ~20:05 UTC) Y10-10/11: kabul anındaki teslim süresi (programa_kabul'de işe yazılır; bilinmiyorsa 30 gün);
+        W3 (S10-6 KULLANICI KARARI 03.11 ~21:00 UTC) Y10-14: etkin süre = max(kabul anındaki, güncel liste). M170 yalnız güncel liste, M171 yalnız kabul anındaki."""
+        guncel = self.ttl_listeden(j)
         if "M170" in self.mut or getattr(j, "ttl_kabul", None) is None:
-            return self.ttl_listeden(j)
-        return j.ttl_kabul
+            return guncel
+        if "M171" in self.mut:
+            return j.ttl_kabul
+        return max(j.ttl_kabul, guncel)
 
     def ttl_listeden(self, j):
         """W1 (KULLANICI KARARI 03.11.2026, W §15) Y10-1/4/8: Meta'nın şablon listesinde O ŞABLON için O AN bildirdiği teslim süresi (teslim_suresi_sn = Meta

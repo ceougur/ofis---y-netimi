@@ -901,7 +901,7 @@ program ↔ kâhin ayrışması BEKLENİR ("beklenen ayrışma (kod henüz yok)"
   Meta'nın o anki listesinden alır, senaryolarda değer değişmez.
 - **S10-5 (bilgi):** Y10-11 — "kabul anındaki süre" Meta'nın o anki listesi mi, programın o ana dek son okuduğu değer mi: ancak liste programın son okumasıyla kabul arasında
   değişirse ayrışır; senaryosuz.
-- **S10-6 (SORU — iki okuma, ders 43; kâhin senaryoyla kesinleştirmedi):** Meta listesindeki süre kabulden SONRA UZARSA (ör. kabul anında 12 sa, sonra 30 gün) önceden kabul edilmiş iş
+- **S10-6 — KAPANDI (KULLANICI KARARI 03.11 ~21:00 UTC, §15.7: B — etkin süre = max(kabul anındaki, güncel)):** ~~SORU — iki okuma, ders 43; kâhin senaryoyla kesinleştirmedi:~~ Meta listesindeki süre kabulden SONRA UZARSA (ör. kabul anında 12 sa, sonra 30 gün) önceden kabul edilmiş iş
   hangi süreyle değerlendirilir? **A (kâhin modeli; kararın ana cümlesi "iş KABUL ANINDAKİ teslim süresiyle değerlendirilir"):** kabul anındaki 12 sa → 13. saatte Süresi Doldu,
   kişi aynı dönemde yeniden gönderilebilir (P3). **B (ilke 2 "almış olabilirse elenir", şüphede uzun süre):** iki değerin uzunu (30 gün) → kişi "Daha Önce Gönderildi", Yine de
   Gönder açık. Meta'nın süreyi iletinin gönderildiği andaki şablondan uyguladığı belgede açık değilse (D0) B güvenli taraftır; belgede açıksa A fiziksel olarak doğrudur.
@@ -962,3 +962,19 @@ değiştirmedi; A1 W kodundan ÖNCE de vardı. Bütün koşu: 25 tam eşit, 196 
 - DENENMEYEN: 2.4.8'in GERÇEK koduyla (v2.4.8) yazılmış `ttlHours` kaydının 2.4.9'da okunmadığı (sürücü yalnız 2.4.9 ucunu dener → 400; eski kayıt üretilmedi); S10-1 pay aralığı,
   S10-2 (12 sa'te bildirim kuyrukta + açılış), S10-3 (süre toplu iş sürerken değişir — W2 dışında), S10-5, S10-6 (süre uzar — SORU); Yol 1 gerçekçi kip (`--kip yol1`) ve Yol 2 kipi; sürücünün yavaş ucu ve `TZ=UTC` yalnız 17 hedef senaryoda (bütün koşu yalnız hızlı uç, Europe/Istanbul); sürücünün `--mutasyon-denetimi` bütün tablosu
   (yalnız yeni `SW-teslim-suresi-verilmez` W1-03'te tek tek koşuldu — program değeri uygulamadığı için bugün DİŞSİZ görünür, A1 düzelince anlamlı olur).
+
+### 15.7 Güncelleme 10b — S10-6 KULLANICI KARARI (03.11.2026 ~21:00 UTC; AYNEN `kahin.KARARLAR` W3) — yorumlar (kodlamadan ÖNCE)
+Kaynak: `docs/2.4.9-IS-LISTESI.md` son satır (AskUserQuestion; kâhinin S10-6 sorusu): "süre kabulden sonra UZARSA önceden kabul edilmiş iş UZUN süreyle (30 gün) değerlendirilir →
+etkin süre = max(kabul anındaki, güncel); kabulde bilinmiyorsa 30 gün". Ana oturum: program bu kuralı henüz uygulamıyor (W-KÖK kodu ayrı ajanda) — bu turda programa karşı KOŞULMADI.
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y10-14 | Etkin süre = max(kabul anında işe yazılan süre, Meta listesinin DEĞERLENDİRME ANINDAKİ değeri); kabulde değer yoksa kabul süresi 30 gün (W2). Kısalma W2 ile aynı sonuç (max eskiyi tutar); uzama → uzun süre (Y10-13'ün A okuması DÜŞTÜ, B oldu) | W3 + W2 |
+| Y10-15 | Kâhinde "güncel" = Meta listesinin o anki değeri, listede değer yoksa 30 gün (W1 "yoksa 30 gün"). Listenin değeri sonradan TAMAMEN kaldırması (bildirmemeye geçmesi) karar metninde yok — senaryosuz (S10-7) | W1 + W3 |
+| Y10-16 | Uzama Süresi Doldu YAZILDIKTAN SONRA gelirse iş yeniden açılmaz (Süresi Doldu kesin durum; J1 "iş yeniden açılmaz" düzeni) — karar metni bu anı söylemiyor, senaryosuz (S10-8) | J1 düzeni |
+- **S10-7 (bilgi, senaryosuz):** Y10-15. **S10-8 (bilgi, senaryosuz):** Y10-16.
+- Senaryo W3-01 (kabulde 12 sa, 6. saatte liste 30 gün → 14. saatte Süresi Doldu YOK, Gönderildi; 15. saatte aynı dönem "Daha Önce Gönderildi", uyarıda "Yine de Gönder" ile gider);
+  W2-01 / W2-02 (kısalma yarısı) kaynak satırına "+ W3". Mutasyon M171 = S10-6'nın A okuması (yalnız kabul anındaki süre; max yok).
+- **Sonuç (10b):** `ttl_suresi()` = max(`ttl_kabul`, `ttl_listeden()` o anki); KARARLAR W3 AYNEN; yeni senaryo W3-01; yeni mutasyon M171 (← W3-01). Senaryolar **292/292** elle = model;
+  kendi testi **315/315** (F mutasyon **170/170**) `TZ=UTC` ve `TZ=Europe/Istanbul`; önceki 291 senaryonun tam sonucu bayt bayt AYNI (W2-01/02 yalnız kaynak satırı); önceki kâhinle
+  (e37016de) W3-01 KIRMIZI, W2-01/02 aynı — `docs/kanit/2026-11-03/kahin-w3/`. Programa karşı KOŞULMADI (ana oturum: W-KÖK kodu ayrı ajanda; W3-01'de ayrışma beklenir).
+  Sürücüde değişiklik gerekmedi (`meta_sablon teslim_suresi_sn` ve aday anlar güncelleme 10'da var).

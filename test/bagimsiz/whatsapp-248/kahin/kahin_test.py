@@ -379,6 +379,7 @@ MUTASYON_IPUCU = {
     "M165": "J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz",
     "M7": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz", "M166": "W1-03-meta-bildirir-12-sa-sablon-basina", "M167": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz",
     "M168": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz", "M169": "W1-03-meta-bildirir-12-sa-sablon-basina", "M170": "W2-01-kabulde-bilinmiyor-sonra-12-sa",
+    "M171": "W3-01-kabulde-12-sa-sonra-30-gun-uzar",
 }
 
 
@@ -534,7 +535,7 @@ def _i1():
 def _i2():
     h = []
     for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5", "G6", "H1", "H2", "H3", "H4",
-              "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11", "J12", "W1", "W2"):
+              "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11", "J12", "W1", "W2", "W3"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
