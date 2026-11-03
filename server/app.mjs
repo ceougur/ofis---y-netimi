@@ -103,13 +103,59 @@ function ensureInitialAdmin(store, config, log) {
 // Mutabakat kapısının tam taraması (v2.1.0, §3.11): arka planda bu aralıkla salt okuma.
 const INTEGRITY_SCAN_MINUTES = 15;
 
+// 2.4.9 B1 (docs/2.4.9-tasarim/B1-createApp-baglanti.md): açılış openDatabase'den SONRA düşerse (göç, kullanıcı aynası, bozuk tablo sayfası, kilit,
+// geç adımlar) kurulan her kaynak tersten geri alınır: şirket dosyasının bağlantısı SENKRON kapanır (çağıran hatayı aldığında dosya serbesttir —
+// Windows'ta silinebilir / geri yüklemede değiştirilebilir), zamanlayıcılar durur, hub'ın işçisinden ve olay kanalından kayıt düşer. Önceden bağlantı
+// çöp toplamaya kadar açık kalıyordu (her başarısız açılış bir tutamak daha). Başarılı açılışta davranış aynen (yığın yalnız hatada okunur); asıl hata
+// aynen yeniden fırlatılır (ders 21: temizlik hatası asıl hatayı ezmez).
 export function createApp(overrides = {}) {
+  const opening = { undo: [], log: overrides.log || null };
+  try {
+    const app = buildApp(overrides, opening);
+    opening.undo.length = 0; // başarılı açılış: geri alma adımları bırakılır; kapanış app.close() ile (değişmedi)
+    return app;
+  } catch (error) {
+    rollbackOpen(opening, error);
+    throw error;
+  }
+}
+
+function rollbackOpen({ undo, log }, cause) {
+  const warn = error => {
+    try {
+      log?.warn?.(`Açılış geri alınırken: ${error?.message || error} (asıl hata: ${cause?.message || cause})`);
+    } catch {
+      // günlük de yazılamadı; asıl hata yine fırlatılır
+    }
+  };
+  for (const step of undo.splice(0).reverse()) {
+    try {
+      const result = step();
+      // Async kapanışlar (analiz / rapor iş parçacığı, işçinin durması, tünel) beklenmez; şirket dosyasını tutmazlar.
+      if (typeof result?.catch === "function") result.catch(warn);
+    } catch (error) {
+      warn(error);
+    }
+  }
+}
+
+function buildApp(overrides, opening) {
+  const { undo } = opening; // açılışta kurulan her kaynağın geri alması, kuruluş sırasıyla (yalnız hatada, tersten — rollbackOpen)
   const config = loadConfig(overrides);
   const log = overrides.log || createLogger(config.logLevel);
+  opening.log = log;
   // 2.4.9 B1 (YALNIZ TEST — test/createapp-acilis-geri-alma-249.test.mjs; __testWriteLockProbe emsali): açılışın verilen aşamasında kesinti. Yalnız programdan
   // (test oluşturucusu) verilir, ortam / ayar dosyasından okunmaz; verilmezse sıfır maliyet. Çocuk örnek `...overrides` ile aynı kancayı alır (companyId ile ayrılır).
+  // "geri-alma-da-duser" dönerse geri alma yığınına fırlatan bir adım da eklenir (T6: temizlik düşse de asıl hata ve öbür adımlar).
   const openFault = stage => {
-    if (overrides.__testOpenFault?.(stage, overrides.companyId || ROOT_COMPANY_ID)) throw new Error(`test: açılış kesintisi ${stage}`);
+    const fault = overrides.__testOpenFault?.(stage, overrides.companyId || ROOT_COMPANY_ID);
+    if (!fault) return;
+    if (fault === "geri-alma-da-duser") {
+      undo.push(() => {
+        throw new Error("test: geri alma kesintisi");
+      });
+    }
+    throw new Error(`test: açılış kesintisi ${stage}`);
   };
   const startedAt = new Date().toISOString();
   mkdirSync(config.dataDir, { recursive: true });
@@ -123,6 +169,7 @@ export function createApp(overrides = {}) {
   const stagedRestore = hub ? null : applyStagedRestore({ dataDir: config.dataDir, backupRoot: config.backupDir, dbPath: config.dbPath, keep: config.backupKeep, log });
 
   const db = openDatabase(config.dbPath);
+  undo.push(() => db.close());
   openFault("after-open");
   const store = createStore(db);
   // Şirket kayıt defteri yalnız hub'da; çocuklar hub'ınkini görür. (v2.0.20: göçlerden önce kurulur; göç öncesi yedek de
@@ -158,6 +205,7 @@ export function createApp(overrides = {}) {
   // 2.4.7 E4/E5 (S4): e-Belge kullanım defteri kurulum düzeyinde, ana veri klasöründe (şirket dosyalarının dışında; lib/einvoice/kullanim-defteri.mjs).
   // Çocuk şirket örnekleri hub'ın defterini kullanır. Bir şirketin izi deftere aktarılır (birincil anahtar çift sayımı önler); okunamayan şirket atlanır.
   const usageLedger = hub ? hub.usageLedger : openUsageLedger({ dir: config.dataDir, log, fault: overrides.edocUsageFault || null });
+  if (!hub) undo.push(() => usageLedger.close());
   function usageRowsOfSelf() {
     try {
       return usageLedger.allRows();
@@ -220,6 +268,10 @@ export function createApp(overrides = {}) {
   openFault("after-migrations");
   // 2.4.8 W2 (lib/whatsapp/hub.mjs): WhatsApp gönderim defteri (makine düzeyi, ana veri klasöründe), tek işçi ve bağlantı kaydı — ortak katmanda tek örnek.
   const whatsapp = hub ? hub.whatsapp : createWhatsappHub({ dataDir: config.dataDir, log, gapMs: config.whatsappGapMs, manual: config.whatsappWorker === "manual", fault: config.whatsappLedgerFault });
+  if (!hub) {
+    undo.push(() => whatsapp.ledger.close());
+    undo.push(() => whatsapp.scheduler.stop()); // tersten: önce işçi (async, beklenmez; açılışta başlamamıştır), sonra defter
+  }
   // 001 yedekten geri yüklendiyse (açılışta uygulandı) eski toplu gönderimler defterde durdurulur: geri yüklenen veri eski işleri diriltmez (plan §6 W2).
   if (!hub && stagedRestore?.ok) whatsapp.ledger.stopCompany(companyId, "restored", new Date(config.now()).toISOString());
   // 2.4.7 E4 (S4): açılışta bütün şirketlerin izi kullanım defterine aktarılır (önceki çalışmada deftere eklenemeyen satır tamamlanır).
@@ -255,6 +307,7 @@ export function createApp(overrides = {}) {
   // Roller ve etkin yetkiler (v2.0.10): yerleşik 4 rol + ofisin tanımladığı roller + kişiye özel ekle/çıkar.
   const access = hub ? hub.access : createAccess({ store });
   const auth = hub ? hub.auth : createAuth({ store, config, audit, access });
+  if (!hub) undo.push(() => auth.limiter.stop());
   // Yönetici parolası kurtarma (v2.0.10): kurtarma anahtarı ya da sunucu bilgisayarında üretilen tek seferlik kod.
   const recovery = hub ? hub.recovery : createRecovery({ store, dataDir: config.dataDir, log });
   const clientState = createClientState({ store, audit });
@@ -263,10 +316,12 @@ export function createApp(overrides = {}) {
   const supervisorLink = hub ? hub.supervisorLink : overrides.supervisorLink ?? (config.supervised ? createSupervisorLink(process) : null);
   // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
   const events = createEventHub({ log, pingMs: config.eventsPingMs, maxAgeMs: config.eventsMaxAgeMs, isValid: client => auth.sessionAlive(client.tokenHash) });
+  undo.push(() => events.stop());
   // 2.4.4 (iş listesi 29): yönetim olayları (yetki, kullanıcı, şirket listesi, lisans) ortak katmanın kanalına yayınlanır; 002'yi gösteren
   // pencere 002'nin kanalına bağlıdır → bu olaylar şirket kanalına aynı hedefle (users/except) iletilir. Şirkete özgü veri olayları
   // (cari, kasa, fatura, sıfırlama…) iletilmez: her şirket kendi verisinin olayını kendi kanalında yayınlar.
   const unbridgeHubEvents = hub?.events ? hub.events.tap((event, data, target) => isSharedEvent(event, data) && events.publish(event, data, target)) : null;
+  undo.push(() => unbridgeHubEvents?.());
   const chat = createChat({ store, events, audit, roles: access });
   // 2.4.8 İş P1 (lib/write-lock.mjs): arka plan işleri kilitli şirket dosyasına yazmayı denemez (olay döngüsü tutulmaz). __testWriteLock* yalnız test oluşturucusundan.
   const writeLock = createWriteLock({ probe: overrides.__testWriteLockProbe !== false, ...(Number.isFinite(overrides.__testWriteLockBackoffMs) ? { backoffMs: overrides.__testWriteLockBackoffMs } : {}) });
@@ -295,6 +350,7 @@ export function createApp(overrides = {}) {
     // İş P1: zamanlanmış eşitleme kilitli dosyada o tur atlanır (kullanıcının "Şimdi Eşitle"si bu denetimden geçmez).
     canWrite: () => (!license || license.writable()) && canWriteInBackground(),
   });
+  undo.push(() => dataset.stop());
   clientState.useDataset(() => dataset.info());
   // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
   const trash = createTrash(store, { now: config.now });
@@ -303,6 +359,7 @@ export function createApp(overrides = {}) {
   // Ofis profili: sektör, kelime dağarcığı, kalemle değiştirilen başlıklar ve verinin önbellekli analizi.
   // Analiz ayrı iş parçacığında koşar; sunucu bu sırada istekleri yanıtlar (yerel-önce: ofis bilgisayarı kilitlenmez).
   const analysisRunner = createAnalysisRunner({ log, enabled: overrides.analysisWorker !== false });
+  undo.push(() => analysisRunner.close());
   const profile = createProfileService({ store, dataset, audit, events, log, free, runner: analysisRunner, clock: config.now });
   profile.init();
   dataset.onChange(() => profile.invalidate());
@@ -324,6 +381,7 @@ export function createApp(overrides = {}) {
       usage: () => edocUsageSummary(),
       ...licenseOptions,
     });
+    undo.push(() => license.stop());
     license.init();
   }
   dataset.start();
@@ -450,6 +508,7 @@ export function createApp(overrides = {}) {
     context.integrity.scanInBackground().catch(error => log.error?.("Mutabakat taraması çalışmadı", error));
   }, INTEGRITY_SCAN_MINUTES * 60_000);
   context.integrity.scanTimer?.unref?.();
+  undo.push(() => clearInterval(context.integrity.scanTimer));
   openFault("after-integrity");
   // POS valör kuyruğu (2.2.0, plan §4.4/2): (a) açılışta bir tur — ilk şirkette dinlemeye başladıktan sonra (listen), şirket örneğinde açılınca;
   // (b) 15 dakikada bir (unref; kapanışta durur); (f) "Şimdi Aktar" ve (g) dönem kilidi öncesi uçlarda; (d) ortak katmanda günde bir: bu süreçte
@@ -457,6 +516,7 @@ export function createApp(overrides = {}) {
   // dakikalık turla karşılanır (karar). Kuyruk açılışı beklemez (setImmediate).
   const posQueue = createPosQueue({ pos: () => context.bankAccounts?.pos, log, canWrite: canWriteInBackground });
   context.posQueue = posQueue;
+  undo.push(() => posQueue.stop()); // stopped bayrağı aşağıdaki setImmediate(start)'ı da etkisiz kılar
   if (hub && overrides.posQueue !== false) setImmediate(() => posQueue.start());
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
   // 2.4.8 W2: WhatsApp Business API gönderim kuyruğu bu şirketin; işçi ortak katmanda tek (whatsapp.scheduler). Açılışta yarım kalan işler defterden çözülür.
@@ -470,6 +530,7 @@ export function createApp(overrides = {}) {
     }
     whatsapp.registry.set(companyId, context.whatsapp.connection.summary());
     whatsapp.scheduler.register(companyId, context.whatsapp.queue);
+    undo.push(() => whatsapp.scheduler.unregister(companyId)); // yalnız bu örnek kaydettiyse (kayıttan hemen sonra)
   }
   openFault("after-register");
   // ANLIK DURUM (v2.0.7): Kasa, Cari, Stok ve Çek/Senet'in kendi hesaplarını okur (tek kaynak); raporlar.
@@ -480,10 +541,12 @@ export function createApp(overrides = {}) {
   // görüntüsünden (lib/report-runner.mjs; aynı kod, aynı çıktı). Bellek içi veri tabanında (dosyası yok) ve kapalıyken yerinde hazırlanır.
   const reportRunner = config.reportWorker && config.dbPath && config.dbPath !== ":memory:" ? createReportRunner(config.reportWorkerEntry ? { entry: config.reportWorkerEntry } : {}) : null;
   context.reportRunner = reportRunner;
+  undo.push(() => reportRunner?.close());
   // sharedStore (2.4.7, müşteri isteği 6a): kişi başına rapor tercihleri ortak katmanda (kullanıcılar orada; 002'de de aynı kişi aynı tercihi görür).
   context.reportCenter = registerReportCenter(router, { ...context, sharedStore: hub ? hub.store : store, tax: () => context.tax, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity, doubtful: () => context.doubtful, offload: reportRunner ? job => reportRunner.run({ ...job, dbPath: config.dbPath, fx: config.fxEnabled === true, later: config.bankLater === true }) : null });
   registerDueRoutes(router, { ...context, calendar: () => context.tableReports?.calendar });
   const documents = registerDocumentRoutes(router, context);
+  undo.push(() => documents.stop());
   registerTrashRoutes(router, { ...context, documents, invoices: context.invoices, bankModule: () => context.bankAccounts?.module, doubtful: () => context.doubtful });
   registerFreeRoutes(router, { ...context, readGoogleSheet });
   registerChatRoutes(router, context);
@@ -819,9 +882,11 @@ export function createApp(overrides = {}) {
   const stopBackups = config.scheduleBackups && !hub
     ? startBackupScheduler({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log })
     : () => {};
+  undo.push(() => stopBackups());
   if (overrides.startLicenseTimers !== false && !hub) license.start();
   // Gün dönümünde tüm ekranlara "alerts.refresh" (olay tabanlı uyarı akışı, v2.0.2).
   const alertScheduler = createAlertScheduler({ events, log, clock: config.now });
+  undo.push(() => alertScheduler.stop());
   if (overrides.alertScheduler !== false) alertScheduler.start();
   auth.purgeExpiredSessions();
   const sessionTimer = setInterval(() => {
@@ -837,6 +902,7 @@ export function createApp(overrides = {}) {
     }
   }, 3_600_000);
   sessionTimer.unref();
+  undo.push(() => clearInterval(sessionTimer));
   // Sohbet arşivi: açılıştan kısa süre sonra ve 6 saatte bir (v2.0.2).
   let archiveRetried = false;
   let archiveRetry = null; // İş R1: yeniden deneme zamanlayıcısı tutulur, close() siler
@@ -862,6 +928,11 @@ export function createApp(overrides = {}) {
   archiveStart?.unref?.();
   const archiveTimer = overrides.chatArchive === false ? null : setInterval(archiveChat, 6 * 3_600_000);
   archiveTimer?.unref?.();
+  undo.push(() => {
+    clearTimeout(archiveStart);
+    clearInterval(archiveTimer);
+    clearTimeout(archiveRetry);
+  });
 
   // Servis yöneticisine (supervisor) iletilen özet bilgi: keşif yanıtlarında ofis adı ve sürüm görünür.
   const infoListeners = new Set();
@@ -1088,6 +1159,7 @@ export function createApp(overrides = {}) {
   // 2.4.7 M4: canlı bağlantı (tünel) — yalnız ortak katmanda; M3 kapıcı adresi (config.mobileKapiUrl) varken ya da testte `tunnel` seçeneğiyle; lib/tunnel/attach.mjs.
   // 2.4.8 W9 (plan §6 W9, S1 A): tünel WhatsApp bağlıyken de açık (durum bildirimi kapıcıdan tünel üzerinden gelir) — "Ne zaman açık" kuralının genişlemesi.
   context.tunnel = hub ? null : attachTunnel({ option: overrides.tunnel, config, store, license, mobileRemote: context.mobileRemote, mobileSync: () => context.mobileSync, extraDemand: () => whatsapp.registry.anyConfigured(), listenRemote: () => (remoteServer.listening ? Promise.resolve(remoteServer.address()) : app.listenRemote(0, "127.0.0.1")), forbiddenPorts: () => [config.port, config.publicPort, server.address()?.port].filter(Number.isInteger), log });
+  undo.push(() => context.tunnel?.stop());
   openFault("after-app");
   return app;
 }
