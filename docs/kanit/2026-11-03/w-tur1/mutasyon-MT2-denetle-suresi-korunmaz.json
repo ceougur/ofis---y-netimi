@@ -1,0 +1,38 @@
+{
+  "ad": "w-tur1/mutasyon-MT2-denetle-suresi-korunmaz",
+  "komut": "node --test --test-reporter=tap test/whatsapp-w2-onbellek-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:59:33.019Z",
+  "sure_sn": 4.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 6,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller › noteListing (tek değişim yeri): yalnız aynı WABA'nın kaydında, yalnız listede bulunan şablonun Meta alanlarını yazar; kayıttan daha eski okuma ve başka WABA yazmaz",
+      "konum": "test/whatsapp-w2-onbellek-249.test.mjs:178:3",
+      "hata": "Denetle'nin kaydettiği teslim süresi önizlemeyle değişmez · + actual - expected · + undefined"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a89b8c1dbc09f146e/docs/kanit/2026-11-03/w-tur1/mutasyon-MT2-denetle-suresi-korunmaz.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/mut-MT2-denetle-suresi-korunmaz-6fd4d020",
+  "ham_cikti_sha256": "3e8ba2aaf6842d3fd9a2402a46dd885ec3cf965aa2be5cb8914962badbc4168e",
+  "ham_cikti_bayt": 4998
+}

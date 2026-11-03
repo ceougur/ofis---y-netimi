@@ -1,0 +1,23 @@
+TAP version 13
+# Subtest: 2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler
+    # Subtest: işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)
+    ok 1 - işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)
+      ---
+      duration_ms: 697.003243
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler
+  ---
+  duration_ms: 698.104786
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1109.362853

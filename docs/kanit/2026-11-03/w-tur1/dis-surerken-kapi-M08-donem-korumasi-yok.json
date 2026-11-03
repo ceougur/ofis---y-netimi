@@ -1,0 +1,43 @@
+{
+  "ad": "w-tur1/dis-surerken-kapi-M08-donem-korumasi-yok",
+  "komut": "node --test --test-reporter=tap /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/betik/surerken-kapi-dis.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:59:51.283Z",
+  "sure_sn": 2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "SÜRERKEN (kapılı) hücresi, Denetle'nin Meta okuması +0 ms",
+      "konum": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/betik/surerken-kapi-dis.test.mjs:28:3",
+      "hata": "giden 3 (beklenen true, gelen false)"
+    },
+    {
+      "ad": "SÜRERKEN (kapılı) hücresi, Denetle'nin Meta okuması +450 ms",
+      "konum": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/betik/surerken-kapi-dis.test.mjs:28:3",
+      "hata": "giden 3 (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a89b8c1dbc09f146e/docs/kanit/2026-11-03/w-tur1/dis-surerken-kapi-M08-donem-korumasi-yok.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/mut-M08-donem-korumasi-yok-6fd4d020",
+  "ham_cikti_sha256": "2d94d11ab874f2c8e80ea516811b248a5e02697c2b13bfa299cdbea915fd598d",
+  "ham_cikti_bayt": 2301
+}

@@ -1,0 +1,9 @@
+(node:20446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Denetle 1: 200
+1. iş: accepted giden ileti: 1
+önizleme 1 (14. saat): 200 A: Daha Önce Gönderildi
+bakımdan sonra 1. iş: expired | kayıttaki TTL: 43200
+önizleme 2: 200 A: gönderilecek
+2. toplu iş: 200 running
+SONUC kod=eski-ed54565c yol=onizleme A'ya aynı dönemde giden ileti=2 (toplam 2)
