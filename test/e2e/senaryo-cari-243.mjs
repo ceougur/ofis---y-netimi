@@ -256,6 +256,131 @@ try {
     await closeAll(page);
   });
 
+  // 2.4.9 C1 (docs/2.4.9-tasarim/C1-hareketli-cari.md §6, §10; KARAR 03.11.2026 ~11:45 A): iş akışı EKRANDAN — cari aç → nakit tahsilat → Sil pasif + nedeni +
+  // Pasife Al önerisi → Pasife Al; Kasa değişmez. Aynı adlı ikinci (hareketsiz) cari: Sil açık, onay metni "hareketi yok" (Kasa sorusu yok) → silinir →
+  // Silinenler'den geri yüklenir. Kart açıkken başka yerden tahsilat girilince Sil → "Cari Silinemez" + Pasife Al (kart yenilenir, Sil pasif).
+  // Pencere seçicisi en üstteki pencere (ders 39); para etkisi veri tabanından (ders 3, 12).
+  await step("C1 Hareketi olan cari silinmez (Pasife Al önerilir); hareketsiz cari silinir ve Silinenler'den geri gelir", async () => {
+    const last = `${modal}:nth-last-child(1 of ${modal})`;
+    const C1_NAME = "Cansu Ekran";
+    const openNew = async () => {
+      await page.evaluate(() => window.HOF.accounts.open());
+      await page.waitForSelector(`${accWin} [data-act="new"]`);
+      await page.click(`${accWin} [data-act="new"]`);
+      await page.waitForSelector(`${last} input[name="name"]`);
+      await page.click(`${last} input[name="name"]`);
+      await typeSlow(page, C1_NAME);
+      await page.keyboard.press("Tab");
+      await page.waitForTimeout(500);
+      await page.click(`${last} button[type="submit"]`);
+    };
+    // Programın gösterdiği Kasa (silinmiş carinin satırı dışarıda); ham tablo toplamı (cashBalance) silmeyi görmez.
+    const kasa = async () => (await must("Kasa", api.get("/api/workspace/cash"))).totals.balance;
+    const c1Accounts = () => db.all("SELECT id, deleted_at AS deletedAt, status FROM accounts WHERE name = ? ORDER BY rowid", C1_NAME).map(row => ({ ...row }));
+    const deleteWhy = () => textOf(page, `${accWin} [data-delete-block]`);
+    const deleteDisabled = () => page.$eval(`${accWin} [data-act="delete"]`, node => node.disabled).catch(() => null);
+
+    // 1) Yeni Cari formundan cari, + Tahsilat formundan 750 TL nakit tahsilat.
+    await openNew();
+    await page.waitForFunction(name => [...document.querySelectorAll(".hof-accounts-modal h3")].some(node => node.textContent.includes(name)), C1_NAME, { timeout: 8000 }).catch(() => null);
+    await page.waitForTimeout(600);
+    const first = c1Accounts()[0];
+    ok(first && first.deletedAt === null, `Yeni Cari formundan "${C1_NAME}" açıldı (${first?.id})`);
+    await page.evaluate(id => window.HOF.accounts.open(id), first.id);
+    await page.waitForSelector(`${accWin} [data-entry="in"]`);
+    const cash0 = await kasa();
+    await page.click(`${accWin} [data-entry="in"]`);
+    await page.waitForSelector(`${last} input[name="amount"]`);
+    await page.click(`${last} input[name="amount"]`);
+    await typeSlow(page, "750");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => Boolean(document.querySelector('.hof-accounts-modal [data-act="delete"]')?.disabled), null, { timeout: 8000 }).catch(() => null);
+    const cash1 = await kasa();
+    ok(entriesOf(first.id).paid === 750 && cash1 === cash0 + 750, `tahsilat carinin defterinde ve Kasa'da (Kasa ${cash0} → ${cash1})`);
+
+    // 2) Sil pasif, nedeni görünür, Pasife Al önerisi; sunucu da reddeder (cashForce'la da), Kasa değişmez.
+    const why = await deleteWhy();
+    ok((await deleteDisabled()) === true && /Silinemez: Bu carinin hareketi var: 1 cari hareketi\. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın/.test(why), `Sil pasif; neden: “${why}”`);
+    ok(await page.isVisible(`${accWin} [data-act="passive"]`), "Pasife Al düğmesi aynı araç çubuğunda");
+    await shot(page, "c1-1-sil-pasif-neden");
+    const refused = await page.evaluate(async id => {
+      const response = await fetch(`/api/workspace/accounts/${encodeURIComponent(id)}?cashForce=1`, { method: "DELETE" });
+      return { status: response.status, body: await response.json() };
+    }, first.id);
+    const cashRefused = await kasa();
+    ok(refused.status === 409 && refused.body.code === "account-has-movements" && c1Accounts()[0].deletedAt === null && cashRefused === cash1, `silme ucu ${refused.status} ${refused.body.code}; cari duruyor; Kasa ${cashRefused} (değişmedi)`);
+
+    // 3) Pasife Al: Pasif rozeti, neden pasif sürümü; Kasa ve hareket aynı.
+    await page.click(`${accWin} [data-act="passive"]`);
+    await page.waitForFunction(() => /Pasif/.test(document.querySelector(".hof-accounts-modal .hof-plan-title h3")?.textContent || ""), null, { timeout: 8000 }).catch(() => null);
+    const passiveWhy = await deleteWhy();
+    ok(c1Accounts()[0].status === "passive" && /cari zaten pasif/.test(passiveWhy) && (await deleteDisabled()) === true, `Pasife Al → durum ${c1Accounts()[0].status}; neden: “${passiveWhy}”`);
+    const cashPassive = await kasa();
+    ok(cashPassive === cash1 && entriesOf(first.id).paid === 750, `pasif caride Kasa (${cashPassive}) ve tahsilat (${entriesOf(first.id).paid}) aynı`);
+    await shot(page, "c1-2-pasife-alindi");
+    await closeAll(page);
+
+    // 4) Aynı adlı ikinci cari (hareketsiz): Sil açık; onay metni "hareketi yok", Kasa sorusu yok; onaylanınca yalnız o silinir.
+    await openNew();
+    const sameName = await page.waitForSelector(`${last} [data-answer="yes"]`, { timeout: 5000 }).then(() => true).catch(() => false);
+    if (sameName) await page.click(`${last} [data-answer="yes"]`);
+    await page.waitForTimeout(1200);
+    const second = c1Accounts()[1];
+    ok(sameName && second && second.id !== first.id, `aynı adlı ikinci cari onayla açıldı (${second?.id})`);
+    await closeAll(page);
+    await page.evaluate(id => window.HOF.accounts.open(id), second.id);
+    await page.waitForSelector(`${accWin} [data-act="delete"]`);
+    ok((await deleteDisabled()) === false && !(await page.$(`${accWin} [data-delete-block]`)), "hareketsiz caride Sil açık, neden kutusu yok");
+    await page.click(`${accWin} [data-act="delete"]`);
+    await page.waitForSelector(`${last} [data-answer="yes"]`);
+    await page.waitForFunction(sel => document.querySelector(sel)?.classList.contains("is-visible"), last, { timeout: 3000 }).catch(() => null);
+    const question = await textOf(page, `${last} .hof-modal-text`);
+    ok(/silinecek \(hareketi yok\)/.test(question) && !/Kasa/.test(question), `onay metni: “${question}”`);
+    await shot(page, "c1-3-hareketsiz-sil-onay");
+    await page.click(`${last} [data-answer="yes"]`);
+    await page.waitForTimeout(1200);
+    const afterDelete = c1Accounts();
+    const cashDeleted = await kasa();
+    ok(Boolean(afterDelete[1].deletedAt) && afterDelete[0].deletedAt === null && cashDeleted === cash1, `yalnız hareketsiz ikiz silindi (hareketli duruyor); Kasa ${cashDeleted}`);
+    await closeAll(page);
+
+    // 5) Silinenler'den geri yükle (Yönetim → Silinenler).
+    const adminPage = await page.context().newPage();
+    adminPage.on("pageerror", error => errors.push(error.message));
+    await adminPage.goto(`${BASE}/admin.html#trash`, { waitUntil: "load" });
+    const trashRow = `#adm-trash tr[data-id="account:${second.id}"]`;
+    await adminPage.waitForSelector(trashRow, { timeout: 15000 });
+    const trashText = await textOf(adminPage, trashRow);
+    ok(/Cansu Ekran/.test(trashText) && /Hareketleriyle Cari listesine geri döner/.test(trashText), `Silinenler satırı: “${trashText.slice(0, 120)}”`);
+    await shot(adminPage, "c1-4-silinenler");
+    await adminPage.click(`${trashRow} [data-restore]`);
+    await adminPage.waitForFunction(sel => !document.querySelector(sel), trashRow, { timeout: 8000 }).catch(() => null);
+    ok(c1Accounts()[1].deletedAt === null, "Silinenler'den geri yüklendi");
+    await adminPage.close();
+
+    // 6) Kart açıkken başka yerden (API: başka kullanıcı / telefon) tahsilat girildi → Sil → sunucu 409 → "Cari Silinemez" + Pasife Al; Vazgeç → kart yenilenir.
+    await page.evaluate(id => window.HOF.accounts.open(id), second.id);
+    await page.waitForSelector(`${accWin} [data-act="delete"]`);
+    await page.waitForTimeout(400);
+    ok((await deleteDisabled()) === false, "geri yüklenen hareketsiz caride Sil açık");
+    await must("başka yerden tahsilat", api.post(`/api/workspace/accounts/${second.id}/entries`, { kind: "in", amount: "40", date: day(0), method: "cash" }));
+    const cash2 = await kasa();
+    await page.click(`${accWin} [data-act="delete"]`);
+    await page.waitForSelector(`${last} [data-answer="yes"]`);
+    await page.click(`${last} [data-answer="yes"]`);
+    const blocked = await page.waitForFunction(sel => [...document.querySelectorAll(sel)].some(node => /Cari Silinemez/.test(node.textContent)), modal, { timeout: 8000 }).then(() => true).catch(() => false);
+    const blockedText = blocked ? await textOf(page, `${last} .hof-modal-text`) : "";
+    const blockedButton = blocked ? await textOf(page, `${last} [data-answer="yes"]`) : "";
+    ok(blocked && /Bu carinin hareketi var: 1 cari hareketi/.test(blockedText) && blockedButton === "Pasife Al", `"Cari Silinemez" penceresi: “${blockedText}” · düğme “${blockedButton}”`);
+    await shot(page, "c1-5-yaris-cari-silinemez");
+    if (blocked) await page.click(`${last} [data-answer="no"]`);
+    await page.waitForFunction(() => Boolean(document.querySelector('.hof-accounts-modal [data-act="delete"]')?.disabled), null, { timeout: 8000 }).catch(() => null);
+    const cash3 = await kasa();
+    ok((await deleteDisabled()) === true && c1Accounts()[1].deletedAt === null && cash3 === cash2, `Vazgeç: kart yenilendi, Sil pasif; cari duruyor; Kasa ${cash3} (değişmedi)`);
+    await shot(page, "c1-6-kart-yenilendi");
+    await closeAll(page);
+  });
+
   await step("A7 Banka hesabı yokken Kasadan Bankaya Yatır kaydedilmez", async () => {
     const before = cashBalance();
     const transfers = one("SELECT COUNT(*) AS n FROM cash_entries WHERE transfer_id IS NOT NULL AND transfer_id <> ''").n;
