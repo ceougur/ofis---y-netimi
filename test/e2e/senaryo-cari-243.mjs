@@ -354,7 +354,8 @@ try {
     const trashRow = `#adm-trash tr[data-id="account:${second.id}"]`;
     await adminPage.waitForSelector(trashRow, { timeout: 15000 });
     const trashText = await textOf(adminPage, trashRow);
-    ok(/Cansu Ekran/.test(trashText) && /Hareketleriyle Cari listesine geri döner/.test(trashText), `Silinenler satırı: “${trashText.slice(0, 120)}”`);
+    // C1 TUR 1 (dar kontrol DÜŞÜK-3): silinen cari hareketsizdir — not "Cari listesine geri döner."; hareket ve Kasa anılmaz.
+    ok(/Cansu Ekran/.test(trashText) && /Cari listesine geri döner/.test(trashText) && !/Hareketleriyle|Kasa yeniden/.test(trashText), `Silinenler satırı: “${trashText.slice(0, 120)}”`);
     await shot(adminPage, "c1-4-silinenler");
     await adminPage.click(`${trashRow} [data-restore]`);
     await adminPage.waitForFunction(sel => !document.querySelector(sel), trashRow, { timeout: 8000 }).catch(() => null);
