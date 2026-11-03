@@ -1,0 +1,83 @@
+{
+  "ad": "c1/eski-35e90e47-senaryo-cari-243",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-cari-243.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:29:19.507Z",
+  "sure_sn": 113.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 69,
+    "gecen": 59,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Sil pasif (true); neden: “Silinemez: Bu carinin 1 taksit kartı var. Önce kartları silin ya da başka cariye taşıyın; kapatılan kartlar da sayılır.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Sil pasif; neden: “”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "silme ucu 200 undefined; cari duruyor; Kasa 1821 (değişmedi)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Pasife Al → durum active; neden: “”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "pasif caride Kasa (1821) ve tahsilat (750) aynı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "aynı adlı ikinci cari onayla açıldı (account-15899b2b-a5f7-45a7-b74b-ce53b3f3143f)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "onay metni: ““Cansu Ekran” silinecek. Hareketleri Kasa’dan düşer. Yönetim → Silinenler’den geri yüklenebilir.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yalnız hareketsiz ikiz silindi (hareketli duruyor); Kasa 1821",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "\"Cari Silinemez\" penceresi: “” · düğme “”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Vazgeç: kart yenilendi, Sil pasif; cari duruyor; Kasa 1821 (değişmedi)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a5bbd50c43062a283/docs/kanit/2026-11-03/c1/eski-35e90e47-senaryo-cari-243.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47",
+  "ham_cikti_sha256": "9a5dff2a4fb74d0584fe1aed2fc124df7d3d1c60ee1b5ecb2d065a066de23ccf",
+  "ham_cikti_bayt": 7124
+}

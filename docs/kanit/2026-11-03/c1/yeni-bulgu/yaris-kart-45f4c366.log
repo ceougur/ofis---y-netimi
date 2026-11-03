@@ -1,0 +1,4 @@
+{"adim":"kart silindi (gövde beklerken)","status":200,"govde":"{\"ok\":true,\"data\":{\"id\":\"plan-a427f2b2-9a9c-41dc-96ce-d415377a2ea9\"}}"}
+{"adim":"kart tahsilatı yanıtı","status":404,"govde":"{\"ok\":false,\"error\":\"Taksit kartı bulunamadı. Silinmiş olabilir.\"}"}
+{"adim":"veri tabanı","satirlar":[{"kind":"in","amount":300,"method":"cash","kartSilinmis":1}],"kasaOnce":0,"kasaSonra":0}
+{"adim":"kartı geri yükle","status":200,"kasa":300}
