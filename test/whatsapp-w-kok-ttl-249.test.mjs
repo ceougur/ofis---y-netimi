@@ -128,6 +128,49 @@ describe("2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şa
       await ctx.close();
     }
   });
+
+  // Dar kontrol (W-KÖK) boşluğu: SÜREN toplu işin R2 yeniden okuması (§7a 27: en geç 10 dk / her 100 iletide; önizleme/başlatma dışındaki okuma) da süreyi öğretir.
+  // Mutasyon N11 (queue.mjs checkTemplate: süre yalnız `note` verilen okumalarda günlüğe) bu hücrede kırmızı olmalı.
+  it("Denetle YOK, süren toplu iş: başta 12 sa, 1. iş kabul → Meta süreyi 30 güne uzatır → 11 dk sonra 2. iş (süren işin yeniden okuması) → 1. işin kabulünden 13 sa + 1 dk: hiçbir iş Süresi Doldu DEĞİL, günlükte 30 gün", async () => {
+    const ctx = await startWa();
+    try {
+      setListedTtl(ctx.fake, 43_200);
+      const ids = [];
+      ids.push((await ctx.account("Süren İş Bir", "0532 120 00 01", 100)).id);
+      ids.push((await ctx.account("Süren İş İki", "0532 120 00 02", 100)).id);
+      const templateReads = () => ctx.fake.requests.filter(item => item.method === "GET" && /^\/\d+\/message_templates$/.test(item.path)).length;
+      const started = await ctx.batch({ kind: "statement", ids, preset: "thisMonth" }); // başlatma: taze okuma (12 sa)
+      assert.equal(started.status, 200, JSON.stringify(started.data).slice(0, 300));
+      const batchId = started.data.data.batch.id;
+      const readsAtStart = templateReads();
+      const ttlLog = () => (JSON.parse(ctx.store.setting("whatsapp.ttlSince", "") || "{}").items?.[EKSTRE] || []).map(entry => entry.seconds);
+      assert.deepEqual(ttlLog(), [43_200], "ön koşul: başlatmanın taze okuması 12 saati günlüğe yazdı (1. iş 12 sa bilinirken kabul edilecek)");
+      await ctx.drain({ max: 1, maintain: false }); // yalnız 1. iş (önbellekteki karar; yeniden okuma yok)
+      let jobs = await ctx.jobs(batchId);
+      const first = jobs.find(job => job.state === "accepted");
+      assert.ok(first, `ön koşul: 1. iş Meta Kabul Etti (durumlar ${jobs.map(job => job.state).join(",")})`);
+      assert.equal(jobs.filter(job => job.state === "accepted").length, 1, `ön koşul: toplu iş SÜRÜYOR — yalnız 1 iş kabul edildi (durumlar ${jobs.map(job => job.state).join(",")})`);
+      assert.equal(templateReads(), readsAtStart, "ön koşul: 1. işte şablon yeniden okunmadı (başlatmanın okuması önbellekte)");
+      ctx.statuses([{ id: first.wamid, status: "sent", timestamp: ts(ctx) }]); // bildirim yolu canlı (§7a 16)
+      setListedTtl(ctx.fake, DEFAULT_TTL); // müşteri WhatsApp Yöneticisi'nde süreyi 30 güne uzattı
+      ctx.clock.advance(11 * MIN); // R2: en geç 10 dk'da bir yeniden okuma
+      await ctx.drain({ maintain: false });
+      assert.equal(templateReads(), readsAtStart + 1, "ön koşul (ders 20/38): süren işin yeniden okuması GERÇEKTEN Meta'ya gitti (tek okuma)");
+      jobs = await ctx.jobs(batchId);
+      assert.equal(jobs.filter(job => job.state === "accepted" || job.state === "sent").length, 2, `ön koşul: 2. iş de kabul edildi (durumlar ${jobs.map(job => job.state).join(",")})`);
+      const second = jobs.find(job => job.wamid !== first.wamid);
+      ctx.statuses([{ id: second.wamid, status: "sent", timestamp: ts(ctx) }]);
+      ctx.clock.advance(13 * HOUR + MIN - 11 * MIN); // 1. işin kabulünden 13 sa + 1 dk
+      await ctx.drain();
+      jobs = await ctx.jobs(batchId);
+      assert.equal(jobs.filter(job => job.state === "expired").length, 0, `süre kabulden sonra 30 güne uzadı: uzun olan geçer — Süresi Doldu olmamalı (durumlar ${jobs.map(job => job.state).join(",")})`);
+      assert.equal(jobs.filter(job => job.state === "sent").length, 2);
+      assert.equal(ctx.fake.state.deleted.length, 0, "PDF silinmedi");
+      assert.deepEqual(ttlLog(), [43_200, DEFAULT_TTL], "süren işin yeniden okuması 30 günü günlüğe yazmalı");
+    } finally {
+      await ctx.close();
+    }
+  });
 });
 
 describe("2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu)", () => {
