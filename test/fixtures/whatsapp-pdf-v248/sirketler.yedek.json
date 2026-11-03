@@ -1,0 +1,20 @@
+{
+  "companies": [
+    {
+      "id": "sirket-001",
+      "code": "001",
+      "name": "Şirket 1",
+      "dir": "",
+      "createdAt": "2026-11-03T18:36:04.750Z",
+      "createdBy": ""
+    },
+    {
+      "id": "sirket-06f31b99-6ac8-461f-baf4-ae79768faac5",
+      "code": "002",
+      "name": "Göç Şirketi",
+      "dir": "sirketler/002",
+      "createdAt": "2026-11-03T18:36:05.386Z",
+      "createdBy": "user-937450df-6f7a-4e22-ada1-7928be17894c"
+    }
+  ]
+}

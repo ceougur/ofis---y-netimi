@@ -1,0 +1,81 @@
+// 2.4.9 B3 göç / geri yükleme fikstürü: v2.4.8'in GERÇEK koduyla (git archive v2.4.8 = 6ff09c10; sunucu kodu e3f74093 ile aynı) programın KENDİ API'sinden
+// ve KENDİ işçisinden üretilir (CLAUDE.md TEST VERİSİ kuralı; ders 23: eski kod ayrı kopyada). Kopyalama / elle SQL YOK.
+// İki şirket (001 boş, 002 WhatsApp'lı). 002'de: C (tek kişilik gönderim, kabul + bakım → pdf_blob NULL); A + B (aynı toplu iş): A'nın iletisi 131056 →
+// Bekliyor (PDF dondurulmuş, Meta'ya yüklenmiş), B kabul (bakım koşmadı → pdf_blob DOLU), sonra toplu iş Duraklatıldı (A "Duraklatıldı", PDF'i dosyada).
+// Bu anda 002'nin yedeği programın Yedek Al'ıyla alınır (v44, A'nın PDF'i içinde). Çıktı: <çıktı>/data, <çıktı>/backups (program kapandıktan sonra), bilgi.json.
+// Kullanım: HUKUK_LICENSE_URL=http://127.0.0.1:9 node uret-v248.mjs <eski kod kökü> <çıktı klasörü>
+import { createHash } from "node:crypto";
+import { mkdirSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
+const [root, out] = process.argv.slice(2);
+if (process.env.HUKUK_LICENSE_URL !== "http://127.0.0.1:9") throw new Error("ders 30");
+const imp = rel => import(pathToFileURL(path.join(root, rel)).href);
+const { startWa, URLS, PNID, WABA, TOKEN } = await imp("test/whatsapp-248-ortak.mjs");
+const sha = data => createHash("sha256").update(Buffer.from(data)).digest("hex");
+const ok = (res, label) => {
+  if (res.status !== 200) throw new Error(`${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 400)}`);
+  return res.data.data;
+};
+const dataDir = path.join(out, "data");
+const backupDir = path.join(out, "backups");
+mkdirSync(out, { recursive: true });
+const localIso = (y, m, d, h = 10) => new Date(y, m - 1, d, h, 0, 0, 0).toISOString();
+const ctx = await startWa({ maxCompanies: 2, dataDir, backupDir, now: { time: localIso(2026, 11, 3, 10), fixed: true } });
+const info = { kod: "v2.4.8 (6ff09c10; sunucu = e3f74093)", node: process.version };
+try {
+  const company = ok(await ctx.api.post("/api/companies", { name: "Göç Şirketi", select: false }), "ikinci şirket");
+  const second = company.company || company;
+  const q = `hofCompany=${encodeURIComponent(second.id)}`;
+  ok(await ctx.api.put(`${URLS.conn}?${q}`, { phoneNumberId: PNID, wabaId: WABA, token: TOKEN }), "bağlantı");
+  ok(await ctx.api.put(`${URLS.ack}?${q}`, { ack: true }), "onay");
+  ok(await ctx.api.put(`/api/admin/office?${q}`, { name: "Göç Şirketi" }), "unvan");
+  const acc = async (name, phone, opening) => ok(await ctx.api.post(`/api/workspace/accounts?${q}`, { name, phone, openingBalance: String(opening) }), name);
+  const a = await acc("Ayşe Yılmaz", "0532 111 22 33", 1250);
+  const b = await acc("Burak Kaya", "0533 444 55 66", 800);
+  const c = await acc("Cem Demir", "0535 777 88 99", 500);
+  const first = ok(await ctx.api.post(`${URLS.batches}?${q}`, { kind: "statement", ids: [c.id], preset: "thisMonth" }), "C gönderimi");
+  await ctx.drain();
+  ctx.clock.advance(60_000);
+  ctx.fake.state.failQueue.push({ match: /\/messages$/, status: 400, body: { error: { message: "Pair rate limit", type: "OAuthException", code: 131056, error_data: { messaging_product: "whatsapp", details: "Pair rate limit" }, fbtrace_id: "Abc" } } });
+  const batch = ok(await ctx.api.post(`${URLS.batches}?${q}`, { kind: "statement", ids: [a.id, b.id], preset: "thisMonth" }), "A+B gönderimi");
+  await ctx.drain({ maintain: false });
+  ok(await ctx.api.post(`${URLS.batches}/${batch.batch.id}/pause?${q}`, {}), "duraklat");
+  const jobsOf = async id => ok(await ctx.api.get(`${URLS.batches}/${id}?${q}`), "ayrıntı").jobs;
+  const jobs = [...(await jobsOf(first.batch.id)), ...(await jobsOf(batch.batch.id))];
+  const backup = ok(await ctx.api.post("/api/admin/backups", { scope: "one", companyId: second.id }), "yedek").backups[0];
+  const uploads = ctx.fake.requests.filter(item => item.method === "POST" && /\/media$/.test(item.path) && item.media).map(item => ({ name: item.media.filename, sha: sha(ctx.fake.state.media.get(item.media.id).data), size: ctx.fake.state.media.get(item.media.id).data.length }));
+  info.company = { id: second.id, code: second.code, name: "Göç Şirketi" };
+  info.accounts = { A: a.id, B: b.id, C: c.id };
+  info.batches = { C: first.batch.id, AB: batch.batch.id };
+  info.backup = { name: backup.name, folder: path.relative(out, backup.folder) };
+  info.uploads = uploads;
+  info.messages = ctx.fake.state.messages.map(m => ({ to: m.to, params: m.params }));
+  info.dbPath002 = null;
+  info.jobsApi = jobs.map(j => ({ id: j.id, accountName: j.accountName, state: j.state, params: j.params, pdfName: j.pdfName, attempt: j.attempt }));
+  info.version = ctx.server.app.store.get("PRAGMA user_version").user_version;
+} finally {
+  await ctx.close();
+}
+// Kapandıktan sonra (salt okunur) 002'nin dosyasındaki dondurulmuş PDF'ler ve yedeğinkiler.
+const { readdirSync } = await import("node:fs");
+const companyDir = readdirSync(path.join(dataDir, "sirketler"))[0];
+const { resolveDbPath } = await imp("server/lib/db-path.mjs");
+const file = resolveDbPath(path.join(dataDir, "sirketler", companyDir));
+info.dbPath002 = path.relative(out, file);
+const read = target => {
+  const db = new DatabaseSync(target, { readOnly: true });
+  try {
+    return {
+      version: db.prepare("PRAGMA user_version").get().user_version,
+      jobs: db.prepare("SELECT id, account_name AS name, state, prepared_at, params_json, pdf_name, media_id, LENGTH(pdf_blob) AS pdfLength, pdf_blob FROM wa_jobs ORDER BY rowid").all().map(row => ({ ...row, pdfSha: row.pdf_blob ? sha(row.pdf_blob) : null, pdf_blob: undefined })),
+    };
+  } finally {
+    db.close();
+  }
+};
+info.live002 = read(file);
+info.backup002 = read(path.join(out, info.backup.folder, info.backup.name));
+writeFileSync(path.join(out, "bilgi.json"), `${JSON.stringify(info, null, 1)}\n`);
+console.log(JSON.stringify({ version: info.version, live: info.live002.jobs.map(j => [j.name, j.state, j.pdfLength]), backup: info.backup002.jobs.map(j => [j.name, j.state, j.pdfLength]) }));

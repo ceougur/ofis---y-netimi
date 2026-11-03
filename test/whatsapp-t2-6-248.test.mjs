@@ -70,8 +70,10 @@ describe("2.4.8 T2-6 — yeniden denemede ileti metni ile ekteki PDF AYNI anlık
       assert.equal(sent.document.id, second.id);
       assert.equal(sent.params[3], "1.250,00 TL (Borçlu)", `ileti dondurulmuş bakiyeyle (geldi ${sent.params[3]})`);
       // Kabul edildi: bakım turu dondurulmuş PDF'i programdan siler (değişkenler ve PDF adı kalır — plan §5).
-      const row = ctx.store.get("SELECT pdf_blob, params_json, pdf_name FROM wa_jobs WHERE batch_id = ?", id);
+      const row = ctx.store.get("SELECT id, pdf_blob, params_json, pdf_name FROM wa_jobs WHERE batch_id = ?", id);
       assert.equal(row.pdf_blob, null, "kabulden sonra dondurulmuş PDF şirket dosyasında kalmaz");
+      // 2.4.9 B3 (göç v45): PDF'in kendisi wa_job_pdfs'te durur; kabulden sonra bakım o satırı siler.
+      assert.equal(ctx.store.get("SELECT COUNT(*) AS n FROM wa_job_pdfs WHERE job_id = ?", row.id).n, 0, "kabulden sonra wa_job_pdfs'te de yok");
       assert.ok(row.pdf_name && JSON.parse(row.params_json).length === 4);
     } finally {
       await ctx.close();

@@ -10,6 +10,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { describe, it } from "node:test";
+import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { removeTestDir } from "./helpers.mjs";
 import { URLS, startWa } from "./whatsapp-248-ortak.mjs";
 
@@ -181,7 +182,8 @@ describe("2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'So
       db.exec("ALTER TABLE wa_jobs DROP COLUMN inherit_of; PRAGMA user_version = 43");
       db.close();
       ctx = await startWa({ now: NOW, dataDir, connect: false, ack: false });
-      assert.equal(ctx.store.get("PRAGMA user_version").user_version, 44, "göç v44 uygulandı");
+      // 2.4.9 B3: v44'ten sonra v45 (wa_job_pdfs) da koşar — dosya en son şemaya çıkar (v44 dahil).
+      assert.equal(ctx.store.get("PRAGMA user_version").user_version, LATEST_VERSION, "göç v44 (ve sonrakiler) uygulandı");
       assert.deepEqual(ctx.store.all("SELECT inherit_of FROM wa_jobs").map(row => row.inherit_of), [""], "eski satır bağsız");
       await ctx.close();
       ctx = null;
@@ -189,7 +191,7 @@ describe("2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'So
       again.exec("PRAGMA user_version = 43");
       again.close();
       ctx = await startWa({ now: NOW, dataDir, connect: false, ack: false });
-      assert.equal(ctx.store.get("PRAGMA user_version").user_version, 44, "sütun varken (yarıda kalmış göç) yeniden açılır");
+      assert.equal(ctx.store.get("PRAGMA user_version").user_version, LATEST_VERSION, "sütun varken (yarıda kalmış göç) yeniden açılır");
     } finally {
       await ctx?.close();
       removeTestDir(root);
