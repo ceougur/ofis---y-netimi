@@ -26,7 +26,7 @@ import { e164Of, waPresetRange } from "./alici.mjs";
 import { allPeriodStartOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
-import { deliveryTtlSeconds, noteListing, sendingVerdict } from "./templates.mjs";
+import { deliveryTtlRules, noteDeliveryTtl, noteListing, sendingVerdict } from "./templates.mjs";
 
 export const TEMPLATE_NAMES = Object.freeze({ statement: "destekofis_ekstre", reminder: "destekofis_odeme_hatirlatma" });
 export const KIND_LABELS = Object.freeze({ statement: "Ekstre", reminder: "Ödeme Hatırlatma" });
@@ -343,6 +343,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // adım için; sonraki adım yeniden okur). Zorla üretildi: test/whatsapp-w2-onbellek-249.test.mjs "SÜRERKEN".
     if ((templateEpoch.get(record.wabaId) || 0) !== epoch) return result;
     templateCache.set(key, { at: nowMs(), result, sent: 0 });
+    // 2.4.9 W-KÖK (kâhin A1): her taze okumada Meta'nın bildirdiği teslim süresi günlüğe — sonra kabul edilen iş bu süreyle ölçülür (templates.mjs noteDeliveryTtl).
+    if (writable()) {
+      try {
+        noteDeliveryTtl(store, record.wabaId, listing.items, readAt);
+      } catch (error) {
+        log.warn?.(`WhatsApp teslim süresi günlüğe yazılamadı: ${error?.message || error}`);
+      }
+    }
     if (note && writable()) {
       try {
         noteListing(store, record, listing, { readAt });
@@ -1625,17 +1633,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const seenWaba = Date.parse(ledger.hookSeenAt?.(connection.read()?.wabaId || "") || "");
     const seenHere = Date.parse(store.setting(HOOK_SEEN_KEY, "") || "");
     const seen = Math.max(Number.isFinite(seenWaba) ? seenWaba : -Infinity, Number.isFinite(seenHere) ? seenHere : -Infinity);
-    // TTL = Meta'nın şablon listesinde bildirdiği ileti ömrü, yoksa Meta'nın varsayılanı 30 gün (lib/whatsapp/templates.mjs deliveryTtlSeconds; 2.4.9 W-T: program
-    // şablona TTL yazmaz) — Meta'nın hâlâ teslim etmeye çalıştığı iletiyi "Süresi Doldu" saymaz, PDF'ini önceden silmez.
-    const ttlOf = new Map();
-    const ttlMs = (wabaId, name) => {
-      const key = `${wabaId}|${name}`;
-      if (!ttlOf.has(key)) ttlOf.set(key, deliveryTtlSeconds(store, wabaId, name) * 1000);
-      return ttlOf.get(key);
-    };
+    // TTL = Meta'nın şablon listesinde bildirdiği ileti ömrü, yoksa Meta'nın varsayılanı 30 gün (2.4.9 W-T: program şablona TTL yazmaz) — Meta'nın hâlâ teslim etmeye
+    // çalıştığı iletiyi "Süresi Doldu" saymaz, PDF'ini önceden silmez. 2.4.9 W-KÖK: iş KABUL ANINDAKİ süreyle ölçülür (sonradan kısalan süre geriye işlemez; bilinmiyorsa
+    // 30 gün; uzarsa uzun olan) — lib/whatsapp/templates.mjs deliveryTtlRules; teslim süresi günlüğü turda bir kez okunur, satır başına yalnız sayı karşılaştırması (ders 47).
     if (Number.isFinite(seen) && nowMs() - seen <= HOOK_ALIVE_MS) {
+      const ttlOf = deliveryTtlRules(store);
       for (const row of store.all("SELECT j.id, j.attempt, j.accepted_at, b.waba_id, b.template FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL")) {
-        if (Date.parse(row.accepted_at) + ttlMs(row.waba_id, row.template) + HOUR >= nowMs()) continue;
+        const acceptedMs = Date.parse(row.accepted_at);
+        if (acceptedMs + ttlOf(row.waba_id, row.template)(acceptedMs) * 1000 + HOUR >= nowMs()) continue;
         // İş V2: defterde bu denemenin teslimi varsa (kancanın yalnız defter yolu / geri yükleme) Süresi Doldu DEĞİL — Teslim Edildi; teslim edilemedi yazılmaz.
         if (settleDelivered(row.id, Number(row.attempt))) continue;
         updateJob(row.id, { state: "expired", closed_at: iso() });

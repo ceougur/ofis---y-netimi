@@ -114,18 +114,107 @@ function contentMatches(def, found) {
   return def.footer ? textOf(footer?.text) === def.footer : !footer;
 }
 
-/**
- * Bu WABA'daki programın şablonunun ileti ömrü (saniye) — gönderim çekirdeği "Süresi Doldu" anını ve PDF'in Meta'dan silinmesini buna bağlar. 2.4.9 W-T (KULLANICI
- * KARARI 03.11.2026, docs/2.4.9-tasarim/W-whatsapp-sablon.md §15): program şablona teslim süresi yazmaz; değer = son şablon okumasında Meta'nın listede BİLDİRDİĞİ
- * message_send_ttl_seconds (D0-W5-9), yoksa / kayıt başka hesabınsa Meta'nın varsayılanı 30 gün. 2.4.8'in kayıtlı TTL ret / düzenleme / "açma yanıtı yansıttı"
- * kayıtları (raw.ttl) OKUNMAZ.
- */
-export function deliveryTtlSeconds(store, wabaId, name) {
-  const raw = parse(store.setting(TEMPLATES_KEY, ""));
-  if (!raw || raw.v !== 1 || raw.wabaId !== wabaId) return META_DEFAULT_TTL_SECONDS;
-  const meta = (raw.items || []).find(item => item?.name === name)?.meta || null;
-  const listed = Number(meta?.[META_D0_W5.ttlField]);
+// Meta'nın listede bildirdiği teslim süresi (sn); bildirmiyorsa Meta'nın varsayılanı 30 gün.
+const listedTtlOf = found => {
+  const listed = Number(found?.[META_D0_W5.ttlField]);
   return Number.isInteger(listed) && listed > 0 ? listed : META_DEFAULT_TTL_SECONDS;
+};
+
+// 2.4.9 W-KÖK (KULLANICI 03.11.2026 ~20:05 UTC; süre uzarsa uzun olan: KULLANICI KARARI 03.11.2026 ~21:00 UTC; docs/2.4.9-IS-LISTESI.md): bir iş KABUL ANINDAKİ teslim
+// süresiyle değerlendirilir. Program süreyi yalnız Meta'nın şablon listesinden öğrenir — Şablonları Denetle'nin VE gönderim çekirdeğinin (önizleme, başlatma, süren işin
+// 10 dk / 100 iletide bir yeniden okuması) HER okumasında (noteDeliveryTtl; W kâhini A1: önceden yalnız Denetle'nin kaydı okunuyordu, Denetle'ye basılmamış şirkette Meta'nın
+// bildirdiği süre hiç uygulanmıyordu). Öğrenilen değerler şirketin TTL_SINCE_KEY satırında DEĞİŞİM GÜNLÜĞÜ olarak durur:
+// { v: 1, wabaId, items: { <şablon adı>: [{ seconds, since }] } } (eskiden yeniye; since = o değerin ilk görüldüğü okumanın anı). Göç YOK (settings satırı; Şirket Verisini
+// Sıfırla'da korunur — app.mjs KEEP_SETTINGS "whatsapp"; yedekle gider, geri yüklemeyle döner). Satır yoksa / başka hesabınsa / günlük bozuksa (2.4.8'den gelen ya da geri
+// yüklenen eski veri) süre "kabul anında bilinmiyor" → 30 gün (güvenli taraf). En çok TTL_SINCE_MAX değişim tutulur; düşen en eski değişim yine "bilinmiyor" (30 gün) olur.
+export const TTL_SINCE_KEY = "whatsapp.ttlSince";
+const TTL_SINCE_MAX = 12;
+// Bir şablonun günlüğü: geçerli girdiler ([{ seconds, since, ms }]); bozuk girdi (eksik / sıfır değer, okunamayan ya da sırasız an) varsa günlük bütünüyle yok sayılır.
+function sinceLog(value) {
+  if (!Array.isArray(value)) return [];
+  const log = [];
+  for (const entry of value) {
+    const seconds = Number(entry?.seconds);
+    const ms = Date.parse(entry?.since || "");
+    if (!Number.isInteger(seconds) || seconds <= 0 || !Number.isFinite(ms) || (log.length && ms < log.at(-1).ms)) return [];
+    log.push({ seconds, since: new Date(ms).toISOString(), ms });
+  }
+  return log;
+}
+const sinceRecord = (raw, wabaId) => (raw && raw.v === 1 && wabaId && raw.wabaId === wabaId && raw.items && typeof raw.items === "object" ? raw.items : null);
+
+/**
+ * Meta'nın şablon listesi okunduğunda (items: listedeki şablonlar; readAt: okumanın başladığı an) programın şablonlarının teslim süresi günlüğe yazılır — yalnız değer
+ * son kayıtlı değerden (günlük boşsa 30 gün) farklıysa ve okuma son değişimden eski değilse (geç dönen eski okuma yeni bilgiyi ezmez). Listede olmayan şablonun günlüğü
+ * değişmez. Çağıran salt okunur lisansta çağırmaz. Dönüş: yazıldıysa true.
+ */
+export function noteDeliveryTtl(store, wabaId, items, readAt) {
+  const readMs = Date.parse(readAt || "");
+  if (!wabaId || !Array.isArray(items) || !Number.isFinite(readMs)) return false;
+  const saved = sinceRecord(parse(store.setting(TTL_SINCE_KEY, "")), wabaId);
+  const next = {};
+  let changed = false;
+  for (const def of TEMPLATE_DEFS) {
+    const log = saved ? sinceLog(saved[def.name]) : [];
+    const found = findExact(items, def);
+    if (found) {
+      const seconds = listedTtlOf(found);
+      const last = log.at(-1);
+      if (seconds !== (last ? last.seconds : META_DEFAULT_TTL_SECONDS) && (!last || readMs >= last.ms)) {
+        log.push({ seconds, since: new Date(readMs).toISOString(), ms: readMs });
+        changed = true;
+      }
+    }
+    if (log.length) next[def.name] = log.slice(-TTL_SINCE_MAX).map(({ seconds, since }) => ({ seconds, since }));
+  }
+  if (!changed) return false;
+  store.setSetting(TTL_SINCE_KEY, JSON.stringify({ v: 1, wabaId, items: next }), null);
+  return true;
+}
+
+// Bir şablonun kuralı: acceptedMs → saniye. Aday değerler: kabul anında bilinen (son değişimi kabulden önce ya da kabul anında görülen; yoksa 30 gün) ve kabulden SONRA
+// görülen her değer; en uzunu geçer. Süre sonradan KISALIRSA önceden kabul edilmiş iş eski süreyle; UZARSA uzun süreyle (KULLANICI KARARI 03.11 ~21:00 UTC) ölçülür.
+function ttlRuleOf(items, name) {
+  const log = items ? sinceLog(items[name]) : [];
+  if (!log.length) return () => META_DEFAULT_TTL_SECONDS;
+  const longestEver = Math.max(META_DEFAULT_TTL_SECONDS, ...log.map(entry => entry.seconds));
+  return acceptedMs => {
+    if (!Number.isFinite(acceptedMs)) return longestEver;
+    let known = META_DEFAULT_TTL_SECONDS; // ilk değişimden önce kabul: süre bilinmiyordu → 30 gün
+    let later = 0;
+    for (const entry of log) {
+      if (entry.ms <= acceptedMs) known = entry.seconds;
+      else if (entry.seconds > later) later = entry.seconds;
+    }
+    return Math.max(known, later);
+  };
+}
+
+/**
+ * Bakım turunun teslim süresi kuralları (2.4.9 W-KÖK): günlüğü BİR kez okur; dönen (wabaId, ad) → (acceptedMs → saniye) işlevi satır başına yalnız sayı karşılaştırır
+ * (ders 47). Gönderim çekirdeği (lib/whatsapp/queue.mjs maintain) "Süresi Doldu"yu, onunla PDF'in Meta'dan silinmesini ve "Daha Önce Gönderildi" sayımını (Süresi Doldu
+ * sayılmaz — P3) buna bağlar.
+ */
+export function deliveryTtlRules(store) {
+  const raw = parse(store.setting(TTL_SINCE_KEY, ""));
+  const rules = new Map();
+  return (wabaId, name) => {
+    const key = `${wabaId}|${name}`;
+    if (!rules.has(key)) rules.set(key, ttlRuleOf(sinceRecord(raw, wabaId), name));
+    return rules.get(key);
+  };
+}
+
+/**
+ * Bu WABA'daki programın şablonunun ileti ömrü (saniye). 2.4.9 W-T (KULLANICI KARARI 03.11.2026, docs/2.4.9-tasarim/W-whatsapp-sablon.md §15): program şablona teslim
+ * süresi yazmaz; değer = Meta'nın listede BİLDİRDİĞİ message_send_ttl_seconds (D0-W5-9; günlükteki son değer), yoksa / günlük başka hesabınsa Meta'nın varsayılanı 30 gün.
+ * 2.4.8'in kayıtlı TTL ret / düzenleme / "açma yanıtı yansıttı" kayıtları (whatsapp.templates ttl) OKUNMAZ. acceptedAt (ISO ya da ms) verilirse (2.4.9 W-KÖK) o anda kabul
+ * edilmiş işin süresi (deliveryTtlRules).
+ */
+export function deliveryTtlSeconds(store, wabaId, name, acceptedAt) {
+  if (acceptedAt !== undefined) return deliveryTtlRules(store)(wabaId, name)(typeof acceptedAt === "number" ? acceptedAt : Date.parse(acceptedAt));
+  const log = sinceLog(sinceRecord(parse(store.setting(TTL_SINCE_KEY, "")), wabaId)?.[name]);
+  return log.length ? log.at(-1).seconds : META_DEFAULT_TTL_SECONDS;
 }
 
 /** Şablonla gönderim yapılabilir mi: yalnız APPROVED + UTILITY (ve içerik değiştirilmemiş). W2 gönderim çekirdeği bu işlevi kullanır. */
@@ -254,7 +343,8 @@ const keep = found =>
  *   - TESLİM SÜRESİ YAZILMAZ (2.4.9 W düzeltme turu 1, dar kontrol W DÜŞÜK-1, karar (a)): listenin message_send_ttl_seconds alanı kayda geçmez; kayıttaki değer
  *     (son Şablonları Denetle'nin okuduğu) olduğu gibi kalır — eklenmez, değişmez, silinmez. Yalnız durum / kategori / içerik (ve kimlik, kalite, ret nedeni)
  *     güncellenir. Neden: deliveryTtlSeconds kayıttaki süreyi okur; önizleme Meta'nın sonradan kısalttığı süreyi yazınca önceden kabul edilmiş iş geriye
- *     dönük "Süresi Doldu" olup aynı dönemde ikinci ileti gidebiliyordu. Denetle yolu 2.4.8 düzeyinde kalır (BİLİNEN SINIR; kök kural C / 2.5.0).
+ *     dönük "Süresi Doldu" olup aynı dönemde ikinci ileti gidebiliyordu. Kök kural 2.4.9 W-KÖK'te: "Süresi Doldu" bu kaydı değil teslim süresi günlüğünü
+ *     (TTL_SINCE_KEY; önizlemenin okuması da oraya yazılır — gönderim çekirdeği) okur, iş kabul anındaki süreyle ölçülür (deliveryTtlRules).
  * Dönüş: yazıldıysa true.
  */
 export function noteListing(store, record, listing, { readAt } = {}) {
@@ -342,6 +432,7 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
     busy = true;
     try {
       let listing;
+      let listedAt = iso(); // 2.4.9 W-KÖK: teslim süresi günlüğünde değerin görüldüğü an = okumanın başladığı an
       try {
         listing = await api.details(record.wabaId);
       } catch (error) {
@@ -380,14 +471,19 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
       // Açma olduysa liste yeniden okunur (Meta'nın kayıtlı teslim süresi dahil — D0-W5-9).
       if (actions.some(action => action.ok)) {
         try {
+          const again = iso();
           listing = await api.details(record.wabaId);
+          listedAt = again;
         } catch (error) {
           if (!(error instanceof MetaGraphError)) throw error;
           // Açma başarılı, yeniden okuma düştü: açma yanıtıyla gösterilir; sonraki denetim düzeltir.
         }
       }
-      const items = TEMPLATE_DEFS.map(def => ({ name: def.name, meta: keep(findExact(listing.items, def) || created.get(def.name) || null) }));
+      const found = TEMPLATE_DEFS.map(def => findExact(listing.items, def) || created.get(def.name) || null);
+      const items = TEMPLATE_DEFS.map((def, index) => ({ name: def.name, meta: keep(found[index]) }));
       save(record, user, { items, actions, complete: listing.complete !== false, error: null });
+      // 2.4.9 W-KÖK: Meta'nın bildirdiği teslim süresi günlüğe (yeni açılan şablon: Meta'nın varsayılanı 30 gün).
+      noteDeliveryTtl(store, record.wabaId, found.filter(Boolean), listedAt);
       audit(user, "whatsapp.templates.checked", "whatsapp", {
         ok: true,
         created: actions.filter(action => action.created).map(action => action.name),
@@ -407,7 +503,7 @@ export function createWhatsappTemplates({ store, config = {}, audit = () => {}, 
     }
   }
 
-  // 2.4.9 W-6: yeni kayıtta teslim süresi kaydı (ttl) YOK; 2.4.8'in kaydı okunmaz.
+  // 2.4.9 W-6: yeni kayıtta teslim süresi kaydı (ttl) YOK; 2.4.8'in kaydı okunmaz. (W-KÖK'ün teslim süresi günlüğü ayrı satırda: TTL_SINCE_KEY.)
   function save(record, user, { items, actions, complete, error }) {
     store.setSetting(TEMPLATES_KEY, JSON.stringify({ v: 1, at: iso(), wabaId: record.wabaId, phoneNumberId: record.phoneNumberId, by: user?.id || "", byName: user?.display_name || user?.name || "", items, actions, complete, error }), user?.id || null);
   }
