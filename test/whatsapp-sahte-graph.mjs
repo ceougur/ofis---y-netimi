@@ -107,6 +107,8 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
       const queued = state.failQueue.findIndex(item => !item.match || item.match.test(line));
       if (queued >= 0) {
         const [failure] = state.failQueue.splice(queued, 1);
+        // 2.4.9 W-2: waitMs — bu yanıt (geliş anında seçilir, gecikmeyle döner): okuma sürerken başka isteğin bitmesini kurmak için.
+        if (failure.waitMs) await new Promise(resolve => setTimeout(resolve, failure.waitMs));
         if (failure.destroy) return req.socket.destroy();
         return reply(failure.status || 400, failure.body || null, failure.raw ?? null);
       }
