@@ -1655,7 +1655,7 @@
           const reason = error.data.reason || error.message;
           const yes = await HOF.confirm({
             title: `Yedeksiz Sil · ${item.code} · ${item.name}`,
-            message: `Yedek alınamadı (${reason}). Veri klasörü yine silinen-sirketler altına taşınır, geri getirilebilir. Şirket yedek alınmadan silinsin mi?`,
+            message: `Yedek alınamadı (${reason}). Veri klasörü silinmez; silinen-sirketler klasöründe saklanır (destek ile geri getirilebilir). Şirket yedek alınmadan silinsin mi?`,
             confirmLabel: "Yedeksiz Sil",
             danger: true,
           });

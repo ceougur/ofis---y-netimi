@@ -10,6 +10,19 @@ import { systemClock } from "../lib/clock.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { K10_LABELS } from "../lib/bank/accounts.mjs";
 
+// 2.4.9 S1 tur 1: silme öncesi yedek hatasının kullanıcıya giden Türkçe nedeni (SQLite birincil sonuç kodu = errcode & 0xff; dosya sistemi error.code).
+// Bilinen nedenlerde yalnız Türkçe metin; bilinmeyende ham ileti ardından. Ham ileti audit'te (backupError) ve sunucu günlüğünde kalır.
+export function backupFailureReason(error) {
+  const primary = Number(error?.errcode) & 0xff;
+  const code = String(error?.code || "");
+  if (primary === 11 || primary === 26) return "veri dosyası bozuk";
+  if (primary === 13 || code === "ENOSPC") return "disk dolu";
+  if (primary === 5 || primary === 6 || code === "EBUSY") return "dosya başka bir programca kullanılıyor";
+  if (code === "EACCES" || code === "EPERM") return "yedek klasörüne yazma izni yok";
+  const raw = error?.message || String(error || "");
+  return raw ? `beklenmeyen hata: ${raw}` : "beklenmeyen hata";
+}
+
 export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies, withCompanyDb, log, closeLive, now: clock = systemClock }) {
   const requireManage = req => auth.requirePermission(req, "system.manage");
   // Geri yüklenen ya da silinen şirkette aynı anda ikinci işlem (ad değiştirme, sıfırlama, silme) yapılmaz.
@@ -128,7 +141,12 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
       } catch (error) {
         if (error instanceof HttpError && error.extra?.code === "company-shared") throw error;
         backupError = error.message || String(error);
-        if (!allowWithoutBackup) throw new HttpError(409, `Silme öncesi yedek alınamadı; şirket silinmedi (${backupError}).`, { code: "backup-failed", reason: backupError });
+        if (!allowWithoutBackup) {
+          // S1 tur 1: neden Türkçe (backupFailureReason); ham neden sunucu günlüğüne.
+          const reason = backupFailureReason(error);
+          log?.warn?.(`Şirket silme öncesi yedek alınamadı (${company.code} · ${company.name}; ${reason}): ${backupError}`);
+          throw new HttpError(409, `Silme öncesi yedek alınamadı; şirket silinmedi (${reason}).`, { code: "backup-failed", reason });
+        }
       }
       removed = companies.remove(user, company.id);
     } finally {
