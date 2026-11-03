@@ -251,6 +251,10 @@ const keep = found =>
  *   - yalnız listede (aynı ad + dil) bulunan şablon güncellenir; listede olmayanın kaydı korunur (liste eksik / sayfalı olabilir);
  *   - okuma (readAt) kayıttaki son denetimden ya da son not edilen okumadan ESKİYSE yazılmaz (Denetle sürerken başlamış önizleme yeni sonucu ezmez);
  *   - oku-değiştir-yaz arada bekleme olmadan (aynı olay döngüsü adımında). Salt okunur lisansta çağıran çağırmaz (gönderim çekirdeği writable()).
+ *   - TESLİM SÜRESİ YAZILMAZ (2.4.9 W düzeltme turu 1, dar kontrol W DÜŞÜK-1, karar (a)): listenin message_send_ttl_seconds alanı kayda geçmez; kayıttaki değer
+ *     (son Şablonları Denetle'nin okuduğu) olduğu gibi kalır — eklenmez, değişmez, silinmez. Yalnız durum / kategori / içerik (ve kimlik, kalite, ret nedeni)
+ *     güncellenir. Neden: deliveryTtlSeconds kayıttaki süreyi okur; önizleme Meta'nın sonradan kısalttığı süreyi yazınca önceden kabul edilmiş iş geriye
+ *     dönük "Süresi Doldu" olup aynı dönemde ikinci ileti gidebiliyordu. Denetle yolu 2.4.8 düzeyinde kalır (BİLİNEN SINIR; kök kural C / 2.5.0).
  * Dönüş: yazıldıysa true.
  */
 export function noteListing(store, record, listing, { readAt } = {}) {
@@ -266,6 +270,8 @@ export function noteListing(store, record, listing, { readAt } = {}) {
     const found = findExact(listing.items, def);
     if (!found) return before;
     const meta = keep(found);
+    delete meta[META_D0_W5.ttlField]; // teslim süresi listeden alınmaz; kayıttaki (Denetle'nin) değer korunur
+    if (before.meta && Object.hasOwn(before.meta, META_D0_W5.ttlField)) meta[META_D0_W5.ttlField] = before.meta[META_D0_W5.ttlField];
     if (JSON.stringify(meta) === JSON.stringify(before.meta)) return before;
     changed = true;
     return { ...before, name: def.name, meta };
