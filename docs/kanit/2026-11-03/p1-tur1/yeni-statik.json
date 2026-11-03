@@ -1,0 +1,32 @@
+{
+  "ad": "p1-tur1/yeni-statik",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-statik.test.mjs test/banka-210-post-statik.test.mjs",
+  "commit": "6024af5ba8a8e4c0195dd429930859e0414cfa97",
+  "dal": "worktree-agent-a3726f63fad9a10bf",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T21:19:19.167Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 9,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/p1-tur1/yeni-statik.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3726f63fad9a10bf",
+  "ham_cikti_sha256": "656a2768833f2ac08ae120d1342ccf9482a0999b62a555595ae63a9d46f08341",
+  "ham_cikti_bayt": 2765
+}

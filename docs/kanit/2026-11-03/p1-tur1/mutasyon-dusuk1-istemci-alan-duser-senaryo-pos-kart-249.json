@@ -1,0 +1,138 @@
+{
+  "ad": "p1-tur1/mutasyon-dusuk1-istemci-alan-duser-senaryo-pos-kart-249",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/e2e/senaryo-pos-kart-249.mjs",
+  "commit": "6024af5ba8a8e4c0195dd429930859e0414cfa97",
+  "dal": "worktree-agent-a3726f63fad9a10bf",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T21:12:56.380Z",
+  "sure_sn": 188.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 328,
+    "gecen": 308,
+    "basarisiz": 20,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "gövde cardRefund false, POS alanları var, kart kimliği yok: {\"amount\":\"110,00\",\"method\":\"card\",\"posInstallments\":\"1\",\"date\":\"2026-10-08\",\"note\":\"\",\"kind\":\"in\",\"refundOf\":\"\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satır 110 POS'ta: {\"id\":\"aentry-100e06e9-6b6f-4df7-8324-4d6fb01a7e77\",\"kind\":\"in\",\"amount\":110,\"method\":\"card\",\"finRef\":\"bacc-35bc6b81-5b75-45b5-8842-cc80d4eb201c\",\"hesap\":\"KART1\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "etkin POS satışı 11000: []",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart1 iade etkisi geri alındı (-9000 → -9000; iadeden önce -20000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "POS Bekleyen +110 (145000 → 145000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yeniden açılınca kutu yok, POS alanı var (görünür, görünür, gizli)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gövde: Nakit, cardRefund false, hesap / POS alanı yok — {\"amount\":\"150,00\",\"method\":\"cash\",\"date\":\"2026-10-08\",\"note\":\"\",\"kind\":\"in\",\"refundOf\":\"\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gövde cardRefund false, POS alanları var, kart kimliği yok: {\"amount\":\"110,00\",\"method\":\"card\",\"posInstallments\":\"1\",\"date\":\"2026-10-08\",\"note\":\"\",\"kind\":\"in\",\"refundOf\":\"\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satır 110 POS'ta: {\"id\":\"aentry-0a933fcb-a3b3-4e48-b81d-3083008849ab\",\"kind\":\"in\",\"amount\":110,\"method\":\"card\",\"finRef\":\"bacc-bb0d2a4d-29eb-4d1a-89cc-94c01f66892f\",\"hesap\":\"KART2\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "etkin POS satışı 11000: []",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart2 iade etkisi geri alındı (-9000 → -9000; iadeden önce -20000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "POS Bekleyen +110 (145000 → 145000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yeniden açılınca kutu yok, POS alanı var (görünür, görünür, gizli)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gövde: Nakit, cardRefund false, hesap / POS alanı yok — {\"amount\":\"150,00\",\"method\":\"cash\",\"date\":\"2026-10-08\",\"note\":\"\",\"kind\":\"in\",\"refundOf\":\"\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "T14 düzeltildi: PUT 400 {\"ok\":false,\"error\":\"POS yalnız tahsilatta ve POS iadesinde kullanılır; ödemede kartla ödeme Kredi Kartı hesabından yapılır.\",\"code\":\"pos-not-for-payment\",\"fiel",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gövde cardRefund false, posId POS2: {\"amount\":\"90,00\",\"method\":\"card\",\"posId\":\"pos-4e5e9adf-de36-4e81-8b1c-4f368968f678\",\"posInstallments\":\"1\",\"date\":\"2026-10-08\",\"note\":\"\",\"kind\":\"in\",\"refundOf\":\"\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satır POS2'de: {\"id\":\"aentry-656d950e-db42-4894-ae51-e6d8fb53990f\",\"kind\":\"in\",\"amount\":90,\"method\":\"card\",\"finRef\":\"bacc-bb0d2a4d-29eb-4d1a-89cc-94c01f66892f\",\"hesap\":\"KART2\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "POS2'de etkin satış 9000: []",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart2 iade etkisi geri alındı (0 → 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "POS Bekleyen +90 (135000 → 135000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-pos-kart-249: 308 geçti, 20 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/e2e/artifacts/senaryo-pos-kart-249",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/p1-tur1/mutasyon-dusuk1-istemci-alan-duser-senaryo-pos-kart-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3726f63fad9a10bf",
+  "ham_cikti_sha256": "dd0691728b4fd2c36aafebccbf714b8c33a4ba77e5509e9efb86480885f454d0",
+  "ham_cikti_bayt": 47988
+}
