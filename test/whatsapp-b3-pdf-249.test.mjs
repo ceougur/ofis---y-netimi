@@ -7,6 +7,7 @@
 //   T7  bakımın PDF silmesi kilide takılınca tur bırakılır (İş N / O1), defter değişmez; sonraki bakım siler
 //   T8  kaynak tarama — pdf_blob yalnız göç dosyasında (CRLF bilen; ders 27)
 //   T9  iki şirket — 001'in açık işinin PDF'i 002'nin bakımından etkilenmez; her şirketin kendi tablosu
+//   T10 iki cari, iki açık iş — PDF iş kimliğiyle aranır: 31 gün sonra her iş KENDİ ilk PDF'ini yeniden yükler (yanlış aramada başkasının ekstresi giderdi; KVKK)
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5) + sahte saat (ders 13). Beklenen bakiye / bayt eşitliği testin girdiği veriden.
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -237,6 +238,83 @@ describe("2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş sat
     assert.deepEqual(hits, [], `pdf_blob göç dışında anılıyor (PDF wa_job_pdfs'te durur): ${hits.join(", ")}`);
     const migrations = readFileSync(path.join(ROOT, "server/lib/migrations.mjs"), "utf8");
     assert.match(migrations, /version: 45,[\s\S]*?wa_job_pdfs[\s\S]*?UPDATE wa_jobs SET pdf_blob = NULL/, "göç v45 PDF'i taşır ve sütunu boşaltır");
+  });
+
+  // B3 dar kontrol DÜŞÜK-2 (03.11.2026): PDF iş kimliğiyle aranır (queue.mjs prepare: wa_job_pdfs WHERE job_id = ?). Mutasyon "iş kimliği yok sayılır" (ilk satır) bütün WhatsApp
+  // testlerinden sağ çıkıyordu — tek açık işli testlerde ilk satır zaten o işin PDF'i. Burada İKİ açık iş: yanlış aramada B'ye A'nın ekstresi gider (KVKK).
+  it("T10 iki cari, iki açık iş: 131056 → Duraklat → 31 gün → Devam Et; her yeniden yükleme O İŞİN ilk PDF'iyle bayt bayt aynı, iki PDF farklı, dosya adı ve PDF'teki ad kişinin", async () => {
+    const ctx = await startWa();
+    try {
+      const people = [
+        { name: "Burak Kaya", phone: "0533 444 55 66", digits: "5334445566", opening: 800, other: "Cem Demir" },
+        { name: "Cem Demir", phone: "0535 777 88 99", digits: "5357778899", opening: 500, other: "Burak Kaya" },
+      ];
+      for (const person of people) person.id = (await ctx.account(person.name, person.phone, person.opening)).id;
+      // Meta'ya yüklenen her PDF (yükleme kimliği → dosya adı + baytlar); bakım kesinleşen işin medyasını sahte Graph'tan siler → her okumada önbelleğe alınır.
+      const media = new Map();
+      const collect = () => {
+        for (const item of ctx.fake.requests) {
+          if (item.method === "POST" && /\/media$/.test(item.path) && item.media && !media.has(item.media.id)) {
+            const data = ctx.fake.state.media.get(item.media.id)?.data;
+            assert.ok(data, `yüklenen PDF ${item.media.id} okunamadı (ders 4)`);
+            media.set(item.media.id, { filename: item.media.filename, data: Buffer.from(data) });
+          }
+        }
+      };
+      // İleti isteği (kabul ya da 131056) → kişi + belgedeki medya kimliği; Meta'ya giden her ileti isteği sırayla.
+      const docRequests = () =>
+        ctx.messageRequests().map(item => {
+          const doc = item.body?.template?.components?.find(c => c.type === "header")?.parameters?.find(p => p.type === "document")?.document;
+          const person = people.find(p => String(item.body?.to || "").endsWith(p.digits));
+          assert.ok(person && doc?.id, `ileti isteği kişiyle / belgeyle eşleşmedi: ${JSON.stringify(item.body).slice(0, 300)}`);
+          return { person: person.name, mediaId: String(doc.id), filename: doc.filename };
+        });
+      ctx.fake.state.failQueue.push({ match: /\/messages$/, status: 400, body: metaError(131056, "Pair rate limit") }, { match: /\/messages$/, status: 400, body: metaError(131056, "Pair rate limit") });
+      const id = (await ctx.batch({ kind: "statement", ids: people.map(p => p.id), preset: "thisMonth" })).data.data.batch.id;
+      await ctx.drain({ maintain: false });
+      collect();
+      const states = Object.fromEntries((await ctx.jobs(id)).map(job => [job.accountName, job.state]));
+      assert.deepEqual(states, { "Burak Kaya": "pending", "Cem Demir": "pending" }, "ön koşul: ikisi de 131056 → Bekliyor");
+      const firstRequests = docRequests();
+      assert.equal(firstRequests.length, 2, "ön koşul: iki ileti isteği (ikisi de 131056)");
+      assert.equal(media.size, 2, "ön koşul: iki ilk yükleme");
+      const first = {};
+      for (const req of firstRequests) {
+        assert.equal(first[req.person], undefined, `${req.person} için iki ilk istek`);
+        first[req.person] = { sha: sha(media.get(req.mediaId).data), mediaId: req.mediaId };
+      }
+      assert.notEqual(first["Burak Kaya"].sha, first["Cem Demir"].sha, "ön koşul: iki kişinin ekstresi farklı baytlar");
+      // Dondurulmuş PDF'ler tabloda iş kimliğiyle, her biri kendi ilk yüklemesi.
+      const frozen = frozenOf(ctx.store);
+      for (const person of people) assert.equal(frozen.get(jobRowOf(ctx.store, id, person.name).id), first[person.name].sha, `${person.name}: dondurulmuş PDF ilk yüklemesi`);
+
+      await ok(ctx.api.post(`${URLS.batches}/${id}/pause`, {}), "duraklat");
+      ctx.clock.advance(31 * DAY);
+      await ctx.wa.scheduler.maintain();
+      assert.equal(pdfRows(ctx.store), 2, "Duraklatıldı + bakım: iki açık işin PDF'i durur");
+      await ok(ctx.api.post(`${URLS.batches}/${id}/resume`, {}), "devam");
+      await ctx.drain({ maintain: false });
+      collect();
+      const after = Object.fromEntries((await ctx.jobs(id)).map(job => [job.accountName, job.state]));
+      assert.deepEqual(after, { "Burak Kaya": "accepted", "Cem Demir": "accepted" }, "Devam Et → ikisi de kabul");
+      assert.equal(media.size, 4, "süresi dolan iki kopya birer kez yeniden yüklendi");
+      const second = docRequests().slice(2);
+      assert.equal(second.length, 2, "Devam Et sonrası iki ileti isteği");
+      for (const req of second) {
+        const person = people.find(p => p.name === req.person);
+        assert.notEqual(req.mediaId, first[req.person].mediaId, `${req.person}: süresi dolan medya yeniden kullanılmadı`);
+        const upload = media.get(req.mediaId);
+        const got = sha(upload.data);
+        const whose = Object.entries(first).find(([, item]) => item.sha === got)?.[0] || "hiçbirinin";
+        assert.equal(got, first[req.person].sha, `${req.person}: yeniden yüklenen PDF o işin ilk PDF'i DEĞİL (${whose} ilk PDF'i gitti)`);
+        assert.ok(upload.filename.includes(req.person) && req.filename.includes(req.person), `${req.person}: dosya adı kişinin değil (yükleme "${upload.filename}", ileti "${req.filename}")`);
+        const text = (await pdfText(upload.data)).replace(/\s+/g, " ");
+        assert.ok(text.includes(req.person) && !text.includes(person.other), `${req.person}: PDF'teki ad kişinin değil`);
+      }
+      assert.deepEqual(ctx.messages().map(m => people.find(p => m.to.endsWith(p.digits))?.name).sort(), ["Burak Kaya", "Cem Demir"], "kabul edilen iki ileti, kişi başına bir");
+    } finally {
+      await ctx.close();
+    }
   });
 
   it("T9 iki şirket: 001'in Duraklatıldı işinin PDF'i 002'nin gönderimi + bakımından etkilenmez; 002'nin PDF'i kendi dosyasında, kabulden sonra silinir; 31 gün sonra 001 AYNI baytları gönderir", async () => {
