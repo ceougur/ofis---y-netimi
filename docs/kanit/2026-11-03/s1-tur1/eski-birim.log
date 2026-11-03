@@ -1,0 +1,327 @@
+TAP version 13
+# Subtest: 2.4.9 S1 — bozuk dosyalı şirket: 409 backup-failed, onayla yedeksiz silme (klasör silinen-sirketler'e)
+    # Subtest: bayraksız istek: 409, kod backup-failed, nedeni iletide ve `reason`da; klasör yerinde, şirket listede, audit yok, yedek dosyası yok
+    not ok 1 - bayraksız istek: 409, kod backup-failed, nedeni iletide ve `reason`da; klasör yerinde, şirket listede, audit yok, yedek dosyası yok
+      ---
+      duration_ms: 88.644257
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:105:3'
+      failureType: 'testCodeFailure'
+      error: 'neden Türkçe değil: database disk image is malformed'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'database disk image is malformed'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:114:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: withoutBackup: true kod/parola onayını atlatmaz (yanlış parola 403, yanlış kod 400); şirket meşgulse 409 meşgul — hepsinde klasör yerinde
+    ok 2 - withoutBackup: true kod/parola onayını atlatmaz (yanlış parola 403, yanlış kod 400); şirket meşgulse 409 meşgul — hepsinde klasör yerinde
+      ---
+      duration_ms: 172.62523
+      type: 'test'
+      ...
+    # Subtest: withoutBackup: true + doğru kod/parola: 200, yedek yok; klasör silinen-sirketler/<kod>-<zaman> altında (dosya aynı), kayıt düştü, audit withoutBackup
+    not ok 3 - withoutBackup: true + doğru kod/parola: 200, yedek yok; klasör silinen-sirketler/<kod>-<zaman> altında (dosya aynı), kayıt düştü, audit withoutBackup
+      ---
+      duration_ms: 74.852006
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:151:3'
+      failureType: 'testCodeFailure'
+      error: "günlükte şirket kodu + audit'teki ham neden"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:172:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - 2.4.9 S1 — bozuk dosyalı şirket: 409 backup-failed, onayla yedeksiz silme (klasör silinen-sirketler'e)
+  ---
+  duration_ms: 1655.556967
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:80:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 S1 — sağlam şirket: davranış AYNEN, withoutBackup yedeği atlatmaz
+    # Subtest: bayraksız: yedek alınır (dosya yedek klasöründe), yanıtta ve audit'te withoutBackup yok, klasör silinen-sirketler'de
+    ok 1 - bayraksız: yedek alınır (dosya yedek klasöründe), yanıtta ve audit'te withoutBackup yok, klasör silinen-sirketler'de
+      ---
+      duration_ms: 529.773219
+      type: 'test'
+      ...
+    # Subtest: withoutBackup: true: yedek alınır (dosya yedek klasöründe), yanıtta ve audit'te withoutBackup yok, klasör silinen-sirketler'de
+    ok 2 - withoutBackup: true: yedek alınır (dosya yedek klasöründe), yanıtta ve audit'te withoutBackup yok, klasör silinen-sirketler'de
+      ---
+      duration_ms: 547.421708
+      type: 'test'
+      ...
+    # Subtest: 001 withoutBackup ile de silinmez (409, kural iletisi)
+    ok 3 - 001 withoutBackup ile de silinmez (409, kural iletisi)
+      ---
+      duration_ms: 6.728975
+      type: 'test'
+      ...
+    1..3
+ok 2 - 2.4.9 S1 — sağlam şirket: davranış AYNEN, withoutBackup yedeği atlatmaz
+  ---
+  duration_ms: 1991.521448
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir)
+    # Subtest: errcode 11 (SQLITE_CORRUPT) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 1 - errcode 11 (SQLITE_CORRUPT) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 98.034474
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: database disk image is malformed'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'database disk image is malformed'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: errcode 26 (SQLITE_NOTADB) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 2 - errcode 26 (SQLITE_NOTADB) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 80.820699
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: file is not a database'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'file is not a database'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: errcode 267 (genişletilmiş CORRUPT_VTAB, & 0xff = 11) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 3 - errcode 267 (genişletilmiş CORRUPT_VTAB, & 0xff = 11) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 81.944469
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: corrupt vtab'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'corrupt vtab'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: errcode 13 (SQLITE_FULL) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 4 - errcode 13 (SQLITE_FULL) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 57.372508
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: database or disk is full'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'database or disk is full'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ENOSPC → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 5 - ENOSPC → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 44.725402
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: ENOSPC: no space left on device, write'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'ENOSPC: no space left on device, write'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: errcode 5 (SQLITE_BUSY) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 6 - errcode 5 (SQLITE_BUSY) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 52.845362
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: database is locked'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'database is locked'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: errcode 6 (SQLITE_LOCKED) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 7 - errcode 6 (SQLITE_LOCKED) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 52.009419
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: database table is locked'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'database table is locked'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: EBUSY → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 8 - EBUSY → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 48.509396
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: EBUSY: resource busy or locked, rename'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'EBUSY: resource busy or locked, rename'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: EACCES → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 9 - EACCES → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 47.05211
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: EACCES: permission denied, mkdir'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'EACCES: permission denied, mkdir'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: EPERM → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 10 - EPERM → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 48.813545
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: EPERM: operation not permitted, open'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'EPERM: operation not permitted, open'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bilinmeyen → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+    not ok 11 - bilinmeyen → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde
+      ---
+      duration_ms: 46.83901
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:245:5'
+      failureType: 'testCodeFailure'
+      error: 'neden: tuhaf bir şey oldu'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'tuhaf bir şey oldu'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:260:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..11
+not ok 3 - 2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir)
+  ---
+  duration_ms: 1742.882946
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35/test/sirket-yedeksiz-sil-249.test.mjs:218:1'
+  failureType: 'subtestsFailed'
+  error: '11 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 S1 — paylaşılan veri dosyası: withoutBackup ile de company-shared reddi aynen
+    # Subtest: 409 company-shared, klasör yerinde, iki şirket kayıtta
+    ok 1 - 409 company-shared, klasör yerinde, iki şirket kayıtta
+      ---
+      duration_ms: 6.145786
+      type: 'test'
+      ...
+    1..1
+ok 4 - 2.4.9 S1 — paylaşılan veri dosyası: withoutBackup ile de company-shared reddi aynen
+  ---
+  duration_ms: 690.349639
+  type: 'suite'
+  ...
+1..4
+# tests 18
+# suites 4
+# pass 5
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6548.634258

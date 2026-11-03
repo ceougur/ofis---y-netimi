@@ -1,0 +1,32 @@
+{
+  "ad": "s1-tur1/yeni-e2e",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-yeni-ff7f5801 && node --disable-warning=ExperimentalWarning test/e2e/senaryo-yedeksiz-sil-249.mjs",
+  "commit": "ff7f580109b60d829da77709d433fec0fb2fb432",
+  "dal": "worktree-agent-ab5db2d50b3409459",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:09:13.516Z",
+  "sure_sn": 13.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 27,
+    "gecen": 27,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/s1-tur1/yeni-e2e.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab5db2d50b3409459",
+  "ham_cikti_sha256": "5a17a3356661a37d20ed3350c3ef6f90fb9657455f4e7d1f8493d331eafe8e85",
+  "ham_cikti_bayt": 3827
+}
