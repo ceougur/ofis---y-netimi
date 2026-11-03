@@ -52,6 +52,8 @@ async function harness({ second = false, dataDir = null, account = true, timeout
       return true;
     },
   });
+  // 2.4.9 W-KÖK — ön koşul bilerek güncellendi (expire): Meta 3 günlük teslim süresini başından bildirir (kabulden önce bilinir).
+  for (const tpl of ctx.fake.state.templates) if (tpl.name.startsWith("destekofis_")) tpl.message_send_ttl_seconds = 259_200;
   const queues = new Map();
   const sch = ctx.server.app.whatsapp.scheduler;
   const reg = sch.register.bind(sch);
@@ -151,10 +153,9 @@ async function uncertain(s) {
 /** Süresi Doldu (bildirim yolu çalışıyor — "sent" geldi —, teslim gelmedi, Meta'nın bildirdiği 3 günlük ömür + 1 sa; t2-p3 düzeneği). */
 async function expire(s, wamid) {
   // 2.4.9 W-T — ön koşul bilerek güncellendi (KULLANICI KARARI 03.11.2026, docs/2.4.9-tasarim/W-whatsapp-sablon.md §15): program şablona teslim süresi YAZMAZ;
-  // "Süresi Doldu" Meta'nın listede BİLDİRDİĞİ değere bağlıdır. Bu tablo süre değil durum kuralını sınar: Meta 3 günü listede bildirir, Denetle onu okur.
-  for (const tpl of s.ctx.fake.state.templates) if (tpl.name.startsWith("destekofis_")) tpl.message_send_ttl_seconds = 259_200;
-  await ok(await s.ctx.api.post(`/api/workspace/whatsapp/templates/ensure${s.q}`, {}), "şablonlar (Meta'nın bildirdiği ömür)");
-  for (const tpl of s.ctx.fake.state.templates) tpl.status = "APPROVED";
+  // "Süresi Doldu" Meta'nın listede BİLDİRDİĞİ değere bağlıdır. Bu tablo süre değil durum kuralını sınar: Meta 3 günü listede bildirir.
+  // 2.4.9 W-KÖK — ön koşul bilerek güncellendi (KULLANICI 03.11.2026 ~20:05 UTC): iş KABUL ANINDAKİ süreyle ölçülür — 3 gün kabulden SONRA öğrenilirse (eskiden burada
+  // Denetle) iş 30 günle kalır. Meta 3 günü düzeneğin başından bildirir (harness); toplu işin taze okuması onu kabulden önce öğrenir.
   s.apply([st(s, wamid, "sent")]);
   s.ctx.clock.advance(74 * HOUR);
   await s.ctx.drain();
