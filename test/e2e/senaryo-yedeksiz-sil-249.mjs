@@ -2,7 +2,8 @@
 // "KULLANICI KARARI (03.11 ~19:45 UTC"). Gerçek tıklama + insan hızında yazım + Tab (ders 12); en üstteki pencere konuma bağlı seçilmez (ders 39);
 // soru/onay pencereleri test yardımcısıyla sessizce yanıtlanmaz, her yanıt adımda bilerek verilir (ders 34).
 //  A. 002'nin veri dosyası bozuk (users kök sayfası) → Yönetim → Şirketler → Sil → kod dolu, parola yazılır → Şirketi Sil → ikinci, açık onay
-//     "Yedeksiz Sil · 002 · …": nedeni ve "Veri klasörü yine silinen-sirketler altına taşınır, geri getirilebilir." yazar; düğme "Yedeksiz Sil"
+//     "Yedeksiz Sil · 002 · …": Türkçe nedeni ("veri dosyası bozuk") ve "Veri klasörü silinmez; silinen-sirketler klasöründe saklanır (destek ile geri
+//     getirilebilir)." yazar (S1 tur 1); düğme "Yedeksiz Sil"
 //     (tehlikeli eylem rengi), odak Vazgeç'te.
 //  B. Vazgeç → ilk pencere açık, nedeni altta; şirket listede, klasör yerinde, audit yok.
 //  C. Yeniden Şirketi Sil → Yedeksiz Sil → bildirim "yedek alınmadan silindi"; liste 1 şirket; klasör silinen-sirketler'de (dosya bayt bayt aynı);
@@ -157,8 +158,10 @@ try {
   const confirmInfo = await topInfo();
   // Ders 38: kırmızının nedeni iletide okunur — ikinci onay yerine ilk pencerede hata kaldıysa (eski davranış: 500) hata metni yazılır.
   if (!ok(confirmInfo.title === `Yedeksiz Sil · ${bad.code} · ${bad.name}`, `ikinci onay açıldı: başlık “${confirmInfo.title}”${confirmInfo.formError ? `; ilk pencerede hata “${confirmInfo.formError}”` : ""}`)) throw new Error("ikinci onay (Yedeksiz Sil) açılmadı");
-  ok(/^Yedek alınamadı \(.+\)\./.test(confirmInfo.text) && /database disk image is malformed|malformed|bozuk/i.test(confirmInfo.text), `neden görünüyor: “${confirmInfo.text.slice(0, 90)}…”`);
-  ok(confirmInfo.text.includes("Veri klasörü yine silinen-sirketler altına taşınır, geri getirilebilir."), "“Veri klasörü yine silinen-sirketler altına taşınır, geri getirilebilir.” yazıyor");
+  // S1 TUR 1: neden Türkçe ("veri dosyası bozuk"; ham SQLite iletisi pencerede yok) ve klasörün korunduğu açıkça yazar.
+  ok(/^Yedek alınamadı \(veri dosyası bozuk\)\./.test(confirmInfo.text) && !/malformed|disk image/i.test(confirmInfo.text), `neden Türkçe: “${confirmInfo.text.slice(0, 90)}…”`);
+  ok(confirmInfo.text.includes("Veri klasörü silinmez; silinen-sirketler klasöründe saklanır (destek ile geri getirilebilir)."), "“Veri klasörü silinmez; silinen-sirketler klasöründe saklanır (destek ile geri getirilebilir).” yazıyor");
+  ok(!confirmInfo.text.includes("yine silinen-sirketler altına taşınır"), "eski metin yok");
   ok(confirmInfo.yes === "Yedeksiz Sil" && confirmInfo.danger, `düğme “${confirmInfo.yes}”, tehlikeli eylem rengi (${confirmInfo.danger})`);
   ok(confirmInfo.focusNo, "odak güvenli düğmede (Vazgeç)");
   ok((await page.$$(MODAL)).length === 2, "ilk pencere arkada açık (iki pencere)");

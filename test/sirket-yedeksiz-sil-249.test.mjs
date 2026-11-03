@@ -9,6 +9,10 @@
 // yerinde bırakıp kaydı düşürürse; (6) reddedilen istekte şirket "siliniyor" işaretinde kalırsa (sonraki istek 409 meşgul).
 // Bozuk dosya: başlık ve şema sağlam, yalnız users tablosunun kök sayfası bozuk (docs/kanit/2026-11-02/db-bozuk-dk/betik/sizinti-log.mjs "tablo-bozuk").
 //
+// S1 TUR 1 (dar kontrol DÜŞÜK'leri, docs/2.4.9-IS-LISTESI.md "S1 DAR KONTROL"): yedek hatasının nedeni kullanıcıya Türkçe (errcode / error.code eşlemesi:
+// 11/26 → veri dosyası bozuk, 13/ENOSPC → disk dolu, 5/6/EBUSY → başka programca kullanılıyor, EACCES/EPERM → yazma izni yok, bilinmeyen → beklenmeyen hata);
+// audit'teki backupError HAM kalır; 409 yolunda sunucu günlüğüne uyarı (şirket kodu + ham neden).
+//
 // Windows notu (ders 48): klasör taşıma (renameSync) dosyaya dokunur; bu testte platforma özgü sayım yok — Windows'ta açık tutamak kalırsa taşıma
 // EBUSY/EPERM ile düşer ve "yedeksiz silme" hücresi kırmızı olur. Sonuç CI'nin Windows işlerinde okunur.
 import assert from "node:assert/strict";
@@ -36,6 +40,11 @@ const del = async (api, id, body) => {
     json = {};
   }
   return { status: res.status, json, body: json.ok ? json.data : json };
+};
+// Sunucu günlüğü yakalanır (409 yolunda uyarı satırı).
+const captureLog = () => {
+  const lines = { warn: [], error: [] };
+  return { lines, log: { debug() {}, info() {}, warn: message => lines.warn.push(String(message)), error: message => lines.error.push(String(message)) } };
 };
 const sha = file => createHash("sha256").update(readFileSync(file)).digest("hex");
 
@@ -75,8 +84,9 @@ describe("2.4.9 S1 — bozuk dosyalı şirket: 409 backup-failed, onayla yedeksi
   let dir;
   let file;
   let folder;
+  const captured = captureLog();
   before(async () => {
-    server = await startTestServer({ maxCompanies: 2, env: ENV });
+    server = await startTestServer({ maxCompanies: 2, env: ENV, log: captured.log });
     api = await loginAdmin(server);
     company = (await must("002 aç", api.post("/api/companies", { name: "Bozuk Dosyalı Şirket", select: false }))).company;
     const q = `?hofCompany=${encodeURIComponent(company.id)}`;
@@ -100,6 +110,12 @@ describe("2.4.9 S1 — bozuk dosyalı şirket: 409 backup-failed, onayla yedeksi
     assert.ok(typeof res.json.reason === "string" && res.json.reason.length > 0, `neden boş: ${JSON.stringify(res.json)}`);
     assert.match(res.json.error, /Silme öncesi yedek alınamadı; şirket silinmedi/);
     assert.ok(res.json.error.includes(res.json.reason), "ileti nedeni içerir");
+    // S1 TUR 1: neden Türkçe — bozuk dosyada "veri dosyası bozuk" (ham SQLite iletisi kullanıcıya tek başına gösterilmez).
+    assert.match(res.json.reason, /^veri dosyası bozuk/, `neden Türkçe değil: ${res.json.reason}`);
+    assert.match(res.json.error, /veri dosyası bozuk/);
+    // S1 TUR 1: 409 yolunda sunucu günlüğüne uyarı — şirket kodu + ham neden.
+    const warned = captured.lines.warn.filter(line => line.includes(company.code) && /yedek/i.test(line));
+    assert.equal(warned.length, 1, `günlük uyarısı: ${JSON.stringify(captured.lines.warn).slice(0, 500)}`);
     assert.ok(existsSync(dir) && existsSync(file), "veri klasörü yerinde");
     assert.equal(sha(file), before, "veri dosyasına dokunulmadı");
     assert.ok(server.app.companies.get(company.id), "şirket kayıtta");
@@ -152,6 +168,8 @@ describe("2.4.9 S1 — bozuk dosyalı şirket: 409 backup-failed, onayla yedeksi
     assert.equal(audits[0].withoutBackup, true);
     assert.equal(audits[0].backup, "");
     assert.ok(typeof audits[0].backupError === "string" && audits[0].backupError.length > 0, "audit'te yedek hatasının nedeni");
+    assert.ok(!/veri dosyası bozuk/.test(audits[0].backupError), `audit'te ham neden kalır: ${audits[0].backupError}`);
+    assert.ok(captured.lines.warn.some(line => line.includes(company.code) && line.includes(audits[0].backupError)), "günlükte şirket kodu + audit'teki ham neden");
     assert.ok(String(audits[0].archivedTo).includes("silinen-sirketler"), `archivedTo: ${audits[0].archivedTo}`);
     assert.deepEqual(backupsIn(folder), [], "yedek dosyası yok");
     // Silinen şirketin yeri boşaldı: yeni şirket açılabilir (2 şirket sınırı).
@@ -195,6 +213,58 @@ describe("2.4.9 S1 — sağlam şirket: davranış AYNEN, withoutBackup yedeği 
     assert.match(res.json.error, /001 kodlu ilk şirket silinemez/);
     assert.ok(server.app.companies.get("sirket-001"));
   });
+});
+
+describe("2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir)", () => {
+  let server;
+  let api;
+  let company;
+  const captured = captureLog();
+  const fault = (props, message) => Object.assign(new Error(message), props);
+  before(async () => {
+    server = await startTestServer({ maxCompanies: 2, env: ENV, log: captured.log });
+    api = await loginAdmin(server);
+    company = (await must("002 aç", api.post("/api/companies", { name: "Arıza Şirketi", select: false }))).company;
+  });
+  after(() => server?.close());
+
+  // Yedek servisinin backup işlevi bu hücrede sahte hatayla değiştirilir (rota her istekte backups.backup'ı okur).
+  for (const [label, error, expected] of [
+    ["errcode 11 (SQLITE_CORRUPT)", fault({ code: "ERR_SQLITE_ERROR", errcode: 11 }, "database disk image is malformed"), /^veri dosyası bozuk/],
+    ["errcode 26 (SQLITE_NOTADB)", fault({ code: "ERR_SQLITE_ERROR", errcode: 26 }, "file is not a database"), /^veri dosyası bozuk/],
+    ["errcode 267 (genişletilmiş CORRUPT_VTAB, & 0xff = 11)", fault({ code: "ERR_SQLITE_ERROR", errcode: 267 }, "corrupt vtab"), /^veri dosyası bozuk/],
+    ["errcode 13 (SQLITE_FULL)", fault({ code: "ERR_SQLITE_ERROR", errcode: 13 }, "database or disk is full"), /^disk dolu/],
+    ["ENOSPC", fault({ code: "ENOSPC" }, "ENOSPC: no space left on device, write"), /^disk dolu/],
+    ["errcode 5 (SQLITE_BUSY)", fault({ code: "ERR_SQLITE_ERROR", errcode: 5 }, "database is locked"), /^dosya başka bir programca kullanılıyor/],
+    ["errcode 6 (SQLITE_LOCKED)", fault({ code: "ERR_SQLITE_ERROR", errcode: 6 }, "database table is locked"), /^dosya başka bir programca kullanılıyor/],
+    ["EBUSY", fault({ code: "EBUSY" }, "EBUSY: resource busy or locked, rename"), /^dosya başka bir programca kullanılıyor/],
+    ["EACCES", fault({ code: "EACCES" }, "EACCES: permission denied, mkdir"), /^yedek klasörüne yazma izni yok/],
+    ["EPERM", fault({ code: "EPERM" }, "EPERM: operation not permitted, open"), /^yedek klasörüne yazma izni yok/],
+    ["bilinmeyen", new Error("tuhaf bir şey oldu"), /^beklenmeyen hata/],
+  ]) {
+    it(`${label} → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde`, async () => {
+      const backups = server.app.backups;
+      const original = backups.backup;
+      const warnsBefore = captured.lines.warn.length;
+      backups.backup = () => {
+        throw error;
+      };
+      let res;
+      try {
+        res = await del(api, company.id, { confirm: company.code, password: ADMIN_PASSWORD });
+      } finally {
+        backups.backup = original;
+      }
+      assert.equal(res.status, 409, `durum ${res.status} ${JSON.stringify(res.json).slice(0, 300)}`);
+      assert.equal(res.json.code, "backup-failed");
+      assert.match(res.json.reason, expected, `neden: ${res.json.reason}`);
+      assert.ok(res.json.error.includes(res.json.reason), `ileti nedeni içerir: ${res.json.error}`);
+      const warned = captured.lines.warn.slice(warnsBefore);
+      assert.equal(warned.length, 1, `günlük: ${JSON.stringify(warned)}`);
+      assert.ok(warned[0].includes(company.code) && warned[0].includes(error.message), `günlükte kod + ham ileti: ${warned[0]}`);
+      assert.ok(server.app.companies.get(company.id), "şirket kayıtta");
+    });
+  }
 });
 
 describe("2.4.9 S1 — paylaşılan veri dosyası: withoutBackup ile de company-shared reddi aynen", () => {
