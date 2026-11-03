@@ -50,7 +50,9 @@ import { canUser } from "../lib/permissions.mjs";
 const MAX_TARGETS = 5000;
 const pad = value => String(value).padStart(2, "0");
 const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
-const tl = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
+// 2.4.9 B2-2: tek biçimleyici (Intl.NumberFormat durumsuz; çıktı aynı) — ekstre metni her tutarda yeniden kurmasın (2.000 kişilik "Tüm Hareketler"de ~1,3 sn).
+const TL_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const tl = value => `${TL_FORMAT.format(Number(value) || 0)} TL`;
 
 // Telefon → wa.me biçimi ve WhatsApp penceresinin dönemleri: lib/whatsapp/alici.mjs (2.4.8 W2: API çekirdeği de aynı kuralla okur).
 export { waNumber };
@@ -99,7 +101,7 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     const body = await readJson(req, { limit: 2_000_000 });
     const kind = body.kind === "statement" ? "statement" : "message";
     const service = accounts();
-    if (!service?.list || !service?.detail) throw new HttpError(503, "Cari modülü hazır değil.");
+    if (!service?.list || !service?.waFacts) throw new HttpError(503, "Cari modülü hazır değil.");
     let ids;
     if (body.all === true) {
       ids = service.list(user, { q: text(body.q).slice(0, 120), group: text(body.group), subgroup: text(body.subgroup), type: text(body.type), status: ["active", "passive", "all"].includes(text(body.status)) ? text(body.status) : "active", balance: text(body.balance) || "all" }).accounts.map(item => item.id);
@@ -115,8 +117,11 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     const recipients = [];
     for (const id of ids) {
       let account;
+      // 2.4.9 B2-1 (ders 47): kartın eleme çekirdeği (accounts.waFacts — detail ile aynı accountRow / plans().forAccount / entriesOf / accountLedger, aynı girdi;
+      // ekran ekleri okunmaz). Silinmiş / olmayan cari iki yolda da fırlatır → listede yok. BİLİNÇLİ TEK FARK (İLKEYLE, ilke 4 "çıkmaz yok"): kartın bir ekran eki
+      // hata verirse kişi artık sessizce düşmez. Önceden kişi başı tam kart: 2.000 caride ~25 sn, olay döngüsü kilitli (docs/2.4.9-tasarim/B2-elle-toplu-alici.md).
       try {
-        account = service.detail(id, user);
+        account = service.waFacts(id, user);
       } catch {
         continue;
       }
