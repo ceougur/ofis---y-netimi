@@ -1,0 +1,556 @@
+TAP version 13
+# Subtest: 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+    # Subtest: T0 new DatabaseSync kurucusu düşer (olmayan dizin) → Node tutamak bırakmaz
+    ok 1 - T0 new DatabaseSync kurucusu düşer (olmayan dizin) → Node tutamak bırakmaz
+      ---
+      duration_ms: 3.009562
+      type: 'test'
+      ...
+    # Subtest: T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir
+    not ok 2 - T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir
+      ---
+      duration_ms: 907.603583
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:237:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '002 açılamadıktan sonra (3 istek): 7 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '002 açılamadıktan sonra (3 istek): 7 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:247:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; "(deleted)" tutamak 0
+    not ok 3 - T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; "(deleted)" tutamak 0
+      ---
+      duration_ms: 834.78242
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:253:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'geri yüklemeden sonra: 8 "(deleted)" tutamak kaldı (destekofis.sqlite)',
+        +   'geri yüklenen şirket kapanınca: 8 "(deleted)" tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'geri yüklemeden sonra: 8 "(deleted)" tutamak kaldı (destekofis.sqlite)'
+        1: 'geri yüklenen şirket kapanınca: 8 "(deleted)" tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:272:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır
+    not ok 4 - T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır
+      ---
+      duration_ms: 1945.916912
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:278:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'göç düştükten sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'düzelip kapanınca: 5 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'göç düştükten sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'düzelip kapanınca: 5 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:308:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 5 - T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 4309.520089
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesinti 503 ({"ok":true,"data":{"accounts":[{"id":"account-78cc9221-b1bc-477d-a070-01c6e02182bb","refNo":"1","type":"customer","name":"Burak Kaya","phone":"0533 444 55 66","email":"","address":"","note":"","registeredOn":"2026-11-03","groupId":null,"subgroupId":null,"groupName":"","subgroupName":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","partyKind":"","city":"","district":"","eInvoice":false,"dueDays":0,"debit":800,"credit":0,"balance":800,"side":"debtor","planCount":0,"activePlans":0,"planRemaining":0,"overdue":0,"overdueCount":0,"next":null,"doubtfulOpen":0,"extra":[]}],"totals":{"count":1,"debtor":800,"creditor":0,"debtorCount":1,"creditorCount":0,"balance":800,"overdue":0,"overdueCount":0,"planRemaining":0,"doubtful":0,"doubtfulCount":0},"sort":"no","groups":[],"fieldLabels":[],"canManage":true,"canCollect":true,"canPlan":true,"today":"2026-11-03","total":1,"offset":0,"limit":300,"hasMore":false}})
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:334:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 6 - T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2698.115335
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesinti 503 ({"ok":true,"data":{"accounts":[{"id":"account-fb608272-e4ca-444a-a014-3f8810284d7a","refNo":"1","type":"customer","name":"Burak Kaya","phone":"0533 444 55 66","email":"","address":"","note":"","registeredOn":"2026-11-03","groupId":null,"subgroupId":null,"groupName":"","subgroupName":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","partyKind":"","city":"","district":"","eInvoice":false,"dueDays":0,"debit":800,"credit":0,"balance":800,"side":"debtor","planCount":0,"activePlans":0,"planRemaining":0,"overdue":0,"overdueCount":0,"next":null,"doubtfulOpen":0,"extra":[]}],"totals":{"count":1,"debtor":800,"creditor":0,"debtorCount":1,"creditorCount":0,"balance":800,"overdue":0,"overdueCount":0,"planRemaining":0,"doubtful":0,"doubtfulCount":0},"sort":"no","groups":[],"fieldLabels":[],"canManage":true,"canCollect":true,"canPlan":true,"today":"2026-11-03","total":1,"offset":0,"limit":300,"hasMore":false}})
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:334:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 7 - T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 3184.505753
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesinti 503 ({"ok":true,"data":{"accounts":[{"id":"account-218895bd-276e-4658-ad9f-e990aae3a77b","refNo":"1","type":"customer","name":"Burak Kaya","phone":"0533 444 55 66","email":"","address":"","note":"","registeredOn":"2026-11-03","groupId":null,"subgroupId":null,"groupName":"","subgroupName":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","partyKind":"","city":"","district":"","eInvoice":false,"dueDays":0,"debit":800,"credit":0,"balance":800,"side":"debtor","planCount":0,"activePlans":0,"planRemaining":0,"overdue":0,"overdueCount":0,"next":null,"doubtfulOpen":0,"extra":[]}],"totals":{"count":1,"debtor":800,"creditor":0,"debtorCount":1,"creditorCount":0,"balance":800,"overdue":0,"overdueCount":0,"planRemaining":0,"doubtful":0,"doubtfulCount":0},"sort":"no","groups":[],"fieldLabels":[],"canManage":true,"canCollect":true,"canPlan":true,"today":"2026-11-03","total":1,"offset":0,"limit":300,"hasMore":false}})
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:334:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 8 - T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2613.72243
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesinti 503 ({"ok":true,"data":{"accounts":[{"id":"account-65045aad-f063-4a67-9183-9972857ef4da","refNo":"1","type":"customer","name":"Burak Kaya","phone":"0533 444 55 66","email":"","address":"","note":"","registeredOn":"2026-11-03","groupId":null,"subgroupId":null,"groupName":"","subgroupName":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","partyKind":"","city":"","district":"","eInvoice":false,"dueDays":0,"debit":800,"credit":0,"balance":800,"side":"debtor","planCount":0,"activePlans":0,"planRemaining":0,"overdue":0,"overdueCount":0,"next":null,"doubtfulOpen":0,"extra":[]}],"totals":{"count":1,"debtor":800,"creditor":0,"debtorCount":1,"creditorCount":0,"balance":800,"overdue":0,"overdueCount":0,"planRemaining":0,"doubtful":0,"doubtfulCount":0},"sort":"no","groups":[],"fieldLabels":[],"canManage":true,"canCollect":true,"canPlan":true,"today":"2026-11-03","total":1,"offset":0,"limit":300,"hasMore":false}})
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:334:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 9 - T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2641.347615
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesinti 503 ({"ok":true,"data":{"accounts":[{"id":"account-c115ed96-670c-40f9-87c4-e9abb393b8f6","refNo":"1","type":"customer","name":"Burak Kaya","phone":"0533 444 55 66","email":"","address":"","note":"","registeredOn":"2026-11-03","groupId":null,"subgroupId":null,"groupName":"","subgroupName":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","partyKind":"","city":"","district":"","eInvoice":false,"dueDays":0,"debit":800,"credit":0,"balance":800,"side":"debtor","planCount":0,"activePlans":0,"planRemaining":0,"overdue":0,"overdueCount":0,"next":null,"doubtfulOpen":0,"extra":[]}],"totals":{"count":1,"debtor":800,"creditor":0,"debtorCount":1,"creditorCount":0,"balance":800,"overdue":0,"overdueCount":0,"planRemaining":0,"doubtful":0,"doubtfulCount":0},"sort":"no","groups":[],"fieldLabels":[],"canManage":true,"canCollect":true,"canPlan":true,"today":"2026-11-03","total":1,"offset":0,"limit":300,"hasMore":false}})
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:334:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 10 - T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2658.349587
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesinti 503 ({"ok":true,"data":{"accounts":[{"id":"account-4075e715-f2d0-47db-ada2-c3fd633cbf0f","refNo":"1","type":"customer","name":"Burak Kaya","phone":"0533 444 55 66","email":"","address":"","note":"","registeredOn":"2026-11-03","groupId":null,"subgroupId":null,"groupName":"","subgroupName":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","partyKind":"","city":"","district":"","eInvoice":false,"dueDays":0,"debit":800,"credit":0,"balance":800,"side":"debtor","planCount":0,"activePlans":0,"planRemaining":0,"overdue":0,"overdueCount":0,"next":null,"doubtfulOpen":0,"extra":[]}],"totals":{"count":1,"debtor":800,"creditor":0,"debtorCount":1,"creditorCount":0,"balance":800,"overdue":0,"overdueCount":0,"planRemaining":0,"doubtful":0,"doubtfulCount":0},"sort":"no","groups":[],"fieldLabels":[],"canManage":true,"canCollect":true,"canPlan":true,"today":"2026-11-03","total":1,"offset":0,"limit":300,"hasMore":false}})
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:334:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 11 - T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2562.668944
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesinti 503 ({"ok":true,"data":{"accounts":[{"id":"account-8d1903d1-6f43-46c5-8541-d6ecceb4682e","refNo":"1","type":"customer","name":"Burak Kaya","phone":"0533 444 55 66","email":"","address":"","note":"","registeredOn":"2026-11-03","groupId":null,"subgroupId":null,"groupName":"","subgroupName":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","partyKind":"","city":"","district":"","eInvoice":false,"dueDays":0,"debit":800,"credit":0,"balance":800,"side":"debtor","planCount":0,"activePlans":0,"planRemaining":0,"overdue":0,"overdueCount":0,"next":null,"doubtfulOpen":0,"extra":[]}],"totals":{"count":1,"debtor":800,"creditor":0,"debtorCount":1,"creditorCount":0,"balance":800,"overdue":0,"overdueCount":0,"planRemaining":0,"doubtful":0,"doubtfulCount":0},"sort":"no","groups":[],"fieldLabels":[],"canManage":true,"canCollect":true,"canPlan":true,"today":"2026-11-03","total":1,"offset":0,"limit":300,"hasMore":false}})
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:334:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0
+    not ok 12 - T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0
+      ---
+      duration_ms: 10865.503745
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:353:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'kilitli açılış düşüp kilit kalkınca: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'kilitli açılış düşüp kilit kalkınca: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:384:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı
+    not ok 13 - T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı
+      ---
+      duration_ms: 618.8452
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:391:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":true,"data":{"accounts":[{"id":"account-baeb4e85-d0f0-4fc7-93d3-51c2efe5eca0","refNo":"1","type":"customer","name":"Burak Kaya","phone":"0533 444 55 66","email":"","address":"","note":"","registeredOn":"2026-11-03","groupId":null,"subgroupId":null,"groupName":"","subgroupName":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","partyKind":"","city":"","district":"","eInvoice":false,"dueDays":0,"debit":800,"credit":0,"balance":800,"side":"debtor","planCount":0,"activePlans":0,"planRemaining":0,"overdue":0,"overdueCount":0,"next":null,"doubtfulOpen":0,"extra":[]}],"totals":{"count":1,"debtor":800,"creditor":0,"debtorCount":1,"creditorCount":0,"balance":800,"overdue":0,"overdueCount":0,"planRemaining":0,"doubtful":0,"doubtfulCount":0},"sort":"no","groups":[],"fieldLabels":[],"canManage":true,"canCollect":true,"canPlan":true,"today":"2026-11-03","total":1,"offset":0,"limit":300,"hasMore":false}}
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:401:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)
+    not ok 14 - T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)
+      ---
+      duration_ms: 792.439652
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:411:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'salt okunur lisansta 002 açılamadıktan sonra (3 istek): 7 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'salt okunur lisansta 002 açılamadıktan sonra (3 istek): 7 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:439:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı
+    not ok 15 - T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı
+      ---
+      duration_ms: 768.321945
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:448:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002 düşer, 001 çalışır
+        + actual - expected
+        
+          [
+        -   503,
+            200,
+        -   503,
+            200,
+        -   503,
+            200,
+            200,
+        +   200,
+        +   200,
+        +   200
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 503
+        1: 200
+        2: 503
+        3: 200
+        4: 503
+        5: 200
+        6: 200
+      actual:
+        0: 200
+        1: 200
+        2: 200
+        3: 200
+        4: 200
+        5: 200
+        6: 200
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:460:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0
+    not ok 16 - T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0
+      ---
+      duration_ms: 1145.602947
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:473:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '20 düşen açılıştan sonra: 41 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '20 düşen açılıştan sonra: 41 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:521:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır
+    not ok 17 - T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır
+      ---
+      duration_ms: 583.478984
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:527:3'
+      failureType: 'testCodeFailure'
+      error: 'ilk açılışı düşen şirket oluşturma yanıtı başarı değil'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 200
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:535:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+    not ok 18 - T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+      ---
+      duration_ms: 315.325261
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:552:5'
+      failureType: 'testCodeFailure'
+      error: 'Missing expected exception.'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      operator: 'throws'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:561:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+    not ok 19 - T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+      ---
+      duration_ms: 266.49369
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:552:5'
+      failureType: 'testCodeFailure'
+      error: 'Missing expected exception.'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      operator: 'throws'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:561:18)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+    not ok 20 - T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+      ---
+      duration_ms: 396.391492
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:597:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'e-belge-kullanim.sqlite düştükten sonra 001: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'e-belge-kullanim.sqlite düştükten sonra defter: 3 açık tutamak kaldı (e-belge-kullanim.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'e-belge-kullanim.sqlite düştükten sonra 001: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'e-belge-kullanim.sqlite düştükten sonra defter: 3 açık tutamak kaldı (e-belge-kullanim.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:619:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+    not ok 21 - T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+      ---
+      duration_ms: 415.754799
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:597:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'whatsapp-gonderim.sqlite düştükten sonra 001: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'whatsapp-gonderim.sqlite düştükten sonra defter: 3 açık tutamak kaldı (whatsapp-gonderim.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'whatsapp-gonderim.sqlite düştükten sonra 001: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'whatsapp-gonderim.sqlite düştükten sonra defter: 3 açık tutamak kaldı (whatsapp-gonderim.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:619:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T12 sağlam açılış: kanca verilmiş ama düşmüyor → davranış aynen; 002 kapanınca ve sunucu kapanınca tutamak 0
+    ok 22 - T12 sağlam açılış: kanca verilmiş ama düşmüyor → davranış aynen; 002 kapanınca ve sunucu kapanınca tutamak 0
+      ---
+      duration_ms: 657.211714
+      type: 'test'
+      ...
+    1..22
+not ok 1 - 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+  ---
+  duration_ms: 41188.603285
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs:223:1'
+  failureType: 'subtestsFailed'
+  error: '20 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 22
+# suites 1
+# pass 2
+# fail 20
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 41912.381356

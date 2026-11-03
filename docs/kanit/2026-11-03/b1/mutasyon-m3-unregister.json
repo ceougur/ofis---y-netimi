@@ -1,0 +1,43 @@
+{
+  "ad": "b1/mutasyon-m3-unregister",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-mut-m3-0d8b1fc9-z4/test/createapp-acilis-geri-alma-249.test.mjs",
+  "commit": "0d8b1fc92863cff5775afce2f49ebd252a2a9a05",
+  "dal": "worktree-agent-af2578cdb282be616",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:42:46.631Z",
+  "sure_sn": 44.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 22,
+    "gecen": 20,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/b1/mutasyon-m3-unregister.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616",
+  "ham_cikti_sha256": "aa4aeb7ff5890303c79ee3c3c74f5c2e12d1d8f87b8354098a1dd591ea98ec04",
+  "ham_cikti_bayt": 11356
+}
