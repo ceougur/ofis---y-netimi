@@ -1,0 +1,60 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+(node:22975) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+not ok 1 - W1-01-varsayilan-30-gun-eski-72-sa-okunmaz [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+  # not: S-33 eski teslim süresi ayarı ttlHours=72 (A) → HTTP 400 (karar §15: 400 beklenir)
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+  # not: S-33 şablon okuması 5; istenen alanlar: name,language,status,category | name,language,status,category,quality_score,rejected_reason,components,message_send_ttl_seconds; teslim süresi gönderen istek: 0
+not ok 2 - W1-03-meta-bildirir-12-sa-sablon-basina [hizli] (35 fark; davranış farkı 32; gösterim: G1-borclu-eki 3)
+  # olusmadi: beklenen [], program ['T3']
+  # toplular.T3: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Gönderildi: beklenen 1, program 2
+  # durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # durum_sayilari.Teslim Edildi: beklenen 2, program 1
+  # meta.post.A: beklenen 2, program 1
+  # meta.kabul.A: beklenen 2, program 1
+  # meta.meta_ileti.A: beklenen 2, program 1
+  # meta.medya_yukleme.A: beklenen 2, program 1
+  # meta.medya_silme.A: beklenen 2, program 0
+  # meta.toplam_post: beklenen 4, program 3
+  # meta.toplam_kabul_program: beklenen 4, program 3
+  # meta.toplam_meta_ileti: beklenen 4, program 3
+  # meta.toplam_medya_yukleme: beklenen 3, program 2
+  # kontroller.K2.durum_sayilari.Gönderildi: beklenen 1, program 2
+  # kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K2.medya_silme: beklenen 2, program 1
+  # kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # kontroller.K3.durum_sayilari.Gönderildi: beklenen 1, program 2
+  # kontroller.K3.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K3.durum_sayilari.Teslim Edildi: beklenen 2, program 1
+  # kontroller.K3.toplam_post: beklenen 4, program 3
+  # kontroller.K3.toplam_kabul: beklenen 4, program 3
+  # kontroller.K3.medya_silme: beklenen 3, program 1
+  # kontroller.K3.toplular.T3: beklenen 'aktif', program '<YOK>'
+  # kontroller.K3.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # kontroller.K3.isler.T3/A: beklenen 'Teslim Edildi', program '<YOK>'
+  # bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+  # bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+  # isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T1/A.medya_silme: beklenen 1, program 0
+  # isler.T3/A: beklenen nesne, program '<YOK>'
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+  # not: S-33 şablon okuması 4; istenen alanlar: name,language,status,category | name,language,status,category,quality_score,rejected_reason,components,message_send_ttl_seconds; teslim süresi gönderen istek: 0
+not ok 3 - W2-01-kabulde-bilinmiyor-sonra-12-sa [hizli] (12 fark; davranış farkı 9; gösterim: G1-borclu-eki 3)
+  # durum_sayilari.Gönderildi: beklenen 1, program 2
+  # durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # meta.medya_silme.C: beklenen 1, program 0
+  # kontroller.K2.durum_sayilari.Gönderildi: beklenen 1, program 2
+  # kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K2.medya_silme: beklenen 3, program 2
+  # kontroller.K2.isler.T4/C: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T4/C.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T4/C.medya_silme: beklenen 1, program 0
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+  # not: S-33 şablon okuması 5; istenen alanlar: name,language,status,category | name,language,status,category,quality_score,rejected_reason,components,message_send_ttl_seconds; teslim süresi gönderen istek: 0
+1..3
+# tests 3
+# pass 0
+# fail 3
+# skipped 0

@@ -1,0 +1,220 @@
+TAP version 13
+# Subtest: teslimNumarasi: + varsa yalnız rakamlar; + yoksa işletme ülke kodu başa eklenir (belge tablosu)
+ok 1 - teslimNumarasi: + varsa yalnız rakamlar; + yoksa işletme ülke kodu başa eklenir (belge tablosu)
+  ---
+  duration_ms: 1.489617
+  type: 'test'
+  ...
+# Subtest: değişken ayrıştırma ve hata gövdesi biçimi (belge 'Error response syntax')
+ok 2 - değişken ayrıştırma ve hata gövdesi biçimi (belge 'Error response syntax')
+  ---
+  duration_ms: 1.122498
+  type: 'test'
+  ...
+# Subtest: ekstre şablonu + belge başlığı (medya id) kabul edilir; yanıt contacts/messages, kayıt değişkenleri tutar
+ok 3 - ekstre şablonu + belge başlığı (medya id) kabul edilir; yanıt contacts/messages, kayıt değişkenleri tutar
+  ---
+  duration_ms: 61.430357
+  type: 'test'
+  ...
+# Subtest: şablon yok / PENDING → 132001, PAUSED → 132015, DISABLED → 132016; değişken sayısı → 132000
+ok 4 - şablon yok / PENDING → 132001, PAUSED → 132015, DISABLED → 132016; değişken sayısı → 132000
+  ---
+  duration_ms: 62.327121
+  type: 'test'
+  ...
+# Subtest: D0 değişken kuralı: satır sonu / sekme / 5+ ardışık boşluk → 132018; boşluklu tek satır kabul
+ok 5 - D0 değişken kuralı: satır sonu / sekme / 5+ ardışık boşluk → 132018; boşluklu tek satır kabul
+  ---
+  duration_ms: 31.313662
+  type: 'test'
+  ...
+# Subtest: silinmiş ya da 30 günü geçmiş medya kimliğiyle gönderim reddedilir (D0: 131053) ve ayrıca kaydedilir
+ok 6 - silinmiş ya da 30 günü geçmiş medya kimliğiyle gönderim reddedilir (D0: 131053) ve ayrıca kaydedilir
+  ---
+  duration_ms: 26.119621
+  type: 'test'
+  ...
+# Subtest: + olmadan gönderim: işletme numarasının ülke kodu eklenir (yanlış kişi riski kayıtta görünür)
+ok 7 - + olmadan gönderim: işletme numarasının ülke kodu eklenir (yanlış kişi riski kayıtta görünür)
+  ---
+  duration_ms: 9.93494
+  type: 'test'
+  ...
+# Subtest: gönderen = alıcı → 131021; şablonsuz ileti müşteri hizmeti penceresi dışında → 131047
+ok 8 - gönderen = alıcı → 131021; şablonsuz ileti müşteri hizmeti penceresi dışında → 131047
+  ---
+  duration_ms: 11.943623
+  type: 'test'
+  ...
+# Subtest: hesap/numara: kayıtsız 133010, bakım 131057, ödeme yöntemi yok 131042, kısıtlı 368
+ok 9 - hesap/numara: kayıtsız 133010, bakım 131057, ödeme yöntemi yok 131042, kısıtlı 368
+  ---
+  duration_ms: 14.596376
+  type: 'test'
+  ...
+# Subtest: belirteç: yok (POST) 190, süresi dolmuş 190/401, iptal 0, ileti izni yok 10, varlık erişimi yok 200/403
+ok 10 - belirteç: yok (POST) 190, süresi dolmuş 190/401, iptal 0, ileti izni yok 10, varlık erişimi yok 200/403
+  ---
+  duration_ms: 22.43279
+  type: 'test'
+  ...
+# Subtest: kural: 1. denemede 131000, 2. denemede kabul; sayılar her denemeyi tutar
+ok 11 - kural: 1. denemede 131000, 2. denemede kabul; sayılar her denemeyi tutar
+  ---
+  duration_ms: 13.245179
+  type: 'test'
+  ...
+# Subtest: kural koptu:'sonra' → ileti KABUL edildi ama yanıt gelmez (çift gönderim tuzağı); 'once' → kabul yok
+ok 12 - kural koptu:'sonra' → ileti KABUL edildi ama yanıt gelmez (çift gönderim tuzağı); 'once' → kabul yok
+  ---
+  duration_ms: 10.050734
+  type: 'test'
+  ...
+# Subtest: kural: gövdesiz 5xx (işlendi / işlenmedi), gecikme (istemci zaman aşımı, ileti yine kabul), bozuk yanıt
+ok 13 - kural: gövdesiz 5xx (işlendi / işlenmedi), gecikme (istemci zaman aşımı, ileti yine kabul), bozuk yanıt
+  ---
+  duration_ms: 615.523286
+  type: 'test'
+  ...
+# Subtest: hız: numara başına mps aşılınca 130429 (belge: throughput)
+ok 14 - hız: numara başına mps aşılınca 130429 (belge: throughput)
+  ---
+  duration_ms: 12.056377
+  type: 'test'
+  ...
+# Subtest: gönderim sınırı (D0 kodu): kayan 24 saatte FARKLI alıcı; aynı alıcıya yeniden yer tutmaz; 24 sa sonra açılır
+ok 15 - gönderim sınırı (D0 kodu): kayan 24 saatte FARKLI alıcı; aynı alıcıya yeniden yer tutmaz; 24 sa sonra açılır
+  ---
+  duration_ms: 21.422529
+  type: 'test'
+  ...
+# Subtest: medya: PDF dışı içerik application/pdf → 131053; desteklenmeyen tür → 131053; messaging_product yok → 100; dosya yok → 131008
+ok 16 - medya: PDF dışı içerik application/pdf → 131053; desteklenmeyen tür → 131053; messaging_product yok → 100; dosya yok → 131008
+  ---
+  duration_ms: 15.390832
+  type: 'test'
+  ...
+# Subtest: medya GET (url/mime/sha256/boyut), indirme belirteç ister, DELETE success, ikinci DELETE ve süresi dolmuş GET hata
+ok 17 - medya GET (url/mime/sha256/boyut), indirme belirteç ister, DELETE success, ikinci DELETE ve süresi dolmuş GET hata
+  ---
+  duration_ms: 25.094497
+  type: 'test'
+  ...
+# Subtest: şablon oluşturma: ad kuralı 100, aynı ad+dil 100/2388024, alt satır > 60 → 2388040, sondaki değişken 2388299
+ok 18 - şablon oluşturma: ad kuralı 100, aynı ad+dil 100/2388024, alt satır > 60 → 2388040, sondaki değişken 2388299
+  ---
+  duration_ms: 26.042852
+  type: 'test'
+  ...
+# Subtest: belge başlıklı şablon: Resumable Upload tutamağı şart (D0 akışı); Meta UTILITY isteneni MARKETING onaylayabilir
+ok 19 - belge başlıklı şablon: Resumable Upload tutamağı şart (D0 akışı); Meta UTILITY isteneni MARKETING onaylayabilir
+  ---
+  duration_ms: 14.616133
+  type: 'test'
+  ...
+# Subtest: şablon listesi: fields + status süzgeci, quality_score {score,date}, sayfalama
+ok 20 - şablon listesi: fields + status süzgeci, quality_score {score,date}, sayfalama
+  ---
+  duration_ms: 16.574787
+  type: 'test'
+  ...
+# Subtest: şablon teslim süresi (message_send_ttl_seconds, D0): yalnız tanımlıysa listede ve tek okumada görünür; tanımsızsa alan yok (kâhin güncellemesi 10)
+ok 21 - şablon teslim süresi (message_send_ttl_seconds, D0): yalnız tanımlıysa listede ve tek okumada görünür; tanımsızsa alan yok (kâhin güncellemesi 10)
+  ---
+  duration_ms: 19.852501
+  type: 'test'
+  ...
+# Subtest: şablon silme: ada göre; onaylı silinen ad 30 gün açılamaz (D0 kod); DISABLED silinemez; düzenleme sınırları
+ok 22 - şablon silme: ada göre; onaylı silinen ad 30 gün açılamaz (D0 kod); DISABLED silinemez; düzenleme sınırları
+  ---
+  duration_ms: 29.389756
+  type: 'test'
+  ...
+# Subtest: numara: whatsapp_business_manager_messaging_limit TIER_250; messaging_limit_tier reddedilir (kaldırıldı); webhook_configuration
+ok 23 - numara: whatsapp_business_manager_messaging_limit TIER_250; messaging_limit_tier reddedilir (kaldırıldı); webhook_configuration
+  ---
+  duration_ms: 16.909792
+  type: 'test'
+  ...
+# Subtest: subscribed_apps: override ≤ 200 karakter + verify_token; GET override_callback_uri gösterir; gövdesiz POST override'ı kaldırır
+ok 24 - subscribed_apps: override ≤ 200 karakter + verify_token; GET override_callback_uri gösterir; gövdesiz POST override'ı kaldırır
+  ---
+  duration_ms: 12.923414
+  type: 'test'
+  ...
+# Subtest: register: 72 saatte 10 deneme, 11. → 133016; yanlış PIN 133005; birlikte kullanımda deregister reddi (D0)
+ok 25 - register: 72 saatte 10 deneme, 11. → 133016; yanlış PIN 133005; birlikte kullanımda deregister reddi (D0)
+  ---
+  duration_ms: 27.726241
+  type: 'test'
+  ...
+# Subtest: oauth/access_token: kod → iş belirteci; ikinci kullanım ve 30 sn sonrası ret; yanlış gizli anahtar ret
+ok 26 - oauth/access_token: kod → iş belirteci; ikinci kullanım ve 30 sn sonrası ret; yanlış gizli anahtar ret
+  ---
+  duration_ms: 12.275805
+  type: 'test'
+  ...
+# Subtest: kanca gövdesi belge biçiminde: sent (fiyatsız) → delivered (pricing utility/regular) → read (fiyatsız); opaque geri gelir; imza (D0)
+ok 27 - kanca gövdesi belge biçiminde: sent (fiyatsız) → delivered (pricing utility/regular) → read (fiyatsız); opaque geri gelir; imza (D0)
+  ---
+  duration_ms: 19.934002
+  type: 'test'
+  ...
+# Subtest: kanca: failed + errors[] (131026), yinelenen olay (tekrar), sahte/bilinmeyen wamid ham gönderimi
+ok 28 - kanca: failed + errors[] (131026), yinelenen olay (tekrar), sahte/bilinmeyen wamid ham gönderimi
+  ---
+  duration_ms: 14.594534
+  type: 'test'
+  ...
+# Subtest: kanca 200 dışı → Meta kuyruğu; sonraki işlemede teslim; 7 günü geçen düşer (belge: 7 güne kadar yeniden deneme)
+ok 29 - kanca 200 dışı → Meta kuyruğu; sonraki işlemede teslim; 7 günü geçen düşer (belge: 7 güne kadar yeniden deneme)
+  ---
+  duration_ms: 12.80765
+  type: 'test'
+  ...
+# Subtest: kanca doğrulama GET (D0): hub.mode/hub.verify_token/hub.challenge; alıcı challenge'ı dönerse geçti
+ok 30 - kanca doğrulama GET (D0): hub.mode/hub.verify_token/hub.challenge; alıcı challenge'ı dönerse geçti
+  ---
+  duration_ms: 11.263367
+  type: 'test'
+  ...
+# Subtest: WhatsApp kullanmayan alıcı: ileti KABUL edilir, failed 131026 kancası kendiliğinden gelir (plan §2.7 D0: teslim hatası kancada)
+ok 31 - WhatsApp kullanmayan alıcı: ileti KABUL edilir, failed 131026 kancası kendiliğinden gelir (plan §2.7 D0: teslim hatası kancada)
+  ---
+  duration_ms: 17.38994
+  type: 'test'
+  ...
+# Subtest: belirteç sızıntısı: belirteç gövdede/sorguda görülürse kayda düşer (Authorization başlığı sayılmaz)
+ok 32 - belirteç sızıntısı: belirteç gövdede/sorguda görülürse kayda düşer (Authorization başlığı sayılmaz)
+  ---
+  duration_ms: 12.057995
+  type: 'test'
+  ...
+# Subtest: sürüm: sürümsüz yol çalışır; kaldırılmış sürüm reddedilir (D0)
+ok 33 - sürüm: sürümsüz yol çalışır; kaldırılmış sürüm reddedilir (D0)
+  ---
+  duration_ms: 5.857357
+  type: 'test'
+  ...
+# Subtest: denetim uçları HTTP üzerinden: /__sahte/kural, /__sahte/saat, /__sahte/sablon, /__sahte/kayit
+ok 34 - denetim uçları HTTP üzerinden: /__sahte/kural, /__sahte/saat, /__sahte/sablon, /__sahte/kayit
+  ---
+  duration_ms: 16.826847
+  type: 'test'
+  ...
+# Subtest: durumGovdesi saf: birden çok durum tek gövdede (Meta toplu teslim edebilir)
+ok 35 - durumGovdesi saf: birden çok durum tek gövdede (Meta toplu teslim edebilir)
+  ---
+  duration_ms: 0.329576
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1372.125519

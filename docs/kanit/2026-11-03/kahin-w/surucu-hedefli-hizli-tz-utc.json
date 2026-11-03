@@ -1,0 +1,118 @@
+{
+  "ad": "kahin-w/surucu-hedefli-hizli-tz-utc",
+  "komut": "env HUKUK_LICENSE_URL=http://127.0.0.1:9 node test/bagimsiz/whatsapp-248/surucu.mjs --senaryo W1-*,W2-*,CIFT-16*,ICERIK-10*,ICERIK-11*,GUV-09*,TARIH-02*,TARIH-03*,J1-02*,J4-01*,J4-02* --uc hizli --tz UTC --ayrinti --cikti docs/kanit/2026-11-03/kahin-w/surucu-hedefli",
+  "commit": "a0962e7ad712778e1cde74a0d4e65d42db305e39",
+  "dal": "is/kahin-w-249",
+  "kirli": 9,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:01:17.570Z",
+  "sure_sn": 18.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 0,
+    "basarisiz": 17,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 17 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "CIFT-16-daha-once-suresi-doldu [hizli] (19 fark; davranış farkı 18; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ICERIK-10-ttl-sonrasi-teslim [hizli] (4 fark; davranış farkı 3; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ICERIK-11-ttl-icinde-gec-teslim [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "GUV-09-sahte-gercek-wamid [hizli] (8 fark; davranış farkı 7; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TARIH-02-ttl-sonu [hizli] (8 fark; davranış farkı 7; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TARIH-03-kancasiz [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "TARIH-03b-kancasiz-yol-calisiyor [hizli] (9 fark; davranış farkı 7; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J1-02-suresi-doldu-sonra-teslim-daha-once [hizli] (5 fark; davranış farkı 3; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J4-01-suresi-doldu-son-kabulden-meta-bekletti [hizli] (9 fark; davranış farkı 7; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "J4-02-suresi-doldu-son-kabulden-yine-de-gonder [hizli] (9 fark; davranış farkı 7; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W1-02-30-gun-dolmadan-daha-once-yine-de-gonder [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W1-03-meta-bildirir-12-sa-sablon-basina [hizli] (35 fark; davranış farkı 32; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W1-04-ay-sonu-12-sa-gec-teslim [hizli] (5 fark; davranış farkı 3; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W1-05-varsayilan-30-gun-meta-bekletti-son-kabulden [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W2-01-kabulde-bilinmiyor-sonra-12-sa [hizli] (12 fark; davranış farkı 9; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W2-02-kabulde-30-gun-sonra-12-sa-kisalir [hizli] (11 fark; davranış farkı 9; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/kahin-w/surucu-hedefli-hizli-tz-utc.log",
+  "klasor": "/home/user/wt-kahin-w-249",
+  "ham_cikti_sha256": "9179126227f708562f118e08bba1b9cd0e1e04531c022e0e6439bf7ef7251930",
+  "ham_cikti_bayt": 10269
+}

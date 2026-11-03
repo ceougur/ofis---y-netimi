@@ -1,0 +1,86 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+(node:19569) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+not ok 1 - CIFT-16-daha-once-suresi-doldu [hizli] (19 fark; davranış farkı 18; gösterim: G1-borclu-eki 1)
+  # olusmadi: beklenen [], program ['T2']
+  # toplular.T2: beklenen nesne, program '<YOK>'
+  # durum_sayilari.Süresi Doldu: beklenen 2, program '<YOK>'
+  # meta.post.A: beklenen 2, program 1
+  # meta.kabul.A: beklenen 2, program 1
+  # meta.meta_ileti.A: beklenen 2, program 1
+  # meta.medya_yukleme.A: beklenen 2, program 1
+  # meta.medya_silme.A: beklenen 2, program 0
+  # meta.toplam_post: beklenen 2, program 1
+  # meta.toplam_kabul_program: beklenen 2, program 1
+  # meta.toplam_meta_ileti: beklenen 2, program 1
+  # meta.toplam_medya_yukleme: beklenen 2, program 1
+  # kontroller.K1.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K1.medya_silme: beklenen 1, program 0
+  # kontroller.K1.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T1/A.medya_silme: beklenen 1, program 0
+  # isler.T2/A: beklenen nesne, program '<YOK>'
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+not ok 2 - ICERIK-10-ttl-sonrasi-teslim [hizli] (4 fark; davranış farkı 3; gösterim: G1-borclu-eki 1)
+  # kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K2.medya_silme: beklenen 1, program 0
+  # kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+not ok 3 - ICERIK-11-ttl-icinde-gec-teslim [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+not ok 4 - GUV-09-sahte-gercek-wamid [hizli] (6 fark; davranış farkı 5; gösterim: G1-borclu-eki 1)
+  # durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K1.durum_sayilari.Gönderildi: beklenen 1, program '<YOK>'
+  # kontroller.K1.medya_silme: beklenen 0, program 1
+  # kontroller.K1.isler.T1/A: beklenen 'Gönderildi', program 'Teslim Edildi'
+  # isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Teslim Edildi'
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+not ok 5 - TARIH-02-ttl-sonu [hizli] (8 fark; davranış farkı 7; gösterim: G1-borclu-eki 1)
+  # durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # meta.medya_silme.A: beklenen 1, program 0
+  # kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K2.medya_silme: beklenen 1, program 0
+  # kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T1/A.medya_silme: beklenen 1, program 0
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+not ok 6 - TARIH-03-kancasiz [hizli] (1 fark; davranış farkı 0; gösterim: G1-borclu-eki 1)
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+not ok 7 - TARIH-03b-kancasiz-yol-calisiyor [hizli] (9 fark; davranış farkı 7; gösterim: G1-borclu-eki 2)
+  # durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # meta.medya_silme.A: beklenen 1, program 0
+  # kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K2.medya_silme: beklenen 2, program 1
+  # kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Meta Kabul Etti'
+  # isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Meta Kabul Etti'
+  # isler.T1/A.medya_silme: beklenen 1, program 0
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+not ok 8 - J1-02-suresi-doldu-sonra-teslim-daha-once [hizli] (5 fark; davranış farkı 3; gösterim: G1-borclu-eki 2)
+  # kontroller.K1.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K1.medya_silme: beklenen 2, program 1
+  # kontroller.K1.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+not ok 9 - J4-01-suresi-doldu-son-kabulden-meta-bekletti [hizli] (9 fark; davranış farkı 7; gösterim: G1-borclu-eki 2)
+  # durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # meta.medya_silme.A: beklenen 1, program 0
+  # kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K2.medya_silme: beklenen 2, program 1
+  # kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T1/A.medya_silme: beklenen 1, program 0
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+not ok 10 - J4-02-suresi-doldu-son-kabulden-yine-de-gonder [hizli] (9 fark; davranış farkı 7; gösterim: G1-borclu-eki 2)
+  # durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # meta.medya_silme.B: beklenen 1, program 0
+  # kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # kontroller.K2.medya_silme: beklenen 2, program 1
+  # kontroller.K2.isler.T1/B: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T1/B.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+  # isler.T1/B.medya_silme: beklenen 1, program 0
+  # not: KANCA W1: Meta'daki adres → A:kayıt yok, defter:SAHİP (active)
+1..10
+# tests 10
+# pass 0
+# fail 10
+# skipped 0
