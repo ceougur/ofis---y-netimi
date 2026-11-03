@@ -1,0 +1,159 @@
+TAP version 13
+# Subtest: 2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şablonları Denetle'ye basılmadan da uygulanır
+    # Subtest: Denetle YOK, Meta ekstre şablonunda 12 sa bildirir: toplu işin taze okumasıyla bilinir — 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silinir; aynı dönemde yeniden gönderilebilir (P3)
+    ok 1 - Denetle YOK, Meta ekstre şablonunda 12 sa bildirir: toplu işin taze okumasıyla bilinir — 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silinir; aynı dönemde yeniden gönderilebilir (P3)
+      ---
+      duration_ms: 653.031127
+      type: 'test'
+      ...
+    # Subtest: Denetle YOK: kabulde süre bildirilmiyor (30 gün) → 14. saatte Meta 12 sa bildirir → önizleme taze okur: önceki iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi'; sonra kabul edilen iş 12 sa'le Süresi Doldu
+    ok 2 - Denetle YOK: kabulde süre bildirilmiyor (30 gün) → 14. saatte Meta 12 sa bildirir → önizleme taze okur: önceki iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi'; sonra kabul edilen iş 12 sa'le Süresi Doldu
+      ---
+      duration_ms: 551.737699
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şablonları Denetle'ye basılmadan da uygulanır
+  ---
+  duration_ms: 1206.605857
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu)
+    # Subtest: p3 Denetle yolu: kabul → 14 sa → Meta listesi 12 sa bildirir → Şablonları Denetle → bakım: iş Süresi Doldu OLMAZ, PDF silinmez; kişi 'Daha Önce Gönderildi', aynı dönemde 2. ileti gitmez; 'Yine de Gönder' açık
+    ok 1 - p3 Denetle yolu: kabul → 14 sa → Meta listesi 12 sa bildirir → Şablonları Denetle → bakım: iş Süresi Doldu OLMAZ, PDF silinmez; kişi 'Daha Önce Gönderildi', aynı dönemde 2. ileti gitmez; 'Yine de Gönder' açık
+      ---
+      duration_ms: 595.003989
+      type: 'test'
+      ...
+    # Subtest: Denetle'den SONRA kabul edilen iş yeni süreyle (12 sa) ölçülür; önceki iş 30 gün + 1 sa'te Süresi Doldu + PDF silinir
+    ok 2 - Denetle'den SONRA kabul edilen iş yeni süreyle (12 sa) ölçülür; önceki iş 30 gün + 1 sa'te Süresi Doldu + PDF silinir
+      ---
+      duration_ms: 676.251983
+      type: 'test'
+      ...
+    # Subtest: süre iki kez KISALIRSA (30 gün → 1 gün → 12 sa): her iş kendi kabul anındaki süreyle — ilk değişimden önceki 30 gün, aradaki 1 gün
+    ok 3 - süre iki kez KISALIRSA (30 gün → 1 gün → 12 sa): her iş kendi kabul anındaki süreyle — ilk değişimden önceki 30 gün, aradaki 1 gün
+      ---
+      duration_ms: 830.637323
+      type: 'test'
+      ...
+    # Subtest: süre UZARSA (KULLANICI KARARI 03.11 ~21:00 UTC: uzun süre): 12 sa'le kabul edilen iş, süre 30 güne çıkınca 30 günle; sonra 6 saate kısalsa da 30 günle; yeni iş 6 sa'le
+    ok 4 - süre UZARSA (KULLANICI KARARI 03.11 ~21:00 UTC: uzun süre): 12 sa'le kabul edilen iş, süre 30 güne çıkınca 30 günle; sonra 6 saate kısalsa da 30 günle; yeni iş 6 sa'le
+      ---
+      duration_ms: 809.884302
+      type: 'test'
+      ...
+    # Subtest: 2.4.8'den gelen veri (kabul anında süre bilinmiyor; şablon kaydında 12 sa): iş 30 günle; sonraki Denetle'den sonra kabul edilen iş 12 sa'le
+    ok 5 - 2.4.8'den gelen veri (kabul anında süre bilinmiyor; şablon kaydında 12 sa): iş 30 günle; sonraki Denetle'den sonra kabul edilen iş 12 sa'le
+      ---
+      duration_ms: 673.899663
+      type: 'test'
+      ...
+    # Subtest: iki şirket AYNI WhatsApp hesabında: 002'de kabul edilmiş iş; süre kısalınca önce 001'de, sonra 002'de Denetle → 002'nin işi Süresi Doldu OLMAZ, 002'de kişiye tek ekstre
+    ok 6 - iki şirket AYNI WhatsApp hesabında: 002'de kabul edilmiş iş; süre kısalınca önce 001'de, sonra 002'de Denetle → 002'nin işi Süresi Doldu OLMAZ, 002'de kişiye tek ekstre
+      ---
+      duration_ms: 920.980639
+      type: 'test'
+      ...
+    # Subtest: geri yüklenen yedek (002): kabul → süre 12 saate kısaldı + Denetle → yedek → geri yükleme → bakım: iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi', 2. ileti gitmez
+    ok 7 - geri yüklenen yedek (002): kabul → süre 12 saate kısaldı + Denetle → yedek → geri yükleme → bakım: iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi', 2. ileti gitmez
+      ---
+      duration_ms: 1169.643558
+      type: 'test'
+      ...
+    # Subtest: ay sonu / gece yarısı: 31.10 20:00 kabul (Ekim ekstresi) → 01.11 09:30 süre 12 saate kısaldı + Denetle → iş Süresi Doldu OLMAZ; 'Geçen Ay' önizlemesi 'Daha Önce Gönderildi', 2. Ekim ekstresi gitmez
+    ok 8 - ay sonu / gece yarısı: 31.10 20:00 kabul (Ekim ekstresi) → 01.11 09:30 süre 12 saate kısaldı + Denetle → iş Süresi Doldu OLMAZ; 'Geçen Ay' önizlemesi 'Daha Önce Gönderildi', 2. Ekim ekstresi gitmez
+      ---
+      duration_ms: 645.80677
+      type: 'test'
+      ...
+    1..8
+ok 2 - 2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu)
+  ---
+  duration_ms: 6323.520802
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük
+    # Subtest: günlük yok / başka hesabın günlüğü: kabul anında süre bilinmiyor → 30 gün
+    ok 1 - günlük yok / başka hesabın günlüğü: kabul anında süre bilinmiyor → 30 gün
+      ---
+      duration_ms: 0.638517
+      type: 'test'
+      ...
+    # Subtest: değişim anı D: D'de ve sonra kabul → yeni süre; D'den önce → 30 gün; kabul anı verilmezse günlükteki son değer
+    ok 2 - değişim anı D: D'de ve sonra kabul → yeni süre; D'den önce → 30 gün; kabul anı verilmezse günlükteki son değer
+      ---
+      duration_ms: 0.198197
+      type: 'test'
+      ...
+    # Subtest: zincir (30 gün → 1 gün → 12 sa) ve uzama (12 sa → 30 gün → 6 sa): kabul anındaki ile sonradan görülen en uzun
+    ok 3 - zincir (30 gün → 1 gün → 12 sa) ve uzama (12 sa → 30 gün → 6 sa): kabul anındaki ile sonradan görülen en uzun
+      ---
+      duration_ms: 0.178596
+      type: 'test'
+      ...
+    # Subtest: bozuk günlük (sırasız an / eksik değer): bilinmiyor → 30 gün
+    not ok 4 - bozuk günlük (sırasız an / eksik değer): bilinmiyor → 30 gün
+      ---
+      duration_ms: 1.041739
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/mut-MK8-bozuk-kismen-17414a4d/test/whatsapp-w-kok-ttl-249.test.mjs:408:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        43200 !== 2592000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2592000
+      actual: 43200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/mut-MK8-bozuk-kismen-17414a4d/test/whatsapp-w-kok-ttl-249.test.mjs:410:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: noteDeliveryTtl: yalnız değer değişince yazar; geç dönen eski okuma yazmaz; başka hesapta günlük o hesapla yeniden başlar; en çok 12 değişim (düşen en eski: 30 gün)
+    ok 5 - noteDeliveryTtl: yalnız değer değişince yazar; geç dönen eski okuma yazmaz; başka hesapta günlük o hesapla yeniden başlar; en çok 12 değişim (düşen en eski: 30 gün)
+      ---
+      duration_ms: 0.912783
+      type: 'test'
+      ...
+    1..5
+not ok 3 - 2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük
+  ---
+  duration_ms: 3.270354
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/mut-MK8-bozuk-kismen-17414a4d/test/whatsapp-w-kok-ttl-249.test.mjs:376:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 W-KÖK — bakım turu teslim süresi bilgisini satır başına okumaz (ders 47)
+    # Subtest: 40 kabul edilmiş iş, bildirim yolu canlı: bir bakım turundaki ayar okumaları iş sayısıyla artmaz
+    ok 1 - 40 kabul edilmiş iş, bildirim yolu canlı: bir bakım turundaki ayar okumaları iş sayısıyla artmaz
+      ---
+      duration_ms: 2484.5133
+      type: 'test'
+      ...
+    1..1
+ok 4 - 2.4.9 W-KÖK — bakım turu teslim süresi bilgisini satır başına okumaz (ders 47)
+  ---
+  duration_ms: 2484.752012
+  type: 'suite'
+  ...
+1..4
+# tests 16
+# suites 4
+# pass 15
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10515.119341

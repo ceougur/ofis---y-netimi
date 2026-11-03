@@ -1,0 +1,73 @@
+{
+  "ad": "w-kok/kahin-surucu-17414a4d-istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/whatsapp-248/surucu.mjs --senaryo W1-03-meta-bildirir-12-sa-sablon-basina,W2-01-kabulde-bilinmiyor-sonra-12-sa,W2-02-kabulde-30-gun-sonra-12-sa-kisalir,CIFT-16-daha-once-suresi-doldu --uc ikisi --cikti /home/user/ofis---y-netimi/.claude/worktrees/agent-aac20c1ad5b639b84/docs/kanit/2026-11-03/w-kok/kahin-surucu-istanbul",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:51:42.447Z",
+  "sure_sn": 9.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 0,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "CIFT-16-daha-once-suresi-doldu [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-16-daha-once-suresi-doldu [yavas] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W1-03-meta-bildirir-12-sa-sablon-basina [hizli] (5 fark; davranış farkı 1; gösterim: G1-borclu-eki 4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W1-03-meta-bildirir-12-sa-sablon-basina [yavas] (5 fark; davranış farkı 1; gösterim: G1-borclu-eki 4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W2-01-kabulde-bilinmiyor-sonra-12-sa [hizli] (4 fark; davranış farkı 1; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W2-01-kabulde-bilinmiyor-sonra-12-sa [yavas] (4 fark; davranış farkı 1; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W2-02-kabulde-30-gun-sonra-12-sa-kisalir [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "W2-02-kabulde-30-gun-sonra-12-sa-kisalir [yavas] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-aac20c1ad5b639b84/docs/kanit/2026-11-03/w-kok/kahin-surucu-17414a4d-istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/kahin-kos-17414a4d",
+  "ham_cikti_sha256": "d42efe57bcd644b09896e5f4d76783a986369896568aa88ba1734278c38dd9a8",
+  "ham_cikti_bayt": 1394
+}
