@@ -1,0 +1,32 @@
+{
+  "ad": "pdf-denetle-k1b",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "f6e0a66b2e0f992a1410dbe663906b1f94218ff5",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T23:25:32.029Z",
+  "sure_sn": 11.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/pdf-denetle-k1b.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "8527b894f8d3acec7d419bda96e4d6267010b28e81f873c04054aff32d85da97",
+  "ham_cikti_bayt": 2210
+}
