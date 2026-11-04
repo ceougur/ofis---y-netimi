@@ -1,0 +1,70 @@
+From 5c6ff33867c0ab16274fca214a975dc5be6c6d08 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 4 Nov 2026 00:44:39 +0000
+Subject: [PATCH 2/2] =?UTF-8?q?2.4.9=20DB-TX=20tur=202:=20store.inTransact?=
+ =?UTF-8?q?ion=20yaln=C4=B1z=20store.tx=20i=C5=9Flemini=20ve=20geri=20alma?=
+ =?UTF-8?q?s=C4=B1=20d=C3=BC=C5=9F=C3=BCp=20a=C3=A7=C4=B1k=20kalan=20i?=
+ =?UTF-8?q?=C5=9Flemi=20sayar?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Tur 1 getter'ı (depth > 0 || db.isTransaction) derinlik 0'da dışarıdan açılan işlemi de true sayıyordu: rapor / bütünlük taraması iş
+parçacıkları kendi salt okunur bağlantısında createStore'dan sonra "BEGIN" açıyor → ileride işlem dışı önbelleğe giren iş parçacığı yolunda
+önbellek sessizce kapanırdı (dar kontrol DÜŞÜK-1). Şimdi: catch'te en dış geri almadan sonra dangling = bağlantıda işlem açık; BEGIN IMMEDIATE
+geçince false; getter depth > 0 || (dangling && openTx() === true). Kapalı bağlantıda openTx false (fırlatmaz).
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YPtTa36rhoDHXGQsPrhcJ8
+---
+ server/lib/db.mjs | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/server/lib/db.mjs b/server/lib/db.mjs
+index 771bd8fc..4f4a14be 100644
+--- a/server/lib/db.mjs
++++ b/server/lib/db.mjs
+@@ -303,6 +303,9 @@ export function createStore(db) {
+       return false;
+     }
+   };
++  // 2.4.9 DB-TX tur 2: en dış store.tx'in geri alması düştü ve bağlantıda işlem açık kaldı (yalnız bu durum store.inTransaction'a eklenir). Başarılı geri
++  // almada ve yeni en dış işlemin BEGIN'i geçince false. Dışarıdan açılan işlem (rapor / bütünlük taraması iş parçacıklarının anlık görüntü BEGIN'i) sayılmaz.
++  let dangling = false;
+   // Geri alma yalnız işlem açıksa (ya da bilinmiyorsa) denenir; SQLite işlemi kendiliğinden geri aldıysa (G/Ç hatası, disk dolu) denenmez. Geri alma
+   // hatası asıl hatayı ezmez (ders 21): çağırana her zaman asıl hata gider.
+   const undo = sql => {
+@@ -348,10 +351,11 @@ export function createStore(db) {
+       guards.push(guard);
+       return () => guards.splice(guards.indexOf(guard), 1);
+     },
+-    // 2.4.9 DB-TX: bağlantıda açık kalmış işlem de sayılır (geri alma düştüyse) — işlem içinde saklanmayan önbellekler (plans R2, fatura kapama,
+-    // banka toplamları) kesinleşmemiş veriyi saklamaz.
++    // 2.4.9 DB-TX: store.tx'in geri alması düşüp bağlantıda açık kalan işlem de sayılır — işlem içinde saklanmayan önbellekler (plans R2, fatura
++    // kapama, banka toplamları) kesinleşmemiş veriyi saklamaz. Tur 2: yalnız bu durum (dangling); derinlik 0'da dışarıdan açılan işlem false (2.4.8
++    // davranışı; iş parçacıklarında önbellekler kapanmaz); kapalı bağlantıda fırlatmaz (openTx).
+     get inTransaction() {
+-      return depth > 0 || openTx() === true;
++      return depth > 0 || (dangling && openTx() === true);
+     },
+     /** Kayıtlı yazımların değişen satır sayısı ↔ bağlantının total_changes()'ı ve data_version (store dışı yazımı görmek için). */
+     changeCounters() {
+@@ -408,6 +412,7 @@ export function createStore(db) {
+       const savepoint = `sp_${depth}`;
+       if (depth === 0) {
+         db.exec("BEGIN IMMEDIATE");
++        dangling = false; // BEGIN geçti: önceden açık kalan işlem yok
+         touched = new Set();
+         touchedEvents = new Set();
+         money = policy ? freshMoney() : null;
+@@ -458,6 +463,7 @@ export function createStore(db) {
+         if (!left) depth -= 1;
+         if (depth === 0) {
+           undo("ROLLBACK");
++          dangling = openTx() === true; // geri alma düştü, işlem açık kaldı
+           money = null;
+           scope = null;
+           const tables = new Set(touched);
+-- 
+2.43.0
+
