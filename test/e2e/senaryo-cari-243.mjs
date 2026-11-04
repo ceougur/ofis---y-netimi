@@ -354,8 +354,8 @@ try {
     const trashRow = `#adm-trash tr[data-id="account:${second.id}"]`;
     await adminPage.waitForSelector(trashRow, { timeout: 15000 });
     const trashText = await textOf(adminPage, trashRow);
-    // C1 TUR 1 (dar kontrol DÜŞÜK-3): silinen cari hareketsizdir — not "Cari listesine geri döner."; hareket ve Kasa anılmaz.
-    ok(/Cansu Ekran/.test(trashText) && /Cari listesine geri döner/.test(trashText) && !/Hareketleriyle|Kasa yeniden/.test(trashText), `Silinenler satırı: “${trashText.slice(0, 120)}”`);
+    // C1 TUR 2 (dar kontrol DÜŞÜK-2): not tek cümle — eski sürümde hareketiyle silinmiş cari için hareketlerin ve Kasa'nın döndüğünü de söyler ("varsa").
+    ok(/Cansu Ekran/.test(trashText) && /Cari listesine geri döner; varsa hareketleri de geri gelir ve Kasa yeniden hesaplanır\./.test(trashText) && !/Hareketleriyle/.test(trashText), `Silinenler satırı: “${trashText.slice(0, 160)}”`);
     await shot(adminPage, "c1-4-silinenler");
     await adminPage.click(`${trashRow} [data-restore]`);
     await adminPage.waitForFunction(sel => !document.querySelector(sel), trashRow, { timeout: 8000 }).catch(() => null);

@@ -159,13 +159,13 @@ describe("2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken k
     assert.deepEqual(itemsOf(plan.id).map(row => row.amount), [250, 300, 300]);
   });
 
-  it("D3 Silinenler'deki (hareketsiz) cari notu: \"Cari listesine geri döner.\" — hareket ve Kasa anılmaz", async () => {
+  it("D3 Silinenler'deki cari notu (C1 TUR 2 DÜŞÜK-2): tek cümle — eski sürümde hareketiyle silinmiş cari için hareketler ve Kasa da anılır (\"varsa\")", async () => {
     const account = await must("cari", ctx.api.post(ACC, { name: "D3 Hareketsiz Silinen", type: "customer", registeredOn: "2026-09-01" }));
     await must("sil", ctx.api.del(`${ACC}/${account.id}`));
     const trash = await must("Silinenler", ctx.api.get("/api/admin/trash"));
     const item = trash.find(row => row.id === `account:${account.id}`);
     assert.ok(item, "silinen cari Silinenler'de");
-    assert.equal(item.note, "Cari listesine geri döner.", `not: “${item.note}”`);
+    assert.equal(item.note, "Cari listesine geri döner; varsa hareketleri de geri gelir ve Kasa yeniden hesaplanır.", `not: “${item.note}”`);
   });
 });
 

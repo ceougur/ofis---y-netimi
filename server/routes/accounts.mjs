@@ -1843,8 +1843,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       deletedAt: item.deletedAt,
       actorName: item.actorName,
       restorable: true,
-      // 2.4.9 C1 TUR 1 (dar kontrol DÜŞÜK-3): hareketi olan cari silinmez; silinen cari hareketsizdir — not hareket ve Kasa anmaz.
-      note: "Cari listesine geri döner.",
+      // 2.4.9 C1 TUR 1 (dar kontrol DÜŞÜK-3): hareketi olan cari silinmez. C1 TUR 2 (dar kontrol DÜŞÜK-2): eski sürümde (v2.4.7) hareketiyle silinmiş cari
+      // Silinenler'de kalabilir; geri yüklenince hareketleri de döner ve Kasa değişir — not ikisini de söyler.
+      note: "Cari listesine geri döner; varsa hareketleri de geri gelir ve Kasa yeniden hesaplanır.",
     }));
   function restoreDeleted(user, id) {
     const account = store.get("SELECT id, name FROM accounts WHERE id = ? AND deleted_at IS NOT NULL", id);
