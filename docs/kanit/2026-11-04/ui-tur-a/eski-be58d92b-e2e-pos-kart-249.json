@@ -1,0 +1,113 @@
+{
+  "ad": "ui-tur-a/eski-be58d92b-e2e-pos-kart-249",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/e2e/senaryo-pos-kart-249.mjs",
+  "commit": "f179467c13c659e8a3f62730bc2569821440f8c8",
+  "dal": "worktree-agent-a19fc328e8dd47ea0",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-04T00:39:56.534Z",
+  "sure_sn": 204.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 383,
+    "gecen": 368,
+    "basarisiz": 15,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 15 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "0 kart: seçicide “Kredi Kartı Tanımla” + “Kredi Kartına İade için önce bir kredi kartı tanımlayın.” (“Kredi Kartı Tanımla Tanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır.”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "“Tanımlamadan kaydederseniz … Hesabı Atanmamış …” yazmıyor (“Kredi Kartı Tanımla Tanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır.”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "açıklama: “Tedarikçi parayı kredi kartımıza iade etti: bakiyeden düşer, seçilen kredi kartının borcu azalır; POS satışı oluşmaz, Kasa değişmez.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "“Tahsilat” düğmesi pasif, nedeni görünür: “” (aria-describedby yok)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tıklama ve Enter istek göndermedi (2), satır yok, form açık",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yeniden işaretlenince yine pasif",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "seçici notu: “Kredi Kartı Tanımla Tanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır.”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "“Kaydet” pasif, neden: “”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Enter istek göndermedi (1), form açık",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tedarikçi Tahsilat etiketleri: [\"POS\",\"POS\"] (beklenen Kredi Kartına İade + POS)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "iade satırı işaretli (data-card-refund) ve etiketi “Kredi Kartına İade”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "müşteri: iade satırı “Tahsilat” + “POS” (beklenen Kredi Kartına İade)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "tedarikçi Tahsilat etiketleri: [\"POS\",\"POS\"] (beklenen Kredi Kartına İade + POS)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "iade satırı işaretli (data-card-refund) ve etiketi “Kredi Kartına İade”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "müşteri: iade satırı “Tahsilat” + “POS” (beklenen Kredi Kartına İade)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-pos-kart-249: 368 geçti, 15 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/e2e/artifacts/senaryo-pos-kart-249",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-04/ui-tur-a/eski-be58d92b-e2e-pos-kart-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a19fc328e8dd47ea0",
+  "ham_cikti_sha256": "61bd17d0eb8a02511cf5ee4d95b004c52f02baf9c96496703814b87ff1fb6990",
+  "ham_cikti_bayt": 56140
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "ui-tur-a/yeni-e2e-kilavuz-metin",
+  "komut": "node --disable-warning=ExperimentalWarning docs/kilavuz/ekran-banka.mjs --denetim",
+  "commit": "f179467c13c659e8a3f62730bc2569821440f8c8",
+  "dal": "worktree-agent-a19fc328e8dd47ea0",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-04T00:40:49.079Z",
+  "sure_sn": 126.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 277,
+    "gecen": 277,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-04/ui-tur-a/yeni-e2e-kilavuz-metin.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a19fc328e8dd47ea0",
+  "ham_cikti_sha256": "500f4a713638161622ec14bdbfe21b850bafd120e7a9888ea67d1e9a1e692c72",
+  "ham_cikti_bayt": 11334
+}
