@@ -1479,7 +1479,7 @@
           .map(group => {
             const keeper = group.companies.find(item => item.keeper);
             const others = group.companies.filter(item => !item.keeper && !item.hidden);
-            return `<p><b>${group.companies.map(item => esc(item.label)).join(" ve ")}</b> aynı veri dosyasını kullanıyor: birine girilen kayıt öbüründe de görünüyor. ${esc(keeper?.label || "")} dosyayı korur; öbürünü “Ayır” ile kendi klasörüne alın. Ayırma anındaki kayıtlar iki şirkette de kalır; sonra her şirkette ona ait olmayan kayıtları silin (Silinenler'den geri alınabilir).</p>
+            return `<p><b>${group.companies.map(item => esc(item.label)).join(" ve ")}</b> aynı veri dosyasını kullanıyor: birine girilen kayıt öbüründe de görünüyor. ${esc(keeper?.label || "")} dosyayı korur; öbürünü “Ayır” ile kendi klasörüne alın. Ayırma anındaki kayıtlar iki şirkette de kalır; sonra her şirkette ona ait olmayan kayıtları silin: önce o carinin hareketlerini (tahsilat, ödeme, fatura…) silin; hareketi kalmayan cari silinir (Silinenler'den geri alınabilir). Pasife Al öbür şirketin tutarlarını bu şirketin Kasa'sından çıkarmaz.</p>
               <div class="adm-actions">${others.map(item => `<button type="button" class="hof-button hof-button-small" data-c-separate="${esc(item.id)}">Ayır: ${esc(item.label)}</button>`).join("")}</div>`;
           })
           .join("")}`
