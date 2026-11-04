@@ -11,7 +11,7 @@
 import { createHash, randomBytes, randomInt } from "node:crypto";
 import { HttpError } from "../http.mjs";
 import { createSecretBox } from "../secret-box.mjs";
-import { META_D0, META_D0_W7, MetaGraphError, createMetaGraph, qualityLabel, tierInfo } from "./meta-graph.mjs";
+import { META_D0, META_D0_W7, MetaGraphError, createMetaGraph, qualityLabel, splitMetaErrorMessage, tierInfo } from "./meta-graph.mjs";
 
 export const SETTING_KEY = "whatsapp.meta";
 // Deneme gönderiminden sonra aynı şirketten yeni deneme için bekleme (çift tık / iki sekme iki ileti göndermesin).
@@ -393,9 +393,17 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     const at = ms(value);
     return Number.isFinite(at) && now().getTime() >= at && now().getTime() - at < span;
   };
+  // 2.4.9 UI tur B (ORTA-3): kaydedilemeyen Bildirim Yolunda kart nedeni Türkçe (cause) ve Meta'nın ham iletisini (metaMessage, metaCode) AYRI alır; at: son olayın
+  // (kaydedilemediği) anı. Defterdeki kayıt (error) değişmez — eski kurulumun kaydı da aynı biçimde ayrılır.
   function hookView(wabaId) {
     const hook = hooks && wabaId ? hooks.hookOf(wabaId) : null;
-    return hook ? { hook: { state: hook.state, registeredAt: hook.registeredAt || null, error: hook.error || "" } } : {};
+    if (!hook) return {};
+    const view = { state: hook.state, at: hook.at || null, registeredAt: hook.registeredAt || null, error: hook.error || "" };
+    if (hook.state === "failed") {
+      const split = splitMetaErrorMessage(hook.error);
+      Object.assign(view, { cause: split.cause, metaCode: split.code, metaMessage: split.details });
+    }
+    return { hook: view };
   }
   const hookEvent = row => {
     try {

@@ -196,10 +196,25 @@ export function redact(value, secret) {
   return text.replace(/Bearer\s+[\x21-\x7e]+/gi, "Bearer ***");
 }
 
+// İleti biçimi: "<Türkçe başlık> (Meta hata kodu <kod>[: <Meta'nın iletisi>])" — kurucu yazar, splitMetaErrorMessage geri ayırır (ikisi bu işareti paylaşır).
+const META_CODE_MARK = " (Meta hata kodu ";
+/**
+ * MetaGraphError iletisinin tersi (2.4.9 UI tur B, ORTA-3): Türkçe neden (cause), Meta hata kodu ve Meta'nın ham iletisi (details) ayrı — ekranda neden Türkçe satırda,
+ * Meta'nın İngilizce iletisi ayrı küçük satırda gösterilir. Kalıba uymayan metin (kodsuz ağ hatası, düz Türkçe kayıt) olduğu gibi nedendir; defterin 500 karakter
+ * sınırında kesilmiş kayıtta (kapanış parantezi yok) ayrıntı kesildiği yere dek alınır.
+ */
+export function splitMetaErrorMessage(text) {
+  const value = String(text ?? "");
+  const at = value.indexOf(META_CODE_MARK);
+  const match = at > 0 ? /^(\d+)(?::\s?([\s\S]*?))?\)?$/.exec(value.slice(at + META_CODE_MARK.length)) : null;
+  if (!match) return { cause: value, code: null, details: "" };
+  return { cause: value.slice(0, at), code: Number(match[1]), details: (match[2] || "").trim() };
+}
+
 export class MetaGraphError extends Error {
   constructor({ code = null, subcode = null, httpStatus = 0, title = "", details = "", fbtraceId = "", retry = "unknown", kind = "unknown", reason = "" } = {}) {
     const known = title || (code != null ? `Meta işlemi reddetti.` : "Meta'ya ulaşılamadı.");
-    const tail = code != null ? ` (Meta hata kodu ${code}${details ? `: ${details}` : ""})` : details ? ` (${details})` : "";
+    const tail = code != null ? `${META_CODE_MARK}${code}${details ? `: ${details}` : ""})` : details ? ` (${details})` : "";
     super(`${known}${tail}`);
     this.name = "MetaGraphError";
     this.code = code;

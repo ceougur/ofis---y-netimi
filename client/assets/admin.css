@@ -1021,6 +1021,8 @@ td.adm-row-actions > .hof-button + .hof-button {
 .adm-wa-status.is-off .adm-license-badge { background: var(--do-surface-soft); color: var(--do-muted); }
 .adm-wa-status .adm-inline { margin-top: 16px; flex-wrap: wrap; }
 .adm-wa-why { margin: 8px 0 0; color: var(--hof-muted, #5f6b76); font-size: 13px; }
+/* 2.4.9 UI tur B (ORTA-3): Meta'nın ham iletisi (İngilizce, uzun) neden satırının altında küçük; uzun sözcük satırı taşırmaz. */
+.adm-wa-why.adm-wa-meta { margin-top: 4px; font-size: 12px; overflow-wrap: anywhere; }
 
 /* 2.4.8 W5: Yönetim → WhatsApp → Bilgilendirme Şablonları (hof-whatsapp-sablon.js). */
 .adm-wa-templates { margin-top: 16px; }
