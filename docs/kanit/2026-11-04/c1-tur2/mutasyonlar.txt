@@ -1,0 +1,21 @@
+C1 TUR 2 — DÜŞÜK-1 (yalnız test) mutasyonları; taban 63cc2250 + bu turun test değişikliği. Her biri GEÇİCİ uygulandı, koşuldu, geri alındı
+(git diff server/ sonunda yalnız routes/accounts.mjs Silinenler notu).
+
+M2 server/routes/plans.mjs PUT /api/workspace/plans/:id/entries/:entryId prepare — kart denetimi yalnız tutarın BÜYÜDÜĞÜ dala taşındı:
+-        assertPlanLive(plan.id);
+-        if (previous.kind === "in" && !previous.opening && toMinor(input.amount) > toMinor(Number(previous.amount) || 0)) assertRoom(...)
++        if (previous.kind === "in" && !previous.opening && toMinor(input.amount) > toMinor(Number(previous.amount) || 0)) assertPlanLive(plan.id), assertRoom(...)
+Sonuç: c1t2-mut-M2.log — 14/15, Y6 KIRMIZI (3/3 durum):
+  - küçülen tutar 500 → 300 (nakit): silinmiş kartın tahsilatı 300'e yazıldı, updated_at doldu, plan.entry.updated 0 → 1 (beklenen neden).
+  - nakit → POS (500) ve 500 nakit → 300 POS: kart denetimi atlandı; yazımı defter bütünlüğü korumacısı geri aldı → 409 "İşlem geri alındı:
+    kayıt defterler arasında sapma oluşturacaktı (POS Bekleyen Mutabakatı …)" — hiçbir şey yazılmadı ama yanıt 404 değil (son savunma hattı).
+
+M3 server/routes/stock.mjs POST /api/workspace/stock/:id/moves prepare — ürün denetimi para yoluna bağlandı:
+-      itemRow(item.id);
++      if (input.pay !== "none") itemRow(item.id);
+Sonuç: c1t2-mut-M3.log — 14/15, S4 KIRMIZI (beklenen neden): silinmiş ürüne yalnız miktar girişi yazıldı — stock_moves 1 → 2 (in 5, pay none),
+stok 10 → 15, Değişiklik Geçmişi stock.in eklendi.
+
+Eski metin (63cc2250 gerçek kodu, yeni testlerle; ayrı kopya git archive): eski-63cc2250-c1-tur1-249.log D3 KIRMIZI ("gelen Cari listesine geri döner.");
+eski-63cc2250-e2e-senaryo-cari-243.log 68/69, Silinenler satırı KIRMIZI. Yeni testlerin Y6/S4/Y7 hücreleri 63cc2250'de YEŞİL (düzeltme C1 TUR 1'de girdi;
+dişleri M2/M3 ile gösterildi).

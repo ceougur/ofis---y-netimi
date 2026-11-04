@@ -1,0 +1,32 @@
+{
+  "ad": "c1t2-dar-ist",
+  "komut": "node --test test/c1-tur1-249.test.mjs test/cari-243.test.mjs test/cari-bilgi-222.test.mjs test/cari-hareket-249.test.mjs test/cari-tur-222.test.mjs test/cari-vade-245.test.mjs test/ci-kapi-listesi.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/static.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "63cc2250cbb5d39a624875d5c6ab9805c756c6e5",
+  "dal": "worktree-agent-a619899bc881a9a08",
+  "kirli": 3,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T23:56:19.694Z",
+  "sure_sn": 9.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 90,
+    "gecen": 90,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/c1t2-dar-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a619899bc881a9a08",
+  "ham_cikti_sha256": "a096fec71ee8a460acabbc2940078630cda93afbbe6413051409f4ea58b6d3c9",
+  "ham_cikti_bayt": 33095
+}

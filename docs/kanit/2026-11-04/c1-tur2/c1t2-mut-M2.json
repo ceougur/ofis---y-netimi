@@ -1,0 +1,38 @@
+{
+  "ad": "c1t2-mut-M2",
+  "komut": "node --test test/c1-tur1-249.test.mjs",
+  "commit": "63cc2250cbb5d39a624875d5c6ab9805c756c6e5",
+  "dal": "worktree-agent-a619899bc881a9a08",
+  "kirli": 4,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T23:53:37.030Z",
+  "sure_sn": 6.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 14,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 C1 TUR 2 — taksit kartı tahsilatı düzeltmesi yarışı (zorla): küçülen tutar ve nakit → POS; gövde yoldayken kart silinirse 404, hiçbir şey yazılmaz › Y6 küçülen tutar (500 → 300), yol değişimi (nakit → POS) ve ikisi birlikte: silinmiş kartın tahsilatı değişmez; geri yüklenince 500 nakit döner",
+      "konum": "test/c1-tur1-249.test.mjs:300:3",
+      "hata": "Y6: 3/3 durum kırmızı · ✗ küçülen tutar 500 → 300 (nakit): küçülen tutar 500 → 300 (nakit): silinmiş kartın tahsilatı değişmemeli (satır, işlem başlığı, POS kaydı, plan.entry.updated aynen) — önce {\"entry\":{\"amount\":500,\"method\":\"cash\",\"finRef\":\"\",\"eventId\":\"ev-0mw1cg6uj0000-44aabfc0-37f4-4488\",\"updatedAt\":\"\"},\"entries\":1,\"updatedAudit\":0,\"events\":3,\"posSales\":0,\"bankLines\":4}, sonra {\"entry\":{\"amount\":300,\"method\":\"cash\",\"finRef\":\"\",\"eventId\":\"ev-0mw1cg6uj0000-44aabfc0-37f4-4488\",\"updatedAt\":\"2026-10-08T09:00:00.699Z\"},\"entries\":1,\"updatedAudit\":1,\"events\":3,\"posSales\":0,\"bankLines\":4} · ✗ yol değişimi nakit → POS (500): yol değişimi nakit → POS (500): yazım reddedilir — 409 {\"ok\":false,\"error\":\"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (POS Bekleyen Mutabakatı (108.01 POS-01 · Ziraat Fiziki POS): -500,00 TL fa (beklenen 0, gelen 3)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/c1t2-mut-M2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a619899bc881a9a08",
+  "ham_cikti_sha256": "9841608b81652459e2e7abc871ff9caaed900e77701a870b15075373413d975f",
+  "ham_cikti_bayt": 9124
+}
