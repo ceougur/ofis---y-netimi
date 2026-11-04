@@ -114,8 +114,8 @@ describe("2.4.3 keşif A: kayda bağlı cari geçmişi, Sil engeli, ekstre TOPLA
     const account = await ok200("cari", api.post("/api/workspace/accounts", { name: "Taksitli Kişi", type: "customer", registeredOn: day(-40) }));
     const plan = await ok200("kart", api.post("/api/workspace/plans", { accountId: account.id, name: "Taksitli Kişi", total: "600", mode: "auto", count: 2, firstDue: day(5), registeredOn: day(-30) }));
     const detail = await ok200("kart", api.get(`/api/workspace/accounts/${account.id}`));
-    // 2.4.9 C1: tek ileti ("Bu carinin hareketi var: 1 taksit kartı. … Pasife Al …"); kartı Silinenler'e giden cari silinir (S1 A).
-    assert.match(detail.deleteBlock, /hareketi var: 1 taksit kartı\./);
+    // 2.4.9 C1: tek ileti ("Bu carinin 1 taksit kartı var. … Pasife Al …" — 2.4.9 UI tur A D9); kartı Silinenler'e giden cari silinir (S1 A).
+    assert.match(detail.deleteBlock, /^Bu carinin 1 taksit kartı var\./);
     assert.match(detail.deleteBlock, /Pasife Al/);
     const refused = await api.del(`/api/workspace/accounts/${account.id}`);
     assert.equal(refused.status, 409);
@@ -127,7 +127,7 @@ describe("2.4.3 keşif A: kayda bağlı cari geçmişi, Sil engeli, ekstre TOPLA
     const buyer = await ok200("alıcı", api.post("/api/workspace/accounts", { name: "Faturalı Alıcı", type: "customer" }));
     await ok200("fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: buyer.id, lines: [{ name: "Hizmet", qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" } }));
     const blocked = await ok200("kart", api.get(`/api/workspace/accounts/${buyer.id}`));
-    assert.match(blocked.deleteBlock, /hareketi var: 1 fatura \/ makbuz/);
+    assert.match(blocked.deleteBlock, /^Bu carinin 1 fatura \/ makbuz/);
     const refusedInvoice = await api.del(`/api/workspace/accounts/${buyer.id}`);
     assert.equal(refusedInvoice.status, 409);
     assert.equal(refusedInvoice.data.code, "account-has-movements");

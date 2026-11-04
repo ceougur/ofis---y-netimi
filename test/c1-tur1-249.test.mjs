@@ -405,7 +405,7 @@ describe("2.4.9 C1 TUR 1 — hareket sayacı H14 (banka fişi): POS kaydı yaln�
     const auditor = { id: "c1-tur1", role: "admin", permissions: [] };
     assert.equal(ctx.app.context.accounts.detail(bankParty.id, auditor, { withRemaining: false }).deleteBlock, "", "yalnız defter okuması: silme engeli yok");
     const card = await must("cari kartı", ctx.api.get(`${ACC}/${bankParty.id}`));
-    assert.match(card.deleteBlock, /^Bu carinin hareketi var: .*6 fatura/, "kart açılışında Sil nedeni aynen (hareket sayacı kartta çalışır)");
+    assert.match(card.deleteBlock, /^Bu carinin .*6 fatura.* var\./, "kart açılışında Sil nedeni aynen (hareket sayacı kartta çalışır)");
   });
 
   it("E2 satırsız KDV'li masraf başlığı POS kaydına bakılmadan sayılmaz (tarama yalnız POS İptal İadesi fişinde — ders 47); son test: ham satır", () => {

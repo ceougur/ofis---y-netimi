@@ -27,6 +27,12 @@
 //         gerekir", form açık kalır, satır POS'ta, POS satışı ve POS Bekleyen aynı (önceden 200: satır sessizce hesapsıza — 108 — yazılıyordu).
 //   T15   (P1 tur 2 TEST-1) üçüncü müşteri "Deniz Ltd.": POS tahsilatı 200 + cari POS İadesi 50 (POS'a bağlı çıkış) → hasCardPayment false, + Tahsilat'ta kutu yok,
 //         API'den Kredi Kartına İade 400 card-refund-no-payment.
+//   UI-A1 (2.4.9 UI tur A, ORTA-1; 1/2 kart) cari kartının Hareketler listesinde "Kredi Kartına İade" satırının yol etiketi "Kredi Kartına İade" (önceden
+//         "POS"), POS tahsilatı "POS", kartla ödeme "Kredi Kartı" — tedarikçide (T6) ve kartla ödemeli müşteride (P1-b); bakiye değişmez.
+//   UI-A2 (2.4.9 UI tur A, ORTA-2; 0 kart) T6 ve T16: "Kredi Kartına İade" işaretliyken kart yoksa seçicide "Kredi Kartına İade için önce bir kredi kartı
+//         tanımlayın." + Kredi Kartı Tanımla; "Tanımlamadan kaydederseniz … Hesabı Atanmamış …" YOK; kaydet düğmesi pasif, nedeni düğmenin üstünde yazılı;
+//         tıklama / Enter istek göndermez, satır değişmez (önceden istek gidip 400 dönüyordu); kutu kaldırılınca düğme etkin. Sunucu API'de yine 400.
+//         T8 (kartla ÖDEME, 0 kart): "Tanımlamadan kaydederseniz …" notu ve hesapsız yazım AYNEN (değişmez).
 // Her adımda yanıt kodu + gövde, veri tabanındaki satır (hangi hesap), bakiyeler (cari, kartlar, POS Bekleyen, Kasa) ve Mutabakat Testi (ders 3).
 // Pencere seçicisi en üstteki görünür pencere (ders 39); pencere kapatma escClose ile, soru beklentisiyle (ders 34). Sahte saat 08.10.2026 (ders 13);
 // lisans servisi ölü adres (ders 30). Çalıştırma: npm run test:senaryo-pos-kart-249 — çıkış: "N geçti, M kaldı" (kaldıysa 1).
@@ -206,6 +212,25 @@ async function phase(CARDS) {
     return { res, status: res?.status ?? 0, sent, formError, open: Boolean(await page.$(form)) };
   };
   const why = r => (r.res ? `${r.status} ${r.res.body.slice(0, 160)}` : `istek yok, form hatası “${r.formError}”`);
+  // 2.4.9 UI tur A (ORTA-2): kaydet düğmesinin durumu ve pasif nedeni (düğmenin üstündeki yazı).
+  const blockState = () =>
+    page.evaluate(f => {
+      const root = document.querySelector(f);
+      const button = root?.querySelector('button[type="submit"]');
+      const note = root?.querySelector("[data-card-refund-block]");
+      return { disabled: Boolean(button?.disabled), label: (button?.textContent || "").trim(), note: note && note.getClientRects().length ? note.textContent.replace(/\s+/g, " ").trim() : "", described: button?.getAttribute("aria-describedby") || "" };
+    }, form);
+  // 2.4.9 UI tur A (ORTA-1): cari kartının Hareketler listesindeki yol etiketleri (satır türü, açıklama, etiket, iade işareti).
+  const ledgerTags = async accountId => {
+    await page.evaluate(id => HOF.accounts.open(id), accountId);
+    await page.waitForSelector(`${accWin} .hof-method-tag`, { timeout: 15000 });
+    await pause(400);
+    return page.$$eval(`${accWin} tr`, rows =>
+      rows
+        .map(row => ({ note: (row.querySelector("td small")?.textContent || "").trim(), label: (row.querySelector("td b")?.childNodes[0]?.textContent || "").trim(), tag: (row.querySelector(".hof-method-tag")?.textContent || "").trim(), refund: Boolean(row.querySelector(".hof-method-tag[data-card-refund]")) }))
+        .filter(row => row.tag),
+    );
+  };
   // 2.4.9 P1 tur 1: son bildirim (kaydedince "… kaydedildi" / "Hareket düzeltildi. Bakiye …").
   // Önceki bildirimlerin metni saklanır; kaydetten sonra yalnız YENİ ya da yinelenen (aynı metin, "×2" sayacı artan — HOF.toast ikiz bildirimi yeniden
   // açmaz, sayacını artırır) bildirim okunur. Değişmeyen eski bildirim sayılmaz.
@@ -353,7 +378,12 @@ async function phase(CARDS) {
       await typeInto(`${form} input[name="amount"]`, "300");
       await chooseMethod("card");
       const f = await formState();
-      if (CARDS === 0) ok(f.cardPicker === "görünür" && f.defineCard, `0 kart: "Kredi Kartı Tanımla" görünür (${f.cardPicker}: “${f.cardText}”)`);
+      if (CARDS === 0) {
+        ok(f.cardPicker === "görünür" && f.defineCard, `0 kart: "Kredi Kartı Tanımla" görünür (${f.cardPicker}: “${f.cardText}”)`);
+        // UI-A2: kartla ÖDEME formu değişmez — not aynen, düğme etkin (kayıt hesapsız yazılır).
+        const blk = await blockState();
+        ok(/Tanımlamadan kaydederseniz hareket Hesabı Atanmamış Eski Hareketler'de kalır\./.test(f.cardText) && !blk.disabled && !blk.note, `ödeme formunda not aynen (“${f.cardText}”), düğme etkin (${!blk.disabled})`);
+      }
       if (CARDS === 1) ok(f.cardPicker === "görünür" && /World kredi kartına yazılır|World/.test(f.cardText) && f.cardValue === null, `1 kart: bilgi satırı (“${f.cardText.slice(0, 60)}”)`);
       if (CARDS === 2) {
         ok(f.cardPicker === "görünür" && f.cardRequired === true, `2 kart: zorunlu kart seçicisi görünür (${f.cardPicker}, zorunlu ${f.cardRequired})`);
@@ -391,13 +421,40 @@ async function phase(CARDS) {
         await pause(400);
       }
       const before = { n: entries(ctx.sup.id).length, pos: posRows().length, bal: await balances() };
+      if (CARDS === 0) {
+        // UI-A2 (2.4.9 UI tur A, ORTA-2): kart yokken iade kaydedilemez — ekran bunu söyler, düğme pasif; istek gitmez (sunucu yine 400 verir).
+        ok(f.defineCard && /Kredi Kartına İade için önce bir kredi kartı tanımlayın\./.test(f.cardText), `0 kart: seçicide “Kredi Kartı Tanımla” + “Kredi Kartına İade için önce bir kredi kartı tanımlayın.” (“${f.cardText}”)`);
+        ok(!/Tanımlamadan kaydederseniz|Hesabı Atanmamış/.test(f.cardText), `“Tanımlamadan kaydederseniz … Hesabı Atanmamış …” yazmıyor (“${f.cardText}”)`);
+        ok(/önce bir kredi kartı tanımlayın/.test(f.help) && !/Hesabı Atanmamış/.test(f.help), `açıklama: “${f.help}”`);
+        const blk = await blockState();
+        ok(blk.disabled && /^Kaydedilemez: Kredi Kartına İade için önce bir kredi kartı tanımlayın/.test(blk.note) && Boolean(blk.described), `“${blk.label}” düğmesi pasif, nedeni görünür: “${blk.note}” (aria-describedby ${blk.described || "yok"})`);
+        await shot("ui-a2-t6-0kart-pasif");
+        const mark = posts.length;
+        await page.click(`${form} button[type="submit"]`, { force: true, timeout: 3000 }).catch(() => null);
+        await page.click(`${form} input[name="amount"]`);
+        await page.keyboard.press("Enter");
+        await pause(900);
+        ok(posts.length === mark && entries(ctx.sup.id).length === before.n && Boolean(await page.$(form)), `tıklama ve Enter istek göndermedi (${posts.length - mark}), satır yok, form açık`);
+        ok((await balances()).tedarikci === before.bal.tedarikci, "tedarikçi bakiyesi değişmedi");
+        await page.click(`${form} input[name="cardRefund"]`);
+        await pause(500);
+        const off = await blockState();
+        const fOff = await formState();
+        ok(!off.disabled && !off.note && fOff.pos === "görünür", `kutu kaldırılınca düğme etkin, not yok, POS alanı görünür (${off.disabled}, “${off.note}”, ${fOff.pos})`);
+        await page.click(`${form} input[name="cardRefund"]`);
+        await pause(500);
+        ok((await blockState()).disabled, "yeniden işaretlenince yine pasif");
+        // Sunucu değişmedi: API'den doğrudan gönderim yine 400 (kart gerekir; 108'e sessiz yazım yok).
+        const viaApi = await api.post(`/api/workspace/accounts/${ctx.sup.id}/entries`, { kind: "in", method: "card", amount: "100", date: TODAY, cardRefund: true });
+        ok(viaApi.status === 400 && /Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir/.test(JSON.stringify(viaApi.data)) && entries(ctx.sup.id).length === before.n, `API: 400, satır yok (${viaApi.status})`);
+        await integrity("T6");
+        await dropDraft("T6 0 kart (kaydedilemedi)");
+        return;
+      }
       const r = await submit("T6 kaydet");
       const fresh = entries(ctx.sup.id).slice(before.n);
       const after = await balances();
-      if (CARDS === 0) {
-        ok(r.status === 400 && /Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir/.test(r.res?.body || "") && fresh.length === 0, `0 kart: 400, satır yok: ${why(r)}`);
-        ok(after.tedarikci === before.bal.tedarikci, `tedarikçi bakiyesi değişmedi (${after.tedarikci})`);
-      } else {
+      {
         ok(r.status === 200 && !r.open, `T6 kaydedildi: ${why(r)}`);
         ok(r.sent.cardRefund === true && !("posInstallments" in r.sent), `gövde cardRefund, POS alanı yok: ${JSON.stringify(r.sent)}`);
         ok(fresh.length === 1 && fresh[0].finRef === cardOf.id, `satır ${refName(cardOf.id)}: ${JSON.stringify(fresh.map(e => ({ ...e, hesap: refName(e.finRef) })))}`);
@@ -443,10 +500,20 @@ async function phase(CARDS) {
         await pause(500);
         const f = await formState();
         ok(f.refundChecked === true && f.cardPicker === "görünür" && f.defineCard, `işaretli: kart seçicisi "Kredi Kartı Tanımla" (${f.cardPicker}: “${f.cardText.slice(0, 60)}”)`);
-        const r = await submit("T16 kaydet");
-        ok(r.status === 400 && r.res?.method === "PUT" && /Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir/.test(r.res?.body || "") && /bank-account-invalid/.test(r.res?.body || ""), `PUT 400 bank-account-invalid: ${why(r)}`);
-        ok(r.sent.cardRefund === true, `gövde cardRefund true: ${JSON.stringify(r.sent)}`);
-        ok(r.open && /Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir/.test(r.formError), `form açık, hata yazısı: “${r.formError}”`);
+        // UI-A2 (2.4.9 UI tur A, ORTA-2): düzeltmede de kaydet pasif, nedeni görünür; istek gitmez (önceden PUT gidip 400 dönüyordu — P1 tur 2).
+        ok(/Kredi Kartına İade için önce bir kredi kartı tanımlayın\./.test(f.cardText) && !/Tanımlamadan kaydederseniz/.test(f.cardText), `seçici notu: “${f.cardText}”`);
+        const blk = await blockState();
+        ok(blk.disabled && /^Kaydedilemez: Kredi Kartına İade için önce bir kredi kartı tanımlayın/.test(blk.note), `“${blk.label}” pasif, neden: “${blk.note}”`);
+        await shot("ui-a2-t16-duzeltme-pasif");
+        const mark = posts.length;
+        await page.click(`${form} input[name="amount"]`);
+        await page.keyboard.press("Enter");
+        await pause(900);
+        const r = { open: Boolean(await page.$(form)) };
+        ok(posts.length === mark && r.open, `Enter istek göndermedi (${posts.length - mark}), form açık`);
+        // Sunucu değişmedi: PUT yine 400 bank-account-invalid (P1 tur 2).
+        const viaApi = await api.put(`/api/workspace/accounts/${ctx.sup.id}/entries/${row.id}`, { kind: "in", method: "card", amount: "50", date: TODAY, cardRefund: true });
+        ok(viaApi.status === 400 && /bank-account-invalid/.test(JSON.stringify(viaApi.data)), `API PUT: 400 bank-account-invalid (${viaApi.status})`);
         const now = entryRow(row.id);
         ok(now.method === "card" && Math.abs(now.amount - 50) < 0.001 && now.finRef === ctx.pos.id, `satır POS'ta kaldı (hesapsıza yazılmadı): ${JSON.stringify({ ...now, hesap: refName(now.finRef) })}`);
         const salesAfter = activeSalesOf(row.id);
@@ -638,6 +705,38 @@ async function phase(CARDS) {
         ok(/Hareket düzeltildi/.test(toast), `bildirim: “${toast}”`);
         await integrity("T13");
         await closeAll(r.open ? "" : "soru-yok", "T13 sonrası");
+      });
+
+    if (CARDS > 0)
+      await step("UI-A1 (ORTA-1) cari kartı Hareketler: Kredi Kartına İade satırının yol etiketi", async () => {
+        const before = await balances();
+        const sup = await ledgerTags(ctx.sup.id);
+        console.log(`  · tedarikçi satırları: ${JSON.stringify(sup)}`);
+        // Tedarikçinin iki Tahsilat satırı: T6 Kredi Kartına İade (karta) ve T7 POS tahsilatı — etiketler satır işaretinden bağımsız okunur.
+        const supIn = sup.filter(row => row.label === "Tahsilat").map(row => row.tag).sort();
+        ok(JSON.stringify(supIn) === JSON.stringify(["Kredi Kartına İade", "POS"]), `tedarikçi Tahsilat etiketleri: ${JSON.stringify(supIn)} (beklenen Kredi Kartına İade + POS)`);
+        ok(sup.filter(row => row.refund).length === 1 && sup.find(row => row.refund)?.tag === "Kredi Kartına İade", "iade satırı işaretli (data-card-refund) ve etiketi “Kredi Kartına İade”");
+        ok(sup.some(row => !row.refund && row.label === "Tahsilat" && row.tag === "POS"), "tedarikçi: POS tahsilatı (T7) etiketi “POS”");
+        ok(sup.some(row => row.label === "Ödeme" && row.tag === "Kredi Kartı"), "tedarikçi: kartla ödeme (T8) etiketi “Kredi Kartı”");
+        await page.$eval(`${accWin} .hof-method-tag[data-card-refund]`, node => node.scrollIntoView({ block: "center" })).catch(() => null);
+        await pause(300);
+        await shot("ui-a1-tedarikci-hareketler");
+        await closeAll("soru-yok", "UI-A1 tedarikçi kartı");
+        // T11'in müşteri iadesi T13'te nakde çevrildi; kartla ödemeli ikinci müşteriye API ile yeni iade (P1-b) — satır müşteride de aynı etiketle.
+        const extra = await api.post(`/api/workspace/accounts/${ctx.abc2.id}/entries`, { kind: "in", method: "card", amount: "20", date: TODAY, cardRefund: true, note: "UI-A1 iade", ...(CARDS === 2 ? { bankAccountId: ctx.kk1.id } : {}) });
+        ok(extra.status === 200, `müşteriye Kredi Kartına İade 20 (API): ${extra.status} ${JSON.stringify(extra.data).slice(0, 120)}`);
+        const cus = await ledgerTags(ctx.abc2.id);
+        console.log(`  · müşteri satırları: ${JSON.stringify(cus)}`);
+        const cusRefund = cus.find(row => row.note.startsWith("UI-A1 iade"));
+        ok(cusRefund?.label === "Tahsilat" && cusRefund?.tag === "Kredi Kartına İade", `müşteri: iade satırı “Tahsilat” + “${cusRefund?.tag || "?"}” (beklenen Kredi Kartına İade)`);
+        ok(cus.some(row => row.label === "Ödeme" && row.tag === "Kredi Kartı"), "müşteri: kartla ödeme “Kredi Kartı”");
+        await page.$eval(`${accWin} .hof-method-tag[data-card-refund]`, node => node.scrollIntoView({ block: "center" })).catch(() => null);
+        await pause(300);
+        await shot("ui-a1-musteri-hareketler");
+        await closeAll("soru-yok", "UI-A1 müşteri kartı");
+        const after = await balances();
+        ok(Math.abs(after.tedarikci - before.tedarikci) < 0.001 && Math.abs(after.musteri2 - (before.musteri2 - 20)) < 0.001, `bakiyeler: tedarikçi aynı (${after.tedarikci}), müşteri 2 yalnız yeni iade kadar −20 (${before.musteri2} → ${after.musteri2})`);
+        await integrity("UI-A1");
       });
 
     await step("T10 Banka → POS → POS İşlemleri → İade 100 (T1 satışı)", async () => {

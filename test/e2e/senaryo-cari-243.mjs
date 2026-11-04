@@ -237,7 +237,7 @@ try {
     await page.waitForSelector(`${accWin} [data-act="delete"]`);
     const disabled = await page.$eval(`${accWin} [data-act="delete"]`, node => node.disabled);
     const why = await textOf(page, `${accWin} [data-delete-block]`);
-    // 2.4.9 C1: tek ileti — "Bu carinin hareketi var: 1 cari hareketi, 1 taksit kartı. … Pasife Al …" (önceden "… taksit kartı var").
+    // 2.4.9 C1: tek ileti — "Bu carinin 1 cari hareketi ve 1 taksit kartı var. … Pasife Al …" (2.4.9 UI tur A D9: doğal cümle).
     ok(disabled && /1 taksit kartı/.test(why) && /Pasife Al/.test(why), `Sil pasif (${disabled}); neden: “${why}”`);
     const card = await textOf(page, `${accWin} .hof-plans-kpis`);
     ok(/Taksitten Kalan \(bakiyeye dahil\)/.test(card), `kart göstergesi: “${card.slice(0, 160)}”`);
@@ -303,7 +303,8 @@ try {
 
     // 2) Sil pasif, nedeni görünür, Pasife Al önerisi; sunucu da reddeder (cashForce'la da), Kasa değişmez.
     const why = await deleteWhy();
-    ok((await deleteDisabled()) === true && /Silinemez: Bu carinin hareketi var: 1 cari hareketi\. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın/.test(why), `Sil pasif; neden: “${why}”`);
+    // 2.4.9 UI tur A (D9): "Bu carinin 1 cari hareketi var." (önceden "Bu carinin hareketi var: 1 cari hareketi." — "hareket" iki kez).
+    ok((await deleteDisabled()) === true && /Silinemez: Bu carinin 1 cari hareketi var\. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın/.test(why) && !/hareketi var: /.test(why), `Sil pasif; neden: “${why}”`);
     ok(await page.isVisible(`${accWin} [data-act="passive"]`), "Pasife Al düğmesi aynı araç çubuğunda");
     await shot(page, "c1-1-sil-pasif-neden");
     const refused = await page.evaluate(async id => {
@@ -377,7 +378,11 @@ try {
     const blocked = await page.waitForFunction(sel => [...document.querySelectorAll(sel)].some(node => /Cari Silinemez/.test(node.textContent)), modal, { timeout: 8000 }).then(() => true).catch(() => false);
     const blockedText = blocked ? await textOf(page, `${last} .hof-modal-text`) : "";
     const blockedButton = blocked ? await textOf(page, `${last} [data-answer="yes"]`) : "";
-    ok(blocked && /Bu carinin hareketi var: 1 cari hareketi/.test(blockedText) && blockedButton === "Pasife Al", `"Cari Silinemez" penceresi: “${blockedText}” · düğme “${blockedButton}”`);
+    // 2.4.9 UI tur A (D9): "Bu carinin 1 cari hareketi var." — (D3) odak öbür onay pencereleri gibi "Vazgeç"te (Enter cariyi pasife almasın).
+    ok(blocked && /^Bu carinin 1 cari hareketi var\./.test(blockedText) && blockedButton === "Pasife Al", `"Cari Silinemez" penceresi: “${blockedText}” · düğme “${blockedButton}”`);
+    const focusNo = blocked ? await page.waitForFunction(sel => { const top = document.querySelector(sel); return Boolean(top?.closest(".is-visible")) && document.activeElement === top.querySelector('[data-answer="no"]'); }, last, { timeout: 3000 }).then(() => true).catch(() => false) : false;
+    const focusName = await page.evaluate(() => (document.activeElement?.textContent || document.activeElement?.tagName || "").trim());
+    ok(focusNo, `"Cari Silinemez" penceresinde odak “Vazgeç”te (odaktaki: “${focusName}”)`);
     await shot(page, "c1-5-yaris-cari-silinemez");
     if (blocked) await page.click(`${last} [data-answer="no"]`);
     await page.waitForFunction(() => Boolean(document.querySelector('.hof-accounts-modal [data-act="delete"]')?.disabled), null, { timeout: 8000 }).catch(() => null);

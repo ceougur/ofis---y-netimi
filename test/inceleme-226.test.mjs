@@ -482,7 +482,7 @@ describe("G7 — silmede eksi bakiye sorusu nedenini söyler", () => {
     assert.doesNotMatch(first.error, /çıkış/);
     // 2.4.9 C1: tahsilatı olan cari hiç silinmez — Kasa sorusu yerine 409 account-has-movements (Pasife Al önerilir); Kasa değişmez.
     const second = await refusedWith("cari sil", api.del(`/api/workspace/accounts/${acc.id}`), 409, "account-has-movements");
-    assert.match(second.error, /Bu carinin hareketi var: 1 cari hareketi/);
+    assert.match(second.error, /^Bu carinin 1 cari hareketi var\./); // 2.4.9 UI tur A D9: doğal cümle
     assert.doesNotMatch(second.error, /Kasa'dan/);
   });
   it("çalışıyor mu: kayıtta çıkış sorusu (yeni ödeme) eski metniyle kalır", async () => {

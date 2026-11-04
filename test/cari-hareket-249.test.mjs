@@ -236,7 +236,8 @@ describe("2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (ba
     await must("taslak", ctx.api.post("/api/workspace/invoices", { status: "draft", scenario: "service_sale", accountId: many.id, lines: [LINE] }));
     await must("kart", ctx.api.post("/api/workspace/plans", { accountId: many.id, name: "T6 Çok Hareketli", total: "600", mode: "auto", count: 2, firstDue: "2026-11-01", registeredOn: TODAY }));
     const res = await assertRefused(ctx, "çok hareketli", many.id, { entries: 3, invoices: 1, plans: 1 });
-    assert.match(res.error, /^Bu carinin hareketi var: 3 cari hareketi, 1 fatura \/ makbuz \(taslak ve iptal dahil\), 1 taksit kartı\. /);
+    // 2.4.9 UI tur A (D9): doğal cümle — son tür "ve" ile, "hareket" iki kez yazılmaz.
+    assert.match(res.error, /^Bu carinin 3 cari hareketi, 1 fatura \/ makbuz \(taslak ve iptal dahil\) ve 1 taksit kartı var\. /);
     await must("personel", ctx.api.post("/api/admin/users", { username: "personel249", name: "Personel", role: "personel", password: "Personel-2026!", mustChangePassword: false }));
     const client = ctx.server.client();
     assert.equal((await client.login("personel249", "Personel-2026!")).status, 200);

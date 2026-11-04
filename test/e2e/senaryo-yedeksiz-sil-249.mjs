@@ -9,6 +9,8 @@
 //  C. Yeniden Şirketi Sil → Yedeksiz Sil → bildirim "yedek alınmadan silindi"; liste 1 şirket; klasör silinen-sirketler'de (dosya bayt bayt aynı);
 //     audit withoutBackup: true.
 //  D. Sağlam şirket: Şirketi Sil → ikinci onay ÇIKMAZ; yedek alınır (dosya diskte), bildirim "Yedek: …".
+//  2.4.9 UI tur A (D4, ders 34): Şirketi Sil penceresinde kaydedilecek veri yok (onay kodu + parola) — Vazgeç'ten sonra (B2) ve parola yazılıp
+//     gönderilmeden (D0) Esc "Kaydedilmemiş Değişiklik" SORMAZ, pencere kapanır (önceden soru çıkıyordu). C pencereyi yeniden açar.
 // Klasör taşıma dosyaya dokunur (ders 48); bu senaryo CI'de yalnız Linux e2e işinde koşar, Windows sonucu birim/API testinden
 // (test/sirket-yedeksiz-sil-249.test.mjs) okunur.
 // Çalıştırma: node --disable-warning=ExperimentalWarning test/e2e/senaryo-yedeksiz-sil-249.mjs
@@ -115,6 +117,21 @@ const waitConfirmOrError = () =>
     TOP,
     { timeout: 15000 },
   );
+// 2.4.9 UI tur A (D4, ders 34): Esc'e basılır; "Kaydedilmemiş Değişiklik" sorusu ÇIKMAMALI (yanıtlanmaz — çıkarsa adım kırmızı, soru "Forma Dön" ile
+// kapatılıp pencere elle kapatılır) ve Şirketi Sil penceresi kapanmalı.
+async function escNoQuestion(label) {
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(600);
+  const asked = await page.evaluate(() => [...document.querySelectorAll(".hof-modal-backdrop .hof-modal-title")].some(node => /Kaydedilmemiş Değişiklik/.test(node.textContent)));
+  ok(!asked, `${label}: “Kaydedilmemiş Değişiklik” sorulmadı${asked ? " (SORULDU)" : ""}`);
+  if (asked) {
+    await page.click('.hof-modal-backdrop.is-visible [data-answer="no"]');
+    await page.waitForTimeout(300);
+    await page.click(`${TOP} [data-cancel]`);
+  }
+  await page.waitForFunction(modal => !document.querySelector(modal), MODAL, { timeout: 8000 }).catch(() => null);
+  ok(!(await page.$(MODAL)), `${label}: Şirketi Sil penceresi kapandı`);
+}
 // Sil penceresini açar, parolayı insan hızında yazar, Tab'la alandan çıkar, Şirketi Sil'e gerçekten tıklar.
 async function openDeleteAndSubmit(id, code) {
   await page.click(`#adm-companies tr[data-company="${id}"] [data-c-delete]`);
@@ -176,10 +193,13 @@ try {
   ok(Boolean(app.companies.get(bad.id)) && !auditOf(bad.id).length && !archived(bad.code).length, "şirket kayıtta, audit yok, silinen-sirketler'de değil");
   await shot("b-vazgec-ilk-pencere");
 
+  console.log("\n■ B2. (D4) Vazgeç'ten sonra Esc: \"Kaydedilmemiş Değişiklik\" sorulmaz, pencere kapanır");
+  await escNoQuestion("B2 Vazgeç sonrası Esc");
+  await shot("b2-esc-sonrasi");
+
   console.log("\n■ C. Yeniden Şirketi Sil → Yedeksiz Sil");
-  // Parola alanı korunur; yeniden gönderim gerçek tıklamayla.
-  // Form gönderimde kendi hata satırını siler (hof-core formModal); bekleme eski hatayı görmez.
-  await page.click(`${TOP} button[type="submit"]`);
+  // Pencere B2'de kapandı: yeniden açılır, parola insan hızında yazılır, gönderim gerçek tıklamayla.
+  await openDeleteAndSubmit(bad.id, bad.code);
   await waitConfirmOrError();
   ok(/Yedeksiz Sil/.test((await topInfo()).title), "ikinci onay yeniden açıldı");
   await page.click(`${TOP} [data-answer="yes"]`);
@@ -206,6 +226,13 @@ try {
   await page.evaluate(() => {
     window.__toasts = [];
   });
+  // D0 (D4): parola yazılıp gönderilmeden Esc — soru yok, pencere kapanır, şirket yerinde.
+  await page.click(`#adm-companies tr[data-company="${good.id}"] [data-c-delete]`);
+  await page.waitForSelector(`${TOP} input[name="password"]`);
+  await page.keyboard.type(PASS, { delay: 45 });
+  await page.keyboard.press("Tab");
+  await escNoQuestion("D0 parola yazılı, gönderilmeden Esc");
+  ok(Boolean(app.companies.get(good.id)) && !auditOf(good.id).length, "D0: şirket silinmedi, audit yok");
   await openDeleteAndSubmit(good.id, good.code);
   await page.waitForFunction(() => window.__toasts.some(text => /silindi\. Yedek:/.test(text)), null, { timeout: 15000 });
   const toastD = await page.evaluate(() => window.__toasts.find(text => /silindi\. Yedek:/.test(text)) || "");
