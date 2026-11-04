@@ -2780,9 +2780,12 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
     const instrument = cheque => (cheque ? (cheque.instrument === "note" ? "Senet" : "Çek") : "Çek / Senet");
     const receipt = line => (line.receiptNo ? `Makbuz ${line.receiptNo}` : "");
     const extras = new Map();
+    // 2.4.9 UI tur A (ORTA-1): "Kredi Kartına İade" satırının yolu POS değil "Kredi Kartına İade" (cari kartındaki cardRefund işaretiyle aynı tanım).
+    const cardRefunds = new Set((account.entries || []).filter(entry => entry.cardRefund === true).map(entry => entry.id));
+    const wayOf = line => methodLabel(line.method, line.kind, { cardRefund: cardRefunds.has(line.id) });
     for (const line of result.lines) {
       const cash = line.kind === "in" || line.kind === "out";
-      if (line.origin === "invoice") extras.set(line.id, { docNo: invoices.get(line.sourceId)?.number || "", way: cash ? methodLabel(line.method, line.kind) : "" });
+      if (line.origin === "invoice") extras.set(line.id, { docNo: invoices.get(line.sourceId)?.number || "", way: cash ? wayOf(line) : "" });
       else if (line.origin === "cheque") {
         const cheque = cheques.get(line.sourceId);
         extras.set(line.id, { docNo: cheque?.serialNo || "", way: instrument(cheque) });
@@ -2790,7 +2793,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         const entry = planEntries.get(String(line.id).slice("plan-entry:".length));
         const cheque = entry?.chequeId ? cheques.get(entry.chequeId) : null;
         extras.set(line.id, { docNo: receipt(line) || cheque?.serialNo || "", way: entry?.chequeId ? instrument(cheque) : entry ? methodLabel(entry.method || "cash", line.kind === "plan-in" ? "in" : "out") : "" });
-      } else extras.set(line.id, { docNo: receipt(line), way: cash ? methodLabel(line.method, line.kind) : "" });
+      } else extras.set(line.id, { docNo: receipt(line), way: cash ? wayOf(line) : "" });
     }
     // 2.4.7 (müşteri isteği 6a): kullanıcının gizlediği kolonlar (kişi başına hatırlanır; detailColumns) — ekran, PDF ve Excel aynı.
     // BAŞ MİMAR KARARI: dönemde açıklamalı kalem yoksa "Kalem Açıklaması" kolonu boştur ve çıkmaz (16 kolonlu yatay PDF'te boş kolon fatura numarasını ve

@@ -124,10 +124,16 @@ export function movementText(counts = {}) {
     .join(", ");
 }
 
-/** Silme engelinin iletisi (cümle düzeni). passive: cari zaten pasif — Pasife Al önerisi yerine durum söylenir. */
+/**
+ * Silme engelinin iletisi (cümle düzeni). passive: cari zaten pasif — Pasife Al önerisi yerine durum söylenir.
+ * 2.4.9 UI tur A (D9): doğal cümle — "Bu carinin 2 cari hareketi var." / "Bu carinin 2 cari hareketi ve 1 taksit kartı var." / "…, … ve … var."
+ * (önceden "Bu carinin hareketi var: 2 cari hareketi." — "hareket" iki kez).
+ */
 export function movementBlockText(counts, { passive = false } = {}) {
-  const list = movementText(counts) || "cari hareketi";
+  const parts = PARTS.filter(([key]) => Number(counts?.[key]) > 0).map(([key, label]) => `${Number(counts[key])} ${label}`);
+  const list = parts.length > 1 ? `${parts.slice(0, -1).join(", ")} ve ${parts.at(-1)}` : parts[0] || "";
+  const head = list ? `Bu carinin ${list} var.` : "Bu carinin hareketi var.";
   return passive
-    ? `Bu carinin hareketi var: ${list}. Hareketi olan cari silinmez; cari zaten pasif (hareketleri ve bakiyesi korunur).`
-    : `Bu carinin hareketi var: ${list}. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).`;
+    ? `${head} Hareketi olan cari silinmez; cari zaten pasif (hareketleri ve bakiyesi korunur).`
+    : `${head} Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).`;
 }

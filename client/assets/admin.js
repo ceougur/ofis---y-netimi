@@ -1642,7 +1642,12 @@
       ],
       submitLabel: "Şirketi Sil",
       // Ana oturum kararı (31f ek): geri alınamaz eylem — Veriyi Sıfırla ve Kullanıcıyı Sil gibi kırmızı; onay akışı aynı.
-      onOpen: dialog => dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger"),
+      // 2.4.9 UI tur A (D4, ders 34): pencerede kaydedilecek veri yok (yalnız onay kodu ve parola) — Esc / × "Kaydedilmemiş Değişiklik" sormaz
+      // (Yedeksiz Sil'den Vazgeç'ten sonra da); alanlar taslak izleyicisine girmez (data-nodirty).
+      onOpen: dialog => {
+        dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger");
+        dialog.querySelector("form")?.setAttribute("data-nodirty", "");
+      },
       onSubmit: async values => {
         const url = `/api/companies/${encodeURIComponent(item.id)}`;
         let result;
