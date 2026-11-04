@@ -217,6 +217,17 @@ export function deliveryTtlSeconds(store, wabaId, name, acceptedAt) {
   return log.length ? log.at(-1).seconds : META_DEFAULT_TTL_SECONDS;
 }
 
+/**
+ * 2.4.9 W-KÖK tur 2 (bağımsız gözden geçirme gerilemesi; S-A İLKEYLE, docs/2.4.9-IS-LISTESI.md): TAZE okunan Meta listesinde programın şablonunun teslim süresi (sn) —
+ * noteDeliveryTtl ile aynı okuma (alan yoksa Meta'nın varsayılanı 30 gün). Şablon listede yoksa null (okuma bu şablon için yeni bilgi vermedi; günlük de değişmez).
+ * Gönderim çekirdeğinin bakım turu (queue.mjs maintain) kısa süreyle "Süresi Doldu" yazmadan önce kullanır.
+ */
+export function listedDeliveryTtl(items, name) {
+  const def = TEMPLATE_DEFS.find(item => item.name === name);
+  const found = def ? findExact(items, def) : null;
+  return found ? listedTtlOf(found) : null;
+}
+
 /** Şablonla gönderim yapılabilir mi: yalnız APPROVED + UTILITY (ve içerik değiştirilmemiş). W2 gönderim çekirdeği bu işlevi kullanır. */
 export function templateUsable(item) {
   return Boolean(item && item.exists && item.status === "APPROVED" && item.category === PROGRAM_TEMPLATE_CATEGORY && item.contentMatches !== false);

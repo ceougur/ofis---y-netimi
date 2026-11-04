@@ -26,7 +26,7 @@ import { e164Of, waPresetRange } from "./alici.mjs";
 import { allPeriodStartOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
-import { deliveryTtlRules, noteDeliveryTtl, noteListing, sendingVerdict } from "./templates.mjs";
+import { deliveryTtlRules, listedDeliveryTtl, noteDeliveryTtl, noteListing, sendingVerdict } from "./templates.mjs";
 
 export const TEMPLATE_NAMES = Object.freeze({ statement: "destekofis_ekstre", reminder: "destekofis_odeme_hatirlatma" });
 export const KIND_LABELS = Object.freeze({ statement: "Ekstre", reminder: "Ödeme Hatırlatma" });
@@ -335,13 +335,20 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const key = `${record.wabaId}|${name}`;
     const cached = templateCache.get(key);
     if (!force && cached && nowMs() - cached.at < TEMPLATE_CHECK_MS && nowMs() >= cached.at && cached.sent < TEMPLATE_CHECK_EVERY) return cached.result;
+    return (await readTemplate(record, name, { note })).result;
+  }
+  // checkTemplate'in TAZE okuma yolu (force): karar önbelleğe, teslim süresi günlüğe (note: şablon kaydına da) yazılır. Dönüş: { result, items, readAt } — 2.4.9 W-KÖK
+  // tur 2: bakım turu (maintain) okunan listenin teslim süresini de kullanır.
+  async function readTemplate(record, name, { note = false } = {}) {
+    const key = `${record.wabaId}|${name}`;
     const epoch = templateEpoch.get(record.wabaId) || 0;
     const readAt = iso();
     const listing = await createMetaTemplates(connection.metaOptions(record)).details(record.wabaId);
     const result = judgeTemplate(listing.items, name);
+    const read = { result, items: listing.items, readAt };
     // W-2: okuma sürerken Şablonları Denetle bittiyse (forgetTemplates) bu okuma Denetle'ninkinden eskidir — önbelleğe ve şablon kaydına YAZILMAZ (karar yalnız bu
     // adım için; sonraki adım yeniden okur). Zorla üretildi: test/whatsapp-w2-onbellek-249.test.mjs "SÜRERKEN".
-    if ((templateEpoch.get(record.wabaId) || 0) !== epoch) return result;
+    if ((templateEpoch.get(record.wabaId) || 0) !== epoch) return read;
     templateCache.set(key, { at: nowMs(), result, sent: 0 });
     // 2.4.9 W-KÖK (kâhin A1): her taze okumada Meta'nın bildirdiği teslim süresi günlüğe — sonra kabul edilen iş bu süreyle ölçülür (templates.mjs noteDeliveryTtl).
     if (writable()) {
@@ -358,7 +365,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         log.warn?.(`WhatsApp şablon kaydı önizlemeden güncellenemedi: ${error?.message || error}`);
       }
     }
-    return result;
+    return read;
   }
   async function dailyLimit(graph, record, { force = false } = {}) {
     const cached = tierCache.get(record.wabaId);
@@ -1637,10 +1644,54 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // çalıştığı iletiyi "Süresi Doldu" saymaz, PDF'ini önceden silmez. 2.4.9 W-KÖK: iş KABUL ANINDAKİ süreyle ölçülür (sonradan kısalan süre geriye işlemez; bilinmiyorsa
     // 30 gün; uzarsa uzun olan) — lib/whatsapp/templates.mjs deliveryTtlRules; teslim süresi günlüğü turda bir kez okunur, satır başına yalnız sayı karşılaştırması (ders 47).
     if (Number.isFinite(seen) && nowMs() - seen <= HOOK_ALIVE_MS) {
-      const ttlOf = deliveryTtlRules(store);
-      for (const row of store.all("SELECT j.id, j.attempt, j.accepted_at, b.waba_id, b.template FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL")) {
+      const openRows = () => store.all("SELECT j.id, j.attempt, j.accepted_at, b.waba_id, b.template FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL");
+      // 2.4.9 W-KÖK tur 2 (bağımsız gözden geçirme gerilemesi; S-A, 03.11 yetkisiyle İLKEYLE — ilke 2 "almış olabilirse elenir"; BAŞ MİMAR KARARI; docs/2.4.9-IS-LISTESI.md):
+      // süre kabulden sonra uzayıp program bu arada Meta'yı okumadıysa (süren toplu iş / önizleme / Denetle yok) uzama bilinmiyordu → iş erken "Süresi Doldu" olup kişiye
+      // aynı dönemde 2. ileti gidebiliyordu. Kural: 30 günden KISA etkin süreyle Süresi Doldu yazılacak iş varsa o WABA + şablon için bu turda BİR taze Meta okuması
+      // (checkTemplate'in force yolu: süre günlüğe) → kural yeniden değerlendirilir (etkin süre = kuraldaki ile taze okunan sürenin en uzunu; kabulden sonra görülen değer).
+      // Okuma düşerse (ağ, Meta hatası) / yapılamıyorsa (bağlantı yok ya da işin hesabı değil, salt okunur lisans — program Meta'dan şablon okumaz) o tur YAZILMAZ,
+      // sonraki turda yeniden denenir. Meta'nın en uzun süresi (30 gün) + 1 sa geçen iş okumasız Süresi Doldu (Meta artık denemez; PDF kuralıyla aynı sınır).
+      // Ders 47: tur başına WABA + şablon başına en çok bir okuma; 30 günlük işlerde okuma yok; satır başına yalnız sayı karşılaştırması.
+      const LONGEST_MS = META_DEFAULT_TTL_SECONDS * 1000 + HOUR;
+      const needsRead = (ttl, acceptedMs) => ttl < META_DEFAULT_TTL_SECONDS && acceptedMs + LONGEST_MS >= nowMs();
+      let ttlOf = deliveryTtlRules(store);
+      let rows = openRows();
+      const fresh = new Map(); // `${waba}|${şablon}` → { seconds (null: şablon listede yok — yeni bilgi yok), ms } | null (okunamadı)
+      const toRead = new Map();
+      for (const row of rows) {
         const acceptedMs = Date.parse(row.accepted_at);
-        if (acceptedMs + ttlOf(row.waba_id, row.template)(acceptedMs) * 1000 + HOUR >= nowMs()) continue;
+        const ttl = ttlOf(row.waba_id, row.template)(acceptedMs);
+        if (acceptedMs + ttl * 1000 + HOUR < nowMs() && needsRead(ttl, acceptedMs)) toRead.set(`${row.waba_id}|${row.template}`, row);
+      }
+      if (toRead.size) {
+        const record = writable() ? connection.read() : null;
+        for (const [key, row] of toRead) {
+          let read = null;
+          if (record && record.wabaId === row.waba_id) {
+            try {
+              const got = await readTemplate(record, row.template);
+              read = { seconds: listedDeliveryTtl(got.items, row.template), ms: Date.parse(got.readAt) };
+            } catch (error) {
+              if (isLockError(error)) throw error;
+              log.warn?.(`WhatsApp: teslim süresi Meta'dan taze okunamadı (${row.template}; ${error?.message || error}); bu turda Süresi Doldu yazılmadı, sonraki turda yeniden denenecek.`);
+            }
+          }
+          fresh.set(key, read);
+        }
+        // Okuma beklenirken durum bildirimi / Denetle / geri yükleme satırları ya da günlüğü değiştirmiş olabilir: ikisi de yeniden okunur (karar döngüsünde bekleme yok).
+        ttlOf = deliveryTtlRules(store);
+        rows = openRows();
+      }
+      for (const row of rows) {
+        const acceptedMs = Date.parse(row.accepted_at);
+        let ttl = ttlOf(row.waba_id, row.template)(acceptedMs);
+        if (acceptedMs + ttl * 1000 + HOUR >= nowMs()) continue;
+        if (needsRead(ttl, acceptedMs)) {
+          const read = fresh.get(`${row.waba_id}|${row.template}`);
+          if (!read) continue; // bu turda okunamadı / okunmadı: Süresi Doldu yazılmaz
+          if (read.seconds !== null && read.ms >= acceptedMs) ttl = Math.max(ttl, read.seconds);
+          if (acceptedMs + ttl * 1000 + HOUR >= nowMs()) continue;
+        }
         // İş V2: defterde bu denemenin teslimi varsa (kancanın yalnız defter yolu / geri yükleme) Süresi Doldu DEĞİL — Teslim Edildi; teslim edilemedi yazılmaz.
         if (settleDelivered(row.id, Number(row.attempt))) continue;
         updateJob(row.id, { state: "expired", closed_at: iso() });
