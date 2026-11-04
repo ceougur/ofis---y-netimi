@@ -1,0 +1,50 @@
+// KAPSAM DIŞI GÖZLEM (server/lib/db.mjs store.tx; R2 farkından değil): GERÇEK programda bir COMMIT dosya boyutu sınırına (disk dolu benzeri, EFBIG → SQLite
+// G/Ç hatası) takılırsa ne olur; sınır kaldırılınca (yer açılınca) yazımlar düzelir mi? Sınır bu sürecin kendisine prlimit ile (yalnız yumuşak) verilir.
+// Kullanım: node program-disk-dolu.mjs <kod kökü>
+import { execFileSync } from "node:child_process";
+import { statSync } from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+const ROOT = process.argv[2];
+const { startTestServer, loginAdmin } = await import(pathToFileURL(path.join(ROOT, "test/helpers.mjs")).href);
+const { resolveDbPath } = await import(pathToFileURL(path.join(ROOT, "server/lib/db-path.mjs")).href);
+const server = await startTestServer({ now: "2026-11-03T09:00:00+03:00", env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+const api = await loginAdmin(server);
+const wal = () => {
+  try {
+    return statSync(`${resolveDbPath(server.dataDir)}-wal`).size;
+  } catch {
+    return 0;
+  }
+};
+const cari = (ad, not = "") => api.post("/api/workspace/accounts", { name: ad, type: "customer", ...(not ? { note: not } : {}) });
+try {
+  for (let i = 0; i < 5; i += 1) await cari(`Isınma ${i}`);
+  // Sayfa başına 4 KB; bir sonraki birkaç işlem WAL'ı büyütür. Sınır = şu anki WAL + 1 KB (bir sayfalık çerçeve bile sığmaz).
+  const before = wal();
+  const limit = before + 1024;
+  server.app.db.exec("PRAGMA wal_autocheckpoint = 0"); // ölçüm sırasında WAL başa dönmesin (yalnız bu deneme için)
+  execFileSync("prlimit", ["--pid", String(process.pid), `--fsize=${limit}:unlimited`]);
+  console.log(`WAL ${before} B → yumuşak sınır ${limit} B`);
+  const big = await cari("Büyük Notlu Cari", "n".repeat(2000));
+  console.log(`1) sınır altındayken büyük yazım: ${big.status} ${JSON.stringify(big.data).slice(0, 200)}`);
+  execFileSync("prlimit", ["--pid", String(process.pid), "--fsize=unlimited:unlimited"]);
+  console.log("2) sınır kaldırıldı (yer açıldı)");
+  const after = await cari("Sonraki Küçük Cari");
+  console.log(`3) sonraki küçük yazım: ${after.status} ${JSON.stringify(after.data).slice(0, 200)}`);
+  const after2 = await api.post("/api/workspace/cash", { kind: "in", amount: 10, date: "2026-11-03", description: "deneme" });
+  console.log(`4) Kasa girişi: ${after2.status} ${JSON.stringify(after2.data).slice(0, 200)}`);
+  console.log(`store.inTransaction=${server.app.store.inTransaction}; db.isTransaction=${server.app.db.isTransaction}`);
+  try {
+    server.app.store.tx(() => 0);
+    console.log("5) boş store.tx: geçti");
+  } catch (error) {
+    console.log(`5) boş store.tx: HATA "${error.message}"`);
+  }
+} finally {
+  try {
+    execFileSync("prlimit", ["--pid", String(process.pid), "--fsize=unlimited:unlimited"]);
+  } catch {}
+  await server.close();
+}

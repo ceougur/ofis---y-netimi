@@ -1,0 +1,107 @@
+TAP version 13
+# Subtest: store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX)
+    # Subtest: (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı
+    ok 1 - (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı
+      ---
+      duration_ms: 13.247623
+      type: 'test'
+      ...
+    # Subtest: (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı
+    ok 2 - (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı
+      ---
+      duration_ms: 34.995856
+      type: 'test'
+      ...
+    # a2 gerçek (Linux RLIMIT_FSIZE 141136 B): store.tx hatası "disk I/O error" (ERR_SQLITE_ERROR 778); deyimler ["BEGIN IMMEDIATE","COMMIT"]; sonra db.isTransaction=false
+    # Subtest: (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır
+    ok 3 - (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır
+      ---
+      duration_ms: 7.651899
+      type: 'test'
+      ...
+    # Subtest: (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0
+    ok 4 - (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0
+      ---
+      duration_ms: 7.127962
+      type: 'test'
+      ...
+    # Subtest: (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür
+    ok 5 - (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür
+      ---
+      duration_ms: 6.723825
+      type: 'test'
+      ...
+    # Subtest: (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur
+    ok 6 - (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur
+      ---
+      duration_ms: 8.3863
+      type: 'test'
+      ...
+    # Subtest: (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez
+    not ok 7 - (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez
+      ---
+      duration_ms: 8.921325
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:311:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        b2: asıl hata yerine "no such savepoint: sp_1"
+        b2: deyimler ["BEGIN IMMEDIATE","SAVEPOINT sp_1","ROLLBACK TO sp_1; RELEASE sp_1"] (işlem kapalıyken geri alma denenmemeli)
+        + actual - expected
+        
+        + [
+        +   'b2: asıl hata yerine "no such savepoint: sp_1"',
+        +   'b2: deyimler ["BEGIN IMMEDIATE","SAVEPOINT sp_1","ROLLBACK TO sp_1; RELEASE sp_1"] (işlem kapalıyken geri alma denenmemeli)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'b2: asıl hata yerine "no such savepoint: sp_1"'
+        1: 'b2: deyimler ["BEGIN IMMEDIATE","SAVEPOINT sp_1","ROLLBACK TO sp_1; RELEASE sp_1"] (işlem kapalıyken geri alma denenmemeli)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:128:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:330:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz
+    ok 8 - (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz
+      ---
+      duration_ms: 9.836032
+      type: 'test'
+      ...
+    # Subtest: (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)
+    ok 9 - (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)
+      ---
+      duration_ms: 647.027431
+      type: 'test'
+      ...
+    # FK: cari 500; günlük ["API hatası POST /api/workspace/accounts: FOREIGN KEY constraint failed"]
+    # FSIZE (2394776 B): cari 500; günlük ["API hatası POST /api/workspace/accounts: disk I/O error"]
+    1..9
+not ok 1 - store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX)
+  ---
+  duration_ms: 745.880756
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:149:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1125.505863

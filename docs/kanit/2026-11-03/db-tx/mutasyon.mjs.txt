@@ -1,0 +1,37 @@
+// 2.4.9 DB-TX mutasyonları: düzeltmenin (3fdce131) her parçası ayrı kopyada tek tek geri alınır; test/db-tx-commit-hata-249.test.mjs koşulur.
+// Kullanım: node mutasyon.mjs <kopya kökü> <çıktı klasörü>
+import { readFileSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import path from "node:path";
+
+const [ROOT, OUT] = process.argv.slice(2);
+const FILE = path.join(ROOT, "server/lib/db.mjs");
+const original = readFileSync(FILE, "utf8");
+const MUTATIONS = [
+  ["M1-cift-azaltma", "        if (!left) depth -= 1;\n", "        depth -= 1;\n"],
+  ["M2-dis-geri-alma-kosulsuz", "          undo(\"ROLLBACK\");\n", "          db.exec(\"ROLLBACK\");\n"],
+  ["M3-ic-geri-alma-kosulsuz", "          undo(`ROLLBACK TO ${savepoint}; RELEASE ${savepoint}`);\n", "          db.exec(`ROLLBACK TO ${savepoint}; RELEASE ${savepoint}`);\n"],
+  ["M4-islem-kapaliyken-de-dener", "    if (openTx() === false) return;\n", ""],
+  ["M5-geri-alma-hatasi-ezer", "    try {\n      db.exec(sql);\n    } catch {\n      // asıl hata yeniden fırlatılır\n    }\n", "    db.exec(sql);\n"],
+  ["M6-getter-yalniz-derinlik", "      return depth > 0 || openTx() === true;\n", "      return depth > 0;\n"],
+  ["M7-isTransaction-bilinmiyor", "      return typeof open === \"boolean\" ? open : null;\n", "      return null;\n"],
+];
+const rows = [];
+try {
+  for (const [name, from, to] of MUTATIONS) {
+    const count = original.split(from).length - 1;
+    if (count !== 1) throw new Error(`${name}: kalıp ${count} kez geçiyor`);
+    writeFileSync(FILE, original.replace(from, to));
+    const run = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "test/db-tx-commit-hata-249.test.mjs"], { cwd: ROOT, encoding: "utf8", env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+    const text = `${run.stdout}${run.stderr}`;
+    writeFileSync(path.join(OUT, `${name}.txt`), text);
+    const red = [...text.matchAll(/^    not ok \d+ - \((\w+)\)/gm)].map(match => match[1]);
+    const sum = Object.fromEntries([...text.matchAll(/^# (tests|pass|fail|cancelled|skipped) (\d+)/gm)].map(match => [match[1], Number(match[2])]));
+    rows.push(`${name}: çıkış ${run.status}; tests ${sum.tests} pass ${sum.pass} fail ${sum.fail} cancelled ${sum.cancelled} skipped ${sum.skipped}; kırmızı hücreler ${red.join(", ") || "YOK (mutasyon YAŞADI)"}`);
+  }
+} finally {
+  writeFileSync(FILE, original);
+}
+const summary = rows.join("\n");
+writeFileSync(path.join(OUT, "ozet.txt"), `${summary}\n`);
+console.log(summary);

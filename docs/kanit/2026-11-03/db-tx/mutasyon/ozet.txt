@@ -1,0 +1,7 @@
+M1-cift-azaltma: çıkış 1; tests 9 pass 3 fail 6 cancelled 0 skipped 0; kırmızı hücreler a1, a2, a4, b1, b3, c
+M2-dis-geri-alma-kosulsuz: çıkış 1; tests 9 pass 3 fail 6 cancelled 0 skipped 0; kırmızı hücreler a2, a3, a4, a5, b2, c
+M3-ic-geri-alma-kosulsuz: çıkış 1; tests 9 pass 8 fail 1 cancelled 0 skipped 0; kırmızı hücreler b2
+M4-islem-kapaliyken-de-dener: çıkış 1; tests 9 pass 5 fail 4 cancelled 0 skipped 0; kırmızı hücreler a2, a3, a4, b2
+M5-geri-alma-hatasi-ezer: çıkış 1; tests 9 pass 8 fail 1 cancelled 0 skipped 0; kırmızı hücreler a5
+M6-getter-yalniz-derinlik: çıkış 1; tests 9 pass 8 fail 1 cancelled 0 skipped 0; kırmızı hücreler a5
+M7-isTransaction-bilinmiyor: çıkış 1; tests 9 pass 4 fail 5 cancelled 0 skipped 0; kırmızı hücreler a2, a3, a4, a5, b2

@@ -1,0 +1,352 @@
+TAP version 13
+# Subtest: store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX)
+    # Subtest: (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı
+    not ok 1 - (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı
+      ---
+      duration_ms: 10.516896
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:150:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        a1: deyimler ["BEGIN IMMEDIATE","COMMIT","ROLLBACK TO sp_0; RELEASE sp_0"] (açık kalan işlem bir kez ROLLBACK edilmeli)
+        a1: yarım yazım kaldı
+        a1: rolledBack []
+        a1: store.inTransaction = true
+        a1: bağlantıda açık işlem kaldı (db.isTransaction = true)
+        a1: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])
+        a1: sonraki işlemin yazımı yok
+        a1: işlem dışı para yazımı işleme alınmadı (deyimler [])
+        a1: sonraki yazımlardan sonra açık işlem kaldı
+        + actual - expected
+        
+        + [
+        +   'a1: deyimler ["BEGIN IMMEDIATE","COMMIT","ROLLBACK TO sp_0; RELEASE sp_0"] (açık kalan işlem bir kez ROLLBACK edilmeli)',
+        +   'a1: yarım yazım kaldı',
+        +   'a1: rolledBack []',
+        +   'a1: store.inTransaction = true',
+        +   'a1: bağlantıda açık işlem kaldı (db.isTransaction = true)',
+        +   'a1: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])',
+        +   'a1: sonraki işlemin yazımı yok',
+        +   'a1: işlem dışı para yazımı işleme alınmadı (deyimler [])',
+        +   'a1: sonraki yazımlardan sonra açık işlem kaldı'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'a1: deyimler ["BEGIN IMMEDIATE","COMMIT","ROLLBACK TO sp_0; RELEASE sp_0"] (açık kalan işlem bir kez ROLLBACK edilmeli)'
+        1: 'a1: yarım yazım kaldı'
+        2: 'a1: rolledBack []'
+        3: 'a1: store.inTransaction = true'
+        4: 'a1: bağlantıda açık işlem kaldı (db.isTransaction = true)'
+        5: 'a1: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])'
+        6: 'a1: sonraki işlemin yazımı yok'
+        7: 'a1: işlem dışı para yazımı işleme alınmadı (deyimler [])'
+        8: 'a1: sonraki yazımlardan sonra açık işlem kaldı'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:128:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:169:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+      ...
+    # Subtest: (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı
+    not ok 2 - (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı
+      ---
+      duration_ms: 26.863956
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:172:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        a2: rolledBack []
+        a2: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])
+        a2: sonraki işlemin yazımı yok
+        a2: işlem dışı para yazımı işleme alınmadı (deyimler [])
+        a2 gerçek: rolledBack []
+        a2 gerçek: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])
+        a2 gerçek: sonraki işlemin yazımı yok
+        a2 gerçek: işlem dışı para yazımı işleme alınmadı (deyimler [])
+        + actual - expected
+        
+        + [
+        +   'a2: rolledBack []',
+        +   'a2: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])',
+        +   'a2: sonraki işlemin yazımı yok',
+        +   'a2: işlem dışı para yazımı işleme alınmadı (deyimler [])',
+        +   'a2 gerçek: rolledBack []',
+        +   'a2 gerçek: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])',
+        +   'a2 gerçek: sonraki işlemin yazımı yok',
+        +   'a2 gerçek: işlem dışı para yazımı işleme alınmadı (deyimler [])'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'a2: rolledBack []'
+        1: 'a2: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])'
+        2: 'a2: sonraki işlemin yazımı yok'
+        3: 'a2: işlem dışı para yazımı işleme alınmadı (deyimler [])'
+        4: 'a2 gerçek: rolledBack []'
+        5: 'a2 gerçek: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])'
+        6: 'a2 gerçek: sonraki işlemin yazımı yok'
+        7: 'a2 gerçek: işlem dışı para yazımı işleme alınmadı (deyimler [])'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:128:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:215:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # a2 gerçek (Linux RLIMIT_FSIZE 141136 B): store.tx hatası "disk I/O error" (ERR_SQLITE_ERROR 778); deyimler ["BEGIN IMMEDIATE","COMMIT"]; sonra db.isTransaction=false
+    # Subtest: (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır
+    ok 3 - (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır
+      ---
+      duration_ms: 6.492405
+      type: 'test'
+      ...
+    # Subtest: (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0
+    not ok 4 - (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0
+      ---
+      duration_ms: 4.393958
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:240:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        a4: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])
+        a4: sonraki işlemin yazımı yok
+        a4: işlem dışı para yazımı işleme alınmadı (deyimler [])
+        + actual - expected
+        
+        + [
+        +   'a4: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])',
+        +   'a4: sonraki işlemin yazımı yok',
+        +   'a4: işlem dışı para yazımı işleme alınmadı (deyimler [])'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'a4: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])'
+        1: 'a4: sonraki işlemin yazımı yok'
+        2: 'a4: işlem dışı para yazımı işleme alınmadı (deyimler [])'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:128:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:264:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür
+    ok 5 - (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür
+      ---
+      duration_ms: 4.566036
+      type: 'test'
+      ...
+    # Subtest: (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur
+    not ok 6 - (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur
+      ---
+      duration_ms: 5.036572
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:287:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        b1: dış işlem düştü: "no such savepoint: sp_0"
+        b1: deyimler ["BEGIN IMMEDIATE","SAVEPOINT sp_1","RELEASE sp_1","ROLLBACK","RELEASE sp_0"]
+        b1: dış işlemin yazımları eksik
+        b1: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-2"])
+        b1: sonraki işlemin yazımı yok
+        b1: işlem dışı para yazımı işleme alınmadı (deyimler [])
+        + actual - expected
+        
+        + [
+        +   'b1: dış işlem düştü: "no such savepoint: sp_0"',
+        +   'b1: deyimler ["BEGIN IMMEDIATE","SAVEPOINT sp_1","RELEASE sp_1","ROLLBACK","RELEASE sp_0"]',
+        +   'b1: dış işlemin yazımları eksik',
+        +   'b1: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-2"])',
+        +   'b1: sonraki işlemin yazımı yok',
+        +   'b1: işlem dışı para yazımı işleme alınmadı (deyimler [])'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'b1: dış işlem düştü: "no such savepoint: sp_0"'
+        1: 'b1: deyimler ["BEGIN IMMEDIATE","SAVEPOINT sp_1","RELEASE sp_1","ROLLBACK","RELEASE sp_0"]'
+        2: 'b1: dış işlemin yazımları eksik'
+        3: 'b1: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-2"])'
+        4: 'b1: sonraki işlemin yazımı yok'
+        5: 'b1: işlem dışı para yazımı işleme alınmadı (deyimler [])'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:128:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:308:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez
+    ok 7 - (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez
+      ---
+      duration_ms: 5.104495
+      type: 'test'
+      ...
+    # Subtest: (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz
+    not ok 8 - (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz
+      ---
+      duration_ms: 4.455749
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:333:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        b3: deyimler ["BEGIN IMMEDIATE","SAVEPOINT sp_1","RELEASE sp_1","COMMIT","ROLLBACK TO sp_0; RELEASE sp_0"]
+        b3: yarım yazım kaldı
+        b3: rolledBack []
+        b3: store.inTransaction = true
+        b3: bağlantıda açık işlem kaldı (db.isTransaction = true)
+        b3: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])
+        b3: sonraki işlemin yazımı yok
+        b3: işlem dışı para yazımı işleme alınmadı (deyimler [])
+        b3: sonraki yazımlardan sonra açık işlem kaldı
+        + actual - expected
+        
+        + [
+        +   'b3: deyimler ["BEGIN IMMEDIATE","SAVEPOINT sp_1","RELEASE sp_1","COMMIT","ROLLBACK TO sp_0; RELEASE sp_0"]',
+        +   'b3: yarım yazım kaldı',
+        +   'b3: rolledBack []',
+        +   'b3: store.inTransaction = true',
+        +   'b3: bağlantıda açık işlem kaldı (db.isTransaction = true)',
+        +   'b3: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])',
+        +   'b3: sonraki işlemin yazımı yok',
+        +   'b3: işlem dışı para yazımı işleme alınmadı (deyimler [])',
+        +   'b3: sonraki yazımlardan sonra açık işlem kaldı'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'b3: deyimler ["BEGIN IMMEDIATE","SAVEPOINT sp_1","RELEASE sp_1","COMMIT","ROLLBACK TO sp_0; RELEASE sp_0"]'
+        1: 'b3: yarım yazım kaldı'
+        2: 'b3: rolledBack []'
+        3: 'b3: store.inTransaction = true'
+        4: 'b3: bağlantıda açık işlem kaldı (db.isTransaction = true)'
+        5: 'b3: sonraki iç içe işlem düştü: "near "-": syntax error" (deyimler ["SAVEPOINT sp_-1"])'
+        6: 'b3: sonraki işlemin yazımı yok'
+        7: 'b3: işlem dışı para yazımı işleme alınmadı (deyimler [])'
+        8: 'b3: sonraki yazımlardan sonra açık işlem kaldı'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:128:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:351:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)
+    not ok 9 - (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)
+      ---
+      duration_ms: 564.950876
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:354:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        FK: düşen cari yarım yazıldı
+        FK: sonraki cari 500 (API hatası POST /api/workspace/accounts: near "-": syntax error)
+        FK: Kasa girişi 500 (API hatası POST /api/workspace/cash: near "-": syntax error)
+        FK: sonraki cari veri tabanında yok
+        FK: Kasa girişi veri tabanında yok
+        FK: store.inTransaction=true, db.isTransaction=true
+        FSIZE: günlükte asıl hata yok: ["API hatası POST /api/workspace/accounts: near \"-\": syntax error"]
+        FSIZE: sonraki cari 500 (API hatası POST /api/workspace/accounts: near "-": syntax error)
+        FSIZE: Kasa girişi 500 (API hatası POST /api/workspace/cash: near "-": syntax error)
+        FSIZE: sonraki cari veri tabanında yok
+        FSIZE: Kasa girişi veri tabanında yok
+        FSIZE: store.inTransaction=true, db.isTransaction=true
+        + actual - expected
+        
+        + [
+        +   'FK: düşen cari yarım yazıldı',
+        +   'FK: sonraki cari 500 (API hatası POST /api/workspace/accounts: near "-": syntax error)',
+        +   'FK: Kasa girişi 500 (API hatası POST /api/workspace/cash: near "-": syntax error)',
+        +   'FK: sonraki cari veri tabanında yok',
+        +   'FK: Kasa girişi veri tabanında yok',
+        +   'FK: store.inTransaction=true, db.isTransaction=true',
+        +   'FSIZE: günlükte asıl hata yok: ["API hatası POST /api/workspace/accounts: near \\"-\\": syntax error"]',
+        +   'FSIZE: sonraki cari 500 (API hatası POST /api/workspace/accounts: near "-": syntax error)',
+        +   'FSIZE: Kasa girişi 500 (API hatası POST /api/workspace/cash: near "-": syntax error)',
+        +   'FSIZE: sonraki cari veri tabanında yok',
+        +   'FSIZE: Kasa girişi veri tabanında yok',
+        +   'FSIZE: store.inTransaction=true, db.isTransaction=true'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'FK: düşen cari yarım yazıldı'
+        1: 'FK: sonraki cari 500 (API hatası POST /api/workspace/accounts: near "-": syntax error)'
+        2: 'FK: Kasa girişi 500 (API hatası POST /api/workspace/cash: near "-": syntax error)'
+        3: 'FK: sonraki cari veri tabanında yok'
+        4: 'FK: Kasa girişi veri tabanında yok'
+        5: 'FK: store.inTransaction=true, db.isTransaction=true'
+        6: 'FSIZE: günlükte asıl hata yok: ["API hatası POST /api/workspace/accounts: near \\"-\\": syntax error"]'
+        7: 'FSIZE: sonraki cari 500 (API hatası POST /api/workspace/accounts: near "-": syntax error)'
+        8: 'FSIZE: Kasa girişi 500 (API hatası POST /api/workspace/cash: near "-": syntax error)'
+        9: 'FSIZE: sonraki cari veri tabanında yok'
+        10: 'FSIZE: Kasa girişi veri tabanında yok'
+        11: 'FSIZE: store.inTransaction=true, db.isTransaction=true'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:128:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:412:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # FK: cari 500; günlük ["API hatası POST /api/workspace/accounts: FOREIGN KEY constraint failed"]
+    # FSIZE (2254696 B): cari 500; günlük ["API hatası POST /api/workspace/accounts: near \\"-\\": syntax error"]
+    1..9
+not ok 1 - store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX)
+  ---
+  duration_ms: 634.335879
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/mut-3fdce131/test/db-tx-commit-hata-249.test.mjs:149:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 3
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 987.412417
