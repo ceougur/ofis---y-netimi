@@ -390,7 +390,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   ÇALIŞAN AJANLAR (her biri bitince: rapor + ana oturum yeni testleri KENDİSİ yeniden koşar (ders 16) → worktree dalını birleştirir (yalnız o dalın commit'leri) → push → CI'yi GitHub MCP ile okur
   (ders 21; gh yalnız arama) → YALNIZ o farka DAR KONTROL (xhigh, YENİ ajan, prensip §3; görev metni prensip §9) → YÜKSEK/ORTA düzeltilir (yeni düzeltme ajanı, ders 46)):
   (1) W-1(a) + W-2 WhatsApp belirteç süresi + Bağlantıyı Kaldır (xhigh) — .claude/worktrees/agent-aa5b96b53dfc0441d (17:53'te kendi test koşusunu bekliyordu);
-  (2) BS-7 şema sürüm kapısı (high) — .claude/worktrees/agent-a03e5f6803e8339cb (dosyaya dokunan testler → Windows CI'de erken, ders 48);
+  (2) BS-7 şema sürüm kapısı (high) — BİTTİ 17:53; dal worktree-agent-a03e5f6803e8339cb (taban ccf0b0ca, 3 commit; özet iş listesi E 17:53) → SIRADA: ana oturum yeni testleri
+      yeniden koşar → birleştirir → push (Windows CI erken, ders 48) → CI → dar kontrol (xhigh); BAŞ MİMAR KARARI (001 yeni şemada eski yedeğe geri yükleme izinli) kullanıcıya gösterilir;
   (3) KÂHİN (kodu görmeyen, xhigh) test/bagimsiz/muhasebe/ — .claude/worktrees/agent-a46b8015c664a74f9 (17:51: model.py ~2.300 satır, senaryolar yazılıyor; commit yok; kararlar "hepsi A" iletildi;
       bitince bağımsızlık denetimi: araç kaydında server/ client/ tools/ test/(kendi klasörü dışı) okunmamış olmalı — mali müşavirde yapıldığı gibi `grep -o '"file_path":"[^"]*"'`);
   (4) Ç1 hesap planı + sınıflama (xhigh; kullanıcı 17:52 "başlatalım" — kâhini beklemeden) — worktree .claude/worktrees/agent-<yeni>; türetme kuralı DEĞİŞMEZ, eşdeğerlik kanıtı.
