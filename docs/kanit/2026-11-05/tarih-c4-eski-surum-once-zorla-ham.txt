@@ -1,0 +1,13 @@
+eski kod: ccf0b0ca (/tmp/c4-eski-surum-nlLqpK/eski-ccf0b0ca)
+(node:18683) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b/test/defter-turu-c4-eski-surum.mjs:29
+  if (res.status !== 200) throw new Error(`${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
+                                ^
+
+Error: fatura 001: 400 {"ok":false,"error":"İleri tarihli fatura kaydedilemez (06.11.2026). Taslak olarak kaydedin; günü gelince kaydedin.","code":"date-future","field":"issueDate"}
+    at must (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b/test/defter-turu-c4-eski-surum.mjs:29:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b/test/defter-turu-c4-eski-surum.mjs:84:5
+
+Node.js v22.23.4

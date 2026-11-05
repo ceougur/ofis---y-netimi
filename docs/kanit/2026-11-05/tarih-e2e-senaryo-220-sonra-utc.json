@@ -1,0 +1,32 @@
+{
+  "ad": "tarih-e2e-senaryo-220-sonra-utc",
+  "komut": "node test/e2e/senaryo-220.mjs",
+  "commit": "9215357158176a87126fff1e4d291a15a59609d6",
+  "dal": "worktree-agent-a7187c0e87f23820b",
+  "kirli": 14,
+  "izlenmeyen": 27,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:13:57.242Z",
+  "sure_sn": 60.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 25,
+    "gecen": 25,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/tarih-e2e-senaryo-220-sonra-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b",
+  "ham_cikti_sha256": "2766a6b270cb6fa34bfb7790749ee0deef83ea060bd73e266e8d0f4e4f9b77d5",
+  "ham_cikti_bayt": 2637
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "tarih-e2e-sema-kapisi-bs7-sonra-istanbul",
+  "komut": "node test/e2e/sema-kapisi-bs7.mjs",
+  "commit": "9215357158176a87126fff1e4d291a15a59609d6",
+  "dal": "worktree-agent-a7187c0e87f23820b",
+  "kirli": 14,
+  "izlenmeyen": 21,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:12:23.146Z",
+  "sure_sn": 4.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/tarih-e2e-sema-kapisi-bs7-sonra-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b",
+  "ham_cikti_sha256": "3b729137f2e44dfa3e6576f421caa022be0a7ee940d2e6320734f05845b08866",
+  "ham_cikti_bayt": 1324
+}

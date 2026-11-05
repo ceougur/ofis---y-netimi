@@ -1,0 +1,12 @@
+onkosul yerel=2026-11-05 utc=2026-11-06 saat=2026-11-06T08:00:00.001Z TZ=Etc/GMT+12
+(node:16681) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ Hazırlık: 001 ve 002 programın kendi API'siyle; 002'nin şeması 'yeni sürüm' benzetimiyle büyütülür
+  ✗ beklenmeyen hata: Error: 002 Kasa girişi: 400 {"ok":false,"error":"İleri tarihli hareket girilemez (06.11.2026). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.","code":"date-future"}
+    at must (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b/test/e2e/sema-kapisi-bs7.mjs:20:33)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b/test/e2e/sema-kapisi-bs7.mjs:48:3
+
+✗ sema-kapisi-bs7: 0 geçti, 1 kaldı
+cikis=1

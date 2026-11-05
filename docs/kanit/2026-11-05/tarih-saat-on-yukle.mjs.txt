@@ -1,0 +1,7 @@
+// Tarih süpürmesi ön yüklemesi (yalnız kanıt koşusu; depoya girmez): sürecin saatini ZORLA_SAAT (ISO) anından akıtır.
+// Amaç: yerel gün ile UTC gününün ayrıştığı anı (ör. TZ=Etc/GMT+12, 2026-11-06T08:00:00Z → yerel 05.11 20:00) her saatte üretmek (ders 20).
+import { installProcessClock } from "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b/test/fixtures/surec-saati.mjs";
+
+const at = Date.parse(process.env.ZORLA_SAAT || "");
+if (!Number.isFinite(at)) throw new Error("ZORLA_SAAT gerekli (ISO)");
+installProcessClock(at);
