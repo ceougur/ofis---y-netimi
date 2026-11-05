@@ -410,7 +410,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   KEEP_SETTINGS (Sıfırla) Defter Türü anahtarını korumalı; B1 gecikmiş tanımı ekranlar arasında farklı (fatura dahil mi → kullanıcıya, WhatsApp elemesi). P4 YAZILDI (docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md).
   P1 (devir D0) BİTTİ → P3 YAZILDI (DEVIR-PLANI "G" bölümü, BAŞ MİMAR KARARLARI): kopyada üret + doğrula + takas (001 dahil bakım kipi), AYRI AÇIK KALEM (devir faturası işareti bırakıldı),
   tablo sınıflaması (edoc_usage / einvoice_inbox / audit_events dokunulmaz), kalıcı devir yedeği (arşiv + belgeler + secret.key), şema sürüm kapısı, Devri Yenile mekanizması, e-Belge numara tabanı.
-  SIRADAKİ: mali müşavir P (planlar + kural kitabı) ‖ P6 WhatsApp planı + sorular → kullanıcı soruları (B1, G13, W) → 1. dalga.
+  P6 YAZILDI (docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md). KULLANICI KARARLARI (05.11 ~18:35, WhatsApp): S-W1 n3 = "İkinci de gitsin" (bugünkü davranış; ilke (2)'nin bu duruma özel
+  istisnası); S-W2 = "Sayılmasın" (Süresi Doldu ileti 24 sa sınırına sayılmaz); S-W3 = "1 yıl + anonim iz" (içerik / telefon / PDF 1 yıl ya da talepte hemen silinir, anonim iz kalır). Kâhin buna göre (WK).
+  SIRADAKİ: mali müşavir P (planlar + kural kitabı, sürüyor) → kullanıcı soruları (B1, G13, çekirdek §12'den para kuralı olanlar) → 1. dalga.
   ORTAM (kullanıcı 05.11: "30 dk bir ara rapor ver, biten işlerin üstünü çiz. 3saate bir de yenilenen ortam kopması için alarm kur"): 30 dk rapor CronCreate d19be8cc ("7,37 * * * *", oturuma bağlı; kapsayıcı yenilenince ve 7 günde
   düşer) — İSTEM: "30 DK ARA RAPOR: TaskList'i oku; Türkçe kısa ara rapor: bitenler ~~üstü çizili~~, süren kalın, ajan durumu, yalnız yeni push'un CI'si (yoklama yok), sıradaki adım ve beklenen karar; değişiklik yoksa tek satır";
   ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (sunucu tarafı, 3 saatte bir :18 UTC, bu oturuma; rapor görevi yoksa yeniden kurar). İş listesi oturumda TaskList'te (docs/2.5.0-IS-LISTESI.md "başla"da açılır).

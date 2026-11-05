@@ -42,7 +42,14 @@ her kişinin bir gönderme yolu kalır; (5) taşınan / geri yüklenen veride ay
 7. Geri yükleme / devir Geri Al sonrası aynı dönem gönderimi.
 8. Kaldır → yeniden bağla → kuyruktaki eski işler.
 
-## 4. Kullanıcıya sorulacaklar (ders 43, 45 — iki seçenek + öneri)
+## 4. KULLANICI KARARLARI (05.11.2026 ~18:35 UTC, AskUserQuestion; aynen)
+- S-W1 (n3) = "İkinci de gitsin" → bugünkü davranış KALIR (kod değişmez); n3 BİLİNEN SINIR değil KARAR. Genel ilke (2)'nin bu duruma özel istisnası (kullanıcı kararı).
+  WhatsApp kâhini "kuyruktaki ikinci iş, birincinin teslimi beklenirken de gider" kuralına göre (ders 40: kural karar metninden).
+- S-W2 (SORU 2) = "Sayılmasın" → bugünkü kural KALIR (Süresi Doldu ileti 24 saatlik alıcı sınırına sayılmaz). WhatsApp kâhini buna göre güncellenir (`pencere_farkli_alici`
+  ailesindeki TTL farkları kural farkı olarak kapanır).
+- S-W3 (W-3) = "1 yıl + anonim iz (Önerilen)" → içerik, telefon ve PDF 1 yıl sonra ya da silme talebinde hemen silinir; tarih, dönem, cari kimliği ve şablon adı anonim iz kalır.
+
+## 4a. Sorulan sorular (ders 43, 45 — iki seçenek + öneri; KAYIT)
 - S-W1 (n3): Kuyrukta bekleyen ikinci iş, aynı kişiye aynı dönem için gönderilmiş ve teslimi beklenen ("Meta Kabul Etti") bir ileti varken ne olsun?
   A (ÖNERİ): elenir ("Zaten Gönderiliyor"); birinci Başarısız olursa ikinci için onaylı "Yine de Gönder" yolu açılır — ilke 2 ("almış olabilirse elenir").
   B: ikinci de gider (bugünkü davranış; nadiren aynı kişiye 2 ileti).
