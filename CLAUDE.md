@@ -385,7 +385,23 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
 - 2.5.0 PLANLAMA (05.11.2026, 2.5.0 oturumu, dal claude/epic-thompson-w0lc2l; eski oturumun dalı claude/compassionate-galileo-f9kghg / PR #40 — buradan oraya yazılmaz). Kullanıcı: "2.5.0'a başlıyoruz …
   önce planlamayı yapalım"; MUHASEBE ÇEKİRDEĞİ talimatı AYNEN docs/erp/MUHASEBE-CEKIRDEGI-TALIMATI.md (not: "devir modülü ile birlikte yürütmek daha sağlıklı"). Kapsam önerisi + koddan kör noktalar
   (tablo sınıflaması eski; devir faturası işareti 146 okuma yeri; devir yedeği SAFETY_KEEP=20 ile budanır, arşiv yedekte yok; kilit izi türetilmiş defteri korumuyor; mükellef türü yok; geç gelen
-  Aralık faturası; App Review'da business_management yok → W-1) kullanıcıya verildi. KARAR BEKLENİYOR: kapsam aşamalaması, mükellef türü, Devri Yenile, devirde açılış karşı hesabı. "başla"dan önce kod yok.
+  Aralık faturası; App Review'da business_management yok → W-1) kullanıcıya verildi. "başla"dan önce kod yok.
+  KULLANICI KARARI (05.11, aynen): "kapsam a olsun, sorularına en güncel mevzuata ve piyasadaki progrmların en yaygın kullandığı şekilde yapalım. ayrıca kodu bilmeyen bir uzman mali müşavir
+  ajanını da baştan yazalım. son adayı uzun koşuya göndermeden ondan geçsin uygunsa?" → KAPSAM A: 2.5.0 = devir modülü + çekirdek temeli (hesap planı eksikleri + alt hesap, saklanan fiş defteri,
+  kilitli dönemin defterini dondurma, Defter Türü, Büyük Defter, Gelir Tablosu + Bilanço, açılış düzeni 30.10, B1) + mutabakat testi yıl hatası + W-1 (süre izleme + uyarı) + W-2. 2.5.1 / 2.6.0: elle Mahsup
+  Fişi ekranı, düzenlenebilir hesap planı, amortisman, tahakkuk, stok maliyet yöntemi, mali analiz, nakit akış ve özkaynak tabloları, mali müşavire aktarım, İşletme Hesabı Özeti, Serbest Meslek özeti.
+  HEDEF: devir 1 Ocak'tan önce yayında (KARAR 26.10; ERP haritasındaki "Aralık başı" daha eski). KESME ÇİZGİSİ (BAŞ MİMAR): gecikirse Bilanço / Gelir Tablosu ekranları 2.5.1'e kayar; devir + çekirdek altyapısı + W-1 kalır.
+  "EN GÜNCEL MEVZUAT + EN YAYGIN" İLE UYGULANAN (BAŞ MİMAR KARARI, ders 40; mali müşavir ajanı P incelemesinde kaynakla doğrular): S2 şirket ayarında Defter Türü (Bilanço Esası / İşletme Hesabı Esası /
+  Serbest Meslek Kazanç Defteri); Bilanço ve Gelir Tablosu bilanço esasında resmî biçimde, ötekilerde "Bilgi Amaçlı" etiketiyle. S3 Devri Yenile 2.5.0'da (20.10 "Devri Güncelle yok / eski yıla yazma yok" kararının
+  YERİNE; gerekçe: yıl sonu düzeltmeleri beyanname dönemine (Mart / Nisan) kadar sürer, yaygın genel muhasebe programlarında devir yeniden yapılabilir; yetkili kişi arşivi gerekçeyle açar, açılışlar çift kayıtsız
+  yeniden üretilir). S4 modül açılışları geçici "Eşleştirilecek Açılış Bakiyeleri"ne; devir açılış fişi onu arşivin kapanış bilançosuyla kendiliğinden eşleştirir (her bilanço hesabı kapanış = açılış).
+  S5 hatırlatıcı trig_01DE8bFDurzMRT6thbptBrQM zaten kapalı (26.10'dan beri), dokunulmadı.
+  MALİ MÜŞAVİR AJANI (KABUL): görev tanımı docs/erp/MALI-MUSAVIR-AJANI.md (kodu görmez, xhigh, her temas yeni ajan). P: plan + MUHASEBELEŞTİRME KURAL KİTABI (kâhinden önce); A: çekirdek temeli
+  sonrası ara kabul; S: son aday — tam kapıdan ve Uzun Doğrulama'dan ÖNCE, UI/UX ajanıyla paralel (tam kapı bir kez koşsun diye kapıdan önce). "başla"da .claude/agents/mali-musavir.md + prensip katmanı
+  (ilk kod gönderimiyle, ders 26). ÖNERİ: Bilanço / Gelir Tablosu satışa sunulmadan önce gerçek bir SMMM incelemesi.
+  "başla" SIRASI: (0) rapor görevi, docs/2.5.0-IS-LISTESI.md + BELGE_YOLLARI (+ci.yml, test), ajan tanımı + prensip; (1) DEVIR-PLANI D0 güncellemesi (kör noktalar, tablo sınıflaması koddan) +
+  docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md (nasıl bozulur, hacim bütçesi) → mali müşavir P → kullanıcı onayı; (2) kâhin (kodu görmeyen, kural kitabından); (3) kod: yıl hatası → çekirdek temeli → mali müşavir A
+  → devir + Devri Yenile → W-1/W-2; (4) aday → mali müşavir S + UI/UX → düzeltme + dar kontrol → tam kapı → CI + UD + windows.yml ×2 → paket.
 - 2.4.8 KARARLARI (30.10–02.11.2026; 2.4.8 YAYIMLANDI; "2.4.8 BAŞLADI", "YETKİ + TESLİM TALİMATI", "TALİMAT 31.10" ve bütün 30.10–02.11 KARAR / İSTEK satırlarının tam metin GECMIS-KARARLAR "Arşiv 02.11.2026 (3)";
   ayrıntı docs/2.4.8-IS-LISTESI.md). SÜRENLER:
   WHATSAPP "KİME KAÇ KEZ" GENEL İLKESİ (31.10 "a"; benzer sorular tek tek SORULMAZ, ilkeyle uygulanır, iş listesine ve teslim notuna "İLKEYLE" yazılır): (1) kesin ALMADIYSA sayılmaz
