@@ -1,0 +1,301 @@
+TAP version 13
+# (node:30628) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi
+    # Subtest: Yol 1 (Elle Bağla): süresiz sayılır — 400 gün sonra da uyarı yok, gönderim açık; bildirim ucu göstermez ve gün yazmaz
+    not ok 1 - Yol 1 (Elle Bağla): süresiz sayılır — 400 gün sonra da uyarı yok, gönderim açık; bildirim ucu göstermez ve gün yazmaz
+      ---
+      duration_ms: 545.461543
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:53:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'manual',
+        +   undefined,
+        +   undefined,
+        +   undefined
+        -   'ok',
+        -   null,
+        -   ''
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'manual'
+        1: 'ok'
+        2: ~
+        3: ''
+      actual:
+        0: 'manual'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:58:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe 7 gün kala 'doluyor' (gün sayısı), bitişte 'Süresi Doldu' — gönderim / önizleme / deneme 409 Türkçe neden, Meta'ya ileti yok; Bağlantıyı Sına açık; Yeniden Bağla yeni 60 gün
+    not ok 2 - Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe 7 gün kala 'doluyor' (gün sayısı), bitişte 'Süresi Doldu' — gönderim / önizleme / deneme 409 Türkçe neden, Meta'ya ileti yok; Bağlantıyı Sına açık; Yeniden Bağla yeni 60 gün
+      ---
+      duration_ms: 364.048349
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:71:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   undefined,
+        +   undefined,
+        +   undefined
+        -   '2027-01-04T07:00:00.000Z',
+        -   'default',
+        -   'ok',
+        -   60
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2027-01-04T07:00:00.000Z'
+        1: 'default'
+        2: 'ok'
+        3: 60
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:77:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği göndermeden duraklatır (neden 'süresi doldu'); Devam Et 409; Yeniden Bağla → Devam Et → kalan kişilere gider, aynı kişiye ikinci ileti yok
+    not ok 3 - süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği göndermeden duraklatır (neden 'süresi doldu'); Devam Et 409; Yeniden Bağla → Devam Et → kalan kişilere gider, aynı kişiye ikinci ileti yok
+      ---
+      duration_ms: 535.216435
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:121:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        toplu iş duraklatıldı (geldi done)
+        
+        'done' !== 'paused'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'paused'
+      actual: 'done'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:138:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlantı 'Süresi Doldu' (Meta); toplu iş duraklar, yeni gönderim / Devam Et 409; yeni belirteçle Yeniden Bağla → Devam Et; Sına başarılıysa kalkar
+    not ok 4 - Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlantı 'Süresi Doldu' (Meta); toplu iş duraklar, yeni gönderim / Devam Et 409; yeni belirteçle Yeniden Bağla → Devam Et; Sına başarılıysa kalkar
+      ---
+      duration_ms: 405.112152
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:156:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   undefined
+        -   'expired',
+        -   'meta'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'expired'
+        1: 'meta'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:169:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış): Süresi Doldu DEĞİL, 'Sınama Başarısız' kalır; Meta 'süresi doldu' derse (alt kod 463) çalışmamış belirteçte de Süresi Doldu
+    not ok 5 - Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış): Süresi Doldu DEĞİL, 'Sınama Başarısız' kalır; Meta 'süresi doldu' derse (alt kod 463) çalışmamış belirteçte de Süresi Doldu
+      ---
+      duration_ms: 435.134305
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:205:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yanlış yazılmış belirteç: Sınama Başarısız (Süresi Doldu değil)
+        + actual - expected
+        
+          [
+        +   undefined,
+        -   'ok',
+            false
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'ok'
+        1: false
+      actual:
+        1: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:212:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ, kullanıcı başına (programın yerel günü); süre dolunca da günde bir; yetkisiz kullanıcıya uç 403
+    not ok 6 - bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ, kullanıcı başına (programın yerel günü); süre dolunca da günde bir; yetkisiz kullanıcıya uç 403
+      ---
+      duration_ms: 646.515007
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:223:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bildirim ucu 404: {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        notice (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:41:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:229:21)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Yol 2 süresi Meta yanıtında varsa kaydedilir: expires_in → bağlanma + o süre; data_access_expires_at yalnız KISALTIR; geçersiz değer yok sayılır (60 gün)
+    not ok 7 - Yol 2 süresi Meta yanıtında varsa kaydedilir: expires_in → bağlanma + o süre; data_access_expires_at yalnız KISALTIR; geçersiz değer yok sayılır (60 gün)
+      ---
+      duration_ms: 389.118728
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:256:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"expiresIn":3600} → undefined
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   undefined
+        -   '2026-11-05T08:00:00.000Z',
+        -   'meta'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-11-05T08:00:00.000Z'
+        1: 'meta'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:273:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WhatsApp'ı Bağla rotası uçtan uca (kapıcı taklidi): kapıcı Meta'nın expires_in'ini aktarırsa o süre, aktarmazsa (bugünkü kapıcı) bağlanma + 60 gün
+    not ok 8 - WhatsApp'ı Bağla rotası uçtan uca (kapıcı taklidi): kapıcı Meta'nın expires_in'ini aktarırsa o süre, aktarmazsa (bugünkü kapıcı) bağlanma + 60 gün
+      ---
+      duration_ms: 418.955406
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:280:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   undefined
+        -   '2027-01-03T07:00:00.000Z',
+        -   'meta'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2027-01-03T07:00:00.000Z'
+        1: 'meta'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:302:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ek denetim — 2.5.0 öncesi Yol 2 kaydı (süre alanları yok): bağlanma anı + 60 gün sayılır; Yol 1 kaydı süresiz (gerçek eski kodla göç: test/whatsapp-w1a-goc-250.mjs)
+    not ok 9 - ek denetim — 2.5.0 öncesi Yol 2 kaydı (süre alanları yok): bağlanma anı + 60 gün sayılır; Yol 1 kaydı süresiz (gerçek eski kodla göç: test/whatsapp-w1a-goc-250.mjs)
+      ---
+      duration_ms: 427.712675
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:310:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bağlanma anı (embedded.at) + 60 gün
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   undefined
+        -   '2027-01-04T07:00:00.000Z',
+        -   'default'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2027-01-04T07:00:00.000Z'
+        1: 'default'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:323:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 1 - 2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi
+  ---
+  duration_ms: 4170.229249
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:52:1'
+  failureType: 'subtestsFailed'
+  error: '9 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 0
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4553.044357

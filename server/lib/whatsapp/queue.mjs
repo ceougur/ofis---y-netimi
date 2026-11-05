@@ -635,6 +635,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // "Gönder" onay işaretlenene dek pasif kalır); toplu iş açma reddeder.
   // T2-8: aynı engel süren toplu işte de geçerlidir — Devam Et reddedilir, işçi her adımda ve ileti isteğinden hemen önce denetler (pauseCode / pauseReason).
   function startBlock() {
+    // 2.5.0 W-1(a) / W-2: bağlantının süresi doldu (Meta 190 ya da bitiş anı geçti) ya da bağlantı kaldırılıyor — yeni gönderim başlatılamaz, süren toplu iş duraklar
+    // (Yeniden Bağla → Devam Et). Neden görünür Türkçe yazı (lib/whatsapp/connection.mjs sendBlock).
+    const link = connection.sendBlock?.();
+    if (link) return link;
     if (!ack()) {
       return {
         code: "whatsapp-ack-required",
@@ -668,6 +672,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   async function preview(user, body) {
     const record = connected();
     if (!writable()) fail(403, "Program salt okunur çalışıyor; WhatsApp gönderimi başlatılamaz.", "LICENSE_READ_ONLY");
+    // 2.5.0 W-1(a): süresi dolan bağlantıda önizleme Meta'ya okuma isteği göndermeden nedeni söyler.
+    const link = connection.sendBlock?.();
+    if (link) fail(409, link.message, link.code);
     const kind = body.kind === "reminder" ? "reminder" : "statement";
     const { graph } = connection.client();
     let limitInfo;
@@ -896,6 +903,16 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const result = await createBatch(user, { kind: row.kind, ids: [job.account_id], requestId: body.requestId }, { inherit: job, period: periodOfRow(row) });
     audit(user, "whatsapp.job.send-anyway", job.id, { batchId: result.batch.id });
     return result;
+  }
+
+  // 2.5.0 W-2 (plan WHATSAPP-PAKETI-2.5.0 §1 W-2; İLKEYLE ilke 1): Bağlantıyı Kaldır — bu şirketin süren ve duraklatılmış toplu işleri "Durduruldu"; gönderilmemiş
+  // kişilere ileti gitmedi, sayılmaz (defterde neden "removed": Meta Bekletti iş de sayılmaz — lib/whatsapp/defter.mjs R3, iptal / geri yükleme ile aynı). Gönderiliyor'daki
+  // iş Meta'nın yanıtıyla kendi yolunda sonuçlanır; Meta Kabul Etti / Sonucu Belirsiz iş değişmez. Dönüş: durdurulan toplu iş sayısı.
+  const REMOVED_REASON = "Bağlantı Kaldırıldı — Durduruldu: WhatsApp bağlantısı kaldırıldı; gönderilmemiş kişilere gönderilmedi. Yeniden bağlandıktan sonra gerekirse yeni gönderim başlatın.";
+  function stopForRemoval() {
+    const rows = store.all("SELECT * FROM wa_batches WHERE state IN ('running', 'paused') ORDER BY created_at, rowid");
+    for (const row of rows) stopBatch(row, REMOVED_REASON, "removed");
+    return rows.length;
   }
 
   // ---------- İşçi ----------
@@ -1257,8 +1274,11 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     job = ready.job;
     // T2-8: onay PDF yüklenirken kaldırılmış olabilir — ileti isteğinden hemen önce yeniden denetlenir; iş Bekliyor'a döner, toplu iş duraklar.
+    // 2.5.0 W-1(a): PDF hazırlığında Meta'nın verdiği hata (ör. 190 — bağlantıyı tam bu adımda "Süresi Doldu" yapar) kendi yolundan işlenir (§7a 13: hatayı alan iş
+    // Başarısız, toplu iş Meta'nın nedeniyle duraklar); bu adımda doğan "Süresi Doldu" engeli onu ezmez. Sonraki adımda (Devam Et dahil) engel geçerlidir.
+    const ownMetaError = prepareError instanceof MetaGraphError && prepareError.reason === "meta";
     const lateBlock = startBlock();
-    if (lateBlock) {
+    if (lateBlock && !(ownMetaError && lateBlock.code === "whatsapp-token-expired")) {
       updateJob(job.id, { state: "pending" });
       pauseBatch(ready.batch, lateBlock.pauseCode, lateBlock.pauseReason);
       return { did: true };
@@ -2158,5 +2178,5 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     writeLock?.mark(companyId);
     syncLockNote();
   };
-  return { canWrite, markLocked, connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate, forgetTemplates };
+  return { canWrite, markLocked, connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate, forgetTemplates, stopForRemoval };
 }

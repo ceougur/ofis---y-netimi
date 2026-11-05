@@ -1023,6 +1023,9 @@ td.adm-row-actions > .hof-button + .hof-button {
 .adm-wa-why { margin: 8px 0 0; color: var(--hof-muted, #5f6b76); font-size: 13px; }
 /* 2.4.9 UI tur B (ORTA-3): Meta'nın ham iletisi (İngilizce, uzun) neden satırının altında küçük; uzun sözcük satırı taşırmaz. */
 .adm-wa-why.adm-wa-meta { margin-top: 4px; font-size: 12px; overflow-wrap: anywhere; }
+/* 2.5.0 W-1(a): bağlantının süresi doluyor (uyarı) / doldu (hata) satırı — kartın başında, görünür. */
+.adm-wa-token { margin: 12px 0 0; padding: 8px 10px; border-left: 3px solid var(--do-warn, #8a5810); background: var(--do-surface-soft, #f5f6f8); font-size: 13px; font-weight: 600; }
+.adm-wa-token.is-expired { border-left-color: var(--do-danger, #b42318); background: var(--do-danger-soft, #fdecea); color: var(--do-danger, #b42318); }
 
 /* 2.4.8 W5: Yönetim → WhatsApp → Bilgilendirme Şablonları (hof-whatsapp-sablon.js). */
 .adm-wa-templates { margin-top: 16px; }

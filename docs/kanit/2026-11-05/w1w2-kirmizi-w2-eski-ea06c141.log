@@ -1,0 +1,206 @@
+TAP version 13
+# (node:30676) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da
+    # Subtest: Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)
+    not ok 1 - Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)
+      ---
+      duration_ms: 519.273797
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:43:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   undefined,
+        +   undefined
+        -   true,
+        -   'removed'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: true
+        1: 'removed'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:52:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'
+    not ok 2 - aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'
+      ---
+      duration_ms: 2507.763149
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:70:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul: ilk Kaldır Meta'da bekliyor
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:78:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme
+    not ok 3 - Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme
+      ---
+      duration_ms: 407.947441
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:95:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Meta reddi: removal.removed
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        failedAtMeta (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:33:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:106:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK
+    not ok 4 - Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK
+      ---
+      duration_ms: 351.425803
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:137:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Meta adresi yok: removal.removed
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        failedAtMeta (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:33:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:145:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'
+    not ok 5 - bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 571.40753
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        üç toplu iş durduruldu (undefined)
+        
+        undefined !== 3
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:180:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir
+    not ok 6 - iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir
+      ---
+      duration_ms: 533.460829
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:204:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            false,
+        +   undefined,
+        +   undefined
+        -   'skipped',
+        -   'shared'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: false
+        1: 'skipped'
+        2: 'shared'
+      actual:
+        0: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:212:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ
+    not ok 7 - Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ
+      ---
+      duration_ms: 2420.581555
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:224:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul: Kaldır Meta'da bekliyor
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:231:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 1 - 2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da
+  ---
+  duration_ms: 7314.304655
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski/test/whatsapp-w2-kaldir-250.test.mjs:42:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 0
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7721.224088

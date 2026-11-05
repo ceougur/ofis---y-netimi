@@ -236,6 +236,15 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
         if (!state.subscriptions.length && !state.override) return reply(200, { data: [] });
         return reply(200, { data: [{ whatsapp_business_api_data: { id: appId, link: `https://www.facebook.com/games/?app_id=${appId}`, name: "DestekOfis Mesaj" }, ...(state.override ? { override_callback_uri: state.override } : {}) }] });
       }
+      // 2.5.0 W-2 (aynı el — kâhin DEĞİL): abonelik silme — DELETE /<WABA_ID>/subscribed_apps → { success: true } (Meta belgesi embedded-signup/webhooks "Unsubscribe").
+      // Abonelik ve alternatif adres gider; state.unsubscribes silme isteklerini sayar.
+      if (req.method === "DELETE" && parts.length === 2 && parts[1] === "subscribed_apps") {
+        if (parts[0] !== wabaId) return reply(400, metaError(100, `Unsupported delete request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
+        (state.unsubscribes ||= []).push({ at: Date.now() });
+        state.subscriptions = [];
+        state.override = null;
+        return reply(200, { success: true });
+      }
       // 2.4.8 W7 (aynı el — kâhin DEĞİL): WhatsApp'ı Bağla sonrası numara kaydı (6 haneli PIN) ve birlikte kullanım eşitlemesi.
       if (req.method === "POST" && parts.length === 2 && (parts[1] === "register" || parts[1] === "smb_app_data")) {
         if (parts[0] !== phoneNumberId) return reply(400, metaError(100, `Unsupported post request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));

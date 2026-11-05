@@ -1,0 +1,61 @@
+TAP version 13
+# (node:12888) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da
+    # Subtest: Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)
+    ok 1 - Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)
+      ---
+      duration_ms: 558.277585
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'
+    ok 2 - aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'
+      ---
+      duration_ms: 391.766462
+      type: 'test'
+      ...
+    # Subtest: Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme
+    ok 3 - Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme
+      ---
+      duration_ms: 501.515531
+      type: 'test'
+      ...
+    # Subtest: Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK
+    ok 4 - Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK
+      ---
+      duration_ms: 434.025099
+      type: 'test'
+      ...
+    # Subtest: bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'
+    ok 5 - bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 736.889756
+      type: 'test'
+      ...
+    # Subtest: iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir
+    ok 6 - iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir
+      ---
+      duration_ms: 636.860372
+      type: 'test'
+      ...
+    # Subtest: Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ
+    ok 7 - Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ
+      ---
+      duration_ms: 519.886893
+      type: 'test'
+      ...
+    1..7
+ok 1 - 2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da
+  ---
+  duration_ms: 3781.823359
+  type: 'suite'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4263.638753

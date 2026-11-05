@@ -138,7 +138,7 @@ const SENT_BEFORE_SQL = (outer, tail) => `${outer} FROM (SELECT c.account_id AS 
                 OR EXISTS (SELECT 1 FROM learned_wamids l WHERE l.job_id = c.job_id AND l.attempt = c.attempt))
               AND NOT (EXISTS (SELECT 1 FROM releases r WHERE r.job_id = c.job_id AND r.attempt = c.attempt)
                 AND COALESCE((SELECT l.event || ':' || l.reason FROM batch_log l WHERE l.batch_id = c.batch_id ORDER BY l.seq DESC LIMIT 1),
-                  (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') IN ('stop:canceled', 'stop:restored', 'stop:moved', 'stop:reset')))
+                  (SELECT 'stop:' || s.reason FROM batch_events s WHERE s.batch_id = c.batch_id AND s.event = 'stop'), '') IN ('stop:canceled', 'stop:restored', 'stop:moved', 'stop:reset', 'stop:removed')))
           OR EXISTS (SELECT 1 FROM deliveries d WHERE d.job_id = c.job_id))
       ${tail}`;
 // "Sonucu Belirsiz" sorgusu (aşağıdaki q.unsettled açıklaması). extra: İş Q1'in eşleşen anahtar sütunları.
@@ -249,6 +249,8 @@ function buildWaLedger(db, { file, log, fault }) {
     // sayılmaz; 'stop:moved' bu defterde açılmış bir toplu işe ancak veri başka şirkete geri yüklenince yazılır. KULLANICI KARARI ("KİME KAÇ KEZ" ilkesi, S3): Şirket
     // Verisini Sıfırla ('stop:reset'; "Yalnız Hareketler" carileri bırakır) ile duran da sayılmaz. Testler: test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs,
     // test/whatsapp-dk9-ilke-248.test.mjs.
+    // 2.5.0 W-2 (plan WHATSAPP-PAKETI-2.5.0 §1 W-2, İLKEYLE ilke 1): Bağlantıyı Kaldır ('stop:removed'; bekleyen işler "Durduruldu") ile duran Meta Bekletti de aynı
+    // kuralla SAYILMAZ (bir daha denenmeyecek); geç teslim sayılır. Test: test/whatsapp-w2-kaldir-250.test.mjs.
     // KULLANICI KARARI ("KİME KAÇ KEZ" ilkesi, S4): kabul SON DENEME bazında — son deneme Meta'ca kabul edilmiş (eşzamanlı ya da sonradan öğrenilen wamid) olmalı; Meta
     // Bekletti'den sonra 2. deneme Sonucu Belirsiz / sonuçsuzsa 1. denemenin kabulü kişiyi "aldı" saymaz (almış olabilir → unsettled; işteki Yine de Gönder çıkmazsız).
     // "after" (asıl işin "Yine de Gönder" sınırı, yerel saatle açılış anı) TALEP anıyla (claims.at, yerel saat, istekten hemen önce) karşılaştırılır, kabul anıyla

@@ -1,0 +1,38 @@
+{
+  "ad": "w1w2-whatsapp-birim-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 test/whatsapp-*.test.mjs",
+  "commit": "90daaddca7320d8d984f0e4eada3499b6c485cc4",
+  "dal": "worktree-agent-aa5b96b53dfc0441d",
+  "kirli": 0,
+  "izlenmeyen": 29,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:01:22.221Z",
+  "sure_sn": 572,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 522,
+    "gecen": 521,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 W2 — belirteç hiçbir çıktıya sızmaz › toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz",
+      "konum": "test/whatsapp-w2-veri-248.test.mjs:476:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'token-expired' (beklenen meta-token, gelen token-expired)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/w1w2-whatsapp-birim-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa5b96b53dfc0441d",
+  "ham_cikti_sha256": "e73be860480157234524e2414b21e1d55d56ff1de1e65cf621426cc421d90530",
+  "ham_cikti_bayt": 233316
+}

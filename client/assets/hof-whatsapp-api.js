@@ -578,5 +578,24 @@
     };
   }
 
-  HOF.whatsappApi = { status, usageBlock, ready, mount, KIND_TITLES };
+  // 2.5.0 W-1(a): WhatsApp bağlantısının süresi doluyor (bitişe 7 gün kala) / doldu — Yeniden Bağla'yı yapabilen yöneticiye kullanıcı başına günde EN ÇOK BİR KEZ
+  // bildirim. Kararı sunucu verir (POST …/connection/expiry-notice; Kritik stok bildirimiyle aynı düzen): ilk açılışta ve gün dönümünde (alerts.refresh) sorulur.
+  async function expiryNotice() {
+    // Salt okunur lisansta gönderim zaten yok ve yazma isteği reddedilir (Yönetim → WhatsApp satırı yine gösterir).
+    if (!HOF.can("system.manage") || HOF.user?.license?.writable === false) return;
+    let answer;
+    try {
+      answer = await HOF.api(`${BASE}/connection/expiry-notice`, { method: "POST", body: {}, background: true });
+    } catch {
+      return; // salt okunur lisans / bağlantı yok: bildirim yok
+    }
+    if (!answer?.show || !answer.message) return;
+    HOF.toast(answer.message, { type: answer.state === "expired" ? "error" : "warn", timeout: 20000, action: { label: "Yeniden Bağla", onClick: () => window.open("/admin.html#whatsapp", "_blank", "noopener") } });
+  }
+  HOF.whenReady(() => {
+    setTimeout(expiryNotice, 2500);
+    HOF.on("live:alerts.refresh", () => expiryNotice());
+  });
+
+  HOF.whatsappApi = { status, usageBlock, ready, mount, KIND_TITLES, expiryNotice };
 })();

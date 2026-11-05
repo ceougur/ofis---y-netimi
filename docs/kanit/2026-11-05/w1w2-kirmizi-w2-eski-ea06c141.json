@@ -1,0 +1,68 @@
+{
+  "ad": "w1w2-kirmizi-w2-eski-ea06c141",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski && node --test --test-timeout=120000 test/whatsapp-w2-kaldir-250.test.mjs",
+  "commit": "90daaddca7320d8d984f0e4eada3499b6c485cc4",
+  "dal": "worktree-agent-aa5b96b53dfc0441d",
+  "kirli": 0,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:43:06.257Z",
+  "sure_sn": 7.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 0,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:43:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:70:3",
+      "hata": "ön koşul: ilk Kaldır Meta'da bekliyor · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:95:3",
+      "hata": "Meta reddi: removal.removed · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:137:3",
+      "hata": "Meta adresi yok: removal.removed · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:153:3",
+      "hata": "üç toplu iş durduruldu (undefined) · undefined !== 3"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:204:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:224:3",
+      "hata": "ön koşul: Kaldır Meta'da bekliyor · 0 !== 1 (beklenen 1, gelen 0)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/w1w2-kirmizi-w2-eski-ea06c141.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa5b96b53dfc0441d",
+  "ham_cikti_sha256": "c91286506c47a7b1b2ad94693d60c2118d2a4ab8614433ff4a69d0df804f8a14",
+  "ham_cikti_bayt": 10284
+}

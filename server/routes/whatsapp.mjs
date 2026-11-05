@@ -189,12 +189,20 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   // ---------- 2.4.8 W1: WhatsApp Business API bağlantısı ----------
   // onChange (W2/W9): ortak katmanın kaydı (tünel kuralı) — lib/whatsapp/hub.mjs. T2-3/4: durum bildirimi adresinin kaydı WABA düzeyinde, makine defterinde
   // (whatsapp.ledger; şirket dosyasının dışında — geri yükleme / sıfırlama bozmaz); publicUrl: Bağlantıyı Sına kanca adresini Meta'dakiyle karşılaştırır.
-  const connection = createWhatsappConnection({ store, config, audit, now: clock, onChange: summary => whatsapp?.registry?.set(companyId, summary), hooks: whatsapp?.ledger || null, publicUrl: () => mobileRemote?.publicUrl?.() || "" });
+  // 2.5.0 W-2 sharedWaba: aynı WABA bu bilgisayarda başka şirkette belirteçli bağlı mı (ortak kayıt; o zaman Bağlantıyı Kaldır Meta'daki ortak aboneliği silmez).
+  const sharedWaba = wabaId => Object.entries(whatsapp?.registry?.snapshot?.() || {}).some(([id, item]) => id !== String(companyId) && item?.configured && item.wabaId === String(wabaId));
+  const connection = createWhatsappConnection({ store, config, audit, now: clock, onChange: summary => whatsapp?.registry?.set(companyId, summary), hooks: whatsapp?.ledger || null, publicUrl: () => mobileRemote?.publicUrl?.() || "", sharedWaba });
   const writable = () => !license || license.writable();
   const view = () => connection.view({ writable: writable() });
   router.get("/api/workspace/whatsapp/connection", async ({ req, res }) => {
     auth.requirePermission(req, "system.manage");
     ok(res, view());
+  });
+  // 2.5.0 W-1(a): bağlantının süresi doluyor / doldu bildirimi — yöneticiye (Yeniden Bağla'yı yapabilen) kullanıcı başına günde EN ÇOK BİR KEZ. İlk soran "göster"
+  // yanıtını alır, aynı gün sonrakiler almaz (sunucunun günü); uyarı yoksa { show: false }. Bağlantı yoksa da { show: false } (istemci her açılışta sorar).
+  router.post("/api/workspace/whatsapp/connection/expiry-notice", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    ok(res, connection.expiryNotice(user));
   });
   router.put("/api/workspace/whatsapp/connection", async ({ req, res }) => {
     const user = auth.requirePermission(req, "system.manage");
@@ -203,10 +211,11 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     connection.save(user, body);
     ok(res, view());
   });
+  // 2.5.0 W-2: Meta'daki abonelik de silinir; yerel kayıt her durumda silinir; bekleyen gönderimler "Durduruldu". Yanıt: bağlantı görünümü + removal (Meta sonucu).
   router.delete("/api/workspace/whatsapp/connection", async ({ req, res }) => {
     const user = auth.requirePermission(req, "system.manage");
-    connection.remove(user);
-    ok(res, view());
+    const removal = await connection.remove(user, { stopSending: () => queue?.stopForRemoval?.() || 0 });
+    ok(res, { ...view(), removal });
   });
   router.post("/api/workspace/whatsapp/connection/test", async ({ req, res }) => {
     const user = auth.requirePermission(req, "system.manage");
@@ -248,7 +257,7 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; WhatsApp bağlanamaz.", { code: "LICENSE_READ_ONLY" });
     const result = await embedded.poll({ session: params.session, companyId });
     if (result.state !== "ready") return ok(res, { state: result.state, ...(result.message ? { message: result.message } : {}) });
-    connection.saveEmbedded(user, { token: result.token, wabaId: result.wabaId, phoneNumberId: result.phoneNumberId, olay: result.event, appId: result.appId });
+    connection.saveEmbedded(user, { token: result.token, wabaId: result.wabaId, phoneNumberId: result.phoneNumberId, olay: result.event, appId: result.appId, expiresIn: result.expiresIn, dataAccessExpiresAt: result.dataAccessExpiresAt });
     // Meta adımları (birlikte kullanımda eşitleme / değilse numara kaydı) ve Bağlantıyı Sına: hata bağlantıyı bozmaz, sonuç kartta.
     for (const step of [() => connection.embeddedSteps(user), () => connection.test(user)]) {
       try {
@@ -281,11 +290,13 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
       ? "Bu kurulumda WhatsApp Business API adresi tanımlı değil; Meta'ya bağlanılamaz."
       : !conn.tokenUsable
         ? "Kayıtlı erişim belirteci bu bilgisayarda açılamıyor; yönetici Yönetim → WhatsApp'ta belirteci yeniden girmeli."
-        : !conn.lastTest
-          ? "WhatsApp bağlantısı henüz sınanmadı; yönetici Yönetim → WhatsApp'ta Bağlantıyı Sına'ya basmalı."
-          : !tested
-            ? `WhatsApp bağlantısının son sınaması başarısız (${conn.lastTest.message || "neden bilinmiyor"}); yönetici Yönetim → WhatsApp'ta bilgileri düzeltip yeniden sınamalı.`
-            : "";
+        : conn.tokenExpiry?.state === "expired"
+          ? `${conn.tokenExpiry.expiredBy === "meta" ? "WhatsApp bağlantısının süresi doldu (Meta erişim belirtecini artık kabul etmiyor)" : "WhatsApp bağlantısının süresi doldu"}; yeni gönderim başlatılamaz. Yönetici Yönetim → WhatsApp'ta Yeniden Bağla ile bağlantıyı yenilemeli.`
+          : !conn.lastTest
+            ? "WhatsApp bağlantısı henüz sınanmadı; yönetici Yönetim → WhatsApp'ta Bağlantıyı Sına'ya basmalı."
+            : !tested
+              ? `WhatsApp bağlantısının son sınaması başarısız (${conn.lastTest.message || "neden bilinmiyor"}); yönetici Yönetim → WhatsApp'ta bilgileri düzeltip yeniden sınamalı.`
+              : "";
     const out = {
       ...base,
       mode: conn.mode,

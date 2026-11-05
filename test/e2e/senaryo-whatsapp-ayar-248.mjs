@@ -13,6 +13,9 @@
 //   A4c (2.4.9 UI tur B, ORTA-3) Meta abonelik kaydını reddedince (100 "must be subscribed"): Bağlantıyı Sına / Kaydet ve Sına UYARI bildirimi; neden düğmelerin altında
 //       Türkçe, hücrede yalnız "Kaydedilemedi · <tarih>", Meta'nın ham iletisi ayrı satırda; düzelince yeşil bildirim aynen. (A2: App ID yardımı Ekstre şablonunu söyler — D8.)
 //   A5 Bağlantıyı Kaldır (onay penceresi) → "Bağlı Değil"; ayar satırı silindi.
+//   A5b (2.5.0 W-2) Meta abonelik silmeyi reddederse bağlantı yine kaldırılır; uyarı "Meta tarafında kaldırılamadı" + Veri Silme Adımları düğmesi.
+//   A5c (2.5.0 W-1(a)) Yol 2 bağlantısı 53. gün: uyarı satırı, Bağlantı Süresi, Yeniden Bağla; ana ekranda günde bir bildirim; 60. gün Süresi Doldu, Kendime Deneme Gönder
+//       pasif + neden, Yeniden Bağla ve Bağlantıyı Sına etkin. A7'de gerçek kapıcıyla bağlanınca "60 gün kaldı".
 //   A6 yetkisiz (Personel): Yönetim açılmaz; API 403.
 //   2.4.8 W7 TAŞINAMAZ BAĞLANTI (bağımsız gözden geçirme ORTA; ikinci program + YEREL kapıcı https://kapi.destekofis.test + sahte Facebook SDK / Meta penceresi —
 //   Playwright yönlendirmesi, gerçek Meta'ya istek YOK; dış istek sayılır ve 0 beklenir):
@@ -410,14 +413,87 @@ await step("A4c Bildirim Yolu kaydedilemedi (Meta 100 abonelik): uyarı bildirim
   server.app.mobileRemote.setPublicUrl("");
 });
 
-await step("A5 Bağlantıyı Kaldır (onaylı) → Bağlı Değil; ayar satırı silindi", async () => {
+const unsubscribes = () => fake.requests.filter(item => item.method === "DELETE" && /\/subscribed_apps$/.test(item.path)).length;
+await step("A5 Bağlantıyı Kaldır (onaylı) → Bağlı Değil; ayar satırı silindi; 2.5.0 W-2: Meta'daki abonelik de silindi, yeşil bildirim", async () => {
+  await clearToasts();
   await page.click('[data-wa-action="remove"]');
   const modal = await topModal();
   ok(/kaldırılsın mı/.test(await text(modal)), "onay sorusu soruldu");
+  ok(/Meta'daki bildirim aboneliği de kaldırılır/.test(await text(modal)) && /bekleyen otomatik gönderimler durdurulur/.test(await text(modal)), "onay metni Meta aboneliğini ve bekleyen gönderimleri söylüyor");
   await page.click(`${modal} .hof-button-danger`);
   ok((await waitState("Bağlı Değil")) === "Bağlı Değil", "durum Bağlı Değil");
   ok(settingRow() === null, "veri tabanında bağlantı yok");
+  ok(unsubscribes() === 1, `Meta'ya bir abonelik silme isteği (${unsubscribes()})`);
+  const toasts = await firstToast();
+  ok(toasts.some(item => /hof-toast-success[^|]*\|WhatsApp bağlantısı kaldırıldı; Meta'daki abonelik de silindi\./.test(item)), `yeşil bildirim: ${toasts.join(" ‖ ")}`);
   await shot("06-kaldirildi");
+});
+
+// 2.5.0 W-2 (plan §1 W-2): Meta tarafı düşerse yerel kaldırma YİNE yapılır; uyarı + destekofis.net/veri-silme düğmesi.
+await step("A5b Meta abonelik silmeyi reddederse: bağlantı yine kaldırılır, uyarı bildirimi 'Meta tarafında kaldırılamadı' + Veri Silme Adımları düğmesi", async () => {
+  ok((await adminApi.put("/api/workspace/whatsapp/connection", { phoneNumberId: PNID, wabaId: WABA, appId: APP, token: TOKEN })).status === 200, "ön koşul: yeniden bağlandı");
+  await page.reload();
+  await page.waitForSelector('[data-wa-action="remove"]');
+  fake.set({ failNext: { match: /^DELETE \/\d+\/subscribed_apps$/, status: 400, body: { error: { message: "(#100) Invalid parameter", type: "OAuthException", code: 100, fbtrace_id: "AbCd" } } } });
+  await clearToasts();
+  await page.click('[data-wa-action="remove"]');
+  const modal = await topModal();
+  await page.click(`${modal} .hof-button-danger`);
+  ok((await waitState("Bağlı Değil")) === "Bağlı Değil", "durum Bağlı Değil (yerel kaldırma yapıldı)");
+  ok(settingRow() === null, "veri tabanında bağlantı yok");
+  const toasts = await firstToast();
+  ok(toasts.some(item => /hof-toast-warn[^|]*\|.*Meta tarafında kaldırılamadı.*destekofis\.net\/veri-silme/.test(item)), `uyarı bildirimi: ${toasts.join(" ‖ ")}`);
+  ok((await page.locator("#hof-toasts .hof-toast-action").allTextContents()).includes("Veri Silme Adımları"), "Veri Silme Adımları düğmesi");
+  await shot("06b-meta-kaldirilamadi");
+});
+
+// 2.5.0 W-1(a) (plan §1 W-1 (a)): Yol 2 bağlantısı bağlanma + 60 gün; bitişe 7 gün kala satır + günde bir bildirim; bitişte Süresi Doldu, deneme pasif + neden, Yeniden Bağla açık.
+await step("A5c belirteç süresi: 53. gün uyarı satırı + Yeniden Bağla; ana ekranda günde bir bildirim; 60. gün Süresi Doldu, Kendime Deneme Gönder pasif + neden, Yeniden Bağla ve Bağlantıyı Sına açık", async () => {
+  const clock = server.app.config.now;
+  const t0 = clock.ms();
+  try {
+    const admin = server.app.store.get("SELECT * FROM users WHERE username = 'admin'");
+    server.app.context.whatsapp.connection.saveEmbedded(admin, { token: TOKEN, wabaId: WABA, phoneNumberId: PNID, olay: "FINISH", appId: APP });
+    clock.set(t0 + 53 * 86_400_000);
+    // Sayfa zaten Yönetim → WhatsApp'ta (aynı adrese goto yenilemez): yeniden yüklenir.
+    await page.reload();
+    await page.waitForSelector("[data-wa-token-why]");
+    const why = await text("[data-wa-token-why]");
+    ok(why.startsWith("WhatsApp bağlantınızın süresi doluyor — yeniden bağlayın") && /7 gün kaldı/.test(why), `uyarı satırı: ${why}`);
+    ok(/tarihine kadar · 7 gün kaldı$/.test(await fact("tokenExpiry")), `Bağlantı Süresi: ${await fact("tokenExpiry")}`);
+    ok(await page.isVisible('[data-wa-action="reconnect"]') && !(await page.isDisabled('[data-wa-action="reconnect"]')), "Yeniden Bağla görünür ve etkin");
+    await shot("06c-suresi-doluyor");
+    // Ana ekran: yöneticiye bildirim (günde en çok bir kez).
+    const notices = () => page.evaluate(() => [...document.querySelectorAll("#hof-toasts .hof-toast")].filter(node => /süresi doluyor/.test(node.textContent)).length);
+    await page.goto(`${server.base}/`);
+    await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+    const shown = await page.waitForFunction(() => /süresi doluyor — yeniden bağlayın/.test(document.getElementById("hof-toasts")?.textContent || ""), null, { timeout: 15000 }).then(() => true, () => false);
+    ok(shown, "ana ekranda bildirim çıktı");
+    ok((await page.locator("#hof-toasts .hof-toast-action").allTextContents()).includes("Yeniden Bağla"), "bildirimde Yeniden Bağla düğmesi");
+    await page.reload();
+    await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+    await page.waitForTimeout(4000);
+    ok((await notices()) === 0, "aynı gün yeniden açılınca bildirim yok (günde en çok bir kez)");
+    // Bitiş: Süresi Doldu.
+    clock.set(t0 + 60 * 86_400_000 + 60_000);
+    await page.goto(`${server.base}/admin.html#whatsapp`);
+    ok((await waitState("Süresi Doldu")) === "Süresi Doldu", "durum Süresi Doldu");
+    ok(/süresi doldu/.test(await text("[data-wa-token-why]")), `neden satırı: ${await text("[data-wa-token-why]")}`);
+    ok(await page.isDisabled('[data-wa-action="self-test"]'), "Kendime Deneme Gönder pasif");
+    ok(/deneme iletisi gönderilemez/.test(await text("[data-wa-why-self]").catch(() => "")), `pasif düğmenin nedeni görünür: ${await text("[data-wa-why-self]").catch(() => "(yok)")}`);
+    ok(!(await page.isDisabled('[data-wa-action="reconnect"]')) && !(await page.isDisabled('[data-wa-action="test"]')), "Yeniden Bağla ve Bağlantıyı Sına etkin");
+    await shot("06d-suresi-doldu");
+    // Yeniden Bağla (WhatsApp'ı Bağla yolu): bu kurulumda kapıcı yok → açık ileti (düğme çalışır, kilitlenmez).
+    await clearToasts();
+    const popupPromise = page.waitForEvent("popup", { timeout: 5000 }).catch(() => null);
+    await page.click('[data-wa-action="reconnect"]');
+    const popup = await popupPromise;
+    ok(await page.waitForFunction(() => (document.getElementById("hof-toasts")?.textContent || "").includes("WhatsApp'ı Bağla bu kurulumda kullanılamıyor"), null, { timeout: 15000 }).then(() => true, () => false), "Yeniden Bağla WhatsApp'ı Bağla yolunu açtı (kapıcısız kurulumda açık ileti)");
+    if (popup) await popup.waitForEvent("close", { timeout: 5000 }).catch(() => null);
+  } finally {
+    clock.set(t0);
+    await adminApi.del("/api/workspace/whatsapp/connection").catch(() => null);
+  }
 });
 
 await step("A6 yetkisiz (Personel): Yönetim açılmaz, WhatsApp bağlantı API'si 403", async () => {
@@ -492,6 +568,8 @@ await step("A7 WhatsApp'ı Bağla uçtan uca: pencere → sır postMessage ile �
   await page2.bringToFront();
   ok((await page2.waitForFunction(() => document.querySelector("[data-wa-state]")?.textContent.trim() === "Bağlı", null, { timeout: 30000 }).then(() => true)), "program Bağlı");
   ok((await page2.textContent('[data-wa-fact="mode"] dd'))?.trim() === "WhatsApp'ı Bağla", "Bağlantı Yolu: WhatsApp'ı Bağla");
+  // 2.5.0 W-1(a): gerçek kapıcı Meta'nın süresini aktarmaz → bağlanma + 60 gün (yapılandırmanın süresi).
+  ok(/tarihine kadar · 60 gün kaldı$/.test((await page2.textContent('[data-wa-fact="tokenExpiry"] dd').catch(() => ""))?.trim() || ""), `Bağlantı Süresi: ${(await page2.textContent('[data-wa-fact="tokenExpiry"] dd').catch(() => ""))?.trim()}`);
   // App ID kapıcıdan gelir (bulgu ORTA: embedded kipte boştu → Ekstre şablonu açılamıyor, ileti olmayan "Bilgileri Değiştir"e gönderiyordu). Program bağlanınca
   // şablonları kendisi açar: örnek PDF /<App ID>/uploads ile yüklenir, Ekstre Meta'ya gönderilir.
   ok((await page2.textContent('[data-wa-fact="appId"] dd').catch(() => ""))?.trim() === W7.app, "Uygulama Kimliği kapıcıdan geldi");
