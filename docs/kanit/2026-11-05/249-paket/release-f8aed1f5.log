@@ -1,0 +1,6 @@
+✓ Doğrulama kapısı: f8aed1f CI YEŞİL, çalışma ağacı temiz
+✓ DestekOfis 2.4.9 güncelleme paketi (stable, anahtar destekofis-2026-1)
+  dist/guncelleme/destekofis-guncelleme-2.4.9.zip · 7580 KB · 329 dosya · sha256 8b627046d8f368b718728b4ee7e175c129b8e6b166f4000c0e2068516c35395a
+  dist/guncelleme/destekofis-guncelleme.json
+
+GitHub'da "v2.4.9" etiketiyle bir yayın (release) oluşturup bu iki dosyayı ekleyin.
