@@ -1274,8 +1274,11 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     job = ready.job;
     // T2-8: onay PDF yüklenirken kaldırılmış olabilir — ileti isteğinden hemen önce yeniden denetlenir; iş Bekliyor'a döner, toplu iş duraklar.
+    // 2.5.0 W-1(a): PDF hazırlığında Meta'nın verdiği hata (ör. 190 — bağlantıyı tam bu adımda "Süresi Doldu" yapar) kendi yolundan işlenir (§7a 13: hatayı alan iş
+    // Başarısız, toplu iş Meta'nın nedeniyle duraklar); bu adımda doğan "Süresi Doldu" engeli onu ezmez. Sonraki adımda (Devam Et dahil) engel geçerlidir.
+    const ownMetaError = prepareError instanceof MetaGraphError && prepareError.reason === "meta";
     const lateBlock = startBlock();
-    if (lateBlock) {
+    if (lateBlock && !(ownMetaError && lateBlock.code === "whatsapp-token-expired")) {
       updateJob(job.id, { state: "pending" });
       pauseBatch(ready.batch, lateBlock.pauseCode, lateBlock.pauseReason);
       return { did: true };
