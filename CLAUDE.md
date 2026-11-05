@@ -402,7 +402,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   "başla" SIRASI: (0) rapor görevi, docs/2.5.0-IS-LISTESI.md + BELGE_YOLLARI (+ci.yml, test), ajan tanımı + prensip; (1) DEVIR-PLANI D0 güncellemesi (kör noktalar, tablo sınıflaması koddan) +
   docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md (nasıl bozulur, hacim bütçesi) → mali müşavir P → kullanıcı onayı; (2) kâhin (kodu görmeyen, kural kitabından); (3) kod: yıl hatası → çekirdek temeli → mali müşavir A
   → devir + Devri Yenile → W-1/W-2; (4) aday → mali müşavir S + UI/UX → düzeltme + dar kontrol → tam kapı → CI + UD + windows.yml ×2 → paket.
-  2.5.0 BAŞLADI (05.11 ~17:00 UTC; kullanıcı: "tüm planlama tamamsa başla, 2.5.1 sürümüne kalan işleri de iş listesine yaz"): İŞ LİSTESİ docs/2.5.0-IS-LISTESI.md (A kapsam + dalgalar + eforlar,
+  2.5.0 BAŞLADI (05.11 ~16:25 UTC; kullanıcı: "tüm planlama tamamsa başla, 2.5.1 sürümüne kalan işleri de iş listesine yaz"): İŞ LİSTESİ docs/2.5.0-IS-LISTESI.md (A kapsam + dalgalar + eforlar,
   B 2.5.1'E KALAN, C sorular, D kararlar, E kayıt). OKUMA: planlama bitmeden plana bağlı kod yok; 0. dalga (0a BELGE_YOLLARI c503e486, 0c mali müşavir ajanı + prensip) YAPILDI; 0b mutabakat motoru yıl
   hatası 2.4.8'de ZATEN YAPILMIŞ (MZ 213efb6) — 2.4.8/2.4.9 teslim notu (d) satırı eskiydi, kullanıcıya düzeltildi. CI bu oturumda GitHub MCP ile okunur (gh bu ortamda yalnız arama; kanit.mjs ci gh kullanır);
   planlama (P1–P6) bitince 1. dalga kendiliğinden; ders 43/45 soruları önce kullanıcıya. P2 (defter mimarisi D0) BİTTİ: başlıca bulgular — defter cari açılışını is_opening değil AÇIKLAMADAN tanıyor;
@@ -410,7 +410,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   KEEP_SETTINGS (Sıfırla) Defter Türü anahtarını korumalı; B1 gecikmiş tanımı ekranlar arasında farklı (fatura dahil mi → kullanıcıya, WhatsApp elemesi). P4 YAZILDI (docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md).
   P1 (devir D0) BİTTİ → P3 YAZILDI (DEVIR-PLANI "G" bölümü, BAŞ MİMAR KARARLARI): kopyada üret + doğrula + takas (001 dahil bakım kipi), AYRI AÇIK KALEM (devir faturası işareti bırakıldı),
   tablo sınıflaması (edoc_usage / einvoice_inbox / audit_events dokunulmaz), kalıcı devir yedeği (arşiv + belgeler + secret.key), şema sürüm kapısı, Devri Yenile mekanizması, e-Belge numara tabanı.
-  P6 YAZILDI (docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md). KULLANICI KARARLARI (05.11 ~18:35, WhatsApp): S-W1 n3 = "İkinci de gitsin" (bugünkü davranış; ilke (2)'nin bu duruma özel
+  P6 YAZILDI (docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md). KULLANICI KARARLARI (05.11 ~16:48, WhatsApp): S-W1 n3 = "İkinci de gitsin" (bugünkü davranış; ilke (2)'nin bu duruma özel
   istisnası); S-W2 = "Sayılmasın" (Süresi Doldu ileti 24 sa sınırına sayılmaz); S-W3 = "1 yıl + anonim iz" (içerik / telefon / PDF 1 yıl ya da talepte hemen silinir, anonim iz kalır). Kâhin buna göre (WK).
   SIRADAKİ: mali müşavir P (planlar + kural kitabı, sürüyor) → kullanıcı soruları (B1, G13, çekirdek §12'den para kuralı olanlar) → 1. dalga.
   ORTAM (kullanıcı 05.11: "30 dk bir ara rapor ver, biten işlerin üstünü çiz. 3saate bir de yenilenen ortam kopması için alarm kur"): 30 dk rapor CronCreate d19be8cc ("7,37 * * * *", oturuma bağlı; kapsayıcı yenilenince ve 7 günde
@@ -419,7 +419,7 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   PLAYWRIGHT (05.11, denendi): proje playwright 1.56 → chromium-1194 ister; `playwright install` KOŞULMAZ (ortam kuralı). Benzersiz klasörde bağlantılarla /opt/pw-browsers 1243'e yönlendirilir:
   PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194 (chromium-1194/chrome-linux → chrome-linux64; chromium_headless_shell-1194/chrome-linux/headless_shell
   → chrome-headless-shell; INSTALLATION_COMPLETE + DEPENDENCIES_VALIDATED); deneme açılışı 153.0.8010.12 GEÇTİ. Ana ağaçta `npm ci` yapıldı (gerçek klasör; ders 29). CI kendi tarayıcısını kurar (yetkili e2e kanıtı CI).
-  İMZA ANAHTARI (bu oturum, kullanıcı 05.11 yükledi): /root/.claude/uploads/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/8b045447-destekofis-imza-anahtari-GIZLI.pem — 05.11 16:3x UTC DENETLENDİ: Ed25519, açık anahtarı
+  İMZA ANAHTARI (bu oturum, kullanıcı 05.11 yükledi): /root/.claude/uploads/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/8b045447-destekofis-imza-anahtari-GIZLI.pem — 05.11 ~16:22 UTC DENETLENDİ: Ed25519, açık anahtarı
   update-keys.mjs'teki TEK güvenilen anahtar destekofis-2026-1 (parmak izi 2817e154132ada8a; liste 2.0.0'dan beri değişmedi) ile eşleşiyor; tools/lib/update-package.mjs keyIdFor eşleşme verdi; imzala → verifyEnvelope GEÇTİ,
   değiştirilmiş bildirge SIGNATURE_INVALID; yayındaki v2.4.9 destekofis-guncelleme.json aynı anahtarla imzalı (GEÇERLİ). Paket: `node tools/release.mjs --anahtar <bu yol>`.
 - 2.4.8 KARARLARI (30.10–02.11.2026; 2.4.8 YAYIMLANDI; "2.4.8 BAŞLADI", "YETKİ + TESLİM TALİMATI", "TALİMAT 31.10" ve bütün 30.10–02.11 KARAR / İSTEK satırlarının tam metin GECMIS-KARARLAR "Arşiv 02.11.2026 (3)";

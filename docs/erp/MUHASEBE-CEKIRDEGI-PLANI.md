@@ -2,7 +2,7 @@
 
 Durum: PLAN (05.11.2026, baş mimar). Mali müşavir P incelemesinden geçmeden kesinleşmez; para / kapama / açılış kuralı gerektiren her nokta önce kullanıcıya
 (ders 43). Kaynaklar: kullanıcı talimatı `docs/erp/MUHASEBE-CEKIRDEGI-TALIMATI.md` (aynen), ERP haritası E1–E4, `docs/devir/DEVIR-PLANI.md`, 30.10 "Açılış kayıtları
-düzeni", P2 bulguları (`docs/2.5.0-IS-LISTESI.md` E kaydı 05.11 ~17:05; ana oturum beş kritik iddiayı koddan yeniden doğruladı). İş listesi: `docs/2.5.0-IS-LISTESI.md` Ç1–Ç6.
+düzeni", P2 bulguları (`docs/2.5.0-IS-LISTESI.md` E kaydı 05.11 ~16:31; ana oturum beş kritik iddiayı koddan yeniden doğruladı). İş listesi: `docs/2.5.0-IS-LISTESI.md` Ç1–Ç6.
 
 ## 0. Kararlar ve sınırlar
 - KAPSAM A (kullanıcı 05.11): hesap planı eksikleri; saklanan fiş defteri; kilitli dönemin defterini dondurma; Defter Türü; Büyük Defter; Gelir Tablosu; Bilanço; açılış düzeni (30.10);
