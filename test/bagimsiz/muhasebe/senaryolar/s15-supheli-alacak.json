@@ -101,30 +101,35 @@
   },
   {
    "cari": "C1",
+   "id": "S1",
    "tarih": "2026-02-01",
    "tur": "supheliye_al",
    "tutar": 800000
   },
   {
    "cari": "C2",
+   "id": "S2",
    "tarih": "2026-02-01",
    "tur": "supheliye_al",
    "tutar": 150000
   },
   {
    "cari": "C1",
+   "kayit": "S1",
    "tarih": "2026-02-02",
    "tur": "karsilik_ayir",
    "tutar": 600000
   },
   {
    "cari": "C2",
+   "kayit": "S2",
    "tarih": "2026-02-02",
    "tur": "karsilik_ayir",
    "tutar": 50000
   },
   {
    "cari": "C1",
+   "kayit": "S1",
    "tarih": "2026-02-03",
    "tur": "karsilik_ayir",
    "tutar": 300000
@@ -146,16 +151,19 @@
   },
   {
    "cari": "C1",
+   "kayit": "S1",
    "tarih": "2026-04-01",
    "tur": "degersiz_yaz"
   },
   {
    "cari": "C2",
+   "kayit": "S2",
    "tarih": "2026-05-01",
    "tur": "supheliden_cikar"
   },
   {
    "cari": "C3",
+   "id": "S3",
    "tarih": "2026-06-01",
    "tur": "supheliye_al",
    "tutar": 10000

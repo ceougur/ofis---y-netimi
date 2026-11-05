@@ -1,0 +1,56 @@
+{
+ "ad": "s54-r1-ayni-gun-borc-once",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "ak": [
+     {
+      "k": "fatura:F1",
+      "kalan": 10000,
+      "tarih": "2026-03-01",
+      "tur": "fatura",
+      "vade": "2026-06-30"
+     }
+    ],
+    "g1": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2026-04-02"
+    },
+    "g2": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "fatura:F1",
+       "vade": "2026-06-30"
+      }
+     ],
+     "gecikmis": 10000,
+     "supheli": 0,
+     "tarih": "2026-07-01"
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

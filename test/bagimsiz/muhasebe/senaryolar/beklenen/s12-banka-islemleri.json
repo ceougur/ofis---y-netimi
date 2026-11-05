@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -24,6 +25,7 @@
       "I.H": 6500
      },
      "aktif_toplam": 1210925,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -63,6 +65,9 @@
       "I.H": 6500
      },
      "aktif_toplam": 1210925,
+     "bilgi": [
+      "KDV_MAHSUBU_YAPILMAMIS:2026-02"
+     ],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {

@@ -49,7 +49,8 @@
    "g5/gecikmis": 30000,
    "g6/gecikmis": 35000,
    "g7/gecikmis": 0,
-   "g8/gecikmis": 30000,
+   "g8/gecikmis": 0,
+   "g8b/gecikmis": 30000,
    "g9/gecikmis": 0,
    "h/otomatik": {
     "C1": 35000,
@@ -240,6 +241,13 @@
    "ad": "h",
    "rapor": "hatirlatma",
    "tarih": "2027-01-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g8b",
+   "cari": "C3",
+   "rapor": "gecikmis",
+   "tarih": "2026-07-01",
    "tur": "rapor"
   }
  ],

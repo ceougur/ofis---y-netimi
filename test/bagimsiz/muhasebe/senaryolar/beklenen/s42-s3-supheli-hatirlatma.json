@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -71,8 +72,10 @@
      "tarih": "2026-05-01"
     },
     "h1": {
+     "elle": {
+      "C1": 30000
+     },
      "otomatik": {
-      "C1": 30000,
       "C3": 20000
      },
      "supheli_etiketli": [
@@ -81,6 +84,7 @@
      "tarih": "2026-04-02"
     },
     "h2": {
+     "elle": {},
      "otomatik": {
       "C3": 20000
      },
@@ -88,6 +92,15 @@
       "C1"
      ],
      "tarih": "2026-04-11"
+    },
+    "h3": {
+     "elle": {},
+     "otomatik": {
+      "C1": 120000,
+      "C3": 20000
+     },
+     "supheli_etiketli": [],
+     "tarih": "2026-05-01"
     }
    },
    "redler": []

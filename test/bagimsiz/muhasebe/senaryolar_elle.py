@@ -549,8 +549,9 @@ S("s22-devir-temel", ["N-01", "N-02", "N-03", "N-04", "N-06", "N-07", "N-09", "N
     "gt_arsiv/tahmini": False,
     "mz_arsiv/satirlar/621/borc": 156000, "mz_arsiv/satirlar/621/alacak": 156000, "mz_arsiv/satirlar/690/bakiye": 0,
     "mz_arsiv/satirlar/590/bakiye": -124000, "mz_arsiv/satirlar/600/borc": 350000,
-    # EK-2 38 / E17 (bakım 2): belgeli gider alışında gider türü boş → 770 (770.90 yalnız tanınmayan değer ve belgesiz çıkış); N-03 ile kapanır
-    "mz_arsiv/satirlar/770.90/borc": 0, "mz_arsiv/satirlar/770/borc": 70000,
+    # EK-2 38 / E17 (bakım 2): belgeli gider alışında gider türü boş → 770 (770.90 yalnız tanınmayan değer ve belgesiz çıkış); N-03 ile kapanır.
+    # G1 60000 → 770; kasa çıkışı 10000 → 770.90 (ilk commit'te 0 / 70000 yazılmıştı — kasa çıkışı unutulmuştu; elle yeniden hesap)
+    "mz_arsiv/satirlar/770.90/borc": 10000, "mz_arsiv/satirlar/770/borc": 60000,
     "bil_arsiv/donem_net_kari": 0, "bil_arsiv/pasif/V.F": 124000, "bil_arsiv/kesin_degil": ["TAMAMLANMAMIS_ACILIS"],
     "devir/arsiv_kapanis/100": 190000, "devir/arsiv_kapanis/102.B1": 1120000, "devir/arsiv_kapanis/153": 84000,
     "devir/arsiv_kapanis/360": -10000, "devir/arsiv_kapanis/320|T1": -168000, "devir/arsiv_kapanis/320|T2": -72000,

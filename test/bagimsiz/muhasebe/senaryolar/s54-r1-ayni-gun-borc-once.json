@@ -1,0 +1,144 @@
+{
+ "aciklama": "Karar (1): bağsız ödeme kendi gününde açık borçlara; aynı gün önce borç kalemleri sayılır (giriş saatine bağlı değil).",
+ "ad": "s54-r1-ayni-gun-borc-once",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "ak": [
+    {
+     "k": "fatura:F1",
+     "kalan": 10000,
+     "tarih": "2026-03-01",
+     "tur": "fatura",
+     "vade": "2026-06-30"
+    }
+   ],
+   "g1/gecikmis": 0,
+   "g2/gecikmis": 10000
+  }
+ },
+ "kapsam": [
+  "karar (1)",
+  "EK-2B 23",
+  "S2"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 10000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-03-01",
+   "tur": "satis_faturasi",
+   "vade": "2026-06-30"
+  },
+  {
+   "cari": "C1",
+   "id": "P1",
+   "tarih": "2026-04-01",
+   "tur": "tahsilat",
+   "tutar": 10000,
+   "yol": "nakit"
+  },
+  {
+   "K": 0,
+   "M": 10000,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2026-04-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "ad": "g1",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-04-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ak",
+   "cari": "C1",
+   "rapor": "acik_kalemler",
+   "tarih": "2026-04-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g2",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-07-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -139,16 +140,23 @@
     },
     "g8": {
      "cari": "C3",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2026-04-01"
+    },
+    "g8b": {
+     "cari": "C3",
      "detay": [
       {
        "kalan": 30000,
-       "kalem": "karsiliksiz:k6",
-       "vade": "2026-03-31"
+       "kalem": "fatura:F2",
+       "vade": "2026-06-30"
       }
      ],
      "gecikmis": 30000,
      "supheli": 0,
-     "tarih": "2026-04-01"
+     "tarih": "2026-07-01"
     },
     "g9": {
      "cari": "C2",
@@ -158,6 +166,7 @@
      "tarih": "2026-12-15"
     },
     "h": {
+     "elle": {},
      "otomatik": {
       "C1": 35000,
       "C2": 30000,

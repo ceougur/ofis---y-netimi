@@ -1,0 +1,303 @@
+{
+ "aciklama": "S8: karşılıksız evrakla yeniden açılan fatura kendi vadesiyle gecikir; öteki bağsız ödemeler kendi günlerinde yeniden dağılır.",
+ "ad": "s61-r20-karsiliksiz-fatura-vadesi",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "af1": [
+    {
+     "fatura": "F1",
+     "kalan": 20000,
+     "tarih": "2026-03-01",
+     "vade": "2026-06-30"
+    }
+   ],
+   "ak3": [
+    {
+     "k": "fatura:F2",
+     "kalan": 5000,
+     "tarih": "2026-03-01",
+     "tur": "fatura",
+     "vade": "2026-03-01"
+    },
+    {
+     "k": "fatura:F3",
+     "kalan": 5000,
+     "tarih": "2026-03-02",
+     "tur": "fatura",
+     "vade": "2026-06-30"
+    }
+   ],
+   "g1a/gecikmis": 0,
+   "g1b/gecikmis": 20000,
+   "g1o/gecikmis": 0,
+   "g2a/gecikmis": 0,
+   "g2b/gecikmis": 3000,
+   "g2c/gecikmis": 6000,
+   "g3a/gecikmis": 0,
+   "g3b/gecikmis": 5000,
+   "g3c/gecikmis": 10000,
+   "mz/satirlar/101.01/bakiye": 0,
+   "mz/satirlar/120|C1/bakiye": 20000,
+   "mz/satirlar/120|C2/bakiye": 6000,
+   "mz/satirlar/120|C3/bakiye": 10000
+  }
+ },
+ "kapsam": [
+  "S8",
+  "EK-2 K-1",
+  "E22",
+  "Ç-07",
+  "M1c"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 20000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-03-01",
+   "tur": "satis_faturasi",
+   "vade": "2026-06-30"
+  },
+  {
+   "K": 0,
+   "M": 10000,
+   "cari": "C3",
+   "id": "F2",
+   "tarih": "2026-03-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 5000,
+   "cari": "C3",
+   "id": "F3",
+   "tarih": "2026-03-02",
+   "tur": "satis_faturasi",
+   "vade": "2026-06-30"
+  },
+  {
+   "cari": "C2",
+   "id": "TK",
+   "kaynak": "yeni_borc",
+   "taksitler": [
+    {
+     "tutar": 3000,
+     "vade": "2026-04-01"
+    },
+    {
+     "tutar": 3000,
+     "vade": "2026-05-01"
+    }
+   ],
+   "tarih": "2026-03-01",
+   "toplam": 6000,
+   "tur": "taksit_karti"
+  },
+  {
+   "cari": "C1",
+   "evrak": "CK1",
+   "fatura": "F1",
+   "tarih": "2026-03-05",
+   "tur": "tahsilat",
+   "tutar": 20000,
+   "yol": "cek"
+  },
+  {
+   "cari": "C3",
+   "evrak": "CK2",
+   "tarih": "2026-03-06",
+   "tur": "tahsilat",
+   "tutar": 10000,
+   "yol": "cek"
+  },
+  {
+   "cari": "C3",
+   "id": "P3",
+   "tarih": "2026-03-20",
+   "tur": "tahsilat",
+   "tutar": 5000,
+   "yol": "nakit"
+  },
+  {
+   "cari": "C2",
+   "evrak": "CK3",
+   "taksit_karti": "TK",
+   "tarih": "2026-04-01",
+   "tur": "tahsilat",
+   "tutar": 3000,
+   "yol": "cek"
+  },
+  {
+   "ad": "g3a",
+   "cari": "C3",
+   "rapor": "gecikmis",
+   "tarih": "2026-04-30",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g1o",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-05-01",
+   "tur": "rapor"
+  },
+  {
+   "evrak": "CK3",
+   "tarih": "2026-04-20",
+   "tur": "evrak_karsiliksiz"
+  },
+  {
+   "evrak": "CK1",
+   "tarih": "2026-05-02",
+   "tur": "evrak_karsiliksiz"
+  },
+  {
+   "evrak": "CK2",
+   "tarih": "2026-05-02",
+   "tur": "evrak_karsiliksiz"
+  },
+  {
+   "ad": "g1a",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-05-03",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g1b",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-07-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "af1",
+   "cari": "C1",
+   "rapor": "acik_faturalar",
+   "tarih": "2026-05-03",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g3b",
+   "cari": "C3",
+   "rapor": "gecikmis",
+   "tarih": "2026-05-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g3c",
+   "cari": "C3",
+   "rapor": "gecikmis",
+   "tarih": "2026-07-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ak3",
+   "cari": "C3",
+   "rapor": "acik_kalemler",
+   "tarih": "2026-05-03",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g2a",
+   "cari": "C2",
+   "rapor": "gecikmis",
+   "tarih": "2026-04-20",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g2b",
+   "cari": "C2",
+   "rapor": "gecikmis",
+   "tarih": "2026-04-21",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g2c",
+   "cari": "C2",
+   "rapor": "gecikmis",
+   "tarih": "2026-05-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-03-01",
+   "rapor": "mizan",
+   "son": "2026-05-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

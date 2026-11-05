@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -25,6 +26,7 @@
       "I.D": 20000
      },
      "aktif_toplam": 136000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -66,6 +68,7 @@
       "I.D": 20000
      },
      "aktif_toplam": 100000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {

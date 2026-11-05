@@ -44,13 +44,17 @@
    "bil/aktif/I.H": 80000,
    "bil/aktif/II.D": 300000,
    "bil/aktif_toplam": 5350000,
+   "bil/bilgi": [],
    "bil/pasif/III.B": 1330000,
    "bil/pasif/III.F": 200000,
    "bil/pasif/V.F": -1180000,
    "bil/pasif/V.G": 5000000,
+   "bil0630/bilgi": [
+    "KDV_MAHSUBU_YAPILMAMIS:2026-05"
+   ],
    "bil_yeni/donem_net_kari": 0,
    "bil_yeni/kesin_degil": [
-    "ARALIK_KDV_MAHSUBU_YAPILMAMIS",
+    "ONCEKI_YIL_KDV_MAHSUBU_YAPILMAMIS:2026-05",
     "TAMAMLANMAMIS_ACILIS"
    ],
    "bil_yeni/pasif/V.F": -1180000,
@@ -164,6 +168,12 @@
    "ad": "bil",
    "rapor": "bilanco",
    "tarih": "2026-05-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil0630",
+   "rapor": "bilanco",
+   "tarih": "2026-06-30",
    "tur": "rapor"
   },
   {

@@ -1,0 +1,70 @@
+{
+ "ad": "s55-r2-bag-kendi-tarihinde",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "af": [
+     {
+      "fatura": "F3",
+      "kalan": 10000,
+      "tarih": "2026-04-01",
+      "vade": "2026-04-01"
+     }
+    ],
+    "ak": [
+     {
+      "k": "fatura:F3",
+      "kalan": 10000,
+      "tarih": "2026-04-01",
+      "tur": "fatura",
+      "vade": "2026-04-01"
+     }
+    ],
+    "g0": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "fatura:F3",
+       "vade": "2026-04-01"
+      }
+     ],
+     "gecikmis": 10000,
+     "supheli": 0,
+     "tarih": "2026-04-02"
+    },
+    "g1": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "fatura:F3",
+       "vade": "2026-04-01"
+      }
+     ],
+     "gecikmis": 10000,
+     "supheli": 0,
+     "tarih": "2026-05-02"
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
