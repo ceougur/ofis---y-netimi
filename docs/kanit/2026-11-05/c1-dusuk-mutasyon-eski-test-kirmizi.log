@@ -1,0 +1,15 @@
+taban: 8 geçti / 0 kaldı (çıkış 0)
+not ok 14 - ters bakiye 'aynı' kuralı Kesin Değil'e döner (bütün '—' hesapları) · YEŞİL — kaçırdı · beklenen neden "136 ters bakiyesi kendi kaleminde işaretli" GÖRÜLMEDİ
+not ok 15 - 191'e Kesin Değil eklenir · YEŞİL — kaçırdı · beklenen neden "191 ters bakiyesi kendi kaleminde işaretli" GÖRÜLMEDİ
+not ok 16 - 590'a brütleştirme eklenir (→ I.D 136) · YEŞİL — kaçırdı · beklenen neden "590 ters bakiyesi kendi kaleminde işaretli" GÖRÜLMEDİ
+not ok 17 - alt hesap tanımı düşer (602.90) · YEŞİL — kaçırdı · beklenen neden "602.90 alt hesap tanımı" GÖRÜLMEDİ
+not ok 18 - alt hesap tanımı düşer (610.90) · YEŞİL — kaçırdı · beklenen neden "610.90 alt hesap tanımı" GÖRÜLMEDİ
+not ok 19 - eklenen hesabın adı yanlış (690 → Dönem Net Zararı) · YEŞİL — kaçırdı · beklenen neden "690: kitap "Dönem Kârı veya Zararı", program "Dönem Net Zararı"" GÖRÜLMEDİ
+1..6
+# tests 6
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+0/6 mutasyon beklenen nedenle yakalandı

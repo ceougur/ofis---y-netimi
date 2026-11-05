@@ -1,0 +1,32 @@
+{
+  "ad": "c1-dusuk-test-utc",
+  "komut": "node --test test/hesap-plani-sinif-250.test.mjs",
+  "commit": "39e6be385bb80b6b3f38dab8373418d78f021345",
+  "dal": "worktree-agent-af73f309dcf37fc0c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T19:52:46.789Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 8,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c1-dusuk-test-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af73f309dcf37fc0c",
+  "ham_cikti_sha256": "396e0be9fd44cb341a8681138a3c25b54033b40b161406c871694aa135c921c2",
+  "ham_cikti_bayt": 2923
+}
