@@ -6,6 +6,8 @@
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL; gerçek Meta'ya istek YOK — ders 30) + elle sürülen işçi (ders 20) + sahte saat (ders 13). Dosya TZ=UTC ve
 // TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
+import { existsSync, mkdirSync, readdirSync, readlinkSync, rmSync, writeFileSync } from "node:fs";
+import path from "node:path";
 import { describe, it } from "node:test";
 import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
 import { PNID, TOKEN, URLS, WABA, startWa } from "./whatsapp-248-ortak.mjs";
@@ -313,6 +315,102 @@ describe("2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da", () => {
       await ctx.close();
     }
   });
+
+  // W TUR 2 dar kontrolü DÜŞÜK D1 (dişsiz testler; yalnız test): sharedWaba'nın dört kuralı — karar öbür şirketin GÜNCEL ayar satırından verilir ve okunan özet ortak kayda yazılır
+  // (tazeleme); öbür şirketin dosyası BOZUK ya da YOK ise "bağlı değil" sayılmaz, kayıttaki özet geçer (ders 4: okunamayan veri boş değildir → abonelik korunur); bu şirketle AYNI veri
+  // dosyasını gösteren şirket "başka şirket" sayılmaz (aynı dosyanın bağlantısı bu şirketinkidir). Beklenenler plan §1 W-2 + §3 "Nasıl bozulur" 1 ve ders 4'ten; programın kodundan değil.
+  // Dosyayı bozan / silen hücreler Windows'a duyarlıdır (ders 48): şirket önce kapatılır (closeCompany), sonra dosya değiştirilir.
+  const dbFileOf = (ctx, company) => {
+    const registry = ctx.server.app.context.companies;
+    const dir = registry.dirsOf(registry.get(company.id)).dataDir;
+    return ["destekofis.sqlite", "hukuk-ofisi.sqlite"].map(name => path.join(dir, name)).find(file => existsSync(file)) || path.join(dir, "destekofis.sqlite");
+  };
+  // Linux'ta açık tutamaklar /proc/self/fd'den okunur (ders 48: okunamayan dosyada bağlantı kapanıyor mu); /proc yoksa (Windows) ölçülmez — null.
+  const openHandlesTo = file => {
+    if (!existsSync("/proc/self/fd")) return null;
+    return readdirSync("/proc/self/fd").filter(fd => {
+      try {
+        return readlinkSync(`/proc/self/fd/${fd}`).startsWith(file);
+      } catch {
+        return false;
+      }
+    }).length;
+  };
+  for (const [kind, label] of [
+    ["stale", "dosyası sağlam, ortak kayıtta ESKİ 'bağlı değil' özeti"],
+    ["corrupt", "dosyası BOZUK (okunamıyor)"],
+    ["missing", "dosyası YOK (klasör silinmiş)"],
+  ]) {
+    it(`aynı WABA'ya bağlı ikinci şirket kapalı, ${label}: 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayılır)${kind === "stale" ? "; ortak kayıt dosyadaki güncel özetle tazelenir" : " — okunamayan dosya 'bağlı değil' sayılmaz (ders 4)"}`, async () => {
+      const ctx = await startWa({ now: NOW });
+      try {
+        const created = await ok(await ctx.api.post("/api/companies", { name: `Kenar ${kind}`, select: false }), "ikinci şirket");
+        const company = created.company || created;
+        const q = `?hofCompany=${encodeURIComponent(company.id)}`;
+        await ok(await ctx.api.put(`${URLS.conn}${q}`, { phoneNumberId: PNID, wabaId: WABA, token: TOKEN }), "ikinci şirkette Elle Bağla");
+        assert.equal(await ctx.server.app.context.closeCompany(company.id), true, "ön koşul: ikinci şirket kapatıldı");
+        const file = dbFileOf(ctx, company);
+        if (kind === "stale") ctx.wa.registry.set(company.id, { configured: false });
+        if (kind === "corrupt") {
+          for (const suffix of ["", "-wal", "-shm"]) rmSync(file + suffix, { force: true });
+          writeFileSync(file, Buffer.alloc(8192, 0x41));
+        }
+        if (kind === "missing") rmSync(path.dirname(file), { recursive: true, force: true });
+        assert.equal(registryOf(ctx, company).configured, kind !== "stale", `ön koşul: ortak kayıtta ikinci şirket ${kind === "stale" ? "'bağlı değil' (eski)" : "'bağlı'"}`);
+        const data = await removeConn(ctx.api);
+        assert.deepEqual([data.configured, data.removal?.removed, data.removal?.meta?.state, data.removal?.meta?.reason], [false, true, "skipped", "shared"], `${label}: abonelik korunmalı — ${JSON.stringify(data.removal)}`);
+        assert.equal(unsubscribeRequests(ctx.fake).length, 0, `${label}: Meta'ya abonelik silme isteği gitmemeli`);
+        assert.equal(registryOf(ctx, company).configured, true, `${label}: ortak kayıtta ikinci şirket 'bağlı' (${kind === "stale" ? "dosyadan tazelendi" : "kayıttaki özet korundu"})`);
+        if (kind === "corrupt") {
+          const handles = openHandlesTo(file);
+          if (handles !== null) assert.equal(handles, 0, "bozuk dosyaya açık tutamak kalmadı (/proc/self/fd)");
+        }
+      } finally {
+        await ctx.close();
+      }
+    });
+  }
+
+  // 2.0.17–2.0.19'dan kalan çakışma: iki şirket AYNI veri klasörünü gösteriyor (Yönetim → Şirketler → Ayır ile ayrılır). Ayır'dan ÖNCE öbür şirketin "bağlantısı" bu şirketin kendi
+  // bağlantısıdır (aynı ayar satırı) → Kaldır aboneliği SİLER. Ayır'dan SONRA ayrılan şirket kendi kopyasında bağlantıyı taşır → ilk Kaldır silmez, ikincisi siler.
+  const SHARED_DIR = [
+    { id: "sirket-001", code: "001", name: "Ana", dir: "", createdAt: "2026-09-01T08:00:00.000Z", createdBy: "" },
+    { id: "sirket-eski", code: "005", name: "Eski", dir: "sirketler/002", createdAt: "2026-10-01T08:00:00.000Z", createdBy: "" },
+    { id: "sirket-yeni", code: "002", name: "Yeni", dir: "sirketler/002", createdAt: "2026-10-02T08:00:00.000Z", createdBy: "" },
+  ];
+  const prepareShared = ({ dataDir }) => {
+    mkdirSync(path.join(dataDir, "sirketler", "002"), { recursive: true });
+    writeFileSync(path.join(dataDir, "sirketler.json"), JSON.stringify({ companies: SHARED_DIR }));
+  };
+  for (const separated of [false, true]) {
+    it(separated
+      ? "aynı veri klasörünü gösteren iki şirket AYIR'dan SONRA: ayrılan şirket bağlantıyı kendi kopyasında taşır → ilk şirketin Kaldır'ı aboneliği SİLMEZ, ayrılanın Kaldır'ı SİLER"
+      : "aynı veri klasörünü gösteren iki şirket (Ayır'dan ÖNCE): öbür şirketin bağlantısı aynı ayar satırıdır, 'başka şirket' sayılmaz → Kaldır Meta'daki aboneliği SİLER", async () => {
+      const ctx = await startWa({ now: NOW, connect: false, maxCompanies: 3, prepare: prepareShared });
+      try {
+        await ok(await ctx.api.put(`${URLS.conn}?hofCompany=sirket-eski`, { phoneNumberId: PNID, wabaId: WABA, token: TOKEN }), "Eski şirkette Elle Bağla");
+        assert.equal((await ok(await ctx.api.get(`${URLS.conn}?hofCompany=sirket-yeni`), "Yeni şirketin görünümü")).configured, true, "ön koşul: aynı dosya → Yeni şirkette de aynı bağlantı");
+        if (separated) {
+          await ok(await ctx.api.post("/api/companies/sirket-yeni/separate", { confirm: "002", password: ADMIN_PASSWORD }), "Ayır");
+          assert.equal((await ok(await ctx.api.get(`${URLS.conn}?hofCompany=sirket-yeni`), "ayrılan şirket")).configured, true, "ön koşul: ayrılan şirket bağlantıyı kendi kopyasında taşıyor");
+        }
+        const first = await removeConn(ctx.api, "?hofCompany=sirket-eski");
+        if (!separated) {
+          assert.deepEqual([first.configured, first.removal?.removed, first.removal?.meta?.state], [false, true, "removed"], `Ayır öncesi: aynı dosyanın şirketi 'başka şirket' sayılmamalı — ${JSON.stringify(first.removal)}`);
+          assert.equal(unsubscribeRequests(ctx.fake).length, 1, "Ayır öncesi: Meta'daki abonelik silindi");
+          assert.doesNotMatch(first.removal.meta.message, /başka bir şirkette/, first.removal.meta.message);
+          return;
+        }
+        assert.deepEqual([first.removal?.meta?.state, first.removal?.meta?.reason], ["skipped", "shared"], JSON.stringify(first.removal));
+        assert.equal(unsubscribeRequests(ctx.fake).length, 0, "Ayır sonrası: ayrılan şirket kullanıyor → abonelik silinmedi");
+        const second = await removeConn(ctx.api, "?hofCompany=sirket-yeni");
+        assert.deepEqual([second.configured, second.removal?.meta?.state], [false, "removed"], JSON.stringify(second.removal));
+        assert.equal(unsubscribeRequests(ctx.fake).length, 1, "son şirket kaldırınca abonelik silindi");
+      } finally {
+        await ctx.close();
+      }
+    });
+  }
 
   // Dar kontrol DÜŞÜK-3 (gerileme): Kaldır Meta'daki aboneliği silince makine defterindeki kanca kaydı "Kayıtlı" kalıyordu; Sına'sız yeniden bağlanınca Bildirim Yolu
   // "Çalışıyor" görünüyor, bakım turu saatlik beklemeyle kaydı atlıyordu (en çok 1 saat durum bildirimi yok). Beklenen: kayıt "Kayıtlı Değil", ilk bakım turu yeniden kaydeder.

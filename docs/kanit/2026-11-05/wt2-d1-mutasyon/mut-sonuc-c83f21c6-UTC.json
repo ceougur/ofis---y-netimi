@@ -1,0 +1,130 @@
+[
+ {
+  "id": "X1",
+  "what": "sharedWaba aynı veri dosyasını gösteren şirketi atlamaz (selfKey denetimi kalkar)",
+  "exit": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "aynı veri klasörünü gösteren iki şirket (Ayır'dan ÖNCE): öbür şirketin bağlantısı aynı ayar satırıdır, 'başka şirket' sayılmaz → Kaldır Meta"
+  ],
+  "errors": [
+   "|-"
+  ]
+ },
+ {
+  "id": "X2",
+  "what": "sharedWaba okunan özeti ortak kayda yazmaz (kayıt tazelenmez)",
+  "exit": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "aynı WABA'ya bağlı ikinci şirket kapalı, dosyası sağlam, ortak kayıtta ESKİ 'bağlı değil' özeti: 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ "
+  ],
+  "errors": [
+   "|-"
+  ]
+ },
+ {
+  "id": "X3",
+  "what": "okunamayan (bozuk) dosya 'bağlı değil' sayılır (ders 4 ihlali)",
+  "exit": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "aynı WABA'ya bağlı ikinci şirket kapalı, dosyası BOZUK (okunamıyor): 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayılır"
+  ],
+  "errors": [
+   "|-"
+  ]
+ },
+ {
+  "id": "X4",
+  "what": "dosyası olmayan şirket 'bağlı değil' sayılır (kayıttaki özet geçmez)",
+  "exit": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "aynı WABA'ya bağlı ikinci şirket kapalı, dosyası YOK (klasör silinmiş): 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayı"
+  ],
+  "errors": [
+   "|-"
+  ]
+ },
+ {
+  "id": "X5",
+  "what": "sharedWaba silinen şirketi de sayar: liste yerine ortak kaydın bütün girdileri",
+  "exit": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "aynı WABA'lı ikinci şirket SİLİNDİ: kalan şirketin Kaldır'ı Meta'daki aboneliği siler (silinen şirket 'başka şirkette bağlı' sayılmaz)"
+  ],
+  "errors": [
+   "|-"
+  ]
+ },
+ {
+  "id": "X6",
+  "what": "102 de belirteç reddi sayılır (kararın dışı — kapsam taşması)",
+  "exit": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "kod 102 (kararın DIŞINDA) belirteç reddi SAYILMAZ: o kişi Başarısız, toplu iş duraklamadan kalanlara sürer, bağlantı Süresi Doldu olmaz"
+  ],
+  "errors": [
+   "\"toplu iş duraklamaz: paused token-expired WhatsApp bağlantınızın süresi doldu: Meta erişim belirtecini artık kabul etmiyor. Gönderim duraklatıldı; Yönetim → WhatsApp'ta Yeniden Bağla ile yeniden bağlayın ve Devam Et'e basın.\""
+  ]
+ },
+ {
+  "id": "X7",
+  "what": "noteMetaError 'daha önce çalıştı' koşulunu yalnız 190'da uygular (0'da her belirteç Süresi Doldu)",
+  "exit": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "Sına yapılmamış (Meta'da hiç çalışmamış) belirteç kod 0 alırsa bağlantı Süresi Doldu OLMAZ (yanlış yazım; 190'ın kuralı — BAŞ MİMAR KARARI ("
+  ],
+  "errors": [
+   "\"hiç çalışmamış belirtecin kod 0'ı bağlantıyı Süresi Doldu yapmaz (geldi expired)\""
+  ]
+ },
+ {
+  "id": "X8",
+  "what": "noteMetaError 'belirteç arada değişti' koşulunu yalnız 190'da uygular",
+  "exit": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "Yol 2: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; ne"
+  ],
+  "errors": [
+   "|-"
+  ]
+ }
+]

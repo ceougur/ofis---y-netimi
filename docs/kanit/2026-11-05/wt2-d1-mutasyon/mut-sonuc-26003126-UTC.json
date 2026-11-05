@@ -1,0 +1,42 @@
+[
+ {
+  "id": "YOK",
+  "what": "mutasyon yok (taban)",
+  "exit": 1,
+  "tests": 27,
+  "pass": 14,
+  "fail": 13,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "aynı WABA'lı ikinci şirket BAĞLANTISIZ yedekten geri yüklendi (ortak kayıtta hâlâ 'bağlı' görünüyor): 001'in Kaldır'ı Meta'daki aboneliği si",
+   "ters yön: aynı WABA'lı ikinci şirket BAĞLANTILI yedekten geri yüklendi (ortak kayıtta 'bağlı değil' görünüyor): 001'in Kaldır'ı aboneliği Sİ",
+   "aynı WABA'ya bağlı ikinci şirket kapalı, dosyası sağlam, ortak kayıtta ESKİ 'bağlı değil' özeti: 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ ",
+   "aynı veri klasörünü gösteren iki şirket (Ayır'dan ÖNCE): öbür şirketin bağlantısı aynı ayar satırıdır, 'başka şirket' sayılmaz → Kaldır Meta",
+   "Yol 2, kod 0 şablon okuması sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Deva",
+   "Yol 2, kod 0 PDF yükleme sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam E",
+   "Yol 2, kod 0 ileti isteği sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam ",
+   "Yol 1 (sınanmış belirteç), ileti isteklerinin HEPSİ kod 0 (belirteç Meta'da iptal): bir kişi gitti, kalan üçü bekler; yeniden bağlanmadan ba",
+   "Yol 1: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; ne",
+   "Yol 2: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; ne",
+   "Sına yapılmamış (Meta'da hiç çalışmamış) belirteç kod 0 alırsa bağlantı Süresi Doldu OLMAZ (yanlış yazım; 190'ın kuralı — BAŞ MİMAR KARARI (",
+   "Bağlantıyı Kaldır: Meta'daki abonelik silme isteği kod 0 alırsa yerel kaldırma yapılır, neden 190'daki gibi 'erişim belirtecinin süresi dolm",
+   "geri yükleme (ilke 5): kod 0 alan kişi bekler → YEDEK → yeniden bağlan + Devam Et (gönderildi) → yedek geri yüklenir: eski toplu iş Durdurul"
+  ],
+  "errors": [
+   "|-",
+   "|-",
+   "|-",
+   "|-",
+   "|-",
+   "|-",
+   "|-",
+   "|-",
+   "|-",
+   "|-",
+   "|-",
+   "\"Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (Meta isteği reddetti, hata kodu 0). Meta uygulamanızın WhatsApp hesabınızdaki aboneliğini Meta'dan kaldırmak için destekofis.net/veri-silme sayfasındaki adımları izleyin.\"",
+   "|-"
+  ]
+ }
+]
