@@ -28,6 +28,12 @@ export const EMBEDDED_TOKEN_DAYS = 60;
 export const TOKEN_WARN_DAYS = 7;
 export const TOKEN_EXPIRED_CODE = 190;
 export const TOKEN_EXPIRED_SUBCODE = 463;
+// 2.5.0 W TUR 2 — KULLANICI KARARI 05.11.2026 21:08 (S-W4 = A, "Kod 0 da 190 gibi işlensin"): Meta'nın belirteci REDDETTİĞİ kodlar — 190 (OAuthException: süresi dolmuş / iptal
+// edilmiş belirteç) ve 0 (AuthException: belirteç süresi dolmuş / geçersiz). Listedeki her kod HER YERDE 190 gibi işlenir (tek liste; kopya mantık yok): bağlantı "Süresi Doldu" olur
+// (noteMetaError), o anda iletisi gitmeyen kişi bekleyenlere döner ve toplu iş duraklar (queue.mjs applyFailure), Meta'da kaldırmanın nedeni "süresi dolmuş" yazılır. Kod 102 (API oturumu)
+// kararın DIŞINDA — bugünkü gibi. Kodsuz Meta hatası (code null) bu listeye GİRMEZ (Number(null) = 0 tuzağı).
+export const TOKEN_REJECT_CODES = Object.freeze([0, TOKEN_EXPIRED_CODE]);
+export const isTokenRejectCode = code => code !== null && code !== undefined && code !== "" && TOKEN_REJECT_CODES.includes(Number(code));
 // 2.5.0 W-2: Meta tarafında kaldırılamazsa kullanıcının izleyeceği adımlar (site; uygulamayı Business Settings → Integrations → Connected apps'ten kaldırma).
 export const DATA_DELETION_URL = "https://destekofis.net/veri-silme";
 const DAY_MS = 86_400_000;
@@ -188,7 +194,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     };
   }
   /**
-   * 2.5.0 W-1(a) (KULLANICI KARARI 05.11 ~19:15): toplu gönderim sürerken Meta belirteci 190 ile reddetti — toplu işin duraklatma kodu ve nedeni. Bağlantı bu redle "Süresi
+   * 2.5.0 W-1(a) (KULLANICI KARARI 05.11 ~19:15; W TUR 2: kod 0 da — S-W4): toplu gönderim sürerken Meta belirteci 190 / 0 ile reddetti — toplu işin duraklatma kodu ve nedeni. Bağlantı bu redle "Süresi
    * Doldu" olduysa onun nedeni (Yeniden Bağla — iki yolda da kartta görünür); olmadıysa (belirteç arada değişti / hiç çalışmamış belirteç) yola göre ne yapılacağı. Her
    * durumda "yeniden bağlandıktan sonra Devam Et" (iletisi gitmeyen kişi bekleyenlerle birlikte gönderilir). Meta'nın genel 190 başlığındaki "Elle Bağla ile girin" Yol 2'de
    * yanlış yönlendirdiği için kullanılmaz.
@@ -202,10 +208,10 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
         : "Yönetim → WhatsApp'ta Bilgileri Değiştir ile Meta'dan aldığınız yeni kalıcı belirteci (System User) girin";
     return { pauseCode: "meta-token", pauseReason: `Meta erişim belirtecini kabul etmedi (süresi dolmuş, iptal edilmiş ya da hatalı olabilir); ileti gönderilmedi ve gönderim duraklatıldı. ${how}, sonra Devam Et'e basın.` };
   }
-  // Meta'nın yanıtladığı her hata buradan geçer (meta-graph onMetaError): 190 → "Süresi Doldu" (yalnız Meta'nın daha önce kabul ettiği belirteçte ya da alt kod 463'te).
-  // Belirteç arada değiştiyse (yeniden bağlandı) yazılmaz; ilk an kalır.
+  // Meta'nın yanıtladığı her hata buradan geçer (meta-graph onMetaError): 190 ve 0 (TOKEN_REJECT_CODES; W TUR 2, S-W4) → "Süresi Doldu" (yalnız Meta'nın daha önce kabul ettiği
+  // belirteçte ya da alt kod 463'te). Belirteç arada değiştiyse (yeniden bağlandı) yazılmaz; ilk an kalır.
   function noteMetaError(record, error) {
-    if (!(error instanceof MetaGraphError) || error.reason !== "meta" || Number(error.code) !== TOKEN_EXPIRED_CODE) return;
+    if (!(error instanceof MetaGraphError) || error.reason !== "meta" || !isTokenRejectCode(error.code)) return;
     const current = read();
     if (!current || current.tokenSealed !== record.tokenSealed || current.tokenExpired) return;
     if (!tokenWorked(current) && Number(error.subcode) !== TOKEN_EXPIRED_SUBCODE) return;
@@ -474,7 +480,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     } catch (error) {
       // Yerel kaldırma her durumda sürer (ilke 4): Meta dışı beklenmeyen hata da "kaldırılamadı" sonucudur.
       if (!(error instanceof MetaGraphError)) return failedAtMeta(record, "unexpected", "beklenmeyen bir hata oluştu");
-      const why = error.reason === "meta" ? (Number(error.code) === TOKEN_EXPIRED_CODE ? "erişim belirtecinin süresi dolmuş" : `Meta isteği reddetti, hata kodu ${error.code}`) : "Meta'ya ulaşılamadı ya da yanıt okunamadı";
+      const why = error.reason === "meta" ? (isTokenRejectCode(error.code) ? "erişim belirtecinin süresi dolmuş" : `Meta isteği reddetti, hata kodu ${error.code}`) : "Meta'ya ulaşılamadı ya da yanıt okunamadı";
       return failedAtMeta(record, error.reason === "meta" ? "meta" : "unreachable", why, { code: error.code ?? null });
     }
     return { state: "removed", reason: "", message: "WhatsApp bağlantısı kaldırıldı; Meta'daki abonelik de silindi." };
