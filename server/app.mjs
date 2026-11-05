@@ -41,6 +41,7 @@ import { createMoneyLines } from "./lib/bank/money-lines.mjs";
 import { migrateBankGrants } from "./lib/bank/grants.mjs";
 import { markLegacyRows, repairBank } from "./lib/bank/repair.mjs";
 import { clearVouchers, repairLegacyReset } from "./lib/ledger-vouchers.mjs";
+import { clearSnapshots } from "./lib/ledger-snapshots.mjs";
 import { LOCK_KEY, createPeriod } from "./lib/period.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
@@ -491,7 +492,9 @@ function buildApp(overrides, opening) {
   // Fatura (v2.0.15): belge birincil kayıt; stok, cari, Kasa (peşin), çek/senet ve taksit (vadeli) aynı işlemde yazılır.
   context.invoices = registerInvoiceRoutes(router, { ...context, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, cheques: () => context.cheques, bankModule: () => context.bankAccounts?.module });
   // Ana Defter (v2.0.13): alt defterlerden türetilen çift yönlü yevmiye, hesap planı mizanı ve mutabakat kapısı.
-  context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity, pos: () => context.bankAccounts?.pos });
+  // 2.5.0 Ç3: kilitli dönemin donmuş defteri (lib/ledger-snapshots.mjs). __testLedgerRule / __testFreezeHook / freezeBatchLines YALNIZ test oluşturucusundan (üretimde yok).
+  context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity, pos: () => context.bankAccounts?.pos,
+    __testLedgerRule: overrides.__testLedgerRule || null, __testFreezeHook: overrides.__testFreezeHook || null, freezeBatchLines: Number(overrides.freezeBatchLines) || 0 });
   // Banka (v2.1.0 Aşama 3; plan §8.1): hesap kartları, açılış, Hesabı Atanmamış Eski Hareketler, Kurulum ve Aktarım Sihirbazı, Banka Ayarları,
   // Alt Hesap Mizanı. Ana Defter servisine (Alt Hesap Mizanı) istek anında ulaşır.
   context.bankAccounts = registerBankRoutes(router, context);
@@ -528,7 +531,21 @@ function buildApp(overrides, opening) {
       log.error?.("Fiş defteri açılış onarımı çalışmadı", error);
     }
   }
+  // 2.5.0 Ç3 (docs/erp/C3-DONDURMA-TASARIM.md §7): eski sürümün değiştirdiği kilit donmuş defterle eşitlenir (ileri: bekleyen koşu; geri: kapsam iner). Kapıdan önce; BS-7
+  // yeni şemalı dosyada koşmaz. Başarısız olsa da program açılır (kapsam ↔ kilit farkı Mutabakat Testi'nde).
+  if (!schemaGate) {
+    try {
+      context.snapshotRepair = context.ledger.snapshots.repairOnOpen();
+    } catch (error) {
+      log.error?.("Donmuş defter açılış onarımı çalışmadı", error);
+    }
+  }
   context.integrity.start();
+  // 2.5.0 Ç3: bekleyen koşu (göç 47'nin 2.4.9 koşusu, yarım kalmış dondurma, onarım) açılışı beklemeden iş parçacığında donar; kapanışta durur (app.close).
+  if (!schemaGate) setImmediate(() => {
+    if (closed) return;
+    context.ledger.snapshots.runPending().catch(error => log.error?.("Donmuş defter dondurulamadı", error));
+  });
   // Tam tarama (§3.11 "Kapı ölçeği" 1): 15 dakikada bir arka planda salt okuma; yeni sapma integrity_log + zil.
   context.integrity.scanMinutes = INTEGRITY_SCAN_MINUTES;
   // Gözden geçirme B7: tarama ayrı iş parçacığında (salt okunur bağlantı); veri, gün ve kilit değişmediyse atlanır.
@@ -999,7 +1016,8 @@ function buildApp(overrides, opening) {
   // 2.4.8 W2: WhatsApp Business API gönderimleri (wa_batches, wa_jobs) mesaj geçmişi gibi hareketle silinir; süren toplu gönderim makine defterinde de durdurulur
   // (sıfırlanan şirkette eski iş dirilmez; 24 saat sayacı ve aylık sayım defterde kalır).
   const MOVEMENT_TABLES = ["cash_entries", "payments", "account_entries", "stock_moves", "invoice_offsets", "invoice_repeats", "invoice_lines", "invoices", "einvoice_inbox", "plan_entries", "plan_items", "plan_imports", "plans", "cheque_events", "cheques", "integrity_log", "message_sends", "wa_job_pdfs", "wa_jobs", "wa_batches", "trash", "audit_events",
-    "fin_events", "bank_lines", "pos_sales", "pos_items", "cheque_collections", "bank_statements", "bank_statement_lines", "bank_matches", "bank_plans", "bank_jobs", "request_keys", "ledger_snapshots",
+    "fin_events", "bank_lines", "pos_sales", "pos_items", "cheque_collections", "bank_statements", "bank_statement_lines", "bank_matches", "bank_plans", "bank_jobs", "request_keys",
+    // 2.5.0 Ç3: "ledger_snapshots" (2.1.0'dan beri bu listedeydi) çıkarıldı — donmuş defter silme tetikleyicisi bu döngüyü düşürürdü; clearSnapshots siler (aşağıda).
     // 2.3.0 İz 1 (plan §3.11b/4 "Şirket Verisini Sıfırla listeleri"): şüpheli alacak kayıtları ve karşılıkları hareketle silinir.
     "doubtful_receivables", "doubtful_provisions"];
   const CARD_TABLES = ["accounts", "stock_items", "plan_groups", "dataset_rows", "dataset_imports", "records", "overrides", "deleted_records", "notes", "phones", "liens", "tasks", "case_notes", "case_documents", "source_snapshots", "free_cells", "free_rows", "free_history", "free_sheets", "messages",
@@ -1027,6 +1045,7 @@ function buildApp(overrides, opening) {
     // kapısı işlemi geri alıyordu (409). Sıfırlamada kilit de kaldırılır (onay penceresinde yazar) ve işlem geçmişine
     // "ledger.period.unlocked" yazılır. "Tümünü Sıfırla" kilit ayarını zaten siliyordu; o da aynı kaydı bırakır.
     const unlocked = context.period?.lockedUntil?.() || "";
+    context.ledger?.snapshots?.cancel?.();
     store.raw("company.reset", () => store.tx(() => {
       const tables = mode === "all" ? [...MOVEMENT_TABLES, ...CARD_TABLES] : MOVEMENT_TABLES;
       for (const table of tables) {
@@ -1037,6 +1056,9 @@ function buildApp(overrides, opening) {
       // 2.5.0 Ç2 (plan §9 madde 5): saklanan fiş defteri iki kipte de silinir — tetikleyiciler (değiştirilemez / silinemez) aynı işlemde kaldırılıp yeniden kurulur
       // (lib/ledger-vouchers.mjs clearVouchers). Fiş numarası o yılın en büyük sırasından sürdüğü için sıfırlamadan sonra 1'den başlar.
       Object.assign(counts, clearVouchers(store));
+      // 2.5.0 Ç3: donmuş defter (satırlar + koşular) iki kipte de silinir; tetikleyiciler aynı işlemde kaldırılıp yeniden kurulur (lib/ledger-snapshots.mjs clearSnapshots).
+      // Kilit zaten sıfırlamada kalkar (aşağıda); süren dondurma işi işlemden önce durduruldu.
+      Object.assign(counts, clearSnapshots(store));
       // Hesap kartları kalırken açılışları silindi: "Bakiye Doğrulandı" kalkar, kartta "Açılış Bakiyesi Gir" açılır (§5.6).
       if (mode !== "all" && has("bank_accounts")) store.run("UPDATE bank_accounts SET balance_confirmed = 0 WHERE balance_confirmed <> 0");
       if (resetNumbers) store.run("DELETE FROM settings WHERE key = 'plans.receiptSeq'");
@@ -1199,6 +1221,8 @@ function buildApp(overrides, opening) {
       }
       await analysisRunner.close();
       await reportRunner?.close({ reason });
+      // 2.5.0 Ç3: süren dondurma işi durur, iş parçacığı sonlanır (dosya tutamağı bırakılır; Windows'ta geri yükleme / silme dosya takası).
+      await context.ledger?.snapshots?.close?.();
       for (const child of children.values()) await child.close();
       if (!hub) usageLedger.close();
       if (!hub) whatsapp.ledger.close();

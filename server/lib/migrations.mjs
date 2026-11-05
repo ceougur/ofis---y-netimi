@@ -1564,7 +1564,80 @@ export const MIGRATIONS = [
       store.exec(LEDGER_VOUCHER_TRIGGERS_V46);
     },
   },
+  {
+    version: 47,
+    name: "v2.5.0 Ç3 kilitli dönemin donmuş defteri (koşular + donmuş yevmiye satırları)",
+    up(store, { now = systemClock } = {}) {
+      // 2.5.0 Ç3 (docs/erp/C3-DONDURMA-TASARIM.md §2, §6; lib/ledger-snapshots.mjs): YALNIZ EKLEYİCİ — iki tablo + indeks + tetikleyiciler. Dönem kilidi varsa BEKLEYEN koşu
+      // yazılır (kural "2.4.9", neden migration): türetme göçte YAPILMAZ (1.000.000 satırda ~1 dk açılışı ve 002'nin tembel açılışını bekletirdi); açılıştan sonra iş
+      // parçacığında 2.4.9 kopyasıyla (lib/ledger-rule-249) donar, arada raporlar kilitli dönemi aynı kuralla canlı okur. Eski sürüm (2.4.9) tabloları görmez.
+      store.exec(LEDGER_SNAPSHOTS_SCHEMA_V47);
+      store.exec(LEDGER_SNAPSHOT_TRIGGERS_V47);
+      const lock = columnExists(store, "settings", "value") ? String(store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || "") : "";
+      if (!isFullDate(lock)) return;
+      const at = now().toISOString();
+      store.run(
+        "INSERT INTO ledger_snapshot_runs (no, id, kind, state, from_date, through, rule_version, reason, created_by, created_at) VALUES (1, ?, 'freeze', 'pending', '', ?, '2.4.9', 'migration', 'system', ?)",
+        `lsr-${randomUUID()}`, lock, at,
+      );
+    },
+  },
 ];
+// 2.5.0 Ç3: kilitli dönemin donmuş defteri. Tutarlar kuruş.
+//   ledger_snapshot_runs: kilit her değiştiğinde bir koşu — freeze (kapsam → through; pending → done) ya da thaw (kapsam through'a iner; done doğar). KAPSAM = state 'done' olan
+//                         son koşunun through'u. state_*: koşudan sonra görünen bütün donmuş satırların toplamları (sağlama). source_digest: through'daki kilit izi
+//                         (lib/integrity.mjs lockDigestOf, digest_version tanımıyla).
+//   ledger_snapshots:     donmuş yevmiye satırı (run, run_seq = koşu içindeki yevmiye sırası). Okuma ORDER BY date, run, run_seq = dondurma anındaki sıra (koşu aralıkları
+//                         ayrık ve ardışık). source / text yalnız maddenin ilk satırında.
+export const LEDGER_SNAPSHOTS_SCHEMA_V47 = `
+  CREATE TABLE IF NOT EXISTS ledger_snapshot_runs (
+    no INTEGER PRIMARY KEY, id TEXT NOT NULL UNIQUE,
+    kind TEXT NOT NULL CHECK (kind IN ('freeze', 'thaw')), state TEXT NOT NULL CHECK (state IN ('pending', 'done', 'abandoned')),
+    from_date TEXT NOT NULL DEFAULT '', through TEXT NOT NULL DEFAULT '', rule_version TEXT NOT NULL DEFAULT '', reason TEXT NOT NULL DEFAULT '',
+    line_count INTEGER NOT NULL DEFAULT 0, entry_count INTEGER NOT NULL DEFAULT 0, debit_minor INTEGER NOT NULL DEFAULT 0, credit_minor INTEGER NOT NULL DEFAULT 0,
+    state_lines INTEGER NOT NULL DEFAULT 0, state_debit INTEGER NOT NULL DEFAULT 0, state_credit INTEGER NOT NULL DEFAULT 0, state_weight INTEGER NOT NULL DEFAULT 0,
+    source_digest TEXT NOT NULL DEFAULT '', digest_version TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, finished_at TEXT NOT NULL DEFAULT '',
+    CHECK (kind = 'freeze' OR state = 'done')
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS ledger_snapshots (
+    run INTEGER NOT NULL, run_seq INTEGER NOT NULL, entry_id TEXT NOT NULL, line_no INTEGER NOT NULL, date TEXT NOT NULL, cls INTEGER NOT NULL, seq INTEGER,
+    account TEXT NOT NULL, sub TEXT NOT NULL DEFAULT '', party TEXT NOT NULL DEFAULT '', debit_minor INTEGER NOT NULL DEFAULT 0, credit_minor INTEGER NOT NULL DEFAULT 0,
+    source TEXT NOT NULL DEFAULT '', text TEXT NOT NULL DEFAULT '', rule_version TEXT NOT NULL,
+    PRIMARY KEY (run, run_seq)
+  ) STRICT, WITHOUT ROWID;
+  CREATE INDEX IF NOT EXISTS idx_ledger_snapshots_date ON ledger_snapshots(date, run, run_seq);
+`;
+// Değişmezlik (Ç2 deseni; lib/ledger-snapshots.mjs): satır değiştirilemez; kapsam içindeki ve dondurma izi olan satır silinemez (2.4.9'un Şirket Verisini Sıfırla'sı önce
+// audit_events'i siler: iz gidince silme geçer, 2.5.0 açılışında onarılır); satır yalnız EN SON bekleyen freeze koşusuna, aralığı içinde eklenir ve aynı (run, run_seq) ikinci
+// kez yazılamaz (INSERT OR REPLACE silme tetikleyicisini çalıştırmadan satır değiştirirdi). Koşu silinemez; yalnız pending → done | abandoned; yeni koşu bekleyen koşu yokken,
+// freeze kapsamdan başlar ve kapsamın üstünde bayat satır yokken, thaw kapsamı indirir. Tetikleyicileri yalnız Şirket Verisini Sıfırla aynı işlemde kaldırıp kurar
+// (clearSnapshots). Ç2'nin withTriggersLifted'i yalnız fiş tetikleyicilerini (adlarıyla) kaldırır; bunlara dokunmaz.
+const COVERAGE_V47 = "COALESCE((SELECT r.through FROM ledger_snapshot_runs r WHERE r.state = 'done' ORDER BY r.no DESC LIMIT 1), '')";
+export const LEDGER_SNAPSHOT_TRIGGER_NAMES = Object.freeze(["ledger_snapshot_runs_no_delete", "ledger_snapshot_runs_no_replace", "ledger_snapshot_runs_state", "ledger_snapshots_insert", "ledger_snapshots_no_delete", "ledger_snapshots_no_update"]);
+export const LEDGER_SNAPSHOT_TRIGGERS_V47 = `
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshots_no_update BEFORE UPDATE ON ledger_snapshots BEGIN SELECT RAISE(ABORT, 'ledger_snapshots değiştirilemez: donmuş defter'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshots_no_delete BEFORE DELETE ON ledger_snapshots
+    WHEN OLD.date <= ${COVERAGE_V47} AND EXISTS (SELECT 1 FROM audit_events a WHERE a.entity_id = 'ledger-snapshot-run:' || OLD.run AND a.type = 'ledger.snapshot.frozen')
+    BEGIN SELECT RAISE(ABORT, 'ledger_snapshots silinemez: donmuş defter (kilit geri çekilmeden)'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshots_insert BEFORE INSERT ON ledger_snapshots
+    WHEN NOT EXISTS (SELECT 1 FROM ledger_snapshot_runs r WHERE r.no = NEW.run AND r.kind = 'freeze' AND r.state = 'pending' AND r.no = (SELECT MAX(no) FROM ledger_snapshot_runs)
+                       AND NEW.date > r.from_date AND NEW.date <= r.through)
+      OR EXISTS (SELECT 1 FROM ledger_snapshots s WHERE s.run = NEW.run AND s.run_seq = NEW.run_seq)
+    BEGIN SELECT RAISE(ABORT, 'ledger_snapshots: satır eklenemez (koşu kapalı, aralık dışı ya da aynı satır)'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshot_runs_no_delete BEFORE DELETE ON ledger_snapshot_runs BEGIN SELECT RAISE(ABORT, 'ledger_snapshot_runs silinemez'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshot_runs_state BEFORE UPDATE ON ledger_snapshot_runs
+    WHEN NOT (OLD.state = 'pending' AND NEW.state IN ('done', 'abandoned') AND NEW.no = OLD.no AND NEW.id = OLD.id AND NEW.kind = OLD.kind AND NEW.from_date = OLD.from_date
+              AND NEW.through = OLD.through AND NEW.rule_version = OLD.rule_version AND NEW.reason = OLD.reason AND NEW.created_by = OLD.created_by AND NEW.created_at = OLD.created_at)
+    BEGIN SELECT RAISE(ABORT, 'ledger_snapshot_runs değiştirilemez (yalnız bekleyen koşu tamamlanır ya da bırakılır)'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshot_runs_no_replace BEFORE INSERT ON ledger_snapshot_runs
+    WHEN EXISTS (SELECT 1 FROM ledger_snapshot_runs WHERE no = NEW.no OR id = NEW.id)
+      OR EXISTS (SELECT 1 FROM ledger_snapshot_runs WHERE state = 'pending')
+      OR (NEW.kind = 'freeze' AND (NEW.state <> 'pending' OR NEW.from_date <> ${COVERAGE_V47} OR NEW.through <= NEW.from_date
+                                   OR EXISTS (SELECT 1 FROM ledger_snapshots s WHERE s.date > ${COVERAGE_V47})))
+      OR (NEW.kind = 'thaw' AND (NEW.state <> 'done' OR NEW.from_date <> ${COVERAGE_V47} OR NEW.through >= NEW.from_date))
+    BEGIN SELECT RAISE(ABORT, 'ledger_snapshot_runs: koşu yazılamaz (aynı koşu, bekleyen koşu, kapsam ya da bayat satır)'); END;
+`;
 // 2.5.0 Ç2: saklanan fiş defteri. Tutarlar kuruş. Fiş başlığı satır sayısını ve borç (= alacak) toplamını taşır; satırlar başlıkla aynı işlemde yazılır.
 //   year / no     : fişin tarihinin yılı ve o yıldaki sıra (fin_events.no'dan ayrı; lib/ledger-vouchers.mjs nextNo)
 //   type          : closing | opening | opening-match | reversal | prior-year-result (KG-12) | rule-diff-correction (KG-15) | manual (2.5.1)

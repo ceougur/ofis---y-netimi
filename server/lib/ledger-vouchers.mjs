@@ -218,7 +218,9 @@ export function voucherProblems(store) {
  * input: { type, cls?, date, description?, source?, requestKey, lines: [{ account, sub?, party?, debit, credit, note? }] } (kuruş).
  * Dönüş: fiş görünümü + replayed (aynı istek kimliğiyle daha önce yazılmış).
  */
-export function createLedgerVouchers({ store, period = null, now = systemClock, newId = () => `lv-${randomUUID()}` }) {
+// onLockChanged (2.5.0 Ç3; lib/ledger-snapshots.mjs lockChanged): lockThrough kilidi ilerletince AYNI işlemde çağrılır — donmuş defter kapanış fişleriyle birlikte donar
+// (kilit + fişler + donmuş satırlar tek işlem; biri düşerse hiçbiri yok).
+export function createLedgerVouchers({ store, period = null, now = systemClock, newId = () => `lv-${randomUUID()}`, onLockChanged = null }) {
   const today = () => period?.today?.() || now.today?.() || now().toISOString().slice(0, 10);
   const lockedUntil = () => period?.lockedUntil?.() || "";
 
@@ -302,6 +304,7 @@ export function createLedgerVouchers({ store, period = null, now = systemClock, 
         // Kilit yalnız ileri gider (yinelenen kapanışta düşmez); "Gelecekteki bir dönem kilitlenemez" denetimi setLock'ta.
         if (!previous || lockThrough > previous) {
           period.setLock(lockThrough);
+          onLockChanged?.({ previous, next: lockThrough, user, reason: "voucher-closing" });
           store.run(
             "INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'ledger.period.locked', 'period', ?, ?, ?, ?)",
             `event-${randomUUID()}`, String(user?.id || "system"), String(user?.display_name || user?.name || "Sistem"), JSON.stringify({ previous, lockedUntil: lockThrough, reason: "ledger.voucher.closing", vouchers: out.map(item => item.id) }), now().toISOString(),

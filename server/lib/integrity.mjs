@@ -113,6 +113,9 @@ const TABLE_LABEL = {
   fin_events: "Finansal İşlemler",
 };
 const labelOf = table => TABLE_LABEL[table] || table;
+// 2.5.0 Ç3: LOCK_SQL tanımının sürümü — en yeni girdinin "since"i (test/donmus-defter-250.test.mjs denetler). Donmuş defter koşusu kaynak izini bu tanımla saklar
+// (ledger_snapshot_runs.digest_version); tanım büyüyünce bu sürüm yükselir, eski koşunun izi kendi sürümüyle karşılaştırılır (lockDigestOf version).
+export const LOCK_SQL_VERSION = "2.5.0";
 // Kapanmış dönemin parmak izi: kilit tarihi ve öncesindeki her para satırı (tutar, yön, yol, tarih, cari/kalem bağı) ve
 // o dönemde cariye borç yazan kartlar. Kilit altındaki tek bir satır değişirse, silinirse ya da eklenirse iz değişir.
 const LOCK_SQL = {
@@ -415,6 +418,13 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const problems = doubtfulProblems(store);
       checks.push({ code: "doubtful:records", name: "Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)", ok: problems.length === 0, count: problems.length, sample: problems.slice(0, 5).map(item => item.sample) });
       lap("doubtful");
+    }
+    // 2.5.0 Ç3 (lib/ledger-snapshots.mjs checks): donmuş defter ("ledger:snapshot") ve Kural Değişikliği Farkı ("ledger:rule-diff", uyarı). YALNIZ tam taramada (açılış, Mutabakat
+    // Testi, arka plan taraması, Defter Mutabakatı) — COMMIT kapısında yok: kural yalnız sürümle değişir, kilitli dönemin kaynağını COMMIT'te kilit izi korur. Sağlıklıyken
+    // görünmez (kilitli şirketin denetim listesi 2.4.9 ile aynı).
+    if (!touched && lastEntries && service?.snapshots?.checks) {
+      checks.push(...service.snapshots.checks({ entries: lastEntries, includeHidden }));
+      lap("snapshots");
     }
     // 2.5.0 Ç2 (lib/ledger-vouchers.mjs): saklanan fiş defterinin yapısı — yalnız fiş varsa görünür (fişsiz veride denetim listesi 2.4.9 ile aynı kalır).
     if (has("ledger_vouchers") && store.get("SELECT 1 AS found FROM ledger_vouchers LIMIT 1")) {
@@ -862,7 +872,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         const lockStarted = performance.now();
         const digest = lock ? lockDigest(lock) : "";
         const lockMs = performance.now() - lockStarted;
-        if (lock && lock === lockState.lock && digest !== lockState.digest) fresh.push({ code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) değişemez`, ok: false, count: 1 });
+        if (lock && lock === lockState.lock && lockState.digest !== null && digest !== lockState.digest) fresh.push({ code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) değişemez`, ok: false, count: 1 });
+        // 2.5.0 Ç3: kilit yeni kondu, izi (dondurmanın anlık görüntüsünden) henüz gelmedi — kilitli döneme dokunan yazım reddedilir (karşılaştıracak iz yok); başka nedenle tam
+        // kapıya düşen işlemin ölçtüğü iz benimsenir (aşağıda pendingLock).
+        if (lock && lock === lockState.lock && lockState.digest === null && String(decision.full || "").startsWith("kilit (")) fresh.push({ code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) değişemez (dönem kilidi yeni kondu)`, ok: false, count: 1 });
         pendingLock = { lock, digest };
         lastGate = { path: "full", reason: decision.full || (decision.findings.length ? `bulgu: ${[...new Set(decision.findings.map(item => item.code))].join(", ")}` : "doğrulama"), ms: performance.now() - gateStarted, runMs, lockMs, sections: { ...(lastRun?.sections || {}), lock: lockMs, scoped: decision.ms || 0 }, events: touched?.size || 0, tables: [...tables], rejected: fresh.length > 0, scope: decision.scope };
         // Testler (gateVerify): süzgeç temiz dediyse tam kapı da kabul etmeli (yoksa süzgeç eksik: eşdeğerlik ihlali).
@@ -922,6 +935,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     // Kilit izi (gözden geçirme D8; plan §3.11/4 "sha256 tam taramaya kalır"): süzgeç kilit izini yalnız kilide giren bir dokunuşta, tam kapı
     // yalnız kendi yolunda hesaplar; kapının görmediği (store dışı, eski sürüm, elle) kilitli dönem değişikliği taramada görünür. Taban
     // değişmez: 2.0.26'daki gibi sonraki tam kapı yolu "Kapanmış dönem" 409'u verir (yeniden başlatmaya ya da kilit değişimine kadar).
+    // 2.5.0 Ç3: kilidin izi bekliyorsa (yeni kilit) taramanın anlık görüntüsündeki iz benimsenir.
+    if (lock && lock === lockState.lock && lockState.digest === null && digest) lockState = { lock, digest };
     if (lock && lock === lockState.lock && lockState.digest && digest !== lockState.digest) {
       const item = { code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) kapının görmediği bir yolla değişti`, ok: false, count: 1 };
       result.checks.push(item);
@@ -1005,10 +1020,24 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     }
   }
 
+  /**
+   * 2.5.0 Ç3 (routes/ledger.mjs PUT period-lock, lib/ledger-snapshots.mjs): kilit değişince kapının kilit izi tam tarama koşmadan güncellenir. digest null = "bekliyor" (ilk ölçen
+   * benimser; kilitli döneme dokunan yazım reddedilir). Aynı kilit için daha önce benimsenmiş iz başkaysa (kapının görmediği değişiklik) Mutabakat Günlüğü'ne yazılır.
+   */
+  function adoptLock({ lock = "", digest = null } = {}) {
+    if (digest !== null && lock && lock === lockState.lock && lockState.digest && lockState.digest !== digest) {
+      const item = { code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) dondurma sırasında kapının görmediği bir yolla değişti`, ok: false, count: 1 };
+      write("scan", [], [item]);
+      log?.warn?.(`Mutabakat: ${item.name}.`);
+    }
+    lockState = { lock, digest: lock ? digest : "" };
+  }
   return {
     run,
     start,
     scan,
+    adoptLock,
+    lockPending: lock => lockState.lock === lock && lockState.digest === null,
     scanInBackground,
     importLegacy,
     get scanStats() {

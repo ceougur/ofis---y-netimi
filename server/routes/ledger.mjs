@@ -8,6 +8,7 @@ import { doubtfulExpected, doubtfulRows, doubtfulUsed } from "../lib/bank/doubtf
 import { systemClock } from "../lib/clock.mjs";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { VOUCHER_TYPES, createLedgerVouchers, voucherJournalRows } from "../lib/ledger-vouchers.mjs";
+import { createLedgerSnapshots } from "../lib/ledger-snapshots.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -16,7 +17,7 @@ const FREE_SEQ = 1e15;
 // İstemcinin istek kimliği (lib/idempotency.mjs FORMAT ile aynı): fişin istek kimliği "api:<kimlik>".
 const REQUEST_ID = /^[A-Za-z0-9_-]{16,100}$/;
 
-export function registerLedgerRoutes(router, { store, auth, audit = () => {}, events = null, period = null, now = systemClock, cash = () => null, accounts = () => null, integrity = () => null, money = null, pos = () => null }) {
+export function registerLedgerRoutes(router, { store, auth, audit = () => {}, events = null, period = null, now = systemClock, cash = () => null, accounts = () => null, integrity = () => null, money = null, pos = () => null, config = {}, log = null, canWriteInBackground = () => true, schemaGate = null, __testLedgerRule = null, __testFreezeHook = null, freezeBatchLines = 0 }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): para satırının hesap bağı (fin_ref; '' = Hesabı Atanmamış). v19 dosyasında (araçlar) kolon yoktur: ''.
   const refOf = (table, alias) => (store.all(`PRAGMA table_info(${table})`).some(column => column.name === "fin_ref") ? `${alias}.fin_ref` : "''");
@@ -205,8 +206,20 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
       if (!free.has(entry.id)) continue;
       for (const line of entry.lines) if (["120", "320", "336"].includes(line.account)) line.account = line.debit ? "770" : "602";
     }
-    return entries;
+    // YALNIZ TEST (test/donmus-defter-250.test.mjs): kural değişikliği benzetimi — canlı türetmenin çıktısı değiştirilir (sürüm yükseltmesi). Üretimde kanca yok.
+    return __testLedgerRule?.fn ? __testLedgerRule.fn(entries) : entries;
   }
+  // 2.5.0 Ç3 — kilitli dönemin donmuş defteri (lib/ledger-snapshots.mjs; docs/erp/C3-DONDURMA-TASARIM.md). Kilit iki yoldan değişir (PUT period-lock ve fişlerin postAll
+  // lockThrough'u); ikisi de lockChanged'i kilitle aynı işlemde çağırır.
+  const snapshots = createLedgerSnapshots({
+    store, period, now, build: () => build(), integrity, events, log, dbPath: config?.dbPath || "", batchLines: freezeBatchLines || 2000, hook: __testFreezeHook,
+    canWrite: () => !schemaGate && canWriteInBackground() !== false,
+  });
+  /**
+   * Karma yevmiye (Yevmiye Defteri, Hesap Planı Mizanı, Ç6 raporları): kilitli dönem donmuş defterden, açık dönem canlı türetmeden. to ≤ kapsam ise canlı türetme yapılmaz.
+   * Mutabakat (alt defter ↔ ana defter) ve kapı canlı türetmeyle (check(), build()) — alt defterler güncel kuralla.
+   */
+  const book = ({ to = "", live = null } = {}) => snapshots.book({ to, live });
   // Alt defterlerin kendi hesabı (beklenen bakiyeler): Kasa ve Banka yola göre, cariler türe göre, portföy durumuna göre.
   // accountList (v2.0.22): mutabakat denetimi aynı anda (aynı veriyle) cari listesini zaten hesapladıysa yeniden hesaplanmaz.
   // v2.1.0 (K5, §3.11): Kasa ve banka tarafı TEK KAYNAKTAN (lib/bank/money-lines.mjs) yol bazında: 100 = nakit, 102 = havale, 108 = POS,
@@ -322,12 +335,13 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     }
     return out;
   }
-  function check({ from = "", to = "", accountList = null } = {}) {
+  // book (2.5.0 Ç3): mizan karma yevmiyeden (kilitli dönem donmuş); mutabakat her zaman canlı türetmeyle.
+  function check({ from = "", to = "", accountList = null, book: useBook = false } = {}) {
     const entries = build();
-    const trial = trialBalance(entries, { from, to });
+    const trial = trialBalance(useBook ? book({ live: entries }) : entries, { from, to });
     const groups = groupsOf();
     // Mutabakat tüm zamanlarla yapılır (alt defter bakiyeleri bugüne kadarki her şeyi içerir).
-    const reconciliation = reconcile(from || to ? trialBalance(entries) : trial, expected(accountList, groups));
+    const reconciliation = reconcile(from || to || useBook ? trialBalance(entries) : trial, expected(accountList, groups));
     return { entries, trial, reconciliation, groups };
   }
   router.get("/api/workspace/ledger", async ({ req, res, url }) => {
@@ -335,13 +349,13 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const from = text(url.searchParams.get("from"));
     const to = text(url.searchParams.get("to"));
     if ((from && !DATE.test(from)) || (to && !DATE.test(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.");
-    const { entries, trial, reconciliation } = check({ from, to });
+    const { entries, trial, reconciliation } = check({ from, to, book: true });
     ok(res, { trial, reconciliation, entryCount: entries.length });
   });
   // Dönem kilidi (v2.0.13): kilitli tarih ve öncesine hareket eklenemez/düzeltilemez/silinemez. Yalnız yönetici değiştirir.
   router.get("/api/workspace/ledger/lock", async ({ req, res }) => {
     auth.requirePermission(req, "overview.view");
-    ok(res, { lockedUntil: period?.lockedUntil() || "", today: period?.today() || "" });
+    ok(res, { lockedUntil: period?.lockedUntil() || "", today: period?.today() || "", frozenThrough: snapshots.coverage(), freeze: snapshots.status() });
   });
   router.put("/api/admin/period-lock", async ({ req, res }) => {
     const user = auth.requirePermission(req, "system.manage");
@@ -351,16 +365,40 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     // 2.2.0 (plan §4.4/6): kilitlenecek döneme düşen vadesi gelmiş POS kalemleri önce bankaya aktarılır; hâlâ bekleyen varsa 409
     // bank-pending-before-lock + liste (uyarı; "Yine de Kilitle" = force).
     if (body?.lockedUntil) pos()?.beforeLock?.(String(body.lockedUntil), body.force === true);
-    const lockedUntil = period.setLock(body.lockedUntil);
+    // 2.5.0 Ç3 (docs/erp/C3-DONDURMA-TASARIM.md §4): başka güne süren dondurma durdurulur; bayat satırlar (geri çekilmiş dönem) kilitten önce parça parça silinir.
+    const target = String(body?.lockedUntil ?? "").trim();
+    const waiting = snapshots.state().pending;
+    if (waiting && waiting.through !== target) await snapshots.cancel();
+    if (!snapshots.status().running) await snapshots.purgeStale();
+    // Kilit + donmuş defter koşusu aynı işlemde (kilit önce, donma arkasından; yarım durumda kilitli dönem bekleyen koşunun kuralıyla canlı okunur).
+    const lockedUntil = store.tx(() => {
+      const value = period.setLock(body?.lockedUntil);
+      snapshots.lockChanged({ previous, next: value, user, reason: "lock" });
+      return value;
+    });
     audit(user, lockedUntil ? "ledger.period.locked" : "ledger.period.unlocked", "period", { previous, lockedUntil });
-    integrity()?.start?.();
-    ok(res, { lockedUntil });
+    // Kapının kilit izi ana iş parçacığında tam taramayla ölçülmez (önceden integrity.start(); 100.000 satırda saniyeler): iz dondurmanın / ayrı iş parçacığının anlık
+    // görüntüsünden gelir, o ana kadar "bekliyor" (kilitli döneme dokunan yazım reddedilir).
+    const gate = integrity();
+    if (gate?.adoptLock) gate.adoptLock({ lock: lockedUntil, digest: null });
+    else gate?.start?.();
+    await snapshots.purgeStale();
+    const freeze = await snapshots.runPending();
+    // Kilit geri çekildiyse (ya da dondurma tamamlanamadıysa) iz ayrı iş parçacığında ölçülür.
+    if (gate?.adoptLock && lockedUntil && gate.lockPending?.(lockedUntil)) {
+      try {
+        gate.adoptLock({ lock: lockedUntil, digest: await snapshots.digestOf(lockedUntil) });
+      } catch (error) {
+        log?.warn?.(`Dönem kilidi izi ölçülemedi (${error.message}); bir sonraki taramada.`);
+      }
+    }
+    ok(res, { lockedUntil, frozenThrough: snapshots.coverage(), freeze });
   });
   // 2.5.0 Ç2 — saklanan fiş defteri (lib/ledger-vouchers.mjs). Kapanış / açılış / eşleştirme fişlerini Ç3, Ç5 ve D4 iç API'yle (vouchers) yazar; kullanıcıya serbest
   // fiş girişi YOK (2.5.1). Fişler Yevmiye Defteri ve Hesap Planı Mizanı'nda görünür (ayrı ekran 2.5.1). Uçlar dönem kilidini koyabilen yetkiyle (system.manage):
   //   GET  /api/admin/ledger/vouchers?from=&to=&type=   → fişler (satırlarıyla)
   //   POST /api/admin/ledger/vouchers/:id/reverse        → ters kayıt fişi (R-03); gövde { date?, description?, requestId } ya da başlık x-hof-request
-  const vouchers = createLedgerVouchers({ store, period, now });
+  const vouchers = createLedgerVouchers({ store, period, now, onLockChanged: change => snapshots.lockChanged({ ...change, sync: true }) });
   router.get("/api/admin/ledger/vouchers", async ({ req, res, url }) => {
     auth.requirePermission(req, "system.manage");
     const from = text(url.searchParams.get("from"));
@@ -423,5 +461,5 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
     const parts = [has("account_entries") ? "(SELECT COUNT(*) FROM account_entries e WHERE e.account_id = j.value)" : "0", has("invoices") ? "(SELECT COUNT(*) FROM invoices i WHERE i.account_id = j.value)" : "0", has("plans") && has("plan_entries") ? "(SELECT COUNT(*) FROM plans p CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE p.account_id = j.value)" : "0"];
     return new Map(store.all(`SELECT j.value AS id, ${parts.join(" + ")} AS n FROM json_each(?) j`, list).map(row => [row.id, Number(row.n) || 0]));
   }
-  return { build, check, expected, expectedSubs, refs, partyTotals, partyRowCounts, vouchers };
+  return { build, book, check, expected, expectedSubs, refs, partyTotals, partyRowCounts, vouchers, snapshots };
 }
