@@ -1,0 +1,6 @@
+head-1 çıkış=0 {"ms":7138,"olayDongusuEnCokMs":7159.7,"surum":45} bakım 131/106/105/107/104
+91d2a200-1 çıkış=0 {"ms":6392,"olayDongusuEnCokMs":6417.3,"surum":45} bakım 140/98/106/122/104
+head-2 çıkış=0 {"ms":6441,"olayDongusuEnCokMs":6467.6,"surum":45} bakım 116/97/103/110/108
+91d2a200-2 çıkış=0 {"ms":6539,"olayDongusuEnCokMs":6559.9,"surum":45} bakım 122/98/80/89/80
+head-3 çıkış=0 {"ms":6106,"olayDongusuEnCokMs":6132.1,"surum":45} bakım 121/114/102/95/101
+91d2a200-3 çıkış=0 {"ms":6288,"olayDongusuEnCokMs":6320.8,"surum":45} bakım 136/110/89/84/89

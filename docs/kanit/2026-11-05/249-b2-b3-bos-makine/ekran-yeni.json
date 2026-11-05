@@ -1,0 +1,63 @@
+{
+ "commit": "5a22228aa423ec4b4c85442dccd454f09f02ea67",
+ "node": "v22.22.0",
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/hazir-taban",
+ "saat": "2026-11-03T15:00:00+03:00",
+ "basladi": "2026-11-05T08:52:14.479Z",
+ "tekrar": [
+  {
+   "yol": "Otomatik + WhatsApp Web (WhatsApp Web kendiliğinden seçili)",
+   "dugme": "Süzgeçteki 2986 cariye ekstre",
+   "acilisMs": 2707,
+   "targets": [
+    {
+     "durum": 200,
+     "ms": 98
+    }
+   ],
+   "donemTargets": [
+    {
+     "durum": 200,
+     "ms": 111
+    }
+   ],
+   "satir": 2986,
+   "head": "2986 Cari 2948 Geçerli Numara 13 Numarası Yok / Hatalı 25 WhatsApp Mesajı İstemiyor 2948 Gönderilecek",
+   "yeniden": {
+    "yalnizBorcluMs": 791,
+    "yalnizBorcluGeriMs": 875,
+    "tekKisiMs": 1109,
+    "hepsiniSecMs": 356
+   },
+   "donemDegisimMs": 2157
+  },
+  {
+   "yol": "Otomatik + WhatsApp Web (WhatsApp Web kendiliğinden seçili)",
+   "dugme": "Süzgeçteki 2986 cariye ekstre",
+   "acilisMs": 2082,
+   "targets": [
+    {
+     "durum": 200,
+     "ms": 36
+    }
+   ],
+   "donemTargets": [
+    {
+     "durum": 200,
+     "ms": 137
+    }
+   ],
+   "satir": 2986,
+   "head": "2986 Cari 2948 Geçerli Numara 13 Numarası Yok / Hatalı 25 WhatsApp Mesajı İstemiyor 2948 Gönderilecek",
+   "yeniden": {
+    "yalnizBorcluMs": 489,
+    "yalnizBorcluGeriMs": 509,
+    "tekKisiMs": 425,
+    "hepsiniSecMs": 420
+   },
+   "donemDegisimMs": 2180
+  }
+ ],
+ "sayfaHatasi": [],
+ "bitti": "2026-11-05T08:52:42.474Z"
+}

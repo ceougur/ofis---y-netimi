@@ -1,0 +1,22 @@
+# --- taban (cari {"toplam":3021,"telefonlu":3014,"secilen":2000}; yeni 5a22228aa423ec4b4c85442dccd454f09f02ea67, eski e3f74093)
+ok 1 - taban ekstreBuAy2000 alıcı 2000: ESKİ 25479/25238/25262 | YENİ 1026/843/812 ; 925/701/709 | bütçe ≤ 2000 ms
+ok 2 - taban ekstreGecenAy2000 alıcı 2000: ESKİ 24891/24688/24674 | YENİ 1107/857/887 ; 886/683/666 | bütçe ≤ 2000 ms
+ok 3 - taban ekstreSon3Ay2000 alıcı 2000: ESKİ 25918/25729/25701 | YENİ 854/670/639 ; 871/645/650 | bütçe ≤ 2000 ms
+ok 4 - taban ekstreTum2000 alıcı 2000: ESKİ 27518/27141/27275 | YENİ 936/699/709 ; 983/787/753 | bütçe ≤ 2000 ms
+ok 5 - taban mesaj2000 alıcı 2000: ESKİ 24713/24464/24502 | YENİ 724/532/508 ; 813/615/603 | bütçe ≤ 2000 ms
+ok 6 - taban tumuneEkstreHepsi alıcı 3021: ESKİ 38813/38626/38593 | YENİ 1314/1106/1094 ; 1523/1236/1295 | bütçe ≤ 3000 ms
+ok 7 - taban tumuneMesajAktif alıcı 2986: ESKİ 35399/35125/35182 | YENİ 1647/1415/1430 ; 1535/1275/1316 | bütçe ≤ 3000 ms
+# --- bes-bin (cari {"toplam":5000,"telefonlu":4993,"secilen":2000}; yeni 5a22228aa423ec4b4c85442dccd454f09f02ea67)
+ok 8 - bes-bin tumuneEkstreHepsi5000 alıcı 5000: ESKİ ölçülmedi | YENİ 2017/1718/1741 ; 1776/1373/1474 | bütçe ≤ 5000 ms
+ok 9 - bes-bin tumuneMesajHepsi5000 alıcı 5000: ESKİ ölçülmedi | YENİ 1445/1224/1226 ; 1342/1134/1121 | bütçe ≤ 5000 ms
+# --- gecmis (cari {"toplam":3036,"telefonlu":3029,"secilen":2000}; yeni 5a22228aa423ec4b4c85442dccd454f09f02ea67)
+ok 10 - gecmis ekstreBuAy2000 alıcı 2000: ESKİ ölçülmedi | YENİ 1025/806/801 ; 901/716/685 | bütçe ≤ 2500 ms
+ok 11 - gecmis ekstreTum2000 alıcı 2000: ESKİ ölçülmedi | YENİ 1035/800/804 ; 1040/807/812 | bütçe ≤ 2500 ms
+ok 12 - gecmis mesaj2000 alıcı 2000: ESKİ ölçülmedi | YENİ 910/731/700 ; 741/561/530 | bütçe ≤ 2500 ms
+# --- iade (cari {"toplam":4021,"telefonlu":4014,"secilen":2000}; yeni 5a22228aa423ec4b4c85442dccd454f09f02ea67)
+ok 13 - iade ekstreBuAy2000 alıcı 2000: ESKİ ölçülmedi | YENİ 887/663/674 ; 822/608/609 | bütçe ≤ 2000 ms
+ok 14 - iade tumuneEkstreHepsi alıcı 4021: ESKİ ölçülmedi | YENİ 1385/1159/1159 ; 1684/1359/1456 | bütçe ≤ 3000 ms
+1..14
+# tests 14
+# pass 14
+# fail 0

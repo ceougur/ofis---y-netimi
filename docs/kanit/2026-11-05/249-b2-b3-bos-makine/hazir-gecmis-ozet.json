@@ -1,0 +1,61 @@
+{
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-40",
+ "saat": "2026-11-02T10:00:00+03:00",
+ "sirket": {
+  "001": {
+   "reddedilen": {
+    "silinmis": 15
+   },
+   "pasif": 30,
+   "istemiyor": 30,
+   "istemiyorVePasif": 5,
+   "telefonGecersiz": 5,
+   "telefonBos": 5,
+   "telefonYurtDisi": 3,
+   "telefonSabitHat": 3,
+   "telefonAyni": 2,
+   "telefonCokNumara": 2,
+   "grup": 60,
+   "tahsilat": 200,
+   "kart1": 300,
+   "kart2": 150,
+   "taksitTahsilati": 150,
+   "kartMevcutBorc": 8,
+   "silinmisIds": [],
+   "silinecekAcildi": 15,
+   "hareketsiz": 5,
+   "ayniAd": 2,
+   "gonderimKaydi1": 2000,
+   "gonderimKaydi2": 2000,
+   "gonderimKaydi3": 2000,
+   "cariSayisi": 3036
+  },
+  "002": {
+   "reddedilen": {
+    "silinmis": 3
+   },
+   "pasif": 6,
+   "istemiyor": 6,
+   "istemiyorVePasif": 1,
+   "telefonGecersiz": 1,
+   "telefonBos": 1,
+   "telefonYurtDisi": 1,
+   "telefonAyni": 1,
+   "grup": 12,
+   "tahsilat": 40,
+   "kart1": 60,
+   "kart2": 30,
+   "taksitTahsilati": 30,
+   "kartMevcutBorc": 2,
+   "silinmisIds": [],
+   "silinecekAcildi": 3,
+   "hareketsiz": 5,
+   "ayniAd": 2,
+   "gonderimKaydi1": 400,
+   "gonderimKaydi2": 400,
+   "gonderimKaydi3": 400,
+   "cariSayisi": 624
+  }
+ },
+ "bitti": "2026-11-05T08:55:04.395Z"
+}

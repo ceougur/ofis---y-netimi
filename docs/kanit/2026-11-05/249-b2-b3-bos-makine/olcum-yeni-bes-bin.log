@@ -1,0 +1,3 @@
+08:53:51 targets bes-bin tumuneEkstreHepsi5000 [{"durum":200,"ms":2017,"olayDongusuEnCokMs":1718,"baskaEnCokMs":1741,"baskaIstek":4,"baskaHata":0,"alici":5000,"gecerli":4927},{"durum":200,"ms":1776,"olayDongusuEnCokMs":1373,"baskaEnCokMs":1474,"baskaIstek":4,"baskaHata":0,"alici":5000,"gecerli":4927}]
+08:53:56 targets bes-bin tumuneMesajHepsi5000 [{"durum":200,"ms":1445,"olayDongusuEnCokMs":1224,"baskaEnCokMs":1226,"baskaIstek":4,"baskaHata":0,"alici":5000,"gecerli":4927},{"durum":200,"ms":1342,"olayDongusuEnCokMs":1134,"baskaEnCokMs":1121,"baskaIstek":4,"baskaHata":0,"alici":5000,"gecerli":4927}]
+yazıldı /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-249-q5n8/cikti/olcum-yeni-bes-bin.json

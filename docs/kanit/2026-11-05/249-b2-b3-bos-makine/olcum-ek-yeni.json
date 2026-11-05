@@ -1,0 +1,99 @@
+{
+ "commit": "5a22228aa423ec4b4c85442dccd454f09f02ea67",
+ "node": "v22.22.0",
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/hazir-iade",
+ "saat": "2026-11-03T15:00:00+03:00",
+ "basladi": "2026-11-05T08:51:28.603Z",
+ "olcum": {
+  "targetsSon2000": [
+   {
+    "ms": 777,
+    "olayDongusuEnCokMs": 554,
+    "baskaEnCokMs": 565,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "durum": 200,
+    "kalem": 2000
+   },
+   {
+    "ms": 792,
+    "olayDongusuEnCokMs": 535,
+    "baskaEnCokMs": 582,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "durum": 200,
+    "kalem": 2000
+   }
+  ],
+  "onizlemeSon2000": [
+   {
+    "ms": 814,
+    "olayDongusuEnCokMs": 539,
+    "baskaEnCokMs": 611,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "durum": 200,
+    "kalem": 2000
+   },
+   {
+    "ms": 668,
+    "olayDongusuEnCokMs": 439,
+    "baskaEnCokMs": 464,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "durum": 200,
+    "kalem": 2000
+   }
+  ],
+  "onizlemeTumune": [
+   {
+    "ms": 1132,
+    "olayDongusuEnCokMs": 910,
+    "baskaEnCokMs": 927,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "durum": 200,
+    "kalem": 4014
+   },
+   {
+    "ms": 1294,
+    "olayDongusuEnCokMs": 1027,
+    "baskaEnCokMs": 1087,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "durum": 200,
+    "kalem": 4014
+   }
+  ],
+  "cariKarti200": [
+   {
+    "ms": 10748,
+    "olayDongusuEnCokMs": 327,
+    "baskaEnCokMs": 299,
+    "baskaIstek": 28,
+    "baskaHata": 0,
+    "durum": 200,
+    "kalem": 200,
+    "istekP50Ms": 26.7,
+    "istekEnCokMs": 328.7
+   },
+   {
+    "ms": 11027,
+    "olayDongusuEnCokMs": 275,
+    "baskaEnCokMs": 293,
+    "baskaIstek": 29,
+    "baskaHata": 0,
+    "durum": 200,
+    "kalem": 200,
+    "istekP50Ms": 26.3,
+    "istekEnCokMs": 300.9
+   }
+  ]
+ },
+ "cariSayisi": {
+  "toplam": 4021,
+  "telefonlu": 4014,
+  "iadeCarisi": 1000
+ },
+ "bitti": "2026-11-05T08:52:13.515Z"
+}
