@@ -412,7 +412,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   tablo sınıflaması (edoc_usage / einvoice_inbox / audit_events dokunulmaz), kalıcı devir yedeği (arşiv + belgeler + secret.key), şema sürüm kapısı, Devri Yenile mekanizması, e-Belge numara tabanı.
   P6 YAZILDI (docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md). KULLANICI KARARLARI (05.11 ~16:48, WhatsApp): S-W1 n3 = "İkinci de gitsin" (bugünkü davranış; ilke (2)'nin bu duruma özel
   istisnası); S-W2 = "Sayılmasın" (Süresi Doldu ileti 24 sa sınırına sayılmaz); S-W3 = "1 yıl + anonim iz" (içerik / telefon / PDF 1 yıl ya da talepte hemen silinir, anonim iz kalır). Kâhin buna göre (WK).
-  SIRADAKİ: mali müşavir P (planlar + kural kitabı, sürüyor) → kullanıcı soruları (B1, G13, çekirdek §12'den para kuralı olanlar) → 1. dalga.
+  P5 MALİ MÜŞAVİR BİTTİ (kural kitabı docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md; sonuçlar çekirdek §13 + devir G14). KULLANICI KARARI 05.11 17:16 "hepsi A": 11 para kuralı (B1 fatura dahil,
+  KG-2 belgesiz gelir KDV'siz, KG-3 kayıt tahsilatı gelir değil, KG-5 Excel taksit = açılış, KG-6 POS komisyonu satış günü, KG-7 KDV İndirim Dönemi alanı, KG-9 eksi stok 0, KG-11 SMM Tahmini iki raporda,
+  KG-12 önceki yıllar 570/580, KG-15 Kural Farkı Düzeltme Fişi, KG-16 Açılış Olabilir listesi). PLANLAMA TAMAM → kâhin (kodu görmeyen, sürüyor) bitince 1. dalga (Ç1…) kendiliğinden ("kâhin önce" kararı 23.10).
   ORTAM (kullanıcı 05.11: "30 dk bir ara rapor ver, biten işlerin üstünü çiz. 3saate bir de yenilenen ortam kopması için alarm kur"): 30 dk rapor CronCreate d19be8cc ("7,37 * * * *", oturuma bağlı; kapsayıcı yenilenince ve 7 günde
   düşer) — İSTEM: "30 DK ARA RAPOR: TaskList'i oku; Türkçe kısa ara rapor: bitenler ~~üstü çizili~~, süren kalın, ajan durumu, yalnız yeni push'un CI'si (yoklama yok), sıradaki adım ve beklenen karar; değişiklik yoksa tek satır";
   ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (sunucu tarafı, 3 saatte bir :18 UTC, bu oturuma; rapor görevi yoksa yeniden kurar). İş listesi oturumda TaskList'te (docs/2.5.0-IS-LISTESI.md "başla"da açılır).

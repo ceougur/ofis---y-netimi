@@ -151,5 +151,5 @@ KABUL EDİLENLER (BAŞ MİMAR KARARI, ders 40 — mali müşavir önerisi, sın�
 - Stok birim maliyeti DÖNEMSEL ağırlıklı ortalama: (dönem başı stok + o yılın alışları); önceki yıl sonları için de değerleme (KG-12 ile).
 - 2.5.1'e (DÜŞÜK): POS komisyonu 653 → 760; kredi 300 / 400 vade ayrımı dipnotu; özel hesap dönemi; "Defter Tutmuyor" Defter Türü seçeneği; kilit kaldırma uyarısı; Muhasebe rolüne dönem kilidi
   (GÖRÜŞ); kılavuzdaki "karşılığı açılış hesabı 500" cümlesi (kılavuz Ç5 ile birlikte güncellenir — 2.5.0).
-KULLANICIYA SORULACAKLAR (para / kapama / açılış kuralı; ders 43; mali müşavir önerisi A): B1, KG-2, KG-3, KG-5, KG-6, KG-7, KG-9, KG-11, KG-12, KG-15, KG-16 (iş listesi C). KG-4 (Borç Yaz /
+KULLANICI KARARI 05.11 17:16 "hepsi A" — aşağıdaki maddelerin HEPSİ A (iş listesi D). Önceki başlık: KULLANICIYA SORULACAKLAR (para / kapama / açılış kuralı; ders 43; mali müşavir önerisi A): B1, KG-2, KG-3, KG-5, KG-6, KG-7, KG-9, KG-11, KG-12, KG-15, KG-16 (iş listesi C). KG-4 (Borç Yaz /
 Alacak Yaz bugünkü 602 / 770 + ".90" alt hesap) ve KG-13 (vergi karşılığı yok, 20.10 kararı) yeni kural değil → sorulmaz. Kâhin yanıt gelene kadar bu maddelerde iki dallı kurulur.

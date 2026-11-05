@@ -450,4 +450,5 @@ KARAR → 2.5.0 (kullanıcı, 30.10.2026 ~19:10 UTC: "bunu devirle beraber 2.5.0
   düzeltme beyannamesi gerekebilir. Mali müşavirinizle görüşün." + 30 Nisan'dan sonra ikinci onay.
 - Mevzuat (kaynaklı): enflasyon düzeltmesi 2025–2027 yapılmaz (VUK geçici 37, 7571 s. K., RG 25.12.2025) → 31.12.2026 devrinde düzeltme kaydı yok; kurumlar vergisi beyanı 1–30 Nisan, gelir
   vergisi 1–31 Mart → Devri Yenile'nin olağan penceresi Ocak–Nisan.
-- Aralık KDV'si: KG-7 kararına bağlı (geç gelen faturada KDV indirim dönemi alanı önerisi, KDVK 29/3).
+- Aralık KDV'si: KG-7 = A (kullanıcı 05.11 17:16 "hepsi A"): alış faturasında "KDV İndirim Dönemi" alanı (KDVK 29/3); geç gelen Aralık faturası arşive (Devri Yenile), KDV'si seçilen ayın mahsubuna;
+  191 bakiyesi açılışla yeni yıla. KG-12 = A: devir yapılmamış önceki yılların sonucu yıl yıl 570 / 580.
