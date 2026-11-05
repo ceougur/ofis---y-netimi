@@ -1,0 +1,32 @@
+{
+  "ad": "wt2-anaoturum-e2e-is-akisi",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-is-akisi-248.mjs",
+  "commit": "57cc9659225117d9d3b2a05f515d8c7a98532498",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:15:19.021Z",
+  "sure_sn": 167.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 184,
+    "gecen": 184,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/wt2-anaoturum-e2e-is-akisi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "bb0ebf1e59fe94a61558b86b1f66a828d560c338cc48c8c92f56ffa83cb6ea50",
+  "ham_cikti_bayt": 14737
+}
