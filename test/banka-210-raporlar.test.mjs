@@ -399,7 +399,7 @@ describe("2.1.0 Aşama 14 — Banka raporları ve K10 (bağımsız beklenenle, h
     assert.equal(gl("770"), sumBy(FEES, fee => fee.base + fee.bsmv), "770 = rapordaki matrah + BSMV");
     assert.equal(gl("191"), sumBy(FEES, fee => fee.vat), "191 = rapordaki KDV");
     const all = await screen("banka-masraf", { preset: "all" }, "770");
-    assert.equal(summaryOf(all, "770 Genel Giderler ve Alış Faturaları") , sumBy(FEES, fee => fee.base + fee.bsmv + fee.vat), "özet hesap kodu satırı");
+    assert.equal(summaryOf(all, "770 Genel Yönetim Giderleri") , sumBy(FEES, fee => fee.base + fee.bsmv + fee.vat), "özet hesap kodu satırı");
   });
 
   it("Alt Hesap Mizanı: her dönem; alt hesaplar = bağımsız defter; ana hesaplar = Hesap Planı Mizanı (102, 108, 300, 309)", async () => {

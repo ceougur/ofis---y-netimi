@@ -16,7 +16,7 @@ export const SETTINGS_KEY = "bank.settings";
 
 const EXPENSE_GL = ROLE_GL.expense;
 const INCOME_GL = ROLE_GL.income;
-/** Masraf ve komisyon eşlemesi: faturalı masrafın gider kalemi olabilen hesaplar (770 Genel Giderler, 653 Komisyon Giderleri). */
+/** Masraf ve komisyon eşlemesi: faturalı masrafın gider kalemi olabilen hesaplar (770 Genel Yönetim Giderleri, 653 Komisyon Giderleri). */
 export const FEE_GL = Object.freeze(["770", "653"]);
 
 // Masraf türleri (§8.11 Temel → Masraf): hesabı masraf türü belirler (vergi kipinden bağımsız; Ek A.1/24).

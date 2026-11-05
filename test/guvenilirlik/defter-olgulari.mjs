@@ -150,6 +150,8 @@ export function normDocumentNames(text) {
   // 2.4.3 MM3 (bilerek): 689'un adı Tekdüzen adı "Diğer Olağandışı Gider ve Zararlar" (önceden "Kapatılan Kartlardan Vazgeçilen Alacaklar"; gecikme
   // zammı da 689'a yazılır). Tutar ve kod değişmez — iki ad aynı belirtece.
   out = out.split("Kapatılan Kartlardan Vazgeçilen Alacaklar").join("689-AD").split("Diğer Olağandışı Gider ve Zararlar").join("689-AD");
+  // 2.5.0 Ç1 (bilerek): 770'in adı Tekdüzen adı "Genel Yönetim Giderleri" (önceden "Genel Giderler ve Alış Faturaları"). Tutar ve kod değişmez — iki ad aynı belirtece.
+  out = out.split("Genel Giderler ve Alış Faturaları").join("770-AD").split("Genel Yönetim Giderleri").join("770-AD");
   return out;
 }
 /** Mizan hesapları (TL): 121 → 101, 321 → 103 katlanır; ad eski ad. Dönüş aynı biçim (TL), kod sırasıyla. */
@@ -246,7 +248,12 @@ export async function ledgerFacts(api) {
     // Alacak) katlamayla değişmez; satır sayısı (total) katlanmış satırlarındır.
     const folded = id === "hesap-mizani" ? foldDocumentRows(id, report.rows) : null;
     // 2.4.3 MM3 (bilerek): 689'un adı Tekdüzen Hesap Planı adı "Diğer Olağandışı Gider ve Zararlar" (önceden "Kapatılan Kartlardan Vazgeçilen Alacaklar").
-    const LEGACY_NAMES = { 649: ["Diğer Olağan Gelir ve Kârlar", "Diğer Olağan Gelirler (Kasaya Elle)"], 689: ["Diğer Olağandışı Gider ve Zararlar", "Kapatılan Kartlardan Vazgeçilen Alacaklar"] };
+    // 2.5.0 Ç1 (bilerek): 770'in adı Tekdüzen adı "Genel Yönetim Giderleri" (önceden "Genel Giderler ve Alış Faturaları"); kod ve tutarlar aynı.
+    const LEGACY_NAMES = {
+      649: ["Diğer Olağan Gelir ve Kârlar", "Diğer Olağan Gelirler (Kasaya Elle)"],
+      689: ["Diğer Olağandışı Gider ve Zararlar", "Kapatılan Kartlardan Vazgeçilen Alacaklar"],
+      770: ["Genel Yönetim Giderleri", "Genel Giderler ve Alış Faturaları"],
+    };
     const rows = folded ? folded.map(row => (LEGACY_NAMES[String(row[0])]?.[0] === row[1] ? [row[0], LEGACY_NAMES[String(row[0])][1], ...row.slice(2)] : row)) : legacy.rows;
     reports[id] = { total: folded ? folded.length : legacy.total, rows: digest(rows), footer: legacy.footer, summary: legacy.summary };
   }

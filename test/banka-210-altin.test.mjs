@@ -12,6 +12,8 @@
 // Tek fark izni: oluşturma saati (PDF/Excel damgası) ve 649'un adı — Aşama 4'te (Banka Fişi 649'a yazmaya başlayınca; bilerek güncellendi)
 // Tekdüzen adı "Diğer Olağan Gelir ve Kârlar" (plan §3.11; tutarı aynı). Hesap Planı Mizanı PDF'inde adın uzunluğu kolon genişliğini,
 // dolayısıyla satır kırılımını değiştirir (o PDF'te kırılım boşluk sayılır). Aşama 2'de (gözden geçirme D3) ad 2.0.26'daki gibi kalmıştı.
+// 2.5.0 Ç1 (bilerek): 770'in adı da Tekdüzen adı "Genel Yönetim Giderleri" (önceden "Genel Giderler ve Alış Faturaları"); iki ad aynı belirtece
+// (defter-olgulari normDocumentNames), tutar ve kod birebir karşılaştırılır.
 // Veri: (1) zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket); (2) v2.0.26'nın KENDİ koduyla
 // mutabakat motoruyla (test/mutabakat/motor.mjs) bu test sırasında üretilen veri: 120 güne yayılmış rastgele işlemler (Kasa, cari,
 // stok, taksit, çek/senet, fatura, iade, iptal, transfer, dönem kilidi).

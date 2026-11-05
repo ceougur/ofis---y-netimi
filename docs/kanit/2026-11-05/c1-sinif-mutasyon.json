@@ -1,0 +1,32 @@
+{
+  "ad": "c1-sinif-mutasyon",
+  "komut": "node --disable-warning=ExperimentalWarning test/hesap-plani-sinif-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/mut-384676ec",
+  "commit": "384676ec8d554dd00ca3086f6e4d67fc545ff743",
+  "dal": "worktree-agent-a51a663795c9175f5",
+  "kirli": 0,
+  "izlenmeyen": 28,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:47:17.309Z",
+  "sure_sn": 2.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c1-sinif-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a51a663795c9175f5",
+  "ham_cikti_sha256": "e09690b21b8ed2b7308bff9c9ad7f67315b03b0acd0cae8d0126d067a7368314",
+  "ham_cikti_bayt": 2132
+}

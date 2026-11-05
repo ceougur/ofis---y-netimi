@@ -179,7 +179,7 @@ describe("Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları", () => {
     assert.equal(section("account").items.find(item => item.key === "defaultPosId").available, true, "Varsayılan POS görünür (2.2.0)");
     assert.equal(section("account").items.find(item => item.key === "defaultAccountId").available, true);
     assert.equal(section("holidayAdvanced").items.find(item => item.key === "shift").available, false, "Tatile Düşen Valör (POS) görünmemeli");
-    assert.equal(settings.chart["770"], "Genel Giderler ve Alış Faturaları");
+    assert.equal(settings.chart["770"], "Genel Yönetim Giderleri");
     assert.equal(settings.chart["653"], "Komisyon Giderleri");
     assert.equal(settings.chart["102"], "Bankalar (Havale / EFT)");
     assert.equal(section("fxAdvanced").items.find(item => item.key === "exchangeTaxPermille").nullable, true, "boş bırakılabilen alan ekrana bildirilir");
