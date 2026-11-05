@@ -21,6 +21,7 @@ import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { VAT_RATES } from "../lib/invoice-math.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
+import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -470,6 +471,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   };
   // Kasa'ya etkisi: peşin satış Kasa'ya giriş, peşin alım ve nakit iade Kasa'dan çıkış (düzeltme/silme koruması için).
   const cashSide = move => (move && move.pay === "cash" && Number(move.amount) > 0 ? { kind: move.kind === "out" ? "in" : "out", amount: move.amount, method: move.method || "cash", date: move.date } : null);
+  // 2.5.0 BİRLEŞİK TUR 1 (YB-1): hareket düzeltmesinde iyimser kilit (lib/row-version.mjs; gövdede updatedAt varsa).
+  const MOVE_STALE = { code: "stock-move-stale", message: "Bu stok hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin." };
   const requireMoveRight = (user, move) => {
     if (move.invoiceId) throw new HttpError(409, "Bu hareket bir faturadan geldi; Fatura ekranından iptal edin ya da iade faturası kesin.", { code: "invoice-linked", invoiceId: move.invoiceId });
     if (canUser(user, "stock.manage")) return;
@@ -478,46 +481,58 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   router.put("/api/workspace/stock/:id/moves/:moveId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "stock.move");
     const item = itemRow(params.id);
-    const previous = moveOf(item.id, params.moveId);
-    requireMoveRight(user, previous);
-    period?.assertOpen(previous.date, "Bu stok hareketi");
+    // Gövde okunmadan önceki denetimler yalnız erken yanıt içindir (yok / yetkisiz / kilitli dönem); karar aşağıda işlemin İÇİNDE güncel satırla yinelenir.
+    const opened = moveOf(item.id, params.moveId);
+    requireMoveRight(user, opened);
+    period?.assertOpen(opened.date, "Bu stok hareketi");
     const body = await readJson(req);
-    const input = moveInput({ ...previous, ...body, kind: previous.kind }, user, item, previous);
-    assertAvailable(item, input, previous, body.force === true);
-    cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
-    const before = { method: previous.pay === "cash" ? previous.method || "cash" : "", finRef: previous.finRef };
-    const moved = previous.pay !== input.pay || (previous.method || "cash") !== (input.method || "cash") || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
-    const finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: before, changed: moved, corporate: corporate(input), posId: body.posId, posRefundOf: body.posRefundOf }) : "";
-    if (finRef !== (previous.finRef || "")) banking.requireOut(user, bankOut(previous), finRef);
-    const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
+    // 2.5.0 BİRLEŞİK TUR 1 (YB-1; routes/accounts.mjs PUT entries ile aynı): eksi stok, Kasa ve banka (K7) denetimleri, gövdeyle birleştirme ve Değişiklik
+    // Geçmişi'nin "önceki"si yazım işleminin İÇİNDE yeniden okunan güncel hareketten (önceden isteğin başındaki okuma gövde beklenirken eskiyordu: arada başka
+    // kullanıcı aynı hareketi düzeltirse Kasa "Engelle" atlanıyordu). Gövdede updatedAt varsa iyimser kilit: hareket form açıldıktan sonra değiştiyse 409.
+    const current = []; // bank.post'un "prev"i: prepare güncel satırı koyar (adım 3 ondan sonra okur)
+    let step = null;
     let touched = [];
     const result = bank.post({
       user,
       module: "stock",
       op: "update",
-      prev: previous,
+      prev: current,
       requestId: banking.requestId(req, body),
       scope: "stock.move.update",
-      body: { ...body, moveId: previous.id },
-      guard: k7.guard,
+      body: { ...body, moveId: opened.id },
+      guard: (outcome, ctx) => step?.k7.guard?.(outcome, ctx),
       // 2.4.9 C1 TUR 1 (madde 4): gövde beklenirken ürün silinirse düzeltme yazılmaz (POST …/moves ile aynı; işlemin içinde, 404).
       // 2.5.0 BS-3 (d): aynı desen hareketin kendisi için — gövde beklenirken hareket silinirse 404 "Stok hareketi bulunamadı" (önceden UPDATE 0 satır,
       // cari satırı silinmiş harekete yeniden yazılıyor, kapı 409 ledger-integrity "yöneticinize bildirin" ile geri alıyordu).
       prepare: () => {
-        itemRow(item.id);
-        moveOf(item.id, previous.id);
+        const product = itemRow(item.id);
+        const previous = moveOf(item.id, opened.id);
+        assertRowVersion(body, rowVersion(store, "stock_moves", previous.id), MOVE_STALE);
+        requireMoveRight(user, previous);
+        period?.assertOpen(previous.date, "Bu stok hareketi");
+        const input = moveInput({ ...previous, ...body, kind: previous.kind }, user, product, previous);
+        assertAvailable(product, input, previous, body.force === true);
+        cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
+        const before = { method: previous.pay === "cash" ? previous.method || "cash" : "", finRef: previous.finRef };
+        const moved = previous.pay !== input.pay || (previous.method || "cash") !== (input.method || "cash") || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
+        const finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: before, changed: moved, corporate: corporate(input), posId: body.posId, posRefundOf: body.posRefundOf }) : "";
+        if (finRef !== (previous.finRef || "")) banking.requireOut(user, bankOut(previous), finRef);
+        const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
+        current.push(previous);
+        step = { product, previous, input, finRef, k7 };
       },
       write: () => {
+        const { product, previous, input, finRef, k7 } = step;
         k7.capture();
         // Peşin ↔ açık hesap geçişi: para satırı olmaktan çıkan hareketin olayı iptal olur, yeniden peşin olan yeni olay alır.
         const eventId = bank.eventFor("stock_moves", { kind: previous.kind, pay: input.pay, amount: input.amount, date: input.date, method: input.method || "cash", fin_ref: finRef, event_id: previous.eventId, pos: finRef ? posMetaOf(body) : null });
         store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, fin_ref = ?, event_id = ?, is_opening = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, finRef, eventId, openingFlag({ ...input, isOpening: Number(previous.isOpening) === 1 }), user.id, now(), previous.id);
-        touched = syncAccount(user, item, previous.id, input, previous.accountId);
+        touched = syncAccount(user, product, previous.id, input, previous.accountId);
         audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input, finRef });
         return { id: previous.id };
       },
     });
-    k7.prime(result);
+    step?.k7.prime(result);
     changed(user, { itemId: item.id });
     changed(user, { kind: "cash" });
     publishAccounts(user, touched);

@@ -15,6 +15,7 @@ import { systemClock } from "../lib/clock.mjs";
 import { createMoneyLines, waysFor } from "../lib/bank/money-lines.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { CASH_OPENING_TEXT, cashOpenings, firstCashMovement, isCashOpeningId } from "../lib/cash-opening.mjs";
+import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
 
 // Banka Fişi'nin para hareketi olmayan türleri (açılış, Devir Kapanışı, eski bakiye aktarımı): raporda "Açılış ve Devir Düzeltmeleri".
 const ADJUST_TYPES = new Set(["opening", "carry_close", "legacy_reclass"]);
@@ -442,51 +443,74 @@ export function registerCashRoutes(router, context) {
     ok(res, { id: cashId, bankId, transferId, direction, amount: roundMoney(amount), date });
   });
 
-  router.put("/api/workspace/cash/:id", async ({ req, res, params }) => {
-    const user = auth.requirePermission(req, "cash.manage");
-    const previous = existing(params.id);
-    // 2.4.3 MM3: Kasa'dan Vergi Ödemesi (B 360 · B 689 / A 100) Kasa'dan düzeltilmez — vergi ve gecikme ayrımı tutarla birlikte değişirdi. Silinir
-    // (Silinenler'den geri gelir) ve Vergi Ödemesi'nden doğru tutarla yeniden girilir.
-    if (store.get("SELECT 1 AS found FROM pragma_table_info('cash_entries') WHERE name = 'tax_json'") && store.get("SELECT tax_json AS t FROM cash_entries WHERE id = ?", previous.id)?.t) {
+  // 2.4.3 MM3: Kasa'dan Vergi Ödemesi (B 360 · B 689 / A 100) Kasa'dan düzeltilmez — vergi ve gecikme ayrımı tutarla birlikte değişirdi. Silinir
+  // (Silinenler'den geri gelir) ve Vergi Ödemesi'nden doğru tutarla yeniden girilir.
+  const assertNotTaxPayment = id => {
+    if (store.get("SELECT 1 AS found FROM pragma_table_info('cash_entries') WHERE name = 'tax_json'") && store.get("SELECT tax_json AS t FROM cash_entries WHERE id = ?", id)?.t) {
       throw new HttpError(409, "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin.", { code: "cash-tax-payment" });
     }
-    context.period?.assertOpen(previous.date, "Bu kasa hareketi");
+  };
+  // 2.5.0 BİRLEŞİK TUR 1 (YB-1): hareket düzeltmesinde iyimser kilit (lib/row-version.mjs; gövdede updatedAt varsa).
+  const ENTRY_STALE = { code: "cash-entry-stale", message: "Bu Kasa hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin." };
+  const TWIN_GONE = "Transferin öbür tarafı bulunamadı. Başka biri silmiş olabilir.";
+  router.put("/api/workspace/cash/:id", async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "cash.manage");
+    // Gövde okunmadan önceki denetimler yalnız erken yanıt içindir (yok / Vergi Ödemesi / kilitli dönem); karar aşağıda işlemin İÇİNDE güncel satırla yinelenir.
+    const opened = existing(params.id);
+    assertNotTaxPayment(opened.id);
+    context.period?.assertOpen(opened.date, "Bu kasa hareketi");
+    const pairedAtOpen = Boolean(twinOf(opened));
     const body = await readJson(req);
-    // Eski (2.0.16 öncesi) nakit dışı Kasa kaydının yolu değiştirilmez; transferde yön (kind) de sabittir.
-    const entry = { ...input({ ...body, method: undefined }), method: previous.method };
-    if (previous.transferId && entry.kind !== previous.kind) throw new HttpError(400, "Transferin yönü değiştirilemez; silip yeniden girin.", { code: "transfer-kind" });
-    // 2.2.0 İz 1.3: Kasa açılışını düzeltmek yalnız yöneticide (kurallar: assertOpening). Yargıç Y2/Y3: işaret düzeltmeyle değişmez — açıklama ne
-    // olursa olsun açılış açılış, sıradan giriş sıradan kalır; açılış çıkışa çevrilmez.
-    const openingAfter = !previous.transferId && isCashOpeningId(store, previous.id);
-    if (openingAfter) {
-      requireOpeningAdmin(user);
-      if (entry.kind !== "in") throw new HttpError(400, "Kasa açılışı çıkışa çevrilemez; tutarı ya da tarihi Kasa → Açılış Bakiyesi'nden düzeltin.", { code: "cash-opening-kind" });
-    }
-    guardChange(previous, entry, body.cashForce === true);
-    const twin = twinOf(previous);
-    if (twin) guardChange(twin, { ...twin, amount: entry.amount, date: entry.date }, body.cashForce === true);
-    // v2.1.0 Aşama 6: transferin banka bacağının hesabı (Hesap Seçin verilmezse mevcut bağ; bağsız eski transferde tutar ya da tarih değişirse
-    // seçim — plan §3.5 kural 4) ve banka yönünde eksi bakiye (K7).
-    const bankLeg = previous.transferId ? (previous.method === "bank" ? previous : twin) : null;
-    let finRef = bankLeg?.finRef || "";
-    let k7 = noGuard;
-    if (bankLeg && banking()) {
-      const moved = Math.abs(roundMoney(bankLeg.amount) - entry.amount) > 0.004 || bankLeg.date !== entry.date;
-      finRef = banking().pickRef({ method: "bank", value: body.bankAccountId, date: entry.date, previous: bankLeg, changed: moved });
-      k7 = banking().negative({ refs: [bankLeg.finRef, finRef], date: bankLeg.date < entry.date ? bankLeg.date : entry.date, force: negativeConfirmed(body) });
-    }
+    // 2.5.0 BİRLEŞİK TUR 1 (YB-1, YB-2; routes/accounts.mjs PUT entries ile aynı): Kasa ve banka (K7) denetimleri, açılış kuralları ve Değişiklik Geçmişi'nin
+    // "önceki"si yazım işleminin İÇİNDE yeniden okunan güncel hareketten (ve transferde güncel ikiz bacaktan). Önceden isteğin başındaki okuma gövde beklenirken
+    // eskiyordu: arada başka kullanıcı aynı hareketi düzeltirse Kasa "Engelle" atlanıyor; hareket silinmişse UPDATE 0 satır, 200 ve Değişiklik Geçmişi'ne sahte
+    // "cash.entry.updated" yazılıyordu. Artık silinmişse 404 (BS-3 iletisi; transferin öbür tarafı da) ve hiçbir tablo yazılmaz. Gövdede updatedAt varsa iyimser
+    // kilit: hareket form açıldıktan sonra değiştiyse 409.
+    const current = []; // bank.post'un "prev"i: prepare güncel satırları koyar (adım 3 ondan sonra okur)
+    let step = null;
     const result = bank.post({
       user,
       module: "cash",
       op: "update",
-      prev: [previous, twin].filter(Boolean),
+      prev: current,
       requestId: requestIdOf(req, body),
       scope: "cash.entry.update",
-      body: { ...body, id: previous.id },
+      body: { ...body, id: opened.id },
       prepare: () => {
+        const previous = existing(opened.id);
+        assertRowVersion(body, rowVersion(store, "cash_entries", previous.id), ENTRY_STALE);
+        assertNotTaxPayment(previous.id);
+        context.period?.assertOpen(previous.date, "Bu kasa hareketi");
+        const twin = twinOf(previous);
+        if (pairedAtOpen && !twin) throw new HttpError(404, TWIN_GONE);
+        // Eski (2.0.16 öncesi) nakit dışı Kasa kaydının yolu değiştirilmez; transferde yön (kind) de sabittir.
+        const entry = { ...input({ ...body, method: undefined }), method: previous.method };
+        if (previous.transferId && entry.kind !== previous.kind) throw new HttpError(400, "Transferin yönü değiştirilemez; silip yeniden girin.", { code: "transfer-kind" });
+        // 2.2.0 İz 1.3: Kasa açılışını düzeltmek yalnız yöneticide (kurallar: assertOpening). Yargıç Y2/Y3: işaret düzeltmeyle değişmez — açıklama ne
+        // olursa olsun açılış açılış, sıradan giriş sıradan kalır; açılış çıkışa çevrilmez.
+        const openingAfter = !previous.transferId && isCashOpeningId(store, previous.id);
+        if (openingAfter) {
+          requireOpeningAdmin(user);
+          if (entry.kind !== "in") throw new HttpError(400, "Kasa açılışı çıkışa çevrilemez; tutarı ya da tarihi Kasa → Açılış Bakiyesi'nden düzeltin.", { code: "cash-opening-kind" });
+        }
+        guardChange(previous, entry, body.cashForce === true);
+        if (twin) guardChange(twin, { ...twin, amount: entry.amount, date: entry.date }, body.cashForce === true);
+        // v2.1.0 Aşama 6: transferin banka bacağının hesabı (Hesap Seçin verilmezse mevcut bağ; bağsız eski transferde tutar ya da tarih değişirse
+        // seçim — plan §3.5 kural 4) ve banka yönünde eksi bakiye (K7).
+        const bankLeg = previous.transferId ? (previous.method === "bank" ? previous : twin) : null;
+        let finRef = bankLeg?.finRef || "";
+        let k7 = noGuard;
+        if (bankLeg && banking()) {
+          const moved = Math.abs(roundMoney(bankLeg.amount) - entry.amount) > 0.004 || bankLeg.date !== entry.date;
+          finRef = banking().pickRef({ method: "bank", value: body.bankAccountId, date: entry.date, previous: bankLeg, changed: moved });
+          k7 = banking().negative({ refs: [bankLeg.finRef, finRef], date: bankLeg.date < entry.date ? bankLeg.date : entry.date, force: negativeConfirmed(body) });
+        }
         if (openingAfter) assertOpening(user, entry, previous.id);
+        current.push(previous, ...(twin ? [twin] : []));
+        step = { previous, twin, entry, bankLeg, finRef, k7 };
       },
       write: () => {
+        const { previous, twin, entry, bankLeg, finRef, k7 } = step;
         k7.capture();
         // Eski (olaysız) satır düzeltilince olay alır; transferin iki bacağı aynı olayda kalır.
         const eventId = bank.eventFor("cash_entries", { ...entry, transfer_id: previous.transferId, event_id: previous.eventId || twin?.eventId || "" });
@@ -496,11 +520,11 @@ export function registerCashRoutes(router, context) {
         audit(user, previous.transferId ? "cash.transfer.updated" : "cash.entry.updated", previous.transferId || previous.id, { previous, ...entry, ...(bankLeg ? { finRef } : {}) });
         return { id: previous.id };
       },
-      guard: k7.guard,
+      guard: (outcome, ctx) => step?.k7.guard?.(outcome, ctx),
     });
-    k7.prime(result);
+    step?.k7.prime(result);
     changed(user);
-    ok(res, { id: previous.id, ...(result?.replayed ? { replayed: true } : {}) });
+    ok(res, { id: opened.id, ...(result?.replayed ? { replayed: true } : {}) });
   });
 
   router.delete("/api/workspace/cash/:id", async ({ req, res, params, url }) => {

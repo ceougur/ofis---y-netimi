@@ -26,6 +26,7 @@ import { ANONYMOUS_TCKN, RETAIL_NAME, classifyTaxId, isRetailName, isValidIban, 
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
 import { accountMovements, movementBlockText } from "../lib/account-movements.mjs";
+import { assertRowVersion, rowVersion } from "../lib/row-version.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -1010,6 +1011,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // Kart yolunun anlamı (plan §4.6 "alan belge türüne göre"): çıkış = kartla ödeme (309) — "POS İadesi" değilse; giriş = POS — "Kredi Kartına İade" değilse.
   const corporateOf = (input, body, previous = null) => (input.kind === "out" ? !posRefundOf(body, previous) : input.kind === "in" && input.method === "card" && cardRefundOf(body, previous));
   const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
+  // 2.5.0 BİRLEŞİK TUR 1 (YB-1): hareket düzeltmesinde iyimser kilit (lib/row-version.mjs; gövdede updatedAt varsa).
+  const ENTRY_STALE = { code: "account-entry-stale", message: "Bu cari hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin." };
   // Hakem K5: onay cashForce (plan §3.9) ya da eşanlamlı negativeOk (module-ref.mjs negativeConfirmed).
   const negativeForced = (body, url) => negativeConfirmed(body, url);
   router.post("/api/workspace/accounts/:id/entries", async ({ req, res, params }) => {
@@ -1054,39 +1057,53 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   router.put("/api/workspace/accounts/:id/entries/:entryId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const account = accountRow(params.id);
-    const previous = entryOf(account.id, params.entryId);
-    requireEntryRight(user, previous);
-    period?.assertOpen(previous.date, "Bu cari hareketi");
+    // Gövde okunmadan önceki denetimler yalnız erken yanıt içindir (yok / yetkisiz / kilitli dönem); karar aşağıda işlemin İÇİNDE güncel satırla yinelenir.
+    const opened = entryOf(account.id, params.entryId);
+    requireEntryRight(user, opened);
+    period?.assertOpen(opened.date, "Bu cari hareketi");
     const body = await readJson(req);
-    // v2.0.13: borç ↔ alacak yönü düzeltilebilir (yanlış yönde yazılan açılış bakiyesi gibi); tahsilat/ödeme yön değiştirmez.
-    const flip = ["debt", "credit"].includes(previous.kind) && ["debt", "credit"].includes(text(body.kind)) ? text(body.kind) : previous.kind;
-    const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
-    assertOffsetFree(previous, input);
-    assertNormalRoom(account, input, previous);
-    // 2.4.9 P1 tur 2: kart iadesi kuralları POST'la aynı — iade olmayan satır müşteride iadeye çevrilirken kartla ödeme denetimi (DÜŞÜK-2), etkin kart
-    // yoksa 400 (DÜŞÜK-1). Var olan iade satırının tutar / tarih / kart düzeltmesi serbest.
-    if (!wasCardRefund(previous)) assertCardRefundRoom(account, input, body);
-    const finRef = refOf(input, body, previous);
-    assertCardTarget(input, body, finRef);
-    if (finRef !== previous.finRef) requireBankOut(user, input.kind, finRef);
-    const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
-    cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
-    const k7 = negativeOf([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, negativeForced(body));
+    // 2.5.0 BİRLEŞİK TUR 1 (YB-1): isteğin başındaki okuma gövde beklenirken eskir — arada başka kullanıcı aynı hareketi düzeltirse Kasa / bakiye denetimleri
+    // bayat satırla hesaplanıyordu (Kasa "Engelle" atlanıp Kasa eksiye düşüyordu) ve bayat satır gövdeyle birleşip öbür kullanıcının düzeltmesini siliyordu.
+    // Artık hareket yazım işleminin İÇİNDE (bank.post prepare: istek kimliği bakışından sonra, yazımdan hemen önce) yeniden okunur; bütün denetimler, gövdeyle
+    // birleştirme ve Değişiklik Geçmişi'nin "önceki"si bu güncel satırdan. Silinmişse 404 (BS-3 iletisi) — yanıltıcı Kasa sorusu da çıkmaz. Gövdede updatedAt
+    // varsa iyimser kilit (lib/row-version.mjs): satır form açıldıktan sonra değiştiyse 409 account-entry-stale.
+    const current = []; // bank.post'un "prev"i: prepare güncel satırı koyar (adım 3 ondan sonra okur)
+    let step = null;
     const result = bank.post({
       user,
       module: "account",
       op: "update",
-      prev: previous,
+      prev: current,
       requestId: requestIdOf(req, body),
       scope: "account.entry.update",
-      body: { ...body, entryId: previous.id },
+      body: { ...body, entryId: opened.id },
       // 2.5.0 BS-3 ailesi (cari hareket düzeltme yarışı; stock.mjs PUT moves / plans.mjs PUT entries ile aynı desen): gövde beklenirken hareket silinirse
-      // isteğin başındaki okuma yazım işleminin İÇİNDE, istek kimliği bakışından sonra yinelenir → 404 "Hareket bulunamadı. Başka biri silmiş olabilir."
-      // (önceden UPDATE 0 satır, 200 ve Değişiklik Geçmişi'ne silinmiş hareket için "düzeltildi" satırı yazılıyordu).
+      // 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden UPDATE 0 satır, 200 ve Değişiklik Geçmişi'ne silinmiş hareket için "düzeltildi" satırı).
       prepare: () => {
-        entryOf(account.id, previous.id);
+        const previous = entryOf(account.id, opened.id);
+        assertRowVersion(body, rowVersion(store, "account_entries", previous.id), ENTRY_STALE);
+        requireEntryRight(user, previous);
+        period?.assertOpen(previous.date, "Bu cari hareketi");
+        const party = accountRow(account.id);
+        // v2.0.13: borç ↔ alacak yönü düzeltilebilir (yanlış yönde yazılan açılış bakiyesi gibi); tahsilat/ödeme yön değiştirmez.
+        const flip = ["debt", "credit"].includes(previous.kind) && ["debt", "credit"].includes(text(body.kind)) ? text(body.kind) : previous.kind;
+        const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
+        assertOffsetFree(previous, input);
+        assertNormalRoom(party, input, previous);
+        // 2.4.9 P1 tur 2: kart iadesi kuralları POST'la aynı — iade olmayan satır müşteride iadeye çevrilirken kartla ödeme denetimi (DÜŞÜK-2), etkin kart
+        // yoksa 400 (DÜŞÜK-1). Var olan iade satırının tutar / tarih / kart düzeltmesi serbest.
+        if (!wasCardRefund(previous)) assertCardRefundRoom(party, input, body);
+        const finRef = refOf(input, body, previous);
+        assertCardTarget(input, body, finRef);
+        if (finRef !== previous.finRef) requireBankOut(user, input.kind, finRef);
+        const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
+        cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
+        const k7 = negativeOf([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, negativeForced(body));
+        current.push(previous);
+        step = { previous, input, finRef, k7 };
       },
       write: () => {
+        const { previous, input, finRef, k7 } = step;
         k7.capture();
         const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
         const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
@@ -1094,9 +1111,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input, finRef });
         return { id: previous.id };
       },
-      guard: k7.guard,
+      guard: (outcome, ctx) => step?.k7.guard?.(outcome, ctx),
     });
-    k7.prime(result);
+    step?.k7.prime(result);
     touched(user, account);
     changed(user, { kind: "cash" });
     ok(res, { ...detail(account.id, user), ...(result?.replayed ? { replayed: true } : {}) });

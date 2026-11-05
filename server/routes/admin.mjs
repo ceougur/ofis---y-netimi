@@ -449,7 +449,9 @@ export function registerAdminRoutes(router, context) {
     const limit = Math.max(1, Math.min(1000, Number(url.searchParams.get("limit") || 200)));
     const type = text(url.searchParams.get("type"));
     // Süzgeç önek; bir süzgeç birden çok öneki kapsayabilir (AUDIT_GROUPS). LIKE'ın joker karakterleri (% _) önekte düz okunur.
-    const prefixes = AUDIT_GROUPS[type] || [type];
+    // 2.5.0 BİRLEŞİK TUR 1 (birleşik dar kontrol DÜŞÜK-1, Ç4 küçük tur gerilemesi): yalnız AUDIT_GROUPS'un kendi anahtarları grup sayılır — "constructor",
+    // "toString", "__proto__", "hasOwnProperty" gibi değerler nesnenin kalıtılan alanını okuyup 500 veriyordu; şimdi her biri kendi önekidir (200, eşleşen satır).
+    const prefixes = Object.hasOwn(AUDIT_GROUPS, type) ? AUDIT_GROUPS[type] : [type];
     const likes = prefixes.map(prefix => `${prefix.replace(/[\\%_]/g, ch => `\\${ch}`)}%`);
     const rows = store.all(
       `SELECT id, type, entity_id AS entityId, actor_id AS actorId, actor_name AS actorName, payload_json AS payloadJson, created_at AS createdAt
