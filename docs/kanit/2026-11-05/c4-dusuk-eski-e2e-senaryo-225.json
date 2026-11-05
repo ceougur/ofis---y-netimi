@@ -1,0 +1,43 @@
+{
+  "ad": "c4-dusuk-eski-e2e-senaryo-225",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-dusuk-eski-f0109646 && npm run test:senaryo-225",
+  "commit": "a55fe1fe81d26e7aa7bce0f4ce4cc26136aee1f3",
+  "dal": "worktree-agent-a02dbfbff8be96ea9",
+  "kirli": 0,
+  "izlenmeyen": 19,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:45:51.434Z",
+  "sure_sn": 35.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 57,
+    "gecen": 55,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Verisini Sıfırla · 001: Tümünü Sıfırla metni korunanları sayar (“Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)”)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Verisini Sıfırla · 002: Tümünü Sıfırla metni korunanları sayar (“Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)”)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-dusuk-eski-e2e-senaryo-225.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a02dbfbff8be96ea9",
+  "ham_cikti_sha256": "315ff4bdee264b66636fd23650fca5c8418960c201b8cfe3d0a2c15983349b24",
+  "ham_cikti_bayt": 5464
+}

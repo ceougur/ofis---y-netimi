@@ -1,0 +1,38 @@
+{
+  "ad": "c4-dusuk-eski-defter-turu-Europe-Istanbul",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-dusuk-eski-f0109646 && node --disable-warning=ExperimentalWarning --test test/defter-turu-c4.test.mjs",
+  "commit": "f0109646c5b63a35b038b194f2b1f395542799e9",
+  "dal": "worktree-agent-a02dbfbff8be96ea9",
+  "kirli": 7,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:43:39.164Z",
+  "sure_sn": 6.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 7,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › Değişiklik Geçmişi: üç ayar türü 'Ayarlar' süzgecinde; Defter Türü satırı eski → yeni ekran adlarını taşır; istemcide Türkçe adları var",
+      "konum": "test/defter-turu-c4.test.mjs:235:3",
+      "hata": "Ayarlar süzgecinde invoice.settings.updated yok: settings.office.updated (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-dusuk-eski-defter-turu-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a02dbfbff8be96ea9",
+  "ham_cikti_sha256": "62088afe67f6f2bb95545c63a6b0d27266c6c74f678f43d32638747e4f0bbbc2",
+  "ham_cikti_bayt": 3925
+}

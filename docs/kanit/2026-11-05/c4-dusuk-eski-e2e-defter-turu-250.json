@@ -1,0 +1,68 @@
+{
+  "ad": "c4-dusuk-eski-e2e-defter-turu-250",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-dusuk-eski-f0109646 && npm run test:senaryo-defter-turu-250",
+  "commit": "a55fe1fe81d26e7aa7bce0f4ce4cc26136aee1f3",
+  "dal": "worktree-agent-a02dbfbff8be96ea9",
+  "kirli": 0,
+  "izlenmeyen": 17,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:45:31.990Z",
+  "sure_sn": 19.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 28,
+    "gecen": 21,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ayarlar: Defter Türü satırları eski → yeni ekran adlarıyla ([])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ayarlar: Fatura Ayarları satırı Türkçe",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Ayarlar: Tabela Adı satırı Türkçe",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tümü: Defter Türü satırları eski → yeni ekran adlarıyla ([])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tümü: Fatura Ayarları satırı Türkçe",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tümü: Tabela Adı satırı Türkçe",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Tümü: ham İngilizce tür anahtarı yok: invoice.settings.updated, accounting.book_type.updated, invoice.settings.updated, accounting.book_type.updated, office.report_header.updated",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-dusuk-eski-e2e-defter-turu-250.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a02dbfbff8be96ea9",
+  "ham_cikti_sha256": "8ccd5edd678e9e4873ee2f25e4664069b21d5e89d5f94c82e460fbcea8611097",
+  "ham_cikti_bayt": 2193
+}

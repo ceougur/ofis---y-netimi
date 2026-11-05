@@ -1,0 +1,39 @@
+
+> destekofis@2.4.9 test:senaryo-defter-turu-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-defter-turu-250.mjs
+
+1) Yönetici — varsayılan ve seçenekler
+  ✓ varsayılan Seçilmedi: {"value":"unset","label":"Seçilmedi"}
+  ✓ seçenekler: Seçilmedi | Bilanço Esası | İşletme Hesabı Esası | Serbest Meslek Kazanç Defteri
+  ✓ alan adı Defter Türü
+  ✓ altında tek cümlelik açıklama: "Bilanço ve gelir tablosunun biçimini belirler; mali müşavirinizin tuttuğu defter türünü seçin."
+  ✓ Firma Bilgisi kartında
+2) Seçim (klavye), kaydedilmemiş Esc, kaydet
+  ✓ Tab sırası: Tabela Adı → Rapor ve Ekstre Başlığı → Defter Türü
+  ✓ ok tuşuyla Bilanço Esası: {"value":"balance","label":"Bilanço Esası"}
+  ✓ kaydedilmemiş seçim Esc'te soruldu (beklenen soru)
+  · soru yanıtlandı: Forma Dön (beklenen soru: kaydedilmemiş Defter Türü)
+  ✓ Forma Dön sonrası seçim yerinde
+  ✓ İşletme Hesabı Esası seçildi: {"value":"operating","label":"İşletme Hesabı Esası"}
+  ✓ kaydedildi bildirimi
+  ✓ sunucuda kayıtlı: operating / Defter Market
+  ✓ kaydedilmiş form Esc'te sorusuz kapanır
+3) Sayfa yenile
+  ✓ yenileyince korunur: {"value":"operating","label":"İşletme Hesabı Esası"}
+  ✓ değişmemiş ayarlar Esc ile sorusuz kapanır
+4) Roller
+  ✓ muhasebe kayıtlı değeri görür
+  ✓ muhasebe ok tuşuyla Serbest Meslek Kazanç Defteri
+  ✓ muhasebe Serbest Meslek Kazanç Defteri kaydetti
+  ✓ avukat Fatura Ayarları düğmesini görmez
+5) Değişiklik Geçmişi
+  ✗ Ayarlar: Defter Türü satırları eski → yeni ekran adlarıyla ([])
+  ✗ Ayarlar: Fatura Ayarları satırı Türkçe
+  ✗ Ayarlar: Tabela Adı satırı Türkçe
+  ✓ Ayarlar: ham İngilizce tür anahtarı yok
+  ✗ Tümü: Defter Türü satırları eski → yeni ekran adlarıyla ([])
+  ✗ Tümü: Fatura Ayarları satırı Türkçe
+  ✗ Tümü: Tabela Adı satırı Türkçe
+  ✗ Tümü: ham İngilizce tür anahtarı yok: invoice.settings.updated, accounting.book_type.updated, invoice.settings.updated, accounting.book_type.updated, office.report_header.updated
+  ✓ sayfa hatası yok
+21 geçti, 7 kaldı

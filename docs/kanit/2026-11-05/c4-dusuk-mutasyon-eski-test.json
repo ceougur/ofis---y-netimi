@@ -1,0 +1,43 @@
+{
+  "ad": "c4-dusuk-mutasyon-eski-test",
+  "komut": "node test/hesap-plani-sinif-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-dusuk-eski-f0109646 --yalniz 20,21",
+  "commit": "a55fe1fe81d26e7aa7bce0f4ce4cc26136aee1f3",
+  "dal": "worktree-agent-a02dbfbff8be96ea9",
+  "kirli": 0,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:44:32.899Z",
+  "sure_sn": 0.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "kapanış hesabının adına (−) eklenir (690) · YEŞİL — kaçırdı · beklenen neden \"690: kitap \"Dönem Kârı veya Zararı\", program \"Dönem Kârı veya Zararı (−)\"\" GÖRÜLMEDİ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kapanış hesabının adına (−) eklenir (692) · YEŞİL — kaçırdı · beklenen neden \"692: kitap \"Dönem Net Kârı veya Zararı\", program \"Dönem Net Kârı veya Zararı (−)\"\" GÖRÜLMEDİ",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-dusuk-mutasyon-eski-test.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a02dbfbff8be96ea9",
+  "ham_cikti_sha256": "ef63a48764d630f51bc326bb6e841c6311f20129c6894eb0b4e0439cbe254a65",
+  "ham_cikti_bayt": 566
+}
