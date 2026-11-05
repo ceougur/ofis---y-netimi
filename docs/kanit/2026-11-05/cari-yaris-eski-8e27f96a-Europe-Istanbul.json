@@ -1,0 +1,48 @@
+{
+  "ad": "cari-yaris-eski-8e27f96a-Europe-Istanbul",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a && TZ=Europe/Istanbul HUKUK_LICENSE_URL=http://127.0.0.1:9 node --test --test-concurrency=1 test/cari-duzeltme-yaris-250.test.mjs",
+  "commit": "8e27f96ad2fc95a813d8d743104e8b38c8dbcdc2",
+  "dal": "worktree-agent-ae1bfe4ab0b1e8e53",
+  "kirli": 1,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:09:40.965Z",
+  "sure_sn": 2.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 1,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 BS-3 ailesi — cari hareketi düzeltmesi: gövde yoldayken hareket silinirse 404 + ileti; hiçbir tablo yazılmaz › (a) Borç Yaz ve nakit tahsilat: gövde yoldayken silinirse 404 \"Hareket bulunamadı. Başka biri silmiş olabilir.\" (önceden 200, satır yok)",
+      "konum": "test/cari-duzeltme-yaris-250.test.mjs:110:3",
+      "hata": "Borç Yaz: yazım reddedilmeli (404) — yanıt 200 {\"ok\":true,\"data\":{\"id\":\"account-7b81b665-bcc6-4bd9-aa99-c457008dacc6\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Yarış Borç Müşterisi\",\"phone\":\"\",\"email\":\"\",\"addres | ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: audit_events 5:d7893551d827833c → 6:d0573318cab98a20 | silinmiş hareket için \"account.entry.updated\" geçmiş satırı: 1 · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BS-3 ailesi — cari hareketi düzeltmesi: gövde yoldayken hareket silinirse 404 + ileti; hiçbir tablo yazılmaz › (c) iki kullanıcı: kart yüklendikten sonra muhasebe kullanıcısı siler, yöneticinin düzeltmesi 404 alır; yeniden yüklenen kartta hareket yok",
+      "konum": "test/cari-duzeltme-yaris-250.test.mjs:153:3",
+      "hata": "iki kullanıcı: yazım reddedilmeli (404) — yanıt 200 {\"ok\":true,\"data\":{\"id\":\"account-5d92a91f-fc82-497a-a4e9-c47c699147af\",\"refNo\":\"3\",\"type\":\"customer\",\"name\":\"Yarış İki Kullanıcı\",\"phone\":\"\",\"email\":\"\",\"address | ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: audit_events 18:2b35816cfa8931d4 → 19:538384a38dc9acbf | silinmiş hareket için \"account.entry.updated\" geçmiş satırı: 1 · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BS-3 ailesi — cari hareketi düzeltmesi: gövde yoldayken hareket silinirse 404 + ileti; hiçbir tablo yazılmaz › (d) bağlı hareketler: Kapatılacak Fatura'ya bağlı tahsilat ve vadeli Borç Yaz — gövde yoldayken silinirse 404, fatura ve vade izi değişmez",
+      "konum": "test/cari-duzeltme-yaris-250.test.mjs:172:3",
+      "hata": "faturaya bağlı tahsilat: yazım reddedilmeli (404) — yanıt 200 {\"ok\":true,\"data\":{\"id\":\"account-6f55f4f1-fba0-443a-9c8c-2c9ddaf28e91\",\"refNo\":\"4\",\"type\":\"customer\",\"name\":\"Yarış Fatura Müşterisi\",\"phone\":\"\",\"email\":\"\",\"addr | ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: audit_events 23:1575d3f6a7528d17 → 24:2634da4638e238de | silinmiş hareket için \"account.entry.updated\" geçmiş satırı: 1 · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/cari-yaris-eski-8e27f96a-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae1bfe4ab0b1e8e53",
+  "ham_cikti_sha256": "16540be979cc5edf2708185ecce2adec9665a072c6ce7004f3c01c4912d5e05f",
+  "ham_cikti_bayt": 10280
+}

@@ -1,0 +1,3 @@
+Y1 POST hareket (cari silinirken): cari silme 200 · yanıt 404 {"ok":false,"error":"Cari bulunamadı. Silinmiş olabilir."} · silinmiş cariye yazılan hareket 0 · cari deleted_at dolu
+Y2 PUT cari (cari silinirken): cari silme 200 · yanıt 404 {"ok":false,"error":"Cari bulunamadı. Silinmiş olabilir."} · ad "Yan Bulgu 2" · deleted_at dolu · account.updated +0
+Y3 eşzamanlı iki silme: 200 / 404 Hareket bulunamadı. Başka biri silmiş olabilir. · account.entry.deleted 1
