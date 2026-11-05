@@ -20,7 +20,7 @@ import { createLicenseService } from "./lib/license.mjs";
 import { createStore, openDatabase } from "./lib/db.mjs";
 import { HttpError, SECURITY_HEADERS, assertSameOrigin, fail, ok, send } from "./lib/http.mjs";
 import { createLogger } from "./lib/logger.mjs";
-import { runMigrations } from "./lib/migrations.mjs";
+import { LATEST_VERSION, SCHEMA_AHEAD_CODE, SCHEMA_AHEAD_MESSAGE, isSchemaAhead, runMigrations } from "./lib/migrations.mjs";
 import { hashPassword } from "./lib/passwords.mjs";
 import { createRouter } from "./lib/router.mjs";
 import { createSheetsReader } from "./lib/sheets.mjs";
@@ -170,6 +170,13 @@ function buildApp(overrides, opening) {
 
   const db = openDatabase(config.dbPath);
   undo.push(() => db.close());
+  // 2.5.0 BS-7 (şema sürüm kapısı; docs/devir/DEVIR-PLANI.md G6): veri dosyası programın daha yeni bir sürümüyle açılmışsa (user_version > LATEST_VERSION) şirket
+  // YAZILABİLİR açılmaz — göç koşmaz, yazma istekleri 409 SCHEMA_AHEAD alır, arka plan işleri yazmaz, açılıştaki onarım / ayna / kayıt adımları atlanır; okuma çalışır.
+  // 002 ve sonrası (çocuk örnek) bağlantı düzeyinde de kilitlenir (PRAGMA query_only: SQLite her yazımı reddeder; gözden kaçan bir yazıcı da dosyayı değiştiremez).
+  // 001'in bağlantısı ortak katmanı da taşır (giriş oturumu, lisans, şirket seçimi) → orada bağlantı kilidi yok; kapı uygulama düzeyinde.
+  const schemaVersionAtOpen = Number(db.prepare("PRAGMA user_version").get().user_version) || 0;
+  const schemaGate = isSchemaAhead(schemaVersionAtOpen) ? Object.freeze({ code: SCHEMA_AHEAD_CODE, version: schemaVersionAtOpen, latest: LATEST_VERSION, message: SCHEMA_AHEAD_MESSAGE }) : null;
+  if (schemaGate && hub) db.exec("PRAGMA query_only = ON");
   openFault("after-open");
   const store = createStore(db);
   // Şirket kayıt defteri yalnız hub'da; çocuklar hub'ınkini görür. (v2.0.20: göçlerden önce kurulur; göç öncesi yedek de
@@ -192,7 +199,8 @@ function buildApp(overrides, opening) {
     if (!company || company.id === companyId) return fn(db);
     if (hub) return hub.withCompanyDb(company, fn);
     const child = children.get(company.id);
-    if (child) return fn(child.db);
+    // BS-7: yeni şemalı (query_only) çocuğun bağlantısında VACUUM INTO (yedek) yapılamaz → kısa süreli salt okunur bağlantı (aşağıda).
+    if (child && !child.schemaGate) return fn(child.db);
     const file = resolveDbPath(companies.dirsOf(company).dataDir);
     if (!existsSync(file)) return null;
     const temp = openDatabase(file, { readOnly: true });
@@ -277,8 +285,8 @@ function buildApp(overrides, opening) {
   // 2.4.7 E4 (S4): açılışta bütün şirketlerin izi kullanım defterine aktarılır (önceki çalışmada deftere eklenemeyen satır tamamlanır).
   if (!hub) syncUsageAll();
   // 2.0.21 öncesinden gelen şirketler (gözden geçirme bulgusu): veri dosyası olan her şirket "açılmış" sayılır; dosyası
-  // sonradan kaybolursa sessizce boş veri tabanı açılmaz (2.0.21'deki ilk açılışını beklemeden).
-  if (!hub) {
+  // sonradan kaybolursa sessizce boş veri tabanı açılmaz (2.0.21'deki ilk açılışını beklemeden). BS-7: yeni şemalı 001'e yazılmaz.
+  if (!hub && !schemaGate) {
     for (const company of companies.list()) {
       if (company.root || store.setting(`company.opened.${company.id}`, "")) continue;
       try {
@@ -289,11 +297,11 @@ function buildApp(overrides, opening) {
     }
   }
   if (!hub) ensureInitialAdmin(store, config, log);
-  else mirrorUsers(hub.store, store);
+  else if (!schemaGate) mirrorUsers(hub.store, store); // BS-7: yeni şemalı çocuğa kullanıcı aynası yazılmaz (yalnız ad gösterimi içindir)
   openFault("after-users");
   // Gözden geçirme D5 (K4): eski sürümün (2.0.25/2.0.26) rol ya da kişi kaydında sildiği banka yetkileri ortak katmanın her açılışında geri
   // gelir (yalnız işaretsiz rol/kişi; yalnız EKLER, bugünkü yetkilerden). Çalışmasa da program açılır.
-  if (!hub) {
+  if (!hub && !schemaGate) {
     try {
       store.tx(() => migrateBankGrants(store));
     } catch (error) {
@@ -301,7 +309,8 @@ function buildApp(overrides, opening) {
     }
   }
 
-  const audit = createAudit(store, { now: config.now });
+  // BS-7: yeni şemalı şirkette Değişiklik Geçmişi'ne (audit_events) yazılmaz — yalnız okuma yapılır; dışa aktarma / giriş izi o sürede tutulmaz.
+  const audit = createAudit(store, { now: config.now, canWrite: () => !schemaGate });
   // Merkezi para yazımı (v2.1.0; lib/bank/post.mjs, plan §3.3 K6): bank.post + para yazımı denetimi (K6) bu şirketin store'unda.
   const bank = createBank({ store, now: config.now, log, strict: config.moneyStrict, requests: createIdempotency({ store, now: config.now }), audit });
   // Roller ve etkin yetkiler (v2.0.10): yerleşik 4 rol + ofisin tanımladığı roller + kişiye özel ekle/çıkar.
@@ -322,10 +331,12 @@ function buildApp(overrides, opening) {
   // (cari, kasa, fatura, sıfırlama…) iletilmez: her şirket kendi verisinin olayını kendi kanalında yayınlar.
   const unbridgeHubEvents = hub?.events ? hub.events.tap((event, data, target) => isSharedEvent(event, data) && events.publish(event, data, target)) : null;
   undo.push(() => unbridgeHubEvents?.());
-  const chat = createChat({ store, events, audit, roles: access });
+  const chat = createChat({ store, events, audit, roles: access, canWrite: () => !schemaGate });
   // 2.4.8 İş P1 (lib/write-lock.mjs): arka plan işleri kilitli şirket dosyasına yazmayı denemez (olay döngüsü tutulmaz). __testWriteLock* yalnız test oluşturucusundan.
   const writeLock = createWriteLock({ probe: overrides.__testWriteLockProbe !== false, ...(Number.isFinite(overrides.__testWriteLockBackoffMs) ? { backoffMs: overrides.__testWriteLockBackoffMs } : {}) });
-  const canWriteInBackground = () => writeLock.guard(companyId, store);
+  // BS-7: yeni şemalı şirkete hiçbir arka plan işi yazmaz (WhatsApp işçisi, belge temizliği, Sheets eşitlemesi, POS valör kuyruğu, oturum temizliği, sohbet arşivi,
+  // mutabakat taraması, mobil özet, WhatsApp durum bildirimi 503 "yeniden denenecek"). Otomatik yedek okumadır; sürer (lib/company-backups.mjs scheduleTargets).
+  const canWriteInBackground = () => !schemaGate && writeLock.guard(companyId, store);
   // 30 günden eski sohbet mesajları veri klasöründeki mesaj-arsivi/ klasörüne taşınır (v2.0.2).
   const chatArchive = createChatArchive({ store, dir: path.join(config.dataDir, "mesaj-arsivi"), log });
   // Lisans (Faz 3): süresi dolan, engellenen veya doğrulanamayan kurulum salt okunur çalışır. Veri eşitlemesi de
@@ -361,7 +372,7 @@ function buildApp(overrides, opening) {
   const analysisRunner = createAnalysisRunner({ log, enabled: overrides.analysisWorker !== false });
   undo.push(() => analysisRunner.close());
   const profile = createProfileService({ store, dataset, audit, events, log, free, runner: analysisRunner, clock: config.now });
-  profile.init();
+  if (!schemaGate) profile.init();
   dataset.onChange(() => profile.invalidate());
   const licenseOptions = overrides.license || {};
   if (hub) license = hub.license;
@@ -405,6 +416,8 @@ function buildApp(overrides, opening) {
     for (const [id, child] of children) if (!companyIds || companyIds.includes(id)) child.events.closeWhere(match);
   };
   const context = {
+    // BS-7: null ya da { code, version, latest, message } — yeni şemalı veri dosyası (şirket yalnız görüntülenir).
+    schemaGate,
     closeLive,
     writeLock,
     canWriteInBackground,
@@ -430,7 +443,7 @@ function buildApp(overrides, opening) {
       counts: ({ from = "" } = {}) => usageLedger.counts({ from, companyId }),
     },
   };
-  if (stagedRestore) {
+  if (stagedRestore && !(schemaGate && !stagedRestore.ok)) {
     const actor = stagedRestore.by ? { id: stagedRestore.by, display_name: stagedRestore.byName } : null;
     audit(actor, stagedRestore.ok ? "system.backup_restored" : "system.backup_restore_failed", stagedRestore.name, { company: "001", safety: stagedRestore.safety || "", error: stagedRestore.error || "" });
     // Sonuç Yönetim → Yedekler'de gösterilir (gözden geçirme bulgusu: başarısız 001 geri yüklemesi sessiz kalıyordu;
@@ -483,20 +496,25 @@ function buildApp(overrides, opening) {
   context.tax = registerTaxRoutes(router, { ...context, ledger: () => context.ledger, cash: () => context.cash, bankAccounts: () => context.bankAccounts });
   // Mutabakat kapısı (v2.0.13): para taşıyan her işlem COMMIT'ten önce alt defter ↔ ana defter denetiminden geçer;
   // sapma yaratacaksa ROLLBACK edilir ve günlüğe yazılır (lib/integrity.mjs).
-  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, money: () => context.money, pos: () => context.bankAccounts?.pos, events, strict: config.moneyStrict, verify: config.gateVerify, partyRows: config.scopePartyRows, dbPath: config.dbPath, log, now: config.now });
+  context.integrity = createIntegrity({ canWrite: () => !schemaGate, store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, money: () => context.money, pos: () => context.bankAccounts?.pos, events, strict: config.moneyStrict, verify: config.gateVerify, partyRows: config.scopePartyRows, dbPath: config.dbPath, log, now: config.now });
   // Açılış onarımı (v2.1.0, §10.6): eski sürüme (2.0.25/2.0.26) dönülüp yeniden güncellenen dosyada eski sürümün izleri kapı kurulmadan
   // toplanır (tek işlem; yalnız ilgili kayıtlar). Onarım başarısız olsa da program açılır; sapmalar kapının tabanı ve Mutabakat Testi'nde.
-  try {
-    repairBank({ store, now: config.now, period: context.period, log });
-  } catch (error) {
-    log.error?.("Açılış onarımı çalışmadı", error);
+  // BS-7: yeni şemalı dosyada açılış onarımları koşmaz (eski kodun onarım kuralı yeni sürümün verisine uygulanmaz).
+  if (!schemaGate) {
+    try {
+      repairBank({ store, now: config.now, period: context.period, log });
+    } catch (error) {
+      log.error?.("Açılış onarımı çalışmadı", error);
+    }
   }
   // Açılış onarımı (v2.1.0, Canlı Hata 2): 2.0.24–2.0.26'da iade + peşin geri ödemesiyle yanlış büyümüş taksit kartları (yalnız ödenmemiş
   // kısım; kilitli döneme yazılmaz; idempotent). Başarısız olsa da program açılır.
-  try {
-    context.ownCardRepair = context.invoices.repairOwnCards({ log });
-  } catch (error) {
-    log.error?.("Taksit kartı açılış onarımı çalışmadı", error);
+  if (!schemaGate) {
+    try {
+      context.ownCardRepair = context.invoices.repairOwnCards({ log });
+    } catch (error) {
+      log.error?.("Taksit kartı açılış onarımı çalışmadı", error);
+    }
   }
   context.integrity.start();
   // Tam tarama (§3.11 "Kapı ölçeği" 1): 15 dakikada bir arka planda salt okuma; yeni sapma integrity_log + zil.
@@ -521,7 +539,8 @@ function buildApp(overrides, opening) {
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
   // 2.4.8 W2: WhatsApp Business API gönderim kuyruğu bu şirketin; işçi ortak katmanda tek (whatsapp.scheduler). Açılışta yarım kalan işler defterden çözülür.
   context.whatsapp = registerWhatsappRoutes(router, { ...context, whatsapp, accounts: () => context.accounts, mobileSyncOf: () => context.mobileSync });
-  if (context.whatsapp.queue) {
+  // BS-7: yeni şemalı şirketin WhatsApp kuyruğu toparlanmaz ve işçiye kaydedilmez (süren iş defterde bekler; program güncellenince sürer).
+  if (context.whatsapp.queue && !schemaGate) {
     try {
       const recovered = context.whatsapp.queue.recover();
       if (Object.values(recovered).some(Boolean)) log.info?.(`WhatsApp gönderim kuyruğu açılışta toparlandı: ${JSON.stringify(recovered)}`);
@@ -568,6 +587,14 @@ function buildApp(overrides, opening) {
     res.writeHead(302, { ...SECURITY_HEADERS, location, "cache-control": "no-store", "content-length": 0 });
     res.end();
   };
+  // BS-7: yeni şemalı şirkette yazma istekleri reddedilir. Açık kalanlar: giriş / çıkış / parola (ortak katman oturumu), lisans, Güncelleme (programı
+  // güncellemek çözümdür), Yedekler (yedek almak okumadır; eski yedeğe geri yüklemek kullanıcının bilinçli çıkış yoludur) ve şirket seçimi (001 yeni şemalıyken
+  // kullanıcı 002'ye geçebilsin). Durum kodu 409: istek geçerli ama şirketin verisi bu programın sürümüyle çakışıyor.
+  const SCHEMA_GATE_ALLOWED = [/^\/api\/auth\//, /^\/api\/license(\/|$)/, /^\/api\/admin\/update(\/|$)/, /^\/api\/admin\/backups(\/|$)/, /^\/api\/companies\/select$/];
+  function assertSchemaWritable(pathname) {
+    if (!schemaGate || SCHEMA_GATE_ALLOWED.some(pattern => pattern.test(pathname))) return;
+    throw new HttpError(409, schemaGate.message, { code: schemaGate.code, schemaGate });
+  }
   async function handle(req, res) {
     const url = new URL(req.url || "/", "http://localhost");
     const pathname = url.pathname;
@@ -576,6 +603,7 @@ function buildApp(overrides, opening) {
         if (!["GET", "HEAD"].includes(req.method)) {
           assertSameOrigin(req, config.trustProxy);
           license.assertWritable(req.method, pathname);
+          assertSchemaWritable(pathname);
         }
         const matched = router.match(req.method, pathname);
         if (!matched) throw new HttpError(404, "Endpoint bulunamadı.");
@@ -668,7 +696,7 @@ function buildApp(overrides, opening) {
       children.set(company.id, child);
       if (!store.setting(openedKey, "")) store.setSetting(openedKey, "1");
       log.info(`Şirket açıldı: ${company.code} · ${company.name}`);
-    } else {
+    } else if (!child.schemaGate) {
       const stamp = usersFingerprint(store);
       if (child.usersStamp !== stamp) {
         mirrorUsers(store, child.store);
@@ -974,6 +1002,7 @@ function buildApp(overrides, opening) {
   // katman listesiyle aynı: company-backups.mjs COMMON_SETTINGS).
   const KEEP_SETTINGS = ["office.", "meta.", "sectors.", "client.", "invoice", "einvoice", "edoc", "whatsapp", "backup", "cloud", "drive", "license.", "update", "company.", "auth.", "bank.settings"];
   function resetData(user, { mode = "movements", resetNumbers = true } = {}) {
+    if (schemaGate) throw new HttpError(409, schemaGate.message, { code: schemaGate.code, schemaGate });
     if (!["movements", "all"].includes(mode)) throw new HttpError(400, "Sıfırlama türü 'movements' ya da 'all' olmalı.");
     const company = companies.get(companyId);
     // Zorunlu yedek şirketin kendi klasörüne (v2.0.20: <kod> - <ad>, adında kod, içinde şirket kimliği).
@@ -1052,6 +1081,7 @@ function buildApp(overrides, opening) {
     companyId,
     handleScoped: scoped,
     resetData,
+    schemaGate,
     integrity: context.integrity,
     ledger: context.ledger,
     period: context.period,
@@ -1068,6 +1098,8 @@ function buildApp(overrides, opening) {
     runDueBackups: () => (hub ? [] : runDueBackups({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, log })),
     stagedRestore,
     openCompanyIds: () => (hub ? [] : [...children.keys()]),
+    // Açık şirket örneği (açmaz; testler ve araçlar için — 2.5.0 BS-7 kapı testleri arka plan denetimini okur).
+    openCompany: id => (hub ? null : children.get(id) || null),
     // Servis yöneticisi altında server.mjs bağlar: 001 geri yüklemesi için uygulama kendini düzgün kapatır, servis
     // yöneticisi yeniden açar (açılışta geri yükleme uygulanır).
     onRestartRequest(handler) {

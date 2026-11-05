@@ -253,8 +253,8 @@ export async function startSupervisor(options = {}) {
   }
 
   // v2.0.20: güncelleme öncesi yedek ilk şirketin (001; ortak katman + 001 verisi) kendi klasörüne gider
-  // (<yedek kökü>/<kod> - <ad>, adında kod, içinde şirket kimliği). Diğer şirketler deneme açılışında açılmaz (bakım
-  // sayfası istekleri bekletir), göç ettirilmez; ilk açıldıklarında uygulama göç öncesi yedeklerini kendisi alır.
+  // (<yedek kökü>/<kod> - <ad>, adında kod, içinde şirket kimliği). Diğer şirketlere kullanıcı isteği deneme açılışında ulaşmaz (bakım sayfası
+  // bekletir) ama arka plan işleri (WhatsApp, POS valörü) onları açıp göç ettirebilir → 2.5.0 BS-7: backupCompanies / restoreCompanies (aşağıda).
   const rootTarget = () => companiesOnDisk({ dataDir, backupRoot: backupDir }).find(item => item.root);
   function backupDatabase(label) {
     const target = rootTarget();
@@ -273,6 +273,78 @@ export async function startSupervisor(options = {}) {
     copyFileSync(source, temp);
     for (const suffix of ["-wal", "-shm"]) rmSync(`${file}${suffix}`, { force: true });
     renameSync(temp, file);
+  }
+
+  // 2.5.0 BS-7: 001 dışındaki şirketler (002…). Deneme açılışında yeni sürüm onları da açıp göç ettirebilir (süren WhatsApp gönderimi, valörü gelmiş POS kalemi
+  // şirketi açar); deneme başarısız olunca yalnız 001 geri dönüyordu → 002 yeni şemada kalıyordu. Artık güncellemeden önce her şirketin şeması okunur ve
+  // güncelleme öncesi yedeği alınır; geri dönüşte şeması büyümüş her şirket (önce o anki hâli "basarisiz-guncelleme" yedeğine alınarak) o yedeğe döner.
+  // Yedeği alınamayan şirket güncellemeyi durdurmaz: yeni şemada kalırsa uygulamanın şema kapısı onu yalnız görüntülenir açar (server/app.mjs).
+  const otherTargets = () => companiesOnDisk({ dataDir, backupRoot: backupDir }).filter(item => !item.root);
+  function withFile(file, fn) {
+    const db = openDatabase(file, { readOnly: true });
+    try {
+      return fn(db);
+    } finally {
+      db.close();
+    }
+  }
+  const schemaOfFile = file => withFile(file, db => Number(db.prepare("PRAGMA user_version").get().user_version) || 0);
+  function backupCompanies(label) {
+    const result = [];
+    for (const target of otherTargets()) {
+      const file = resolveDbPath(target.dataDir);
+      if (!existsSync(file)) continue;
+      const entry = { id: target.company.id, code: target.company.code, schemaBefore: null, backup: null };
+      let db = null;
+      try {
+        db = openDatabase(file, { readOnly: true });
+        entry.schemaBefore = Number(db.prepare("PRAGMA user_version").get().user_version) || 0;
+        entry.backup = createBackup(db, target.backupDir, { label, keep: backupKeep, company: target.company }).name;
+      } catch (error) {
+        log.warn?.(`Güncelleme öncesi yedek alınamadı (${target.company.code} · ${target.company.name}): ${error.message}. Şirket yeni şemada kalırsa yalnız görüntülenir.`);
+      } finally {
+        try {
+          db?.close();
+        } catch {
+          // zaten kapalı
+        }
+      }
+      result.push(entry);
+    }
+    return result;
+  }
+  // list: backupCompanies'in sonucu (current.json'da saklanır). Dönüş: geri döndürülen şirketlerin kodları.
+  function restoreCompanies(list, failLabel) {
+    const restored = [];
+    const targets = new Map(otherTargets().map(item => [item.company.id, item]));
+    for (const entry of Array.isArray(list) ? list : []) {
+      const target = targets.get(entry?.id);
+      if (!target || !Number.isInteger(entry.schemaBefore)) continue;
+      const file = resolveDbPath(target.dataDir);
+      if (!existsSync(file)) continue;
+      try {
+        const schemaNow = schemaOfFile(file);
+        if (schemaNow <= entry.schemaBefore) continue;
+        if (!entry.backup || !BACKUP_NAME.test(String(entry.backup))) {
+          log.warn?.(`${target.company.code} · ${target.company.name} yeni sürümde göç etti (şema ${entry.schemaBefore} → ${schemaNow}) ama güncelleme öncesi yedeği yok; şirket yalnız görüntülenir.`);
+          continue;
+        }
+        const source = path.join(target.backupDir, entry.backup);
+        if (!existsSync(source)) throw new Error(`Yedek bulunamadı: ${entry.backup}`);
+        const identity = readBackupIdentity(source);
+        if (identity && identity.id !== target.company.id) throw new Error(`Yedek “${identity.code} · ${identity.name}” şirketine ait.`);
+        withFile(file, db => createBackup(db, target.backupDir, { label: failLabel, keep: backupKeep, company: target.company }));
+        const temp = `${file}.geri-yukleniyor`;
+        copyFileSync(source, temp);
+        for (const suffix of ["-wal", "-shm"]) rmSync(`${file}${suffix}`, { force: true });
+        renameSync(temp, file);
+        restored.push(target.company.code);
+        log.info(`${target.company.code} · ${target.company.name} güncelleme öncesi yedeğe döndürüldü: ${entry.backup}`);
+      } catch (error) {
+        log.error(`${target.company.code} · ${target.company.name} güncelleme öncesi hâline döndürülemedi (şirket yalnız görüntülenir)`, error);
+      }
+    }
+    return restored;
   }
 
   async function probeChild(version) {
@@ -349,6 +421,8 @@ export async function startSupervisor(options = {}) {
     schemaVersion: () => withDatabase(db => db.prepare("PRAGMA user_version").get().user_version),
     backupDatabase,
     restoreDatabase,
+    backupCompanies,
+    restoreCompanies,
   };
 
   // ---------- Güncelleme (yalnızca kurulu düzende) ----------

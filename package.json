@@ -113,6 +113,7 @@
     "test:uiux-b-243": "node --disable-warning=ExperimentalWarning test/e2e/uiux-b-243.mjs",
     "test:uiux-ui11-244": "node --disable-warning=ExperimentalWarning test/e2e/uiux-ui11-244.mjs",
     "test:sirket-canli-yetki-244": "node --disable-warning=ExperimentalWarning test/e2e/sirket-canli-yetki-244.mjs",
+    "test:sema-kapisi-bs7": "node --disable-warning=ExperimentalWarning test/e2e/sema-kapisi-bs7.mjs",
     "test:baslarken-244": "node --disable-warning=ExperimentalWarning test/e2e/baslarken-244.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
     "test:guvenilirlik": "node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs",

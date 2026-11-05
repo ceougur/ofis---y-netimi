@@ -30,6 +30,12 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     if (busyCompanies?.has(company.id)) throw new HttpError(409, busyCompanies.get(company.id) || "Bu şirkette başka bir işlem sürüyor; birkaç saniye sonra yeniden deneyin.");
   };
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
+  // 2.5.0 BS-7: şirketin veri dosyası programın daha yeni bir sürümüyle açılmışsa o dosyaya yazan işlem (unvan, sıfırlama, Ayır) yapılmaz — kayıt defteri
+  // (sirketler.json) değişip veri dosyası değişmeden kalmasın diye işlemin BAŞINDA denetlenir. Silme ve geri yükleme dosyaya yazmaz (yedek okur, klasörü taşır / değiştirir).
+  const assertDataWritable = company => {
+    const gate = appFor(company)?.schemaGate;
+    if (gate) throw new HttpError(409, gate.message, { code: gate.code, schemaGate: gate });
+  };
   const shape = (user, company) => {
     const current = companies.selectedFor(user);
     return { id: company.id, code: company.code, name: company.name, label: company.label, root: company.root, current: company.id === current, createdAt: company.createdAt };
@@ -107,6 +113,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const body = await readJson(req);
     const before = companies.require(params.id);
     notBusy(before);
+    if (body.name !== undefined) assertDataWritable(before);
     const company = companies.update(user, before.id, { name: body.name !== undefined ? text(body.name) : undefined, code: body.code !== undefined ? text(body.code) : undefined });
     if (body.name !== undefined) appFor(company).store.setSetting("office.name", company.name, user.id);
     audit(user, "company.updated", company.id, { from: { code: before.code, name: before.name }, to: { code: company.code, name: company.name } });
@@ -191,6 +198,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const company = companies.require(params.id);
     notBusy(company);
     backups.assertNotShared(company, "sıfırlama");
+    assertDataWritable(company);
     confirmCode(company, body.confirm);
     confirmPassword(user, body.password);
     const result = resetData(company, user, { mode: text(body.mode) || "movements", resetNumbers: body.resetNumbers !== false });

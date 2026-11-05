@@ -1931,6 +1931,13 @@ const BANK_SCHEMA_V20 = `
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;
 
+// 2.5.0 BS-7 (şema sürüm kapısı; docs/devir/DEVIR-PLANI.md G6): veri dosyası bu programdan YENİ bir sürümle açılmışsa (user_version > LATEST_VERSION) eski kod
+// onu göç ettirmez ve yazmaz — bilmediği kolon / tablo / kuralı bozabilir. Şirket yalnız görüntülenir (server/app.mjs kapısı). Kaynak: bootstrap'ın açılamayan
+// sürümden eski sürüme dönüşü; başarısız güncellemenin geri alması (supervisor + update-orchestrator, 001 dışındaki şirketler de güncelleme öncesi yedeğe döner).
+export const SCHEMA_AHEAD_CODE = "SCHEMA_AHEAD";
+export const SCHEMA_AHEAD_MESSAGE = "Bu şirketin verisi programın daha yeni bir sürümüyle açılmış. Programı güncelleyin; o zamana kadar veri yalnız görüntülenir.";
+export const isSchemaAhead = version => Number.isInteger(version) && version > LATEST_VERSION;
+
 /**
  * v20'nin Aşama 4 eklemeleri (yalnız ekleyici; idempotent): İşlem Kartı'nın işlem geçmişi indeksi, Planlı İşlemlerin ek alanı ve vade indeksi.
  * 2.1.0 yayımlanmadan önce bu dalda v20'ye geçmiş geliştirme dosyaları da açılışta tamamlanır (runMigrations her açılışta çağırır).
@@ -1952,6 +1959,11 @@ export function ensureBankSchema(store) {
 // now: iş saati (config.now) — göç damgaları (meta.schema.v20At) sahte saatte de iş gününü taşır.
 export function runMigrations(store, { backupDir, keep = 30, log, company = null, now = systemClock } = {}) {
   const current = store.get("PRAGMA user_version").user_version;
+  // BS-7: yeni şemalı dosyada hiçbir göç adımı (ensureBankSchema'nın indeks / kolon eklemeleri dahil) koşmaz; dosya olduğu gibi kalır.
+  if (isSchemaAhead(current)) {
+    log?.warn?.(`Veri dosyası programın daha yeni bir sürümüyle açılmış (şema ${current} > ${LATEST_VERSION}); göç yapılmadı, şirket yalnız görüntülenir.`);
+    return { from: current, to: current, applied: [], backup: null, ahead: true };
+  }
   const pending = MIGRATIONS.filter(item => item.version > current);
   if (!pending.length) {
     if (current >= 20) store.raw("migration.v20.ensure", () => ensureBankSchema(store));

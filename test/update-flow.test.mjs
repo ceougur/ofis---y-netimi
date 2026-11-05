@@ -190,6 +190,81 @@ process.exit(3);
     }
   });
 
+  // 2.5.0 BS-7: deneme açılışında yeni sürüm 002'yi de açıp göç ettirebilir (süren WhatsApp gönderimi, valörü gelmiş POS kalemi). Önceden geri dönüş yalnız 001'i
+  // geri yüklüyordu; 002 yeni şemada kalıyordu. Bozuk sürüm burada 001'in ve 002'nin şemasını değiştirip çöker.
+  it("yeni sürüm açılamazsa 001 dışındaki şirketler de güncelleme öncesi yedeğe döner (BS-7)", async () => {
+    const broken = `import { DatabaseSync } from "node:sqlite";
+import { existsSync, readdirSync } from "node:fs";
+const dir = process.env.HUKUK_DATA_DIR;
+const files = [existsSync(dir + "/hukuk-ofisi.sqlite") ? dir + "/hukuk-ofisi.sqlite" : dir + "/destekofis.sqlite"];
+for (const name of existsSync(dir + "/sirketler") ? readdirSync(dir + "/sirketler") : []) {
+  const file = dir + "/sirketler/" + name + "/destekofis.sqlite";
+  if (existsSync(file)) files.push(file);
+}
+for (const file of files) {
+  const db = new DatabaseSync(file);
+  db.exec("PRAGMA user_version = 99");
+  db.close();
+}
+process.exit(3);
+`;
+    const release = buildRelease(makeVersion(path.join(work, "src-bs7"), "9.0.1", { serverSource: broken }), path.join(work, "rel-bs7"), keys);
+    const installRoot = await prepareInstall("bs7");
+    // 002: programın kendi API'siyle açılır (şirket + Kasa girişi).
+    const seed = createApp({ dataDir: path.join(installRoot, "data"), backupDir: path.join(installRoot, "backups"), logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD }, startLicenseTimers: false, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" } });
+    let secondFile = "";
+    let secondBackups = "";
+    try {
+      const address = await seed.listen(0, "127.0.0.1");
+      const base = `http://127.0.0.1:${address.port}`;
+      const admin = await login(base, "admin", ADMIN_PASSWORD);
+      const post = async (url, body) => {
+        const response = await fetch(`${base}${url}`, { method: "POST", headers: { cookie: admin.cookie, "content-type": "application/json" }, body: JSON.stringify(body) });
+        return { status: response.status, body: await response.json() };
+      };
+      const created = await post("/api/companies", { name: "İkinci Şirket" });
+      assert.equal(created.status, 200, JSON.stringify(created.body));
+      const id = created.body.data.company.id;
+      assert.equal((await post(`/api/workspace/cash?hofCompany=${id}`, { kind: "in", amount: 250, description: "002 girişi" })).status, 200);
+      const dirs = seed.companies.dirsOf(seed.companies.get(id));
+      secondFile = path.join(dirs.dataDir, "destekofis.sqlite");
+      secondBackups = dirs.backupDir;
+    } finally {
+      await seed.close();
+    }
+    assert.equal(schemaOf(secondFile), LATEST_VERSION);
+    const github = await startMockGithub([{ tag: "v9.0.1", files: releaseFiles(release) }]);
+    const { supervisor, appHealth, log } = await supervise(installRoot, github);
+    try {
+      await waitFor(async () => {
+        const result = supervisor.updates.status().lastResult;
+        if (result?.outcome === "rolled-back") return result;
+        throw new Error(JSON.stringify(result));
+      }, { timeoutMs: 60_000 });
+      const app = await waitFor(async () => (await appHealth()) || Promise.reject(new Error("hazır değil")));
+      assert.equal(app.version, "9.0.0");
+      assert.equal(schemaOf(path.join(installRoot, "data", "destekofis.sqlite")), LATEST_VERSION, "001 güncelleme öncesi hâline dönmeli");
+      assert.equal(schemaOf(secondFile), LATEST_VERSION, "002 de güncelleme öncesi hâline dönmeli (yeni şemada kalmamalı)");
+      const names = readdirSync(secondBackups);
+      assert.ok(names.some(name => /^destekofis-002-.*guncelleme-oncesi-9-0-0/.test(name)), `002'nin güncelleme öncesi yedeği: ${names.join(", ")}`);
+      assert.ok(names.some(name => /^destekofis-002-.*basarisiz-guncelleme-9-0-1/.test(name)), `002'nin başarısız güncelleme yedeği (yeni şemalı hâli): ${names.join(", ")}`);
+      assert.ok(log.lines.some(line => /002 · İkinci Şirket güncelleme öncesi yedeğe döndürüldü/.test(line)), log.lines.join("\n"));
+    } catch (error) {
+      console.log(log.lines.join("\n"));
+      throw error;
+    } finally {
+      await supervisor.stop();
+      await github.close();
+    }
+    // Geri dönülen 002 verisi aynen: 250'lik giriş duruyor.
+    const db = new DatabaseSync(secondFile, { readOnly: true });
+    try {
+      assert.equal(db.prepare("SELECT COUNT(*) AS n FROM cash_entries WHERE description = '002 girişi'").get().n, 1);
+    } finally {
+      db.close();
+    }
+  });
+
   it("otomatik güncelleme kapalıyken yönetici panelinden denetlenip kurulabilir", async () => {
     const release = buildRelease(makeVersion(path.join(work, "src-c"), "9.0.1"), path.join(work, "rel-c"), keys);
     const github = await startMockGithub([{ tag: "v9.0.1", files: releaseFiles(release) }]);

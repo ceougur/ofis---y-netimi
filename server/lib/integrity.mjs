@@ -243,7 +243,7 @@ export function lockDigestOf(store, lock, { version = "" } = {}) {
   return hash.digest("hex");
 }
 
-export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, pos = () => null, events = null, strict = false, verify = false, partyRows = 2000, dbPath = "", log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
+export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, pos = () => null, events = null, strict = false, verify = false, partyRows = 2000, dbPath = "", log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock, canWrite = () => true }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): banka çekirdeğinin denetimleri (lib/bank/checks.mjs) — olay bazlı (COMMIT'te dokunulan olaylar) ve tam tarama.
   let bankChecks = null;
@@ -768,6 +768,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   let pending = null;
   let pendingDecision = null;
   const write = (action, tables, failures) => {
+    // BS-7: yeni şemalı (yalnız görüntülenen) şirkette günlük de yazılmaz (açılış tabanı, Mutabakat Testi).
+    if (!canWrite()) return;
     try {
       store.run(
         "INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, ?, ?, ?, ?)",

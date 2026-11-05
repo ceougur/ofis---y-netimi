@@ -272,7 +272,9 @@ export function applyStagedRestore({ dataDir, backupRoot, dbPath, keep = 30, log
       } finally {
         probe.close();
       }
-      if (liveVersion !== LATEST_VERSION) throw new Error("Program o sırada güncelleniyordu; geri yükleme uygulanmadı. Güncelleme bittikten sonra Yönetim → Yedekler'den yeniden geri yükleyin.");
+      // 2.5.0 BS-7: canlı dosya programdan YENİ şemadaysa (yalnız görüntülenen şirket) güncelleme sürmüyordur; kullanıcının eski yedeğe dönmesi çıkış yoludur
+      // (önce geri yükleme öncesi yedek alınır; ortak katman yalnız ortak kolonlarla aktarılır). Engel yalnız canlı dosya ESKİ şemadayken (deneme açılışı).
+      if (liveVersion < LATEST_VERSION) throw new Error("Program o sırada güncelleniyordu; geri yükleme uygulanmadı. Güncelleme bittikten sonra Yönetim → Yedekler'den yeniden geri yükleyin.");
     }
     const target = companiesOnDisk({ dataDir, backupRoot }).find(item => item.company.id === ROOT_COMPANY_ID);
     let safety = null;

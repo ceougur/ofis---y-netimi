@@ -12,7 +12,7 @@ import { systemClock } from "../lib/clock.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, bank, auth, access = null, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null, period = null, cash = () => null, bankModule = () => null, now: clock = systemClock }) {
+export function registerWorkspaceRoutes(router, { store, bank, auth, access = null, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null, period = null, cash = () => null, bankModule = () => null, now: clock = systemClock, schemaGate = null }) {
   // İş saati (v2.1.0): context.now (config.now).
   const now = () => clock().toISOString();
   // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
@@ -731,7 +731,8 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   router.get("/api/workspace/client-state", async ({ req, res }) => {
     auth.requireUser(req);
     // appVersion: açık ekranlar sunucu güncellendiğinde bunu fark edip yenilenmeyi önerir.
-    ok(res, { ...clientState.read(), appVersion: config?.version || null });
+    // schemaGate (2.5.0 BS-7): şirketin verisi programın daha yeni bir sürümüyle açılmışsa ekran uyarı şeridini gösterir (hof-license.js).
+    ok(res, { ...clientState.read(), appVersion: config?.version || null, schemaGate: schemaGate || null });
   });
 
   router.put("/api/workspace/client-state", async ({ req, res }) => {
