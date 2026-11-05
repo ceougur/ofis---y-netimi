@@ -1,0 +1,32 @@
+{
+  "ad": "c1-birlesim-bs7-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/sema-kapisi-bs7.test.mjs",
+  "commit": "4e142b57241a6dba2bc0052c06e5a1722238283f",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T19:25:47.885Z",
+  "sure_sn": 5.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c1-birlesim-bs7-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "823c11a1fd79bac05882c9f54f19b3e4a92d4842525ffbb6f3533b09bb83012d",
+  "ham_cikti_bayt": 1655
+}
