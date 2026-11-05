@@ -304,11 +304,39 @@ describe("BS-7 şema sürüm kapısı", () => {
     const stagedCopy = path.join(seed.dataDir, "geri-yukleme", seed.rootBackup);
     assert.ok(existsSync(stagedCopy), `hazırlanan kopya yok: ${stagedCopy}`);
     writeFileSync(stagedCopy, "bozuk kopya — veri tabanı değil");
+    // BS-7 dar kontrol DÜŞÜK-1: kapılı 001'e başarısız geri yükleme açılışında YALNIZ sonuç notu (backup.lastRestore — kapının bilinçli istisnası) ile ortak katman
+    // ayarları (license.*, company.*, auth.*) yazılabilir; denetim izi dahil başka hiçbir şey değişmez. Önce/sonra giriş YAPILMADAN alınır (giriş ortak katmana yazar).
+    const rootAudit = () => {
+      const db = new DatabaseSync(seed.rootFile, { readOnly: true });
+      try {
+        return db.prepare("SELECT COUNT(*) AS n FROM audit_events").get().n;
+      } finally {
+        db.close();
+      }
+    };
+    const rootSettings = () => {
+      const db = new DatabaseSync(seed.rootFile, { readOnly: true });
+      try {
+        return new Map(db.prepare("SELECT key, value, updated_at FROM settings").all().map(row => [row.key, `${row.value}|${row.updated_at}`]));
+      } finally {
+        db.close();
+      }
+    };
+    const { settings: _rootSettingsBefore, ...rootBefore } = fingerprint(seed.rootFile);
+    const rootSettingsBefore = rootSettings();
+    const rootAuditBefore = rootAudit();
     server = await startTestServer({ dataDir: seed.dataDir, backupDir: seed.backupDir });
     try {
       assert.equal(server.app.stagedRestore?.ok, false, JSON.stringify(server.app.stagedRestore));
       assert.equal(server.app.schemaGate?.version, AHEAD, "geri yükleme uygulanmadı; 001 yeni şemada, kapı sürer");
       assert.equal(schemaOf(seed.rootFile), AHEAD);
+      assert.equal(rootAudit(), rootAuditBefore, "kapılı 001'e geri yükleme denetim izi (audit_events) yazılmamalı");
+      const { settings: _rootSettingsAfter, ...rootAfter } = fingerprint(seed.rootFile);
+      assert.deepEqual(rootAfter, rootBefore, "kapılı 001'in tabloları (audit_events dahil) başarısız geri yükleme açılışında değişmemeli");
+      const rootSettingsAfter = rootSettings();
+      const changedKeys = [...new Set([...rootSettingsBefore.keys(), ...rootSettingsAfter.keys()])].filter(key => rootSettingsBefore.get(key) !== rootSettingsAfter.get(key)).sort();
+      assert.ok(changedKeys.includes("backup.lastRestore"), `sonuç notu yazılmalı; değişen: ${changedKeys.join(", ")}`);
+      for (const key of changedKeys) assert.match(key, /^(backup\.lastRestore$|company\.|license\.|auth\.)/, `kapılı 001'de yalnız sonuç notu ve ortak katman ayarı yazılabilir; değişen: ${changedKeys.join(", ")}`);
       const admin = await loginAdmin(server);
       const folders = unwrap(await admin.get("/api/admin/backups/folders"));
       assert.equal(folders.lastRestore?.ok, false, `başarısız geri yükleme Yedekler'de görünmeli: ${JSON.stringify(folders.lastRestore)}`);
