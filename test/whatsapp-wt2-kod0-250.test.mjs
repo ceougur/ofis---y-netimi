@@ -196,6 +196,23 @@ describe("2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARAR
     }
   });
 
+  it("Bağlantıyı Kaldır: Meta'daki abonelik silme isteği kod 0 alırsa yerel kaldırma yapılır, neden 190'daki gibi 'erişim belirtecinin süresi dolmuş' + veri silme adımı", async () => {
+    const ctx = await startWa({ now: { time: iso(T0), fixed: true } });
+    try {
+      assert.equal((await ctx.api.post(`${URLS.conn}/test`, {})).status, 200);
+      ctx.fake.state.failQueue.push({ match: /^DELETE \/\d+\/subscribed_apps$/, status: 401, body: authException() });
+      const res = await ctx.api.del(URLS.conn);
+      assert.equal(res.status, 200, JSON.stringify(res.data).slice(0, 300));
+      assert.equal(ctx.fake.state.failQueue.length, 0, "ön koşul: silme isteği kod 0 aldı");
+      const { configured, removal } = res.data.data;
+      assert.deepEqual([configured, removal?.meta?.state], [false, "failed"], JSON.stringify(removal));
+      assert.match(removal.meta.message, /erişim belirtecinin süresi dolmuş/, removal.meta.message);
+      assert.match(removal.meta.message, /destekofis\.net\/veri-silme/, removal.meta.message);
+    } finally {
+      await ctx.close();
+    }
+  });
+
   it("geri yükleme (ilke 5): kod 0 alan kişi bekler → YEDEK → yeniden bağlan + Devam Et (gönderildi) → yedek geri yüklenir: eski toplu iş Durduruldu, Devam Et reddedilir, aynı kişilere yeni gönderim 'Daha Önce Gönderildi' — kişi başına 1 ileti", async () => {
     const root = mkdtempSync(path.join(tmpdir(), "wt2-kod0-geri-"));
     const dataDir = path.join(root, "data");
