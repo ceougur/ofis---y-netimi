@@ -41,6 +41,9 @@
  "elle": {
   "A": {
    "acik/0/kalan": 60000,
+   "af": [
+    "devir_acilis:devir-2026-1"
+   ],
    "bil/pasif/V.F": 50000,
    "bil_arsiv/pasif/V.F": 50000,
    "mz/satirlar/120|C1/bakiye": 60000,
@@ -167,6 +170,12 @@
    "dosya": "arsiv",
    "rapor": "bilanco",
    "tarih": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "af",
+   "rapor": "acilis_fisleri",
+   "tarih": "2027-01-01",
    "tur": "rapor"
   }
  ],

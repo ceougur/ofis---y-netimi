@@ -50,8 +50,10 @@
    "g2/supheli": 120000,
    "g3/gecikmis": 120000,
    "g3/supheli": 0,
+   "h1/elle": {
+    "C1": 30000
+   },
    "h1/otomatik": {
-    "C1": 30000,
     "C3": 20000
    },
    "h1/supheli_etiketli": [
@@ -62,7 +64,13 @@
    },
    "h2/supheli_etiketli": [
     "C1"
-   ]
+   ],
+   "h3/elle": {},
+   "h3/otomatik": {
+    "C1": 120000,
+    "C3": 20000
+   },
+   "h3/supheli_etiketli": []
   }
  },
  "kapsam": [
@@ -111,6 +119,7 @@
   },
   {
    "cari": "C1",
+   "id": "S1",
    "tarih": "2026-04-01",
    "tur": "supheliye_al",
    "tutar": 120000
@@ -152,6 +161,7 @@
   },
   {
    "cari": "C1",
+   "kayit": "S1",
    "tarih": "2026-05-01",
    "tur": "supheliden_cikar"
   },
@@ -166,6 +176,12 @@
    "ad": "acik",
    "cari": "C1",
    "rapor": "acik_faturalar",
+   "tarih": "2026-05-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "h3",
+   "rapor": "hatirlatma",
    "tarih": "2026-05-01",
    "tur": "rapor"
   }

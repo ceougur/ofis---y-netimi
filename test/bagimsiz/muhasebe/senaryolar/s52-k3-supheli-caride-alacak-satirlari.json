@@ -88,12 +88,14 @@
   },
   {
    "cari": "C1",
+   "id": "SA",
    "tarih": "2026-10-05",
    "tur": "supheliye_al",
    "tutar": 4000
   },
   {
    "cari": "C1",
+   "kayit": "SA",
    "tarih": "2026-10-06",
    "tur": "karsilik_ayir",
    "tutar": 2500
@@ -107,6 +109,7 @@
   },
   {
    "cari": "C1",
+   "kayit": "SA",
    "tarih": "2026-10-08",
    "tur": "degersiz_yaz"
   },

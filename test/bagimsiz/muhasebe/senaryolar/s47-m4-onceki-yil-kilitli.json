@@ -54,8 +54,8 @@
    "devir/kapanis/onceki_yil/2025/R": 10000,
    "devir/kapanis/onceki_yil/2025/SMM": 20000,
    "devir/kapanis/sonuc": -37500,
-   "devir/yeni_acilis/570": -10000,
-   "devir/yeni_acilis/580": 3000,
+   "devir/yeni_acilis/570.2025": -10000,
+   "devir/yeni_acilis/580.2024": 3000,
    "devir/yeni_acilis/591": 37500,
    "gt25/kalemler/D": 20000,
    "gt25/kalemler/DNK": 10000,
@@ -65,13 +65,27 @@
    "gt26/kalemler/DNK": -37500,
    "gt26/kalemler/E": 5000,
    "gt26/tahmini": false,
+   "mz_arsiv/ana/570/bakiye": -10000,
+   "mz_arsiv/ana/580/bakiye": 3000,
    "mz_arsiv/satirlar/153/bakiye": 17500,
-   "mz_arsiv/satirlar/570/bakiye": -10000,
-   "mz_arsiv/satirlar/580/bakiye": 3000,
+   "mz_arsiv/satirlar/570.2025/bakiye": -10000,
+   "mz_arsiv/satirlar/580.2024/bakiye": 3000,
    "mz_arsiv/satirlar/591/bakiye": 37500,
    "mz_arsiv/satirlar/600/bakiye": 0,
    "mz_arsiv/satirlar/770/bakiye": 0,
-   "yev25": []
+   "yev25": [],
+   "yevK/0/satirlar/0/a": 3000,
+   "yevK/0/satirlar/0/h": "770.90",
+   "yevK/0/satirlar/1/b": 3000,
+   "yevK/0/satirlar/1/h": "580.2024",
+   "yevK/0/sinif": 4,
+   "yevK/0/tur": "onceki_yil_sonucu",
+   "yevK/1/sinif": 4,
+   "yevK/1/tur": "onceki_yil_sonucu",
+   "yevK/2/sinif": 2,
+   "yevK/2/tur": "stok_degerleme",
+   "yevK/3/sinif": 3,
+   "yevK/3/tur": "kapanis"
   }
  },
  "kapsam": [
@@ -229,6 +243,14 @@
    "dosya": "arsiv",
    "rapor": "bilanco",
    "tarih": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yevK",
+   "bas": "2026-12-31",
+   "dosya": "arsiv",
+   "rapor": "yevmiye",
+   "son": "2026-12-31",
    "tur": "rapor"
   }
  ],

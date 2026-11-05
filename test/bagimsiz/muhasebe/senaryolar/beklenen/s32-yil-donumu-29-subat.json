@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -18,6 +19,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -37,12 +39,14 @@
       "kapanis_acilis": [],
       "m12_k_oncesi_satir": [],
       "m13_ayri": [],
+      "m27_net_satir": [],
       "m2_gecikmis_ayni": [],
       "m3_tek_satir": [],
       "m4_m6_kapanis": [],
       "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
+      "tek_acilis_fisi": [],
       "yeni_gt_sifir": []
      },
      "id": "devir-2027-1"
@@ -56,6 +60,7 @@
       "I.H": 6000
      },
      "aktif_toplam": 196000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -109,6 +114,7 @@
       "I.H": 6000
      },
      "aktif_toplam": 206000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -215,12 +221,14 @@
       "kapanis_acilis": [],
       "m12_k_oncesi_satir": [],
       "m13_ayri": [],
+      "m27_net_satir": [],
       "m2_gecikmis_ayni": [],
       "m3_tek_satir": [],
       "m4_m6_kapanis": [],
       "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
+      "tek_acilis_fisi": [],
       "yeni_gt_sifir": []
      },
      "kapanis": {
@@ -278,7 +286,7 @@
      "hesaplanmadi": false,
      "hesaplar": {
       "600": 50000,
-      "770.90": 30000
+      "770": 30000
      },
      "kalemler": {
       "A": 50000,
@@ -363,7 +371,7 @@
       "satirlar": [
        {
         "b": 30000,
-        "h": "770.90"
+        "h": "770"
        },
        {
         "b": 6000,

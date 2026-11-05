@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -18,6 +19,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -37,12 +39,14 @@
       "kapanis_acilis": [],
       "m12_k_oncesi_satir": [],
       "m13_ayri": [],
+      "m27_net_satir": [],
       "m2_gecikmis_ayni": [],
       "m3_tek_satir": [],
       "m4_m6_kapanis": [],
       "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
+      "tek_acilis_fisi": [],
       "yeni_gt_sifir": []
      },
      "id": "devir-2026-1"
@@ -56,6 +60,7 @@
       "II.D": 300000
      },
      "aktif_toplam": 5350000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -98,6 +103,58 @@
      "pasif_toplam": 5350000,
      "tarih": "2026-05-31"
     },
+    "bil0630": {
+     "aktif": {
+      "I.A": 4970000,
+      "I.H": 80000,
+      "II.D": 300000
+     },
+     "aktif_toplam": 5350000,
+     "bilgi": [
+      "KDV_MAHSUBU_YAPILMAMIS:2026-05"
+     ],
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 4970000
+      },
+      "I.H": {
+       "191": 80000
+      },
+      "II.D": {
+       "255": 300000
+      },
+      "III.B": {
+       "320|T1": 530000,
+       "320|T2": 800000
+      },
+      "III.F": {
+       "360": 200000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": -1180000
+      },
+      "V.G": {
+       "519": 5000000
+      }
+     },
+     "donem_net_kari": -1180000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
+     "kesin_degil": [
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "III.B": 1330000,
+      "III.F": 200000,
+      "V.F": -1180000,
+      "V.G": 5000000
+     },
+     "pasif_toplam": 5350000,
+     "tarih": "2026-06-30"
+    },
     "bil_yeni": {
      "aktif": {
       "I.A": 4970000,
@@ -105,6 +162,7 @@
       "II.D": 300000
      },
      "aktif_toplam": 5350000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -136,7 +194,7 @@
      "gecmis_yillar_kar": 0,
      "gecmis_yillar_zarar": 0,
      "kesin_degil": [
-      "ARALIK_KDV_MAHSUBU_YAPILMAMIS",
+      "ONCEKI_YIL_KDV_MAHSUBU_YAPILMAMIS:2026-05",
       "TAMAMLANMAMIS_ACILIS"
      ],
      "pasif": {
@@ -277,12 +335,14 @@
       "kapanis_acilis": [],
       "m12_k_oncesi_satir": [],
       "m13_ayri": [],
+      "m27_net_satir": [],
       "m2_gecikmis_ayni": [],
       "m3_tek_satir": [],
       "m4_m6_kapanis": [],
       "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
+      "tek_acilis_fisi": [],
       "yeni_gt_sifir": []
      },
      "kapanis": {
@@ -619,7 +679,7 @@
     {
      "kod": "KDV_MAHSUP_BOS",
      "neden": "2027-01",
-     "olay": 13,
+     "olay": 14,
      "tur": "kdv_mahsup"
     }
    ]

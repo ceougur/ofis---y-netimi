@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -24,6 +25,7 @@
       "I.C": 150000
      },
      "aktif_toplam": 190000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -135,6 +137,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -151,6 +154,7 @@
       "I.C": 150000
      },
      "aktif_toplam": 190000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {

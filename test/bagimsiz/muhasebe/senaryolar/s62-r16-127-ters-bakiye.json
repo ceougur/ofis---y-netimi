@@ -1,0 +1,126 @@
+{
+ "aciklama": "EK-2 36: 127 Diğer Ticari Alacaklar; alacaklı kart 340'ta, kart bazında brüt.",
+ "ad": "s62-r16-127-ters-bakiye",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 100000,
+   "bil/aktif/I.C": 8000,
+   "bil/aktif_toplam": 108000,
+   "bil/detay/I.C/127.K2": 8000,
+   "bil/detay/III.D/127.K1": 5000,
+   "bil/kesin_degil": [],
+   "bil/pasif/III.D": 5000,
+   "bil/pasif/V.A": 103000,
+   "bil/pasif_toplam": 108000
+  }
+ },
+ "kapsam": [
+  "EK-2 36",
+  "E14",
+  "M-11",
+  "§7.3"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "tarih": "2026-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 100000
+  },
+  {
+   "satirlar": [
+    {
+     "alacak": 5000,
+     "hesap": "127.K1"
+    },
+    {
+     "borc": 8000,
+     "hesap": "127.K2"
+    },
+    {
+     "alacak": 103000,
+     "hesap": "500"
+    }
+   ],
+   "tarih": "2026-01-01",
+   "tur": "acilis_eslestir"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-01-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

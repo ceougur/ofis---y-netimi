@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -137,6 +138,61 @@
       "tarih": "2026-01-03",
       "tur": "kasa_acilis"
      }
+    ],
+    "yevB": [
+     {
+      "id": "KA#0",
+      "kaynak": "KA",
+      "satirlar": [
+       {
+        "b": 12000,
+        "h": "100"
+       },
+       {
+        "a": 12000,
+        "h": "519"
+       }
+      ],
+      "sinif": 0,
+      "tarih": "2026-01-03",
+      "tur": "kasa_acilis"
+     }
+    ],
+    "yevC": [
+     {
+      "id": "KA#0",
+      "kaynak": "KA",
+      "satirlar": [
+       {
+        "b": 12000,
+        "h": "100"
+       },
+       {
+        "a": 12000,
+        "h": "519"
+       }
+      ],
+      "sinif": 0,
+      "tarih": "2026-01-05",
+      "tur": "kasa_acilis"
+     },
+     {
+      "id": "k2#0",
+      "kaynak": "k2",
+      "satirlar": [
+       {
+        "b": 5000,
+        "h": "100"
+       },
+       {
+        "a": 5000,
+        "h": "649.90"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2026-01-05",
+      "tur": "kasa_giris"
+     }
     ]
    },
    "redler": [
@@ -145,6 +201,12 @@
      "neden": "",
      "olay": 4,
      "tur": "kasa_acilis"
+    },
+    {
+     "kod": "KASA_ACILIS_SONRA",
+     "neden": "ilk Kasa hareketi 2026-01-05",
+     "olay": 23,
+     "tur": "duzenle"
     }
    ]
   }

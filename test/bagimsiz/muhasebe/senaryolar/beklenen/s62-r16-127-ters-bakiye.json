@@ -1,0 +1,62 @@
+{
+ "ad": "s62-r16-127-ters-bakiye",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.A": 100000,
+      "I.C": 8000
+     },
+     "aktif_toplam": 108000,
+     "bilgi": [],
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 100000
+      },
+      "I.C": {
+       "127.K2": 8000
+      },
+      "III.D": {
+       "127.K1": 5000
+      },
+      "V.A": {
+       "500": 103000
+      }
+     },
+     "donem_net_kari": 0,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
+     "kesin_degil": [],
+     "pasif": {
+      "III.D": 5000,
+      "V.A": 103000
+     },
+     "pasif_toplam": 108000,
+     "tarih": "2026-01-01"
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

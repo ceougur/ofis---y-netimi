@@ -101,6 +101,7 @@
   },
   {
    "cari": "C1",
+   "id": "S1",
    "tarih": "2026-12-01",
    "tur": "supheliye_al",
    "tutar": 70000
@@ -127,6 +128,7 @@
   },
   {
    "cari": "C1",
+   "kayit": "S1",
    "tarih": "2027-02-01",
    "tur": "supheliden_cikar"
   },

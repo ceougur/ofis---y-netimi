@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -24,6 +25,7 @@
       "I.E": 144444
      },
      "aktif_toplam": 596444,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -114,6 +116,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -129,6 +132,7 @@
       "I.E": 200000
      },
      "aktif_toplam": 652000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -218,6 +222,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -235,6 +240,7 @@
       "I.H": 3000
      },
      "aktif_toplam": 599444,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {

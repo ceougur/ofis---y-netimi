@@ -42,8 +42,8 @@ MUTANTLAR = [
     ("M12 KG-6 A'da komisyon satış günü yazılmaz", [('if yol == "pos" and self.k.KG6 == "A" and v.get("komisyon"):', 'if False:')]),
     ("M13 KDV mahsubu devreden KDV'yi (D) yok sayar (V-01)", [('D = d.bakiyeler(t).get(("190", None), 0)', 'D = 0')]),
     ("M15 gelir tablosu dönem sonu sınıfını (N-01) dışlar (§4)",
-     [('if m.tarih < a or m.sinif == 3:\n                continue\n            for s in m.satirlar:\n                h = s["h"]',
-       'if m.tarih < a or m.sinif >= 2:\n                continue\n            for s in m.satirlar:\n                h = s["h"]')]),
+     [('if m.tarih < a or m.sinif in GT_DISI:\n                continue\n            for s in m.satirlar:\n                h = s["h"]',
+       'if m.tarih < a or m.sinif in (2, 3, 4):\n                continue\n            for s in m.satirlar:\n                h = s["h"]')]),
     ("M16 bilançoda tahmini SMM yok, gelir tablosunda var (YÜKSEK-1)", [("R[y] -= smm", "pass")]),
     ("M18 G ≠ 0 iken Kesin Değil yok (§7.4)", [('if bal.get((G, None), 0):\n            kd.append', 'if False:\n            kd.append')]),
     ("M19 iç yüzde KDV aşağı yuvarlanır (G-1, KG-2 B)",
@@ -56,7 +56,7 @@ MUTANTLAR = [
      [('tutar = it["brut"] - it["iade"] - ((it["kom"] - it["kom_iade"]) if self.k.KG6 == "A" else 0)', 'tutar = it["brut"] - it["iade"]')]),
     ("M23 Devri Yenile eski devir satırlarını silmez (N-14)",
      [("for kid in [i for i, k in yeni.kaynaklar.items() if k.devir == did]:", "for kid in []:")]),
-    ("M24 aynı gün sırası sınıfsız (G-4, ders 31)", [("return (m.tarih, m.sinif, m.seq, m.id)", "return (m.tarih, m.seq, m.id)")]),
+    ("M24 aynı gün sırası sınıfsız (G-4, ders 31)", [("return (m.tarih, SINIF_SIRASI[m.sinif], m.seq, m.id)", "return (m.tarih, m.seq, m.id)")]),
     ("M25 iptal edilen faturanın peşin ödemesi kalır (F-15)", [('return f is None or f.durum != "aktif"', "return False")]),
     ("M28 onaylı 'Açılış Olabilir' 602.90'a (KG-16 A)", [('acilis = v.get("onay") is True', "acilis = False")]),
     ("M29 kilitli döneme yazım kabul (Ç3, 409)", [("if self.kilit is not None and tarih <= self.kilit:", "if False:")]),
@@ -85,7 +85,7 @@ MUTANTLAR = [
     ("M54 Excel kartında önceden ödenen taksitten düşülmez (KG-5 A, B1; TYK'de kart_ac)",
      [('P = kt.get("odenen", 0) if (kt["kaynak"] == "excel" and self.k.KG5 == "A") else 0', "P = 0")]),
     ("M55 kapanmış dosyada hesaplanmış Dönem Net Kârı satırı da yazılır (çift sayım)",
-     [("if (c is not None and m.tarih <= c) or m.sinif == 3:", "if m.sinif == 3:")]),
+     [("if (c is not None and m.tarih <= c) or m.sinif in GT_DISI:", "if m.sinif in GT_DISI:")]),
     ("M02 açık kalemin defter karşılığı gelir / gider (G14, N-10, M3 satırı)",
      [('[L(self.ch(c), t, c, k="devir:" + c, tur="devir_cari"), L(G, -t)])', '[L(self.ch(c), t, c, k="devir:" + c, tur="devir_cari"), L("600" if t > 0 else "770", -t)])')]),
     ("M14 cari kalemleri açık kalemler düşülmeden (G2, M2 net kalan)",
@@ -119,8 +119,7 @@ MUTANTLAR = [
     ("N02 S2: bağsız ödeme belge tarihi sırasıyla", [('return (o["vade"], o["tarih"], o["sira"])', 'return (o["tarih"], o["sira"])')]),
     ("N03 S2: eşit vadede giriş sırası (belge tarihi yok sayılır)", [('return (o["vade"], o["tarih"], o["sira"])', 'return (o["vade"], o["sira"])')]),
     ("N04 S3: şüpheli tutar gecikmişe girer", [('"gecikmis": top, "supheli": sup,', '"gecikmis": top + sup, "supheli": sup,')]),
-    ("N05 S3: şüpheli carisi otomatik hatırlatmadan tümüyle çıkar (tutar değil cari bazında)",
-     [('if g["gecikmis"] > 0:\n                oto[c]', 'if g["gecikmis"] > 0 and not g["supheli"]:\n                oto[c]')]),
+    # N05 kaldırıldı: S7 A (kullanıcı 21:08) ile "cari bazında" artık DOĞRU davranış; tersi B17
     ("N06 M13: Şüpheliden Çıkar kalemleri çıkarma günü vadesiyle döner",
      [('self.ekle(x["k"], x["tur"], "b", x["kalan"], x["tarih"], x["vade"], x["sira"])', 'self.ekle(x["k"], x["tur"], "b", x["kalan"], tarih, tarih, sira)')]),
     ("N07 M13: J-01 şüpheli kuyruğuna taşımaz (bağsız alacak gibi)",
@@ -129,8 +128,8 @@ MUTANTLAR = [
     ("N09 S4: ters kayıt asıl kaydın ayına etiketlenir", [("k.tarih, zorla=k.tarih[:7])", "k.tarih)")]),
     ("N10 S4: KDV Mahsubu Güncel Değil uyarısı yok",
      [('if et.get(("191", ay), 0) or et.get(("391", ay), 0):\n                    kd.append(f"KDV_MAHSUBU_GUNCEL_DEGIL', 'if False:\n                    kd.append(f"KDV_MAHSUBU_GUNCEL_DEGIL')]),
-    ("N11 M8-4: Aralık KDV mahsubu yapılmamış uyarısı yok",
-     [('if any(v and dn and int(dn[:4]) < yil(t) for (h, dn), v in et.items()):', "if False:")]),
+    ("N11 M8-4 / EK-2 34: önceki yıl KDV mahsubu yapılmamış uyarısı yok",
+     [("if v and dn and int(dn[:4]) < yil(t):       # M8-4", "if False:       # M8-4")]),
     ("N12 S5: ayrıca bağlanan tahsilat da faturayla düşer", [('if v.get("fatura") and v.get("fatura_odemesi"):', 'if v.get("fatura"):')]),
     ("N13 M2: devir açık kalemi K+1 vadesiyle",
      [('"tarih": o["tarih"],\n                                 "vade": o["vade"], "sira": list(o["sira"])})', '"tarih": o["tarih"],\n                                 "vade": t, "sira": list(o["sira"])})')]),
@@ -141,8 +140,8 @@ MUTANTLAR = [
        '[L(self.ch(c), x["kalan"] if x["taraf"] == "b" else -x["kalan"], c, k="devir:" + c, tur="devir_cari") for x in k.v.get("kalemler", [])]'
        ' + [L(self.ch(c), t - sum(x["kalan"] if x["taraf"] == "b" else -x["kalan"] for x in k.v.get("kalemler", [])), c, k="devir:" + c, tur="devir_cari"), L(G, -t)])')]),
     ("N16 M4 B: önceki yıl sonucu o yılın 31 Aralık'ına (kilitli döneme)",
-     [('arsiv.fis_ekle(K, 3, "onceki_yil_sonucu"', 'arsiv.fis_ekle(yb, 3, "onceki_yil_sonucu"')]),
-    ("N17 M4: 570 / 580 netleştirilir (yıl yıl brüt değil)", [('sat.append(L("570" if R > 0 else "580", -R))', 'sat.append(L("570", -R))')]),
+     [('arsiv.fis_ekle(K, 4, "onceki_yil_sonucu"', 'arsiv.fis_ekle(yb, 4, "onceki_yil_sonucu"')]),
+    ("N17 M4: 570 / 580 netleştirilir (yıl yıl brüt değil)", [('sat.append(L(f"570.{y}" if R > 0 else f"580.{y}", -R))', 'sat.append(L(f"570.{y}", -R))')]),
     ("N18 M5 B: eksi stok miktarı 0 devreder",
      [('kal = [{"urun": u, "miktar": x["miktar"], "deger": x["deger"]}', 'kal = [{"urun": u, "miktar": str(max(Fraction(x["miktar"]), Fraction(0))), "deger": x["deger"]}')]),
     ("N19 M7 B: önceki mali yılın farkı da 602 / 770'e", [("if sonuc_hesabi(h) and y < fis_yili:", "if False:")]),
@@ -151,10 +150,9 @@ MUTANTLAR = [
     ("N22 M12: bakiyesi 0 cariye devir / ekstre satırı", [("if not ch_bal:                            # M12", "if False:                            # M12")]),
     ("N23 M1d: kapatılan kartın kalanı kuyruktan düşer", [('if top:\n            kk["kalani"].append', 'if False:\n            kk["kalani"].append')]),
     ("N24 M1e: Mevcut Borç kartı alttaki borcu tüketmez",
-     [('for y in self.acik("b"):\n                if y["kart"]:', 'for y in []:\n                if y["kart"]:')]),
-    ("N25 bağ, hedefin bağsız kapanmış kısmını geri almaz (bağlar önce)",
-     [("for y in hedefler:                           # 2. geçiş", "for y in []:                           # 2. geçiş")]),
-    ("N26 M14: gider türü seçilmemiş alış 770'e", [('return GIDER_HESAP.get(v.get("gider_turu"), SINIFLANDIRILMAMIS_GIDER)', 'return GIDER_HESAP.get(v.get("gider_turu"), "770")')]),
+     [('for y in self.acik("b"):\n                    if y["kart"] or kalan <= 0:', 'for y in []:\n                    if y["kart"] or kalan <= 0:')]),
+    ("N25 bağ, hedefin bağsız kapanmış kısmını geri almaz (karar (2))",
+     [('if x["tur"] != "kart_vazgec":                # 3. hedefin', 'if False:                # 3. hedefin')]),
     ("N27 M9: kısmi düşüşte de Devri Yenile çakışması",
      [("cakisma = [f for f, b in bagli.items() if b and not yeni_acik.get(f, 0)]", "cakisma = [f for f, b in bagli.items() if b and yeni_acik.get(f, 0) < b]")]),
     # ---- ana oturum ek maddeleri (K3 şüpheli alacak satırları, R-04 fatura geri yükleme)
@@ -173,6 +171,63 @@ MUTANTLAR = [
      [("sup, cozulme, kalan = ([], [], t) if (borc or acilis) else self._supheliden_dus(k, c, t)", "sup, cozulme, kalan = ([], [], t)")]),
     ("N37 silinen kaydedilmiş fatura geri yüklenince etkin döner", [('k.durum = "iptal"                         # kaydedilmiş', 'k.durum = "aktif"                         # kaydedilmiş')]),
     ("N38 KG-3 A: carisiz Kasa girişi de 336.90'a (onaylanan metne aykırı)", [("return CARISIZ_PASIF if kayit else CARISIZ_GELIR", "return CARISIZ_PASIF")]),
+    # ---- kâhin bakımı 2 (EK-2 / EK-2B + kullanıcı kararları 05.11 21:08 ve 21:30; README R1–R21)
+    ("B01 R1 karar (1): aynı gün borç önce değil, giriş sırası", [('0 if s["b"] else 2, m.seq, m.id, i)', '2, m.seq, m.id, i)')]),
+    ("B02 R2 karar (2): serbest kalan bağsız ödeme KENDİ tarihinde değil bağ gününde dağılır",
+     [('self.cakisma[(self.ev, y["id"])] += n', 'self._eski_serbest(x, y, n) if x is not None else None')]),
+    ("B03 R3 karar (3): kilitli dönemdeki bağsız kapanış kilitten sonraki bağla geri alınır",
+     [("kilitli_bag = self.kilit is not None and self.simdi > self.kilit", "kilitli_bag = False")]),
+    ("B03b R3 karar (3): kilit notu yazılmaz", [("if kil_f and gerek > 0:", "if False:")]),
+    ("B03c R3 EK-2B §5.3: devir M2 karşılaştırmasında devirsiz eş kilitsiz", [("x.kilit = max(kilit, x.kilit) if x.kilit else kilit", "x.kilit = None")]),
+    ("B04 R4 2B-S3: kart küçülmesi son taksitten (B dalı)",
+     [('key=s2_anahtari):\n            if n <= 0:\n                break\n            m = min(n, o["kalan"])',
+       'key=s2_anahtari, reverse=True):\n            if n <= 0:\n                break\n            m = min(n, o["kalan"])')]),
+    ("B05 R4 32 (a): borçtan düşülen iade kartı küçültmez (bağsız alacak gibi)",
+     [('if x["tur"] == "iade":                       # karar (4)', 'if False:                       # karar (4)')]),
+    ("B05b R4 32 (a): kart alttaki borçtan büyük kalır (eski kart_fark avansı)",
+     [("eksik = kalan if tuketen else 0",
+       'eksik = 0\n        if tuketen and kalan:\n            self.ekle("kart_fark:" + kid, "kart_fark", "a", kalan, tarih, tarih, sira)')]),
+    ("B06 R4: paralı iade de kartı küçültür", [('link = "iade_para:" + k.id               # iade kendi', 'link = "fatura:" + v["asil_fatura"]               # iade kendi')]),
+    ("B07 R5 karar (5): fatura durumu net kuyruktan (karşı yönlü fatura kendiliğinden kapatır)",
+     [("self.kuyruk(c, t, fg=True).ogeler", "self.kuyruk(c, t).ogeler")]),
+    ("B08 R5 karar (5) B: alış faturası gecikmişten düşülmez (yalnız Mahsup Et)",
+     [('if self.fg and a["tur"] == "fatura" and b["tur"] == "fatura":', 'if a["tur"] == "fatura" and b["tur"] == "fatura":')]),
+    ("B09 R6 karar (6): önceden kapatılmış kart da borçta kalır (eski 689 kaybolur)",
+     [('if k.v.get("eski") or self.kural == "2.4.9":', 'if self.kural == "2.4.9":')]),
+    ("B09b R6 karar (6) B: Kartı Kapat kalanı 689'la borçtan düşer", [('if k.v.get("eski") or self.kural == "2.4.9":', "if True:")]),
+    ("B10 R7 karar (7): Devri Yenile eski açılış fişini silmez (iki açılış fişi)",
+     [("yeni.fisler = [f for f in yeni.fisler if f.kaynak != did]", "yeni.fisler = list(yeni.fisler)")]),
+    ("B11 R8 EK-2B 33: Kasa açılışı ilk hareketten sonraya düzeltilebilir", [('if ilk and o["degisiklik"]["tarih"] > min(ilk):', "if False:")]),
+    ("B12 R9 EK-2B 35: faturanın kendi kartı fatura iptal / silinince kalmaz değil (kalır)",
+     [('if f is None or f.durum != "aktif":\n                return', 'if False:\n                return')]),
+    ("B13 R9 EK-2B 35: tahsilatlı kartın faturası silinebilir", [('raise Red("FATURA_SIL_TAHSILATLI_KART", k.id)', "pass")]),
+    ("B14 R10 EK-2 25: önceki yıl sonucu kapanış sırasında (N-01'den sonra; G-4 eski)", [("SINIF_SIRASI = {0: 0, 1: 1, 4: 2, 2: 3, 3: 4}", "SINIF_SIRASI = {0: 0, 1: 1, 4: 4, 2: 3, 3: 4}")]),
+    ("B15 R11 EK-2 26: 570 / 580 yıl alt hesabı yok", [('sat.append(L(f"570.{y}" if R > 0 else f"580.{y}", -R))', 'sat.append(L("570" if R > 0 else "580", -R))')]),
+    ("B15b R11 EK-2 26: eşleştirmede yılsız 570 .0000 almaz", [('if h in ("570", "580"):', "if False:")]),
+    ("B16 R12 EK-2 27: ekstre toplam satırı vadeli (K)",
+     [('satir.append({"tarih": t, "aciklama": aciklama, "borc": borc, "alacak": alacak, "vade": vade, "bakiye": bak})',
+       'satir.append({"tarih": t, "aciklama": aciklama, "borc": borc, "alacak": alacak, "vade": vade or K, "bakiye": bak})')]),
+    ("B17 R13 S7 B (eski N05'in tersi): şüpheli carisine şüphelisiz gecikmiş otomatik gider",
+     [('elif g["gecikmis"] > 0:\n                oto[c] = g["gecikmis"]', 'if g["gecikmis"] > 0:\n                oto[c] = g["gecikmis"]')]),
+    ("B18 R14 EK-2 31: kayıtsız şüpheli işleminde varsayılan kayıt (senaryo hatası değil)",
+     [('if not v.get("kayit"):                       # EK-2 31', 'if False:                       # EK-2 31')]),
+    ("B19 R15 EK-2 34: Kesin Değil eski ad, ay listesi yok",
+     [('kd.append(f"ONCEKI_YIL_KDV_MAHSUBU_YAPILMAMIS:{dn}")', 'kd.append("ARALIK_KDV_MAHSUBU_YAPILMAMIS")')]),
+    ("B19b R15 EK-2 34: t'nin yılındaki mahsupsuz ay bilgi uyarısı yok", [('bilgi.append(f"KDV_MAHSUBU_YAPILMAMIS:{dn}")', "pass")]),
+    ("B20 R16 EK-2 36: alacaklı 127 340'a brütleşmez",
+     [('"121": "KD", "127": "III.D",', '"121": "KD",')]),
+    ("B21 R17 EK-2 38 (eski N26'nın tersi): gider türü boş → 770.90", [('if not g:\n        return "770"', "if not g:\n        return SINIFLANDIRILMAMIS_GIDER")]),
+    ("B22 R18 EK-2 39: hesap adında (Geçici)",
+     [('"519": ("Eşleştirilecek Açılış Bakiyeleri", "Ö", "V.G")', '"519": ("Eşleştirilecek Açılış Bakiyeleri (Geçici)", "Ö", "V.G")')]),
+    ("B23 R19 EK-2 40: 691 N-04'te 690'a kapanır", [('ana(h) not in ("690", "691", "692") and v:', 'ana(h) not in ("690", "692") and v:')]),
+    ("B23b R19 EK-2 40: 691 692'ye kapanmaz (açık kalır)", [('+ ([L("692", v691), L("691", -v691)] if v691 else [])', "")]),
+    ("B24 R20 S8: karşılıksız evrak kapattığı faturayı yeniden açmaz (eski M1c)",
+     [('if e.get("tur") == "karsiliksiz" and e.get("evrak_kaynak") and not e.get("kart_tahsilati"):', "if False:")]),
+    ("B24b R20 S8 'taksitli değişmez' yok: kart tahsilatı çeki de taksiti yeniden açar",
+     [('if e.get("tur") == "karsiliksiz" and e.get("evrak_kaynak") and not e.get("kart_tahsilati"):',
+       'if e.get("tur") == "karsiliksiz" and e.get("evrak_kaynak"):')]),
+    ("B30 R2 Mahsup Et hedefin bağsız kapanmış kısmını geri almaz",
+     [("if tut > 0:\n                    self._ayir_iste([x], tut)", "if False:\n                    self._ayir_iste([x], tut)")]),
 ]
 
 
@@ -208,7 +263,13 @@ def kos(src):
     return r.testsRun, adlar
 
 
+def _mutant_kos(is_):
+    src, degisiklikler = is_
+    return kos(mutant_kaynak(src, degisiklikler))
+
+
 def main():
+    import multiprocessing
     with open(MODEL, encoding="utf-8") as f:
         src = f.read()
     n, kirmizi = kos(src)
@@ -216,13 +277,25 @@ def main():
     if kirmizi or n == 0:
         print("  TEMEL KIRMIZI:", kirmizi)
         return 1
+    for _, degisiklikler in MUTANTLAR:                # parçalar önce denetlenir (tam bir kez geçmeli)
+        mutant_kaynak(src, degisiklikler)
     sag = []
-    for ad, degisiklikler in MUTANTLAR:
-        n, kirmizi = kos(mutant_kaynak(src, degisiklikler))
+    # her mutant ayrı süreçte (fork) koşar; sonuç sırası korunur. MUTASYON_PARALEL=1 sıralı koşar.
+    paralel = int(os.environ.get("MUTASYON_PARALEL", os.cpu_count() or 1))
+    isler = [(src, d) for _, d in MUTANTLAR]
+    if paralel > 1:
+        havuz = multiprocessing.get_context("fork").Pool(paralel)
+        sonuclar = havuz.imap(_mutant_kos, isler)
+    else:
+        havuz, sonuclar = None, map(_mutant_kos, isler)
+    for (ad, degisiklikler), (n, kirmizi) in zip(MUTANTLAR, sonuclar):
         durum = "ÖLDÜ" if kirmizi else "SAĞ KALDI"
         print(f"{ad:<78} {durum:<10} ({len(kirmizi)}/{n} test kırmızı: {', '.join(kirmizi[:3])}{' …' if len(kirmizi) > 3 else ''})")
         if not kirmizi:
             sag.append(ad)
+    if havuz is not None:
+        havuz.close()
+        havuz.join()
     yukle(src)
     print(f"# tests {len(MUTANTLAR)}")
     print(f"# pass {len(MUTANTLAR) - len(sag)}")

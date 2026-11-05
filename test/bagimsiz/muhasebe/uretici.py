@@ -375,13 +375,14 @@ class Uretici:
         if self.cari[c] < 20000:
             return
         tut = self.cari[c] // 2
-        self.ekle("supheliye_al", t1, cari=c, tutar=tut)
-        self.ekle("karsilik_ayir", t1, cari=c, tutar=tut // 2)
+        kayit = self.id("SK")                                         # EK-2 31: işlemler kayıt başına, olay kaydı taşır
+        self.ekle("supheliye_al", t1, id=kayit, cari=c, tutar=tut)
+        self.ekle("karsilik_ayir", t1, cari=c, tutar=tut // 2, kayit=kayit)
         self.ekle("tahsilat", t2, cari=c, yol="havale", banka="B1", tutar=tut // 3, supheliden=True)
         self.cari[c] -= tut // 3
         self.supheli[c] = True
         if self.r.random() < 0.5:
-            self.ekle("degersiz_yaz", t3, cari=c)
+            self.ekle("degersiz_yaz", t3, cari=c, kayit=kayit)
         self.cari[c] -= tut - tut // 3
 
     def gunler(self, bas, son):
@@ -444,13 +445,16 @@ def uret(tohum, yil=2026, yogunluk=3):
 
 
 def devirsiz(s):
-    """Aynı senaryonun devir / yenile içermeyen hâli (devir şirketin durumunu değiştirmez denetimi için)."""
+    """Aynı senaryonun devir / yenile içermeyen hâli (devir şirketin durumunu değiştirmez denetimi için). Devir yapmayan müşteri
+    dönem kilidiyle çalışır (DEVIR-PLANI §0); karşılaştırma AYNI kilitle (L = K, EK-2B §5.3 / karar (3)): düzeltmelerden sonra kilit."""
     x = copy.deepcopy(s)
     out = []
+    K = next(o["K"] for o in x["olaylar"] if o["tur"] == "devir")
     for o in x["olaylar"]:
         if o["tur"] in ("devir", "devri_yenile"):
             if o["tur"] == "devri_yenile":
                 out += o["duzeltmeler"]
+                out.append({"tur": "donem_kilitle", "tarih": K})
             continue
         if o["tur"] == "rapor" and o.get("dosya", "canli") != "canli":
             continue

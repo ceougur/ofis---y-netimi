@@ -1,0 +1,147 @@
+{
+ "ad": "s58-r9-kartli-fatura-sil-iptal",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "ak3": [
+     {
+      "k": "tahsilat:P2",
+      "kalan": -3000,
+      "tarih": "2026-02-15",
+      "tur": "tahsilat",
+      "vade": "2026-02-15"
+     }
+    ],
+    "g1": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2026-03-11"
+    },
+    "g2a": {
+     "cari": "C2",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2026-03-02"
+    },
+    "g2b": {
+     "cari": "C2",
+     "detay": [
+      {
+       "kalan": 2000,
+       "kalem": "kart:TK3",
+       "vade": "2026-04-01"
+      }
+     ],
+     "gecikmis": 2000,
+     "supheli": 0,
+     "tarih": "2026-04-02"
+    },
+    "g3": {
+     "cari": "C3",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2026-03-20"
+    },
+    "kt1": {},
+    "kt2": {
+     "TK3": {
+      "kapali": false,
+      "taksitler": [
+       {
+        "kalan": 2000,
+        "tutar": 2000,
+        "vade": "2026-04-01"
+       }
+      ]
+     }
+    },
+    "kt3": {},
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 3000,
+       "borc": 3000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 3000,
+       "bakiye": -1000,
+       "borc": 2000,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 2000,
+       "bakiye": -2000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 3000,
+       "borc": 3000,
+       "devir": 0
+      },
+      "120|C2": {
+       "alacak": 0,
+       "bakiye": 2000,
+       "borc": 2000,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 3000,
+       "bakiye": -3000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 2000,
+       "bakiye": -2000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-04-30",
+     "toplam": {
+      "alacak": 5000,
+      "bakiye": 0,
+      "borc": 5000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "FATURA_SIL_TAHSILATLI_KART",
+     "neden": "F2",
+     "olay": 10,
+     "tur": "sil"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

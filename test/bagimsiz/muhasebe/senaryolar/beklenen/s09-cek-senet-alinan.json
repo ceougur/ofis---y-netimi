@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -24,6 +25,7 @@
       "I.C": 150000
      },
      "aktif_toplam": 300000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -59,6 +61,7 @@
       "I.C": 90000
      },
      "aktif_toplam": 300000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -190,7 +193,7 @@
        "borc": 0,
        "devir": 0
       },
-      "770.90": {
+      "770": {
        "alacak": 0,
        "bakiye": 80000,
        "borc": 80000,

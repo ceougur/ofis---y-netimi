@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -58,6 +59,7 @@
       "I.H": 2000
      },
      "aktif_toplam": 423500,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -103,7 +105,7 @@
      "hesaplar": {
       "600": 290000,
       "689": 500,
-      "770.90": 170000
+      "770": 170000
      },
      "kalemler": {
       "A": 290000,
@@ -258,7 +260,7 @@
        "borc": 500,
        "devir": 0
       },
-      "770.90": {
+      "770": {
        "alacak": 0,
        "bakiye": 170000,
        "borc": 170000,

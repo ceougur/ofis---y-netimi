@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -24,6 +25,7 @@
       "I.C": 50000
      },
      "aktif_toplam": 176500,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -53,6 +55,7 @@
       "I.A": 97500
      },
      "aktif_toplam": 97500,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -80,6 +83,7 @@
       "I.C": 50000
      },
      "aktif_toplam": 147500,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -267,6 +271,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -283,6 +288,7 @@
       "I.C": 50000
      },
      "aktif_toplam": 176500,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -312,6 +318,7 @@
       "I.A": 100000
      },
      "aktif_toplam": 100000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -339,6 +346,7 @@
       "I.C": 50000
      },
      "aktif_toplam": 147500,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {

@@ -8,6 +8,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -25,6 +26,7 @@
       "I.E": 16667
      },
      "aktif_toplam": 771667,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -51,7 +53,7 @@
        "500": 400000
       },
       "V.D": {
-       "570": 61667
+       "570.0000": 61667
       }
      },
      "donem_net_kari": 0,
@@ -78,6 +80,7 @@
       "I.E": 16667
      },
      "aktif_toplam": 771667,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {

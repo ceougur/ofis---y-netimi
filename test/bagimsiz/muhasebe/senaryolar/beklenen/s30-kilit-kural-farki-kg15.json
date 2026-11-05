@@ -10,6 +10,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "kural_farki_yeni_kural": [],
      "madde_dengesi": [],
@@ -27,6 +28,7 @@
       "I.C": 240000
      },
      "aktif_toplam": 350000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -67,6 +69,7 @@
       "I.C": 190000
      },
      "aktif_toplam": 300000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -295,6 +298,7 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
      "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
@@ -311,6 +315,7 @@
       "I.C": 240000
      },
      "aktif_toplam": 350000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {
@@ -351,6 +356,7 @@
       "I.C": 190000
      },
      "aktif_toplam": 300000,
+     "bilgi": [],
      "bilgi_amacli": false,
      "detay": {
       "I.A": {

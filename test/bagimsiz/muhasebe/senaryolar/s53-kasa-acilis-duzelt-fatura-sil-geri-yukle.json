@@ -52,10 +52,16 @@
    "mz/satirlar/600/bakiye": 0,
    "mz/satirlar/649.90/bakiye": -5000,
    "redler": [
-    "KASA_ACILIS_TEKRAR"
+    "KASA_ACILIS_TEKRAR",
+    "KASA_ACILIS_SONRA"
    ],
    "yevA/0/kaynak": "KA",
-   "yevA/0/satirlar/0/b": 12000
+   "yevA/0/satirlar/0/b": 12000,
+   "yevB/0/kaynak": "KA",
+   "yevB/0/satirlar/0/b": 12000,
+   "yevC/0/kaynak": "KA",
+   "yevC/0/sinif": 0,
+   "yevC/1/tur": "kasa_giris"
   }
  },
  "kapsam": [
@@ -218,6 +224,34 @@
    "ad": "durum_TS1",
    "kaynak": "TS1",
    "rapor": "kaynak_durumu",
+   "tur": "rapor"
+  },
+  {
+   "degisiklik": {
+    "tarih": "2026-01-06"
+   },
+   "kaynak": "KA",
+   "tur": "duzenle"
+  },
+  {
+   "ad": "yevB",
+   "bas": "2026-01-03",
+   "rapor": "yevmiye",
+   "son": "2026-01-03",
+   "tur": "rapor"
+  },
+  {
+   "degisiklik": {
+    "tarih": "2026-01-05"
+   },
+   "kaynak": "KA",
+   "tur": "duzenle"
+  },
+  {
+   "ad": "yevC",
+   "bas": "2026-01-05",
+   "rapor": "yevmiye",
+   "son": "2026-01-05",
    "tur": "rapor"
   }
  ],

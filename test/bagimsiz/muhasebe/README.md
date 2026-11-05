@@ -21,11 +21,11 @@ Program (JavaScript) ayrı bir sürücü ajanıyla bu senaryolara karşı koşul
 | Dosya | Ne |
 |---|---|
 | `model.py` | Model: hesap planı (§2 + 671 / 681), olay → madde (§3), mizan, büyük defter, gelir tablosu (MSUGT, 7/A), bilanço (ters bakiye brütleştirme, hesaplanmış satırlar, Kesin Değil), dönem sonu değerleme (§5), **Tek Yükümlülük Kuyruğu** (EK-1 §1: açık kalemler, gecikmiş, hatırlatma, şüpheli kuyruğu), kapanış (Önceki Yıl Sonucu Fişleri + N-01…N-07), devir açılışları (N-09…N-13; M2/M3/M12/M13), Devri Yenile (N-14, M9), Devri Geri Al (N-15), dönem kilidi + 2.4.9 donmuş defter + Kural Farkı Düzeltme Fişi (Ç3, KG-15, M7), KDV dönem etiketi (M8, S4), şüpheli kayıtları (K3), değişmezler |
-| `senaryolar_elle.py` | 54 elle doğrulanabilir senaryo (s01…s53; s26 iki seçenekli); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
+| `senaryolar_elle.py` | 63 elle doğrulanabilir senaryo (s01…s62; s26 iki seçenekli); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
 | `uretici.py` | Tohumlu rastgele üretici: bir yıl (~800 olay) + K sonrası Ocak + devir + devirden sonra kayıt + Devri Yenile; tohum 1, 2, 3 |
 | `uret_beklenen.py` | `senaryolar/<ad>.json` (kendi kendine yeten senaryo: tanımlar + olaylar + dallar + elle) ve `senaryolar/beklenen/<ad>.json` (her dal için modelin tam çıktısı) yazar / `--denetle` |
-| `test_model.py` | 97 test: yardımcılar, olay → madde birim testleri, 54 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü), dosya güncelliği |
-| `mutasyon.py` | 95 metin mutantı (model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
+| `test_model.py` | 114 test: yardımcılar, olay → madde birim testleri, 63 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü), dosya güncelliği |
+| `mutasyon.py` | 126 metin mutantı (model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
 
 ## Çalıştırma
 ```
@@ -34,7 +34,8 @@ python3 test/bagimsiz/muhasebe/mutasyon.py            # testin dişi (çıkış 
 python3 test/bagimsiz/muhasebe/uret_beklenen.py       # senaryo + beklenen dosyalarını yeniden yaz (model değişince)
 python3 test/bagimsiz/muhasebe/uret_beklenen.py --denetle
 python3 test/bagimsiz/muhasebe/uretici.py 2           # tek tohum özeti
-# kanıt: node tools/kanit.mjs kos kahin-muhasebe-bakim-test -- python3 test/bagimsiz/muhasebe/test_model.py
+# kanıt: node tools/kanit.mjs kos kahin2-test -- python3 test/bagimsiz/muhasebe/test_model.py
+#        node tools/kanit.mjs kos kahin2-mutasyon -- python3 test/bagimsiz/muhasebe/mutasyon.py
 ```
 
 ## Senaryo dili (sürücü bunu programın API'sine çevirir)
@@ -161,6 +162,10 @@ gecikmiş tutarı (iki tarihte) aynı.
   beklenen KARAR GEREKİYOR 24'teki okumadan elle). İlk koşuda M54 da sağ kaldı: Excel kartının önceden ödeneni artık modül sayacında değil kuyrukta
   (`kart_ac`) düşülüyor; mutant kuralın yeni yerine taşındı.
 - s07'deki kilitli tarihli satış faturası (F5) seri dışı Borç Yaz yapıldı (red kodu VUK sıra-tarihiyle karışmasın); beklenen aynı.
+- Kâhin bakımı 2 — 9ab25cd5: s54–s62, değişen eski beklentiler ve yeni birim testleri model DEĞİŞTİRİLMEDEN ÖNCE commit'lendi; eski modelle 114 testten 27'si beklenen
+  nedenle kırmızı (`docs/kanit/2026-11-05/kahin2-eski-model-kirmizi.*`). Model değiştikten sonra bir elle değer YANLIŞ çıktı ve elle yeniden hesaplandı: s22
+  `mz_arsiv/satirlar/770.90/borc` 0 → 10000 ve `770/borc` 70000 → 60000 (Aralık kasa çıkışı 10000 belgesiz çıkıştır, 770.90'da kalır; ilk hesapta unutulmuştu).
+  Öteki yeni değerlerin hiçbiri değişmedi.
 
 ## Üretici düzeltmeleri (ana oturum 05.11 ~19:50, K1–K5)
 - K1: KDV, tevkifat (5/10, 2/10) ve stopaj tutarı kuruşa YARIM YUKARI (kitap G-1; GİB / UBL-TR satır yuvarlaması) — önce aşağı yuvarlıyordu. Tutar kâhini OKUNMADI
@@ -171,7 +176,7 @@ gecikmiş tutarı (iki tarihte) aynı.
 - K5: Devri Yenile'nin geç gelen Aralık satış faturası K (31.12) tarihli — serinin son tarihinden önce olamaz.
 
 ## KARAR GEREKİYOR (kâhinde kesinleştirilmedi; model seçimi yanında — "ÇÖZÜLDÜ" olanlar karar metninden)
-1. ~~KG-3 tanım çelişkisi~~ ÇÖZÜLDÜ (onaylanan metin A). Kalan: "649'da kalır" — model alt hesap 649.90 (kitap K-01 önerisi); düz 649 da okunabilir.
+1. ~~KG-3 tanım çelişkisi~~ ÇÖZÜLDÜ (onaylanan metin A; EK-2 37: 649.90).
 2. ~~B1 ayrıntısı~~ ÇÖZÜLDÜ (EK-1 §1, S1, S2, M1a–M1f).
 3. ~~Devirde cari açılış satırının vadesi~~ ÇÖZÜLDÜ (M2).
 4. ~~KG-17 net tek madde~~ ÇÖZÜLDÜ (M3).
@@ -189,37 +194,33 @@ gecikmiş tutarı (iki tarihte) aynı.
 16. POS komisyonu hesabı: 653 (760 geçişi 2.5.1, çekirdek §13) — sürer.
 17. D-04 valörden sonra komisyon iadesi — model desteklemez (sürer).
 18. ~~Yıl ortası K~~ ÇÖZÜLDÜ (M11).
-19. ~~F-06 gider türü~~ ÇÖZÜLDÜ (M14). Kalan: kitap F-06 "varsayılan 770" ile M14 "seçilmemiş / tanınmayan → 770.90" — model: olay dilinde gider_turu
-    YAZILMAMIŞSA "seçilmemiş" (770.90). Programda gider türü hep dolu geliyorsa sürücü olayı "genel" ile girmeli.
+19. ~~F-06 gider türü~~ ÇÖZÜLDÜ (M14 + EK-2 38 / E17: boş → 770, eşlemede olmayan değer → 770.90).
 20. ~~KG-2 B~~ geçersiz.
 21. ~~Ekstre~~ ÇÖZÜLDÜ (M12).
 22. Kesin Değil metinleri programın; model kod kullanır — sürücü eşlemesi gerekir (sürer).
-23. **YENİ — TYK okuması:** EK-1 §1 adım 4 "bağsız alacak kalemleri havuzlanır … Sonuç: açık borç kümesi, sıralı listenin SONUNDAKİ kalemlerdir" (HAVUZ: as-of-t, ödemeden
+23. ~~TYK okuması~~ ÇÖZÜLDÜ — karar (1) = A (kendi tarihinde; bakım 2 R1). Eski not: EK-1 §1 adım 4 "bağsız alacak kalemleri havuzlanır … Sonuç: açık borç kümesi, sıralı listenin SONUNDAKİ kalemlerdir" (HAVUZ: as-of-t, ödemeden
     sonra girilen ve vadesi daha önce gelen borç da ödemeyi "alır") ile M2'nin değişmezi "her t ≥ K+1 için gecikmiş devirli = devirsiz" ve S2'nin sorusu ("bağlamadan yapılan
     ödeme önce hangi borcunu kapatsın") iki okumaya izin veriyor. Model ANINDA okuması: ödeme girildiği anda açık olan borçlara S2 sırasıyla (M2 değişmezini her durumda
     yalnız bu okuma sağlıyor — havuz okumasında K'den önceki ödeme K sonrası erken vadeli borca kayabilir). Fark örneği s41 C2: F6 (01.03, vade 30.06), ödeme 01.04 40.000,
     F7 (10.05, vadesiz) → ANINDA: 11.05'te gecikmiş 40.000; HAVUZ: 0 (ödeme F7'ye kayar, F6 açık ama vadesi gelmemiş). Kullanıcıya / baş mimara (para + "kime hatırlatma"; ders 43).
-24. **YENİ — "Bağlar önce" ile anında okuma:** bağ (Mahsup Et, Kapatılacak Fatura, iade, kart tahsilatı) hedefi daha önce bağsız bir kalemle kapanmışsa model o bağsız
+24. ~~"Bağlar önce"~~ ÇÖZÜLDÜ — karar (2) = A (bakım 2 R2: serbest kalan kendi tarihinde; yeniden oynatma). Eski not: bağ (Mahsup Et, Kapatılacak Fatura, iade, kart tahsilatı) hedefi daha önce bağsız bir kalemle kapanmışsa model o bağsız
     kapanışı geri alır (serbest kalan kalem yeniden dağıtılır; s39 Mahsup Et). Metin bunu açıkça yazmıyor; §1 adım 3'ten türetildi.
-25. **YENİ — M4 aynı gün sırası:** EK-1 "Önceki Yıl Sonucu Fişleri → N-01 → N-02" der; G-4 (tarih → sınıf → yazım sırası) N-01'i (dönem sonu sınıfı) kapanış sınıfındaki
-    önceki yıl fişlerinden ÖNCE sıralar. Model G-4 (bakiye etkisi yok; yalnız yevmiye / büyük defter satır sırası).
-26. **YENİ — 570.Y / 580.Y alt hesabı** ("önerilir"): model düz 570 / 580 (ana hesap tutarı aynı).
-27. **YENİ — devir net kalan satırı** (avans / fazla ödeme; "vadesi önemsiz"): model birleştirilen en eski açık alacağın vade / tarih / sırasını kullanır.
-28. **YENİ — değişmez (4)'ün sınırı (BİLİNEN SINIR):** K sonrası bir bağ, K'de bağsız kapanmış ≤K kaleme yönelirse devirsiz dosyada geri alma yapılır, devirli dosyada G2
+25. ~~M4 aynı gün sırası~~ ÇÖZÜLDÜ — EK-2 25 / E13 (bakım 2 R10: sınıf 4 "önceki yıl sonucu").
+26. ~~570.Y / 580.Y~~ ÇÖZÜLDÜ — EK-2 26 (bakım 2 R11).
+27. ~~Devir net kalan satırı~~ ÇÖZÜLDÜ — EK-2 27 KABUL + değişmez `m27_net_satir` (bakım 2 R12).
+28. ~~Değişmez (4)'ün sınırı~~ ÇÖZÜLDÜ — karar (3) = A (bakım 2 R3: kilitli kapanış geri alınmaz; devirsiz eş aynı kilitle; M2 istisnasız). Eski not: K sonrası bir bağ, K'de bağsız kapanmış ≤K kaleme yönelirse devirsiz dosyada geri alma yapılır, devirli dosyada G2
     "arşiv başvurusu" ile bağsız kalır. Alacak yönlü bağda (tahsilat → fatura) borç tarafı iki dosyada eşit kalır (serbest kalan = bağsız kalan tutar); borç yönlü bağda
     (alış faturasına bağlı ödeme, K sonrası Mahsup Et) açık borç kalemlerinin vadesi ayrışabilir. Rastgele 3 tohumda görülmedi; elle senaryo yok.
-29. **YENİ — S3 kapsamı:** model TUTAR bazında: şüpheli tutar hatırlatmaya girmez, aynı carinin CH'deki gecikmiş borcu otomatik listede kalır (s42 h1); "şüpheli
-    kaydı olan cari otomatik listeden tümüyle çıkar" okuması da mümkün ("kime hatırlatma" → kullanıcı, ders 45).
-30. **YENİ — K3 + TYK birleşimi:** şüpheliden düşen tahsilat CH kuyruğuna girmez → Mevcut Borcu Taksitlendir kartının taksit tahsilatı şüpheliden düşünce kartın CH'deki
+29. ~~S3 kapsamı~~ ÇÖZÜLDÜ — S7 = A (kullanıcı 21:08; bakım 2 R13: cari bazında).
+30. ~~K3 + TYK birleşimi~~ ÇÖZÜLDÜ — EK-2 30 KABUL (E23). Eski not: şüpheliden düşen tahsilat CH kuyruğuna girmez → Mevcut Borcu Taksitlendir kartının taksit tahsilatı şüpheliden düşünce kartın CH'deki
     taksiti açık kalır ve gecikmiş olur (s52 C3: 3.000). İki karar metninin (plan §3.11b/2 (c), EK-1 M1e) birleşimi; açıkça yazılmamış.
-31. **YENİ — K3 olay dili:** karşılık / değersiz / çıkar için kayıt verilmezse model: karşılıkta en eski (karşılık yeri olan) açık kayıt, değersiz ve çıkarda carinin bütün
+31. ~~K3 olay dili~~ ÇÖZÜLDÜ — EK-2 31 (bakım 2 R14: kayıt zorunlu). Eski not: karşılık / değersiz / çıkar için kayıt verilmezse model: karşılıkta en eski (karşılık yeri olan) açık kayıt, değersiz ve çıkarda carinin bütün
     açık kayıtları. "Hesapsız (Açılıştan Önce)" tahsilatı ve Kredi Kartına İade (T-11) de "tahsilat" sayıldı (şüpheliden düşer); "kapatılan kartın vazgeçilen kalanı"
     KG-23 A'da madde üretmediği için uygulanmadı.
-32. **YENİ — kart alttaki borçtan büyükse** (fatura kartı / Mevcut Borç kartı): model farkı "kart_fark" alacak kalemi yapar (Σ açık = CH korunur); senaryo yok.
-33. **YENİ — kasa açılışının tarihinin ilk hareketten SONRAYA düzeltilmesi:** M-01 "ilk hareketten önce" düzeltmede de geçerli mi yazılı değil; model reddetmez (s53 yalnız
-    öne alma).
-34. **YENİ — Kesin Değil "ARALIK_KDV_MAHSUBU_YAPILMAMIS":** model, dönemi t'nin yılından önceki HER ayda kalmış 191 / 391 için koyar (yalnız Aralık değil; s04 Mayıs).
-35. **YENİ — silinen faturaya bağlı taksit kartı:** karar "taksit … etkileri geri alınır" der; model fatura kartını kaldırmaz (alttaki fatura yok → kart_fark). Senaryo yok.
+32. ~~Kart alttaki borçtan büyükse~~ ÇÖZÜLDÜ — EK-2B 32 (a) + karar (4) (bakım 2 R4: kart küçülür, kart_fark yok).
+33. ~~Kasa açılışını sonraya düzeltme~~ ÇÖZÜLDÜ — EK-2B 33 (bakım 2 R8: ret).
+34. ~~Kesin Değil "Aralık KDV…"~~ ÇÖZÜLDÜ — EK-2 34 (bakım 2 R15: "Önceki Yıl KDV Mahsubu Yapılmamış" + ay).
+35. ~~Silinen faturaya bağlı taksit kartı~~ ÇÖZÜLDÜ — EK-2B 35 (bakım 2 R9).
 
 ## DENENMEYEN / BİLİNEN SINIRLAR (modelin)
 - Programla karşılaştırma (sürücü ayrı ajan). Kod hiç okunmadığı için alan adları / uç noktalar sürücüde eşlenir.
@@ -233,3 +234,94 @@ gecikmiş tutarı (iki tarihte) aynı.
 - POS valörü üreticide yalnız hafta sonu kaydırması (resmî tatil yok); banka transfer valörü kaydırılmaz.
 - K3: kabul §2 C / F / G / I–Y satırlarının çoğu (süreç, yetki, istek kimliği, eski sürüm) modelde yok; şüpheli caride borç satırları (ödeme / H-05) K3'e girmez.
 - F-17, S-08 modellenmedi (yukarıda).
+
+## Kâhin bakımı 2 (05.11.2026, kodu görmeyen ajan; EK-2 / EK-2B + kullanıcı kararları 05.11 21:08 ve 21:30)
+
+### Kaynaklar ve bağımsızlık
+- Okunan: `CLAUDE.md`, `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, bu klasörün tamamı, `docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md`, `…-EK-1.md`, `…-EK-2.md`,
+  `…-EK-2B.md`, `docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md`, `docs/devir/DEVIR-PLANI.md` (G, §0, §1, §4, §11, G14), `docs/2.5.0-IS-LISTESI.md` satır 1–80 ve 129–201 (A, C, D).
+- Kural sırası: kullanıcı kararları (iş listesi D, 21:08 S7 / S8 ve 21:30 (1)–(7), AYNEN) → EK-2B (23, 24, 28, 32, 33, 35, K-2, K-3) → EK-2'nin geçerli maddeleri
+  (25, 26, 27, 29, 30, 31, 34, 36–40, K-1, E11–E25, §4'ün 15 değişmezi). EK-2'nin 23 / 24 / 28 / 32 / 33 / 35 / K-2 / K-3 metinleri ve onlardan türeyen E11, E12, E18, E20, E24,
+  E25 ile §4 (2), (3), (7), (8), (9) değişmezleri EK-2B ve kullanıcı kararlarıyla ÇELİŞTİĞİ yerde EK-2B / karar uygulandı (aşağıda her biri yazılı).
+- `server/`, `client/`, `tools/` (yalnız `tools/kanit.mjs kos` ÇALIŞTIRILDI), `bulut/`, `docs/kanit/` (kendi kanıtları dışında), öteki `test/` klasörleri (sürücü dahil), git geçmişi /
+  farkı OKUNMADI. Program çalıştırılmadı. Tam okuma / arama listesi ajan raporunda.
+
+### Kural başına yorum (önce yorum, sonra kod)
+| # | Kural (kaynak) | Kâhin yorumu | Senaryo / test | Mutant |
+|---|---|---|---|---|
+| R1 | 23 = A (karar (1); EK-2B 23): bağsız ödeme KENDİ TARİHİNDE (o gün dahil) açık borçlara S2 sırasıyla; sonradan doğan borca kaymaz; aynı gün önce borç kalemleri | Kuyruk olay sırası: tarih → defter sınıfı → K3 gün sınıfı → **taraf sınıfı** (0 borç satırı, 1 kart açılışı, 2 alacak satırı / bağ / Mahsup Et, 3 Kartı Kapat) → giriş sırası. Kart açılışı aynı günün borcundan SONRA, alacağından ÖNCE ("kart açıldığı günkü borcu taksitlendirir", kılavuz; sıra EK-2B'de yazılı değil → yorum) | s54, s41 C2, birim `test_R1_sonradan_dogan_borc_dagitimi_degistirmez` | B01 |
+| R2 | 24 = A (karar (2); EK-2B 24): bağ hedefini her durumda kapatır; hedefi önceden kapatmış bağsız ödeme serbest kalır ve KENDİ TARİHİNDE yeniden dağılır | Rezervli yeniden oynatma: bağ (Kapatılacak Fatura, iade → asıl fatura, Mahsup Et, kart tahsilatı, fatura kartı açılışı) hedefinde bağsız kapanmış kısım bulursa o kısım hedefte bağ için AYRILIR ve kuyruk baştan oynatılır; bağsız ödemeler ayrılmış kısmı almaz, kendi günlerinde başka açık borçlara gider (eski model serbest kalanı bağ gününün açık borçlarına dağıtıyordu) | s55, `test_TYK_bag_hedefin_bagsiz_kapanisini_geri_alir`, s39 | B02, N25 |
+| R3 | 28 = A (karar (3); EK-2B 28): kilitli / devredilmiş dönemde bağsız ödemeyle kapanmış kalem kilitten sonraki bağla yeniden açılmaz; bağ bağsız gibi dağılır, program kayıtta yazar | Tarihi > L (dosyanın kilidi; devirde K) olan bağ, tahsis tarihi ≤ L olan bağsız kapanışı geri ALMAZ; tahsis tarihi = eşleşmenin olduğu gün (ödemenin tarihi değil). Geri alınamayan kısım `kilit_bag_notu` raporunda. M2 karşılaştırması devirli ↔ AYNI kilitli (L = K) devirsiz dosya (EK-2B §5.3) | s56 (kilitli + devir + açık dönem karşılığı) | B03 |
+| R4 | 2B-S3 = A + 32 (a) (karar (4); EK-2B 32): iade borçtan düşülünce / kartın faturası iptal-silinince kart küçülür, vadesi en önce gelen açık taksitten; aşarsa fazlası avans; paralı iadede kart değişmez; "kart_fark" yok | Asıl faturası bir kartça tüketilmiş iade önce faturanın açık kısmını, sonra kartı (en erken açık taksitten) küçültür; Mevcut Borç / fatura kartı alttaki borçtan büyük kalırsa açılışta en erken taksitlerden küçülür. Paralı iade olay dilinde `para_iadesi` (iade + T-09 ödeme tek olay; iade kendi ödeme satırına bağlı) | s57, s58 C2 | B04, B05, B06 |
+| R5 | K-2 = A "Bakiyeden Netleşsin" (karar (5); EK-2B K-2) | Kuyrukta alış faturası satış borcuna kendi tarihinde uygulanır (EK-1 §1 aynen; gecikmiş ≤ net borç). **Fatura durumu** (`acik_faturalar`) ayrı görünümle: karşı yönlü iki fatura birbirini bağsız kapatmaz, yalnız Mahsup Et | s59 | B07, B08 |
+| R6 | K-3 = A "Borçta Kalsın" (karar (6); EK-2B K-3): Kartı Kapat yalnız planı bitirir, kalan borçta, ertesi gün gecikmiş; önceden kapatılmış kartlar olduğu gibi kalır | Yeni kapama madde yok (M1d aynen). Olay dilinde `eski: true` = 2.5.0'dan önce kapatılmış kart: B 689 / A CH (2.4.9 davranışı, EK-2B'nin aktardığı plan metinlerinden; K3'te önce 128), kalan kuyrukta borç değil. Donmuş 2.4.9 türetmesi bütün kapamaları 689 sayar | s60, s40 | B09 |
+| R7 | Devri Yenile (karar (7)): yalnız devrin ürettiği fişler silinip yeniden yazılır; yevmiyede tek açılış fişi | Devrin bütün açılış maddeleri `fis_grubu = devir_acilis:<devir>` taşır; değişmez `tek_acilis_fisi`: yeni yılda devir kaynakları = son üretimin kaynakları, N-13 fişi en çok bir | s28 | B10, M23 |
+| R8 | 33 (EK-2B 33): Kasa açılışı ilk Kasa hareketinden sonraya düzeltilemez; aynı gün izinli; öne alma serbest | `duzenle` kasa açılışının tarihini ilk açılış dışı Kasa hareketinden SONRAYA alırsa KASA_ACILIS_SONRA, hiçbir şey değişmez. Değişmez `kasa_acilis_ilk` | s53 | B11 |
+| R9 | 35 (EK-2B 35): faturanın kendi kartı faturayla kalkar; silmede tahsilatlı kart engeller; iptalde tahsilat avans; Mevcut Borç kartı dalı R4'e bağlı | Kaynağı silinmiş / iptal edilmiş faturanın kartı hiç kurulmaz; silme FATURA_SIL_TAHSILATLI_KART ile reddedilir; iptalde kart tahsilatının bağı boşa düşer (avans). Rapor `kartlar` | s58 | B12, B13 |
+| R10 | 25 (EK-2; E13): K günü sıra Önceki Yıl Sonucu → N-01 → N-02 … | Yeni defter sınıfı kodu **4 = önceki yıl sonucu**, sıra değeri olağan (1) ile dönem sonu (2) arası; Gelir Tablosu dışı. Değişmez: önceki yıl fişlerinden sonra 153 = DSS_(K−1) + K yılı 153 hareketleri; K günü tür sırası | s47 `yevK` | B14 |
+| R11 | 26 (EK-2): 570.YYYY / 580.YYYY; eşleştirmede yıl yoksa .0000 | Önceki Yıl Sonucu Fişi `570.<Y>` / `580.<Y>`; Açılış Eşleştirme'de düz "570" / "580" → `.0000`. Değişmez: her 570.Y = R_Y, 580.Y = −R_Y | s47, s25, s31 | B15 |
+| R12 | 27 (EK-2): devir net kalan satırının tarih / vade seçimi sonucu değiştirmez | Değişmez `m27_net_satir` (net satır K+1 / en önce sıralanmış hâliyle yeniden kurulan kuyruk aynı gecikmiş ve açık borç listesini verir); ekstre toplam satırları vadesiz | s46, s21 | B16 |
+| R13 | 29 + S7 = A (karar 21:08): şüpheli kaydı açık müşteri otomatik hatırlatmaya girmez; etiketle görünür, elle seçilirse şüphelisiz gecikmiş | `hatirlatma`: otomatik yalnız 128 = 0 olan cariler; `supheli_etiketli` liste aynen; yeni `elle` {cari: şüphelisiz gecikmiş}. Açık kayıt = 128 > 0; kapanınca listeye döner | s42 (h1, h3) | N05 yerine B17 |
+| R14 | 31 (EK-2): karşılık / değersiz / çıkar kayıt başına; olay dili kaydı taşır; kayıtsız varsayılan kaldırılır | `karsilik_ayir`, `degersiz_yaz`, `supheliden_cikar` olayında `kayit` zorunlu (yoksa senaryo hatası); Hesapsız (Açılıştan Önce) ve Kredi Kartına İade alacak satırıdır (değişmedi) | s15, s27, s42, s50, s52, üretici, birim | B18 |
+| R15 | 34 (EK-2; E19): "Önceki Yıl KDV Mahsubu Yapılmamış" + ay listesi; t'nin yılı yalnız bilgi | Kesin Değil kodu `ONCEKI_YIL_KDV_MAHSUBU_YAPILMAMIS:<ay>` (her ay ayrı); bilanço `bilgi` listesinde `KDV_MAHSUBU_YAPILMAMIS:<ay>` (t'nin yılında biten, mahsupsuz ay) | s04 | B19 |
+| R16 | 36 (EK-2; E14): 127 "Diğer Ticari Alacaklar", I.C; alacaklı 127 → III.D 340, kart (alt hesap) bazında brüt | Hesap planına 127; TERS 127 → III.D | s62 | B20 |
+| R17 | 37, 38 (EK-2; E16, E17): Kasa girişi 649.90; belgeli gider türü boşsa 770, eşlemede olmayan değer 770.90 | `gider_turu` yok / boş → 770; bilinmeyen değer → 770.90 (KARAR GEREKİYOR 19 kapandı) | birim F06, s22 | N26 yerine B21 |
+| R18 | 39 (EK-2; E15): hesap adı "Eşleştirilecek Açılış Bakiyeleri" ("(Geçici)" yalnız Bilanço satırında) | HESAPLAR adı düzeltildi; bilanço kalem adı aynen | birim | B22 |
+| R19 | 40 (EK-2; kitap N-06): 691 → 692; 692 = 690 − 691 | N-06: B 690 / A 692 (kâr) + 691 ≠ 0 ise B 692 / A 691; N-07 692'nin neti | birim `test_N06_691_692ye_kapanir` | B23 |
+| R20 | K-1 + S8 = A (karar 21:08; EK-2 K-1, E22): karşılıksız evrakla yeniden açılan fatura kendi vadesiyle gecikir; taksit kartı tahsilatı olan evrakta M1c | Kuyrukta karşılıksız / iade, evrakın tahsilat (cirodaysa tedarikçideki ciro ödemesi) kalemini geri alır; kapattığı kalemler kendi vadeleriyle açık, öteki bağsız ödemeler kendi günlerinde yeniden dağılır; K3'le 128'e düşen kısım ayrı kalem (vade karşılıksız günü). Taksit kartı tahsilatı evrakta M1c aynen | s61, s40 | B24 |
+| R21 | EK-2 §4 değişmezleri | (1) aynı gün yazım sırası karıştırılınca gecikmiş ve vade bazında açık borç aynı (birim); (2) R1 birimi (karar (2) yüzünden "bağ hariç": sonra gelen bağ önceki dağıtımı değiştirebilir); (3) R3 ile M2 istisnasız; (4) R12; (5) R10; (6) tyk; (7) `kart_alttaki_borc` (tyk); (8) `kasa_acilis_ilk`; (9) `kaldirilan_kart` (tyk); (10) R14; (11) R19; (12) R16; (13) R11; (14) R15; (15) s61 | — | — |
+
+### Değişen eski beklentiler (eski → yeni, nedeni)
+- `test_F06_M14_gider_turu_esleme`: gider türü yazılmamış 770.90 → 770 (R17). `s22`: `mz_arsiv/satirlar/770.90/borc` 70000 → 0, `770/borc` 0 → 70000 (R17).
+- `s04`: `bil_yeni/kesin_degil` "ARALIK_KDV_MAHSUBU_YAPILMAMIS" → "ONCEKI_YIL_KDV_MAHSUBU_YAPILMAMIS:2026-05" (R15); yeni `bil0630/bilgi`.
+- `s25`, `s31`, `s47`: 570 / 580 satırları yıl alt hesabına: `570` → `570.2025` (s25, s47), `580` → `580.2024` (s47), eşleştirmedeki `570` → `570.0000` (s31); ana hesap tutarları
+  aynı (`mz/ana/570`) (R11).
+- `s40`: `g8` (C3, 01.04) 30000 → 0 (çekle kapanan F2 karşılıksızla yeniden açılır, vadesi 30.06; R20); yeni `g8b` (01.07) 30000.
+- `s42`: `h1/otomatik` {C1 30000, C3 20000} → {C3 20000}; yeni `h1/elle/C1` 30000, `h3` (R13).
+- `s53`: `redler` [KASA_ACILIS_TEKRAR] → [KASA_ACILIS_TEKRAR, KASA_ACILIS_SONRA] (yeni olaylar; R8).
+- `s15`, `s27`, `s42`, `s50`, `s52`, `test_J04`: şüpheli olaylarına `id` / `kayit` eklendi; sayılar aynı (R14).
+- Tohumlu senaryolar: üretici değişti (kayıt kimliği, devirsiz koşu L = K) → `rastgele-*.json` ve beklenenleri yeniden üretildi (sayı değil, değişmez denetlenir).
+
+### KULLANICIYA SORULMALI / KÂHİN SUSUYOR (kodlanmadı ya da yalnız gözlem)
+1. **S8 ↔ kilit (KULLANICIYA SORULMALI; para + kime hatırlatma):** çek / senet kilitli (ya da devredilmiş) dönemde faturayı kapattı, kilitten SONRA karşılıksız döndü. A (öneri): karar (3)'ün
+   ilkesiyle kilitli dönemdeki kapanış değişmez — fatura yeniden açılmaz, karşılıksız tutar ayrı borç (vade karşılıksız günü, M1c); devirli ve devirsiz dosya aynı sonucu verir. B: S8 harfiyen —
+   fatura kendi vadesiyle yeniden açılır; devirli dosyada fatura arşivde olduğu için devir "evrakın kapattığı kalemleri" ayrıca taşımalı (D4'e iş), yoksa M2 bozulur. KÂHİN: bu durumda
+   kuyruk ayrı kalem kurar ama sonucu kural saymaz (`kahin_susuyor` listesi, `gecikmis` raporunda); hiçbir senaryo bunu ölçmez.
+2. **Kasa açılışından ÖNCE tarihli yeni Kasa hareketi (KULLANICIYA SORULMALI; Kasa tutarı):** EK-2B 33 notu "kural metni yok". A (öneri): banka gibi reddedilir. B: bankadaki
+   "Hesapsız (Açılıştan Önce)" gibi karşılığı 519. Model reddetmiyor; değişmez `kasa_acilis_ilk` böyle bir hareketi HATA sayar (senaryo yok).
+3. **Fatura durumunda Alacak Yaz / Borç Yaz (sunum, baş mimar):** 2.0.17 "borç kaydı ödeme sayılmaz … satış tarafında simetrik" ifadesi Alacak Yaz'ın satış faturasını kapatıp kapatmadığını
+   açık bırakıyor. Model: karar (5) yalnız karşı yönlü FATURA eşleşmesini Mahsup Et'e bağladı → Alacak Yaz fatura durumunu kapatır (eski beklentiler korunur). Gecikmişi değiştirmez.
+4. **Aynı gün sırası (R1) — kart açılışı / J-01:** EK-2B "aynı gün önce borç kalemleri" der; kart açılışının ve Şüpheliye Al'ın aynı günün ödemesine göre yeri yazılı değil. Model: kart açılışı
+   borçtan sonra, alacaktan önce; J-01 (2.3.0 K3 gün sırası) en başta. Ayrışırsa önce hata (ders 6).
+5. **Mevcut Borç kartı / J-01'in gelecekteki bir bağa ayrılmış kısmı tüketmesi:** model önce ayrılmamış kısımdan tüketir, yetmezse ayrılmışı da (bağın fazlası bağsız olur). Yazılı kural yok; senaryo yok.
+6. Eski kapama (R6 `eski`): kalan = kart toplamı − taksit tahsilatları (Excel'de önceden ödenen dahil); kartın iadeyle küçülmüş kısmı hesaba girmez (2.4.9 kodu görülmedi — DOĞRULANMADI).
+7. Sürer: 16 (POS komisyonu 653), 17 (valörden sonra komisyon iadesi), 22 (Kesin Değil metinleri).
+
+### Yeni senaryolar ve mutasyonlar
+- Yeni elle senaryolar: s54 (R1), s55 (R2), s56 (R3), s57 (R4), s58 (R9 + R4 Mevcut Borç), s59 (R5), s60 (R6), s61 (R20), s62 (R16). Beklenenler model değiştirilmeden ÖNCE yazıldı
+  (ilk commit), hesaplar senaryoda yorum satırında.
+- Yeni birim testleri: R1 (2. değişmez), R19 (691), R18 (ad), R14 (kayıtsız olay senaryo hatası), §4 (1) aynı gün karıştırma, değişmez denetçilerinin dişi (tek açılış fişi, m27).
+- Mutantlar B01–B24, alt harfli eşleri (B03b, B03c, B05b, B09b, B15b, B19b, B23b, B24b) ve B30 (Mahsup Et'in geri alması) — toplam 33 yeni, liste 126 mutant.
+  N05 kaldırıldı (S7 A ile "cari bazında" artık doğru; tersi B17), N26'nın tersi B21; kodu değişen 8 eski mutantın metni (M15, M24, M55, N11, N16, N17, N24, N25)
+  yeni koda taşındı. B02 için modelde YALNIZ mutasyonun çağırdığı `Kuyruk._eski_serbest` yardımcısı var (eski "bağ gününde serbest bırak" okuması).
+- Elle senaryo değerlerinden sonra eklenen tek araç: `kartlar`, `kilit_bag_notu`, `acilis_fisleri` raporları (beklenenleri ilk commit'te yazıldı).
+- DENENMEYEN ek: Stok → Müşteri İadesi'nin `taksit_karti` ile kart küçültmesi (yol kodlandı, elle senaryo yok); fatura düzenlemesiyle küçülen kartın elle senaryosu yok
+  (aynı mekanizma s58 C2'de).
+
+### Sürücü için (programla karşılaştırmadan önce)
+- Yeni / değişen olay alanları: `satis_iade_faturasi.para_iadesi` ("nakit" | "havale" + `banka`) = iade + müşteriye para iadesi; `stok_musteri_iadesi.taksit_karti` (borçtan düşülen stok
+  iadesi kartı küçültür); `taksit_kapat.eski` (2.5.0'dan önce kapatılmış kart — göç verisi); `karsilik_ayir` / `degersiz_yaz` / `supheliden_cikar` için `kayit` ZORUNLU (supheliye_al `id`'si).
+- Yeni red kodu `FATURA_SIL_TAHSILATLI_KART` (silme); `KASA_ACILIS_SONRA` artık düzeltmede de.
+- Yeni raporlar: `kartlar {cari, tarih}` → {kart: {kapali, taksitler [vade, tutar, kalan]}}; `kilit_bag_notu {cari, tarih}` → [{kaynak, hedef, tutar, tarih}] (programın "Bu fatura kilitli
+  dönemde kapanmış…" iletisi); `acilis_fisleri {tarih}` → açılış fiş grupları. `hatirlatma` → ayrıca `elle`. Bilanço → ayrıca `bilgi`.
+- Değişen çıktı: yevmiye madde sınıfı `4` = önceki yıl sonucu (sıra: olağan ile dönem sonu arası); devir açılış maddelerinde `fis_grubu`; Kesin Değil `ONCEKI_YIL_KDV_MAHSUBU_YAPILMAMIS:<ay>`;
+  570.YYYY / 580.YYYY; satır ekinde `evrak_kaynak`, `kart_tahsilati`, `ciro_kaynak` (kâhin içi; programla eşlenmez).
+- Fatura durumu (`acik_faturalar`) gecikmiş kuyruğundan AYRI görünüm (R5); gecikmiş, açık kalemler ve devir yine Tek Yükümlülük Kuyruğu'ndan.
+- M2 karşılaştırmasında devirsiz koşu kilitli (L = K) olmalı (R3); tohumlu üreticinin `devirsiz()`'i düzeltmelerden sonra `donem_kilitle K` ekler.
+
+### DENENMEYEN (bu bakım)
+- Programla karşılaştırma (sürücü güncellemesi ayrı iş). Gerçek 2.4.9 verisiyle eski kart kapaması (R6 `eski`) ve donmuş 2.4.9 kapama türetmesi.
+- Hedefi bağdan SONRA doğan bağ (geriye tarihli fatura): model bağı bağsız sayar; senaryo yok.
+- Kilit kaldırma olayı modelde yok (R3'ün "kilit kaldırılınca kural kalkar" kısmı yalnız kilitsiz eş cariyle gösterildi).
+- Devri Yenile'nin "tek açılış fişi" kuralı fiş grubu düzeyinde; programın fiş numarası / tek kayıt biçimi sürücüde eşlenir.
+- KG-13 B (vergi karşılığı) yok; 691 yalnız birim testinde elle verilen fişle.
