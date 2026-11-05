@@ -122,6 +122,7 @@ jobs:
       - run: npm run test:uiux-244-ux9-ux10
       - run: npm run test:uiux-ui11-244
       - run: npm run test:sirket-canli-yetki-244
+      - run: npm run test:sema-kapisi-bs7
       - run: npm run test:baslarken-244
 
   windows:

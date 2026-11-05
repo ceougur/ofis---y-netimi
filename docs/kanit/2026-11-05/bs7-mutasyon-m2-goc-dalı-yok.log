@@ -1,0 +1,74 @@
+TAP version 13
+# (node:27529) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: BS-7 şema sürüm kapısı
+    # Subtest: göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+    not ok 1 - göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+      ---
+      duration_ms: 161.863507
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/mutasyon-m2-goc-dalı-yok/test/sema-kapisi-bs7.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ensureBankSchema yeni şemalı dosyaya indeks eklememeli
+        + actual - expected
+        
+        + [Object: null prototype] {
+        +   found: 1
+        + }
+        - undefined
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      actual:
+        found: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/mutasyon-m2-goc-dal%C4%B1-yok/test/sema-kapisi-bs7.test.mjs:147:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+    ok 2 - 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+      ---
+      duration_ms: 1569.832364
+      type: 'test'
+      ...
+    # Subtest: 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+    ok 3 - 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+      ---
+      duration_ms: 1306.381553
+      type: 'test'
+      ...
+    # Subtest: geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+    ok 4 - geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+      ---
+      duration_ms: 1572.394107
+      type: 'test'
+      ...
+    1..4
+not ok 1 - BS-7 şema sürüm kapısı
+  ---
+  duration_ms: 4613.681354
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/mutasyon-m2-goc-dalı-yok/test/sema-kapisi-bs7.test.mjs:133:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5173.263658

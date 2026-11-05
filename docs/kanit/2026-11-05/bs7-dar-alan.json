@@ -1,0 +1,38 @@
+{
+  "ad": "bs7-dar-alan",
+  "komut": "node --test test/migrations.test.mjs test/supervisor.test.mjs test/update-guard.test.mjs test/updater.test.mjs test/packaging.test.mjs test/yedek-220.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-denetim-221.test.mjs test/sirket-yedek-klasor-210.test.mjs test/sirketler-217.test.mjs test/sirket-yedeksiz-sil-249.test.mjs test/sirket-ayir-221.test.mjs test/sirket-listesi-221.test.mjs test/sirket-pencere-221.test.mjs test/sirket-siniri-225.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/chat.test.mjs test/chat-archive.test.mjs test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/license.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/guvenilirlik-221-goc.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/geri-yukleme-uyari-244.test.mjs test/isgecmisi-230-geri-yukleme-yetki.test.mjs test/mutabakat-213.test.mjs test/write-lock-248.test.mjs test/whatsapp-w9-kanca-248.test.mjs test/whatsapp-dk13-arka-plan-kilit-248.test.mjs test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs test/edoc-kullanim-yedek-247.test.mjs",
+  "commit": "631abb1e5a3e29250483aa52fc99aa64496f3d68",
+  "dal": "worktree-agent-a03e5f6803e8339cb",
+  "kirli": 0,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:24:12.268Z",
+  "sure_sn": 91.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 361,
+    "gecen": 359,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 1
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Doğrulama Kapısı — beklenen liste ↔ CI adımları › yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar",
+      "konum": "test/ci-kapi-listesi.test.mjs:51:3",
+      "hata": "release.yml'de koşmayan arayüz senaryosu: test:sema-kapisi-bs7 · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-dar-alan.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a03e5f6803e8339cb",
+  "ham_cikti_sha256": "c88541f68e3af162074105e936b18aa9cd2cf3ab1bd6b05ca4d78746b507f774",
+  "ham_cikti_bayt": 136295
+}

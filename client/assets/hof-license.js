@@ -128,14 +128,35 @@
     }
   }
 
+  // 2.5.0 BS-7 (şema sürüm kapısı): şirketin verisi programın daha yeni bir sürümüyle açılmışsa sunucu her yazmayı 409 SCHEMA_AHEAD ile reddeder; bu şerit
+  // durumu sürekli gösterir (kapatılamaz). Lisans şeridi de görünüyorsa onun üstüne yerleşir.
+  function renderSchemaGate(gate) {
+    document.getElementById("hof-schema-bar")?.remove();
+    if (!gate) return;
+    html.classList.add("hof-schema-ahead");
+    const hint = HOF.can("system.manage") ? '<a class="hof-button hof-button-small" href="/admin.html#system">Güncellemeleri Aç</a>' : "";
+    const bar = HOF.el(
+      "aside",
+      { id: "hof-schema-bar", class: "hof-license-bar is-error hof-schema-bar", role: "alert", "aria-live": "polite" },
+      `<div class="hof-license-text"><strong>Bu Şirket Yalnız Görüntülenir</strong><span>${HOF.esc(gate.message || "Bu şirketin verisi programın daha yeni bir sürümüyle açılmış. Programı güncelleyin; o zamana kadar veri yalnız görüntülenir.")}</span></div><div class="hof-license-actions">${hint}</div>`,
+    );
+    document.body.appendChild(bar);
+    const license = document.getElementById("hof-license-bar");
+    if (license) bar.style.bottom = `${license.getBoundingClientRect().height + 28}px`;
+  }
+
   HOF.whenReady(user => {
     render(user?.license || null);
+    renderSchemaGate(HOF.schemaGate);
     if (license && !license.writable) setTimeout(() => explain(license), 1200);
     else if (license?.askContact) setTimeout(() => askContact(license), 2500);
   });
   HOF.on("license-read-only", payload => {
     if (payload?.license) render({ ...license, ...payload.license });
     if (Date.now() - lastModalAt > 20_000) explain(license, { attempted: true });
+  });
+  HOF.on("schema-ahead", gate => {
+    if (!document.getElementById("hof-schema-bar")) renderSchemaGate(gate && gate.message ? gate : { message: "" });
   });
   HOF.on("live:license.changed", () => refresh());
   HOF.on("live:resync", () => refresh());

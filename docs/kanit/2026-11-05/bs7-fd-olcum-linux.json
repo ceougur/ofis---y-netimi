@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-fd-olcum-linux",
+  "komut": "node --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/fd-olcum.test.mjs",
+  "commit": "019341481d370f717dfe60a0a1ac5814e37937eb",
+  "dal": "worktree-agent-a03e5f6803e8339cb",
+  "kirli": 0,
+  "izlenmeyen": 44,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:52:49.802Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-fd-olcum-linux.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a03e5f6803e8339cb",
+  "ham_cikti_sha256": "4783834bdb5848bcb482557f3439065a7fa4bdc8c0479ae98378eab7226f45c5",
+  "ham_cikti_bayt": 801
+}

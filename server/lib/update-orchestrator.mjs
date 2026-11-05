@@ -236,6 +236,14 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     } catch (error) {
       log.error("Veritabanı güncelleme öncesi hâline döndürülemedi", error);
     }
+    // 2.5.0 BS-7: 001 dışındaki şirketler — deneme sırasında yeni sürümün göç ettirdiği her şirket kendi güncelleme öncesi yedeğine döner (yedeği yoksa
+    // şirket yeni şemada kalır ve uygulamanın şema kapısı onu yalnız görüntülenir açar).
+    try {
+      const restored = controller.restoreCompanies?.(info.companies, `basarisiz-guncelleme-${info.version}`) || [];
+      if (restored.length) log.info(`Güncelleme öncesi yedeğe döndürülen öbür şirketler: ${restored.join(", ")}`);
+    } catch (error) {
+      log.error("Öbür şirketler güncelleme öncesi hâline döndürülemedi", error);
+    }
     updater.rollback({ version: info.version, previous: info.previous, reason });
     updater.discardPrepared?.({ protectedDirs: [previousDir, runningDir] });
     controller.setAppDir(previousDir);
@@ -286,10 +294,17 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
         } catch (error) {
           throw new UpdateError(`Güncelleme öncesi veritabanı yedeği alınamadı: ${error.message}`, "BACKUP_FAILED");
         }
-        updater.activate({ version, previous: from, backup: backup?.name, schemaBefore });
+        // 2.5.0 BS-7: öbür şirketlerin şeması + güncelleme öncesi yedeği (alınamayan şirket güncellemeyi durdurmaz; kapı korur).
+        let companies = [];
+        try {
+          companies = controller.backupCompanies?.(`guncelleme-oncesi-${from}`) || [];
+        } catch (error) {
+          log.warn?.(`Öbür şirketlerin güncelleme öncesi yedeği alınamadı: ${error.message}`);
+        }
+        updater.activate({ version, previous: from, backup: backup?.name, schemaBefore, companies });
         activated = true;
         controller.setAppDir(dir);
-        await trial({ version, previous: from, previousDir: fromDir, backup: backup?.name, schemaBefore });
+        await trial({ version, previous: from, previousDir: fromDir, backup: backup?.name, schemaBefore, companies });
       } catch (error) {
         const reason = error instanceof UpdateError ? error.message : `Beklenmeyen hata: ${error.message}`;
         status.lastResult = { outcome: "failed", version, reason, at: now() };
@@ -326,7 +341,7 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     if (current?.pending && current.version === controller.appVersion()) {
       log.info(`${current.version} sürümü önceki açılışta etkinleştirilmiş ama onaylanmamış; deneme açılışı yapılıyor.`);
       controller.setPhase("updating", `${current.version} sürümü doğrulanıyor`);
-      await trial({ version: current.version, previous: current.previous, backup: current.backup, schemaBefore: current.schemaBefore });
+      await trial({ version: current.version, previous: current.previous, backup: current.backup, schemaBefore: current.schemaBefore, companies: current.companies });
     } else {
       checkedAtStartup = await installPreparedAtStartup();
       if (!controller.isRunning() && !stopped) await controller.start();

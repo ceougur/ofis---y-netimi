@@ -1,0 +1,101 @@
+TAP version 13
+# (node:27789) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: BS-7 şema sürüm kapısı
+    # Subtest: göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+    ok 1 - göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+      ---
+      duration_ms: 222.829074
+      type: 'test'
+      ...
+    # Subtest: 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+    not ok 2 - 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+      ---
+      duration_ms: 1680.809428
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/mutasyon-m7-iz-yazimi-acik/test/sema-kapisi-bs7.test.mjs:156:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        142 uçtan 5xx verenler
+        + actual - expected
+        
+        + [
+        +   '/api/workspace/accounts/export.xlsx → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/accounts/liste.pdf → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/bank/movements.pdf → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/bank/movements.xlsx → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/cash.pdf → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/cheques/export.xlsx → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/cheques/liste.pdf → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/invoices/export.xlsx → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/overview/mizan.pdf → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/overview/mizan.xlsx → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/overview/nakit-akisi.pdf → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/overview/nakit-akisi.xlsx → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/overview/vade-takip.pdf → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/overview/vade-takip.xlsx → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/plans/liste.pdf → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/stock/export.xlsx → 500 Sunucu işlemi tamamlayamadı.',
+        +   '/api/workspace/stock/liste.pdf → 500 Sunucu işlemi tamamlayamadı.'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '/api/workspace/accounts/export.xlsx → 500 Sunucu işlemi tamamlayamadı.'
+        1: '/api/workspace/accounts/liste.pdf → 500 Sunucu işlemi tamamlayamadı.'
+        2: '/api/workspace/bank/movements.pdf → 500 Sunucu işlemi tamamlayamadı.'
+        3: '/api/workspace/bank/movements.xlsx → 500 Sunucu işlemi tamamlayamadı.'
+        4: '/api/workspace/cash.pdf → 500 Sunucu işlemi tamamlayamadı.'
+        5: '/api/workspace/cheques/export.xlsx → 500 Sunucu işlemi tamamlayamadı.'
+        6: '/api/workspace/cheques/liste.pdf → 500 Sunucu işlemi tamamlayamadı.'
+        7: '/api/workspace/invoices/export.xlsx → 500 Sunucu işlemi tamamlayamadı.'
+        8: '/api/workspace/overview/mizan.pdf → 500 Sunucu işlemi tamamlayamadı.'
+        9: '/api/workspace/overview/mizan.xlsx → 500 Sunucu işlemi tamamlayamadı.'
+        10: '/api/workspace/overview/nakit-akisi.pdf → 500 Sunucu işlemi tamamlayamadı.'
+        11: '/api/workspace/overview/nakit-akisi.xlsx → 500 Sunucu işlemi tamamlayamadı.'
+        12: '/api/workspace/overview/vade-takip.pdf → 500 Sunucu işlemi tamamlayamadı.'
+        13: '/api/workspace/overview/vade-takip.xlsx → 500 Sunucu işlemi tamamlayamadı.'
+        14: '/api/workspace/plans/liste.pdf → 500 Sunucu işlemi tamamlayamadı.'
+        15: '/api/workspace/stock/export.xlsx → 500 Sunucu işlemi tamamlayamadı.'
+        16: '/api/workspace/stock/liste.pdf → 500 Sunucu işlemi tamamlayamadı.'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/mutasyon-m7-iz-yazimi-acik/test/sema-kapisi-bs7.test.mjs:205:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+    ok 3 - 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+      ---
+      duration_ms: 1507.961972
+      type: 'test'
+      ...
+    # Subtest: geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+    ok 4 - geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+      ---
+      duration_ms: 1643.271771
+      type: 'test'
+      ...
+    1..4
+not ok 1 - BS-7 şema sürüm kapısı
+  ---
+  duration_ms: 5057.531047
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/mutasyon-m7-iz-yazimi-acik/test/sema-kapisi-bs7.test.mjs:133:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5552.506512
