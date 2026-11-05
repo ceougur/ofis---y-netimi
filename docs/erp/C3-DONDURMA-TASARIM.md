@@ -81,8 +81,9 @@ Sıra: göçlerden ve Ç2 onarımından sonra, kapıdan önce; BS-7 yeni şemal�
   yok. Çözüm: Kilidi Aç → Yeniden Kilitle (güncel kuralla yeniden donar).
 
 ## 8. Fark denetimi ve kapı
-- `ledger:snapshot` "Donmuş Defter" (yapı): görünen satır sayısı / borç / alacak / ağırlık = son koşunun durum toplamları; kapsam = kilit (bekleyen koşu → uyarı "Dondurma Sürüyor");
-  kaynak izi (`lockDigestOf(kapsam, { version: digest_version })`) = saklanan iz. Ucuz SQL; tam taramada.
+- `ledger:snapshot` "Donmuş Defter" (yapı): görünen satır sayısı / borç / alacak / ağırlık = son koşunun durum toplamları; kapsam = kilit (bekleyen koşu kilide kadar sürüyorsa
+  sorun sayılmaz, adında "Dondurma Sürüyor"); kaynak izi (`lockDigestOf(kapsam, { version: digest_version })`) = saklanan iz ("Donmuş Dönemin Kaynağı Değişti"). Ucuz SQL; tam
+  taramada. Düzey "uyarı" (kapıda koşmaz, işlemleri engellemez; çözüm Kilidi Aç → Yeniden Kilitle) — banka-210-onarim'in "kilitli satırı elle boz" senaryosu bunu böyle görür.
 - `ledger:rule-diff` "Kural Değişikliği Farkı (Kilitli Dönem)": kapsam içindeki her madde donmuş ↔ güncel türetme (tarih + satırlar: hesap, alt hesap, cari, borç, alacak; sıra ve yazım
   sırası karşılaştırılmaz — VACUUM INTO rowid'i değiştirebilir). Fiş maddeleri (voucher-*) saklanan satırdır: donmuş kopyayla karşılaştırılır, yeniden türetilmez (Ç2 §11). Fark: sayı
   (madde) + yıl / hesap / alt hesap / cari bazında tutar (`ruleDiff()`; Ç5'in Kural Farkı Düzeltme Fişi bunu okur). Düzey "uyarı" (`severity: warning`, ok false): yeni işlemleri
@@ -120,7 +121,8 @@ türetme bütün geçmişi kurmaya devam eder: şüpheli alacak ayırması ve ka
   `vouchers.postAll(…, { lockThrough: K })` bunu kendisi çağırır (kapanış fişleri donmuş satırlarda).
 - `ruleDiff({ through })` → { entries: N, sample, balances: [{ year, account, sub, party, frozenMinor, liveMinor, differenceMinor }] } — Ç5'in Kural Farkı Düzeltme Fişi
   (tarih kilit + 1, M7: aynı yıl eski hesabın tersi, önceki yıl 671 / 681) bu tutarlardan kurulur. Fişin kendisi açık dönemde, olağan sınıfta (Ç2 `post`); donmuş satırlara dokunmaz.
-- `thawSync({ to, user, reason })` (Devri Yenile'nin arşivi açması; G7) ve `lockChanged(...)`.
+- `lockChanged({ next, user, reason, sync })` — kilidi değiştiren işlemin içinde (Devri Yenile'nin arşivi açması da: geri çekme = thaw; G7). `purgeStale()`, `runPending()`,
+  `digestOf(lock)`, `repairOnOpen()`, `cancel()` / `close()`, `status()`.
 - D4 notları: arşiv kopyasında `freezeSync` iş parçacığının KENDİ bağlantısında (bakım kipi); yeni yıl dosyasında kapsam K (arşivin donmuş satırları yeni yılda YOK — G3: ≤K budanır;
   `pruneThrough` D4'ün dar işlevi, tetikleyici kaldırma deseniyle). Ç2'nin satır tetikleyicisi (`ledger_voucher_lines_closed`) her eklemede COUNT(*) yapar: binlerce satırlı devir
   açılış fişinde karesel — D4 ölçmeli.
@@ -134,6 +136,17 @@ türetme bütün geçmişi kurmaya devam eder: şüpheli alacak ayırması ve ka
   götürdüyse aradaki dönem hangi kuralla donsun? (A, öneri) 2.4.9 kopyasıyla — kilidi koyan programın kuralı, kullanıcı kilitlerken o raporları gördü; (B) güncel kuralla. Ç3'ün
   kodunda iki seçenek bugün AYNI sonucu verir (güncel kural = 2.4.9 tutarda); seçim tek sabittir (`GAP_RULE`), Ç5'ten önce kesinleşmeli.
 - Kural kitabı sorusu YOK: Ç3 para kuralı değiştirmez; KG-15 A (kullanıcı kararı 05.11 "hepsi A") gösterimi ve düzeltme fişini zaten kararlaştırdı.
+
+## 12a. Uygulamada netleşenler (05.11 gece)
+- Kilit ucu artık `integrity.start()` (ana iş parçacığında tam tarama) çağırmaz: `adoptLock({ lock, digest: null })` → dondurma bitince iş parçacığının izi; geri çekmede iz
+  `digestOf` ile ayrı iş parçacığında. İz beklerken kilitli döneme dokunan yazım 409 (period-lock); tam tarama da bekleyen izi benimser.
+- Göç 47 yeniden koşarsa (tablolar zaten var) koşu eklemez (banka-230-supheli-bozma N senaryosu: sürüm numarası elle düşürülen dosya); kapsam ↔ kilit farkını açılış onarımı giderir.
+- Açılış sonradan düşerse dondurma başlatması geri alınır (`setImmediate` geri alma yığınında; createapp-acilis-geri-alma-249 T4 / T11).
+- Ana oturum notu (22:0x): Ç2'nin `withTriggersLifted`'i yalnız fiş tetikleyicilerini adlarıyla kaldırıp kurar; donmuş defter tetikleyicileri ayrı adlıdır ve etkilenmez — iki kipte
+  sıfırlamadan ve Ç2 onarımlı açılıştan sonra sqlite_master'da sayılır (test F13, F13c, F12). Kilidi değiştiren BÜTÜN yollar: PUT period-lock (kanca), postAll lockThrough (kanca,
+  eşzamanlı), Şirket Verisini Sıfırla (clearSnapshots + kilit silinir), geri yükleme (dosya takası; açılış onarımı kapsamı kilide eşitler), eski sürümün ayar yazımı (açılış onarımı) —
+  her biri testli (F1–F4, F10, F13, F13b, F12, eski sürüm betiği). postAll lockThrough PUT ucunun ön adımlarını (pos.beforeLock) çağırmaz: Ç2 düzeltme turunun / D4'ün işi.
+- 2.4.9'un Şirket Verisini Sıfırla'sı GERÇEK kodla denendi (test/donmus-defter-eski-surum-250.mjs): donmuş satırlar varken 200, satırlar silinir, 2.5.0 açılışında kapsam boşa iner.
 
 ## 13. Ç5 / Ç7 notları
 - Ç5 kural değişikliği girince `LEDGER_RULE_VERSION` yükseltilir ve kural tuzağı testi bilerek güncellenir; kilitli dönemin raporları değişmez, Defter Mutabakatı "Kural Değişikliği

@@ -135,7 +135,10 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   const rules = { [LEDGER_RULE_VERSION]: () => build(), [RULE_249]: () => buildRule249(store) };
   const ruleKnown = rule => Object.hasOwn(rules, rule);
   const callHook = (phase, info) => hook?.fn?.(phase, info);
-  let closed = false;
+  // shut: kapanış (kalıcı); stopping: süren işin durdurulması (sıfırlama, başka güne kilit; iş bitince kalkar). İkisinden biri → yazım adımı atılmaz.
+  let shut = false;
+  let stopping = false;
+  const halted = () => shut || stopping;
   let current = null;
   let activeHandle = null;
   let progress = { running: false, phase: "", done: 0, total: 0, run: 0, error: "" };
@@ -309,7 +312,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     if (!ready()) return 0;
     let removed = 0;
     for (;;) {
-      if (closed) return removed;
+      if (halted()) return removed;
       const n = store.tx(() => Number(store.run(`DELETE FROM ledger_snapshots WHERE (run, run_seq) IN (SELECT run, run_seq FROM ledger_snapshots WHERE date > ${COVERAGE_SQL} LIMIT ?)`, batch).changes) || 0);
       removed += n;
       if (n < batch) return removed;
@@ -328,7 +331,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     const publish = () => events?.publish?.("ledger.freeze", { run: run.no, phase: progress.phase, done: progress.done, total: progress.total, through: run.through });
     try {
       await purgeStale();
-      if (closed || !stillPending(run.no)) throw new Cancelled("koşu değişti");
+      if (halted() || !stillPending(run.no)) throw new Cancelled("koşu değişti");
       if (!ruleKnown(run.rule_version)) {
         // Kuralı bu programda olmayan (eski bir sürümün açtığı) bekleyen koşu: bırakılır, aynı aralık güncel kuralla yeniden açılır.
         log?.warn?.(`Donmuş defter: ${run.rule_version} kuralı programda yok; ${run.through} güncel kuralla dondurulacak.`);
@@ -353,7 +356,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         let lastEntry = null;
         handle = activeHandle = startFreezeWorker({ dbPath, time: now().toISOString(), batchLines: batch, run: { no: run.no, from: run.from_date, through: run.through, rule: run.rule_version } }, {
           onBatch: async rows => {
-            if (closed) throw new Cancelled("program kapanıyor");
+            if (halted()) throw new Cancelled("program kapanıyor");
             progress.phase = "yazım";
             store.tx(() => {
               if (!stillPending(run.no)) throw new Cancelled("koşu değişti");
@@ -378,7 +381,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         progress.total = Number(done.lines) || 0;
         if (done.lines !== own.lines || done.debit !== own.debit || done.credit !== own.credit) throw new Error(`Donmuş defter: yazılan satırlar türetmeyle tutmuyor (${own.lines}/${done.lines})`);
         await callHook("before-done", { run: run.no });
-        if (closed) throw new Cancelled("program kapanıyor");
+        if (halted()) throw new Cancelled("program kapanıyor");
         store.tx(() => {
           if (!stillPending(run.no)) throw new Cancelled("koşu değişti");
           complete(run, { ...own, entries: Number(done.entries) || own.entries }, done.digest, null);
@@ -389,7 +392,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
       progress.phase = "tamam";
       log?.info?.(`Donmuş defter: ${run.through} ve öncesi donduruldu (${run.rule_version}).`);
     } catch (error) {
-      if (error instanceof Cancelled || closed) progress.phase = "durdu";
+      if (error instanceof Cancelled || halted()) progress.phase = "durdu";
       else {
         progress.error = /full/i.test(String(error?.message)) ? `Disk dolu: ${error.message}` : String(error?.message || error);
         progress.phase = "hata";
@@ -411,7 +414,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         await current;
         continue;
       }
-      if (closed || !ready() || !canWrite()) break;
+      if (halted() || !ready() || !canWrite()) break;
       const run = pendingRun();
       if (!run) {
         // Bekleyen koşu yok: geri çekilmiş dönemin bayat satırları (açılış onarımının thaw'ı dahil) temizlenir.
@@ -577,14 +580,14 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
   /** Süren işi durdurur (sıfırlama, geri yükleme, kapanış): iş parçacığı sonlandırılır, sonraki işlem adımı yazmaz. */
   function cancel() {
     const running = current;
-    if (running) closed = true;
+    if (running) stopping = true;
     activeHandle?.terminate();
     return running ? running.finally(() => {
-      closed = false;
+      stopping = false;
     }) : Promise.resolve();
   }
   async function close() {
-    closed = true;
+    shut = true;
     if (current) await current.catch(() => {});
   }
 
