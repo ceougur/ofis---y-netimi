@@ -179,7 +179,7 @@ S("s07-duzenle-iptal-sil-kilit", ["F-14", "F-15", "F-12", "R-04", "G-7", "Ç3"],
     o("sil", kaynak="F4"),
     o("donem_kilitle", tarih="2026-07-02"),
     o("duzenle", kaynak="F2", degisiklik={"M": 1}),
-    o("satis_faturasi", "2026-07-01", id="F5", cari="C1", M=100, K=0),
+    o("borc_yaz", "2026-07-01", id="F5", cari="C1", tutar=100, aciklama="Fark"),   # kilitli tarihe yazım (seri dışı; VUK sıra-tarih karışmasın)
     o("sil", kaynak="F3"),
     MZ("mz", "2026-07-01", "2026-07-31"), GT("gt", "2026-07-01", "2026-07-31"),
 ], {"A": {

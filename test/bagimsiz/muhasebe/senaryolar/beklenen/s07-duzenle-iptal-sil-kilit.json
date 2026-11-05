@@ -8,9 +8,12 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
     }
    },
    "devirler": [],
@@ -106,7 +109,7 @@
      "kod": "KILITLI_DONEM",
      "neden": "2026-07-01 ≤ kilit 2026-07-02 (409)",
      "olay": 13,
-     "tur": "satis_faturasi"
+     "tur": "borc_yaz"
     }
    ]
   }

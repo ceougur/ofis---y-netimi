@@ -1,0 +1,164 @@
+{
+ "aciklama": "M1e: Carinin Mevcut Borcu kartı alttaki borcu tüketir; kart ile alttaki borç birlikte sayılmaz.",
+ "ad": "s51-m1e-mevcut-borc-karti",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "acik": [],
+   "g1/gecikmis": 30000,
+   "g2/gecikmis": 50000,
+   "g3/gecikmis": 50000
+  }
+ },
+ "kapsam": [
+  "M1e",
+  "H-02",
+  "H-04",
+  "S2"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-01-10",
+   "tur": "satis_faturasi",
+   "vade": "2026-02-10"
+  },
+  {
+   "aciklama": "Fark",
+   "cari": "C1",
+   "id": "BY1",
+   "tarih": "2026-01-15",
+   "tur": "borc_yaz",
+   "tutar": 30000,
+   "vade": "2026-03-15"
+  },
+  {
+   "cari": "C1",
+   "id": "TK1",
+   "kaynak": "mevcut_borc",
+   "taksitler": [
+    {
+     "tutar": 30000,
+     "vade": "2026-03-01"
+    },
+    {
+     "tutar": 30000,
+     "vade": "2026-04-01"
+    }
+   ],
+   "tarih": "2026-02-01",
+   "toplam": 60000,
+   "tur": "taksit_karti"
+  },
+  {
+   "ad": "g1",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-03-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g2",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-03-16",
+   "tur": "rapor"
+  },
+  {
+   "ad": "acik",
+   "cari": "C1",
+   "rapor": "acik_faturalar",
+   "tarih": "2026-03-02",
+   "tur": "rapor"
+  },
+  {
+   "cari": "C1",
+   "taksit_karti": "TK1",
+   "tarih": "2026-03-20",
+   "tur": "tahsilat",
+   "tutar": 30000,
+   "yol": "nakit"
+  },
+  {
+   "ad": "g3",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-04-02",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

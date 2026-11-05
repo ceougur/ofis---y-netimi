@@ -149,12 +149,12 @@
    "tur": "duzenle"
   },
   {
-   "K": 0,
-   "M": 100,
+   "aciklama": "Fark",
    "cari": "C1",
    "id": "F5",
    "tarih": "2026-07-01",
-   "tur": "satis_faturasi"
+   "tur": "borc_yaz",
+   "tutar": 100
   },
   {
    "kaynak": "F3",

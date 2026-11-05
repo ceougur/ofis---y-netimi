@@ -1,0 +1,97 @@
+{
+ "ad": "s42-s3-supheli-hatirlatma",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "acik": [
+     {
+      "fatura": "F1",
+      "kalan": 100000,
+      "tarih": "2026-01-10",
+      "vade": "2026-02-10"
+     },
+     {
+      "fatura": "F2",
+      "kalan": 20000,
+      "tarih": "2026-01-20",
+      "vade": "2026-03-20"
+     }
+    ],
+    "g1": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "fatura:F2",
+       "vade": "2026-03-20"
+      }
+     ],
+     "gecikmis": 30000,
+     "supheli": 120000,
+     "tarih": "2026-04-02"
+    },
+    "g2": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 120000,
+     "tarih": "2026-04-11"
+    },
+    "g3": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 100000,
+       "kalem": "fatura:F1",
+       "vade": "2026-02-10"
+      },
+      {
+       "kalan": 20000,
+       "kalem": "fatura:F2",
+       "vade": "2026-03-20"
+      }
+     ],
+     "gecikmis": 120000,
+     "supheli": 0,
+     "tarih": "2026-05-01"
+    },
+    "h1": {
+     "otomatik": {
+      "C1": 30000,
+      "C3": 20000
+     },
+     "supheli_etiketli": [
+      "C1"
+     ],
+     "tarih": "2026-04-02"
+    },
+    "h2": {
+     "otomatik": {
+      "C3": 20000
+     },
+     "supheli_etiketli": [
+      "C1"
+     ],
+     "tarih": "2026-04-11"
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

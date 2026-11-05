@@ -8,17 +8,22 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tyk": []
     },
     "canli": {
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
     }
    },
    "devirler": [
@@ -30,6 +35,12 @@
       "g_eslesme": [],
       "hareket_sayisi": [],
       "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
       "yeni_gt_sifir": []
@@ -42,7 +53,7 @@
      {
       "fatura": "F1",
       "kalan": 75000,
-      "tarih": "2027-01-01",
+      "tarih": "2026-03-01",
       "vade": "2026-03-01"
      }
     ],
@@ -55,26 +66,76 @@
       },
       "acik_kalemler": [
        {
+        "belge_tarihi": "2026-03-01",
         "cari": "C1",
-        "fatura": "F1",
+        "k": "fatura:F1",
         "kalan": 75000,
-        "tarih": "2026-03-01",
+        "tur": "fatura",
         "vade": "2026-03-01"
+       },
+       {
+        "belge_tarihi": "2026-04-01",
+        "cari": "C1",
+        "k": "borc:BY",
+        "kalan": 20000,
+        "tur": "borc_yaz",
+        "vade": "2026-04-01"
        }
       ],
       "cariler": {
        "C1": {
-        "acilis": 20000,
+        "acilis": 0,
         "bakiye": 95000
        }
       },
+      "eksi_stok": [],
       "ekstre": {
        "C1": {
         "Alacak Toplamı": 75000,
-        "Borç Toplamı": 95000,
-        "acik_kalemler": 1
+        "Borç Toplamı": 75000,
+        "acik_kalemler": 2,
+        "satirlar": [
+         {
+          "aciklama": "Devir — Borç Toplamı",
+          "alacak": 0,
+          "bakiye": 75000,
+          "borc": 75000,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir — Alacak Toplamı",
+          "alacak": 75000,
+          "bakiye": 0,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": null
+         },
+         {
+          "aciklama": "Devir: F1 (2026-03-01)",
+          "alacak": 0,
+          "bakiye": 75000,
+          "borc": 75000,
+          "tarih": "2027-01-01",
+          "vade": "2026-03-01"
+         },
+         {
+          "aciklama": "Devir: BY (2026-04-01)",
+          "alacak": 0,
+          "bakiye": 95000,
+          "borc": 20000,
+          "tarih": "2027-01-01",
+          "vade": "2026-04-01"
+         }
+        ]
        }
-      }
+      },
+      "ekstre_cariler": [
+       "C1"
+      ],
+      "kartlar": {},
+      "stok": {},
+      "supheli": {}
      },
      "arsiv_kapanis": {
       "100": 70000,
@@ -88,6 +149,12 @@
       "g_eslesme": [],
       "hareket_sayisi": [],
       "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
       "yeni_gt_sifir": []
@@ -100,6 +167,7 @@
       "R": {
        "2026": 115000
       },
+      "onceki_yil": {},
       "sonuc": 115000
      },
      "secenek": "borc_alacak",
@@ -117,9 +185,15 @@
        "kalan": 75000,
        "kalem": "fatura:F1",
        "vade": "2026-03-01"
+      },
+      {
+       "kalan": 20000,
+       "kalem": "borc:BY",
+       "vade": "2026-04-01"
       }
      ],
-     "gecikmis": 75000,
+     "gecikmis": 95000,
+     "supheli": 0,
      "tarih": "2026-12-31"
     },
     "gec_sonra": {
@@ -129,9 +203,15 @@
        "kalan": 75000,
        "kalem": "fatura:F1",
        "vade": "2026-03-01"
+      },
+      {
+       "kalan": 20000,
+       "kalem": "borc:BY",
+       "vade": "2026-04-01"
       }
      ],
-     "gecikmis": 75000,
+     "gecikmis": 95000,
+     "supheli": 0,
      "tarih": "2027-03-15"
     }
    },

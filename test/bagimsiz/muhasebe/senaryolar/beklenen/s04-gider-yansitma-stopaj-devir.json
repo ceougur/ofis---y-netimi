@@ -8,17 +8,22 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tyk": []
     },
     "canli": {
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
     }
    },
    "devirler": [
@@ -30,6 +35,12 @@
       "g_eslesme": [],
       "hareket_sayisi": [],
       "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
       "yeni_gt_sifir": []
@@ -73,6 +84,8 @@
      "donem_net_kari": -1180000,
      "fark": 0,
      "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
      "kesin_degil": [
       "TAMAMLANMAMIS_ACILIS"
      ],
@@ -120,7 +133,10 @@
      "donem_net_kari": 0,
      "fark": 0,
      "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
      "kesin_degil": [
+      "ARALIK_KDV_MAHSUBU_YAPILMAMIS",
       "TAMAMLANMAMIS_ACILIS"
      ],
      "pasif": {
@@ -136,7 +152,7 @@
      "K": "2026-12-31",
      "acilis": {
       "N13": {
-       "191": 80000,
+       "191@2026-05": 80000,
        "255": 300000,
        "360": -200000,
        "519": -1360000,
@@ -144,31 +160,35 @@
       },
       "acik_kalemler": [
        {
+        "belge_tarihi": "2026-05-03",
         "cari": "T1",
-        "fatura": "G2",
+        "k": "fatura:G2",
         "kalan": -120000,
-        "tarih": "2026-05-03",
+        "tur": "fatura",
         "vade": "2026-05-03"
        },
        {
+        "belge_tarihi": "2026-05-04",
         "cari": "T1",
-        "fatura": "G3",
+        "k": "fatura:G3",
         "kalan": -50000,
-        "tarih": "2026-05-04",
+        "tur": "fatura",
         "vade": "2026-05-04"
        },
        {
+        "belge_tarihi": "2026-05-05",
         "cari": "T1",
-        "fatura": "G4",
+        "k": "fatura:G4",
         "kalan": -360000,
-        "tarih": "2026-05-05",
+        "tur": "fatura",
         "vade": "2026-05-05"
        },
        {
+        "belge_tarihi": "2026-05-02",
         "cari": "T2",
-        "fatura": "G1",
+        "k": "fatura:G1",
         "kalan": -800000,
-        "tarih": "2026-05-02",
+        "tur": "fatura",
         "vade": "2026-05-02"
        }
       ],
@@ -182,18 +202,62 @@
         "bakiye": -800000
        }
       },
+      "eksi_stok": [],
       "ekstre": {
        "T1": {
         "Alacak Toplamı": 0,
         "Borç Toplamı": 0,
-        "acik_kalemler": 3
+        "acik_kalemler": 3,
+        "satirlar": [
+         {
+          "aciklama": "Devir: G2 (2026-05-03)",
+          "alacak": 120000,
+          "bakiye": -120000,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": "2026-05-03"
+         },
+         {
+          "aciklama": "Devir: G3 (2026-05-04)",
+          "alacak": 50000,
+          "bakiye": -170000,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": "2026-05-04"
+         },
+         {
+          "aciklama": "Devir: G4 (2026-05-05)",
+          "alacak": 360000,
+          "bakiye": -530000,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": "2026-05-05"
+         }
+        ]
        },
        "T2": {
         "Alacak Toplamı": 0,
         "Borç Toplamı": 0,
-        "acik_kalemler": 1
+        "acik_kalemler": 1,
+        "satirlar": [
+         {
+          "aciklama": "Devir: G1 (2026-05-02)",
+          "alacak": 800000,
+          "bakiye": -800000,
+          "borc": 0,
+          "tarih": "2027-01-01",
+          "vade": "2026-05-02"
+         }
+        ]
        }
-      }
+      },
+      "ekstre_cariler": [
+       "T1",
+       "T2"
+      ],
+      "kartlar": {},
+      "stok": {},
+      "supheli": {}
      },
      "arsiv_kapanis": {
       "100": 4970000,
@@ -211,6 +275,12 @@
       "g_eslesme": [],
       "hareket_sayisi": [],
       "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
       "yeni_gt_sifir": []
@@ -223,6 +293,7 @@
       "R": {
        "2026": -1180000
       },
+      "onceki_yil": {},
       "sonuc": -1180000
      },
      "secenek": "borc_alacak",

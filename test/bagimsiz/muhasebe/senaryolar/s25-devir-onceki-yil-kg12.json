@@ -54,14 +54,17 @@
    "bil/pasif/V.K": 25000,
    "bil_yeni/pasif/V.D": 25000,
    "bil_yeni/pasif/V.F": 92500,
-   "devir/kapanis/N01/2025": 60000,
    "devir/kapanis/N01/2026": 137500,
+   "devir/kapanis/onceki_yil/2025/R": 25000,
+   "devir/kapanis/onceki_yil/2025/SMM": 60000,
    "devir/yeni_acilis/570": -25000,
    "devir/yeni_acilis/590": -92500,
    "gt25/kalemler/D": 60000,
    "gt25/kalemler/DNK": 25000,
+   "gt25/tahmini": true,
    "gt26/kalemler/D": 137500,
-   "gt26/kalemler/DNK": 92500
+   "gt26/kalemler/DNK": 92500,
+   "gt26/tahmini": false
   },
   "KG12=B": {
    "bil/donem_net_kari": 117500,

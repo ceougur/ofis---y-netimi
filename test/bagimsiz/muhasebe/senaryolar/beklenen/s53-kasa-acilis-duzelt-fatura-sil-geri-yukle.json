@@ -1,0 +1,153 @@
+{
+ "ad": "s53-kasa-acilis-duzelt-fatura-sil-geri-yukle",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "deg": {
+     "eksi": [],
+     "toplam": 5000,
+     "urunler": {
+      "U1": {
+       "birim": "1000",
+       "deger": 5000,
+       "miktar": "5"
+      }
+     },
+     "uyarilar": []
+    },
+    "durum_F1": "iptal",
+    "durum_P2": "aktif",
+    "durum_TS1": "aktif",
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 18000,
+       "borc": 18000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "153": {
+       "alacak": 0,
+       "bakiye": 5000,
+       "borc": 5000,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 5000,
+       "bakiye": -5000,
+       "borc": 0,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 12000,
+       "bakiye": -12000,
+       "borc": 0,
+       "devir": 0
+      },
+      "649": {
+       "alacak": 5000,
+       "bakiye": -5000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 18000,
+       "borc": 18000,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 1000,
+       "bakiye": -1000,
+       "borc": 0,
+       "devir": 0
+      },
+      "153": {
+       "alacak": 0,
+       "bakiye": 5000,
+       "borc": 5000,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 5000,
+       "bakiye": -5000,
+       "borc": 0,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 12000,
+       "bakiye": -12000,
+       "borc": 0,
+       "devir": 0
+      },
+      "649.90": {
+       "alacak": 5000,
+       "bakiye": -5000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-02-28",
+     "toplam": {
+      "alacak": 23000,
+      "bakiye": 0,
+      "borc": 23000,
+      "devir": 0
+     }
+    },
+    "yevA": [
+     {
+      "id": "KA#0",
+      "kaynak": "KA",
+      "satirlar": [
+       {
+        "b": 12000,
+        "h": "100"
+       },
+       {
+        "a": 12000,
+        "h": "519"
+       }
+      ],
+      "sinif": 0,
+      "tarih": "2026-01-03",
+      "tur": "kasa_acilis"
+     }
+    ]
+   },
+   "redler": [
+    {
+     "kod": "KASA_ACILIS_TEKRAR",
+     "neden": "",
+     "olay": 4,
+     "tur": "kasa_acilis"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

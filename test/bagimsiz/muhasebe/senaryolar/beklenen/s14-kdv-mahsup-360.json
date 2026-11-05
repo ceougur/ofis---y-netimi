@@ -8,9 +8,12 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
     }
    },
    "devirler": [],
@@ -42,6 +45,7 @@
       }
      ],
      "hesap": "190",
+     "satir_sayisi": 2,
      "son": "2026-03-31",
      "son_bakiye": 6000,
      "toplam_alacak": 4000,
@@ -78,6 +82,8 @@
      "donem_net_kari": 119500,
      "fark": 0,
      "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
      "kesin_degil": [
       "BORCLU_360",
       "TAMAMLANMAMIS_ACILIS"
@@ -97,7 +103,7 @@
      "hesaplar": {
       "600": 290000,
       "689": 500,
-      "770": 170000
+      "770.90": 170000
      },
      "kalemler": {
       "A": 290000,
@@ -252,7 +258,7 @@
        "borc": 500,
        "devir": 0
       },
-      "770": {
+      "770.90": {
        "alacak": 0,
        "bakiye": 170000,
        "borc": 170000,

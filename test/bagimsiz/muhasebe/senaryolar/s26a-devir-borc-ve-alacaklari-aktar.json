@@ -42,15 +42,21 @@
   "A": {
    "acik/0/fatura": "F1",
    "acik/0/kalan": 75000,
-   "devir/acilis/cariler/C1/acilis": 20000,
+   "devir/acilis/acik_kalemler/0/k": "fatura:F1",
+   "devir/acilis/acik_kalemler/1/k": "borc:BY",
+   "devir/acilis/acik_kalemler/1/vade": "2026-04-01",
+   "devir/acilis/cariler/C1/acilis": 0,
    "devir/acilis/ekstre/C1/Alacak Toplamı": 75000,
-   "devir/acilis/ekstre/C1/Borç Toplamı": 95000,
+   "devir/acilis/ekstre/C1/Borç Toplamı": 75000,
+   "devir/acilis/ekstre/C1/satirlar/0/aciklama": "Devir — Borç Toplamı",
+   "devir/acilis/ekstre/C1/satirlar/2/aciklama": "Devir: F1 (2026-03-01)",
+   "devir/acilis/ekstre/C1/satirlar/3/bakiye": 95000,
    "devir/yeni_acilis/100": 70000,
    "devir/yeni_acilis/120|C1": 95000,
    "devir/yeni_acilis/519": -50000,
    "devir/yeni_acilis/590": -115000,
-   "gec_once/gecikmis": 75000,
-   "gec_sonra/gecikmis": 75000
+   "gec_once/gecikmis": 95000,
+   "gec_sonra/gecikmis": 95000
   }
  },
  "kapsam": [
@@ -97,6 +103,7 @@
   {
    "aciklama": "Fark",
    "cari": "C1",
+   "id": "BY",
    "tarih": "2026-04-01",
    "tur": "borc_yaz",
    "tutar": 20000

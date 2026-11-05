@@ -1,0 +1,259 @@
+{
+ "aciklama": "M4: kapanmamış önceki yıllar (biri kilitli) K tarihli Önceki Yıl Sonucu Fişi ile; 570 / 580 yıl yıl brüt; N-01 = K yılının SMM'si.",
+ "ad": "s47-m4-onceki-yil-kilitli",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil_arsiv/pasif/V.D": 10000,
+   "bil_arsiv/pasif/V.E": -3000,
+   "bil_arsiv/pasif/V.F": -37500,
+   "bil_once/donem_net_kari": -37500,
+   "bil_once/gecmis_yillar_kapanmamis": 7000,
+   "bil_once/gecmis_yillar_kar": 10000,
+   "bil_once/gecmis_yillar_zarar": 3000,
+   "bil_once/pasif/V.K": 7000,
+   "devir/kapanis/N01/2026": 52500,
+   "devir/kapanis/onceki_yil/2024/R": -3000,
+   "devir/kapanis/onceki_yil/2024/SMM": 0,
+   "devir/kapanis/onceki_yil/2025/R": 10000,
+   "devir/kapanis/onceki_yil/2025/SMM": 20000,
+   "devir/kapanis/sonuc": -37500,
+   "devir/yeni_acilis/570": -10000,
+   "devir/yeni_acilis/580": 3000,
+   "devir/yeni_acilis/591": 37500,
+   "gt25/kalemler/D": 20000,
+   "gt25/kalemler/DNK": 10000,
+   "gt25/tahmini": true,
+   "gt26/kalemler/A": 20000,
+   "gt26/kalemler/D": 52500,
+   "gt26/kalemler/DNK": -37500,
+   "gt26/kalemler/E": 5000,
+   "gt26/tahmini": false,
+   "mz_arsiv/satirlar/153/bakiye": 17500,
+   "mz_arsiv/satirlar/570/bakiye": -10000,
+   "mz_arsiv/satirlar/580/bakiye": 3000,
+   "mz_arsiv/satirlar/591/bakiye": 37500,
+   "mz_arsiv/satirlar/600/bakiye": 0,
+   "mz_arsiv/satirlar/770/bakiye": 0,
+   "yev25": []
+  }
+ },
+ "kapsam": [
+  "M4",
+  "KG-12",
+  "N-08",
+  "N-01",
+  "§5.2",
+  "Ç3"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "tarih": "2024-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 100000
+  },
+  {
+   "tarih": "2024-03-01",
+   "tur": "kasa_cikis",
+   "tutar": 3000
+  },
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "T1",
+   "fatura_turu": "stok",
+   "id": "A1",
+   "kalemler": [
+    {
+     "miktar": 10,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2025-02-01",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 40000,
+   "cari": "C1",
+   "id": "F1",
+   "kalemler": [
+    {
+     "miktar": 4,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2025-06-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 10000,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "gider_turu": "genel",
+   "id": "G1",
+   "tarih": "2025-07-01",
+   "tur": "alis_faturasi"
+  },
+  {
+   "tarih": "2025-12-31",
+   "tur": "donem_kilitle"
+  },
+  {
+   "K": 0,
+   "M": 40000,
+   "cari": "T1",
+   "fatura_turu": "stok",
+   "id": "A2",
+   "kalemler": [
+    {
+     "miktar": 10,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2026-03-01",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 20000,
+   "cari": "C1",
+   "id": "F2",
+   "kalemler": [
+    {
+     "miktar": 12,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2026-05-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "tarih": "2026-06-01",
+   "tur": "kasa_cikis",
+   "tutar": 5000
+  },
+  {
+   "ad": "bil_once",
+   "rapor": "bilanco",
+   "tarih": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "ad": "mz_arsiv",
+   "bas": "2026-01-01",
+   "dosya": "arsiv",
+   "rapor": "mizan",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yev25",
+   "bas": "2025-12-31",
+   "dosya": "arsiv",
+   "rapor": "yevmiye",
+   "son": "2025-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt25",
+   "bas": "2025-01-01",
+   "dosya": "arsiv",
+   "rapor": "gelir_tablosu",
+   "son": "2025-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt26",
+   "bas": "2026-01-01",
+   "dosya": "arsiv",
+   "rapor": "gelir_tablosu",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil_arsiv",
+   "dosya": "arsiv",
+   "rapor": "bilanco",
+   "tarih": "2026-12-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

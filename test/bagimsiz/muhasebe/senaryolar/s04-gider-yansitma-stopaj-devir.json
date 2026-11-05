@@ -49,6 +49,10 @@
    "bil/pasif/V.F": -1180000,
    "bil/pasif/V.G": 5000000,
    "bil_yeni/donem_net_kari": 0,
+   "bil_yeni/kesin_degil": [
+    "ARALIK_KDV_MAHSUBU_YAPILMAMIS",
+    "TAMAMLANMAMIS_ACILIS"
+   ],
    "bil_yeni/pasif/V.F": -1180000,
    "devir/kapanis/sonuc": -1180000,
    "devir/yeni_acilis/100": 4970000,
