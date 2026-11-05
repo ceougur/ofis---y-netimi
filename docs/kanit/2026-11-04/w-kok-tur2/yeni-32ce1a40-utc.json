@@ -1,0 +1,32 @@
+{
+  "ad": "w-kok-tur2/yeni-32ce1a40-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-reporter=tap test/whatsapp-w-kok-ttl-249.test.mjs",
+  "commit": "32ce1a40ecc708e25f86e58ce0553410910fb4d3",
+  "dal": "worktree-agent-ae2684d24946f2a25",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-04T00:44:09.821Z",
+  "sure_sn": 11.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 25,
+    "gecen": 25,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-04/w-kok-tur2/yeni-32ce1a40-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae2684d24946f2a25",
+  "ham_cikti_sha256": "6bea19ba1b7ff4be0ed86da5af3762c3f5aab7431cd9815ddd8a2c55f8f06f2a",
+  "ham_cikti_bayt": 12583
+}

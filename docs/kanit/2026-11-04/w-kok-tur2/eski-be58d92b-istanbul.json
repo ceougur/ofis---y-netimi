@@ -1,0 +1,73 @@
+{
+  "ad": "w-kok-tur2/eski-be58d92b-istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-reporter=tap test/whatsapp-w-kok-ttl-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-04T00:43:36.480Z",
+  "sure_sn": 15.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 25,
+    "gecen": 17,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2) › (a) süre kabulden SONRA 30 güne uzar, program bu arada Meta'yı okumaz: bakımın taze okuması 30 gün görür → 13 sa + 1 dk'da iş Süresi Doldu DEĞİL, PDF silinmez; aynı dönem 'Daha Önce Gönderildi', 2. toplu iş 400, kişiye 1 ileti",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:533:3",
+      "hata": "süre kabulden sonra 30 güne uzadı (uzun olan geçer): Süresi Doldu yazılmamalı · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2) › (a2) süre kabulden SONRA Meta varsayılanına döner (alan kaldırıldı = 30 gün): aynı karar — Süresi Doldu DEĞİL, günlükte 30 gün",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:560:3",
+      "hata": "Meta varsayılanı 30 gün: Süresi Doldu yazılmamalı · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2) › (b) Meta'da süre GERÇEKTEN 12 sa kalmış: 13 sa − 1 dk'da okuma yok; 13 sa + 1 dk'da bakımın taze okuması 12 sa görür → Süresi Doldu + PDF silinir; aynı dönem 'gönderilecek' (P3); sonraki turda okuma yok",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:579:3",
+      "hata": "Süresi Doldu yazılmadan önce bir taze okuma · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2) › (c) taze okuma DÜŞER (Meta 500, sonra yanıtsız): o turlar Süresi Doldu YAZILMAZ, PDF silinmez, günlük değişmez; sonraki başarılı turda Meta hâlâ 12 sa → Süresi Doldu + PDF silinir",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:601:3",
+      "hata": "taze okuma düştü (Meta 500): bu tur Süresi Doldu yazılmamalı · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2) › (c2) okuma YAPILAMIYOR — salt okunur lisans (program Meta'dan şablon okumaz): okuma da yazma da yok; lisans yazılabilir olunca ilk turda okur → Meta 30 gün → Süresi Doldu DEĞİL",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:631:3",
+      "hata": "salt okunur: okuma yapılamadı → Süresi Doldu yazılmamalı · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2) › (c3) okuma YAPILAMIYOR — bağlantı kaldırıldı: 13 sa + 1 dk'da okuma yok, Süresi Doldu yazılmaz; Meta'nın en uzun süresi (30 gün) + 1 sa geçince okumasız Süresi Doldu",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:661:3",
+      "hata": "bağlantı yok, okuma yapılamadı: Süresi Doldu yazılmamalı · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2) › (e) taze okuma SÜRERKEN kişi iletiyi okur ('read' bildirimi): bakım kararı okumadan sonraki satırla verir — iş 'Okundu' kalır, Süresi Doldu / Teslim Edildi'ye düşmez",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:686:3",
+      "hata": "ön koşul (ders 20): bakımın taze okuması Meta'da (kapıda) bekliyor · 0 !== 1 (beklenen 1, gelen 0)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2) › (d) okuma sayısı (ders 47): aynı şablonda 5 iş (12 sa) → turda TAM 1 okuma, 5'i Süresi Doldu; ayrı kurulumda 30 günlük 5 iş → 13 sa + 1 dk'da, 30 gün − 1 dk'da ve 30 gün + 1 sa + 1 dk'da 0 okuma",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:710:3",
+      "hata": "aynı WABA + şablon: turda tek okuma (iş başına değil; 0 okuma) · 0 !== 1 (beklenen 1, gelen 0)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ae2684d24946f2a25/docs/kanit/2026-11-04/w-kok-tur2/eski-be58d92b-istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b",
+  "ham_cikti_sha256": "1dce6d26a58ebe4bc2c68a19b220e1cedec3dd9fef570095f76c1e8b90d1dc9e",
+  "ham_cikti_bayt": 19925
+}

@@ -1,0 +1,336 @@
+TAP version 13
+# Subtest: 2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şablonları Denetle'ye basılmadan da uygulanır
+    # Subtest: Denetle YOK, Meta ekstre şablonunda 12 sa bildirir: toplu işin taze okumasıyla bilinir — 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silinir; aynı dönemde yeniden gönderilebilir (P3)
+    ok 1 - Denetle YOK, Meta ekstre şablonunda 12 sa bildirir: toplu işin taze okumasıyla bilinir — 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silinir; aynı dönemde yeniden gönderilebilir (P3)
+      ---
+      duration_ms: 1192.573042
+      type: 'test'
+      ...
+    # Subtest: Denetle YOK: kabulde süre bildirilmiyor (30 gün) → 14. saatte Meta 12 sa bildirir → önizleme taze okur: önceki iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi'; sonra kabul edilen iş 12 sa'le Süresi Doldu
+    ok 2 - Denetle YOK: kabulde süre bildirilmiyor (30 gün) → 14. saatte Meta 12 sa bildirir → önizleme taze okur: önceki iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi'; sonra kabul edilen iş 12 sa'le Süresi Doldu
+      ---
+      duration_ms: 435.447388
+      type: 'test'
+      ...
+    # Subtest: Denetle YOK, süren toplu iş: başta 12 sa, 1. iş kabul → Meta süreyi 30 güne uzatır → 11 dk sonra 2. iş (süren işin yeniden okuması) → 1. işin kabulünden 13 sa + 1 dk: hiçbir iş Süresi Doldu DEĞİL, günlükte 30 gün
+    ok 3 - Denetle YOK, süren toplu iş: başta 12 sa, 1. iş kabul → Meta süreyi 30 güne uzatır → 11 dk sonra 2. iş (süren işin yeniden okuması) → 1. işin kabulünden 13 sa + 1 dk: hiçbir iş Süresi Doldu DEĞİL, günlükte 30 gün
+      ---
+      duration_ms: 389.325953
+      type: 'test'
+      ...
+    1..3
+ok 1 - 2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şablonları Denetle'ye basılmadan da uygulanır
+  ---
+  duration_ms: 2018.650283
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu)
+    # Subtest: p3 Denetle yolu: kabul → 14 sa → Meta listesi 12 sa bildirir → Şablonları Denetle → bakım: iş Süresi Doldu OLMAZ, PDF silinmez; kişi 'Daha Önce Gönderildi', aynı dönemde 2. ileti gitmez; 'Yine de Gönder' açık
+    ok 1 - p3 Denetle yolu: kabul → 14 sa → Meta listesi 12 sa bildirir → Şablonları Denetle → bakım: iş Süresi Doldu OLMAZ, PDF silinmez; kişi 'Daha Önce Gönderildi', aynı dönemde 2. ileti gitmez; 'Yine de Gönder' açık
+      ---
+      duration_ms: 377.335095
+      type: 'test'
+      ...
+    # Subtest: Denetle'den SONRA kabul edilen iş yeni süreyle (12 sa) ölçülür; önceki iş 30 gün + 1 sa'te Süresi Doldu + PDF silinir
+    ok 2 - Denetle'den SONRA kabul edilen iş yeni süreyle (12 sa) ölçülür; önceki iş 30 gün + 1 sa'te Süresi Doldu + PDF silinir
+      ---
+      duration_ms: 422.380819
+      type: 'test'
+      ...
+    # Subtest: süre iki kez KISALIRSA (30 gün → 1 gün → 12 sa): her iş kendi kabul anındaki süreyle — ilk değişimden önceki 30 gün, aradaki 1 gün
+    ok 3 - süre iki kez KISALIRSA (30 gün → 1 gün → 12 sa): her iş kendi kabul anındaki süreyle — ilk değişimden önceki 30 gün, aradaki 1 gün
+      ---
+      duration_ms: 423.910796
+      type: 'test'
+      ...
+    # Subtest: süre UZARSA (KULLANICI KARARI 03.11 ~21:00 UTC: uzun süre): 12 sa'le kabul edilen iş, süre 30 güne çıkınca 30 günle; sonra 6 saate kısalsa da 30 günle; yeni iş 6 sa'le
+    ok 4 - süre UZARSA (KULLANICI KARARI 03.11 ~21:00 UTC: uzun süre): 12 sa'le kabul edilen iş, süre 30 güne çıkınca 30 günle; sonra 6 saate kısalsa da 30 günle; yeni iş 6 sa'le
+      ---
+      duration_ms: 416.364299
+      type: 'test'
+      ...
+    # Subtest: 2.4.8'den gelen veri (kabul anında süre bilinmiyor; şablon kaydında 12 sa): iş 30 günle; sonraki Denetle'den sonra kabul edilen iş 12 sa'le
+    ok 5 - 2.4.8'den gelen veri (kabul anında süre bilinmiyor; şablon kaydında 12 sa): iş 30 günle; sonraki Denetle'den sonra kabul edilen iş 12 sa'le
+      ---
+      duration_ms: 407.514316
+      type: 'test'
+      ...
+    # Subtest: iki şirket AYNI WhatsApp hesabında: 002'de kabul edilmiş iş; süre kısalınca önce 001'de, sonra 002'de Denetle → 002'nin işi Süresi Doldu OLMAZ, 002'de kişiye tek ekstre
+    ok 6 - iki şirket AYNI WhatsApp hesabında: 002'de kabul edilmiş iş; süre kısalınca önce 001'de, sonra 002'de Denetle → 002'nin işi Süresi Doldu OLMAZ, 002'de kişiye tek ekstre
+      ---
+      duration_ms: 627.14942
+      type: 'test'
+      ...
+    # Subtest: geri yüklenen yedek (002): kabul → süre 12 saate kısaldı + Denetle → yedek → geri yükleme → bakım: iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi', 2. ileti gitmez
+    ok 7 - geri yüklenen yedek (002): kabul → süre 12 saate kısaldı + Denetle → yedek → geri yükleme → bakım: iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi', 2. ileti gitmez
+      ---
+      duration_ms: 687.138589
+      type: 'test'
+      ...
+    # Subtest: ay sonu / gece yarısı: 31.10 20:00 kabul (Ekim ekstresi) → 01.11 09:30 süre 12 saate kısaldı + Denetle → iş Süresi Doldu OLMAZ; 'Geçen Ay' önizlemesi 'Daha Önce Gönderildi', 2. Ekim ekstresi gitmez
+    ok 8 - ay sonu / gece yarısı: 31.10 20:00 kabul (Ekim ekstresi) → 01.11 09:30 süre 12 saate kısaldı + Denetle → iş Süresi Doldu OLMAZ; 'Geçen Ay' önizlemesi 'Daha Önce Gönderildi', 2. Ekim ekstresi gitmez
+      ---
+      duration_ms: 416.355197
+      type: 'test'
+      ...
+    1..8
+ok 2 - 2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu)
+  ---
+  duration_ms: 3779.236512
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük
+    # Subtest: günlük yok / başka hesabın günlüğü: kabul anında süre bilinmiyor → 30 gün
+    ok 1 - günlük yok / başka hesabın günlüğü: kabul anında süre bilinmiyor → 30 gün
+      ---
+      duration_ms: 0.442566
+      type: 'test'
+      ...
+    # Subtest: değişim anı D: D'de ve sonra kabul → yeni süre; D'den önce → 30 gün; kabul anı verilmezse günlükteki son değer
+    ok 2 - değişim anı D: D'de ve sonra kabul → yeni süre; D'den önce → 30 gün; kabul anı verilmezse günlükteki son değer
+      ---
+      duration_ms: 0.156494
+      type: 'test'
+      ...
+    # Subtest: zincir (30 gün → 1 gün → 12 sa) ve uzama (12 sa → 30 gün → 6 sa): kabul anındaki ile sonradan görülen en uzun
+    ok 3 - zincir (30 gün → 1 gün → 12 sa) ve uzama (12 sa → 30 gün → 6 sa): kabul anındaki ile sonradan görülen en uzun
+      ---
+      duration_ms: 0.248501
+      type: 'test'
+      ...
+    # Subtest: bozuk günlük (sırasız an / eksik değer): bilinmiyor → 30 gün
+    ok 4 - bozuk günlük (sırasız an / eksik değer): bilinmiyor → 30 gün
+      ---
+      duration_ms: 0.112306
+      type: 'test'
+      ...
+    # Subtest: noteDeliveryTtl: yalnız değer değişince yazar; geç dönen eski okuma yazmaz; başka hesapta günlük o hesapla yeniden başlar; en çok 12 değişim (düşen en eski: 30 gün)
+    ok 5 - noteDeliveryTtl: yalnız değer değişince yazar; geç dönen eski okuma yazmaz; başka hesapta günlük o hesapla yeniden başlar; en çok 12 değişim (düşen en eski: 30 gün)
+      ---
+      duration_ms: 0.728132
+      type: 'test'
+      ...
+    1..5
+ok 3 - 2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük
+  ---
+  duration_ms: 1.875432
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-KÖK — bakım turu teslim süresi bilgisini satır başına okumaz (ders 47)
+    # Subtest: 40 kabul edilmiş iş, bildirim yolu canlı: bir bakım turundaki ayar okumaları iş sayısıyla artmaz
+    ok 1 - 40 kabul edilmiş iş, bildirim yolu canlı: bir bakım turundaki ayar okumaları iş sayısıyla artmaz
+      ---
+      duration_ms: 1250.450239
+      type: 'test'
+      ...
+    1..1
+ok 4 - 2.4.9 W-KÖK — bakım turu teslim süresi bilgisini satır başına okumaz (ders 47)
+  ---
+  duration_ms: 1250.624024
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2)
+    # Subtest: (a) süre kabulden SONRA 30 güne uzar, program bu arada Meta'yı okumaz: bakımın taze okuması 30 gün görür → 13 sa + 1 dk'da iş Süresi Doldu DEĞİL, PDF silinmez; aynı dönem 'Daha Önce Gönderildi', 2. toplu iş 400, kişiye 1 ileti
+    not ok 1 - (a) süre kabulden SONRA 30 güne uzar, program bu arada Meta'yı okumaz: bakımın taze okuması 30 gün görür → 13 sa + 1 dk'da iş Süresi Doldu DEĞİL, PDF silinmez; aynı dönem 'Daha Önce Gönderildi', 2. toplu iş 400, kişiye 1 ileti
+      ---
+      duration_ms: 337.522915
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:533:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        süre kabulden sonra 30 güne uzadı (uzun olan geçer): Süresi Doldu yazılmamalı
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:544:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (a2) süre kabulden SONRA Meta varsayılanına döner (alan kaldırıldı = 30 gün): aynı karar — Süresi Doldu DEĞİL, günlükte 30 gün
+    not ok 2 - (a2) süre kabulden SONRA Meta varsayılanına döner (alan kaldırıldı = 30 gün): aynı karar — Süresi Doldu DEĞİL, günlükte 30 gün
+      ---
+      duration_ms: 358.581039
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:560:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Meta varsayılanı 30 gün: Süresi Doldu yazılmamalı
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:570:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b) Meta'da süre GERÇEKTEN 12 sa kalmış: 13 sa − 1 dk'da okuma yok; 13 sa + 1 dk'da bakımın taze okuması 12 sa görür → Süresi Doldu + PDF silinir; aynı dönem 'gönderilecek' (P3); sonraki turda okuma yok
+    not ok 3 - (b) Meta'da süre GERÇEKTEN 12 sa kalmış: 13 sa − 1 dk'da okuma yok; 13 sa + 1 dk'da bakımın taze okuması 12 sa görür → Süresi Doldu + PDF silinir; aynı dönem 'gönderilecek' (P3); sonraki turda okuma yok
+      ---
+      duration_ms: 399.245272
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:579:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Süresi Doldu yazılmadan önce bir taze okuma
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:592:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (c) taze okuma DÜŞER (Meta 500, sonra yanıtsız): o turlar Süresi Doldu YAZILMAZ, PDF silinmez, günlük değişmez; sonraki başarılı turda Meta hâlâ 12 sa → Süresi Doldu + PDF silinir
+    not ok 4 - (c) taze okuma DÜŞER (Meta 500, sonra yanıtsız): o turlar Süresi Doldu YAZILMAZ, PDF silinmez, günlük değişmez; sonraki başarılı turda Meta hâlâ 12 sa → Süresi Doldu + PDF silinir
+      ---
+      duration_ms: 370.717318
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:601:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taze okuma düştü (Meta 500): bu tur Süresi Doldu yazılmamalı
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:610:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (c2) okuma YAPILAMIYOR — salt okunur lisans (program Meta'dan şablon okumaz): okuma da yazma da yok; lisans yazılabilir olunca ilk turda okur → Meta 30 gün → Süresi Doldu DEĞİL
+    not ok 5 - (c2) okuma YAPILAMIYOR — salt okunur lisans (program Meta'dan şablon okumaz): okuma da yazma da yok; lisans yazılabilir olunca ilk turda okur → Meta 30 gün → Süresi Doldu DEĞİL
+      ---
+      duration_ms: 341.611801
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:631:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        salt okunur: okuma yapılamadı → Süresi Doldu yazılmamalı
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:646:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (c3) okuma YAPILAMIYOR — bağlantı kaldırıldı: 13 sa + 1 dk'da okuma yok, Süresi Doldu yazılmaz; Meta'nın en uzun süresi (30 gün) + 1 sa geçince okumasız Süresi Doldu
+    not ok 6 - (c3) okuma YAPILAMIYOR — bağlantı kaldırıldı: 13 sa + 1 dk'da okuma yok, Süresi Doldu yazılmaz; Meta'nın en uzun süresi (30 gün) + 1 sa geçince okumasız Süresi Doldu
+      ---
+      duration_ms: 358.409251
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:661:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bağlantı yok, okuma yapılamadı: Süresi Doldu yazılmamalı
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:670:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (e) taze okuma SÜRERKEN kişi iletiyi okur ('read' bildirimi): bakım kararı okumadan sonraki satırla verir — iş 'Okundu' kalır, Süresi Doldu / Teslim Edildi'ye düşmez
+    not ok 7 - (e) taze okuma SÜRERKEN kişi iletiyi okur ('read' bildirimi): bakım kararı okumadan sonraki satırla verir — iş 'Okundu' kalır, Süresi Doldu / Teslim Edildi'ye düşmez
+      ---
+      duration_ms: 5439.40636
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:686:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul (ders 20): bakımın taze okuması Meta'da (kapıda) bekliyor
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:697:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (d) okuma sayısı (ders 47): aynı şablonda 5 iş (12 sa) → turda TAM 1 okuma, 5'i Süresi Doldu; ayrı kurulumda 30 günlük 5 iş → 13 sa + 1 dk'da, 30 gün − 1 dk'da ve 30 gün + 1 sa + 1 dk'da 0 okuma
+    not ok 8 - (d) okuma sayısı (ders 47): aynı şablonda 5 iş (12 sa) → turda TAM 1 okuma, 5'i Süresi Doldu; ayrı kurulumda 30 günlük 5 iş → 13 sa + 1 dk'da, 30 gün − 1 dk'da ve 30 gün + 1 sa + 1 dk'da 0 okuma
+      ---
+      duration_ms: 407.216172
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:710:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı WABA + şablon: turda tek okuma (iş başına değil; 0 okuma)
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:729:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 5 - 2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2)
+  ---
+  duration_ms: 8013.693288
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/wk2-q8m3/eski-be58d92b/test/whatsapp-w-kok-ttl-249.test.mjs:532:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 25
+# suites 5
+# pass 17
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15453.083065

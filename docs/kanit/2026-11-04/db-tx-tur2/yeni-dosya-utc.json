@@ -1,0 +1,32 @@
+{
+  "ad": "db-tx-tur2/yeni-dosya-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/db-tx-commit-hata-249.test.mjs",
+  "commit": "99c33b3c420a479a3b7770d20da8a1c5c271af33",
+  "dal": "worktree-agent-a4e675045411ef5cf",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-04T00:44:13.602Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-04/db-tx-tur2/yeni-dosya-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4e675045411ef5cf",
+  "ham_cikti_sha256": "6ba1f0e3e1ddf8d72cdc454f5144cf75da38fad82675d98d135d735e2539a72f",
+  "ham_cikti_bayt": 5088
+}
