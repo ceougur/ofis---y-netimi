@@ -1,0 +1,32 @@
+{
+  "ad": "c4-genel-kaynak",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs",
+  "commit": "0fc8add42d85e8e89a816374ef0844fd01a29a3a",
+  "dal": "worktree-agent-a1a42f4d745a759a0",
+  "kirli": 7,
+  "izlenmeyen": 23,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:07:14.360Z",
+  "sure_sn": 4.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 71,
+    "gecen": 71,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-genel-kaynak.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1a42f4d745a759a0",
+  "ham_cikti_sha256": "384d1e3661bf6f45474a4059e4e0dfcdf8a128227d6c9620ca5a1e5e5e4e9bb6",
+  "ham_cikti_bayt": 20740
+}

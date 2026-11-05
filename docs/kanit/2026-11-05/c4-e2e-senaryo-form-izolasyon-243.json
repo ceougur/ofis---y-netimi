@@ -1,0 +1,32 @@
+{
+  "ad": "c4-e2e-senaryo-form-izolasyon-243",
+  "komut": "npm run test:senaryo-form-izolasyon-243",
+  "commit": "0fc8add42d85e8e89a816374ef0844fd01a29a3a",
+  "dal": "worktree-agent-a1a42f4d745a759a0",
+  "kirli": 7,
+  "izlenmeyen": 31,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:08:13.804Z",
+  "sure_sn": 249.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 188,
+    "gecen": 188,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-e2e-senaryo-form-izolasyon-243.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1a42f4d745a759a0",
+  "ham_cikti_sha256": "07f7428f4b82cbfcad0dc40d916126abf0e9e23034509e0c5847ad416ba29987",
+  "ham_cikti_bayt": 29593
+}
