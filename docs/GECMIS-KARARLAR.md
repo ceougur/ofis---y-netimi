@@ -3037,3 +3037,35 @@ Kullanıcı kararı 31.10.2026 13:40 UTC ("tamam, teslimden sonra kısalt"). Aş
   PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194; imza anahtarı yolu aşağıdaki İMZA ANAHTARI satırında (denetlendi); disk 27 GB boş.
   ESKİ OTURUM: dal claude/compassionate-galileo-f9kghg (PR #40, Meta / Tech Provider; CLAUDE.md'ye yazmaz) — PR #40 master'a birleşince master bu dala birleştirilir, CLAUDE.md'deki DURUM 18/19 satırları korunur.
   W-1(b) (kendiliğinden yenileme) Meta App Review'da business_management izni gelince — kullanıcıya eski oturuma iletmesi hatırlatıldı.
+
+## Arşiv 05.11.2026 (3) (CLAUDE.md Açık iş — DURUM 21, DURUM 22 yerine geçti; AYNEN)
+
+- SIKIŞTIRMA ÖNCESİ DURUM 21 (05.11.2026 ~19:20 UTC, `date -u`; kullanıcı: "compqct hazırlığı yap"). DURUM 20'nin YERİNE GEÇER (DURUM 20 → GECMIS-KARARLAR "Arşiv 05.11.2026 (2)" AYNEN).
+  KAYNAK: docs/2.5.0-IS-LISTESI.md (A kapsam + durum sütunu, B 2.5.1, C sorular, D KULLANICI KARARLARI, E zaman sıralı kayıt) + docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md + EK-1 (…-EK-1.md) +
+  docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md (§13, §14) + docs/devir/DEVIR-PLANI.md (G) + docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md (§4 kararlar). Sıkıştırmadan sonra her karar bu belgelerden yeniden okunur.
+  KULLANICI KARARLARI (bu oturum, sonraki): 18:37 W-1 süre dolunca işler "Duraklasın, sonra sürsün"; 18:55 EK-1 S1–S5 HEPSİ A (vadesiz borç ertesi gün gecikmiş; bağsız ödeme vadesi en önce gelene;
+  şüpheli alacak otomatik hatırlatmaya girmez; mahsuptan sonra 191'i azaltan kayıt girildiği ayın mahsubunda; fatura iptalinde ayrıca bağlanan tahsilat avans kalır); 19:15 Meta 190 alan kişi "Bekleyenlere
+  dönsün" (Devam Et ile ona da gider). Kullanıcıya gösterilen BAŞ MİMAR KARARLARI iş listesi D / E'de (BS-7 bootstrap dönüşünde veri geri yüklenmez; W-1 60 gün varsayılanı; Yol 1'de abonelik silinir; EK-1 §6).
+  KAPANAN: 0a (CI #994 7/7 yeşil); KÂHİN K (test/bagimsiz/muhasebe, CI'de kahin-muhasebe-model + -mutasyon; bağımsızlık denetimi temiz; KG-3 kullanıcı metninden SORU dalı); MALİ MÜŞAVİR EK-1; BS-7
+  (birleşim 5402b712 + tur 1 13c035ff; tur 1 dar kontrolü YÜKSEK/ORTA YOK → DURMA KURALI).
+  BİRLEŞTİRİLMEYİ BEKLEYEN: BS-7 DÜŞÜK-1/2 küçük düzeltmesi — dal worktree-agent-abd3e97171ecf0def (9c84775d test + yorum, 498041e0 kanıt; M5 kırmızı "7 !== 6") → Ç1 ile BİRLİKTE birleştir,
+  sema-kapisi-bs7 iki TZ'de kanıtla yeniden koş, tek push (ders 26).
+  ÇALIŞAN AJANLAR (her biri bitince: rapor → ana oturum yeni testleri KENDİSİ yeniden koşar (ders 16) → worktree dalını birleştirir → push → CI (GitHub MCP, ders 21) → YALNIZ o farka DAR KONTROL
+  (xhigh, YENİ ajan, prensip §3/§9) → YÜKSEK/ORTA + sakınca süzgecinden geçmeyen DÜŞÜK düzeltilir (yeni ajan, ders 46)):
+  (1) Ç1 hesap planı + sınıflama (xhigh) — dal worktree-agent-a51a663795c9175f5 (taban 1c0e4e9e); 19:00'de kapsamına 671 / 681 / 689 tanımı eklendi (EK-1 E2); türetme DEĞİŞMEZ, eşdeğerlik kanıtı;
+  (2) SÜRÜCÜ (xhigh, kod görür) — dal worktree-agent-a64680bb6bb82a79e (taban 5e37f0ee); kod test/bagimsiz/muhasebe-surucu/ (kâhin klasörüne yazmaz); KG-3 SORU dalı ve "EK-1 konularındaki farklar R —
+      kâhin bakımı bekleniyor" iletildi; bitince P/K/R/U farkları → P'ler ayrı düzeltme ajanına, R'ler kullanıcıya (ders 43); kâhin bakımı birleşince karşılaştırma yeniden koşulur;
+  (3) KÂHİN BAKIMI (kodu görmeyen, xhigh) — dal worktree-agent-a40029fdd7a9756f7 (taban 4e4cbf95); EK-1 + S1–S5 + KG-3; bitince bağımsızlık denetimi (araç kaydı: server/ client/ tools/ ve
+      test/bagimsiz/muhasebe-surucu/ okunmamış olmalı — `grep -o '"file_path":"[^"]*"'` + Bash komutları) → test + mutasyon yeniden koşu → birleştir;
+  (4) W1W2 DÜZELTME TURU 1 (xhigh) — dal worktree-agent-a757b01a0d070b652 (taban 90a4bede): ORTA-1 mobil özet gerilemesi (expiry-notice POST'u yazma sayılıyor), 19:15 kararı (190 alan kişi bekleyenlere),
+      DÜŞÜK-2 (silinen şirket ortak WABA kaydında), DÜŞÜK-3 (abonelik silinince kanca kaydı), DÜŞÜK-4 testler, Yol 1 "Never (Süresiz)" metni + kılavuz PDF; bitince WhatsApp testleri iki TZ + e2e yeniden
+      koşu → birleştir → push → YENİ dar kontrol (yalnız bu fark). WhatsApp kâhinine dokunmaz (WK işi).
+  CI: #996 (6f547743 BS-7), #997 (516dfc9f kâhin), #998 (d9fbdfa3 W-1/W-2 + BS-7 tur 1) 19:12'de SÜRÜYORDU → her biri ayrı okunacak (ders 21); BS-7 dosya testleri Windows'ta (ders 48).
+  SIRADAKİ: sürücü + kâhin bakımı → Ç2 saklanan fiş defteri (göç numarasını ana oturum verir) → Ç3 dondurma (Ç5'ten önce) → Ç4 ‖ → Ç5 (+B1: S1–S3, KG-15/16) → Ç6 → mali müşavir A → D2 (+BS-7 Y5:
+  arşivi açan yolda kapı, restoreCompanies'e arşiv, test; TASARIM GİRDİSİ: 2.4.9 göç etmiş 002'ye yazabilir → fiş defteri / arşiv kendini onarmalı) → D3–D6 → WK (WhatsApp kâhini: S-W1, S-W2, 18:37,
+  19:15) / W-3 / WE / WY / G1 / BS-1…6 → aday (mali müşavir S ‖ UI/UX → dar kontrol → tam kapı → CI + UD + windows.yml ×2) → paket. Aynı anda en çok 2–3 kod ajanı.
+  ORTAM: 30 dk rapor CronCreate 57030f4a (istem aşağıdaki ORTAM satırında; boş disk / bellek satırı dahil); ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (3 saatte bir :18); disk 21 GB, bellek 14 GB boş;
+  PLAYWRIGHT_BROWSERS_PATH ve imza anahtarı yolu aşağıdaki satırlarda. Biten işlerin eski kod kopyaları not defterinden tam yollarıyla silindi (ders 36; `rm -rf "$S/$d"` güvenlik denetimine takılır →
+  tam yazılmış yol kullan). Stop kancası gönderilmemiş commit / izlenmeyen dosyada uyarır: yalnız kanıt / belge değişikliği tek başına CI başlatmasın diye kanıt dosyaları kodla birlikte gönderilir (ders 26).
+  ESKİ OTURUM: dal claude/compassionate-galileo-f9kghg (PR #40, Meta / Tech Provider; CLAUDE.md'ye yazmaz) — PR #40 master'a birleşince master bu dala birleştirilir, DURUM 18/19 satırları korunur.
+  W-1(b) (kendiliğinden yenileme) Meta App Review'da business_management izni gelince.
