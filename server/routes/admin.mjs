@@ -3,6 +3,7 @@ import { createReadStream, statSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { BACKUP_NAME } from "../lib/backup.mjs";
+import { bookTypeLabel } from "../lib/book-type.mjs";
 import { auditBackups } from "../lib/backup-audit.mjs";
 import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
 import { nameConflict } from "../lib/names.mjs";
@@ -11,6 +12,12 @@ import { ADMIN_ONLY, GRANTABLE, NOT_YET_PERMISSIONS, PERMISSION_GROUPS, ROLE_LAB
 import { migrateBankGrants, withGrantsDone } from "../lib/bank/grants.mjs";
 import { compareVersions } from "../lib/semver.mjs";
 import { prepareNetworkSettings, readNetworkSettings, splitProxy, writeNetworkSettings } from "../lib/net-proxy.mjs";
+
+// Değişiklik Geçmişi süzgeci (client/admin.html #adm-audit-type) → kapsadığı tür önekleri. Listede olmayan süzgeç değeri kendi önekidir.
+// 2.5.0 Ç4 dar kontrol DÜŞÜK: Fatura Ayarları'nın yazdığı üç tür (fatura ayarı, Tabela Adı / Rapor Başlığı, Defter Türü) "Ayarlar"a girmiyordu.
+export const AUDIT_GROUPS = Object.freeze({
+  "settings.": Object.freeze(["settings.", "invoice.settings.updated", "office.report_header.updated", "accounting.book_type.updated"]),
+});
 
 // Personel bilgisayarlarının bağlanabileceği yerel ağ adresleri (sanal/yerel bağdaştırıcılar hariç).
 function lanAddresses(port) {
@@ -441,12 +448,20 @@ export function registerAdminRoutes(router, context) {
     auth.requirePermission(req, "audit.view");
     const limit = Math.max(1, Math.min(1000, Number(url.searchParams.get("limit") || 200)));
     const type = text(url.searchParams.get("type"));
+    // Süzgeç önek; bir süzgeç birden çok öneki kapsayabilir (AUDIT_GROUPS). LIKE'ın joker karakterleri (% _) önekte düz okunur.
+    const prefixes = AUDIT_GROUPS[type] || [type];
+    const likes = prefixes.map(prefix => `${prefix.replace(/[\\%_]/g, ch => `\\${ch}`)}%`);
     const rows = store.all(
       `SELECT id, type, entity_id AS entityId, actor_id AS actorId, actor_name AS actorName, payload_json AS payloadJson, created_at AS createdAt
-       FROM audit_events WHERE (? = '' OR type LIKE ? || '%') ORDER BY created_at DESC LIMIT ?`,
-      type, type, limit,
+       FROM audit_events WHERE (? = '' OR ${likes.map(() => "type LIKE ? ESCAPE '\\'").join(" OR ")}) ORDER BY created_at DESC LIMIT ?`,
+      type, ...likes, limit,
     );
-    ok(res, rows.map(({ payloadJson, ...row }) => ({ ...row, payload: parseJson(payloadJson) })));
+    ok(res, rows.map(({ payloadJson, ...row }) => {
+      const payload = parseJson(payloadJson);
+      // 2.5.0 Ç4 dar kontrol DÜŞÜK: Defter Türü değişikliğinde kayıtlı kodların ekran adları (tek yardımcı lib/book-type.mjs).
+      if (row.type === "accounting.book_type.updated" && payload && typeof payload === "object") return { ...row, payload: { ...payload, fromLabel: bookTypeLabel(payload.from), toLabel: bookTypeLabel(payload.to) } };
+      return { ...row, payload };
+    }));
   });
 
   router.get("/api/admin/office", async ({ req, res }) => {

@@ -131,6 +131,15 @@ describe("2.5.0 Ç4 Defter Türü", () => {
         assert.equal(settingRow(file), "operating");
         assert.equal(settingRow(file, "ledger.lockedUntil"), null, `${mode}: dönem kilidi bilerek silinir ("ledger." korunmaz)`);
         assert.equal((await ok200("kilit oku", admin.get("/api/workspace/ledger/lock"))).lockedUntil, "");
+        // Dar kontrol DÜŞÜK (koruma): KEEP_SETTINGS'in "accounting." öneki bugün YALNIZ Defter Türü'nü korur. İleride eklenen accounting.* anahtarı (sayaç,
+        // dondurma işareti) sıfırlamada sessizce kalırsa burada kırmızı olur → korunup korunmayacağı bilinçli karara bağlanır (app.mjs KEEP_SETTINGS).
+        const db = new DatabaseSync(file, { readOnly: true });
+        try {
+          const kept = db.prepare("SELECT key FROM settings WHERE key LIKE 'accounting.%' ORDER BY key").all().map(row => row.key);
+          assert.deepEqual(kept, ["accounting.bookType"], `${mode}: sıfırlamadan sonra korunan accounting.* anahtarları`);
+        } finally {
+          db.close();
+        }
       }
     } finally {
       await server.close();
@@ -221,6 +230,34 @@ describe("2.5.0 Ç4 Defter Türü", () => {
       await server.close();
     }
     assert.equal(settingRow(secondFile), "balance", "kapılı şirketin dosyası değişmedi");
+  });
+
+  test("Değişiklik Geçmişi: üç ayar türü 'Ayarlar' süzgecinde; Defter Türü satırı eski → yeni ekran adlarını taşır; istemcide Türkçe adları var", async () => {
+    const server = await startTestServer();
+    try {
+      const admin = await loginAdmin(server);
+      await ok200("kaydet", admin.put(URL_SETTINGS, { bookType: "balance", reportHeader: { signName: "Defter Market", mode: "sign" } }));
+      await ok200("değiştir", admin.put(URL_SETTINGS, { bookType: "professional" }));
+      await ok200("ofis adı", admin.put("/api/admin/office", { name: "Ofis" }));
+      const filtered = await ok200("Ayarlar süzgeci", admin.get("/api/admin/audit?limit=300&type=settings."));
+      const types = new Set(filtered.map(row => row.type));
+      for (const type of ["invoice.settings.updated", "office.report_header.updated", "accounting.book_type.updated", "settings.office.updated"]) assert.ok(types.has(type), `Ayarlar süzgecinde ${type} yok: ${[...types].join(", ")}`);
+      assert.ok([...types].every(type => type.startsWith("settings.") || ["invoice.settings.updated", "office.report_header.updated", "accounting.book_type.updated"].includes(type)), `süzgece başka tür girmez: ${[...types].join(", ")}`);
+      const book = filtered.filter(row => row.type === "accounting.book_type.updated").map(row => `${row.payload.fromLabel} > ${row.payload.toLabel}`);
+      assert.deepEqual(book, ["Bilanço Esası > Serbest Meslek Kazanç Defteri", "Seçilmedi > Bilanço Esası"]);
+      // Öbür süzgeçler önek olarak çalışmayı sürdürür; "Tümü" de Defter Türü satırına ad ekler.
+      const all = await ok200("Tümü", admin.get("/api/admin/audit?limit=300"));
+      assert.ok(all.filter(row => row.type === "accounting.book_type.updated").every(row => row.payload.toLabel), "Tümü: ekran adı var");
+      const auth = await ok200("Girişler", admin.get("/api/admin/audit?limit=300&type=auth."));
+      assert.ok(auth.length > 0 && auth.every(row => row.type.startsWith("auth.")), "Girişler süzgeci yalnız auth.*");
+    } finally {
+      await server.close();
+    }
+    const { readFileSync } = await import("node:fs");
+    const source = readFileSync(new URL("../client/assets/admin.js", import.meta.url), "utf8");
+    for (const [type, label] of [["invoice.settings.updated", "Fatura Ayarları'nı değiştirdi"], ["office.report_header.updated", "Tabela Adı / Rapor ve Ekstre Başlığı'nı değiştirdi"], ["accounting.book_type.updated", "Defter Türü'nü değiştirdi"]]) {
+      assert.ok(source.includes(`"${type}": "${label}",`), `admin.js EVENT_LABELS: ${type} → ${label}`);
+    }
   });
 
   test("okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset", async () => {
