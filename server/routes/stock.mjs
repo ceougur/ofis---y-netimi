@@ -501,8 +501,11 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       body: { ...body, moveId: previous.id },
       guard: k7.guard,
       // 2.4.9 C1 TUR 1 (madde 4): gövde beklenirken ürün silinirse düzeltme yazılmaz (POST …/moves ile aynı; işlemin içinde, 404).
+      // 2.5.0 BS-3 (d): aynı desen hareketin kendisi için — gövde beklenirken hareket silinirse 404 "Stok hareketi bulunamadı" (önceden UPDATE 0 satır,
+      // cari satırı silinmiş harekete yeniden yazılıyor, kapı 409 ledger-integrity "yöneticinize bildirin" ile geri alıyordu).
       prepare: () => {
         itemRow(item.id);
+        moveOf(item.id, previous.id);
       },
       write: () => {
         k7.capture();
