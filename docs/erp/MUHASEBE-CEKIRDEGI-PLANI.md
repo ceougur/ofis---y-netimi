@@ -153,3 +153,8 @@ KABUL EDİLENLER (BAŞ MİMAR KARARI, ders 40 — mali müşavir önerisi, sın�
   (GÖRÜŞ); kılavuzdaki "karşılığı açılış hesabı 500" cümlesi (kılavuz Ç5 ile birlikte güncellenir — 2.5.0).
 KULLANICI KARARI 05.11 17:16 "hepsi A" — aşağıdaki maddelerin HEPSİ A (iş listesi D). Önceki başlık: KULLANICIYA SORULACAKLAR (para / kapama / açılış kuralı; ders 43; mali müşavir önerisi A): B1, KG-2, KG-3, KG-5, KG-6, KG-7, KG-9, KG-11, KG-12, KG-15, KG-16 (iş listesi C). KG-4 (Borç Yaz /
 Alacak Yaz bugünkü 602 / 770 + ".90" alt hesap) ve KG-13 (vergi karşılığı yok, 20.10 kararı) yeni kural değil → sorulmaz. Kâhin yanıt gelene kadar bu maddelerde iki dallı kurulur.
+
+## §14 EK-1 KARARLARI (05.11.2026)
+Kodu görmeyen mali müşavirin EK-1'i (docs/erp/MUHASEBELESTIRME-KURAL-KITABI-EK-1.md) kâhinin 14 belirsiz noktasını çözdü. KULLANICI KARARI 05.11 ~18:55: S1–S5 HEPSİ A (vadesiz borç ertesi gün
+gecikmiş; bağsız ödeme vadesi en önce gelen borca; şüpheli alacak otomatik hatırlatmaya girmez; mahsuptan sonra 191'i azaltan kayıt girildiği ayın mahsubunda; fatura iptalinde ayrıca bağlanan
+tahsilat avans kalır). Teknik maddeler BAŞ MİMAR KARARI (EK-1 §6; iş listesi D). Hesap planına 671 / 681 (EK-1 E2). Kâhin bakımı EK-1 + S1–S5 ile.

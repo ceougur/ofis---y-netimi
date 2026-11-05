@@ -395,6 +395,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   (3) KÂHİN (kodu görmeyen, xhigh) test/bagimsiz/muhasebe/ — .claude/worktrees/agent-a46b8015c664a74f9 (17:51: model.py ~2.300 satır, senaryolar yazılıyor; commit yok; kararlar "hepsi A" iletildi;
       bitince bağımsızlık denetimi: araç kaydında server/ client/ tools/ test/(kendi klasörü dışı) okunmamış olmalı — mali müşavirde yapıldığı gibi `grep -o '"file_path":"[^"]*"'`);
   (4) Ç1 hesap planı + sınıflama (xhigh; kullanıcı 17:52 "başlatalım" — kâhini beklemeden) — worktree .claude/worktrees/agent-<yeni>; türetme kuralı DEĞİŞMEZ, eşdeğerlik kanıtı.
+  KULLANICI KARARLARI 05.11 (sonraki): ~18:37 W-1 süre dolunca işler "Duraklasın, sonra sürsün"; ~18:55 mali müşavir EK-1 soruları S1–S5 HEPSİ A (iş listesi D). Durum 18:55: kâhin BİTTİ ve CI'de;
+  BS-7 + W-1/W-2 + BS-7 tur 1 birleşti ve gönderildi (CI #996–#998 okunacak); süren: Ç1, sürücü, iki dar kontrol (W1W2, BS7-T1); sırada kâhin bakımı (EK-1).
   SIRADAKİ: ajan sonuçları (yukarıdaki akış); kâhin bitince SÜRÜCÜ ajanı (kod görür; kâhin senaryolarını programa API ile uygular, bugünkü kodla karşılaştırır — fark önce hata, ders 6; kural gerekiyorsa
   kullanıcıya, ders 43) → Ç2 fiş defteri → Ç3 dondurma (Ç5'TEN ÖNCE; göçte 2.4.9 kuralıyla) → Ç4 Defter Türü ‖ → Ç5 açılış düzeni + B1 (+ KG-15 / KG-16) → Ç6 raporlar → mali müşavir A → devir D2–D6
   (kopyada üret + takas, ayrı açık kalem, kalıcı devir yedeği, Devri Yenile) → WhatsApp WK / W-3 / WE / WY / G1 / BS'ler → aday (mali müşavir S ‖ UI/UX → dar kontrol → tam kapı → CI + UD + windows.yml ×2)
