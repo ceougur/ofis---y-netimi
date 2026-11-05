@@ -97,7 +97,8 @@ hesabına fiş → kapı 409 · N22 store dışı silme → tam tarama "Kapanmı
 - Dar liste (169 dosya: Ç1 listesi + göç / yedek / sıfırlama / kapı / kilit / yevmiye / kaynak tarayan genel testler): UTC 1807/1810 (3 atlanan etiketli, Ç1 ile aynı);
   İstanbul 1806/1810 — tek kırmızı test/cheques-overview.test.mjs "adım 50: Kasa (bugüne kadar)": koşu 23:55 İstanbul'da başladı, dosya yerel gece yarısından sonra koştu;
   testin beklentisi UTC günüyle (`new Date().toISOString().slice(0, 10)`, satır ~406), program yerel günle hesaplar → İstanbul'da 00:00–03:00 arası her koşuda kırmızı. TABAN
-  KOD 204f58bf aynı anda aynı sayılarla kırmızı (c2-cheques-overview-ist-taban-204f58bf), yeni kod UTC'de yeşil — Ç2 ile ilgisiz, TEST HATASI (ders 13 ailesi; ayrı iş).
+  KOD 204f58bf aynı anda aynı sayılarla kırmızı (c2-cheques-overview-ist-taban-204f58bf), yeni kod UTC'de yeşil — Ç2 ile ilgisiz, BİLİNEN TEST HATASI, ana oturumun çalışma dalında
+  25effbe7'de düzeldi (bu dalda dokunulmadı; aynı kalıbı taşıyan öbür test dosyaları ayrı süpürme işinde).
 - Kâhin defter 176/176, kâhin cari 8698/8698.
 - e2e: senaryo-defter-243 24/24, senaryo-banka-210 424/424, sema-kapisi-bs7 12/12 (LATEST + 1 = 47), senaryo-220-yedek 37/37.
 - WINDOWS (ders 48): test/fis-defteri-yasam-250.test.mjs süreç öldürür (SIGKILL → Windows'ta TerminateProcess) ve öldürülen sürecin dosyasını yeniden açar; yedek geri yükleme
