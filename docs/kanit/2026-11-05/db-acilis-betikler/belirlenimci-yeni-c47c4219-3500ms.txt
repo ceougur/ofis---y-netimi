@@ -1,0 +1,6 @@
+{"mode":"excl-wal","holdMs":3500,"ro":false,"ok":false,"ms":2016,"code":"ERR_SQLITE_ERROR","errcode":5,"message":"database is locked","at":1793922556682,"fdsAfterFail":0,"sinceReady":2054,"afterRelease":-1446,"stderr":""}
+{"mode":"excl-wal","holdMs":3500,"ro":true,"ok":true,"ms":3544,"n":2,"at":1793922561829,"fdsAfterClose":0,"sinceReady":3589,"afterRelease":91,"stderr":""}
+{"mode":"begin-exclusive","holdMs":3500,"ro":false,"ok":true,"ms":1,"n":1,"at":1793922561958,"fdsAfterClose":0,"sinceReady":36,"afterRelease":-3464,"stderr":""}
+{"mode":"begin-exclusive","holdMs":3500,"ro":true,"ok":true,"ms":1,"n":1,"at":1793922565574,"fdsAfterClose":0,"sinceReady":48,"afterRelease":-3453,"stderr":""}
+{"mode":"rollback-read","holdMs":3500,"ro":false,"ok":false,"ms":2005,"code":"ERR_SQLITE_ERROR","errcode":5,"message":"database is locked","at":1793922571206,"fdsAfterFail":0,"sinceReady":2040,"afterRelease":-1460,"stderr":""}
+{"mode":"rollback-read","holdMs":3500,"ro":true,"ok":true,"ms":0,"n":1,"at":1793922572816,"fdsAfterClose":0,"sinceReady":46,"afterRelease":-3453,"stderr":""}

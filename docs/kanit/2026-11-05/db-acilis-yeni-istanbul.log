@@ -1,0 +1,61 @@
+TAP version 13
+# (node:7338) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından önce
+    # Subtest: açılış süresi kullanıcı yazımlarının süresinden kısa (kilitli dosyada şirket isteği olay döngüsünü 10 sn kilitlemez)
+    ok 1 - açılış süresi kullanıcı yazımlarının süresinden kısa (kilitli dosyada şirket isteği olay döngüsünü 10 sn kilitlemez)
+      ---
+      duration_ms: 7.562806
+      type: 'test'
+      ...
+# (node:7338) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: (a) başka bağlantı dosyayı özel kilitle tutarken açılış BEKLER, kilit kalkınca açılır ve yazar
+    ok 2 - (a) başka bağlantı dosyayı özel kilitle tutarken açılış BEKLER, kilit kalkınca açılır ve yazar
+      ---
+      duration_ms: 1096.471883
+      type: 'test'
+      ...
+# (node:7338) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: (b) kilit bekleme süresi boyunca kalkmazsa açılış SQLITE_BUSY ile düşer (süre kadar bekleyerek) ve bağlantı kapanır
+    ok 3 - (b) kilit bekleme süresi boyunca kalkmazsa açılış SQLITE_BUSY ile düşer (süre kadar bekleyerek) ve bağlantı kapanır
+      ---
+      duration_ms: 3555.751214
+      type: 'test'
+      ...
+# (node:7338) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: (c) salt okunur açılış: kilitli dosyada açılır, ilk okuma kilit kalkana kadar (BUSY_TIMEOUT_MS içinde) bekler ve okur; tutamak kalmaz
+    ok 4 - (c) salt okunur açılış: kilitli dosyada açılır, ilk okuma kilit kalkana kadar (BUSY_TIMEOUT_MS içinde) bekler ve okur; tutamak kalmaz
+      ---
+      duration_ms: 4608.49973
+      type: 'test'
+      ...
+    # Subtest: (d) bozuk dosya (veri tabanı değil) BEKLEMEDEN düşer ve bağlantı kapanır (2.4.8 davranışı aynen)
+    ok 5 - (d) bozuk dosya (veri tabanı değil) BEKLEMEDEN düşer ve bağlantı kapanır (2.4.8 davranışı aynen)
+      ---
+      duration_ms: 2.794364
+      type: 'test'
+      ...
+    # Subtest: (e) yazar işlem ortasında SIGKILL ile öldürülür (kurtarılacak WAL), sonra İKİ SÜREÇ AYNI ANDA açar → ikisi de açılır (CI \#1007 errcode 261)
+    ok 6 - (e) yazar işlem ortasında SIGKILL ile öldürülür (kurtarılacak WAL), sonra İKİ SÜREÇ AYNI ANDA açar → ikisi de açılır (CI \#1007 errcode 261)
+      ---
+      duration_ms: 19767.803224
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından önce
+  ---
+  duration_ms: 29082.359035
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29594.003715

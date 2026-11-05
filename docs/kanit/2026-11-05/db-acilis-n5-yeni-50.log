@@ -1,0 +1,17 @@
+TAP version 13
+# {"n":50,"failed":0,"failures":[]}
+# Subtest: fis-defteri-yasam-250 N11+N5 × 50 (/home/user/ofis---y-netimi/.claude/worktrees/agent-aa4c32f640b15a6cf)
+ok 1 - fis-defteri-yasam-250 N11+N5 × 50 (/home/user/ofis---y-netimi/.claude/worktrees/agent-aa4c32f640b15a6cf)
+  ---
+  duration_ms: 144579.609072
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 144658.956402
