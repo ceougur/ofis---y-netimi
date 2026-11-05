@@ -406,6 +406,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   ORTAM (kullanıcı 05.11: "30 dk bir ara rapor ver, biten işlerin üstünü çiz. 3saate bir de yenilenen ortam kopması için alarm kur"): 30 dk rapor CronCreate d19be8cc ("7,37 * * * *", oturuma bağlı; kapsayıcı yenilenince ve 7 günde
   düşer) — İSTEM: "30 DK ARA RAPOR: TaskList'i oku; Türkçe kısa ara rapor: bitenler ~~üstü çizili~~, süren kalın, ajan durumu, yalnız yeni push'un CI'si (yoklama yok), sıradaki adım ve beklenen karar; değişiklik yoksa tek satır";
   ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (sunucu tarafı, 3 saatte bir :18 UTC, bu oturuma; rapor görevi yoksa yeniden kurar). İş listesi oturumda TaskList'te (docs/2.5.0-IS-LISTESI.md "başla"da açılır).
+  İMZA ANAHTARI (bu oturum, kullanıcı 05.11 yükledi): /root/.claude/uploads/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/8b045447-destekofis-imza-anahtari-GIZLI.pem — 05.11 16:3x UTC DENETLENDİ: Ed25519, açık anahtarı
+  update-keys.mjs'teki TEK güvenilen anahtar destekofis-2026-1 (parmak izi 2817e154132ada8a; liste 2.0.0'dan beri değişmedi) ile eşleşiyor; tools/lib/update-package.mjs keyIdFor eşleşme verdi; imzala → verifyEnvelope GEÇTİ,
+  değiştirilmiş bildirge SIGNATURE_INVALID; yayındaki v2.4.9 destekofis-guncelleme.json aynı anahtarla imzalı (GEÇERLİ). Paket: `node tools/release.mjs --anahtar <bu yol>`.
 - 2.4.8 KARARLARI (30.10–02.11.2026; 2.4.8 YAYIMLANDI; "2.4.8 BAŞLADI", "YETKİ + TESLİM TALİMATI", "TALİMAT 31.10" ve bütün 30.10–02.11 KARAR / İSTEK satırlarının tam metin GECMIS-KARARLAR "Arşiv 02.11.2026 (3)";
   ayrıntı docs/2.4.8-IS-LISTESI.md). SÜRENLER:
   WHATSAPP "KİME KAÇ KEZ" GENEL İLKESİ (31.10 "a"; benzer sorular tek tek SORULMAZ, ilkeyle uygulanır, iş listesine ve teslim notuna "İLKEYLE" yazılır): (1) kesin ALMADIYSA sayılmaz
