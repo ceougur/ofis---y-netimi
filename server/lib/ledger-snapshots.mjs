@@ -222,16 +222,37 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     const cover = ready() ? coverage() : "";
     if (!cover) return trialOf([], 0, { from, to }, ready() ? afterCoverage("", live || build()) : live || build());
     const upper = to && to < cover ? to : cover;
-    const rows = store.all(
-      `SELECT account, SUM(CASE WHEN date < ?1 THEN debit_minor - credit_minor ELSE 0 END) AS opening, SUM(CASE WHEN date >= ?1 THEN debit_minor ELSE 0 END) AS debit,
-              SUM(CASE WHEN date >= ?1 THEN credit_minor ELSE 0 END) AS credit
-       FROM ledger_snapshots WHERE date <= ?2 GROUP BY account`,
-      from || "", upper,
-    );
-    // trialBalance maddeyi (kimlik + koşu) "dengesiz" sayar; donmuş maddenin satırları ardışıktır (aynı koşu, aynı madde).
-    const unbalanced = Number(store.get("SELECT COUNT(*) AS n FROM (SELECT 1 FROM ledger_snapshots WHERE date <= ? GROUP BY run, entry_id, date HAVING SUM(debit_minor - credit_minor) <> 0)", upper).n);
+    const { rows, unbalanced } = frozenTrial(cover, from || "", upper);
     const tail = cover && to && to <= cover ? [] : afterCoverage(cover, live || build());
     return trialOf(rows, unbalanced, { from, to }, tail);
+  }
+  // Donmuş dönemin mizan toplamları (100.000 satırda ~0,5 sn): donmuş satırlar değişmez — sonuç koşu durumu (son koşu, kapsam) ve bağlantının data_version'ıyla (başka bağlantının
+  // yazımı) anahtarlanıp saklanır; kilit değişince ya da dış yazımda anahtar değişir. En çok 16 aralık.
+  const trialCache = new Map();
+  function frozenTrial(cover, from, upper) {
+    let version = "";
+    try {
+      version = String(store.changeCounters?.().version ?? "");
+    } catch {
+      version = "";
+    }
+    const key = `${cover}|${store.get("SELECT COALESCE(MAX(no), 0) AS n FROM ledger_snapshot_runs").n}|${version}|${from}|${upper}`;
+    if (version && trialCache.has(key)) return trialCache.get(key);
+    const value = {
+      rows: store.all(
+        `SELECT account, SUM(CASE WHEN date < ?1 THEN debit_minor - credit_minor ELSE 0 END) AS opening, SUM(CASE WHEN date >= ?1 THEN debit_minor ELSE 0 END) AS debit,
+                SUM(CASE WHEN date >= ?1 THEN credit_minor ELSE 0 END) AS credit
+         FROM ledger_snapshots WHERE date <= ?2 GROUP BY account`,
+        from, upper,
+      ),
+      // trialBalance maddeyi "dengesiz" sayar; donmuş maddenin satırları ardışıktır (aynı koşu, aynı madde).
+      unbalanced: Number(store.get("SELECT COUNT(*) AS n FROM (SELECT 1 FROM ledger_snapshots WHERE date <= ? GROUP BY run, entry_id, date HAVING SUM(debit_minor - credit_minor) <> 0)", upper).n),
+    };
+    if (version) {
+      if (trialCache.size >= 16) trialCache.delete(trialCache.keys().next().value);
+      trialCache.set(key, value);
+    }
+    return value;
   }
   function trialOf(frozenRows, frozenUnbalanced, { from, to }, entriesAfter) {
     const accounts = new Map();

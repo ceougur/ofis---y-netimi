@@ -2,12 +2,11 @@
 // 2.5.0 Ç3 — dönem kilidi + dondurma ve defter raporlarının HIZI (ders 47; plan docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md §8 "Dönem kilidi + dondurma ≤ 10 sn (100.000 satır) | ≤ 50 ms
 // olay döngüsü"; ders 15: aynı veri kopyası, ölçümler tek tek — flock ile sarılır). Veri programın KENDİ ürettiği veridir: tools/kapi-olcum.mjs --yalniz-kur (mutabakat motoru +
 // tohumun satır satır kopyası; 100.000 para satırı, dört yıl, iki şirket). Her kod için veri taze kopyaya alınır; sunucu aynı süreçte, üretim kipinde (kapı eşdeğerlik denetimi
-// kapalı, K6 günlükte) açılır. Ölçülen: yanıt süresi (ms) ve isteğin boyunca olay döngüsünün en büyük gecikmesi (perf_hooks.monitorEventLoopDelay; ms).
+// kapalı, K6 günlükte) açılır. Ölçülen: yanıt süresi (ms) ve isteğin boyunca olay döngüsünün en büyük gecikmesi (5 ms'lik yoklayıcı zamanlayıcının en büyük gecikmesi; ms).
 //   flock <kilit> node test/donmus-defter-olcum-250.mjs --kod <kök> --veri <n-100000 klasörü> --cikti <dosya.json> [--kilit 2025-12-31] [--tur 3]
 import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { monitorEventLoopDelay } from "node:perf_hooks";
 import { pathToFileURL } from "node:url";
 
 const argv = process.argv.slice(2);
@@ -23,21 +22,26 @@ const { startTestServer } = await import(pathToFileURL(path.join(root, "test/hel
 const work = mkdtempSync(path.join(path.dirname(output), "donma-olcum-"));
 const median = values => values.slice().sort((a, b) => a - b)[Math.floor(values.length / 2)];
 const result = { kod: root, veri, now: NOW, kilit: lockDay, tur: rounds, node: process.version, cpu: os.cpus().length, yuk: os.loadavg(), olcumler: {} };
+// Olay döngüsü: 5 ms'lik zamanlayıcının iki çalışması arasındaki en büyük aralık − 5 ms (istek boyunca + bir tur sonrası; tek parça engelleme de görünür).
 async function timed(label, fn) {
-  const loop = monitorEventLoopDelay({ resolution: 5 });
-  loop.enable();
+  let last = performance.now();
+  let worst = 0;
+  const probe = setInterval(() => {
+    const at = performance.now();
+    worst = Math.max(worst, at - last - 5);
+    last = at;
+  }, 5);
   const started = performance.now();
   let value;
   let ms;
   try {
     value = await fn();
     ms = performance.now() - started;
-    // Tek parça engellemede gecikme, geç düşen zamanlayıcı sonraki turda çalışınca kaydedilir: okumadan önce bir tur beklenir.
-    await new Promise(resolve => setTimeout(resolve, 25));
+    await new Promise(resolve => setTimeout(resolve, 30));
   } finally {
-    loop.disable();
+    clearInterval(probe);
   }
-  return { ms: Math.round(ms), loopMaxMs: Math.round(loop.max / 1e6), value };
+  return { ms: Math.round(ms), loopMaxMs: Math.round(Math.max(0, worst)), value };
 }
 try {
   cpSync(path.join(veri, "data"), path.join(work, "data"), { recursive: true });
