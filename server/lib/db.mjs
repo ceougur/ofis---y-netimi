@@ -3,10 +3,18 @@ import { DatabaseSync } from "node:sqlite";
 
 // Kullanıcı isteklerinin yazımları kilitli dosyada bu kadar bekler (sonra SQLITE_BUSY). Arka plan işleri kısa sınamayla atlar (probeWritable; İş P1).
 export const BUSY_TIMEOUT_MS = 10_000;
+// openDatabase'in açılış PRAGMA'ları (journal_mode / synchronous) kilitli ya da kurtarılan dosyada bu kadar bekler (2.5.0; aşağıda).
+export const OPEN_BUSY_TIMEOUT_MS = 2_000;
 
 export function openDatabase(dbPath, { readOnly = false } = {}) {
   const db = readOnly ? new DatabaseSync(dbPath, { readOnly: true }) : new DatabaseSync(dbPath);
   try {
+    // 2.5.0 (CI #1007 Windows): bekleme süresi İLK ayar. journal_mode PRAGMA'sı dosyayı okur (kilit + WAL kurtarması); süre ayarlanmadan
+    // koşunca başka bağlantı kilit tutarken ya da WAL'ı kurtarırken (çökme sonrası / taze -shm ile eşzamanlı ilk açılış) beklemeden
+    // SQLITE_BUSY / SQLITE_BUSY_RECOVERY (261) ile düşüyordu. Açılışta kısa süre (OPEN_BUSY_TIMEOUT_MS): kurtarma ve başka bağlantının
+    // kapanış denetim noktası milisaniyeler sürer; dosyayı başka program özel kilitle tutuyorsa şirket isteği (senkron açılış, olay döngüsü
+    // kilitli) 10 sn değil bu kadar bekleyip 503 alır. Açılış bitince kullanıcı yazımlarının süresi (BUSY_TIMEOUT_MS).
+    db.exec(`PRAGMA busy_timeout = ${OPEN_BUSY_TIMEOUT_MS};`);
     // WAL + synchronous FULL (v2.0.6): her COMMIT diske işlenir; elektrik kesilse de tamamlanmış işlem kaybolmaz, yarım
     // işlem kalmaz (geri alınır). Yerel ofis programında yazma sıklığı düşük; güvenlik hız maliyetine değer.
     if (!readOnly) db.exec("PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;");
