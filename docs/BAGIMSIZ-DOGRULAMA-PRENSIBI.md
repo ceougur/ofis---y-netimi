@@ -13,6 +13,11 @@ gerilemesini getirebildi; bu yüzden tek tur yetmez, düzeltmeden sonra yalnız 
 ## 2. Katmanlar (hiçbiri tek başına yetmez)
 1. **Kâhin (temiz oda):** programın kodunu GÖRMEYEN ayrı ajan, plandan ve kullanıcı kararlarından, ayrı dilde (Python) model yazar;
    program senaryo senaryo karşılaştırılır (ör. 2.4.8 K0/T1, 145 senaryo). Kâhin programa uydurulmaz (ders 40).
+1a. **Mali müşavir (kodu görmeyen uzman; kullanıcı kararı 05.11.2026: "kodu bilmeyen bir uzman mali müşavir ajanını da baştan yazalım. son adayı uzun koşuya
+   göndermeden ondan geçsin"):** muhasebe / defter / devir işlerinde planı ve kararları mevzuata ve yaygın uygulamaya göre inceler ve kâhinin kurulacağı
+   MUHASEBELEŞTİRME KURAL KİTABI'nı yazar (P, kâhinden önce); çekirdek bitince ara kabul (A); son adayı tam kapıdan ve Uzun Doğrulama'dan ÖNCE kullanıcı gibi
+   ekrandan denetler (S). Görev tanımı `docs/erp/MALI-MUSAVIR-AJANI.md`, ajan `.claude/agents/mali-musavir.md`; efor xhigh; her temas noktası yeni ajan.
+   Kâhin programı plana karşı, mali müşavir planı ve çıktıyı mevzuata karşı denetler. Lisanslı SMMM görüşü yerine geçmez.
 2. **Bağımsız gözden geçirme:** son adayın tamamına bir tur, yalnız hata arar (ör. 2.4.8 T2).
 3. **Dar kontrol:** her düzeltmeden SONRA, YALNIZ o düzeltmenin farkına (`git diff <önceki>..<düzeltme>`) yeni bir incelemeci (§3).
 4. **Tam kapı:** tam `npm test` + ci.yml'nin bütün e2e'leri + CI dışı senaryolar (ders 8, 35, 37, 41).
