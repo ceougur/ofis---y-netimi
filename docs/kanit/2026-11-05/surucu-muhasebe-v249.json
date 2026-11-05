@@ -1,0 +1,32 @@
+{
+  "ad": "surucu-muhasebe-v249",
+  "komut": "node test/bagimsiz/muhasebe-surucu/kos.mjs --paralel 3 --program /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu-muhasebe-eski-v2.4.9-ccf0b0ca --cikti docs/kanit/2026-11-05/surucu-muhasebe-v249 --veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu-muhasebe-veri-v249",
+  "commit": "d2cf73f15189d27a46c23b97c8c4ac7b074dd2a8",
+  "dal": "worktree-agent-a64680bb6bb82a79e",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T19:14:15.519Z",
+  "sure_sn": 170.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3734,
+    "gecen": 3088,
+    "basarisiz": 646,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 646 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/surucu-muhasebe-v249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a64680bb6bb82a79e",
+  "ham_cikti_sha256": "d75ddda9279df9c5b21fd869edeab40fa896bb5ff375e582d26ea5d2073d5123",
+  "ham_cikti_bayt": 52445
+}

@@ -1,0 +1,353 @@
+{
+ "adim_farklari": [],
+ "bugun_dal": "KG3=SORU,KG6=B,KG7=B,KG15=B",
+ "dal": "KG3=SORU",
+ "degismezler": {
+  "kahin_mizan_toplam_sifir": true,
+  "program_her_adimda_dengeli": true,
+  "program_her_adimda_mutabakat": true,
+  "program_mizan_toplam_sifir": true,
+  "program_mutabakat_testi": true
+ },
+ "etiketler": {
+  "C1-ALT-90": {
+   "dayanak": "çekirdek planı §13 / kitap §2: '.90' alt hesapları (600.90, 610.90, 602.90, 770.90, 649.90) bugün yok; §1 'Alt hesap: banka 102.NN …'",
+   "is": "Ç1"
+  },
+  "C5-ACILIS-519": {
+   "dayanak": "çekirdek planı §6 Ç5: 'Bütün modül açılışlarının karşı hesabı 500 yerine GEÇİCİ AÇILIŞ HESABI'; §1 bugün 500",
+   "is": "Ç5"
+  },
+  "C5-CARI-ACIKLAMA": {
+   "dayanak": "çekirdek planı §1: 'CARİ AÇILIŞI ise AÇIKLAMADAN (/^açılış/i …)' — açılış işareti yalnız cari açılırken; önceden açık caride açılış Borç / Alacak Yaz satırıdır (açıklaması 'Açılış' değilse 602 / 770)",
+   "is": "Ç5"
+  },
+  "C5-EVRAK-ACILIS": {
+   "dayanak": "çekirdek planı §1: 'Cariye işlenmemiş evrak (Excel \"Açılış portföyü\") 602 / 770'e (gelir / gider) gider'; §6 'geçici hesaba'",
+   "is": "Ç5"
+  },
+  "C5-EVRAK-KARSILIKSIZ": {
+   "dayanak": "çekirdek planı §1 'Cariye işlenmemiş evrak (Excel \"Açılış portföyü\") 602 / 770'e (gelir / gider) gider' + 30.10 (1) 'açılış çekleri gelir / gidere yazılmaz' (Ç5); kitap Ç-07 'Müşteri yeniden borçlanır' — bugün karşılıksız açılış çeki 770'e (cariye borç yazılmaz)",
+   "is": "Ç5 (planda karşılıksız tarafı AÇIK YAZMIYOR — Ç5 ajanına not)"
+  },
+  "F06-GIDER-TURU": {
+   "dayanak": "kitap F-06: 'Gider türü → hesap eşlemesi Ç1'de yazılır (DOĞRULANMADI)' — finansman 780",
+   "is": "Ç1"
+  },
+  "K14-HESAPSIZ": {
+   "dayanak": "kitap K-14 / K-15: 'Hesapsız (Açılıştan Önce)' ve açılıştan önceki Kart Borcuna Aktar'da banka / kart tarafı yerine G; bugün BANKA-MODULU-PLAN K11 / §10: '102.00 ve 108.00 Hesabı Atanmamış Eski Hareketler'",
+   "is": "Ç5 kapsamına yakın (iş kodu atanmamış)"
+  },
+  "KG15-DUZELTME": {
+   "dayanak": "kitap KG-15 A / iş listesi D (10): Kural Farkı Düzeltme Fişi",
+   "is": "Ç3 / KG-15"
+  },
+  "KG16-ACIKLAMA": {
+   "dayanak": "çekirdek planı §1: \"'Açılış bakiyesi' açıklamalı elle borç defterde hâlâ 500'e gider\"; KG-16 A 'Açılış Olabilir' listesi",
+   "is": "KG-16 / Ç5"
+  },
+  "KG19-YOLDAKI": {
+   "dayanak": "kitap KG-19 A (K değil): valörlü transferde 108.90 Yoldaki Transferler; B 'çıkış günü doğrudan alıcı hesaba'",
+   "is": "KG-19 (iş kodu atanmamış)"
+  },
+  "KG2-H03": {
+   "dayanak": "kitap H-03 / KG-2 A (ürün sahibi 05.11 'hepsi A'): taksit Yeni Borç 600.90; bugün CHART 602 'Taksitli Satış'",
+   "is": "KG-2 (D bölümü (2); iş kodu atanmamış)"
+  },
+  "KG24-IHRACAT": {
+   "dayanak": "kitap KG-24 A (K değil): ihracat 601; B 600 (bugün CHART'ta 601 yok — çekirdek §1)",
+   "is": "Ç1 + türetme (iş kodu atanmamış)"
+  },
+  "KG3-KAYIT": {
+   "dayanak": "iş listesi D (3): 'KG-3 kayıt (dosya) tahsilatı gelir değil → Sınıflandırılmamış Tahsilatlar'; bugün CHART 602 'Kayıt Tahsilatları'",
+   "is": "KG-3 (iş kodu atanmamış)"
+  },
+  "KG5-EXCEL": {
+   "dayanak": "iş listesi D (4): 'KG-5 Excel'den yüklenen taksit kartı açılış alacağı (519 karşılıklı), gelir değil'; bugün kart toplamı 602, Ödenen 500 (çekirdek §1 'taksit … açılış 500')",
+   "is": "KG-5 / Ç5"
+  },
+  "KG6-POS-TARIH": {
+   "dayanak": "iş listesi D (5): 'KG-6 POS komisyonu satış günü'; kitap KG-6 B = valör günü (D-01, bugünkü)",
+   "is": "KG-6 (iş kodu atanmamış; D 'ETKİ: banka modülü')"
+  },
+  "KG7-INDIRIM": {
+   "dayanak": "iş listesi D (6): 'KG-7 alış faturasında KDV İndirim Dönemi'; kitap KG-7 B = hep belge ayı (bugünkü)",
+   "is": "KG-7 (iş kodu atanmamış; kesme çizgisinde 2.5.1'e kayabilir)"
+  },
+  "KG8-IADE-KDV": {
+   "dayanak": "kitap KG-8 (K değil; 'baş mimar + mali müşavir A'): satıştan iade KDV'si B 191; B seçeneği 391",
+   "is": "KG-8 (iş kodu atanmamış)"
+  }
+ },
+ "olay_durumlari": {
+  "rapor": 3,
+  "red": 1,
+  "yapildi": 21
+ },
+ "oz_denetim": {
+  "raporlar_ayni": true,
+  "redler_ayni": true
+ },
+ "ozet": {
+  "AYNI": 34,
+  "K": 0,
+  "P": 0,
+  "R": 0,
+  "SINIFLANMADI": 0,
+  "U": 0,
+  "adim_sinifsiz": 0
+ },
+ "raporlar": {
+  "bil": {
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 7,
+    "K": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0
+   },
+   "program_dengeli": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "100",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "102",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "120",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "320",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "T1",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "bilanco",
+   "uygulanmadi": "Bilanço (Ç6): kalemler, hesaplanmış Dönem Net Kârı, ters bakiye, Kesin Değil yok — yalnız 1–5 sınıfı hesap bakiyeleri karşılaştırıldı"
+  },
+  "bil05": {
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0
+   },
+   "program_dengeli": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "101",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "120",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "121",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "320",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "101.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "101.02",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "T1",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "bilanco",
+   "uygulanmadi": "Bilanço (Ç6): kalemler, hesaplanmış Dönem Net Kârı, ters bakiye, Kesin Değil yok — yalnız 1–5 sınıfı hesap bakiyeleri karşılaştırıldı"
+  },
+  "mz": {
+   "brut": {
+    "kahin": {
+     "alacak": 1080000,
+     "borc": 1080000
+    },
+    "program": {
+     "alacak": 1160000,
+     "borc": 1160000
+    }
+   },
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 9,
+    "K": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 0
+   },
+   "program_dengeli": true,
+   "program_mutabakat": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "100",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "102",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "120",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "320",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "600",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "770",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "T1",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "mizan"
+  }
+ },
+ "redler": [
+  {
+   "id": "",
+   "kahin": {
+    "kod": "EVRAK_DURUMU",
+    "neden": "CK1 tahsil"
+   },
+   "no": 14,
+   "program": {
+    "ileti": "Yalnız portföydeki alınan çek ve senet bankaya tahsile verilir (bu evrak: Tahsil Edildi).",
+    "kod": "cheque-not-in-portfolio",
+    "status": 409
+   },
+   "sonuc": "AYNI",
+   "tur": "evrak_tahsile_ver"
+  }
+ ],
+ "senaryo": "s09-cek-senet-alinan",
+ "son": [
+  {
+   "alan": "ana",
+   "anahtar": "100",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "102",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "120",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "320",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "600",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "770",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "alt",
+   "anahtar": "102.B1",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "C1",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "T1",
+   "sinif": "AYNI"
+  }
+ ],
+ "tz": "UTC",
+ "uyarilar": [],
+ "uygulanamayan": []
+}
