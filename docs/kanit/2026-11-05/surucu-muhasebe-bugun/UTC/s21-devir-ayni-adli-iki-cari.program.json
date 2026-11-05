@@ -1,0 +1,768 @@
+{
+ "senaryo": "s21-devir-ayni-adli-iki-cari",
+ "tz": "UTC",
+ "program": "bu-depo",
+ "ilk_tarih": "2026-11-01",
+ "olaylar": [
+  {
+   "no": 1,
+   "tur": "satis_faturasi",
+   "id": "F1",
+   "tarih": "2026-11-01",
+   "durum": "yapildi",
+   "status": 200,
+   "ms": 38,
+   "saat": "2026-11-01",
+   "delta": {
+    "ana": {
+     "120": 100000,
+     "600": -100000
+    },
+    "alt": {},
+    "cari": {
+     "C1": 100000
+    }
+   },
+   "dengeli": true,
+   "mutabakat": true
+  },
+  {
+   "no": "2g",
+   "tur": "gun",
+   "tarih": "2026-11-02",
+   "onceki": "2026-11-01",
+   "durum": "yapildi",
+   "settled": 0,
+   "delta": {
+    "ana": {},
+    "alt": {},
+    "cari": {}
+   }
+  },
+  {
+   "no": 2,
+   "tur": "satis_faturasi",
+   "id": "F2",
+   "tarih": "2026-11-02",
+   "durum": "yapildi",
+   "status": 200,
+   "ms": 24,
+   "saat": "2026-11-02",
+   "delta": {
+    "ana": {
+     "120": 50000,
+     "600": -50000
+    },
+    "alt": {},
+    "cari": {
+     "C2": 50000
+    }
+   },
+   "dengeli": true,
+   "mutabakat": true
+  },
+  {
+   "no": "3g",
+   "tur": "gun",
+   "tarih": "2026-11-05",
+   "onceki": "2026-11-02",
+   "durum": "yapildi",
+   "settled": 0,
+   "delta": {
+    "ana": {},
+    "alt": {},
+    "cari": {}
+   }
+  },
+  {
+   "no": 3,
+   "tur": "tahsilat",
+   "tarih": "2026-11-05",
+   "durum": "yapildi",
+   "status": 200,
+   "ms": 27,
+   "saat": "2026-11-05",
+   "delta": {
+    "ana": {
+     "100": 80000,
+     "120": -80000
+    },
+    "alt": {},
+    "cari": {
+     "C2": -80000
+    }
+   },
+   "dengeli": true,
+   "mutabakat": true
+  },
+  {
+   "no": 4,
+   "tur": "devir",
+   "durum": "uygulanmadi",
+   "is": "D2–D4",
+   "neden": "yıl sonu devri (arşiv + yeni yıl açılışı)",
+   "ms": 0,
+   "saat": "2026-11-05"
+  },
+  {
+   "no": "5g",
+   "tur": "gun",
+   "tarih": "2027-01-01",
+   "onceki": "2026-11-05",
+   "durum": "yapildi",
+   "settled": 0,
+   "delta": {
+    "ana": {},
+    "alt": {},
+    "cari": {}
+   }
+  },
+  {
+   "no": 5,
+   "tur": "rapor",
+   "tarih": "2027-01-01",
+   "durum": "rapor"
+  },
+  {
+   "no": "6g",
+   "tur": "gun",
+   "tarih": "2027-12-31",
+   "onceki": "2027-01-01",
+   "durum": "yapildi",
+   "settled": 0,
+   "delta": {
+    "ana": {},
+    "alt": {},
+    "cari": {}
+   }
+  },
+  {
+   "no": 6,
+   "tur": "rapor",
+   "durum": "rapor"
+  }
+ ],
+ "raporlar": {
+  "bil": {
+   "no": 5,
+   "tur": "bilanco",
+   "ad": "bil",
+   "saat": "2027-01-01",
+   "mizan": [
+    {
+     "hesap": "100",
+     "devir": 0,
+     "borc": 80000,
+     "alacak": 0,
+     "bakiye": 80000
+    },
+    {
+     "hesap": "120",
+     "devir": 0,
+     "borc": 150000,
+     "alacak": 80000,
+     "bakiye": 70000
+    },
+    {
+     "hesap": "600",
+     "devir": 0,
+     "borc": 0,
+     "alacak": 150000,
+     "bakiye": -150000
+    }
+   ],
+   "mizan_toplam": {
+    "borc": 230000,
+    "alacak": 230000
+   },
+   "dengeli": true,
+   "mutabakat": {
+    "ok": true,
+    "balanced": true,
+    "checks": [
+     {
+      "code": "100",
+      "name": "Kasa (Nakit)",
+      "ledger": 800,
+      "subledger": 800,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "101",
+      "name": "Alınan Çekler",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "102",
+      "name": "Bankalar (Havale / EFT)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "103",
+      "name": "Verilen Çekler ve Ödeme Emirleri (−)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "108",
+      "name": "Kredi Kartı Tahsilatları (POS)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "120",
+      "name": "Alıcılar (Müşteri Carileri)",
+      "ledger": 700,
+      "subledger": 700,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "127",
+      "name": "Carisiz Taksit Kartları",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "191",
+      "name": "İndirilecek KDV",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "193",
+      "name": "Peşin Ödenen Vergiler (Stopaj)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "320",
+      "name": "Satıcılar (Tedarikçi Carileri)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "336",
+      "name": "Diğer Cariler (Personel vb.)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "360",
+      "name": "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "391",
+      "name": "Hesaplanan KDV",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     }
+    ]
+   },
+   "alt": [],
+   "cari_mizani": {
+    "headers": [
+     "Cari No",
+     "Cari",
+     "Tür",
+     "Devir",
+     "Borç",
+     "Alacak",
+     "Bakiye",
+     "Durum"
+    ],
+    "rows": [
+     [
+      "1",
+      "Ahmet Yılmaz",
+      "Müşteri",
+      "0,00 TL",
+      "1.000,00 TL",
+      "0,00 TL",
+      "1.000,00 TL",
+      "Borçlu"
+     ],
+     [
+      "2",
+      "Ahmet Yılmaz",
+      "Müşteri",
+      "0,00 TL",
+      "500,00 TL",
+      "800,00 TL",
+      "300,00 TL",
+      "Alacaklı"
+     ]
+    ],
+    "footer": [
+     "TOPLAM",
+     "",
+     "",
+     "0,00 TL",
+     "1.500,00 TL",
+     "800,00 TL",
+     "700,00 TL",
+     "Borçlu"
+    ],
+    "summary": [
+     [
+      "Cari Sayısı",
+      "2"
+     ],
+     [
+      "Dönem Borç",
+      "1.500,00 TL"
+     ],
+     [
+      "Dönem Alacak",
+      "800,00 TL"
+     ],
+     [
+      "Borçlular Toplamı",
+      "1.000,00 TL"
+     ],
+     [
+      "Alacaklılar Toplamı",
+      "300,00 TL"
+     ]
+    ]
+   },
+   "dosya": "canli"
+  },
+  "gt": {
+   "no": 6,
+   "tur": "gelir_tablosu",
+   "ad": "gt",
+   "saat": "2027-12-31",
+   "mizan": [
+    {
+     "hesap": "100",
+     "devir": 80000,
+     "borc": 0,
+     "alacak": 0,
+     "bakiye": 80000
+    },
+    {
+     "hesap": "120",
+     "devir": 70000,
+     "borc": 0,
+     "alacak": 0,
+     "bakiye": 70000
+    },
+    {
+     "hesap": "600",
+     "devir": -150000,
+     "borc": 0,
+     "alacak": 0,
+     "bakiye": -150000
+    }
+   ],
+   "mizan_toplam": {
+    "borc": 0,
+    "alacak": 0
+   },
+   "dengeli": true,
+   "mutabakat": {
+    "ok": true,
+    "balanced": true,
+    "checks": [
+     {
+      "code": "100",
+      "name": "Kasa (Nakit)",
+      "ledger": 800,
+      "subledger": 800,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "101",
+      "name": "Alınan Çekler",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "102",
+      "name": "Bankalar (Havale / EFT)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "103",
+      "name": "Verilen Çekler ve Ödeme Emirleri (−)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "108",
+      "name": "Kredi Kartı Tahsilatları (POS)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "120",
+      "name": "Alıcılar (Müşteri Carileri)",
+      "ledger": 700,
+      "subledger": 700,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "127",
+      "name": "Carisiz Taksit Kartları",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "191",
+      "name": "İndirilecek KDV",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "193",
+      "name": "Peşin Ödenen Vergiler (Stopaj)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "320",
+      "name": "Satıcılar (Tedarikçi Carileri)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "336",
+      "name": "Diğer Cariler (Personel vb.)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "360",
+      "name": "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     },
+     {
+      "code": "391",
+      "name": "Hesaplanan KDV",
+      "ledger": 0,
+      "subledger": 0,
+      "difference": 0,
+      "ok": true
+     }
+    ]
+   },
+   "alt": [],
+   "cari_mizani": {
+    "headers": [
+     "Cari No",
+     "Cari",
+     "Tür",
+     "Devir",
+     "Borç",
+     "Alacak",
+     "Bakiye",
+     "Durum"
+    ],
+    "rows": [
+     [
+      "1",
+      "Ahmet Yılmaz",
+      "Müşteri",
+      "1.000,00 TL",
+      "0,00 TL",
+      "0,00 TL",
+      "1.000,00 TL",
+      "Borçlu"
+     ],
+     [
+      "2",
+      "Ahmet Yılmaz",
+      "Müşteri",
+      "-300,00 TL",
+      "0,00 TL",
+      "0,00 TL",
+      "300,00 TL",
+      "Alacaklı"
+     ]
+    ],
+    "footer": [
+     "TOPLAM",
+     "",
+     "",
+     "700,00 TL",
+     "0,00 TL",
+     "0,00 TL",
+     "700,00 TL",
+     "Borçlu"
+    ],
+    "summary": [
+     [
+      "Cari Sayısı",
+      "2"
+     ],
+     [
+      "Dönem Borç",
+      "0,00 TL"
+     ],
+     [
+      "Dönem Alacak",
+      "0,00 TL"
+     ],
+     [
+      "Borçlular Toplamı",
+      "1.000,00 TL"
+     ],
+     [
+      "Alacaklılar Toplamı",
+      "300,00 TL"
+     ]
+    ]
+   },
+   "dosya": "canli"
+  }
+ },
+ "kurulum": [
+  {
+   "ad": "banka-kurulum-gec",
+   "status": 200
+  },
+  {
+   "ad": "eksi-politika",
+   "status": 200
+  },
+  {
+   "ad": "benzer-uyari-kapali",
+   "status": 200
+  },
+  {
+   "ad": "cari:C1",
+   "status": 200
+  },
+  {
+   "ad": "cari:C2",
+   "status": 200
+  },
+  {
+   "ad": "cari:C3",
+   "status": 200
+  },
+  {
+   "ad": "cari:D1",
+   "status": 200
+  },
+  {
+   "ad": "cari:T1",
+   "status": 200
+  },
+  {
+   "ad": "cari:T2",
+   "status": 200
+  },
+  {
+   "ad": "urun:U1",
+   "status": 200
+  },
+  {
+   "ad": "urun:U2",
+   "status": 200
+  },
+  {
+   "ad": "urun:U3",
+   "status": 200
+  }
+ ],
+ "alt_hesap": {},
+ "cari_kimlik": {
+  "account-beda8e09-3ec2-4420-9301-af800ec5ef54": "C1",
+  "account-7244a6cb-cc22-411d-b838-8949a65fd7de": "C2",
+  "account-c416984f-28c2-4e11-8fbf-169012443590": "C3",
+  "account-09d0325d-3ea2-49cb-9cb9-448e805f8b4c": "D1",
+  "account-36ede3c2-f8e6-45c3-a8e1-4354c0c7a229": "T1",
+  "account-25b3b64f-c12e-42c6-bbf9-c831dda75507": "T2"
+ },
+ "cari_no": {
+  "1": "C1",
+  "2": "C2",
+  "3": "C3",
+  "4": "D1",
+  "5": "T1",
+  "6": "T2"
+ },
+ "adim": true,
+ "saat": "2027-12-31",
+ "ufuk": "2027-12-31",
+ "baslangic": {
+  "ana": {},
+  "alt": {},
+  "cari": {},
+  "ok": true,
+  "dengeli": true,
+  "mutabakat": true
+ },
+ "son": {
+  "ana": {
+   "100": 80000,
+   "120": 70000,
+   "600": -150000
+  },
+  "alt": {},
+  "cari": {
+   "C1": 100000,
+   "C2": -30000
+  },
+  "ok": true,
+  "dengeli": true,
+  "mutabakat": true
+ },
+ "son_tum": {
+  "ana": {
+   "100": 80000,
+   "120": 70000,
+   "600": -150000
+  },
+  "alt": {},
+  "cari": {},
+  "ok": false,
+  "dengeli": true,
+  "mutabakat": true
+ },
+ "mutabakat_testi": true,
+ "olcum": {
+  "olay_dongusu_en_cok_ms": 31,
+  "olay_dongusu_p99_ms": 31,
+  "istek_sayisi": 59,
+  "istekler": [
+   {
+    "istek": "POST /api/workspace/accounts",
+    "sayi": 6,
+    "toplam_ms": 146,
+    "en_cok_ms": 70
+   },
+   {
+    "istek": "GET /api/workspace/ledger",
+    "sayi": 12,
+    "toplam_ms": 56,
+    "en_cok_ms": 10
+   },
+   {
+    "istek": "POST /api/workspace/invoices",
+    "sayi": 2,
+    "toplam_ms": 56,
+    "en_cok_ms": 32
+   },
+   {
+    "istek": "GET /api/workspace/report-center/mizan",
+    "sayi": 12,
+    "toplam_ms": 43,
+    "en_cok_ms": 9
+   },
+   {
+    "istek": "POST /api/workspace/stock",
+    "sayi": 3,
+    "toplam_ms": 35,
+    "en_cok_ms": 14
+   },
+   {
+    "istek": "GET /api/workspace/bank/sub-trial",
+    "sayi": 12,
+    "toplam_ms": 27,
+    "en_cok_ms": 5
+   },
+   {
+    "istek": "POST /api/workspace/accounts/:id/entries",
+    "sayi": 1,
+    "toplam_ms": 27,
+    "en_cok_ms": 27
+   },
+   {
+    "istek": "POST /api/workspace/bank/setup/dismiss",
+    "sayi": 1,
+    "toplam_ms": 18,
+    "en_cok_ms": 18
+   },
+   {
+    "istek": "PUT /api/workspace/bank/settings",
+    "sayi": 1,
+    "toplam_ms": 17,
+    "en_cok_ms": 17
+   },
+   {
+    "istek": "POST /api/workspace/bank/settle",
+    "sayi": 5,
+    "toplam_ms": 16,
+    "en_cok_ms": 8
+   },
+   {
+    "istek": "PUT /api/admin/negative-policy",
+    "sayi": 1,
+    "toplam_ms": 10,
+    "en_cok_ms": 10
+   },
+   {
+    "istek": "GET /api/workspace/ledger/integrity",
+    "sayi": 1,
+    "toplam_ms": 10,
+    "en_cok_ms": 10
+   },
+   {
+    "istek": "GET /api/workspace/bank/accounts",
+    "sayi": 1,
+    "toplam_ms": 3,
+    "en_cok_ms": 3
+   },
+   {
+    "istek": "GET /api/workspace/bank/pos",
+    "sayi": 1,
+    "toplam_ms": 1,
+    "en_cok_ms": 1
+   }
+  ]
+ }
+}

@@ -1,0 +1,230 @@
+{
+ "senaryolar": 3,
+ "tz": [
+  "Europe/Istanbul"
+ ],
+ "dal": "KG3=SORU",
+ "program": "bu-depo",
+ "say": {
+  "AYNI": 431,
+  "U": 142,
+  "P": 17,
+  "K": 1,
+  "R": 0,
+  "SINIFLANMADI": 227,
+  "adim_sinifsiz": null
+ },
+ "etiketSay": {
+  "F06-GIDER-TURU": 50,
+  "C5-ACILIS-519": 36,
+  "C5-EVRAK-ACILIS": 36,
+  "C1-ALT-90": 52,
+  "KG2-H03": 36,
+  "KG24-IHRACAT": 35,
+  "C5-EVRAK-KARSILIKSIZ": 6
+ },
+ "redFark": 0,
+ "uygulanamayan": 0,
+ "adimSinifsiz": 0,
+ "ozBozuk": 0,
+ "degismez": 0,
+ "hata": 0,
+ "sonuclar": [
+  {
+   "ad": "rastgele-1",
+   "tz": "Europe/Istanbul",
+   "ms": 32893,
+   "ozet": {
+    "AYNI": 156,
+    "K": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 70,
+    "U": 49,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 5,
+    "rapor": 8,
+    "red": 1,
+    "uygulanmadi": 1,
+    "yapildi": 847
+   },
+   "redler": 1,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 75,
+    "olay_dongusu_p99_ms": 62,
+    "istek_sayisi": 1271,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 319,
+      "toplam_ms": 10948,
+      "en_cok_ms": 65
+     },
+     {
+      "istek": "POST /api/workspace/cheques",
+      "sayi": 62,
+      "toplam_ms": 1940,
+      "en_cok_ms": 52
+     },
+     {
+      "istek": "POST /api/workspace/cash",
+      "sayi": 45,
+      "toplam_ms": 1364,
+      "en_cok_ms": 50
+     },
+     {
+      "istek": "POST /api/workspace/accounts/account-1e8d8e57-a539-44d0-8de9-159c6778f5a4/entries",
+      "sayi": 34,
+      "toplam_ms": 1347,
+      "en_cok_ms": 68
+     },
+     {
+      "istek": "POST /api/workspace/bank/settle",
+      "sayi": 300,
+      "toplam_ms": 1182,
+      "en_cok_ms": 62
+     },
+     {
+      "istek": "POST /api/workspace/accounts/account-f7d5dbaa-f0f7-480b-9c91-a9d09667ee3b/entries",
+      "sayi": 28,
+      "toplam_ms": 1092,
+      "en_cok_ms": 58
+     }
+    ]
+   }
+  },
+  {
+   "ad": "rastgele-2",
+   "tz": "Europe/Istanbul",
+   "ms": 29284,
+   "ozet": {
+    "AYNI": 150,
+    "K": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 74,
+    "U": 48,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 5,
+    "rapor": 8,
+    "uygulanmadi": 1,
+    "yapildi": 813
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 80,
+    "olay_dongusu_p99_ms": 59,
+    "istek_sayisi": 1219,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 300,
+      "toplam_ms": 9908,
+      "en_cok_ms": 64
+     },
+     {
+      "istek": "POST /api/workspace/cash",
+      "sayi": 58,
+      "toplam_ms": 1722,
+      "en_cok_ms": 54
+     },
+     {
+      "istek": "POST /api/workspace/cheques",
+      "sayi": 58,
+      "toplam_ms": 1655,
+      "en_cok_ms": 41
+     },
+     {
+      "istek": "POST /api/workspace/bank/vouchers",
+      "sayi": 39,
+      "toplam_ms": 1002,
+      "en_cok_ms": 56
+     },
+     {
+      "istek": "POST /api/workspace/accounts/account-89b389a5-e405-4e1e-83aa-1298095ddac6/entries",
+      "sayi": 27,
+      "toplam_ms": 973,
+      "en_cok_ms": 61
+     },
+     {
+      "istek": "POST /api/workspace/accounts/account-0e3bae06-11e2-4b80-ab51-18c3f30c7850/entries",
+      "sayi": 26,
+      "toplam_ms": 963,
+      "en_cok_ms": 81
+     }
+    ]
+   }
+  },
+  {
+   "ad": "rastgele-3",
+   "tz": "Europe/Istanbul",
+   "ms": 28257,
+   "ozet": {
+    "AYNI": 125,
+    "K": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 83,
+    "U": 45,
+    "adim_sinifsiz": 0
+   },
+   "olay": {
+    "api_yok": 7,
+    "rapor": 8,
+    "uygulanmadi": 1,
+    "yapildi": 811
+   },
+   "redler": 0,
+   "adim": 0,
+   "olcum": {
+    "olay_dongusu_en_cok_ms": 75,
+    "olay_dongusu_p99_ms": 59,
+    "istek_sayisi": 1237,
+    "en_agir": [
+     {
+      "istek": "POST /api/workspace/invoices",
+      "sayi": 296,
+      "toplam_ms": 9267,
+      "en_cok_ms": 62
+     },
+     {
+      "istek": "POST /api/workspace/cash",
+      "sayi": 66,
+      "toplam_ms": 1847,
+      "en_cok_ms": 58
+     },
+     {
+      "istek": "POST /api/workspace/cheques",
+      "sayi": 56,
+      "toplam_ms": 1513,
+      "en_cok_ms": 51
+     },
+     {
+      "istek": "POST /api/workspace/bank/vouchers",
+      "sayi": 46,
+      "toplam_ms": 1070,
+      "en_cok_ms": 55
+     },
+     {
+      "istek": "POST /api/workspace/accounts/account-acda6a8a-9b7a-4ea5-810d-b2da667dfddb/entries",
+      "sayi": 27,
+      "toplam_ms": 1021,
+      "en_cok_ms": 75
+     },
+     {
+      "istek": "POST /api/workspace/accounts/account-a5d34ef4-0584-42ee-bfe8-7dc179f40b9f/entries",
+      "sayi": 29,
+      "toplam_ms": 1007,
+      "en_cok_ms": 56
+     }
+    ]
+   }
+  }
+ ]
+}
