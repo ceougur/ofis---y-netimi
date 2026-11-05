@@ -403,7 +403,8 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md (nasıl bozulur, hacim bütçesi) → mali müşavir P → kullanıcı onayı; (2) kâhin (kodu görmeyen, kural kitabından); (3) kod: yıl hatası → çekirdek temeli → mali müşavir A
   → devir + Devri Yenile → W-1/W-2; (4) aday → mali müşavir S + UI/UX → düzeltme + dar kontrol → tam kapı → CI + UD + windows.yml ×2 → paket.
   2.5.0 BAŞLADI (05.11 ~17:00 UTC; kullanıcı: "tüm planlama tamamsa başla, 2.5.1 sürümüne kalan işleri de iş listesine yaz"): İŞ LİSTESİ docs/2.5.0-IS-LISTESI.md (A kapsam + dalgalar + eforlar,
-  B 2.5.1'E KALAN, C sorular, D kararlar, E kayıt). OKUMA: planlama bitmeden plana bağlı kod yok; 0. dalga (0a BELGE_YOLLARI, 0b mutabakat motoru yıl hatası [XH], 0c mali müşavir ajanı + prensip) başladı;
+  B 2.5.1'E KALAN, C sorular, D kararlar, E kayıt). OKUMA: planlama bitmeden plana bağlı kod yok; 0. dalga (0a BELGE_YOLLARI c503e486, 0c mali müşavir ajanı + prensip) YAPILDI; 0b mutabakat motoru yıl
+  hatası 2.4.8'de ZATEN YAPILMIŞ (MZ 213efb6) — 2.4.8/2.4.9 teslim notu (d) satırı eskiydi, kullanıcıya düzeltildi. CI bu oturumda GitHub MCP ile okunur (gh bu ortamda yalnız arama; kanit.mjs ci gh kullanır);
   planlama (P1–P6) bitince 1. dalga kendiliğinden; ders 43/45 soruları önce kullanıcıya. P2 (defter mimarisi D0) BİTTİ: başlıca bulgular — defter cari açılışını is_opening değil AÇIKLAMADAN tanıyor;
   giderler 760/770/780 (7/A) → kapanış yalnız 6xx değil, 7/A-7/B kararı; kilit izi türetmeyi korumuyor (senet 121/321'de yaşandı); yevmiye ana iş parçacığında bütün geçmişten (100 bin ~2,8 sn, 1 M ~55 sn);
   KEEP_SETTINGS (Sıfırla) Defter Türü anahtarını korumalı; B1 gecikmiş tanımı ekranlar arasında farklı (fatura dahil mi → kullanıcıya, WhatsApp elemesi). P1 (devir D0) sürüyor.
