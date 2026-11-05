@@ -1,0 +1,32 @@
+{
+  "ad": "wk250-senaryolar",
+  "komut": "python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py",
+  "commit": "260031261d631460eca05a2c9359828b9a189172",
+  "dal": "worktree-agent-a9037d8b18fac715b",
+  "kirli": 5,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:49:26.867Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 310,
+    "gecen": 310,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/wk250-senaryolar.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9037d8b18fac715b",
+  "ham_cikti_sha256": "ef775073fb95e098f1838c96afcd69eda8241a2d69b7c9cbc4acf9c1ab1d34d5",
+  "ham_cikti_bayt": 580
+}

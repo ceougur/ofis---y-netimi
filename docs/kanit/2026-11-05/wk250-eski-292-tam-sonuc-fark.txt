@@ -1,0 +1,61 @@
+eski 292, yeni 310, ortak 292, yeni eklenen 18, çıkan 0
+== ICERIK-10-ttl-sonrasi-teslim: değişen alanlar ['beklenen']
+   beklenen. kontroller.K2.pencere_farkli_alici.W1: 1 → 0
+== HESAP-0: değişen alanlar ['girdi', 'elle', 'beklenen', 'kaynak', 'aciklama']
+   beklenen. bu_ay.W1.2026-10.teslim: 2 → 3
+   beklenen. bu_ay.W1.2026-10.yaklasik_usd: "0.0018" → "0.0027"
+   beklenen. durum_sayilari.Başarısız: 1 → "<YOK>"
+   beklenen. durum_sayilari.Teslim Edildi: 2 → 3
+   beklenen. isler.T1/B.durum: "Başarısız" → "Teslim Edildi"
+   beklenen. isler.T1/B.hata_kodu: 0 → null
+   beklenen. isler.T1/B.kabul: 0 → 1
+   beklenen. isler.T1/B.meta_ileti: 0 → 1
+   beklenen. isler.T1/B.post: 1 → 2
+   beklenen. kontroller.K1.durum_sayilari.Başarısız: 1 → "<YOK>"
+   beklenen. kontroller.K1.durum_sayilari.Duraklatıldı: 1 → 2
+   beklenen. kontroller.K1.isler.T1/B: "Başarısız" → "Duraklatıldı"
+   beklenen. kontroller.K1.medya_silme: 2 → 1
+   beklenen. kontroller.K2.durum_sayilari.Başarısız: 1 → "<YOK>"
+   beklenen. kontroller.K2.durum_sayilari.Teslim Edildi: 2 → 3
+   beklenen. kontroller.K2.isler.T1/B: "Başarısız" → "Teslim Edildi"
+   beklenen. kontroller.K2.pencere_farkli_alici.W1: 2 → 3
+   beklenen. kontroller.K2.toplam_kabul: 2 → 3
+   beklenen. kontroller.K2.toplam_post: 3 → 4
+   beklenen. meta.kabul.B: 0 → 1
+   beklenen. meta.meta_ileti.B: 0 → 1
+   beklenen. meta.post.B: 1 → 2
+   beklenen. meta.toplam_kabul_program: 2 → 3
+   beklenen. meta.toplam_meta_ileti: 2 → 3
+   beklenen. meta.toplam_post: 3 → 4
+   elle. durum_sayilari.Başarısız: 1 → "<YOK>"
+   elle. durum_sayilari.Teslim Edildi: 2 → 3
+   elle. isler.T1/B.hata_kodu: 0 → null
+   elle. kontroller.K1.isler.T1/B: "Başarısız" → "Duraklatıldı"
+   elle. kontroller.K1.toplular: "<YOK>" → {"T1": "duraklatildi"}
+   elle. kontroller.K2.isler: "<YOK>" → {"T1/A": "Teslim Edildi", "T1/B": "Teslim Edildi", "T1/C": "Teslim Edildi"}
+   elle. meta.medya_yukleme: "<YOK>" → {"A": 1, "B": 1, "C": 1}
+   elle. meta.post.B: 1 → 2
+   elle. toplular.T1: "<YOK>" → {"durum": "aktif", "is_sayisi": 3, "neden": null}
+   elle. toplular.T1.durum: "aktif" → "<YOK>"
+   girdi. olaylar: [{"donem": {"bas": "2026-10-01", "son": "2026-10-31"}, "etiket": "T1", "sablon": "ekstre", "secim": ["A", "B", "C"], "t": "+0s", "tur": "baslat"}, {"ad": "K1",  → [{"donem": {"bas": "2026-10-01", "son": "2026-10-31"}, "etiket": "T1", "sablon": "ekstre", "secim": ["A", "B", "C"], "t": "+0s", "tur": "baslat"}, {"ad": "K1", 
+== TARIH-02-ttl-sonu: değişen alanlar ['beklenen']
+   beklenen. kontroller.K2.pencere_farkli_alici.W1: 1 → 0
+== TARIH-03b-kancasiz-yol-calisiyor: değişen alanlar ['beklenen']
+   beklenen. kontroller.K2.pencere_farkli_alici.W1: 2 → 1
+== J4-01-suresi-doldu-son-kabulden-meta-bekletti: değişen alanlar ['beklenen']
+   beklenen. kontroller.K2.pencere_farkli_alici.W1: 1 → 0
+== J4-02-suresi-doldu-son-kabulden-yine-de-gonder: değişen alanlar ['beklenen']
+   beklenen. kontroller.K2.pencere_farkli_alici.W1: 1 → 0
+== J9-01-n3-iptal-sonrasi-ikinci-is-gec-teslim-iki-ileti: değişen alanlar ['girdi', 'kaynak', 'aciklama']
+   girdi. bilinen_sinir: {"n3": "kuyruktaki ikinci iş birincinin geç tesliminden sonra da gider (2 ileti) — KARAR 05:58: BİLİNEN SINIR, 2.5.0 (A seçeneği gelince beklenti POST 1 olur)"} → "<YOK>"
+== J9-02-n3-basarisiz-sonrasi-ikinci-is-gec-teslim-iki-ileti: değişen alanlar ['girdi', 'kaynak', 'aciklama']
+   girdi. bilinen_sinir: {"n3": "kuyruktaki ikinci iş birincinin geç tesliminden sonra da gider (2 ileti) — KARAR 05:58: BİLİNEN SINIR, 2.5.0 (A seçeneği gelince beklenti POST 1 olur)"} → "<YOK>"
+== W1-03-meta-bildirir-12-sa-sablon-basina: değişen alanlar ['beklenen']
+   beklenen. kontroller.K2.pencere_farkli_alici.W1: 3 → 2
+== W1-04-ay-sonu-12-sa-gec-teslim: değişen alanlar ['beklenen']
+   beklenen. kontroller.K2.pencere_farkli_alici.W1: 2 → 1
+== W2-01-kabulde-bilinmiyor-sonra-12-sa: değişen alanlar ['beklenen']
+   beklenen. kontroller.K2.pencere_farkli_alici.W1: 2 → 1
+== W2-02-kabulde-30-gun-sonra-12-sa-kisalir: değişen alanlar ['beklenen']
+   beklenen. kontroller.K2.pencere_farkli_alici.W1: 1 → 0
+bayt bayt aynı (girdi + elle + beklenen + kaynak + açıklama): 280/292
