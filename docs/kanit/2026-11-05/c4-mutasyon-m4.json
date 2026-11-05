@@ -1,0 +1,38 @@
+{
+  "ad": "c4-mutasyon-m4",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-mutasyon-m4/test/defter-turu-c4.test.mjs",
+  "commit": "0fc8add42d85e8e89a816374ef0844fd01a29a3a",
+  "dal": "worktree-agent-a1a42f4d745a759a0",
+  "kirli": 6,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:05:03.194Z",
+  "sure_sn": 7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 6,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez",
+      "konum": "test/defter-turu-c4.test.mjs:187:3",
+      "hata": "{\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} · 500 !== 409 (beklenen 409, gelen 500)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-mutasyon-m4.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1a42f4d745a759a0",
+  "ham_cikti_sha256": "19acc68776ca76e1fce4b6a27d2d2fada93cf4fda122e2ee43e3e5d6ca1321ab",
+  "ham_cikti_bayt": 3523
+}

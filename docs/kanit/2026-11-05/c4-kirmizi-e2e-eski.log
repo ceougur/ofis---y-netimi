@@ -1,0 +1,15 @@
+1) Yönetici — varsayılan ve seçenekler
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.waitForSelector: Timeout 12000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible) [data-s="bookType"]') to be visible[22m
+
+    at openSettings (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/e2e/senaryo-defter-turu-250.mjs:61:14)
+    at async file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/e2e/senaryo-defter-turu-250.mjs:75:1 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.23.4

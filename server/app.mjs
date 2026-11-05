@@ -1002,7 +1002,9 @@ function buildApp(overrides, opening) {
   // v2.0.21 (rastgele sıra testi bulgusu): 001'in veri tabanı aynı zamanda ortak katmandır; kullanıcıların şirket seçimi ve
   // ŞİRKET YETKİLERİ (company.*) ile parola kurtarma anahtarı (auth.*) "Tümünü Sıfırla"da silinmez (geri yüklemedeki ortak
   // katman listesiyle aynı: company-backups.mjs COMMON_SETTINGS).
-  const KEEP_SETTINGS = ["office.", "meta.", "sectors.", "client.", "invoice", "einvoice", "edoc", "whatsapp", "backup", "cloud", "drive", "license.", "update", "company.", "auth.", "bank.settings"];
+  const KEEP_SETTINGS = ["office.", "meta.", "sectors.", "client.", "invoice", "einvoice", "edoc", "whatsapp", "backup", "cloud", "drive", "license.", "update", "company.", "auth.", "bank.settings",
+    // 2.5.0 Ç4: Defter Türü (accounting.bookType) şirketin defter düzeni ayarıdır, hareket değil — korunur. "ledger." BİLEREK yok: dönem kilidi sıfırlamada kalkar.
+    "accounting."];
   function resetData(user, { mode = "movements", resetNumbers = true } = {}) {
     if (schemaGate) throw new HttpError(409, schemaGate.message, { code: schemaGate.code, schemaGate });
     if (!["movements", "all"].includes(mode)) throw new HttpError(400, "Sıfırlama türü 'movements' ya da 'all' olmalı.");
