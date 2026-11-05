@@ -382,6 +382,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   destek-ofis.vercel.app DEĞİŞMEZ. SÜREÇ (sürer): DÜŞÜK bulgu sonraki sürüme; UD + windows.yml ×2 aynı commit'te; mobil değişikliğinde mobil özet ölçümü yinelenir.
 
 ## Açık iş (yalnız güncel; kapanan sürümler `docs/GECMIS-KARARLAR.md`)
+- 2.5.0 PLANLAMA (05.11.2026, 2.5.0 oturumu, dal claude/epic-thompson-w0lc2l; eski oturumun dalı claude/compassionate-galileo-f9kghg / PR #40 — buradan oraya yazılmaz). Kullanıcı: "2.5.0'a başlıyoruz …
+  önce planlamayı yapalım"; MUHASEBE ÇEKİRDEĞİ talimatı AYNEN docs/erp/MUHASEBE-CEKIRDEGI-TALIMATI.md (not: "devir modülü ile birlikte yürütmek daha sağlıklı"). Kapsam önerisi + koddan kör noktalar
+  (tablo sınıflaması eski; devir faturası işareti 146 okuma yeri; devir yedeği SAFETY_KEEP=20 ile budanır, arşiv yedekte yok; kilit izi türetilmiş defteri korumuyor; mükellef türü yok; geç gelen
+  Aralık faturası; App Review'da business_management yok → W-1) kullanıcıya verildi. KARAR BEKLENİYOR: kapsam aşamalaması, mükellef türü, Devri Yenile, devirde açılış karşı hesabı. "başla"dan önce kod yok.
 - 2.4.8 KARARLARI (30.10–02.11.2026; 2.4.8 YAYIMLANDI; "2.4.8 BAŞLADI", "YETKİ + TESLİM TALİMATI", "TALİMAT 31.10" ve bütün 30.10–02.11 KARAR / İSTEK satırlarının tam metin GECMIS-KARARLAR "Arşiv 02.11.2026 (3)";
   ayrıntı docs/2.4.8-IS-LISTESI.md). SÜRENLER:
   WHATSAPP "KİME KAÇ KEZ" GENEL İLKESİ (31.10 "a"; benzer sorular tek tek SORULMAZ, ilkeyle uygulanır, iş listesine ve teslim notuna "İLKEYLE" yazılır): (1) kesin ALMADIYSA sayılmaz
