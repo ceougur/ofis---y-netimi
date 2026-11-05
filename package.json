@@ -55,6 +55,7 @@
     "test:senaryo-k8-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-k8-230.mjs",
     "test:senaryo-iz32-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz32-230.mjs",
     "test:senaryo-pos-kart-249": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-pos-kart-249.mjs",
+    "test:senaryo-kart-iade-gecmis-250": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kart-iade-gecmis-250.mjs",
     "test:senaryo-supheli-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-supheli-230.mjs",
     "test:senaryo-iz5-230": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz5-230.mjs",
     "test:senaryo-entegrator-240": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-entegrator-240.mjs",
