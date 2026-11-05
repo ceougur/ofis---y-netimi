@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-e2e-ana",
+  "komut": "npm run test:e2e",
+  "commit": "019341481d370f717dfe60a0a1ac5814e37937eb",
+  "dal": "worktree-agent-a03e5f6803e8339cb",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:28:27.419Z",
+  "sure_sn": 176.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-e2e-ana.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a03e5f6803e8339cb",
+  "ham_cikti_sha256": "170386fe650637cdb93fd9712c823167518825b279346cf23a962c96dd575230",
+  "ham_cikti_bayt": 5699
+}

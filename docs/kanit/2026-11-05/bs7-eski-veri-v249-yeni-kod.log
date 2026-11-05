@@ -1,0 +1,18 @@
+TAP version 13
+# (node:28438) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: v2.4.9 verisi (001 + 002) yeni kodla normal açılır; kapı yok, yazma çalışır
+ok 1 - v2.4.9 verisi (001 + 002) yeni kodla normal açılır; kapı yok, yazma çalışır
+  ---
+  duration_ms: 1519.837586
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2179.325077

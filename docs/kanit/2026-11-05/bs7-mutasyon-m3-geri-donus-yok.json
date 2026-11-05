@@ -1,0 +1,38 @@
+{
+  "ad": "bs7-mutasyon-m3-geri-donus-yok",
+  "komut": "node --test --test-name-pattern BS-7 test/update-flow.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:35:29.987Z",
+  "sure_sn": 3.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "otomatik güncelleme akışı › yeni sürüm açılamazsa 001 dışındaki şirketler de güncelleme öncesi yedeğe döner (BS-7)",
+      "konum": "test/update-flow.test.mjs:195:3",
+      "hata": "002 de güncelleme öncesi hâline dönmeli (yeni şemada kalmamalı) · 99 !== 45 (beklenen 45, gelen 99)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a03e5f6803e8339cb/docs/kanit/2026-11-05/bs7-mutasyon-m3-geri-donus-yok.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/mutasyon-m3-geri-donus-yok",
+  "ham_cikti_sha256": "7eb05f4b4184b4e773d43c84606dc45c3d5f386bf9133cda9bee4b6ac3194873",
+  "ham_cikti_bayt": 2800
+}

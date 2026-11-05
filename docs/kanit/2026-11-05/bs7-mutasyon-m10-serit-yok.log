@@ -1,0 +1,16 @@
+
+■ Hazırlık: 001 ve 002 programın kendi API'siyle; 002'nin şeması 'yeni sürüm' benzetimiyle büyütülür
+
+■ 002 penceresi: şerit görünür, okuma çalışır
+2026-11-05T17:35:42.991Z [WARN] Veri dosyası programın daha yeni bir sürümüyle açılmış (şema 46 > 45); göç yapılmadı, şirket yalnız görüntülenir.
+  ✓ pencere 002'yi gösteriyor
+  ✗ uyarı şeridi görünür
+  ✗ şerit başlığı ()
+  ✗ şerit Türkçe nedeni söyler
+  ✗ beklenmeyen hata: page.getAttribute: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('#hof-schema-bar')[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/mutasyon-m10-serit-yok/test/e2e/sema-kapisi-bs7.mjs:76:18
+
+✗ sema-kapisi-bs7: 1 geçti, 4 kaldı

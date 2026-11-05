@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-dar-alan-2",
+  "komut": "node --test test/migrations.test.mjs test/supervisor.test.mjs test/update-guard.test.mjs test/updater.test.mjs test/packaging.test.mjs test/yedek-220.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-denetim-221.test.mjs test/sirket-yedek-klasor-210.test.mjs test/sirketler-217.test.mjs test/sirket-yedeksiz-sil-249.test.mjs test/sirket-ayir-221.test.mjs test/sirket-listesi-221.test.mjs test/sirket-pencere-221.test.mjs test/sirket-siniri-225.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/chat.test.mjs test/chat-archive.test.mjs test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/license.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/guvenilirlik-221-goc.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/geri-yukleme-uyari-244.test.mjs test/isgecmisi-230-geri-yukleme-yetki.test.mjs test/mutabakat-213.test.mjs test/write-lock-248.test.mjs test/whatsapp-w9-kanca-248.test.mjs test/whatsapp-dk13-arka-plan-kilit-248.test.mjs test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs test/edoc-kullanim-yedek-247.test.mjs",
+  "commit": "019341481d370f717dfe60a0a1ac5814e37937eb",
+  "dal": "worktree-agent-a03e5f6803e8339cb",
+  "kirli": 0,
+  "izlenmeyen": 14,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:26:36.227Z",
+  "sure_sn": 92.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 361,
+    "gecen": 360,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 1
+  },
+  "hukum": "GEÇTİ",
+  "neden": "1 atlanan/todo",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-dar-alan-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a03e5f6803e8339cb",
+  "ham_cikti_sha256": "bc6aceb59326a42880c62eff04398ac6fdf44873943d6db58d8e5d7852a5c05f",
+  "ham_cikti_bayt": 134884
+}
