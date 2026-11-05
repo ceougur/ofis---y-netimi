@@ -448,8 +448,8 @@ function buildApp(overrides, opening) {
     // BS-7: 001 yeni şemalıyken (geri yükleme başarısız, kapı açık) denetim izi (şirket verisi) yazılmaz; sonuç satırı aşağıda YİNE yazılır.
     if (!schemaGate) audit(actor, stagedRestore.ok ? "system.backup_restored" : "system.backup_restore_failed", stagedRestore.name, { company: "001", safety: stagedRestore.safety || "", error: stagedRestore.error || "" });
     // Sonuç Yönetim → Yedekler'de gösterilir (gözden geçirme bulgusu: başarısız 001 geri yüklemesi sessiz kalıyordu;
-    // kullanıcı eski veriyle çalıştığını bilmiyordu). 2.5.0 BS-7 tur 1 (dar kontrol ORTA-1): kapı açıkken de yazılır — backup.* ortak katman
-    // anahtarıdır (kapı license.* ve company.* gibi); yazılmazsa kullanıcı yalnız "Yalnız Görüntülenir" şeridini görür, geri yüklemenin nedeni hiçbir yerde olmaz.
+    // kullanıcı eski veriyle çalıştığını bilmiyordu). 2.5.0 BS-7 tur 1 (dar kontrol ORTA-1): kapı açıkken de yazılır — backup.lastRestore ortak katman
+    // anahtarı DEĞİLDİR (COMMON_SETTINGS yalnız backup.cloud); kapının bilinçli istisnasıdır (yalnız bu durum notu; test/sema-kapisi-bs7.test.mjs denetler); yazılmazsa kullanıcı yalnız "Yalnız Görüntülenir" şeridini görür, geri yüklemenin nedeni hiçbir yerde olmaz.
     try {
       store.setSetting("backup.lastRestore", JSON.stringify({ ok: stagedRestore.ok, name: stagedRestore.name, safety: stagedRestore.safety || "", error: stagedRestore.error || "", byName: stagedRestore.byName || "", at: new Date().toISOString() }));
     } catch (error) {
