@@ -68,13 +68,13 @@ const NEW_NAMES = {
   690: "Dönem Kârı veya Zararı", 691: "Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)", 692: "Dönem Net Kârı veya Zararı",
   761: "Pazarlama Satış ve Dağıtım Giderleri Yansıtma Hesabı", 771: "Genel Yönetim Giderleri Yansıtma Hesabı", 781: "Finansman Giderleri Yansıtma Hesabı",
 };
+// Dar kontrol DÜŞÜK (Ç4 turu): "(−)" YALNIZ kitabın adından silinir; programın adı olduğu gibi karşılaştırılır — programda gelir tablosu / kapanış hesabının
+// adına "(−)" eklenirse (2.4.9'dan beri adda yazılmaz) kırmızı olur.
 const sameName = (code, got, want) => {
   const statement = !itemOf(code)?.bilanco;
-  const norm = text => {
-    const plain = String(text ?? "").replace(/,/g, "").replace(/\s+/g, " ").trim();
-    return statement ? plain.replace(/\s*\(−\)$/, "") : plain;
-  };
-  return norm(got) === norm(want);
+  const norm = text => String(text ?? "").replace(/,/g, "").replace(/\s+/g, " ").trim();
+  const book = statement ? norm(want).replace(/\s*\(−\)$/, "") : norm(want);
+  return norm(got) === book;
 };
 // 2.4.9'daki (taban 1c0e4e9e) hesap adları: Ç1 yalnız 770'in adını değiştirir.
 const NAMES_249 = {

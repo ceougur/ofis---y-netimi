@@ -36,6 +36,9 @@ const MUTASYONLAR = [
   [17, "alt hesap tanımı düşer (602.90)", '  "602.90": "Sınıflandırılmamış",\n', "", "602.90 alt hesap tanımı"],
   [18, "alt hesap tanımı düşer (610.90)", '  "610.90": "Belgesiz",\n', "", "610.90 alt hesap tanımı"],
   [19, "eklenen hesabın adı yanlış (690 → Dönem Net Zararı)", '690: kapanis("Dönem Kârı veya Zararı"),', '690: kapanis("Dönem Net Zararı"),', '690: kitap "Dönem Kârı veya Zararı", program "Dönem Net Zararı"'],
+  // Dar kontrol DÜŞÜK (Ç4 turu): sameName "(−)"yu programın adından da siliyordu → kapanış hesabının adına eklenen "(−)" yakalanmıyordu.
+  [20, "kapanış hesabının adına (−) eklenir (690)", '690: kapanis("Dönem Kârı veya Zararı"),', '690: kapanis("Dönem Kârı veya Zararı (−)"),', '690: kitap "Dönem Kârı veya Zararı", program "Dönem Kârı veya Zararı (−)"'],
+  [21, "kapanış hesabının adına (−) eklenir (692)", '692: kapanis("Dönem Net Kârı veya Zararı"),', '692: kapanis("Dönem Net Kârı veya Zararı (−)"),', '692: kitap "Dönem Net Kârı veya Zararı", program "Dönem Net Kârı veya Zararı (−)"'],
 ];
 
 const run = () => {

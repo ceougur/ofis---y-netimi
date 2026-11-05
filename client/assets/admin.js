@@ -133,6 +133,10 @@
     "message.created": "Mesaj gönderdi",
     "settings.client.updated": "Ofis ayarını değiştirdi",
     "settings.office.updated": "Ofis adını değiştirdi",
+    // 2.5.0 Ç4 dar kontrol DÜŞÜK: Fatura Ayarları'nın yazdığı üç tür (server/routes/invoices.mjs) ham anahtar görünüyordu; üçü "Ayarlar" süzgecinde de (admin.mjs AUDIT_GROUPS).
+    "invoice.settings.updated": "Fatura Ayarları'nı değiştirdi",
+    "office.report_header.updated": "Tabela Adı / Rapor ve Ekstre Başlığı'nı değiştirdi",
+    "accounting.book_type.updated": "Defter Türü'nü değiştirdi",
     "system.backup_created": "Yedek aldı",
     "system.backup_downloaded": "Yedek indirdi",
     "system.backup_restored": "Yedekten geri yükledi",
@@ -912,6 +916,8 @@
     if (payload.title) parts.push(payload.title);
     if (payload.recipient) parts.push(`Alıcı: ${payload.recipient}`);
     if (payload.key && event.type.startsWith("settings.")) parts.push(payload.key);
+    // Ekran adları sunucudan (admin.mjs → lib/book-type.mjs bookTypeLabel; tek yardımcı).
+    if (event.type === "accounting.book_type.updated") parts.push(`${payload.fromLabel || payload.from || ""} → ${payload.toLabel || payload.to || ""}`);
     if (payload.ip) parts.push(`IP ${payload.ip}`);
     if (event.type.startsWith("staff.") && Array.isArray(payload.fields) && payload.fields.length) parts.push(`Alanlar: ${payload.fields.join(", ")}`);
     return parts.join(" · ");
@@ -1614,7 +1620,7 @@
       eyebrow: "ŞİRKET",
       intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Dönem kilidi varsa o da kaldırılır; kapatılmış dönemin hareketleri de silinir, yeniden girdikten sonra kilidi yeniden koyun. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
       fields: [
-        { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)" }] },
+        { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, Tabela Adı, Defter Türü ve fatura serisi kalır)" }] },
         // 2.4.4 (madde 30c G6): kutu yalnız tahsilat makbuzu sayacını (plans.receiptSeq, app.mjs) siler; fatura/fiş serileri kutudan bağımsız baştan başlar
         // (faturalar ve invoice.numberFloor silinir) — ad buna göre, fatura numaralarının durumu açıklamada.
         // 31f U11: kararın tek cümlesi kutunun ALTINDA (önceden giriş paragrafındaydı).

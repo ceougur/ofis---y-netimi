@@ -258,6 +258,9 @@ try {
       // 31f U11: kararın cümlesi kutunun HEMEN ALTINDA (giriş paragrafında değil, tekrar da yok); geri alınamaz eylem kırmızı.
       ok(reset.help === g6 && reset.helpAfterBox && !reset.intro.includes("Fatura ve fiş numaraları"), `${label}: G6 cümlesi kutunun altında, girişte yok (altta: “${reset.help.slice(0, 60)}”)`);
       ok(reset.submit === "Veriyi Sıfırla" && reset.danger, `${label}: “${reset.submit}” tehlikeli eylem rengi (hof-button-danger: ${reset.danger})`);
+      // 2.5.0 Ç4 dar kontrol DÜŞÜK: Tümünü Sıfırla'nın koruduğu ayarlar (app.mjs KEEP_SETTINGS: office.reportHeader, accounting.bookType) seçenek metninde.
+      const allOption = await page.$eval(`${modal} select[name="mode"] option[value="all"]`, node => node.textContent.trim());
+      ok(allOption === "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, Tabela Adı, Defter Türü ve fatura serisi kalır)", `${label}: Tümünü Sıfırla metni korunanları sayar (“${allOption}”)`);
     }
     if (label.startsWith("Şirketi Sil")) {
       // 31f ek (ana oturum kararı): geri alınamaz "Şirketi Sil" de tehlikeli eylem rengi; onay akışı (kod + parola) aynı.

@@ -1,0 +1,32 @@
+{
+  "ad": "c4-dusuk-mutasyon-yeni",
+  "komut": "node test/hesap-plani-sinif-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-dusuk-yeni-a55fe1fe",
+  "commit": "a55fe1fe81d26e7aa7bce0f4ce4cc26136aee1f3",
+  "dal": "worktree-agent-a02dbfbff8be96ea9",
+  "kirli": 0,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:44:29.004Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 21,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-dusuk-mutasyon-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a02dbfbff8be96ea9",
+  "ham_cikti_sha256": "d2cfd5af9b54e5ee342852936fdfae768729fdf2b59a186524f64cbe9e299bcf",
+  "ham_cikti_bayt": 3475
+}

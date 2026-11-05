@@ -140,6 +140,28 @@ const v = await session("avukat1", "Avukat-2026!");
 await openInvoices(v.page);
 ok((await v.page.locator(`${TOP} [data-act="settings"]`).count()) === 0, "avukat Fatura Ayarları düğmesini görmez");
 
+// 5) Yönetim → Değişiklik Geçmişi (dar kontrol DÜŞÜK): üç tür Türkçe adla; Defter Türü satırında eski → yeni ekran adları; üçü "Ayarlar" süzgecinde; ham anahtar yok.
+console.log("5) Değişiklik Geçmişi");
+await a.page.goto(`${BASE}/admin.html#audit`, { waitUntil: "load" });
+await a.page.waitForSelector("#adm-audit-type");
+const auditRows = async filter => {
+  await a.page.selectOption("#adm-audit-type", filter);
+  await a.page.waitForFunction(() => !/Yükleniyor/.test(document.querySelector("#adm-audit")?.textContent || "") && document.querySelectorAll("#adm-audit tr").length > 0);
+  await sleep(600);
+  return a.page.$$eval("#adm-audit tr", rows => rows.map(row => [...row.querySelectorAll("td")].slice(2).map(td => td.textContent.trim())));
+};
+for (const filter of ["settings.", ""]) {
+  const rows = await auditRows(filter);
+  const name = filter ? "Ayarlar" : "Tümü";
+  const book = rows.filter(([type]) => type === "Defter Türü'nü değiştirdi").map(([, detail]) => detail);
+  ok(JSON.stringify(book) === JSON.stringify(["İşletme Hesabı Esası → Serbest Meslek Kazanç Defteri", "Seçilmedi → İşletme Hesabı Esası"]), `${name}: Defter Türü satırları eski → yeni ekran adlarıyla (${JSON.stringify(book)})`);
+  ok(rows.some(([type]) => type === "Fatura Ayarları'nı değiştirdi"), `${name}: Fatura Ayarları satırı Türkçe`);
+  ok(rows.some(([type]) => type === "Tabela Adı / Rapor ve Ekstre Başlığı'nı değiştirdi"), `${name}: Tabela Adı satırı Türkçe`);
+  const raw = rows.filter(([type]) => /^[a-z_]+(\.[a-z_]+)+$/.test(type || ""));
+  ok(raw.length === 0, `${name}: ham İngilizce tür anahtarı yok${raw.length ? `: ${raw.map(([type]) => type).join(", ")}` : ""}`);
+}
+await a.page.screenshot({ path: path.join(shots, "defter-turu-250-degisiklik-gecmisi.png") }).catch(() => {});
+
 await m.context.close();
 await v.context.close();
 await a.context.close();

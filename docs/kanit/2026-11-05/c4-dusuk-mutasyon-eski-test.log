@@ -1,0 +1,11 @@
+taban: 8 geçti / 0 kaldı (çıkış 0)
+not ok 20 - kapanış hesabının adına (−) eklenir (690) · YEŞİL — kaçırdı · beklenen neden "690: kitap "Dönem Kârı veya Zararı", program "Dönem Kârı veya Zararı (−)"" GÖRÜLMEDİ
+not ok 21 - kapanış hesabının adına (−) eklenir (692) · YEŞİL — kaçırdı · beklenen neden "692: kitap "Dönem Net Kârı veya Zararı", program "Dönem Net Kârı veya Zararı (−)"" GÖRÜLMEDİ
+1..2
+# tests 2
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+0/2 mutasyon beklenen nedenle yakalandı
