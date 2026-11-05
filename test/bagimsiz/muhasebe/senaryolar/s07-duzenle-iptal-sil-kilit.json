@@ -1,0 +1,202 @@
+{
+ "aciklama": "Açık dönemde düzenle / iptal / sil / geri yükle maddeyi yeniden türetir; kilitli tarihe yazım 409.",
+ "ad": "s07-duzenle-iptal-sil-kilit",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "gt/kalemler/DNK": 80000,
+   "mz/satirlar/120|C1/bakiye": 96000,
+   "mz/satirlar/391/bakiye": -16000,
+   "mz/satirlar/600/bakiye": -80000,
+   "mz/toplam/borc": 96000,
+   "redler": [
+    "KILITLI_DONEM",
+    "KILITLI_DONEM"
+   ]
+  }
+ },
+ "kapsam": [
+  "F-14",
+  "F-15",
+  "F-12",
+  "R-04",
+  "G-7",
+  "Ç3"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 20000,
+   "M": 100000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-07-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "fatura": "F1",
+   "fatura_odemesi": true,
+   "id": "P1",
+   "tarih": "2026-07-01",
+   "tur": "tahsilat",
+   "tutar": 120000,
+   "yol": "nakit"
+  },
+  {
+   "K": 10000,
+   "M": 50000,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2026-07-02",
+   "tur": "satis_faturasi"
+  },
+  {
+   "degisiklik": {
+    "K": 16000,
+    "M": 80000
+   },
+   "kaynak": "F2",
+   "tur": "duzenle"
+  },
+  {
+   "kaynak": "F1",
+   "tur": "iptal"
+  },
+  {
+   "K": 6000,
+   "M": 30000,
+   "cari": "C3",
+   "id": "F3",
+   "tarih": "2026-07-03",
+   "tur": "satis_faturasi"
+  },
+  {
+   "kaynak": "F3",
+   "tur": "sil"
+  },
+  {
+   "kaynak": "F3",
+   "tur": "geri_yukle"
+  },
+  {
+   "K": 2000,
+   "M": 10000,
+   "cari": "C3",
+   "id": "F4",
+   "tarih": "2026-07-04",
+   "tur": "satis_faturasi"
+  },
+  {
+   "kaynak": "F4",
+   "tur": "sil"
+  },
+  {
+   "tarih": "2026-07-02",
+   "tur": "donem_kilitle"
+  },
+  {
+   "degisiklik": {
+    "M": 1
+   },
+   "kaynak": "F2",
+   "tur": "duzenle"
+  },
+  {
+   "K": 0,
+   "M": 100,
+   "cari": "C1",
+   "id": "F5",
+   "tarih": "2026-07-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "kaynak": "F3",
+   "tur": "sil"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-07-01",
+   "rapor": "mizan",
+   "son": "2026-07-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-07-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-07-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

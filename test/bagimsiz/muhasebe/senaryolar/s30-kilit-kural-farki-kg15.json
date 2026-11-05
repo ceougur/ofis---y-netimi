@@ -1,0 +1,233 @@
+{
+ "aciklama": "2.4.9 kuralıyla donmuş kilitli dönem; KG-15 A ilk açık güne Kural Farkı Düzeltme Fişi.",
+ "ad": "s30-kilit-kural-farki-kg15",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [
+  "KG15=B"
+ ],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "acilis_olabilir": [
+    "BY2"
+   ],
+   "bil/aktif_toplam": 350000,
+   "bil/kesin_degil": [
+    "TAMAMLANMAMIS_ACILIS"
+   ],
+   "bil/pasif/V.G": 150000,
+   "bil0331/pasif/V.A": 150000,
+   "fark/500": 150000,
+   "fark/519": -150000,
+   "fark/602": 30000,
+   "fark/602.90": -10000,
+   "fark/770": -20000,
+   "gt/kalemler/A": 200000,
+   "gt/kalemler/DNK": 200000,
+   "gt/kalemler/E": 0,
+   "mz/satirlar/500/bakiye": 0,
+   "mz/satirlar/519/bakiye": -150000,
+   "mz/satirlar/602.90/bakiye": -50000,
+   "mz/satirlar/602/bakiye": 0,
+   "redler": [
+    "KILITLI_DONEM"
+   ]
+  },
+  "KG15=B": {
+   "bil/kesin_degil": [
+    "KURAL_DEGISIKLIGI_FARKI"
+   ],
+   "bil/pasif/V.A": 150000,
+   "gt/kalemler/A": 220000,
+   "gt/kalemler/DNK": 200000,
+   "gt/kalemler/E": 20000,
+   "mz/satirlar/500/bakiye": -150000,
+   "mz/satirlar/519/bakiye": 0,
+   "redler": [
+    "KILITLI_DONEM",
+    "KG15_B_DUZELTILMEZ"
+   ]
+  }
+ },
+ "kapsam": [
+  "Ç3",
+  "KG-15",
+  "N-16",
+  "KG-16"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "tarih": "2026-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 100000
+  },
+  {
+   "cari": "C1",
+   "durum": "portfoy",
+   "evrak": "CK1",
+   "evrak_turu": "cek",
+   "tarih": "2026-01-01",
+   "tur": "evrak_acilis",
+   "tutar": 30000,
+   "yon": "alinan"
+  },
+  {
+   "banka": "B1",
+   "cari": "T1",
+   "evrak": "VC1",
+   "evrak_turu": "cek",
+   "tarih": "2026-01-01",
+   "tur": "evrak_acilis",
+   "tutar": 20000,
+   "yon": "verilen"
+  },
+  {
+   "aciklama": "Devreden bakiye",
+   "cari": "C1",
+   "tarih": "2026-01-01",
+   "tur": "cari_acilis",
+   "tutar": 40000,
+   "yon": "borc"
+  },
+  {
+   "aciklama": "Açılış bakiyesi",
+   "cari": "C2",
+   "id": "BY2",
+   "tarih": "2026-01-02",
+   "tur": "borc_yaz",
+   "tutar": 50000
+  },
+  {
+   "K": 0,
+   "M": 100000,
+   "cari": "C3",
+   "id": "F1",
+   "tarih": "2026-02-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "kural": "2.4.9",
+   "tarih": "2026-03-31",
+   "tur": "donem_kilitle"
+  },
+  {
+   "ad": "fark",
+   "rapor": "kural_farki",
+   "tur": "rapor"
+  },
+  {
+   "K": 0,
+   "M": 100,
+   "cari": "C3",
+   "id": "FX",
+   "tarih": "2026-03-15",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "C3",
+   "id": "F2",
+   "tarih": "2026-04-10",
+   "tur": "satis_faturasi"
+  },
+  {
+   "tur": "kural_farki_duzelt"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-04-30",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-04-30",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-04-30",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil0331",
+   "rapor": "bilanco",
+   "tarih": "2026-03-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

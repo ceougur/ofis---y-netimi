@@ -1,0 +1,141 @@
+{
+ "ad": "s18-acilislar-eslestirme",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.A": 580000,
+      "I.C": 175000,
+      "I.E": 16667
+     },
+     "aktif_toplam": 771667,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 100000,
+       "101.01": 40000,
+       "102.B1": 500000,
+       "103": -60000
+      },
+      "I.C": {
+       "120|C1": 150000,
+       "121.02": 25000
+      },
+      "I.E": {
+       "153 (Tahmini Değerleme)": 16667
+      },
+      "III.A": {
+       "300.KR1": 200000,
+       "309.KK1": 30000
+      },
+      "III.B": {
+       "320|T1": 80000
+      },
+      "V.A": {
+       "500": 400000
+      },
+      "V.D": {
+       "570": 61667
+      }
+     },
+     "donem_net_kari": 0,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI"
+     ],
+     "pasif": {
+      "III.A": 230000,
+      "III.B": 80000,
+      "V.A": 400000,
+      "V.D": 61667
+     },
+     "pasif_toplam": 771667,
+     "tarih": "2026-01-01"
+    },
+    "bil0": {
+     "aktif": {
+      "I.A": 580000,
+      "I.C": 175000,
+      "I.E": 16667
+     },
+     "aktif_toplam": 771667,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 100000,
+       "101.01": 40000,
+       "102.B1": 500000,
+       "103": -60000
+      },
+      "I.C": {
+       "120|C1": 150000,
+       "121.02": 25000
+      },
+      "I.E": {
+       "153 (Tahmini Değerleme)": 16667
+      },
+      "III.A": {
+       "300.KR1": 200000,
+       "309.KK1": 30000
+      },
+      "III.B": {
+       "320|T1": 80000
+      },
+      "V.G": {
+       "519": 461667
+      }
+     },
+     "donem_net_kari": 0,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI",
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "III.A": 230000,
+      "III.B": 80000,
+      "V.G": 461667
+     },
+     "pasif_toplam": 771667,
+     "tarih": "2026-01-01"
+    }
+   },
+   "redler": [
+    {
+     "kod": "KASA_ACILIS_TEKRAR",
+     "neden": "",
+     "olay": 11,
+     "tur": "kasa_acilis"
+    },
+    {
+     "kod": "ESLESTIRME_TERS",
+     "neden": "G -461667 → 38333",
+     "olay": 13,
+     "tur": "acilis_eslestir"
+    },
+    {
+     "kod": "ESLESTIRME_TERS",
+     "neden": "G 0 → 1",
+     "olay": 15,
+     "tur": "acilis_eslestir"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

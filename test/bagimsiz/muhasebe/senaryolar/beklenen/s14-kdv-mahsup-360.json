@@ -1,0 +1,282 @@
+{
+ "ad": "s14-kdv-mahsup-360",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bd190": {
+     "bas": "2026-01-01",
+     "cari": null,
+     "devir": 0,
+     "hareketler": [
+      {
+       "alacak": 0,
+       "bakiye": 10000,
+       "borc": 10000,
+       "cari": null,
+       "hesap": "190",
+       "madde": "fis8",
+       "tarih": "2026-02-28",
+       "tur": "kdv_mahsup"
+      },
+      {
+       "alacak": 4000,
+       "bakiye": 6000,
+       "borc": 0,
+       "cari": null,
+       "hesap": "190",
+       "madde": "fis11",
+       "tarih": "2026-03-31",
+       "tur": "kdv_mahsup"
+      }
+     ],
+     "hesap": "190",
+     "son": "2026-03-31",
+     "son_bakiye": 6000,
+     "toplam_alacak": 4000,
+     "toplam_borc": 10000
+    },
+    "bil": {
+     "aktif": {
+      "I.A": 73500,
+      "I.C": 348000,
+      "I.H": 2000
+     },
+     "aktif_toplam": 423500,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "102.B1": 73500
+      },
+      "I.C": {
+       "120|C1": 348000
+      },
+      "I.H": {
+       "360": 2000
+      },
+      "III.B": {
+       "320|T1": 204000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 119500
+      },
+      "V.G": {
+       "519": 100000
+      }
+     },
+     "donem_net_kari": 119500,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "BORCLU_360",
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "III.B": 204000,
+      "V.F": 119500,
+      "V.G": 100000
+     },
+     "pasif_toplam": 423500,
+     "tarih": "2026-05-31"
+    },
+    "gt": {
+     "bas": "2026-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "600": 290000,
+      "689": 500,
+      "770": 170000
+     },
+     "kalemler": {
+      "A": 290000,
+      "B": 0,
+      "BSK": 290000,
+      "C": 290000,
+      "D": 0,
+      "DK": 119500,
+      "DNK": 119500,
+      "E": 170000,
+      "F": 0,
+      "FK": 120000,
+      "G": 0,
+      "H": 0,
+      "I": 0,
+      "J": 500,
+      "K": 0,
+      "OK": 120000
+     },
+     "kesin_degil": [],
+     "son": "2026-05-31",
+     "tahmini": false
+    },
+    "mz": {
+     "ana": {
+      "102": {
+       "alacak": 26500,
+       "bakiye": 73500,
+       "borc": 100000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 0,
+       "bakiye": 348000,
+       "borc": 348000,
+       "devir": 0
+      },
+      "190": {
+       "alacak": 16000,
+       "bakiye": 0,
+       "borc": 16000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 34000,
+       "bakiye": 0,
+       "borc": 34000,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 204000,
+       "bakiye": -204000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 38000,
+       "bakiye": 2000,
+       "borc": 40000,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 78000,
+       "bakiye": 0,
+       "borc": 78000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 100000,
+       "bakiye": -100000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 290000,
+       "bakiye": -290000,
+       "borc": 0,
+       "devir": 0
+      },
+      "689": {
+       "alacak": 0,
+       "bakiye": 500,
+       "borc": 500,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 170000,
+       "borc": 170000,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "102.B1": {
+       "alacak": 26500,
+       "bakiye": 73500,
+       "borc": 100000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 0,
+       "bakiye": 348000,
+       "borc": 348000,
+       "devir": 0
+      },
+      "190": {
+       "alacak": 16000,
+       "bakiye": 0,
+       "borc": 16000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 34000,
+       "bakiye": 0,
+       "borc": 34000,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 204000,
+       "bakiye": -204000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 38000,
+       "bakiye": 2000,
+       "borc": 40000,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 78000,
+       "bakiye": 0,
+       "borc": 78000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 100000,
+       "bakiye": -100000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 290000,
+       "bakiye": -290000,
+       "borc": 0,
+       "devir": 0
+      },
+      "689": {
+       "alacak": 0,
+       "bakiye": 500,
+       "borc": 500,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 170000,
+       "borc": 170000,
+       "devir": 0
+      }
+     },
+     "son": "2026-05-31",
+     "toplam": {
+      "alacak": 786500,
+      "bakiye": 0,
+      "borc": 786500,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "KDV_MAHSUP_TEKRAR",
+     "neden": "2026-04",
+     "olay": 15,
+     "tur": "kdv_mahsup"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

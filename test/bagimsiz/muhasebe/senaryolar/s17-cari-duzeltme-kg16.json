@@ -1,0 +1,175 @@
+{
+ "aciklama": "Borç / Alacak Yaz 602.90 / 770.90; açılış işaretiyle (açıklamadan değil) 519; KG-16.",
+ "ad": "s17-cari-duzeltme-kg16",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [
+  "KG16=B"
+ ],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "acilis_olabilir": [
+    "AY2",
+    "BY3",
+    "BY4"
+   ],
+   "gt/kalemler/A": 90000,
+   "gt/kalemler/DNK": 80000,
+   "mz/satirlar/120|C1/bakiye": 80000,
+   "mz/satirlar/120|C2/bakiye": 200000,
+   "mz/satirlar/120|C3/bakiye": 30000,
+   "mz/satirlar/320|T1/bakiye": -25000,
+   "mz/satirlar/519/bakiye": -205000,
+   "mz/satirlar/602.90/bakiye": -90000,
+   "mz/satirlar/770.90/bakiye": 10000
+  },
+  "KG16=B": {
+   "acilis_olabilir": [],
+   "gt/kalemler/DNK": 85000,
+   "mz/satirlar/519/bakiye": -200000,
+   "mz/satirlar/602.90/bakiye": -120000,
+   "mz/satirlar/770.90/bakiye": 35000
+  }
+ },
+ "kapsam": [
+  "C-01",
+  "C-02",
+  "M-02",
+  "M-03",
+  "KG-16",
+  "KG-4"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "aciklama": "Devreden bakiye",
+   "cari": "C2",
+   "tarih": "2026-01-01",
+   "tur": "cari_acilis",
+   "tutar": 200000,
+   "yon": "borc"
+  },
+  {
+   "aciklama": "Açılış bakiyesi",
+   "cari": "C3",
+   "id": "BY3",
+   "onay": true,
+   "tarih": "2026-01-02",
+   "tur": "borc_yaz",
+   "tutar": 30000
+  },
+  {
+   "aciklama": "açılış farkı",
+   "cari": "C1",
+   "id": "BY4",
+   "tarih": "2026-01-03",
+   "tur": "borc_yaz",
+   "tutar": 40000
+  },
+  {
+   "aciklama": "AÇILIŞ",
+   "cari": "T1",
+   "id": "AY2",
+   "onay": true,
+   "tarih": "2026-01-04",
+   "tur": "alacak_yaz",
+   "tutar": 25000
+  },
+  {
+   "aciklama": "Fark faturası",
+   "cari": "C1",
+   "tarih": "2026-01-05",
+   "tur": "borc_yaz",
+   "tutar": 50000
+  },
+  {
+   "aciklama": "İndirim",
+   "cari": "C1",
+   "tarih": "2026-01-06",
+   "tur": "alacak_yaz",
+   "tutar": 10000
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

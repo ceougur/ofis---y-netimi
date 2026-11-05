@@ -1,0 +1,203 @@
+{
+ "aciklama": "Eksi miktarlı ürün değerlemesi (KG-9) ve sonraki yıl ortalamasına etkisi.",
+ "ad": "s24-devir-eksi-stok-kg9",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [
+  "KG9=B"
+ ],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil_arsiv/kesin_degil": [
+    "EKSI_STOK"
+   ],
+   "bil_arsiv_once/kesin_degil": [
+    "EKSI_STOK",
+    "SATISLARIN_MALIYETI_TAHMINI"
+   ],
+   "deg/toplam": 121000,
+   "devir/kapanis/DSS": 25000,
+   "devir/kapanis/sonuc": 175000,
+   "devir/yeni_acilis/153": 25000,
+   "gt/kalemler/D": 24000,
+   "gt/kalemler/DNK": -24000
+  },
+  "KG9=B": {
+   "deg/toplam": 125000,
+   "devir/kapanis/DSS": 5000,
+   "devir/kapanis/sonuc": 155000,
+   "gt/kalemler/D": 0
+  }
+ },
+ "kapsam": [
+  "KG-9",
+  "KG-10",
+  "N-01",
+  "§5.2"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 100000,
+   "cari": "T1",
+   "fatura_turu": "stok",
+   "id": "A1",
+   "kalemler": [
+    {
+     "miktar": 10,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2026-03-01",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "T1",
+   "fatura_turu": "stok",
+   "id": "A2",
+   "kalemler": [
+    {
+     "miktar": 2,
+     "urun": "U2"
+    }
+   ],
+   "tarih": "2026-03-01",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 300000,
+   "cari": "C1",
+   "id": "F1",
+   "kalemler": [
+    {
+     "miktar": 12,
+     "urun": "U1"
+    },
+    {
+     "miktar": 1,
+     "urun": "U2"
+    }
+   ],
+   "tarih": "2026-06-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "ad": "bil_arsiv_once",
+   "rapor": "bilanco",
+   "tarih": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "ad": "bil_arsiv",
+   "dosya": "arsiv",
+   "rapor": "bilanco",
+   "tarih": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "K": 0,
+   "M": 120000,
+   "cari": "T1",
+   "fatura_turu": "stok",
+   "id": "A3",
+   "kalemler": [
+    {
+     "miktar": 10,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2027-02-01",
+   "tur": "alis_faturasi"
+  },
+  {
+   "ad": "gt",
+   "bas": "2027-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2027-02-28",
+   "tur": "rapor"
+  },
+  {
+   "ad": "deg",
+   "rapor": "degerleme",
+   "tarih": "2027-02-28",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

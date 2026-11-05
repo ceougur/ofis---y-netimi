@@ -1,0 +1,163 @@
+{
+ "aciklama": "Borç ve Alacakları Aktar / Sadece Bakiyeyi Aktar: defter aynı (cari başına net), ekstre farklı.",
+ "ad": "s26a-devir-borc-ve-alacaklari-aktar",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "acik/0/fatura": "F1",
+   "acik/0/kalan": 75000,
+   "devir/acilis/cariler/C1/acilis": 20000,
+   "devir/acilis/ekstre/C1/Alacak Toplamı": 75000,
+   "devir/acilis/ekstre/C1/Borç Toplamı": 95000,
+   "devir/yeni_acilis/100": 70000,
+   "devir/yeni_acilis/120|C1": 95000,
+   "devir/yeni_acilis/519": -50000,
+   "devir/yeni_acilis/590": -115000,
+   "gec_once/gecikmis": 75000,
+   "gec_sonra/gecikmis": 75000
+  }
+ },
+ "kapsam": [
+  "§11.2",
+  "KG-17",
+  "G14",
+  "B1",
+  "G2"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "cari": "C1",
+   "tarih": "2026-01-01",
+   "tur": "cari_acilis",
+   "tutar": 50000,
+   "yon": "borc"
+  },
+  {
+   "K": 0,
+   "M": 100000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-03-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "tarih": "2026-03-10",
+   "tur": "tahsilat",
+   "tutar": 70000,
+   "yol": "nakit"
+  },
+  {
+   "aciklama": "Fark",
+   "cari": "C1",
+   "tarih": "2026-04-01",
+   "tur": "borc_yaz",
+   "tutar": 20000
+  },
+  {
+   "aciklama": "İndirim",
+   "cari": "C1",
+   "tarih": "2026-05-01",
+   "tur": "alacak_yaz",
+   "tutar": 5000
+  },
+  {
+   "ad": "gec_once",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "secenek": "borc_alacak",
+   "tur": "devir"
+  },
+  {
+   "ad": "gec_sonra",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2027-03-15",
+   "tur": "rapor"
+  },
+  {
+   "ad": "acik",
+   "cari": "C1",
+   "rapor": "acik_faturalar",
+   "tarih": "2027-01-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

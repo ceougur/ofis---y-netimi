@@ -1,0 +1,129 @@
+{
+ "ad": "s12-banka-islemleri",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.A": 1204425,
+      "I.H": 6500
+     },
+     "aktif_toplam": 1210925,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "102.B1": 875925,
+       "102.B2": 278500,
+       "108.90": 50000
+      },
+      "I.H": {
+       "191": 2000,
+       "193": 4500
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 10925
+      },
+      "V.G": {
+       "519": 1200000
+      }
+     },
+     "donem_net_kari": 10925,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "V.F": 10925,
+      "V.G": 1200000
+     },
+     "pasif_toplam": 1210925,
+     "tarih": "2026-02-28"
+    },
+    "bil2": {
+     "aktif": {
+      "I.A": 1204425,
+      "I.H": 6500
+     },
+     "aktif_toplam": 1210925,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "102.B1": 875925,
+       "102.B2": 328500
+      },
+      "I.H": {
+       "191": 2000,
+       "193": 4500
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 10925
+      },
+      "V.G": {
+       "519": 1200000
+      }
+     },
+     "donem_net_kari": 10925,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "V.F": 10925,
+      "V.G": 1200000
+     },
+     "pasif_toplam": 1210925,
+     "tarih": "2026-03-02"
+    },
+    "gt": {
+     "bas": "2026-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "642": 30000,
+      "649": 2000,
+      "659": 1500,
+      "770": 11575,
+      "780": 8000
+     },
+     "kalemler": {
+      "A": 0,
+      "B": 0,
+      "BSK": 0,
+      "C": 0,
+      "D": 0,
+      "DK": 10925,
+      "DNK": 10925,
+      "E": 11575,
+      "F": 32000,
+      "FK": -11575,
+      "G": 1500,
+      "H": 8000,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": 10925
+     },
+     "kesin_degil": [],
+     "son": "2026-02-28",
+     "tahmini": false
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

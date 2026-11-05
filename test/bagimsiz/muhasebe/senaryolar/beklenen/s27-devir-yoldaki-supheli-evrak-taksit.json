@@ -1,0 +1,214 @@
+{
+ "ad": "s27-devir-yoldaki-supheli-evrak-taksit",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "arsiv:0": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    },
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [
+    {
+     "K": "2026-12-31",
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "yeni_gt_sifir": []
+     },
+     "id": "devir-2026-1"
+    }
+   ],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.A": 600000,
+      "I.C": 80000
+     },
+     "aktif_toplam": 680000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 60000,
+       "102.B1": 440000,
+       "102.B2": 100000
+      },
+      "I.C": {
+       "120|C1": 50000,
+       "120|C3": 30000,
+       "128|C1": 90000,
+       "129|C1": -90000
+      },
+      "V.F": {
+       "590": 170000,
+       "Dönem Net Kârı (Hesaplanmış)": 10000
+      },
+      "V.G": {
+       "519": 500000
+      }
+     },
+     "donem_net_kari": 10000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "V.F": 180000,
+      "V.G": 500000
+     },
+     "pasif_toplam": 680000,
+     "tarih": "2027-02-28"
+    },
+    "devir": {
+     "K": "2026-12-31",
+     "acilis": {
+      "N13": {
+       "519": 170000,
+       "590": -170000
+      },
+      "acik_kalemler": [
+       {
+        "cari": "C1",
+        "fatura": "F1",
+        "kalan": 50000,
+        "tarih": "2026-10-01",
+        "vade": "2026-10-01"
+       }
+      ],
+      "cariler": {
+       "C1": {
+        "acilis": 0,
+        "bakiye": 50000
+       },
+       "C3": {
+        "acilis": 60000,
+        "bakiye": 60000
+       }
+      },
+      "ekstre": {
+       "C1": {
+        "Alacak Toplamı": 150000,
+        "Borç Toplamı": 150000,
+        "acik_kalemler": 1
+       },
+       "C3": {
+        "Alacak Toplamı": 30000,
+        "Borç Toplamı": 90000,
+        "acik_kalemler": 0
+       }
+      }
+     },
+     "arsiv_kapanis": {
+      "100": 30000,
+      "101.02": 40000,
+      "102.B1": 400000,
+      "103": -60000,
+      "108.90": 100000,
+      "120|C1": 50000,
+      "120|C3": 60000,
+      "128|C1": 150000,
+      "129|C1": -100000,
+      "519": -500000,
+      "590": -170000
+     },
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "yeni_gt_sifir": []
+     },
+     "kapanis": {
+      "DSS": 0,
+      "N01": {
+       "2026": 0
+      },
+      "R": {
+       "2026": 170000
+      },
+      "sonuc": 170000
+     },
+     "secenek": "borc_alacak",
+     "yeni_acilis": {
+      "100": 30000,
+      "101.02": 40000,
+      "102.B1": 400000,
+      "103": -60000,
+      "108.90": 100000,
+      "120|C1": 50000,
+      "120|C3": 60000,
+      "128|C1": 150000,
+      "129|C1": -100000,
+      "519": -500000,
+      "590": -170000
+     }
+    },
+    "gec3": {
+     "cari": "C3",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "taksit:TK1",
+       "vade": "2027-02-10"
+      }
+     ],
+     "gecikmis": 30000,
+     "tarih": "2027-02-15"
+    },
+    "gt": {
+     "bas": "2027-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "644": 10000
+     },
+     "kalemler": {
+      "A": 0,
+      "B": 0,
+      "BSK": 0,
+      "C": 0,
+      "D": 0,
+      "DK": 10000,
+      "DNK": 10000,
+      "E": 0,
+      "F": 10000,
+      "FK": 0,
+      "G": 0,
+      "H": 0,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": 10000
+     },
+     "kesin_degil": [],
+     "son": "2027-02-28",
+     "tahmini": false
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

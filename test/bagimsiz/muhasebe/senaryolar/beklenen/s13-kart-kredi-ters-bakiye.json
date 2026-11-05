@@ -1,0 +1,136 @@
+{
+ "ad": "s13-kart-kredi-ters-bakiye",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.D": 13000,
+      "I.E": 5000
+     },
+     "aktif_toplam": 18000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.D": {
+       "309.KK1": 13000
+      },
+      "I.E": {
+       "153 (Tahmini Değerleme)": 5000
+      },
+      "III.A": {
+       "102.B1": 23000,
+       "300.KR1": 150000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": -105000
+      },
+      "V.G": {
+       "519": -50000
+      }
+     },
+     "donem_net_kari": -105000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI",
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "III.A": 173000,
+      "V.F": -105000,
+      "V.G": -50000
+     },
+     "pasif_toplam": 18000,
+     "tarih": "2026-03-31"
+    },
+    "bil07": {
+     "aktif": {
+      "I.D": 3000,
+      "I.E": 15000
+     },
+     "aktif_toplam": 18000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.D": {
+       "309.KK1": 3000
+      },
+      "I.E": {
+       "153 (Tahmini Değerleme)": 5000,
+       "320|T1": 10000
+      },
+      "III.A": {
+       "102.B1": 23000,
+       "300.KR1": 150000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": -105000
+      },
+      "V.G": {
+       "519": -50000
+      }
+     },
+     "donem_net_kari": -105000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI",
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "III.A": 173000,
+      "V.F": -105000,
+      "V.G": -50000
+     },
+     "pasif_toplam": 18000,
+     "tarih": "2026-03-07"
+    },
+    "gt": {
+     "bas": "2026-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "770": 100000,
+      "780": 5000
+     },
+     "kalemler": {
+      "A": 0,
+      "B": 0,
+      "BSK": 0,
+      "C": 0,
+      "D": 0,
+      "DK": -105000,
+      "DNK": -105000,
+      "E": 100000,
+      "F": 0,
+      "FK": -100000,
+      "G": 0,
+      "H": 5000,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": -105000
+     },
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI"
+     ],
+     "son": "2026-03-31",
+     "tahmini": true
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

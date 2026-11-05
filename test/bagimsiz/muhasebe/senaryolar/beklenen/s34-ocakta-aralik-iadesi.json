@@ -1,0 +1,212 @@
+{
+ "ad": "s34-ocakta-aralik-iadesi",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "arsiv:0": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    },
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [
+    {
+     "K": "2026-12-31",
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "yeni_gt_sifir": []
+     },
+     "id": "devir-2026-1"
+    }
+   ],
+   "raporlar": {
+    "acik": [
+     {
+      "fatura": "F1",
+      "kalan": 144000,
+      "tarih": "2027-01-01",
+      "vade": "2026-12-15"
+     }
+    ],
+    "bil": {
+     "aktif": {
+      "I.C": 144000,
+      "I.E": 60000,
+      "I.H": 6000
+     },
+     "aktif_toplam": 210000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.C": {
+       "120|C1": 144000
+      },
+      "I.E": {
+       "153 (Tahmini Değerleme)": 60000
+      },
+      "I.H": {
+       "190": 6000
+      },
+      "III.B": {
+       "320|T1": 120000
+      },
+      "III.F": {
+       "360": 10000
+      },
+      "V.F": {
+       "590": 100000,
+       "Dönem Net Kârı (Hesaplanmış)": -20000
+      }
+     },
+     "donem_net_kari": -20000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI"
+     ],
+     "pasif": {
+      "III.B": 120000,
+      "III.F": 10000,
+      "V.F": 80000
+     },
+     "pasif_toplam": 210000,
+     "tarih": "2027-01-31"
+    },
+    "devir": {
+     "K": "2026-12-31",
+     "acilis": {
+      "N13": {
+       "360": -10000,
+       "519": 110000,
+       "590": -100000
+      },
+      "acik_kalemler": [
+       {
+        "cari": "C1",
+        "fatura": "F1",
+        "kalan": 180000,
+        "tarih": "2026-12-15",
+        "vade": "2026-12-15"
+       },
+       {
+        "cari": "T1",
+        "fatura": "A1",
+        "kalan": -120000,
+        "tarih": "2026-11-01",
+        "vade": "2026-11-01"
+       }
+      ],
+      "cariler": {
+       "C1": {
+        "acilis": 0,
+        "bakiye": 180000
+       },
+       "T1": {
+        "acilis": 0,
+        "bakiye": -120000
+       }
+      },
+      "ekstre": {
+       "C1": {
+        "Alacak Toplamı": 0,
+        "Borç Toplamı": 0,
+        "acik_kalemler": 1
+       },
+       "T1": {
+        "Alacak Toplamı": 0,
+        "Borç Toplamı": 0,
+        "acik_kalemler": 1
+       }
+      }
+     },
+     "arsiv_kapanis": {
+      "120|C1": 180000,
+      "153": 50000,
+      "320|T1": -120000,
+      "360": -10000,
+      "590": -100000
+     },
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "yeni_gt_sifir": []
+     },
+     "kapanis": {
+      "DSS": 50000,
+      "N01": {
+       "2026": 50000
+      },
+      "R": {
+       "2026": 100000
+      },
+      "sonuc": 100000
+     },
+     "secenek": "borc_alacak",
+     "yeni_acilis": {
+      "120|C1": 180000,
+      "153": 50000,
+      "320|T1": -120000,
+      "360": -10000,
+      "590": -100000
+     }
+    },
+    "gt": {
+     "bas": "2027-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "610": 30000,
+      "621 (Tahmini)": -10000
+     },
+     "kalemler": {
+      "A": 0,
+      "B": 30000,
+      "BSK": -20000,
+      "C": -30000,
+      "D": -10000,
+      "DK": -20000,
+      "DNK": -20000,
+      "E": 0,
+      "F": 0,
+      "FK": -20000,
+      "G": 0,
+      "H": 0,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": -20000
+     },
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI"
+     ],
+     "son": "2027-01-31",
+     "tahmini": true
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
