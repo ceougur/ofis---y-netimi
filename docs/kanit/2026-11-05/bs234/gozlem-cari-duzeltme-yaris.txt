@@ -1,0 +1,4 @@
+borç: silme 200
+borç: düzeltme yanıtı 200 {"ok":true,"data":{"id":"account-f09a7a20-db50-407e-9127-d05507ce148a","refNo":"1","type":"customer","name":"Gözlem","phone":"","email":"","address":"","registe · satır yok · audit +1 (silme dışı)
+tahsilat: silme 200
+tahsilat: düzeltme yanıtı 200 {"ok":true,"data":{"id":"account-f09a7a20-db50-407e-9127-d05507ce148a","refNo":"1","type":"customer","name":"Gözlem","phone":"","email":"","address":"","registe · satır yok · audit +1 (silme dışı)
