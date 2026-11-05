@@ -1,0 +1,263 @@
+TAP version 13
+# Subtest: 2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından önce
+    # Subtest: açılış süresi kullanıcı yazımlarının süresinden kısa (kilitli dosyada şirket isteği olay döngüsünü 10 sn kilitlemez)
+    not ok 1 - açılış süresi kullanıcı yazımlarının süresinden kısa (kilitli dosyada şirket isteği olay döngüsünü 10 sn kilitlemez)
+      ---
+      duration_ms: 1.585074
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-ana-eski-899fdbce/test/db-acilis-kilit-250.test.mjs:89:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılış bekleme süresi tanımlı (OPEN_BUSY_TIMEOUT_MS)
+        + actual - expected
+        
+        + 'undefined'
+        - 'number'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'number'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-ana-eski-899fdbce/test/db-acilis-kilit-250.test.mjs:90:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (a) başka bağlantı dosyayı özel kilitle tutarken açılış BEKLER, kilit kalkınca açılır ve yazar
+    not ok 2 - (a) başka bağlantı dosyayı özel kilitle tutarken açılış BEKLER, kilit kalkınca açılır ve yazar
+      ---
+      duration_ms: 65.99361
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-ana-eski-899fdbce/test/db-acilis-kilit-250.test.mjs:103:3'
+      failureType: 'testCodeFailure'
+      error: 'database is locked'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        openDatabase (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-ana-eski-899fdbce/server/lib/db.mjs:12:23)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-ana-eski-899fdbce/test/db-acilis-kilit-250.test.mjs:108:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (b) kilit bekleme süresi boyunca kalkmazsa açılış SQLITE_BUSY ile düşer (süre kadar bekleyerek) ve bağlantı kapanır
+    not ok 3 - (b) kilit bekleme süresi boyunca kalkmazsa açılış SQLITE_BUSY ile düşer (süre kadar bekleyerek) ve bağlantı kapanır
+      ---
+      duration_ms: 3549.926872
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-ana-eski-899fdbce/test/db-acilis-kilit-250.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: 'açılış bekleme süresi kadar bekledi (1 ms)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-ana-eski-899fdbce/test/db-acilis-kilit-250.test.mjs:137:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (c) salt okunur açılış: kilitli dosyada açılır, ilk okuma kilit kalkana kadar (BUSY_TIMEOUT_MS içinde) bekler ve okur; tutamak kalmaz
+    ok 4 - (c) salt okunur açılış: kilitli dosyada açılır, ilk okuma kilit kalkana kadar (BUSY_TIMEOUT_MS içinde) bekler ve okur; tutamak kalmaz
+      ---
+      duration_ms: 4587.109762
+      type: 'test'
+      ...
+    # Subtest: (d) bozuk dosya (veri tabanı değil) BEKLEMEDEN düşer ve bağlantı kapanır (2.4.8 davranışı aynen)
+    ok 5 - (d) bozuk dosya (veri tabanı değil) BEKLEMEDEN düşer ve bağlantı kapanır (2.4.8 davranışı aynen)
+      ---
+      duration_ms: 2.537433
+      type: 'test'
+      ...
+    # Subtest: (e) yazar işlem ortasında SIGKILL ile öldürülür (kurtarılacak WAL), sonra İKİ SÜREÇ AYNI ANDA açar → ikisi de açılır (CI \#1007 errcode 261)
+    not ok 6 - (e) yazar işlem ortasında SIGKILL ile öldürülür (kurtarılacak WAL), sonra İKİ SÜREÇ AYNI ANDA açar → ikisi de açılır (CI \#1007 errcode 261)
+      ---
+      duration_ms: 19567.156629
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-ana-eski-899fdbce/test/db-acilis-kilit-250.test.mjs:188:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        11 açılış düştü / 24
+        + actual - expected
+        
+        + [
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 4,
+        +     ok: false,
+        +     round: 0
+        +   },
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 4,
+        +     ok: false,
+        +     round: 1
+        +   },
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 4,
+        +     ok: false,
+        +     round: 2
+        +   },
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 4,
+        +     ok: false,
+        +     round: 3
+        +   },
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 4,
+        +     ok: false,
+        +     round: 4
+        +   },
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 5,
+        +     ok: false,
+        +     round: 5
+        +   },
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 4,
+        +     ok: false,
+        +     round: 7
+        +   },
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 4,
+        +     ok: false,
+        +     round: 8
+        +   },
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 4,
+        +     ok: false,
+        +     round: 9
+        +   },
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 4,
+        +     ok: false,
+        +     round: 10
+        +   },
+        +   {
+        +     errcode: 261,
+        +     message: 'database is locked',
+        +     ms: 4,
+        +     ok: false,
+        +     round: 11
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          round: 0
+          ok: false
+          ms: 4
+          errcode: 261
+          message: 'database is locked'
+        1:
+          round: 1
+          ok: false
+          ms: 4
+          errcode: 261
+          message: 'database is locked'
+        2:
+          round: 2
+          ok: false
+          ms: 4
+          errcode: 261
+          message: 'database is locked'
+        3:
+          round: 3
+          ok: false
+          ms: 4
+          errcode: 261
+          message: 'database is locked'
+        4:
+          round: 4
+          ok: false
+          ms: 4
+          errcode: 261
+          message: 'database is locked'
+        5:
+          round: 5
+          ok: false
+          ms: 5
+          errcode: 261
+          message: 'database is locked'
+        6:
+          round: 7
+          ok: false
+          ms: 4
+          errcode: 261
+          message: 'database is locked'
+        7:
+          round: 8
+          ok: false
+          ms: 4
+          errcode: 261
+          message: 'database is locked'
+        8:
+          round: 9
+          ok: false
+          ms: 4
+          errcode: 261
+          message: 'database is locked'
+        9:
+          round: 10
+          ok: false
+          ms: 4
+          errcode: 261
+          message: 'database is locked'
+        10:
+          round: 11
+          ok: false
+          ms: 4
+          errcode: 261
+          message: 'database is locked'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-ana-eski-899fdbce/test/db-acilis-kilit-250.test.mjs:206:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 1 - 2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından önce
+  ---
+  duration_ms: 27815.37347
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-ana-eski-899fdbce/test/db-acilis-kilit-250.test.mjs:83:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 2
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 28206.356127
