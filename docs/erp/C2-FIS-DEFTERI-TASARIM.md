@@ -84,6 +84,25 @@ kapanış sonda, ters kayıt asıl sınıfta) · N14 kapanış + kilit aynı iş
 tetikleyiciler geri kurulu) · N18 eski sürüm sıfırlaması → açılış onarımı · N19 göç (fikstür + v2.4.9) · N20 31.12 / 01.01 (numara yılı, sıra, devir kolonu) · N21 kontrol
 hesabına fiş → kapı 409 · N22 store dışı silme → tam tarama "Kapanmış dönem" · N23 yetki (system.manage; Muhasebe 403).
 
+## 9a. Kanıt (docs/kanit/2026-11-05/c2-*; her koşu tools/kanit.mjs kos)
+- Kırmızı (eski kod 204f58bf, ayrı kopya): yeni iki test dosyası 0/23 — nedenler "fiş defteri yok", yevmiyede fiş maddesi yok, tetikleyici yok, "no such table: ledger_vouchers",
+  modül yok (iptal 0). Yeşil: 23/23 (dar listede iki saat diliminde).
+- Mutasyon 16/16 beklenen nedenle (denklik, sıfır satır, ters kayıt yönü, istek kimliği, kilit 409, UPDATE / DELETE tetikleyicisi, journal() sınıf sırası ×2, kapanış + kilit,
+  ikinci ters kayıt, sıfırlama ×2, eski sürüm onarımı, kilit izi, FINANCIAL).
+- Eşdeğerlik (fişsiz): mutabakat motoru verisi (taban kodla üretildi; tohum 7, 3.000 işlem, 2.216 madde / 5.004 satır) 14/14; 2.0.26 zincir fikstürü (4 şirket) 51/51; GERÇEK
+  v2.4.9 koduyla üretilmiş veri (tohum 11, 1.500 işlem; 46'ya göç ederek) 14/14 (tek fark Ç1'in 770 adı).
+- Eski sürüm (2.4.9 gerçek kodu) senaryosu 17/17 (§8 son iki satır).
+- Hız (motor verisi, 15 tur, medyan): GET ledger tüm zaman 41,1 → 39,3 ms; bu yıl 39,8 → 40,5; Hesap Planı Mizanı 40,1 → 41,0; Yevmiye 45,5 → 42,8 (fişsiz: fark gürültü düzeyinde);
+  200 fiş × 40 satır (+8.000 satır) eklenince 67,6 / 70,9 / 71,2 / 108,4 ms, olay döngüsü en çok 95–186 ms (satır sayısıyla doğrusal; makine yükü 2,1–3,0 — başka ajanlar).
+- Dar liste (169 dosya: Ç1 listesi + göç / yedek / sıfırlama / kapı / kilit / yevmiye / kaynak tarayan genel testler): UTC 1807/1810 (3 atlanan etiketli, Ç1 ile aynı);
+  İstanbul 1806/1810 — tek kırmızı test/cheques-overview.test.mjs "adım 50: Kasa (bugüne kadar)": koşu 23:55 İstanbul'da başladı, dosya yerel gece yarısından sonra koştu;
+  testin beklentisi UTC günüyle (`new Date().toISOString().slice(0, 10)`, satır ~406), program yerel günle hesaplar → İstanbul'da 00:00–03:00 arası her koşuda kırmızı. TABAN
+  KOD 204f58bf aynı anda aynı sayılarla kırmızı (c2-cheques-overview-ist-taban-204f58bf), yeni kod UTC'de yeşil — Ç2 ile ilgisiz, TEST HATASI (ders 13 ailesi; ayrı iş).
+- Kâhin defter 176/176, kâhin cari 8698/8698.
+- e2e: senaryo-defter-243 24/24, senaryo-banka-210 424/424, sema-kapisi-bs7 12/12 (LATEST + 1 = 47), senaryo-220-yedek 37/37.
+- WINDOWS (ders 48): test/fis-defteri-yasam-250.test.mjs süreç öldürür (SIGKILL → Windows'ta TerminateProcess) ve öldürülen sürecin dosyasını yeniden açar; yedek geri yükleme
+  dosya takası yapar — ilk gönderimde CI'nin Windows işlerinde görülmeli.
+
 ## 10. BAŞ MİMAR KARARI ÖNERİLERİ (ders 40; kullanıcıya gösterilecek)
 - K1 Sınıf ayrı kolonda (`journal_class`), türden türetilir ama closing türü `period-end` de alabilir: kural kitabı N-01 (stok değerlemesi) "dönem sonu sınıfı" ve Gelir Tablosu'na
   GİRER; N-02…N-07 kapanış sınıfı ve GİRMEZ (§4) — tek "closing" türü ikisini ayıramazdı. Ters kayıt asıl fişin sınıfını alır (kapanışın tersi de Gelir Tablosu dışında kalır).
@@ -115,3 +134,7 @@ hesabına fiş → kapı 409 · N22 store dışı silme → tam tarama "Kapanmı
   G-6 "silinemez, düzeltme ters kayıtla" ÇELİŞİR: (a) önceki devir fişleri ters kaydedilip yenileri yazılır (iz kalır, mizan sütun toplamları büyür) ya da (b) yalnız devir
   kaynaklı fişleri silen dar bir yol (tetikleyici kaldırma, aynı işlem, iz) — Ç2 (b)'yi KURMADI; karar D4'ten önce (öneri a; KULLANICIYA SORULMALI listesinde). Devri Geri Al
   dosya takasıyla: fiş numaraları devir öncesi dosyanınkinden sürer (K3).
+- D2 / D4 (G3 tablo sınıflaması): `ledger_vouchers` / `ledger_voucher_lines` G3 listesine girer (öneri: "≤K SİLİNİR, yeni yılda AÇILIŞ" — ≤K fişler arşivde kalır, yeni yıl
+  dosyasında N-13 açılışıyla çift sayılmasın diye budanır). Tetikleyiciler DELETE'i reddeder → budama yalnız Ç2'nin tetikleyici kaldırma yoluyla (`withTriggersLifted`, şimdi
+  modül içi) ve yalnız bakım kipindeki KOPYADA yapılmalı; D4 bunun için dar, dışa açık bir işlev ekler (ör. `pruneVouchersThrough(store, K)`, aynı işlem, iz). D4 fişleri iç API
+  dışından yazmamalı: her fişin izi (`ledger.voucher.created`) eski sürüm onarımının dayanağıdır (izsiz fiş + "company.reset" = artakalan fiş).

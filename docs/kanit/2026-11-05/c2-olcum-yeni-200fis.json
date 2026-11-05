@@ -1,0 +1,32 @@
+{
+  "ad": "c2-olcum-yeni-200fis",
+  "komut": "node --disable-warning=ExperimentalWarning test/fis-defteri-olcum-250.mjs --kod /home/user/ofis---y-netimi/.claude/worktrees/agent-addb60b4cac4f5935 --veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-is/veri-motor --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-is/olcum-yeni-fis.json --tur 15 --fis 200 --satir 40",
+  "commit": "1b1a28a13bf1749412fa22e76a314b264ff08fc5",
+  "dal": "worktree-agent-addb60b4cac4f5935",
+  "kirli": 0,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:23:33.256Z",
+  "sure_sn": 27.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c2-olcum-yeni-200fis.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-addb60b4cac4f5935",
+  "ham_cikti_sha256": "209c26ebfb90048398074ca7855c2a374f701fd55911c5e90b8fff22ed4df7c8",
+  "ham_cikti_bayt": 612
+}
