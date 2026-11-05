@@ -29,6 +29,13 @@ const MUTASYONLAR = [
   [11, "yansıtma hesabına mali tablo kalemi verilir (771 → E)", 'yansitma = (ad, kaynak, hedef) => planItem(ad, "yansitma", { kaynak, hedef });', 'yansitma = (ad, kaynak, hedef) => planItem(ad, "yansitma", { kaynak, hedef, gelirTablosu: "E" });', "771 Genel Yönetim Giderleri Yansıtma Hesabı: çift sınıflı"],
   [12, "alt hesap tanımı düşer (770.90)", '  "770.90": "Sınıflandırılmamış",\n', "", "not ok 7 - alt hesap tanımları"],
   [13, "önceki dönem geliri yanlış kalemde (671 I → F)", '671: gelir("Önceki Dönem Gelir ve Kârları", "I"),', '671: gelir("Önceki Dönem Gelir ve Kârları", "F"),', "671: beklenen gelir I, program gelir F"],
+  // Dar kontrol DÜŞÜK-2 (2.5.0 Ç1): kitapta ters bakiye sütunu "—" olan hesaplar, yeni hesap adları ve 602.90 / 610.90 korumasızdı.
+  [14, "ters bakiye 'aynı' kuralı Kesin Değil'e döner (bütün '—' hesapları)", 'if (item.ters === null) return { kural: "ayni" };', 'if (item.ters === null) return { kural: "kesinDegil" };', "136 ters bakiyesi kendi kaleminde işaretli"],
+  [15, "191'e Kesin Değil eklenir", '191: aktif("İndirilecek KDV", "I.H"),', '191: aktif("İndirilecek KDV", "I.H", KESIN_DEGIL),', "191 ters bakiyesi kendi kaleminde işaretli"],
+  [16, "590'a brütleştirme eklenir (→ I.D 136)", '590: pasif("Dönem Net Kârı", "V.F"),', '590: pasif("Dönem Net Kârı", "V.F", brut("I.D", "136", "hesap")),', "590 ters bakiyesi kendi kaleminde işaretli"],
+  [17, "alt hesap tanımı düşer (602.90)", '  "602.90": "Sınıflandırılmamış",\n', "", "602.90 alt hesap tanımı"],
+  [18, "alt hesap tanımı düşer (610.90)", '  "610.90": "Belgesiz",\n', "", "610.90 alt hesap tanımı"],
+  [19, "eklenen hesabın adı yanlış (690 → Dönem Net Zararı)", '690: kapanis("Dönem Kârı veya Zararı"),', '690: kapanis("Dönem Net Zararı"),', '690: kitap "Dönem Kârı veya Zararı", program "Dönem Net Zararı"'],
 ];
 
 const run = () => {
@@ -47,9 +54,11 @@ for (const [no, ad, eski, yeni, neden] of MUTASYONLAR) {
   if (ONLY && !ONLY.has(no)) continue;
   const yol = path.join(COPY, F);
   const asil = readFileSync(yol, "utf8");
-  const adet = asil.split(eski).length - 1;
+  // Windows'ta git dosyayı CRLF ile çıkarır; eski metinlerdeki "\n" LF'tir (ders 27) → aramadan önce satır sonu normalleştirilir. Geri yazma asıl baytlarla.
+  const lf = asil.replace(/\r\n/g, "\n");
+  const adet = lf.split(eski).length - 1;
   if (adet !== 1) throw new Error(`mutasyon ${no} kurulamadı: eski metin ${adet} kez geçiyor (${F})`);
-  writeFileSync(yol, asil.replace(eski, yeni));
+  writeFileSync(yol, lf.replace(eski, yeni));
   let r;
   try {
     r = run();
