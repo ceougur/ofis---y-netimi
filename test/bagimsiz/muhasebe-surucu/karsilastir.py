@@ -38,7 +38,11 @@ sys.path.insert(0, os.path.join(A.kok, "test", "bagimsiz", "muhasebe"))
 import model as M  # noqa: E402
 
 S = json.load(open(A.senaryo, encoding="utf-8"))
-P = json.load(open(A.program, encoding="utf-8"))
+if A.program.endswith(".gz"):
+    import gzip
+    P = json.load(gzip.open(A.program, "rt", encoding="utf-8"))
+else:
+    P = json.load(open(A.program, encoding="utf-8"))
 B = json.load(open(A.beklenen, encoding="utf-8"))
 SIN = json.load(open(A.siniflama, encoding="utf-8")) if A.siniflama and os.path.exists(A.siniflama) else {"kurallar": []}
 
@@ -500,6 +504,11 @@ def aciklanan_toplam(liste, son=None, bas=None, donemsel=False):
     return out, siniflar
 
 
+# BUGÜN dalı (KG-6 = B, KG-7 = B) kaynaklı U satırlarının etiketi: senaryoda POS komisyonu / KDV indirim dönemi var mı.
+DAL_ETIKETI = sorted(({"KG6-POS-TARIH"} if any(o["tur"] == "tahsilat" and o.get("yol") == "pos" and o.get("komisyon") for o in S["olaylar"]) else set())
+                     | ({"KG7-INDIRIM"} if any(o.get("indirim_ayi") for o in S["olaylar"]) or any(d.get("indirim_ayi") for o in S["olaylar"] for d in o.get("duzeltmeler", [])) else set())) or ["BUGUN-DALI"]
+
+
 def karsilastir_gorunum(prg, kah, bug, et, rapor_adi, sadece=None, acik_toplam=None):
     satirlar = []
     acik = {}
@@ -526,6 +535,8 @@ def karsilastir_gorunum(prg, kah, bug, et, rapor_adi, sadece=None, acik_toplam=N
                 if s:
                     acik[(alan, k)] = s.get("aciklama", "")
             etk = sorted(et.get(k if alan != "cari" else "cari:" + k, set()) | (et.get(k.split(".")[0], set()) if alan == "alt" else set()))
+            if sinif == "U" and not etk:
+                etk = DAL_ETIKETI  # hesap değişimi yok: fark BUGÜN dalından (KG-6 / KG-7 B)
             if sinif != "AYNI" or kk != bb:
                 satirlar.append({"alan": alan, "anahtar": k, "program": p, "kahin": kk, "bugun": bb, "sinif": sinif, **({"etiket": etk} if etk else {}), **({"aciklama": acik[(alan, k)]} if (alan, k) in acik else {})})
             else:

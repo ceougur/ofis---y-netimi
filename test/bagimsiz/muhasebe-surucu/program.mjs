@@ -68,7 +68,7 @@ async function api(method, url, body, etiket = "") {
   const r = method === "GET" ? await client.get(url) : method === "DELETE" ? await client.del(url) : await client[method.toLowerCase()](url, body);
   const ms = performance.now() - t0;
   const data = unwrap(r);
-  sureler.push({ method, url: url.replace(/[?].*$/, "").replace(/\/[a-z]+_[A-Za-z0-9_-]{6,}|\/[0-9a-f-]{20,}/g, "/:id"), ms, etiket });
+  sureler.push({ method, url: url.replace(/[?].*$/, "").replace(/\/(?:[a-z]+[-_])?[0-9a-f]{8}-[0-9a-f-]{20,}|\/[a-z]+_[A-Za-z0-9]{10,}/g, "/:id"), ms, etiket });
   const ok = r.status >= 200 && r.status < 300;
   gunluk.push({ method, url, status: r.status, ...(body !== undefined ? { body } : {}), ...(ok ? {} : { yanit: data }) });
   return { ok, status: r.status, data, kod: ok ? "" : data?.code || "", ileti: ok ? "" : String(data?.error || data?.message || "").slice(0, 400) };
