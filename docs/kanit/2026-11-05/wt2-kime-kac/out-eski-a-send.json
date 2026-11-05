@@ -1,0 +1,87 @@
+{
+ "sina": 200,
+ "b1": 200,
+ "stage": "send",
+ "reqsAfter": [
+  "GET /102290129340398/phone_numbers",
+  "GET /106540352242922",
+  "GET /102290129340398/message_templates",
+  "GET /102290129340398/message_templates",
+  "GET /106540352242922",
+  "POST /106540352242922/media",
+  "POST /106540352242922/messages",
+  "POST /106540352242922/media",
+  "POST /106540352242922/messages",
+  "DELETE /770000000000002"
+ ],
+ "tokenExpiry": {
+  "state": "ok",
+  "expiresAt": null,
+  "source": "",
+  "expiredBy": "",
+  "expiredAt": null,
+  "daysLeft": null,
+  "message": ""
+ },
+ "audit": 0,
+ "failQueueLeft": 0,
+ "afterFail": {
+  "state": "paused",
+  "pauseCode": "meta-token",
+  "jobs": [
+   "Ali:accepted:",
+   "Berk:failed:0",
+   "Cem:paused:"
+  ],
+  "msgs": {
+   "+905328110001": 1
+  }
+ },
+ "newWhileExpired": [
+  200,
+  null
+ ],
+ "reconnect": 200,
+ "preview2": [
+  "Berk:Zaten Kuyrukta",
+  "Deniz:Zaten Kuyrukta"
+ ],
+ "b2": [
+  400,
+  "whatsapp-nothing"
+ ],
+ "resume": [
+  200,
+  null,
+  null
+ ],
+ "final1": {
+  "state": "done",
+  "jobs": [
+   "Ali:accepted::",
+   "Berk:failed:0:",
+   "Cem:accepted::"
+  ]
+ },
+ "msgsPerPerson": {
+  "+905328110001": 1,
+  "+905328110002": 1,
+  "+905328110004": 1,
+  "+905328110003": 1
+ },
+ "messageRequests": 5,
+ "window": {
+  "count": 4,
+  "phones": 4
+ },
+ "retryFailed": [
+  400,
+  "whatsapp-nothing"
+ ],
+ "msgsAfterRetry": {
+  "+905328110001": 1,
+  "+905328110002": 1,
+  "+905328110004": 1,
+  "+905328110003": 1
+ }
+}

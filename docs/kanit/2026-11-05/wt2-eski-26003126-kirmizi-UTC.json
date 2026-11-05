@@ -1,0 +1,83 @@
+{
+  "ad": "wt2-eski-26003126-kirmizi-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-wt2-kod0-250.test.mjs test/whatsapp-w2-kaldir-250.test.mjs test/whatsapp-w2-veri-248.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:53:32.166Z",
+  "sure_sn": 20.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 32,
+    "gecen": 22,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › aynı WABA'lı ikinci şirket BAĞLANTISIZ yedekten geri yüklendi (ortak kayıtta hâlâ 'bağlı' görünüyor): 001'in Kaldır'ı Meta'daki aboneliği siler; ileti 'başka şirkette bağlı' demez",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:273:3",
+      "hata": "{\"removed\":true,\"already\":false,\"replaced\":false,\"stopped\":0,\"meta\":{\"state\":\"skipped\",\"reason\":\"shared\",\"message\":\"Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın. Orada kaldıramıyorsanız destekofis.net/veri-silme sayfasındaki adımları izleyin (öbür şirketin WhatsApp gönderimi de durur).\",\"link\":\"https://destekofis.net/veri-silme\"}} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › ters yön: aynı WABA'lı ikinci şirket BAĞLANTILI yedekten geri yüklendi (ortak kayıtta 'bağlı değil' görünüyor): 001'in Kaldır'ı aboneliği SİLMEZ (ikinci şirket gerçekten kullanıyor); ikinci şirket de kaldırınca silinir",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:293:3",
+      "hata": "{\"removed\":true,\"already\":false,\"replaced\":false,\"stopped\":0,\"meta\":{\"state\":\"removed\",\"reason\":\"\",\"message\":\"WhatsApp bağlantısı kaldırıldı; Meta'daki abonelik de silindi.\"}} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARARI 05.11 21:08 S-W4 = A) › Yol 2, kod 0 şablon okuması sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti",
+      "konum": "test/whatsapp-wt2-kod0-250.test.mjs:50:5",
+      "hata": "kod 0: bağlantı Süresi Doldu (Meta) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARARI 05.11 21:08 S-W4 = A) › Yol 2, kod 0 PDF yükleme sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti",
+      "konum": "test/whatsapp-wt2-kod0-250.test.mjs:50:5",
+      "hata": "kod 0: bağlantı Süresi Doldu (Meta) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARARI 05.11 21:08 S-W4 = A) › Yol 2, kod 0 ileti isteği sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti",
+      "konum": "test/whatsapp-wt2-kod0-250.test.mjs:50:5",
+      "hata": "kod 0: bağlantı Süresi Doldu (Meta) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARARI 05.11 21:08 S-W4 = A) › Yol 1 (sınanmış belirteç), ileti isteklerinin HEPSİ kod 0 (belirteç Meta'da iptal): bir kişi gitti, kalan üçü bekler; yeniden bağlanmadan basılan Devam Et (3 kez) reddedilir — kimse Başarısız olmaz, 'geri yüklenmiş / taşınmış' Durdurması çıkmaz, Meta'ya yeni istek gitmez; yeniden bağlanınca Devam Et → kişi başına 1 ileti",
+      "konum": "test/whatsapp-wt2-kod0-250.test.mjs:91:3",
+      "hata": "paused meta-token Meta erişim belirtecini kabul etmedi (süresi dolmuş, iptal edilmiş ya da hatalı olabilir). Meta İşletme Ayarları → Sistem Kullanıcıları'ndan yeni kalıcı belirteç oluşturup Elle Bağla ile girin. (Meta hata kodu 0: We were unable to authenticate the app user.) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARARI 05.11 21:08 S-W4 = A) › Yol 1: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; neden kendi yolunu söyler ('Bilgileri Değiştir', 'Devam Et'); Devam Et yeni belirteçle gönderir",
+      "konum": "test/whatsapp-wt2-kod0-250.test.mjs:138:5",
+      "hata": "kod 0 alan kişi bekleyenlerle Duraklatıldı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARARI 05.11 21:08 S-W4 = A) › Yol 2: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; neden kendi yolunu söyler ('WhatsApp'ı Yeniden Bağla', 'Devam Et'); Devam Et yeni belirteçle gönderir",
+      "konum": "test/whatsapp-wt2-kod0-250.test.mjs:138:5",
+      "hata": "kod 0 alan kişi bekleyenlerle Duraklatıldı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARARI 05.11 21:08 S-W4 = A) › Bağlantıyı Kaldır: Meta'daki abonelik silme isteği kod 0 alırsa yerel kaldırma yapılır, neden 190'daki gibi 'erişim belirtecinin süresi dolmuş' + veri silme adımı",
+      "konum": "test/whatsapp-wt2-kod0-250.test.mjs:199:3",
+      "hata": "Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (Meta isteği reddetti, hata kodu 0). Meta uygulamanızın WhatsApp hesabınızdaki aboneliğini Meta'dan kaldırmak için destekofis.net/veri-silme sayfasındaki adımları izleyin. (beklenen , gelen Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (Meta isteği reddetti, hata kodu 0). Meta uygulamanızın WhatsApp hesabınızdaki aboneliğini Meta'dan kaldırmak için destekofis.net/veri-silme sayfasındaki adımları izleyin.)"
+    },
+    {
+      "ad": "2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARARI 05.11 21:08 S-W4 = A) › geri yükleme (ilke 5): kod 0 alan kişi bekler → YEDEK → yeniden bağlan + Devam Et (gönderildi) → yedek geri yüklenir: eski toplu iş Durduruldu, Devam Et reddedilir, aynı kişilere yeni gönderim 'Daha Önce Gönderildi' — kişi başına 1 ileti",
+      "konum": "test/whatsapp-wt2-kod0-250.test.mjs:216:3",
+      "hata": "kod 0 alan kişi bekleyenlerle · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-afa5e1506cc292bd8/docs/kanit/2026-11-05/wt2-eski-26003126-kirmizi-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wt2-eski-26003126",
+  "ham_cikti_sha256": "98ae4b3ad3406da4b76911145e38fc38d1e21f6b71846dc9521f9f54ad7c5f9c",
+  "ham_cikti_bayt": 28948
+}

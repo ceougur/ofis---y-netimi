@@ -1,0 +1,13 @@
+[
+ {
+  "id": "M10",
+  "what": "meta-graph.mjs redact kaldırılır (Meta'nın metni arındırılmaz)",
+  "exit": 0,
+  "tests": 12,
+  "pass": 12,
+  "fail": 0,
+  "caught": false,
+  "failedTests": [],
+  "other": []
+ }
+]
