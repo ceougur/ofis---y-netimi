@@ -1,0 +1,91 @@
+{
+ "ad": "s20-ters-bakiye-avans-ayni-ad",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.A": 80000,
+      "I.C": 36000,
+      "I.D": 20000
+     },
+     "aktif_toplam": 136000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 80000
+      },
+      "I.C": {
+       "120|C2": 36000
+      },
+      "I.D": {
+       "336|D1": 20000
+      },
+      "III.D": {
+       "120|C1": 100000
+      },
+      "III.I": {
+       "391": 6000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 30000
+      }
+     },
+     "donem_net_kari": 30000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [],
+     "pasif": {
+      "III.D": 100000,
+      "III.I": 6000,
+      "V.F": 30000
+     },
+     "pasif_toplam": 136000,
+     "tarih": "2026-06-30"
+    },
+    "bil05": {
+     "aktif": {
+      "I.A": 80000,
+      "I.D": 20000
+     },
+     "aktif_toplam": 100000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 80000
+      },
+      "I.D": {
+       "336|D1": 20000
+      },
+      "III.D": {
+       "120|C1": 100000
+      }
+     },
+     "donem_net_kari": 0,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [],
+     "pasif": {
+      "III.D": 100000
+     },
+     "pasif_toplam": 100000,
+     "tarih": "2026-06-05"
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

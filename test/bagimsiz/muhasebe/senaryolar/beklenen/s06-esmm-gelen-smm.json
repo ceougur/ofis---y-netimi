@@ -1,0 +1,98 @@
+{
+ "ad": "s06-esmm-gelen-smm",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.C": 1000000,
+      "I.H": 260000
+     },
+     "aktif_toplam": 1260000,
+     "bilgi_amacli": true,
+     "detay": {
+      "I.C": {
+       "120|C1": 1000000
+      },
+      "I.H": {
+       "191": 60000,
+       "193": 200000
+      },
+      "III.B": {
+       "320|T1": 300000
+      },
+      "III.F": {
+       "360": 60000
+      },
+      "III.I": {
+       "391": 200000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 700000
+      }
+     },
+     "donem_net_kari": 700000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "BILGI_AMACLI"
+     ],
+     "pasif": {
+      "III.B": 300000,
+      "III.F": 60000,
+      "III.I": 200000,
+      "V.F": 700000
+     },
+     "pasif_toplam": 1260000,
+     "tarih": "2026-06-30"
+    },
+    "gt": {
+     "bas": "2026-01-01",
+     "bilgi_amacli": true,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "600": 1000000,
+      "770": 300000
+     },
+     "kalemler": {
+      "A": 1000000,
+      "B": 0,
+      "BSK": 1000000,
+      "C": 1000000,
+      "D": 0,
+      "DK": 700000,
+      "DNK": 700000,
+      "E": 300000,
+      "F": 0,
+      "FK": 700000,
+      "G": 0,
+      "H": 0,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": 700000
+     },
+     "kesin_degil": [
+      "BILGI_AMACLI"
+     ],
+     "son": "2026-12-31",
+     "tahmini": false
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

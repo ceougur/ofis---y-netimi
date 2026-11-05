@@ -1,0 +1,178 @@
+{
+ "aciklama": "Ocak'ta Aralık faturasının iadesi: açık kalemi önce kapatır; 610 / 191 yeni yılda; stok geri girer.",
+ "ad": "s34-ocakta-aralik-iadesi",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "acik/0/kalan": 144000,
+   "bil/aktif/I.E": 60000,
+   "bil/aktif/I.H": 6000,
+   "bil/aktif_toplam": 210000,
+   "bil/pasif/V.F": 80000,
+   "devir/kapanis/sonuc": 100000,
+   "devir/yeni_acilis/360": -10000,
+   "gt/kalemler/B": 30000,
+   "gt/kalemler/D": -10000,
+   "gt/kalemler/DNK": -20000
+  }
+ },
+ "kapsam": [
+  "F-09",
+  "G13.1",
+  "N-10"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 20000,
+   "M": 100000,
+   "cari": "T1",
+   "fatura_turu": "stok",
+   "id": "A1",
+   "kalemler": [
+    {
+     "miktar": 10,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2026-11-01",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 30000,
+   "M": 150000,
+   "cari": "C1",
+   "id": "F1",
+   "kalemler": [
+    {
+     "miktar": 5,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2026-12-15",
+   "tur": "satis_faturasi"
+  },
+  {
+   "ay": "2026-11",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "ay": "2026-12",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "K": 6000,
+   "M": 30000,
+   "asil_fatura": "F1",
+   "cari": "C1",
+   "id": "I1",
+   "kalemler": [
+    {
+     "miktar": 1,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2027-01-10",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "ay": "2027-01",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "ad": "acik",
+   "cari": "C1",
+   "rapor": "acik_faturalar",
+   "tarih": "2027-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2027-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2027-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2027-01-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

@@ -1,0 +1,114 @@
+{
+ "ad": "s37-kart-borcuna-aktar",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {},
+     "aktif_toplam": 0,
+     "bilgi_amacli": false,
+     "detay": {
+      "III.A": {
+       "309.KK1": 130000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": -50000
+      },
+      "V.G": {
+       "519": -80000
+      }
+     },
+     "donem_net_kari": -50000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "III.A": 130000,
+      "V.F": -50000,
+      "V.G": -80000
+     },
+     "pasif_toplam": 0,
+     "tarih": "2026-02-28"
+    },
+    "mz": {
+     "ana": {
+      "309": {
+       "alacak": 130000,
+       "bakiye": -130000,
+       "borc": 0,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 50000,
+       "bakiye": 0,
+       "borc": 50000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 20000,
+       "bakiye": 80000,
+       "borc": 100000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "309.KK1": {
+       "alacak": 130000,
+       "bakiye": -130000,
+       "borc": 0,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 50000,
+       "bakiye": 0,
+       "borc": 50000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 20000,
+       "bakiye": 80000,
+       "borc": 100000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      }
+     },
+     "son": "2026-02-28",
+     "toplam": {
+      "alacak": 200000,
+      "bakiye": 0,
+      "borc": 200000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

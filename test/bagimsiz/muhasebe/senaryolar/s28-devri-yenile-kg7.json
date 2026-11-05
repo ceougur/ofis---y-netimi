@@ -1,0 +1,197 @@
+{
+ "aciklama": "Devri Yenile: geç gelen Aralık faturası (KDV indirimi Ocak'ta, KG-7); Devir Raporu farkı; çakışma listesi.",
+ "ad": "s28-devri-yenile-kg7",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "acik/0/kalan": 60000,
+   "bil/pasif/V.F": 50000,
+   "bil_arsiv/pasif/V.F": 50000,
+   "mz/satirlar/120|C1/bakiye": 60000,
+   "mz/satirlar/190/bakiye": 10000,
+   "mz/satirlar/191/bakiye": 0,
+   "redler": [
+    "DEVIR_YENILE_CAKISMA"
+   ],
+   "yenile/acilis/N13/191@2027-01": 10000,
+   "yenile/fark/191": 10000,
+   "yenile/fark/320|T1": -60000,
+   "yenile/fark/590": 50000
+  }
+ },
+ "kapsam": [
+  "N-14",
+  "KG-7",
+  "G7",
+  "G13",
+  "V-01"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "banka": "B1",
+   "tarih": "2026-01-01",
+   "tur": "banka_acilis",
+   "tutar": 1000000
+  },
+  {
+   "K": 20000,
+   "M": 100000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-12-10",
+   "tur": "satis_faturasi",
+   "vade": "2027-01-10"
+  },
+  {
+   "ay": "2026-12",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "banka": "B1",
+   "cari": "C1",
+   "fatura": "F1",
+   "tarih": "2027-01-15",
+   "tur": "tahsilat",
+   "tutar": 60000,
+   "yol": "havale"
+  },
+  {
+   "ad": "yenile",
+   "duzeltmeler": [
+    {
+     "K": 10000,
+     "M": 50000,
+     "cari": "T1",
+     "fatura_turu": "gider",
+     "id": "G9",
+     "indirim_ayi": "2027-01",
+     "tarih": "2026-12-28",
+     "tur": "alis_faturasi"
+    }
+   ],
+   "tur": "devri_yenile"
+  },
+  {
+   "ay": "2027-01",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2027-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2027-01-01",
+   "rapor": "mizan",
+   "son": "2027-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "acik",
+   "cari": "C1",
+   "rapor": "acik_faturalar",
+   "tarih": "2027-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yenile2",
+   "duzeltmeler": [
+    {
+     "K": 20000,
+     "M": 100000,
+     "asil_fatura": "F1",
+     "cari": "C1",
+     "id": "I9",
+     "tarih": "2026-12-29",
+     "tur": "satis_iade_faturasi"
+    }
+   ],
+   "tur": "devri_yenile"
+  },
+  {
+   "ad": "bil_arsiv",
+   "dosya": "arsiv",
+   "rapor": "bilanco",
+   "tarih": "2026-12-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

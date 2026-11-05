@@ -1,0 +1,115 @@
+{
+ "ad": "s07-duzenle-iptal-sil-kilit",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "gt": {
+     "bas": "2026-07-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "600": 80000
+     },
+     "kalemler": {
+      "A": 80000,
+      "B": 0,
+      "BSK": 80000,
+      "C": 80000,
+      "D": 0,
+      "DK": 80000,
+      "DNK": 80000,
+      "E": 0,
+      "F": 0,
+      "FK": 80000,
+      "G": 0,
+      "H": 0,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": 80000
+     },
+     "kesin_degil": [],
+     "son": "2026-07-31",
+     "tahmini": false
+    },
+    "mz": {
+     "ana": {
+      "120": {
+       "alacak": 0,
+       "bakiye": 96000,
+       "borc": 96000,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 16000,
+       "bakiye": -16000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 80000,
+       "bakiye": -80000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-07-01",
+     "satirlar": {
+      "120|C1": {
+       "alacak": 0,
+       "bakiye": 96000,
+       "borc": 96000,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 16000,
+       "bakiye": -16000,
+       "borc": 0,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 80000,
+       "bakiye": -80000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-07-31",
+     "toplam": {
+      "alacak": 96000,
+      "bakiye": 0,
+      "borc": 96000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "KILITLI_DONEM",
+     "neden": "2026-07-02 ≤ kilit 2026-07-02 (409)",
+     "olay": 12,
+     "tur": "duzenle"
+    },
+    {
+     "kod": "KILITLI_DONEM",
+     "neden": "2026-07-01 ≤ kilit 2026-07-02 (409)",
+     "olay": 13,
+     "tur": "satis_faturasi"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

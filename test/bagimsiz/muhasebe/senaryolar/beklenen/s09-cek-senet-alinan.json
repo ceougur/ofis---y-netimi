@@ -1,0 +1,213 @@
+{
+ "ad": "s09-cek-senet-alinan",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.A": 150000,
+      "I.C": 150000
+     },
+     "aktif_toplam": 300000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 50000,
+       "102.B1": 100000
+      },
+      "I.C": {
+       "120|C1": 150000
+      },
+      "III.B": {
+       "320|T1": 80000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 220000
+      }
+     },
+     "donem_net_kari": 220000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [],
+     "pasif": {
+      "III.B": 80000,
+      "V.F": 220000
+     },
+     "pasif_toplam": 300000,
+     "tarih": "2026-09-30"
+    },
+    "bil05": {
+     "aktif": {
+      "I.A": 210000,
+      "I.C": 90000
+     },
+     "aktif_toplam": 300000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "101.01": 110000,
+       "101.02": 100000
+      },
+      "I.C": {
+       "120|C1": 40000,
+       "121.01": 50000
+      },
+      "III.B": {
+       "320|T1": 80000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 220000
+      }
+     },
+     "donem_net_kari": 220000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [],
+     "pasif": {
+      "III.B": 80000,
+      "V.F": 220000
+     },
+     "pasif_toplam": 300000,
+     "tarih": "2026-09-05"
+    },
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      },
+      "101": {
+       "alacak": 310000,
+       "bakiye": 0,
+       "borc": 310000,
+       "devir": 0
+      },
+      "102": {
+       "alacak": 0,
+       "bakiye": 100000,
+       "borc": 100000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 260000,
+       "bakiye": 150000,
+       "borc": 410000,
+       "devir": 0
+      },
+      "121": {
+       "alacak": 50000,
+       "bakiye": 0,
+       "borc": 50000,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 160000,
+       "bakiye": -80000,
+       "borc": 80000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 300000,
+       "bakiye": -300000,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 80000,
+       "borc": 80000,
+       "devir": 0
+      }
+     },
+     "bas": "2026-09-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      },
+      "101.01": {
+       "alacak": 210000,
+       "bakiye": 0,
+       "borc": 210000,
+       "devir": 0
+      },
+      "101.02": {
+       "alacak": 100000,
+       "bakiye": 0,
+       "borc": 100000,
+       "devir": 0
+      },
+      "102.B1": {
+       "alacak": 0,
+       "bakiye": 100000,
+       "borc": 100000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 260000,
+       "bakiye": 150000,
+       "borc": 410000,
+       "devir": 0
+      },
+      "121.01": {
+       "alacak": 50000,
+       "bakiye": 0,
+       "borc": 50000,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 160000,
+       "bakiye": -80000,
+       "borc": 80000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 300000,
+       "bakiye": -300000,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 80000,
+       "borc": 80000,
+       "devir": 0
+      }
+     },
+     "son": "2026-09-30",
+     "toplam": {
+      "alacak": 1080000,
+      "bakiye": 0,
+      "borc": 1080000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "EVRAK_DURUMU",
+     "neden": "CK1 tahsil",
+     "olay": 14,
+     "tur": "evrak_tahsile_ver"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

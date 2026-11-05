@@ -1,0 +1,187 @@
+{
+ "aciklama": "Taksit Yeni Borç (belgesiz gelir), taksit tahsilatı, Excel'den yüklenen kart (KG-5).",
+ "ad": "s19-taksit-kg5",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [
+  "KG5=B"
+ ],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 40000,
+   "bil/aktif/I.C": 150000,
+   "bil/pasif/V.F": 120000,
+   "bil/pasif/V.G": 70000,
+   "gec1/gecikmis": 80000,
+   "gec2/gecikmis": 70000,
+   "gt/hesaplar/600.90": 120000,
+   "gt/kalemler/DNK": 120000
+  },
+  "KG5=B": {
+   "bil/aktif/I.C": 150000,
+   "bil/pasif/V.F": 220000,
+   "bil/pasif/V.G": -30000,
+   "gt/hesaplar/600.90": 220000
+  }
+ },
+ "kapsam": [
+  "H-01",
+  "H-03",
+  "H-04",
+  "H-06",
+  "M-10",
+  "KG-2",
+  "KG-5",
+  "B1"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "cari": "C1",
+   "id": "TK1",
+   "kaynak": "yeni_borc",
+   "taksitler": [
+    {
+     "tutar": 40000,
+     "vade": "2026-04-01"
+    },
+    {
+     "tutar": 40000,
+     "vade": "2026-05-01"
+    },
+    {
+     "tutar": 40000,
+     "vade": "2026-06-01"
+    }
+   ],
+   "tarih": "2026-03-01",
+   "toplam": 120000,
+   "tur": "taksit_karti"
+  },
+  {
+   "cari": "C1",
+   "taksit_karti": "TK1",
+   "tarih": "2026-04-01",
+   "tur": "tahsilat",
+   "tutar": 40000,
+   "yol": "nakit"
+  },
+  {
+   "cari": "C2",
+   "id": "TE1",
+   "odenen": 30000,
+   "taksitler": [
+    {
+     "tutar": 35000,
+     "vade": "2026-04-01"
+    },
+    {
+     "tutar": 35000,
+     "vade": "2026-05-01"
+    },
+    {
+     "tutar": 30000,
+     "vade": "2026-06-01"
+    }
+   ],
+   "tarih": "2026-03-01",
+   "toplam": 100000,
+   "tur": "taksit_excel"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-04-30",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-04-30",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gec1",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-06-15",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gec2",
+   "cari": "C2",
+   "rapor": "gecikmis",
+   "tarih": "2026-06-15",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

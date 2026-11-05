@@ -1,0 +1,492 @@
+{
+ "ad": "s24-devir-eksi-stok-kg9",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "arsiv:0": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    },
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [
+    {
+     "K": "2026-12-31",
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "yeni_gt_sifir": []
+     },
+     "id": "devir-2026-1"
+    }
+   ],
+   "raporlar": {
+    "bil_arsiv": {
+     "aktif": {
+      "I.C": 300000,
+      "I.E": 25000
+     },
+     "aktif_toplam": 325000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.C": {
+       "120|C1": 300000
+      },
+      "I.E": {
+       "153": 25000
+      },
+      "III.B": {
+       "320|T1": 150000
+      },
+      "V.F": {
+       "590": 175000
+      }
+     },
+     "donem_net_kari": 0,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "EKSI_STOK"
+     ],
+     "pasif": {
+      "III.B": 150000,
+      "V.F": 175000
+     },
+     "pasif_toplam": 325000,
+     "tarih": "2026-12-31"
+    },
+    "bil_arsiv_once": {
+     "aktif": {
+      "I.C": 300000,
+      "I.E": 25000
+     },
+     "aktif_toplam": 325000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.C": {
+       "120|C1": 300000
+      },
+      "I.E": {
+       "153 (Tahmini Değerleme)": 25000
+      },
+      "III.B": {
+       "320|T1": 150000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 175000
+      }
+     },
+     "donem_net_kari": 175000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "EKSI_STOK",
+      "SATISLARIN_MALIYETI_TAHMINI"
+     ],
+     "pasif": {
+      "III.B": 150000,
+      "V.F": 175000
+     },
+     "pasif_toplam": 325000,
+     "tarih": "2026-12-31"
+    },
+    "deg": {
+     "eksi": [],
+     "toplam": 121000,
+     "urunler": {
+      "U1": {
+       "birim": "12000",
+       "deger": 96000,
+       "miktar": "8"
+      },
+      "U2": {
+       "birim": "25000",
+       "deger": 25000,
+       "miktar": "1"
+      }
+     },
+     "uyarilar": []
+    },
+    "devir": {
+     "K": "2026-12-31",
+     "acilis": {
+      "N13": {
+       "519": 175000,
+       "590": -175000
+      },
+      "acik_kalemler": [
+       {
+        "cari": "C1",
+        "fatura": "F1",
+        "kalan": 300000,
+        "tarih": "2026-06-01",
+        "vade": "2026-06-01"
+       },
+       {
+        "cari": "T1",
+        "fatura": "A1",
+        "kalan": -100000,
+        "tarih": "2026-03-01",
+        "vade": "2026-03-01"
+       },
+       {
+        "cari": "T1",
+        "fatura": "A2",
+        "kalan": -50000,
+        "tarih": "2026-03-01",
+        "vade": "2026-03-01"
+       }
+      ],
+      "cariler": {
+       "C1": {
+        "acilis": 0,
+        "bakiye": 300000
+       },
+       "T1": {
+        "acilis": 0,
+        "bakiye": -150000
+       }
+      },
+      "ekstre": {
+       "C1": {
+        "Alacak Toplamı": 0,
+        "Borç Toplamı": 0,
+        "acik_kalemler": 1
+       },
+       "T1": {
+        "Alacak Toplamı": 0,
+        "Borç Toplamı": 0,
+        "acik_kalemler": 2
+       }
+      }
+     },
+     "arsiv_kapanis": {
+      "120|C1": 300000,
+      "153": 25000,
+      "320|T1": -150000,
+      "590": -175000
+     },
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "yeni_gt_sifir": []
+     },
+     "kapanis": {
+      "DSS": 25000,
+      "N01": {
+       "2026": 125000
+      },
+      "R": {
+       "2026": 175000
+      },
+      "sonuc": 175000
+     },
+     "secenek": "borc_alacak",
+     "yeni_acilis": {
+      "120|C1": 300000,
+      "153": 25000,
+      "320|T1": -150000,
+      "590": -175000
+     }
+    },
+    "gt": {
+     "bas": "2027-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "621 (Tahmini)": 24000
+     },
+     "kalemler": {
+      "A": 0,
+      "B": 0,
+      "BSK": -24000,
+      "C": 0,
+      "D": 24000,
+      "DK": -24000,
+      "DNK": -24000,
+      "E": 0,
+      "F": 0,
+      "FK": -24000,
+      "G": 0,
+      "H": 0,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": -24000
+     },
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI"
+     ],
+     "son": "2027-02-28",
+     "tahmini": true
+    }
+   },
+   "redler": []
+  },
+  "KG9=B": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "arsiv:0": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    },
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [
+    {
+     "K": "2026-12-31",
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "yeni_gt_sifir": []
+     },
+     "id": "devir-2026-1"
+    }
+   ],
+   "raporlar": {
+    "bil_arsiv": {
+     "aktif": {
+      "I.C": 300000,
+      "I.E": 5000
+     },
+     "aktif_toplam": 305000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.C": {
+       "120|C1": 300000
+      },
+      "I.E": {
+       "153": 5000
+      },
+      "III.B": {
+       "320|T1": 150000
+      },
+      "V.F": {
+       "590": 155000
+      }
+     },
+     "donem_net_kari": 0,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "EKSI_STOK"
+     ],
+     "pasif": {
+      "III.B": 150000,
+      "V.F": 155000
+     },
+     "pasif_toplam": 305000,
+     "tarih": "2026-12-31"
+    },
+    "bil_arsiv_once": {
+     "aktif": {
+      "I.C": 300000,
+      "I.E": 5000
+     },
+     "aktif_toplam": 305000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.C": {
+       "120|C1": 300000
+      },
+      "I.E": {
+       "153 (Tahmini Değerleme)": 5000
+      },
+      "III.B": {
+       "320|T1": 150000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 155000
+      }
+     },
+     "donem_net_kari": 155000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "EKSI_STOK",
+      "SATISLARIN_MALIYETI_TAHMINI"
+     ],
+     "pasif": {
+      "III.B": 150000,
+      "V.F": 155000
+     },
+     "pasif_toplam": 305000,
+     "tarih": "2026-12-31"
+    },
+    "deg": {
+     "eksi": [],
+     "toplam": 125000,
+     "urunler": {
+      "U1": {
+       "birim": "12500",
+       "deger": 100000,
+       "miktar": "8"
+      },
+      "U2": {
+       "birim": "25000",
+       "deger": 25000,
+       "miktar": "1"
+      }
+     },
+     "uyarilar": []
+    },
+    "devir": {
+     "K": "2026-12-31",
+     "acilis": {
+      "N13": {
+       "519": 155000,
+       "590": -155000
+      },
+      "acik_kalemler": [
+       {
+        "cari": "C1",
+        "fatura": "F1",
+        "kalan": 300000,
+        "tarih": "2026-06-01",
+        "vade": "2026-06-01"
+       },
+       {
+        "cari": "T1",
+        "fatura": "A1",
+        "kalan": -100000,
+        "tarih": "2026-03-01",
+        "vade": "2026-03-01"
+       },
+       {
+        "cari": "T1",
+        "fatura": "A2",
+        "kalan": -50000,
+        "tarih": "2026-03-01",
+        "vade": "2026-03-01"
+       }
+      ],
+      "cariler": {
+       "C1": {
+        "acilis": 0,
+        "bakiye": 300000
+       },
+       "T1": {
+        "acilis": 0,
+        "bakiye": -150000
+       }
+      },
+      "ekstre": {
+       "C1": {
+        "Alacak Toplamı": 0,
+        "Borç Toplamı": 0,
+        "acik_kalemler": 1
+       },
+       "T1": {
+        "Alacak Toplamı": 0,
+        "Borç Toplamı": 0,
+        "acik_kalemler": 2
+       }
+      }
+     },
+     "arsiv_kapanis": {
+      "120|C1": 300000,
+      "153": 5000,
+      "320|T1": -150000,
+      "590": -155000
+     },
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "yeni_gt_sifir": []
+     },
+     "kapanis": {
+      "DSS": 5000,
+      "N01": {
+       "2026": 145000
+      },
+      "R": {
+       "2026": 155000
+      },
+      "sonuc": 155000
+     },
+     "secenek": "borc_alacak",
+     "yeni_acilis": {
+      "120|C1": 300000,
+      "153": 5000,
+      "320|T1": -150000,
+      "590": -155000
+     }
+    },
+    "gt": {
+     "bas": "2027-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {},
+     "kalemler": {
+      "A": 0,
+      "B": 0,
+      "BSK": 0,
+      "C": 0,
+      "D": 0,
+      "DK": 0,
+      "DNK": 0,
+      "E": 0,
+      "F": 0,
+      "FK": 0,
+      "G": 0,
+      "H": 0,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": 0
+     },
+     "kesin_degil": [
+      "SATISLARIN_MALIYETI_TAHMINI"
+     ],
+     "son": "2027-02-28",
+     "tahmini": true
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

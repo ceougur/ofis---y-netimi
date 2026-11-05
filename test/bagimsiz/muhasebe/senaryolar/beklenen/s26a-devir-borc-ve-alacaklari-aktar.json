@@ -1,0 +1,142 @@
+{
+ "ad": "s26a-devir-borc-ve-alacaklari-aktar",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "arsiv:0": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    },
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [
+    {
+     "K": "2026-12-31",
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "yeni_gt_sifir": []
+     },
+     "id": "devir-2026-1"
+    }
+   ],
+   "raporlar": {
+    "acik": [
+     {
+      "fatura": "F1",
+      "kalan": 75000,
+      "tarih": "2027-01-01",
+      "vade": "2026-03-01"
+     }
+    ],
+    "devir": {
+     "K": "2026-12-31",
+     "acilis": {
+      "N13": {
+       "519": 115000,
+       "590": -115000
+      },
+      "acik_kalemler": [
+       {
+        "cari": "C1",
+        "fatura": "F1",
+        "kalan": 75000,
+        "tarih": "2026-03-01",
+        "vade": "2026-03-01"
+       }
+      ],
+      "cariler": {
+       "C1": {
+        "acilis": 20000,
+        "bakiye": 95000
+       }
+      },
+      "ekstre": {
+       "C1": {
+        "Alacak Toplamı": 75000,
+        "Borç Toplamı": 95000,
+        "acik_kalemler": 1
+       }
+      }
+     },
+     "arsiv_kapanis": {
+      "100": 70000,
+      "120|C1": 95000,
+      "519": -50000,
+      "590": -115000
+     },
+     "degismezler": {
+      "arsiv_153_dss": [],
+      "arsiv_6_7_sifir": [],
+      "g_eslesme": [],
+      "hareket_sayisi": [],
+      "kapanis_acilis": [],
+      "modul_defter_arsiv": [],
+      "modul_esitligi": [],
+      "yeni_gt_sifir": []
+     },
+     "kapanis": {
+      "DSS": 0,
+      "N01": {
+       "2026": 0
+      },
+      "R": {
+       "2026": 115000
+      },
+      "sonuc": 115000
+     },
+     "secenek": "borc_alacak",
+     "yeni_acilis": {
+      "100": 70000,
+      "120|C1": 95000,
+      "519": -50000,
+      "590": -115000
+     }
+    },
+    "gec_once": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 75000,
+       "kalem": "fatura:F1",
+       "vade": "2026-03-01"
+      }
+     ],
+     "gecikmis": 75000,
+     "tarih": "2026-12-31"
+    },
+    "gec_sonra": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 75000,
+       "kalem": "fatura:F1",
+       "vade": "2026-03-01"
+      }
+     ],
+     "gecikmis": 75000,
+     "tarih": "2027-03-15"
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

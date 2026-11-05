@@ -1,0 +1,157 @@
+{
+ "aciklama": "Banka ters kaydı girildiği gün; asıl ve ters madde ikisi de kalır; Düzelt = ters + doğrusu.",
+ "ad": "s35-banka-ters-kayit",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 97500,
+   "bil04/aktif/I.A": 93000,
+   "bil04/pasif/V.F": -7000,
+   "gt/kalemler/DNK": -2500,
+   "gt/kalemler/E": 2500,
+   "gt/kalemler/G": 0,
+   "mz/satirlar/770/alacak": 5000,
+   "mz/satirlar/770/borc": 7500
+  }
+ },
+ "kapsam": [
+  "R-01",
+  "R-02",
+  "KG-18"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "banka": "B1",
+   "tarih": "2026-01-01",
+   "tur": "banka_acilis",
+   "tutar": 100000
+  },
+  {
+   "banka": "B1",
+   "id": "M1",
+   "tarih": "2026-03-01",
+   "tur": "banka_masraf",
+   "tutar": 5000
+  },
+  {
+   "banka": "B1",
+   "id": "M2",
+   "tarih": "2026-03-02",
+   "tur": "banka_diger_gider",
+   "tutar": 2000
+  },
+  {
+   "ad": "bil04",
+   "rapor": "bilanco",
+   "tarih": "2026-03-04",
+   "tur": "rapor"
+  },
+  {
+   "hedef": "M1",
+   "tarih": "2026-03-05",
+   "tur": "ters"
+  },
+  {
+   "hedef": "M2",
+   "tarih": "2026-03-06",
+   "tur": "ters"
+  },
+  {
+   "banka": "B1",
+   "tarih": "2026-03-06",
+   "tur": "banka_masraf",
+   "tutar": 2500
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-03-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-03-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-03-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

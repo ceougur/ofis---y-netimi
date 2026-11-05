@@ -1,0 +1,140 @@
+{
+ "aciklama": "Aynı adlı iki cari devirde ayrı; açık kalem F1, avanslı C2 net açılış.",
+ "ad": "s21-devir-ayni-adli-iki-cari",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.C": 100000,
+   "bil/kesin_degil": [],
+   "bil/pasif/III.D": 30000,
+   "bil/pasif/V.F": 150000,
+   "devir/acilis/cariler/C1/acilis": 0,
+   "devir/acilis/cariler/C2/acilis": -30000,
+   "devir/yeni_acilis/100": 80000,
+   "devir/yeni_acilis/120|C1": 100000,
+   "devir/yeni_acilis/120|C2": -30000,
+   "devir/yeni_acilis/590": -150000,
+   "gt/kalemler/DNK": 0
+  }
+ },
+ "kapsam": [
+  "N-09",
+  "N-10",
+  "N-13",
+  "G2"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 100000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-11-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "C2",
+   "id": "F2",
+   "tarih": "2026-11-02",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C2",
+   "tarih": "2026-11-05",
+   "tur": "tahsilat",
+   "tutar": 80000,
+   "yol": "nakit"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2027-01-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2027-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2027-12-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

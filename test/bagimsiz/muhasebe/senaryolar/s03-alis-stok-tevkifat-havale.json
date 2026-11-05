@@ -1,0 +1,170 @@
+{
+ "aciklama": "Tevkifatlı stoklu alış; havale ödeme; KDV mahsubu net ≥ 0 (190).",
+ "ad": "s03-alis-stok-tevkifat-havale",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 760000,
+   "bil/aktif/I.E": 200000,
+   "bil/aktif/I.H": 40000,
+   "bil/kesin_degil": [
+    "SATISLARIN_MALIYETI_TAHMINI",
+    "TAMAMLANMAMIS_ACILIS"
+   ],
+   "bil/pasif/V.G": 1000000,
+   "gt/kalemler/D": 0,
+   "gt/kalemler/DNK": 0,
+   "mz/satirlar/102.B1/bakiye": 760000,
+   "mz/satirlar/153/bakiye": 200000,
+   "mz/satirlar/190/bakiye": 40000,
+   "mz/satirlar/191/alacak": 40000,
+   "mz/satirlar/191/borc": 40000,
+   "mz/satirlar/320|T1/bakiye": 0,
+   "mz/satirlar/360/alacak": 20000,
+   "mz/satirlar/360/borc": 20000
+  }
+ },
+ "kapsam": [
+  "M-04",
+  "F-05",
+  "S-01",
+  "T-05",
+  "V-01",
+  "V-02"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "banka": "B1",
+   "tarih": "2026-01-01",
+   "tur": "banka_acilis",
+   "tutar": 1000000
+  },
+  {
+   "K": 40000,
+   "M": 200000,
+   "T": 20000,
+   "cari": "T1",
+   "fatura_turu": "stok",
+   "id": "A1",
+   "kalemler": [
+    {
+     "miktar": 20,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2026-02-10",
+   "tur": "alis_faturasi"
+  },
+  {
+   "banka": "B1",
+   "cari": "T1",
+   "fatura": "A1",
+   "tarih": "2026-02-20",
+   "tur": "odeme",
+   "tutar": 220000,
+   "yol": "havale"
+  },
+  {
+   "ay": "2026-02",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "banka": "B1",
+   "tarih": "2026-03-26",
+   "tur": "vergi_odeme",
+   "tutar": 20000,
+   "yol": "havale"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-03-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-03-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-03-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

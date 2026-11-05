@@ -1,0 +1,246 @@
+{
+ "ad": "s19-taksit-kg5",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.A": 40000,
+      "I.C": 150000
+     },
+     "aktif_toplam": 190000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 40000
+      },
+      "I.C": {
+       "120|C1": 80000,
+       "120|C2": 70000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 120000
+      },
+      "V.G": {
+       "519": 70000
+      }
+     },
+     "donem_net_kari": 120000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "V.F": 120000,
+      "V.G": 70000
+     },
+     "pasif_toplam": 190000,
+     "tarih": "2026-04-30"
+    },
+    "gec1": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 40000,
+       "kalem": "taksit:TK1",
+       "vade": "2026-05-01"
+      },
+      {
+       "kalan": 40000,
+       "kalem": "taksit:TK1",
+       "vade": "2026-06-01"
+      }
+     ],
+     "gecikmis": 80000,
+     "tarih": "2026-06-15"
+    },
+    "gec2": {
+     "cari": "C2",
+     "detay": [
+      {
+       "kalan": 5000,
+       "kalem": "taksit:TE1",
+       "vade": "2026-04-01"
+      },
+      {
+       "kalan": 35000,
+       "kalem": "taksit:TE1",
+       "vade": "2026-05-01"
+      },
+      {
+       "kalan": 30000,
+       "kalem": "taksit:TE1",
+       "vade": "2026-06-01"
+      }
+     ],
+     "gecikmis": 70000,
+     "tarih": "2026-06-15"
+    },
+    "gt": {
+     "bas": "2026-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "600.90": 120000
+     },
+     "kalemler": {
+      "A": 120000,
+      "B": 0,
+      "BSK": 120000,
+      "C": 120000,
+      "D": 0,
+      "DK": 120000,
+      "DNK": 120000,
+      "E": 0,
+      "F": 0,
+      "FK": 120000,
+      "G": 0,
+      "H": 0,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": 120000
+     },
+     "kesin_degil": [],
+     "son": "2026-04-30",
+     "tahmini": false
+    }
+   },
+   "redler": []
+  },
+  "KG5=B": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.A": 40000,
+      "I.C": 150000
+     },
+     "aktif_toplam": 190000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 40000
+      },
+      "I.C": {
+       "120|C1": 80000,
+       "120|C2": 70000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": 220000
+      },
+      "V.G": {
+       "519": -30000
+      }
+     },
+     "donem_net_kari": 220000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "kesin_degil": [
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "V.F": 220000,
+      "V.G": -30000
+     },
+     "pasif_toplam": 190000,
+     "tarih": "2026-04-30"
+    },
+    "gec1": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 40000,
+       "kalem": "taksit:TK1",
+       "vade": "2026-05-01"
+      },
+      {
+       "kalan": 40000,
+       "kalem": "taksit:TK1",
+       "vade": "2026-06-01"
+      }
+     ],
+     "gecikmis": 80000,
+     "tarih": "2026-06-15"
+    },
+    "gec2": {
+     "cari": "C2",
+     "detay": [
+      {
+       "kalan": 5000,
+       "kalem": "taksit:TE1",
+       "vade": "2026-04-01"
+      },
+      {
+       "kalan": 35000,
+       "kalem": "taksit:TE1",
+       "vade": "2026-05-01"
+      },
+      {
+       "kalan": 30000,
+       "kalem": "taksit:TE1",
+       "vade": "2026-06-01"
+      }
+     ],
+     "gecikmis": 70000,
+     "tarih": "2026-06-15"
+    },
+    "gt": {
+     "bas": "2026-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "600.90": 220000
+     },
+     "kalemler": {
+      "A": 220000,
+      "B": 0,
+      "BSK": 220000,
+      "C": 220000,
+      "D": 0,
+      "DK": 220000,
+      "DNK": 220000,
+      "E": 0,
+      "F": 0,
+      "FK": 220000,
+      "G": 0,
+      "H": 0,
+      "I": 0,
+      "J": 0,
+      "K": 0,
+      "OK": 220000
+     },
+     "kesin_degil": [],
+     "son": "2026-04-30",
+     "tahmini": false
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
