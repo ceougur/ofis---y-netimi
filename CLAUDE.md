@@ -382,6 +382,26 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   destek-ofis.vercel.app DEĞİŞMEZ. SÜREÇ (sürer): DÜŞÜK bulgu sonraki sürüme; UD + windows.yml ×2 aynı commit'te; mobil değişikliğinde mobil özet ölçümü yinelenir.
 
 ## Açık iş (yalnız güncel; kapanan sürümler `docs/GECMIS-KARARLAR.md`)
+- SIKIŞTIRMA ÖNCESİ DURUM 20 (05.11.2026 17:53 UTC, `date -u`; kullanıcı: "başlatalım, ayrıca compact talimatı vereceğim hazırlık yap"). KAYNAK: docs/2.5.0-IS-LISTESI.md (A kapsam, B 2.5.1, C sorular, D kararlar,
+  E zaman sıralı kayıt) + planlar docs/devir/DEVIR-PLANI.md (G bölümü, G14), docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md (§13), docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md, kural kitabı docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md,
+  mali müşavir görev tanımı docs/erp/MALI-MUSAVIR-AJANI.md. Sıkıştırmadan sonra her karar bu belgelerden yeniden okunur (özetten anlatılmaz).
+  YAPILDI: planlama tamam (P1–P6, mali müşavir P, kullanıcı kararları: kapsam A; S2–S5; WhatsApp S-W1 "ikinci de gitsin", S-W2 "sayılmasın", S-W3 "1 yıl + anonim iz"; 11 para kuralı "hepsi A").
+  0a (c503e486) CI #994: 4 platform npm test + e2e + Doğrulama Kapısı success; Dağıtım paketi işi 17:50'de sürüyordu → OKUNACAK (ders 1). 0b gereksizdi (2.4.8 MZ). 0c yapıldı.
+  ÇALIŞAN AJANLAR (her biri bitince: rapor + ana oturum yeni testleri KENDİSİ yeniden koşar (ders 16) → worktree dalını birleştirir (yalnız o dalın commit'leri) → push → CI'yi GitHub MCP ile okur
+  (ders 21; gh yalnız arama) → YALNIZ o farka DAR KONTROL (xhigh, YENİ ajan, prensip §3; görev metni prensip §9) → YÜKSEK/ORTA düzeltilir (yeni düzeltme ajanı, ders 46)):
+  (1) W-1(a) + W-2 WhatsApp belirteç süresi + Bağlantıyı Kaldır (xhigh) — .claude/worktrees/agent-aa5b96b53dfc0441d (17:53'te kendi test koşusunu bekliyordu);
+  (2) BS-7 şema sürüm kapısı (high) — .claude/worktrees/agent-a03e5f6803e8339cb (dosyaya dokunan testler → Windows CI'de erken, ders 48);
+  (3) KÂHİN (kodu görmeyen, xhigh) test/bagimsiz/muhasebe/ — .claude/worktrees/agent-a46b8015c664a74f9 (17:51: model.py ~2.300 satır, senaryolar yazılıyor; commit yok; kararlar "hepsi A" iletildi;
+      bitince bağımsızlık denetimi: araç kaydında server/ client/ tools/ test/(kendi klasörü dışı) okunmamış olmalı — mali müşavirde yapıldığı gibi `grep -o '"file_path":"[^"]*"'`);
+  (4) Ç1 hesap planı + sınıflama (xhigh; kullanıcı 17:52 "başlatalım" — kâhini beklemeden) — worktree .claude/worktrees/agent-<yeni>; türetme kuralı DEĞİŞMEZ, eşdeğerlik kanıtı.
+  SIRADAKİ: ajan sonuçları (yukarıdaki akış); kâhin bitince SÜRÜCÜ ajanı (kod görür; kâhin senaryolarını programa API ile uygular, bugünkü kodla karşılaştırır — fark önce hata, ders 6; kural gerekiyorsa
+  kullanıcıya, ders 43) → Ç2 fiş defteri → Ç3 dondurma (Ç5'TEN ÖNCE; göçte 2.4.9 kuralıyla) → Ç4 Defter Türü ‖ → Ç5 açılış düzeni + B1 (+ KG-15 / KG-16) → Ç6 raporlar → mali müşavir A → devir D2–D6
+  (kopyada üret + takas, ayrı açık kalem, kalıcı devir yedeği, Devri Yenile) → WhatsApp WK / W-3 / WE / WY / G1 / BS'ler → aday (mali müşavir S ‖ UI/UX → dar kontrol → tam kapı → CI + UD + windows.yml ×2)
+  → paket. Göç numaralarını ana oturum dağıtır (Ç2, Ç3, sonra D2). Aynı anda en çok 2–3 kod ajanı.
+  ORTAM: 30 dk rapor CronCreate d19be8cc (oturuma bağlı; yenilenince / 7 günde düşer — ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok 3 saatte bir :18'de yeniden kurar); ana ağaçta npm ci yapıldı;
+  PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194; imza anahtarı yolu aşağıdaki İMZA ANAHTARI satırında (denetlendi); disk 27 GB boş.
+  ESKİ OTURUM: dal claude/compassionate-galileo-f9kghg (PR #40, Meta / Tech Provider; CLAUDE.md'ye yazmaz) — PR #40 master'a birleşince master bu dala birleştirilir, CLAUDE.md'deki DURUM 18/19 satırları korunur.
+  W-1(b) (kendiliğinden yenileme) Meta App Review'da business_management izni gelince — kullanıcıya eski oturuma iletmesi hatırlatıldı.
 - 2.5.0 PLANLAMA (05.11.2026, 2.5.0 oturumu, dal claude/epic-thompson-w0lc2l; eski oturumun dalı claude/compassionate-galileo-f9kghg / PR #40 — buradan oraya yazılmaz). Kullanıcı: "2.5.0'a başlıyoruz …
   önce planlamayı yapalım"; MUHASEBE ÇEKİRDEĞİ talimatı AYNEN docs/erp/MUHASEBE-CEKIRDEGI-TALIMATI.md (not: "devir modülü ile birlikte yürütmek daha sağlıklı"). Kapsam önerisi + koddan kör noktalar
   (tablo sınıflaması eski; devir faturası işareti 146 okuma yeri; devir yedeği SAFETY_KEEP=20 ile budanır, arşiv yedekte yok; kilit izi türetilmiş defteri korumuyor; mükellef türü yok; geç gelen
