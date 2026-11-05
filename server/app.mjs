@@ -40,6 +40,7 @@ import { createBank } from "./lib/bank/post.mjs";
 import { createMoneyLines } from "./lib/bank/money-lines.mjs";
 import { migrateBankGrants } from "./lib/bank/grants.mjs";
 import { markLegacyRows, repairBank } from "./lib/bank/repair.mjs";
+import { clearVouchers, repairLegacyReset } from "./lib/ledger-vouchers.mjs";
 import { LOCK_KEY, createPeriod } from "./lib/period.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
@@ -516,6 +517,15 @@ function buildApp(overrides, opening) {
       context.ownCardRepair = context.invoices.repairOwnCards({ log });
     } catch (error) {
       log.error?.("Taksit kartı açılış onarımı çalışmadı", error);
+    }
+  }
+  // 2.5.0 Ç2 (BS-7 tasarım girdisi; lib/ledger-vouchers.mjs repairLegacyReset): fiş defterini bilmeyen eski sürümde yapılan Şirket Verisini Sıfırla'dan artakalan fişler
+  // kapı kurulmadan kaldırılır (iz: Mutabakat Günlüğü "repair" + işlem geçmişi). Başarısız olsa da program açılır.
+  if (!schemaGate) {
+    try {
+      context.voucherRepair = repairLegacyReset({ store, now: config.now, log });
+    } catch (error) {
+      log.error?.("Fiş defteri açılış onarımı çalışmadı", error);
     }
   }
   context.integrity.start();
@@ -1024,6 +1034,9 @@ function buildApp(overrides, opening) {
         counts[table] = store.get(`SELECT COUNT(*) AS n FROM ${table}`).n;
         store.run(`DELETE FROM ${table}`);
       }
+      // 2.5.0 Ç2 (plan §9 madde 5): saklanan fiş defteri iki kipte de silinir — tetikleyiciler (değiştirilemez / silinemez) aynı işlemde kaldırılıp yeniden kurulur
+      // (lib/ledger-vouchers.mjs clearVouchers). Fiş numarası o yılın en büyük sırasından sürdüğü için sıfırlamadan sonra 1'den başlar.
+      Object.assign(counts, clearVouchers(store));
       // Hesap kartları kalırken açılışları silindi: "Bakiye Doğrulandı" kalkar, kartta "Açılış Bakiyesi Gir" açılır (§5.6).
       if (mode !== "all" && has("bank_accounts")) store.run("UPDATE bank_accounts SET balance_confirmed = 0 WHERE balance_confirmed <> 0");
       if (resetNumbers) store.run("DELETE FROM settings WHERE key = 'plans.receiptSeq'");

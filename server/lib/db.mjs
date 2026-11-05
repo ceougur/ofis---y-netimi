@@ -82,7 +82,10 @@ export function createStore(db) {
   const FINANCIAL = new Set(["payments", "cash_entries", "accounts", "account_entries", "plans", "plan_items", "plan_entries", "stock_items", "stock_moves", "cheques", "cheque_events",
     "fin_events", "bank_lines", "bank_accounts", "pos_terminals", "pos_sales", "pos_items", "cheque_collections",
     // 2.3.0 İz 1: şüpheli alacak kayıtları ve karşılıkları (128/129; lib/bank/doubtful.mjs) — para dışı ama yevmiyeyi değiştirir, kapıdan geçer.
-    "doubtful_receivables", "doubtful_provisions"]);
+    "doubtful_receivables", "doubtful_provisions",
+    // 2.5.0 Ç2: saklanan fiş defteri (lib/ledger-vouchers.mjs) — yevmiyeye satır yazar; her yazım tam kapıdan geçer (integrity-scope FULL_TABLES). Fatura ve KDV mahsubu
+    // tabloları (invoices, vat_offsets) bilerek eklenmedi: 2.0.15'ten beri BİLİNEN SINIR, ayrı iş (docs/erp/C2-FIS-DEFTERI-TASARIM.md §5).
+    "ledger_vouchers", "ledger_voucher_lines"]);
   const WRITE = /^\s*(?:INSERT(?:\s+OR\s+\w+)?\s+INTO|UPDATE(?:\s+OR\s+\w+)?|DELETE\s+FROM|REPLACE\s+INTO)\s+["`]?(\w+)/i;
   const guards = [];
   // v2.0.22 (yük ölçümü): carinin yalnız BİLGİ kolonlarına (ad, telefon, adres, not, grup, ek alan, vergi bilgisi…) yazan

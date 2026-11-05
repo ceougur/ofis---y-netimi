@@ -1553,7 +1553,66 @@ export const MIGRATIONS = [
       store.run("UPDATE wa_jobs SET pdf_blob = NULL WHERE pdf_blob IS NOT NULL");
     },
   },
+  {
+    version: 46,
+    name: "v2.5.0 Ç2 saklanan fiş defteri (kapanış / açılış / eşleştirme / ters kayıt fişleri)",
+    up(store) {
+      // 2.5.0 Ç2 (docs/erp/C2-FIS-DEFTERI-TASARIM.md; docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md §3; lib/ledger-vouchers.mjs): satırları yazım anında saklanan fişler
+      // (bank_lines gibi; journal() aynen alır). YALNIZ EKLEYİCİ: boş iki tablo + indeksler + tetikleyiciler; mevcut satırlara ve ayarlara dokunulmaz. Eski sürüm (2.4.9)
+      // tabloları görmez; tetikleyiciler dosyanın parçasıdır, eski kod da değiştiremez / silemez.
+      store.exec(LEDGER_VOUCHERS_SCHEMA_V46);
+      store.exec(LEDGER_VOUCHER_TRIGGERS_V46);
+    },
+  },
 ];
+// 2.5.0 Ç2: saklanan fiş defteri. Tutarlar kuruş. Fiş başlığı satır sayısını ve borç (= alacak) toplamını taşır; satırlar başlıkla aynı işlemde yazılır.
+//   year / no     : fişin tarihinin yılı ve o yıldaki sıra (fin_events.no'dan ayrı; lib/ledger-vouchers.mjs nextNo)
+//   type          : closing | opening | opening-match | reversal | prior-year-result (KG-12) | rule-diff-correction (KG-15) | manual (2.5.1)
+//   journal_class : yevmiyede aynı günün sırası — opening (günün başı) | ordinary | period-end (dönem sonu) | closing (günün sonu); ters kayıt asıl fişinkini alır
+//   request_key   : istek kimliği (TEKİL): aynı kimlik ikinci kez fiş yazmaz
+//   reversal_of   : ters kaydın asıl fişi (TEKİL: bir fiş bir kez ters kaydedilir); yalnız type = 'reversal'de dolu
+export const LEDGER_VOUCHERS_SCHEMA_V46 = `
+  CREATE TABLE IF NOT EXISTS ledger_vouchers (
+    id TEXT PRIMARY KEY, year INTEGER NOT NULL CHECK (year BETWEEN 1000 AND 9999), no INTEGER NOT NULL CHECK (no >= 1),
+    date TEXT NOT NULL CHECK (length(date) = 10),
+    type TEXT NOT NULL CHECK (type IN ('closing', 'opening', 'opening-match', 'reversal', 'prior-year-result', 'rule-diff-correction', 'manual')),
+    journal_class TEXT NOT NULL CHECK (journal_class IN ('opening', 'ordinary', 'period-end', 'closing')),
+    description TEXT NOT NULL DEFAULT '', source TEXT NOT NULL DEFAULT '', request_key TEXT NOT NULL UNIQUE,
+    reversal_of TEXT REFERENCES ledger_vouchers(id),
+    line_count INTEGER NOT NULL CHECK (line_count >= 2), total_minor INTEGER NOT NULL CHECK (total_minor > 0),
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL,
+    UNIQUE (year, no),
+    CHECK ((type = 'reversal') = (reversal_of IS NOT NULL))
+  ) STRICT;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_ledger_vouchers_reversal ON ledger_vouchers(reversal_of) WHERE reversal_of IS NOT NULL;
+  CREATE INDEX IF NOT EXISTS idx_ledger_vouchers_date ON ledger_vouchers(date);
+  CREATE INDEX IF NOT EXISTS idx_ledger_vouchers_source ON ledger_vouchers(source) WHERE source <> '';
+  CREATE TABLE IF NOT EXISTS ledger_voucher_lines (
+    voucher_id TEXT NOT NULL REFERENCES ledger_vouchers(id), seq INTEGER NOT NULL CHECK (seq >= 1),
+    account TEXT NOT NULL CHECK (length(account) = 3), sub TEXT NOT NULL DEFAULT '', party TEXT NOT NULL DEFAULT '',
+    debit_minor INTEGER NOT NULL DEFAULT 0 CHECK (debit_minor >= 0), credit_minor INTEGER NOT NULL DEFAULT 0 CHECK (credit_minor >= 0),
+    note TEXT NOT NULL DEFAULT '',
+    CHECK ((debit_minor > 0 AND credit_minor = 0) OR (credit_minor > 0 AND debit_minor = 0)),
+    PRIMARY KEY (voucher_id, seq)
+  ) STRICT;
+`;
+// Değişmezlik (edoc_usage deseni): fiş ve satırı değiştirilemez, silinemez; düzeltme yalnız ters kayıt fişiyle. INSERT OR REPLACE çakışan satırı silme tetikleyicisini
+// çalıştırmadan değiştirir (recursive_triggers kapalı) — bu yüzden ekleme de denetlenir: aynı kimlik / istek kimliği / numarayla başlık eklenemez, başlığın satır sayısı
+// dolduktan sonra satır eklenemez (kapanmış fişe satır eklenmez; satırlar başlıkla aynı işlemde yazılır). Tetikleyicileri yalnız şirket sıfırlaması ve eski sürüm
+// sıfırlamasının açılış onarımı aynı işlemde kaldırıp yeniden kurar (lib/ledger-vouchers.mjs withTriggersLifted).
+export const LEDGER_VOUCHER_TRIGGER_NAMES = Object.freeze(["ledger_vouchers_no_update", "ledger_vouchers_no_delete", "ledger_vouchers_no_replace", "ledger_voucher_lines_no_update", "ledger_voucher_lines_no_delete", "ledger_voucher_lines_closed"]);
+export const LEDGER_VOUCHER_TRIGGERS_V46 = `
+  CREATE TRIGGER IF NOT EXISTS ledger_vouchers_no_update BEFORE UPDATE ON ledger_vouchers BEGIN SELECT RAISE(ABORT, 'ledger_vouchers değiştirilemez: düzeltme ters kayıt fişiyle'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_vouchers_no_delete BEFORE DELETE ON ledger_vouchers BEGIN SELECT RAISE(ABORT, 'ledger_vouchers silinemez: düzeltme ters kayıt fişiyle'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_vouchers_no_replace BEFORE INSERT ON ledger_vouchers
+    WHEN EXISTS (SELECT 1 FROM ledger_vouchers WHERE id = NEW.id OR request_key = NEW.request_key OR (year = NEW.year AND no = NEW.no))
+    BEGIN SELECT RAISE(ABORT, 'ledger_vouchers: aynı fiş ikinci kez yazılamaz'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_no_update BEFORE UPDATE ON ledger_voucher_lines BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines değiştirilemez: düzeltme ters kayıt fişiyle'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_no_delete BEFORE DELETE ON ledger_voucher_lines BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines silinemez: düzeltme ters kayıt fişiyle'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_closed BEFORE INSERT ON ledger_voucher_lines
+    WHEN (SELECT COUNT(*) FROM ledger_voucher_lines WHERE voucher_id = NEW.voucher_id) >= COALESCE((SELECT line_count FROM ledger_vouchers WHERE id = NEW.voucher_id), 0)
+    BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines: fiş kapalı (satır sayısı dolu ya da fiş yok)'); END;
+`;
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";
 

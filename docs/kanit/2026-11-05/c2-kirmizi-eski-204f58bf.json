@@ -1,0 +1,148 @@
+{
+  "ad": "c2-kirmizi-eski-204f58bf",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs",
+  "commit": "fb3eb17475207dda918ea86237a822cc67588e55",
+  "dal": "worktree-agent-addb60b4cac4f5935",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:19:32.737Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 0,
+    "basarisiz": 23,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 23 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N12 (tohum): fiş yokken Defter Mutabakatı'nda Fiş Defteri denetimi görünmez, yevmiyede fiş maddesi yok",
+      "konum": "test/fis-defteri-250.test.mjs:48:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N1–N3: dengesiz, sıfır, iki taraflı, eksi, kesirli satır; planda olmayan hesap, yabancı alt hesap, kontrol dışı cari → 400, hiçbir satır yazılmaz",
+      "konum": "test/fis-defteri-250.test.mjs:57:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N4: aynı istek kimliği — aynı içerik aynı fişi döndürür (yeni fiş yok), farklı içerik 409; numara tüketilmez",
+      "konum": "test/fis-defteri-250.test.mjs:78:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N7 ileri tarih 400; N6 kilitli tarihe fiş 409 period-locked, hiçbir satır yazılmaz",
+      "konum": "test/fis-defteri-250.test.mjs:93:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N8: fiş ve satırı UPDATE / DELETE / INSERT OR REPLACE / UPSERT ile değişmez; kapanmış fişe satır eklenmez; fişsiz satır eklenmez",
+      "konum": "test/fis-defteri-250.test.mjs:111:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N9–N10: ters kayıt aynalar, mizan sıfırlanır, iki madde de yevmiyede; ikinci ters kayıt, ters kaydın tersi ve asıldan önce tarih reddedilir; kilitli asıl tarihe ters kayıt 409",
+      "konum": "test/fis-defteri-250.test.mjs:131:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N9 (HTTP): aynı istek kimliğiyle eşzamanlı iki ters kayıt → tek fiş (biri yinelenen); farklı kimlikle eşzamanlı iki ters kayıt → biri 200, biri 409",
+      "konum": "test/fis-defteri-250.test.mjs:163:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N13: aynı gün sırası — açılış fişi günün en başında, olağan fiş Banka Fişi'nden sonra, dönem sonu KDV mahsubundan sonra, kapanış günün en sonunda; sınıf içinde yazım sırası",
+      "konum": "test/fis-defteri-250.test.mjs:185:3",
+      "hata": "[\"cash:k1\",\"bank:ev1\",\"vat-offset:m1\"] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N14: kapanış fişleri ve kilit AYNI işlemde (lockThrough); biri düşerse fiş de kilit de yazılmaz; yalnız kapanış türleri, fiş ≤ kilit",
+      "konum": "test/fis-defteri-250.test.mjs:201:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N20: 31.12 ve 01.01 — numara yılı ayrı, 31.12 kapanışı yılın son maddesi, 01.01 açılışı yeni yılın ilk maddesi, mizan devri",
+      "konum": "test/fis-defteri-250.test.mjs:229:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N21: kontrol (alt defter) hesabına yazan fiş kapıda geri alınır (Defter Mutabakatı farkı); numara tüketilmez",
+      "konum": "test/fis-defteri-250.test.mjs:251:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N23: uçlar yalnız system.manage — Muhasebe ve Personel 403",
+      "konum": "test/fis-defteri-250.test.mjs:261:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › Fiş Defteri denetimi: fiş varken Defter Mutabakatı'nda tutarlı satır; yapısı bozulan fişi (store dışı) tam tarama yakalar",
+      "konum": "test/fis-defteri-250.test.mjs:272:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — N22: kilitli dönemdeki fiş store dışından silinirse tam tarama \"Kapanmış dönem\" der › kilit izi fiş satırlarını içerir",
+      "konum": "test/fis-defteri-250.test.mjs:294:3",
+      "hata": "fiş defteri yok"
+    },
+    {
+      "ad": "2.5.0 Ç2 — fiş defteri: iki şirket, yedek → geri yükle, Şirket Verisini Sıfırla › N15: 001'e yazılan fiş 002'de yok; numaralar şirket başına ayrı; 002'nin defterinde yalnız kendi fişi",
+      "konum": "test/fis-defteri-yasam-250.test.mjs:55:3",
+      "hata": "fiş defteri yok (ledger.vouchers)"
+    },
+    {
+      "ad": "2.5.0 Ç2 — fiş defteri: iki şirket, yedek → geri yükle, Şirket Verisini Sıfırla › N16: 002 yedeği → yeni fiş → geri yükle: yedekteki fişler ve tetikleyiciler döner, numara yedeğin devamı",
+      "konum": "test/fis-defteri-yasam-250.test.mjs:71:3",
+      "hata": "fiş defteri yok (ledger.vouchers)"
+    },
+    {
+      "ad": "2.5.0 Ç2 — fiş defteri: iki şirket, yedek → geri yükle, Şirket Verisini Sıfırla › N17: Şirket Verisini Sıfırla (movements) fişleri ve satırları siler, tetikleyiciler yeniden kurulu, numara 1'den",
+      "konum": "test/fis-defteri-yasam-250.test.mjs:87:5",
+      "hata": "fiş defteri yok (ledger.vouchers)"
+    },
+    {
+      "ad": "2.5.0 Ç2 — fiş defteri: iki şirket, yedek → geri yükle, Şirket Verisini Sıfırla › N17: Şirket Verisini Sıfırla (all) fişleri ve satırları siler, tetikleyiciler yeniden kurulu, numara 1'den",
+      "konum": "test/fis-defteri-yasam-250.test.mjs:87:5",
+      "hata": "fiş defteri yok (ledger.vouchers)"
+    },
+    {
+      "ad": "2.5.0 Ç2 — N18: eski sürüm (fiş defterini bilmeyen kod) Şirket Verisini Sıfırla yaptıysa artakalan fiş açılışta kaldırılır › izi olmayan fiş + sıfırlama izi → kaldırılır (Mutabakat Günlüğü 'repair', işlem geçmişi); sonra yazılan fiş kalır; sıfırlama izi yoksa dokunulmaz",
+      "konum": "test/fis-defteri-yasam-250.test.mjs:124:3",
+      "hata": "fiş defteri yok (ledger.vouchers)"
+    },
+    {
+      "ad": "2.5.0 Ç2 — N19: eski sürüm verisinden göç (v2.4.3 fikstürü, iki şirket) 46'ya; kilit izi ve defter değişmez › iki şirketin dosyası son şemaya çıkar, tablolar ve tetikleyiciler kurulu, kilit izi (2.4.9 tanımı = güncel tanım), Mutabakat tutarlı; ikinci açılışta göç yok",
+      "konum": "test/fis-defteri-yasam-250.test.mjs:179:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç2 — N11 süreç öldürme / disk dolu ve N5 eşzamanlı iki süreç (ayrı bağlantılar) › N11a: fiş yazılırken (işlem açık) süreç öldürülürse yarım fiş yok — başlık, satır ve iz yok; dosya sağlam",
+      "konum": "test/fis-defteri-yasam-250.test.mjs:241:3",
+      "hata": "no such table: ledger_vouchers"
+    },
+    {
+      "ad": "2.5.0 Ç2 — N11 süreç öldürme / disk dolu ve N5 eşzamanlı iki süreç (ayrı bağlantılar) › N11b: disk dolu (sayfa sınırı) → fiş yazılamaz, hiçbir satır kalmaz; yer açılınca aynı istek kimliğiyle yazılır",
+      "konum": "test/fis-defteri-yasam-250.test.mjs:259:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/server/lib/ledger-vouchers.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs"
+    },
+    {
+      "ad": "2.5.0 Ç2 — N11 süreç öldürme / disk dolu ve N5 eşzamanlı iki süreç (ayrı bağlantılar) › N5: iki ayrı süreç aynı anda aynı istek kimliğiyle fiş yazar → tek fiş; biri yeni, öbürü yinelenen (aynı kimlik)",
+      "konum": "test/fis-defteri-yasam-250.test.mjs:283:3",
+      "hata": "işçi 1: node:internal/modules/esm/resolve:275 · throw new ERR_MODULE_NOT_FOUND( · ^"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c2-kirmizi-eski-204f58bf.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-addb60b4cac4f5935",
+  "ham_cikti_sha256": "f23146828588ab20ce33ef063276517a13a46d460f4c32fc8140dbe2258b080a",
+  "ham_cikti_bayt": 34799
+}
