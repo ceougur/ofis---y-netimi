@@ -52,6 +52,8 @@ her kişinin bir gönderme yolu kalır; (5) taşınan / geri yüklenen veride ay
 - W-1 SÜRE DOLUNCA (05.11 ~18:37, AskUserQuestion) = "Duraklasın, sonra sürsün (Önerilen)" → iş 'Duraklatıldı' olur; yeniden bağlanınca 'Devam Et' ile yalnız kalan kişilere gider,
   kimseye ikinci ileti gitmez (bugünkü Meta 190 davranışı). §3 madde 3'teki "Durduruldu + Yine de Gönder" notunun YERİNE geçer.
 
+- W-1 META 190 ALAN KİŞİ (05.11 ~19:15, AskUserQuestion) = "Bekleyenlere dönsün (Önerilen)" → iletisi kesin gitmedi; kalan kişilerle bekler, yeniden bağlanınca 'Devam Et' ile ona da gider.
+
 ## 4a. Sorulan sorular (ders 43, 45 — iki seçenek + öneri; KAYIT)
 - S-W1 (n3): Kuyrukta bekleyen ikinci iş, aynı kişiye aynı dönem için gönderilmiş ve teslimi beklenen ("Meta Kabul Etti") bir ileti varken ne olsun?
   A (ÖNERİ): elenir ("Zaten Gönderiliyor"); birinci Başarısız olursa ikinci için onaylı "Yine de Gönder" yolu açılır — ilke 2 ("almış olabilirse elenir").
