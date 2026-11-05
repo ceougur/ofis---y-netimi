@@ -76,6 +76,10 @@ export async function startTestServer(options = {}) {
     ...(options.log ? { log: options.log } : {}),
     // 2.4.9 B1: açılış kesintisi kancası (server/app.mjs openFault; yalnız test/createapp-acilis-geri-alma-249.test.mjs).
     ...(options.__testOpenFault ? { __testOpenFault: options.__testOpenFault } : {}),
+    // 2.5.0 Ç3 (test/donmus-defter-250.test.mjs): kural değişikliği benzetimi ({ fn(entries) }), dondurma kancası ({ fn(phase) }) ve parça boyu (satır) — yalnız testlerde.
+    ...(options.__testLedgerRule ? { __testLedgerRule: options.__testLedgerRule } : {}),
+    ...(options.__testFreezeHook ? { __testFreezeHook: options.__testFreezeHook } : {}),
+    ...(options.freezeBatchLines ? { freezeBatchLines: options.freezeBatchLines } : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.
     moneyStrict: options.moneyStrict ?? true,
