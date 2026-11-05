@@ -1,5 +1,9 @@
 # Muhasebeleştirme Kural Kitabı — EK-2: Kâhinin ve Hesap Planı İncelemesinin Açık Kural Soruları (DestekOfis 2.5.0)
 
+> **ANA OTURUM NOTU (05.11.2026 21:30 UTC):** Bu turun bağımsızlık denetiminde geniş bir `grep -r docs` araması kodu anlatan belge satırlarını (kapama sırası, kart kapama)
+> ekrana getirdi. Bu yüzden **23, 24, 28, 32, 33, 35, K-2 ve K-3** maddeleri temiz bağlamlı yeni ajanla yinelendi: **geçerli olan `MUHASEBELESTIRME-KURAL-KITABI-EK-2B.md`**
+> ve kullanıcı kararlarıdır (iş listesi D, 05.11 21:30). Öbür maddeler (25, 26, 27, 29, 30, 31, 34, 36–40, K-1) bu belgeden geçerlidir.
+
 > **Bu ek programın kodu görülmeden yazıldı.** Kaynak: kural kitabı (`docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md`), EK-1 (`…-EK-1.md`), `docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md`,
 > `docs/devir/DEVIR-PLANI.md`, `docs/2.5.0-IS-LISTESI.md` (A, C, D), önceden yazılmış karar metinleri (`docs/2.3.0-SUPHELI-KABUL.md`, `docs/BANKA-MODULU-PLAN.md` §3.8 ve §3.11b,
 > `docs/GECMIS-KARARLAR.md`, `docs/2.2.0-IS-LISTESI.md` madde 1.3), kullanım kılavuzu, `CLAUDE.md`, görev tanımı `docs/erp/MALI-MUSAVIR-AJANI.md`; ana oturumun 40 soruluk listesi (23–40).
