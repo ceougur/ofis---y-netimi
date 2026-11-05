@@ -1,0 +1,32 @@
+{
+  "ad": "249-tamkapi/ci-kahin-mobil-yazma",
+  "komut": "npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu",
+  "commit": "7897604227694cd6c14ebdbf73bf2b9471b761e0",
+  "dal": "worktree-agent-ad08b374963951ef6",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T05:09:37.371Z",
+  "sure_sn": 187.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 52,
+    "gecen": 52,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/249-tamkapi/ci-kahin-mobil-yazma.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad08b374963951ef6",
+  "ham_cikti_sha256": "71ab475c689ff1904fb0df91f88669ece4d42a297519cbf26d38690af23ad905",
+  "ham_cikti_bayt": 3084
+}

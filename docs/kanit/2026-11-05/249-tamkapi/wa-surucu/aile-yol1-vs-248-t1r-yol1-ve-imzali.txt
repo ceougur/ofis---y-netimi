@@ -1,0 +1,351 @@
+# docs/kanit/2026-11-05/249-tamkapi/wa-surucu/karsilastirma-yol1-hizli-Europe-Istanbul.json
+senaryo×uç 292; tam eşit 25; yalnız gösterim 195; davranış farkı 72
+## gösterim sınıfları (sürücünün): G1-borclu-eki 258 senaryo/479 satır; G2-toplu-gosterim 10 senaryo/26 satır; G3-gonderilmeyen-icerik 11 senaryo/60 satır; G4-liste-icinde-ozel-yaprak 27 senaryo/42 satır
+## davranış farkı aileleri (54):
+  kontroller.K*.pencere_farkli_alici.W*: 25 senaryo, 29 satır
+  isler.T*/*.pdf.donem_bas: 18 senaryo, 29 satır
+  isler.T*/*.pdf.donem_son: 18 senaryo, 29 satır
+  meta.kabul.<kişi>: 17 senaryo, 19 satır
+  durum_sayilari.<durum>: 13 senaryo, 13 satır
+  meta.medya_silme.<kişi>: 13 senaryo, 15 satır
+  meta.toplam_kabul_program: 12 senaryo, 12 satır
+  kontroller.K*.isler.T*/*: 11 senaryo, 27 satır
+  bu_ay.W*: 10 senaryo, 10 satır
+  isler.T*/*.kabul: 10 senaryo, 10 satır
+  meta.post.<kişi>: 10 senaryo, 12 satır
+  meta.meta_ileti.<kişi>: 10 senaryo, 12 satır
+  isler.T*/*.durum: 9 senaryo, 9 satır
+  meta.medya_yukleme.<kişi>: 8 senaryo, 10 satır
+  toplular.T*: 7 senaryo, 7 satır
+  meta.toplam_post: 7 senaryo, 7 satır
+  meta.toplam_meta_ileti: 7 senaryo, 7 satır
+  kontroller.K*.medya_silme: 7 senaryo, 8 satır
+  isler.T*/*: 7 senaryo, 9 satır
+  isler.T*/*.medya_silme: 6 senaryo, 6 satır
+  bu_ay.W*.<tarih>.teslim: 6 senaryo, 6 satır
+  bu_ay.W*.<tarih>.yaklasik_usd: 6 senaryo, 6 satır
+  kontroller.K*.toplular.T*: 6 senaryo, 10 satır
+  onceki_uyari.T*: 6 senaryo, 6 satır
+  meta.toplam_medya_yukleme: 5 senaryo, 5 satır
+  kontroller.K*.durum_sayilari.<durum>: 5 senaryo, 5 satır
+  kontroller.K*.toplam_post: 4 senaryo, 4 satır
+  kontroller.K*.toplam_kabul: 4 senaryo, 4 satır
+  olusmadi: 4 senaryo, 4 satır
+  isler.T*/*.degiskenler: 3 senaryo, 3 satır
+  isler.T*/*.pdf.hareket_sayisi: 3 senaryo, 3 satır
+  isler.T*/*.pdf.donem_sonu_bakiye: 3 senaryo, 3 satır
+  yeniden.Y*.oneri: 3 senaryo, 3 satır
+  elenen.T*.<kişi>: 3 senaryo, 3 satır
+  elenen.T*: 3 senaryo, 3 satır
+  durum_sayilari.Atlandı: 3 senaryo, 3 satır
+  kontroller.K*.durum_sayilari.Atlandı: 3 senaryo, 6 satır
+  isler.T*/*.atlanma_nedeni: 3 senaryo, 3 satır
+  kontroller.K*.durum_sayilari.Bekliyor: 2 senaryo, 3 satır
+  baslamadi.T*: 2 senaryo, 3 satır
+  yeniden.Y*.elenen.<kişi>: 2 senaryo, 2 satır
+  kontroller.K*.durum_sayilari.Duraklatıldı: 2 senaryo, 2 satır
+  isler.T*/*.post: 2 senaryo, 2 satır
+  isler.T*/*.meta_ileti: 2 senaryo, 2 satır
+  isler.T*/*.pdf.cari_ad: 1 senaryo, 1 satır
+  isler.T*/*.dosya_adi.on_ek: 1 senaryo, 1 satır
+  bu_ay.W*.<tarih>: 1 senaryo, 1 satır
+  durum_sayilari.Durduruldu (Geri Yükleme): 1 senaryo, 1 satır
+  kontroller.K*.durum_sayilari.Durduruldu (Geri Yükleme): 1 senaryo, 1 satır
+  isler.T*/*.pdf.devir: 1 senaryo, 1 satır
+  durum_sayilari: 1 senaryo, 1 satır
+  kanca_yanitlari.200: 1 senaryo, 1 satır
+  yeniden.Y*.alinan: 1 senaryo, 1 satır
+  isler.T*/*.hata_kodu: 1 senaryo, 1 satır
+
+## KARŞILAŞTIRMA ↔ 2.4.8 t1r yol1 (docs/kanit/2026-11-01/248-t1r/karsilastirma-yol1-hizli-Europe-Istanbul.json)
+eski: senaryo×uç 284; tam 25; gösterim 187; davranış 72
+YENİ aile (eskide yok): YOK
+KALKAN aile (yenide yok): kanca_yanitlari.503 | isler.T*/*.telefon | isler.T*/*.pdf | isler.T*/*.dosya_adi | isler.T*/*.medya_yukleme
+YENİ gösterim sınıfı: YOK
+ortak senaryo×uç 284: davranış farkı listesi AYNI 272, DEĞİŞEN 12
+  DEĞİŞEN CIFT-16-daha-once-suresi-doldu [hizli]: +0 −18
+     − olusmadi: beklenen [], program ['T2']
+     − toplular.T2: beklenen nesne, program '<YOK>'
+     − durum_sayilari.Süresi Doldu: beklenen 2, program '<YOK>'
+     − meta.post.A: beklenen 2, program 1
+     − meta.kabul.A: beklenen 2, program 1
+     − meta.meta_ileti.A: beklenen 2, program 1
+     − meta.medya_yukleme.A: beklenen 2, program 1
+     − meta.medya_silme.A: beklenen 2, program 0
+     − meta.toplam_post: beklenen 2, program 1
+     − meta.toplam_kabul_program: beklenen 2, program 1
+     − meta.toplam_meta_ileti: beklenen 2, program 1
+     − meta.toplam_medya_yukleme: beklenen 2, program 1
+     − kontroller.K1.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K1.medya_silme: beklenen 1, program 0
+     − kontroller.K1.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+     − isler.T2/A: beklenen nesne, program '<YOK>'
+  DEĞİŞEN ICERIK-10-ttl-sonrasi-teslim [hizli]: +1 −3
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  DEĞİŞEN GUV-09-sahte-gercek-wamid [hizli]: +4 −2
+     + durum_sayilari.Gönderildi: beklenen 1, program '<YOK>'
+     + meta.medya_silme.A: beklenen 0, program 1
+     + isler.T1/A.durum: beklenen 'Gönderildi', program 'Teslim Edildi'
+     + isler.T1/A.medya_silme: beklenen 0, program 1
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Teslim Edildi'
+  DEĞİŞEN TARIH-02-ttl-sonu [hizli]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN TARIH-03b-kancasiz-yol-calisiyor [hizli]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 1
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 2, program 1
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Meta Kabul Etti'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Meta Kabul Etti'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J1-02-suresi-doldu-sonra-teslim-daha-once [hizli]: +0 −3
+     − kontroller.K1.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K1.medya_silme: beklenen 2, program 1
+     − kontroller.K1.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  DEĞİŞEN J1-03-silinmis-sirket-gec-bildirim [hizli]: +1 −0
+     + kontroller.K1.pencere_farkli_alici.W1: beklenen 3, program 2
+  DEĞİŞEN J4-01-suresi-doldu-son-kabulden-meta-bekletti [hizli]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 2, program 1
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J4-02-suresi-doldu-son-kabulden-yine-de-gonder [hizli]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.B: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 2, program 1
+     − kontroller.K2.isler.T1/B: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/B.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/B.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J6-02-sirket-gecici-acilamaz-503 [hizli]: +0 −10
+     − durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − kontroller.K2.isler.T1/A: beklenen 'Teslim Edildi', program 'Gönderildi'
+     − bu_ay.W1: beklenen nesne, program '<YOK>'
+     − kanca_yanitlari.200: beklenen 2, program 1
+     − kanca_yanitlari.503: beklenen 1, program 2
+     − isler.T1/A.durum: beklenen 'Teslim Edildi', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J6-03-bildirim-kaydedilemez-503 [hizli]: +0 −3
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti [hizli]: +0 −31
+     − durum_sayilari.Teslim Edildi: beklenen 2, program 1
+     − meta.post.C: beklenen 1, program 0
+     − meta.kabul.C: beklenen 1, program 0
+     − meta.meta_ileti.C: beklenen 1, program 0
+     − meta.medya_yukleme.C: beklenen 1, program 0
+     − meta.medya_silme.A: beklenen 1, program 0
+     − meta.medya_silme.C: beklenen 1, program 0
+     − meta.toplam_post: beklenen 2, program 1
+     − meta.toplam_kabul_program: beklenen 2, program 1
+     − meta.toplam_meta_ileti: beklenen 2, program 1
+     − meta.toplam_medya_yukleme: beklenen 2, program 1
+     − kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 2, program 1
+     − kontroller.K1.toplam_post: beklenen 2, program 1
+     − kontroller.K1.toplam_kabul: beklenen 2, program 1
+     − kontroller.K1.pencere_farkli_alici.W1: beklenen 2, program 1
+     − kontroller.K1.medya_silme: beklenen 2, program 0
+     − kontroller.K1.isler.T3/C: beklenen 'Teslim Edildi', program 'Bekliyor'
+     − bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+     − bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+     − kanca_yanitlari.200: beklenen 4, program 2
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+     − isler.T3/C.durum: beklenen 'Teslim Edildi', program 'Bekliyor'
+     − isler.T3/C.telefon: beklenen '+905343334455', program None
+     − isler.T3/C.degiskenler: beklenen ['Zeynep Demir', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '0,00 TL'], program None
+     − isler.T3/C.pdf: beklenen nesne, program None
+     − isler.T3/C.dosya_adi: beklenen nesne, program None
+     − isler.T3/C.post: beklenen 1, program 0
+     − isler.T3/C.kabul: beklenen 1, program 0
+     − isler.T3/C.meta_ileti: beklenen 1, program 0
+     − isler.T3/C.medya_yukleme: beklenen 1, program 0
+     − isler.T3/C.medya_silme: beklenen 1, program 0
+yalnız yenide (8): W1-01-varsayilan-30-gun-eski-72-sa-okunmaz [hizli] (yalnız gösterim); W1-02-30-gun-dolmadan-daha-once-yine-de-gonder [hizli] (yalnız gösterim); W1-03-meta-bildirir-12-sa-sablon-basina [hizli] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W1-04-ay-sonu-12-sa-gec-teslim [hizli] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W1-05-varsayilan-30-gun-meta-bekletti-son-kabulden [hizli] (yalnız gösterim); W2-01-kabulde-bilinmiyor-sonra-12-sa [hizli] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W2-02-kabulde-30-gun-sonra-12-sa-kisalir [hizli] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W3-01-kabulde-12-sa-sonra-30-gun-uzar [hizli] (yalnız gösterim)
+yalnız eskide (0): 
+
+## KARŞILAŞTIRMA ↔ 2.4.9 imzalı İstanbul (docs/kanit/2026-11-05/249-tamkapi/wa-surucu/karsilastirma-imzali-ikisi-Europe-Istanbul.json)
+eski: senaryo×uç 584; tam 50; gösterim 398; davranış 136
+YENİ aile (eskide yok): kanca_yanitlari.200 | yeniden.Y*.alinan
+KALKAN aile (yenide yok): kanca_yanitlari.503 | isler.T*/*.medya_yukleme
+YENİ gösterim sınıfı: YOK
+ortak senaryo×uç 292: davranış farkı listesi AYNI 279, DEĞİŞEN 13
+  DEĞİŞEN CIFT-01-zaman-asimi-meta-aldi [hizli]: +8 −0
+     + durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + meta.kabul.A: beklenen 1, program 0
+     + meta.medya_silme.A: beklenen 1, program 0
+     + meta.toplam_kabul_program: beklenen 1, program 0
+     + bu_ay.W1: beklenen nesne, program '<YOK>'
+     + isler.T1/A.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+     + isler.T1/A.kabul: beklenen 1, program 0
+     + isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN CIFT-04-cokme-istek-ulasti [hizli]: +9 −0
+     + durum_sayilari.Teslim Edildi: beklenen 3, program 2
+     + meta.kabul.B: beklenen 1, program 0
+     + meta.medya_silme.B: beklenen 1, program 0
+     + meta.toplam_kabul_program: beklenen 3, program 2
+     + bu_ay.W1.2026-10.teslim: beklenen 3, program 2
+     + bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0027', program '0.0018'
+     + isler.T1/B.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+     + isler.T1/B.kabul: beklenen 1, program 0
+     + isler.T1/B.medya_silme: beklenen 1, program 0
+  DEĞİŞEN K5-03-sonra-programin-saatine-gore [hizli]: +11 −0
+     + durum_sayilari.Teslim Edildi: beklenen 2, program 1
+     + meta.kabul.A: beklenen 2, program 1
+     + meta.medya_silme.A: beklenen 3, program 2
+     + meta.toplam_kabul_program: beklenen 2, program 1
+     + bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+     + bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+     + yeniden.Y1.elenen.A: beklenen 'daha_once_gonderildi', program 'sonucu_belirsiz'
+     + yeniden.Y1.oneri: beklenen None, program 'isteki_yine_de_gonder'
+     + isler.T2/A.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+     + isler.T2/A.kabul: beklenen 1, program 0
+     + isler.T2/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim [hizli]: +10 −0
+     + elenen.T2.A: beklenen 'daha_once_gonderildi', program 'sonucu_belirsiz'
+     + onceki_uyari.T2: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + meta.kabul.A: beklenen 2, program 1
+     + meta.medya_silme.A: beklenen 1, program 0
+     + meta.toplam_kabul_program: beklenen 2, program 1
+     + bu_ay.W1: beklenen nesne, program '<YOK>'
+     + isler.T1/A.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+     + isler.T1/A.kabul: beklenen 2, program 1
+     + isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN H3-01-geri-yukleme-dosyasiz-gec-kabul [hizli]: +12 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + onceki_uyari.T2: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 1, program 2
+     + meta.post.B: beklenen 1, program 2
+     + meta.kabul.B: beklenen 1, program 2
+     + meta.meta_ileti.B: beklenen 1, program 2
+     + meta.medya_yukleme.B: beklenen 1, program 2
+     + meta.medya_silme.B: beklenen 1, program 2
+     + meta.toplam_post: beklenen 2, program 3
+     + meta.toplam_meta_ileti: beklenen 2, program 3
+     + meta.toplam_medya_yukleme: beklenen 2, program 3
+  DEĞİŞEN J1-04-asilmis-belirsiz-gec-teslim-iki-deneme [hizli]: +4 −2
+     + meta.kabul.B: beklenen 2, program 1
+     + bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+     + bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+     + isler.T1/B.kabul: beklenen 2, program 1
+     − meta.toplam_kabul_program: beklenen 1, program 2
+     − kontroller.K1.toplam_kabul: beklenen 1, program 2
+  DEĞİŞEN J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz [hizli]: +5 −1
+     + elenen.T2.B: beklenen 'daha_once_gonderildi', program 'sonucu_belirsiz'
+     + onceki_uyari.T2: beklenen nesne, program '<YOK>'
+     + meta.kabul.B: beklenen 2, program 1
+     + bu_ay.W1: beklenen nesne, program '<YOK>'
+     + isler.T1/B.kabul: beklenen 2, program 1
+     − meta.toplam_kabul_program: beklenen 1, program 2
+  DEĞİŞEN J3-03-asilmis-belirsiz-gec-failed-kisi-almadi [hizli]: +21 −2
+     + olusmadi: beklenen [], program ['T2']
+     + toplular.T2: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + meta.post.B: beklenen 3, program 2
+     + meta.kabul.B: beklenen 3, program 1
+     + meta.meta_ileti.B: beklenen 3, program 2
+     + meta.medya_yukleme.B: beklenen 2, program 1
+     + meta.medya_silme.B: beklenen 2, program 1
+     + meta.toplam_post: beklenen 3, program 2
+     + meta.toplam_kabul_program: beklenen 2, program 1
+     + meta.toplam_meta_ileti: beklenen 3, program 2
+     + meta.toplam_medya_yukleme: beklenen 2, program 1
+     + kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + kontroller.K1.toplam_post: beklenen 3, program 2
+     + kontroller.K1.toplam_kabul: beklenen 2, program 1
+     + kontroller.K1.medya_silme: beklenen 2, program 1
+     + kontroller.K1.toplular.T2: beklenen 'aktif', program '<YOK>'
+     + kontroller.K1.isler.T2/B: beklenen 'Teslim Edildi', program '<YOK>'
+     + bu_ay.W1: beklenen nesne, program '<YOK>'
+     + isler.T1/B.kabul: beklenen 2, program 1
+     + isler.T2/B: beklenen nesne, program '<YOK>'
+     − meta.toplam_kabul_program: beklenen 2, program 3
+     − kontroller.K1.toplam_kabul: beklenen 2, program 3
+  DEĞİŞEN J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz [hizli]: +2 −3
+     + meta.kabul.B: beklenen 2, program 1
+     + isler.T1/B.kabul: beklenen 2, program 1
+     − meta.toplam_kabul_program: beklenen 1, program 2
+     − kontroller.K1.toplam_kabul: beklenen 1, program 2
+     − kontroller.K2.toplam_kabul: beklenen 1, program 2
+  DEĞİŞEN J6-01-yanit-beklenirken-taninmayan-503-yineleme [hizli]: +1 −1
+     + kanca_yanitlari.200: beklenen 3, program 2
+     − kanca_yanitlari.503: beklenen 3, program 0
+  DEĞİŞEN J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez [hizli]: +1 −7
+     + meta.toplam_kabul_program: beklenen 1, program 2
+     − meta.kabul.B: beklenen 1, program 2
+     − meta.toplam_kabul_program: beklenen 1, program 3
+     − kontroller.K2.toplam_kabul: beklenen 1, program 2
+     − kontroller.K3.toplam_kabul: beklenen 1, program 2
+     − bu_ay.W1.2026-10.teslim: beklenen 2, program 3
+     − bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0027'
+     − isler.T1/B.kabul: beklenen 1, program 2
+  DEĞİŞEN J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez [hizli]: +12 −1
+     + durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+     + meta.post.B: beklenen 1, program 2
+     + meta.meta_ileti.B: beklenen 1, program 2
+     + meta.toplam_post: beklenen 1, program 2
+     + meta.toplam_meta_ileti: beklenen 1, program 2
+     + kontroller.K3.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+     + kontroller.K3.toplam_post: beklenen 1, program 2
+     + kontroller.K3.isler.T1/B: beklenen 'Atlandı', program 'Teslim Edildi'
+     + isler.T1/B.durum: beklenen 'Atlandı', program 'Teslim Edildi'
+     + isler.T1/B.post: beklenen 1, program 2
+     + isler.T1/B.meta_ileti: beklenen 1, program 2
+     + isler.T1/B.atlanma_nedeni: beklenen 'daha_once_gonderildi', program None
+     − kontroller.K2.toplam_kabul: beklenen 0, program 1
+  DEĞİŞEN J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez [hizli]: +18 −11
+     + durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+     + meta.kabul.B: beklenen 1, program 0
+     + kontroller.K1.durum_sayilari.Duraklatıldı: beklenen 1, program '<YOK>'
+     + kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+     + kontroller.K1.toplular.T1: beklenen 'duraklatildi', program 'aktif'
+     + kontroller.K1.isler.T1/B: beklenen 'Duraklatıldı', program 'Başarısız'
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 0, program 1
+     + kontroller.K2.toplular.T1: beklenen 'duraklatildi', program 'aktif'
+     + kontroller.K2.isler.T1/B: beklenen 'Atlandı', program 'Başarısız'
+     + kontroller.K3.durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+     + kontroller.K3.pencere_farkli_alici.W1: beklenen 0, program 1
+     + kontroller.K3.isler.T1/B: beklenen 'Atlandı', program 'Başarısız'
+     + bu_ay.W1: beklenen nesne, program '<YOK>'
+     + yeniden.Y1.alinan: beklenen ['B'], program []
+     + yeniden.Y1.oneri: beklenen None, program 'isteki_yine_de_gonder'
+     + isler.T1/B.durum: beklenen 'Atlandı', program 'Başarısız'
+     + isler.T1/B.kabul: beklenen 1, program 0
+     + isler.T1/B.atlanma_nedeni: beklenen 'daha_once_gonderildi', program None
+     − meta.medya_yukleme.B: beklenen 1, program 2
+     − meta.medya_silme.B: beklenen 1, program 2
+     − meta.toplam_kabul_program: beklenen 0, program 1
+     − meta.toplam_medya_yukleme: beklenen 1, program 2
+     − kontroller.K1.toplam_kabul: beklenen 0, program 1
+     − kontroller.K2.toplam_kabul: beklenen 0, program 1
+     − kontroller.K2.isler.T1/B: beklenen 'Atlandı', program 'Duraklatıldı'
+     − kontroller.K3.toplam_kabul: beklenen 0, program 1
+     − kontroller.K3.medya_silme: beklenen 1, program 2
+     − isler.T1/B.medya_yukleme: beklenen 1, program 2
+     − isler.T1/B.medya_silme: beklenen 1, program 2
+yalnız yenide (0): 
+yalnız eskide (292): TEMEL-01-ekstre-uc-kisi [yavas]; TEMEL-02-odeme-hatirlatma [yavas]; TEMEL-03-okundu-teslimsiz [yavas]; TEMEL-04-sirasiz-kanca [yavas]; TEMEL-05-teslimden-sonra-failed [yavas]; CIFT-01-zaman-asimi-meta-aldi [yavas]; CIFT-02-yanitsiz-yine-de-gonder [yavas]; CIFT-03-yine-de-gonder-cift-gider [yavas]; CIFT-04-cokme-istek-ulasti [yavas]; CIFT-05-cokme-istek-ulasmadi [yavas]; CIFT-06-cift-tik [yavas]; CIFT-07-iki-sekme [yavas]; CIFT-07b-iki-sekme-yine-de-gonder [yavas]; CIFT-08-iki-kullanici-ayni-cari [yavas]; CIFT-09-basarisizlari-yeniden-dene [yavas]; CIFT-10-yinelenen-kanca [yavas]; CIFT-11-medya-yanitsiz [yavas]; CIFT-12-geri-yukleme-dirilmez [yavas]; CIFT-13-veri-tasindi [yavas]; CIFT-15-daha-once-basarisiz [yavas]; CIFT-16-daha-once-suresi-doldu [yavas]; CIFT-17-baska-donem [yavas]; CIFT-14-geri-yukleme-sonra-baslat [yavas]; KAYIP-01-kapaliyken-kanca [yavas]; KAYIP-02-sekiz-gun-kapali [yavas]; KAYIP-03-tunel-kapali [yavas]; KAYIP-04-guncelleme-kapat-ac [yavas]; KAYIP-05-meta-ulasilamaz [yavas]; KAYIP-06-meta-ulasilamaz-uc-kisi [yavas]; KAYIP-07-baglanti-arada-koptu [yavas]; KISI-01-telefon-kuyrukta-degisti [yavas]; KISI-02-ayni-adli-iki-cari [yavas]; KISI-03-ayni-kisi-iki-kez [yavas]; KISI-04-hucrede-iki-numara [yavas]; KISI-05-sabit-hat [yavas]; KISI-06-yurt-disi [yavas]; KISI-07-telefonsuz-gecersiz [yavas]; KISI-08-istemiyor [yavas]; KISI-09-istemiyor-sonradan [yavas]; KISI-10-silindi-kuyrukta [yavas]; KISI-11-numara-bicimleri [yavas]; KISI-12-ayni-telefon-iki-cari [yavas]; KISI-13-hepsi-elendi [yavas]; KISI-14-ayiricilar [yavas]; KISI-15-pasif [yavas]; ICERIK-01-pdf-karismasi [yavas]; ICERIK-02-devir-ve-donem-uclari [yavas]; ICERIK-03-yil-donumu [yavas]; ICERIK-04-turkce-emoji-satir-sonu [yavas]; ICERIK-05-cok-uzun-ad [yavas]; ICERIK-06-eksi-bakiye [yavas]; ICERIK-07-tutar-bicimi [yavas]; ICERIK-08-tum-hareketler [yavas]; ICERIK-09-kuyrukta-bakiye-degisti [yavas]; ICERIK-10-ttl-sonrasi-teslim [yavas]; ICERIK-11-ttl-icinde-gec-teslim [yavas]; ICERIK-12-hatirlatma-kuyrukta-odendi [yavas]; HESAP-0 [yavas]; HESAP-10 [yavas]; HESAP-200 [yavas]; HESAP-131005 [yavas]; HESAP-368 [yavas]; HESAP-131031 [yavas]; HESAP-131042 [yavas]; HESAP-133010 [yavas]; HESAP-131045 [yavas]; SABLON-GONDERIM-132000 [yavas]; SABLON-GONDERIM-132001 [yavas]; SABLON-GONDERIM-132007 [yavas]; SABLON-GONDERIM-132012 [yavas]; SABLON-GONDERIM-132015 [yavas]; SABLON-GONDERIM-132016 [yavas]; SABLON-GONDERIM-132018 [yavas]; HATA-SINIFSIZ-100 [yavas]; HATA-SINIFSIZ-131008 [yavas]; HATA-SINIFSIZ-135000 [yavas]; HATA-SINIFSIZ-131053 [yavas]; HATA-SINIFSIZ-131047 [yavas]; HATA-SINIFSIZ-131050 [yavas]; HATA-SINIFSIZ-131051 [yavas]; HATA-SINIFSIZ-130403 [yavas]; HATA-SINIFSIZ-131064 [yavas]; HATA-SINIFSIZ-131063 [yavas]; HATA-SINIFSIZ-133016 [yavas]; HATA-SINIFSIZ-987654 [yavas]; SABLON-BASLATMA-PENDING [yavas]; SABLON-BASLATMA-REJECTED [yavas]; SABLON-BASLATMA-PAZARLAMA [yavas]; SABLON-BASLATMA-DURAKLATILMIS [yavas]; SABLON-BASLATMA-YOK [yavas]; SABLON-BASLATMA-YALNIZ-HATIRLATMA [yavas]; SABLON-SONRAKI-TOPLU [yavas]; SABLON-PAZARLAMA-ARADA [yavas]; SABLON-PAZARLAMA-10-DK [yavas]; GECICI-01-131000-iki-kez [yavas]; GECICI-02-bes-art-arda [yavas]; GECICI-03-uc-sonra-kabul [yavas]; GECICI-03b-dort-hata-basarisiz [yavas]; GECICI-130429 [yavas]; GECICI-131057 [yavas]; GECICI-80007 [yavas]; GECICI-4 [yavas]; GECICI-1 [yavas]; GECICI-2 [yavas]; GECICI-133004 [yavas]; GECICI-131056 [yavas]; ALICI-131049-bir-kez [yavas]; ALICI-131049-iki-kez [yavas]; ALICI-131049-esanli [yavas]; ALICI-131026-kancada [yavas]; ALICI-131021-esanli [yavas]; SINIR-01-250-uzeri [yavas]; SINIR-02-basamak-artti [yavas]; SINIR-03-elle-ust-sinir [yavas]; SINIR-04-meta-sinir-hatasi [yavas]; SINIR-05-pencerede-sayili-alici [yavas]; SINIR-06-gece-yarisi-kayan [yavas]; SINIR-07-131048 [yavas]; SIRKET-01-ayni-waba [yavas]; SIRKET-02-ayri-waba [yavas]; SIRKET-03-sinir-hatasi-ayri-waba [yavas]; OLCEK-01-iki-bin [yavas]; OLCEK-02-uc-gune-yayilan [yavas]; OLCEK-03-kanca-yagmuru [yavas]; OLCEK-04-pazarlama-300 [yavas]; OLCEK-05-pazarlama-100-ileti [yavas]; GUV-01-yetkisiz [yavas]; GUV-02-salt-okunur-lisans [yavas]; GUV-03-lisans-arada-biter [yavas]; GUV-04-onay-yok [yavas]; GUV-05-sahte-kanca [yavas]; GUV-06-sahte-opaque [yavas]; GUV-07-bagli-degil [yavas]; GUV-08-lisans-geri-gelir [yavas]; GUV-09-sahte-gercek-wamid [yavas]; GUV-10-yetki-ve-baglanti-sirasi [yavas]; GUV-11-yetki-lisans-onay-sirasi [yavas]; GUV-12-onay-sablon-sirasi [yavas]; TARIH-01-ay-sonu [yavas]; TARIH-02-ttl-sonu [yavas]; TARIH-03-kancasiz [yavas]; TARIH-03b-kancasiz-yol-calisiyor [yavas]; TARIH-04-eski-toplu-sinirda [yavas]; TARIH-05-eski-toplu [yavas]; TARIH-06-genc-toplu-kapat-ac [yavas]; K1-01-ay-sonu-bu-ay-sonra-gecen-ay [yavas]; K1-02-yil-donumu [yavas]; K1-03-yarim-ay-bu-ay-sonra-tam-ay-gecen-ay [yavas]; K1-04-zaten-kuyrukta-ay-donumu [yavas]; K1-05-son-3-ay-7-gun [yavas]; K1-06-tum-hareketler-7-gun [yavas]; K1-07-hatirlatma-ayni-yerel-gun [yavas]; K1-08-hatirlatma-zaten-kuyrukta-ayni-gun [yavas]; K1-09-bu-ay-gecen-ay-farkli-ay [yavas]; K1-10-ozel-aralik-birebir [yavas]; K2-01-son-3-ay-bekleyen-yasi-yok [yavas]; K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra [yavas]; K3-01-basarisiz-sayilmaz-ay-donumu [yavas]; K3-02-meta-bekletti-ret-sonra-gec-teslim-sayilir [yavas]; K7-01-meta-bekletti-ikinci-deneme-reddi-sayilmaz [yavas]; K7-02-iptal-meta-bekletti-sayilmaz [yavas]; K7-03-iptal-meta-bekletti-gec-teslim-sayilir [yavas]; K7-04-geri-yukleme-meta-bekletti-sayilmaz [yavas]; K7-05-tasima-meta-bekletti-gec-teslim-sayilir [yavas]; K4-01-ay-sonu-yeniden-deneme-donemi-tasinir [yavas]; K4-02-yil-donumu-yeniden-deneme [yavas]; K4-03-son-3-ay-yeniden-deneme-secim-tasinir [yavas]; K5-01-karar-yeniden-denemeye-tasinir [yavas]; K5-02-acilistan-sonra-baska-isle-giden-elenir [yavas]; K5-03-sonra-programin-saatine-gore [yavas]; K5-04-isteki-yine-de-gonder-karari-tasir [yavas]; K5-05-karar-yokken-onceki-gec-teslim-sayilir [yavas]; K6-01-yeniden-denemesi-belirsiz-elenir [yavas]; K6-02-asil-isin-karari-belirsizi-gecmez [yavas]; K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi [yavas]; K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil [yavas]; K8-01-sayfalama-imlec-kaymaz [yavas]; K8-02-tarih-suzgeci-yerel-gun [yavas]; K8-03-suzgec-ile-sayfalama [yavas]; D1-01-belirsiz-yeni-toplu-iste-elenir [yavas]; D1-02-belirsiz-ay-sonu-eslik [yavas]; D1-03-belirsiz-son-3-ay-7-gun [yavas]; D2-01-hatirlatma-dunden-bekleyen-bugunku-eler [yavas]; D2-02-hatirlatma-uc-gundur-bekleyen-ve-ertesi-gun-serbest [yavas]; D3-01-yeniden-deneme-7-gun-yeni-gonderimden [yavas]; D3-02-yine-de-gonder-7-gun-yeni-gonderimden [yavas]; D4-01-ozel-aralik-ayni-gun-bu-ay [yavas]; D4-02-ay-sonu-bu-ay-sonra-ozel-aralik [yavas]; D4-03-yil-donumu-ozel-aralik-zaten-kuyrukta [yavas]; D5-01-sonraki-denemesi-kabul-daha-once [yavas]; D5-02-sonraki-denemesi-bekliyor-zaten-kuyrukta [yavas]; D6-01-asilmis-belirsiz-yeni-toplu-iste-eler [yavas]; D6-02-asilmis-belirsiz-yeniden-denemede-eler [yavas]; D6-03-asilmis-belirsiz-son-3-ay-7-gun [yavas]; D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir [yavas]; D7-02-geri-yukleme-ay-donumu-defterdeki-kabul [yavas]; D8-01-tasinan-veride-dosyadaki-ileti-sayilir [yavas]; D8-02-tasinan-veride-yine-de-gonder [yavas]; E1-01-dosyada-ve-defterde-belirsiz [yavas]; E2-01-yeni-is-uclu-cakisma [yavas]; E2-02-yeni-is-belirsiz-ve-r3-yine-de-gonder [yavas]; E2-03-yeniden-denemede-kuyrukta-once-belirsiz [yavas]; E2-04-yeniden-denemede-uclu-cakisma [yavas]; E2-05-yeniden-denemede-belirsiz-once-r3 [yavas]; E2-06-isteki-yine-de-gonder-zaten-kuyrukta [yavas]; E3-01-hatirlatma-belirsiz-ayni-yerel-gun [yavas]; E3-02-hatirlatma-yeniden-deneme-ayni-gun-belirsiz [yavas]; E4-01-son-3-ay-sonraki-teslim-7-gun [yavas]; E4-02-tum-hareketler-sonraki-teslim-7-gun [yavas]; N6-01-yeniden-denemede-baska-iste-bekleyen [yavas]; F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider [yavas]; F1-02-asilmis-belirsiz-ve-bekleyen-zaten-kuyrukta [yavas]; F1-03-asilmis-eski-belirsiz-isteki-yine-de-gonder-gider [yavas]; F2-01-hatirlatma-yeniden-deneme-ertesi-gun [yavas]; F2-02-hatirlatma-dunku-belirsiz-bugunku-r3 [yavas]; G0-01-sonraki-denemesi-teslimsiz-durdu-yeniden-gider [yavas]; G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder [yavas]; G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem [yavas]; G1-02-bu-ay-sinirla-ertesi-gun-ayni-donem [yavas]; G1-03-yeniden-deneme-ertesi-gun-asil-isin-gunu [yavas]; G2-01-bu-ay-0311-ozel-0511 [yavas]; G2-02-iki-ozel-aralik-kendi-gunlerinde-bu-ay [yavas]; G2-03-gece-yarisi-bu-ay-yerel-gun [yavas]; G3-01-tasinan-belirsiz-yeni-iste-eler [yavas]; G3-02-tasinan-belirsiz-yeniden-denemede-eler [yavas]; G3-03-tasinan-teslim-son-3-ay-7-gun [yavas]; G3-04-tasinan-asil-isin-yine-de-gonder-siniri [yavas]; G4-01-sifirlama-meta-bekletti-sayilmaz [yavas]; G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir [yavas]; G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir [yavas]; G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim [yavas]; G6-01-son-3-ay-ozel-aralik-7-gun [yavas]; G6-02-ozel-aralik-tum-hareketler-kisiye-gore [yavas]; G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi [yavas]; G6-04-tum-hareketler-belirsiz-ozel-aralik [yavas]; G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu [yavas]; H1-01-yine-de-gonder-teslim-daha-once [yavas]; H1-02-yine-de-gonder-basarisiz-belirsiz-surer [yavas]; H1-03-gece-yarisi-son-3-ay-yine-de-gonder [yavas]; H2-01-tasima-gonderiliyor-belirsiz [yavas]; H2-02-tasima-gonderiliyor-gec-kanca [yavas]; H3-01-geri-yukleme-dosyasiz-gec-kabul [yavas]; H3-02-geri-yukleme-meta-bekletti-gec-teslim [yavas]; H4-01-r3-son-gonderim-son-kabul-gece-yarisi [yavas]; J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir [yavas]; J1-02-suresi-doldu-sonra-teslim-daha-once [yavas]; J1-03-silinmis-sirket-gec-bildirim [yavas]; J1-04-asilmis-belirsiz-gec-teslim-iki-deneme [yavas]; J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz [yavas]; J1-06-meta-bekletti-ret-gec-teslim-yeniden-acilmaz [yavas]; J2-01-meta-bekletti-teslim-is-kapanir [yavas]; J2-02-meta-bekletti-okundu-is-kapanir [yavas]; J3-01-geri-yukleme-sonrasi-gec-failed-yeniden-gonderilir [yavas]; J3-02-sifirlama-sonrasi-gec-failed-yeniden-gonderilir [yavas]; J3-03-asilmis-belirsiz-gec-failed-kisi-almadi [yavas]; J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz [yavas]; J4-01-suresi-doldu-son-kabulden-meta-bekletti [yavas]; J4-02-suresi-doldu-son-kabulden-yine-de-gonder [yavas]; J5-01-bekletme-sonrasi-iki-teslim [yavas]; J5-02-iki-teslim-ay-donumu-yerel [yavas]; J6-01-yanit-beklenirken-taninmayan-503-yineleme [yavas]; J6-02-sirket-gecici-acilamaz-503 [yavas]; J6-03-bildirim-kaydedilemez-503 [yavas]; J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz [yavas]; J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti [yavas]; J8-01-tum-hareketler-bu-ay-ayni-gun [yavas]; J8-02-tum-hareketler-gecen-ay-ayni-gun [yavas]; J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay [yavas]; J8-04-tum-hareketler-bekleyen-bu-ay-zaten-kuyrukta [yavas]; J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi [yavas]; J8-06-ozel-aralik-kanon-sonra-tum-hareketler [yavas]; J9-01-n3-iptal-sonrasi-ikinci-is-gec-teslim-iki-ileti [yavas]; J9-02-n3-basarisiz-sonrasi-ikinci-is-gec-teslim-iki-ileti [yavas]; J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez [yavas]; J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez [yavas]; J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez [yavas]; J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider [yavas]; J10-05-b-r3-yine-de-gonder-onceki-teslim-ikinci-kopya-gider [yavas]; J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun [yavas]; J11-02-hareketsiz-cari-metni-ve-eslik [yavas]; J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir [yavas]; J12-01-yine-de-gonder-ekstre-icerigi-acilistaki-gibi [yavas]; J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez [yavas]; J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket [yavas]; W1-01-varsayilan-30-gun-eski-72-sa-okunmaz [yavas]; W1-02-30-gun-dolmadan-daha-once-yine-de-gonder [yavas]; W1-03-meta-bildirir-12-sa-sablon-basina [yavas]; W1-04-ay-sonu-12-sa-gec-teslim [yavas]; W1-05-varsayilan-30-gun-meta-bekletti-son-kabulden [yavas]; W2-01-kabulde-bilinmiyor-sonra-12-sa [yavas]; W2-02-kabulde-30-gun-sonra-12-sa-kisalir [yavas]; W3-01-kabulde-12-sa-sonra-30-gun-uzar [yavas]

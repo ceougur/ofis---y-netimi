@@ -1,0 +1,124 @@
+// 2.4.9 TAM KAPI (ders 2, 8, 15, 22, 24, 30, 35, 37, 41): 2.4.8 kapi-248.mjs düzeni aynen + 2.4.9 eklemeleri.
+// tam npm test + ci.yml'nin BÜTÜN kâhin ve e2e satırları + CI dışı senaryolar (+ 2.4.8 T4/T7 e2e, betiksiz) + CI dışı kâhinler
+// + WhatsApp kâhini (kendi testleri, sahte Meta, senaryolar.py, program sürücüsü bütün senaryolar, sürücü mutasyon denetimi).
+// Her koşu `tools/kanit.mjs kos 249-tamkapi/<ad>` ile, `flock <not defteri>/tam-npm-test.lock` altında TEK TEK. GEÇTİ kaydı olanı atlar (devam edilebilir).
+// kanit.mjs gün klasörünü koşu başında UTC günden seçer: hüküm 05.11 ve 06.11 klasörlerinde aranır.
+// Kırmızı olan bir kez "<ad>-tekrar" adıyla yeniden koşulur (ders 20; neden iletiden ayrıca okunur, ders 38).
+// BEKLENEN KIRMIZI (araç hükmü BAŞARISIZ olan karşılaştırma koşuları — bilinen kâhin farkları; asıl hüküm aile karşılaştırmasında): tekrar EDİLMEZ, "beklenen-fark" yazılır
+// (ders 20'nin "ara sıra" kırmızısı değil; deterministik karşılaştırma). Bunlar: dis-kahin-mobil-erisim, dis-kahin-mobil-yazma-tam, dis-kahin-sayac-karsilastir,
+// dis-kahin-sayac-surucu (özet satırı yok → BELİRSİZ), wa-surucu-* (kâhin ↔ program fark listesi).
+// Kullanım: node kapi-249.mjs <bölüm…>   bölümler: npmtest ci-kahin ci-e2e cidisi kahin-dis whatsapp
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import path from "node:path";
+
+const W = "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad08b374963951ef6";
+const bolumler = process.argv.slice(2);
+const S = "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/tamkapi-249-k7d2";
+const L = "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/tam-npm-test.lock";
+const GUNLER = ["2026-11-05", "2026-11-06"].map(g => path.join(W, "docs/kanit", g, "249-tamkapi"));
+const GUN = new Date().toISOString().slice(0, 10);
+const KD = path.join(W, "docs/kanit", GUN, "249-tamkapi");
+const PW = "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1-kod-ac15eb6c/pw";
+if (!existsSync(path.join(PW, "chromium_headless_shell-1194"))) { console.error("chromium_headless_shell-1194 yok: " + PW); process.exit(4); }
+const env = { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", PLAYWRIGHT_BROWSERS_PATH: PW };
+delete env.KANIT_DIR;
+mkdirSync(path.join(S, "sayac"), { recursive: true });
+const now = () => new Date().toISOString().slice(11, 19);
+const log = msg => { console.log(msg); appendFileSync(path.join(S, "kapi.log"), msg + "\n"); };
+const hukum = ad => {
+  for (const D of GUNLER) {
+    const f = path.join(D, ad + ".json");
+    if (!existsSync(f)) continue;
+    try { return JSON.parse(readFileSync(f, "utf8")).hukum; } catch { return "OKUNAMADI"; }
+  }
+  return null;
+};
+const diskMB = () => {
+  const r = spawnSync("df", ["--output=avail", "-BM", "/"], { encoding: "utf8" });
+  return Number((r.stdout.trim().split("\n").pop() || "").replace(/\D/g, ""));
+};
+let n = 0;
+const sonuc = [];
+function tek(ad, cmd) {
+  const bos = diskMB();
+  log(`${now()} disk ${bos} MB boş — başlıyor ${ad}`);
+  if (!(bos >= 5000)) { log(`DUR: disk ${bos} MB (ders 24)`); process.exit(3); }
+  const r = spawnSync("flock", [L, "node", "tools/kanit.mjs", "kos", "249-tamkapi/" + ad, "--", ...cmd], { cwd: W, env, encoding: "utf8", maxBuffer: 1 << 29 });
+  const out = (r.stdout || "") + (r.stderr || "");
+  writeFileSync(path.join(S, "son.out"), out);
+  const son = out.trim().split("\n").slice(-1)[0] || "";
+  log(`${now()} ${ad} cikis=${r.status} hüküm=${hukum(ad)} ${son.slice(0, 220)}`);
+  return r.status === 0 && hukum(ad) === "GEÇTİ";
+}
+function kos(ad, cmd, { tekrarYok = false } = {}) {
+  n++;
+  if (hukum(ad) === "GEÇTİ") { log(`ATLA ${ad} (GEÇTİ)`); sonuc.push([ad, "GEÇTİ"]); return; }
+  if (hukum(ad) == null && tek(ad, cmd)) { sonuc.push([ad, "GEÇTİ"]); return; }
+  if (tekrarYok) { sonuc.push([ad, "beklenen-fark (" + hukum(ad) + ")"]); return; }
+  if (hukum(ad + "-tekrar") === "GEÇTİ") { sonuc.push([ad, "1.kırmızı, 2.yeşil"]); return; }
+  if (hukum(ad + "-tekrar") == null && tek(ad + "-tekrar", cmd)) { sonuc.push([ad, "1.kırmızı, 2.yeşil"]); return; }
+  sonuc.push([ad, "2× kırmızı"]);
+}
+const npm = s => ["npm", "run", s];
+const nodeE2e = f => ["node", "--disable-warning=ExperimentalWarning", "test/e2e/" + f];
+for (const b of bolumler) {
+  if (b === "npmtest") kos("npm-test", ["npm", "test"]);
+  if (b === "ci-kahin") {
+    kos("ci-kahin-defter", npm("test:kahin-defter"));
+    kos("ci-kahin-cari", npm("test:kahin-cari"));
+    kos("ci-kahin-tutar", npm("test:kahin-tutar"));
+    kos("ci-kahin-ebelge-model", ["python3", "test/bagimsiz/ebelge/test_model.py"]);
+    kos("ci-kahin-ebelge-mutasyon", ["python3", "test/bagimsiz/ebelge/mutasyon.py"]);
+    kos("ci-kahin-ebelge-senaryo", [...npm("test:kahin-ebelge"), "--", "--senaryo", "test/bagimsiz/ebelge/senaryolar", "--ux15", "acik"]);
+    kos("ci-kahin-maliyet", npm("test:kahin-maliyet"));
+    kos("ci-kahin-mobil-yazma", [...npm("test:kahin-mobil-yazma"), "--", "--haric", "E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu"]);
+  }
+  if (b === "ci-e2e") {
+    const ci = readFileSync(path.join(W, ".github/workflows/ci.yml"), "utf8");
+    const satirlar = [...ci.matchAll(/kanit\.mjs kos (e2e-[A-Za-z0-9_-]+) npm run ([A-Za-z0-9:_-]+)\s*$/gm)];
+    log(`ci.yml e2e satırı: ${satirlar.length}`);
+    for (const m of satirlar) kos("ci-" + m[1], npm(m[2]));
+  }
+  if (b === "cidisi") {
+    for (const s of ["210", "211", "212", "213", "214", "215", "216", "217", "218", "rapor", "taslak", "whatsapp"]) kos("cidisi-senaryo-" + s, npm("test:senaryo-" + s));
+    kos("cidisi-senaryo", npm("test:senaryo"));
+    kos("cidisi-ui-ux-217", nodeE2e("ui-ux-217.mjs"));
+    // 2.4.8 T4/T7 e2e'leri (package.json'da betiği yok; 2.4.8 iş listesi "Ders 16: T10'da bu iki e2e ana oturumca koşulur")
+    kos("cidisi-is-akisi-248", nodeE2e("senaryo-is-akisi-248.mjs"));
+    kos("cidisi-tarih-248", nodeE2e("senaryo-tarih-248.mjs"));
+  }
+  if (b === "kahin-dis") {
+    kos("dis-kahin-maliyet-tam", ["python3", "-I", "test/bagimsiz/maliyet/kos.py"]);
+    kos("dis-kahin-mobil-erisim", ["node", "test/bagimsiz/mobil-erisim/program-surucu.mjs", "--cikti", path.join(S, "erisim")], { tekrarYok: true });
+    kos("dis-kahin-mobil-yazma-tam", npm("test:kahin-mobil-yazma"), { tekrarYok: true });
+    kos("dis-kahin-sayac-surucu", ["env", "TZ=Europe/Istanbul", "node", "test/bagimsiz/edm-sayac/program-surucu.mjs", "test/bagimsiz/edm-sayac/kabul.json",
+      path.join(S, "sayac/program.json"), path.join(S, "sayac/uretilemeyen.json")], { tekrarYok: true });
+    kos("dis-kahin-sayac-karsilastir", ["python3", "-I", "test/bagimsiz/edm-sayac/kahin.py", "karsilastir", "test/bagimsiz/edm-sayac/kabul.json", path.join(S, "sayac/program.json"),
+      "--birlesim", "ay=gonderim;anahtar=sirket_ettn_ortam;e11048=kesinlestirir;pencere=icinde_dahil;geri_yukleme=etkilemez"], { tekrarYok: true });
+    kos("dis-kahin-sayac-kendi", ["python3", "-I", "test/bagimsiz/edm-sayac/kahin_test.py"]);
+    kos("dis-kahin-erisim-kendi", ["python3", "-I", "test/bagimsiz/mobil-erisim/kahin_test.py"]);
+    kos("dis-kahin-yazma-kendi", ["python3", "-I", "test/bagimsiz/mobil-yazma/kahin_test.py"]);
+    kos("dis-kahin-maliyet-kendi", ["python3", "-I", "test/bagimsiz/maliyet/test_kahin.py"]);
+  }
+  if (b === "whatsapp") {
+    const WA = "test/bagimsiz/whatsapp-248";
+    kos("wa-kahin-kendi-istanbul", ["env", "TZ=Europe/Istanbul", "python3", "-I", WA + "/kahin/kahin_test.py"]);
+    kos("wa-kahin-kendi-utc", ["env", "TZ=UTC", "python3", "-I", WA + "/kahin/kahin_test.py"]);
+    kos("wa-sahte-meta", ["node", "--test", WA + "/sahte-meta/sunucu.test.mjs"]);
+    kos("wa-sahte-meta-mutasyon", ["node", WA + "/sahte-meta/mutasyon.mjs"]);
+    // senaryolar.py depodaki senaryolar.json'u yeniden yazar (elle = model ise); sonra `git diff --stat` ile değişmediği denetlenir.
+    kos("wa-senaryolar", ["python3", "-I", WA + "/kahin/senaryolar.py"]);
+    kos("wa-surucu-kendi-testi", ["node", "--disable-warning=ExperimentalWarning", WA + "/surucu.mjs", "--kendi-testi"]);
+    const C = path.join(KD, "wa-surucu");
+    const sur = (ad, ...a) => kos(ad, ["node", "--disable-warning=ExperimentalWarning", WA + "/surucu.mjs", ...a, "--cikti", C], { tekrarYok: true });
+    sur("wa-surucu-imzali-ikisi-istanbul", "--uc", "ikisi", "--kip", "imzali", "--tz", "Europe/Istanbul");
+    sur("wa-surucu-imzali-ikisi-utc", "--uc", "ikisi", "--kip", "imzali", "--tz", "UTC");
+    sur("wa-surucu-yol1-hizli-istanbul", "--uc", "hizli", "--kip", "yol1", "--tz", "Europe/Istanbul");
+    sur("wa-surucu-yol2-hizli-istanbul", "--uc", "hizli", "--kip", "yol2", "--tz", "Europe/Istanbul");
+    sur("wa-surucu-mutasyon", "--mutasyon-denetimi", "--tz", "Europe/Istanbul");
+  }
+}
+log(`BİTTİ (${bolumler.join(",")}): ${n} koşu`);
+for (const [ad, h] of sonuc) if (h !== "GEÇTİ") log(`  KIRMIZI GÖRÜLDÜ: ${ad} → ${h}`);
+process.exit(sonuc.some(([, h]) => h === "2× kırmızı") ? 1 : 0);

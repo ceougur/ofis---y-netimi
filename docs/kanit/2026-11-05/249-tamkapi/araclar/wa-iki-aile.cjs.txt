@@ -1,0 +1,12 @@
+// G1 borçlu eki ve K*.pencere_farkli_alici ailelerinin senaryo sayıları (yalnız hızlı uç); argüman: etiket=dosya …
+const fs = require("fs");
+for (const a of process.argv.slice(2)) {
+  const [et, f] = a.split("=");
+  const j = JSON.parse(fs.readFileSync(f, "utf8")).filter(s => s.uc === "hizli");
+  const say = re => j.filter(s => (s.davranis_farki || []).some(d => re.test(d))).map(s => s.ad);
+  const g1 = j.filter(s => (s.siniflar || {})["G1-borclu-eki"]).length;
+  const k1 = say(/^kontroller\.K1\.pencere_farkli_alici/), k2 = say(/^kontroller\.K2\.pencere_farkli_alici/), k3 = say(/^kontroller\.K[3-9]\.pencere_farkli_alici/);
+  const yalnizPencere = j.filter(s => (s.davranis_farki || []).length && s.davranis_farki.every(d => /pencere_farkli_alici/.test(d))).map(s => s.ad);
+  console.log(`${et}: hızlı ${j.length}; davranış farkı ${j.filter(s => (s.davranis_farki || []).length).length}; G1-borçlu-eki ${g1} senaryo; K1.pencere ${k1.length}; K2.pencere ${k2.length}; K3+.pencere ${k3.length}; YALNIZ pencere farkı olan ${yalnizPencere.length}`);
+  console.log(`   K2.pencere: ${k2.join(", ")}`);
+}

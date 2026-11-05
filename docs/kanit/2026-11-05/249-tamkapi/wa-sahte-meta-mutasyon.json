@@ -1,0 +1,32 @@
+{
+  "ad": "249-tamkapi/wa-sahte-meta-mutasyon",
+  "komut": "node test/bagimsiz/whatsapp-248/sahte-meta/mutasyon.mjs",
+  "commit": "7897604227694cd6c14ebdbf73bf2b9471b761e0",
+  "dal": "worktree-agent-ad08b374963951ef6",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T07:08:04.131Z",
+  "sure_sn": 202.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 19,
+    "gecen": 19,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/249-tamkapi/wa-sahte-meta-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad08b374963951ef6",
+  "ham_cikti_sha256": "7449f1625155310092d60d294a5bc7081507ed596cffa147a2d7645f052fa92a",
+  "ham_cikti_bayt": 3560
+}

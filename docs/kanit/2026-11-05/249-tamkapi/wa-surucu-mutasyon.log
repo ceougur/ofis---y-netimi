@@ -1,0 +1,200 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+ok 1 - mutasyon S1-bitis-yok-sayilir (S-1 / S-10 bitis → ufuk) yakalandı: K1-03-yarim-ay-bu-ay-sonra-tam-ay-gecen-ay, K7-01-meta-bekletti-ikinci-deneme-reddi-sayilmaz, K7-02-iptal-meta-bekletti-sayilmaz, K7-04-geri-yukleme-meta-bekletti-sayilmaz, D3-02-yine-de-gonder-7-gun-yeni-gonderimden
+  # K1-03-yarim-ay-bu-ay-sonra-tam-ay-gecen-ay: ayrıştı (yeni fark 18, kaybolan 1) örn. bu_ay.W1.2026-11: beklenen nesne, program '<YOK>'
+  # K7-01-meta-bekletti-ikinci-deneme-reddi-sayilmaz: ayrıştı (yeni fark 12, kaybolan 0) örn. durum_sayilari.Meta Bekletti (24 Saat Sonra Yeniden): beklenen 1, program '<YOK>'
+  # K7-02-iptal-meta-bekletti-sayilmaz: ayrıştı (yeni fark 12, kaybolan 0) örn. durum_sayilari.Meta Bekletti (24 Saat Sonra Yeniden): beklenen 1, program '<YOK>'
+  # K7-04-geri-yukleme-meta-bekletti-sayilmaz: ayrıştı (yeni fark 12, kaybolan 0) örn. durum_sayilari.Meta Bekletti (24 Saat Sonra Yeniden): beklenen 1, program '<YOK>'
+  # D3-02-yine-de-gonder-7-gun-yeni-gonderimden: ayrıştı (yeni fark 18, kaybolan 0) örn. bu_ay.W1.2026-11.teslim: beklenen 2, program 1
+  # D8-01-tasinan-veride-dosyadaki-ileti-sayilir: ayrışmadı (yeni fark 0, kaybolan 0)
+ok 2 - mutasyon S2-bu-ay-gecen-ay-takas (S-2 bu_ay/gecen_ay → thisMonth/lastMonth) yakalandı: K1-01-ay-sonu-bu-ay-sonra-gecen-ay, K1-03-yarim-ay-bu-ay-sonra-tam-ay-gecen-ay, K1-09-bu-ay-gecen-ay-farkli-ay, D1-02-belirsiz-ay-sonu-eslik, D4-01-ozel-aralik-ayni-gun-bu-ay, D7-02-geri-yukleme-ay-donumu-defterdeki-kabul
+  # K1-01-ay-sonu-bu-ay-sonra-gecen-ay: ayrıştı (yeni fark 39, kaybolan 2) örn. bu_ay.W1.2026-11.teslim: beklenen 1, program 3
+  # K1-03-yarim-ay-bu-ay-sonra-tam-ay-gecen-ay: ayrıştı (yeni fark 29, kaybolan 2) örn. bu_ay.W1.2026-11.teslim: beklenen 1, program 2
+  # K1-09-bu-ay-gecen-ay-farkli-ay: ayrıştı (yeni fark 11, kaybolan 2) örn. isler.T1/A.degiskenler: beklenen ['Ayşe Yılmaz', 'Deneme Ticaret Ltd. Şti.', {'plan_susuyor': "'bu_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu 1
+  # D1-02-belirsiz-ay-sonu-eslik: ayrıştı (yeni fark 28, kaybolan 2) örn. bu_ay.W1.2026-11.teslim: beklenen 1, program 2
+  # D4-01-ozel-aralik-ayni-gun-bu-ay: ayrıştı (yeni fark 22, kaybolan 1) örn. bu_ay.W1.2026-10.teslim: beklenen 2, program 3
+  # D7-02-geri-yukleme-ay-donumu-defterdeki-kabul: ayrıştı (yeni fark 7, kaybolan 0) örn. elenen.T2: beklenen nesne, program '<YOK>'
+ok 3 - mutasyon S2-son-3-ay-tum (S-2 son_3_ay → last3) yakalandı: K1-05-son-3-ay-7-gun, K4-03-son-3-ay-yeniden-deneme-secim-tasinir, D1-03-belirsiz-son-3-ay-7-gun, D3-01-yeniden-deneme-7-gun-yeni-gonderimden, G6-01-son-3-ay-ozel-aralik-7-gun, G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi, G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu
+  # K1-05-son-3-ay-7-gun: ayrıştı (yeni fark 30, kaybolan 6) örn. bu_ay.W1.2026-10.teslim: beklenen 3, program 2
+  # K4-03-son-3-ay-yeniden-deneme-secim-tasinir: ayrıştı (yeni fark 3, kaybolan 1) örn. isler.T1/Y.degiskenler: beklenen ['Yusuf Eski', 'Deneme Ticaret Ltd. Şti.', {'plan_susuyor': "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu
+  # D1-03-belirsiz-son-3-ay-7-gun: ayrıştı (yeni fark 6, kaybolan 2) örn. isler.T1/Y.degiskenler: beklenen ['Yusuf Eski', 'Deneme Ticaret Ltd. Şti.', {'plan_susuyor': "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu
+  # D3-01-yeniden-deneme-7-gun-yeni-gonderimden: ayrıştı (yeni fark 2, kaybolan 2) örn. isler.T1/A.degiskenler: beklenen ['Ayşe Yılmaz', 'Deneme Ticaret Ltd. Şti.', {'plan_susuyor': "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorum
+  # G6-01-son-3-ay-ozel-aralik-7-gun: ayrıştı (yeni fark 3, kaybolan 1) örn. isler.T1/Y.degiskenler: beklenen ['Yusuf Eski', 'Deneme Ticaret Ltd. Şti.', {'plan_susuyor': "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu
+  # G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi: ayrıştı (yeni fark 19, kaybolan 2) örn. bu_ay.W1.2026-11.teslim: beklenen 2, program 3
+  # G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu: ayrıştı (yeni fark 3, kaybolan 1) örn. isler.T1/Y.degiskenler: beklenen ['Yusuf Eski', 'Deneme Ticaret Ltd. Şti.', {'plan_susuyor': "'son_3_ay' seçiminin tarih uçları karar metninde yok (kâhin yorumu
+ok 4 - mutasyon S3-hedef-yok-sayilir (S-3 hedef asil → asıl toplu iş) yakalandı: K6-01-yeniden-denemesi-belirsiz-elenir, K6-02-asil-isin-karari-belirsizi-gecmez, D5-01-sonraki-denemesi-kabul-daha-once, D5-02-sonraki-denemesi-bekliyor-zaten-kuyrukta
+  # K6-01-yeniden-denemesi-belirsiz-elenir: ayrıştı (yeni fark 2, kaybolan 0) örn. yeniden.Y2.elenen.A: beklenen 'sonucu_belirsiz', program '<YOK>'
+  # K6-02-asil-isin-karari-belirsizi-gecmez: ayrıştı (yeni fark 2, kaybolan 0) örn. yeniden.Y2.elenen.A: beklenen 'sonucu_belirsiz', program '<YOK>'
+  # D5-01-sonraki-denemesi-kabul-daha-once: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.elenen.A: beklenen 'daha_once_gonderildi', program '<YOK>'
+  # D5-02-sonraki-denemesi-bekliyor-zaten-kuyrukta: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.elenen.A: beklenen 'zaten_kuyrukta', program '<YOK>'
+ok 5 - mutasyon S3-elenen-okunmaz (S-3 yanıttaki elenen + neden) yakalandı: K5-02-acilistan-sonra-baska-isle-giden-elenir, K6-01-yeniden-denemesi-belirsiz-elenir, K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi, D3-01-yeniden-deneme-7-gun-yeni-gonderimden, D5-02-sonraki-denemesi-bekliyor-zaten-kuyrukta
+  # K5-02-acilistan-sonra-baska-isle-giden-elenir: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1.elenen.A: beklenen 'daha_once_gonderildi', program '<YOK>'
+  # K6-01-yeniden-denemesi-belirsiz-elenir: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.elenen.A: beklenen 'sonucu_belirsiz', program '<YOK>'
+  # K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1.elenen.A: beklenen 'sonucu_belirsiz', program '<YOK>'
+  # D3-01-yeniden-deneme-7-gun-yeni-gonderimden: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1.elenen.A: beklenen 'daha_once_gonderildi', program '<YOK>'
+  # D5-02-sonraki-denemesi-bekliyor-zaten-kuyrukta: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.elenen.A: beklenen 'zaten_kuyrukta', program '<YOK>'
+ok 6 - mutasyon S3-alinan-elenenleri-de-sayar (S-3 yanıttaki alınan) yakalandı: K5-02-acilistan-sonra-baska-isle-giden-elenir, K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi, D5-01-sonraki-denemesi-kabul-daha-once
+  # K5-02-acilistan-sonra-baska-isle-giden-elenir: ayrıştı (yeni fark 2, kaybolan 0) örn. yeniden.Y1.alinan: beklenen [], program ['A']
+  # K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: ayrıştı (yeni fark 2, kaybolan 0) örn. yeniden.Y1.alinan: beklenen [], program ['A']
+  # D5-01-sonraki-denemesi-kabul-daha-once: ayrıştı (yeni fark 2, kaybolan 0) örn. yeniden.Y2.alinan: beklenen [], program ['A']
+ok 7 - mutasyon S3-oneri-takas (S-3 iletideki öneri) yakalandı: K6-01-yeniden-denemesi-belirsiz-elenir, K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi, D6-02-asilmis-belirsiz-yeniden-denemede-eler
+  # K6-01-yeniden-denemesi-belirsiz-elenir: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.oneri: beklenen 'isteki_yine_de_gonder', program 'yeni_gonderim'
+  # K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1.oneri: beklenen 'yeni_gonderim', program 'isteki_yine_de_gonder'
+  # D6-02-asilmis-belirsiz-yeniden-denemede-eler: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1.oneri: beklenen 'isteki_yine_de_gonder', program 'yeni_gonderim'
+ok 8 - mutasyon S3-ret-yaniti-okunmaz (S-3 400 yanıtı okunur) yakalandı: K5-02-acilistan-sonra-baska-isle-giden-elenir, K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi
+  # K5-02-acilistan-sonra-baska-isle-giden-elenir: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1: beklenen nesne, program '<YOK>'
+  # K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1: beklenen nesne, program '<YOK>'
+  # D3-02-yine-de-gonder-7-gun-yeni-gonderimden: ayrışmadı (yeni fark 0, kaybolan 0)
+ok 9 - mutasyon S4-onaysiz-yine-de-gonder (S-4 Yine de Gönder (onaylı) + yanıtı) yakalandı: K5-04-isteki-yine-de-gonder-karari-tasir, D1-01-belirsiz-yeni-toplu-iste-elenir, D3-02-yine-de-gonder-7-gun-yeni-gonderimden, D6-01-asilmis-belirsiz-yeni-toplu-iste-eler, F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider, F1-03-asilmis-eski-belirsiz-isteki-yine-de-gonder-gider
+  # K5-04-isteki-yine-de-gonder-karari-tasir: ayrıştı (yeni fark 21, kaybolan 0) örn. bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+  # D1-01-belirsiz-yeni-toplu-iste-elenir: ayrıştı (yeni fark 21, kaybolan 0) örn. bu_ay.W1.2026-10.teslim: beklenen 3, program 2
+  # D3-02-yine-de-gonder-7-gun-yeni-gonderimden: ayrıştı (yeni fark 23, kaybolan 0) örn. bu_ay.W1.2026-11.teslim: beklenen 2, program 1
+  # D6-01-asilmis-belirsiz-yeni-toplu-iste-eler: ayrıştı (yeni fark 20, kaybolan 0) örn. durum_sayilari.Başarısız: beklenen 1, program '<YOK>'
+  # F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider: ayrıştı (yeni fark 22, kaybolan 0) örn. bu_ay.W1: beklenen nesne, program '<YOK>'
+  # F1-03-asilmis-eski-belirsiz-isteki-yine-de-gonder-gider: ayrıştı (yeni fark 21, kaybolan 0) örn. bu_ay.W1: beklenen nesne, program '<YOK>'
+ok 10 - mutasyon S5-yedek-yok-sayilir (S-5 geri_yukle {yedek} → adlı yedek) yakalandı: K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi, E1-01-dosyada-ve-defterde-belirsiz, E2-03-yeniden-denemede-kuyrukta-once-belirsiz
+  # K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: ayrıştı (yeni fark 29, kaybolan 2) örn. durum_sayilari.Başarısız: beklenen 1, program '<YOK>'
+  # D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir: ayrışmadı (yeni fark 0, kaybolan 0)
+  # D7-02-geri-yukleme-ay-donumu-defterdeki-kabul: ayrışmadı (yeni fark 0, kaybolan 0)
+  # E1-01-dosyada-ve-defterde-belirsiz: ayrıştı (yeni fark 31, kaybolan 2) örn. bu_ay.W1: beklenen nesne, program '<YOK>'
+  # E2-03-yeniden-denemede-kuyrukta-once-belirsiz: ayrıştı (yeni fark 29, kaybolan 5) örn. bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+ok 11 - mutasyon S6-imlec-gonderilmez (S-6 imleç (before)) yakalandı: K8-01-sayfalama-imlec-kaymaz
+  # K8-01-sayfalama-imlec-kaymaz: ayrıştı (yeni fark 3, kaybolan 0) örn. listeler.L2.etiketler: beklenen ['T35', 'T34', 'T33', 'T32', 'T31', 'T30', 'T29', 'T28', 'T27', 'T26', 'T25', 'T24', 'T23', 'T22', 'T21', 'T20', 'T19', 'T18', '
+ok 12 - mutasyon S6-suzgec-gonderilmez (S-6 Başlangıç/Bitiş (from/to)) yakalandı: K8-02-tarih-suzgeci-yerel-gun, K8-03-suzgec-ile-sayfalama
+  # K8-02-tarih-suzgeci-yerel-gun: ayrıştı (yeni fark 4, kaybolan 0) örn. listeler.L1.etiketler: beklenen ['T4', 'T3', 'T2'], program ['T5', 'T4', 'T3', 'T2', 'T1']
+  # K8-03-suzgec-ile-sayfalama: ayrıştı (yeni fark 4, kaybolan 0) örn. listeler.L1.etiketler: beklenen ['T33', 'T32', 'T31', 'T30', 'T29', 'T28', 'T27', 'T26', 'T25', 'T24', 'T23', 'T22', 'T21', 'T20', 'T19', 'T18', 'T17', 'T16', '
+not ok 13 - mutasyon S6-devam-suzgeci-devralmaz (S-6 devam süzgeci devralır) DİŞSİZ: hiçbir hedefte ayrışma yok
+  # K8-03-suzgec-ile-sayfalama: ayrışmadı (yeni fark 0, kaybolan 0)
+ok 14 - mutasyon S6-sayfa-31 (S-6 sayfa boyu 30) yakalandı: K8-01-sayfalama-imlec-kaymaz, K8-03-suzgec-ile-sayfalama
+  # K8-01-sayfalama-imlec-kaymaz: ayrıştı (yeni fark 4, kaybolan 0) örn. listeler.L1.etiketler: beklenen ['T65', 'T64', 'T63', 'T62', 'T61', 'T60', 'T59', 'T58', 'T57', 'T56', 'T55', 'T54', 'T53', 'T52', 'T51', 'T50', 'T49', 'T48', '
+  # K8-03-suzgec-ile-sayfalama: ayrıştı (yeni fark 2, kaybolan 0) örn. listeler.L1.etiketler: beklenen ['T33', 'T32', 'T31', 'T30', 'T29', 'T28', 'T27', 'T26', 'T25', 'T24', 'T23', 'T22', 'T21', 'T20', 'T19', 'T18', 'T17', 'T16', '
+ok 15 - mutasyon S6-daha-fazla-hep-yok (S-6 Daha Fazla Göster (31. kayıt)) yakalandı: K8-01-sayfalama-imlec-kaymaz, K8-03-suzgec-ile-sayfalama
+  # K8-01-sayfalama-imlec-kaymaz: ayrıştı (yeni fark 3, kaybolan 0) örn. listeler.L1.daha_fazla: beklenen True, program False
+  # K8-03-suzgec-ile-sayfalama: ayrıştı (yeni fark 1, kaybolan 0) örn. listeler.L1.daha_fazla: beklenen True, program False
+ok 16 - mutasyon S6-ters-aralik-bos-liste (S-6 Başlangıç > Bitiş reddi) yakalandı: K8-02-tarih-suzgeci-yerel-gun
+  # K8-02-tarih-suzgeci-yerel-gun: ayrıştı (yeni fark 1, kaybolan 0) örn. listeler.L4.ret: beklenen 'bas_son_ters', program '<YOK>'
+ok 17 - mutasyon S7-yeniden-belirsiz-eslemesi-yok (S-7 yeniden denemede Sonucu Belirsiz → sonucu_belirsiz) yakalandı: K6-01-yeniden-denemesi-belirsiz-elenir, K6-02-asil-isin-karari-belirsizi-gecmez, K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi, D6-02-asilmis-belirsiz-yeniden-denemede-eler, F2-01-hatirlatma-yeniden-deneme-ertesi-gun
+  # K6-01-yeniden-denemesi-belirsiz-elenir: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.elenen.A: beklenen 'sonucu_belirsiz', program '?Sonucu Belirsiz'
+  # K6-02-asil-isin-karari-belirsizi-gecmez: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.elenen.A: beklenen 'sonucu_belirsiz', program '?Sonucu Belirsiz'
+  # K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1.elenen.A: beklenen 'sonucu_belirsiz', program '?Sonucu Belirsiz'
+  # D6-02-asilmis-belirsiz-yeniden-denemede-eler: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1.elenen.A: beklenen 'sonucu_belirsiz', program '?Sonucu Belirsiz'
+  # F2-01-hatirlatma-yeniden-deneme-ertesi-gun: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.elenen.H: beklenen 'sonucu_belirsiz', program '?Sonucu Belirsiz'
+ok 18 - mutasyon S9-baslatma-belirsiz-eslemesi-yok (S-9 başlatmada Sonucu Belirsiz → sonucu_belirsiz) yakalandı: D1-01-belirsiz-yeni-toplu-iste-elenir, D1-02-belirsiz-ay-sonu-eslik, D1-03-belirsiz-son-3-ay-7-gun, D6-01-asilmis-belirsiz-yeni-toplu-iste-eler, D6-03-asilmis-belirsiz-son-3-ay-7-gun
+  # D1-01-belirsiz-yeni-toplu-iste-elenir: ayrıştı (yeni fark 2, kaybolan 0) örn. elenen.T2.A: beklenen 'sonucu_belirsiz', program '?Sonucu Belirsiz'
+  # D1-02-belirsiz-ay-sonu-eslik: ayrıştı (yeni fark 1, kaybolan 0) örn. elenen.T2.A: beklenen 'sonucu_belirsiz', program '?Sonucu Belirsiz'
+  # D1-03-belirsiz-son-3-ay-7-gun: ayrıştı (yeni fark 1, kaybolan 0) örn. elenen.T2.Y: beklenen 'sonucu_belirsiz', program '?Sonucu Belirsiz'
+  # D6-01-asilmis-belirsiz-yeni-toplu-iste-eler: ayrıştı (yeni fark 1, kaybolan 0) örn. elenen.T2.A: beklenen 'sonucu_belirsiz', program '?Sonucu Belirsiz'
+  # D6-03-asilmis-belirsiz-son-3-ay-7-gun: ayrıştı (yeni fark 1, kaybolan 0) örn. elenen.T2.Y: beklenen 'sonucu_belirsiz', program '?Sonucu Belirsiz'
+ok 19 - mutasyon S9-yeniden-kuyrukta-eslemesi-yok (S-9 yeniden denemede Zaten Kuyrukta → zaten_kuyrukta) yakalandı: D5-02-sonraki-denemesi-bekliyor-zaten-kuyrukta
+  # D5-02-sonraki-denemesi-bekliyor-zaten-kuyrukta: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.elenen.A: beklenen 'zaten_kuyrukta', program '?Zaten Kuyrukta'
+ok 20 - mutasyon S9-yeniden-daha-once-eslemesi-yok (S-9 yeniden denemede Daha Önce Gönderildi → daha_once_gonderildi) yakalandı: K5-02-acilistan-sonra-baska-isle-giden-elenir, D3-01-yeniden-deneme-7-gun-yeni-gonderimden, D5-01-sonraki-denemesi-kabul-daha-once, F2-02-hatirlatma-dunku-belirsiz-bugunku-r3
+  # K5-02-acilistan-sonra-baska-isle-giden-elenir: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1.elenen.A: beklenen 'daha_once_gonderildi', program '?Daha Önce Gönderildi'
+  # D3-01-yeniden-deneme-7-gun-yeni-gonderimden: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y1.elenen.A: beklenen 'daha_once_gonderildi', program '?Daha Önce Gönderildi'
+  # D5-01-sonraki-denemesi-kabul-daha-once: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.elenen.A: beklenen 'daha_once_gonderildi', program '?Daha Önce Gönderildi'
+  # F2-02-hatirlatma-dunku-belirsiz-bugunku-r3: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.Y2.elenen.H: beklenen 'daha_once_gonderildi', program '?Daha Önce Gönderildi'
+ok 21 - mutasyon S11-yine-kuyrukta-eslemesi-yok (S-11 işteki Yine de Gönder'de Zaten Kuyrukta → zaten_kuyrukta) yakalandı: E2-06-isteki-yine-de-gonder-zaten-kuyrukta, F1-02-asilmis-belirsiz-ve-bekleyen-zaten-kuyrukta
+  # E2-06-isteki-yine-de-gonder-zaten-kuyrukta: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.G1.elenen.Y: beklenen 'zaten_kuyrukta', program '?Zaten Kuyrukta'
+  # F1-02-asilmis-belirsiz-ve-bekleyen-zaten-kuyrukta: ayrıştı (yeni fark 1, kaybolan 0) örn. yeniden.G1.elenen.A: beklenen 'zaten_kuyrukta', program '?Zaten Kuyrukta'
+ok 22 - mutasyon S11-medya-silme-durumsuz (S-11 iç denetim: yalnız kesinleşmemiş işin PDF silmesi sayılır) yakalandı: TEMEL-01-ekstre-uc-kisi, E4-01-son-3-ay-sonraki-teslim-7-gun, E4-02-tum-hareketler-sonraki-teslim-7-gun
+  # TEMEL-01-ekstre-uc-kisi: ayrıştı (yeni fark 1, kaybolan 0) örn. degismez.kesin_oncesi_medya_silme: beklenen 0, program 3
+  # E4-01-son-3-ay-sonraki-teslim-7-gun: ayrıştı (yeni fark 1, kaybolan 0) örn. degismez.kesin_oncesi_medya_silme: beklenen 0, program 3
+  # E4-02-tum-hareketler-sonraki-teslim-7-gun: ayrıştı (yeni fark 1, kaybolan 0) örn. degismez.kesin_oncesi_medya_silme: beklenen 0, program 3
+not ok 23 - mutasyon S11-medya-silme-son-deneme-yok (S-11 iç denetim: yalnız SON denemenin PDF'i) DİŞSİZ: hiçbir hedefte ayrışma yok
+  # K4-01-ay-sonu-yeniden-deneme-donemi-tasinir: ayrışmadı (yeni fark 0, kaybolan 0)
+  # D5-01-sonraki-denemesi-kabul-daha-once: ayrışmadı (yeni fark 0, kaybolan 0)
+  # E4-01-son-3-ay-sonraki-teslim-7-gun: ayrışmadı (yeni fark 0, kaybolan 0)
+  # E4-02-tum-hareketler-sonraki-teslim-7-gun: ayrışmadı (yeni fark 0, kaybolan 0)
+ok 24 - mutasyon SK-kabul-dosyadan (S-K kabul telin bağımsız kaydından (dosyadaki wamid değil)) yakalandı: ALICI-131049-iki-kez, K3-02-meta-bekletti-ret-sonra-gec-teslim-sayilir, K7-01-meta-bekletti-ikinci-deneme-reddi-sayilmaz, D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir, D7-02-geri-yukleme-ay-donumu-defterdeki-kabul
+  # ALICI-131049-iki-kez: ayrıştı (yeni fark 4, kaybolan 0) örn. isler.T1/A.kabul: beklenen 2, program 1
+  # K3-02-meta-bekletti-ret-sonra-gec-teslim-sayilir: ayrıştı (yeni fark 4, kaybolan 0) örn. isler.T1/A.kabul: beklenen 1, program 0
+  # K7-01-meta-bekletti-ikinci-deneme-reddi-sayilmaz: ayrıştı (yeni fark 4, kaybolan 0) örn. isler.T1/A.kabul: beklenen 1, program 0
+  # D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir: ayrıştı (yeni fark 2, kaybolan 0) örn. kontroller.K1.toplam_kabul: beklenen 1, program 0
+  # D7-02-geri-yukleme-ay-donumu-defterdeki-kabul: ayrıştı (yeni fark 1, kaybolan 0) örn. meta.toplam_kabul_program: beklenen 1, program 0
+ok 25 - mutasyon SK-kabul-meta-iletisinden (S-K kabul = programa ulaşan yanıt / imzalı çözüm (Meta'daki her ileti değil)) yakalandı: CIFT-03-yine-de-gonder-cift-gider
+  # CIFT-03-yine-de-gonder-cift-gider: ayrıştı (yeni fark 3, kaybolan 0) örn. isler.T1/A.kabul: beklenen 1, program 2
+ok 26 - mutasyon SK-kabul-kanca-cozumu-yok (S-K imzalı durum bildirimiyle çözülen belirsiz ileti kabul sayılır) yakalandı: CIFT-01-zaman-asimi-meta-aldi, CIFT-04-cokme-istek-ulasti
+  # CIFT-01-zaman-asimi-meta-aldi: ayrıştı (yeni fark 3, kaybolan 0) örn. isler.T1/A.kabul: beklenen 1, program 0
+  # CIFT-04-cokme-istek-ulasti: ayrıştı (yeni fark 3, kaybolan 0) örn. isler.T1/B.kabul: beklenen 1, program 0
+ok 27 - mutasyon S16-hata-kodu-yalniz-son-is (ayıklama düzeltmesi: kâhin işinin hata kodu önceki denemeden taşınır (başarıya dek)) yakalandı: E3-02-hatirlatma-yeniden-deneme-ayni-gun-belirsiz, F2-02-hatirlatma-dunku-belirsiz-bugunku-r3
+  # E3-02-hatirlatma-yeniden-deneme-ayni-gun-belirsiz: ayrıştı (yeni fark 1, kaybolan 0) örn. isler.T1/H.hata_kodu: beklenen 131026, program None
+  # F2-02-hatirlatma-dunku-belirsiz-bugunku-r3: ayrıştı (yeni fark 1, kaybolan 0) örn. isler.T1/H.hata_kodu: beklenen 131026, program None
+ok 28 - mutasyon SJ10-atlanan-telefonsuz (iş telefonu: gönderilmiş işte sonradan Atlandı (T1 resmî koşu düzeltmesi)) yakalandı: J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez, J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez
+  # J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez: ayrıştı (yeni fark 1, kaybolan 0) örn. isler.T1/B.telefon: beklenen '+905332223344', program None
+  # J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez: ayrıştı (yeni fark 1, kaybolan 0) örn. isler.T1/B.telefon: beklenen '+905332223344', program None
+ok 29 - mutasyon S16-iptal-nedeni-okunmaz (ayıklama düzeltmesi: iptal edilen toplu işin önceki duraklatma nedeni) yakalandı: K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra
+  # K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra: ayrıştı (yeni fark 1, kaybolan 0) örn. toplular.T1.neden: beklenen 'kullanici', program None
+ok 30 - mutasyon S12-yine-hedef-yok-sayilir (S-12 Yine de Gönder hedef asil → asıl toplu işteki iş) yakalandı: G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder
+  # G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder: ayrıştı (yeni fark 24, kaybolan 0) örn. bu_ay.W1: beklenen nesne, program '<YOK>'
+ok 31 - mutasyon S13-sifirla-geri-yukleme-benzetimi (S-13 sıfırla → programın gerçek Şirket Verisini Sıfırla ucu) yakalandı: G4-01-sifirlama-meta-bekletti-sayilmaz, G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir
+  # G4-01-sifirlama-meta-bekletti-sayilmaz: ayrıştı (yeni fark 5, kaybolan 14) örn. isler.T1/A.degiskenler: beklenen ['Ayşe Yılmaz', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '1.250,00 TL'], program ['Ayşe Yılmaz', 'Deneme Ticaret 
+  # G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir: ayrıştı (yeni fark 3, kaybolan 8) örn. isler.T1/A.degiskenler: beklenen ['Ayşe Yılmaz', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '1.250,00 TL'], program ['Ayşe Yılmaz', 'Deneme Ticaret 
+ok 32 - mutasyon S14-gunluk-sinir-yok-sayilir (S-14 günlük üst sınır (ayar.gunluk_ust_sinir)) yakalandı: E2-03-yeniden-denemede-kuyrukta-once-belirsiz, G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem, G1-02-bu-ay-sinirla-ertesi-gun-ayni-donem
+  # E2-03-yeniden-denemede-kuyrukta-once-belirsiz: ayrıştı (yeni fark 6, kaybolan 1) örn. kontroller.K1.durum_sayilari.Sınır Nedeniyle Bekliyor: beklenen 1, program '<YOK>'
+  # G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem: ayrıştı (yeni fark 8, kaybolan 0) örn. kontroller.K1.durum_sayilari.Sınır Nedeniyle Bekliyor: beklenen 1, program '<YOK>'
+  # G1-02-bu-ay-sinirla-ertesi-gun-ayni-donem: ayrıştı (yeni fark 1, kaybolan 0) örn. onceki_uyari.T2.son: beklenen '2026-10-16', program '2026-10-15'
+ok 33 - mutasyon S15-tum-son-3-ay (S-15 "tum" → all (özel aralıkla aynı senaryoda)) yakalandı: K1-06-tum-hareketler-7-gun, G6-02-ozel-aralik-tum-hareketler-kisiye-gore, G6-04-tum-hareketler-belirsiz-ozel-aralik
+  # K1-06-tum-hareketler-7-gun: ayrıştı (yeni fark 8, kaybolan 6) örn. isler.T1/Y.degiskenler: beklenen ['Yusuf Eski', 'Deneme Ticaret Ltd. Şti.', '15.01.2026 – 30.10.2026', '400,00 TL'], program ['Yusuf Eski', 'Deneme Ticaret Ltd.
+  # G6-02-ozel-aralik-tum-hareketler-kisiye-gore: ayrıştı (yeni fark 19, kaybolan 3) örn. bu_ay.W1.2026-10.teslim: beklenen 3, program 4
+  # G6-04-tum-hareketler-belirsiz-ozel-aralik: ayrıştı (yeni fark 18, kaybolan 3) örn. bu_ay.W1.2026-10.teslim: beklenen 1, program 2
+ok 34 - mutasyon S15-ozel-aralik-bitisi-kaydir (S-15 özel aralık bas/son olduğu gibi (hazır seçimle aynı senaryoda)) yakalandı: K1-10-ozel-aralik-birebir, G6-02-ozel-aralik-tum-hareketler-kisiye-gore, G6-04-tum-hareketler-belirsiz-ozel-aralik
+  # K1-10-ozel-aralik-birebir: ayrıştı (yeni fark 4, kaybolan 2) örn. isler.T1/A.degiskenler: beklenen ['Ayşe Yılmaz', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 15.10.2026', '1.500,00 TL'], program ['Ayşe Yılmaz', 'Deneme Ticaret 
+  # G6-01-son-3-ay-ozel-aralik-7-gun: ayrışmadı (yeni fark 0, kaybolan 0)
+  # G6-02-ozel-aralik-tum-hareketler-kisiye-gore: ayrıştı (yeni fark 19, kaybolan 2) örn. bu_ay.W1.2026-10.teslim: beklenen 3, program 4
+  # G6-04-tum-hareketler-belirsiz-ozel-aralik: ayrıştı (yeni fark 14, kaybolan 0) örn. bu_ay.W1.2026-10.teslim: beklenen 1, program 2
+  # G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu: ayrışmadı (yeni fark 0, kaybolan 0)
+ok 35 - mutasyon S16-dosyasiz-kanca-iletilmez (S-16 iş dosyada yokken gelen (geciktirilmiş) imzalı kanca programa iletilir) yakalandı: H3-01-geri-yukleme-dosyasiz-gec-kabul, H3-02-geri-yukleme-meta-bekletti-gec-teslim
+  # H3-01-geri-yukleme-dosyasiz-gec-kabul: ayrıştı (yeni fark 12, kaybolan 0) örn. durum_sayilari.Teslim Edildi: beklenen 1, program 2
+  # H3-02-geri-yukleme-meta-bekletti-gec-teslim: ayrıştı (yeni fark 7, kaybolan 0) örn. elenen.T2: beklenen nesne, program '<YOK>'
+ok 36 - mutasyon S17-tasima-cokme-diskine-uygulanmaz (S-17 çökme → taşıma (program kapalı) → açılış: taşıma çökme diskine uygulanır) yakalandı: H2-01-tasima-gonderiliyor-belirsiz, H2-02-tasima-gonderiliyor-gec-kanca
+  # H2-01-tasima-gonderiliyor-belirsiz: ayrıştı (yeni fark 0, kaybolan 2)
+  # H2-02-tasima-gonderiliyor-gec-kanca: ayrıştı (yeni fark 0, kaybolan 12)
+ok 37 - mutasyon S18-is-anahtari-yok-sayilir (S-18 kanca planında iş anahtarı (T1/B) önce) yakalandı: J1-04-asilmis-belirsiz-gec-teslim-iki-deneme, J3-01-geri-yukleme-sonrasi-gec-failed-yeniden-gonderilir, J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez
+  # J1-04-asilmis-belirsiz-gec-teslim-iki-deneme: ayrıştı (yeni fark 10, kaybolan 2) örn. bu_ay.W1: beklenen nesne, program '<YOK>'
+  # J3-01-geri-yukleme-sonrasi-gec-failed-yeniden-gonderilir: ayrıştı (yeni fark 18, kaybolan 1) örn. durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+  # J9-01-n3-iptal-sonrasi-ikinci-is-gec-teslim-iki-ileti: ayrışmadı (yeni fark 1, kaybolan 2, HATA TypeError: Cannot read properties of undefined (reading 'batchIds')) örn. SÜRÜCÜ HATASI
+  # J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez: ayrıştı (yeni fark 15, kaybolan 14) örn. bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+not ok 38 - mutasyon S19-gec-kabul-bekletilmez (S-19 gecikmeli kabul: yanıt tutulur, arada kanca/olay programa ulaşır) DİŞSİZ: hiçbir hedefte ayrışma yok
+  # J6-01-yanit-beklenirken-taninmayan-503-yineleme: ayrışmadı (yeni fark 0, kaybolan 0)
+not ok 39 - mutasyon S20-imzasiz-da-sayilir (S-20 kanca yanıt sayımı yalnız imzalı bildirim) DİŞSİZ: hiçbir hedefte ayrışma yok
+  # J1-03-silinmis-sirket-gec-bildirim: ayrışmadı (yeni fark 0, kaybolan 0)
+  # J6-01-yanit-beklenirken-taninmayan-503-yineleme: ayrışmadı (yeni fark 0, kaybolan 0)
+  # J6-02-sirket-gecici-acilamaz-503: ayrışmadı (yeni fark 0, kaybolan 0)
+  # J6-03-bildirim-kaydedilemez-503: ayrışmadı (yeni fark 0, kaybolan 0)
+ok 40 - mutasyon S20-503-sayilmaz (S-20 kanca yanıt sayımı 503'ü de sayar) yakalandı: J6-02-sirket-gecici-acilamaz-503, J6-03-bildirim-kaydedilemez-503
+  # J6-01-yanit-beklenirken-taninmayan-503-yineleme: ayrışmadı (yeni fark 0, kaybolan 0)
+  # J6-02-sirket-gecici-acilamaz-503: ayrıştı (yeni fark 1, kaybolan 0) örn. kanca_yanitlari.503: beklenen 1, program 0
+  # J6-03-bildirim-kaydedilemez-503: ayrıştı (yeni fark 1, kaybolan 0) örn. kanca_yanitlari.503: beklenen 1, program 0
+ok 41 - mutasyon S22-sirket-silinmez (S-22 sirket_sil → programın Şirketi Sil ucu) yakalandı: J1-03-silinmis-sirket-gec-bildirim
+  # J1-03-silinmis-sirket-gec-bildirim: ayrıştı (yeni fark 3, kaybolan 0) örn. durum_sayilari.Teslim Edildi: beklenen 1, program 2
+not ok 42 - mutasyon S22-silme-govdesiz (S-22 Şirketi Sil onay kodu + parola GÖVDEDE (T1 resmî koşu düzeltmesi)) DİŞSİZ: hiçbir hedefte ayrışma yok
+  # J1-03-silinmis-sirket-gec-bildirim: ayrışmadı (yeni fark 1, kaybolan 2, HATA Error: şirket sil A: 400 {"ok":false,"error":"Onay için şirket kodunu (002) ya da adını yazın.","code":"confirm"}) örn. SÜRÜCÜ HATASI
+ok 43 - mutasyon S23-kilit-uygulanmaz (S-23 arıza olayları dosya kilidiyle oluşur (J7: gönderim defteri, 9d)) yakalandı: J6-02-sirket-gecici-acilamaz-503, J6-03-bildirim-kaydedilemez-503, J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz, J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti
+  # J6-02-sirket-gecici-acilamaz-503: ayrıştı (yeni fark 4, kaybolan 0) örn. kanca_yanitlari.503: beklenen 1, program 0
+  # J6-03-bildirim-kaydedilemez-503: ayrıştı (yeni fark 4, kaybolan 0) örn. kanca_yanitlari.503: beklenen 1, program 0
+  # J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz: ayrıştı (yeni fark 7, kaybolan 0) örn. baslamadi.T2: beklenen 'onarim_bekleyen_kabul', program '<YOK>'
+  # J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti: ayrıştı (yeni fark 7, kaybolan 0) örn. baslamadi.T2: beklenen 'onarim_bekleyen_kabul', program '<YOK>'
+ok 44 - mutasyon S23-gercek-saat-yetismez (S-23 kilit sonrası gerçek saat (programın kilit işareti Date.now ile; T1 resmî koşu düzeltmesi)) yakalandı: J6-02-sirket-gecici-acilamaz-503, J6-03-bildirim-kaydedilemez-503, J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti
+  # J6-02-sirket-gecici-acilamaz-503: ayrıştı (yeni fark 10, kaybolan 0) örn. bu_ay.W1: beklenen nesne, program '<YOK>'
+  # J6-03-bildirim-kaydedilemez-503: ayrıştı (yeni fark 3, kaybolan 0) örn. isler.T1/A.medya_silme: beklenen 1, program 0
+  # J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti: ayrıştı (yeni fark 31, kaybolan 0) örn. bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+ok 45 - mutasyon S24-onarim-eslenmez (S-24 onarım bekleyen kabul reddi → onarim_bekleyen_kabul (9d: J7 artık geçerli, gec_kabul 10 sn)) yakalandı: J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz, J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti
+  # J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz: ayrıştı (yeni fark 1, kaybolan 0) örn. baslamadi.T2: beklenen 'onarim_bekleyen_kabul', program '?503 whatsapp-ledger'
+  # J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti: ayrıştı (yeni fark 1, kaybolan 0) örn. baslamadi.T2: beklenen 'onarim_bekleyen_kabul', program '?503 whatsapp-ledger'
+not ok 46 - mutasyon S30-tum-araligi-okunmaz (S-30 Tüm Hareketler PDF dönemi okunur) DİŞSİZ: hiçbir hedefte ayrışma yok
+  # ICERIK-08-tum-hareketler: ayrışmadı (yeni fark 0, kaybolan 0)
+  # J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun: ayrışmadı (yeni fark 0, kaybolan 0)
+  # J11-02-hareketsiz-cari-metni-ve-eslik: ayrışmadı (yeni fark 0, kaybolan 0)
+  # J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez: ayrışmadı (yeni fark 0, kaybolan 0)
+not ok 47 - mutasyon S32-degiskenler-programdan (S-32 değişkenler Meta'ya gidenden) DİŞSİZ: hiçbir hedefte ayrışma yok
+  # ICERIK-09-kuyrukta-bakiye-degisti: ayrışmadı (yeni fark 0, kaybolan 0)
+  # J12-01-yine-de-gonder-ekstre-icerigi-acilistaki-gibi: ayrışmadı (yeni fark 0, kaybolan 0)
+  # J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket: ayrışmadı (yeni fark 0, kaybolan 0)
+ok 48 - mutasyon SW-teslim-suresi-verilmez (S-33 Meta'nın şablon listesindeki teslim süresi (teslim_suresi_sn → message_send_ttl_seconds) sahte Meta'ya verilir) yakalandı: TARIH-02-ttl-sonu, W1-03-meta-bildirir-12-sa-sablon-basina, W2-02-kabulde-30-gun-sonra-12-sa-kisalir
+  # TARIH-02-ttl-sonu: ayrıştı (yeni fark 7, kaybolan 1) örn. durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+  # W1-03-meta-bildirir-12-sa-sablon-basina: ayrıştı (yeni fark 32, kaybolan 2) örn. bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+  # W2-02-kabulde-30-gun-sonra-12-sa-kisalir: ayrıştı (yeni fark 9, kaybolan 1) örn. durum_sayilari.Gönderildi: beklenen 1, program 2
+1..48
+# tests 48
+# pass 41
+# fail 7
+# skipped 0

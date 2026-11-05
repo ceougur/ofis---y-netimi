@@ -1,0 +1,9 @@
+// kanit.mjs JSON özetleri: node jsonozet.cjs <dosya…>
+const fs = require("fs");
+for (const f of process.argv.slice(2)) {
+  try {
+    const j = JSON.parse(fs.readFileSync(f, "utf8"));
+    const o = j.ozet || {};
+    console.log([j.ad, j.hukum, (j.commit || "").slice(0, 8), `${o.gecen}/${o.toplam} f${o.basarisiz} c${o.iptal} s${o.atlanan}`, j.sure_sn + "s", j.basladi, (j.komut || "").slice(0, 260)].join(" | "));
+  } catch (e) { console.log(f, "OKUNAMADI", e.message); }
+}
