@@ -1,0 +1,32 @@
+{
+  "ad": "tarih-anaoturum-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/cari-bilgi-222.test.mjs test/istek-kimligi-222.test.mjs test/odeme-yolu-222.test.mjs test/sema-kapisi-bs7.test.mjs test/sirket-pencere-221.test.mjs test/sirket-siniri-225.test.mjs test/sirketler-217.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-t2-6-248.test.mjs test/yedek-denetim-221.test.mjs test/rapor-220.test.mjs",
+  "commit": "2baaf1ecc7d072af5477b371e7f1ce0a4ec551b3",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:18:22.681Z",
+  "sure_sn": 31.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/tarih-anaoturum-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "b5cce1be4a9b52255b19ac8a297f4be465e86c475f255d913bc60450611bb523",
+  "ham_cikti_bayt": 21498
+}
