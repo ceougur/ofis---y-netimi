@@ -34,7 +34,7 @@ const MUTASYONLAR = [
   [12, "eski sürüm kilidinin açılış onarımı yok", "server/app.mjs", "      context.snapshotRepair = context.ledger.snapshots.repairOnOpen();", "      context.snapshotRepair = null;", [LIFE], /not ok \d+ - F12/],
   [13, "postAll lockThrough dondurmaz (kanca çağrılmaz)", "server/lib/ledger-vouchers.mjs", "          onLockChanged?.({ previous, next: lockThrough, user, reason: \"voucher-closing\" });\n", "", [MAIN], /kapsam aynı işlemde kilide geldi/],
   [14, "kaynak izi denetimi yok", LS, "if (last.kind === \"freeze\" && last.through === cover && last.source_digest &&", "if (false && last.kind === \"freeze\" && last.through === cover && last.source_digest &&", [MAIN], /Donmuş Defter bulgusu/],
-  [15, "bayat satırlar temizlenmez", LS, "      if (closed) return removed;\n      const n = store.tx(", "      return removed;\n      const n = store.tx(", [MAIN], /açılan dönemin donmuş satırları kalktı/],
+  [15, "bayat satırlar temizlenmez", LS, "      if (halted()) return removed;\n      const n = store.tx(", "      return removed;\n      const n = store.tx(", [MAIN], /açılan dönemin donmuş satırları kalktı/],
   [16, "2.4.9 kopyası değişti (649 yerine 642)", "server/lib/ledger-rule-249/general-ledger.mjs", "moneyOf(row), \"649\", row.amount);", "moneyOf(row), \"642\", row.amount);", [MAIN, LIFE], /v2\.4\.9 kopyası değişti/],
 ];
 

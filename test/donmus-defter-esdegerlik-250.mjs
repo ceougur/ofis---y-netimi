@@ -11,7 +11,7 @@
 // HUKUK_LICENSE_URL=http://127.0.0.1:9 ile koşulur (ders 30).
 import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const argv = process.argv.slice(2);
 const command = argv[0];
@@ -167,7 +167,7 @@ function compare() {
 async function equal() {
   const veri = path.resolve(opt("veri"));
   const saved = JSON.parse(readFileSync(path.join(veri, NOW_FILE), "utf8"));
-  const self = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+  const self = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
   const { startTestServer, loginAdmin } = await fromRoot(self, "test/helpers.mjs");
   const lib = await fromRoot(self, "server/lib/general-ledger.mjs");
   const work = mkdtempSync(path.join(veri, "..", "donma-esit-"));
