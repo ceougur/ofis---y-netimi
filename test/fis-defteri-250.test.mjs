@@ -40,9 +40,8 @@ describe("2.5.0 Ç2 — saklanan fiş defteri", () => {
     server = await startTestServer({ now: { time: NOW, fixed: true } });
     admin = await loginAdmin(server);
     store = server.app.store;
+    // Fiş defteri yoksa (eski kod) her test kendi başında "fiş defteri yok" der (hazırlık düşmez: testler iptal değil, nedeniyle kırmızı — ders 38).
     V = server.app.ledger.vouchers;
-    assert.ok(V?.post, "fiş defteri yok (server.app.ledger.vouchers)");
-    assert.ok(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'ledger_vouchers'"), "fiş defteri yok (ledger_vouchers tablosu)");
   });
   after(() => server?.close());
 

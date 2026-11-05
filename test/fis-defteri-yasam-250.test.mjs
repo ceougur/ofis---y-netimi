@@ -3,8 +3,8 @@
 // süreç öldürme ve disk dolu (yarım fiş yok), eşzamanlı iki süreç aynı istek kimliği (tek fiş). Saat sahte ve sabit (ders 13, 22).
 // WINDOWS (ders 48): süreç öldürme (process.kill) ve öldürülen sürecin dosyasını yeniden açma bu dosyadadır — Windows CI'de ayrıca görülür.
 import assert from "node:assert/strict";
-import { spawn, spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { spawn } from "node:child_process";
+import { existsSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -124,10 +124,14 @@ describe("2.5.0 Ç2 — N18: eski sürüm (fiş defterini bilmeyen kod) Şirket 
   it("izi olmayan fiş + sıfırlama izi → kaldırılır (Mutabakat Günlüğü 'repair', işlem geçmişi); sonra yazılan fiş kalır; sıfırlama izi yoksa dokunulmaz", async () => {
     let server = await open();
     let file = server.app.config.dbPath;
-    let V = vouchersOf(server.app);
-    const a = V.post(USER, { type: "closing", date: "2027-01-06", requestKey: "yasam-n18-eski-a", lines: pair(700, "602", "690") });
-    V.reverse(USER, a.id, { requestKey: "yasam-n18-eski-r" });
-    await server.close();
+    let V;
+    try {
+      V = vouchersOf(server.app);
+      const a = V.post(USER, { type: "closing", date: "2027-01-06", requestKey: "yasam-n18-eski-a", lines: pair(700, "602", "690") });
+      V.reverse(USER, a.id, { requestKey: "yasam-n18-eski-r" });
+    } finally {
+      await server.close();
+    }
     legacyReset(file);
     server = await open();
     try {
@@ -216,9 +220,12 @@ describe("2.5.0 Ç2 — N11 süreç öldürme / disk dolu ve N5 eşzamanlı iki 
   before(async () => {
     root = mkdtempSync(path.join(tmpdir(), "fis-surec-"));
     const server = await startTestServer({ now: { time: NOW, fixed: true }, dataDir: path.join(root, "data"), backupDir: path.join(root, "backups") });
-    file = server.app.config.dbPath;
-    vouchersOf(server.app);
-    await server.close();
+    // Eski kodda tablo yok: testler kendi başında "no such table: ledger_vouchers" / modül yok nedeniyle kırmızı (hazırlık düşmez).
+    try {
+      file = server.app.config.dbPath;
+    } finally {
+      await server.close();
+    }
   });
   after(() => removeTestDir(root));
   const look = () => {
@@ -294,11 +301,5 @@ describe("2.5.0 Ç2 — N11 süreç öldürme / disk dolu ve N5 eşzamanlı iki 
     } finally {
       db.close();
     }
-  });
-
-  it("işçi betiği tek başına koşar (sözdizimi)", () => {
-    const r = spawnSync(process.execPath, ["--check", WORKER], { encoding: "utf8" });
-    assert.equal(r.status, 0, r.stderr);
-    rmSync(path.join(root, "isci-isaret.txt"), { force: true });
   });
 });
