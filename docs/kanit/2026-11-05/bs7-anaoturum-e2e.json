@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-anaoturum-e2e",
+  "komut": "npm run test:sema-kapisi-bs7",
+  "commit": "5402b712093022ef06006a9c4ee0fbfe0c2b4462",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:00:47.272Z",
+  "sure_sn": 5.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-anaoturum-e2e.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "376dc6d537eca2c175da97ef1360e458870363ca75ea350ad32d6ce59a2b295b",
+  "ham_cikti_bayt": 1271
+}
