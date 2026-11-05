@@ -28,6 +28,7 @@ const MUTASYONLAR = [
   [10, "770 adı eski hâline döner", '770: gider("Genel Yönetim Giderleri", "E",', '770: gider("Genel Giderler ve Alış Faturaları", "E",', "Genel Giderler ve Alış Faturaları"],
   [11, "yansıtma hesabına mali tablo kalemi verilir (771 → E)", 'yansitma = (ad, kaynak, hedef) => planItem(ad, "yansitma", { kaynak, hedef });', 'yansitma = (ad, kaynak, hedef) => planItem(ad, "yansitma", { kaynak, hedef, gelirTablosu: "E" });', "771 Genel Yönetim Giderleri Yansıtma Hesabı: çift sınıflı"],
   [12, "alt hesap tanımı düşer (770.90)", '  "770.90": "Sınıflandırılmamış",\n', "", "not ok 7 - alt hesap tanımları"],
+  [13, "önceki dönem geliri yanlış kalemde (671 I → F)", '671: gelir("Önceki Dönem Gelir ve Kârları", "I"),', '671: gelir("Önceki Dönem Gelir ve Kârları", "F"),', "671: beklenen gelir I, program gelir F"],
 ];
 
 const run = () => {

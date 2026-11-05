@@ -152,6 +152,9 @@ export const ACCOUNT_PLAN = Object.freeze({
   656: gider("Kambiyo Zararları", "G"),
   659: gider("Diğer Olağan Gider ve Zararlar", "G"),
   660: gider("Kısa Vadeli Borçlanma Giderleri", "H"),
+  // 2.5.0 Ç1 (kural kitabı EK-1 E2, M14): önceki dönem düzeltmeleri — Kural Farkı Düzeltme Fişi (Ç2 / Ç3) kullanır; dönem sonunda 690'a kapanan sonuç hesapları.
+  671: gelir("Önceki Dönem Gelir ve Kârları", "I"),
+  681: gider("Önceki Dönem Gider ve Zararları", "J"),
   // 2.4.3 MM3: Tekdüzen Hesap Planı adı. Kapatılan taksit kartlarının vazgeçilen kalanı ve vergi ödemesinin gecikme zammı / faizi (KKEG) buraya yazılır
   // (önceki ad "Kapatılan Kartlardan Vazgeçilen Alacaklar"; tutarlar değişmez).
   689: gider("Diğer Olağandışı Gider ve Zararlar", "J"),

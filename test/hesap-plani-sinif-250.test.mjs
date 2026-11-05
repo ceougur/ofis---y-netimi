@@ -22,7 +22,7 @@ const incomeItems = () => gl.INCOME_STATEMENT_ITEMS || {};
 const codesOf = object => Object.keys(object).sort();
 
 // Kural kitabı §2 (Tür, MSUGT kalemi). 127 / 646 / 656 kitapta yok: 127 Tekdüzen 12 grubu (Ticari Alacaklar), 646 ve 656 §7.1 aralıkları (F 640–649, G 653–659).
-// 691: kitapta tür KP ama MSUGT gelir tablosunda K satırı (§7.1) — gelir tablosu kalemi K.
+// 691: kitapta tür KP ama MSUGT gelir tablosunda K satırı (§7.1) — gelir tablosu kalemi K. 671 / 681: kural kitabı EK-1 E2 (M7, Kural Farkı Düzeltme Fişi) — GT I / J.
 const EXPECTED = {
   100: ["aktif", "I.A"], 101: ["aktif", "I.A"], 102: ["aktif", "I.A"], 103: ["aktif", "I.A"], 108: ["aktif", "I.A"],
   120: ["aktif", "I.C"], 121: ["aktif", "I.C"], 127: ["aktif", "I.C"], 128: ["aktif", "I.C"], 129: ["aktif", "I.C"],
@@ -33,7 +33,7 @@ const EXPECTED = {
   500: ["pasif", "V.A"], 519: ["pasif", "V.G"], 570: ["pasif", "V.D"], 580: ["pasif", "V.E"], 590: ["pasif", "V.F"], 591: ["pasif", "V.F"],
   600: ["gelir", "A"], 602: ["gelir", "A"], 610: ["gider", "B"], 621: ["gider", "D"], 631: ["gider", "E"], 632: ["gider", "E"],
   642: ["gelir", "F"], 644: ["gelir", "F"], 646: ["gelir", "F"], 649: ["gelir", "F"],
-  653: ["gider", "G"], 654: ["gider", "G"], 656: ["gider", "G"], 659: ["gider", "G"], 660: ["gider", "H"], 689: ["gider", "J"],
+  653: ["gider", "G"], 654: ["gider", "G"], 656: ["gider", "G"], 659: ["gider", "G"], 660: ["gider", "H"], 671: ["gelir", "I"], 681: ["gider", "J"], 689: ["gider", "J"],
   690: ["kapanis", null], 691: ["gider", "K"], 692: ["kapanis", null],
   760: ["gider", "E"], 761: ["yansitma", null], 770: ["gider", "E"], 771: ["yansitma", null], 780: ["gider", "H"], 781: ["yansitma", null],
 };
@@ -166,9 +166,11 @@ describe("2.5.0 Ç1 — hesap planı sınıflaması", () => {
   it("adlar: 770 Tekdüzen adıyla; geri kalan 2.4.9 adları değişmedi; yeni hesaplar planda", () => {
     assert.equal(gl.CHART["770"], "Genel Yönetim Giderleri");
     assert.equal(gl.CHART["519"], "Eşleştirilecek Açılış Bakiyeleri");
+    assert.equal(gl.CHART["671"], "Önceki Dönem Gelir ve Kârları");
+    assert.equal(gl.CHART["681"], "Önceki Dönem Gider ve Zararları");
     const renamed = Object.entries(NAMES_249).filter(([code, name]) => gl.CHART[code] !== name).map(([code, name]) => `${code}: ${name} → ${gl.CHART[code]}`);
     assert.deepEqual(renamed, [], "2.4.9 adı değişen hesap (yalnız 770 değişir)");
-    for (const code of ["519", "570", "580", "590", "591", "690", "691", "692", "621", "631", "632", "660", "761", "771", "781", "340", "159", "136", "198"]) assert.ok(gl.CHART[code], `${code} planda yok`);
+    for (const code of ["519", "570", "580", "590", "591", "690", "691", "692", "621", "631", "632", "660", "671", "681", "761", "771", "781", "340", "159", "136", "198"]) assert.ok(gl.CHART[code], `${code} planda yok`);
   });
 
   it("alt hesap tanımları (yalnız tanım): 600.90 Belgesiz, 770.90 Sınıflandırılmamış, 336.90 Sınıflandırılmamış Tahsilatlar", () => {
