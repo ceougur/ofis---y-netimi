@@ -1,0 +1,38 @@
+{
+  "ad": "birlesim-pdf-denetle",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "03cac9661ea0201136a2409105c8295a5fd34b54",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T03:43:37.997Z",
+  "sure_sn": 11.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 38,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "client/kilavuz kopyası aynı dosya (sha256 0f59e237dcc3428d25729b98a361c63ee7bfbe0bbb1c1ac222e3f9a93e653043)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/birlesim-pdf-denetle.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "612d3ac3238f0b829922ba731678a8bf7f552d0f751e2b1e6d06a18f4a8309bf",
+  "ham_cikti_bayt": 2210
+}
