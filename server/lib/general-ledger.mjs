@@ -8,62 +8,210 @@
 // karşılaştırır; fark varsa hangi hesapta ve ne kadar olduğunu söyler.
 //
 // Hesap planı: Tekdüzen Hesap Planı'nın ilgili hesapları.
-import { DOCUMENT_GL, documentGl } from "./cheque-gl.mjs";
+import { DOCUMENT_GL, documentGl, mainOfSub } from "./cheque-gl.mjs";
 import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal, doubtfulSkipOf } from "./doubtful-gl.mjs";
 import { roundMoney } from "./money.mjs";
 
-export const CHART = Object.freeze({
-  100: "Kasa (Nakit)",
+// ---------- Hesap planı ve sınıflama (2.5.0 Ç1) ----------
+// Kaynak: docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md §2 (hesap planı), §7 (MSUGT bilanço / gelir tablosu kalemleri, ters bakiye); docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md
+// §2, §13. Her hesabın TEK kaydı ACCOUNT_PLAN'dadır (ad + sınıflama); CHART (kod → ad) ondan türetilir ve eski okuyucular (raporlar, Banka Ayarları, İşlem Kartı)
+// onu değişmeden okur. Sınıflama YALNIZ sınıflamadır: hiçbir olayın hangi hesaba yazıldığı buradan okunmaz (journal aşağıda, değişmedi). Kilitli dönemin
+// defterini dondurma (Ç3) gelmeden türetme kuralı değişmez; yeni hesapların ve alt hesapların deftere yazılması Ç2 / Ç5 / Ç6'dadır. Mali tablolar (Ç6)
+// aşağıdaki yardımcılarla okur (accountOf, balanceSheetItemOf, incomeStatementItemOf, reverseBalanceOf). Denetim: test/hesap-plani-sinif-250.test.mjs.
+//
+// Alanlar:
+//   tur          aktif | pasif | gelir | gider | yansitma | kapanis — özkaynak (5 sınıfı) pasif tarafındadır (bilanço kalemi V.x). 7/A gider hesapları
+//                (760 / 770 / 780) "gider"dir; gelir tablosunda yansıtıldıkları hesabın (631 / 632 / 660) satırında görünürler (kural kitabı §2, §7.1).
+//   duzenleyici  bilançonun düzenleyici (−) hesabı: kendi kaleminde eksi (103, 129, 580, 591; kural kitabı §2 "Tür" kolonu, §7.2).
+//   bilanco      MSUGT bilanço kalemi (BALANCE_SHEET_ITEMS) — aktif / pasif hesaplarda.
+//   gelirTablosu MSUGT gelir tablosu kalemi (INCOME_STATEMENT_ITEMS) — gelir / gider hesaplarda. Yansıtma ve kapanış hesaplarının kalemi yoktur (dönem
+//                sonu kapanış maddelerinde yer alırlar; gelir tablosu kapanış sınıfı maddelerini almaz — kural kitabı §4).
+//   ters         bilanço hesabının ters bakiyesi (kural kitabı §7.3; çekirdek §13): null = kural kitabında "—" (kendi kaleminde işaretli);
+//                "kesinDegil" = kendi kaleminde eksi + rapor "Kesin Değil" (eksi kasa, evrak, stok …); { bilanco, hesap, boyut, kesinDegil? } =
+//                BRÜTLEŞTİRME, ters bakiye o kaleme o hesabın adıyla gider (boyut: cari = cari bazında, altHesap = alt hesap bazında, hesap = hesap
+//                bazında); "karar" = kural kitabında yok, KARAR GEREKİYOR (Ç6'dan önce sorulur; sessiz varsayım yok).
+//   yansitma / hedef (7/A gider hesabında) ve kaynak / hedef (yansıtma hesabında): 760 → 761 / 631, 770 → 771 / 632, 780 → 781 / 660 (çekirdek §13).
+const KESIN_DEGIL = "kesinDegil";
+const KARAR = "karar";
+const brut = (bilanco, hesap, boyut, extra = {}) => Object.freeze({ bilanco, hesap, boyut, ...extra });
+const planItem = (ad, tur, { duzenleyici = false, bilanco = null, gelirTablosu = null, ters = null, ...extra } = {}) => Object.freeze({ ad, tur, duzenleyici, bilanco, gelirTablosu, ters, ...extra });
+const aktif = (ad, bilanco, ters = null, extra = {}) => planItem(ad, "aktif", { bilanco, ters, ...extra });
+const pasif = (ad, bilanco, ters = null, extra = {}) => planItem(ad, "pasif", { bilanco, ters, ...extra });
+const gelir = (ad, gelirTablosu) => planItem(ad, "gelir", { gelirTablosu });
+const gider = (ad, gelirTablosu, extra = {}) => planItem(ad, "gider", { gelirTablosu, ...extra });
+const yansitma = (ad, kaynak, hedef) => planItem(ad, "yansitma", { kaynak, hedef });
+const kapanis = ad => planItem(ad, "kapanis");
+
+export const ACCOUNT_KINDS = Object.freeze(["aktif", "pasif", "gelir", "gider", "yansitma", "kapanis"]);
+/** MSUGT bilanço kalemleri (kural kitabı §7.2; kullanılanlar). taraf: aktif | pasif; grup: Roma rakamı (I Dönen, II Duran, III Kısa Vadeli, V Özkaynaklar). */
+export const BALANCE_SHEET_ITEMS = Object.freeze({
+  "I.A": Object.freeze({ taraf: "aktif", grup: "I", grupAd: "Dönen Varlıklar", ad: "Hazır Değerler" }),
+  "I.C": Object.freeze({ taraf: "aktif", grup: "I", grupAd: "Dönen Varlıklar", ad: "Ticari Alacaklar" }),
+  "I.D": Object.freeze({ taraf: "aktif", grup: "I", grupAd: "Dönen Varlıklar", ad: "Diğer Alacaklar" }),
+  "I.E": Object.freeze({ taraf: "aktif", grup: "I", grupAd: "Dönen Varlıklar", ad: "Stoklar" }),
+  "I.H": Object.freeze({ taraf: "aktif", grup: "I", grupAd: "Dönen Varlıklar", ad: "Diğer Dönen Varlıklar" }),
+  "II.D": Object.freeze({ taraf: "aktif", grup: "II", grupAd: "Duran Varlıklar", ad: "Maddi Duran Varlıklar" }),
+  "III.A": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Mali Borçlar" }),
+  "III.B": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Ticari Borçlar" }),
+  "III.C": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Diğer Borçlar" }),
+  "III.D": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Alınan Avanslar" }),
+  "III.F": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Ödenecek Vergi ve Diğer Yükümlülükler" }),
+  "III.G": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Borç ve Gider Karşılıkları" }),
+  "III.I": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Diğer Kısa Vadeli Yabancı Kaynaklar" }),
+  "V.A": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Ödenmiş Sermaye" }),
+  "V.D": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Geçmiş Yıllar Kârları" }),
+  "V.E": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Geçmiş Yıllar Zararları (−)" }),
+  "V.F": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Dönem Net Kârı (Zararı)" }),
+  // Kural kitabı §7.2 / çekirdek §13: Özkaynaklar'ın sonunda ayrı, uyarılı satır (MSUGT'de karşılığı yok; açılış eşleştirilince 0 olur).
+  "V.G": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Eşleştirilecek Açılış Bakiyeleri (Geçici)" }),
+});
+/** MSUGT gelir tablosu kalemleri (kural kitabı §7.1; hesap taşıyanlar — Net Satışlar, Brüt Satış Kârı gibi ara toplamlar raporun işidir). eksi: (−) kalem. */
+export const INCOME_STATEMENT_ITEMS = Object.freeze({
+  A: Object.freeze({ ad: "Brüt Satışlar", eksi: false }),
+  B: Object.freeze({ ad: "Satış İndirimleri (−)", eksi: true }),
+  D: Object.freeze({ ad: "Satışların Maliyeti (−)", eksi: true }),
+  E: Object.freeze({ ad: "Faaliyet Giderleri (−)", eksi: true }),
+  F: Object.freeze({ ad: "Diğer Faaliyetlerden Olağan Gelir ve Kârlar", eksi: false }),
+  G: Object.freeze({ ad: "Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)", eksi: true }),
+  H: Object.freeze({ ad: "Finansman Giderleri (−)", eksi: true }),
+  I: Object.freeze({ ad: "Olağandışı Gelir ve Kârlar", eksi: false }),
+  J: Object.freeze({ ad: "Olağandışı Gider ve Zararlar (−)", eksi: true }),
+  K: Object.freeze({ ad: "Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)", eksi: true }),
+});
+
+export const ACCOUNT_PLAN = Object.freeze({
+  100: aktif("Kasa (Nakit)", "I.A", KESIN_DEGIL),
   // 2.2.0 İz 4.2 (plan §3.11a): çek ve senet ayrı Tekdüzen hesaplarında (lib/cheque-gl.mjs) — önceden 101 "Alınan Çekler ve Senetler (Portföy)"
   // ve 103 "Verilen Çekler ve Senetler" ikisini birlikte tutuyordu.
-  101: "Alınan Çekler",
-  102: "Bankalar (Havale / EFT)",
-  103: "Verilen Çekler ve Ödeme Emirleri (−)",
-  108: "Kredi Kartı Tahsilatları (POS)",
-  120: "Alıcılar (Müşteri Carileri)",
-  121: "Alacak Senetleri",
-  127: "Carisiz Taksit Kartları",
+  101: aktif("Alınan Çekler", "I.A", KESIN_DEGIL),
+  // Ters: alacaklı banka hesabı (KMH) alt hesap bazında Kısa Vadeli Mali Borçlar'a (300).
+  102: aktif("Bankalar (Havale / EFT)", "I.A", brut("III.A", "300", "altHesap")),
+  103: aktif("Verilen Çekler ve Ödeme Emirleri (−)", "I.A", KESIN_DEGIL, { duzenleyici: true }),
+  108: aktif("Kredi Kartı Tahsilatları (POS)", "I.A", KESIN_DEGIL),
+  // Ters: alacaklı müşteri cari bazında Alınan Sipariş Avansları'na (340).
+  120: aktif("Alıcılar (Müşteri Carileri)", "I.C", brut("III.D", "340", "cari")),
+  121: aktif("Alacak Senetleri", "I.C", KESIN_DEGIL),
+  // Tekdüzen 12 grubu (Ticari Alacaklar). Ters bakiyesi (fazla ödenmiş carisiz kart) kural kitabında yok → KARAR GEREKİYOR.
+  127: aktif("Carisiz Taksit Kartları", "I.C", KARAR),
   // 2.3.0 İz 1 (plan §3.11b; lib/doubtful-gl.mjs): şüpheli ticari alacaklar ve karşılığı (129 eksi bakiyeli), karşılık gideri (654) ve konusu
   // kalmayan karşılık geliri (644). 659 zaten var (karşılıksız değersiz alacak).
-  128: DOUBTFUL_CHART[128],
-  129: DOUBTFUL_CHART[129],
-  153: "Ticari Mallar (Stok Alımları)",
+  128: aktif(DOUBTFUL_CHART[128], "I.C", KESIN_DEGIL),
+  129: aktif(DOUBTFUL_CHART[129], "I.C", KESIN_DEGIL, { duzenleyici: true }),
+  // 2.5.0 Ç1: ters bakiye kalemleri (yalnız sunum; borçlu 336 ve borçlu 309 buraya).
+  136: aktif("Diğer Çeşitli Alacaklar", "I.D"),
+  153: aktif("Ticari Mallar (Stok Alımları)", "I.E", KESIN_DEGIL),
+  // 2.5.0 Ç1: borçlu tedarikçi (320 ters bakiyesi; yalnız sunum).
+  159: aktif("Verilen Sipariş Avansları", "I.E"),
   // 2.4.3 MM3: KDV Mahsup Fişi'nin devreden KDV'si (indirilecek KDV hesaplanandan büyükse; sonraki ayın mahsubunda kullanılır).
-  190: "Devreden KDV",
-  191: "İndirilecek KDV",
-  193: "Peşin Ödenen Vergiler (Stopaj)",
-  255: "Demirbaşlar",
-  // v2.1.0 (§3.11): banka kredisi ve kurumsal kredi kartı borcu.
-  300: "Banka Kredileri",
-  309: "Diğer Mali Borçlar (Kredi Kartları)",
-  320: "Satıcılar (Tedarikçi Carileri)",
-  321: "Borç Senetleri",
-  336: "Diğer Cariler (Personel vb.)",
-  360: "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)",
-  391: "Hesaplanan KDV",
-  500: "Açılış ve Devir Bakiyeleri",
-  600: "Yurt İçi Satışlar (Stok)",
-  602: "Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)",
-  610: "Satıştan İadeler",
+  190: aktif("Devreden KDV", "I.H"),
+  191: aktif("İndirilecek KDV", "I.H"),
+  193: aktif("Peşin Ödenen Vergiler (Stopaj)", "I.H"),
+  // 2.5.0 Ç1: borçlu 360 (tahakkuku programda olmayan vergi ödemesi; KG-14) — yalnız sunum.
+  198: aktif("Diğer Çeşitli Dönen Varlıklar", "I.H"),
+  255: aktif("Demirbaşlar", "II.D"),
+  // v2.1.0 (§3.11): banka kredisi ve kurumsal kredi kartı borcu. Krediler vadeye bakılmaksızın kısa vadede (kural kitabı §7.5 dipnot 4).
+  300: pasif("Banka Kredileri", "III.A", KESIN_DEGIL),
+  // Ters: borçlu kart alt hesap bazında Diğer Çeşitli Alacaklar'a (136).
+  309: pasif("Diğer Mali Borçlar (Kredi Kartları)", "III.A", brut("I.D", "136", "altHesap")),
+  // Ters: borçlu tedarikçi cari bazında Verilen Sipariş Avansları'na (159).
+  320: pasif("Satıcılar (Tedarikçi Carileri)", "III.B", brut("I.E", "159", "cari")),
+  321: pasif("Borç Senetleri", "III.B", KESIN_DEGIL),
+  // Ters: borçlu "Diğer" cari cari bazında Diğer Çeşitli Alacaklar'a (136).
+  336: pasif("Diğer Cariler (Personel vb.)", "III.C", brut("I.D", "136", "cari")),
+  // 2.5.0 Ç1: alacaklı müşteri (120 ters bakiyesi; yalnız sunum).
+  340: pasif("Alınan Sipariş Avansları", "III.D"),
+  // Ters (KG-14 A, çekirdek §13): borçlu 360 Diğer Çeşitli Dönen Varlıklar'a (198) + Kesin Değil.
+  360: pasif("Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)", "III.F", brut("I.H", "198", "hesap", { kesinDegil: true })),
+  391: pasif("Hesaplanan KDV", "III.I"),
+  500: pasif("Açılış ve Devir Bakiyeleri", "V.A"),
+  // 2.5.0 Ç1 (KG-1, çekirdek §13): geçici açılış hesabı. Modül açılışları Ç5'te buraya yazılır; Bilanço'da Özkaynaklar'ın sonunda uyarılı satır.
+  519: pasif("Eşleştirilecek Açılış Bakiyeleri", "V.G"),
+  // 2.5.0 Ç1: dönem sonu ve devir hesapları (kapanış akışı: 690 → 692 → 590 / 591; önceki yıllar 570 / 580 — KG-12).
+  570: pasif("Geçmiş Yıllar Kârları", "V.D"),
+  580: pasif("Geçmiş Yıllar Zararları (−)", "V.E", null, { duzenleyici: true }),
+  590: pasif("Dönem Net Kârı", "V.F"),
+  591: pasif("Dönem Net Zararı (−)", "V.F", null, { duzenleyici: true }),
+  600: gelir("Yurt İçi Satışlar (Stok)", "A"),
+  602: gelir("Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)", "A"),
+  610: gider("Satıştan İadeler", "B"),
+  // 2.5.0 Ç1: dönem sonu stok değerlemesi (satışların maliyeti; kural kitabı §5).
+  621: gider("Satılan Ticari Mallar Maliyeti", "D"),
+  // 2.5.0 Ç1: 7/A yansıtmasının gelir tablosu hesapları (çekirdek §13).
+  631: gider("Pazarlama, Satış ve Dağıtım Giderleri", "E"),
+  632: gider("Genel Yönetim Giderleri", "E"),
   // v2.1.0 (§3.11): faiz geliri ve kambiyo kârı (banka fişi, döviz değerlemesi).
-  642: "Faiz Gelirleri",
-  644: DOUBTFUL_CHART[644],
-  646: "Kambiyo Kârları",
+  642: gelir("Faiz Gelirleri", "F"),
+  644: gelir(DOUBTFUL_CHART[644], "F"),
+  646: gelir("Kambiyo Kârları", "F"),
   // v2.1.0 Aşama 4 (plan §3.11): Tekdüzen Hesap Planı'ndaki adı. Kasa'ya elle giriş ve Banka Fişi'nin "Diğer Gelir"i buraya yazar (2.0.26'daki
   // ad "Diğer Olağan Gelirler (Kasaya Elle)"; tutarlar değişmez). Aşama 2'de (gözden geçirme D3) ad bilinçli olarak eski kalmıştı.
-  649: "Diğer Olağan Gelir ve Kârlar",
+  649: gelir("Diğer Olağan Gelir ve Kârlar", "F"),
   // v2.1.0 (§3.11): POS komisyonu, kambiyo zararı, diğer olağan giderler, finansman giderleri.
-  653: "Komisyon Giderleri",
-  654: DOUBTFUL_CHART[654],
-  656: "Kambiyo Zararları",
-  659: "Diğer Olağan Gider ve Zararlar",
+  653: gider("Komisyon Giderleri", "G"),
+  654: gider(DOUBTFUL_CHART[654], "G"),
+  656: gider("Kambiyo Zararları", "G"),
+  659: gider("Diğer Olağan Gider ve Zararlar", "G"),
+  660: gider("Kısa Vadeli Borçlanma Giderleri", "H"),
   // 2.4.3 MM3: Tekdüzen Hesap Planı adı. Kapatılan taksit kartlarının vazgeçilen kalanı ve vergi ödemesinin gecikme zammı / faizi (KKEG) buraya yazılır
   // (önceki ad "Kapatılan Kartlardan Vazgeçilen Alacaklar"; tutarlar değişmez).
-  689: "Diğer Olağandışı Gider ve Zararlar",
-  760: "Pazarlama, Satış ve Dağıtım Giderleri",
-  770: "Genel Giderler ve Alış Faturaları",
-  780: "Finansman Giderleri",
+  689: gider("Diğer Olağandışı Gider ve Zararlar", "J"),
+  // 2.5.0 Ç1: kapanış hesapları. 691 kural kitabında kapanış akışındadır (KP) ama MSUGT gelir tablosunda K satırıdır (program ayırmaz, KG-13 A → 0).
+  690: kapanis("Dönem Kârı veya Zararı"),
+  691: gider("Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları", "K"),
+  692: kapanis("Dönem Net Kârı veya Zararı"),
+  // 7/A (çekirdek §13): giderler 760 / 770 / 780'e yazılır; gelir tablosunda ve kapanışta 761 / 771 / 781 ile 631 / 632 / 660'a yansıtılır.
+  760: gider("Pazarlama, Satış ve Dağıtım Giderleri", "E", { yansitma: "761", hedef: "631" }),
+  761: yansitma("Pazarlama, Satış ve Dağıtım Giderleri Yansıtma Hesabı", "760", "631"),
+  // 2.5.0 Ç1: Tekdüzen adı (2.4.9'a kadar "Genel Giderler ve Alış Faturaları"; yalnız ad — tutar ve hesap değişmez, ad saklanmaz, kod saklanır).
+  770: gider("Genel Yönetim Giderleri", "E", { yansitma: "771", hedef: "632" }),
+  771: yansitma("Genel Yönetim Giderleri Yansıtma Hesabı", "770", "632"),
+  780: gider("Finansman Giderleri", "H", { yansitma: "781", hedef: "660" }),
+  781: yansitma("Finansman Giderleri Yansıtma Hesabı", "780", "660"),
 });
+/** Hesap kodu → ad (2.0.13'ten beri okuyucuların biçimi; ACCOUNT_PLAN'dan türetilir). */
+export const CHART = Object.freeze(Object.fromEntries(Object.entries(ACCOUNT_PLAN).map(([code, item]) => [code, item.ad])));
+/**
+ * Planın alt hesapları (2.5.0 Ç1 — YALNIZ TANIM; deftere yazılmaları Ç5 / Ç6'da): kod → ad. Sınıflaması ana hesabınınkidir (accountOf). Kaynak kural kitabı:
+ * 600.90 / 610.90 KG-2 (faturasız satış / iade, kullanıcı kararı 05.11 "A"); 602.90 / 770.90 KG-4 (Borç Yaz / Alacak Yaz) ve çekirdek §13 (Kasa çıkışı);
+ * 336.90 KG-3 (kayıt tahsilatı gelir değil — pasif; kullanıcı kararı 05.11 "A").
+ */
+export const PLAN_SUBS = Object.freeze({
+  "336.90": "Sınıflandırılmamış Tahsilatlar",
+  "600.90": "Belgesiz",
+  "602.90": "Sınıflandırılmamış",
+  "610.90": "Belgesiz",
+  "770.90": "Sınıflandırılmamış",
+});
+/** Hesabın plan kaydı (alt hesap verilirse ana hesabınınki: 770.90 → 770; 102.01 → 102); planda yoksa null. */
+export function accountOf(code) {
+  const main = mainOfSub(String(code ?? "").trim());
+  return main && Object.hasOwn(ACCOUNT_PLAN, main) ? ACCOUNT_PLAN[main] : null;
+}
+/** Hesabın MSUGT bilanço kalemi: { kod, taraf, grup, grupAd, ad, duzenleyici }; bilanço hesabı değilse (ya da planda yoksa) null. */
+export function balanceSheetItemOf(code) {
+  const item = accountOf(code);
+  return item?.bilanco ? { kod: item.bilanco, ...BALANCE_SHEET_ITEMS[item.bilanco], duzenleyici: item.duzenleyici } : null;
+}
+/**
+ * Hesabın MSUGT gelir tablosu kalemi: { kod, ad, eksi, hesap } — hesap, gelir tablosunda göründüğü hesaptır (7/A gideri yansıtıldığı hesabın satırında:
+ * 770 → 632). Gelir tablosu hesabı değilse (bilanço, yansıtma, kapanış ya da planda yok) null.
+ */
+export function incomeStatementItemOf(code) {
+  const item = accountOf(code);
+  if (!item?.gelirTablosu) return null;
+  return { kod: item.gelirTablosu, ...INCOME_STATEMENT_ITEMS[item.gelirTablosu], hesap: item.hedef || mainOfSub(String(code).trim()) };
+}
+/**
+ * Bilanço hesabının ters bakiye kuralı (kural kitabı §7.3): { kural: "ayni" } (kendi kaleminde işaretli), { kural: "kesinDegil" }, { kural: "karar" }
+ * (KARAR GEREKİYOR) ya da { kural: "brut", bilanco, hesap, boyut, kesinDegil } (brütleştirme). Bilanço hesabı değilse null.
+ */
+export function reverseBalanceOf(code) {
+  const item = accountOf(code);
+  if (!item?.bilanco) return null;
+  if (item.ters === null) return { kural: "ayni" };
+  if (item.ters === KESIN_DEGIL || item.ters === KARAR) return { kural: item.ters };
+  return { kural: "brut", bilanco: item.ters.bilanco, hesap: item.ters.hesap, boyut: item.ters.boyut, kesinDegil: Boolean(item.ters.kesinDegil) };
+}
 // 128 (2.3.0 İz 1): şüpheli alacak satırları da cariyi taşır — carinin defter bakiyesi 120 + 128 = cari kartı (Şüpheli Alacağa Al cari bakiyesini
 // değiştirmez; lib/doubtful-gl.mjs).
 const PARTY_ACCOUNTS = new Set(["120", "127", "320", "336", DOUBTFUL_GL.doubtful]);

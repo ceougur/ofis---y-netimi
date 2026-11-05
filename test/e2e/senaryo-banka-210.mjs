@@ -503,7 +503,7 @@ try {
     await admin.click(`${bankWin} [data-act="advanced"]`);
     await admin.waitForTimeout(300);
     const advanced = await textOf(admin, `${bankWin} [data-advanced]`);
-    ok(has(advanced, "Hesap Eşlemeleri") && has(advanced, "770 · Genel Giderler ve Alış Faturaları") && has(advanced, "102 · Bankalar (Havale / EFT)") && !has(advanced, "Ekstre"), "Gelişmiş: hesap eşlemeleri adlarıyla; Ekstre bölümü yok");
+    ok(has(advanced, "Hesap Eşlemeleri") && has(advanced, "770 · Genel Yönetim Giderleri") && has(advanced, "102 · Bankalar (Havale / EFT)") && !has(advanced, "Ekstre"), "Gelişmiş: hesap eşlemeleri adlarıyla; Ekstre bölümü yok");
     const hiddenKeys = ["fx.source", "fxAdvanced.exchangeTaxPermille", "movement.channel", "other.manualVoucher", "gl.fxGain", "gl.fxLoss"];
     const shownHidden = [];
     for (const key of hiddenKeys) if (await admin.$(`${bankWin} [data-set="${key}"]`)) shownHidden.push(key);
