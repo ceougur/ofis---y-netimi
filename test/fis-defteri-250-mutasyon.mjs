@@ -19,14 +19,15 @@ const GL = "server/lib/general-ledger.mjs";
 const MAIN = "test/fis-defteri-250.test.mjs";
 const LIFE = "test/fis-defteri-yasam-250.test.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
+// Not (3): aynalanmayan ters kaydı önce KAPI geri alır (tam taramanın "Fiş Defteri" denetimi: "ters kayıt asıl fişin aynası değil") — iki katman; beklenen neden kapınınki.
 const MUTASYONLAR = [
   [1, "fiş denkliği denetimi düşer (borç ≠ alacak kabul)", LV, "if (debit !== credit || debit <= 0) throw", "if (debit <= 0) throw", [MAIN], /not ok \d+ - N1–N3[\s\S]*beklenen 400, gelen 409/],
   [2, "sıfır satır denetimi düşer (iki tarafı sıfır satır kabul)", LV, "if ((dr > 0) === (cr > 0)) throw", "if (dr > 0 && cr > 0) throw", [MAIN], /not ok \d+ - N1–N3[\s\S]*beklenen 400, gelen undefined/],
-  [3, "ters kayıt yönü (satırlar aynalanmaz)", LV, "debit: line.credit, credit: line.debit, note: line.note", "debit: line.debit, credit: line.credit, note: line.note", [MAIN], /satırlar aynanın tersi/],
+  [3, "ters kayıt yönü (satırlar aynalanmaz)", LV, "debit: line.credit, credit: line.debit, note: line.note", "debit: line.debit, credit: line.credit, note: line.note", [MAIN], /not ok \d+ - N9–N10[\s\S]*ters kaydı asıl fişin aynası[\s\S]*ters kayıt asıl fişin aynası değil/],
   [4, "istek kimliği tekilliği (yinelenen kimlik aranmaz)", LV, "const existing = byKey(item.requestKey);", "const existing = null;", [MAIN, LIFE], /aynı fiş ikinci kez yazılamaz/],
   [5, "kilit 409 (kilit günü açık sayılır)", LV, "if (lock && item.date <= lock) throw", "if (lock && item.date < lock) throw", [MAIN], /beklenen kod period-locked/],
-  [6, "UPDATE tetikleyicisi yok (başlık)", MIG, "  CREATE TRIGGER IF NOT EXISTS ledger_vouchers_no_update BEFORE UPDATE ON ledger_vouchers BEGIN SELECT RAISE(ABORT, 'ledger_vouchers değiştirilemez: düzeltme ters kayıt fişiyle'); END;\n", "", [MAIN], /Missing expected exception \(UPDATE başlık\)/],
-  [7, "DELETE tetikleyicisi yok (satır)", MIG, "  CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_no_delete BEFORE DELETE ON ledger_voucher_lines BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines silinemez: düzeltme ters kayıt fişiyle'); END;\n", "", [MAIN], /Missing expected exception \(DELETE satır\)/],
+  [6, "UPDATE tetikleyicisi yok (başlık)", MIG, "  CREATE TRIGGER IF NOT EXISTS ledger_vouchers_no_update BEFORE UPDATE ON ledger_vouchers BEGIN SELECT RAISE(ABORT, 'ledger_vouchers değiştirilemez: düzeltme ters kayıt fişiyle'); END;\n", "", [MAIN], /not ok \d+ - N8[\s\S]*Missing expected exception: UPDATE başlık/],
+  [7, "DELETE tetikleyicisi yok (satır)", MIG, "  CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_no_delete BEFORE DELETE ON ledger_voucher_lines BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines silinemez: düzeltme ters kayıt fişiyle'); END;\n", "", [MAIN], /not ok \d+ - N8[\s\S]*Missing expected exception: DELETE satır/],
   [8, "journal() sınıf sırası (kapanış günün sonunda değil)", GL, '  "voucher-close": 99,', '  "voucher-close": 30,', [MAIN], /not ok \d+ - N13[\s\S]*not ok \d+ - N20/],
   [9, "journal() sınıf sırası (açılış günün başında değil)", GL, '  "voucher-open": 1,', '  "voucher-open": 50,', [MAIN], /01\.01'in ilk maddesi açılış/],
   [10, "kapanış + kilit aynı işlemde değil (kilit konmaz)", LV, "          period.setLock(lockThrough);\n", "", [MAIN], /kilit fişlerle aynı işlemde kondu/],
@@ -68,7 +69,7 @@ for (const [no, ad, dosya, eski, yeni, testler, neden] of MUTASYONLAR) {
   toplam += 1;
   if (kirmizi && nedenli) yakalanan += 1;
   console.log(`${kirmizi && nedenli ? "ok" : "not ok"} ${no} - ${ad} · ${kirmizi ? `KIRMIZI (${r.fail} başarısız)` : "YEŞİL — kaçırdı"} · beklenen neden ${neden} ${nedenli ? "görüldü" : "GÖRÜLMEDİ"}`);
-  if (!nedenli) console.log(r.out.split("\n").filter(line => /not ok|Error|beklenen|expected/i.test(line)).slice(0, 12).join("\n"));
+  if (!nedenli) console.log(r.out.split("\n").filter(line => /not ok|error:|Error|beklenen|expected/i.test(line)).slice(0, 20).join("\n"));
 }
 const son = run([MAIN, LIFE]);
 if (son.status !== 0) throw new Error("mutasyonlardan sonra kopya geri yazılamadı (taban kırmızı)");
