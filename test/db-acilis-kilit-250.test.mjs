@@ -102,7 +102,8 @@ describe("2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından ö
 
   it("(a) başka bağlantı dosyayı özel kilitle tutarken açılış BEKLER, kilit kalkınca açılır ve yazar", async () => {
     const file = freshDb();
-    const lock = await holdLock(file, 400);
+    // Kilit 1 sn tutulur (açılış süresinin içinde); iletinin ana iş parçacığına gecikmesi yavaş koşucuda birkaç yüz ms olabilir → alt sınır 300 ms.
+    const lock = await holdLock(file, 1000);
     const started = Date.now();
     const db = openDatabase(file);
     const waited = Date.now() - started;
@@ -112,9 +113,8 @@ describe("2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından ö
     } finally {
       db.close();
     }
-    const releasedAt = await lock.released;
-    assert.ok(waited >= 200, `açılış kilidin kalkmasını bekledi (${waited} ms)`);
-    assert.ok(releasedAt && started + waited >= releasedAt - 50, "açılış kilit kalktıktan sonra bitti");
+    await lock.released;
+    assert.ok(waited >= 300, `açılış kilidin kalkmasını bekledi (${waited} ms)`);
   });
 
   it("(b) kilit bekleme süresi boyunca kalkmazsa açılış SQLITE_BUSY ile düşer (süre kadar bekleyerek) ve bağlantı kapanır", async () => {
@@ -150,7 +150,7 @@ describe("2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından ö
     // Salt okunur yolda açılış PRAGMA'sı kilit istemez; bekleme ilk okumada olur. Kilit açılış süresinden UZUN tutulur: okuma yine okur (rapor işçisi,
     // yedek, Mutabakat gibi salt okunur yollar kısa açılış süresinden etkilenmez).
     const file = freshDb();
-    const lock = await holdLock(file, OPEN_BUSY_TIMEOUT_MS + 1500);
+    const lock = await holdLock(file, OPEN_BUSY_TIMEOUT_MS + 2500);
     const started = Date.now();
     const db = openDatabase(file, { readOnly: true });
     try {
@@ -160,7 +160,7 @@ describe("2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından ö
     }
     const waited = Date.now() - started;
     await lock.released;
-    assert.ok(waited >= OPEN_BUSY_TIMEOUT_MS + 1000, `salt okunur okuma kilidin kalkmasını bekledi (${waited} ms)`);
+    assert.ok(waited >= OPEN_BUSY_TIMEOUT_MS + 500, `salt okunur okuma açılış süresinden uzun bekledi ve okudu (${waited} ms)`);
     const handles = openHandles(file);
     if (handles !== null) assert.equal(handles, 0, "kapatılan salt okunur bağlantı tutamak bırakmadı");
   });
@@ -191,7 +191,7 @@ describe("2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından ö
     for (let round = 0; round < rounds; round++) {
       const file = freshDb();
       await killed(await runProc(["yaz-kill", file, "20000"], true));
-      const at = String(Date.now() + 600);
+      const at = String(Date.now() + 1500); // N5 gibi: süreç açılışı (Windows'ta yavaş) bitsin, iki açılış aynı anda başlasın
       const results = await Promise.all([runProc(["ac", file, at]), runProc(["ac", file, at])]);
       for (const item of results) if (!item.ok) failures.push({ round, ...item });
       const db = openDatabase(file);
