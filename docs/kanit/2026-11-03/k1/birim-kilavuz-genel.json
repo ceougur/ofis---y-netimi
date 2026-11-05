@@ -1,0 +1,32 @@
+{
+  "ad": "k1/birim-kilavuz-genel",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kilavuz-surum.test.mjs test/kilavuz-pdf-surum.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/disa-aktarim-dugmeleri.test.mjs test/mobil-karekod-248.test.mjs test/gorunen-adres-247.test.mjs test/banka-bakiye-ileri-tarihli.test.mjs test/kanit-araci.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/ci-kapi-listesi.test.mjs",
+  "commit": "5a780c1d0d88cb5f4f3d892089a5dcc6306ad7a6",
+  "dal": "worktree-agent-af061f45481d3a2a1",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T23:18:09.333Z",
+  "sure_sn": 5.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 108,
+    "gecen": 108,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/k1/birim-kilavuz-genel.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af061f45481d3a2a1",
+  "ham_cikti_sha256": "ca48452fc09fb5af0c4a34e785afa5539b58f127a808cf4d8533e5cb275c1a3f",
+  "ham_cikti_bayt": 34201
+}

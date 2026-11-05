@@ -23,7 +23,8 @@
 // 2.4.8 W2 (plan §6 W2; lib/whatsapp/queue.mjs): gönderim çekirdeği — toplu gönderim (Ekstre + PDF / Ödeme Hatırlatma), yetki whatsapp.send.
 //   GET  /api/workspace/whatsapp/ack                         bir kez onay ("Aydınlatma metnimi okudum, carilerime ulaştıracağım.") — whatsapp.send
 //   PUT  /api/workspace/whatsapp/ack                         { ack: true | false } — yalnız yönetici (system.manage)
-//   GET|PUT /api/workspace/whatsapp/sending-settings         { dailyCap (elle günlük sınır, boş = Meta), ttlHours (S2 A: 72) } — system.manage
+//   GET|PUT /api/workspace/whatsapp/sending-settings         { dailyCap (elle günlük sınır, boş = Meta) } — system.manage; ttlHours → 400 (2.4.9 W-T: teslim süresi
+//                                                           Meta'nın varsayılanı 30 gün, değiştirilemez)
 //   POST /api/workspace/whatsapp/batches/preview             önizleme: kişiler, atlama nedenleri, bugünkü sınırdan kalan, yarına kalacak (Meta'ya yalnız okuma)
 //   POST /api/workspace/whatsapp/batches                     { kind: statement|reminder, ids | all + süzgeçler, preset | from + to, requestId, repeat }
 //   GET  /api/workspace/whatsapp/batches                     son toplu gönderimler; GET …/batches/:id ayrıntı + işler
@@ -49,7 +50,9 @@ import { canUser } from "../lib/permissions.mjs";
 const MAX_TARGETS = 5000;
 const pad = value => String(value).padStart(2, "0");
 const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
-const tl = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
+// 2.4.9 B2-2: tek biçimleyici (Intl.NumberFormat durumsuz; çıktı aynı) — ekstre metni her tutarda yeniden kurmasın (2.000 kişilik "Tüm Hareketler"de ~1,3 sn).
+const TL_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const tl = value => `${TL_FORMAT.format(Number(value) || 0)} TL`;
 
 // Telefon → wa.me biçimi ve WhatsApp penceresinin dönemleri: lib/whatsapp/alici.mjs (2.4.8 W2: API çekirdeği de aynı kuralla okur).
 export { waNumber };
@@ -98,7 +101,7 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     const body = await readJson(req, { limit: 2_000_000 });
     const kind = body.kind === "statement" ? "statement" : "message";
     const service = accounts();
-    if (!service?.list || !service?.detail) throw new HttpError(503, "Cari modülü hazır değil.");
+    if (!service?.list || !service?.waFacts) throw new HttpError(503, "Cari modülü hazır değil.");
     let ids;
     if (body.all === true) {
       ids = service.list(user, { q: text(body.q).slice(0, 120), group: text(body.group), subgroup: text(body.subgroup), type: text(body.type), status: ["active", "passive", "all"].includes(text(body.status)) ? text(body.status) : "active", balance: text(body.balance) || "all" }).accounts.map(item => item.id);
@@ -114,8 +117,11 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     const recipients = [];
     for (const id of ids) {
       let account;
+      // 2.4.9 B2-1 (ders 47): kartın eleme çekirdeği (accounts.waFacts — detail ile aynı accountRow / plans().forAccount / entriesOf / accountLedger, aynı girdi;
+      // ekran ekleri okunmaz). Silinmiş / olmayan cari iki yolda da fırlatır → listede yok. BİLİNÇLİ TEK FARK (İLKEYLE, ilke 4 "çıkmaz yok"): kartın bir ekran eki
+      // hata verirse kişi artık sessizce düşmez. Önceden kişi başı tam kart: 2.000 caride ~25 sn, olay döngüsü kilitli (docs/2.4.9-tasarim/B2-elle-toplu-alici.md).
       try {
-        account = service.detail(id, user);
+        account = service.waFacts(id, user);
       } catch {
         continue;
       }
@@ -255,8 +261,10 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   });
 
   // ---------- 2.4.8 W5: bilgilendirme şablonları (routes/whatsapp-sablon.mjs) ----------
-  // T2-5: şablona yazılan teslim süresi gönderim ayarından (kuyruk aşağıda kurulur; istek anında okunur).
-  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection, ttlHours: () => queue?.settings?.().ttlHours });
+  // 2.4.9 W-T: şablona teslim süresi yazılmaz (ayar yok). W-2: Şablonları Denetle bitince gönderim yolunun o WABA için şablon önbelleği temizlenir — ortak işçinin
+  // bütün kuyruklarında (aynı WABA'yı kullanan öbür şirket dahil); işçi yoksa bu şirketin kuyruğunda (kuyruk aşağıda kurulur; çağrı anında okunur).
+  const forgetTemplates = wabaId => (whatsapp?.scheduler?.forgetTemplates ? whatsapp.scheduler.forgetTemplates(wabaId) : queue?.forgetTemplates?.(wabaId));
+  const templates = registerWhatsappTemplateRoutes(router, { store, auth, audit, config, license, now: clock, connection, onChecked: forgetTemplates });
 
   // ---------- 2.4.8 W4: gönderim ekranının durumu ----------
   router.get("/api/workspace/whatsapp/sending-status", async ({ req, res }) => {

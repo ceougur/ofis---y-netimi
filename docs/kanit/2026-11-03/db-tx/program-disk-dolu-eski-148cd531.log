@@ -1,0 +1,9 @@
+(node:13634) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+WAL 2352552 B → yumuşak sınır 2353576 B
+1) sınır altındayken büyük yazım: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+2) sınır kaldırıldı (yer açıldı)
+3) sonraki küçük yazım: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+4) Kasa girişi: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+store.inTransaction=false; db.isTransaction=false
+5) boş store.tx: HATA "near "-": syntax error"

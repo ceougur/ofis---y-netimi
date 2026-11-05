@@ -10,6 +10,19 @@ import { systemClock } from "../lib/clock.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { K10_LABELS } from "../lib/bank/accounts.mjs";
 
+// 2.4.9 S1 tur 1: silme öncesi yedek hatasının kullanıcıya giden Türkçe nedeni (SQLite birincil sonuç kodu = errcode & 0xff; dosya sistemi error.code).
+// Bilinen nedenlerde yalnız Türkçe metin; bilinmeyende ham ileti ardından. Ham ileti audit'te (backupError) ve sunucu günlüğünde kalır.
+export function backupFailureReason(error) {
+  const primary = Number(error?.errcode) & 0xff;
+  const code = String(error?.code || "");
+  if (primary === 11 || primary === 26) return "veri dosyası bozuk";
+  if (primary === 13 || code === "ENOSPC") return "disk dolu";
+  if (primary === 5 || primary === 6 || code === "EBUSY") return "dosya başka bir programca kullanılıyor";
+  if (code === "EACCES" || code === "EPERM") return "yedek klasörüne yazma izni yok";
+  const raw = error?.message || String(error || "");
+  return raw ? `beklenmeyen hata: ${raw}` : "beklenmeyen hata";
+}
+
 export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies, withCompanyDb, log, closeLive, now: clock = systemClock }) {
   const requireManage = req => auth.requirePermission(req, "system.manage");
   // Geri yüklenen ya da silinen şirkette aynı anda ikinci işlem (ad değiştirme, sıfırlama, silme) yapılmaz.
@@ -112,23 +125,37 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     confirmPassword(user, body.password);
     // Önce yedek (şirketin kendi yedek klasörüne: <kod> - <ad>), sonra örnek kapatılır ve veri klasörü silinen-sirketler
     // altına taşınır. Yedek klasörü yerinde kalır (v2.0.20). Bu sırada şirkete gelen istek 503 alır (yeniden açılmaz).
+    // 2.4.9 S1 (kullanıcı kararı 03.11.2026): veri dosyası bozuk şirkette yedek düşer; önceden 500 ile silme hiç yapılamıyordu. Artık 409
+    // `backup-failed` + neden döner; ekran ikinci, açık bir onay sorar ve `withoutBackup: true` ile yeniden ister. Yedek HER ZAMAN denenir
+    // (sağlam şirkette `withoutBackup` yedeği atlatmaz); yalnız yedek düşerse onaylı istek silmeyi sürdürür. Silme veriyi yok etmez: klasör yine
+    // silinen-sirketler altına taşınır (companies.remove). Paylaşılan dosya reddi (company-shared) yedek hatası sayılmaz, aynen döner.
+    const allowWithoutBackup = body.withoutBackup === true;
     busyCompanies?.set(company.id, `“${company.code} · ${company.name}” siliniyor.`);
     let backup = "";
+    let backupError = "";
     let removed;
     try {
       await closeCompany?.(company.id);
       try {
         backup = backups.backup(company, { label: `silme-oncesi-${company.code}`, keep: 100 })?.name || "";
       } catch (error) {
-        throw new HttpError(500, `Silme öncesi yedek alınamadı; şirket silinmedi (${error.message}).`);
+        if (error instanceof HttpError && error.extra?.code === "company-shared") throw error;
+        backupError = error.message || String(error);
+        if (!allowWithoutBackup) {
+          // S1 tur 1: neden Türkçe (backupFailureReason); ham neden sunucu günlüğüne.
+          const reason = backupFailureReason(error);
+          log?.warn?.(`Şirket silme öncesi yedek alınamadı (${company.code} · ${company.name}; ${reason}): ${backupError}`);
+          throw new HttpError(409, `Silme öncesi yedek alınamadı; şirket silinmedi (${reason}).`, { code: "backup-failed", reason });
+        }
       }
       removed = companies.remove(user, company.id);
     } finally {
       busyCompanies?.delete(company.id);
     }
-    audit(user, "company.deleted", company.id, { code: company.code, name: company.name, backup, archivedTo: removed.archivedTo });
+    const skipped = Boolean(backupError);
+    audit(user, "company.deleted", company.id, { code: company.code, name: company.name, backup, archivedTo: removed.archivedTo, ...(skipped ? { withoutBackup: true, backupError } : {}) });
     publish(user, { kind: "companies" });
-    ok(res, { deleted: company.id, backup, companies: companies.listFor(user) });
+    ok(res, { deleted: company.id, backup, ...(skipped ? { withoutBackup: true } : {}), companies: companies.listFor(user) });
   });
   // Kullanıcı yetkisi: hangi şirketleri görür (yönetici hepsini görür).
   router.get("/api/companies/access", async ({ req, res }) => {

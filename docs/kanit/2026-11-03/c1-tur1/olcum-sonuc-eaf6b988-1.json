@@ -1,0 +1,420 @@
+{
+ "etiket": "eaf6b988",
+ "kod": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1-7f3a91/eski-eaf6b988",
+ "acilisMs": 4410,
+ "node": "v22.22.0",
+ "yuk": [
+  3.82,
+  3.96,
+  4.39
+ ],
+ "veri": {
+  "posSales": 100000,
+  "masrafBasligi": 600,
+  "bankaFaturasi": 600,
+  "iptalIadesi": 3,
+  "cari": 24,
+  "cariSatiri": 3200,
+  "finEvents": 3208
+ },
+ "N": 10,
+ "evreler": {
+  "bankaKarti": {
+   "sure": {
+    "n": 10,
+    "p50": 8025.9,
+    "p95": 8576.84,
+    "enCok": 8576.84
+   },
+   "donguEnCok": 8553.46,
+   "deleteBlock": "Bu carinin hareketi var: 600 fatura / makbuz (taslak ve iptal dahil). Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur)."
+  },
+  "faturaListesiAlis": {
+   "sure": {
+    "n": 10,
+    "p50": 8635.99,
+    "p95": 9484.79,
+    "enCok": 9484.79
+   },
+   "donguEnCok": 9477.69,
+   "satir": 0,
+   "toplam": 600
+  },
+  "faturaListesiHepsi": {
+   "sure": {
+    "n": 10,
+    "p50": 8309.11,
+    "p95": 9255.62,
+    "enCok": 9255.62
+   },
+   "donguEnCok": 9237.21,
+   "toplam": 600
+  },
+  "iptalIadeliKart": {
+   "sure": {
+    "n": 10,
+    "p50": 4.96,
+    "p95": 9.74,
+    "enCok": 9.74
+   },
+   "donguEnCok": 11.03,
+   "deleteBlock": "Bu carinin hareketi var: 1 banka fişi. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur)."
+  },
+  "posMusteriKarti": {
+   "sure": {
+    "n": 10,
+    "p50": 9.31,
+    "p95": 16.79,
+    "enCok": 16.79
+   },
+   "donguEnCok": 14.43,
+   "deleteBlock": "Bu carinin hareketi var: 100 cari hareketi. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur)."
+  }
+ },
+ "esdegerlik": {
+  "kart": {
+   "account-0ce6ec6a-3670-44ea-8a81-7bea1a218549": "cc21bcc934b92450",
+   "account-10a1540a-665c-45d3-8224-b568a74d3075": "c11d33c627eaf63b",
+   "account-24ad5b3a-6388-4584-9896-009db51e06fc": "ff0adbb431645ef2",
+   "account-2e5ef20b-0601-462a-9e0a-44f273c0a863": "dc7a8030127ccea9",
+   "account-2e8c7f00-1701-4a5c-8b9a-4f25158b769b": "04ee7cee36c28cfc",
+   "account-33d2679f-f488-46db-90b3-19c40977e273": "93558d8d9d15ffcc",
+   "account-388ef858-748d-460f-94aa-4e86b49c0193": "5730985543658453",
+   "account-584c1ce3-bcb1-4b2c-a798-feefc39427c4": "cbc61726b6065bb2",
+   "account-632461fd-0ba2-4f9f-98da-7d11baf18e69": "c37cdf06030cb629",
+   "account-63482272-8e55-4c06-b173-757d556cabfb": "02d40c2e4fb3d726",
+   "account-68f4ee18-7f98-4d2e-9596-0a7500cc649f": "40a646a5461836a8",
+   "account-80c36ec8-70d8-4e48-a13b-5cbdcbf10bac": "ad8803778ea06e9a",
+   "account-87904c8b-20be-406c-bbe7-d13cd84623f8": "f19fe9645cc809c1",
+   "account-96a92a5f-0227-4fd5-a49b-10cab2dc8641": "0af3281ab9353c9d",
+   "account-9d7e80c7-6f3b-460b-b18c-74eb9a6fb84e": "19ec6c494afd5d5e",
+   "account-a1a43a77-f70c-4aa1-a072-7a003ab899fb": "989a86beb7cabfbf",
+   "account-a6282a14-a751-4ab4-96de-156613cf5d25": "d0cc054e82fb9eae",
+   "account-b745d2c5-1d30-499e-bc8f-cde97622eba4": "f6d93c3fac13b6b1",
+   "account-c15ed49c-fcfe-4cec-8fd5-23032a72f0eb": "d5085bb57c5f6ab3",
+   "account-c6ece751-83a1-40ff-8ea9-44152737bb40": "cc63f703097b511b",
+   "account-cfac8474-2ede-4c2a-b4b0-5746a09ca32d": "154b12a08a5c0cef",
+   "account-d945da52-1567-4e28-84d5-4305b5f5116c": "99b2e947846349d9",
+   "account-de96ec83-8bab-42cf-b357-3526cf179cd0": "2dd8243745a048cf",
+   "account-fa98ddcc-62f9-4272-909b-6f12e7001f36": "12bee1886f1b02ff"
+  },
+  "sayac": {
+   "account-0ce6ec6a-3670-44ea-8a81-7bea1a218549": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-10a1540a-665c-45d3-8224-b568a74d3075": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-24ad5b3a-6388-4584-9896-009db51e06fc": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-2e5ef20b-0601-462a-9e0a-44f273c0a863": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-2e8c7f00-1701-4a5c-8b9a-4f25158b769b": {
+    "total": 1,
+    "counts": {
+     "entries": 0,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 1
+    }
+   },
+   "account-33d2679f-f488-46db-90b3-19c40977e273": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-388ef858-748d-460f-94aa-4e86b49c0193": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-584c1ce3-bcb1-4b2c-a798-feefc39427c4": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-632461fd-0ba2-4f9f-98da-7d11baf18e69": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-63482272-8e55-4c06-b173-757d556cabfb": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-68f4ee18-7f98-4d2e-9596-0a7500cc649f": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-80c36ec8-70d8-4e48-a13b-5cbdcbf10bac": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-87904c8b-20be-406c-bbe7-d13cd84623f8": {
+    "total": 1,
+    "counts": {
+     "entries": 0,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 1
+    }
+   },
+   "account-96a92a5f-0227-4fd5-a49b-10cab2dc8641": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-9d7e80c7-6f3b-460b-b18c-74eb9a6fb84e": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-a1a43a77-f70c-4aa1-a072-7a003ab899fb": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-a6282a14-a751-4ab4-96de-156613cf5d25": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-b745d2c5-1d30-499e-bc8f-cde97622eba4": {
+    "total": 1800,
+    "counts": {
+     "entries": 0,
+     "stock": 0,
+     "invoices": 600,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-c15ed49c-fcfe-4cec-8fd5-23032a72f0eb": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-c6ece751-83a1-40ff-8ea9-44152737bb40": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-cfac8474-2ede-4c2a-b4b0-5746a09ca32d": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-d945da52-1567-4e28-84d5-4305b5f5116c": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   },
+   "account-de96ec83-8bab-42cf-b357-3526cf179cd0": {
+    "total": 1,
+    "counts": {
+     "entries": 0,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 1
+    }
+   },
+   "account-fa98ddcc-62f9-4272-909b-6f12e7001f36": {
+    "total": 100,
+    "counts": {
+     "entries": 100,
+     "stock": 0,
+     "invoices": 0,
+     "offsets": 0,
+     "plans": 0,
+     "cheques": 0,
+     "doubtful": 0,
+     "vouchers": 0
+    }
+   }
+  },
+  "faturaListesiAlis": "563a9cc5e932a56b",
+  "faturaListesiHepsi": "563a9cc5e932a56b"
+ },
+ "sayacTumCarilerMs": 7905.92,
+ "sayacKaliciSilmeTumCarilerMs": 7417.61
+}

@@ -2778,11 +2778,13 @@
     DEFINES.set(String(kind), { permission: "bank.accounts", ...spec });
   }
   const canDefine = spec => Boolean(spec) && HOF.can(spec.permission) && HOF.license?.writable !== false;
-  function defineHtml(kind) {
+  // hint (2.4.9 UI tur A, ORTA-2): formun kendi notu (verilmezse tanımın notu) — "Kredi Kartına İade" kipinde kart tanımlanmadan kaydedilemez.
+  function defineHtml(kind, { hint = null } = {}) {
     const spec = DEFINES.get(String(kind));
     if (!spec) return "";
     const inner = canDefine(spec) ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-bank-define="${esc(kind)}">${esc(spec.button)}</button>` : `<p class="hof-bank-define-missing" data-bank-define-missing="${esc(kind)}">${esc(spec.missing)}</p>`;
-    return `<div class="hof-bank-define" data-bank-define-box="${esc(kind)}">${inner}${spec.hint ? `<small class="hof-bank-pick-note">${esc(spec.hint)}</small>` : ""}</div>`;
+    const note = hint ?? spec.hint;
+    return `<div class="hof-bank-define" data-bank-define-box="${esc(kind)}">${inner}${note ? `<small class="hof-bank-pick-note">${esc(note)}</small>` : ""}</div>`;
   }
   const defining = new Set();
   async function define(kind) {
@@ -2879,11 +2881,11 @@
   // K2 (plan §3.5, §4.6, §8.9 "'Kredi Kartı' seçilince Kurumsal Kart"): form "card" = Kurumsal Kredi Kartı hesapları. Kartta varsayılan ön seçim
   // yoktur (preselect false): birden çok kartta kullanıcı kartı kendisi seçer (çokta seçim zorunlu); tek kartta bilgi satırı.
   // none (2.5): "Hesapsız (Açılıştan Önce)" seçeneği (para satırı formları; çek hesabında yok). required (2.6): senet önerisi zorunlu değil.
-  function pickerHtml(data, { form = "bank", value = "", name = "bankAccountId", label = "Banka Hesabı", keepLabel = "", note = null, choose = "Hesap Seçin", preselect = true, define: defineKind = "", none: noneOption = true, required = true } = {}) {
+  function pickerHtml(data, { form = "bank", value = "", name = "bankAccountId", label = "Banka Hesabı", keepLabel = "", note = null, choose = "Hesap Seçin", preselect = true, define: defineKind = "", defineHint = null, none: noneOption = true, required = true } = {}) {
     const meta = data?.forms?.[form];
     const accounts = (meta?.ids || []).map(id => data.accounts.find(account => account.id === id)).filter(Boolean);
     const current = value ? data?.accounts?.find(account => account.id === value) : null;
-    if (!accounts.length && !current) return defineKind && DEFINES.has(defineKind) ? { mode: "define", accountId: "", html: defineHtml(defineKind) } : { mode: "none", accountId: "", html: "" };
+    if (!accounts.length && !current) return defineKind && DEFINES.has(defineKind) ? { mode: "define", accountId: "", html: defineHtml(defineKind, { hint: defineHint }) } : { mode: "none", accountId: "", html: "" };
     // Tek hesap: yalnız bilgi satırı; kimlik GÖNDERİLMEZ (m1: ekranın eski görünümü sunucunun seçimini ezmesin). Düzeltmede satırın bağı
     // sunucuda korunur (pickRef: önceki bağ), yeni satırda sunucu tek uygun hesabı kendisi seçer.
     const shown = account => `${account.label}${account.cardLast4 ? ` •••• ${account.cardLast4}` : ""}`;
@@ -2900,6 +2902,11 @@
   }
   /** Kurumsal kart seçicisinin ayarları (form "card"; alan cardAccountId — gönderimde accountBody bankAccountId'ye taşır). */
   const CARD_PICKER = Object.freeze({ form: "card", name: "cardAccountId", label: "Kredi Kartı", choose: "Kart Seçin", preselect: false, define: "card", note: label => `${label} kredi kartına yazılır.` });
+  // 2.4.9 UI tur A (ORTA-2): tahsilat formunda "Kredi Kartına İade" (cardRefund) kart hesabı ister — tanımlı etkin kart yoksa sunucu 400 verir (Yargıç 2.3.0 #6,
+  // P1 tur 2: POST ve PUT). Kart yoksa "Tanımlamadan kaydederseniz … Hesabı Atanmamış'ta kalır" yazmaz (ödemede öyledir); kutu işaretliyken kaydet düğmesi
+  // pasif, nedeni düğmenin üstünde yazılı. Kartla ÖDEME formu (kutusuz) değişmez: kart yoksa hareket hesapsız yazılır.
+  const CARD_REFUND_DEFINE_HINT = "Kredi Kartına İade için önce bir kredi kartı tanımlayın.";
+  const CARD_REFUND_BLOCK = "Kaydedilemez: Kredi Kartına İade için önce bir kredi kartı tanımlayın (ya da işareti kaldırın / yolu değiştirin).";
   /** Seçiciyi anchor öğesinin ardına yerleştirir (data: choices yanıtı); dönüş mode. Zorunluluk data-required'da saklanır (yol gizleyince geri gelsin). */
   function insertPicker(anchor, options, data) {
     if (!anchor) return "none";
@@ -2944,7 +2951,8 @@
     const suggested = options.suggest ? data?.forms?.[options.suggest]?.ids?.find(id => data?.forms?.bank?.ids?.includes(id)) || "" : "";
     const mode = insertPicker(place, { define: "bank", ...options, value: kept[bankName] || options.value || suggested || "" }, data);
     const box = form.querySelector('[data-bank-pick]:not([data-bank-pick="card"])');
-    if (card) insertPicker(box || place, { ...CARD_PICKER, value: kept[CARD_PICKER.name] || card.value || "", keepLabel: card.keepLabel || "" }, data);
+    const refundForm = Boolean(form.querySelector('input[name="cardRefund"]'));
+    if (card) insertPicker(box || place, { ...CARD_PICKER, ...(refundForm ? { defineHint: CARD_REFUND_DEFINE_HINT } : {}), value: kept[CARD_PICKER.name] || card.value || "", keepLabel: card.keepLabel || "" }, data);
     return mode;
   }
   /**
@@ -2975,7 +2983,34 @@
         const select = node.querySelector("select");
         if (select) select.required = on && select.dataset.required === "1";
       });
+    syncRefundBlock(form, setup);
     syncBalances(form, setup);
+  }
+  /** 2.4.9 UI tur A (ORTA-2): "Kredi Kartına İade" işaretli + yol Kredi Kartı + tanımlı kart yok (seçici "Kredi Kartı Tanımla" kipinde) → kaydet pasif, neden görünür. */
+  const refundBlocked = (form, setup) => {
+    const refundToggle = form.querySelector('input[name="cardRefund"]');
+    const cardBox = form.querySelector('[data-bank-pick="card"]');
+    return Boolean(setup?.card && refundToggle?.checked && setup.methodNode?.value === "card" && cardBox && !cardBox.hidden && cardBox.querySelector("[data-bank-define-box]"));
+  };
+  let refundBlockSeq = 0;
+  const refundBlockId = form => (form.dataset.cardRefundBlockId ||= `hof-card-refund-block-${(refundBlockSeq += 1)}`);
+  function syncRefundBlock(form, setup) {
+    const blocked = refundBlocked(form, setup);
+    const submit = form.querySelector('button[type="submit"]');
+    const actions = submit?.closest(".hof-actions");
+    const note = form.querySelector("[data-card-refund-block]");
+    if (blocked && !note && actions) actions.insertAdjacentHTML("beforebegin", `<p class="hof-bank-pick-note" id="${esc(refundBlockId(form))}" data-card-refund-block role="status">${esc(CARD_REFUND_BLOCK)}</p>`);
+    else if (!blocked && note) note.remove();
+    if (!submit) return;
+    if (blocked) {
+      submit.disabled = true;
+      submit.dataset.cardRefundBlocked = "1";
+      submit.setAttribute("aria-describedby", refundBlockId(form));
+    } else if (submit.dataset.cardRefundBlocked === "1") {
+      submit.disabled = false;
+      delete submit.dataset.cardRefundBlocked;
+      submit.removeAttribute("aria-describedby");
+    }
   }
   /**
    * 2.7 bakiye seçenekleri: direction — işlemin seçilen hesaba etkisi ("in" giriş, "out" çıkış; kartta "out" = kartla ödeme, borç artar);
@@ -3018,6 +3053,17 @@
     // POS alanı (yalnız yol alanı olan formda; seçiciden ayrı kutu, data-pos-pick): POS betiği yüklüyse.
     if (pos && methodNode && posField?.attach) setup.posField = posField.attach(form, { methodNode, direction, data, dateNode, amountOf: setup.amountOf, ...pos });
     if (methodNode) methodNode.addEventListener("change", () => syncPickers(form, setup));
+    // 2.4.9 UI tur A (ORTA-2): pasif düğmeye karşın Enter / programla gönderim de durur (yakalama evresinde; formModal'ın gönderiminden önce).
+    form.addEventListener(
+      "submit",
+      event => {
+        if (!refundBlocked(form, setup)) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        syncRefundBlock(form, setup);
+      },
+      true,
+    );
     // Seçici yeniden kurulsa da (refreshPickers) dinleyici formda: seçim değişince not yerleşir/kalkar.
     form.addEventListener("change", event => {
       if (event.target.closest?.("[data-bank-pick]")) syncNone(form);
@@ -3188,9 +3234,11 @@
     if (!body) return body;
     // 2.3.0 (İz 3.2): tahsilat formunda "Kredi Kartına İade" kutusu — işaretli değilse kart seçicisinin (gizli) değeri gönderilmez (kart yolu POS'tur);
     // işaretliyse POS alanları gönderilmez. Kutusu olmayan formlar (ödeme) eskisi gibi.
+    // 2.4.9 P1 tur 1 (dar kontrol DÜŞÜK-1): kutu formda ve işaretsizse cardRefund: false gönderilir — sunucu önceki satırın kart bağına bakmaz (var olan Kredi
+    // Kartına İade satırında kutu kaldırılınca düzeltme POS'a / başka yola uygulanır; önceden alan düşüyor, satır kartta kalıyordu).
     const refundToggle = "cardRefund" in body;
     const cardRefund = body.cardRefund === true;
-    if (refundToggle && !cardRefund) delete body.cardRefund;
+    if (refundToggle && !cardRefund) body.cardRefund = false;
     const cardId = refundToggle && !cardRefund ? "" : body.cardAccountId;
     delete body.cardAccountId;
     if (method === "card" && cardId) body.bankAccountId = cardId;

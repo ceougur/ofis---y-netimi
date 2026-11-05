@@ -1,0 +1,158 @@
+{
+  "ad": "p1-tur1/eski-a5a3fcb8-senaryo-pos-kart-249",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/eski-a5a3fcb8/test/e2e/senaryo-pos-kart-249.mjs",
+  "commit": "6024af5ba8a8e4c0195dd429930859e0414cfa97",
+  "dal": "worktree-agent-a3726f63fad9a10bf",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:59:50.891Z",
+  "sure_sn": 237.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 280,
+    "gecen": 247,
+    "basarisiz": 33,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 33 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "hasCardPayment undefined (0 kartta ödeme hesapsız: sayılmaz)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ödeme silinince hasCardPayment false",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gövde cardRefund false, POS alanları var, kart kimliği yok: {\"amount\":\"110,00\",\"method\":\"card\",\"posInstallments\":\"1\",\"date\":\"2026-10-08\",\"note\":\"\",\"kind\":\"in\",\"refundOf\":\"\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satır 110 POS'ta: {\"id\":\"aentry-7c8b3d08-ff48-4920-b169-564dc741877a\",\"kind\":\"in\",\"amount\":110,\"method\":\"card\",\"finRef\":\"bacc-16e4d744-b731-41cd-821c-0487386cc26b\",\"hesap\":\"KART1\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "etkin POS satışı 11000: []",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart1 iade etkisi geri alındı (-9000 → -9000; iadeden önce -20000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "POS Bekleyen +110 (145000 → 145000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yeniden açılınca kutu yok, POS alanı var (görünür, görünür, gizli)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "hasCardPayment undefined (kartla ödeme var)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kartla ödemeli müşteride kutu görünür, işaretsiz; kart seçicisi gizli, POS alanı görünür (yok, null, yok, görünür)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kutu etiketi müşteriye göre: “”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "düzeltilecek satır: yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Kasa 150 (POS / kart Kasa'ya girmez; T13 Nakit 150): 0",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ödeme silinince hasCardPayment false",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "gövde cardRefund false, POS alanları var, kart kimliği yok: {\"amount\":\"110,00\",\"method\":\"card\",\"posInstallments\":\"1\",\"date\":\"2026-10-08\",\"note\":\"\",\"kind\":\"in\",\"refundOf\":\"\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "satır 110 POS'ta: {\"id\":\"aentry-802f09da-a99b-4f2c-95d0-0b17ef2ee50b\",\"kind\":\"in\",\"amount\":110,\"method\":\"card\",\"finRef\":\"bacc-40fc9502-55bb-4035-8fae-ebe2d761bbc9\",\"hesap\":\"KART2\"}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "etkin POS satışı 11000: []",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart2 iade etkisi geri alındı (-9000 → -9000; iadeden önce -20000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "POS Bekleyen +110 (145000 → 145000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yeniden açılınca kutu yok, POS alanı var (görünür, görünür, gizli)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "hasCardPayment undefined (kartla ödeme var)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kartla ödemeli müşteride kutu görünür, işaretsiz; kart seçicisi gizli, POS alanı görünür (yok, null, yok, görünür)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kutu etiketi müşteriye göre: “”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/p1-tur1/eski-a5a3fcb8-senaryo-pos-kart-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3726f63fad9a10bf",
+  "ham_cikti_sha256": "bd228b85f53e726b5d63655986a79a601d1e09aa1c4eb1407f73cd88db1dc441",
+  "ham_cikti_bayt": 43841
+}

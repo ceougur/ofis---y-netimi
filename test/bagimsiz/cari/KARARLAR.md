@@ -1,6 +1,6 @@
 # Bağımsız CARİ / EVRAK kâhini — kurallar ve kararlar (2.4.4 madde 31a, B1–B2)
 
-Kural seti (25.10.2026): **`2.4.6`** varsayılan (2.4.5 + KS8–KS10 — §9; dil `/3` aynı, iki ek: `iade {geri}`, adımda `catal`); `--kural 2.4.5` 2.4.5 beklentilerini bayt bayt verir,
+Kural seti (03.11.2026): **`2.4.9`** varsayılan (2.4.6 + C1 hareketli cari silinemez — §12); 25.10.2026: **`2.4.6`** (2.4.5 + KS8–KS10 — §9; dil `/3` aynı, iki ek: `iade {geri}`, adımda `catal`); `--kural 2.4.5` 2.4.5 beklentilerini bayt bayt verir,
 `--legacy` 2.4.4. Dil: **`destekofis-cari/3`** (24.10.2026, 2.4.5 kuralları — §8; `/1` `/2` senaryoları değişmeden koşar ya da 2.4.5 kararıyla geçersiz diye atlanır — §8 C0) · `/2`: 23.10.2026, B3–B5 · İlk yazıldığı gün: 22.10.2026 · Kâhin: `model.py` (Python 3, yalnız standart kütüphane, `python3 -I`) ·
 Koşucu: `kos.mjs` · Rastgele üretici: `uretici.py` · Elle senaryolar: `senaryolar/*.json` · Komut: `node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs` (npm betiği `test:kahin-cari`, iş akışına eklenirken açılır: test/ci-kapi-listesi.test.mjs her test:kahin-* betiğinin ci.yml ya da uzun-dogrulama.yml'de koşmasını ister).
 
@@ -784,3 +784,121 @@ sonrası ÇATAL; projeksiyon geçmiş + bugün + 30 (son gün dahil). API kartı
   sırasındaydı — C13c'deki 97 "KS8.3 / K-c" farkı kâhinin geri alınan okumasıydı).
 - **Eşdeğerlik:** `--kural 2.4.5` / `--legacy` = eski model (e77447a) 106/106. **Elle tablo:** 202/202. **Öz denetim** (Σ açık − dağıtılmamış giriş − Σ iade artanı − Σ borç açık + dağıtılmamış çıkış = bakiye):
   elle 65 cari + yeni üreticiyle 30 rastgele s1 senaryosu 43 cari, tutmayan 0.
+
+## 12. 2.4.9 kuralları — kural seti `2.4.9` (03.11.2026, C1 "hareketli cari silinemez"; dil `/3` aynı, ekler aşağıda) — YENİ VARSAYILAN
+
+Kural seti `2.4.9` = `2.4.6` + C1 (bu bölüm). `--kural 2.4.6` 2.4.6 beklentilerini bayt bayt verir (eski model b02874ba ile eşdeğerlik: elle 47 + rastgele, üç kip); koşucu her senaryoda
+"2.4.9 kararıyla değişen beklenti" (2.4.6 ↔ 2.4.9 kâhin çıktısı farkı) kümesini kurar ve programla her farkı bu sınıfta mı diye yazar (C1 öncesi kodda — 35e90e47 — SINIF DIŞI 0 beklenir).
+Kâhin, yazan ve programı yazan elden AYRI ajan (03.11.2026, temiz bağlam; ders 5, 40); kural metni bu bölüm, kodu `model.py` (`k249`), senaryolar `c14*`.
+
+### C00e Temiz oda (2.4.9)
+- **Okunan (karar metni):** CLAUDE.md (anayasa "Kalite çıtası", "Kalıcı ürün kararları", dersler 5, 7, 38, 40, 43); `docs/2.4.8-IS-LISTESI.md` 03.11 "MÜŞTERİ BULGUSU — İNCELEME" (cari silme),
+  "KARAR (kullanıcı, 03.11 ~11:45 UTC, A)", "KARAR / İLKE (kullanıcı, 03.11 ~11:50 UTC)"; `docs/2.4.9-IS-LISTESI.md` C1 satırı ve "KULLANICI KARARLARI (03.11 ~18:48 UTC, C1)" (S1 A, S2 A, S3 A, BAŞ MİMAR
+  KARARI yarış); `docs/2.4.9-tasarim/C1-hareketli-cari.md` §0, §2 (H1–H14 ve §2.1 — KARAR METNİ olarak; §13'te ana oturum onayı), §4 (S1–S3 seçenek metinleri ve gerekçeleri), §5 (cariyi kaldıran
+  / geri getiren yollar), §13 (kullanıcı kararları + onay); bu klasörün önceki kâhin dosyaları.
+- **Okunmayan:** `server/**`, `client/**`, `test/**` (kâhin klasörleri dışında), `docs/kanit/**` (önceki koşular), git farkları, tasarım notunun §1, §3, §6–§12 (kod ayrıntısı, test matrisi, bozulma listesi).
+  İNCELEME satırı ve §2 tablosundaki kod göndermeleri (satır no, tablo adı) kural sayılmadı; kural yalnız tablonun "Ne" / "Yeni" sütunundan ve kullanıcı metninden.
+- **Kara kutu yoklaması (yalnız ORTAM — uç, gövde, alan adı; not defteri `kahin-cari-249-yokla/yokla1–4.mjs`, b02874ba kodu):** cari kartı `GET /accounts/:id` → `status` ("active" / "passive"),
+  `deleteBlock` (metin; boşsa silinebilir), silinmiş cari 404; `DELETE /accounts/:id` → 200 `{id}` / ret gövdesi `{error, code, …}`; Silinenler kalemi `kind: "account"`, `id: "account:<cariId>"`;
+  taksit kartı `DELETE /plans/:id`, Silinenler `kind: "plan"`, `id: "plan:<kartId>"`; taslak fatura `DELETE /invoices/:id`, Silinenler `kind: "invoice"`, `ref` = fatura kimliği; Pasife Al `PUT
+  /accounts/:id {…, status: "passive"}`; mal kartı `DELETE /stock/:id`; sıfır tutarlı taksit kartı `POST /plans {name, registeredOn, accountId, total: "0"}` (taksit bölümü yok — "Taksit kurulmadı"
+  kartı). **Açıklama (ders 40):** yoklama yanıtlarında programın C1 davranışının bir kısmı da göründü (409 ve iletisi, sıfır kartın ve stok satırının `deleteBlock`'u, silinmiş cariye
+  tahsilatın 404'ü, 0,00 TL taslak faturanın 400'ü). Aşağıdaki kurallar karar metninden yazıldı; yoklamadan kural ya da beklenen değer TÜRETİLMEDİ — yalnız "0,00 TL taslak fatura API'den
+  kurulamıyor" bilgisi DENENMEYEN'e yazıldı, HTTP kodu kararda olmayan retlerde kod denetlenmez.
+
+### Kurallar
+- **C1.1 [KULLANICI KARAR A + İLKE; tanım BAŞ MİMAR §2 H1–H14, onay §13]** Hareket = cariye bağlı TUTAR TAŞIYAN her kayıt. Kâhinin kurduğu türler: H1 tahsilat (nakit, havale) / ödeme; H2 Borç Yaz /
+  Alacak Yaz; H3 Açılış Bakiyesi; H4 stok hareketinin cari satırı (satış iadesi, cari hesaba stok satışı); H9 fatura — kesilmiş, TASLAK, İPTAL ("taslak/iptal dahil tutarlı her belge"), iade faturası;
+  H11 çek/senet — alınan evrakın carisi ve CİRO ALAN cari; H12 taksit kartı. Biri varsa `cari_sil` → **ret** [KULLANICI], `http` **409** [BAŞ MİMAR — iş listesi C1 "silme 409"], `kod`
+  **`account-has-movements`** [BAŞ MİMAR — tasarım §5 Y1, onay §13], cari pasif değilse ret iletisinde **"Pasife Al"** önerisi `pasifeAl` [YAYGIN — KARAR A "program 'Pasife Al' önerir … deleteBlock
+  ile aynı yer"; önerinin yanıt iletisinde olması okuma, İNCELE]. Ret hiçbir şeyi değiştirmez: cari listede (`var`), bakiye, Kasa, Kasa raporu, mizan, takvim / projeksiyon kalemleri o kontrolün
+  mevcut denetimleriyle AYNEN (müşteri bulgusunun belirtisi — silinen carinin nakdi Kasa'dan düşüyordu — `kasa` ve `kasaRapor:*` denetimleriyle).
+- **C1.2 [KULLANICI KARAR A]** HİÇ hareketi olmayan cari silinir: `durum` ok, listede yok (`var` false), **Silinenler'de** (`silinenlerde` true) [BAŞ MİMAR §5 Y1 "hareketsizse yumuşak silme (Silinenler)"].
+  Silme denemesi yapılan, pasife alınan ya da geri yüklenen her cari için her kontrolde `var`, `silinenlerde`, (listedeyse) **`silinebilir`** = hareketsiz mi [KULLANICI KARAR A "Sil düğmesi pasif +
+  nedeni görünür yazı" — kartın `deleteBlock`'u boş mu] ve **`pasif`** [BAŞ MİMAR §5 G1] denetlenir.
+- **C1.3 [KULLANICI İLKE "tutar taşımayan kayıtlar … değişiklik geçmişi hareket sayılmaz"]** Ad değişikliği (değişiklik geçmişi), telefon / not → hareket DEĞİL. **[BAŞ MİMAR §2.1 İLKEYLE]**
+  kayıt (tablo) tahsilatı kayda bağlıdır, cariye değil → kayda bağlı carinin hareketi DEĞİL.
+- **C1.4 [KULLANICI S1 A]** Yalnız Silinenler'deki kayıt (silinmiş tahsilat / Borç Yaz, silinmiş evrak, silinmiş taslak fatura, silinmiş taksit kartı) hareket SAYILMAZ → böyle cari silinir.
+- **C1.5 [KULLANICI S2 A]** Tutarı sıfır taksit kartı ("Taksit kurulmadı") hareket SAYILIR.
+- **C1.6 [BAŞ MİMAR §13 KARARI — değişmez "silinmiş caride para hareketi olmaz"; §4 S1 A gerekçesi "o kayıtların geri yüklemesi 'Önce cariyi geri yükleyin' der"]** Silinmiş cariye tahsilat, ödeme,
+  Borç / Alacak Yaz, fatura, evrak, taksit kartı, stok satırı YAZILAMAZ; Silinenler'deki hareketi / evrakı / faturası, carisi silinmişken GERİ YÜKLENEMEZ → `durum` ret; Kasa, mizan aynı. HTTP kodu
+  kararda yok → denetlenmez. (Eşzamanlı yarış sıralı kâhinde kurulamaz — DENENMEYEN; kâhin "silindikten SONRA yazım" sırasını denetler.)
+- **C1.7 [KULLANICI KARAR A "daha önce silinmiş cariler Silinenler'den geri yüklenebilir kalır"]** `cari_geri_yukle` ok: listede, Silinenler'de değil. Cariden AYRI silinmiş kayıtlar Silinenler'de
+  KALIR, sonra ayrıca geri yüklenir [BAŞ MİMAR §4 S1 A gerekçesi — "çıkmaz yok"]: cari geri gelince bakiye ve Kasa onlarsız; kayıt geri gelince Kasa'ya döner. **Geri yüklenen hareketli cari bir
+  daha silinemez** (C1.1; §4 S3 A metni "geri yüklenen cari bir daha silinemez").
+- **C1.8 [BAŞ MİMAR §5 R2 "değişmez" + §4 S1 A gerekçesi "taksit kartı geri yüklenince cariyi de geri getirir → çıkmaz yok"]** Silinenler'den taksit kartı geri yüklenince kartın silinmiş carisi de
+  geri gelir; cari artık hareketli (C1.1).
+- **C1.9 [BAŞ MİMAR §5 G1 "gizler (Pasif sekmesi), hareket korunur"; KARAR A öneri yolu]** `pasife_al` ok: `pasif` true; bakiye, Kasa, Kasa raporu, mizan AYNI. Pasif hareketli cari de silinemez
+  (C1.1 — karar durum ayırmıyor; ret iletisinde Pasife Al önerisi denetlenmez, cari zaten pasif); pasif hareketsiz cari silinir (C1.2).
+- **C1.10 [BAŞ MİMAR §5 Y2 + §13 "S1 A … Y2 kalıcı silmede yine sayılır"; KULLANICI KARAR A "cariyi kaldıran BÜTÜN yollar"; B1.6]** Taksit aktarımını Geri Al: aktarımın açtığı cari, aktarımın
+  KENDİ kartı dışında hareketi varsa — Silinenler'deki dahil — KALIR (`var` true, bakiye kalan hareketlerden); yoksa kalkar (B1.6, YAYGIN aynen).
+- **C1.11 [BAŞ MİMAR §2 H4 İLKEYLE]** Mal kartı silinmiş olsa da stok hareketinin cari satırı carinin hareketidir (bakiyede durur) → cari silinemez.
+- **C1.12 [KULLANICI İLKE "cariye bağlı" + Kalite çıtası "aynı adlı iki kişi"]** Hareket CARİYE (kimliğe) bağlıdır, ada değil: aynı adlı iki cariden hareketsizi silinir, hareketlisi silinemez;
+  silinip aynı adla yeniden açılan cari ayrı caridir.
+- **Etiket:** `durum` KULLANICI; yalnız İLKEYLE dayanaklı karar (C1.3 kayıt tahsilatı, C1.11 ürünü silinmiş stok satırı, C1.8 kart geri yüklemesi, C1.10 Y2) BAŞ MİMAR — hepsi BULGU sınıfı.
+
+### Dil ekleri (/3, 2.4.9)
+`cari_sil {cari}` (2.4.9'da C1 denetimi) · `cari_geri_yukle {cari}` (Silinenler `account:<id>`) · `pasife_al {cari}` · `kart_ac {ad, cari, tutar: "0"}` → sıfır kart (gövde yalnız toplam; `mevcut`
+yok) · `kart_sil {kart}` (yalnız tahsilatsız kart; kâhin başkasını kurmaz) · `kart_geri_yukle {kart}` · `fatura_sil {fatura}` (yalnız taslak) · `fatura_geri_yukle {fatura}` · `urun_sil` (stok adımlarının
+mal kartı). Yeni çıktı anahtarları: `adim:<id>:{kod, pasifeAl}`, `<k>:cari:<ad>:{silinenlerde, silinebilir, pasif}`, `<k>:fatura:<ad>:var` (silinen / geri yüklenen taslak; YAYGIN).
+
+### C8e Nasıl bozulur? (2.4.9 — önce yazıldı; senaryo karşılıkları)
+| # | Bozulma | Senaryo |
+|---|---|---|
+| Z19 | Hareket tanımı eksik: bir tür (tahsilat, havale, ödeme, Borç/Alacak Yaz, açılış, stok satırı, kesilmiş / taslak / iptal fatura, alınan evrak, ciro alan cari, taksit kartı) tek başınayken cari silinir | c14a |
+| Z20 | Sıfır tutarlı kart sayılmaz (S2 B); ürünü silinen stok satırı sayılmaz (H4) | c14a |
+| Z21 | Ret bir şey değiştirir: silinemeyen carinin nakdi Kasa'dan / raporlardan düşer (müşteri bulgusu), bakiye değişir, cari listeden kaybolur | c14a, c14e |
+| Z22 | Silinenler'deki kayıt sayılır (S1 B) ya da cari geri gelince ayrı silinmiş kayıtları da gelir; geri yüklenen hareketli cari yine silinir | c14b |
+| Z23 | Kart geri yüklemesi silinmiş cariyi getirmez (çıkmaz) | c14b |
+| Z24 | Silinmiş cariye yazım: tahsilat / ödeme / borç / fatura / evrak / kart / stok satırı; Silinenler'den hareket / evrak / fatura geri yükleme | c14c |
+| Z25 | Aynı adlı iki cari: hareket ada göre aranır; sil + aynı adla yeniden aç; sil → geri yükle → sil | c14d |
+| Z26 | Pasife Al bakiye / Kasa'yı değiştirir; pasif hareketli cari silinir; pasif hareketsiz silinemez | c14e |
+| Z27 | Geri Al: aktarımın açtığı HAREKETLİ cari kalkar (tahsilat / taslak / iptal fatura / evrak / Silinenler'deki tahsilat yetim kalır); hareketsizi kalır | c14f |
+| Z28 | Aşırı engel: ad değişikliği ya da kayıt (tablo) tahsilatı hareket sayılır; hareketsiz cari silinemez; silinen cari Silinenler'e gitmez | c14g, c14d |
+| Z29 | Eski sürümde silinmiş hareketli cari (S3 A) | DENENMEYEN (eski sürüm verisi gerekir; yeni programda hareketli cari silinemez) |
+
+### C10e Mutantlar (2.4.9)
+150–174 (`model.py --mutasyonlar`; "C1" önekli): 150 hareketli cari silinebilir · 151 Silinenler sayılır (S1 B) · 152 sıfır kart sayılmaz (S2 B) · 153 taslak / iptal fatura sayılmaz ·
+154 Borç / Alacak Yaz ve Açılış sayılmaz · 155 silinmiş cariye tahsilat yazılır · 156 geri yüklenen kayıt sayılmaz · 157 Y2: hareketli cari Geri Al'da kalkar · 158 Y2: Silinenler sayılmaz ·
+159 silinen cari Silinenler'e gitmez · 160 Pasife Al nakdi Kasa'dan düşürür · 161 pasif hareketli silinir · 162 ciro alan cari sayılmaz · 163 stok satırı sayılmaz · 164 hareket ada göre ·
+165 ad değişikliği sayılır · 166 kayıt tahsilatı sayılır · 167 hareketsiz de silinemez · 168 carisi silinmişken Silinenler'den geri yükleme · 169 cari geri gelince ayrı silinmiş kayıtları da gelir ·
+170 kart geri yüklemesi cariyi getirmez · 171 ürünü silinen stok satırı sayılmaz · 172 alınan evrak sayılmaz · 173 ret Kasa'yı değiştirir (müşteri bulgusu) · 174 silinmiş cariye tahsilat dışı yazım.
+Mutasyon taraması `/3` dosyalarını üç kural setiyle (2.4.9 + 2.4.6 + 2.4.5) değerlendirir. Model tek başına (elle 54 senaryo): 166 mutantın hepsi yakalandı (yeni 25'in her biri c14* ya da b5 ile).
+
+### C14e Koşucu (ölçüm aracı) düzeltmeleri — kural DEĞİL (ders 38: neden ham satırda okundu)
+- **Kart okuması:** silinen kart `GET /plans/:id` → 404; hata gövdesi kart sayılıyordu (`var` true). Yalnız 200 yanıtı kart (C1 öncesi senaryolarda kart silinmediği için görünmemişti).
+- **Aynı adlı cari:** görünüm toplamlarında (`<k>:*:cariToplam:<cari>`) satır, ad başka bir canlı cariyle ortaksa adla değil yalnız kimlikle eşleşir. c14d ilk koşusunda A3'ün "Faturasız Cari Alacağı"
+  satırı (`ref.id` = A3) aynı adlı A2'ye de sayıldı (program 40000 · kâhin 0); program satırı doğru carinin kimliğiyle veriyordu.
+- **Silme denenen cari:** önceden silme denenen carinin bakiyesi hiç okunmuyordu (silme hep başarılıydı); artık cari listede ise okunur. Her cari için `var`, `silinenlerde`, `silinebilir`, `pasif` yazılır
+  (kâhin yalnız C1.2'deki carileri denetler).
+
+### C12e DENENMEYEN (2.4.9; neden)
+- H5'in peşin tahsilat satırı ayrı (fatura H9 ile zaten hareketli), H6, H8 (POS iadesi, banka kaynaklı satır), H10 mahsup, H14 banka fişi: kâhin sürücüsünde yol yok. H13 şüpheli kaydı TEK BAŞINA
+  (borcu silinmiş, yalnız şüpheli kaydı kalan cari) kurulmadı. H7 değersiz satırı yalnız şüpheli kayıtlı caride (zaten hareketli).
+- S2 A'nın 0,00 TL'lik taslak faturası: API taslakta ödenecek tutar 0'ı kabul etmiyor (yoklama, ORTAM) → kurulamadı; S2 A yalnız sıfır kartla.
+- S3 A (eski sürümde silinmiş hareketli cari): eski sürümün gerçek koduyla veri üretilmeden kurulamaz (ders 17) — kâhin yeni programda yalnız "geri yüklenen hareketli cari bir daha silinemez" yolunu
+  C1.4 + C1.7 ve C1.8 üzerinden kurar.
+- Excel / Sheets yeniden yükleme, toplu işlem, birleştirme (tasarım §5: cari kaldırmıyor / yok), Şirket Verisini Sıfırla (bilerek hariç), yedekten geri yükleme, kilitli dönem, yetkisiz kullanıcının silmesi,
+  mobil yazma (ayrı kâhin), eşzamanlı silme + tahsilat yarışı (C1.6), Silinenler'de kalıcı silme (yok).
+
+### C11e SORU (ders 43 — karar metni susuyor; kâhin bu yolu KURMAZ, kural yazılmadı)
+- **S-Y2k — Aktarım kartına DOĞRUDAN taksit tahsilatı girildikten sonra Geri Al:** B1.6 yalnız "taşınan tahsilatlar cariye taksit dışı döner" der; aktarımdan SONRA karta doğrudan girilen tahsilat
+  (H12 "taksit kartı ve tahsilatları") için ne olacağı yazılı değil — tahsilat Kasa'dadır, aktarımın açtığı cari Geri Al'da kalıcı kalkarsa nakit sahipsiz kalır (müşteri bulgusunun ailesi).
+  **A (öneri):** Geri Al reddedilir (önce kart tahsilatları kaldırılır ya da kart tek tek silinir) — veri kaybı yok, hareket görmüş belge geri alınmaz (Logo / Mikro: işlem görmüş fiş geri
+  alınmaz). **B:** Geri Al yürür, kart tahsilatı cariye taksit dışı tahsilat olarak döner, cari hareketli olduğu için KALIR (C1.10). **Gözlem (kural değil; not defteri `kahin-cari-249-gozlem/`, b02874ba):**
+  program bugün 409 `touched` ile reddediyor (kart, cari, Kasa yerinde) — yani A. Karar A gelirse kâhine `c14f` adımı olarak eklenir.
+
+### C13e Sonuç — b02874ba kodu (C1 kodlanmış; kâhin f1291f02; kanıt `docs/kanit/2026-11-03/kahin-cari/`)
+- **Taban (eski kâhin, değişmeden):** `taban-b02874ba-eski-kahin` 39 senaryo, 7.408/7.408, 141 mutant yakalandı.
+- **Yeni kâhin, bütün varsayılan çağrı (elle 54 + rastgele ux18 / s1 tohum 1–2 × 60 + mutasyon):** `kahin-249-f1291f02-program-b02874ba` 46 senaryo, **8.698/8.698, 0 fark** (yalnız 7 BİLİNEN b3y),
+  okuma hatası 0; "2.4.9 kararıyla değişen beklenti" 630 denetim / 8 senaryo; **166 mutantın hepsi yakalandı** (yeni 150–174 dahil). Yeni senaryolar: c14a 424, c14b 257, c14c 91, c14d 107,
+  c14e 87, c14f 249, c14g 74 denetim — hepsi tuttu.
+- **C1 öncesi kodda (35e90e47, ayrı kopya `git archive`; ders 7, 23, 38):** `kirmizi-c14-eski-kod-35e90e47-kahin-f1291f02` c14a–g + b5: 1.323 denetim, **318 fark** — 297'si "2.4.9 kararıyla değişen"
+  sınıfta (hareketli cari siliniyor: `durum` program "ok" · kâhin "ret", `http` 200 · 409, kart `var` / `bakiye` yok; Geri Al'da tahsilatlı / taslak faturalı aktarım carisi kalkıyor). SINIF DIŞI 21:
+  hepsi müşteri bulgusunun belirtisi — silinen hareketli carinin nakdi `kasa`, `kasaRapor:*`, `mizan:100` / `mizan:120`'den düşüyor (2.4.6 kâhini Kasa düşüşünü hiç modellemediği için sınıfa girmez)
+  ve `sil-m4` (eski Geri Al Silinenler'de tahsilatı olan carisi kalıcı sildi; sonra Sil 404). **c14c eski kodda da yeşil (91/91):** silinmiş cariye SIRALI yazım C1'den önce de reddediliyordu;
+  C1'in düzelttiği eşzamanlı yarış sıralı kâhinde kurulamaz (DENENMEYEN) — c14c'nin dişi mutant 155 / 174.
+- **Eşdeğerlik:** `esdeger-249-f1291f02` (betik `esdeger-249.sh`) — `--kural 2.4.6` / `2.4.5` / `--legacy` çıktıları eski modelle 159/159 bayt bayt aynı + üretici 6/6; c14 dışındaki elle ve rastgele
+  senaryolarda 2.4.9 = 2.4.6, tek fark b5 (`cari_sil`'li: `silinenlerde`, durum etiketi).
+- **Komşu testler (kara kutu):** ekstre-ayrinti-245, mobil-yazma-247, platform-tasinabilirlik, lisans-servisi-izolasyonu, ci-kapi-listesi 42/42. Mobil yazma kâhininin `kabul.json`'u
+  (`cari_model_sha256`) yeniden üretildi: kabul kümesi bayt bayt aynı, yalnız sha satırı değişti (mobil kâhin cari kâhinini `kural 2.4.6` ile kullanır — eşdeğerlik yukarıda).

@@ -1,0 +1,19 @@
+✓ YAKALANDI M1 fatura sayacı yok · çıkış 1 · tests 13 pass 9 fail 4 · kırmızı: T1 bugün silinebilen her hareket türü tek başına cariyi koru | T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıt | T6 kartın neden yazısı = silme iletisi; parçalar elle sayıml | T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız g
+✓ YAKALANDI M2 fatura yalnız kayıtlı (taslak/iptal sayılmaz) · çıkış 1 · tests 13 pass 10 fail 3 · kırmızı: T1 bugün silinebilen her hareket türü tek başına cariyi koru | T6 kartın neden yazısı = silme iletisi; parçalar elle sayıml | T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız g
+✓ YAKALANDI M3 mahsup sayacı yok · çıkış 1 · tests 13 pass 11 fail 2 · kırmızı: T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıt | T1 faturası olmayan cari satırı ve faturası olmayan mahsup f
+✓ YAKALANDI M4 taksit kartı sayacı yok · çıkış 1 · tests 13 pass 11 fail 2 · kırmızı: T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıt | T6 kartın neden yazısı = silme iletisi; parçalar elle sayıml
+✓ YAKALANDI M5 ciro alan cari sayılmaz · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıt
+✓ YAKALANDI M6 şüpheli alacak sayacı yok · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıt
+✓ YAKALANDI M7 banka fişi sayacı yok · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T1 POS'lu faturası silinmiş (Müşteriye İade Edildi) caride y
+✓ YAKALANDI M8 POS İptal İadesi (pos_sales bağı) sayılmaz · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T1 POS'lu faturası silinmiş (Müşteriye İade Edildi) caride y
+✓ YAKALANDI M9 yalnız elle satır (kaynaklı/yetim satır sayılmaz) · çıkış 1 · tests 13 pass 10 fail 3 · kırmızı: T1 bugün silinebilen her hareket türü tek başına cariyi koru | T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıt | T1 faturası olmayan cari satırı ve faturası olmayan mahsup f
+✓ YAKALANDI M10 stok sayacı yok · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T1 bugün silinebilen her hareket türü tek başına cariyi koru
+✓ YAKALANDI M11 Silinenler'deki kart cari silmede sayılır (S1 B) · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T3 hareketsiz cari silinir — not, telefon, WhatsApp gönderim
+✓ YAKALANDI M12 kalıcı silmede Silinenler sayılmaz · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız g
+✓ YAKALANDI M13 dizin fatura yükünü bilmez · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız g
+✓ YAKALANDI M14 Geri Al silinmişleri saymaz · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız g
+✓ YAKALANDI M15 addEntry cari canlılığını denetlemez (yarış) · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T8 yarış (§9, zorla): tahsilatın gövdesi yoldayken hareketsi
+✓ YAKALANDI M16 deleteBlock hareketi görmez · çıkış 1 · tests 13 pass 3 fail 10 · kırmızı: T1 bugün silinebilen her hareket türü tek başına cariyi koru | T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıt | T4 eski sürümde silinmiş hareketli cari (S3 A) Silinenler'de | T5 aynı adlı iki cari: yalnız hareketsiz olan silinir; pasif | T6 kartın neden yazısı = silme iletisi; parçalar elle sayıml | T1 faturası olmayan cari satırı ve faturası olmayan mahsup f | T2 banka hesabına bağlı tahsilat: aynı kural, tek kod | T1 POS'lu faturası silinmiş (Müşteriye İade Edildi) caride y | T5 iki şirket: 002'deki hareketli cari silinmez, 001'deki ay | T5 kilitli dönem: hareketli cari kilitliyken de account-has-
+✓ YAKALANDI M17 pasif bilgisi yanlış · çıkış 1 · tests 13 pass 12 fail 1 · kırmızı: T5 aynı adlı iki cari: yalnız hareketsiz olan silinir; pasif
+
+17 denetim geçti, 0 başarısız

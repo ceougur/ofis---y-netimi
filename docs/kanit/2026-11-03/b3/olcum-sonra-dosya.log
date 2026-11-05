@@ -1,0 +1,11 @@
+20:02:20 statik {"dosyaMb":267.6,"surum":45,"sayfaBoyu":4096,"sayfa":68511,"bosListe":15163,"bosListeMb":59.2,"wa_jobs":{"sayfa":4149,"mb":16.2,"bosMb":3,"yukMb":13},"wa_job_pdfs":{"sayfa":1,"mb":0,"bosMb":0,"yukMb":0},"tumDosya":{"mb":208.4,"bosMb":19.8,"yukMb":180.3},"isSatiri":20023,"satirdaPdf":{"n":0,"b":0},"pdfTablosu":{"n":0,"b":0},"sayimMs":134,"vacuumInto":{"ms":803,"mb":197.5}}
+20:02:27 açılış {"ms":5703,"olayDongusuEnCokMs":5771.4,"surum":45} bakım [{"ms":112,"olayDongusuEnCokMs":12.9},{"ms":102,"olayDongusuEnCokMs":12.6},{"ms":96,"olayDongusuEnCokMs":11.1},{"ms":86,"olayDongusuEnCokMs":11.3},{"ms":93,"olayDongusuEnCokMs":11.5}]
+ok 1 - statik sayım
+ok 2 - açılış ve 5 bakım turu
+1..2
+# tests 2
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

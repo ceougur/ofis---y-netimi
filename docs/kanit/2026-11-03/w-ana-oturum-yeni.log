@@ -1,0 +1,269 @@
+TAP version 13
+# (node:22345) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T2-5 → 2.4.9 W-T — şablonun teslim süresi (TTL) Meta'ya GİTMEZ (Meta varsayılanı 30 gün)
+    # Subtest: program şablonları AÇARKEN teslim süresi göndermez; Meta'daki şablonda TTL yok; ikinci denetim açmaz / düzenlemez
+    ok 1 - program şablonları AÇARKEN teslim süresi göndermez; Meta'daki şablonda TTL yok; ikinci denetim açmaz / düzenlemez
+      ---
+      duration_ms: 855.028457
+      type: 'test'
+      ...
+    # Subtest: teslim süresi ayarı (ttlHours: 48) REDDEDİLİR (400); onaylı şablonlar denetimde düzenlenmez
+    ok 2 - teslim süresi ayarı (ttlHours: 48) REDDEDİLİR (400); onaylı şablonlar denetimde düzenlenmez
+      ---
+      duration_ms: 813.088784
+      type: 'test'
+      ...
+    # Subtest: şablon Meta'da önceden (teslim süresiz) açılmışsa ilk denetimde DÜZENLENMEZ (Meta varsayılanı kalır)
+    ok 3 - şablon Meta'da önceden (teslim süresiz) açılmışsa ilk denetimde DÜZENLENMEZ (Meta varsayılanı kalır)
+      ---
+      duration_ms: 669.339847
+      type: 'test'
+      ...
+    # Subtest: Meta 12 saatten uzun teslim süresini reddeden hesapta (gerçek Meta gibi) şablon TEK istekte açılır; kartta teslim süresi uyarısı yok; denetim yinelenince istek yok
+    ok 4 - Meta 12 saatten uzun teslim süresini reddeden hesapta (gerçek Meta gibi) şablon TEK istekte açılır; kartta teslim süresi uyarısı yok; denetim yinelenince istek yok
+      ---
+      duration_ms: 632.742098
+      type: 'test'
+      ...
+    1..4
+ok 1 - 2.4.8 T2-5 → 2.4.9 W-T — şablonun teslim süresi (TTL) Meta'ya GİTMEZ (Meta varsayılanı 30 gün)
+  ---
+  duration_ms: 2971.642153
+  type: 'suite'
+  ...
+# (node:22346) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 T2-5 güvenli taraf → 2.4.9 W-T — Süresi Doldu ve PDF silme Meta'nın teslim süresine (yoksa 30 güne) bağlı
+    # Subtest: Meta listesi teslim süresi BİLDİRMİYOR (Meta varsayılanı): iş 73. saatte Süresi Doldu OLMAZ, PDF silinmez; kartta uyarı yok; 30 gün + 1 saatte Süresi Doldu + PDF silinir
+    ok 1 - Meta listesi teslim süresi BİLDİRMİYOR (Meta varsayılanı): iş 73. saatte Süresi Doldu OLMAZ, PDF silinmez; kartta uyarı yok; 30 gün + 1 saatte Süresi Doldu + PDF silinir
+      ---
+      duration_ms: 1148.353959
+      type: 'test'
+      ...
+    # Subtest: Meta varsayılanı (30 gün) ve bildirim yolu 7 günden beri sessiz: iş Gönderildi'de kalır (§7a 16), PDF yine 30 gün + 1 saatte silinir (Meta artık teslim etmeye çalışmaz)
+    ok 2 - Meta varsayılanı (30 gün) ve bildirim yolu 7 günden beri sessiz: iş Gönderildi'de kalır (§7a 16), PDF yine 30 gün + 1 saatte silinir (Meta artık teslim etmeye çalışmaz)
+      ---
+      duration_ms: 800.79655
+      type: 'test'
+      ...
+    # Subtest: Meta listede 43.200 sn (12 saat) BİLDİRİR (WhatsApp Yöneticisi'nde ayarlı): 13. saatte Süresi Doldu + PDF silinir (12 saat 30 dk'da henüz değil)
+    ok 3 - Meta listede 43.200 sn (12 saat) BİLDİRİR (WhatsApp Yöneticisi'nde ayarlı): 13. saatte Süresi Doldu + PDF silinir (12 saat 30 dk'da henüz değil)
+      ---
+      duration_ms: 755.436345
+      type: 'test'
+      ...
+    # Subtest: Meta listede 259.200 sn BİLDİRİR (2.4.8'de 72 saatle açılmış eski şablon; §15 'liste değeri geçerli'): 73. saatte Süresi Doldu + PDF silinir (72 saat 30 dk'da henüz değil)
+    ok 4 - Meta listede 259.200 sn BİLDİRİR (2.4.8'de 72 saatle açılmış eski şablon; §15 'liste değeri geçerli'): 73. saatte Süresi Doldu + PDF silinir (72 saat 30 dk'da henüz değil)
+      ---
+      duration_ms: 565.735777
+      type: 'test'
+      ...
+    1..4
+ok 2 - 2.4.8 T2-5 güvenli taraf → 2.4.9 W-T — Süresi Doldu ve PDF silme Meta'nın teslim süresine (yoksa 30 güne) bağlı
+  ---
+  duration_ms: 3272.08637
+  type: 'suite'
+  ...
+# (node:22347) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler
+    # Subtest: süren toplu iş, Meta şablonu Pazarlama'ya aldı, kullanıcı Denetle'ye bastı: saat ilerlemeden sonraki adımda iş DURUR (template-marketing), yeni ileti gitmez
+    ok 1 - süren toplu iş, Meta şablonu Pazarlama'ya aldı, kullanıcı Denetle'ye bastı: saat ilerlemeden sonraki adımda iş DURUR (template-marketing), yeni ileti gitmez
+      ---
+      duration_ms: 1196.297928
+      type: 'test'
+      ...
+    # Subtest: Denetle'nin Meta okuması düşse de (502) önbellek temizlenir: sonraki adım şablonu taze okur, Pazarlama'yı görüp durur
+    ok 2 - Denetle'nin Meta okuması düşse de (502) önbellek temizlenir: sonraki adım şablonu taze okur, Pazarlama'yı görüp durur
+      ---
+      duration_ms: 852.237533
+      type: 'test'
+      ...
+    # Subtest: işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)
+    ok 3 - işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)
+      ---
+      duration_ms: 1183.840388
+      type: 'test'
+      ...
+    # Subtest: iki şirket AYNI WhatsApp hesabında: 002'de süren iş, 001'de Denetle → 002'nin işi de sonraki adımda durur (giden 1)
+    ok 4 - iki şirket AYNI WhatsApp hesabında: 002'de süren iş, 001'de Denetle → 002'nin işi de sonraki adımda durur (giden 1)
+      ---
+      duration_ms: 1212.015439
+      type: 'test'
+      ...
+    1..4
+ok 3 - 2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler
+  ---
+  duration_ms: 4447.03519
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller
+    # Subtest: Denetle'de 'Onay Bekliyor' → Meta onayladı → önizleme (taze okuma): kart 'Onaylandı / Evet', pencere Otomatik Gönder; Denetle'ye basılmadı, son denetim zamanı değişmedi
+    ok 1 - Denetle'de 'Onay Bekliyor' → Meta onayladı → önizleme (taze okuma): kart 'Onaylandı / Evet', pencere Otomatik Gönder; Denetle'ye basılmadı, son denetim zamanı değişmedi
+      ---
+      duration_ms: 579.522931
+      type: 'test'
+      ...
+    # Subtest: noteListing (tek değişim yeri): yalnız aynı WABA'nın kaydında, yalnız listede bulunan şablonun Meta alanlarını yazar; kayıttan daha eski okuma ve başka WABA yazmaz
+    ok 2 - noteListing (tek değişim yeri): yalnız aynı WABA'nın kaydında, yalnız listede bulunan şablonun Meta alanlarını yazar; kayıttan daha eski okuma ve başka WABA yazmaz
+      ---
+      duration_ms: 1.891235
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller
+  ---
+  duration_ms: 581.861373
+  type: 'suite'
+  ...
+# (node:22446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 W-4 — hata 100 iletisi işleme göre (gerçek program, sahte Meta)
+    # Subtest: şablon açma isteği 100 (2388024 değil): işlem iletisi 'şablon açma isteğindeki bir değeri kabul etmedi', kimlik suçlanmaz; şablon tek istekte denenir
+    ok 1 - şablon açma isteği 100 (2388024 değil): işlem iletisi 'şablon açma isteğindeki bir değeri kabul etmedi', kimlik suçlanmaz; şablon tek istekte denenir
+      ---
+      duration_ms: 734.336519
+      type: 'test'
+      ...
+    # Subtest: bildirim adresi kaydı 100 'must be subscribed' (ELLE KABUL BULGUSU 3): 'Meta bildirim adresini kaydetmedi … abonelik … Elle Bağla ön koşulları'; kartta Kaydedilemedi nedeni aynı
+    ok 2 - bildirim adresi kaydı 100 'must be subscribed' (ELLE KABUL BULGUSU 3): 'Meta bildirim adresini kaydetmedi … abonelik … Elle Bağla ön koşulları'; kartta Kaydedilemedi nedeni aynı
+      ---
+      duration_ms: 605.532092
+      type: 'test'
+      ...
+    # Subtest: bildirim adresi kaydı başka 100: 'Meta bildirim adresi kaydını kabul etmedi (geçersiz değer)'
+    ok 3 - bildirim adresi kaydı başka 100: 'Meta bildirim adresi kaydını kabul etmedi (geçersiz değer)'
+      ---
+      duration_ms: 519.291227
+      type: 'test'
+      ...
+    # Subtest: ileti isteği 100 (alt kodsuz): iş Başarısız, neden 'ileti isteğindeki bir değeri kabul etmedi'; toplu iş sürer (sınıf değişmedi)
+    ok 4 - ileti isteği 100 (alt kodsuz): iş Başarısız, neden 'ileti isteğindeki bir değeri kabul etmedi'; toplu iş sürer (sınıf değişmedi)
+      ---
+      duration_ms: 653.920808
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Sına: numara listesi okuması 100 (alt kodsuz) → 'Meta okuma isteğini kabul etmedi; … yanlış olabilir'
+    ok 5 - Bağlantıyı Sına: numara listesi okuması 100 (alt kodsuz) → 'Meta okuma isteğini kabul etmedi; … yanlış olabilir'
+      ---
+      duration_ms: 446.141677
+      type: 'test'
+      ...
+    # Subtest: gerileme koruması — yanlış WABA (100 + alt kod 33): ileti kimlikleri söyler, /yanlış olabilir/ (test/whatsapp-w1-baglanti.test.mjs ile aynı beklenti)
+    ok 6 - gerileme koruması — yanlış WABA (100 + alt kod 33): ileti kimlikleri söyler, /yanlış olabilir/ (test/whatsapp-w1-baglanti.test.mjs ile aynı beklenti)
+      ---
+      duration_ms: 486.114109
+      type: 'test'
+      ...
+    1..6
+ok 5 - 2.4.9 W-4 — hata 100 iletisi işleme göre (gerçek program, sahte Meta)
+  ---
+  duration_ms: 3447.398972
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-4 değişmez — hata sınıfı (kind / retry) işlemden bağımsız
+    # Subtest: 100 (alt kodsuz / 33 / 2388024) her işlemde: kind request, retry never, kod ve alt kod korunur; ileti 'Meta hata kodu 100' ile biter
+    ok 1 - 100 (alt kodsuz / 33 / 2388024) her işlemde: kind request, retry never, kod ve alt kod korunur; ileti 'Meta hata kodu 100' ile biter
+      ---
+      duration_ms: 15.665838
+      type: 'test'
+      ...
+    # Subtest: 100 + alt kod 33 HER işlemde (abonelik iletili olsa da) kimlik başlığı: Phone Number ID, WABA ID ya da App ID; işleme özgü başlık 33'ün önüne geçmez
+    ok 2 - 100 + alt kod 33 HER işlemde (abonelik iletili olsa da) kimlik başlığı: Phone Number ID, WABA ID ya da App ID; işleme özgü başlık 33'ün önüne geçmez
+      ---
+      duration_ms: 3.192451
+      type: 'test'
+      ...
+    # Subtest: 100 dışı kodlarda başlık ve sınıf classifyMetaCode'la aynı (190, 131026, 131000, 132001, 1, bilinmeyen 987654)
+    ok 3 - 100 dışı kodlarda başlık ve sınıf classifyMetaCode'la aynı (190, 131026, 131000, 132001, 1, bilinmeyen 987654)
+      ---
+      duration_ms: 13.572507
+      type: 'test'
+      ...
+    1..3
+ok 6 - 2.4.9 W-4 değişmez — hata sınıfı (kind / retry) işlemden bağımsız
+  ---
+  duration_ms: 33.064244
+  type: 'suite'
+  ...
+# (node:22454) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 W-T — program şablon teslim süresi (TTL) GÖNDERMEZ, DÜZENLEMEZ; ttlHours kalktı
+    # Subtest: şablon AÇILIRKEN istekte teslim süresi alanı YOK (iki şablon, tek istekte açılır); onaydan sonra Denetle hiçbir şablonu açmaz / düzenlemez
+    ok 1 - şablon AÇILIRKEN istekte teslim süresi alanı YOK (iki şablon, tek istekte açılır); onaydan sonra Denetle hiçbir şablonu açmaz / düzenlemez
+      ---
+      duration_ms: 804.962581
+      type: 'test'
+      ...
+    # Subtest: şablonlar Meta'da ZATEN ONAYLI, bu şirkette kayıt yok (başka şirket / bilgisayar / yeniden bağlama): Denetle (kendiliğinden ve düğmeyle) teslim süresi DÜZENLEMEZ, kartta kırmızı ileti yok
+    ok 2 - şablonlar Meta'da ZATEN ONAYLI, bu şirkette kayıt yok (başka şirket / bilgisayar / yeniden bağlama): Denetle (kendiliğinden ve düğmeyle) teslim süresi DÜZENLEMEZ, kartta kırmızı ileti yok
+      ---
+      duration_ms: 531.840065
+      type: 'test'
+      ...
+    # Subtest: PUT …/sending-settings { ttlHours } → 400 (alan ttlHours, "Teslim süresi Meta'nın varsayılanıdır (30 gün); değiştirilemez."); GET'te ttlHours yok; günlük sınır ayarı çalışır
+    ok 3 - PUT …/sending-settings { ttlHours } → 400 (alan ttlHours, "Teslim süresi Meta'nın varsayılanıdır (30 gün); değiştirilemez."); GET'te ttlHours yok; günlük sınır ayarı çalışır
+      ---
+      duration_ms: 539.918045
+      type: 'test'
+      ...
+    # Subtest: 2.4.8'den kalan kayıtlı ttlHours (12) okunmaz: GET'te yok, şablon açma isteğinde teslim süresi yok; günlük sınır kaydı eski alanı siler
+    ok 4 - 2.4.8'den kalan kayıtlı ttlHours (12) okunmaz: GET'te yok, şablon açma isteğinde teslim süresi yok; günlük sınır kaydı eski alanı siler
+      ---
+      duration_ms: 605.56759
+      type: 'test'
+      ...
+    1..4
+ok 7 - 2.4.9 W-T — program şablon teslim süresi (TTL) GÖNDERMEZ, DÜZENLEMEZ; ttlHours kalktı
+  ---
+  duration_ms: 2483.733048
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-T — Süresi Doldu ve PDF silme: Meta'nın bildirdiği değer, yoksa 30 gün + 1 saat
+    # Subtest: program şablonları açtı, Meta listesi teslim süresi bildirmiyor: 73. saatte de 13. saatte de Süresi Doldu YOK; 30 gün + 1 sa − 1 dk Gönderildi, + 1 dk Süresi Doldu + PDF silindi
+    ok 1 - program şablonları açtı, Meta listesi teslim süresi bildirmiyor: 73. saatte de 13. saatte de Süresi Doldu YOK; 30 gün + 1 sa − 1 dk Gönderildi, + 1 dk Süresi Doldu + PDF silindi
+      ---
+      duration_ms: 578.995897
+      type: 'test'
+      ...
+    # Subtest: Meta listesi teslim süresini BİLDİRİYORSA (WhatsApp Yöneticisi'nde 12 saat) o geçerli: program değeri değiştirmez; 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silindi
+    ok 2 - Meta listesi teslim süresini BİLDİRİYORSA (WhatsApp Yöneticisi'nde 12 saat) o geçerli: program değeri değiştirmez; 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silindi
+      ---
+      duration_ms: 506.52028
+      type: 'test'
+      ...
+    1..2
+ok 8 - 2.4.9 W-T — Süresi Doldu ve PDF silme: Meta'nın bildirdiği değer, yoksa 30 gün + 1 saat
+  ---
+  duration_ms: 1085.853297
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-6 — 2.4.8'den kalan TTL kayıtları okunmaz, kartta gösterilmez
+    # Subtest: kartta (GET …/templates) eski TTL reddi uyarısı ve TTL düzenleme işlemi YOK; TTL notu açma iletisinden düşer; başka uyarı / işlem korunur
+    ok 1 - kartta (GET …/templates) eski TTL reddi uyarısı ve TTL düzenleme işlemi YOK; TTL notu açma iletisinden düşer; başka uyarı / işlem korunur
+      ---
+      duration_ms: 339.450128
+      type: 'test'
+      ...
+    # Subtest: eski kayıttaki 'Meta 72 saati yansıttı' bilgisi okunmaz (liste bildirmiyor): 73. saatte Süresi Doldu YOK; 30 gün + 1 sa + 1 dk Süresi Doldu
+    ok 2 - eski kayıttaki 'Meta 72 saati yansıttı' bilgisi okunmaz (liste bildirmiyor): 73. saatte Süresi Doldu YOK; 30 gün + 1 sa + 1 dk Süresi Doldu
+      ---
+      duration_ms: 411.534161
+      type: 'test'
+      ...
+    1..2
+ok 9 - 2.4.9 W-6 — 2.4.8'den kalan TTL kayıtları okunmaz, kartta gösterilmez
+  ---
+  duration_ms: 751.42113
+  type: 'suite'
+  ...
+1..9
+# tests 31
+# suites 9
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8595.442527

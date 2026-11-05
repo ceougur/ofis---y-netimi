@@ -1500,6 +1500,7 @@ export const MIGRATIONS = [
       // ve ekstre PDF'i tek anlık görüntüden üretilip dondurulur; her yeniden deneme aynı metni ve aynı PDF'i kullanır, Meta'daki kopya silinmiş / süresi
       // dolmuşsa aynı baytlardan yeniden yüklenir. prepared_at: dondurma anı. pdf_blob: PDF'in kendisi — YALNIZ iş açıkken (Bekliyor / Sınırda / Duraklatıldı …)
       // tutulur; iş Meta'ya kabul edilince ya da kesinleşince bakım turu siler (plan §5: iletinin içeriği saklanmaz; yalnız değişkenler + PDF adı kalır).
+      // 2.4.9 B3 (v45): PDF artık wa_job_pdfs tablosunda; bu sütun yalnız göç için durur (her zaman NULL).
       addColumn(store, "wa_jobs", "prepared_at", "TEXT");
       addColumn(store, "wa_jobs", "pdf_blob", "BLOB");
     },
@@ -1534,6 +1535,22 @@ export const MIGRATIONS = [
       // elemesi yapmaz (kişi "Daha Önce Gönderildi"ye düşer; R3 sorusu yolu açık — çıkmaz yok). Taşınan veride de aynı kural (bağ şirket dosyasında). inherit_of: '' = bağ
       // yok (eski satırlar dahil — bugünkü davranış). YALNIZ EKLEYİCİ: tek sütun.
       addColumn(store, "wa_jobs", "inherit_of", "TEXT NOT NULL DEFAULT ''");
+    },
+  },
+  {
+    version: 45,
+    name: "v2.4.9 WhatsApp: işin dondurulmuş PDF'i ayrı tabloda (para dışı)",
+    up(store) {
+      // 2.4.9 B3 (docs/2.4.9-tasarim/B3-B4.md §B3-3 A; lib/whatsapp/queue.mjs prepare / bakım): dondurulmuş ekstre PDF'i (~33 KB) işin KENDİ satırında (wa_jobs.pdf_blob, v41)
+      // duruyordu; bakım turu kesinleşen işte NULL yapınca satırın yaprak sayfadaki yerel kısmı (~0,5–4 KB) kalıcı boşluk olarak kalıyordu (T9: 40 gönderimde wa_jobs'ta 125 MB).
+      // Artık PDF wa_job_pdfs'te (iş açıkken bir satır); kesinleşince SATIR SİLİNİR, sayfaları sonraki gönderimde yeniden kullanılır. Davranış aynı (ilk hazırlıkta donar, her
+      // yeniden deneme aynı baytları gönderir). YALNIZ EKLEYİCİ + taşıma: NULL olmayan HER pdf_blob taşınır (durum süzgeci yok — kesinleşmiş işin PDF'ini ilk bakım turu siler,
+      // eski kodla aynı yaşam döngüsü), sonra sütun boşaltılır. wa_jobs.pdf_blob sütunu KALIR (her zaman NULL; DROP COLUMN tabloyu yeniden yazar). Yabancı anahtar YOK (yetimi
+      // bakım, hepsini sıfırlama siler). Otomatik VACUUM YOK (BAŞ MİMAR KARARI B3-4): eski boşluk yedekte (VACUUM INTO) zaten yok.
+      store.exec("CREATE TABLE IF NOT EXISTS wa_job_pdfs (job_id TEXT PRIMARY KEY, pdf BLOB NOT NULL, created_at TEXT NOT NULL) STRICT");
+      if (!columnExists(store, "wa_jobs", "pdf_blob")) return;
+      store.run("INSERT OR IGNORE INTO wa_job_pdfs (job_id, pdf, created_at) SELECT id, pdf_blob, COALESCE(prepared_at, updated_at) FROM wa_jobs WHERE pdf_blob IS NOT NULL");
+      store.run("UPDATE wa_jobs SET pdf_blob = NULL WHERE pdf_blob IS NOT NULL");
     },
   },
 ];

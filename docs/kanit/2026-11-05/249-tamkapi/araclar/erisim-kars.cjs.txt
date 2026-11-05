@@ -1,0 +1,12 @@
+// Mobil erişim kâhini: 2.4.8 tam kapı karşılaştırması ↔ 2.4.9 (fark listeleri birebir mi)
+const fs = require("fs"), zlib = require("zlib");
+const a = JSON.parse(zlib.gunzipSync(fs.readFileSync("/home/user/ofis---y-netimi/.claude/worktrees/agent-ad08b374963951ef6/docs/kanit/2026-11-01/248-tamkapi/erisim-karsilastirma.json.gz")));
+const b = JSON.parse(fs.readFileSync("/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/tamkapi-249-k7d2/erisim/karsilastirma.json", "utf8"));
+console.log("birleşim aynı:", a.birlesim === b.birlesim);
+let farkli = 0;
+for (const k of new Set([...Object.keys(a.senaryolar), ...Object.keys(b.senaryolar)])) {
+  const x = JSON.stringify((a.senaryolar[k] || {}).farklar), y = JSON.stringify((b.senaryolar[k] || {}).farklar);
+  if (x !== y) { farkli++; console.log("FARKLI", k, "\n  2.4.8:", x, "\n  2.4.9:", y); }
+}
+console.log("senaryo 2.4.8:", Object.keys(a.senaryolar).length, "2.4.9:", Object.keys(b.senaryolar).length, "fark listesi farklı senaryo:", farkli);
+console.log("farklı senaryolar (2.4.9):", Object.entries(b.senaryolar).filter(([, v]) => v.farklar.length).map(([k, v]) => k + " " + v.farklar.length).join(", "));

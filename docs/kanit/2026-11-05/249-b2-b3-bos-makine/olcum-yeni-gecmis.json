@@ -1,0 +1,82 @@
+{
+ "commit": "5a22228aa423ec4b4c85442dccd454f09f02ea67",
+ "node": "v22.22.0",
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-249-q5n8/hazir-gecmis",
+ "set": "gecmis",
+ "saat": "2026-11-03T15:00:00+03:00",
+ "basladi": "2026-11-05T08:55:04.848Z",
+ "olcum": {
+  "ekstreBuAy2000": [
+   {
+    "durum": 200,
+    "ms": 1025,
+    "olayDongusuEnCokMs": 806,
+    "baskaEnCokMs": 801,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   },
+   {
+    "durum": 200,
+    "ms": 901,
+    "olayDongusuEnCokMs": 716,
+    "baskaEnCokMs": 685,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   }
+  ],
+  "ekstreTum2000": [
+   {
+    "durum": 200,
+    "ms": 1035,
+    "olayDongusuEnCokMs": 800,
+    "baskaEnCokMs": 804,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   },
+   {
+    "durum": 200,
+    "ms": 1040,
+    "olayDongusuEnCokMs": 807,
+    "baskaEnCokMs": 812,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   }
+  ],
+  "mesaj2000": [
+   {
+    "durum": 200,
+    "ms": 910,
+    "olayDongusuEnCokMs": 731,
+    "baskaEnCokMs": 700,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   },
+   {
+    "durum": 200,
+    "ms": 741,
+    "olayDongusuEnCokMs": 561,
+    "baskaEnCokMs": 530,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   }
+  ]
+ },
+ "cariSayisi": {
+  "toplam": 3036,
+  "telefonlu": 3029,
+  "secilen": 2000
+ },
+ "bitti": "2026-11-05T08:55:26.973Z"
+}

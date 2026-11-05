@@ -1,0 +1,133 @@
+{
+  "ad": "ui-tur-b/eski-be58d92b-senaryo-whatsapp-ayar-248",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-ayar-248.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-04T00:27:16.152Z",
+  "sure_sn": 136,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 118,
+    "gecen": 98,
+    "basarisiz": 20,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "App ID yardımı Ekstre şablonunu söylüyor: İsteğe bağlı; Meta uygulama panelinin üst kısmındaki App ID.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Bağlantıyı Sına: uyarı bildirimi: hof-toast hof-toast-success|Bağlantı çalışıyor.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yeşil 'Bağlantı çalışıyor.' bildirimi yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "hücrede yalnız Kaydedilemedi + tarih: Kaydedilemedi · Meta bildirim adresini kaydetmedi: uygulamanızın bu WhatsApp Business hesabına aboneliği ve uygulama düzeyi webhook ayarı tamamlanmamış. Kullanım Kılavuzu'ndaki Elle Bağla ön koşullarını tamamlayıp Bağlantıyı Sına'ya basın. (Meta hata kodu 100: (",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "neden Türkçe satırda:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Meta iletisi ayrı satırda:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "neden düğmelerin altında, Meta iletisi onun altında, bilgi kutusunun dışında: {\"whyAfterActions\":false,\"metaAfterWhy\":false,\"outsideFacts\":true}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Bildirim Yolu hücresi kısa (yükseklik 336 px, Son Sınama 179 px)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "hücrede yalnız Kaydedilemedi + tarih: Kaydedilemedi · Meta bildirim adresini kaydetmedi: uygulamanızın bu WhatsApp Business hesabına aboneliği ve uygulama düzeyi webhook ayarı tamamlanmamış. Kullanım Kılavuzu'ndaki Elle Bağla ön koşullarını tamamlayıp Bağlantıyı Sına'ya basın. (Meta hata kodu 100: (",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "neden Türkçe satırda:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Meta iletisi ayrı satırda:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "neden düğmelerin altında, Meta iletisi onun altında, bilgi kutusunun dışında: {\"whyAfterActions\":false,\"metaAfterWhy\":false,\"outsideFacts\":true}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Bildirim Yolu hücresi kısa (yükseklik 336 px, Son Sınama 179 px)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Kaydet ve Sına: uyarı bildirimi: hof-toast hof-toast-success is-visible|Kaydedildi; bağlantı çalışıyor.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yeşil 'Kaydedildi; bağlantı çalışıyor.' yok",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "hücrede yalnız Kaydedilemedi + tarih: Kaydedilemedi · Meta bildirim adresini kaydetmedi: uygulamanızın bu WhatsApp Business hesabına aboneliği ve uygulama düzeyi webhook ayarı tamamlanmamış. Kullanım Kılavuzu'ndaki Elle Bağla ön koşullarını tamamlayıp Bağlantıyı Sına'ya basın. (Meta hata kodu 100: (",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "neden Türkçe satırda:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Meta iletisi ayrı satırda:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "neden düğmelerin altında, Meta iletisi onun altında, bilgi kutusunun dışında: {\"whyAfterActions\":false,\"metaAfterWhy\":false,\"outsideFacts\":true}",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Bildirim Yolu hücresi kısa (yükseklik 336 px, Son Sınama 179 px)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ae21f646ea0e1380e/docs/kanit/2026-11-04/ui-tur-b/eski-be58d92b-senaryo-whatsapp-ayar-248.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uib-7c3e91d4/eski-be58d92b",
+  "ham_cikti_sha256": "fe0288a51f8b7929c52c6daa641174d6cf7ce445238cfb62f899098232b9cdbf",
+  "ham_cikti_bayt": 9985
+}

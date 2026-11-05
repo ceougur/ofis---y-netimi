@@ -1,0 +1,8 @@
+AYNI W2-01-kabulde-bilinmiyor-sonra-12-sa
+AYNI W2-02-kabulde-30-gun-sonra-12-sa-kisalir
+KIRMIZI (eski kâhin ≠ yeni elle) W3-01-kabulde-12-sa-sonra-30-gun-uzar: 8 fark
+    W3-01-kabulde-12-sa-sonra-30-gun-uzar * [{}…] kontroller.K1.isler: elle {"T1/A": "Gönderildi", "T1/B": "Teslim Edildi"} ≠ model {"T1/A": "Süresi Doldu", "T1/B": "Teslim Edildi"}
+    W3-01-kabulde-12-sa-sonra-30-gun-uzar * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi"}} ≠ model {}
+    W3-01-kabulde-12-sa-sonra-30-gun-uzar * [{}…] olusmadi: elle ["T2"] ≠ model []
+    W3-01-kabulde-12-sa-sonra-30-gun-uzar * [{}…] onceki_uyari: elle {"T2": {"sayi": 1, "son": "2026-10-30"}, "T3": {"sayi": 1, "son": "2026-10-30"}} ≠ model {"T3": {"sayi": 1, "son": "2026-10-31"}}
+# eski kâhinle: 1 kırmızı, 2 aynı

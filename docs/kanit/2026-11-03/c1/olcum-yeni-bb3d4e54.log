@@ -1,0 +1,13 @@
+(node:26975) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+20:06:48 veri {"cari":3014,"cariSatiri":57227,"enCokSatirliCari":117,"ornek":482,"fatura":261,"cek":92,"kart":94,"finEvents":85954} açılış 7242 ms
+20:06:56 A kart {"n":482,"p50":13.01,"p95":20.78,"enCok":170.81,"toplam":7512,"durumlar":{"200":482},"kodlar":{},"olayDongusuEnCokMs":167,"olayDongusuP99Ms":45}
+20:06:56 ✓ A: 482 kartın hepsi 200
+20:06:57 B accountMovements {"n":3014,"p50":0.2,"p95":0.37,"enCok":4.87,"toplam":698,"hareketli":3014,"hareketsiz":0,"olayDongusuEnCokMs":0}
+20:06:58 C sil {"n":482,"p50":1.64,"p95":2.29,"enCok":8.52,"toplam":868,"durumlar":{"409":482},"kodlar":{"account-has-movements":482},"olayDongusuEnCokMs":9,"olayDongusuP99Ms":7}
+20:06:58 ✓ C: hareketli 482 cari 409, hareketsiz 0 cari 200 (yardımcıyla aynı)
+20:07:06 ✓ D: Excel taksit yüklemesi 200, 2000 kart (7624 ms)
+20:07:06 D geri al {"durum":200,"sureMs":666,"olayDongusuEnCokMs":5,"rapor":{"plans":2000,"links":0,"payments":0,"accountEntries":0,"accounts":2000,"accountsKept":0}}
+20:07:06 ✓ D: Geri Al 200; kalıcı silinen 2000 + kalan 0 = 2.000
+
+4 denetim geçti, 0 başarısız

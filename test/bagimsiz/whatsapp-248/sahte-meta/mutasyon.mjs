@@ -19,6 +19,7 @@ const MUTASYONLAR = [
   { ad: "pricing her durumda", dosya: "sunucu.mjs", eski: "if (fiyatAl && s.durum !== \"failed\")", yeni: "if (s.durum !== \"failed\")" },
   { ad: "sınır FARKLI alıcı yerine kabul sayar", dosya: "sunucu.mjs", eski: "if (!kume.has(hedef) && kume.size >= L)", yeni: "if (this.mesajlar.length + (this.ayar.sinir.disKullanim || []).length >= L)" },
   { ad: "kanca kuyruğu 7 günde düşmez", dosya: "kanca.mjs", eski: "if (simdi - k.ilkDenemeT > YEDI_GUN_MS)", yeni: "if (false)" },
+  { ad: "şablon teslim süresi listede bildirilmez (kâhin güncellemesi 10)", dosya: "sunucu.mjs", eski: "rejected_reason: s.rejected_reason, message_send_ttl_seconds: s.message_send_ttl_seconds };", yeni: "rejected_reason: s.rejected_reason };" },
   { ad: "medya 30 gün ömrü yok", dosya: "sunucu.mjs", eski: "if (!m || m.silindi || this.simdi() - m.yuklenmeT > this.ayar.medyaOmruMs) return { hata:", yeni: "if (!m || m.silindi) return { hata:" },
   { ad: "aynı ad + dil şablonu ikinci kez açılır", dosya: "sunucu.mjs", eski: "if (this.sablonlar.some(s => s.waba === waba.id && s.name === name && s.language === language && !s.silindi))", yeni: "if (false)" },
   { ad: "imza yanlış anahtarla", dosya: "kanca.mjs", eski: 'return "sha256=" + crypto.createHmac("sha256", sir)', yeni: 'return "sha256=" + crypto.createHmac("sha256", sir + "x")' },

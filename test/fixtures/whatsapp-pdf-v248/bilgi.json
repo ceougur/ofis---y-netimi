@@ -1,0 +1,178 @@
+{
+ "kod": "v2.4.8 (6ff09c10; sunucu = e3f74093)",
+ "node": "v22.22.0",
+ "company": {
+  "id": "sirket-06f31b99-6ac8-461f-baf4-ae79768faac5",
+  "code": "002",
+  "name": "Göç Şirketi"
+ },
+ "accounts": {
+  "A": "account-2a169a23-d7a4-49fe-8fc4-b078544ec2d3",
+  "B": "account-a8d55e81-4e7c-4cd7-a159-d2601609f633",
+  "C": "account-9726ec2d-463e-4fa6-96c5-40c0e30e795e"
+ },
+ "batches": {
+  "C": "wab-6075aff7-1f1b-430b-b0be-9917219e38cd",
+  "AB": "wab-3a0dd6a4-fce7-4234-bbdb-f726cf72b8b4"
+ },
+ "backup": {
+  "name": "destekofis-002-2026-11-03T18-36-06-077Z-manuel.sqlite",
+  "folder": "backups/002 - Göç Şirketi"
+ },
+ "uploads": [
+  {
+   "name": "Ekstre Cem Demir 01.11.2026-03.11.2026.pdf",
+   "sha": "62cd9a008e9c829349adbfe2a1a69dc1b10888a329059de37a03298c8add12bc",
+   "size": 32567
+  },
+  {
+   "name": "Ekstre Ayşe Yılmaz 01.11.2026-03.11.2026.pdf",
+   "sha": "3f3fac44894e987ee6b77f2169b5b90103b912655d376a73836b798f0ad66db6",
+   "size": 33195
+  },
+  {
+   "name": "Ekstre Burak Kaya 01.11.2026-03.11.2026.pdf",
+   "sha": "e18ba04ad22277bb83a6dc68cf1e5ca220d6c6b77130141e367ee5961178ebda",
+   "size": 32789
+  }
+ ],
+ "messages": [
+  {
+   "to": "+905357778899",
+   "params": [
+    "Cem Demir",
+    "Göç Şirketi",
+    "01.11.2026 – 03.11.2026",
+    "500,00 TL (Borçlu)"
+   ]
+  },
+  {
+   "to": "+905334445566",
+   "params": [
+    "Burak Kaya",
+    "Göç Şirketi",
+    "01.11.2026 – 03.11.2026",
+    "800,00 TL (Borçlu)"
+   ]
+  }
+ ],
+ "dbPath002": "data/sirketler/002/destekofis.sqlite",
+ "jobsApi": [
+  {
+   "id": "waj-b5fa2359-4049-494b-8cac-a212dbbb175a",
+   "accountName": "Cem Demir",
+   "state": "accepted",
+   "params": [
+    "Cem Demir",
+    "Göç Şirketi",
+    "01.11.2026 – 03.11.2026",
+    "500,00 TL (Borçlu)"
+   ],
+   "pdfName": "Ekstre Cem Demir 01.11.2026-03.11.2026.pdf",
+   "attempt": 1
+  },
+  {
+   "id": "waj-55c62184-ba23-40b0-8e85-5a47895e8876",
+   "accountName": "Ayşe Yılmaz",
+   "state": "paused",
+   "params": [
+    "Ayşe Yılmaz",
+    "Göç Şirketi",
+    "01.11.2026 – 03.11.2026",
+    "1.250,00 TL (Borçlu)"
+   ],
+   "pdfName": "Ekstre Ayşe Yılmaz 01.11.2026-03.11.2026.pdf",
+   "attempt": 1
+  },
+  {
+   "id": "waj-7bdaa064-9aa4-4801-9a05-011877c6ff03",
+   "accountName": "Burak Kaya",
+   "state": "accepted",
+   "params": [
+    "Burak Kaya",
+    "Göç Şirketi",
+    "01.11.2026 – 03.11.2026",
+    "800,00 TL (Borçlu)"
+   ],
+   "pdfName": "Ekstre Burak Kaya 01.11.2026-03.11.2026.pdf",
+   "attempt": 1
+  }
+ ],
+ "version": 44,
+ "live002": {
+  "version": 44,
+  "jobs": [
+   {
+    "id": "waj-b5fa2359-4049-494b-8cac-a212dbbb175a",
+    "name": "Cem Demir",
+    "state": "accepted",
+    "prepared_at": "2026-11-03T10:00:00.000Z",
+    "params_json": "[\"Cem Demir\",\"Göç Şirketi\",\"01.11.2026 – 03.11.2026\",\"500,00 TL (Borçlu)\"]",
+    "pdf_name": "Ekstre Cem Demir 01.11.2026-03.11.2026.pdf",
+    "media_id": "770000000000001",
+    "pdfLength": null,
+    "pdfSha": null
+   },
+   {
+    "id": "waj-55c62184-ba23-40b0-8e85-5a47895e8876",
+    "name": "Ayşe Yılmaz",
+    "state": "paused",
+    "prepared_at": "2026-11-03T10:01:00.000Z",
+    "params_json": "[\"Ayşe Yılmaz\",\"Göç Şirketi\",\"01.11.2026 – 03.11.2026\",\"1.250,00 TL (Borçlu)\"]",
+    "pdf_name": "Ekstre Ayşe Yılmaz 01.11.2026-03.11.2026.pdf",
+    "media_id": "770000000000002",
+    "pdfLength": 33195,
+    "pdfSha": "3f3fac44894e987ee6b77f2169b5b90103b912655d376a73836b798f0ad66db6"
+   },
+   {
+    "id": "waj-7bdaa064-9aa4-4801-9a05-011877c6ff03",
+    "name": "Burak Kaya",
+    "state": "accepted",
+    "prepared_at": "2026-11-03T10:01:00.000Z",
+    "params_json": "[\"Burak Kaya\",\"Göç Şirketi\",\"01.11.2026 – 03.11.2026\",\"800,00 TL (Borçlu)\"]",
+    "pdf_name": "Ekstre Burak Kaya 01.11.2026-03.11.2026.pdf",
+    "media_id": "770000000000003",
+    "pdfLength": 32789,
+    "pdfSha": "e18ba04ad22277bb83a6dc68cf1e5ca220d6c6b77130141e367ee5961178ebda"
+   }
+  ]
+ },
+ "backup002": {
+  "version": 44,
+  "jobs": [
+   {
+    "id": "waj-b5fa2359-4049-494b-8cac-a212dbbb175a",
+    "name": "Cem Demir",
+    "state": "accepted",
+    "prepared_at": "2026-11-03T10:00:00.000Z",
+    "params_json": "[\"Cem Demir\",\"Göç Şirketi\",\"01.11.2026 – 03.11.2026\",\"500,00 TL (Borçlu)\"]",
+    "pdf_name": "Ekstre Cem Demir 01.11.2026-03.11.2026.pdf",
+    "media_id": "770000000000001",
+    "pdfLength": null,
+    "pdfSha": null
+   },
+   {
+    "id": "waj-55c62184-ba23-40b0-8e85-5a47895e8876",
+    "name": "Ayşe Yılmaz",
+    "state": "paused",
+    "prepared_at": "2026-11-03T10:01:00.000Z",
+    "params_json": "[\"Ayşe Yılmaz\",\"Göç Şirketi\",\"01.11.2026 – 03.11.2026\",\"1.250,00 TL (Borçlu)\"]",
+    "pdf_name": "Ekstre Ayşe Yılmaz 01.11.2026-03.11.2026.pdf",
+    "media_id": "770000000000002",
+    "pdfLength": 33195,
+    "pdfSha": "3f3fac44894e987ee6b77f2169b5b90103b912655d376a73836b798f0ad66db6"
+   },
+   {
+    "id": "waj-7bdaa064-9aa4-4801-9a05-011877c6ff03",
+    "name": "Burak Kaya",
+    "state": "accepted",
+    "prepared_at": "2026-11-03T10:01:00.000Z",
+    "params_json": "[\"Burak Kaya\",\"Göç Şirketi\",\"01.11.2026 – 03.11.2026\",\"800,00 TL (Borçlu)\"]",
+    "pdf_name": "Ekstre Burak Kaya 01.11.2026-03.11.2026.pdf",
+    "media_id": "770000000000003",
+    "pdfLength": 32789,
+    "pdfSha": "e18ba04ad22277bb83a6dc68cf1e5ca220d6c6b77130141e367ee5961178ebda"
+   }
+  ]
+ }
+}

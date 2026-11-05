@@ -300,6 +300,27 @@
     "sorunun metni: \"Ekstre PDF'i ve bakiye açılış gününde hazırlanıyor\""
    ]
   },
+  "W1": {
+   "kaynak_turu": "kullanıcı (KARAR 03.11.2026 ~18:45 UTC, W SORU T0) + ana oturum onayı (~18:50 UTC) — docs/2.4.9-IS-LISTESI.md ve docs/2.4.9-tasarim/W-whatsapp-sablon.md §15, AYNEN; J4 metnindeki \"(3 gün)\"ün YERİNE",
+   "metin": [
+    "KULLANICI KARARI (03.11 ~18:45 UTC, W SORU T0): Meta'nın utility'de izin verdiği en uzun özel süre 12 SAAT çıktı → kullanıcı \"30 gün (Meta varsayılanı)\" seçti; SORU 1 A DEĞİŞTİ: program TTL göndermez/düzenlemez, ttlHours (72) kalkar, Süresi Doldu = Meta'nın bildirdiği değer yoksa 30 gün. T1, T2 düştü.",
+    "KULLANICI (AskUserQuestion, 03.11; SORU T0, 12 saatlik üst sınır öğrenildikten sonra KARAR 03.11 SORU 1 A'yı DEĞİŞTİRDİ): TESLİM SÜRESİ = 30 GÜN (Meta varsayılanı). Program şablon açarken TTL GÖNDERMEZ, onaylı şablonun TTL'ini DÜZENLEMEZ. SORU T1 ve T2 bu kararla DÜŞER (30 günde bildirim kaçma penceresi pratikte yok, §7).",
+    "\"Süresi Doldu\" ve PDF silme: Meta listesinin bildirdiği değer varsa o, yoksa 30 gün (+1 sa) […]. Kayıtlı eski TTL ret/düzenleme kayıtları okunmaz, zarar vermez; eski kurulumlarda 72 sa ile açılmış şablon varsa (Meta reddettiği için yok) liste değeri geçerli.",
+    "W kâhini (kahin.py TTL = 72 sa) KODU GÖRMEYEN ayrı ajanla karar metninden 30 güne güncellenir (ders 5, 40) — kod ajanı kâhine dokunmaz."
+   ]
+  },
+  "W2": {
+   "kaynak_turu": "kullanıcı (03.11.2026 ~20:05 UTC, \"2.5.0 bırakmasak büyük bir iş mi?\" → W-KÖK 2.4.9'A ALINDI) — docs/2.4.9-IS-LISTESI.md son satır, AYNEN; İLKEYLE (ilke 2); program henüz uygulamıyor (ana oturum iletisi: ayrışma beklenir)",
+   "metin": [
+    "KULLANICI (03.11 ~20:05 UTC, \"2.5.0 bırakmasak büyük bir iş mi?\") → W-KÖK 2.4.9'A ALINDI: iş KABUL ANINDAKİ teslim süresiyle değerlendirilir (Meta listesindeki süre sonradan kısalırsa önceden kabul edilmiş iş eski süreyle; o an süre bilinmiyorsa 30 gün) — İLKEYLE (ilke 2 \"almış olabilirse elenir\"), yeni soru yok."
+   ]
+  },
+  "W3": {
+   "kaynak_turu": "kullanıcı (03.11.2026 ~21:00 UTC, AskUserQuestion; kâhinin S10-6 sorusu) — docs/2.4.9-IS-LISTESI.md son satır, AYNEN; program henüz uygulamıyor",
+   "metin": [
+    "KULLANICI KARARI (03.11 ~21:00 UTC, AskUserQuestion; kâhinin S10-6 sorusu): süre kabulden sonra UZARSA önceden kabul edilmiş iş UZUN süreyle (30 gün) değerlendirilir → etkin süre = max(kabul anındaki, güncel); kabulde bilinmiyorsa 30 gün. W-KÖK ajanına ve kâhine iletildi."
+   ]
+  },
   "K8": {
    "kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
    "metin": [
@@ -5736,8 +5757,8 @@
   {
    "ad": "CIFT-16-daha-once-suresi-doldu",
    "baslik": "ÇİFT",
-   "aciklama": "Önceki ileti Süresi Doldu (teslim edilmedi); aynı dönem yeniden: gider (kâhin yorumu: Süresi Doldu 'gönderilmiş' sayılmaz)",
-   "kaynak": "§7a R3, §7a 16",
+   "aciklama": "Önceki ileti Süresi Doldu (Meta listede 12 sa bildirir; teslim edilmedi); aynı dönem yeniden: gider (kâhin yorumu: Süresi Doldu 'gönderilmiş' sayılmaz)",
+   "kaynak": "§7a R3, §7a 16, W1 (Y10-9)",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -5798,6 +5819,15 @@
       }
      }
     ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    },
     "meta_davranis": {
      "kanca": {
       "A": [
@@ -13941,8 +13971,8 @@
   {
    "ad": "ICERIK-10-ttl-sonrasi-teslim",
    "baslik": "YANLIŞ İÇERİK",
-   "aciklama": "Teslim kancası TTL + 1 sa'ten sonra geldi: önce Süresi Doldu, sonra gerçek bilgi Teslim Edildi; ay = teslim zamanı (Kasım)",
-   "kaynak": "§11 S2 A, §7a 16/17/19",
+   "aciklama": "Teslim kancası süre + 1 sa'ten sonra geldi (Meta listede 12 sa): önce Süresi Doldu, sonra gerçek bilgi Teslim Edildi; ay = teslim zamanı (Kasım)",
+   "kaynak": "W1 (Y10-1/9), §7a 16/17/19",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -13985,16 +14015,25 @@
       }
      },
      {
-      "t": "+72h30m",
+      "t": "+11h30m",
       "tur": "kontrol",
       "ad": "K1"
      },
      {
-      "t": "+73h30m",
+      "t": "+13h30m",
       "tur": "kontrol",
       "ad": "K2"
      }
     ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    },
     "meta_davranis": {
      "kanca": {
       "A": [
@@ -14004,7 +14043,7 @@
        ],
        [
         "delivered",
-        "+76h"
+        "+2d"
        ]
       ]
      }
@@ -14079,14 +14118,14 @@
       },
       "kontroller": {
        "K1": {
-        "t": "2026-11-02T10:30:00+03:00",
+        "t": "2026-10-30T21:30:00+03:00",
         "durum_sayilari": {
          "Gönderildi": 1
         },
         "toplam_post": 1,
         "toplam_kabul": 1,
         "pencere_farkli_alici": {
-         "W1": 0
+         "W1": 1
         },
         "medya_silme": 0,
         "toplular": {
@@ -14097,14 +14136,14 @@
         }
        },
        "K2": {
-        "t": "2026-11-02T11:30:00+03:00",
+        "t": "2026-10-30T23:30:00+03:00",
         "durum_sayilari": {
          "Süresi Doldu": 1
         },
         "toplam_post": 1,
         "toplam_kabul": 1,
         "pencere_farkli_alici": {
-         "W1": 0
+         "W1": 1
         },
         "medya_silme": 1,
         "toplular": {
@@ -65728,8 +65767,8 @@
   {
    "ad": "GUV-09-sahte-gercek-wamid",
    "baslik": "GÜVENLİK",
-   "aciklama": "İmzasız sahte 'delivered' gerçek işin wamid'iyle: düşer; iş TTL'de Süresi Doldu, 'Bu Ay'a girmez",
-   "kaynak": "§7a 3, 16",
+   "aciklama": "İmzasız sahte 'delivered' gerçek işin wamid'iyle: düşer; iş Gönderildi'de kalır (30 gün dolmadı — W1), 'Bu Ay'a girmez, PDF silinmez",
+   "kaynak": "§7a 3, 16, W1",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -65801,10 +65840,10 @@
       "kontroller.K1.isler": {
        "T1/A": "Gönderildi"
       },
-      "isler.T1/A.durum": "Süresi Doldu",
+      "isler.T1/A.durum": "Gönderildi",
       "bu_ay": {},
       "meta.medya_silme": {
-       "A": 1
+       "A": 0
       }
      }
     }
@@ -65828,7 +65867,7 @@
        }
       },
       "durum_sayilari": {
-       "Süresi Doldu": 1
+       "Gönderildi": 1
       },
       "meta": {
        "post": {
@@ -65844,7 +65883,7 @@
         "A": 1
        },
        "medya_silme": {
-        "A": 1
+        "A": 0
        },
        "toplam_post": 1,
        "toplam_kabul_program": 1,
@@ -65881,7 +65920,7 @@
       },
       "isler": {
        "T1/A": {
-        "durum": "Süresi Doldu",
+        "durum": "Gönderildi",
         "telefon": "+905321112233",
         "sablon": "destekofis_ekstre",
         "degiskenler": [
@@ -65907,7 +65946,7 @@
         "kabul": 1,
         "meta_ileti": 1,
         "medya_yukleme": 1,
-        "medya_silme": 1,
+        "medya_silme": 0,
         "atlanma_nedeni": null
        }
       }
@@ -66490,8 +66529,8 @@
   {
    "ad": "TARIH-02-ttl-sonu",
    "baslik": "TARİH",
-   "aciklama": "Yalnız 'sent' geldi (kanca yolu çalışıyor): TTL + 1 saatte Süresi Doldu, PDF silinir; öncesinde değil",
-   "kaynak": "§6 W2, §11 S2/S3, §7a 16",
+   "aciklama": "Yalnız 'sent' geldi (kanca yolu çalışıyor; Meta listede 12 sa bildirir): süre + 1 saatten sonra Süresi Doldu, PDF silinir; süre dolmadan değil",
+   "kaynak": "§6 W2, §11 S3, §7a 16, W1 (Y10-1/9)",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -66534,16 +66573,25 @@
       }
      },
      {
-      "t": "+72h30m",
+      "t": "+11h30m",
       "tur": "kontrol",
       "ad": "K1"
      },
      {
-      "t": "+73h30m",
+      "t": "+13h30m",
       "tur": "kontrol",
       "ad": "K2"
      }
     ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    },
     "meta_davranis": {
      "kanca": {
       "A": [
@@ -66614,14 +66662,14 @@
       },
       "kontroller": {
        "K1": {
-        "t": "2026-11-02T10:30:00+03:00",
+        "t": "2026-10-30T21:30:00+03:00",
         "durum_sayilari": {
          "Gönderildi": 1
         },
         "toplam_post": 1,
         "toplam_kabul": 1,
         "pencere_farkli_alici": {
-         "W1": 0
+         "W1": 1
         },
         "medya_silme": 0,
         "toplular": {
@@ -66632,14 +66680,14 @@
         }
        },
        "K2": {
-        "t": "2026-11-02T11:30:00+03:00",
+        "t": "2026-10-30T23:30:00+03:00",
         "durum_sayilari": {
          "Süresi Doldu": 1
         },
         "toplam_post": 1,
         "toplam_kabul": 1,
         "pencere_farkli_alici": {
-         "W1": 0
+         "W1": 1
         },
         "medya_silme": 1,
         "toplular": {
@@ -66697,8 +66745,8 @@
   {
    "ad": "TARIH-03-kancasiz",
    "baslik": "TARİH",
-   "aciklama": "Bağlantıda hiç kanca gelmedi (kanca yolu yok): 'Meta Kabul Etti'de kalır, PDF silinmez ('Durum Bilinmiyor' yok)",
-   "kaynak": "§7a 16",
+   "aciklama": "Bağlantıda hiç kanca gelmedi (kanca yolu yok; Meta listede 12 sa bildirir): süre dolsa da 'Meta Kabul Etti'de kalır, PDF silinmez ('Durum Bilinmiyor' yok)",
+   "kaynak": "§7a 16, W1 (Y10-5/9)",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -66750,7 +66798,16 @@
       "tur": "kontrol",
       "ad": "K2"
      }
-    ]
+    ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    }
    },
    "elle": [
     {
@@ -66896,8 +66953,8 @@
   {
    "ad": "TARIH-03b-kancasiz-yol-calisiyor",
    "baslik": "TARİH",
-   "aciklama": "A'ya hiç kanca gelmedi ama aynı bağlantıda B'nin kancaları geldi (yol çalışıyor): A TTL + 1 saatte Süresi Doldu",
-   "kaynak": "§7a 16",
+   "aciklama": "A'ya hiç kanca gelmedi ama aynı bağlantıda B'nin kancaları geldi (yol çalışıyor; Meta listede 12 sa): A süre + 1 saatten sonra Süresi Doldu",
+   "kaynak": "§7a 16, W1 (Y10-9)",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -66953,16 +67010,25 @@
       }
      },
      {
-      "t": "+72h30m",
+      "t": "+11h30m",
       "tur": "kontrol",
       "ad": "K1"
      },
      {
-      "t": "+73h30m",
+      "t": "+13h30m",
       "tur": "kontrol",
       "ad": "K2"
      }
     ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    },
     "meta_davranis": {
      "kanca": {
       "B": [
@@ -67055,7 +67121,7 @@
       },
       "kontroller": {
        "K1": {
-        "t": "2026-11-02T10:30:00+03:00",
+        "t": "2026-10-30T21:30:00+03:00",
         "durum_sayilari": {
          "Meta Kabul Etti": 1,
          "Teslim Edildi": 1
@@ -67063,7 +67129,7 @@
         "toplam_post": 2,
         "toplam_kabul": 2,
         "pencere_farkli_alici": {
-         "W1": 0
+         "W1": 2
         },
         "medya_silme": 1,
         "toplular": {
@@ -67075,7 +67141,7 @@
         }
        },
        "K2": {
-        "t": "2026-11-02T11:30:00+03:00",
+        "t": "2026-10-30T23:30:00+03:00",
         "durum_sayilari": {
          "Süresi Doldu": 1,
          "Teslim Edildi": 1
@@ -67083,7 +67149,7 @@
         "toplam_post": 2,
         "toplam_kabul": 2,
         "pencere_farkli_alici": {
-         "W1": 0
+         "W1": 2
         },
         "medya_silme": 2,
         "toplular": {
@@ -98438,8 +98504,8 @@
   {
    "ad": "J1-02-suresi-doldu-sonra-teslim-daha-once",
    "baslik": "J1",
-   "aciklama": "A Süresi Doldu (kanca yolu çalışıyor), 4. gün teslim bildirimi → Teslim Edildi; 5. gün aynı dönem 'Daha Önce Gönderildi' (son 30.10); 'Bu Ay' teslim ayına (Kasım)",
-   "kaynak": "J1 (süresi dolmuş olsa da) + §7a 17 + H4",
+   "aciklama": "A Süresi Doldu (kanca yolu çalışıyor; Meta listede 12 sa), 4. gün teslim bildirimi → Teslim Edildi; 5. gün aynı dönem 'Daha Önce Gönderildi' (son 30.10); 'Bu Ay' teslim ayına (Kasım)",
+   "kaynak": "J1 (süresi dolmuş olsa da) + §7a 17 + H4 + W1 (Y10-9)",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -98513,6 +98579,15 @@
       }
      }
     ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    },
     "meta_davranis": {
      "kanca": {
       "A": [
@@ -101680,8 +101755,8 @@
   {
    "ad": "J4-01-suresi-doldu-son-kabulden-meta-bekletti",
    "baslik": "J4",
-   "aciklama": "Meta Bekletti; 24 sa sonra 2. deneme kabul (Gönderildi, teslim yok): Süresi Doldu 2. kabulden 73 saat sonra (80. saatte hâlâ Gönderildi, 98. saatte Süresi Doldu)",
-   "kaynak": "J4 (Y9-9) + §6 W2 + S2 A",
+   "aciklama": "Meta Bekletti; 24 sa sonra 2. deneme kabul (Gönderildi, teslim yok): Süresi Doldu 2. kabulden süre + 1 sa sonra (Meta listede 12 sa: 30. saatte hâlâ Gönderildi, 38. saatte Süresi Doldu)",
+   "kaynak": "J4 (Y9-9) + §6 W2 + W1 (Y10-3/9)",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -101737,16 +101812,25 @@
       }
      },
      {
-      "t": "+80h",
+      "t": "+30h",
       "tur": "kontrol",
       "ad": "K1"
      },
      {
-      "t": "+98h",
+      "t": "+38h",
       "tur": "kontrol",
       "ad": "K2"
      }
     ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    },
     "meta_davranis": {
      "kanca": {
       "A": {
@@ -101861,7 +101945,7 @@
       },
       "kontroller": {
        "K1": {
-        "t": "2026-11-02T18:00:00+03:00",
+        "t": "2026-10-31T16:00:00+03:00",
         "durum_sayilari": {
          "Gönderildi": 1,
          "Teslim Edildi": 1
@@ -101869,7 +101953,7 @@
         "toplam_post": 3,
         "toplam_kabul": 3,
         "pencere_farkli_alici": {
-         "W1": 0
+         "W1": 1
         },
         "medya_silme": 1,
         "toplular": {
@@ -101881,7 +101965,7 @@
         }
        },
        "K2": {
-        "t": "2026-11-03T12:00:00+03:00",
+        "t": "2026-11-01T00:00:00+03:00",
         "durum_sayilari": {
          "Süresi Doldu": 1,
          "Teslim Edildi": 1
@@ -101889,7 +101973,7 @@
         "toplam_post": 3,
         "toplam_kabul": 3,
         "pencere_farkli_alici": {
-         "W1": 0
+         "W1": 1
         },
         "medya_silme": 2,
         "toplular": {
@@ -101985,8 +102069,8 @@
   {
    "ad": "J4-02-suresi-doldu-son-kabulden-yine-de-gonder",
    "baslik": "J4",
-   "aciklama": "B Sonucu Belirsiz (bildirimsiz); 1. gün Yine de Gönder kabul (Gönderildi): Süresi Doldu Yine de Gönder'in kabulünden 73 saat sonra",
-   "kaynak": "J4 (Y9-9)",
+   "aciklama": "B Sonucu Belirsiz (bildirimsiz); 1. gün Yine de Gönder kabul (Gönderildi): Süresi Doldu Yine de Gönder'in kabulünden süre + 1 sa sonra (Meta listede 12 sa: 30. saatte Gönderildi, 38. saatte Süresi Doldu)",
+   "kaynak": "J4 (Y9-9) + W1 (Y10-3/9)",
    "serbest": [],
    "girdi": {
     "baslangic": "2026-10-30T10:00:00+03:00",
@@ -102049,16 +102133,25 @@
       "etiket": "G1"
      },
      {
-      "t": "+80h",
+      "t": "+30h",
       "tur": "kontrol",
       "ad": "K1"
      },
      {
-      "t": "+98h",
+      "t": "+38h",
       "tur": "kontrol",
       "ad": "K2"
      }
     ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    },
     "meta_davranis": {
      "mesaj": {
       "B": [
@@ -102167,7 +102260,7 @@
       },
       "kontroller": {
        "K1": {
-        "t": "2026-11-02T18:00:00+03:00",
+        "t": "2026-10-31T16:00:00+03:00",
         "durum_sayilari": {
          "Gönderildi": 1,
          "Teslim Edildi": 1
@@ -102175,7 +102268,7 @@
         "toplam_post": 3,
         "toplam_kabul": 2,
         "pencere_farkli_alici": {
-         "W1": 0
+         "W1": 1
         },
         "medya_silme": 1,
         "toplular": {
@@ -102187,7 +102280,7 @@
         }
        },
        "K2": {
-        "t": "2026-11-03T12:00:00+03:00",
+        "t": "2026-11-01T00:00:00+03:00",
         "durum_sayilari": {
          "Süresi Doldu": 1,
          "Teslim Edildi": 1
@@ -102195,7 +102288,7 @@
         "toplam_post": 3,
         "toplam_kabul": 2,
         "pencere_farkli_alici": {
-         "W1": 0
+         "W1": 1
         },
         "medya_silme": 2,
         "toplular": {
@@ -109665,6 +109758,3420 @@
         },
         "dosya_adi": {
          "on_ek": "Ekstre Rana Ortada ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz",
+   "baslik": "W1",
+   "aciklama": "Meta listede süre bildirmez, 2.4.8'den 72 sa ayarı kalmış (okunmaz): A'ya yalnız 'sent' gelir; 4. günde hâlâ Gönderildi, 5. gün aynı dönem 'Daha Önce Gönderildi'; 28. gün C'nin gönderimi kanca yolunu canlı tutar; 30 gün + 30 dk'da hâlâ Gönderildi (1 sa payı), 30 gün + 2 sa'te Süresi Doldu — PDF'i Meta 30 günde kendisi silmiştir (Meta'da silme 0); Süresi Doldu'dan sonra aynı dönem yeniden gider (P3)",
+   "kaynak": "W1 (Y10-1/2/4/6/7) + §7a 16 + K3/P3",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     },
+     {
+      "id": "C",
+      "ad": "Zeynep Demir",
+      "telefon": "0534 333 44 55",
+      "hareketler": [
+       {
+        "tarih": "2026-08-01",
+        "borc": 300,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-09-01",
+        "borc": 0,
+        "alacak": 300
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+4d",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+5d",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+28d",
+      "tur": "baslat",
+      "etiket": "T3",
+      "secim": [
+       "C"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+30d30m",
+      "tur": "kontrol",
+      "ad": "K2"
+     },
+     {
+      "t": "+30d2h",
+      "tur": "kontrol",
+      "ad": "K3"
+     },
+     {
+      "t": "+30d3h",
+      "tur": "baslat",
+      "etiket": "T4",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     }
+    ],
+    "bitis": "+31d",
+    "ayar": {
+     "eski_ttl_saat": 72
+    },
+    "meta_davranis": {
+     "kanca": {
+      "T1/A": [
+       [
+        "sent",
+        "+1s"
+       ]
+      ],
+      "A": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ],
+      "B": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ],
+      "C": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi"
+      },
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "kontroller.K2.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi",
+       "T3/C": "Teslim Edildi"
+      },
+      "kontroller.K3.isler": {
+       "T1/A": "Süresi Doldu",
+       "T1/B": "Teslim Edildi",
+       "T3/C": "Teslim Edildi"
+      },
+      "kontroller.K3.medya_silme": 2,
+      "isler.T1/A.medya_silme": 0,
+      "isler.T1/A.medya_yukleme": 1,
+      "isler.T4/A.durum": "Teslim Edildi",
+      "meta.post": {
+       "A": 2,
+       "B": 1,
+       "C": 1
+      },
+      "meta.medya_silme": {
+       "A": 1,
+       "B": 1,
+       "C": 1
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        },
+        "2026-11": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       },
+       "T3": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       },
+       "T4": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Süresi Doldu": 1,
+       "Teslim Edildi": 3
+      },
+      "meta": {
+       "post": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "kabul": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "meta_ileti": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "medya_yukleme": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "medya_silme": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "toplam_post": 4,
+       "toplam_kabul_program": 4,
+       "toplam_meta_ileti": 4,
+       "toplam_medya_yukleme": 4
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-11-03T10:00:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 2,
+        "toplam_kabul": 2,
+        "pencere_farkli_alici": {
+         "W1": 0
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi"
+        }
+       },
+       "K2": {
+        "t": "2026-11-29T10:30:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Teslim Edildi": 2
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 3,
+        "pencere_farkli_alici": {
+         "W1": 0
+        },
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T3": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi",
+         "T3/C": "Teslim Edildi"
+        }
+       },
+       "K3": {
+        "t": "2026-11-29T12:00:00+03:00",
+        "durum_sayilari": {
+         "Süresi Doldu": 1,
+         "Teslim Edildi": 2
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 3,
+        "pencere_farkli_alici": {
+         "W1": 0
+        },
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T3": "aktif"
+        },
+        "isler": {
+         "T1/A": "Süresi Doldu",
+         "T1/B": "Teslim Edildi",
+         "T3/C": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        },
+        "2026-11": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Süresi Doldu",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T3/C": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905343334455",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Zeynep Demir",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "0,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Zeynep Demir",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "0.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Zeynep Demir ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T4/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "W1-02-30-gun-dolmadan-daha-once-yine-de-gonder",
+   "baslik": "W1",
+   "aciklama": "Meta bildirmez (30 gün): A Gönderildi (teslim yok); 29. gün aynı dönem 'Daha Önce Gönderildi' (almış olabilir — İLKEYLE 2), T2 oluşmaz; uyarıda 'Yine de Gönder' ile A'ya ikinci ileti gider (çıkmaz yok — İLKEYLE 4)",
+   "kaynak": "W1 (Y10-1/6) + R3 + ilke (2), (4)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+29d",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+29d1m",
+      "tur": "baslat",
+      "etiket": "T3",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "onceki": "gonder",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+29d2h",
+      "tur": "kontrol",
+      "ad": "K1"
+     }
+    ],
+    "bitis": "+29d3h",
+    "meta_davranis": {
+     "kanca": {
+      "T1/A": [
+       [
+        "sent",
+        "+1s"
+       ]
+      ],
+      "A": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ],
+      "B": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       },
+       "T3": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "kontroller.K1.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi",
+       "T3/A": "Teslim Edildi"
+      },
+      "meta.post": {
+       "A": 2,
+       "B": 1
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        },
+        "2026-11": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       },
+       "T3": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       },
+       "T3": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Gönderildi": 1,
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "A": 2,
+        "B": 1
+       },
+       "kabul": {
+        "A": 2,
+        "B": 1
+       },
+       "meta_ileti": {
+        "A": 2,
+        "B": 1
+       },
+       "medya_yukleme": {
+        "A": 2,
+        "B": 1
+       },
+       "medya_silme": {
+        "A": 1,
+        "B": 1
+       },
+       "toplam_post": 3,
+       "toplam_kabul_program": 3,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 3
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-11-28T12:00:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Teslim Edildi": 2
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 3,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T3": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi",
+         "T3/A": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        },
+        "2026-11": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Gönderildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T3/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "W1-03-meta-bildirir-12-sa-sablon-basina",
+   "baslik": "W1",
+   "aciklama": "Meta listede ekstre için 12 sa bildirir, Ödeme Hatırlatma için bildirmez: A'nın ekstresi 12 + 1 sa'ten sonra Süresi Doldu (PDF silinir), D'nin hatırlatması 4. günde hâlâ Gönderildi (30 gün); Süresi Doldu'dan sonra A'ya aynı dönem ekstre yeniden gider",
+   "kaynak": "W1 (Y10-1/8) + §7a 16 + K3/P3",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     },
+     {
+      "id": "D",
+      "ad": "Hasan Çelik",
+      "telefon": "0535 444 55 66",
+      "hareketler": [
+       {
+        "tarih": "2026-10-10",
+        "borc": 750,
+        "alacak": 0
+       }
+      ],
+      "vadeler": [
+       {
+        "vade": "2026-10-10",
+        "kalan": 750
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+1m",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "D"
+      ],
+      "sablon": "hatirlatma"
+     },
+     {
+      "t": "+11h30m",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+13h30m",
+      "tur": "kontrol",
+      "ad": "K2"
+     },
+     {
+      "t": "+14h",
+      "tur": "baslat",
+      "etiket": "T3",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+4d",
+      "tur": "kontrol",
+      "ad": "K3"
+     }
+    ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    },
+    "meta_davranis": {
+     "kanca": {
+      "T1/A": [
+       [
+        "sent",
+        "+1s"
+       ]
+      ],
+      "T2/D": [
+       [
+        "sent",
+        "+1s"
+       ]
+      ],
+      "A": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ],
+      "B": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi",
+       "T2/D": "Gönderildi"
+      },
+      "kontroller.K2.isler": {
+       "T1/A": "Süresi Doldu",
+       "T1/B": "Teslim Edildi",
+       "T2/D": "Gönderildi"
+      },
+      "kontroller.K3.isler": {
+       "T1/A": "Süresi Doldu",
+       "T1/B": "Teslim Edildi",
+       "T2/D": "Gönderildi",
+       "T3/A": "Teslim Edildi"
+      },
+      "elenen": {},
+      "isler.T1/A.medya_silme": 1,
+      "isler.T2/D.durum": "Gönderildi",
+      "meta.post": {
+       "A": 2,
+       "B": 1,
+       "D": 1
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       },
+       "T2": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       },
+       "T3": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Gönderildi": 1,
+       "Süresi Doldu": 1,
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "A": 2,
+        "B": 1,
+        "D": 1
+       },
+       "kabul": {
+        "A": 2,
+        "B": 1,
+        "D": 1
+       },
+       "meta_ileti": {
+        "A": 2,
+        "B": 1,
+        "D": 1
+       },
+       "medya_yukleme": {
+        "A": 2,
+        "B": 1,
+        "D": 0
+       },
+       "medya_silme": {
+        "A": 2,
+        "B": 1,
+        "D": 0
+       },
+       "toplam_post": 4,
+       "toplam_kabul_program": 4,
+       "toplam_meta_ileti": 4,
+       "toplam_medya_yukleme": 3
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-30T21:30:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 2,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 3,
+        "pencere_farkli_alici": {
+         "W1": 3
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi",
+         "T2/D": "Gönderildi"
+        }
+       },
+       "K2": {
+        "t": "2026-10-30T23:30:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Süresi Doldu": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 3,
+        "pencere_farkli_alici": {
+         "W1": 3
+        },
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
+        "isler": {
+         "T1/A": "Süresi Doldu",
+         "T1/B": "Teslim Edildi",
+         "T2/D": "Gönderildi"
+        }
+       },
+       "K3": {
+        "t": "2026-11-03T10:00:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Süresi Doldu": 1,
+         "Teslim Edildi": 2
+        },
+        "toplam_post": 4,
+        "toplam_kabul": 4,
+        "pencere_farkli_alici": {
+         "W1": 0
+        },
+        "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif",
+         "T3": "aktif"
+        },
+        "isler": {
+         "T1/A": "Süresi Doldu",
+         "T1/B": "Teslim Edildi",
+         "T2/D": "Gönderildi",
+         "T3/A": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Süresi Doldu",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T2/D": {
+        "durum": "Gönderildi",
+        "telefon": "+905354445566",
+        "sablon": "destekofis_odeme_hatirlatma",
+        "degiskenler": [
+         "Hasan Çelik",
+         "Deneme Ticaret Ltd. Şti.",
+         "10.10.2026",
+         "750,00 TL",
+         "750,00 TL"
+        ],
+        "pdf": null,
+        "dosya_adi": null,
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 0,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T3/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "W1-04-ay-sonu-12-sa-gec-teslim",
+   "baslik": "W1",
+   "aciklama": "31.10 20:00 gönderim, Meta 12 sa bildirir: 01.11 07:30'da Gönderildi, 09:30'da Süresi Doldu; 02.11'de geç teslim → Teslim Edildi ('Bu Ay' Kasım); 03.11 aynı dönem 'Daha Önce Gönderildi' (son 31.10)",
+   "kaynak": "W1 (Y10-1) + §7a 17/19 + J1 + H4",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-31T20:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+11h30m",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+13h30m",
+      "tur": "kontrol",
+      "ad": "K2"
+     },
+     {
+      "t": "+3d",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     }
+    ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    },
+    "meta_davranis": {
+     "kanca": {
+      "A": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+2d"
+       ]
+      ],
+      "B": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi"
+      },
+      "kontroller.K2.isler": {
+       "T1/A": "Süresi Doldu",
+       "T1/B": "Teslim Edildi"
+      },
+      "isler.T1/A.durum": "Teslim Edildi",
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-31"
+       }
+      },
+      "meta.post": {
+       "A": 1,
+       "B": 1
+      },
+      "meta.medya_silme": {
+       "A": 1,
+       "B": 1
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        },
+        "2026-11": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-31"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       }
+      },
+      "durum_sayilari": {
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "A": 1,
+        "B": 1
+       },
+       "kabul": {
+        "A": 1,
+        "B": 1
+       },
+       "meta_ileti": {
+        "A": 1,
+        "B": 1
+       },
+       "medya_yukleme": {
+        "A": 1,
+        "B": 1
+       },
+       "medya_silme": {
+        "A": 1,
+        "B": 1
+       },
+       "toplam_post": 2,
+       "toplam_kabul_program": 2,
+       "toplam_meta_ileti": 2,
+       "toplam_medya_yukleme": 2
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-11-01T07:30:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 2,
+        "toplam_kabul": 2,
+        "pencere_farkli_alici": {
+         "W1": 2
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi"
+        }
+       },
+       "K2": {
+        "t": "2026-11-01T09:30:00+03:00",
+        "durum_sayilari": {
+         "Süresi Doldu": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 2,
+        "toplam_kabul": 2,
+        "pencere_farkli_alici": {
+         "W1": 2
+        },
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Süresi Doldu",
+         "T1/B": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        },
+        "2026-11": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "W1-05-varsayilan-30-gun-meta-bekletti-son-kabulden",
+   "baslik": "W1",
+   "aciklama": "Meta bildirmez (30 gün); A Meta Bekletti, 24 sa sonra 2. deneme kabul (yalnız 'sent'): 30 gün + 12 sa'te hâlâ Gönderildi (süre 2. kabulden), 31 gün + 2 sa'te Süresi Doldu; aynı medya 2. denemede kullanılır, 30 günü dolduğu için Meta'da silme 0",
+   "kaynak": "W1 (Y10-1/3/7) + J4 + §7a 14/15",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     },
+     {
+      "id": "C",
+      "ad": "Zeynep Demir",
+      "telefon": "0534 333 44 55",
+      "hareketler": [
+       {
+        "tarih": "2026-08-01",
+        "borc": 300,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-09-01",
+        "borc": 0,
+        "alacak": 300
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+29d",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "C"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+30d12h",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+31d2h",
+      "tur": "kontrol",
+      "ad": "K2"
+     }
+    ],
+    "bitis": "+31d3h",
+    "meta_davranis": {
+     "kanca": {
+      "A": {
+       "1": [
+        [
+         "sent",
+         "+1s"
+        ],
+        [
+         "failed",
+         "+10s",
+         {
+          "kod": 131049
+         }
+        ]
+       ],
+       "2": [
+        [
+         "sent",
+         "+1s"
+        ]
+       ]
+      },
+      "B": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ],
+      "C": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi",
+       "T2/C": "Teslim Edildi"
+      },
+      "kontroller.K2.isler": {
+       "T1/A": "Süresi Doldu",
+       "T1/B": "Teslim Edildi",
+       "T2/C": "Teslim Edildi"
+      },
+      "isler.T1/A.medya_yukleme": 1,
+      "isler.T1/A.medya_silme": 0,
+      "meta.post": {
+       "A": 2,
+       "B": 1,
+       "C": 1
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {},
+      "olusmadi": [],
+      "ayni_istek": {},
+      "onceki_uyari": {},
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       },
+       "T2": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Süresi Doldu": 1,
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "kabul": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "meta_ileti": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "medya_yukleme": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "medya_silme": {
+        "A": 0,
+        "B": 1,
+        "C": 1
+       },
+       "toplam_post": 4,
+       "toplam_kabul_program": 4,
+       "toplam_meta_ileti": 4,
+       "toplam_medya_yukleme": 3
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-11-29T22:00:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Teslim Edildi": 2
+        },
+        "toplam_post": 4,
+        "toplam_kabul": 4,
+        "pencere_farkli_alici": {
+         "W1": 0
+        },
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi",
+         "T2/C": "Teslim Edildi"
+        }
+       },
+       "K2": {
+        "t": "2026-11-30T12:00:00+03:00",
+        "durum_sayilari": {
+         "Süresi Doldu": 1,
+         "Teslim Edildi": 2
+        },
+        "toplam_post": 4,
+        "toplam_kabul": 4,
+        "pencere_farkli_alici": {
+         "W1": 0
+        },
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T2": "aktif"
+        },
+        "isler": {
+         "T1/A": "Süresi Doldu",
+         "T1/B": "Teslim Edildi",
+         "T2/C": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        },
+        "2026-11": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Süresi Doldu",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 2,
+        "kabul": 2,
+        "meta_ileti": 2,
+        "medya_yukleme": 1,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T2/C": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905343334455",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Zeynep Demir",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "0,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Zeynep Demir",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "0.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Zeynep Demir ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "W2-01-kabulde-bilinmiyor-sonra-12-sa",
+   "baslik": "W2",
+   "aciklama": "Kabul anında Meta listede süre bildirmez (30 gün); 14 sa sonra liste 12 sa bildirir: A Süresi Doldu OLMAZ (Gönderildi kalır), 16. saatte aynı dönem 'Daha Önce Gönderildi' (ikinci ileti gitmez), uyarıda 'Yine de Gönder' ile gider; liste değiştikten sonra kabul edilen C yeni süreyle (12 sa) Süresi Doldu",
+   "kaynak": "W2 (Y10-10/11/12) + W1 + R3 + ilke (2), (4) + W3",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     },
+     {
+      "id": "C",
+      "ad": "Zeynep Demir",
+      "telefon": "0534 333 44 55",
+      "hareketler": [
+       {
+        "tarih": "2026-08-01",
+        "borc": 300,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-09-01",
+        "borc": 0,
+        "alacak": 300
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+14h",
+      "tur": "meta_sablon",
+      "ad": "destekofis_ekstre",
+      "teslim_suresi_sn": 43200
+     },
+     {
+      "t": "+15h",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+16h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+16h1m",
+      "tur": "baslat",
+      "etiket": "T3",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "onceki": "gonder",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+16h2m",
+      "tur": "baslat",
+      "etiket": "T4",
+      "secim": [
+       "C"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+30h",
+      "tur": "kontrol",
+      "ad": "K2"
+     }
+    ],
+    "meta_davranis": {
+     "kanca": {
+      "T1/A": [
+       [
+        "sent",
+        "+1s"
+       ]
+      ],
+      "T4/C": [
+       [
+        "sent",
+        "+1s"
+       ]
+      ],
+      "A": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ],
+      "B": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi"
+      },
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       },
+       "T3": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "kontroller.K2.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi",
+       "T3/A": "Teslim Edildi",
+       "T4/C": "Süresi Doldu"
+      },
+      "isler.T1/A.durum": "Gönderildi",
+      "isler.T1/A.medya_silme": 0,
+      "isler.T4/C.medya_silme": 1,
+      "meta.post": {
+       "A": 2,
+       "B": 1,
+       "C": 1
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       },
+       "T3": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       },
+       "T3": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       },
+       "T4": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Gönderildi": 1,
+       "Süresi Doldu": 1,
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "kabul": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "meta_ileti": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "medya_yukleme": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+       },
+       "medya_silme": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "toplam_post": 4,
+       "toplam_kabul_program": 4,
+       "toplam_meta_ileti": 4,
+       "toplam_medya_yukleme": 4
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-31T01:00:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 2,
+        "toplam_kabul": 2,
+        "pencere_farkli_alici": {
+         "W1": 2
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi"
+        }
+       },
+       "K2": {
+        "t": "2026-10-31T16:00:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Süresi Doldu": 1,
+         "Teslim Edildi": 2
+        },
+        "toplam_post": 4,
+        "toplam_kabul": 4,
+        "pencere_farkli_alici": {
+         "W1": 2
+        },
+        "medya_silme": 3,
+        "toplular": {
+         "T1": "aktif",
+         "T3": "aktif",
+         "T4": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi",
+         "T3/A": "Teslim Edildi",
+         "T4/C": "Süresi Doldu"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Gönderildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T3/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T4/C": {
+        "durum": "Süresi Doldu",
+        "telefon": "+905343334455",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Zeynep Demir",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "0,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Zeynep Demir",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "0.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Zeynep Demir ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "W2-02-kabulde-30-gun-sonra-12-sa-kisalir",
+   "baslik": "W2",
+   "aciklama": "Kabul anında Meta listede 30 gün bildirir; 20 sa sonra 12 sa'e kısalır: önceden kabul edilmiş A eski süreyle (30 gün) — 21. saatte Gönderildi, 22. saatte aynı dönem 'Daha Önce Gönderildi'; kısalmadan sonra kabul edilen C 12 + 1 sa'ten sonra Süresi Doldu",
+   "kaynak": "W2 (Y10-10/12) + W1 + R3 + W3",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     },
+     {
+      "id": "C",
+      "ad": "Zeynep Demir",
+      "telefon": "0534 333 44 55",
+      "hareketler": [
+       {
+        "tarih": "2026-08-01",
+        "borc": 300,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-09-01",
+        "borc": 0,
+        "alacak": 300
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+20h",
+      "tur": "meta_sablon",
+      "ad": "destekofis_ekstre",
+      "teslim_suresi_sn": 43200
+     },
+     {
+      "t": "+21h",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+22h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+22h1m",
+      "tur": "baslat",
+      "etiket": "T3",
+      "secim": [
+       "C"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+36h",
+      "tur": "kontrol",
+      "ad": "K2"
+     }
+    ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 2592000
+      }
+     }
+    },
+    "meta_davranis": {
+     "kanca": {
+      "T1/A": [
+       [
+        "sent",
+        "+1s"
+       ]
+      ],
+      "T3/C": [
+       [
+        "sent",
+        "+1s"
+       ]
+      ],
+      "A": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ],
+      "B": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi"
+      },
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "kontroller.K2.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi",
+       "T3/C": "Süresi Doldu"
+      },
+      "isler.T1/A.durum": "Gönderildi",
+      "meta.post": {
+       "A": 1,
+       "B": 1,
+       "C": 1
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       },
+       "T3": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Gönderildi": 1,
+       "Süresi Doldu": 1,
+       "Teslim Edildi": 1
+      },
+      "meta": {
+       "post": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "kabul": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "meta_ileti": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "medya_yukleme": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+       },
+       "medya_silme": {
+        "A": 0,
+        "B": 1,
+        "C": 1
+       },
+       "toplam_post": 3,
+       "toplam_kabul_program": 3,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 3
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-31T07:00:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 2,
+        "toplam_kabul": 2,
+        "pencere_farkli_alici": {
+         "W1": 2
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi"
+        }
+       },
+       "K2": {
+        "t": "2026-10-31T22:00:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Süresi Doldu": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 3,
+        "pencere_farkli_alici": {
+         "W1": 1
+        },
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T3": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi",
+         "T3/C": "Süresi Doldu"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 1,
+         "yaklasik_usd": "0.0009"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Gönderildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T3/C": {
+        "durum": "Süresi Doldu",
+        "telefon": "+905343334455",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Zeynep Demir",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "0,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Zeynep Demir",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 0,
+         "donem_sonu_bakiye": "0.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Zeynep Demir ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "ad": "W3-01-kabulde-12-sa-sonra-30-gun-uzar",
+   "baslik": "W3",
+   "aciklama": "Kabul anında Meta listede 12 sa bildirir; 6. saatte liste 30 gün'e uzar: önceden kabul edilmiş A uzun süreyle — 14. saatte Süresi Doldu YOK (Gönderildi), 15. saatte aynı dönem 'Daha Önce Gönderildi' (ikinci ileti gitmez), uyarıda 'Yine de Gönder' ile gider",
+   "kaynak": "W3 (Y10-14) + W2 + W1 + R3 + ilke (2), (4)",
+   "serbest": [],
+   "girdi": {
+    "baslangic": "2026-10-30T10:00:00+03:00",
+    "cariler": [
+     {
+      "id": "A",
+      "ad": "Ayşe Yılmaz",
+      "telefon": "0532 111 22 33",
+      "hareketler": [
+       {
+        "tarih": "2026-09-10",
+        "borc": 1000,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-05",
+        "borc": 500,
+        "alacak": 0
+       },
+       {
+        "tarih": "2026-10-20",
+        "borc": 0,
+        "alacak": 250
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "ad": "Mehmet Kaya",
+      "telefon": "0533 222 33 44",
+      "hareketler": [
+       {
+        "tarih": "2026-10-15",
+        "borc": 2000,
+        "alacak": 0
+       }
+      ]
+     }
+    ],
+    "olaylar": [
+     {
+      "t": "+0s",
+      "tur": "baslat",
+      "etiket": "T1",
+      "secim": [
+       "A",
+       "B"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+6h",
+      "tur": "meta_sablon",
+      "ad": "destekofis_ekstre",
+      "teslim_suresi_sn": 2592000
+     },
+     {
+      "t": "+14h",
+      "tur": "kontrol",
+      "ad": "K1"
+     },
+     {
+      "t": "+15h",
+      "tur": "baslat",
+      "etiket": "T2",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+15h1m",
+      "tur": "baslat",
+      "etiket": "T3",
+      "secim": [
+       "A"
+      ],
+      "sablon": "ekstre",
+      "onceki": "gonder",
+      "donem": {
+       "bas": "2026-10-01",
+       "son": "2026-10-31"
+      }
+     },
+     {
+      "t": "+2d",
+      "tur": "kontrol",
+      "ad": "K2"
+     }
+    ],
+    "meta": {
+     "sablonlar": {
+      "destekofis_ekstre": {
+       "durum": "APPROVED",
+       "kategori": "UTILITY",
+       "teslim_suresi_sn": 43200
+      }
+     }
+    },
+    "meta_davranis": {
+     "kanca": {
+      "T1/A": [
+       [
+        "sent",
+        "+1s"
+       ]
+      ],
+      "A": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ],
+      "B": [
+       [
+        "sent",
+        "+1s"
+       ],
+       [
+        "delivered",
+        "+5s"
+       ]
+      ]
+     }
+    }
+   },
+   "elle": [
+    {
+     "secim": {},
+     "yollar": {
+      "kontroller.K1.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi"
+      },
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       },
+       "T3": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "kontroller.K2.isler": {
+       "T1/A": "Gönderildi",
+       "T1/B": "Teslim Edildi",
+       "T3/A": "Teslim Edildi"
+      },
+      "isler.T1/A.durum": "Gönderildi",
+      "isler.T1/A.medya_silme": 0,
+      "meta.post": {
+       "A": 2,
+       "B": 1
+      }
+     }
+    }
+   ],
+   "beklenen": [
+    {
+     "secimler": [
+      {}
+     ],
+     "sonuc": {
+      "baslamadi": {},
+      "elenen": {
+       "T2": {
+        "A": "daha_once_gonderildi"
+       }
+      },
+      "olusmadi": [
+       "T2"
+      ],
+      "ayni_istek": {},
+      "onceki_uyari": {
+       "T2": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       },
+       "T3": {
+        "sayi": 1,
+        "son": "2026-10-30"
+       }
+      },
+      "toplular": {
+       "T1": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 2
+       },
+       "T3": {
+        "durum": "aktif",
+        "neden": null,
+        "is_sayisi": 1
+       }
+      },
+      "durum_sayilari": {
+       "Gönderildi": 1,
+       "Teslim Edildi": 2
+      },
+      "meta": {
+       "post": {
+        "A": 2,
+        "B": 1
+       },
+       "kabul": {
+        "A": 2,
+        "B": 1
+       },
+       "meta_ileti": {
+        "A": 2,
+        "B": 1
+       },
+       "medya_yukleme": {
+        "A": 2,
+        "B": 1
+       },
+       "medya_silme": {
+        "A": 1,
+        "B": 1
+       },
+       "toplam_post": 3,
+       "toplam_kabul_program": 3,
+       "toplam_meta_ileti": 3,
+       "toplam_medya_yukleme": 3
+      },
+      "kontroller": {
+       "K1": {
+        "t": "2026-10-31T00:00:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Teslim Edildi": 1
+        },
+        "toplam_post": 2,
+        "toplam_kabul": 2,
+        "pencere_farkli_alici": {
+         "W1": 2
+        },
+        "medya_silme": 1,
+        "toplular": {
+         "T1": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi"
+        }
+       },
+       "K2": {
+        "t": "2026-11-01T10:00:00+03:00",
+        "durum_sayilari": {
+         "Gönderildi": 1,
+         "Teslim Edildi": 2
+        },
+        "toplam_post": 3,
+        "toplam_kabul": 3,
+        "pencere_farkli_alici": {
+         "W1": 0
+        },
+        "medya_silme": 2,
+        "toplular": {
+         "T1": "aktif",
+         "T3": "aktif"
+        },
+        "isler": {
+         "T1/A": "Gönderildi",
+         "T1/B": "Teslim Edildi",
+         "T3/A": "Teslim Edildi"
+        }
+       }
+      },
+      "bu_ay": {
+       "W1": {
+        "2026-10": {
+         "teslim": 2,
+         "yaklasik_usd": "0.0018"
+        }
+       }
+      },
+      "degismez": {
+       "silinmis_medyayla_gonderim": 0,
+       "kesin_oncesi_medya_silme": 0,
+       "artisiz_numaraya_gonderim": 0,
+       "lisanssiz_gonderim": 0,
+       "duraklatilmis_toplu_gonderim": 0
+      },
+      "isler": {
+       "T1/A": {
+        "durum": "Gönderildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 0,
+        "atlanma_nedeni": null
+       },
+       "T1/B": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905332223344",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Mehmet Kaya",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "2.000,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Mehmet Kaya",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "0.00",
+         "hareket_sayisi": 1,
+         "donem_sonu_bakiye": "2000.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Mehmet Kaya ",
+         "son_ek": ".pdf"
+        },
+        "hata_kodu": null,
+        "post": 1,
+        "kabul": 1,
+        "meta_ileti": 1,
+        "medya_yukleme": 1,
+        "medya_silme": 1,
+        "atlanma_nedeni": null
+       },
+       "T3/A": {
+        "durum": "Teslim Edildi",
+        "telefon": "+905321112233",
+        "sablon": "destekofis_ekstre",
+        "degiskenler": [
+         "Ayşe Yılmaz",
+         "Deneme Ticaret Ltd. Şti.",
+         "01.10.2026 – 31.10.2026",
+         "1.250,00 TL"
+        ],
+        "pdf": {
+         "cari_ad": "Ayşe Yılmaz",
+         "donem_bas": "2026-10-01",
+         "donem_son": "2026-10-31",
+         "devir": "1000.00",
+         "hareket_sayisi": 2,
+         "donem_sonu_bakiye": "1250.00"
+        },
+        "dosya_adi": {
+         "on_ek": "Ekstre Ayşe Yılmaz ",
          "son_ek": ".pdf"
         },
         "hata_kodu": null,

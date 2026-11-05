@@ -1,0 +1,86 @@
+TAP version 13
+# Subtest: store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX)
+    # Subtest: (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı
+    ok 1 - (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı
+      ---
+      duration_ms: 14.302916
+      type: 'test'
+      ...
+    # Subtest: (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı
+    ok 2 - (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı
+      ---
+      duration_ms: 29.845993
+      type: 'test'
+      ...
+    # a2 gerçek (Linux RLIMIT_FSIZE 141136 B): store.tx hatası "disk I/O error" (ERR_SQLITE_ERROR 778); deyimler ["BEGIN IMMEDIATE","COMMIT"]; sonra db.isTransaction=false
+    # Subtest: (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır
+    ok 3 - (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır
+      ---
+      duration_ms: 8.342397
+      type: 'test'
+      ...
+    # Subtest: (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0
+    ok 4 - (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0
+      ---
+      duration_ms: 7.859399
+      type: 'test'
+      ...
+    # Subtest: (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür
+    ok 5 - (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür
+      ---
+      duration_ms: 6.92792
+      type: 'test'
+      ...
+    # Subtest: (a6) işlemin içinde bağlantı kapanır → asıl hata fırlatılır, geri alma denenmez; store.inTransaction fırlatmaz ve false (geri alma düşüp işlem açık kaldıktan sonra kapanınca da)
+    ok 6 - (a6) işlemin içinde bağlantı kapanır → asıl hata fırlatılır, geri alma denenmez; store.inTransaction fırlatmaz ve false (geri alma düşüp işlem açık kaldıktan sonra kapanınca da)
+      ---
+      duration_ms: 12.952205
+      type: 'test'
+      ...
+    # Subtest: (a7) dışarıdan açılan işlem (iş parçacığı anlık görüntü deseni) store.inTransaction'ı true yapmaz; store.tx içinde true; geri alma düşüp kapanan işlemden sonra da
+    ok 7 - (a7) dışarıdan açılan işlem (iş parçacığı anlık görüntü deseni) store.inTransaction'ı true yapmaz; store.tx içinde true; geri alma düşüp kapanan işlemden sonra da
+      ---
+      duration_ms: 14.393498
+      type: 'test'
+      ...
+    # Subtest: (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur
+    ok 8 - (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur
+      ---
+      duration_ms: 7.669323
+      type: 'test'
+      ...
+    # Subtest: (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez
+    ok 9 - (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez
+      ---
+      duration_ms: 8.250372
+      type: 'test'
+      ...
+    # Subtest: (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz
+    ok 10 - (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz
+      ---
+      duration_ms: 7.274015
+      type: 'test'
+      ...
+    # Subtest: (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)
+    ok 11 - (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)
+      ---
+      duration_ms: 626.265421
+      type: 'test'
+      ...
+    # FK: cari 500; günlük ["API hatası POST /api/workspace/accounts: FOREIGN KEY constraint failed"]
+    # FSIZE (2394776 B): cari 500; günlük ["API hatası POST /api/workspace/accounts: disk I/O error"]
+    1..11
+ok 1 - store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX)
+  ---
+  duration_ms: 746.025114
+  type: 'suite'
+  ...
+1..1
+# tests 11
+# suites 1
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1086.281998

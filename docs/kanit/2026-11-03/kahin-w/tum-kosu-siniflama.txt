@@ -1,0 +1,62 @@
+senaryo 291; tam eşit 25; yalnız gösterim sınıfı (davranış farkı 0) 196; davranış farkı olan 70
+davranış farkı olan, TTL/W kümesi: ['CIFT-16-daha-once-suresi-doldu', 'ICERIK-10-ttl-sonrasi-teslim', 'TARIH-02-ttl-sonu', 'TARIH-03b-kancasiz-yol-calisiyor', 'J1-02-suresi-doldu-sonra-teslim-daha-once', 'J4-01-suresi-doldu-son-kabulden-meta-bekletti', 'J4-02-suresi-doldu-son-kabulden-yine-de-gonder', 'W1-03-meta-bildirir-12-sa-sablon-basina', 'W1-04-ay-sonu-12-sa-gec-teslim', 'W2-01-kabulde-bilinmiyor-sonra-12-sa', 'W2-02-kabulde-30-gun-sonra-12-sa-kisalir']
+davranış farkı olan, GUV-09 (imzasız olay): ['GUV-09-sahte-gercek-wamid']
+davranış farkı olan, W'DEN BAĞIMSIZ (58; W öncesi programda bb68798a AYNI fark listesi):
+  CIFT-02-yanitsiz-yine-de-gonder: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+  CIFT-09-basarisizlari-yeniden-dene: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+  CIFT-13-veri-tasindi: 1 — bu_ay.W1: beklenen nesne, program '<YOK>'
+  KAYIP-05-meta-ulasilamaz: 26 — toplular.T1: beklenen nesne, program '<YOK>'
+  KAYIP-06-meta-ulasilamaz-uc-kisi: 39 — toplular.T1: beklenen nesne, program '<YOK>'
+  ICERIK-04-turkce-emoji-satir-sonu: 2 — isler.T1/S.pdf.cari_ad: beklenen 'Şükrü Öğüt 😀 Çağ', program 'ŞükrüÖğüt   Çağ'
+  ICERIK-08-tum-hareketler: 2 — isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+  ICERIK-09-kuyrukta-bakiye-degisti: 3 — isler.T2/B.degiskenler: beklenen ['Mehmet Kaya', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '2.000,00 TL'], program ['Mehmet Kaya', 'Denem
+  ALICI-131049-iki-kez: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+  SINIR-05-pencerede-sayili-alici: 1 — kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 1
+  GUV-10-yetki-ve-baglanti-sirasi: 2 — baslamadi.T1: beklenen 'bagli_degil', program 'lisans_salt_okunur'
+  GUV-11-yetki-lisans-onay-sirasi: 1 — baslamadi.T1: beklenen 'yetki_yok', program 'lisans_salt_okunur'
+  K1-05-son-3-ay-7-gun: 2 — isler.T2/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+  K1-06-tum-hareketler-7-gun: 4 — isler.T1/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+  K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra: 4 — isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+  K6-01-yeniden-denemesi-belirsiz-elenir: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+  K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+  K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+  D3-02-yine-de-gonder-7-gun-yeni-gonderimden: 4 — isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+  D6-03-asilmis-belirsiz-son-3-ay-7-gun: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+  D8-01-tasinan-veride-dosyadaki-ileti-sayilir: 1 — bu_ay.W1: beklenen nesne, program '<YOK>'
+  D8-02-tasinan-veride-yine-de-gonder: 2 — bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+  E1-01-dosyada-ve-defterde-belirsiz: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 2
+  E2-03-yeniden-denemede-kuyrukta-once-belirsiz: 4 — kontroller.K1.isler.T2/A: beklenen 'Sınır Nedeniyle Bekliyor', program 'Teslim Edildi'
+  E4-02-tum-hareketler-sonraki-teslim-7-gun: 2 — isler.T1/A.pdf.donem_bas: beklenen '2026-09-10', program None
+  G3-03-tasinan-teslim-son-3-ay-7-gun: 1 — bu_ay.W1.2026-10: beklenen nesne, program '<YOK>'
+  G3-04-tasinan-asil-isin-yine-de-gonder-siniri: 2 — bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+  G4-01-sifirlama-meta-bekletti-sayilmaz: 14 — toplular.T1: beklenen nesne, program '<YOK>'
+  G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir: 8 — toplular.T1: beklenen nesne, program '<YOK>'
+  G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 0, program 1
+  G6-01-son-3-ay-ozel-aralik-7-gun: 5 — elenen.T2: beklenen nesne, program '<YOK>'
+  G6-02-ozel-aralik-tum-hareketler-kisiye-gore: 2 — isler.T2/Z.pdf.donem_bas: beklenen '2026-02-10', program None
+  G6-04-tum-hareketler-belirsiz-ozel-aralik: 2 — isler.T1/Y.pdf.donem_bas: beklenen '2026-01-15', program None
+  G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu: 15 — elenen.T2: beklenen nesne, program '<YOK>'
+  H2-02-tasima-gonderiliyor-gec-kanca: 10 — elenen.T2.B: beklenen 'daha_once_gonderildi', program 'sonucu_belirsiz'
+  H3-01-geri-yukleme-dosyasiz-gec-kabul: 1 — meta.toplam_kabul_program: beklenen 1, program 2
+  J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir: 2 — kontroller.K1.durum_sayilari.Duraklatıldı: beklenen 1, program '<YOK>'
+  J1-03-silinmis-sirket-gec-bildirim: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 3, program 2
+  J1-04-asilmis-belirsiz-gec-teslim-iki-deneme: 2 — meta.toplam_kabul_program: beklenen 1, program 2
+  J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz: 1 — meta.toplam_kabul_program: beklenen 1, program 2
+  J3-02-sifirlama-sonrasi-gec-failed-yeniden-gonderilir: 15 — toplular.T1: beklenen nesne, program '<YOK>'
+  J3-03-asilmis-belirsiz-gec-failed-kisi-almadi: 2 — meta.toplam_kabul_program: beklenen 2, program 3
+  J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz: 3 — meta.toplam_kabul_program: beklenen 1, program 2
+  J6-01-yanit-beklenirken-taninmayan-503-yineleme: 1 — kanca_yanitlari.503: beklenen 3, program 0
+  J8-01-tum-hareketler-bu-ay-ayni-gun: 4 — isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+  J8-02-tum-hareketler-gecen-ay-ayni-gun: 4 — isler.T1/Q.pdf.donem_bas: beklenen '2026-10-01', program None
+  J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay: 2 — isler.T1/S.pdf.donem_bas: beklenen '2026-11-01', program None
+  J8-04-tum-hareketler-bekleyen-bu-ay-zaten-kuyrukta: 4 — isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+  J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi: 2 — isler.T1/Q.pdf.donem_bas: beklenen '2026-10-01', program None
+  J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez: 27 — durum_sayilari.Atlandı: beklenen 1, program '<YOK>'
+  J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez: 9 — meta.toplam_kabul_program: beklenen 0, program 1
+  J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez: 13 — meta.medya_yukleme.B: beklenen 1, program 2
+  J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider: 1 — kontroller.K1.pencere_farkli_alici.W1: beklenen 1, program 0
+  J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun: 4 — isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None
+  J11-02-hareketsiz-cari-metni-ve-eslik: 4 — isler.T1/N1.pdf.donem_bas: beklenen '2026-11-01', program None
+  J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir: 4 — isler.T1/R.pdf.donem_bas: beklenen '2026-10-15', program None
+  J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez: 4 — isler.T1/F2.pdf.donem_bas: beklenen '2026-10-05', program None
+  J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket: 4 — isler.T1/P.pdf.donem_bas: beklenen '2026-11-01', program None

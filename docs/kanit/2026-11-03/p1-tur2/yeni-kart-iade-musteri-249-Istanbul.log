@@ -1,0 +1,109 @@
+TAP version 13
+# Subtest: P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026)
+    # Subtest: kartla ödemesi olmayan müşteri: POST cardRefund 400 card-refund-no-payment, satır yok, kart değişmez; nakit / havale / POS hareketi bayrak açmaz (false)
+    ok 1 - kartla ödemesi olmayan müşteri: POST cardRefund 400 card-refund-no-payment, satır yok, kart değişmez; nakit / havale / POS hareketi bayrak açmaz (false)
+      ---
+      duration_ms: 677.921843
+      type: 'test'
+      ...
+    # Subtest: müşteriye kartla Ödeme 400 (KART1) → Kredi Kartına İade 500 (ödemeden büyük, üst sınır yok) seçilen KART2'ye, POS satışı yok; aynı adlı ikinci müşteride 400; bayrak cari bazında
+    ok 2 - müşteriye kartla Ödeme 400 (KART1) → Kredi Kartına İade 500 (ödemeden büyük, üst sınır yok) seçilen KART2'ye, POS satışı yok; aynı adlı ikinci müşteride 400; bayrak cari bazında
+      ---
+      duration_ms: 580.718896
+      type: 'test'
+      ...
+    # Subtest: silinmemiş: kartla ödeme silinince yeni Kredi Kartına İade 400 ve bayrak false; var olan iade satırının düzeltmesi (PUT, alan yok ya da cardRefund true) 200 ve kartta kalır
+    ok 3 - silinmemiş: kartla ödeme silinince yeni Kredi Kartına İade 400 ve bayrak false; var olan iade satırının düzeltmesi (PUT, alan yok ya da cardRefund true) 200 ve kartta kalır
+      ---
+      duration_ms: 555.332611
+      type: 'test'
+      ...
+    # Subtest: tedarikçi ve Diğer türü cari: kartla ödeme olmadan da Kredi Kartına İade 200, tek kart kendiliğinden (değişmedi — gerileme koruması)
+    ok 4 - tedarikçi ve Diğer türü cari: kartla ödeme olmadan da Kredi Kartına İade 200, tek kart kendiliğinden (değişmedi — gerileme koruması)
+      ---
+      duration_ms: 486.391753
+      type: 'test'
+      ...
+    1..4
+ok 1 - P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026)
+  ---
+  duration_ms: 2301.545416
+  type: 'suite'
+  ...
+# Subtest: DÜŞÜK-1 — var olan Kredi Kartına İade satırında kutu kaldırılınca (cardRefund: false) düzeltme uygulanır
+    # Subtest: tek POS: tedarikçi ve kartla ödemeli müşteri — PUT cardRefund:false, tutar aynı → satır POS'a, etkin POS satışı, kart etkisi geri, POS Bekleyen +
+    ok 1 - tek POS: tedarikçi ve kartla ödemeli müşteri — PUT cardRefund:false, tutar aynı → satır POS'a, etkin POS satışı, kart etkisi geri, POS Bekleyen +
+      ---
+      duration_ms: 681.650731
+      type: 'test'
+      ...
+    # Subtest: 2 POS: PUT cardRefund:false + posId POS2 → 200, satır POS2'de (önceden 400 pos-not-for-payment: "POS yalnız tahsilatta ve POS iadesinde kullanılır…")
+    ok 2 - 2 POS: PUT cardRefund:false + posId POS2 → 200, satır POS2'de (önceden 400 pos-not-for-payment: "POS yalnız tahsilatta ve POS iadesinde kullanılır…")
+      ---
+      duration_ms: 572.966364
+      type: 'test'
+      ...
+    # Subtest: alan gönderilmezse (eski istemci) önceki kart bağı sürer; cardRefund:false + Nakit → nakit satır, Kasa +, kart etkisi geri
+    ok 3 - alan gönderilmezse (eski istemci) önceki kart bağı sürer; cardRefund:false + Nakit → nakit satır, Kasa +, kart etkisi geri
+      ---
+      duration_ms: 580.911814
+      type: 'test'
+      ...
+    # Subtest: ters yön (komşu): tek kartta POS tahsilatı satırı Kredi Kartına İade'ye çevrilince (kart kimliği yok, tutar aynı) satır kartta; POS satışı geçersiz
+    ok 4 - ters yön (komşu): tek kartta POS tahsilatı satırı Kredi Kartına İade'ye çevrilince (kart kimliği yok, tutar aynı) satır kartta; POS satışı geçersiz
+      ---
+      duration_ms: 583.207948
+      type: 'test'
+      ...
+    1..4
+ok 2 - DÜŞÜK-1 — var olan Kredi Kartına İade satırında kutu kaldırılınca (cardRefund: false) düzeltme uygulanır
+  ---
+  duration_ms: 2419.435203
+  type: 'suite'
+  ...
+# Subtest: P1 tur 2 — düzeltmede (PUT) kart iadesi kuralları POST'la aynı (dar kontrol DÜŞÜK-1 / DÜŞÜK-2, TEST-1 / TEST-2)
+    # Subtest: DÜŞÜK-1 0 kart: POS ve Nakit tahsilatı PUT cardRefund:true → 400 bank-account-invalid, satır yerinde (POS / Nakit), POS satışı sürer; POST da 400
+    ok 1 - DÜŞÜK-1 0 kart: POS ve Nakit tahsilatı PUT cardRefund:true → 400 bank-account-invalid, satır yerinde (POS / Nakit), POS satışı sürer; POST da 400
+      ---
+      duration_ms: 547.573738
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 tek kart pasif: POS satırı PUT cardRefund:true → 400 bank-account-invalid; var olan iade satırı korunur (açıklama düzeltmesi 200, kartı aynı; tutar değişikliği pasif kartta 400)
+    ok 2 - DÜŞÜK-1 tek kart pasif: POS satırı PUT cardRefund:true → 400 bank-account-invalid; var olan iade satırı korunur (açıklama düzeltmesi 200, kartı aynı; tutar değişikliği pasif kartta 400)
+      ---
+      duration_ms: 637.552654
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-2 müşteri: iade olmayan satır (POS / Nakit) PUT ile Kredi Kartına İade'ye — kartla ödemesi yoksa 400 card-refund-no-payment, varsa 200; var olan iade satırının tutar / tarih / kart düzeltmesi serbest; tedarikçi serbest
+    ok 3 - DÜŞÜK-2 müşteri: iade olmayan satır (POS / Nakit) PUT ile Kredi Kartına İade'ye — kartla ödemesi yoksa 400 card-refund-no-payment, varsa 200; var olan iade satırının tutar / tarih / kart düzeltmesi serbest; tedarikçi serbest
+      ---
+      duration_ms: 797.32455
+      type: 'test'
+      ...
+    # Subtest: TEST-1 yalnız POS İadesi (cari formundan ve Banka → POS İşlemleri'nden; POS'a bağlı çıkış) olan müşteride hasCardPayment false, Kredi Kartına İade POST 400
+    ok 4 - TEST-1 yalnız POS İadesi (cari formundan ve Banka → POS İşlemleri'nden; POS'a bağlı çıkış) olan müşteride hasCardPayment false, Kredi Kartına İade POST 400
+      ---
+      duration_ms: 536.52776
+      type: 'test'
+      ...
+    # Subtest: TEST-2 iade → POS çevirmesinde POS ayrıntısı gövdeden: taksit 3, provizyon no 123456, son 4 hane 4242 (tedarikçi ve kartla ödemeli müşteri)
+    ok 5 - TEST-2 iade → POS çevirmesinde POS ayrıntısı gövdeden: taksit 3, provizyon no 123456, son 4 hane 4242 (tedarikçi ve kartla ödemeli müşteri)
+      ---
+      duration_ms: 729.642431
+      type: 'test'
+      ...
+    1..5
+ok 3 - P1 tur 2 — düzeltmede (PUT) kart iadesi kuralları POST'la aynı (dar kontrol DÜŞÜK-1 / DÜŞÜK-2, TEST-1 / TEST-2)
+  ---
+  duration_ms: 3249.222201
+  type: 'suite'
+  ...
+1..3
+# tests 13
+# suites 3
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8336.672412

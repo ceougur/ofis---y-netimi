@@ -1,0 +1,7 @@
+const fs = require("fs");
+const W = "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad08b374963951ef6";
+const pk = JSON.parse(fs.readFileSync(W + "/package.json", "utf8")).scripts;
+const ci = fs.readFileSync(W + "/.github/workflows/ci.yml", "utf8");
+const ciScripts = new Set([...ci.matchAll(/npm run ([A-Za-z0-9:_-]+)/g)].map(m => m[1]));
+for (const k of Object.keys(pk)) if (k.startsWith("test:") && !ciScripts.has(k)) console.log(k, "=>", pk[k].slice(0, 150));
+console.log("test script:", pk.test.slice(0, 400));

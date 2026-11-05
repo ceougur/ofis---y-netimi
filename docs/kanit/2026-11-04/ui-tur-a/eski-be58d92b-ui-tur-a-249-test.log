@@ -1,0 +1,200 @@
+TAP version 13
+# (node:15698) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 UI tur A: ortak yardımcılar
+    # Subtest: ORTA-1 methodLabel: cardRefund yalnız giriş + kart yolunda "Kredi Kartına İade"; öbür her durum eskisi gibi
+    not ok 1 - ORTA-1 methodLabel: cardRefund yalnız giriş + kart yolunda "Kredi Kartına İade"; öbür her durum eskisi gibi
+      ---
+      duration_ms: 2.303832
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:24:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'POS'
+        - 'Kredi Kartına İade'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Kredi Kartına İade'
+      actual: 'POS'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:25:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: D9 movementBlockText: tek tür, iki tür, üç tür, boş, pasif cari
+    not ok 2 - D9 movementBlockText: tek tür, iki tür, üç tür, boş, pasif cari
+      ---
+      duration_ms: 0.678004
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:35:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'Bu carinin hareketi var: 2 cari hareketi. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).'
+        - 'Bu carinin 2 cari hareketi var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Bu carinin 2 cari hareketi var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).'
+      actual: 'Bu carinin hareketi var: 2 cari hareketi. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:37:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..2
+not ok 1 - 2.4.9 UI tur A: ortak yardımcılar
+  ---
+  duration_ms: 4.347196
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:23:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 UI tur A: Kredi Kartına İade satırının yol adı (komşu yollar) ve silme engeli iletisi (API)
+    # Subtest: ön koşul: satırlar doğru hesaplarda (iade kartta, POS tahsilatı POS'ta); cari kartı işareti; bakiye −850
+    ok 1 - ön koşul: satırlar doğru hesaplarda (iade kartta, POS tahsilatı POS'ta); cari kartı işareti; bakiye −850
+      ---
+      duration_ms: 4.590027
+      type: 'test'
+      ...
+    # Subtest: ORTA-1 Ayrıntılı Cari Ekstre: Yol "Kredi Kartına İade" (iade), "POS" (POS tahsilatı), "Kredi Kartı" (ödeme); ekran = Excel = PDF; toplamlar düz ekstreyle aynı
+    not ok 2 - ORTA-1 Ayrıntılı Cari Ekstre: Yol "Kredi Kartına İade" (iade), "POS" (POS tahsilatı), "Kredi Kartı" (ödeme); ekran = Excel = PDF; toplamlar düz ekstreyle aynı
+      ---
+      duration_ms: 13.786152
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:94:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Yol kolonu: {"Dönem başı bakiye":"","Mal alımı":"","Kartla ödeme":"Kredi Kartı","Karta iade":"POS","Kartla tahsil":"POS"}
+        + actual - expected
+        
+          {
+        +   iade: 'POS',
+        -   iade: 'Kredi Kartına İade',
+            odeme: 'Kredi Kartı',
+            pos: 'POS'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        iade: 'Kredi Kartına İade'
+        pos: 'POS'
+        odeme: 'Kredi Kartı'
+      actual:
+        iade: 'POS'
+        pos: 'POS'
+        odeme: 'Kredi Kartı'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ORTA-1 yol yazmayan çıktılar değişmez: düz Cari Ekstre ve Tüm Cari Hareketleri İşlem "Tahsilat" (POS yok); cari ekstre PDF'inde "POS" yok
+    ok 3 - ORTA-1 yol yazmayan çıktılar değişmez: düz Cari Ekstre ve Tüm Cari Hareketleri İşlem "Tahsilat" (POS yok); cari ekstre PDF'inde "POS" yok
+      ---
+      duration_ms: 27.562067
+      type: 'test'
+      ...
+    # Subtest: ORTA-1 kayıt kartı İşlem Geçmişi: kayda bağlı carinin Kredi Kartına İade satırı cardRefund işaretli, POS tahsilatı ve ödeme işaretsiz; Toplam Tahsilat aynı
+    not ok 4 - ORTA-1 kayıt kartı İşlem Geçmişi: kayda bağlı carinin Kredi Kartına İade satırı cardRefund işaretli, POS tahsilatı ve ödeme işaretsiz; Toplam Tahsilat aynı
+      ---
+      duration_ms: 3.931899
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        işaretler: {"aentry-030d7763-7dcb-4e60-bd60-740d0903db6c":false,"aentry-9644f223-4638-469b-a80f-d44df986b895":false,"aentry-a8bcf405-6db4-4f60-9cd2-633e31c8c417":false}
+        + actual - expected
+        
+          [
+        -   true,
+            false,
+            false,
+        +   false
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: true
+        1: false
+        2: false
+      actual:
+        0: false
+        1: false
+        2: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:144:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D9 silme engeli: "Bu carinin 2 cari hareketi var." / "Bu carinin 1 cari hareketi ve 1 taksit kartı var."
+    not ok 5 - D9 silme engeli: "Bu carinin 2 cari hareketi var." / "Bu carinin 1 cari hareketi ve 1 taksit kartı var."
+      ---
+      duration_ms: 45.31485
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:150:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /^Bu carinin 2 cari hareketi var\. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın/. Input:
+        
+        'Bu carinin hareketi var: 2 cari hareketi. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Bu carinin hareketi var: 2 cari hareketi. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:155:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 2 - 2.4.9 UI tur A: Kredi Kartına İade satırının yol adı (komşu yollar) ve silme engeli iletisi (API)
+  ---
+  duration_ms: 845.487388
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/uia-7k3q9z/eski-be58d92b/test/ui-tur-a-249.test.mjs:46:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 7
+# suites 2
+# pass 2
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1337.113743

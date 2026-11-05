@@ -1,0 +1,48 @@
+{
+  "ad": "p1-tur2/eski-20ca225a-kart-iade-musteri-249",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t2-30952b1f/eski-20ca225a/test/kart-iade-musteri-249.test.mjs",
+  "commit": "be87daab7a797f6f63d07eb3e81203b5d99fd8e6",
+  "dal": "worktree-agent-aabdc4a8158a60ac9",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T22:50:47.116Z",
+  "sure_sn": 10.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 10,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "P1 tur 2 — düzeltmede (PUT) kart iadesi kuralları POST'la aynı (dar kontrol DÜŞÜK-1 / DÜŞÜK-2, TEST-1 / TEST-2) › DÜŞÜK-1 0 kart: POS ve Nakit tahsilatı PUT cardRefund:true → 400 bank-account-invalid, satır yerinde (POS / Nakit), POS satışı sürer; POST da 400",
+      "konum": "test/kart-iade-musteri-249.test.mjs:228:3",
+      "hata": "0 kart: POS satırı Kredi Kartına İade'ye: 200 {\"id\":\"account-63474cce-69e2-4c3a-80d7-6967f30f409c\",\"refNo\":\"3\",\"type\":\"supplier\",\"name\":\"Toptancı A.Ş.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\": · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "P1 tur 2 — düzeltmede (PUT) kart iadesi kuralları POST'la aynı (dar kontrol DÜŞÜK-1 / DÜŞÜK-2, TEST-1 / TEST-2) › DÜŞÜK-1 tek kart pasif: POS satırı PUT cardRefund:true → 400 bank-account-invalid; var olan iade satırı korunur (açıklama düzeltmesi 200, kartı aynı; tutar değişikliği pasif kartta 400)",
+      "konum": "test/kart-iade-musteri-249.test.mjs:260:3",
+      "hata": "tek kart pasif: POS satırı Kredi Kartına İade'ye: 200 {\"id\":\"account-5a90e60c-399c-4ba4-828a-5c312b2049a4\",\"refNo\":\"3\",\"type\":\"supplier\",\"name\":\"Toptancı A.Ş.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\": · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "P1 tur 2 — düzeltmede (PUT) kart iadesi kuralları POST'la aynı (dar kontrol DÜŞÜK-1 / DÜŞÜK-2, TEST-1 / TEST-2) › DÜŞÜK-2 müşteri: iade olmayan satır (POS / Nakit) PUT ile Kredi Kartına İade'ye — kartla ödemesi yoksa 400 card-refund-no-payment, varsa 200; var olan iade satırının tutar / tarih / kart düzeltmesi serbest; tedarikçi serbest",
+      "konum": "test/kart-iade-musteri-249.test.mjs:289:3",
+      "hata": "ABC #1: POS satırı Kredi Kartına İade'ye (kartla ödeme yok): 200 {\"id\":\"account-23c441f6-58b2-4c07-b181-de258ba7de71\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"ABC Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\",\"p · 200 !== 400 (beklenen 400, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/p1-tur2/eski-20ca225a-kart-iade-musteri-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aabdc4a8158a60ac9",
+  "ham_cikti_sha256": "d6111487bc81d701cbf0c11a61b541b544c6c359d5d705b12ecbc1099b1160fa",
+  "ham_cikti_bayt": 11507
+}

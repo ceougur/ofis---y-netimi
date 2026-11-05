@@ -1,0 +1,14 @@
+# --- olcum (cari {"toplam":4021,"telefonlu":4014,"secilen":2000}; yeni 5a22228aa423ec4b4c85442dccd454f09f02ea67)
+#     yük (load average 1/5/15 dk, önce → sonra): eski okunamadı | yeni 0.99, 0.68, 0.50 → 1.00, 0.70, 0.51
+ok 1 - ekstreBuAy2000 kalem 2000: ESKİ ölçülmedi | YENİ 887/663/674 ; 822/608/609 | bütçe ≤ 2000 ms
+ok 2 - tumuneEkstreHepsi kalem 4021: ESKİ ölçülmedi | YENİ 1385/1159/1159 ; 1684/1359/1456 | bütçe ≤ 3000 ms
+# --- olcum-ek (cari {"toplam":4021,"telefonlu":4014,"iadeCarisi":1000}; yeni 5a22228aa423ec4b4c85442dccd454f09f02ea67)
+#     yük (load average 1/5/15 dk, önce → sonra): eski okunamadı | yeni 1.00, 0.70, 0.51 → 1.07, 0.76, 0.54
+ok 3 - targetsSon2000 kalem 2000: ESKİ ölçülmedi | YENİ 777/554/565 ; 792/535/582 | bütçe ≤ 2000 ms
+ok 4 - onizlemeSon2000 kalem 2000: ESKİ ölçülmedi | YENİ 814/539/611 ; 668/439/464 | bütçe ≤ 2000 ms
+ok 5 - onizlemeTumune kalem 4014: ESKİ ölçülmedi | YENİ 1132/910/927 ; 1294/1027/1087 | bütçe ≤ 3000 ms
+ok 6 - cariKarti200 kalem 200: ESKİ ölçülmedi | YENİ 10748/327/299 (istek p50 26.7, en çok 328.7) ; 11027/275/293 (istek p50 26.3, en çok 300.9) | bütçe yok (bilgi)
+1..6
+# tests 6
+# pass 6
+# fail 0

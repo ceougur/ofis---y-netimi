@@ -1,0 +1,32 @@
+{
+  "ad": "b3/yeni-testler-tz-istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-b3-buyume-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-b3-goc-249.test.mjs test/whatsapp-t2-6-248.test.mjs test/whatsapp-q2-yine-de-gonder-kabul-248.test.mjs",
+  "commit": "91d2a20006d9f0ca95e8f2d0d80f91f1bf2ccd29",
+  "dal": "worktree-agent-a972c155e62a73ec3",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:21:06.131Z",
+  "sure_sn": 62.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/b3/yeni-testler-tz-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a972c155e62a73ec3",
+  "ham_cikti_sha256": "cf58d1428c16565b779443cd6ae9c740ad2d41b1e79bef02e0a6ceaea8aaabc0",
+  "ham_cikti_bayt": 10805
+}

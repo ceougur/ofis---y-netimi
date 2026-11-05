@@ -1,0 +1,21 @@
+TAP version 13
+# saat dilimi Europe/Istanbul
+not ok 1 - CIFT-16-daha-once-suresi-doldu [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 2 - CIFT-16-daha-once-suresi-doldu [yavas] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 3 - W1-03-meta-bildirir-12-sa-sablon-basina [hizli] (5 fark; davranış farkı 1; gösterim: G1-borclu-eki 4)
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 3, program 2
+not ok 4 - W1-03-meta-bildirir-12-sa-sablon-basina [yavas] (5 fark; davranış farkı 1; gösterim: G1-borclu-eki 4)
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 3, program 2
+not ok 5 - W2-01-kabulde-bilinmiyor-sonra-12-sa [hizli] (4 fark; davranış farkı 1; gösterim: G1-borclu-eki 3)
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 1
+not ok 6 - W2-01-kabulde-bilinmiyor-sonra-12-sa [yavas] (4 fark; davranış farkı 1; gösterim: G1-borclu-eki 3)
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 1
+not ok 7 - W2-02-kabulde-30-gun-sonra-12-sa-kisalir [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+not ok 8 - W2-02-kabulde-30-gun-sonra-12-sa-kisalir [yavas] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)
+  # kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+1..8
+# tests 8
+# pass 0
+# fail 8
+# skipped 0

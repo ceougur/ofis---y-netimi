@@ -1,0 +1,419 @@
+TAP version 13
+# Subtest: 2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket)
+    # Subtest: T1 bugün silinebilen her hareket türü tek başına cariyi korur (tahsilat, ödeme, havale, Borç/Alacak Yaz, açılış, stok, taslak/iptal/e-SMM, yetim satır, mahsup)
+    not ok 1 - T1 bugün silinebilen her hareket türü tek başına cariyi korur (tahsilat, ödeme, havale, Borç/Alacak Yaz, açılış, stok, taslak/iptal/e-SMM, yetim satır, mahsup)
+      ---
+      duration_ms: 626.749363
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:85:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        T1: 11/11 durum kırmızı
+        ✗ nakit tahsilat: nakit tahsilat: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-cd466295-7230-4db3-b069-917d9a02b600"}
+        ✗ nakit ödeme: nakit ödeme: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-6c31e4fc-0859-43c2-b8de-a640bacd4b4a"}
+        ✗ havale (banka hesabı atanmamış): havale (banka hesabı atanmamış): hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-f4d351e4-ceb8-4ea6-b0eb-ccad9123a307"}
+        ✗ Borç Yaz: Borç Yaz: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-75d72318-1b20-4db1-9189-8ac8aaef7ab5"}
+        ✗ Alacak Yaz: Alacak Yaz: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-3abce84d-7bb0-4633-aaee-604f2dd7a32f"}
+        ✗ taslak fatura: taslak fatura: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-cb7a0931-f2de-47ae-86f4-a0cad879dd34"}
+        ✗ iptal edilmiş fatura: iptal edilmiş fatura: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-3d9d4fd9-744d-4b6f-9cbd-188e650a971b"}
+        ✗ e-SMM (serbest meslek makbuzu) taslağı: e-SMM (serbest meslek makbuzu) taslağı: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-6af7b6f4-76b9-4dfd-beda-733a0aeedc6c"}
+        ✗ ürünü sonradan silinen açık hesap stok alımı: ürünü sonradan silinen açık hesap stok alımı: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-74c80374-357f-4de7-ac3b-006b2460bfe9"}
+        ✗ açılış bakiyesi (Yeni Cari): açılış bakiyesi (Yeni Cari): hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-5b86e6c5-6be1-43a7-97ab-bdb3ce770c76"}
+        ✗ açılış bakiyesi (Excel'den cari yükleme): açılış bakiyesi (Excel): hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-0b26f2ed-d548-4cf0-bd56-40ff63f3144c"}
+        
+        11 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 11
+      operator: 'strictEqual'
+      stack: |-
+        verdict (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:72:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:121:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıtlı fatura, peşinli fatura, mahsup, çek, ciro alan cari, taksit kartı açık/kapalı/kalemsiz, şüpheli alacak)
+    not ok 2 - T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıtlı fatura, peşinli fatura, mahsup, çek, ciro alan cari, taksit kartı açık/kapalı/kalemsiz, şüpheli alacak)
+      ---
+      duration_ms: 379.096115
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        T2: 8/8 durum kırmızı
+        ✗ kayıtlı fatura: kayıtlı fatura: tek hata kodu
+        ✗ peşin tahsilatlı fatura: peşin tahsilatlı fatura: tek hata kodu
+        ✗ mahsup: mahsup: tek hata kodu
+        ✗ alınan çek ve ciro alan cari: alınan çek: tek hata kodu
+        ✗ açık taksit kartı: açık taksit kartı: tek hata kodu
+        ✗ kapatılmış taksit kartı: kapatılmış taksit kartı: tek hata kodu
+        ✗ taksit kurulmamış, toplamı sıfır kart (S2 A): taksit kurulmamış kart (S2 A): tek hata kodu
+        ✗ şüpheli alacak: şüpheli alacak: tek hata kodu
+        
+        8 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 8
+      operator: 'strictEqual'
+      stack: |-
+        verdict (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:72:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:175:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3 hareketsiz cari silinir — not, telefon, WhatsApp gönderim izi, değişiklik geçmişi hareket değil; Silinenler'deki kayıt sayılmaz (S1 A)
+    ok 3 - T3 hareketsiz cari silinir — not, telefon, WhatsApp gönderim izi, değişiklik geçmişi hareket değil; Silinenler'deki kayıt sayılmaz (S1 A)
+      ---
+      duration_ms: 268.557231
+      type: 'test'
+      ...
+    # Subtest: T4 eski sürümde silinmiş hareketli cari (S3 A) Silinenler'den geri yüklenir, Kasa geri gelir; bir daha silinemez
+    not ok 4 - T4 eski sürümde silinmiş hareketli cari (S3 A) Silinenler'den geri yüklenir, Kasa geri gelir; bir daha silinemez
+      ---
+      duration_ms: 82.4834
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:206:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yüklenen hareketli cari: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-ae559e1c-4495-4d6f-831d-d0b924b19abb"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:38:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:215:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T5 aynı adlı iki cari: yalnız hareketsiz olan silinir; pasif hareketli caride ileti pasif sürümü
+    not ok 5 - T5 aynı adlı iki cari: yalnız hareketsiz olan silinir; pasif hareketli caride ileti pasif sürümü
+      ---
+      duration_ms: 109.579189
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:218:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı adlı hareketli: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-aaddda73-33f4-4aa4-bdfa-ae0479d5d5d8"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:38:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:222:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T6 kartın neden yazısı = silme iletisi; parçalar elle sayımla; yetkisiz kullanıcıya neden gitmez
+    not ok 6 - T6 kartın neden yazısı = silme iletisi; parçalar elle sayımla; yetkisiz kullanıcıya neden gitmez
+      ---
+      duration_ms: 144.142149
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:231:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        çok hareketli: tek hata kodu
+        + actual - expected
+        
+        + undefined
+        - 'account-has-movements'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'account-has-movements'
+      operator: 'strictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:44:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:238:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız gerçekten boşsa kalıcı silinir (taslak fatura, Silinenler'deki tahsilat ve fatura cariyi tutar)
+    not ok 7 - T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız gerçekten boşsa kalıcı silinir (taslak fatura, Silinenler'deki tahsilat ve fatura cariyi tutar)
+      ---
+      duration_ms: 363.871829
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:248:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taslaklı, Silinenler'de tahsilatı ve faturası olan cari kalır: {"plans":4,"links":0,"payments":0,"accountEntries":0,"accounts":4,"accountsKept":0}
+        
+        0 !== 3
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 3
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:264:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T7 yarıda kesilme (§8/8): Geri Al ikinci carinin hareket sayımında kesilirse hiçbir şey değişmez (kartlar, cariler, aktarım); kesinti kalkınca Geri Al tamamlanır
+    not ok 8 - T7 yarıda kesilme (§8/8): Geri Al ikinci carinin hareket sayımında kesilirse hiçbir şey değişmez (kartlar, cariler, aktarım); kesinti kalkınca Geri Al tamamlanır
+      ---
+      duration_ms: 44.876689
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:284:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul: kesinti Geri Al'ın içinde gerçekten oluştu
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:306:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T8 yarış (§9, zorla): tahsilatın gövdesi yoldayken hareketsiz cari silinirse tahsilat YAZILMAZ (404), Kasa değişmez
+    not ok 9 - T8 yarış (§9, zorla): tahsilatın gövdesi yoldayken hareketsiz cari silinirse tahsilat YAZILMAZ (404), Kasa değişmez
+      ---
+      duration_ms: 456.437081
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:314:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        silinmiş cariye tahsilat yazılmamalı
+        + actual - expected
+        
+        + [
+        +   {
+        +     amount: 500,
+        +     kind: 'in'
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          kind: 'in'
+          amount: 500
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:337:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 1 - 2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket)
+  ---
+  duration_ms: 3110.036155
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:77:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 C1 — kaynağı olmayan (yetim) satırlar da hareket
+    # Subtest: T1 faturası olmayan cari satırı ve faturası olmayan mahsup fişi tek başına cariyi korur
+    not ok 1 - T1 faturası olmayan cari satırı ve faturası olmayan mahsup fişi tek başına cariyi korur
+      ---
+      duration_ms: 64.870653
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:353:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        T1 yetim: 2/2 durum kırmızı
+        ✗ kaynağı olmayan (yetim) cari satırı: yetim satır: tek hata kodu
+        ✗ faturası olmayan mahsup fişi: yetim mahsup: hareketli cari silinmemeli — beklenen 409, gelen 500 {"ok":false,"error":"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:120, party:accounts, invoice:orphan, invoice:offset).","code":"gate-equivalence","failures":[{"c
+        
+        2 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        verdict (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:72:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:361:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - 2.4.9 C1 — kaynağı olmayan (yetim) satırlar da hareket
+  ---
+  duration_ms: 747.053468
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:345:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 C1 — banka ve POS: hesaba bağlı tahsilat, POS İptal İadesi fişi (H14)
+    # Subtest: T2 banka hesabına bağlı tahsilat: aynı kural, tek kod
+    not ok 1 - T2 banka hesabına bağlı tahsilat: aynı kural, tek kod
+      ---
+      duration_ms: 51.468129
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:375:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        banka hesabına bağlı tahsilat: tek hata kodu
+        + actual - expected
+        
+        + 'account-bank-linked'
+        - 'account-has-movements'
+                   ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'account-has-movements'
+      actual: 'account-bank-linked'
+      operator: 'strictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:44:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:378:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T1 POS'lu faturası silinmiş (Müşteriye İade Edildi) caride yalnız POS İptal İadesi fişi kalır: yine hareket (İLKEYLE H14)
+    not ok 2 - T1 POS'lu faturası silinmiş (Müşteriye İade Edildi) caride yalnız POS İptal İadesi fişi kalır: yine hareket (İLKEYLE H14)
+      ---
+      duration_ms: 104.207617
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:381:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        POS İptal İadesi fişi: hareketli cari silinmemeli — beklenen 409, gelen 200 {"id":"account-7ee0af48-9026-4cc6-894c-987f59e8b455"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:38:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:391:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - 2.4.9 C1 — banka ve POS: hesaba bağlı tahsilat, POS İptal İadesi fişi (H14)
+  ---
+  duration_ms: 686.179977
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:365:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 C1 — kilitli dönem ve iki şirket
+    # Subtest: T5 iki şirket: 002'deki hareketli cari silinmez, 001'deki aynı adlı hareketsiz cari silinir
+    not ok 1 - T5 iki şirket: 002'deki hareketli cari silinmez, 001'deki aynı adlı hareketsiz cari silinir
+      ---
+      duration_ms: 272.089451
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:403:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002 hareketli cari: 200 {"id":"account-904c4777-b71a-478d-9469-327cc9b88751"}
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:411:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T5 kilitli dönem: hareketli cari kilitliyken de account-has-movements (kilidi açmak silmeye yetmez); hareketsiz cari kilitliyken silinir
+    not ok 2 - T5 kilitli dönem: hareketli cari kilitliyken de account-has-movements (kilidi açmak silmeye yetmez); hareketsiz cari kilitliyken silinir
+      ---
+      duration_ms: 68.118732
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:419:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kilitli dönemde hareketli: tek hata kodu
+        + actual - expected
+        
+        + 'period-locked'
+        - 'account-has-movements'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'account-has-movements'
+      actual: 'period-locked'
+      operator: 'strictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:44:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:425:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 4 - 2.4.9 C1 — kilitli dönem ve iki şirket
+  ---
+  duration_ms: 759.317881
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47/test/cari-hareket-249.test.mjs:395:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 C1 — gerçek eski sürüm verisi (v2.4.7 kodu; S3 A): orada silinmiş hareketli cari geri yüklenir, sonra silinemez
+ok 5 - 2.4.9 C1 — gerçek eski sürüm verisi (v2.4.7 kodu; S3 A): orada silinmiş hareketli cari geri yüklenir, sonra silinemez # SKIP v2.4.7 etiketi yok (git fetch --tags)
+  ---
+  duration_ms: 0.080862
+  type: 'suite'
+  ...
+1..5
+# tests 14
+# suites 5
+# pass 1
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5779.743569

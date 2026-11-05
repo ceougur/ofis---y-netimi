@@ -1,0 +1,5 @@
+olcum-eski-iade çıkış=0
+olcum-yeni-iade çıkış=0
+olcum-ek-eski çıkış=0
+olcum-ek-yeni çıkış=0
+bitti

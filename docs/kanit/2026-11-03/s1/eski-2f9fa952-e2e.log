@@ -1,0 +1,25 @@
+
+■ Kurulum: 002 açılır, cari girilir, veri dosyasının users kök sayfası bozulur
+  ✓ 002 açıldı (200)
+  ✓ 002'ye cari girildi (200)
+2026-11-03T19:39:19.681Z [ERROR] Şirket açılamadı (002 · Bozuk Dosyalı Şirket) Error: database disk image is malformed
+    at Object.run (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/server/lib/db.mjs:320:35)
+    at file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/server/lib/companies.mjs:471:18
+    at Object.tx (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/server/lib/db.mjs:401:24)
+    at mirrorUsers (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/server/lib/companies.mjs:470:16)
+    at buildApp (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/server/app.mjs:292:8)
+    at createApp (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/server/app.mjs:114:17)
+    at appFor (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/server/app.mjs:650:15)
+    at dispatchApp (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/server/app.mjs:765:14)
+    at dispatch (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/server/app.mjs:725:12)
+    at Server.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/server/app.mjs:793:5)
+  ✓ ön koşul: bozuk şirket açılmıyor (durum 503)
+
+■ A. Şirketi Sil → yedek alınamadı → ikinci, açık onay
+  ✓ listede iki şirket
+  ✓ Şirketi Sil · 002: kod kutusu “002”, parola odakta (true)
+  ✗ ikinci onay açıldı: başlık “Şirketi Sil · 002 · Bozuk Dosyalı Şirket”; ilk pencerede hata “Silme öncesi yedek alınamadı; şirket silinmedi (database disk image is malformed).”
+  ✗ beklenmeyen hata: Error: ikinci onay (Yedeksiz Sil) açılmadı
+    at file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-2f9fa952/test/e2e/senaryo-yedeksiz-sil-249.mjs:159:218
+
+Senaryo 2.4.9 S1 (yedeksiz sil): 5 geçti, 2 kaldı. Ekranlar: /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1-kod-eski-ekran

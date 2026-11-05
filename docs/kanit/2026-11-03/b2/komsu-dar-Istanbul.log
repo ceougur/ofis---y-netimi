@@ -1,0 +1,514 @@
+TAP version 13
+# Subtest: createClock — çalışıyor mu
+    # Subtest: gerçek saat: her çağrıda Date'i okur (taklit edilebilir), bugün yerel gün
+    ok 1 - gerçek saat: her çağrıda Date'i okur (taklit edilebilir), bugün yerel gün
+      ---
+      duration_ms: 1.448839
+      type: 'test'
+      ...
+    # Subtest: sabit sahte saat: set, advance (gün), freeze/resume; ISO damgası
+    ok 2 - sabit sahte saat: set, advance (gün), freeze/resume; ISO damgası
+      ---
+      duration_ms: 0.740688
+      type: 'test'
+      ...
+    # Subtest: akan sahte saat: verilen andan gerçek zamanla ilerler; yalnız tarih verilirse yerel öğlen
+    ok 3 - akan sahte saat: verilen andan gerçek zamanla ilerler; yalnız tarih verilirse yerel öğlen
+      ---
+      duration_ms: 71.613543
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: bozuk zaman TypeError; sahte saat dışarıdan dondurulamaz (Date döndürür, kopyası)
+    ok 4 - nasıl bozarım: bozuk zaman TypeError; sahte saat dışarıdan dondurulamaz (Date döndürür, kopyası)
+      ---
+      duration_ms: 0.812505
+      type: 'test'
+      ...
+    1..4
+ok 1 - createClock — çalışıyor mu
+  ---
+  duration_ms: 75.695023
+  type: 'suite'
+  ...
+# Subtest: Sunucu sahte saatle (startTestServer({ now }))
+    # Subtest: sunucunun saati paylaşılır: server.clock = app.config.now = context.now
+    ok 1 - sunucunun saati paylaşılır: server.clock = app.config.now = context.now
+      ---
+      duration_ms: 0.48905
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: tarihsiz Kasa hareketi, kayıt tahsilatı, cari hareketi, taksit kartı/tahsilatı, stok, çek ve fatura sahte günü alır
+    ok 2 - çalışıyor mu: tarihsiz Kasa hareketi, kayıt tahsilatı, cari hareketi, taksit kartı/tahsilatı, stok, çek ve fatura sahte günü alır
+      ---
+      duration_ms: 242.920702
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: sahte günden bir gün sonrası ileri tarih (400); saat ilerleyince o gün girilir, kapı engellemez
+    ok 3 - nasıl bozarım: sahte günden bir gün sonrası ileri tarih (400); saat ilerleyince o gün girilir, kapı engellemez
+      ---
+      duration_ms: 41.211147
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: saat 30 gün ileri — oturum düşmez (oturum süresi gerçek saatle), işlem yine sahte günle
+    ok 4 - nasıl bozarım: saat 30 gün ileri — oturum düşmez (oturum süresi gerçek saatle), işlem yine sahte günle
+      ---
+      duration_ms: 16.566465
+      type: 'test'
+      ...
+    # Subtest: çocuk şirket (002) aynı saati kullanır
+    ok 5 - çocuk şirket (002) aynı saati kullanır
+      ---
+      duration_ms: 256.424918
+      type: 'test'
+      ...
+    1..5
+ok 2 - Sunucu sahte saatle (startTestServer({ now }))
+  ---
+  duration_ms: 968.813089
+  type: 'suite'
+  ...
+# Subtest: Gerçek saat (now verilmezse) davranış değişmez
+    # Subtest: bugün = gerçek yerel gün; app.config.now gerçek saat
+    ok 1 - bugün = gerçek yerel gün; app.config.now gerçek saat
+      ---
+      duration_ms: 370.932176
+      type: 'test'
+      ...
+    1..1
+ok 3 - Gerçek saat (now verilmezse) davranış değişmez
+  ---
+  duration_ms: 371.178585
+  type: 'suite'
+  ...
+# Subtest: Statik tarama: iş modüllerinde saat tek kaynaktan
+    # Subtest: tarayıcı kendini sınar: sızıntıyı yakalar, işaretli satırı ve yorumu geçer
+    ok 1 - tarayıcı kendini sınar: sızıntıyı yakalar, işaretli satırı ve yorumu geçer
+      ---
+      duration_ms: 1.015533
+      type: 'test'
+      ...
+    # Subtest: iş modüllerinde `new Date()` / `Date.now()` yok (yalnız context.now)
+    ok 2 - iş modüllerinde `new Date()` / `Date.now()` yok (yalnız context.now)
+      ---
+      duration_ms: 39.243869
+      type: 'test'
+      ...
+    1..2
+ok 4 - Statik tarama: iş modüllerinde saat tek kaynaktan
+  ---
+  duration_ms: 40.450874
+  type: 'suite'
+  ...
+# Subtest: G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+    # Subtest: tek geçiş: yazımdan sonra iki harita için carilerin defteri BİR KEZ kurulur; ikinci çağrılar önbellekten
+    ok 1 - tek geçiş: yazımdan sonra iki harita için carilerin defteri BİR KEZ kurulur; ikinci çağrılar önbellekten
+      ---
+      duration_ms: 21.248439
+      type: 'test'
+      ...
+    # Subtest: toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+    ok 2 - toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+      ---
+      duration_ms: 22.422687
+      type: 'test'
+      ...
+    # Subtest: kapsam: elle satır haritası yalnız vadeli satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil, vadesiz cari yok)
+    ok 3 - kapsam: elle satır haritası yalnız vadeli satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil, vadesiz cari yok)
+      ---
+      duration_ms: 12.280742
+      type: 'test'
+      ...
+    # Subtest: bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+    ok 4 - bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+      ---
+      duration_ms: 67.855733
+      type: 'test'
+      ...
+    1..4
+ok 5 - G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+  ---
+  duration_ms: 1253.822389
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 6 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 8.758149
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 7 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 111.837475
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 8 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.501732
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 9 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.995318
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 10 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.527623
+  type: 'test'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.761421
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 153.749861
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 148.913199
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 181.400305
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 313.101145
+      type: 'test'
+      ...
+    1..5
+ok 11 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 799.22101
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 42.159103
+      type: 'test'
+      ...
+    1..1
+ok 12 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 42.309918
+  type: 'suite'
+  ...
+# Subtest: WhatsApp numara ve ekstre metni
+    # Subtest: Türkiye cep numaralarını wa.me biçimine çevirir; sabit hattı ve eksik numarayı ayırır
+    ok 1 - Türkiye cep numaralarını wa.me biçimine çevirir; sabit hattı ve eksik numarayı ayırır
+      ---
+      duration_ms: 1.529197
+      type: 'test'
+      ...
+    # Subtest: ekstre metni devir, dönem hareketleri ve güncel bakiyeyi verir
+    ok 2 - ekstre metni devir, dönem hareketleri ve güncel bakiyeyi verir
+      ---
+      duration_ms: 0.68985
+      type: 'test'
+      ...
+    1..2
+ok 13 - WhatsApp numara ve ekstre metni
+  ---
+  duration_ms: 3.183543
+  type: 'suite'
+  ...
+# Subtest: WhatsApp gönderim API'si
+    # Subtest: seçilen carilere kişiye özel ekstre hazırlar; numarası geçersiz olanı nedeniyle ayırır
+    ok 1 - seçilen carilere kişiye özel ekstre hazırlar; numarası geçersiz olanı nedeniyle ayırır
+      ---
+      duration_ms: 9.337947
+      type: 'test'
+      ...
+    # Subtest: süzgeçteki carilerin hepsi (all) seçilebilir; seçim yoksa hata verir
+    ok 2 - süzgeçteki carilerin hepsi (all) seçilebilir; seçim yoksa hata verir
+      ---
+      duration_ms: 10.345637
+      type: 'test'
+      ...
+    # Subtest: gönderim ve atlama cari kartının geçmişine yazılır; son gönderim alıcı listesinde görünür
+    ok 3 - gönderim ve atlama cari kartının geçmişine yazılır; son gönderim alıcı listesinde görünür
+      ---
+      duration_ms: 19.110245
+      type: 'test'
+      ...
+    1..3
+ok 14 - WhatsApp gönderim API'si
+  ---
+  duration_ms: 538.951067
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 B2 — elle toplu WhatsApp alıcı listesi kartın eleme çekirdeğiyle (davranış aynen)
+    # Subtest: YAPI: alıcı listesi kişi başı tam cari kartı (accounts.detail) okumaz — her dönemde, ekstre ve mesajda, seçili ve 'Tümüne'
+    ok 1 - YAPI: alıcı listesi kişi başı tam cari kartı (accounts.detail) okumaz — her dönemde, ekstre ve mesajda, seçili ve 'Tümüne'
+      ---
+      duration_ms: 842.49318
+      type: 'test'
+      ...
+    # Subtest: YAPI: ekstre metni hazırlanırken tutar başına yeni biçimleyici (Intl.NumberFormat) kurulmaz — taksit kartı olmayan hareketli carilerde 0
+    ok 2 - YAPI: ekstre metni hazırlanırken tutar başına yeni biçimleyici (Intl.NumberFormat) kurulmaz — taksit kartı olmayan hareketli carilerde 0
+      ---
+      duration_ms: 689.190251
+      type: 'test'
+      ...
+    # Subtest: KÂHİN = SINIF TANIMI: geçerlilik/neden, silinmiş ve olmayan cari, bakiye, sıradaki taksit, gecikmiş, son tahsilat, son gönderim, ekstre metni (devir, dönem, ileri tarih)
+    ok 3 - KÂHİN = SINIF TANIMI: geçerlilik/neden, silinmiş ve olmayan cari, bakiye, sıradaki taksit, gecikmiş, son tahsilat, son gönderim, ekstre metni (devir, dönem, ileri tarih)
+      ---
+      duration_ms: 649.223779
+      type: 'test'
+      ...
+    # Subtest: ÇEKİRDEK ↔ KART: her cari sınıfında alıcı listesinin okuduğu alanlar (bakiye, gecikmiş, kartlar, defter satırları) waFacts ↔ detail birebir aynı
+    ok 4 - ÇEKİRDEK ↔ KART: her cari sınıfında alıcı listesinin okuduğu alanlar (bakiye, gecikmiş, kartlar, defter satırları) waFacts ↔ detail birebir aynı
+      ---
+      duration_ms: 646.595237
+      type: 'test'
+      ...
+    # Subtest: BİLİNÇLİ TEK FARK (§13 b, İLKEYLE): kartın bir ekran eki (fatura kalanları) hata verirse kişi alıcı listesinden sessizce DÜŞMEZ, kendi bakiyesiyle görünür
+    ok 5 - BİLİNÇLİ TEK FARK (§13 b, İLKEYLE): kartın bir ekran eki (fatura kalanları) hata verirse kişi alıcı listesinden sessizce DÜŞMEZ, kendi bakiyesiyle görünür
+      ---
+      duration_ms: 796.996094
+      type: 'test'
+      ...
+    1..5
+ok 15 - 2.4.9 B2 — elle toplu WhatsApp alıcı listesi kartın eleme çekirdeğiyle (davranış aynen)
+  ---
+  duration_ms: 3626.398951
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen)
+    # Subtest: eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı
+    ok 1 - eleme çekirdeği (waFacts) ↔ tam cari kartı (detail): her cari sınıfında plan()'ın okuduğu alanlar birebir aynı; cari kartındaki taksit özeti kartın kendi ayrıntısıyla aynı
+      ---
+      duration_ms: 952.440958
+      type: 'test'
+      ...
+    # Subtest: önizlemenin eleme nedenleri sınıf tanımından; önizleme ve açma kişi başı tam kart OKUMAZ, gönderim anı okur; 'Zaten Kuyrukta' tek sorgu (süren VE duraklatılmış iş)
+    ok 2 - önizlemenin eleme nedenleri sınıf tanımından; önizleme ve açma kişi başı tam kart OKUMAZ, gönderim anı okur; 'Zaten Kuyrukta' tek sorgu (süren VE duraklatılmış iş)
+      ---
+      duration_ms: 844.846114
+      type: 'test'
+      ...
+    # Subtest: makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen
+    ok 3 - makine defteri: 'Tüm Hareketler' R3 sorgusunun planında claim_keys kişi anahtarlarıyla tek tek yoklanmaz; Tüm ↔ Özel aralık eşliği sonuç olarak aynen
+      ---
+      duration_ms: 688.045856
+      type: 'test'
+      ...
+    1..3
+ok 16 - 2.4.8 İş Z — WhatsApp önizlemesi kartın eleme çekirdeğiyle (davranış aynen)
+  ---
+  duration_ms: 2487.117624
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+    # Subtest: kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez
+    ok 1 - kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez
+      ---
+      duration_ms: 761.834256
+      type: 'test'
+      ...
+    1..1
+ok 17 - 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+  ---
+  duration_ms: 762.855223
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+    # Subtest: 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış
+    ok 1 - 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış
+      ---
+      duration_ms: 1166.735041
+      type: 'test'
+      ...
+    # Subtest: 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ
+    ok 2 - 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ
+      ---
+      duration_ms: 855.223175
+      type: 'test'
+      ...
+    # Subtest: 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ
+    ok 3 - 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ
+      ---
+      duration_ms: 707.329847
+      type: 'test'
+      ...
+    # Subtest: şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'
+    ok 4 - şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'
+      ---
+      duration_ms: 712.609624
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur
+    ok 5 - Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur
+      ---
+      duration_ms: 600.131965
+      type: 'test'
+      ...
+    # Subtest: 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'
+    ok 6 - 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'
+      ---
+      duration_ms: 755.727376
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)
+    ok 7 - salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)
+      ---
+      duration_ms: 585.012663
+      type: 'test'
+      ...
+    1..7
+ok 18 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+  ---
+  duration_ms: 5384.087713
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+    # Subtest: sayı = TESLİM edilen, ay = teslim zamanı (Türkiye saati), kapsam WABA; 31 Aralık 23:59 kabul / 1 Ocak 00:01 teslim Ocak'a sayılır; sayaç yıl dönümünde sıfırlanmaz
+    ok 1 - sayı = TESLİM edilen, ay = teslim zamanı (Türkiye saati), kapsam WABA; 31 Aralık 23:59 kabul / 1 Ocak 00:01 teslim Ocak'a sayılır; sayaç yıl dönümünde sıfırlanmaz
+      ---
+      duration_ms: 493.492998
+      type: 'test'
+      ...
+    # Subtest: durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır
+    ok 2 - durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır
+      ---
+      duration_ms: 477.847588
+      type: 'test'
+      ...
+    # Subtest: işçi (gerçek zamanlayıcı): iki iş ASLA aynı anda yürümez, iletiler arası en az gapMs; şirketler dönüşümlü
+    ok 3 - işçi (gerçek zamanlayıcı): iki iş ASLA aynı anda yürümez, iletiler arası en az gapMs; şirketler dönüşümlü
+      ---
+      duration_ms: 846.844732
+      type: 'test'
+      ...
+    1..3
+ok 19 - 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+  ---
+  duration_ms: 1818.603157
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — belirteç hiçbir çıktıya sızmaz
+    # Subtest: toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz
+    ok 1 - toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz
+      ---
+      duration_ms: 382.847153
+      type: 'test'
+      ...
+    1..1
+ok 20 - 2.4.8 W2 — belirteç hiçbir çıktıya sızmaz
+  ---
+  duration_ms: 383.104476
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+    # Subtest: wa.me 'Cari Ekstre - PDF' seçilen dönemi basar (Geçen Ay: devir 1.000, Ekim hareketleri, dönem sonu 850); metindeki güncel bakiyeyle aynı; ANLIK DURUM ekstresiyle BAYT BAYT aynı
+    ok 1 - wa.me 'Cari Ekstre - PDF' seçilen dönemi basar (Geçen Ay: devir 1.000, Ekim hareketleri, dönem sonu 850); metindeki güncel bakiyeyle aynı; ANLIK DURUM ekstresiyle BAYT BAYT aynı
+      ---
+      duration_ms: 615.325016
+      type: 'test'
+      ...
+    # Subtest: 'Tüm Hareketler' bugüne kadar: ileri tarihli hareket metne de PDF'e de girmez (§7a 22); Bu Ay ayın 1'inde tek gün
+    ok 2 - 'Tüm Hareketler' bugüne kadar: ileri tarihli hareket metne de PDF'e de girmez (§7a 22); Bu Ay ayın 1'inde tek gün
+      ---
+      duration_ms: 442.53055
+      type: 'test'
+      ...
+    # Subtest: WhatsApp Business API'ye yüklenen PDF, wa.me yolunun aynı dönem PDF'iyle BAYT BAYT aynı; iletinin {{3}} ve {{4}}'ü PDF'le aynı
+    ok 3 - WhatsApp Business API'ye yüklenen PDF, wa.me yolunun aynı dönem PDF'iyle BAYT BAYT aynı; iletinin {{3}} ve {{4}}'ü PDF'le aynı
+      ---
+      duration_ms: 576.511676
+      type: 'test'
+      ...
+    1..3
+ok 21 - 2.4.8 W3 — dönemli ekstre üç yolda aynı (metin = PDF)
+  ---
+  duration_ms: 1635.79578
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+    # Subtest: kesin durumdan sonra (Teslim Edildi / Okundu / Başarısız / Süresi Doldu) PDF Meta'dan silinir; Meta Kabul Etti / Sonucu Belirsiz / Meta Bekletti'de silinmez; zaten silinmişse silinmiş sayılır
+    ok 1 - kesin durumdan sonra (Teslim Edildi / Okundu / Başarısız / Süresi Doldu) PDF Meta'dan silinir; Meta Kabul Etti / Sonucu Belirsiz / Meta Bekletti'de silinmez; zaten silinmişse silinmiş sayılır
+      ---
+      duration_ms: 623.951974
+      type: 'test'
+      ...
+    # Subtest: yeniden denemede medya geçerliyse AYNISI kullanılır, 30 günü geçmişse yeniden yüklenir (§7a 15)
+    ok 2 - yeniden denemede medya geçerliyse AYNISI kullanılır, 30 günü geçmişse yeniden yüklenir (§7a 15)
+      ---
+      duration_ms: 504.410111
+      type: 'test'
+      ...
+    1..2
+ok 22 - 2.4.8 W3 — gönderilen PDF Meta'da (S3 A; §7a 14, 15)
+  ---
+  duration_ms: 1128.738766
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 87.357149
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 7.50935
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.499005
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 4.144439
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 3.828431
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 39.389325
+      type: 'test'
+      ...
+    1..6
+ok 23 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 146.081343
+  type: 'suite'
+  ...
+1..23
+# tests 63
+# suites 18
+# pass 63
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24683.437885

@@ -1,0 +1,48 @@
+{
+  "ad": "w/mutasyon-M01-acmada-ttl-gider",
+  "komut": "node --test --test-reporter=tap test/whatsapp-wt-ttl-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:11:59.527Z",
+  "sure_sn": 5.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 5,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 W-T — program şablon teslim süresi (TTL) GÖNDERMEZ, DÜZENLEMEZ; ttlHours kalktı › şablon AÇILIRKEN istekte teslim süresi alanı YOK (iki şablon, tek istekte açılır); onaydan sonra Denetle hiçbir şablonu açmaz / düzenlemez",
+      "konum": "test/whatsapp-wt-ttl-249.test.mjs:60:3",
+      "hata": "destekofis_ekstre: açma isteğinde teslim süresi alanı olmamalı (geldi 259200) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.9 W-T — program şablon teslim süresi (TTL) GÖNDERMEZ, DÜZENLEMEZ; ttlHours kalktı › 2.4.8'den kalan kayıtlı ttlHours (12) okunmaz: GET'te yok, şablon açma isteğinde teslim süresi yok; günlük sınır kaydı eski alanı siler",
+      "konum": "test/whatsapp-wt-ttl-249.test.mjs:125:3",
+      "hata": "destekofis_ekstre: eski ayardaki 12 saat Meta'ya gitmemeli (geldi 259200) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.9 W-T — Süresi Doldu ve PDF silme: Meta'nın bildirdiği değer, yoksa 30 gün + 1 saat › program şablonları açtı, Meta listesi teslim süresi bildirmiyor: 73. saatte de 13. saatte de Süresi Doldu YOK; 30 gün + 1 sa − 1 dk Gönderildi, + 1 dk Süresi Doldu + PDF silindi",
+      "konum": "test/whatsapp-wt-ttl-249.test.mjs:141:3",
+      "hata": "73. saatte Süresi Doldu olmamalı (Meta 30 gün teslim etmeye çalışır) · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ac7daa9bc89dacc8b/docs/kanit/2026-11-03/w/mutasyon-M01-acmada-ttl-gider.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2",
+  "ham_cikti_sha256": "2fc18642eba86336a91272fddaff5e98735ee95d2717d44e5f7b65104edb1a90",
+  "ham_cikti_bayt": 7820
+}

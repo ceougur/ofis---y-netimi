@@ -1,0 +1,21 @@
+// CI dışı e2e dosyalarını çıkarır: test/e2e/*.mjs ↔ package.json betikleri ↔ ci.yml'nin npm run satırları.
+const fs = require("fs");
+const W = "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad08b374963951ef6";
+const pk = JSON.parse(fs.readFileSync(W + "/package.json", "utf8")).scripts;
+const ci = fs.readFileSync(W + "/.github/workflows/ci.yml", "utf8");
+const ciScripts = new Set([...ci.matchAll(/npm run ([A-Za-z0-9:_-]+)/g)].map(m => m[1]));
+const files = fs.readdirSync(W + "/test/e2e").filter(f => /\.mjs$/.test(f));
+const byFile = {};
+for (const [k, v] of Object.entries(pk)) {
+  const m = v.match(/test\/e2e\/[^\s"']+\.mjs/g);
+  if (m) for (const x of m) { const f = x.replace("test/e2e/", ""); (byFile[f] = byFile[f] || []).push(k); }
+}
+let n = 0;
+for (const f of files) {
+  const s = byFile[f] || [];
+  const inci = s.some(x => ciScripts.has(x)) || ci.includes("test/e2e/" + f);
+  if (!inci) { n++; console.log(f, "|", s.join(",") || "(betik yok)"); }
+}
+console.log("e2e dosyası:", files.length, "ci dışı:", n);
+// ci.yml'nin npm run e2e betikleri package.json'da var mı
+for (const s of ciScripts) if (!pk[s]) console.log("ci.yml betiği package.json'da YOK:", s);

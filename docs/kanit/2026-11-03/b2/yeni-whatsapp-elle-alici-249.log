@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: 2.4.9 B2 — elle toplu WhatsApp alıcı listesi kartın eleme çekirdeğiyle (davranış aynen)
+    # Subtest: YAPI: alıcı listesi kişi başı tam cari kartı (accounts.detail) okumaz — her dönemde, ekstre ve mesajda, seçili ve 'Tümüne'
+    ok 1 - YAPI: alıcı listesi kişi başı tam cari kartı (accounts.detail) okumaz — her dönemde, ekstre ve mesajda, seçili ve 'Tümüne'
+      ---
+      duration_ms: 1455.90917
+      type: 'test'
+      ...
+    # Subtest: YAPI: ekstre metni hazırlanırken tutar başına yeni biçimleyici (Intl.NumberFormat) kurulmaz — taksit kartı olmayan hareketli carilerde 0
+    ok 2 - YAPI: ekstre metni hazırlanırken tutar başına yeni biçimleyici (Intl.NumberFormat) kurulmaz — taksit kartı olmayan hareketli carilerde 0
+      ---
+      duration_ms: 822.000781
+      type: 'test'
+      ...
+    # Subtest: KÂHİN = SINIF TANIMI: geçerlilik/neden, silinmiş ve olmayan cari, bakiye, sıradaki taksit, gecikmiş, son tahsilat, son gönderim, ekstre metni (devir, dönem, ileri tarih)
+    ok 3 - KÂHİN = SINIF TANIMI: geçerlilik/neden, silinmiş ve olmayan cari, bakiye, sıradaki taksit, gecikmiş, son tahsilat, son gönderim, ekstre metni (devir, dönem, ileri tarih)
+      ---
+      duration_ms: 719.668888
+      type: 'test'
+      ...
+    # Subtest: ÇEKİRDEK ↔ KART: her cari sınıfında alıcı listesinin okuduğu alanlar (bakiye, gecikmiş, kartlar, defter satırları) waFacts ↔ detail birebir aynı
+    ok 4 - ÇEKİRDEK ↔ KART: her cari sınıfında alıcı listesinin okuduğu alanlar (bakiye, gecikmiş, kartlar, defter satırları) waFacts ↔ detail birebir aynı
+      ---
+      duration_ms: 739.439467
+      type: 'test'
+      ...
+    # Subtest: BİLİNÇLİ TEK FARK (§13 b, İLKEYLE): kartın bir ekran eki (fatura kalanları) hata verirse kişi alıcı listesinden sessizce DÜŞMEZ, kendi bakiyesiyle görünür
+    ok 5 - BİLİNÇLİ TEK FARK (§13 b, İLKEYLE): kartın bir ekran eki (fatura kalanları) hata verirse kişi alıcı listesinden sessizce DÜŞMEZ, kendi bakiyesiyle görünür
+      ---
+      duration_ms: 816.206186
+      type: 'test'
+      ...
+    1..5
+ok 1 - 2.4.9 B2 — elle toplu WhatsApp alıcı listesi kartın eleme çekirdeğiyle (davranış aynen)
+  ---
+  duration_ms: 4555.234679
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5109.37243

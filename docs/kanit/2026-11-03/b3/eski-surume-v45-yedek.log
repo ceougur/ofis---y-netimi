@@ -1,0 +1,10 @@
+ok 1 - yeni kodla v45'e çıktı ({"from":44,"to":45,"applied":[45],"backup":null})
+ok 2 - eski kodun en son şeması 44 (44)
+ok 3 - eski sürüm v45 yedeğini 409 ile reddeder (409 Bu yedek programın daha yeni bir sürümünde alınmış; önce programı güncelleyin, sonra geri yükleyin.)
+1..3
+# tests 3
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

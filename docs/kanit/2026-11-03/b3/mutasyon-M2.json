@@ -1,0 +1,38 @@
+{
+  "ad": "b3/mutasyon-M2",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-b3-buyume-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-b3-goc-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:58:57.314Z",
+  "sure_sn": 47.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 13,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok › T6 yarıda kesilme: PDF yazımı (disk dolu) düşerse işin satırı da geri alınır — prepared_at boş, değişken yok; sonraki tur temiz hazırlar, PDF bir kez gider",
+      "konum": "test/whatsapp-b3-pdf-249.test.mjs:149:3",
+      "hata": "işin satırı da geri alındı (yarım dondurma yok) · + actual - expected · + '2026-11-03T06:00:00.000Z' (beklenen ~, gelen 2026-11-03T06:00:00.000Z)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a972c155e62a73ec3/docs/kanit/2026-11-03/b3/mutasyon-M2.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M2-f71e1e8b",
+  "ham_cikti_sha256": "6504f72d78ac7ddf71c33322305cc1cbe87bc1a7013d3acc7f7bfc5d8b234ff6",
+  "ham_cikti_bayt": 8043
+}

@@ -1,0 +1,22 @@
+20:08:03 ekran {"yol":"Otomatik + WhatsApp Web (WhatsApp Web kendiliğinden seçili)","dugme":"Süzgeçteki 2986 cariye ekstre","acilisMs":43943,"targets":[{"durum":"düştü","hata":"net::ERR_ABORTED","ms":43656}],"istemciHatasi":"Sunucu zamanında yanıt vermedi."}
+yazıldı /home/user/ofis---y-netimi/.claude/worktrees/agent-a95435e4eb1b4db61/docs/kanit/2026-11-03/b2/olcum/ekran2-eski.json
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:nth-last-child(1 of .hof-modal-backdrop.is-visible) [data-act="waStatement"]')[22m
+[2m    - locator resolved to <button type="button" data-act="waStatement" title="Süzgeçteki 2986 cariye ekstre" class="hof-button hof-button-small hof-button-ghost hof-whatsapp">Tümüne WhatsApp Ekstre</button>[22m
+[2m  - attempting click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m    - element is visible, enabled and stable[22m
+[2m    - scrolling into view if needed[22m
+[2m    - done scrolling[22m
+[2m    - performing click action[22m
+
+    at /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/eski-e3f74093/test/b2-249/ekran-olcum.mjs:60:16 {
+  name: 'TimeoutError'
+}
+
+Node.js v22.22.0

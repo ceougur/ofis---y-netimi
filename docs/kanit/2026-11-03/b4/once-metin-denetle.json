@@ -1,0 +1,158 @@
+{
+  "ad": "b4/once-metin-denetle",
+  "komut": "node /home/user/ofis---y-netimi/.claude/worktrees/agent-abedb07fbbfcd9cfe/docs/kilavuz/metin-denetle.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b4-kod-abedb07/once-metinler.json",
+  "commit": "c0149534b9fbb3d2cac6fa067f9d6d9912aea5a7",
+  "dal": "worktree-agent-abedb07fbbfcd9cfe",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:28:25.818Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 200,
+    "gecen": 168,
+    "basarisiz": 32,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 32 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "7: Açık Hesap",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "7: Gecikme Zammı / Faizi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: KMH Limiti",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Kredi Kartı Kullan",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Çek Kullan",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Çek Hesabı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Senet Kullan",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: POS Kullan",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: IBAN faturada gösterilsin",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: + Kart Borcu Ödemesi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: + Kredi İşlemi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Pasife Al",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Kredi Kartı Tanımla",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Kart Limiti",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: + Giriş",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: + POS Ekle",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Valör Günü",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: + POS",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: POS Taksit Sayısı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Şimdi Aktar",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: POS İşlemleri",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: İptal Et",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: + POS İadesi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Cari · Kasa · Stok · Fatura · Çek / Senet · Taksit · Banka · Ana Defter · Kayıtlar · Ofis",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "8: Hareketler sekmesinde PDF / Excel",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/b4/once-metin-denetle.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abedb07fbbfcd9cfe",
+  "ham_cikti_sha256": "32eaac2ce0d0a389bf8bd9047fd0dcc9819ac49957df3d2b64b847287fc3165b",
+  "ham_cikti_bayt": 5555
+}

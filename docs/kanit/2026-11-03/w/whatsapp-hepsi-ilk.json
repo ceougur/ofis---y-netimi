@@ -1,0 +1,58 @@
+{
+  "ad": "w/whatsapp-hepsi-ilk",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-reporter=tap test/whatsapp-*.test.mjs",
+  "commit": "8923d5280fbac7c3c1513013f1f89bb040b7b99c",
+  "dal": "worktree-agent-ac7daa9bc89dacc8b",
+  "kirli": 10,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:49:14.264Z",
+  "sure_sn": 579.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 455,
+    "gecen": 450,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T8 Süresi Doldu → geç delivered → Teslim Edildi, Bu Ay 1, Daha Önce (P3)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:254:3",
+      "hata": "ön koşul: Süresi Doldu · 'sent' !== 'expired' (beklenen expired, gelen sent)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T20 Süresi Doldu → sıfırlama → geç delivered (imzasız) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:375:5",
+      "hata": "ön koşul: Süresi Doldu teslim edilemedi · + actual - expected · + 'accepted' (beklenen failed, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T20 Süresi Doldu → sıfırlama → geç delivered (imzalı) → teslim sayılır, Bu Ay 1, Daha Önce (A2, P3)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:375:5",
+      "hata": "ön koşul: Süresi Doldu teslim edilemedi · + actual - expected · + 'accepted' (beklenen failed, gelen accepted)"
+    },
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T8x Süresi Doldu · delivered ×2 → Bu Ay 1, iş yeniden açılmaz (K1′ koşul c)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:702:3",
+      "hata": "ön koşul: Süresi Doldu · 'sent' !== 'expired' (beklenen expired, gelen sent)"
+    },
+    {
+      "ad": "2.4.8 İş T — kanca yanıtı (K0 kilit / A5, K5 istisnası / A6) › T-Ksil-D+geri veri dosyası YOK · delivered → 200 + defter teslim; dosya geri gelince Daha Önce, Bu Ay 1; süre dolumu satırı Teslim Edildi yapar (Süresi Doldu / teslim edilemedi YOK) (V1 + V2)",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:1563:3",
+      "hata": "süre dolumu teslimi gördü · + actual - expected · + 'sent' (beklenen delivered, gelen sent)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/w/whatsapp-hepsi-ilk.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac7daa9bc89dacc8b",
+  "ham_cikti_sha256": "f61db1efd008ed1c08372155d38bbc61aa9eb0e0cf09768fd28bef69bf9c39cd",
+  "ham_cikti_bayt": 204399
+}

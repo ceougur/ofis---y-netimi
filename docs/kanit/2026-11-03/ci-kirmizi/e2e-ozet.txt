@@ -1,0 +1,28 @@
+# senaryo-mobil-yazma-247 koşuları (CI #963 Y9 kırmızısı; ders 20). Satırlar bu klasördeki .json/.log kayıtlarından çıkarıldı.
+# Ön koşul (yavas): Y9 bağlamında (sayfa2) 'Cihaz eşlendi' bildirimi eklendikten sonra Kaydet isteği 5.000 ms içinde gitti VE istek anında
+#   eski bildirim ekranda: eski kodda 'acik-bildirim 1'; yeni kodda Kaydet'ten hemen önce temizlendi ('kalkti' < 5.000 ms, istek 'acik-bildirim 0').
+mobil-yazma-247-eski-0ecc90de-dogal-1: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-0ecc90de-dogal-2: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-0ecc90de-dogal-3: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-0ecc90de-yavas-1: BAŞARISIZ çıkış 1 · 73/74 · Y9 ✗ personel tahsilatı kaydedildi · eşleme bildirimi → Kaydet 2611 ms · istek anında açık bildirim 1 · ön koşul OLUŞTU
+mobil-yazma-247-eski-0ecc90de-yavas-2: BAŞARISIZ çıkış 1 · 73/74 · Y9 ✗ personel tahsilatı kaydedildi · eşleme bildirimi → Kaydet 2534 ms · istek anında açık bildirim 1 · ön koşul OLUŞTU
+mobil-yazma-247-eski-521be1b9-dogal-1: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-521be1b9-dogal-2: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-521be1b9-dogal-3: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-521be1b9-yavas-1: BAŞARISIZ çıkış 1 · 73/74 · Y9 ✗ personel tahsilatı kaydedildi · eşleme bildirimi → Kaydet 2544 ms · istek anında açık bildirim 1 · ön koşul OLUŞTU
+mobil-yazma-247-eski-521be1b9-yavas-2: BAŞARISIZ çıkış 1 · 73/74 · Y9 ✗ personel tahsilatı kaydedildi · eşleme bildirimi → Kaydet 2568 ms · istek anında açık bildirim 1 · ön koşul OLUŞTU
+mobil-yazma-247-eski-87b28e3e-dogal-1: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-87b28e3e-dogal-2: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-87b28e3e-dogal-3: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-87b28e3e-dogal-4: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-87b28e3e-dogal-5: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-eski-87b28e3e-yavas-1: BAŞARISIZ çıkış 1 · 73/74 · Y9 ✗ personel tahsilatı kaydedildi · eşleme bildirimi → Kaydet 2556 ms · istek anında açık bildirim 1 · ön koşul OLUŞTU
+mobil-yazma-247-eski-87b28e3e-yavas-2: BAŞARISIZ çıkış 1 · 73/74 · Y9 ✗ personel tahsilatı kaydedildi · eşleme bildirimi → Kaydet 2567 ms · istek anında açık bildirim 1 · ön koşul OLUŞTU
+mobil-yazma-247-yeni-dogal-1: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-yeni-dogal-2: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-yeni-dogal-3: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-yeni-dogal-4: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-yeni-dogal-5: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi
+mobil-yazma-247-yeni-yavas-1: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi · eşleme bildirimi → Kaydet 2597 ms · istek anında açık bildirim 0 (Kaydet öncesi temizlendi) · ön koşul OLUŞTU
+mobil-yazma-247-yeni-yavas-2: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi · eşleme bildirimi → Kaydet 2581 ms · istek anında açık bildirim 0 (Kaydet öncesi temizlendi) · ön koşul OLUŞTU
+mobil-yazma-247-yeni-yavas-3: GEÇTİ çıkış 0 · 74/74 · Y9 ✓ personel tahsilatı kaydedildi · eşleme bildirimi → Kaydet 2616 ms · istek anında açık bildirim 0 (Kaydet öncesi temizlendi) · ön koşul OLUŞTU

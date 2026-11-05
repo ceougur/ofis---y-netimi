@@ -1,0 +1,138 @@
+TAP version 13
+# (node:32365) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 W-4 — hata 100 iletisi işleme göre (gerçek program, sahte Meta)
+    # Subtest: şablon açma isteği 100 (2388024 değil): işlem iletisi 'şablon açma isteğindeki bir değeri kabul etmedi', kimlik suçlanmaz; şablon tek istekte denenir
+    not ok 1 - şablon açma isteği 100 (2388024 değil): işlem iletisi 'şablon açma isteğindeki bir değeri kabul etmedi', kimlik suçlanmaz; şablon tek istekte denenir
+      ---
+      duration_ms: 1014.917225
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2/test/whatsapp-w4-hata100-249.test.mjs:17:3'
+      failureType: 'testCodeFailure'
+      error: 'destekofis_ekstre: Meta isteği geçersiz buldu. (Meta hata kodu 100: Invalid parameter: components)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Meta isteği geçersiz buldu. (Meta hata kodu 100: Invalid parameter: components)'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2/test/whatsapp-w4-hata100-249.test.mjs:29:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: bildirim adresi kaydı 100 'must be subscribed' (ELLE KABUL BULGUSU 3): 'Meta bildirim adresini kaydetmedi … abonelik … Elle Bağla ön koşulları'; kartta Kaydedilemedi nedeni aynı
+    ok 2 - bildirim adresi kaydı 100 'must be subscribed' (ELLE KABUL BULGUSU 3): 'Meta bildirim adresini kaydetmedi … abonelik … Elle Bağla ön koşulları'; kartta Kaydedilemedi nedeni aynı
+      ---
+      duration_ms: 819.605544
+      type: 'test'
+      ...
+    # Subtest: bildirim adresi kaydı başka 100: 'Meta bildirim adresi kaydını kabul etmedi (geçersiz değer)'
+    not ok 3 - bildirim adresi kaydı başka 100: 'Meta bildirim adresi kaydını kabul etmedi (geçersiz değer)'
+      ---
+      duration_ms: 635.062569
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2/test/whatsapp-w4-hata100-249.test.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: 'Meta isteği geçersiz buldu. (Meta hata kodu 100: override_callback_uri must be https)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Meta isteği geçersiz buldu. (Meta hata kodu 100: override_callback_uri must be https)'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2/test/whatsapp-w4-hata100-249.test.mjs:66:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ileti isteği 100 (alt kodsuz): iş Başarısız, neden 'ileti isteğindeki bir değeri kabul etmedi'; toplu iş sürer (sınıf değişmedi)
+    not ok 4 - ileti isteği 100 (alt kodsuz): iş Başarısız, neden 'ileti isteğindeki bir değeri kabul etmedi'; toplu iş sürer (sınıf değişmedi)
+      ---
+      duration_ms: 567.160804
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2/test/whatsapp-w4-hata100-249.test.mjs:73:3'
+      failureType: 'testCodeFailure'
+      error: 'Meta isteği geçersiz buldu. (Meta hata kodu 100: Parameter value is not valid)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Meta isteği geçersiz buldu. (Meta hata kodu 100: Parameter value is not valid)'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2/test/whatsapp-w4-hata100-249.test.mjs:88:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Bağlantıyı Sına: numara listesi okuması 100 (alt kodsuz) → 'Meta okuma isteğini kabul etmedi; … yanlış olabilir'
+    not ok 5 - Bağlantıyı Sına: numara listesi okuması 100 (alt kodsuz) → 'Meta okuma isteğini kabul etmedi; … yanlış olabilir'
+      ---
+      duration_ms: 828.47829
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2/test/whatsapp-w4-hata100-249.test.mjs:97:3'
+      failureType: 'testCodeFailure'
+      error: 'Meta isteği geçersiz buldu. (Meta hata kodu 100: (#100) Invalid parameter)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Meta isteği geçersiz buldu. (Meta hata kodu 100: (#100) Invalid parameter)'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2/test/whatsapp-w4-hata100-249.test.mjs:103:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: gerileme koruması — yanlış WABA (100 + alt kod 33): ileti kimlikleri söyler, /yanlış olabilir/ (test/whatsapp-w1-baglanti.test.mjs ile aynı beklenti)
+    ok 6 - gerileme koruması — yanlış WABA (100 + alt kod 33): ileti kimlikleri söyler, /yanlış olabilir/ (test/whatsapp-w1-baglanti.test.mjs ile aynı beklenti)
+      ---
+      duration_ms: 648.04775
+      type: 'test'
+      ...
+    1..6
+not ok 1 - 2.4.9 W-4 — hata 100 iletisi işleme göre (gerçek program, sahte Meta)
+  ---
+  duration_ms: 4516.509988
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2/test/whatsapp-w4-hata100-249.test.mjs:16:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 W-4 değişmez — hata sınıfı (kind / retry) işlemden bağımsız
+    # Subtest: 100 (alt kodsuz / 33 / 2388024) her işlemde: kind request, retry never, kod ve alt kod korunur; ileti 'Meta hata kodu 100' ile biter
+    ok 1 - 100 (alt kodsuz / 33 / 2388024) her işlemde: kind request, retry never, kod ve alt kod korunur; ileti 'Meta hata kodu 100' ile biter
+      ---
+      duration_ms: 12.817197
+      type: 'test'
+      ...
+    # Subtest: 100 + alt kod 33 HER işlemde (abonelik iletili olsa da) kimlik başlığı: Phone Number ID, WABA ID ya da App ID; işleme özgü başlık 33'ün önüne geçmez
+    ok 2 - 100 + alt kod 33 HER işlemde (abonelik iletili olsa da) kimlik başlığı: Phone Number ID, WABA ID ya da App ID; işleme özgü başlık 33'ün önüne geçmez
+      ---
+      duration_ms: 3.933642
+      type: 'test'
+      ...
+    # Subtest: 100 dışı kodlarda başlık ve sınıf classifyMetaCode'la aynı (190, 131026, 131000, 132001, 1, bilinmeyen 987654)
+    ok 3 - 100 dışı kodlarda başlık ve sınıf classifyMetaCode'la aynı (190, 131026, 131000, 132001, 1, bilinmeyen 987654)
+      ---
+      duration_ms: 12.807798
+      type: 'test'
+      ...
+    1..3
+ok 2 - 2.4.9 W-4 değişmez — hata sınıfı (kind / retry) işlemden bağımsız
+  ---
+  duration_ms: 30.133763
+  type: 'suite'
+  ...
+1..2
+# tests 9
+# suites 2
+# pass 5
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4999.911351

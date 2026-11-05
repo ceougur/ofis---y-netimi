@@ -1,0 +1,63 @@
+{
+  "ad": "p1-tur1/eski-a5a3fcb8-kart-iade-musteri-249",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/eski-a5a3fcb8/test/kart-iade-musteri-249.test.mjs",
+  "commit": "6024af5ba8a8e4c0195dd429930859e0414cfa97",
+  "dal": "worktree-agent-a3726f63fad9a10bf",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:59:23.033Z",
+  "sure_sn": 8.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 2,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026) › kartla ödemesi olmayan müşteri: POST cardRefund 400 card-refund-no-payment, satır yok, kart değişmez; nakit / havale / POS hareketi bayrak açmaz (false)",
+      "konum": "test/kart-iade-musteri-249.test.mjs:43:3",
+      "hata": "kartla ödemesi olmayan müşteriye Kredi Kartına İade: 200 {\"id\":\"account-93725ae0-73d0-48b5-928a-ba776949e8df\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"ABC Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\",\"p · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026) › müşteriye kartla Ödeme 400 (KART1) → Kredi Kartına İade 500 (ödemeden büyük, üst sınır yok) seçilen KART2'ye, POS satışı yok; aynı adlı ikinci müşteride 400; bayrak cari bazında",
+      "konum": "test/kart-iade-musteri-249.test.mjs:66:3",
+      "hata": "ABC #2 (kartla ödemesi yok): 200 {\"id\":\"account-fe76a0f8-3a8d-4408-9035-6728a2847f31\",\"refNo\":\"2\",\"type\":\"customer\",\"name\":\"ABC Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\",\"p · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026) › silinmemiş: kartla ödeme silinince yeni Kredi Kartına İade 400 ve bayrak false; var olan iade satırının düzeltmesi (PUT, alan yok ya da cardRefund true) 200 ve kartta kalır",
+      "konum": "test/kart-iade-musteri-249.test.mjs:96:3",
+      "hata": "silinmiş ödemeden sonra yeni iade: 200 {\"id\":\"account-aa585c65-ea8e-4233-8436-1f5eefc14704\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"ABC Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\",\"p · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "DÜŞÜK-1 — var olan Kredi Kartına İade satırında kutu kaldırılınca (cardRefund: false) düzeltme uygulanır › tek POS: tedarikçi ve kartla ödemeli müşteri — PUT cardRefund:false, tutar aynı → satır POS'a, etkin POS satışı, kart etkisi geri, POS Bekleyen +",
+      "konum": "test/kart-iade-musteri-249.test.mjs:135:3",
+      "hata": "Toptancı A.Ş.: satır POS'a geçti (önceki KART2) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "DÜŞÜK-1 — var olan Kredi Kartına İade satırında kutu kaldırılınca (cardRefund: false) düzeltme uygulanır › 2 POS: PUT cardRefund:false + posId POS2 → 200, satır POS2'de (önceden 400 pos-not-for-payment: \"POS yalnız tahsilatta ve POS iadesinde kullanılır…\")",
+      "konum": "test/kart-iade-musteri-249.test.mjs:160:3",
+      "hata": "PUT 400 pos-not-for-payment POS yalnız tahsilatta ve POS iadesinde kullanılır; ödemede kartla ödeme Kredi Kartı hesabından yapılır. · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "DÜŞÜK-1 — var olan Kredi Kartına İade satırında kutu kaldırılınca (cardRefund: false) düzeltme uygulanır › ters yön (komşu): tek kartta POS tahsilatı satırı Kredi Kartına İade'ye çevrilince (kart kimliği yok, tutar aynı) satır kartta; POS satışı geçersiz",
+      "konum": "test/kart-iade-musteri-249.test.mjs:198:3",
+      "hata": "satır tek karta (KART1) · + actual - expected · + 'pos-70f5c5c0-bd5e-422c-96f1-8de84c0c3f15' (beklenen bacc-b052c698-b391-47b5-954c-5a7e6d6cbcca, gelen pos-70f5c5c0-bd5e-422c-96f1-8de84c0c3f15)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/p1-tur1/eski-a5a3fcb8-kart-iade-musteri-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3726f63fad9a10bf",
+  "ham_cikti_sha256": "b9a4abc8179434f5909d7f144afc9b819f8f4935e61396fbef5d9462edfebb4b",
+  "ham_cikti_bayt": 12375
+}

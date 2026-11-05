@@ -1,0 +1,20 @@
+K-1 kılavuz + B4 ekran adı yarışı (CI #970 87b28e3e "✗ 8: + Giriş") — 03.11.2026, taban 5a780c1d
+
+KÖK NEDEN: docs/kilavuz/ekran-banka.mjs stok adımı '.hof-modal [data-move="in"]' (görünürlük sınıfsız) bekleyip hemen
+grab("stok-kart", ".hof-modal-backdrop.is-visible") okuyordu. Pencerenin içeriği "is-visible" sınıfından önce hazır olursa
+(sınıf requestAnimationFrame ile bir kare sonra gelir; sayfa saati page.clock ile sahte) seçici hiçbir pencere bulmaz, stok-kart
+metni boş kalır; "+ Giriş" bölüm 8'de yalnız bu ekrandan gelir → 274/275. Doğal ölçüm (eski-olc.log): yerelde is-visible 9 ms
+sonra, içerik ondan SONRA — CI yükünde ara sıra ters döner (ders 39 ailesi).
+
+DÜZELTME: grab() okumadan önce açık her .hof-modal-backdrop'un is-visible aldığını (kapanmakta olanların DOM'dan çıktığını)
+bekler (8 sn; olmazsa adım hatayla düşer, sessiz boş metin yok). Bekleme süresi uzatılmadı; doğru hâl beklenir.
+
+ZORLAMA (test/e2e/pencere-yaris-zorla.mjs HOF_ZORLA=gorunur; kos-hepsi.sh <dizin> <günlük> [gecikme ms] [hedef]):
+  eski-zorla-250.log        eski kod, 250 ms, hedef .hof-stock   → 274/275 "✗ 8: + Giriş" (CI #970 ile AYNI imza), zorlama 1
+  eski-zorla-hepsi-250.log  eski kod, 250 ms, bütün pencereler   → 274/275 "✗ 8: + Giriş", zorlama 54
+  eski-zorla-1500.log       eski kod, 1500 ms, hedef .hof-stock  → 272/275 (+ Giriş, + Kart Borcu Ödemesi; kart adımı 30 sn)
+  yeni-zorla-250.log        yeni kod, 250 ms, hedef .hof-stock   → 275/275, zorlama 1
+  yeni-zorla-hepsi-250.log  yeni kod, 250 ms, bütün pencereler   → 275/275, zorlama 54
+  yeni-zorla-1500.log       yeni kod, 1500 ms, hedef .hof-stock  → 275/275, zorlama 1
+  yeni-zorla-hepsi-250-son.log  son kod (K-1 tedarikçi adımı dahil), 250 ms, bütün pencereler → 277/277, zorlama 56
+Eski kod ayrı kopyada (git archive 5a780c1d, ders 23). kilavuz-metin.log: son kod, zorlamasız, 277/277.

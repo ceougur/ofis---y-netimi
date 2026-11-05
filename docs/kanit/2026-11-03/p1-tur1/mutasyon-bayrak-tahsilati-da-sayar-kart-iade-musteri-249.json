@@ -1,0 +1,38 @@
+{
+  "ad": "p1-tur1/mutasyon-bayrak-tahsilati-da-sayar-kart-iade-musteri-249",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/kart-iade-musteri-249.test.mjs",
+  "commit": "6024af5ba8a8e4c0195dd429930859e0414cfa97",
+  "dal": "worktree-agent-a3726f63fad9a10bf",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T21:08:27.438Z",
+  "sure_sn": 5.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 7,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026) › silinmemiş: kartla ödeme silinince yeni Kredi Kartına İade 400 ve bayrak false; var olan iade satırının düzeltmesi (PUT, alan yok ya da cardRefund true) 200 ve kartta kalır",
+      "konum": "test/kart-iade-musteri-249.test.mjs:96:3",
+      "hata": "silinmiş ödemeden sonra yeni iade: 200 {\"id\":\"account-6fb5a81c-2832-4b7a-a8b8-499cac81ede9\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"ABC Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\",\"p · 200 !== 400 (beklenen 400, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/p1-tur1/mutasyon-bayrak-tahsilati-da-sayar-kart-iade-musteri-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3726f63fad9a10bf",
+  "ham_cikti_sha256": "d1dbdabb8ece5c65c11305ee5f3ad02059a7934507dbe1c9c6cc138f7ed777dc",
+  "ham_cikti_bayt": 5816
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "c1/olcum-eski-35e90e47",
+  "komut": "node docs/kanit/2026-11-03/c1/olcum-c1.mjs --kod /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47 --taban /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-a5bbd5/olcum-taban --is /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-a5bbd5/olcum-is-eski --json docs/kanit/2026-11-03/c1/olcum-eski-35e90e47-sonuc.json --etiket eski-35e90e47",
+  "commit": "4bed467f82f97c6ac4fe4dd0c50fa76dad06a7d7",
+  "dal": "worktree-agent-a5bbd50c43062a283",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:05:20.743Z",
+  "sure_sn": 25.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/c1/olcum-eski-35e90e47.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a5bbd50c43062a283",
+  "ham_cikti_sha256": "be12c974a18f139030fcd8b50566545cb82f152160f91ec0133ae1616793ae55",
+  "ham_cikti_bayt": 1038
+}

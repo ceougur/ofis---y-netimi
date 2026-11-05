@@ -74,6 +74,8 @@ export async function startTestServer(options = {}) {
     ...(options.__testWriteLockProbe === false ? { __testWriteLockProbe: false } : {}),
     ...(Number.isFinite(options.__testWriteLockBackoffMs) ? { __testWriteLockBackoffMs: options.__testWriteLockBackoffMs } : {}),
     ...(options.log ? { log: options.log } : {}),
+    // 2.4.9 B1: açılış kesintisi kancası (server/app.mjs openFault; yalnız test/createapp-acilis-geri-alma-249.test.mjs).
+    ...(options.__testOpenFault ? { __testOpenFault: options.__testOpenFault } : {}),
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.
     moneyStrict: options.moneyStrict ?? true,

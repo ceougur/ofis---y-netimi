@@ -1,0 +1,235 @@
+
+■ S0 boş veri: giriş; Cari listesi boş; Yönetim → WhatsApp Bağlı Değil; boş seçimle toplu iş açılmaz
+  ✓ Cari listesi boş + yol gösterir: Bu süzgeçte cari yok. + Yeni Cari ile tek kart açın ya da Excel / Sheets’ten Yükle ile listenizi bir kerede aktarın.
+  ⚑ GÖZLEM: hiç cari yokken boş liste "Bu süzgeçte cari yok. + Yeni Cari ile te…" diyor ("Henüz cari yok" değil; varsayılan süzgeç Tümü değil)
+  ✓ seçim yokken WhatsApp Ekstre düğmesi görünmez
+  ✓ Yönetim → WhatsApp: Bağlı Değil
+  ✓ boş seçim: toplu iş açılmadı (önizleme 409, başlatma 409 WhatsApp Business API bağlantısı yok; önce Yönetim → WhatsApp'ta Elle Bağla ile )
+  ✓ veri tabanında toplu iş 0, Meta'ya ileti 0
+  ✓ Bu Ay: bağlantı yok, 0 ({"c":false,"d":0})
+
+■ S1 firma bilgisi: Yönetim → Sistem → Ofis Adı (insan hızında) + Fatura Ayarları satıcı (API)
+  ✓ veri tabanında ofis adı "Deniz Ticaret Ltd. Şti."
+  ✓ satıcı bilgisi kaydedildi
+
+■ S2 Elle Bağla (Tab, insan hızında) → Kaydet ve Sına → Bağlı; Bağlantıyı Sına; kanca adresi Meta'da
+  ✓ Tab sırası: kimlikler → belirteç
+  ✓ durum Bağlı
+  ✓ görünen ad Meta'dan (Deniz Ticaret)
+  ✓ Bağlantıyı Sına sonrası Bağlı
+  ✓ Bağlantıyı Sına Meta'ya gitti (+4 istek)
+  ✓ kanca adresi Meta'ya kaydedildi (http://ofis-t4.localhost:40547/wa/kanca/…)
+  ✓ sayfada belirteç yok
+  ✓ belirteç gövde/sorguda Meta'ya sızmadı (0)
+
+■ S3 Şablonlar: kendiliğinden açıldı (UTILITY, tr, KVKK, teslim süresi yok) → Meta onaylar → Şablonları Denetle ve Oluştur → Onaylandı / Evet
+  ✓ Meta'da 2 şablon (destekofis_ekstre, destekofis_odeme_hatirlatma)
+  ✓ ikisi de UTILITY, tr
+  ✓ Ekstre gövdesi K3 metni
+  ✓ KVKK alt satırı
+  ✓ belge başlığı
+  ✓ şablon açmada teslim süresi gönderilmedi — Meta varsayılanı 30 gün (2 açma, TTL [])
+  ✓ Ekstre: Onay Bekliyor
+  ✓ iki şablon gönderime hazır: Evet
+  ✓ Ekstre Onaylandı
+
+■ S4 Aydınlatma Metni Hazırla: firma unvanı ve e-posta metinde; eksik bilgi yok; Esc ile kapanır
+  ✓ metinde unvan, VKN, e-posta
+  ✓ yer tutucu kalmadı (bütün firma bilgileri dolu)
+  ✓ Esc ile kapandı (soru yok)
+
+■ S5 Gönderim Onayı (Yönetim kartı): Tab + Boşluk → veri tabanı
+  ⚑ GÖZLEM: Elle Bağla + Şablonları Denetle'den sonra aynı sayfada Gönderim Onayı kartı görünmüyor; sayfa yenilenince görünüyor mu denendi
+  ✓ başlangıçta işaretsiz
+  ✓ Tab ile kutuya gelindi
+  ✓ onay veri tabanında ({"version":1,"text":"Aydınlatma metnimi okudum, carilerime u)
+
+■ S6 cariler EKRANDAN (+ Yeni Cari, insan hızında); İstemiyor Tab + Boşluk; Pasife Al; hareketler + taksit kartı API'den
+  ✓ cari açıldı: Aynı Ad Kişi 0532 100 00 01
+  ⚑ GÖZLEM: "Aynı Ad Kişi" açılırken soru: "Aynı Adlı Cari Var" seçenekler no:Vazgeç | yes:Yine de Aç
+  ✓ cari açıldı: Aynı Ad Kişi 0532 100 00 02
+  ✓ cari açıldı: Ortak Telefon A 0533 200 00 00
+  ✓ cari açıldı: Ortak Telefon B 0533 200 00 00
+  ✓ cari açıldı: Sabit Hat Kişi 0212 555 01 01
+  ✓ cari açıldı: Yurt Dışı Kişi +49 151 2345 6789
+  ✓ cari açıldı: Telefonsuz Kişi (telefonsuz)
+  ✓ İstemiyor kutusu Tab + Boşluk ile işaretlendi
+  ✓ cari açıldı: İstemiyor Kişi 0534 300 00 00
+  ✓ veri tabanında İstemiyor 1
+  ✓ cari açıldı: Pasif Kişi 0535 400 00 00
+  ✓ cari açıldı: Alacaklı Kişi 0536 600 00 00
+  ✓ veri tabanında 10 cari
+  ✓ Pasif Kişi veri tabanında passive
+  ✓ bakiyeler: C1 890, C3 250, C10 −300 (890, 250, -300)
+  ✓ C3 kartta Geciken 200 (200)
+    (C2 açılış vadesi 20.10.2026 → kartta Geciken 0)
+
+■ S7 Geçen Ay toplu ekstre: önizleme 10 / 7 / 3; Gönder → 7 ileti; şablon, değişkenler ve PDF metni (dönem, bakiye)
+  ✓ Otomatik Gönder varsayılan
+  ✓ dönem: 01.10.2026 – 31.10.2026
+  ✓ seçilen 10 (10)
+  ✓ gönderilecek 7: aynı adlı 2 + aynı telefonlu 2 + sabit hat + yurt dışı + alacaklı (K1, K2) (7)
+  ✓ elenen 3 (3)
+  ✓ elenme nedeni "Telefon yok" 1
+  ✓ elenme nedeni "WhatsApp Mesajı İstemiyor" 1
+  ✓ elenme nedeni "Pasif Cari" 1
+  ✓ Telefonsuz Kişi: satırda "Telefon yok"
+  ✓ İstemiyor Kişi: satırda "WhatsApp Mesajı İstemiyor"
+  ✓ Pasif Kişi: satırda "Pasif Cari"
+  ✓ tahmini ücret 7 × 0,0009 = 0,0063 USD (≈ 0,0063 USD (7 ileti × 0,0009 USD; yalnız teslim edilen ileti ücretlidir, Meta faturası esastır))
+  ✓ Daha Önce Gönderildi 0 (ilk gönderim)
+  ✓ Gönder etkin
+  ✓ düğme: Gönder (7 Kişi) (Gönder (7 Kişi))
+  ✓ başlatma sorusu (Gönderim Başlasın mı?)
+  ✓ veri tabanı: 7 bekliyor + 3 atlandı ({"pending":7,"skipped":3})
+  ✓ işçi çalışmadan Meta'ya ileti yok
+  ✓ sahte Meta: 7 ileti kabul (7); POST 7
+  ✓ alıcılar beklenenle aynı (4915123456789, 902125550101, 905321000001, 905321000002, 905332000000, 905332000000, 905366000000)
+  ✓ numaralar '+' ve ülke koduyla
+  ✓ şablon destekofis_ekstre, tr
+  ✓ 7 PDF yüklendi (7)
+  ✓ Aynı Ad Kişi (+905321000001) iletisi var
+  ✓ Aynı Ad Kişi: {{2}} firma "Deniz Ticaret Ltd. Şti."
+  ✓ Aynı Ad Kişi: {{3}} dönem "01.10.2026 – 31.10.2026"
+  ✓ Aynı Ad Kişi: {{4}} bakiye "850,00 TL (Borçlu)" (beklenen 850,00 TL)
+  ✓ Aynı Ad Kişi: PDF dönemi Ekim
+  ✓ Aynı Ad Kişi: PDF'te dönem sonu 850,00 TL
+  ✓ C1 PDF: Ekim hareketleri var, Kasım YOK, devir 1.000,00
+  ✓ Aynı Ad Kişi: dosya adı "Ekstre Aynı Ad Kişi 01.10.2026-31.10.2026.pdf"
+  ✓ Aynı Ad Kişi (+905321000002) iletisi var
+  ✓ Aynı Ad Kişi: {{2}} firma "Deniz Ticaret Ltd. Şti."
+  ✓ Aynı Ad Kişi: {{3}} dönem "01.10.2026 – 31.10.2026"
+  ✓ Aynı Ad Kişi: {{4}} bakiye "500,00 TL (Borçlu)" (beklenen 500,00 TL)
+  ✓ Aynı Ad Kişi: PDF dönemi Ekim
+  ✓ Aynı Ad Kişi: PDF'te dönem sonu 500,00 TL
+  ✓ Aynı Ad Kişi: dosya adı "Ekstre Aynı Ad Kişi 01.10.2026-31.10.2026.pdf"
+  ✓ Ortak Telefon A (+905332000000) iletisi var
+  ✓ Ortak Telefon A: {{2}} firma "Deniz Ticaret Ltd. Şti."
+  ✓ Ortak Telefon A: {{3}} dönem "01.10.2026 – 31.10.2026"
+  ✓ Ortak Telefon A: {{4}} bakiye "250,00 TL (Borçlu)" (beklenen 250,00 TL)
+  ✓ Ortak Telefon A: PDF dönemi Ekim
+  ✓ Ortak Telefon A: PDF'te dönem sonu 250,00 TL
+  ✓ Ortak Telefon A: dosya adı "Ekstre Ortak Telefon A 01.10.2026-31.10.2026.pdf"
+  ✓ Ortak Telefon B (+905332000000) iletisi var
+  ✓ Ortak Telefon B: {{2}} firma "Deniz Ticaret Ltd. Şti."
+  ✓ Ortak Telefon B: {{3}} dönem "01.10.2026 – 31.10.2026"
+  ✓ Ortak Telefon B: {{4}} bakiye "750,00 TL (Borçlu)" (beklenen 750,00 TL)
+  ✓ Ortak Telefon B: PDF dönemi Ekim
+  ✓ Ortak Telefon B: PDF'te dönem sonu 750,00 TL
+  ✓ Ortak Telefon B: dosya adı "Ekstre Ortak Telefon B 01.10.2026-31.10.2026.pdf"
+  ✓ Sabit Hat Kişi (+902125550101) iletisi var
+  ✓ Sabit Hat Kişi: {{2}} firma "Deniz Ticaret Ltd. Şti."
+  ✓ Sabit Hat Kişi: {{3}} dönem "01.10.2026 – 31.10.2026"
+  ✓ Sabit Hat Kişi: {{4}} bakiye "100,00 TL (Borçlu)" (beklenen 100,00 TL)
+  ✓ Sabit Hat Kişi: PDF dönemi Ekim
+  ✓ Sabit Hat Kişi: PDF'te dönem sonu 100,00 TL
+  ✓ Sabit Hat Kişi: dosya adı "Ekstre Sabit Hat Kişi 01.10.2026-31.10.2026.pdf"
+  ✓ Yurt Dışı Kişi (+4915123456789) iletisi var
+  ✓ Yurt Dışı Kişi: {{2}} firma "Deniz Ticaret Ltd. Şti."
+  ✓ Yurt Dışı Kişi: {{3}} dönem "01.10.2026 – 31.10.2026"
+  ✓ Yurt Dışı Kişi: {{4}} bakiye "300,00 TL (Borçlu)" (beklenen 300,00 TL)
+  ✓ Yurt Dışı Kişi: PDF dönemi Ekim
+  ✓ Yurt Dışı Kişi: PDF'te dönem sonu 300,00 TL
+  ✓ Yurt Dışı Kişi: dosya adı "Ekstre Yurt Dışı Kişi 01.10.2026-31.10.2026.pdf"
+  ✓ Alacaklı Kişi (+905366000000) iletisi var
+  ✓ Alacaklı Kişi: {{2}} firma "Deniz Ticaret Ltd. Şti."
+  ✓ Alacaklı Kişi: {{3}} dönem "01.10.2026 – 31.10.2026"
+  ✓ Alacaklı Kişi: {{4}} bakiye "300,00 TL (Alacaklı)" (beklenen 300,00 TL (Alacaklı))
+  ✓ Alacaklı Kişi: PDF dönemi Ekim
+  ✓ Alacaklı Kişi: PDF'te dönem sonu 300,00 TL
+  ✓ C10 PDF: alacaklı bakiye
+  ✓ Alacaklı Kişi: dosya adı "Ekstre Alacaklı Kişi 01.10.2026-31.10.2026.pdf"
+  ✓ ekranda Meta Kabul Etti 7, Atlandı 3
+  ✓ toplu iş Tamamlandı
+
+■ S8 kanca (sahte Meta): teslim 4, okundu 1, başarısız 1 (sabit hat 131026), yanıtsız 1 → ekranda durumlar; Bu Ay 5 (ekran = API = Yönetim)
+  ✓ kanca yanıtları 200 (200,200,200,200,200,200,200)
+  ✓ ekranda Teslim 4, Okundu 1, Başarısız 1, Meta Kabul Etti 1 (4/1/1/1)
+  ✓ başarısız satırı sabit hat + neden (Sabit Hat Kişi …0101 Başarısız İleti alıcıya iletilemedi (numara WhatsApp kullanmıyor, WhatsApp'ın koşullarını kabul etmemiş ya da WhatsApp'ı çok eski). (Meta hata kodu 131026) )
+  ✓ veri tabanı aynı ({"accepted":1,"delivered":4,"failed":1,"read":1,"skipped":3})
+  ✓ API Bu Ay teslim 5 = 4 teslim + 1 okundu (5; ücretli 5)
+  ✓ Gönderim Özeti: 5 teslim edildi (ücretli 5; yaklaşık 0,0045 USD)
+  ✓ Gönderimler listesinde Geçen Ay toplu işi
+  ✓ Yönetim → WhatsApp: Teslim Edilen İleti 5
+
+■ S9 Bu Ay ekstresi: R3 uyarısı YOK (dönem farklı), 7 ileti, dönem 01.11.2026 – 03.11.2026, C1 890
+  ✓ dönem varsayılanı Bu Ay
+  ✓ dönem: 01.11.2026 – 03.11.2026
+  ✓ gönderilecek 7, Daha Önce Gönderildi 0 (7/0)
+  ✓ Gönder etkin
+  ✓ düğme: Gönder (7 Kişi) (Gönder (7 Kişi))
+  ✓ başlatma sorusu (Gönderim Başlasın mı?)
+  ✓ Meta'ya 7 yeni ileti (7); toplam 14
+  ✓ hepsinde dönem 01.11.2026 – 03.11.2026
+  ✓ C1 bakiye 890,00 TL (Borçlu)
+  ✓ C1 PDF: Kasım hareketi var, Ekim yok, devir 850, dönem sonu 890
+  ✓ Bu Ay teslim 8 (8)
+
+■ S10 Ödeme Hatırlatma: gecikmiş borçlular; değişkenler (en eski vade, vadesi geçmiş toplam, güncel bakiye)
+  ✓ C3 (taksit kartında vadesi geçmiş 200) hatırlatmaya alınır
+  ⚑ GÖZLEM: C2 açılış bakiyesinin Vade Tarihi 20.10.2026 geçmiş (kartta Geciken görünür mü: API'den okundu) ama hatırlatmada "Aynı Ad Kişi …0002 Gecikmiş Borç Yok" — plan §7a 20 "vadesi geçmiş borç"; kartta Geciken de 0 (açılış vadesi gecikmiş sayılmıyor)
+  ✓ Gecikmiş Borç Yok 6
+  ✓ Gönder etkin
+  ✓ düğme: Gönder (1 Kişi) (Gönder (1 Kişi))
+  ✓ başlatma sorusu (Gönderim Başlasın mı?)
+  ✓ Meta'ya 1 hatırlatma, şablon destekofis_odeme_hatirlatma
+  ✓ C3'e bir hatırlatma (aynı telefondaki C4'e değil — C4'ün gecikmiş borcu yok)
+  ✓ C3 değişkenleri: ["Ortak Telefon A","Deniz Ticaret Ltd. Şti.","15.09.2026","200,00 TL","250,00 TL (Borçlu)"] (beklenen [ad, firma, 15.09.2026, 200,00 TL, 250,00 TL])
+  ✓ hatırlatmada PDF yok
+
+■ S11 WhatsApp Web ile Gönder: yurt dışı (+49) kişiye wa.me (numara + metin); sabit hat bu yolda seçilemez + neden
+    (WhatsApp Web özeti:  10Seçilen Cari 0Gönderilecek 10Elenen 0Ertesi Güne Kalacak )
+  ✓ sabit hat wa.me yolunda seçilemez, nedeni satırda ( Sabit Hat Kişi 0212 555 01 01 · Sabit hat (WhatsApp cep numarası değil) ₺100,00 Borçlu)
+  ⚑ GÖZLEM: WhatsApp Web ile Gönder sabit hattı "Numarası Yok / Hatalı" sayar (wa.me cep ister), Otomatik Gönder göndermeye alır (K1) — iki yolun sayıları farklı:  10Seçilen Cari 0Gönderilecek 10Elenen 0Ertesi Güne Kalacak 
+  ✓ wa.me/4915123456789 açıldı (https://wa.me/4915123456789?text=Say%C4%)
+  ✓ metin adı ve bakiyesiyle (Sayın Yurt Dışı Kişi, / Deniz Ticaret Ltd. Şti. cari hesap ekstreniz (01.11.2026 – 03.11.2026):)
+  ✓ cari kartına kayıt (message_sends +1)
+  ✓ wa.me yolu Meta'ya istek göndermedi
+
+■ S12 yetkisiz (Personel): Otomatik Gönder pasif + neden; API 403
+  ✓ sekmede neden: yetkiniz yok
+  ✓ Gönder pasif
+  ✓ neden görünür: WhatsApp ile otomatik gönderim yetkiniz yok (yetkiyi yönetici verir: WhatsApp ile Otomatik Gönder).
+  ✓ API: personel toplu iş 403
+  ✓ Meta'ya ileti yok
+
+■ S13 iki şirket: 002 ekrandan açılır → sızıntı yok; 002 kendi WABA'sıyla 1 ileti → 001'in Bu Ay'ı değişmez
+  ✓ 002 açıldı (002 · İkinci Şirket)
+  ✓ 002: Cari listesi (Tümü) boş — 001'in carileri yok
+  ✓ 002: bağlantı yok, Bu Ay 0 ({"c":false,"d":0})
+  ✓ 002: Gönderimler boş
+  ✓ 002 Yönetim → WhatsApp: Bağlı Değil (bağlantı şirkete özel)
+  ✓ 002 ofis adı
+  ✓ 002 bağlantı (200)
+  ✓ 002 toplu iş (200 )
+  ✓ 002 iletisi kendi numarasından, kendi firma adı ve bakiyesiyle (106540352242999, Aynı Ad Kişi | İkinci Şirket | 01.11.2026 – 03.11.2026 | 77,00 TL (Borçlu))
+  ✓ 002 kancası 200
+    (şirket parametresiz istek sol seçicideki şirkete gider: Bu Ay 1, WABA 102290129340777)
+  ✓ 001 Bu Ay değişmedi (8 → 8)
+  ✓ 002 Bu Ay 1
+  ✓ 001 veri tabanında 002'nin işi yok
+
+■ S14 salt okunur lisans: Otomatik Gönder pasif + neden; API reddi; Meta'ya yeni ileti yok
+  ✓ salt okunur: WhatsApp Web ile Gönder varsayılan
+  ✓ Gönder pasif
+  ✓ neden görünür: Program salt okunur çalışıyor (lisans); WhatsApp ile otomatik gönderim yapılamaz.
+  ✓ API reddi 403 (Ücretsiz deneme henüz başlamadı. Program salt okunur çalışıyor; bu işl)
+  ✓ yeni toplu iş yok, Meta'ya yeni ileti yok
+
+■ S15 Yönetim → Mobil Cihazlar: lisans bitişine 7 gün kala uyarı (KARAR L1), 8 gün kala uyarı yok
+  ✓ 8 gün kala uyarı yok (0 / 3 eşli cihaz (iki şirket birlikte; telefon, tablet ve uzak tarayıcı sayılır).Bulut Öze)
+  ✓ 7 gün kala: "Lisansınız 7 gün sonra bitiyor." (KARAR L1 "lisans X gün sonra bitiyor"; F4 BAŞ MİMAR KARARI cümle düzeni)
+  ✓ eşli cihaz sayısı görünür
+  ✓ sayfa hatası yok
+  ✓ Meta'ya belirteç sızıntısı yok (0)
+
+GÖZLEMLER (5):
+  - hiç cari yokken boş liste "Bu süzgeçte cari yok. + Yeni Cari ile te…" diyor ("Henüz cari yok" değil; varsayılan süzgeç Tümü değil)
+  - Elle Bağla + Şablonları Denetle'den sonra aynı sayfada Gönderim Onayı kartı görünmüyor; sayfa yenilenince görünüyor mu denendi
+  - "Aynı Ad Kişi" açılırken soru: "Aynı Adlı Cari Var" seçenekler no:Vazgeç | yes:Yine de Aç
+  - C2 açılış bakiyesinin Vade Tarihi 20.10.2026 geçmiş (kartta Geciken görünür mü: API'den okundu) ama hatırlatmada "Aynı Ad Kişi …0002 Gecikmiş Borç Yok" — plan §7a 20 "vadesi geçmiş borç"; kartta Geciken de 0 (açılış vadesi gecikmiş sayılmıyor)
+  - WhatsApp Web ile Gönder sabit hattı "Numarası Yok / Hatalı" sayar (wa.me cep ister), Otomatik Gönder göndermeye alır (K1) — iki yolun sayıları farklı:  10Seçilen Cari 0Gönderilecek 10Elenen 0Ertesi Güne Kalacak 
+
+Sahte Meta toplam: ileti isteği 16, kabul 16, PDF 15, silinen PDF 9
+
+184 geçti, 0 kaldı

@@ -1,0 +1,32 @@
+{
+  "ad": "kilavuz-metin-k1c",
+  "komut": "npm run -s test:kilavuz-metin",
+  "commit": "f3ccc6499d53f0c4df8ef18797910c42ac43980d",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T23:46:57.024Z",
+  "sure_sn": 123.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 277,
+    "gecen": 277,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/kilavuz-metin-k1c.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "7029d8b39622d4135623b55dc14ea57b297dfe5582a5977efa1ce55e88b4f5e9",
+  "ham_cikti_bayt": 11334
+}

@@ -8,7 +8,8 @@
 //   S0 boş veri: hiç cari yok — Cari listesi "Henüz cari yok", Yönetim → WhatsApp "Bağlı Değil", önizleme API'si boş seçimde iş açmaz.
 //   S1 firma bilgisi (Yönetim → Sistem → Ofis Adı, insan hızında) + Fatura Ayarları satıcı bilgisi (API).
 //   S2 Yönetim → WhatsApp → Elle Bağla (Tab ile, insan hızında) → Kaydet ve Sına → "Bağlı"; Bağlantıyı Sına; kanca adresi Meta'ya kaydedildi.
-//   S3 Şablonlar: Elle Bağla'dan sonra kendiliğinden açıldı (Meta'da 2 şablon, UTILITY, tr, KVKK alt satırı, TTL 3 gün = 259200 sn) → Meta onaylar →
+//   S3 Şablonlar: Elle Bağla'dan sonra kendiliğinden açıldı (Meta'da 2 şablon, UTILITY, tr, KVKK alt satırı, teslim süresi GÖNDERİLMEZ — Meta varsayılanı 30 gün;
+//      2.4.9 W-T, KULLANICI KARARI 03.11.2026; önceden TTL 3 gün = 259200 sn) → Meta onaylar →
 //      Şablonları Denetle ve Oluştur → ikisi "Onaylandı / Evet".
 //   S4 Aydınlatma Metni Hazırla: firma unvanı metinde; Esc. S5 Gönderim Onayı: Yönetim kartında Tab + Boşluk → veri tabanı.
 //   S6 cariler EKRANDAN (+ Yeni Cari): aynı adlı iki cari, aynı telefonlu iki cari, sabit hat, yurt dışı +49, telefonsuz, "WhatsApp Mesajı İstemiyor",
@@ -305,7 +306,7 @@ await step("S2 Elle Bağla (Tab, insan hızında) → Kaydet ve Sına → Bağl�
   await shot("03-bagli");
 });
 
-await step("S3 Şablonlar: kendiliğinden açıldı (UTILITY, tr, KVKK, TTL) → Meta onaylar → Şablonları Denetle ve Oluştur → Onaylandı / Evet", async () => {
+await step("S3 Şablonlar: kendiliğinden açıldı (UTILITY, tr, KVKK, teslim süresi yok) → Meta onaylar → Şablonları Denetle ve Oluştur → Onaylandı / Evet", async () => {
   const tpls = meta.meta.sablonlar.filter(s => s.waba === WABA && !s.silindi);
   const names = tpls.map(s => s.name).sort();
   ok(names.join() === "destekofis_ekstre,destekofis_odeme_hatirlatma", `Meta'da 2 şablon (${names.join(", ")})`);
@@ -316,8 +317,9 @@ await step("S3 Şablonlar: kendiliğinden açıldı (UTILITY, tr, KVKK, TTL) →
   ok(parts.FOOTER?.text === "KVKK aydınlatma metni için firmamıza başvurabilirsiniz.", "KVKK alt satırı");
   ok(String(parts.HEADER?.format).toUpperCase() === "DOCUMENT", "belge başlığı");
   const posts = kayit().istekler.filter(i => i.islem === "templates_post" && i.yol.includes(WABA));
+  // 2.4.9 W-T — beklenti bilerek güncellendi (KULLANICI KARARI 03.11.2026 ~18:45 UTC; docs/2.4.9-tasarim/W-whatsapp-sablon.md §15): açma isteğinde teslim süresi YOK.
   const ttls = posts.map(p => p.govde?.message_send_ttl_seconds).filter(v => v !== undefined);
-  ok(ttls.length === 2 && ttls.every(v => v === 259200), `şablon açmada teslim süresi 3 gün = 259200 sn (S2 A) (${JSON.stringify(ttls)})`);
+  ok(posts.length === 2 && ttls.length === 0, `şablon açmada teslim süresi gönderilmedi — Meta varsayılanı 30 gün (${posts.length} açma, TTL ${JSON.stringify(ttls)})`);
   await page.waitForSelector('[data-wa-tpl="destekofis_ekstre"] [data-wa-tpl-status]');
   ok(/Onay Bekliyor/.test(await text('[data-wa-tpl="destekofis_ekstre"] [data-wa-tpl-status]')), `Ekstre: ${await text('[data-wa-tpl="destekofis_ekstre"] [data-wa-tpl-status]')}`);
   for (const s of tpls) s.status = "APPROVED";

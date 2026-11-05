@@ -1,0 +1,273 @@
+From 59ffe3b163bafca10565a86c058b6cf6b8e2a50c Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 4 Nov 2026 00:42:59 +0000
+Subject: [PATCH 1/2] =?UTF-8?q?Test:=202.4.9=20W-K=C3=96K=20tur=202=20?=
+ =?UTF-8?q?=E2=80=94=20bak=C4=B1m=20k=C4=B1sa=20s=C3=BCreyle=20S=C3=BCresi?=
+ =?UTF-8?q?=20Doldu=20yazmadan=20=C3=B6nce=20=C5=9Fablonu=20turda=20bir=20?=
+ =?UTF-8?q?kez=20taze=20okur=20(test/whatsapp-w-kok-ttl-249.test.mjs)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Bağımsız gözden geçirme gerilemesi (DÜŞÜK-2 → S-A, İLKEYLE): süre kabulden sonra uzar, program Meta'yı okumaz →
+13 sa + 1 dk'da Süresi Doldu, kişiye aynı dönemde 2. ileti. Hücreler (a) uzama → Süresi Doldu değil, 1 ileti;
+(a2) varsayılana dönüş; (b) gerçekten 12 sa → Süresi Doldu (eski davranış); (c) okuma düşer (500 / yanıtsız) →
+yazılmaz, sonraki başarılı turda doğru karar; (c2) salt okunur lisans; (c3) bağlantı yok + 30 gün + 1 sa sınırı;
+(d) okuma sayısı (aynı şablonda 5 iş → 1; 30 günlük işler → 0); (e) okuma sürerken gelen "read" ezilmez.
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YPtTa36rhoDHXGQsPrhcJ8
+---
+ test/whatsapp-w-kok-ttl-249.test.mjs | 239 +++++++++++++++++++++++++++
+ 1 file changed, 239 insertions(+)
+
+diff --git a/test/whatsapp-w-kok-ttl-249.test.mjs b/test/whatsapp-w-kok-ttl-249.test.mjs
+index 41ce081d..0cce478f 100644
+--- a/test/whatsapp-w-kok-ttl-249.test.mjs
++++ b/test/whatsapp-w-kok-ttl-249.test.mjs
+@@ -511,3 +511,242 @@ describe("2.4.9 W-KÖK — bakım turu teslim süresi bilgisini satır başına
+     }
+   });
+ });
++
++// 2.4.9 W-KÖK TUR 2 — bağımsız gözden geçirme GERİLEMESİ (04.11.2026 ~00:55 UTC, docs/2.4.9-IS-LISTESI.md "BAĞIMSIZ GÖZDEN GEÇİRME" DÜŞÜK-2): Meta 12 sa bildirir, iş kabul
++// edilir, 1 sa sonra Meta'da süre 30 güne çıkar ama program bu arada Meta'yı OKUMAZ (süren toplu iş / önizleme / Denetle yok) → 13 sa + 1 dk'da Süresi Doldu, PDF silinir,
++// aynı dönemde kişiye 2. ileti (v2.4.8'de 1). KARAR (S-A, 03.11 yetkisiyle İLKEYLE — ilke 2 "almış olabilirse elenir"; BAŞ MİMAR KARARI): bakım, 30 günden KISA etkin süreyle
++// Süresi Doldu yazacağı iş varsa o WABA / şablon için turda BİR KEZ taze Meta şablon okuması yapar (süre günlüğe), kuralı yeniden değerlendirir; okuma düşerse (ağ, Meta
++// hatası, bağlantı yok) o tur Süresi Doldu YAZILMAZ, sonraki turda yeniden denenir. Tur başına WABA + şablon başına en çok bir okuma (ders 47); 30 günlük işlerde okuma yok.
++// Beklenen sayılar karar metninden ve testin girdiği veriden (ders 5). Eski kod (be58d92b): (a), (a2), (c), (c2), (c3) beklenen nedenle ("Süresi Doldu yazılmamalı") kırmızı;
++// (b) ve (d) eski kodda yalnız okuma sayısında kırmızı (Süresi Doldu kararı eski kodla aynı — eski davranış korunur); (e) eski kodda ön koşulda (bakım Meta'yı okumuyor).
++const templateReads = ctx => ctx.fake.requests.filter(item => item.method === "GET" && /^\/\d+\/message_templates$/.test(item.path)).length;
++const ttlLogOf = ctx => (JSON.parse(ctx.store.setting("whatsapp.ttlSince", "") || "{}").items?.[EKSTRE] || []).map(entry => entry.seconds);
++const TEMPLATE_GET = /^GET \/\d+\/message_templates$/;
++/** Bir bakım turu (yalnız bakım; iş yürütülmez). Dönüş: o turdaki şablon okuması sayısı. */
++async function maintainTurn(ctx) {
++  const before = templateReads(ctx);
++  await ctx.wa.scheduler.maintain();
++  return templateReads(ctx) - before;
++}
++
++describe("2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan önce şablonu turda bir kez taze okur (ilke 2)", () => {
++  it("(a) süre kabulden SONRA 30 güne uzar, program bu arada Meta'yı okumaz: bakımın taze okuması 30 gün görür → 13 sa + 1 dk'da iş Süresi Doldu DEĞİL, PDF silinmez; aynı dönem 'Daha Önce Gönderildi', 2. toplu iş 400, kişiye 1 ileti", async () => {
++    const ctx = await startWa();
++    try {
++      setListedTtl(ctx.fake, 43_200); // müşteri WhatsApp Yöneticisi'nde 12 sa ayarlamış
++      const one = await sendOne(ctx, await ctx.account("Ayşe Yılmaz", "0532 111 22 33", 1250));
++      assert.deepEqual(ttlLogOf(ctx), [43_200], "ön koşul: iş 12 sa bilinirken kabul edildi (başlatmanın taze okuması)");
++      ctx.clock.advance(HOUR);
++      setListedTtl(ctx.fake, DEFAULT_TTL); // müşteri süreyi 30 güne uzattı; program bu arada Meta'yı okumaz
++      ctx.clock.advance(12 * HOUR + MIN); // kabulden 13 sa + 1 dk
++      keepHookAlive(ctx); // bildirim yolu canlı (§7a 16)
++      const reads = await maintainTurn(ctx);
++      assert.equal(await one.state(), "sent", "süre kabulden sonra 30 güne uzadı (uzun olan geçer): Süresi Doldu yazılmamalı");
++      assert.equal(ctx.fake.state.deleted.length, 0, "Meta hâlâ teslim etmeye çalışırken PDF silinmemeli");
++      assert.equal(reads, 1, "ön koşul (ders 20/38): bakım şablonu bu turda GERÇEKTEN bir kez taze okudu");
++      assert.deepEqual(ttlLogOf(ctx), [43_200, DEFAULT_TTL], "bakımın taze okuması 30 günü günlüğe yazdı");
++      assert.equal(await maintainTurn(ctx), 0, "sonraki tur: kısa süreli iş kalmadı → okuma yok");
++      assert.equal(await one.state(), "sent");
++      assert.equal(await preview(ctx, one.body), "Daha Önce Gönderildi", "aynı dönemde kişi elenir (ilke 2/3)");
++      const second = await ctx.batch({ ...one.body, requestId: "w-kok-tur2-a" });
++      assert.equal(second.status, 400, `ikinci toplu iş başlamamalı (geldi ${second.status} ${JSON.stringify(second.data).slice(0, 200)})`);
++      await ctx.drain();
++      assert.equal(toPhone(ctx, "5321112233"), 1, "aynı dönemde kişiye tek ekstre");
++    } finally {
++      await ctx.close();
++    }
++  });
++
++  it("(a2) süre kabulden SONRA Meta varsayılanına döner (alan kaldırıldı = 30 gün): aynı karar — Süresi Doldu DEĞİL, günlükte 30 gün", async () => {
++    const ctx = await startWa();
++    try {
++      setListedTtl(ctx.fake, 43_200);
++      const one = await sendOne(ctx, await ctx.account("Varsayılan Dönüş", "0532 111 22 44", 100));
++      ctx.clock.advance(2 * HOUR);
++      setListedTtl(ctx.fake, null);
++      ctx.clock.advance(11 * HOUR + MIN);
++      keepHookAlive(ctx);
++      const reads = await maintainTurn(ctx);
++      assert.equal(await one.state(), "sent", "Meta varsayılanı 30 gün: Süresi Doldu yazılmamalı");
++      assert.equal(ctx.fake.state.deleted.length, 0);
++      assert.equal(reads, 1);
++      assert.deepEqual(ttlLogOf(ctx), [43_200, DEFAULT_TTL]);
++    } finally {
++      await ctx.close();
++    }
++  });
++
++  it("(b) Meta'da süre GERÇEKTEN 12 sa kalmış: 13 sa − 1 dk'da okuma yok; 13 sa + 1 dk'da bakımın taze okuması 12 sa görür → Süresi Doldu + PDF silinir; aynı dönem 'gönderilecek' (P3); sonraki turda okuma yok", async () => {
++    const ctx = await startWa();
++    try {
++      setListedTtl(ctx.fake, 43_200);
++      const one = await sendOne(ctx, await ctx.account("Gerçek On İki", "0532 111 22 55", 100));
++      ctx.clock.advance(13 * HOUR - MIN);
++      keepHookAlive(ctx);
++      assert.equal(await maintainTurn(ctx), 0, "süre dolmadı: okuma yok");
++      assert.equal(await one.state(), "sent");
++      ctx.clock.advance(2 * MIN);
++      const reads = await maintainTurn(ctx);
++      assert.equal(await one.state(), "expired", "Meta'nın bildirdiği 12 saat + 1 saatte Süresi Doldu (eski davranış korunur)");
++      assert.equal(ctx.fake.state.deleted.length, 1, "PDF Meta'dan silindi");
++      assert.equal(reads, 1, "Süresi Doldu yazılmadan önce bir taze okuma");
++      assert.deepEqual(ttlLogOf(ctx), [43_200], "günlük değişmedi (aynı değer)");
++      assert.equal(await maintainTurn(ctx), 0, "sonraki tur: okuma yok");
++      assert.equal(await preview(ctx, one.body), "gönderilecek", "Süresi Doldu 'Daha Önce Gönderildi' sayılmaz (P3)");
++    } finally {
++      await ctx.close();
++    }
++  });
++
++  it("(c) taze okuma DÜŞER (Meta 500, sonra yanıtsız): o turlar Süresi Doldu YAZILMAZ, PDF silinmez, günlük değişmez; sonraki başarılı turda Meta hâlâ 12 sa → Süresi Doldu + PDF silinir", async () => {
++    const ctx = await startWa();
++    try {
++      setListedTtl(ctx.fake, 43_200);
++      const one = await sendOne(ctx, await ctx.account("Okuma Düştü", "0532 111 22 66", 100));
++      ctx.clock.advance(13 * HOUR + MIN);
++      keepHookAlive(ctx);
++      ctx.fake.state.failQueue.push({ match: TEMPLATE_GET, status: 500, raw: "<html>Bad Gateway</html>" });
++      const first = await maintainTurn(ctx);
++      assert.equal(await one.state(), "sent", "taze okuma düştü (Meta 500): bu tur Süresi Doldu yazılmamalı");
++      assert.equal(ctx.fake.state.deleted.length, 0, "PDF silinmemeli");
++      assert.equal(first, 1, "ön koşul (ders 20/38): okuma GERÇEKTEN denendi ve düştü (tek okuma)");
++      assert.equal(ctx.fake.state.failQueue.length, 0, "ön koşul: 500 yanıtı tüketildi");
++      ctx.fake.state.hang = TEMPLATE_GET; // ağ: yanıt gelmez (istemci zaman aşımı)
++      ctx.clock.advance(MIN);
++      const second = await maintainTurn(ctx);
++      ctx.fake.state.hang = null;
++      assert.equal(await one.state(), "sent", "taze okuma yanıtsız kaldı: bu tur da Süresi Doldu yazılmamalı");
++      assert.equal(second, 1, "sonraki turda yeniden denendi (tek okuma)");
++      assert.deepEqual(ttlLogOf(ctx), [43_200], "düşen okumalar günlüğe bir şey yazmaz");
++      ctx.clock.advance(MIN);
++      const third = await maintainTurn(ctx);
++      assert.equal(third, 1);
++      assert.equal(await one.state(), "expired", "okuma başarılı, Meta hâlâ 12 sa: Süresi Doldu");
++      assert.equal(ctx.fake.state.deleted.length, 1, "PDF silindi");
++    } finally {
++      await ctx.close();
++    }
++  });
++
++  it("(c2) okuma YAPILAMIYOR — salt okunur lisans (program Meta'dan şablon okumaz): okuma da yazma da yok; lisans yazılabilir olunca ilk turda okur → Meta 30 gün → Süresi Doldu DEĞİL", async () => {
++    const ctx = await startWa();
++    try {
++      setListedTtl(ctx.fake, 43_200);
++      const one = await sendOne(ctx, await ctx.account("Salt Okunur", "0532 111 22 77", 100));
++      ctx.clock.advance(HOUR);
++      setListedTtl(ctx.fake, DEFAULT_TTL);
++      ctx.clock.advance(12 * HOUR + MIN);
++      keepHookAlive(ctx);
++      const license = ctx.server.app.license;
++      const original = license.writable;
++      let writable = false;
++      license.writable = () => writable;
++      try {
++        const reads = await maintainTurn(ctx);
++        assert.equal(await one.state(), "sent", "salt okunur: okuma yapılamadı → Süresi Doldu yazılmamalı");
++        assert.equal(reads, 0, "salt okunur: Meta'ya şablon okuması yok");
++        assert.equal(ctx.fake.state.deleted.length, 0);
++        writable = true;
++        assert.equal(await maintainTurn(ctx), 1, "lisans yazılabilir: turda bir taze okuma");
++        assert.equal(await one.state(), "sent", "Meta 30 gün bildiriyor: Süresi Doldu yazılmamalı");
++        assert.deepEqual(ttlLogOf(ctx), [43_200, DEFAULT_TTL]);
++      } finally {
++        license.writable = original;
++      }
++    } finally {
++      await ctx.close();
++    }
++  });
++
++  it("(c3) okuma YAPILAMIYOR — bağlantı kaldırıldı: 13 sa + 1 dk'da okuma yok, Süresi Doldu yazılmaz; Meta'nın en uzun süresi (30 gün) + 1 sa geçince okumasız Süresi Doldu", async () => {
++    const ctx = await startWa();
++    try {
++      setListedTtl(ctx.fake, 43_200);
++      const one = await sendOne(ctx, await ctx.account("Bağlantısız", "0532 111 22 88", 100));
++      assert.equal((await ctx.api.del(URLS.conn)).status, 200, "Bağlantıyı Kaldır");
++      ctx.clock.advance(13 * HOUR + MIN);
++      keepHookAlive(ctx);
++      const reads = await maintainTurn(ctx);
++      assert.equal(await one.state(), "sent", "bağlantı yok, okuma yapılamadı: Süresi Doldu yazılmamalı");
++      assert.equal(reads, 0, "bağlantı yok: okuma yok");
++      ctx.clock.advance(30 * DAY - 12 * HOUR - 2 * MIN); // kabulden 30 gün + 59 dk
++      keepHookAlive(ctx);
++      await maintainTurn(ctx);
++      assert.equal(await one.state(), "sent", "30 gün + 1 sa dolmadı");
++      ctx.clock.advance(2 * MIN); // kabulden 30 gün + 1 sa + 1 dk
++      assert.equal(await maintainTurn(ctx), 0, "Meta'nın en uzun süresi geçti: okuma gerekmez");
++      assert.equal(await one.state(), "expired", "30 gün + 1 sa: Meta artık teslim etmeye çalışmaz → Süresi Doldu");
++    } finally {
++      await ctx.close();
++    }
++  });
++
++  // Tur 2'nin bakıma eklediği BEKLEME (taze okuma) sırasında satırın durumu değişebilir: karar okumadan SONRA yeniden okunan satırlarla verilir. Eski kodda bakım Meta'yı
++  // okumadığı için ön koşul kurulamaz (kapıda bekleyen okuma yok); dişi mutasyonla (okumadan önceki satırla karar) gösterilir.
++  it("(e) taze okuma SÜRERKEN kişi iletiyi okur ('read' bildirimi): bakım kararı okumadan sonraki satırla verir — iş 'Okundu' kalır, Süresi Doldu / Teslim Edildi'ye düşmez", async () => {
++    const ctx = await startWa();
++    let release = () => {};
++    try {
++      setListedTtl(ctx.fake, 43_200);
++      const one = await sendOne(ctx, await ctx.account("Okurken Okudu", "0532 111 22 99", 100));
++      ctx.clock.advance(13 * HOUR + MIN);
++      keepHookAlive(ctx);
++      ctx.fake.state.hold = { match: TEMPLATE_GET, promise: new Promise(resolve => (release = resolve)) };
++      const turn = ctx.wa.scheduler.maintain();
++      for (let i = 0; i < 500 && !ctx.fake.state.held; i += 1) await new Promise(resolve => setTimeout(resolve, 10));
++      assert.equal(ctx.fake.state.held, 1, "ön koşul (ders 20): bakımın taze okuması Meta'da (kapıda) bekliyor");
++      ctx.statuses([{ id: one.wamid, status: "read", timestamp: ts(ctx) }]);
++      assert.equal(await one.state(), "read", "ön koşul: 'read' bildirimi okuma sürerken işlendi");
++      release();
++      await turn;
++      assert.equal(await one.state(), "read", "okuma beklenirken gelen 'Okundu' bakımın okumadan önceki satırıyla ezilmemeli");
++    } finally {
++      release();
++      ctx.fake.state.hold = null;
++      await ctx.close();
++    }
++  });
++
++  it("(d) okuma sayısı (ders 47): aynı şablonda 5 iş (12 sa) → turda TAM 1 okuma, 5'i Süresi Doldu; ayrı kurulumda 30 günlük 5 iş → 13 sa + 1 dk'da, 30 gün − 1 dk'da ve 30 gün + 1 sa + 1 dk'da 0 okuma", { timeout: 120_000 }, async () => {
++    const make = async (ctx, prefix) => {
++      const ids = [];
++      for (let i = 0; i < 5; i += 1) ids.push((await ctx.account(`${prefix} ${i + 1}`, `0555 200 ${String(i).padStart(2, "0")} 00`, 10)).id);
++      const res = await ctx.batch({ kind: "statement", ids, preset: "thisMonth" });
++      assert.equal(res.status, 200, JSON.stringify(res.data).slice(0, 300));
++      await ctx.drain({ maintain: false });
++      const jobs = await ctx.jobs(res.data.data.batch.id);
++      assert.equal(jobs.filter(job => job.state === "accepted").length, 5, "ön koşul: 5 iş Meta Kabul Etti");
++      return res.data.data.batch.id;
++    };
++    const shortCtx = await startWa();
++    try {
++      setListedTtl(shortCtx.fake, 43_200);
++      const batchId = await make(shortCtx, "Kısa Süre");
++      shortCtx.clock.advance(13 * HOUR + MIN);
++      keepHookAlive(shortCtx);
++      const reads = await maintainTurn(shortCtx);
++      assert.equal((await shortCtx.jobs(batchId)).filter(job => job.state === "expired").length, 5, "Meta 12 sa: 5'i Süresi Doldu");
++      assert.equal(reads, 1, `aynı WABA + şablon: turda tek okuma (iş başına değil; ${reads} okuma)`);
++      assert.equal(await maintainTurn(shortCtx), 0, "sonraki tur: okuma yok");
++    } finally {
++      await shortCtx.close();
++    }
++    const longCtx = await startWa();
++    try {
++      const batchId = await make(longCtx, "Uzun Süre"); // Meta süre bildirmiyor: 30 gün
++      longCtx.clock.advance(13 * HOUR + MIN);
++      keepHookAlive(longCtx);
++      assert.equal(await maintainTurn(longCtx), 0, "30 günlük iş: okuma yok");
++      longCtx.clock.advance(30 * DAY - 13 * HOUR - 2 * MIN);
++      keepHookAlive(longCtx);
++      assert.equal(await maintainTurn(longCtx), 0, "30 gün − 1 dk: okuma yok");
++      assert.equal((await longCtx.jobs(batchId)).filter(job => job.state === "expired").length, 0);
++      longCtx.clock.advance(HOUR + 2 * MIN);
++      keepHookAlive(longCtx);
++      assert.equal(await maintainTurn(longCtx), 0, "30 gün + 1 sa + 1 dk: okumasız Süresi Doldu");
++      assert.equal((await longCtx.jobs(batchId)).filter(job => job.state === "expired").length, 5);
++    } finally {
++      await longCtx.close();
++    }
++  });
++});
+-- 
+2.43.0
+

@@ -179,6 +179,9 @@ export class SahteMeta {
       category: s.category || "UTILITY", status: s.status || "APPROVED", components: s.components || [{ type: "BODY", text: s.body || "Merhaba {{1}}", example: { body_text: [["Ali"]] } }],
       parameter_format: s.parameter_format || "POSITIONAL", quality_score: { score: s.quality || "UNKNOWN", date: Math.floor(this.simdi() / 1000) },
       silindi: false, olusturmaT: this.simdi(), duzenlemeler: [], rejected_reason: s.rejected_reason,
+      // Şablonun teslim süresi (Meta alanı message_send_ttl_seconds). D0: yalnız senaryo verdiyse listede görünür (Meta'nın bunu listede bildirip bildirmediği
+      // belirsiz — 2.4.9 W tasarım §7 T2); kâhin güncellemesi 10 (README §15) "Meta listede süre bildirir" senaryoları için.
+      message_send_ttl_seconds: s.message_send_ttl_seconds,
     };
     this.sablonlar.push(kayit);
     return kayit;
@@ -565,7 +568,7 @@ export class SahteMeta {
 
   sablonNesnesi(s, alanlar) {
     const tam = { name: s.name, parameter_format: s.parameter_format, components: s.components, language: s.language, status: s.status, category: s.category, id: s.id,
-      quality_score: s.quality_score, rejected_reason: s.rejected_reason };
+      quality_score: s.quality_score, rejected_reason: s.rejected_reason, message_send_ttl_seconds: s.message_send_ttl_seconds };
     if (!alanlar) { const { quality_score, rejected_reason, ...v } = tam; return v; }
     const o = {};
     for (const a of alanlar) if (a in tam && tam[a] !== undefined) o[a] = tam[a];

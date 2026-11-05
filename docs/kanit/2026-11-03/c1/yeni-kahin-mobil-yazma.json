@@ -1,0 +1,32 @@
+{
+  "ad": "c1/yeni-kahin-mobil-yazma",
+  "komut": "npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu",
+  "commit": "576b743d4f050e4129487f03b80a2b7e0947ceae",
+  "dal": "worktree-agent-a5bbd50c43062a283",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:12:08.222Z",
+  "sure_sn": 228.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 52,
+    "gecen": 52,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/c1/yeni-kahin-mobil-yazma.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a5bbd50c43062a283",
+  "ham_cikti_sha256": "71ab475c689ff1904fb0df91f88669ece4d42a297519cbf26d38690af23ad905",
+  "ham_cikti_bayt": 3084
+}

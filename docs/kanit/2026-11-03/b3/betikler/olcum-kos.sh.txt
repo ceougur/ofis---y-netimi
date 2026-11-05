@@ -1,0 +1,27 @@
+#!/bin/bash
+# B3-6 ölçüm sürücüsü (not defteri): önce (eski kod, ayrı kopya e3f74093) / sonra (yeni kod, worktree) AYNI kaynak verinin taze kopyasıyla, AYNI betikle, TEK TEK
+# (flock /tmp/destekofis-olcum.lock — ders 15). Kaynak t9-4c8e1d salt okunur (betikler önce kopyalar). Kayıtlar worktree docs/kanit/<gün>/b3/ (kanit.mjs kos).
+# Kullanım: bash olcum-kos.sh <adım>   adımlar: once-uret sonra-uret once-dosya sonra-dosya goc-eski goc-yeni
+WT=/home/user/ofis---y-netimi/.claude/worktrees/agent-a972c155e62a73ec3
+SP=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad
+E=$SP/b3a972-eski-e3f74093
+SRC=$SP/t9-4c8e1d
+O=$SP/b3a972-olcum
+GUN=$(date -u +%Y-%m-%d)
+K=$WT/docs/kanit/$GUN/b3
+mkdir -p "$O" "$K" || exit 1
+avail=$(df -BG --output=avail / | tail -1 | tr -dc 0-9)
+if [ "$avail" -lt 5 ]; then echo "disk: yalnız ${avail} GB boş (ders 24)"; exit 1; fi
+kos() { # <kod kökü> <kayıt adı> <komut…>
+  local root=$1 ad=$2; shift 2
+  (cd "$root" && flock /tmp/destekofis-olcum.lock env KANIT_DIR="$WT/docs/kanit" HUKUK_LICENSE_URL=http://127.0.0.1:9 node "$WT/tools/kanit.mjs" kos "b3/$ad" -- "$@")
+}
+case "$1" in
+  once-uret) kos "$E" olcum-once-uret node --disable-warning=ExperimentalWarning test/t9-248/wa-gecmis-uret.mjs --veri "$SRC/taban-2910" --is "$O/once" --json "$K/sonuc-olcum-once-uret.json" --toplam 100 --bas 0 --adet 10 --olc ;;
+  sonra-uret) kos "$WT" olcum-sonra-uret node --disable-warning=ExperimentalWarning test/t9-248/wa-gecmis-uret.mjs --veri "$SRC/taban-2910" --is "$O/sonra" --json "$K/sonuc-olcum-sonra-uret.json" --toplam 100 --bas 0 --adet 10 --olc ;;
+  once-dosya) kos "$E" olcum-once-dosya node --disable-warning=ExperimentalWarning test/t9-248/b3-dosya-olcum.mjs --veri "$O/once" --is "$O/once-dosya-is" --json "$K/sonuc-olcum-once-dosya.json" ;;
+  sonra-dosya) kos "$WT" olcum-sonra-dosya node --disable-warning=ExperimentalWarning test/t9-248/b3-dosya-olcum.mjs --veri "$O/sonra" --is "$O/sonra-dosya-is" --json "$K/sonuc-olcum-sonra-dosya.json" ;;
+  goc-eski) kos "$E" olcum-goc-eski-gecmis40 node --disable-warning=ExperimentalWarning test/t9-248/b3-dosya-olcum.mjs --veri "$SRC/gecmis-40" --is "$O/goc-eski-is" --json "$K/sonuc-olcum-goc-eski-gecmis40.json" --goc ;;
+  goc-yeni) kos "$WT" olcum-goc-yeni-gecmis40 node --disable-warning=ExperimentalWarning test/t9-248/b3-dosya-olcum.mjs --veri "$SRC/gecmis-40" --is "$O/goc-yeni-is" --json "$K/sonuc-olcum-goc-yeni-gecmis40.json" --goc ;;
+  *) echo "adım?"; exit 2 ;;
+esac

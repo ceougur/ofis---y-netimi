@@ -1,0 +1,32 @@
+{
+  "ad": "b2/komsu-dar-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-elle-alici-249.test.mjs test/whatsapp-213.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-w3-ekstre-248.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/banka-210-saat.test.mjs test/kapama-tek-gecis-245.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "a9f0b84a4b753ab8495e8db13c33a53bdff08d3d",
+  "dal": "worktree-agent-a95435e4eb1b4db61",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:27:16.656Z",
+  "sure_sn": 25,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 63,
+    "gecen": 63,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/b2/komsu-dar-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a95435e4eb1b4db61",
+  "ham_cikti_sha256": "9b1b6dbee247f24f4e07fc9328b7ac24d0e47fb49ac59dddc0bdbecc5ea7b61c",
+  "ham_cikti_bayt": 24524
+}

@@ -1,0 +1,697 @@
+TAP version 13
+# (node:26700) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404)
+    # Subtest: Y1 kart tahsilatı ve iadesi (POST …/entries; mobil taksit tahsilatı da bu uç): silinmiş karta satır, makbuz numarası, işlem başlığı yazılmaz; Kasa aynı
+    ok 1 - Y1 kart tahsilatı ve iadesi (POST …/entries; mobil taksit tahsilatı da bu uç): silinmiş karta satır, makbuz numarası, işlem başlığı yazılmaz; Kasa aynı
+      ---
+      duration_ms: 757.85303
+      type: 'test'
+      ...
+    # Subtest: Y2 kart tahsilatını düzeltme (PUT …/entries/:id): silinmiş kartın tahsilatı değişmez
+    ok 2 - Y2 kart tahsilatını düzeltme (PUT …/entries/:id): silinmiş kartın tahsilatı değişmez
+      ---
+      duration_ms: 373.692797
+      type: 'test'
+      ...
+    # Subtest: Y3 taksit ekleme (POST …/items): silinmiş karta taksit eklenmez
+    ok 3 - Y3 taksit ekleme (POST …/items): silinmiş karta taksit eklenmez
+      ---
+      duration_ms: 342.165056
+      type: 'test'
+      ...
+    # Subtest: Y4 taksit düzeltme (PUT …/items/:id): silinmiş kartın taksiti değişmez
+    ok 4 - Y4 taksit düzeltme (PUT …/items/:id): silinmiş kartın taksiti değişmez
+      ---
+      duration_ms: 345.254277
+      type: 'test'
+      ...
+    # Subtest: Y5 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+    ok 5 - Y5 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+      ---
+      duration_ms: 139.859713
+      type: 'test'
+      ...
+    # Subtest: D3 Silinenler'deki cari notu (C1 TUR 2 DÜŞÜK-2): tek cümle — eski sürümde hareketiyle silinmiş cari için hareketler ve Kasa da anılır ("varsa")
+    ok 6 - D3 Silinenler'deki cari notu (C1 TUR 2 DÜŞÜK-2): tek cümle — eski sürümde hareketiyle silinmiş cari için hareketler ve Kasa da anılır ("varsa")
+      ---
+      duration_ms: 29.705896
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404)
+  ---
+  duration_ms: 2455.167658
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 TUR 1 — stok hareketi yarışı (zorla): gövde yoldayken ürün silinirse hiçbir şey yazılmaz (404)
+    # Subtest: S1 stok satışı (POST …/moves; açık hesap ve peşin): silinmiş ürüne hareket, cari borcu, Kasa girişi yazılmaz
+    ok 1 - S1 stok satışı (POST …/moves; açık hesap ve peşin): silinmiş ürüne hareket, cari borcu, Kasa girişi yazılmaz
+      ---
+      duration_ms: 692.212875
+      type: 'test'
+      ...
+    # Subtest: S2 stok hareketi düzeltme (PUT …/moves/:id): silinmiş ürünün hareketi ve cari borcu değişmez
+    ok 2 - S2 stok hareketi düzeltme (PUT …/moves/:id): silinmiş ürünün hareketi ve cari borcu değişmez
+      ---
+      duration_ms: 350.64859
+      type: 'test'
+      ...
+    # Subtest: S4 yalnız miktar stok girişi (pay: "none"; mobil stok girişi bu gövdeyi gönderir): silinmiş ürüne hareket, stok, Değişiklik Geçmişi yazılmaz
+    ok 3 - S4 yalnız miktar stok girişi (pay: "none"; mobil stok girişi bu gövdeyi gönderir): silinmiş ürüne hareket, stok, Değişiklik Geçmişi yazılmaz
+      ---
+      duration_ms: 324.495146
+      type: 'test'
+      ...
+    # Subtest: S3 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+    ok 4 - S3 yarış yokken aynı uçlar yazar (düzeltme olağan yolu bozmaz)
+      ---
+      duration_ms: 50.87451
+      type: 'test'
+      ...
+    1..4
+ok 2 - 2.4.9 C1 TUR 1 — stok hareketi yarışı (zorla): gövde yoldayken ürün silinirse hiçbir şey yazılmaz (404)
+  ---
+  duration_ms: 1742.867279
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 TUR 2 — taksit kartı tahsilatı düzeltmesi yarışı (zorla): küçülen tutar ve nakit → POS; gövde yoldayken kart silinirse 404, hiçbir şey yazılmaz
+    # Subtest: Y6 küçülen tutar (500 → 300), yol değişimi (nakit → POS) ve ikisi birlikte: silinmiş kartın tahsilatı değişmez; geri yüklenince 500 nakit döner
+    ok 1 - Y6 küçülen tutar (500 → 300), yol değişimi (nakit → POS) ve ikisi birlikte: silinmiş kartın tahsilatı değişmez; geri yüklenince 500 nakit döner
+      ---
+      duration_ms: 1163.39413
+      type: 'test'
+      ...
+    # Subtest: Y7 yarış yokken küçülen tutar ve nakit → POS düzeltmesi yazar (düzeltme olağan yolu bozmaz)
+    ok 2 - Y7 yarış yokken küçülen tutar ve nakit → POS düzeltmesi yazar (düzeltme olağan yolu bozmaz)
+      ---
+      duration_ms: 109.904466
+      type: 'test'
+      ...
+    1..2
+ok 3 - 2.4.9 C1 TUR 2 — taksit kartı tahsilatı düzeltmesi yarışı (zorla): küçülen tutar ve nakit → POS; gövde yoldayken kart silinirse 404, hiçbir şey yazılmaz
+  ---
+  duration_ms: 1710.982801
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 TUR 1 — hareket sayacı H14 (banka fişi): POS kaydı yalnız POS İptal İadesi fişinde aranır; fatura kapaması silme engelini hesaplamaz
+    # Subtest: E1 eşdeğerlik: her carinin banka fişi sayısı düzeltmeden önceki tanımla birebir aynı (POS İptal İadesi fişli cari, masraf fişli banka carisi dahil)
+    ok 1 - E1 eşdeğerlik: her carinin banka fişi sayısı düzeltmeden önceki tanımla birebir aynı (POS İptal İadesi fişli cari, masraf fişli banka carisi dahil)
+      ---
+      duration_ms: 1.96154
+      type: 'test'
+      ...
+    # Subtest: E3 fatura listesi (ödeme durumu: cari defteri, withRemaining: false) hareket sayacını çalıştırmaz; cari kartının Sil nedeni aynen
+    ok 2 - E3 fatura listesi (ödeme durumu: cari defteri, withRemaining: false) hareket sayacını çalıştırmaz; cari kartının Sil nedeni aynen
+      ---
+      duration_ms: 11.270553
+      type: 'test'
+      ...
+    # Subtest: E2 satırsız KDV'li masraf başlığı POS kaydına bakılmadan sayılmaz (tarama yalnız POS İptal İadesi fişinde — ders 47); son test: ham satır
+    ok 3 - E2 satırsız KDV'li masraf başlığı POS kaydına bakılmadan sayılmaz (tarama yalnız POS İptal İadesi fişinde — ders 47); son test: ham satır
+      ---
+      duration_ms: 1.092628
+      type: 'test'
+      ...
+    1..3
+ok 4 - 2.4.9 C1 TUR 1 — hareket sayacı H14 (banka fişi): POS kaydı yalnız POS İptal İadesi fişinde aranır; fatura kapaması silme engelini hesaplamaz
+  ---
+  duration_ms: 818.574687
+  type: 'suite'
+  ...
+# (node:26701) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.3 keşif A: kayda bağlı cari geçmişi, Sil engeli, ekstre TOPLAM, hareket adları
+    # Subtest: A2 kayıt önce → cari bağlı → kayıttan tahsilat: geçmişte ve Toplam Tahsilat'ta; bağsız aynı adlı carinin tahsilatı girmez
+    ok 1 - A2 kayıt önce → cari bağlı → kayıttan tahsilat: geçmişte ve Toplam Tahsilat'ta; bağsız aynı adlı carinin tahsilatı girmez
+      ---
+      duration_ms: 207.232863
+      type: 'test'
+      ...
+    # Subtest: A2 cari önce (tahsilat bağdan ÖNCE girilmiş) → sonra kayda bağlanır: geçmişte görünür; bağ kalkınca düşer
+    ok 2 - A2 cari önce (tahsilat bağdan ÖNCE girilmiş) → sonra kayda bağlanır: geçmişte görünür; bağ kalkınca düşer
+      ---
+      duration_ms: 51.968275
+      type: 'test'
+      ...
+    # Subtest: A2 taksit önce: kayda ve cariye bağlı taksit kartının tahsilatı bir kez (plan-entry), cari tahsilatı ayrıca
+    ok 3 - A2 taksit önce: kayda ve cariye bağlı taksit kartının tahsilatı bir kez (plan-entry), cari tahsilatı ayrıca
+      ---
+      duration_ms: 66.430266
+      type: 'test'
+      ...
+    # Subtest: A2 "Kayıt Kartından Tahsilatlar": kayıt tahsilatları + kayda bağlı carilerin tahsilatları (Cari No ile); bağsız cari girmez
+    ok 4 - A2 "Kayıt Kartından Tahsilatlar": kayıt tahsilatları + kayda bağlı carilerin tahsilatları (Cari No ile); bağsız cari girmez
+      ---
+      duration_ms: 7.552039
+      type: 'test'
+      ...
+    # Subtest: A5 silinemeyen caride kart deleteBlock taşır, silme ucuyla aynı neden; engel kalkınca silinir
+    ok 5 - A5 silinemeyen caride kart deleteBlock taşır, silme ucuyla aynı neden; engel kalkınca silinir
+      ---
+      duration_ms: 193.879407
+      type: 'test'
+      ...
+    # Subtest: A22 cari ekstre PDF'inde TOPLAM satırı = satırların toplamı; A15 hareket türü adları
+    ok 6 - A22 cari ekstre PDF'inde TOPLAM satırı = satırların toplamı; A15 hareket türü adları
+      ---
+      duration_ms: 133.41158
+      type: 'test'
+      ...
+    1..6
+ok 5 - 2.4.3 keşif A: kayda bağlı cari geçmişi, Sil engeli, ekstre TOPLAM, hareket adları
+  ---
+  duration_ms: 1181.733338
+  type: 'suite'
+  ...
+# (node:26703) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: veri katmanı: yalnız bilgi kolonuna yazan UPDATE kapıyı tetiklemez; geri kalan her yazma tetikler
+ok 6 - veri katmanı: yalnız bilgi kolonuna yazan UPDATE kapıyı tetiklemez; geri kalan her yazma tetikler
+  ---
+  duration_ms: 5.712501
+  type: 'test'
+  ...
+# Subtest: cari kartı: notu/adresi düzeltmek kapıyı ve ANLIK DURUM yenilemesini tetiklemez; tür ve ad değişikliği tetikler
+ok 7 - cari kartı: notu/adresi düzeltmek kapıyı ve ANLIK DURUM yenilemesini tetiklemez; tür ve ad değişikliği tetikler
+  ---
+  duration_ms: 2799.229972
+  type: 'test'
+  ...
+# (node:26741) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket)
+    # Subtest: T1 bugün silinebilen her hareket türü tek başına cariyi korur (tahsilat, ödeme, havale, Borç/Alacak Yaz, açılış, stok, taslak/iptal/e-SMM, yetim satır, mahsup)
+    ok 1 - T1 bugün silinebilen her hareket türü tek başına cariyi korur (tahsilat, ödeme, havale, Borç/Alacak Yaz, açılış, stok, taslak/iptal/e-SMM, yetim satır, mahsup)
+      ---
+      duration_ms: 445.873195
+      type: 'test'
+      ...
+    # Subtest: T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıtlı fatura, peşinli fatura, mahsup, çek, ciro alan cari, taksit kartı açık/kapalı/kalemsiz, şüpheli alacak)
+    ok 2 - T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıtlı fatura, peşinli fatura, mahsup, çek, ciro alan cari, taksit kartı açık/kapalı/kalemsiz, şüpheli alacak)
+      ---
+      duration_ms: 330.687288
+      type: 'test'
+      ...
+    # Subtest: T3 hareketsiz cari silinir — not, telefon, WhatsApp gönderim izi, değişiklik geçmişi hareket değil; Silinenler'deki kayıt sayılmaz (S1 A)
+    ok 3 - T3 hareketsiz cari silinir — not, telefon, WhatsApp gönderim izi, değişiklik geçmişi hareket değil; Silinenler'deki kayıt sayılmaz (S1 A)
+      ---
+      duration_ms: 275.408795
+      type: 'test'
+      ...
+    # Subtest: T4 eski sürümde silinmiş hareketli cari (S3 A) Silinenler'den geri yüklenir, Kasa geri gelir; bir daha silinemez
+    ok 4 - T4 eski sürümde silinmiş hareketli cari (S3 A) Silinenler'den geri yüklenir, Kasa geri gelir; bir daha silinemez
+      ---
+      duration_ms: 58.12173
+      type: 'test'
+      ...
+    # Subtest: T5 aynı adlı iki cari: yalnız hareketsiz olan silinir; pasif hareketli caride ileti pasif sürümü
+    ok 5 - T5 aynı adlı iki cari: yalnız hareketsiz olan silinir; pasif hareketli caride ileti pasif sürümü
+      ---
+      duration_ms: 77.27413
+      type: 'test'
+      ...
+    # Subtest: T6 kartın neden yazısı = silme iletisi; parçalar elle sayımla; yetkisiz kullanıcıya neden gitmez
+    ok 6 - T6 kartın neden yazısı = silme iletisi; parçalar elle sayımla; yetkisiz kullanıcıya neden gitmez
+      ---
+      duration_ms: 174.632494
+      type: 'test'
+      ...
+    # Subtest: T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız gerçekten boşsa kalıcı silinir (taslak fatura, Silinenler'deki tahsilat ve fatura cariyi tutar)
+    ok 7 - T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız gerçekten boşsa kalıcı silinir (taslak fatura, Silinenler'deki tahsilat ve fatura cariyi tutar)
+      ---
+      duration_ms: 134.649884
+      type: 'test'
+      ...
+    # Subtest: T7 yarıda kesilme (§8/8): Geri Al ikinci carinin hareket sayımında kesilirse hiçbir şey değişmez (kartlar, cariler, aktarım); kesinti kalkınca Geri Al tamamlanır
+    ok 8 - T7 yarıda kesilme (§8/8): Geri Al ikinci carinin hareket sayımında kesilirse hiçbir şey değişmez (kartlar, cariler, aktarım); kesinti kalkınca Geri Al tamamlanır
+      ---
+      duration_ms: 30.150265
+      type: 'test'
+      ...
+    # Subtest: T8 yarış (§9, zorla): tahsilatın gövdesi yoldayken hareketsiz cari silinirse tahsilat YAZILMAZ (404), Kasa değişmez
+    ok 9 - T8 yarış (§9, zorla): tahsilatın gövdesi yoldayken hareketsiz cari silinirse tahsilat YAZILMAZ (404), Kasa değişmez
+      ---
+      duration_ms: 335.096035
+      type: 'test'
+      ...
+    1..9
+ok 8 - 2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket)
+  ---
+  duration_ms: 2345.383177
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 — kaynağı olmayan (yetim) satırlar da hareket
+    # Subtest: T1 faturası olmayan cari satırı ve faturası olmayan mahsup fişi tek başına cariyi korur
+    ok 1 - T1 faturası olmayan cari satırı ve faturası olmayan mahsup fişi tek başına cariyi korur
+      ---
+      duration_ms: 47.325619
+      type: 'test'
+      ...
+    1..1
+ok 9 - 2.4.9 C1 — kaynağı olmayan (yetim) satırlar da hareket
+  ---
+  duration_ms: 384.051413
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 — banka ve POS: hesaba bağlı tahsilat, POS İptal İadesi fişi (H14)
+    # Subtest: T2 banka hesabına bağlı tahsilat: aynı kural, tek kod
+    ok 1 - T2 banka hesabına bağlı tahsilat: aynı kural, tek kod
+      ---
+      duration_ms: 38.639887
+      type: 'test'
+      ...
+    # Subtest: T1 POS'lu faturası silinmiş (Müşteriye İade Edildi) caride yalnız POS İptal İadesi fişi kalır: yine hareket (İLKEYLE H14)
+    ok 2 - T1 POS'lu faturası silinmiş (Müşteriye İade Edildi) caride yalnız POS İptal İadesi fişi kalır: yine hareket (İLKEYLE H14)
+      ---
+      duration_ms: 75.084454
+      type: 'test'
+      ...
+    1..2
+ok 10 - 2.4.9 C1 — banka ve POS: hesaba bağlı tahsilat, POS İptal İadesi fişi (H14)
+  ---
+  duration_ms: 534.096862
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 — kilitli dönem ve iki şirket
+    # Subtest: T5 iki şirket: 002'deki hareketli cari silinmez, 001'deki aynı adlı hareketsiz cari silinir
+    ok 1 - T5 iki şirket: 002'deki hareketli cari silinmez, 001'deki aynı adlı hareketsiz cari silinir
+      ---
+      duration_ms: 272.938064
+      type: 'test'
+      ...
+    # Subtest: T5 kilitli dönem: hareketli cari kilitliyken de account-has-movements (kilidi açmak silmeye yetmez); hareketsiz cari kilitliyken silinir
+    ok 2 - T5 kilitli dönem: hareketli cari kilitliyken de account-has-movements (kilidi açmak silmeye yetmez); hareketsiz cari kilitliyken silinir
+      ---
+      duration_ms: 89.926507
+      type: 'test'
+      ...
+    1..2
+ok 11 - 2.4.9 C1 — kilitli dönem ve iki şirket
+  ---
+  duration_ms: 739.655812
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 C1 — gerçek eski sürüm verisi (v2.4.7 kodu; S3 A): orada silinmiş hareketli cari geri yüklenir, sonra silinemez
+    # Subtest: T4 v2.4.7'de silinen tahsilatlı cari güncel kodda Silinenler'de; geri yüklenince Kasa geri gelir; yeniden silme 409
+    ok 1 - T4 v2.4.7'de silinen tahsilatlı cari güncel kodda Silinenler'de; geri yüklenince Kasa geri gelir; yeniden silme 409
+      ---
+      duration_ms: 1029.088093
+      type: 'test'
+      ...
+    1..1
+ok 12 - 2.4.9 C1 — gerçek eski sürüm verisi (v2.4.7 kodu; S3 A): orada silinmiş hareketli cari geri yüklenir, sonra silinemez
+  ---
+  duration_ms: 1029.315732
+  type: 'suite'
+  ...
+# (node:26753) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tür hücresi: tek tür tanınır; iki tür birden ve tanınmayan değer türe atanmaz
+ok 13 - tür hücresi: tek tür tanınır; iki tür birden ve tanınmayan değer türe atanmaz
+  ---
+  duration_ms: 2.239407
+  type: 'test'
+  ...
+# Subtest: Excel'den cari yükleme: Tür Değerleri
+    # Subtest: ön izleme: Tür kolonundaki değerler, programın okuması ve belirsiz satırlar için uyarı
+    ok 1 - ön izleme: Tür kolonundaki değerler, programın okuması ve belirsiz satırlar için uyarı
+      ---
+      duration_ms: 24.930588
+      type: 'test'
+      ...
+    # Subtest: seçim yapılmadan yükleme: belirsiz satırlar varsayılan türle açılır ve satır numarasıyla raporlanır (sessiz Tedarikçi yok)
+    ok 2 - seçim yapılmadan yükleme: belirsiz satırlar varsayılan türle açılır ve satır numarasıyla raporlanır (sessiz Tedarikçi yok)
+      ---
+      duration_ms: 39.296373
+      type: 'test'
+      ...
+    # Subtest: değer başına seçim (typeMap): seçilen türle açılır, açılış bakiyesi o türe göre
+    ok 3 - değer başına seçim (typeMap): seçilen türle açılır, açılış bakiyesi o türe göre
+      ---
+      duration_ms: 33.02366
+      type: 'test'
+      ...
+    1..3
+ok 14 - Excel'den cari yükleme: Tür Değerleri
+  ---
+  duration_ms: 587.363665
+  type: 'suite'
+  ...
+# (node:26761) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi)
+    # Subtest: K6.4 göç: account_entries'te due_date ve expected_date (TEXT, varsayılan '')
+    ok 1 - K6.4 göç: account_entries'te due_date ve expected_date (TEXT, varsayılan '')
+      ---
+      duration_ms: 1.175965
+      type: 'test'
+      ...
+    # Subtest: K6.1 alanlar: Borç ve Alacak'ta saklanır, kartta döner; tahsilat / ödemede gönderilse de kaydedilmez
+    ok 2 - K6.1 alanlar: Borç ve Alacak'ta saklanır, kartta döner; tahsilat / ödemede gönderilse de kaydedilmez
+      ---
+      duration_ms: 119.904817
+      type: 'test'
+      ...
+    # Subtest: K6.1 doğrulama: tarihten önce, biçimsiz ya da takvimde olmayan gün → 400 (field); hiçbir satır yazılmaz
+    ok 3 - K6.1 doğrulama: tarihten önce, biçimsiz ya da takvimde olmayan gün → 400 (field); hiçbir satır yazılmaz
+      ---
+      duration_ms: 42.053661
+      type: 'test'
+      ...
+    # Subtest: K6.1 düzeltme: anahtar yoksa tarih kalır, boş metin siler; yön değişince kalır; tarih vadeden sonraya alınırsa 400
+    ok 4 - K6.1 düzeltme: anahtar yoksa tarih kalır, boş metin siler; yön değişince kalır; tarih vadeden sonraya alınırsa 400
+      ---
+      duration_ms: 69.302281
+      type: 'test'
+      ...
+    # Subtest: K6.1 Açılış Bakiyesi: POST'ta openingDueDate / openingExpectedDate; tedarikçide alacak yönlü; açılış yoksa ya da tarihten önceyse 400; PUT günceller
+    ok 5 - K6.1 Açılış Bakiyesi: POST'ta openingDueDate / openingExpectedDate; tedarikçide alacak yönlü; açılış yoksa ya da tarihten önceyse 400; PUT günceller
+      ---
+      duration_ms: 85.139107
+      type: 'test'
+      ...
+    # Subtest: S1 FIFO: aynı gün iki borç + tahsilat → önce yazılan kapanır (yazım sırası); Vade Tarihi sırayı değiştirmez
+    ok 6 - S1 FIFO: aynı gün iki borç + tahsilat → önce yazılan kapanır (yazım sırası); Vade Tarihi sırayı değiştirmez
+      ---
+      duration_ms: 132.706338
+      type: 'test'
+      ...
+    # Subtest: S1 karışık kuyruk: vadeli borç + taksitsiz satış faturası tarih sırasıyla; faturanın açığı aynı kuraldan
+    ok 7 - S1 karışık kuyruk: vadeli borç + taksitsiz satış faturası tarih sırasıyla; faturanın açığı aynı kuraldan
+      ---
+      duration_ms: 94.04274
+      type: 'test'
+      ...
+    # Subtest: S1 bağlı ödeme: Kapatılacak Fatura seçilen tahsilat borç kaydını kapatmaz
+    ok 8 - S1 bağlı ödeme: Kapatılacak Fatura seçilen tahsilat borç kaydını kapatmaz
+      ---
+      duration_ms: 69.748121
+      type: 'test'
+      ...
+    # Subtest: KS2: müşterideki elle Alacak karşı taraf yükümlülüğüdür — müşterinin borcuna mahsup EDİLMEZ; vadesi varsa "Ödenecek Borç" kalemi
+    ok 9 - KS2: müşterideki elle Alacak karşı taraf yükümlülüğüdür — müşterinin borcuna mahsup EDİLMEZ; vadesi varsa "Ödenecek Borç" kalemi
+      ---
+      duration_ms: 83.882639
+      type: 'test'
+      ...
+    # Subtest: S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)
+    ok 10 - S1 taksit kartı: ayrı kartın tahsilatı borç kaydını kapatmaz; Mevcut Borç kartının kapsadığı borç takvimden düşer (taksitlerle bir kez)
+      ---
+      duration_ms: 153.232079
+      type: 'test'
+      ...
+    # Subtest: tahsilat silinince kalem geri açılır, Silinenler'den dönünce yine kapanır; silinen borç tarihleriyle geri gelir
+    ok 11 - tahsilat silinince kalem geri açılır, Silinenler'den dönünce yine kapanır; silinen borç tarihleriyle geri gelir
+      ---
+      duration_ms: 147.137307
+      type: 'test'
+      ...
+    # Subtest: çek karşılıksız dönünce kapattığı borç kaydı yeniden açılır
+    ok 12 - çek karşılıksız dönünce kapattığı borç kaydı yeniden açılır
+      ---
+      duration_ms: 72.716354
+      type: 'test'
+      ...
+    # Subtest: borç düzenlenip tutar küçülünce Kalan küçülür; tutar tahsilatın altına inince kalem kapanır
+    ok 13 - borç düzenlenip tutar küçülünce Kalan küçülür; tutar tahsilatın altına inince kalem kapanır
+      ---
+      duration_ms: 109.181811
+      type: 'test'
+      ...
+    # Subtest: K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir
+    ok 14 - K6.3 kalem sözleşmesi: id, source, accountId, entryId, direction, person, label, dueDate, amount, days, state; Beklenen Ödeme Tarihi önce gelir
+      ---
+      duration_ms: 99.913034
+      type: 'test'
+      ...
+    # Subtest: K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); tarihsiz borç kalem değildir
+    ok 15 - K6.3 ufuk: geçmişin tamamı + bugünden 7 gün (8. gün yok); tarihsiz borç kalem değildir
+      ---
+      duration_ms: 72.658379
+      type: 'test'
+      ...
+    # Subtest: K6.3 Vade Takip aynı kalemleri gösterir (kaynak 'account', tarih, tutar, etiket); aralık dışı (8. gün) Vade Takip'te 30 günlükte var
+    ok 16 - K6.3 Vade Takip aynı kalemleri gösterir (kaynak 'account', tarih, tutar, etiket); aralık dışı (8. gün) Vade Takip'te 30 günlükte var
+      ---
+      duration_ms: 57.756879
+      type: 'test'
+      ...
+    # Subtest: K6.3 yetki: Cari görüntüleme yetkisi olmayan kişi kalemi görmez (zil, takvim, Vade Takip); sürüm yetkiyle değişir
+    ok 17 - K6.3 yetki: Cari görüntüleme yetkisi olmayan kişi kalemi görmez (zil, takvim, Vade Takip); sürüm yetkiyle değişir
+      ---
+      duration_ms: 175.745249
+      type: 'test'
+      ...
+    # Subtest: Ödendi Say yok: settle 'account|…' kalemini reddeder (400); kalem yerinde kalır
+    ok 18 - Ödendi Say yok: settle 'account|…' kalemini reddeder (400); kalem yerinde kalır
+      ---
+      duration_ms: 38.818085
+      type: 'test'
+      ...
+    # Subtest: önbellek: durağan saatte yalnız Beklenen Ödeme Tarihi değişince kalem o güne kayar (sürüm değişir)
+    ok 19 - önbellek: durağan saatte yalnız Beklenen Ödeme Tarihi değişince kalem o güne kayar (sürüm değişir)
+      ---
+      duration_ms: 87.722435
+      type: 'test'
+      ...
+    # Subtest: cari silinince kalem yok; geri yüklenince döner
+    ok 20 - cari silinince kalem yok; geri yüklenince döner
+      ---
+      duration_ms: 55.675415
+      type: 'test'
+      ...
+    # Subtest: yevmiye ve mizan değişmez: tarih eklemek / silmek Ana Defter'i değiştirmez
+    ok 21 - yevmiye ve mizan değişmez: tarih eklemek / silmek Ana Defter'i değiştirmez
+      ---
+      duration_ms: 79.087968
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi: göç orada da; kalemler şirkete ayrı
+    ok 22 - 002 şirketi: göç orada da; kalemler şirkete ayrı
+      ---
+      duration_ms: 566.648722
+      type: 'test'
+      ...
+    1..22
+ok 15 - 2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi)
+  ---
+  duration_ms: 2964.243022
+  type: 'suite'
+  ...
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 1.85675
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.473422
+      type: 'test'
+      ...
+    1..2
+ok 16 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 3.177629
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 1.109845
+      type: 'test'
+      ...
+    1..1
+ok 17 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 1.2381
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 2.891856
+      type: 'test'
+      ...
+    1..1
+ok 18 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 3.090259
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 19 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 16.000222
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 20 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 156.020693
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 21 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.386997
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 22 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.618563
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 23 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.433985
+  type: 'test'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.671533
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 162.473627
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 158.117107
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 184.703061
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 317.647687
+      type: 'test'
+      ...
+    1..5
+ok 24 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 824.807954
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 46.993577
+      type: 'test'
+      ...
+    1..1
+ok 25 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 47.136211
+  type: 'suite'
+  ...
+# (node:26799) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: statik dosyalar
+    # Subtest: ana sayfayı güvenlik başlıkları ve CSP ile sunar
+    ok 1 - ana sayfayı güvenlik başlıkları ve CSP ile sunar
+      ---
+      duration_ms: 25.25675
+      type: 'test'
+      ...
+    # Subtest: değişmeyen dosyada 304 döner ve sıkıştırma uygular
+    ok 2 - değişmeyen dosyada 304 döner ve sıkıştırma uygular
+      ---
+      duration_ms: 39.294391
+      type: 'test'
+      ...
+    # Subtest: klasör dışına çıkma ve gizli dosya denemelerini engeller
+    ok 3 - klasör dışına çıkma ve gizli dosya denemelerini engeller
+      ---
+      duration_ms: 13.030241
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+    ok 4 - bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+      ---
+      duration_ms: 3.0399
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+    ok 5 - bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+      ---
+      duration_ms: 13.235513
+      type: 'test'
+      ...
+    1..5
+ok 26 - statik dosyalar
+  ---
+  duration_ms: 445.53996
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 95.16944
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.363733
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.58766
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 5.465197
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 3.981324
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 49.986874
+      type: 'test'
+      ...
+    1..6
+ok 27 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 163.837394
+  type: 'suite'
+  ...
+1..27
+# tests 90
+# suites 19
+# pass 90
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8353.05046

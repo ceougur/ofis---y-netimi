@@ -1,0 +1,1 @@
+{"surum":39,"sayfa":47381,"bosListe":0,"vacuumMs":781,"dosyaMb":185.1,"vacuumIntoMb":176}

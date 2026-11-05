@@ -1,0 +1,4 @@
+head-1 çıkış=0 göç 917 803/917 açılış {"ms":9726,"olayDongusuEnCokMs":9756,"surum":45} bakım 150/126/105/106/127
+91d2a200-1 çıkış=0 göç 878 760/877 açılış {"ms":8327,"olayDongusuEnCokMs":8350.9,"surum":45} bakım 123/96/105/96/108
+head-2 çıkış=0 göç 906 771/906 açılış {"ms":8758,"olayDongusuEnCokMs":8791.3,"surum":45} bakım 127/110/96/102/109
+91d2a200-2 çıkış=0 göç 787 667/787 açılış {"ms":9770,"olayDongusuEnCokMs":9806.3,"surum":45} bakım 144/100/91/101/102

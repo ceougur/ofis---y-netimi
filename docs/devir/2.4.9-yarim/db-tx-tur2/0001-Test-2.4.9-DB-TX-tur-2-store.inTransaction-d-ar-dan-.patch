@@ -1,0 +1,155 @@
+From 9c5b75fd4a5721ee04e665ee595d1d4ba5288629 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 4 Nov 2026 00:44:28 +0000
+Subject: [PATCH 1/2] =?UTF-8?q?Test:=202.4.9=20DB-TX=20tur=202=20=E2=80=94?=
+ =?UTF-8?q?=20store.inTransaction=20d=C4=B1=C5=9Far=C4=B1dan=20a=C3=A7?=
+ =?UTF-8?q?=C4=B1lan=20i=C5=9Flemi=20saymaz=20(a7),=20kapal=C4=B1=20ba?=
+ =?UTF-8?q?=C4=9Flant=C4=B1da=20f=C4=B1rlatmaz=20(a6)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+a6: işlemin içinde bağlantı kapanır → asıl hata, geri alma denenmez, rolledBack; getter fırlatmaz ve false; geri alma düşüp işlem açık
+kaldıktan sonra kapanınca da (dar kontrol DÜŞÜK-2, N3 mutasyonu).
+a7: rapor / bütünlük taraması iş parçacıklarının deseni — createStore + dışarıdan BEGIN → false (2.4.8 davranışı), store.tx içinde true;
+geri alma düşüp kapanan işlemden ve yeniden başarılı store.tx'ten sonra da false (dar kontrol DÜŞÜK-1).
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YPtTa36rhoDHXGQsPrhcJ8
+---
+ test/db-tx-commit-hata-249.test.mjs | 112 +++++++++++++++++++++++++++-
+ 1 file changed, 111 insertions(+), 1 deletion(-)
+
+diff --git a/test/db-tx-commit-hata-249.test.mjs b/test/db-tx-commit-hata-249.test.mjs
+index 9ea89b2b..7716cdc8 100644
+--- a/test/db-tx-commit-hata-249.test.mjs
++++ b/test/db-tx-commit-hata-249.test.mjs
+@@ -3,7 +3,8 @@
+ // ("no such savepoint: sp_0"), açık kalan işlem geri alınmıyor, sonraki her store.tx "SAVEPOINT sp_-1" → "near "-": syntax error" (şirket yeniden açılana kadar
+ // her yazım 500). Ayrıca SQLite işlemi kendiliğinden geri aldığında (G/Ç hatası, disk dolu, OR ROLLBACK) "ROLLBACK" / "ROLLBACK TO" asıl hatayı örtüyordu.
+ // Beklenen: derinlik her çıkışta TAM BİR KEZ azalır; işlem açıksa tam geri alınır, değilse geri alma denenmez; asıl hata yeniden fırlatılır (geri alma hatası
+-// ezmez); kapı kancası rolledBack asıl hatayla çağrılır; store.inTransaction bağlantının gerçek durumunu söyler.
++// ezmez); kapı kancası rolledBack asıl hatayla çağrılır; store.inTransaction store.tx'in işlemini ve geri alması düşüp açık kalan işlemi söyler — dışarıdan
++// açılan işlemi (iş parçacıklarının anlık görüntü BEGIN'i) saymaz, kapalı bağlantıda fırlatmaz (tur 2: a6, a7).
+ // Ölçü: store'a verilen bağlantı bir Proxy ile sarılır — db.exec'e giden her deyim kaydedilir (işlem dizisi: "BEGIN IMMEDIATE", "SAVEPOINT sp_1"…), istenen
+ // deyimde hata enjekte edilebilir. Her hücre bütün sorunları tek iletide verir (ders 38).
+ // Platform (ders 48): dosya boyutu sınırı (RLIMIT_FSIZE, prlimit; Node SIGXFSZ'yi yok sayar → yazım EFBIG → SQLite G/Ç hatası) yalnız Linux'ta gerçek; aynı
+@@ -284,6 +285,115 @@ describe("store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2
+     report(problems);
+   });
+ 
++  // DB-TX tur 2 (dar kontrol DÜŞÜK-2): openTx'in kapalı bağlantı dalı. node:sqlite kapalı bağlantıda isTransaction okununca fırlatır ("database is not
++  // open"); getter ve geri alma bunu yutmazsa asıl hata yerine bu hata gider ya da salt okuma getter'ı çağıranı düşürür.
++  it("(a6) işlemin içinde bağlantı kapanır → asıl hata fırlatılır, geri alma denenmez; store.inTransaction fırlatmaz ve false (geri alma düşüp işlem açık kaldıktan sonra kapanınca da)", () => {
++    const problems = [];
++    /** Getter'ı okur: fırlatırsa sorun yazılır; değer false olmalı. */
++    const expectClosedFalse = (store, label) => {
++      let value;
++      const thrown = caught(() => {
++        value = store.inTransaction;
++      });
++      if (thrown) problems.push(`${label}: kapalı bağlantıda store.inTransaction fırlattı: "${thrown.message}"`);
++      else if (value !== false) problems.push(`${label}: kapalı bağlantıda store.inTransaction = ${value}`);
++    };
++    /** Kapalı bağlantıdan sonra yarım yazım kaldı mı: dosya yeniden açılıp sayılır. */
++    const leftover = (file, sql, ...args) => {
++      const again = openDatabase(file);
++      try {
++        return Number(again.prepare(sql).get(...args).n);
++      } finally {
++        again.close();
++      }
++    };
++    // 1) fn içinde bağlantı kapanır (SQLite açık işlemi kapanışta geri alır).
++    const ctx = fresh();
++    try {
++      const at = ctx.execs.length;
++      const error = caught(() => ctx.store.tx(() => {
++        ctx.store.run("INSERT INTO cash_entries (id, p) VALUES ('a6', NULL)");
++        ctx.raw.close();
++        throw new Error("asıl hata");
++      }));
++      expectError(problems, error, /^asıl hata$/, "a6 kapanış");
++      const seq = ctx.execs.slice(at);
++      if (JSON.stringify(seq) !== JSON.stringify(["BEGIN IMMEDIATE"])) problems.push(`a6: deyimler ${JSON.stringify(seq)} (kapalı bağlantıda geri alma denenmemeli)`);
++      if (JSON.stringify(ctx.calls.rolledBack) !== JSON.stringify(["asıl hata"])) problems.push(`a6: rolledBack ${JSON.stringify(ctx.calls.rolledBack)}`);
++      expectClosedFalse(ctx.store, "a6 kapanış");
++      if (leftover(ctx.file, "SELECT COUNT(*) AS n FROM cash_entries WHERE id = 'a6'")) problems.push("a6: yarım yazım kaldı");
++    } finally {
++      ctx.close();
++    }
++    // 2) Geri alma düşer, işlem açık kalır (store.inTransaction true — a5), sonra bağlantı kapanır → getter fırlatmaz ve false.
++    const open = fresh(once(/^ROLLBACK$/, () => new Error("geri alma düştü")));
++    try {
++      const error = caught(() => open.store.tx(() => {
++        open.store.run("INSERT INTO t (v) VALUES ('a6 açık')");
++        throw new Error("asıl hata");
++      }));
++      expectError(problems, error, /^asıl hata$/, "a6 açık");
++      if (open.raw.isTransaction !== true || open.store.inTransaction !== true) problems.push(`a6 açık: ön koşul kurulamadı (db.isTransaction=${open.raw.isTransaction}, store.inTransaction=${open.store.inTransaction})`);
++      open.raw.close();
++      expectClosedFalse(open.store, "a6 açık sonra kapanış");
++      if (leftover(open.file, "SELECT COUNT(*) AS n FROM t WHERE v = 'a6 açık'")) problems.push("a6 açık: yarım yazım kaldı");
++    } finally {
++      open.close();
++    }
++    report(problems);
++  });
++
++  // DB-TX tur 2 (dar kontrol DÜŞÜK-1): rapor ve bütünlük taraması iş parçacıkları (report-worker.mjs, integrity-scan-worker.mjs) kendi salt okunur
++  // bağlantılarında createStore'dan sonra dışarıdan "BEGIN" açar (anlık görüntü). Bu, store.tx'in açtığı işlem değildir: store.inTransaction derinlik 0'da
++  // false kalmalı (2.4.8 davranışı) — yoksa iş parçacığı yolu işlem dışı önbelleklere (money-lines keep, plans iade kesintisi…) girdiğinde önbellek sessizce kapanır.
++  it("(a7) dışarıdan açılan işlem (iş parçacığı anlık görüntü deseni) store.inTransaction'ı true yapmaz; store.tx içinde true; geri alma düşüp kapanan işlemden sonra da", () => {
++    const problems = [];
++    /** Dışarıdan BEGIN … COMMIT: arada store.inTransaction false olmalı. */
++    const outside = (ctx, label) => {
++      ctx.raw.exec("BEGIN");
++      try {
++        ctx.raw.prepare("SELECT COUNT(*) AS n FROM t").get();
++        if (ctx.raw.isTransaction !== true) problems.push(`${label}: ön koşul kurulamadı (dışarıdan BEGIN sonrası db.isTransaction=${ctx.raw.isTransaction})`);
++        else if (ctx.store.inTransaction !== false) problems.push(`${label}: dışarıdan açılmış işlemde (derinlik 0) store.inTransaction = ${ctx.store.inTransaction} (iş parçacığında işlem dışı önbellekler kapanır)`);
++      } finally {
++        ctx.raw.exec("COMMIT");
++      }
++    };
++    // 1) Yeni store: öncesi false, dışarıdan BEGIN'de false, store.tx içinde true, sonra false.
++    const ctx = fresh();
++    try {
++      if (ctx.store.inTransaction !== false) problems.push(`a7: işlem yokken store.inTransaction = ${ctx.store.inTransaction}`);
++      outside(ctx, "a7");
++      let inside = null;
++      ctx.store.tx(() => {
++        inside = ctx.store.inTransaction;
++        ctx.store.run("INSERT INTO t (v) VALUES ('a7')");
++      });
++      if (inside !== true) problems.push(`a7: store.tx içinde store.inTransaction = ${inside}`);
++      if (ctx.store.inTransaction !== false) problems.push(`a7: store.tx'ten sonra store.inTransaction = ${ctx.store.inTransaction}`);
++      outside(ctx, "a7 store.tx sonrası");
++    } finally {
++      ctx.close();
++    }
++    // 2) Geri alma düşer (işlem açık kalır, store.inTransaction true — a5) → işlem kapanır → store.tx yeniden başarıyla girer → dışarıdan BEGIN'de false.
++    const was = fresh(once(/^ROLLBACK$/, () => new Error("geri alma düştü")));
++    try {
++      caught(() => was.store.tx(() => {
++        was.store.run("INSERT INTO t (v) VALUES ('a7 yarım')");
++        throw new Error("asıl hata");
++      }));
++      if (was.raw.isTransaction !== true || was.store.inTransaction !== true) problems.push(`a7 açık kalan: ön koşul kurulamadı (db.isTransaction=${was.raw.isTransaction}, store.inTransaction=${was.store.inTransaction})`);
++      was.raw.exec("ROLLBACK"); // açık kalan işlemi test kapatır
++      if (was.store.inTransaction !== false) problems.push(`a7 açık kalan: işlem kapandıktan sonra store.inTransaction = ${was.store.inTransaction}`);
++      was.store.tx(() => was.store.run("INSERT INTO t (v) VALUES ('a7 sonra')"));
++      outside(was, "a7 açık kalan kapandıktan sonra");
++      if (was.count("t", "v = 'a7 yarım'") || was.count("t", "v = 'a7 sonra'") !== 1) problems.push("a7 açık kalan: yazımlar beklenen gibi değil");
++    } finally {
++      was.close();
++    }
++    report(problems);
++  });
++
+   it("(b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur", () => {
+     const ctx = fresh(once(/^RELEASE sp_1$/, () => new Error("RELEASE düştü")));
+     const problems = [];
+-- 
+2.43.0
+

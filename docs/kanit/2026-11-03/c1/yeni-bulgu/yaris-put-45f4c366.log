@@ -1,0 +1,3 @@
+{"adim":"cari silindi (gövde beklerken)","status":200}
+{"adim":"PUT yanıtı","status":404,"govde":"{\"ok\":false,\"error\":\"Cari bulunamadı. Silinmiş olabilir.\"}"}
+{"adim":"veri tabanı","satir":{"name":"PUT Yarış Carisi","phone":"0532 000 00 01","status":"active","waOptOut":0,"silinmis":1}}

@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.4.9 — Cari Silme Kuralı ve İyileştirmeler
+
+- Yeni: hareketi olan cari artık silinmez, Pasife Al önerilir (hareketsiz, yanlış açılmış cari silinir); müşteriye kredi kartıyla yapılmış ödemenin iadesi için Kredi Kartına İade; veri dosyası bozuk şirket ikinci onayla Yedeksiz Sil ile silinir.
+- İyileştirmeler: WhatsApp bağlantısında Türkçe ve yerinde hata iletileri, teslim süresi Meta'nın varsayılanı (30 gün), Şablonları Denetle'den hemen sonra gönderim; iki kredi kartlı şirkette müşteriden POS tahsilatı; büyük cari listelerinde WhatsApp penceresi hızlandı; WhatsApp gönderimleri şirket dosyasını büyütmez; disk dolunca program kilitlenmez. Ayrıntı: docs/2.4.9-DEGISIKLIKLER.md.
+
 ## 2.4.8 — WhatsApp Otomatik Gönderim ve İyileştirmeler
 
 - Yeni: WhatsApp ile otomatik gönderim — Yönetim → WhatsApp'ta işletmenizin Meta (WhatsApp Business API) bağlantısı; carilere toplu ekstre (PDF ile) ve ödeme hatırlatması; aynı dönemin ekstresi aynı kişiye ikinci kez gitmez; WhatsApp Gönderimleri ekranında durum izleme; caride "WhatsApp Mesajı İstemiyor".

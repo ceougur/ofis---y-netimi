@@ -1,0 +1,98 @@
+{
+  "ad": "s1-tur1/eski-birim",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-eski-c17dda35 && node --test --disable-warning=ExperimentalWarning test/sirket-yedeksiz-sil-249.test.mjs",
+  "commit": "8daa19674fcddf48db30a0e568dcd67524d35bff",
+  "dal": "worktree-agent-ab5db2d50b3409459",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:07:28.302Z",
+  "sure_sn": 6.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 5,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 S1 — bozuk dosyalı şirket: 409 backup-failed, onayla yedeksiz silme (klasör silinen-sirketler'e) › bayraksız istek: 409, kod backup-failed, nedeni iletide ve `reason`da; klasör yerinde, şirket listede, audit yok, yedek dosyası yok",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:105:3",
+      "hata": "neden Türkçe değil: database disk image is malformed (beklenen , gelen database disk image is malformed)"
+    },
+    {
+      "ad": "2.4.9 S1 — bozuk dosyalı şirket: 409 backup-failed, onayla yedeksiz silme (klasör silinen-sirketler'e) › withoutBackup: true + doğru kod/parola: 200, yedek yok; klasör silinen-sirketler/<kod>-<zaman> altında (dosya aynı), kayıt düştü, audit withoutBackup",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:151:3",
+      "hata": "günlükte şirket kodu + audit'teki ham neden (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › errcode 11 (SQLITE_CORRUPT) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: database disk image is malformed (beklenen , gelen database disk image is malformed)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › errcode 26 (SQLITE_NOTADB) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: file is not a database (beklenen , gelen file is not a database)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › errcode 267 (genişletilmiş CORRUPT_VTAB, & 0xff = 11) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: corrupt vtab (beklenen , gelen corrupt vtab)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › errcode 13 (SQLITE_FULL) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: database or disk is full (beklenen , gelen database or disk is full)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › ENOSPC → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: ENOSPC: no space left on device, write (beklenen , gelen ENOSPC: no space left on device, write)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › errcode 5 (SQLITE_BUSY) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: database is locked (beklenen , gelen database is locked)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › errcode 6 (SQLITE_LOCKED) → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: database table is locked (beklenen , gelen database table is locked)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › EBUSY → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: EBUSY: resource busy or locked, rename (beklenen , gelen EBUSY: resource busy or locked, rename)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › EACCES → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: EACCES: permission denied, mkdir (beklenen , gelen EACCES: permission denied, mkdir)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › EPERM → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: EPERM: operation not permitted, open (beklenen , gelen EPERM: operation not permitted, open)"
+    },
+    {
+      "ad": "2.4.9 S1 TUR 1 — yedek hatasının nedeni Türkçe (errcode / error.code eşlemesi; hata zorla üretilir) › bilinmeyen → 409 backup-failed, reason Türkçe; günlükte şirket kodu + ham ileti; şirket yerinde",
+      "konum": "test/sirket-yedeksiz-sil-249.test.mjs:245:5",
+      "hata": "neden: tuhaf bir şey oldu (beklenen , gelen tuhaf bir şey oldu)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/s1-tur1/eski-birim.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab5db2d50b3409459",
+  "ham_cikti_sha256": "0fc9aa99789f2f481953eb0beba85cb3aad6b4eee7df6792613f479ca1626ed1",
+  "ham_cikti_bayt": 18243
+}

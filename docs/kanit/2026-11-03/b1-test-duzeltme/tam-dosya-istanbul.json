@@ -1,0 +1,32 @@
+{
+  "ad": "b1-test-duzeltme/tam-dosya-istanbul",
+  "komut": "node --test test/createapp-acilis-geri-alma-249.test.mjs",
+  "commit": "7846c6f8ffbccc2a7ada7b5129e0c5c4d98b0b1a",
+  "dal": "worktree-agent-a43173a9fa42c4392",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:29:57.558Z",
+  "sure_sn": 44.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/b1-test-duzeltme/tam-dosya-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a43173a9fa42c4392",
+  "ham_cikti_sha256": "e79aa682112508448b4266b813603cd281aa9c6a50bbc610697d1b72f606cd67",
+  "ham_cikti_bayt": 9696
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "s1-tur1/yeni-birim",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/s1t1-yeni-ff7f5801 && node --test --disable-warning=ExperimentalWarning test/sirket-yedeksiz-sil-249.test.mjs",
+  "commit": "ff7f580109b60d829da77709d433fec0fb2fb432",
+  "dal": "worktree-agent-ab5db2d50b3409459",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:08:59.106Z",
+  "sure_sn": 5.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 18,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/s1-tur1/yeni-birim.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab5db2d50b3409459",
+  "ham_cikti_sha256": "0897ce4050d632e97e696753859c82c73fee03ef494c623134b75a22dbb0c20a",
+  "ham_cikti_bayt": 7028
+}

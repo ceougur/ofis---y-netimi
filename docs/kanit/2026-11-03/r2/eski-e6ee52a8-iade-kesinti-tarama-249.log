@@ -1,0 +1,96 @@
+TAP version 13
+# Subtest: 2.4.9 R2 — taksit kartının iade kesintisi toplu yolda cari başına yeniden taranmaz (kural aynen)
+    # Subtest: YAPI: elle alıcı listesi, otomatik önizleme ve cari kartı döngüsü iade faturalarını cari başına yeniden taramaz (istek başına en çok 1)
+    not ok 1 - YAPI: elle alıcı listesi, otomatik önizleme ve cari kartı döngüsü iade faturalarını cari başına yeniden taramaz (istek başına en çok 1)
+      ---
+      duration_ms: 70.0202
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/eski-e6ee52a8/test/iade-kesinti-tarama-249.test.mjs:158:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iade faturaları cari başına yeniden taranıyor: {"elleTumune":16,"elleSecili":16,"onizleme":16,"kartDongusu":32} (cari 16; beklenen her istekte ≤ 1)
+        + actual - expected
+        
+        + [
+        +   [
+        +     'elleTumune',
+        +     16
+        +   ],
+        +   [
+        +     'elleSecili',
+        +     16
+        +   ],
+        +   [
+        +     'onizleme',
+        +     16
+        +   ],
+        +   [
+        +     'kartDongusu',
+        +     32
+        +   ]
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          0: 'elleTumune'
+          1: 16
+        1:
+          0: 'elleSecili'
+          1: 16
+        2:
+          0: 'onizleme'
+          1: 16
+        3:
+          0: 'kartDongusu'
+          1: 32
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/eski-e6ee52a8/test/iade-kesinti-tarama-249.test.mjs:180:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # iade taraması: {"elleTumune":16,"elleSecili":16,"onizleme":16,"kartDongusu":32} (cari 16)
+    # Subtest: EŞDEĞERLİK: her kartın kesintisi eski kuralla ve kâhinle birebir — kısmi / tam iade, iki kart, tek iadede iki kart, iptal, taslak, satışa yazılmış, aynı ad, taşınan kart
+    ok 2 - EŞDEĞERLİK: her kartın kesintisi eski kuralla ve kâhinle birebir — kısmi / tam iade, iki kart, tek iadede iki kart, iptal, taslak, satışa yazılmış, aynı ad, taşınan kart
+      ---
+      duration_ms: 9.268412
+      type: 'test'
+      ...
+    # Subtest: BAYATLIK — API: iade düzenlenince, silinince, iptal edilince saklanan kesinti kullanılmaz (hemen güncel)
+    ok 3 - BAYATLIK — API: iade düzenlenince, silinince, iptal edilince saklanan kesinti kullanılmaz (hemen güncel)
+      ---
+      duration_ms: 80.672801
+      type: 'test'
+      ...
+    # Subtest: BAYATLIK — doğrudan yazım, eski / bozuk biçimli satır, başka bağlantının yazması, geri alınan işlem: kesinti eski kuralla birebir
+    ok 4 - BAYATLIK — doğrudan yazım, eski / bozuk biçimli satır, başka bağlantının yazması, geri alınan işlem: kesinti eski kuralla birebir
+      ---
+      duration_ms: 17.706466
+      type: 'test'
+      ...
+    1..4
+not ok 1 - 2.4.9 R2 — taksit kartının iade kesintisi toplu yolda cari başına yeniden taranmaz (kural aynen)
+  ---
+  duration_ms: 1969.87111
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/eski-e6ee52a8/test/iade-kesinti-tarama-249.test.mjs:84:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2450.603119

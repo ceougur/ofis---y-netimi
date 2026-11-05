@@ -1,0 +1,26 @@
+yeni-taban-2026-11-03T150000-tam-UTC çıkış=0
+eski-taban-2026-11-03T150000-tam-UTC çıkış=0
+yeni-taban-2026-12-01T003000-dar-UTC çıkış=0
+eski-taban-2026-12-01T003000-dar-UTC çıkış=0
+yeni-taban-2026-11-30T233000-dar-UTC çıkış=0
+eski-taban-2026-11-30T233000-dar-UTC çıkış=0
+yeni-taban-2026-12-31T233000-dar-UTC çıkış=0
+eski-taban-2026-12-31T233000-dar-UTC çıkış=0
+yeni-taban-2027-01-01T003000-dar-UTC çıkış=0
+eski-taban-2027-01-01T003000-dar-UTC çıkış=0
+yeni-gecmis-2026-11-03T150000-dar-UTC çıkış=0
+eski-gecmis-2026-11-03T150000-dar-UTC çıkış=0
+yeni-taban-2026-11-03T150000-tam-Europe_Istanbul çıkış=0
+eski-taban-2026-11-03T150000-tam-Europe_Istanbul çıkış=0
+yeni-taban-2026-12-01T003000-dar-Europe_Istanbul çıkış=0
+eski-taban-2026-12-01T003000-dar-Europe_Istanbul çıkış=0
+yeni-taban-2026-11-30T233000-dar-Europe_Istanbul çıkış=0
+eski-taban-2026-11-30T233000-dar-Europe_Istanbul çıkış=0
+yeni-taban-2026-12-31T233000-dar-Europe_Istanbul çıkış=0
+eski-taban-2026-12-31T233000-dar-Europe_Istanbul çıkış=0
+yeni-taban-2027-01-01T003000-dar-Europe_Istanbul çıkış=0
+eski-taban-2027-01-01T003000-dar-Europe_Istanbul çıkış=0
+yeni-gecmis-2026-11-03T150000-dar-Europe_Istanbul çıkış=0
+eski-gecmis-2026-11-03T150000-dar-Europe_Istanbul çıkış=0
+yeni-taban-2026-11-03T150000-tam-UTC-dis çıkış=0
+bitti

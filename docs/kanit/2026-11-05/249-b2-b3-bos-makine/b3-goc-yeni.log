@@ -1,0 +1,15 @@
+09:06:59 statik {"dosyaMb":434.2,"surum":44,"sayfaBoyu":4096,"sayfa":111166,"bosListe":11636,"bosListeMb":45.5,"wa_jobs":{"sayfa":44995,"mb":175.8,"bosMb":124.8,"yukMb":49.7},"wa_job_pdfs":null,"tumDosya":{"mb":388.8,"bosMb":144,"yukMb":234.4},"isSatiri":80126,"satirdaPdf":{"n":1,"b":33320},"pdfTablosu":null,"sayimMs":335,"vacuumInto":{"ms":1242,"mb":259.8}}
+09:07:01 göç {"from":44,"to":45,"applied":[45],"toplamMs":901,"adimlar":[{"ms":777,"message":"Göç öncesi yedek alındı: destekofis-2026-11-05T09-06-59-925Z-pre-migration-v45.sqlite"},{"ms":901,"message":"Veritabanı göçü uygulandı: 45 (v2.4.9 WhatsApp: işin dondurulmuş PDF'i ayrı tabloda (para dışı))"}],"yedek":{"ad":"destekofis-2026-11-05T09-06-59-925Z-pre-migration-v45.sqlite","mb":259.8}} {"dosyaMb":434.2,"surum":45,"sayfaBoyu":4096,"sayfa":111166,"bosListe":11633,"bosListeMb":45.4,"wa_jobs":{"sayfa":44987,"mb":175.7,"bosMb":124.8,"yukMb":49.7},"wa_job_pdfs":{"sayfa":9,"mb":0,"bosMb":0,"yukMb":0},"tumDosya":{"mb":388.8,"bosMb":144,"yukMb":234.4},"isSatiri":80126,"satirdaPdf":{"n":0,"b":0},"pdfTablosu":{"n":1,"b":33320}}
+09:07:12 açılış {"ms":8594,"olayDongusuEnCokMs":8623.5,"surum":45} bakım [{"ms":148,"olayDongusuEnCokMs":11.8},{"ms":134,"olayDongusuEnCokMs":12.1},{"ms":113,"olayDongusuEnCokMs":11.3},{"ms":111,"olayDongusuEnCokMs":12.8},{"ms":117,"olayDongusuEnCokMs":11.7}]
+ok 1 - statik sayım
+ok 2 - açılış ve 5 bakım turu
+ok 3 - göç koştu
+1..3
+# tests 3
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+
+[kanit] b3/olcum-goc-yeni-gecmis40: GEÇTİ · çıkış 0 · 3/3 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 5a22228 · linux 6.18.44-fc-v236 x64 · Node v22.22.0

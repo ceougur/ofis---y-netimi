@@ -1,0 +1,32 @@
+{
+  "ad": "p1-tur2/yeni-senaryo-cari-243",
+  "komut": "npm run test:senaryo-cari-243",
+  "commit": "393aeb57fcbca79243782de58f4c6d7031e90221",
+  "dal": "worktree-agent-aabdc4a8158a60ac9",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T23:08:50.922Z",
+  "sure_sn": 71.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 69,
+    "gecen": 69,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/p1-tur2/yeni-senaryo-cari-243.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aabdc4a8158a60ac9",
+  "ham_cikti_sha256": "428c543c61c8a493c5722bb85186663dd373581975c9a96f0ef7da6ac3e7f84c",
+  "ham_cikti_bayt": 7850
+}

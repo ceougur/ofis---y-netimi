@@ -1,0 +1,26 @@
+// 249-tamkapi kayıtlarının bölüm bölüm özeti (iki gün klasörü): koşu sayısı, denetim toplamı, kırmızılar, ad=sayı listesi, commit'ler, süre.
+const fs = require("fs"), path = require("path");
+const kayit = [];
+for (const D of process.argv.slice(2)) if (fs.existsSync(D)) for (const f of fs.readdirSync(D)) if (f.endsWith(".json")) {
+  const k = JSON.parse(fs.readFileSync(path.join(D, f), "utf8")); k._gun = path.basename(path.dirname(D)); if (k.ad) kayit.push(k);
+}
+const bolum = ad => ad.match(/^(npm-test|ci-kahin|ci-e2e|cidisi|dis-kahin|wa)/)[1];
+const g = {}; const commits = {};
+for (const k of kayit) {
+  const ad = k.ad.replace(/^249-tamkapi\//, ""); const b = bolum(ad);
+  (g[b] ||= { kos: 0, gecti: 0, toplam: 0, gecen: 0, kirmizi: [], liste: [], sure: 0 });
+  const o = k.ozet || {};
+  g[b].kos++; g[b].sure += k.sure_sn || 0;
+  if (k.hukum === "GEÇTİ") g[b].gecti++; else g[b].kirmizi.push(`${ad}: ${k.hukum} ${o.gecen ?? "-"}/${o.toplam ?? "-"}`);
+  g[b].toplam += o.toplam || 0; g[b].gecen += o.gecen || 0;
+  g[b].liste.push(`${ad.replace(/^(ci-e2e-|cidisi-|ci-|dis-)/, "")} ${o.gecen ?? "-"}/${o.toplam ?? "-"}${k._gun !== "2026-11-05" ? " [" + k._gun + "]" : ""}`);
+  (commits[(k.commit||"yok").slice(0, 8)] ||= []).push(ad);
+}
+for (const [b, v] of Object.entries(g)) {
+  console.log(`== ${b}: ${v.kos} kayıt, GEÇTİ ${v.gecti}, denetim ${v.gecen}/${v.toplam}, süre ${Math.round(v.sure)} sn`);
+  if (v.kirmizi.length) console.log("  kırmızı: " + v.kirmizi.join(" | "));
+  console.log("  " + v.liste.sort().join(", "));
+}
+for (const [c, l] of Object.entries(commits)) console.log(`commit ${c}: ${l.length} kayıt (ilk: ${l.sort()[0]})`);
+const bas = kayit.map(k => k.basladi).sort();
+console.log("ilk başlama", bas[0], "son başlama", bas.at(-1));

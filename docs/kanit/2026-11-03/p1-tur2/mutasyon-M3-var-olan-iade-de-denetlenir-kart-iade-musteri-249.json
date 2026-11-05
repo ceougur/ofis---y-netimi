@@ -1,0 +1,43 @@
+{
+  "ad": "p1-tur2/mutasyon-M3-var-olan-iade-de-denetlenir-kart-iade-musteri-249",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t2-30952b1f/mut-393aeb57/test/kart-iade-musteri-249.test.mjs",
+  "commit": "393aeb57fcbca79243782de58f4c6d7031e90221",
+  "dal": "worktree-agent-aabdc4a8158a60ac9",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T22:57:26.873Z",
+  "sure_sn": 8.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 11,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026) › silinmemiş: kartla ödeme silinince yeni Kredi Kartına İade 400 ve bayrak false; var olan iade satırının düzeltmesi (PUT, alan yok ya da cardRefund true) 200 ve kartta kalır",
+      "konum": "test/kart-iade-musteri-249.test.mjs:107:3",
+      "hata": "düzelt (cardRefund true): 400 {\"ok\":false,\"error\":\"Bu müşteriye kredi kartıyla yapılmış bir ödeme yok; Kredi Kartına İade girilemez. Müşteriden kartla alınan para POS tahsilatıdır: \\\"Kredi Kartına İade\\\" işaretini kaldırın.\",\"code\":\"card-refund-no-payment\",\"field\":\"cardRefund\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "P1 tur 2 — düzeltmede (PUT) kart iadesi kuralları POST'la aynı (dar kontrol DÜŞÜK-1 / DÜŞÜK-2, TEST-1 / TEST-2) › DÜŞÜK-2 müşteri: iade olmayan satır (POS / Nakit) PUT ile Kredi Kartına İade'ye — kartla ödemesi yoksa 400 card-refund-no-payment, varsa 200; var olan iade satırının tutar / tarih / kart düzeltmesi serbest; tedarikçi serbest",
+      "konum": "test/kart-iade-musteri-249.test.mjs:289:3",
+      "hata": "iade 120 → 110, 07.10, KART1: 400 {\"ok\":false,\"error\":\"Bu müşteriye kredi kartıyla yapılmış bir ödeme yok; Kredi Kartına İade girilemez. Müşteriden kartla alınan para POS tahsilatıdır: \\\"Kredi Kartına İade\\\" işaretini kaldırın.\",\"code\":\"card-refund-no-payment\",\"field\":\"cardRefund\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/p1-tur2/mutasyon-M3-var-olan-iade-de-denetlenir-kart-iade-musteri-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aabdc4a8158a60ac9",
+  "ham_cikti_sha256": "f3e0d1183ce0413fc3cbc52b7707b4d7d2397e4a461b4c42fedc3f2d296ced48",
+  "ham_cikti_bayt": 9855
+}

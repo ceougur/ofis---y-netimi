@@ -1,0 +1,132 @@
+TAP version 13
+# Subtest: P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026)
+    # Subtest: kartla ödemesi olmayan müşteri: POST cardRefund 400 card-refund-no-payment, satır yok, kart değişmez; nakit / havale / POS hareketi bayrak açmaz (false)
+    not ok 1 - kartla ödemesi olmayan müşteri: POST cardRefund 400 card-refund-no-payment, satır yok, kart değişmez; nakit / havale / POS hareketi bayrak açmaz (false)
+      ---
+      duration_ms: 1245.820956
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/kart-iade-musteri-249.test.mjs:43:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kartla ödemesi olmayan müşteriye Kredi Kartına İade: 200 {"id":"account-8881fc71-b00b-49d9-a703-4eff97247299","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":"","p 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/kart-iade-musteri-249.test.mjs:52:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: müşteriye kartla Ödeme 400 (KART1) → Kredi Kartına İade 500 (ödemeden büyük, üst sınır yok) seçilen KART2'ye, POS satışı yok; aynı adlı ikinci müşteride 400; bayrak cari bazında
+    not ok 2 - müşteriye kartla Ödeme 400 (KART1) → Kredi Kartına İade 500 (ödemeden büyük, üst sınır yok) seçilen KART2'ye, POS satışı yok; aynı adlı ikinci müşteride 400; bayrak cari bazında
+      ---
+      duration_ms: 721.686241
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/kart-iade-musteri-249.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ABC #2 (kartla ödemesi yok): 200 {"id":"account-c553dd81-87ae-47dd-a862-968693296eef","refNo":"2","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":"","p 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/kart-iade-musteri-249.test.mjs:83:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: silinmemiş: kartla ödeme silinince yeni Kredi Kartına İade 400 ve bayrak false; var olan iade satırının düzeltmesi (PUT, alan yok ya da cardRefund true) 200 ve kartta kalır
+    not ok 3 - silinmemiş: kartla ödeme silinince yeni Kredi Kartına İade 400 ve bayrak false; var olan iade satırının düzeltmesi (PUT, alan yok ya da cardRefund true) 200 ve kartta kalır
+      ---
+      duration_ms: 757.16381
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/kart-iade-musteri-249.test.mjs:96:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        silinmiş ödemeden sonra yeni iade: 200 {"id":"account-68fb7c30-d906-4f61-bccd-464f3f835d8c","refNo":"1","type":"customer","name":"ABC Ltd.","phone":"","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":"","district":"","p 
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        expectStatus (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/banka-210-hesap-ortak.mjs:57:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/kart-iade-musteri-249.test.mjs:102:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tedarikçi ve Diğer türü cari: kartla ödeme olmadan da Kredi Kartına İade 200, tek kart kendiliğinden (değişmedi — gerileme koruması)
+    ok 4 - tedarikçi ve Diğer türü cari: kartla ödeme olmadan da Kredi Kartına İade 200, tek kart kendiliğinden (değişmedi — gerileme koruması)
+      ---
+      duration_ms: 1430.849077
+      type: 'test'
+      ...
+    1..4
+not ok 1 - P1-b — müşteride Kredi Kartına İade yalnız o cariye kredi kartıyla yapılmış bir Ödeme varken (kullanıcı kararı 03.11.2026)
+  ---
+  duration_ms: 4157.165669
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/p1t1-a3726f63/mut-taban/test/kart-iade-musteri-249.test.mjs:42:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: DÜŞÜK-1 — var olan Kredi Kartına İade satırında kutu kaldırılınca (cardRefund: false) düzeltme uygulanır
+    # Subtest: tek POS: tedarikçi ve kartla ödemeli müşteri — PUT cardRefund:false, tutar aynı → satır POS'a, etkin POS satışı, kart etkisi geri, POS Bekleyen +
+    ok 1 - tek POS: tedarikçi ve kartla ödemeli müşteri — PUT cardRefund:false, tutar aynı → satır POS'a, etkin POS satışı, kart etkisi geri, POS Bekleyen +
+      ---
+      duration_ms: 1043.056051
+      type: 'test'
+      ...
+    # Subtest: 2 POS: PUT cardRefund:false + posId POS2 → 200, satır POS2'de (önceden 400 pos-not-for-payment: "POS yalnız tahsilatta ve POS iadesinde kullanılır…")
+    ok 2 - 2 POS: PUT cardRefund:false + posId POS2 → 200, satır POS2'de (önceden 400 pos-not-for-payment: "POS yalnız tahsilatta ve POS iadesinde kullanılır…")
+      ---
+      duration_ms: 810.652034
+      type: 'test'
+      ...
+    # Subtest: alan gönderilmezse (eski istemci) önceki kart bağı sürer; cardRefund:false + Nakit → nakit satır, Kasa +, kart etkisi geri
+    ok 3 - alan gönderilmezse (eski istemci) önceki kart bağı sürer; cardRefund:false + Nakit → nakit satır, Kasa +, kart etkisi geri
+      ---
+      duration_ms: 882.806668
+      type: 'test'
+      ...
+    # Subtest: ters yön (komşu): tek kartta POS tahsilatı satırı Kredi Kartına İade'ye çevrilince (kart kimliği yok, tutar aynı) satır kartta; POS satışı geçersiz
+    ok 4 - ters yön (komşu): tek kartta POS tahsilatı satırı Kredi Kartına İade'ye çevrilince (kart kimliği yok, tutar aynı) satır kartta; POS satışı geçersiz
+      ---
+      duration_ms: 633.046878
+      type: 'test'
+      ...
+    1..4
+ok 2 - DÜŞÜK-1 — var olan Kredi Kartına İade satırında kutu kaldırılınca (cardRefund: false) düzeltme uygulanır
+  ---
+  duration_ms: 3371.060641
+  type: 'suite'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 5
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8020.328428

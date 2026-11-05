@@ -1,0 +1,405 @@
+TAP version 13
+# \# B3 T1 ölçüm: [[1,1665,380928,271376,null],[2,115,770048,550706,null],[3,107,1146880,817796,null],[4,112,1536000,1097126,null],[5,116,1875968,1327496,null],[6,91,2129920,1472186,null],[7,89,2506752,1739284,null],[8,111,2854912,1977814,null],[9,104,3117056,2130664,null],[10,79,3375104,2279434,null]]
+# Subtest: 2.4.9 B3 T1 — toplu gönderimler şirket dosyasında kalıcı boşluk bırakmaz
+    # Subtest: 10 tur × 200 ekstre (kabul + bakım): wa_jobs sayfa içi boş ≤ %10, bakımdan sonra wa_job_pdfs 0, tur başına sayfa artışı sabit
+    not ok 1 - 10 tur × 200 ekstre (kabul + bakım): wa_jobs sayfa içi boş ≤ %10, bakımdan sonra wa_job_pdfs 0, tur başına sayfa artışı sabit
+      ---
+      duration_ms: 40953.943341
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-buyume-249.test.mjs:15:3'
+      failureType: 'testCodeFailure'
+      error: "wa_jobs sayfa içi boş %67.5 > %10 (2.17 MB, iş başına 1140 bayt) — kesinleşen işin PDF'i satırda boşluk bırakıyor"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-buyume-249.test.mjs:42:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.4.9 B3 T1 — toplu gönderimler şirket dosyasında kalıcı boşluk bırakmaz
+  ---
+  duration_ms: 40955.785501
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-buyume-249.test.mjs:14:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45)
+    # Subtest: fikstür v2.4.8'in ürettiği gibi: 002 v44, A Duraklatıldı + B kabul (bakımsız) PDF'leri satırda, C'nin PDF'i silinmiş; yedekte aynısı
+    ok 1 - fikstür v2.4.8'in ürettiği gibi: 002 v44, A Duraklatıldı + B kabul (bakımsız) PDF'leri satırda, C'nin PDF'i silinmiş; yedekte aynısı
+      ---
+      duration_ms: 37.582518
+      type: 'test'
+      ...
+    # Subtest: T3 güncelleme: yeni programla açılınca PDF'ler wa_job_pdfs'e AYNI baytlarla taşınır, satır boşalır; bakım kesinleşeni siler; 31 gün sonra Devam Et AYNI PDF'i gönderir; ikinci açılışta göç yok
+    not ok 2 - T3 güncelleme: yeni programla açılınca PDF'ler wa_job_pdfs'e AYNI baytlarla taşınır, satır boşalır; bakım kesinleşeni siler; 31 gün sonra Devam Et AYNI PDF'i gönderir; ikinci açılışta göç yok
+      ---
+      duration_ms: 429.449631
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-goc-249.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        göç v45: wa_job_pdfs tablosu yok (şema sürümü 44)
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-goc-249.test.mjs:123:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3 yarıda kalmış göç: tablo var + bir PDF taşınmış ama şema 44 (kesinti) → yeniden açılış göçü tamamlar; taşınmış satır korunur, eksik eklenir
+    not ok 3 - T3 yarıda kalmış göç: tablo var + bir PDF taşınmış ama şema 44 (kesinti) → yeniden açılış göçü tamamlar; taşınmış satır korunur, eksik eklenir
+      ---
+      duration_ms: 291.417584
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-goc-249.test.mjs:155:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yarıda kalmış göç tamamlandı
+        
+        44 !== 45
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 45
+      actual: 44
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-goc-249.test.mjs:166:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geri yükleme: v2.4.8'de alınmış yedek (v44, A'nın PDF'i satırda) yeni programa geri yüklenince göç v45 yedek dosyasında koşar; eski toplu iş durur (§7a 26), bakım PDF'leri siler, ileti gitmez
+    not ok 4 - T4 geri yükleme: v2.4.8'de alınmış yedek (v44, A'nın PDF'i satırda) yeni programa geri yüklenince göç v45 yedek dosyasında koşar; eski toplu iş durur (§7a 26), bakım PDF'leri siler, ileti gitmez
+      ---
+      duration_ms: 529.282046
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-goc-249.test.mjs:175:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yüklenen dosyada wa_job_pdfs yok (şema 44)
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-goc-249.test.mjs:192:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 Ayır: paylaşılan 002 dosyası ayrılınca kopya (VACUUM INTO) wa_job_pdfs'i aynı baytlarla taşır
+    not ok 5 - T4 Ayır: paylaşılan 002 dosyası ayrılınca kopya (VACUUM INTO) wa_job_pdfs'i aynı baytlarla taşır
+      ---
+      duration_ms: 444.189506
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-goc-249.test.mjs:209:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ayrılan kopyada wa_job_pdfs yok
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-goc-249.test.mjs:221:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 2 - 2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45)
+  ---
+  duration_ms: 1734.137238
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-goc-249.test.mjs:99:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok
+    # Subtest: T2 eşdeğerlik: 131056 → Bağlantı Bekleniyor → Duraklat → 31 gün → Devam Et (arada bakım turları, tahsilat): PDF iki kez yüklenir, BAYT BAYT aynı; ileti ilk hazırlığın bakiyesiyle
+    ok 1 - T2 eşdeğerlik: 131056 → Bağlantı Bekleniyor → Duraklat → 31 gün → Devam Et (arada bakım turları, tahsilat): PDF iki kez yüklenir, BAYT BAYT aynı; ileti ilk hazırlığın bakiyesiyle
+      ---
+      duration_ms: 873.259558
+      type: 'test'
+      ...
+    # Subtest: T2b yaşam döngüsü: A 131056 (Bekliyor), B 131026 (Başarısız), C kabul → bakım yalnız A'nınkini tutar; Duraklat'ta durur; İptal Et → bakım siler (eski kodla aynı sayılar)
+    ok 2 - T2b yaşam döngüsü: A 131056 (Bekliyor), B 131026 (Başarısız), C kabul → bakım yalnız A'nınkini tutar; Duraklat'ta durur; İptal Et → bakım siler (eski kodla aynı sayılar)
+      ---
+      duration_ms: 859.678729
+      type: 'test'
+      ...
+    # Subtest: T5 Şirket Verisini Sıfırla (Tüm Hareketleri Sil), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+    not ok 3 - T5 Şirket Verisini Sıfırla (Tüm Hareketleri Sil), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+      ---
+      duration_ms: 566.952149
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:130:5'
+      failureType: 'testCodeFailure'
+      error: 'wa_job_pdfs tablosu yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      actual: ~
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:137:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T5 Şirket Verisini Sıfırla (Tümünü Sıfırla), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+    not ok 4 - T5 Şirket Verisini Sıfırla (Tümünü Sıfırla), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+      ---
+      duration_ms: 473.924614
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:130:5'
+      failureType: 'testCodeFailure'
+      error: 'wa_job_pdfs tablosu yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      actual: ~
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:137:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T6 yarıda kesilme: PDF yazımı (disk dolu) düşerse işin satırı da geri alınır — prepared_at boş, değişken yok; sonraki tur temiz hazırlar, PDF bir kez gider
+    not ok 5 - T6 yarıda kesilme: PDF yazımı (disk dolu) düşerse işin satırı da geri alınır — prepared_at boş, değişken yok; sonraki tur temiz hazırlar, PDF bir kez gider
+      ---
+      duration_ms: 592.530333
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:149:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesinti noktası (wa_job_pdfs yazımı) çalışmadı — PDF ayrı tabloya yazılmıyor
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:164:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T7 kilit: bakımın PDF silmesi kilide takılınca tur bırakılır (İş N / O1), iş ve defter değişmez; kilit kalkınca sonraki bakım siler
+    not ok 6 - T7 kilit: bakımın PDF silmesi kilide takılınca tur bırakılır (İş N / O1), iş ve defter değişmez; kilit kalkınca sonraki bakım siler
+      ---
+      duration_ms: 537.685171
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:186:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bakımın PDF silmesi (DELETE FROM wa_job_pdfs) çalışmadı
+        
+        0 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:206:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T8 kaynak tarama: wa_jobs.pdf_blob yalnız göç dosyasında anılır (yazım da okuma da yok; CRLF bilen)
+    not ok 7 - T8 kaynak tarama: wa_jobs.pdf_blob yalnız göç dosyasında anılır (yazım da okuma da yok; CRLF bilen)
+      ---
+      duration_ms: 84.905568
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:220:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        pdf_blob göç dışında anılıyor (PDF wa_job_pdfs'te durur): server/lib/whatsapp/queue.mjs:1321, server/lib/whatsapp/queue.mjs:1327, server/lib/whatsapp/queue.mjs:1348, server/lib/whatsapp/queue.mjs:1654, server/lib/whatsapp/queue.mjs:1655
+        + actual - expected
+        
+        + [
+        +   'server/lib/whatsapp/queue.mjs:1321',
+        +   'server/lib/whatsapp/queue.mjs:1327',
+        +   'server/lib/whatsapp/queue.mjs:1348',
+        +   'server/lib/whatsapp/queue.mjs:1654',
+        +   'server/lib/whatsapp/queue.mjs:1655'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'server/lib/whatsapp/queue.mjs:1321'
+        1: 'server/lib/whatsapp/queue.mjs:1327'
+        2: 'server/lib/whatsapp/queue.mjs:1348'
+        3: 'server/lib/whatsapp/queue.mjs:1654'
+        4: 'server/lib/whatsapp/queue.mjs:1655'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:237:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T9 iki şirket: 001'in Duraklatıldı işinin PDF'i 002'nin gönderimi + bakımından etkilenmez; 002'nin PDF'i kendi dosyasında, kabulden sonra silinir; 31 gün sonra 001 AYNI baytları gönderir
+    not ok 8 - T9 iki şirket: 001'in Duraklatıldı işinin PDF'i 002'nin gönderimi + bakımından etkilenmez; 002'nin PDF'i kendi dosyasında, kabulden sonra silinir; 31 gün sonra 001 AYNI baytları gönderir
+      ---
+      duration_ms: 452.285025
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:242:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        wa_job_pdfs tablosu yok ya da boş
+        
+        null !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: ~
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:253:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 3 - 2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok
+  ---
+  duration_ms: 4443.319644
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-b3-pdf-249.test.mjs:58:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'Sonucu Belirsiz' ile elemez
+    # Subtest: genel (b2): J belirsiz → K kabul + teslim → yeni gönderim 'Daha Önce Gönderildi'; R3'te Yine de Gönder ile gider (çıkmaz yok); bağ dosyada ve defterde
+    ok 1 - genel (b2): J belirsiz → K kabul + teslim → yeni gönderim 'Daha Önce Gönderildi'; R3'te Yine de Gönder ile gider (çıkmaz yok); bağ dosyada ve defterde
+      ---
+      duration_ms: 731.671622
+      type: 'test'
+      ...
+    # Subtest: Meta Bekletti kipi (b2 bekletti): J'nin 131049 sonrası 2. denemesi belirsiz → K kabul → 'Daha Önce Gönderildi'
+    ok 2 - Meta Bekletti kipi (b2 bekletti): J'nin 131049 sonrası 2. denemesi belirsiz → K kabul → 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 533.867185
+      type: 'test'
+      ...
+    # Subtest: gerileme: Yine de Gönder işi Başarısız → kaynak yine 'Sonucu Belirsiz' ile eler; Yine de Gönder işi belirsiz → eler
+    ok 3 - gerileme: Yine de Gönder işi Başarısız → kaynak yine 'Sonucu Belirsiz' ile eler; Yine de Gönder işi belirsiz → eler
+      ---
+      duration_ms: 997.371399
+      type: 'test'
+      ...
+    # Subtest: zincir: J belirsiz → K belirsiz → K'nin Yine de Gönder'i L kabul → J ve K elemez, 'Daha Önce Gönderildi'
+    ok 4 - zincir: J belirsiz → K belirsiz → K'nin Yine de Gönder'i L kabul → J ve K elemez, 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 423.21218
+      type: 'test'
+      ...
+    # Subtest: yalnız defterdeki bağ (dosyadaki bağ yok — eski yedek): kaynak yine elemez; yalnız dosyadaki bağ (taşınan veri, defter yok): kaynak elemez
+    ok 5 - yalnız defterdeki bağ (dosyadaki bağ yok — eski yedek): kaynak yine elemez; yalnız dosyadaki bağ (taşınan veri, defter yok): kaynak elemez
+      ---
+      duration_ms: 632.983764
+      type: 'test'
+      ...
+    # Subtest: göç v44: v43 dosyası (inherit_of yok) açılınca sütun eklenir, eski satırlar bağsız (''); göç yarıda kalmış dosya (sütun var, sürüm 43) yeniden açılır
+    ok 6 - göç v44: v43 dosyası (inherit_of yok) açılınca sütun eklenir, eski satırlar bağsız (''); göç yarıda kalmış dosya (sütun var, sürüm 43) yeniden açılır
+      ---
+      duration_ms: 763.350671
+      type: 'test'
+      ...
+    1..6
+ok 4 - 2.4.8 İş Q2 — kabul edilen 'Yine de Gönder' işinin kaynağı 'Sonucu Belirsiz' ile elemez
+  ---
+  duration_ms: 4084.629796
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 T2-6 — yeniden denemede ileti metni ile ekteki PDF AYNI anlık görüntüden
+    # Subtest: 131056 → 1 dk sonra yeniden deneme: arada tahsilat girilse de ileti ve PDF ilk hazırlıktaki bakiyeyi (1.250,00) taşır; PDF bir kez yüklenir
+    ok 1 - 131056 → 1 dk sonra yeniden deneme: arada tahsilat girilse de ileti ve PDF ilk hazırlıktaki bakiyeyi (1.250,00) taşır; PDF bir kez yüklenir
+      ---
+      duration_ms: 655.808504
+      type: 'test'
+      ...
+    # Subtest: Duraklat → 31 gün → Devam Et: Meta'daki kopyanın süresi dolmuş; AYNI PDF baytları yeniden yüklenir, ileti aynı bakiyeyle gider; kesinleşince dondurulmuş PDF silinir
+    not ok 2 - Duraklat → 31 gün → Devam Et: Meta'daki kopyanın süresi dolmuş; AYNI PDF baytları yeniden yüklenir, ileti aynı bakiyeyle gider; kesinleşince dondurulmuş PDF silinir
+      ---
+      duration_ms: 471.907819
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-t2-6-248.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: 'no such table: wa_job_pdfs'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        prepare (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/server/lib/db.mjs:71:22)
+        Object.get (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/server/lib/db.mjs:308:28)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-t2-6-248.test.mjs:76:30)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ödeme hatırlatması: yeniden denemede değişkenler (vade, gecikmiş toplam, bakiye) ilk hazırlıktakiyle AYNI
+    ok 3 - ödeme hatırlatması: yeniden denemede değişkenler (vade, gecikmiş toplam, bakiye) ilk hazırlıktakiyle AYNI
+      ---
+      duration_ms: 608.138583
+      type: 'test'
+      ...
+    1..3
+not ok 5 - 2.4.8 T2-6 — yeniden denemede ileti metni ile ekteki PDF AYNI anlık görüntüden
+  ---
+  duration_ms: 1737.192215
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-eski-e3f74093/test/whatsapp-t2-6-248.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 23
+# suites 5
+# pass 11
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 55239.604478

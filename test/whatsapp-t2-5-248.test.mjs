@@ -1,8 +1,8 @@
-// 2.4.8 T2 bulgu 5 (ORTA; bağımsız gözden geçirme r4): S2 A ("utility şablonda teslim süresi 3 gün"; plan §11 S2, §2.2) Meta'ya hiç gitmiyordu — program
-// şablonları kendisi açıyor (W5) ama açma isteğinde message_send_ttl_seconds yoktu → Meta varsayılanı (30 gün) geçerli kalırken program 73 saatte "Süresi Doldu"
-// deyip PDF'i Meta'dan siliyordu. Beklenen: şablon AÇILIRKEN ve zaten açık şablonun süresi programın ayarından farklıysa GÜNCELLENİRKEN teslim süresi gönderilir
-// (değer = programdaki teslim süresi ayarı; varsayılan S2 A 3 gün = 259.200 sn — plandan); aynı değer bir daha gönderilmez; Meta alanı reddederse şablon yine açılır
-// (gönderim kapanmaz) ve kartta uyarı çıkar (D0-W5-8: izinli aralık belgede okunmadı).
+// 2.4.8 T2 bulgu 5 (ORTA; bağımsız gözden geçirme r4): S2 A ("utility şablonda teslim süresi 3 gün") için program şablonu açarken ve onaylı şablonda teslim süresini
+// (message_send_ttl_seconds) gönderiyordu. 2.4.9 W-T — BEKLENTİ BİLEREK GÜNCELLENDİ (KULLANICI KARARI 03.11.2026 ~18:45 UTC, SORU T0; docs/2.4.9-tasarim/
+// W-whatsapp-sablon.md §15): gerçek Meta 259.200 sn'yi hem açmada hem onaylı şablonun düzenlemesinde reddetti (utility'de izinli özel süre en çok 12 saat) →
+// kullanıcı "30 gün (Meta varsayılanı)" seçti: program şablon açarken teslim süresi GÖNDERMEZ, onaylı şablonun teslim süresini DÜZENLEMEZ; gönderim ayarındaki
+// ttlHours kalktı (PUT → 400). Ayrıntılı yeni testler: test/whatsapp-wt-ttl-249.test.mjs.
 // Düzenek: gerçek program + yerel sahte Graph (aynı el — kâhin DEĞİL, ders 5; alanı kaydeder, test okur).
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
@@ -10,7 +10,7 @@ import { startFakeGraph } from "./whatsapp-sahte-graph.mjs";
 import { PNID, TOKEN, URLS, WABA, startWa } from "./whatsapp-248-ortak.mjs";
 
 const APP = "1505264761663625";
-const THREE_DAYS = 3 * 24 * 3600; // plan §11 S2 A
+const TTL_FIELD = "message_send_ttl_seconds";
 const ENSURE = "/api/workspace/whatsapp/templates/ensure";
 const creates = fake => fake.requests.filter(item => item.method === "POST" && /\/message_templates$/.test(item.path));
 const edits = fake => fake.requests.filter(item => item.method === "POST" && /^\/9\d+$/.test(item.path));
@@ -24,16 +24,16 @@ async function fresh() {
   return { ctx, fake, close: async () => { await ctx.close(); await fake.close(); } };
 }
 
-describe("2.4.8 T2-5 — şablonun teslim süresi (TTL) Meta'ya gider", () => {
-  it("program şablonları AÇARKEN teslim süresini (3 gün = 259.200 sn) gönderir; sahte Meta kaydeder; ikinci denetim yeniden göndermez", async () => {
+describe("2.4.8 T2-5 → 2.4.9 W-T — şablonun teslim süresi (TTL) Meta'ya GİTMEZ (Meta varsayılanı 30 gün)", () => {
+  it("program şablonları AÇARKEN teslim süresi göndermez; Meta'daki şablonda TTL yok; ikinci denetim açmaz / düzenlemez", async () => {
     const { ctx, fake, close } = await fresh();
     try {
       const res = await ctx.api.post(ENSURE, {});
       assert.equal(res.status, 200, JSON.stringify(res.data));
       const sent = creates(fake);
       assert.equal(sent.length, 2, "iki şablon açıldı");
-      for (const request of sent) assert.equal(request.body.message_send_ttl_seconds, THREE_DAYS, `${request.body.name}: açma isteğinde teslim süresi (geldi ${request.body.message_send_ttl_seconds})`);
-      for (const tpl of program(fake)) assert.equal(tpl.message_send_ttl_seconds, THREE_DAYS);
+      for (const request of sent) assert.ok(!Object.hasOwn(request.body, TTL_FIELD), `${request.body.name}: açma isteğinde teslim süresi yok (geldi ${request.body[TTL_FIELD]})`);
+      for (const tpl of program(fake)) assert.equal(tpl[TTL_FIELD], undefined);
       fake.requests.length = 0;
       assert.equal((await ctx.api.post(ENSURE, {})).status, 200);
       assert.equal(edits(fake).length + creates(fake).length, 0, "ikinci denetimde şablon açılmadı / düzenlenmedi");
@@ -42,53 +42,50 @@ describe("2.4.8 T2-5 — şablonun teslim süresi (TTL) Meta'ya gider", () => {
     }
   });
 
-  it("teslim süresi ayarı değişince (48 saat) mevcut şablonlar GÜNCELLENİRKEN yeni değer gönderilir (yalnız TTL alanı); aynı değer bir daha gitmez", async () => {
+  it("teslim süresi ayarı (ttlHours: 48) REDDEDİLİR (400); onaylı şablonlar denetimde düzenlenmez", async () => {
     const { ctx, fake, close } = await fresh();
     try {
       assert.equal((await ctx.api.post(ENSURE, {})).status, 200);
       for (const tpl of program(fake)) tpl.status = "APPROVED";
-      assert.equal((await ctx.api.put(URLS.sending, { ttlHours: 48 })).status, 200);
-      fake.requests.length = 0;
-      const res = await ctx.api.post(ENSURE, {});
-      assert.equal(res.status, 200, JSON.stringify(res.data));
-      const sent = edits(fake);
-      assert.equal(sent.length, 2, "iki şablonun teslim süresi güncellendi");
-      for (const request of sent) assert.deepEqual(request.body, { message_send_ttl_seconds: 48 * 3600 }, "düzenleme yalnız teslim süresini taşır (içerik / kategori değişmez)");
-      for (const tpl of program(fake)) assert.equal(tpl.message_send_ttl_seconds, 48 * 3600);
+      const res = await ctx.api.put(URLS.sending, { ttlHours: 48 });
+      assert.equal(res.status, 400, JSON.stringify(res.data));
+      assert.equal(res.data.field, "ttlHours");
       fake.requests.length = 0;
       assert.equal((await ctx.api.post(ENSURE, {})).status, 200);
-      assert.equal(edits(fake).length, 0, "aynı değer bir daha gönderilmez");
+      assert.equal(edits(fake).length, 0, "onaylı şablonun teslim süresi düzenlenmez");
+      for (const tpl of program(fake)) assert.equal(tpl[TTL_FIELD], undefined);
     } finally {
       await close();
     }
   });
 
-  it("şablon Meta'da önceden (teslim süresiz) açılmışsa ilk denetimde teslim süresi güncellenir", async () => {
+  it("şablon Meta'da önceden (teslim süresiz) açılmışsa ilk denetimde DÜZENLENMEZ (Meta varsayılanı kalır)", async () => {
     const ctx = await startWa();
     try {
       const res = await ctx.api.post(ENSURE, {});
       assert.equal(res.status, 200, JSON.stringify(res.data));
       assert.equal(creates(ctx.fake).length, 0);
-      assert.deepEqual(edits(ctx.fake).map(item => item.body.message_send_ttl_seconds), [THREE_DAYS, THREE_DAYS]);
-      for (const tpl of program(ctx.fake)) assert.equal(tpl.message_send_ttl_seconds, THREE_DAYS);
+      assert.equal(edits(ctx.fake).length, 0, `düzenleme gitmemeli (geldi ${JSON.stringify(edits(ctx.fake).map(item => item.body))})`);
+      for (const tpl of program(ctx.fake)) assert.equal(tpl[TTL_FIELD], undefined);
     } finally {
       await ctx.close();
     }
   });
 
-  it("Meta teslim süresini reddederse (D0) şablon YİNE açılır (Meta varsayılanı), kartta uyarı çıkar; reddedilen değer her denetimde yinelenmez", async () => {
+  it("Meta 12 saatten uzun teslim süresini reddeden hesapta (gerçek Meta gibi) şablon TEK istekte açılır; kartta teslim süresi uyarısı yok; denetim yinelenince istek yok", async () => {
     const { ctx, fake, close } = await fresh();
     try {
       fake.state.ttlRange = [30, 43_200];
       const res = await ctx.api.post(ENSURE, {});
       assert.equal(res.status, 200, JSON.stringify(res.data));
-      for (const tpl of program(fake)) assert.ok(tpl && tpl.message_send_ttl_seconds === undefined, "şablon teslim süresiz açıldı");
+      assert.equal(creates(fake).length, 2, "her şablon tek açma isteği");
+      for (const tpl of program(fake)) assert.ok(tpl && tpl[TTL_FIELD] === undefined, "şablon teslim süresiz açıldı");
       const items = res.data.data.items;
-      assert.ok(items.every(item => item.warnings.includes("Meta teslim süresini kabul etmedi; Meta 30 güne kadar teslim etmeyi dener.")), JSON.stringify(items.map(item => item.warnings)));
+      assert.ok(items.every(item => !item.warnings.some(text => /teslim süresi/i.test(text))), JSON.stringify(items.map(item => item.warnings)));
       for (const tpl of program(fake)) tpl.status = "APPROVED";
       fake.requests.length = 0;
       assert.equal((await ctx.api.post(ENSURE, {})).status, 200);
-      assert.equal(edits(fake).length + creates(fake).length, 0, "reddedilen değer yeniden gönderilmedi");
+      assert.equal(edits(fake).length + creates(fake).length, 0, "yeniden istek gönderilmedi");
     } finally {
       await close();
     }

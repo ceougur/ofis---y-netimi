@@ -5,8 +5,9 @@
 Programın kodunu GÖRMEDEN, yalnız KARARLAR.md'deki kurallarla (kaynakları: CLAUDE.md "Açık iş" kullanıcı kararları, docs/BANKA-MODULU-PLAN.md,
 KURALLAR-244.md'deki ajan kural metinleri) bir senaryonun (dil "destekofis-cari/1") beklenen sonuçlarını hesaplar.
 
-  python3 -I test/bagimsiz/cari/model.py <senaryo.json> [--mutasyon N] [--legacy | --kural 2.4.5|2.4.6] > beklenen.json
-  (--legacy: 2.4.4 kural seti — anahtarlar açık sunucuda "2.4.5 kararıyla geçersiz" /1 /2 senaryoları; --kural: varsayılan 2.4.6 (KS8–KS10), 2.4.5 karşılaştırma;
+  python3 -I test/bagimsiz/cari/model.py <senaryo.json> [--mutasyon N] [--legacy | --kural 2.4.5|2.4.6|2.4.9] > beklenen.json
+  (--legacy: 2.4.4 kural seti — anahtarlar açık sunucuda "2.4.5 kararıyla geçersiz" /1 /2 senaryoları; --kural: varsayılan 2.4.9 (2.4.6 + C1 hareketli cari silinemez),
+  2.4.6 (KS8–KS10) ve 2.4.5 karşılaştırma;
   --gecersiz-mi: senaryo 2.4.5 kararıyla geçersiz sınıfta mı)
 
 Çıktı: {"ad", "denetimler": {anahtar: {"b": beklenen, "e": etiket, "k": kural}}, "belirsiz": [..]}. Anahtarlar koşucunun (kos.mjs) programdan
@@ -26,9 +27,11 @@ DIL = "destekofis-cari/3"
 # 2.4.6 (madde 0 "kâhin önce", 25.10.2026; kodu görmeyen el — KARARLAR.md §9 "2.4.6 kuralları"): kural seti "2.4.6" (YENİ VARSAYILAN; dil /3 aynı) = 2.4.5 +
 # KS8 iade geri ödemesi (madde 9, DB1), KS9 faturasız Alış İadesi gerçek yol + simetrik geri tahsilat (madde 10), KS10 Nakit Akış Projeksiyonu'nda cari vadeli
 # kalemler (madde 11). "--kural 2.4.5" 2.4.5 beklentilerini bayt bayt verir (karşılaştırma ve "2.4.6 kararıyla değişen beklenti" sınıfı için).
+# 2.4.9 (03.11.2026; kodu görmeyen AYRI el — KARARLAR.md §12 "2.4.9 kuralları"): kural seti "2.4.9" (YENİ VARSAYILAN; dil /3 aynı + ekler) = 2.4.6 + C1 HAREKETLİ CARİ SİLİNEMEZ
+# (KULLANICI KARAR A + İLKE 03.11, S1 A / S2 A / S3 A; BAŞ MİMAR tanımı H1–H14, Y2, değişmez "silinmiş caride para hareketi olmaz"). "--kural 2.4.6" 2.4.6 beklentilerini bayt bayt verir.
 DILLER = ("destekofis-cari/1", "destekofis-cari/2", DIL)
-KURALLAR = ("2.4.4", "2.4.5", "2.4.6")
-VARSAYILAN_KURAL = "2.4.6"
+KURALLAR = ("2.4.4", "2.4.5", "2.4.6", "2.4.9")
+VARSAYILAN_KURAL = "2.4.9"
 BIRINCIL = {"KULLANICI", "PLAN", "GIB", "EDM", "BAŞ MİMAR"}
 # 2.4.5 kararıyla geçersiz (/1 /2): tablo para yoluna bağlı işlem içeren senaryo (kayıt tahsilatı POST, Tablodan Aktar) varsayılan kipte koşulmaz (KARARLAR.md C0).
 GECERSIZ_ISLEM = ("kayit_tahsilat", "aktar")
@@ -191,7 +194,36 @@ MUTASYONLAR = {
     134: "R1 / K1 İADE KAPANIŞI: iadenin kendi geri ödemesi (geri nakit) iadeyi kapatmaz — iade yine asıl faturanın açığından düşer",
     135: "KS9 simetri: tedarikçiden iade bedelinin geri tahsilatı (Tahsilat) alış iadesine bağlanmaz — alış iadesi yine alış faturasını kapatır",
     136: "KS8: Kapatılacak Fatura = iade belgesi olan (bağlı) Ödeme iadeyi kapatmaz (havuza gider)",
+    # 2.4.9 C1 (KARARLAR.md §12; yalnız "2.4.9" kural setinde anlamlı)
+    150: "C1.1: hareketli cari silinebilir (hareket denetimi yok)",
+    151: "C1.4 S1 B: Silinenler'deki kayıt (silinmiş tahsilat / Borç Yaz / evrak / taslak fatura / taksit kartı) hareket sayılır",
+    152: "C1.5 S2 B: tutarı sıfır taksit kartı hareket sayılmaz",
+    153: "C1.1 İLKE: taslak ve iptal fatura hareket sayılmaz (yalnız düzenlenmiş fatura)",
+    154: "C1.1 İLKE: Borç / Alacak Yaz ve Açılış Bakiyesi hareket sayılmaz",
+    155: "C1.6: silinmiş cariye tahsilat yazılır (yazım anında cari denetimi yok) — Kasa'ya girer",
+    156: "C1.7: Silinenler'den geri yüklenen kayıt hareket sayılmaz (geri yüklenen hareketli cari yine silinir)",
+    157: "C1.10 Y2: aktarımın açtığı cari hareketli olsa da Geri Al'da kalkar",
+    158: "C1.10 Y2: Silinenler'deki kayıt aktarımın açtığı cariyi tutmaz (S1 A Y2'ye de uygulanır)",
+    159: "C1.2: silinen hareketsiz cari Silinenler'e gitmez (geri yüklenemez)",
+    160: "C1.9: Pasife Al carinin nakit tahsilat / ödemelerini Kasa'dan düşürür",
+    161: "C1.9: pasif hareketli cari silinebilir",
+    162: "C1.1 H11: ciro alan cari hareketsiz sayılır",
+    163: "C1.1 H4: stok hareketinin cari satırı hareket sayılmaz",
+    164: "C1.12: hareket ada göre aranır (aynı adlı başka carinin hareketi bu cariyi de kilitler)",
+    165: "C1.3: değişiklik geçmişi (ad değişikliği) hareket sayılır",
+    166: "C1.3: kayıt (tablo) tahsilatı kayda bağlı carinin hareketi sayılır",
+    167: "C1.2: hareketsiz cari de silinemez",
+    168: "C1.6: carisi silinmişken Silinenler'den hareket / evrak / fatura geri yüklenir",
+    169: "C1.7: cari geri yüklenince ayrı silinmiş kayıtları da geri gelir",
+    170: "C1.8: taksit kartı geri yüklemesi silinmiş carisini geri getirmez (kart geri yüklenemez — çıkmaz)",
+    171: "C1.11: ürünü silinen stok satırı hareket sayılmaz",
+    172: "C1.1 H11: alınan çek / senet hareket sayılmaz",
+    173: "C1.1: ret Kasa'yı değiştirir — silinemeyen carinin nakit tahsilat / ödemeleri Kasa'dan düşer (müşteri bulgusunun belirtisi)",
+    174: "C1.6: silinmiş cariye Borç / Alacak Yaz, ödeme, fatura, evrak, kart, stok satırı yazılır (yalnız tahsilat denetlenir)",
 }
+# 2.4.9 C1.6: silinmiş cariye yazılamayan para adımları (hedef cari adımın `cari`'si) ve carisi silinmişken yapılamayan Silinenler geri yüklemeleri (hedef kaydın carisi)
+C1_YAZIM = ("tahsilat", "odeme", "borc", "alacak", "fatura", "evrak", "kart_ac", "stok_iade", "alis_iade", "stok_satis_hesap", "supheli_al", "ciro")
+C1_GERI = ("hareket_geri_yukle", "evrak_geri_yukle", "fatura_geri_yukle")
 
 
 def kurus(metin):
@@ -379,7 +411,11 @@ class Model:
         # /3: kural seti — "2.4.6" (varsayılan; 2.4.5 + KS8–KS10), "2.4.5" (karşılaştırma) ya da "2.4.4" (--legacy: geçersiz /1 /2 senaryoları anahtarlar açık
         # sunucuda eski kurallarla). 2.4.5'in bütün kuralları 2.4.6'da sürer (kodda `self.kural != "2.4.4"`); 2.4.6 ekleri `self.k246` ile.
         self.kural = kural
-        self.k246 = kural == "2.4.6"
+        self.k246 = kural in ("2.4.6", "2.4.9")  # 2.4.6 ekleri 2.4.9'da sürer
+        self.k249 = kural == "2.4.9"            # C1 (KARARLAR.md §12)
+        self.c1_izlenen = set()    # 2.4.9: silme denenen / pasife alınan / geri yüklenen / Y2'de kalan cariler (kontrolde var, silinenlerde, silinebilir, pasif)
+        self.fatura_sil_izlenen = set()  # 2.4.9: silinen / geri yüklenen taslak faturalar (kontrolde fatura:<ad>:var)
+        self._ok_etiket = {}       # 2.4.9: kabul edilen adımın durum etiketi (adım id → (etiket, kural)); yoksa PLAN "adım kabul edilir"
         self._artik = {}           # öz denetim izi: tarafın dağıtılmamış havuzu (son hesap)
         self._iz = {}              # 2.4.6 etiket izi (ks8_sinif): bağsız kapatıcı kaynağı sayısı, iadenin kapattığı kalem sayısı (son saf geçiş)
         self._onbellek = {}        # kuyruk hesap önbelleği — her durum değiştiren adımdan önce boşalır (kos); kontrol adımı ve kos sonrası okumalar aynı durumu görür
@@ -1392,12 +1428,221 @@ class Model:
     def cari_sil(self, a):
         if a["cari"] not in self.cariler:
             return ("ret", "YAYGIN")  # (yalnız mutasyonlu dünyada: cari hiç açılmadı)
-        self.cariler[a["cari"]]["silindi"] = True
+        if not self.k249:
+            self.cariler[a["cari"]]["silindi"] = True
+            return "ok"
+        return self.c1_sil(a)
+
+    # ───────────────────────── 2.4.9 C1 — HAREKETLİ CARİ SİLİNEMEZ (KARARLAR.md §12; kaynak: KULLANICI KARAR A + İLKE 03.11, S1 A / S2 A; BAŞ MİMAR H1–H14, Y2, R2, G1, §13)
+    def _c1_tek(self, cari, silinenler):
+        """C1.1 hareket tanımı (H1–H14'ün kâhinde kurulabilenleri): carinin TUTAR TAŞIYAN kayıtları → [(kod, İLKEYLE mi)]. silinenler=False (C1.4 S1 A): yalnız canlı kayıtlar;
+        True (C1.10 Y2 kalıcı silme): Silinenler'dekiler de. Tutar taşımayanlar (C1.3: ad değişikliği, not, kayıt (tablo) tahsilatı) sayılmaz."""
+        m = self.mut
+        sil = silinenler or m == 151
+        out = []
+        tur_kod = {"tahsilat": "H1", "odeme": "H1", "borc": "H2", "alacak": "H2", "acilis": "H3"}
+        for h in self.hareketler.values():  # H1 tahsilat / ödeme (nakit, havale), H2 Borç / Alacak Yaz, H3 Açılış Bakiyesi
+            if h["cari"] != cari or not (h["aktif"] or (sil and h["tur"] != "acilis")):
+                continue
+            if m == 154 and h["tur"] in ("borc", "alacak", "acilis"):
+                continue
+            if m == 156 and h.get("geriYuklendi"):
+                continue
+            out.append((tur_kod[h["tur"]], False))
+        for x in self.kapaticilar.values():  # H4 stok satırı (satış iadesi, stok satışı, alış iadesi); H7 değersiz alacak satırı
+            if x["cari"] != cari or not x["aktif"]:
+                continue
+            if x["tur"] == "degersiz":
+                out.append(("H7", False))
+                continue
+            if m == 163 or (m == 171 and x.get("urunSilindi")):
+                continue
+            out.append(("H4", bool(x.get("urunSilindi"))))  # C1.11: ürünü silinmiş stok satırı — İLKEYLE (BAŞ MİMAR §2 H4)
+        for f in self.faturalar.values():  # H9 fatura — kesilmiş, taslak, iptal, iade faturası
+            if f["cari"] != cari or (f["durum"] == "silindi" and not sil):
+                continue
+            if m == 153 and f["durum"] in ("taslak", "iptal"):
+                continue
+            if m == 156 and f.get("geriYuklendi"):
+                continue
+            out.append(("H9", False))
+        for e in self.evraklar.values():  # H11 çek / senet: alınan evrakın carisi; ciro alan cari
+            if e["cari"] == cari and (e["durum"] != "silindi" or sil) and m != 172 and not (m == 156 and e.get("geriYuklendi")):
+                out.append(("H11", False))
+            if e.get("ciroCari") == cari and e["durum"] == "ciro" and m != 162:
+                out.append(("H11", False))
+        for kt in self.kartlar.values():  # H12 taksit kartı (C1.5 S2 A: tutarı sıfır kart dahil)
+            if kt["cari"] != cari or not (kt["aktif"] or (sil and kt.get("silindi"))):
+                continue
+            if m == 152 and kt["toplam"] == 0:
+                continue
+            if m == 156 and kt.get("geriYuklendi"):
+                continue
+            out.append(("H12", False))
+        for sp in self.supheliler.values():  # H13 şüpheli alacak kaydı
+            if sp["cari"] == cari:
+                out.append(("H13", False))
+        c = self.cariler.get(cari, {})
+        if m == 165 and c.get("adlandirildi"):
+            out.append(("degisiklik", False))
+        if m == 166 and c.get("kayit") is not None and any(o["aktif"] and o["kayit"] == c["kayit"] for o in self.kayitOdeme.values()):
+            out.append(("kayit-tahsilati", False))
+        return out
+
+    def c1_hareketler(self, cari, silinenler=False):
+        """C1.1 + C1.12: hareket CARİYE bağlıdır (kimlik). Mutant 164: ada göre (aynı adlı canlı carilerin hareketleri birlikte)."""
+        if self.mut == 164:
+            isim = self.cariler[cari]["isim"]
+            out = []
+            for ad, c in self.cariler.items():
+                if c["isim"] == isim and (ad == cari or not c.get("silindi")):
+                    out += self._c1_tek(ad, silinenler)
+            return out
+        return self._c1_tek(cari, silinenler)
+
+    def _c1_hedef(self, a):
+        """C1.6: adımın yazdığı ya da geri yüklediği kaydın carisi (yoksa None)."""
+        i = a["islem"]
+        if i in C1_YAZIM:
+            return a.get("cari")
+        kaynak = {"hareket_geri_yukle": (self.hareketler, "hareket"), "evrak_geri_yukle": (self.evraklar, "evrak"), "fatura_geri_yukle": (self.faturalar, "fatura")}.get(i)
+        if kaynak:
+            x = kaynak[0].get(a.get(kaynak[1]))
+            return x["cari"] if x else None
+        return None
+
+    def _c1_kasadan_dus(self, cari):
+        """Mutant 160 / 173: carinin canlı nakit tahsilat / ödemeleri Kasa'dan düşer (yanlış dünya)."""
+        for hn, h in self.hareketler.items():
+            if h["cari"] == cari and h["aktif"] and h["tur"] in ("tahsilat", "odeme") and h["ref"].get("nakit", True):
+                self.kasa += -h["ref"]["tutar"] if h["tur"] == "tahsilat" else h["ref"]["tutar"]
+                self.kasa_hareket = [x for x in self.kasa_hareket if x[3] != hn]
+
+    def c1_sil(self, a):
+        """C1.1 / C1.2 / C1.9: Sil (DELETE /accounts/:id). Hareketli → ret 409 account-has-movements (+ Pasife Al önerisi), hiçbir şey değişmez; hareketsiz → silinir, Silinenler'de."""
+        ad = a["cari"]
+        c = self.cariler[ad]
+        self.c1_izlenen.add(ad)
+        if c.get("silindi"):
+            return ("ret", "YAYGIN", "C1: silinmiş cari yeniden silinemez (cari listede yok)")
+        neden = self.c1_hareketler(ad)
+        engel = bool(neden) and self.mut != 150 and not (self.mut == 161 and c.get("pasif"))
+        if self.mut == 167:
+            engel = True
+        if engel:
+            self.d("adim:%s:http" % a["id"], 409, "BAŞ MİMAR", "C1 (iş listesi): hareketli cari silme isteği 409")
+            self.d("adim:%s:kod" % a["id"], "account-has-movements", "BAŞ MİMAR", "C1 tasarım §5 Y1 (onay §13): ret kodu account-has-movements")
+            if not c.get("pasif"):
+                self.d("adim:%s:pasifeAl" % a["id"], True, "YAYGIN", "C1.1 KARAR A 'program Pasife Al önerir' — öneri ret iletisinde (deleteBlock ile aynı yer; okuma, İNCELE)")
+            if self.mut == 173:
+                self._c1_kasadan_dus(ad)
+            ilkeyle = bool(neden) and all(x[1] for x in neden)
+            return ("ret", "BAŞ MİMAR" if ilkeyle else "KULLANICI",
+                    "C1.1 KARAR A + İLKE: hareketi olan cari silinemez → Pasife Al (hareket: %s)" % ",".join(sorted(set(x[0] for x in neden)) or ["—"]))
+        c["silindi"] = True
+        c["silinenlerde"] = self.mut != 159
+        kayitli = c.get("kayit") is not None and any(o["aktif"] and o["kayit"] == c["kayit"] for o in self.kayitOdeme.values())
+        self._ok_etiket[a["id"]] = ("BAŞ MİMAR" if kayitli else "KULLANICI",
+                                   "C1.2 KARAR A: hiç hareketi olmayan cari silinir (Silinenler'e gider)"
+                                   + (" · C1.3 §2.1 İLKEYLE: kayıt (tablo) tahsilatı cariye bağlı değil" if kayitli else ""))
+        return "ok"
+
+    def cari_geri_yukle(self, a):
+        """C1.7 [KULLANICI KARAR A]: Silinenler → Cari Geri Yükle. Cariden AYRI silinmiş kayıtlar Silinenler'de kalır [BAŞ MİMAR §4 S1 A gerekçesi]; mutant 169: onlar da gelir."""
+        c = self.cariler.get(a["cari"])
+        if not c or not c.get("silindi") or (self.k249 and not c.get("silinenlerde")):
+            return ("ret", "YAYGIN", "C1.7: Silinenler'de bu cari yok")
+        c["silindi"] = False
+        c["silinenlerde"] = False
+        self.c1_izlenen.add(a["cari"])
+        if self.mut == 169:
+            for hn, h in self.hareketler.items():
+                if h["cari"] == a["cari"] and not h["aktif"] and h["tur"] != "acilis":
+                    self.hareket_geri_yukle({"hareket": hn})
+            for e in self.evraklar.values():
+                if e["cari"] == a["cari"] and e["durum"] == "silindi" and "silinmedenOnce" in e:
+                    e["durum"] = e.pop("silinmedenOnce")
+            for f in self.faturalar.values():
+                if f["cari"] == a["cari"] and f["durum"] == "silindi":
+                    f["durum"] = f.pop("silinmedenOnce")
+        self._ok_etiket[a["id"]] = ("KULLANICI", "C1.7 KARAR A: daha önce silinmiş cariler Silinenler'den geri yüklenebilir kalır")
+        return "ok"
+
+    def pasife_al(self, a):
+        """C1.9 [BAŞ MİMAR §5 G1; KARAR A öneri yolu]: Pasife Al — cari pasif; bakiye, Kasa, mizan AYNI (hareket korunur). Mutant 160: nakit hareketler Kasa'dan düşer."""
+        c = self.cariler.get(a["cari"])
+        if not c or c.get("silindi"):
+            return ("ret", "YAYGIN", "C1.9: cari yok")
+        c["pasif"] = True
+        self.c1_izlenen.add(a["cari"])
+        if self.mut == 160:
+            self._c1_kasadan_dus(a["cari"])
+        self._ok_etiket[a["id"]] = ("BAŞ MİMAR", "C1.9 §5 G1: Pasife Al gizler (Pasif), hareket korunur")
+        return "ok"
+
+    def kart_sil(self, a):
+        """C1.4 dil eki: taksit kartını sil (Silinenler'e). Kâhin yalnız tahsilatsız kartı kurar (tahsilatlı kartın Kasa etkisi bu kâhinde yok)."""
+        kt = self.kartlar.get(a["kart"])
+        if not kt or not kt["aktif"]:
+            return ("ret", "YAYGIN", "kart yok")
+        if kt["tasinan"] or kt.get("parca"):
+            raise SystemExit("kart_sil yalnız tahsilatsız kart (senaryo kurmaz): %s" % a["kart"])
+        kt["aktif"] = False
+        kt["silindi"] = True
+        return "ok"
+
+    def kart_geri_yukle(self, a):
+        """C1.8 [BAŞ MİMAR §5 R2 + §4 S1 A gerekçesi]: Silinenler → taksit kartı Geri Yükle; kartın silinmiş carisi de geri gelir. Mutant 170: gelmez, kart geri yüklenemez."""
+        kt = self.kartlar.get(a["kart"])
+        if not kt or not kt.get("silindi"):
+            return ("ret", "YAYGIN", "Silinenler'de bu kart yok")
+        c = self.cariler.get(kt["cari"])
+        cari_geldi = bool(c and c.get("silindi"))
+        if cari_geldi:
+            if self.mut == 170:
+                return ("ret", "BAŞ MİMAR", "mutant 170")
+            c["silindi"] = False
+            c["silinenlerde"] = False
+            self.c1_izlenen.add(kt["cari"])
+        kt["aktif"] = True
+        kt.pop("silindi", None)
+        if self.k249:
+            kt["geriYuklendi"] = True
+        if cari_geldi:
+            self._ok_etiket[a["id"]] = ("BAŞ MİMAR", "C1.8 §5 R2: taksit kartı geri yüklenince silinmiş carisi de geri gelir")
+        return "ok"
+
+    def fatura_sil(self, a):
+        """C1.4 dil eki: TASLAK faturayı sil (Silinenler "Fatura"). Kâhin başka durumdaki faturayı silmez."""
+        f = self.faturalar.get(a["fatura"])
+        if not f or f["durum"] != "taslak":
+            raise SystemExit("fatura_sil yalnız taslak fatura (senaryo kurmaz): %s" % a["fatura"])
+        f["silinmedenOnce"] = f["durum"]
+        f["durum"] = "silindi"
+        self.fatura_sil_izlenen.add(a["fatura"])
+        return "ok"
+
+    def fatura_geri_yukle(self, a):
+        f = self.faturalar.get(a["fatura"])
+        if not f or f["durum"] != "silindi":
+            return ("ret", "YAYGIN", "Silinenler'de bu fatura yok")
+        f["durum"] = f.pop("silinmedenOnce")
+        if self.k249:
+            f["geriYuklendi"] = True
+        return "ok"
+
+    def urun_sil(self, a):
+        """C1.11 dil eki: stok adımlarının mal kartını sil. Carideki stok satırı bakiyede durur ve hareket kalır (BAŞ MİMAR §2 H4 İLKEYLE)."""
+        for x in self.kapaticilar.values():
+            if x["tur"] in ("stok_iade", "alis_iade", "stok_satis"):
+                x["urunSilindi"] = True
         return "ok"
 
     def cari_adlandir(self, a):
         if a["cari"] not in self.cariler:
             return ("ret", "YAYGIN")
+        if self.k249:
+            self.cariler[a["cari"]]["adlandirildi"] = True
         self.cariler[a["cari"]]["isim"] = a["isim"]
         if "tckn" in a:
             self.cariler[a["cari"]]["tckn"] = a["tckn"]
@@ -1481,6 +1726,8 @@ class Model:
         if h is None or h["aktif"]:
             return ("ret", "YAYGIN")
         h["aktif"] = True
+        if self.k249:
+            h["geriYuklendi"] = True
         if self.mut == 104 and h["tur"] in ("borc", "alacak"):
             h["vade"], h["beklenen"] = "", ""
         r = self._hareket_ref(h)
@@ -1648,7 +1895,7 @@ class Model:
     def yedek_al(self, a):
         """/3 K6.4: yerel yedek — o anki bütün durum."""
         import copy
-        self.yedekler[a["ad"]] = copy.deepcopy({k: v for k, v in self.__dict__.items() if k not in ("s", "out", "belirsiz", "yedekler", "mut", "kural", "k246", "v3", "anahtar", "seq", "kullanicilar", "_onbellek", "_artik", "_iz")})
+        self.yedekler[a["ad"]] = copy.deepcopy({k: v for k, v in self.__dict__.items() if k not in ("s", "out", "belirsiz", "yedekler", "mut", "kural", "k246", "v3", "anahtar", "seq", "kullanicilar", "_onbellek", "_artik", "_iz", "k249", "c1_izlenen", "fatura_sil_izlenen", "_ok_etiket")})
         return "ok"
 
     def yedek_geri_yukle(self, a):
@@ -1676,6 +1923,10 @@ class Model:
         """2.4.6 dil eki: Taksitler'den "Carinin Mevcut Borcunu Taksitlendir" kartı (POST /plans {…, coversBalance: true}; test çağrı satırları). Kart yeni borç YAZMAZ (K6.5 /
         v2.0.23: kapsanan borç kartın taksitleriyle bir kez). Taksitler [YAYGIN — "otomatik" bölüm]: eşit tutar (artık kuruş sonda), ilk vadeden ayda bir."""
         n, T = int(a.get("taksit", 1)), kurus(a["tutar"])
+        if T == 0:
+            # 2.4.9 dil eki (C1.5 S2 A): tutarı sıfır kart — "Taksit kurulmadı" (kalemsiz, toplam 0; gövde yalnız toplam, mevcut borç kartı değil)
+            self.kartlar[a["ad"]] = {"cari": a["cari"], "toplam": 0, "mevcut": False, "tasinan": [], "aktar": None, "aktif": True, "items": [], "api": True}
+            return "ok"
         pay = [T // n] * n
         pay[-1] += T - sum(pay)
         items = [(self._ay_ekle(a["ilkVade"], i), pay[i]) for i in range(n)]
@@ -1850,8 +2101,10 @@ class Model:
             return ("ret", "KULLANICI")
         if a["aktar"] not in self.aktarimlar:
             return ("ret", "YAYGIN")  # aktarım hiç olmadı (kapı kapalıydı)
-        for ad in [c for c, v in self.cariler.items() if v.get("ortuk") == a["aktar"]]:
-            self.cariler[ad]["silindi"] = True  # aktarımın açtığı cari geri almayla kalkar [YAYGIN]
+        ortuk = [c for c, v in self.cariler.items() if v.get("ortuk") == a["aktar"]]
+        if not self.k249:
+            for ad in ortuk:
+                self.cariler[ad]["silindi"] = True  # aktarımın açtığı cari geri almayla kalkar [YAYGIN]
         for no in self.aktarimlar[a["aktar"]]["kartlar"]:
             k = self.kartlar[no]
             k["aktif"] = False
@@ -1861,6 +2114,16 @@ class Model:
                     t["aktif"] = False
             if k.get("parca"):
                 self.tahsilatlar["@parca-" + no]["kart"] = None
+        if self.k249:
+            # C1.10 [BAŞ MİMAR §5 Y2 + §13]: aktarımın kendi kartı kalktıktan SONRA, açtığı carinin hareketi (Silinenler'deki dahil) varsa cari KALIR; yoksa kalkar (B1.6)
+            for ad in ortuk:
+                neden = self.c1_hareketler(ad, silinenler=self.mut != 158)
+                if neden and self.mut != 157:
+                    self.cariler[ad]["y2Kaldi"] = sorted(set(x[0] for x in neden))
+                    self.c1_izlenen.add(ad)
+                else:
+                    self.cariler[ad]["silindi"] = True
+                    self.cariler[ad]["y2Kalkti"] = True  # B1.6 kalıcı kalkış (Silinenler'e gitmez — kâhin denetlemez)
         return "ok"
 
     def fatura(self, a):
@@ -2012,8 +2275,12 @@ class Model:
 
     def evrak_geri_yukle(self, a):
         e = self.evraklar[a["evrak"]]
+        if "silinmedenOnce" not in e:
+            return ("ret", "YAYGIN", "Silinenler'de bu evrak yok")  # 2.4.9 senaryolarının 2.4.6 kipi: C1.6 korumasız dünyada evrak zaten geri yüklendi
         e["durum"] = e.pop("silinmedenOnce")
         self.etiketCari[e["cari"]].add("geri-yukle")
+        if self.k249:
+            e["geriYuklendi"] = True
         return "ok"
 
     def bag_degistir(self, a):
@@ -2065,6 +2332,27 @@ class Model:
         if len(t) == 10 and t[2] == "." and t[5] == ".":
             return "%s-%s-%s" % (t[6:], t[3:5], t[:2])
         return t if tarih_mi(t) else None
+
+    def kontrol_c1(self, k):
+        """2.4.9 C1 denetimleri (KARARLAR.md §12): silme denenen / pasife alınan / geri yüklenen carinin listede olup olmadığı, Silinenler'de olup olmadığı, Sil düğmesinin açık olup olmadığı
+        (hareketsiz mi) ve pasifliği; silinen / geri yüklenen taslak faturanın listede olup olmadığı."""
+        for ad in sorted(self.c1_izlenen):
+            c = self.cariler[ad]
+            if c.get("y2Kalkti"):
+                continue  # B1.6 kalıcı kalkış — Silinenler'i kâhin denetlemez (kararda yok); var aşağıda
+            if c.get("silindi"):
+                self.d("%s:cari:%s:var" % (k, ad), False, "KULLANICI", "C1.2 hareketsiz cari silindi — listede yok")
+                self.d("%s:cari:%s:silinenlerde" % (k, ad), bool(c.get("silinenlerde")), "BAŞ MİMAR", "C1.2 §5 Y1: silinen cari Silinenler'de (geri yüklenebilir)")
+                continue
+            neden = self.c1_hareketler(ad)
+            self.d("%s:cari:%s:var" % (k, ad), True, "KULLANICI", "C1.1 / C1.7: cari listede (hareketli cari silinmez; geri yüklenen cari listede)")
+            self.d("%s:cari:%s:silinenlerde" % (k, ad), False, "BAŞ MİMAR", "C1.7: listedeki cari Silinenler'de değil")
+            ilkeyle = bool(neden) and all(x[1] for x in neden)
+            self.d("%s:cari:%s:silinebilir" % (k, ad), not neden, "BAŞ MİMAR" if ilkeyle else "KULLANICI",
+                   "C1.1 / C1.2 KARAR A: Sil düğmesi yalnız hiç hareketi olmayan caride açık (nedeni görünür yazı)" + (" — hareket: %s" % ",".join(sorted(set(x[0] for x in neden))) if neden else ""))
+            self.d("%s:cari:%s:pasif" % (k, ad), bool(c.get("pasif")), "BAŞ MİMAR", "C1.9 §5 G1: Pasife Al")
+        for fad in sorted(self.fatura_sil_izlenen):
+            self.d("%s:fatura:%s:var" % (k, fad), self.faturalar[fad]["durum"] != "silindi", "YAYGIN", "C1.4 dil eki: silinen taslak fatura listede yok, geri yüklenen listede")
 
     def kontrol_v3(self, a, k):
         """/3 madde 6 (K6.1–K6.4 + S1) denetimleri ve fatura/evrak takvim kalemleri."""
@@ -2249,7 +2537,7 @@ class Model:
         satis = [(f, v) for f, v in acik_a.items() if self.faturalar[f]["tur"] == "satis" and v > 0]
         out, kapsam = [], 0
         for no, kt in kartlar:
-            items = kt.get("items") or self.kayitlar[no]["items"]
+            items = kt["items"] if "items" in kt else self.kayitlar[no]["items"]
             odenen = sum(t["tutar"] for t in kt["tasinan"]) + kt.get("parca", 0)
             kalan = odenen
             for i, (tarih, tutar) in enumerate(items):
@@ -2415,9 +2703,16 @@ class Model:
     # ───────────────────────── kontrol
     def kontrol(self, a):
         k = a["id"]
+        if self.k249:
+            self.kontrol_c1(k)
         for ad, c in self.cariler.items():
             if c.get("ortuk"):
-                self.d("%s:cari:%s:var" % (k, ad), not c.get("silindi"), "YAYGIN", "B1.6 aktarımın açtığı cari geri almayla kalkar")
+                if c.get("y2Kaldi") and not c.get("silindi"):
+                    self.d("%s:cari:%s:var" % (k, ad), True, "BAŞ MİMAR", "C1.10 §5 Y2: aktarımın açtığı cari hareketliyse (Silinenler dahil: %s) Geri Al'da kalır" % ",".join(c["y2Kaldi"]))
+                elif c.get("y2Kaldi"):
+                    self.d("%s:cari:%s:var" % (k, ad), False, "KULLANICI", "C1.2: Geri Al'da kalan cari sonra Sil ile silindi (hareketsiz)")
+                else:
+                    self.d("%s:cari:%s:var" % (k, ad), not c.get("silindi"), "YAYGIN", "B1.6 aktarımın açtığı cari geri almayla kalkar")
                 if c.get("silindi"):
                     continue
             elif c.get("silindi"):
@@ -2446,7 +2741,10 @@ class Model:
                     self.d("%s:fatura:%s:durum" % (k, fad), "iptal", "PLAN", "B2.5 iptal")
         for no, kt in self.kartlar.items():
             if not kt["aktif"]:
-                self.d("%s:kart:%s:var" % (k, no), False, "KULLANICI", "B1.6 geri al kartı kaldırır")
+                if kt.get("silindi"):
+                    self.d("%s:kart:%s:var" % (k, no), False, "YAYGIN", "C1.4 dil eki: silinen taksit kartı listede yok (Silinenler'de)")
+                else:
+                    self.d("%s:kart:%s:var" % (k, no), False, "KULLANICI", "B1.6 geri al kartı kaldırır")
                 continue
             bay = self.etiketCari[kt["cari"]]
             et = "AJAN" if "5a-sonraki-kucuk" in bay else "KULLANICI"          # 5a (taşıma) denetimleri
@@ -2459,7 +2757,7 @@ class Model:
             self.d("%s:kart:%s:odenen" % (k, no), odenen, et, "B1.2 taşınan tahsilatlar karta")
             self.d("%s:kart:%s:kalan" % (k, no), kt["toplam"] - odenen, et, "B1.2")
             self.d("%s:kart:%s:mevcutBorc" % (k, no), kt["mevcut"], et_b, "B1.4 mevcut borcu taksitlendir")
-            items = kt.get("items") or self.kayitlar[no]["items"]
+            items = kt["items"] if "items" in kt else self.kayitlar[no]["items"]
             kalan = odenen
             sirali = list(range(len(items)))
             if self.mut == 12:
@@ -2708,7 +3006,13 @@ class Model:
                 continue
             self._onbellek = {}  # durum değişecek — kuyruk önbelleği boşalır
             fn = getattr(self, islem)
-            sonuc = fn(a)
+            hedef = self._c1_hedef(a) if self.k249 else None
+            if hedef and self.cariler.get(hedef, {}).get("silindi") and not (
+                    (self.mut == 155 and islem == "tahsilat") or (self.mut == 168 and islem in C1_GERI) or (self.mut == 174 and islem in C1_YAZIM and islem != "tahsilat")):
+                # C1.6 [BAŞ MİMAR §13 değişmez; §4 S1 A gerekçesi]: silinmiş cariye para hareketi yazılamaz / Silinenler'den geri yüklenemez — hiçbir satır yazılmaz, Kasa aynı
+                sonuc = ("ret", "BAŞ MİMAR", "C1.6 §13: silinmiş caride para hareketi olmaz (yazım ve Silinenler'den geri yükleme reddedilir; 'Önce cariyi geri yükleyin')")
+            else:
+                sonuc = fn(a)
             if (islem == "tablo_yukle" or islem == "cari_ac") and not isinstance(sonuc, tuple):
                 self.d("adim:%s:durum" % a["id"], "ok", "PLAN", "adım kabul edilir")
                 continue
@@ -2721,9 +3025,10 @@ class Model:
                     self.d("adim:%s:%s" % (a["id"], alan), sonuc[alan], cari_et, "B1 aktarım özeti")
                 continue
             if isinstance(sonuc, tuple):
-                self.d("adim:%s:durum" % a["id"], "ret", sonuc[1], "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz")
+                self.d("adim:%s:durum" % a["id"], "ret", sonuc[1], sonuc[2] if len(sonuc) > 2 else "B2.4 bağ kurulamaz → ret, hiçbir satır yazılmaz")
             else:
-                self.d("adim:%s:durum" % a["id"], "ok", "PLAN", "adım kabul edilir")
+                et, kural_metni = self._ok_etiket.pop(a["id"], ("PLAN", "adım kabul edilir"))
+                self.d("adim:%s:durum" % a["id"], "ok", et, kural_metni)
         out = dict(self.out)
         catal = [a for a in self.s["adimlar"] if a.get("catal")]
         if catal:

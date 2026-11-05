@@ -1,0 +1,130 @@
+{
+  "commit": "5a22228aa423ec4b4c85442dccd454f09f02ea67",
+  "kok": "/home/user/ofis---y-netimi",
+  "node": "v22.22.0",
+  "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/gecmis-40",
+  "goc": {
+    "from": 44,
+    "to": 45,
+    "applied": [
+      45
+    ],
+    "toplamMs": 917,
+    "adimlar": [
+      {
+        "ms": 803,
+        "message": "Göç öncesi yedek alındı: destekofis-2026-11-05T09-09-15-907Z-pre-migration-v45.sqlite"
+      },
+      {
+        "ms": 917,
+        "message": "Veritabanı göçü uygulandı: 45 (v2.4.9 WhatsApp: işin dondurulmuş PDF'i ayrı tabloda (para dışı))"
+      }
+    ],
+    "yedek": {
+      "ad": "destekofis-2026-11-05T09-09-15-907Z-pre-migration-v45.sqlite",
+      "mb": 259.8
+    }
+  },
+  "basladi": "2026-11-05T09:09:13.420Z",
+  "statik": {
+    "dosyaMb": 434.2,
+    "surum": 44,
+    "sayfaBoyu": 4096,
+    "sayfa": 111166,
+    "bosListe": 11636,
+    "bosListeMb": 45.5,
+    "wa_jobs": {
+      "sayfa": 44995,
+      "mb": 175.8,
+      "bosMb": 124.8,
+      "yukMb": 49.7
+    },
+    "wa_job_pdfs": null,
+    "tumDosya": {
+      "mb": 388.8,
+      "bosMb": 144,
+      "yukMb": 234.4
+    },
+    "isSatiri": 80126,
+    "satirdaPdf": {
+      "n": 1,
+      "b": 33320
+    },
+    "pdfTablosu": null,
+    "sayimMs": 417,
+    "vacuumInto": {
+      "ms": 1591,
+      "mb": 259.8
+    }
+  },
+  "gocSonrasi": {
+    "dosyaMb": 434.2,
+    "surum": 45,
+    "sayfaBoyu": 4096,
+    "sayfa": 111166,
+    "bosListe": 11633,
+    "bosListeMb": 45.4,
+    "wa_jobs": {
+      "sayfa": 44987,
+      "mb": 175.7,
+      "bosMb": 124.8,
+      "yukMb": 49.7
+    },
+    "wa_job_pdfs": {
+      "sayfa": 9,
+      "mb": 0,
+      "bosMb": 0,
+      "yukMb": 0
+    },
+    "tumDosya": {
+      "mb": 388.8,
+      "bosMb": 144,
+      "yukMb": 234.4
+    },
+    "isSatiri": 80126,
+    "satirdaPdf": {
+      "n": 0,
+      "b": 0
+    },
+    "pdfTablosu": {
+      "n": 1,
+      "b": 33320
+    }
+  },
+  "acilis": {
+    "ms": 9726,
+    "olayDongusuEnCokMs": 9756,
+    "surum": 45
+  },
+  "bakim": [
+    {
+      "ms": 150,
+      "olayDongusuEnCokMs": 13.3
+    },
+    {
+      "ms": 126,
+      "olayDongusuEnCokMs": 11.3
+    },
+    {
+      "ms": 105,
+      "olayDongusuEnCokMs": 11
+    },
+    {
+      "ms": 106,
+      "olayDongusuEnCokMs": 11.5
+    },
+    {
+      "ms": 127,
+      "olayDongusuEnCokMs": 14.8
+    }
+  ],
+  "acilisSonrasiDosyalar": {
+    "destekofis.sqlite": 434.2,
+    "e-belge-kullanim.sqlite": 0,
+    "sirketler/002/destekofis.sqlite": 23.2,
+    "sirketler/002/destekofis.sqlite-shm": 0,
+    "sirketler/002/destekofis.sqlite-wal": 0.1,
+    "whatsapp-gonderim.sqlite": 104.7
+  },
+  "bitti": "2026-11-05T09:09:30.572Z"
+}

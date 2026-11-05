@@ -1,0 +1,183 @@
+From 40af1550e4f2883b132aacecc7f4fc8c312541c8 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 4 Nov 2026 00:33:53 +0000
+Subject: [PATCH 2/3] =?UTF-8?q?2.4.9=20UI=20tur=20B=20(ORTA-3):=20Bildirim?=
+ =?UTF-8?q?=20Yolu=20kaydedilemezken=20Ba=C4=9Flant=C4=B1y=C4=B1=20S=C4=B1?=
+ =?UTF-8?q?na=20/=20Kaydet=20ve=20S=C4=B1na=20UYARI=20verir;=20neden=20d?=
+ =?UTF-8?q?=C3=BC=C4=9Fmelerin=20alt=C4=B1nda=20T=C3=BCrk=C3=A7e,=20Meta?=
+ =?UTF-8?q?=20iletisi=20ayr=C4=B1=20(D8:=20App=20ID=20yard=C4=B1m=C4=B1)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- meta-graph.mjs: splitMetaErrorMessage — MetaGraphError iletisinin tersi (Türkçe neden, kod, Meta'nın ham iletisi); işaret kurucuyla ortak (ileti aynen).
+- connection.mjs hookView: kaydedilemeyen Bildirim Yolunda cause / metaCode / metaMessage + at; defterdeki kayıt (error) değişmez. Gönderim/kuyruk/sayım dokunulmadı.
+- hof-whatsapp-ayar.js: hücrede yalnız "Kaydedilemedi · <tarih>"; düğmelerin altında "Bildirim Yolu kaydedilemedi — <neden> …" (data-wa-hook-why) ve
+  "Meta iletisi: …" (data-wa-hook-meta); bildirim "Bağlantı çalışıyor; ancak Bildirim Yolu kaydedilemedi — nedeni aşağıda." (warn; Kaydet ve Sına'da
+  başında "Kaydedildi."). Bildirim Yolu sorunsuzsa yeşil bildirim aynen. App ID yardımı: "İsteğe bağlı; Ekstre şablonunu Meta'da açmak için gerekir
+  (…)" — kural koddan: örnek PDF /<App ID>/uploads ile yalnız Ekstre şablonu açılırken (templates.mjs); gönderim /<PNID>/media, App ID istemez.
+- hof-ui.css: .hof-toast-warn altın kenar (önce bilgiyle aynı görünüyordu); admin.css: Meta iletisi satırı küçük, uzun sözcük taşmaz.
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YPtTa36rhoDHXGQsPrhcJ8
+---
+ client/assets/admin.css            |  2 ++
+ client/assets/hof-ui.css           |  5 +++++
+ client/assets/hof-whatsapp-ayar.js | 23 +++++++++++++++++++----
+ server/lib/whatsapp/connection.mjs | 12 ++++++++++--
+ server/lib/whatsapp/meta-graph.mjs | 17 ++++++++++++++++-
+ 5 files changed, 52 insertions(+), 7 deletions(-)
+
+diff --git a/client/assets/admin.css b/client/assets/admin.css
+index 3a289350..68238067 100644
+--- a/client/assets/admin.css
++++ b/client/assets/admin.css
+@@ -1021,6 +1021,8 @@ td.adm-row-actions > .hof-button + .hof-button {
+ .adm-wa-status.is-off .adm-license-badge { background: var(--do-surface-soft); color: var(--do-muted); }
+ .adm-wa-status .adm-inline { margin-top: 16px; flex-wrap: wrap; }
+ .adm-wa-why { margin: 8px 0 0; color: var(--hof-muted, #5f6b76); font-size: 13px; }
++/* 2.4.9 UI tur B (ORTA-3): Meta'nın ham iletisi (İngilizce, uzun) neden satırının altında küçük; uzun sözcük satırı taşırmaz. */
++.adm-wa-why.adm-wa-meta { margin-top: 4px; font-size: 12px; overflow-wrap: anywhere; }
+ 
+ /* 2.4.8 W5: Yönetim → WhatsApp → Bilgilendirme Şablonları (hof-whatsapp-sablon.js). */
+ .adm-wa-templates { margin-top: 16px; }
+diff --git a/client/assets/hof-ui.css b/client/assets/hof-ui.css
+index 1270ce4f..6ed795fe 100644
+--- a/client/assets/hof-ui.css
++++ b/client/assets/hof-ui.css
+@@ -494,6 +494,11 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
+ .hof-toast-error {
+   border-left-color: var(--do-danger);
+ }
++/* 2.4.9 UI tur B (ORTA-3): uyarı bildirimi (iş yapıldı ama bir parçası eksik) yeşil ya da kırmızı değil, altın kenarlı. */
++.hof-toast-warn,
++.hof-toast-warning {
++  border-left-color: var(--do-gold);
++}
+ .hof-toast-text {
+   flex: 1;
+ }
+diff --git a/client/assets/hof-whatsapp-ayar.js b/client/assets/hof-whatsapp-ayar.js
+index 183751f3..03e99300 100644
+--- a/client/assets/hof-whatsapp-ayar.js
++++ b/client/assets/hof-whatsapp-ayar.js
+@@ -26,10 +26,23 @@
+     if (!hook) return "Kayıtlı Değil · ofisin uzaktan bağlantısı açılınca kendiliğinden kaydedilir";
+     if (hook.state === "active") return `Çalışıyor${hook.registeredAt ? ` · ${when(hook.registeredAt)} tarihinde kaydedildi` : ""}`;
+     if (hook.state === "pending") return "Kaydediliyor · Meta'nın yanıtı bekleniyor";
+-    if (hook.state === "failed") return `Kaydedilemedi${hook.error ? ` · ${hook.error}` : ""} (program saatte bir yeniden dener)`;
++    // 2.4.9 UI tur B (ORTA-3): hücrede yalnız durum + an; neden düğmelerin altında ayrı satırda (hookFailure).
++    if (hook.state === "failed") return `Kaydedilemedi${hook.at ? ` · ${when(hook.at)}` : ""}`;
+     if (hook.state === "conflict") return "Çakışma · Meta'daki adres bu bilgisayarınkinden farklı";
+     return hook.state || "Bilinmiyor";
+   };
++  // 2.4.9 UI tur B (ORTA-3, UI/UX gezintisi 04.11): Bildirim Yolu kaydedilemediyse neden Türkçe satırda (sunucu Meta'nın iletisini ayırır — lib/whatsapp/connection.mjs
++  // hookView); Meta'nın ham iletisi (İngilizce) varsa ayrı, küçük satırda. Önce hata yalnız dar hücrede, İngilizce ileti ve iç içe parantezle görünüyordu.
++  const HOOK_FAILED_TAIL = "Kaydedilene dek teslim ve okundu bilgisi bu bilgisayara gelmez; program saatte bir kendiliğinden yeniden dener.";
++  const hookFailure = hook => {
++    const raw = String(hook.cause ?? hook.error ?? "").trim();
++    const cause = raw && !/[.!?]$/.test(raw) ? `${raw}.` : raw;
++    const meta = String(hook.metaMessage || "").trim();
++    const code = hook.metaCode != null && !meta.includes(`#${hook.metaCode}`) ? ` (hata kodu ${hook.metaCode})` : "";
++    const why = `<p class="adm-wa-why" data-wa-hook-why>${esc(`Bildirim Yolu kaydedilemedi${cause ? ` — ${cause}` : "."} ${HOOK_FAILED_TAIL}`)}</p>`;
++    return meta ? `${why}<p class="adm-wa-why adm-wa-meta" data-wa-hook-meta>${esc(`Meta iletisi: ${meta}${code}`)}</p>` : why;
++  };
++  const HOOK_WARNING = "Bağlantı çalışıyor; ancak Bildirim Yolu kaydedilemedi — nedeni aşağıda.";
+   // 2.4.8 W7: WhatsApp'ı Bağla yalnız programın YEREL / ÖZEL AĞ adresinden (bağlama penceresi sırrı yalnız böyle kökenden kabul eder). Kural
+   // server/lib/whatsapp/embedded.mjs isLocalOrigin ve bulut/kapi/wa-bagla.mjs yerelKoken ile AYNI (test/whatsapp-w7-tasinma-248.test.mjs karşılaştırır).
+   // <yerel-koken>
+@@ -116,7 +129,7 @@
+         <button type="button" class="hof-button hof-button-danger" data-wa-action="remove" ${editBlock ? "disabled" : ""}>Bağlantıyı Kaldır</button>
+       </div>
+       ${metaBlock ? `<p class="adm-wa-why" data-wa-why>${esc(metaBlock)}</p>` : ""}${data.mode === "embedded" ? embeddedWhy : ""}
+-      ${data.hook?.state === "conflict" ? `<p class="adm-wa-why" data-wa-hook-why>${esc(HOOK_CONFLICT)}</p>` : ""}`;
++      ${data.hook?.state === "conflict" ? `<p class="adm-wa-why" data-wa-hook-why>${esc(HOOK_CONFLICT)}</p>` : ""}${data.hook?.state === "failed" ? hookFailure(data.hook) : ""}`;
+   }
+ 
+   async function load() {
+@@ -188,7 +201,9 @@
+       view = await HOF.api(`${API}/test`, { method: "POST", body: {} });
+       // 2.4.8 W5: bağlantı kaydedilip sınanınca program iki bilgilendirme şablonunu (yoksa) Meta'da kendisi açar; sonuç Şablonlar kartında.
+       if (afterSave) await HOF.whatsappTemplates?.ensure({ quiet: true });
+-      HOF.toast(afterSave ? "Kaydedildi; bağlantı çalışıyor." : "Bağlantı çalışıyor.", { type: "success" });
++      // 2.4.9 UI tur B (ORTA-3): sınama başarılı ama Bildirim Yolu kaydedilemediyse yeşil "çalışıyor" değil UYARI; neden kartta düğmelerin altında.
++      if (view?.hook?.state === "failed") HOF.toast(afterSave ? `Kaydedildi. ${HOOK_WARNING}` : HOOK_WARNING, { type: "warn" });
++      else HOF.toast(afterSave ? "Kaydedildi; bağlantı çalışıyor." : "Bağlantı çalışıyor.", { type: "success" });
+     } catch (error) {
+       HOF.toastError(error);
+       await load();
+@@ -206,7 +221,7 @@
+       fields: [
+         { name: "phoneNumberId", label: "Telefon Numarası Kimliği (Phone Number ID)", required: true, value: data.phoneNumberId || "", inputmode: "numeric", autofocus: true },
+         { name: "wabaId", label: "WhatsApp Business Hesap Kimliği (WABA ID)", required: true, value: data.wabaId || "", inputmode: "numeric" },
+-        { name: "appId", label: "Uygulama Kimliği (App ID)", value: data.appId || "", inputmode: "numeric", help: "İsteğe bağlı; Meta uygulama panelinin üst kısmındaki App ID." },
++        { name: "appId", label: "Uygulama Kimliği (App ID)", value: data.appId || "", inputmode: "numeric", help: "İsteğe bağlı; Ekstre şablonunu Meta'da açmak için gerekir (Meta uygulama panelinin üst kısmındaki App ID)." },
+         { name: "token", label: "Kalıcı Erişim Belirteci (System User)", type: "password", required: !data.hasToken, autocomplete: "new-password", help: data.hasToken ? "Kayıtlı belirteç korunur; değiştirmek için yenisini yapıştırın." : "Meta İşletme Ayarları'nda (Business Settings) System Users → Generate token; izinler: business_management, whatsapp_business_management, whatsapp_business_messaging." },
+       ],
+       submitLabel: "Kaydet ve Sına",
+diff --git a/server/lib/whatsapp/connection.mjs b/server/lib/whatsapp/connection.mjs
+index 2bd5d71a..8a69eae3 100644
+--- a/server/lib/whatsapp/connection.mjs
++++ b/server/lib/whatsapp/connection.mjs
+@@ -11,7 +11,7 @@
+ import { createHash, randomBytes, randomInt } from "node:crypto";
+ import { HttpError } from "../http.mjs";
+ import { createSecretBox } from "../secret-box.mjs";
+-import { META_D0, META_D0_W7, MetaGraphError, createMetaGraph, qualityLabel, tierInfo } from "./meta-graph.mjs";
++import { META_D0, META_D0_W7, MetaGraphError, createMetaGraph, qualityLabel, splitMetaErrorMessage, tierInfo } from "./meta-graph.mjs";
+ 
+ export const SETTING_KEY = "whatsapp.meta";
+ // Deneme gönderiminden sonra aynı şirketten yeni deneme için bekleme (çift tık / iki sekme iki ileti göndermesin).
+@@ -393,9 +393,17 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
+     const at = ms(value);
+     return Number.isFinite(at) && now().getTime() >= at && now().getTime() - at < span;
+   };
++  // 2.4.9 UI tur B (ORTA-3): kaydedilemeyen Bildirim Yolunda kart nedeni Türkçe (cause) ve Meta'nın ham iletisini (metaMessage, metaCode) AYRI alır; at: son olayın
++  // (kaydedilemediği) anı. Defterdeki kayıt (error) değişmez — eski kurulumun kaydı da aynı biçimde ayrılır.
+   function hookView(wabaId) {
+     const hook = hooks && wabaId ? hooks.hookOf(wabaId) : null;
+-    return hook ? { hook: { state: hook.state, registeredAt: hook.registeredAt || null, error: hook.error || "" } } : {};
++    if (!hook) return {};
++    const view = { state: hook.state, at: hook.at || null, registeredAt: hook.registeredAt || null, error: hook.error || "" };
++    if (hook.state === "failed") {
++      const split = splitMetaErrorMessage(hook.error);
++      Object.assign(view, { cause: split.cause, metaCode: split.code, metaMessage: split.details });
++    }
++    return { hook: view };
+   }
+   const hookEvent = row => {
+     try {
+diff --git a/server/lib/whatsapp/meta-graph.mjs b/server/lib/whatsapp/meta-graph.mjs
+index f7026b0d..74b9a810 100644
+--- a/server/lib/whatsapp/meta-graph.mjs
++++ b/server/lib/whatsapp/meta-graph.mjs
+@@ -196,10 +196,25 @@ export function redact(value, secret) {
+   return text.replace(/Bearer\s+[\x21-\x7e]+/gi, "Bearer ***");
+ }
+ 
++// İleti biçimi: "<Türkçe başlık> (Meta hata kodu <kod>[: <Meta'nın iletisi>])" — kurucu yazar, splitMetaErrorMessage geri ayırır (ikisi bu işareti paylaşır).
++const META_CODE_MARK = " (Meta hata kodu ";
++/**
++ * MetaGraphError iletisinin tersi (2.4.9 UI tur B, ORTA-3): Türkçe neden (cause), Meta hata kodu ve Meta'nın ham iletisi (details) ayrı — ekranda neden Türkçe satırda,
++ * Meta'nın İngilizce iletisi ayrı küçük satırda gösterilir. Kalıba uymayan metin (kodsuz ağ hatası, düz Türkçe kayıt) olduğu gibi nedendir; defterin 500 karakter
++ * sınırında kesilmiş kayıtta (kapanış parantezi yok) ayrıntı kesildiği yere dek alınır.
++ */
++export function splitMetaErrorMessage(text) {
++  const value = String(text ?? "");
++  const at = value.indexOf(META_CODE_MARK);
++  const match = at > 0 ? /^(\d+)(?::\s?([\s\S]*?))?\)?$/.exec(value.slice(at + META_CODE_MARK.length)) : null;
++  if (!match) return { cause: value, code: null, details: "" };
++  return { cause: value.slice(0, at), code: Number(match[1]), details: (match[2] || "").trim() };
++}
++
+ export class MetaGraphError extends Error {
+   constructor({ code = null, subcode = null, httpStatus = 0, title = "", details = "", fbtraceId = "", retry = "unknown", kind = "unknown", reason = "" } = {}) {
+     const known = title || (code != null ? `Meta işlemi reddetti.` : "Meta'ya ulaşılamadı.");
+-    const tail = code != null ? ` (Meta hata kodu ${code}${details ? `: ${details}` : ""})` : details ? ` (${details})` : "";
++    const tail = code != null ? `${META_CODE_MARK}${code}${details ? `: ${details}` : ""})` : details ? ` (${details})` : "";
+     super(`${known}${tail}`);
+     this.name = "MetaGraphError";
+     this.code = code;
+-- 
+2.43.0
+

@@ -1,0 +1,78 @@
+{
+  "ad": "db-tx/eski-148cd531-kirmizi-UTC",
+  "komut": "node --test --disable-warning=ExperimentalWarning test/db-tx-commit-hata-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T22:38:41.168Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 0,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX) › (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı",
+      "konum": "test/db-tx-commit-hata-249.test.mjs:150:3",
+      "hata": "a1 COMMIT: asıl hata yerine \"no such savepoint: sp_0\" · a1: deyimler [\"BEGIN IMMEDIATE\",\"COMMIT\",\"ROLLBACK TO sp_0; RELEASE sp_0\"] (açık kalan işlem bir kez ROLLBACK edilmeli) · a1: yarım yazım kaldı (beklenen , gelen )"
+    },
+    {
+      "ad": "store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX) › (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı",
+      "konum": "test/db-tx-commit-hata-249.test.mjs:172:3",
+      "hata": "a2 enjekte COMMIT: asıl hata yerine \"no such savepoint: sp_0\" · a2: deyimler [\"BEGIN IMMEDIATE\",\"COMMIT\",\"ROLLBACK TO sp_0; RELEASE sp_0\"] (işlem kapalıyken ROLLBACK denenmemeli) · a2: rolledBack [] (beklenen , gelen )"
+    },
+    {
+      "ad": "store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX) › (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır",
+      "konum": "test/db-tx-commit-hata-249.test.mjs:218:3",
+      "hata": "a3: asıl hata yerine \"cannot rollback - no transaction is active\" · a3: deyimler [\"BEGIN IMMEDIATE\",\"ROLLBACK\"] (işlem kapalıyken ROLLBACK denenmemeli) · a3: rolledBack [] (beklenen , gelen )"
+    },
+    {
+      "ad": "store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX) › (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0",
+      "konum": "test/db-tx-commit-hata-249.test.mjs:240:3",
+      "hata": "a4: asıl hata yerine \"no such savepoint: sp_0\" · a4: deyimler [\"BEGIN IMMEDIATE\",\"COMMIT\",\"ROLLBACK TO sp_0; RELEASE sp_0\"] · a4: sonraki iç içe işlem düştü: \"near \"-\": syntax error\" (deyimler [\"SAVEPOINT sp_-1\"]) (beklenen , gelen )"
+    },
+    {
+      "ad": "store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX) › (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür",
+      "konum": "test/db-tx-commit-hata-249.test.mjs:267:3",
+      "hata": "a5: asıl hata yerine \"geri alma düştü\" · a5: bağlantıda işlem açıkken store.inTransaction = false (önbellekler kesinleşmemiş veriyi saklar) · + actual - expected (beklenen , gelen )"
+    },
+    {
+      "ad": "store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX) › (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur",
+      "konum": "test/db-tx-commit-hata-249.test.mjs:287:3",
+      "hata": "b1: dış işlem düştü: \"no such savepoint: sp_0\" · b1: deyimler [\"BEGIN IMMEDIATE\",\"SAVEPOINT sp_1\",\"RELEASE sp_1\",\"ROLLBACK\",\"RELEASE sp_0\",\"ROLLBACK TO sp_0; RELEASE sp_0\"] · b1: dış işlemin yazımları eksik (beklenen , gelen )"
+    },
+    {
+      "ad": "store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX) › (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez",
+      "konum": "test/db-tx-commit-hata-249.test.mjs:311:3",
+      "hata": "b2: asıl hata yerine \"cannot rollback - no transaction is active\" · b2: deyimler [\"BEGIN IMMEDIATE\",\"SAVEPOINT sp_1\",\"ROLLBACK TO sp_1; RELEASE sp_1\",\"ROLLBACK\"] (işlem kapalıyken geri alma denenmemeli) · b2: rolledBack [] (beklenen , gelen )"
+    },
+    {
+      "ad": "store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX) › (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz",
+      "konum": "test/db-tx-commit-hata-249.test.mjs:333:3",
+      "hata": "b3: asıl hata yerine \"no such savepoint: sp_0\" · b3: deyimler [\"BEGIN IMMEDIATE\",\"SAVEPOINT sp_1\",\"RELEASE sp_1\",\"COMMIT\",\"ROLLBACK TO sp_0; RELEASE sp_0\"] · b3: yarım yazım kaldı (beklenen , gelen )"
+    },
+    {
+      "ad": "store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX) › (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)",
+      "konum": "test/db-tx-commit-hata-249.test.mjs:354:3",
+      "hata": "FK: günlükte asıl hata yok: [\"API hatası POST /api/workspace/accounts: no such savepoint: sp_0\"] · FK: düşen cari yarım yazıldı · FK: sonraki cari 500 (API hatası POST /api/workspace/accounts: near \"-\": syntax error) (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ac9309ccb308a3754/docs/kanit/2026-11-03/db-tx/eski-148cd531-kirmizi-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/dbtx2-7f3a91c4/eski-148cd531",
+  "ham_cikti_sha256": "05e326e7c00815b4872aa5e5813bba5061d1a50fc549e3c9bad470e51f7f4418",
+  "ham_cikti_bayt": 28479
+}

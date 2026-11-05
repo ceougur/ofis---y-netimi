@@ -25,6 +25,7 @@ import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { ANONYMOUS_TCKN, RETAIL_NAME, classifyTaxId, isRetailName, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
+import { accountMovements, movementBlockText } from "../lib/account-movements.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -130,11 +131,22 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
        FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? ORDER BY e.date, e.created_at, e.rowid`,
       accountId,
     );
+  // 2.4.9 P1-b (kullanıcı kararı 03.11.2026): müşteride "Kredi Kartına İade" yalnız bu cariye kredi kartıyla yapılmış, silinmemiş bir Ödeme varken (ekrandaki
+  // kutu cari ayrıntısının hasCardPayment bayrağıyla, POST aynı denetimle). Kartla ödeme = çıkış + kart yolu + bağı bir Kredi Kartı hesabı (POS iadesi POS'a
+  // bağlıdır; hesapsız kart satırı fatura / stok POS iadesinden ayırt edilemez, sayılmaz). Tek sorgu (idx_account_entries_account), öğe başına okuma yok.
+  const hasCardPaymentOf = accountId => {
+    try {
+      return Boolean(store.get("SELECT 1 AS found FROM account_entries e JOIN bank_accounts b ON b.id = e.fin_ref AND b.kind = 'card' WHERE e.account_id = ? AND e.kind = 'out' AND e.method = 'card' LIMIT 1", accountId));
+    } catch {
+      return false; // banka tabloları yoksa (göç öncesi veri)
+    }
+  };
 
   // Cari kartındaki taksit kartı özeti (detail ve waFacts AYNI eşlemeyle; İş Z 2.4.8).
   const planSummaryOf = plan => ({ id: plan.id, name: plan.name, refNo: plan.refNo, status: plan.status, state: plan.state, totals: plan.totals, next: plan.next, itemCount: plan.itemCount, registeredOn: plan.registeredOn, total: plan.total, coversBalance: Boolean(plan.coversBalance) });
 
-  // withRemaining (2.4.5 madde 6): false → borç kayıtlarının Kalan'ı hesaplanmaz (fatura kapaması yalnız defteri ister; aynı kapama iki kez koşmasın).
+  // withRemaining (2.4.5 madde 6): false → borç kayıtlarının Kalan'ı hesaplanmaz (fatura kapaması yalnız defteri ister; aynı kapama iki kez koşmasın);
+  // geri ödenecek iadeler ve silme engeli (2.4.9 C1 TUR 1) de okunmaz.
   function detail(id, user, { withRemaining = true } = {}) {
     const account = accountRow(id);
     const manage = canUser(user, "accounts.manage");
@@ -174,11 +186,15 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       side: balanceSide(ledger.totals.balance),
       canManage: manage,
       canCollect: canUser(user, "accounts.collect"),
+      // 2.4.9 P1-b: bu cariye kredi kartıyla yapılmış Ödeme var mı (müşteride Tahsilat formunun "Kredi Kartına İade" kutusu bununla görünür).
+      hasCardPayment: hasCardPaymentOf(account.id),
       // 2.3.0 İz 1 (plan §3.11b/5 "cari kartında Şüpheli Alacak bilgisi"): açık şüpheli, karşılık, tahsil edilen, değersiz yazılan (kuruş).
       doubtful: doubtfulSummary,
       canDoubtful: manage && canUser(user, "accounts.doubtful"),
       // 2.4.3 (keşif A5): silinemeyen caride Sil pasif, nedeni kartta yazılı (silme ucuyla aynı denetim).
-      deleteBlock: manage ? deleteBlock(account)?.message || "" : "",
+      // 2.4.9 C1 TUR 1 (dar kontrol ORTA-1, ders 47): fatura kapamasının defter okuması (withRemaining: false; cari başına, fatura listesinde) silme
+      // engelini — hareket sayacını — hesaplamaz; yalnız kart görünümünde (refundables ile aynı kural).
+      deleteBlock: manage && withRemaining ? deleteBlock(account)?.message || "" : "",
       // 2.4.5 madde 6: Açılış Bakiyesi satırı (Düzenle formundaki açılış Vade Tarihi / Beklenen Ödeme Tarihi; PUT openingDueDate / openingExpectedDate).
       openingEntryId: openingEntryOf(account.id)?.id || "",
       // 2.4.6 madde 9 (DB1): Ödeme / Tahsilat formunun "Geri Ödenen İade" seçenekleri (geri ödenmemiş kalanı olan iadeler; yalnız kart görünümünde —
@@ -642,17 +658,17 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     if (money || followed) changed(user, { kind: "plans" });
     ok(res, result);
   });
-  router.delete("/api/workspace/accounts/:id", async ({ req, res, params, url }) => {
+  router.delete("/api/workspace/accounts/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.manage");
     const account = accountRow(params.id);
-    // 2.4.3 (keşif A5): silme engelleri tek yerde (deleteBlock) — cari kartı Sil düğmesini aynı nedenle pasif gösterir.
-    const block = deleteBlock(account);
-    if (block) throw new HttpError(block.status || 409, block.message, block.extra);
-    // Silinen carinin tahsilat/ödemeleri Kasa'dan ve bankadan düşer: eksi bakiye denetimi (Uyar/Engelle) toplam etkiyle sorar.
-    cash?.guardRemove?.(store.all("SELECT kind, amount, method, date FROM account_entries WHERE account_id = ? AND kind IN ('in', 'out') AND source = ''", account.id), url.searchParams.get("cashForce") === "1", "Bu cari silinince tahsilat ve ödemeleriyle birlikte");
     store.tx(() => {
-      // Yumuşak silme: hareketleri yerinde durur (Kasa'dan düşer); yönetim panelindeki Silinenler'den geri gelir.
-      store.run("UPDATE accounts SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), account.id);
+      // 2.4.3 (keşif A5): silme engelleri tek yerde (deleteBlock) — cari kartı Sil düğmesini aynı nedenle pasif gösterir.
+      // 2.4.9 C1: hareketi olan cari silinmez (409 account-has-movements); denetim yazımla AYNI işlemde.
+      const block = deleteBlock(account);
+      if (block) throw new HttpError(block.status || 409, block.message, block.extra);
+      // Yumuşak silme yalnız hareketsiz caride: Kasa, banka ve defter değişmez (eski "Kasa'dan düşer" sorusu — cash.guardRemove — gereksiz; ?cashForce=1
+      // yok sayılır). Yönetim panelindeki Silinenler'den geri gelir.
+      store.run("UPDATE accounts SET deleted_by = ?, deleted_at = ? WHERE id = ? AND deleted_at IS NULL", user.id, now(), account.id);
       audit(user, "account.deleted", account.id, { name: account.name });
     });
     touched(user, account);
@@ -679,34 +695,24 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   }
   /**
    * 2.4.3 (keşif A5): cari silinemiyorsa nedeni ({ message, extra }), silinebiliyorsa null. Silme ucu bununla 409 verir; cari kartı (detail)
-   * aynı nedeni deleteBlock olarak taşır, Sil düğmesi pasif ve nedeni görünür yazılır (fatura kartındaki kural). Sıra eski denetim sırasıdır.
+   * aynı nedeni deleteBlock olarak taşır, Sil düğmesi pasif ve nedeni görünür yazılır (fatura kartındaki kural).
+   * 2.4.9 C1 (KARAR 03.11.2026 ~11:45 A + İLKE ~11:50; S1–S3 A): HAREKETİ OLAN CARİ SİLİNMEZ. Tek tanım lib/account-movements.mjs (tahsilat/ödeme, Borç/Alacak
+   * Yaz, açılış, stok satırı, fatura — taslak/iptal dahil —, mahsup, taksit kartı, çek/senet, şüpheli alacak, banka fişi); tek kod account-has-movements
+   * (BAŞ MİMAR YORUMU Y1: silmedeki eski account-has-invoices / account-bank-linked / account-doubtful-open / period-locked kalktı). İleti Pasife Al önerir;
+   * eski "önce kartları / stok hareketlerini silin" yönlendirmesi yok (gerçek işlem cariyi silmek için silinmez).
    */
   function deleteBlock(account) {
-    const planCount = plans()?.countForAccount ? plans().countForAccount(account.id) : 0;
-    if (planCount) return { message: `Bu carinin ${planCount} taksit kartı var. Önce kartları silin ya da başka cariye taşıyın; kapatılan kartlar da sayılır.` };
-    const stockLinked = store.get(
-      "SELECT COUNT(*) AS n FROM account_entries e JOIN stock_moves m ON m.id = e.source_id JOIN stock_items i ON i.id = m.item_id WHERE e.account_id = ? AND e.source = 'stock' AND i.deleted_at IS NULL",
-      account.id,
-    ).n;
-    if (stockLinked) return { message: `Bu cariye yazılmış ${stockLinked} stok hareketi var. Önce stok hareketlerini düzeltin.` };
-    const chequeLinked = cheques()?.countForAccount ? cheques().countForAccount(account.id) : 0;
-    if (chequeLinked) return { message: `Bu cariye bağlı ${chequeLinked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka cariye taşıyın.` };
-    // v2.0.15: faturası olan cari silinmez (fatura yasal belgedir; Logo/Netsis'teki gibi hareketli cari silinemez).
-    const invoiceCount = store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name = 'invoices'").n ? store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status = 'issued'", account.id).n : 0;
-    if (invoiceCount) return { message: `Bu carinin ${invoiceCount} faturası var; faturası olan cari silinemez. Cariyi pasife alın.`, extra: { code: "account-has-invoices" } };
-    // v2.1.0 Aşama 5 (plan §3.8 "Cari kartı"): banka hesabına bağlı hareketi olan cari silinmez (silinirse hareket banka hesabından düşer,
-    // banka bakiyesi bankadakinden ayrılırdı). Pasife Al önerilir.
-    const bankLinked = store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ? AND fin_ref <> ''", account.id).n;
-    if (bankLinked) return { message: `Bu carinin banka hesabına bağlı ${bankLinked} hareketi var; cari silinirse banka hesabının bakiyesi değişirdi. Cariyi pasife alın (hareketleri korunur).`, extra: { code: "account-bank-linked", count: bankLinked } };
-    // 2.3.0 İz 1 (plan §3.11b): şüpheli alacak kaydı olan cari silinmez (kayıt ve 128 satırları defterden düşerdi).
-    // v2.0.26 (A3): kapanmış dönemde hareketi olan cari silinmez (silinen carinin satırları defterden düşer).
-    for (const check of [() => doubtful()?.assertNone?.(account.id, "silinemez"), () => assertUnlocked(account.id, "silinemez")]) {
-      try {
-        check();
-      } catch (error) {
-        if (error instanceof HttpError) return { message: error.message, extra: error.extra, status: error.status };
-        throw error;
-      }
+    const found = accountMovements(store, account.id);
+    if (found.total > 0) {
+      const passive = account.status === "passive";
+      return { message: movementBlockText(found.counts, { passive }), extra: { code: "account-has-movements", counts: found.counts, passive } };
+    }
+    // Savunma (yeni kuralda erişilmez: kilitli dönem denetiminin baktığı satırlar ve kartlar yukarıda zaten hareket sayılır).
+    try {
+      assertUnlocked(account.id, "silinemez");
+    } catch (error) {
+      if (error instanceof HttpError) return { message: error.message, extra: error.extra, status: error.status };
+      throw error;
     }
     return null;
   }
@@ -723,6 +729,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return current + 1;
   };
   function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "", pos = null, doubtfulSkip = false, dueDate = "", expectedDate = "", opening = false, refundOf = "" }) {
+    // 2.4.9 C1 (§9, BAŞ MİMAR KARARI): silinmiş cariye hareket yazılmaz — cari YAZIM ANINDA (çağıranın işlemi içinde) yeniden denetlenir. Önceden cari
+    // isteğin başında okunuyordu; gövde beklenirken (await readJson) cari silinirse tahsilat silinmiş cariye yazılıyor, Kasa'da görünmüyordu (yanıt 404).
+    // Bütün addEntry yazıcıları (tahsilat/ödeme, Borç/Alacak, açılış, stok, fatura, şüpheli, POS iadesi) buradan geçer; 404 işlemi geri alır.
+    if (!exists(accountId)) throw new HttpError(404, "Cari bulunamadı. Silinmiş olabilir.");
     // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
     period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");
@@ -962,10 +972,15 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const refOf = (input, body, previous = null) => {
     const module = banking();
     if (!module || !isMoney(input.kind)) return "";
-    const changed = !previous || previous.method !== input.method || Math.abs(roundMoney(previous.amount) - roundMoney(input.amount)) > 0.004 || previous.date !== input.date;
+    const corporate = corporateOf(input, body, previous);
+    // 2.4.9 P1 tur 1: kart yolunun ANLAMI değişirse (Kredi Kartına İade ↔ POS tahsilatı) satır yeni kayıt gibi bağlanır — önceki bağ öbür ailenin hesabıdır
+    // (kart ↔ POS), korunmaz; tek POS / tek kart kendiliğinden, birden çoksa seçim istenir. Önceden kutu kaldırılınca tutar aynıysa satır hesapsız kalırdı.
+    const flipped = Boolean(previous && previous.method === "card" && input.method === "card" && corporateOf({ kind: previous.kind, method: "card" }, {}, previous) !== corporate);
+    const prior = flipped ? null : previous;
+    const changed = !prior || prior.method !== input.method || Math.abs(roundMoney(prior.amount) - roundMoney(input.amount)) > 0.004 || prior.date !== input.date;
     // K2 (plan §3.7 #3, §4.6): cari ödemesinde kart yolu firmanın kartıyla ödemedir (309); tahsilatta POS (2.2.0). Cari "POS İadesi"
     // (posRefund / posRefundOf / posSourceless) çıkış olsa da POS'tur (plan §4.6 "alan belge türüne göre seçilir").
-    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed, corporate: corporateOf(input, body, previous), posId: body.posId, posRefundOf: body.posRefundOf });
+    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous: prior, changed, corporate, posId: body.posId, posRefundOf: body.posRefundOf });
   };
   // 2.2.0: cari "POS İadesi" — kart yolunda müşteriye POS'tan iade (POS'a bağlı önceki satır da öyledir).
   const posRefundOf = (body, previous = null) =>
@@ -973,7 +988,25 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // 2.3.0 (İz 3.2; plan §4.6 "ödeme iadesi (giriş) → Kurumsal Kart, POS satışı oluşmaz, 309 düşer"): cari "Kredi Kartına İade" — tedarikçi parayı
   // firmanın kredi kartına iade etti (cardRefund). Giriş olsa da kart yolu POS değil Kredi Kartı hesabıdır; karta bağlı önceki satır da öyledir.
   const isCardAccount = id => Boolean(id && store.get("SELECT 1 AS found FROM bank_accounts WHERE id = ? AND kind = 'card'", id));
-  const cardRefundOf = (body, previous = null) => body?.cardRefund === true || Boolean(previous && previous.kind === "in" && previous.method === "card" && isCardAccount(previous.finRef));
+  // 2.4.9 P1 tur 1 (dar kontrol DÜŞÜK-1): ekran kutu formdayken işaretsizse cardRefund: false gönderir → önceki satıra bakılmaz (kart iadesi POS'a / başka yola
+  // çevrilir; önceden "Hareket düzeltildi" deyip satır kartta kalıyordu). Alan hiç yoksa (eski istemci, mobil) önceki satırın bağı sürer.
+  // Var olan "Kredi Kartına İade" satırı: giriş + kart yolu + bağı bir Kredi Kartı hesabı (cari ayrıntısındaki cardRefund işaretiyle aynı tanım).
+  const wasCardRefund = previous => Boolean(previous && previous.kind === "in" && previous.method === "card" && isCardAccount(previous.finRef));
+  const cardRefundOf = (body, previous = null) => body?.cardRefund === true || (body?.cardRefund !== false && wasCardRefund(previous));
+  // 2.4.9 P1-b: müşteride yeni "Kredi Kartına İade" (POST) yalnız bu cariye kartla Ödeme varken; düzeltmede (PUT) var olan kart iadesi satırları korunur
+  // (kullanıcı kararı). P1 tur 2 (tur 1 dar kontrol DÜŞÜK-2; 03.11 yetkisiyle BAŞ MİMAR KARARI): "korunur" yalnız VAR OLAN iade satırlarını kapsar — PUT iade
+  // olmayan satırı (POS, Nakit, Havale) iadeye çevirirken bu denetim aynen uygulanır (çağıran: PUT, wasCardRefund değilse).
+  const assertCardRefundRoom = (account, input, body) => {
+    if (account.type === "customer" && input.kind === "in" && input.method === "card" && body?.cardRefund === true && !hasCardPaymentOf(account.id))
+      throw new HttpError(400, "Bu müşteriye kredi kartıyla yapılmış bir ödeme yok; Kredi Kartına İade girilemez. Müşteriden kartla alınan para POS tahsilatıdır: \"Kredi Kartına İade\" işaretini kaldırın.", { code: "card-refund-no-payment", field: "cardRefund" });
+  };
+  // Yargıç 2.3.0 #6 (15.10.2026): "Kredi Kartına İade" (cardRefund) kart hesabı ister; tanımlı etkin kart yoksa 108.00'a sessiz yazım yok (400). P1 tur 2 (tur 1 dar
+  // kontrol DÜŞÜK-1): düzeltmede (PUT) de aynı — tur 1'in "kart yolunun anlamı değişince yeni kayıt gibi bağla" kuralıyla POS / Nakit satırı iadeye çevrilirken
+  // etkin kart yoksa (0 kart ya da tek kart pasif) satır sessizce hesapsıza yazılıyordu. Var olan kart iadesi satırı buraya boş bağla gelmez: pickRef önceki kart
+  // bağını korur ya da (parası değişince) pasif hesap / açılış kuralıyla kendi 400/409'unu verir — satır korunur.
+  const assertCardTarget = (input, body, finRef) => {
+    if (input.kind === "in" && input.method === "card" && body?.cardRefund === true && !finRef) throw new HttpError(400, "Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir; tanımlı kart yoksa Banka → Hesaplar'dan ekleyin ya da yolu değiştirin.", { code: "bank-account-invalid", field: "bankAccountId" });
+  };
   // Kart yolunun anlamı (plan §4.6 "alan belge türüne göre"): çıkış = kartla ödeme (309) — "POS İadesi" değilse; giriş = POS — "Kredi Kartına İade" değilse.
   const corporateOf = (input, body, previous = null) => (input.kind === "out" ? !posRefundOf(body, previous) : input.kind === "in" && input.method === "card" && cardRefundOf(body, previous));
   const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
@@ -986,10 +1019,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const input = entryInput(body, account.id);
     requireKindRight(user, input.kind);
     assertNormalRoom(account, input);
+    assertCardRefundRoom(account, input, body);
     const finRef = refOf(input, body);
     requireBankOut(user, input.kind, finRef);
-    // Yargıç 2.3.0 #6 (15.10.2026): "Kredi Kartına İade" (cardRefund) kart hesabı ister; tanımlı etkin kart yoksa 108.00'a sessiz yazım yok (400).
-    if (input.kind === "in" && input.method === "card" && body.cardRefund === true && !finRef) throw new HttpError(400, "Kredi Kartına İade için etkin bir kredi kartı hesabı gerekir; tanımlı kart yoksa Banka → Hesaplar'dan ekleyin ya da yolu değiştirin.", { code: "bank-account-invalid", field: "bankAccountId" });
+    assertCardTarget(input, body, finRef);
     const k7 = negativeOf([finRef], input.date, negativeForced(body));
     const created = bank.post({
       user,
@@ -1030,7 +1063,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
     assertOffsetFree(previous, input);
     assertNormalRoom(account, input, previous);
+    // 2.4.9 P1 tur 2: kart iadesi kuralları POST'la aynı — iade olmayan satır müşteride iadeye çevrilirken kartla ödeme denetimi (DÜŞÜK-2), etkin kart
+    // yoksa 400 (DÜŞÜK-1). Var olan iade satırının tutar / tarih / kart düzeltmesi serbest.
+    if (!wasCardRefund(previous)) assertCardRefundRoom(account, input, body);
     const finRef = refOf(input, body, previous);
+    assertCardTarget(input, body, finRef);
     if (finRef !== previous.finRef) requireBankOut(user, input.kind, finRef);
     const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
@@ -1806,7 +1843,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       deletedAt: item.deletedAt,
       actorName: item.actorName,
       restorable: true,
-      note: "Hareketleriyle Cari listesine geri döner; Kasa yeniden hesaplanır.",
+      // 2.4.9 C1 TUR 1 (dar kontrol DÜŞÜK-3): hareketi olan cari silinmez. C1 TUR 2 (dar kontrol DÜŞÜK-2): eski sürümde (v2.4.7) hareketiyle silinmiş cari
+      // Silinenler'de kalabilir; geri yüklenince hareketleri de döner ve Kasa değişir — not ikisini de söyler.
+      note: "Cari listesine geri döner; varsa hareketleri de geri gelir ve Kasa yeniden hesaplanır.",
     }));
   function restoreDeleted(user, id) {
     const account = store.get("SELECT id, name FROM accounts WHERE id = ? AND deleted_at IS NOT NULL", id);

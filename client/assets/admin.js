@@ -1479,7 +1479,7 @@
           .map(group => {
             const keeper = group.companies.find(item => item.keeper);
             const others = group.companies.filter(item => !item.keeper && !item.hidden);
-            return `<p><b>${group.companies.map(item => esc(item.label)).join(" ve ")}</b> aynı veri dosyasını kullanıyor: birine girilen kayıt öbüründe de görünüyor. ${esc(keeper?.label || "")} dosyayı korur; öbürünü “Ayır” ile kendi klasörüne alın. Ayırma anındaki kayıtlar iki şirkette de kalır; sonra her şirkette ona ait olmayan kayıtları silin (Silinenler'den geri alınabilir).</p>
+            return `<p><b>${group.companies.map(item => esc(item.label)).join(" ve ")}</b> aynı veri dosyasını kullanıyor: birine girilen kayıt öbüründe de görünüyor. ${esc(keeper?.label || "")} dosyayı korur; öbürünü “Ayır” ile kendi klasörüne alın. Ayırma anındaki kayıtlar iki şirkette de kalır; sonra her şirkette ona ait olmayan kayıtları silin: önce o carinin hareketlerini (tahsilat, ödeme, fatura…) silin; hareketi kalmayan cari silinir (Silinenler'den geri alınabilir). Pasife Al öbür şirketin tutarlarını bu şirketin Kasa'sından çıkarmaz.</p>
               <div class="adm-actions">${others.map(item => `<button type="button" class="hof-button hof-button-small" data-c-separate="${esc(item.id)}">Ayır: ${esc(item.label)}</button>`).join("")}</div>`;
           })
           .join("")}`
@@ -1642,10 +1642,32 @@
       ],
       submitLabel: "Şirketi Sil",
       // Ana oturum kararı (31f ek): geri alınamaz eylem — Veriyi Sıfırla ve Kullanıcıyı Sil gibi kırmızı; onay akışı aynı.
-      onOpen: dialog => dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger"),
+      // 2.4.9 UI tur A (D4, ders 34): pencerede kaydedilecek veri yok (yalnız onay kodu ve parola) — Esc / × "Kaydedilmemiş Değişiklik" sormaz
+      // (Yedeksiz Sil'den Vazgeç'ten sonra da); alanlar taslak izleyicisine girmez (data-nodirty).
+      onOpen: dialog => {
+        dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger");
+        dialog.querySelector("form")?.setAttribute("data-nodirty", "");
+      },
       onSubmit: async values => {
-        const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}`, { method: "DELETE", body: { confirm: values.confirm, password: values.password } });
-        HOF.toast(`“${item.code} · ${item.name}” silindi. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });
+        const url = `/api/companies/${encodeURIComponent(item.id)}`;
+        let result;
+        try {
+          result = await HOF.api(url, { method: "DELETE", body: { confirm: values.confirm, password: values.password } });
+        } catch (error) {
+          // 2.4.9 S1 (kullanıcı kararı 03.11.2026): veri dosyası bozuk şirkette yedek alınamaz; ikinci, açık onayla yedeksiz silinir (aynı kod ve parola).
+          // Vazgeçilirse ilk pencere açık kalır, nedeni altta yazar.
+          if (error?.data?.code !== "backup-failed") throw error;
+          const reason = error.data.reason || error.message;
+          const yes = await HOF.confirm({
+            title: `Yedeksiz Sil · ${item.code} · ${item.name}`,
+            message: `Yedek alınamadı (${reason}). Veri klasörü silinmez; silinen-sirketler klasöründe saklanır (destek ile geri getirilebilir). Şirket yedek alınmadan silinsin mi?`,
+            confirmLabel: "Yedeksiz Sil",
+            danger: true,
+          });
+          if (!yes) throw error;
+          result = await HOF.api(url, { method: "DELETE", body: { confirm: values.confirm, password: values.password, withoutBackup: true } });
+        }
+        HOF.toast(result.withoutBackup ? `“${item.code} · ${item.name}” yedek alınmadan silindi; veri klasörü silinen-sirketler altında.` : `“${item.code} · ${item.name}” silindi. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });
         loadCompanies();
       },
     });

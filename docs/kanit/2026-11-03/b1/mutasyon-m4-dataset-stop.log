@@ -1,0 +1,241 @@
+TAP version 13
+# Subtest: 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+    # Subtest: T0 new DatabaseSync kurucusu düşer (olmayan dizin) → Node tutamak bırakmaz
+    ok 1 - T0 new DatabaseSync kurucusu düşer (olmayan dizin) → Node tutamak bırakmaz
+      ---
+      duration_ms: 3.095631
+      type: 'test'
+      ...
+    # Subtest: T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir
+    ok 2 - T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir
+      ---
+      duration_ms: 1070.932848
+      type: 'test'
+      ...
+    # Subtest: T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; "(deleted)" tutamak 0
+    ok 3 - T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; "(deleted)" tutamak 0
+      ---
+      duration_ms: 857.770142
+      type: 'test'
+      ...
+    # Subtest: T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır
+    ok 4 - T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır
+      ---
+      duration_ms: 908.150147
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 5 - T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2865.170189
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 6 - T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 3463.082311
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 7 - T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 3539.783328
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 8 - T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2666.563039
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-mut-m4-0d8b1fc9-z4/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'after-dataset: 2 yetim zamanlayıcı kaldı: setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'after-dataset: 2 yetim zamanlayıcı kaldı: setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-mut-m4-0d8b1fc9-z4/test/createapp-acilis-geri-alma-249.test.mjs:346:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 9 - T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2807.084107
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-mut-m4-0d8b1fc9-z4/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'after-integrity: 2 yetim zamanlayıcı kaldı: setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'after-integrity: 2 yetim zamanlayıcı kaldı: setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-mut-m4-0d8b1fc9-z4/test/createapp-acilis-geri-alma-249.test.mjs:346:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 10 - T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2812.177582
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-mut-m4-0d8b1fc9-z4/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'after-register: 2 yetim zamanlayıcı kaldı: setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'after-register: 2 yetim zamanlayıcı kaldı: setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-mut-m4-0d8b1fc9-z4/test/createapp-acilis-geri-alma-249.test.mjs:346:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 11 - T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2709.335263
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-mut-m4-0d8b1fc9-z4/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'after-app: 2 yetim zamanlayıcı kaldı: setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'after-app: 2 yetim zamanlayıcı kaldı: setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-mut-m4-0d8b1fc9-z4/test/createapp-acilis-geri-alma-249.test.mjs:346:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0
+    ok 12 - T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0
+      ---
+      duration_ms: 10805.769031
+      type: 'test'
+      ...
+    # Subtest: T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı
+    ok 13 - T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı
+      ---
+      duration_ms: 1355.385995
+      type: 'test'
+      ...
+    # Subtest: T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)
+    ok 14 - T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)
+      ---
+      duration_ms: 1192.083404
+      type: 'test'
+      ...
+    # Subtest: T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı
+    ok 15 - T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı
+      ---
+      duration_ms: 1394.853451
+      type: 'test'
+      ...
+    # Subtest: T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0
+    ok 16 - T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0
+      ---
+      duration_ms: 1017.27715
+      type: 'test'
+      ...
+    # Subtest: T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır
+    ok 17 - T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır
+      ---
+      duration_ms: 671.468421
+      type: 'test'
+      ...
+    # Subtest: T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+    ok 18 - T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+      ---
+      duration_ms: 995.938236
+      type: 'test'
+      ...
+    # Subtest: T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+    ok 19 - T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+      ---
+      duration_ms: 992.08188
+      type: 'test'
+      ...
+    # Subtest: T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+    ok 20 - T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+      ---
+      duration_ms: 715.615406
+      type: 'test'
+      ...
+    # Subtest: T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+    ok 21 - T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+      ---
+      duration_ms: 488.5585
+      type: 'test'
+      ...
+    # Subtest: T12 sağlam açılış: kanca verilmiş ama düşmüyor → davranış aynen; 002 kapanınca ve sunucu kapanınca tutamak 0
+    ok 22 - T12 sağlam açılış: kanca verilmiş ama düşmüyor → davranış aynen; 002 kapanınca ve sunucu kapanınca tutamak 0
+      ---
+      duration_ms: 887.418499
+      type: 'test'
+      ...
+    1..22
+not ok 1 - 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+  ---
+  duration_ms: 44223.08892
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-mut-m4-0d8b1fc9-z4/test/createapp-acilis-geri-alma-249.test.mjs:223:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 22
+# suites 1
+# pass 18
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 44742.164299

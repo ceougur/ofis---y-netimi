@@ -1,0 +1,33 @@
+// B3 süre karşılaştırması (not defteri; ders 15 — paylaşılan makinede yük kayması: eski/yeni DÖNÜŞÜMLÜ, her koşu ayrı süreç, aynı senaryo).
+// Tek koşu: node ab-sure.mjs <kod kökü> → 200 cari, 3 tur × 200 ekstre (gerçek kuyruk + sahte Graph); iş başına ms (runOnce), bakım ms, olay döngüsü en çok.
+import path from "node:path";
+import { monitorEventLoopDelay } from "node:perf_hooks";
+import { pathToFileURL } from "node:url";
+const [root] = process.argv.slice(2);
+if (process.env.HUKUK_LICENSE_URL !== "http://127.0.0.1:9") throw new Error("ders 30");
+const { startWa } = await import(pathToFileURL(path.join(root, "test/whatsapp-248-ortak.mjs")).href);
+const ctx = await startWa();
+ctx.fake.state.tier = "TIER_2K";
+const ids = [];
+for (let i = 0; i < 200; i += 1) ids.push((await ctx.account(`Süre ${i}`, `0554 200 ${String(Math.floor(i / 100)).padStart(2, "0")} ${String(i % 100).padStart(2, "0")}`, 100 + i)).id);
+const eld = monitorEventLoopDelay({ resolution: 5 });
+eld.enable();
+const per = [];
+const bakim = [];
+for (let t = 0; t < 3; t += 1) {
+  await ctx.batch({ kind: "statement", ids, preset: "thisMonth", sendAgain: true });
+  for (;;) {
+    const a = performance.now();
+    const r = await ctx.wa.scheduler.runOnce();
+    if (!r.did) break;
+    per.push(performance.now() - a);
+  }
+  const b = performance.now();
+  await ctx.wa.scheduler.maintain();
+  bakim.push(performance.now() - b);
+  ctx.clock.advance(60_000);
+}
+const s = per.slice().sort((x, y) => x - y);
+const q = p => Math.round(s[Math.min(s.length - 1, Math.ceil(p * s.length) - 1)] * 10) / 10;
+console.log(JSON.stringify({ kok: path.basename(root), n: per.length, p50: q(0.5), p95: q(0.95), enCok: q(1), ort: Math.round((per.reduce((x, y) => x + y, 0) / per.length) * 10) / 10, bakimMs: bakim.map(x => Math.round(x)), olayEnCokMs: Math.round(eld.max / 1e5) / 10 }));
+await ctx.close();

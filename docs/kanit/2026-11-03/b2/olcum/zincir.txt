@@ -1,0 +1,16 @@
+hazir-iade çıkış=0
+hazir-bes-bin çıkış=0
+olcum-eski-taban çıkış=0
+olcum-yeni-taban çıkış=0
+olcum-eski-bes-bin çıkış=0
+olcum-yeni-bes-bin çıkış=0
+olcum-eski-gecmis çıkış=0
+olcum-yeni-gecmis çıkış=0
+olcum-yeni-iade çıkış=0
+ekran-yeni çıkış=0
+ekran-eski çıkış=0
+bitti
+ekran2-yeni çıkış=0
+ekran2-eski çıkış=1
+ekran2-bitti
+olcum-eski-iade çıkış=0

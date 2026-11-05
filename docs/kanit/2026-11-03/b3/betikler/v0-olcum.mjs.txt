@@ -1,0 +1,22 @@
+// Taban (t9-4c8e1d/taban-2910) şirket dosyasının sıkışık (VACUUM INTO) boyu — TAZE KOPYADA (kaynağa dokunulmaz). Kullanım: node v0-olcum.mjs <kaynak data> <çalışma>
+import { copyFileSync, existsSync, mkdirSync, rmSync, statSync } from "node:fs";
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+const [src, work] = process.argv.slice(2);
+if (existsSync(work)) throw new Error("çalışma klasörü zaten var");
+mkdirSync(work, { recursive: true });
+try {
+  for (const s of ["", "-wal", "-shm"]) if (existsSync(path.join(src, `destekofis.sqlite${s}`))) copyFileSync(path.join(src, `destekofis.sqlite${s}`), path.join(work, `destekofis.sqlite${s}`));
+  const db = new DatabaseSync(path.join(work, "destekofis.sqlite"));
+  const g = sql => db.prepare(sql).get();
+  const out = { surum: g("PRAGMA user_version").user_version, sayfa: g("PRAGMA page_count").page_count, bosListe: g("PRAGMA freelist_count").freelist_count };
+  const t = performance.now();
+  db.exec(`VACUUM INTO '${path.join(work, "v.sqlite").replace(/'/g, "''")}'`);
+  out.vacuumMs = Math.round(performance.now() - t);
+  db.close();
+  out.dosyaMb = Math.round((out.sayfa * 4096) / 104857.6) / 10;
+  out.vacuumIntoMb = Math.round(statSync(path.join(work, "v.sqlite")).size / 104857.6) / 10;
+  console.log(JSON.stringify(out));
+} finally {
+  rmSync(work, { recursive: true, force: true });
+}

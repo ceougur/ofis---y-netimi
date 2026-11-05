@@ -422,7 +422,11 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     let trimmed = [];
     // Hakem K4 (plan §3.3 sırası "1 istek kimliği → 2 prepare"): eksi stok ve Kasa ön denetimleri istek kimliği bakışından SONRA, işlemin içinde.
     // Önceden önce çalışıyordu: stoğu ya da Kasa'yı 0'a indiren hareketin yinelemesi 409 stock-negative / cash-negative alıyordu.
+    // 2.4.9 C1 TUR 1 (madde 4; plans.mjs assertPlanLive ile aynı desen): ürün isteğin başında okunur; gövde beklenirken (await readJson) ürün silinirse
+    // satış silinmiş ürüne yazılıyor, yanıt yazımdan SONRA 404 oluyordu (kullanıcı yineler → cariye çift borç / Kasa'ya çift giriş). İşlemin içinde
+    // yeniden denetlenir: silinmişse 404, hiçbir şey yazılmaz.
     const prepare = () => {
+      itemRow(item.id);
       assertAvailable(item, input, null, body.force === true);
       if (input.kind === "in" && input.pay === "cash") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
     };
@@ -496,6 +500,10 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       scope: "stock.move.update",
       body: { ...body, moveId: previous.id },
       guard: k7.guard,
+      // 2.4.9 C1 TUR 1 (madde 4): gövde beklenirken ürün silinirse düzeltme yazılmaz (POST …/moves ile aynı; işlemin içinde, 404).
+      prepare: () => {
+        itemRow(item.id);
+      },
       write: () => {
         k7.capture();
         // Peşin ↔ açık hesap geçişi: para satırı olmaktan çıkan hareketin olayı iptal olur, yeniden peşin olan yeni olay alır.

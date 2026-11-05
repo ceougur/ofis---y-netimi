@@ -182,6 +182,22 @@ export function openWaLedger({ dir, log = console, fault = null }) {
   mkdirSync(dir, { recursive: true });
   const file = path.join(dir, WA_LEDGER_FILE);
   const db = openDatabase(file);
+  // 2.4.9 B1-b (BAŞ MİMAR KARARI; docs/2.4.9-tasarim/B1-createApp-baglanti.md §10/2): kurulum (şema, kimlik, hazır sorgular) düşerse (bozuk sayfa, uyumsuz
+  // şema) bağlantı kapatılır, asıl hata aynen fırlatılır — yoksa defter dosyası çöp toplamaya kadar açık kalır (Windows'ta silinemez; createApp'ı aynı
+  // süreçte yeniden çağıran araç / test). openDatabase PRAGMA'da düşeni zaten kapatır (2.4.8).
+  try {
+    return buildWaLedger(db, { file, log, fault });
+  } catch (error) {
+    try {
+      db.close();
+    } catch {
+      // kapatma hatası asıl hatayı ezmez (ders 21)
+    }
+    throw error;
+  }
+}
+
+function buildWaLedger(db, { file, log, fault }) {
   db.exec(SCHEMA);
   let id = db.prepare("SELECT value FROM meta WHERE key = 'ledgerId'").get()?.value;
   if (!id) {

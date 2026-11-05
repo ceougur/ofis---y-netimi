@@ -4,10 +4,14 @@
 // Karışım (gerçekçi + zincirler): ekstre dönemleri sırayla Geçen Ay / Bu Ay / Son 3 Ay / Özel Aralık / Tüm Hareketler ("Yine de Gönder" ile — aynı dönem yinelenir),
 // her 10. gönderim Ödeme Hatırlatma; her 7. gönderimde 20 kişiye Meta "teslim edilemez" (131026) → Başarısızları Yeniden Dene (yeni toplu iş); her 9. gönderimde 3 iletinin
 // yanıtı düşer (Sonucu Belirsiz) → işteki "Yine de Gönder" (onaylı; anyway_links / inherit_of zinciri). İş saati sahte ve DURUR; gönderimler 03.11.2025 → 30.10.2026.
-// Kullanım: node test/t9-248/wa-gecmis-uret.mjs --veri <taban> --is <çıktı klasörü> --json <dosya> [--toplam 100] [--bas 0] [--adet N] [--kisi 2000]
+// Kullanım: node test/t9-248/wa-gecmis-uret.mjs --veri <taban> --is <çıktı klasörü> --json <dosya> [--toplam 100] [--bas 0] [--adet N] [--kisi 2000] [--olc]
+// --olc (2.4.9 B3 ölçümü, docs/2.4.9-tasarim/B3-B4.md §B3-6; varsayılan davranış değişmez): ana gönderimin işleri tek tek yürütülür (drain'in kendisi: runOnce + sonda bakım)
+// ve iş başına süre (p50/p95/en çok), olay döngüsü en çok (açılış, gönderim, bakım), bakım süresi, bakımdan ÖNCE (tepe) ve SONRA şirket dosyası sayfa / boş liste /
+// wa_jobs + wa_job_pdfs (dbstat) kaydedilir. Ayrı kopyada (git archive; .git yok) da koşar: commit okunamazsa "git yok" yazılır.
 import { writeFileSync } from "node:fs";
 import { execSync } from "node:child_process";
-import { KOK, boyutlar, durumDongusu, kurulum, log, mb } from "./ortak.mjs";
+import { monitorEventLoopDelay } from "node:perf_hooks";
+import { KOK, boyutlar, durumDongusu, kurulum, log, mb, ozet } from "./ortak.mjs";
 
 const argv = process.argv.slice(2);
 const opt = (ad, v) => {
@@ -29,9 +33,37 @@ const denetle = (ad, kosul, ayrinti = "") => {
   denetimler.push({ ad, ok: Boolean(kosul), ayrinti });
   console.log(`${kosul ? "ok" : "not ok"} ${denetimler.length} - ${ad}${ayrinti ? ` (${ayrinti})` : ""}`);
 };
-const sonuc = { commit: execSync("git rev-parse HEAD", { cwd: KOK }).toString().trim(), node: process.version, veri: VERI, toplam: TOPLAM, bas: BAS_I, adet: ADET, kisi: KISI, basladi: new Date().toISOString(), gonderimler: [] };
+const OLC = argv.includes("--olc");
+const commitOf = () => {
+  try {
+    return execSync("git rev-parse HEAD", { cwd: KOK, stdio: ["ignore", "pipe", "ignore"] }).toString().trim();
+  } catch {
+    return `git yok (${KOK})`;
+  }
+};
+const sonuc = { commit: commitOf(), node: process.version, veri: VERI, toplam: TOPLAM, bas: BAS_I, adet: ADET, kisi: KISI, olc: OLC, basladi: new Date().toISOString(), gonderimler: [] };
+const eld = monitorEventLoopDelay({ resolution: 10 });
+if (OLC) eld.enable();
+const msOf = ns => Math.round((ns / 1e6) * 10) / 10;
 const ctx = await kurulum({ veri: VERI, is: IS, saat: { time: BAS + Math.round(((SON - BAS) * BAS_I) / Math.max(1, TOPLAM - 1)), fixed: true }, isci: "manual", aralik: 0, tier: "TIER_2K", onEk: `gec${Date.now().toString(36)}` });
 const { admin, at } = ctx;
+// --olc: şirket dosyasının (001) anlık sayımı — sayfa, boş liste, wa_jobs / wa_job_pdfs (dbstat), PDF'i duran iş sayısı (tablo ya da eski sütun).
+const dosyaOlcu = () => {
+  const s = ctx.app.store;
+  const sayfa = s.get("PRAGMA page_count").page_count;
+  const tablolar = Object.fromEntries(s.all("SELECT name, SUM(pgsize) AS bayt, SUM(unused) AS bos, SUM(payload) AS yuk, COUNT(*) AS sayfa FROM dbstat WHERE name IN ('wa_jobs', 'wa_job_pdfs') GROUP BY name").map(r => [r.name, { sayfa: r.sayfa, mb: mb(r.bayt), bosMb: mb(r.bos), yukMb: mb(r.yuk) }]));
+  let pdfSatir = null;
+  try {
+    pdfSatir = s.get("SELECT COUNT(*) AS n FROM wa_job_pdfs").n;
+  } catch {
+    pdfSatir = null;
+  }
+  return { sayfa, dosyaMb: mb(sayfa * s.get("PRAGMA page_size").page_size), bosListe: s.get("PRAGMA freelist_count").freelist_count, tablolar, pdfSatir, satirdaPdf: s.get("SELECT COUNT(*) AS n FROM wa_jobs WHERE pdf_blob IS NOT NULL").n };
+};
+if (OLC) {
+  sonuc.acilis = { ms: ctx.acilisMs, olayDongusuEnCokMs: msOf(eld.max), surum: ctx.app.store.get("PRAGMA user_version").user_version, dosya: dosyaOlcu() };
+  log("açılış", JSON.stringify(sonuc.acilis));
+}
 let hata = null;
 const toplam = { toplu: 0, is: 0, metaIleti: 0, kancaOlay: 0, kancaDurum: 0, kancaHata: 0, yenidenDene: 0, yineDeGonder: 0 };
 try {
@@ -94,7 +126,26 @@ try {
       }
     }
     const t1 = performance.now();
-    const yurutulen = await ctx.wa.scheduler.drain({ max: 100_000 });
+    let yurutulen;
+    let olcu = null;
+    if (OLC) {
+      // drain({ max: 100_000 }) ile aynı yol (lib/whatsapp/scheduler.mjs): iş kalmayana dek runOnce, sonra bakım — bu kez her iş ve bakım ayrı ölçülür.
+      const sureler = [];
+      eld.reset();
+      for (let n = 0; n < 100_000; n += 1) {
+        const a = performance.now();
+        const r = await ctx.wa.scheduler.runOnce();
+        if (!r.did) break;
+        sureler.push(performance.now() - a);
+      }
+      yurutulen = sureler.length;
+      const gonderimOlay = msOf(eld.max);
+      const tepe = dosyaOlcu();
+      eld.reset();
+      const b = performance.now();
+      await ctx.wa.scheduler.maintain();
+      olcu = { is: ozet(sureler), olayDongusuEnCokMs: gonderimOlay, bakimMs: Math.round(performance.now() - b), bakimOlayDongusuEnCokMs: msOf(eld.max), bakimOncesi: tepe, bakimSonrasi: dosyaOlcu() };
+    } else yurutulen = await ctx.wa.scheduler.drain({ max: 100_000 });
     const surMs = performance.now() - t1;
     await kancala();
     if (basarisiz.length) await ctx.meta.ayarla({ recipientErrors: {} });
@@ -102,7 +153,7 @@ try {
     const c = {};
     for (const j of d.jobs) c[j.state] = (c[j.state] || 0) + 1;
     toplam.is += d.jobs.length;
-    const kayit = { sira: i + 1, gun, tur: govde.kind, donem: govde.preset || (govde.from ? "özel" : ""), acmaMs: Math.round(acMs), yurutulen, isBasinaMs: yurutulen ? Math.round((surMs / yurutulen) * 10) / 10 : null, durumlar: c };
+    const kayit = { sira: i + 1, gun, tur: govde.kind, donem: govde.preset || (govde.from ? "özel" : ""), acmaMs: Math.round(acMs), yurutulen, isBasinaMs: yurutulen ? Math.round((surMs / yurutulen) * 10) / 10 : null, durumlar: c, ...(olcu ? { olcu } : {}) };
     // Başarısızları Yeniden Dene (aynı gün, 2 saat sonra).
     if ((c.failed || 0) > 0) {
       ctx.saat.advance({ hours: 2 });
@@ -127,6 +178,7 @@ try {
     }
     if (belirsizIstek) kayit.belirsiz = { istenen: belirsizIstek, olan: belirsizler.length };
     await ctx.wa.scheduler.maintain();
+    if (OLC) kayit.olcu.gonderimSonu = dosyaOlcu();
     kayit.sureSn = Math.round((performance.now() - t0) / 1000);
     sonuc.gonderimler.push(kayit);
     if (i % 5 === 0 || i === BAS_I + ADET - 1) log(`gönderim ${i + 1}/${TOPLAM}`, JSON.stringify(kayit), `RSS ${mb(process.memoryUsage().rss)} MB`, JSON.stringify(toplam));

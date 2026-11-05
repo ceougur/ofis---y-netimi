@@ -48,6 +48,7 @@ jobs:
       - run: npm run test:senaryo-224
       - run: npm run test:senaryo-225
       - run: npm run test:senaryo-225-uyari
+      - run: npm run test:senaryo-yedeksiz-sil-249
       - run: npm run test:senaryo-226
       - run: npm run test:senaryo-iz1-sayfa
       - run: npm run test:senaryo-iz1-kasa-acilis
@@ -57,9 +58,11 @@ jobs:
       - run: npm run test:senaryo-banka-210-eski-satir
       - run: npm run test:senaryo-banka-220
       - run: npm run test:senaryo-pos-220
+      - run: npm run test:kilavuz-metin
       - run: npm run test:senaryo-tahsile-ver-220
       - run: npm run test:senaryo-k8-230
       - run: npm run test:senaryo-iz32-230
+      - run: npm run test:senaryo-pos-kart-249
       - run: npm run test:senaryo-supheli-230
       - run: npm run test:senaryo-iz5-230
       - run: npm run test:senaryo-entegrator-240

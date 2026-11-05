@@ -373,8 +373,12 @@ describe("2.4.6 madde 11: Nakit Akış Projeksiyonu'na cari vadeli borç kalemle
     const acc = await t.account("Silinen");
     await t.entry(acc, { kind: "debt", amount: "55", date: day(-2), dueDate: day(1) });
     assert.equal(t.mine(await t.flow(), acc).length, 1);
+    // 2.4.9 C1: vadeli borcu olan cari silinmez (409 account-has-movements); eski sürümde (v2.0.6–v2.4.8) silinmiş böyle bir cari store dışı yumuşak
+    // silmeyle kurulur — satırı görünmez, geri yüklenince döner (S3 A).
     const removed = await t.api.del(`/api/workspace/accounts/${acc.id}`);
-    assert.equal(removed.status, 200, `cari silinemedi: ${JSON.stringify(removed.data).slice(0, 200)}`);
+    assert.equal(removed.status, 409, `hareketli cari silinmez: ${JSON.stringify(removed.data).slice(0, 200)}`);
+    assert.equal(removed.data?.code, "account-has-movements");
+    t.server.app.db.prepare("UPDATE accounts SET deleted_at = ?, deleted_by = 'eski-surum' WHERE id = ?").run(`${t.TODAY}T09:00:00.000Z`, acc.id);
     assert.deepEqual(t.mine(await t.flow(), acc), [], "silinmiş carinin projeksiyon satırı yok");
     const trash = await must("Silinenler", t.api.get("/api/admin/trash"));
     await must("geri yükle", t.api.post("/api/admin/trash/restore", { id: trash.find(row => row.kind === "account" && row.title === acc.name).id }));

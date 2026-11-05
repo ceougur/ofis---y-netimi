@@ -306,7 +306,10 @@
   // yönsüz yerde "POS / Kredi Kartı". direction: "in" | "out" | "" (kayıtlı değer `card` değişmez).
   HOF.methodName = (value, direction = "") => (value === "card" ? (direction === "in" ? "POS" : direction === "out" ? "Kredi Kartı" : "POS / Kredi Kartı") : (HOF.PAY_METHODS.find(item => item.value === value) || HOF.PAY_METHODS[0]).label);
   HOF.payMethods = (direction = "") => HOF.PAY_METHODS.map(item => ({ ...item, label: HOF.methodName(item.value, direction) }));
-  HOF.methodLabel = (value, direction = "") => HOF.methodName(value, direction);
+  // 2.4.9 UI tur A (ORTA-1): "Kredi Kartına İade" satırı (giriş + kart yolu + bağı bir Kredi Kartı hesabı; sunucunun cardRefund işareti) POS tahsilatı
+  // değildir — yol adı "Kredi Kartına İade" (sunucuda lib/pay-method.mjs methodLabel aynı kural).
+  HOF.CARD_REFUND_LABEL = "Kredi Kartına İade";
+  HOF.methodLabel = (value, direction = "", { cardRefund = false } = {}) => (cardRefund === true && value === "card" && direction === "in" ? HOF.CARD_REFUND_LABEL : HOF.methodName(value, direction));
   HOF.methodField = (value = "cash", { incoming = true, name = "method" } = {}) => ({ name, label: incoming ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: value || "cash", options: HOF.payMethods(incoming ? "in" : "out") });
   HOF.can = permission => Boolean(HOF.user && HOF.user.permissions && HOF.user.permissions.includes(permission));
   // 2.4.3 (uzman UX7): silinen kaydın geri yükleme yolu yetkiye göre söylenir. Silinenler yalnız Yönetim panelindedir ve panel yalnız yöneticiye

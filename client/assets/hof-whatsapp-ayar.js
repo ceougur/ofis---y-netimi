@@ -26,10 +26,23 @@
     if (!hook) return "Kayıtlı Değil · ofisin uzaktan bağlantısı açılınca kendiliğinden kaydedilir";
     if (hook.state === "active") return `Çalışıyor${hook.registeredAt ? ` · ${when(hook.registeredAt)} tarihinde kaydedildi` : ""}`;
     if (hook.state === "pending") return "Kaydediliyor · Meta'nın yanıtı bekleniyor";
-    if (hook.state === "failed") return `Kaydedilemedi${hook.error ? ` · ${hook.error}` : ""} (program saatte bir yeniden dener)`;
+    // 2.4.9 UI tur B (ORTA-3): hücrede yalnız durum + an; neden düğmelerin altında ayrı satırda (hookFailure).
+    if (hook.state === "failed") return `Kaydedilemedi${hook.at ? ` · ${when(hook.at)}` : ""}`;
     if (hook.state === "conflict") return "Çakışma · Meta'daki adres bu bilgisayarınkinden farklı";
     return hook.state || "Bilinmiyor";
   };
+  // 2.4.9 UI tur B (ORTA-3, UI/UX gezintisi 04.11): Bildirim Yolu kaydedilemediyse neden Türkçe satırda (sunucu Meta'nın iletisini ayırır — lib/whatsapp/connection.mjs
+  // hookView); Meta'nın ham iletisi (İngilizce) varsa ayrı, küçük satırda. Önce hata yalnız dar hücrede, İngilizce ileti ve iç içe parantezle görünüyordu.
+  const HOOK_FAILED_TAIL = "Kaydedilene dek teslim ve okundu bilgisi bu bilgisayara gelmez; program saatte bir kendiliğinden yeniden dener.";
+  const hookFailure = hook => {
+    const raw = String(hook.cause ?? hook.error ?? "").trim();
+    const cause = raw && !/[.!?]$/.test(raw) ? `${raw}.` : raw;
+    const meta = String(hook.metaMessage || "").trim();
+    const code = hook.metaCode != null && !meta.includes(`#${hook.metaCode}`) ? ` (hata kodu ${hook.metaCode})` : "";
+    const why = `<p class="adm-wa-why" data-wa-hook-why>${esc(`Bildirim Yolu kaydedilemedi${cause ? ` — ${cause}` : "."} ${HOOK_FAILED_TAIL}`)}</p>`;
+    return meta ? `${why}<p class="adm-wa-why adm-wa-meta" data-wa-hook-meta>${esc(`Meta iletisi: ${meta}${code}`)}</p>` : why;
+  };
+  const HOOK_WARNING = "Bağlantı çalışıyor; ancak Bildirim Yolu kaydedilemedi — nedeni aşağıda.";
   // 2.4.8 W7: WhatsApp'ı Bağla yalnız programın YEREL / ÖZEL AĞ adresinden (bağlama penceresi sırrı yalnız böyle kökenden kabul eder). Kural
   // server/lib/whatsapp/embedded.mjs isLocalOrigin ve bulut/kapi/wa-bagla.mjs yerelKoken ile AYNI (test/whatsapp-w7-tasinma-248.test.mjs karşılaştırır).
   // <yerel-koken>
@@ -116,7 +129,7 @@
         <button type="button" class="hof-button hof-button-danger" data-wa-action="remove" ${editBlock ? "disabled" : ""}>Bağlantıyı Kaldır</button>
       </div>
       ${metaBlock ? `<p class="adm-wa-why" data-wa-why>${esc(metaBlock)}</p>` : ""}${data.mode === "embedded" ? embeddedWhy : ""}
-      ${data.hook?.state === "conflict" ? `<p class="adm-wa-why" data-wa-hook-why>${esc(HOOK_CONFLICT)}</p>` : ""}`;
+      ${data.hook?.state === "conflict" ? `<p class="adm-wa-why" data-wa-hook-why>${esc(HOOK_CONFLICT)}</p>` : ""}${data.hook?.state === "failed" ? hookFailure(data.hook) : ""}`;
   }
 
   async function load() {
@@ -188,7 +201,9 @@
       view = await HOF.api(`${API}/test`, { method: "POST", body: {} });
       // 2.4.8 W5: bağlantı kaydedilip sınanınca program iki bilgilendirme şablonunu (yoksa) Meta'da kendisi açar; sonuç Şablonlar kartında.
       if (afterSave) await HOF.whatsappTemplates?.ensure({ quiet: true });
-      HOF.toast(afterSave ? "Kaydedildi; bağlantı çalışıyor." : "Bağlantı çalışıyor.", { type: "success" });
+      // 2.4.9 UI tur B (ORTA-3): sınama başarılı ama Bildirim Yolu kaydedilemediyse yeşil "çalışıyor" değil UYARI; neden kartta düğmelerin altında.
+      if (view?.hook?.state === "failed") HOF.toast(afterSave ? `Kaydedildi. ${HOOK_WARNING}` : HOOK_WARNING, { type: "warn" });
+      else HOF.toast(afterSave ? "Kaydedildi; bağlantı çalışıyor." : "Bağlantı çalışıyor.", { type: "success" });
     } catch (error) {
       HOF.toastError(error);
       await load();
@@ -206,7 +221,7 @@
       fields: [
         { name: "phoneNumberId", label: "Telefon Numarası Kimliği (Phone Number ID)", required: true, value: data.phoneNumberId || "", inputmode: "numeric", autofocus: true },
         { name: "wabaId", label: "WhatsApp Business Hesap Kimliği (WABA ID)", required: true, value: data.wabaId || "", inputmode: "numeric" },
-        { name: "appId", label: "Uygulama Kimliği (App ID)", value: data.appId || "", inputmode: "numeric", help: "İsteğe bağlı; Meta uygulama panelinin üst kısmındaki App ID." },
+        { name: "appId", label: "Uygulama Kimliği (App ID)", value: data.appId || "", inputmode: "numeric", help: "İsteğe bağlı; Ekstre şablonunu Meta'da açmak için gerekir (Meta uygulama panelinin üst kısmındaki App ID)." },
         { name: "token", label: "Kalıcı Erişim Belirteci (System User)", type: "password", required: !data.hasToken, autocomplete: "new-password", help: data.hasToken ? "Kayıtlı belirteç korunur; değiştirmek için yenisini yapıştırın." : "Meta İşletme Ayarları'nda (Business Settings) System Users → Generate token; izinler: business_management, whatsapp_business_management, whatsapp_business_messaging." },
       ],
       submitLabel: "Kaydet ve Sına",

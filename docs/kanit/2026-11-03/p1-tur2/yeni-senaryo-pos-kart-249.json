@@ -1,0 +1,32 @@
+{
+  "ad": "p1-tur2/yeni-senaryo-pos-kart-249",
+  "komut": "npm run test:senaryo-pos-kart-249",
+  "commit": "393aeb57fcbca79243782de58f4c6d7031e90221",
+  "dal": "worktree-agent-aabdc4a8158a60ac9",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T23:14:05.516Z",
+  "sure_sn": 198.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 356,
+    "gecen": 356,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/p1-tur2/yeni-senaryo-pos-kart-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aabdc4a8158a60ac9",
+  "ham_cikti_sha256": "0562e27a5d20fcbc5f18d2f4d8ba67303fe40888a2dee3e89f9ca6abd06ea063",
+  "ham_cikti_bayt": 53910
+}

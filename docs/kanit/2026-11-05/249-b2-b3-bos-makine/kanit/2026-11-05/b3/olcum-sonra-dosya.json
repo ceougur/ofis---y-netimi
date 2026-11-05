@@ -1,0 +1,32 @@
+{
+  "ad": "b3/olcum-sonra-dosya",
+  "komut": "node --disable-warning=ExperimentalWarning test/t9-248/b3-dosya-olcum.mjs --veri /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-249-q5n8/b3-sonra --is /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-249-q5n8/b3-sonra-dosya-is --json /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-249-q5n8/cikti/sonuc-b3-sonra-dosya.json",
+  "commit": "5a22228aa423ec4b4c85442dccd454f09f02ea67",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T09:06:47.972Z",
+  "sure_sn": 9.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-249-q5n8/cikti/kanit/2026-11-05/b3/olcum-sonra-dosya.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "8dafaf6ef6fa85aa796413853b8ecc41c92b17c937271d72e8ce088d39497c35",
+  "ham_cikti_bayt": 776
+}

@@ -1,0 +1,98 @@
+{
+  "ad": "c1/eski-35e90e47-cari-hareket-249",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/cari-hareket-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:29:05.482Z",
+  "sure_sn": 5.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 1,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket) › T1 bugün silinebilen her hareket türü tek başına cariyi korur (tahsilat, ödeme, havale, Borç/Alacak Yaz, açılış, stok, taslak/iptal/e-SMM, yetim satır, mahsup)",
+      "konum": "test/cari-hareket-249.test.mjs:85:3",
+      "hata": "T1: 11/11 durum kırmızı · ✗ nakit tahsilat: nakit tahsilat: hareketli cari silinmemeli — beklenen 409, gelen 200 {\"id\":\"account-cd466295-7230-4db3-b069-917d9a02b600\"} · ✗ nakit ödeme: nakit ödeme: hareketli cari silinmemeli — beklenen 409, gelen 200 {\"id\":\"account-6c31e4fc-0859-43c2-b8de-a640bacd4b4a\"} (beklenen 0, gelen 11)"
+    },
+    {
+      "ad": "2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket) › T2 zaten korunan türler aynı kurala ve tek koda geçer (kayıtlı fatura, peşinli fatura, mahsup, çek, ciro alan cari, taksit kartı açık/kapalı/kalemsiz, şüpheli alacak)",
+      "konum": "test/cari-hareket-249.test.mjs:124:3",
+      "hata": "T2: 8/8 durum kırmızı · ✗ kayıtlı fatura: kayıtlı fatura: tek hata kodu · ✗ peşin tahsilatlı fatura: peşin tahsilatlı fatura: tek hata kodu (beklenen 0, gelen 8)"
+    },
+    {
+      "ad": "2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket) › T4 eski sürümde silinmiş hareketli cari (S3 A) Silinenler'den geri yüklenir, Kasa geri gelir; bir daha silinemez",
+      "konum": "test/cari-hareket-249.test.mjs:206:3",
+      "hata": "geri yüklenen hareketli cari: hareketli cari silinmemeli — beklenen 409, gelen 200 {\"id\":\"account-ae559e1c-4495-4d6f-831d-d0b924b19abb\"} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket) › T5 aynı adlı iki cari: yalnız hareketsiz olan silinir; pasif hareketli caride ileti pasif sürümü",
+      "konum": "test/cari-hareket-249.test.mjs:218:3",
+      "hata": "aynı adlı hareketli: hareketli cari silinmemeli — beklenen 409, gelen 200 {\"id\":\"account-aaddda73-33f4-4aa4-bdfa-ae0479d5d5d8\"} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket) › T6 kartın neden yazısı = silme iletisi; parçalar elle sayımla; yetkisiz kullanıcıya neden gitmez",
+      "konum": "test/cari-hareket-249.test.mjs:231:3",
+      "hata": "çok hareketli: tek hata kodu · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket) › T7 Taksit aktarımını Geri Al: aktarımın açtığı cari yalnız gerçekten boşsa kalıcı silinir (taslak fatura, Silinenler'deki tahsilat ve fatura cariyi tutar)",
+      "konum": "test/cari-hareket-249.test.mjs:248:3",
+      "hata": "taslaklı, Silinenler'de tahsilatı ve faturası olan cari kalır: {\"plans\":4,\"links\":0,\"payments\":0,\"accountEntries\":0,\"accounts\":4,\"accountsKept\":0} · 0 !== 3 (beklenen 3, gelen 0)"
+    },
+    {
+      "ad": "2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket) › T7 yarıda kesilme (§8/8): Geri Al ikinci carinin hareket sayımında kesilirse hiçbir şey değişmez (kartlar, cariler, aktarım); kesinti kalkınca Geri Al tamamlanır",
+      "konum": "test/cari-hareket-249.test.mjs:284:3",
+      "hata": "ön koşul: kesinti Geri Al'ın içinde gerçekten oluştu · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.9 C1 — hareket tanımı (H1–H14), silme ucu, kart, yarış (bankasız şirket) › T8 yarış (§9, zorla): tahsilatın gövdesi yoldayken hareketsiz cari silinirse tahsilat YAZILMAZ (404), Kasa değişmez",
+      "konum": "test/cari-hareket-249.test.mjs:314:3",
+      "hata": "silinmiş cariye tahsilat yazılmamalı · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 C1 — kaynağı olmayan (yetim) satırlar da hareket › T1 faturası olmayan cari satırı ve faturası olmayan mahsup fişi tek başına cariyi korur",
+      "konum": "test/cari-hareket-249.test.mjs:353:3",
+      "hata": "T1 yetim: 2/2 durum kırmızı · ✗ kaynağı olmayan (yetim) cari satırı: yetim satır: tek hata kodu · ✗ faturası olmayan mahsup fişi: yetim mahsup: hareketli cari silinmemeli — beklenen 409, gelen 500 {\"ok\":false,\"error\":\"Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (gl:120, party:accounts, invoice:orphan, invoice:offset).\",\"code\":\"gate-equivalence\",\"failures\":[{\"c (beklenen 0, gelen 2)"
+    },
+    {
+      "ad": "2.4.9 C1 — banka ve POS: hesaba bağlı tahsilat, POS İptal İadesi fişi (H14) › T2 banka hesabına bağlı tahsilat: aynı kural, tek kod",
+      "konum": "test/cari-hareket-249.test.mjs:375:3",
+      "hata": "banka hesabına bağlı tahsilat: tek hata kodu · + actual - expected · + 'account-bank-linked' (beklenen account-has-movements, gelen account-bank-linked)"
+    },
+    {
+      "ad": "2.4.9 C1 — banka ve POS: hesaba bağlı tahsilat, POS İptal İadesi fişi (H14) › T1 POS'lu faturası silinmiş (Müşteriye İade Edildi) caride yalnız POS İptal İadesi fişi kalır: yine hareket (İLKEYLE H14)",
+      "konum": "test/cari-hareket-249.test.mjs:381:3",
+      "hata": "POS İptal İadesi fişi: hareketli cari silinmemeli — beklenen 409, gelen 200 {\"id\":\"account-7ee0af48-9026-4cc6-894c-987f59e8b455\"} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 C1 — kilitli dönem ve iki şirket › T5 iki şirket: 002'deki hareketli cari silinmez, 001'deki aynı adlı hareketsiz cari silinir",
+      "konum": "test/cari-hareket-249.test.mjs:403:3",
+      "hata": "002 hareketli cari: 200 {\"id\":\"account-904c4777-b71a-478d-9469-327cc9b88751\"} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 C1 — kilitli dönem ve iki şirket › T5 kilitli dönem: hareketli cari kilitliyken de account-has-movements (kilidi açmak silmeye yetmez); hareketsiz cari kilitliyken silinir",
+      "konum": "test/cari-hareket-249.test.mjs:419:3",
+      "hata": "kilitli dönemde hareketli: tek hata kodu · + actual - expected · + 'period-locked' (beklenen account-has-movements, gelen period-locked)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a5bbd50c43062a283/docs/kanit/2026-11-03/c1/eski-35e90e47-cari-hareket-249.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47",
+  "ham_cikti_sha256": "163670357f1c18fd0c11cf995ff69746eb59377a38c77497c85914bce672e2af",
+  "ham_cikti_bayt": 23692
+}

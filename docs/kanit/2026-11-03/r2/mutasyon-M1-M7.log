@@ -1,0 +1,26 @@
+ok 1 - M1 önbellek okunmaz (her çağrıda tam tarama — eski davranış): çıkış 1; kırmızı 1 hücre [YAPI: elle alıcı listesi, otomatik önizl]; beklenen [YAPI] tuttu
+#   ileti: iade faturaları cari başına yeniden taranıyor: {"elleTumune":16,"elleSecili":16,"onizleme":16,"kartDongusu":32} (cari 16; beklenen her istekte ≤ 1)
+ok 2 - M2 işlem içinde de saklanır / okunur: çıkış 1; kırmızı 1 hücre [BAYATLIK — doğrudan yazım, eski / bozuk ]; beklenen [BAYATLIK — doğrudan yazım] tuttu
+#   ileti: geri alınan işlemin kesintisi kaldı
+ok 3 - M3 damgada data_version yok (başka bağlantının yazması görülmez): çıkış 1; kırmızı 1 hücre [BAYATLIK — doğrudan yazım, eski / bozuk ]; beklenen [BAYATLIK — doğrudan yazım] tuttu
+#   ileti: başka bağlantının yazması görülmedi
+ok 4 - M4 damgada total_changes yok (bu bağlantının yazması görülmez): çıkış 1; kırmızı 3 hücre [EŞDEĞERLİK: her kartın kesintisi eski ku | BAYATLIK — API: iade düzenlenince, silin | BAYATLIK — doğrudan yazım, eski / bozuk ]; beklenen [BAYATLIK — API | BAYATLIK — doğrudan yazım] tuttu
+#   ileti: işlem içi yol farklı: account-35e82d2a-077e-4249-8187-81e4e187f55c
+#   ileti: Expected values to be strictly equal:
+#   ileti: özgün: kesinti
+ok 5 - M5 kesinti yanlış karta (belgenin ilk kartına): çıkış 1; kırmızı 3 hücre [EŞDEĞERLİK: her kartın kesintisi eski ku | BAYATLIK — API: iade düzenlenince, silin | BAYATLIK — doğrudan yazım, eski / bozuk ]; beklenen [EŞDEĞERLİK] tuttu
+#   ileti: Tek İade İki Kart 1000: kesinti eski kuraldan farklı
+#   ileti: Tek İade İki Kart 1000: API sonrası eski kuraldan farklı
+#   ileti: Tek İade İki Kart 1000: son durumda eski kuraldan farklı
+ok 6 - M6 kapsam dışı iade sayılır (iptal / taslak — status süzgeci yok): çıkış 1; kırmızı 3 hücre [EŞDEĞERLİK: her kartın kesintisi eski ku | BAYATLIK — API: iade düzenlenince, silin | BAYATLIK — doğrudan yazım, eski / bozuk ]; beklenen [EŞDEĞERLİK] tuttu
+#   ileti: İptal Edilen İade 2000: kesinti eski kuraldan farklı
+#   ileti: iptal edilen iade
+#   ileti: Kısmi İade 2000: son durumda eski kuraldan farklı
+ok 7 - M7 damga hiç değişmez (bayat değer): çıkış 1; kırmızı 3 hücre [EŞDEĞERLİK: her kartın kesintisi eski ku | BAYATLIK — API: iade düzenlenince, silin | BAYATLIK — doğrudan yazım, eski / bozuk ]; beklenen [BAYATLIK — API | BAYATLIK — doğrudan yazım] tuttu
+#   ileti: işlem içi yol farklı: account-2fa59ffd-dae2-41d6-bb87-981063b09bc3
+#   ileti: Expected values to be strictly equal:
+#   ileti: özgün: kesinti
+1..7
+# tests 7
+# pass 7
+# fail 0

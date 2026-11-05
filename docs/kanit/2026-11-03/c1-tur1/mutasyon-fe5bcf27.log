@@ -1,0 +1,12 @@
+YAKALANDI	M1 H14: POS taraması yeniden her satırsız başlıkta	kırmızı: E2	beklenen: E2	neden: true
+YAKALANDI	M2 H14: yanlış tür adı (pos_refund)	kırmızı: E1,E2	beklenen: E1	neden: true
+YAKALANDI	M3 detail withRemaining:false yine silme engeli hesaplar	kırmızı: E3	beklenen: E3	neden: true
+YAKALANDI	M4 kart tahsilatı/iadesi: prepare'de kart denetimi yok	kırmızı: Y1	beklenen: Y1	neden: true
+YAKALANDI	M5 tahsilat düzeltme: prepare'de kart denetimi yok	kırmızı: Y2	beklenen: Y2	neden: true
+YAKALANDI	M6 taksit ekleme: işlemde kart denetimi yok	kırmızı: Y3	beklenen: Y3	neden: true
+YAKALANDI	M7 taksit düzeltme: işlemde kart denetimi yok	kırmızı: Y4	beklenen: Y4	neden: true
+YAKALANDI	M8 Silinenler cari notu eski metin	kırmızı: D3	beklenen: D3	neden: true
+# tests 8
+# pass 8
+# fail 0
+[{"ad":"M1 H14: POS taraması yeniden her satırsız başlıkta","dosya":"server/lib/account-movements.mjs","cikis":1,"kirmizi":["E2"],"beklenen":"E2","nedenGorundu":true,"sonuc":"YAKALANDI"},{"ad":"M2 H14: yanlış tür adı (pos_refund)","dosya":"server/lib/account-movements.mjs","cikis":1,"kirmizi":["E1","E2"],"beklenen":"E1","nedenGorundu":true,"sonuc":"YAKALANDI"},{"ad":"M3 detail withRemaining:false yine silme engeli hesaplar","dosya":"server/routes/accounts.mjs","cikis":1,"kirmizi":["E3"],"beklenen":"E3","nedenGorundu":true,"sonuc":"YAKALANDI"},{"ad":"M4 kart tahsilatı/iadesi: prepare'de kart denetimi yok","dosya":"server/routes/plans.mjs","cikis":1,"kirmizi":["Y1"],"beklenen":"Y1","nedenGorundu":true,"sonuc":"YAKALANDI"},{"ad":"M5 tahsilat düzeltme: prepare'de kart denetimi yok","dosya":"server/routes/plans.mjs","cikis":1,"kirmizi":["Y2"],"beklenen":"Y2","nedenGorundu":true,"sonuc":"YAKALANDI"},{"ad":"M6 taksit ekleme: işlemde kart denetimi yok","dosya":"server/routes/plans.mjs","cikis":1,"kirmizi":["Y3"],"beklenen":"Y3","nedenGorundu":true,"sonuc":"YAKALANDI"},{"ad":"M7 taksit düzeltme: işlemde kart denetimi yok","dosya":"server/routes/plans.mjs","cikis":1,"kirmizi":["Y4"],"beklenen":"Y4","nedenGorundu":true,"sonuc":"YAKALANDI"},{"ad":"M8 Silinenler cari notu eski metin","dosya":"server/routes/accounts.mjs","cikis":1,"kirmizi":["D3"],"beklenen":"D3","nedenGorundu":true,"sonuc":"YAKALANDI"}]

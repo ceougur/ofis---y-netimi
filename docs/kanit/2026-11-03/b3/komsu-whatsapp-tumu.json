@@ -1,0 +1,32 @@
+{
+  "ad": "b3/komsu-whatsapp-tumu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-*.test.mjs",
+  "commit": "f71e1e8bc61051ee1c60b7390b89c8dc393baec5",
+  "dal": "worktree-agent-a972c155e62a73ec3",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:04:29.442Z",
+  "sure_sn": 639,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 446,
+    "gecen": 446,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/b3/komsu-whatsapp-tumu.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a972c155e62a73ec3",
+  "ham_cikti_sha256": "402518987de0968833608fe3da35eebc6a7b1d438ef72f93abba23dbd9562679",
+  "ham_cikti_bayt": 194924
+}

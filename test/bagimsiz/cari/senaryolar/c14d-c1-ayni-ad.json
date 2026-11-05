@@ -1,0 +1,28 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "c14d-c1-ayni-ad",
+ "aciklama": "2.4.9 C1.12 / C1.3: aynı adlı iki cariden hareketsizi silinir, tahsilatlısı silinemez; silinen adla yeni cari açılır, Borç Yaz yazılır ve o da silinemez; hareketsiz cari sil → geri yükle → sil → geri yükle → sil; adı değiştirilen (değişiklik geçmişi olan) hareketsiz cari silinir.",
+ "dayanak": "KARARLAR.md §12 C1.12, C1.2, C1.3, C1.7 (KULLANICI İLKE 'cariye bağlı', 'değişiklik geçmişi hareket sayılmaz'; Kalite çıtası 'aynı adlı iki kişi'; KARAR A)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "c-a1", "islem": "cari_ac", "ad": "A1", "isim": "Ayşe Yılmaz", "tarih": "2026-06-01"},
+  {"id": "c-a2", "islem": "cari_ac", "ad": "A2", "isim": "Ayşe Yılmaz", "tarih": "2026-06-01"},
+  {"id": "c-r", "islem": "cari_ac", "ad": "R", "isim": "Rıza Eski", "tarih": "2026-06-01", "tel": "05321234567"},
+  {"id": "t-a1", "islem": "tahsilat", "cari": "A1", "tutar": "250", "tarih": "2026-06-04"},
+  {"id": "sil-a2", "islem": "cari_sil", "cari": "A2"},
+  {"id": "sil-a1", "islem": "cari_sil", "cari": "A1"},
+  {"id": "c-a3", "islem": "cari_ac", "ad": "A3", "isim": "Ayşe Yılmaz", "tarih": "2026-06-05"},
+  {"id": "b-a3", "islem": "borc", "cari": "A3", "tutar": "400", "tarih": "2026-06-05"},
+  {"id": "sil-a3", "islem": "cari_sil", "cari": "A3"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "cg-a2", "islem": "cari_geri_yukle", "cari": "A2"},
+  {"id": "k2", "islem": "kontrol"},
+  {"id": "sil-a2-2", "islem": "cari_sil", "cari": "A2"},
+  {"id": "cg-a2-2", "islem": "cari_geri_yukle", "cari": "A2"},
+  {"id": "sil-a2-3", "islem": "cari_sil", "cari": "A2"},
+  {"id": "sil-a2-4", "islem": "cari_sil", "cari": "A2"},
+  {"id": "ad-r", "islem": "cari_adlandir", "cari": "R", "isim": "Rıza Yeni"},
+  {"id": "sil-r", "islem": "cari_sil", "cari": "R"},
+  {"id": "k3", "islem": "kontrol"}
+ ]
+}

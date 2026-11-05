@@ -1,0 +1,194 @@
+TAP version 13
+# \# B3 T1 ölçüm: [[1,1664,122880,14287,0],[2,47,241664,24337,0],[3,46,356352,30307,0],[4,45,475136,40357,0],[5,46,593920,50407,0],[6,54,708608,56377,0],[7,40,827392,66427,0],[8,50,946176,76477,0],[9,57,1060864,82447,0],[10,50,1179648,92497,0]]
+# Subtest: 2.4.9 B3 T1 — toplu gönderimler şirket dosyasında kalıcı boşluk bırakmaz
+    # Subtest: 10 tur × 200 ekstre (kabul + bakım): wa_jobs sayfa içi boş ≤ %10, bakımdan sonra wa_job_pdfs 0, tur başına sayfa artışı sabit
+    ok 1 - 10 tur × 200 ekstre (kabul + bakım): wa_jobs sayfa içi boş ≤ %10, bakımdan sonra wa_job_pdfs 0, tur başına sayfa artışı sabit
+      ---
+      duration_ms: 36226.047919
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.4.9 B3 T1 — toplu gönderimler şirket dosyasında kalıcı boşluk bırakmaz
+  ---
+  duration_ms: 36227.110659
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45)
+    # Subtest: fikstür v2.4.8'in ürettiği gibi: 002 v44, A Duraklatıldı + B kabul (bakımsız) PDF'leri satırda, C'nin PDF'i silinmiş; yedekte aynısı
+    ok 1 - fikstür v2.4.8'in ürettiği gibi: 002 v44, A Duraklatıldı + B kabul (bakımsız) PDF'leri satırda, C'nin PDF'i silinmiş; yedekte aynısı
+      ---
+      duration_ms: 22.49965
+      type: 'test'
+      ...
+    # Subtest: T3 güncelleme: yeni programla açılınca PDF'ler wa_job_pdfs'e AYNI baytlarla taşınır, satır boşalır; bakım kesinleşeni siler; 31 gün sonra Devam Et AYNI PDF'i gönderir; ikinci açılışta göç yok
+    not ok 2 - T3 güncelleme: yeni programla açılınca PDF'ler wa_job_pdfs'e AYNI baytlarla taşınır, satır boşalır; bakım kesinleşeni siler; 31 gün sonra Devam Et AYNI PDF'i gönderir; ikinci açılışta göç yok
+      ---
+      duration_ms: 440.935182
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M6-f71e1e8b/test/whatsapp-b3-goc-249.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Meta'ya bir kez A'nın v2.4.8'de dondurulmuş PDF'i (sha aynı)
+        + actual - expected
+        
+          [
+            {
+              name: 'Ekstre Ayşe Yılmaz 01.11.2026-03.11.2026.pdf',
+        +     sha: '735c3b96fdceacb8636a10112f7fcd534e675f573c12435e2b9c25239eb74f61'
+        -     sha: '3f3fac44894e987ee6b77f2169b5b90103b912655d376a73836b798f0ad66db6'
+            }
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          name: 'Ekstre Ayşe Yılmaz 01.11.2026-03.11.2026.pdf'
+          sha: '3f3fac44894e987ee6b77f2169b5b90103b912655d376a73836b798f0ad66db6'
+      actual:
+        0:
+          name: 'Ekstre Ayşe Yılmaz 01.11.2026-03.11.2026.pdf'
+          sha: '735c3b96fdceacb8636a10112f7fcd534e675f573c12435e2b9c25239eb74f61'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M6-f71e1e8b/test/whatsapp-b3-goc-249.test.mjs:139:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3 yarıda kalmış göç: tablo var + bir PDF taşınmış ama şema 44 (kesinti) → yeniden açılış göçü tamamlar; taşınmış satır korunur, eksik eklenir
+    ok 3 - T3 yarıda kalmış göç: tablo var + bir PDF taşınmış ama şema 44 (kesinti) → yeniden açılış göçü tamamlar; taşınmış satır korunur, eksik eklenir
+      ---
+      duration_ms: 250.86746
+      type: 'test'
+      ...
+    # Subtest: T4 geri yükleme: v2.4.8'de alınmış yedek (v44, A'nın PDF'i satırda) yeni programa geri yüklenince göç v45 yedek dosyasında koşar; eski toplu iş durur (§7a 26), bakım PDF'leri siler, ileti gitmez
+    ok 4 - T4 geri yükleme: v2.4.8'de alınmış yedek (v44, A'nın PDF'i satırda) yeni programa geri yüklenince göç v45 yedek dosyasında koşar; eski toplu iş durur (§7a 26), bakım PDF'leri siler, ileti gitmez
+      ---
+      duration_ms: 413.805044
+      type: 'test'
+      ...
+    # Subtest: T4 Ayır: paylaşılan 002 dosyası ayrılınca kopya (VACUUM INTO) wa_job_pdfs'i aynı baytlarla taşır
+    ok 5 - T4 Ayır: paylaşılan 002 dosyası ayrılınca kopya (VACUUM INTO) wa_job_pdfs'i aynı baytlarla taşır
+      ---
+      duration_ms: 373.265428
+      type: 'test'
+      ...
+    1..5
+not ok 2 - 2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45)
+  ---
+  duration_ms: 1502.963165
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M6-f71e1e8b/test/whatsapp-b3-goc-249.test.mjs:99:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok
+    # Subtest: T2 eşdeğerlik: 131056 → Bağlantı Bekleniyor → Duraklat → 31 gün → Devam Et (arada bakım turları, tahsilat): PDF iki kez yüklenir, BAYT BAYT aynı; ileti ilk hazırlığın bakiyesiyle
+    not ok 1 - T2 eşdeğerlik: 131056 → Bağlantı Bekleniyor → Duraklat → 31 gün → Devam Et (arada bakım turları, tahsilat): PDF iki kez yüklenir, BAYT BAYT aynı; ileti ilk hazırlığın bakiyesiyle
+      ---
+      duration_ms: 736.422772
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M6-f71e1e8b/test/whatsapp-b3-pdf-249.test.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeniden yüklenen PDF ilk hazırlıktakiyle BAYT BAYT aynı (dondurulmuş)
+        + actual - expected
+        
+        + '379bf763d410774024c7ba048d43a462b91ce4ed06958deb0f62023026c637d2'
+        - '59ff10937b8da8a9a34e81c12c934399d667191ad58e4acea0d588cfb4631987'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '59ff10937b8da8a9a34e81c12c934399d667191ad58e4acea0d588cfb4631987'
+      actual: '379bf763d410774024c7ba048d43a462b91ce4ed06958deb0f62023026c637d2'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M6-f71e1e8b/test/whatsapp-b3-pdf-249.test.mjs:91:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: T2b yaşam döngüsü: A 131056 (Bekliyor), B 131026 (Başarısız), C kabul → bakım yalnız A'nınkini tutar; Duraklat'ta durur; İptal Et → bakım siler (eski kodla aynı sayılar)
+    ok 2 - T2b yaşam döngüsü: A 131056 (Bekliyor), B 131026 (Başarısız), C kabul → bakım yalnız A'nınkini tutar; Duraklat'ta durur; İptal Et → bakım siler (eski kodla aynı sayılar)
+      ---
+      duration_ms: 479.565804
+      type: 'test'
+      ...
+    # Subtest: T5 Şirket Verisini Sıfırla (Tüm Hareketleri Sil), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+    ok 3 - T5 Şirket Verisini Sıfırla (Tüm Hareketleri Sil), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+      ---
+      duration_ms: 511.589377
+      type: 'test'
+      ...
+    # Subtest: T5 Şirket Verisini Sıfırla (Tümünü Sıfırla), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+    ok 4 - T5 Şirket Verisini Sıfırla (Tümünü Sıfırla), açık iş varken: wa_job_pdfs bakımdan ÖNCE boşalır
+      ---
+      duration_ms: 566.385583
+      type: 'test'
+      ...
+    # Subtest: T6 yarıda kesilme: PDF yazımı (disk dolu) düşerse işin satırı da geri alınır — prepared_at boş, değişken yok; sonraki tur temiz hazırlar, PDF bir kez gider
+    ok 5 - T6 yarıda kesilme: PDF yazımı (disk dolu) düşerse işin satırı da geri alınır — prepared_at boş, değişken yok; sonraki tur temiz hazırlar, PDF bir kez gider
+      ---
+      duration_ms: 525.792513
+      type: 'test'
+      ...
+    # Subtest: T7 kilit: bakımın PDF silmesi kilide takılınca tur bırakılır (İş N / O1), iş ve defter değişmez; kilit kalkınca sonraki bakım siler
+    ok 6 - T7 kilit: bakımın PDF silmesi kilide takılınca tur bırakılır (İş N / O1), iş ve defter değişmez; kilit kalkınca sonraki bakım siler
+      ---
+      duration_ms: 400.277687
+      type: 'test'
+      ...
+    # Subtest: T8 kaynak tarama: wa_jobs.pdf_blob yalnız göç dosyasında anılır (yazım da okuma da yok; CRLF bilen)
+    ok 7 - T8 kaynak tarama: wa_jobs.pdf_blob yalnız göç dosyasında anılır (yazım da okuma da yok; CRLF bilen)
+      ---
+      duration_ms: 63.238775
+      type: 'test'
+      ...
+    # Subtest: T9 iki şirket: 001'in Duraklatıldı işinin PDF'i 002'nin gönderimi + bakımından etkilenmez; 002'nin PDF'i kendi dosyasında, kabulden sonra silinir; 31 gün sonra 001 AYNI baytları gönderir
+    not ok 8 - T9 iki şirket: 001'in Duraklatıldı işinin PDF'i 002'nin gönderimi + bakımından etkilenmez; 002'nin PDF'i kendi dosyasında, kabulden sonra silinir; 31 gün sonra 001 AYNI baytları gönderir
+      ---
+      duration_ms: 727.003913
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M6-f71e1e8b/test/whatsapp-b3-pdf-249.test.mjs:242:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        001 dondurulmuş baytları gönderdi
+        + actual - expected
+        
+        + 'f7750a9eeb17ec01dc11a31bf9919c03f3d746b7b85653a2737fdfc97b4f17e0'
+        - '59ff10937b8da8a9a34e81c12c934399d667191ad58e4acea0d588cfb4631987'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '59ff10937b8da8a9a34e81c12c934399d667191ad58e4acea0d588cfb4631987'
+      actual: 'f7750a9eeb17ec01dc11a31bf9919c03f3d746b7b85653a2737fdfc97b4f17e0'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M6-f71e1e8b/test/whatsapp-b3-pdf-249.test.mjs:284:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 3 - 2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok
+  ---
+  duration_ms: 4013.235474
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M6-f71e1e8b/test/whatsapp-b3-pdf-249.test.mjs:58:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 14
+# suites 3
+# pass 11
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 42976.393514

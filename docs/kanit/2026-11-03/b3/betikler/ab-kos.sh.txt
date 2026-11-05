@@ -1,0 +1,15 @@
+#!/bin/bash
+# Eski (e3f74093 ayrı kopya) / yeni (worktree) dönüşümlü 5 çift; flock /tmp/destekofis-olcum.lock; TAP özeti sonda (kanit.mjs kos için).
+SP=/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad
+WT=/home/user/ofis---y-netimi/.claude/worktrees/agent-a972c155e62a73ec3
+n=0; ok=0
+for i in 1 2 3 4 5; do
+  for root in "$SP/b3a972-eski-e3f74093" "$WT"; do
+    n=$((n+1))
+    out=$(flock /tmp/destekofis-olcum.lock env HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning "$SP/b3a972-betik/ab-sure.mjs" "$root" 2>&1 | tail -1)
+    echo "çift $i $out"
+    case "$out" in *'"n":600'*) ok=$((ok+1));; esac
+  done
+done
+echo "1..$n"; echo "# tests $n"; echo "# pass $ok"; echo "# fail $((n-ok))"; echo "# cancelled 0"; echo "# skipped 0"; echo "# todo 0"
+[ "$ok" = "$n" ]

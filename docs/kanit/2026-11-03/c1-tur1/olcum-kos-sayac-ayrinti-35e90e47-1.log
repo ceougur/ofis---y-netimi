@@ -1,0 +1,116 @@
+(node:13140) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "kod": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1-7f3a91/eski-35e90e47",
+ "N": 30,
+ "yuk": [
+  2.44,
+  3.91,
+  4.41
+ ],
+ "parca": {
+  "allEntries": {
+   "p50": 0.064,
+   "enCok": 0.143,
+   "n": 1200,
+   "plan": [
+    "SEARCH account_entries USING COVERING INDEX idx_account_entries_account (account_id=?)"
+   ]
+  },
+  "stock": {
+   "p50": 0.004,
+   "enCok": 0.012,
+   "n": 0,
+   "plan": [
+    "SEARCH account_entries USING INDEX idx_account_entries_source (source=?)"
+   ]
+  },
+  "linkedEntries": {
+   "p50": 1.086,
+   "enCok": 1.149,
+   "n": 1200,
+   "plan": [
+    "SEARCH e USING INDEX idx_account_entries_account (account_id=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH i USING INDEX sqlite_autoindex_invoices_1 (id=?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SEARCH c USING INDEX sqlite_autoindex_cheques_1 (id=?)",
+    "CORRELATED SCALAR SUBQUERY 3",
+    "SEARCH d USING INDEX sqlite_autoindex_doubtful_receivables_1 (id=?)"
+   ]
+  },
+  "invoices": {
+   "p50": 0.032,
+   "enCok": 0.108,
+   "n": 600,
+   "plan": [
+    "SEARCH invoices USING COVERING INDEX idx_invoices_account (account_id=?)"
+   ]
+  },
+  "offsets": {
+   "p50": 0.004,
+   "enCok": 0.004,
+   "n": 0,
+   "plan": [
+    "SEARCH invoice_offsets USING COVERING INDEX idx_invoice_offsets_account (account_id=?)"
+   ]
+  },
+  "plans": {
+   "p50": 0.004,
+   "enCok": 0.01,
+   "n": 0,
+   "plan": [
+    "SEARCH plans USING INDEX idx_plans_account (account_id=?)"
+   ]
+  },
+  "cheques": {
+   "p50": 0.004,
+   "enCok": 0.008,
+   "n": 0,
+   "plan": [
+    "SEARCH cheques USING INDEX idx_cheques_open (deleted_at=?)"
+   ]
+  },
+  "doubtful": {
+   "p50": 0.004,
+   "enCok": 0.004,
+   "n": 0,
+   "plan": [
+    "SEARCH doubtful_receivables USING INDEX idx_doubtful_receivables_account (account_id=?)"
+   ]
+  },
+  "vouchers": {
+   "p50": 0.297,
+   "enCok": 0.39,
+   "n": 0,
+   "plan": [
+    "SEARCH e USING INDEX idx_fin_events_party (party_id=?)",
+    "CORRELATED SCALAR SUBQUERY 1",
+    "SEARCH l USING COVERING INDEX idx_bank_lines_event (event_id=?)",
+    "CORRELATED SCALAR SUBQUERY 2",
+    "SCAN s"
+   ]
+  }
+ },
+ "kartDetail": {
+  "p50": 23.891,
+  "enCok": 33.768
+ },
+ "defterDetail": {
+  "p50": 15.584,
+  "enCok": 23.652
+ },
+ "kartJsonBayt": 1141265,
+ "kartHttp": {
+  "p50": 44.708,
+  "enCok": 66.835
+ },
+ "veri": {
+  "cariSatiri": 1200,
+  "fatura": 600,
+  "fis": 1200
+ }
+}
+# tests 1
+# pass 1
+# fail 0

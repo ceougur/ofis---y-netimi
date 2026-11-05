@@ -1,0 +1,32 @@
+{
+  "ad": "db-tx/yeni-dosya-ve-genel-Istanbul",
+  "komut": "node --test --disable-warning=ExperimentalWarning test/db-tx-commit-hata-249.test.mjs test/db-bozuk-dosya-tutamak-248.test.mjs test/iade-kesinti-tarama-249.test.mjs test/banka-210-post-statik.test.mjs test/banka-210-kapi-kapsam.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/ci-kapi-listesi.test.mjs test/static.test.mjs",
+  "commit": "3fdce131056ced9d9fd38bfc9e18da02931bc274",
+  "dal": "worktree-agent-ac9309ccb308a3754",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T22:38:29.051Z",
+  "sure_sn": 4.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 73,
+    "gecen": 73,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/db-tx/yeni-dosya-ve-genel-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac9309ccb308a3754",
+  "ham_cikti_sha256": "d549069a44488f5497474c5bfbb7438686257ba0b2a4529a1b9056e6da4495de",
+  "ham_cikti_bayt": 25240
+}

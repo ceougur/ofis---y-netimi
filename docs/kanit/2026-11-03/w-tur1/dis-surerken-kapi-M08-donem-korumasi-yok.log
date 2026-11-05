@@ -1,0 +1,52 @@
+TAP version 13
+# (node:19982) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# SONUC kok=mut-M08-donem-korumasi-yok-6fd4d020 ensureDelay=0 denetleMs=8 onKosulOlustu=true giden=3 durum=done/
+# Subtest: SÜRERKEN (kapılı) hücresi, Denetle'nin Meta okuması +0 ms
+not ok 1 - SÜRERKEN (kapılı) hücresi, Denetle'nin Meta okuması +0 ms
+  ---
+  duration_ms: 610.879175
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/betik/surerken-kapi-dis.test.mjs:28:3'
+  failureType: 'testCodeFailure'
+  error: 'giden 3'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/betik/surerken-kapi-dis.test.mjs:65:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# SONUC kok=mut-M08-donem-korumasi-yok-6fd4d020 ensureDelay=450 denetleMs=458 onKosulOlustu=true giden=3 durum=done/
+# Subtest: SÜRERKEN (kapılı) hücresi, Denetle'nin Meta okuması +450 ms
+not ok 2 - SÜRERKEN (kapılı) hücresi, Denetle'nin Meta okuması +450 ms
+  ---
+  duration_ms: 931.415682
+  type: 'test'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/betik/surerken-kapi-dis.test.mjs:28:3'
+  failureType: 'testCodeFailure'
+  error: 'giden 3'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/betik/surerken-kapi-dis.test.mjs:65:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1964.907362

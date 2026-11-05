@@ -1,0 +1,128 @@
+{
+  "ad": "b1/c1-kirmizi-linux",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/createapp-acilis-geri-alma-249.test.mjs",
+  "commit": "c81ce36b936b3fee8dfcb41f9512f91f90954668",
+  "dal": "worktree-agent-af2578cdb282be616",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:33:39.885Z",
+  "sure_sn": 38.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 22,
+    "gecen": 3,
+    "basarisiz": 19,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 19 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:237:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; \"(deleted)\" tutamak 0",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:253:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:278:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:353:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:391:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:411:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:448:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:473:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:527:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:552:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:552:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:597:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:597:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/b1/c1-kirmizi-linux.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616",
+  "ham_cikti_sha256": "f6bf1ced95f277a384cfe33b4d6a20cb4bd818c087662e908a6050a10acaf7c4",
+  "ham_cikti_bayt": 39472
+}

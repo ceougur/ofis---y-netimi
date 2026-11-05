@@ -1,0 +1,18 @@
+(node:8487) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+bankaKarti {"A":{"n":60,"p50":41.32,"p95":66.78,"enCok":70.6},"B":{"n":60,"p50":43.72,"p95":53.94,"enCok":64.69},"farkP50":2.4,"farkP95":-12.84,"eslesikFarkP50":1.03,"donguEnCokA":61.44,"donguEnCokB":47}
+faturaListesiAlis {"A":{"n":60,"p50":37.73,"p95":51.71,"enCok":64.46},"B":{"n":60,"p50":40.71,"p95":59.26,"enCok":64.29},"farkP50":2.98,"farkP95":7.55,"eslesikFarkP50":1.77,"donguEnCokA":60.95,"donguEnCokB":58.68}
+faturaListesiHepsi {"A":{"n":60,"p50":35.8,"p95":55.91,"enCok":62.91},"B":{"n":60,"p50":36.81,"p95":53.28,"enCok":60.83},"farkP50":1.01,"farkP95":-2.63,"eslesikFarkP50":-0.01,"donguEnCokA":59.54,"donguEnCokB":50.54}
+iptalIadeliKart {"A":{"n":60,"p50":3.08,"p95":4.27,"enCok":10.04},"B":{"n":60,"p50":2.91,"p95":5.43,"enCok":8.73},"farkP50":-0.17,"farkP95":1.16,"eslesikFarkP50":-0.18,"donguEnCokA":9.46,"donguEnCokB":8.1}
+posMusteriKarti {"A":{"n":60,"p50":5.6,"p95":8.38,"enCok":13.26},"B":{"n":60,"p50":4.91,"p95":9.12,"enCok":11.28},"farkP50":-0.69,"farkP95":0.74,"eslesikFarkP50":-0.6,"donguEnCokA":8.71,"donguEnCokB":7.53}
+bankaKartiDetail {"A":{"n":60,"p50":21.3,"p95":29.39,"enCok":33.29},"B":{"n":60,"p50":22.32,"p95":29.52,"enCok":40.48},"farkP50":1.02}
+yük başta 2.5,2.7,1.8 · sonda 2.98,2.8,1.86
+✓ bankaKarti: kart açılışı C1 öncesine göre p50 2.4 ms, p95 -12.84 ms, eşleşik 1.03 ms (bütçe ≤ +5 ms)
+✓ iptalIadeliKart: kart açılışı C1 öncesine göre p50 -0.17 ms, p95 1.16 ms, eşleşik -0.18 ms (bütçe ≤ +5 ms)
+✓ posMusteriKarti: kart açılışı C1 öncesine göre p50 -0.69 ms, p95 0.74 ms, eşleşik -0.6 ms (bütçe ≤ +5 ms)
+✓ faturaListesiAlis: fatura listesi C1 öncesine döndü — p50 37.73 → 40.71 ms (fark 2.98 ms, p95 7.55 ms)
+✓ faturaListesiHepsi: fatura listesi C1 öncesine döndü — p50 35.8 → 36.81 ms (fark 1.01 ms, p95 -2.63 ms)
+✓ bankaKartiDetail (sunucu tarafı, HTTP'siz): p50 21.3 → 22.32 ms
+# tests 6
+# pass 6
+# fail 0

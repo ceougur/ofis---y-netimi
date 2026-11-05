@@ -1,0 +1,68 @@
+{
+  "ad": "c1-tur1/eski-eaf6b988-c1-tur1-249",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/c1-tur1-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T21:27:34.398Z",
+  "sure_sn": 5.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 2,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404) › Y1 kart tahsilatı ve iadesi (POST …/entries; mobil taksit tahsilatı da bu uç): silinmiş karta satır, makbuz numarası, işlem başlığı yazılmaz; Kasa aynı",
+      "konum": "test/c1-tur1-249.test.mjs:96:3",
+      "hata": "Y1: 2/2 durum kırmızı · ✗ tahsilat (nakit): tahsilat: silinmiş karta yazılmamalı (kayıtlar aynen) — önce {\"entries\":[],\"receipt\":\"\",\"events\":0}, sonra {\"entries\":[{\"kind\":\"in\",\"amount\":100}],\"receipt\":\"1\",\"events\":1} · ✗ iade (nakit ödeme): iade: silinmiş karta yazılmamalı (kayıtlar aynen) — önce {\"entries\":[{\"kind\":\"in\",\"amount\":200}],\"receipt\":\"2\",\"events\":2}, sonra {\"entries\":[{\"kind\":\"in\",\"amount\":200},{\"kind\":\"out\",\"amount\":50}],\"receipt\":\"2\",\"events\":3} (beklenen 0, gelen 2)"
+    },
+    {
+      "ad": "2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404) › Y2 kart tahsilatını düzeltme (PUT …/entries/:id): silinmiş kartın tahsilatı değişmez",
+      "konum": "test/c1-tur1-249.test.mjs:121:3",
+      "hata": "tahsilat düzeltmesi: silinmiş karta yazılmamalı (kayıtlar aynen) — önce {\"entries\":[{\"kind\":\"in\",\"amount\":100}],\"updated\":\"YOK\",\"events\":4}, sonra {\"entries\":[{\"kind\":\"in\",\"amount\":150}],\"updated\":\"2026-10-08T09:00:02.232Z\",\"events\":4} · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404) › Y3 taksit ekleme (POST …/items): silinmiş karta taksit eklenmez",
+      "konum": "test/c1-tur1-249.test.mjs:131:3",
+      "hata": "taksit ekleme: silinmiş karta yazılmamalı (kayıtlar aynen) — önce {\"items\":[{\"dueDate\":\"2026-11-01\",\"amount\":300},{\"dueDate\":\"2026-12-01\",\"amount\":300}]}, sonra {\"items\":[{\"dueDate\":\"2026-11-01\",\"amount\":300},{\"dueDate\":\"2026-12-01\",\"amount\":300},{\"dueDate\":\"2027-01-01\",\"amount\":300}]} · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404) › Y4 taksit düzeltme (PUT …/items/:id): silinmiş kartın taksiti değişmez",
+      "konum": "test/c1-tur1-249.test.mjs:140:3",
+      "hata": "taksit düzeltme: silinmiş karta yazılmamalı (kayıtlar aynen) — önce {\"items\":[{\"dueDate\":\"2026-11-01\",\"amount\":300},{\"dueDate\":\"2026-12-01\",\"amount\":300}]}, sonra {\"items\":[{\"dueDate\":\"2026-11-01\",\"amount\":250},{\"dueDate\":\"2026-12-01\",\"amount\":300}]} · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404) › D3 Silinenler'deki (hareketsiz) cari notu: \"Cari listesine geri döner.\" — hareket ve Kasa anılmaz",
+      "konum": "test/c1-tur1-249.test.mjs:161:3",
+      "hata": "not: “Hareketleriyle Cari listesine geri döner; Kasa yeniden hesaplanır.” · + actual - expected · + 'Hareketleriyle Cari listesine geri döner; Kasa yeniden hesaplanır.' (beklenen Cari listesine geri döner., gelen Hareketleriyle Cari listesine geri döner; Kasa yeniden hesaplanır.)"
+    },
+    {
+      "ad": "2.4.9 C1 TUR 1 — hareket sayacı H14 (banka fişi): POS kaydı yalnız POS İptal İadesi fişinde aranır; fatura kapaması silme engelini hesaplamaz › E3 fatura listesi (ödeme durumu: cari defteri, withRemaining: false) hareket sayacını çalıştırmaz; cari kartının Sil nedeni aynen",
+      "konum": "test/c1-tur1-249.test.mjs:218:3",
+      "hata": "fatura listesinin cari defteri okuması silme engelini (hareket sayacı) hesaplamamalı · 1 !== 0 (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "2.4.9 C1 TUR 1 — hareket sayacı H14 (banka fişi): POS kaydı yalnız POS İptal İadesi fişinde aranır; fatura kapaması silme engelini hesaplamaz › E2 satırsız KDV'li masraf başlığı POS kaydına bakılmadan sayılmaz (tarama yalnız POS İptal İadesi fişinde — ders 47); son test: ham satır",
+      "konum": "test/c1-tur1-249.test.mjs:239:3",
+      "hata": "masraf başlığı (fee) POS kaydı taşısa da banka fişi sayılmaz: POS kaydı yalnız İptal İadesi fişinde aranır · 1 !== 0 (beklenen 0, gelen 1)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-aaf6108593c8ff041/docs/kanit/2026-11-03/c1-tur1/eski-eaf6b988-c1-tur1-249.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t1-7f3a91/eski-eaf6b988",
+  "ham_cikti_sha256": "bae67182a9c2bb6f032d72f586e82694ee47ff3c1aa36743ba81458af21660ab",
+  "ham_cikti_bayt": 14137
+}

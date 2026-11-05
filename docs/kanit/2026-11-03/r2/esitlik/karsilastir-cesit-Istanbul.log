@@ -1,0 +1,21 @@
+# eski e6ee52a8 Europe/Istanbul /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/hazir-cesit
+# yeni 7839d2a7c0dfd4f8e9fbfcb1eb833e28dac87ac4 Europe/Istanbul /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/hazir-cesit
+# kesinti eski {"kart":1935,"kesintili":1102,"toplam":611691.88,"kartliCari":1510,"cari":4286} yeni {"kart":1935,"kesintili":1102,"toplam":611691.88,"kartliCari":1510,"cari":4286}
+ok 1 - aynı veri ve saat (2026-11-03T15:00:00+03:00)
+ok 2 - eşitlik boş değil: 1935 kart, 1102 kesintili, 1510 kartlı cari / 4286
+ok 3 - httpKart: kalem 4286 ↔ 4286, farklı kalem 0
+ok 4 - targets ekstre Bu Ay 2.000: kalem 2000 ↔ 2000, durum 200 ↔ 200, farklı kalem 0
+ok 5 - targets ekstre Bu Ay son 2.000: kalem 2000 ↔ 2000, durum 200 ↔ 200, farklı kalem 0
+ok 6 - targets Tümüne ekstre (tümü): kalem 4271 ↔ 4271, durum 200 ↔ 200, farklı kalem 0
+ok 7 - targets Tümüne mesaj (etkin): kalem 4236 ↔ 4236, durum 200 ↔ 200, farklı kalem 0
+ok 8 - önizleme ekstre son 2.000: kalem 2000 ↔ 2000, durum 200 ↔ 200, farklı kalem 0
+ok 9 - önizleme hatırlatma tümü: kalem 4264 ↔ 4264, durum 200 ↔ 200, farklı kalem 0
+ok 10 - forAccount: kalem 4286 ↔ 4286, farklı kalem 0
+ok 11 - kesintiler: kalem 1935 ↔ 1935, farklı kalem 0
+ok 12 - mizan: kalem 1510 ↔ 1510, farklı kalem 0
+ok 13 - detail: kalem 4286 ↔ 4286, farklı kalem 0
+ok 14 - waFacts: kalem 4286 ↔ 4286, farklı kalem 0
+1..14
+# tests 14
+# pass 14
+# fail 0

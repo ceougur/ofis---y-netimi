@@ -1,0 +1,58 @@
+{
+  "etiket": "eski-35e90e47",
+  "kod": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1kod-eski-35e90e47",
+  "acilisMs": 7065,
+  "node": "v22.22.0",
+  "veri": {
+    "cari": 3014,
+    "cariSatiri": 57227,
+    "enCokSatirliCari": 117,
+    "ornek": 482,
+    "fatura": 261,
+    "cek": 92,
+    "kart": 94,
+    "finEvents": 85954
+  },
+  "kartAcilisi": {
+    "n": 482,
+    "p50": 13.09,
+    "p95": 19.7,
+    "enCok": 187.48,
+    "toplam": 7406,
+    "durumlar": {
+      "200": 482
+    },
+    "kodlar": {},
+    "olayDongusuEnCokMs": 188,
+    "olayDongusuP99Ms": 75
+  },
+  "sil": {
+    "n": 482,
+    "p50": 1.89,
+    "p95": 2.11,
+    "enCok": 7.81,
+    "toplam": 889,
+    "durumlar": {
+      "409": 482
+    },
+    "kodlar": {
+      "?": 11,
+      "account-bank-linked": 471
+    },
+    "olayDongusuEnCokMs": 10,
+    "olayDongusuP99Ms": 8
+  },
+  "geriAl": {
+    "durum": 200,
+    "sureMs": 335,
+    "olayDongusuEnCokMs": 5,
+    "rapor": {
+      "plans": 2000,
+      "links": 0,
+      "payments": 0,
+      "accountEntries": 0,
+      "accounts": 2000,
+      "accountsKept": 0
+    }
+  }
+}

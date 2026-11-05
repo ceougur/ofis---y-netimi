@@ -20,7 +20,10 @@ export function methodInput(value, fallback = "cash") {
   if (Object.hasOwn(METHODS, key)) return key;
   throw new HttpError(400, `Ödeme yolu tanınmadı (${key.slice(0, 40)}). Nakit, Havale / EFT ya da POS / Kredi Kartı seçin.`, { code: "pay-method-invalid", field: "method" });
 }
-export const methodLabel = (value, direction = "") => methodsFor(direction)[value] || METHODS.cash;
+// 2.4.9 UI tur A (ORTA-1): "Kredi Kartına İade" satırı (giriş + kart yolu + bağı bir Kredi Kartı hesabı — routes/accounts.mjs detail() cardRefund işareti)
+// POS tahsilatı değildir; yol adı "Kredi Kartına İade" (istemcide HOF.methodLabel aynı kural). Kayıtlı değer yine `card`.
+export const CARD_REFUND_LABEL = "Kredi Kartına İade";
+export const methodLabel = (value, direction = "", { cardRefund = false } = {}) => (cardRefund === true && value === "card" && direction === "in" ? CARD_REFUND_LABEL : methodsFor(direction)[value] || METHODS.cash);
 
 // Eksi bakiye denetimi (v2.0.13): Logo/Netsis'teki "kasa/banka eksi bakiye kontrolü" parametresinin karşılığı.
 //   off   — denetim yok (ör. kredili mevduat hesabı)

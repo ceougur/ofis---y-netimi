@@ -54,7 +54,8 @@
       // 2.3.0 (İz 3.2; plan §4.6 "ödeme iadesi (giriş) → Kredi Kartı"): "Kredi Kartına İade" işaretliyse tedarikçi parayı firmanın kredi kartına iade etti.
       // 2.4.3 (keşif C2): tanımlı POS seçiliyken (pos: "single" | "many") metin seçilen POS'u ve valörü anlatır; "Hesabı Atanmamış Eski Hareketler"
       // yalnız hiç POS tanımlı değilken (formun kendi önizlemesiyle çelişmesin).
-      card: (picked, none, refund, pos) => (refund ? (none ? "Tedarikçi parayı kredi kartımıza iade etti: bakiyeden düşer; kartın açılışından önceki hareket olduğu için hiçbir kartın borcuna yazılmaz, Hesabı Atanmamış Eski Hareketler'de (POS / Kart) kalır." : picked ? "Tedarikçi parayı kredi kartımıza iade etti: bakiyeden düşer, seçilen kredi kartının borcu azalır; POS satışı oluşmaz, Kasa değişmez." : "Tedarikçi parayı kredi kartımıza iade etti: kredi kartı tanımlanmadığı için Hesabı Atanmamış Eski Hareketler'e (POS / Kart) yazılır.") : pos === "single" || pos === "many" ? "Cariden POS ile tahsil edildi: bakiyeden düşer; seçilen POS'a yazılır, valör gününde komisyonu düşülerek POS'un bağlı olduğu banka hesabına geçer (aşağıdaki önizleme); Kasa'ya girmez, makbuzu alınır." : "Cariden POS ile tahsil edildi: bakiyeden düşer; POS tanımlı olmadığı için Kasa'ya girmez, Banka → Hesabı Atanmamış Eski Hareketler'de POS / Kart olarak görünür; makbuzu alınır."),
+      // 2.4.9 P1-b: who — kutuyu işaretleyen carinin türü ("Müşteri" müşteride, öbürlerinde "Tedarikçi"; formun data-refund-who'su).
+      card: (picked, none, refund, pos, who = "Tedarikçi") => (refund ? (none ? `${who} parayı kredi kartımıza iade etti: bakiyeden düşer; kartın açılışından önceki hareket olduğu için hiçbir kartın borcuna yazılmaz, Hesabı Atanmamış Eski Hareketler'de (POS / Kart) kalır.` : picked ? `${who} parayı kredi kartımıza iade etti: bakiyeden düşer, seçilen kredi kartının borcu azalır; POS satışı oluşmaz, Kasa değişmez.` : `${who} parayı kredi kartımıza iade etti: Kredi Kartına İade için önce bir kredi kartı tanımlayın; kart tanımlanmadan kaydedilemez.`) : pos === "single" || pos === "many" ? "Cariden POS ile tahsil edildi: bakiyeden düşer; seçilen POS'a yazılır, valör gününde komisyonu düşülerek POS'un bağlı olduğu banka hesabına geçer (aşağıdaki önizleme); Kasa'ya girmez, makbuzu alınır." : "Cariden POS ile tahsil edildi: bakiyeden düşer; POS tanımlı olmadığı için Kasa'ya girmez, Banka → Hesabı Atanmamış Eski Hareketler'de POS / Kart olarak görünür; makbuzu alınır."),
       cheque: () => "Cariden çek / senet alındı: evrak formu açılır; evrak portföye girer, carinin bakiyesinden düşer, Kasa değişmez.",
     },
     out: {
@@ -75,9 +76,12 @@
     const method = form?.querySelector('[name="method"]')?.value || "cash";
     // 2.3.0 (İz 3.2): tahsilatta kart yolu POS'tur; "Kredi Kartına İade" işaretliyse kart seçicisi (kart borcu azalır).
     const refund = method === "card" && Boolean(form?.querySelector('input[name="cardRefund"]')?.checked);
-    const pick = method === "bank" ? form?.querySelector('[data-bank-pick]:not([data-bank-pick="card"])') : method === "card" && (type === "out" || refund) ? form?.querySelector('[data-bank-pick="card"]') : null;
+    // 2.4.9 UI tur A (ORTA-2): "Kredi Kartına İade"de kart seçicisi "Kredi Kartı Tanımla" kipindeyse (tanımlı kart yok) kart seçilmiş sayılmaz — sunucu
+    // kart ister (400), satır hesapsız yazılmaz; metin "önce bir kredi kartı tanımlayın" der (ödemede kart yokken hareket hesapsız yazılır, değişmez).
+    const cardPick = method === "card" && (type === "out" || refund) ? form?.querySelector('[data-bank-pick="card"]') : null;
+    const pick = method === "bank" ? form?.querySelector('[data-bank-pick]:not([data-bank-pick="card"])') : refund && cardPick?.querySelector("[data-bank-define-box]") ? null : cardPick;
     const pos = method === "card" && !refund ? form?.querySelector('[data-pos-pick="sale"]')?.dataset.posMode || "" : "";
-    const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick), pick?.querySelector("select")?.value === "none", refund, pos);
+    const text = ENTRY_HELP_BY_METHOD[type]?.[method]?.(Boolean(pick), pick?.querySelector("select")?.value === "none", refund, pos, form?.dataset.refundWho || undefined);
     if (intro && text) intro.textContent = wrap(text);
   }
   const LEDGER_FILTERS = [
@@ -354,7 +358,7 @@
       const parts = [entry.dueDate ? `Vade ${HOF.formatDate(entry.dueDate)}` : "", entry.expectedDate ? `Beklenen Ödeme ${HOF.formatDate(entry.expectedDate)}` : "", Number.isFinite(left) ? (left > 0.004 ? `Kalan ${money(left)}` : "Kapandı") : ""].filter(Boolean);
       return `<small class="hof-acc-due" data-entry-due="${esc(entry.id)}">${esc(parts.join(" · "))}</small>`;
     };
-    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.method ? ` <span class="hof-method-tag is-${esc(line.method)}">${esc(HOF.methodLabel(line.method, line.kind === "in" || line.kind === "out" ? line.kind : ""))}</span>` : ""}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}${line.invoiceId && line.origin === "account" ? ` <a href="#" class="hof-plan-receipt" data-open-invoice="${esc(line.invoiceId)}" title="Bu kayıt seçilen faturayı kapatır">Faturaya Bağlı</a>` : ""}${line.refundOf && line.origin === "account" ? ` <span class="hof-plan-receipt" data-refund-of="${esc(line.refundOf)}" title="${esc(`Geri ödenen iade: ${entryById.get(line.id)?.refundLabel || "iade"}`)}">İadeye Bağlı</span>` : ""}${line.doubtfulNormal ? ` <span class="hof-plan-receipt" data-doubtful-normal title="Şüpheli alacaktan düşmedi; normal cari hesaba (120) işlendi">Normal Cariye İşlendi</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}${dueNote(line)}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
+    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.method ? ` <span class="hof-method-tag is-${esc(line.method)}"${entryById.get(line.id)?.cardRefund === true ? " data-card-refund" : ""}>${esc(HOF.methodLabel(line.method, line.kind === "in" || line.kind === "out" ? line.kind : "", { cardRefund: entryById.get(line.id)?.cardRefund === true }))}</span>` : ""}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}${line.invoiceId && line.origin === "account" ? ` <a href="#" class="hof-plan-receipt" data-open-invoice="${esc(line.invoiceId)}" title="Bu kayıt seçilen faturayı kapatır">Faturaya Bağlı</a>` : ""}${line.refundOf && line.origin === "account" ? ` <span class="hof-plan-receipt" data-refund-of="${esc(line.refundOf)}" title="${esc(`Geri ödenen iade: ${entryById.get(line.id)?.refundLabel || "iade"}`)}">İadeye Bağlı</span>` : ""}${line.doubtfulNormal ? ` <span class="hof-plan-receipt" data-doubtful-normal title="Şüpheli alacaktan düşmedi; normal cari hesaba (120) işlendi">Normal Cariye İşlendi</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}${dueNote(line)}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
     const planRow = plan => `<tr data-open-plan="${esc(plan.id)}" tabindex="0" class="is-${esc(plan.state)}"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${plan.itemCount ? `${plan.itemCount} taksit` : "Taksit kurulmadı"}${plan.next ? ` · sıradaki ${esc(HOF.formatDate(plan.next.dueDate))}` : ""}</small></td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${plan.status === "closed" ? '<span class="hof-plan-badge is-muted">Kapalı</span>' : plan.state === "overdue" ? `<span class="hof-plan-badge is-late">${plan.totals.overdueCount} taksit gecikti</span>` : plan.state === "done" ? '<span class="hof-plan-badge is-done">Tamamlandı</span>' : '<span class="hof-plan-badge is-info">Devam Ediyor</span>'}</td></tr>`;
     const caseCell = account.caseKey
       ? account.caseSource && HOF.datasetKey && account.caseSource !== HOF.datasetKey
@@ -1036,6 +1040,13 @@
     // v2.1.0 Aşama 5: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
     const requestId = HOF.requestId();
     const money_ = type === "in" || type === "out";
+    // 2.4.9 P1: "Kredi Kartına İade" kutusunun koşulu bir kez; alan da kart seçicisi de bu değerden. 2.4.3 C13 kutuyu müşteride kaldırdı, kart seçicisi her
+    // tahsilatta kaldı: kutusuz formda seçici yol Kredi Kartı iken açılıyordu (2+ kartta zorunlu "Kredi Kartı", seçilince sunucu 400; 0/1 kartta yanlış
+    // "Kredi Kartı Tanımla" / "kredi kartına yazılır"). Müşteride kart yolu POS'tur (plan §4.6); eski cardRefund satırının düzeltmesinde kutu ve seçici kalır.
+    // 2.4.9 P1-b (kullanıcı kararı 03.11.2026): müşteride kutu, bu cariye kredi kartıyla yapılmış bir Ödeme varken de görünür (hasCardPayment; şirket kartıyla
+    // ödenen paranın müşteriden karta iadesi); davranış tedarikçideki gibi. Eski cardRefund satırının düzeltmesinde kutu yine kalır.
+    const refundBox = type === "in" && Boolean(HOF.bank?.attachPicker) && (account.type !== "customer" || entry?.cardRefund === true || account.hasCardPayment === true);
+    const refundWho = account.type === "customer" ? "Müşteri" : "Tedarikçi";
     HOF.formModal({
       title: entry ? ENTRY_EDIT_LABEL[type] : ENTRY_LABEL[type],
       // 2.4.3 (keşif A1/A21): aynı adlı cariler karışmasın — başlıkta Cari No ve telefon (kayıt kartından açılan tahsilat hangi cariye yazılacak).
@@ -1049,7 +1060,7 @@
           : []),
         // 2.3.0 (İz 3.2; plan §4.6 "alıştan iade, ödeme iadesi (giriş) → Kredi Kartı; POS satışı oluşmaz, 309 düşer"): tahsilatta Kredi Kartı yolu POS'tur;
         // tedarikçi parayı firmanın kredi kartına iade ettiyse bu kutu işaretlenir → POS alanı yerine kredi kartı seçicisi (yalnız yol Kredi Kartı iken görünür).
-        ...(type === "in" && HOF.bank?.attachPicker && (account.type !== "customer" || entry?.cardRefund === true) ? [{ name: "cardRefund", label: "Kredi Kartına İade (tedarikçi parayı firmanın kredi kartına iade etti; POS tahsilatı değil)", type: "checkbox", value: entry?.cardRefund === true }] : []),
+        ...(refundBox ? [{ name: "cardRefund", label: `Kredi Kartına İade (${refundWho.toLocaleLowerCase("tr-TR")} parayı firmanın kredi kartına iade etti; POS tahsilatı değil)`, type: "checkbox", value: entry?.cardRefund === true }] : []),
         // Karar 15.10.2026 (plan §3.11b/2): şüpheli kaydı AÇIK müşteride tahsilat varsayılan şüpheliden düşer; bu kutu işaretlenirse satır normal
         // cari hesapta (120) kalır. Yalnız müşteri + açık şüpheli varken görünür; fatura peşini ve Kapatılacak Fatura bağlı tahsilat zaten normaldir.
         ...(type === "in" && account.type === "customer" && (account.doubtful?.openMinor || 0) > 0 ? [{ name: "doubtfulSkip", label: "Normal Cari Hesaba İşle (şüpheli alacaktan düşmez; satır 120 Alıcılar'da kalır)", type: "checkbox", value: entry?.doubtfulSkip === true }] : []),
@@ -1066,7 +1077,7 @@
       onOpen: dialog => {
         if (type === "debt" || type === "credit") wireDueMin(dialog, "date", ["dueDate", "expectedDate"]);
         // K2 (plan §3.7 #3, §8.9): ödemede "Kredi Kartı" seçilince Kurumsal Kart (tahsilatta kart yolu POS'tur; seçici yok).
-        const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : type === "in" ? { value: entry?.cardRefund === true ? entry.finRef || "" : "", keepLabel: "" } : null;
+        const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : refundBox ? { value: entry?.cardRefund === true ? entry.finRef || "" : "", keepLabel: "" } : null;
         // 2.7: seçicide bakiye — tahsilat hesaba girer, ödeme çıkar (kartla ödeme kart borcunu artırır); düzeltmede eski tutar bakiyede (original).
         const original = entry && (entry.method === "bank" || entry.method === "card") && entry.finRef ? { ref: entry.finRef, amount: entry.amount, date: entry.date } : null;
         // 2.2.0 (İz 3.2): tahsilatta kart yolu POS'tur — POS, POS Taksit Sayısı, Provizyon No, Kartın Son 4 Hanesi ve önizleme (düzeltmede satırın
@@ -1075,6 +1086,7 @@
         const picker = money_ && HOF.bank?.attachPicker ? HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card, pos, direction: type === "out" ? "out" : "in", original }) : null;
         // Ek iş B: açıklama yola göre (seçici yerleşince ve yol değişince).
         if (money_) {
+          if (refundBox && dialog.querySelector("form")) dialog.querySelector("form").dataset.refundWho = refundWho;
           // "Kredi Kartına İade" kutusu yalnız yol Kredi Kartı iken görünür.
           const syncCardRefund = () => {
             const form = dialog.querySelector("form");
@@ -1384,7 +1396,8 @@
   async function deleteAccount(account) {
     // 2.4.3 (keşif A5): silinemeyen caride düğme pasiftir; yine de basılırsa (eski görünüm) onay sorulmadan nedeni söylenir.
     if (account.deleteBlock) return HOF.toast(account.deleteBlock, { type: "error" });
-    const ok = await HOF.confirm({ title: "Cariyi Sil", message: `“${account.name}” silinecek. Hareketleri Kasa’dan düşer. ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
+    // 2.4.9 C1: yalnız hareketsiz cari silinir (Kasa ve bakiye değişmez; eski "Hareketleri Kasa’dan düşer" kalktı).
+    const ok = await HOF.confirm({ title: "Cariyi Sil", message: `“${account.name}” silinecek (hareketi yok). ${HOF.trashHint()}`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`, { method: "DELETE" });
@@ -1395,11 +1408,15 @@
       loadList();
       HOF.emit("accounts-changed", {});
     } catch (error) {
-      // v2.1.0 Aşama 5: banka hesabına bağlı hareketi ya da faturası olan cari silinmez; nedeni söylenir, Pasife Al önerilir.
-      if (["account-bank-linked", "account-has-invoices"].includes(error?.data?.code) && account.status !== "passive") {
-        const passive = await HOF.confirm({ title: "Cari Silinemez", message: error.message, confirmLabel: "Pasife Al", cancelLabel: "Vazgeç" });
-        if (passive) await setStatus(account, "passive");
-        return;
+      // 2.4.9 C1: kart açıkken başka biri (ya da telefon) bu cariye hareket girdiyse sunucu 409 account-has-movements verir: nedeni söylenir, Pasife Al
+      // önerilir (cari pasifse yalnız neden); kart yenilenir (Sil pasif, neden kartta yazılı).
+      if (error?.data?.code === "account-has-movements") {
+        if (account.status !== "passive") {
+          // 2.4.9 UI tur A (D3): öbür onay pencereleri gibi odak "Vazgeç"te (Enter ile cari yanlışlıkla pasife alınmasın).
+          const passive = await HOF.confirm({ title: "Cari Silinemez", message: error.message, confirmLabel: "Pasife Al", cancelLabel: "Vazgeç", safeFocus: true });
+          if (passive) return setStatus(account, "passive");
+        } else HOF.toast(error.message, { type: "error" });
+        return loadAccount(account.id, { quiet: true }).catch(() => null);
       }
       HOF.toastError(error);
     }

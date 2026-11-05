@@ -1,0 +1,42 @@
+TAP version 13
+# Subtest: 2.4.9 R2 — taksit kartının iade kesintisi toplu yolda cari başına yeniden taranmaz (kural aynen)
+    # Subtest: YAPI: elle alıcı listesi, otomatik önizleme ve cari kartı döngüsü iade faturalarını cari başına yeniden taramaz (istek başına en çok 1)
+    ok 1 - YAPI: elle alıcı listesi, otomatik önizleme ve cari kartı döngüsü iade faturalarını cari başına yeniden taramaz (istek başına en çok 1)
+      ---
+      duration_ms: 112.010983
+      type: 'test'
+      ...
+    # iade taraması: {"elleTumune":0,"elleSecili":1,"onizleme":1,"kartDongusu":0} (cari 16)
+    # Subtest: EŞDEĞERLİK: her kartın kesintisi eski kuralla ve kâhinle birebir — kısmi / tam iade, iki kart, tek iadede iki kart, iptal, taslak, satışa yazılmış, aynı ad, taşınan kart
+    ok 2 - EŞDEĞERLİK: her kartın kesintisi eski kuralla ve kâhinle birebir — kısmi / tam iade, iki kart, tek iadede iki kart, iptal, taslak, satışa yazılmış, aynı ad, taşınan kart
+      ---
+      duration_ms: 10.30791
+      type: 'test'
+      ...
+    # Subtest: BAYATLIK — API: iade düzenlenince, silinince, iptal edilince saklanan kesinti kullanılmaz (hemen güncel)
+    ok 3 - BAYATLIK — API: iade düzenlenince, silinince, iptal edilince saklanan kesinti kullanılmaz (hemen güncel)
+      ---
+      duration_ms: 70.248085
+      type: 'test'
+      ...
+    # Subtest: BAYATLIK — doğrudan yazım, eski / bozuk biçimli satır, başka bağlantının yazması, geri alınan işlem: kesinti eski kuralla birebir
+    ok 4 - BAYATLIK — doğrudan yazım, eski / bozuk biçimli satır, başka bağlantının yazması, geri alınan işlem: kesinti eski kuralla birebir
+      ---
+      duration_ms: 54.778287
+      type: 'test'
+      ...
+    1..4
+ok 1 - 2.4.9 R2 — taksit kartının iade kesintisi toplu yolda cari başına yeniden taranmaz (kural aynen)
+  ---
+  duration_ms: 3063.34467
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3867.652265

@@ -1,0 +1,639 @@
+TAP version 13
+# Subtest: 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+    # Subtest: T0 new DatabaseSync kurucusu düşer (olmayan dizin) → Node tutamak bırakmaz
+    ok 1 - T0 new DatabaseSync kurucusu düşer (olmayan dizin) → Node tutamak bırakmaz
+      ---
+      duration_ms: 2.981778
+      type: 'test'
+      ...
+    # Subtest: T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir
+    not ok 2 - T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir
+      ---
+      duration_ms: 864.387481
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:237:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '002 açılamadıktan sonra (3 istek): 7 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '002 açılamadıktan sonra (3 istek): 7 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:247:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; "(deleted)" tutamak 0
+    not ok 3 - T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; "(deleted)" tutamak 0
+      ---
+      duration_ms: 855.627231
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:253:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'geri yüklemeden sonra: 8 "(deleted)" tutamak kaldı (destekofis.sqlite)',
+        +   'geri yüklenen şirket kapanınca: 8 "(deleted)" tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'geri yüklemeden sonra: 8 "(deleted)" tutamak kaldı (destekofis.sqlite)'
+        1: 'geri yüklenen şirket kapanınca: 8 "(deleted)" tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:272:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır
+    not ok 4 - T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır
+      ---
+      duration_ms: 660.693044
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:278:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'göç düştükten sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'düzelip kapanınca: 5 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'göç düştükten sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'düzelip kapanınca: 5 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:308:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 5 - T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2807.863059
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 6 - T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2603.184413
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'after-migrations düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'after-migrations: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'after-migrations düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'after-migrations: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:346:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 7 - T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2577.095994
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'after-users düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'after-users: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'after-users düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'after-users: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:346:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 8 - T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2556.89067
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'after-dataset düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'after-dataset: 3 yetim zamanlayıcı kaldı: setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13)',
+        +   'after-dataset: hub olay kanalında 1 yetim dinleyici kaldı',
+        +   'after-dataset: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'after-dataset düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'after-dataset: 3 yetim zamanlayıcı kaldı: setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13)'
+        2: 'after-dataset: hub olay kanalında 1 yetim dinleyici kaldı'
+        3: 'after-dataset: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:346:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 9 - T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2679.205605
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'after-integrity düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'after-integrity: 4 yetim zamanlayıcı kaldı: setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13) | setInterval ← at createApp (server/app.mjs:447:76)',
+        +   'after-integrity: hub olay kanalında 1 yetim dinleyici kaldı',
+        +   'after-integrity: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'after-integrity düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'after-integrity: 4 yetim zamanlayıcı kaldı: setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13) | setInterval ← at createApp (server/app.mjs:447:76)'
+        2: 'after-integrity: hub olay kanalında 1 yetim dinleyici kaldı'
+        3: 'after-integrity: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:346:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 10 - T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2602.419058
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'after-register düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'after-register: 5 yetim zamanlayıcı kaldı: setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13) | setInterval ← at createApp (server/app.mjs:447:76) | setInterval ← at Object.start (server/lib/bank/pos.mjs:1531:15)',
+        +   'after-register: hub WhatsApp işçisinde 1 yetim kuyruk kaydı kaldı',
+        +   'after-register: hub olay kanalında 1 yetim dinleyici kaldı',
+        +   'after-register: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'after-register düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'after-register: 5 yetim zamanlayıcı kaldı: setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13) | setInterval ← at createApp (server/app.mjs:447:76) | setInterval ← at Object.start (server/lib/bank/pos.mjs:1531:15)'
+        2: 'after-register: hub WhatsApp işçisinde 1 yetim kuyruk kaydı kaldı'
+        3: 'after-register: hub olay kanalında 1 yetim dinleyici kaldı'
+        4: 'after-register: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:346:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    not ok 11 - T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2616.7204
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:315:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'after-app düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'after-app: 10 yetim zamanlayıcı kaldı: setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13) | setInterval ← at createApp (server/app.mjs:447:76) | setTimeout ← at registerDocumentRoutes (server/routes/documents.mjs:32:22) | setTimeout ← at schedule (server/lib/alerts.mjs:25:13) | setInterval ← at createApp (server/app.mjs:827:24) | setTimeout ← at createApp (server/app.mjs:861:65) | setInterval ← at createApp (server/app.mjs:863:65) | setInterval ← at Object.start (server/lib/bank/pos.mjs:1531:15)',
+        +   'after-app: hub WhatsApp işçisinde 1 yetim kuyruk kaydı kaldı',
+        +   'after-app: hub olay kanalında 1 yetim dinleyici kaldı',
+        +   'after-app: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'after-app düştükten hemen sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'after-app: 10 yetim zamanlayıcı kaldı: setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setTimeout ← at Object.start (server/lib/dataset.mjs:1501:18) | setInterval ← at Object.start (server/lib/dataset.mjs:1503:13) | setInterval ← at createApp (server/app.mjs:447:76) | setTimeout ← at registerDocumentRoutes (server/routes/documents.mjs:32:22) | setTimeout ← at schedule (server/lib/alerts.mjs:25:13) | setInterval ← at createApp (server/app.mjs:827:24) | setTimeout ← at createApp (server/app.mjs:861:65) | setInterval ← at createApp (server/app.mjs:863:65) | setInterval ← at Object.start (server/lib/bank/pos.mjs:1531:15)'
+        2: 'after-app: hub WhatsApp işçisinde 1 yetim kuyruk kaydı kaldı'
+        3: 'after-app: hub olay kanalında 1 yetim dinleyici kaldı'
+        4: 'after-app: sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:346:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0
+    not ok 12 - T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0
+      ---
+      duration_ms: 10688.470149
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:353:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'kilitli açılış düşüp kilit kalkınca: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'kilitli açılış düşüp kilit kalkınca: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'sonraki açılış kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:384:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı
+    not ok 13 - T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı
+      ---
+      duration_ms: 512.275879
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:391:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'geri alma adımı düştükten sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'günlükte geri alma uyarısı (adımın hatası + asıl hata) yok: ["error: Şirket açılamadı (002 · Deneme Şirketi) test: açılış kesintisi after-dataset"]'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'geri alma adımı düştükten sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'günlükte geri alma uyarısı (adımın hatası + asıl hata) yok: ["error: Şirket açılamadı (002 · Deneme Şirketi) test: açılış kesintisi after-dataset"]'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:405:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)
+    not ok 14 - T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)
+      ---
+      duration_ms: 669.984536
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:411:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'salt okunur lisansta 002 açılamadıktan sonra (3 istek): 7 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'salt okunur lisansta 002 açılamadıktan sonra (3 istek): 7 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:439:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı
+    not ok 15 - T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı
+      ---
+      duration_ms: 709.046253
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:448:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '002 üç kez düştükten sonra: 7 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '002 üç kez düştükten sonra: 7 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:467:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0
+    not ok 16 - T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0
+      ---
+      duration_ms: 684.693023
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:473:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '20 düşen açılıştan sonra: 41 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '20 düşen açılıştan sonra: 41 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:521:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır
+    not ok 17 - T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır
+      ---
+      duration_ms: 505.038094
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:527:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'yeni şirketin ilk açılışı düştükten sonra: 1 açık tutamak kaldı (destekofis.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'yeni şirketin ilk açılışı düştükten sonra: 1 açık tutamak kaldı (destekofis.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:545:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+    not ok 18 - T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+      ---
+      duration_ms: 817.960241
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:552:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '001 after-integrity düştükten sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   '001 after-integrity düştükten sonra: 3 açık tutamak kaldı (e-belge-kullanim.sqlite)',
+        +   '001 after-integrity düştükten sonra: 3 açık tutamak kaldı (whatsapp-gonderim.sqlite)',
+        +   '001 after-integrity: 3 yetim zamanlayıcı kaldı: setInterval ← at createRateLimiter (server/lib/auth.mjs:28:19) | setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setInterval ← at createApp (server/app.mjs:447:76)',
+        +   'ikinci createApp kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)',
+        +   'ikinci createApp kapanınca: 4 açık tutamak kaldı (e-belge-kullanim.sqlite)',
+        +   'ikinci createApp kapanınca: 4 açık tutamak kaldı (whatsapp-gonderim.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '001 after-integrity düştükten sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: '001 after-integrity düştükten sonra: 3 açık tutamak kaldı (e-belge-kullanim.sqlite)'
+        2: '001 after-integrity düştükten sonra: 3 açık tutamak kaldı (whatsapp-gonderim.sqlite)'
+        3: '001 after-integrity: 3 yetim zamanlayıcı kaldı: setInterval ← at createRateLimiter (server/lib/auth.mjs:28:19) | setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setInterval ← at createApp (server/app.mjs:447:76)'
+        4: 'ikinci createApp kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+        5: 'ikinci createApp kapanınca: 4 açık tutamak kaldı (e-belge-kullanim.sqlite)'
+        6: 'ikinci createApp kapanınca: 4 açık tutamak kaldı (whatsapp-gonderim.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:577:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+    not ok 19 - T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+      ---
+      duration_ms: 793.54741
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:552:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '001 after-app düştükten sonra: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   '001 after-app düştükten sonra: 3 açık tutamak kaldı (e-belge-kullanim.sqlite)',
+        +   '001 after-app düştükten sonra: 3 açık tutamak kaldı (whatsapp-gonderim.sqlite)',
+        +   '001 after-app: 8 yetim zamanlayıcı kaldı: setInterval ← at createRateLimiter (server/lib/auth.mjs:28:19) | setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setInterval ← at createApp (server/app.mjs:447:76) | setTimeout ← at registerDocumentRoutes (server/routes/documents.mjs:32:22) | setTimeout ← at schedule (server/lib/alerts.mjs:25:13) | setInterval ← at createApp (server/app.mjs:827:24) | setTimeout ← at createApp (server/app.mjs:861:65) | setInterval ← at createApp (server/app.mjs:863:65)',
+        +   'ikinci createApp kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)',
+        +   'ikinci createApp kapanınca: 4 açık tutamak kaldı (e-belge-kullanim.sqlite)',
+        +   'ikinci createApp kapanınca: 4 açık tutamak kaldı (whatsapp-gonderim.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '001 after-app düştükten sonra: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: '001 after-app düştükten sonra: 3 açık tutamak kaldı (e-belge-kullanim.sqlite)'
+        2: '001 after-app düştükten sonra: 3 açık tutamak kaldı (whatsapp-gonderim.sqlite)'
+        3: '001 after-app: 8 yetim zamanlayıcı kaldı: setInterval ← at createRateLimiter (server/lib/auth.mjs:28:19) | setInterval ← at createEventHub (server/lib/events.mjs:162:18) | setInterval ← at createApp (server/app.mjs:447:76) | setTimeout ← at registerDocumentRoutes (server/routes/documents.mjs:32:22) | setTimeout ← at schedule (server/lib/alerts.mjs:25:13) | setInterval ← at createApp (server/app.mjs:827:24) | setTimeout ← at createApp (server/app.mjs:861:65) | setInterval ← at createApp (server/app.mjs:863:65)'
+        4: 'ikinci createApp kapanınca: 4 açık tutamak kaldı (destekofis.sqlite)'
+        5: 'ikinci createApp kapanınca: 4 açık tutamak kaldı (e-belge-kullanim.sqlite)'
+        6: 'ikinci createApp kapanınca: 4 açık tutamak kaldı (whatsapp-gonderim.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:577:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+    not ok 20 - T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+      ---
+      duration_ms: 336.068754
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:597:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'e-belge-kullanim.sqlite düştükten sonra 001: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'e-belge-kullanim.sqlite düştükten sonra defter: 3 açık tutamak kaldı (e-belge-kullanim.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'e-belge-kullanim.sqlite düştükten sonra 001: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'e-belge-kullanim.sqlite düştükten sonra defter: 3 açık tutamak kaldı (e-belge-kullanim.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:619:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+    not ok 21 - T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+      ---
+      duration_ms: 325.197517
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:597:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'whatsapp-gonderim.sqlite düştükten sonra 001: 3 açık tutamak kaldı (destekofis.sqlite)',
+        +   'whatsapp-gonderim.sqlite düştükten sonra defter: 3 açık tutamak kaldı (whatsapp-gonderim.sqlite)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'whatsapp-gonderim.sqlite düştükten sonra 001: 3 açık tutamak kaldı (destekofis.sqlite)'
+        1: 'whatsapp-gonderim.sqlite düştükten sonra defter: 3 açık tutamak kaldı (whatsapp-gonderim.sqlite)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:619:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T12 sağlam açılış: kanca verilmiş ama düşmüyor → davranış aynen; 002 kapanınca ve sunucu kapanınca tutamak 0
+    ok 22 - T12 sağlam açılış: kanca verilmiş ama düşmüyor → davranış aynen; 002 kapanınca ve sunucu kapanınca tutamak 0
+      ---
+      duration_ms: 556.742696
+      type: 'test'
+      ...
+    1..22
+not ok 1 - 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+  ---
+  duration_ms: 37429.446236
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616/test/createapp-acilis-geri-alma-249.test.mjs:223:1'
+  failureType: 'subtestsFailed'
+  error: '19 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 22
+# suites 1
+# pass 3
+# fail 19
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 38071.273739

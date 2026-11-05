@@ -1,0 +1,17 @@
+çift 1 {"kok":"b3a972-eski-e3f74093","n":600,"p50":13.4,"p95":26.7,"enCok":71.4,"ort":15.3,"bakimMs":[6,5,5],"olayEnCokMs":53.1}
+çift 1 {"kok":"agent-a972c155e62a73ec3","n":600,"p50":13.3,"p95":21.4,"enCok":73.1,"ort":14.5,"bakimMs":[5,4,5],"olayEnCokMs":68.6}
+çift 2 {"kok":"b3a972-eski-e3f74093","n":600,"p50":16.7,"p95":38.9,"enCok":78,"ort":19.6,"bakimMs":[6,5,5],"olayEnCokMs":59.9}
+çift 2 {"kok":"agent-a972c155e62a73ec3","n":600,"p50":12.7,"p95":19.4,"enCok":51.5,"ort":13.7,"bakimMs":[5,5,5],"olayEnCokMs":42}
+çift 3 {"kok":"b3a972-eski-e3f74093","n":600,"p50":13.6,"p95":20.6,"enCok":41,"ort":14.5,"bakimMs":[5,5,6],"olayEnCokMs":30.2}
+çift 3 {"kok":"agent-a972c155e62a73ec3","n":600,"p50":12.6,"p95":17.6,"enCok":49.5,"ort":13.3,"bakimMs":[6,5,5],"olayEnCokMs":35.2}
+çift 4 {"kok":"b3a972-eski-e3f74093","n":600,"p50":13.1,"p95":18.7,"enCok":41.9,"ort":13.9,"bakimMs":[4,5,6],"olayEnCokMs":29.8}
+çift 4 {"kok":"agent-a972c155e62a73ec3","n":600,"p50":12.9,"p95":20.3,"enCok":52.1,"ort":13.9,"bakimMs":[6,5,5],"olayEnCokMs":32.4}
+çift 5 {"kok":"b3a972-eski-e3f74093","n":600,"p50":14.1,"p95":27.4,"enCok":69.6,"ort":15.9,"bakimMs":[4,5,5],"olayEnCokMs":46.3}
+çift 5 {"kok":"agent-a972c155e62a73ec3","n":600,"p50":12.5,"p95":20.8,"enCok":44.9,"ort":13.8,"bakimMs":[6,5,27],"olayEnCokMs":36.6}
+1..10
+# tests 10
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

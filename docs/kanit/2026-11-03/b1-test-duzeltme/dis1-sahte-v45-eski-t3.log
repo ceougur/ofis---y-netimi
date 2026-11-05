@@ -1,0 +1,48 @@
+TAP version 13
+# (node:22043) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+    # Subtest: T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır
+    not ok 1 - T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır
+      ---
+      duration_ms: 1006.431103
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1td-v45-7846c6f8/test/eski-t3.test.mjs:278:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        göç düşünce 503 ({"ok":true,"data":{"accounts":[{"id":"account-8fb9973e-74dd-45ea-83be-a84a34a7444c","refNo":"1","type":"customer","name":"Burak Kaya","phone":"0533 444 55 66","email":"","address":"","note":"","registeredOn":"2026-11-03","groupId":null,"subgroupId":null,"groupName":"","subgroupName":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","partyKind":"","city":"","district":"","eInvoice":false,"dueDays":0,"debit":800,"credit":0,"balance":800,"side":"debtor","planCount":0,"activePlans":0,"planRemaining":0,"overdue":0,"overdueCount":0,"next":null,"doubtfulOpen":0,"extra":[]}],"totals":{"count":1,"debtor":800,"creditor":0,"debtorCount":1,"creditorCount":0,"balance":800,"overdue":0,"overdueCount":0,"planRemaining":0,"doubtful":0,"doubtfulCount":0},"sort":"no","groups":[],"fieldLabels":[],"canManage":true,"canCollect":true,"canPlan":true,"today":"2026-11-03","total":1,"offset":0,"limit":300,"hasMore":false}})
+        
+        200 !== 503
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 503
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1td-v45-7846c6f8/test/eski-t3.test.mjs:294:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 3)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+  ---
+  duration_ms: 1009.424098
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1td-v45-7846c6f8/test/eski-t3.test.mjs:223:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1618.749594

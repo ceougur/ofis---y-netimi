@@ -1,0 +1,8 @@
+08:47:56 targets taban ekstreBuAy2000 [{"durum":200,"ms":25479,"olayDongusuEnCokMs":25238,"baskaEnCokMs":25262,"baskaIstek":4,"baskaHata":0,"alici":2000,"gecerli":1934}]
+08:48:22 targets taban ekstreGecenAy2000 [{"durum":200,"ms":24891,"olayDongusuEnCokMs":24688,"baskaEnCokMs":24674,"baskaIstek":4,"baskaHata":0,"alici":2000,"gecerli":1934}]
+08:48:49 targets taban ekstreSon3Ay2000 [{"durum":200,"ms":25918,"olayDongusuEnCokMs":25729,"baskaEnCokMs":25701,"baskaIstek":4,"baskaHata":0,"alici":2000,"gecerli":1934}]
+08:49:17 targets taban ekstreTum2000 [{"durum":200,"ms":27518,"olayDongusuEnCokMs":27141,"baskaEnCokMs":27275,"baskaIstek":4,"baskaHata":0,"alici":2000,"gecerli":1934}]
+08:49:44 targets taban mesaj2000 [{"durum":200,"ms":24713,"olayDongusuEnCokMs":24464,"baskaEnCokMs":24502,"baskaIstek":4,"baskaHata":0,"alici":2000,"gecerli":1934}]
+08:50:24 targets taban tumuneEkstreHepsi [{"durum":200,"ms":38813,"olayDongusuEnCokMs":38626,"baskaEnCokMs":38593,"baskaIstek":4,"baskaHata":0,"alici":3021,"gecerli":2948}]
+08:51:00 targets taban tumuneMesajAktif [{"durum":200,"ms":35399,"olayDongusuEnCokMs":35125,"baskaEnCokMs":35182,"baskaIstek":4,"baskaHata":0,"alici":2986,"gecerli":2948}]
+yazıldı /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/olcum-249-q5n8/cikti/olcum-eski-taban.json

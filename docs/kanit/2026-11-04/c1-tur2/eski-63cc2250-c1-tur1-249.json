@@ -1,0 +1,38 @@
+{
+  "ad": "eski-63cc2250-c1-tur1-249",
+  "komut": "node --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/c1t2-k7q3/eski-63cc2250/test/c1-tur1-249.test.mjs",
+  "commit": "63cc2250cbb5d39a624875d5c6ab9805c756c6e5",
+  "dal": "worktree-agent-a619899bc881a9a08",
+  "kirli": 3,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T23:58:13.710Z",
+  "sure_sn": 6.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 14,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 C1 TUR 1 — taksit kartı yarışı (zorla): gövde yoldayken kart silinirse hiçbir şey yazılmaz (404) › D3 Silinenler'deki cari notu (C1 TUR 2 DÜŞÜK-2): tek cümle — eski sürümde hareketiyle silinmiş cari için hareketler ve Kasa da anılır (\"varsa\")",
+      "konum": "test/c1-tur1-249.test.mjs:169:3",
+      "hata": "not: “Cari listesine geri döner.” · + actual - expected · + 'Cari listesine geri döner.' (beklenen Cari listesine geri döner; varsa hareketleri de geri gelir ve Kasa yeniden hesaplanır., gelen Cari listesine geri döner.)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/eski-63cc2250-c1-tur1-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a619899bc881a9a08",
+  "ham_cikti_sha256": "1629151a50d31b49e48f3f7b0dfc3ee0eeb581ce34d200b3ca45e131409a2c1a",
+  "ham_cikti_bayt": 8053
+}

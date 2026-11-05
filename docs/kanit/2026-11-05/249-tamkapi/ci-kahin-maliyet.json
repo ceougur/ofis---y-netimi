@@ -1,0 +1,32 @@
+{
+  "ad": "249-tamkapi/ci-kahin-maliyet",
+  "komut": "npm run test:kahin-maliyet",
+  "commit": "7897604227694cd6c14ebdbf73bf2b9471b761e0",
+  "dal": "worktree-agent-ad08b374963951ef6",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T05:07:01.121Z",
+  "sure_sn": 156.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 41306,
+    "gecen": 41306,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/249-tamkapi/ci-kahin-maliyet.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad08b374963951ef6",
+  "ham_cikti_sha256": "a3ab0df59b22a9359d8ad99c678dda6682ba86103116c922398c58be083be738",
+  "ham_cikti_bayt": 531
+}

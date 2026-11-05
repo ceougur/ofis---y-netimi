@@ -10,6 +10,8 @@
 //      doğru belirteçle yeniden "Bağlı".
 //   A4b (T2 dar kontrol D3) Bildirim Yolu satırı: uzaktan adres yokken "Kayıtlı Değil"; Bağlantıyı Sına → "Çalışıyor"; Çakışma'da (başka bilgisayar, zorla) neden
 //       yazısı + Bağlantıyı Sına Meta'daki adresi bu bilgisayara geri alır.
+//   A4c (2.4.9 UI tur B, ORTA-3) Meta abonelik kaydını reddedince (100 "must be subscribed"): Bağlantıyı Sına / Kaydet ve Sına UYARI bildirimi; neden düğmelerin altında
+//       Türkçe, hücrede yalnız "Kaydedilemedi · <tarih>", Meta'nın ham iletisi ayrı satırda; düzelince yeşil bildirim aynen. (A2: App ID yardımı Ekstre şablonunu söyler — D8.)
 //   A5 Bağlantıyı Kaldır (onay penceresi) → "Bağlı Değil"; ayar satırı silindi.
 //   A6 yetkisiz (Personel): Yönetim açılmaz; API 403.
 //   2.4.8 W7 TAŞINAMAZ BAĞLANTI (bağımsız gözden geçirme ORTA; ikinci program + YEREL kapıcı https://kapi.destekofis.test + sahte Facebook SDK / Meta penceresi —
@@ -89,6 +91,13 @@ const topModal = async () => {
 const noToken = async label => {
   const html = await page.content();
   ok(!html.includes(TOKEN) && !html.includes(TOKEN.slice(-12)), `${label}: sayfada belirteç yok`);
+};
+// 2.4.9 UI tur B (ORTA-3): bildirimler "<sınıf>|<metin>" olarak okunur; tıklamadan önce kap boşaltılır (aynı metinli eski bildirim ×2 sayılmasın).
+const clearToasts = () => page.evaluate(() => document.getElementById("hof-toasts")?.replaceChildren());
+const toastsNow = () => page.evaluate(() => [...document.querySelectorAll("#hof-toasts .hof-toast")].map(node => `${node.className}|${node.querySelector(".hof-toast-text")?.textContent.trim() || ""}`));
+const firstToast = async () => {
+  await page.waitForSelector("#hof-toasts .hof-toast", { timeout: 15000 });
+  return toastsNow();
 };
 
 // ---------- 2.4.8 W7 ortamı: ikinci program (lisanslı) + yerel kapıcı (https, kendinden imzalı) + kapıcının sahte Meta'sı (kod → belirteç) ----------
@@ -207,6 +216,10 @@ await step("A2 Elle Bağla: Tab ile insan hızında yazım → Kaydet ve Sına �
   await page.click('[data-wa-action="connect"]');
   const modal = await topModal();
   ok((await text(`${modal} .hof-modal-title, ${modal} h2`)).includes("Elle Bağla"), "pencere başlığı Elle Bağla");
+  // 2.4.9 UI tur B (D8 — K-1 kılavuzuyla çelişki): App ID isteğe bağlı ama program Ekstre şablonunu Meta'da açarken gerekir (örnek PDF /<App ID>/uploads ile yüklenir;
+  // lib/whatsapp/templates.mjs). Yardım yazısı bunu söyler.
+  const appHelp = await text(`${modal} label:has([name="appId"]) small`).catch(() => "");
+  ok(/^İsteğe bağlı; Ekstre şablonunu Meta'da açmak için gerekir/.test(appHelp), `App ID yardımı Ekstre şablonunu söylüyor: ${appHelp}`);
   await page.click(`${modal} [name="phoneNumberId"]`);
   await typeSlow(PNID);
   await page.keyboard.press("Tab");
@@ -219,6 +232,9 @@ await step("A2 Elle Bağla: Tab ile insan hızında yazım → Kaydet ve Sına �
   await shot("02-elle-bagla");
   await page.click(`${modal} button[type="submit"]`);
   ok((await waitState("Bağlı")) === "Bağlı", "sınama sonrası durum Bağlı");
+  // 2.4.9 UI tur B (ORTA-3): Bildirim Yolu sorunu yokken (uzaktan adres henüz yok — Kayıtlı Değil) Kaydet ve Sına bildirimi AYNEN yeşil.
+  const savedToasts = await toastsNow();
+  ok(savedToasts.some(item => /hof-toast-success[^|]*\|Kaydedildi; bağlantı çalışıyor\.$/.test(item)) && !savedToasts.some(item => /hof-toast-warn/.test(item)), `Kaydet ve Sına bildirimi yeşil: ${savedToasts.join(" ‖ ")}`);
   ok((await page.locator(MODAL).count()) === 0, "pencere kapandı");
   ok((await fact("verifiedName")) === "Deneme Ticaret Ltd", `görünen ad: ${await fact("verifiedName")}`);
   ok((await fact("quality")) === "Yüksek", `kalite: ${await fact("quality")}`);
@@ -288,9 +304,14 @@ await step("A4b Bildirim Yolu: uzaktan adres yokken Kayıtlı Değil → Bağlan
   if (!ok((await page.locator('[data-wa-fact="hook"]').count()) === 1, "kartta Bildirim Yolu satırı var")) return;
   ok((await fact("hook")).startsWith("Kayıtlı Değil"), `uzaktan adres yokken: ${await fact("hook")}`);
   server.app.mobileRemote.setPublicUrl("http://ofisx.destekofis.test");
+  await clearToasts();
   await page.click('[data-wa-action="test"]');
   await page.waitForFunction(() => /^Çalışıyor/.test(document.querySelector('[data-wa-fact="hook"] dd')?.textContent.trim() || ""), null, { timeout: 15000 });
   ok(/^Çalışıyor · .+ tarihinde kaydedildi$/.test(await fact("hook")), `Bağlantıyı Sına sonrası: ${await fact("hook")}`);
+  // 2.4.9 UI tur B (ORTA-3): Bildirim Yolu kaydedilince bildirim AYNEN yeşil "Bağlantı çalışıyor." (uyarı yok).
+  const done = await firstToast();
+  ok(done.some(item => /hof-toast-success[^|]*\|Bağlantı çalışıyor\.$/.test(item)) && !done.some(item => /hof-toast-warn|Bildirim Yolu/.test(item)), `başarılı yolda yeşil bildirim aynen: ${done.join(" ‖ ")}`);
+  ok((await page.locator("[data-wa-hook-meta]").count()) === 0, "çalışırken Meta iletisi satırı yok");
   const ours = fake.state.override;
   ok(/^http:\/\/ofisx\.destekofis\.test\/wa\/kanca\//.test(String(ours)), "Meta'ya bu ofisin adresi kaydedildi");
   ok((await page.locator("[data-wa-hook-why]").count()) === 0, "çalışırken neden yazısı yok");
@@ -312,6 +333,80 @@ await step("A4b Bildirim Yolu: uzaktan adres yokken Kayıtlı Değil → Bağlan
   // Yeniden kayıt yeni gizli yolla yapılır (eski yol öbür bilgisayarın eline geçmiş olabilir): adres bu ofisin, yol yeni.
   ok(/^http:\/\/ofisx\.destekofis\.test\/wa\/kanca\//.test(String(fake.state.override)) && fake.state.override !== ours, `Bağlantıyı Sına Meta'daki adresi bu bilgisayara geri aldı (yeni gizli yol)`);
   ok((await page.locator("[data-wa-hook-why]").count()) === 0, "çakışma yazısı kalktı");
+  server.app.mobileRemote.setPublicUrl("");
+});
+
+// 2.4.9 UI tur B (ORTA-3, UI/UX gezintisi 04.11): Meta abonelik kaydını reddederken (100 "must be subscribed" — ELLE KABUL BULGUSU 3) Bağlantıyı Sına ve Kaydet ve Sına
+// YEŞİL "Bağlantı çalışıyor." diyordu; hata yalnız dar Bildirim Yolu hücresinde İngilizce Meta iletisi ve iç içe parantezle (hücreler kayıyordu). İstenen: UYARI bildirimi,
+// neden düğmelerin altında ayrı Türkçe satırda, hücrede yalnız "Kaydedilemedi · <tarih>", Meta'nın ham iletisi ayrı küçük satırda "Meta iletisi: …".
+await step("A4c Bildirim Yolu kaydedilemedi (Meta 100 abonelik): uyarı bildirimi, neden düğmelerin altında Türkçe, hücrede yalnız Kaydedilemedi + tarih; düzelince yeşil", async () => {
+  const UYARI = "Bağlantı çalışıyor; ancak Bildirim Yolu kaydedilemedi — nedeni aşağıda.";
+  const META = "(#100) Before override the current callback uri, your app must be subscribed to receive messages for WhatsApp Business Account";
+  server.app.mobileRemote.setPublicUrl("http://ofisx.destekofis.test");
+  // Ön koşul (zorla): Meta'daki adres kalkmış (uygulamanın aboneliği kaldırılmış) → Bağlantıyı Sına yeniden kaydetmeyi dener; Meta abonelik kaydını 100 ile reddeder.
+  // A4b'den kalan "Çalışıyor" kaydı Meta'daki adresle eşleşirse program yalnız doğrular, kayıt istemez (ön koşul oluşmaz) — aşağıda istek sayısıyla denetlenir.
+  fake.state.override = null;
+  fake.set({ failNext: { match: /^POST \/\d+\/subscribed_apps$/, sticky: true, status: 400, body: { error: { message: META, type: "OAuthException", code: 100, fbtrace_id: "AbCdEfGh" } } } });
+  const subscribePosts = () => fake.requests.filter(item => item.method === "POST" && /\/subscribed_apps$/.test(item.path)).length;
+  const hookFacts = async () => {
+    await page.waitForFunction(() => /^Kaydedilemedi/.test(document.querySelector('[data-wa-fact="hook"] dd')?.textContent.trim() || ""), null, { timeout: 15000 });
+    const cell = await fact("hook");
+    ok(/^Kaydedilemedi · \d{2}\.\d{2}\.\d{4} \d{2}:\d{2}$/.test(cell), `hücrede yalnız Kaydedilemedi + tarih: ${cell}`);
+    const why = (await page.textContent("[data-wa-hook-why]").catch(() => "")) || "";
+    ok(/^Bildirim Yolu kaydedilemedi — Meta bildirim adresini kaydetmedi: uygulamanızın bu WhatsApp Business hesabına aboneliği/.test(why.trim()) && /Elle Bağla ön koşullarını/.test(why), `neden Türkçe satırda: ${why.slice(0, 160)}`);
+    ok(!/must be subscribed|Before override|\(#100\)/.test(why), "neden satırında İngilizce Meta iletisi yok");
+    const meta = ((await page.textContent("[data-wa-hook-meta]").catch(() => "")) || "").trim();
+    ok(meta === `Meta iletisi: ${META}`, `Meta iletisi ayrı satırda: ${meta.slice(0, 120)}`);
+    // Neden ve Meta iletisi düğmelerin ALTINDA (çakışma uyarısındaki adm-wa-why düzeni); bilgi kutusunun içinde değil.
+    const order = await page.evaluate(() => {
+      const actions = document.querySelector(".adm-wa-actions");
+      const why = document.querySelector("[data-wa-hook-why]");
+      const meta = document.querySelector("[data-wa-hook-meta]");
+      const facts = document.querySelector("[data-wa-facts]");
+      const after = (a, b) => Boolean(a && b && a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+      return { whyAfterActions: after(actions, why), metaAfterWhy: after(why, meta), outsideFacts: !facts?.contains(why) && !facts?.contains(meta) };
+    });
+    ok(order.whyAfterActions && order.metaAfterWhy && order.outsideFacts, `neden düğmelerin altında, Meta iletisi onun altında, bilgi kutusunun dışında: ${JSON.stringify(order)}`);
+    // Hücre kaymaz: Bildirim Yolu hücresi komşu hücre (Son Sınama) kadar kısa kalır.
+    const heights = await page.evaluate(() => ["hook", "lastTest"].map(key => Math.round(document.querySelector(`[data-wa-fact="${key}"] dd`)?.getBoundingClientRect().height || 0)));
+    ok(heights[0] > 0 && heights[0] <= Math.max(heights[1], 24) * 1.5, `Bildirim Yolu hücresi kısa (yükseklik ${heights[0]} px, Son Sınama ${heights[1]} px)`);
+  };
+
+  await clearToasts();
+  const postsBefore = subscribePosts();
+  await page.click('[data-wa-action="test"]');
+  const warned = await firstToast();
+  ok(subscribePosts() === postsBefore + 1, `ön koşul oluştu: Meta'ya abonelik kaydı istendi ve reddedildi (${subscribePosts() - postsBefore} istek)`);
+  ok(warned.some(item => /hof-toast-warn[^|]*\|/.test(item) && item.endsWith(`|${UYARI}`)), `Bağlantıyı Sına: uyarı bildirimi: ${warned.join(" ‖ ")}`);
+  ok(!warned.some(item => /hof-toast-success/.test(item)), "yeşil 'Bağlantı çalışıyor.' bildirimi yok");
+  await hookFacts();
+  ok((await text("[data-wa-state]")) === "Bağlı", "bağlantı (ileti gönderimi) çalışıyor: durum Bağlı");
+  await shot("05c-bildirim-yolu-kaydedilemedi");
+  // Sayfa yeniden açılınca da neden aynı yerde (bildirim kaçırılsa bile).
+  await page.reload();
+  await page.waitForSelector('[data-wa-fact="hook"]');
+  await hookFacts();
+
+  // Kaydet ve Sına (Bilgileri Değiştir → kayıtlı belirteç korunur): aynı uyarı, başında "Kaydedildi."
+  await page.click('[data-wa-action="connect"]');
+  const modal = await topModal();
+  await clearToasts();
+  await page.click(`${modal} button[type="submit"]`);
+  await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 15000 });
+  const saved = await firstToast();
+  ok(saved.some(item => /hof-toast-warn[^|]*\|/.test(item) && item.endsWith(`|Kaydedildi. ${UYARI}`)), `Kaydet ve Sına: uyarı bildirimi: ${saved.join(" ‖ ")}`);
+  ok(!saved.some(item => /hof-toast-success[^|]*\|Kaydedildi; bağlantı çalışıyor\.$/.test(item)), "yeşil 'Kaydedildi; bağlantı çalışıyor.' yok");
+  await hookFacts();
+
+  // Meta'da ön koşul tamamlandı → Bağlantıyı Sına: yeşil bildirim aynen, neden ve Meta iletisi satırları kalkar.
+  fake.set({ failNext: null });
+  await clearToasts();
+  await page.click('[data-wa-action="test"]');
+  await page.waitForFunction(() => /^Çalışıyor/.test(document.querySelector('[data-wa-fact="hook"] dd')?.textContent.trim() || ""), null, { timeout: 15000 });
+  const fixed = await firstToast();
+  ok(fixed.some(item => /hof-toast-success[^|]*\|Bağlantı çalışıyor\.$/.test(item)) && !fixed.some(item => /hof-toast-warn/.test(item)), `düzelince yeşil bildirim: ${fixed.join(" ‖ ")}`);
+  ok((await page.locator("[data-wa-hook-why]").count()) === 0 && (await page.locator("[data-wa-hook-meta]").count()) === 0, "neden ve Meta iletisi satırları kalktı");
+  await shot("05d-bildirim-yolu-duzeldi");
   server.app.mobileRemote.setPublicUrl("");
 });
 

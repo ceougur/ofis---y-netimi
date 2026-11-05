@@ -1,0 +1,38 @@
+{
+  "ad": "c1t2-mut-M3",
+  "komut": "node --test test/c1-tur1-249.test.mjs",
+  "commit": "63cc2250cbb5d39a624875d5c6ab9805c756c6e5",
+  "dal": "worktree-agent-a619899bc881a9a08",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v233 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T23:54:05.095Z",
+  "sure_sn": 6.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 14,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 C1 TUR 1 — stok hareketi yarışı (zorla): gövde yoldayken ürün silinirse hiçbir şey yazılmaz (404) › S4 yalnız miktar stok girişi (pay: \"none\"; mobil stok girişi bu gövdeyi gönderir): silinmiş ürüne hareket, stok, Değişiklik Geçmişi yazılmaz",
+      "konum": "test/c1-tur1-249.test.mjs:238:3",
+      "hata": "yalnız miktar giriş: silinmiş ürüne yazılmamalı (kayıtlar aynen) — önce {\"moves\":[{\"kind\":\"in\",\"qty\":10,\"amount\":0,\"pay\":\"none\",\"accountId\":\"\"}],\"qty\":10,\"audit\":[\"stock.item.created\"],\"events\":0}, sonra {\"moves\":[{\"kind\":\"in\",\"qty\":10,\"amount\":0,\"pay\":\"none\",\"accountId\":\"\"},{\"kind\":\"in\",\"qty\":5,\"amount\":0,\"pay\":\"none\",\"accountId\":\"\"}],\"qty\":15,\"audit\":[\"stock.item.created\",\"stock.in\"],\"events\":0} · + actual - expected · ... Skipped lines"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/c1t2-mut-M3.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a619899bc881a9a08",
+  "ham_cikti_sha256": "dee5c5689f95bf8145ca202f81ef39bb67964fb1b045491cac343d20077e0e72",
+  "ham_cikti_bayt": 9322
+}

@@ -1,0 +1,383 @@
+TAP version 13
+# Subtest: 2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şablonları Denetle'ye basılmadan da uygulanır
+    # Subtest: Denetle YOK, Meta ekstre şablonunda 12 sa bildirir: toplu işin taze okumasıyla bilinir — 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silinir; aynı dönemde yeniden gönderilebilir (P3)
+    not ok 1 - Denetle YOK, Meta ekstre şablonunda 12 sa bildirir: toplu işin taze okumasıyla bilinir — 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silinir; aynı dönemde yeniden gönderilebilir (P3)
+      ---
+      duration_ms: 710.578353
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:93:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Meta'nın bildirdiği 12 saat + 1 saatte Süresi Doldu (Denetle'ye basılmamış şirkette de)
+        
+        'sent' !== 'expired'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'expired'
+      actual: 'sent'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:104:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Denetle YOK: kabulde süre bildirilmiyor (30 gün) → 14. saatte Meta 12 sa bildirir → önizleme taze okur: önceki iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi'; sonra kabul edilen iş 12 sa'le Süresi Doldu
+    not ok 2 - Denetle YOK: kabulde süre bildirilmiyor (30 gün) → 14. saatte Meta 12 sa bildirir → önizleme taze okur: önceki iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi'; sonra kabul edilen iş 12 sa'le Süresi Doldu
+      ---
+      duration_ms: 599.055412
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        12 sa bilinirken kabul edilen iş 12 saat + 1 saatte Süresi Doldu
+        
+        'sent' !== 'expired'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'expired'
+      actual: 'sent'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:124:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şablonları Denetle'ye basılmadan da uygulanır
+  ---
+  duration_ms: 1311.061503
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:92:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu)
+    # Subtest: p3 Denetle yolu: kabul → 14 sa → Meta listesi 12 sa bildirir → Şablonları Denetle → bakım: iş Süresi Doldu OLMAZ, PDF silinmez; kişi 'Daha Önce Gönderildi', aynı dönemde 2. ileti gitmez; 'Yine de Gönder' açık
+    not ok 1 - p3 Denetle yolu: kabul → 14 sa → Meta listesi 12 sa bildirir → Şablonları Denetle → bakım: iş Süresi Doldu OLMAZ, PDF silinmez; kişi 'Daha Önce Gönderildi', aynı dönemde 2. ileti gitmez; 'Yine de Gönder' açık
+      ---
+      duration_ms: 511.783775
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kabul anında süre 30 gündü: sonradan kısalan süre geriye dönük Süresi Doldu yapmamalı
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:144:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Denetle'den SONRA kabul edilen iş yeni süreyle (12 sa) ölçülür; önceki iş 30 gün + 1 sa'te Süresi Doldu + PDF silinir
+    not ok 2 - Denetle'den SONRA kabul edilen iş yeni süreyle (12 sa) ölçülür; önceki iş 30 gün + 1 sa'te Süresi Doldu + PDF silinir
+      ---
+      duration_ms: 674.193303
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:162:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        A (değişimden önce kabul): 30 gün
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:178:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: süre iki kez KISALIRSA (30 gün → 1 gün → 12 sa): her iş kendi kabul anındaki süreyle — ilk değişimden önceki 30 gün, aradaki 1 gün
+    not ok 3 - süre iki kez KISALIRSA (30 gün → 1 gün → 12 sa): her iş kendi kabul anındaki süreyle — ilk değişimden önceki 30 gün, aradaki 1 gün
+      ---
+      duration_ms: 702.988415
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        B 1 günlük süreyle kabul edildi: 13. saatte Süresi Doldu olmamalı
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:212:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: süre UZARSA (KULLANICI KARARI 03.11 ~21:00 UTC: uzun süre): 12 sa'le kabul edilen iş, süre 30 güne çıkınca 30 günle; sonra 6 saate kısalsa da 30 günle; yeni iş 6 sa'le
+    not ok 4 - süre UZARSA (KULLANICI KARARI 03.11 ~21:00 UTC: uzun süre): 12 sa'le kabul edilen iş, süre 30 güne çıkınca 30 günle; sonra 6 saate kısalsa da 30 günle; yeni iş 6 sa'le
+      ---
+      duration_ms: 673.717346
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:223:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kabulden sonra görülen en uzun süre (30 gün) geçer; sonraki kısalma geriye işlemez
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:239:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 2.4.8'den gelen veri (kabul anında süre bilinmiyor; şablon kaydında 12 sa): iş 30 günle; sonraki Denetle'den sonra kabul edilen iş 12 sa'le
+    not ok 5 - 2.4.8'den gelen veri (kabul anında süre bilinmiyor; şablon kaydında 12 sa): iş 30 günle; sonraki Denetle'den sonra kabul edilen iş 12 sa'le
+      ---
+      duration_ms: 508.523033
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:251:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kabul anında süre bilinmiyordu → 30 gün (eski kayıttaki 12 sa geriye işlemez)
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:279:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket AYNI WhatsApp hesabında: 002'de kabul edilmiş iş; süre kısalınca önce 001'de, sonra 002'de Denetle → 002'nin işi Süresi Doldu OLMAZ, 002'de kişiye tek ekstre
+    not ok 6 - iki şirket AYNI WhatsApp hesabında: 002'de kabul edilmiş iş; süre kısalınca önce 001'de, sonra 002'de Denetle → 002'nin işi Süresi Doldu OLMAZ, 002'de kişiye tek ekstre
+      ---
+      duration_ms: 779.612535
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:295:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002'nin işi kabul anındaki 30 günle
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:310:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: geri yüklenen yedek (002): kabul → süre 12 saate kısaldı + Denetle → yedek → geri yükleme → bakım: iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi', 2. ileti gitmez
+    not ok 7 - geri yüklenen yedek (002): kabul → süre 12 saate kısaldı + Denetle → yedek → geri yükleme → bakım: iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi', 2. ileti gitmez
+      ---
+      duration_ms: 900.435815
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:321:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yüklenen veride de kabul anındaki süre (30 gün)
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:341:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ay sonu / gece yarısı: 31.10 20:00 kabul (Ekim ekstresi) → 01.11 09:30 süre 12 saate kısaldı + Denetle → iş Süresi Doldu OLMAZ; 'Geçen Ay' önizlemesi 'Daha Önce Gönderildi', 2. Ekim ekstresi gitmez
+    not ok 8 - ay sonu / gece yarısı: 31.10 20:00 kabul (Ekim ekstresi) → 01.11 09:30 süre 12 saate kısaldı + Denetle → iş Süresi Doldu OLMAZ; 'Geçen Ay' önizlemesi 'Daha Önce Gönderildi', 2. Ekim ekstresi gitmez
+      ---
+      duration_ms: 486.646892
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:352:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kabul anındaki 30 gün: ay dönümünde geriye dönük Süresi Doldu yok
+        
+        'expired' !== 'sent'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'sent'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:361:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 2 - 2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu)
+  ---
+  duration_ms: 5239.475628
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:133:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük
+    # Subtest: günlük yok / başka hesabın günlüğü: kabul anında süre bilinmiyor → 30 gün
+    ok 1 - günlük yok / başka hesabın günlüğü: kabul anında süre bilinmiyor → 30 gün
+      ---
+      duration_ms: 0.420477
+      type: 'test'
+      ...
+    # Subtest: değişim anı D: D'de ve sonra kabul → yeni süre; D'den önce → 30 gün; kabul anı verilmezse günlükteki son değer
+    not ok 2 - değişim anı D: D'de ve sonra kabul → yeni süre; D'den önce → 30 gün; kabul anı verilmezse günlükteki son değer
+      ---
+      duration_ms: 0.372725
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:388:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        2592000 !== 43200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 43200
+      actual: 2592000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:390:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: zincir (30 gün → 1 gün → 12 sa) ve uzama (12 sa → 30 gün → 6 sa): kabul anındaki ile sonradan görülen en uzun
+    not ok 3 - zincir (30 gün → 1 gün → 12 sa) ve uzama (12 sa → 30 gün → 6 sa): kabul anındaki ile sonradan görülen en uzun
+      ---
+      duration_ms: 0.329264
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:397:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        2592000 !== 86400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 86400
+      actual: 2592000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:401:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bozuk günlük (sırasız an / eksik değer): bilinmiyor → 30 gün
+    ok 4 - bozuk günlük (sırasız an / eksik değer): bilinmiyor → 30 gün
+      ---
+      duration_ms: 0.225596
+      type: 'test'
+      ...
+    # Subtest: noteDeliveryTtl: yalnız değer değişince yazar; geç dönen eski okuma yazmaz; başka hesapta günlük o hesapla yeniden başlar; en çok 12 değişim (düşen en eski: 30 gün)
+    not ok 5 - noteDeliveryTtl: yalnız değer değişince yazar; geç dönen eski okuma yazmaz; başka hesapta günlük o hesapla yeniden başlar; en çok 12 değişim (düşen en eski: 30 gün)
+      ---
+      duration_ms: 0.692565
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:414:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        templates.mjs noteDeliveryTtl dışa açılmalı
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:416:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 3 - 2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük
+  ---
+  duration_ms: 2.317404
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8/test/whatsapp-w-kok-ttl-249.test.mjs:376:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.9 W-KÖK — bakım turu teslim süresi bilgisini satır başına okumaz (ders 47)
+    # Subtest: 40 kabul edilmiş iş, bildirim yolu canlı: bir bakım turundaki ayar okumaları iş sayısıyla artmaz
+    ok 1 - 40 kabul edilmiş iş, bildirim yolu canlı: bir bakım turundaki ayar okumaları iş sayısıyla artmaz
+      ---
+      duration_ms: 1971.233475
+      type: 'test'
+      ...
+    1..1
+ok 4 - 2.4.9 W-KÖK — bakım turu teslim süresi bilgisini satır başına okumaz (ders 47)
+  ---
+  duration_ms: 1971.437918
+  type: 'suite'
+  ...
+1..4
+# tests 16
+# suites 4
+# pass 3
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8990.586058

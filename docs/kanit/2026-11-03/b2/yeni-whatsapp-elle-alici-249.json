@@ -1,0 +1,32 @@
+{
+  "ad": "b2/yeni-whatsapp-elle-alici-249",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/whatsapp-elle-alici-249.test.mjs",
+  "commit": "1ea21c9c89440ca82ad8982fef6479bcfb19cb13",
+  "dal": "worktree-agent-a95435e4eb1b4db61",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:26:43.536Z",
+  "sure_sn": 5.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/b2/yeni-whatsapp-elle-alici-249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a95435e4eb1b4db61",
+  "ham_cikti_sha256": "9615b002911865a2dd4da5d084e0f01737353c3e9d3e9d39b5f39c0f9bb5ca3f",
+  "ham_cikti_bayt": 2450
+}

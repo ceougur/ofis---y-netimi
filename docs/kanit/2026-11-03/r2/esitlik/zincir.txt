@@ -1,0 +1,8 @@
+eski-iade-UTC çıkış=0
+yeni-iade-UTC çıkış=0
+eski-cesit-UTC çıkış=0
+yeni-cesit-UTC çıkış=0
+eski-cesit-Europe_Istanbul çıkış=0
+yeni-cesit-Europe_Istanbul çıkış=0
+yeni-cesit-UTC-dis çıkış=0
+bitti

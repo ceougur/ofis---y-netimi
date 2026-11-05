@@ -1,0 +1,5 @@
+# T35r yarış denemesi: 3 deneme, kip yavas (geri yükleme kopyası +3500 ms), TZ UTC, çalışma klasörü /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/cik-q7m3/eski-87b28e3e
+deneme 1: çıkış 1 · KIRMIZI · ileti isteği → geri yükleme bitti 3664 ms (ön koşul OLUŞTU) · Meta yanıtı ara okumadan ÖNCE · AssertionError [ERR_ASSERTION]: ön koşul: toparlama Sonucu Belirsiz yazdı (geldi accepted) + actual - expected
+deneme 2: çıkış 1 · KIRMIZI · ileti isteği → geri yükleme bitti 3665 ms (ön koşul OLUŞTU) · Meta yanıtı ara okumadan ÖNCE · AssertionError [ERR_ASSERTION]: ön koşul: toparlama Sonucu Belirsiz yazdı (geldi accepted) + actual - expected
+deneme 3: çıkış 1 · KIRMIZI · ileti isteği → geri yükleme bitti 3662 ms (ön koşul OLUŞTU) · Meta yanıtı ara okumadan ÖNCE · AssertionError [ERR_ASSERTION]: ön koşul: toparlama Sonucu Belirsiz yazdı (geldi accepted) + actual - expected
+# özet: 0/3 yeşil, 3 kırmızı; ön koşul oluşan deneme 3/3

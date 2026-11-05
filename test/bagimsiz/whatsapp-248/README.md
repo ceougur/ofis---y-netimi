@@ -12,8 +12,8 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 284 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
-   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14) + 8 **güncelleme 9b** (S9-1 / S9-2 kararları J10–J11; §14.10–14.12) + 3 **güncelleme 9c** (ekstre içeriği açılışta, J12; §14.13–14.14).
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 291 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+   + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14) + 8 **güncelleme 9b** (S9-1 / S9-2 kararları J10–J11; §14.10–14.12) + 3 **güncelleme 9c** (ekstre içeriği açılışta, J12; §14.13–14.14) + 7 **güncelleme 10** (2.4.9 W: teslim süresi 30 gün W1 + W-KÖK W2; §15).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
 araştırma belgesi, Meta belge sayfaları (send-messages, document-messages, media, template-media, components, template-management, template-categorization,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164) ve 1'i J7 düzeltmesinin (M165) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -33,10 +33,10 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.mjs` | Sahte Graph sunucusu: `sahteMetaBaslat()` + denetim uçları `/__sahte/*`; `node sunucu.mjs --port 0` ayrı süreç |
 | `sahte-meta/hatalar.mjs` | Meta hata kataloğu (belgedeki `details` aynen) + D0 HTTP durum eşlemesi + hata gövdesi |
 | `sahte-meta/kanca.mjs` | Durum kancası gövdesi (belge biçimi), imza (D0), doğrulama isteği (D0), Meta yeniden deneme kuyruğu (7 gün) |
-| `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 34) |
-| `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 18 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
+| `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 35) |
+| `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 19 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 284 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 291 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -112,7 +112,7 @@ pencere içindeki farklı alıcı, silinen medya, toplu iş durumları), `bu_ay`
 
 **İki uç:** her senaryo 2 kez koşar: işçi adımı ∈ {hızlı 0,5 sn, yavaş 5 sn} (planın "~1 sn"i). Sıra artık plan kuralı (§7a 5, seçim sırası); geçici bekleme
 dizisi sabit (§7a 15: 30 sn → 2 dk → 15 dk).
-**Ufuk:** benzetim olay kalmayınca ya da başlangıçtan 10 gün sonra biter (senaryoların en geç denetimi +8 gün; TTL 73 sa ve 7 gün kuralı içinde).
+**Ufuk:** benzetim olay kalmayınca ya da başlangıçtan 10 gün sonra biter (senaryoların en geç denetimi +8 gün; 7 gün kuralı içinde); senaryonun `bitis`i varsa odur (güncelleme 10'un 30 günlük senaryoları +29 g 3 sa … +31 g 3 sa).
 "Son durum" = bu ufuktaki durum.
 
 **Planın kâhine aktarılan kuralları** (kaynak satırları kodda): seçim → tek onay; bağlantı / yetki / lisans / onay / şablon (APPROVED + UTILITY) yoksa
@@ -133,7 +133,7 @@ basamağı [başlarken + 6 saatte bir okunur], elle üst sınır), kayan 24 saat
 WABA'ya göre (iki şirket aynı WABA → ortak; geri yükleme azaltmaz); sınırda kalanlar "Sınır Nedeniyle Bekliyor", pencere açılınca sürer; Meta sınır hatası ve
 131048 → aynı WABA'nın BÜTÜN işleri 24 saat; durum yalnız ileri (read'den sonra delivered, delivered/read'den sonra failed yok sayılır; read = teslim edildi —
 Meta); yinelenen kanca etkisiz; Sonucu Belirsiz YALNIZ imzalı olay + iş kimliğiyle çözülür (sayaç ve pencereye girer), imzasız olay düşer; kanca yolu çalışıyorsa
-(son 7 günde kanca) TTL 3 gün + 1 saat → Süresi Doldu, çalışmıyorsa "Meta Kabul Etti"de kalır; Süresi Doldu'dan sonra gelen teslim yazılır (zaman = kanca
+(son 7 günde kanca) TTL + 1 saat → Süresi Doldu (TTL: güncelleme 10'dan beri Meta'nın şablon listesinde bildirdiği değer, yoksa 30 gün; iş KABUL ANINDAKİ değerle — §15; eskiden 3 gün), çalışmıyorsa "Meta Kabul Etti"de kalır; Süresi Doldu'dan sonra gelen teslim yazılır (zaman = kanca
 timestamp'i); kesin durumda (teslim / başarısız / süresi doldu) PDF Meta'dan silinir, bir kez; başarılı işin hata kodu temizlenir; "Başarısızları Yeniden Dene"
 yalnız kesin Başarısız; "Yine de Gönder" Sonucu Belirsiz'i yeniden gönderir (çift gidebilir); kapanış: kaldığı yerden sürer, "Gönderiliyor" → Sonucu Belirsiz; 24
 saatten eski toplu işte SINIR / Meta Bekletti bekleyeni sürer, öbürü açılışta sorulur; geri yükleme / sıfırlama → "Durduruldu (Geri Yükleme)", taşıma → "Taşınan
@@ -183,7 +183,7 @@ Sahte sunucu:
 
 Kâhin:
 29. 60 karakteri aşan değişken değeri "kısaltılabilir" (Meta sınırı yerelde yok; plan "kısaltır" der).
-30. Meta TTL'den sonra teslim edilmeyen iletiyi düşürür (belge); kâhin TTL'yi kabul anından sayar.
+30. Meta TTL'den sonra teslim edilmeyen iletiyi düşürür (belge); kâhin TTL'yi kabul anından sayar. Güncelleme 10: Meta'nın şablon listesinde `message_send_ttl_seconds` bildirip bildirmediği belirsiz (W tasarım §7 T2) — sahte Meta yalnız senaryo verdiyse bildirir; API medya kimliği 30 gün (belge) → 30 günlük süreden sonra Meta'da silme yok.
 
 ## 5. Plan §7a kararları kâhinde (ilk sürümün "PLAN SUSUYOR" 1–32 listesiyle aynı numaralar)
 
@@ -856,3 +856,125 @@ CLAUDE.md'deki "defterde onarım bekleyen kabul varken" bunun özetidir.
 - **Sürücü:** S-19 "gecikme < 15 sn"; S-23 `defter_yazilamaz` = gönderim defteri (makine düzeyi) yazma kilidi, şirket dosyası yazılabilir; programın kabulü deftere yazamadığı
   (günlük / yanıt) okunmalı, oluşmadıysa senaryo GEÇERSİZ. S-24 aynen (neden `onarim_bekleyen_kabul`, onarımdan sonra kapat / aç).
 - **Kanıt:** kendi testi **307/307** (F **164/164**), `TZ=UTC` ve `TZ=Europe/Istanbul`; `docs/kanit/2026-11-01/248-kahin9d-*`.
+
+## 15. Kâhin güncellemesi 10 — 2.4.9 W: teslim süresi 30 gün (KULLANICI KARARI 03.11.2026) — yorumlar (kodlamadan ve programla karşılaştırmadan ÖNCE)
+
+### 15.1 Kaynak ve bağımsızlık
+Kaynak YALNIZ karar metinleri (AYNEN `kahin.KARARLAR` W1): `docs/2.4.9-IS-LISTESI.md` "KULLANICI KARARI (03.11 ~18:45 UTC, W SORU T0)" satırı ve
+`docs/2.4.9-tasarim/W-whatsapp-sablon.md` §15 "KULLANICI KARARI + ANA OTURUM ONAYI (03.11.2026 ~18:50 UTC)" (karar metni olarak; §7 SORU T0/T1/T2 ve §8 "Nasıl bozulur?"
+yalnız sorunun ve düşen soruların bağlamı için okundu). Öncekiler aynen: §7a 16 (kanca yolu + TTL + 1 sa), §6 W2, J4 ("son kabul ettiği denemeden"), K3/P3 (Süresi Doldu
+"Daha Önce Gönderildi" sayılmaz), WhatsApp "KİME KAÇ KEZ" genel ilkesi (CLAUDE.md). Program kodu (`server/`, `client/`, `bulut/`), program testleri ve W kod ajanının kanıtları
+GÖRÜLMEDİ. Sürücüden (`surucu.mjs`) yalnız TTL ayarının yeri, şablon kurulumu (sahte Meta'ya verilen şablon nesnesi), `sending-settings` satırı, ufuk ve mutasyon tablosu
+okundu. Sahte Meta'dan (`sahte-meta/sunucu.mjs`) şablon nesnesi ve medya ömrü (30 gün) okundu.
+
+### 15.2 Yorumlar (kâhinde; her birinin kaynağı)
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y10-1 | Teslim süresi (TTL) = Meta'nın şablon listesinde O ŞABLON için bildirdiği değer (Meta alanı `message_send_ttl_seconds`; kâhin girdisi `meta.sablonlar.<ad>.teslim_suresi_sn`), yoksa **30 gün**. Program TTL göndermez/düzenlemez — kâhin bunu yalnız Meta'nın bildirdiği değer üzerinden görür | §15 "Meta listesinin bildirdiği değer varsa o, yoksa 30 gün (+1 sa)" |
+| Y10-2 | Pay: "Süresi Doldu" = son kabul + süre + **1 saat** (§6 W2 / §7a 16 "TTL + 1 sa" genel kural; §15 30 günün yanında "(+1 sa)"). Kâhin payı Meta'nın bildirdiği değere de uygular; ama bu bir okumadır (§15 parantezi yalnız 30 günün yanında) → hiçbir senaryo [süre, süre + 1 sa] aralığında DENETİM yapmaz ve o aralıkta olay yoktur; payı yalnız 30 günde (metinde açık) W1-01 denetler | §15 + §7a 16 |
+| Y10-3 | Ölçü noktası değişmedi: Meta'nın SON kabul ettiği deneme (J4); J4 metnindeki "(3 gün)" §15 ile yerini Y10-1'e bıraktı | J4 + §15 |
+| Y10-4 | 2.4.8'in 72 saatlik teslim süresi ayarı ("ttlHours", 2.4.8'in 72 sa varsayılanı) **okunmaz**: kâhin girdisi `ayar.eski_ttl_saat` etkisiz (yalnız M7 okur). "Eski kurulumlarda 72 sa ile açılmış şablon varsa liste değeri geçerli" → listede değer varsa Y10-1 | §15 "ttlHours ayarı ve 72 saat varsayılanı KALKAR", "Kayıtlı eski TTL … kayıtları okunmaz, zarar vermez" |
+| Y10-5 | §7a 16 aynen: kanca yolu (aynı WABA'da son 7 günde imzalı, tanınan kanca) çalışmıyorsa Süresi Doldu yazılmaz, iş Meta Kabul Etti / Gönderildi'de kalır | §7a 16 |
+| Y10-6 | 30 gün dolmadan Meta Kabul Etti / Gönderildi kalan kişi aynı dönemde **"Daha Önce Gönderildi"** (R3 "Meta Kabul Etti ve sonrası", yorum 15 — değişmedi; İLKEYLE (2) "almış olabilirse elenir") ve R3 **"Yine de Gönder"** yolu açık (İLKEYLE (4) "çıkmaz yok"); Süresi Doldu'dan sonra K3/P3 (sayılmaz) aynen | R3 + K3/P3 + ilke (2), (4); §15 "SORU T1 ve T2 bu kararla DÜŞER" |
+| Y10-7 | **Meta davranışı (kural değil):** Meta API medya kimliğini 30 günde kendisi siler (Meta belgesi; sahte Meta `medyaOmruMs`, §1). 30 günlük süreden sonra (Süresi Doldu = kabul + 30 gün + 1 sa) programın PDF silmesi Meta'da bir şey silmez → çıktıdaki `medya_silme` (Meta'da silinen) yalnız 30 günü dolmamış medyayı sayar; 30 günden eski medya yeniden kullanılmaz (§7a 15 "medya geçerliyse aynısı, yoksa yeniden yüklenir"). Eski senaryoların hiçbirinde etkisi yok (en uzun ufuk +19 gün) | Meta belgesi + §11 S3 + §7a 15 |
+| Y10-8 | Teslim süresi şablon başına (Meta'nın TTL'i şablonun özelliği): ekstre şablonunda bildirilen değer Ödeme Hatırlatma'ya geçmez | Y10-1 |
+| Y10-9 | Eski TTL senaryoları (CIFT-16, ICERIK-10, TARIH-02, TARIH-03, TARIH-03b, J1-02, J4-01, J4-02) kurallarının (P3, §7a 16/17, J1, J4) dişi kalsın diye Meta'nın listede **12 saat** (43.200 sn — iş listesindeki karar satırına göre Meta'nın utility'de izin verdiği en uzun özel süre) bildirdiği düzene alınır (test düzeneği; kural değil); denetim anları 12 + 1 sa'e göre kaydırılır, beklenen DEĞERLER aynı kalır. GUV-09'un konusu imzasız olay: varsayılanda (30 gün) kalır, iş 10 günlük ufukta Gönderildi'de kalır (eski: 73. saatte Süresi Doldu) | düzenek |
+
+### 15.2b W-KÖK (KULLANICI 03.11.2026 ~20:05 UTC, "W-KÖK 2.4.9'A ALINDI"; AYNEN `kahin.KARARLAR` W2) — yorumlar (kodlamadan ÖNCE; ana oturumun iletisiyle geldi)
+Kaynak: `docs/2.4.9-IS-LISTESI.md` son satır: "iş KABUL ANINDAKİ teslim süresiyle değerlendirilir (Meta listesindeki süre sonradan kısalırsa önceden kabul edilmiş iş eski süreyle; o an
+süre bilinmiyorsa 30 gün) — İLKEYLE (ilke 2 'almış olabilirse elenir'), yeni soru yok". Ana oturum: program bu kuralı HENÜZ uygulamıyor (kod ayrı turda) → W2 senaryolarında
+program ↔ kâhin ayrışması BEKLENİR ("beklenen ayrışma (kod henüz yok)").
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y10-10 | Her kabulde (programın kabulü öğrendiği an — J4'ün kabul anı) o işin şablonu için Meta listesinin O ANKİ değeri (yoksa 30 gün) işe yazılır; Süresi Doldu bu değerle ölçülür; listede sonradan olan değişiklik o kabulü etkilemez. Meta Bekletti 2. denemesi / Yine de Gönder yeni bir kabuldür: o anın değerini alır (J4 + W2) | W2 + J4 |
+| Y10-11 | "O an süre bilinmiyorsa 30 gün" = kabul anında Meta listesinde değer yoksa 30 gün; sonradan 12 sa bildirilse de o iş 30 günle değerlendirilir (W2-01). Kâhin "kabul anındaki değer"i Meta'nın o anki listesinden alır; programın o ana dek son OKUDUĞU değerle ayrışabileceği an (liste programın son okumasından sonra ama kabulden önce değişirse) senaryosuz (S10-5) | W2 |
+| Y10-12 | Kısalma: kabul anında 30 gün bildirilmiş, sonra 12 sa → o iş 30 gün (W2-02). Kişi o arada aynı dönemde "Daha Önce Gönderildi" (İLKEYLE 2), R3 "Yine de Gönder" açık (İLKEYLE 4); süre değiştikten sonra kabul edilen YENİ iş yeni süreyle (12 sa) | W2 + ilke (2), (4) |
+| Y10-13 | **Uzama SENARYOSUZ (iki okuma, ders 43 — §15.3 S10-6 SORU):** kabul anında 12 sa, sonra 30 gün. Kuralın ana cümlesi "kabul anındaki süre" → 12 sa (kâhin modeli böyle); ama gerekçe ilke 2 "almış olabilirse elenir" ve Meta'nın süreyi gönderim anında mı yoksa güncel şablondan mı uyguladığı belgesiz (D0) → şüphede uzun süre de okunabilir | W2 + ilke (2) |
+
+### 15.3 KÂHİN SUSUYOR / bilgi (ana oturuma; senaryosuz)
+- **S10-1 (bilgi):** Y10-2 — Meta değeri bildirdiğinde 1 saatlik payın uygulanıp uygulanmadığı. Kişiye kaç ileti gittiğini yalnız [süre, süre + 1 sa] aralığında yeni gönderim
+  başlatılırsa değiştirir; senaryolar bu aralıkta denetim/olay içermez (program iki okumadan birini kullanabilir).
+- **S10-2 (bilgi):** Meta 12 sa bildirirse (şablonun süresi Meta panelinde elle kısaltılmışsa) §7 SORU T1'in penceresi geri gelir: program / tünel kapalıyken teslim bildirimi
+  Meta kuyruğunda beklerken açılışta Süresi Doldu yazılabilir → P3 gereği aynı dönemde ikinci ekstre. Karar T1'i "30 günde pratikte yok" diye düşürdü; program TTL göndermediği için bu
+  ancak elle değiştirilmiş şablonda olur.
+- **S10-3 (bilgi):** Toplu iş sürerken Meta'nın bildirdiği değer değişirse hangi okumanın (gönderim anı / programın son okuması) geçerli olduğu karar metninde yok; kâhin değeri
+  Meta'nın o anki listesinden alır, senaryolarda değer değişmez.
+- **S10-5 (bilgi):** Y10-11 — "kabul anındaki süre" Meta'nın o anki listesi mi, programın o ana dek son okuduğu değer mi: ancak liste programın son okumasıyla kabul arasında
+  değişirse ayrışır; senaryosuz.
+- **S10-6 — KAPANDI (KULLANICI KARARI 03.11 ~21:00 UTC, §15.7: B — etkin süre = max(kabul anındaki, güncel)):** ~~SORU — iki okuma, ders 43; kâhin senaryoyla kesinleştirmedi:~~ Meta listesindeki süre kabulden SONRA UZARSA (ör. kabul anında 12 sa, sonra 30 gün) önceden kabul edilmiş iş
+  hangi süreyle değerlendirilir? **A (kâhin modeli; kararın ana cümlesi "iş KABUL ANINDAKİ teslim süresiyle değerlendirilir"):** kabul anındaki 12 sa → 13. saatte Süresi Doldu,
+  kişi aynı dönemde yeniden gönderilebilir (P3). **B (ilke 2 "almış olabilirse elenir", şüphede uzun süre):** iki değerin uzunu (30 gün) → kişi "Daha Önce Gönderildi", Yine de
+  Gönder açık. Meta'nın süreyi iletinin gönderildiği andaki şablondan uyguladığı belgede açık değilse (D0) B güvenli taraftır; belgede açıksa A fiziksel olarak doğrudur.
+- **S10-4 (bilgi, bu güncellemenin kapsamı dışı):** KARAR 01.11.2026 10:40 "Gittiği anki içerik" kâhinin J12'siyle (ekstre içeriği AÇILIŞTA) çelişir; kâhinin bu karara göre
+  güncellenmesi 2.4.9 iş listesinde C (SONRAYA). Sürücü koşusunda ICERIK-09 / J12-01 / J12-03 bu yüzden ayrışabilir — W farkı değildir.
+
+### 15.4 Güncelleme 10 sonuçları (kâhin, senaryolar, mutasyonlar, değişen beklentiler, sürücü, kanıt)
+- **Kâhinde:** `TTL = 72 sa` kalktı → `ttl_listeden()` (Meta'nın o şablon için o anki listesi `teslim_suresi_sn`, yoksa `TTL_VARSAYILAN` 30 gün; `ayar.eski_ttl_saat` okunmaz) +
+  `ttl_suresi()` (W2: `programa_kabul`'de işe yazılan `ttl_kabul`); Süresi Doldu = son kabul + süre + `TTL_PAYI` (1 sa); `meta_sablon` olayı `teslim_suresi_sn`'yi de değiştirir;
+  `MEDYA_OMRU` 30 gün: `medya_t` (yükleme anları), `silme_n` (Meta'da GERÇEKTEN silinen) — çıktıdaki `medya_silme` artık `silme_n`; 30 günden eski medya yeniden kullanılmaz.
+  `KARARLAR` W1 (03.11 18:45 + §15) ve W2 (W-KÖK 20:05) AYNEN.
+- **Yeni senaryolar (7):**
+
+| Karar | Senaryo | Sınır | Mutasyon (yakalayan) |
+|---|---|---|---|
+| W1 | W1-01 Meta bildirmez + 2.4.8 72 sa ayarı: 4. gün Gönderildi, 5. gün "Daha Önce Gönderildi", 28. gün C kanca yolunu canlı tutar, 30 g 30 dk Gönderildi (pay), 30 g 2 sa Süresi Doldu (Meta'da silme 0), sonra aynı dönem gider | 30 gün, 1 sa pay, medya 30 gün | M7, M167, M168 |
+| W1 | W1-02 29. gün "Daha Önce Gönderildi" (İLKEYLE 2), R3 Yine de Gönder ile ikinci ileti (İLKEYLE 4) | 29. gün | (M7 de) |
+| W1 | W1-03 Meta ekstre için 12 sa, hatırlatma için bildirmez: A ekstresi 13,5. saatte Süresi Doldu, D hatırlatması 4. gün Gönderildi; A'ya aynı dönem yeniden | şablon başına | M166, M169 |
+| W1 | W1-04 31.10 20:00 gönderim, 12 sa: 01.11 07:30 Gönderildi, 09:30 Süresi Doldu, 02.11 geç teslim (Kasım), 03.11 "Daha Önce Gönderildi" (son 31.10) | ay sonu, gece yarısı | — |
+| W1 | W1-05 Meta bildirmez; Meta Bekletti 2. denemesi 24. saatte kabul: 30 g 12 sa Gönderildi, 31 g 2 sa Süresi Doldu, Meta'da silme 0 | 30 gün + J4 | (M141 J4-01'de) |
+| W2 | W2-01 kabulde bilinmiyor (30 gün), 14. saatte liste 12 sa: A Süresi Doldu OLMAZ, 16. saatte "Daha Önce Gönderildi", Yine de Gönder gider; sonra kabul edilen C 12 sa ile Süresi Doldu | kısalma | M170 |
+| W2 | W2-02 kabulde 30 gün bildirilmiş, 20. saatte 12 sa'e kısalır: A eski süreyle, "Daha Önce Gönderildi"; sonra kabul edilen C 12 sa ile Süresi Doldu | kısalma | (M170 de) |
+
+- **Mutasyonlar:** M7 TERSİNE çevrildi ("TTL 3 gün yerine 30 gün" → "Meta bildirmezse 2.4.8'in 72 sa'i"), yeni M166–M170; ayrıca M41 (kanca yolu yokken Süresi Doldu) 30 günde
+  10 günlük ufukta dişsiz kalmıştı → TARIH-03 12 sa düzenine alındı, yine yakalanıyor. Toplam **169/169**.
+- **Değişen eski senaryolar (9; 284'ün tam sonucunda 6'sı değişti, 278'i bayt bayt aynı — `docs/kanit/2026-11-03/kahin-w/eski-284-tam-sonuc-fark.txt`):**
+  - Meta 12 sa bildirir düzenine alınan (Y10-9; elle beklenen DEĞERLER aynı): CIFT-16, TARIH-03, J1-02 (zamanlar da aynı); ICERIK-10 (K1/K2 11 sa 30 dk / 13 sa 30 dk,
+    teslim +2 g), TARIH-02 ve TARIH-03b (K1/K2 11 sa 30 dk / 13 sa 30 dk), J4-01 ve J4-02 (K1/K2 30 sa / 38 sa).
+  - Beklentisi değişen: **GUV-09** — iş 10 günlük ufukta Gönderildi'de kalır, PDF silinmez (eski: 73. saatte Süresi Doldu, PDF silinir; elle de değişti).
+  - Eski kâhinle (a0962e7a, ayrı `git archive` kopyası) yeni/değişen 16 senaryo: **13 kırmızı, 3 aynı** (CIFT-16, TARIH-03, J1-02 — 12 sa ile 72 sa'in aynı sonucu verdiği
+    düzenek değişiklikleri) — `docs/kanit/2026-11-03/kahin-w/eski-kahin-a0962e7a-ile-yeni-ve-degisen-senaryolar.txt`.
+- **Sahte Meta:** şablon nesnesine `message_send_ttl_seconds` (D0: yalnız senaryo verdiyse listede ve tek okumada görünür); yeni test (35/35) ve mutasyon (19/19).
+- **Sürücü (S-33):** `ttlSaat = 72` kalktı → `ttlSureleri` (senaryonun Meta değerleri + olaylardaki `meta_sablon teslim_suresi_sn` + 30 gün); aday anlar her süre için süre ve süre + 1 sa
+  (S10-1'in iki okuması); şablon nesnesine `message_send_ttl_seconds`; `meta_sablon` olayında sahte Meta'daki değer değişir; `ayar.eski_ttl_saat` → programa
+  `PUT …/sending-settings {ttlHours}` denenir ve HTTP kodu nota yazılır (karar §15: 400); eşleme mutasyonu `SW-teslim-suresi-verilmez` (W1-03, TARIH-02, W2-02).
+
+### 15.5 Programa karşı sürücü koşusu (03.11.2026; program = a0962e7a, W kodu ed54565c dahil; kâhin c70c77e0) — AYRIŞMALAR (programa uydurulmadı, ders 40)
+Koşular (`docs/kanit/2026-11-03/kahin-w/`): yeni + değişen 17 senaryo × hızlı / yavaş × `TZ` Europe/Istanbul / UTC (dördü de aynı sonuç: 0/17 tam eşit; davranış farkı 0 olanlar
+yalnız G1 gösterim sınıfıyla ayrışıyor); eski kâhinle (a0962e7a, ayrı çalışma ağacı) aynı programa karşı değişen 10 senaryo; tanı koşusu (programın şablon okuma alanları);
+eşleme mutasyonu `SW-teslim-suresi-verilmez` (W1-03); bütün 291 senaryo (hızlı uç) hem W kodlu programa (a0962e7a) hem W ÖNCESİ programa (bb68798a, ayrı çalışma ağacında
+yeni kâhinle) — iki koşunun senaryo başına davranış farkı listeleri **291/291 AYNI** (`iki-program-kosusu-fark-bb68798a-a0962e7a.txt`): W kodu kâhinin gördüğü hiçbir davranışı
+değiştirmedi; A1 W kodundan ÖNCE de vardı. Bütün koşu: 25 tam eşit, 196 yalnız gösterim sınıfı, 70 davranış farkı (12'si aşağıdaki A1/A2 kümesi, 1'i A3, 58'i W'den bağımsız —
+`tum-kosu-siniflama.txt`).
+| # | Ayrışma | Senaryolar | Sınıf |
+|---|---|---|---|
+| A1 | **Program Meta'nın şablon listesinde bildirdiği teslim süresini uygulamıyor:** 12 sa (43.200 sn) düzeninde iş 13,5. saatte de 10 günlük ufukta da Gönderildi / Meta Kabul Etti kalıyor, Süresi Doldu yazılmıyor, PDF silinmiyor; P3 gereği gitmesi beklenen aynı dönem iletisi "Daha Önce Gönderildi" ile eleniyor (CIFT-16 T2, W1-03 T3 oluşmuyor). Tanı: program şablon okumalarından birinde `fields=…,message_send_ttl_seconds` istiyor, sahte Meta 43200 dönüyor; sahte Meta'ya değer hiç verilmeyince (eşleme mutasyonu) programın davranışı DEĞİŞMİYOR (W1-03: 35 fark aynı) → program değeri okuyor gibi ama Süresi Doldu'ya bağlamıyor. Kural: §15 "Meta listesinin bildirdiği değer varsa o". Etki yönü güvenli (kişi almış sayılır, ikinci ileti gitmez, Yine de Gönder açık) ama karar metnine aykırı | CIFT-16, ICERIK-10, TARIH-02, TARIH-03b, J1-02, J4-01, J4-02, W1-03, W1-04, W2-01 (C), W2-02 (C) | W davranış farkı — kök neden kodda (kâhin kodu görmedi) |
+| A2 | **W-KÖK (W2) — BEKLENEN AYRIŞMA (kod henüz yok):** W2-01/W2-02'nin ayrışması bugün yalnız A1'den (liste değiştikten SONRA kabul edilen C Süresi Doldu olmuyor). W-KÖK'ün asıl parçası (önceden kabul edilmiş A eski süreyle → Gönderildi, "Daha Önce Gönderildi", Yine de Gönder gider) programda RASTLANTIYLA uyuyor: program listedeki değeri hiç uygulamadığı için. A1 + W-KÖK kodu gelince W2-01/02 yeniden koşulmalı (A'nın Süresi Doldu OLMAMASI asıl denetim) | W2-01, W2-02 | beklenen ayrışma (kod henüz yok) |
+| A3 | İmzasız (`wa0`) sahte "delivered" (gerçek işin opaque'ıyla) programda işi Teslim Edildi yapıyor (+2 sa'te). Eski kâhinle aynı programa karşı da aynı K1 farkı → W değişikliğinden BAĞIMSIZ. Kâhin §7a 3'e göre "imzasız düşer" der; sürücünün `imzali` kipinde kapıcı imzasızı `wa0` diye geçirir (Elle Bağla'da kapıcı müşterinin uygulama sırrını bilmez — sürücü başlığı) → ana oturum sınıflasın (bilinen Yol 1 düzeni mi, hata mı) | GUV-09 | W'den bağımsız |
+| A4 | Program artı bakiyeye " (Borçlu)" ekliyor — sürücünün G1 gösterim sınıfı (her senaryoda) | hepsi | gösterim, W'den bağımsız |
+| A5 | **W'den bağımsız 58 senaryo** (W öncesi programda AYNI fark listesi; bu güncellemenin konusu değil, ana oturuma): Tüm Hareketler PDF dönem uçları sürücüde `None` (ICERIK-08, K1-05/06, K2-02, D3-02, E4-02, G6-02/04, J8-01…05, J11-01…03, J12-02/03), ICERIK-09 (S10-4 "Gittiği anki içerik" ↔ J12), sınır penceresi sayısı (`pencere_farkli_alici`: CIFT-02/09, ALICI-131049-iki-kez, SINIR-05, K6-01/03/04, D6-03, E1-01, G5-01, J1-03, J10-04), `toplam_kabul_program` (H3-01, J1-04/05, J3-03/04), taşıma "Bu Ay" (CIFT-13, D8-01/02, G3-03/04), Meta'ya ulaşılamaz (KAYIP-05/06), sıfırlama (G4-01/02, J3-02), ret sırası (GUV-10/11), J10-01…03 (S9-1), G6-01/05, H2-02, E2-03, J1-01, J6-01, ICERIK-04 (emoji PDF) | 58 | W'den bağımsız |
+| — | **Uyanlar (davranış farkı 0):** 30 gün varsayılanı, 2.4.8'in 72 sa'i okunmuyor (`PUT sending-settings {ttlHours: 72}` → **400**, karar §15), 29. gün "Daha Önce Gönderildi" + R3 Yine de Gönder, 30 gün + 1 sa pay, Meta Bekletti 2. kabulünden 30 gün (J4), 30 günden sonra Meta'da PDF silme 0 (Y10-7), kancasız yol (TARIH-03), TTL içinde geç teslim (ICERIK-11). Program hiçbir istekte teslim süresi GÖNDERMİYOR (tanı notu: 0) | W1-01, W1-02, W1-05, TARIH-03, ICERIK-11 | uyuyor |
+
+### 15.6 DENENEN / DENENMEYEN
+- DENENEN: kâhinin kendi testi 314/314 (F mutasyon 169/169) `TZ=UTC` ve `TZ=Europe/Istanbul`; senaryolar 291/291 elle = model; eski 284'ün tam sonucunda 6'sı değişti (yalnız
+  §15.4'tekiler); eski kâhinle yeni/değişen 16 senaryo 13 kırmızı; sahte Meta 35/35, mutasyon 19/19; sürücü §15.5; sahte Meta'yı kullanan program e2e'leri
+  `senaryo-tarih-248` 43/43 ve `senaryo-is-akisi-248` 184/184 (ilk denemeler ORTAM yüzünden düştü: node_modules'teki Playwright headless_shell-1194 istiyor, /opt'ta 1243 var —
+  not defterinde yalnız bu koşu için bağ klasörü + `PLAYWRIGHT_BROWSERS_PATH`; kanıt dosyaları yeşil yeniden koşuyla yazıldı).
+- DENENMEYEN: 2.4.8'in GERÇEK koduyla (v2.4.8) yazılmış `ttlHours` kaydının 2.4.9'da okunmadığı (sürücü yalnız 2.4.9 ucunu dener → 400; eski kayıt üretilmedi); S10-1 pay aralığı,
+  S10-2 (12 sa'te bildirim kuyrukta + açılış), S10-3 (süre toplu iş sürerken değişir — W2 dışında), S10-5, S10-6 (süre uzar — SORU); Yol 1 gerçekçi kip (`--kip yol1`) ve Yol 2 kipi; sürücünün yavaş ucu ve `TZ=UTC` yalnız 17 hedef senaryoda (bütün koşu yalnız hızlı uç, Europe/Istanbul); sürücünün `--mutasyon-denetimi` bütün tablosu
+  (yalnız yeni `SW-teslim-suresi-verilmez` W1-03'te tek tek koşuldu — program değeri uygulamadığı için bugün DİŞSİZ görünür, A1 düzelince anlamlı olur).
+
+### 15.7 Güncelleme 10b — S10-6 KULLANICI KARARI (03.11.2026 ~21:00 UTC; AYNEN `kahin.KARARLAR` W3) — yorumlar (kodlamadan ÖNCE)
+Kaynak: `docs/2.4.9-IS-LISTESI.md` son satır (AskUserQuestion; kâhinin S10-6 sorusu): "süre kabulden sonra UZARSA önceden kabul edilmiş iş UZUN süreyle (30 gün) değerlendirilir →
+etkin süre = max(kabul anındaki, güncel); kabulde bilinmiyorsa 30 gün". Ana oturum: program bu kuralı henüz uygulamıyor (W-KÖK kodu ayrı ajanda) — bu turda programa karşı KOŞULMADI.
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y10-14 | Etkin süre = max(kabul anında işe yazılan süre, Meta listesinin DEĞERLENDİRME ANINDAKİ değeri); kabulde değer yoksa kabul süresi 30 gün (W2). Kısalma W2 ile aynı sonuç (max eskiyi tutar); uzama → uzun süre (Y10-13'ün A okuması DÜŞTÜ, B oldu) | W3 + W2 |
+| Y10-15 | Kâhinde "güncel" = Meta listesinin o anki değeri, listede değer yoksa 30 gün (W1 "yoksa 30 gün"). Listenin değeri sonradan TAMAMEN kaldırması (bildirmemeye geçmesi) karar metninde yok — senaryosuz (S10-7) | W1 + W3 |
+| Y10-16 | Uzama Süresi Doldu YAZILDIKTAN SONRA gelirse iş yeniden açılmaz (Süresi Doldu kesin durum; J1 "iş yeniden açılmaz" düzeni) — karar metni bu anı söylemiyor, senaryosuz (S10-8) | J1 düzeni |
+- **S10-7 (bilgi, senaryosuz):** Y10-15. **S10-8 (bilgi, senaryosuz):** Y10-16.
+- Senaryo W3-01 (kabulde 12 sa, 6. saatte liste 30 gün → 14. saatte Süresi Doldu YOK, Gönderildi; 15. saatte aynı dönem "Daha Önce Gönderildi", uyarıda "Yine de Gönder" ile gider);
+  W2-01 / W2-02 (kısalma yarısı) kaynak satırına "+ W3". Mutasyon M171 = S10-6'nın A okuması (yalnız kabul anındaki süre; max yok).
+- **Sonuç (10b):** `ttl_suresi()` = max(`ttl_kabul`, `ttl_listeden()` o anki); KARARLAR W3 AYNEN; yeni senaryo W3-01; yeni mutasyon M171 (← W3-01). Senaryolar **292/292** elle = model;
+  kendi testi **315/315** (F mutasyon **170/170**) `TZ=UTC` ve `TZ=Europe/Istanbul`; önceki 291 senaryonun tam sonucu bayt bayt AYNI (W2-01/02 yalnız kaynak satırı); önceki kâhinle
+  (e37016de) W3-01 KIRMIZI, W2-01/02 aynı — `docs/kanit/2026-11-03/kahin-w3/`. Programa karşı KOŞULMADI (ana oturum: W-KÖK kodu ayrı ajanda; W3-01'de ayrışma beklenir).
+  Sürücüde değişiklik gerekmedi (`meta_sablon teslim_suresi_sn` ve aday anlar güncelleme 10'da var).

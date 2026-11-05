@@ -114,21 +114,23 @@ describe("2.4.3 keşif A: kayda bağlı cari geçmişi, Sil engeli, ekstre TOPLA
     const account = await ok200("cari", api.post("/api/workspace/accounts", { name: "Taksitli Kişi", type: "customer", registeredOn: day(-40) }));
     const plan = await ok200("kart", api.post("/api/workspace/plans", { accountId: account.id, name: "Taksitli Kişi", total: "600", mode: "auto", count: 2, firstDue: day(5), registeredOn: day(-30) }));
     const detail = await ok200("kart", api.get(`/api/workspace/accounts/${account.id}`));
-    assert.match(detail.deleteBlock, /1 taksit kartı var/);
+    // 2.4.9 C1: tek ileti ("Bu carinin 1 taksit kartı var. … Pasife Al …" — 2.4.9 UI tur A D9); kartı Silinenler'e giden cari silinir (S1 A).
+    assert.match(detail.deleteBlock, /^Bu carinin 1 taksit kartı var\./);
+    assert.match(detail.deleteBlock, /Pasife Al/);
     const refused = await api.del(`/api/workspace/accounts/${account.id}`);
     assert.equal(refused.status, 409);
     assert.equal(refused.data.error || refused.data.message, detail.deleteBlock);
     await ok200("kartı sil", api.del(`/api/workspace/plans/${plan.id}`));
     assert.equal((await ok200("kart", api.get(`/api/workspace/accounts/${account.id}`))).deleteBlock, "");
     await ok200("cariyi sil", api.del(`/api/workspace/accounts/${account.id}`));
-    // Faturası olan cari: kod (account-has-invoices) korunur.
+    // Faturası olan cari: 2.4.9 C1'den beri tek kod account-has-movements (önceden account-has-invoices).
     const buyer = await ok200("alıcı", api.post("/api/workspace/accounts", { name: "Faturalı Alıcı", type: "customer" }));
     await ok200("fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: buyer.id, lines: [{ name: "Hizmet", qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" } }));
     const blocked = await ok200("kart", api.get(`/api/workspace/accounts/${buyer.id}`));
-    assert.match(blocked.deleteBlock, /faturası olan cari silinemez/);
+    assert.match(blocked.deleteBlock, /^Bu carinin 1 fatura \/ makbuz/);
     const refusedInvoice = await api.del(`/api/workspace/accounts/${buyer.id}`);
     assert.equal(refusedInvoice.status, 409);
-    assert.equal(refusedInvoice.data.code, "account-has-invoices");
+    assert.equal(refusedInvoice.data.code, "account-has-movements");
     // Yetkisi olmayan (yalnız görüntüleyen) kullanıcıya neden gönderilmez.
     const staff = await ok200("personel", api.post("/api/admin/users", { username: "personel243", name: "Personel", role: "personel", password: "Personel-2026!", mustChangePassword: false }));
     assert.ok(staff);

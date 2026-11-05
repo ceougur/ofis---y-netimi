@@ -1,0 +1,20 @@
+ok 1 - M1 waFacts'ta plans: [] (taksit kartları alıcıya gelmez): çıkış 1; kırmızı 2 hücre [KÂHİN = SINIF TANIMI: geçerlilik/neden,  | ÇEKİRDEK ↔ KART: her cari sınıfında alıc]; beklenen [KÂHİN | ÇEKİRDEK] tuttu
+#   ileti: Expected values to be strictly deep-equal:
+#   ileti: alıcı alanları farklı: account-9e639e7c-2d19-4083-bf87-2023d98f4e4e
+ok 2 - M2 son tahsilat süzgecinden plan-in çıkar: çıkış 1; kırmızı 1 hücre [KÂHİN = SINIF TANIMI: geçerlilik/neden, ]; beklenen [KÂHİN] tuttu
+#   ileti: Expected values to be strictly deep-equal:
+ok 3 - M3 waOptOut denetimi === "1": çıkış 1; kırmızı 1 hücre [KÂHİN = SINIF TANIMI: geçerlilik/neden, ]; beklenen [KÂHİN] tuttu
+#   ileti: istemiyor nedeni
+ok 4 - M4 TL_FORMAT minimumFractionDigits 0: çıkış 1; kırmızı 3 hücre [YAPI: ekstre metni hazırlanırken tutar b | KÂHİN = SINIF TANIMI: geçerlilik/neden,  | BİLİNÇLİ TEK FARK (§13 b, İLKEYLE): kart]; beklenen [KÂHİN] tuttu
+#   ileti: ekstre metninde tutar yok (denetim boş geçerdi)
+#   ileti: Expected values to be strictly equal:
+#   ileti: The input did not match the regular expression /\*Güncel bakiye: 1\.000,00 TL \(borcunuz\)\*/. Input:
+ok 5 - M5 detail'e geri dönüş: çıkış 1; kırmızı 2 hücre [YAPI: alıcı listesi kişi başı tam cari k | BİLİNÇLİ TEK FARK (§13 b, İLKEYLE): kart]; beklenen [YAPI: alıcı listesi kişi başı tam cari kartı | BİLİNÇLİ TEK FARK] tuttu
+#   ileti: alıcı listesi kişi başı tam cari kartı okuyor: 113 çağrı (beklenen 0) — [{"govde":"statement thisMonth seçili","alici":15,"tamKartOkuma":17},{"govde":"statement lastMonth seçili","alici":15,"tamKartOkuma":17},{"govde":"s
+#   ileti: ekran eki hata verince kişi alıcı listesinden sessizce düşüyor (beklenen: listede, kendi bakiyesiyle — ilke 4 çıkmaz yok)
+ok 6 - M6 tl yine çağrı başına biçimleyici: çıkış 1; kırmızı 1 hücre [YAPI: ekstre metni hazırlanırken tutar b]; beklenen [YAPI: ekstre metni] tuttu
+#   ileti: ekstre metni her tutarda yeni biçimleyici kuruyor: 8 (beklenen 0)
+1..6
+# tests 6
+# pass 6
+# fail 0

@@ -36,8 +36,20 @@ export const USAGE_LEDGER_FILE = "e-belge-kullanim.sqlite";
 export function openUsageLedger({ dir, log = console, fault = null }) {
   mkdirSync(dir, { recursive: true });
   const db = openDatabase(path.join(dir, USAGE_LEDGER_FILE));
-  db.exec(SCHEMA);
-  const insert = db.prepare("INSERT OR IGNORE INTO usage (company_id, ettn, env, kind, month, company_code, invoice_id, source, created_at, added_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+  // 2.4.9 B1-b (BAŞ MİMAR KARARI; docs/2.4.9-tasarim/B1-createApp-baglanti.md §10/2): kurulum (şema, hazır sorgu) düşerse (uyumsuz şema, bozuk dosya)
+  // bağlantı kapatılır, asıl hata aynen fırlatılır — yoksa defter dosyası çöp toplamaya kadar açık kalır. openDatabase PRAGMA'da düşeni zaten kapatır (2.4.8).
+  let insert;
+  try {
+    db.exec(SCHEMA);
+    insert = db.prepare("INSERT OR IGNORE INTO usage (company_id, ettn, env, kind, month, company_code, invoice_id, source, created_at, added_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+  } catch (error) {
+    try {
+      db.close();
+    } catch {
+      // kapatma hatası asıl hatayı ezmez (ders 21)
+    }
+    throw error;
+  }
   const put = (companyId, companyCode, row) => {
     if (fault?.(row)) throw new Error("kullanım defteri yazılamadı (test kesintisi)");
     return Number(insert.run(String(companyId), String(row.ettn), row.env, row.kind, row.month, String(companyCode || ""), String(row.invoice_id ?? row.invoiceId ?? ""), String(row.source || ""), String(row.created_at ?? row.createdAt ?? ""), new Date().toISOString()).changes) > 0;

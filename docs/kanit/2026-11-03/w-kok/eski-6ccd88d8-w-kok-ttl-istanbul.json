@@ -1,0 +1,98 @@
+{
+  "ad": "w-kok/eski-6ccd88d8-w-kok-ttl-istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-reporter=tap test/whatsapp-w-kok-ttl-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:45:47.711Z",
+  "sure_sn": 10.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 3,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şablonları Denetle'ye basılmadan da uygulanır › Denetle YOK, Meta ekstre şablonunda 12 sa bildirir: toplu işin taze okumasıyla bilinir — 13 sa − 1 dk Gönderildi, 13 sa + 1 dk Süresi Doldu + PDF silinir; aynı dönemde yeniden gönderilebilir (P3)",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:93:3",
+      "hata": "Meta'nın bildirdiği 12 saat + 1 saatte Süresi Doldu (Denetle'ye basılmamış şirkette de) · 'sent' !== 'expired' (beklenen expired, gelen sent)"
+    },
+    {
+      "ad": "2.4.9 W-T §15 + kâhin A1 — Meta'nın listede bildirdiği süre Şablonları Denetle'ye basılmadan da uygulanır › Denetle YOK: kabulde süre bildirilmiyor (30 gün) → 14. saatte Meta 12 sa bildirir → önizleme taze okur: önceki iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi'; sonra kabul edilen iş 12 sa'le Süresi Doldu",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:112:3",
+      "hata": "12 sa bilinirken kabul edilen iş 12 saat + 1 saatte Süresi Doldu · 'sent' !== 'expired' (beklenen expired, gelen sent)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu) › p3 Denetle yolu: kabul → 14 sa → Meta listesi 12 sa bildirir → Şablonları Denetle → bakım: iş Süresi Doldu OLMAZ, PDF silinmez; kişi 'Daha Önce Gönderildi', aynı dönemde 2. ileti gitmez; 'Yine de Gönder' açık",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:134:3",
+      "hata": "kabul anında süre 30 gündü: sonradan kısalan süre geriye dönük Süresi Doldu yapmamalı · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu) › Denetle'den SONRA kabul edilen iş yeni süreyle (12 sa) ölçülür; önceki iş 30 gün + 1 sa'te Süresi Doldu + PDF silinir",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:162:3",
+      "hata": "A (değişimden önce kabul): 30 gün · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu) › süre iki kez KISALIRSA (30 gün → 1 gün → 12 sa): her iş kendi kabul anındaki süreyle — ilk değişimden önceki 30 gün, aradaki 1 gün",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:192:3",
+      "hata": "B 1 günlük süreyle kabul edildi: 13. saatte Süresi Doldu olmamalı · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu) › süre UZARSA (KULLANICI KARARI 03.11 ~21:00 UTC: uzun süre): 12 sa'le kabul edilen iş, süre 30 güne çıkınca 30 günle; sonra 6 saate kısalsa da 30 günle; yeni iş 6 sa'le",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:223:3",
+      "hata": "kabulden sonra görülen en uzun süre (30 gün) geçer; sonraki kısalma geriye işlemez · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu) › 2.4.8'den gelen veri (kabul anında süre bilinmiyor; şablon kaydında 12 sa): iş 30 günle; sonraki Denetle'den sonra kabul edilen iş 12 sa'le",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:251:3",
+      "hata": "kabul anında süre bilinmiyordu → 30 gün (eski kayıttaki 12 sa geriye işlemez) · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu) › iki şirket AYNI WhatsApp hesabında: 002'de kabul edilmiş iş; süre kısalınca önce 001'de, sonra 002'de Denetle → 002'nin işi Süresi Doldu OLMAZ, 002'de kişiye tek ekstre",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:295:3",
+      "hata": "002'nin işi kabul anındaki 30 günle · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu) › geri yüklenen yedek (002): kabul → süre 12 saate kısaldı + Denetle → yedek → geri yükleme → bakım: iş Süresi Doldu OLMAZ, 'Daha Önce Gönderildi', 2. ileti gitmez",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:321:3",
+      "hata": "geri yüklenen veride de kabul anındaki süre (30 gün) · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — iş kabul anındaki teslim süresiyle değerlendirilir (Şablonları Denetle yolu) › ay sonu / gece yarısı: 31.10 20:00 kabul (Ekim ekstresi) → 01.11 09:30 süre 12 saate kısaldı + Denetle → iş Süresi Doldu OLMAZ; 'Geçen Ay' önizlemesi 'Daha Önce Gönderildi', 2. Ekim ekstresi gitmez",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:352:3",
+      "hata": "kabul anındaki 30 gün: ay dönümünde geriye dönük Süresi Doldu yok · 'expired' !== 'sent' (beklenen sent, gelen expired)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük › değişim anı D: D'de ve sonra kabul → yeni süre; D'den önce → 30 gün; kabul anı verilmezse günlükteki son değer",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:388:3",
+      "hata": "Expected values to be strictly equal: · 2592000 !== 43200 (beklenen 43200, gelen 2592000)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük › zincir (30 gün → 1 gün → 12 sa) ve uzama (12 sa → 30 gün → 6 sa): kabul anındaki ile sonradan görülen en uzun",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:397:3",
+      "hata": "Expected values to be strictly equal: · 2592000 !== 86400 (beklenen 86400, gelen 2592000)"
+    },
+    {
+      "ad": "2.4.9 W-KÖK — kural (birim): deliveryTtlSeconds(store, WABA, ad, kabulAnı) ve günlük › noteDeliveryTtl: yalnız değer değişince yazar; geç dönen eski okuma yazmaz; başka hesapta günlük o hesapla yeniden başlar; en çok 12 değişim (düşen en eski: 30 gün)",
+      "konum": "test/whatsapp-w-kok-ttl-249.test.mjs:414:3",
+      "hata": "templates.mjs noteDeliveryTtl dışa açılmalı · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-aac20c1ad5b639b84/docs/kanit/2026-11-03/w-kok/eski-6ccd88d8-w-kok-ttl-istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kok-aac20c1a/eski-6ccd88d8",
+  "ham_cikti_sha256": "c829b4643a4315c38506d910006917fcbf931b8a538656413d9dbe845258e5b7",
+  "ham_cikti_bayt": 21142
+}

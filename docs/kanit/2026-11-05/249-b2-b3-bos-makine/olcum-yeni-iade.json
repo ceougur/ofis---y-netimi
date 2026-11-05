@@ -1,0 +1,60 @@
+{
+ "commit": "5a22228aa423ec4b4c85442dccd454f09f02ea67",
+ "node": "v22.22.0",
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/hazir-iade",
+ "set": "iade",
+ "saat": "2026-11-03T15:00:00+03:00",
+ "basladi": "2026-11-05T08:51:01.437Z",
+ "olcum": {
+  "ekstreBuAy2000": [
+   {
+    "durum": 200,
+    "ms": 887,
+    "olayDongusuEnCokMs": 663,
+    "baskaEnCokMs": 674,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   },
+   {
+    "durum": 200,
+    "ms": 822,
+    "olayDongusuEnCokMs": 608,
+    "baskaEnCokMs": 609,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   }
+  ],
+  "tumuneEkstreHepsi": [
+   {
+    "durum": 200,
+    "ms": 1385,
+    "olayDongusuEnCokMs": 1159,
+    "baskaEnCokMs": 1159,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 4021,
+    "gecerli": 3948
+   },
+   {
+    "durum": 200,
+    "ms": 1684,
+    "olayDongusuEnCokMs": 1359,
+    "baskaEnCokMs": 1456,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 4021,
+    "gecerli": 3948
+   }
+  ]
+ },
+ "cariSayisi": {
+  "toplam": 4021,
+  "telefonlu": 4014,
+  "secilen": 2000
+ },
+ "bitti": "2026-11-05T08:51:27.915Z"
+}

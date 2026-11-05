@@ -1,0 +1,40 @@
+{
+ "commit": "e3f74093",
+ "node": "v22.22.0",
+ "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b2-kod-a954/hazir-iade",
+ "set": "iade",
+ "saat": "2026-11-03T15:00:00+03:00",
+ "basladi": "2026-11-03T20:12:13.025Z",
+ "olcum": {
+  "ekstreBuAy2000": [
+   {
+    "durum": 200,
+    "ms": 44996,
+    "olayDongusuEnCokMs": 44765,
+    "baskaEnCokMs": 44777,
+    "baskaIstek": 4,
+    "baskaHata": 0,
+    "alici": 2000,
+    "gecerli": 1934
+   }
+  ],
+  "tumuneEkstreHepsi": [
+   {
+    "durum": 200,
+    "ms": 107923,
+    "olayDongusuEnCokMs": 107858,
+    "baskaEnCokMs": 107656,
+    "baskaIstek": 4,
+    "baskaHata": 1,
+    "alici": 4021,
+    "gecerli": 3948
+   }
+  ]
+ },
+ "cariSayisi": {
+  "toplam": 4021,
+  "telefonlu": 4014,
+  "secilen": 2000
+ },
+ "bitti": "2026-11-03T20:14:56.238Z"
+}

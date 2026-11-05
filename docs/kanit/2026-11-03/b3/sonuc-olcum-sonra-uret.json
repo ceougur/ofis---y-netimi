@@ -1,0 +1,960 @@
+{
+  "commit": "91d2a20006d9f0ca95e8f2d0d80f91f1bf2ccd29",
+  "node": "v22.22.0",
+  "veri": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/t9-4c8e1d/taban-2910",
+  "toplam": {
+    "toplu": 14,
+    "is": 20000,
+    "metaIleti": 20003,
+    "kancaOlay": 489,
+    "kancaDurum": 48024,
+    "kancaHata": 0,
+    "yenidenDene": 1,
+    "yineDeGonder": 3,
+    "hatirlatmaYok": 1
+  },
+  "bas": 0,
+  "adet": 10,
+  "kisi": 2000,
+  "olc": true,
+  "basladi": "2026-11-03T19:40:55.461Z",
+  "gonderimler": [
+    {
+      "sira": 1,
+      "gun": "2025-11-03",
+      "tur": "statement",
+      "donem": "lastMonth",
+      "acmaMs": 873,
+      "yurutulen": 2000,
+      "isBasinaMs": 38.9,
+      "durumlar": {
+        "read": 803,
+        "delivered": 1197
+      },
+      "olcu": {
+        "is": {
+          "n": 2000,
+          "p50": 34,
+          "p95": 69,
+          "enCok": 444
+        },
+        "olayDongusuEnCokMs": 438.3,
+        "bakimMs": 19,
+        "bakimOlayDongusuEnCokMs": 0,
+        "bakimOncesi": {
+          "sayfa": 60035,
+          "dosyaMb": 234.5,
+          "bosListe": 7887,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 4233,
+              "mb": 16.5,
+              "bosMb": 0.1,
+              "yukMb": 16.4
+            },
+            "wa_jobs": {
+              "sayfa": 335,
+              "mb": 1.3,
+              "bosMb": 0.2,
+              "yukMb": 1.1
+            }
+          },
+          "pdfSatir": 516,
+          "satirdaPdf": 0
+        },
+        "bakimSonrasi": {
+          "sayfa": 60035,
+          "dosyaMb": 234.5,
+          "bosListe": 12126,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 335,
+              "mb": 1.3,
+              "bosMb": 0.2,
+              "yukMb": 1.1
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        },
+        "gonderimSonu": {
+          "sayfa": 60035,
+          "dosyaMb": 234.5,
+          "bosListe": 12053,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 406,
+              "mb": 1.6,
+              "bosMb": 0.3,
+              "yukMb": 1.3
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        }
+      },
+      "sureSn": 82
+    },
+    {
+      "sira": 2,
+      "gun": "2025-11-06",
+      "tur": "statement",
+      "donem": "thisMonth",
+      "acmaMs": 666,
+      "yurutulen": 2000,
+      "isBasinaMs": 39.9,
+      "durumlar": {
+        "delivered": 1214,
+        "read": 786
+      },
+      "olcu": {
+        "is": {
+          "n": 2000,
+          "p50": 36,
+          "p95": 70,
+          "enCok": 853
+        },
+        "olayDongusuEnCokMs": 550.5,
+        "bakimMs": 100,
+        "bakimOlayDongusuEnCokMs": 11,
+        "bakimOncesi": {
+          "sayfa": 60035,
+          "dosyaMb": 234.5,
+          "bosListe": 3056,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 8468,
+              "mb": 33.1,
+              "bosMb": 0.2,
+              "yukMb": 32.8
+            },
+            "wa_jobs": {
+              "sayfa": 744,
+              "mb": 2.9,
+              "bosMb": 0.4,
+              "yukMb": 2.4
+            }
+          },
+          "pdfSatir": 1030,
+          "satirdaPdf": 0
+        },
+        "bakimSonrasi": {
+          "sayfa": 60035,
+          "dosyaMb": 234.5,
+          "bosListe": 11534,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 746,
+              "mb": 2.9,
+              "bosMb": 0.4,
+              "yukMb": 2.4
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        },
+        "gonderimSonu": {
+          "sayfa": 60035,
+          "dosyaMb": 234.5,
+          "bosListe": 11461,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 818,
+              "mb": 3.2,
+              "bosMb": 0.6,
+              "yukMb": 2.6
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        }
+      },
+      "sureSn": 86
+    },
+    {
+      "sira": 3,
+      "gun": "2025-11-10",
+      "tur": "statement",
+      "donem": "last3",
+      "acmaMs": 946,
+      "yurutulen": 2000,
+      "isBasinaMs": 38.8,
+      "durumlar": {
+        "delivered": 1209,
+        "read": 791
+      },
+      "olcu": {
+        "is": {
+          "n": 2000,
+          "p50": 36,
+          "p95": 64,
+          "enCok": 235
+        },
+        "olayDongusuEnCokMs": 180.9,
+        "bakimMs": 73,
+        "bakimOlayDongusuEnCokMs": 10.6,
+        "bakimOncesi": {
+          "sayfa": 61654,
+          "dosyaMb": 240.8,
+          "bosListe": 11219,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1337,
+              "mb": 5.2,
+              "bosMb": 0,
+              "yukMb": 5.2
+            },
+            "wa_jobs": {
+              "sayfa": 1153,
+              "mb": 4.5,
+              "bosMb": 0.7,
+              "yukMb": 3.7
+            }
+          },
+          "pdfSatir": 162,
+          "satirdaPdf": 0
+        },
+        "bakimSonrasi": {
+          "sayfa": 61654,
+          "dosyaMb": 240.8,
+          "bosListe": 12556,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 1154,
+              "mb": 4.5,
+              "bosMb": 0.7,
+              "yukMb": 3.7
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        },
+        "gonderimSonu": {
+          "sayfa": 61654,
+          "dosyaMb": 240.8,
+          "bosListe": 12474,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 1236,
+              "mb": 4.8,
+              "bosMb": 0.9,
+              "yukMb": 3.9
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        }
+      },
+      "sureSn": 86
+    },
+    {
+      "sira": 4,
+      "gun": "2025-11-14",
+      "tur": "statement",
+      "donem": "özel",
+      "acmaMs": 806,
+      "yurutulen": 2000,
+      "isBasinaMs": 35.6,
+      "durumlar": {
+        "delivered": 1199,
+        "read": 781,
+        "failed": 20
+      },
+      "olcu": {
+        "is": {
+          "n": 2000,
+          "p50": 33,
+          "p95": 52,
+          "enCok": 266
+        },
+        "olayDongusuEnCokMs": 251.7,
+        "bakimMs": 111,
+        "bakimOlayDongusuEnCokMs": 14.2,
+        "bakimOncesi": {
+          "sayfa": 61654,
+          "dosyaMb": 240.8,
+          "bosListe": 5851,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 6105,
+              "mb": 23.8,
+              "bosMb": 0.2,
+              "yukMb": 23.6
+            },
+            "wa_jobs": {
+              "sayfa": 1572,
+              "mb": 6.1,
+              "bosMb": 1,
+              "yukMb": 5
+            }
+          },
+          "pdfSatir": 737,
+          "satirdaPdf": 0
+        },
+        "bakimSonrasi": {
+          "sayfa": 61654,
+          "dosyaMb": 240.8,
+          "bosListe": 11964,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 1572,
+              "mb": 6.1,
+              "bosMb": 1,
+              "yukMb": 5
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        },
+        "gonderimSonu": {
+          "sayfa": 61654,
+          "dosyaMb": 240.8,
+          "bosListe": 11876,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 1658,
+              "mb": 6.5,
+              "bosMb": 1.2,
+              "yukMb": 5.2
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        }
+      },
+      "yenidenDene": "wab-f2cc8e45-ef32-4f01-9361-1055ab53f7a4",
+      "sureSn": 79
+    },
+    {
+      "sira": 5,
+      "gun": "2025-11-17",
+      "tur": "statement",
+      "donem": "all",
+      "acmaMs": 739,
+      "yurutulen": 1547,
+      "isBasinaMs": 33.9,
+      "durumlar": {
+        "delivered": 1170,
+        "read": 827,
+        "uncertain": 3
+      },
+      "olcu": {
+        "is": {
+          "n": 1547,
+          "p50": 30,
+          "p95": 48,
+          "enCok": 903
+        },
+        "olayDongusuEnCokMs": 716.7,
+        "bakimMs": 90,
+        "bakimOlayDongusuEnCokMs": 10.9,
+        "bakimOncesi": {
+          "sayfa": 61654,
+          "dosyaMb": 240.8,
+          "bosListe": 1624,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 9725,
+              "mb": 38,
+              "bosMb": 0.2,
+              "yukMb": 37.7
+            },
+            "wa_jobs": {
+              "sayfa": 1992,
+              "mb": 7.8,
+              "bosMb": 1.4,
+              "yukMb": 6.3
+            }
+          },
+          "pdfSatir": 1172,
+          "satirdaPdf": 0
+        },
+        "bakimSonrasi": {
+          "sayfa": 61654,
+          "dosyaMb": 240.8,
+          "bosListe": 11361,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 1994,
+              "mb": 7.8,
+              "bosMb": 1.4,
+              "yukMb": 6.3
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        },
+        "gonderimSonu": {
+          "sayfa": 61654,
+          "dosyaMb": 240.8,
+          "bosListe": 11298,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 2053,
+              "mb": 8,
+              "bosMb": 1.4,
+              "yukMb": 6.5
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        }
+      },
+      "belirsiz": {
+        "istenen": 3,
+        "olan": 3
+      },
+      "sureSn": 73
+    },
+    {
+      "sira": 6,
+      "gun": "2025-11-21",
+      "tur": "statement",
+      "donem": "lastMonth",
+      "acmaMs": 892,
+      "yurutulen": 2000,
+      "isBasinaMs": 32.8,
+      "durumlar": {
+        "read": 816,
+        "delivered": 1184
+      },
+      "olcu": {
+        "is": {
+          "n": 2000,
+          "p50": 31,
+          "p95": 45,
+          "enCok": 168
+        },
+        "olayDongusuEnCokMs": 139.2,
+        "bakimMs": 85,
+        "bakimOlayDongusuEnCokMs": 10.4,
+        "bakimOncesi": {
+          "sayfa": 63490,
+          "dosyaMb": 248,
+          "bosListe": 0,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 12605,
+              "mb": 49.2,
+              "bosMb": 0.4,
+              "yukMb": 48.8
+            },
+            "wa_jobs": {
+              "sayfa": 2388,
+              "mb": 9.3,
+              "bosMb": 1.6,
+              "yukMb": 7.6
+            }
+          },
+          "pdfSatir": 1539,
+          "satirdaPdf": 0
+        },
+        "bakimSonrasi": {
+          "sayfa": 63492,
+          "dosyaMb": 248,
+          "bosListe": 12624,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 2390,
+              "mb": 9.3,
+              "bosMb": 1.6,
+              "yukMb": 7.6
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        },
+        "gonderimSonu": {
+          "sayfa": 63492,
+          "dosyaMb": 248,
+          "bosListe": 12549,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 2465,
+              "mb": 9.6,
+              "bosMb": 1.7,
+              "yukMb": 7.8
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        }
+      },
+      "sureSn": 73
+    },
+    {
+      "sira": 7,
+      "gun": "2025-11-25",
+      "tur": "statement",
+      "donem": "thisMonth",
+      "acmaMs": 956,
+      "yurutulen": 2000,
+      "isBasinaMs": 35.8,
+      "durumlar": {
+        "delivered": 1204,
+        "read": 796
+      },
+      "olcu": {
+        "is": {
+          "n": 2000,
+          "p50": 33,
+          "p95": 56,
+          "enCok": 197
+        },
+        "olayDongusuEnCokMs": 134.5,
+        "bakimMs": 110,
+        "bakimOlayDongusuEnCokMs": 12.3,
+        "bakimOncesi": {
+          "sayfa": 65375,
+          "dosyaMb": 255.4,
+          "bosListe": 11265,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 2649,
+              "mb": 10.3,
+              "bosMb": 0.1,
+              "yukMb": 10.2
+            },
+            "wa_jobs": {
+              "sayfa": 2800,
+              "mb": 10.9,
+              "bosMb": 1.9,
+              "yukMb": 8.9
+            }
+          },
+          "pdfSatir": 318,
+          "satirdaPdf": 0
+        },
+        "bakimSonrasi": {
+          "sayfa": 65375,
+          "dosyaMb": 255.4,
+          "bosListe": 13915,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 2803,
+              "mb": 10.9,
+              "bosMb": 1.9,
+              "yukMb": 8.9
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        },
+        "gonderimSonu": {
+          "sayfa": 65375,
+          "dosyaMb": 255.4,
+          "bosListe": 13832,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 2887,
+              "mb": 11.3,
+              "bosMb": 2.1,
+              "yukMb": 9.1
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        }
+      },
+      "sureSn": 80
+    },
+    {
+      "sira": 8,
+      "gun": "2025-11-28",
+      "tur": "statement",
+      "donem": "last3",
+      "acmaMs": 700,
+      "yurutulen": 2000,
+      "isBasinaMs": 37.4,
+      "durumlar": {
+        "delivered": 1196,
+        "read": 804
+      },
+      "olcu": {
+        "is": {
+          "n": 2000,
+          "p50": 34,
+          "p95": 63,
+          "enCok": 296
+        },
+        "olayDongusuEnCokMs": 295.2,
+        "bakimMs": 98,
+        "bakimOlayDongusuEnCokMs": 15.3,
+        "bakimOncesi": {
+          "sayfa": 65375,
+          "dosyaMb": 255.4,
+          "bosListe": 5792,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 7507,
+              "mb": 29.3,
+              "bosMb": 0.3,
+              "yukMb": 29
+            },
+            "wa_jobs": {
+              "sayfa": 3222,
+              "mb": 12.6,
+              "bosMb": 2.2,
+              "yukMb": 10.3
+            }
+          },
+          "pdfSatir": 897,
+          "satirdaPdf": 0
+        },
+        "bakimSonrasi": {
+          "sayfa": 65375,
+          "dosyaMb": 255.4,
+          "bosListe": 13309,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 3223,
+              "mb": 12.6,
+              "bosMb": 2.2,
+              "yukMb": 10.3
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        },
+        "gonderimSonu": {
+          "sayfa": 65375,
+          "dosyaMb": 255.4,
+          "bosListe": 13223,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 3307,
+              "mb": 12.9,
+              "bosMb": 2.4,
+              "yukMb": 10.4
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        }
+      },
+      "sureSn": 84
+    },
+    {
+      "sira": 9,
+      "gun": "2025-12-02",
+      "tur": "statement",
+      "donem": "özel",
+      "acmaMs": 730,
+      "yurutulen": 2000,
+      "isBasinaMs": 33,
+      "durumlar": {
+        "delivered": 1174,
+        "read": 826
+      },
+      "olcu": {
+        "is": {
+          "n": 2000,
+          "p50": 29,
+          "p95": 49,
+          "enCok": 540
+        },
+        "olayDongusuEnCokMs": 258.3,
+        "bakimMs": 116,
+        "bakimOlayDongusuEnCokMs": 10.9,
+        "bakimOncesi": {
+          "sayfa": 65375,
+          "dosyaMb": 255.4,
+          "bosListe": 774,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 11929,
+              "mb": 46.6,
+              "bosMb": 0.4,
+              "yukMb": 46.2
+            },
+            "wa_jobs": {
+              "sayfa": 3641,
+              "mb": 14.2,
+              "bosMb": 2.5,
+              "yukMb": 11.6
+            }
+          },
+          "pdfSatir": 1451,
+          "satirdaPdf": 0
+        },
+        "bakimSonrasi": {
+          "sayfa": 65375,
+          "dosyaMb": 255.4,
+          "bosListe": 12720,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 3642,
+              "mb": 14.2,
+              "bosMb": 2.5,
+              "yukMb": 11.6
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        },
+        "gonderimSonu": {
+          "sayfa": 65375,
+          "dosyaMb": 255.4,
+          "bosListe": 12636,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 3725,
+              "mb": 14.6,
+              "bosMb": 2.7,
+              "yukMb": 11.7
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        }
+      },
+      "sureSn": 76
+    },
+    {
+      "sira": 10,
+      "gun": "2025-12-06",
+      "tur": "statement",
+      "donem": "thisMonth",
+      "acmaMs": 1542,
+      "yurutulen": 2000,
+      "isBasinaMs": 33,
+      "durumlar": {
+        "delivered": 1222,
+        "read": 778
+      },
+      "olcu": {
+        "is": {
+          "n": 2000,
+          "p50": 29,
+          "p95": 49,
+          "enCok": 622
+        },
+        "olayDongusuEnCokMs": 423.4,
+        "bakimMs": 93,
+        "bakimOlayDongusuEnCokMs": 14.8,
+        "bakimOncesi": {
+          "sayfa": 68511,
+          "dosyaMb": 267.6,
+          "bosListe": 14024,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1225,
+              "mb": 4.8,
+              "bosMb": 0,
+              "yukMb": 4.7
+            },
+            "wa_jobs": {
+              "sayfa": 4062,
+              "mb": 15.9,
+              "bosMb": 2.8,
+              "yukMb": 12.9
+            }
+          },
+          "pdfSatir": 148,
+          "satirdaPdf": 0
+        },
+        "bakimSonrasi": {
+          "sayfa": 68511,
+          "dosyaMb": 267.6,
+          "bosListe": 15248,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 4064,
+              "mb": 15.9,
+              "bosMb": 2.8,
+              "yukMb": 12.9
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        },
+        "gonderimSonu": {
+          "sayfa": 68511,
+          "dosyaMb": 267.6,
+          "bosListe": 15163,
+          "tablolar": {
+            "wa_job_pdfs": {
+              "sayfa": 1,
+              "mb": 0,
+              "bosMb": 0,
+              "yukMb": 0
+            },
+            "wa_jobs": {
+              "sayfa": 4149,
+              "mb": 16.2,
+              "bosMb": 3,
+              "yukMb": 13
+            }
+          },
+          "pdfSatir": 0,
+          "satirdaPdf": 0
+        }
+      },
+      "sureSn": 78
+    }
+  ],
+  "acilis": {
+    "ms": 8317,
+    "olayDongusuEnCokMs": 8350.9,
+    "surum": 45,
+    "dosya": {
+      "sayfa": 47398,
+      "dosyaMb": 185.1,
+      "bosListe": 0,
+      "tablolar": {
+        "wa_job_pdfs": {
+          "sayfa": 1,
+          "mb": 0,
+          "bosMb": 0,
+          "yukMb": 0
+        },
+        "wa_jobs": {
+          "sayfa": 1,
+          "mb": 0,
+          "bosMb": 0,
+          "yukMb": 0
+        }
+      },
+      "pdfSatir": 0,
+      "satirdaPdf": 0
+    }
+  },
+  "dosyalar": {
+    "destekofis.sqlite": 280621056,
+    "e-belge-kullanim.sqlite": 16384,
+    "sirketler/002/destekofis.sqlite": 24408064,
+    "whatsapp-gonderim.sqlite": 30572544
+  },
+  "denetimler": [
+    {
+      "ad": "10 gönderim açıldı",
+      "ok": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kanca istekleri hatasız",
+      "ok": true,
+      "ayrinti": "0"
+    },
+    {
+      "ad": "yeniden deneme ve Yine de Gönder zinciri üretildi",
+      "ok": true,
+      "ayrinti": "{\"toplu\":14,\"is\":20000,\"metaIleti\":20003,\"kancaOlay\":489,\"kancaDurum\":48024,\"kancaHata\":0,\"yenidenDene\":1,\"yineDeGonder\":3,\"hatirlatmaYok\":1}"
+    }
+  ],
+  "bitti": "2026-11-03T19:54:22.107Z"
+}

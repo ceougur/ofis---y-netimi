@@ -1,0 +1,38 @@
+{
+  "ad": "r2/eski-e6ee52a8-iade-kesinti-tarama-249",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/iade-kesinti-tarama-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:49:46.805Z",
+  "sure_sn": 2.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 R2 — taksit kartının iade kesintisi toplu yolda cari başına yeniden taranmaz (kural aynen) › YAPI: elle alıcı listesi, otomatik önizleme ve cari kartı döngüsü iade faturalarını cari başına yeniden taramaz (istek başına en çok 1)",
+      "konum": "test/iade-kesinti-tarama-249.test.mjs:158:3",
+      "hata": "iade faturaları cari başına yeniden taranıyor: {\"elleTumune\":16,\"elleSecili\":16,\"onizleme\":16,\"kartDongusu\":32} (cari 16; beklenen her istekte ≤ 1) · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-aa56c65749221d09d/docs/kanit/2026-11-03/r2/eski-e6ee52a8-iade-kesinti-tarama-249.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/eski-e6ee52a8",
+  "ham_cikti_sha256": "9ac7c7e8f93e7403f3cd1c226f6a975dd7a1f80353dbaae2248d0f3c8e594673",
+  "ham_cikti_bayt": 3922
+}

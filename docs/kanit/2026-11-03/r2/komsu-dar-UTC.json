@@ -1,0 +1,32 @@
+{
+  "ad": "r2/komsu-dar-UTC",
+  "komut": "env TZ=UTC node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-kapi-plan.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-rapor-bulgu.test.mjs test/banka-220-pos-kabul.test.mjs test/banka-230-46-iade-iptal.test.mjs test/bulgu-223.test.mjs test/cari-vade-245.test.mjs test/defter-213.test.mjs test/defter-243-ux24-toplam.test.mjs test/ebelge-240-ek-secenekler.test.mjs test/einvoice-edm.test.mjs test/ekstre-ayrinti-245.test.mjs test/ekstre-ayrinti-247.test.mjs test/ertelenen-224.test.mjs test/fatura-215.test.mjs test/fatura-216.test.mjs test/fatura-217.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/goc-246-iade-bagi.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-geri-odeme-246.test.mjs test/iade-kapama-k1.test.mjs test/iade-kesinti-tarama-249.test.mjs test/inceleme-226.test.mjs test/kapama-rastgele-223.test.mjs test/mobil-yazma-247.test.mjs test/numara-silinen-244.test.mjs test/projeksiyon-vade-246.test.mjs test/rapor-230-iz5.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/supheli-230-kontrol2.test.mjs test/uiux-b-243.test.mjs test/ux18-cek-fatura-244.test.mjs test/whatsapp-elle-alici-249.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/whatsapp-213.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-w3-ekstre-248.test.mjs test/kapama-tek-gecis-245.test.mjs test/plans.test.mjs test/plan-transfer.test.mjs test/cari-243.test.mjs test/accounts-stock.test.mjs test/is-akisi.test.mjs test/banka-210-kabul-mizan.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/banka-210-post-statik.test.mjs",
+  "commit": "7839d2a7c0dfd4f8e9fbfcb1eb833e28dac87ac4",
+  "dal": "worktree-agent-aa56c65749221d09d",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:56:17.979Z",
+  "sure_sn": 389.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 759,
+    "gecen": 759,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/r2/komsu-dar-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa56c65749221d09d",
+  "ham_cikti_sha256": "28e78d9e31cbd93de8f9e0fdd7418ec4b97283d8e5e9e0931556d14a685134f2",
+  "ham_cikti_bayt": 276378
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "w-tur1/yeni-6fd4d020-surerken-tekrar-2",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-reporter=tap --test-name-pattern=SÜRERKEN test/whatsapp-w2-onbellek-249.test.mjs",
+  "commit": "6fd4d0209a13e51d1edf216baea2cd7a9905debd",
+  "dal": "worktree-agent-a89b8c1dbc09f146e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:10:36.062Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/w-tur1/yeni-6fd4d020-surerken-tekrar-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a89b8c1dbc09f146e",
+  "ham_cikti_sha256": "5f1864fc03c716280b85443b0e3448346ee1e1340c16b316ccbf78602306180d",
+  "ham_cikti_bayt": 794
+}

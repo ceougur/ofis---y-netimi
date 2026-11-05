@@ -294,6 +294,28 @@ export function createStore(db) {
     }
     return out;
   }
+  // 2.4.9 DB-TX: bağlantıda açık işlem var mı — true | false | null (bilinmiyor: isTransaction Node 22.16'dan önce yok). Kapalı bağlantıda false.
+  const openTx = () => {
+    try {
+      const open = db.isTransaction;
+      return typeof open === "boolean" ? open : null;
+    } catch {
+      return false;
+    }
+  };
+  // 2.4.9 DB-TX tur 2: en dış store.tx'in geri alması düştü ve bağlantıda işlem açık kaldı (yalnız bu durum store.inTransaction'a eklenir). Başarılı geri
+  // almada ve yeni en dış işlemin BEGIN'i geçince false. Dışarıdan açılan işlem (rapor / bütünlük taraması iş parçacıklarının anlık görüntü BEGIN'i) sayılmaz.
+  let dangling = false;
+  // Geri alma yalnız işlem açıksa (ya da bilinmiyorsa) denenir; SQLite işlemi kendiliğinden geri aldıysa (G/Ç hatası, disk dolu) denenmez. Geri alma
+  // hatası asıl hatayı ezmez (ders 21): çağırana her zaman asıl hata gider.
+  const undo = sql => {
+    if (openTx() === false) return;
+    try {
+      db.exec(sql);
+    } catch {
+      // asıl hata yeniden fırlatılır
+    }
+  };
   const store = {
     /**
      * 2.4.8 İş P1 (lib/write-lock.mjs): dosya şimdi yazılabilir mi — SENKRON kısa sınama (busy_timeout ms; BEGIN IMMEDIATE + ROLLBACK), bitince busy_timeout
@@ -329,8 +351,11 @@ export function createStore(db) {
       guards.push(guard);
       return () => guards.splice(guards.indexOf(guard), 1);
     },
+    // 2.4.9 DB-TX: store.tx'in geri alması düşüp bağlantıda açık kalan işlem de sayılır — işlem içinde saklanmayan önbellekler (plans R2, fatura
+    // kapama, banka toplamları) kesinleşmemiş veriyi saklamaz. Tur 2: yalnız bu durum (dangling); derinlik 0'da dışarıdan açılan işlem false (2.4.8
+    // davranışı; iş parçacıklarında önbellekler kapanmaz); kapalı bağlantıda fırlatmaz (openTx).
     get inTransaction() {
-      return depth > 0;
+      return depth > 0 || (dangling && openTx() === true);
     },
     /** Kayıtlı yazımların değişen satır sayısı ↔ bağlantının total_changes()'ı ve data_version (store dışı yazımı görmek için). */
     changeCounters() {
@@ -380,10 +405,14 @@ export function createStore(db) {
       return rawScope.at(-1) || "";
     },
     // İç içe çağrılabilen işlem; iç seviyelerde SAVEPOINT kullanılır.
+    // 2.4.9 DB-TX: derinlik her çıkışta TAM BİR KEZ azalır. Önceden COMMIT / RELEASE (ya da COMMIT sonrası after kancası) düşünce catch derinliği
+    // ikinci kez azaltıyordu: −1'de "ROLLBACK TO sp_0" asıl hatayı ("disk I/O error", ertelenmiş yabancı anahtar) örtüyor, açık kalan işlem geri
+    // alınmıyor, sonraki her işlem "SAVEPOINT sp_-1" söz dizimi hatasıyla düşüyordu (şirket yeniden açılana kadar her yazım 500).
     tx(fn) {
       const savepoint = `sp_${depth}`;
       if (depth === 0) {
         db.exec("BEGIN IMMEDIATE");
+        dangling = false; // BEGIN geçti: önceden açık kalan işlem yok
         touched = new Set();
         touchedEvents = new Set();
         money = policy ? freshMoney() : null;
@@ -397,6 +426,7 @@ export function createStore(db) {
       // İç işlem (SAVEPOINT) geri alınırsa onun içinde görülen K6 ihlali de düşer.
       const violationsAt = money ? money.violations.length : 0;
       depth += 1;
+      let left = false; // bu çağrının derinliği azaltıldı (COMMIT / RELEASE'e geçildi)
       try {
         const result = fn();
         if (depth === 1 && touched.size && guards.length) {
@@ -417,6 +447,7 @@ export function createStore(db) {
           if (violations.length) policy.onViolations(violations);
         }
         depth -= 1;
+        left = true;
         if (depth === 0) {
           db.exec("COMMIT");
           money = null;
@@ -429,16 +460,17 @@ export function createStore(db) {
         } else db.exec(`RELEASE ${savepoint}`);
         return result;
       } catch (error) {
-        depth -= 1;
+        if (!left) depth -= 1;
         if (depth === 0) {
-          db.exec("ROLLBACK");
+          undo("ROLLBACK");
+          dangling = openTx() === true; // geri alma düştü, işlem açık kaldı
           money = null;
           scope = null;
           const tables = new Set(touched);
           touched = new Set();
           if (tables.size) for (const guard of guards) guard.rolledBack?.({ tables, error });
         } else {
-          db.exec(`ROLLBACK TO ${savepoint}; RELEASE ${savepoint}`);
+          undo(`ROLLBACK TO ${savepoint}; RELEASE ${savepoint}`);
           if (money) money.violations.length = Math.min(money.violations.length, violationsAt);
         }
         throw error;

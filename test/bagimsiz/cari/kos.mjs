@@ -9,12 +9,16 @@
 // 2.4.6 (madde 0, 25.10.2026; KARARLAR.md §9): kural seti "2.4.6" VARSAYILAN — 2.4.5 + KS8 iade geri ödemesi (madde 9 / DB1: müşteriye cari "Ödeme" iadeye bağlanır),
 // KS9 faturasız Alış İadesi (preturn) gerçek yol + simetrik geri tahsilat (madde 10), KS10 Nakit Akış Projeksiyonu'nda cari vadeli kalemler (madde 11). `--kural 2.4.5`
 // 2.4.5 beklentileriyle koşar. Her /3 senaryoda "2.4.6 kararıyla değişen beklenti" (2.4.5 ↔ 2.4.6 kâhin çıktısı farkı) sayılır; programla her fark bu sınıfta mı yazılır.
+// 2.4.9 (03.11.2026; KARARLAR.md §12): kural seti "2.4.9" VARSAYILAN — 2.4.6 + C1 HAREKETLİ CARİ SİLİNEMEZ (cari_sil 409 account-has-movements; hareketsiz cari Silinenler'e;
+// silinmiş cariye para hareketi yazılamaz; Pasife Al; Geri Al Y2). `--kural 2.4.6` 2.4.6 beklentileriyle koşar; her senaryoda "2.4.9 kararıyla değişen beklenti" sayılır.
+// Yeni adımlar: cari_geri_yukle, pasife_al, kart_sil, kart_geri_yukle, fatura_sil, fatura_geri_yukle, urun_sil; kart_ac tutar "0" (sıfır kart). Uç / alan adları kara kutu
+// yoklamasından (ORTAM; not defteri kahin-cari-249-yokla/yokla1–4.mjs).
 // /2 (23.10.2026): B3 Tablodaki Kişiler borcu (sekme türü "serbest": başlıklar ve hücre metinleri senaryodan aynen), B4 Nakit Akışı / Kasa raporu Kasa
 // giriş-çıkışı (GET /api/workspace/reports/nakit-akis → report.totals.cashIn/cashOut; GET /api/workspace/cash?method=cash → totals.in/out), B5 Nihai
 // Tüketici (POST /api/workspace/invoices/retail-account → {id, name, created}); uçlar test/nakit-akis-kasa-mm6, test/nihai-tuketici-u1-244 ÇAĞRI
 // satırlarından, yanıt biçimi kara kutu yoklamasından (not defteri yokla3.mjs).
 //
-//   node test/bagimsiz/cari/kos.mjs [senaryo.json …] [--tohum 1-3 --islem 60] [--tur ux18|s1] [--cikti <klasör>] [--mutasyonsuz] [--legacy | --kural 2.4.5]
+//   node test/bagimsiz/cari/kos.mjs [senaryo.json …] [--tohum 1-3 --islem 60] [--tur ux18|s1] [--cikti <klasör>] [--mutasyonsuz] [--legacy | --kural 2.4.5|2.4.6]
 //
 // Ne yapar:
 //   1. Her senaryoyu ayrı, boş bir programda koşar (test/helpers.mjs startTestServer; sahte saat = senaryonun "bugun"ü 09:00'dan akar;
@@ -46,9 +50,11 @@ mkdirSync(OUT, { recursive: true });
 let dosyalar = argv.filter((a, i) => a.endsWith(".json") && argv[i - 1] !== "--cikti");
 // Bağımsız çağrı (dosya ve tohum verilmeden): bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem (UX18 /2 ve S1 /3; --legacy'de rastgele yok).
 const LEGACY = argv.includes("--legacy");
-// Kural seti: --legacy → 2.4.4; değilse --kural (varsayılan 2.4.6; 2.4.5 karşılaştırma için)
-const KURAL = LEGACY ? "2.4.4" : opt("--kural") || "2.4.6";
-if (!["2.4.4", "2.4.5", "2.4.6"].includes(KURAL)) throw new Error(`kural seti bilinmiyor: ${KURAL}`);
+// Kural seti: --legacy → 2.4.4; değilse --kural (varsayılan 2.4.9; 2.4.6 / 2.4.5 karşılaştırma için)
+const KURAL = LEGACY ? "2.4.4" : opt("--kural") || "2.4.9";
+if (!["2.4.4", "2.4.5", "2.4.6", "2.4.9"].includes(KURAL)) throw new Error(`kural seti bilinmiyor: ${KURAL}`);
+// "<KURAL> kararıyla değişen beklenti" sınıfı: bir önceki kural setinin kâhin çıktısıyla fark (2.4.6 ↔ 2.4.5, 2.4.9 ↔ 2.4.6)
+const ONCEKI = { "2.4.6": "2.4.5", "2.4.9": "2.4.6" }[KURAL] || null;
 const VARSAYILAN = !dosyalar.length && !opt("--tohum");
 if (VARSAYILAN) dosyalar = readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).sort().map(f => path.join(HERE, "senaryolar", f));
 const TOHUM = opt("--tohum") || (VARSAYILAN ? "1-2" : null);
@@ -169,7 +175,10 @@ async function kos(senaryo) {
   const cariAit = (ad, id, adlar) => {
     const kimlikler = [id, ...Object.values(ids.hareket).filter(h => h.cari === ad).map(h => h.id), ...Object.entries(ids.faturaCari).filter(([, c]) => c === ad).map(([f]) => ids.fatura[f]),
       ...Object.values(ids.kart).filter(x => x.cari === ad).map(x => x.id)].filter(Boolean);
-    const isim = adlar[ad] ? JSON.stringify(adlar[ad]) : null;
+    // 2.4.9 (c14d, aynı adlı iki cari): ad başka bir canlı cariyle ORTAKSA satır adla değil yalnız kimlikle eşleşir — yoksa öbür carinin satırı (ör. `ref.id` = öbür cari)
+    // bu cariye de sayılır (koşucunun okuma hatası; ham satır `ref.id`'yi taşıyor — ders 38)
+    const ayniAdli = adlar[ad] != null && Object.values(adlar).filter(n => n === adlar[ad]).length > 1;
+    const isim = adlar[ad] && !ayniAdli ? JSON.stringify(adlar[ad]) : null;
     return r => { const j = JSON.stringify(r); return (isim && j.includes(`:${isim}`)) || kimlikler.some(x => j.includes(x)); };
   };
   async function kontrolV3(k, a, girisler, adlar = {}) {
@@ -452,7 +461,7 @@ async function kos(senaryo) {
           // KS7 / KS7.1: faturasız stok hareketi — POST /api/workspace/stock/:id/moves (test çağrı satırları; yoklama 5), Cari Hesap: satış iadesi kind "in" + reason "return"
           // (müşteride alacak satırı); açık alış iadesi kind "out" + reason "preturn" (KS7.1: formda yolu yok — senaryoda kullanılmaz); nedensiz stok çıkışı ("Stok satışı",
           // tedarikçiye de olsa yükümlülük) kind "out", reason yok. Mal kartı ilk kullanımda açılır.
-          if (!ids.mal) ids.mal = (await api("POST", "/api/workspace/stock", { kind: "goods", code: "KAHIN-MAL", name: "Kâhin Malı", unit: "Adet", openingQty: "100000", salePrice: "100" })).data?.id;
+          if (!ids.mal) ids.mal = (await api("POST", "/api/workspace/stock", { kind: "goods", code: `KAHIN-MAL${ids.malSilinen ? `-${ids.malSilinen + 1}` : ""}`, name: "Kâhin Malı", unit: "Adet", openingQty: "100000", salePrice: "100" })).data?.id;
           const neden = { stok_iade: { kind: "in", reason: "return" }, alis_iade: { kind: "out", reason: "preturn" }, stok_satis_hesap: { kind: "out" } }[a.islem];
           durum(a, await api("POST", `/api/workspace/stock/${ids.mal}/moves`, { ...neden, qty: "1", unitPrice: tlMetin(kurusOf(a.tutar)), pay: "account", accountId: ids.cari[a.cari], date: t }));
           break;
@@ -558,8 +567,12 @@ async function kos(senaryo) {
         case "kart_ac": {
           // 2.4.6: Taksitler'den "Carinin Mevcut Borcunu Taksitlendir" — POST /api/workspace/plans {name, registeredOn, total, accountId, mode: "auto", count, firstDue,
           // coversBalance: true} (test çağrı satırları); kart kimliği yanıttan
-          const r = await api("POST", "/api/workspace/plans", { name: senaryo.adimlar.find(x => x.islem === "cari_ac" && x.ad === a.cari)?.isim, registeredOn: t, total: tlMetin(kurusOf(a.tutar)),
-            accountId: ids.cari[a.cari], mode: "auto", count: String(a.taksit || 1), firstDue: a.ilkVade, coversBalance: a.mevcut !== false });
+          const ad = senaryo.adimlar.find(x => x.islem === "cari_ac" && x.ad === a.cari)?.isim;
+          // 2.4.9 (C1.5 S2 A): tutarı sıfır kart — "Taksit kurulmadı" (gövde yalnız toplam; taksit bölümü yok — yoklama 2)
+          const r = kurusOf(a.tutar) === 0
+            ? await api("POST", "/api/workspace/plans", { name: ad, registeredOn: t, total: "0", accountId: ids.cari[a.cari] })
+            : await api("POST", "/api/workspace/plans", { name: ad, registeredOn: t, total: tlMetin(kurusOf(a.tutar)),
+              accountId: ids.cari[a.cari], mode: "auto", count: String(a.taksit || 1), firstDue: a.ilkVade, coversBalance: a.mevcut !== false });
           durum(a, r);
           ids.kart[a.ad] = { id: r.data?.id ?? r.data?.plan?.id, cari: a.cari };
           break;
@@ -676,8 +689,53 @@ async function kos(senaryo) {
           break;
         }
         case "cari_sil": {
-          durum(a, await api("DELETE", `/api/workspace/accounts/${ids.cari[a.cari]}`));
+          const r = await api("DELETE", `/api/workspace/accounts/${ids.cari[a.cari]}`);
+          durum(a, r);
+          // 2.4.9 C1.1: ret iletisinde "Pasife Al" önerisi var mı (KARAR A "program Pasife Al önerir")
+          if (r.status !== 200) P[`adim:${a.id}:pasifeAl`] = /Pasife Al/i.test(String(r.data?.error || ""));
           (ids.silinen ||= new Set()).add(a.cari);
+          break;
+        }
+        case "cari_geri_yukle": {
+          // 2.4.9 C1.7: Silinenler → Cari Geri Yükle (kalem `account:<cariId>` — yoklama 1)
+          const cop = (await api("GET", "/api/admin/trash")).data;
+          const kalem = (Array.isArray(cop) ? cop : cop?.items || []).find(x => x.kind === "account" && (x.id === `account:${ids.cari[a.cari]}` || x.ref === ids.cari[a.cari]));
+          durum(a, await api("POST", "/api/admin/trash/restore", { id: kalem?.id || `account:${ids.cari[a.cari]}`, cashForce: true }));
+          break;
+        }
+        case "pasife_al": {
+          // 2.4.9 C1.9: Pasife Al — PUT /accounts/:id tam gövde + status "passive" (cari_adlandir gibi; yoklama 1)
+          const cur = (await api("GET", `/api/workspace/accounts/${ids.cari[a.cari]}`)).data || {};
+          const govde = { name: cur.name, type: cur.type, taxNo: cur.taxNo, partyKind: cur.partyKind, firstName: cur.firstName, familyName: cur.familyName, city: cur.city, district: cur.district, phone: cur.phone, status: "passive", similarOk: true, ...(cur.updatedAt ? { updatedAt: cur.updatedAt } : {}) };
+          durum(a, await api("PUT", `/api/workspace/accounts/${ids.cari[a.cari]}`, govde));
+          break;
+        }
+        case "kart_sil": {
+          durum(a, await api("DELETE", `/api/workspace/plans/${ids.kart[a.kart]?.id}`));
+          break;
+        }
+        case "kart_geri_yukle": {
+          const cop = (await api("GET", "/api/admin/trash")).data;
+          const id = ids.kart[a.kart]?.id;
+          const kalem = (Array.isArray(cop) ? cop : cop?.items || []).find(x => x.kind === "plan" && (x.id === `plan:${id}` || x.ref === id));
+          durum(a, await api("POST", "/api/admin/trash/restore", { id: kalem?.id || `plan:${id}`, cashForce: true }));
+          break;
+        }
+        case "fatura_sil": {
+          durum(a, await api("DELETE", `/api/workspace/invoices/${ids.fatura[a.fatura]}`));
+          (ids.faturaSilinen ||= new Set()).add(a.fatura);
+          break;
+        }
+        case "fatura_geri_yukle": {
+          const kalem = await copBul("invoice", ids.fatura[a.fatura]);
+          durum(a, await api("POST", "/api/admin/trash/restore", { id: kalem?.id || `invoice:${ids.fatura[a.fatura]}`, cashForce: true }));
+          break;
+        }
+        case "urun_sil": {
+          // 2.4.9 C1.11: stok adımlarının mal kartını sil (DELETE /stock/:id — yoklama 4); sonraki stok adımı yeni kodla yeni mal kartı açar
+          durum(a, await api("DELETE", `/api/workspace/stock/${ids.mal}`));
+          ids.mal = null;
+          ids.malSilinen = (ids.malSilinen || 0) + 1;
           break;
         }
         case "cari_adlandir": {
@@ -699,27 +757,39 @@ async function kos(senaryo) {
           }
           const girisler = {}; // /3: cari takma adı → hareketler (entries)
           const adlar = {}; // 2.4.6 KS10: cari takma adı → programdaki adı (projeksiyon satırının `party`si)
+          // 2.4.9 C1: Silinenler'deki cari kimlikleri (kalem `kind: "account"`, `id: "account:<cariId>"` — yoklama 1); okunamazsa "okunamadı" (ders 4)
+          const copR = await api("GET", "/api/admin/trash");
+          const copListe = Array.isArray(copR.data) ? copR.data : copR.data?.items;
+          const copCari = Array.isArray(copListe) ? new Set(copListe.filter(x => x.kind === "account").map(x => x.ref || String(x.id || "").replace(/^account:/, ""))) : null;
           for (const [ad, id] of Object.entries(ids.cari)) {
             if (!id) continue;
             const r = await api("GET", `/api/workspace/accounts/${id}`);
             if (r.status === 200) girisler[ad] = r.data?.entries || [];
             if (r.status === 200) adlar[ad] = r.data?.name ?? r.data?.account?.name ?? null;
-            if (ids.silinen?.has(ad)) {
-              P[`${k}:cari:${ad}:var`] = r.status === 200 && !r.data?.deletedAt;
-              continue;
-            }
-            if (ad.startsWith("@")) P[`${k}:cari:${ad}:var`] = r.status === 200;
-            if (ad.startsWith("@") && r.status === 404) continue;
+            const canli = r.status === 200 && !r.data?.deletedAt;
+            // 2.4.9: her cari için listede mi ve Silinenler'de mi (kâhin yalnız silme denenen / pasife alınan / geri yüklenen / Geri Al'da kalan carileri denetler)
+            P[`${k}:cari:${ad}:var`] = canli;
+            P[`${k}:cari:${ad}:silinenlerde`] = copCari ? copCari.has(id) : "okunamadı";
+            if (!canli && (ids.silinen?.has(ad) || ad.startsWith("@")) && (r.status === 404 || r.status === 200)) continue; // silinmiş / kalkmış cari — beklenen kâhinde
             if (r.status !== 200) {
               hatalar.push(`${k} cari ${ad} okunamadı (${r.status})`);
               continue;
             }
             P[`${k}:cari:${ad}:bakiye`] = kurus(r.data.totals?.balance);
             P[`${k}:cari:${ad}:taksitDisi`] = (r.data.entries || []).filter(e => e.kind === "in").reduce((s, e) => s + kurus(e.amount), 0);
+            // 2.4.9 C1.2: Sil düğmesi açık mı (kartın `deleteBlock`'u boş) ve pasif mi (`status`) — alan yoksa "okunamadı"
+            P[`${k}:cari:${ad}:silinebilir`] = typeof r.data.deleteBlock === "string" ? r.data.deleteBlock === "" : "okunamadı";
+            P[`${k}:cari:${ad}:pasif`] = r.data.status === "passive" ? true : r.data.status === "active" ? false : `durum:${r.data.status}`;
+            ham[`${k}:cari:${ad}:deleteBlock`] = r.data.deleteBlock; // ders 38: nedenin metni
           }
           for (const [ad, id] of Object.entries(ids.fatura)) {
             if (!id) continue;
             const r = await api("GET", `/api/workspace/invoices/${id}`);
+            if (ids.faturaSilinen?.has(ad)) {
+              // 2.4.9 dil eki: silinen / geri yüklenen taslak fatura listede mi
+              P[`${k}:fatura:${ad}:var`] = r.status === 200 && !r.data?.deletedAt;
+              if (r.status !== 200) continue;
+            }
             if (r.status !== 200) {
               hatalar.push(`${k} fatura ${ad} okunamadı (${r.status})`);
               continue;
@@ -738,7 +808,9 @@ async function kos(senaryo) {
           }
           for (const [ad, kt] of Object.entries(ids.kart)) {
             // 2.4.6 kart_ac kartları (kayıt anahtarı yok — kimlikle)
-            const d = kt.id ? (await api("GET", `/api/workspace/plans/${kt.id}`)).data : null;
+            // 2.4.9: silinen kart (kart_sil) 404 döner — yalnız 200 yanıtı kart sayılır (hata gövdesi kart değildir)
+            const kr = kt.id ? await api("GET", `/api/workspace/plans/${kt.id}`) : null;
+            const d = kr && kr.status === 200 ? kr.data : null;
             P[`${k}:kart:${ad}:var`] = Boolean(d && !d.deletedAt);
             if (!d) continue;
             Object.assign(P, { [`${k}:kart:${ad}:toplam`]: kurus(d?.totals?.total), [`${k}:kart:${ad}:odenen`]: kurus(d?.totals?.paid), [`${k}:kart:${ad}:kalan`]: kurus(d?.totals?.remaining), [`${k}:kart:${ad}:mevcutBorc`]: Boolean(d?.coversBalance) });
@@ -1028,8 +1100,9 @@ function bilinenMutantlari() {
 const BILINEN = bilinenYukle();
 
 const GECERSIZ_DENETIM = [];
-const DEGISEN = [];          // 2.4.6 kararıyla değişen beklenti (senaryo başına)
-const SINIF = { ic: 0, ks9: 0, dis: 0 }; // programla farkların 2.4.6 sınıfında / KS9 madde 10 yolunda / dışında olanları
+const DEGISEN = [];          // <KURAL> kararıyla değişen beklenti (senaryo başına; 2.4.6 ↔ 2.4.5, 2.4.9 ↔ 2.4.6)
+const SINIF = { ic: 0, ks9: 0, dis: 0 }; // programla farkların bu sınıfta / KS9 madde 10 yolunda (yalnız 2.4.6) / dışında olanları
+const SINIF_ADI = `${KURAL} kararıyla değişen`;
 let genelToplam = 0;
 let genelFark = 0;
 let okumaHatasi = 0;
@@ -1051,16 +1124,18 @@ for (const dosya of dosyalar) {
   // 2.4.6 kararıyla DEĞİŞEN beklenti (KARARLAR.md §9 C0b): 2.4.5 kâhininin bu anahtardaki beklentisi farklıysa (ya da anahtar yoksa) programla fark "beklenen sınıf"tadır —
   // 2.4.5 kodunda (değişmemiş program) yalnız bu sınıfta fark beklenir; sınıf dışı fark eski kuralın farkıdır (BULGU / İNCELE, ayrıca incelenir)
   let degisen = null;
-  if (KURAL === "2.4.6") {
-    const eski = model(dosya, 0, "2.4.5").denetimler;
+  if (ONCEKI) {
+    // 2.4.9 C0 (KARARLAR.md §12): 2.4.6 kâhininin bu anahtardaki beklentisi farklıysa (ya da anahtar yoksa) programla fark "2.4.9 kararıyla değişen" sınıftadır — C1 öncesi kodda
+    // (35e90e47) yalnız bu sınıfta fark beklenir. 2.4.6 kipinde aynı mekanizma 2.4.5 ile (§9 C0b).
+    const eski = model(dosya, 0, ONCEKI).denetimler;
     degisen = new Set(Object.keys(beklenen.denetimler).filter(x => !(x in eski) || !esit(eski[x].b, beklenen.denetimler[x].b)));
     DEGISEN.push({ senaryo: senaryo.ad, adet: degisen.size });
     // KS9 (madde 10): faturasız Alış İadesi (preturn) 2.4.4/2.4.5'te YALNIZ birim düzeyinde vardı (iş listesi "BİLİNEN SINIR: stok formunda faturasız Alış İadesi yok");
-    // kuralı (KS7 simetri) 2.4.5 kâhininde de aynıdır ama yolu bu sürümde açılır → o carinin denetimlerindeki fark da beklenen sınıftır (ayrı sayılır)
-    const ks9 = ks9Cariler(senaryo);
+    // kuralı (KS7 simetri) 2.4.5 kâhininde de aynıdır ama yolu bu sürümde açılır → o carinin denetimlerindeki fark da beklenen sınıftır (ayrı sayılır; yalnız 2.4.6 kipinde)
+    const ks9 = KURAL === "2.4.6" ? ks9Cariler(senaryo) : new Set();
     for (const f of tumFarklar) {
       const c = anahtarCarisi(senaryo, f.anahtar);
-      f.sinif246 = degisen.has(f.anahtar) ? "2.4.6 kararıyla değişen" : c && ks9.has(c) ? "KS9 madde 10 yolu" : "SINIF DIŞI";
+      f.sinif246 = degisen.has(f.anahtar) ? SINIF_ADI : c && ks9.has(c) ? "KS9 madde 10 yolu" : "SINIF DIŞI";
     }
     // Genel sayaçlar (takvimdeki / projeksiyondaki cari kalemi sayısı) carisiz anahtardır: aynı kontrolde o listenin kalem farkı varsa onun sınıfını alır (türev sayım)
     for (const f of tumFarklar.filter(x => x.sinif246 === "SINIF DIŞI")) {
@@ -1084,13 +1159,13 @@ for (const dosya of dosyalar) {
   console.log(`${senaryo.ad}: ${toplam - farklar.length - bilinen.length}/${toplam} tuttu${bilinen.length ? ` · BİLİNEN ${bilinen.length}` : ""}${hatalar.length ? ` · OKUMA HATASI ${hatalar.length}: ${hatalar.join("; ")}` : ""}`);
   for (const b of bilinen) console.log(`  ≈ [BİLİNEN] ${b.anahtar}: program ${JSON.stringify(b.program)} · kâhin ${JSON.stringify(b.beklenen)} (${b.kaynak})`);
   if (degisen) {
-    const ic = farklar.filter(f => f.sinif246 === "2.4.6 kararıyla değişen").length;
+    const ic = farklar.filter(f => f.sinif246 === SINIF_ADI).length;
     const k9 = farklar.filter(f => f.sinif246 === "KS9 madde 10 yolu").length;
     const dis = farklar.length - ic - k9;
     SINIF.ic += ic;
     SINIF.ks9 += k9;
     SINIF.dis += dis;
-    if (degisen.size || farklar.length) console.log(`  2.4.6 kararıyla değişen beklenti: ${degisen.size} denetim · farkların ${ic}/${farklar.length}'i bu sınıfta${k9 ? `, ${k9}'i KS9 (madde 10 yolu)` : ""}${dis ? ` — SINIF DIŞI ${dis}` : ""}`);
+    if (degisen.size || farklar.length) console.log(`  ${SINIF_ADI} beklenti: ${degisen.size} denetim · farkların ${ic}/${farklar.length}'i bu sınıfta${k9 ? `, ${k9}'i KS9 (madde 10 yolu)` : ""}${dis ? ` — SINIF DIŞI ${dis}` : ""}`);
   }
   for (const f of farklar) console.log(`  ✗ [${f.sinif} ${f.etiket}${f.sinif246 === "SINIF DIŞI" ? " · SINIF DIŞI" : f.sinif246 === "KS9 madde 10 yolu" ? " · KS9" : ""}] ${f.anahtar}: program ${JSON.stringify(f.program)} · kâhin ${JSON.stringify(f.beklenen)} (${f.kural})${f.anahtar.endsWith(":durum") && program[f.anahtar.replace(/:durum$/, ":yanit")] ? ` · yanıt: ${program[f.anahtar.replace(/:durum$/, ":yanit")]}` : ""}`);
   ozet.push({ ad: senaryo.ad, toplam, fark: farklar.length, bulgu: farklar.filter(f => f.sinif === "BULGU").length, bilinen: bilinen.length });
@@ -1110,7 +1185,7 @@ if (!argv.includes("--mutasyonsuz")) {
   const kipler = d => {
     if (gecersizMi(d)) return ["2.4.4"];
     const ana = KURAL === "2.4.4" ? "2.4.5" : KURAL;
-    if (JSON.parse(readFileSync(d, "utf8")).dil === "destekofis-cari/3") return ["2.4.6", "2.4.5"]; // her kipte iki kural seti (2.4.6 mutantları --legacy / --kural 2.4.5'te de)
+    if (JSON.parse(readFileSync(d, "utf8")).dil === "destekofis-cari/3") return ["2.4.9", "2.4.6", "2.4.5"]; // her kipte üç kural seti (2.4.9 / 2.4.6 mutantları --legacy / --kural 2.4.5'te de)
     return [ana, "2.4.4"];
   };
   // Tek Python sürecinde (model.py --mutasyon-tara): her mutant için ilk 3 yakalayan (dosya, kip) — 100+ mutant × 40+ dosya × 1–2 kip, süreç başlatma maliyeti yok
@@ -1130,10 +1205,11 @@ for (const m of bilinenMutantlari()) {
   if (!m.yakalandi) kacan += 1;
   console.log(`  liste mutasyonu ${m.n} (${m.ad}): ${m.yakalandi ? "YAKALANDI" : "YAKALANMADI"}`);
 }
-writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ kip: LEGACY ? "legacy (2.4.4 kuralları, anahtarlar açık)" : KURAL, ozet, degisen246: DEGISEN, farkSinifi246: KURAL === "2.4.6" ? SINIF : null, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar, atlanan: ATLANAN, gecersizDenetim: GECERSIZ_DENETIM }, null, 1));
+writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ kip: LEGACY ? "legacy (2.4.4 kuralları, anahtarlar açık)" : KURAL, ozet, oncekiKural: ONCEKI, degisen: DEGISEN, farkSinifi: ONCEKI ? SINIF : null, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar, atlanan: ATLANAN, gecersizDenetim: GECERSIZ_DENETIM }, null, 1));
 if (!LEGACY) console.log(`\nGEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): ${GECERSIZ_DENETIM.reduce((t, x) => t + x.adet, 0)} denetim, ${GECERSIZ_DENETIM.length} senaryo${GECERSIZ_DENETIM.length ? ` — ${GECERSIZ_DENETIM.map(x => `${x.senaryo} ${x.adet}`).join(", ")}` : ""}`);
 console.log(`\nATLANAN (${LEGACY ? "/3 — yalnız varsayılan kipte koşar" : "2.4.5 kararıyla geçersiz — --legacy ile koşar"}): ${ATLANAN.length}${ATLANAN.length ? ` — ${ATLANAN.join(", ")}` : ""}`);
 if (KURAL === "2.4.6") console.log(`\n2.4.6 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §9 C0b): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.ks9}'i KS9 (madde 10: faturasız Alış İadesi yolu 2.4.5'te yok), ${SINIF.dis}'i SINIF DIŞI`);
+if (KURAL === "2.4.9") console.log(`\n2.4.9 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §12; 2.4.6 kâhinine göre): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.dis}'i SINIF DIŞI`);
 console.log(`\nÖZET [${LEGACY ? "legacy" : KURAL}]: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon, ${ATLANAN.length} atlanan senaryo. Ham çıktı: ${OUT}`);
 if (genelBilinen) console.log(`BİLİNEN SINIRLAR (${genelBilinen}): ${bilinenHepsi.map(b => `${b.senaryo} ${b.anahtar}`).join("; ")}`);
 // "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında

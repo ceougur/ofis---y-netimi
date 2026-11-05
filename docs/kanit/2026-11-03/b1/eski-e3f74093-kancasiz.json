@@ -1,0 +1,133 @@
+{
+  "ad": "b1/eski-e3f74093-kancasiz",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b1-eski-e3f74093-q8w2/test/createapp-acilis-geri-alma-249.test.mjs",
+  "commit": "c81ce36b936b3fee8dfcb41f9512f91f90954668",
+  "dal": "worktree-agent-af2578cdb282be616",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:34:48.836Z",
+  "sure_sn": 42,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 22,
+    "gecen": 2,
+    "basarisiz": 20,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:237:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; \"(deleted)\" tutamak 0",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:253:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:278:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "kesinti 503 ({\"ok\":true,\"data\":{\"accounts\":[{\"id\":\"account-78cc9221-b1bc-477d-a070-01c6e02182bb\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Burak Kaya\",\"phone\":\"0533 444 55 66\",\"email\":\"\",\"address\":\"\",\"note\":\"\",\"registeredOn\":\"2026-11-03\",\"groupId\":null,\"subgroupId\":null,\"groupName\":\"\",\"subgroupName\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"partyKind\":\"\",\"city\":\"\",\"district\":\"\",\"eInvoice\":false,\"dueDays\":0,\"debit\":800,\"credit\":0,\"balance\":800,\"side\":\"debtor\",\"planCount\":0,\"activePlans\":0,\"planRemaining\":0,\"overdue\":0,\"overdueCount\":0,\"next\":null,\"doubtfulOpen\":0,\"extra\":[]}],\"totals\":{\"count\":1,\"debtor\":800,\"creditor\":0,\"debtorCount\":1,\"creditorCount\":0,\"balance\":800,\"overdue\":0,\"overdueCount\":0,\"planRemaining\":0,\"doubtful\":0,\"doubtfulCount\":0},\"sort\":\"no\",\"groups\":[],\"fieldLabels\":[],\"canManage\":true,\"canCollect\":true,\"canPlan\":true,\"today\":\"2026-11-03\",\"total\":1,\"offset\":0,\"limit\":300,\"hasMore\":false}}) · 200 !== 503 (beklenen 503, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "kesinti 503 ({\"ok\":true,\"data\":{\"accounts\":[{\"id\":\"account-fb608272-e4ca-444a-a014-3f8810284d7a\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Burak Kaya\",\"phone\":\"0533 444 55 66\",\"email\":\"\",\"address\":\"\",\"note\":\"\",\"registeredOn\":\"2026-11-03\",\"groupId\":null,\"subgroupId\":null,\"groupName\":\"\",\"subgroupName\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"partyKind\":\"\",\"city\":\"\",\"district\":\"\",\"eInvoice\":false,\"dueDays\":0,\"debit\":800,\"credit\":0,\"balance\":800,\"side\":\"debtor\",\"planCount\":0,\"activePlans\":0,\"planRemaining\":0,\"overdue\":0,\"overdueCount\":0,\"next\":null,\"doubtfulOpen\":0,\"extra\":[]}],\"totals\":{\"count\":1,\"debtor\":800,\"creditor\":0,\"debtorCount\":1,\"creditorCount\":0,\"balance\":800,\"overdue\":0,\"overdueCount\":0,\"planRemaining\":0,\"doubtful\":0,\"doubtfulCount\":0},\"sort\":\"no\",\"groups\":[],\"fieldLabels\":[],\"canManage\":true,\"canCollect\":true,\"canPlan\":true,\"today\":\"2026-11-03\",\"total\":1,\"offset\":0,\"limit\":300,\"hasMore\":false}}) · 200 !== 503 (beklenen 503, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "kesinti 503 ({\"ok\":true,\"data\":{\"accounts\":[{\"id\":\"account-218895bd-276e-4658-ad9f-e990aae3a77b\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Burak Kaya\",\"phone\":\"0533 444 55 66\",\"email\":\"\",\"address\":\"\",\"note\":\"\",\"registeredOn\":\"2026-11-03\",\"groupId\":null,\"subgroupId\":null,\"groupName\":\"\",\"subgroupName\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"partyKind\":\"\",\"city\":\"\",\"district\":\"\",\"eInvoice\":false,\"dueDays\":0,\"debit\":800,\"credit\":0,\"balance\":800,\"side\":\"debtor\",\"planCount\":0,\"activePlans\":0,\"planRemaining\":0,\"overdue\":0,\"overdueCount\":0,\"next\":null,\"doubtfulOpen\":0,\"extra\":[]}],\"totals\":{\"count\":1,\"debtor\":800,\"creditor\":0,\"debtorCount\":1,\"creditorCount\":0,\"balance\":800,\"overdue\":0,\"overdueCount\":0,\"planRemaining\":0,\"doubtful\":0,\"doubtfulCount\":0},\"sort\":\"no\",\"groups\":[],\"fieldLabels\":[],\"canManage\":true,\"canCollect\":true,\"canPlan\":true,\"today\":\"2026-11-03\",\"total\":1,\"offset\":0,\"limit\":300,\"hasMore\":false}}) · 200 !== 503 (beklenen 503, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "kesinti 503 ({\"ok\":true,\"data\":{\"accounts\":[{\"id\":\"account-65045aad-f063-4a67-9183-9972857ef4da\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Burak Kaya\",\"phone\":\"0533 444 55 66\",\"email\":\"\",\"address\":\"\",\"note\":\"\",\"registeredOn\":\"2026-11-03\",\"groupId\":null,\"subgroupId\":null,\"groupName\":\"\",\"subgroupName\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"partyKind\":\"\",\"city\":\"\",\"district\":\"\",\"eInvoice\":false,\"dueDays\":0,\"debit\":800,\"credit\":0,\"balance\":800,\"side\":\"debtor\",\"planCount\":0,\"activePlans\":0,\"planRemaining\":0,\"overdue\":0,\"overdueCount\":0,\"next\":null,\"doubtfulOpen\":0,\"extra\":[]}],\"totals\":{\"count\":1,\"debtor\":800,\"creditor\":0,\"debtorCount\":1,\"creditorCount\":0,\"balance\":800,\"overdue\":0,\"overdueCount\":0,\"planRemaining\":0,\"doubtful\":0,\"doubtfulCount\":0},\"sort\":\"no\",\"groups\":[],\"fieldLabels\":[],\"canManage\":true,\"canCollect\":true,\"canPlan\":true,\"today\":\"2026-11-03\",\"total\":1,\"offset\":0,\"limit\":300,\"hasMore\":false}}) · 200 !== 503 (beklenen 503, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "kesinti 503 ({\"ok\":true,\"data\":{\"accounts\":[{\"id\":\"account-c115ed96-670c-40f9-87c4-e9abb393b8f6\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Burak Kaya\",\"phone\":\"0533 444 55 66\",\"email\":\"\",\"address\":\"\",\"note\":\"\",\"registeredOn\":\"2026-11-03\",\"groupId\":null,\"subgroupId\":null,\"groupName\":\"\",\"subgroupName\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"partyKind\":\"\",\"city\":\"\",\"district\":\"\",\"eInvoice\":false,\"dueDays\":0,\"debit\":800,\"credit\":0,\"balance\":800,\"side\":\"debtor\",\"planCount\":0,\"activePlans\":0,\"planRemaining\":0,\"overdue\":0,\"overdueCount\":0,\"next\":null,\"doubtfulOpen\":0,\"extra\":[]}],\"totals\":{\"count\":1,\"debtor\":800,\"creditor\":0,\"debtorCount\":1,\"creditorCount\":0,\"balance\":800,\"overdue\":0,\"overdueCount\":0,\"planRemaining\":0,\"doubtful\":0,\"doubtfulCount\":0},\"sort\":\"no\",\"groups\":[],\"fieldLabels\":[],\"canManage\":true,\"canCollect\":true,\"canPlan\":true,\"today\":\"2026-11-03\",\"total\":1,\"offset\":0,\"limit\":300,\"hasMore\":false}}) · 200 !== 503 (beklenen 503, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "kesinti 503 ({\"ok\":true,\"data\":{\"accounts\":[{\"id\":\"account-4075e715-f2d0-47db-ada2-c3fd633cbf0f\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Burak Kaya\",\"phone\":\"0533 444 55 66\",\"email\":\"\",\"address\":\"\",\"note\":\"\",\"registeredOn\":\"2026-11-03\",\"groupId\":null,\"subgroupId\":null,\"groupName\":\"\",\"subgroupName\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"partyKind\":\"\",\"city\":\"\",\"district\":\"\",\"eInvoice\":false,\"dueDays\":0,\"debit\":800,\"credit\":0,\"balance\":800,\"side\":\"debtor\",\"planCount\":0,\"activePlans\":0,\"planRemaining\":0,\"overdue\":0,\"overdueCount\":0,\"next\":null,\"doubtfulOpen\":0,\"extra\":[]}],\"totals\":{\"count\":1,\"debtor\":800,\"creditor\":0,\"debtorCount\":1,\"creditorCount\":0,\"balance\":800,\"overdue\":0,\"overdueCount\":0,\"planRemaining\":0,\"doubtful\":0,\"doubtfulCount\":0},\"sort\":\"no\",\"groups\":[],\"fieldLabels\":[],\"canManage\":true,\"canCollect\":true,\"canPlan\":true,\"today\":\"2026-11-03\",\"total\":1,\"offset\":0,\"limit\":300,\"hasMore\":false}}) · 200 !== 503 (beklenen 503, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:315:5",
+      "hata": "kesinti 503 ({\"ok\":true,\"data\":{\"accounts\":[{\"id\":\"account-8d1903d1-6f43-46c5-8541-d6ecceb4682e\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Burak Kaya\",\"phone\":\"0533 444 55 66\",\"email\":\"\",\"address\":\"\",\"note\":\"\",\"registeredOn\":\"2026-11-03\",\"groupId\":null,\"subgroupId\":null,\"groupName\":\"\",\"subgroupName\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"partyKind\":\"\",\"city\":\"\",\"district\":\"\",\"eInvoice\":false,\"dueDays\":0,\"debit\":800,\"credit\":0,\"balance\":800,\"side\":\"debtor\",\"planCount\":0,\"activePlans\":0,\"planRemaining\":0,\"overdue\":0,\"overdueCount\":0,\"next\":null,\"doubtfulOpen\":0,\"extra\":[]}],\"totals\":{\"count\":1,\"debtor\":800,\"creditor\":0,\"debtorCount\":1,\"creditorCount\":0,\"balance\":800,\"overdue\":0,\"overdueCount\":0,\"planRemaining\":0,\"doubtful\":0,\"doubtfulCount\":0},\"sort\":\"no\",\"groups\":[],\"fieldLabels\":[],\"canManage\":true,\"canCollect\":true,\"canPlan\":true,\"today\":\"2026-11-03\",\"total\":1,\"offset\":0,\"limit\":300,\"hasMore\":false}}) · 200 !== 503 (beklenen 503, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:353:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:391:3",
+      "hata": "{\"ok\":true,\"data\":{\"accounts\":[{\"id\":\"account-baeb4e85-d0f0-4fc7-93d3-51c2efe5eca0\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"Burak Kaya\",\"phone\":\"0533 444 55 66\",\"email\":\"\",\"address\":\"\",\"note\":\"\",\"registeredOn\":\"2026-11-03\",\"groupId\":null,\"subgroupId\":null,\"groupName\":\"\",\"subgroupName\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"partyKind\":\"\",\"city\":\"\",\"district\":\"\",\"eInvoice\":false,\"dueDays\":0,\"debit\":800,\"credit\":0,\"balance\":800,\"side\":\"debtor\",\"planCount\":0,\"activePlans\":0,\"planRemaining\":0,\"overdue\":0,\"overdueCount\":0,\"next\":null,\"doubtfulOpen\":0,\"extra\":[]}],\"totals\":{\"count\":1,\"debtor\":800,\"creditor\":0,\"debtorCount\":1,\"creditorCount\":0,\"balance\":800,\"overdue\":0,\"overdueCount\":0,\"planRemaining\":0,\"doubtful\":0,\"doubtfulCount\":0},\"sort\":\"no\",\"groups\":[],\"fieldLabels\":[],\"canManage\":true,\"canCollect\":true,\"canPlan\":true,\"today\":\"2026-11-03\",\"total\":1,\"offset\":0,\"limit\":300,\"hasMore\":false}} · 200 !== 503 (beklenen 503, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:411:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:448:3",
+      "hata": "002 düşer, 001 çalışır · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:473:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:527:3",
+      "hata": "ilk açılışı düşen şirket oluşturma yanıtı başarı değil (beklenen 200, gelen 200)"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:552:5",
+      "hata": "Missing expected exception."
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:552:5",
+      "hata": "Missing expected exception."
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:597:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır › T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır",
+      "konum": "test/createapp-acilis-geri-alma-249.test.mjs:597:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/b1/eski-e3f74093-kancasiz.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af2578cdb282be616",
+  "ham_cikti_sha256": "b4a40adc87678da7d8b26bb40c56413f2f1b7a0c85518419d80a7a4a1e8d9908",
+  "ham_cikti_bayt": 36936
+}

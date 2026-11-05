@@ -1,0 +1,53 @@
+{
+  "ad": "b3/mutasyon-M7",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-b3-buyume-249.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-b3-goc-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:03:09.841Z",
+  "sure_sn": 39.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 10,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45) › T3 güncelleme: yeni programla açılınca PDF'ler wa_job_pdfs'e AYNI baytlarla taşınır, satır boşalır; bakım kesinleşeni siler; 31 gün sonra Devam Et AYNI PDF'i gönderir; ikinci açılışta göç yok",
+      "konum": "test/whatsapp-b3-goc-249.test.mjs:117:3",
+      "hata": "wa_jobs.pdf_blob boşaltıldı · 2 !== 0 (beklenen 0, gelen 2)"
+    },
+    {
+      "ad": "2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45) › T3 yarıda kalmış göç: tablo var + bir PDF taşınmış ama şema 44 (kesinti) → yeniden açılış göçü tamamlar; taşınmış satır korunur, eksik eklenir",
+      "konum": "test/whatsapp-b3-goc-249.test.mjs:155:3",
+      "hata": "Expected values to be strictly equal: · 2 !== 0 (beklenen 0, gelen 2)"
+    },
+    {
+      "ad": "2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göçü (v45) › T4 geri yükleme: v2.4.8'de alınmış yedek (v44, A'nın PDF'i satırda) yeni programa geri yüklenince göç v45 yedek dosyasında koşar; eski toplu iş durur (§7a 26), bakım PDF'leri siler, ileti gitmez",
+      "konum": "test/whatsapp-b3-goc-249.test.mjs:175:3",
+      "hata": "ön koşul: canlıda PDF kalmadı ({}, satırda 2) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok › T8 kaynak tarama: wa_jobs.pdf_blob yalnız göç dosyasında anılır (yazım da okuma da yok; CRLF bilen)",
+      "konum": "test/whatsapp-b3-pdf-249.test.mjs:220:3",
+      "hata": "göç v45 PDF'i taşır ve sütunu boşaltır (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a972c155e62a73ec3/docs/kanit/2026-11-03/b3/mutasyon-M7.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b3a972-mut-M7-f71e1e8b",
+  "ham_cikti_sha256": "d6fbc53f7c23333a29d00e7b7961a84fb97ad918fd18d330a1a3103ab7d087e5",
+  "ham_cikti_bayt": 156634
+}

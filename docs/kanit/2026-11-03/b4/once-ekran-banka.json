@@ -1,0 +1,68 @@
+{
+  "ad": "b4/once-ekran-banka",
+  "komut": "node /home/user/ofis---y-netimi/.claude/worktrees/agent-abedb07fbbfcd9cfe/docs/kilavuz/ekran-banka.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/b4-kod-abedb07/once-ekran",
+  "commit": "c0149534b9fbb3d2cac6fa067f9d6d9912aea5a7",
+  "dal": "worktree-agent-abedb07fbbfcd9cfe",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T18:24:51.281Z",
+  "sure_sn": 214.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 44,
+    "gecen": 37,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "dogrulanmadi page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kart page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "kredi page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "genel-bakis page.click: Timeout 30000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "planli-ikinci-kart page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Banka raporları: Banka Bakiye Raporu, Banka Hareket Raporu, Banka Masraf Raporu, Alt Hesap Mizanı, Tahsildeki Çek ve Senetler, POS Ödeme Takvimi, Faturası Beklenen Komisyonlar, POS Satış Raporu, POS Komisyon Raporu, Günlük Banka Raporu, Aylık Banka Raporu, Banka Bazında Bakiye, Para Birimi Bazında B",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Banka yetkileri (Banka ve POS): Banka Görüntüleme, Banka Raporları, Banka Hesabı Tanımlama ve Açılış, Banka Hareketi Girme ve Bankadan Çıkış, Banka Hareketi Silme, İptal ve Ters Kayıt, Transfer Yapma, POS Tanımlama, Komisyon Oranlarını Değiştirme, Banka Ayarları",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-03/b4/once-ekran-banka.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abedb07fbbfcd9cfe",
+  "ham_cikti_sha256": "cd1ad4761b8983ef634a19bd168b1f52a6dc701868a76fb7ee61f8765c431d86",
+  "ham_cikti_bayt": 5228
+}

@@ -1,0 +1,1667 @@
+{
+ "U01-tek-kabul": {
+  "sayilar": {
+   "2026-10|live|efatura": 1
+  },
+  "usage": {
+   "2026-10-15T09:59:59+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-10-15T10:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 1,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U02-ay-sonu-23-59-ayin-1i-00-00": {
+  "sayilar": {
+   "2026-10|live|earsiv": 1,
+   "2026-11|live|earsiv": 1
+  },
+  "usage": {
+   "2026-10-31T23:59:59+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 1,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-11-01T00:00:00+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 1,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0,
+     "2026-11|live|efatura": 0,
+     "2026-11|live|earsiv": 1,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U03-utc-ve-ofsetsiz-saat": {
+  "sayilar": {
+   "2026-11|live|esmm": 2,
+   "2026-12|live|esmm": 1
+  },
+  "usage": {}
+ },
+ "U04-yil-donumu": {
+  "sayilar": {
+   "2026-12|live|efatura": 1,
+   "2027-01|live|efatura": 1,
+   "2028-01|live|efatura": 1
+  },
+  "usage": {
+   "2027-01-01T00:00:00+03:00": {
+    "aylar": [
+     "2026-11",
+     "2026-12",
+     "2027-01"
+    ],
+    "aylik": {
+     "2026-11|live|efatura": 0,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0,
+     "2026-12|live|efatura": 1,
+     "2026-12|live|earsiv": 0,
+     "2026-12|live|esmm": 0,
+     "2026-12|test|efatura": 0,
+     "2026-12|test|earsiv": 0,
+     "2026-12|test|esmm": 0,
+     "2027-01|live|efatura": 1,
+     "2027-01|live|earsiv": 0,
+     "2027-01|live|esmm": 0,
+     "2027-01|test|efatura": 0,
+     "2027-01|test|earsiv": 0,
+     "2027-01|test|esmm": 0
+    }
+   },
+   "2028-02-01T00:00:00+03:00": {
+    "aylar": [
+     "2027-12",
+     "2028-01",
+     "2028-02"
+    ],
+    "aylik": {
+     "2027-12|live|efatura": 0,
+     "2027-12|live|earsiv": 0,
+     "2027-12|live|esmm": 0,
+     "2027-12|test|efatura": 0,
+     "2027-12|test|earsiv": 0,
+     "2027-12|test|esmm": 0,
+     "2028-01|live|efatura": 1,
+     "2028-01|live|earsiv": 0,
+     "2028-01|live|esmm": 0,
+     "2028-01|test|efatura": 0,
+     "2028-01|test|earsiv": 0,
+     "2028-01|test|esmm": 0,
+     "2028-02|live|efatura": 0,
+     "2028-02|live|earsiv": 0,
+     "2028-02|live|esmm": 0,
+     "2028-02|test|efatura": 0,
+     "2028-02|test|earsiv": 0,
+     "2028-02|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U05-ayni-ettn-iki-sirkette": {
+  "sayilar": {
+   "2026-10|live|efatura": 2
+  },
+  "usage": {}
+ },
+ "U06-ayni-ettn-test-ve-canlida": {
+  "sayilar": {
+   "2026-10|live|efatura": 1,
+   "2026-10|test|efatura": 1
+  },
+  "usage": {}
+ },
+ "U07-11048-ilk-olay": {
+  "sayilar": {},
+  "usage": {}
+ },
+ "U08-iptal-sonrasi-yeniden-gonderim": {
+  "sayilar": {
+   "2026-10|live|earsiv": 1,
+   "2026-11|live|earsiv": 1
+  },
+  "usage": {}
+ },
+ "U09-red-sonrasi-ayni-ettn-kabul": {
+  "sayilar": {
+   "2026-10|live|efatura": 1,
+   "2026-11|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U10-sira-karisik": {
+  "sayilar": {
+   "2026-10|live|earsiv": 2,
+   "2026-11|live|earsiv": 1
+  },
+  "usage": {}
+ },
+ "U11-belirsiz-kesinlesti-ayni-ay": {
+  "sayilar": {
+   "2026-10|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U12-belirsiz-ay-sinirinda-kesinlesti": {
+  "sayilar": {
+   "2026-10|live|earsiv": 1
+  },
+  "usage": {
+   "2026-11-01T00:01:00+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0,
+     "2026-11|live|efatura": 0,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0
+    }
+   },
+   "2026-11-05T12:00:00+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 1,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0,
+     "2026-11|live|efatura": 0,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U13-belirsiz-kesinlesti-red": {
+  "sayilar": {
+   "2026-10|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U14-belirsiz-sonucsuz": {
+  "sayilar": {},
+  "usage": {}
+ },
+ "U15-belirsiz-sonra-11048": {
+  "sayilar": {
+   "2026-10|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U16-iki-belirsiz-sonra-kesinlesme": {
+  "sayilar": {
+   "2026-10|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U17-red-araya-girer": {
+  "sayilar": {
+   "2026-09|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U18-kabul-sonrasi-gurultu": {
+  "sayilar": {
+   "2026-10|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U19-iki-kullanici-ayni-saniye": {
+  "sayilar": {
+   "2026-10|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U20-yetim-kesinlesme-eski-surum": {
+  "sayilar": {},
+  "usage": {}
+ },
+ "U21-eski-surumde-kabul-edilmis": {
+  "sayilar": {},
+  "usage": {}
+ },
+ "U22-turler-ve-profiller": {
+  "sayilar": {
+   "2026-10|live|efatura": 3,
+   "2026-10|live|earsiv": 1,
+   "2026-10|live|esmm": 1
+  },
+  "usage": {}
+ },
+ "U23-sirketler-toplanir": {
+  "sayilar": {
+   "2026-10|live|earsiv": 6
+  },
+  "usage": {}
+ },
+ "U24-bos": {
+  "sayilar": {},
+  "usage": {
+   "2026-10-15T09:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U25-kullanim-penceresi": {
+  "sayilar": {
+   "2026-07|live|efatura": 1,
+   "2026-08|live|efatura": 1,
+   "2026-09|live|efatura": 1,
+   "2026-09|live|earsiv": 1,
+   "2026-10|live|efatura": 1,
+   "2026-10|test|esmm": 1,
+   "2026-11|live|efatura": 1
+  },
+  "usage": {
+   "2026-10-31T23:59:59+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 1,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 1,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 1,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 1
+    }
+   },
+   "2026-11-01T00:00:00+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 1,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 1,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 1,
+     "2026-11|live|efatura": 0,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0
+    }
+   },
+   "2026-11-05T10:00:00+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 1,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 1,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 1,
+     "2026-11|live|efatura": 1,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0
+    }
+   },
+   "2026-11-30T23:00:00+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 1,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 1,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 1,
+     "2026-11|live|efatura": 1,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U27-kesinlesme-pencere-disi": {
+  "sayilar": {
+   "2026-08|live|efatura": 1,
+   "2026-10|live|efatura": 1
+  },
+  "usage": {
+   "2026-10-15T00:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-11-02T10:00:00+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0,
+     "2026-11|live|efatura": 0,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0
+    }
+   },
+   "2026-11-05T10:00:00+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0,
+     "2026-11|live|efatura": 0,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0
+    }
+   },
+   "2026-11-10T10:00:00+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 1,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0,
+     "2026-11|live|efatura": 0,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U28-yedekten-geri-yukleme": {
+  "sayilar": {
+   "2026-09|live|earsiv": 1,
+   "2026-10|live|earsiv": 2
+  },
+  "usage": {
+   "2026-10-05T12:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 2,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-10-06T09:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 2,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-10-10T12:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 2,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U29-sirket-verisi-sifirlandi": {
+  "sayilar": {
+   "2026-10|live|earsiv": 4
+  },
+  "usage": {}
+ },
+ "U30-belge-silindi-yeniden-acildi": {
+  "sayilar": {
+   "2026-10|live|efatura": 2
+  },
+  "usage": {}
+ },
+ "U31-ettn-buyuk-kucuk-harf": {
+  "sayilar": {
+   "2026-10|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U32-cok-gurultu": {
+  "sayilar": {
+   "2026-10|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U33-belirsiz-sonra-yeniden-deneme-kabul": {
+  "sayilar": {
+   "2026-11|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U34-ortam-degisti-kesinlesme": {
+  "sayilar": {},
+  "usage": {}
+ },
+ "U35-sirket-capraz-kesinlesme": {
+  "sayilar": {},
+  "usage": {}
+ },
+ "U36-yalniz-iptal": {
+  "sayilar": {},
+  "usage": {}
+ },
+ "U37-artik-yil-subat": {
+  "sayilar": {
+   "2028-02|test|esmm": 1,
+   "2028-03|test|esmm": 1
+  },
+  "usage": {}
+ },
+ "U38-11048-sonra-kesinlesme": {
+  "sayilar": {
+   "2026-10|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U39-tekrarlanan-red": {
+  "sayilar": {},
+  "usage": {}
+ },
+ "U40-belirsiz-red-sonra-kesinlesme": {
+  "sayilar": {
+   "2026-09|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U41-F1-bulunamadi-yeniden-belirsiz-kesinlesme": {
+  "sayilar": {
+   "2026-11|live|efatura": 1
+  },
+  "usage": {
+   "2026-11-15T10:00:00+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0,
+     "2026-11|live|efatura": 0,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0
+    }
+   },
+   "2026-12-05T10:00:00+03:00": {
+    "aylar": [
+     "2026-10",
+     "2026-11",
+     "2026-12"
+    ],
+    "aylik": {
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0,
+     "2026-11|live|efatura": 1,
+     "2026-11|live|earsiv": 0,
+     "2026-11|live|esmm": 0,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 0,
+     "2026-11|test|esmm": 0,
+     "2026-12|live|efatura": 0,
+     "2026-12|live|earsiv": 0,
+     "2026-12|live|esmm": 0,
+     "2026-12|test|efatura": 0,
+     "2026-12|test|earsiv": 0,
+     "2026-12|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U42-F1-bulunamadi-yeniden-belirsiz-11048": {
+  "sayilar": {
+   "2026-11|live|esmm": 1
+  },
+  "usage": {}
+ },
+ "U43-F2-belirsiz-red-belirsiz-kesinlesme": {
+  "sayilar": {
+   "2026-09|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "U44-bulunamadi-sonra-yeni-deneme-olmadan-kabul": {
+  "sayilar": {},
+  "usage": {}
+ },
+ "U45-bulunamadi-sonra-iptal": {
+  "sayilar": {},
+  "usage": {}
+ },
+ "U46-yedekten-defter-kazanimi": {
+  "sayilar": {
+   "2026-09|live|earsiv": 1,
+   "2026-10|live|earsiv": 4
+  },
+  "usage": {
+   "2026-10-06T12:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 3,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-10-07T12:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 1,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-10-08T12:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 2,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-10-09T09:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 3,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-10-10T12:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 1,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 0,
+     "2026-10|live|earsiv": 4,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U47-yedek-defteri-iki-sirket": {
+  "sayilar": {
+   "2026-10|live|efatura": 2
+  },
+  "usage": {
+   "2026-10-09T12:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 2,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-10-10T09:00:00+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 2,
+     "2026-10|live|earsiv": 0,
+     "2026-10|live|esmm": 0,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   }
+  }
+ },
+ "U48-eski-yedekte-defter-kopyasi-yok": {
+  "sayilar": {
+   "2026-09|live|efatura": 1,
+   "2026-10|live|efatura": 1
+  },
+  "usage": {}
+ },
+ "R1-rastgele-500-belge": {
+  "sayilar": {
+   "2026-10|live|efatura": 5,
+   "2026-10|live|earsiv": 11,
+   "2026-10|live|esmm": 2,
+   "2026-10|test|efatura": 2,
+   "2026-10|test|earsiv": 2,
+   "2026-10|test|esmm": 3,
+   "2026-11|live|efatura": 13,
+   "2026-11|live|earsiv": 7,
+   "2026-11|live|esmm": 1,
+   "2026-11|test|efatura": 4,
+   "2026-11|test|earsiv": 1,
+   "2026-11|test|esmm": 2,
+   "2026-12|live|efatura": 12,
+   "2026-12|live|earsiv": 8,
+   "2026-12|live|esmm": 2,
+   "2026-12|test|efatura": 5,
+   "2026-12|test|earsiv": 2,
+   "2026-12|test|esmm": 2,
+   "2027-01|live|efatura": 9,
+   "2027-01|live|earsiv": 5,
+   "2027-01|live|esmm": 4,
+   "2027-01|test|efatura": 3,
+   "2027-01|test|earsiv": 3,
+   "2027-01|test|esmm": 1,
+   "2027-02|live|efatura": 6,
+   "2027-02|live|earsiv": 10,
+   "2027-02|live|esmm": 3,
+   "2027-02|test|efatura": 3,
+   "2027-02|test|earsiv": 3,
+   "2027-02|test|esmm": 1,
+   "2027-03|live|efatura": 9,
+   "2027-03|live|earsiv": 9,
+   "2027-03|live|esmm": 4,
+   "2027-03|test|efatura": 2,
+   "2027-03|test|earsiv": 2,
+   "2027-03|test|esmm": 2,
+   "2027-04|live|efatura": 15,
+   "2027-04|live|earsiv": 10,
+   "2027-04|live|esmm": 3,
+   "2027-04|test|efatura": 7,
+   "2027-04|test|earsiv": 3,
+   "2027-05|live|efatura": 10,
+   "2027-05|live|earsiv": 9,
+   "2027-05|live|esmm": 4,
+   "2027-05|test|efatura": 11,
+   "2027-05|test|earsiv": 5,
+   "2027-05|test|esmm": 2,
+   "2027-06|live|efatura": 11,
+   "2027-06|live|earsiv": 12,
+   "2027-06|live|esmm": 2,
+   "2027-06|test|efatura": 5,
+   "2027-06|test|earsiv": 2,
+   "2027-06|test|esmm": 3,
+   "2027-07|live|efatura": 12,
+   "2027-07|live|earsiv": 14,
+   "2027-07|live|esmm": 1,
+   "2027-07|test|efatura": 6,
+   "2027-07|test|earsiv": 3,
+   "2027-07|test|esmm": 2,
+   "2027-08|live|efatura": 10,
+   "2027-08|live|earsiv": 7,
+   "2027-08|live|esmm": 2,
+   "2027-08|test|efatura": 4,
+   "2027-08|test|earsiv": 4,
+   "2027-09|live|efatura": 3,
+   "2027-09|live|earsiv": 11,
+   "2027-09|live|esmm": 3,
+   "2027-09|test|efatura": 5,
+   "2027-09|test|earsiv": 4,
+   "2027-10|live|efatura": 10,
+   "2027-10|live|earsiv": 8,
+   "2027-10|live|esmm": 3,
+   "2027-10|test|efatura": 5,
+   "2027-10|test|earsiv": 6,
+   "2027-10|test|esmm": 4,
+   "2027-11|live|efatura": 9,
+   "2027-11|live|earsiv": 12,
+   "2027-11|live|esmm": 4,
+   "2027-11|test|efatura": 1,
+   "2027-11|test|earsiv": 3,
+   "2027-11|test|esmm": 1,
+   "2027-12|live|earsiv": 5,
+   "2027-12|test|efatura": 1,
+   "2027-12|test|earsiv": 4,
+   "2028-01|test|efatura": 1
+  },
+  "usage": {
+   "2026-12-21T06:36:38+03:00": {
+    "aylar": [
+     "2026-10",
+     "2026-11",
+     "2026-12"
+    ],
+    "aylik": {
+     "2026-10|live|efatura": 5,
+     "2026-10|live|earsiv": 11,
+     "2026-10|live|esmm": 2,
+     "2026-10|test|efatura": 2,
+     "2026-10|test|earsiv": 2,
+     "2026-10|test|esmm": 3,
+     "2026-11|live|efatura": 13,
+     "2026-11|live|earsiv": 7,
+     "2026-11|live|esmm": 1,
+     "2026-11|test|efatura": 4,
+     "2026-11|test|earsiv": 1,
+     "2026-11|test|esmm": 2,
+     "2026-12|live|efatura": 8,
+     "2026-12|live|earsiv": 6,
+     "2026-12|live|esmm": 1,
+     "2026-12|test|efatura": 3,
+     "2026-12|test|earsiv": 1,
+     "2026-12|test|esmm": 0
+    }
+   },
+   "2027-09-10T11:19:32+03:00": {
+    "aylar": [
+     "2027-07",
+     "2027-08",
+     "2027-09"
+    ],
+    "aylik": {
+     "2027-07|live|efatura": 12,
+     "2027-07|live|earsiv": 14,
+     "2027-07|live|esmm": 1,
+     "2027-07|test|efatura": 6,
+     "2027-07|test|earsiv": 3,
+     "2027-07|test|esmm": 2,
+     "2027-08|live|efatura": 10,
+     "2027-08|live|earsiv": 7,
+     "2027-08|live|esmm": 2,
+     "2027-08|test|efatura": 4,
+     "2027-08|test|earsiv": 4,
+     "2027-08|test|esmm": 0,
+     "2027-09|live|efatura": 2,
+     "2027-09|live|earsiv": 4,
+     "2027-09|live|esmm": 2,
+     "2027-09|test|efatura": 2,
+     "2027-09|test|earsiv": 2,
+     "2027-09|test|esmm": 0
+    }
+   },
+   "2027-10-01T00:00:00+03:00": {
+    "aylar": [
+     "2027-08",
+     "2027-09",
+     "2027-10"
+    ],
+    "aylik": {
+     "2027-08|live|efatura": 10,
+     "2027-08|live|earsiv": 7,
+     "2027-08|live|esmm": 2,
+     "2027-08|test|efatura": 4,
+     "2027-08|test|earsiv": 4,
+     "2027-08|test|esmm": 0,
+     "2027-09|live|efatura": 3,
+     "2027-09|live|earsiv": 11,
+     "2027-09|live|esmm": 3,
+     "2027-09|test|efatura": 5,
+     "2027-09|test|earsiv": 4,
+     "2027-09|test|esmm": 0,
+     "2027-10|live|efatura": 0,
+     "2027-10|live|earsiv": 0,
+     "2027-10|live|esmm": 0,
+     "2027-10|test|efatura": 0,
+     "2027-10|test|earsiv": 0,
+     "2027-10|test|esmm": 0
+    }
+   },
+   "2028-01-24T03:44:32+03:00": {
+    "aylar": [
+     "2027-11",
+     "2027-12",
+     "2028-01"
+    ],
+    "aylik": {
+     "2027-11|live|efatura": 9,
+     "2027-11|live|earsiv": 12,
+     "2027-11|live|esmm": 4,
+     "2027-11|test|efatura": 1,
+     "2027-11|test|earsiv": 3,
+     "2027-11|test|esmm": 1,
+     "2027-12|live|efatura": 0,
+     "2027-12|live|earsiv": 5,
+     "2027-12|live|esmm": 0,
+     "2027-12|test|efatura": 1,
+     "2027-12|test|earsiv": 4,
+     "2027-12|test|esmm": 0,
+     "2028-01|live|efatura": 0,
+     "2028-01|live|earsiv": 0,
+     "2028-01|live|esmm": 0,
+     "2028-01|test|efatura": 1,
+     "2028-01|test|earsiv": 0,
+     "2028-01|test|esmm": 0
+    }
+   }
+  }
+ },
+ "R2-rastgele-500-belge": {
+  "sayilar": {
+   "2026-10|live|efatura": 7,
+   "2026-10|live|earsiv": 8,
+   "2026-10|live|esmm": 6,
+   "2026-10|test|efatura": 2,
+   "2026-10|test|earsiv": 5,
+   "2026-10|test|esmm": 5,
+   "2026-11|live|efatura": 7,
+   "2026-11|live|earsiv": 11,
+   "2026-11|live|esmm": 4,
+   "2026-11|test|efatura": 7,
+   "2026-11|test|earsiv": 4,
+   "2026-11|test|esmm": 2,
+   "2026-12|live|efatura": 9,
+   "2026-12|live|earsiv": 11,
+   "2026-12|live|esmm": 2,
+   "2026-12|test|efatura": 2,
+   "2026-12|test|earsiv": 3,
+   "2026-12|test|esmm": 2,
+   "2027-01|live|efatura": 10,
+   "2027-01|live|earsiv": 8,
+   "2027-01|live|esmm": 4,
+   "2027-01|test|efatura": 3,
+   "2027-01|test|earsiv": 5,
+   "2027-02|live|efatura": 10,
+   "2027-02|live|earsiv": 4,
+   "2027-02|live|esmm": 3,
+   "2027-02|test|efatura": 3,
+   "2027-02|test|earsiv": 6,
+   "2027-02|test|esmm": 1,
+   "2027-03|live|efatura": 9,
+   "2027-03|live|earsiv": 10,
+   "2027-03|live|esmm": 4,
+   "2027-03|test|efatura": 2,
+   "2027-03|test|earsiv": 2,
+   "2027-04|live|efatura": 7,
+   "2027-04|live|earsiv": 13,
+   "2027-04|live|esmm": 3,
+   "2027-04|test|efatura": 7,
+   "2027-04|test|earsiv": 1,
+   "2027-04|test|esmm": 1,
+   "2027-05|live|efatura": 14,
+   "2027-05|live|earsiv": 11,
+   "2027-05|live|esmm": 4,
+   "2027-05|test|efatura": 4,
+   "2027-05|test|earsiv": 3,
+   "2027-06|live|efatura": 5,
+   "2027-06|live|earsiv": 7,
+   "2027-06|live|esmm": 2,
+   "2027-06|test|efatura": 4,
+   "2027-06|test|earsiv": 4,
+   "2027-07|live|efatura": 8,
+   "2027-07|live|earsiv": 10,
+   "2027-07|live|esmm": 5,
+   "2027-07|test|efatura": 1,
+   "2027-07|test|earsiv": 3,
+   "2027-07|test|esmm": 2,
+   "2027-08|live|efatura": 13,
+   "2027-08|live|earsiv": 7,
+   "2027-08|live|esmm": 6,
+   "2027-08|test|efatura": 6,
+   "2027-08|test|earsiv": 2,
+   "2027-09|live|efatura": 10,
+   "2027-09|live|earsiv": 4,
+   "2027-09|live|esmm": 3,
+   "2027-09|test|efatura": 3,
+   "2027-09|test|earsiv": 3,
+   "2027-09|test|esmm": 1,
+   "2027-10|live|efatura": 14,
+   "2027-10|live|earsiv": 12,
+   "2027-10|live|esmm": 4,
+   "2027-10|test|efatura": 3,
+   "2027-10|test|earsiv": 3,
+   "2027-11|live|efatura": 13,
+   "2027-11|live|earsiv": 8,
+   "2027-11|live|esmm": 3,
+   "2027-11|test|efatura": 4,
+   "2027-11|test|earsiv": 4,
+   "2027-12|live|efatura": 1,
+   "2027-12|live|esmm": 2,
+   "2027-12|test|earsiv": 1,
+   "2027-12|test|esmm": 1
+  },
+  "usage": {
+   "2026-10-08T23:54:17+03:00": {
+    "aylar": [
+     "2026-08",
+     "2026-09",
+     "2026-10"
+    ],
+    "aylik": {
+     "2026-08|live|efatura": 0,
+     "2026-08|live|earsiv": 0,
+     "2026-08|live|esmm": 0,
+     "2026-08|test|efatura": 0,
+     "2026-08|test|earsiv": 0,
+     "2026-08|test|esmm": 0,
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 1,
+     "2026-10|live|earsiv": 1,
+     "2026-10|live|esmm": 2,
+     "2026-10|test|efatura": 0,
+     "2026-10|test|earsiv": 0,
+     "2026-10|test|esmm": 0
+    }
+   },
+   "2026-11-05T04:21:22+03:00": {
+    "aylar": [
+     "2026-09",
+     "2026-10",
+     "2026-11"
+    ],
+    "aylik": {
+     "2026-09|live|efatura": 0,
+     "2026-09|live|earsiv": 0,
+     "2026-09|live|esmm": 0,
+     "2026-09|test|efatura": 0,
+     "2026-09|test|earsiv": 0,
+     "2026-09|test|esmm": 0,
+     "2026-10|live|efatura": 7,
+     "2026-10|live|earsiv": 8,
+     "2026-10|live|esmm": 6,
+     "2026-10|test|efatura": 2,
+     "2026-10|test|earsiv": 5,
+     "2026-10|test|esmm": 5,
+     "2026-11|live|efatura": 2,
+     "2026-11|live|earsiv": 1,
+     "2026-11|live|esmm": 2,
+     "2026-11|test|efatura": 0,
+     "2026-11|test|earsiv": 1,
+     "2026-11|test|esmm": 0
+    }
+   },
+   "2027-03-01T00:00:00+03:00": {
+    "aylar": [
+     "2027-01",
+     "2027-02",
+     "2027-03"
+    ],
+    "aylik": {
+     "2027-01|live|efatura": 10,
+     "2027-01|live|earsiv": 7,
+     "2027-01|live|esmm": 4,
+     "2027-01|test|efatura": 3,
+     "2027-01|test|earsiv": 4,
+     "2027-01|test|esmm": 0,
+     "2027-02|live|efatura": 10,
+     "2027-02|live|earsiv": 2,
+     "2027-02|live|esmm": 2,
+     "2027-02|test|efatura": 3,
+     "2027-02|test|earsiv": 6,
+     "2027-02|test|esmm": 1,
+     "2027-03|live|efatura": 0,
+     "2027-03|live|earsiv": 0,
+     "2027-03|live|esmm": 0,
+     "2027-03|test|efatura": 0,
+     "2027-03|test|earsiv": 0,
+     "2027-03|test|esmm": 0
+    }
+   },
+   "2028-01-15T08:48:00+03:00": {
+    "aylar": [
+     "2027-11",
+     "2027-12",
+     "2028-01"
+    ],
+    "aylik": {
+     "2027-11|live|efatura": 13,
+     "2027-11|live|earsiv": 8,
+     "2027-11|live|esmm": 3,
+     "2027-11|test|efatura": 4,
+     "2027-11|test|earsiv": 4,
+     "2027-11|test|esmm": 0,
+     "2027-12|live|efatura": 1,
+     "2027-12|live|earsiv": 0,
+     "2027-12|live|esmm": 2,
+     "2027-12|test|efatura": 0,
+     "2027-12|test|earsiv": 1,
+     "2027-12|test|esmm": 1,
+     "2028-01|live|efatura": 0,
+     "2028-01|live|earsiv": 0,
+     "2028-01|live|esmm": 0,
+     "2028-01|test|efatura": 0,
+     "2028-01|test|earsiv": 0,
+     "2028-01|test|esmm": 0
+    }
+   }
+  }
+ },
+ "R3-rastgele-500-belge": {
+  "sayilar": {
+   "2026-10|live|efatura": 8,
+   "2026-10|live|earsiv": 8,
+   "2026-10|live|esmm": 1,
+   "2026-10|test|efatura": 1,
+   "2026-10|test|earsiv": 6,
+   "2026-11|live|efatura": 6,
+   "2026-11|live|earsiv": 8,
+   "2026-11|live|esmm": 3,
+   "2026-11|test|efatura": 9,
+   "2026-11|test|earsiv": 5,
+   "2026-11|test|esmm": 2,
+   "2026-12|live|efatura": 13,
+   "2026-12|live|earsiv": 7,
+   "2026-12|live|esmm": 1,
+   "2026-12|test|efatura": 6,
+   "2026-12|test|earsiv": 8,
+   "2026-12|test|esmm": 2,
+   "2027-01|live|efatura": 13,
+   "2027-01|live|earsiv": 7,
+   "2027-01|live|esmm": 3,
+   "2027-01|test|efatura": 4,
+   "2027-01|test|earsiv": 4,
+   "2027-01|test|esmm": 1,
+   "2027-02|live|efatura": 11,
+   "2027-02|live|earsiv": 5,
+   "2027-02|live|esmm": 3,
+   "2027-02|test|efatura": 5,
+   "2027-02|test|esmm": 1,
+   "2027-03|live|efatura": 12,
+   "2027-03|live|earsiv": 8,
+   "2027-03|live|esmm": 2,
+   "2027-03|test|efatura": 3,
+   "2027-03|test|earsiv": 2,
+   "2027-03|test|esmm": 2,
+   "2027-04|live|efatura": 11,
+   "2027-04|live|earsiv": 16,
+   "2027-04|live|esmm": 1,
+   "2027-04|test|efatura": 3,
+   "2027-04|test|earsiv": 2,
+   "2027-04|test|esmm": 2,
+   "2027-05|live|efatura": 6,
+   "2027-05|live|earsiv": 18,
+   "2027-05|live|esmm": 6,
+   "2027-05|test|efatura": 4,
+   "2027-05|test|earsiv": 4,
+   "2027-05|test|esmm": 3,
+   "2027-06|live|efatura": 8,
+   "2027-06|live|earsiv": 12,
+   "2027-06|live|esmm": 5,
+   "2027-06|test|efatura": 2,
+   "2027-06|test|earsiv": 6,
+   "2027-07|live|efatura": 5,
+   "2027-07|live|earsiv": 8,
+   "2027-07|live|esmm": 8,
+   "2027-07|test|efatura": 2,
+   "2027-07|test|earsiv": 4,
+   "2027-08|live|efatura": 8,
+   "2027-08|live|earsiv": 7,
+   "2027-08|live|esmm": 2,
+   "2027-08|test|efatura": 5,
+   "2027-08|test|earsiv": 3,
+   "2027-09|live|efatura": 9,
+   "2027-09|live|earsiv": 7,
+   "2027-09|live|esmm": 4,
+   "2027-09|test|efatura": 4,
+   "2027-09|test|earsiv": 3,
+   "2027-09|test|esmm": 3,
+   "2027-10|live|efatura": 12,
+   "2027-10|live|earsiv": 6,
+   "2027-10|live|esmm": 2,
+   "2027-10|test|efatura": 3,
+   "2027-10|test|earsiv": 2,
+   "2027-10|test|esmm": 6,
+   "2027-11|live|efatura": 10,
+   "2027-11|live|earsiv": 12,
+   "2027-11|live|esmm": 4,
+   "2027-11|test|efatura": 2,
+   "2027-11|test|earsiv": 4,
+   "2027-11|test|esmm": 1,
+   "2027-12|live|earsiv": 3,
+   "2027-12|live|esmm": 2,
+   "2027-12|test|efatura": 3
+  },
+  "usage": {
+   "2027-05-01T01:28:12+03:00": {
+    "aylar": [
+     "2027-03",
+     "2027-04",
+     "2027-05"
+    ],
+    "aylik": {
+     "2027-03|live|efatura": 12,
+     "2027-03|live|earsiv": 7,
+     "2027-03|live|esmm": 2,
+     "2027-03|test|efatura": 3,
+     "2027-03|test|earsiv": 2,
+     "2027-03|test|esmm": 2,
+     "2027-04|live|efatura": 11,
+     "2027-04|live|earsiv": 16,
+     "2027-04|live|esmm": 1,
+     "2027-04|test|efatura": 3,
+     "2027-04|test|earsiv": 2,
+     "2027-04|test|esmm": 2,
+     "2027-05|live|efatura": 0,
+     "2027-05|live|earsiv": 0,
+     "2027-05|live|esmm": 0,
+     "2027-05|test|efatura": 0,
+     "2027-05|test|earsiv": 0,
+     "2027-05|test|esmm": 1
+    }
+   },
+   "2027-09-01T00:00:00+03:00": {
+    "aylar": [
+     "2027-07",
+     "2027-08",
+     "2027-09"
+    ],
+    "aylik": {
+     "2027-07|live|efatura": 5,
+     "2027-07|live|earsiv": 8,
+     "2027-07|live|esmm": 8,
+     "2027-07|test|efatura": 2,
+     "2027-07|test|earsiv": 4,
+     "2027-07|test|esmm": 0,
+     "2027-08|live|efatura": 7,
+     "2027-08|live|earsiv": 7,
+     "2027-08|live|esmm": 2,
+     "2027-08|test|efatura": 5,
+     "2027-08|test|earsiv": 3,
+     "2027-08|test|esmm": 0,
+     "2027-09|live|efatura": 0,
+     "2027-09|live|earsiv": 0,
+     "2027-09|live|esmm": 0,
+     "2027-09|test|efatura": 0,
+     "2027-09|test|earsiv": 0,
+     "2027-09|test|esmm": 0
+    }
+   },
+   "2027-11-12T19:39:51+03:00": {
+    "aylar": [
+     "2027-09",
+     "2027-10",
+     "2027-11"
+    ],
+    "aylik": {
+     "2027-09|live|efatura": 9,
+     "2027-09|live|earsiv": 7,
+     "2027-09|live|esmm": 4,
+     "2027-09|test|efatura": 4,
+     "2027-09|test|earsiv": 3,
+     "2027-09|test|esmm": 3,
+     "2027-10|live|efatura": 12,
+     "2027-10|live|earsiv": 5,
+     "2027-10|live|esmm": 2,
+     "2027-10|test|efatura": 2,
+     "2027-10|test|earsiv": 2,
+     "2027-10|test|esmm": 6,
+     "2027-11|live|efatura": 5,
+     "2027-11|live|earsiv": 5,
+     "2027-11|live|esmm": 2,
+     "2027-11|test|efatura": 0,
+     "2027-11|test|earsiv": 3,
+     "2027-11|test|esmm": 1
+    }
+   },
+   "2028-01-07T03:59:15+03:00": {
+    "aylar": [
+     "2027-11",
+     "2027-12",
+     "2028-01"
+    ],
+    "aylik": {
+     "2027-11|live|efatura": 10,
+     "2027-11|live|earsiv": 12,
+     "2027-11|live|esmm": 4,
+     "2027-11|test|efatura": 2,
+     "2027-11|test|earsiv": 4,
+     "2027-11|test|esmm": 1,
+     "2027-12|live|efatura": 0,
+     "2027-12|live|earsiv": 3,
+     "2027-12|live|esmm": 2,
+     "2027-12|test|efatura": 3,
+     "2027-12|test|earsiv": 0,
+     "2027-12|test|esmm": 0,
+     "2028-01|live|efatura": 0,
+     "2028-01|live|earsiv": 0,
+     "2028-01|live|esmm": 0,
+     "2028-01|test|efatura": 0,
+     "2028-01|test|earsiv": 0,
+     "2028-01|test|esmm": 0
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "w/kaynak-tarayan-c96892b5",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-reporter=tap test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/kanit-araci.test.mjs",
+  "commit": "c96892b55079c172344320d013431c94b087f673",
+  "dal": "worktree-agent-ac7daa9bc89dacc8b",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:26:44.890Z",
+  "sure_sn": 4.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 67,
+    "gecen": 67,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/w/kaynak-tarayan-c96892b5.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac7daa9bc89dacc8b",
+  "ham_cikti_sha256": "600065efac647bf52f12216166462cf1814303eeab91ce4275a47a5fc6df764d",
+  "ham_cikti_bayt": 19041
+}

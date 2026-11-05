@@ -1,0 +1,32 @@
+{
+  "ad": "b1-lisans-tarayici-duzeltme",
+  "komut": "node --test test/lisans-servisi-izolasyonu.test.mjs test/createapp-acilis-geri-alma-249.test.mjs",
+  "commit": "df42640d8d4ae1a3c898da3ad50b59fc50ef8455",
+  "dal": "claude/compassionate-galileo-f9kghg",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T20:00:26.616Z",
+  "sure_sn": 41.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 28,
+    "gecen": 28,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/b1-lisans-tarayici-duzeltme.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "702a087d335d9a146f0ee034d2ecec3336ee0a794dd18809ebe3545fccf1c3ba",
+  "ham_cikti_bayt": 11056
+}

@@ -494,6 +494,11 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
 .hof-toast-error {
   border-left-color: var(--do-danger);
 }
+/* 2.4.9 UI tur B (ORTA-3): uyarı bildirimi (iş yapıldı ama bir parçası eksik) yeşil ya da kırmızı değil, altın kenarlı. */
+.hof-toast-warn,
+.hof-toast-warning {
+  border-left-color: var(--do-gold);
+}
 .hof-toast-text {
   flex: 1;
 }

@@ -1,0 +1,564 @@
+TAP version 13
+# Subtest: kapı süzgeci (dokunulan varlıklar) — çalışıyor mu
+    # Subtest: günlük işler süzgeç yolundan geçer; tam kapı çalışmaz; Mutabakat Testi tutarlı
+    ok 1 - günlük işler süzgeç yolundan geçer; tam kapı çalışmaz; Mutabakat Testi tutarlı
+      ---
+      duration_ms: 180.096697
+      type: 'test'
+      ...
+    # Subtest: kilitli dönemin satırında yalnız açıklama: 200 ve süzgeç yolu; tutar değişirse 409 (aşağıda)
+    ok 2 - kilitli dönemin satırında yalnız açıklama: 200 ve süzgeç yolu; tutar değişirse 409 (aşağıda)
+      ---
+      duration_ms: 91.809942
+      type: 'test'
+      ...
+    1..2
+ok 1 - kapı süzgeci (dokunulan varlıklar) — çalışıyor mu
+  ---
+  duration_ms: 852.943813
+  type: 'suite'
+  ...
+# Subtest: kapı süzgeci — nasıl bozarım (üretim kipi; işlem içinde doğrudan SQL)
+    # Subtest: 1. kuruştan küçük küsurat → 409, satır yazılmaz
+    ok 1 - 1. kuruştan küçük küsurat → 409, satır yazılmaz
+      ---
+      duration_ms: 13.657947
+      type: 'test'
+      ...
+    # Subtest: 2. para satırının tutarını bank.post dışında değiştir (işlem başlığı kopyası tutmaz): üretimde 2.0.26/dilim 3 gibi K6 günlüğü, tam tarama bank:event bulur; test kipinde 500
+    ok 2 - 2. para satırının tutarını bank.post dışında değiştir (işlem başlığı kopyası tutmaz): üretimde 2.0.26/dilim 3 gibi K6 günlüğü, tam tarama bank:event bulur; test kipinde 500
+      ---
+      duration_ms: 550.948482
+      type: 'test'
+      ...
+    # Subtest: 3. ileri tarihli ve 30 Şubat tarihli Kasa satırı → 409
+    ok 3 - 3. ileri tarihli ve 30 Şubat tarihli Kasa satırı → 409
+      ---
+      duration_ms: 20.722782
+      type: 'test'
+      ...
+    # Subtest: 4. tanınmayan yol (bitcoin) → 409
+    ok 4 - 4. tanınmayan yol (bitcoin) → 409
+      ---
+      duration_ms: 9.152635
+      type: 'test'
+      ...
+    # Subtest: 5–6. kilitli satırı sil / tutarını değiştir; kilitli dönemde hareketi olan carinin türünü değiştir → 409 period-lock
+    ok 5 - 5–6. kilitli satırı sil / tutarını değiştir; kilitli dönemde hareketi olan carinin türünü değiştir → 409 period-lock
+      ---
+      duration_ms: 84.821799
+      type: 'test'
+      ...
+    # Subtest: 7. stok: açık hesap hareketinin tutarı carideki satırdan ayrı; hareketi olmayan stok kaynaklı cari satırı → 409
+    ok 6 - 7. stok: açık hesap hareketinin tutarı carideki satırdan ayrı; hareketi olmayan stok kaynaklı cari satırı → 409
+      ---
+      duration_ms: 26.504284
+      type: 'test'
+      ...
+    # Subtest: 8. çek kaynaklı cari satırı çekten farklı tutarda → 409
+    ok 7 - 8. çek kaynaklı cari satırı çekten farklı tutarda → 409
+      ---
+      duration_ms: 19.017215
+      type: 'test'
+      ...
+    # Subtest: 9. faturanın cari satırı faturadan farklı → 409
+    ok 8 - 9. faturanın cari satırı faturadan farklı → 409
+      ---
+      duration_ms: 27.59408
+      type: 'test'
+      ...
+    # Subtest: 10. olaysız para satırı: üretimde K6 günlüğe yazar ve iş durmaz; tam tarama money:event bulur
+    ok 9 - 10. olaysız para satırı: üretimde K6 günlüğe yazar ve iş durmaz; tam tarama money:event bulur
+      ---
+      duration_ms: 17.465677
+      type: 'test'
+      ...
+    1..9
+ok 2 - kapı süzgeci — nasıl bozarım (üretim kipi; işlem içinde doğrudan SQL)
+  ---
+  duration_ms: 1150.184403
+  type: 'suite'
+  ...
+# Subtest: kapı süzgeci — nasıl bozarım: bağlı varlıkta çıkan sapma (üretim kipi)
+    # Subtest: 15. peşin satışı olan ürünü ham DELETE ile sil → tek kaynak ürünsüz hareketi görmez, yevmiye görür (100) → 409
+    ok 1 - 15. peşin satışı olan ürünü ham DELETE ile sil → tek kaynak ürünsüz hareketi görmez, yevmiye görür (100) → 409
+      ---
+      duration_ms: 26.855138
+      type: 'test'
+      ...
+    # Subtest: 16. tahsil edilmiş çeki ham UPDATE ile sil → cari satırının 101 karşılığı kalır, portföy değişmez → 409
+    ok 2 - 16. tahsil edilmiş çeki ham UPDATE ile sil → cari satırının 101 karşılığı kalır, portföy değişmez → 409
+      ---
+      duration_ms: 18.978462
+      type: 'test'
+      ...
+    # Subtest: 17. peşinli faturayı ham DELETE ile sil (aynı işlemde bir para yazımıyla) → tek kaynak peşin satırını görmez, yevmiye görür → 409
+    ok 3 - 17. peşinli faturayı ham DELETE ile sil (aynı işlemde bir para yazımıyla) → tek kaynak peşin satırını görmez, yevmiye görür → 409
+      ---
+      duration_ms: 43.226305
+      type: 'test'
+      ...
+    # Subtest: BİLİNEN SINIR (2.0.15'ten beri, değişmedi): YALNIZ fatura tablosuna yazan işlem kapıyı tetiklemez; Mutabakat Testi (tam tarama) bulur
+    ok 4 - BİLİNEN SINIR (2.0.15'ten beri, değişmedi): YALNIZ fatura tablosuna yazan işlem kapıyı tetiklemez; Mutabakat Testi (tam tarama) bulur
+      ---
+      duration_ms: 49.815967
+      type: 'test'
+      ...
+    # Subtest: 18. Kasa ↔ Banka transferinin banka bacağını ham UPDATE ile değiştir → 102 kayar → 409
+    ok 5 - 18. Kasa ↔ Banka transferinin banka bacağını ham UPDATE ile değiştir → 102 kayar → 409
+      ---
+      duration_ms: 20.818082
+      type: 'test'
+      ...
+    # Subtest: 19. fatura kalemini ham UPDATE ile değiştir (aynı işlemde bir cari yazımıyla) → başlık ≠ kalemler, kalem ≠ stok hareketi → 409
+    ok 6 - 19. fatura kalemini ham UPDATE ile değiştir (aynı işlemde bir cari yazımıyla) → başlık ≠ kalemler, kalem ≠ stok hareketi → 409
+      ---
+      duration_ms: 32.238835
+      type: 'test'
+      ...
+    # Subtest: 20. kapatılmış (kilitli dönemde) kartın tahsilatı: karta bugün tahsilat → kilit izi (vazgeçilen kalan) → 409
+    ok 7 - 20. kapatılmış (kilitli dönemde) kartın tahsilatı: karta bugün tahsilat → kilit izi (vazgeçilen kalan) → 409
+      ---
+      duration_ms: 74.77969
+      type: 'test'
+      ...
+    # Subtest: süzgeç her durumda sapmayı gördü (karar tam kapının) ve normal işler yine süzgeç yolunda
+    ok 8 - süzgeç her durumda sapmayı gördü (karar tam kapının) ve normal işler yine süzgeç yolunda
+      ---
+      duration_ms: 29.77234
+      type: 'test'
+      ...
+    1..8
+ok 3 - kapı süzgeci — nasıl bozarım: bağlı varlıkta çıkan sapma (üretim kipi)
+  ---
+  duration_ms: 787.715732
+  type: 'suite'
+  ...
+# Subtest: kapı süzgeci — store dışı yazım, çözülemeyen yazım, taban sapması
+    # Subtest: 11. aynı bağlantıdan store dışı bozuk satır → ilgisiz API yazımı tam kapıya döner → 409 (2.0.26 gibi); satır silinince geçer
+    ok 1 - 11. aynı bağlantıdan store dışı bozuk satır → ilgisiz API yazımı tam kapıya döner → 409 (2.0.26 gibi); satır silinince geçer
+      ---
+      duration_ms: 34.940653
+      type: 'test'
+      ...
+    # Subtest: 12. başka bağlantıdan (ikinci DatabaseSync) bozuk satır → data_version → tam kapı → 409
+    ok 2 - 12. başka bağlantıdan (ikinci DatabaseSync) bozuk satır → data_version → tam kapı → 409
+      ---
+      duration_ms: 24.687707
+      type: 'test'
+      ...
+    # Subtest: 13. çözülemeyen yazım (upsert) → tam kapı
+    ok 3 - 13. çözülemeyen yazım (upsert) → tam kapı
+      ---
+      duration_ms: 20.52838
+      type: 'test'
+      ...
+    # Subtest: taban sapması: açılışta kuruşu bozuk Kasa satırı → yeni Kasa yazımı süzgeç yolunda, eski satıra dokunan yazım tam kapıda geçer (sapma büyümedi), cari yazımı süzgeç yolunda
+    ok 4 - taban sapması: açılışta kuruşu bozuk Kasa satırı → yeni Kasa yazımı süzgeç yolunda, eski satıra dokunan yazım tam kapıda geçer (sapma büyümedi), cari yazımı süzgeç yolunda
+      ---
+      duration_ms: 53.826816
+      type: 'test'
+      ...
+    1..4
+ok 4 - kapı süzgeci — store dışı yazım, çözülemeyen yazım, taban sapması
+  ---
+  duration_ms: 569.217142
+  type: 'suite'
+  ...
+# Subtest: kapı süzgeci — eşdeğerlik koruması (test kipi)
+    # Subtest: 14. süzgeç bilerek kör edilirse bozuk yazım 500 gate-equivalence ile kırılır (tam kapı her işlemde çalışır)
+    ok 1 - 14. süzgeç bilerek kör edilirse bozuk yazım 500 gate-equivalence ile kırılır (tam kapı her işlemde çalışır)
+      ---
+      duration_ms: 29.638927
+      type: 'test'
+      ...
+    # Subtest: test kipinde temiz işlemler tam kapıyla aynı karar (süzgeç sayacı)
+    ok 2 - test kipinde temiz işlemler tam kapıyla aynı karar (süzgeç sayacı)
+      ---
+      duration_ms: 23.291607
+      type: 'test'
+      ...
+    1..2
+ok 5 - kapı süzgeci — eşdeğerlik koruması (test kipi)
+  ---
+  duration_ms: 477.413034
+  type: 'suite'
+  ...
+# Subtest: K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+    # Subtest: tarayıcı kendini sınar
+    ok 1 - tarayıcı kendini sınar
+      ---
+      duration_ms: 4.569837
+      type: 'test'
+      ...
+    # Subtest: izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+    ok 2 - izinli liste geçerli: her girdinin dosyası, işlevi, türü ve gerekçesi var
+      ---
+      duration_ms: 0.478265
+      type: 'test'
+      ...
+    # Subtest: gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+    ok 3 - gerçek kod: liste dışında ham yazım yeri yok; listede eskimiş girdi yok
+      ---
+      duration_ms: 893.330484
+      type: 'test'
+      ...
+    # Subtest: 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+    ok 4 - 'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona
+      ---
+      duration_ms: 1038.041582
+      type: 'test'
+      ...
+    # Subtest: olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+    ok 5 - olay türleri sözlükte (CHECK yerine kod sözlüğü, §3.6)
+      ---
+      duration_ms: 0.569274
+      type: 'test'
+      ...
+    # Subtest: cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+    ok 6 - cheque_events.kind'e yazılan her değer göçteki CHECK listesinde (plan Aşama 8)
+      ---
+      duration_ms: 44.898325
+      type: 'test'
+      ...
+    1..6
+ok 6 - K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli listede
+  ---
+  duration_ms: 1983.14217
+  type: 'suite'
+  ...
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 2.030733
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.562832
+      type: 'test'
+      ...
+    1..2
+ok 7 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 3.86885
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 1.206048
+      type: 'test'
+      ...
+    1..1
+ok 8 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 1.340218
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 2.75367
+      type: 'test'
+      ...
+    1..1
+ok 9 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 2.88037
+  type: 'suite'
+  ...
+# Subtest: openDatabase — bozuk dosyada bağlantı sızmaz (2.4.8)
+    # Subtest: yazma açışı: bozuk dosya → hata; dosya açık kalmaz, silinebilir
+    ok 1 - yazma açışı: bozuk dosya → hata; dosya açık kalmaz, silinebilir
+      ---
+      duration_ms: 6.102385
+      type: 'test'
+      ...
+    # Subtest: salt okunur açış: bozuk dosyada ilk sorgu düşer, çağıranın close'u dosyayı bırakır
+    ok 2 - salt okunur açış: bozuk dosyada ilk sorgu düşer, çağıranın close'u dosyayı bırakır
+      ---
+      duration_ms: 1.017037
+      type: 'test'
+      ...
+    # Subtest: sağlam dosya: açılış eskisi gibi (WAL, foreign_keys, busy_timeout)
+    ok 3 - sağlam dosya: açılış eskisi gibi (WAL, foreign_keys, busy_timeout)
+      ---
+      duration_ms: 2.426076
+      type: 'test'
+      ...
+    1..3
+ok 10 - openDatabase — bozuk dosyada bağlantı sızmaz (2.4.8)
+  ---
+  duration_ms: 10.812241
+  type: 'suite'
+  ...
+# Subtest: store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX)
+    # Subtest: (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı
+    ok 1 - (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı
+      ---
+      duration_ms: 11.489536
+      type: 'test'
+      ...
+    # Subtest: (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı
+    ok 2 - (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı
+      ---
+      duration_ms: 35.933477
+      type: 'test'
+      ...
+    # a2 gerçek (Linux RLIMIT_FSIZE 141136 B): store.tx hatası "disk I/O error" (ERR_SQLITE_ERROR 778); deyimler ["BEGIN IMMEDIATE","COMMIT"]; sonra db.isTransaction=false
+    # Subtest: (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır
+    ok 3 - (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır
+      ---
+      duration_ms: 8.746275
+      type: 'test'
+      ...
+    # Subtest: (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0
+    ok 4 - (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0
+      ---
+      duration_ms: 10.87538
+      type: 'test'
+      ...
+    # Subtest: (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür
+    ok 5 - (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür
+      ---
+      duration_ms: 8.528528
+      type: 'test'
+      ...
+    # Subtest: (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur
+    ok 6 - (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur
+      ---
+      duration_ms: 10.302821
+      type: 'test'
+      ...
+    # Subtest: (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez
+    ok 7 - (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez
+      ---
+      duration_ms: 9.497764
+      type: 'test'
+      ...
+    # Subtest: (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz
+    ok 8 - (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz
+      ---
+      duration_ms: 9.595401
+      type: 'test'
+      ...
+    # Subtest: (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)
+    ok 9 - (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)
+      ---
+      duration_ms: 773.230228
+      type: 'test'
+      ...
+    # FK: cari 500; günlük ["API hatası POST /api/workspace/accounts: FOREIGN KEY constraint failed"]
+    # FSIZE (2394776 B): cari 500; günlük ["API hatası POST /api/workspace/accounts: disk I/O error"]
+    1..9
+ok 11 - store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX)
+  ---
+  duration_ms: 880.413255
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 R2 — taksit kartının iade kesintisi toplu yolda cari başına yeniden taranmaz (kural aynen)
+    # Subtest: YAPI: elle alıcı listesi, otomatik önizleme ve cari kartı döngüsü iade faturalarını cari başına yeniden taramaz (istek başına en çok 1)
+    ok 1 - YAPI: elle alıcı listesi, otomatik önizleme ve cari kartı döngüsü iade faturalarını cari başına yeniden taramaz (istek başına en çok 1)
+      ---
+      duration_ms: 62.395311
+      type: 'test'
+      ...
+    # iade taraması: {"elleTumune":0,"elleSecili":1,"onizleme":1,"kartDongusu":0} (cari 16)
+    # Subtest: EŞDEĞERLİK: her kartın kesintisi eski kuralla ve kâhinle birebir — kısmi / tam iade, iki kart, tek iadede iki kart, iptal, taslak, satışa yazılmış, aynı ad, taşınan kart
+    ok 2 - EŞDEĞERLİK: her kartın kesintisi eski kuralla ve kâhinle birebir — kısmi / tam iade, iki kart, tek iadede iki kart, iptal, taslak, satışa yazılmış, aynı ad, taşınan kart
+      ---
+      duration_ms: 6.169616
+      type: 'test'
+      ...
+    # Subtest: BAYATLIK — API: iade düzenlenince, silinince, iptal edilince saklanan kesinti kullanılmaz (hemen güncel)
+    ok 3 - BAYATLIK — API: iade düzenlenince, silinince, iptal edilince saklanan kesinti kullanılmaz (hemen güncel)
+      ---
+      duration_ms: 67.508311
+      type: 'test'
+      ...
+    # Subtest: BAYATLIK — doğrudan yazım, eski / bozuk biçimli satır, başka bağlantının yazması, geri alınan işlem: kesinti eski kuralla birebir
+    ok 4 - BAYATLIK — doğrudan yazım, eski / bozuk biçimli satır, başka bağlantının yazması, geri alınan işlem: kesinti eski kuralla birebir
+      ---
+      duration_ms: 15.841758
+      type: 'test'
+      ...
+    1..4
+ok 12 - 2.4.9 R2 — taksit kartının iade kesintisi toplu yolda cari başına yeniden taranmaz (kural aynen)
+  ---
+  duration_ms: 1889.063524
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 13 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 15.631642
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 14 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 131.443455
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 15 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.220648
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 16 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.529108
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 17 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.445104
+  type: 'test'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.748501
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 151.341928
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 147.835031
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 166.551462
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 320.88544
+      type: 'test'
+      ...
+    1..5
+ok 18 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 788.502368
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 47.877425
+      type: 'test'
+      ...
+    1..1
+ok 19 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 48.018317
+  type: 'suite'
+  ...
+# Subtest: statik dosyalar
+    # Subtest: ana sayfayı güvenlik başlıkları ve CSP ile sunar
+    ok 1 - ana sayfayı güvenlik başlıkları ve CSP ile sunar
+      ---
+      duration_ms: 30.629598
+      type: 'test'
+      ...
+    # Subtest: değişmeyen dosyada 304 döner ve sıkıştırma uygular
+    ok 2 - değişmeyen dosyada 304 döner ve sıkıştırma uygular
+      ---
+      duration_ms: 31.744419
+      type: 'test'
+      ...
+    # Subtest: klasör dışına çıkma ve gizli dosya denemelerini engeller
+    ok 3 - klasör dışına çıkma ve gizli dosya denemelerini engeller
+      ---
+      duration_ms: 14.526803
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+    ok 4 - bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+      ---
+      duration_ms: 2.966792
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+    ok 5 - bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+      ---
+      duration_ms: 15.983112
+      type: 'test'
+      ...
+    1..5
+ok 20 - statik dosyalar
+  ---
+  duration_ms: 528.558786
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 87.913859
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 6.3152
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.356523
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 9.683521
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 5.770327
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 45.699045
+      type: 'test'
+      ...
+    1..6
+ok 21 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 158.967324
+  type: 'suite'
+  ...
+1..21
+# tests 73
+# suites 16
+# pass 73
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4385.740283

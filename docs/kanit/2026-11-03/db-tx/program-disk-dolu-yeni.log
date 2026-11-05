@@ -1,0 +1,9 @@
+(node:13785) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+WAL 2352552 B → yumuşak sınır 2353576 B
+1) sınır altındayken büyük yazım: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+2) sınır kaldırıldı (yer açıldı)
+3) sonraki küçük yazım: 200 {"ok":true,"data":{"id":"account-3e47e1f4-a222-4e2d-a33f-42e843eecc2f","refNo":"6","type":"customer","name":"Sonraki Küçük Cari","phone":"","email":"","address":"","registeredOn":"2026-11-03","groupId
+4) Kasa girişi: 200 {"ok":true,"data":{"id":"cash-3c3e2e20-5a25-4c46-bea0-763cecf59792"}}
+store.inTransaction=false; db.isTransaction=false
+5) boş store.tx: geçti

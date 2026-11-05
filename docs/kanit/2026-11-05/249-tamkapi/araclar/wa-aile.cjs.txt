@@ -1,0 +1,73 @@
+// WhatsApp kâhini program sürücüsü karşılaştırma dosyalarını aile adıyla sınıflar ve eski koşuyla karşılaştırır.
+// Kullanım: node wa-aile.cjs <yeni karsilastirma.json> [<eski karsilastirma.json> <eski etiket>]…
+// Aile: davranış farkı satırının yolu, kimlikler normalleştirilmiş (K1→K*, T2→T*, W1→W*, isler.T1/A→isler.T*/*, tarih anahtarı → <ay>); gösterim farkları sürücünün kendi "siniflar" adıyla.
+const fs = require("fs");
+const yukle = f => JSON.parse(fs.readFileSync(f, "utf8"));
+const aile = satir => {
+  const yol = satir.split(":")[0];
+  return yol
+    .replace(/\bisler\.[A-Z]\d+\/[^.]+/g, "isler.T*/*")
+    .replace(/\b(K|T|W|S|Y)\d+\b/g, "$1*")
+    .replace(/\.\d{4}-\d{2}(-\d{2})?/g, ".<tarih>")
+    .replace(/\.(Teslim Edildi|Sonucu Belirsiz|Duraklatıldı|Atlandı|Başarısız|Okundu|Gönderildi|Süresi Doldu|Sınır Nedeniyle Bekliyor|Kuyrukta|İptal Edildi|Meta Bekletti)\b/g, ".<durum>")
+    .replace(/\.(elenen|post|kabul|meta_ileti|medya_yukleme|medya_silme)\.[A-Za-zÇĞİÖŞÜçğıöşü0-9]+$/u, ".$1.<kişi>")
+    .replace(/\b(elenen\.T\*)\.[A-Za-z0-9]+$/, "$1.<kişi>");
+};
+const anahtar = s => s.ad + " [" + s.uc + "]";
+function ozet(dosya) {
+  const j = yukle(dosya);
+  const m = new Map();
+  for (const s of j) m.set(anahtar(s), s);
+  const sayi = { senaryo: j.length, tam: 0, gosterim: 0, davranis: 0 };
+  const aileler = {}; // aile -> {senaryo:Set, satir:n}
+  const gosterim = {}; // sınıf -> {senaryo:Set, satir:n}
+  for (const s of j) {
+    const df = s.davranis_farki || [];
+    const ff = s.farklar || [];
+    if (!ff.length) sayi.tam++;
+    else if (!df.length) sayi.gosterim++;
+    else sayi.davranis++;
+    for (const d of df) { const a = aile(d); (aileler[a] ||= { senaryo: new Set(), satir: 0 }).senaryo.add(anahtar(s)); aileler[a].satir++; }
+    for (const [k, v] of Object.entries(s.siniflar || {})) { (gosterim[k] ||= { senaryo: new Set(), satir: 0 }).senaryo.add(anahtar(s)); gosterim[k].satir += v.length; }
+  }
+  return { m, sayi, aileler, gosterim };
+}
+const [yeniF, ...eskiler] = process.argv.slice(2);
+const Y = ozet(yeniF);
+console.log(`# ${yeniF}`);
+console.log(`senaryo×uç ${Y.sayi.senaryo}; tam eşit ${Y.sayi.tam}; yalnız gösterim ${Y.sayi.gosterim}; davranış farkı ${Y.sayi.davranis}`);
+console.log(`## gösterim sınıfları (sürücünün): ` + Object.entries(Y.gosterim).map(([k, v]) => `${k} ${v.senaryo.size} senaryo/${v.satir} satır`).join("; "));
+console.log(`## davranış farkı aileleri (${Object.keys(Y.aileler).length}):`);
+for (const [k, v] of Object.entries(Y.aileler).sort((a, b) => b[1].senaryo.size - a[1].senaryo.size)) console.log(`  ${k}: ${v.senaryo.size} senaryo, ${v.satir} satır`);
+for (let i = 0; i < eskiler.length; i += 2) {
+  const E = ozet(eskiler[i]);
+  const et = eskiler[i + 1] || eskiler[i];
+  console.log(`\n## KARŞILAŞTIRMA ↔ ${et} (${eskiler[i]})`);
+  console.log(`eski: senaryo×uç ${E.sayi.senaryo}; tam ${E.sayi.tam}; gösterim ${E.sayi.gosterim}; davranış ${E.sayi.davranis}`);
+  const yeniAile = Object.keys(Y.aileler).filter(a => !E.aileler[a]);
+  const gidenAile = Object.keys(E.aileler).filter(a => !Y.aileler[a]);
+  console.log(`YENİ aile (eskide yok): ${yeniAile.length ? yeniAile.join(" | ") : "YOK"}`);
+  console.log(`KALKAN aile (yenide yok): ${gidenAile.length ? gidenAile.join(" | ") : "YOK"}`);
+  const yeniG = Object.keys(Y.gosterim).filter(a => !E.gosterim[a]);
+  console.log(`YENİ gösterim sınıfı: ${yeniG.length ? yeniG.join(" | ") : "YOK"}`);
+  let ayni = 0, degisen = [], yalnizYeni = [], yalnizEski = [];
+  for (const [k, s] of Y.m) {
+    const e = E.m.get(k);
+    if (!e) { yalnizYeni.push(k + ((s.davranis_farki || []).length ? ` (davranış ${s.davranis_farki.length}: ${[...new Set(s.davranis_farki.map(aile))].join(", ")})` : (s.farklar || []).length ? " (yalnız gösterim)" : " (tam)")); continue; }
+    const a = JSON.stringify([...(s.davranis_farki || [])].sort());
+    const b = JSON.stringify([...(e.davranis_farki || [])].sort());
+    if (a === b) ayni++;
+    else degisen.push({ k, yeni: s.davranis_farki || [], eski: e.davranis_farki || [] });
+  }
+  for (const k of E.m.keys()) if (!Y.m.has(k)) yalnizEski.push(k);
+  console.log(`ortak senaryo×uç ${Y.m.size - yalnizYeni.length}: davranış farkı listesi AYNI ${ayni}, DEĞİŞEN ${degisen.length}`);
+  for (const d of degisen) {
+    const ekl = d.yeni.filter(x => !d.eski.includes(x));
+    const cik = d.eski.filter(x => !d.yeni.includes(x));
+    console.log(`  DEĞİŞEN ${d.k}: +${ekl.length} −${cik.length}`);
+    for (const x of ekl) console.log(`     + ${x.slice(0, 260)}`);
+    for (const x of cik) console.log(`     − ${x.slice(0, 260)}`);
+  }
+  console.log(`yalnız yenide (${yalnizYeni.length}): ${yalnizYeni.join("; ")}`);
+  console.log(`yalnız eskide (${yalnizEski.length}): ${yalnizEski.join("; ")}`);
+}

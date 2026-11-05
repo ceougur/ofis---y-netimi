@@ -342,14 +342,26 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
     // o carinin tahsilat ve ödemeleri de kişinin geçmişinde görünür ve Toplam Tahsilat'a girer (önceden geçmişte yalnız not görünüyordu).
     // Bağ /cases/:key/account ile aynı kuralla (açık veri oturumu) bulunur; Cari Görüntüleme yetkisi olmayana gösterilmez.
     const linkedAccount = canUser(user, "accounts.view") ? store.get("SELECT id, ref_no AS refNo, name FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ? ORDER BY created_at LIMIT 1", key, dataset.currentKey()) : null;
+    // 2.4.9 UI tur A (ORTA-1): "Kredi Kartına İade" satırı (giriş + kart yolu + bağı bir Kredi Kartı hesabı; cari kartındaki cardRefund işaretiyle aynı
+    // tanım) geçmişte "POS" değil "Kredi Kartına İade" yazsın. Kart hesapları bir kez okunur (yalnız kart yollu giriş varsa).
+    let cardIds = null;
+    const cardAccountIds = () => {
+      if (cardIds) return cardIds;
+      try {
+        cardIds = new Set(store.all("SELECT id FROM bank_accounts WHERE kind = 'card'").map(row => row.id));
+      } catch {
+        cardIds = new Set(); // banka tabloları yoksa (göç öncesi veri)
+      }
+      return cardIds;
+    };
     const accountEntries = linkedAccount
       ? store
           .all(
-            `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.created_by AS actorId, e.created_at AS createdAt, e.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName
+            `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.fin_ref AS finRef, e.receipt_no AS receiptNo, e.created_by AS actorId, e.created_at AS createdAt, e.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName
              FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? AND e.kind IN ('in', 'out')`,
             linkedAccount.id,
           )
-          .map(entry => ({ ...entry, type: "account-entry", accountId: linkedAccount.id, accountRefNo: linkedAccount.refNo || "", accountName: linkedAccount.name }))
+          .map(({ finRef, ...entry }) => ({ ...entry, ...(entry.kind === "in" && entry.method === "card" && cardAccountIds().has(finRef) ? { cardRefund: true } : {}), type: "account-entry", accountId: linkedAccount.id, accountRefNo: linkedAccount.refNo || "", accountName: linkedAccount.name }))
       : [];
     const items = [
       // 2.3.0 İz 5.6: not / telefon / haciz satırları düzeltilip silinebilir; düzeltme izi (updatedAt, updatedByName) tahsilattaki gibi.

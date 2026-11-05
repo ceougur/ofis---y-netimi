@@ -1,0 +1,32 @@
+{
+  "ad": "r2/esitlik/karsilastir-cesit-Istanbul",
+  "komut": "node test/r2-249/esitlik-karsilastir.mjs /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/esitlik/eski-cesit-Europe_Istanbul.json /tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/r2-249-aa56/esitlik/yeni-cesit-Europe_Istanbul.json",
+  "commit": "7839d2a7c0dfd4f8e9fbfcb1eb833e28dac87ac4",
+  "dal": "worktree-agent-aa56c65749221d09d",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T21:38:24.861Z",
+  "sure_sn": 0.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-03/r2/esitlik/karsilastir-cesit-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa56c65749221d09d",
+  "ham_cikti_sha256": "3631b1f7f23c9f00b3c63aab290d578d9ddd6edb168335f6c2368734f679d472",
+  "ham_cikti_bayt": 1530
+}

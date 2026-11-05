@@ -1,0 +1,640 @@
+# docs/kanit/2026-11-05/249-tamkapi/wa-surucu/karsilastirma-imzali-ikisi-UTC.json
+senaryo×uç 584; tam eşit 44; yalnız gösterim 384; davranış farkı 156
+## gösterim sınıfları (sürücünün): G1-borclu-eki 516 senaryo/954 satır; G2-toplu-gosterim 20 senaryo/52 satır; G3-gonderilmeyen-icerik 22 senaryo/120 satır; G4-liste-icinde-ozel-yaprak 54 senaryo/84 satır
+## davranış farkı aileleri (60):
+  kontroller.K*.pencere_farkli_alici.W*: 48 senaryo, 52 satır
+  meta.toplam_kabul_program: 42 senaryo, 42 satır
+  isler.T*/*.pdf.donem_bas: 36 senaryo, 58 satır
+  isler.T*/*.pdf.donem_son: 36 senaryo, 58 satır
+  meta.kabul.<kişi>: 32 senaryo, 36 satır
+  durum_sayilari.<durum>: 30 senaryo, 30 satır
+  meta.post.<kişi>: 30 senaryo, 34 satır
+  meta.meta_ileti.<kişi>: 30 senaryo, 34 satır
+  meta.medya_silme.<kişi>: 26 senaryo, 30 satır
+  meta.toplam_post: 26 senaryo, 26 satır
+  meta.toplam_meta_ileti: 26 senaryo, 26 satır
+  kontroller.K*.isler.T*/*: 26 senaryo, 52 satır
+  meta.medya_yukleme.<kişi>: 24 senaryo, 28 satır
+  kontroller.K*.toplam_kabul: 24 senaryo, 34 satır
+  meta.toplam_medya_yukleme: 20 senaryo, 20 satır
+  kontroller.K*.durum_sayilari.<durum>: 20 senaryo, 22 satır
+  olusmadi: 20 senaryo, 20 satır
+  toplular.T*: 18 senaryo, 18 satır
+  isler.T*/*: 18 senaryo, 22 satır
+  bu_ay.W*.<tarih>.teslim: 18 senaryo, 18 satır
+  bu_ay.W*.<tarih>.yaklasik_usd: 18 senaryo, 18 satır
+  kontroller.K*.medya_silme: 16 senaryo, 18 satır
+  bu_ay.W*: 14 senaryo, 14 satır
+  elenen.T*: 14 senaryo, 14 satır
+  kontroller.K*.toplular.T*: 12 senaryo, 18 satır
+  kontroller.K*.toplam_post: 12 senaryo, 12 satır
+  onceki_uyari.T*: 10 senaryo, 10 satır
+  isler.T*/*.durum: 8 senaryo, 8 satır
+  isler.T*/*.degiskenler: 6 senaryo, 6 satır
+  isler.T*/*.pdf.hareket_sayisi: 6 senaryo, 6 satır
+  isler.T*/*.pdf.donem_sonu_bakiye: 6 senaryo, 6 satır
+  isler.T*/*.medya_silme: 6 senaryo, 6 satır
+  isler.T*/*.kabul: 6 senaryo, 6 satır
+  kontroller.K*.durum_sayilari.Atlandı: 6 senaryo, 8 satır
+  kontroller.K*.durum_sayilari.Bekliyor: 4 senaryo, 6 satır
+  baslamadi.T*: 4 senaryo, 6 satır
+  listeler.L1.etiketler: 4 senaryo, 4 satır
+  listeler.L2.etiketler: 4 senaryo, 4 satır
+  listeler.L3.etiketler: 4 senaryo, 4 satır
+  yeniden.Y*.oneri: 4 senaryo, 4 satır
+  isler.T*/*.hata_kodu: 4 senaryo, 4 satır
+  isler.T*/*.post: 4 senaryo, 4 satır
+  isler.T*/*.meta_ileti: 4 senaryo, 4 satır
+  isler.T*/*.pdf.cari_ad: 2 senaryo, 2 satır
+  isler.T*/*.dosya_adi.on_ek: 2 senaryo, 2 satır
+  onceki_uyari.T*.son: 2 senaryo, 2 satır
+  listeler.L1.daha_fazla: 2 senaryo, 2 satır
+  yeniden.Y*.elenen.<kişi>: 2 senaryo, 2 satır
+  yeniden.Y*.alinan: 2 senaryo, 2 satır
+  bu_ay.W*.<tarih>: 2 senaryo, 2 satır
+  durum_sayilari.Durduruldu (Geri Yükleme): 2 senaryo, 2 satır
+  kontroller.K*.durum_sayilari.Durduruldu (Geri Yükleme): 2 senaryo, 2 satır
+  isler.T*/*.pdf.devir: 2 senaryo, 2 satır
+  durum_sayilari: 2 senaryo, 2 satır
+  elenen.T*.<kişi>: 2 senaryo, 2 satır
+  kontroller.K*.durum_sayilari.Duraklatıldı: 2 senaryo, 2 satır
+  kanca_yanitlari.503: 2 senaryo, 2 satır
+  durum_sayilari.Atlandı: 2 senaryo, 2 satır
+  isler.T*/*.atlanma_nedeni: 2 senaryo, 2 satır
+  isler.T*/*.medya_yukleme: 2 senaryo, 2 satır
+
+## KARŞILAŞTIRMA ↔ 2.4.8 t1r UTC (9ef34b6e) (docs/kanit/2026-11-01/248-t1r/karsilastirma-imzali-ikisi-UTC.json)
+eski: senaryo×uç 568; tam 44; gösterim 368; davranış 156
+YENİ aile (eskide yok): YOK
+KALKAN aile (yenide yok): kanca_yanitlari.200 | isler.T*/*.telefon | isler.T*/*.pdf | isler.T*/*.dosya_adi
+YENİ gösterim sınıfı: YOK
+ortak senaryo×uç 568: davranış farkı listesi AYNI 540, DEĞİŞEN 28
+  DEĞİŞEN CIFT-16-daha-once-suresi-doldu [hizli]: +0 −18
+     − olusmadi: beklenen [], program ['T2']
+     − toplular.T2: beklenen nesne, program '<YOK>'
+     − durum_sayilari.Süresi Doldu: beklenen 2, program '<YOK>'
+     − meta.post.A: beklenen 2, program 1
+     − meta.kabul.A: beklenen 2, program 1
+     − meta.meta_ileti.A: beklenen 2, program 1
+     − meta.medya_yukleme.A: beklenen 2, program 1
+     − meta.medya_silme.A: beklenen 2, program 0
+     − meta.toplam_post: beklenen 2, program 1
+     − meta.toplam_kabul_program: beklenen 2, program 1
+     − meta.toplam_meta_ileti: beklenen 2, program 1
+     − meta.toplam_medya_yukleme: beklenen 2, program 1
+     − kontroller.K1.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K1.medya_silme: beklenen 1, program 0
+     − kontroller.K1.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+     − isler.T2/A: beklenen nesne, program '<YOK>'
+  DEĞİŞEN CIFT-16-daha-once-suresi-doldu [yavas]: +0 −18
+     − olusmadi: beklenen [], program ['T2']
+     − toplular.T2: beklenen nesne, program '<YOK>'
+     − durum_sayilari.Süresi Doldu: beklenen 2, program '<YOK>'
+     − meta.post.A: beklenen 2, program 1
+     − meta.kabul.A: beklenen 2, program 1
+     − meta.meta_ileti.A: beklenen 2, program 1
+     − meta.medya_yukleme.A: beklenen 2, program 1
+     − meta.medya_silme.A: beklenen 2, program 0
+     − meta.toplam_post: beklenen 2, program 1
+     − meta.toplam_kabul_program: beklenen 2, program 1
+     − meta.toplam_meta_ileti: beklenen 2, program 1
+     − meta.toplam_medya_yukleme: beklenen 2, program 1
+     − kontroller.K1.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K1.medya_silme: beklenen 1, program 0
+     − kontroller.K1.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+     − isler.T2/A: beklenen nesne, program '<YOK>'
+  DEĞİŞEN ICERIK-10-ttl-sonrasi-teslim [hizli]: +1 −3
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  DEĞİŞEN ICERIK-10-ttl-sonrasi-teslim [yavas]: +1 −3
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  DEĞİŞEN GUV-09-sahte-gercek-wamid [hizli]: +4 −2
+     + durum_sayilari.Gönderildi: beklenen 1, program '<YOK>'
+     + meta.medya_silme.A: beklenen 0, program 1
+     + isler.T1/A.durum: beklenen 'Gönderildi', program 'Teslim Edildi'
+     + isler.T1/A.medya_silme: beklenen 0, program 1
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Teslim Edildi'
+  DEĞİŞEN GUV-09-sahte-gercek-wamid [yavas]: +4 −2
+     + durum_sayilari.Gönderildi: beklenen 1, program '<YOK>'
+     + meta.medya_silme.A: beklenen 0, program 1
+     + isler.T1/A.durum: beklenen 'Gönderildi', program 'Teslim Edildi'
+     + isler.T1/A.medya_silme: beklenen 0, program 1
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Teslim Edildi'
+  DEĞİŞEN TARIH-02-ttl-sonu [hizli]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN TARIH-02-ttl-sonu [yavas]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN TARIH-03b-kancasiz-yol-calisiyor [hizli]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 1
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 2, program 1
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Meta Kabul Etti'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Meta Kabul Etti'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN TARIH-03b-kancasiz-yol-calisiyor [yavas]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 2, program 1
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 2, program 1
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Meta Kabul Etti'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Meta Kabul Etti'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J1-02-suresi-doldu-sonra-teslim-daha-once [hizli]: +0 −3
+     − kontroller.K1.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K1.medya_silme: beklenen 2, program 1
+     − kontroller.K1.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  DEĞİŞEN J1-02-suresi-doldu-sonra-teslim-daha-once [yavas]: +0 −3
+     − kontroller.K1.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K1.medya_silme: beklenen 2, program 1
+     − kontroller.K1.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+  DEĞİŞEN J1-03-silinmis-sirket-gec-bildirim [hizli]: +1 −0
+     + kontroller.K1.pencere_farkli_alici.W1: beklenen 3, program 2
+  DEĞİŞEN J1-03-silinmis-sirket-gec-bildirim [yavas]: +1 −0
+     + kontroller.K1.pencere_farkli_alici.W1: beklenen 3, program 2
+  DEĞİŞEN J4-01-suresi-doldu-son-kabulden-meta-bekletti [hizli]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 2, program 1
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J4-01-suresi-doldu-son-kabulden-meta-bekletti [yavas]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 2, program 1
+     − kontroller.K2.isler.T1/A: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J4-02-suresi-doldu-son-kabulden-yine-de-gonder [hizli]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.B: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 2, program 1
+     − kontroller.K2.isler.T1/B: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/B.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/B.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J4-02-suresi-doldu-son-kabulden-yine-de-gonder [yavas]: +1 −7
+     + kontroller.K2.pencere_farkli_alici.W1: beklenen 1, program 0
+     − durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − meta.medya_silme.B: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Süresi Doldu: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 2, program 1
+     − kontroller.K2.isler.T1/B: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/B.durum: beklenen 'Süresi Doldu', program 'Gönderildi'
+     − isler.T1/B.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J6-02-sirket-gecici-acilamaz-503 [hizli]: +0 −10
+     − durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − kontroller.K2.isler.T1/A: beklenen 'Teslim Edildi', program 'Gönderildi'
+     − bu_ay.W1: beklenen nesne, program '<YOK>'
+     − kanca_yanitlari.200: beklenen 2, program 1
+     − kanca_yanitlari.503: beklenen 1, program 2
+     − isler.T1/A.durum: beklenen 'Teslim Edildi', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J6-02-sirket-gecici-acilamaz-503 [yavas]: +0 −10
+     − durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − kontroller.K2.isler.T1/A: beklenen 'Teslim Edildi', program 'Gönderildi'
+     − bu_ay.W1: beklenen nesne, program '<YOK>'
+     − kanca_yanitlari.200: beklenen 2, program 1
+     − kanca_yanitlari.503: beklenen 1, program 2
+     − isler.T1/A.durum: beklenen 'Teslim Edildi', program 'Gönderildi'
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J6-03-bildirim-kaydedilemez-503 [hizli]: +0 −3
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J6-03-bildirim-kaydedilemez-503 [yavas]: +0 −3
+     − meta.medya_silme.A: beklenen 1, program 0
+     − kontroller.K2.medya_silme: beklenen 1, program 0
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti [hizli]: +0 −31
+     − durum_sayilari.Teslim Edildi: beklenen 2, program 1
+     − meta.post.C: beklenen 1, program 0
+     − meta.kabul.C: beklenen 1, program 0
+     − meta.meta_ileti.C: beklenen 1, program 0
+     − meta.medya_yukleme.C: beklenen 1, program 0
+     − meta.medya_silme.A: beklenen 1, program 0
+     − meta.medya_silme.C: beklenen 1, program 0
+     − meta.toplam_post: beklenen 2, program 1
+     − meta.toplam_kabul_program: beklenen 2, program 1
+     − meta.toplam_meta_ileti: beklenen 2, program 1
+     − meta.toplam_medya_yukleme: beklenen 2, program 1
+     − kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 2, program 1
+     − kontroller.K1.toplam_post: beklenen 2, program 1
+     − kontroller.K1.toplam_kabul: beklenen 2, program 1
+     − kontroller.K1.pencere_farkli_alici.W1: beklenen 2, program 1
+     − kontroller.K1.medya_silme: beklenen 2, program 0
+     − kontroller.K1.isler.T3/C: beklenen 'Teslim Edildi', program 'Bekliyor'
+     − bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+     − bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+     − kanca_yanitlari.200: beklenen 4, program 2
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+     − isler.T3/C.durum: beklenen 'Teslim Edildi', program 'Bekliyor'
+     − isler.T3/C.telefon: beklenen '+905343334455', program None
+     − isler.T3/C.degiskenler: beklenen ['Zeynep Demir', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '0,00 TL'], program None
+     − isler.T3/C.pdf: beklenen nesne, program None
+     − isler.T3/C.dosya_adi: beklenen nesne, program None
+     − isler.T3/C.post: beklenen 1, program 0
+     − isler.T3/C.kabul: beklenen 1, program 0
+     − isler.T3/C.meta_ileti: beklenen 1, program 0
+     − isler.T3/C.medya_yukleme: beklenen 1, program 0
+     − isler.T3/C.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti [yavas]: +0 −31
+     − durum_sayilari.Teslim Edildi: beklenen 2, program 1
+     − meta.post.C: beklenen 1, program 0
+     − meta.kabul.C: beklenen 1, program 0
+     − meta.meta_ileti.C: beklenen 1, program 0
+     − meta.medya_yukleme.C: beklenen 1, program 0
+     − meta.medya_silme.A: beklenen 1, program 0
+     − meta.medya_silme.C: beklenen 1, program 0
+     − meta.toplam_post: beklenen 2, program 1
+     − meta.toplam_kabul_program: beklenen 2, program 1
+     − meta.toplam_meta_ileti: beklenen 2, program 1
+     − meta.toplam_medya_yukleme: beklenen 2, program 1
+     − kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 2, program 1
+     − kontroller.K1.toplam_post: beklenen 2, program 1
+     − kontroller.K1.toplam_kabul: beklenen 2, program 1
+     − kontroller.K1.pencere_farkli_alici.W1: beklenen 2, program 1
+     − kontroller.K1.medya_silme: beklenen 2, program 0
+     − kontroller.K1.isler.T3/C: beklenen 'Teslim Edildi', program 'Bekliyor'
+     − bu_ay.W1.2026-10.teslim: beklenen 2, program 1
+     − bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0018', program '0.0009'
+     − kanca_yanitlari.200: beklenen 4, program 2
+     − isler.T1/A.medya_silme: beklenen 1, program 0
+     − isler.T3/C.durum: beklenen 'Teslim Edildi', program 'Bekliyor'
+     − isler.T3/C.telefon: beklenen '+905343334455', program None
+     − isler.T3/C.degiskenler: beklenen ['Zeynep Demir', 'Deneme Ticaret Ltd. Şti.', '01.10.2026 – 31.10.2026', '0,00 TL'], program None
+     − isler.T3/C.pdf: beklenen nesne, program None
+     − isler.T3/C.dosya_adi: beklenen nesne, program None
+     − isler.T3/C.post: beklenen 1, program 0
+     − isler.T3/C.kabul: beklenen 1, program 0
+     − isler.T3/C.meta_ileti: beklenen 1, program 0
+     − isler.T3/C.medya_yukleme: beklenen 1, program 0
+     − isler.T3/C.medya_silme: beklenen 1, program 0
+  DEĞİŞEN J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez [hizli]: +0 −1
+     − isler.T1/B.telefon: beklenen '+905332223344', program None
+  DEĞİŞEN J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez [yavas]: +0 −1
+     − isler.T1/B.telefon: beklenen '+905332223344', program None
+  DEĞİŞEN J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez [hizli]: +0 −1
+     − isler.T1/B.telefon: beklenen '+905332223344', program None
+  DEĞİŞEN J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez [yavas]: +0 −1
+     − isler.T1/B.telefon: beklenen '+905332223344', program None
+yalnız yenide (16): W1-01-varsayilan-30-gun-eski-72-sa-okunmaz [hizli] (yalnız gösterim); W1-01-varsayilan-30-gun-eski-72-sa-okunmaz [yavas] (yalnız gösterim); W1-02-30-gun-dolmadan-daha-once-yine-de-gonder [hizli] (yalnız gösterim); W1-02-30-gun-dolmadan-daha-once-yine-de-gonder [yavas] (yalnız gösterim); W1-03-meta-bildirir-12-sa-sablon-basina [hizli] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W1-03-meta-bildirir-12-sa-sablon-basina [yavas] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W1-04-ay-sonu-12-sa-gec-teslim [hizli] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W1-04-ay-sonu-12-sa-gec-teslim [yavas] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W1-05-varsayilan-30-gun-meta-bekletti-son-kabulden [hizli] (yalnız gösterim); W1-05-varsayilan-30-gun-meta-bekletti-son-kabulden [yavas] (yalnız gösterim); W2-01-kabulde-bilinmiyor-sonra-12-sa [hizli] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W2-01-kabulde-bilinmiyor-sonra-12-sa [yavas] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W2-02-kabulde-30-gun-sonra-12-sa-kisalir [hizli] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W2-02-kabulde-30-gun-sonra-12-sa-kisalir [yavas] (davranış 1: kontroller.K*.pencere_farkli_alici.W*); W3-01-kabulde-12-sa-sonra-30-gun-uzar [hizli] (yalnız gösterim); W3-01-kabulde-12-sa-sonra-30-gun-uzar [yavas] (yalnız gösterim)
+yalnız eskide (0): 
+
+## KARŞILAŞTIRMA ↔ 2.4.9 aynı koşu İstanbul (docs/kanit/2026-11-05/249-tamkapi/wa-surucu/karsilastirma-imzali-ikisi-Europe-Istanbul.json)
+eski: senaryo×uç 584; tam 50; gösterim 398; davranış 136
+YENİ aile (eskide yok): onceki_uyari.T*.son | listeler.L1.etiketler | listeler.L2.etiketler | listeler.L3.etiketler | listeler.L1.daha_fazla | yeniden.Y*.alinan
+KALKAN aile (yenide yok): YOK
+YENİ gösterim sınıfı: YOK
+ortak senaryo×uç 584: davranış farkı listesi AYNI 562, DEĞİŞEN 22
+  DEĞİŞEN K1-04-zaten-kuyrukta-ay-donumu [hizli]: +19 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + durum_sayilari.Teslim Edildi: beklenen 2, program 3
+     + meta.post.B: beklenen 1, program 2
+     + meta.kabul.B: beklenen 1, program 2
+     + meta.meta_ileti.B: beklenen 1, program 2
+     + meta.medya_yukleme.B: beklenen 1, program 2
+     + meta.medya_silme.B: beklenen 1, program 2
+     + meta.toplam_post: beklenen 2, program 3
+     + meta.toplam_kabul_program: beklenen 2, program 3
+     + meta.toplam_meta_ileti: beklenen 2, program 3
+     + meta.toplam_medya_yukleme: beklenen 2, program 3
+     + kontroller.K1.durum_sayilari.Sınır Nedeniyle Bekliyor: beklenen 1, program 2
+     + kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 2, program 3
+     + kontroller.K2.toplam_post: beklenen 2, program 3
+     + kontroller.K2.toplam_kabul: beklenen 2, program 3
+     + kontroller.K2.medya_silme: beklenen 2, program 3
+     + bu_ay.W1.2026-11.teslim: beklenen 1, program 2
+     + bu_ay.W1.2026-11.yaklasik_usd: beklenen '0.0009', program '0.0018'
+  DEĞİŞEN K1-04-zaten-kuyrukta-ay-donumu [yavas]: +19 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + durum_sayilari.Teslim Edildi: beklenen 2, program 3
+     + meta.post.B: beklenen 1, program 2
+     + meta.kabul.B: beklenen 1, program 2
+     + meta.meta_ileti.B: beklenen 1, program 2
+     + meta.medya_yukleme.B: beklenen 1, program 2
+     + meta.medya_silme.B: beklenen 1, program 2
+     + meta.toplam_post: beklenen 2, program 3
+     + meta.toplam_kabul_program: beklenen 2, program 3
+     + meta.toplam_meta_ileti: beklenen 2, program 3
+     + meta.toplam_medya_yukleme: beklenen 2, program 3
+     + kontroller.K1.durum_sayilari.Sınır Nedeniyle Bekliyor: beklenen 1, program 2
+     + kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 2, program 3
+     + kontroller.K2.toplam_post: beklenen 2, program 3
+     + kontroller.K2.toplam_kabul: beklenen 2, program 3
+     + kontroller.K2.medya_silme: beklenen 2, program 3
+     + bu_ay.W1.2026-11.teslim: beklenen 1, program 2
+     + bu_ay.W1.2026-11.yaklasik_usd: beklenen '0.0009', program '0.0018'
+  DEĞİŞEN K1-07-hatirlatma-ayni-yerel-gun [hizli]: +18 −0
+     + olusmadi: beklenen ['T2'], program ['T2', 'T3']
+     + onceki_uyari.T4.son: beklenen '2026-10-31', program '2026-10-30'
+     + toplular.T3: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 3, program 2
+     + meta.post.H: beklenen 3, program 2
+     + meta.kabul.H: beklenen 3, program 2
+     + meta.meta_ileti.H: beklenen 3, program 2
+     + meta.toplam_post: beklenen 3, program 2
+     + meta.toplam_kabul_program: beklenen 3, program 2
+     + meta.toplam_meta_ileti: beklenen 3, program 2
+     + kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 3, program 2
+     + kontroller.K1.toplam_post: beklenen 3, program 2
+     + kontroller.K1.toplam_kabul: beklenen 3, program 2
+     + kontroller.K1.toplular.T3: beklenen 'aktif', program '<YOK>'
+     + kontroller.K1.isler.T3/H: beklenen 'Teslim Edildi', program '<YOK>'
+     + bu_ay.W1.2026-10.teslim: beklenen 3, program 2
+     + bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0027', program '0.0018'
+     + isler.T3/H: beklenen nesne, program '<YOK>'
+  DEĞİŞEN K1-07-hatirlatma-ayni-yerel-gun [yavas]: +18 −0
+     + olusmadi: beklenen ['T2'], program ['T2', 'T3']
+     + onceki_uyari.T4.son: beklenen '2026-10-31', program '2026-10-30'
+     + toplular.T3: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 3, program 2
+     + meta.post.H: beklenen 3, program 2
+     + meta.kabul.H: beklenen 3, program 2
+     + meta.meta_ileti.H: beklenen 3, program 2
+     + meta.toplam_post: beklenen 3, program 2
+     + meta.toplam_kabul_program: beklenen 3, program 2
+     + meta.toplam_meta_ileti: beklenen 3, program 2
+     + kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 3, program 2
+     + kontroller.K1.toplam_post: beklenen 3, program 2
+     + kontroller.K1.toplam_kabul: beklenen 3, program 2
+     + kontroller.K1.toplular.T3: beklenen 'aktif', program '<YOK>'
+     + kontroller.K1.isler.T3/H: beklenen 'Teslim Edildi', program '<YOK>'
+     + bu_ay.W1.2026-10.teslim: beklenen 3, program 2
+     + bu_ay.W1.2026-10.yaklasik_usd: beklenen '0.0027', program '0.0018'
+     + isler.T3/H: beklenen nesne, program '<YOK>'
+  DEĞİŞEN K8-02-tarih-suzgeci-yerel-gun [hizli]: +3 −0
+     + listeler.L1.etiketler: beklenen ['T4', 'T3', 'T2'], program ['T5', 'T4', 'T3']
+     + listeler.L2.etiketler: beklenen ['T4', 'T3', 'T2', 'T1'], program ['T5', 'T4', 'T3', 'T2', 'T1']
+     + listeler.L3.etiketler: beklenen ['T5'], program []
+  DEĞİŞEN K8-02-tarih-suzgeci-yerel-gun [yavas]: +3 −0
+     + listeler.L1.etiketler: beklenen ['T4', 'T3', 'T2'], program ['T5', 'T4', 'T3']
+     + listeler.L2.etiketler: beklenen ['T4', 'T3', 'T2', 'T1'], program ['T5', 'T4', 'T3', 'T2', 'T1']
+     + listeler.L3.etiketler: beklenen ['T5'], program []
+  DEĞİŞEN K8-03-suzgec-ile-sayfalama [hizli]: +4 −0
+     + listeler.L1.etiketler: beklenen ['T33', 'T32', 'T31', 'T30', 'T29', 'T28', 'T27', 'T26', 'T25', 'T24', 'T23', 'T22', 'T21', 'T20', 'T19', 'T18', 'T17', 'T16', 'T15', 'T14', 'T13', 'T12', 'T11', 'T10', 'T09', 'T08', 'T07', 'T06', 'T05', 'T04'], program ['T35', 
+     + listeler.L1.daha_fazla: beklenen True, program False
+     + listeler.L2.etiketler: beklenen ['T03', 'T02', 'T01'], program []
+     + listeler.L3.etiketler: beklenen ['T35', 'T34'], program []
+  DEĞİŞEN K8-03-suzgec-ile-sayfalama [yavas]: +4 −0
+     + listeler.L1.etiketler: beklenen ['T33', 'T32', 'T31', 'T30', 'T29', 'T28', 'T27', 'T26', 'T25', 'T24', 'T23', 'T22', 'T21', 'T20', 'T19', 'T18', 'T17', 'T16', 'T15', 'T14', 'T13', 'T12', 'T11', 'T10', 'T09', 'T08', 'T07', 'T06', 'T05', 'T04'], program ['T35', 
+     + listeler.L1.daha_fazla: beklenen True, program False
+     + listeler.L2.etiketler: beklenen ['T03', 'T02', 'T01'], program []
+     + listeler.L3.etiketler: beklenen ['T35', 'T34'], program []
+  DEĞİŞEN D4-03-yil-donumu-ozel-aralik-zaten-kuyrukta [hizli]: +15 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + durum_sayilari.Teslim Edildi: beklenen 2, program 3
+     + meta.post.B: beklenen 1, program 2
+     + meta.kabul.B: beklenen 1, program 2
+     + meta.meta_ileti.B: beklenen 1, program 2
+     + meta.medya_yukleme.B: beklenen 1, program 2
+     + meta.medya_silme.B: beklenen 1, program 2
+     + meta.toplam_post: beklenen 2, program 3
+     + meta.toplam_kabul_program: beklenen 2, program 3
+     + meta.toplam_meta_ileti: beklenen 2, program 3
+     + meta.toplam_medya_yukleme: beklenen 2, program 3
+     + kontroller.K1.durum_sayilari.Sınır Nedeniyle Bekliyor: beklenen 1, program 2
+     + bu_ay.W1.2027-01.teslim: beklenen 1, program 2
+     + bu_ay.W1.2027-01.yaklasik_usd: beklenen '0.0009', program '0.0018'
+  DEĞİŞEN D4-03-yil-donumu-ozel-aralik-zaten-kuyrukta [yavas]: +15 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + durum_sayilari.Teslim Edildi: beklenen 2, program 3
+     + meta.post.B: beklenen 1, program 2
+     + meta.kabul.B: beklenen 1, program 2
+     + meta.meta_ileti.B: beklenen 1, program 2
+     + meta.medya_yukleme.B: beklenen 1, program 2
+     + meta.medya_silme.B: beklenen 1, program 2
+     + meta.toplam_post: beklenen 2, program 3
+     + meta.toplam_kabul_program: beklenen 2, program 3
+     + meta.toplam_meta_ileti: beklenen 2, program 3
+     + meta.toplam_medya_yukleme: beklenen 2, program 3
+     + kontroller.K1.durum_sayilari.Sınır Nedeniyle Bekliyor: beklenen 1, program 2
+     + bu_ay.W1.2027-01.teslim: beklenen 1, program 2
+     + bu_ay.W1.2027-01.yaklasik_usd: beklenen '0.0009', program '0.0018'
+  DEĞİŞEN D7-02-geri-yukleme-ay-donumu-defterdeki-kabul [hizli]: +7 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + onceki_uyari.T2: beklenen nesne, program '<YOK>'
+     + meta.toplam_post: beklenen 1, program 2
+     + meta.toplam_kabul_program: beklenen 1, program 2
+     + meta.toplam_meta_ileti: beklenen 1, program 2
+     + meta.toplam_medya_yukleme: beklenen 1, program 2
+  DEĞİŞEN D7-02-geri-yukleme-ay-donumu-defterdeki-kabul [yavas]: +7 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + onceki_uyari.T2: beklenen nesne, program '<YOK>'
+     + meta.toplam_post: beklenen 1, program 2
+     + meta.toplam_kabul_program: beklenen 1, program 2
+     + meta.toplam_meta_ileti: beklenen 1, program 2
+     + meta.toplam_medya_yukleme: beklenen 1, program 2
+  DEĞİŞEN E3-01-hatirlatma-belirsiz-ayni-yerel-gun [hizli]: +16 −0
+     + olusmadi: beklenen ['T2'], program ['T2', 'T3']
+     + toplular.T3: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + meta.post.H: beklenen 2, program 1
+     + meta.kabul.H: beklenen 1, program 0
+     + meta.meta_ileti.H: beklenen 1, program 0
+     + meta.toplam_post: beklenen 2, program 1
+     + meta.toplam_kabul_program: beklenen 1, program 0
+     + meta.toplam_meta_ileti: beklenen 1, program 0
+     + kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + kontroller.K1.toplam_post: beklenen 2, program 1
+     + kontroller.K1.toplam_kabul: beklenen 1, program 0
+     + kontroller.K1.toplular.T3: beklenen 'aktif', program '<YOK>'
+     + kontroller.K1.isler.T3/H: beklenen 'Teslim Edildi', program '<YOK>'
+     + bu_ay.W1: beklenen nesne, program '<YOK>'
+     + isler.T3/H: beklenen nesne, program '<YOK>'
+  DEĞİŞEN E3-01-hatirlatma-belirsiz-ayni-yerel-gun [yavas]: +16 −0
+     + olusmadi: beklenen ['T2'], program ['T2', 'T3']
+     + toplular.T3: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + meta.post.H: beklenen 2, program 1
+     + meta.kabul.H: beklenen 1, program 0
+     + meta.meta_ileti.H: beklenen 1, program 0
+     + meta.toplam_post: beklenen 2, program 1
+     + meta.toplam_kabul_program: beklenen 1, program 0
+     + meta.toplam_meta_ileti: beklenen 1, program 0
+     + kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + kontroller.K1.toplam_post: beklenen 2, program 1
+     + kontroller.K1.toplam_kabul: beklenen 1, program 0
+     + kontroller.K1.toplular.T3: beklenen 'aktif', program '<YOK>'
+     + kontroller.K1.isler.T3/H: beklenen 'Teslim Edildi', program '<YOK>'
+     + bu_ay.W1: beklenen nesne, program '<YOK>'
+     + isler.T3/H: beklenen nesne, program '<YOK>'
+  DEĞİŞEN F2-01-hatirlatma-yeniden-deneme-ertesi-gun [hizli]: +19 −0
+     + durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + meta.post.H: beklenen 3, program 2
+     + meta.kabul.H: beklenen 1, program 0
+     + meta.meta_ileti.H: beklenen 1, program 0
+     + meta.toplam_post: beklenen 3, program 2
+     + meta.toplam_kabul_program: beklenen 1, program 0
+     + meta.toplam_meta_ileti: beklenen 1, program 0
+     + kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + kontroller.K1.toplam_post: beklenen 3, program 2
+     + kontroller.K1.toplam_kabul: beklenen 1, program 0
+     + kontroller.K1.isler.T1/H: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+     + bu_ay.W1: beklenen nesne, program '<YOK>'
+     + yeniden.Y3.alinan: beklenen ['H'], program []
+     + yeniden.Y3.oneri: beklenen None, program 'isteki_yine_de_gonder'
+     + isler.T1/H.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+     + isler.T1/H.hata_kodu: beklenen None, program 131026
+     + isler.T1/H.post: beklenen 3, program 2
+     + isler.T1/H.kabul: beklenen 1, program 0
+     + isler.T1/H.meta_ileti: beklenen 1, program 0
+  DEĞİŞEN F2-01-hatirlatma-yeniden-deneme-ertesi-gun [yavas]: +19 −0
+     + durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + meta.post.H: beklenen 3, program 2
+     + meta.kabul.H: beklenen 1, program 0
+     + meta.meta_ileti.H: beklenen 1, program 0
+     + meta.toplam_post: beklenen 3, program 2
+     + meta.toplam_kabul_program: beklenen 1, program 0
+     + meta.toplam_meta_ileti: beklenen 1, program 0
+     + kontroller.K1.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+     + kontroller.K1.toplam_post: beklenen 3, program 2
+     + kontroller.K1.toplam_kabul: beklenen 1, program 0
+     + kontroller.K1.isler.T1/H: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+     + bu_ay.W1: beklenen nesne, program '<YOK>'
+     + yeniden.Y3.alinan: beklenen ['H'], program []
+     + yeniden.Y3.oneri: beklenen None, program 'isteki_yine_de_gonder'
+     + isler.T1/H.durum: beklenen 'Teslim Edildi', program 'Sonucu Belirsiz'
+     + isler.T1/H.hata_kodu: beklenen None, program 131026
+     + isler.T1/H.post: beklenen 3, program 2
+     + isler.T1/H.kabul: beklenen 1, program 0
+     + isler.T1/H.meta_ileti: beklenen 1, program 0
+  DEĞİŞEN G2-03-gece-yarisi-bu-ay-yerel-gun [hizli]: +15 −0
+     + olusmadi: beklenen ['T2'], program ['T2', 'T3']
+     + toplular.T3: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 2, program 1
+     + meta.post.A: beklenen 2, program 1
+     + meta.kabul.A: beklenen 2, program 1
+     + meta.meta_ileti.A: beklenen 2, program 1
+     + meta.medya_yukleme.A: beklenen 2, program 1
+     + meta.medya_silme.A: beklenen 2, program 1
+     + meta.toplam_post: beklenen 2, program 1
+     + meta.toplam_kabul_program: beklenen 2, program 1
+     + meta.toplam_meta_ileti: beklenen 2, program 1
+     + meta.toplam_medya_yukleme: beklenen 2, program 1
+     + bu_ay.W1.2026-11.teslim: beklenen 2, program 1
+     + bu_ay.W1.2026-11.yaklasik_usd: beklenen '0.0018', program '0.0009'
+     + isler.T3/A: beklenen nesne, program '<YOK>'
+  DEĞİŞEN G2-03-gece-yarisi-bu-ay-yerel-gun [yavas]: +15 −0
+     + olusmadi: beklenen ['T2'], program ['T2', 'T3']
+     + toplular.T3: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 2, program 1
+     + meta.post.A: beklenen 2, program 1
+     + meta.kabul.A: beklenen 2, program 1
+     + meta.meta_ileti.A: beklenen 2, program 1
+     + meta.medya_yukleme.A: beklenen 2, program 1
+     + meta.medya_silme.A: beklenen 2, program 1
+     + meta.toplam_post: beklenen 2, program 1
+     + meta.toplam_kabul_program: beklenen 2, program 1
+     + meta.toplam_meta_ileti: beklenen 2, program 1
+     + meta.toplam_medya_yukleme: beklenen 2, program 1
+     + bu_ay.W1.2026-11.teslim: beklenen 2, program 1
+     + bu_ay.W1.2026-11.yaklasik_usd: beklenen '0.0018', program '0.0009'
+     + isler.T3/A: beklenen nesne, program '<YOK>'
+  DEĞİŞEN G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi [hizli]: +15 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + durum_sayilari.Teslim Edildi: beklenen 2, program 3
+     + meta.post.Y: beklenen 1, program 2
+     + meta.kabul.Y: beklenen 1, program 2
+     + meta.meta_ileti.Y: beklenen 1, program 2
+     + meta.medya_yukleme.Y: beklenen 1, program 2
+     + meta.medya_silme.Y: beklenen 1, program 2
+     + meta.toplam_post: beklenen 2, program 3
+     + meta.toplam_kabul_program: beklenen 2, program 3
+     + meta.toplam_meta_ileti: beklenen 2, program 3
+     + meta.toplam_medya_yukleme: beklenen 2, program 3
+     + kontroller.K1.durum_sayilari.Sınır Nedeniyle Bekliyor: beklenen 1, program 2
+     + bu_ay.W1.2026-11.teslim: beklenen 2, program 3
+     + bu_ay.W1.2026-11.yaklasik_usd: beklenen '0.0018', program '0.0027'
+  DEĞİŞEN G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi [yavas]: +15 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + durum_sayilari.Teslim Edildi: beklenen 2, program 3
+     + meta.post.Y: beklenen 1, program 2
+     + meta.kabul.Y: beklenen 1, program 2
+     + meta.meta_ileti.Y: beklenen 1, program 2
+     + meta.medya_yukleme.Y: beklenen 1, program 2
+     + meta.medya_silme.Y: beklenen 1, program 2
+     + meta.toplam_post: beklenen 2, program 3
+     + meta.toplam_kabul_program: beklenen 2, program 3
+     + meta.toplam_meta_ileti: beklenen 2, program 3
+     + meta.toplam_medya_yukleme: beklenen 2, program 3
+     + kontroller.K1.durum_sayilari.Sınır Nedeniyle Bekliyor: beklenen 1, program 2
+     + bu_ay.W1.2026-11.teslim: beklenen 2, program 3
+     + bu_ay.W1.2026-11.yaklasik_usd: beklenen '0.0018', program '0.0027'
+  DEĞİŞEN J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi [hizli]: +13 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + onceki_uyari.T2: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 1, program 2
+     + meta.post.Q: beklenen 1, program 2
+     + meta.kabul.Q: beklenen 1, program 2
+     + meta.meta_ileti.Q: beklenen 1, program 2
+     + meta.medya_yukleme.Q: beklenen 1, program 2
+     + meta.medya_silme.Q: beklenen 1, program 2
+     + meta.toplam_post: beklenen 1, program 2
+     + meta.toplam_kabul_program: beklenen 1, program 2
+     + meta.toplam_meta_ileti: beklenen 1, program 2
+     + meta.toplam_medya_yukleme: beklenen 1, program 2
+  DEĞİŞEN J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi [yavas]: +13 −0
+     + elenen.T2: beklenen nesne, program '<YOK>'
+     + olusmadi: beklenen ['T2'], program []
+     + onceki_uyari.T2: beklenen nesne, program '<YOK>'
+     + durum_sayilari.Teslim Edildi: beklenen 1, program 2
+     + meta.post.Q: beklenen 1, program 2
+     + meta.kabul.Q: beklenen 1, program 2
+     + meta.meta_ileti.Q: beklenen 1, program 2
+     + meta.medya_yukleme.Q: beklenen 1, program 2
+     + meta.medya_silme.Q: beklenen 1, program 2
+     + meta.toplam_post: beklenen 1, program 2
+     + meta.toplam_kabul_program: beklenen 1, program 2
+     + meta.toplam_meta_ileti: beklenen 1, program 2
+     + meta.toplam_medya_yukleme: beklenen 1, program 2
+yalnız yenide (0): 
+yalnız eskide (0): 

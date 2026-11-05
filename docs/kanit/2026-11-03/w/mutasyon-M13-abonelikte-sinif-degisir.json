@@ -1,0 +1,43 @@
+{
+  "ad": "w/mutasyon-M13-abonelikte-sinif-degisir",
+  "komut": "node --test --test-reporter=tap test/whatsapp-w4-hata100-249.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v230 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-03T19:13:00.667Z",
+  "sure_sn": 4.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 7,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.9 W-4 değişmez — hata sınıfı (kind / retry) işlemden bağımsız › 100 (alt kodsuz / 33 / 2388024) her işlemde: kind request, retry never, kod ve alt kod korunur; ileti 'Meta hata kodu 100' ile biter",
+      "konum": "test/whatsapp-w4-hata100-249.test.mjs:156:3",
+      "hata": "subscribeApp/null: kind değişmemeli · + actual - expected · + 'config' (beklenen request, gelen config)"
+    },
+    {
+      "ad": "2.4.9 W-4 değişmez — hata sınıfı (kind / retry) işlemden bağımsız › 100 dışı kodlarda başlık ve sınıf classifyMetaCode'la aynı (190, 131026, 131000, 132001, 1, bilinmeyen 987654)",
+      "konum": "test/whatsapp-w4-hata100-249.test.mjs:181:3",
+      "hata": "subscribeApp/190 · 'config' !== 'token' (beklenen token, gelen config)"
+    }
+  ],
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ac7daa9bc89dacc8b/docs/kanit/2026-11-03/w/mutasyon-M13-abonelikte-sinif-degisir.log",
+  "klasor": "/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-kod-ac7d-mut-3bb677d2",
+  "ham_cikti_sha256": "6edd4aa3ba006173497a0ab3f6633c595c6cda85a3fe20f71220a50f54bdaa96",
+  "ham_cikti_bayt": 6298
+}

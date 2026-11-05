@@ -26,7 +26,7 @@ import { e164Of, waPresetRange } from "./alici.mjs";
 import { allPeriodStartOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
-import { deliveryTtlSeconds, sendingVerdict } from "./templates.mjs";
+import { deliveryTtlRules, listedDeliveryTtl, noteDeliveryTtl, noteListing, sendingVerdict } from "./templates.mjs";
 
 export const TEMPLATE_NAMES = Object.freeze({ statement: "destekofis_ekstre", reminder: "destekofis_odeme_hatirlatma" });
 export const KIND_LABELS = Object.freeze({ statement: "Ekstre", reminder: "Ödeme Hatırlatma" });
@@ -167,11 +167,11 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       return false;
     }
   };
+  // 2.4.9 W-T (KULLANICI KARARI 03.11.2026): gönderim ayarında teslim süresi (ttlHours) YOK — Meta'nın varsayılanı 30 gün; 2.4.8'in kayıtlı değeri okunmaz.
   const settings = () => {
     const raw = parse(store.setting(SENDING_KEY, ""), {}) || {};
-    const ttl = Number(raw.ttlHours);
     const cap = Number(raw.dailyCap);
-    return { ttlHours: Number.isInteger(ttl) && ttl >= 1 && ttl <= 720 ? ttl : META_D0.defaultTtlHours, dailyCap: Number.isInteger(cap) && cap > 0 ? cap : null };
+    return { dailyCap: Number.isInteger(cap) && cap > 0 ? cap : null };
   };
   const ack = () => {
     const raw = parse(store.setting(ACK_KEY, ""), null);
@@ -324,18 +324,48 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
 
   // ---------- Meta denetimleri (şablon + sınır basamağı) ----------
   const templateCache = new Map(); // `${waba}|${name}` → { at, result }
+  const templateEpoch = new Map(); // waba → Şablonları Denetle sayacı (2.4.9 W-2: Denetle'den önce başlamış okuma önbelleğe yazılmaz)
   const tierCache = new Map(); // waba → { at, limit, tier }
   // T2-7: karar ekrandaki "Gönderime Hazır" ile AYNI kuralla, tek yerde (lib/whatsapp/templates.mjs sendingVerdict: durum, kategori VE içerik).
   const judgeTemplate = (items, name) => sendingVerdict(items, name);
   // Şablon listesi Şablonlar kartıyla AYNI okumayla (createMetaTemplates.details: içerik dahil ayrıntılı alanlar; alan reddinde temel alanlara bir kez düşer).
-  async function checkTemplate(record, name, { force = false } = {}) {
+  // note (2.4.9 W-2b): önizleme ve başlatmanın taze okuması şablon kaydına da yazılır (templates.mjs noteListing: Yönetim kartı + pencerenin varsayılan sekmesi);
+  // salt okunur lisansta yazılmaz.
+  async function checkTemplate(record, name, { force = false, note = false } = {}) {
     const key = `${record.wabaId}|${name}`;
     const cached = templateCache.get(key);
     if (!force && cached && nowMs() - cached.at < TEMPLATE_CHECK_MS && nowMs() >= cached.at && cached.sent < TEMPLATE_CHECK_EVERY) return cached.result;
+    return (await readTemplate(record, name, { note })).result;
+  }
+  // checkTemplate'in TAZE okuma yolu (force): karar önbelleğe, teslim süresi günlüğe (note: şablon kaydına da) yazılır. Dönüş: { result, items, readAt } — 2.4.9 W-KÖK
+  // tur 2: bakım turu (maintain) okunan listenin teslim süresini de kullanır.
+  async function readTemplate(record, name, { note = false } = {}) {
+    const key = `${record.wabaId}|${name}`;
+    const epoch = templateEpoch.get(record.wabaId) || 0;
+    const readAt = iso();
     const listing = await createMetaTemplates(connection.metaOptions(record)).details(record.wabaId);
     const result = judgeTemplate(listing.items, name);
+    const read = { result, items: listing.items, readAt };
+    // W-2: okuma sürerken Şablonları Denetle bittiyse (forgetTemplates) bu okuma Denetle'ninkinden eskidir — önbelleğe ve şablon kaydına YAZILMAZ (karar yalnız bu
+    // adım için; sonraki adım yeniden okur). Zorla üretildi: test/whatsapp-w2-onbellek-249.test.mjs "SÜRERKEN".
+    if ((templateEpoch.get(record.wabaId) || 0) !== epoch) return read;
     templateCache.set(key, { at: nowMs(), result, sent: 0 });
-    return result;
+    // 2.4.9 W-KÖK (kâhin A1): her taze okumada Meta'nın bildirdiği teslim süresi günlüğe — sonra kabul edilen iş bu süreyle ölçülür (templates.mjs noteDeliveryTtl).
+    if (writable()) {
+      try {
+        noteDeliveryTtl(store, record.wabaId, listing.items, readAt);
+      } catch (error) {
+        log.warn?.(`WhatsApp teslim süresi günlüğe yazılamadı: ${error?.message || error}`);
+      }
+    }
+    if (note && writable()) {
+      try {
+        noteListing(store, record, listing, { readAt });
+      } catch (error) {
+        log.warn?.(`WhatsApp şablon kaydı önizlemeden güncellenemedi: ${error?.message || error}`);
+      }
+    }
+    return read;
   }
   async function dailyLimit(graph, record, { force = false } = {}) {
     const cached = tierCache.get(record.wabaId);
@@ -643,7 +673,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let limitInfo;
     let template;
     try {
-      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true });
+      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true, note: true });
       limitInfo = await dailyLimit(graph, record, { force: true });
     } catch (error) {
       if (error instanceof MetaGraphError) throw metaHttp(error);
@@ -715,7 +745,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     let template;
     let limitInfo;
     try {
-      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true });
+      template = await checkTemplate(record, TEMPLATE_NAMES[kind], { force: true, note: true });
       if (template.ok) limitInfo = await dailyLimit(graph, record, { force: true });
     } catch (error) {
       if (error instanceof MetaGraphError) throw metaHttp(error, { starting: true });
@@ -1006,6 +1036,22 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
   // Bekleniyor"daki toplu işte Meta okunmaz (R1). Okuma düşerse en erken 1 dk sonra yeniden. Dönüş: { acted, waitMs } (en yakın denetim anı).
   const WATCH_RETRY_MS = 60_000;
   const watchTried = new Map(); // `${waba}|${şablon}` / `tier|${waba}` → son deneme (ms)
+  // 2.4.9 W-2 (ANA OTURUM ONAYI 03.11.2026; docs/2.4.9-tasarim/W-whatsapp-sablon.md §5): "Şablonları Denetle ve Oluştur" bitince (templates.mjs ensure → routes/whatsapp.mjs
+  // → scheduler.forgetTemplates: aynı WABA'yı kullanan BÜTÜN şirketlerin kuyrukları) bu WABA'nın şablon kararları unutulur — süren toplu işin sonraki adımı şablonu
+  // Meta'dan TAZE okur (kart "gönderilmez" derken önbellekle 10 dk / 100 ileti sürmez). Sınır basamağı (tier|…) önbelleğine dokunulmaz. Dönüş: silinen karar sayısı.
+  function forgetTemplates(wabaId) {
+    const prefix = `${String(wabaId || "")}|`;
+    if (prefix === "|") return 0;
+    templateEpoch.set(String(wabaId), (templateEpoch.get(String(wabaId)) || 0) + 1);
+    let forgotten = 0;
+    for (const key of [...templateCache.keys()]) {
+      if (!key.startsWith(prefix)) continue;
+      templateCache.delete(key);
+      forgotten += 1;
+    }
+    for (const key of [...watchTried.keys()]) if (key.startsWith(prefix)) watchTried.delete(key);
+    return forgotten;
+  }
   async function watch() {
     let acted = false;
     let soon = null;
@@ -1317,14 +1363,15 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
 
   // Meta'daki PDF kopyası yeniden kullanılabilir mi (§7a 15): kimliği var, 29 günü dolmadı, silinmedi.
   const mediaUsable = job => Boolean(job.media_id && job.media_at && !job.media_deleted_at && nowMs() - Date.parse(job.media_at) <= MEDIA_REUSE_MS);
-  // T2-6 (bağımsız gözden geçirme r3): değişkenler ve PDF İLK HAZIRLIKTA AYNI cari okumasından üretilir ve DONDURULUR (prepared_at, params_json, pdf_name,
-  // pdf_blob — göç v41); her yeniden deneme (131056, geçici hata, Bağlantı Bekleniyor, 131049, Duraklat → Devam Et) aynı metni ve aynı PDF'i gönderir (metin = PDF,
-  // §7a 1; aynı medya, §7a 14–15). Meta'daki kopya geçerliyse (29 gün, silinmemiş) aynısı, değilse dondurulmuş baytlar yeniden yüklenir. Uygunluk (İstemiyor, pasif,
-  // silinmiş, telefon; hatırlatmada gecikmiş borç) her denemede GÜNCEL okunur (§7a 2): içerik donar, gönderilip gönderilmeyeceği donmaz.
+  // T2-6 (bağımsız gözden geçirme r3): değişkenler ve PDF İLK HAZIRLIKTA AYNI cari okumasından üretilir ve DONDURULUR (prepared_at, params_json, pdf_name — göç v41;
+  // PDF'in baytları wa_job_pdfs — 2.4.9 B3, göç v45); her yeniden deneme (131056, geçici hata, Bağlantı Bekleniyor, 131049, Duraklat → Devam Et) aynı metni ve aynı PDF'i
+  // gönderir (metin = PDF, §7a 1; aynı medya, §7a 14–15). Meta'daki kopya geçerliyse (29 gün, silinmemiş) aynısı, değilse dondurulmuş baytlar yeniden yüklenir. Uygunluk
+  // (İstemiyor, pasif, silinmiş, telefon; hatırlatmada gecikmiş borç) her denemede GÜNCEL okunur (§7a 2): içerik donar, gönderilip gönderilmeyeceği donmaz.
   async function prepare(batch, job, graph, record, account, user) {
     if (batch.kind !== "statement" && !overdueOf(account, today())) return { skip: "Gecikmiş Borç Yok" };
     let params = job.prepared_at ? parse(job.params_json, null) : null;
-    let pdf = job.prepared_at && job.pdf_blob ? Buffer.from(job.pdf_blob) : null;
+    const frozenPdf = job.prepared_at ? store.get("SELECT pdf FROM wa_job_pdfs WHERE job_id = ?", job.id)?.pdf : null;
+    let pdf = frozenPdf ? Buffer.from(frozenPdf) : null;
     let filename = job.pdf_name || "";
     // Dondurulmuş PDF baytları iş Meta'ya kabul edilince silinir (bakım); 131049 / Yine de Gönder sonrası yeniden denemede Meta'daki kopya geçerliyse o yeter.
     const frozen = Array.isArray(params) && params.length > 0 && (batch.kind !== "statement" || Boolean(filename && (pdf?.length || mediaUsable(job))));
@@ -1345,7 +1392,14 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         pdf = null;
       }
       // Yeni anlık görüntü: önceki bir denemenin Meta'daki kopyası (varsa) bu içeriğe ait sayılmaz → yeniden yüklenir.
-      updateJob(job.id, { prepared_at: iso(), params_json: JSON.stringify(params), pdf_name: filename, pdf_blob: pdf, ...(job.media_id ? { media_id: null, media_at: null } : {}) });
+      // 2.4.9 B3: işin satırı ve PDF'i TEK işlemde (eski tek UPDATE'in eşdeğeri — ya ikisi ya hiçbiri; yarısı yazılsa yeni değişkenler eski PDF'le donabilirdi).
+      // Hatırlatmada (PDF yok) satır yok.
+      const preparedAt = iso();
+      store.tx(() => {
+        updateJob(job.id, { prepared_at: preparedAt, params_json: JSON.stringify(params), pdf_name: filename, ...(job.media_id ? { media_id: null, media_at: null } : {}) });
+        if (pdf) store.run("INSERT OR REPLACE INTO wa_job_pdfs (job_id, pdf, created_at) VALUES (?, ?, ?)", job.id, pdf, preparedAt);
+        else store.run("DELETE FROM wa_job_pdfs WHERE job_id = ?", job.id);
+      });
       job = jobRow(job.id);
     }
     let document = null;
@@ -1586,17 +1640,58 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const seenWaba = Date.parse(ledger.hookSeenAt?.(connection.read()?.wabaId || "") || "");
     const seenHere = Date.parse(store.setting(HOOK_SEEN_KEY, "") || "");
     const seen = Math.max(Number.isFinite(seenWaba) ? seenWaba : -Infinity, Number.isFinite(seenHere) ? seenHere : -Infinity);
-    // T2-5 güvenli taraf: TTL = META'NIN KABUL ETTİĞİ ileti ömrü (lib/whatsapp/templates.mjs deliveryTtlSeconds; okunamazsa / reddedildiyse Meta'nın varsayılanı 30 gün) —
-    // ayardaki değer değil: Meta'nın hâlâ teslim etmeye çalıştığı iletiyi "Süresi Doldu" saymaz, PDF'ini önceden silmez.
-    const ttlOf = new Map();
-    const ttlMs = (wabaId, name) => {
-      const key = `${wabaId}|${name}`;
-      if (!ttlOf.has(key)) ttlOf.set(key, deliveryTtlSeconds(store, wabaId, name) * 1000);
-      return ttlOf.get(key);
-    };
+    // TTL = Meta'nın şablon listesinde bildirdiği ileti ömrü, yoksa Meta'nın varsayılanı 30 gün (2.4.9 W-T: program şablona TTL yazmaz) — Meta'nın hâlâ teslim etmeye
+    // çalıştığı iletiyi "Süresi Doldu" saymaz, PDF'ini önceden silmez. 2.4.9 W-KÖK: iş KABUL ANINDAKİ süreyle ölçülür (sonradan kısalan süre geriye işlemez; bilinmiyorsa
+    // 30 gün; uzarsa uzun olan) — lib/whatsapp/templates.mjs deliveryTtlRules; teslim süresi günlüğü turda bir kez okunur, satır başına yalnız sayı karşılaştırması (ders 47).
     if (Number.isFinite(seen) && nowMs() - seen <= HOOK_ALIVE_MS) {
-      for (const row of store.all("SELECT j.id, j.attempt, j.accepted_at, b.waba_id, b.template FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL")) {
-        if (Date.parse(row.accepted_at) + ttlMs(row.waba_id, row.template) + HOUR >= nowMs()) continue;
+      const openRows = () => store.all("SELECT j.id, j.attempt, j.accepted_at, b.waba_id, b.template FROM wa_jobs j JOIN wa_batches b ON b.id = j.batch_id WHERE j.state IN ('accepted', 'sent') AND j.accepted_at IS NOT NULL");
+      // 2.4.9 W-KÖK tur 2 (bağımsız gözden geçirme gerilemesi; S-A, 03.11 yetkisiyle İLKEYLE — ilke 2 "almış olabilirse elenir"; BAŞ MİMAR KARARI; docs/2.4.9-IS-LISTESI.md):
+      // süre kabulden sonra uzayıp program bu arada Meta'yı okumadıysa (süren toplu iş / önizleme / Denetle yok) uzama bilinmiyordu → iş erken "Süresi Doldu" olup kişiye
+      // aynı dönemde 2. ileti gidebiliyordu. Kural: 30 günden KISA etkin süreyle Süresi Doldu yazılacak iş varsa o WABA + şablon için bu turda BİR taze Meta okuması
+      // (checkTemplate'in force yolu: süre günlüğe) → kural yeniden değerlendirilir (etkin süre = kuraldaki ile taze okunan sürenin en uzunu; kabulden sonra görülen değer).
+      // Okuma düşerse (ağ, Meta hatası) / yapılamıyorsa (bağlantı yok ya da işin hesabı değil, salt okunur lisans — program Meta'dan şablon okumaz) o tur YAZILMAZ,
+      // sonraki turda yeniden denenir. Meta'nın en uzun süresi (30 gün) + 1 sa geçen iş okumasız Süresi Doldu (Meta artık denemez; PDF kuralıyla aynı sınır).
+      // Ders 47: tur başına WABA + şablon başına en çok bir okuma; 30 günlük işlerde okuma yok; satır başına yalnız sayı karşılaştırması.
+      const LONGEST_MS = META_DEFAULT_TTL_SECONDS * 1000 + HOUR;
+      const needsRead = (ttl, acceptedMs) => ttl < META_DEFAULT_TTL_SECONDS && acceptedMs + LONGEST_MS >= nowMs();
+      let ttlOf = deliveryTtlRules(store);
+      let rows = openRows();
+      const fresh = new Map(); // `${waba}|${şablon}` → { seconds (null: şablon listede yok — yeni bilgi yok), ms } | null (okunamadı)
+      const toRead = new Map();
+      for (const row of rows) {
+        const acceptedMs = Date.parse(row.accepted_at);
+        const ttl = ttlOf(row.waba_id, row.template)(acceptedMs);
+        if (acceptedMs + ttl * 1000 + HOUR < nowMs() && needsRead(ttl, acceptedMs)) toRead.set(`${row.waba_id}|${row.template}`, row);
+      }
+      if (toRead.size) {
+        const record = writable() ? connection.read() : null;
+        for (const [key, row] of toRead) {
+          let read = null;
+          if (record && record.wabaId === row.waba_id) {
+            try {
+              const got = await readTemplate(record, row.template);
+              read = { seconds: listedDeliveryTtl(got.items, row.template), ms: Date.parse(got.readAt) };
+            } catch (error) {
+              if (isLockError(error)) throw error;
+              log.warn?.(`WhatsApp: teslim süresi Meta'dan taze okunamadı (${row.template}; ${error?.message || error}); bu turda Süresi Doldu yazılmadı, sonraki turda yeniden denenecek.`);
+            }
+          }
+          fresh.set(key, read);
+        }
+        // Okuma beklenirken durum bildirimi / Denetle / geri yükleme satırları ya da günlüğü değiştirmiş olabilir: ikisi de yeniden okunur (karar döngüsünde bekleme yok).
+        ttlOf = deliveryTtlRules(store);
+        rows = openRows();
+      }
+      for (const row of rows) {
+        const acceptedMs = Date.parse(row.accepted_at);
+        let ttl = ttlOf(row.waba_id, row.template)(acceptedMs);
+        if (acceptedMs + ttl * 1000 + HOUR >= nowMs()) continue;
+        if (needsRead(ttl, acceptedMs)) {
+          const read = fresh.get(`${row.waba_id}|${row.template}`);
+          if (!read) continue; // bu turda okunamadı / okunmadı: Süresi Doldu yazılmaz
+          if (read.seconds !== null && read.ms >= acceptedMs) ttl = Math.max(ttl, read.seconds);
+          if (acceptedMs + ttl * 1000 + HOUR >= nowMs()) continue;
+        }
         // İş V2: defterde bu denemenin teslimi varsa (kancanın yalnız defter yolu / geri yükleme) Süresi Doldu DEĞİL — Teslim Edildi; teslim edilemedi yazılmaz.
         if (settleDelivered(row.id, Number(row.attempt))) continue;
         updateJob(row.id, { state: "expired", closed_at: iso() });
@@ -1651,8 +1746,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
         }
       }
     }
-    // T2-6 + plan §5: dondurulmuş PDF (pdf_blob) yalnız iş açıkken (yeniden denenebilirken) tutulur; kabul edilen / kesinleşen işte silinir (değişkenler ve PDF adı kalır).
-    store.run(`UPDATE wa_jobs SET pdf_blob = NULL WHERE pdf_blob IS NOT NULL AND state NOT IN (${OPEN_JOB.map(() => "?").join(",")})`, ...OPEN_JOB);
+    // T2-6 + plan §5: dondurulmuş PDF yalnız iş açıkken (yeniden denenebilirken) tutulur; kabul edilen / kesinleşen işte silinir (değişkenler ve PDF adı kalır).
+    // 2.4.9 B3: PDF ayrı tabloda (wa_job_pdfs, göç v45) — SATIR silinir (sayfaları sonraki gönderimde yeniden kullanılır; işin satırında kalıcı boşluk kalmaz); işi
+    // silinmiş yetim satır da gider. Tarama küçük tabloda (açık işlerin PDF'leri), iş satırı birincil anahtarla okunur.
+    store.run(`DELETE FROM wa_job_pdfs WHERE NOT EXISTS (SELECT 1 FROM wa_jobs j WHERE j.id = wa_job_pdfs.job_id AND j.state IN (${OPEN_JOB.map(() => "?").join(",")}))`, ...OPEN_JOB);
     // Kabul yazımı düşmüş (disk dolu) ve 5 dakikadır "Gönderiliyor"da kalan iş (tek işçi; istek 15 sn'de biter): açılıştaki kuralla defterden çözülür.
     const stuck = store.all("SELECT * FROM wa_jobs WHERE state = 'sending' AND sending_at < ?", iso(nowMs() - 5 * 60_000));
     if (stuck.length) out.repaired = settleSending(stuck);
@@ -2017,7 +2114,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     };
   }
 
-  // ---------- Ayarlar (bir kez onay, sınır, TTL) ----------
+  // ---------- Ayarlar (bir kez onay, sınır) ----------
   function setAck(user, value) {
     if (value === true) store.setSetting(ACK_KEY, JSON.stringify({ version: ACK_VERSION, text: ACK_TEXT, at: iso(), by: user.id, byName: user.display_name || user.username || "" }), user.id);
     else store.run("DELETE FROM settings WHERE key = ?", ACK_KEY);
@@ -2029,16 +2126,13 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     return { text: ACK_TEXT, version: ACK_VERSION, acknowledged: Boolean(current), at: current?.at || null, byName: current?.byName || "" };
   };
   function setSending(user, body = {}) {
+    // 2.4.9 W-T (KULLANICI KARARI 03.11.2026): teslim süresi değiştirilemez; istek bütünüyle reddedilir (birlikte gelen alan da yazılmaz).
+    if (Object.hasOwn(body, "ttlHours")) fail(400, "Teslim süresi Meta'nın varsayılanıdır (30 gün); değiştirilemez.", "whatsapp-invalid", { field: "ttlHours" });
     const next = { ...settings() };
     if (Object.hasOwn(body, "dailyCap")) {
       const cap = body.dailyCap === null || body.dailyCap === "" ? null : Number(body.dailyCap);
       if (cap !== null && (!Number.isInteger(cap) || cap < 1 || cap > 1_000_000)) fail(400, "Günlük sınır 1 ile 1.000.000 arasında tam sayı olmalı (boş = Meta'nın sınırı).", "whatsapp-invalid", { field: "dailyCap" });
       next.dailyCap = cap;
-    }
-    if (Object.hasOwn(body, "ttlHours")) {
-      const ttl = Number(body.ttlHours);
-      if (!Number.isInteger(ttl) || ttl < 1 || ttl > 720) fail(400, "Teslim süresi 1 ile 720 saat arasında olmalı.", "whatsapp-invalid", { field: "ttlHours" });
-      next.ttlHours = ttl;
     }
     store.setSetting(SENDING_KEY, JSON.stringify(next), user.id);
     audit(user, "whatsapp.sending.saved", "whatsapp", next);
@@ -2064,5 +2158,5 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     writeLock?.mark(companyId);
     syncLockNote();
   };
-  return { canWrite, markLocked, connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate };
+  return { canWrite, markLocked, connected, preview, createBatch, list, detail, pause, resume, cancel, retryFailed, sendAnyway, next, step, recover, maintain, applyStatuses, movedOwnerOfWamid, monthStats, historyOf, setAck, ackView, ack, setSending, settings, judgeTemplate, forgetTemplates };
 }

@@ -1,0 +1,90 @@
+TAP version 13
+# (node:19820) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler
+    # Subtest: süren toplu iş, Meta şablonu Pazarlama'ya aldı, kullanıcı Denetle'ye bastı: saat ilerlemeden sonraki adımda iş DURUR (template-marketing), yeni ileti gitmez
+    ok 1 - süren toplu iş, Meta şablonu Pazarlama'ya aldı, kullanıcı Denetle'ye bastı: saat ilerlemeden sonraki adımda iş DURUR (template-marketing), yeni ileti gitmez
+      ---
+      duration_ms: 609.894061
+      type: 'test'
+      ...
+    # Subtest: Denetle'nin Meta okuması düşse de (502) önbellek temizlenir: sonraki adım şablonu taze okur, Pazarlama'yı görüp durur
+    ok 2 - Denetle'nin Meta okuması düşse de (502) önbellek temizlenir: sonraki adım şablonu taze okur, Pazarlama'yı görüp durur
+      ---
+      duration_ms: 1152.284884
+      type: 'test'
+      ...
+    # Subtest: işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)
+    ok 3 - işçinin şablon okuması SÜRERKEN Denetle biterse (nasıl bozulur 15): o eski okuma önbelleğe yazılmaz — bir sonraki adım yeniden okuyup durur (giden en çok 2)
+      ---
+      duration_ms: 470.665599
+      type: 'test'
+      ...
+    # Subtest: iki şirket AYNI WhatsApp hesabında: 002'de süren iş, 001'de Denetle → 002'nin işi de sonraki adımda durur (giden 1)
+    ok 4 - iki şirket AYNI WhatsApp hesabında: 002'de süren iş, 001'de Denetle → 002'nin işi de sonraki adımda durur (giden 1)
+      ---
+      duration_ms: 735.885784
+      type: 'test'
+      ...
+    1..4
+ok 1 - 2.4.9 W-2 — Şablonları Denetle süren işin şablon önbelleğini temizler
+  ---
+  duration_ms: 2970.268668
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller
+    # Subtest: Denetle'de 'Onay Bekliyor' → Meta onayladı → önizleme (taze okuma): kart 'Onaylandı / Evet', pencere Otomatik Gönder; Denetle'ye basılmadı, son denetim zamanı değişmedi
+    ok 1 - Denetle'de 'Onay Bekliyor' → Meta onayladı → önizleme (taze okuma): kart 'Onaylandı / Evet', pencere Otomatik Gönder; Denetle'ye basılmadı, son denetim zamanı değişmedi
+      ---
+      duration_ms: 675.973296
+      type: 'test'
+      ...
+    # Subtest: noteListing (tek değişim yeri): yalnız aynı WABA'nın kaydında, yalnız listede bulunan şablonun Meta alanlarını yazar; kayıttan daha eski okuma ve başka WABA yazmaz
+    not ok 2 - noteListing (tek değişim yeri): yalnız aynı WABA'nın kaydında, yalnız listede bulunan şablonun Meta alanlarını yazar; kayıttan daha eski okuma ve başka WABA yazmaz
+      ---
+      duration_ms: 2.719034
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/mut-MT2-denetle-suresi-korunmaz-6fd4d020/test/whatsapp-w2-onbellek-249.test.mjs:178:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Denetle'nin kaydettiği teslim süresi önizlemeyle değişmez
+        + actual - expected
+        
+        + undefined
+        - 259200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 259200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/mut-MT2-denetle-suresi-korunmaz-6fd4d020/test/whatsapp-w2-onbellek-249.test.mjs:225:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: önizlemenin taze okuması teslim süresini kayda YAZMAZ: Meta listesi süreyi sonradan kısaltınca (12 sa) önceden kabul edilmiş iş Süresi Doldu OLMAZ, aynı dönemde ikinci ekstre gitmez
+    ok 3 - önizlemenin taze okuması teslim süresini kayda YAZMAZ: Meta listesi süreyi sonradan kısaltınca (12 sa) önceden kabul edilmiş iş Süresi Doldu OLMAZ, aynı dönemde ikinci ekstre gitmez
+      ---
+      duration_ms: 457.734223
+      type: 'test'
+      ...
+    1..3
+not ok 2 - 2.4.9 W-2b — önizlemenin taze şablon okuması kartı ve gönderim penceresini günceller
+  ---
+  duration_ms: 1137.11285
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/2a941a30-cea4-5380-a679-f28a541c21a1/scratchpad/w-tur1-a89b8c1d/mut-MT2-denetle-suresi-korunmaz-6fd4d020/test/whatsapp-w2-onbellek-249.test.mjs:143:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 7
+# suites 2
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4529.131364

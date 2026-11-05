@@ -635,13 +635,16 @@ describe("kod incelemesi düzeltmeleri (v2.0.6): numara, eşleşme, başlık sat
     assert.equal((await admin.get(`/api/workspace/stock/${item.id}`)).data.data.unitPrice, 12);
   });
 
-  it("ürün silindikten sonra ona bağlı hareketler carinin silinmesini engellemez; kayıt anahtarı iki kez çözülmez", async () => {
+  it("ürün silindikten sonra da ona bağlı (carideki) stok satırı carinin silinmesini engeller; kayıt anahtarı iki kez çözülmez", async () => {
     const supplier = (await admin.post("/api/workspace/accounts", { name: "Silinecek Tedarikçi", type: "supplier" })).data.data;
     const item = (await admin.post("/api/workspace/stock", { name: "Geçici Ürün", unit: "adet" })).data.data;
     assert.equal((await admin.post(`/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: 2, unitPrice: 5, pay: "account", accountId: supplier.id })).status, 200);
     assert.equal((await admin.del(`/api/workspace/accounts/${supplier.id}`)).status, 409, "ürün dururken cari silinmez");
     assert.equal((await admin.del(`/api/workspace/stock/${item.id}`)).status, 200);
-    assert.equal((await admin.del(`/api/workspace/accounts/${supplier.id}`)).status, 200, "ürün silinince cari de silinebilir");
+    // 2.4.9 C1 (İLKEYLE H4): ürün silinse de stok hareketinin cari satırı carinin bakiyesinde durur — hareket; cari silinmez (önceden 200).
+    const refused = await admin.del(`/api/workspace/accounts/${supplier.id}`);
+    assert.equal(refused.status, 409, "ürün silinince de cari silinmez (stok satırı carinin hareketi)");
+    assert.equal(refused.data.code, "account-has-movements");
     const weird = await admin.get(`/api/workspace/cases/${encodeURIComponent("kayit %zz 50%")}/account`);
     assert.equal(weird.status, 200, "yüzde işaretli anahtar 500 vermez");
   });
