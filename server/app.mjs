@@ -542,9 +542,11 @@ function buildApp(overrides, opening) {
   }
   context.integrity.start();
   // 2.5.0 Ç3: bekleyen koşu (göç 47'nin 2.4.9 koşusu, yarım kalmış dondurma, onarım) açılışı beklemeden iş parçacığında donar; kapanışta durur (app.close).
-  if (!schemaGate) setImmediate(() => {
-    if (closed) return;
-    context.ledger.snapshots.runPending().catch(error => log.error?.("Donmuş defter dondurulamadı", error));
+  // Açılış sonradan düşerse (openFault / hata) geri alınır: kapalı bağlantıya çarpan iş olmaz (createapp-acilis-geri-alma-249).
+  const snapshotStart = schemaGate ? null : setImmediate(() => context.ledger.snapshots.runPending().catch(error => log.error?.("Donmuş defter dondurulamadı", error)));
+  undo.push(() => {
+    clearImmediate(snapshotStart);
+    return context.ledger.snapshots.close();
   });
   // Tam tarama (§3.11 "Kapı ölçeği" 1): 15 dakikada bir arka planda salt okuma; yeni sapma integrity_log + zil.
   context.integrity.scanMinutes = INTEGRITY_SCAN_MINUTES;

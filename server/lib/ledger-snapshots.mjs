@@ -541,7 +541,15 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
         problems.push(`Donmuş Dönemin Kaynağı Değişti: ${dayText(cover)} ve öncesinin kaynak kayıtları dondurmadan sonra kapının görmediği bir yolla (eski sürüm, dış yazım) değişti; Kilidi Aç → Yeniden Kilitle ile güncel veri donar`);
       }
     }
-    const items = [{ code: "ledger:snapshot", name: `Donmuş Defter (${cover ? `${dayText(cover)} ve öncesi` : "yok"})${pending ? " · Dondurma Sürüyor" : ""}`, ok: problems.length === 0, count: problems.length, sample: problems.slice(0, 5) }];
+    // Uyarı düzeyi: bu denetim kapıda (COMMIT) koşmaz, yeni işlemleri engellemez; çözümü kullanıcının elindedir (Kilidi Aç → Yeniden Kilitle).
+    const items = [{
+      code: "ledger:snapshot",
+      name: `Donmuş Defter (${cover ? `${dayText(cover)} ve öncesi` : "yok"})${pending ? " · Dondurma Sürüyor" : ""}`,
+      ok: problems.length === 0,
+      count: problems.length,
+      sample: problems.slice(0, 5),
+      ...(problems.length ? { severity: "warning", hint: "Kilitli dönemin raporları donmuş defterden okunur. Kaynak kayıtlar kilitliyken değiştiyse (eski sürüm, dış yazım) yönetici kilidi açıp yeniden kilitleyince güncel veri donar." } : {}),
+    }];
     if (cover) {
       const diff = ruleDiff({ live });
       const byAccount = new Map();

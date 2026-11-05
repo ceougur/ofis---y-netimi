@@ -1574,7 +1574,8 @@ export const MIGRATIONS = [
       store.exec(LEDGER_SNAPSHOTS_SCHEMA_V47);
       store.exec(LEDGER_SNAPSHOT_TRIGGERS_V47);
       const lock = columnExists(store, "settings", "value") ? String(store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || "") : "";
-      if (!isFullDate(lock)) return;
+      // Yeniden koşan göç (tablolar zaten var; ör. sürüm numarası elle düşürülmüş dosya): koşu eklenmez — kapsam ↔ kilit farkını açılış onarımı giderir.
+      if (!isFullDate(lock) || store.get("SELECT 1 AS found FROM ledger_snapshot_runs LIMIT 1")) return;
       const at = now().toISOString();
       store.run(
         "INSERT INTO ledger_snapshot_runs (no, id, kind, state, from_date, through, rule_version, reason, created_by, created_at) VALUES (1, ?, 'freeze', 'pending', '', ?, '2.4.9', 'migration', 'system', ?)",
