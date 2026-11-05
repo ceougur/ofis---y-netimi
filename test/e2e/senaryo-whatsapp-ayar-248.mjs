@@ -223,6 +223,9 @@ await step("A2 Elle Bağla: Tab ile insan hızında yazım → Kaydet ve Sına �
   // lib/whatsapp/templates.mjs). Yardım yazısı bunu söyler.
   const appHelp = await text(`${modal} label:has([name="appId"]) small`).catch(() => "");
   ok(/^İsteğe bağlı; Ekstre şablonunu Meta'da açmak için gerekir/.test(appHelp), `App ID yardımı Ekstre şablonunu söylüyor: ${appHelp}`);
+  // 2.5.0 W-1(a) düzeltme turu 1 (dar kontrol, metin): System User belirtecinde süre "Never" seçilmeli (60 günlük belirtecin bitişi programa gelmez).
+  const tokenHelp = await text(`${modal} label:has([name="token"]) small`).catch(() => "");
+  ok(/Token expiration\) olarak Never seçin/.test(tokenHelp), `belirteç yardımı süre için Never diyor: ${tokenHelp}`);
   await page.click(`${modal} [name="phoneNumberId"]`);
   await typeSlow(PNID);
   await page.keyboard.press("Tab");
@@ -419,7 +422,9 @@ await step("A5 Bağlantıyı Kaldır (onaylı) → Bağlı Değil; ayar satırı
   await page.click('[data-wa-action="remove"]');
   const modal = await topModal();
   ok(/kaldırılsın mı/.test(await text(modal)), "onay sorusu soruldu");
-  ok(/Meta'daki bildirim aboneliği de kaldırılır/.test(await text(modal)) && /bekleyen otomatik gönderimler durdurulur/.test(await text(modal)), "onay metni Meta aboneliğini ve bekleyen gönderimleri söylüyor");
+  // 2.5.0 W-2 düzeltme turu 1 (metin): Elle Bağla'da abonelik müşterinin kendi Meta uygulamasınındır ("DestekOfis'in" değil).
+  const sure = await text(modal);
+  ok(/Meta uygulamanızın bu WhatsApp hesabındaki bildirim aboneliği de kaldırılır/.test(sure) && !/DestekOfis'in/.test(sure) && /bekleyen otomatik gönderimler durdurulur/.test(sure), `onay metni (Elle Bağla) kendi uygulamanın aboneliğini ve bekleyen gönderimleri söylüyor: ${sure.slice(0, 220)}`);
   await page.click(`${modal} .hof-button-danger`);
   ok((await waitState("Bağlı Değil")) === "Bağlı Değil", "durum Bağlı Değil");
   ok(settingRow() === null, "veri tabanında bağlantı yok");

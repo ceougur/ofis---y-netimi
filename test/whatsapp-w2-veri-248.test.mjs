@@ -495,7 +495,10 @@ describe("2.4.8 W2 — belirteç hiçbir çıktıya sızmaz", () => {
       assert.deepEqual(leaks(readFileSync(ctx.wa.ledger.file).toString("latin1")), [], "makine defterinde belirteç yok");
       const detail = await ctx.detail(created.data.data.batch.id);
       assert.equal(detail.state, "paused");
-      assert.equal(detail.pauseCode, "meta-token");
+      // 2.5.0 W-1(a): Meta'nın daha önce kabul ettiği belirtecin 190'ı bağlantıyı "Süresi Doldu" yapar → duraklatma nedeni bağlantınınki; 190 alan kişi Başarısız değil,
+      // bekleyenlerle Duraklatıldı (KULLANICI KARARI 05.11.2026 ~19:15 "Bekleyenlere dönsün").
+      assert.equal(detail.pauseCode, "token-expired");
+      assert.deepEqual(detail.jobs.map(job => job.state), ["paused"]);
     } finally {
       await ctx.close();
     }

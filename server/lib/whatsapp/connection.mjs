@@ -187,6 +187,21 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       pauseReason: `${status.expiredBy === "meta" ? "WhatsApp bağlantınızın süresi doldu: Meta erişim belirtecini artık kabul etmiyor." : `WhatsApp bağlantınızın süresi doldu (${dayText(Date.parse(status.expiresAt))}).`} Gönderim duraklatıldı; ${RECONNECT} ve Devam Et'e basın.`,
     };
   }
+  /**
+   * 2.5.0 W-1(a) (KULLANICI KARARI 05.11 ~19:15): toplu gönderim sürerken Meta belirteci 190 ile reddetti — toplu işin duraklatma kodu ve nedeni. Bağlantı bu redle "Süresi
+   * Doldu" olduysa onun nedeni (Yeniden Bağla — iki yolda da kartta görünür); olmadıysa (belirteç arada değişti / hiç çalışmamış belirteç) yola göre ne yapılacağı. Her
+   * durumda "yeniden bağlandıktan sonra Devam Et" (iletisi gitmeyen kişi bekleyenlerle birlikte gönderilir). Meta'nın genel 190 başlığındaki "Elle Bağla ile girin" Yol 2'de
+   * yanlış yönlendirdiği için kullanılmaz.
+   */
+  function tokenRejectedPause() {
+    const block = sendBlock();
+    if (block?.code === "whatsapp-token-expired") return { pauseCode: block.pauseCode, pauseReason: block.pauseReason };
+    const how =
+      read()?.mode === "embedded"
+        ? "Yönetim → WhatsApp'ta WhatsApp'ı Yeniden Bağla ile yeniden bağlayın"
+        : "Yönetim → WhatsApp'ta Bilgileri Değiştir ile Meta'dan aldığınız yeni kalıcı belirteci (System User) girin";
+    return { pauseCode: "meta-token", pauseReason: `Meta erişim belirtecini kabul etmedi (süresi dolmuş, iptal edilmiş ya da hatalı olabilir); ileti gönderilmedi ve gönderim duraklatıldı. ${how}, sonra Devam Et'e basın.` };
+  }
   // Meta'nın yanıtladığı her hata buradan geçer (meta-graph onMetaError): 190 → "Süresi Doldu" (yalnız Meta'nın daha önce kabul ettiği belirteçte ya da alt kod 463'te).
   // Belirteç arada değiştiyse (yeniden bağlandı) yazılmaz; ilk an kalır.
   function noteMetaError(record, error) {
@@ -396,6 +411,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   async function removeNow(user, previous, stopSending) {
     const stopped = safeStop(stopSending);
     const meta = await unsubscribeAtMeta(previous);
+    if (meta.state === "removed") forgetHook(previous.wabaId);
     const current = read();
     // Meta beklenirken bağlantı yeniden kurulduysa (başka pencerede yeni belirteç / kimlik) YENİSİ silinmez.
     const same = current && current.tokenSealed === previous.tokenSealed && current.wabaId === previous.wabaId && current.phoneNumberId === previous.phoneNumberId;
@@ -412,10 +428,25 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       return 0; // durdurma yazılamasa da kaldırma sürer; işçi bağlantısız toplu işi zaten yürütmez (duraklatır)
     }
   };
-  const failedAtMeta = (reason, why, extra = {}) => ({
+  // 2.5.0 W-2 dar kontrol DÜŞÜK-3: Meta'daki abonelik (ve onunla durum bildirimi adresi) silindi → WABA'nın makine defterindeki kanca kaydına "kaldırıldı" olayı yazılır
+  // (adres boş: bakım turu / Bağlantıyı Sına bağlantı yeniden kurulunca HEMEN yeniden kaydeder — saatlik bekleme yok; kart "Kayıtlı Değil" der, eski "Çalışıyor" değil).
+  // Gizli yolun ve doğrulama belirtecinin karması korunur: Meta'nın kaldırmadan önce kuyruğa aldığı geç bildirimler (teslim) yine tanınır. Defter yazılamazsa kaldırma
+  // sürer (eski kayıt kalır; bakım turu en geç saatte bir Meta'daki adresi okuyup yeniden kaydeder).
+  const HOOK_REMOVED = "removed";
+  function forgetHook(wabaId) {
+    const hook = hooks ? hooks.hookOf(wabaId) : null;
+    if (!hook || hook.reason === HOOK_REMOVED) return;
+    try {
+      hooks.hookEvent({ ...hook, base: "", state: "failed", reason: HOOK_REMOVED, error: "Bağlantı kaldırıldı; durum bildirimi aboneliği Meta'dan silindi.", at: iso() });
+    } catch {
+      // defter yazılamadı (disk dolu / kilit): yukarıdaki açıklama
+    }
+  }
+  // Meta tarafı kaldırılamadı: yola göre kimin aboneliği (Yol 2: DestekOfis uygulamasının erişimi; Yol 1: müşterinin kendi Meta uygulamasının aboneliği) + veri silme adımları.
+  const failedAtMeta = (record, reason, why, extra = {}) => ({
     state: "failed",
     reason,
-    message: `Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (${why}). DestekOfis uygulamasının WhatsApp hesabınıza erişimini Meta'dan kaldırmak için ${DATA_DELETION_URL.replace(/^https:\/\//, "")} sayfasındaki adımları izleyin.`,
+    message: `Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (${why}). ${record.mode === "embedded" ? "DestekOfis uygulamasının WhatsApp hesabınıza erişimini" : "Meta uygulamanızın WhatsApp hesabınızdaki aboneliğini"} Meta'dan kaldırmak için ${DATA_DELETION_URL.replace(/^https:\/\//, "")} sayfasındaki adımları izleyin.`,
     link: DATA_DELETION_URL,
     ...extra,
   });
@@ -427,18 +458,24 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       shared = false;
     }
     if (shared) {
-      return { state: "skipped", reason: "shared", message: "Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın." };
+      // Çıkmaz yok (ilke 4): öbür şirkette kaldırılamıyorsa (dosyası açılamıyor vb.) veri silme adımları da yazılır.
+      return {
+        state: "skipped",
+        reason: "shared",
+        message: `Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın. Orada kaldıramıyorsanız ${DATA_DELETION_URL.replace(/^https:\/\//, "")} sayfasındaki adımları izleyin (öbür şirketin WhatsApp gönderimi de durur).`,
+        link: DATA_DELETION_URL,
+      };
     }
-    if (!config.whatsappGraphUrl) return failedAtMeta("graph-off", "bu kurulumda Meta adresi tanımlı değil");
-    if (!record.tokenSealed || !secrets().open(record.tokenSealed)) return failedAtMeta("token", "kayıtlı erişim belirteci bu bilgisayarda açılamıyor");
-    if (record.tokenExpired) return failedAtMeta("expired", "erişim belirtecinin süresi dolmuş");
+    if (!config.whatsappGraphUrl) return failedAtMeta(record, "graph-off", "bu kurulumda Meta adresi tanımlı değil");
+    if (!record.tokenSealed || !secrets().open(record.tokenSealed)) return failedAtMeta(record, "token", "kayıtlı erişim belirteci bu bilgisayarda açılamıyor");
+    if (record.tokenExpired) return failedAtMeta(record, "expired", "erişim belirtecinin süresi dolmuş");
     try {
       await createMetaGraph({ baseUrl: config.whatsappGraphUrl, fetchImpl: config.fetchImpl, openToken: () => secrets().open(record.tokenSealed), timeoutMs: Number(config.whatsappTimeoutMs) > 0 ? Number(config.whatsappTimeoutMs) : undefined }).unsubscribeApp(record.wabaId);
     } catch (error) {
       // Yerel kaldırma her durumda sürer (ilke 4): Meta dışı beklenmeyen hata da "kaldırılamadı" sonucudur.
-      if (!(error instanceof MetaGraphError)) return failedAtMeta("unexpected", "beklenmeyen bir hata oluştu");
+      if (!(error instanceof MetaGraphError)) return failedAtMeta(record, "unexpected", "beklenmeyen bir hata oluştu");
       const why = error.reason === "meta" ? (Number(error.code) === TOKEN_EXPIRED_CODE ? "erişim belirtecinin süresi dolmuş" : `Meta isteği reddetti, hata kodu ${error.code}`) : "Meta'ya ulaşılamadı ya da yanıt okunamadı";
-      return failedAtMeta(error.reason === "meta" ? "meta" : "unreachable", why, { code: error.code ?? null });
+      return failedAtMeta(record, error.reason === "meta" ? "meta" : "unreachable", why, { code: error.code ?? null });
     }
     return { state: "removed", reason: "", message: "WhatsApp bağlantısı kaldırıldı; Meta'daki abonelik de silindi." };
   }
@@ -608,7 +645,8 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   // (kaydedilemediği) anı. Defterdeki kayıt (error) değişmez — eski kurulumun kaydı da aynı biçimde ayrılır.
   function hookView(wabaId) {
     const hook = hooks && wabaId ? hooks.hookOf(wabaId) : null;
-    if (!hook) return {};
+    // 2.5.0 W-2 (DÜŞÜK-3): Bağlantıyı Kaldır Meta'daki aboneliği sildi — adres kayıtlı değil ("Kayıtlı Değil"; bakım turu yeniden kaydeder).
+    if (!hook || hook.reason === HOOK_REMOVED) return {};
     const view = { state: hook.state, at: hook.at || null, registeredAt: hook.registeredAt || null, error: hook.error || "" };
     if (hook.state === "failed") {
       const split = splitMetaErrorMessage(hook.error);
@@ -737,5 +775,5 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     return { baseUrl: config.whatsappGraphUrl, fetchImpl: config.fetchImpl, openToken: () => secrets().open(record.tokenSealed), timeoutMs: Number(config.whatsappTimeoutMs) > 0 ? Number(config.whatsappTimeoutMs) : undefined, onMetaError: error => noteMetaError(record, error), onMetaOk: () => noteMetaOk(record) };
   }
 
-  return { read, view, save, saveEmbedded, embeddedSteps, remove, test, selfTest, client, summary, registerHook, ensureHook, hookMatches, verifyMatches, metaOptions, tokenStatus, sendBlock, expiryNotice };
+  return { read, view, save, saveEmbedded, embeddedSteps, remove, test, selfTest, client, summary, registerHook, ensureHook, hookMatches, verifyMatches, metaOptions, tokenStatus, sendBlock, tokenRejectedPause, expiryNotice };
 }

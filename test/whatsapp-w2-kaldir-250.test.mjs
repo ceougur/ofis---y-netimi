@@ -7,7 +7,7 @@
 // TZ=Europe/Istanbul ile koşulur.
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { loginAdmin, startTestServer } from "./helpers.mjs";
+import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
 import { PNID, TOKEN, URLS, WABA, startWa } from "./whatsapp-248-ortak.mjs";
 
 const NOW = { time: "2026-11-05T10:00:00+03:00", fixed: true };
@@ -103,7 +103,11 @@ describe("2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da", () => {
       await ok(await ctx.api.post(`${URLS.conn}/test`, {}), "Bağlantıyı Sına");
       // (a) Meta reddetti.
       ctx.fake.set({ failNext: { match: /^DELETE \/\d+\/subscribed_apps$/, status: 400, body: metaError(100, "(#100) Invalid parameter") } });
-      failedAtMeta(await removeConn(ctx.api), "meta", "Meta reddi");
+      const a = await removeConn(ctx.api);
+      failedAtMeta(a, "meta", "Meta reddi");
+      // Düzeltme turu 1 (metin): Elle Bağla'da abonelik müşterinin kendi Meta uygulamasınındır.
+      assert.match(a.removal.meta.message, /Meta uygulamanızın WhatsApp hesabınızdaki aboneliğini/, a.removal.meta.message);
+      assert.doesNotMatch(a.removal.meta.message, /DestekOfis uygulamasının/, a.removal.meta.message);
       assert.equal(settingRow(ctx), null);
       // (b) Meta'ya ulaşılamıyor.
       await reconnect();
@@ -129,6 +133,13 @@ describe("2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da", () => {
       failedAtMeta(await removeConn(ctx.api), "expired", "süresi dolmuş belirteç");
       assert.equal(unsubscribeRequests(ctx.fake).length, before, "süresi dolmuş belirteçle Meta'ya istek gitmedi");
       assert.equal(settingRow(ctx), null);
+      // (e) Yol 2 (WhatsApp'ı Bağla) Meta reddi: erişimi kaldırılacak olan DestekOfis uygulamasıdır.
+      ctx.fake.set({ token: TOKEN });
+      embedded(ctx);
+      ctx.fake.set({ failNext: { match: /^DELETE \/\d+\/subscribed_apps$/, status: 400, body: metaError(100, "(#100) Invalid parameter") } });
+      const e = await removeConn(ctx.api);
+      failedAtMeta(e, "meta", "Yol 2 Meta reddi");
+      assert.match(e.removal.meta.message, /DestekOfis uygulamasının WhatsApp hesabınıza erişimini/, e.removal.meta.message);
     } finally {
       await ctx.close();
     }
@@ -211,11 +222,63 @@ describe("2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da", () => {
       const one = await removeConn(ctx.api);
       assert.deepEqual([one.configured, one.removal?.meta?.state, one.removal?.meta?.reason], [false, "skipped", "shared"], JSON.stringify(one.removal));
       assert.match(one.removal.meta.message, /başka bir şirkette de bağlı/);
+      // Düzeltme turu 1 (ilke 4, çıkmaz yok): öbür şirkette kaldırılamıyorsa izlenecek yol da yazılı.
+      assert.match(one.removal.meta.message, /destekofis\.net\/veri-silme/, one.removal.meta.message);
+      assert.equal(one.removal.meta.link, VERI_SILME);
       assert.equal(unsubscribeRequests(ctx.fake).length, 0, "ortak abonelik silinmedi");
       assert.equal((await ctx.api.get(`${URLS.conn}${q}`)).data.data.configured, true, "ikinci şirketin bağlantısı sürüyor");
       const two = await removeConn(ctx.api, q);
       assert.deepEqual([two.configured, two.removal?.meta?.state], [false, "removed"], JSON.stringify(two.removal));
       assert.equal(unsubscribeRequests(ctx.fake).length, 1, "son şirket kaldırınca abonelik silindi");
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  // Dar kontrol DÜŞÜK-2 (gerileme): silinen şirketin bağlantı özeti ortak kayıtta kalıyordu → son şirketin Kaldır'ı aboneliği "başka şirkette de bağlı" diye hiç silemiyordu,
+  // ileti artık olmayan şirketi gösteriyordu, veri silme bağlantısı da yoktu (çıkmaz; ilke 4). Beklenen: yalnız VAR OLAN şirket sayılır.
+  it("aynı WABA'lı ikinci şirket SİLİNDİ: kalan şirketin Kaldır'ı Meta'daki aboneliği siler (silinen şirket 'başka şirkette bağlı' sayılmaz)", async () => {
+    const ctx = await startWa({ now: NOW });
+    try {
+      const created = await ok(await ctx.api.post("/api/companies", { name: "Silinecek Şirket", select: false }), "ikinci şirket");
+      const company = created.company || created;
+      const q = `?hofCompany=${encodeURIComponent(company.id)}`;
+      await ok(await ctx.api.put(`${URLS.conn}${q}`, { phoneNumberId: PNID, wabaId: WABA, token: TOKEN }), "ikinci şirkette Elle Bağla");
+      const code = (await ok(await ctx.api.get("/api/companies"), "şirketler")).companies.find(item => item.id === company.id)?.code;
+      const del = await ctx.api.raw("DELETE", `/api/companies/${company.id}`, { body: JSON.stringify({ confirm: code, password: ADMIN_PASSWORD }), headers: { "content-type": "application/json" } });
+      assert.equal(del.status, 200, `ön koşul: şirket silindi (${del.status} ${JSON.stringify(del.data).slice(0, 200)})`);
+      const data = await removeConn(ctx.api);
+      assert.deepEqual([data.configured, data.removal?.removed, data.removal?.meta?.state], [false, true, "removed"], JSON.stringify(data.removal));
+      assert.equal(unsubscribeRequests(ctx.fake).length, 1, "Meta'daki abonelik silindi");
+      assert.doesNotMatch(data.removal.meta.message, /başka bir şirkette/, data.removal.meta.message);
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  // Dar kontrol DÜŞÜK-3 (gerileme): Kaldır Meta'daki aboneliği silince makine defterindeki kanca kaydı "Kayıtlı" kalıyordu; Sına'sız yeniden bağlanınca Bildirim Yolu
+  // "Çalışıyor" görünüyor, bakım turu saatlik beklemeyle kaydı atlıyordu (en çok 1 saat durum bildirimi yok). Beklenen: kayıt "Kayıtlı Değil", ilk bakım turu yeniden kaydeder.
+  it("Kaldır aboneliği silince Bildirim Yolu kaydı da düşer: Sına'sız yeniden bağlanınca 'Kayıtlı Değil' (Çalışıyor DEĞİL), ilk bakım turu Meta'ya hemen yeniden kaydeder", async () => {
+    const ctx = await startWa({ now: NOW, connect: false });
+    try {
+      embedded(ctx);
+      ctx.server.app.mobileRemote.setPublicUrl("http://ofisw2.destekofis.test");
+      await ok(await ctx.api.post(`${URLS.conn}/test`, {}), "Bağlantıyı Sına");
+      assert.equal((await ok(await ctx.api.get(URLS.conn), "görünüm")).hook?.state, "active", "ön koşul: Bildirim Yolu Çalışıyor");
+      const removed = await removeConn(ctx.api);
+      assert.equal(removed.removal?.meta?.state, "removed", "ön koşul: Meta'daki abonelik silindi");
+      assert.equal(ctx.fake.state.override, null, "ön koşul: Meta'da adres yok");
+      embedded(ctx); // yeniden bağlan (Sına'sız)
+      const again = await ok(await ctx.api.get(URLS.conn), "görünüm");
+      assert.notEqual(again.hook?.state, "active", `Bildirim Yolu 'Çalışıyor' görünmemeli (Meta'da adres yok): ${JSON.stringify(again.hook)}`);
+      assert.equal(again.hook, undefined, "Kayıtlı Değil");
+      const before = ctx.fake.requests.length;
+      ctx.clock.advance(60_000);
+      await ctx.wa.scheduler.maintain();
+      const posts = ctx.fake.requests.slice(before).filter(item => item.method === "POST" && /\/subscribed_apps$/.test(item.path));
+      assert.equal(posts.length, 1, "ilk bakım turu adresi Meta'ya yeniden kaydetti (saatlik bekleme yok)");
+      assert.match(String(ctx.fake.state.override), /^http:\/\/ofisw2\.destekofis\.test\/wa\/kanca\//);
+      assert.equal((await ok(await ctx.api.get(URLS.conn), "görünüm")).hook?.state, "active");
     } finally {
       await ctx.close();
     }

@@ -81,7 +81,7 @@ export function statementText({ office, account, lines, range, next, overdue }) 
   return out.join("\n");
 }
 
-export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null, mobileSyncOf = () => null, writeLock = null }) {
+export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null, mobileSyncOf = () => null, writeLock = null, companies = null }) {
   const today = () => {
     const d = clock();
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -190,7 +190,9 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   // onChange (W2/W9): ortak katmanın kaydı (tünel kuralı) — lib/whatsapp/hub.mjs. T2-3/4: durum bildirimi adresinin kaydı WABA düzeyinde, makine defterinde
   // (whatsapp.ledger; şirket dosyasının dışında — geri yükleme / sıfırlama bozmaz); publicUrl: Bağlantıyı Sına kanca adresini Meta'dakiyle karşılaştırır.
   // 2.5.0 W-2 sharedWaba: aynı WABA bu bilgisayarda başka şirkette belirteçli bağlı mı (ortak kayıt; o zaman Bağlantıyı Kaldır Meta'daki ortak aboneliği silmez).
-  const sharedWaba = wabaId => Object.entries(whatsapp?.registry?.snapshot?.() || {}).some(([id, item]) => id !== String(companyId) && item?.configured && item.wabaId === String(wabaId));
+  // Dar kontrol DÜŞÜK-2: yalnız VAR OLAN şirket sayılır — silinen şirketin özeti kayıtta kalır (silme kaydı düşürmez); sayılırsa son şirketin Kaldır'ı aboneliği hiç silemezdi.
+  const exists = id => (companies?.get ? Boolean(companies.get(id)) : true);
+  const sharedWaba = wabaId => Object.entries(whatsapp?.registry?.snapshot?.() || {}).some(([id, item]) => id !== String(companyId) && item?.configured && item.wabaId === String(wabaId) && exists(id));
   const connection = createWhatsappConnection({ store, config, audit, now: clock, onChange: summary => whatsapp?.registry?.set(companyId, summary), hooks: whatsapp?.ledger || null, publicUrl: () => mobileRemote?.publicUrl?.() || "", sharedWaba });
   const writable = () => !license || license.writable();
   const view = () => connection.view({ writable: writable() });

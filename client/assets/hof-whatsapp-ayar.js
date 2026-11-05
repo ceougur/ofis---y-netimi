@@ -231,6 +231,9 @@
     render();
   }
 
+  // 2.5.0 W-1(a) dar kontrol (metin): belirteç oluşturulurken süre "Never" seçilmeli — Meta 60 günlük seçenek de sunar; o belirtecin bitişi programa gelmez, önceden
+  // uyarı verilemez (yalnız Meta reddedince "Süresi Doldu").
+  const TOKEN_HELP = "Meta İşletme Ayarları'nda (Business Settings) System Users → Generate token; süre (Token expiration) olarak Never seçin — 60 günlük belirtecin bitişini program önceden bilemez. İzinler: business_management, whatsapp_business_management, whatsapp_business_messaging.";
   // renew (2.5.0 W-1(a) Yeniden Bağla, Elle Bağla yolu): süresi dolan / dolmak üzere olan belirtecin yerine yenisi ZORUNLU.
   function connectForm({ renew = false } = {}) {
     const data = view || {};
@@ -239,13 +242,13 @@
       title: renew ? "Yeniden Bağla" : "Elle Bağla",
       eyebrow: "WHATSAPP BUSINESS API",
       intro: renew
-        ? "Meta İşletme Ayarları'nda (Business Settings) System Users → Generate token ile yeni kalıcı belirteç oluşturup aşağıya yapıştırın. Kimlikler kayıtlı değerlerle dolu gelir. Belirteç şifreli saklanır ve bir daha ekranda gösterilmez."
+        ? "Meta İşletme Ayarları'nda (Business Settings) System Users → Generate token ile yeni kalıcı belirteç oluşturup aşağıya yapıştırın; süre (Token expiration) olarak Never seçin. Kimlikler kayıtlı değerlerle dolu gelir. Belirteç şifreli saklanır ve bir daha ekranda gösterilmez."
         : "Meta İşletme Ayarları'nda oluşturduğunuz uygulamanın bilgilerini girin. Numara WhatsApp uygulamasında kayıtlı olmamalıdır (ör. sabit hat); yeni hesapta Meta 24 saatte en çok 250 farklı kişiye gönderime izin verir. Belirteç şifreli saklanır ve bir daha ekranda gösterilmez.",
       fields: [
         { name: "phoneNumberId", label: "Telefon Numarası Kimliği (Phone Number ID)", required: true, value: data.phoneNumberId || "", inputmode: "numeric", autofocus: !renew },
         { name: "wabaId", label: "WhatsApp Business Hesap Kimliği (WABA ID)", required: true, value: data.wabaId || "", inputmode: "numeric" },
         { name: "appId", label: "Uygulama Kimliği (App ID)", value: data.appId || "", inputmode: "numeric", help: "İsteğe bağlı; Ekstre şablonunu Meta'da açmak için gerekir (Meta uygulama panelinin üst kısmındaki App ID)." },
-        { name: "token", label: "Kalıcı Erişim Belirteci (System User)", type: "password", required: !keep, autofocus: renew, autocomplete: "new-password", help: keep ? "Kayıtlı belirteç korunur; değiştirmek için yenisini yapıştırın." : "Meta İşletme Ayarları'nda (Business Settings) System Users → Generate token; izinler: business_management, whatsapp_business_management, whatsapp_business_messaging." },
+        { name: "token", label: "Kalıcı Erişim Belirteci (System User)", type: "password", required: !keep, autofocus: renew, autocomplete: "new-password", help: keep ? "Kayıtlı belirteç korunur; değiştirmek için yenisini yapıştırın." : TOKEN_HELP },
       ],
       submitLabel: "Kaydet ve Sına",
       onSubmit: async values => {
@@ -377,7 +380,9 @@
   let removeBusy = false;
   async function removeConnection(button) {
     if (removeBusy) return;
-    const sure = await HOF.confirm({ title: "Bağlantı kaldırılsın mı?", message: "Kayıtlı belirteç ve kimlikler bu şirketten silinir, DestekOfis'in Meta'daki bildirim aboneliği de kaldırılır; bekleyen otomatik gönderimler durdurulur ve WhatsApp ile otomatik gönderim yapılamaz. Meta'daki numaranız ve WhatsApp hesabınız değişmez.", confirmLabel: "Bağlantıyı Kaldır", danger: true });
+    // Dar kontrol (metin): Elle Bağla'da abonelik müşterinin kendi Meta uygulamasınındır (DestekOfis'in değil).
+    const whose = view?.mode === "embedded" ? "DestekOfis'in Meta'daki bildirim aboneliği" : "Meta uygulamanızın bu WhatsApp hesabındaki bildirim aboneliği";
+    const sure = await HOF.confirm({ title: "Bağlantı kaldırılsın mı?", message: `Kayıtlı belirteç ve kimlikler bu şirketten silinir, ${whose} de kaldırılır; bekleyen otomatik gönderimler durdurulur ve WhatsApp ile otomatik gönderim yapılamaz. Meta'daki numaranız ve WhatsApp hesabınız değişmez.`, confirmLabel: "Bağlantıyı Kaldır", danger: true });
     if (!sure) return;
     removeBusy = true;
     if (button) {
@@ -391,8 +396,10 @@
       if (removal?.meta?.state === "failed") {
         const link = removal.meta.link;
         HOF.toast(`${removal.meta.message}${stopped}`, { type: "warn", timeout: 20000, ...(link ? { action: { label: "Veri Silme Adımları", onClick: () => window.open(link, "_blank", "noopener") } } : {}) });
-      } else if (removal?.meta?.state === "skipped" && removal.meta.message) HOF.toast(`${removal.meta.message}${stopped}`, { type: "info", timeout: 12000 });
-      else HOF.toast(`${removal?.meta?.message || "WhatsApp bağlantısı kaldırıldı."}${stopped}`, { type: "success" });
+      } else if (removal?.meta?.state === "skipped" && removal.meta.message) {
+        const link = removal.meta.link;
+        HOF.toast(`${removal.meta.message}${stopped}`, { type: "info", timeout: 20000, ...(link ? { action: { label: "Veri Silme Adımları", onClick: () => window.open(link, "_blank", "noopener") } } : {}) });
+      } else HOF.toast(`${removal?.meta?.message || "WhatsApp bağlantısı kaldırıldı."}${stopped}`, { type: "success" });
     } catch (error) {
       HOF.toastError(error);
     } finally {

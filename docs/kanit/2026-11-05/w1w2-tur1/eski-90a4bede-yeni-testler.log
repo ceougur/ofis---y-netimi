@@ -1,0 +1,763 @@
+TAP version 13
+# (node:2054) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: B5 şirket seçimi / lisans denetimi → özet yüklemesi
+    # Subtest: sınıflama: select / license check / license contact yüklemez; erişim, şirket yaşam döngüsü ve lisans etkinleştirme güvenlik
+    ok 1 - sınıflama: select / license check / license contact yüklemez; erişim, şirket yaşam döngüsü ve lisans etkinleştirme güvenlik
+      ---
+      duration_ms: 0.973522
+      type: 'test'
+      ...
+    # Subtest: 10 şirket geçişi ve 3 elle lisans denetimi özet yüklemesi doğurmaz (istekler 200)
+    ok 2 - 10 şirket geçişi ve 3 elle lisans denetimi özet yüklemesi doğurmaz (istekler 200)
+      ---
+      duration_ms: 348.426161
+      type: 'test'
+      ...
+    # Subtest: komşu: şirket ERİŞİMİ değişikliği hemen bir özet yüklemesi doğurur (güvenlik olarak kalır)
+    ok 3 - komşu: şirket ERİŞİMİ değişikliği hemen bir özet yüklemesi doğurur (güvenlik olarak kalır)
+      ---
+      duration_ms: 170.390049
+      type: 'test'
+      ...
+    1..3
+ok 1 - B5 şirket seçimi / lisans denetimi → özet yüklemesi
+  ---
+  duration_ms: 1593.893252
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 W-1(a) ORTA-1 — WhatsApp süre bildirimi sorusu → özet yüklemesi
+    # Subtest: sınıflama: süre bildirimi sorusu yüklemez; WhatsApp bağlantısının gerçek değişiklikleri (kaydet / kaldır) ve benzer adlı uç veri kalır
+    not ok 1 - sınıflama: süre bildirimi sorusu yüklemez; WhatsApp bağlantısının gerçek değişiklikleri (kaydet / kaldır) ve benzer adlı uç veri kalır
+      ---
+      duration_ms: 1.422628
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/mobil-gg247-b5.test.mjs:90:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        'veri' !== null
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      actual: 'veri'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/mobil-gg247-b5.test.mjs:91:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 10 saatte 30 ana ekran açılışı (bildirim sorusu, yanıt 200) 0 özet yüklemesi; aynı çizelgede bir cari kaydı yükler
+    not ok 2 - 10 saatte 30 ana ekran açılışı (bildirim sorusu, yanıt 200) 0 özet yüklemesi; aynı çizelgede bir cari kaydı yükler
+      ---
+      duration_ms: 731.374751
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/mobil-gg247-b5.test.mjs:96:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        30 bildirim sorusu 30 özet yüklemesi doğurdu
+        
+        30 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 30
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/mobil-gg247-b5.test.mjs:106:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.5.0 W-1(a) ORTA-1 — WhatsApp süre bildirimi sorusu → özet yüklemesi
+  ---
+  duration_ms: 1322.276323
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/mobil-gg247-b5.test.mjs:71:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:2065) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi
+    # Subtest: Yol 1 (Elle Bağla): süresiz sayılır — 400 gün sonra da uyarı yok, gönderim açık; bildirim ucu göstermez ve gün yazmaz
+    ok 1 - Yol 1 (Elle Bağla): süresiz sayılır — 400 gün sonra da uyarı yok, gönderim açık; bildirim ucu göstermez ve gün yazmaz
+      ---
+      duration_ms: 675.47118
+      type: 'test'
+      ...
+    # Subtest: Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe 7 gün kala 'doluyor' (gün sayısı), bitişte 'Süresi Doldu' — gönderim / önizleme / deneme 409 Türkçe neden, Meta'ya ileti yok; Bağlantıyı Sına açık; Yeniden Bağla yeni 60 gün
+    ok 2 - Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe 7 gün kala 'doluyor' (gün sayısı), bitişte 'Süresi Doldu' — gönderim / önizleme / deneme 409 Türkçe neden, Meta'ya ileti yok; Bağlantıyı Sına açık; Yeniden Bağla yeni 60 gün
+      ---
+      duration_ms: 727.108278
+      type: 'test'
+      ...
+    # Subtest: süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği göndermeden duraklatır (neden 'süresi doldu'); Devam Et 409; Yeniden Bağla → Devam Et → kalan kişilere gider, aynı kişiye ikinci ileti yok
+    ok 3 - süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği göndermeden duraklatır (neden 'süresi doldu'); Devam Et 409; Yeniden Bağla → Devam Et → kalan kişilere gider, aynı kişiye ikinci ileti yok
+      ---
+      duration_ms: 548.965817
+      type: 'test'
+      ...
+    # Subtest: Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlantı 'Süresi Doldu' (Meta); toplu iş duraklar, yeni gönderim / Devam Et 409; yeni belirteçle Yeniden Bağla → Devam Et; Sına başarılıysa kalkar
+    not ok 4 - Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlantı 'Süresi Doldu' (Meta); toplu iş duraklar, yeni gönderim / Devam Et 409; yeni belirteçle Yeniden Bağla → Devam Et; Sına başarılıysa kalkar
+      ---
+      duration_ms: 475.243098
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:156:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        190 alan kişi bekleyenlerle Duraklatıldı
+        + actual - expected
+        
+          [
+        +   'failed',
+            'paused',
+        -   'paused'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'paused'
+        1: 'paused'
+      actual:
+        0: 'failed'
+        1: 'paused'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:173:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış): Süresi Doldu DEĞİL, 'Sınama Başarısız' kalır; Meta 'süresi doldu' derse (alt kod 463) çalışmamış belirteçte de Süresi Doldu
+    ok 5 - Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış): Süresi Doldu DEĞİL, 'Sınama Başarısız' kalır; Meta 'süresi doldu' derse (alt kod 463) çalışmamış belirteçte de Süresi Doldu
+      ---
+      duration_ms: 361.665654
+      type: 'test'
+      ...
+    # Subtest: bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ, kullanıcı başına (programın yerel günü); süre dolunca da günde bir; yetkisiz kullanıcıya uç 403
+    ok 6 - bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ, kullanıcı başına (programın yerel günü); süre dolunca da günde bir; yetkisiz kullanıcıya uç 403
+      ---
+      duration_ms: 612.750641
+      type: 'test'
+      ...
+    # Subtest: Yol 2 süresi Meta yanıtında varsa kaydedilir: expires_in → bağlanma + o süre; data_access_expires_at yalnız KISALTIR; geçersiz değer yok sayılır (60 gün)
+    ok 7 - Yol 2 süresi Meta yanıtında varsa kaydedilir: expires_in → bağlanma + o süre; data_access_expires_at yalnız KISALTIR; geçersiz değer yok sayılır (60 gün)
+      ---
+      duration_ms: 400.25363
+      type: 'test'
+      ...
+    # Subtest: WhatsApp'ı Bağla rotası uçtan uca (kapıcı taklidi): kapıcı Meta'nın expires_in'ini aktarırsa o süre, aktarmazsa (bugünkü kapıcı) bağlanma + 60 gün
+    ok 8 - WhatsApp'ı Bağla rotası uçtan uca (kapıcı taklidi): kapıcı Meta'nın expires_in'ini aktarırsa o süre, aktarmazsa (bugünkü kapıcı) bağlanma + 60 gün
+      ---
+      duration_ms: 407.019733
+      type: 'test'
+      ...
+    # Subtest: ek denetim — 2.5.0 öncesi Yol 2 kaydı (süre alanları yok): bağlanma anı + 60 gün sayılır; Yol 1 kaydı süresiz (gerçek eski kodla göç: test/whatsapp-w1a-goc-250.mjs)
+    ok 9 - ek denetim — 2.5.0 öncesi Yol 2 kaydı (süre alanları yok): bağlanma anı + 60 gün sayılır; Yol 1 kaydı süresiz (gerçek eski kodla göç: test/whatsapp-w1a-goc-250.mjs)
+      ---
+      duration_ms: 409.348641
+      type: 'test'
+      ...
+    1..9
+not ok 3 - 2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi
+  ---
+  duration_ms: 4620.611158
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:52:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 W-1(a) — Meta 190 alan kişi bekleyenlere döner (KULLANICI KARARI 05.11 ~19:15)
+    # Subtest: Yol 2, 190 şablon okuması sırasında: iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+    not ok 1 - Yol 2, 190 şablon okuması sırasında: iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+      ---
+      duration_ms: 470.499814
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:359:5'
+      failureType: 'testCodeFailure'
+      error: "neden 'Devam Et'i anar: Erişim belirtecinin süresi dolmuş. Meta İşletme Ayarları → Sistem Kullanıcıları'ndan yeni kalıcı belirteç oluşturup Elle Bağla ile girin. (Meta hata kodu 190: Error validating access token: The session has been invalidated.)"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "Erişim belirtecinin süresi dolmuş. Meta İşletme Ayarları → Sistem Kullanıcıları'ndan yeni kalıcı belirteç oluşturup Elle Bağla ile girin. (Meta hata kodu 190: Error validating access token: The session has been invalidated.)"
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:378:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Yol 2, 190 PDF yükleme sırasında: iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+    not ok 2 - Yol 2, 190 PDF yükleme sırasında: iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+      ---
+      duration_ms: 501.358006
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:359:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        190 alan kişi Başarısız değil; üç kişi de Duraklatıldı
+        + actual - expected
+        
+          [
+        +   'failed',
+            'paused',
+            'paused',
+        -   'paused'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'paused'
+        1: 'paused'
+        2: 'paused'
+      actual:
+        0: 'failed'
+        1: 'paused'
+        2: 'paused'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:375:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Yol 2, 190 ileti isteği sırasında: iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+    not ok 3 - Yol 2, 190 ileti isteği sırasında: iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+      ---
+      duration_ms: 473.828316
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:359:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        190 alan kişi Başarısız değil; üç kişi de Duraklatıldı
+        + actual - expected
+        
+          [
+        +   'failed',
+            'paused',
+            'paused',
+        -   'paused'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'paused'
+        1: 'paused'
+        2: 'paused'
+      actual:
+        0: 'failed'
+        1: 'paused'
+        2: 'paused'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:375:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Yol 1, ileti isteği Meta'dayken belirteç değiştirildi (başka pencerede Bilgileri Değiştir) ve eski belirteç 190 aldı: bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; neden Yol 1'e göre ('Bilgileri Değiştir', 'Devam Et'); Devam Et yeni belirteçle gönderir
+    not ok 4 - Yol 1, ileti isteği Meta'dayken belirteç değiştirildi (başka pencerede Bilgileri Değiştir) ve eski belirteç 190 aldı: bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; neden Yol 1'e göre ('Bilgileri Değiştir', 'Devam Et'); Devam Et yeni belirteçle gönderir
+      ---
+      duration_ms: 473.770298
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:395:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        190 alan kişi bekleyenlerle Duraklatıldı
+        + actual - expected
+        
+          [
+        +   'failed',
+            'paused',
+        -   'paused'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'paused'
+        1: 'paused'
+      actual:
+        0: 'failed'
+        1: 'paused'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:418:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 4 - 2.5.0 W-1(a) — Meta 190 alan kişi bekleyenlere döner (KULLANICI KARARI 05.11 ~19:15)
+  ---
+  duration_ms: 1920.147298
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs:353:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 W-1(a) — dar kontrol DÜŞÜK-4 (M8, M11, M18)
+    # Subtest: M8: Meta 190 kaynaklı Süresi Doldu, Sına DIŞI bir istekte Meta belirteci yine kabul edince kalkar (Bildirim Yolu Yeniden Kaydet)
+    ok 1 - M8: Meta 190 kaynaklı Süresi Doldu, Sına DIŞI bir istekte Meta belirteci yine kabul edince kalkar (Bildirim Yolu Yeniden Kaydet)
+      ---
+      duration_ms: 416.209677
+      type: 'test'
+      ...
+    # Subtest: M11: PDF yüklenirken bitiş anı geçti ve Meta 190 DIŞI bir duraklatma hatası verdi (131031): o hata kendi yolundan — iş Başarısız (§7a 13), toplu iş Meta'nın nedeniyle duraklar; Süresi Doldu engeli onu ezmez
+    ok 2 - M11: PDF yüklenirken bitiş anı geçti ve Meta 190 DIŞI bir duraklatma hatası verdi (131031): o hata kendi yolundan — iş Başarısız (§7a 13), toplu iş Meta'nın nedeniyle duraklar; Süresi Doldu engeli onu ezmez
+      ---
+      duration_ms: 495.089308
+      type: 'test'
+      ...
+    # Subtest: M18: süresi dolan bağlantıda bakım turu Meta'ya istek göndermez (Bildirim Yolu denetimi atlanır); Bağlantıyı Sına yine dener
+    ok 3 - M18: süresi dolan bağlantıda bakım turu Meta'ya istek göndermez (Bildirim Yolu denetimi atlanır); Bağlantıyı Sına yine dener
+      ---
+      duration_ms: 402.241664
+      type: 'test'
+      ...
+    1..3
+ok 5 - 2.5.0 W-1(a) — dar kontrol DÜŞÜK-4 (M8, M11, M18)
+  ---
+  duration_ms: 1313.985033
+  type: 'suite'
+  ...
+# (node:2077) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 29, 31)
+    # Subtest: ret sırası bağlı değil → yetki → lisans → onay → şablon; firma adı yok; şablon onaysız / Pazarlama'da → 409, Meta'ya ileti gitmez, toplu iş kaydı oluşmaz
+    ok 1 - ret sırası bağlı değil → yetki → lisans → onay → şablon; firma adı yok; şablon onaysız / Pazarlama'da → 409, Meta'ya ileti gitmez, toplu iş kaydı oluşmaz
+      ---
+      duration_ms: 752.822176
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.4.8 W2 — ön koşullar, yetki ve onay kutusu (sunucuda; §7a 28, 29, 31)
+  ---
+  duration_ms: 754.038503
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi
+    # Subtest: ekstre: belge başlıklı şablon (PDF + 4 değişken, '+' ile); sabit hat ve yurt dışı ELENMEZ, aynı numaralı iki cariye iki ileti; numarasız / WhatsApp Mesajı İstemiyor elenir; sıra = seçim sırası
+    ok 1 - ekstre: belge başlıklı şablon (PDF + 4 değişken, '+' ile); sabit hat ve yurt dışı ELENMEZ, aynı numaralı iki cariye iki ileti; numarasız / WhatsApp Mesajı İstemiyor elenir; sıra = seçim sırası
+      ---
+      duration_ms: 707.320772
+      type: 'test'
+      ...
+    # Subtest: ödeme hatırlatma (§7a 20): {{3}} en eski gecikmiş vade, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; gecikmiş borcu olmayan elenir
+    ok 2 - ödeme hatırlatma (§7a 20): {{3}} en eski gecikmiş vade, {{4}} vadesi geçmiş toplam, {{5}} güncel bakiye; gecikmiş borcu olmayan elenir
+      ---
+      duration_ms: 503.677268
+      type: 'test'
+      ...
+    1..2
+ok 7 - 2.4.8 W2 — gönderim: içerik, eleme nedenleri, durum makinesi
+  ---
+  duration_ms: 1211.614446
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — çift gönderim yok (§7a 9, 10)
+    # Subtest: aynı istek kimliği → tek toplu iş; bekleyen iş varken aynı cari + şablon + dönem 'Zaten Kuyrukta' (iki sekme / iki kullanıcı); bittikten sonra 'Daha Önce Gönderildi' (R3: varsayılan Bunları Çıkar, sendAgain ile Yine de Gönder)
+    ok 1 - aynı istek kimliği → tek toplu iş; bekleyen iş varken aynı cari + şablon + dönem 'Zaten Kuyrukta' (iki sekme / iki kullanıcı); bittikten sonra 'Daha Önce Gönderildi' (R3: varsayılan Bunları Çıkar, sendAgain ile Yine de Gönder)
+      ---
+      duration_ms: 605.937568
+      type: 'test'
+      ...
+    # Subtest: zaman aşımı / bağlantı kopması → Sonucu Belirsiz, kendiliğinden yeniden GÖNDERİLMEZ, toplu iş SÜRER; Yine de Gönder onay ister
+    ok 2 - zaman aşımı / bağlantı kopması → Sonucu Belirsiz, kendiliğinden yeniden GÖNDERİLMEZ, toplu iş SÜRER; Yine de Gönder onay ister
+      ---
+      duration_ms: 1312.691807
+      type: 'test'
+      ...
+    # Subtest: kabul yazımı düştü (disk dolu): iş 'Gönderiliyor'da kalır, defterdeki kabulle çözülür; program yeniden açılınca da İKİNCİ ileti yok
+    ok 3 - kabul yazımı düştü (disk dolu): iş 'Gönderiliyor'da kalır, defterdeki kabulle çözülür; program yeniden açılınca da İKİNCİ ileti yok
+      ---
+      duration_ms: 575.402544
+      type: 'test'
+      ...
+    1..3
+ok 8 - 2.4.8 W2 — çift gönderim yok (§7a 9, 10)
+  ---
+  duration_ms: 2494.776764
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+    # Subtest: 190 (belirteç) → toplu iş duraklar; hatayı alan kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; sonraki kişilere istek gitmez; yeniden bağlanınca Devam Et üçüne de gönderir (kişi başına bir ileti)
+    not ok 1 - 190 (belirteç) → toplu iş duraklar; hatayı alan kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; sonraki kişilere istek gitmez; yeniden bağlanınca Devam Et üçüne de gönderir (kişi başına bir ileti)
+      ---
+      duration_ms: 546.203647
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-cekirdek-248.test.mjs:319:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'meta-token'
+        - 'token-expired'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'token-expired'
+      actual: 'meta-token'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-cekirdek-248.test.mjs:330:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 131026 (alıcı) ve tanınmayan kod → o iş Başarısız (kodlu), toplu iş sürer; Başarısızları Yeniden Dene yalnız onları YENİ işle gönderir
+    ok 2 - 131026 (alıcı) ve tanınmayan kod → o iş Başarısız (kodlu), toplu iş sürer; Başarısızları Yeniden Dene yalnız onları YENİ işle gönderir
+      ---
+      duration_ms: 675.02786
+      type: 'test'
+      ...
+    # Subtest: geçici (130429): iş 30 sn → 2 dk → 15 dk bekler, 3 denemeden sonra Başarısız; toplu işte art arda 5 geçici → duraklar; kod 2 → bekleyip BİR kez; başarılı işin hata kodu temizlenir
+    ok 3 - geçici (130429): iş 30 sn → 2 dk → 15 dk bekler, 3 denemeden sonra Başarısız; toplu işte art arda 5 geçici → duraklar; kod 2 → bekleyip BİR kez; başarılı işin hata kodu temizlenir
+      ---
+      duration_ms: 730.008928
+      type: 'test'
+      ...
+    # Subtest: R1: Meta'ya HİÇ ulaşılamıyor (internet yok) → iş Başarısız SAYILMAZ, deneme sayacı artmaz; toplu iş 'Bağlantı Bekleniyor' (Devam Et gerekmez), kaç tur sürerse sürsün duraklamaz; bağlantı dönünce kendiliğinden BİR kez gider
+    ok 4 - R1: Meta'ya HİÇ ulaşılamıyor (internet yok) → iş Başarısız SAYILMAZ, deneme sayacı artmaz; toplu iş 'Bağlantı Bekleniyor' (Devam Et gerekmez), kaç tur sürerse sürsün duraklamaz; bağlantı dönünce kendiliğinden BİR kez gider
+      ---
+      duration_ms: 600.369113
+      type: 'test'
+      ...
+    # Subtest: 131056 → o kişi 1 dk sonra; 131049 → 'Meta Bekletti (24 Saat Sonra Yeniden)', aynı medyayla bir kez, yine düşerse Başarısız (§7a 14)
+    ok 5 - 131056 → o kişi 1 dk sonra; 131049 → 'Meta Bekletti (24 Saat Sonra Yeniden)', aynı medyayla bir kez, yine düşerse Başarısız (§7a 14)
+      ---
+      duration_ms: 560.903944
+      type: 'test'
+      ...
+    # Subtest: R2: şablon gönderim sürerken Pazarlama'ya alınırsa en geç 10 dakikada ve HER 100 İLETİDE yeniden okunur (§7a 27 revizyonu): toplu iş durur, ileti gitmez
+    ok 6 - R2: şablon gönderim sürerken Pazarlama'ya alınırsa en geç 10 dakikada ve HER 100 İLETİDE yeniden okunur (§7a 27 revizyonu): toplu iş durur, ileti gitmez
+      ---
+      duration_ms: 3836.274439
+      type: 'test'
+      ...
+    1..6
+not ok 9 - 2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)
+  ---
+  duration_ms: 6950.049098
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-cekirdek-248.test.mjs:315:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+    # Subtest: sınır = min(Meta basamağı, elle sınır); fazlası 'Sınır Nedeniyle Bekliyor', pencere (en eski + 24 sa) açılınca sürer; gece yarısında SIFIRLANMAZ; pencerede sayılmış kişi GEÇER
+    ok 1 - sınır = min(Meta basamağı, elle sınır); fazlası 'Sınır Nedeniyle Bekliyor', pencere (en eski + 24 sa) açılınca sürer; gece yarısında SIFIRLANMAZ; pencerede sayılmış kişi GEÇER
+      ---
+      duration_ms: 669.574173
+      type: 'test'
+      ...
+    # Subtest: Meta basamağı TIER_2K ise elle sınır yoksa 2.000; Meta sınır kodu (131048, D0-10) → aynı WABA'nın BÜTÜN işleri 24 saat bekler
+    ok 2 - Meta basamağı TIER_2K ise elle sınır yoksa 2.000; Meta sınır kodu (131048, D0-10) → aynı WABA'nın BÜTÜN işleri 24 saat bekler
+      ---
+      duration_ms: 614.939833
+      type: 'test'
+      ...
+    # Subtest: iki şirket AYNI portföyü (WABA) kullanınca sayaç ortak: 001'in gönderdiği kişiler 002'nin sınırından düşer; aynı numaralı kişi yer tutmaz
+    ok 3 - iki şirket AYNI portföyü (WABA) kullanınca sayaç ortak: 001'in gönderdiği kişiler 002'nin sınırından düşer; aynı numaralı kişi yer tutmaz
+      ---
+      duration_ms: 958.342654
+      type: 'test'
+      ...
+    1..3
+ok 10 - 2.4.8 W2 — 24 saatte farklı kişi sınırı (makine defteri, WABA kimliğine göre; §7a 4, 30)
+  ---
+  duration_ms: 2243.327831
+  type: 'suite'
+  ...
+# (node:2084) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da
+    # Subtest: Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)
+    ok 1 - Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)
+      ---
+      duration_ms: 544.292883
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'
+    ok 2 - aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'
+      ---
+      duration_ms: 472.807191
+      type: 'test'
+      ...
+    # Subtest: Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme
+    not ok 3 - Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme
+      ---
+      duration_ms: 381.930527
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-kaldir-250.test.mjs:95:3'
+      failureType: 'testCodeFailure'
+      error: "Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (Meta isteği reddetti, hata kodu 100). DestekOfis uygulamasının WhatsApp hesabınıza erişimini Meta'dan kaldırmak için destekofis.net/veri-silme sayfasındaki adımları izleyin."
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (Meta isteği reddetti, hata kodu 100). DestekOfis uygulamasının WhatsApp hesabınıza erişimini Meta'dan kaldırmak için destekofis.net/veri-silme sayfasındaki adımları izleyin."
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-kaldir-250.test.mjs:109:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK
+    ok 4 - Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK
+      ---
+      duration_ms: 434.31437
+      type: 'test'
+      ...
+    # Subtest: bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'
+    ok 5 - bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 602.793584
+      type: 'test'
+      ...
+    # Subtest: iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir
+    not ok 6 - iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir
+      ---
+      duration_ms: 549.61293
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-kaldir-250.test.mjs:215:3'
+      failureType: 'testCodeFailure'
+      error: "Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın."
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: "Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın."
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-kaldir-250.test.mjs:226:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: aynı WABA'lı ikinci şirket SİLİNDİ: kalan şirketin Kaldır'ı Meta'daki aboneliği siler (silinen şirket 'başka şirkette bağlı' sayılmaz)
+    not ok 7 - aynı WABA'lı ikinci şirket SİLİNDİ: kalan şirketin Kaldır'ı Meta'daki aboneliği siler (silinen şirket 'başka şirkette bağlı' sayılmaz)
+      ---
+      duration_ms: 754.088105
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-kaldir-250.test.mjs:240:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"removed":true,"already":false,"replaced":false,"stopped":0,"meta":{"state":"skipped","reason":"shared","message":"Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın."}}
+        + actual - expected
+        
+          [
+            false,
+            true,
+        +   'skipped'
+        -   'removed'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: false
+        1: true
+        2: 'removed'
+      actual:
+        0: false
+        1: true
+        2: 'skipped'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-kaldir-250.test.mjs:251:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Kaldır aboneliği silince Bildirim Yolu kaydı da düşer: Sına'sız yeniden bağlanınca 'Kayıtlı Değil' (Çalışıyor DEĞİL), ilk bakım turu Meta'ya hemen yeniden kaydeder
+    not ok 8 - Kaldır aboneliği silince Bildirim Yolu kaydı da düşer: Sına'sız yeniden bağlanınca 'Kayıtlı Değil' (Çalışıyor DEĞİL), ilk bakım turu Meta'ya hemen yeniden kaydeder
+      ---
+      duration_ms: 381.787996
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-kaldir-250.test.mjs:261:3'
+      failureType: 'testCodeFailure'
+      error: `Bildirim Yolu 'Çalışıyor' görünmemeli (Meta'da adres yok): {"state":"active","at":"2026-11-05T07:00:00.000Z","registeredAt":"2026-11-05T07:00:00.000Z","error":""}`
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'active'
+      actual: 'active'
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-kaldir-250.test.mjs:273:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ
+    ok 9 - Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ
+      ---
+      duration_ms: 465.082502
+      type: 'test'
+      ...
+    1..9
+not ok 11 - 2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da
+  ---
+  duration_ms: 4589.630518
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-kaldir-250.test.mjs:42:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:2095) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+    # Subtest: kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez
+    ok 1 - kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez
+      ---
+      duration_ms: 895.897267
+      type: 'test'
+      ...
+    1..1
+ok 12 - 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+  ---
+  duration_ms: 897.11375
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+    # Subtest: 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış
+    ok 1 - 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış
+      ---
+      duration_ms: 1106.742888
+      type: 'test'
+      ...
+    # Subtest: 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ
+    ok 2 - 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ
+      ---
+      duration_ms: 1005.819041
+      type: 'test'
+      ...
+    # Subtest: 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ
+    ok 3 - 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ
+      ---
+      duration_ms: 741.060798
+      type: 'test'
+      ...
+    # Subtest: şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'
+    ok 4 - şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'
+      ---
+      duration_ms: 700.92418
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur
+    ok 5 - Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur
+      ---
+      duration_ms: 635.101301
+      type: 'test'
+      ...
+    # Subtest: 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'
+    ok 6 - 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'
+      ---
+      duration_ms: 858.560852
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)
+    ok 7 - salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)
+      ---
+      duration_ms: 669.209099
+      type: 'test'
+      ...
+    1..7
+ok 13 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+  ---
+  duration_ms: 5718.764296
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+    # Subtest: sayı = TESLİM edilen, ay = teslim zamanı (Türkiye saati), kapsam WABA; 31 Aralık 23:59 kabul / 1 Ocak 00:01 teslim Ocak'a sayılır; sayaç yıl dönümünde sıfırlanmaz
+    ok 1 - sayı = TESLİM edilen, ay = teslim zamanı (Türkiye saati), kapsam WABA; 31 Aralık 23:59 kabul / 1 Ocak 00:01 teslim Ocak'a sayılır; sayaç yıl dönümünde sıfırlanmaz
+      ---
+      duration_ms: 585.288082
+      type: 'test'
+      ...
+    # Subtest: durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır
+    ok 2 - durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır
+      ---
+      duration_ms: 553.629982
+      type: 'test'
+      ...
+    # Subtest: işçi (gerçek zamanlayıcı): iki iş ASLA aynı anda yürümez, iletiler arası en az gapMs; şirketler dönüşümlü
+    ok 3 - işçi (gerçek zamanlayıcı): iki iş ASLA aynı anda yürümez, iletiler arası en az gapMs; şirketler dönüşümlü
+      ---
+      duration_ms: 845.931603
+      type: 'test'
+      ...
+    1..3
+ok 14 - 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+  ---
+  duration_ms: 1985.603526
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — belirteç hiçbir çıktıya sızmaz
+    # Subtest: toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz
+    not ok 1 - toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz
+      ---
+      duration_ms: 582.819055
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-veri-248.test.mjs:476:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'meta-token'
+        - 'token-expired'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'token-expired'
+      actual: 'meta-token'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-veri-248.test.mjs:500:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 15 - 2.4.8 W2 — belirteç hiçbir çıktıya sızmaz
+  ---
+  duration_ms: 583.740238
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-veri-248.test.mjs:475:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..15
+# tests 57
+# suites 15
+# pass 44
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40525.635492

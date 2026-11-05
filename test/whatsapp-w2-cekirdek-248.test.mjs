@@ -313,7 +313,10 @@ describe("2.4.8 W2 — çift gönderim yok (§7a 9, 10)", () => {
 });
 
 describe("2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32)", () => {
-  it("190 (belirteç) → hatayı alan iş Başarısız (kodlu), toplu iş duraklar, bekleyenler Duraklatıldı, sonraki kişilere istek gitmez; Devam Et ile sürer", async () => {
+  // 2.5.0 W-1(a) KULLANICI KARARI (05.11.2026 ~19:15, aynen): "Toplu WhatsApp gönderimi sürerken Meta anahtarı reddederse (süre doldu ya da iptal — Meta hata 190), o anda
+  // iletisi gitmeyen kişi: 'Bekleyenlere dönsün' — iletisi kesin gitmediği için kalan kişilerle bekler, yeniden bağlanınca 'Devam Et' ile ona da gider." §7a 13'ün
+  // ("hatayı alan iş Başarısız") 190 için yerine geçer; beklenti bu karar metninden (2.4.8'deki "Başarısız + Başarısızları Yeniden Dene" beklentisi kalktı).
+  it("190 (belirteç) → toplu iş duraklar; hatayı alan kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; sonraki kişilere istek gitmez; yeniden bağlanınca Devam Et üçüne de gönderir (kişi başına bir ileti)", async () => {
     const ctx = await startWa();
     try {
       const ids = [];
@@ -323,23 +326,29 @@ describe("2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 3
       await ctx.drain();
       let detail = await ctx.detail(id);
       assert.equal(detail.state, "paused");
-      assert.equal(detail.pauseCode, "meta-token");
-      assert.match(detail.pauseReason, /süresi dolmuş/);
+      // Meta bu belirteci daha önce kabul etmişti (şablon okuması) → 190 bağlantıyı "Süresi Doldu" yapar; duraklatma nedeni bağlantınınki (Yeniden Bağla → Devam Et).
+      assert.equal(detail.pauseCode, "token-expired");
+      assert.match(detail.pauseReason, /süresi doldu/);
+      assert.match(detail.pauseReason, /Devam Et/);
       assert.equal(ctx.messageRequests().length, 1, "yalnız ilk istek");
-      assert.equal(detail.counts.failed, 1);
-      assert.equal(detail.jobs[0].errorCode, 190);
-      assert.equal(detail.counts.paused, 2, "bekleyenler Duraklatıldı");
+      assert.equal(detail.counts.failed || 0, 0, "190 alan kişi Başarısız değil");
+      assert.equal(detail.counts.paused, 3, "190 alan kişi bekleyenlerle Duraklatıldı");
+      assert.deepEqual([detail.jobs[0].stateLabel, detail.jobs[0].errorCode], ["Duraklatıldı", 190], "neden satırda (kod 190)");
       assert.equal(detail.jobs[1].stateLabel, "Duraklatıldı");
+      const refused = await ctx.api.post(`${URLS.batches}/${id}/resume`, {});
+      assert.deepEqual([refused.status, refused.data.code], [409, "whatsapp-token-expired"], "Süresi Doldu bağlantıyla Devam Et reddedilir");
+      // Yeniden bağlan: Meta belirteci yine kabul ediyor (tek seferlik ret) → Bağlantıyı Sına "Süresi Doldu"yu kaldırır.
+      assert.equal((await ctx.api.post(`${URLS.conn}/test`, {})).status, 200);
       assert.equal((await ctx.api.post(`${URLS.batches}/${id}/resume`, {})).status, 200);
       await ctx.drain();
       detail = await ctx.detail(id);
       assert.equal(detail.state, "done");
-      assert.equal(detail.counts.accepted, 2);
-      assert.equal(ctx.messages().length, 2);
+      assert.equal(detail.counts.accepted, 3, "üç kişi de Meta Kabul Etti");
+      assert.equal(ctx.messages().length, 3, "Meta'nın kabul ettiği ileti 3");
+      assert.equal(new Set(ctx.messages().map(item => item.to)).size, 3, "kişi başına bir ileti (190 alan kişiye ikinci ileti yok)");
       const retry = await ctx.api.post(`${URLS.batches}/${id}/retry-failed`, {});
-      assert.equal(retry.status, 200);
       await ctx.drain();
-      assert.equal(ctx.messages().length, 3, "hatayı alan iş yeniden denemede bir kez");
+      assert.equal(ctx.messages().length, 3, `Başarısız iş yok; yeniden deneme ileti göndermez (yanıt ${retry.status})`);
     } finally {
       await ctx.close();
     }

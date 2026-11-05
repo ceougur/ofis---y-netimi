@@ -169,6 +169,8 @@ describe("2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi", () => 
       assert.deepEqual([data.tokenExpiry?.state, data.tokenExpiry?.expiredBy], ["expired", "meta"], JSON.stringify(data.tokenExpiry));
       assert.match(data.tokenExpiry.message, /Meta erişim belirtecini artık kabul etmiyor/);
       assert.equal(ctx.messages().length, 0, "Meta'nın kabul ettiği ileti yok");
+      // KULLANICI KARARI (05.11 ~19:15, "Bekleyenlere dönsün"): 190 alan kişi Başarısız değil — iki kişi de Duraklatıldı (dar kontrol DÜŞÜK-4: önce `accepted >= 1` gevşekti).
+      assert.deepEqual((await ctx.jobs(batchId)).map(job => job.state), ["paused", "paused"], "190 alan kişi bekleyenlerle Duraklatıldı");
       assert.ok(ctx.store.all("SELECT type FROM audit_events WHERE type = 'whatsapp.token.expired'").length === 1, "işlem geçmişinde bir kez");
       const c = await ctx.account("Meta Üç", "0532 400 00 03", 100);
       expiredRefusal(await newBatch(ctx, [c.id]), "yeni gönderim");
@@ -186,10 +188,9 @@ describe("2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi", () => 
       assert.equal(resumed.status, 200, JSON.stringify(resumed.data).slice(0, 300));
       await ctx.drain();
       const jobs = await ctx.jobs(batchId);
-      const accepted = jobs.filter(job => job.state === "accepted").length;
-      assert.ok(accepted >= 1 && jobs.every(job => ["accepted", "failed"].includes(job.state)), `190 reddi ileti sayılmaz (ilke 1); kalan yeni belirteçle gitti: ${jobs.map(job => job.state)}`);
-      assert.equal(ctx.messages().length, accepted, "Meta'nın kabul ettiği ileti sayısı = kabul edilen iş sayısı (yalnız yeni belirteçle)");
-      assert.equal(new Set(ctx.messages().map(item => item.to)).size, ctx.messages().length, "aynı kişiye ikinci ileti yok");
+      assert.deepEqual(jobs.map(job => job.state), ["accepted", "accepted"], "190 reddi ileti sayılmaz (ilke 1); iki kişi de yeni belirteçle gitti");
+      assert.equal(ctx.messages().length, 2, "Meta'nın kabul ettiği ileti 2 (yalnız yeni belirteçle)");
+      assert.deepEqual(ctx.messages().map(item => item.to).sort(), ["+905324000001", "+905324000002"], "kişi başına bir ileti");
       // Meta 190 sonrası belirteç Meta'da yeniden kabul edilirse (ör. geçici iptal geri alındı): başarılı Sına Süresi Doldu'yu kaldırır.
       ctx.fake.set({ token: "IKINCI-KEZ-REDDEDILEN" });
       await sina(ctx, 502);
@@ -327,6 +328,174 @@ describe("2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi", () => 
       ctx.store.setSetting("whatsapp.meta", JSON.stringify(raw));
       data = await view(ctx);
       assert.deepEqual([data.mode, data.tokenExpiry?.expiresAt], ["manual", null], "eski Yol 1 kaydı süresiz");
+    } finally {
+      await ctx.close();
+    }
+  });
+});
+
+// ---------- 2.5.0 W-1(a) düzeltme turu 1 (dar kontrol W1W2: DÜŞÜK-1 → KULLANICI KARARI, DÜŞÜK-4) ----------
+// KULLANICI KARARI (05.11.2026 ~19:15, aynen): "Toplu WhatsApp gönderimi sürerken Meta anahtarı reddederse (süre doldu ya da iptal — Meta hata 190), o anda iletisi gitmeyen
+// kişi: 'Bekleyenlere dönsün' — iletisi kesin gitmediği için kalan kişilerle bekler, yeniden bağlanınca 'Devam Et' ile ona da gider." + 18:37 kararı ("Duraklasın, sonra sürsün";
+// kimseye ikinci ileti gitmez). Beklenen sayılar bu karar metinlerinden ve testin girdiği veriden (kişi başına kabul edilen ileti = 1). Dar kontrolün bulgusu: duraklatma nedeni
+// Yol 2'de de "Elle Bağla ile girin" diyordu ve "Devam Et"i anmıyordu → neden yola göre + "Devam Et".
+const waitHeld = async ctx => {
+  // En çok 15 sn (yavaş koşucu: PDF üretimi + yükleme); ön koşul kapıyla kurulur, beklemeyle değil (ders 20).
+  for (let i = 0; i < 1500 && !ctx.fake.state.held; i += 1) await new Promise(resolve => setTimeout(resolve, 10));
+  assert.equal(ctx.fake.state.held, 1, "ön koşul: istek Meta'da (kapıda) bekliyor");
+};
+const gate = ctx => {
+  let release;
+  const promise = new Promise(resolve => (release = resolve));
+  return { promise, release, hold: match => ctx.fake.set({ hold: { match, promise } }) };
+};
+const perPerson = ctx => ctx.messages().reduce((out, item) => ({ ...out, [item.to]: (out[item.to] || 0) + 1 }), {});
+
+describe("2.5.0 W-1(a) — Meta 190 alan kişi bekleyenlere döner (KULLANICI KARARI 05.11 ~19:15)", () => {
+  for (const [stage, match, label, ownCode] of [
+    ["check", /^GET \/\d+\/message_templates$/, "şablon okuması", false],
+    ["media", /^POST \/\d+\/media$/, "PDF yükleme", true],
+    ["send", /^POST \/\d+\/messages$/, "ileti isteği", true],
+  ]) {
+    it(`Yol 2, 190 ${label} sırasında: iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti`, async () => {
+      const ctx = await startWa({ now: { time: iso(T0), fixed: true }, connect: false });
+      try {
+        embedded(ctx);
+        const ids = [];
+        for (let i = 1; i <= 3; i += 1) ids.push((await ctx.account(`Ret ${label} ${i}`, `0532 710 00 0${i}`, 100)).id);
+        const res = await newBatch(ctx, ids);
+        assert.equal(res.status, 200, JSON.stringify(res.data).slice(0, 300));
+        const batchId = res.data.data.batch.id;
+        // Belirteç Meta'da kaldırıldı / süresi doldu: bu aşamanın ilk isteği 190 alır. Şablon okuması gönderim başlarken yapıldı; işçinin yeniden okuması için 11 dk (R2: en geç 10 dk).
+        ctx.fake.state.failQueue.push({ match, status: 401, body: metaError(190, "Error validating access token: The session has been invalidated.") });
+        if (stage === "check") ctx.clock.advance(11 * 60_000);
+        await ctx.drain();
+        assert.equal(ctx.fake.state.failQueue.length, 0, `ön koşul: 190 ${label} isteğine verildi`);
+        const detail = await ctx.detail(batchId);
+        assert.equal(detail.state, "paused", `toplu iş duraklatıldı (geldi ${detail.state})`);
+        assert.deepEqual(detail.jobs.map(job => job.state), ["paused", "paused", "paused"], "190 alan kişi Başarısız değil; üç kişi de Duraklatıldı");
+        assert.equal(detail.counts.failed || 0, 0);
+        if (ownCode) assert.equal(detail.jobs[0].errorCode, 190, "190 alan kişinin satırında neden (kod)");
+        assert.match(detail.pauseReason, /Devam Et/, `neden 'Devam Et'i anar: ${detail.pauseReason}`);
+        assert.doesNotMatch(detail.pauseReason, /Elle Bağla/, `Yol 2'de 'Elle Bağla' yönlendirmesi yok: ${detail.pauseReason}`);
+        assert.equal(detail.pauseCode, "token-expired", "Meta'nın kabul ettiği belirtecin 190'ı: bağlantı Süresi Doldu");
+        assert.equal(ctx.messages().length, 0, "Meta'nın kabul ettiği ileti yok");
+        expiredRefusal(await ctx.api.post(`${URLS.batches}/${batchId}/resume`, {}), "Devam Et (Süresi Doldu)");
+        embedded(ctx); // Yeniden Bağla (WhatsApp'ı Bağla): yeni 60 gün, Meta belirteci kabul ediyor
+        assert.equal((await ctx.api.post(`${URLS.batches}/${batchId}/resume`, {})).status, 200);
+        await ctx.drain();
+        const after = await ctx.detail(batchId);
+        assert.deepEqual(after.jobs.map(job => job.state), ["accepted", "accepted", "accepted"], "Devam Et 190 alan kişiye de gönderdi");
+        assert.deepEqual(Object.values(perPerson(ctx)), [1, 1, 1], `kişi başına kabul edilen ileti: ${JSON.stringify(perPerson(ctx))}`);
+      } finally {
+        await ctx.close();
+      }
+    });
+  }
+
+  it("Yol 1, ileti isteği Meta'dayken belirteç değiştirildi (başka pencerede Bilgileri Değiştir) ve eski belirteç 190 aldı: bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; neden Yol 1'e göre ('Bilgileri Değiştir', 'Devam Et'); Devam Et yeni belirteçle gönderir", async () => {
+    const ctx = await startWa({ now: { time: iso(T0), fixed: true } });
+    try {
+      await sina(ctx);
+      const a = await ctx.account("Pencere Bir", "0532 720 00 01", 100);
+      const b = await ctx.account("Pencere İki", "0532 720 00 02", 100);
+      const res = await newBatch(ctx, [a.id, b.id]);
+      assert.equal(res.status, 200, JSON.stringify(res.data).slice(0, 300));
+      const batchId = res.data.data.batch.id;
+      const door = gate(ctx);
+      door.hold(/^POST \/\d+\/messages$/);
+      ctx.fake.state.failQueue.push({ match: /^POST \/\d+\/messages$/, status: 401, body: metaError(190, "Error validating access token") });
+      const run = ctx.drain({ max: 1 });
+      await waitHeld(ctx);
+      const FRESH = "SAHTE-W1a-pencere-belirteci_0123456789-yeni";
+      assert.equal((await ctx.api.put(URLS.conn, { phoneNumberId: PNID, wabaId: WABA, token: FRESH })).status, 200);
+      ctx.fake.set({ token: FRESH });
+      door.release();
+      await run;
+      ctx.fake.set({ hold: null });
+      const detail = await ctx.detail(batchId);
+      assert.equal((await view(ctx)).tokenExpiry?.state, "ok", "yeni belirteç Süresi Doldu değil");
+      assert.equal(detail.state, "paused");
+      assert.deepEqual(detail.jobs.map(job => job.state), ["paused", "paused"], "190 alan kişi bekleyenlerle Duraklatıldı");
+      assert.match(detail.pauseReason, /Bilgileri Değiştir/, detail.pauseReason);
+      assert.match(detail.pauseReason, /Devam Et/, detail.pauseReason);
+      assert.doesNotMatch(detail.pauseReason, /Elle Bağla ile girin/, detail.pauseReason);
+      assert.equal((await ctx.api.post(`${URLS.batches}/${batchId}/resume`, {})).status, 200);
+      await ctx.drain();
+      assert.deepEqual((await ctx.jobs(batchId)).map(job => job.state), ["accepted", "accepted"]);
+      assert.deepEqual(Object.values(perPerson(ctx)), [1, 1], `kişi başına kabul edilen ileti: ${JSON.stringify(perPerson(ctx))}`);
+    } finally {
+      await ctx.close();
+    }
+  });
+});
+
+// Dar kontrol DÜŞÜK-4: mevcut davranışların dişsiz kalan yerleri (M8, M11, M18 mutasyonları yeni testlerce yakalanmıyordu). Bunlar 90a4bede'de de geçer (davranış zaten
+// vardı); dişleri mutasyonla gösterilir (ders 7, 38).
+describe("2.5.0 W-1(a) — dar kontrol DÜŞÜK-4 (M8, M11, M18)", () => {
+  it("M8: Meta 190 kaynaklı Süresi Doldu, Sına DIŞI bir istekte Meta belirteci yine kabul edince kalkar (Bildirim Yolu Yeniden Kaydet)", async () => {
+    const ctx = await startWa({ now: { time: iso(T0), fixed: true } });
+    try {
+      ctx.server.app.mobileRemote.setPublicUrl("http://ofisw1a.destekofis.test");
+      await sina(ctx);
+      ctx.fake.set({ token: "GECICI-OLARAK-REDDEDILEN" });
+      await sina(ctx, 502);
+      assert.deepEqual([(await view(ctx)).tokenExpiry?.state, (await view(ctx)).tokenExpiry?.expiredBy], ["expired", "meta"], "ön koşul: Süresi Doldu (Meta)");
+      ctx.fake.set({ token: TOKEN });
+      const before = ctx.fake.requests.length;
+      const res = await ctx.api.post(`${URLS.conn}/hook`, {});
+      assert.equal(res.status, 200, JSON.stringify(res.data).slice(0, 300));
+      assert.ok(ctx.fake.requests.slice(before).some(item => item.method === "POST" && /\/subscribed_apps$/.test(item.path)), "ön koşul: Meta'ya Sına dışı istek gitti ve kabul edildi");
+      assert.equal((await view(ctx)).tokenExpiry?.state, "ok", "Meta belirteci kabul etti → Süresi Doldu kalktı");
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  it("M11: PDF yüklenirken bitiş anı geçti ve Meta 190 DIŞI bir duraklatma hatası verdi (131031): o hata kendi yolundan — iş Başarısız (§7a 13), toplu iş Meta'nın nedeniyle duraklar; Süresi Doldu engeli onu ezmez", async () => {
+    const ctx = await startWa({ now: { time: iso(T0), fixed: true }, connect: false });
+    try {
+      embedded(ctx);
+      const ids = [];
+      for (let i = 1; i <= 3; i += 1) ids.push((await ctx.account(`Hesap ${i}`, `0532 730 00 0${i}`, 100)).id);
+      ctx.clock.set(T0 + 60 * DAY - 10 * 60_000);
+      const res = await newBatch(ctx, ids);
+      assert.equal(res.status, 200, JSON.stringify(res.data).slice(0, 300));
+      const batchId = res.data.data.batch.id;
+      const door = gate(ctx);
+      door.hold(/^POST \/\d+\/media$/);
+      ctx.fake.state.failQueue.push({ match: /^POST \/\d+\/media$/, status: 400, body: metaError(131031, "Business account has been locked.") });
+      const run = ctx.drain({ max: 1 });
+      await waitHeld(ctx);
+      ctx.clock.set(T0 + 60 * DAY); // yükleme sürerken bitiş anı geldi
+      door.release();
+      await run;
+      ctx.fake.set({ hold: null });
+      const detail = await ctx.detail(batchId);
+      assert.equal((await view(ctx)).tokenExpiry?.state, "expired", "ön koşul: bağlantı Süresi Doldu (bitiş anı)");
+      assert.deepEqual([detail.jobs[0].state, detail.jobs[0].errorCode], ["failed", 131031], "hatayı alan iş Başarısız (kodlu)");
+      assert.deepEqual([detail.state, detail.pauseCode], ["paused", "meta-account"], `toplu iş Meta'nın nedeniyle duraklar: ${detail.pauseCode} ${detail.pauseReason}`);
+      assert.deepEqual(detail.jobs.slice(1).map(job => job.state), ["paused", "paused"]);
+      assert.equal(ctx.messages().length, 0);
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  it("M18: süresi dolan bağlantıda bakım turu Meta'ya istek göndermez (Bildirim Yolu denetimi atlanır); Bağlantıyı Sına yine dener", async () => {
+    const ctx = await startWa({ now: { time: iso(T0), fixed: true }, connect: false });
+    try {
+      embedded(ctx);
+      ctx.server.app.mobileRemote.setPublicUrl("http://ofisw1a.destekofis.test");
+      await sina(ctx);
+      assert.equal((await view(ctx)).hook?.state, "active", "ön koşul: Bildirim Yolu kayıtlı");
+      ctx.clock.set(T0 + 61 * DAY);
+      assert.equal((await view(ctx)).tokenExpiry?.state, "expired", "ön koşul: Süresi Doldu");
+      const before = ctx.fake.requests.length;
+      await ctx.wa.scheduler.maintain();
+      assert.deepEqual(ctx.fake.requests.slice(before).map(item => `${item.method} ${item.path}`), [], "bakım turu Meta'ya istek göndermedi");
+      await sina(ctx);
+      assert.ok(ctx.fake.requests.length > before, "Bağlantıyı Sına Meta'ya gitti");
     } finally {
       await ctx.close();
     }
