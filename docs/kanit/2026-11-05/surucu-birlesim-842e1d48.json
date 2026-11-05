@@ -1,0 +1,32 @@
+{
+  "ad": "surucu-birlesim-842e1d48",
+  "komut": "node test/bagimsiz/muhasebe-surucu/kos.mjs --senaryo s01,s11,s17,s18,rastgele-1 --tz UTC,Europe/Istanbul --paralel 2 --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu-birlesim-842e1d48/cikti --veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu-birlesim-842e1d48/veri",
+  "commit": "842e1d4893650cd57d4f95ec2afc6724b609ef26",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T19:35:36.939Z",
+  "sure_sn": 74.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 892,
+    "gecen": 646,
+    "basarisiz": 246,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 246 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/surucu-birlesim-842e1d48.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "0d356c0300fcda4d43676b55c88ea52f1f75017b569c7d01e9dc09939d677ec9",
+  "ham_cikti_bayt": 16675
+}
