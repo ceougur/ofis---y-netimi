@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-anaoturum-e2e-senaryo-220-yedek",
+  "komut": "npm run test:senaryo-220-yedek",
+  "commit": "6f5477439a2cd27e824e7598cdfcd3bb674679b1",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:07:20.625Z",
+  "sure_sn": 14.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 37,
+    "gecen": 37,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-anaoturum-e2e-senaryo-220-yedek.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "840b07e52b0959511f84cd6399fa9446b544e117a2061abb2d01e39926d960c6",
+  "ham_cikti_bayt": 4006
+}
