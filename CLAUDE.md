@@ -391,7 +391,9 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   kalır; (3) kilitli dönemde kapanış değişmez; (4) kart küçülmesi en erken vadeli açık taksitten; (5) gecikmiş net borcu aşmaz; (6) Kartı Kapat kalanı BORÇTA kalır (bugünkü 689 davranışı DEĞİŞİR);
   (7) Devri Yenile'de yalnız devir fişleri silinip yeniden yazılır. Atama: (1)(2)(3)(5) + S7 + S8 → Ç5; (4)(6) → Ç7b; (7) → D4; hepsi kâhin bakımı 2'de. Ayrıca: 20:57 ortam alarmı zaten kurulu
   (yenisi kurulmadı); 21:00 DİNLENME DÜZENİ (kullanıcı yokken engelleyen soru penceresi açılmaz; para / kapama / kime kaç kez soruları bekler, öbür işler sürer; para dışı 5 dk yetkisi); 21:39 (kayıt saati) "anayasamıza ve
-  derslerimize dikkat edelim" → öz denetim + SAAT KURALI.
+  derslerimize dikkat edelim" → öz denetim + SAAT KURALI. 21:48 "işler yapılırken regresyona dikkat et" → GERİLEME KORUMASI G1–G7 (iş listesi D): her kod birleşmesi ayrı gönderim + kendi CI;
+  yeniden koşu birleşmiş ağaçta, komşu testler taranarak; eski test beklentisi gerekçesiz değişmez; ortak yardımcının bütün çağıranları dar kontrole; para birleşmesinden sonra kâhin sürücüsü; göçte v2.4.9
+  zinciri; ikinci gerileme kullanıcıya.
   KULLANICIYA GÖSTERİLEN BAŞ MİMAR KARARLARI (iş listesi E): BS-3 iletileri ("… bulunamadı. Başka biri silmiş olabilir.") + BS-4 409 kısmi toplam yok; W1W2 DÜŞÜK-2 sakınca süzgeciyle ORTA (KVKK);
   EK-2 bağımsızlık ihlali → EK-2B yinelemesi; EK-2B tur GEÇERLİ (görülen E satırları ilgisiz); cari hareket düzeltme yarışı bu sürümde; Birleşik Rapor PDF / Excel ham JSON → 2.5.1 BİLİNEN SINIR;
   Ç2 K1–K8; cheques-overview tarih testi düzeltmesi (yalnız test).
