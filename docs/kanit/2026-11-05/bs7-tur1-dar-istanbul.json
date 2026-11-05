@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-tur1-dar-istanbul",
+  "komut": "node --test test/sema-kapisi-bs7.test.mjs test/update-flow.test.mjs",
+  "commit": "d3a312ab7b55cd4dfbdb05d782924d5f3848b9d9",
+  "dal": "worktree-agent-ac6f71161a5c927c0",
+  "kirli": 0,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:31:35.998Z",
+  "sure_sn": 20.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 10,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-tur1-dar-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac6f71161a5c927c0",
+  "ham_cikti_sha256": "6abf3cd4f9bf2e2ba49a956a0559897759497d025772c935d080746a424f98ba",
+  "ham_cikti_bayt": 3826
+}
