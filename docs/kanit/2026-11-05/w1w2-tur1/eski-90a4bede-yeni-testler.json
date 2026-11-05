@@ -1,0 +1,98 @@
+{
+  "ad": "w1w2-tur1/eski-90a4bede-yeni-testler",
+  "komut": "node --test --test-concurrency=1 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/mobil-gg247-b5.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w1a-belirtec-suresi-250.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-cekirdek-248.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-kaldir-250.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-tur1-eski-90a4bede/test/whatsapp-w2-veri-248.test.mjs",
+  "commit": "0cf8d897f74a43128e6c38e17f0126687e0aacea",
+  "dal": "worktree-agent-a757b01a0d070b652",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T19:30:48.777Z",
+  "sure_sn": 40.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 57,
+    "gecen": 44,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 W-1(a) ORTA-1 — WhatsApp süre bildirimi sorusu → özet yüklemesi › sınıflama: süre bildirimi sorusu yüklemez; WhatsApp bağlantısının gerçek değişiklikleri (kaydet / kaldır) ve benzer adlı uç veri kalır",
+      "konum": "test/mobil-gg247-b5.test.mjs:90:3",
+      "hata": "Expected values to be strictly equal: · 'veri' !== null (beklenen ~, gelen veri)"
+    },
+    {
+      "ad": "2.5.0 W-1(a) ORTA-1 — WhatsApp süre bildirimi sorusu → özet yüklemesi › 10 saatte 30 ana ekran açılışı (bildirim sorusu, yanıt 200) 0 özet yüklemesi; aynı çizelgede bir cari kaydı yükler",
+      "konum": "test/mobil-gg247-b5.test.mjs:96:3",
+      "hata": "30 bildirim sorusu 30 özet yüklemesi doğurdu · 30 !== 0 (beklenen 0, gelen 30)"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi › Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlantı 'Süresi Doldu' (Meta); toplu iş duraklar, yeni gönderim / Devam Et 409; yeni belirteçle Yeniden Bağla → Devam Et; Sına başarılıysa kalkar",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:156:3",
+      "hata": "190 alan kişi bekleyenlerle Duraklatıldı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — Meta 190 alan kişi bekleyenlere döner (KULLANICI KARARI 05.11 ~19:15) › Yol 2, 190 şablon okuması sırasında: iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:359:5",
+      "hata": "neden 'Devam Et'i anar: Erişim belirtecinin süresi dolmuş. Meta İşletme Ayarları → Sistem Kullanıcıları'ndan yeni kalıcı belirteç oluşturup Elle Bağla ile girin. (Meta hata kodu 190: Error validating access token: The session has been invalidated.) (beklenen , gelen Erişim belirtecinin süresi dolmuş. Meta İşletme Ayarları → Sistem Kullanıcıları'ndan yeni kalıcı belirteç oluşturup Elle Bağla ile girin. (Meta hata kodu 190: Error validating access token: The session has been invalidated.))"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — Meta 190 alan kişi bekleyenlere döner (KULLANICI KARARI 05.11 ~19:15) › Yol 2, 190 PDF yükleme sırasında: iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:359:5",
+      "hata": "190 alan kişi Başarısız değil; üç kişi de Duraklatıldı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — Meta 190 alan kişi bekleyenlere döner (KULLANICI KARARI 05.11 ~19:15) › Yol 2, 190 ileti isteği sırasında: iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:359:5",
+      "hata": "190 alan kişi Başarısız değil; üç kişi de Duraklatıldı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — Meta 190 alan kişi bekleyenlere döner (KULLANICI KARARI 05.11 ~19:15) › Yol 1, ileti isteği Meta'dayken belirteç değiştirildi (başka pencerede Bilgileri Değiştir) ve eski belirteç 190 aldı: bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; neden Yol 1'e göre ('Bilgileri Değiştir', 'Devam Et'); Devam Et yeni belirteçle gönderir",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:395:3",
+      "hata": "190 alan kişi bekleyenlerle Duraklatıldı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.8 W2 — Meta hata sınıfları (plan §6 W2 + §7a 11–15, 30, 32) › 190 (belirteç) → toplu iş duraklar; hatayı alan kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; sonraki kişilere istek gitmez; yeniden bağlanınca Devam Et üçüne de gönderir (kişi başına bir ileti)",
+      "konum": "test/whatsapp-w2-cekirdek-248.test.mjs:319:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'meta-token' (beklenen token-expired, gelen meta-token)"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:95:3",
+      "hata": "Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (Meta isteği reddetti, hata kodu 100). DestekOfis uygulamasının WhatsApp hesabınıza erişimini Meta'dan kaldırmak için destekofis.net/veri-silme sayfasındaki adımları izleyin. (beklenen , gelen Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (Meta isteği reddetti, hata kodu 100). DestekOfis uygulamasının WhatsApp hesabınıza erişimini Meta'dan kaldırmak için destekofis.net/veri-silme sayfasındaki adımları izleyin.)"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:215:3",
+      "hata": "Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın. (beklenen , gelen Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın.)"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › aynı WABA'lı ikinci şirket SİLİNDİ: kalan şirketin Kaldır'ı Meta'daki aboneliği siler (silinen şirket 'başka şirkette bağlı' sayılmaz)",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:240:3",
+      "hata": "{\"removed\":true,\"already\":false,\"replaced\":false,\"stopped\":0,\"meta\":{\"state\":\"skipped\",\"reason\":\"shared\",\"message\":\"Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın.\"}} · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da › Kaldır aboneliği silince Bildirim Yolu kaydı da düşer: Sına'sız yeniden bağlanınca 'Kayıtlı Değil' (Çalışıyor DEĞİL), ilk bakım turu Meta'ya hemen yeniden kaydeder",
+      "konum": "test/whatsapp-w2-kaldir-250.test.mjs:261:3",
+      "hata": "`Bildirim Yolu 'Çalışıyor' görünmemeli (Meta'da adres yok): {\"state\":\"active\",\"at\":\"2026-11-05T07:00:00.000Z\",\"registeredAt\":\"2026-11-05T07:00:00.000Z\",\"error\":\"\"}` (beklenen active, gelen active)"
+    },
+    {
+      "ad": "2.4.8 W2 — belirteç hiçbir çıktıya sızmaz › toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz",
+      "konum": "test/whatsapp-w2-veri-248.test.mjs:476:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'meta-token' (beklenen token-expired, gelen meta-token)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/w1w2-tur1/eski-90a4bede-yeni-testler.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a757b01a0d070b652",
+  "ham_cikti_sha256": "bd6dd70513f5d5648c33115f9587e48350b6aa81902a155bdf9cc93f2ad33834",
+  "ham_cikti_bayt": 45715
+}
