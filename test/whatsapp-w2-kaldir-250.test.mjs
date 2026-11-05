@@ -256,6 +256,64 @@ describe("2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da", () => {
     }
   });
 
+  // W TUR 2 — dar kontrol W1W2-T1 DÜŞÜK-2 (sakınca süzgeciyle ORTA: W-2'nin amacı Meta'da iptal, KVKK; betik e-ortak-waba-geri-yukleme): ikinci şirket bağlantısız bir yedekten GERİ
+  // YÜKLENİNCE ortak kayıttaki özeti "bağlı" kalıyordu → 001'in Kaldır'ı "başka şirkette de bağlı" deyip Meta'daki aboneliği silmiyordu, ileti aslında bağlı olmayan şirketi gösteriyordu.
+  // Plan §1 W-2 + §3 "Nasıl bozulur" 1: abonelik ancak aynı WABA'yı GERÇEKTEN kullanan başka şirket varsa korunur. İki yön de sınanır (ters yön: bağlantılı yedekten geri yüklenen
+  // şirket kayıtta "bağlı değil" görünse de gerçekten bağlıdır → abonelik SİLİNMEZ). Geri yükleme şirket klasöründe dosya değiştirir (ders 48 — Windows CI'de erken görülür).
+  async function restoreCompany(ctx, company, name) {
+    const code = (await ok(await ctx.api.get("/api/companies"), "şirketler")).companies.find(item => item.id === company.id)?.code;
+    await ok(await ctx.api.post("/api/admin/backups/restore", { name, company: company.id, confirm: code, password: ADMIN_PASSWORD }), "ikinci şirketin yedeği geri yüklendi");
+  }
+  async function companyBackup(ctx, company) {
+    const data = await ok(await ctx.api.post("/api/admin/backups", { scope: "one", companyId: company.id }), "ikinci şirketin yedeği");
+    return data.backups[0].name;
+  }
+  const registryOf = (ctx, company) => ctx.wa.registry.get(company.id);
+
+  it("aynı WABA'lı ikinci şirket BAĞLANTISIZ yedekten geri yüklendi (ortak kayıtta hâlâ 'bağlı' görünüyor): 001'in Kaldır'ı Meta'daki aboneliği siler; ileti 'başka şirkette bağlı' demez", async () => {
+    const ctx = await startWa({ now: NOW });
+    try {
+      const created = await ok(await ctx.api.post("/api/companies", { name: "Geri Yüklenen Şirket", select: false }), "ikinci şirket");
+      const company = created.company || created;
+      const q = `?hofCompany=${encodeURIComponent(company.id)}`;
+      const backup = await companyBackup(ctx, company); // bağlantısız yedek
+      await ok(await ctx.api.put(`${URLS.conn}${q}`, { phoneNumberId: PNID, wabaId: WABA, token: TOKEN }), "ikinci şirkette Elle Bağla");
+      await restoreCompany(ctx, company, backup);
+      assert.deepEqual([registryOf(ctx, company).configured, registryOf(ctx, company).wabaId], [true, WABA], "ön koşul: ortak kayıtta ikinci şirketin ESKİ özeti ('bağlı') duruyor");
+      const data = await removeConn(ctx.api);
+      assert.deepEqual([data.configured, data.removal?.removed, data.removal?.meta?.state], [false, true, "removed"], JSON.stringify(data.removal));
+      assert.equal(unsubscribeRequests(ctx.fake).length, 1, "Meta'daki abonelik silindi (aynı WABA'yı kullanan başka şirket yok)");
+      assert.doesNotMatch(data.removal.meta.message, /başka bir şirkette/, data.removal.meta.message);
+      assert.equal((await ctx.api.get(`${URLS.conn}${q}`)).data.data.configured, false, "ikinci şirkette gerçekten bağlantı yok");
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  it("ters yön: aynı WABA'lı ikinci şirket BAĞLANTILI yedekten geri yüklendi (ortak kayıtta 'bağlı değil' görünüyor): 001'in Kaldır'ı aboneliği SİLMEZ (ikinci şirket gerçekten kullanıyor); ikinci şirket de kaldırınca silinir", async () => {
+    const ctx = await startWa({ now: NOW });
+    try {
+      const created = await ok(await ctx.api.post("/api/companies", { name: "Bağlı Geri Yüklenen", select: false }), "ikinci şirket");
+      const company = created.company || created;
+      const q = `?hofCompany=${encodeURIComponent(company.id)}`;
+      await ok(await ctx.api.put(`${URLS.conn}${q}`, { phoneNumberId: PNID, wabaId: WABA, token: TOKEN }), "ikinci şirkette Elle Bağla");
+      const backup = await companyBackup(ctx, company); // bağlantılı yedek
+      const first = await removeConn(ctx.api, q); // ikinci şirket kaldırır (001 bağlı → abonelik korunur)
+      assert.deepEqual([first.removal?.meta?.state, first.removal?.meta?.reason], ["skipped", "shared"], JSON.stringify(first.removal));
+      await restoreCompany(ctx, company, backup);
+      assert.equal(registryOf(ctx, company).configured, false, "ön koşul: ortak kayıtta ikinci şirket 'bağlı değil' (eski özet)");
+      const data = await removeConn(ctx.api);
+      assert.deepEqual([data.configured, data.removal?.meta?.state, data.removal?.meta?.reason], [false, "skipped", "shared"], JSON.stringify(data.removal));
+      assert.equal(unsubscribeRequests(ctx.fake).length, 0, "ortak abonelik silinmedi (geri yüklenen ikinci şirket aynı WABA'ya bağlı)");
+      assert.equal((await ctx.api.get(`${URLS.conn}${q}`)).data.data.configured, true, "ikinci şirketin geri yüklenen bağlantısı sürüyor");
+      const last = await removeConn(ctx.api, q);
+      assert.deepEqual([last.configured, last.removal?.meta?.state], [false, "removed"], JSON.stringify(last.removal));
+      assert.equal(unsubscribeRequests(ctx.fake).length, 1, "son şirket kaldırınca abonelik silindi");
+    } finally {
+      await ctx.close();
+    }
+  });
+
   // Dar kontrol DÜŞÜK-3 (gerileme): Kaldır Meta'daki aboneliği silince makine defterindeki kanca kaydı "Kayıtlı" kalıyordu; Sına'sız yeniden bağlanınca Bildirim Yolu
   // "Çalışıyor" görünüyor, bakım turu saatlik beklemeyle kaydı atlıyordu (en çok 1 saat durum bildirimi yok). Beklenen: kayıt "Kayıtlı Değil", ilk bakım turu yeniden kaydeder.
   it("Kaldır aboneliği silince Bildirim Yolu kaydı da düşer: Sına'sız yeniden bağlanınca 'Kayıtlı Değil' (Çalışıyor DEĞİL), ilk bakım turu Meta'ya hemen yeniden kaydeder", async () => {

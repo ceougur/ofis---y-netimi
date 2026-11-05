@@ -480,11 +480,20 @@ describe("2.4.8 W2 — belirteç hiçbir çıktıya sızmaz", () => {
     try {
       ctx.fake.state.echoToken = true;
       const a = await ctx.account("Sızıntı", "0552 000 00 01", 10);
+      const b = await ctx.account("Sızıntı İki", "0552 000 00 02", 10);
       const responses = [];
-      responses.push((await ctx.api.post(URLS.preview, { kind: "statement", ids: [a.id], preset: "thisMonth" })).data);
-      const created = await ctx.batch({ kind: "statement", ids: [a.id], preset: "thisMonth" });
+      responses.push((await ctx.api.post(URLS.preview, { kind: "statement", ids: [a.id, b.id], preset: "thisMonth" })).data);
+      const created = await ctx.batch({ kind: "statement", ids: [a.id, b.id], preset: "thisMonth" });
       responses.push(created.data);
-      // Belirteç geçersiz → Meta 190 metni belirteci yankılar (sahte sunucu echoToken) → program metni arındırır.
+      // W TUR 2 (dar kontrol W1W2-T1 DÜŞÜK-3, ders 34): 2.5.0 W-1(a)'dan beri 190 Meta'nın metnini işe / nedene YAZMAZ (programın kendi cümlesi) → 190'ın yankısı kuyruk yolunda
+      // arındırmayı sınamıyordu. Birinci kişi: metni SAKLANAN, 190 dışı bir kod (131026 — alıcıya özgü; iş Başarısız, Meta'nın metni işin nedenine yazılır) belirteci yankılar
+      // (düz ve "Bearer" biçiminde) → program metni arındırır (meta-graph redact). İkinci kişi: belirteç geçersiz → Meta 190 metni belirteci yankılar (sahte sunucu echoToken).
+      ctx.fake.state.failQueue.push({ match: /^POST \/\d+\/messages$/, status: 400, body: { error: { message: `(#131026) Message undeliverable. Invalid parameter: access_token=${TOKEN}; Authorization: Bearer ${TOKEN}`, type: "OAuthException", code: 131026, fbtrace_id: "AbCd" } } });
+      await ctx.drain({ max: 1 });
+      assert.equal(ctx.fake.state.failQueue.length, 0, "ön koşul: yankılı 131026 ileti isteğine verildi");
+      const echoed = ctx.store.get("SELECT error_code, error_text FROM wa_jobs WHERE account_id = ?", a.id);
+      assert.equal(echoed.error_code, 131026, "ön koşul: 131026 işin satırına yazıldı (Meta'nın metni saklanır)");
+      assert.match(echoed.error_text, /Message undeliverable\. Invalid parameter: access_token=/, "ön koşul: Meta'nın yankılı metni işin nedenine yazıldı");
       ctx.fake.state.token = "BASKA-BELIRTEC";
       await ctx.drain();
       responses.push((await ctx.api.get(`${URLS.batches}/${created.data.data.batch.id}`)).data, (await ctx.api.get(URLS.batches)).data, (await ctx.api.get(URLS.stats)).data);
@@ -498,7 +507,7 @@ describe("2.4.8 W2 — belirteç hiçbir çıktıya sızmaz", () => {
       // 2.5.0 W-1(a): Meta'nın daha önce kabul ettiği belirtecin 190'ı bağlantıyı "Süresi Doldu" yapar → duraklatma nedeni bağlantınınki; 190 alan kişi Başarısız değil,
       // bekleyenlerle Duraklatıldı (KULLANICI KARARI 05.11.2026 ~19:15 "Bekleyenlere dönsün").
       assert.equal(detail.pauseCode, "token-expired");
-      assert.deepEqual(detail.jobs.map(job => job.state), ["paused"]);
+      assert.deepEqual(detail.jobs.map(job => job.state), ["failed", "paused"], "131026 alan kişi Başarısız; 190 alan kişi bekleyenlerle");
     } finally {
       await ctx.close();
     }

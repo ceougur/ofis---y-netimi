@@ -23,7 +23,7 @@ import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
 import { statementData, statementFileName, statementPdf } from "../statement-pdf.mjs";
 import { e164Of, waPresetRange } from "./alici.mjs";
-import { TOKEN_EXPIRED_CODE } from "./connection.mjs";
+import { isTokenRejectCode } from "./connection.mjs";
 import { allPeriodStartOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
@@ -1481,8 +1481,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       store.run("UPDATE wa_jobs SET state = ?, closed_at = ?, updated_at = ? WHERE id = ? AND state IN ('pending', 'limited', 'preparing', 'paused', 'held')", row.state, iso(), iso(), job.id);
     }
   }
-  // 2.5.0 W-1(a) (KULLANICI KARARI 05.11 ~19:15): Meta 190 alan, Bekliyor'a dönen işin satırındaki neden (Devam Et'te başarılı gönderim temizler — §7a 32).
-  const TOKEN_REJECTED_JOB = "Meta erişim belirtecini reddetti (Meta hata kodu 190); ileti gönderilmedi. Yeniden bağlandıktan sonra Devam Et ile gönderilir.";
+  // 2.5.0 W-1(a) (KULLANICI KARARI 05.11 ~19:15; W TUR 2: kod 0 da — S-W4): Meta belirteci reddeden kodu (190 / 0) alan, Bekliyor'a dönen işin satırındaki neden — Meta'nın verdiği
+  // gerçek kodla (Devam Et'te başarılı gönderim temizler — §7a 32).
+  const tokenRejectedJob = code => `Meta erişim belirtecini reddetti (Meta hata kodu ${code}); ileti gönderilmedi. Yeniden bağlandıktan sonra Devam Et ile gönderilir.`;
   function applyFailure(batch, job, error, { stage, attempt = null }) {
     const row = batchRow(batch.id);
     const reachedMeta = error.reason === "meta";
@@ -1536,9 +1537,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // 2.5.0 W-1(a) KULLANICI KARARI (05.11.2026 ~19:15, "Bekleyenlere dönsün"): toplu gönderim sürerken Meta belirteci reddetti (190 — süresi doldu ya da iptal) →
     // o anda iletisi gitmeyen kişinin iletisi KESİN gitmedi (ilke 1: sayılmaz; ileti isteğinde defterde bu deneme "gitmedi"): iş Başarısız DEĞİL, Bekliyor'a döner ve
     // kalan kişilerle birlikte Duraklatıldı olur; yeniden bağlanınca Devam Et ona da gönderir (aynı iş — kimseye ikinci ileti gitmez). §7a 13'ün ("hatayı alan iş
-    // Başarısız") yalnız 190 için istisnası; şablon / sınır okumasında (check) iş zaten bekler. Neden yola göre ve "Devam Et"i anar (connection.tokenRejectedPause).
-    if (kind === "pause" && code === TOKEN_EXPIRED_CODE) {
-      if (stage !== "check") updateJob(job.id, { state: "pending", next_at: null, sending_at: null, error_code: code, error_text: TOKEN_REJECTED_JOB });
+    // Başarısız") yalnız belirteç reddi için istisnası; şablon / sınır okumasında (check) iş zaten bekler. Neden yola göre ve "Devam Et"i anar (connection.tokenRejectedPause).
+    // W TUR 2 (KULLANICI KARARI 05.11.2026 21:08, S-W4 = A): kod 0 ("AuthException") da aynı yoldan (connection.mjs TOKEN_REJECT_CODES — tek liste).
+    if (kind === "pause" && isTokenRejectCode(error.code)) {
+      if (stage !== "check") updateJob(job.id, { state: "pending", next_at: null, sending_at: null, error_code: code, error_text: tokenRejectedJob(code) });
       const pause = connection.tokenRejectedPause?.() || { pauseCode: "meta-token", pauseReason: error.message };
       return pauseBatch(batchRow(batch.id), pause.pauseCode, pause.pauseReason);
     }

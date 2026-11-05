@@ -1,0 +1,32 @@
+{
+  "ad": "wt2-e2e-senaryo-whatsapp-ayar-248",
+  "komut": "npm run test:senaryo-whatsapp-ayar-248",
+  "commit": "add0f37c8e9c37f69099f5ced4681e23538f34b4",
+  "dal": "worktree-agent-afa5e1506cc292bd8",
+  "kirli": 0,
+  "izlenmeyen": 20,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:50:34.465Z",
+  "sure_sn": 63.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 140,
+    "gecen": 140,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/wt2-e2e-senaryo-whatsapp-ayar-248.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afa5e1506cc292bd8",
+  "ham_cikti_sha256": "1559a9da2ee3bae871cf96343628b4daa1ee36b69d34159b6bccfc6ab0a6e5a6",
+  "ham_cikti_bayt": 12525
+}
