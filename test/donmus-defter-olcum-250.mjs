@@ -28,12 +28,15 @@ async function timed(label, fn) {
   loop.enable();
   const started = performance.now();
   let value;
+  let ms;
   try {
     value = await fn();
+    ms = performance.now() - started;
+    // Tek parça engellemede gecikme, geç düşen zamanlayıcı sonraki turda çalışınca kaydedilir: okumadan önce bir tur beklenir.
+    await new Promise(resolve => setTimeout(resolve, 25));
   } finally {
     loop.disable();
   }
-  const ms = performance.now() - started;
   return { ms: Math.round(ms), loopMaxMs: Math.round(loop.max / 1e6), value };
 }
 try {

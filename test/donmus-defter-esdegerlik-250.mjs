@@ -207,6 +207,8 @@ async function equal() {
           const book = server.app.ledger.book();
           const same = years.every(year => JSON.stringify(lib.trialBalance(book, { from: `${year}-01-01`, to: `${year}-12-31` })) === JSON.stringify(lib.trialBalance(live, { from: `${year}-01-01`, to: `${year}-12-31` })));
           check(same && JSON.stringify(lib.trialBalance(book)) === JSON.stringify(lib.trialBalance(live)), `${tag} ${label}: mizan yıl yıl (${years.join(" ")}) ve bütün zaman aynı`);
+          const sqlSame = [...years.map(year => [`${year}-01-01`, `${year}-12-31`]), ["", ""], ["", lock], [lock, ""]].every(([from, to]) => JSON.stringify(S.trial({ from, to })) === JSON.stringify(lib.trialBalance(live, { from, to })));
+          check(sqlSame, `${tag} ${label}: karma mizanın SQL yolu (snapshots.trial) = canlı mizan (yıl yıl, kilit günü, bütün zaman)`);
         };
         verify("ilk");
         const scan = await admin.get("/api/workspace/ledger/integrity");

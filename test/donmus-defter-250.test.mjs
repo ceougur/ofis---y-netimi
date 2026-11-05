@@ -103,6 +103,13 @@ describe("2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural de�
     const trialOf = entries => trialBalance(entries, { from: "2026-01-01", to: "2026-12-31" });
     assert.deepEqual(trialOf(L().book()), trialOf(live), "2026 mizanı");
     assert.deepEqual(trialBalance(L().book()), trialBalance(live), "bütün zamanlar mizanı");
+    // Karma mizanın SQL yolu (snapshots.trial) = trialBalance(karma yevmiye), her aralıkta (kilit günü, yıl dönümü, açık dönem, boş, tek gün).
+    for (const [from, to] of [["", ""], ["2026-01-01", "2026-12-31"], ["2026-06-30", "2027-01-05"], ["2027-01-01", "2027-01-31"], ["2026-12-31", "2026-12-31"], ["", "2026-03-10"], ["2025-01-01", "2025-12-31"]]) {
+      assert.deepEqual(S().trial({ from, to }), trialBalance(L().book(), { from, to }), `karma mizan ${from || "baş"} → ${to || "son"}`);
+    }
+    assert.deepEqual(L().check({ from: "2026-01-01", to: "2026-12-31", book: true }).trial, trialOf(live), "check(book) mizanı");
+    // Aralık başından okunan donmuş yevmiye = süzülmüş karma yevmiye.
+    assert.deepEqual(canon(L().book({ from: "2026-07-01", to: "2027-01-31" }).filter(entry => entry.date >= "2026-07-01" && entry.date <= "2027-01-31")), canon(live.filter(entry => entry.date >= "2026-07-01" && entry.date <= "2027-01-31")));
     // Koşu başlığı: kural sürümü "2.5.0", neden lock, kaynak izi = kilit izinin LOCK_SQL_VERSION tanımı.
     const run = store.get("SELECT * FROM ledger_snapshot_runs WHERE kind = 'freeze' AND state = 'done' ORDER BY no DESC LIMIT 1");
     assert.equal(run.rule_version, "2.5.0");
@@ -383,6 +390,16 @@ describe("2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı", 
       if (name !== "cheque-gl.mjs" && name !== "money.mjs") assert.ok(imports.length > 0, `${name}: içe aktarma okunamadı (dişsiz denetim)`);
       for (const from of imports) assert.match(from, /^\.\/[\w-]+\.mjs$/, `${name}: ${from} kopyanın dışına bakıyor`);
     }
+  });
+  it("LOCK_SQL_VERSION kilit izinin en yeni girdisinin sürümüdür (koşunun kaynak izi = kapının kilit izi tanımı)", async () => {
+    const integrity = await import("../server/lib/integrity.mjs");
+    assert.ok(integrity.LOCK_SQL_VERSION, "LOCK_SQL_VERSION yok");
+    const text = readFileSync(path.join(ROOT, "server/lib/integrity.mjs"), "utf8").replace(/\r\n/g, "\n");
+    const versions = [...text.matchAll(/since: "(\d+\.\d+\.\d+)"/g)].map(match => match[1]);
+    assert.ok(versions.length >= 5, `since girdileri okunamadı (${versions.length})`);
+    const key = value => value.split(".").map(part => part.padStart(4, "0")).join(".");
+    const newest = versions.sort((a, b) => key(a).localeCompare(key(b))).at(-1);
+    assert.equal(integrity.LOCK_SQL_VERSION, newest, "yeni kilit izi girdisi eklenince LOCK_SQL_VERSION yükselir");
   });
   it("kural tuzağı: güncel kural sürümü 2.5.0 iken güncel türetme = 2.4.9 kopyası (madde madde); Ç5 / Ç7 ilk kural değişikliğinde bu testi ve LEDGER_RULE_VERSION'ı bilerek değiştirir", async () => {
     const gl = await import("../server/lib/general-ledger.mjs");

@@ -14,7 +14,8 @@
 import { randomUUID } from "node:crypto";
 import { Worker } from "node:worker_threads";
 import { systemClock } from "./clock.mjs";
-import { JOURNAL_CLASS, LEDGER_RULE_VERSION, journalOrder } from "./general-ledger.mjs";
+import { CHART, JOURNAL_CLASS, LEDGER_RULE_VERSION, journalOrder } from "./general-ledger.mjs";
+import { roundMoney } from "./money.mjs";
 import { HttpError } from "./http.mjs";
 import { LOCK_SQL_VERSION, lockDigestOf } from "./integrity.mjs";
 import { RULE_249, buildRule249 } from "./ledger-rule-249/index.mjs";
@@ -192,14 +193,17 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
 
   /**
    * Karma yevmiye: ≤ kapsam donmuş; (kapsam, bekleyen koşunun günü] bekleyen koşunun kuralıyla; sonrası güncel kuralla. live: aynı çağrıda kurulmuş güncel türetme (ikinci kez
-   * kurulmaz). to ≤ kapsam ise canlı türetme yapılmaz.
+   * kurulmaz). to ≤ kapsam ise canlı türetme yapılmaz; from verilirse donmuş satırlar yalnız from'dan okunur (dönem raporu; mizan için trial()).
    */
-  function book({ to = "", live = null } = {}) {
+  function book({ from = "", to = "", live = null } = {}) {
     if (!ready()) return live || build();
     const cover = coverage();
-    if (cover && to && to <= cover) return entries({ to });
-    const fresh = live || build();
-    const frozen = cover ? entries() : [];
+    if (cover && to && to <= cover) return entries({ from, to });
+    const frozen = cover ? entries({ from }) : [];
+    return [...frozen, ...afterCoverage(cover, live || build())];
+  }
+  /** Kapsamın sonrası: (kapsam, bekleyen koşunun günü] bekleyen koşunun kuralıyla (2.4.9 göç koşusu), sonrası güncel türetme. */
+  function afterCoverage(cover, fresh) {
     const pending = pendingRun();
     let middle = [];
     let tail = cover ? fresh.filter(entry => entry.date > cover) : fresh;
@@ -207,7 +211,64 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
       middle = rules[pending.rule_version]().filter(entry => entry.date > cover && entry.date <= pending.through);
       tail = tail.filter(entry => entry.date > pending.through);
     }
-    return [...frozen, ...middle, ...tail];
+    return [...middle, ...tail];
+  }
+
+  /**
+   * Karma mizan (lib/general-ledger.mjs trialBalance ile AYNI sonuç; test/donmus-defter-250.test.mjs denetler): donmuş dönem SQL toplamıyla (satırlar JS nesnesine çevrilmez;
+   * ders 47), kapsamın sonrası karma yevmiyenin maddeleriyle. live: aynı çağrıda kurulmuş güncel türetme.
+   */
+  function trial({ from = "", to = "", live = null } = {}) {
+    const cover = ready() ? coverage() : "";
+    if (!cover) return trialOf([], 0, { from, to }, ready() ? afterCoverage("", live || build()) : live || build());
+    const upper = to && to < cover ? to : cover;
+    const rows = store.all(
+      `SELECT account, SUM(CASE WHEN date < ?1 THEN debit_minor - credit_minor ELSE 0 END) AS opening, SUM(CASE WHEN date >= ?1 THEN debit_minor ELSE 0 END) AS debit,
+              SUM(CASE WHEN date >= ?1 THEN credit_minor ELSE 0 END) AS credit
+       FROM ledger_snapshots WHERE date <= ?2 GROUP BY account`,
+      from || "", upper,
+    );
+    // trialBalance maddeyi (kimlik + koşu) "dengesiz" sayar; donmuş maddenin satırları ardışıktır (aynı koşu, aynı madde).
+    const unbalanced = Number(store.get("SELECT COUNT(*) AS n FROM (SELECT 1 FROM ledger_snapshots WHERE date <= ? GROUP BY run, entry_id, date HAVING SUM(debit_minor - credit_minor) <> 0)", upper).n);
+    const tail = cover && to && to <= cover ? [] : afterCoverage(cover, live || build());
+    return trialOf(rows, unbalanced, { from, to }, tail);
+  }
+  function trialOf(frozenRows, frozenUnbalanced, { from, to }, entriesAfter) {
+    const accounts = new Map();
+    let debit = 0;
+    let credit = 0;
+    let unbalanced = frozenUnbalanced;
+    for (const row of frozenRows) {
+      accounts.set(row.account, { code: row.account, name: CHART[row.account] || row.account, opening: Number(row.opening), debit: Number(row.debit), credit: Number(row.credit) });
+      debit += Number(row.debit);
+      credit += Number(row.credit);
+    }
+    for (const entry of entriesAfter) {
+      if (to && entry.date > to) continue;
+      const before = from && entry.date < from;
+      let own = 0;
+      for (const line of entry.lines) {
+        own += line.debit - line.credit;
+        const row = accounts.get(line.account) || { code: line.account, name: CHART[line.account] || line.account, opening: 0, debit: 0, credit: 0 };
+        if (before) row.opening += line.debit - line.credit;
+        else {
+          row.debit += line.debit;
+          row.credit += line.credit;
+          debit += line.debit;
+          credit += line.credit;
+        }
+        accounts.set(line.account, row);
+      }
+      if (own !== 0) unbalanced += 1;
+    }
+    const tl = value => roundMoney(value / 100);
+    const list = [...accounts.values()].sort((a, b) => a.code.localeCompare(b.code)).map(row => ({ ...row, balance: row.opening + row.debit - row.credit }));
+    return {
+      accounts: list.map(row => ({ code: row.code, name: row.name, opening: tl(row.opening), debit: tl(row.debit), credit: tl(row.credit), balance: tl(row.balance) })),
+      totals: { debit: tl(debit), credit: tl(credit), difference: tl(debit - credit) },
+      balanced: debit === credit && unbalanced === 0,
+      unbalanced,
+    };
   }
 
   function insertRun({ kind, state: runState, from, through, rule = "", reason, user, totals = null }) {
@@ -591,7 +652,7 @@ export function createLedgerSnapshots({ store, period = null, now = systemClock,
     if (current) await current.catch(() => {});
   }
 
-  return { state, status, entries, book, lockChanged, freezeSync, purgeStale, runPending, digestOf, repairOnOpen, ruleDiff, checks, cancel, close, coverage, journalOrder };
+  return { state, status, entries, book, trial, lockChanged, freezeSync, purgeStale, runPending, digestOf, repairOnOpen, ruleDiff, checks, cancel, close, coverage, journalOrder };
 }
 
 /** İç API hata biçimi (uçlar için). */

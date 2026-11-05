@@ -212,14 +212,14 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
   // 2.5.0 Ç3 — kilitli dönemin donmuş defteri (lib/ledger-snapshots.mjs; docs/erp/C3-DONDURMA-TASARIM.md). Kilit iki yoldan değişir (PUT period-lock ve fişlerin postAll
   // lockThrough'u); ikisi de lockChanged'i kilitle aynı işlemde çağırır.
   const snapshots = createLedgerSnapshots({
-    store, period, now, build: () => build(), integrity, events, log, dbPath: config?.dbPath || "", batchLines: freezeBatchLines || 2000, hook: __testFreezeHook,
+    store, period, now, build: () => build(), integrity, events, log, dbPath: config?.dbPath || "", batchLines: freezeBatchLines || 1000, hook: __testFreezeHook,
     canWrite: () => !schemaGate && canWriteInBackground() !== false,
   });
   /**
    * Karma yevmiye (Yevmiye Defteri, Hesap Planı Mizanı, Ç6 raporları): kilitli dönem donmuş defterden, açık dönem canlı türetmeden. to ≤ kapsam ise canlı türetme yapılmaz.
    * Mutabakat (alt defter ↔ ana defter) ve kapı canlı türetmeyle (check(), build()) — alt defterler güncel kuralla.
    */
-  const book = ({ to = "", live = null } = {}) => snapshots.book({ to, live });
+  const book = ({ from = "", to = "", live = null } = {}) => snapshots.book({ from, to, live });
   // Alt defterlerin kendi hesabı (beklenen bakiyeler): Kasa ve Banka yola göre, cariler türe göre, portföy durumuna göre.
   // accountList (v2.0.22): mutabakat denetimi aynı anda (aynı veriyle) cari listesini zaten hesapladıysa yeniden hesaplanmaz.
   // v2.1.0 (K5, §3.11): Kasa ve banka tarafı TEK KAYNAKTAN (lib/bank/money-lines.mjs) yol bazında: 100 = nakit, 102 = havale, 108 = POS,
@@ -338,7 +338,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
   // book (2.5.0 Ç3): mizan karma yevmiyeden (kilitli dönem donmuş); mutabakat her zaman canlı türetmeyle.
   function check({ from = "", to = "", accountList = null, book: useBook = false } = {}) {
     const entries = build();
-    const trial = trialBalance(useBook ? book({ live: entries }) : entries, { from, to });
+    // Karma mizan: donmuş dönem SQL toplamıyla (snapshots.trial; trialBalance(book()) ile aynı sonuç).
+    const trial = useBook ? snapshots.trial({ from, to, live: entries }) : trialBalance(entries, { from, to });
     const groups = groupsOf();
     // Mutabakat tüm zamanlarla yapılır (alt defter bakiyeleri bugüne kadarki her şeyi içerir).
     const reconciliation = reconcile(from || to || useBook ? trialBalance(entries) : trial, expected(accountList, groups));
