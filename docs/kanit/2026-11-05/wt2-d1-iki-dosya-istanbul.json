@@ -1,0 +1,32 @@
+{
+  "ad": "wt2-d1-iki-dosya-istanbul",
+  "komut": "node --test --test-concurrency=1 test/whatsapp-wt2-kod0-250.test.mjs test/whatsapp-w2-kaldir-250.test.mjs",
+  "commit": "c83f21c6a04fe26e62a87a447965247428f8ebd4",
+  "dal": "worktree-agent-aabef37e4fca15eb3",
+  "kirli": 2,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:52:11.295Z",
+  "sure_sn": 47,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 27,
+    "gecen": 27,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/wt2-d1-iki-dosya-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aabef37e4fca15eb3",
+  "ham_cikti_sha256": "7d17778c1a2c73532b626babc0f3b26d7365f0948c3afd742f063d63788f9173",
+  "ham_cikti_bayt": 14595
+}

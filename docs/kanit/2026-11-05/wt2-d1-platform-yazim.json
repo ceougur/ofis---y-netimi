@@ -1,0 +1,32 @@
+{
+  "ad": "wt2-d1-platform-yazim",
+  "komut": "node --test --test-concurrency=1 test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "c83f21c6a04fe26e62a87a447965247428f8ebd4",
+  "dal": "worktree-agent-aabef37e4fca15eb3",
+  "kirli": 2,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:53:25.557Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/wt2-d1-platform-yazim.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aabef37e4fca15eb3",
+  "ham_cikti_sha256": "c1dcfafa6384663bf0274f3e762ea3a44193c726d99605763a34def18433bd95",
+  "ham_cikti_bayt": 3443
+}
