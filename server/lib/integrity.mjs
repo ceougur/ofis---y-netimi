@@ -30,6 +30,7 @@ import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mj
 import { byEntity, createBankChecks } from "./bank/checks.mjs";
 import { collectionProblems } from "./bank/collections.mjs";
 import { doubtfulProblems, doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
+import { voucherProblems } from "./ledger-vouchers.mjs";
 import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentGl, documentWanted } from "./cheque-gl.mjs";
 import { compareVersions } from "./semver.mjs";
 import { CHEQUE_BOND_BAD, createScopedGate, familyOf } from "./integrity-scope.mjs";
@@ -214,6 +215,14 @@ const LOCK_SQL = {
   // MM4: açılış stoku (B 153 / A 500) değeri miktar × birim fiyattır; kapanmış dönemdeki açılışın birim fiyatı ya da işareti değişirse mizan kayar.
   stock_opening_lock: { requires: ["stock_moves.is_opening"], since: "2.4.3", sql: "SELECT id, qty, unit_price, is_opening FROM stock_moves WHERE is_opening = 1 AND date <= ?1 ORDER BY id" },
   cash_tax_lock: { requires: ["cash_entries.tax_json"], since: "2.4.3", sql: "SELECT id, tax_json FROM cash_entries WHERE tax_json <> '' AND date <= ?1 ORDER BY id" },
+  // 2.5.0 Ç2: saklanan fiş defteri — kapanmış dönemdeki fişin her satırı (hesap, alt hesap, cari, tutar) ve fişin türü / sınıfı / ters kayıt bağı. Fiş tetikleyiciyle
+  // değiştirilemez; bu girdi kilitli tarihe eklenen (kilit değişmeden) ya da store dışından silinen fişi yakalar. Fişi olmayan veride satır üretmez (iz 2.4.9 ile birebir).
+  ledger_vouchers_lock: {
+    requires: ["ledger_vouchers", "ledger_voucher_lines"],
+    since: "2.5.0",
+    sql: `SELECT v.id, v.year, v.no, v.date, v.type, v.journal_class, COALESCE(v.reversal_of, '') AS reversal_of, v.total_minor, l.seq, l.account, l.sub, l.party, l.debit_minor, l.credit_minor
+          FROM ledger_vouchers v JOIN ledger_voucher_lines l ON l.voucher_id = v.id WHERE v.date <= ?1 ORDER BY v.id, l.seq`,
+  },
 };
 
 /**
@@ -406,6 +415,12 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const problems = doubtfulProblems(store);
       checks.push({ code: "doubtful:records", name: "Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)", ok: problems.length === 0, count: problems.length, sample: problems.slice(0, 5).map(item => item.sample) });
       lap("doubtful");
+    }
+    // 2.5.0 Ç2 (lib/ledger-vouchers.mjs): saklanan fiş defterinin yapısı — yalnız fiş varsa görünür (fişsiz veride denetim listesi 2.4.9 ile aynı kalır).
+    if (has("ledger_vouchers") && store.get("SELECT 1 AS found FROM ledger_vouchers LIMIT 1")) {
+      const problems = voucherProblems(store);
+      checks.push({ code: "ledger:vouchers", name: "Fiş Defteri (her fiş dengeli, satırları tam, hesapları planda, ters kaydı asıl fişin aynası)", ok: problems.length === 0, count: problems.length, sample: problems.slice(0, 5) });
+      lap("vouchers");
     }
     // Taksit alt defteri: Taksitler ekranının her kart için gösterdiği toplam ve tahsilat = kartın satırları.
     if (plans()?.list && has("plans")) {

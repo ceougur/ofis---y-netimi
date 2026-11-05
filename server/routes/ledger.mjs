@@ -5,14 +5,18 @@
 import { journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
 import { DOUBTFUL_GL } from "../lib/doubtful-gl.mjs";
 import { doubtfulExpected, doubtfulRows, doubtfulUsed } from "../lib/bank/doubtful.mjs";
+import { systemClock } from "../lib/clock.mjs";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+import { VOUCHER_TYPES, createLedgerVouchers, voucherJournalRows } from "../lib/ledger-vouchers.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // Carisiz evrak satırlarının yazım sırası tabanı (MM8): cari satırlarının rowid'lerinden büyük (aynı gün aynı sınıfta onlardan sonra gelir).
 const FREE_SEQ = 1e15;
+// İstemcinin istek kimliği (lib/idempotency.mjs FORMAT ile aynı): fişin istek kimliği "api:<kimlik>".
+const REQUEST_ID = /^[A-Za-z0-9_-]{16,100}$/;
 
-export function registerLedgerRoutes(router, { store, auth, audit = () => {}, period = null, cash = () => null, accounts = () => null, integrity = () => null, money = null, pos = () => null }) {
+export function registerLedgerRoutes(router, { store, auth, audit = () => {}, events = null, period = null, now = systemClock, cash = () => null, accounts = () => null, integrity = () => null, money = null, pos = () => null }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): para satırının hesap bağı (fin_ref; '' = Hesabı Atanmamış). v19 dosyasında (araçlar) kolon yoktur: ''.
   const refOf = (table, alias) => (store.all(`PRAGMA table_info(${table})`).some(column => column.name === "fin_ref") ? `${alias}.fin_ref` : "''");
@@ -186,6 +190,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     // 2.4.3 MM3: KDV Mahsup Fişleri (etkin ve geri alınmış; geri alınanın ters kaydı aynı gün). Süzgeçli kurulumda (kapının dokunulan varlıkları)
     // yüklenmez: mahsup tablosuna yazım tam kapıya düşer (integrity-scope "kapsam dışı").
     if (!filter && has("vat_offsets")) out.vatOffsets = store.all("SELECT id, rowid AS seq, month, date, out_minor AS outMinor, in_minor AS inMinor, carry_in_minor AS carryInMinor, carry_out_minor AS carryOutMinor, payable_minor AS payableMinor, status FROM vat_offsets ORDER BY date, created_at, rowid");
+    // 2.5.0 Ç2: saklanan fiş defteri (lib/ledger-vouchers.mjs; tek toplu sorgu). Süzgeçli kurulumda yüklenmez (KDV mahsubu gibi): fiş yazımı her zaman tam kapıya
+    // düşer (integrity-scope FULL_TABLES). Fiş satırı cari taşırsa yalnız tam kapıda görünür — kontrol hesabına (120 / 320 / 336 / 127 / 128) yazan fiş alt defterin
+    // beklenenini değiştirmez, Defter Mutabakatı farkı verir ve kapıda geri alınır (bilerek; C2-FIS-DEFTERI-TASARIM.md §4).
+    if (!filter) out.vouchers = voucherJournalRows(store);
     return out;
   }
   // Carisiz evrakın karşı hesabı gelir/gider (602 / 770): journal() cariyi kontrol hesabı sayar; burada düzeltilir.
@@ -348,6 +356,29 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     integrity()?.start?.();
     ok(res, { lockedUntil });
   });
+  // 2.5.0 Ç2 — saklanan fiş defteri (lib/ledger-vouchers.mjs). Kapanış / açılış / eşleştirme fişlerini Ç3, Ç5 ve D4 iç API'yle (vouchers) yazar; kullanıcıya serbest
+  // fiş girişi YOK (2.5.1). Fişler Yevmiye Defteri ve Hesap Planı Mizanı'nda görünür (ayrı ekran 2.5.1). Uçlar dönem kilidini koyabilen yetkiyle (system.manage):
+  //   GET  /api/admin/ledger/vouchers?from=&to=&type=   → fişler (satırlarıyla)
+  //   POST /api/admin/ledger/vouchers/:id/reverse        → ters kayıt fişi (R-03); gövde { date?, description?, requestId } ya da başlık x-hof-request
+  const vouchers = createLedgerVouchers({ store, period, now });
+  router.get("/api/admin/ledger/vouchers", async ({ req, res, url }) => {
+    auth.requirePermission(req, "system.manage");
+    const from = text(url.searchParams.get("from"));
+    const to = text(url.searchParams.get("to"));
+    const type = text(url.searchParams.get("type"));
+    if ((from && !DATE.test(from)) || (to && !DATE.test(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.", { code: "date-invalid" });
+    if (type && !Object.hasOwn(VOUCHER_TYPES, type)) throw new HttpError(400, "Fiş türü geçerli değil.", { code: "voucher-type" });
+    ok(res, { vouchers: vouchers.list({ from, to, type }) });
+  });
+  router.post("/api/admin/ledger/vouchers/:id/reverse", async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = (await readJson(req)) || {};
+    const requestId = text(req.headers["x-hof-request"]) || text(body.requestId);
+    if (!REQUEST_ID.test(requestId)) throw new HttpError(400, "İstek kimliği gerekli.", { code: "request-id-invalid" });
+    const voucher = vouchers.reverse(user, text(params.id), { date: text(body.date), description: body.description, requestKey: `api:${requestId}` });
+    if (!voucher.replayed) events?.publish?.("workspace.changed", { kind: "ledger", actorId: user.id, actorName: user.display_name }, { except: user.id });
+    ok(res, { voucher, replayed: voucher.replayed === true });
+  });
   // Mutabakat testi (tüm denetimler) ve geri alınan işlemlerin günlüğü.
   router.get("/api/workspace/ledger/integrity", async ({ req, res }) => {
     auth.requirePermission(req, "overview.view");
@@ -392,5 +423,5 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     const parts = [has("account_entries") ? "(SELECT COUNT(*) FROM account_entries e WHERE e.account_id = j.value)" : "0", has("invoices") ? "(SELECT COUNT(*) FROM invoices i WHERE i.account_id = j.value)" : "0", has("plans") && has("plan_entries") ? "(SELECT COUNT(*) FROM plans p CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE p.account_id = j.value)" : "0"];
     return new Map(store.all(`SELECT j.value AS id, ${parts.join(" + ")} AS n FROM json_each(?) j`, list).map(row => [row.id, Number(row.n) || 0]));
   }
-  return { build, check, expected, expectedSubs, refs, partyTotals, partyRowCounts };
+  return { build, check, expected, expectedSubs, refs, partyTotals, partyRowCounts, vouchers };
 }

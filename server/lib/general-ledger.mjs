@@ -217,7 +217,7 @@ export function reverseBalanceOf(code) {
 }
 // 128 (2.3.0 İz 1): şüpheli alacak satırları da cariyi taşır — carinin defter bakiyesi 120 + 128 = cari kartı (Şüpheli Alacağa Al cari bakiyesini
 // değiştirmez; lib/doubtful-gl.mjs).
-const PARTY_ACCOUNTS = new Set(["120", "127", "320", "336", DOUBTFUL_GL.doubtful]);
+export const PARTY_ACCOUNTS = Object.freeze(new Set(["120", "127", "320", "336", DOUBTFUL_GL.doubtful]));
 const CONTROL = { customer: "120", supplier: "320", other: "336" };
 const cents = value => Math.round((Number(value) || 0) * 100);
 /**
@@ -296,6 +296,8 @@ export function moneyAccount(method, ref = "", refs = {}) {
  *   (instrument: 'cheque' | 'note' — 2.2.0 İz 4.2: çek 101 / 103, senet 121 / 321; yoksa çek)
  *   invoices: { id, kind, date, number, glJson ([{ account, net }] TL kuruş), tryVat, tryWithheld, tryStoppage, tryPayable,
  *               accountType, party }  (yalnız kesilmiş; taslak ve iptal deftere girmez)
+ *   vouchers: { id, seq, date, cls, label, text, lines: [{ account, sub, party, debit, credit }] } (2.5.0 Ç2 saklanan fiş defteri, kuruş;
+ *               lib/ledger-vouchers.mjs voucherJournalRows) — satırlar yazım anında saklanmıştır, aynen alınır
  *
  * Fatura (v2.0.15) çok satırlı tek yevmiye maddesidir; cariye yazılan borç/alacak satırı (account_entries, source =
  * 'invoice') faturanın kendisinden gelir, ikinci kez sayılmaz. Faturanın peşin tahsilat/ödemesi ayrı cari satırıdır
@@ -565,9 +567,21 @@ export function journal(rows) {
   // 2.3.0 İz 1 (plan §3.11b; lib/doubtful-gl.mjs): şüpheli alacak kayıtları varsa carinin alacak satırları önce 128'den düşer (A 120 → A 128),
   // al / karşılık / 644 / çıkar maddeleri eklenir. Kayıt yoksa (ya da süzgeç yüklemediyse) yevmiye 2.2.0'dakiyle aynıdır.
   if (rows.doubtful?.records?.length) applyDoubtfulToJournal(out, rows.doubtful);
+  // 2.5.0 Ç2 (lib/ledger-vouchers.mjs; docs/erp/C2-FIS-DEFTERI-TASARIM.md): saklanan fişler — satırlar yazım anındaki hesap, alt hesap ve cariyle AYNEN (Banka Fişi gibi; kuruş
+  // doğrudan). Şüpheli alacak ayırmasından SONRA eklenir: saklanan satır yeniden sınıflanmaz. Maddenin kimlik öneki fişin yevmiye sınıfıdır (aynı gün sırası,
+  // JOURNAL_CLASS: açılış günün başında, kapanış günün sonunda). Fiş yoksa (rows.vouchers boş) yevmiye 2.4.9'dakiyle aynıdır.
+  for (const voucher of rows.vouchers || []) {
+    const lines = voucher.lines
+      .filter(line => line.debit > 0 || line.credit > 0)
+      .map(line => ({ account: String(line.account), debit: Number(line.debit) || 0, credit: Number(line.credit) || 0, ...(line.sub ? { sub: String(line.sub) } : {}), ...(line.party ? { party: String(line.party) } : {}) }));
+    at = voucher.seq;
+    if (lines.length) out.push(stamp({ id: `${VOUCHER_ENTRY[voucher.cls] || VOUCHER_ENTRY.ordinary}:${voucher.id}`, date: voucher.date, source: voucher.label, text: voucher.text, lines }));
+  }
   out.sort(journalOrder);
   return out;
 }
+/** Saklanan fişin yevmiye sınıfı (ledger_vouchers.journal_class) → madde kimliğinin öneki (JOURNAL_CLASS). */
+export const VOUCHER_ENTRY = Object.freeze({ opening: "voucher-open", ordinary: "voucher", "period-end": "voucher-end", closing: "voucher-close" });
 
 /**
  * Yevmiye madde sırası (2.4.4 MM8, mali müşavir 31b; ders 31 "aynı tarihli kayıtlar kimlikle sıralanmaz"): tarih → olay sınıfı → yazım sırası (kaynak
@@ -578,8 +592,12 @@ export function journal(rows) {
  * MONEY_SOURCES rank: kayıt tahsilatı 1, Kasa 2, taksit tahsilatı 3, cari satırı 4, stok 5, çek/senet 6; Banka Fişi 9) → kart kapanışı → şüpheliden
  * çıkar / konusu kalmayan karşılık (§4.15 "çıkar") → ay sonu KDV Mahsup Fişi ve ters kaydı. Sıra yalnız gösterim sırasıdır: mizan, cari bakiyesi ve şüpheli
  * ayırması maddelerin sırasından bağımsızdır (ayırma kendi sırasını doubtful-gl'de kurar; test/yevmiye-sira-244.test.mjs).
+ * 2.5.0 Ç2 (kural kitabı G-4 "açılış sınıfı günün başı … kapanış sınıfı günün sonu"): saklanan fişler — açılış sınıfı (Açılış / Açılış Eşleştirme Fişi) günün
+ * EN BAŞINDA, olağan fiş (Kural Farkı Düzeltme Fişi) olağan maddelerin arasında (Banka Fişi'nden sonra), dönem sonu sınıfı KDV mahsubundan sonra, kapanış sınıfı
+ * (Kapanış / Önceki Yıl Sonucu Fişi) günün EN SONUNDA; sınıf içinde yazım sırası (fişin rowid'i). Ters kayıt asıl fişin sınıfındadır.
  */
 export const JOURNAL_CLASS = Object.freeze({
+  "voucher-open": 1,
   "doubtful-take": 10,
   "doubtful-provision": 11,
   invoice: 20,
@@ -595,11 +613,14 @@ export const JOURNAL_CLASS = Object.freeze({
   "cheque-deposit": 36,
   "cheque-withdraw": 36,
   bank: 39,
+  voucher: 45,
   "plan-close": 50,
   "doubtful-644": 60,
   "doubtful-release": 61,
   "vat-offset": 70,
   "vat-offset-reverse": 71,
+  "voucher-end": 75,
+  "voucher-close": 99,
 });
 const classOf = id => JOURNAL_CLASS[String(id).slice(0, String(id).indexOf(":"))] ?? 90;
 export function journalOrder(a, b) {

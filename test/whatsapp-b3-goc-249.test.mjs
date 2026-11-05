@@ -15,6 +15,7 @@ import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
 import { ADMIN_PASSWORD, removeTestDir } from "./helpers.mjs";
+import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { PNID, TOKEN, URLS, WABA, startWa } from "./whatsapp-248-ortak.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -88,7 +89,8 @@ const preMigration = dir => {
   const walk = d => {
     for (const entry of readdirSync(d, { withFileTypes: true })) {
       if (entry.isDirectory()) walk(path.join(d, entry.name));
-      else if (/pre-migration-v45/.test(entry.name)) out.push(entry.name);
+      // 2.5.0 Ç2: göç öncesi yedeğin adı zincirin SON göçünü taşır (v45 de koşar; 2.5.0'da son göç v46).
+      else if (new RegExp(`pre-migration-v${LATEST_VERSION}`).test(entry.name)) out.push(entry.name);
     }
   };
   if (existsSync(dir)) walk(dir);
@@ -121,7 +123,7 @@ describe("2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göç�
       ctx = await open(dirs);
       let view = look(dirs.file002);
       assert.equal(view.hasPdfTable, true, `göç v45: wa_job_pdfs tablosu yok (şema sürümü ${view.version})`);
-      assert.equal(view.version, 45, "şema v45");
+      assert.equal(view.version, LATEST_VERSION, "şema son sürümde (v45 dahil; 2.5.0 Ç2: v46)");
       assert.deepEqual(view.pdfs, { [A.id]: A.pdfSha, [B.id]: B.pdfSha }, "A ve B'nin PDF'i bayt bayt aynı taşındı (durum süzgeci yok: kesinleşeni bakım siler)");
       assert.equal(view.blobs, 0, "wa_jobs.pdf_blob boşaltıldı");
       assert.equal(preMigration(dirs.backupDir).length, 2, `göçten önce iki şirketin tam yedeği (${preMigration(dirs.backupDir).join(", ")})`);
@@ -144,7 +146,7 @@ describe("2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göç�
       ctx = null;
       // İkinci açılış: göç yok (yeni göç öncesi yedeği alınmaz), şema v45.
       ctx = await open(dirs);
-      assert.equal(look(dirs.file002).version, 45);
+      assert.equal(look(dirs.file002).version, LATEST_VERSION);
       assert.equal(preMigration(dirs.backupDir).length, 2, "ikinci açılışta göç yok (yeni göç öncesi yedeği yok)");
     } finally {
       await ctx?.close();
@@ -163,7 +165,7 @@ describe("2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göç�
       assert.equal(look(dirs.file002).version, 44, "ön koşul: şema 44");
       ctx = await open(dirs);
       const view = look(dirs.file002);
-      assert.equal(view.version, 45, "yarıda kalmış göç tamamlandı");
+      assert.equal(view.version, LATEST_VERSION, "yarıda kalmış göç tamamlandı");
       assert.deepEqual(view.pdfs, { [A.id]: A.pdfSha, [B.id]: B.pdfSha });
       assert.equal(view.blobs, 0);
     } finally {
@@ -190,7 +192,7 @@ describe("2.4.9 B3 — v2.4.8 verisinde dondurulmuş PDF'in ayrı tabloya göç�
       assert.equal(restored.restored, true, JSON.stringify(restored));
       let view = look(dirs.file002);
       assert.equal(view.hasPdfTable, true, `geri yüklenen dosyada wa_job_pdfs yok (şema ${view.version})`);
-      assert.equal(view.version, 45);
+      assert.equal(view.version, LATEST_VERSION);
       assert.deepEqual(view.pdfs, { [A.id]: A.pdfSha, [B.id]: B.pdfSha }, "yedekteki PDF'ler bayt bayt taşındı");
       assert.equal(view.blobs, 0);
       const detail = await ok(ctx.api.get(`${URLS.batches}/${INFO.batches.AB}?${Q}`), "ayrıntı");

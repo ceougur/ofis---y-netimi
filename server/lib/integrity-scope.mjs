@@ -45,7 +45,9 @@ const WAY_ACCOUNT = { cash: "100", bank: "102", card: "108", ccard: "309", loan:
 // Bankaya Tahsile Ver (cheque_collections, plan §3.14) 2.2.0 doğrulaması T1/D6'dan beri bu yolda: plan §3.11 cheque:collections "Her COMMIT"
 // (indeksli) — dokunulan evrakın 101.01/101.02 satırları ve tahsil kayıtları denetlenir (önceden her tahsile verme, geri alma ve tahsildeki
 // evrakın tahsili/karşılıksızı tam kapıya düşüyordu: 100.000 satırda ~1 sn).
-const FULL_TABLES = new Set(["pos_terminals", "pos_sales", "pos_items"]);
+// 2.5.0 Ç2: saklanan fiş defteri (ledger_vouchers / ledger_voucher_lines) — fiş seyrek yazılır (kapanış, açılış eşleştirme, ters kayıt), satırları herhangi bir hesaba
+// düşebilir: karar her zaman tam kapının (yevmiye dengesi, bütün beklenenler, kilit izi).
+const FULL_TABLES = new Set(["pos_terminals", "pos_sales", "pos_items", "ledger_vouchers", "ledger_voucher_lines"]);
 // Hesap kartında yevmiyeyi etkileyen alanlar (yol türetmesi ve alt hesap): değişirse karar tam kapının.
 const ACCOUNT_LEDGER_FIELDS = ["kind", "gl", "gl_sub", "currency"];
 // Kilit izinin (lib/integrity.mjs LOCK_SQL) satır alanları: kilitli dönemdeki satırda bunlardan biri değişirse, satır eklenir ya da silinirse iz değişir.
