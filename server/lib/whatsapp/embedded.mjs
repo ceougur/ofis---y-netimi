@@ -109,7 +109,10 @@ export function createEmbeddedSignup({ mobileSync = () => null, now = () => Date
       fail(502, "Meta'dan gelen erişim belirteci açılamadı; WhatsApp'ı Bağla'yı yeniden deneyin.", "whatsapp-embedded-token");
     }
     const appId = /^[0-9]{5,30}$/.test(String(data.appId || "")) ? String(data.appId) : "";
-    return { state: "ready", token, wabaId: String(data.wabaId || ""), phoneNumberId: String(data.phoneNumberId || ""), event: String(data.olay || ""), appId };
+    // 2.5.0 W-1(a): Meta'nın kod değişimi yanıtındaki süre alanları (expires_in sn; data_access_expires_at Unix sn) — kapıcı AYNEN aktarırsa (bugünkü kapıcı aktarmaz;
+    // W-1(b)). Sayı değilse yok sayılır; bağlantı o zaman bağlanma anı + 60 gün sayılır (lib/whatsapp/connection.mjs saveEmbedded).
+    const seconds = value => (typeof value === "number" || (typeof value === "string" && /^[0-9]{1,12}$/.test(value)) ? Number(value) : null);
+    return { state: "ready", token, wabaId: String(data.wabaId || ""), phoneNumberId: String(data.phoneNumberId || ""), event: String(data.olay || ""), appId, expiresIn: seconds(data.expires_in), dataAccessExpiresAt: seconds(data.data_access_expires_at) };
   }
 
   return { start, poll, size: () => sessions.size };

@@ -16,6 +16,38 @@ import { META_D0, META_D0_W7, MetaGraphError, createMetaGraph, qualityLabel, spl
 export const SETTING_KEY = "whatsapp.meta";
 // Deneme gönderiminden sonra aynı şirketten yeni deneme için bekleme (çift tık / iki sekme iki ileti göndermesin).
 export const SELF_TEST_COOLDOWN_MS = 15_000;
+
+// ---------- 2.5.0 W-1(a) BELİRTEÇ SÜRESİ (docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md §1 W-1; docs/devir/2.5.0-DEVREDEN.md W-1) ----------
+// Yol 2 (WhatsApp'ı Bağla): Meta'daki yapılandırma ("DestekOfis WhatsApp Bağla", config_id 1468332482078262) belirteci 60 GÜNLÜK verir (değiştirilemez). Süre Meta
+// yanıtında gelirse (expires_in / data_access_expires_at — kapıcı aktarırsa) o kaydedilir; gelmezse bağlanma anı + 60 gün. Yol 1 (Elle Bağla, kalıcı System User
+// belirteci) SÜRESİZ sayılır. Meta 190 (OAuthException) dönerse bağlantı "Süresi Doldu" olur — yalnız daha önce Meta'nın kabul ettiği (sınanmış / Yol 2) belirteçte
+// ya da Meta açıkça "süresi doldu" (alt kod 463) dediğinde; yeni yazılmış, hiç çalışmamış belirtecin 190'ı yanlış yazımdır ("Sınama Başarısız" kalır).
+// Bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ (kullanıcı başına) uyarı; süre dolunca yeni gönderim başlatılamaz, Yeniden Bağla her zaman açık.
+// Belirteci YENİLEME (W-1(b), kapıcıda) Meta izninden sonra; burada yok.
+export const EMBEDDED_TOKEN_DAYS = 60;
+export const TOKEN_WARN_DAYS = 7;
+export const TOKEN_EXPIRED_CODE = 190;
+export const TOKEN_EXPIRED_SUBCODE = 463;
+// 2.5.0 W-2: Meta tarafında kaldırılamazsa kullanıcının izleyeceği adımlar (site; uygulamayı Business Settings → Integrations → Connected apps'ten kaldırma).
+export const DATA_DELETION_URL = "https://destekofis.net/veri-silme";
+const DAY_MS = 86_400_000;
+const MAX_TOKEN_SECONDS = 10 * 365 * 86_400; // Meta'dan gelen süre bundan uzunsa / geçersizse yok sayılır
+const isoOrNull = value => (typeof value === "string" && Number.isFinite(Date.parse(value)) ? new Date(Date.parse(value)).toISOString() : null);
+const pad2 = value => String(value).padStart(2, "0");
+// Ekrandaki gün (programın yerel günü; kurulumda Türkiye saati).
+const dayText = ms => {
+  const date = new Date(ms);
+  return `${pad2(date.getDate())}.${pad2(date.getMonth() + 1)}.${date.getFullYear()}`;
+};
+const localDay = date => `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+/** Meta'nın kapıcı yoluyla aktardığı süre alanlarından bitiş anı (ms) ya da null: expires_in (sn, verildiği andan) ve data_access_expires_at (Unix sn) — erken olanı. */
+export function metaExpiryOf({ expiresIn = null, dataAccessExpiresAt = null } = {}, issuedMs) {
+  const seconds = Number(expiresIn);
+  const fromIn = Number.isFinite(seconds) && seconds > 0 && seconds <= MAX_TOKEN_SECONDS ? issuedMs + seconds * 1000 : null;
+  const unix = Number(dataAccessExpiresAt);
+  const fromData = Number.isFinite(unix) && unix * 1000 > issuedMs && unix * 1000 <= issuedMs + MAX_TOKEN_SECONDS * 1000 ? unix * 1000 : null;
+  return { fromIn, fromData };
+}
 // Programın W5'te açacağı iki bilgilendirme şablonu (plan §6 W5); W1'de yalnız durumları okunur ("Henüz Açılmadı").
 export const PROGRAM_TEMPLATES = Object.freeze(["destekofis_ekstre", "destekofis_odeme_hatirlatma"]);
 
@@ -59,15 +91,23 @@ export function summaryOf(value) {
   return { configured: typeof raw.tokenSealed === "string" && raw.tokenSealed !== "", mode: raw.mode === "embedded" ? "embedded" : "manual", wabaId: String(raw.wabaId), phoneNumberId: String(raw.phoneNumberId) };
 }
 export const sha256 = value => createHash("sha256").update(String(value)).digest("hex");
-export function createWhatsappConnection({ store, config = {}, audit = () => {}, now = () => new Date(), onChange = () => {}, hooks = null, publicUrl = () => "" }) {
+// sharedWaba(wabaId) (2.5.0 W-2): bu bilgisayarda BAŞKA bir şirket aynı WhatsApp Business hesabına belirteçli bağlı mı (ortak kayıt — lib/whatsapp/hub.mjs). Bağlıysa
+// Bağlantıyı Kaldır Meta'daki aboneliği SİLMEZ (abonelik uygulama + WABA başına tektir; öbür şirketinki de odur — plan §3 "Nasıl bozulur" 1).
+export function createWhatsappConnection({ store, config = {}, audit = () => {}, now = () => new Date(), onChange = () => {}, hooks = null, publicUrl = () => "", sharedWaba = () => false }) {
   let box = null;
   const secrets = () => (box ||= createSecretBox(config.dataDir || "."));
   const iso = () => now().toISOString();
   let selfTestBusy = false;
+  // 2.5.0 W-2: süren Bağlantıyı Kaldır (aynı şirketin ikinci isteği aynı sonucu bekler; bu arada gönderim başlatılamaz).
+  let removing = null;
 
   function read() {
     const raw = parse(store.setting(SETTING_KEY, ""));
     if (!raw || !raw.phoneNumberId || !raw.wabaId) return null;
+    // 2.5.0 W-1(a): süre alanları 2.5.0'dan önce kaydedilmiş bağlantıda yok — Yol 2 için bağlanma anı + 60 gün, Yol 1 süresiz (göç yazmaz; okurken hesaplanır).
+    const known = Object.hasOwn(raw, "tokenExpiresAt");
+    const legacyEmbedded = !known && raw.mode === "embedded";
+    const connectedMs = Date.parse(raw.embedded?.at || raw.savedAt || "");
     return {
       mode: raw.mode === "embedded" ? "embedded" : "manual",
       phoneNumberId: String(raw.phoneNumberId),
@@ -82,9 +122,103 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       // 2.4.8 W7: "WhatsApp'ı Bağla" bilgisi (olay türü, birlikte kullanım, Meta adımlarının sonucu) ve kayıt PIN'i (mühürlü; ekrana çıkmaz).
       embedded: raw.embedded && typeof raw.embedded === "object" ? raw.embedded : null,
       pinSealed: typeof raw.pinSealed === "string" ? raw.pinSealed : "",
+      // 2.5.0 W-1(a): belirtecin bitişi (ISO; null = süresiz / bilinmiyor), kaynağı ("meta" | "default" | ""), Meta'nın bu belirteci son kabul ettiği an ve Meta'nın
+      // 190 ile reddettiği an ({ at, code, subcode } | null). Belirteç değişince dördü sıfırlanır.
+      tokenExpiresAt: known ? isoOrNull(raw.tokenExpiresAt) : legacyEmbedded && Number.isFinite(connectedMs) ? new Date(connectedMs + EMBEDDED_TOKEN_DAYS * DAY_MS).toISOString() : null,
+      tokenExpirySource: known ? String(raw.tokenExpirySource || "") : legacyEmbedded && Number.isFinite(connectedMs) ? "default" : "",
+      tokenVerifiedAt: isoOrNull(raw.tokenVerifiedAt),
+      tokenExpired: raw.tokenExpired && typeof raw.tokenExpired === "object" ? raw.tokenExpired : null,
     };
   }
   const write = (record, userId = null) => store.setSetting(SETTING_KEY, JSON.stringify(record), userId);
+
+  // ---------- 2.5.0 W-1(a): belirteç süresi ----------
+  // Meta bu belirteci daha önce kabul etti mi: sınama / deneme başarılı oldu ya da belirteci Meta verdi (Yol 2). 2.5.0 öncesi kayıtta son sınama / deneme sonucu.
+  const tokenWorked = record => Boolean(record.tokenVerifiedAt || record.mode === "embedded" || record.lastTest?.ok || record.lastSelfTest?.ok);
+  const tokenFieldsOf = record => ({ tokenExpiresAt: record.tokenExpiresAt, tokenExpirySource: record.tokenExpirySource, tokenVerifiedAt: record.tokenVerifiedAt, tokenExpired: record.tokenExpired });
+  const NO_TOKEN_FIELDS = Object.freeze({ tokenExpiresAt: null, tokenExpirySource: "", tokenVerifiedAt: null, tokenExpired: null });
+  const RECONNECT = "Yönetim → WhatsApp'ta Yeniden Bağla ile yeniden bağlayın";
+  /**
+   * Belirtecin durumu (gizli değer YOK): state "ok" | "expiring" (bitişe ≤ 7 gün) | "expired" (Meta 190 ya da bitiş anı geçti); expiresAt (ISO | null = süresiz),
+   * source ("meta" | "default" | ""), expiredBy ("meta" | "clock" | ""), daysLeft, message (ekranda ve bildirimde aynen; uyarı yoksa "").
+   */
+  function tokenStatus(record = read()) {
+    if (!record) return null;
+    const nowMs = now().getTime();
+    const endMs = Date.parse(record.tokenExpiresAt || "");
+    const hasEnd = Number.isFinite(endMs);
+    const byMeta = Boolean(record.tokenExpired);
+    const byClock = hasEnd && nowMs >= endMs;
+    const left = hasEnd ? endMs - nowMs : null;
+    const state = byMeta || byClock ? "expired" : hasEnd && left <= TOKEN_WARN_DAYS * DAY_MS ? "expiring" : "ok";
+    const daysLeft = hasEnd && left > 0 ? Math.ceil(left / DAY_MS) : hasEnd ? 0 : null;
+    let message = "";
+    if (state === "expired") {
+      message = byMeta
+        ? `WhatsApp bağlantınızın süresi doldu: Meta erişim belirtecini artık kabul etmiyor (süresi dolmuş ya da iptal edilmiş). Yeni gönderim başlatılamaz; ${RECONNECT}.`
+        : `WhatsApp bağlantınızın süresi doldu (${dayText(endMs)}). Yeni gönderim başlatılamaz; ${RECONNECT}.`;
+    } else if (state === "expiring") {
+      message = `WhatsApp bağlantınızın süresi doluyor — yeniden bağlayın. Bağlantı ${dayText(endMs)} tarihinde sona erer (${left < DAY_MS ? "1 günden az kaldı" : `${daysLeft} gün kaldı`}).`;
+    }
+    return {
+      state,
+      expiresAt: hasEnd ? new Date(endMs).toISOString() : null,
+      source: record.tokenExpirySource || "",
+      expiredBy: byMeta ? "meta" : byClock ? "clock" : "",
+      expiredAt: byMeta ? record.tokenExpired.at || null : byClock ? new Date(endMs).toISOString() : null,
+      daysLeft,
+      message,
+    };
+  }
+  /**
+   * Gönderimi başlatmayı / sürdürmeyi engelleyen bağlantı nedeni (lib/whatsapp/queue.mjs startBlock'un ilk adımı) ya da null: bağlantı kaldırılıyor ya da belirtecin
+   * süresi doldu. pauseReason süren toplu işin ekranındaki nedendir.
+   */
+  function sendBlock() {
+    if (removing) {
+      return { code: "whatsapp-removing", message: "WhatsApp bağlantısı kaldırılıyor; gönderim başlatılamaz.", pauseCode: "connection", pauseReason: "WhatsApp bağlantısı kaldırılıyor; gönderim duraklatıldı." };
+    }
+    const status = tokenStatus();
+    if (status?.state !== "expired") return null;
+    return {
+      code: "whatsapp-token-expired",
+      message: status.message,
+      pauseCode: "token-expired",
+      pauseReason: `${status.expiredBy === "meta" ? "WhatsApp bağlantınızın süresi doldu: Meta erişim belirtecini artık kabul etmiyor." : `WhatsApp bağlantınızın süresi doldu (${dayText(Date.parse(status.expiresAt))}).`} Gönderim duraklatıldı; ${RECONNECT} ve Devam Et'e basın.`,
+    };
+  }
+  // Meta'nın yanıtladığı her hata buradan geçer (meta-graph onMetaError): 190 → "Süresi Doldu" (yalnız Meta'nın daha önce kabul ettiği belirteçte ya da alt kod 463'te).
+  // Belirteç arada değiştiyse (yeniden bağlandı) yazılmaz; ilk an kalır.
+  function noteMetaError(record, error) {
+    if (!(error instanceof MetaGraphError) || error.reason !== "meta" || Number(error.code) !== TOKEN_EXPIRED_CODE) return;
+    const current = read();
+    if (!current || current.tokenSealed !== record.tokenSealed || current.tokenExpired) return;
+    if (!tokenWorked(current) && Number(error.subcode) !== TOKEN_EXPIRED_SUBCODE) return;
+    write({ v: 1, ...current, tokenExpired: { at: iso(), code: Number(error.code), subcode: Number.isFinite(Number(error.subcode)) ? Number(error.subcode) : null } });
+    audit(null, "whatsapp.token.expired", "whatsapp", { wabaId: current.wabaId, code: Number(error.code), subcode: error.subcode ?? null });
+  }
+  // Meta bu belirteçle bir isteği kabul etti (meta-graph onMetaOk): "çalıştı" işareti ilk kez yazılır, Meta 190 kaynaklı "Süresi Doldu" kalkar (belirteç geçerli). Yalnız
+  // durum değişince yazar (belirteç başına bir kez) — her istekte değil. Bitiş anı (Yol 2: 60 gün) değişmez.
+  function noteMetaOk(record) {
+    const current = read();
+    if (!current || current.tokenSealed !== record.tokenSealed) return;
+    if (current.tokenVerifiedAt && !current.tokenExpired) return;
+    write({ v: 1, ...current, tokenVerifiedAt: iso(), tokenExpired: null });
+  }
+  /**
+   * Bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ uyarı (kullanıcı başına; programın yerel günü). İlk soran "göster" yanıtını alır, aynı gün sonrakiler almaz
+   * (Kritik stok bildirimiyle aynı düzen — routes/stock.mjs alerts/notified). Uyarı yoksa gün yazılmaz (durum gün içinde değişirse aynı gün yine gösterilir).
+   */
+  function expiryNotice(user) {
+    const status = tokenStatus();
+    if (!status || status.state === "ok") return { show: false, state: status?.state || "none" };
+    const key = `whatsapp.expiryNotice.${user.id}`;
+    const day = localDay(now());
+    // Günde en çok BİR bildirim (durum aynı gün "doluyor"dan "doldu"ya geçse de; o gün ekranlardaki satır ve gönderim engeli nedeni gösterir).
+    if (store.setting(key, "") === day) return { show: false, state: status.state, day };
+    store.setSetting(key, day, user.id);
+    return { show: true, state: status.state, day, message: status.message, expiresAt: status.expiresAt };
+  }
 
   // İstemciye giden görünüm: tokenSealed YOK; yalnız kayıtlı mı ve bu bilgisayarda açılabiliyor mu.
   function view({ writable = true } = {}) {
@@ -106,6 +240,9 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       savedByName: record.savedByName,
       lastTest: record.lastTest,
       lastSelfTest: record.lastSelfTest,
+      // 2.5.0 W-1(a): belirtecin süresi ve durumu (Süresi Doldu / doluyor; gizli değer YOK).
+      // Alan adı "token" DEĞİL: yanıtta belirteç adlı alan olmaz (test/whatsapp-w1-baglanti.test.mjs).
+      tokenExpiry: tokenStatus(record),
       // 2.4.8 W9 / T2-3/4: durum bildirimi kaydı (WABA düzeyinde, makine defterinde; gizli yol ve belirteç YOK — yalnız durum).
       ...hookView(record.wabaId),
       // 2.4.8 W7: WhatsApp'ı Bağla — birlikte kullanım mı, Meta adımlarının sonucu (PIN ve belirteç YOK).
@@ -152,6 +289,9 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       // Bağlantı değişince eski sınama sonucu geçersizdir (e-Belge Entegratör Ayarları düzeni).
       lastTest: changed ? null : previous.lastTest,
       lastSelfTest: changed ? null : previous.lastSelfTest,
+      // 2.5.0 W-1(a): yeni belirteç (Yol 1, kalıcı System User) SÜRESİZ ve henüz sınanmamış; belirteç aynı kaldıysa (yalnız kimlikler değişti) süresi ve durumu
+      // aynen taşınır (ör. Yol 2 belirteciyle Bilgileri Değiştir — 60 günlük süre sürer).
+      ...(tokenChanged || !previous ? NO_TOKEN_FIELDS : tokenFieldsOf(previous)),
     };
     write(record, user.id);
     // İşlem geçmişine belirteç YAZILMAZ; yalnız değişip değişmediği.
@@ -175,6 +315,11 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     // (eski kapıcı / eksik ayar) — Şablonlar kartı bu kipe uygun nedeni yazar (lib/whatsapp/templates.mjs).
     const appId = META_D0.idPattern.test(String(input.appId || "")) ? String(input.appId) : "";
     const at = iso();
+    // 2.5.0 W-1(a): bitiş — Meta'nın verdiği süre (expires_in) varsa o, yoksa bağlanma anı + 60 gün (yapılandırmanın süresi); veri erişim bitişi
+    // (data_access_expires_at) yalnız KISALTIR. Bugünkü kapıcı bu alanları aktarmaz → 60 gün (W-1(b)'de kapıcı aynen aktarırsa kaydedilir).
+    const issuedMs = Date.parse(at);
+    const meta = metaExpiryOf({ expiresIn: input.expiresIn, dataAccessExpiresAt: input.dataAccessExpiresAt }, issuedMs);
+    const endMs = Math.min(meta.fromIn ?? issuedMs + EMBEDDED_TOKEN_DAYS * DAY_MS, meta.fromData ?? Infinity);
     const record = {
       v: 1,
       mode: "embedded",
@@ -189,9 +334,14 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       lastSelfTest: null,
       embedded: { olay: String(input.olay || "FINISH"), coex, at, adimlar: [] },
       pinSealed: "",
+      tokenExpiresAt: new Date(endMs).toISOString(),
+      tokenExpirySource: meta.fromIn !== null || (meta.fromData !== null && meta.fromData <= endMs) ? "meta" : "default",
+      // Belirteci Meta şimdi verdi (kod değişimi): kabul edilmiş sayılır.
+      tokenVerifiedAt: at,
+      tokenExpired: null,
     };
     write(record, user.id);
-    audit(user, "whatsapp.connection.saved", "whatsapp", { mode: "embedded", phoneNumberId, wabaId, appId, coex, first: !previous });
+    audit(user, "whatsapp.connection.saved", "whatsapp", { mode: "embedded", phoneNumberId, wabaId, appId, coex, first: !previous, tokenExpiresAt: record.tokenExpiresAt, tokenExpirySource: record.tokenExpirySource });
     announce();
     return view();
   }
@@ -227,13 +377,70 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     return view();
   }
 
-  function remove(user) {
+  // ---------- 2.5.0 W-2: Bağlantıyı Kaldır (Meta'da da; plan §1 W-2) ----------
+  // Sıra: (1) bu şirketin bekleyen gönderimleri durdurulur (stopSending; "Durduruldu" — ilke 1) → (2) Meta'da uygulamanın bu WABA'ya aboneliği silinir (DELETE
+  // subscribed_apps; aynı WABA bu bilgisayarda başka şirkette bağlıysa SİLİNMEZ) → (3) yerel kayıt HER ZAMAN silinir (ilke 4: çıkmaz yok; Meta düşse de) → (4) arada
+  // açılmış gönderim de durdurulur. Kesinti (2)'de olursa yerel kayıt durur, Kaldır yeniden denenir. Meta çağrısı düşerse sonuç "Meta tarafında kaldırılamadı" +
+  // destekofis.net/veri-silme adımı. Aynı anda ikinci Kaldır aynı işlemin sonucunu alır (Meta'ya ikinci istek gitmez); bittikten sonraki Kaldır etkisizdir.
+  // Belirtecin kendisini iptal eden Meta ucu belgede yok (meta-graph unsubscribeApp açıklaması) — müşteri Meta'dan kaldırır (veri silme sayfası).
+  // Dönüş: { removed (yerel kayıt silindi), already (zaten bağlı değildi), meta: { state: "removed" | "failed" | "skipped", reason, message, link? } }.
+  function remove(user, { stopSending = () => 0 } = {}) {
+    if (removing) return removing;
     const previous = read();
-    if (!previous) return view();
-    store.run("DELETE FROM settings WHERE key = ?", SETTING_KEY);
-    audit(user, "whatsapp.connection.removed", "whatsapp", { phoneNumberId: previous.phoneNumberId, wabaId: previous.wabaId });
+    if (!previous) return Promise.resolve({ removed: false, already: true, meta: { state: "skipped", reason: "none", message: "" } });
+    removing = removeNow(user, previous, stopSending).finally(() => {
+      removing = null;
+    });
+    return removing;
+  }
+  async function removeNow(user, previous, stopSending) {
+    const stopped = safeStop(stopSending);
+    const meta = await unsubscribeAtMeta(previous);
+    const current = read();
+    // Meta beklenirken bağlantı yeniden kurulduysa (başka pencerede yeni belirteç / kimlik) YENİSİ silinmez.
+    const same = current && current.tokenSealed === previous.tokenSealed && current.wabaId === previous.wabaId && current.phoneNumberId === previous.phoneNumberId;
+    if (same) store.run("DELETE FROM settings WHERE key = ?", SETTING_KEY);
+    const late = same ? safeStop(stopSending) : 0;
+    audit(user, "whatsapp.connection.removed", "whatsapp", { phoneNumberId: previous.phoneNumberId, wabaId: previous.wabaId, meta: meta.state, metaReason: meta.reason, metaCode: meta.code ?? null, stopped: stopped + late, replaced: !same });
     announce();
-    return view();
+    return { removed: same, already: false, replaced: !same, stopped: stopped + late, meta };
+  }
+  const safeStop = stopSending => {
+    try {
+      return Number(stopSending()) || 0;
+    } catch {
+      return 0; // durdurma yazılamasa da kaldırma sürer; işçi bağlantısız toplu işi zaten yürütmez (duraklatır)
+    }
+  };
+  const failedAtMeta = (reason, why, extra = {}) => ({
+    state: "failed",
+    reason,
+    message: `Bağlantı bu programdan kaldırıldı; ancak Meta tarafında kaldırılamadı (${why}). DestekOfis uygulamasının WhatsApp hesabınıza erişimini Meta'dan kaldırmak için ${DATA_DELETION_URL.replace(/^https:\/\//, "")} sayfasındaki adımları izleyin.`,
+    link: DATA_DELETION_URL,
+    ...extra,
+  });
+  async function unsubscribeAtMeta(record) {
+    let shared = false;
+    try {
+      shared = Boolean(sharedWaba(record.wabaId));
+    } catch {
+      shared = false;
+    }
+    if (shared) {
+      return { state: "skipped", reason: "shared", message: "Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın." };
+    }
+    if (!config.whatsappGraphUrl) return failedAtMeta("graph-off", "bu kurulumda Meta adresi tanımlı değil");
+    if (!record.tokenSealed || !secrets().open(record.tokenSealed)) return failedAtMeta("token", "kayıtlı erişim belirteci bu bilgisayarda açılamıyor");
+    if (record.tokenExpired) return failedAtMeta("expired", "erişim belirtecinin süresi dolmuş");
+    try {
+      await createMetaGraph({ baseUrl: config.whatsappGraphUrl, fetchImpl: config.fetchImpl, openToken: () => secrets().open(record.tokenSealed), timeoutMs: Number(config.whatsappTimeoutMs) > 0 ? Number(config.whatsappTimeoutMs) : undefined }).unsubscribeApp(record.wabaId);
+    } catch (error) {
+      // Yerel kaldırma her durumda sürer (ilke 4): Meta dışı beklenmeyen hata da "kaldırılamadı" sonucudur.
+      if (!(error instanceof MetaGraphError)) return failedAtMeta("unexpected", "beklenmeyen bir hata oluştu");
+      const why = error.reason === "meta" ? (Number(error.code) === TOKEN_EXPIRED_CODE ? "erişim belirtecinin süresi dolmuş" : `Meta isteği reddetti, hata kodu ${error.code}`) : "Meta'ya ulaşılamadı ya da yanıt okunamadı";
+      return failedAtMeta(error.reason === "meta" ? "meta" : "unreachable", why, { code: error.code ?? null });
+    }
+    return { state: "removed", reason: "", message: "WhatsApp bağlantısı kaldırıldı; Meta'daki abonelik de silindi." };
   }
 
   // Meta istemcisi: belirteç yalnız istek anında, meta-graph.mjs içinde açılır.
@@ -241,7 +448,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
     if (!config.whatsappGraphUrl) fail(409, "Bu kurulumda WhatsApp Business API'ye bağlanılamaz (Meta adresi tanımlı değil).", "whatsapp-graph-off");
     if (!record.tokenSealed) fail(409, "Kalıcı erişim belirteci kayıtlı değil; Elle Bağla ile girin.", "whatsapp-token-missing");
     if (!secrets().open(record.tokenSealed)) fail(409, "Kayıtlı erişim belirteci bu bilgisayarda açılamadı (veriler başka bilgisayardan taşınmış olabilir). Elle Bağla ile belirteci yeniden girin.", "whatsapp-token-unreadable");
-    return createMetaGraph({ baseUrl: config.whatsappGraphUrl, fetchImpl: config.fetchImpl, openToken: () => secrets().open(record.tokenSealed), timeoutMs: Number(config.whatsappTimeoutMs) > 0 ? Number(config.whatsappTimeoutMs) : undefined });
+    return createMetaGraph({ baseUrl: config.whatsappGraphUrl, fetchImpl: config.fetchImpl, openToken: () => secrets().open(record.tokenSealed), timeoutMs: Number(config.whatsappTimeoutMs) > 0 ? Number(config.whatsappTimeoutMs) : undefined, onMetaError: error => noteMetaError(record, error), onMetaOk: () => noteMetaOk(record) });
   }
   const required = () => {
     const record = read();
@@ -309,7 +516,8 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
       audit(user, "whatsapp.connection.tested", "whatsapp", { ok: false, code: error.code, reason: error.reason });
       throw metaFailure(error);
     }
-    saveResult({ lastTest: result }, record);
+    // 2.5.0 W-1(a): Meta belirteci kabul etti — "Süresi Doldu" (190) kalkar; bitiş anı (Yol 2: 60 gün) değişmez.
+    saveResult({ lastTest: result, tokenVerifiedAt: result.at, tokenExpired: null }, record);
     audit(user, "whatsapp.connection.tested", "whatsapp", { ok: true, tier: result.phone.tier, quality: result.phone.quality });
     // T2-3/4: Bağlantıyı Sına durum bildirimi adresini de Meta'daki kayıtlı adresle HEMEN karşılaştırır (farklıysa / yoksa yeniden kaydeder). Hata sınamayı bozmaz.
     try {
@@ -332,6 +540,9 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   async function selfTest(user, to) {
     const record = required();
     const graph = graphFor(record);
+    // 2.5.0 W-1(a): süresi dolan bağlantıyla ileti gönderilmez (deneme de bir gönderimdir); Bağlantıyı Sına açık kalır.
+    const expired = tokenStatus(record);
+    if (expired?.state === "expired") fail(409, expired.message, "whatsapp-token-expired");
     const last = record.lastSelfTest;
     const lastAt = Date.parse(last?.at || "");
     if (last?.ok && Number.isFinite(lastAt) && now().getTime() - lastAt >= 0 && now().getTime() - lastAt < SELF_TEST_COOLDOWN_MS) {
@@ -364,7 +575,7 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
         throw metaFailure(error);
       }
       const outcome = { ok: true, at: iso(), to4: last4(to), wamid: sent.wamid, template: template.name, language: String(template.language || ""), message: "Deneme iletisi Meta'ya kabul edildi; birkaç saniye içinde telefona gelmelidir (kabul, teslim değildir)." };
-      saveResult({ lastSelfTest: outcome }, record);
+      saveResult({ lastSelfTest: outcome, tokenVerifiedAt: outcome.at, tokenExpired: null }, record);
       audit(user, "whatsapp.selftest.sent", "whatsapp", { to4: outcome.to4, wamid: sent.wamid, template: template.name });
       return { result: outcome, connection: view() };
     } finally {
@@ -466,6 +677,8 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   async function ensureHook(publicUrl, { force = false } = {}) {
     const record = read();
     if (!record?.tokenSealed || !config.whatsappGraphUrl) return { skipped: "no-connection" };
+    // 2.5.0 W-1(a): süresi dolan belirteçle bakım turu Meta'ya saatte bir boşuna istek göndermez (Bağlantıyı Sına — force — yine dener).
+    if (!force && tokenStatus(record)?.state === "expired") return { skipped: "token-expired" };
     if (!hooks) return { skipped: "no-ledger" };
     const base = hookBase(publicUrl);
     if (!usableBase(base)) return { skipped: "no-url" };
@@ -521,8 +734,8 @@ export function createWhatsappConnection({ store, config = {}, audit = () => {},
   // istek anında openToken içinde açılır (mühürlü belirtece yalnız bu modül dokunur).
   function metaOptions(record) {
     graphFor(record);
-    return { baseUrl: config.whatsappGraphUrl, fetchImpl: config.fetchImpl, openToken: () => secrets().open(record.tokenSealed), timeoutMs: Number(config.whatsappTimeoutMs) > 0 ? Number(config.whatsappTimeoutMs) : undefined };
+    return { baseUrl: config.whatsappGraphUrl, fetchImpl: config.fetchImpl, openToken: () => secrets().open(record.tokenSealed), timeoutMs: Number(config.whatsappTimeoutMs) > 0 ? Number(config.whatsappTimeoutMs) : undefined, onMetaError: error => noteMetaError(record, error), onMetaOk: () => noteMetaOk(record) };
   }
 
-  return { read, view, save, saveEmbedded, embeddedSteps, remove, test, selfTest, client, summary, registerHook, ensureHook, hookMatches, verifyMatches, metaOptions };
+  return { read, view, save, saveEmbedded, embeddedSteps, remove, test, selfTest, client, summary, registerHook, ensureHook, hookMatches, verifyMatches, metaOptions, tokenStatus, sendBlock, expiryNotice };
 }
