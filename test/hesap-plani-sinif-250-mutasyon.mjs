@@ -27,7 +27,7 @@ const MUTASYONLAR = [
   [9, "7/A yansıtma hedefi yanlış (770 → 631)", '770: gider("Genel Yönetim Giderleri", "E", { yansitma: "771", hedef: "632" }),', '770: gider("Genel Yönetim Giderleri", "E", { yansitma: "771", hedef: "631" }),', "770 Genel Yönetim Giderleri: yansıtma hesabı tutarsız"],
   [10, "770 adı eski hâline döner", '770: gider("Genel Yönetim Giderleri", "E",', '770: gider("Genel Giderler ve Alış Faturaları", "E",', "Genel Giderler ve Alış Faturaları"],
   [11, "yansıtma hesabına mali tablo kalemi verilir (771 → E)", 'yansitma = (ad, kaynak, hedef) => planItem(ad, "yansitma", { kaynak, hedef });', 'yansitma = (ad, kaynak, hedef) => planItem(ad, "yansitma", { kaynak, hedef, gelirTablosu: "E" });', "771 Genel Yönetim Giderleri Yansıtma Hesabı: çift sınıflı"],
-  [12, "alt hesap tanımı düşer (770.90)", '  "770.90": "Sınıflandırılmamış",\n', "", "Sınıflandırılmamış"],
+  [12, "alt hesap tanımı düşer (770.90)", '  "770.90": "Sınıflandırılmamış",\n', "", "not ok 7 - alt hesap tanımları"],
 ];
 
 const run = () => {
