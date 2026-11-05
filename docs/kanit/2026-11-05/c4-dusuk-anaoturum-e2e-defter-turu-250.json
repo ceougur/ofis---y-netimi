@@ -1,0 +1,32 @@
+{
+  "ad": "c4-dusuk-anaoturum-e2e-defter-turu-250",
+  "komut": "npm run test:senaryo-defter-turu-250",
+  "commit": "ba27aaaacc26e1865550aa989503c7e8afbdeb6e",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:54:41.895Z",
+  "sure_sn": 18.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 28,
+    "gecen": 28,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-dusuk-anaoturum-e2e-defter-turu-250.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "b463ef27e55a6b2213b52a94a926778227a0854ee336d82337ef9f3d7b6c2077",
+  "ham_cikti_bayt": 2257
+}

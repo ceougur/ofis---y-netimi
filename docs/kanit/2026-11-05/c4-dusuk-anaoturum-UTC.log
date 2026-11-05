@@ -1,0 +1,213 @@
+TAP version 13
+# Subtest: 2.5.0 Ç4 Defter Türü
+    # Subtest: varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+    ok 1 - varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+      ---
+      duration_ms: 497.936504
+      type: 'test'
+      ...
+    # Subtest: geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+    ok 2 - geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+      ---
+      duration_ms: 360.274804
+      type: 'test'
+      ...
+    # Subtest: yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+    ok 3 - yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+      ---
+      duration_ms: 600.08517
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+    ok 4 - Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+      ---
+      duration_ms: 637.140891
+      type: 'test'
+      ...
+    # Subtest: iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+    ok 5 - iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+      ---
+      duration_ms: 1021.36593
+      type: 'test'
+      ...
+    # Subtest: BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+    ok 6 - BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+      ---
+      duration_ms: 744.448329
+      type: 'test'
+      ...
+    # Subtest: Değişiklik Geçmişi: üç ayar türü 'Ayarlar' süzgecinde; Defter Türü satırı eski → yeni ekran adlarını taşır; istemcide Türkçe adları var
+    ok 7 - Değişiklik Geçmişi: üç ayar türü 'Ayarlar' süzgecinde; Defter Türü satırı eski → yeni ekran adlarını taşır; istemcide Türkçe adları var
+      ---
+      duration_ms: 351.972805
+      type: 'test'
+      ...
+    # Subtest: okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+    ok 8 - okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+      ---
+      duration_ms: 1.122794
+      type: 'test'
+      ...
+    1..8
+ok 1 - 2.5.0 Ç4 Defter Türü
+  ---
+  duration_ms: 4216.412979
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç1 — hesap planı sınıflaması
+    # Subtest: CHART'taki her hesap tam bir yere düşer (bilanço kalemi ya da gelir tablosu kalemi ya da yansıtma / kapanış türü); sınıfsız ya da çift sınıflı yok
+    ok 1 - CHART'taki her hesap tam bir yere düşer (bilanço kalemi ya da gelir tablosu kalemi ya da yansıtma / kapanış türü); sınıfsız ya da çift sınıflı yok
+      ---
+      duration_ms: 1.909291
+      type: 'test'
+      ...
+    # Subtest: tür ve MSUGT kalemi kural kitabı §2 tablosuyla aynı (eksik hesaplar eklendi)
+    ok 2 - tür ve MSUGT kalemi kural kitabı §2 tablosuyla aynı (eksik hesaplar eklendi)
+      ---
+      duration_ms: 0.455855
+      type: 'test'
+      ...
+    # Subtest: ters bakiye kuralları (çekirdek §13, kural kitabı §7.3): brütleştirme, Kesin Değil, KARAR GEREKİYOR
+    ok 3 - ters bakiye kuralları (çekirdek §13, kural kitabı §7.3): brütleştirme, Kesin Değil, KARAR GEREKİYOR
+      ---
+      duration_ms: 0.683916
+      type: 'test'
+      ...
+    # Subtest: 7/A yansıtma: 760 → 761 / 631, 770 → 771 / 632, 780 → 781 / 660; gelir tablosunda yansıtıldığı hesabın satırında
+    ok 4 - 7/A yansıtma: 760 → 761 / 631, 770 → 771 / 632, 780 → 781 / 660; gelir tablosunda yansıtıldığı hesabın satırında
+      ---
+      duration_ms: 0.363338
+      type: 'test'
+      ...
+    # Subtest: yardımcılar: alt hesap ana hesabın sınıfını alır; planda olmayan kod null
+    ok 5 - yardımcılar: alt hesap ana hesabın sınıfını alır; planda olmayan kod null
+      ---
+      duration_ms: 0.212324
+      type: 'test'
+      ...
+    # Subtest: adlar: 770 Tekdüzen adıyla; geri kalan 2.4.9 adları değişmedi; yeni hesaplar planda
+    ok 6 - adlar: 770 Tekdüzen adıyla; geri kalan 2.4.9 adları değişmedi; yeni hesaplar planda
+      ---
+      duration_ms: 0.699392
+      type: 'test'
+      ...
+    # Subtest: alt hesap tanımları (yalnız tanım): 600.90 / 610.90 Belgesiz, 602.90 / 770.90 Sınıflandırılmamış, 336.90 Sınıflandırılmamış Tahsilatlar
+    ok 7 - alt hesap tanımları (yalnız tanım): 600.90 / 610.90 Belgesiz, 602.90 / 770.90 Sınıflandırılmamış, 336.90 Sınıflandırılmamış Tahsilatlar
+      ---
+      duration_ms: 0.325027
+      type: 'test'
+      ...
+    # Subtest: defterin yazabildiği her hesap planda (sınıflanabilir): banka fişi rolleri, evrak, şüpheli alacak, fatura gider türleri, yevmiye kaynağı
+    ok 8 - defterin yazabildiği her hesap planda (sınıflanabilir): banka fişi rolleri, evrak, şüpheli alacak, fatura gider türleri, yevmiye kaynağı
+      ---
+      duration_ms: 1.962337
+      type: 'test'
+      ...
+    1..8
+ok 2 - 2.5.0 Ç1 — hesap planı sınıflaması
+  ---
+  duration_ms: 7.850797
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.744844
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 173.871756
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 164.710529
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 168.912475
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 308.001917
+      type: 'test'
+      ...
+    1..5
+ok 3 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 817.536005
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 54.99335
+      type: 'test'
+      ...
+    1..1
+ok 4 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 55.223802
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 82.072767
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 6.269777
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.18956
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 4.785041
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 3.828007
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 39.01231
+      type: 'test'
+      ...
+    1..6
+ok 5 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 139.684255
+  type: 'suite'
+  ...
+1..5
+# tests 28
+# suites 5
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5858.378596
