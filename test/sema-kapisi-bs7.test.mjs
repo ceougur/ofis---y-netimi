@@ -6,7 +6,7 @@
 // eski yedeğe geri yükleme (002 hemen, 001 yeniden açılışta) ve kapının kalkması; daha yeni yedeğin geri yüklenmesi (reddedilir); göç adımı (ensureBankSchema).
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdtempSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -293,7 +293,28 @@ describe("BS-7 şema sürüm kapısı", () => {
       // Geri yükleme öncesi yedek (yeni şemalı veri) şirketin klasöründe durur — veri kaybolmaz.
       const folder = server.app.companies.dirsOf(server.app.companies.get(seed.second.id)).backupDir;
       assert.ok(readdirSync(folder).some(name => /geri-yukleme-oncesi-002/.test(name)), readdirSync(folder).join(","));
-      // 001: eski yedek hazırlanır (yeniden açılışta uygulanır).
+      // 001: eski yedek hazırlanır; aşağıda hazırlanan kopya yeniden açılıştan önce bozulur (BS-7 tur 1, dar kontrol ORTA-1).
+      const stagedBroken = await admin.post("/api/admin/backups/restore", { name: seed.rootBackup, company: ROOT_COMPANY_ID, confirm: "001", password: ADMIN_PASSWORD });
+      assert.equal(stagedBroken.status, 200, JSON.stringify(stagedBroken.data));
+      assert.equal(unwrap(stagedBroken).staged, true);
+    } finally {
+      await server.close();
+    }
+    // Başarısız 001 geri yüklemesi kapı açıkken de sessiz kalmaz: sonuç Yönetim → Yedekler'de (lastRestore) görünür; 001 yeni şemada kalır (kapı sürer).
+    const stagedCopy = path.join(seed.dataDir, "geri-yukleme", seed.rootBackup);
+    assert.ok(existsSync(stagedCopy), `hazırlanan kopya yok: ${stagedCopy}`);
+    writeFileSync(stagedCopy, "bozuk kopya — veri tabanı değil");
+    server = await startTestServer({ dataDir: seed.dataDir, backupDir: seed.backupDir });
+    try {
+      assert.equal(server.app.stagedRestore?.ok, false, JSON.stringify(server.app.stagedRestore));
+      assert.equal(server.app.schemaGate?.version, AHEAD, "geri yükleme uygulanmadı; 001 yeni şemada, kapı sürer");
+      assert.equal(schemaOf(seed.rootFile), AHEAD);
+      const admin = await loginAdmin(server);
+      const folders = unwrap(await admin.get("/api/admin/backups/folders"));
+      assert.equal(folders.lastRestore?.ok, false, `başarısız geri yükleme Yedekler'de görünmeli: ${JSON.stringify(folders.lastRestore)}`);
+      assert.match(folders.lastRestore.error, /Yedek dosyası okunamadı/);
+      assert.equal(folders.lastRestore.name, seed.rootBackup);
+      // 001: eski yedek yeniden hazırlanır (yeniden açılışta uygulanır).
       const staged = await admin.post("/api/admin/backups/restore", { name: seed.rootBackup, company: ROOT_COMPANY_ID, confirm: "001", password: ADMIN_PASSWORD });
       assert.equal(staged.status, 200, JSON.stringify(staged.data));
       assert.equal(unwrap(staged).staged, true);

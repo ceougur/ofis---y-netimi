@@ -1,5 +1,6 @@
 // Uçtan uca güncelleme akışı: gerçek servis yöneticisi + gerçek uygulama süreçleri + sahte GitHub Releases.
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -88,6 +89,7 @@ async function login(base, username, password) {
 }
 
 const readJson = file => JSON.parse(readFileSync(file, "utf8"));
+const sha256 = file => createHash("sha256").update(readFileSync(file)).digest("hex");
 const schemaOf = dbPath => {
   const db = new DatabaseSync(dbPath, { readOnly: true });
   try {
@@ -192,28 +194,14 @@ process.exit(3);
 
   // 2.5.0 BS-7: deneme açılışında yeni sürüm 002'yi de açıp göç ettirebilir (süren WhatsApp gönderimi, valörü gelmiş POS kalemi). Önceden geri dönüş yalnız 001'i
   // geri yüklüyordu; 002 yeni şemada kalıyordu. Bozuk sürüm burada 001'in ve 002'nin şemasını değiştirip çöker.
+  // BS-7 tur 1 (dar kontrol DÜŞÜK-2; testin dişi): (a) 002'nin göçü bağlantı KAPATILMADAN çöker — değişiklik ana dosyada değil -wal günlüğünde kalır; geri dönüş
+  // eski günlüğü silmezse SQLite onu geri yüklenen dosyanın üstüne işler (bozuk dosya ya da deneme satırı geri gelir). (b) 003 deneme açılışında hiç göç etmez —
+  // şeması aynı kalan şirket yedeğe DÖNDÜRÜLMEZ (dosyası bayt bayt aynı, başarısız güncelleme yedeği yok).
   it("yeni sürüm açılamazsa 001 dışındaki şirketler de güncelleme öncesi yedeğe döner (BS-7)", async () => {
-    const broken = `import { DatabaseSync } from "node:sqlite";
-import { existsSync, readdirSync } from "node:fs";
-const dir = process.env.HUKUK_DATA_DIR;
-const files = [existsSync(dir + "/hukuk-ofisi.sqlite") ? dir + "/hukuk-ofisi.sqlite" : dir + "/destekofis.sqlite"];
-for (const name of existsSync(dir + "/sirketler") ? readdirSync(dir + "/sirketler") : []) {
-  const file = dir + "/sirketler/" + name + "/destekofis.sqlite";
-  if (existsSync(file)) files.push(file);
-}
-for (const file of files) {
-  const db = new DatabaseSync(file);
-  db.exec("PRAGMA user_version = 99");
-  db.close();
-}
-process.exit(3);
-`;
-    const release = buildRelease(makeVersion(path.join(work, "src-bs7"), "9.0.1", { serverSource: broken }), path.join(work, "rel-bs7"), keys);
     const installRoot = await prepareInstall("bs7");
-    // 002: programın kendi API'siyle açılır (şirket + Kasa girişi).
-    const seed = createApp({ dataDir: path.join(installRoot, "data"), backupDir: path.join(installRoot, "backups"), logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD }, startLicenseTimers: false, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" } });
-    let secondFile = "";
-    let secondBackups = "";
+    // 002 ve 003: programın kendi API'siyle açılır (şirket + Kasa girişi). Üç şirket eski kurulumlarda kalır (maxCompanies yalnız tohumda).
+    const seed = createApp({ dataDir: path.join(installRoot, "data"), backupDir: path.join(installRoot, "backups"), logLevel: "silent", scheduleBackups: false, maxCompanies: 3, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, startLicenseTimers: false, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" } });
+    const others = {};
     try {
       const address = await seed.listen(0, "127.0.0.1");
       const base = `http://127.0.0.1:${address.port}`;
@@ -222,17 +210,36 @@ process.exit(3);
         const response = await fetch(`${base}${url}`, { method: "POST", headers: { cookie: admin.cookie, "content-type": "application/json" }, body: JSON.stringify(body) });
         return { status: response.status, body: await response.json() };
       };
-      const created = await post("/api/companies", { name: "İkinci Şirket" });
-      assert.equal(created.status, 200, JSON.stringify(created.body));
-      const id = created.body.data.company.id;
-      assert.equal((await post(`/api/workspace/cash?hofCompany=${id}`, { kind: "in", amount: 250, description: "002 girişi" })).status, 200);
-      const dirs = seed.companies.dirsOf(seed.companies.get(id));
-      secondFile = path.join(dirs.dataDir, "destekofis.sqlite");
-      secondBackups = dirs.backupDir;
+      for (const [key, name] of [["second", "İkinci Şirket"], ["third", "Üçüncü Şirket"]]) {
+        const created = await post("/api/companies", { name });
+        assert.equal(created.status, 200, JSON.stringify(created.body));
+        const id = created.body.data.company.id;
+        assert.equal((await post(`/api/workspace/cash?hofCompany=${id}`, { kind: "in", amount: 250, description: `${key} girişi` })).status, 200);
+        const dirs = seed.companies.dirsOf(seed.companies.get(id));
+        others[key] = { code: seed.companies.get(id).code, file: path.join(dirs.dataDir, "destekofis.sqlite"), backups: dirs.backupDir };
+      }
     } finally {
       await seed.close();
     }
-    assert.equal(schemaOf(secondFile), LATEST_VERSION);
+    const { second, third } = others;
+    assert.equal(second.code, "002");
+    assert.equal(third.code, "003");
+    assert.equal(schemaOf(second.file), LATEST_VERSION);
+    const thirdSha = sha256(third.file);
+    // Bozuk sürüm: 001'i göç ettirip kapatır; 002'de deneme satırı + şema değişikliği yazar ve bağlantıyı KAPATMADAN çıkar (WAL'da kalır); 003'e dokunmaz.
+    const broken = `import { DatabaseSync } from "node:sqlite";
+import { existsSync } from "node:fs";
+const dir = process.env.HUKUK_DATA_DIR;
+const root = existsSync(dir + "/hukuk-ofisi.sqlite") ? dir + "/hukuk-ofisi.sqlite" : dir + "/destekofis.sqlite";
+const first = new DatabaseSync(root);
+first.exec("PRAGMA user_version = 99");
+first.close();
+const second = new DatabaseSync(${JSON.stringify(second.file)});
+second.exec("PRAGMA journal_mode = WAL; PRAGMA wal_autocheckpoint = 0; CREATE TABLE yeni_surum_bs7 (x); INSERT INTO yeni_surum_bs7 VALUES (1); UPDATE cash_entries SET description = 'deneme satırı'; PRAGMA user_version = 99");
+globalThis.acikBaglanti = second;
+process.exit(3);
+`;
+    const release = buildRelease(makeVersion(path.join(work, "src-bs7"), "9.0.1", { serverSource: broken }), path.join(work, "rel-bs7"), keys);
     const github = await startMockGithub([{ tag: "v9.0.1", files: releaseFiles(release) }]);
     const { supervisor, appHealth, log } = await supervise(installRoot, github);
     try {
@@ -244,11 +251,18 @@ process.exit(3);
       const app = await waitFor(async () => (await appHealth()) || Promise.reject(new Error("hazır değil")));
       assert.equal(app.version, "9.0.0");
       assert.equal(schemaOf(path.join(installRoot, "data", "destekofis.sqlite")), LATEST_VERSION, "001 güncelleme öncesi hâline dönmeli");
-      assert.equal(schemaOf(secondFile), LATEST_VERSION, "002 de güncelleme öncesi hâline dönmeli (yeni şemada kalmamalı)");
-      const names = readdirSync(secondBackups);
+      assert.equal(schemaOf(second.file), LATEST_VERSION, "002 de güncelleme öncesi hâline dönmeli (yeni şemada kalmamalı)");
+      const names = readdirSync(second.backups);
       assert.ok(names.some(name => /^destekofis-002-.*guncelleme-oncesi-9-0-0/.test(name)), `002'nin güncelleme öncesi yedeği: ${names.join(", ")}`);
-      assert.ok(names.some(name => /^destekofis-002-.*basarisiz-guncelleme-9-0-1/.test(name)), `002'nin başarısız güncelleme yedeği (yeni şemalı hâli): ${names.join(", ")}`);
+      const failed = names.find(name => /^destekofis-002-.*basarisiz-guncelleme-9-0-1/.test(name));
+      assert.ok(failed, `002'nin başarısız güncelleme yedeği (yeni şemalı hâli): ${names.join(", ")}`);
+      // Başarısız güncelleme yedeği günlükteki değişikliği de taşır (yeni sürümün verisi kaybolmaz).
+      assert.equal(schemaOf(path.join(second.backups, failed)), 99);
       assert.ok(log.lines.some(line => /002 · İkinci Şirket güncelleme öncesi yedeğe döndürüldü/.test(line)), log.lines.join("\n"));
+      // 003 göç etmedi: döndürülmez.
+      const thirdNames = readdirSync(third.backups);
+      assert.deepEqual(thirdNames.filter(name => /basarisiz-guncelleme/.test(name)), [], `003 göç etmedi; başarısız güncelleme yedeği alınmamalı: ${thirdNames.join(", ")}`);
+      assert.equal(log.lines.some(line => /003 · Üçüncü Şirket güncelleme öncesi yedeğe döndürüldü/.test(line)), false, log.lines.join("\n"));
     } catch (error) {
       console.log(log.lines.join("\n"));
       throw error;
@@ -256,10 +270,14 @@ process.exit(3);
       await supervisor.stop();
       await github.close();
     }
-    // Geri dönülen 002 verisi aynen: 250'lik giriş duruyor.
-    const db = new DatabaseSync(secondFile, { readOnly: true });
+    assert.equal(sha256(third.file), thirdSha, "003'ün dosyası bayt bayt aynı kalmalı (göç etmeyen şirket geri yüklenmez)");
+    // Geri dönülen 002 verisi aynen: tohumdaki giriş duruyor; deneme sürümünün günlükteki satırı ve tablosu yok (eski -wal geri yüklenen dosyaya işlenmedi).
+    const db = new DatabaseSync(second.file, { readOnly: true });
     try {
-      assert.equal(db.prepare("SELECT COUNT(*) AS n FROM cash_entries WHERE description = '002 girişi'").get().n, 1);
+      assert.equal(db.prepare("PRAGMA integrity_check").get().integrity_check, "ok");
+      assert.equal(db.prepare("SELECT COUNT(*) AS n FROM cash_entries WHERE description = 'second girişi'").get().n, 1);
+      assert.equal(db.prepare("SELECT COUNT(*) AS n FROM cash_entries WHERE description = 'deneme satırı'").get().n, 0);
+      assert.equal(db.prepare("SELECT COUNT(*) AS n FROM sqlite_master WHERE name = 'yeni_surum_bs7'").get().n, 0);
     } finally {
       db.close();
     }
