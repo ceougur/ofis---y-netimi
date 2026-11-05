@@ -1,0 +1,78 @@
+{
+  "ad": "w1w2-kirmizi-w1a-eski-ea06c141",
+  "komut": "bash -c cd /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w1w2-ea06c141/eski && node --test --test-timeout=120000 test/whatsapp-w1a-belirtec-suresi-250.test.mjs",
+  "commit": "90daaddca7320d8d984f0e4eada3499b6c485cc4",
+  "dal": "worktree-agent-aa5b96b53dfc0441d",
+  "kirli": 0,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:43:01.543Z",
+  "sure_sn": 4.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 0,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi › Yol 1 (Elle Bağla): süresiz sayılır — 400 gün sonra da uyarı yok, gönderim açık; bildirim ucu göstermez ve gün yazmaz",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:53:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi › Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe 7 gün kala 'doluyor' (gün sayısı), bitişte 'Süresi Doldu' — gönderim / önizleme / deneme 409 Türkçe neden, Meta'ya ileti yok; Bağlantıyı Sına açık; Yeniden Bağla yeni 60 gün",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:71:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi › süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği göndermeden duraklatır (neden 'süresi doldu'); Devam Et 409; Yeniden Bağla → Devam Et → kalan kişilere gider, aynı kişiye ikinci ileti yok",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:121:3",
+      "hata": "toplu iş duraklatıldı (geldi done) · 'done' !== 'paused' (beklenen paused, gelen done)"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi › Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlantı 'Süresi Doldu' (Meta); toplu iş duraklar, yeni gönderim / Devam Et 409; yeni belirteçle Yeniden Bağla → Devam Et; Sına başarılıysa kalkar",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:156:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi › Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış): Süresi Doldu DEĞİL, 'Sınama Başarısız' kalır; Meta 'süresi doldu' derse (alt kod 463) çalışmamış belirteçte de Süresi Doldu",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:205:3",
+      "hata": "yanlış yazılmış belirteç: Sınama Başarısız (Süresi Doldu değil) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi › bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ, kullanıcı başına (programın yerel günü); süre dolunca da günde bir; yetkisiz kullanıcıya uç 403",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:223:3",
+      "hata": "bildirim ucu 404: {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"} · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi › Yol 2 süresi Meta yanıtında varsa kaydedilir: expires_in → bağlanma + o süre; data_access_expires_at yalnız KISALTIR; geçersiz değer yok sayılır (60 gün)",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:256:3",
+      "hata": "{\"expiresIn\":3600} → undefined · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi › WhatsApp'ı Bağla rotası uçtan uca (kapıcı taklidi): kapıcı Meta'nın expires_in'ini aktarırsa o süre, aktarmazsa (bugünkü kapıcı) bağlanma + 60 gün",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:280:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi › ek denetim — 2.5.0 öncesi Yol 2 kaydı (süre alanları yok): bağlanma anı + 60 gün sayılır; Yol 1 kaydı süresiz (gerçek eski kodla göç: test/whatsapp-w1a-goc-250.mjs)",
+      "konum": "test/whatsapp-w1a-belirtec-suresi-250.test.mjs:310:3",
+      "hata": "bağlanma anı (embedded.at) + 60 gün · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/w1w2-kirmizi-w1a-eski-ea06c141.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa5b96b53dfc0441d",
+  "ham_cikti_sha256": "968854e25196ed10b29450f9c64633595a341caeabe031b92e1aa993e227f6eb",
+  "ham_cikti_bayt": 14589
+}

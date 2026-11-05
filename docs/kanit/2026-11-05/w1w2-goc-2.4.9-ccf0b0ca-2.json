@@ -1,0 +1,32 @@
+{
+  "ad": "w1w2-goc-2.4.9-ccf0b0ca-2",
+  "komut": "node test/whatsapp-w1a-goc-250.mjs ccf0b0ca",
+  "commit": "cc17dfe0291bd492545b39bb8f13cc16f6c7bf35",
+  "dal": "worktree-agent-aa5b96b53dfc0441d",
+  "kirli": 0,
+  "izlenmeyen": 39,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:12:40.645Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/w1w2-goc-2.4.9-ccf0b0ca-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa5b96b53dfc0441d",
+  "ham_cikti_sha256": "4fb73831ae62bd6e8e9bf7c975fbc3717b641faf6cd033bef36f8ac32294b576",
+  "ham_cikti_bayt": 1750
+}

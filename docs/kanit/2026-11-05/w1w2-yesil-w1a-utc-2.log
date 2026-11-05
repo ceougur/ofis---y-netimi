@@ -1,0 +1,73 @@
+TAP version 13
+# (node:12631) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi
+    # Subtest: Yol 1 (Elle Bağla): süresiz sayılır — 400 gün sonra da uyarı yok, gönderim açık; bildirim ucu göstermez ve gün yazmaz
+    ok 1 - Yol 1 (Elle Bağla): süresiz sayılır — 400 gün sonra da uyarı yok, gönderim açık; bildirim ucu göstermez ve gün yazmaz
+      ---
+      duration_ms: 701.624725
+      type: 'test'
+      ...
+    # Subtest: Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe 7 gün kala 'doluyor' (gün sayısı), bitişte 'Süresi Doldu' — gönderim / önizleme / deneme 409 Türkçe neden, Meta'ya ileti yok; Bağlantıyı Sına açık; Yeniden Bağla yeni 60 gün
+    ok 2 - Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe 7 gün kala 'doluyor' (gün sayısı), bitişte 'Süresi Doldu' — gönderim / önizleme / deneme 409 Türkçe neden, Meta'ya ileti yok; Bağlantıyı Sına açık; Yeniden Bağla yeni 60 gün
+      ---
+      duration_ms: 680.470301
+      type: 'test'
+      ...
+    # Subtest: süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği göndermeden duraklatır (neden 'süresi doldu'); Devam Et 409; Yeniden Bağla → Devam Et → kalan kişilere gider, aynı kişiye ikinci ileti yok
+    ok 3 - süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği göndermeden duraklatır (neden 'süresi doldu'); Devam Et 409; Yeniden Bağla → Devam Et → kalan kişilere gider, aynı kişiye ikinci ileti yok
+      ---
+      duration_ms: 482.749461
+      type: 'test'
+      ...
+    # Subtest: Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlantı 'Süresi Doldu' (Meta); toplu iş duraklar, yeni gönderim / Devam Et 409; yeni belirteçle Yeniden Bağla → Devam Et; Sına başarılıysa kalkar
+    ok 4 - Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlantı 'Süresi Doldu' (Meta); toplu iş duraklar, yeni gönderim / Devam Et 409; yeni belirteçle Yeniden Bağla → Devam Et; Sına başarılıysa kalkar
+      ---
+      duration_ms: 560.297636
+      type: 'test'
+      ...
+    # Subtest: Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış): Süresi Doldu DEĞİL, 'Sınama Başarısız' kalır; Meta 'süresi doldu' derse (alt kod 463) çalışmamış belirteçte de Süresi Doldu
+    ok 5 - Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış): Süresi Doldu DEĞİL, 'Sınama Başarısız' kalır; Meta 'süresi doldu' derse (alt kod 463) çalışmamış belirteçte de Süresi Doldu
+      ---
+      duration_ms: 443.964104
+      type: 'test'
+      ...
+    # Subtest: bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ, kullanıcı başına (programın yerel günü); süre dolunca da günde bir; yetkisiz kullanıcıya uç 403
+    ok 6 - bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ, kullanıcı başına (programın yerel günü); süre dolunca da günde bir; yetkisiz kullanıcıya uç 403
+      ---
+      duration_ms: 637.761031
+      type: 'test'
+      ...
+    # Subtest: Yol 2 süresi Meta yanıtında varsa kaydedilir: expires_in → bağlanma + o süre; data_access_expires_at yalnız KISALTIR; geçersiz değer yok sayılır (60 gün)
+    ok 7 - Yol 2 süresi Meta yanıtında varsa kaydedilir: expires_in → bağlanma + o süre; data_access_expires_at yalnız KISALTIR; geçersiz değer yok sayılır (60 gün)
+      ---
+      duration_ms: 454.973106
+      type: 'test'
+      ...
+    # Subtest: WhatsApp'ı Bağla rotası uçtan uca (kapıcı taklidi): kapıcı Meta'nın expires_in'ini aktarırsa o süre, aktarmazsa (bugünkü kapıcı) bağlanma + 60 gün
+    ok 8 - WhatsApp'ı Bağla rotası uçtan uca (kapıcı taklidi): kapıcı Meta'nın expires_in'ini aktarırsa o süre, aktarmazsa (bugünkü kapıcı) bağlanma + 60 gün
+      ---
+      duration_ms: 550.491734
+      type: 'test'
+      ...
+    # Subtest: ek denetim — 2.5.0 öncesi Yol 2 kaydı (süre alanları yok): bağlanma anı + 60 gün sayılır; Yol 1 kaydı süresiz (gerçek eski kodla göç: test/whatsapp-w1a-goc-250.mjs)
+    ok 9 - ek denetim — 2.5.0 öncesi Yol 2 kaydı (süre alanları yok): bağlanma anı + 60 gün sayılır; Yol 1 kaydı süresiz (gerçek eski kodla göç: test/whatsapp-w1a-goc-250.mjs)
+      ---
+      duration_ms: 412.904775
+      type: 'test'
+      ...
+    1..9
+ok 1 - 2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi
+  ---
+  duration_ms: 4927.544212
+  type: 'suite'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5403.857495
