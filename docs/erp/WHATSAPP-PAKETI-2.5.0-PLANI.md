@@ -49,6 +49,9 @@ her kişinin bir gönderme yolu kalır; (5) taşınan / geri yüklenen veride ay
   ailesindeki TTL farkları kural farkı olarak kapanır).
 - S-W3 (W-3) = "1 yıl + anonim iz (Önerilen)" → içerik, telefon ve PDF 1 yıl sonra ya da silme talebinde hemen silinir; tarih, dönem, cari kimliği ve şablon adı anonim iz kalır.
 
+- W-1 SÜRE DOLUNCA (05.11 ~18:37, AskUserQuestion) = "Duraklasın, sonra sürsün (Önerilen)" → iş 'Duraklatıldı' olur; yeniden bağlanınca 'Devam Et' ile yalnız kalan kişilere gider,
+  kimseye ikinci ileti gitmez (bugünkü Meta 190 davranışı). §3 madde 3'teki "Durduruldu + Yine de Gönder" notunun YERİNE geçer.
+
 ## 4a. Sorulan sorular (ders 43, 45 — iki seçenek + öneri; KAYIT)
 - S-W1 (n3): Kuyrukta bekleyen ikinci iş, aynı kişiye aynı dönem için gönderilmiş ve teslimi beklenen ("Meta Kabul Etti") bir ileti varken ne olsun?
   A (ÖNERİ): elenir ("Zaten Gönderiliyor"); birinci Başarısız olursa ikinci için onaylı "Yine de Gönder" yolu açılır — ilke 2 ("almış olabilirse elenir").

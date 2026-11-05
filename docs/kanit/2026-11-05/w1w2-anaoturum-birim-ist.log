@@ -1,0 +1,220 @@
+TAP version 13
+# Subtest: 2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi
+    # Subtest: Yol 1 (Elle Bağla): süresiz sayılır — 400 gün sonra da uyarı yok, gönderim açık; bildirim ucu göstermez ve gün yazmaz
+    ok 1 - Yol 1 (Elle Bağla): süresiz sayılır — 400 gün sonra da uyarı yok, gönderim açık; bildirim ucu göstermez ve gün yazmaz
+      ---
+      duration_ms: 616.350558
+      type: 'test'
+      ...
+    # Subtest: Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe 7 gün kala 'doluyor' (gün sayısı), bitişte 'Süresi Doldu' — gönderim / önizleme / deneme 409 Türkçe neden, Meta'ya ileti yok; Bağlantıyı Sına açık; Yeniden Bağla yeni 60 gün
+    ok 2 - Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe 7 gün kala 'doluyor' (gün sayısı), bitişte 'Süresi Doldu' — gönderim / önizleme / deneme 409 Türkçe neden, Meta'ya ileti yok; Bağlantıyı Sına açık; Yeniden Bağla yeni 60 gün
+      ---
+      duration_ms: 538.619053
+      type: 'test'
+      ...
+    # Subtest: süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği göndermeden duraklatır (neden 'süresi doldu'); Devam Et 409; Yeniden Bağla → Devam Et → kalan kişilere gider, aynı kişiye ikinci ileti yok
+    ok 3 - süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği göndermeden duraklatır (neden 'süresi doldu'); Devam Et 409; Yeniden Bağla → Devam Et → kalan kişilere gider, aynı kişiye ikinci ileti yok
+      ---
+      duration_ms: 519.056029
+      type: 'test'
+      ...
+    # Subtest: Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlantı 'Süresi Doldu' (Meta); toplu iş duraklar, yeni gönderim / Devam Et 409; yeni belirteçle Yeniden Bağla → Devam Et; Sına başarılıysa kalkar
+    ok 4 - Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlantı 'Süresi Doldu' (Meta); toplu iş duraklar, yeni gönderim / Devam Et 409; yeni belirteçle Yeniden Bağla → Devam Et; Sına başarılıysa kalkar
+      ---
+      duration_ms: 523.195996
+      type: 'test'
+      ...
+    # Subtest: Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış): Süresi Doldu DEĞİL, 'Sınama Başarısız' kalır; Meta 'süresi doldu' derse (alt kod 463) çalışmamış belirteçte de Süresi Doldu
+    ok 5 - Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış): Süresi Doldu DEĞİL, 'Sınama Başarısız' kalır; Meta 'süresi doldu' derse (alt kod 463) çalışmamış belirteçte de Süresi Doldu
+      ---
+      duration_ms: 413.268425
+      type: 'test'
+      ...
+    # Subtest: bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ, kullanıcı başına (programın yerel günü); süre dolunca da günde bir; yetkisiz kullanıcıya uç 403
+    ok 6 - bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ, kullanıcı başına (programın yerel günü); süre dolunca da günde bir; yetkisiz kullanıcıya uç 403
+      ---
+      duration_ms: 611.553513
+      type: 'test'
+      ...
+    # Subtest: Yol 2 süresi Meta yanıtında varsa kaydedilir: expires_in → bağlanma + o süre; data_access_expires_at yalnız KISALTIR; geçersiz değer yok sayılır (60 gün)
+    ok 7 - Yol 2 süresi Meta yanıtında varsa kaydedilir: expires_in → bağlanma + o süre; data_access_expires_at yalnız KISALTIR; geçersiz değer yok sayılır (60 gün)
+      ---
+      duration_ms: 365.176753
+      type: 'test'
+      ...
+    # Subtest: WhatsApp'ı Bağla rotası uçtan uca (kapıcı taklidi): kapıcı Meta'nın expires_in'ini aktarırsa o süre, aktarmazsa (bugünkü kapıcı) bağlanma + 60 gün
+    ok 8 - WhatsApp'ı Bağla rotası uçtan uca (kapıcı taklidi): kapıcı Meta'nın expires_in'ini aktarırsa o süre, aktarmazsa (bugünkü kapıcı) bağlanma + 60 gün
+      ---
+      duration_ms: 477.099436
+      type: 'test'
+      ...
+    # Subtest: ek denetim — 2.5.0 öncesi Yol 2 kaydı (süre alanları yok): bağlanma anı + 60 gün sayılır; Yol 1 kaydı süresiz (gerçek eski kodla göç: test/whatsapp-w1a-goc-250.mjs)
+    ok 9 - ek denetim — 2.5.0 öncesi Yol 2 kaydı (süre alanları yok): bağlanma anı + 60 gün sayılır; Yol 1 kaydı süresiz (gerçek eski kodla göç: test/whatsapp-w1a-goc-250.mjs)
+      ---
+      duration_ms: 347.193056
+      type: 'test'
+      ...
+    1..9
+ok 1 - 2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi
+  ---
+  duration_ms: 4414.072438
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da
+    # Subtest: Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)
+    ok 1 - Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)
+      ---
+      duration_ms: 517.652575
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'
+    ok 2 - aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'
+      ---
+      duration_ms: 427.415206
+      type: 'test'
+      ...
+    # Subtest: Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme
+    ok 3 - Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme
+      ---
+      duration_ms: 451.581161
+      type: 'test'
+      ...
+    # Subtest: Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK
+    ok 4 - Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK
+      ---
+      duration_ms: 357.600048
+      type: 'test'
+      ...
+    # Subtest: bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'
+    ok 5 - bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 555.003849
+      type: 'test'
+      ...
+    # Subtest: iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir
+    ok 6 - iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir
+      ---
+      duration_ms: 686.05526
+      type: 'test'
+      ...
+    # Subtest: Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ
+    ok 7 - Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ
+      ---
+      duration_ms: 368.855671
+      type: 'test'
+      ...
+    1..7
+ok 2 - 2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da
+  ---
+  duration_ms: 3366.307874
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+    # Subtest: kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez
+    ok 1 - kuyruktayken işaretlenen / pasife alınan cari gönderim anında elenir, telefonu değişen carinin YENİ numarasına gider; kısmi PUT işareti korur; wa.me yolunda da seçilemez
+      ---
+      duration_ms: 726.491375
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.4.8 W2 — WhatsApp Mesajı İstemiyor (accounts.wa_opt_out) ve gönderim anında okuma (§7a 1, 2)
+  ---
+  duration_ms: 727.515342
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+    # Subtest: 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış
+    ok 1 - 002: gönderim → yedek → yeni gönderim → GERİ YÜKLE → yedekteki eski işler 'Durduruldu (Geri Yükleme)' (DİRİLMEZ), sayaç AZALMAZ → yeniden çalış
+      ---
+      duration_ms: 1113.797376
+      type: 'test'
+      ...
+    # Subtest: 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ
+    ok 2 - 002: toplu iş SÜRERKEN (sınırda bekleyen kişiler varken) alınan yedek hemen geri yüklenir → bekleyenler 'Durduruldu (Geri Yükleme)', pencere açılınca da GİTMEZ
+      ---
+      duration_ms: 878.113233
+      type: 'test'
+      ...
+    # Subtest: 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ
+    ok 3 - 001: geri yükleme bir sonraki açılışta uygulanır (yeniden başlatma) → süren toplu iş 'Durduruldu (Geri Yükleme)', ileti GİTMEZ
+      ---
+      duration_ms: 691.37023
+      type: 'test'
+      ...
+    # Subtest: şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'
+    ok 4 - şirket dosyası program KAPALIYKEN eski bir kopyayla değiştirildi (elle kopya / 'önceki sürümler'): makine defteri kabulü görür, İKİNCİ ileti yok, iş 'Meta Kabul Etti'
+      ---
+      duration_ms: 860.436067
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur
+    ok 5 - Şirket Verisini Sıfırla: gönderim kayıtları silinir, süren toplu iş defterde durur (sıfırlanan şirkette dirilmez); defter sayaçları kalır; bir kez onay korunur
+      ---
+      duration_ms: 526.188593
+      type: 'test'
+      ...
+    # Subtest: 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'
+    ok 6 - 24 saatten eski toplu iş: SINIR nedeniyle bekleyen kendiliğinden sürer, program kapalı kaldığı için bekleyen sorulur; defteri olmadan taşınan veri 'Taşınan Veri — Durduruldu'
+      ---
+      duration_ms: 761.129387
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)
+    ok 7 - salt okunur lisans: süren toplu iş 'Lisans Nedeniyle Durdu' (ileti yok), yeni gönderim 403; lisans yeniden yazılabilir olunca kendiliğinden SÜRMEZ (§7a 25)
+      ---
+      duration_ms: 662.246645
+      type: 'test'
+      ...
+    1..7
+ok 4 - 2.4.8 W2 — yedek tatbikatı, sıfırlama, taşınan veri, bayat toplu iş (§7a 24, 26)
+  ---
+  duration_ms: 5494.445464
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+    # Subtest: sayı = TESLİM edilen, ay = teslim zamanı (Türkiye saati), kapsam WABA; 31 Aralık 23:59 kabul / 1 Ocak 00:01 teslim Ocak'a sayılır; sayaç yıl dönümünde sıfırlanmaz
+    ok 1 - sayı = TESLİM edilen, ay = teslim zamanı (Türkiye saati), kapsam WABA; 31 Aralık 23:59 kabul / 1 Ocak 00:01 teslim Ocak'a sayılır; sayaç yıl dönümünde sıfırlanmaz
+      ---
+      duration_ms: 445.506634
+      type: 'test'
+      ...
+    # Subtest: durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır
+    ok 2 - durum bildirimi yolu çalışıyorsa teslim olmayan ileti TTL (3 gün) + 1 saatte 'Süresi Doldu'; yol hiç çalışmadıysa 'Meta Kabul Etti'de kalır (Durum Bilinmiyor YOK); geç gelen teslim yazılır
+      ---
+      duration_ms: 485.985654
+      type: 'test'
+      ...
+    # Subtest: işçi (gerçek zamanlayıcı): iki iş ASLA aynı anda yürümez, iletiler arası en az gapMs; şirketler dönüşümlü
+    ok 3 - işçi (gerçek zamanlayıcı): iki iş ASLA aynı anda yürümez, iletiler arası en az gapMs; şirketler dönüşümlü
+      ---
+      duration_ms: 843.902702
+      type: 'test'
+      ...
+    1..3
+ok 5 - 2.4.8 W2 — 'Bu Ay Gönderilen İleti Sayısı' (§7a 19), süre dolumu (§7a 16) ve işçinin beklemesi
+  ---
+  duration_ms: 1775.871263
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 W2 — belirteç hiçbir çıktıya sızmaz
+    # Subtest: toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz
+    ok 1 - toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri belirteci taşımaz
+      ---
+      duration_ms: 454.254966
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.4.8 W2 — belirteç hiçbir çıktıya sızmaz
+  ---
+  duration_ms: 454.548828
+  type: 'suite'
+  ...
+1..6
+# tests 28
+# suites 6
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17418.984291
