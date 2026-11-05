@@ -16,12 +16,13 @@ const veri = path.resolve(opt("veri"));
 const output = path.resolve(opt("cikti"));
 const lockDay = opt("kilit", "2025-12-31");
 const rounds = Number(opt("tur", 3));
+const batchLines = Number(opt("parca", 0)) || 0; // yalnız yeni kod: dondurma parça boyu (satır); 0 = programın varsayılanı
 const NOW = "2026-10-08T12:00:00+03:00"; // tools/kapi-olcum.mjs ile aynı
 const PASS = "Kapi-Olcum-2026!";
 const { startTestServer } = await import(pathToFileURL(path.join(root, "test/helpers.mjs")).href);
 const work = mkdtempSync(path.join(path.dirname(output), "donma-olcum-"));
 const median = values => values.slice().sort((a, b) => a - b)[Math.floor(values.length / 2)];
-const result = { kod: root, veri, now: NOW, kilit: lockDay, tur: rounds, node: process.version, cpu: os.cpus().length, yuk: os.loadavg(), olcumler: {} };
+const result = { kod: root, veri, now: NOW, kilit: lockDay, tur: rounds, parca: batchLines, node: process.version, cpu: os.cpus().length, yuk: os.loadavg(), olcumler: {} };
 // Olay döngüsü: 5 ms'lik zamanlayıcının iki çalışması arasındaki en büyük aralık − 5 ms (istek boyunca + bir tur sonrası; tek parça engelleme de görünür).
 async function timed(label, fn) {
   let last = performance.now();
@@ -46,7 +47,7 @@ async function timed(label, fn) {
 try {
   cpSync(path.join(veri, "data"), path.join(work, "data"), { recursive: true });
   const openStarted = performance.now();
-  const server = await startTestServer({ dataDir: path.join(work, "data"), backupDir: path.join(work, "backups"), now: { time: NOW, fixed: true }, adminPassword: PASS, gateVerify: false, moneyStrict: false });
+  const server = await startTestServer({ dataDir: path.join(work, "data"), backupDir: path.join(work, "backups"), now: { time: NOW, fixed: true }, adminPassword: PASS, gateVerify: false, moneyStrict: false, ...(batchLines ? { freezeBatchLines: batchLines } : {}) });
   result.acilisMs = Math.round(performance.now() - openStarted);
   try {
     const admin = server.client();

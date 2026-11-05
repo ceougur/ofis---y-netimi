@@ -212,7 +212,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, ev
   // 2.5.0 Ç3 — kilitli dönemin donmuş defteri (lib/ledger-snapshots.mjs; docs/erp/C3-DONDURMA-TASARIM.md). Kilit iki yoldan değişir (PUT period-lock ve fişlerin postAll
   // lockThrough'u); ikisi de lockChanged'i kilitle aynı işlemde çağırır.
   const snapshots = createLedgerSnapshots({
-    store, period, now, build: () => build(), integrity, events, log, dbPath: config?.dbPath || "", batchLines: freezeBatchLines || 1000, hook: __testFreezeHook,
+    store, period, now, build: () => build(), integrity, events, log, dbPath: config?.dbPath || "", batchLines: freezeBatchLines || 500, hook: __testFreezeHook,
     canWrite: () => !schemaGate && canWriteInBackground() !== false,
   });
   /**
