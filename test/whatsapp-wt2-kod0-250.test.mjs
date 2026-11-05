@@ -180,6 +180,51 @@ describe("2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARAR
     });
   }
 
+  // W TUR 2 dar kontrolü DÜŞÜK D1 (dişsiz testler; yalnız test). Kaynak: S-W4 kararının kapsamı yalnız 0 (W TUR 2 görev metni "0 = 190, tek liste; 102 kapsam dışı") ve BAŞ MİMAR KARARI (a)
+  // "0 için de 190'ın kuralı (Meta'da hiç çalışmamış belirteç ve alt kod 463 yoksa Süresi Doldu olmaz)" — iş listesi E 21:57. 102 (API oturumu) bugünkü gibi tek kişilik hata: o kişi Başarısız,
+  // toplu iş durmadan sürer, bağlantı Süresi Doldu olmaz.
+  it("kod 102 (kararın DIŞINDA) belirteç reddi SAYILMAZ: o kişi Başarısız, toplu iş duraklamadan kalanlara sürer, bağlantı Süresi Doldu olmaz", async () => {
+    const ctx = await startWa({ now: { time: iso(T0), fixed: true } });
+    try {
+      assert.equal((await ctx.api.post(`${URLS.conn}/test`, {})).status, 200, "ön koşul: Bağlantıyı Sına (belirteç Meta'da çalıştı)");
+      const ids = [];
+      for (let i = 1; i <= 3; i += 1) ids.push((await ctx.account(`Yüz İki ${i}`, `0532 790 00 0${i}`, 100)).id);
+      const res = await newBatch(ctx, ids);
+      assert.equal(res.status, 200, JSON.stringify(res.data).slice(0, 300));
+      const batchId = res.data.data.batch.id;
+      ctx.fake.state.failQueue.push({ match: MESSAGES, status: 401, body: { error: { message: "Session key invalid or no longer valid", type: "OAuthException", code: 102, fbtrace_id: "AbCd102" } } });
+      await ctx.drain();
+      assert.equal(ctx.fake.state.failQueue.length, 0, "ön koşul: 102 ileti isteğine verildi");
+      assert.equal((await tokenState(ctx))?.state, "ok", "102 bağlantıyı Süresi Doldu yapmaz");
+      const detail = await ctx.detail(batchId);
+      assert.notEqual(detail.state, "paused", `toplu iş duraklamaz: ${detail.state} ${detail.pauseCode} ${detail.pauseReason}`);
+      assert.deepEqual(detail.jobs.map(job => job.state), ["failed", "accepted", "accepted"], "102 alan kişi Başarısız, kalanlar gönderildi");
+      assert.equal(detail.counts.failed, 1);
+      assert.equal(ctx.messages().length, 2, "kalan iki kişiye birer ileti");
+    } finally {
+      await ctx.close();
+    }
+  });
+
+  it("Sına yapılmamış (Meta'da hiç çalışmamış) belirteç kod 0 alırsa bağlantı Süresi Doldu OLMAZ (yanlış yazım; 190'ın kuralı — BAŞ MİMAR KARARI (a)); alt kod 463 ile Süresi Doldu olur", async () => {
+    for (const subcode of [null, 463]) {
+      const ctx = await startWa({ now: { time: iso(T0), fixed: true } }); // Elle Bağla (Sına'sız)
+      try {
+        const body = authException();
+        if (subcode) body.error.error_subcode = subcode;
+        ctx.fake.state.failQueue.push({ status: 401, body });
+        const res = await ctx.api.post(`${URLS.conn}/test`, {});
+        assert.equal(ctx.fake.state.failQueue.length, 0, "ön koşul: Sına'nın ilk Meta isteği kod 0 aldı");
+        assert.notEqual(res.status, 200, `Sınama Başarısız: ${res.status}`);
+        const state = (await tokenState(ctx))?.state;
+        if (subcode) assert.equal(state, "expired", "alt kod 463: Meta açıkça 'süresi doldu' dedi → Süresi Doldu");
+        else assert.notEqual(state, "expired", `hiç çalışmamış belirtecin kod 0'ı bağlantıyı Süresi Doldu yapmaz (geldi ${state})`);
+      } finally {
+        await ctx.close();
+      }
+    }
+  });
+
   it("kodsuz Meta hatası (error nesnesinde code yok) belirteç reddi SAYILMAZ: bağlantı Süresi Doldu olmaz (kod 0 ile karışmaz)", async () => {
     const ctx = await startWa({ now: { time: iso(T0), fixed: true } });
     try {
