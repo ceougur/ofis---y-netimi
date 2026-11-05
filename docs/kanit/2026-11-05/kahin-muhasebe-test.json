@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-muhasebe-test",
+  "komut": "python3 test/bagimsiz/muhasebe/test_model.py",
+  "commit": "1bb94d3de2e8e97c5c225c791f2e44eae451026d",
+  "dal": "worktree-agent-a46b8015c664a74f9",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:13:15.730Z",
+  "sure_sn": 5.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 74,
+    "gecen": 74,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/kahin-muhasebe-test.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a46b8015c664a74f9",
+  "ham_cikti_sha256": "5ce8974458480c8bd2a51cde2197793c14dc36a3cc5551b2858bbb596a7fb0a7",
+  "ham_cikti_bayt": 223
+}
