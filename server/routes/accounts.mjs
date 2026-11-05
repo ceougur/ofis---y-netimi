@@ -1080,6 +1080,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       requestId: requestIdOf(req, body),
       scope: "account.entry.update",
       body: { ...body, entryId: previous.id },
+      // 2.5.0 BS-3 ailesi (cari hareket düzeltme yarışı; stock.mjs PUT moves / plans.mjs PUT entries ile aynı desen): gövde beklenirken hareket silinirse
+      // isteğin başındaki okuma yazım işleminin İÇİNDE, istek kimliği bakışından sonra yinelenir → 404 "Hareket bulunamadı. Başka biri silmiş olabilir."
+      // (önceden UPDATE 0 satır, 200 ve Değişiklik Geçmişi'ne silinmiş hareket için "düzeltildi" satırı yazılıyordu).
+      prepare: () => {
+        entryOf(account.id, previous.id);
+      },
       write: () => {
         k7.capture();
         const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
