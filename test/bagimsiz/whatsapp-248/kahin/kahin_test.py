@@ -21,6 +21,9 @@ Bölümler:
      yanıt sayıları tutarlı
   C (güncelleme 9, J5): "Bu Ay" teslim = Teslim + Okundu İŞ sayısı yalnız her işin tek iletisi olan ve bütün iletileri dosyada olan senaryoda; öbüründe
      Teslim + Okundu ≤ Σ "Bu Ay" ≤ Meta'daki ileti (J5: "Bu Ay" teslim edilen DENEMEyi sayar)
+  I8 (güncelleme 11, 2.5.0: SW1, SW2, SD1837, SD1915, SW4, S7): secenek_birlestir birim denetimi; yeniden bağlanmadan Devam Et'in üç okuması kime / kaç kez
+     alanlarında (kabul, Meta'daki ileti, "Bu Ay", elenen, oluşmayan) AYNI; belirteç kodları (190, 0; 102 değil); n3 artık BİLİNEN SINIR işaretli değil;
+     karar dışı durumlar (S7-a / S7-b, Süresi Doldu bağlantıda Yine de Gönder) kâhinde hata verir (kodlanmadı)
 """
 import copy
 import json
@@ -380,6 +383,15 @@ MUTASYON_IPUCU = {
     "M7": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz", "M166": "W1-03-meta-bildirir-12-sa-sablon-basina", "M167": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz",
     "M168": "W1-01-varsayilan-30-gun-eski-72-sa-okunmaz", "M169": "W1-03-meta-bildirir-12-sa-sablon-basina", "M170": "W2-01-kabulde-bilinmiyor-sonra-12-sa",
     "M171": "W3-01-kabulde-12-sa-sonra-30-gun-uzar",
+    "M172": "SD1915-01-ileti-isteginde-190-bekleyenlere-doner", "M173": "SW4-01-kod-0-ayni-sirketin-oburu-toplu-isi-de-duraklar",
+    "M174": "SD1915-01-ileti-isteginde-190-bekleyenlere-doner", "M175": "SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar",
+    "M176": "SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar", "M177": "SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar",
+    "M178": "SW2-01-suresi-doldu-pencerede-sayilmaz-yeni-is-gider", "M179": "SD1837-03-sure-dolunca-yeni-gonderim-baslamaz", "M180": "SW4-03-kod-102-bugunku-gibi",
+    "M181": "S7-01-supheli-alacakli-otomatik-listeye-girmez", "M182": "S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar",
+    "M183": "S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar", "M184": "SD1915-02-pdf-yuklemesinde-190-bekleyenlere-doner",
+    "M185": "SD1915-01-ileti-isteginde-190-bekleyenlere-doner", "M186": "SD1915-03-meta-bekletti-ikinci-deneme-190-ilk-ileti-teslim-is-kapanir",
+    "M187": "SW2-02-ayni-aliciya-sayilan-baska-kabul-varsa-sayilir", "M188": "SD1915-04-geri-yukleme-reddedilen-sayilmaz",
+    "M189": "SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar",
 }
 
 
@@ -535,7 +547,8 @@ def _i1():
 def _i2():
     h = []
     for k in ("K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1", "E2", "E3", "E4", "N6", "F1", "F2", "G0", "G1", "G2", "G3", "G4", "G5", "G6", "H1", "H2", "H3", "H4",
-              "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11", "J12", "W1", "W2", "W3"):
+              "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11", "J12", "W1", "W2", "W3",
+              "SW1", "SW2", "SD1837", "SD1915", "SW4", "S7"):
         if not kahin.KARARLAR.get(k, {}).get("metin"):
             h.append(f"{k}: karar metni yok")
         n = sum(1 for s in TUM if s["baslik"] == k or f"{k} " in s["kaynak"] or s["kaynak"].startswith(k) or f", {k}" in s["kaynak"] or f"+ {k}" in s["kaynak"])
@@ -578,7 +591,8 @@ def _i4():
         if isinstance(o, list):
             return [y for i, v in enumerate(o) for y in gez(v, f"{yol}[{i}]")]
         return []
-    eski = [s for s in TUM if not (len(s["baslik"]) in (2, 3) and s["baslik"][0] in "KDENFGHJW" and s["baslik"][1:].isdigit())]
+    eski = [s for s in TUM if not (len(s["baslik"]) in (2, 3) and s["baslik"][0] in "KDENFGHJW" and s["baslik"][1:].isdigit())
+            and s["baslik"] not in senaryolar.YENI_250]                    # güncelleme 11 başlıkları (HESAP-0 eski kümede kalır; beklentisi değişti — README §16.6)
     for s in eski:
         r = beklenen(s)[0]["sonuc"]
         if gez(r) or "yeniden" in r or "listeler" in r:
@@ -626,7 +640,7 @@ def _i6():
     return h + [f"bilgi: yeni toplu işte Sonucu Belirsiz elemesi {n} kez"]
 
 
-@test("I güncelleme 9: BİLİNEN SINIR işaretleri (J9 n3 + J5 iki ileti) ve kanca yanıt sayıları tutarlı")
+@test("I güncelleme 9 + 11: BİLİNEN SINIR işaretleri (J5 iki ileti; n3 artık KARAR SW1 — işaretsiz) ve kanca yanıt sayıları tutarlı")
 def _i7():
     h = []; bilgi = []
     for s in TUM:
@@ -635,8 +649,10 @@ def _i7():
             if not neden:
                 h.append(f"{s['ad']}: bilinen sınır {k} nedensiz")
             bilgi.append(f"bilgi: BİLİNEN SINIR {k}: {s['ad']}")
-        if s["baslik"] == "J9" and "n3" not in bs:
-            h.append(f"{s['ad']}: J9 senaryosu 'n3' BİLİNEN SINIR işaretli değil")
+        if "n3" in bs:
+            h.append(f"{s['ad']}: n3 hâlâ BİLİNEN SINIR işaretli (güncelleme 11: S-W1 KARARI)")
+        if s["baslik"] == "J9" and "SW1" not in s["kaynak"]:
+            h.append(f"{s['ad']}: J9 senaryosunun kaynağında SW1 kararı yok")
         r = beklenen(s)[0]["sonuc"]
         if s.get("kanca_yanit_cikti"):
             ky = r.get("kanca_yanitlari")
@@ -644,9 +660,71 @@ def _i7():
                 h.append(f"{s['ad']}: kanca_yanitlari biçimi {ky}")
         elif "kanca_yanitlari" in r:
             h.append(f"{s['ad']}: istenmediği hâlde kanca_yanitlari çıktıda (eski senaryolar değişmemeli)")
-    if sum(1 for s in TUM if "n3" in (s.get("bilinen_sinir") or {})) < 2:
-        h.append("n3 BİLİNEN SINIR senaryosu < 2")
+    if sum(1 for s in TUM if s["baslik"] in ("J9", "SW1")) < 4:
+        h.append("n3 (J9 + SW1) senaryosu < 4")
     return h + bilgi
+
+
+@test("I güncelleme 11: secenek_birlestir birim; yeniden bağlanmadan Devam Et'in üç okumasında kime / kaç kez AYNI; belirteç kodları; karar dışı durumlar hata verir")
+def _i8():
+    h = []; bilgi = []
+    sb = kahin.secenek_birlestir
+    if sb([1, 1, 1], "n") != 1 or sb([{"a": 1, "b": 2}, {"a": 1, "b": 3}], "n") != {"a": 1, "b": {"secenek": [2, 3], "susuyor": "n"}}:
+        h.append("secenek_birlestir: aynı değer / sözlük içi")
+    if sb([{"secenek": ["x", "y"], "susuyor": "e"}, "z", "x"], "n") != {"secenek": ["x", "y", "z"], "susuyor": "e + n"}:
+        h.append(f"secenek_birlestir: iç seçenek düzleşmedi {sb([{'secenek': ['x', 'y'], 'susuyor': 'e'}, 'z', 'x'], 'n')}")
+    if sb([{"plan_susuyor": "p"}, 3], "n") != {"plan_susuyor": "p"} or sb([[1, 2], [1, 3]], "n") != [1, {"secenek": [2, 3], "susuyor": "n"}]:
+        h.append("secenek_birlestir: plan_susuyor / liste")
+    b = kahin.Benzetim(senaryolar.girdi(TUM[0]))
+    if not (b.belirtec_kodu(190) and b.belirtec_kodu(0)) or b.belirtec_kodu(102) or b.belirtec_kodu(10) or b.belirtec_kodu(None):
+        h.append("belirteç kodları 190 / 0 (102 ve 10 değil)")
+    if not kahin.Benzetim(senaryolar.girdi(TUM[0]), mut=frozenset(["M180"])).belirtec_kodu(102) or kahin.Benzetim(senaryolar.girdi(TUM[0]), mut=frozenset(["M173"])).belirtec_kodu(0):
+        h.append("M180 / M173 birim düzeyinde etkisiz")
+    # README §16.4: üç okuma kime / kaç kez alanlarında aynı (yalnız gösterim / istek sayısı ayrışır)
+    n = 0
+    for s in TUM:
+        for zaman in kahin.ZAMANLAR:
+            b0 = kahin.Benzetim(senaryolar.girdi(s), kahin.tam_secim({}), zaman)
+            r0 = b0.calistir()
+            if "devam_sd" not in b0.okuma_izi:
+                continue
+            n += 1
+            for o in kahin.DEVAM_OKUMALARI[1:]:
+                r = kahin.Benzetim(senaryolar.girdi(s), kahin.tam_secim({}), zaman, okuma={"devam_sd": o}).calistir()
+                for alan in ("elenen", "olusmadi", "onceki_uyari", "bu_ay", "baslamadi"):
+                    if not senaryolar._esit(r[alan], r0[alan]):
+                        h.append(f"{s['ad']} [{zaman}] okuma {o}: {alan} ayrışıyor (kime / kaç kez)")
+                for alan in ("kabul", "meta_ileti", "toplam_meta_ileti", "toplam_kabul_program"):
+                    if not senaryolar._esit(r["meta"][alan], r0["meta"][alan]):
+                        h.append(f"{s['ad']} [{zaman}] okuma {o}: meta.{alan} ayrışıyor (kime / kaç kez)")
+    if n == 0:
+        h.append("yeniden bağlanmadan Devam Et hiçbir senaryoda yok")
+    # karar dışı / kodlanmamış durumlar sessizce geçmez (KULLANICIYA SORULMALI / KÂHİN SUSUYOR — README §16.4)
+    s7 = next(x for x in TUM if x["ad"].startswith("S7-02"))
+    for ad, degistir in (("S7-a", lambda g: g["cariler"].__setitem__(1, {**g["cariler"][1], "vadeler": [{"vade": "2026-10-05", "kalan": 300, "supheli": True}]})),
+                         ("S7-b", lambda g: (g["olaylar"].__setitem__(0, {**g["olaylar"][0], "supheli_elle": []}),
+                                             g["cariler"].__setitem__(1, {**g["cariler"][1], "vadeler": [{"vade": "2026-10-12", "kalan": 200}]}),
+                                             g["olaylar"].insert(1, {"t": "+0s", "tur": "duraklat", "toplu": "T1"}),
+                                             g["olaylar"].insert(2, {"t": "+1m", "tur": "cari", "id": "SA", "vadeler": [{"vade": "2026-10-05", "kalan": 300, "supheli": True},
+                                                                                                                       {"vade": "2026-10-12", "kalan": 200}]}),
+                                             g["olaylar"].insert(3, {"t": "+2m", "tur": "devam", "toplu": "T1"})))):
+        g = copy.deepcopy(senaryolar.girdi(s7))
+        degistir(g)
+        try:
+            kahin.hesapla(g)
+            h.append(f"{ad}: KULLANICIYA SORULMALI durumu sessizce hesaplandı")
+        except ValueError as e:
+            if "KULLANICIYA SORULMALI" not in str(e):
+                h.append(f"{ad}: beklenmeyen hata {e}")
+    g = copy.deepcopy(senaryolar.girdi(next(x for x in TUM if x["ad"].startswith("SD1915-01"))))
+    g["olaylar"].append({"t": "+40m", "tur": "basarisizlari_yeniden_dene", "toplu": "T1"})
+    try:
+        kahin.hesapla(g)
+        h.append("bağlantı Süresi Doldu iken yeniden deneme sessizce hesaplandı")
+    except ValueError as e:
+        if "KÂHİN SUSUYOR" not in str(e):
+            h.append(f"yeniden deneme: beklenmeyen hata {e}")
+    return h + bilgi + [f"bilgi: üç okumalı koşu {n} (senaryo × zaman ucu)"]
 
 
 # ---- H -----------------------------------------------------------------------------------------------------------------------

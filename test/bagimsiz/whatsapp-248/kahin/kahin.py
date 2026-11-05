@@ -36,6 +36,12 @@ yazılabilir olunca; eski "defterde var, şirket dosyasına yazılamadı" okumas
 GÜNCELLEME 10 (2.4.9 W, KULLANICI KARARI 03.11.2026, W1): teslim süresi = Meta'nın şablon listesinde o şablon için bildirdiği değer (teslim_suresi_sn), yoksa
 30 gün (+1 sa payı; son kabul edilen denemeden, J4; W2 W-KÖK + W3: etkin süre = max(KABUL ANINDAKİ, güncel)); 2.4.8'in 72 sa ayarı okunmaz; Meta API medyayı 30 günde kendisi siler (Meta'da silme sayısı yalnız 30 günü
 dolmamış medyayı sayar, 30 günden eski medya yeniden kullanılmaz) — README §15.
+GÜNCELLEME 11 (2.5.0, KULLANICI KARARLARI 05.11.2026 S-W1, S-W2, 18:37, 19:15, 21:08 S-W4 ve S7 — metinler AYNEN KARARLAR SW1, SW2, SD1837, SD1915, SW4, S7;
+yorumlar README §16, kodlamadan önce yazıldı): n3 (kuyruktaki ikinci iş birincinin geç tesliminden sonra da gider) BİLİNEN SINIR değil KARAR; Süresi Doldu deneme 24 saatlik
+farklı alıcı penceresinde sayılmaz; bağlantının süresi dolunca (`baglanti_suresi_doldu`) o şirketin süren toplu işleri Duraklatıldı, yeni gönderim başlamaz, yeniden bağlanınca
+(`yeniden_baglan`) yalnız Devam Et ile kalanlara gider; Meta 190 / 0 reddinde o anda iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlere döner (bağlantı Süresi Doldu); kod 102
+bugünkü gibi; şüpheli alacak kaydı açık müşteri Ödeme Hatırlatma'da `supheli_alacak` ile elenir, elle seçilirse ({{4}} şüphesiz gecikmiş tutarla) gider. Yeniden bağlanmadan
+Devam Et karar metninde yok → üç okuma koşulur, ayrışan yapraklar {"secenek"} (kime / kaç kez üçünde aynı).
 
 KÂHİN GÜNCELLEMESİ 8 (31.10.2026): H1 (kullanıcı) — Yine de Gönder ile açılan iş kabul/teslim edilince KAYNAK Sonucu Belirsiz deneme o kişi için artık
 elemez (kişi "Daha Önce Gönderildi"; yol R3 Yine de Gönder); açılan iş başarısız/belirsiz kalırsa kaynak elemeye devam eder. H2–H4 (baş mimar, G0 İLKEYLE):
@@ -111,6 +117,11 @@ ONERI_IS = "isteki_yine_de_gonder"                    # K6: iş dosyada dururken
 ONERI_YENI = "yeni_gonderim"                          # K6: iş dosyada yoksa (geri yükleme sonrası) "yeni gönderim başlatın"
 R3_PENCERE = 7 * 24 * 60 * 60 * 1000                  # K1: Son 3 Ay / Tüm Hareketler "son 7 gün içinde aynı seçim" (kâhin yorumu 16: kayan 7 × 24 saat)
 ONARIM = "onarim_bekleyen_kabul"                      # J7 (Y9e-1/2): kabulü gönderim defterine yazılamamış deneme varken yeni gönderim başlamaz (baslamadi nedeni)
+SURE_DOLDU_NEDEN = "baglanti_suresi_doldu"            # SD1837 (Y11-8/11): bağlantının süresi doldu — toplu işin durma nedeni + başlatma reddi nedeni (kâhin adı)
+DURDU_BAGLANTI = "Durduruldu (Bağlantı)"              # yalnız M189 (P6 §3 madde 3'ün 18:37 öncesi notu: Durduruldu + Yine de Gönder)
+SUPHELI = "supheli_alacak"                            # S7 (Y11-18): elenme nedeni ("Şüpheli Alacağı Var" etiketi)
+BELIRTEC_KODLARI = {190, 0}                           # SD1915 (190) + SW4 (0 "190 gibi"); 102 kararın DIŞINDA (Y11-15)
+DEVAM_OKUMALARI = ("ret", "bekle", "dene")            # yeniden bağlanmadan Devam Et'in üç okuması (README §16.4) — ilki model, öbürleri seçenek
 TANINMAYAN_503 = 5 * 60 * 1000                        # J6: yanıt beklenirken tanınmayan bildirime en çok 5 dk 503
 SAYFA = 30                                            # K8: Gönderimler listesi 30'ar
 SECIMLER = ("bu_ay", "gecen_ay", "son_3_ay", "tum")   # K1: hazır dönem seçimleri (özel aralık = {"bas", "son"})
@@ -316,7 +327,7 @@ MUTASYONLAR = {
     "M147": "J7: defterde onarım bekleyen kabul varken yeni gönderim başlar",
     "M148": "J8: Tüm Hareketler'in kişiye özel dönemi Bu Ay / Geçen Ay ile hiç eşleşmez",
     "M150": "J8: Tüm Hareketler'de 'o günün Bu Ay'ı' kanonu yok (yalnız Bu Ay / Geçen Ay gönderiminin kendi günündeki tarih eşliği)",
-    "M151": "J9 (n3 A seçeneği): gönderimden hemen önce R3 bir kez daha denetlenir — BİLİNEN SINIR senaryosunda yakalanmalı",
+    "M151": "SW1'in tersi (n3 A seçeneği; J9 artık KARAR): gönderimden hemen önce R3 bir kez daha denetlenir — kuyruktaki ikinci iş birincinin teslimiyle elenir",
     "M152": "J1 + Y9-5: dosyadaki işin aşılmış (Yine de Gönder ile geride kalmış) belirsiz denemesine iş kimliğiyle gelen geç bildirim düşer (eski kâhin)",
     "M153": "J3 + Y9-5: eski denemenin geç failed'ı işin ŞU ANKİ (kabul edilmiş) denemesini Başarısız yapar",
     # ---- kâhin güncellemesi 9b (01.11.2026 07:07 + 07:11 UTC, J10 = S9-1, J11 = S9-2; M149 kalktı — S9-3 tek okuma artık doğru model) ----
@@ -341,6 +352,25 @@ MUTASYONLAR = {
     "M169": "W1 (Y10-8): bir şablonda bildirilen teslim süresi bütün şablonlara uygulanır (şablon başına değil)",
     "M170": "W2 (W-KÖK, Y10-10): teslim süresi kabul anındaki değerden değil Meta'nın GÜNCEL listesinden (sonradan kısalan süre önceden kabul edilmiş işe uygulanır)",
     "M171": "W3 (S10-6, Y10-14): yalnız kabul anındaki süre — sonradan UZAYAN süre önceden kabul edilmiş işe uygulanmaz (max yok; S10-6'nın A okuması)",
+    # ---- kâhin güncellemesi 11 (2.5.0, 05.11.2026: SW1, SW2, SD1837, SD1915, SW4, S7) ----
+    "M172": "SD1915: Meta 190 / 0 alan kişi Başarısız (Başarısızları Yeniden Dene — 19:15 öncesi düzen; bağlantı durumu yok)",
+    "M173": "SW4: Meta 0 (AuthException) alan kişi Başarısız, bağlantı Süresi Doldu olmaz (S-W4 öncesi; yalnız 190 belirteç reddi)",
+    "M174": "SD1915 + SD1837: belirteç reddinde (190 / 0) toplu iş duraklamaz — işçi kalan kişilere de istek gönderir (her biri reddedilir)",
+    "M175": "SD1837: program bağlantının süresinin dolduğunu bildiği hâlde toplu işi duraklatmaz; Meta'nın 190 reddine kadar göndermeyi dener",
+    "M176": "SD1837: yeniden bağlanınca duran toplu iş Devam Et beklemeden kendiliğinden sürer",
+    "M177": "SD1837 'kimseye ikinci ileti gitmez': Devam Et teslimi beklenen (Meta Kabul Etti / Gönderildi) kişilere de yeniden gönderir",
+    "M178": "SW2: Süresi Doldu ileti 24 saatlik farklı alıcı penceresinde sayılır (A seçeneği — eski kâhin)",
+    "M179": "P6 W-1 (a): bağlantı Süresi Doldu iken yeni toplu gönderim başlar",
+    "M180": "SW4: kod 102 de 190 gibi işlenir (karar dışı)",
+    "M181": "S7: şüpheli alacak kaydı açık cari seçimde elenmez — şüphesiz kısım gider (S7'nin B seçeneği)",
+    "M182": "S7: elle seçilen şüpheli alacaklı caride {{4}} şüpheli tutarı da içerir",
+    "M183": "S7: elle seçilen şüpheli alacaklı cari de elenir (elle seçim yolu yok — çıkmaz)",
+    "M184": "SD1915: PDF yüklemesinde 190 / 0 alan kişi Başarısız (yalnız ileti isteğinde bekleyenlere döner)",
+    "M185": "SD1915: 190 / 0 alan kişi Sonucu Belirsiz sayılır (almış olabilir) — bekleyenlere dönmez",
+    "M186": "SD1915 + J2: Meta Bekletti 2. denemesi 190 ile reddedilip beklerken 1. iletinin teslimi işi kapatmaz (2. deneme yine gider)",
+    "M187": "SW2: Süresi Doldu olan alıcı pencereden tümüyle düşer (aynı alıcının sayılan başka kabulü olsa da)",
+    "M188": "SD1915: 190 / 0 ile reddedilen deneme 'Daha Önce Gönderildi' sayılır (kesin gitmedi sayılmaz)",
+    "M189": "SD1837 öncesi plan notu (P6 §3 madde 3): süre dolunca bekleyen işler 'Durduruldu', Devam Et ile sürmez",
 }
 
 # Kâhin güncellemesi 2'nin kaynak karar metinleri (AYNEN; CLAUDE.md "Açık iş" + docs/2.4.8-IS-LISTESI.md, 31.10.2026). "kaynak_turu": kullanıcı kararı mı,
@@ -505,6 +535,50 @@ KARARLAR = {
     "W3": {"kaynak_turu": "kullanıcı (03.11.2026 ~21:00 UTC, AskUserQuestion; kâhinin S10-6 sorusu) — docs/2.4.9-IS-LISTESI.md son satır, AYNEN; program henüz uygulamıyor",
            "metin": ["KULLANICI KARARI (03.11 ~21:00 UTC, AskUserQuestion; kâhinin S10-6 sorusu): süre kabulden sonra UZARSA önceden kabul edilmiş iş UZUN süreyle (30 gün) "
                      "değerlendirilir → etkin süre = max(kabul anındaki, güncel); kabulde bilinmiyorsa 30 gün. W-KÖK ajanına ve kâhine iletildi."]},
+    # ---- kâhin güncellemesi 11 (2.5.0; docs/2.5.0-IS-LISTESI.md D + C, docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md §1/§4/§4a, ana oturum görev iletisi — AYNEN) ----
+    "SW1": {"kaynak_turu": "kullanıcı (05.11.2026 ~16:48 UTC, AskUserQuestion; iş listesi D + P6 §4, aynen) — J9'un BİLİNEN SINIR'ının YERİNE (n3 KARAR); soru metni P6 §4a",
+            "metin": ["S-W1 (05.11 ~16:48): n3 = \"İkinci de gitsin\". Bugünkü davranış; genel ilke (2)'nin bu duruma özel istisnası.",
+                      "KULLANICI KARARLARI (05.11 ~16:48, WhatsApp, aynen): S-W1 n3 = \"İkinci de gitsin\" (bugünkü davranış; genel ilke (2)'nin bu duruma özel istisnası)",
+                      "S-W1 (n3) = \"İkinci de gitsin\" → bugünkü davranış KALIR (kod değişmez); n3 BİLİNEN SINIR değil KARAR. Genel ilke (2)'nin bu duruma özel istisnası (kullanıcı kararı). "
+                      "WhatsApp kâhini \"kuyruktaki ikinci iş, birincinin teslimi beklenirken de gider\" kuralına göre (ders 40: kural karar metninden).",
+                      "soru (P6 §4a): S-W1 (n3): Kuyrukta bekleyen ikinci iş, aynı kişiye aynı dönem için gönderilmiş ve teslimi beklenen (\"Meta Kabul Etti\") bir ileti varken ne olsun? "
+                      "A (ÖNERİ): elenir (\"Zaten Gönderiliyor\"); birinci Başarısız olursa ikinci için onaylı \"Yine de Gönder\" yolu açılır — ilke 2 (\"almış olabilirse elenir\"). "
+                      "B: ikinci de gider (bugünkü davranış; nadiren aynı kişiye 2 ileti)."]},
+    "SW2": {"kaynak_turu": "kullanıcı (05.11.2026 ~16:48 UTC, AskUserQuestion; iş listesi D + P6 §4, aynen); soru metni P6 §4a",
+            "metin": ["S-W2 (05.11 ~16:48): SORU 2 = \"Sayılmasın\". Süresi Doldu ileti 24 saatlik sınıra sayılmaz; bugünkü kural.",
+                      "S-W2 (SORU 2) = \"Sayılmasın\" → bugünkü kural KALIR (Süresi Doldu ileti 24 saatlik alıcı sınırına sayılmaz). WhatsApp kâhini buna göre güncellenir "
+                      "(`pencere_farkli_alici` ailesindeki TTL farkları kural farkı olarak kapanır).",
+                      "soru (P6 §4a): S-W2 (SORU 2): Teslim süresi dolan (\"Süresi Doldu\") ileti, Meta'nın 24 saatlik alıcı sınırı hesabında sayılsın mı? A (ÖNERİ, güvenli taraf): "
+                      "sayılır — sınıra yaklaşılan günde program biraz erken durur; Meta reddi hiç yaşanmaz. B: sayılmaz (bugünkü) — sınıra yakın günde Meta birkaç iletiyi reddedebilir "
+                      "(red zaten işleniyor, ileti kaybolmaz, ertesi gün gider). Meta belgesi Süresi Doldu iletiyi sayıp saymadığını açık yazmıyor (DOĞRULANMADI)."]},
+    "SD1837": {"kaynak_turu": "kullanıcı (05.11.2026 ~18:37 UTC, AskUserQuestion; iş listesi D + P6 §4, aynen); 'süre dolunca gönderim başlatılamaz' PLAN P6 §1 W-1 (a) (karar değil)",
+               "metin": ["18:37: \"WhatsApp bağlantısının süresi dolduğunda kuyruktaki / süren toplu gönderim işleri\" → \"Duraklasın, sonra sürsün\": iş 'Duraklatıldı' olur; yeniden "
+                         "bağlanınca 'Devam Et' ile yalnız kalan kişilere gider, kimseye ikinci ileti gitmez. Plan §3 madde 3'teki \"Durduruldu + Yine de Gönder\" notunun YERİNE geçer.",
+                         "KULLANICI KARARI 05.11 ~18:37 (AskUserQuestion, W-1 ajanının KULLANICIYA SORULMALI 1): \"WhatsApp bağlantısının süresi dolduğunda kuyruktaki / süren toplu "
+                         "gönderim işleri\" → \"Duraklasın, sonra sürsün (Önerilen)\": iş 'Duraklatıldı' olur; yeniden bağlanınca 'Devam Et' ile yalnız kalan kişilere gider, kimseye ikinci "
+                         "ileti gitmez (bugünkü Meta 190 davranışı). Plan §3 madde 3'teki \"Durduruldu + Yine de Gönder\" notunun YERİNE geçer. WhatsApp kâhini (WK) bu metinden.",
+                         "plan (P6 §1 W-1): BELİRTEÇ: (a) şimdi — bağlantının belirteç süresini izle; bitişe 7 gün kala ve sonra her gün en çok bir kez \"WhatsApp bağlantınızın süresi "
+                         "doluyor — yeniden bağlayın\" uyarısı (Yönetim → WhatsApp + bildirim); süre dolunca gönderim başlatılamaz, neden görünür yazı; \"Yeniden Bağla\" her zaman açık."]},
+    "SD1915": {"kaynak_turu": "kullanıcı (05.11.2026 ~19:15 UTC, AskUserQuestion; W1W2 dar kontrolünün KULLANICIYA SORULMALI'sı; iş listesi D + P6 §4, aynen)",
+               "metin": ["19:15: \"Toplu WhatsApp gönderimi sürerken Meta anahtarı reddederse (süre doldu ya da iptal — Meta hata 190), o anda iletisi gitmeyen kişi ne olsun?\" → "
+                         "\"Bekleyenlere dönsün\": iletisi kesin gitmediği için kalan kişilerle bekler, yeniden bağlanınca 'Devam Et' ile ona da gider. Bugünkü 'Başarısız + Başarısızları "
+                         "Yeniden Dene' davranışının YERİNE.",
+                         "KULLANICI KARARI 05.11 ~19:15: \"Bekleyenlere dönsün (Önerilen)\": iletisi kesin gitmediği için kalan kişilerle bekler, yeniden bağlanınca 'Devam Et' ile ona da "
+                         "gider (18:37 kararının 'yalnız kalan kişilere gider' okuması; ilke 1). Bugünkü 'Başarısız + Başarısızları Yeniden Dene' davranışının YERİNE."]},
+    "SW4": {"kaynak_turu": "kullanıcı (05.11.2026 21:08 UTC, sohbette sorulan soruya yanıt 'hepsi A'; iş listesi C + D, aynen); 'Kod 102 bu kararın DIŞINDA' ana oturum görev iletisi",
+            "metin": ["S-W4 (05.11 21:08): \"Kod 0 da 190 gibi işlensin\": Meta belirteci 0 koduyla (\"AuthException\") reddederse bağlantı 'Süresi Doldu' olur, o anda iletisi gitmeyen "
+                      "kişi bekleyenlere döner, yeniden bağlanınca 'Devam Et' ile kalanlara gider. Kod 102 bu kararın DIŞINDA; kâhinde bugünkü hâliyle kalır.",
+                      "S-W4 = A — \"Kod 0 da 190 gibi işlensin\": Meta belirteci 0 koduyla (\"AuthException\") reddederse bağlantı 'Süresi Doldu' olur, o anda iletisi gitmeyen kişi "
+                      "bekleyenlere döner, yeniden bağlanınca 'Devam Et' ile kalanlara gider (19:15 kararının 0'a genişletilmesi). → W TUR 2 (kod) + WK (kâhin).",
+                      "soru (iş listesi C): S-W4 (W1W2 dar kontrol DÜŞÜK-1: Meta kod 0 \"AuthException\" da 190 gibi mi — A öneri / B yalnız 190)"]},
+    "S7": {"kaynak_turu": "kullanıcı (05.11.2026 21:08 UTC 'hepsi A'; iş listesi C + D, aynen) + aynı ailenin 18:55 S3 kararı (mali müşavir EK-1, aynen)",
+           "metin": ["S7 (05.11 21:08): \"Müşteri otomatik listeye girmesin\": şüpheli alacak kaydı (icra / dava) açık olan müşteriye otomatik Ödeme Hatırlatma gitmez; ekranda "
+                     "\"Şüpheli Alacağı Var\" etiketiyle görünür, istenirse elle seçilir (iletide şüphelisiz gecikmiş tutar yazar).",
+                     "S7 = A — \"Müşteri otomatik listeye girmesin\": şüpheli alacak kaydı (icra / dava) açık olan müşteriye otomatik Ödeme Hatırlatma gitmez; ekranda \"Şüpheli Alacağı "
+                     "Var\" etiketiyle görünür, istenirse elle seçilir (iletide şüphelisiz gecikmiş tutar yazar). → Ç5 (B1 ortak gecikmiş tanımı + WhatsApp elemesi) + muhasebe kâhini "
+                     "(kâhin bakımı 2) + WK.",
+                     "soru (iş listesi C): S7 (EK-2 Soru 29: şüpheli alacağı olan müşteriye otomatik Ödeme Hatırlatma — A öneri \"otomatik listeye girmesin\" / B \"şüphelisiz kısım gitsin\")",
+                     "18:55 S3: \"Şüpheli alacağa alınmış borç otomatik Ödeme Hatırlatma'ya girsin mi\" → \"Hayır, elle seçilebilir\""]},
     "K8": {"kaynak_turu": "kullanıcı (08:20 'şimdi yap'); en yeni önce / yerel gün / iki uç dahil / ters aralık ret ana oturum görev metni",
            "metin": ["KARAR (kullanıcı, 31.10.2026 ~08:20 UTC: \"şimdi yap\"): WhatsApp Gönderimleri ekranına 2.4.8'de \"Daha Fazla Göster\" (30'ar, imleçli) + "
                      "Başlangıç/Bitiş tarih süzgeci (eski gönderimlere erişim)."]},
@@ -783,8 +857,13 @@ class Toplu:
 
 
 class Benzetim:
-    def __init__(self, sen, secim=None, zaman="hizli", mut=frozenset()):
+    def __init__(self, sen, secim=None, zaman="hizli", mut=frozenset(), okuma=None):
         self.sen = sen; self.zaman = zaman; self.mut = set(mut)
+        # güncelleme 11: karar metninin sustuğu yerde okuma (yalnız hesapla_tek; kime / kaç kez okumalarda aynı) + hangi okumaya düşüldüğü
+        self.okuma = dict(okuma or {}); self.okuma_izi = set()
+        self.baglanti_sd = set()     # SD1837 / SD1915 / SW4: bağlantısı 'Süresi Doldu' olan şirketler (program bilir)
+        self.meta_belirtec = {}      # şirket → Meta'nın o şirketin belirtecine döndüğü kod (190 / 0); yeniden bağlanana dek her istek reddedilir
+        self.pencere_kayit = []      # SW2: (kabul t, waba, alıcı, deneme kimliği, iş anahtarı) — Süresi Doldu denemenin kabulü pencerede sayılmaz
         self.T0 = zaman_ayristir(sen["baslangic"], 0)
         self.tz = datetime.fromisoformat(sen["baslangic"]).tzinfo or timezone.utc
         self.adim = ADIM[zaman]
@@ -920,19 +999,39 @@ class Benzetim:
                     if j.durum in (BEKLIYOR, SINIR, BEKLEME_131049):
                         self.durum(j, DURAKLATILDI, t)
             elif tur == "devam":
+                if tp.sirket in self.baglanti_sd:
+                    # README §16.4: yeniden bağlanmadan Devam Et karar metninde yok → üç okuma (ret / bekle / dene); kime / kaç kez üçünde aynı
+                    self.okuma_izi.add("devam_sd")
+                    if self.okuma.get("devam_sd", DEVAM_OKUMALARI[0]) == "ret":
+                        return                                           # (a) reddedilir / etkisiz: toplu iş Duraklatıldı kalır
                 tp.durum = "aktif"; tp.neden = None; tp.gecici = 0; tp.bas = 0
+                tp.baglanti_neden = False; tp.belirtec_neden = None
                 for j in tp.isler:
                     if j.durum in (DURAKLATILDI, SORULUYOR, LISANS):
+                        self.durum(j, BEKLIYOR, t); j.next_at = t
+                    elif "M177" in self.mut and j.durum in (KABUL, GONDERILDI):   # SD1837 "kimseye ikinci ileti gitmez"in tersi
                         self.durum(j, BEKLIYOR, t); j.next_at = t
             else:
                 tp.durum = "iptal"
                 for j in tp.isler:
                     if j.durum in DURDURULABILIR:
                         self.durum(j, IPTAL, t)
-        elif tur == "basarisizlari_yeniden_dene":
-            self.yeniden_dene(o, t)
-        elif tur == "yine_de_gonder":
-            self.yine_de_gonder(o, t)
+        elif tur in ("basarisizlari_yeniden_dene", "yine_de_gonder"):
+            if self.toplular[o["toplu"]].sirket in self.baglanti_sd:
+                raise ValueError("KÂHİN SUSUYOR (README §16.4): bağlantı Süresi Doldu iken işteki Yine de Gönder / Başarısızları Yeniden Dene modellenmedi")
+            (self.yeniden_dene if tur == "basarisizlari_yeniden_dene" else self.yine_de_gonder)(o, t)
+        elif tur == "baglanti_suresi_doldu":                            # SD1837 (Y11-7): programın izlediği belirteç süresi doldu; Meta da o belirteci 190 ile reddeder
+            s = o.get("sirket", "A")
+            self.meta_belirtec[s] = 190
+            if "M175" not in self.mut:
+                self.sure_doldu(s, t, SURE_DOLDU_NEDEN)
+        elif tur == "yeniden_baglan":                                   # SD1837 (Y11-9): yeni geçerli belirteç; duran toplu iş KENDİLİĞİNDEN sürmez (Devam Et)
+            s = o.get("sirket", "A")
+            self.baglanti_sd.discard(s); self.meta_belirtec.pop(s, None)
+            if "M176" in self.mut:
+                for tp in self.toplular.values():
+                    if tp.sirket == s and tp.durum == "duraklatildi" and getattr(tp, "baglanti_neden", False):
+                        self.olay({"tur": "devam", "toplu": tp.etiket}, t)
         elif tur == "yedek_al":                                         # K6/K7: şirket dosyasının o anki kopyası (makine defteri yedeğe girmez)
             self.yedekler[o["ad"]] = copy.deepcopy((self.toplular, self.toplu_sira, self.isler))
         elif tur in ("geri_yukle", "sifirla", "tasindi"):
@@ -1281,10 +1380,16 @@ class Benzetim:
                              "daha_fazla": daha if (daha or len(sayfa) < n) else {"plan_susuyor": "tam sayfa, kalan yok: Daha Fazla Göster görünür mü"}}
         self.liste_imlec[ad] = {"bas": bas, "son": son, "son_oge": (sayfa[-1].t, sayfa[-1].sira) if sayfa else sonra, "gosterilen": atla + len(sayfa)}
 
-    def gecikmis(self, c, t):
-        """§7a 20: vadesi geçmiş açık kalemler (girdi: cari 'vadeler' [{vade, kalan}]; gecikmiş = vade < bugün — kâhin yorumu)."""
+    def gecikmis(self, c, t, supheli_dahil=False):
+        """§7a 20: vadesi geçmiş açık kalemler (girdi: cari 'vadeler' [{vade, kalan, supheli?}]; gecikmiş = vade < bugün — kâhin yorumu).
+        S7 (Y11-19): şüpheli alacak kaydına alınmış kalem ({"supheli": true}) Ödeme Hatırlatma'nın gecikmiş tutarına GİRMEZ (supheli_dahil yalnız M182)."""
         bugun = tarih(t, self.tz)
-        return sorted((v for v in c.get("vadeler", []) if v["vade"] < bugun and Decimal(str(v["kalan"])) > 0), key=lambda v: v["vade"])
+        return sorted((v for v in c.get("vadeler", []) if v["vade"] < bugun and Decimal(str(v["kalan"])) > 0 and (supheli_dahil or not v.get("supheli"))),
+                      key=lambda v: v["vade"])
+
+    def supheli_acik(self, c):
+        """S7 (Y11-17): carinin açık şüpheli alacak kaydı var mı (kalanı > 0 olan {"supheli": true} kalem; vadesine bakılmaz)."""
+        return any(v.get("supheli") and Decimal(str(v["kalan"])) > 0 for v in c.get("vadeler", []))
 
     def baslat(self, o, t):
         etiket = o["etiket"]; sirket = o.get("sirket", "A"); sablon = o.get("sablon", "ekstre")
@@ -1294,9 +1399,13 @@ class Benzetim:
             self.ayni_istek[etiket] = self.istekler[istek]
             return
         neden = None
+        if self.meta_belirtec.get(sirket) is not None and sirket not in self.baglanti_sd:
+            raise ValueError("KÂHİN SUSUYOR (README §16.4): Meta belirteci geçersizken (program bilmiyor) toplu gönderim başlatma modellenmedi")
         st = self.meta["sablonlar"].get(ICERIK_SABLON[sablon]) or {}
         if not self.ayar["bagli"]:                                          # §7a 29 sırası
             neden = "bagli_degil"
+        elif sirket in self.baglanti_sd and "M179" not in self.mut:
+            neden = SURE_DOLDU_NEDEN                                        # P6 §1 W-1 (a) "süre dolunca gönderim başlatılamaz" (Y11-11: bağlantı durumundan hemen sonra)
         elif not self.kullanicilar.get(kullanici, {}).get("whatsapp.send") and "M18y" not in self.mut:
             neden = "yetki_yok"
         elif not self.lisans and "M18" not in self.mut:
@@ -1333,6 +1442,13 @@ class Benzetim:
                 elenen[cid] = "sabit_hat"; continue                       # §7a 6 (K1): sabit hat / yurt dışı ELENMEZ
             if tel in telefonlar and "M54" in self.mut:
                 elenen[cid] = "ayni_telefon"; continue                    # §7a 8 (K2): aynı telefon iki cari → iki ileti
+            elle = cid in (o.get("supheli_elle") or ())
+            if sablon == "hatirlatma" and self.supheli_acik(c):
+                # S7 (Y11-18): şüpheli alacak kaydı açık müşteri otomatik listeye girmez ("Şüpheli Alacağı Var"); elle seçilirse şüphesiz gecikmiş tutarla gider
+                if "M183" in self.mut or (not elle and "M181" not in self.mut):
+                    elenen[cid] = SUPHELI; continue
+                if not self.gecikmis(c, t) and "M181" not in self.mut:
+                    raise ValueError("KULLANICIYA SORULMALI S7-a (README §16.4): elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yok — kodlanmadı")
             if sablon == "hatirlatma" and not self.gecikmis(c, t) and "M44" not in self.mut:
                 elenen[cid] = "gecikmis_borc_yok"; continue               # §7a 20
             ctx = self.kisi_ctx(coz, cid)                                  # J8: Tüm Hareketler'de kişiye özel kanon
@@ -1363,6 +1479,7 @@ class Benzetim:
                 n += 1; anahtar = f"{etiket}/{cid}#{n}"
             j = Is(anahtar, etiket, cid, sirket)
             j.next_at = t
+            j.supheli_elle = elle                                         # S7: şüpheli alacaklı cari elle seçildi
             j.anahtar_donem = coz["anahtar"]; j.tarih_donem = coz["tarih"]; j.kanon_donem = ctx[2]; j.coz_ozel = None
             j.tarihler_donem = ctx[3]
             if "M58" in self.mut:
@@ -1424,12 +1541,14 @@ class Benzetim:
             }
         bugun = tarih(t, self.tz)
         bakiye = sum((d for tr, d in hareketler if tr <= bugun), Decimal("0"))
-        gec = self.gecikmis(c, t)
+        gec = self.gecikmis(c, t)                                       # S7 (Y11-19): şüphesiz kalemler — {{3}} ve {{4}} aynı kalemlerden
         if gec:
-            vade, tutar = tr_tarih(gec[0]["vade"]), para(sum((Decimal(str(v["kalan"])) for v in gec), Decimal("0")), self.mut)
+            toplam = sum((Decimal(str(v["kalan"])) for v in (self.gecikmis(c, t, supheli_dahil=True) if "M182" in self.mut else gec)), Decimal("0"))
+            vade, tutar = tr_tarih(gec[0]["vade"]), para(toplam, self.mut)
         else:
             vade, tutar = {"plan_susuyor": "gecikmiş borç yok (yalnız M44'te)"}, {"plan_susuyor": "gecikmiş borç yok"}
-        return {"degiskenler": [ad, firma, vade, tutar, para(bakiye, self.mut)], "pdf": None, "dosya_adi": None}   # §7a 20
+        bak = {"plan_susuyor": self.S7_BAKIYE_SUSUYOR} if self.supheli_acik(c) else para(bakiye, self.mut)
+        return {"degiskenler": [ad, firma, vade, tutar, bak], "pdf": None, "dosya_adi": None}   # §7a 20
 
     # ---- işçi ---------------------------------------------------------------------------------------------------------------
     def _ilerlet(self, tp):
@@ -1438,7 +1557,8 @@ class Benzetim:
 
     def engelli(self, tp):
         """§6 W2 "Gönderiliyor istekten ÖNCE yazılır": şirket dosyası yazılamıyor (J7) ya da şirket geçici açılamıyorsa (J6) o şirketin işçisi istek göndermez."""
-        return self.defter_kilit or tp.sirket in self.acilamaz          # Y9e-3: talep deftere yazılamıyorsa istek gitmez
+        return (self.defter_kilit or tp.sirket in self.acilamaz          # Y9e-3: talep deftere yazılamıyorsa istek gitmez
+                or (self.okuma.get("devam_sd") == "bekle" and tp.sirket in self.baglanti_sd))   # README §16.4 okuma (b): bağlantı Süresi Doldu iken istek yok
 
     def isci_zamani(self):
         en = None
@@ -1459,12 +1579,31 @@ class Benzetim:
             L = min(L, cap)
         return L
 
+    def suresi_doldu_kabul(self, rid, anahtar):
+        """SW2 (Y11-3/4): bu kabulün denemesi ŞU AN Süresi Doldu mu (sonradan teslim gelirse artık değil)."""
+        rec = self.kayitlar.get(rid) if rid is not None else None
+        if rec is not None:
+            return rec["son_durum"] == SURESI_DOLDU
+        j = self.isler.get(anahtar)
+        return j is not None and j.durum == SURESI_DOLDU
+
     def pencere_kumesi(self, waba, t):
         p = self.pencere.get(waba, {})
         if "M6" in self.mut:
             gun_bas = int(datetime.fromtimestamp(t / 1000, self.tz).replace(hour=0, minute=0, second=0, microsecond=0).timestamp() * 1000)
             return {a: x for a, x in p.items() if x >= gun_bas}
-        return {a: x for a, x in p.items() if x > t - GUN}
+        # §6 W2: kayan 24 saatte "Meta Kabul Etti" olmuş FARKLI alıcı; SW2 (Y11-3): Süresi Doldu yazılmış denemenin kabulü SAYILMAZ (alıcının başka sayılan kabulü varsa alıcı sayılır)
+        kume = {}; dolan = set()
+        for (x, w, alici, rid, anahtar) in self.pencere_kayit:
+            if w != waba or not x > t - GUN:
+                continue
+            if "M178" not in self.mut and self.suresi_doldu_kabul(rid, anahtar):
+                dolan.add(alici)
+                continue
+            kume[alici] = max(kume.get(alici, 0), x)
+        if "M187" in self.mut:
+            kume = {a: x for a, x in kume.items() if a not in dolan}
+        return kume
 
     def sigar(self, kume, alici, L):
         return len(kume) + (0 if alici in kume else 1) <= L      # §7a 4: penceresinde sayılmış alıcı GEÇER
@@ -1525,6 +1664,11 @@ class Benzetim:
                     if tel is None:
                         self.atla(j, tur_, t)
                         continue
+                    if tp.sablon == "hatirlatma" and self.supheli_acik(c) and "M181" not in self.mut:
+                        if not getattr(j, "supheli_elle", False):
+                            raise ValueError("KULLANICIYA SORULMALI S7-b (README §16.4): kuyruktayken şüpheli alacak kaydı açılan, elle seçilmemiş cari — kodlanmadı")
+                        if not self.gecikmis(c, t):
+                            raise ValueError("KULLANICIYA SORULMALI S7-a (README §16.4): elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yok — kodlanmadı")
                     if tp.sablon == "hatirlatma" and not self.gecikmis(c, t) and "M44" not in self.mut:
                         self.atla(j, "gecikmis_borc_yok", t)
                         continue
@@ -1559,6 +1703,8 @@ class Benzetim:
     def meta_yanit_mesaj(self, j, deneme):
         if self.meta["kapali"]:
             return "baglanti_reddi"
+        if self.meta_belirtec.get(j.sirket) is not None:       # SD1915 / SW4: belirteç Meta'da geçersiz → her istek reddedilir (sahte Meta: deneme sayacı yine artar)
+            return {"hata": self.meta_belirtec[j.sirket]}
         kurallar = self.davranis.get("mesaj", {})
         liste = kurallar.get(j.cari, kurallar.get("*"))
         if liste is None:
@@ -1578,7 +1724,9 @@ class Benzetim:
                 return {"hata": 132001}
         return yanit
 
-    def meta_yanit_medya(self):
+    def meta_yanit_medya(self, j):
+        if self.meta_belirtec.get(j.sirket) is not None:       # SD1915 / SW4: PDF yüklemesi de reddedilir (genel medya sırası yine ilerler)
+            return {"hata": self.meta_belirtec[j.sirket]}
         liste = self.davranis.get("medya", [])
         return liste[self.medya_toplam - 1] if self.medya_toplam - 1 < len(liste) else "kabul"
 
@@ -1595,7 +1743,7 @@ class Benzetim:
                     if self.meta["kapali"]:
                         return self.baglanti_yok(j, tp, ts)
                     self.medya_toplam += 1
-                    y = self.meta_yanit_medya()
+                    y = self.meta_yanit_medya(j)
                     if y == "kabul":
                         j.medyalar.append(f"m:{j.anahtar}#{len(j.medyalar) + 1}"); j.medya_t.append(t)
                         break
@@ -1692,7 +1840,55 @@ class Benzetim:
             if x.durum in (BEKLIYOR, SINIR, HAZIRLANIYOR, BEKLEME_131049):
                 self.durum(x, DURAKLATILDI, ts)
 
+    def belirtec_kodu(self, kod):
+        """SD1915 (190) + SW4 (0 "190 gibi"); 102 kararın DIŞINDA (Y11-15; M180 ekler). M173: 0 bugünkü hesap hatası gibi (S-W4 öncesi)."""
+        k = set(BELIRTEC_KODLARI) | ({102} if "M180" in self.mut else set())
+        if "M173" in self.mut:
+            k.discard(0)
+        return isinstance(kod, int) and not isinstance(kod, bool) and kod in k
+
+    def sure_doldu(self, sirket, t, neden, belirtec=False):
+        """SD1837 (Y11-7/8) + SD1915 / SW4 (Y11-12): bağlantı 'Süresi Doldu' — o şirketin süren (aktif / Bağlantı Bekleniyor) toplu işleri Duraklatıldı, içindeki
+        Bekliyor / Sınır / Hazırlanıyor / Meta Bekletti işler 'Duraklatıldı'; Meta Kabul Etti / Gönderildi işlere dokunulmaz. Yeniden bağlanınca Devam Et ile sürer."""
+        self.baglanti_sd.add(sirket)
+        if "M174" in self.mut and belirtec:
+            return
+        for e in self.toplu_sira:
+            tp = self.toplular[e]
+            if tp.sirket != sirket or tp.durum not in ("aktif", "baglanti_bekleniyor"):
+                continue
+            tp.durum = "duraklatildi"; tp.neden = neden; tp.baglanti_neden = True
+            tp.belirtec_neden = neden if belirtec else None
+            for x in tp.isler:
+                if x.durum in (BEKLIYOR, SINIR, HAZIRLANIYOR, BEKLEME_131049):
+                    self.durum(x, DURDU_BAGLANTI if ("M189" in self.mut and not belirtec) else DURAKLATILDI, t)
+
+    def belirtec_reddi(self, j, tp, kod, ts):
+        """SD1915 + SW4 (Y11-12…14): Meta belirteci reddetti (190 / 0) — o anda iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlere döner ('Duraklatıldı'; kesin gitmedi:
+        R3'te sayılmaz, Sonucu Belirsiz değil — ilke 1); bağlantı 'Süresi Doldu' (belirteç Meta'da yeniden bağlanana dek geçersiz); yeniden bağlanınca Devam Et ile gider."""
+        self.meta_belirtec[tp.sirket] = kod
+        if "M185" in self.mut:
+            self.belirsiz(j, ts)
+            return self.sure_doldu(tp.sirket, ts, kod, belirtec=True)
+        j.kod = kod; j.belirtec_kodu = kod
+        if j.son_kayit is not None:                                    # ileti isteği reddedildi: bu deneme kesin gitmedi
+            rec = self.kayitlar[j.son_kayit]
+            if "M188" in self.mut:
+                rec["kabul"] = True; rec["son_durum"] = KABUL
+            else:
+                rec["son_durum"] = DURAKLATILDI; rec["belirtec_reddi"] = kod
+            onceki = [r for r in j.kayitlar if r != j.son_kayit]
+            j.son_kayit = None
+            if onceki and "M186" not in self.mut:
+                r0 = self.kayitlar[onceki[-1]]
+                if r0.get("bekletti") and not r0.get("teslim") and r0["son_durum"] == BEKLEME_131049:
+                    j.son_kayit = onceki[-1]                           # Y11-14 (İLKEYLE G0 3 + J2): 2. deneme gitmedi → iş yine Meta Bekletti iletisini taşır
+        self.durum(j, DURAKLATILDI, ts)
+        self.sure_doldu(tp.sirket, ts, kod, belirtec=True)
+
     def hata_isle(self, j, tp, kod, ts, post_yok=False):
+        if self.belirtec_kodu(kod) and "M172" not in self.mut and not (post_yok and "M184" in self.mut):
+            return self.belirtec_reddi(j, tp, kod, ts)
         j.kod = kod
         self.durum(j, BEKLIYOR, ts)
         if kod in DURAKLATAN or (isinstance(kod, int) and kod in DURAKLATAN_ARALIK):
@@ -1809,6 +2005,7 @@ class Benzetim:
             j.kod = None                                     # §7a 32
         p = self.pencere.setdefault(waba, {})
         p[j.telefon] = max(p.get(j.telefon, 0), ts)
+        self.pencere_kayit.append((ts, waba, j.telefon, j.son_kayit, j.anahtar))   # SW2: deneme başına (Süresi Doldu olan sayılmaz)
         tp.okuma_sayac += 1                                  # §7a R2: son kategori okumasından beri ileti
         self.kabul_kaydi.append((ts, waba, tp.sirket, j.telefon, j.anahtar))
         self.durum(j, KABUL, ts)
@@ -2201,6 +2398,21 @@ class Benzetim:
     GEC_TESLIM_SUSUYOR = "teslimsiz kapanan işe (Başarısız/İptal/Durduruldu/Taşınan) geç gelen teslimin ekran durumu (K3/K7 yalnız 'sayılır' der)"
     PDF_SILME_SUSUYOR = "İptal / geri yükleme / taşıma ile duran işin PDF'i (§11 S3 yalnız teslim / başarısız / süresi doldu der)"
 
+    # README §16.4: kime / kaç kez DEĞİŞMEYEN, karar metninin sustuğu gösterimler
+    DEVAM_SD_SUSUYOR = ("bağlantı Süresi Doldu iken (yeniden bağlanmadan) Devam Et: karar metni yalnız 'yeniden bağlanınca Devam Et ile' der — reddedilir / bekler / "
+                        "dener ve Meta reddeder (üçünde de ileti gitmez)")
+    BELIRTEC_NEDEN_SUSUYOR = "190 / 0 ile duran toplu işin neden adı (hata kodu ya da 'Bağlantı Süresi Doldu') karar metninde yok"
+    BELIRTEC_KOD_SUSUYOR = "190 / 0 alıp bekleyenlere dönen işin hata kodu karar metninde yok ('kalan kişilerle bekler')"
+    S7_BAKIYE_SUSUYOR = "S7: şüpheli alacak kaydı açık caride Ödeme Hatırlatma {{5}} güncel bakiye karar metninde yok (yalnız 'şüphelisiz gecikmiş tutar')"
+
+    def belirtec_bekliyor(self, j):
+        return j.kod is not None and j.kod == getattr(j, "belirtec_kodu", None) and j.durum not in SIRA and j.durum not in KESIN
+
+    def toplu_nedeni(self, tp):
+        if tp.durum == "duraklatildi" and tp.neden is not None and tp.neden == getattr(tp, "belirtec_neden", None):
+            return {"secenek": [tp.neden, SURE_DOLDU_NEDEN], "susuyor": self.BELIRTEC_NEDEN_SUSUYOR}
+        return tp.neden
+
     def gorunen(self, j):
         if j.gec_teslim and j.durum in KAPANDI_TESLIMSIZ:
             return {"secenek": [j.durum, j.gec_teslim], "susuyor": self.GEC_TESLIM_SUSUYOR}
@@ -2242,7 +2454,8 @@ class Benzetim:
                 "degiskenler": j.icerik["degiskenler"] if j.icerik else None,
                 "pdf": j.icerik["pdf"] if j.icerik else None,
                 "dosya_adi": j.icerik["dosya_adi"] if j.icerik else None,
-                "hata_kodu": {"secenek": [j.kod, None], "susuyor": self.GEC_TESLIM_SUSUYOR} if (gec and j.kod is not None) else j.kod,
+                "hata_kodu": ({"secenek": [j.kod, None], "susuyor": self.GEC_TESLIM_SUSUYOR} if (gec and j.kod is not None)
+                              else {"secenek": [j.kod, None], "susuyor": self.BELIRTEC_KOD_SUSUYOR} if self.belirtec_bekliyor(j) else j.kod),
                 "post": j.post, "kabul": len(j.wamidler), "meta_ileti": j.meta_sayi,
                 "medya_yukleme": len(j.medyalar), "medya_silme": {"plan_susuyor": self.PDF_SILME_SUSUYOR} if self.pdf_susuyor(j) else j.silme_n,
                 "atlanma_nedeni": j.elendi_neden,
@@ -2286,7 +2499,7 @@ class Benzetim:
             "olusmadi": sorted(self.olusmadi),
             "ayni_istek": dict(sorted(self.ayni_istek.items())),
             "onceki_uyari": dict(sorted(self.onceki_uyari.items())),
-            "toplular": {e: {"durum": self.toplular[e].durum, "neden": self.toplular[e].neden, "is_sayisi": len(self.toplular[e].isler)} for e in self.toplu_sira},
+            "toplular": {e: {"durum": self.toplular[e].durum, "neden": self.toplu_nedeni(self.toplular[e]), "is_sayisi": len(self.toplular[e].isler)} for e in self.toplu_sira},
             "durum_sayilari": self.durum_sayilari(),
             "meta": {"post": topla(lambda j: j.post), "kabul": topla(lambda j: len(j.wamidler)), "meta_ileti": topla(lambda j: j.meta_sayi),
                      "medya_yukleme": topla(lambda j: len(j.medyalar)), "medya_silme": medya_silme,
@@ -2348,8 +2561,44 @@ def tam_secim(kismi):
     return s
 
 
+def secenek_birlestir(degerler, neden):
+    """Karar metninin sustuğu OKUMALAR (kime / kaç kez hepsinde aynı) arasında ayrışan yaprak → {"secenek": [...], "susuyor": neden} (program seçeneklerden biri
+    olmalı); aynı yapıdaki sözlük / liste içine iner; içteki seçenek yaprakları düzleşir; {"plan_susuyor"} denetlenmez kalır."""
+    ilk = degerler[0]
+    if all(_metin(d) == _metin(ilk) for d in degerler):
+        return ilk
+    yaprak = lambda d: isinstance(d, dict) and ("secenek" in d or "plan_susuyor" in d or set(d) in ({"biri"}, {"kisaltilabilir"}))
+    if all(isinstance(d, dict) and not yaprak(d) and set(d) == set(ilk) for d in degerler):
+        return {k: secenek_birlestir([d[k] for d in degerler], neden) for k in ilk}
+    if all(isinstance(d, list) for d in degerler) and all(len(d) == len(ilk) for d in degerler):
+        return [secenek_birlestir([d[i] for d in degerler], neden) for i in range(len(ilk))]
+    for d in degerler:
+        if isinstance(d, dict) and "plan_susuyor" in d:
+            return d
+    secenekler = []; nedenler = []
+    for d in degerler:
+        for x in (d["secenek"] if isinstance(d, dict) and "secenek" in d else [d]):
+            if not any(_metin(x) == _metin(y) for y in secenekler):
+                secenekler.append(x)
+        if isinstance(d, dict) and "secenek" in d and d.get("susuyor") not in nedenler:
+            nedenler.append(d["susuyor"])
+    if neden not in nedenler:
+        nedenler.append(neden)
+    return {"secenek": secenekler, "susuyor": " + ".join(nedenler)}
+
+
 def hesapla_tek(sen, kismi=None, mut=frozenset()):
-    return birlestir([Benzetim(sen, tam_secim(kismi or {}), zaman, mut).calistir() for zaman in ZAMANLAR])
+    """İki zaman ucu (birleştirme {"biri"}); güncelleme 11: koşu karar metninin sustuğu bir duruma düştüyse (yeniden bağlanmadan Devam Et) öbür okumalar da koşulur,
+    ayrışan yapraklar {"secenek"} (README §16.4)."""
+    sonuclar = []
+    for zaman in ZAMANLAR:
+        b = Benzetim(sen, tam_secim(kismi or {}), zaman, mut)
+        r = b.calistir()
+        if "devam_sd" in b.okuma_izi:
+            r = secenek_birlestir([r] + [Benzetim(sen, tam_secim(kismi or {}), zaman, mut, okuma={"devam_sd": o}).calistir() for o in DEVAM_OKUMALARI[1:]],
+                                  Benzetim.DEVAM_SD_SUSUYOR)
+        sonuclar.append(r)
+    return birlestir(sonuclar)
 
 
 def hesapla(sen, mut=frozenset()):

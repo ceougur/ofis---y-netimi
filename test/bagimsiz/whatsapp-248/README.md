@@ -12,7 +12,7 @@ madde K0) bağımsız kâhinidir:
    aşağıda "Kâhin yorumları"nda (teyit gerekir). §7a'nın **revizyonu R1–R3** (30.10.2026 15:18 UTC, plan §7a sonu "REVİZYON ÖNERİSİ" + KARAR, programın
    davranışı görülmeden) da sabit: R1 Meta'ya hiç ulaşılamıyorsa "Bağlantı Bekleniyor", R2 kategori her 100 iletide / en geç 10 dakikada, R3 daha önce
    gönderilmiş dönem uyarısı (varsayılan Bunları Çıkar).
-3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 291 senaryo: 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
+3. **Senaryo kümesi** (`kahin/senaryolar.py` → `kahin/senaryolar.json`) — 310 senaryo (güncelleme 11 ile; aşağıdaki döküm 291'e kadar, + W3 1 + **güncelleme 11** 18: SW1 3, SW2 2, SD1837 3, SD1915 5, SW4 3, S7 2 — §16): 145 (plan §8 "Nasıl bozulur?" başlıklarının hepsi + §7a kararlarının ve R1–R3'ün her biri)
    + 34 **kâhin güncellemesi 2** (31.10.2026, ürün sahibi kararları K1–K8; §7) + 19 **kâhin güncellemesi 3** (★ soruların yanıtları D1–D8; §8) + 12 **kâhin güncellemesi 4** (N2–N5 yanıtları E1–E4 + N6; §9) + 5 **güncelleme 5** (P1/P2 → F1/F2; §10) + 16 **güncelleme 6** (G0 ilke + G1–G5; §11) + 5 **güncelleme 7** (G6; §12) + 8 **güncelleme 8** (H1–H4; §13) + 29 **güncelleme 9** (01.11.2026 kullanıcı onaylı 8 davranış J1–J8 + n3 BİLİNEN SINIR J9; §14) + 8 **güncelleme 9b** (S9-1 / S9-2 kararları J10–J11; §14.10–14.12) + 3 **güncelleme 9c** (ekstre içeriği açılışta, J12; §14.13–14.14) + 7 **güncelleme 10** (2.4.9 W: teslim süresi 30 gün W1 + W-KÖK W2; §15).
 
 **Bağımsızlık.** Programın kodu (`server/`, `client/`, `bulut/`) GÖRÜLMEDEN yazıldı (KANIT KURALI 2, ders 5). Okunanlar: CLAUDE.md, plan, iş listesi,
@@ -22,7 +22,7 @@ implementation / tech-provider onboarding / versions, pricing) ve bu klasörün 
 Plan §6 K0 klasör olarak `test/sahte-meta/` yazıyor; görev bu klasörü (`test/bagimsiz/whatsapp-248/`) verdi.
 
 **Bağımsızlığın sınırı.** Elle beklenen ile model aynı elden (bu kâhin) çıktı: bağımsızlık PROGRAMA göredir. Kendi içindeki dişi: (a) elle beklenen ↔ model
-iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi) tersi —, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
+iki ayrı türetme, (b) mutasyon testi (164 bilerek hata — 30'u §7a kararlarının ya da R1–R3'ün tersi, 30'u K1–K8'in (M68–M97), 11'i D1–D8'in (M98–M108), 9'u E1–E4 + N6'nın (M109–M117), 2'si F1/F2'nin (M118–M119), 9'u G0–G5'in (M120–M128), 2'si G6'nın (M129–M130), 6'sı H1–H4'ün (M131–M136), 16'sı J1–J9'un (M137–M153; M149 güncelleme 9b'de kalktı) 9'u J10–J11'in (M154–M162) 2'si J12'nin (M163–M164), 1'i J7 düzeltmesinin (M165) ve 5'i W1/W2'nin (M166–M170; M7 de W1'e göre TERSİNE çevrildi), 1'i W3'ün (M171) ve 18'i güncelleme 11'in (M172–M189; M151 artık SW1'in tersi) tersi — toplam 188, her biri en az bir senaryoda yakalanıyor), (c) değişmezler (ör. "Bu Ay"
 teslim = Teslim + Okundu iş sayısı, başarılı işte hata kodu yok, metin bakiyesi = PDF bakiyesi), (d) beklenen şablon metinleri plan dosyasından okunup
 karşılaştırılır (H).
 
@@ -36,7 +36,7 @@ karşılaştırılır (H).
 | `sahte-meta/sunucu.test.mjs` | Sahte sunucunun kendi testleri (node --test, 35) |
 | `sahte-meta/mutasyon.mjs` | Testlerin dişi: sunucuya 19 bilerek hata, her biri ayrı geçici kopyada; her biri en az bir testi kırmızı yapmalı |
 | `kahin/kahin.py` | Model + komut satırı (`hesapla`, `karsilastir`) |
-| `kahin/senaryolar.py` | 291 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
+| `kahin/senaryolar.py` | 310 senaryo (girdi + ELLE beklenen); modelle karşılaştırır, aynıysa `senaryolar.json` yazar |
 | `kahin/senaryolar.json` | Her senaryo: girdi, elle beklenen, modelin bütün beklenen sonucu; üstte `sablonlar` (programın açması beklenen 2 şablonun metni, §7a 23 + W5) |
 | `kahin/kahin_test.py` | Kâhinin kendi testi (A–H) + mutasyon; TAP + `# tests/pass/fail` |
 
@@ -92,7 +92,8 @@ durum/kategori), `meta_davranis` (`mesaj` alıcı başına n. POST yanıtı; `me
 (`baslat` [etiket, seçim SIRASIYLA, şablon, dönem, kullanıcı, `istek` = istek kimliği, `onceki` = R3 uyarısındaki seçim "cikar" (varsayılan) / "gonder"], `kontrol`, `cari` [telefon / istemiyor / silindi / pasif / ad /
 hareket_ekle / vadeler], `kapat`, `ac`, `cokme` [o carinin isteği anında süreç ölür, `istek_ulasti`], `tunel`, `kanca_kuyrugu`, `lisans`, `duraklat`/`devam`/
 `iptal`, `basarisizlari_yeniden_dene`, `yine_de_gonder`, `geri_yukle`/`sifirla`/`tasindi`, `meta_basamak`, `meta_sablon` [durum / kategori], `meta_kapali`,
-`sahte_kanca` [İMZASIZ olay: `wamid` ya da `is` (gerçek işin wamid'i), `durum`, `kod`, `opaque`]), `ozet_cikti`. `meta_davranis.kanca` olayları Meta'nındır
+`sahte_kanca` [İMZASIZ olay: `wamid` ya da `is` (gerçek işin wamid'i), `durum`, `kod`, `opaque`]; güncelleme 11: `baglanti_suresi_doldu` / `yeniden_baglan` {`sirket`},
+`baslat.supheli_elle`, `vadeler[].supheli` — §16), `ozet_cikti`. `meta_davranis.kanca` olayları Meta'nındır
 (kapıcıda imzası doğrulanmış sayılır, §7a 3).
 
 **Çıktı** (beklenen; `[{secimler: [{}], sonuc}]` — serbest seçim kalmadığından TEK grup): `baslamadi` (etiket → neden: `bagli_degil` / `yetki_yok` /
@@ -978,3 +979,132 @@ etkin süre = max(kabul anındaki, güncel); kabulde bilinmiyorsa 30 gün". Ana 
   kendi testi **315/315** (F mutasyon **170/170**) `TZ=UTC` ve `TZ=Europe/Istanbul`; önceki 291 senaryonun tam sonucu bayt bayt AYNI (W2-01/02 yalnız kaynak satırı); önceki kâhinle
   (e37016de) W3-01 KIRMIZI, W2-01/02 aynı — `docs/kanit/2026-11-03/kahin-w3/`. Programa karşı KOŞULMADI (ana oturum: W-KÖK kodu ayrı ajanda; W3-01'de ayrışma beklenir).
   Sürücüde değişiklik gerekmedi (`meta_sablon teslim_suresi_sn` ve aday anlar güncelleme 10'da var).
+
+## 16. Kâhin güncellemesi 11 — 2.5.0 kararları (S-W1, S-W2, 18:37, 19:15, S-W4, S7)
+
+### 16.1 Kaynak ve bağımsızlık
+Kaynak YALNIZ karar metinleri (AYNEN `kahin.KARARLAR` SW1, SW2, SD1837, SD1915, SW4, S7): `docs/2.5.0-IS-LISTESI.md` D bölümü (05.11 ~16:48, ~18:37, ~18:55 S3, ~19:15,
+21:08 satırları) ve C bölümü (S7 sorusunun iki seçeneği), `docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md` §0, §1 (W-1 (a) satırı), §3, §4, §4a, plan 2.4.8 `docs/erp/WHATSAPP-API-PLANI-2.4.8.md`
+(§2.7, §3, §4, §6 W1–W2, §7a, §11) ve ana oturumun görev iletisindeki karar özetleri (S-W4'ün "Kod 102 bu kararın DIŞINDA" cümlesi yalnız iletide). Okunan başka dosya:
+CLAUDE.md, `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, bu README, `kahin/*`, `sahte-meta/sunucu.mjs` (belirteç denetimi `yetkiDenetle`, istek yönlendirme ve kural eşleme bölümü),
+`sahte-meta/hatalar.mjs` ve `surucu.mjs` içinde yalnız `belirtec` / `suresi_dolmus` / `debug_token` araması (iki satır: sabit belirteç adı ve sahte Meta'ya verilen belirteç nesnesi).
+Program kodu (`server/`, `client/`, `bulut/`, `tools/`), program testleri, `docs/kanit/`, iş listesinin B ve E bölümleri ve git geçmişi / farkı GÖRÜLMEDİ. Programa karşı KOŞULMADI.
+Bu bölümün 16.2–16.4'ü kodlamadan ÖNCE yazıldı (ders 40); 16.5–16.8 kodlamadan sonra.
+
+### 16.2 Yorumlar (kâhinde; her birinin kaynağı)
+| # | Yorum (kâhinde) | Kaynak |
+|---|---|---|
+| Y11-1 | **S-W1 "İkinci de gitsin"** = kâhinin J9 kuralı (gönderim anında R3 yeniden denetlenmez; kuyruktaki ikinci iş, birincinin iletisi Meta'da teslim beklerken ya da geç teslimi geldikten sonra da gider → kişiye 2 ileti, "Bu Ay" 2 — J5). Kural DEĞİŞMEZ; BİLİNEN SINIR değil KARAR: J9-01/02'nin `bilinen_sinir: n3` işareti kalkar, kaynakları SW1. M151 (A seçeneği: gönderimden önce R3 bir kez daha) artık "kararın tersi" | SW1 + J9 + J5 |
+| Y11-2 | "Teslimi beklenen ('Meta Kabul Etti') ileti varken kuyruktaki ikinci iş": programda birinci iş Meta Kabul Etti / Gönderildi iken aynı kişi + dönem için ikinci iş yalnız R3 "Yine de Gönder" ile açılabilir (öbür yollar Zaten Kuyrukta / Sonucu Belirsiz / Daha Önce Gönderildi ile eler) — o yol J10 (07:11 b) ile zaten "ikinci kopya gider". Programda teslimsiz kapanmış ama iletisi Meta'da duran birinci iş (Meta Bekletti → İptal, failed, Başarısız) J9 yoludur; plan §3 madde 4'ün çeşitleri (geç teslim ikinci iş beklerken / 7 gün sonra / birinci Başarısız kalır) yeni senaryolarla | SW1 + P6 §3 madde 4 |
+| Y11-3 | **S-W2 "Sayılmasın"** = programın kayan 24 saatlik FARKLI alıcı sayacında (§6 W2: "Meta Kabul Etti" olmuş farklı alıcı) Süresi Doldu yazılmış DENEMENİN kabulü sayılmaz; aynı alıcının pencere içinde sayılan başka kabulü (başka cari aynı telefon — K2, başka iş) varsa alıcı yine sayılır. Süresi Doldu yazıldığı andan sonraki sınır kararları ve `pencere_farkli_alici` gözlemi bunu yansıtır | SW2 + §6 W2 |
+| Y11-4 | Süresi Doldu'dan SONRA teslim gelirse (§7a 17 Teslim Edildi) deneme artık "Süresi Doldu ileti" değildir → kabulü (kabul anıyla) yeniden sayılır. Senaryosuz (teslim pencere içinde gelmiyor) | SW2 + §7a 17 |
+| Y11-5 | Sınır Nedeniyle Bekleyen kişinin, Süresi Doldu ile boşalan yere NE ZAMAN geçtiği karar metninde yok (kime / kaç kez değil): kâhin bekleyenin açılış zamanını yeniden hesaplamaz; Süresi Doldu'dan sonra yeni başlatılan iş hemen değerlendirilir. Senaryolar bekleyen kişiyi o aralıkta denetlemez | SW2 |
+| Y11-6 | S-W2 yalnız Süresi Doldu'yu söyler: kabulden sonra failed (Başarısız) olan deneme §6 W2 gereği sayılmaya devam eder (kâhin değişmedi). P6 §1 SORU 2 satırındaki "deliveryFailed sayaçtan düşer" programın bugünkü davranışının anlatımıdır, karar değil → 16.4 bilgi | SW2 + §6 W2 |
+| Y11-7 | **18:37 "bağlantının süresi dolduğunda"** = programın izlediği (W-1 a) belirteç süresinin dolması — yeni olay `baglanti_suresi_doldu {sirket}`: o andan bağlantı 'Süresi Doldu', Meta da o belirteci 190 ile reddeder. Bağlantı ŞİRKET başına (2.4.8 §6 W1 "Ayarlar (şirket başına)") | SD1837 + P6 W-1 (a) |
+| Y11-8 | "kuyruktaki / süren toplu gönderim işleri" = o şirketin `aktif` ya da R1 `baglanti_bekleniyor` toplu işleri → toplu iş `duraklatildi` (süre izlemeyle: neden `baglanti_suresi_doldu`); içindeki Bekliyor / Sınır Nedeniyle Bekliyor / Hazırlanıyor / Meta Bekletti işler 'Duraklatıldı' (§7a 13 düzeni). Meta Kabul Etti / Gönderildi işlere dokunulmaz (ileti gitti; teslim / Süresi Doldu bildirimi sürer). Kullanıcının duraklattığı toplu iş öyle kalır | SD1837 + §7a 13 |
+| Y11-9 | "yeniden bağlanınca 'Devam Et' ile" — yeni olay `yeniden_baglan {sirket}` (yeni geçerli belirteç): duran toplu işi KENDİLİĞİNDEN sürdürmez, 'Devam Et' gerekir | SD1837 |
+| Y11-10 | "yalnız kalan kişilere gider, kimseye ikinci ileti gitmez" = Devam Et yalnız Duraklatıldı (ve bugünkü gibi açılışta sorulan / Lisans) işleri Bekliyor'a alır; Meta Kabul Etti / Gönderildi / Teslim / Okundu / Başarısız / Sonucu Belirsiz / Atlandı iş yeniden gönderilmez (Sonucu Belirsiz yine yalnız işteki Yine de Gönder — G0 2) | SD1837 + G0 (2) |
+| Y11-11 | "süre dolunca gönderim başlatılamaz" (PLAN P6 §1 W-1 (a), karar değil): bağlantı 'Süresi Doldu' iken yeni toplu gönderim BAŞLAMAZ, neden `baglanti_suresi_doldu`; ret sırasında `bagli_degil`'den hemen sonra (bağlantı durumu, yetkiden önce — kâhin yorumu; senaryoda başka ret nedeni yok) | P6 §1 W-1 (a) + §7a 29 |
+| Y11-12 | **19:15 "Meta anahtarı reddederse (190)… o anda iletisi gitmeyen kişi"** = o kişinin isteği — ileti POST'u ya da (ekstrede) PDF yüklemesi — 190 alırsa kişi Başarısız OLMAZ: 'Duraklatıldı' (bekleyenlerle), iletisi kesin gitmedi → R3'te sayılmaz, Sonucu Belirsiz değil (ilke 1). Bağlantı 'Süresi Doldu' olur (S-W4 metni "bağlantı 'Süresi Doldu' olur" 190 için de; 19:15 "süre doldu ya da iptal"), toplu iş ve o şirketin öbür süren toplu işleri Duraklatıldı (Y11-8; bugünkü §6 W2 "İLK hatada DURAKLAR"). Belirteç Meta'da yeniden bağlanana dek geçersiz kalır (sonraki her istek reddedilir) | SD1915 + SW4 + SD1837 + G0 (1) |
+| Y11-13 | PDF: 190 ileti isteğinde geldiyse yüklenmiş PDF silinmez (iş kesin değil — §11 S3) ve Devam Et'te aynı medya kullanılır (§7a 15); PDF yüklemesinde geldiyse medya yok, Devam Et'te yüklenir. Geçici hata sayaçları ("5 art arda", iş başı deneme) 190/0'dan etkilenmez | SD1915 + §11 S3 + §7a 15 |
+| Y11-14 | Meta Bekletti işin 2. denemesi 190 / 0 ile reddedilirse 2. deneme GİTMEMİŞTİR: iş yine Meta Bekletti iletisini taşır; o ileti beklerken teslim edilirse iş kapanır, Devam Et 2. denemeyi göndermez — **İLKEYLE G0 (3)** + J2 | SD1915 + J2 + G0 (3) |
+| Y11-15 | **S-W4**: kod 0 her yerde 190 ile aynı (Y11-12…14). Kod 102 bu kararın DIŞINDA: kâhinde bugünkü hâliyle (§7a 12 tanınmayan kod → o iş Başarısız, toplu iş sürer, bağlantı Süresi Doldu olmaz) | SW4 + §7a 12 |
+| Y11-16 | Geri yükleme / sıfırlama / taşıma (ilke 5): 190/0 ile bekleyen ve süre dolunca duran işler bugünkü §7a 26 / §6 W2 kuralıyla durur ("Durduruldu (Geri Yükleme)" / "Taşınan Veri — Durduruldu"), dirilmez; reddedilen deneme R3'te SAYILMAZ (kesin gitmedi) → yeniden bağlandıktan sonraki yeni toplu işte kişi elenmez, bir kez gider | G0 (1, 5) + SD1915 + §7a 26 |
+| Y11-17 | **S7**: girdi `vadeler[].supheli: true` = o açık kalem şüpheli alacak kaydına (icra / dava) alınmış; "kaydı açık" = böyle bir kalemin kalanı > 0. Yalnız Ödeme Hatırlatma (karar metni); Ekstre değişmez | S7 (+ 18:55 S3) |
+| Y11-18 | "otomatik listeye girmesin… 'Şüpheli Alacağı Var' etiketiyle görünür" = Ödeme Hatırlatma başlatmasında seçimdeki şüpheli kaydı açık cari ELENİR, neden `supheli_alacak` (ileti gitmez); "istenirse elle seçilir" = başlatmada `supheli_elle: [cari]` ile ayrıca seçilen cari elenmez, gider. Eleme sırası: silindi / pasif / İstemiyor / numara → `supheli_alacak` → `gecikmis_borc_yok` → Zaten Kuyrukta → Sonucu Belirsiz → R3 | S7 + §7a 20 + E2 |
+| Y11-19 | "iletide şüphelisiz gecikmiş tutar yazar" = elle seçilen şüpheli caride {{4}} şüpheli OLMAYAN vadesi geçmiş kalemlerin toplamı; {{3}} aynı kalemlerin en eskisi (kâhin yorumu: §7a 20'nin {{3}} / {{4}}'ü aynı kalemlerden); {{5}} güncel bakiye için karar metni bir şey söylemiyor → `plan_susuyor`. İçerik bugünkü gibi gönderim anında (Y9d-2) | S7 + §7a 20 |
+
+### 16.3 Önceki güncellemelerle çelişen yerler (yeni KARAR geçer)
+- §2 / §5 §7a 13 "hesap/şablon hatası İLK hatada DURAKLAR, **hatayı alan Başarısız**" → 190 ve 0'da hatayı alan Başarısız DEĞİL, bekleyenlere döner + bağlantı Süresi Doldu (SD1915, SW4). Öbür
+  hesap kodları (10, 200–299, 131005, 368, 131031, 131042, 133010, 131045) ve şablon kodları AYNEN. → **HESAP-0** beklentisi değişir (B Duraklatıldı; senaryoya yeniden bağlanma olayı
+  eklenir — 18:37 "yeniden bağlanınca Devam Et").
+- §14.2 Y9-19 / §14.6 J9 "n3 BİLİNEN SINIR, 2.5.0'da düzelir" + §14.8 S-25 (n3 kısmı) → KARAR (SW1): fark çıkarsa BİLİNEN SINIR değil KARAR ihlali.
+- §6 W2 "Kayan 24 saatte 'Meta Kabul Etti' olmuş FARKLI alıcı sayılır" → Süresi Doldu deneme sayılmaz (SW2). 12 sa düzenindeki eski senaryoların `pencere_farkli_alici` gözlemi değişebilir (16.6).
+- P6 §3 madde 3 ("Durduruldu + Yine de Gönder") kâhinde hiç kodlanmamıştı; 18:37 ile geçersiz (M189 o okumayı tutar).
+
+### 16.4 KÂHİN SUSUYOR / KULLANICIYA SORULMALI (ana oturuma)
+**KULLANICIYA SORULMALI (kime / kaç kez — kodlanmadı; senaryo bu duruma girerse kâhin `ValueError` verir):**
+- **S7-a ★** Elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç YOKSA (bütün gecikmiş borcu şüpheli): A) "Gecikmiş Borç Yok" ile elenir — iletide yazılacak şüphesiz gecikmiş
+  tutar yok (ÖNERİ; §7a 20 düzeni); B) ileti yine gider ({{4}} 0,00 TL ya da şüpheli tutarla).
+- **S7-b ★** Ödeme Hatırlatma kuyruktayken (gönderimden önce) şüpheli alacak kaydı AÇILAN, elle seçilmemiş cari: A) gönderim anında 'Atlandı — Şüpheli Alacağı Var' (ÖNERİ; §7a 2
+  "eleme denetimleri gönderim anında" + S7 "otomatik gitmez"); B) başlatmadaki seçimle gider (şüphesiz tutarla).
+
+**KÂHİN SUSUYOR — `secenek` yaprağı (kime / kaç kez DEĞİŞMEZ; program seçeneklerden birini vermeli):**
+- **Yeniden bağlanmadan Devam Et** (karar metni yalnız "yeniden bağlanınca Devam Et ile" der): (a) reddedilir / etkisiz — toplu iş Duraklatıldı kalır (W-1 (a) "süre dolunca gönderim
+  başlatılamaz"); (b) kabul edilir, işler Bekliyor, bağlantı Süresi Doldu iken işçi istek göndermez, yeniden bağlanınca sürer; (c) kabul edilir, işçi dener, Meta reddeder → 19:15 düzeni
+  (kişi bekleyenlere, toplu iş yine Duraklatıldı). Üçünde de yeniden bağlanmadan kimseye ileti gitmez, yeniden bağlanıp Devam Et'ten sonra kalan herkese bir kez gider; kâhin üç okumayı
+  koşar, ayrışan yapraklar (istek sayısı, toplu iş / iş durumu) `secenek`.
+- 190 / 0 ile duran toplu işin neden adı (hata kodu ya da 'Bağlantı Süresi Doldu'); 190 / 0 alıp bekleyen işin hata kodu (kod ya da boş); S7'de {{5}} (`plan_susuyor`).
+
+**KÂHİN SUSUYOR — modellenmedi (senaryo bu duruma girerse kâhin `ValueError` verir):** bağlantı Süresi Doldu iken işteki Yine de Gönder / Başarısızları Yeniden Dene; Meta belirteci
+geçersizken (program bilmiyor) yeni toplu gönderim başlatma (başlatmadaki şablon okuması reddedilir); Meta'nın şablon / basamak okumasına 190 / 0 dönmesi (kâhin okumayı Meta'nın
+durumundan yapar; senaryolarda belirteç geçersizken okuma zamanı gelmez).
+
+**Bilgi:** Y11-4 (Süresi Doldu sonrası teslim yeniden sayılır), Y11-5 (bekleyenin boşalan yere geçiş anı), Y11-6 (failed kabul pencerede sayılır; program "deliveryFailed"ı da düşürüyorsa
+ana oturum sınıflasın — yalnız bekleme süresi), Y11-7 / Y11-8 şirket başına bağlantı (iki şirket aynı WABA — senaryosuz), R1 "Bağlantı Bekleniyor" + süre dolması (senaryosuz).
+
+### 16.5 Kâhinde (kodlama) — senaryolar (18) ve mutasyonlar (18)
+Kod: `KARARLAR` SW1, SW2, SD1837, SD1915, SW4, S7 (AYNEN); olaylar `baglanti_suresi_doldu {sirket}`, `yeniden_baglan {sirket}`; başlatmada `supheli_elle`; `vadeler[].supheli`;
+`belirtec_reddi()` (190 / 0 → Duraklatıldı + `sure_doldu()`; Meta Bekletti 2. denemesi reddedildiyse iş yine o iletiyi taşır), `sure_doldu()` (şirketin süren toplu işleri),
+`pencere_kumesi()` deneme başına (`pencere_kayit`; Süresi Doldu deneme sayılmaz), `gecikmis()` şüphesiz kalemler, `supheli_acik()`, başlatma reddi `baglanti_suresi_doldu`;
+`hesapla_tek()` yeniden bağlanmadan Devam Et'e düşen koşuda üç okumayı (`DEVAM_OKUMALARI`) koşar ve `secenek_birlestir()` ile birleştirir. Çıktıda yeni yaprak yalnız yeni durumlarda:
+toplu iş nedeni `{"secenek": [kod, "baglanti_suresi_doldu"]}` (190 / 0 ile duran), bekleyen işin `hata_kodu` `{"secenek": [kod, null]}`, S7'de {{5}} `plan_susuyor`.
+
+| Karar | Senaryo | Sınır | Mutasyon (yakalayan) |
+|---|---|---|---|
+| SW1 | SW1-01 geç teslim ikinci iş 130429 ile 30 sn beklerken gelir → 2 ileti · SW1-02 geç teslim 7 gün sonra (Ekim 1 + Kasım 1) · SW1-03 birinci Başarısız kalır → tek ileti; J9-01/02 (işaretsiz, kaynak SW1) | 30 sn bekleme, 7 gün, ay dönümü | M151 (J9-01; SW1-01 de) |
+| SW2 | SW2-01 sınır 1, 12 sa: Süresi Doldu'dan sonra pencere 0, yeni B hemen gider · SW2-02 aynı telefonlu A2 teslim → alıcı yine sayılır, C sınırda | 13. saat (12 sa + 1 sa pay) | M178 (SW2-01), M187 (SW2-02) |
+| SD1837 | SD1837-01 süre dolunca T1 + T2 Duraklatıldı, yeniden bağlanınca sürmez, T1 Devam Et → yalnız C, D (B Gönderildi'ye ikinci ileti yok), T2 bekler · SD1837-02 yeniden bağlanmadan Devam Et (üç okuma; `secenek`) · SD1837-03 süre dolunca yeni gönderim başlamaz | 24 sa pencere, 26 / 30 sa | M175, M176, M177, M189 (SD1837-01); M179 (SD1837-03) |
+| SD1915 | SD1915-01 ileti isteğinde 190 → bekleyenlere, aynı PDF · SD1915-02 PDF yüklemesinde 190 · SD1915-03 Meta Bekletti 2. denemesi 190 + 1. ileti teslim → iş kapanır (İLKEYLE G0 3 + J2) · SD1915-04 geri yükleme · SD1915-05 taşıma (kod 0) | 24 sa (Meta Bekletti), geri yükleme, taşıma | M172, M174, M185 (SD1915-01); M184 (SD1915-02); M186 (SD1915-03); M188 (SD1915-04) |
+| SW4 | HESAP-0 (değişti) · SW4-01 kod 0 → aynı şirketin öbür toplu işi de durur · SW4-02 kod 0 PDF yüklemesinde · SW4-03 kod 102 bugünkü gibi (Başarısız, toplu sürer, sonraki gönderim başlar) | — | M173 (SW4-01), M180 (SW4-03) |
+| S7 | S7-01 şüpheli kaydı açık SA ve VI 'supheli_alacak' ile elenir, kalanı 0 olan KK ve A gider · S7-02 SA elle seçilir: {{3}} 12.10.2026, {{4}} 200,00 TL, {{5}} `plan_susuyor`; Ekstre etkilenmez | kalan 0 (kayıt kapalı) | M181 (S7-01), M182, M183 (S7-02) |
+
+Mutasyonlar M172–M189 (açıklamalar `kahin.MUTASYONLAR`): hepsi değerle (elle beklenen) yakalanıyor — istisnayla yakalanan yok. Kâhinin kendi testine I8 eklendi: `secenek_birlestir`
+birim denetimi; üç okumada kime / kaç kez alanları (elenen, oluşmayan, R3 uyarısı, "Bu Ay", başlatma reddi, kabul, Meta'daki ileti) AYNI; belirteç kodları (190, 0 evet; 102, 10 hayır;
+M180 / M173 birim); S7-a, S7-b ve bağlantı Süresi Doldu iken yeniden deneme kâhinde hata veriyor (kodlanmadı). I2'ye yeni kararlar, I4'e yeni başlıklar (`senaryolar.YENI_250`), I7'ye
+"n3 işaretli senaryo kalmadı" eklendi.
+
+**Eski kâhinle (26003126, ayrı kopya) yeni / değişen 21 senaryo:** 14 KIRMIZI, 7 AYNI. İlk koşuda 11 kırmızı yalnız "bilinmeyen olay"dandı (zayıf kanıt, ders 38) → eski kopyaya YALNIZ iki
+yeni olay etkisiz tanıtılıp yeniden koşuldu: yine 14 KIRMIZI ve her birinde beklenen neden görülüyor (190 / 0 alan Başarısız ↔ Duraklatıldı; süre dolunca toplu iş aktif ↔ duraklatildi;
+başlatma reddi yok; S7 elemesi yok; {{4}} şüpheli dahil). AYNI 7: J9-01/02 + SW1-01…03 (S-W1 bugünkü davranış — kural değişmedi), SW4-03 (102 değişmedi), SW2-02 (deneme başına sayımı
+korur; eski kâhinde A2 aynı alıcıyı zaten sayıyordu — M187 içindir). Kanıt `docs/kanit/2026-11-05/wk250-*` (`wk250-OKU.txt`).
+
+### 16.6 Değişen eski beklentiler (292 eski senaryonun TAM model sonucu, 26003126 `senaryolar.json` ile)
+280'i bayt bayt aynı (girdi + elle + tam sonuç). Değişen 12:
+| Senaryo | Değişen | Neden (KARAR) |
+|---|---|---|
+| HESAP-0 | girdi (+ `yeniden_baglan` 50. dakikada), elle ve tam sonuç: B Başarısız → Duraklatıldı → Devam Et ile Teslim; B POST 1 → 2; K1 `medya_silme` 2 → 1 (B'nin PDF'i silinmez); "Bu Ay" 2 → 3 | SW4 + SD1915 + SD1837 |
+| J9-01, J9-02 | yalnız girdi `bilinen_sinir: n3` kalktı, kaynak / açıklama "KARAR SW1"; tam sonuç AYNI | SW1 |
+| ICERIK-10, TARIH-02, J4-01, J4-02, W2-02 | yalnız `kontroller.K2.pencere_farkli_alici.W1` 1 → 0 | SW2 |
+| TARIH-03b | yalnız `kontroller.K2.pencere_farkli_alici.W1` 2 → 1 | SW2 |
+| W1-03 | yalnız `kontroller.K2.pencere_farkli_alici.W1` 3 → 2 | SW2 |
+| W1-04, W2-01 | yalnız `kontroller.K2.pencere_farkli_alici.W1` 2 → 1 | SW2 |
+Pencere değişiklikleri P6 §4'ün "`pencere_farkli_alici` ailesindeki TTL farkları kural farkı olarak kapanır" cümlesiyle uyumlu; bu 9 senaryonun elle beklenenleri değişmedi. Kanıt
+`docs/kanit/2026-11-05/wk250-eski-292-tam-sonuc-fark.txt`.
+
+### 16.7 Sürücü için (S-34 … S-41; programa karşı koşmadan önce gereken yeni eşlemeler)
+- **S-34 `baglanti_suresi_doldu {sirket}`:** programın izlediği belirteç süresi (W-1 a) o anda dolmalı ve sahte Meta'da o belirteç `suresi_dolmus` (`/__sahte/belirtec`) olmalı. Programın
+  süreyi nereden öğrendiği (Meta `debug_token` `expires_at`? kullanıcı girişi?) kâhinde bilinmiyor; sahte Meta'da süre ucu YOK (D0) → sürücü programın süre kaynağını sahte saatle bu ana denk
+  getirmeli; olay oluşmadıysa (program süreyi bilmedi) senaryo GEÇERSİZ.
+- **S-35 `yeniden_baglan {sirket}`:** Elle Bağla ile YENİ geçerli belirteç (sahte Meta'da yeni `gecerli` belirteç); toplu işler Devam Et'siz sürmemeli.
+- **S-36 `{"hata": 190 | 0}` kuralı (mesaj ya da medya):** kâhin bu yanıttan SONRA belirteci yeniden bağlanana dek geçersiz sayar (sonraki her istek reddedilir) → sürücü kuraldan sonra sahte
+  Meta belirtecini de `suresi_dolmus` (190) / `iptal` (0) yapmalı; senaryolarda yeniden bağlanmadan yapılan istek yalnız SD1837-02'nin (c) okumasında var.
+- **S-37 okunacaklar:** bekleyen işin ekran durumu `Duraklatıldı` (Başarısız DEĞİL) ve hata kodu (`secenek`); toplu iş durma nedeni (190 / 0 → kod ya da "Bağlantı Süresi Doldu" → `secenek`;
+  süre izlemeyle duran → `baglanti_suresi_doldu`); başlatma reddi nedeni → `baglanti_suresi_doldu`; S7 elemesi ("Şüpheli Alacağı Var") → `supheli_alacak`.
+- **S-38 `secenek` (yeniden bağlanmadan Devam Et):** `kahin.py karsilastir` yaprak başına denetler (sürücü değişikliği gerekmez); program Devam Et'te şablon okuyup 190 alırsa istek sayısı (a)
+  okumasının değerini verir — o da seçenekte.
+- **S-39 S7:** cari `vadeler[].supheli: true` → programda o kalem için şüpheli alacak kaydı (icra / dava) açılır (Ç5'in arayüzü / ucu — kâhin bilmiyor); başlatmada `supheli_elle: [cari]` →
+  o cari ELLE seçilir; programın otomatik listesinde etiketli görünüp seçilmeyen cari → `elenen` `supheli_alacak`. Program S7'yi henüz uygulamıyorsa (Ç5 sonra) S7-01/02'de ayrışma BEKLENİR.
+- **S-40 n3:** J9-01/02 ve SW1-* `bilinen_sinir` taşımaz → POST 1 çıkarsa KARAR (SW1) ihlali; S-25'in n3 kısmı geçersiz.
+- **S-41 `pencere_farkli_alici`:** Süresi Doldu deneme sayılmaz (deneme başına; aynı alıcının sayılan başka kabulü varsa alıcı sayılır).
+
+### 16.8 Kanıt ve DENENMEYEN
+- **Kanıt:** senaryolar **310/310** elle = model (`wk250-senaryolar`); kâhinin kendi testi **334/334**, F mutasyon **188/188** (`wk250-kahin`; `TZ=Europe/Istanbul` ile de 334/334 —
+  `wk250-kahin-tz-istanbul`); eski kâhinle karşılaştırma ve 292'nin tam sonuç farkı `docs/kanit/2026-11-05/wk250-*`. Sahte Meta'ya DOKUNULMADI (testleri yeniden koşulmadı).
+- **DENENMEYEN:** programa karşı sürücü koşusu (görev gereği; S-34…S-41 yazılmadı); sahte Meta'da belirteç süresi ucu (S-34, D0); program bilmeden Meta'da iptal edilen belirteç
+  (senaryo kurulmadı — ilk Meta isteğinin şablon okuması mı kişinin isteği mi olduğu programa bağlı; kâhin kural ve süre olayıyla kurar); şablon / basamak okumasında 190 / 0; bağlantı Süresi
+  Doldu iken Yine de Gönder / Başarısızları Yeniden Dene (kâhin hata verir); iki şirket aynı WABA, birinin bağlantısı Süresi Doldu; R1 "Bağlantı Bekleniyor" + süre dolması; Süresi Doldu
+  sonrası pencere içinde teslim (Y11-4); Sınır'da bekleyenin boşalan yere geçiş anı (Y11-5); failed kabulün pencerede sayımı (Y11-6, bilgi); S7-a / S7-b (KULLANICIYA SORULMALI); S7'nin B1 / S1 /
+  S8 ortak gecikmiş tanımıyla birleşimi (Ç5 + muhasebe kâhini — `vadeler` girdisinin üretimi bu kâhinde değişmedi); Meta Bekletti işin 18:37 ile duraklatılıp Devam Et'te 24 saat beklemeden
+  gönderilmesi (kâhinin eski Devam Et düzeni, senaryosuz); "Şirket Verisini Sıfırla"nın 190 / süre durumundaki etkisi (S-13 düzeni, senaryosuz).
+- **Bilgi (eski):** M5 ve M108 26003126'da da istisnayla (KeyError) yakalanıyordu; bu güncellemede değişmedi.
