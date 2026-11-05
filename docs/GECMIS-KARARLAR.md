@@ -3069,3 +3069,39 @@ Kullanıcı kararı 31.10.2026 13:40 UTC ("tamam, teslimden sonra kısalt"). Aş
   tam yazılmış yol kullan). Stop kancası gönderilmemiş commit / izlenmeyen dosyada uyarır: yalnız kanıt / belge değişikliği tek başına CI başlatmasın diye kanıt dosyaları kodla birlikte gönderilir (ders 26).
   ESKİ OTURUM: dal claude/compassionate-galileo-f9kghg (PR #40, Meta / Tech Provider; CLAUDE.md'ye yazmaz) — PR #40 master'a birleşince master bu dala birleştirilir, DURUM 18/19 satırları korunur.
   W-1(b) (kendiliğinden yenileme) Meta App Review'da business_management izni gelince.
+
+## Arşiv 05.11.2026 (4) (CLAUDE.md Açık iş — DURUM 22, DURUM 23 yerine geçti; AYNEN)
+
+- SIKIŞTIRMA ÖNCESİ DURUM 22 (05.11.2026 20:44 UTC, `date -u`; kullanıcı: "compact hazırlığı yap"). DURUM 21'in YERİNE GEÇER (DURUM 21 → GECMIS-KARARLAR "Arşiv 05.11.2026 (3)" AYNEN).
+  KAYNAK: docs/2.5.0-IS-LISTESI.md (A kapsam + durum, B 2.5.1, C sorular, D kararlar, E zaman sıralı kayıt — saatler `date -u` / stat / git log ile ÖLÇÜLÜR, tahmin yazılmaz: 05.11 20:05 düzeltmesi) +
+  docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md + EK-1 (+ EK-2 gelince) + docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md (§13, §14) + docs/devir/DEVIR-PLANI.md (G) + docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md (§4). Sıkıştırmadan
+  sonra her karar bu belgelerden yeniden okunur. Bu bölümde yeni KULLANICI KARARI yok (18:37, 18:55 S1–S5, 19:15 iş listesi D'de); kullanıcıya gösterilen BAŞ MİMAR KARARLARI iş listesi E'de (R1–R3 eski
+  karar metinlerinden, 770 adı "Genel Yönetim Giderleri", Ç7a / Ç7b, P3 kart faizi 2.5.0'a, Ç4 okuma yetkisi, ad karşılaştırması netleştirmeleri, W1W2 tur 1 yorumları).
+  KAPANAN: Ç1 hesap planı (birleşim 0794c7cc; dar kontrol YÜKSEK/ORTA yok; DÜŞÜK-2/3 küçük turu 550be04a); SÜRÜCÜ (842e1d48; P1 → Ç5, P2 → Ç7b, P3 → Ç7a, P4 → 2.5.1; K1–K5 + R1–R3 kâhin bakımına);
+  KÂHİN BAKIMI (17093905; test 97, mutasyon 95; bağımsızlık temiz); Ç4 Defter Türü (ec84d1dd; dar kontrol YÜKSEK/ORTA yok); W1W2 DÜZELTME TURU 1 (fb1af810; ana oturum 536/536 iki TZ, e2e 140, pdf 39);
+  BS-7 küçük (4e142b57). CI #996 / #997 / #998 YEŞİL (7/7, Windows dahil).
+  YENİ İŞLER (sürücü §5, plan boşluğu): Ç7a banka kitap kuralları (KG-6, KG-19, K-14 / K-15, D-07 kart faizi) ve Ç7b fatura / KDV / taksit / kayıt (KG-2, KG-3, KG-7, KG-8 + F-08, KG-24, F-06) — Ç3'ten SONRA;
+  kesme çizgisinde Ç6 ile birlikte 2.5.1'e kayabilir.
+  ÇALIŞAN AJANLAR (bitince: rapor → ana oturum yeni testleri KENDİSİ yeniden koşar (ders 16) → worktree dalını birleştirir → push → CI (GitHub MCP, ders 21) → YALNIZ o farka DAR KONTROL (xhigh, YENİ ajan,
+  prensip §3/§9) → YÜKSEK/ORTA + sakınca süzgecinden geçmeyen DÜŞÜK yeni ajanla (ders 46); yalnız teste dokunan DÜŞÜK aynı turda):
+  (1) Ç2 saklanan fiş defteri (xhigh, 19:32'den) — dal worktree-agent-addb60b4cac4f5935, taban 204f58bf, GÖÇ 46 (Ç3 = 47, devir 48'den); tasarım notu docs/erp/C2-FIS-DEFTERI-TASARIM.md; raporda
+      BAŞ MİMAR KARARI önerileri ve varsa KULLANICIYA SORULMALI (para / kapama → kullanıcıya, ders 43);
+  (2) Ç4 DÜŞÜK KÜÇÜK TURU (medium, 20:40'tan) — dal worktree-agent-a02dbfbff8be96ea9, taban f0109646: Değişiklik Geçmişi'nde 3 ham İngilizce tür (accounting.book_type.updated, invoice.settings.updated,
+      office.report_header.updated) Türkçe etiket + ayrıntı + "Ayarlar" süzgeci; Tümünü Sıfırla metni (Defter Türü, Tabela Adı); sameName "(−)" testi + 2 mutasyon (21/21); KEEP "accounting." koruma testi;
+  (3) DAR KONTROL W1W2-T1 (xhigh, 20:36'dan) — fark 90a4bede..84ca9df3 (kime kaç kez, 190'ın her aşaması, mobil özet, silinen şirket, Bildirim Yolu kaydı);
+  (4) MALİ MÜŞAVİR EK-2 (kodu görmeyen, xhigh, 20:33'ten) — dal worktree-agent-a28cf2423f71c4f2e, soru dosyası scratchpad/mali-musavir-ek2/sorular.md (kâhin README 23–35 + Ç1 36–40: 127 ters bakiye,
+      649 / 649.90, F-06 770 ↔ M14 770.90, 519 adı, 691 → 692); çıktı docs/erp/MUHASEBELESTIRME-KURAL-KITABI-EK-2.md. Bitince: BAĞIMSIZLIK DENETİMİ (araç kaydı; yasak server/ client/ test/ tools/ bulut/
+      docs/kanit/ ve iş listesi E) → §5 soruları kullanıcıya (ders 43, 45) → KÂHİN BAKIMI 2 (kodu görmeyen) → SÜRÜCÜ GÜNCELLEMESİ (kâhinde KG3 dalı "SORU" → "A", kitabın A'sı "KITAP"; yeni senaryolar s40–s53;
+      yeniden koşu + P / K / R / U).
+  BEKLEYEN KANIT (ders 26 — bir sonraki KOD gönderimiyle depoya; docs/kanit/2026-11-05/'ya geri taşı): /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bekleyen-kanit/ içinde
+  w1w2t1-anaoturum-Europe-Istanbul.{json,log}, w1w2t1-anaoturum-e2e-whatsapp-ayar.{json,log}, w1w2t1-anaoturum-pdf-denetle.{json,log}.
+  CI: #1000 (204f58bf), #1001 (b31254c4), #1002 (0fc8add4), #1003 (8fa407a9), #1004 (f0109646) 20:42'de SÜRÜYORDU → her biri ayrı okunacak (ders 21). Okuma: list_workflow_runs (run sonucu) +
+  get_workflow_run_usage (Ubuntu 5 + Windows 2 iş); list_workflow_jobs çıktısı ~25 bin token (e2e 100 adım) → yalnız kırmızıda.
+  SIRADAKİ: Ç2 → birleştir → dar kontrol → Ç3 dondurma (göç 47; Ç5'ten ÖNCE) → Ç5 (+B1, P1, karşılıksız açılış çeki, KG-15 / 16) ‖ Ç7a → Ç7b → Ç6 (Ç5'ten SONRA; "Defter Türü sor" yalnız
+  invoices.settings yetkilisine) → MA (127 / 649.90 / 519 adı gibi sınıflama soruları) → D2 (+BS-7 Y5; audit_events ortak katman yorum tutarsızlığı) → D3–D6 (D4: 691 → 692; arşiv kendi Defter Türü'nü taşır)
+  → WK (19:15: kâhin 190'ı "iş Başarısız" sayıyor → güncelle + 190 senaryosu) / W-3 / WE / WY / G1 / BS-1…6 (BS-5: k31 / k33 görselleri, Ç4 kılavuz metni) → aday → paket. Aynı anda en çok 2–3 kod ajanı.
+  ORTAM: 30 dk rapor CronCreate 57030f4a (istem aşağıdaki ORTAM satırında); ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (3 saatte bir :18); disk 24 GB, bellek 14 GB boş (20:42). Biten ajanların worktree'leri
+  ve not defteri kopyaları tam yollarıyla silindi (önce node_modules bağı `rm <tam yol>/node_modules`, sonra `git worktree remove`; değişkenli rm yolu güvenlik denetimine takılır → tam yol). docs/kilavuz/*.pdf
+  gitignore'da: pdf-denetle için önce client/kilavuz PDF'i oraya kopyalanır (ya da pdf-uret).
+  ESKİ OTURUM: dal claude/compassionate-galileo-f9kghg (PR #40, Meta / Tech Provider; CLAUDE.md'ye yazmaz) — PR #40 master'a birleşince master bu dala birleştirilir, DURUM 18/19 satırları korunur.
+  W-1(b) (kendiliğinden yenileme) Meta App Review'da business_management izni gelince.

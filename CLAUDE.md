@@ -382,37 +382,39 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   destek-ofis.vercel.app DEĞİŞMEZ. SÜREÇ (sürer): DÜŞÜK bulgu sonraki sürüme; UD + windows.yml ×2 aynı commit'te; mobil değişikliğinde mobil özet ölçümü yinelenir.
 
 ## Açık iş (yalnız güncel; kapanan sürümler `docs/GECMIS-KARARLAR.md`)
-- SIKIŞTIRMA ÖNCESİ DURUM 22 (05.11.2026 20:44 UTC, `date -u`; kullanıcı: "compact hazırlığı yap"). DURUM 21'in YERİNE GEÇER (DURUM 21 → GECMIS-KARARLAR "Arşiv 05.11.2026 (3)" AYNEN).
-  KAYNAK: docs/2.5.0-IS-LISTESI.md (A kapsam + durum, B 2.5.1, C sorular, D kararlar, E zaman sıralı kayıt — saatler `date -u` / stat / git log ile ÖLÇÜLÜR, tahmin yazılmaz: 05.11 20:05 düzeltmesi) +
-  docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md + EK-1 (+ EK-2 gelince) + docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md (§13, §14) + docs/devir/DEVIR-PLANI.md (G) + docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md (§4). Sıkıştırmadan
-  sonra her karar bu belgelerden yeniden okunur. Bu bölümde yeni KULLANICI KARARI yok (18:37, 18:55 S1–S5, 19:15 iş listesi D'de); kullanıcıya gösterilen BAŞ MİMAR KARARLARI iş listesi E'de (R1–R3 eski
-  karar metinlerinden, 770 adı "Genel Yönetim Giderleri", Ç7a / Ç7b, P3 kart faizi 2.5.0'a, Ç4 okuma yetkisi, ad karşılaştırması netleştirmeleri, W1W2 tur 1 yorumları).
-  KAPANAN: Ç1 hesap planı (birleşim 0794c7cc; dar kontrol YÜKSEK/ORTA yok; DÜŞÜK-2/3 küçük turu 550be04a); SÜRÜCÜ (842e1d48; P1 → Ç5, P2 → Ç7b, P3 → Ç7a, P4 → 2.5.1; K1–K5 + R1–R3 kâhin bakımına);
-  KÂHİN BAKIMI (17093905; test 97, mutasyon 95; bağımsızlık temiz); Ç4 Defter Türü (ec84d1dd; dar kontrol YÜKSEK/ORTA yok); W1W2 DÜZELTME TURU 1 (fb1af810; ana oturum 536/536 iki TZ, e2e 140, pdf 39);
-  BS-7 küçük (4e142b57). CI #996 / #997 / #998 YEŞİL (7/7, Windows dahil).
-  YENİ İŞLER (sürücü §5, plan boşluğu): Ç7a banka kitap kuralları (KG-6, KG-19, K-14 / K-15, D-07 kart faizi) ve Ç7b fatura / KDV / taksit / kayıt (KG-2, KG-3, KG-7, KG-8 + F-08, KG-24, F-06) — Ç3'ten SONRA;
-  kesme çizgisinde Ç6 ile birlikte 2.5.1'e kayabilir.
-  ÇALIŞAN AJANLAR (bitince: rapor → ana oturum yeni testleri KENDİSİ yeniden koşar (ders 16) → worktree dalını birleştirir → push → CI (GitHub MCP, ders 21) → YALNIZ o farka DAR KONTROL (xhigh, YENİ ajan,
-  prensip §3/§9) → YÜKSEK/ORTA + sakınca süzgecinden geçmeyen DÜŞÜK yeni ajanla (ders 46); yalnız teste dokunan DÜŞÜK aynı turda):
-  (1) Ç2 saklanan fiş defteri (xhigh, 19:32'den) — dal worktree-agent-addb60b4cac4f5935, taban 204f58bf, GÖÇ 46 (Ç3 = 47, devir 48'den); tasarım notu docs/erp/C2-FIS-DEFTERI-TASARIM.md; raporda
-      BAŞ MİMAR KARARI önerileri ve varsa KULLANICIYA SORULMALI (para / kapama → kullanıcıya, ders 43);
-  (2) Ç4 DÜŞÜK KÜÇÜK TURU (medium, 20:40'tan) — dal worktree-agent-a02dbfbff8be96ea9, taban f0109646: Değişiklik Geçmişi'nde 3 ham İngilizce tür (accounting.book_type.updated, invoice.settings.updated,
-      office.report_header.updated) Türkçe etiket + ayrıntı + "Ayarlar" süzgeci; Tümünü Sıfırla metni (Defter Türü, Tabela Adı); sameName "(−)" testi + 2 mutasyon (21/21); KEEP "accounting." koruma testi;
-  (3) DAR KONTROL W1W2-T1 (xhigh, 20:36'dan) — fark 90a4bede..84ca9df3 (kime kaç kez, 190'ın her aşaması, mobil özet, silinen şirket, Bildirim Yolu kaydı);
-  (4) MALİ MÜŞAVİR EK-2 (kodu görmeyen, xhigh, 20:33'ten) — dal worktree-agent-a28cf2423f71c4f2e, soru dosyası scratchpad/mali-musavir-ek2/sorular.md (kâhin README 23–35 + Ç1 36–40: 127 ters bakiye,
-      649 / 649.90, F-06 770 ↔ M14 770.90, 519 adı, 691 → 692); çıktı docs/erp/MUHASEBELESTIRME-KURAL-KITABI-EK-2.md. Bitince: BAĞIMSIZLIK DENETİMİ (araç kaydı; yasak server/ client/ test/ tools/ bulut/
-      docs/kanit/ ve iş listesi E) → §5 soruları kullanıcıya (ders 43, 45) → KÂHİN BAKIMI 2 (kodu görmeyen) → SÜRÜCÜ GÜNCELLEMESİ (kâhinde KG3 dalı "SORU" → "A", kitabın A'sı "KITAP"; yeni senaryolar s40–s53;
-      yeniden koşu + P / K / R / U).
-  BEKLEYEN KANIT (ders 26 — bir sonraki KOD gönderimiyle depoya; docs/kanit/2026-11-05/'ya geri taşı): /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bekleyen-kanit/ içinde
-  w1w2t1-anaoturum-Europe-Istanbul.{json,log}, w1w2t1-anaoturum-e2e-whatsapp-ayar.{json,log}, w1w2t1-anaoturum-pdf-denetle.{json,log}.
-  CI: #1000 (204f58bf), #1001 (b31254c4), #1002 (0fc8add4), #1003 (8fa407a9), #1004 (f0109646) 20:42'de SÜRÜYORDU → her biri ayrı okunacak (ders 21). Okuma: list_workflow_runs (run sonucu) +
-  get_workflow_run_usage (Ubuntu 5 + Windows 2 iş); list_workflow_jobs çıktısı ~25 bin token (e2e 100 adım) → yalnız kırmızıda.
-  SIRADAKİ: Ç2 → birleştir → dar kontrol → Ç3 dondurma (göç 47; Ç5'ten ÖNCE) → Ç5 (+B1, P1, karşılıksız açılış çeki, KG-15 / 16) ‖ Ç7a → Ç7b → Ç6 (Ç5'ten SONRA; "Defter Türü sor" yalnız
-  invoices.settings yetkilisine) → MA (127 / 649.90 / 519 adı gibi sınıflama soruları) → D2 (+BS-7 Y5; audit_events ortak katman yorum tutarsızlığı) → D3–D6 (D4: 691 → 692; arşiv kendi Defter Türü'nü taşır)
-  → WK (19:15: kâhin 190'ı "iş Başarısız" sayıyor → güncelle + 190 senaryosu) / W-3 / WE / WY / G1 / BS-1…6 (BS-5: k31 / k33 görselleri, Ç4 kılavuz metni) → aday → paket. Aynı anda en çok 2–3 kod ajanı.
-  ORTAM: 30 dk rapor CronCreate 57030f4a (istem aşağıdaki ORTAM satırında); ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (3 saatte bir :18); disk 24 GB, bellek 14 GB boş (20:42). Biten ajanların worktree'leri
-  ve not defteri kopyaları tam yollarıyla silindi (önce node_modules bağı `rm <tam yol>/node_modules`, sonra `git worktree remove`; değişkenli rm yolu güvenlik denetimine takılır → tam yol). docs/kilavuz/*.pdf
-  gitignore'da: pdf-denetle için önce client/kilavuz PDF'i oraya kopyalanır (ya da pdf-uret).
+- SIKIŞTIRMA ÖNCESİ DURUM 23 (05.11.2026 21:43 UTC, `date -u`; kullanıcı: "sıkıştırma hazırlığı yap"). DURUM 22'nin YERİNE GEÇER (DURUM 22 → GECMIS-KARARLAR "Arşiv 05.11.2026 (4)" AYNEN).
+  KAYNAK: docs/2.5.0-IS-LISTESI.md (başta SAAT KURALI: saat elle yazılmaz, kaydı yazan komut `date -u` / `stat -L` / `git log` ile üretir; A kapsam + durum, B 2.5.1, C sorular, D kararlar, E zaman sıralı
+  kayıt) + docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md + EK-1 + EK-2 (başındaki notla: 23/24/28/32/33/35/K-2/K-3 EK-2B'den) + EK-2B + docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md + docs/erp/C2-FIS-DEFTERI-TASARIM.md
+  (§10 K1–K8, §11 Ç3 / Ç5 / D4 notları) + docs/devir/DEVIR-PLANI.md (G) + docs/erp/WHATSAPP-PAKETI-2.5.0-PLANI.md. Sıkıştırmadan sonra her karar bu belgelerden yeniden okunur.
+  YENİ KULLANICI KARARLARI (tam metin iş listesi D): 21:08 "hepsi A" — S-W4 Meta kod 0 = 190 (süre doldu, kişi bekleyenlere döner); S7 şüpheli alacak kaydı açık müşteri otomatik hatırlatmaya girmez;
+  S8 karşılıksız evrakla yeniden açılan fatura kendi vadesiyle gecikir. 21:30 "önerilerini uygula" (7 soru A): (1) bağsız ödeme kendi tarihindeki açık borçlara; (2) bağ hedefi kapatır, bağsız ödeme serbest
+  kalır; (3) kilitli dönemde kapanış değişmez; (4) kart küçülmesi en erken vadeli açık taksitten; (5) gecikmiş net borcu aşmaz; (6) Kartı Kapat kalanı BORÇTA kalır (bugünkü 689 davranışı DEĞİŞİR);
+  (7) Devri Yenile'de yalnız devir fişleri silinip yeniden yazılır. Atama: (1)(2)(3)(5) + S7 + S8 → Ç5; (4)(6) → Ç7b; (7) → D4; hepsi kâhin bakımı 2'de. Ayrıca: 20:57 ortam alarmı zaten kurulu
+  (yenisi kurulmadı); 21:00 DİNLENME DÜZENİ (kullanıcı yokken engelleyen soru penceresi açılmaz; para / kapama / kime kaç kez soruları bekler, öbür işler sürer; para dışı 5 dk yetkisi); 21:39 (kayıt saati) "anayasamıza ve
+  derslerimize dikkat edelim" → öz denetim + SAAT KURALI.
+  KULLANICIYA GÖSTERİLEN BAŞ MİMAR KARARLARI (iş listesi E): BS-3 iletileri ("… bulunamadı. Başka biri silmiş olabilir.") + BS-4 409 kısmi toplam yok; W1W2 DÜŞÜK-2 sakınca süzgeciyle ORTA (KVKK);
+  EK-2 bağımsızlık ihlali → EK-2B yinelemesi; EK-2B tur GEÇERLİ (görülen E satırları ilgisiz); cari hareket düzeltme yarışı bu sürümde; Birleşik Rapor PDF / Excel ham JSON → 2.5.1 BİLİNEN SINIR;
+  Ç2 K1–K8; cheques-overview tarih testi düzeltmesi (yalnız test).
+  KAPANAN / BİRLEŞEN (bu bölüm): Ç4 küçük tur (ba27aaaa; farkı birleşik dar kontrole); W1W2 tur 1 dar kontrol YÜKSEK/ORTA YOK; BS-2/3/4 (80d4a775; yeniden koşu geçti); Ç2 (9569ff76; yeniden koşu
+  28/28 iki TZ, mutasyon 16/16, bs7 e2e 12/12; DAR KONTROL sürüyor); EK-2 (06024a24) + EK-2B (160b3728); tarih testi (25effbe7). CI #1000–#1003 YEŞİL (7/7, Windows dahil).
+  ÇALIŞAN AJANLAR (5; bitince: rapor → ana oturum yeni testleri KENDİSİ yeniden koşar (ders 16) → birleştirir → push → CI → yalnız o farka DAR KONTROL (xhigh, yeni ajan) → YÜKSEK/ORTA + sakınca
+  süzgecinden geçmeyen DÜŞÜK yeni ajanla (ders 46); kodu görmeyenlerde önce BAĞIMSIZLIK DENETİMİ (araç kaydı, readlink tasks/<id>.output → grep file_path / command)):
+  (1) W TUR 2 (kod, xhigh; taban 26003126): S-W4 A (0 = 190, tek liste; 102 kapsam dışı) + DÜŞÜK-2 (geri yüklenen şirketin eski ortak WABA kaydı) + DÜŞÜK-3 (dişli test) → yeniden koş (iki TZ, komşular, e2e
+      whatsapp-ayar-248, mutasyon) → birleştir → push (Windows: geri yükleme) → W tur 2 dar kontrol; dar kontrol betikleri not defterinde dk-w1w2t1-a9a7-betik/.
+  (2) WK (WhatsApp kâhini, kodu görmeyen; taban 26003126): README §16 güncelleme 11 → bağımsızlık denetimi → birleştir → sürücü (kâhin ↔ program) koşusu.
+  (3) Ç2 DAR KONTROL (xhigh; fark 204f58bf..22347b4d; ağaç a2796dd4) → DURMA KURALI.
+  (4) Ç3 DONDURMA (kod, xhigh, GÖÇ 47; taban a2796dd4; 21:34) → tasarım notu C3-DONDURMA-TASARIM.md → yeniden koş (iki TZ, mutasyon, eşdeğerlik, v2.4.9, ölçüm) → birleştir → push (Windows: SIGKILL) →
+      dar kontrol → Ç5 ‖ Ç7a.
+  (5) KÂHİN BAKIMI 2 (kodu görmeyen; taban a2796dd4; 21:34) → bağımsızlık denetimi → birleştir → SÜRÜCÜ GÜNCELLEMESİ (kodu gören) + yeniden koşu (P / K / R / U).
+  BEKLEYEN: cari hareket düzeltme yarışı küçük ajanı (high; accounts.mjs PUT entries; C1 tur 1 deseni; W tur 2 bitince — kod ajanı sınırı) → BİRLEŞİK DAR KONTROL (Ç4 küçük f0109646..75b215f0 + BS-2/3/4
+  e74eb6e7..5ffa3c59 + 25effbe7 + cari yarış farkı). TARİH SÜPÜRMESİ (11 test dosyasında `new Date().toISOString().slice(0, 10)`; yalnız test, medium) bir yer boşalınca; o zamana kadar İstanbul
+  00:00–03:00 (21:00–24:00 UTC) koşularındaki kırmızı önce bu kalıp için denetlenir (ders 6).
+  CI: #1004 (f0109646; W1W2 silinen şirket testi Windows'ta ilk kez), #1005 (5457310e), #1006 (25effbe7), #1007 (a2796dd4; BS-4 + Ç2 yaşam döngüsü Windows'ta ilk kez) SÜRÜYORDU → her biri AYRI okunur
+  (ders 21, 48; list_workflow_runs + get_workflow_run_usage; kırmızıda list_workflow_jobs); kırmızıda ilgili iş durur.
+  SIRADAKİ: Ç3 → Ç5 (+B1, P1, karşılıksız açılış çeki, KG-15 / 16, S7, S8, kararlar (1)(2)(3)(5)) ‖ Ç7a → Ç7b (+ (4)(6), KG-23) → Ç6 → MA → D2 (+ ledger.mjs ~186 yanlış yorum, audit_events yorum) →
+  D3–D6 (D4: (7), K6 expected()'e fiş satırları, M4 sırası, 691 → 692, arşiv kendi Defter Türü, pruneVouchersThrough) → WK sürücüsü / W-3 / WE / WY / G1 / BS-1, BS-5, BS-6 → aday → paket.
+  ORTAM: 30 dk rapor CronCreate 57030f4a; ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (3 saatte bir :18; 21:18 "Ortam sağlam"); disk 26 GB, bellek 14 GB (21:43). Biten ajanların ağaçları ve kopyaları tam
+  yollarla silindi (önce node_modules bağı `rm <tam yol>/node_modules`, sonra `git worktree remove` + `git branch -d`). Playwright yolu ve imza anahtarı DURUM 22'deki gibi (aşağıdaki 2.5.0 PLANLAMA maddesinde).
   ESKİ OTURUM: dal claude/compassionate-galileo-f9kghg (PR #40, Meta / Tech Provider; CLAUDE.md'ye yazmaz) — PR #40 master'a birleşince master bu dala birleştirilir, DURUM 18/19 satırları korunur.
   W-1(b) (kendiliğinden yenileme) Meta App Review'da business_management izni gelince.
 - 2.5.0 PLANLAMA (05.11.2026, 2.5.0 oturumu, dal claude/epic-thompson-w0lc2l; eski oturumun dalı claude/compassionate-galileo-f9kghg / PR #40 — buradan oraya yazılmaz). Kullanıcı: "2.5.0'a başlıyoruz …
