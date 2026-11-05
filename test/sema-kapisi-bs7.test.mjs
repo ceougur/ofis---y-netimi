@@ -195,6 +195,8 @@ describe("BS-7 şema sürüm kapısı", () => {
       assert.equal(child.schemaGate?.version, AHEAD);
       assert.equal(child.context.canWriteInBackground(), false);
       assert.equal(server.app.context.canWriteInBackground(), true);
+      // Bağlantı kilidi (query_only): kapıyı atlayan bir yazıcı da 002 dosyasını değiştiremez.
+      assert.throws(() => child.store.run("INSERT INTO gelecek_bs7 (id, value) VALUES ('b', 'eski kod')"), /readonly/i, "002 bağlantısı yazıma kapalı olmalı");
       // Yedek almak okumadır: yeni şemalı şirkette de çalışır.
       const backup = await admin.post("/api/admin/backups", { scope: "one", companyId: seed.second.id });
       assert.equal(backup.status, 200, JSON.stringify(backup.data));
