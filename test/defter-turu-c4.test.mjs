@@ -260,6 +260,34 @@ describe("2.5.0 Ç4 Defter Türü", () => {
     }
   });
 
+  // 2.5.0 BİRLEŞİK TUR 1 (birleşik dar kontrol DÜŞÜK-1, Ç4 küçük tur gerilemesi; betik dk-bir-c83f/c4-surgec.mjs): süzgeç değeri nesnenin kalıtılan bir alanıysa
+  // (AUDIT_GROUPS[type] → Object.prototype'tan işlev ya da nesne) 500 "Sunucu işlemi tamamlayamadı." dönüyordu (f0109646 öncesi 200, 0 satır). Eski kodda (03c04532)
+  // beklenen kırmızı: "constructor: 500".
+  test("Değişiklik Geçmişi süzgeci: constructor / toString / __proto__ / hasOwnProperty / valueOf değerleri 200 + 0 satır (kendi önekleri); gruplar aynen", async () => {
+    const server = await startTestServer({ env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+    try {
+      const admin = await loginAdmin(server);
+      await ok200("kaydet", admin.put(URL_SETTINGS, { bookType: "balance" }));
+      await ok200("ofis adı", admin.put("/api/admin/office", { name: "Süzgeç Ofisi" }));
+      const problems = [];
+      for (const type of ["constructor", "toString", "__proto__", "hasOwnProperty", "valueOf", "isPrototypeOf"]) {
+        const res = await admin.get(`/api/admin/audit?limit=300&type=${encodeURIComponent(type)}`);
+        const rows = unwrap(res);
+        if (res.status !== 200) problems.push(`${type}: ${res.status} ${JSON.stringify(res.data).slice(0, 120)}`);
+        else if (!Array.isArray(rows) || rows.length !== 0) problems.push(`${type}: ${Array.isArray(rows) ? rows.length : typeof rows} satır (beklenen 0)`);
+      }
+      assert.deepEqual(problems, [], problems.join(" | "));
+      // Gruplar ve önekler değişmedi: "settings." üç ayar türünü de kapsar; "auth." yalnız giriş satırları; eşleşmeyen önek 0 satır.
+      const settings = new Set((await ok200("Ayarlar", admin.get("/api/admin/audit?limit=300&type=settings."))).map(row => row.type));
+      assert.ok(settings.has("accounting.book_type.updated") && settings.has("invoice.settings.updated") && settings.has("settings.office.updated"), [...settings].join(", "));
+      const auth = await ok200("Girişler", admin.get("/api/admin/audit?limit=300&type=auth."));
+      assert.ok(auth.length > 0 && auth.every(row => row.type.startsWith("auth.")));
+      assert.deepEqual(await ok200("bilinmeyen", admin.get("/api/admin/audit?limit=300&type=yok.")), []);
+    } finally {
+      await server.close();
+    }
+  });
+
   test("okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset", async () => {
     const { bookTypeOf, bookTypeLabel, BOOK_TYPE_KEY } = await import("../server/lib/book-type.mjs");
     assert.equal(BOOK_TYPE_KEY, "accounting.bookType");

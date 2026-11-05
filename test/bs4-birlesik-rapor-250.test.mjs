@@ -138,3 +138,45 @@ describe("2.5.0 BS-4 — veri dosyası bozuk (açılış hata verir): 409 compan
     assert.equal(existsSync(w.file), true);
   });
 });
+
+// 2.5.0 BİRLEŞİK TUR 1 (birleşik dar kontrol DÜŞÜK-2, yalnız test — prensip §4): meşgul şirketin (geri yükleme / silme sürüyor) 503'ü dişsizdi — companies.mjs
+// buildReport'taki "if (error instanceof HttpError) throw error;" satırı silinince bu dosya ve sirketler-217 yeşil kalıyordu (meşgul şirket 409 company-unavailable
+// "verisi açılamadı" olurdu: geçici bekleme kalıcı arıza gibi söylenir). Beklenen (BS-4 BAŞ MİMAR KARARI "Meşgul şirketin 503'ü olduğu gibi döner"): ekran, PDF ve Excel
+// 503 + meşgul iletisi + retryAfter 5 (gövde) + Retry-After: 5 (başlık); meşguliyet kalkınca rapor iki şirketle 200. Mutasyon: o satır silinince kırmızı (409).
+describe("2.5.0 BS-4 — meşgul şirket (geri yükleme / silme sürüyor) varken Birleşik Rapor 503 + retryAfter döner (ekran = PDF = Excel); meşguliyet kalkınca 200", () => {
+  let w;
+  before(async () => {
+    w = await world();
+  });
+  after(async () => w?.server.close());
+
+  test("meşgul 002: 503, ileti meşgul iletisi, retryAfter 5 ve Retry-After başlığı; yalnız 001 seçilince 200; meşguliyet kalkınca iki şirketle 200", async () => {
+    const busy = w.server.app.context.busyCompanies;
+    const message = "“002 · Kayıp Veri Ltd.” yedekten geri yükleniyor; birkaç saniye sonra yeniden deneyin.";
+    busy.set(w.company.id, message);
+    const problems = [];
+    try {
+      for (const [kind, url] of [
+        ["ekran", "/api/companies/report"],
+        ["ekran (yalnız 002)", `/api/companies/report?ids=${w.company.id}`],
+        ["PDF", "/api/companies/report.pdf?inline=1"],
+        ["Excel", "/api/companies/report.xlsx"],
+      ]) {
+        const res = await w.admin.raw("GET", url);
+        const body = res.data || {};
+        if (res.status !== 503) problems.push(`${kind}: 503 olmalı — yanıt ${res.status} ${body.code || ""} ${String(body.error || res.buffer.toString("utf8")).slice(0, 140)}`);
+        if (body.error !== message) problems.push(`${kind}: ileti “${body.error}” (beklenen meşgul iletisi)`);
+        if (body.retryAfter !== 5) problems.push(`${kind}: gövdede retryAfter ${body.retryAfter} (beklenen 5)`);
+        if (res.headers.get("retry-after") !== "5") problems.push(`${kind}: Retry-After başlığı ${res.headers.get("retry-after")} (beklenen 5)`);
+      }
+      const rootOnly = await w.admin.get(`/api/companies/report?ids=${w.root.id}`);
+      if (rootOnly.status !== 200) problems.push(`yalnız 001: ${rootOnly.status}`);
+    } finally {
+      busy.delete(w.company.id);
+    }
+    assert.deepEqual(problems, [], problems.join(" | "));
+    const healthy = await w.admin.get("/api/companies/report");
+    assert.equal(healthy.status, 200, JSON.stringify(healthy.data));
+    assert.deepEqual(unwrap(healthy).rows.map(row => [row.code, row.cash]), [["001", 1000], ["002", 2500]], "meşguliyet kalkınca 002 yeniden açılır, verisi yerinde");
+  });
+});
