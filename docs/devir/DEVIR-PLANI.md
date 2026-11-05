@@ -1,11 +1,151 @@
 # Yıl Sonu Devri — Uygulama Planı
 
-Durum: **PLAN — 2.4.4'ten SONRA uygulanacak** (kullanıcı, 20.10.2026: "2.4.4'ten sonrası için planlayalım, devir dosyası olarak tüm
+Durum: **2.5.0'DA UYGULANIYOR** — 05.11.2026 D0 güncellemesi aşağıdaki "G" bölümünde ve ÇELİŞKİDE GEÇERLİDİR (mali müşavir P incelemesinden geçer). Eski durum: **PLAN — 2.4.4'ten SONRA uygulanacak** (kullanıcı, 20.10.2026: "2.4.4'ten sonrası için planlayalım, devir dosyası olarak tüm
 detayları ile yazalım; yeni bir sohbet penceresinden de yazsam oradan bulup yapabil"). Kod henüz değişmedi.
 
 Bu dosya tek başına yeterli olacak biçimde yazıldı: yeni bir oturum bunu okuyup işe başlayabilir. Arka plan ve kararların kaynağı
 `docs/devir/DEVIR-MODULU.md` (§1–§10). Kod olguları 20.10.2026'da koddan çıkarıldı (dosya:satır); uygulamaya başlamadan önce **yeniden
 doğrulanır** (2.4.4 kodu değiştirmiş olabilir).
+
+---
+
+## G. 2.5.0 D0 GÜNCELLEMESİ (05.11.2026) — aşağıdaki bölümlerle ÇELİŞİRSE GEÇERLİ OLAN BUDUR
+
+Kaynak: D0 doğrulaması (P1 ajanı, xhigh, salt okuma; ana oturum yedi kritik iddiayı koddan yeniden doğruladı), kullanıcı kararları 05.11 (kapsam A, S2–S4),
+`docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md` (çekirdek: fiş defteri Ç2, dondurma Ç3, açılış düzeni Ç5 — devir bunlara dayanır). Mali müşavir P incelemesinden geçer.
+Aşağıdaki maddeler BAŞ MİMAR KARARI'dır (ders 40); para / kapama kuralına dokunan açık sorular G13'te (ders 43).
+
+### G0. Değişen kararlar
+- "Devri Güncelle YOK" ve "eski yıla yazma YOK" → **Devri Yenile VAR** (kullanıcı 05.11 "en güncel mevzuat + en yaygın uygulama"; gerekçe: yıl sonu düzeltmeleri beyanname
+  dönemine (Mart / Nisan) kadar sürer, geç gelen Aralık faturası olağan). Eski yıla yazım yalnız Devri Yenile içinden, yetkili + gerekçeli (G7).
+- Açılışların karşı hesabı 500 değil geçici "Eşleştirilecek Açılış Bakiyeleri"; devir açılış fişi onu arşivin kapanış bilançosuyla kendiliğinden eşleştirir (S4; çekirdek Ç5).
+- Kapanış fişi yalnız 6xx'i değil 7/A giderlerini de (760 / 770 / 780) kapatır; 7/A ↔ 7/B ve yansıtma mali müşavir P'de (çekirdek §12).
+- §4.1 / §7.1'deki "account_entries.is_opening eklenir" YANLIŞ: sütun 2.4.6'da var (göç 35); eksik olan defterin onu okuması (çekirdek Ç5).
+- §4.2'deki "devir faturası" (fatura yeni yılda işaretle kalır) yöntemi BIRAKILDI → AYRI AÇIK KALEM (G2). §7.1'deki invoices.devir_year / devir_remaining sütunları YOK.
+- Kapanış / açılış fişleri çekirdeğin saklanan fiş defterine (ledger_vouchers, Ç2) yazılır; arşivin ≤K dönemi kilitlenir ve DONAR (Ç3) → beyan edilmiş yıl sonraki sürümlerde değişmez.
+
+### G1. Mekanizma: KOPYADA ÜRET, DOĞRULA, TAKAS ET
+P1 olguları: 001'de appFor meşgul denetiminden önce döner (app.mjs:629 → 001'e 503 yok), closeCompany 001'i kapatmaz (app.mjs:781-789); yedek / geri yükleme / ayırma / göç ana
+iş parçacığında; veri tabanına yazan worker deseni yok; güncelleme sessiz saatte uygulamadaki işi bilmeden kurulur (update-orchestrator.mjs:159).
+1. BAKIM KİPİ: şirket "Devir yapılıyor" kipine alınır — bütün yazma istekleri 503 (001 dahil: appFor'un 001 yolu da bakım bayrağını okur); arka plan yazıcıları durur (yedek
+   zamanlayıcı, e-Belge turları, WhatsApp kuyruğu, tekrarlayan fatura, belge temizliği, mobil yükleme); güncelleme kurulumu bakım bayrağı varken başlamaz.
+2. KALICI DEVİR YEDEĞİ (G5) alınır.
+3. Worker'da, `VACUUM INTO` ile alınmış tutarlı kopyadan İKİ dosya üretilir: arşiv (≤K, kapanış fişi, kilit + donma) ve yeni yıl (>K + açılışlar + açık kalemler + kilit = K).
+   Canlı dosya takasa kadar DEĞİŞMEZ.
+4. Değişmezler KOPYALARDA koşulur: her bilanço hesabı arşiv K kapanışı = yeni yıl K+1 açılışı (kuruşu kuruşuna); modül bakiyeleri (cari, kasa, banka, stok, çek, taksit) K'de
+   eşit; hareket sayıları (arşiv ≤K + yeni yıl >K = devir öncesi); iki dosyada tam Mutabakat yeşil. Biri tutmazsa kopyalar atılır, canlı dosya aynen kalır, rapor nedeni gösterir.
+5. TAKAS: 002 ve sonrası `swapInRestoredFile` deseniyle; 001 yeniden başlatmada uygulanan hazırlıkla (`stageRootRestore` deseni; kullanıcıya "program yeniden başlatılacak").
+6. Arşiv kaydı (`sirketler.json` archives[] + sha256); arşiv klasörü diskten yeniden kurmada tanınır (bugün yalnız `sirketler/<klasör>` ilk düzeyi taranıyor, companies.mjs:157-186).
+Kazanç: yarıda kesilme / disk dolu / kilitli dosya → canlı veri devir öncesiyle aynı (ROLLBACK = kopyayı at); olay döngüsü kilitlenmez (ders 47); dosya takası yazıldığı gün
+Windows CI'de denenir (ders 48).
+
+### G2. Açık faturalar: AYRI AÇIK KALEM (§4.2'nin YERİNE)
+- Gerekçe (P1 §3): invoices 19 dosyada 144 yerde okunuyor. İşaret yönteminde en az 12 zorunlu dışlama + 5 kapama çekirdeği + ~12 rapor yeri; unutulan tek yer KDV / gelir / stokta
+  SESSİZ çift sayar ve Mutabakat yakalamaz (yevmiye ile beklenen tutar aynı faturayı birlikte sayar). Ayrı kalemde ~6–8 değişiklik; varsayılan davranış "görmemek" → hata
+  gürültülü (Mutabakat kırmızı). Ek kazanç: eski sürüm (2.4.9) devredilmiş dosyayı açsa bile açık kalemler sıradan cari satırı olduğu için çift sayım olmaz (G6).
+- Biçim: yeni yıl dosyasında açık fatura başına `account_entries` satırı — source = 'devir', source_id = fatura kimliği, due_date = faturanın vadesi, tutar = K'deki kalan (yön
+  işaretli), açıklama "Devir: <belge no> (<belge tarihi>)", devir çalışma kimliği (G7). Fatura ve satırları yeni yılda YOK; resmî görüntü, PDF ve XML "Arşivde Aç" ile.
+  Kalan, 2.4.5'ten beri tarihli elle borç satırlarının kapandığı tek yükümlülük kuyruğunda kapanır (invoice-settle.mjs:166-180).
+- Cari açılışı = cari K bakiyesi − Σ (o carinin açık kalemleri) (yön işaretli) → yeni yılda cari bakiye = K bakiyesi. "Borç ve Alacakları Aktar": iki açılış satırı (borç toplamı,
+  alacak toplamı) + açık kalemler; "Sadece Bakiyeyi Aktar": tek net satır + açık kalemler. 2.4.6 "cari başına tek açılış" kuralı (accounts.mjs:577) devir satırlarını kapsamaz.
+- K SONRASI BAĞLAR açık kaleme yönlenir: Kapatılacak Fatura (account_entries.invoice_id), mahsup (invoice_offsets), çek (cheque_events / cheques.invoice_id), fin_events.invoice_id,
+  plans.invoice_id (taksit kartına bağlı faturada kalan taksitte izlenir; çift sayım yok — kâhinle).
+- KAPANMIŞ ≤K FATURA, K sonrası bir satırdan bağlıysa: bağ arşiv başvurusuna (yıl + belge no) çevrilir. Aktif tekrarlayan faturanın ≤K şablonu yeni yıla TASLAK kopya olarak
+  taşınır, tekrar ona bağlanır (taslak defter / KDV / stoka girmez). Ayrıca bugünkü hata düzeltilir: şablonu bulunamayan tekrar sessizce atlanıyor (invoices.mjs:2751) →
+  pasife alınır + uyarı.
+
+### G3. Tablo sınıflaması (§3'ün TAMAMI bununla; §8.16 testi bu listeye karşı — yeni tablo eklenince kırılır)
+Şemada 75 canlı tablo (göç 1–45) + geri yüklemede gelen 2 koşullu (backup_meta, edoc_usage_defter) + makine düzeyinde 17 (e-Belge kullanım `usage`, WhatsApp defteri 16 tablo).
+- DOKUNULMAZ (yeni yılda aynen; arşivde kopya): users, roles (ortak katman), settings (yıla bağlı anahtarlar aşağıda), records, overrides, deleted_records, case_notes,
+  source_snapshots, notes, phones, liens, tasks, messages, chat_*, free_*, dataset_rows, dataset_imports, case_documents (+ `belgeler/`), plan_groups, accounts (silinmişler dahil),
+  stock_items (unit_price son alışla eziliyor → ağırlıklı ortalama stock_moves'tan), invoice_repeats (şablon kuralı G2), **edoc_usage + edoc_usage_meta (SİLİNEMEZ: UPDATE / DELETE
+  tetikleyicisi, budama DELETE gönderirse bütün işlem düşer)**, **einvoice_inbox** (çekme son 30 günü uuid ile eliyor; silinirse Aralık belgeleri "yeni" döner), **audit_events**
+  (e-Belge iletim / iptal izi, numara tutucu, banka işlem geçmişi okuyor), **integrity_log**, wa_batches, wa_jobs, wa_job_pdfs, message_sends, maliyet_*, staff_members,
+  pos_terminals, pos_rates, fx_rates, bank_holidays, bank_accounts (opening_date K+1'e — kural D2'de), bank_statements / bank_statement_lines / bank_matches (yazan kod yok),
+  request_keys (30 günde kendiliğinden), backup_meta, edoc_usage_defter; makine: usage, WhatsApp defteri (şirket ve cari kimlikleri değişmediği için eleme sürer), sirketler.json.
+  Arşivde boşaltılır: sessions, mobile_access / codes / devices / sessions.
+- ≤K SİLİNİR, yeni yılda AÇILIŞ: payments (Kasa açılışı kapsar), cash_entries (açılış K+1), account_entries (cari açılışı + açık kalemler; K sonrası satırlar kalır), stock_moves
+  (açılış K+1, miktar K'deki, değer ağırlıklı ortalama), plan_entries (açık kart: tek açılış, taksit dağılımı korunur), fin_events / bank_lines (hesap açılışı K+1; K sonrası ters
+  kayıtların reversal_of bağı çözülür), vat_offsets (≤K; Aralık mahsubu ay sonu tarihli → G4), invoice_offsets (≤K), pos_sales (BEKLEYEN KALEMİ OLAN satış KALIR — valör işi
+  pos_items ↔ pos_sales INNER JOIN, pos.mjs:890), bank_plans (tamamlanmış ve tekrarsız ≤K), bank_jobs (biten ≤K; bekleyen G4'te durdurur), trash (YALNIZ yük tarihi ≤K para
+  kalemleri), plan_imports (≤K içe aktarmanın Geri Al'ı kapatılır).
+- AÇIK OLAN KALIR: invoices / invoice_lines (açık → G2 açık kalem; kapanmış ≤K silinir, bağ kuralı G2), cheques (açık kalır, kapanmış ≤K silinir), cheque_events (≤K olaylar tek
+  "devir" olayına; kind CHECK kısıtı (migrations.mjs:729-732) nedeniyle TABLOYU YENİDEN KURAN göç), cheque_collections (bekleyen kalır), doubtful_receivables / provisions
+  (açık kalır; ≤K olay bağı çözülür), plans / plan_items (kart kalır), pos_items (valörü K'den sonraya kalan bekleyen kalem açık kalem).
+- settings'te yıla bağlı: meta.bank.seq.<yıl> (dokunulmaz), invoice.numberFloor{seri+yıl} → YENİ: yeni yıl dosyasına her (seri, K) için MAX(seq) TABANI yazılır (budama K yılının
+  MAX'ını düşürür; ≤K bekleyen belge gönderilirse çift e-Belge numarası riski), invoice.settings.start{…}, plans.receiptSeq (yıla bağlı değil, sürer), ledger.lockedUntil = K,
+  bank.pos.draftMonth, invoice.restoreNotice. Sıfırlama listesindeki `ledger_snapshots` (app.mjs:962) bugün ölü ad; çekirdek Ç3 bu adı kullanacaksa uyumlu.
+
+### G4. Ön denetim ekleri (§5'e)
+- DURDURUR: ≤K tarihli "waiting" ve "withdrawn" (Listeden Sil) e-Belge; ayrıca gönderim yoluna (sendBlockOf, invoices.mjs:3708 — bugün kilit denetimi yok) yeni yılda ≤K / arşiv
+  belgesi denetimi; bekleyen bank_jobs; yarım POS gün sonu.
+- UYARIR: Aralık KDV mahsubu yapılmamış (ay sonu tarihli; devirden sonra yalnız Devri Yenile ile); ≤K içe aktarmaların Geri Al'ı kapanacak; aktif tekrarın ≤K şablonu taşınacak;
+  001'de devir program yeniden başlatması ister.
+
+### G5. Yedek ve geri yükleme
+- KALICI DEVİR YEDEĞİ sınıfı: budanmaz (bugün "devir-oncesi" etiketi SAFETY_LABEL'de yok → rutin sayılır, ~7,5 iş gününde silinir; etiket eklemek de yetmez, güvenlik yedekleri
+  30'luk kuyruğu paylaşır). Devri Yenile ve Geri Al öncesi de aynı sınıf. Yedekler ekranında ayrı "Devir Yedekleri".
+- Devir yedeği arşiv klasörünü + `belgeler/` + `secret.key` + `mesaj-arsivi/` içerir (bugün hiçbiri yedekte değil).
+- "Yedekten Geri Yükle" arşiv kaydını bilir: devir öncesi tarihli yedek seçilirse Devri Geri Al akışına yönlendirilir ya da engellenir (K yılı iki dosyada birden olmasın).
+- Geri Al / geri yüklemede WhatsApp "kime kaç kez" (ilke 5): makine defteri dokunulmaz; dosyadaki wa_jobs ile defter birleşir (iş listesi D6).
+
+### G6. Şema sürüm kapısı (iş listesi BS-7)
+- user_version > LATEST_VERSION ise şirket / arşiv YAZILABİLİR açılmaz: salt okunur + "Bu veri programın daha yeni bir sürümüyle açılmış" uyarısı. Bootstrap'ın eski sürüme dönüşü
+  (bootstrap.mjs:79-97) ve başarısız güncellemenin geri alması (yalnız 001'i geri yüklüyor) 002 ve arşivleri de kapsar. BİLİNEN SINIR: kapı 2.5.0 ile gelir, 2.4.9 bilmez — G2'nin
+  açık kalem yöntemi bu yüzden seçildi (eski kod da doğru bakiye görür).
+
+### G7. Devri Yenile ve Devri Geri Al
+- Devrin ürettiği her satıra DEVİR ÇALIŞMA KİMLİĞİ (açılışlar, açık kalemler, çek "devir" olayı, ledger_vouchers); kullanıcının kendi açılışları bundan ayrılır (ör. devirden sonra
+  açılan banka hesabının açılışı yenilemede silinmez). Deterministik kimlik `devir-<yıl>-<varlık>` + yerinde güncelleme; düzeltmeyle kapanan bir kalemin K sonrası bağı varsa
+  ÇAKIŞMA LİSTESİ gösterilir, işlem durur.
+- Devir satırları normal ekranlardan düzenlenemez / silinemez (K+1 tarihli oldukları için kilit dışında kalırlar); yalnız Devri Yenile / Geri Al değiştirir.
+- Devri Yenile akışı: yetki system.manage + gerekçe (denetim izi) → arşiv BAKIM KİPİNDE yazılabilir tam şirket örneği (arka plan yazıcıları ve GET'te yazan yollar kapalı:
+  runRepeats, ensureTestStart) → düzeltme (geç gelen Aralık faturası, Aralık KDV mahsubu) → arşiv yeniden kilitlenir ve donar → yeni yılın devir satırları G1 mekanizmasıyla
+  yeniden üretilir → değişmezler → Devir Raporu (önceki ↔ yeni farkı). K sonrası girilmiş kayıtlar korunur; kapama okumada yeniden hesaplanır; Kasa / banka eksiye düşerse
+  uyarı raporu. Yalnız EN SON arşiv yenilenir; sonraki yılın devri varsa durur (zincirleme yenileme BİLİNEN SINIR).
+- Devri Geri Al: §6 + kalıcı yedek (G5) + WhatsApp ilke 5.
+
+### G8. Arşiv örneği
+- GET'te yazan yollar ve arka plan işleri arşivde kapalı; `belgeler/`, `secret.key`, `mesaj-arsivi/` şirket klasörüne çözülür (arşiv kendi klasöründen açılırsa belgeler ve şifreli
+  ayarlar okunamaz); belge temizliği arşivin başvurularını görür (documents.mjs:89-108 — yoksa yeni yılda silinen belge 30 gün sonra diskten gider, arşivin gösterdiği dosya da);
+  arşivde meta.instanceId yenilenir (ayırma deseni); sessions ve mobile_* boşaltılır; users ortak katmandan okunur (DOĞRULANACAK).
+
+### G9. Hacim bütçesi (ders 47)
+- Ön izleme (saf hesap) 100.000 satırda ≤ 10 sn worker'da; 1.000.000'da ölçülür. Devir (kopyada üretim + değişmezler) 1.000.000 satırda ≤ 5 dk; olay döngüsü en çok ≤ 50 ms
+  (bakım kipinde istekler 503 alır). Ölçüm D3'te programın kendi ürettiği büyük veride, önce / sonra aynı kopyayla (ders 15).
+
+### G10. Nasıl bozulur? ekleri (§8'in devamı)
+17. 001'de devir (yeniden başlatma) ve 002'de devir; devir sırasında güncelleme denemesi; mobil özetin 503 davranışı.
+18. Devir öncesi yedeğin "Yedekten Geri Yükle" ile dönmesi.
+19. ≤K "Listeden Sil"inmiş e-Belge'nin yeni yılda gönderilmesi — çift numara olmamalı.
+20. Aralık KDV mahsubu devirden sonra (Devri Yenile ile); 190 devri açılış fişinde.
+21. Gelen kutusu: devirden sonra Aralık belgesi yeniden "yeni" görünmemeli.
+22. Aktif tekrarlayan faturanın ≤K şablonu; şablonu bulunamayan tekrar.
+23. Ocak'ta Aralık faturasının iadesi (G13 kararından sonra).
+24. Devri Yenile: devirden sonra açılan banka hesabının açılışı korunur; K sonrası Kapatılacak Fatura bağı korunur; çakışma listesi; Kasa eksiye düşme uyarısı.
+25. Eski sürüme dönüş (bootstrap geri dönüşü, başarısız güncelleme) → şema kapısı; 002 ve arşiv.
+26. Arşiv klasörü silinmiş / bozulmuş (sha256 uyarısı); sirketler.json'da arşiv kaydı kaybı → diskten kurtarma.
+27. edoc_usage'a silme gitmez; einvoice_inbox, audit_events, integrity_log korunur; trash seçici.
+28. Bekleyen POS kalemi olan ≤K satış; bekleyen tahsildeki çek; açık şüpheli alacağın ≤K olay bağı.
+
+### G11. Plan başvurularının güncel yerleri (P1 §2 — D2 başında yeniden okunur)
+§2: company-separate.mjs VACUUM INTO :57; db.mjs openDatabase :7; app.mjs readOnly :198, appFor :628, assertWritable :578; license.mjs :727; companies.mjs create :331; routes/companies.mjs
+select :86. §4.1: general-ledger.mjs :208, :254-255, :284-286, :308; routes/accounts.mjs :611, :1453; stock.mjs openingFlag :343; lib/accounts.mjs stockLevel :154; cheques.mjs :754;
+routes/ledger.mjs :191-198. §4.2: openItems :4980, paymentStates :785, settleTables :690-716, accountSettleInput :762-783, settleInvoices invoice-settle.mjs:163. §4.3: rows :29,
+trialBalance :502, reconcile :539, expected :209. §4.4: nextNumber :1909, assertChronology :1939, yıl :2213/:2220, receiptSeq plans.mjs:793. §5: eUnsent :868, unsentSql :1402,
+busyCompanies app.mjs:250. §6: admin.mjs :379, restoreCompany :662, stageRootRestore :631. §7: LATEST_VERSION :1932, accounts list() :264, createMoneyLines :222, summary :507,
+balanceAt cash.mjs:43, leftOf/signedLeftOf :475/:480, overview compute :146, subBalances :465, partyBalances :495, LOCK_SQL :117, lockDigestOf :225, rangeOf :224.
+§11.4: unitCost stock.mjs:718-727 + alış faturası invoices.mjs:2310-2326.
+
+### G12. Sıra (D aşamaları, iş listesi D2–D6)
+Çekirdek Ç1 → Ç2 → Ç3 → Ç5 bitmeden devir kodu (D2–D4) başlamaz. D2 göç + arşiv + şema kapısı + kalıcı yedek → D3 saf hesap + Devir Raporu (kâhinle) → D4 kopyada üretim +
+değişmezler + takas + Devri Yenile / Geri Al → D5 sihirbaz + arşiv görünümü → D6 WhatsApp ilke 5. Göç numaralarını ana oturum dağıtır.
+
+### G13. Açık sorular (mali müşavir P → para / kapama kuralıysa kullanıcıya, ders 43)
+1. Ocak'ta Aralık faturasının iadesi: iade belgesi arşivdeki faturaya nasıl bağlanır (bugün iade yalnız aynı dosyadaki faturadan seçilir), stok ve KDV etkisi yeni yılda.
+2. Kapanış akışı: 7/A giderleri, 690 → (691) → 692 → 590 / 591; açılışta 590 / 591'in aynen açılması (§11.1) ile açılış eşleştirmesindeki 570 / 580 dağıtımının ilişkisi.
+3. "Borç ve Alacakları Aktar"ın iki satırı ile açık kalemlerin cari ekstrede gösterim düzeni.
+4. Devri Yenile'nin kullanıcıya açıklaması: beyanname verilmiş bir yıl yenilenirse ne olur (uyarı metni).
 
 ---
 
@@ -18,8 +158,8 @@ doğrulanır** (2.4.4 kodu değiştirmiş olabilir).
 | Ne zaman | Ocak–Şubat'ta, Aralık kayıtları tamamlanınca. Kesim tarihi seçilir (ör. 31.12.2026) | Arkadaş yanıtı |
 | Kesime kadar | Eski yıl dosyasında kalır → **salt okunur arşiv** | Arkadaş yanıtı |
 | Kesimden sonra | Ocak–Şubat'ta girilmiş kayıtlar yeni yıla **hareket olarak aynen** geçer | Kullanıcı teyidi, 20.10.2026 |
-| Eski yıla yazma | Devirden sonra YOK ("girilmesi doğru değil") | Arkadaş yanıtı |
-| Devri Güncelle | İlk sürümde YOK (Wolvox'ta da yok) | Arkadaş yanıtı |
+| Eski yıla yazma | ~~Devirden sonra YOK~~ → yalnız Devri Yenile içinden, yetkili + gerekçeli (G0, G7) | Arkadaş yanıtı; DEĞİŞTİ 05.11 (kullanıcı: en güncel mevzuat + en yaygın) |
+| Devri Güncelle | ~~İlk sürümde YOK~~ → **Devri Yenile VAR** (G7) | Arkadaş yanıtı; DEĞİŞTİ 05.11 |
 | Devri Geri Al | VAR (zorunlu yedekle; yanlışlıkla devir için güvence) | Baş mimar |
 | Kapanış/açılış fişi | Program yapar: 6'lı hesaplar kapanır, yeni yıla yalnız bilanço hesapları geçer | Baş mimar |
 | Stok değeri | **Ağırlıklı ortalama alış fiyatı** (Wolvox varsayılanı, en yaygın); fark arşivde dönem sonu değerleme kaydıyla (§4.3) | Kullanıcı: "en yaygın", 20.10.2026 (§11) |

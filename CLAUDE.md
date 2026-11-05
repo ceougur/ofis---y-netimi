@@ -407,7 +407,10 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   hatası 2.4.8'de ZATEN YAPILMIŞ (MZ 213efb6) — 2.4.8/2.4.9 teslim notu (d) satırı eskiydi, kullanıcıya düzeltildi. CI bu oturumda GitHub MCP ile okunur (gh bu ortamda yalnız arama; kanit.mjs ci gh kullanır);
   planlama (P1–P6) bitince 1. dalga kendiliğinden; ders 43/45 soruları önce kullanıcıya. P2 (defter mimarisi D0) BİTTİ: başlıca bulgular — defter cari açılışını is_opening değil AÇIKLAMADAN tanıyor;
   giderler 760/770/780 (7/A) → kapanış yalnız 6xx değil, 7/A-7/B kararı; kilit izi türetmeyi korumuyor (senet 121/321'de yaşandı); yevmiye ana iş parçacığında bütün geçmişten (100 bin ~2,8 sn, 1 M ~55 sn);
-  KEEP_SETTINGS (Sıfırla) Defter Türü anahtarını korumalı; B1 gecikmiş tanımı ekranlar arasında farklı (fatura dahil mi → kullanıcıya, WhatsApp elemesi). P1 (devir D0) sürüyor.
+  KEEP_SETTINGS (Sıfırla) Defter Türü anahtarını korumalı; B1 gecikmiş tanımı ekranlar arasında farklı (fatura dahil mi → kullanıcıya, WhatsApp elemesi). P4 YAZILDI (docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md).
+  P1 (devir D0) BİTTİ → P3 YAZILDI (DEVIR-PLANI "G" bölümü, BAŞ MİMAR KARARLARI): kopyada üret + doğrula + takas (001 dahil bakım kipi), AYRI AÇIK KALEM (devir faturası işareti bırakıldı),
+  tablo sınıflaması (edoc_usage / einvoice_inbox / audit_events dokunulmaz), kalıcı devir yedeği (arşiv + belgeler + secret.key), şema sürüm kapısı, Devri Yenile mekanizması, e-Belge numara tabanı.
+  SIRADAKİ: mali müşavir P (planlar + kural kitabı) ‖ P6 WhatsApp planı + sorular → kullanıcı soruları (B1, G13, W) → 1. dalga.
   ORTAM (kullanıcı 05.11: "30 dk bir ara rapor ver, biten işlerin üstünü çiz. 3saate bir de yenilenen ortam kopması için alarm kur"): 30 dk rapor CronCreate d19be8cc ("7,37 * * * *", oturuma bağlı; kapsayıcı yenilenince ve 7 günde
   düşer) — İSTEM: "30 DK ARA RAPOR: TaskList'i oku; Türkçe kısa ara rapor: bitenler ~~üstü çizili~~, süren kalın, ajan durumu, yalnız yeni push'un CI'si (yoklama yok), sıradaki adım ve beklenen karar; değişiklik yoksa tek satır";
   ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (sunucu tarafı, 3 saatte bir :18 UTC, bu oturuma; rapor görevi yoksa yeniden kurar). İş listesi oturumda TaskList'te (docs/2.5.0-IS-LISTESI.md "başla"da açılır).
