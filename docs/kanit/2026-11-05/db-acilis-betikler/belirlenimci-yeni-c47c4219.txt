@@ -1,0 +1,6 @@
+{"mode":"excl-wal","holdMs":300,"ro":false,"ok":true,"ms":332,"n":2,"at":1793922552414,"fdsAfterClose":0,"sinceReady":367,"afterRelease":68,"stderr":""}
+{"mode":"excl-wal","holdMs":300,"ro":true,"ok":true,"ms":330,"n":2,"at":1793922552871,"fdsAfterClose":0,"sinceReady":370,"afterRelease":70,"stderr":""}
+{"mode":"begin-exclusive","holdMs":300,"ro":false,"ok":true,"ms":1,"n":1,"at":1793922553017,"fdsAfterClose":0,"sinceReady":48,"afterRelease":-253,"stderr":""}
+{"mode":"begin-exclusive","holdMs":300,"ro":true,"ok":true,"ms":0,"n":1,"at":1793922553400,"fdsAfterClose":0,"sinceReady":44,"afterRelease":-258,"stderr":""}
+{"mode":"rollback-read","holdMs":300,"ro":false,"ok":true,"ms":331,"n":1,"at":1793922554141,"fdsAfterClose":0,"sinceReady":369,"afterRelease":70,"stderr":""}
+{"mode":"rollback-read","holdMs":300,"ro":true,"ok":true,"ms":0,"n":1,"at":1793922554275,"fdsAfterClose":0,"sinceReady":39,"afterRelease":-261,"stderr":""}

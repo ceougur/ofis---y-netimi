@@ -1,0 +1,17 @@
+TAP version 13
+# {"iterations":200,"mode":"kill","rows":20000,"openFailures":0,"iterationsWithFailure":0,"errcodes":{},"maxOkMs":924}
+# Subtest: kurtarma (SIGKILL + iki süreç aynı anda openDatabase) × 200 (/home/user/ofis---y-netimi/.claude/worktrees/agent-aa4c32f640b15a6cf/server/lib/db.mjs)
+ok 1 - kurtarma (SIGKILL + iki süreç aynı anda openDatabase) × 200 (/home/user/ofis---y-netimi/.claude/worktrees/agent-aa4c32f640b15a6cf/server/lib/db.mjs)
+  ---
+  duration_ms: 108668.974671
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 108760.117927
