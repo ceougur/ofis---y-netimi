@@ -1,0 +1,420 @@
+TAP version 13
+# Subtest: 2.4.6 madde 12: Açılış Bakiyesi satırı işaretle tanınır (güncel kod)
+    # Subtest: açıklaması değiştirilen açılış satırı yine açılıştır: kart openingEntryId'si ve Düzenle'deki açılış Vade Tarihi aynı satıra gider
+    ok 1 - açıklaması değiştirilen açılış satırı yine açılıştır: kart openingEntryId'si ve Düzenle'deki açılış Vade Tarihi aynı satıra gider
+      ---
+      duration_ms: 149.984776
+      type: 'test'
+      ...
+    # Subtest: sonradan elle 'Açılış bakiyesi' açıklamasıyla yazılan Borç açılış sayılmaz (açılışlı ve açılışsız caride)
+    ok 2 - sonradan elle 'Açılış bakiyesi' açıklamasıyla yazılan Borç açılış sayılmaz (açılışlı ve açılışsız caride)
+      ---
+      duration_ms: 100.118052
+      type: 'test'
+      ...
+    # Subtest: Excel'den cari yüklemede Bakiye kolonu açılış işaretli satır yazar; bakiyesiz satırda işaret yok
+    ok 3 - Excel'den cari yüklemede Bakiye kolonu açılış işaretli satır yazar; bakiyesiz satırda işaret yok
+      ---
+      duration_ms: 39.788967
+      type: 'test'
+      ...
+    # Subtest: Silinenler: açıklaması değiştirilmiş açılış silinip geri yüklenince yine açılış; silinmişken kart açılışsız
+    ok 4 - Silinenler: açıklaması değiştirilmiş açılış silinip geri yüklenince yine açılış; silinmişken kart açılışsız
+      ---
+      duration_ms: 105.973496
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla (hareketler) sonrası yetim işaret yok; yeni açılış işaretli
+    ok 5 - Şirket Verisini Sıfırla (hareketler) sonrası yetim işaret yok; yeni açılış işaretli
+      ---
+      duration_ms: 176.865557
+      type: 'test'
+      ...
+    1..5
+ok 1 - 2.4.6 madde 12: Açılış Bakiyesi satırı işaretle tanınır (güncel kod)
+  ---
+  duration_ms: 1178.135892
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 madde 12 göç v35: v2.4.5 verisi (gerçek kod) güncel kodla — işaret 2.4.5'in kuralıyla, para aynı
+    # Subtest: v2.4.5 verisi: göç açılışları işaretler (eski openingEntryId'lerle aynı), bakiye / hareket / mizan aynı; Silinenler ve v2.4.5 yedeği
+    ok 1 - v2.4.5 verisi: göç açılışları işaretler (eski openingEntryId'lerle aynı), bakiye / hareket / mizan aynı; Silinenler ve v2.4.5 yedeği
+      ---
+      duration_ms: 1558.105276
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.4.6 madde 12 göç v35: v2.4.5 verisi (gerçek kod) güncel kodla — işaret 2.4.5'in kuralıyla, para aynı
+  ---
+  duration_ms: 1565.854325
+  type: 'suite'
+  ...
+# K1 zincir: durumu değişen belge 12; karşılaştırılan yanıt 550; senet katlaması (2.2.0 İz 4.2) 0 yanıt, ekranla karşılaştırılan dosya 0; Nakit Akışı faturasız kalem (2.4.3 MM5) 264
+# Subtest: altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+    # Subtest: zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+    ok 1 - zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+      ---
+      duration_ms: 18804.505357
+      type: 'test'
+      ...
+# K1 motor: durumu değişen belge 8; karşılaştırılan yanıt 154; senet katlaması (2.2.0 İz 4.2, toplam) 8 yanıt, ekranla karşılaştırılan dosya 8; Nakit Akışı faturasız kalem (2.4.3 MM5) 288
+    # Subtest: v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+    ok 2 - v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+      ---
+      duration_ms: 7699.319597
+      type: 'test'
+      ...
+    1..2
+ok 3 - altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+  ---
+  duration_ms: 26505.152018
+  type: 'suite'
+  ...
+# Subtest: altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder
+    # Subtest: aynı sayılar başka satır kırılımıyla ve kesiksiz özet tutarıyla: aynı
+    ok 1 - aynı sayılar başka satır kırılımıyla ve kesiksiz özet tutarıyla: aynı
+      ---
+      duration_ms: 0.767679
+      type: 'test'
+      ...
+    # Subtest: tablo tutarının son rakamı değişirse fark
+    ok 2 - tablo tutarının son rakamı değişirse fark
+      ---
+      duration_ms: 0.501401
+      type: 'test'
+      ...
+    # Subtest: kesik özet tutarı yeni tutarın öneki değilse fark; kesiğin devamına metin giremez
+    ok 3 - kesik özet tutarı yeni tutarın öneki değilse fark; kesiğin devamına metin giremez
+      ---
+      duration_ms: 0.432034
+      type: 'test'
+      ...
+    # Subtest: araya sözcük girerse ya da sözcük değişirse fark; Rapor Merkezi dışındaki PDF bu kurala girmez
+    ok 4 - araya sözcük girerse ya da sözcük değişirse fark; Rapor Merkezi dışındaki PDF bu kurala girmez
+      ---
+      duration_ms: 0.263515
+      type: 'test'
+      ...
+    1..4
+ok 4 - altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder
+  ---
+  duration_ms: 2.517316
+  type: 'suite'
+  ...
+# Subtest: Aşama 15 — dün (v2.0.26) 200 dönen her para işlemi bugün (2.1.0) de aynı kodu döner
+    # Subtest: dün: v2.0.26 kodu, kopya veriyle bütün roller
+    ok 1 - dün: v2.0.26 kodu, kopya veriyle bütün roller
+      ---
+      duration_ms: 2152.126018
+      type: 'test'
+      ...
+# [dün-bugün] hücre 168, dün 200 olan 154, fark 0
+    # Subtest: bugün: 2.1.0 kodu (göç 20 + yetki göçü), aynı kopya veriyle aynı işlemler
+    ok 2 - bugün: 2.1.0 kodu (göç 20 + yetki göçü), aynı kopya veriyle aynı işlemler
+      ---
+      duration_ms: 4590.756485
+      type: 'test'
+      ...
+    # Subtest: karşılaştırma: her hücrede aynı durum kodu (dün 200 → bugün 200; dün 403 → bugün 403)
+    ok 3 - karşılaştırma: her hücrede aynı durum kodu (dün 200 → bugün 200; dün 403 → bugün 403)
+      ---
+      duration_ms: 2.829272
+      type: 'test'
+      ...
+    1..3
+ok 5 - Aşama 15 — dün (v2.0.26) 200 dönen her para işlemi bugün (2.1.0) de aynı kodu döner
+  ---
+  duration_ms: 7870.192667
+  type: 'suite'
+  ...
+# Subtest: D4 — eski sürüm boşaltıp yeniden yazınca olaysız satırlar görünür
+    # Subtest: 2.0.26 'Tüm Hareketleri Sil' + 2 Kasa girişi → açılış onarımı 2 satır bulur; eski satırlar sayılmaz
+    ok 1 - 2.0.26 'Tüm Hareketleri Sil' + 2 Kasa girişi → açılış onarımı 2 satır bulur; eski satırlar sayılmaz
+      ---
+      duration_ms: 1693.655193
+      type: 'test'
+      ...
+    1..1
+ok 6 - D4 — eski sürüm boşaltıp yeniden yazınca olaysız satırlar görünür
+  ---
+  duration_ms: 1694.987783
+  type: 'suite'
+  ...
+# Subtest: B3/B4 — 001: sıfırlama öncesi yedeğine dönüş (gerçek 2.0.26 verisiyle)
+    # Subtest: geri yüklenen dosya kendi eski satır işaretini korur: Mutabakat Testi temiz, onarım uyarısı yok; İşlem No geri gitmez
+    ok 1 - geri yüklenen dosya kendi eski satır işaretini korur: Mutabakat Testi temiz, onarım uyarısı yok; İşlem No geri gitmez
+      ---
+      duration_ms: 1366.00796
+      type: 'test'
+      ...
+    1..1
+ok 7 - B3/B4 — 001: sıfırlama öncesi yedeğine dönüş (gerçek 2.0.26 verisiyle)
+  ---
+  duration_ms: 1367.387284
+  type: 'suite'
+  ...
+# Subtest: B4 — 002: İşlem No sayacı geri yüklemede geri gitmez (001 ile aynı kural)
+    # Subtest: yedek → 3 yeni hareket → geri yükle → yeni hareketin numarası öncekilerden büyük, tekrar yok
+    ok 1 - yedek → 3 yeni hareket → geri yükle → yeni hareketin numarası öncekilerden büyük, tekrar yok
+      ---
+      duration_ms: 989.473854
+      type: 'test'
+      ...
+    1..1
+ok 8 - B4 — 002: İşlem No sayacı geri yüklemede geri gitmez (001 ile aynı kural)
+  ---
+  duration_ms: 989.897845
+  type: 'suite'
+  ...
+# K1 surum-2.0.16-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# Subtest: göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11)
+    # Subtest: surum-2.0.16-zincir
+    ok 1 - surum-2.0.16-zincir
+      ---
+      duration_ms: 793.427359
+      type: 'test'
+      ...
+# K1 surum-2.0.17-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.17-zincir 002 · Şahin İnşaat Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.17-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+    # Subtest: surum-2.0.17-zincir
+    ok 2 - surum-2.0.17-zincir
+      ---
+      duration_ms: 1628.949215
+      type: 'test'
+      ...
+# K1 surum-2.0.18-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.18-zincir 002 · Şahin İnşaat Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.18-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.18-zincir 004 · Çağdaş Eğitim Kurumları: durumu değişen belge 0
+    # Subtest: surum-2.0.18-zincir
+    ok 3 - surum-2.0.18-zincir
+      ---
+      duration_ms: 2024.730455
+      type: 'test'
+      ...
+# K1 surum-2.0.19-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.19-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.19-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.19-zincir 004 · Çağdaş Eğitim Kurumları: durumu değişen belge 0
+    # Subtest: surum-2.0.19-zincir
+    ok 4 - surum-2.0.19-zincir
+      ---
+      duration_ms: 2371.977921
+      type: 'test'
+      ...
+# K1 surum-2.0.20-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.20-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 0
+# K1 surum-2.0.20-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.20-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.20-zincir
+    ok 5 - surum-2.0.20-zincir
+      ---
+      duration_ms: 2414.980921
+      type: 'test'
+      ...
+# K1 surum-2.0.21-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 1 — IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.21-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 1 — IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.21-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.21-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.21-zincir
+    ok 6 - surum-2.0.21-zincir
+      ---
+      duration_ms: 2551.369795
+      type: 'test'
+      ...
+# K1 surum-2.0.22-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 2 — IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.22-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 2 — IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.22-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.22-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.22-zincir
+    ok 7 - surum-2.0.22-zincir
+      ---
+      duration_ms: 2503.730331
+      type: 'test'
+      ...
+# K1 surum-2.0.23-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 3 — IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.23-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 3 — IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.23-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.23-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.23-zincir
+    ok 8 - surum-2.0.23-zincir
+      ---
+      duration_ms: 2644.383009
+      type: 'test'
+      ...
+# K1 surum-2.0.24-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 4 — IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.24-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 4 — IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.24-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.24-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.24-zincir
+    ok 9 - surum-2.0.24-zincir
+      ---
+      duration_ms: 2326.510595
+      type: 'test'
+      ...
+# K1 surum-2.0.25-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 5 — IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.25-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 5 — IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.25-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.25-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.25-zincir
+    ok 10 - surum-2.0.25-zincir
+      ---
+      duration_ms: 2585.543098
+      type: 'test'
+      ...
+# K1 surum-2.0.26-zincir 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-zincir 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-zincir 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.26-zincir 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.26-zincir
+    ok 11 - surum-2.0.26-zincir
+      ---
+      duration_ms: 2497.307436
+      type: 'test'
+      ...
+# K1 surum-2.0.19-cakisma 001 · Şirket 1: durumu değişen belge 0
+# K1 surum-2.0.19-cakisma 005 · Resmi Şirket: durumu değişen belge 0
+# K1 surum-2.0.19-cakisma 002 · Gayri Resmi Şirket: durumu değişen belge 0
+    # Subtest: surum-2.0.19-cakisma
+    ok 12 - surum-2.0.19-cakisma
+      ---
+      duration_ms: 1352.545768
+      type: 'test'
+      ...
+# K1 surum-2.0.19-eski 001 · Eski Hukuk Bürosu: durumu değişen belge 0
+# K1 surum-2.0.19-eski 002 · Yeni Büro Ltd. Şti.: durumu değişen belge 0
+    # Subtest: surum-2.0.19-eski
+    ok 13 - surum-2.0.19-eski
+      ---
+      duration_ms: 1068.729724
+      type: 'test'
+      ...
+# K1 surum-2.0.26-turler 001 · Merkez Danışmanlık Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-turler 002 · Şahin İnşaat ve Ticaret Ltd. Şti.: durumu değişen belge 6 — IAD2026000000006 ["return",0,0]→["return",18000,0]; IAD2026000000005 ["return",0,0]→["return",18000,0]; IAD2026000000004 ["return",0,0]→["return",18000,0]; IAD2026000000003 ["return",0,0]→["return",18000,0]; IAD2026000000002 ["return",0,0]→["return",18000,0]; IAD2026000000001 ["return",0,0]→["return",18000,0]
+# K1 surum-2.0.26-turler 007 · Mavi Gıda A.Ş.: durumu değişen belge 0
+# K1 surum-2.0.26-turler 004 · Işık Turizm ve Seyahat: durumu değişen belge 0
+    # Subtest: surum-2.0.26-turler
+    ok 14 - surum-2.0.26-turler
+      ---
+      duration_ms: 2389.983831
+      type: 'test'
+      ...
+    1..14
+ok 9 - göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11)
+  ---
+  duration_ms: 29157.139419
+  type: 'suite'
+  ...
+# Subtest: 2.0.21–2.0.26 kesitleri v20 koduyla: hiçbir kayıt ve yedek kaybolmaz, eski yedekler kendi şirketine geri yüklenir
+    # Subtest: surum-2.0.21-zincir
+    ok 1 - surum-2.0.21-zincir
+      ---
+      duration_ms: 7230.554523
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.26-zincir
+    ok 2 - surum-2.0.26-zincir
+      ---
+      duration_ms: 9084.24217
+      type: 'test'
+      ...
+    # Subtest: surum-2.0.26-turler
+    ok 3 - surum-2.0.26-turler
+      ---
+      duration_ms: 10558.069952
+      type: 'test'
+      ...
+    1..3
+ok 10 - 2.0.21–2.0.26 kesitleri v20 koduyla: hiçbir kayıt ve yedek kaybolmaz, eski yedekler kendi şirketine geri yüklenir
+  ---
+  duration_ms: 26873.550634
+  type: 'suite'
+  ...
+# Subtest: göç v29: v2.4.2 verisi güncel kodla açılır (iade e-Belge referansı)
+    # Subtest: eski iade referanssız (asıl numara), faturalar aynı; kâğıt asıllı iade referansla kesilir; Mutabakat Testi temiz; geri dönüşte referans kalır
+    ok 1 - eski iade referanssız (asıl numara), faturalar aynı; kâğıt asıllı iade referansla kesilir; Mutabakat Testi temiz; geri dönüşte referans kalır
+      ---
+      duration_ms: 1333.852142
+      type: 'test'
+      ...
+    1..1
+ok 11 - göç v29: v2.4.2 verisi güncel kodla açılır (iade e-Belge referansı)
+  ---
+  duration_ms: 1341.7406
+  type: 'suite'
+  ...
+# Subtest: göç v30: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+    # Subtest: eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır
+    ok 1 - eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır
+      ---
+      duration_ms: 1345.431765
+      type: 'test'
+      ...
+    1..1
+ok 12 - göç v30: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+  ---
+  duration_ms: 1354.831046
+  type: 'suite'
+  ...
+# Subtest: göç v28: v2.4.2 verisi güncel kodla açılır (stok kartında KDV oranı)
+    # Subtest: eski veride oran boş; miktar, değer, faturalar aynı; düzenleme oranı korur; yazılan oran faturada gelir; Mutabakat Testi temiz
+    ok 1 - eski veride oran boş; miktar, değer, faturalar aynı; düzenleme oranı korur; yazılan oran faturada gelir; Mutabakat Testi temiz
+      ---
+      duration_ms: 1414.283745
+      type: 'test'
+      ...
+    1..1
+ok 13 - göç v28: v2.4.2 verisi güncel kodla açılır (stok kartında KDV oranı)
+  ---
+  duration_ms: 1422.200718
+  type: 'suite'
+  ...
+# Subtest: e-SMM gönderim kapıları: v2.4.0 ESMM makbuzu ve v2.4.3 kâğıt makbuzu güncel kodla
+    # Subtest: bayrak kapalıyken ikisi de gönderilmez; açıkken yalnız 2.4.0'ın ESMM makbuzu kendi numarasıyla e-SMM servisinden gider
+    ok 1 - bayrak kapalıyken ikisi de gönderilmez; açıkken yalnız 2.4.0'ın ESMM makbuzu kendi numarasıyla e-SMM servisinden gider
+      ---
+      duration_ms: 1665.6123
+      type: 'test'
+      ...
+    1..1
+ok 14 - e-SMM gönderim kapıları: v2.4.0 ESMM makbuzu ve v2.4.3 kâğıt makbuzu güncel kodla
+  ---
+  duration_ms: 1673.933282
+  type: 'suite'
+  ...
+# Subtest: iptal süresi: v2.4.3 verisi güncel kodla (iletim günü eski sürümün gönderim kaydından)
+    # Subtest: 3. gün gönderilen 11. gün iptal edilir, 0. gün gönderilen reddedilir; geri dönüşte 2.4.3 kesimden sayar
+    ok 1 - 3. gün gönderilen 11. gün iptal edilir, 0. gün gönderilen reddedilir; geri dönüşte 2.4.3 kesimden sayar
+      ---
+      duration_ms: 1438.447888
+      type: 'test'
+      ...
+    1..1
+ok 15 - iptal süresi: v2.4.3 verisi güncel kodla (iletim günü eski sürümün gönderim kaydından)
+  ---
+  duration_ms: 1445.328062
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (bağ yazılmaz; bağsız geri ödeme iadenin geri ödemesi sayılır, para aynı)
+    # Subtest: v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır
+    ok 1 - v2.4.5 verisi: göç boş bağ ekler, para aynı; fatura açıkları iade kadar döner (bağsız geri ödeme); Düzelt ile bağlamak sayıları değiştirmez; geri dönüş v2.4.5 ile açılır
+      ---
+      duration_ms: 1687.386231
+      type: 'test'
+      ...
+    1..1
+ok 16 - 2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (bağ yazılmaz; bağsız geri ödeme iadenin geri ödemesi sayılır, para aynı)
+  ---
+  duration_ms: 1695.458088
+  type: 'suite'
+  ...
+1..16
+# tests 41
+# suites 16
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 111162.280035

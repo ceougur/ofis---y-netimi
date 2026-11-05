@@ -1,0 +1,526 @@
+TAP version 13
+# Subtest: 2.5.0 Ç1 — hesap planı sınıflaması
+    # Subtest: CHART'taki her hesap tam bir yere düşer (bilanço kalemi ya da gelir tablosu kalemi ya da yansıtma / kapanış türü); sınıfsız ya da çift sınıflı yok
+    not ok 1 - CHART'taki her hesap tam bir yere düşer (bilanço kalemi ya da gelir tablosu kalemi ya da yansıtma / kapanış türü); sınıfsız ya da çift sınıflı yok
+      ---
+      duration_ms: 3.447811
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:110:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        sınıflama sorunları:
+        100 Kasa (Nakit): sınıfsız (hesap planında sınıflama kaydı yok)
+        101 Alınan Çekler: sınıfsız (hesap planında sınıflama kaydı yok)
+        102 Bankalar (Havale / EFT): sınıfsız (hesap planında sınıflama kaydı yok)
+        103 Verilen Çekler ve Ödeme Emirleri (−): sınıfsız (hesap planında sınıflama kaydı yok)
+        108 Kredi Kartı Tahsilatları (POS): sınıfsız (hesap planında sınıflama kaydı yok)
+        120 Alıcılar (Müşteri Carileri): sınıfsız (hesap planında sınıflama kaydı yok)
+        121 Alacak Senetleri: sınıfsız (hesap planında sınıflama kaydı yok)
+        127 Carisiz Taksit Kartları: sınıfsız (hesap planında sınıflama kaydı yok)
+        128 Şüpheli Ticari Alacaklar: sınıfsız (hesap planında sınıflama kaydı yok)
+        129 Şüpheli Ticari Alacaklar Karşılığı (−): sınıfsız (hesap planında sınıflama kaydı yok)
+        153 Ticari Mallar (Stok Alımları): sınıfsız (hesap planında sınıflama kaydı yok)
+        190 Devreden KDV: sınıfsız (hesap planında sınıflama kaydı yok)
+        191 İndirilecek KDV: sınıfsız (hesap planında sınıflama kaydı yok)
+        193 Peşin Ödenen Vergiler (Stopaj): sınıfsız (hesap planında sınıflama kaydı yok)
+        255 Demirbaşlar: sınıfsız (hesap planında sınıflama kaydı yok)
+        300 Banka Kredileri: sınıfsız (hesap planında sınıflama kaydı yok)
+        309 Diğer Mali Borçlar (Kredi Kartları): sınıfsız (hesap planında sınıflama kaydı yok)
+        320 Satıcılar (Tedarikçi Carileri): sınıfsız (hesap planında sınıflama kaydı yok)
+        321 Borç Senetleri: sınıfsız (hesap planında sınıflama kaydı yok)
+        336 Diğer Cariler (Personel vb.): sınıfsız (hesap planında sınıflama kaydı yok)
+        360 Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj): sınıfsız (hesap planında sınıflama kaydı yok)
+        391 Hesaplanan KDV: sınıfsız (hesap planında sınıflama kaydı yok)
+        500 Açılış ve Devir Bakiyeleri: sınıfsız (hesap planında sınıflama kaydı yok)
+        600 Yurt İçi Satışlar (Stok): sınıfsız (hesap planında sınıflama kaydı yok)
+        602 Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları): sınıfsız (hesap planında sınıflama kaydı yok)
+        610 Satıştan İadeler: sınıfsız (hesap planında sınıflama kaydı yok)
+        642 Faiz Gelirleri: sınıfsız (hesap planında sınıflama kaydı yok)
+        644 Konusu Kalmayan Karşılıklar: sınıfsız (hesap planında sınıflama kaydı yok)
+        646 Kambiyo Kârları: sınıfsız (hesap planında sınıflama kaydı yok)
+        649 Diğer Olağan Gelir ve Kârlar: sınıfsız (hesap planında sınıflama kaydı yok)
+        653 Komisyon Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)
+        654 Karşılık Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)
+        656 Kambiyo Zararları: sınıfsız (hesap planında sınıflama kaydı yok)
+        659 Diğer Olağan Gider ve Zararlar: sınıfsız (hesap planında sınıflama kaydı yok)
+        689 Diğer Olağandışı Gider ve Zararlar: sınıfsız (hesap planında sınıflama kaydı yok)
+        760 Pazarlama, Satış ve Dağıtım Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)
+        770 Genel Giderler ve Alış Faturaları: sınıfsız (hesap planında sınıflama kaydı yok)
+        780 Finansman Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)
+        + actual - expected
+        
+        + [
+        +   '100 Kasa (Nakit): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '101 Alınan Çekler: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '102 Bankalar (Havale / EFT): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '103 Verilen Çekler ve Ödeme Emirleri (−): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '108 Kredi Kartı Tahsilatları (POS): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '120 Alıcılar (Müşteri Carileri): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '121 Alacak Senetleri: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '127 Carisiz Taksit Kartları: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '128 Şüpheli Ticari Alacaklar: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '129 Şüpheli Ticari Alacaklar Karşılığı (−): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '153 Ticari Mallar (Stok Alımları): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '190 Devreden KDV: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '191 İndirilecek KDV: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '193 Peşin Ödenen Vergiler (Stopaj): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '255 Demirbaşlar: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '300 Banka Kredileri: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '309 Diğer Mali Borçlar (Kredi Kartları): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '320 Satıcılar (Tedarikçi Carileri): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '321 Borç Senetleri: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '336 Diğer Cariler (Personel vb.): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '360 Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '391 Hesaplanan KDV: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '500 Açılış ve Devir Bakiyeleri: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '600 Yurt İçi Satışlar (Stok): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '602 Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları): sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '610 Satıştan İadeler: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '642 Faiz Gelirleri: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '644 Konusu Kalmayan Karşılıklar: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '646 Kambiyo Kârları: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '649 Diğer Olağan Gelir ve Kârlar: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '653 Komisyon Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '654 Karşılık Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '656 Kambiyo Zararları: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '659 Diğer Olağan Gider ve Zararlar: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '689 Diğer Olağandışı Gider ve Zararlar: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '760 Pazarlama, Satış ve Dağıtım Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '770 Genel Giderler ve Alış Faturaları: sınıfsız (hesap planında sınıflama kaydı yok)',
+        +   '780 Finansman Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '100 Kasa (Nakit): sınıfsız (hesap planında sınıflama kaydı yok)'
+        1: '101 Alınan Çekler: sınıfsız (hesap planında sınıflama kaydı yok)'
+        2: '102 Bankalar (Havale / EFT): sınıfsız (hesap planında sınıflama kaydı yok)'
+        3: '103 Verilen Çekler ve Ödeme Emirleri (−): sınıfsız (hesap planında sınıflama kaydı yok)'
+        4: '108 Kredi Kartı Tahsilatları (POS): sınıfsız (hesap planında sınıflama kaydı yok)'
+        5: '120 Alıcılar (Müşteri Carileri): sınıfsız (hesap planında sınıflama kaydı yok)'
+        6: '121 Alacak Senetleri: sınıfsız (hesap planında sınıflama kaydı yok)'
+        7: '127 Carisiz Taksit Kartları: sınıfsız (hesap planında sınıflama kaydı yok)'
+        8: '128 Şüpheli Ticari Alacaklar: sınıfsız (hesap planında sınıflama kaydı yok)'
+        9: '129 Şüpheli Ticari Alacaklar Karşılığı (−): sınıfsız (hesap planında sınıflama kaydı yok)'
+        10: '153 Ticari Mallar (Stok Alımları): sınıfsız (hesap planında sınıflama kaydı yok)'
+        11: '190 Devreden KDV: sınıfsız (hesap planında sınıflama kaydı yok)'
+        12: '191 İndirilecek KDV: sınıfsız (hesap planında sınıflama kaydı yok)'
+        13: '193 Peşin Ödenen Vergiler (Stopaj): sınıfsız (hesap planında sınıflama kaydı yok)'
+        14: '255 Demirbaşlar: sınıfsız (hesap planında sınıflama kaydı yok)'
+        15: '300 Banka Kredileri: sınıfsız (hesap planında sınıflama kaydı yok)'
+        16: '309 Diğer Mali Borçlar (Kredi Kartları): sınıfsız (hesap planında sınıflama kaydı yok)'
+        17: '320 Satıcılar (Tedarikçi Carileri): sınıfsız (hesap planında sınıflama kaydı yok)'
+        18: '321 Borç Senetleri: sınıfsız (hesap planında sınıflama kaydı yok)'
+        19: '336 Diğer Cariler (Personel vb.): sınıfsız (hesap planında sınıflama kaydı yok)'
+        20: '360 Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj): sınıfsız (hesap planında sınıflama kaydı yok)'
+        21: '391 Hesaplanan KDV: sınıfsız (hesap planında sınıflama kaydı yok)'
+        22: '500 Açılış ve Devir Bakiyeleri: sınıfsız (hesap planında sınıflama kaydı yok)'
+        23: '600 Yurt İçi Satışlar (Stok): sınıfsız (hesap planında sınıflama kaydı yok)'
+        24: '602 Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları): sınıfsız (hesap planında sınıflama kaydı yok)'
+        25: '610 Satıştan İadeler: sınıfsız (hesap planında sınıflama kaydı yok)'
+        26: '642 Faiz Gelirleri: sınıfsız (hesap planında sınıflama kaydı yok)'
+        27: '644 Konusu Kalmayan Karşılıklar: sınıfsız (hesap planında sınıflama kaydı yok)'
+        28: '646 Kambiyo Kârları: sınıfsız (hesap planında sınıflama kaydı yok)'
+        29: '649 Diğer Olağan Gelir ve Kârlar: sınıfsız (hesap planında sınıflama kaydı yok)'
+        30: '653 Komisyon Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)'
+        31: '654 Karşılık Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)'
+        32: '656 Kambiyo Zararları: sınıfsız (hesap planında sınıflama kaydı yok)'
+        33: '659 Diğer Olağan Gider ve Zararlar: sınıfsız (hesap planında sınıflama kaydı yok)'
+        34: '689 Diğer Olağandışı Gider ve Zararlar: sınıfsız (hesap planında sınıflama kaydı yok)'
+        35: '760 Pazarlama, Satış ve Dağıtım Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)'
+        36: '770 Genel Giderler ve Alış Faturaları: sınıfsız (hesap planında sınıflama kaydı yok)'
+        37: '780 Finansman Giderleri: sınıfsız (hesap planında sınıflama kaydı yok)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:112:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: tür ve MSUGT kalemi kural kitabı §2 tablosuyla aynı (eksik hesaplar eklendi)
+    not ok 2 - tür ve MSUGT kalemi kural kitabı §2 tablosuyla aynı (eksik hesaplar eklendi)
+      ---
+      duration_ms: 0.994814
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        100: planda yok
+        101: planda yok
+        102: planda yok
+        103: planda yok
+        108: planda yok
+        120: planda yok
+        121: planda yok
+        127: planda yok
+        128: planda yok
+        129: planda yok
+        136: planda yok
+        153: planda yok
+        159: planda yok
+        190: planda yok
+        191: planda yok
+        193: planda yok
+        198: planda yok
+        255: planda yok
+        300: planda yok
+        309: planda yok
+        320: planda yok
+        321: planda yok
+        336: planda yok
+        340: planda yok
+        360: planda yok
+        391: planda yok
+        500: planda yok
+        519: planda yok
+        570: planda yok
+        580: planda yok
+        590: planda yok
+        591: planda yok
+        600: planda yok
+        602: planda yok
+        610: planda yok
+        621: planda yok
+        631: planda yok
+        632: planda yok
+        642: planda yok
+        644: planda yok
+        646: planda yok
+        649: planda yok
+        653: planda yok
+        654: planda yok
+        656: planda yok
+        659: planda yok
+        660: planda yok
+        671: planda yok
+        681: planda yok
+        689: planda yok
+        690: planda yok
+        691: planda yok
+        692: planda yok
+        760: planda yok
+        761: planda yok
+        770: planda yok
+        771: planda yok
+        780: planda yok
+        781: planda yok
+        + actual - expected
+        
+        + [
+        +   '100: planda yok',
+        +   '101: planda yok',
+        +   '102: planda yok',
+        +   '103: planda yok',
+        +   '108: planda yok',
+        +   '120: planda yok',
+        +   '121: planda yok',
+        +   '127: planda yok',
+        +   '128: planda yok',
+        +   '129: planda yok',
+        +   '136: planda yok',
+        +   '153: planda yok',
+        +   '159: planda yok',
+        +   '190: planda yok',
+        +   '191: planda yok',
+        +   '193: planda yok',
+        +   '198: planda yok',
+        +   '255: planda yok',
+        +   '300: planda yok',
+        +   '309: planda yok',
+        +   '320: planda yok',
+        +   '321: planda yok',
+        +   '336: planda yok',
+        +   '340: planda yok',
+        +   '360: planda yok',
+        +   '391: planda yok',
+        +   '500: planda yok',
+        +   '519: planda yok',
+        +   '570: planda yok',
+        +   '580: planda yok',
+        +   '590: planda yok',
+        +   '591: planda yok',
+        +   '600: planda yok',
+        +   '602: planda yok',
+        +   '610: planda yok',
+        +   '621: planda yok',
+        +   '631: planda yok',
+        +   '632: planda yok',
+        +   '642: planda yok',
+        +   '644: planda yok',
+        +   '646: planda yok',
+        +   '649: planda yok',
+        +   '653: planda yok',
+        +   '654: planda yok',
+        +   '656: planda yok',
+        +   '659: planda yok',
+        +   '660: planda yok',
+        +   '671: planda yok',
+        +   '681: planda yok',
+        +   '689: planda yok',
+        +   '690: planda yok',
+        +   '691: planda yok',
+        +   '692: planda yok',
+        +   '760: planda yok',
+        +   '761: planda yok',
+        +   '770: planda yok',
+        +   '771: planda yok',
+        +   '780: planda yok',
+        +   '781: planda yok'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '100: planda yok'
+        1: '101: planda yok'
+        2: '102: planda yok'
+        3: '103: planda yok'
+        4: '108: planda yok'
+        5: '120: planda yok'
+        6: '121: planda yok'
+        7: '127: planda yok'
+        8: '128: planda yok'
+        9: '129: planda yok'
+        10: '136: planda yok'
+        11: '153: planda yok'
+        12: '159: planda yok'
+        13: '190: planda yok'
+        14: '191: planda yok'
+        15: '193: planda yok'
+        16: '198: planda yok'
+        17: '255: planda yok'
+        18: '300: planda yok'
+        19: '309: planda yok'
+        20: '320: planda yok'
+        21: '321: planda yok'
+        22: '336: planda yok'
+        23: '340: planda yok'
+        24: '360: planda yok'
+        25: '391: planda yok'
+        26: '500: planda yok'
+        27: '519: planda yok'
+        28: '570: planda yok'
+        29: '580: planda yok'
+        30: '590: planda yok'
+        31: '591: planda yok'
+        32: '600: planda yok'
+        33: '602: planda yok'
+        34: '610: planda yok'
+        35: '621: planda yok'
+        36: '631: planda yok'
+        37: '632: planda yok'
+        38: '642: planda yok'
+        39: '644: planda yok'
+        40: '646: planda yok'
+        41: '649: planda yok'
+        42: '653: planda yok'
+        43: '654: planda yok'
+        44: '656: planda yok'
+        45: '659: planda yok'
+        46: '660: planda yok'
+        47: '671: planda yok'
+        48: '681: planda yok'
+        49: '689: planda yok'
+        50: '690: planda yok'
+        51: '691: planda yok'
+        52: '692: planda yok'
+        53: '760: planda yok'
+        54: '761: planda yok'
+        55: '770: planda yok'
+        56: '771: planda yok'
+        57: '780: planda yok'
+        58: '781: planda yok'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:129:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: ters bakiye kuralları (çekirdek §13, kural kitabı §7.3): brütleştirme, Kesin Değil, KARAR GEREKİYOR
+    not ok 3 - ters bakiye kuralları (çekirdek §13, kural kitabı §7.3): brütleştirme, Kesin Değil, KARAR GEREKİYOR
+      ---
+      duration_ms: 0.430947
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:135:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        102 ters bakiyesi
+        + actual - expected
+        
+        + undefined
+        - {
+        -   bilanco: 'III.A',
+        -   boyut: 'altHesap',
+        -   hesap: '300',
+        -   kesinDegil: false,
+        -   kural: 'brut'
+        - }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        kural: 'brut'
+        bilanco: 'III.A'
+        hesap: '300'
+        boyut: 'altHesap'
+        kesinDegil: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:136:62)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 7/A yansıtma: 760 → 761 / 631, 770 → 771 / 632, 780 → 781 / 660; gelir tablosunda yansıtıldığı hesabın satırında
+    not ok 4 - 7/A yansıtma: 760 → 761 / 631, 770 → 771 / 632, 780 → 781 / 660; gelir tablosunda yansıtıldığı hesabın satırında
+      ---
+      duration_ms: 0.316173
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:144:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        760 yansıtma hesabı
+        
+        undefined !== '761'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '761'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:146:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yardımcılar: alt hesap ana hesabın sınıfını alır; planda olmayan kod null
+    not ok 5 - yardımcılar: alt hesap ana hesabın sınıfını alır; planda olmayan kod null
+      ---
+      duration_ms: 0.319715
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:156:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - null
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:157:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: adlar: 770 Tekdüzen adıyla; geri kalan 2.4.9 adları değişmedi; yeni hesaplar planda
+    not ok 6 - adlar: 770 Tekdüzen adıyla; geri kalan 2.4.9 adları değişmedi; yeni hesaplar planda
+      ---
+      duration_ms: 0.234123
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:166:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'Genel Giderler ve Alış Faturaları'
+        - 'Genel Yönetim Giderleri'
+                 ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Genel Yönetim Giderleri'
+      actual: 'Genel Giderler ve Alış Faturaları'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:167:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: alt hesap tanımları (yalnız tanım): 600.90 Belgesiz, 770.90 Sınıflandırılmamış, 336.90 Sınıflandırılmamış Tahsilatlar
+    not ok 7 - alt hesap tanımları (yalnız tanım): 600.90 Belgesiz, 770.90 Sınıflandırılmamış, 336.90 Sınıflandırılmamış Tahsilatlar
+      ---
+      duration_ms: 0.315485
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:176:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - 'Belgesiz'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Belgesiz'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:178:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: defterin yazabildiği her hesap planda (sınıflanabilir): banka fişi rolleri, evrak, şüpheli alacak, fatura gider türleri, yevmiye kaynağı
+    ok 8 - defterin yazabildiği her hesap planda (sınıflanabilir): banka fişi rolleri, evrak, şüpheli alacak, fatura gider türleri, yevmiye kaynağı
+      ---
+      duration_ms: 2.185554
+      type: 'test'
+      ...
+    1..8
+not ok 1 - 2.5.0 Ç1 — hesap planı sınıflaması
+  ---
+  duration_ms: 9.730999
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski/test/hesap-plani-sinif-250.test.mjs:109:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 1
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 115.820578
