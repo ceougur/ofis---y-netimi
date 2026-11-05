@@ -1,0 +1,32 @@
+{
+  "ad": "tarih-cheques-overview-yeni-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/cheques-overview.test.mjs",
+  "commit": "3772f54ae7528cac87ac4eff600557b54d3279a2",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:21:20.142Z",
+  "sure_sn": 10.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 22,
+    "gecen": 22,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/tarih-cheques-overview-yeni-ist.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "74f455997996c86339af96042c31975913fdb38cd766f7b38c5d2fc7f78de289",
+  "ham_cikti_bayt": 7338
+}

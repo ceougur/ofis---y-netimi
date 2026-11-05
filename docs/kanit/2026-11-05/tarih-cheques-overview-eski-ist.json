@@ -1,0 +1,38 @@
+{
+  "ad": "tarih-cheques-overview-eski-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/cheques-overview.test.mjs",
+  "commit": "3772f54ae7528cac87ac4eff600557b54d3279a2",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:20:53.104Z",
+  "sure_sn": 6.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 22,
+    "gecen": 21,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 işlem) › Kasa, alacak, borç, kritik stok, mizan ve nakit akışı her adımda tutarlı",
+      "konum": "test/cheques-overview.test.mjs:384:3",
+      "hata": "adım 50: Kasa (bugüne kadar): 9192.09 ≠ 7950.7 (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/tarih-cheques-overview-eski-ist.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "7227eca0b3f853fe1815ef14e6f58f267fd9a97198e9365c8a5a477242beb0df",
+  "ham_cikti_bayt": 8444
+}

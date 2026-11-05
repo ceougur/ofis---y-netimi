@@ -403,7 +403,9 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
       const list = (await admin.get("/api/workspace/accounts?status=all&limit=5000")).data.data;
       const stock = (await admin.get("/api/workspace/stock")).data.data;
       const portfolio = (await admin.get("/api/workspace/cheques?limit=5000")).data.data;
-      const today = new Date().toISOString().slice(0, 10);
+      // Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü İstanbul 00:00–03:00 arasında bir gün geride kalır (ders 13, 22).
+      // Her denetimde yeniden okunur: koşu gece yarısını geçse de beklenen gün programınkiyle aynı kalır.
+      const today = isoDay(new Date());
       const cashToday = cash.entries.filter(entry => entry.date <= today).reduce((sum, entry) => sum + (entry.kind === "in" ? entry.amount : -entry.amount), 0);
       near(view.cash.balance, cashToday, `${label}: Kasa (bugüne kadar)`);
       near(view.cash.allEntries, cash.totals.balance, `${label}: Kasa (tüm hareketler)`);
@@ -420,7 +422,7 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
       near(mizan.totals.closingCreditor, list.totals.creditor, `${label}: mizan borç`);
       for (const account of list.accounts) near(mizan.rows.find(row => row.id === account.id)?.closing ?? 0, account.balance, `${label}: ${account.name} mizan bakiyesi`);
       // Nakit akışı: çok uzun aralığın sonu = bugünkü kasa + ileri tarihli Kasa + açık taksitler + portföy − ödenecek (gecikmişler dahil).
-      const flow = (await admin.get("/api/workspace/overview/nakit-akisi?from=" + TODAY + "&to=2099-12-31&overdue=1")).data.data;
+      const flow = (await admin.get("/api/workspace/overview/nakit-akisi?from=" + today + "&to=2099-12-31&overdue=1")).data.data;
       const openPlans = (await admin.get("/api/workspace/plans?status=active")).data.data;
       const planRemaining = (openPlans.plans || []).reduce((sum, plan) => sum + Math.max(0, plan.totals?.remaining ?? 0), 0);
       // Nakit akışı tüm parayla (nakit + banka/POS) başlar; Kasa penceresi yalnız nakit (v2.0.17).
