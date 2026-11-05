@@ -23,6 +23,7 @@ import { roundMoney } from "../money.mjs";
 import { dayText } from "../plans.mjs";
 import { statementData, statementFileName, statementPdf } from "../statement-pdf.mjs";
 import { e164Of, waPresetRange } from "./alici.mjs";
+import { TOKEN_EXPIRED_CODE } from "./connection.mjs";
 import { allPeriodStartOf, localDayOf, periodKeyOf, periodKeysOf, queueKeysOf, rollingSinceOf, sameKeys, sentSinceOf } from "./donem.mjs";
 import { DAY_MS } from "./defter.mjs";
 import { META_D0, META_DEFAULT_TTL_SECONDS, MetaGraphError, classifyMetaCode, createMetaTemplates, neverReachedMeta, tierInfo } from "./meta-graph.mjs";
@@ -1274,8 +1275,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     job = ready.job;
     // T2-8: onay PDF yüklenirken kaldırılmış olabilir — ileti isteğinden hemen önce yeniden denetlenir; iş Bekliyor'a döner, toplu iş duraklar.
-    // 2.5.0 W-1(a): PDF hazırlığında Meta'nın verdiği hata (ör. 190 — bağlantıyı tam bu adımda "Süresi Doldu" yapar) kendi yolundan işlenir (§7a 13: hatayı alan iş
-    // Başarısız, toplu iş Meta'nın nedeniyle duraklar); bu adımda doğan "Süresi Doldu" engeli onu ezmez. Sonraki adımda (Devam Et dahil) engel geçerlidir.
+    // 2.5.0 W-1(a): PDF hazırlığında Meta'nın verdiği hata kendi yolundan işlenir (applyFailure; ör. 131031 → §7a 13: hatayı alan iş Başarısız, toplu iş Meta'nın
+    // nedeniyle duraklar) — hazırlık sürerken doğan "Süresi Doldu" engeli (bitiş anı geçti ya da 190 bağlantıyı tam bu adımda "Süresi Doldu" yaptı) onu ezmez. 190'ın
+    // kendisi de orada işlenir (KULLANICI KARARI 05.11 ~19:15: iş Bekliyor'a döner, toplu iş duraklar). Sonraki adımda (Devam Et dahil) engel geçerlidir.
     const ownMetaError = prepareError instanceof MetaGraphError && prepareError.reason === "meta";
     const lateBlock = startBlock();
     if (lateBlock && !(ownMetaError && lateBlock.code === "whatsapp-token-expired")) {
@@ -1479,6 +1481,8 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       store.run("UPDATE wa_jobs SET state = ?, closed_at = ?, updated_at = ? WHERE id = ? AND state IN ('pending', 'limited', 'preparing', 'paused', 'held')", row.state, iso(), iso(), job.id);
     }
   }
+  // 2.5.0 W-1(a) (KULLANICI KARARI 05.11 ~19:15): Meta 190 alan, Bekliyor'a dönen işin satırındaki neden (Devam Et'te başarılı gönderim temizler — §7a 32).
+  const TOKEN_REJECTED_JOB = "Meta erişim belirtecini reddetti (Meta hata kodu 190); ileti gönderilmedi. Yeniden bağlandıktan sonra Devam Et ile gönderilir.";
   function applyFailure(batch, job, error, { stage, attempt = null }) {
     const row = batchRow(batch.id);
     const reachedMeta = error.reason === "meta";
@@ -1529,6 +1533,15 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     const code = Number(error.code);
     const known = classifyMetaCode(code);
     const kind = classOf(code);
+    // 2.5.0 W-1(a) KULLANICI KARARI (05.11.2026 ~19:15, "Bekleyenlere dönsün"): toplu gönderim sürerken Meta belirteci reddetti (190 — süresi doldu ya da iptal) →
+    // o anda iletisi gitmeyen kişinin iletisi KESİN gitmedi (ilke 1: sayılmaz; ileti isteğinde defterde bu deneme "gitmedi"): iş Başarısız DEĞİL, Bekliyor'a döner ve
+    // kalan kişilerle birlikte Duraklatıldı olur; yeniden bağlanınca Devam Et ona da gönderir (aynı iş — kimseye ikinci ileti gitmez). §7a 13'ün ("hatayı alan iş
+    // Başarısız") yalnız 190 için istisnası; şablon / sınır okumasında (check) iş zaten bekler. Neden yola göre ve "Devam Et"i anar (connection.tokenRejectedPause).
+    if (kind === "pause" && code === TOKEN_EXPIRED_CODE) {
+      if (stage !== "check") updateJob(job.id, { state: "pending", next_at: null, sending_at: null, error_code: code, error_text: TOKEN_REJECTED_JOB });
+      const pause = connection.tokenRejectedPause?.() || { pauseCode: "meta-token", pauseReason: error.message };
+      return pauseBatch(batchRow(batch.id), pause.pauseCode, pause.pauseReason);
+    }
     // Okuma (şablon, sınır) aşamasında alıcıya / bu iletiye özgü sınıf yoktur: geçici değilse toplu iş duraklar (iş bekler).
     if (stage === "check") {
       if (kind === "temporary") return checkLater(error.message);
