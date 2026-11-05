@@ -11,6 +11,7 @@ import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { ADMIN_PASSWORD, createClient } from "./helpers.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
 process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -67,7 +68,8 @@ const rowOf = (file, key) => {
     db.close();
   }
 };
-const today = new Date().toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const today = isoDay(new Date());
 
 const { dir: oldDir, commit } = oldCode(process.argv[2]);
 console.log(`eski kod: ${commit} (${oldDir})`);

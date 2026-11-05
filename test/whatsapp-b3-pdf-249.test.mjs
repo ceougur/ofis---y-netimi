@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 import { pdfText } from "./banka-210-ortak.mjs";
 import { ADMIN_PASSWORD } from "./helpers.mjs";
 import { PNID, TOKEN, URLS, WABA, startWa } from "./whatsapp-248-ortak.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MIN = 60_000;
@@ -36,7 +37,8 @@ const uploads = ctx => {
   }
   return [...seen.values()];
 };
-const today = ctx => ctx.clock().toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const today = ctx => isoDay(ctx.clock());
 const hasTable = (store, name) => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", name));
 // Dondurulmuş PDF'in DURDUĞU yerden bağımsız sayım (eşdeğerlik testleri eski kodda da koşar): yeni kodda wa_job_pdfs, eski kodda wa_jobs.pdf_blob.
 const frozenOf = store => {

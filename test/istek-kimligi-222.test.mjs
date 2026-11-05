@@ -6,9 +6,11 @@ import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { bodyHash, createIdempotency } from "../server/lib/idempotency.mjs";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
 const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
-const TODAY = new Date().toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const TODAY = isoDay(new Date());
 const ID = suffix => `test-istek-${suffix}-0123456789abcdef`;
 
 test("kütüphane: anahtar kullanıcıya ve işleme bağlı; içerik özeti alan sırasından ve onay bayraklarından bağımsız", () => {

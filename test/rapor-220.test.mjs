@@ -12,9 +12,11 @@ import { inflateSync } from "node:zlib";
 import { cellNumber, footerRow } from "../server/routes/report-center.mjs";
 import { readZip } from "../server/lib/zip.mjs";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
-const TODAY = new Date().toISOString().slice(0, 10);
-const shift = days => new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const TODAY = isoDay(new Date());
+const shift = days => isoDay(new Date(Date.now() + days * 86_400_000));
 const trDay = iso => iso.split("-").reverse().join(".");
 // Bağımsız para okuyucu (rapor kodundaki ayrıştırıcıdan farklı yöntem): "1.234,56 TL" → 1234.56.
 const tl = text => {
