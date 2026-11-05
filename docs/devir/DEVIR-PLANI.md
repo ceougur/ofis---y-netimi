@@ -440,3 +440,14 @@ Her biri yerli programların (Logo, Mikro, Netsis, Wolvox) yaygın uygulaması v
 ## Ek — Açılış kayıtları düzeni (2.5.0; 30.10.2026)
 
 KARAR → 2.5.0 (kullanıcı, 30.10.2026 ~19:10 UTC: "bunu devirle beraber 2.5.0'da yapalım, o sürüm için planladığımız muhasebe çekirdeğini de eklemeyi düşünüyorum zaten"): AÇILIŞ KAYITLARI DÜZENİ 2.5.0'da devir + muhasebe çekirdeğiyle — (1) açılış çekleri gelir/gidere yazılmaz (bugün carisiz/açılış portföyü alınan 101/602, verilen 770/103: server/routes/ledger.mjs build() 602/770 eşlemesi); (2) bütün açılışların (cari, kasa, banka, taksit, stok, çek) karşı hesabı 500 Sermaye DEĞİL — geçici "Eşleştirilecek Açılış Bakiyeleri" (server/lib/general-ledger.mjs CHART 500 "Açılış ve Devir Bakiyeleri"); (3) açılış bilançosuyla eşleştirme + öz sermaye (500/570/580) dağıtımı; karşı hesap belirlenemezse "tamamlanmamış açılış" bekler. Dayanak (kullanıcının VUK listesi, baş mimar mali müşavir incelemesiyle ilkede AYNI sonuç): VUK 3/B, 174, 182–186, 192. 2.4.8'de bu konuda kod DEĞİŞMEZ.
+
+### G14. Mali müşavir P sonuçları (05.11.2026 17:12 UTC; ayrıntı docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md §13 ve kural kitabı)
+- KABUL (BAŞ MİMAR KARARI): açık kalemin defter karşılığı açılış sınıfında B cari / A 519 (geçici) — sıradan Borç Yaz gibi 602'ye GİTMEZ (yoksa gelir iki kez sayılır); değişmez: devirden hemen
+  sonra yeni yılın Gelir Tablosu = 0. "Borç ve Alacakları Aktar": ekstrede iki satır, DEFTERDE cari başına NET tek madde (KG-17; yeni yıl mizanında önceki yılın cirosu taşınmaz).
+- G13 yanıtları: (1) Ocak'ta Aralık faturasının iadesi — arşivdeki faturaya salt okunur başvuru (yıl, belge no, tarih, kalemler); iade yeni yılda 610 / 191 ↔ cari; açık kalem varsa önce onu kapatır;
+  KDV iade ayında; stok yeni yıla girer; e-Belge'de asıl belgeye başvuru. (2) kapanış sırası çekirdek §13. (3) ekstre: "Borç Toplamı" / "Alacak Toplamı" (açık kalemler düşülmüş) + açık kalemler
+  kendi tarih ve vadesiyle. (4) Devri Yenile uyarısı: "Bu yılın beyannamesi verildiyse ya da e-Defter beratı yüklendiyse burada yapacağınız düzeltme yasal defterinizi ve beyannamenizi değiştirmez;
+  düzeltme beyannamesi gerekebilir. Mali müşavirinizle görüşün." + 30 Nisan'dan sonra ikinci onay.
+- Mevzuat (kaynaklı): enflasyon düzeltmesi 2025–2027 yapılmaz (VUK geçici 37, 7571 s. K., RG 25.12.2025) → 31.12.2026 devrinde düzeltme kaydı yok; kurumlar vergisi beyanı 1–30 Nisan, gelir
+  vergisi 1–31 Mart → Devri Yenile'nin olağan penceresi Ocak–Nisan.
+- Aralık KDV'si: KG-7 kararına bağlı (geç gelen faturada KDV indirim dönemi alanı önerisi, KDVK 29/3).

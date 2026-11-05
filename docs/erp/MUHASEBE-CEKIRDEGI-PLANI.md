@@ -136,3 +136,20 @@ Desenler: defter servisi rapor iş parçacığına (integrity-scan-worker örne�
 6. Satışların maliyeti: tahmini gösterim mi, "Hesaplanmadı" mı.
 7. Defter Türü "Seçilmedi" ve İşletme Hesabı / Serbest Meslek'te "Bilgi Amaçlı" biçim yeterli mi.
 8. Kasa çıkışının hep 770 olması (hesap seçimi 2.5.1) bilançoda hangi kalemleri gizler; rapor dipnotu.
+
+## 13. Mali müşavir P sonuçları (05.11.2026 17:12 UTC; kural kitabı docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md — kodu görmeden yazıldı, araç kaydı denetlendi: yasak klasöre dokunulmadı)
+KABUL EDİLENLER (BAŞ MİMAR KARARI, ders 40 — mali müşavir önerisi, sınıflama / gösterim; para kuralı değil):
+- YÜKSEK-1: satışların maliyeti hangi seçenekle olursa olsun Gelir Tablosu VE Bilanço'ya BİRLİKTE uygulanır; değişmez "Gelir Tablosu dönem kârı = Bilanço dönem kârı" (kâhin + test).
+- 7/A kalır; yansıtma 760→761/631, 770→771/632, 780→781/660; kapanış sırası: stok değerlemesi (621) → yansıtma → 6xx → 690 → (691 = 0, program ayırmaz) → 692 → 590 / 591.
+- Geçici açılış hesabı kodu 519 "Eşleştirilecek Açılış Bakiyeleri" (Tek Düzen'de boş grup 51; GÖRÜŞ); Bilanço'da Özkaynaklar sonunda uyarılı satır.
+- Açılış eşleştirmesinin hedefi bütün 5 sınıfı (500–503, 52x, 54x, 570, 580, 590 / 591; enflasyon düzeltmesinden kalan 502 / 503 / 52x dahil).
+- Ters bakiye: cari bazında brütleştirme — alacaklı 120 → 340, borçlu 320 → 159, borçlu 336 → 136, eksi 102 → 300, borçlu 309 → 136, borçlu 360 → 198 + Kesin Değil;
+  eksi kasa / stok / evrak → Kesin Değil; 191 / 391 mahsupsuz aylarda netleşmez, biten ay mahsupsuzsa uyarı.
+- Dipnotlar: Bilanço Esası "yasal (TTK / KÜMİ FRS) finansal tablo değildir, dönem sonu işlemleri dahil değildir"; Serbest Meslek "tahsil esası; müvekkil adına alınan para kazanç değildir";
+  590 "vergi öncesi" etiketi (vergi karşılığı program dışı — 20.10 §11.5 kararı aynen).
+- Kasa çıkışı (hesap seçimi 2.5.1'e kadar) "770.90 Sınıflandırılmamış" alt hesap + Gelir Tablosu'nda "Sınıflandırılmamış Kasa / Banka Giderleri" satırı + kalıcı dipnot.
+- Stok birim maliyeti DÖNEMSEL ağırlıklı ortalama: (dönem başı stok + o yılın alışları); önceki yıl sonları için de değerleme (KG-12 ile).
+- 2.5.1'e (DÜŞÜK): POS komisyonu 653 → 760; kredi 300 / 400 vade ayrımı dipnotu; özel hesap dönemi; "Defter Tutmuyor" Defter Türü seçeneği; kilit kaldırma uyarısı; Muhasebe rolüne dönem kilidi
+  (GÖRÜŞ); kılavuzdaki "karşılığı açılış hesabı 500" cümlesi (kılavuz Ç5 ile birlikte güncellenir — 2.5.0).
+KULLANICIYA SORULACAKLAR (para / kapama / açılış kuralı; ders 43; mali müşavir önerisi A): B1, KG-2, KG-3, KG-5, KG-6, KG-7, KG-9, KG-11, KG-12, KG-15, KG-16 (iş listesi C). KG-4 (Borç Yaz /
+Alacak Yaz bugünkü 602 / 770 + ".90" alt hesap) ve KG-13 (vergi karşılığı yok, 20.10 kararı) yeni kural değil → sorulmaz. Kâhin yanıt gelene kadar bu maddelerde iki dallı kurulur.
