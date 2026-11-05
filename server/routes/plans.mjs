@@ -717,7 +717,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   };
   const itemOf = (planId, itemId) => {
     const item = store.get("SELECT id, seq, due_date AS dueDate, amount, note FROM plan_items WHERE plan_id = ? AND id = ?", planId, limited(itemId, 120, "Taksit"));
-    if (!item) throw new HttpError(404, "Taksit bulunamadı.");
+    // 2.5.0 BS-3 (g): ileti cari / stok / tahsilat düzeltmesiyle aynı üslupta (silinmiş olabileceği söylenir).
+    if (!item) throw new HttpError(404, "Taksit bulunamadı. Başka biri silmiş olabilir.");
     return item;
   };
   router.post("/api/workspace/plans/:id/items", async ({ req, res, params }) => {
@@ -746,6 +747,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (!(input.amount > 0)) throw new HttpError(400, "Taksit tutarı sıfırdan büyük olmalı.");
     store.tx(() => {
       assertPlanLive(plan.id);
+      // 2.5.0 BS-3 (g): gövde beklenirken TAKSİT silinirse 404 (kart denetimiyle aynı desen; önceden UPDATE 0 satır, 200 ve "taksit düzeltildi" geçmişi).
+      itemOf(plan.id, previous.id);
       store.run("UPDATE plan_items SET due_date = ?, amount = ?, note = ?, updated_at = ? WHERE id = ?", input.dueDate, input.amount, input.note, now(), previous.id);
       audit(user, "plan.item.updated", previous.id, { planId: plan.id, previous, ...input });
     });
@@ -924,6 +927,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       // K8 (2.3.0, plan §3.10/3 update): yalnız tutarı BÜYÜYEN tahsilat düzeltmesinde kartın kalanı (bu satır hariç) işlemin içinde yeniden okunur.
       prepare: () => {
         assertPlanLive(plan.id);
+        // 2.5.0 BS-3 (f): gövde beklenirken TAHSİLAT silinirse 404 (kart denetimiyle aynı desen; önceden UPDATE 0 satır, 200 ve "düzeltildi" geçmişi).
+        entryOf(plan.id, previous.id);
         if (previous.kind === "in" && !previous.opening && toMinor(input.amount) > toMinor(Number(previous.amount) || 0)) assertRoom(user, plan.id, input.amount, { overpay: body.overpay === true, exceptId: previous.id, op: "update" });
       },
       write: () => {

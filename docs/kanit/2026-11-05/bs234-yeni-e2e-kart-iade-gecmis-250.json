@@ -1,0 +1,32 @@
+{
+  "ad": "bs234-yeni-e2e-kart-iade-gecmis-250",
+  "komut": "npm run test:senaryo-kart-iade-gecmis-250",
+  "commit": "1abb27240c345eed7605218428edb4f3a0bf739b",
+  "dal": "worktree-agent-a43c8fa8274cd88ab",
+  "kirli": 0,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:05:50.736Z",
+  "sure_sn": 13.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 8,
+    "gecen": 8,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs234-yeni-e2e-kart-iade-gecmis-250.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a43c8fa8274cd88ab",
+  "ham_cikti_sha256": "a8bfa83ff4886e4db596223702a5491985af04381ae675d50221176f0ef9bb76",
+  "ham_cikti_bayt": 1909
+}

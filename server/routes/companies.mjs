@@ -218,8 +218,27 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const chosen = ids.length ? allowed.filter(item => ids.includes(item.id)) : allowed;
     if (!chosen.length) throw new HttpError(400, "Rapor için en az bir şirket seçin (yetkili olduğunuz şirketler).");
     const showBank = bankVisible(user);
+    // 2.5.0 BS-4 (BAŞ MİMAR KARARI; ders 4 — okunamayan veri boş değildir): seçilen şirketlerden birinin verisi açılamıyorsa (veri dosyası kayıp ya da bozuk)
+    // rapor ÜRETİLMEZ, kısmi toplam verilmez; ekran, PDF ve Excel aynı 409. Önceden appFor'un HttpError olmayan hatası (dataMissing / SQLite) 500 "Sunucu işlemi
+    // tamamlayamadı." oluyordu. Önce bütün şirketler açılır, sonra hesaplanır. Meşgul şirketin (geri yükleme / silme) 503'ü olduğu gibi döner. appFor kayıp
+    // dosyada dosya ya da klasör yaratmaz (v2.0.21 koruması açılıştan önce).
+    const apps = new Map();
+    const failures = [];
+    for (const item of chosen) {
+      try {
+        apps.set(item.id, appFor(companies.get(item.id)));
+      } catch (error) {
+        if (error instanceof HttpError) throw error;
+        log?.warn?.(`Birleşik rapor: ${item.code} · ${item.name} açılamadı (${error.message})`);
+        failures.push({ item, missing: error?.dataMissing === true, reason: backupFailureReason(error) });
+      }
+    }
+    if (failures.length) {
+      const what = failures.map(({ item, missing, reason }) => `“${item.code} · ${item.name}” şirketinin ${missing ? "veri dosyası bulunamadı" : `verisi açılamadı (${reason})`}`).join(", ");
+      throw new HttpError(409, `${what}; birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.`, { code: failures.every(failure => failure.missing) ? "company-data-missing" : "company-unavailable", companies: failures.map(({ item }) => ({ id: item.id, code: item.code, name: item.name })) });
+    }
     const rows = chosen.map(item => {
-      const app = appFor(companies.get(item.id));
+      const app = apps.get(item.id);
       const view = app.context.overview?.compute?.() || {};
       const bank = view.cash?.bank || {};
       return {

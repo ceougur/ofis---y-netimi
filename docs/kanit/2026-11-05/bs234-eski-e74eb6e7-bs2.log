@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: 2.5.0 BS-2 (a): Ayrıntılı Cari Ekstre — fatura kökenli Kredi Kartına İade satırının yolu (alıştan iade → karta iade); ekran = Excel = PDF
+    # Subtest: ön koşul: iade satırı faturadan gelir (source invoice), giriş + kart yolu + kart hesabı; cari kartında cardRefund; bakiye 0
+    ok 1 - ön koşul: iade satırı faturadan gelir (source invoice), giriş + kart yolu + kart hesabı; cari kartında cardRefund; bakiye 0
+      ---
+      duration_ms: 11.944941
+      type: 'test'
+      ...
+    # Subtest: Ayrıntılı Cari Ekstre: fatura kökenli iade satırının Yol'u "Kredi Kartına İade", ödeme "Kredi Kartı", "POS" yok; ekran = Excel = PDF
+    ok 2 - Ayrıntılı Cari Ekstre: fatura kökenli iade satırının Yol'u "Kredi Kartına İade", ödeme "Kredi Kartı", "POS" yok; ekran = Excel = PDF
+      ---
+      duration_ms: 91.738533
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.5.0 BS-2 (a): Ayrıntılı Cari Ekstre — fatura kökenli Kredi Kartına İade satırının yolu (alıştan iade → karta iade); ekran = Excel = PDF
+  ---
+  duration_ms: 874.224973
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1292.922065

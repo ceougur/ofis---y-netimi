@@ -1,0 +1,32 @@
+{
+  "ad": "bs234-komsu-cheques-overview-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/cheques-overview.test.mjs",
+  "commit": "1abb27240c345eed7605218428edb4f3a0bf739b",
+  "dal": "worktree-agent-a43c8fa8274cd88ab",
+  "kirli": 0,
+  "izlenmeyen": 24,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:12:16.566Z",
+  "sure_sn": 10,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 22,
+    "gecen": 22,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs234-komsu-cheques-overview-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a43c8fa8274cd88ab",
+  "ham_cikti_sha256": "ce7fc06170ac2c74947cf7e9cf3aa43f003abed10deeae9df06d16702827d22b",
+  "ham_cikti_bayt": 7335
+}
