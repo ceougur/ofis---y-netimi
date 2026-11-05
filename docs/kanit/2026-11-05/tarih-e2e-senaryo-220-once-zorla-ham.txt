@@ -1,0 +1,45 @@
+onkosul yerel=2026-11-05 utc=2026-11-06 saat=2026-11-06T08:00:00.000Z TZ=Etc/GMT+12
+(node:16365) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ Kurulum: yönetici girer, başlangıç tablosu; 10 müşterinin taksitleri Excel'den (Ödenen kolonuyla) arayüzden
+  ✗ 10 kart · toplam 100000 · ödenen 10000 (Excel'de 10.000 + programda 5.000)
+
+■ Raporlar penceresi: ilk sekme (Cari Ekstre / Mizan) Bu Yıl ile açılır, altta TOPLAM
+  ✓ Mizan dönemi: thisYear (Bu Yıl)
+  ✗ Mizan TOPLAM: TOPLAM · ₺0,00 · ₺100.000,00 · ₺10.000,00 · ₺90.000,00 · Borçlu
+
+■ Cari Listesi ve Bakiyeler: toplam borç / toplam alacak / müşteri alacakları / net kartları ve TOPLAM satırı
+  ✓ Toplam Borç ₺100.000,00
+  ✗ Toplam Alacak ₺10.000,00
+  ✗ Müşteri Alacakları ₺90.000,00
+  ✗ Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları) ₺90.000,00
+  ✗ TOPLAM satırı: Borç ₺100.000,00 · Alacak ₺10.000,00 · Bakiye ₺90.000,00 Borçlu
+  ✓ telefon tek satırda: "0532 100 00 01" (1 satır)
+  ✓ 10 kolonlu Cari Listesi 1440 px ekranda yana taşmıyor (1024 / 1024)
+
+■ Cari Bazında Tahsilat (kullanıcının 'çalışmıyor' dediği rapor): Excel'de ödenmiş + programda alınan
+  ✓ açılış dönemi thisYear (Bu Yıl)
+  ✗ kartlar: Önceden Ödenen ₺10.000,00 · Taksit ₺0,00 · Toplam ₺10.000,00
+  ✗ 10 satır; TOPLAM satırı ₺10.000,00
+  ✓ 9 kolonlu tablo 1440 px ekranda yana taşmıyor (1024 / 1024)
+  ✓ 1440 × 1000: TOPLAM pencere kaydırılmadan görünür (alt 910 ≤ 970)
+  ✓ 1366 × 768: TOPLAM pencere kaydırılmadan görünür (alt 691 ≤ 750); tablo kutusu 265 px (en az 160)
+  ✓ 1366 × 768: pencere tabloya kaydırılınca da TOPLAM görünür (alt 690 ≤ 750)
+
+■ Boş dönem ipucu ve dönem hafızası (Satış Faturaları)
+  ✓ Satış Faturaları ilk açılış: thisYear
+  ✓ boş dönem: "Bu dönemde kayıt yok. Tüm Zamanları Göster"
+  ✓ Tüm Zamanları Göster → Tüm Zamanlar seçildi
+  ✓ yeniden açınca son seçilen dönem hatırlandı: all
+  ✗ beklenmeyen hata: page.evaluate: TypeError: Cannot read properties of undefined (reading 'getBoundingClientRect')
+    at eval (eval at <anonymous> (eval at evaluate (:290:30)), <anonymous>:10:26)
+    at eval (eval at <anonymous> (eval at evaluate (:290:30)), <anonymous>:12:5)
+    at eval (eval at evaluate (:290:30), <anonymous>:1:70)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at lastModal (/home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b/test/e2e/senaryo-220.mjs:82:37)
+    at /home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b/test/e2e/senaryo-220.mjs:233:22
+
+Senaryo 2.0.20: 13 geçti, 9 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220
+cikis=1

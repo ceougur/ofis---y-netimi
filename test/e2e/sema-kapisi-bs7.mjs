@@ -10,11 +10,13 @@ import { resolveDbPath } from "../../server/lib/db-path.mjs";
 import { LATEST_VERSION } from "../../server/lib/migrations.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
 import { CURRENT, bootVersion } from "../guvenilirlik/surumler.mjs";
+import { isoDay } from "../../server/lib/plans.mjs";
 
 const MESSAGE = "Bu şirketin verisi programın daha yeni bir sürümüyle açılmış. Programı güncelleyin; o zamana kadar veri yalnız görüntülenir.";
 const root = mkdtempSync(path.join(tmpdir(), "sema-kapisi-bs7-"));
 const dirs = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn" };
-const today = new Date().toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const today = isoDay(new Date());
 const must = async (label, promise) => {
   const res = await promise;
   if (res.status !== 200) throw new Error(`${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);

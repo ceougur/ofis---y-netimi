@@ -15,6 +15,7 @@ import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
 import { escClose } from "./esc-kapat.mjs";
+import { isoDay } from "../../server/lib/plans.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-220");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -26,7 +27,8 @@ const xlsx = (file, name, columns, rows) => {
   writeFileSync(target, buildXlsx([{ name, columns, rows }], { title: name }));
   return target;
 };
-const iso = days => new Date(Date.now() + days * 86400000).toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const iso = days => isoDay(new Date(Date.now() + days * 86400000));
 const tr = value => value.split("-").reverse().join(".");
 
 

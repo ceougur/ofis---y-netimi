@@ -17,10 +17,12 @@ import { ROOT_COMPANY_ID } from "../server/lib/companies.mjs";
 import { resolveDbPath } from "../server/lib/db-path.mjs";
 import { LATEST_VERSION, runMigrations } from "../server/lib/migrations.mjs";
 import { ADMIN_PASSWORD, loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
 const MESSAGE = "Bu şirketin verisi programın daha yeni bir sürümüyle açılmış. Programı güncelleyin; o zamana kadar veri yalnız görüntülenir.";
 const AHEAD = LATEST_VERSION + 1;
-const today = new Date().toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const today = isoDay(new Date());
 const roots = [];
 after(() => {
   for (const dir of roots) removeTestDir(dir);

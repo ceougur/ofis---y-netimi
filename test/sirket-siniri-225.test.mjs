@@ -8,6 +8,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { after, describe, test } from "node:test";
 import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
 const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
 const apiOf = client => ({
@@ -100,7 +101,7 @@ describe("Şirket sınırı: en fazla 2", () => {
     assert.deepEqual([list.limit.count, list.limit.canCreate], [3, false]);
     assert.equal((await api.post("/api/companies/select", { id: third.id })).status, 200);
     assert.deepEqual((await api.get("/api/workspace/accounts")).data.accounts.map(item => item.name), ["Üçüncüdeki Cari"]);
-    assert.equal((await api.post("/api/workspace/cash", { kind: "in", amount: 100, date: new Date().toISOString().slice(0, 10), description: "Çalışıyor" })).status, 200);
+    assert.equal((await api.post("/api/workspace/cash", { kind: "in", amount: 100, date: isoDay(new Date()), description: "Çalışıyor" })).status, 200);
     const four = await api.post("/api/companies", { name: "Dört" });
     assert.equal(four.status, 409);
     // 3+ şirkette mesaj doğru yolu söyler (gözden geçirme bulgusu): "bir şirketi silin" yetmez.

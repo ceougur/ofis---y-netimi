@@ -1,0 +1,32 @@
+{
+  "ad": "tarih-sonra-istanbul-gercek",
+  "komut": "node --test --test-concurrency=1 test/rapor-220.test.mjs test/istek-kimligi-222.test.mjs test/cari-bilgi-222.test.mjs test/odeme-yolu-222.test.mjs test/sirketler-217.test.mjs test/yedek-denetim-221.test.mjs test/sema-kapisi-bs7.test.mjs test/sirket-siniri-225.test.mjs test/sirket-pencere-221.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-t2-6-248.test.mjs",
+  "commit": "9215357158176a87126fff1e4d291a15a59609d6",
+  "dal": "worktree-agent-a7187c0e87f23820b",
+  "kirli": 11,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:09:02.452Z",
+  "sure_sn": 34.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/tarih-sonra-istanbul-gercek.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b",
+  "ham_cikti_sha256": "5fe6c748b2a2325fc61f248ce9414cc2344459697e8dded617184dc9e3295dc7",
+  "ham_cikti_bayt": 23402
+}

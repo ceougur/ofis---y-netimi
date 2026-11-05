@@ -1,0 +1,158 @@
+{
+  "ad": "tarih-once-zorla-gmt12",
+  "komut": "node --import /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/saat-on-yukle.mjs --test --test-concurrency=1 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/test/istek-kimligi-222.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/test/cari-bilgi-222.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/test/odeme-yolu-222.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/test/sirketler-217.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/test/yedek-denetim-221.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/test/sema-kapisi-bs7.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/test/sirket-siniri-225.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/test/sirket-pencere-221.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/test/whatsapp-b3-pdf-249.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/test/whatsapp-t2-6-248.test.mjs",
+  "commit": "9215357158176a87126fff1e4d291a15a59609d6",
+  "dal": "worktree-agent-a7187c0e87f23820b",
+  "kirli": 11,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:10:22.922Z",
+  "sure_sn": 22.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 46,
+    "gecen": 15,
+    "basarisiz": 20,
+    "iptal": 11,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 11 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "cari kartı: notu/adresi düzeltmek kapıyı ve ANLIK DURUM yenilemesini tetiklemez; tür ve ad değişikliği tetikler",
+      "konum": "test/cari-bilgi-222.test.mjs:46:1",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › aynı kimlik iki kez → tek fatura, ikinci yanıt ilk faturayı döndürür (replayed); cari ve stok bir kez",
+      "konum": "test/istek-kimligi-222.test.mjs:63:3",
+      "hata": "{\"ok\":false,\"error\":\"İleri tarihli fatura kaydedilemez (06.11.2026). Taslak olarak kaydedin; günü gelince kaydedin.\",\"code\":\"date-future\",\"field\":\"issueDate\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › aynı anda iki istek (aynı kimlik) → tek fatura",
+      "konum": "test/istek-kimligi-222.test.mjs:77:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › kimliği farklı aynı içerikli iki fatura serbest (gerçekten iki satış); kimliksiz istek eskisi gibi",
+      "konum": "test/istek-kimligi-222.test.mjs:86:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › aynı kimlik farklı içerikle → 409, yeni fatura yok",
+      "konum": "test/istek-kimligi-222.test.mjs:95:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › reddedilen istek saklanmaz: aynı kimlikle düzeltilip yeniden gönderilince kaydedilir",
+      "konum": "test/istek-kimligi-222.test.mjs:105:3",
+      "hata": "{\"ok\":false,\"error\":\"İleri tarihli fatura kaydedilemez (06.11.2026). Taslak olarak kaydedin; günü gelince kaydedin.\",\"code\":\"date-future\",\"field\":\"issueDate\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › başka kullanıcı aynı kimliği gönderirse ilk kullanıcının faturası dönmez (kendi faturası açılır)",
+      "konum": "test/istek-kimligi-222.test.mjs:115:3",
+      "hata": "yetkisi yoksa 403 (sızma yok) · 400 !== 403 (beklenen 403, gelen 400)"
+    },
+    {
+      "ad": "tanımsız ödeme yolu her uçta 400; boş yol varsayılan, geçerli yol kabul",
+      "konum": "test/odeme-yolu-222.test.mjs:10:1",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "BS-7 şema sürüm kapısı › 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır",
+      "konum": "test/sema-kapisi-bs7.test.mjs:156:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "BS-7 şema sürüm kapısı › 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır",
+      "konum": "test/sema-kapisi-bs7.test.mjs:216:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "BS-7 şema sürüm kapısı › geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir",
+      "konum": "test/sema-kapisi-bs7.test.mjs:271:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.0.21 · aynı hesap iki pencerede: kayıt sayfanın şirketine yazılır › düzeltme: A'nın isteği sayfasının şirketini (001) taşır; B'nin seçimi etkilemez",
+      "konum": "test/sirket-pencere-221.test.mjs:36:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "Şirket sınırı: en fazla 2 › eski kurulum: sınırdan önce açılmış 3 şirket kalır ve çalışır; yenisi açılmaz",
+      "konum": "test/sirket-siniri-225.test.mjs:84:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › göç: mevcut veri 001 kodlu ilk şirkettir, sayılar aynı; /api/auth/me şirketi söyler",
+      "konum": "test/sirketler-217.test.mjs:37:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › yeni şirket 002: sıfırdan; aynı adlı cari iki şirkette; birinde tahsilat öbürünü değiştirmez",
+      "konum": "test/sirketler-217.test.mjs:49:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › sayfalar şirkete aittir: 001'de sayfa adı değişir, 002'de görünmez",
+      "konum": "test/sirketler-217.test.mjs:71:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › yetki: personel yetkisiz şirketi göremez/seçemez (403); yönetici yetki verince seçer; yönetici daraltılamaz",
+      "konum": "test/sirketler-217.test.mjs:79:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › şirket kodu/adı değişir; kod tekil ve üç hane; 001 silinemez",
+      "konum": "test/sirketler-217.test.mjs:105:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › birleşik rapor: seçilen şirketler yan yana + toplam; PDF ve Excel iner; yetkisiz şirket rapora girmez",
+      "konum": "test/sirketler-217.test.mjs:118:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › şirket verisini sıfırla: zorunlu yedek, onay (kod + parola); hareketler silinir, kartlar kalır; lisans ve öbür şirket aynı; kullanıcı girer",
+      "konum": "test/sirketler-217.test.mjs:138:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › şirket silme: onay + parola, önce yedek, klasör silinen-sirketler altına; seçmiş kullanıcılar 001'e döner",
+      "konum": "test/sirketler-217.test.mjs:166:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme",
+      "konum": "test/sirketler-217.test.mjs:18:1",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok › T2 eşdeğerlik: 131056 → Bağlantı Bekleniyor → Duraklat → 31 gün → Devam Et (arada bakım turları, tahsilat): PDF iki kez yüklenir, BAYT BAYT aynı; ileti ilk hazırlığın bakiyesiyle",
+      "konum": "test/whatsapp-b3-pdf-249.test.mjs:60:3",
+      "hata": "{\"ok\":false,\"error\":\"İleri tarihli hareket girilemez (03.11.2026). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.\",\"code\":\"date-future\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok › T6 yarıda kesilme: PDF yazımı (disk dolu) düşerse işin satırı da geri alınır — prepared_at boş, değişken yok; sonraki tur temiz hazırlar, PDF bir kez gider",
+      "konum": "test/whatsapp-b3-pdf-249.test.mjs:150:3",
+      "hata": "{\"ok\":false,\"error\":\"İleri tarihli hareket girilemez (03.11.2026). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.\",\"code\":\"date-future\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.9 B3 — dondurulmuş PDF ayrı tabloda: davranış aynı, iş satırında boşluk yok › T8 kaynak tarama: wa_jobs.pdf_blob yalnız göç dosyasında anılır (yazım da okuma da yok; CRLF bilen)",
+      "konum": "test/whatsapp-b3-pdf-249.test.mjs:221:3",
+      "hata": "ENOENT: no such file or directory, scandir '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/eski-92153571/client'"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/tarih-once-zorla-gmt12.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b",
+  "ham_cikti_sha256": "11ef01e532be7bfbf5db49d135636a442dcee58af988663984272a04b20c4eba",
+  "ham_cikti_bayt": 45688
+}
