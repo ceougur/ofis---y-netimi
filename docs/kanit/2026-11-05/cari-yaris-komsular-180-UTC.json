@@ -1,0 +1,32 @@
+{
+  "ad": "cari-yaris-komsular-180-UTC",
+  "komut": "bash -c TZ=UTC HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $(cat /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/komsular.txt)",
+  "commit": "8e27f96ad2fc95a813d8d743104e8b38c8dbcdc2",
+  "dal": "worktree-agent-ae1bfe4ab0b1e8e53",
+  "kirli": 1,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:10:54.886Z",
+  "sure_sn": 1031.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2027,
+    "gecen": 2027,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/cari-yaris-komsular-180-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae1bfe4ab0b1e8e53",
+  "ham_cikti_sha256": "f59471e82d71ef09da973daefed1a6412bf159e7cde2eaef2587f79a9c42def2",
+  "ham_cikti_bayt": 776553
+}

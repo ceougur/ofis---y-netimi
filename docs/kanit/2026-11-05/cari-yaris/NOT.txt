@@ -1,0 +1,18 @@
+2.5.0 cari hareketi düzeltme yarışı (BS-3 ailesi) — kanıt notu (düzeltme ajanı; taban 8e27f96a; test 4d9938b4, düzeltme 855b06ea)
+
+GÖZLEM YENİDEN ÜRETİLDİ (ders 6): docs/kanit/2026-11-05/bs234/gozlem-cari-duzeltme-yaris.mjs bu ağaçta (8e27f96a) → borç / tahsilat: silme 200, düzeltme 200, satır yok, audit +1.
+KÖK NEDEN: server/routes/accounts.mjs PUT /accounts/:id/entries/:entryId — hareket isteğin başında (entryOf, ~1056) okunur, sonra `await readJson(req)` (~1059) ile gövde beklenir;
+bank.post write'ı (~1087 UPDATE … WHERE id = ?) yeniden denetlemez → silinmiş harekete UPDATE 0 satır, audit "account.entry.updated", yanıt 200 + kart.
+DÜZELTME: bank.post'a prepare: entryOf(account.id, previous.id) (yazım işleminin içinde, istek kimliği bakışından sonra; stock.mjs PUT moves / plans.mjs PUT entries ile aynı).
+
+KOŞULAR (tools/kanit.mjs kos; ham çıktı bu klasörün üstünde, cari-yaris-*.log / .json):
+  eski 8e27f96a (ayrı kopya, git archive)  UTC 1/4, İstanbul 1/4 — (a)(c)(d) "yazım reddedilmeli (404) — yanıt 200" + "değişen: audit_events" + "account.entry.updated geçmiş satırı: 1"; (b) yeşil (gerileme denetimi)
+  yeni                                     UTC 4/4, İstanbul 4/4
+  mutasyon M1 (prepare yok)                = eski kod (tek fark prepare) → 1/4
+  mutasyon M2 (prepare cariyi okur, hareketi değil) UTC 1/4
+  komşular UTC: cari-yaris-komsular-180-UTC (accounts.mjs ya da /accounts/ anan bütün 180 *.test.mjs, yeni test dahil) 2027/2027
+  komşular İstanbul: cari-yaris-put-komsular-33-Istanbul (cari hareketine PUT atan 33 dosya) 511/511
+  kaynak tarayan: cari-yaris-kaynak-tarama (post-statik, statik, kanit-araci, lisans izolasyonu, platform, yazım) 76/76
+  e2e (cari kartında Düzelt ✎ kullananlar + BS-2): cari-vade-245 39/39, banka-210b 90/90, banka-210-eski-satir 29/29, pos-kart-249 383/383, kart-iade-gecmis-250 8/8
+  NOT: eski / mutasyon koşularının .json'undaki commit, aracın çağrıldığı ağacınkidir (8e27f96 + değişmiş dosya); komut ayrı kopyada (scratchpad/cari-yaris-ae1b/eski-8e27f96a, mutasyon-m2) koştu.
+YAN BULGU YOKLAMASI: yan-bulgu-yoklama.mjs / .txt (Y1 POST hareket cari silinirken 404, Y2 PUT cari 404, Y3 eşzamanlı iki silme 200 / 404 + tek iz — aynı aileden açık yok).
