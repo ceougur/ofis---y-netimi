@@ -1,0 +1,32 @@
+{
+  "ad": "kahin2-mutasyon",
+  "komut": "python3 test/bagimsiz/muhasebe/mutasyon.py",
+  "commit": "de199de4bf7fe630175f3fe6195542b3fa9e81da",
+  "dal": "worktree-agent-abeb665376d582d24",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:38:38.412Z",
+  "sure_sn": 368.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 126,
+    "gecen": 126,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/kahin2-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-abeb665376d582d24",
+  "ham_cikti_sha256": "63c665aabeb869cba1847b3c7de190354a18e3c8a5bf87a1555191fe98ef1938",
+  "ham_cikti_bayt": 23225
+}
