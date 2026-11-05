@@ -8,33 +8,44 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tyk": []
     },
     "canli": {
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
     }
    },
    "devirler": [
     {
-     "K": "2028-02-29",
+     "K": "2027-12-31",
      "degismezler": {
       "arsiv_153_dss": [],
       "arsiv_6_7_sifir": [],
       "g_eslesme": [],
       "hareket_sayisi": [],
       "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
       "yeni_gt_sifir": []
      },
-     "id": "devir-2028-1"
+     "id": "devir-2027-1"
     }
    ],
    "raporlar": {
@@ -75,6 +86,8 @@
      "donem_net_kari": 20000,
      "fark": 0,
      "gecmis_yillar_kapanmamis": 100000,
+     "gecmis_yillar_kar": 100000,
+     "gecmis_yillar_zarar": 0,
      "kesin_degil": [
       "KAPANMAMIS_ONCEKI_YIL",
       "TAMAMLANMAMIS_ACILIS"
@@ -113,98 +126,86 @@
       "III.F": {
        "360": 30000
       },
-      "V.D": {
-       "570": 100000
-      },
       "V.F": {
-       "590": 20000,
-       "Dönem Net Kârı (Hesaplanmış)": 10000
+       "590": 100000,
+       "Dönem Net Kârı (Hesaplanmış)": 30000
       },
       "V.G": {
        "519": 10000
       }
      },
-     "donem_net_kari": 10000,
+     "donem_net_kari": 30000,
      "fark": 0,
      "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
      "kesin_degil": [
       "TAMAMLANMAMIS_ACILIS"
      ],
      "pasif": {
       "III.B": 36000,
       "III.F": 30000,
-      "V.D": 100000,
-      "V.F": 30000,
+      "V.F": 130000,
       "V.G": 10000
      },
      "pasif_toplam": 206000,
      "tarih": "2028-03-01"
     },
     "devir": {
-     "K": "2028-02-29",
+     "K": "2027-12-31",
      "acilis": {
       "N13": {
-       "190": 6000,
-       "360": -30000,
-       "519": 144000,
-       "570": -100000,
-       "590": -20000
+       "360": -20000,
+       "519": 120000,
+       "590": -100000
       },
       "acik_kalemler": [
        {
+        "belge_tarihi": "2027-12-31",
         "cari": "C1",
-        "fatura": "F1",
+        "k": "fatura:F1",
         "kalan": 120000,
-        "tarih": "2027-12-31",
+        "tur": "fatura",
         "vade": "2027-12-31"
-       },
-       {
-        "cari": "C1",
-        "fatura": "F2",
-        "kalan": 60000,
-        "tarih": "2028-01-01",
-        "vade": "2028-01-01"
-       },
-       {
-        "cari": "T1",
-        "fatura": "A1",
-        "kalan": -36000,
-        "tarih": "2028-02-29",
-        "vade": "2028-02-29"
        }
       ],
       "cariler": {
        "C1": {
         "acilis": 0,
-        "bakiye": 180000
-       },
-       "T1": {
-        "acilis": 0,
-        "bakiye": -36000
+        "bakiye": 120000
        }
       },
+      "eksi_stok": [],
       "ekstre": {
        "C1": {
         "Alacak Toplamı": 0,
         "Borç Toplamı": 0,
-        "acik_kalemler": 2
-       },
-       "T1": {
-        "Alacak Toplamı": 0,
-        "Borç Toplamı": 0,
-        "acik_kalemler": 1
+        "acik_kalemler": 1,
+        "satirlar": [
+         {
+          "aciklama": "Devir: F1 (2027-12-31)",
+          "alacak": 0,
+          "bakiye": 120000,
+          "borc": 120000,
+          "tarih": "2028-01-01",
+          "vade": "2027-12-31"
+         }
+        ]
        }
-      }
+      },
+      "ekstre_cariler": [
+       "C1"
+      ],
+      "kartlar": {},
+      "stok": {},
+      "supheli": {}
      },
      "arsiv_kapanis": {
       "100": 10000,
-      "120|C1": 180000,
-      "190": 6000,
-      "320|T1": -36000,
-      "360": -30000,
+      "120|C1": 120000,
+      "360": -20000,
       "519": -10000,
-      "570": -100000,
-      "590": -20000
+      "590": -100000
      },
      "degismezler": {
       "arsiv_153_dss": [],
@@ -212,6 +213,12 @@
       "g_eslesme": [],
       "hareket_sayisi": [],
       "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
       "yeni_gt_sifir": []
@@ -219,25 +226,21 @@
      "kapanis": {
       "DSS": 0,
       "N01": {
-       "2027": 0,
-       "2028": 0
+       "2027": 0
       },
       "R": {
-       "2027": 100000,
-       "2028": 20000
+       "2027": 100000
       },
-      "sonuc": 120000
+      "onceki_yil": {},
+      "sonuc": 100000
      },
      "secenek": "borc_alacak",
      "yeni_acilis": {
       "100": 10000,
-      "120|C1": 180000,
-      "190": 6000,
-      "320|T1": -36000,
-      "360": -30000,
+      "120|C1": 120000,
+      "360": -20000,
       "519": -10000,
-      "570": -100000,
-      "590": -20000
+      "590": -100000
      }
     },
     "gt27": {
@@ -275,7 +278,7 @@
      "hesaplanmadi": false,
      "hesaplar": {
       "600": 50000,
-      "770": 30000
+      "770.90": 30000
      },
      "kalemler": {
       "A": 50000,
@@ -330,121 +333,6 @@
     },
     "yev": [
      {
-      "id": "devir-2028-1:devir_kasa:1#0",
-      "kaynak": "devir-2028-1:devir_kasa:1",
-      "satirlar": [
-       {
-        "b": 10000,
-        "h": "100"
-       },
-       {
-        "a": 10000,
-        "h": "519"
-       }
-      ],
-      "sinif": 0,
-      "tarih": "2028-03-01",
-      "tur": "devir_kasa"
-     },
-     {
-      "id": "devir-2028-1:devir_acik_kalem:2#0",
-      "kaynak": "devir-2028-1:devir_acik_kalem:2",
-      "satirlar": [
-       {
-        "b": 120000,
-        "c": "C1",
-        "e": {
-         "k": "fatura:F1",
-         "tur": "fatura",
-         "vade": "2027-12-31"
-        },
-        "h": "120"
-       },
-       {
-        "a": 120000,
-        "h": "519"
-       }
-      ],
-      "sinif": 0,
-      "tarih": "2028-03-01",
-      "tur": "devir_acik_kalem"
-     },
-     {
-      "id": "devir-2028-1:devir_acik_kalem:3#0",
-      "kaynak": "devir-2028-1:devir_acik_kalem:3",
-      "satirlar": [
-       {
-        "b": 60000,
-        "c": "C1",
-        "e": {
-         "k": "fatura:F2",
-         "tur": "fatura",
-         "vade": "2028-01-01"
-        },
-        "h": "120"
-       },
-       {
-        "a": 60000,
-        "h": "519"
-       }
-      ],
-      "sinif": 0,
-      "tarih": "2028-03-01",
-      "tur": "devir_acik_kalem"
-     },
-     {
-      "id": "devir-2028-1:devir_acik_kalem:4#0",
-      "kaynak": "devir-2028-1:devir_acik_kalem:4",
-      "satirlar": [
-       {
-        "a": 36000,
-        "c": "T1",
-        "e": {
-         "k": "fatura:A1",
-         "tur": "fatura",
-         "vade": "2028-02-29"
-        },
-        "h": "320"
-       },
-       {
-        "b": 36000,
-        "h": "519"
-       }
-      ],
-      "sinif": 0,
-      "tarih": "2028-03-01",
-      "tur": "devir_acik_kalem"
-     },
-     {
-      "id": "fis19",
-      "kaynak": "devir-2028-1",
-      "satirlar": [
-       {
-        "b": 6000,
-        "h": "190"
-       },
-       {
-        "a": 30000,
-        "h": "360"
-       },
-       {
-        "a": 100000,
-        "h": "570"
-       },
-       {
-        "a": 20000,
-        "h": "590"
-       },
-       {
-        "b": 144000,
-        "h": "519"
-       }
-      ],
-      "sinif": 0,
-      "tarih": "2028-03-01",
-      "tur": "devir_acilis"
-     },
-     {
       "id": "F3#0",
       "kaynak": "F3",
       "satirlar": [
@@ -467,9 +355,75 @@
       "tarih": "2028-03-01",
       "tur": "satis_faturasi"
      }
+    ],
+    "yev29": [
+     {
+      "id": "A1#0",
+      "kaynak": "A1",
+      "satirlar": [
+       {
+        "b": 30000,
+        "h": "770.90"
+       },
+       {
+        "b": 6000,
+        "e": {
+         "donem": "2028-02",
+         "indirim_ayi": null
+        },
+        "h": "191"
+       },
+       {
+        "a": 36000,
+        "c": "T1",
+        "e": {
+         "k": "fatura:A1",
+         "tur": "fatura",
+         "vade": "2028-02-29"
+        },
+        "h": "320"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2028-02-29",
+      "tur": "alis_faturasi"
+     },
+     {
+      "id": "fis7",
+      "kaynak": "fis7",
+      "satirlar": [
+       {
+        "a": 6000,
+        "e": {
+         "donem": "2028-02"
+        },
+        "h": "191"
+       },
+       {
+        "b": 6000,
+        "h": "190"
+       }
+      ],
+      "sinif": 2,
+      "tarih": "2028-02-29",
+      "tur": "kdv_mahsup"
+     }
     ]
    },
-   "redler": []
+   "redler": [
+    {
+     "kod": "DEVIR_K_31_ARALIK",
+     "neden": "2028-02-29",
+     "olay": 12,
+     "tur": "devir"
+    },
+    {
+     "kod": "DEVIR_K_GELECEK",
+     "neden": "2028-12-31 ≥ bugün 2028-03-02",
+     "olay": 13,
+     "tur": "devir"
+    }
+   ]
   }
  },
  "dil": "muhasebe-kahin/1"

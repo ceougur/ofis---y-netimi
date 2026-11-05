@@ -1,0 +1,119 @@
+{
+ "ad": "s44-s5-iptalde-avans",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "acik1": [],
+    "acik2": [
+     {
+      "fatura": "F2",
+      "kalan": 30000,
+      "tarih": "2026-08-01",
+      "vade": "2026-08-01"
+     }
+    ],
+    "bil": {
+     "aktif": {
+      "I.A": 20000
+     },
+     "aktif_toplam": 20000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "102.B1": 20000
+      },
+      "III.D": {
+       "120|C1": 20000
+      }
+     },
+     "donem_net_kari": 0,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
+     "kesin_degil": [],
+     "pasif": {
+      "III.D": 20000
+     },
+     "pasif_toplam": 20000,
+     "tarih": "2026-07-31"
+    },
+    "g1": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2026-08-15"
+    },
+    "g2": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "fatura:F2",
+       "vade": "2026-08-01"
+      }
+     ],
+     "gecikmis": 30000,
+     "supheli": 0,
+     "tarih": "2026-08-02"
+    },
+    "mz": {
+     "ana": {
+      "102": {
+       "alacak": 0,
+       "bakiye": 20000,
+       "borc": 20000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-07-01",
+     "satirlar": {
+      "102.B1": {
+       "alacak": 0,
+       "bakiye": 20000,
+       "borc": 20000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-07-31",
+     "toplam": {
+      "alacak": 20000,
+      "bakiye": 0,
+      "borc": 20000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

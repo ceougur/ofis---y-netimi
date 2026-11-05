@@ -1,0 +1,83 @@
+{
+ "ad": "s41-s2-vade-sirasi",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "acik1": [
+     {
+      "fatura": "F1",
+      "kalan": 50000,
+      "tarih": "2026-03-01",
+      "vade": "2026-06-30"
+     }
+    ],
+    "ak3": [
+     {
+      "k": "borc:BY5",
+      "kalan": 5000,
+      "tarih": "2026-08-10",
+      "tur": "borc_yaz",
+      "vade": "2026-09-30"
+     },
+     {
+      "k": "fatura:F4",
+      "kalan": 10000,
+      "tarih": "2026-08-15",
+      "tur": "fatura",
+      "vade": "2026-09-30"
+     }
+    ],
+    "g1": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2026-05-21"
+    },
+    "g2": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 50000,
+       "kalem": "fatura:F1",
+       "vade": "2026-06-30"
+      }
+     ],
+     "gecikmis": 50000,
+     "supheli": 0,
+     "tarih": "2026-07-01"
+    },
+    "g3": {
+     "cari": "C2",
+     "detay": [
+      {
+       "kalan": 40000,
+       "kalem": "fatura:F7",
+       "vade": "2026-05-10"
+      }
+     ],
+     "gecikmis": 40000,
+     "supheli": 0,
+     "tarih": "2026-05-11"
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

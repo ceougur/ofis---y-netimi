@@ -87,7 +87,9 @@ class Yardimci(unittest.TestCase):
     def test_kurallar_dallar(self):
         k = M.Kurallar()
         self.assertEqual({getattr(k, a) for a in M.IKI_DALLI}, {"A"})
-        self.assertEqual(M.Kurallar.etiketten("KG6=B,KG3=SORU").etiket(), "KG3=SORU,KG6=B")
+        self.assertEqual(M.Kurallar.etiketten("KG6=B,KG3=KITAP").etiket(), "KG3=KITAP,KG6=B")
+        with self.assertRaises(ValueError):
+            M.Kurallar(KG3="SORU")                       # eski etiket: KG-3 onaylanan metin artık A
         with self.assertRaises(ValueError):
             M.Kurallar(KG6="C")
 
@@ -118,8 +120,16 @@ class OlayMaddeleri(unittest.TestCase):
         self.assertEqual(satirlar(yev[0]), {"153": 200000, "191": 40000, "320|T1": -220000, "360": -20000})
 
     def test_F06_kira_stopaji(self):
-        yev, _ = yevmiye([o("alis_faturasi", "2026-05-02", cari="T2", fatura_turu="gider", M=1000000, S=200000)])
+        yev, _ = yevmiye([o("alis_faturasi", "2026-05-02", cari="T2", fatura_turu="gider", gider_turu="genel", M=1000000, S=200000)])
         self.assertEqual(satirlar(yev[0]), {"770": 1000000, "320|T2": -800000, "360": -200000})
+
+    def test_F06_M14_gider_turu_esleme(self):
+        # EK-1 M14: satış 760, genel 770, finansman 780, demirbaş 255, ceza 689; seçilmemiş / tanınmayan 770.90 (G-8)
+        tur = [("satis", "760"), ("genel", "770"), ("finansman", "780"), ("demirbas", "255"), ("ceza", "689"), (None, "770.90"),
+               ("bilinmeyen", "770.90")]
+        ols = [o("alis_faturasi", "2026-05-02", cari="T1", fatura_turu="gider", M=100, **({"gider_turu": g} if g else {})) for g, _ in tur]
+        yev, _ = yevmiye(ols)
+        self.assertEqual([[h for h in satirlar(m) if h[0] in "267"] for m in yev], [[h] for _, h in tur])
 
     def test_F10_esmm_stopaj_193(self):
         yev, _ = yevmiye([o("esmm", "2026-06-01", cari="C1", brut=1000000, K=200000, S=200000)])
@@ -199,11 +209,13 @@ class OlayMaddeleri(unittest.TestCase):
         self.assertEqual(satirlar(yev[5])["590"], -(900 + 100 - 600 - 10))
 
     def test_N10_acik_kalem_karsiligi_519_gelir_degil(self):
-        ols = [o("satis_faturasi", "2026-12-15", id="F1", cari="C1", M=1000, vade="2027-01-15"), o("devir", K="2026-12-31"),
-               E.R("yev", "yevmiye", bas="2027-01-01", son="2027-01-01")]
+        ols = [o("satis_faturasi", "2026-12-15", id="F1", cari="C1", M=1000, vade="2027-01-15"), o("devir", K="2026-12-31", ad="dv"),
+               E.R("yev", "yevmiye", bas="2027-01-01", son="2027-01-01"), E.R("ak", "acik_kalemler", cari="C1", tarih="2027-01-01")]
         r = M.kos(senaryo(ols))
         self.assertEqual([satirlar(m) for m in r["raporlar"]["yev"]], [{"120|C1": 1000, "519": -1000}, {"590": -1000, "519": 1000}])
-        self.assertEqual(r["raporlar"]["yev"][0]["satirlar"][0]["e"]["vade"], "2027-01-15")
+        # M3: defter satırında vade yok (tek net satır); açık kalem cari modülünde kendi vadesiyle (M2)
+        self.assertEqual(r["raporlar"]["yev"][0]["satirlar"][0]["e"]["tur"], "devir_cari")
+        self.assertEqual(r["raporlar"]["ak"], [{"k": "fatura:F1", "tur": "fatura", "kalan": 1000, "vade": "2027-01-15", "tarih": "2026-12-15"}])
 
     def test_KG7_indirim_donemi(self):
         # Aralık faturası, KDV indirimi Ocak'ta: Aralık mahsubuna girmez, Ocak'ınkine girer
@@ -245,6 +257,26 @@ class OlayMaddeleri(unittest.TestCase):
         self.assertEqual([satirlar(m) for m in yev], [{"120|C1": 900, "602.90": -900}, {"100": 900, "120|C1": -900},
                                                      {"120|C1": 100, "100": -100}])
         self.assertTrue(M.tumu_tuttu(r["degismezler"]))
+
+    def test_TYK_bag_hedefin_bagsiz_kapanisini_geri_alir(self):
+        # EK-1 §1 adım 3 "bağlar önce" (README KARAR GEREKİYOR 24; mutasyon N25 için sonradan elle yazıldı): F1 bağsız P1 ile kapanmışken
+        # P2 "Kapatılacak Fatura: F1" gelir → P2 F1'i kapatır, P1 serbest kalır ve avans olarak açık kalır (P2 değil)
+        r = M.kos(senaryo([o("satis_faturasi", "2026-03-01", id="F1", cari="C1", M=10000, vade="2026-03-31"),
+                           o("tahsilat", "2026-03-10", id="P1", cari="C1", yol="nakit", tutar=10000),
+                           o("tahsilat", "2026-03-20", id="P2", cari="C1", yol="nakit", tutar=10000, fatura="F1"),
+                           E.R("ak", "acik_kalemler", cari="C1", tarih="2026-03-31")]))
+        self.assertEqual(r["raporlar"]["ak"], [{"k": "tahsilat:P1", "tur": "tahsilat", "kalan": -10000, "vade": "2026-03-10", "tarih": "2026-03-10"}])
+
+    def test_K3_kabul_E_iki_kayit_en_eskisi_once(self):
+        # docs/2.3.0-SUPHELI-KABUL.md §2 E (plandan elle): al 2.000 (03.10), al 3.000 (04.10) → tahsilat 2.500 (05.10)
+        # → kayıt 1 kalan 0, kayıt 2 kalan 2.500; 128 = 2.500
+        r = M.kos(senaryo([o("borc_yaz", "2026-10-01", cari="C1", tutar=1000000, aciklama="Bedel"),
+                           o("supheliye_al", "2026-10-03", id="S1", cari="C1", tutar=200000),
+                           o("supheliye_al", "2026-10-04", id="S2", cari="C1", tutar=300000),
+                           o("tahsilat", "2026-10-05", cari="C1", yol="nakit", tutar=250000),
+                           E.R("k", "supheli_kayitlari", cari="C1"), E.MZ("mz", "2026-10-01", "2026-10-31")]))
+        self.assertEqual([(x["id"], x["kalan"]) for x in r["raporlar"]["k"]], [("S1", 0), ("S2", 250000)])
+        self.assertEqual(r["raporlar"]["mz"]["satirlar"]["128|C1"]["bakiye"], 250000)
 
     def test_ayni_gun_sirasi_acilis_olagan_donem_sonu(self):
         ols = [o("satis_faturasi", "2026-01-31", cari="C1", M=100, K=20), o("kdv_mahsup", ay="2026-01"),
@@ -305,6 +337,9 @@ def _rastgele_testi(tohum):
         b1 = {k: v for k, v in r["raporlar"]["mz_yeni"]["satirlar"].items() if k[0] in "1234" and k != "153" and v["bakiye"]}
         b2 = {k: v["bakiye"] for k, v in r2["raporlar"]["mz_yeni"]["satirlar"].items() if k[0] in "1234" and k != "153" and v["bakiye"]}
         self.assertEqual({k: v["bakiye"] for k, v in b1.items()}, b2)
+        # EK-1 M2 + §4 (4): her carinin gecikmiş tutarı devirli ve devirsiz koşuda aynı (Devri Yenile sonrası dahil)
+        self.assertEqual(r["raporlar"]["gec_ocak"], r2["raporlar"]["gec_ocak"])
+        self.assertEqual(r["raporlar"]["gec_son"], r2["raporlar"]["gec_son"])
     return test
 
 
@@ -342,9 +377,83 @@ class DegismezDenetcileri(unittest.TestCase):
         d = M.devir_degismezleri(m.arsivler[0], m.canli, "2026-12-31", None, did)
         self.assertTrue(d["yeni_gt_sifir"])
 
+    def _devirli(self):
+        m = self._model([o("cari_acilis", "2026-01-01", id="AC1", cari="C1", yon="borc", tutar=1000),
+                         o("satis_faturasi", "2026-12-10", id="F1", cari="C1", M=3000, vade="2027-02-01"),
+                         o("tahsilat", "2027-01-05", cari="C1", yol="nakit", tutar=500), o("devir", K="2026-12-31")])
+        return m, m.canli, m.arsivler[0], m.devirler[0]["id"]
+
+    def test_devreden_kalem_eksikse_m13_ve_tyk_yakalar(self):
+        m, yeni, arsiv, did = self._devirli()
+        self.assertTrue(M.tumu_tuttu(M.devir_degismezleri(arsiv, yeni, "2026-12-31", None, did)))
+        self.assertEqual(M.tyk_degismezleri(yeni, "2027-01-31"), [])
+        k = next(k for k in yeni.kaynaklar.values() if k.tur == "devir_cari")
+        k.v["kalemler"] = k.v["kalemler"][1:]
+        yeni.degisti()
+        self.assertTrue(M.devir_degismezleri(arsiv, yeni, "2026-12-31", None, did)["m13_ayri"])
+        self.assertTrue(M.tyk_degismezleri(yeni, "2027-01-31"))
+
+    def test_devreden_kalemin_vadesi_degisirse_m2_yakalar(self):
+        m, yeni, arsiv, did = self._devirli()
+        devirsiz = M.devirsiz_dosya(arsiv, yeni, did)
+        self.assertEqual(M.devir_degismezleri(arsiv, yeni, "2026-12-31", None, did, devirsiz=devirsiz)["m2_gecikmis_ayni"], [])
+        k = next(k for k in yeni.kaynaklar.values() if k.tur == "devir_cari")
+        k.v["kalemler"][-1]["vade"] = "2027-01-01"                  # M2 C: vadesiz / K+1
+        yeni.degisti()
+        self.assertTrue(M.devir_degismezleri(arsiv, yeni, "2026-12-31", None, did, devirsiz=devirsiz)["m2_gecikmis_ayni"])
+
+    def test_kural_farki_fisi_yanlis_hesapta_yakalanir(self):
+        m = self._model([o("kasa_acilis", "2026-01-01", tutar=100), o("donem_kilitle", tarih="2026-12-31", kural="2.4.9"),
+                         o("kural_farki_duzelt")])
+        d = m.canli
+        self.assertEqual(M.degismezler(d, "2027-01-01")["kural_farki_yeni_kural"], [])
+        f = next(f for f in d.fisler if f.tur == "kural_farki")
+        f.satirlar = [M.L("101.01" if x["h"] == "500" else x["h"], x["b"] - x["a"], x["c"]) for x in f.satirlar]
+        d.degisti()
+        self.assertTrue(M.degismezler(d, "2027-01-01")["kural_farki_yeni_kural"])
+
     def test_tumu_tuttu(self):
         self.assertTrue(M.tumu_tuttu({"a": [], "b": {"c": []}}))
         self.assertFalse(M.tumu_tuttu({"a": [], "b": {"c": [1]}}))
+
+
+# ------------------------------------------------------------------------------------------------ senaryo hijyeni (mutasyonda koşmaz)
+SERI = {"satis_faturasi": "satis", "satis_iade_faturasi": "satis", "esmm": "esmm"}
+
+
+class SenaryoHijyeni(unittest.TestCase):
+    """Senaryolar programın kabul edeceği sırada mı (ana oturum 05.11 ~19:50, K4 / K5)."""
+
+    def _hepsi(self):
+        return [dict(s, **E.TANIM) for s in E.SENARYOLAR] + [U.uret(t) for t in U.TOHUMLAR]
+
+    def test_vuk_muteselsil_sira_tarih(self):
+        # aynı seride (ve yılda) sonra girilen belgenin tarihi öncekinden önce olamaz (GECMIS-KARARLAR "NUMARA" sıra-tarih denetimi);
+        # Devri Yenile düzeltmesi arşivdeki serinin son tarihinden önce olamaz
+        for s in self._hepsi():
+            son = {}
+            for i, x in enumerate(s["olaylar"]):
+                for y in ([x] if x["tur"] != "devri_yenile" else x["duzeltmeler"]):
+                    seri = SERI.get(y["tur"])
+                    if not seri:
+                        continue
+                    a = (seri, y["tarih"][:4])
+                    self.assertGreaterEqual(y["tarih"], son.get(a, ""), f"{s['ad']} olay {i + 1} {y.get('id')}")
+                    son[a] = y["tarih"]
+
+    def test_hesapsiz_hareket_banka_acilisindan_once(self):
+        for s in self._hepsi():
+            acilis = [x["tarih"] for x in s["olaylar"] if x["tur"] == "banka_acilis"]
+            for x in s["olaylar"]:
+                if x["tur"] == "hesapsiz_hareket" and acilis:
+                    self.assertLess(x["tarih"], min(acilis), s["ad"])
+
+    def test_pos_valoru_is_gunu(self):
+        import datetime as dt
+        for s in [U.uret(t) for t in U.TOHUMLAR]:
+            for x in s["olaylar"]:
+                if x.get("yol") == "pos" and x.get("valor"):
+                    self.assertLess(dt.date.fromisoformat(x["valor"]).weekday(), 5, s["ad"])
 
 
 # ------------------------------------------------------------------------------------------------ diskteki dosyalar (mutasyonda koşmaz)

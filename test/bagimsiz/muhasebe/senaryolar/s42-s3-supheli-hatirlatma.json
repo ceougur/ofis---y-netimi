@@ -1,0 +1,197 @@
+{
+ "aciklama": "S3 + M13: şüpheliye alınan borç gecikmiş / otomatik hatırlatma dışında; Şüpheliden Çıkar kalemleri kendi vadeleriyle döndürür.",
+ "ad": "s42-s3-supheli-hatirlatma",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "acik/0/fatura": "F1",
+   "acik/0/kalan": 100000,
+   "acik/1/fatura": "F2",
+   "acik/1/kalan": 20000,
+   "g1/gecikmis": 30000,
+   "g1/supheli": 120000,
+   "g2/gecikmis": 0,
+   "g2/supheli": 120000,
+   "g3/gecikmis": 120000,
+   "g3/supheli": 0,
+   "h1/otomatik": {
+    "C1": 30000,
+    "C3": 20000
+   },
+   "h1/supheli_etiketli": [
+    "C1"
+   ],
+   "h2/otomatik": {
+    "C3": 20000
+   },
+   "h2/supheli_etiketli": [
+    "C1"
+   ]
+  }
+ },
+ "kapsam": [
+  "S3",
+  "M13",
+  "J-01",
+  "J-06"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 100000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-01-10",
+   "tur": "satis_faturasi",
+   "vade": "2026-02-10"
+  },
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2026-01-20",
+   "tur": "satis_faturasi",
+   "vade": "2026-03-20"
+  },
+  {
+   "K": 0,
+   "M": 20000,
+   "cari": "C3",
+   "id": "F3",
+   "tarih": "2026-01-25",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "tarih": "2026-04-01",
+   "tur": "supheliye_al",
+   "tutar": 120000
+  },
+  {
+   "ad": "g1",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-04-02",
+   "tur": "rapor"
+  },
+  {
+   "ad": "h1",
+   "rapor": "hatirlatma",
+   "tarih": "2026-04-02",
+   "tur": "rapor"
+  },
+  {
+   "banka": "B1",
+   "cari": "C1",
+   "normal_cari": true,
+   "tarih": "2026-04-10",
+   "tur": "tahsilat",
+   "tutar": 30000,
+   "yol": "havale"
+  },
+  {
+   "ad": "g2",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-04-11",
+   "tur": "rapor"
+  },
+  {
+   "ad": "h2",
+   "rapor": "hatirlatma",
+   "tarih": "2026-04-11",
+   "tur": "rapor"
+  },
+  {
+   "cari": "C1",
+   "tarih": "2026-05-01",
+   "tur": "supheliden_cikar"
+  },
+  {
+   "ad": "g3",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-05-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "acik",
+   "cari": "C1",
+   "rapor": "acik_faturalar",
+   "tarih": "2026-05-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

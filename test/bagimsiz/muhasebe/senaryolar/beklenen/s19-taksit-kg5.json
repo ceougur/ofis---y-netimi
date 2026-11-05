@@ -8,9 +8,12 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
     }
    },
    "devirler": [],
@@ -40,6 +43,8 @@
      "donem_net_kari": 120000,
      "fark": 0,
      "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
      "kesin_degil": [
       "TAMAMLANMAMIS_ACILIS"
      ],
@@ -55,16 +60,17 @@
      "detay": [
       {
        "kalan": 40000,
-       "kalem": "taksit:TK1",
+       "kalem": "kart:TK1",
        "vade": "2026-05-01"
       },
       {
        "kalan": 40000,
-       "kalem": "taksit:TK1",
+       "kalem": "kart:TK1",
        "vade": "2026-06-01"
       }
      ],
      "gecikmis": 80000,
+     "supheli": 0,
      "tarih": "2026-06-15"
     },
     "gec2": {
@@ -72,21 +78,22 @@
      "detay": [
       {
        "kalan": 5000,
-       "kalem": "taksit:TE1",
+       "kalem": "kart:TE1",
        "vade": "2026-04-01"
       },
       {
        "kalan": 35000,
-       "kalem": "taksit:TE1",
+       "kalem": "kart:TE1",
        "vade": "2026-05-01"
       },
       {
        "kalan": 30000,
-       "kalem": "taksit:TE1",
+       "kalem": "kart:TE1",
        "vade": "2026-06-01"
       }
      ],
      "gecikmis": 70000,
+     "supheli": 0,
      "tarih": "2026-06-15"
     },
     "gt": {
@@ -128,9 +135,12 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
     }
    },
    "devirler": [],
@@ -160,6 +170,8 @@
      "donem_net_kari": 220000,
      "fark": 0,
      "gecmis_yillar_kapanmamis": 0,
+     "gecmis_yillar_kar": 0,
+     "gecmis_yillar_zarar": 0,
      "kesin_degil": [
       "TAMAMLANMAMIS_ACILIS"
      ],
@@ -175,16 +187,17 @@
      "detay": [
       {
        "kalan": 40000,
-       "kalem": "taksit:TK1",
+       "kalem": "kart:TK1",
        "vade": "2026-05-01"
       },
       {
        "kalan": 40000,
-       "kalem": "taksit:TK1",
+       "kalem": "kart:TK1",
        "vade": "2026-06-01"
       }
      ],
      "gecikmis": 80000,
+     "supheli": 0,
      "tarih": "2026-06-15"
     },
     "gec2": {
@@ -192,21 +205,22 @@
      "detay": [
       {
        "kalan": 5000,
-       "kalem": "taksit:TE1",
+       "kalem": "kart:TE1",
        "vade": "2026-04-01"
       },
       {
        "kalan": 35000,
-       "kalem": "taksit:TE1",
+       "kalem": "kart:TE1",
        "vade": "2026-05-01"
       },
       {
        "kalan": 30000,
-       "kalem": "taksit:TE1",
+       "kalem": "kart:TE1",
        "vade": "2026-06-01"
       }
      ],
      "gecikmis": 70000,
+     "supheli": 0,
      "tarih": "2026-06-15"
     },
     "gt": {

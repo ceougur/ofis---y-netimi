@@ -1,0 +1,163 @@
+{
+ "aciklama": "M7: önceki mali yılın donmuş kural farkı 671 / 681 ile (aynı yılda eski hesabın tersi — s30).",
+ "ad": "s49-m7-kural-farki-671-681",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 110000,
+   "bil/kesin_degil": [
+    "KAPANMAMIS_ONCEKI_YIL",
+    "TAMAMLANMAMIS_ACILIS"
+   ],
+   "bil/pasif/V.F": -10000,
+   "bil/pasif/V.G": 110000,
+   "bil/pasif/V.K": 10000,
+   "gt/hesaplar/671": 20000,
+   "gt/hesaplar/681": 30000,
+   "gt/kalemler/A": 0,
+   "gt/kalemler/DNK": -10000,
+   "gt/kalemler/E": 0,
+   "gt/kalemler/I": 20000,
+   "gt/kalemler/J": 30000,
+   "mz/satirlar/500/bakiye": 0,
+   "mz/satirlar/519/bakiye": -110000,
+   "mz/satirlar/602/bakiye": -30000,
+   "mz/satirlar/671/bakiye": -20000,
+   "mz/satirlar/681/bakiye": 30000,
+   "mz/satirlar/770/bakiye": 20000,
+   "redler": []
+  }
+ },
+ "kapsam": [
+  "M7",
+  "KG-15",
+  "N-16",
+  "Ç3"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "tarih": "2026-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 100000
+  },
+  {
+   "cari": "C1",
+   "durum": "portfoy",
+   "evrak": "CK1",
+   "evrak_turu": "cek",
+   "tarih": "2026-01-01",
+   "tur": "evrak_acilis",
+   "tutar": 30000,
+   "yon": "alinan"
+  },
+  {
+   "banka": "B1",
+   "cari": "T1",
+   "evrak": "VC1",
+   "evrak_turu": "cek",
+   "tarih": "2026-01-01",
+   "tur": "evrak_acilis",
+   "tutar": 20000,
+   "yon": "verilen"
+  },
+  {
+   "kural": "2.4.9",
+   "tarih": "2026-12-31",
+   "tur": "donem_kilitle"
+  },
+  {
+   "tur": "kural_farki_duzelt"
+  },
+  {
+   "ad": "gt",
+   "bas": "2027-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2027-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2027-01-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2027-01-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

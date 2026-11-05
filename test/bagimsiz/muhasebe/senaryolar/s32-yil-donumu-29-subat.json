@@ -1,5 +1,5 @@
 {
- "aciklama": "Yıl dönümü (31.12 / 01.01), 29 Şubat 2028 mahsup tarihi ve 29 Şubat kesim tarihi (K+1 = 1 Mart).",
+ "aciklama": "Yıl dönümü (31.12 / 01.01), 29 Şubat 2028 mahsup tarihi; K yalnız geçmiş bir yılın 31 Aralık'ı (EK-1 M11).",
  "ad": "s32-yil-donumu-29-subat",
  "bankalar": {
   "B1": {
@@ -45,26 +45,36 @@
    "bil/donem_net_kari": 20000,
    "bil/gecmis_yillar_kapanmamis": 100000,
    "bil/pasif/III.F": 30000,
+   "bil_yeni/donem_net_kari": 30000,
    "bil_yeni/kesin_degil": [
     "TAMAMLANMAMIS_ACILIS"
    ],
-   "bil_yeni/pasif/V.D": 100000,
-   "bil_yeni/pasif/V.F": 30000,
-   "devir/yeni_acilis/120|C1": 180000,
-   "devir/yeni_acilis/570": -100000,
-   "devir/yeni_acilis/590": -20000,
+   "bil_yeni/pasif/V.F": 130000,
+   "devir/yeni_acilis/100": 10000,
+   "devir/yeni_acilis/120|C1": 120000,
+   "devir/yeni_acilis/360": -20000,
+   "devir/yeni_acilis/519": -10000,
+   "devir/yeni_acilis/590": -100000,
    "gt27/kalemler/DNK": 100000,
    "gt28/kalemler/DNK": 20000,
    "gt_yeni/kalemler/A": 10000,
+   "redler": [
+    "DEVIR_K_31_ARALIK",
+    "DEVIR_K_GELECEK"
+   ],
    "yev/-1/kaynak": "F3",
-   "yev/0/sinif": 0
+   "yev/0/sinif": 1,
+   "yev29/1/sinif": 2,
+   "yev29/1/tarih": "2028-02-29",
+   "yev29/1/tur": "kdv_mahsup"
   }
  },
  "kapsam": [
   "G-4",
   "V-01",
   "KG-12",
-  "N-08"
+  "N-08",
+  "M11"
  ],
  "kartlar": {
   "KK1": {
@@ -150,6 +160,17 @@
   },
   {
    "K": "2028-02-29",
+   "ad": "devir_red",
+   "tur": "devir"
+  },
+  {
+   "K": "2028-12-31",
+   "ad": "devir_red2",
+   "bugun": "2028-03-02",
+   "tur": "devir"
+  },
+  {
+   "K": "2027-12-31",
    "ad": "devir",
    "tur": "devir"
   },
@@ -171,6 +192,13 @@
    "bas": "2028-03-01",
    "rapor": "yevmiye",
    "son": "2028-03-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "yev29",
+   "bas": "2028-02-29",
+   "rapor": "yevmiye",
+   "son": "2028-02-29",
    "tur": "rapor"
   }
  ],

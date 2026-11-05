@@ -1,0 +1,218 @@
+{
+ "ad": "s49-m7-kural-farki-671-681",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
+     "kural_farki_yeni_kural": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "bil": {
+     "aktif": {
+      "I.A": 110000
+     },
+     "aktif_toplam": 110000,
+     "bilgi_amacli": false,
+     "detay": {
+      "I.A": {
+       "100": 100000,
+       "101.01": 30000,
+       "103": -20000
+      },
+      "V.F": {
+       "Dönem Net Kârı (Hesaplanmış)": -10000
+      },
+      "V.G": {
+       "519": 110000
+      },
+      "V.K": {
+       "Geçmiş Yıllar — Kapanmamış (Hesaplanmış)": 10000
+      }
+     },
+     "donem_net_kari": -10000,
+     "fark": 0,
+     "gecmis_yillar_kapanmamis": 10000,
+     "gecmis_yillar_kar": 10000,
+     "gecmis_yillar_zarar": 0,
+     "kesin_degil": [
+      "KAPANMAMIS_ONCEKI_YIL",
+      "TAMAMLANMAMIS_ACILIS"
+     ],
+     "pasif": {
+      "V.F": -10000,
+      "V.G": 110000,
+      "V.K": 10000
+     },
+     "pasif_toplam": 110000,
+     "tarih": "2027-01-01"
+    },
+    "gt": {
+     "bas": "2027-01-01",
+     "bilgi_amacli": false,
+     "hesaplanmadi": false,
+     "hesaplar": {
+      "671": 20000,
+      "681": 30000
+     },
+     "kalemler": {
+      "A": 0,
+      "B": 0,
+      "BSK": 0,
+      "C": 0,
+      "D": 0,
+      "DK": -10000,
+      "DNK": -10000,
+      "E": 0,
+      "F": 0,
+      "FK": 0,
+      "G": 0,
+      "H": 0,
+      "I": 20000,
+      "J": 30000,
+      "K": 0,
+      "OK": 0
+     },
+     "kesin_degil": [],
+     "son": "2027-12-31",
+     "tahmini": false
+    },
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 100000,
+       "borc": 100000,
+       "devir": 0
+      },
+      "101": {
+       "alacak": 0,
+       "bakiye": 30000,
+       "borc": 30000,
+       "devir": 0
+      },
+      "103": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "500": {
+       "alacak": 100000,
+       "bakiye": 0,
+       "borc": 100000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 110000,
+       "bakiye": -110000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 30000,
+       "bakiye": -30000,
+       "borc": 0,
+       "devir": 0
+      },
+      "671": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "681": {
+       "alacak": 0,
+       "bakiye": 30000,
+       "borc": 30000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 20000,
+       "borc": 20000,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 100000,
+       "borc": 100000,
+       "devir": 0
+      },
+      "101.01": {
+       "alacak": 0,
+       "bakiye": 30000,
+       "borc": 30000,
+       "devir": 0
+      },
+      "103": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "500": {
+       "alacak": 100000,
+       "bakiye": 0,
+       "borc": 100000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 110000,
+       "bakiye": -110000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 30000,
+       "bakiye": -30000,
+       "borc": 0,
+       "devir": 0
+      },
+      "671": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "681": {
+       "alacak": 0,
+       "bakiye": 30000,
+       "borc": 30000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 20000,
+       "borc": 20000,
+       "devir": 0
+      }
+     },
+     "son": "2027-01-01",
+     "toplam": {
+      "alacak": 280000,
+      "bakiye": 0,
+      "borc": 280000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

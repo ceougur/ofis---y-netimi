@@ -8,9 +8,12 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
     }
    },
    "devirler": [],
@@ -24,10 +27,11 @@
       },
       "acik_kalemler": [
        {
+        "belge_tarihi": "2026-06-01",
         "cari": "C1",
-        "fatura": "F1",
+        "k": "fatura:F1",
         "kalan": 20000,
-        "tarih": "2026-06-01",
+        "tur": "fatura",
         "vade": "2026-06-01"
        }
       ],
@@ -37,13 +41,30 @@
         "bakiye": 20000
        }
       },
+      "eksi_stok": [],
       "ekstre": {
        "C1": {
         "Alacak Toplamı": 0,
         "Borç Toplamı": 0,
-        "acik_kalemler": 1
+        "acik_kalemler": 1,
+        "satirlar": [
+         {
+          "aciklama": "Devir: F1 (2026-06-01)",
+          "alacak": 0,
+          "bakiye": 20000,
+          "borc": 20000,
+          "tarih": "2027-01-01",
+          "vade": "2026-06-01"
+         }
+        ]
        }
-      }
+      },
+      "ekstre_cariler": [
+       "C1"
+      ],
+      "kartlar": {},
+      "stok": {},
+      "supheli": {}
      },
      "arsiv_kapanis": {
       "100": 10000,
@@ -57,6 +78,12 @@
       "g_eslesme": [],
       "hareket_sayisi": [],
       "kapanis_acilis": [],
+      "m12_k_oncesi_satir": [],
+      "m13_ayri": [],
+      "m2_gecikmis_ayni": [],
+      "m3_tek_satir": [],
+      "m4_m6_kapanis": [],
+      "m5_miktar": [],
       "modul_defter_arsiv": [],
       "modul_esitligi": [],
       "yeni_gt_sifir": []
@@ -69,6 +96,7 @@
       "R": {
        "2026": 20000
       },
+      "onceki_yil": {},
       "sonuc": 20000
      },
      "secenek": "borc_alacak",

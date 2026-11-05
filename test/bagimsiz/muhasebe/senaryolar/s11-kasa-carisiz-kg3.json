@@ -36,7 +36,7 @@
   }
  },
  "dallar": [
-  "KG3=SORU",
+  "KG3=KITAP",
   "KG3=B"
  ],
  "defter_turu": "bilanco",
@@ -45,18 +45,21 @@
   "A": {
    "bil/aktif/I.A": 145000,
    "bil/kesin_degil": [
+    "SINIFLANDIRILMAMIS_TAHSILAT",
     "TAMAMLANMAMIS_ACILIS"
    ],
-   "bil/pasif/V.F": 45000,
+   "bil/pasif/III.C": 30000,
+   "bil/pasif/V.F": 15000,
    "bil/pasif/V.G": 100000,
-   "gt/kalemler/DNK": 45000,
+   "gt/kalemler/DNK": 15000,
    "gt/kalemler/E": 5000,
-   "gt/kalemler/F": 50000,
+   "gt/kalemler/F": 20000,
    "mz/satirlar/100/bakiye": 51000,
    "mz/satirlar/102.B1/bakiye": 94000,
    "mz/satirlar/120|C1/bakiye": 0,
+   "mz/satirlar/336.90/bakiye": -30000,
    "mz/satirlar/519/bakiye": -100000,
-   "mz/satirlar/649.90/bakiye": -50000,
+   "mz/satirlar/649.90/bakiye": -20000,
    "mz/satirlar/770.90/bakiye": 5000
   },
   "KG3=B": {
@@ -65,17 +68,14 @@
    "gt/kalemler/F": 0,
    "mz/satirlar/336.90/bakiye": -50000
   },
-  "KG3=SORU": {
+  "KG3=KITAP": {
    "bil/kesin_degil": [
-    "SINIFLANDIRILMAMIS_TAHSILAT",
     "TAMAMLANMAMIS_ACILIS"
    ],
-   "bil/pasif/III.C": 30000,
-   "bil/pasif/V.F": 15000,
-   "gt/kalemler/DNK": 15000,
-   "gt/kalemler/F": 20000,
-   "mz/satirlar/336.90/bakiye": -30000,
-   "mz/satirlar/649.90/bakiye": -20000
+   "bil/pasif/V.F": 45000,
+   "gt/kalemler/DNK": 45000,
+   "gt/kalemler/F": 50000,
+   "mz/satirlar/649.90/bakiye": -50000
   }
  },
  "kapsam": [
@@ -101,17 +101,24 @@
  },
  "olaylar": [
   {
+   "cari": "C1",
+   "tarih": "2025-12-01",
+   "tur": "cari_acilis",
+   "tutar": 7000,
+   "yon": "borc"
+  },
+  {
+   "cari": "C1",
+   "tarih": "2025-12-20",
+   "tur": "hesapsiz_hareket",
+   "tutar": 7000,
+   "yon": "tahsilat"
+  },
+  {
    "banka": "B1",
    "tarih": "2026-01-01",
    "tur": "banka_acilis",
    "tutar": 100000
-  },
-  {
-   "cari": "C1",
-   "tarih": "2026-01-01",
-   "tur": "cari_acilis",
-   "tutar": 7000,
-   "yon": "borc"
   },
   {
    "tarih": "2026-01-05",
@@ -139,13 +146,6 @@
    "tarih": "2026-01-09",
    "tur": "kasadan_bankaya",
    "tutar": 4000
-  },
-  {
-   "cari": "C1",
-   "tarih": "2026-01-10",
-   "tur": "hesapsiz_hareket",
-   "tutar": 7000,
-   "yon": "tahsilat"
   },
   {
    "ad": "mz",

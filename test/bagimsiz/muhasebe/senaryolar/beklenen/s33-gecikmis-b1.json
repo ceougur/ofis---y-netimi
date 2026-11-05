@@ -8,9 +8,12 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
     }
    },
    "devirler": [],
@@ -25,6 +28,7 @@
       }
      ],
      "gecikmis": 30000,
+     "supheli": 0,
      "tarih": "2026-04-01"
     },
     "gec0501": {
@@ -42,6 +46,7 @@
       }
      ],
      "gecikmis": 40000,
+     "supheli": 0,
      "tarih": "2026-05-01"
     },
     "gec0515": {
@@ -59,11 +64,12 @@
       },
       {
        "kalan": 40000,
-       "kalem": "taksit:TK1",
+       "kalem": "kart:TK1",
        "vade": "2026-05-01"
       }
      ],
      "gecikmis": 80000,
+     "supheli": 0,
      "tarih": "2026-05-15"
     }
    },
@@ -76,9 +82,12 @@
      "aktif_pasif": [],
      "buyuk_defter_mizan": [],
      "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
      "madde_dengesi": [],
      "mizan_dengesi": [],
-     "modul_defter": []
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
     }
    },
    "devirler": [],
@@ -87,6 +96,7 @@
      "cari": "C1",
      "detay": [],
      "gecikmis": 0,
+     "supheli": 0,
      "tarih": "2026-04-01"
     },
     "gec0501": {
@@ -99,6 +109,7 @@
       }
      ],
      "gecikmis": 10000,
+     "supheli": 0,
      "tarih": "2026-05-01"
     },
     "gec0515": {
@@ -111,11 +122,12 @@
       },
       {
        "kalan": 40000,
-       "kalem": "taksit:TK1",
+       "kalem": "kart:TK1",
        "vade": "2026-05-01"
       }
      ],
      "gecikmis": 50000,
+     "supheli": 0,
      "tarih": "2026-05-15"
     }
    },

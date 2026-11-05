@@ -1,0 +1,76 @@
+{
+ "ad": "s51-m1e-mevcut-borc-karti",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "acik": [],
+    "g1": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "kart:TK1",
+       "vade": "2026-03-01"
+      }
+     ],
+     "gecikmis": 30000,
+     "supheli": 0,
+     "tarih": "2026-03-02"
+    },
+    "g2": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "kart:TK1",
+       "vade": "2026-03-01"
+      },
+      {
+       "kalan": 20000,
+       "kalem": "borc:BY1",
+       "vade": "2026-03-15"
+      }
+     ],
+     "gecikmis": 50000,
+     "supheli": 0,
+     "tarih": "2026-03-16"
+    },
+    "g3": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 20000,
+       "kalem": "borc:BY1",
+       "vade": "2026-03-15"
+      },
+      {
+       "kalan": 30000,
+       "kalem": "kart:TK1",
+       "vade": "2026-04-01"
+      }
+     ],
+     "gecikmis": 50000,
+     "supheli": 0,
+     "tarih": "2026-04-02"
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

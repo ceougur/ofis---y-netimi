@@ -16,6 +16,7 @@ import os
 import random
 import sys
 from collections import defaultdict
+from fractions import Fraction
 
 BURASI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BURASI)
@@ -65,6 +66,18 @@ class Uretici:
     def tutar(self, a, b):
         return self.r.randrange(a, b, 100)
 
+    @staticmethod
+    def oranla(tutar, pay, payda=100):
+        """KDV / tevkifat / stopaj = tutar × oran, kuruşa YARIM YUKARI (kitap G-1; GİB / UBL-TR satır tutarı yuvarlaması) — ana oturum K1."""
+        return M.yuvarla(Fraction(tutar * pay, payda))
+
+    @staticmethod
+    def is_gunu(g):
+        """POS valörü hafta sonuna düşerse sonraki iş günü (docs/BANKA-MODULU-PLAN.md POS valör örnekleri; resmî tatil yok) — ana oturum K3."""
+        while g.weekday() >= 5:
+            g += datetime.timedelta(days=1)
+        return g
+
     # -- olay türleri
     def acilislar(self, t):
         self.ekle("kasa_acilis", t, tutar=self.tutar(100000, 2000000))
@@ -96,12 +109,13 @@ class Uretici:
         c = self.r.choice(MUSTERI + ("T1",))
         M_ = self.tutar(5000, 400000)
         oran = self.r.choice([0, 1, 10, 20, 20, 20])
-        K = M_ * oran // 100
+        K = self.oranla(M_, oran)
         o = {"cari": c, "M": M_, "K": K}
         if K and self.r.random() < 0.1:
-            o["T"] = K // 2
+            o["T"] = self.oranla(K, 5, 10)                       # 5/10 tevkifat, yarım yukarı
         if self.r.random() < 0.05:
             o.update(ihracat=True, K=0, T=0)
+            oran = 0
         if self.r.random() < 0.5:
             o["vade"] = (datetime.date.fromisoformat(t) + datetime.timedelta(days=self.r.choice([15, 30, 60]))).isoformat()
         u = self.r.choice(("U1", "U2", "U3"))
@@ -113,7 +127,7 @@ class Uretici:
         self.ekle("satis_faturasi", t, id=fid, **o)
         tut = o["M"] + o["K"] - o.get("T", 0)
         self.cari[c] += tut
-        self.acik[c].append([fid, tut, False])
+        self.acik[c].append([fid, tut, False, o["M"], oran, bool(o.get("T"))])
 
     def alis(self, t):
         c = self.r.choice(TEDARIKCI)
@@ -122,17 +136,17 @@ class Uretici:
             u = self.r.choice(("U1", "U2", "U3"))
             q = self.r.randint(3, 30)
             M_ = q * self.r.randrange(800, 3000, 10)
-            K = M_ * self.r.choice([0, 20]) // 100
+            K = self.oranla(M_, self.r.choice([0, 20]))
             o = {"cari": c, "fatura_turu": "stok", "M": M_, "K": K, "kalemler": [{"urun": u, "miktar": q}]}
             self.stok[u] += q
         else:
             M_ = self.tutar(5000, 200000)
-            K = M_ * self.r.choice([0, 10, 20]) // 100
+            K = self.oranla(M_, self.r.choice([0, 10, 20]))
             o = {"cari": c, "fatura_turu": "gider", "gider_turu": self.r.choice(["genel", "genel", "satis", "finansman", "demirbas"]), "M": M_, "K": K}
             if c == "T2":
-                o["S"] = M_ * 20 // 100
+                o["S"] = self.oranla(M_, 20)
         if o["K"] and self.r.random() < 0.1:
-            o["T"] = o["K"] // 5
+            o["T"] = self.oranla(o["K"], 2, 10)                   # 2/10 tevkifat, yarım yukarı
         if t[5:7] == "12" and t[8:] >= "20" and o["K"] and self.r.random() < 0.5:
             o["indirim_ayi"] = f"{int(t[:4]) + 1}-01"           # KG-7 A: geç gelen Aralık faturası, KDV Ocak'ta
         self.ekle("alis_faturasi", t, id=fid, **o)
@@ -162,7 +176,8 @@ class Uretici:
             self.kasa += tut
         elif yol == "pos":
             gun = self.r.choice([1, 1, 2, 30])
-            o.update(pos="POS1", komisyon=tut * 2 // 100, valor=(datetime.date.fromisoformat(t) + datetime.timedelta(days=gun)).isoformat())
+            valor = self.is_gunu(datetime.date.fromisoformat(t) + datetime.timedelta(days=gun))
+            o.update(pos="POS1", komisyon=self.oranla(tut, 2), valor=valor.isoformat())
         else:
             e = self.id("E")
             o["evrak"] = e
@@ -309,12 +324,13 @@ class Uretici:
             self.cari[c] -= tut
         elif x < 0.45:
             c = self.r.choice(MUSTERI)
-            fat = [y for y in self.acik[c] if y[1] > 2000]
+            fat = [y for y in self.acik[c] if y[1] > 2000 and not y[5]]   # tevkifatsız satış faturası
             if fat:
                 f = self.r.choice(fat)
-                m = f[1] // 4
-                self.ekle("satis_iade_faturasi", t, id=self.id("I"), cari=c, M=m, K=0, asil_fatura=f[0])
-                self.cari[c] -= m
+                m = f[3] // 4
+                k = self.oranla(m, f[4])                              # F-09: asıl faturanın KDV oranı (ana oturum K2)
+                self.ekle("satis_iade_faturasi", t, id=self.id("I"), cari=c, M=m, K=k, asil_fatura=f[0])
+                self.cari[c] -= m + k
         elif x < 0.55:
             c = self.r.choice(MUSTERI)
             kid = self.id("TK")
@@ -406,7 +422,8 @@ def uret(tohum, yil=2026, yogunluk=3):
     u.ekle("devri_yenile", ad="yenile", duzeltmeler=[
         {"tur": "alis_faturasi", "tarih": f"{yil}-12-29", "id": "GEC1", "cari": "T3", "fatura_turu": "gider", "M": 40000, "K": 8000, "gider_turu": "genel",
          "indirim_ayi": f"{yil + 1}-01"},
-        {"tur": "satis_faturasi", "tarih": f"{yil}-12-30", "id": "GEC2", "cari": "C5", "M": 25000, "K": 5000},
+        # K5 (VUK müteselsil sıra-tarih): geç kesilen Aralık satış faturası K (31.12) tarihli — serinin son tarihinden önce olamaz
+        {"tur": "satis_faturasi", "tarih": K, "id": "GEC2", "cari": "C5", "M": 25000, "K": 5000},
     ])
     u.ekle("kdv_mahsup_geri_al", ay=f"{yil + 1}-01")
     u.ekle("kdv_mahsup", ay=f"{yil + 1}-01")
@@ -415,6 +432,9 @@ def uret(tohum, yil=2026, yogunluk=3):
         {"tur": "rapor", "ad": "gt_yeni", "rapor": "gelir_tablosu", "bas": f"{yil + 1}-01-01", "son": son},
         {"tur": "rapor", "ad": "bil_yeni", "rapor": "bilanco", "tarih": son},
         {"tur": "rapor", "ad": "mz_yeni", "rapor": "mizan", "bas": f"{yil + 1}-01-01", "son": son},
+        # EK-1 M2: devirli ve devirsiz koşuda her carinin gecikmiş tutarı aynı (iki tarih)
+        {"tur": "rapor", "ad": "gec_ocak", "rapor": "gecikmis_tumu", "tarih": f"{yil + 1}-01-25"},
+        {"tur": "rapor", "ad": "gec_son", "rapor": "gecikmis_tumu", "tarih": son},
     ]
     t = tanim()
     s = {"dil": M.DIL, "ad": f"rastgele-{tohum}", "aciklama": f"Tohumlu rastgele bir yıl (tohum {tohum}, yoğunluk {yogunluk}) + devir + Devri Yenile",
