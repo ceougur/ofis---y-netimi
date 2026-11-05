@@ -340,7 +340,8 @@ describe("2.5.0 W-1(a) — WhatsApp bağlantısının belirteç süresi", () => 
 // kimseye ikinci ileti gitmez). Beklenen sayılar bu karar metinlerinden ve testin girdiği veriden (kişi başına kabul edilen ileti = 1). Dar kontrolün bulgusu: duraklatma nedeni
 // Yol 2'de de "Elle Bağla ile girin" diyordu ve "Devam Et"i anmıyordu → neden yola göre + "Devam Et".
 const waitHeld = async ctx => {
-  for (let i = 0; i < 300 && !ctx.fake.state.held; i += 1) await new Promise(resolve => setTimeout(resolve, 10));
+  // En çok 15 sn (yavaş koşucu: PDF üretimi + yükleme); ön koşul kapıyla kurulur, beklemeyle değil (ders 20).
+  for (let i = 0; i < 1500 && !ctx.fake.state.held; i += 1) await new Promise(resolve => setTimeout(resolve, 10));
   assert.equal(ctx.fake.state.held, 1, "ön koşul: istek Meta'da (kapıda) bekliyor");
 };
 const gate = ctx => {
