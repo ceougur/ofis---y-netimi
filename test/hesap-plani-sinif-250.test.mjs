@@ -50,8 +50,32 @@ const GROSS = {
 };
 // Kural kitabı §2 / §7.3: ters bakiyesi kendi kaleminde eksi + "Kesin Değil".
 const NOT_FINAL = ["100", "101", "103", "108", "121", "128", "129", "153", "300", "321"];
+// Kural kitabı §2 "Ters bakiyede (§7.3)" sütunu "—" olan bilanço hesapları: ters bakiye kendi kaleminde işaretli kalır (brütleştirme / Kesin Değil yok).
+// 519'un sütunu "aynı satır, eksi" — aynı kural. (Kitap satırları: 136, 159, 190, 191, 193, 198, 255, 340, 391, 500, 519, 570, 580, 590, 591.)
+const SAME = ["136", "159", "190", "191", "193", "198", "255", "340", "391", "500", "519", "570", "580", "590", "591"];
 // Kural kitabında ters kuralı olmayan bilanço hesapları — KARAR GEREKİYOR (liste ancak bilerek büyür).
 const UNDECIDED = ["127"];
+// Ç1'de eklenen hesapların adları — kural kitabı §2 "Ad (Tek Düzen)" sütunundan (671 / 681: EK-1 M7 / E2) ELLE yazıldı. Karşılaştırmada iki yazım farkı yok sayılır
+// (sameName): (a) gelir tablosu ve kapanış hesaplarının (kitapta Gİ / KP) adındaki "(−)" MSUGT işaretidir — programda gelir tablosu kaleminin `eksi`
+// alanıyla taşınır, 2.4.9'dan beri adda yazılmaz (kitap "610 Satıştan İadeler (−)", "689 … (−)" ↔ aşağıdaki 2.4.9 adları); bilanço hesaplarında (580 / 591)
+// "(−)" adın parçasıdır, yok sayılmaz; (b) virgül (kitap "Pazarlama Satış ve Dağıtım", 2.4.9'un 760'ı "Pazarlama, Satış ve Dağıtım"). 761 / 771 / 781:
+// kitabın "… / Yansıtma" kısaltmasının Tekdüzen tam adı "… Yansıtma Hesabı". 519 burada yok: kitapta "(Geçici)" ekiyle — aşağıdaki ayrı denetim.
+const NEW_NAMES = {
+  136: "Diğer Çeşitli Alacaklar", 159: "Verilen Sipariş Avansları", 198: "Diğer Çeşitli Dönen Varlıklar", 340: "Alınan Sipariş Avansları",
+  570: "Geçmiş Yıllar Kârları", 580: "Geçmiş Yıllar Zararları (−)", 590: "Dönem Net Kârı", 591: "Dönem Net Zararı (−)",
+  621: "Satılan Ticari Mallar Maliyeti (−)", 631: "Pazarlama Satış ve Dağıtım Giderleri (−)", 632: "Genel Yönetim Giderleri (−)", 660: "Kısa Vadeli Borçlanma Giderleri (−)",
+  671: "Önceki Dönem Gelir ve Kârları", 681: "Önceki Dönem Gider ve Zararları",
+  690: "Dönem Kârı veya Zararı", 691: "Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)", 692: "Dönem Net Kârı veya Zararı",
+  761: "Pazarlama Satış ve Dağıtım Giderleri Yansıtma Hesabı", 771: "Genel Yönetim Giderleri Yansıtma Hesabı", 781: "Finansman Giderleri Yansıtma Hesabı",
+};
+const sameName = (code, got, want) => {
+  const statement = !itemOf(code)?.bilanco;
+  const norm = text => {
+    const plain = String(text ?? "").replace(/,/g, "").replace(/\s+/g, " ").trim();
+    return statement ? plain.replace(/\s*\(−\)$/, "") : plain;
+  };
+  return norm(got) === norm(want);
+};
 // 2.4.9'daki (taban 1c0e4e9e) hesap adları: Ç1 yalnız 770'in adını değiştirir.
 const NAMES_249 = {
   100: "Kasa (Nakit)", 101: "Alınan Çekler", 102: "Bankalar (Havale / EFT)", 103: "Verilen Çekler ve Ödeme Emirleri (−)", 108: "Kredi Kartı Tahsilatları (POS)",
@@ -135,6 +159,11 @@ describe("2.5.0 Ç1 — hesap planı sınıflaması", () => {
   it("ters bakiye kuralları (çekirdek §13, kural kitabı §7.3): brütleştirme, Kesin Değil, KARAR GEREKİYOR", () => {
     for (const [code, want] of Object.entries(GROSS)) assert.deepEqual(gl.reverseBalanceOf?.(code), { kural: "brut", ...want }, `${code} ters bakiyesi`);
     for (const code of NOT_FINAL) assert.deepEqual(gl.reverseBalanceOf?.(code), { kural: "kesinDegil" }, `${code} ters bakiyesi kendi kaleminde eksi + Kesin Değil`);
+    for (const code of SAME) assert.deepEqual(gl.reverseBalanceOf?.(code), { kural: "ayni" }, `${code} ters bakiyesi kendi kaleminde işaretli (kitap §2 "—")`);
+    // Her bilanço hesabı tam bir listede: brütleştirme, Kesin Değil, aynı ya da KARAR GEREKİYOR (yeni bilanço hesabı kitaptan bu listelere yazılır).
+    const listed = new Set([...Object.keys(GROSS), ...NOT_FINAL, ...SAME, ...UNDECIDED]);
+    const unlisted = codesOf(gl.CHART).filter(code => itemOf(code)?.bilanco && !listed.has(code));
+    assert.deepEqual(unlisted, [], "ters bakiye beklentisi yazılmamış bilanço hesabı");
     const undecided = codesOf(gl.CHART).filter(code => gl.reverseBalanceOf?.(code)?.kural === "karar");
     assert.deepEqual(undecided, UNDECIDED, "KARAR GEREKİYOR listesi");
     assert.equal(gl.reverseBalanceOf?.("600"), null, "gelir tablosu hesabının ters bakiye kuralı yok");
@@ -171,13 +200,18 @@ describe("2.5.0 Ç1 — hesap planı sınıflaması", () => {
     const renamed = Object.entries(NAMES_249).filter(([code, name]) => gl.CHART[code] !== name).map(([code, name]) => `${code}: ${name} → ${gl.CHART[code]}`);
     assert.deepEqual(renamed, [], "2.4.9 adı değişen hesap (yalnız 770 değişir)");
     for (const code of ["519", "570", "580", "590", "591", "690", "691", "692", "621", "631", "632", "660", "671", "681", "761", "771", "781", "340", "159", "136", "198"]) assert.ok(gl.CHART[code], `${code} planda yok`);
+    const wrongNames = Object.entries(NEW_NAMES).filter(([code, name]) => !sameName(code, gl.CHART[code], name)).map(([code, name]) => `${code}: kitap "${name}", program "${gl.CHART[code]}"`);
+    assert.deepEqual(wrongNames, [], "eklenen hesabın adı kural kitabı §2'deki Tek Düzen adı değil");
   });
 
-  it("alt hesap tanımları (yalnız tanım): 600.90 Belgesiz, 770.90 Sınıflandırılmamış, 336.90 Sınıflandırılmamış Tahsilatlar", () => {
+  it("alt hesap tanımları (yalnız tanım): 600.90 / 610.90 Belgesiz, 602.90 / 770.90 Sınıflandırılmamış, 336.90 Sınıflandırılmamış Tahsilatlar", () => {
     const subs = gl.PLAN_SUBS || {};
     assert.equal(subs["600.90"], "Belgesiz");
     assert.equal(subs["770.90"], "Sınıflandırılmamış");
     assert.equal(subs["336.90"], "Sınıflandırılmamış Tahsilatlar");
+    // Kitap §2 "602 Diğer Gelirler (.90 Sınıflandırılmamış)" (KG-4 Borç Yaz); KG-2 "600.90 / 610.90" belgesiz satış / müşteri iadesi — 600.90 ile aynı ad.
+    assert.equal(subs["602.90"], "Sınıflandırılmamış", "602.90 alt hesap tanımı");
+    assert.equal(subs["610.90"], "Belgesiz", "610.90 alt hesap tanımı");
     assert.equal(itemOf("336")?.tur, "pasif", "Sınıflandırılmamış Tahsilatlar pasif hesabın altında (KG-3: gelir değil)");
     const taken = new Set([...Object.keys(DOCUMENT_SUB_NAMES), ...Object.keys(gl.UNASSIGNED_SUBS || {}), ...Object.values(UNASSIGNED_SUB)]);
     for (const sub of Object.keys(subs)) {
