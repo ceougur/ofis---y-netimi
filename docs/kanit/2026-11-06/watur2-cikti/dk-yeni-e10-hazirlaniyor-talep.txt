@@ -1,0 +1,23 @@
+{
+ "on_kosul": {
+  "state": "preparing",
+  "pdf": 1
+ },
+ "talep": 200,
+ "talep_sonrasi": {
+  "state": "skipped",
+  "pdf": 0
+ },
+ "sonra": {
+  "state": "skipped",
+  "reason": "Silme Talebi",
+  "ileti": 0,
+  "satir": {
+   "tel": "",
+   "params": "{\"icerikSilindi\":\"ta",
+   "pdf_name": "",
+   "media": true
+  },
+  "pdf": 0
+ }
+}
