@@ -189,7 +189,7 @@ describe("2.5.0 WhatsApp tur 2 — W-3 dk ORTA-1: defter anonimleştirmesi düş
       removeTestDir(t.root);
     }
   });
-  it("T2-5b yeniden açılış: açılıştaki talep uygulaması (bakım turundan ÖNCE) defteri anonimleştirir", { timeout: 180_000 }, async () => {
+  it("T2-5b yeniden açılış (bellekteki bayrak kayboldu): açılıştaki talep uygulaması yeniden denemeyi kurar → ilk bakım turunda defter anonimleştirilir", { timeout: 180_000 }, async () => {
     const t = await talepAnindaDefterYazilamaz();
     let again = null;
     let closed = false;
@@ -198,8 +198,8 @@ describe("2.5.0 WhatsApp tur 2 — W-3 dk ORTA-1: defter anonimleştirmesi düş
       await t.ctx.close();
       closed = true;
       again = await startWa({ fake: t.graph, env: DEAD, dataDir: t.dataDir, backupDir: t.backupDir, connect: false, ack: false, office: null, now: { time: localIso(2026, 11, 3, 13), fixed: true } });
-      assert.deepEqual(ledgerPlain(t.dataDir), { telefon: 0, wamid: 0 }, "açılışta (recover → talepler) defter temizlendi (eski kod: kalıyor)");
       await again.server.app.context.whatsapp.queue.maintain();
+      assert.deepEqual(ledgerPlain(t.dataDir), { telefon: 0, wamid: 0 }, "açılıştan sonraki ilk bakım turunda defter temizlendi (eski kod: kalıyor)");
       assert.deepEqual(hitsIn(t.dataDir, t.needles), [], "veri klasöründe telefon / açık wamid yok");
     } finally {
       if (!closed) await t.ctx.close().catch(() => {});
@@ -221,8 +221,8 @@ describe("2.5.0 WhatsApp tur 2 — W-3 dk ORTA-1: defter anonimleştirmesi düş
     let ctx = null;
     try {
       ctx = await startWa({ env: DEAD, dataDir, backupDir: path.join(root, "backups"), connect: false, ack: false, office: null, now: { time: new Date(Date.parse(info.at) + 2 * HOUR).toISOString(), fixed: true } });
-      assert.deepEqual(ledgerPlain(dataDir), { telefon: 0, wamid: 0 }, "açılışta defter temizlendi");
       await ctx.server.app.context.whatsapp.queue.maintain();
+      assert.deepEqual(ledgerPlain(dataDir), { telefon: 0, wamid: 0 }, "açılıştan sonraki ilk bakım turunda defter temizlendi");
       const row = ctx.store.get("SELECT wamid, phone_e164 AS phone FROM wa_jobs WHERE id = ?", info.jobs.B.id);
       assert.ok(String(row.wamid).startsWith("h:") && row.wamid.length === 66, `dosyadaki silinmiş B satırının wamid'i ÖZETLENDİ (eski kod: açık) — ${String(row.wamid).slice(0, 12)}`);
       assert.equal(row.phone, "");

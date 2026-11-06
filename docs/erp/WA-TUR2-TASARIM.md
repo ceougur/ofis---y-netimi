@@ -94,6 +94,9 @@ Durum: KODDAN ÖNCE yazıldı (06.11.2026, tur 2 kod ajanı, taban 329d5d1b = Wh
   1. Defter: `pendingAnonJobs(şirket, cari, an, ekİşler)` — o carinin talep anından önceki (ilk talebi ≤ an) ve verilen işlerden telefonu / wamid'i hâlâ açık olanlar (toplu SQL, iş
      başına okuma yok — ders 47).
   2. `reapplyRequests` her talep için: dosyada talep anından önce açılmış BÜTÜN işler (silinmiş olanlar dahil) ∪ defterdeki işleri → açık kalanları `anonymizeJobs`'a (eşgüçlü).
+     UYGULAMADA DEĞİŞTİ (06.11, ölçüm — ders 47): açılışta eşzamanlı yapılınca 200 talep × 500 işte olay döngüsü 2,3 sn tutuluyordu → `reapplyRequests` (açılış) yeniden denemeyi
+     KURAR (bellekteki bayrak; her açılışta yeniden kurulur), iş açılıştan sonraki İLK bakım turunda talepler ve 250'lik parçalar arasında olay döngüsüne sıra vererek yapılır
+     (ölçüm: 1,9 sn toplam, olay döngüsü en çok 47 ms; 100.000 açık iş: 21,7 sn / 126 ms). Dosya tarafı (W-3) açılışta aynen.
   3. Bakım turu: anonimleştirme düştüyse (bayrak) sonraki turda aynı yeniden uygulama (yalnız defter; dosya kuralı aynen), talepler arasında olay döngüsüne sıra verilir.
      UYGULAMADA DEĞİŞTİ (06.11, ölçüm — ders 47): "ayrıca saatte bir" KALDIRILDI — 200 talep × 500 işte bayraksız saatlik yeniden uygulama olay döngüsünü 1.332 ms tutuyordu
      (docs/kanit/2026-11-06/watur2-olcum). Bayrak düşmüş her yazımı kapsar; program yeniden açılırsa açılıştaki reapplyRequests aynısını yapar.
