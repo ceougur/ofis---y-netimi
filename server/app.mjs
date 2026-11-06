@@ -597,7 +597,9 @@ function buildApp(overrides, opening) {
       log.error?.("Donmuş defter açılış onarımı çalışmadı", error);
     }
   }
-  context.integrity.start();
+  // 2.5.0 D2 (ders 47): arşiv örneğinde kapı KURULMAZ — taban ölçümü bütün defteri tarar (100.000 satırda ~1,7 sn olay döngüsü) ama arşive hiçbir yazma ulaşmaz
+  // (403 + salt okunur bağlantı), kapının denetleyeceği işlem yoktur. Mutabakat Testi (okuma) arşivde de kendi taramasını yapar.
+  if (!archiveGate) context.integrity.start();
   // 2.5.0 Ç3: bekleyen koşu (göç 47'nin 2.4.9 koşusu, yarım kalmış dondurma, onarım) açılışı beklemeden iş parçacığında donar; kapanışta durur (app.close).
   // Açılış sonradan düşerse (openFault / hata) geri alınır: kapalı bağlantıya çarpan iş olmaz (createapp-acilis-geri-alma-249).
   const snapshotStart = !openRepairs ? null : setImmediate(() => context.ledger.snapshots.runPending().catch(error => log.error?.("Donmuş defter dondurulamadı", error)));
