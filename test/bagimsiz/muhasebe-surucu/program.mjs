@@ -228,11 +228,22 @@ function faturaGovdesi(o, kind) {
     kalemler.forEach((x, i) => {
       const tutar = x.M ?? (i === kalemler.length - 1 ? kalan : Math.round((M * Number(x.miktar)) / toplamMiktar));
       kalan -= tutar;
-      for (const parca of bol(tutar, x.miktar)) lines.push({ itemId: ids.urun[x.urun], goods: true, name: s.urunler?.[x.urun]?.ad || x.urun, qty: parca.qty, unitPrice: fiyat(parca.fiyat), ...ortak });
+      // Sürücü bakımı 2: tutar miktara tam bölünmüyorsa ÖNCE tek satır, 4 ondalıklı birim fiyat (ekranın birim fiyat alanı 4 ondalık) — miktar × fiyat
+      // kuruşa yuvarlanınca tutarı veriyorsa. Önceki iki satırlı bölme (bol) KDV / tevkifatı satır başına yuvarlatıyordu (rastgele F131: tevkifat 11.741,
+      // kâhin belge toplamından 11.740 — kitap G-1 "fatura satır matematiği bu kitabın konusu değildir") ve kalemsiz kısmi iadeyi 3 ondalıklı miktarla
+      // kuruşu tutmaz kılıyordu (I125 1 kuruş). Tutmazsa eski bölme.
+      const q = Number(x.miktar);
+      const f4 = Math.round((tutar / q) * 100) / 10000;
+      const tek = Number.isFinite(f4) && q > 0 && Math.round(q * f4 * 100) === tutar && !(Number.isInteger(q) && tutar % q === 0);
+      if (tek) lines.push({ itemId: ids.urun[x.urun], goods: true, name: s.urunler?.[x.urun]?.ad || x.urun, qty: q, unitPrice: String(f4).replace(".", ","), ...ortak });
+      else for (const parca of bol(tutar, x.miktar)) lines.push({ itemId: ids.urun[x.urun], goods: true, name: s.urunler?.[x.urun]?.ad || x.urun, qty: parca.qty, unitPrice: fiyat(parca.fiyat), ...ortak });
     });
   } else {
     const gider = { genel: "other", satis: "marketing", finansman: "", demirbas: "asset" }[o.gider_turu || "genel"];
-    lines.push({ name: kind === "sale" || kind === "smm" ? "Hizmet" : "Gider", qty: 1, unitPrice: tl(M), ...ortak, ...(kind === "purchase" && gider ? { expenseCode: gider } : {}) });
+    // Kalemsiz belge (hizmet / gider): miktar = kuruş sayısı, birim fiyat 0,01 TL — satır toplamı aynı (M), KDV aynı satırdan. Sürücü bakımı 2: kâhinin
+    // kalemsiz KISMİ iadesi (ör. s57 I1 30,00 / F1 90,00) asıl satırdan miktarla seçilir (iade birim fiyatı asıl satırınki, miktar en çok 3 ondalık —
+    // routes/invoices.mjs return lines); önceki 1 × M satırında 0,333 × 90,00 = 29,97 (3 kuruş eşleme farkı) çıkıyordu, şimdi tam sayı miktar.
+    lines.push({ name: kind === "sale" || kind === "smm" ? "Hizmet" : "Gider", qty: M, unitPrice: "0,01", ...ortak, ...(kind === "purchase" && gider ? { expenseCode: gider } : {}) });
   }
   const stopaj = S ? Math.round((S * 10000) / M) / 100 : 0;
   if (S && Math.round((M * stopaj) / 100) !== S) return { eslenemez: `stopaj ${S} / matrah ${M}: oran tutmuyor` };
@@ -319,12 +330,34 @@ async function supheliKaydi(c) {
 // ---------------------------------------------------------------- olaylar
 const tuketilen = new Set();
 const evrakDurum = {}; // fatura formuna alınan peşin ödemeler (olay sıra no)
+const kasaAcilis = { durum: null }; // girilmiş Kasa açılışı (duzenle → Kasa Açılış Bakiyesini Düzelt formu tutar + tarihle gider)
+const faturaNo = {}; // kâhin fatura kimliği → programın belge numarası (Açık Faturalar raporu satırları)
+const faturaKarti = {}; // kâhin kart kimliği → { fatura, planId }: faturanın KENDİ kartı fatura formunda (payment.rest "installments") açıldı
+// Faturanın kendi taksit kartı (kâhin taksit_karti {kaynak: "fatura", fatura, tarih = fatura günü}): ekranda fatura formunun "Kalanı Taksitlendir"i
+// (routes/invoices.mjs paymentInput rest 'installments' → plans.createForAccount invoiceId). Önceki sürücü kartı ayrıca "Mevcut Borcu Taksitlendir"
+// (coversBalance) olarak açıyordu; kart faturaya bağlı olmadığı için EK-2B 35 (faturayla kalkan kart, tahsilatlı kartta silme) sınanamıyordu.
+function faturaKartOlayi(fatura) {
+  return s.olaylar.find(x => x.tur === "taksit_karti" && x.kaynak === "fatura" && x.fatura === fatura.id && x.tarih === fatura.tarih && x.cari === fatura.cari);
+}
 async function uygula(o, no) {
   const v = o;
   switch (o.tur) {
     // ---- açılışlar (2.5.0'da karşı hesap 519 — Ç5; program bugün 500'e yazar)
-    case "kasa_acilis":
-      return sonuc(o, await api("POST", "/api/workspace/cash/opening", { amount: tl(v.tutar), date: v.tarih, ...benzer }));
+    case "kasa_acilis": {
+      // Sürücü bakımı 2 (kâhin README R2 / EK-2B 33, "sürücünün s18 eşlemesi düzeltme ucuna gitmiş"): açılış girilmişken Kasa → Açılış Bakiyesi ekranı
+      // YALNIZ "Kasa Açılış Bakiyesini Düzelt" açar (client/assets/hof-workspace.js cashOpeningForm: başlık / düğme mevcut açılışa göre) — ikinci açılış
+      // girecek yol yok. Kâhinin İKİNCİ kasa_acilis olayı (M-01 "bir kez") bu yüzden programa GÖNDERİLMEZ; ekran ön koşulu reddi olarak yazılır
+      // (status "ekran", HTTP isteği yok — ders 3: başarı sayılmaz). Açılışın düzeltmesi kâhinde ayrı olay (duzenle {kaynak: <kasa_acilis>}).
+      const mevcut = await api("GET", "/api/workspace/cash/opening", undefined, "kasa-acilis-oku");
+      const ac = mevcut.data?.opening;
+      if (ac) return { durum: "red", status: "ekran", kod: "cash-opening-exists", ileti: `Kasa açılışı var (${ac.date} · ${ac.amount}); ekran yalnız "Kasa Açılış Bakiyesini Düzelt" açar — ikinci açılış yolu yok (istek gönderilmedi)`, yol: "ekran ön koşulu" };
+      const r = await api("POST", "/api/workspace/cash/opening", { amount: tl(v.tutar), date: v.tarih, ...benzer });
+      if (r.ok) {
+        if (o.id) ids.olay[o.id] = r.data?.id;
+        kasaAcilis.durum = { id: o.id || "", tutar: v.tutar, tarih: v.tarih };
+      }
+      return sonuc(o, r);
+    }
     case "banka_acilis": {
       if (ids.banka[v.banka]) return sonuc(o, await api("POST", `/api/workspace/bank/accounts/${ids.banka[v.banka]}/opening`, { date: v.tarih, amount: tl(v.tutar), confirmed: true }));
       const id = await bankaAc(v.banka, v);
@@ -403,7 +436,7 @@ async function uygula(o, no) {
       return sonuc(o, r);
     }
     case "acilis_eslestir":
-      return uygulanmadi("Ç5", "Açılış Eşleştirme Fişi (M-11) 2.5.0'da yazılacak");
+      return uygulanmadi("Ç5-ESLESTIRME (M-11)", "Açılış Eşleştirme Fişi (M-11) 2.5.0'da yazılacak");
 
     // ---- fatura
     case "satis_faturasi":
@@ -420,15 +453,22 @@ async function uygula(o, no) {
       const pesin = pesinler(o);
       const cash = pesin.filter(x => ["nakit", "havale"].includes(x.yol)).map((x, i) => ({ amount: tl(x.tutar), method: YOL[x.yol], lineKey: `p${i + 1}`, ...(x.yol === "havale" ? { bankAccountId: ids.banka[x.banka] } : {}) }));
       for (const x of pesin) tuketilen.add(x);
-      const body = { ...g.body, payment: { cash, rest: "open", ...(v.vade ? { dueDate: v.vade } : {}) } };
+      const kartOlayi = o.tur === "satis_faturasi" ? faturaKartOlayi(o) : null;
+      const taksitli = kartOlayi ? { rest: "installments", installments: { count: kartOlayi.taksitler?.length || 1, firstDue: kartOlayi.taksitler?.[0]?.vade || o.tarih, everyMonths: 1 } } : null;
+      const body = { ...g.body, payment: { cash, ...(taksitli || { rest: "open" }), ...(v.vade ? { dueDate: v.vade } : {}) } };
       if (o.tur === "alis_faturasi" && v.indirim_ayi) body.__kdvIndirimAyi = v.indirim_ayi;
       delete body.__kdvIndirimAyi;
       const r = await api("POST", "/api/workspace/invoices", body);
       if (r.ok) {
         ids.olay[o.id] = r.data?.id || r.data?.invoice?.id;
         ids.satirlar[o.id] = (r.data?.lines || []).map(l => l.id);
+        if (r.data?.number) faturaNo[r.data.number] = o.id;
+        if (kartOlayi) {
+          faturaKarti[kartOlayi.id] = { fatura: o.id, planId: r.data?.planId || "" };
+          tuketilen.add(kartOlayi);
+        }
       }
-      return sonuc(o, r, { ...(pesin.length ? { not: `peşin ödeme fatura formunda: ${pesin.map(x => x.id).join(", ")}` } : {}), ...(v.indirim_ayi ? { eksik: "KG-7 KDV İndirim Dönemi alanı programda yok (gönderilmedi)" } : {}), ...(tevUyari ? { uyari: tevUyari } : {}) });
+      return sonuc(o, r, { ...(pesin.length ? { not: `peşin ödeme fatura formunda: ${pesin.map(x => x.id).join(", ")}` } : {}), ...(kartOlayi ? { kart: `faturanın kendi kartı ${kartOlayi.id} fatura formunda (Kalanı Taksitlendir; planId ${r.data?.planId || "YOK"})` } : {}), ...(v.indirim_ayi ? { eksik: "KG-7 KDV İndirim Dönemi alanı programda yok (gönderilmedi)" } : {}), ...(tevUyari ? { uyari: tevUyari } : {}) });
     }
     case "satis_iade_faturasi":
     case "alis_iade_faturasi": {
@@ -448,19 +488,21 @@ async function uygula(o, no) {
         // Kalemsiz iade: matrah M asıl satırların birim fiyatlarından açgözlü (önce tam adet, kalan son satırdan oranla; miktar en çok 3 ondalık).
         lines = [];
         let kalan = v.M;
+        // Birim fiyat kuruş cinsinden KESİRLİ (program 4 ondalıklı TL fiyatı saklar; tamsayıya yuvarlamak kısmi iadede kuruş kaydırıyordu).
+        const birimOf = sat => Number(String(sat.unitPrice).replace(",", ".")) * 100;
         for (const sat of satirlar) {
           if (kalan <= 0) break;
-          const birim = kurus(sat.unitPrice);
+          const birim = birimOf(sat);
           if (!birim) continue;
-          const q = Math.min(Number(sat.qty), Math.floor(kalan / birim));
+          const q = Math.min(Number(sat.qty), Math.floor(kalan / birim + 1e-9));
           if (q > 0) {
             lines.push({ originLineId: sat.id, qty: q });
-            kalan -= q * birim;
+            kalan -= Math.round(q * birim);
           }
         }
         if (kalan > 0) {
-          const sat = satirlar.find(x => kurus(x.unitPrice) && !lines.some(l => l.originLineId === x.id && l.qty >= Number(x.qty))) || satirlar[0];
-          const q = Math.round((kalan / kurus(sat.unitPrice)) * 1000) / 1000;
+          const sat = satirlar.find(x => birimOf(x) && !lines.some(l => l.originLineId === x.id && l.qty >= Number(x.qty))) || satirlar[0];
+          const q = Math.round((kalan / birimOf(sat)) * 1000) / 1000;
           const var0 = lines.find(l => l.originLineId === sat.id);
           if (var0) var0.qty = Math.round((var0.qty + q) * 1000) / 1000;
           else lines.push({ originLineId: sat.id, qty: q });
@@ -468,12 +510,33 @@ async function uygula(o, no) {
       } else {
         return apiYok(`asıl fatura ${v.asil_fatura} programda yok ya da çok kalemli (${satirlar.length}); kalemsiz iade eşlenemedi`);
       }
-      const r = await api("POST", "/api/workspace/invoices", { kind, originalId: asil, issueDate: v.tarih, lines, payment: { cash: [] }, ...(kind === "purchase_return" ? { number: `${o.id}-${v.tarih}` } : {}), force: true });
-      if (r.ok) ids.olay[o.id] = r.data?.id;
-      return sonuc(o, r);
+      // Kâhin bakımı 2 (README "Sürücü için"): para_iadesi ("nakit" | "havale" + banka) = iade + müşteriye para iadesi tek olay, iade kendi ödeme
+      // satırına bağlı → iade faturası formunun ödeme satırı (payment.cash; tutar = iade belgesinin ödenecek toplamı, program hesaplar).
+      let cash = [];
+      if (v.para_iadesi) {
+        const calc = await api("POST", "/api/workspace/invoices/calc", { kind, originalId: asil, issueDate: v.tarih, lines }, "iade-hesap");
+        const toplam = [calc.data?.totals?.payable, calc.data?.payable, calc.data?.totals?.grand, calc.data?.grand].find(x => x !== undefined && x !== null);
+        const tutar = toplam !== undefined ? kurus(String(toplam).replace(",", ".")) : (v.M || 0) + (v.K || 0);
+        cash = [{ amount: tl(tutar), method: v.para_iadesi === "havale" ? "bank" : "cash", lineKey: "r1", ...(v.para_iadesi === "havale" ? { bankAccountId: await bankaId(v.banka || "B1") } : {}) }];
+      }
+      const r = await api("POST", "/api/workspace/invoices", { kind, originalId: asil, issueDate: v.tarih, lines, payment: { cash }, ...(kind === "purchase_return" ? { number: `${o.id}-${v.tarih}` } : {}), force: true });
+      if (r.ok) {
+        ids.olay[o.id] = r.data?.id;
+        if (r.data?.number) faturaNo[r.data.number] = o.id;
+      }
+      return sonuc(o, r, v.para_iadesi ? { yol: `iade faturası formunda para iadesi (${cash[0]?.amount} ${cash[0]?.method})` } : {});
     }
     case "duzenle": {
       const kaynak = s.olaylar.find(x => x.id === v.kaynak);
+      if (kaynak?.tur === "kasa_acilis") {
+        // Kasa → Açılış Bakiyesi → "Kasa Açılış Bakiyesini Düzelt" (G-7; kâhin EK-2B 33: ilk Kasa hareketinden SONRAYA alınamaz — program 409 cash-opening-after-first).
+        const st = kasaAcilis.durum;
+        if (!st || st.id !== v.kaynak) return apiYok(`düzeltilecek kasa açılışı ${v.kaynak} programda yok`);
+        const yeni = { ...st, tutar: v.degisiklik?.tutar ?? st.tutar, tarih: v.degisiklik?.tarih ?? st.tarih };
+        const r = await api("POST", "/api/workspace/cash/opening", { amount: tl(yeni.tutar), date: yeni.tarih, ...benzer });
+        if (r.ok) kasaAcilis.durum = yeni;
+        return sonuc(o, r, { yol: "Kasa Açılış Bakiyesini Düzelt (tutar + tarih)" });
+      }
       const fid = ids.olay[v.kaynak];
       if (!kaynak || !fid) return apiYok("düzenlenecek kayıt programda yok");
       const yeni = { ...kaynak, ...v.degisiklik };
@@ -481,6 +544,11 @@ async function uygula(o, no) {
       if (!kind) return apiYok(`düzenle: ${kaynak.tur} eşlenmedi`);
       let g = faturaGovdesi(yeni, kind);
       let not = "";
+      if (g.eslenemez && v.degisiklik && "K" in v.degisiklik && !("M" in v.degisiklik)) {
+        // Sürücü bakımı 2 (s43): yalnız KDV tutarı, matrah aynı (ör. 50.000 → KDV 12.000 = %24) — program yalnız %0 / 1 / 10 / 20 (invoice-math VAT_RATES);
+        // ekranda bu düzenleme kurulamaz. Asıl oranla göndermek "değişiklik yok" düzenlemesi olurdu (kâhin değiştirir) → istek gönderilmez, olay iki yanda da yok.
+        return apiYok(`düzenle: ${g.eslenemez} — KDV tutarı matrah değişmeden standart oran dışına (program yalnız %0, %1, %10, %20)`);
+      }
       if (g.eslenemez) {
         // Kâhinin değişikliği oranı bozuyorsa (ör. kilitli dönem reddi denemesi) matrah yeni, oran asıl faturanınki.
         const oran = kdvOrani(kaynak.M, kaynak.K || 0).oran ?? 20;
@@ -507,7 +575,22 @@ async function uygula(o, no) {
     case "sil": {
       const fid = ids.olay[v.kaynak];
       if (!fid) return apiYok("silinecek kayıt programda yok");
+      const kaynak = s.olaylar.find(x => x.id === v.kaynak);
+      // Cari kartından girilen tahsilat / ödeme (kâhin T-xx) cari kartındaki satırdan, taksit tahsilatı kartın satırından silinir; faturalar ve taslak Faturalar'dan.
+      if (kaynak && (kaynak.tur === "tahsilat" || kaynak.tur === "odeme") && ids.satir[v.kaynak]) {
+        const [tablo, eid] = ids.satir[v.kaynak].split(":");
+        const url = tablo === "plan_entries" ? `/api/workspace/plans/${ids.taksit[kaynak.taksit_karti]}/entries/${eid}` : `/api/workspace/accounts/${ids.cari[kaynak.cari]}/entries/${eid}`;
+        return sonuc(o, await api("DELETE", url), { yol: tablo === "plan_entries" ? "taksit kartı satırı Sil" : "cari kartı satırı Sil" });
+      }
+      if (kaynak && kaynak.tur !== "taslak" && !/faturasi|esmm|smm/.test(kaynak.tur)) return apiYok(`sil: ${kaynak.tur} için silme eşlemesi yazılmadı`);
       return sonuc(o, await api("DELETE", `/api/workspace/invoices/${fid}`));
+    }
+    case "taslak": {
+      // F-13: taslak fatura (deftere dokunmaz, numarasız). Kâhinin taslağında cari / kalem yok: sürücü ilk müşteriye tek kalemli hizmet taslağı yazar.
+      const c = Object.keys(s.cariler || {}).find(x => s.cariler[x].tur === "musteri") || Object.keys(s.cariler || {})[0];
+      const r = await api("POST", "/api/workspace/invoices", { kind: "sale", status: "draft", accountId: await cariAc(c), issueDate: v.tarih, lines: [{ name: "Hizmet", qty: 1, unitPrice: "100,00", vatRate: 20, discountRate: 0 }], payment: { cash: [], rest: "open" } });
+      if (r.ok && o.id) ids.olay[o.id] = r.data?.id;
+      return sonuc(o, r, { yol: `taslak satış faturası (${c}, 100,00 + KDV)` });
     }
     case "geri_yukle": {
       const fid = ids.olay[v.kaynak];
@@ -553,7 +636,10 @@ async function uygula(o, no) {
       }
       const plan = v.taksit_karti ? ids.taksit[v.taksit_karti] : null;
       if (v.taksit_karti && !plan) return apiYok(`taksit kartı ${v.taksit_karti} programda yok`);
-      const govde = { kind: giris ? "in" : "out", amount: tl(v.tutar), date: v.tarih, note: o.id || o.tur, ...yol, ...fatura, ...(giris && !v.supheliden ? { doubtfulSkip: true } : {}), ...(giris && v.yol === "kart" ? { cardRefund: true } : {}) };
+      // Kâhin bakımı 1 (README "tahsilat … normal_cari ('Normal Cari Hesaba İşle'; `supheliden` geriye uyum için kabul edilir, artık varsayılan)"): şüpheli
+      // kaydı açık caride tahsilat VARSAYILAN olarak şüpheliden düşer (2.3.0 K3); yalnız normal_cari işaretlisi formun "Normal Cari Hesaba İşle" kutusuyla
+      // (doubtfulSkip). Önceki sürücü (kâhin 5e37f0ee dili) tersini yapıyordu: işaretsiz her tahsilatı doubtfulSkip ile gönderiyordu.
+      const govde = { kind: giris ? "in" : "out", amount: tl(v.tutar), date: v.tarih, note: o.id || o.tur, ...yol, ...fatura, ...(giris && v.normal_cari ? { doubtfulSkip: true } : {}), ...(giris && v.yol === "kart" ? { cardRefund: true } : {}) };
       const r = plan ? await api("POST", `/api/workspace/plans/${plan}/entries`, { ...govde, ...benzer }) : await cariGiris(v.cari, govde);
       if (r.ok && o.id) {
         ids.olay[o.id] = r.data?.entryId || r.data?.id;
@@ -619,6 +705,7 @@ async function uygula(o, no) {
         ids.cari.__banka = rc.data?.id;
       }
       const r = await api("POST", "/api/workspace/bank/vouchers", { type: "fee", accountId: await bankaId(v.banka), amount: tl(v.M), date: v.tarih, feeType: "diger", tax: "vat_excl", taxRate: String(k.oran), invoiceNo: `MF-${v.tarih}`, partyId: ids.cari.__banka, description: "Faturalı masraf", ...benzer });
+      if (r.ok && o.id) ids.olay[o.id] = r.data?.id;
       return sonuc(o, r, { yol: "faturayı kesen cari: sürücünün açtığı 'Banka (Masraf Faturası)' tedarikçisi" });
     }
     case "faiz_geliri": {
@@ -724,10 +811,20 @@ async function uygula(o, no) {
     case "taksit_karti": {
       const cariId = await cariAc(v.cari);
       const ilk = v.taksitler?.[0]?.vade || v.tarih;
-      const body = { accountId: cariId, name: `${s.cariler?.[v.cari]?.ad || v.cari} ${o.id}`, total: tl(v.toplam), registeredOn: v.tarih, mode: "auto", count: v.taksitler?.length || 1, firstDue: ilk, ...(v.kaynak !== "yeni_borc" ? { coversBalance: true } : {}) };
-      const r = await api("POST", "/api/workspace/plans", body);
-      if (!r.ok) return sonuc(o, r);
-      const pid = r.data?.id || r.data?.plan?.id;
+      let r;
+      let pid;
+      const fk = faturaKarti[o.id];
+      if (fk) {
+        // Faturanın kendi kartı fatura formunda açıldı (yukarıda); burada yalnız taksitler kâhinin vade / tutarına getirilir.
+        if (!fk.planId) return apiYok(`faturanın kartı ${o.id}: fatura yanıtında planId yok`);
+        pid = fk.planId;
+        r = { ok: true, status: 200 };
+      } else {
+        const body = { accountId: cariId, name: `${s.cariler?.[v.cari]?.ad || v.cari} ${o.id}`, total: tl(v.toplam), registeredOn: v.tarih, mode: "auto", count: v.taksitler?.length || 1, firstDue: ilk, ...(v.kaynak !== "yeni_borc" ? { coversBalance: true } : {}) };
+        r = await api("POST", "/api/workspace/plans", body);
+        if (!r.ok) return sonuc(o, r);
+        pid = r.data?.id || r.data?.plan?.id;
+      }
       ids.taksit[o.id] = pid;
       // Taksitler kâhinin vade ve tutarına (taksit satırı düzeltmesi).
       const kart = await api("GET", `/api/workspace/plans/${pid}`);
@@ -741,10 +838,16 @@ async function uygula(o, no) {
           if (!u.ok) farkli.push(`${i + 1}. taksit: ${u.status} ${u.ileti}`);
         }
       }
-      return sonuc(o, r, { yol: v.kaynak === "yeni_borc" ? "Yeni Borç kartı" : "Mevcut Borcu Taksitlendir (coversBalance)", ...(farkli.length ? { uyari: farkli.join("; ") } : {}) });
+      const yol = fk ? "faturanın kendi kartı (fatura formu Kalanı Taksitlendir)" : v.kaynak === "yeni_borc" ? "Yeni Borç kartı" : "Mevcut Borcu Taksitlendir (coversBalance)";
+      return { ...sonuc(o, r, { yol, ...(farkli.length ? { uyari: farkli.join("; ") } : {}) }), ...(fk ? { durum: "faturada", not: `fatura ${fk.fatura} formunda açıldı` } : {}) };
     }
-    case "taksit_kapat":
-      return apiYok("senaryolarda yok (eşleme yazılmadı)");
+    case "taksit_kapat": {
+      // H-07 Kartı Kapat: kart düzenleme formunun Durum = Kapalı (PUT /plans/:id status closed; kapanış günü = programın bugünü = olay günü).
+      // `eski: true` (kâhin bakımı 2 R6: 2.5.0'dan önce kapatılmış kart, göç verisi) programda AYNI yol — bugünkü kural (kalan 689) iki dalda da.
+      const pid = ids.taksit[v.kart];
+      if (!pid) return apiYok(`kapatılacak kart ${v.kart} programda yok`);
+      return sonuc(o, await api("PUT", `/api/workspace/plans/${pid}`, { status: "closed" }), { yol: `Kartı Kapat${v.eski ? " (kâhin: 2.5.0'dan önce kapatılmış kart)" : ""}` });
+    }
 
     // ---- KDV ve vergi
     case "kdv_mahsup": {
@@ -769,17 +872,26 @@ async function uygula(o, no) {
     case "supheliye_al": {
       const cid = await cariAc(v.cari);
       const r = await api("POST", `/api/workspace/accounts/${cid}/doubtful`, { amount: tl(v.tutar), date: v.tarih, reason: "other", note: "Şüpheli", ...benzer });
+      if (r.ok && o.id) ids.supheli[o.id] = r.data?.record?.id || "";
       return sonuc(o, r);
     }
     case "karsilik_ayir":
     case "degersiz_yaz":
     case "supheliden_cikar": {
-      const rec = await supheliKaydi(v.cari);
+      // Kâhin bakımı 2 (R14, EK-2 31): işlem KAYIT başına; olay `kayit` = supheliye_al olayının kimliği (zorunlu). Kayıt eşlenemezse açık son kayıt (eski davranış) + uyarı.
+      const hedef = v.kayit ? ids.supheli[v.kayit] : "";
+      let rec = null;
+      if (hedef) {
+        const lr = await api("GET", `/api/workspace/accounts/${ids.cari[v.cari]}/doubtful`);
+        rec = (lr.data?.records || []).find(x => x.id === hedef) || null;
+      }
+      const kayitUyari = v.kayit && !rec ? `kayıt ${v.kayit} programda eşlenemedi — açık son kayıt kullanıldı` : "";
+      if (!rec) rec = await supheliKaydi(v.cari);
       if (!rec) return apiYok(`${v.cari} için açık şüpheli kaydı programda yok`);
       const yol = { karsilik_ayir: "provision", degersiz_yaz: "write-off", supheliden_cikar: "release" }[o.tur];
       const kalan = Number(rec.remainingMinor) || 0;
       const body = { date: v.tarih, ...(o.tur === "karsilik_ayir" ? { amount: tl(v.tutar) } : o.tur === "degersiz_yaz" ? { amount: tl(kalan) } : {}), ...benzer };
-      return sonuc(o, await api("POST", `/api/workspace/accounts/${ids.cari[v.cari]}/doubtful/${rec.id}/${yol}`, body), o.tur === "degersiz_yaz" ? { not: `programın kalan şüphelisi ${kalan}` } : {});
+      return sonuc(o, await api("POST", `/api/workspace/accounts/${ids.cari[v.cari]}/doubtful/${rec.id}/${yol}`, body), { ...(o.tur === "degersiz_yaz" ? { not: `programın kalan şüphelisi ${kalan}` } : {}), ...(kayitUyari ? { uyari: kayitUyari } : {}) });
     }
 
     // ---- stok modülü
@@ -831,11 +943,14 @@ async function uygula(o, no) {
     }
     case "donem_kilitle": {
       // Kâhinde kural "2.4.9" = göçte 2.4.9 kuralıyla DONMUŞ kilit (Ç3). Program bugün kilidi koyar, türetmeyi dondurmaz (program zaten 2.4.9 kuralıyla türetir).
+      // Ç3 (2.5.0, birleşti 2ba5ac0b): kilit kancası kilitli dönemin defterini DONDURUR (göç 47); yanıtta frozenThrough + freeze. Kâhinin kural
+      // "2.4.9" (göçte 2.4.9 kuralıyla donmuş kilit) programda bugünkü kural = 2.4.9 kopyası olduğundan aynı türetme (Ç5 / Ç7 kural değişiklikleri sonra).
       const r = await api("PUT", "/api/admin/period-lock", { lockedUntil: v.tarih, force: true });
-      return sonuc(o, r, v.kural === "2.4.9" ? { not: "dondurma (Ç3) yok: düz dönem kilidi" } : {});
+      const kilit = r.ok ? { frozenThrough: r.data?.frozenThrough ?? null, freeze: r.data?.freeze ? { state: r.data.freeze.state || r.data.freeze.status || "", ...Object.fromEntries(Object.entries(r.data.freeze).filter(([k]) => /run|through|rule|done|state|error/i.test(k)).slice(0, 8)) } : null } : {};
+      return sonuc(o, r, { ...(v.kural === "2.4.9" ? { not: "kâhin: 2.4.9 kuralıyla donmuş kilit (program: Ç3 dondurması, bugünkü kural 2.4.9 kopyası)" } : {}), kilit });
     }
     case "kural_farki_duzelt":
-      return uygulanmadi("Ç3/KG-15", "Kural Farkı Düzeltme Fişi");
+      return uygulanmadi("Ç5-KG15", "Kural Farkı Düzeltme Fişi (KG-15; Ç3 tasarım notu §13: Ç5'in işi)");
     case "devir":
       return uygulanmadi("D2–D4", "yıl sonu devri (arşiv + yeni yıl açılışı)");
     case "devri_yenile": {
@@ -850,7 +965,7 @@ async function uygula(o, no) {
       return { durum: red ? red.durum : "yapildi", status: red?.status || 200, ...(red ? { kod: red.kod, ileti: red.ileti } : {}), alt, not: "Devri Yenile mekanizması yok (D4): düzeltmeler tek dosyaya girildi" };
     }
     case "devri_geri_al":
-      return uygulanmadi("D4", "Devri Geri Al");
+      return uygulanmadi("D4-GERI-AL", "Devri Geri Al");
     case "fis_ters":
       return uygulanmadi("Ç2", "saklanan fişin ters kaydı");
     default:
@@ -932,17 +1047,74 @@ async function raporOku(o) {
   if (o.rapor === "yevmiye") out.yevmiye = await rapor("yevmiye", { ...(bas ? { from: bas } : {}), ...(son ? { to: son } : {}) });
   if (o.rapor === "buyuk_defter") out.buyuk_defter_yok = "Büyük Defter (hesap ekstresi) programda yok — Ç6";
   if (o.rapor === "degerleme") out.stok = await rapor("stok-durumu", {});
-  if (o.rapor === "acik_faturalar" || o.rapor === "gecikmis") {
-    const cid = ids.cari[o.cari];
+  // ---- B1 / Tek Yükümlülük Kuyruğu raporları (kâhin bakımı 1–2). Programın BUGÜNKÜ okumaları; "bugün" = raporun günü (sahte saat). Geçmiş günlü
+  // raporda (o.tarih < o ana kadarki en büyük olay günü) program sonradan girilmiş kayıtları da görür — `gecmis_gunlu` işareti (karşılaştırıcı yazar).
+  const cariKart = async c => {
+    const cid = ids.cari[c];
+    if (!cid) return null;
+    const r = await api("GET", `/api/workspace/accounts/${cid}`, undefined, `rapor:${o.rapor}`);
+    const a = r.data?.account || r.data || {};
+    // Cari kartındaki "Geciken" = totals.overdue (açık taksit kartlarının vadesi geçmiş kalanı; WhatsApp Ödeme Hatırlatma {{4}} ve elemesi bununla — lib/whatsapp/queue.mjs overdueOf).
+    return { gecikmis: kurus(a.totals?.overdue), gecikmis_sayi: Number(a.totals?.overdueCount) || 0, bakiye: kurus(a.totals?.balance), supheli: a.doubtful ? { kalan: Number(a.doubtful.remainingMinor ?? a.doubtful.openMinor ?? 0) || 0, sayi: Number(a.doubtful.count) || 0 } : null, kartlar: (a.plans || []).map(p => ({ id: p.id, durum: p.status, gecikmis: kurus(p.totals?.overdue) })) };
+  };
+  if (["gecikmis", "acik_faturalar", "acik_kalemler", "kartlar", "kilit_bag_notu"].includes(o.rapor)) {
     out.cari = o.cari;
-    out.acik_faturalar = await rapor("acik-faturalar", {});
-    const kart = cid ? await api("GET", `/api/workspace/accounts/${cid}`, undefined, `rapor:${o.rapor}`) : null;
-    const a = kart?.data?.account || kart?.data || {};
-    out.cari_kart = { bakiye: kurus(a.balance), gecikmis: kurus(a.overdue ?? a.overdueAmount ?? a.due?.overdue ?? NaN), alanlar: Object.keys(a).filter(k => /due|overdue|gecik/i.test(k)) };
-    out.cari_kart_ham = Object.fromEntries(Object.entries(a).filter(([k]) => /due|overdue|balance|open/i.test(k)));
+    out.cari_kart = await cariKart(o.cari);
+  }
+  if (o.rapor === "gecikmis_tumu") {
+    out.cariler = {};
+    for (const c of Object.keys(s.cariler || {})) out.cariler[c] = await cariKart(c);
+  }
+  if (o.rapor === "hatirlatma") {
+    // Ödeme Hatırlatma seçimi: WhatsApp → Toplu Gönderim'in alıcı listesi (POST /whatsapp/targets, Bağlantı gerektirmez; eleme çekirdeği Otomatik Gönder'le aynı —
+    // accounts.waFacts; kuyruk "Gecikmiş Borç Yok" elemesi overdueOf: totals.overdue > 0). Şüpheli alacak etiketi programda yok (S7 Ç5'te).
+    const r = await api("POST", "/api/workspace/whatsapp/targets", { kind: "message", all: true, status: "all" }, "rapor:hatirlatma");
+    out.alicilar = r.ok ? Object.fromEntries((r.data?.recipients || []).map(x => [program.cari_kimlik[x.id] || x.id, { gecikmis: kurus(x.overdue?.amount), bakiye: kurus(x.balance), gecerli: x.valid, neden: x.reason || "" }])) : { hata: r.status, ileti: r.ileti };
+  }
+  if (o.rapor === "acik_faturalar" || o.rapor === "acik_kalemler" || o.rapor === "gecikmis") {
+    const af = await rapor("acik-faturalar", {});
+    const h = af.headers || [];
+    const ix = ad => h.indexOf(ad);
+    // Satır → kâhin faturası (belge numarasıyla; aynı adlı iki cari ayrışır). Kalan: satış tarafı +, alış tarafı − (kâhin acik_faturalar işareti).
+    out.acik_faturalar = (af.rows || []).map(row => ({ fatura: faturaNo[row[ix("Fatura No")]] || `?${row[ix("Fatura No")]}`, taraf: row[ix("Taraf")], kalan: (/borç|alış/i.test(String(row[ix("Taraf")])) ? -1 : 1) * Math.abs(paraMetni(row[ix("Kalan")]) || 0), vade: gunIso(row[ix("Vade")]), tarih: gunIso(row[ix("Fatura Tarihi")]) }));
+    out.acik_faturalar_ham = { headers: h, satir: (af.rows || []).length };
+  }
+  if (o.rapor === "kartlar") {
+    out.kartlar = {};
+    for (const [k, pid] of Object.entries(ids.taksit)) {
+      const tanim = s.olaylar.find(x => x.id === k && (x.tur === "taksit_karti" || x.tur === "taksit_excel"));
+      if (!tanim || tanim.cari !== o.cari) continue;
+      const r = await api("GET", `/api/workspace/plans/${pid}`, undefined, "rapor:kartlar");
+      if (!r.ok) {
+        out.kartlar[k] = { yok: r.status, ileti: r.ileti };
+        continue;
+      }
+      out.kartlar[k] = { kapali: r.data?.status === "closed", durum: r.data?.status, taksitler: (r.data?.items || []).map(it => ({ vade: it.dueDate, tutar: kurus(it.amount), kalan: kurus(it.remaining) })) };
+    }
+  }
+  if (o.rapor === "kaynak_durumu") {
+    const kaynak = s.olaylar.find(x => x.id === o.kaynak);
+    const id = ids.olay[o.kaynak];
+    if (!kaynak || !id) out.durum = { yok: true };
+    else if (/faturasi|esmm|smm|taslak/.test(kaynak.tur)) {
+      const r = await api("GET", `/api/workspace/invoices/${id}`, undefined, "rapor:kaynak");
+      out.durum = r.ok ? { status: r.data?.status, statusLabel: r.data?.statusLabel } : { yok: r.status, ileti: r.ileti };
+    } else if (kaynak.tur === "tahsilat" || kaynak.tur === "odeme") {
+      const r = await api("GET", `/api/workspace/accounts/${ids.cari[kaynak.cari]}`, undefined, "rapor:kaynak");
+      out.durum = { satir_var: (r.data?.entries || []).some(e => e.id === id) };
+    } else out.durum = { eslenmedi: kaynak.tur };
+  }
+  if (o.rapor === "kural_farki") {
+    // Ç3: "Kural Değişikliği Farkı (Kilitli Dönem)" — donmuş defter ↔ güncel türetme (Mutabakat Testi tam taraması; ledger:rule-diff).
+    const r = await api("GET", "/api/workspace/ledger/integrity", undefined, "rapor:kural_farki");
+    out.denetimler = (r.data?.checks || r.data?.extra || []).filter(x => /^ledger:/.test(x.code || "")).map(x => ({ code: x.code, ok: x.ok, count: x.count, breakdown: x.breakdown || [] }));
   }
   return out;
 }
+const gunIso = metin => {
+  const m = String(metin || "").match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : String(metin || "");
+};
 
 // ---------------------------------------------------------------- akış
 const sonOkunan = { deger: null };
@@ -983,11 +1155,13 @@ try {
     const kayit = { no, tur: o.tur, ...(o.id ? { id: o.id } : {}), ...(o.tarih ? { tarih: o.tarih } : {}) };
     if (o.tur === "rapor") {
       const gun = o.tarih || o.son || program.saat;
+      const enBuyukGun = program.saat;
       await ilerle(gun, no);
-      if (o.rapor === "gecikmis" || o.rapor === "acik_faturalar") {
-        // Gecikmiş / açık fatura: programın "bugün"ü raporun günü (geçmiş günse saat geçici olarak geri alınır).
+      if (["gecikmis", "gecikmis_tumu", "hatirlatma", "acik_faturalar", "acik_kalemler", "kartlar", "kilit_bag_notu"].includes(o.rapor)) {
+        // Gecikmiş / açık kalem raporları: programın "bugün"ü raporun günü (geçmiş günse saat geçici olarak geri alınır; program yine de o ana kadar
+        // girilmiş BÜTÜN kayıtları görür — kâhin yalnız ≤ rapor günü olayları sayar → gecmis_gunlu).
         saat(o.tarih);
-        program.raporlar[o.ad] = { no, ...(await raporOku(o)), dosya: o.dosya || "canli" };
+        program.raporlar[o.ad] = { no, ...(await raporOku(o)), dosya: o.dosya || "canli", ...(o.tarih < enBuyukGun ? { gecmis_gunlu: enBuyukGun } : {}) };
         saat(program.saat);
       } else program.raporlar[o.ad] = { no, ...(await raporOku(o)), dosya: o.dosya || "canli" };
       kayit.durum = "rapor";
@@ -1017,7 +1191,13 @@ try {
   await altHesaplariOku();
   program.son = await durum("son");
   program.son_tum = await durum("son-tum", "9999-12-31");
-  program.mutabakat_testi = (await api("GET", "/api/workspace/ledger/integrity", undefined, "oku:integrity")).data?.ok ?? null;
+  const mt = await api("GET", "/api/workspace/ledger/integrity", undefined, "oku:integrity");
+  program.mutabakat_testi = mt.data?.ok ?? null;
+  // Tutmayan denetimler + Ç3 donmuş defter denetimleri (ledger:snapshot / ledger:rule-diff: donmuş = güncel türetme mi — madde madde, tam taramada).
+  program.mutabakat_denetimleri = (mt.data?.checks || []).filter(x => !x.ok || /^ledger:/.test(x.code || "")).map(x => ({ code: x.code, name: x.name, ok: x.ok, ...(x.count !== undefined ? { count: x.count } : {}), ...(x.breakdown ? { breakdown: x.breakdown } : {}), ...(x.sample ? { sample: x.sample } : {}) }));
+  program.mutabakat_kodlari = (mt.data?.checks || []).map(x => `${x.code}:${x.ok ? 1 : 0}`);
+  const kl = await api("GET", "/api/workspace/ledger/lock", undefined, "oku:kilit");
+  program.kilit_son = kl.ok ? { lockedUntil: kl.data?.lockedUntil || "", frozenThrough: kl.data?.frozenThrough ?? null } : null;
 } finally {
   loop.disable();
   program.olcum = {
