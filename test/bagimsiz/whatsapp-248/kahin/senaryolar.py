@@ -3579,7 +3579,7 @@ S("S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olu
 S("S42-04-gonderiliyor-talep-gece-yarisi-yerel-gun-iz-gonderim-aninda", "S42",
   "31.10 23:59:50 (yerel; UTC 20:59:50) Ödeme Hatırlatma GB: istek 23:59:5x'te gider, yanıt gelmez (zaman aşımı 01.11'de); 23:59:56'da silme talebi → içerik silinir, iş Sonucu Belirsiz (iz "
   "GÖNDERİM ANINDA, 31.10); 01.11 00:24:50'de yeni hatırlatma GB'ye GİDER (yerel gün değişti — E3; UTC'de aynı gün). 01.11 23:59:50'de GK: istek gider, Meta'nın kabulü 10 sn gecikir (02.11'de "
-  "gelir); 23:59:56'da talep → içerik silinir, kabul ize yazılır (iz 01.11), teslim 02.11; 02.11 00:24:50'de yeni hatırlatma GK'ye GİDER (aynı gün değil — D2 a), 00:34:50'de aynı gün "
+  "gelir); 23:59:56'da talep → içerik silinir, kabul ize yazılır (iz 01.11), teslim 02.11; 02.11 00:24:50'de yeni hatırlatma GK'ye GİDER (aynı gün değil — D2 a), 00:44:50'de aynı gün "
   "'Daha Önce Gönderildi' (son 02.11)",
   "S42 (Y18-2/3/4/8) + K5 + D2 + E3 + Y14-9 + §7a 19", [
    cari_h("GB", "Gonca Belirsiz", "0552 100 20 30", [_h("2026-09-01", 300, 0)], vadeler=[_v("2026-10-10", 300)]),
