@@ -157,4 +157,25 @@ aynı). Düzey uyarı: Mutabakat Testi ok = false (gizlenmez, G4 / dates:future 
   okur (senaryo yok). Seçenekler: (a) bugünkü gibi red (açılış sonraya düşmez; X13 durumu oluşmaz) — ÖNERİ; (b) geri yüklensin, uyarı versin. Uç durum: "Uç durum böyle kalsın (BİLİNEN SINIR)".
 - **B-K3 (fatura peşini):** açılıştan önce tarihli nakit peşinli fatura S12'de TAMAMEN reddedilir (kâhinde yalnız peşin tahsilatı — README bakım 3 "Sürücü için"); kayıt bütünlüğü için
   belgeyi yarım yazmamak doğru görünüyor (yaygın uygulama) — BAŞ MİMAR değerlendirir.
-- S54–S57: SORULDU (yanıt yok) — kod değişmez.
+- S54–S57: SORULDU (yanıt yok) — kod değişmez. → GÜNCELLEME 06.11 (kullanıcı: S54–S57 = A; ana oturum kararı): S56 Ç5-K'de yalnız test + mutant (kural 2.3.0'dan
+  routes/accounts.mjs:773 `assertNormalRoom` → 409 doubtful-normal-exceeds; kod değişmez). S54, S55, S57 Ç5-B'ye (routes/accounts.mjs PUT entries "Cari" alanı +
+  bağlıysa 409; S54'te bağ yeni carinin belgesine; invoice-settle bağ tarihi). BAŞ MİMAR KARARI: S57 kayıt (cari hareketi) düzeyidir; taksit KARTININ carisinin
+  tahsilatlarıyla birlikte değişmesi (plans.mjs:640–660) S57 kapsamında değil.
+
+## 9. Uygulama (koddan sonra eklendi)
+- Kod: `server/lib/cash-opening.mjs` (installCashOpeningGuard, restoringCash, cashBeforeOpening, isCashMovement, cashOpeningDate), `server/routes/cash.mjs` (kurulum),
+  `server/routes/trash.mjs` (geri yükleme ucu restoringCash içinde; gövde restoreItem'e alındı), `server/lib/integrity.mjs` (yalnız `cash:before-opening` uyarısı,
+  tam taramada). Göç YOK; defter kuralı değişmez (mizan v2.4.9 ile birebir — test).
+- Önceki hâl eşlemesinde tasarımdaki (a)–(c)'ye iki ek: (d) olaysız (eski sürümden) silinen nakit satırı aynı gün ve tutarla başka tabloya taşınmışsa (Taksite Aktar)
+  aynı kayıt; (e) bu işlemde EKLENİP düzeltilen satırın `scope.before`'daki eklendiği hâli önceki hâl sayılmaz (rowid > son COMMIT'teki en büyük rowid; başka bağlantı
+  yazdıysa — data_version — eklenmemiş sayılır, kabul yönünde).
+- Testler: `test/kasa-acilis-once-250.test.mjs` (41), `test/kasa-acilis-once-250-mutasyon.mjs` (19 karşı mutant, ayrı kopyada).
+- Sürücü: `test/bagimsiz/muhasebe-surucu/program.mjs` — `yedekten` olayları v2.4.9'un gerçek koduyla (son `yedekten` olayına kadar; sonra göç), Kasa Giriş / Çıkış Sil ve
+  Düzenle, cari / taksit tahsilatı Düzenle (tutar, tarih, açıklama, yol, Kapatılacak Fatura, Normal Cari), `mutabakat_uyarilari` raporu; uyarı düzeyindeki Mutabakat
+  Testi sapması değişmezi bozmaz. `karsilastir.py` — `mutabakat_uyarilari` karşılaştırması. Programda yolu olmayan: cari değiştirme (uygulanmadı, Ç5-B), taksit kartı
+  bağı değişikliği (api_yok → B-K4).
+- **B-K4 (yeni; BAŞ MİMAR / ana oturum):** S44 = A "taksit kartı bağı düzeltilebilir" — programda cari tahsilatını karta, karttaki tahsilatı cariye ya da kartlar arası
+  taşıyan tek kayıt düzeltmesi YOK (kâhin s81 #31 / #32 / #36, s82 #30). Yol hangi pakette (routes/plans.mjs + routes/accounts.mjs; Ç5-K dosyası değil)?
+- **B-K5 (sürücü bakımı):** `karsilastir.py` son bölümündeki BUGÜN sezgisi (S12'den önce yazılmış "Kasa açılışından önce kabul edilen nakit = Ç5-S12 U") artık eski:
+  geri yüklenen / açılıştan önce girilip açılışı öne alınan satırları da U sayıyor; asıl S12 karşılaştırması `redler`'de (hepsi AYNI). Görev metni sürücüye yalnız eşleme
+  eklemeye izin verdiği için kaldırılmadı; kaldırılması ana oturum onayıyla.
