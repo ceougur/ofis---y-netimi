@@ -334,6 +334,10 @@ async function measure(fixtureDir, info) {
     // Geçmiş dönem kilitli (bugün − 45 gün): kapının kilit izi ve (varsa) kilitli dönem anlık görüntüsü devrede.
     const lockAt = performance.now();
     await must("kilit", client.put("/api/admin/period-lock", { lockedUntil: addDays(today, -LOCK_DAYS) }));
+    out.lockAnswerMs = performance.now() - lockAt;
+    // 2.5.0 Ç3 tur 2: uç dondurmayı beklemez (kilit + koşu yazılınca yanıt; dondurma ve kilit izi arkada) — "kilitli" evresi dondurma bittikten sonra ölçülür, lockMs önceki gibi
+    // kilit + dondurmanın bitişi (yanıt süresi lockAnswerMs).
+    while (app.ledger?.freezeView?.().active) await new Promise(resolve => setTimeout(resolve, 20));
     out.lockMs = performance.now() - lockAt;
     out.phase = "kilitli";
     for (let k = 0; k < rounds; k += 1) await round();
