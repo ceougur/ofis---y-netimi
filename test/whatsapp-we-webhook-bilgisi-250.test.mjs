@@ -9,14 +9,16 @@
 // Ders 48 (Windows): bir hücre secret.key'i DEĞİŞTİRİR (program kapalıyken; veri başka bilgisayara taşındı benzetimi).
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
-import { mkdtempSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { describe, it } from "node:test";
 import { resolveDbPath } from "../server/lib/db-path.mjs";
+import { createStore, openDatabase } from "../server/lib/db.mjs";
 import { LATEST_VERSION } from "../server/lib/migrations.mjs";
+import { createAppWebhook } from "../server/lib/whatsapp/app-webhook.mjs";
 import { ADMIN_PASSWORD, createUser, removeTestDir } from "./helpers.mjs";
 import { PNID, URLS, WABA, startWa } from "./whatsapp-248-ortak.mjs";
 
@@ -385,4 +387,163 @@ describe("2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum
       }
     });
   }
+});
+
+// ---------- 2.5.0 BİRLEŞİK TUR 5 madde 5 (WE + BS-7 dar kontrol ORTA-1; gerileme + "kime kaç kez"): 001 geri yüklemesinde kurulum başına çift ----------
+// BAŞ MİMAR KARARI (ders 40; gerekçe: kurulum başına çift + ilke (4) çıkmaz yok / (5) taşınan-geri yüklenen veri): canlıda çift VARSA canlınınki, YOKSA yedeğinki kalır.
+// Nasıl bozulur (dar kontrol betiği dk-webs7-is/senaryo.mjs): 001'in veri dosyası kaybolur / bozulur, program boş 001 ile açılır, kullanıcı yedekten geri yükler → yedekteki
+// DOĞRU çift silinir, Meta'daki adres 404 (07e7056f'de 200); veri başka bilgisayara secret.key ile taşınınca da aynı. Eski kodda (3fe5a92d / 578c12d4) WE-10 ve WE-11 404 ile
+// kırmızı (beklenen neden). WE-12 kararın öbür yarısı (canlıda çift var, yedektekinden farklı → canlınınki) — eski kodda da yeşil (G3: korunan davranış).
+// Ders 48 (Windows): WE-10 program kapalıyken 001 veri dosyasını (-wal / -shm dahil) SİLER; WE-11 yedek dosyasını ve secret.key'i başka veri klasörüne KOPYALAR; üçü de geri
+// yüklemede dosya takası yapar (applyStagedRestore).
+async function backup001(ctx) {
+  const backup = await ctx.api.post("/api/admin/backups", { scope: "one", companyId: "sirket-001" });
+  assert.equal(backup.status, 200, JSON.stringify(backup.data));
+  return backup.data.data.name;
+}
+async function restore001Applied(ctx, name, options) {
+  const restore = await ctx.api.post("/api/admin/backups/restore", { name, company: "sirket-001", confirm: "001", password: ADMIN_PASSWORD });
+  assert.equal(restore.status, 200, JSON.stringify(restore.data));
+  await ctx.close();
+  const next = await startOnce(options);
+  const applied = JSON.parse(next.store.setting("backup.lastRestore", "{}") || "{}");
+  assert.deepEqual([applied.ok, applied.name], [true, name], `ön koşul: geri yükleme uygulandı (${JSON.stringify(applied)})`);
+  return next;
+}
+describe("2.5.0 BİRLEŞİK TUR 5 — 001 geri yüklemesinde webhook çifti: canlıda varsa canlınınki, yoksa yedeğinki", () => {
+  it("WE-10 001'in veri dosyası kayboldu (secret.key duruyor) → boş 001 açıldı → yedekten geri yüklendi: Meta'ya girilmiş çiftle doğrulama 200, gösterilen çift AYNI", { timeout: 180_000 }, async () => {
+    const root = mkdtempSync(path.join(tmpdir(), "destekofis-we-"));
+    const dataDir = path.join(root, "data");
+    const backupDir = path.join(root, "backups");
+    const rootFile = resolveDbPath(dataDir);
+    let ctx = await startOnce({ dataDir, backupDir, env: DEAD });
+    try {
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      const first = await info(ctx);
+      assert.equal((await verifyGet(await remoteOf(ctx), first, 70)).status, 200, "ön koşul: çift Meta'da doğrulandı");
+      const name = await backup001(ctx);
+      await ctx.close();
+      for (const suffix of ["", "-wal", "-shm"]) rmSync(`${rootFile}${suffix}`, { force: true });
+      assert.equal(existsSync(rootFile), false, "ön koşul: 001 veri dosyası yok");
+      assert.equal(existsSync(path.join(dataDir, "secret.key")), true, "ön koşul: secret.key duruyor");
+      const options = { dataDir, backupDir, env: DEAD, connect: false, ack: false, office: null };
+      ctx = await startOnce(options);
+      assert.equal(ctx.store.setting(KEY, null), null, "ön koşul: boş 001'de çift yok (canlıda çift YOK)");
+      ctx = await restore001Applied(ctx, name, options);
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      const base = await remoteOf(ctx);
+      const early = await verifyGet(base, first, 71);
+      assert.deepEqual([early.status, early.text], [200, "71"], "geri yüklemeden sonra (yeniden gösterimden önce) Meta'daki çiftle doğrulama");
+      assert.deepEqual(await info(ctx), first, "gösterilen çift yedektekiyle (Meta'daki) aynı");
+      const late = await verifyGet(base, first, 72);
+      assert.deepEqual([late.status, late.text], [200, "72"], "yeniden gösterimden sonra da doğrulama");
+    } finally {
+      await ctx.close();
+      removeTestDir(root);
+    }
+  });
+
+  it("WE-11 veri başka bilgisayara secret.key ile taşındı (yeni kurulumda çift hiç gösterilmedi) → 001 yedeği geri yüklendi: Meta'daki çiftle doğrulama 200, gösterilen çift AYNI", { timeout: 180_000 }, async () => {
+    const root = mkdtempSync(path.join(tmpdir(), "destekofis-we-"));
+    const dataA = path.join(root, "dataA");
+    const backupA = path.join(root, "backupsA");
+    const dataB = path.join(root, "dataB");
+    const backupB = path.join(root, "backupsB");
+    let ctx = await startOnce({ dataDir: dataA, backupDir: backupA, env: DEAD });
+    try {
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      const first = await info(ctx);
+      const name = await backup001(ctx);
+      await ctx.close();
+      const optionsB = { dataDir: dataB, backupDir: backupB, env: DEAD, connect: false, ack: false, office: null };
+      ctx = await startOnce(optionsB);
+      const companies = ctx.server.app.companies;
+      const folderB = companies.dirsOf(companies.get("sirket-001")).backupDir;
+      const fromA = readdirSync(backupA, { recursive: true }).map(String).find(item => item.endsWith(name));
+      assert.ok(fromA, "ön koşul: yedek A'nın yedek klasöründe");
+      await ctx.close();
+      mkdirSync(folderB, { recursive: true });
+      copyFileSync(path.join(backupA, fromA), path.join(folderB, name));
+      copyFileSync(path.join(dataA, "secret.key"), path.join(dataB, "secret.key"));
+      ctx = await startOnce(optionsB);
+      assert.equal(ctx.store.setting(KEY, null), null, "ön koşul: yeni kurulumda çift yok (canlıda çift YOK)");
+      ctx = await restore001Applied(ctx, name, optionsB);
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      const res = await verifyGet(await remoteOf(ctx), first, 81);
+      assert.deepEqual([res.status, res.text], [200, "81"], "taşınan kurulumda Meta'daki (eski bilgisayarın) çiftle doğrulama");
+      assert.deepEqual(await info(ctx), first, "gösterilen çift aynı");
+    } finally {
+      await ctx.close();
+      removeTestDir(root);
+    }
+  });
+
+  it("WE-12 canlıda çift VAR ve yedektekinden farklı → geri yüklemede canlınınki kalır (yedekteki eski çift 404); kararın öbür yarısı", { timeout: 180_000 }, async () => {
+    const root = mkdtempSync(path.join(tmpdir(), "destekofis-we-"));
+    const dataDir = path.join(root, "data");
+    const backupDir = path.join(root, "backups");
+    const options = { dataDir, backupDir, env: DEAD, connect: false, ack: false, office: null };
+    let ctx = await startOnce({ dataDir, backupDir, env: DEAD });
+    try {
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      const old = await info(ctx);
+      const name = await backup001(ctx);
+      // Canlıda yeni çift (Meta'ya yeniden girilmiş olan): eski satır kalkar, yeniden gösterimde yeni çift üretilir.
+      ctx.store.run("DELETE FROM settings WHERE key = ?", KEY);
+      const live = await info(ctx);
+      assert.notEqual(live.verifyToken, old.verifyToken, "ön koşul: canlıdaki çift yedektekinden farklı");
+      ctx = await restore001Applied(ctx, name, options);
+      ctx.server.app.mobileRemote.setPublicUrl(PUBLIC);
+      const base = await remoteOf(ctx);
+      const kept = await verifyGet(base, live, 91);
+      assert.deepEqual([kept.status, kept.text], [200, "91"], "canlıdaki çiftle doğrulama");
+      assert.equal((await verifyGet(base, old, 92)).status, 404, "yedekteki eski çift geri gelmedi");
+      assert.deepEqual(await info(ctx), live, "gösterilen çift canlınınki");
+    } finally {
+      await ctx.close();
+      removeTestDir(root);
+    }
+  });
+});
+
+// ---------- 2.5.0 BİRLEŞİK TUR 5 madde 7 (WhatsApp tur 1 yan ölçümü docs/kanit/2026-11-06/watur1-yan-olcum-salt-okunur.txt): salt okunur lisansta çift üretilmez ----------
+// BAŞ MİMAR KARARI (ders 40; WE + BS-7 ile aynı düzen — "okuma yazma değildir"; salt okunurda tünel kapalı, Meta doğrulaması zaten geçemez): çift YOKSA ÜRETİLMEZ (ready false +
+// Türkçe neden, ayar satırı yok); var olan çift OKUNUR ve gösterilir; bu bilgisayarda açılamayan çift yeniden üretilmez. Neden metni görev metninden (koddan değil).
+// Düzenek: çifti üreten nesne (createAppWebhook) gerçek SQLite deposuyla; lisans durumu reveal'in ikinci bağımsız değişkeniyle ({ writable: false }). Eski kodda (578c12d4)
+// ikinci değişken yok sayılır → çift üretilir (beklenen kırmızı neden: "salt okunurda çift üretilmez" denetimi).
+// Ders 48 (Windows): hücre geçici klasörde secret.key'i DEĞİŞTİRİR (veri başka bilgisayara taşındı benzetimi); depo kapatılıp klasör silinir.
+const READ_ONLY = "Lisans salt okunur; Webhook Bilgileri lisans etkinleşince gösterilir.";
+describe("2.5.0 BİRLEŞİK TUR 5 — salt okunur lisansta Webhook Bilgileri çifti üretmez", () => {
+  it("WE-13 salt okunur: çift YOK → ready false + neden, değer boş, ayar satırı yok; yazılabilir olunca üretilir; çift VARKEN salt okunur → aynı çift; açılamayan çift salt okunurda yeniden üretilmez", () => {
+    const root = mkdtempSync(path.join(tmpdir(), "destekofis-we-ro-"));
+    const db = openDatabase(path.join(root, "a.sqlite"));
+    try {
+      db.exec("CREATE TABLE settings (key TEXT PRIMARY KEY, value TEXT, updated_at TEXT, updated_by TEXT)");
+      const store = createStore(db);
+      const row = () => store.get("SELECT value, updated_at AS updatedAt FROM settings WHERE key = ?", KEY) || null;
+      const hooks = createAppWebhook({ store, dataDir: root, now: () => new Date("2026-11-06T09:00:00Z") });
+      const none = hooks.reveal(PUBLIC, { writable: false });
+      assert.deepEqual([none.ready, none.callbackUrl, none.verifyToken, none.reason], [false, "", "", READ_ONLY], "salt okunurda çift üretilmez");
+      assert.equal(row(), null, "salt okunurda ayar satırı yazılmadı");
+      assert.deepEqual(hooks.reveal(PUBLIC, { writable: false }), none, "ikinci soruşta da üretilmez");
+      assert.equal(row(), null);
+      const made = hooks.reveal(PUBLIC, { writable: true });
+      assert.equal(made.ready, true, "lisans yazılabilir olunca çift üretilir (çıkmaz yok)");
+      assert.match(made.verifyToken, /^[A-Za-z0-9_-]{43}$/);
+      const saved = row();
+      assert.ok(saved, "ayar satırı yazıldı");
+      assert.deepEqual(hooks.reveal(PUBLIC, { writable: false }), made, "çift varken salt okunurda aynı çift gösterilir");
+      assert.deepEqual(row(), saved, "satır aynen");
+      assert.deepEqual(hooks.reveal(PUBLIC), made, "lisans bilgisi verilmezse (bugünkü çağıran) davranış aynen");
+      // Veri başka bilgisayara taşındı (secret.key farklı): yeniden üretim yazma olurdu → salt okunurda üretilmez.
+      writeFileSync(path.join(root, "secret.key"), randomBytes(32));
+      const moved = createAppWebhook({ store, dataDir: root, now: () => new Date("2026-11-06T09:00:00Z") });
+      const gated = moved.reveal(PUBLIC, { writable: false });
+      assert.deepEqual([gated.ready, gated.callbackUrl, gated.verifyToken, gated.reason], [false, "", "", READ_ONLY], "açılamayan çift salt okunurda yeniden üretilmez");
+      assert.deepEqual(row(), saved, "satır aynen (secret.key değişse de)");
+    } finally {
+      db.close();
+      removeTestDir(root);
+    }
+  });
 });

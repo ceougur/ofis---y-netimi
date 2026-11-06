@@ -9,7 +9,7 @@
 // soruyu Kaydet'ten sonra yalnız 1,2 sn bekliyordu (answerConfirms); yük altında 409 yanıtı daha geç gelince (20 kullanıcıda yazım p95 1,3–1,6 sn,
 // yedek sırasında 10 sn'ye kadar) soru kaçıyordu. Ürün hatası değil, ölçek aracının adım hatası; düzeltme tools/olcek-ekran.mjs.
 //
-// Varyantlar (her tur; ön koşulu oluşmayan deneme KIRMIZI sayılır):
+// Varyantlar (her tur; ön koşulu oluşmayan deneme sayılmaz ve yeniden denenir — en çok ONKOSUL_DENEME (3); hiçbirinde oluşmazsa varyant KIRMIZI; 2.5.0 BİRLEŞİK TUR 5):
 //   A  Benzer İşlem sorusu GEÇ: başka oturum aynı hesaba bugün aynı tutarda EFT masrafı yazar; ekrandan aynı tutar kaydedilir; POST /vouchers yanıtı
 //      Playwright route ile GECIKME_MS (1.600) tutulur → ön koşul: soru Kaydet'ten ≥ 1.200 ms sonra belirdi. Beklenen: soru yanıtlanır, kayıt
 //      veri tabanına BİR kez yazılır, listede görünür, form kapanır, sonraki "+ Masraf" tıklanabilir (üstte açık pencere kalmaz).
@@ -159,7 +159,7 @@ const ok = (cond, what) => {
 const precondition = (cond, what) => {
   if (!cond) {
     noPrecondition += 1;
-    console.log(`  ✗ ÖN KOŞUL OLUŞMADI: ${what} (deneme sayılmaz, kırmızı)`);
+    console.log(`  ✗ ÖN KOŞUL OLUŞMADI: ${what} (deneme sayılmaz; yeniden denenir, ${ATTEMPTS} denemede oluşmazsa kırmızı)`);
   } else console.log(`  · ön koşul: ${what}`);
   return Boolean(cond);
 };
@@ -196,7 +196,25 @@ const afterStep = async () => {
   }
 };
 let round = 0;
+// 2.5.0 BİRLEŞİK TUR 5 madde 6 (CI #1036 b57c527d: C varyantında "soru 1.200 ms içinde belirdi (-8 ms)" → ön koşulu oluşmayan deneme kırmızı sayıldı, koşu düştü; commit'te ürün
+// kodu yoktu): ders 20 — ön koşul zorla üretildi (test/e2e/banka-230-onkosul-zorla.mjs HOF_ZORLA_B230=sira:5 → eski testte "31 geçti, 1 kaldı", CI imzasıyla aynı). Ön koşulu
+// oluşmayan deneme artık YENİDEN DENENİR (yeni tutar, yeni iz; en çok ONKOSUL_DENEME, varsayılan 3); denetimler YALNIZ ön koşulun gerçekten oluştuğu denemede sayılır;
+// N denemenin hiçbirinde oluşmazsa varyant KIRMIZI. Sayılar özet satırında: ön koşulu oluşan / oluşmayan (yeniden denenen) deneme, hiç oluşmayan varyant.
+const ATTEMPTS = Math.max(1, Number(process.env.ONKOSUL_DENEME || 3));
+let metAttempts = 0;
+let unmetVariants = 0;
 async function variant(kind, n) {
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
+    if (await attemptVariant(kind, n, attempt)) {
+      metAttempts += 1;
+      return;
+    }
+    if (attempt < ATTEMPTS) console.log(`  ↻ ${kind}${n}: ön koşul oluşmadı (deneme ${attempt}/${ATTEMPTS}) → yeniden deneniyor (yeni tutar, yeni iz)`);
+  }
+  unmetVariants += 1;
+  ok(false, `${kind}${n}: ön koşul ${ATTEMPTS} denemenin hiçbirinde oluşmadı`);
+}
+async function attemptVariant(kind, n, attempt) {
   round += 1;
   const mark = `YARIS-${kind}${n}-${round}`;
   const late = kind !== "C";
@@ -205,7 +223,7 @@ async function variant(kind, n) {
   // B: her turda ayrı tutar (aynı tutar önce Benzer İşlem sorusunu açar: 409 similar → 409 negative → 200; yeni adım onu da yanıtlar).
   const amount = kind === "B" ? 15000 + round * 7 : cents;
   const title = kind === "A" ? "Benzer İşlem sorusu GEÇ (yanıt tutulur)" : kind === "B" ? "Eksi Bakiye sorusu GEÇ (yanıt tutulur)" : "Benzer İşlem sorusu ERKEN (tutma yok)";
-  console.log(`\n■ ${kind}${n} — ${title}: ${amountText(amount)} ₺, iz ${mark}`);
+  console.log(`\n■ ${kind}${n}${attempt > 1 ? ` (deneme ${attempt}/${ATTEMPTS})` : ""} — ${title}: ${amountText(amount)} ₺, iz ${mark}`);
   if (!(await page.$(`${WIN} [data-bank] .hof-bank-tabs`))) await openBank();
   if (kind !== "B") await writeOther(account, cents);
   delay = late ? DELAY_MS : 0;
@@ -226,7 +244,7 @@ async function variant(kind, n) {
   const met = late ? soruMs >= 1200 : soruMs > 0 && soruMs < 1200;
   if (!precondition(met, late ? `soru Kaydet'ten en az 1.200 ms sonra belirdi (${soruMs} ms)` : `soru 1.200 ms içinde belirdi (${soruMs} ms)`)) {
     await openBank();
-    return;
+    return false;
   }
   const rows = await inDb(mark);
   ok(rows.length === 1, `${kind}${n}: kayıt veri tabanında bir kez (${rows.length})`);
@@ -242,6 +260,7 @@ async function variant(kind, n) {
   ok(mine.length === 2 && ids.size === 1 && mine[0].status === 409 && mine[1].status === 200, `${kind}${n}: ürün — iki gönderim aynı istek kimliğiyle, 409 → 200 (${mine.map(item => item.status).join(", ")}; kimlik ${ids.size})`);
   if (rows.length === 1) ok(rows[0].accountLabel?.includes(kind === "B" ? "Akbank" : "Garanti") && Math.abs(Number(rows[0].signedMinor)) === amount, `${kind}${n}: ürün — kayıt doğru hesapta ve tutarda (${rows[0].accountLabel}, ${rows[0].signedMinor})`);
   await openBank();
+  return true;
 }
 
 try {
@@ -255,9 +274,8 @@ try {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);
 } finally {
-  if (noPrecondition) failed += noPrecondition;
   ok(errors.length === 0, `sayfa hatası yok${errors.length ? `: ${errors.slice(0, 5).join(" | ")}` : ""}`);
-  console.log(`\nön koşulu oluşmayan deneme: ${noPrecondition}; başka oturumun masrafı: ${others}; adım: ${stepName}`);
+  console.log(`\nön koşulu oluşan deneme: ${metAttempts}; ön koşulu oluşmayan (yeniden denenen) deneme: ${noPrecondition}; ${ATTEMPTS} denemede ön koşulu hiç oluşmayan varyant: ${unmetVariants}; başka oturumun masrafı: ${others}; adım: ${stepName}`);
   console.log(`\n${failed ? "✗" : "✓"} banka-230-hareket-yaris: ${passed} geçti, ${failed} kaldı`);
   await browser.close();
   await app.close();

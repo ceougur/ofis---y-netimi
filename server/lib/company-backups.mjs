@@ -141,7 +141,7 @@ function transplantCommon(db, fromFile) {
       if (hasTable(db, "main", "settings") && hasTable(db, "live", "settings")) {
         const liveColumns = new Set(columnsOf(db, "live", "settings"));
         const columns = columnsOf(db, "main", "settings").filter(name => liveColumns.has(name)).map(quoteName).join(", ");
-        db.exec(`DELETE FROM main.settings WHERE ${COMMON_SETTINGS}`);
+        db.exec(`DELETE FROM main.settings WHERE ${COMMON_SETTINGS} AND NOT (key = 'whatsapp.appWebhook' AND NOT EXISTS (SELECT 1 FROM live.settings WHERE key = 'whatsapp.appWebhook'))`);
         db.exec(`INSERT INTO main.settings (${columns}) SELECT ${columns} FROM live.settings WHERE ${COMMON_SETTINGS}`);
         db.exec(maxCounterSql("live"));
       }
