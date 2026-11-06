@@ -1,0 +1,38 @@
+{
+  "ad": "c2t3-v249-banka-utc",
+  "komut": "env GIT_DIR=/home/user/ofis---y-netimi/.git node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-v249/test/banka-onarim-kayit-250.test.mjs",
+  "commit": "3f66242640f2f2cc7a61e08fe8511fc79eb482c8",
+  "dal": "worktree-agent-a7280bb16b4491d5b",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T07:52:47.572Z",
+  "sure_sn": 33.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç2 tur 3 — YAN BULGU 2: banka açılış onarımının kaydı kesilmiş JSON olmaz (2.0.26'ya dönüp Tüm Hareketleri Sil → 600 iptal başlığı) › 600 tahsilat → GERÇEK 2.0.26 'Tüm Hareketleri Sil' → güncel açılış: 600 başlık iptal; kayıt geçerli JSON (ilk 50 + counts); Mutabakat Testi 200; ikinci açılışta kayıt yinelenmez",
+      "konum": "test/banka-onarim-kayit-250.test.mjs:33:3",
+      "hata": "onarım kaydının ayrıntısı geçerli JSON değil (20000 karakter, sonu \",\\\\\"ev-0mw4ogd3x0000-9ce0b4f2-c0aa-4cad\\\\\",\\\\\"\"): Unterminated string in JSON at position 20000 (line 1 column 20001)"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-kanit/2026-11-06/c2t3-v249-banka-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7280bb16b4491d5b",
+  "ham_cikti_sha256": "adc3934666bfdaa4a4e34756ad9fd6c21c8327517a59ccb0a28d93210ac8b62a",
+  "ham_cikti_bayt": 2518
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "c2t3-yeni-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/fis-defteri-kayit-250.test.mjs test/banka-onarim-kayit-250.test.mjs test/fis-defteri-250.test.mjs test/fis-defteri-yasam-250.test.mjs test/fis-defteri-koruma-250.test.mjs",
+  "commit": "5a2c284425f1b6a1017c82b57ab65ab9480d726a",
+  "dal": "worktree-agent-a7280bb16b4491d5b",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T09:02:13.453Z",
+  "sure_sn": 71.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 61,
+    "gecen": 61,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-kanit/2026-11-06/c2t3-yeni-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7280bb16b4491d5b",
+  "ham_cikti_sha256": "2648aa3b55c8a9579f7e7f1bbb2d5a00cf5cef626af6d78001d7190023f1e327",
+  "ham_cikti_bayt": 30163
+}

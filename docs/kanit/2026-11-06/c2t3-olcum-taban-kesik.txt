@@ -1,0 +1,20 @@
+== c2t3-eski-bc495a1c uzunluk 6000
+açılış 1: {"tabanSatiri":1,"sonUzunluk":20000,"sonGecerli":false,"tamUzunluk":30900,"birebir":false,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":500}
+açılış 2: {"tabanSatiri":1,"sonUzunluk":20000,"sonGecerli":false,"tamUzunluk":30900,"birebir":false,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":500}
+açılış 3: {"tabanSatiri":1,"sonUzunluk":20000,"sonGecerli":false,"tamUzunluk":30900,"birebir":false,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":500}
+çıkış 0
+== c2t3-eski-bc495a1c uzunluk 100
+açılış 1: {"tabanSatiri":1,"sonUzunluk":1400,"sonGecerli":true,"tamUzunluk":1400,"birebir":true,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":200}
+açılış 2: {"tabanSatiri":1,"sonUzunluk":1400,"sonGecerli":true,"tamUzunluk":1400,"birebir":true,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":200}
+açılış 3: {"tabanSatiri":1,"sonUzunluk":1400,"sonGecerli":true,"tamUzunluk":1400,"birebir":true,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":200}
+çıkış 0
+== agent-a7280bb16b4491d5b uzunluk 6000
+açılış 1: {"tabanSatiri":1,"sonUzunluk":12630,"sonGecerli":true,"tamUzunluk":30900,"birebir":false,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":200}
+açılış 2: {"tabanSatiri":1,"sonUzunluk":12630,"sonGecerli":true,"tamUzunluk":30900,"birebir":false,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":200}
+açılış 3: {"tabanSatiri":1,"sonUzunluk":12630,"sonGecerli":true,"tamUzunluk":30900,"birebir":false,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":200}
+çıkış 0
+== agent-a7280bb16b4491d5b uzunluk 100
+açılış 1: {"tabanSatiri":1,"sonUzunluk":1400,"sonGecerli":true,"tamUzunluk":1400,"birebir":true,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":200}
+açılış 2: {"tabanSatiri":1,"sonUzunluk":1400,"sonGecerli":true,"tamUzunluk":1400,"birebir":true,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":200}
+açılış 3: {"tabanSatiri":1,"sonUzunluk":1400,"sonGecerli":true,"tamUzunluk":1400,"birebir":true,"basarisiz":["dates:format:account_entries","dates:future:account_entries"],"mutabakatTestiHTTP":200}
+çıkış 0
