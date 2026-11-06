@@ -275,6 +275,29 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
     await must("yeniden kilit", admin.put("/api/admin/period-lock", { lockedUntil: LOCK }));
     await waitForFreeze(admin);
     assert.deepEqual(canon(S().entries()), canon(upTo(server.app.ledger.build(), LOCK)));
+    // Büyük şirket benzetimi: geri çekmede iz bütçeden uzun → yanıt ~5 sn'de; dondurma yok ama arka iş (iz) sürüyor → ilerleme görünümü "süren iş" der (kart yoklamayı bırakmaz).
+    let release = null;
+    const held = new Promise(resolve => {
+      release = resolve;
+    });
+    const fallback = setTimeout(() => release(), 20000);
+    hook.fn = async phase => {
+      if (phase === "trace") await held;
+    };
+    try {
+      const slow = await must("geri çek (iz yavaş)", admin.put("/api/admin/period-lock", { lockedUntil: "2026-06-30" }));
+      assert.equal(slow.freeze.pending, null);
+      assert.equal(slow.freeze.running, false, "dondurma yok");
+      assert.equal(slow.freeze.active, true, `yanıtta süren iş (kilit izi arkada): ${JSON.stringify(slow.freeze)}`);
+      assert.equal((await must("kilit görünümü", admin.get("/api/workspace/ledger/lock"))).freeze.active, true, "GET de süren iş der");
+    } finally {
+      clearTimeout(fallback);
+      release();
+      hook.fn = null;
+    }
+    const after2 = await waitForFreeze(admin);
+    assert.equal(after2.freeze.active, false);
+    assert.equal(server.app.context.integrity.lockPending("2026-06-30"), false, "iz arkada geldi");
   });
 
   it("K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz)", async () => {
@@ -306,12 +329,14 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
       release = resolve;
     });
     const fallback = setTimeout(() => release(), 20000); // uç beklerse (eski kod) kilitlenme yok
+    // İz de tutulur (büyük şirket: iz bütçeden uzun): kapanış başladığında iz işi hâlâ sürüyor — kapanış onu beklemeli, iz kapalı bağlantıya çarpmamalı (mutant 205).
     hook.fn = async phase => {
-      if (phase === "before-done") await held;
+      if (phase === "before-done" || phase === "trace") await held;
     };
     const put = await must("kilit", admin.put("/api/admin/period-lock", { lockedUntil: LOCK }));
     clearTimeout(fallback);
     assert.equal(put.freeze.active, true, "ön koşul: dondurma arkada sürüyor");
+    assert.equal(server.app.context.integrity.lockPending(LOCK), true, "ön koşul: kilit izi de arkada sürüyor");
     for (let i = 0; i < 400 && !S().status().running; i += 1) await sleep(10);
     warns.length = 0;
     const closed = server;
