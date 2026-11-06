@@ -94,7 +94,9 @@ Durum: KODDAN ÖNCE yazıldı (06.11.2026, tur 2 kod ajanı, taban 329d5d1b = Wh
   1. Defter: `pendingAnonJobs(şirket, cari, an, ekİşler)` — o carinin talep anından önceki (ilk talebi ≤ an) ve verilen işlerden telefonu / wamid'i hâlâ açık olanlar (toplu SQL, iş
      başına okuma yok — ders 47).
   2. `reapplyRequests` her talep için: dosyada talep anından önce açılmış BÜTÜN işler (silinmiş olanlar dahil) ∪ defterdeki işleri → açık kalanları `anonymizeJobs`'a (eşgüçlü).
-  3. Bakım turu: anonimleştirme düştüyse (bayrak) sonraki turda, ayrıca saklama süpürmesiyle birlikte saatte bir aynı yeniden uygulama (yalnız defter; dosya kuralı aynen).
+  3. Bakım turu: anonimleştirme düştüyse (bayrak) sonraki turda aynı yeniden uygulama (yalnız defter; dosya kuralı aynen), talepler arasında olay döngüsüne sıra verilir.
+     UYGULAMADA DEĞİŞTİ (06.11, ölçüm — ders 47): "ayrıca saatte bir" KALDIRILDI — 200 talep × 500 işte bayraksız saatlik yeniden uygulama olay döngüsünü 1.332 ms tutuyordu
+     (docs/kanit/2026-11-06/watur2-olcum). Bayrak düşmüş her yazımı kapsar; program yeniden açılırsa açılıştaki reapplyRequests aynısını yapar.
   4. S42: `erasedInFlight` = defter (`jobAnonymized`) ∪ dosya (`erasedOf(params_json)`; dosya okunamazsa yalnız defter).
   5. Saklama süpürmesi: dosyada içeriği silinmiş ama `wamid`'i özet olmayan satırlar (bugünkü kodun ürettiği veri) özetlenir — aynı satır numarası penceresi içinde.
 - Kime kaç kez: değişmez (yalnız telefon / wamid biçimi; sayaç alıcıyı işin kimliğiyle sayar — W-3 aynen; geç bildirim özetle eşleşir).

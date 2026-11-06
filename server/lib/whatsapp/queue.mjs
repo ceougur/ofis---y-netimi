@@ -1046,16 +1046,19 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       const fileIds = store.all("SELECT id FROM wa_jobs WHERE account_id = ? AND created_at <= ?", request.accountId, request.at).map(row => row.id);
       const ids = [...new Set([...fileIds, ...(ledger.accountJobsUntil?.(companyId, request.accountId, request.at) || [])])];
       const open = ids.length ? ledger.plainJobs?.(ids) || [] : [];
-      return open.length ? anonymizeLedger(open) : true;
+      return open.length ? anonymizeLedger(open, { flush: false }) : true; // WAL çağıranın döngüsünün sonunda bir kez boşaltılır
     } catch (error) {
-      if (isLockError(error)) throw error;
+      // Kilit dahil: açılış toparlamasını (recover) ve bakım turunu düşürmez — bayrak kalır, sonraki turda yeniden.
       ledgerRetry = true;
       log.warn?.(`WhatsApp silme talebi gönderim defterine yeniden uygulanamadı (${error?.code || error?.message || error}); sonra yeniden denenecek.`);
       return false;
     }
   }
-  /** Bakım turu: bütün talepler için defter tarafı (reapplyLedger); hepsi geçerse bayrak iner. */
-  function retryLedgerErasures() {
+  /**
+   * Bakım turu (YALNIZ bayrak varken — talep / açılış anında defter yazılamadı): bütün talepler için defter tarafı (reapplyLedger); talepler arasında olay döngüsüne sıra verilir
+   * (ders 47 — ölçüm: 200 talep × 500 iş tek seferde olay döngüsünü ~1,3 sn tutuyordu). Hepsi geçerse bayrak iner. Program yeniden açılırsa açılıştaki reapplyRequests aynısını yapar.
+   */
+  async function retryLedgerErasures() {
     let list;
     try {
       list = ledger.erasureRequests?.(companyId) || [];
@@ -1066,7 +1069,10 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     }
     ledgerRetry = false;
     let ok = true;
-    for (const request of list) if (!reapplyLedger(request)) ok = false;
+    for (const request of list) {
+      if (!reapplyLedger(request)) ok = false;
+      await yieldLoop();
+    }
     if (!ok) ledgerRetry = true;
     return ok;
   }
@@ -1156,6 +1162,7 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
       // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1): dosyada daha önce silinmiş işlerin DEFTER tarafı da (talep anında defter yazılamamış olabilir) — eşgüçlü.
       reapplyLedger(request);
     }
+    if (ledger.flushPending?.()) ledger.flush?.();
     settleErased(batches);
     return out;
   }
@@ -2031,9 +2038,9 @@ export function createWaQueue({ store, companyId, ledger, connection, accounts, 
     // 2.5.0 W-3: 1 yıl süpürmesi (program saatiyle saatte bir; açılıştan sonraki ilk turda).
     const retention = await sweepRetention();
     if (retention && (retention.jobs || retention.manual || retention.ledger || retention.digested)) out.retention = retention;
-    // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1 / ORTA-3; tasarım §5, §7): talebin defter tarafı düştüyse sonraki turda, ayrıca saklama süpürmesiyle (saatte bir + açılıştan sonraki
-    // ilk tur) yeniden uygulanır (eşgüçlü); düşmüş denetim noktası (şirket dosyası / defter) bayrak varken yeniden denenir.
-    if (ledgerRetry || retention) retryLedgerErasures();
+    // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-1 / ORTA-3; tasarım §5, §7): talebin defter tarafı düştüyse (bayrak) sonraki turda yeniden uygulanır (eşgüçlü; program yeniden açılırsa
+    // açılıştaki reapplyRequests); düşmüş denetim noktası (şirket dosyası / defter) bayrak varken yeniden denenir. Bayraksız turda ikisi de YOK (ders 47).
+    if (ledgerRetry) await retryLedgerErasures();
     if (flushPending) flushStore();
     if (ledger.flushPending?.()) ledger.flush?.();
     // Bildirim yolu çalışıyorsa (son 7 günde bu şirkete en az bir durum bildirimi geldi) teslim edilmeyen ileti TTL + 1 saatte "Süresi Doldu"; yoksa "Meta Kabul Etti"de kalır.
