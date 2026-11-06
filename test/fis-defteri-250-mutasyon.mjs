@@ -3,9 +3,12 @@
 // Programın ayrı bir kopyasında (ders 23: çalışma ağacında değil) her seferinde TEK bilerek hata açılır, kopyanın kendi test/fis-defteri-250.test.mjs ve
 // test/fis-defteri-yasam-250.test.mjs dosyaları koşulur: çıkış ≠ 0 VE çıktıda beklenen neden (düzenli ifade) varsa YAKALANDI. Kopya dosyası her mutasyondan sonra geri yazılır.
 // Kullanım: HUKUK_LICENSE_URL=http://127.0.0.1:9 node test/fis-defteri-250-mutasyon.mjs --kopya <git archive HEAD kopyası> [--yalniz 1,3]
-import { spawnSync } from "node:child_process";
+// Ç2 tur 3: eski sürümün gerçek kodunu açan testler (v2.0.26, v2.4.9; test/guvenilirlik/surumler.mjs) etiketleri git'ten okur — kopya git deposu değildir; betik bu deponun
+// git klasörünü (GIT_DIR, yalnız okuma: rev-parse + archive) koşulara verir. Tabanda atlanan test varsa tarama geçersizdir (atlanan test mutant yakalamaz).
+import { execFileSync, spawnSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const argv = process.argv.slice(2);
 const opt = name => (argv.includes(name) ? argv[argv.indexOf(name) + 1] : null);
@@ -20,6 +23,13 @@ const MAIN = "test/fis-defteri-250.test.mjs";
 const LIFE = "test/fis-defteri-yasam-250.test.mjs";
 // Ç2 tur 1 korumaları (test/fis-defteri-koruma-250.test.mjs).
 const KORUMA = "test/fis-defteri-koruma-250.test.mjs";
+// Ç2 tur 3: sınırlı kayıt ayrıntısı (lib/log-detail.mjs) + K5 test boşlukları (D1–D8) + integrity.mjs taban kaydı; banka açılış onarımının kaydı.
+const KAYIT = "test/fis-defteri-kayit-250.test.mjs";
+const BANKA = "test/banka-onarim-kayit-250.test.mjs";
+const LOGD = "server/lib/log-detail.mjs";
+const BANKR = "server/lib/bank/repair.mjs";
+const INTEG = "server/lib/integrity.mjs";
+const GIT_DIR = execFileSync("git", ["-C", path.dirname(fileURLToPath(import.meta.url)), "rev-parse", "--path-format=absolute", "--git-common-dir"], { encoding: "utf8" }).trim();
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 // Not (3): aynalanmayan ters kaydı önce KAPI geri alır (tam taramanın "Fiş Defteri" denetimi: "ters kayıt asıl fişin aynası değil") — iki katman; beklenen neden kapınınki.
 const MUTASYONLAR = [
@@ -61,19 +71,42 @@ const MUTASYONLAR = [
   [33, "B1 K5 sıfırlama izinin işlem geçmişini sildiği denetlenmez (izli fişten sonra eklenmiş iz de sayılır)", LV, "      if (firstTrace !== null && Number(firstTrace) < Number(reset.seq)) doubts.set(row.id, \"reset-without-wipe\");", "      if (false) doubts.set(row.id, \"reset-without-wipe\");", [KORUMA], /işlem geçmişini silmeyen sıfırlama izi fiş kaldırmamalı/],
   [34, "B1 kuşkulu fiş Mutabakat Günlüğü'ne yazılmaz (sessiz)", LV, "      if (keptLog) store.run(", "      if (false) store.run(", [KORUMA], /kuşkulu fişin görünür kaydı/],
   [35, "B1 kuşkulu fişin kaydı her açılışta yinelenir (tekilleştirme yok)", LV, "    if (!store.get(\"SELECT 1 AS found FROM integrity_log WHERE action = 'repair' AND tables = 'ledger_vouchers' AND detail_json = ?\", detail)) {", "    if (true) {", [KORUMA], /aynı kuşkulu fiş için kayıt her açılışta yinelenmez/],
+  // ---- Ç2 TUR 3 (Ç2 tur 2 dar kontrolü DÜŞÜK-3: tur 2 kodunda YEŞİL kalan D1–D8 + yan bulgular). D7 (çift kuralı tek geçiş) EŞDEĞER: ters kaydın ters kaydı 409 → zincir tek halka. ----
+  [36, "D1 K5 en son yerine EN ESKİ sıfırlama izi", LV, "ORDER BY rowid DESC LIMIT 1\", String(companyId))", "ORDER BY rowid ASC LIMIT 1\", String(companyId))", [KAYIT], /en son sıfırlama izi işlem geçmişini silmemiş: izsiz fiş kalmalı/],
+  [37, "D2 K5 izli ilk yerine izli SON fiş", LV, "SELECT MIN(v.rowid) AS seq FROM ledger_vouchers v WHERE ${traced}", "SELECT MAX(v.rowid) AS seq FROM ledger_vouchers v WHERE ${traced}", [KAYIT], /izli İLK fişten sonra yazılan izsiz fiş kalmalı/],
+  [38, "D3 K5 'işlem geçmişi silinmemiş' denetimi ilk yerine SON izle", LV, "SELECT MIN(a.rowid) AS seq FROM audit_events a WHERE a.type = '${CREATED_TRACE}'", "SELECT MAX(a.rowid) AS seq FROM audit_events a WHERE a.type = '${CREATED_TRACE}'", [KAYIT], /ilk iz sıfırlama izinden önce: iz işlem geçmişini silmemiş, fiş kalmalı/],
+  [39, "D5 kuşku kaydında keptCount yazılmaz", LV, "boundedDetail({ kept, keptCount: kept.length, doubts: keptDoubts", "boundedDetail({ kept, doubts: keptDoubts", [KAYIT], /kuşku kaydının ayrıntısı \(Ç2 tur 2 biçimi\)/],
+  [40, "D6 kuşku kaydında 50 sınırı kalkar", LV, "resetAt: reset?.at || \"\" }, { maxList: KEPT_LIST", "resetAt: reset?.at || \"\" }, { maxList: Infinity", [KAYIT], /kuşku kaydının ayrıntısı \(Ç2 tur 2 biçimi\)/],
+  [41, "kaldırma kaydında removedCount yazılmaz", LV, "{ ids: orphans, removedCount: orphans.length, resetAt", "{ ids: orphans, resetAt", [KAYIT], /ilk 50 kimlik \(yazım sırasıyla\) \+ tam sayılar/],
+  [42, "kaldırma kaydında 50 sınırı kalkar", LV, "kept, keptCount: kept.length }, { maxList: KEPT_LIST, maxChars: DETAIL_CHARS });", "kept, keptCount: kept.length }, { maxList: Infinity, maxChars: DETAIL_CHARS });", [KAYIT], /ilk 50 kimlik \(yazım sırasıyla\) \+ tam sayılar/],
+  [43, "D8 kaldırma kaydı 200 karakterde kesilir", LV, "summary.slice(0, 500), removedDetail);", "summary.slice(0, 500), removedDetail.slice(0, 200));", [KAYIT], /kaldırma kaydı \(600\): kayıt ayrıntısı geçerli JSON değil/],
+  [44, "yan bulgu 1 geri gelir (kaldırma kaydı JSON.stringify(...).slice(0, 20000))", LV, "boundedDetail({ ids: orphans, removedCount: orphans.length, resetAt: reset.at, kept, keptCount: kept.length }, { maxList: KEPT_LIST, maxChars: DETAIL_CHARS })", "JSON.stringify({ ids: orphans, resetAt: reset.at, kept }).slice(0, 20000)", [KAYIT], /kaldırma kaydı \(600\): kayıt ayrıntısı geçerli JSON değil/],
+  [45, "boundedDetail boyut aşınca listeyi kısaltmaz (yalnız metni keser)", LOGD, "  while (text.length > cap && limit > 1) {", "  while (false) {", [KAYIT], /liste kısaldı/],
+  [46, "boundedDetail kökün alanlarını da kısaltır (sayılar kaybolabilir)", LOGD, "      if (!atRoot && isPlainObject(item)) {", "      if (isPlainObject(item)) {", [KAYIT], /kökün 20 alanı/],
+  [47, "boundedDetail kayıt nesnesinin alanlarını keser (az anahtarlı nesne de liste sayılır)", LOGD, "const RECORD_KEYS = 16;", "const RECORD_KEYS = 0;", [KAYIT], /her sapma kodu ve sayısıyla/],
+  [48, "boundedDetail sığan değerde de metni kısaltır (JSON.stringify ile birebir değil)", LOGD, "  let text = render(limit, Infinity);", "  let text = render(limit, 1024);", [KAYIT], /sığan değer birebir olmalı/],
+  [49, "boundedDetail listenin bütün öğelerini okur (öğe başına iş; ders 47)", LOGD, "return item.length > limit ? item.slice(0, limit) : item;", "return item.length > limit ? item.map(entry => entry).slice(0, limit) : item;", [KAYIT], /100\.000 öğeli listeden \d+ öğe okundu/],
+  [50, "yan bulgu 2 geri gelir (banka onarımı kaydı JSON.stringify(...).slice(0, 20000))", BANKR, "boundedDetail({ ...report, unassignedIds: undefined, counts }, { maxList: 50, maxChars: 20_000 })", "JSON.stringify({ ...report, unassignedIds: undefined }).slice(0, 20000)", [BANKA], /onarım kaydının ayrıntısı geçerli JSON değil/],
+  [51, "banka onarımı kaydında tam sayılar (counts) yazılmaz", BANKR, "unassignedIds: undefined, counts }", "unassignedIds: undefined }", [BANKA], /tam sayılar/],
+  [52, "banka onarımı kaydında 50 sınırı kalkar", BANKR, "counts }, { maxList: 50, maxChars: 20_000 })", "counts }, { maxList: Infinity, maxChars: 20_000 })", [BANKA], /kayıtta ilk 50 başlık/],
+  [53, "integrity günlük yazımı yine kesilir (JSON.stringify(...).slice(0, 20000))", INTEG, "failures.map(item => item.name).join(\"; \").slice(0, 500), detailOf(failures),", "failures.map(item => item.name).join(\"; \").slice(0, 500), JSON.stringify(failures).slice(0, 20000),", [KAYIT], /açılış 1: taban kaydı: kayıt ayrıntısı geçerli JSON değil/],
+  [54, "integrity taban karşılaştırması sınırsız JSON'la (her açılışta yeni satır)", INTEG, "if (last?.detail !== detailOf(result.failures))", "if (last?.detail !== JSON.stringify(result.failures))", [KAYIT], /açılış 2: tek taban kaydı/],
+  // Not: maxList Infinity → 50 bu veride EŞDEĞERE YAKIN (sapma listesi 50'den kısa, örnekler en çok 5); birebirliği bozan liste sınırı 4 ile denenir.
+  [55, "integrity günlük ayrıntısına liste sınırı girer (sığan kayıt birebir değil)", INTEG, "boundedDetail(failures, { maxList: Infinity, maxChars: 20_000 })", "boundedDetail(failures, { maxList: 4, maxChars: 20_000 })", [KAYIT], /sığan kayıt birebir/],
 ];
 
 const run = files => {
   // Zaman sınırı (Ç2 tur 1): mutasyonla asılı kalan koşu taramayı durdurmasın — süre dolan koşu "kaçırdı" sayılır (özet yok → kırmızı sayılmaz; ihtiyatlı yön).
-  const r = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...files], { cwd: COPY, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, timeout: 15 * 60_000, killSignal: "SIGKILL", env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+  const r = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...files], { cwd: COPY, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, timeout: 15 * 60_000, killSignal: "SIGKILL", env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", GIT_DIR } });
   const out = `${r.stdout}\n${r.stderr}`;
   const count = key => Number((out.match(new RegExp(`^# ${key} (\\d+)$`, "m")) || [])[1] ?? NaN);
-  return { status: r.status, out, pass: count("pass"), fail: count("fail") };
+  return { status: r.status, out, pass: count("pass"), fail: count("fail"), skipped: count("skipped") };
 };
 
-const taban = run([MAIN, LIFE, KORUMA]);
-console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
-if (taban.status !== 0 || taban.fail !== 0 || !(taban.pass > 0)) throw new Error("taban testi yeşil değil — mutasyon taraması anlamsız");
+const ALL = [MAIN, LIFE, KORUMA, KAYIT, BANKA];
+const taban = run(ALL);
+console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı / ${taban.skipped} atlandı (çıkış ${taban.status})`);
+if (taban.status !== 0 || taban.fail !== 0 || taban.skipped !== 0 || !(taban.pass > 0)) throw new Error("taban testi yeşil değil ya da atlanan test var — mutasyon taraması anlamsız");
 let yakalanan = 0;
 let toplam = 0;
 for (const [no, ad, dosya, eski, yeni, testler, neden] of MUTASYONLAR) {
@@ -96,7 +129,7 @@ for (const [no, ad, dosya, eski, yeni, testler, neden] of MUTASYONLAR) {
   console.log(`${kirmizi && nedenli ? "ok" : "not ok"} ${no} - ${ad} · ${kirmizi ? `KIRMIZI (${r.fail} başarısız)` : "YEŞİL — kaçırdı"} · beklenen neden ${neden} ${nedenli ? "görüldü" : "GÖRÜLMEDİ"}`);
   if (!nedenli) console.log(r.out.split("\n").filter(line => /not ok|error:|Error|beklenen|expected/i.test(line)).slice(0, 20).join("\n"));
 }
-const son = run([MAIN, LIFE, KORUMA]);
+const son = run(ALL);
 if (son.status !== 0) throw new Error("mutasyonlardan sonra kopya geri yazılamadı (taban kırmızı)");
 console.log(`1..${toplam}\n# tests ${toplam}\n# pass ${yakalanan}\n# fail ${toplam - yakalanan}\n# cancelled 0\n# skipped 0\n# todo 0`);
 console.log(`${yakalanan}/${toplam} mutasyon beklenen nedenle yakalandı`);
