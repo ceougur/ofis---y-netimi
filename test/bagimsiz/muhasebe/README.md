@@ -21,11 +21,11 @@ Program (JavaScript) ayrı bir sürücü ajanıyla bu senaryolara karşı koşul
 | Dosya | Ne |
 |---|---|
 | `model.py` | Model: hesap planı (§2 + 671 / 681), olay → madde (§3), mizan, büyük defter, gelir tablosu (MSUGT, 7/A), bilanço (ters bakiye brütleştirme, hesaplanmış satırlar, Kesin Değil), dönem sonu değerleme (§5), **Tek Yükümlülük Kuyruğu** (EK-1 §1: açık kalemler, gecikmiş, hatırlatma, şüpheli kuyruğu), kapanış (Önceki Yıl Sonucu Fişleri + N-01…N-07), devir açılışları (N-09…N-13; M2/M3/M12/M13), Devri Yenile (N-14, M9), Devri Geri Al (N-15), dönem kilidi + 2.4.9 donmuş defter + Kural Farkı Düzeltme Fişi (Ç3, KG-15, M7), KDV dönem etiketi (M8, S4), şüpheli kayıtları (K3), değişmezler |
-| `senaryolar_elle.py` | 66 elle doğrulanabilir senaryo (s01…s65; s26 iki seçenekli); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
+| `senaryolar_elle.py` | 73 elle doğrulanabilir senaryo (s01…s72; s26 iki seçenekli); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
 | `uretici.py` | Tohumlu rastgele üretici: bir yıl (~800 olay) + K sonrası Ocak (+ zorla S11: K'den önce alınmış evrak 20.01'de karşılıksız) + devir + devirden sonra kayıt + Devri Yenile; tohum 1, 2, 3 |
 | `uret_beklenen.py` | `senaryolar/<ad>.json` (kendi kendine yeten senaryo: tanımlar + olaylar + dallar + elle) ve `senaryolar/beklenen/<ad>.json` (her dal için modelin tam çıktısı) yazar / `--denetle` |
-| `test_model.py` | 119 test: yardımcılar, olay → madde birim testleri, 66 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü ve resmî tatile düşmez), dosya güncelliği |
-| `mutasyon.py` | 136 metin mutantı (model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
+| `test_model.py` | 130 test: yardımcılar, olay → madde birim testleri, 73 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü ve belirsiz güne — yarım gün / doğrulanmamış bayram — düşmez; bakım 4'ten beri sabit resmî tatile düşebilir, model kaydırır), dosya güncelliği |
+| `mutasyon.py` | 155 metin mutantı (model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
 
 ## Çalıştırma
 ```
@@ -34,8 +34,8 @@ python3 test/bagimsiz/muhasebe/mutasyon.py            # testin dişi (çıkış 
 python3 test/bagimsiz/muhasebe/uret_beklenen.py       # senaryo + beklenen dosyalarını yeniden yaz (model değişince)
 python3 test/bagimsiz/muhasebe/uret_beklenen.py --denetle
 python3 test/bagimsiz/muhasebe/uretici.py 2           # tek tohum özeti
-# kanıt: node tools/kanit.mjs kos kahin3-test -- python3 test/bagimsiz/muhasebe/test_model.py
-#        node tools/kanit.mjs kos kahin3-mutasyon -- python3 test/bagimsiz/muhasebe/mutasyon.py
+# kanıt: node tools/kanit.mjs kos kahin4-test -- python3 test/bagimsiz/muhasebe/test_model.py
+#        node tools/kanit.mjs kos kahin4-mutasyon -- python3 test/bagimsiz/muhasebe/mutasyon.py
 ```
 
 ## Senaryo dili (sürücü bunu programın API'sine çevirir)
@@ -59,7 +59,7 @@ içinde tarih sırasıyla girilir (VUK müteselsil sıra-tarih; `SenaryoHijyeni`
 | esmm / gelen_smm | cari, brut, K, S, T | F-10, F-11 |
 | duzenle {kaynak, degisiklik{}} / iptal {kaynak} / sil / geri_yukle | kaydedilmiş fatura Silinenler'den geri yüklenince ETKİSİZ ("İptal Edildi"); öbür kayıtlar ve taslak etkin döner | F-14, F-15, D-03, R-04, C-03, G-7 |
 | mahsup | fatura1, fatura2, tutar (madde yok) | F-16 |
-| tahsilat | cari, yol nakit/havale/pos/cek/senet/kart, tutar, banka, pos+komisyon+valor, evrak, fatura (+fatura_odemesi = formdaki peşin), taksit_karti, normal_cari ("Normal Cari Hesaba İşle"; `supheliden` geriye uyum için kabul edilir, artık varsayılan) | T-01…T-04, T-10…T-13, H-04, J-03, K3 |
+| tahsilat | cari, yol nakit/havale/pos/cek/senet/kart, tutar, banka, pos+komisyon+valor (NOMİNAL; etkin = sonraki iş günü, S21), evrak, fatura (+fatura_odemesi = formdaki peşin), taksit_karti, normal_cari ("Normal Cari Hesaba İşle"; `supheliden` geriye uyum için kabul edilir, artık varsayılan) | T-01…T-04, T-10…T-13, H-04, J-03, K3 |
 | odeme | cari, yol nakit/havale/kart/cek/senet/ciro, tutar, banka, kart, evrak, fatura, taksit_karti | T-05…T-09, H-05 |
 | kayit_tahsilati / kasa_giris / kasa_cikis | tutar | T-14, K-01, K-02 |
 | bankadan_kasaya / kasadan_bankaya | banka, tutar | K-03, K-04 |
@@ -78,7 +78,8 @@ içinde tarih sırasıyla girilir (VUK müteselsil sıra-tarih; `SenaryoHijyeni`
 | ters {hedef} | banka işlem kartı → Ters Kaydet (girildiği gün; 191 / 391 satırı kendi ayına etiketlenir, S4) | R-01, R-02 |
 | donem_kilitle {tarih, kural: "2.4.9" göç senaryosu} / kural_farki_duzelt / cari_tur_degistir {cari, yeni_tur} | — | Ç3, KG-15, M7, N-16, G-2 |
 | devir {K, secenek borc_alacak/sadece_bakiye, bugun} / devri_yenile {duzeltmeler[], bugun} / devri_geri_al | K yalnız 31 Aralık (M11); bugun verilirse K < bugun | N-01…N-15, M11 |
-| rapor {ad, rapor, dosya canli/arsiv, …} | mizan {bas, son} · gelir_tablosu {bas, son} · bilanco {tarih} · buyuk_defter {hesap, bas, son, cari} · gecikmis {cari, tarih} · gecikmis_tumu {tarih} · hatirlatma {tarih} · acik_faturalar {cari, tarih} · acik_kalemler {cari, tarih} · degerleme {tarih} · yevmiye · kural_farki · kaynak_durumu {kaynak} · supheli_kayitlari {cari} | §4, §7 |
+| rapor {ad, rapor, dosya canli/arsiv, …} | mizan {bas, son} · gelir_tablosu {bas, son} · bilanco {tarih} · buyuk_defter {hesap, bas, son, cari} · gecikmis {cari, tarih} · gecikmis_tumu {tarih} · hatirlatma {tarih} · acik_faturalar {cari, tarih} · acik_kalemler {cari, tarih} · degerleme {tarih} · yevmiye · kural_farki · kaynak_durumu {kaynak} · supheli_kayitlari {cari} · mutabakat_uyarilari {tarih} (bakım 4, S20) | §4, §7 |
+| (her kaynak olayı) `yedekten: true` | bakım 4 (S20): kayıt geri yüklenen yedekte / eski sürüm verisinde vardı — S12 ve açılışın R8'i uygulanmaz, veri aynen | G-7 |
 
 Çıktı anahtarları: bilanço kalemleri `I.A … II.D` (aktif), `III.A … III.I`, `V.A, V.D, V.E, V.F (Dönem Net Kârı), V.K (Geçmiş Yıllar — Kapanmamış), V.G (519)`;
 ayrıca `gecmis_yillar_kar` / `gecmis_yillar_zarar` (V.K'nın 570 / 580 kısımları, M4). Gelir tablosu `A, B, C, D, BSK, E, FK, F, G, H, OK, I (671 dahil), J (681 dahil), DK, K, DNK`;
@@ -110,6 +111,8 @@ taksitler girer (M1e); Kartı Kapat kalanı kapatma tarihli tek kalem (M1d); kar
 alınan evrak dahil; Alacak Yaz; satıştan iade; taksit tahsilatı) ÖNCE şüpheliden düşer (A 128, en eski kayıt önce; aşan A 120). 120'de kalanlar: "Normal Cari
 Hesaba İşle", satış faturasının peşini, Kapatılacak Fatura bağlı tahsilat (SINIR: açık kayıt varken 120 bakiyesini aşamaz → SUPHELI_NORMAL_ASIM); taksit
 tahsilatı yalnız kart açılış tarihi ≤ kayıt tarihi olan kayıtlardan düşer (Mevcut Borcu Taksitlendir kartı her zaman düşer). Karşılık kayıt başına; K6 (karşılık ≤ kalan → 644).
+Bakım 4 (S14 A): faturaya BAĞLI çek / senet bağlı faturanın durduğu hesaptan düşer — faturanın şüpheli kuyruğundaki kısmı 128'den (o kalemi taşıyan kayıttan), kalanı 120; sınır
+yalnız 120'ye kalan kısma (README Y1–Y7).
 
 ## Dallar
 Varsayılan bütün maddeler A (ürün sahibi 05.11.2026 17:16 ve 18:55). **B dalları GEÇERSİZ (kullanıcı A seçti)**: ucuz oldukları için duruyor, kanıt sayılmaz.
@@ -231,8 +234,8 @@ gecikmiş tutarı (iki tarihte) aynı.
 - Zincirleme ikinci yıl devri ve "yalnız EN SON arşiv yenilenir" kuralı senaryoda yok; arşivlenmiş yıldaki kural farkının yeni yıla taşınması (M7 son cümlesi) senaryoda yok.
 - Devri Geri Al'ın kesim sonrası kayıtları taşıması 2.5.1 (model: devirden sonraki kayıtlar kaybolur, s29 BİLİNEN SINIR olarak gösterir).
 - M8: KDV İndirim Dönemi üst sınırı (KDVK 29/3), M14: KDVK 30 indirilemeyecek KDV, VUK 313 haddi — modellenmedi.
-- POS valörü üreticide yalnız hafta sonu kaydırması; resmî tatil kuralı YOK (kitap susuyor) — bakım 3'ten beri üretici valörü resmî tatile hiç düşürmez (E1, KULLANICIYA SORULMALI 5);
-  banka transfer valörü kaydırılmaz.
+- POS valörü: bakım 4'ten beri MODEL kaydırır (hafta sonu + 2429 tam gün resmî tatil → sonraki iş günü, S21); yarım günler ve dinî bayramlar belirsiz (kâhin susar; bayram tarihleri
+  DOĞRULANMADI); banka transfer valörü kaydırılmaz.
 - K3: kabul §2 C / F / G / I–Y satırlarının çoğu (süreç, yetki, istek kimliği, eski sürüm) modelde yok; şüpheli caride borç satırları (ödeme / H-05) K3'e girmez.
 - F-17, S-08 modellenmedi (yukarıda).
 
@@ -431,3 +434,137 @@ hareketi bankadaki gibi reddedilir (banka bugün 409 bank-before-opening)". S8 (
 - Kilit ilerletme / kaldırma (KULLANICIYA SORULMALI 2); S12'de geri yükleme (KULLANICIYA SORULMALI 3) ve düzeltmeyle yolun nakde çevrilmesi (model reddeder — T12 — ama senaryo yok);
   Devri Yenile'nin arşivdeki Kasa düzeltmesi (genel kuralla reddedilir, senaryo yok).
 - Program iletisi (KULLANICIYA SORULMALI 4) ölçülmez.
+
+## Kâhin bakımı 4 (06.11.2026, kodu görmeyen ajan; kullanıcı kararı 06.11 04:50 UTC S14, S15, S18, S19, S20, S21 — "hepsine A")
+
+### Kaynaklar ve bağımsızlık
+- Okunan: `CLAUDE.md`, `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`, bu klasörün kaynakları (README, `model.py`, `senaryolar_elle.py`, `test_model.py`, `mutasyon.py`, `uretici.py`,
+  `uret_beklenen.py`; `senaryolar/` yalnız listelendi), `docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md` (§1 G-1…G-8 ve §3 satırları aranarak), `…-EK-1.md` / `…-EK-2B.md` (aranarak;
+  EK-2B 28, 33, 35), `docs/devir/DEVIR-PLANI.md` (G0–G3; §1 / §4 aranarak), `docs/BANKA-MODULU-PLAN.md` YALNIZ §3.11b, `docs/2.5.0-IS-LISTESI.md` A (satır 1–83), C ve D (161–299);
+  B ve E okunmadı. Tam liste ajan raporunda.
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (yalnız `node tools/kanit.mjs kos` ÇALIŞTIRILDI), öteki `test/` klasörleri (sürücü dahil), `docs/kanit/` (kendi kanıtları
+  dışında), git geçmişi / farkı OKUNMADI; program çalıştırılmadı. Git: `git merge --ff-only e6e5610f` (çıktının son üç satırı `test/` ve `tools/` altındaki üç yeni dosyanın ADINI
+  gösterdi — açılmadı), `git status -s`, `git branch --show-current`, `git log --oneline -3` (yalnız başlıklar), `git archive e6e5610f test/bagimsiz/muhasebe` (eski kâhin kopyası,
+  kırmızı kanıtı için, not defterinde), bitişte kendi yollarımın `git add` + `git commit`'i.
+- Birincil kaynak denemesi: `mevzuat.gov.tr` (2429 sayılı Kanun) ve `vakithesaplama.diyanet.gov.tr` (dinî günler) bu oturumun ağ ayarında ERİŞİLEMEDİ (ENOTFOUND) → 2429 metni
+  ve dinî bayram tarihleri birincil kaynaktan DOĞRULANMADI; gün listesi kâhinin bilgisi.
+
+### Karar metinleri (AYNEN, iş listesi D "KULLANICI KARARI 06.11 04:50 UTC")
+- **S14 = A:** şüpheli alacaklı caride faturaya BAĞLI alınan çek / senet bağlı faturanın durduğu hesaptan düşer (şüpheliye aktarılmış fatura 128, sonradan kesilmiş 120).
+- **S15 = A:** taksit kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, kartın tahsilatları carinin avansı olur (S5 / EK-2B 35 ile aynı).
+- **S18 = A:** kilitli dönemde alınıp kilit günü sonunda tamamen dağılmamış (avans) çek karşılıksız dönerse çekin TAMAMI ayrı borç.
+- **S19 = A:** S11 / R3 kararı karşılıksızın yazıldığı andaki kilide göre bir kez verilir; kilit sonradan ilerletilirse değişmez.
+- **S20 = A:** yedekte Kasa açılışından önce tarihli Kasa hareketi varsa geri yükleme veriyi aynen getirir (G-7); S12 kuralı yalnız yeni kayıtta; Mutabakat Testi uyarı verir.
+- **S21 = A:** POS valörü resmî tatile düşerse bir sonraki iş gününe kayar.
+- Seçeneklerin öbür yüzü (iş listesi C): S14 B "her durumda 128'den"; S15 B "reddedilir, iade faturası kesilir"; S18 B "kilitten sonraki kapanış S8 gibi geri alınır"; S19 B "her
+  türetmede güncel kilide göre"; S20 B "geri yükleme reddedilir ya da hareket ayıklanır"; S21 B "verilen valör aynen".
+
+### Kural başına yorum (önce yorum, sonra kod — ders 40)
+| # | Karar | Kâhin yorumu | Senaryo / test | Mutant |
+|---|---|---|---|---|
+| Y1 | S14 kapsam | Çek / senet tahsilatı (`yol` cek / senet), `fatura` bağı (Kapatılacak Fatura ya da formdaki peşin), carinin tahsilat günü AÇIK şüpheli kaydı var (kalan > 0, kayıt tarihi ≤ tahsilat). Açık kayıt yoksa S14'ün konusu yok | s68 | B40 |
+| Y2 | S14 "şüpheliye aktarılma anı" | Faturanın durduğu hesap TAHSİLAT ANINDA okunur (aynı gün K3 gün sırası: al → karşılık → değersiz → alacak satırı → çıkar): faturanın açık kısmı şüpheli kuyruğunda mı (J-01 açık borçları vade sırasıyla taşır, M13). Fatura kayıttan SONRA kesildiyse, kayıt tutarı ona yetmediyse ya da Şüpheliden Çıkar ile döndüyse → 120. Değersizle kapanan fatura açık değildir (senaryo yok) | s68 C1, C2 | B40, B40b |
+| Y3 | S14 tutar ve kayıt | Şüpheli kuyruğundaki kısım kadar A 128 — o kalemi TAŞIYAN kayıttan (K3'ün "en eski kayıt önce"si burada uygulanmaz: bağ hedefini kapatır, karar (2)); kuyrukta o kalem kapanır. K6 (karşılık > kalan → 644) aynen. Faturanın 120'deki kısmı A 120 bağla kapanır | s68 C1 (644), C2 (iki açık kayıt) | B40d |
+| Y4 | S14 sınır | SUPHELI_NORMAL_ASIM yalnız 120'ye kalan (normal) kısma uygulanır: 128'den düşen kısım "normal cari hesaba işlenen" değildir (plan §3.11b/2 sınır cümlesi). Eski kâhinde bağlı çekin tamamı sınıra girdiği için şüpheli faturaya bağlı çeklerin çoğu reddediliyordu | s68 C1, C2, C3 | B40c |
+| Y5 | S14 kısmi (KULLANICIYA SORULMALI 2) | Fatura KISMEN aktarılmışsa (bir kısmı 128, bir kısmı 120) ve çek iki kısmın toplamından küçükse hangisi önce kapanır — metin söylemez. Çek iki kısmın toplamı kadar ya da büyükse tek okuma (ikisi de kapanır; s68 C3). Kısmi durumda model şüpheli kısmı önce düşer (K3 "önce şüpheliden") ve `gecikmis.kahin_susuyor` "S14_KISMI" yazar | birim `test_S14_kismi_kahin_susar` | — |
+| Y6 | S14 fazla / öbür yollar (KULLANICIYA SORULMALI 2) | Çekin faturanın açık kısımlarını aşan fazlası ve nakit / havale / POS ile bağlı tahsilat karar metninde yok → plan §3.11b/2 (b) aynen (bağlı tahsilat normal, 120; sınırıyla). Senaryo yok | — | — |
+| Y7 | S14 karşılıksız | S14 çekinin karşılıksızı R20 aynen (128'e düşen kısım vade karşılıksız günü ayrı kalem) — senaryo yok (DENENMEYEN) | — | — |
+| Y8 | S15 = EK-2B 35 (3) + S5 | İptal kabul; faturanın kendi kartının taksitleri kuyruktan çıkar; kart tahsilatlarının bağı çözülür, bağsız alacak olur ve TYK'da KENDİ TARİHİNDE dağılır (karar (1); carinin başka açık borcu varsa onu kapatır, yoksa avans). Formdaki peşin faturayla düşer (S5, F-15). Kısmi taksit tahsilatı aynı. Kilitli dönemdeki fatura iptal edilemez (F-15, G-7: KILITLI_DONEM). Sayısal sonuç bakım 2 R9 ile AYNI — model zaten EK-2B 35 (3) ile böyleydi | s69, s58 | B41, B41b |
+| Y9 | S15 "kart kapanır" | Tahsilatı olan kart iptalde KAPALI görünür, açık taksiti yok (`kartlar` raporu {kapali: true, taksitler: []}); tahsilatsız kartlı faturanın silinmesi / iptali EK-2B 35 (1) aynen: kart kalkar (raporda yok). Ayrım karar metninden ("kapanır") ve EK-2B 35 (1)'den ("kalkar") | s69, s58 C3 | B41c |
+| Y10 | S18 | S11'in tetiği evrakın L günündeki dağılımına artık BAKMAZ: evrakın tahsilat (ciro ödemesi) kalemi tarihi ≤ L ve karşılıksız > L → tahsilat kalemi kalır (kilitten önce de sonra da kapattığı kalemler kapalı), karşılıksız tutarın TAMAMI ayrı borç (vade karşılıksız günü, M1c). Karşılıksız anında hâlâ dağılmamış kısım (avans) TYK'da bu ayrı borca uygulanır (net). Bakım 3'ün "S11_AVANS" susması kalkar; sayı aynı (model bu sayıyı zaten veriyordu). Devirde avans net satırla taşınır, evraka bağlanmaz → devirli = devirsiz | s66, birim `test_S18_avans_evrak_tamami_ayri_borc` | B34 |
+| Y11 | S19 kilit | L = kaydın YAZILDIĞI andaki dosya kilidi (kaynakta saklanır). S11: karşılıksız (ciro dönüşü) kaynağının L'si; kilit sonradan ilerlese de karar değişmez. Kilit KALDIRILIRSA EK-2B 28 ("kural o dönem için kalkar") → etkin L = min(yazılış kilidi, güncel kilit); modelde kilit kaldırma olayı yok (yalnız formül, DENENMEYEN) | s67 C1, C3 | B35 |
+| Y12 | S19 ↔ R3 | Karar metni "S11 / R3" der; R3'te karşılıksızın karşılığı BAĞDIR (Kapatılacak Fatura tahsilatı / ödemesi, iade → asıl fatura, kart tahsilatı, fatura kartı açılışı, Mahsup Et): R3 kararı bağın yazıldığı kilide göre. Yazıldığında açık dönemdeki bağsız kapanışı geri almış (karar (2)) bağ, kilit o kapanışı kapsayacak biçimde ilerletilse de geri almış kalır; kilit notu yazılmaz (kâhin yorumu — BAŞ MİMAR değerlendirir) | s67 C2 | B35b |
+| Y13 | S19 düzeltme | Düzeltilen kaydın yazılış kilidi değişmez ("bir kez") — senaryo yok | — | — |
+| Y14 | S19 × devir (KULLANICIYA SORULMALI 1) | Devirden ÖNCE (kilit < K iken) yazılmış K sonrası kayıt (Ocak'ta girilen Aralık çekinin karşılıksızı, Aralık faturasına Ocak bağı): devirli dosyada evrakın tahsilatı / bağın hedefi arşivde → kendiliğinden M1c / G2; S19 harfiyen ise yazılış anındaki S8 / karar (2) sonucu kalmalı (devir taşımalı, D4'e iş). Kâhin KURAL KURMAZ, bakım 2 / 3 davranışını sürdürür: devir, K sonrası bütün kayıtları K kilidiyle değerlendirir (devirli = aynı K kilidi altında yazılmış devirsiz eş, EK-2B §5.3; S11 "devirli ve devirsiz aynı"). Devir raporu `s19_devir` bu kayıtları listeler | devir raporu, üretici | B35c |
+| Y15 | S20 "geri yükleme" | İki yol: (a) Silinenler'den geri yükleme (G-7: "maddesi aynen geri gelir"), (b) yedekten geri yüklenen eski sürüm verisi (olay dilinde `yedekten: true` = kayıt geri yüklenen yedekte / göç verisinde vardı). İkisinde de S12 (KASA_ACILIS_ONCE) ve açılışın ilk girişteki R8'i uygulanmaz; veri aynen | s70 (a), s71 (b) | B42, B42b |
+| Y16 | S20 "yalnız yeni kayıtta" | Geri yüklemeden sonra açılıştan önce tarihli YENİ Kasa hareketi yine KASA_ACILIS_ONCE. Açılışın düzeltilmesi R8 aynen (ilk Kasa hareketi — geri yüklenen dahil — sonrasına alınamaz; öne alma serbest, uyarı kalkar) | s70, s71 | — |
+| Y17 | S20 ↔ değişmez (8) | Mutabakat Testi uyarısı: yeni rapor `mutabakat_uyarilari {tarih}` → [{kod KASA_ACILIS_ONCESI_HAREKET, kaynak, tarih, acilis}]. Değişmez `kasa_acilis_ilk` (EK-2 §4 (8)) artık yalnız GERİ YÜKLENMEMİŞ kayıtta hata sayar: hareketin kaynağı ya da en erken açılışın kendisi geri yüklendiyse uyarı, hata değil (S20'nin açık istisnası). Geri yüklenmemiş kayıt açılıştan önceye düşerse (modelin reddi atlanırsa) değişmez yine kırmızı | s70, `test_kasa_acilis_ilk_hareketten_sonra_yakalanir` | B42c, B42d |
+| Y18 | S20 ↔ T12 (KULLANICIYA SORULMALI 3) | T12 (BAŞ MİMAR KARARI: Kasa hareketini düzeltmeyle açılış öncesine taşıma red) aynen. Geri yüklenmiş açılış öncesi kaydın tarihi değişmeden düzeltilmesi (ör. tutar) bugünkü kâhinde T12 ile reddedilir; "S12 yalnız yeni kayıtta" ifadesi düzeltmeyi serbest de okutabilir → iki okuma; senaryo yok | — | — |
+| Y19 | S21 takvim | 2429 sayılı Kanun md. 1–2 (kâhinin bilgisi; birincil metin bu oturumda açılamadı): TAM GÜN 1 Ocak, 23 Nisan, 1 Mayıs, 19 Mayıs, 15 Temmuz, 30 Ağustos, 29 Ekim; YARIM GÜN 28 Ekim (13:00'ten) ve Ramazan / Kurban arifesi (13:00'ten); dinî bayram günleri (Ramazan 3, Kurban 4 gün). Dinî bayram tarihleri DOĞRULANMADI (kâhinin bilgisi: Ramazan 2026-03-20..22, Kurban 2026-05-27..30, Ramazan 2027-03-09..11, Kurban 2027-05-16..19); model arifeden bir gün önce – bayramdan bir gün sonra pencereyi belirsiz sayar. Hafta sonu (Cumartesi, Pazar) iş günü değildir (ana oturum K3) | birim `test_S21_tatil_takvimi` | — |
+| Y20 | S21 kural | Etkin valör = nominal valörden (POS'un verdiği valör günü: çekim + gün; olay dilinde `valor`) başlayarak İLK İŞ GÜNÜ (hafta sonu da tam gün resmî tatil de değil); zincir: tatil + hafta sonu (1 Mayıs 2026 Cuma → 4 Mayıs Pazartesi; 1 Ocak 2027 Cuma → 4 Ocak). 108 → 102 etkin valör günü (D-01); KG-6 komisyon tarihi değişmez (çekim günü); POS iadesi "valörden önce mi" etkin valöre göre (D-04); devirde bekleyen POS etkin valöre göre (N-11). Şimdi Aktar (aktarım tarihi, kullanıcı işlemi) kaydırılmaz | s72, s23 | B44, B44b, B44c |
+| Y21 | S21 belirsiz günler (KULLANICIYA SORULMALI 4) | Yarım günler (28 Ekim, arife) iş günü mü — metin söylemez; dinî bayramlar doğrulanmadı; bayram takvimi olmayan yıllar (2026–2027 dışı) bilinmez. Kâhin SUSAR: nominal valör ya da kaydırma yolu bu günlere değerse "senaryo hatası" (AssertionError); senaryolar yalnız sabit tatillerle kurulur | birim `test_S21_belirsiz_valor_kahin_susar` | — |
+| Y22 | S21 kapsam dışı | Donmuş 2.4.9 türetmesi S21'siz (yalnız hafta sonu; 2.4.9 bu kuralı bilmez). Banka transfer valörü (K-07) kaydırılmaz (karar yalnız POS) | — | — |
+| Y23 | S21 üretici | Hafta sonu kaydırması üreticide kalır (senaryo valörü iş günü); sabit resmî tatilden KAÇINMA KALDIRILDI (model kaydırır); belirsiz günlerden kaçınma sürer (rastgele sayı tüketmeden öbür valör seçenekleri, hiçbiri olmazsa havale) | hijyen `test_pos_valoru_belirsiz_gune_dusmez` | — |
+
+### Önceki beklentilerle çelişen yerler (eski → yeni, nedeni)
+- `s58` `kt3` (C3: tahsilatlı kartın faturası iptal): `{}` → `{"TK2": {"kapali": true, "taksitler": []}}` — S15 "kart kapanır" (Y9). Sayılar aynı.
+- `test_S11_avans_kahin_susar` → `test_S18_avans_evrak_tamami_ayri_borc`: `kahin_susuyor` [("S11_AVANS", 10000)] → yok; gecikmiş (11.01) 10000, açık kalem yalnız karşılıksız (S18, Y10).
+- Hijyen `test_pos_valoru_resmi_tatile_dusmez` → `test_pos_valoru_belirsiz_gune_dusmez`: sabit resmî tatile düşen valör artık serbest (S21; model kaydırır), belirsiz güne düşen yasak (Y21, Y23).
+- Model POS valörünü hafta sonundan da kaydırır (eski: valör aynen): `s23`'ün 2027-01-02 (Cumartesi) valörü → 2027-01-04; s23'ün elle değerleri (31.01 raporları) DEĞİŞMEZ.
+- Mutant B31d (S11 avansında kâhin susmaz) KALDIRILDI (S18 ile susma yok) → B34 (avansta S8). Kodu taşınan mutantların metni yeni koda taşınır: B03, B12, B30, B31, B31b, B31c, B33d,
+  M57, N33.
+- Üretici `devirsiz()`: kilit (K) eşin SONUNA değil, K sonrası ilk kaydın ÖNÜNE konur, Devri Yenile düzeltmeleri (≤ K) ondan önce. S19 ile sona konan kilit önceki kayıtları kapsamaz;
+  devirli dosyanın kayıtları (Y14) K kilidiyle değerlendirildiği için eş de "K kilidi altında yazılmış" olmalı. Aynı tarihli kayıtların göreli sırası değişmez (düzeltmeler ≤ K,
+  ötekiler > K).
+- Tohumlu senaryolar: üretici değişti (sabit tatil valörü, devirsiz eş) → `rastgele-*.json` ve beklenenleri yeniden üretilir. Devir raporlarına `s19_devir` anahtarı eklenir
+  (beklenen dosyaları yeniden üretilir; elle değer değişmez).
+
+### KULLANICIYA SORULMALI / KÂHİN SUSUYOR (kodlanmadı ya da yalnız gözlem; para / kime hatırlatma → ders 43)
+1. **S19 × devir (Y14):** Aralık'ta alınıp Aralık faturasını kapatan çek, kilit Kasım'dayken (ya da kilit yokken) Ocak'ta karşılıksız girildi → S19 ile fatura kendi vadesiyle yeniden açıldı
+   (S8). Sonra devir yapıldı. A (kâhinin bugünkü davranışı): devir K sonrası kayıtları K kilidiyle değerlendirir → fatura kapalı, karşılıksız tutar ayrı borç (vade karşılıksız günü);
+   devirle gecikmiş / hatırlatma değişebilir; D4'e ek iş yok. B (S19 harfiyen): yazılış anındaki S8 sonucu kalır → devir, karşılıksızla yeniden açılmış Aralık faturasını açık kalem olarak
+   (kendi vadesiyle) taşır (D4'e iş). Aynı soru Ocak'ta girilip Aralık'taki bağsız kapanışı geri almış (karar (2)) bağ için de geçerli. Örnek: 01.11 F 10.000 vade 31.03 · kilit 30.11 ·
+   20.12 çek (F'ye bağlı) · 15.01 karşılıksız · 20.01 devir → 16.01–31.03 arası gecikmiş A: 10.000, B: 0. Kâhin A'nın sayısını verir; devir raporu `s19_devir` bu kayıtları listeler.
+2. **S14 ayrıntıları (Y5, Y6):** (a) kısmen aktarılmış faturaya bağlı, faturanın iki kısmının toplamından küçük çek — önce 128 kısmı mı, 120 kısmı mı (kâhin şüpheliyi önce düşer,
+   "S14_KISMI" susar); (b) çekin faturanın açık kısımlarını aşan fazlası; (c) nakit / havale / POS ile şüpheliye aktarılmış faturaya bağlı tahsilat (karar yalnız çek / senet; kâhin (b)
+   kuralıyla 120 — sınır nedeniyle çoğu reddedilir).
+3. **S20 × T12 (Y18):** geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tarihi değişmeden düzeltilmesi: A reddedilir (T12'nin bugünkü okuması), B kabul (S20 "yalnız yeni kayıtta").
+4. **S21 yarım gün (Y21):** valör 28 Ekim ya da bayram arifesine (öğleden sonra tatil) düşerse o gün mü, ertesi iş günü mü. Ayrıca dinî bayram tarihleri birincil kaynaktan doğrulanmalı.
+5. Sürer: bakım 2 listesinin 3 (fatura durumunda Alacak Yaz), 4 (aynı gün sırası), 5 (Mevcut Borç kartının ayrılmış kısmı), 6 (eski kapama), 7 (16, 17, 22); bakım 3'ün 4'ü (program
+   iletisi). Bakım 3'ün 1, 2, 3, 5'i bu bakımda kural oldu (S18, S19, S20, S21).
+
+### Elle beklenenlerin yazılış sırası (bakım 4)
+- bd30057e: yorum (Y1–Y23), s66–s72, s58 `kt3` değişikliği, birim testleri (`test_S18_avans_evrak_tamami_ayri_borc`, `test_S14_kismi_kahin_susar`, `test_S21_tatil_takvimi`,
+  `test_S21_belirsiz_valor_kahin_susar`) ve hijyen `test_pos_valoru_belirsiz_gune_dusmez` model DEĞİŞTİRİLMEDEN ÖNCE commit'lendi. Eski modelle 129 testten 14'ü beklenen nedenle
+  kırmızı (`docs/kanit/2026-11-06/kahin4-eski-model-kirmizi.*`); nedenler ayrı dökümde (`kahin4-eski-model-neden.txt`: eskinin bilmediği `mutabakat_uyarilari` raporu atlanarak
+  elle anahtar başına beklenen ↔ eski değer ve eski değişmez hataları — s58 1, s66 3 (S11_AVANS susması), s67 5 (güncel kilit okuması), s68 28 (bağlı çek 120 + üç
+  SUPHELI_NORMAL_ASIM), s69 1, s70 3 (değişmez `kasa_acilis_ilk` kırmızı + rapor yok), s71 9 (yedekteki kayıtlar reddedildi), s72 12 (valör tatilde)).
+- Model değiştikten sonra ilk koşuda HİÇBİR elle değer değişmedi (tek kırmızı dosya güncelliğiydi; beklenen dosyaları yeniden yazıldı). Eski elle senaryoların beklenen dosyalarında
+  fark yalnız s58 `kt3` ve devir raporlarına eklenen `s19_devir` anahtarı (karşılaştırma eski kâhin kopyasının dosyalarıyla, not defterindeki betikle).
+- Sonradan elle eklenen tek birim testi: `test_S14_hedef_kalem_kapanir` — mutant tasarımında görüldü: S14'te şüpheli kuyruğunda HANGİ kalemin kapandığını (bağlı fatura mı, vadesi ilk
+  gelen mi) hiçbir senaryo ölçmüyordu (B40f sağ kalırdı). Beklenen Y3'ten elle (Şüpheliden Çıkar'dan sonra açık kalem yalnız F4).
+
+### Yeni senaryolar, testler ve mutasyonlar
+- Elle senaryolar (7, toplam 73): s66 (S18 — tamamen avans / kısmen dağılmış / karşılıksız anında avansı kalan çek; devirli = devirsiz), s67 (S19 — S8 yazılmış karşılıksız, S11 yazılmış
+  karşılıksız, R2 yazılmış bağ; kilit iki kez ilerletilir), s68 (S14 — aktarılmış fatura 128 + K6 644, sonradan kesilmiş fatura 120, kısmen aktarılmış faturanın iki kısmı, Şüpheliden
+  Çıkar ile dönmüş fatura 120, iki açık kayıtta kalemi taşıyan kayıt, sınır), s69 (S15 — peşin + kartlı fatura, kısmi kart tahsilatı, iptal, kart kapalı, tahsilatlar F0'ı kendi
+  günlerinde kapatır; kilitli dönemde iptal red), s70 (S20 Silinenler'den geri yükleme), s71 (S20 yedekten eski veri; öne alma uyarıyı kaldırır), s72 (S21 — 23 Nisan, 1 Mayıs +
+  hafta sonu, 29 Ekim, 1 Ocak + devir; tatil günü POS iadesi).
+- Birim (130 test): `test_S18_avans_evrak_tamami_ayri_borc` (eski `test_S11_avans_kahin_susar`'ın yerine), `test_S14_kismi_kahin_susar`, `test_S14_hedef_kalem_kapanir`,
+  `test_S21_tatil_takvimi`, `test_S21_belirsiz_valor_kahin_susar`; hijyen `test_pos_valoru_belirsiz_gune_dusmez` (eski `test_pos_valoru_resmi_tatile_dusmez`'in yerine; en az 4 valör
+  sabit tatile düşer).
+- Üretici: sabit tatilden kaçınma kalktı (tohum 2'de P89 valörü 2026-04-23 → model 24.04'e kaydırır); tohum 2'de S14 yolu da işler (P227 şüpheliye aktarılmış faturaya bağlı çek →
+  128); `devirsiz()` kilidi K sonrası ilk kaydın önüne koyar. Rastgele sayı akışı değişmedi.
+- Mutantlar: B31d kaldırıldı; 20 yeni (B34, B35, B35b, B35c, B40, B40b, B40c, B40d, B40e, B40f, B41, B41b, B41c, B42, B42b, B42c, B42d, B44, B44b, B44c) → liste 155. Kodu taşınan eski
+  mutantların metni yeni koda taşındı (B03, B12, B30, B31, B31b, B31c, B33d, M57, N33; anlamları aynı). Modelde YALNIZ mutasyonun çağırdığı yardımcı: `Dosya.l_sonu_acik`
+  (B34; bakım 3'ün eski T1 okuması).
+
+### Sürücü için (programla karşılaştırmadan önce)
+- **S14:** yeni olay alanı yok. Şüpheli kaydı açık caride `tahsilat` `yol` cek / senet + `fatura`: 128'den düşen kısım şüpheli kuyruğundaki bağlı fatura kalemi kadar, o kalemi taşıyan
+  kayıttan; kalan 120 (bağ). `supheli_kayitlari` raporundaki kayıt kalanları ve 128 / 129 / 644 karşılaştırılır. `gecikmis.kahin_susuyor` "S14_KISMI" → bu carinin o tarihteki 120 /
+  128 ayrımı ve gecikmiş karşılaştırması ATLANIR (KULLANICIYA SORULMALI 2). SUPHELI_NORMAL_ASIM yalnız 120'ye kalan kısma.
+- **S15:** iptal artık kabul (programın bugünkü reddi B'dir → fark beklenir, Ç7b). `kartlar` raporunda tahsilatlı kartı iptal edilen kart `{kapali: true, taksitler: []}`; tahsilatsız
+  kart (iptal ya da silme) raporda YOK. Kart tahsilatları bağsız alacak (TYK'da kendi tarihinde).
+- **S18:** `kahin_susuyor` "S11_AVANS" KALKTI (bakım 3'teki atlama listesinden çıkarılır); bu cariler artık karşılaştırılır.
+- **S19:** kilit = kaydın yazıldığı andaki kilit. Senaryoda `donem_kilitle` olayının konumu anlamlıdır: kilitten ÖNCE girilen karşılıksız / bağ, kilit sonra ilerlese de eski kilide göre
+  değerlendirilir (s67). Sürücü olayları senaryo sırasıyla girmeli. Devir raporu yeni anahtar `s19_devir` = devirden önce (kilit < K iken) yazılmış K sonrası karşılıksız / bağ
+  kaynakları — bu kayıtlarla ilgili devirli gecikmiş farkı kural kimliği "S19-DEVIR" ile ayrı listeye alınır (KULLANICIYA SORULMALI 1; G5).
+- **S20:** yeni olay alanı `yedekten: true` (herhangi bir kaynak olayında) = kayıt geri yüklenen yedekte / eski sürüm verisinde vardı: sürücü bu kaydı programın YENİ kayıt yolundan değil,
+  eski sürümün (v2.4.9) gerçek koduyla üretilmiş veri + yedekten geri yükleme ile kurar (ders 17); kurulamıyorsa senaryo DENENMEYEN. Yeni rapor `mutabakat_uyarilari {tarih}` →
+  [{kod KASA_ACILIS_ONCESI_HAREKET, kaynak, tarih, acilis}] (programın Mutabakat Testi uyarısıyla eşlenir; metin / kod sürücüde). Silinenler'den geri yükleme (`geri_yukle`) açılış
+  öncesine düşse de kabul.
+- **S21:** `valor` = NOMİNAL valör (POS'un verdiği valör günü; çekim + gün sayısı). Program etkin valörü hafta sonu ve tam gün resmî tatilden sonraki iş gününe kaydırmalı. s23'ün
+  2027-01-02 (Cumartesi) valörü artık 2027-01-04'te bankaya geçer. Senaryolarda valör hiçbir zaman belirsiz güne (28 Ekim, bayram penceresi) düşmez; düşerse kâhin hata verir.
+  Banka transfer valörü (K-07) kaydırılmaz.
+- Değişmez: `kasa_acilis_ilk` geri yüklenen kayıtta hata saymaz (programın Mutabakat Testi bunu uyarı vermeli, kırmızı değil).
+
+### DENENMEYEN (bu bakım)
+- Programla karşılaştırma (sürücü güncellemesi ayrı iş); S15'te programın bugünkü reddi ve S21'de programın valör kaydırması bilinmiyor (kod okunmadı).
+- S14: kısmi aktarılmış faturaya bağlı küçük çek (yalnız susma birimi), çek fazlası, nakit / havale / POS bağlı tahsilat (KULLANICIYA SORULMALI 2), S14 çekinin karşılıksızı, değersizle
+  kapanmış faturaya bağ, devirli yeni yılda şüpheliye aktarılmış (devreden) faturaya bağlı çek (yalnız tohum 2'nin arşiv dönemi), formdaki peşinin çek olması.
+- S15: çekle alınmış kart tahsilatının iptalden sonra karşılıksız dönmesi (kart_tahsilati işareti); iptal edilen faturanın Mevcut Borç kartının (R4) ayrıca iptali.
+- S19: kilit kaldırma olayı (formül var, olay yok); düzeltilen kaydın yazılış kilidi; devir öncesi yazılmış kayıtların S19 okuması (KULLANICIYA SORULMALI 1 — kâhin bakım 2 / 3 davranışında).
+- S20: geri yüklenmiş açılış öncesi kaydın düzeltilmesi (KULLANICIYA SORULMALI 3); açılışın kendisinin geri yüklenmesi (değişmez istisnası kodlandı, senaryo yok); şirket düzeyinde yedek
+  geri yükleme mekanizması (model olay bayrağıyla temsil eder); Devri Yenile ile birlikte.
+- S21: yarım günler ve dinî bayramlar (KULLANICIYA SORULMALI 4, DOĞRULANMADI); 2026–2027 dışı yıllar (kâhin susar); Şimdi Aktar'ın tatil günü; KG-6 B dalında (geçersiz) komisyonun
+  kaydırılmış valör günü.

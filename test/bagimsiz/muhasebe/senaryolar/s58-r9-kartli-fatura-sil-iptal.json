@@ -66,7 +66,12 @@
      ]
     }
    },
-   "kt3": {},
+   "kt3": {
+    "TK2": {
+     "kapali": true,
+     "taksitler": []
+    }
+   },
    "mz/satirlar/120|C1/bakiye": 0,
    "mz/satirlar/120|C2/bakiye": 2000,
    "mz/satirlar/120|C3/bakiye": -3000,

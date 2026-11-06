@@ -25,27 +25,25 @@ from senaryolar_elle import TANIM  # noqa: E402
 
 TOHUMLAR = (1, 2, 3)
 
-# Kâhin bakımı 3 (ana oturum K3; README E1): resmî tatiller (2429 sayılı Kanun) — sabit günler her yıl (28 Ekim yarım gün); dinî bayramlar (arife yarım
-# gün dahil) 2026–2027. Bayram tarihleri birincil takvimden DOĞRULANMADI → her pencere arifeden bir gün önce – bayramdan bir gün sonra (geniş). Kitap
-# D-01 valörün tatilde ne olduğunu söylemez (KULLANICIYA SORULMALI 5): üretici valörü bu günlere düşürmez — kural uydurmaz, durumdan kaçınır.
-RESMI_TATIL_SABIT = ("01-01", "04-23", "05-01", "05-19", "07-15", "08-30", "10-28", "10-29")
-DINI_BAYRAM_PENCERESI = (("2026-03-18", "2026-03-23"), ("2026-05-25", "2026-05-31"), ("2027-03-07", "2027-03-12"), ("2027-05-14", "2027-05-20"))
+# Kâhin bakımı 4 (S21 A, README Y19–Y23): resmî tatil takvimi model.py'de (2429; tatil_turu). Sabit tam gün tatile düşen valör artık SERBEST (model sonraki
+# iş gününe kaydırır; bakım 3'ün kaçınması kalktı). BELİRSİZ günlerden (yarım gün 28 Ekim / arife, doğrulanmamış dinî bayram) kaçınma sürer: kâhin orada kural
+# kurmaz (KULLANICIYA SORULMALI 4).
+def belirsiz_mi(g):
+    return M.tatil_turu(g.isoformat()) == "belirsiz"
 
 
-def tatil_mi(g):
-    s = g.isoformat()
-    return s[5:] in RESMI_TATIL_SABIT or any(a <= s <= b for a, b in DINI_BAYRAM_PENCERESI)
-
-
-def valor_tatilsiz(t, valor):
-    """Valör resmî tatil değil ve hafta sonu kaydırmasının üstünden geçtiği günlerde (valörden önceki ardışık hafta sonu, çekim gününden sonra) tatil yok."""
-    if tatil_mi(valor):
-        return False
+def valor_kesin(t, valor):
+    """Valör, hafta sonu kaydırmasının geçtiği günler (valörden önceki ardışık hafta sonu, çekim gününden sonra) ve modelin S21 kaydırma yolu belirsiz güne
+    değmez."""
     g, bas = valor - datetime.timedelta(days=1), datetime.date.fromisoformat(t)
     while g > bas and g.weekday() >= 5:
-        if tatil_mi(g):
+        if belirsiz_mi(g):
             return False
         g -= datetime.timedelta(days=1)
+    try:
+        M.pos_etkin_valor(valor.isoformat())
+    except AssertionError:
+        return False
     return True
 MUSTERI = ("C1", "C2", "C3", "C4", "C5")
 TEDARIKCI = ("T1", "T2", "T3")
@@ -102,11 +100,11 @@ class Uretici:
         return g
 
     def pos_valoru(self, t, gun):
-        """POS valörü = çekim + gun, hafta sonu → sonraki iş günü (ana oturum K3). Bakım 3 E1: valör resmî tatile ya da tatilin üstünden geçen
-        kaydırmaya düşerse öbür seçenekler (1, 2, 30 gün) sırayla denenir (rastgele sayı tüketmez); hiçbiri olmazsa None."""
+        """POS valörü = çekim + gun, hafta sonu → sonraki iş günü (ana oturum K3); sabit resmî tatile düşerse model kaydırır (S21). Valör ya da kaydırma
+        yolu BELİRSİZ güne değerse öbür seçenekler (1, 2, 30 gün) sırayla denenir (rastgele sayı tüketmez); hiçbiri olmazsa None."""
         for g_ in [gun] + [x for x in (1, 2, 30) if x != gun]:
             aday = self.is_gunu(datetime.date.fromisoformat(t) + datetime.timedelta(days=g_))
-            if valor_tatilsiz(t, aday):
+            if valor_kesin(t, aday):
                 return aday
         return None
 
@@ -492,19 +490,24 @@ def uret(tohum, yil=2026, yogunluk=3):
 
 def devirsiz(s):
     """Aynı senaryonun devir / yenile içermeyen hâli (devir şirketin durumunu değiştirmez denetimi için). Devir yapmayan müşteri
-    dönem kilidiyle çalışır (DEVIR-PLANI §0); karşılaştırma AYNI kilitle (L = K, EK-2B §5.3 / karar (3)): düzeltmelerden sonra kilit."""
+    dönem kilidiyle çalışır (DEVIR-PLANI §0); karşılaştırma AYNI kilitle (L = K, EK-2B §5.3 / karar (3)).
+    Kâhin bakımı 4 (S19 A, README Y14): kilit kaydın YAZILDIĞI anda geçerlidir → kilit K sonrası İLK kaydın önüne konur (devirli dosya K sonrası bütün
+    kayıtları K kilidiyle değerlendirir); Devri Yenile düzeltmeleri (≤ K) ondan önce. Aynı tarihli kayıtların göreli sırası değişmez."""
     x = copy.deepcopy(s)
-    out = []
     K = next(o["K"] for o in x["olaylar"] if o["tur"] == "devir")
+    duz = [y for o in x["olaylar"] if o["tur"] == "devri_yenile" for y in o["duzeltmeler"]]
+    out, kondu = [], False
     for o in x["olaylar"]:
         if o["tur"] in ("devir", "devri_yenile"):
-            if o["tur"] == "devri_yenile":
-                out += o["duzeltmeler"]
-                out.append({"tur": "donem_kilitle", "tarih": K})
             continue
         if o["tur"] == "rapor" and o.get("dosya", "canli") != "canli":
             continue
+        if not kondu and o.get("tarih", "") > K:
+            out += duz + [{"tur": "donem_kilitle", "tarih": K}]
+            kondu = True
         out.append(o)
+    if not kondu:
+        out += duz + [{"tur": "donem_kilitle", "tarih": K}]
     x["olaylar"] = out
     return x
 

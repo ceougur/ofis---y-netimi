@@ -1,0 +1,131 @@
+{
+ "ad": "s70-s20-silinenlerden-geri-yukle-kasa",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "durum_KG1": "aktif",
+    "mod14": {
+     "kasa": 800
+    },
+    "mod15": {
+     "kasa": 11500
+    },
+    "mu1": [
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "KG1",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-10"
+     }
+    ],
+    "mu2": [
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "KG1",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-10"
+     },
+     {
+      "acilis": "2026-01-15",
+      "kaynak": "KC1",
+      "kod": "KASA_ACILIS_ONCESI_HAREKET",
+      "tarih": "2026-01-12"
+     }
+    ],
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 200,
+       "bakiye": 11500,
+       "borc": 11700,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      },
+      "649": {
+       "alacak": 1700,
+       "bakiye": -1700,
+       "borc": 0,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 0,
+       "bakiye": 200,
+       "borc": 200,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 200,
+       "bakiye": 11500,
+       "borc": 11700,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      },
+      "649.90": {
+       "alacak": 1700,
+       "bakiye": -1700,
+       "borc": 0,
+       "devir": 0
+      },
+      "770.90": {
+       "alacak": 0,
+       "bakiye": 200,
+       "borc": 200,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 11900,
+      "bakiye": 0,
+      "borc": 11900,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "KASA_ACILIS_ONCE",
+     "neden": "Kasa hareketi 2026-01-11 < Kasa açılışı 2026-01-15",
+     "olay": 8,
+     "tur": "kasa_giris"
+    },
+    {
+     "kod": "KASA_ACILIS_SONRA",
+     "neden": "ilk Kasa hareketi 2026-01-10",
+     "olay": 11,
+     "tur": "duzenle"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}
