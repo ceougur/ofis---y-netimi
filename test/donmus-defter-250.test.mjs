@@ -92,11 +92,11 @@ describe("2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural de�
     const live = L().build();
     const result = await lock(LOCK_2026);
     assert.equal(result.lockedUntil, LOCK_2026);
-    // Ç3 tur 2 (G3 — beklenti BİLEREK değişti; plan §8 İLERLEME, tasarım notu §18): uç kilit + bekleyen koşu yazılınca yanıt verir, dondurmayı beklemez. Önceden bu satır
-    // "uç dondurma bittikten sonra yanıt verir" (frozenThrough = kilit) diyordu; 1.000.000 satırda istemcinin 30 sn sınırını aşıyordu (kanıt c3t2-yeniden-uret-1m-eski).
-    assert.equal(result.put.frozenThrough, "", `uç yanıtı dondurmadan önce: ${JSON.stringify(result.put)}`);
-    assert.equal(result.put.freeze?.pending?.through, LOCK_2026, "yanıtta bekleyen koşu (arkada donar)");
-    assert.equal(result.put.freeze?.active, true, "yanıtta süren iş");
+    // Ç3 tur 2 (tasarım notu §18, T2-2): uç arka işi (dondurma + kilit izi) EN ÇOK 5 sn bekler — kısa dondurma (bu veri) bütçe içinde biter: yanıt dondurma bittikten sonra (eski
+    // beklenti aynen). Uzun dondurmanın arkada sürmesi ve ilerleme test/donmus-defter-kilit-ucu-250.test.mjs K4 / K9'da.
+    assert.equal(result.put.frozenThrough, LOCK_2026, `uç dondurma bittikten sonra yanıt verir (kısa dondurma bütçe içinde): ${JSON.stringify(result.put)}`);
+    assert.equal(result.put.freeze?.pending, null, "yanıtta bekleyen koşu yok");
+    assert.equal(result.put.freeze?.running, false);
     assert.equal(result.frozenThrough, LOCK_2026, `dondurma bitti: ${JSON.stringify(result)}`);
     assert.equal(result.freeze?.running, false);
     assert.equal(result.freeze?.pending, null);

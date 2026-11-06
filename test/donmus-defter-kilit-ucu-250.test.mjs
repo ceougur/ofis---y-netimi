@@ -46,14 +46,14 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
   const pos = () => server.app.context.bankAccounts.pos;
   const runs = () => server.app.store.all("SELECT no, kind, state, through FROM ledger_snapshot_runs ORDER BY no").map(row => ({ ...row }));
   // Dondurma kancası: ilk parça yazılınca dondurma TUTULUR (süreye değil kapıya bağlı — ders 20: uç kilit izini beklerken süreli dondurma bitebiliyordu; zorla üretildi:
-  // iz 3 sn → K6 ön koşulu düştü). Bırakılınca (ya da 8 sn güvenlik süresi dolunca — uç dondurmayı beklerse, eski kod / mutant, test kilitlenmez) sürer. Parça boyu 5 satır.
+  // iz 3 sn → K6 ön koşulu düştü). Bırakılınca (ya da 20 sn güvenlik süresi dolunca — uç arka işi 5 sn bekler, iki istek sığar — uç dondurmayı beklerse, eski kod / mutant, test kilitlenmez) sürer. Parça boyu 5 satır.
   let releaseBatches = () => {};
   const holdBatches = () => {
     let release = null;
     const held = new Promise(resolve => {
       release = resolve;
     });
-    const fallback = setTimeout(() => release(), 8000);
+    const fallback = setTimeout(() => release(), 20000);
     releaseBatches = () => {
       clearTimeout(fallback);
       release();
@@ -201,8 +201,8 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
     const gate = new Promise(resolve => {
       release = resolve;
     });
-    // Güvenlik: uç dondurmayı BEKLERSE (eski kod) bitiş kancası 8 sn sonra kendiliğinden bırakılır — test kilitlenmez, aşağıdaki denetim nedeniyle kırmızı olur.
-    const fallback = setTimeout(() => release(), 8000);
+    // Güvenlik: uç dondurmayı BEKLERSE (eski kod) bitiş kancası 20 sn sonra kendiliğinden bırakılır — test kilitlenmez, aşağıdaki denetim nedeniyle kırmızı olur.
+    const fallback = setTimeout(() => release(), 20000);
     hook.fn = async phase => {
       if (phase === "before-done") await gate;
     };
@@ -304,7 +304,7 @@ describe("2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada do
     const held = new Promise(resolve => {
       release = resolve;
     });
-    const fallback = setTimeout(() => release(), 8000); // uç beklerse (eski kod) kilitlenme yok
+    const fallback = setTimeout(() => release(), 20000); // uç beklerse (eski kod) kilitlenme yok
     hook.fn = async phase => {
       if (phase === "before-done") await held;
     };
@@ -363,7 +363,7 @@ describe("2.5.0 Ç3 tur 2 — dondurma sürerken kilitli fişin Ters Kaydet'i", 
     const held = new Promise(resolve => {
       release = resolve;
     });
-    const fallback = setTimeout(() => release(), 8000); // uç beklerse (eski kod) kilitlenme yok
+    const fallback = setTimeout(() => release(), 20000); // uç beklerse (eski kod) kilitlenme yok
     hook.fn = async phase => {
       if (phase === "before-done") await held;
     };
@@ -398,7 +398,7 @@ describe("2.5.0 Ç3 tur 2 — dondurma sürerken kilitli fişin Ters Kaydet'i", 
     const held = new Promise(resolve => {
       release = resolve;
     });
-    const fallback = setTimeout(() => release(), 12000);
+    const fallback = setTimeout(() => release(), 20000);
     // İz de dondurma da (dondurmanın kendi izi) tutulur: büyük şirkette ikisi de bütçeden uzun.
     hook.fn = async phase => {
       if (phase === "trace" || phase === "before-done") await held;
