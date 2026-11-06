@@ -163,3 +163,40 @@ döneme 409, açık döneme 200) · F9 gün / yıl dönümü kilidi (31.12 / 01.
 · F11 v2.4.9 GERÇEK koduyla üretilmiş kilitli veri → göç → donmuş = 2.4.9 türetmesi, raporlar önce / sonra birebir · F12 eski sürüm (2.4.9 kodu) 47'lik dosyada kilidi açar / ilerletir /
 sıfırlar → açılış onarımı · F13 Sıfırla (iki kip), yedek → geri yükle, iki şirket · F14 kaynak izi (dış yazım) · F15 hacim: 100.000 satırda kilit + dondurma süresi, olay döngüsü,
 raporların kilitli / açık okuma süresi önce / sonra.
+
+## 15. Kanıt (docs/kanit/2026-11-05/c3-*; her koşu tools/kanit.mjs kos)
+- Testler: test/donmus-defter-250.test.mjs (13) + test/donmus-defter-yasam-250.test.mjs (7) = 20; yeni kodda 20/20 (UTC ve Europe/Istanbul). Kırmızı: eski kod a2796dd4 (`git archive`,
+  ayrı kopya) 0/20 — nedenler "donmuş defter yok (ledger.snapshots)", "2.4.9 kural kopyası yok", "LOCK_SQL_VERSION yok" (c3-kirmizi-eski-a2796dd4).
+- Dar liste (Ç2'nin 169 dosyası + Ç3'ün okuduğu yollar + kaynak tarayan genel testler = 191 dosya; 8c3a0436): UTC 2180/2181 — tek kırmızı platform-tasinabilirlik, kanıt betiğimdeki
+  `new URL(import.meta.url).pathname` (Windows'ta kırılır; 26935fe5'te düzeldi, yeniden 6/6: c3-dar-UTC-platform); Europe/Istanbul 2181/2181 (00:00–03:00 İstanbul aralığında koştu).
+  banka-210-onarim (v2.0.25 / v2.0.26 etiketleri getirildiği için bu kez ATLANMADI, koştu) ilk koşuda Ç3'ün "Donmuş Defter" bulgusunu engelleyici saydı → bulgu uyarı düzeyine alındı (§12a).
+- e2e (8c3a0436 / 26935fe5): sema-kapisi-bs7 12/12 (LATEST + 1 = 48), senaryo-defter-243 24/24, senaryo-224 69/69, senaryo-226 22/22, senaryo-213 64/64, gg244-numara-tarih-onay 40/40,
+  gg243-banka-kart-aciklama 11/11, senaryo-220-yedek 37/37, senaryo-banka-210 424/424. Kâhin defter 176/176, kâhin cari 8698/8698.
+- Mutasyon (test/donmus-defter-250-mutasyon.mjs, `git archive HEAD` kopyası): 16 mutasyonun 16'sı beklenen nedenle yakalandı (c3-mutasyon-son + c3-mutasyon-son-15): karma okuma, satır kaybı ×2, kilit günü,
+  kilit ↔ donma ayrışması, geri çekme izi, fark denetimi, göç kuralı, UPDATE / DELETE tetikleyicisi, sıfırlama, açılış onarımı, postAll kancası, kaynak izi, bayat satır, 2.4.9 kopyası.
+- Eşdeğerlik: (1) v2.4.9 GERÇEK koduyla üretilmiş veri (motor tohum 11, 1.500 işlem; kilit 31.08.2026 v2.4.9'un ucuyla) → göç 47 → bekleyen 2.4.9 koşusu → donmuş = v2.4.9 türetmesi
+  836 / 836 madde; 2.4.9 kopyası = v2.4.9 gerçek kodu 1.142 / 1.142 madde; kilitli yılın Yevmiye Defteri (1.359 satır) ve kilit gününe kadar bütün Yevmiye Defteri (1.913 satır) TAM satırlarıyla,
+  Hesap Planı Mizanı (32 hesap) göçten önce / sonra birebir (yalnız 770 adı) — 17/17 (c3-esdegerlik-v249). (2) 2.0.26 zincir fikstürü (4 şirket; 001 göç koşusuyla, 002–004 uçla
+  kilitlenerek): donmuş = canlı, karma = canlı, mizan yıl yıl, karma mizanın SQL yolu = canlı mizan, geri çek + yeniden kilitle — 48/48 (c3-esdegerlik-zincir). (3) aynı v2.4.9 verisinde
+  bu kodla 12/12 (c3-esdegerlik-motor-v249).
+- Gerçek kod kopyasıyla kural değişikliği (sürüm yükseltmesi): kilitli yılın Yevmiye Defteri ve Hesap Planı Mizanı birebir, açık dönem yeni kuralla, "Kural Değişikliği Farkı" 4 madde,
+  ruleDiff tutarları, yeni kilit yeni etiketle, geri çek + yeniden kilitle → açılan dönem yeni kuralla — 14/14 (c3-kural-degisikligi).
+- Eski sürüm (2.4.9 GERÇEK kodu) 47'lik dosyada kilidi ilerletir / kaldırır / Şirket Verisini Sıfırla (donmuş satırlar varken 200) → 2.5.0 açılış onarımı — 20/20 (c3-eski-surum-v249).
+- Hız (aynı veri kopyası, flock, 226.734 para satırı / ~400.000 satır, kilit 31.12.2025 → 274.616 donmuş satır; taban a2796dd4 ↔ yeni; makine yükü JSON'da):
+  | Yol | Taban | Yeni |
+  |---|---|---|
+  | Dönem kilidi (+ dondurma) | 9.491 ms, olay döngüsü 9.485 ms | 9.573 ms (parça 500), olay döngüsü en çok 30 ms (parça 1000: 7,4–8,0 sn, 28–69 ms) |
+  | Kilidi geri çek | 8.981 ms, olay döngüsü 8.973 ms | 2.128–2.270 ms, olay döngüsü 53–61 ms (thaw işlemindeki SQL toplamı) |
+  | Yevmiye Defteri, kilitli yıl | 2.280 ms | 707–755 ms (yalnız tablo) |
+  | Yevmiye Defteri, açık dönem | 2.537 ms | 2.343–2.393 ms |
+  | Hesap Planı Mizanı, kilitli yıl | 3.175 ms | 3.598 ms (medyan; ilk açılış +~0,55 sn donmuş SQL toplamı, sonra önbellekte) |
+  | Açık döneme yazım (kilitten sonra) | 39 ms | 25–32 ms |
+  Kilit ucu artık tam taramayı ana iş parçacığında koşmuyor (taban: kilit ve geri çekme boyunca bütün sunucu bekliyordu). Raporların canlı türetmesi (2–4 sn, olay döngüsünü kilitler) Ç3'ten
+  önce de böyleydi — plan §8'in rapor bütçesi Ç6'nın işi.
+- WINDOWS'A DUYARLI (ders 48; ilk gönderimde CI'nin Windows işlerinde görülmeli): test/donmus-defter-yasam-250.test.mjs F7a (dondurma sırasında ayrı süreç SIGKILL → TerminateProcess,
+  öldürülen sürecin dosyası yeniden açılır), F13b (002 yedeğinden geri yükleme = dosya takası; dondurma iş parçacığının salt okunur tutamağı), test/fixtures/donma-isci.mjs; dondurma iş
+  parçacığı (lib/ledger-freeze-worker.mjs) bağlantısını satırları göndermeden ÖNCE kapatır, ama iptal türetme sürerken gelirse terminate() ile kesilir (tutamağın bırakılması Node'a kalır).
+- İKİNCİ BAĞLANTI AÇAN YOLLAR (ana oturum notu 23:0x, db.mjs PRAGMA sırası; düzeltme ayrı ajanda): (1) lib/ledger-freeze-worker.mjs — salt okunur `openDatabase(dbPath, { readOnly: true })`:
+  PUT period-lock'ta ileri kilitte (koşu), açılışta bekleyen koşu varsa (göç 47'nin 2.4.9 koşusu, yarım koşu, onarım), kilit geri çekilince ya da dondurma bitmeyince yalnız iz için
+  (`digestOf`); (2) testlerde: F7a ayrı süreç (ana sunucu kapalıyken), yaşam testinin ham okuma / yazmaları (`new DatabaseSync`, sunucu kapandıktan sonra), eski sürüm / eşdeğerlik
+  betiklerinin ham okumaları (sunucular kapalı). Eşzamanlı ikinci bağlantı yalnız (1)'de; iş parçacığı salt okunurdur (WAL kipi ayarlamaz).

@@ -1,0 +1,38 @@
+{
+  "ad": "c3-mutasyon",
+  "komut": "node test/donmus-defter-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-mutasyon-kopya",
+  "commit": "4a07278679f69aad3748ae8d136d96aa97b1e90c",
+  "dal": "worktree-agent-af0fd5a610216d3a2",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:20:59.618Z",
+  "sure_sn": 155.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 15,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "donmuş satır kaybı (iş parçacığı son parçadan bir satır düşürür): çıkış 0, 12 geçti / 0 kaldı — beklenen neden görülmedi (/uç dondurma bittikten sonra yanıt verir/)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c3-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af0fd5a610216d3a2",
+  "ham_cikti_sha256": "d2c014c894758ecd1718c6dd2df6db966b7c5ec306c8dbcd8ec09567beae537c",
+  "ham_cikti_bayt": 1548
+}

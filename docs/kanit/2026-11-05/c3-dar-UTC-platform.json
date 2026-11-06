@@ -1,0 +1,32 @@
+{
+  "ad": "c3-dar-UTC-platform",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/platform-tasinabilirlik.test.mjs",
+  "commit": "8c3a04366b4654c0e07dd940628400c31af456a8",
+  "dal": "worktree-agent-af0fd5a610216d3a2",
+  "kirli": 3,
+  "izlenmeyen": 33,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:43:37.495Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c3-dar-UTC-platform.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af0fd5a610216d3a2",
+  "ham_cikti_sha256": "71990d67e4cc470a37faa9bd0f896f2101f3c548fa397825febe633293ac55ca",
+  "ham_cikti_bayt": 1938
+}

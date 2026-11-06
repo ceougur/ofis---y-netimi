@@ -1,0 +1,133 @@
+{
+  "ad": "c3-kirmizi-eski-a2796dd4",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/donmus-defter-250.test.mjs test/donmus-defter-yasam-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:21:45.307Z",
+  "sure_sn": 6.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 0,
+    "basarisiz": 20,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 20 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F1: kilit konunca kilit gününe kadarki türetilmiş yevmiye satır satır donar; donmuş = canlı (madde madde, mizan yıl yıl); koşu başlığı kural sürümü ve kaynak iziyle",
+      "konum": "test/donmus-defter-250.test.mjs:83:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F2 / F3 / F4: kilit geri çekilince açılan dönemin donmuş satırları izle kalkar; değişen kayıtla yeniden kilitlenince yeniden donar; ilerletme ardışık iki koşu",
+      "konum": "test/donmus-defter-250.test.mjs:132:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F5: kural değişikliği benzetimi — kilitli dönemin Yevmiye Defteri ve Hesap Planı Mizanı DEĞİŞMEZ, açık dönem yeni kuralla; Mutabakat Testi ve Defter Mutabakatı 'Kural Değişikliği Farkı'; ruleDiff tutarları; yeni işlemler engellenmez",
+      "konum": "test/donmus-defter-250.test.mjs:164:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F5b: aralığın tamamı donmuş dönemdeyse Yevmiye Defteri canlı türetme yapmaz (yan kazanç); açık dönemi kapsayan aralıkta yapar",
+      "konum": "test/donmus-defter-250.test.mjs:213:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F6: değişmezlik — donmuş satır değiştirilemez, kapsam içinde silinemez, REPLACE ile ezilemez, kapanmış koşuya satır eklenemez; koşu başlığı değiştirilemez / silinemez",
+      "konum": "test/donmus-defter-250.test.mjs:231:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F8: kilit sırasında yazım (kilitli döneme 409, açık döneme 200) ve aynı anda iki kilit isteği → son kilit; tek bekleyen koşu yok, donmuş = canlı",
+      "konum": "test/donmus-defter-250.test.mjs:257:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F9: gün / yıl dönümü — 01.01.2027'ye kadar kilit 31.12 ve 01.01 maddelerini dondurur; 01.01 geri çekilince yalnız o gün açılır",
+      "konum": "test/donmus-defter-250.test.mjs:274:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F10: kapanış fişi kilitle aynı işlemde (postAll lockThrough) — fiş donmuş defterde, koşu eşzamanlı ve tek işlemde; dondurma düşerse fiş de kilit de yok",
+      "konum": "test/donmus-defter-250.test.mjs:286:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F14: kaynak izi — kilitli dönemin kaynak satırı kapının görmediği bir yolla değişirse Mutabakat Testi 'Donmuş Defter' bulgusu verir; donmuş defter aynen kalır (düzeltme yok)",
+      "konum": "test/donmus-defter-250.test.mjs:329:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği › F13 / yetki: Şirket Verisini Sıfırla donmuş defteri ve koşuları siler, tetikleyiciler yeniden kurulu; Muhasebe rolü kilit koyamaz (403)",
+      "konum": "test/donmus-defter-250.test.mjs:350:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı › kopya dosyaları sabit (sha256); kopya yalnız kendi klasörünü içe aktarır",
+      "konum": "test/donmus-defter-250.test.mjs:381:3",
+      "hata": "2.4.9 kural kopyası yok"
+    },
+    {
+      "ad": "2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı › LOCK_SQL_VERSION kilit izinin en yeni girdisinin sürümüdür (koşunun kaynak izi = kapının kilit izi tanımı)",
+      "konum": "test/donmus-defter-250.test.mjs:394:3",
+      "hata": "LOCK_SQL_VERSION yok"
+    },
+    {
+      "ad": "2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı › kural tuzağı: güncel kural sürümü 2.5.0 iken güncel türetme = 2.4.9 kopyası (madde madde); Ç5 / Ç7 ilk kural değişikliğinde bu testi ve LEDGER_RULE_VERSION'ı bilerek değiştirir",
+      "konum": "test/donmus-defter-250.test.mjs:404:3",
+      "hata": "2.4.9 kural kopyası yok"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: iki şirket, yedek → geri yükle › F13a: iki şirket karışmaz — 001'in kilidi yalnız 001'i dondurur; 002 kendi gününe kendi kuralıyla donar",
+      "konum": "test/donmus-defter-yasam-250.test.mjs:67:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: iki şirket, yedek → geri yükle › F13b: 002 yedeği (kilitli) → kilidi geri çek → geri yükle: yedekteki kapsam, koşular, satırlar ve tetikleyiciler döner; donmuş = canlı",
+      "konum": "test/donmus-defter-yasam-250.test.mjs:79:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: iki şirket, yedek → geri yükle › F13c: Tümünü Sıfırla donmuş defteri siler; sonra kilit yeniden donar",
+      "konum": "test/donmus-defter-yasam-250.test.mjs:97:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm, göç › F7a: dondurma sırasında süreç öldürülürse (ilk parça yazılmış, koşu açık) yarım koşu görünmez; açılışta sürer, sonuç kilit = kapsam, donmuş = canlı",
+      "konum": "test/donmus-defter-yasam-250.test.mjs:131:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm, göç › F7b: disk dolu — kilit konur ama dondurma tamamlanamaz: yarım satırlar görünmez, raporlar canlı (doğru); yer açılınca tamamlanır",
+      "konum": "test/donmus-defter-yasam-250.test.mjs:174:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm, göç › F12: eski sürüm (BS-7 kapısını bilmez) kilidi ilerletir → açılışta aradaki dönem 2.4.9 kuralıyla donar; geri çeker → açılışta çözülür; Şirket Verisini Sıfırla (önce işlem geçmişi) donmuş satırları silebilir → açılışta tutarlı",
+      "konum": "test/donmus-defter-yasam-250.test.mjs:214:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    },
+    {
+      "ad": "2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm, göç › F11 (benzetim): göç 47 — kilitli 46'lık dosyada bekleyen 2.4.9 koşusu yazılır, açılıştan sonra 2.4.9 kopyasıyla donar; kilitsiz dosyada koşu yok",
+      "konum": "test/donmus-defter-yasam-250.test.mjs:281:3",
+      "hata": "donmuş defter yok (ledger.snapshots)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c3-kirmizi-eski-a2796dd4.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-eski-a2796dd4",
+  "ham_cikti_sha256": "0c24b17398aed9b9bd525f6fde8d5e5acfa35994dd91f680c52d6f4daca83f52",
+  "ham_cikti_bayt": 27551
+}
