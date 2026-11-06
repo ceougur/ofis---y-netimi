@@ -386,35 +386,47 @@ oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
   destek-ofis.vercel.app DEĞİŞMEZ. SÜREÇ (sürer): DÜŞÜK bulgu sonraki sürüme; UD + windows.yml ×2 aynı commit'te; mobil değişikliğinde mobil özet ölçümü yinelenir.
 
 ## Açık iş (yalnız güncel; kapanan sürümler `docs/GECMIS-KARARLAR.md`)
-- SIKIŞTIRMA ÖNCESİ DURUM 25 (06.11.2026 07:11 UTC, `date -u`; kullanıcı: "sıkıştırma hazırlığı yap"). DURUM 24'ün YERİNE GEÇER (DURUM 24 → GECMIS-KARARLAR "Arşiv 06.11.2026" AYNEN).
-  KAYNAK: docs/2.5.0-IS-LISTESI.md (SAAT KURALI; A kapsam, B 2.5.1, C sorular, D kararlar + G1–G7, E kayıt — 06.11 05:20 … 07:11 satırları) + docs/erp/C3-DONDURMA-TASARIM.md (§17 tur 1; tur 2 §18 ekleyecek) +
-  docs/erp/C2-FIS-DEFTERI-TASARIM.md (§11b, §11c tur 2) + kâhin README'leri (test/bagimsiz/muhasebe "Kâhin bakımı 4"; test/bagimsiz/whatsapp-248 §18–§20) + WHATSAPP-PAKETI-2.5.0-PLANI. Sıkıştırmadan sonra kararlar bu belgelerden okunur.
-  KULLANICI (bu bölüm, hepsi "a" = öneri): S22 (S7-d), S23 (S7-e), S24–S27 (devir / şüpheli / yedek / valör yarım gün), S28 (K5 onarımı yazım sırasıyla), S29–S32 (WhatsApp KVKK), S33 (Yol 2 imzalı işaret);
-  05:42 "a": BAĞIMSIZ işlerde 4 kod ajanı (bağımlı zincir sıralı; kâhin ve dar kontrol sınıra sayılmaz). Ağ ayarına (kullanıcı onayıyla) vakithesaplama.diyanet.gov.tr, www.mevzuat.gov.tr, www.resmigazete.gov.tr eklendi.
-  BİRLEŞEN + GÖNDERİLEN (06.11): BİRLEŞİK TUR 3 a7118763 (G2 2402/2402; dar kontrol YÜKSEK 0, ORTA-1 gerileme + DÜŞÜK-1 süzgeç → BİRLEŞİK TUR 4; YB-1 Kartı Kapat → Ç7b karar (6)); Ç3 TUR 1 (c77f3983; 37/37 iki TZ,
-  v2.4.9 18/18, mutasyon 23/23, G2 2663/2663); Ç2 TUR 2 ccbf7812 (084e3634; 46/46 iki TZ, eski 16/23, G6, mutasyon 35/35; S28 = A kesinleşti); WK 13, 14, 15 (bağımsızlık temiz; WK 15 342/342 + 370/370);
-  KÂHİN BAKIMI 4 (130/130 iki TZ, 155/155). CI: #1018–#1023 YEŞİL 7/7 (birleşik tur 2 Windows 3 yeşil → kapandı; Ç2 tur 1 K5 Windows 1. yeşil). OKUNACAK (ders 21): #1024 (8d359527) ve sonraki bütün kod
-  gönderimleri (ac82acdb, c77f3983, c2668b40, 77c1a115, 084e3634, 5550a1be …; list_workflow_runs + get_workflow_run_usage, UBUNTU 5 + WINDOWS 2).
-  ÇALIŞAN AJANLAR (bitince akış DURUM 24'teki gibi: rapor → ana oturum KENDİSİ koşar (iki TZ, eski kod kırmızısı ayrı kopyada, G2 komşu taraması, G3) → birleştir → AYRI gönderim → yalnız o farka DAR KONTROL
-  (xhigh, yeni ajan) → YÜKSEK/ORTA + süzgeçten geçemeyen DÜŞÜK yeni ajanla; kodu görmeyende önce bağımsızlık denetimi (readlink tasks/<id>.output → scratchpad/denetim-wk250/arac-kaydi.py + yasaklı yol grep'i)):
-  (1) Ç3 TUR 2 (ae037f9ed9ae9cefe; xhigh; taban 40473f17; routes/ledger.mjs PUT sırası + erken yanıt + admin.js ilerleme + period.mjs) → bitince birleştir, sonra BİRLEŞİK Ç3 TUR 1-2 DAR KONTROL; ardından
-      routes/report-center.mjs:719 "Defter kuralı program sürümüyle değişti" alt başlığı (K4 ailesi) küçük iş.
-  (2) AH + BS-6 (ab0062d42feec8f21; xhigh; taban f5b34f31; ah-istem.txt; önce v2.1.0 ↔ v2.4.9 ↔ bugün gerileme ölçümü, toplu SQL + eşdeğerlik + olcum.lock ölçüm; store.run koruması).
-  (3) BİRLEŞİK TUR 4 (a8e6f2114d96e812f; high; taban ccbf7812; bt4-istem.txt; üç PUT'ta "değişiklik yok" kısa yolu + Kasa Uyar e2e U1 / N6).
-  (4) Ç2 TUR 2 DAR KONTROL (a5034e4b5143f5443; xhigh; dk-c2t2-istem.txt; S28 = A bildirildi) → bulgular + YAN BULGU (onarım kaydı JSON.stringify(...).slice(0, 20000) → ~470+ fişte 500, süzgeçle ORTA) → Ç2 TUR 3.
-  (5) KÂHİN BAKIMI 5 (aa1d453c9cc7bfb3b; kodu görmeyen; kahin5-istem.txt; S24–S27; resmî kaynaklar açıldı bildirildi) ve (6) WK GÜNCELLEMESİ 16 (ad594c1d77baac62a; kodu görmeyen; wk16-istem.txt; S29–S32).
-  ARKA PLAN KOŞULARI: Ç2 tur 2 komşu 129 dosya (ana ağaç, c2t2-kos.sh); WHATSAPP KÜÇÜK İŞLER yeniden koşusu AYRI AĞAÇTA (scratchpad/wkucuk-birlesim-ag, dal wkucuk-birlesim, 5bbd3fb3; wkucuk-kos.sh; yeni 18/18 iki TZ ve
-  yeniden üretim GEÇTİ; e2e whatsapp-ayar, pdf-denetle, eski f5b34f31, komşu 116 sürüyor) → geçince ANA DALA `git merge --no-ff worktree-agent-a7c02d003909b3c2a` (kod sınanan ağaçla birebir mi diff ile bak) → kanıtla
-  gönder → sınama ağacını sil (`git branch -D wkucuk-birlesim`) → DAR KONTROL → WHATSAPP KÜÇÜK İŞLER TUR 1 (+ S33 = A). Bekleyen kanıt: scratchpad/bekleyen-kanit/2026-11-06/2026-11-06/ → sonraki kod gönderimiyle docs/kanit'e.
-  SIRADA (kod ajanı yeri açılınca, en çok 4): BS-5 (kılavuz; WhatsApp küçük işler birleştikten sonra — aynı kılavuz dosyası); W-3 KVKK saklama (xhigh; WK 16 birleştikten sonra; S-W3, S30–S32); Ç2 tur 3; WhatsApp
-  küçük işler tur 1; report-center:719. Ç5 Ç3 tur 1-2 dar kontrolünden sonra (zincir 06.11 BAŞ MİMAR KARARIYLA: Ç5 ‖ Ç7a → Ç7b → Ç6-HESAP → MA → D3 → D4 → D5 → D6; D2 Ç5'ten itibaren paralel; Ç6-EKRAN D'ye paralel ve kesme çizgisinde;
-  → WK / muhasebe sürücüsü yeniden koşusu → aday → paket).
-  BAŞ MİMAR KARARLARI (kullanıcıya gösterildi / gösterilecek; iş listesi E): birleşik tur 3 (1)–(4); Ç3 tur 1 (a)–(d); Ç2 tur 2 (b)(c); WhatsApp küçük işler (1)–(6); WK 13 "Net Borcu Yok" adı önerisi (Ç5'te);
-  kâhin 4 Y12 (S19'da R3 bağ üzerinden) Ç5'te değerlendirilir. İLKEYLE (WK 15): silinmiş kayıtta R3 Yine de Gönder açık; kapanmış işin belirsiz izi eler.
-  ORTAM: 30 dk rapor CronCreate da3eb3f2 ("7,37 * * * *"); ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (06:18 "Ortam sağlam", kapsayıcı 00:46'dan beri); disk ~11 GB, bellek ~11 GB (06:51). PLAYWRIGHT_BROWSERS_PATH=
-  /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194; imza anahtarı DURUM 22'deki yol (2.5.0 PLANLAMA maddesi); ölçüm kilidi scratchpad/olcum.lock; T6_KOK gereken testlerde benzersiz klasör.
-  YÖNTEM NOTLARI: DURUM 24'tekiler + iş listesi betiklerini dosyaya yaz (scratchpad/kayit-*.py; heredoc içinde """...""".replace( paren hatası iki kez düştü, ders 19 korudu); ana ağaçta koşu sürerken kod birleşimi
-  AYRI sınama ağacında (git worktree add -b <ad>-birlesim <yol> HEAD), sonra ana dala aynı ajan dalının --no-ff birleşimi; SAAT KURALI: kayıt saati `T=$(date -u +%H:%M)` ile (05:29 kaydı tahminle yazılıp düzeltildi).
+- SIKIŞTIRMA ÖNCESİ DURUM 26 (06.11.2026 08:59 UTC, `date -u`; kullanıcı: "sıkıştırma hazırlığı yap"). DURUM 25'in YERİNE GEÇER (DURUM 25 → GECMIS-KARARLAR "Arşiv 06.11.2026" AYNEN).
+  KAYNAK: docs/2.5.0-IS-LISTESI.md (SAAT KURALI; A kapsam + KESME ÇİZGİSİ, B 2.5.1, C sorular, D kararlar + G1–G7, E kayıt — 06.11 07:1x … 08:59 satırları) + docs/erp/C3-DONDURMA-TASARIM.md (§17 tur 1, §18 tur 2) +
+  docs/erp/C2-FIS-DEFTERI-TASARIM.md (tur 3 §11d ekleyecek) + kâhin README'leri (test/bagimsiz/muhasebe "Kâhin bakımı 5"; test/bagimsiz/whatsapp-248 §20–§22) + WHATSAPP-PAKETI-2.5.0-PLANI. Sıkıştırmadan sonra kararlar bu belgelerden okunur.
+  KULLANICI (bu bölüm): S34–S40 "a" = öneriler (S37 = B); S41 = A; S42 = A, S43 = A; kullanıcı sorusu (Ç6 ↔ devir) → BAŞ MİMAR KARARI: Ç6 ikiye — Ç6-HESAP devrin ön koşulu, kesme çizgisinden çıktı; Ç6-EKRAN kayabilir;
+  D2 AH birleşince paralel. YENİ ZİNCİR: Ç5 ‖ Ç7a → Ç7b → Ç6-HESAP → MA → D3 → D4 → D5 → D6 (D2 erken; Ç6-EKRAN D'ye paralel). Öz denetim 1 + 2 yapıldı (iş listesi E; ders 10'a 06.11 eki).
+  BAŞ MİMAR KARARLARI (kullanıcıya gösterildi / gösterilecek; iş listesi D / E): Z9 (S26 Silinenler'den geri alınana da), Y17-6 (S35 1 yıl dolumunda da), WE + BS-7 (kapılı 001'e WE hiç yazmaz), birleşik tur 4 (a)–(d), Ç3 tur 2
+  T2-1…T2-7 (T2-2 KARAR METNİNDEN SAPMA: yanıt arka işi en çok 5 sn), AH + BS-6 kapsam genişlemesi, "kâhin önce"den bilinçli sapma (S42 kâhini W-3 ile paralel), birleşik Ç3 dar kontrolü sınama birleşimi üzerinde.
+  ANA DALDA (06.11, hepsi yeniden koşuldu + gönderildi): WhatsApp küçük işler 7c8ae18e (+kanıt 64dcd609; dar kontrol YÜKSEK 0, ORTA-1 → S41), WK 16 19e74456, kâhin bakımı 5 e89cdda5 (138/138, mutasyon 169/169), birleşik tur 4
+  8c8840b6 (+kanıt e86acf3b), WK 17 + BS-5 (2407982d; 367/367, 397/397; 928/928, PDF 39/39). Ç2 tur 2 KAPANDI (dar kontrol YÜKSEK/ORTA 0).
+  GERİLEME ANA DALDA (ORTA): WE kapılı 001'e whatsapp.appWebhook yazıyor → sema-kapisi-bs7 kırmızı (f5b34f31'de yeşildi) → CI #1031 (64dcd609) ve sonrası KIRMIZI BEKLENİR; düzeltme ajanı çalışıyor.
+  CI: #1018–#1030 YEŞİL 7/7 (UBUNTU 5 + WINDOWS 2; okundu). OKUNACAK (ders 21): #1031–#1036+ (64dcd609, c9634ca8, 0d8eac5b, e86acf3b, 2407982d, …) — sema-kapisi-bs7 dışında kırmızı var mı; Windows'ta ilk kez koşan testler (ders 48/18).
+  ÇALIŞAN AJANLAR (bitince akış: rapor → ana oturum KENDİSİ koşar (iki TZ, eski kod kırmızısı KENDİ ayrı kopyamda + nedeni okunur, G2 komşu taraması: ajan listesi + test/ grep; ortak katmana / ayara / yedeğe yazan değişiklikte
+  sema-kapisi-bs7 + geri yükleme testleri DAHİL) → birleştir → kanıtla gönder → DAR KONTROL (xhigh, yeni ajan) → YÜKSEK / ORTA + süzgeçten geçemeyen DÜŞÜK yeni ajanla; kodu görmeyende önce bağımsızlık denetimi
+  (readlink tasks/<id>.output → scratchpad/denetim-wk250/arac-kaydi.py + yasaklı yol grep'i); her rapordan sonra kullanılmayan ağaç / kopya HEMEN silinir):
+  (1) Ç2 TUR 3 (a7280bb16b4491d5b; xhigh; c2-tur3-istem.txt; sınırlı kayıt ayrıntısı ledger-vouchers + bank/repair + koşullu integrity; D1–D8 testleri).
+  (2) WE + BS-7 DÜZELTME (a790a293738c6ae40; high; we-bs7-istem.txt; kendi koşusunu bekliyor) → birleşince WHATSAPP KÜÇÜK İŞLER TUR 1 (xhigh, yeni ajan; istem YAZILMADI: S33 + S41 + S43 + dar kontrol DÜŞÜK-2 (hub.mjs:448
+      kip WABA testi) + S33 etkileşim notu (işaret kipe göre / şirket + imza; aynı WABA'da 001 Yol 1 + 002 Yol 2 bozulmasın) + BS-1 "yalnız ileti" metni B'de kalır).
+  (3) W-3 KVKK SAKLAMA KODU (a049637a49bdad154; xhigh; w3-istem.txt; tasarım notu docs/erp/W3-SAKLAMA-TASARIM.md önce).
+  (4) WK GÜNCELLEMESİ 18 (a5015f1609709b58a; kodu görmeyen; wk18-istem.txt; S42, S43) ve KÂHİN BAKIMI 6 (a54d4d1f8b4544f12; kodu görmeyen; kahin6-istem.txt; S39, S40, Z9; kendi koşusunu bekliyor).
+  (5) DAR KONTROLLER: BİRLEŞİK Ç3 TUR 1-2 (a23219fec267e0ba7; dk-c3t12-istem.txt; 834cd0ad üzerinde) ve BİRLEŞİK TUR 4 (aa3d4cef67f332b90; dk-bt4-istem.txt; e86acf3b).
+  ARKA PLAN KOŞULARI (run_in_background; bildirim gelir):
+  - AH + BS-6 (bvdtwylr3, ah-kos.sh) AYRI AĞAÇTA scratchpad/ah-birlesim-ag (dal ah-birlesim, a6e63b66 = ana dal + worktree-agent-ab0062d42feec8f21): yeni 26/26 iki TZ ve eşdeğerlik AYNI GEÇTİ; eski f5b34f31 kendi kopyamda
+    ELLE yeniden koşuldu 5/6 kırmızı beklenen nedenle (ah-kos-eski.txt; betiğin "eski" satırı ilk GEÇERSİZ koşudur); TAM npm test (ders 41) SÜRÜYOR → geçince ANA DALA `git merge --no-ff worktree-agent-ab0062d42feec8f21`
+    (kod sınanan ağaçla birebir mi diff), kanıtla gönder → AH DAR KONTROL (G4 allLedgers çağıranları: overview.mjs:254, report-center.mjs:1772 / 1804, invoices.mjs allSettled / repairScreen) → D2 başlar (istem YAZILMADI; devir
+    planı G bölümü: göç + arşiv kayıt defteri, salt okunur açma, merkezî yazma yasağı, devir yedeği budanmaz + arşiv yedekte; göç numarası ana oturum verir).
+  - Ç3 TUR 2 (bnma9uhw2, c3t2-kos.sh) AYRI AĞAÇTA scratchpad/c3t2-birlesim-ag (dal c3t2-birlesim, 834cd0ad = ana dal 07e7056f + worktree-agent-ae037f9ed9ae9cefe 3 yollu; çakışmalar ci.yml / release.yml / package.json iki yan
+    eklemesi, C3 tasarım §17 + §18, mutasyon dosyası iki blok + taban [MAIN, LIFE, NEW, TUR1, KU]): yeni + tur1 + bellek 46/46 iki TZ GEÇTİ; eski 40473f17 1/9 (nedenleri OKUNACAK: 4 beklenen + 4 ön koşul); birleşik mutasyon,
+    e2e dönem kilidi + 222, komşu 173 UTC sürüyor → geçince ANA DALA `git merge --no-ff worktree-agent-ae037f9ed9ae9cefe` + çakışan 5 dosya `git checkout c3t2-birlesim -- <dosya>` ile (sınama çözümü), kod diff = 834cd0ad →
+    kanıtla gönder → Ç3 KÜÇÜK İŞLER (report-center.mjs:719 K4 alt başlığı + routes/ledger.mjs:440 kesik kayıtta hoşgörülü ayrıştırma (2.4.9'dan kalan kesik bank/repair kayıtları) + admin.js:1055–1068 hatada satırı sessizce
+    boşaltma) yeni ajanla; Ç5 ‖ Ç7a Ç3 dar kontrolü YÜKSEK/ORTA'sız kapanınca.
+  - H2 (dal worktree-agent-af3cb227184197f2d, ağaç duruyor; a9b91624 + 2d548757): tek başına 5/5 iki TZ GEÇTİ; yüklü zorla koşu (`bash scratchpad/h2-tani/h2-zorla.sh <ağaç> 3 25 Europe/Istanbul` ve `… 6 25 UTC`, eski 0b6f8136
+    kopyasında kırmızı) AH tam testi BİTİNCE (yakıcılar onu bozmasın) → birleştir; eski sql: kipi rapor-is-parcacigi-sinama.mjs'te (kullanılmıyor) → B.
+  BEKLEYEN KANIT: scratchpad/bekleyen-kanit/2026-11-06/2026-11-06/ (ah-*, c3t2-* — kendi işleri birleşince docs/kanit'e).
+  SIRADA (kod ajanı en çok 4; şu an Ç2 tur 3, WE + BS-7, W-3 + tur 1'e ayrılan yer): D2 (AH birleşince, İLK BOŞ YER — devir kritik yol), WhatsApp tur 1, Ç3 küçük işler, AH / H2 / BS-5 / W-3 / Ç2 tur 3 dar kontrolleri,
+  sonra Ç5 ‖ Ç7a → Ç7b → Ç6-HESAP → MA → D3–D6 → WK / muhasebe sürücüsü yeniden koşusu → mali müşavir S + UI/UX → aday → paket.
+  ORTAM: 30 dk rapor CronCreate da3eb3f2 ("7,37 * * * *"); ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok; disk ~8–9 GB (ajan başına ~600 MB; < 5 GB UYARI), bellek ~12 GB; PLAYWRIGHT_BROWSERS_PATH=
+  /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194 (pdf-denetle ve ekran betikleri de ister; docs/kilavuz/*.pdf .gitignore'da → client/kilavuz'dan kopyala); imza anahtarı DURUM 22'deki yol
+  (2.5.0 PLANLAMA maddesi); ölçüm kilidi scratchpad/olcum.lock; tam npm test kilidi scratchpad/tam-npm-test.lock; T6_KOK gereken testlerde benzersiz klasör; scratchpad/c3-olcum-veri 3,1 GB (Ç3 ölçüm verisi; Ç3 dar kontrolü bitince silinebilir).
+  YÖNTEM NOTLARI: arka plan betiklerinde HER adımın çıkış kodu (`kanit.mjs kos` ya da `; echo cikis=$?`), `| tail` özeti kanıt değil; saat dilimi dosya adına "/" ile girmez (Europe-Istanbul); eski kod kopyasına yeni testin
+  BÜTÜN fikstürleri (test/fixtures/surum-nesneler/*.br dahil) kopyalanır; ajan dalı eski tabandansa 3 yollu birleşim sınama ağacında, çakışma çözümü dosyalarla ana dala taşınır; iş listesi betikleri dosyaya
+  (scratchpad/kayit-*.py); SAAT KURALI `T=$(date -u +%H:%M)`.
 - 2.5.0 PLANLAMA (05.11.2026, 2.5.0 oturumu, dal claude/epic-thompson-w0lc2l; eski oturumun dalı claude/compassionate-galileo-f9kghg / PR #40 — buradan oraya yazılmaz). Kullanıcı: "2.5.0'a başlıyoruz …
   önce planlamayı yapalım"; MUHASEBE ÇEKİRDEĞİ talimatı AYNEN docs/erp/MUHASEBE-CEKIRDEGI-TALIMATI.md (not: "devir modülü ile birlikte yürütmek daha sağlıklı"). Kapsam önerisi + koddan kör noktalar
   (tablo sınıflaması eski; devir faturası işareti 146 okuma yeri; devir yedeği SAFETY_KEEP=20 ile budanır, arşiv yedekte yok; kilit izi türetilmiş defteri korumuyor; mükellef türü yok; geç gelen
