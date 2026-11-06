@@ -1,0 +1,4 @@
+ 14:44:34 up 13:57,  0 user,  load average: 8.61, 9.38, 10.88
+{"kod":"/home/user/ofis---y-netimi/.claude/worktrees/agent-a6d184d8909364925","copies":500,"jobs":100000,"claims":100000,"kvkk_arama_ad":{"status":200,"ms":67,"olayDongusuEnCokMs":6,"sonuc":10},"kvkk_arama_telefon":{"status":200,"ms":65,"olayDongusuEnCokMs":4,"sonuc":10},"kvkk_arama_eslesmeyen":{"status":200,"ms":64,"olayDongusuEnCokMs":0,"sonuc":0},"talep200_toplamMs":20560,"silinmisIs":100000,"defterAcikTelefon_talepSonrasi":100000,"bakim_bayrakli_200_talep_100k_is":{"status":"-","ms":20636,"olayDongusuEnCokMs":258},"defterAcikTelefon_bakimSonrasi":0,"bakim_saatlik_bayraksiz":{"status":"-","ms":402,"olayDongusuEnCokMs":6},"bakim_bos":{"status":"-","ms":330,"olayDongusuEnCokMs":26},"acilis_talepler_200_temiz":{"status":"-","ms":2355,"olayDongusuEnCokMs":2301}}
+çıkış 0
+ 14:46:21 up 13:59,  0 user,  load average: 9.82, 9.57, 10.78

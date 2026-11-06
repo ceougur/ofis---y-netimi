@@ -1,0 +1,32 @@
+{
+  "ad": "watur2-rapor-kapanis-eski",
+  "komut": "node --test test/banka-210-rapor-is-parcacigi-kapanis.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T14:44:01.966Z",
+  "sure_sn": 9.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../watur2-kanit/2026-11-06/watur2-rapor-kapanis-eski.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b",
+  "ham_cikti_sha256": "8fd349e7b2974614990efff36dbb6c6e45be3d435220f8c3047b8ed30dc4db09",
+  "ham_cikti_bayt": 4002
+}

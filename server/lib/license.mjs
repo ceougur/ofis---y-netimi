@@ -75,6 +75,9 @@ const READ_ONLY_ALLOWED = [
   /^\/api\/workspace\/getting-started$/,
   // Oturumlar arasında geçiş veri değiştirmez (v2.0.1).
   /^\/api\/workspace\/sessions\/select$/,
+  // 2.5.0 WhatsApp tur 2 — KULLANICI KARARI S62 = A: KVKK silme talebi salt okunur lisansta da AÇIK (KVKK yükümlülüğü lisanstan bağımsız; yalnız siler, yeni iş / ileti
+  // üretmez). YALNIZ bu tek uç (tam yol); başka hiçbir WhatsApp yazması açılmaz. Şema kapısı (app.mjs assertSchemaWritable) ayrıca çalışır.
+  /^\/api\/workspace\/whatsapp\/kvkk-erase$/,
 ];
 export const allowedWhenReadOnly = pathname => READ_ONLY_ALLOWED.some(pattern => pattern.test(pathname));
 

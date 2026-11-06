@@ -1,0 +1,57 @@
+TAP version 13
+# (node:32354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-3: denetim noktası düşerse bakım turu yeniden dener
+    # Subtest: T2-7 dış okuyucu (açık okuma işlemi) varken talep → WAL / dosyada iz kalır; okuyucu kapanınca BİR bakım turu sonra veri klasöründe silinen telefon 0
+    not ok 1 - T2-7 dış okuyucu (açık okuma işlemi) varken talep → WAL / dosyada iz kalır; okuyucu kapanınca BİR bakım turu sonra veri klasöründe silinen telefon 0
+      ---
+      duration_ms: 2335.114164
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:299:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        okuyucular kapandıktan sonraki ilk bakım turunda iz kalmadı — şirket dosyası + defter, WAL dahil (eski kod: bir sonraki silmeye dek kalıyor)
+        + actual - expected
+        
+        + [
+        +   '+905321112233 @ destekofis.sqlite',
+        +   '+905321112233 @ destekofis.sqlite-wal',
+        +   '+905321112233 @ whatsapp-gonderim.sqlite-wal'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '+905321112233 @ destekofis.sqlite'
+        1: '+905321112233 @ destekofis.sqlite-wal'
+        2: '+905321112233 @ whatsapp-gonderim.sqlite-wal'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:326:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-3: denetim noktası düşerse bakım turu yeniden dener
+  ---
+  duration_ms: 2337.032719
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:298:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2909.100034

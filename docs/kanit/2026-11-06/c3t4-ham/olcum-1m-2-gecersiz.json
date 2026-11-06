@@ -1,0 +1,33 @@
+{
+ "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1",
+ "cpu": 4,
+ "loadavgBasta": "6.81 6.46 6.09 8/184 4158",
+ "adimlar": [
+  {
+   "adim": "kilit 31.12.2025 (PUT yanıtı)",
+   "ms": 5041,
+   "olayDongusuEnCokMs": 50,
+   "bosluk50msUstu": 0,
+   "status": 200,
+   "yanitMs": 5041,
+   "active": true,
+   "loadavg": "6.93 6.50 6.11 10/185 4237"
+  },
+  {
+   "adim": "dondurmanın bitişi (yazım + doğrulama + tamamlama)",
+   "ms": 118720,
+   "olayDongusuEnCokMs": 338,
+   "bosluk50msUstu": 43,
+   "kapsam": "2025-12-31",
+   "gorunen": 2741312,
+   "kayitli": 2741312,
+   "hata": "",
+   "loadavg": "6.96 6.65 6.21 6/184 4842"
+  }
+ ],
+ "loadavgOlcumOncesi": "6.84 6.47 6.10 6/184 4190",
+ "SONUC": "TUTARLI",
+ "loadavgSonda": "6.88 6.64 6.21 5/184 4842",
+ "yukEnCok": 6.96,
+ "GECERLILIK": "GEÇERSİZ: ölçümden önceki yük (1 dk ortalaması) 6.81 > 2 (4 çekirdek; ders 52); ölçüm sırasında en çok 6.96"
+}

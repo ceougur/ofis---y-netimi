@@ -1,0 +1,31 @@
+{
+ "gonderilen": [
+  [
+   "A",
+   "accepted",
+   "+905321112233"
+  ],
+  [
+   "Z",
+   "accepted",
+   "+905369998877"
+  ]
+ ],
+ "yetki_muhasebe": 403,
+ "yetki_avukat": 403,
+ "yetki_personel": 403,
+ "cari_silindi": 200,
+ "kvkk_aramasi_buluyor": 0,
+ "kvkk_aramasi_telefonla": 0,
+ "Z_dosyada_telefon": "+905369998877",
+ "uc_dogrudan": {
+  "status": 200,
+  "data": {
+   "at": "2026-11-03T10:00:00.000Z",
+   "jobs": 1,
+   "skipped": 0,
+   "manual": 0
+  }
+ },
+ "Z_sonra": ""
+}

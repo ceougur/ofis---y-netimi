@@ -1,0 +1,32 @@
+{
+  "ad": "t16-eski-5e06a9a1-zorla-900-utc",
+  "komut": "node test/whatsapp-t16-zorla.mjs test 3 900",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T15:58:46.135Z",
+  "sure_sn": 7.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 0,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../t16-kanit/2026-11-06/t16-eski-5e06a9a1-zorla-900-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t16-5e06a9a1",
+  "ham_cikti_sha256": "968b6f1ffaa5d6af5a3d49399d2587b6f4a774a24ca36c83ee7213e5562f109b",
+  "ham_cikti_bayt": 1536
+}

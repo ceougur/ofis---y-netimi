@@ -1,0 +1,93 @@
+{
+  "ad": "watur2-eski-dosya1-UTC",
+  "komut": "node --test test/whatsapp-tur2-bildirim-yolu-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T13:17:52.911Z",
+  "sure_sn": 26.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 4,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — İş 1 (tur 1 dk ORTA-1): v2.4.9'un WABA düzeyi hook_seen satırı yükseltmeden sonra işaret SAYILMAZ › T2-1 v2.4.9 GERÇEK verisi (tanınmayan wamid'li imzasız bildirim → hook_seen 1, şirket işareti yok) → 13,5 sa sonra bakım turu: iş Meta Kabul Etti, kişi Daha Önce Gönderildi",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:107:3",
+      "hata": "v2.4.9'un WABA düzeyi işareti sayılmadı → Süresi Doldu DEĞİL (eski kod: expired) · + actual - expected · + 'expired' (beklenen accepted, gelen expired)"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S58 = A: kip değişince bildirim yolu işareti sıfırlanır (teslim süresi 12 sa) › T2-2a Yol 1 → Yol 2: Yol 1'in işareti Yol 2'de sayılmaz — teslim bilgisi gelmeyen iş TTL + 1 sa sonra Meta Kabul Etti, Daha Önce Gönderildi",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:164:3",
+      "hata": "kip değişince işaret silindi · + actual - expected · + '2026-11-03T06:01:00.000Z' (beklenen , gelen 2026-11-03T06:01:00.000Z)"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S58 = A: kip değişince bildirim yolu işareti sıfırlanır (teslim süresi 12 sa) › T2-2b Yol 2 → Yol 1 (ters yön): Yol 2'nin imzalı bildirimiyle konan işaret Yol 1'de sayılmaz",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:178:3",
+      "hata": "kip değişince işaret silindi · + actual - expected · + '2026-11-03T06:01:00.000Z' (beklenen , gelen 2026-11-03T06:01:00.000Z)"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S58 = A: kip değişince bildirim yolu işareti sıfırlanır (teslim süresi 12 sa) › T2-2c geri dönüş: Yol 1 → Yol 2 → Yol 1 — eski işaret DİRİLMEZ",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:193:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + '2026-11-03T06:01:00.000Z' (beklenen , gelen 2026-11-03T06:01:00.000Z)"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S58 = A: kip değişince bildirim yolu işareti sıfırlanır (teslim süresi 12 sa) › T2-2e Bağlantıyı Kaldır + başka kiple bağla: işaret silinir; Kaldır + aynı kiple bağla: işaretin kipi kayıtlı → KALIR",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:226:3",
+      "hata": "Kaldır + Yol 2: işaret silindi · + actual - expected · + '2026-11-03T06:01:00.000Z' (beklenen , gelen 2026-11-03T06:01:00.000Z)"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S58 = A: kip değişince bildirim yolu işareti sıfırlanır (teslim süresi 12 sa) › T2-2f tur 2'den ÖNCEKİ kodun işareti (kipi yazılmamış — whatsapp-kvkk-329d5d1b gerçek verisi): aynı kipte yeniden girişte kalır; Kaldır + yeniden bağlamada kipi bilinmediği için silinir",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:252:3",
+      "hata": "kipi bilinmeyen işaret (önceki bağlantı yok) silindi — güvenli yön · + actual - expected · + '2026-11-03T10:00:00.000Z' (beklenen , gelen 2026-11-03T10:00:00.000Z)"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: hepsi) › T2-3a hepsi · iki şirket iki uygulama: kayıt, Bağlantıyı Sına (iki şirket), bakım turu (1 sa sonra) — her adımdan sonra iki uygulamanın adresi YAŞAR; Meta isteği yalnız ilgili uygulamanın belirteciyle",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:329:5",
+      "hata": "kayıttan sonra: A'nın Meta'daki adresine 001'in bildirimi (eski kod: 404 — tek kayıt öbür uygulamanın) · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: hepsi) › T2-3b hepsi · S41: A'nın alternatif adresi Meta'dan kalkar → uygulama düzeyi adrese gelen 001 bildirimi işlenir, adres YALNIZ Elle Bağla şirketiyle (A) yeniden kaydedilir, B'nin adresi değişmez; Elle Bağla şirketi denetleyemezse WhatsApp'ı Bağla şirketi DENETLEMEZ",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:366:5",
+      "hata": "adres yalnız A ile okundu ve yeniden kaydedildi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: hepsi) › T2-3d hepsi · v2.4.9 GERÇEK verisi, İKİ uygulama (001 WhatsApp'ı Bağla = B, 002 Elle Bağla = A; v2.4.9'da B'nin adresi 404): ilk bakım turundan sonra iki uygulama da kendi adresini kaydeder, iki şirketin teslimi 200",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:429:5",
+      "hata": "iki uygulama da kendi adresini kaydetti: [\"GET B\",\"GET A\"] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: kendi) › T2-3a kendi · iki şirket iki uygulama: kayıt, Bağlantıyı Sına (iki şirket), bakım turu (1 sa sonra) — her adımdan sonra iki uygulamanın adresi YAŞAR; Meta isteği yalnız ilgili uygulamanın belirteciyle",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:329:5",
+      "hata": "kayıttan sonra: A'nın Meta'daki adresine 001'in bildirimi (eski kod: 404 — tek kayıt öbür uygulamanın) · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: kendi) › T2-3b kendi · S41: A'nın alternatif adresi Meta'dan kalkar → uygulama düzeyi adrese gelen 001 bildirimi işlenir, adres YALNIZ Elle Bağla şirketiyle (A) yeniden kaydedilir, B'nin adresi değişmez; Elle Bağla şirketi denetleyemezse WhatsApp'ı Bağla şirketi DENETLEMEZ",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:366:5",
+      "hata": "B'nin adresi yaşıyor (beklenen 404, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: kendi) › T2-3d kendi · v2.4.9 GERÇEK verisi, İKİ uygulama (001 WhatsApp'ı Bağla = B, 002 Elle Bağla = A; v2.4.9'da B'nin adresi 404): ilk bakım turundan sonra iki uygulama da kendi adresini kaydeder, iki şirketin teslimi 200",
+      "konum": "test/whatsapp-tur2-bildirim-yolu-250.test.mjs:429:5",
+      "hata": "iki uygulama da kendi adresini kaydetti: [\"GET B\",\"POST B\"] (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../watur2-kanit/2026-11-06/watur2-eski-dosya1-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b",
+  "ham_cikti_sha256": "0e8883897ce3de765913b9a6022689afb08c94a456c6deae56d509d4a2f8af9f",
+  "ham_cikti_bayt": 22133
+}

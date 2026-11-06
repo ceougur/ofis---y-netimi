@@ -27,16 +27,21 @@ const ROUTE = "server/routes/ledger.mjs";
 const KU = "test/donmus-defter-kilit-ucu-250.test.mjs";
 // Ç3 tur 3 (birleşik Ç3 tur 1-2 dar kontrolünün bulguları + Ç3 küçük işler + S46; tasarım notu §19).
 const T3 = "test/donmus-defter-tur3-250.test.mjs";
+// Ç3 tur 4 (Ç3 tur 3 dar kontrolünün bulguları: ORTA-1 S46 planı, DÜŞÜK-1 test dişi; tasarım notu §20).
+const T4 = "test/donmus-defter-tur4-250.test.mjs";
 const E2E = "test/e2e/senaryo-donem-kilidi-ilerleme-250.mjs";
 const RC = "server/routes/report-center.mjs";
 const ADMIN = "client/assets/admin.js";
+// 202 (Ç3 tur 4): durdurma koşuluna "kilit değişmiyorsa durdurma" eklendi — aynı hata, yeni metinde.
 const T2_ORDER_BEFORE = [
   "    beforeLock(target, body?.force === true);\n",
   "    const previous = period.lockedUntil();\n",
   "    // 2.5.0 Ç3 (§4): başka güne süren dondurma durdurulur; bayat satırlar (geri çekilmiş dönem) kilitten önce parça parça silinir.\n",
+  "    // Ç3 tur 4 (ORTA-1): kilit DEĞİŞMİYORSA (aynı güne yeniden kaydetme) bekleyen koşu — günü kilitten önce olsa da (yeniden donma planının ilk dilimi, ilerletilmiş kilitte\n",
+  "    // eski kurallı koşu) — durdurulmaz; lockChanged onu sürdürür (aynı ayrım lockNeedsCleanup'ta).\n",
   "    const waiting = snapshots.state().pending;\n",
   "    let stopped = false;\n",
-  "    if (waiting && waiting.through !== target) {\n",
+  "    if (waiting && waiting.through !== target && target !== previous) {\n",
   "      await snapshots.cancel();\n",
   "      stopped = true;\n",
   "    }\n",
@@ -128,6 +133,14 @@ const MUTASYONLAR = [
   [351, "S46 karşı seçenek B: eksilen dönem her durumda 2.4.9 kopyasıyla", LS, "      const rule = traced ? segment.rule : GAP_RULE;", "      const rule = GAP_RULE;", [T3], /kuralıyla yeniden dondu \(S46 = A/],
   [352, "S46: izsiz dönem de koşunun kendi kuralıyla (S13 çiğnenir)", LS, "      const rule = traced ? segment.rule : GAP_RULE;", "      const rule = segment.rule;", [T3, TUR1], /izsiz dönem GAP_RULE ile donmalı|yeniden donan dönem GAP_RULE \(S13 = A\)/],
   [353, "S46: yeniden donma planı sürdürülmez (kalan dilimler GAP_RULE)", LS, "    if (plan.length) return insertPlanned(plan, run.through, { extended: extended.through > run.through ? extended : null });\n", "", [T3], /plan dilimleri kendi kurallarıyla donmalı/],
+  // Ç3 tur 4 (400'lü; tasarım notu §20): ORTA-1 (S46 = A planı yeniden açılışta ve aynı güne yeniden kaydetmede korunur; S13 = A eşi) — dar kontrolün önerdiği bozulmalar.
+  [401, "ORTA-1: açılış onarımının 'taşınan koşu' kararı yalnız kurala bakar (güncel kurallı plan dilimi bırakılır)", LS, "const carried = Boolean(pending && (pending.rule_version !== LEDGER_RULE_VERSION || planOf(pending.no).length || extendedOf(pending.no).through > pending.through));", "const carried = Boolean(pending && pending.rule_version !== LEDGER_RULE_VERSION);", [T4], /kuralıyla dondu \(S46 = A: 2\.5\.0\)/],
+  [402, "ORTA-1: lockChanged kilit değişmezken (aynı gün) bekleyen koşuyu bırakır", LS, "    if (pending && !sync && previous !== undefined && target === String(previous || \"\") && pending.through < target) return { action: \"freeze\", run: pending };\n", "", [T4], /S46 = A: 2\.4\.9|S13 = A: 2\.4\.9|planın ilk dilimini bıraktı/],
+  [403, "ORTA-1: PUT süren dondurmayı kilit değişmezken de durdurur", ROUTE, "    if (waiting && waiting.through !== target && target !== previous) {\n", "    if (waiting && waiting.through !== target) {\n", [T4], /planın dondurması durduruldu ya da baştan başladı/],
+  [404, "ORTA-1: lockNeedsCleanup kilit değişmezken de temizlik ister (409)", LS, "    if (pending && target === lockNow() && pending.through < target) return false;\n", "", [T4], /kilit değişmezken \(aynı gün\) temizlik istendi: 409/],
+  // DÜŞÜK-1 (test dişi): yazım bayrağı tablo doğrulaması bitmeden kalkar → aynı güne kilidin arka işi koşunun satırlarını siler (dar kontrol 100.000'de 6.500 satır, koşu "tamam").
+  [901, "DÜŞÜK-1: yazım bayrağı iş parçacığı bitince, doğrulamadan önce kalkar", LS, "        const done = await handle.promise;\n", "        const done = await handle.promise;\n        writing = 0;\n", [T4], /"before-done" penceresinde yazılan koşunun satırlarını sildi|"verify" penceresinde yazılan koşunun satırlarını sildi/],
+  [902, "DÜŞÜK-1: yazım bayrağı tablo doğrulaması başlarken kalkar", LS, "        progress.phase = \"doğrulama\";\n", "        progress.phase = \"doğrulama\";\n        writing = 0;\n", [T4], /"verify" penceresinde yazılan koşunun satırlarını sildi/],
 ];
 
 // E2E (tarayıcı; PLAYWRIGHT_BROWSERS_PATH ve kopyada node_modules gerekir): betik olarak koşulur, çıktısında ✗ satırları ve "# fail" sayısı okunur.
@@ -140,7 +153,7 @@ const run = files => {
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([MAIN, LIFE, NEW, TUR1, KU, T3]);
+const taban = run([MAIN, LIFE, NEW, TUR1, KU, T3, T4]);
 const tabanE2E = ONLY && ![...ONLY].some(no => MUTASYONLAR.find(item => item[0] === no)?.[5].includes(E2E)) ? null : run([E2E]);
 console.log(`taban e2e: ${tabanE2E ? `${tabanE2E.pass} geçti / ${tabanE2E.fail} kaldı (çıkış ${tabanE2E.status})` : "koşulmadı (seçilen mutantlarda e2e yok)"}`);
 if (tabanE2E && tabanE2E.status !== 0) {

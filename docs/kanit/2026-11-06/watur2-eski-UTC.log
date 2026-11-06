@@ -1,0 +1,693 @@
+TAP version 13
+# (node:31204) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 WhatsApp tur 2 — İş 1 (tur 1 dk ORTA-1): v2.4.9'un WABA düzeyi hook_seen satırı yükseltmeden sonra işaret SAYILMAZ
+    # Subtest: T2-1 v2.4.9 GERÇEK verisi (tanınmayan wamid'li imzasız bildirim → hook_seen 1, şirket işareti yok) → 13,5 sa sonra bakım turu: iş Meta Kabul Etti, kişi Daha Önce Gönderildi
+    not ok 1 - T2-1 v2.4.9 GERÇEK verisi (tanınmayan wamid'li imzasız bildirim → hook_seen 1, şirket işareti yok) → 13,5 sa sonra bakım turu: iş Meta Kabul Etti, kişi Daha Önce Gönderildi
+      ---
+      duration_ms: 1222.349965
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:107:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        v2.4.9'un WABA düzeyi işareti sayılmadı → Süresi Doldu DEĞİL (eski kod: expired)
+        + actual - expected
+        
+        + 'expired'
+        - 'accepted'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'accepted'
+      actual: 'expired'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:120:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.5.0 WhatsApp tur 2 — İş 1 (tur 1 dk ORTA-1): v2.4.9'un WABA düzeyi hook_seen satırı yükseltmeden sonra işaret SAYILMAZ
+  ---
+  duration_ms: 1224.113314
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:106:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — S58 = A: kip değişince bildirim yolu işareti sıfırlanır (teslim süresi 12 sa)
+    # Subtest: T2-2a Yol 1 → Yol 2: Yol 1'in işareti Yol 2'de sayılmaz — teslim bilgisi gelmeyen iş TTL + 1 sa sonra Meta Kabul Etti, Daha Önce Gönderildi
+    not ok 1 - T2-2a Yol 1 → Yol 2: Yol 1'in işareti Yol 2'de sayılmaz — teslim bilgisi gelmeyen iş TTL + 1 sa sonra Meta Kabul Etti, Daha Önce Gönderildi
+      ---
+      duration_ms: 2338.22262
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:164:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski kod: expired + gönderilecek
+        + actual - expected
+        
+          {
+            skip: [
+        +     'gönderilecek'
+        -     'Daha Önce Gönderildi'
+            ],
+        +   state: 'expired'
+        -   state: 'accepted'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        state: 'accepted'
+        skip:
+          0: 'Daha Önce Gönderildi'
+      actual:
+        state: 'expired'
+        skip:
+          0: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:172:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-2b Yol 2 → Yol 1 (ters yön): Yol 2'nin imzalı bildirimiyle konan işaret Yol 1'de sayılmaz
+    not ok 2 - T2-2b Yol 2 → Yol 1 (ters yön): Yol 2'nin imzalı bildirimiyle konan işaret Yol 1'de sayılmaz
+      ---
+      duration_ms: 1615.228624
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:178:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski kod: expired + gönderilecek
+        + actual - expected
+        
+          {
+            skip: [
+        +     'gönderilecek'
+        -     'Daha Önce Gönderildi'
+            ],
+        +   state: 'expired'
+        -   state: 'accepted'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        state: 'accepted'
+        skip:
+          0: 'Daha Önce Gönderildi'
+      actual:
+        state: 'expired'
+        skip:
+          0: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:187:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-2c geri dönüş: Yol 1 → Yol 2 → Yol 1 — eski işaret DİRİLMEZ
+    not ok 3 - T2-2c geri dönüş: Yol 1 → Yol 2 → Yol 1 — eski işaret DİRİLMEZ
+      ---
+      duration_ms: 1716.146629
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:193:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski kod: expired + gönderilecek
+        + actual - expected
+        
+          {
+            skip: [
+        +     'gönderilecek'
+        -     'Daha Önce Gönderildi'
+            ],
+        +   state: 'expired'
+        -   state: 'accepted'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        state: 'accepted'
+        skip:
+          0: 'Daha Önce Gönderildi'
+      actual:
+        state: 'expired'
+        skip:
+          0: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:202:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-2d aynı kipte Bilgileri Değiştir: işaret KALIR (karar yalnız kip der) — iş TTL + 1 sa sonra Süresi Doldu (bugünkü kural)
+    ok 4 - T2-2d aynı kipte Bilgileri Değiştir: işaret KALIR (karar yalnız kip der) — iş TTL + 1 sa sonra Süresi Doldu (bugünkü kural)
+      ---
+      duration_ms: 1521.561049
+      type: 'test'
+      ...
+    # Subtest: T2-2e Bağlantıyı Kaldır + başka kiple bağla: işaret silinir; Kaldır + aynı kiple bağla: işaretin kipi kayıtlı → KALIR
+    not ok 5 - T2-2e Bağlantıyı Kaldır + başka kiple bağla: işaret silinir; Kaldır + aynı kiple bağla: işaretin kipi kayıtlı → KALIR
+      ---
+      duration_ms: 1906.399509
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:226:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski kod: expired + gönderilecek
+        + actual - expected
+        
+          {
+            skip: [
+        +     'gönderilecek'
+        -     'Daha Önce Gönderildi'
+            ],
+        +   state: 'expired'
+        -   state: 'accepted'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        state: 'accepted'
+        skip:
+          0: 'Daha Önce Gönderildi'
+      actual:
+        state: 'expired'
+        skip:
+          0: 'gönderilecek'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:234:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-2f tur 2'den ÖNCEKİ kodun işareti (kipi yazılmamış — whatsapp-kvkk-329d5d1b gerçek verisi): aynı kipte yeniden girişte kalır; Kaldır + yeniden bağlamada kipi bilinmediği için silinir
+    not ok 6 - T2-2f tur 2'den ÖNCEKİ kodun işareti (kipi yazılmamış — whatsapp-kvkk-329d5d1b gerçek verisi): aynı kipte yeniden girişte kalır; Kaldır + yeniden bağlamada kipi bilinmediği için silinir
+      ---
+      duration_ms: 582.258773
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:252:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kipi bilinmeyen işaret (önceki bağlantı yok) silindi — güvenli yön
+        + actual - expected
+        
+        + '2026-11-03T10:00:00.000Z'
+        - ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      actual: '2026-11-03T10:00:00.000Z'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:262:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 2 - 2.5.0 WhatsApp tur 2 — S58 = A: kip değişince bildirim yolu işareti sıfırlanır (teslim süresi 12 sa)
+  ---
+  duration_ms: 9681.330486
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:163:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: hepsi)
+    # Subtest: T2-3a hepsi · iki şirket iki uygulama: kayıt, Bağlantıyı Sına (iki şirket), bakım turu (1 sa sonra) — her adımdan sonra iki uygulamanın adresi YAŞAR; Meta isteği yalnız ilgili uygulamanın belirteciyle
+    not ok 1 - T2-3a hepsi · iki şirket iki uygulama: kayıt, Bağlantıyı Sına (iki şirket), bakım turu (1 sa sonra) — her adımdan sonra iki uygulamanın adresi YAŞAR; Meta isteği yalnız ilgili uygulamanın belirteciyle
+      ---
+      duration_ms: 3190.760787
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:329:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kayıttan sonra: A'nın Meta'daki adresine 001'in bildirimi (eski kod: 404 — tek kayıt öbür uygulamanın)
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        check (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:340:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:344:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-3b hepsi · S41: A'nın alternatif adresi Meta'dan kalkar → uygulama düzeyi adrese gelen 001 bildirimi işlenir, adres YALNIZ Elle Bağla şirketiyle (A) yeniden kaydedilir, B'nin adresi değişmez; Elle Bağla şirketi denetleyemezse WhatsApp'ı Bağla şirketi DENETLEMEZ
+    not ok 2 - T2-3b hepsi · S41: A'nın alternatif adresi Meta'dan kalkar → uygulama düzeyi adrese gelen 001 bildirimi işlenir, adres YALNIZ Elle Bağla şirketiyle (A) yeniden kaydedilir, B'nin adresi değişmez; Elle Bağla şirketi denetleyemezse WhatsApp'ı Bağla şirketi DENETLEMEZ
+      ---
+      duration_ms: 3298.944581
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:366:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        adres yalnız A ile okundu ve yeniden kaydedildi
+        + actual - expected
+        
+          [
+            'GET A',
+        -   'POST A'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'GET A'
+        1: 'POST A'
+      actual:
+        0: 'GET A'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:382:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-3c hepsi · v2.4.9 GERÇEK verisi, TEK uygulama (Elle Bağla): eski WABA başına kayıt Elle Bağla'nın sayılır — eski adres yaşar, bakım turunda Meta'ya YENİ KAYIT GİTMEZ
+    ok 3 - T2-3c hepsi · v2.4.9 GERÇEK verisi, TEK uygulama (Elle Bağla): eski WABA başına kayıt Elle Bağla'nın sayılır — eski adres yaşar, bakım turunda Meta'ya YENİ KAYIT GİTMEZ
+      ---
+      duration_ms: 822.595225
+      type: 'test'
+      ...
+    # Subtest: T2-3d hepsi · v2.4.9 GERÇEK verisi, İKİ uygulama (001 WhatsApp'ı Bağla = B, 002 Elle Bağla = A; v2.4.9'da B'nin adresi 404): ilk bakım turundan sonra iki uygulama da kendi adresini kaydeder, iki şirketin teslimi 200
+    not ok 4 - T2-3d hepsi · v2.4.9 GERÇEK verisi, İKİ uygulama (001 WhatsApp'ı Bağla = B, 002 Elle Bağla = A; v2.4.9'da B'nin adresi 404): ilk bakım turundan sonra iki uygulama da kendi adresini kaydeder, iki şirketin teslimi 200
+      ---
+      duration_ms: 1128.573612
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:429:5'
+      failureType: 'testCodeFailure'
+      error: 'iki uygulama da kendi adresini kaydetti: ["GET B","GET A"]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:450:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 3 - 2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: hepsi)
+  ---
+  duration_ms: 8441.706025
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:328:3'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: kendi)
+    # Subtest: T2-3a kendi · iki şirket iki uygulama: kayıt, Bağlantıyı Sına (iki şirket), bakım turu (1 sa sonra) — her adımdan sonra iki uygulamanın adresi YAŞAR; Meta isteği yalnız ilgili uygulamanın belirteciyle
+    not ok 1 - T2-3a kendi · iki şirket iki uygulama: kayıt, Bağlantıyı Sına (iki şirket), bakım turu (1 sa sonra) — her adımdan sonra iki uygulamanın adresi YAŞAR; Meta isteği yalnız ilgili uygulamanın belirteciyle
+      ---
+      duration_ms: 2291.970465
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:329:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kayıttan sonra: A'nın Meta'daki adresine 001'in bildirimi (eski kod: 404 — tek kayıt öbür uygulamanın)
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        check (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:340:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:344:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-3b kendi · S41: A'nın alternatif adresi Meta'dan kalkar → uygulama düzeyi adrese gelen 001 bildirimi işlenir, adres YALNIZ Elle Bağla şirketiyle (A) yeniden kaydedilir, B'nin adresi değişmez; Elle Bağla şirketi denetleyemezse WhatsApp'ı Bağla şirketi DENETLEMEZ
+    not ok 2 - T2-3b kendi · S41: A'nın alternatif adresi Meta'dan kalkar → uygulama düzeyi adrese gelen 001 bildirimi işlenir, adres YALNIZ Elle Bağla şirketiyle (A) yeniden kaydedilir, B'nin adresi değişmez; Elle Bağla şirketi denetleyemezse WhatsApp'ı Bağla şirketi DENETLEMEZ
+      ---
+      duration_ms: 1931.346066
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:366:5'
+      failureType: 'testCodeFailure'
+      error: "B'nin adresi yaşıyor"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 404
+      actual: 404
+      operator: 'notStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:384:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-3c kendi · v2.4.9 GERÇEK verisi, TEK uygulama (Elle Bağla): eski WABA başına kayıt Elle Bağla'nın sayılır — eski adres yaşar, bakım turunda Meta'ya YENİ KAYIT GİTMEZ
+    ok 3 - T2-3c kendi · v2.4.9 GERÇEK verisi, TEK uygulama (Elle Bağla): eski WABA başına kayıt Elle Bağla'nın sayılır — eski adres yaşar, bakım turunda Meta'ya YENİ KAYIT GİTMEZ
+      ---
+      duration_ms: 360.048946
+      type: 'test'
+      ...
+    # Subtest: T2-3d kendi · v2.4.9 GERÇEK verisi, İKİ uygulama (001 WhatsApp'ı Bağla = B, 002 Elle Bağla = A; v2.4.9'da B'nin adresi 404): ilk bakım turundan sonra iki uygulama da kendi adresini kaydeder, iki şirketin teslimi 200
+    not ok 4 - T2-3d kendi · v2.4.9 GERÇEK verisi, İKİ uygulama (001 WhatsApp'ı Bağla = B, 002 Elle Bağla = A; v2.4.9'da B'nin adresi 404): ilk bakım turundan sonra iki uygulama da kendi adresini kaydeder, iki şirketin teslimi 200
+      ---
+      duration_ms: 855.433104
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:429:5'
+      failureType: 'testCodeFailure'
+      error: 'iki uygulama da kendi adresini kaydetti: ["GET B","POST B"]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:450:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 4 - 2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: kendi)
+  ---
+  duration_ms: 5439.735781
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-bildirim-yolu-250.test.mjs:328:3'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — tur 1 dk DÜŞÜK-2 (test boşluğu): kilitli defter + kaydı OLMAYAN WABA'nın uygulama düzeyi bildirimi
+    # Subtest: T2-9a defter başka süreçte kilitli (kısa sınama düşer) → kaydı olmayan WABA'nın bildirimi 200 (düşer, işlenmez), Meta'ya istek YOK; kaydı olan WABA'nınki 503
+    ok 1 - T2-9a defter başka süreçte kilitli (kısa sınama düşer) → kaydı olmayan WABA'nın bildirimi 200 (düşer, işlenmez), Meta'ya istek YOK; kaydı olan WABA'nınki 503
+      ---
+      duration_ms: 950.297248
+      type: 'test'
+      ...
+    1..1
+ok 5 - 2.5.0 WhatsApp tur 2 — tur 1 dk DÜŞÜK-2 (test boşluğu): kilitli defter + kaydı OLMAYAN WABA'nın uygulama düzeyi bildirimi
+  ---
+  duration_ms: 950.833744
+  type: 'suite'
+  ...
+# (node:31205) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 WhatsApp tur 2 — S62 = A: salt okunur lisansta KVKK silme talebi AÇIK (yalnız bu uç)
+    # Subtest: T2-4 salt okunur: talep 200, içerik + telefon silinir (dosya + defter); toplu gönderim / önizleme / Bildirim Yolu / bağlantı / Yine de Gönder / cari açma hâlâ 403
+    not ok 1 - T2-4 salt okunur: talep 200, içerik + telefon silinir (dosya + defter); toplu gönderim / önizleme / Bildirim Yolu / bağlantı / Yine de Gönder / cari açma hâlâ 403
+      ---
+      duration_ms: 3141.2251
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:81:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        salt okunurda KVKK talebi açık (eski kod: 403 LICENSE_READ_ONLY) — 403 {"ok":false,"error":"Ücretsiz deneme henüz başlamadı. Program salt okunur çalışıyor; bu işlem yapılamaz.","code":"LICENSE_READ_ONLY","license":{"state":"none","writable":false,"severity":"error","kind
+        
+        403 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 403
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:104:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 6 - 2.5.0 WhatsApp tur 2 — S62 = A: salt okunur lisansta KVKK silme talebi AÇIK (yalnız bu uç)
+  ---
+  duration_ms: 3144.339905
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:80:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-1: defter anonimleştirmesi düşerse yeniden denenir (yeniden açılış + bakım turu); S42 kabulü özetle
+    # Subtest: T2-5a bakım turu: defter yeniden anonimleştirilir; B'nin dosyadaki kabulü ÖZETLE yazılmıştı (S42 defter ∪ dosya) → defterde ve dosyada telefon / açık wamid 0
+    not ok 1 - T2-5a bakım turu: defter yeniden anonimleştirilir; B'nin dosyadaki kabulü ÖZETLE yazılmıştı (S42 defter ∪ dosya) → defterde ve dosyada telefon / açık wamid 0
+      ---
+      duration_ms: 2272.243484
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:175:3'
+      failureType: 'testCodeFailure'
+      error: 'S42: istek sürerken silinen işin kabulü dosyaya ÖZETLE yazıldı (eski kod: açık wamid) — wamid.HBgMOT'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:178:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-5b yeniden açılış: açılıştaki talep uygulaması (bakım turundan ÖNCE) defteri anonimleştirir
+    not ok 2 - T2-5b yeniden açılış: açılıştaki talep uygulaması (bakım turundan ÖNCE) defteri anonimleştirir
+      ---
+      duration_ms: 2878.967763
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılışta (recover → talepler) defter temizlendi (eski kod: kalıyor)
+        + actual - expected
+        
+          {
+        +   telefon: 2,
+        +   wamid: 2
+        -   telefon: 0,
+        -   wamid: 0
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        telefon: 0
+        wamid: 0
+      actual:
+        telefon: 2
+        wamid: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:201:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-5c tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-329d5d1b: defterde 2 telefon + 2 açık wamid, dosyada silinmiş B satırında AÇIK wamid) → açılış + ilk bakım turu: hepsi özetlenir
+    not ok 3 - T2-5c tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-329d5d1b: defterde 2 telefon + 2 açık wamid, dosyada silinmiş B satırında AÇIK wamid) → açılış + ilk bakım turu: hepsi özetlenir
+      ---
+      duration_ms: 490.73147
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:211:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılışta defter temizlendi
+        + actual - expected
+        
+          {
+        +   telefon: 2,
+        +   wamid: 2
+        -   telefon: 0,
+        -   wamid: 0
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        telefon: 0
+        wamid: 0
+      actual:
+        telefon: 2
+        wamid: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:224:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 7 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-1: defter anonimleştirmesi düşerse yeniden denenir (yeniden açılış + bakım turu); S42 kabulü özetle
+  ---
+  duration_ms: 5642.847079
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:131:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-2: silinmiş işe SONRADAN yazılan hata metni de numarasız (scrubDigits)
+    # Subtest: T2-6a scrubDigits: boşluklu / tireli / parantezli / bitişik numara '…', Meta hata kodu (≤ 7 hane) kalır
+    ok 1 - T2-6a scrubDigits: boşluklu / tireli / parantezli / bitişik numara '…', Meta hata kodu (≤ 7 hane) kalır
+      ---
+      duration_ms: 0.305578
+      type: 'test'
+      ...
+    # Subtest: T2-6b (a) S42 + Meta hatası (ayrıntıda '+90 532 111 22 33'), (b) kabul + talep + sonra 'failed' bildirimi (ayrıntıda '905334445566'), (c) talepten önce yazılmış hata — dosyada, veri klasöründe ve günlükte numara yok
+    not ok 2 - T2-6b (a) S42 + Meta hatası (ayrıntıda '+90 532 111 22 33'), (b) kabul + talep + sonra 'failed' bildirimi (ayrıntıda '905334445566'), (c) talepten önce yazılmış hata — dosyada, veri klasöründe ve günlükte numara yok
+      ---
+      duration_ms: 2419.165268
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:249:3'
+      failureType: 'testCodeFailure'
+      error: "(a) S42 sonrası hata metni numarasız (eski kod: '+90 532 111 22 33') — Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:270:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 8 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-2: silinmiş işe SONRADAN yazılan hata metni de numarasız (scrubDigits)
+  ---
+  duration_ms: 2420.214889
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:240:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-3: denetim noktası düşerse bakım turu yeniden dener
+    # Subtest: T2-7 dış okuyucu (açık okuma işlemi) varken talep → WAL / dosyada iz kalır; okuyucu kapanınca BİR bakım turu sonra veri klasöründe silinen telefon 0
+    not ok 1 - T2-7 dış okuyucu (açık okuma işlemi) varken talep → WAL / dosyada iz kalır; okuyucu kapanınca BİR bakım turu sonra veri klasöründe silinen telefon 0
+      ---
+      duration_ms: 3116.209399
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:299:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        okuyucu kapandıktan sonraki ilk bakım turunda iz kalmadı (eski kod: bir sonraki silmeye dek kalıyor)
+        + actual - expected
+        
+        + [
+        +   '+905321112233 @ destekofis.sqlite',
+        +   '+905321112233 @ destekofis.sqlite-wal'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '+905321112233 @ destekofis.sqlite'
+        1: '+905321112233 @ destekofis.sqlite-wal'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:322:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 9 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-3: denetim noktası düşerse bakım turu yeniden dener
+  ---
+  duration_ms: 3116.826509
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:298:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-4 (BAŞ MİMAR KARARI A): KVKK araması Silinenler'deki ama WhatsApp kaydı olan carileri de bulur
+    # Subtest: T2-8 silinmiş cari adla / telefonla bulunur (telefon yanıtta yok), talep yapılır; etkin cari ve kaydı olmayan silinmiş cari bu uçta yok; Muhasebe / Avukat / Personel 403
+    not ok 1 - T2-8 silinmiş cari adla / telefonla bulunur (telefon yanıtta yok), talep yapılır; etkin cari ve kaydı olmayan silinmiş cari bu uçta yok; Muhasebe / Avukat / Personel 403
+      ---
+      duration_ms: 2888.271733
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:331:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        KVKK araması (ad): 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        ok (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:48:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:342:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 10 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-4 (BAŞ MİMAR KARARI A): KVKK araması Silinenler'deki ama WhatsApp kaydı olan carileri de bulur
+  ---
+  duration_ms: 2888.723793
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:330:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk DÜŞÜK-1 (test boşluğu): talep anında açık işin dondurulmuş PDF'i silinir
+    # Subtest: T2-9b 131056 ile Bekliyor'a dönen işin PDF'i dosyada (ön koşul) → talep → wa_job_pdfs satırı 0 (bakım turundan ÖNCE), iş Atlandı — Silme Talebi
+    ok 1 - T2-9b 131056 ile Bekliyor'a dönen işin PDF'i dosyada (ön koşul) → talep → wa_job_pdfs satırı 0 (bakım turundan ÖNCE), iş Atlandı — Silme Talebi
+      ---
+      duration_ms: 2180.138146
+      type: 'test'
+      ...
+    1..1
+ok 11 - 2.5.0 WhatsApp tur 2 — W-3 dk DÜŞÜK-1 (test boşluğu): talep anında açık işin dondurulmuş PDF'i silinir
+  ---
+  duration_ms: 2180.580525
+  type: 'suite'
+  ...
+1..11
+# tests 25
+# suites 11
+# pass 6
+# fail 19
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26753.226056

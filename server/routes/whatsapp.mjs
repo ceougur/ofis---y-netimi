@@ -32,7 +32,9 @@
 //   POST /api/workspace/whatsapp/batches/:id/pause | resume | cancel | retry-failed
 //   POST /api/workspace/whatsapp/jobs/:id/send-anyway        Sonucu Belirsiz → "Yine de Gönder" { confirm: true }
 //   GET  /api/workspace/whatsapp/stats?month=YYYY-MM         "Bu Ay Gönderilen İleti Sayısı" (Meta Kabul Etti / Teslim Edilen (Ücretli) / yaklaşık ücret)
-//   POST /api/workspace/whatsapp/kvkk-erase                  2.5.0 W-3 KVKK silme talebi { accountId, confirm: true } — system.manage (lib/whatsapp/saklama.mjs)
+//   POST /api/workspace/whatsapp/kvkk-erase                  2.5.0 W-3 KVKK silme talebi { accountId, confirm: true } — system.manage (lib/whatsapp/saklama.mjs);
+//                                                           2.5.0 tur 2 S62 = A: salt okunur lisansta da açık (lib/license.mjs READ_ONLY_ALLOWED)
+//   GET  /api/workspace/whatsapp/kvkk-deleted?q=             2.5.0 tur 2 (W-3 dk ORTA-4): Silinenler'deki, WhatsApp kaydı olan cariler — system.manage
 // 2.4.8 W4 (gönderim ekranı, client/assets/hof-whatsapp-api.js):
 //   GET  /api/workspace/whatsapp/sending-status              cari ekranının WhatsApp penceresi hangi yolu açacak: bağlantı (sınanmış mı), şablonların son denetimi,
 //                                                           lisans, kişinin yetkisi, onay, süren gönderimler, bu ay sayısı. accounts.view (wa.me yolunun yetkisi) —
@@ -457,6 +459,13 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     const user = auth.requirePermission(req, "system.manage");
     const body = await readJson(req, { limit: 4096 });
     ok(res, queue.eraseAccount(user, body.accountId, body));
+  });
+  // 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-4 (BAŞ MİMAR KARARI A): KVKK araması Silinenler'deki ama WhatsApp kaydı olan carileri de bulur (cari araması — routes/accounts.mjs —
+  // yalnız silinmemiş carileri döndürür; ona dokunulmaz). Yalnız yönetici (system.manage). Yanıt [{ id, name, refNo, deleted: true }] — telefon yok; silinmiş cari kartı AÇILMAZ,
+  // yalnız silme talebi (kvkk-erase) yapılır.
+  router.get("/api/workspace/whatsapp/kvkk-deleted", async ({ req, res, url }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, queue.deletedErasable(text(url.searchParams.get("q")).slice(0, 120)));
   });
   return { connection, queue };
 }

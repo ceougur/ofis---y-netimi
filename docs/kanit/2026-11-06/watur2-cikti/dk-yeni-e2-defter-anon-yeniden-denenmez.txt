@@ -1,0 +1,80 @@
+{
+ "talep": {
+  "A": 200,
+  "B": 200
+ },
+ "B_satir": {
+  "state": "accepted",
+  "wamid": "h:457257293d335d81d5c2af42acc122b4528f10aba34236e7424f4eea14408a66",
+  "acikMi": false,
+  "contentErased": true
+ },
+ "talepten_hemen_sonra": {
+  "A_defter_telefon": [
+   "silinmis:waj-dbe3be31-239d-43ff-bf14-bc7d93a5db63"
+  ],
+  "A_defter_wamid": [
+   "h:62fe"
+  ],
+  "B_defter_telefon": [
+   "silinmis:waj-04d80df0-f777-401c-9de9-71e80f97ef9c"
+  ],
+  "B_defter_wamid": [
+   "h:4572"
+  ],
+  "B_dosya_wamid": "özet/boş",
+  "bayt": []
+ },
+ "bakim_turundan_sonra": {
+  "A_defter_telefon": [
+   "silinmis:waj-dbe3be31-239d-43ff-bf14-bc7d93a5db63"
+  ],
+  "A_defter_wamid": [
+   "h:62fe"
+  ],
+  "B_defter_telefon": [
+   "silinmis:waj-04d80df0-f777-401c-9de9-71e80f97ef9c"
+  ],
+  "B_defter_wamid": [
+   "h:4572"
+  ],
+  "B_dosya_wamid": "özet/boş",
+  "bayt": []
+ },
+ "yeniden_acilistan_sonra": {
+  "A_defter_telefon": [
+   "silinmis:waj-dbe3be31-239d-43ff-bf14-bc7d93a5db63"
+  ],
+  "A_defter_wamid": [
+   "h:62fe"
+  ],
+  "B_defter_telefon": [
+   "silinmis:waj-04d80df0-f777-401c-9de9-71e80f97ef9c"
+  ],
+  "B_defter_wamid": [
+   "h:4572"
+  ],
+  "B_dosya_wamid": "özet/boş",
+  "bayt": []
+ },
+ "bir_yil_supurmeden_sonra": {
+  "A_defter_telefon": [
+   "silinmis:waj-dbe3be31-239d-43ff-bf14-bc7d93a5db63"
+  ],
+  "A_defter_wamid": [
+   "h:62fe"
+  ],
+  "B_defter_telefon": [
+   "silinmis:waj-04d80df0-f777-401c-9de9-71e80f97ef9c"
+  ],
+  "B_defter_wamid": [
+   "h:4572"
+  ],
+  "B_dosya_wamid": "özet/boş",
+  "bayt": []
+ },
+ "gunluk_uyari": [
+  "[WARN] WhatsApp gönderim defterinde telefon / ileti kimliği silinemedi (ENOSPC); sonra yeniden denenecek.",
+  "[WARN] WhatsApp gönderim defterinde telefon / ileti kimliği silinemedi (ENOSPC); sonra yeniden denenecek."
+ ]
+}

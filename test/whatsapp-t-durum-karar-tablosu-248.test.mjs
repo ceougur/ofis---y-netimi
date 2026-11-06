@@ -611,25 +611,34 @@ describe("2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşı
   });
 
   // ---------- istek Meta'dayken (T16 / T35) ----------
-  it("T16 imzalı bildirim istek Meta'dayken işi ilerletir; yanıt 'Meta Kabul Etti' ezmez; tek ileti", async () => {
-    const s = await harness();
+  it("T16 imzalı bildirim istek Meta'dayken işi ilerletir; yanıt 'Meta Kabul Etti' ezmez; tek ileti", { timeout: 120_000 }, async () => {
+    // CI #1050 (12dcad12) Linux Node 22 (06.11.2026, ders 20): eski düzenek "istek Meta'dayken" ön koşulunu süreyle kuruyordu (sahte Meta yanıtı 400 ms gecikmeli,
+    // istemci süre sınırı 800 ms); imzalı teslim yazıldıktan sonra olay döngüsü ≥ ~400 ms durunca (yüklü koşucu) istek ZAMAN AŞIMINA düştü ve satır 'uncertain'
+    // kaldı — bu hücrenin konusu değil (yanıt GELİR). Zorla: test/whatsapp-t16-zorla.mjs test. Artık yanıt KAPIDA tutulur (sahte Graph hold), bildirim uygulanınca
+    // bırakılır; program süre sınırı kapıdan uzun (60 sn). "Yanıt hiç gelmez" sırası (zaman aşımı teslim bilgisini eziyor — ÜRÜN yarışı) ayrı: test/whatsapp-t16-zorla.mjs urun.
+    const s = await harness({ timeoutMs: 60_000 });
+    let release = () => {};
     try {
       const batchId = await s.batch();
       const wamid = `wamid.SAHTE${String(s.ctx.fake.state.sent + 1).padStart(4, "0")}`;
-      s.ctx.fake.state.delayMs = 400;
+      s.ctx.fake.state.hold = { match: /^POST \/\d+\/messages$/, promise: new Promise(resolve => (release = resolve)) };
       const turn = s.ctx.wa.scheduler.runOnce();
-      let job = null;
-      for (let i = 0; i < 200 && !(job?.state === "sending" && s.ctx.fake.requests.some(item => item.path.endsWith("/messages"))); i += 1) {
-        job = s.ctx.store.get("SELECT id, state FROM wa_jobs WHERE batch_id = ?", batchId);
-        await wait(20);
-      }
+      for (let i = 0; i < 2_000 && !s.ctx.fake.state.held; i += 1) await wait(10);
+      assert.equal(s.ctx.fake.state.held, 1, "ön koşul: ileti isteği Meta'da (yanıt kapıda)");
+      const job = s.ctx.store.get("SELECT id, state, attempt FROM wa_jobs WHERE batch_id = ?", batchId);
+      assert.equal(job.state, "sending", "ön koşul: satır Gönderiliyor");
       assert.equal(s.apply([st(s, wamid, "delivered", { biz_opaque_callback_data: job.id })], true).applied, 1);
+      assert.deepEqual([s.ctx.fake.state.held, (await s.job(batchId)).state], [1, "delivered"], "ön koşul: bildirim uygulandığında yanıt henüz gelmedi");
+      s.ctx.fake.state.hold = null;
+      release();
       await turn;
-      s.ctx.fake.state.delayMs = 0;
+      assert.equal(s.outcomeSql(job.id, job.attempt), "accepted", "ileti isteği Meta'nın yanıtıyla sonuçlandı (zaman aşımı değil)");
       assert.equal((await s.job(batchId)).state, "delivered");
       await s.ctx.drain();
       assert.equal(s.ctx.messages().length, 1);
     } finally {
+      s.ctx.fake.state.hold = null;
+      release();
       await s.close();
     }
   });
