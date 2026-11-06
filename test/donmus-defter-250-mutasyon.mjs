@@ -22,14 +22,31 @@ const NEW = "test/donmus-defter-bellek-250.test.mjs";
 const LEAN = "server/lib/lean-rows.mjs";
 // Ç3 tur 1 (dar kontrol ORTA-1/2/3, K4, DÜŞÜK-3, §5 kural kayıt defteri; tasarım notu §17).
 const TUR1 = "test/donmus-defter-tur1-250.test.mjs";
+// Ç3 tur 2 (kilit ucu: sıra + arkada dondurma; tasarım notu §18).
+const ROUTE = "server/routes/ledger.mjs";
+const KU = "test/donmus-defter-kilit-ucu-250.test.mjs";
+const T2_ORDER_BEFORE = [
+  "    beforeLock(target, body?.force === true);\n",
+  "    const previous = period.lockedUntil();\n",
+  "    // 2.5.0 Ç3 (§4): başka güne süren dondurma durdurulur; bayat satırlar (geri çekilmiş dönem) kilitten önce parça parça silinir.\n",
+  "    const waiting = snapshots.state().pending;\n",
+  "    let stopped = false;\n",
+  "    if (waiting && waiting.through !== target) {\n",
+  "      await snapshots.cancel();\n",
+  "      stopped = true;\n",
+  "    }\n",
+].join("");
+// İptal ön adımdan ÖNCE (eski sıra): POS'u reddedilen istek süren dondurmayı durdurur.
+const T2_ORDER_AFTER = T2_ORDER_BEFORE.replace("    beforeLock(target, body?.force === true);\n", "").replace("      stopped = true;\n    }\n", "      stopped = true;\n    }\n    beforeLock(target, body?.force === true);\n");
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 const MUTASYONLAR = [
   [1, "kilitli dönemde güncel türetmeye düşme (karma okuma donmuş defteri okumaz)", LS, "    if (!ready()) return live || build();\n    const cover = coverage();\n    if (cover && to && to <= cover)", "    return live || build();\n    const cover = coverage();\n    if (cover && to && to <= cover)", [MAIN], /kilitli yılın Yevmiye Defteri aynı/],
   // 2 (Ç3 tamamlama): satırlar artık parça parça üretilir (snapshotBatches) — aynı hata, yeni yerinde: son parçadan bir satır düşer.
-  [2, "donmuş satır kaybı (son parçadan bir satır düşer)", LS, "  if (part.length) yield part;\n}", "  if (part.length) yield part.slice(0, -1);\n}", [MAIN], /uç dondurma bittikten sonra yanıt verir/],
+  // 2 ve 5 (Ç3 tur 2): F1'in iletisi "uç dondurma bittikten sonra yanıt verir" → "dondurma bitti" (uç artık beklemez; beklenen neden aynı denetim).
+  [2, "donmuş satır kaybı (son parçadan bir satır düşer)", LS, "  if (part.length) yield part;\n}", "  if (part.length) yield part.slice(0, -1);\n}", [MAIN], /dondurma bitti: |uç dondurma bittikten sonra yanıt verir/],
   [3, "donmuş satır kaybı (okuma kapsam gününü atlar)", LS, "FROM ledger_snapshots WHERE date <= ? AND date >= ? ORDER BY date, run, run_seq", "FROM ledger_snapshots WHERE date < ? AND date >= ? ORDER BY date, run, run_seq", [MAIN], /donmuş maddeler = canlı türetme/],
   [4, "kilit günü donmaz (aralık kilit gününü dışlar)", LS, "if (!(entry.date > from && entry.date <= through)) continue;", "if (!(entry.date > from && entry.date < through)) continue;", [MAIN], /donmuş maddeler = canlı türetme \(kilit günü dahil\)/],
-  [5, "kilit ile donma ayrışması (kanca önceki kilidi dondurur)", "server/routes/ledger.mjs", "snapshots.lockChanged({ previous, next: value, user, reason: \"lock\" });", "snapshots.lockChanged({ previous, next: previous, user, reason: \"lock\" });", [MAIN], /uç dondurma bittikten sonra yanıt verir|kapsam = kilit/],
+  [5, "kilit ile donma ayrışması (kanca önceki kilidi dondurur)", "server/routes/ledger.mjs", "snapshots.lockChanged({ previous, next: value, user, reason: \"lock\" });", "snapshots.lockChanged({ previous, next: previous, user, reason: \"lock\" });", [MAIN], /dondurma bitti: |uç dondurma bittikten sonra yanıt verir|kapsam = kilit/],
   [6, "geri çekmede iz yok", LS, "    trace(THAWED_TRACE, run.no, user, { from: cover, through: next, reason });\n", "", [MAIN], /geri çekme izi/],
   // 7 (Ç3 tamamlama): fark denetimi akışlı (differ) — aynı hata, yeni yerinde.
   [7, "fark denetimi susuyor", LS, "if (a && b && contentOf(a) === contentOf(b)) return;", "return;", [MAIN], /Kural Değişikliği Farkı görünür/],
@@ -74,6 +91,16 @@ const MUTASYONLAR = [
   [44, "DÜŞÜK-3: kilitli yılın Yevmiye Defteri güncel türetmeyi de kurar", LS, "    if (carried && to && to <= carried.through) return", "    if (false && carried && to && to <= carried.through) return", [TUR1], /iki tam türetme/],
   [45, "DÜŞÜK-3: ara dilim from'dan önce bitse de kurulur", LS, "    if (from && from > pending.through) return tail;\n", "", [TUR1], /from > bekleyen gün/],
   [46, "DÜŞÜK-3: işlem içinde okunan ara dilim saklanır (GG2)", LS, "    if (store.inTransaction) return \"\";\n    try {\n      const counters", "    try {\n      const counters", [TUR1], /işlem içinde okunan ara dilim saklanmamalı/],
+  // Ç3 tur 2 (201–207; tur 1'in numaralarıyla çakışmasın diye 200'lü): kilit ucu sırası (DÜŞÜK-1 → ORTA) ve arkada dondurma (plan §8 İLERLEME).
+  [201, "sıra: doğrulama iptalden sonra (geçersiz istek süren dondurmayı durdurur)", ROUTE, "    const target = period.checkLock(body?.lockedUntil);\n", "    const target = String(body?.lockedUntil ?? \"\").trim();\n", [KU], /reddedilen istek süren dondurmayı durdurdu/],
+  [202, "sıra: iptal POS ön adımından önce (ön adımı reddedilen istek süren dondurmayı durdurur)", ROUTE, T2_ORDER_BEFORE, T2_ORDER_AFTER, [KU], /ön adımı reddedilen istekten sonra dondurma sürüyor/],
+  [203, "bütçe yok (uç dondurmanın bitmesini sınırsız bekler; 1 M'de 30 sn sınırı)", ROUTE, "    await settleWithin(afterLock(lockedUntil).job, LOCK_WAIT_MS);\n", "    await afterLock(lockedUntil).job;\n", [KU], /uç dondurmayı bekledi/],
+  [208, "uç arka işi hiç beklemez (iz bekliyorken tam kapının ikinci katmanı yok — D8; kısa kilitte de yanıttan sonra yazım)", ROUTE, "    await settleWithin(afterLock(lockedUntil).job, LOCK_WAIT_MS);\n", "    afterLock(lockedUntil);\n", [KU], /kilit izi yanıttan önce benimsendi/],
+  [209, "uç yalnız izi bekler (kısa dondurma da yanıttan sonra biter; kilitten hemen sonraki sayım fotoğrafı bozulur)", ROUTE, "    await settleWithin(afterLock(lockedUntil).job, LOCK_WAIT_MS);\n", "    await settleWithin(afterLock(lockedUntil).traced, LOCK_WAIT_MS);\n", [MAIN], /uç dondurma bittikten sonra yanıt verir/],
+  [204, "durdurulan koşu sahipsiz kalır (kilit yazılamayınca önceki koşu sürdürülmez)", ROUTE, "      if (stopped) afterLock(period.lockedUntil());\n", "", [KU], /durdurulan koşu sahipsiz kaldı/],
+  [205, "kapanış arka işi beklemez (iş kapalı bağlantıya çarpar)", ROUTE, "      closing = true;\n      await snapshots.close();\n      await Promise.allSettled([...lockJobs]);\n", "      await snapshots.close();\n", [KU], /kapanıştan sonra arka iş kapalı bağlantıya çarpmadı/],
+  [206, "ilerleme görünümü arka işi saymaz (temizlik / iz sırasında 'bitti' görünür)", ROUTE, "active: Boolean(status.running || lockJobs.size)", "active: Boolean(status.running)", [KU, MAIN], /yanıtta süren iş/],
+  [207, "gelecek tarih denetimi yok (kilit ucu yazmadan önce denetlemez)", "server/lib/period.mjs", "    if (date && date > today()) throw new HttpError(400, \"Gelecekteki bir dönem kilitlenemez.\");\n    return date;\n  }", "    return date;\n  }", [KU], /2099-01-01: 200|2099-01-01: \d+/],
 ];
 
 const run = files => {
@@ -83,7 +110,7 @@ const run = files => {
   return { status: r.status, out, pass: count("pass"), fail: count("fail") };
 };
 
-const taban = run([MAIN, LIFE, NEW, TUR1]);
+const taban = run([MAIN, LIFE, NEW, TUR1, KU]);
 console.log(`taban: ${taban.pass} geçti / ${taban.fail} kaldı (çıkış ${taban.status})`);
 if (taban.status !== 0) {
   console.log(taban.out.slice(-4000));

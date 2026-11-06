@@ -86,6 +86,7 @@ jobs:
       - run: npm run test:senaryo-defter-turu-250
       - run: npm run test:senaryo-duzeltme-kilidi-250
       - run: npm run test:senaryo-duzeltme-kilidi-tur3-250
+      - run: npm run test:senaryo-donem-kilidi-ilerleme-250
       - run: npm run test:senaryo-whatsapp-ayar-248
       - run: npm run test:senaryo-whatsapp-donem-248
       - run: npm run test:senaryo-whatsapp-sablon-248

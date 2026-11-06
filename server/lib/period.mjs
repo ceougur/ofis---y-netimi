@@ -67,12 +67,20 @@ export function createPeriod({ store, now = systemClock }) {
     if (from && date < from) throw new HttpError(400, `${label} (${dayText(date)}) işlem tarihinden (${dayText(from)}) önce olamaz.`, { code: "due-before-start" });
     return date;
   }
-  function setLock(value) {
+  /**
+   * Kilit tarihinin denetimi, YAZMADAN (boş = kilidi kaldır): geçersiz ya da gelecek tarih 400. setLock ve PUT period-lock aynı kural; uç bunu her şeyden önce çağırır
+   * (2.5.0 Ç3 tur 2: reddedilecek istek süren dondurmayı durdurmaz, POS ön adımını çalıştırmaz).
+   */
+  function checkLock(value) {
     const date = String(value ?? "").trim();
     if (date && !isIsoDate(date)) throw new HttpError(400, "Kilit tarihi geçerli bir tarih olmalı.");
     if (date && date > today()) throw new HttpError(400, "Gelecekteki bir dönem kilitlenemez.");
+    return date;
+  }
+  function setLock(value) {
+    const date = checkLock(value);
     store.setSetting(LOCK_KEY, date);
     return date;
   }
-  return { today, lockedUntil, assertOpen, restoreDate, movementDate, dueDate, setLock };
+  return { today, lockedUntil, assertOpen, restoreDate, movementDate, dueDate, checkLock, setLock };
 }

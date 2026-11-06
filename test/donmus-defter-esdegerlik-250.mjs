@@ -41,6 +41,8 @@ async function lockData() {
       const admin = await loginAdmin(server);
       const response = await admin.put("/api/admin/period-lock", { lockedUntil: day, force: true });
       if (response.status !== 200) throw new Error(`${company.code}: kilit ${response.status} ${JSON.stringify(response.data)}`);
+      // Ç3 tur 2: 2.5.0'ın ucu dondurmayı beklemez — kapanmadan önce bitsin (kapanış süren dondurmayı durdurur; koşu açılışta sürerdi). Eski kodda donmuş defter yok (atlanır).
+      await server.app.ledger?.snapshots?.runPending?.();
       console.log(`${company.code}: kilit ${response.data.data.lockedUntil} (${root})`);
     } finally {
       await server.close();
@@ -193,6 +195,8 @@ async function equal() {
           const day = opt("gun") || monthEndBefore(shiftDay(dayOf(saved.now), -30));
           const response = await admin.put("/api/admin/period-lock", { lockedUntil: day, force: true });
           if (response.status !== 200) throw new Error(`${company.code}: kilit ${response.status} ${JSON.stringify(response.data).slice(0, 200)}`);
+          // Ç3 tur 2: uç dondurmayı beklemez (arkada sürer); denetimden önce bitsin.
+          await S.runPending();
           lock = day;
         }
         const tag = `şirket ${company.code} (kilit ${lock}${migrated ? `, göç koşusu ${migrated}` : ""})`;
@@ -216,6 +220,7 @@ async function equal() {
         const back = `${String(Number(lock.slice(0, 4)) - 1)}-12-31`;
         const r1 = await admin.put("/api/admin/period-lock", { lockedUntil: back, force: true });
         const r2 = await admin.put("/api/admin/period-lock", { lockedUntil: lock, force: true });
+        await S.runPending();
         check(r1.status === 200 && r2.status === 200, `${tag}: geri çek (${back}) ve yeniden kilitle`);
         verify("yeniden");
       } finally {

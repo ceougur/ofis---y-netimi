@@ -13,6 +13,8 @@ import { DatabaseSync } from "node:sqlite";
 import { after, before, describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
 import { ADMIN_PASSWORD, loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
+// Ç3 tur 2: kilit ucu dondurmayı beklemez; donmuş defteri okuyan / dosyayı kapatıp dışarıdan değiştiren adımlar önce dondurmanın bitmesini bekler.
+import { lockAndWait } from "./fixtures/donma-bekle.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const WORKER = path.join(HERE, "fixtures", "donma-isci.mjs");
@@ -66,10 +68,10 @@ describe("2.5.0 Ç3 — donmuş defter: iki şirket, yedek → geri yükle", () 
 
   it("F13a: iki şirket karışmaz — 001'in kilidi yalnız 001'i dondurur; 002 kendi gününe kendi kuralıyla donar", async () => {
     snapshotsOf(server.app);
-    await must("001 kilit", admin.put("/api/admin/period-lock", { lockedUntil: LOCK }));
+    await lockAndWait(admin, LOCK);
     assert.equal(snapshotsOf(server.app).state().coverage, LOCK);
     assert.equal(countOf(child().store, "ledger_snapshot_runs"), 0, "002'de koşu yok");
-    await must("002 kilit", admin.put(`/api/admin/period-lock?${q2}`, { lockedUntil: "2026-06-30" }));
+    await lockAndWait(admin, "2026-06-30", { query: q2 });
     assert.equal(snapshotsOf(child()).state().coverage, "2026-06-30");
     assert.equal(snapshotsOf(server.app).state().coverage, LOCK, "001 değişmedi");
     assert.deepEqual(canon(snapshotsOf(child()).entries()), canon(upTo(child().ledger.build(), "2026-06-30")));
@@ -78,10 +80,10 @@ describe("2.5.0 Ç3 — donmuş defter: iki şirket, yedek → geri yükle", () 
 
   it("F13b: 002 yedeği (kilitli) → kilidi geri çek → geri yükle: yedekteki kapsam, koşular, satırlar ve tetikleyiciler döner; donmuş = canlı", async () => {
     snapshotsOf(child());
-    if (snapshotsOf(child()).state().coverage !== "2026-06-30") await must("002 kilit", admin.put(`/api/admin/period-lock?${q2}`, { lockedUntil: "2026-06-30" }));
+    if (snapshotsOf(child()).state().coverage !== "2026-06-30") await lockAndWait(admin, "2026-06-30", { query: q2 });
     const lines = countOf(child().store, "ledger_snapshots");
     const backup = (await must("yedek", admin.post("/api/admin/backups", { scope: "one", companyId: second.id }))).backups[0].name;
-    await must("002 kilit aç", admin.put(`/api/admin/period-lock?${q2}`, { lockedUntil: "" }));
+    await lockAndWait(admin, "", { query: q2 });
     assert.equal(countOf(child().store, "ledger_snapshots"), 0);
     await must("geri yükle", admin.post("/api/admin/backups/restore", { name: backup, company: second.id, confirm: second.code, password: ADMIN_PASSWORD }));
     await must("002 yeniden", admin.get(`/api/workspace/ledger?${q2}`));
@@ -102,7 +104,7 @@ describe("2.5.0 Ç3 — donmuş defter: iki şirket, yedek → geri yükle", () 
     assert.equal(countOf(server.app.store, "ledger_snapshot_runs"), 0);
     assert.deepEqual(triggersOf(server.app.store), TRIGGERS);
     await seed(admin);
-    await must("kilit", admin.put("/api/admin/period-lock", { lockedUntil: LOCK }));
+    await lockAndWait(admin, LOCK);
     assert.deepEqual(canon(snapshotsOf(server.app).entries()), canon(upTo(server.app.ledger.build(), LOCK)));
   });
 });
@@ -189,16 +191,24 @@ describe("2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm
         db.exec(`PRAGMA max_page_count = ${db.prepare("PRAGMA page_count").get().page_count}`);
       };
       let result;
+      let put;
       try {
-        result = await must("kilit", admin.put("/api/admin/period-lock", { lockedUntil: LOCK }));
+        // Ç3 tur 2: uç dondurmayı beklemez — sınır dondurma bitene (düşene) kadar yerinde kalır.
+        ({ put, view: result } = await lockAndWait(admin, LOCK));
       } finally {
         hook.fn = null;
         db.exec("PRAGMA max_page_count = 1073741823");
       }
       assert.ok(limited, "ön koşul: ilk parçadan sonra sayfa sınırı kondu");
-      assert.equal(result.lockedUntil, LOCK, "kilit kondu");
+      assert.equal(put.lockedUntil, LOCK, "kilit kondu");
+      assert.equal(result.lockedUntil, LOCK, "kilit yerinde");
       assert.equal(result.frozenThrough, "", "dondurma tamamlanmadı");
       assert.match(String(result.freeze?.error || ""), /full|dolu/i);
+      // Ekranın göreceği durum: koşu bekliyor, süren iş yok, hata bu koşunun (yoklama durur, kart "dondurulamadı" yazar).
+      assert.equal(result.freeze?.active, false);
+      assert.equal(result.freeze?.pending?.through, LOCK);
+      assert.equal(result.freeze?.run, result.freeze?.pending?.no);
+      assert.equal(result.freeze?.phase, "hata");
       assert.equal(S.state().coverage, "");
       assert.ok(S.state().pending, "koşu bekliyor");
       assert.equal(S.entries().length, 0, "yarım satırlar görünmez");
@@ -218,7 +228,7 @@ describe("2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm
       snapshotsOf(server.app);
       const admin = await loginAdmin(server);
       await seed(admin);
-      await must("kilit", admin.put("/api/admin/period-lock", { lockedUntil: "2026-06-30" }));
+      await lockAndWait(admin, "2026-06-30");
       // Ç2 fişi (açık dönemde): (c)'deki eski sürüm sıfırlamasından artakalınca Ç2'nin açılış onarımı (withTriggersLifted) çalışsın diye.
       server.app.ledger.vouchers.post({ id: "eski-surum", display_name: "Eski Sürüm" }, { type: "opening-match", date: "2027-01-03", requestKey: "donma-f12-fis", lines: [{ account: "590", debit: 100 }, { account: "519", credit: 100 }] });
     } finally {
@@ -285,7 +295,7 @@ describe("2.5.0 Ç3 — donmuş defter: yarıda kesilme, disk dolu, eski sürüm
       snapshotsOf(server.app);
       const admin = await loginAdmin(server);
       await seed(admin);
-      await must("kilit", admin.put("/api/admin/period-lock", { lockedUntil: LOCK }));
+      await lockAndWait(admin, LOCK);
     } finally {
       await server.close();
     }
