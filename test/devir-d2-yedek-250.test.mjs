@@ -152,6 +152,23 @@ describe("D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi", () => 
     }
   });
 
+  test("Şirket Verisini Sıfırla (Tümünü Sıfırla) devir işaretini (devir.years) korur: arşiv kayıtlı kalır, sıfırlamadan sonra alınan yedek geri yüklenebilir, sıfırlama öncesi yedeği yine denetlenir", async () => {
+    const dir = workDir();
+    const server = await start(dir);
+    try {
+      const { admin, second } = await seed(server);
+      const company = () => companyOf(server.app, second.id);
+      await makeArchive(server.app, second.id, { year: "2025", runId: "devir-2025-s" });
+      await must("Tümünü Sıfırla", admin.post(`/api/companies/${second.id}/reset`, { mode: "all", confirm: company().code, password: ADMIN_PASSWORD }));
+      const years = JSON.parse(server.app.openCompany(second.id).store.setting(DEVIR_YEARS_KEY, "") || "[]");
+      assert.deepEqual(years.map(item => [item.year, item.runId]), [["2025", "devir-2025-s"]], "sıfırlamadan sonra çalışma dosyası devrini bilir");
+      const afterReset = server.app.backups.backup(company(), { label: "manuel" });
+      await must("sıfırlama sonrası yedek geri yüklenir (arşivle tutarlı)", restore(admin, afterReset, company()));
+    } finally {
+      await server.close();
+    }
+  });
+
   test("Yedekten Geri Yükle (001, yeniden açılışta): devir öncesi yedek hazırlanmaz (409); devirden ÖNCE hazırlanıp devirden SONRA uygulanacak geri yükleme açılışta uygulanmaz, veri aynı kalır, neden Yedekler'de görünür", async () => {
     const dir = workDir();
     let server = await start(dir);
