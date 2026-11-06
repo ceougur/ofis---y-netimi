@@ -1,0 +1,32 @@
+{
+  "ad": "bt4-e2e-komsu-senaryo-form-izolasyon-243",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-form-izolasyon-243.mjs",
+  "commit": "ccbf781250ace68169e882d99849dac774ebe79f",
+  "dal": "worktree-agent-a8e6f2114d96e812f",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T07:11:25.649Z",
+  "sure_sn": 321.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 188,
+    "gecen": 188,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-kanit/2026-11-06/bt4-e2e-komsu-senaryo-form-izolasyon-243.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8e6f2114d96e812f",
+  "ham_cikti_sha256": "3670c3eb50bfa93a2fd2b8965ba0d37b7cba59e4cd8270ca143a52450313a480",
+  "ham_cikti_bayt": 29455
+}
