@@ -10,9 +10,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { after, describe, test } from "node:test";
 import { ROOT_COMPANY_ID } from "../server/lib/companies.mjs";
-import { MAINTENANCE_MARKER } from "../server/lib/devir/maintenance.mjs";
 import { createUpdateOrchestrator } from "../server/lib/update-orchestrator.mjs";
-import { HUB_BLOCKED, HUB_ONLY, companyDbFile, diffKeys, fingerprint, getRoutes, writeRoutes } from "./devir-d2-yardimci.mjs";
+import { ARCHIVE_MARK_KEY, ARCHIVE_SIDECAR, DEVIR_BACKUP_DIR, DEVIR_BACKUP_MANIFEST, DEVIR_YEARS_KEY, HUB_BLOCKED, HUB_ONLY, MAINTENANCE_MARKER, companyDbFile, diffKeys, fingerprint, getRoutes, writeRoutes } from "./devir-d2-yardimci.mjs";
 import { loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -85,6 +84,17 @@ describe("D2 bakım kipi (G1.1)", () => {
     const source = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
     assert.ok(source.includes(`const HUB_ONLY = /${HUB_ONLY.source}/;`), "HUB_ONLY ifadesi sunucudakiyle aynı değil (yardımcıyı güncelleyin)");
     assert.ok(source.includes(`const MAINTENANCE_HUB_BLOCKED = /${HUB_BLOCKED.source}/;`), "MAINTENANCE_HUB_BLOCKED ifadesi sunucudakiyle aynı değil");
+  });
+
+  test("sözleşme sabitleri: test yardımcısının yerel değerleri programınkiyle aynı (işaret anahtarları, dosya adları)", async () => {
+    const archives = await import("../server/lib/devir/archives.mjs");
+    const maintenance = await import("../server/lib/devir/maintenance.mjs");
+    const backups = await import("../server/lib/devir/devir-backups.mjs");
+    assert.deepEqual(
+      [archives.ARCHIVE_MARK_KEY, archives.DEVIR_YEARS_KEY, archives.ARCHIVE_SIDECAR, maintenance.MAINTENANCE_MARKER, backups.DEVIR_BACKUP_DIR, backups.DEVIR_BACKUP_MANIFEST],
+      [ARCHIVE_MARK_KEY, DEVIR_YEARS_KEY, ARCHIVE_SIDECAR, MAINTENANCE_MARKER, DEVIR_BACKUP_DIR, DEVIR_BACKUP_MANIFEST],
+    );
+    assert.equal(archives.archiveDirOf("/v", "2025"), path.join("/v", "arsiv", "2025"));
   });
 
   test("001 bakımda: şirket yazma uçlarının HEPSİ 503, ortak katmanın şirket / yedek / güncelleme / devir yazmaları 503, giriş çalışır; GET'ler 001'in verisini değiştirmez (GET'te yazan yol dahil); kip kalkınca yazılır", async () => {

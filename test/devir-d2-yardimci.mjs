@@ -5,15 +5,35 @@
 //   - makeArchive: D4'ün (devri yapan iş akışı) bırakacağı arşivin BENZETİMİ — şirket dosyasının tutarlı kopyası (VACUUM INTO) arsiv/<yıl>/'a, içine arşiv işareti,
 //     çalışma dosyasına devir yılı, kayıt defterine girdi (sha256). Devrin para / budama kuralı burada YOK (D3–D4).
 import { createHash } from "node:crypto";
-import { mkdirSync, readdirSync, readFileSync } from "node:fs";
+import { createReadStream, mkdirSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
-import { ARCHIVE_MARK_KEY, DEVIR_YEARS_KEY, archiveDirOf, hashFile } from "../server/lib/devir/archives.mjs";
-import { commonLayer } from "../server/lib/company-backups.mjs";
 import { resolveDbPath } from "../server/lib/db-path.mjs";
 
 const SERVER = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "server");
+
+// Sözleşme sabitleri YEREL (ders 7 / 38: testler D2'den önceki kodda da YÜKLENİR ve beklenen nedenle kırmızı olur — yeni modülü içe aktarmak yerine çökmez);
+// programdaki değerlerle aynılığı test/devir-d2-bakim-250.test.mjs "sözleşme sabitleri" denetler.
+export const ARCHIVE_MARK_KEY = "devir.archive";
+export const DEVIR_YEARS_KEY = "devir.years";
+export const ARCHIVE_SIDECAR = "arsiv-kaydi.json";
+export const MAINTENANCE_MARKER = "bakim-kipi.json";
+export const DEVIR_BACKUP_DIR = "devir-yedekleri";
+export const DEVIR_BACKUP_MANIFEST = "devir-yedegi.json";
+export const archiveDirOf = (companyDataDir, year) => path.join(companyDataDir, "arsiv", String(year));
+export function hashFile(file) {
+  return new Promise((resolve, reject) => {
+    const hash = createHash("sha256");
+    createReadStream(file)
+      .on("data", chunk => hash.update(chunk))
+      .on("error", reject)
+      .on("end", () => resolve(hash.digest("hex")));
+  });
+}
+// Ortak ayar süzgeci: programınki (lib/company-backups.mjs commonLayer); D2 öncesi kodda yoksa o kodun COMMON_SETTINGS'inin aynısı.
+const programCommon = await import("../server/lib/company-backups.mjs").then(module => module.commonLayer?.() || null).catch(() => null);
+const COMMON_SETTINGS_SQL = programCommon?.settingsSql || "(key LIKE 'license.%' OR (key LIKE 'meta.%' AND key NOT LIKE 'meta.bank.%' AND key NOT LIKE 'meta.schema.%') OR key LIKE 'auth.%' OR key LIKE 'company.%' OR key = 'backup.cloud' OR key = 'office.name')";
 
 function sources() {
   const out = [];
@@ -77,7 +97,7 @@ export function fingerprint(file, { skip = [], commonSettings = true } = {}) {
     out.schema = createHash("sha256").update(JSON.stringify(db.prepare("SELECT type, name, sql FROM sqlite_master ORDER BY type, name").all())).digest("hex");
     for (const table of tables) {
       if (skip.includes(table)) continue;
-      const sql = table === "settings" && !commonSettings ? `SELECT * FROM settings WHERE NOT (${commonLayer().settingsSql})` : `SELECT * FROM "${table}"`;
+      const sql = table === "settings" && !commonSettings ? `SELECT * FROM settings WHERE NOT (${COMMON_SETTINGS_SQL})` : `SELECT * FROM "${table}"`;
       const rows = db.prepare(sql).all().map(row => JSON.stringify(row)).sort();
       out[table] = createHash("sha256").update(rows.join("\n")).digest("hex");
     }
@@ -133,7 +153,8 @@ export async function makeArchive(app, companyId, { year = "2025", cutoff = `${y
     }
   }
   const sha256 = await hashFile(file);
-  if (register) app.companies.addArchive(companyId, { year, cutoff, runId, sha256, schemaVersion: schemaOf(file), createdAt: new Date().toISOString() });
+  // D2 öncesi kodda kayıt defteri arşivi bilmez (addArchive yok): dosyalar yine yazılır; test o kodda beklenen nedenle (403 yerine 200, 409 yerine 200) kırmızı.
+  if (register && app.companies.addArchive) app.companies.addArchive(companyId, { year, cutoff, runId, sha256, schemaVersion: schemaOf(file), createdAt: new Date().toISOString() });
   return { file, dir, sha256, year, runId };
 }
 export function schemaOf(file) {

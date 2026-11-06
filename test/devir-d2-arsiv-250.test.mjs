@@ -13,11 +13,11 @@ import { DatabaseSync } from "node:sqlite";
 import { after, describe, test } from "node:test";
 import { ROOT_COMPANY_ID } from "../server/lib/companies.mjs";
 import { resolveDbPath } from "../server/lib/db-path.mjs";
-import { ARCHIVE_MARK_KEY, ARCHIVE_SIDECAR, DEVIR_YEARS_KEY, archiveDirOf, hashFile } from "../server/lib/devir/archives.mjs";
+
 import { LATEST_VERSION, runMigrations } from "../server/lib/migrations.mjs";
 import { createStore, openDatabase } from "../server/lib/db.mjs";
 import { unpackFixture } from "./guvenilirlik/fikstur.mjs";
-import { HUB_ONLY, diffKeys, fingerprint, getRoutes, makeArchive, schemaOf, writeRoutes, writeSettingRaw } from "./devir-d2-yardimci.mjs";
+import { ARCHIVE_MARK_KEY, ARCHIVE_SIDECAR, DEVIR_YEARS_KEY, HUB_ONLY, archiveDirOf, diffKeys, fingerprint, getRoutes, hashFile, makeArchive, schemaOf, writeRoutes, writeSettingRaw } from "./devir-d2-yardimci.mjs";
 import { loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
 
 const NOW = "2026-11-02T10:00:00+03:00";
@@ -38,6 +38,10 @@ const must = async (label, promise, status = 200) => {
 };
 const readJson = file => JSON.parse(readFileSync(file, "utf8"));
 const start = dir => startTestServer({ dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), now: { time: NOW, fixed: true } });
+// D2 öncesi kodda bu işlevler yok: testler çökmek yerine beklenen nedenle (kayıt yok, örnek açılmadı) kırmızı olur (ders 7 / 38).
+const archivesOf = (app, id) => app.companies.archivesOf?.(id) ?? [];
+const archiveOf = (app, id, year) => app.companies.archiveOf?.(id, year) ?? null;
+const openArchives = app => app.openArchiveIds?.() ?? [];
 
 async function seed(server) {
   const admin = await loginAdmin(server);
@@ -80,8 +84,8 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
       }
       assert.equal(readJson(path.join(made.dir, ARCHIVE_SIDECAR)).sha256, made.sha256, "arşiv klasöründeki kopya (arsiv-kaydi.json)");
       await must("002 ad + kod değişikliği", admin.put(`/api/companies/${second.id}`, { name: "Yeni Ad", code: "007" }));
-      assert.equal(server.app.companies.archiveOf(second.id, "2025")?.sha256, readJson(path.join(made.dir.replace(server.dataDir, server.app.companies.dirsOf(server.app.companies.get(second.id)).dataDir), ARCHIVE_SIDECAR)).sha256, "ad / kod değişince arşiv kaydı korunur");
-      assert.ok(server.app.companies.archiveOf(second.id, "2025"), "ad / kod değişince arşiv kaydı düşmez");
+      assert.equal(archiveOf(server.app, second.id, "2025")?.sha256, readJson(path.join(made.dir.replace(server.dataDir, server.app.companies.dirsOf(server.app.companies.get(second.id)).dataDir), ARCHIVE_SIDECAR)).sha256, "ad / kod değişince arşiv kaydı korunur");
+      assert.ok(archiveOf(server.app, second.id, "2025"), "ad / kod değişince arşiv kaydı düşmez");
       assert.throws(() => server.app.companies.addArchive(ROOT_COMPANY_ID, { year: "2025" }), error => error.status === 409 && error.extra?.code === "archive-exists");
       assert.throws(() => server.app.companies.addArchive(ROOT_COMPANY_ID, { year: "25" }), error => error.status === 400);
       assert.throws(() => server.app.companies.addArchive(ROOT_COMPANY_ID, { year: "../../x" }), error => error.status === 400);
@@ -109,8 +113,8 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
       const companies = server.app.companies.list();
       const recovered = companies.find(item => item.id !== ROOT_COMPANY_ID);
       assert.ok(recovered, "002 diskten kuruldu");
-      assert.deepEqual(server.app.companies.archivesOf(ROOT_COMPANY_ID).map(item => [item.year, item.sha256, item.recovered]), [["2024", a1.sha256, true]], "001 arşivi diskten tanındı, özeti arşiv klasöründen");
-      assert.deepEqual(server.app.companies.archivesOf(recovered.id).map(item => [item.year, item.sha256, item.recovered]), [["2025", a2.sha256, true]], "002 arşivi diskten tanındı (kurtarılan kimlikle)");
+      assert.deepEqual(archivesOf(server.app, ROOT_COMPANY_ID).map(item => [item.year, item.sha256, item.recovered]), [["2024", a1.sha256, true]], "001 arşivi diskten tanındı, özeti arşiv klasöründen");
+      assert.deepEqual(archivesOf(server.app, recovered.id).map(item => [item.year, item.sha256, item.recovered]), [["2025", a2.sha256, true]], "002 arşivi diskten tanındı (kurtarılan kimlikle)");
       const admin = await loginAdmin(server);
       await must("tanınan arşiv açılır", admin.get(`/api/workspace/cash?hofCompany=${recovered.id}&hofArchive=2025`));
     } finally {
@@ -127,9 +131,9 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
     server = await start(dir);
     try {
       const other = server.app.companies.list().find(item => item.id !== ROOT_COMPANY_ID);
-      assert.equal(server.app.companies.archivesOf(ROOT_COMPANY_ID).length, 1, "eski sürümün düşürdüğü 001 arşivi yeniden tanındı");
-      assert.equal(server.app.companies.archivesOf(other.id).length, 1, "002 arşivi yeniden tanındı");
-      assert.deepEqual(server.app.companies.orphanArchives(), []);
+      assert.equal(archivesOf(server.app, ROOT_COMPANY_ID).length, 1, "eski sürümün düşürdüğü 001 arşivi yeniden tanındı");
+      assert.equal(archivesOf(server.app, other.id).length, 1, "002 arşivi yeniden tanındı");
+      assert.deepEqual((server.app.companies.orphanArchives?.() ?? []), []);
     } finally {
       await server.app.close();
     }
@@ -144,9 +148,9 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
     db.close();
     server = await start(dir);
     try {
-      assert.equal(server.app.companies.archivesOf(otherEntry.id).length, 0, "yarım devrin arşivi kayda girmez (K yılı iki dosyada olmasın)");
-      assert.equal(server.app.companies.archivesOf(ROOT_COMPANY_ID).length, 1, "001 etkilenmez");
-      const orphans = server.app.companies.orphanArchives();
+      assert.equal(archivesOf(server.app, otherEntry.id).length, 0, "yarım devrin arşivi kayda girmez (K yılı iki dosyada olmasın)");
+      assert.equal(archivesOf(server.app, ROOT_COMPANY_ID).length, 1, "001 etkilenmez");
+      const orphans = (server.app.companies.orphanArchives?.() ?? []);
       assert.equal(orphans.length, 1);
       assert.match(orphans[0].reason, /çalışma dosyasında bu yılın devri yok/);
       const admin = await loginAdmin(server);
@@ -166,8 +170,12 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
       for (const [companyId, query] of [[second.id, `hofCompany=${second.id}`], [ROOT_COMPANY_ID, `hofCompany=${ROOT_COMPANY_ID}`]]) {
         const made = await makeArchive(server.app, companyId, { year: "2025" });
         const archiveQuery = `${query}&hofArchive=2025`;
+        const liveBefore = (await must("canlı okuma", admin.get(`/api/workspace/cash?${query}`))).entries.length;
+        const sample = await admin.post(`/api/workspace/cash?${archiveQuery}`, { kind: "in", amount: 1, date: "2025-12-01", description: "arşive yazma denemesi" });
+        assert.equal(sample.status, 403, `arşive yazma 403 olmalı (gelen ${sample.status} ${sample.data?.code || ""})`);
+        assert.equal((await must("canlı okuma", admin.get(`/api/workspace/cash?${query}`))).entries.length, liveBefore, "arşive yazma denemesi canlı şirkete de yazmadı");
         await must("arşiv okuma", admin.get(`/api/workspace/cash?${archiveQuery}`));
-        const archive = server.app.openArchiveIds().find(key => key.startsWith(`${companyId}@`));
+        const archive = openArchives(server.app).find(key => key.startsWith(`${companyId}@`));
         assert.ok(archive, "arşiv örneği açıldı");
         let count = 0;
         const bad = [];
@@ -215,7 +223,7 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
       appendFileSync(changed.file, Buffer.alloc(4096));
       const opened = await must("değişmiş arşiv okunur", admin.get(`/api/workspace/cash${q}&hofArchive=2024`));
       assert.ok(Array.isArray(opened.entries));
-      const child = server.app.openArchiveIds().find(key => key.endsWith("arsiv-2024"));
+      const child = openArchives(server.app).find(key => key.endsWith("arsiv-2024"));
       assert.ok(child);
       const verified = await must("doğrula", admin.post("/api/admin/devir/archives/verify", { company: second.id, year: "2024" }));
       assert.equal(verified.state, "changed");
@@ -265,12 +273,12 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
       const twin = path.join(dir, "ikiz.sqlite");
       copyFileSync(file, twin);
       const sha = await hashFile(file);
-      server.app.companies.addArchive(ROOT_COMPANY_ID, { year: "2025", cutoff: "2025-12-31", runId: "devir-2025-eski", sha256: sha, schemaVersion: oldSchema });
+      server.app.companies.addArchive?.(ROOT_COMPANY_ID, { year: "2025", cutoff: "2025-12-31", runId: "devir-2025-eski", sha256: sha, schemaVersion: oldSchema });
       const [a, b] = await Promise.all([admin.get("/api/workspace/cash?hofArchive=2025"), admin.get("/api/workspace/cash?hofArchive=2025")]);
       assert.equal(a.status, 200, JSON.stringify(a.data).slice(0, 300));
       assert.equal(b.status, 200);
       assert.equal(schemaOf(file), LATEST_VERSION, "arşiv son şemaya taşındı");
-      const entry = server.app.companies.archiveOf(ROOT_COMPANY_ID, "2025");
+      const entry = archiveOf(server.app, ROOT_COMPANY_ID, "2025");
       assert.equal(entry.migratedFrom, oldSchema);
       assert.equal(entry.previousSha256, sha);
       assert.equal(entry.sha256, await hashFile(file), "kayıttaki özet göçten sonraki dosyanınki");
@@ -300,10 +308,10 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
       const raw = new DatabaseSync(ahead.file);
       raw.exec(`PRAGMA user_version = ${LATEST_VERSION + 1}`);
       raw.close();
-      server.app.companies.updateArchive(ROOT_COMPANY_ID, "2026", { sha256: await hashFile(ahead.file) });
+      server.app.companies.updateArchive?.(ROOT_COMPANY_ID, "2026", { sha256: await hashFile(ahead.file) });
       await must("yeni şemalı arşiv okunur", admin.get("/api/workspace/cash?hofArchive=2026"));
       assert.equal(schemaOf(ahead.file), LATEST_VERSION + 1, "göç edilmedi");
-      const key = server.app.openArchiveIds().find(item => item.endsWith("arsiv-2026"));
+      const key = openArchives(server.app).find(item => item.endsWith("arsiv-2026"));
       assert.ok(key);
       const written = await admin.post("/api/workspace/cash?hofArchive=2026", { kind: "in", amount: 1, date: "2025-12-01", description: "x" });
       assert.equal(written.status, 403);
@@ -325,7 +333,7 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
       assert.ok(targets.every(item => !item.backupDir.includes(`${path.sep}arsiv${path.sep}`)));
       const done = server.app.runDueBackups();
       assert.equal(done.length, 2);
-      assert.deepEqual(server.app.openArchiveIds(), [], "zamanlayıcı arşiv örneği açmadı");
+      assert.deepEqual(openArchives(server.app), [], "zamanlayıcı arşiv örneği açmadı");
       for (const item of made) assert.equal(await hashFile(item.file), item.sha256, "arşiv dosyası değişmedi");
       assert.equal(server.app.backups.list({ role: "admin" }).filter(item => item.dir.includes(`${path.sep}arsiv${path.sep}`)).length, 0, "Yedekler listesinde arşiv yok");
     } finally {
@@ -342,9 +350,9 @@ describe("D2 arşiv kayıt defteri ve salt okunur açma", () => {
       await makeArchive(server.app, ROOT_COMPANY_ID, { year: "2025" });
       await must("002 arşivi", admin.get(`/api/workspace/cash${q}&hofArchive=2025`));
       await must("001 arşivi", admin.get("/api/workspace/cash?hofArchive=2025"));
-      assert.equal(server.app.openArchiveIds().length, 2);
+      assert.equal(openArchives(server.app).length, 2);
       await server.app.context.closeCompany(second.id);
-      assert.deepEqual(server.app.openArchiveIds(), [`${ROOT_COMPANY_ID}@arsiv-2025`], "yalnız 002'nin arşivi kapandı");
+      assert.deepEqual(openArchives(server.app), [`${ROOT_COMPANY_ID}@arsiv-2025`], "yalnız 002'nin arşivi kapandı");
       assert.ok(!server.app.openCompanyIds().includes(second.id));
     } finally {
       await server.close();

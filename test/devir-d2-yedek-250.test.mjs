@@ -10,9 +10,12 @@ import path from "node:path";
 import { after, describe, test } from "node:test";
 import { listBackups } from "../server/lib/backup.mjs";
 import { ROOT_COMPANY_ID } from "../server/lib/companies.mjs";
-import { DEVIR_YEARS_KEY } from "../server/lib/devir/archives.mjs";
-import { DEVIR_BACKUP_DIR, DEVIR_BACKUP_MANIFEST, listDevirBackups, verifyDevirBackup } from "../server/lib/devir/devir-backups.mjs";
-import { companyOf, makeArchive } from "./devir-d2-yardimci.mjs";
+import { DEVIR_BACKUP_DIR, DEVIR_BACKUP_MANIFEST, DEVIR_YEARS_KEY, companyOf, makeArchive } from "./devir-d2-yardimci.mjs";
+
+// D2 öncesi kodda modül yok: dosya yine yüklenir, devir yedeği testleri "işlev yok" nedeniyle kırmızı olur (ders 7 / 38).
+const devirBackups = await import("../server/lib/devir/devir-backups.mjs").catch(() => ({}));
+const listDevirBackups = (...args) => devirBackups.listDevirBackups(...args);
+const verifyDevirBackup = (...args) => devirBackups.verifyDevirBackup(...args);
 import { ADMIN_PASSWORD, loginAdmin, removeTestDir, startTestServer } from "./helpers.mjs";
 
 const NOW = "2026-11-02T10:00:00+03:00";
