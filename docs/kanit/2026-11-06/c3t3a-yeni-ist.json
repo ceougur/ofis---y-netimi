@@ -1,0 +1,32 @@
+{
+  "ad": "c3t3a-yeni-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/donmus-defter-tur3-250.test.mjs test/donmus-defter-kilit-ucu-250.test.mjs test/banka-210-saat.test.mjs",
+  "commit": "218083460a0b2ddc530f51122f56cbed6649d6a1",
+  "dal": "c3t3-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T12:12:24.819Z",
+  "sure_sn": 99,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 32,
+    "gecen": 32,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c3t3a-kanit/2026-11-06/c3t3a-yeni-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t3-birlesim-ag",
+  "ham_cikti_sha256": "d110a6be3adc90bca15b89b111e1edc8dd98aa239ad987851c33d96dda596cb4",
+  "ham_cikti_bayt": 15546
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "wk19a-senaryolar-ist",
+  "komut": "python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py",
+  "commit": "886d346d7d8c967aa5f6279c965a8b28a6ff82be",
+  "dal": "wk19-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T13:02:04.175Z",
+  "sure_sn": 6.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 389,
+    "gecen": 389,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../wk19a-kanit/2026-11-06/wk19a-senaryolar-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk19-birlesim-ag",
+  "ham_cikti_sha256": "a680bfc023efce06056510cec266e0a28cd54cd1c80709b575663a39ebfdf1f7",
+  "ham_cikti_bayt": 769
+}
