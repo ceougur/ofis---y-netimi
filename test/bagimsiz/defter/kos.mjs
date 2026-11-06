@@ -40,7 +40,7 @@ export const UCLAR = {
   kdv_mahsup_geri_al: { method: "POST", url: (o, ids) => `/api/workspace/tax/vat-offset/${encodeURIComponent(ids[o.mahsup])}/reverse`, govde: () => ({}), kimlik: () => null },
   // 2.5.0 Ç5 (KARARLAR.md "Eşleme notları") — uç adı Ç5-A kod ajanınca verilir; verilene kadar olay ATLANAN (sonuç yeşil sayılmaz):
   //   acilis_evrak        : { tarih, yon: "alinan"|"verilen", evrak: "cek"|"senet", tutar, no, vade }  cariye işlenmemiş açılış portföyü (Excel "Açılış portföyü")
-  //   karsiliksiz_cari    : { cek, tarih, cari }  açılış evrakının karşılıksızında programın "cari seç" sorusuna verilen yanıt (S48); kimlik ids[olay.cek]
+  //   karsiliksiz_cari    : { cek, tarih, cari }  açılış evrakının (S48) ve formdan carisiz evrakın (S66, bakım 2) karşılıksızında programın "cari seç" sorusuna verilen yanıt; kimlik ids[olay.cek]
   //   excel_taksit_karti  : { tarih, cari, toplam, odenen }  Excel'den (tablodan) yüklenen taksit kartı (KG-5)
   //   kasa_duzelt         : { hareket, tarih }  Kasa hareketinin tarih düzeltmesi (B11); kimlik ids[olay.hareket]
   acilis_evrak: null,
@@ -178,7 +178,7 @@ try {
         await gonder(o, "POST", `/api/workspace/cheques/${ids[o.cek]}/actions`, { action: "bank-deposit", bankAccountId: ids.B, date: t }, () => null);
         break;
       case "karsiliksiz":
-        // 2.5.0: evrakı gönderilmemişse (ör. açılış evrakı ATLANAN) atlanır; açılış evrakında cari seçimi (S48) UCLAR.karsiliksiz_cari ile
+        // 2.5.0: evrakı gönderilmemişse (ör. açılış evrakı ATLANAN) atlanır; açılış evrakında (S48) ve formdan carisiz evrakta (S66) cari seçimi UCLAR.karsiliksiz_cari ile
         if (!ids[o.cek]) {
           atlanan.push({ olay: o.id, tur: o.tur, neden: "evrakı programa gönderilmedi (atlanan / reddedilen)" });
           break;
@@ -186,7 +186,7 @@ try {
         if (o.cari) {
           const uc = UCLAR.karsiliksiz_cari;
           if (!uc) {
-            atlanan.push({ olay: o.id, tur: o.tur, neden: "uç adı henüz verilmedi (UCLAR.karsiliksiz_cari — S48 cari seçimi)" });
+            atlanan.push({ olay: o.id, tur: o.tur, neden: "uç adı henüz verilmedi (UCLAR.karsiliksiz_cari — S48 / S66 cari seçimi)" });
             break;
           }
           await gonder(o, uc.method || "POST", typeof uc.url === "function" ? uc.url(o, ids) : uc.url, uc.govde ? uc.govde(o, ids) : {}, uc.kimlik || (() => null));
@@ -321,7 +321,7 @@ if (atlanan.length) console.log(`\nATLANAN OLAYLAR (${atlanan.length}) — sonu�
 // Mutasyon (testin dişi): kâhine bilerek hata → karşılaştırma sonucu (farklı denetimler kümesi) değişmeli. İki yerde denenir:
 //  a) bu koşunun gerçek program çıktısına karşı (atlanan olayların mutasyonu burada görünmeyebilir — bilgi),
 //  b) TAM senaryoda (bütün olaylar) kâhinin kendi çıktısından kurulan "kusursuz program"a karşı — her mutasyon burada YAKALANMALI.
-// 2.5.0 Ç5 mutantları (14–21, 32, 33: bu senaryoda; 22–31, 34 göç / Kasa açılışı elle senaryolarında — test/bagimsiz/defter/oz-test.py) — kahin.py MUTASYONLAR_250
+// 2.5.0 Ç5 mutantları (14–21, 32, 33: bu senaryoda; 22–31, 34 göç / Kasa açılışı elle senaryolarında, 35–38 bakım 2 elle senaryolarında — test/bagimsiz/defter/oz-test.py) — kahin.py MUTASYONLAR_250
 const MUTASYONLAR = { 11: "31b-MM3: satıştan iade 360 tarafında", 12: "31b-MM3: iade artı yazılır", 13: "31b-MM8: yevmiyede aynı gün sınıfsız yazım sırası", 1: "KDV dahil fiyatta KDV'yi brüt × oran ile hesapla", 2: "satıştan iade 610 yerine 600", 3: "stopaj 360 yerine 193", 4: "tevkifatlı satışta 391'e tam KDV", 5: "POS komisyonu yazılmaz", 6: "KDV mahsubunda devreden 190 kullanılmaz", 7: "stok açılışı deftere yazılmaz (MM4 öncesi)", 8: "yaşlandırmada faturasız bakiye atlanır (MM5 öncesi)", 9: "gecikme zammı 689 yerine 360", 10: "karşılıksız çek cariye yazılmaz",
   14: "D1 (30.10 B): açılış karşı hesabı 500", 15: "D2 (M-02 B): açıklaması 'açılış' ile başlayan yeni Borç / Alacak Yaz açılış sayılır", 16: "D3 (30.10 (1) B): açılış evrakı 602 / 770'e", 17: "D4 (S48 B): karşılıksız carisiz açılış evrakı gidere", 18: "D4 (S48): cari seçilse de 519", 19: "D5 (S49 B): formdan carisiz evrak 519'a", 20: "D5 (S49 C): formdan carisiz evrak 602 / 770", 21: "D9 (KG-5 B): Excel taksit kartı yeni satış", 32: "D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul", 33: "D10 (B11 B): açılıştan önceye alınan düzeltme kabul" };
 const imza = s => s.denetimler.filter(d => !d.ok).map(d => `${d.ad}=${d.program}/${d.beklenen}`).sort().join("|");

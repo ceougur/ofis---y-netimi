@@ -58,6 +58,9 @@ if (!["2.4.4", "2.4.5", "2.4.6", "2.4.9", "2.5.0"].includes(KURAL)) throw new Er
 const ONCEKI = { "2.4.6": "2.4.5", "2.4.9": "2.4.6", "2.5.0": "2.4.9" }[KURAL] || null;
 // 2.5.0 C13.5: carinin B1 gecikmiş tutarını cari kartı yanıtından okuyan eşleme — Ç5-B kod ajanı verir (ör. r => r.totals?.overdue); null → "okunamadı"
 const GECIKMIS_ALAN = null;
+// 2.5.0 bakım 2 C14.3 (KARARLAR.md §14): carisiz evrakın karşılıksızında programın "cari seç" sorusuna verilen yanıtın gövde alanı — Ç5-A kod ajanı verir
+// (ör. (a, ids) => ({ accountId: ids.cari[a.cari] })); null → `karsiliksiz {cari}` adımı GÖNDERİLMEZ, okuma hatası yazılır (sonuç yeşil sayılmaz)
+const KARSILIKSIZ_CARI = null;
 const VARSAYILAN = !dosyalar.length && !opt("--tohum");
 if (VARSAYILAN) dosyalar = readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).sort().map(f => path.join(HERE, "senaryolar", f));
 const TOHUM = opt("--tohum") || (VARSAYILAN ? "1-2" : null);
@@ -638,7 +641,11 @@ async function kos(senaryo) {
         case "tahsil":
         case "ciro": {
           const action = { karsiliksiz: "bounce", tahsil: "collect", ciro: "endorse" }[a.islem];
-          durum(a, await api("POST", `/api/workspace/cheques/${ids.evrak[a.evrak]}/actions`, { action, date: t, method: "cash", cashForce: true, ...(a.islem === "ciro" ? { accountId: ids.cari[a.cari] } : {}) }));
+          if (a.islem === "karsiliksiz" && a.cari && !KARSILIKSIZ_CARI) {
+            hatalar.push(`${a.id}: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi`);
+            break;
+          }
+          durum(a, await api("POST", `/api/workspace/cheques/${ids.evrak[a.evrak]}/actions`, { action, date: t, method: "cash", cashForce: true, ...(a.islem === "ciro" ? { accountId: ids.cari[a.cari] } : {}), ...(a.islem === "karsiliksiz" && a.cari ? KARSILIKSIZ_CARI(a, ids) : {}) }));
           break;
         }
         case "evrak_sil": {

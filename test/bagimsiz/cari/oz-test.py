@@ -5,7 +5,8 @@
   python3 -I test/bagimsiz/cari/oz-test.py
 
 1. Elle tablolar: senaryolar/*.json içindeki `elleBeklenen` (elle hesaplanmış beklenenler, kuruş) ↔ 2.5.0 kâhininin çıktısı; `elleCatal`: ÇATAL denetimlerin dalları.
-2. Mutantlar 200–213 (kâhinin dişi): her biri en az bir elle senaryoda 2.5.0 çıktısını DEĞERLE değiştirmeli (çökme de yakalandı sayılır — kos.mjs düzeni).
+   Bakım 2 (§14): hiçbir denetim SK-4 ÇATAL'ı taşımaz (S68 = A — ikinci dal yok).
+2. Mutantlar 200–218 (kâhinin dişi): her biri en az bir elle senaryoda 2.5.0 çıktısını DEĞERLE değiştirmeli (çökme de yakalandı sayılır — kos.mjs düzeni).
 3. Çapraz denetim: tek yükümlülük kuyruğu (C13.4 (2)(3)(4)) "saf" bir zaman çizelgesi simülasyonuyla — yalnız fatura / elle Borç / borçlu Açılış / tahsilat (bağlı ya da bağsız)
    olan carilerde (kart, iade, evrak, kapatıcı, ödeme, şüpheli YOK) — model.py'nin açık / Kalan değerleri bire bir aynı olmalı. Senaryolar: elle /3 dosyaları + uretici.py
    rastgele s1 ve ux18 (tohum 1–3 × 60).
@@ -45,6 +46,10 @@ def saf_tyk(m, cari):
     for hn, h in m.hareketler.items():
         if h["cari"] == cari and h["aktif"] and (h["tur"] == "borc" or (h["tur"] == "acilis" and h["yon"] == "borc")):
             kalem[hn] = [h["tarih"], h.get("vade") or h["tarih"], h["seq"], h["tutar"]]
+    for en, e in m.evraklar.items():
+        # bakım 2 C14.3 (S66 A + S1 A): carisiz evrakın karşılıksızında seçilen carinin ayrı borç kalemi — belge günü = vade = karşılıksız günü
+        if e["durum"] == "karsiliksiz" and e.get("karsiliksizCari") == cari:
+            kalem["kars:" + en] = [e["karsiliksizTarih"], e["karsiliksizTarih"], e["karsiliksizSeq"], e["tutar"]]
     para = []
     bagli = defaultdict(list)
     for tn, t in m.tahsilatlar.items():
@@ -136,6 +141,8 @@ def main():
                     degerler = [x.get(alan) for x in dallar]
                     ok = ok and (sorted(degerler) == sorted(beklenen) if isinstance(beklenen, list) else all(x == beklenen for x in degerler))
             denetle("%s %s ÇATAL" % (ad, k), ok, json.dumps(g, ensure_ascii=False)[:300])
+        sk4 = [k for k, v in out.items() if "ÇATAL SK-4" in v.get("k", "")]
+        denetle("%s SK-4 ÇATAL yok (S68 = A)" % ad, not sk4, ",".join(sk4[:5]))
     # 2. mutantlar 200–213
     for n, ad in M.MUTASYONLAR.items():
         if n < 200:
@@ -176,10 +183,12 @@ def main():
             beklenen = saf_tyk(m, cari)
             model_acik = dict(m.aciklar(cari))
             model_acik.update(m.kalanlar(cari))
+            model_acik.update({k_: v_ for k_, v_ in m.tyk250(cari)["kuyruk"].items() if k_.startswith("kars:")})  # bakım 2 C14.3 kalemi
             for kad, v in beklenen.items():
                 capraz += 1
                 denetle("%s %s %s saf TYK" % (ad, cari, kad), model_acik.get(kad) == v, "saf %s · model %s" % (v, model_acik.get(kad)))
-            vadesiz = not any(h["cari"] == cari and h.get("vade") for h in m.hareketler.values())
+            vadesiz = not any(h["cari"] == cari and h.get("vade") for h in m.hareketler.values()) \
+                and not any(e.get("karsiliksizCari") == cari for e in m.evraklar.values())  # C14.3 yalnız 2.5.0'da (2.4.9'da yok)
             if vadesiz:
                 a249 = dict(m249.aciklar(cari))
                 a249.update(m249.kalanlar(cari))

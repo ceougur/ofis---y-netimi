@@ -151,8 +151,9 @@ Kural seti adı değişmedi: **`2.5.0`** varsayılan = bakım 1 + bu bölüm; **
 karşılıksız kabul (madde donmuş döneme yazılır). `kos.mjs` "tam senaryo" listesine EKLENMEDİ (olayları `senaryo.json`'da değil — 22–31, 34 gibi elle senaryolarda).
 
 ### Değişen eski beklentiler (G3)
-YOK — eski senaryolarda ortada geçen açılış açıklaması ve carisiz evrak karşılıksızı yoktu (bakım 1 kâhini bu durumlarda HATA veriyordu); `senaryo.json` ve g1–g5'in 2.5.0 çıktısı bayt bayt
-aynı kalmalı (kanıtta), `--kural 2.4.9` bayt bayt aynı.
+YOK — eski senaryolarda ortada geçen açılış açıklaması ve carisiz evrak karşılıksızı yoktu (bakım 1 kâhini bu durumlarda HATA veriyordu); `senaryo.json` (+ 2.5.0 olayları çıkarılmış 2.4.3 olay
+dili hâli) ve g1–g5'in 2.5.0 ve 2.4.9 çıktısı, mutasyonsuz ve 1–34 mutantlarıyla, bakım 1 kâhiniyle (`a5a89a1f`) bayt bayt AYNI: 490/490 (kanıt `docs/kanit/2026-11-06/kahineski2-esdeger-defter-*`).
+Yeni senaryolar bakım 1 kâhininde beklenen NEDENLE çöker (ders 7, 38): g6 "SK-1 … ortada geçen eski kayıt ('2025 açılış farkı')", g7 / g8 "SK-2 … carisiz (açılış değil) evrakın karşılıksızı".
 
 ### Eşleme notları (Ç5-A kod ajanı için; `kos.mjs`)
 - S66 cari seçimi bakım 1'in S48 eşlemesini kullanır: `karsiliksiz {cek, tarih, cari}` → `UCLAR.karsiliksiz_cari` (uç adı Ç5-A'da verilir; verilene kadar olay ATLANAN, sonuç yeşil sayılmaz);

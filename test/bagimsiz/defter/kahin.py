@@ -36,6 +36,9 @@
 #   (alınan B 101|121 / A 519, verilen B 519 / A 103|321) · D4 S48 karşılıksız carisiz açılış evrakı (cari seçilirse B CH, seçilmezse B 519) · D5 S49 formdan carisiz
 #   evrak (alınan A 649, verilen B 770) · D6 göç "Açılış Olabilir" (KG-16, S47, S51, B6, B8, S53) · D7 kilitli dönem 2.4.9 kuralıyla donar (Ç3, S13, B15) · D8 Kural
 #   Farkı Düzeltme Fişi (KG-15, M7, B16) · D9 KG-5 Excel taksit kartı B CH (T − P) / A 519 · D10 S12 / B11 Kasa açılışından önce tarihli hareket / düzeltme ret.
+# 2.5.0 Ç5 bakımı 2 (06.11.2026; KARARLAR.md "2.5.0 Ç5 bakımı 2" — kodu görmeyen AYRI el; KULLANICI S65 = A, S66 = A):
+#   D6′ "Açılış Olabilir" adayı yalnız açıklaması "Açılış…" ile BAŞLAYAN eski kayıt (ortada geçen aday değil — SK-1 kapandı) · D4′ formdan carisiz ALINAN evrakın karşılıksızı:
+#   cari seçilirse B CH / A 101|121 (cari borçlanır), seçilmezse B 649 / A 101|121 (S49 geliri geri alınır) — SK-2 kapandı; Y2 (kitap G-7): kilitli dönem içinde tarihli karşılıksız ret.
 #
 # Kullanım: python3 -I kahin.py senaryo.json [--yapilan yapilan.json] [--mutasyon N] [--kural 2.5.0|2.4.9] > beklenen.json
 import json
@@ -70,6 +73,11 @@ MUTASYONLAR_250 = {
     32: "D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul",
     33: "D10 (B11 B): Kasa hareketinin tarihini açılıştan önceye alan düzeltme kabul",
     34: "D10 (EK-2B 33 B): Kasa açılışının tarihi Kasa'nın ilk hareketinden sonra olabilir",
+    # bakım 2 (KARARLAR.md "2.5.0 Ç5 bakımı 2")
+    35: "D6′ (S65 B): açıklamasında 'açılış' ORTADA geçen eski kayıt da aday",
+    36: "D4′ (S66 B): carisiz evrakın karşılıksızı, cari seçilmezse gidere (B 770 / A 101)",
+    37: "D4′ (S66): cari seçilse de cari borçlanmaz (B 649 / A 101)",
+    38: "D4′ Y2 (G-7 B): kilitli dönem içinde tarihli karşılıksız kabul (madde donmuş döneme yazılır)",
 }
 ACILIS_TURLERI = ("kasa_acilis", "banka_hesap", "urun", "cari_acilis", "borc_yaz", "alacak_yaz", "acilis_evrak", "cek_carisiz", "excel_taksit_karti")
 
@@ -88,8 +96,9 @@ def tr_katla(metin, katla=True):
     return s
 
 def kg16_aday(aciklama, mut=0):
-    """D6 KG-16 A + B6: açıklama "Açılış" ile BAŞLIYOR mu (Türkçe katlamayla; "Devir" / "Devreden" girmez). Ortada geçen "açılış" SK-1 (kâhin kurmaz).
-    Mutant 24: katlama yok (yalnız "Açılış"ın Türkçe küçük harfi tam); 25: "Devir" / "Devreden" de aday."""
+    """D6 KG-16 A + B6: açıklama "Açılış" ile BAŞLIYOR mu (Türkçe katlamayla; "Devir" / "Devreden" girmez). D6′ [KULLANICI S65 A, bakım 2]: ortada geçen "açılış"
+    ("2025 açılış farkı") aday DEĞİL (sıradan Borç / Alacak Yaz). Mutant 24: katlama yok (yalnız "Açılış"ın Türkçe küçük harfi tam); 25: "Devir" / "Devreden" de aday;
+    35 (S65 B): ortada geçen de aday."""
     if mut == 24:
         return str(aciklama or "").strip().startswith("Açılış")
     k = tr_katla(aciklama)
@@ -97,8 +106,8 @@ def kg16_aday(aciklama, mut=0):
         return True
     if k.startswith("acilis"):
         return True
-    if "acilis" in k:
-        raise SystemExit("SK-1 KULLANICIYA SORULMALI: açıklamasında 'açılış' ortada geçen eski kayıt (%r) — kâhin bu durumu kurmaz" % aciklama)
+    if mut == 35 and "acilis" in k:
+        return True
     return False
 
 
@@ -444,11 +453,31 @@ def hesapla(sen, yapilan=None, mut=0, kural=VARSAYILAN_KURAL):
         elif tur == "tahsile_ver":
             ck = cekler[o["cek"]]; ck["durum"] = "bankada"
             fis(t, oid, B(ck["hesap"], ck["tutar"]), A(ck["hesap"], ck["tutar"]))
+        elif tur == "karsiliksiz" and Y and donmus(t) and mut != 38:
+            # D4′ Y2 (kitap G-7, bakım 2): kilitli dönem içinde tarihli karşılıksız reddedilir — kilitli dönemde kaynak değişmez, madde yazılmaz, evrak ve cari aynı
+            # (bakım 1'in kilitli kaynak `kayit_sil` reddiyle aynı düzen). Mutant 38: kabul.
+            retler.append(oid)
+            continue
         elif tur == "karsiliksiz":
             ck = cekler[o["cek"]]; x = ck["tutar"]
             if ck["cari"] is None:
                 if ck.get("tur") == "cek_carisiz":
-                    raise SystemExit("SK-2 KULLANICIYA SORULMALI: formdan girilmiş carisiz (açılış değil) evrakın karşılıksızı — kâhin bu durumu kurmaz")
+                    if ck["durum"] == "verildi":
+                        raise SystemExit("D4′: verilen carisiz evrak karşılıksız dönmez (kararda yok) — kâhin kurmaz")
+                    if goc_i is not None and not kaynak_goc_gecti[0]:
+                        raise SystemExit("D4′: göç öncesi (2.4.9'un yazdığı) carisiz evrak karşılıksızının eski karşılığı kararda yok — kâhin kurmaz")
+                    # D4′ S66 A [KULLANICI 06.11 12:16, bakım 2]: program cariyi sorar; seçilirse cari borçlanır B CH / A 101|121 (S49'un 649'u yerinde), seçilmezse
+                    # B 649 / A 101|121 (S49 geliri geri alınır). Y1: donmuş eski evrakta da 649 (karar hesabı açıkça veriyor). Mutant 36 (S66 B): seçilmezse 770; 37: seçilse de borçlanmaz.
+                    secilen = o.get("cari") if mut != 37 else None
+                    if secilen:
+                        fis(t, oid, B(ch(secilen), x), A(ck["hesap"], x)); cari[secilen] += x
+                        ck["cari"] = secilen
+                    else:
+                        fis(t, oid, B("770" if mut == 36 else "649", x), A(ck["hesap"], x))
+                    ck["durum"] = "karsiliksiz"
+                    if tur in PARA:
+                        sinif_gun[t].append("para")
+                    continue
                 # D4 S48 A: program cariyi sorar; seçilirse cari borçlanır, seçilmezse B 519 / A 101|121 ("açılış geri alınmış")
                 secilen = o.get("cari")
                 if secilen and mut != 18:

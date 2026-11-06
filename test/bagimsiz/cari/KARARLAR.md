@@ -1,6 +1,6 @@
 # Bağımsız CARİ / EVRAK kâhini — kurallar ve kararlar (2.4.4 madde 31a, B1–B2)
 
-Kural seti (06.11.2026): **`2.5.0`** varsayılan (2.4.9 + Ç5: açılış 519, KG-5, S49, tek yükümlülük kuyruğu S50 / S2 / ANINDA, B1 gecikmiş S52 — §13); (03.11.2026): **`2.4.9`** (2.4.6 + C1 hareketli cari silinemez — §12); 25.10.2026: **`2.4.6`** (2.4.5 + KS8–KS10 — §9; dil `/3` aynı, iki ek: `iade {geri}`, adımda `catal`); `--kural 2.4.5` 2.4.5 beklentilerini bayt bayt verir,
+Kural seti (06.11.2026): **`2.5.0`** varsayılan (2.4.9 + Ç5: açılış 519, KG-5, S49, tek yükümlülük kuyruğu S50 / S2 / ANINDA, B1 gecikmiş S52 — §13; bakım 2: S68 borç tarafı vade sırası, S67 takvim kalemi, S66 carisiz evrakın karşılıksızı — §14); (03.11.2026): **`2.4.9`** (2.4.6 + C1 hareketli cari silinemez — §12); 25.10.2026: **`2.4.6`** (2.4.5 + KS8–KS10 — §9; dil `/3` aynı, iki ek: `iade {geri}`, adımda `catal`); `--kural 2.4.5` 2.4.5 beklentilerini bayt bayt verir,
 `--legacy` 2.4.4. Dil: **`destekofis-cari/3`** (24.10.2026, 2.4.5 kuralları — §8; `/1` `/2` senaryoları değişmeden koşar ya da 2.4.5 kararıyla geçersiz diye atlanır — §8 C0) · `/2`: 23.10.2026, B3–B5 · İlk yazıldığı gün: 22.10.2026 · Kâhin: `model.py` (Python 3, yalnız standart kütüphane, `python3 -I`) ·
 Koşucu: `kos.mjs` · Rastgele üretici: `uretici.py` · Elle senaryolar: `senaryolar/*.json` · Komut: `node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs` (npm betiği `test:kahin-cari`, iş akışına eklenirken açılır: test/ci-kapi-listesi.test.mjs her test:kahin-* betiğinin ci.yml ya da uzun-dogrulama.yml'de koşmasını ister).
 
@@ -1100,7 +1100,20 @@ gider (B 770 / A 101) · 217 S66: cari seçilse de borçlanmaz (B 649 / A 101) �
 - Tedarikçide alış iadesi + bağsız Ödeme + vadeli alış faturası birlikte (kaynaklar arası öncelik 2.4.9 — kararda yok; d9'da alış iadesi yok).
 - Program koşulmadı (görev: CI ayrışmayı Ç5-A ile görür).
 
-### C0g Değişen eski beklentiler (G3; bakım 1 ↔ bakım 2 kâhin çıktısı, `2.5.0`) — dökümü kod commit'inde (aşağıya eklenir)
+### C0g Değişen eski beklentiler (G3; bakım 1 `a5a89a1f` ↔ bakım 2 kâhin çıktısı, `2.5.0`; eski elle senaryolar + rastgele s1 / ux18 tohum 1–10 × 120) — kararla ilgisiz eski beklenti DEĞİŞMEDİ
+Toplam 895 denetim satırı (elle 34, rastgele s1 861, rastgele ux18 0); dökümü kanıtta (`docs/kanit/2026-11-06/kahineski2-esdeger-cari-*`).
+- **C14.1 (S68 A) — SK-4 ÇATAL → A dalı (vade sırası):** 798 (c13-ks83-ayni-gun-sira S7: `hareket:a7:kalan` 30.000, `acikToplam` −30.000, `acikEsitBakiye` true, takvim / Vade Takip /
+  projeksiyon kalemi a7 ve sayaçları — 8; rastgele s1 790: alış faturası açıkları, elle Alacak / alacaklı Açılış Kalan'ları, takvim / projeksiyon kalemleri). Bakım 1'in "yalnız A dalında tanımlı
+  denetimi silme"si kalktı → c13 S7'nin `takvim|vadeTakip|projeksiyon:cariToplam:S7` = −30.000 YENİDEN yazılır (3). c13 S8 a8'in dört denetiminde etiket YAYGIN → BAŞ MİMAR (değer aynı; `ks8_sinif`'in
+  "aynı tarihte" nedeni 2.5.0'da düştü — C14.1). Senaryonun açıklamasındaki S7 "Alacak önce yazıldı → Alacak 0" 2.4.9 beklentisidir (2.4.9 kipinde aynen).
+- **C14.2 (S67 A) — C13.6 ÇATAL → S67 değeri:** 28 (c6-cari-vade-fifo b1 / b5 — 14, d7-c5-s52-gecikmis a1 — 1, rastgele s1 13): `state` "overdue", `days` vadeden.
+- **SK-5 (yeni soru) — K6.3 tek değeri → ÇATAL {K6.3, S67}:** söz GEÇMİŞ kalem 42 (c10-ks10 bh2 k1/k2/k3/k5 — 4, rastgele s1 38) + iki sorunun BİRLİKTE değdiği 19 (rastgele s1: bakım 1'de SK-4 ÇATAL'ı
+  {kalem, "yok"}, şimdi SK-5 ÇATAL'ı — tutar A dalınınki) + söz BUGÜN kaleminin kural metni 1 (değer aynı ÇATAL). Bu bir ZAYIFLAMADIR (bakım 1 söz geçmiş kalemi K6.3 ile kesin bekliyordu):
+  gerekçe S67 A'nın "ileri tarihli" sözünün iki okuması (§14 KULLANICIYA SORULMALI SK-5); ÇATAL'ın bir dalı bakım 1'in beklentisidir.
+- **DEĞİŞMEYEN (komşu — ders 10):** müşteri tarafının sırası (C13.4 (2)–(4)), B1 gecikmiş, mizan, KG-5, kart ödenenleri; d1–d8'in `elleBeklenen`'i (d7'nin ÇATAL'ı dışında) aynen geçer; rastgele ux18
+  (vadesiz) hiç değişmedi. `--kural 2.4.9` / 2.4.6 / 2.4.5 / `--legacy`: 289/289 bayt bayt aynı (üretici 20/20 aynı dizi).
+- **Yeni senaryolar eski (bakım 1) kâhinde — beklenen NEDENLE farklı (ders 7, 38):** d9 27 denetim (her biri SK-4 ÇATAL'ı — ör. `fatura:AF1:acik` {0, 20.000}, `hareket:acilis:T3:kalan` {40.000, 10.000});
+  d10 6 denetim C13.6 ÇATAL'ı + d1 (söz geçmiş) K6.3 tek değeri; d11 15 denetim: mizan YAZILMIYOR (SK-2 `belirsiz`), seçilen cariler borçlanmıyor (A −200 / B 400 / T 0), gecikmiş 0 / 400 / 0.
 
 ### Eşleme notları (Ç5-A / Ç5-B kod ajanı için; `kos.mjs`)
 - `karsiliksiz {evrak, cari}` (carisiz evrakta cari seçimi): gövde alanı Ç5-A'da verilir — `kos.mjs` `KARSILIKSIZ_CARI` eşlemesi (verilene kadar adım GÖNDERİLMEZ, okuma hatası yazılır; sonuç yeşil
