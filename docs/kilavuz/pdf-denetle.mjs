@@ -44,7 +44,7 @@ check(sha(docBuf) === sha(appBuf), `client/kilavuz kopyası aynı dosya (sha256 
 // Programın Yardım yolu: gerçek sunucu, sol menü → Kullanım Kılavuzu.
 const root = mkdtempSync(path.join(tmpdir(), "kilavuz-pdf-"));
 const PASS = "Kilavuz-Admin-2026";
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "b"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "7f3a91c24be05d6e8a1b2c3d4e5f6073" } });
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "b"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "7f3a91c24be05d6e8a1b2c3d4e5f6073" } });
 const { port } = await app.listen(0, "127.0.0.1");
 const base = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();
