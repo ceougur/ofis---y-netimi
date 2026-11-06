@@ -21,11 +21,11 @@ Program (JavaScript) ayrı bir sürücü ajanıyla bu senaryolara karşı koşul
 | Dosya | Ne |
 |---|---|
 | `model.py` | Model: hesap planı (§2 + 671 / 681), olay → madde (§3), mizan, büyük defter, gelir tablosu (MSUGT, 7/A), bilanço (ters bakiye brütleştirme, hesaplanmış satırlar, Kesin Değil), dönem sonu değerleme (§5), **Tek Yükümlülük Kuyruğu** (EK-1 §1: açık kalemler, gecikmiş, hatırlatma, şüpheli kuyruğu), kapanış (Önceki Yıl Sonucu Fişleri + N-01…N-07), devir açılışları (N-09…N-13; M2/M3/M12/M13), Devri Yenile (N-14, M9), Devri Geri Al (N-15), dönem kilidi + 2.4.9 donmuş defter + Kural Farkı Düzeltme Fişi (Ç3, KG-15, M7), KDV dönem etiketi (M8, S4), şüpheli kayıtları (K3), değişmezler |
-| `senaryolar_elle.py` | 63 elle doğrulanabilir senaryo (s01…s62; s26 iki seçenekli); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
-| `uretici.py` | Tohumlu rastgele üretici: bir yıl (~800 olay) + K sonrası Ocak + devir + devirden sonra kayıt + Devri Yenile; tohum 1, 2, 3 |
+| `senaryolar_elle.py` | 65 elle doğrulanabilir senaryo (s01…s64; s26 iki seçenekli); her birinde ELLE hesaplanmış beklenenler ("elle", hesap yorumda) |
+| `uretici.py` | Tohumlu rastgele üretici: bir yıl (~800 olay) + K sonrası Ocak (+ zorla S11: K'den önce alınmış evrak 20.01'de karşılıksız) + devir + devirden sonra kayıt + Devri Yenile; tohum 1, 2, 3 |
 | `uret_beklenen.py` | `senaryolar/<ad>.json` (kendi kendine yeten senaryo: tanımlar + olaylar + dallar + elle) ve `senaryolar/beklenen/<ad>.json` (her dal için modelin tam çıktısı) yazar / `--denetle` |
-| `test_model.py` | 114 test: yardımcılar, olay → madde birim testleri, 63 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü), dosya güncelliği |
-| `mutasyon.py` | 126 metin mutantı (model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
+| `test_model.py` | 117 test: yardımcılar, olay → madde birim testleri, 65 elle senaryo (her dal + bütün değişmezler), 3 rastgele tohum (devirli = AYNI kilitli devirsiz dahil), değişmez denetçilerinin dişi, senaryo hijyeni (VUK sıra-tarih, K-14 tarihi, POS valörü iş günü), dosya güncelliği |
+| `mutasyon.py` | 135 metin mutantı (model.py kaynağında tek kural bozulur); her biri en az bir testte KIRMIZI olmalı |
 
 ## Çalıştırma
 ```
@@ -34,8 +34,8 @@ python3 test/bagimsiz/muhasebe/mutasyon.py            # testin dişi (çıkış 
 python3 test/bagimsiz/muhasebe/uret_beklenen.py       # senaryo + beklenen dosyalarını yeniden yaz (model değişince)
 python3 test/bagimsiz/muhasebe/uret_beklenen.py --denetle
 python3 test/bagimsiz/muhasebe/uretici.py 2           # tek tohum özeti
-# kanıt: node tools/kanit.mjs kos kahin2-test -- python3 test/bagimsiz/muhasebe/test_model.py
-#        node tools/kanit.mjs kos kahin2-mutasyon -- python3 test/bagimsiz/muhasebe/mutasyon.py
+# kanıt: node tools/kanit.mjs kos kahin3-test -- python3 test/bagimsiz/muhasebe/test_model.py
+#        node tools/kanit.mjs kos kahin3-mutasyon -- python3 test/bagimsiz/muhasebe/mutasyon.py
 ```
 
 ## Senaryo dili (sürücü bunu programın API'sine çevirir)
@@ -89,7 +89,7 @@ Devir Bakiyesi, acik_kalemler, satirlar [tarih, aciklama, borc, alacak, vade, ba
 stok, eksi_stok, N13 (191 / 391 "hesap@dönem")}, degismezler; Devri Yenile ayrıca fark, gecikmis_degisen {cari: {once, sonra}}, bag_degisen {kayıt: {once, sonra}}, uyarilar.
 Kesin Değil kodları: `TAMAMLANMAMIS_ACILIS, SATISLARIN_MALIYETI_TAHMINI, SATISLARIN_MALIYETI_HESAPLANMADI, EKSI_KASA, EKSI_STOK, TERS_BAKIYE:<hesap>,
 BORCLU_360, KAPANMAMIS_ONCEKI_YIL, KURAL_DEGISIKLIGI_FARKI, SINIFLANDIRILMAMIS_TAHSILAT, BILGI_AMACLI, AKTIF_PASIF_FARKI, KDV_MAHSUBU_GUNCEL_DEGIL:<ay>,
-ARALIK_KDV_MAHSUBU_YAPILMAMIS`. Red kodları (program 4xx): `KILITLI_DONEM, KASA_ACILIS_TEKRAR, KASA_ACILIS_SONRA, SUPHELI_FAZLA, KARSILIK_FAZLA,
+ARALIK_KDV_MAHSUBU_YAPILMAMIS`. Red kodları (program 4xx): `KILITLI_DONEM, KASA_ACILIS_TEKRAR, KASA_ACILIS_SONRA, KASA_ACILIS_ONCE (bakım 3, S12), SUPHELI_FAZLA, KARSILIK_FAZLA,
 SUPHELI_YOK, SUPHELI_NORMAL_ASIM, EVRAK_DURUMU, KDV_MAHSUP_TEKRAR, KDV_MAHSUP_BOS, ZATEN_TERS, ESLESTIRME_HESAP, ESLESTIRME_TERS, KG15_B_DUZELTILMEZ,
 KURAL_FARKI_YOK, DEVIR_YENILE_CAKISMA, DEVIR_K_31_ARALIK, DEVIR_K_GELECEK` (SUPHELI_TAHSILAT_FAZLA kalktı: K3'te aşan kısım 120'ye).
 
@@ -283,11 +283,11 @@ gecikmiş tutarı (iki tarihte) aynı.
 - Tohumlu senaryolar: üretici değişti (kayıt kimliği, devirsiz koşu L = K) → `rastgele-*.json` ve beklenenleri yeniden üretildi (sayı değil, değişmez denetlenir).
 
 ### KULLANICIYA SORULMALI / KÂHİN SUSUYOR (kodlanmadı ya da yalnız gözlem)
-1. **S8 ↔ kilit (KULLANICIYA SORULMALI; para + kime hatırlatma):** çek / senet kilitli (ya da devredilmiş) dönemde faturayı kapattı, kilitten SONRA karşılıksız döndü. A (öneri): karar (3)'ün
+1. ÇÖZÜLDÜ (kullanıcı 06.11 03:35 S11 = A; bakım 3 T1–T8). **S8 ↔ kilit (KULLANICIYA SORULMALI; para + kime hatırlatma):** çek / senet kilitli (ya da devredilmiş) dönemde faturayı kapattı, kilitten SONRA karşılıksız döndü. A (öneri): karar (3)'ün
    ilkesiyle kilitli dönemdeki kapanış değişmez — fatura yeniden açılmaz, karşılıksız tutar ayrı borç (vade karşılıksız günü, M1c); devirli ve devirsiz dosya aynı sonucu verir. B: S8 harfiyen —
    fatura kendi vadesiyle yeniden açılır; devirli dosyada fatura arşivde olduğu için devir "evrakın kapattığı kalemleri" ayrıca taşımalı (D4'e iş), yoksa M2 bozulur. KÂHİN: bu durumda
    kuyruk ayrı kalem kurar ama sonucu kural saymaz (`kahin_susuyor` listesi, `gecikmis` raporunda); hiçbir senaryo bunu ölçmez.
-2. **Kasa açılışından ÖNCE tarihli yeni Kasa hareketi (KULLANICIYA SORULMALI; Kasa tutarı):** EK-2B 33 notu "kural metni yok". A (öneri): banka gibi reddedilir. B: bankadaki
+2. ÇÖZÜLDÜ (kullanıcı 06.11 03:35 S12 = A; bakım 3 T9–T13). **Kasa açılışından ÖNCE tarihli yeni Kasa hareketi (KULLANICIYA SORULMALI; Kasa tutarı):** EK-2B 33 notu "kural metni yok". A (öneri): banka gibi reddedilir. B: bankadaki
    "Hesapsız (Açılıştan Önce)" gibi karşılığı 519. Model reddetmiyor; değişmez `kasa_acilis_ilk` böyle bir hareketi HATA sayar (senaryo yok).
 3. **Fatura durumunda Alacak Yaz / Borç Yaz (sunum, baş mimar):** 2.0.17 "borç kaydı ödeme sayılmaz … satış tarafında simetrik" ifadesi Alacak Yaz'ın satış faturasını kapatıp kapatmadığını
    açık bırakıyor. Model: karar (5) yalnız karşı yönlü FATURA eşleşmesini Mahsup Et'e bağladı → Alacak Yaz fatura durumunu kapatır (eski beklentiler korunur). Gecikmişi değiştirmez.
@@ -383,3 +383,37 @@ hareketi bankadaki gibi reddedilir (banka bugün 409 bank-before-opening)". S8 (
    senaryo yok; değişmez `kasa_acilis_ilk` bu durumu HATA sayar.
 4. Kâhinin ölçmediği sunum (para değil, baş mimar): karar (3) "program bunu kayıtta yazar" der; S11 için bir ileti ("Bu fatura kilitli dönemde kapanmış; karşılıksız tutar ayrı borç olarak
    yazıldı") karar metninde yok → kâhin ölçmez (`kilit_bag_notu` yalnız R3'ün bağları).
+
+### Elle beklenenlerin yazılış sırası (bakım 3)
+- cb57123f: yorum (yukarıdaki T1–T13), s63, s64, `test_S11_avans_kahin_susar` ve `test_kasa_acilis_ilk_hareketten_sonra_yakalanir`'ın yeni beklentisi model DEĞİŞTİRİLMEDEN ÖNCE
+  commit'lendi. Eski modelle 117 testten 5'i beklenen nedenle kırmızı (`docs/kanit/2026-11-06/kahin3-eski-model-kirmizi.*`): s63 yalnız `kahin_susuyor` ("S8_KILIT") ile — sayıların
+  hepsi elle değerlerle aynıydı (eski modelin susma yolu M1c'yi hesaplıyordu); s64 reddedilmeyen hareketlerle (`EVRAK_DURUMU`, Kasa 17210 ≠ 16250); avans birimi "S8_KILIT" ≠ "S11_AVANS";
+  Kasa değişmezi birimi red yok; dosya güncelliği. Model değiştikten sonra hiçbir elle değer değişmedi.
+
+### Yeni senaryolar, testler ve mutasyonlar
+- Elle senaryolar: s63 (S11 — C1 iki bağlı çek, biri ciro; C2 kilit günü / L+1; C3 kısmi kapanış + kilitli dönemde dönen çek (S8); T1 ciro dönüşü; devirden önce ve sonra aynı
+  değerler), s64 (S12 — açılışsız Kasa, R8, açılış günü, bir gün önce, nakit tahsilat / ödeme, çekin Kasa'dan tahsili, düzeltme, öne alınan açılış).
+- Birim: `test_S11_avans_kahin_susar` (yeni), `test_kasa_acilis_ilk_hareketten_sonra_yakalanir` (S12 reddi + değişmezin dişi doğrudan eklemeyle). Toplam 117 test (114 + s63 + s64 + 1).
+- Üretici: her tohumda K'den önce tahsilatla alınmış ilk portföy / tahsilde evrak 20.01'de karşılıksız (tohum 1 C4, 2 C2, 3 C2; üçünde de evrak L'de tamamen dağılmış → S11 kuralı,
+  susma yok); devirli (M1c) = devirsiz L = K (S11) `gec_ocak` / `gec_son` ve değişmez m2 ile karşılaştırılır.
+- Mutantlar (9 yeni, liste 135): B31 (S11 yok — S8 harfiyen), B31b (kilit günü dahil değil), B31c (tedarikçi tarafı S8'le geri alınır), B31d (avansta susmaz), B32 (M1c ayrı borç hiç
+  gecikmez), B33 (S12 yok), B33b (açılış günü de red), B33c (düzeltmede S12 yok), B33d (yalnız Kasa Giriş / Çıkış Kasa hareketi). Kodu değişen eski mutant: B11'in metni (`dg["tarih"]`).
+
+### Sürücü için (programla karşılaştırmadan önce)
+- Yeni red kodu `KASA_ACILIS_ONCE`: Kasa'ya yazan bir kaynak (ya da `duzenle`) Kasa açılış tarihinden ÖNCE tarihliyse, kaydın tamamı (program 409; bankanın `bank-before-opening`
+  karşılığı — program kodu sürücüde eşlenir). s64'te nakit tahsilat / ödeme cariye de yazılmaz (bakiye 0 / 1000 elle değerde).
+- Yeni olay türü / alan YOK. S11 mevcut olaylarla: `donem_kilitle` → kilitten sonra `evrak_karsiliksiz` (ciroda `odeme yol ciro` evrakı). Devirli kontrol: aynı olaylar, `devir`
+  karşılıksızlardan SONRA (s56 deseni); devirsiz eş aynı kilitle (L = K).
+- `gecikmis.kahin_susuyor`: [{kaynak, evrak_kaynak, neden "S11_AVANS", tutar}] → bu carinin o tarihteki gecikmiş / açık kalem karşılaştırması atlanır (KULLANICIYA SORULMALI 1).
+  "S8_KILIT" nedeni kalktı.
+- Model dilinde faturanın formdaki peşin ödemesi AYRI tahsilat olayıdır (`fatura_odemesi`); programda tek kayıt olabilir → S12 reddi programda faturanın tamamını, modelde yalnız peşin
+  tahsilatını reddeder. Hiçbir senaryo açılıştan önce nakit peşinli fatura girmez; sürücü eşlerken dikkat.
+- s64'te banka hesabı kullanılmadı (bankanın kendi açılış reddi kâhinde modellenmez); havale / POS / kart açılıştan önce de kabul sayılmaz — senaryoda yok.
+
+### DENENMEYEN (bu bakım)
+- Programla karşılaştırma (sürücü güncellemesi ayrı iş).
+- Evrakın kendisinin kısmen karşılıksız çıkması (model dilinde yok); K3 şüpheli caride S11 (128'e düşen evrak tahsilatı); S11 ile karar (3)'ün aynı faturada birlikte işlemesi; taksit kartı
+  tahsilatı çekinin kilitten sonra karşılıksızı (M1c zaten; kilitten bağımsız) — elle senaryo yok.
+- Kilit ilerletme / kaldırma (KULLANICIYA SORULMALI 2); S12'de geri yükleme (KULLANICIYA SORULMALI 3) ve düzeltmeyle yolun nakde çevrilmesi (model reddeder — T12 — ama senaryo yok);
+  Devri Yenile'nin arşivdeki Kasa düzeltmesi (genel kuralla reddedilir, senaryo yok).
+- Program iletisi (KULLANICIYA SORULMALI 4) ölçülmez.

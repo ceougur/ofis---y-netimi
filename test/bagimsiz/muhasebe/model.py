@@ -11,6 +11,8 @@ BAKIM (05.11.2026, ikinci tur): docs/erp/MUHASEBELESTIRME-KURAL-KITABI-EK-1.md (
 değil → Sınıflandırılmamış Tahsilatlar; carisiz Kasa girişi 649'da kalır").
 BAKIM 2 (05.11.2026, üçüncü tur): docs/erp/MUHASEBELESTIRME-KURAL-KITABI-EK-2B.md (23, 24, 28, 32, 33, 35, K-2, K-3) + EK-2'nin geçerli maddeleri
 (25–27, 29–31, 34, 36–40, K-1, E11–E25, §4) + ürün sahibinin 05.11 21:08 (S7, S8) ve 21:30 (1)–(7) kararları (hepsi A). Yorumlar README R1–R21.
+BAKIM 3 (06.11.2026, dördüncü tur): ürün sahibinin 06.11 03:35 S11 (kilitli dönemde evrakla kapanan fatura kilitten sonraki karşılıksızla
+yeniden açılmaz; karşılıksız tutar ayrı borç) ve S12 (Kasa açılışından önce tarihli Kasa hareketi reddedilir) kararları (A). Yorumlar README T1–T13.
 Saf Python, yalnız standart kütüphane. Para kuruş tamsayı; miktar Fraction.
 
 Yapı:
@@ -1205,7 +1207,7 @@ class Kuyruk:
         self.ev, self.simdi, self._j = -1, None, 0
         self.cakisma = defaultdict(int)              # (bağ olayı, öğe id) → bu turda bulunan yeni rezerv ihtiyacı
         self.notlar = []                             # karar (3): kilit nedeniyle geri alınmayan bağ
-        self.susulan = []                            # KÂHİN SUSUYOR durumları (README "Kâhin bakımı 2" soru 1)
+        self.susulan = []                            # KÂHİN SUSUYOR durumları (README "Kâhin bakımı 3" KULLANICIYA SORULMALI 1)
 
     def olay(self, ev, tarih):
         self.ev, self.simdi, self._j = ev, tarih, 0
@@ -1960,7 +1962,12 @@ class Dosya:
             if not es:
                 continue                              # evrakın tahsilatı bu dosyada yok (devirle gelen evrak) → M1c ayrı kalem
             if self.kilit is not None and es[0][0].tarih <= self.kilit < m.tarih:
-                susulan.append({"kaynak": m.kaynak, "evrak_kaynak": kk, "neden": "S8_KILIT"})   # KÂHİN SUSUYOR (README soru 1) → M1c
+                # S11 A (kullanıcı 06.11 03:35; README bakım 3 T1–T8): evrak kilitli (devredilmiş) dönemde alınıp orada TAMAMEN dağıldıysa kapanış
+                # değişmez — tahsilat (ciro ödemesi) kalemi kalır, karşılıksız / ciro dönüşü satırı tam tutar ayrı kalem (vade karşılıksız günü, M1c).
+                # L'de dağılmamış kısım (avans) varsa iki okuma (KULLANICIYA SORULMALI 1): sayı aynı, KÂHİN SUSUYOR "S11_AVANS"
+                acik = self.l_sonu_acik(c, hedef)
+                if acik:
+                    susulan.append({"kaynak": m.kaynak, "evrak_kaynak": kk, "neden": "S11_AVANS", "tutar": acik})
                 continue
             for mm, ii, ss in es:
                 cikar.add((mm.id, ii))
@@ -1988,6 +1995,11 @@ class Dosya:
                 olaylar.append(((tarih, 1, GUN_SINIFI["degersiz_yaz"] if tur == "degersiz" else 3, 2, seq, "", -1), "supheli", (tur, tut, kayit)))
         olaylar.sort(key=lambda x: (x[0][0], SINIF_SIRASI[x[0][1]]) + x[0][2:])
         return olaylar, susulan
+
+    def l_sonu_acik(self, c, hedef):
+        """S11 (README bakım 3 T1): evrakın tahsilat (ciro ödemesi) kaleminin kilit (L) günü sonundaki dağılmamış kalanı; 0 = bütün kapanışları
+        ≤ L günlerinde. Karşılıksız > L olduğundan L'nin kuyruğu bu evrakın karşılıksızını içermez (özyineleme bir düzey)."""
+        return sum(o["kalan"] for o in self.kuyruk(c, self.kilit).ogeler if o["k"] == hedef)
 
     def _oynat(self, c, olaylar, rezerv, fg):
         g = self.gecis()
@@ -2191,7 +2203,26 @@ class Model:
         d.kilit_denetimi(tarih)
         v = {k: x for k, x in o.items() if k not in ("tur", "tarih", "id")}
         self._denetle(tur, tarih, v, d)
+        if tur not in ("kasa_acilis", "devir_kasa"):
+            self._kasa_acilis_oncesi(d, tarih, lambda dd: dd.kaynak_ekle(tur, tarih, copy.deepcopy(v), o.get("id")).id)
         return d.kaynak_ekle(tur, tarih, v, o.get("id"))
+
+    @staticmethod
+    def _kasa_acilis_oncesi(d, tarih, dene):
+        """S12 A (kullanıcı 06.11 03:35; README bakım 3 T9–T13): Kasa açılışından ÖNCE tarihli Kasa hareketi reddedilir (409; bankadaki
+        bank-before-opening'in karşılığı) — yeni kayıt da düzeltme de, kaydın TAMAMI. Kasa hareketi = 100'e yazan her kaynak (("kasa",) modül
+        hareketi; R8 ve kasa_acilis_ilk ile aynı tanım). Aynı gün olur (açılış günün başı); açılışsız Kasa'da kural yok. dene(dd): kaydı
+        kopyaya uygular, kimliğini döndürür (kopyanın sayacı ayrı — asıl dosyanın sıra numaraları değişmez)."""
+        a0 = min((k.tarih for k in d.kaynaklar.values() if k.tur in ("kasa_acilis", "devir_kasa") and k.durum == "aktif"), default=None)
+        if a0 is None or tarih >= a0:
+            return
+        dd = d.kopya()
+        dd.sayac = Sayac()
+        dd.sayac.n = d.sayac.n
+        kid = dene(dd)
+        once = [t for (t, anah, _) in dd.gecis()._modk.get(kid, []) if anah == ("kasa",) and t < a0]
+        if once:
+            raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
 
     def _denetle(self, tur, tarih, v, d):
         """Olay anında reddedilmesi gereken istekler (program 4xx)."""
@@ -2239,15 +2270,24 @@ class Model:
 
     def _o_duzenle(self, o, d):                      # F-14, C-03
         k = self._hedef(o, d)
-        if "tarih" in o.get("degisiklik", {}):
-            d.kilit_denetimi(o["degisiklik"]["tarih"])
+        dg = o.get("degisiklik", {})
+        if "tarih" in dg:
+            d.kilit_denetimi(dg["tarih"])
             if k.tur == "kasa_acilis":               # EK-2B 33: ilk Kasa hareketinden SONRAYA alınamaz (aynı gün olur)
                 ilk = [x[0] for x in d.gecis().mod if x[3] == ("kasa",) and x[5] != k.id]
-                if ilk and o["degisiklik"]["tarih"] > min(ilk):
+                if ilk and dg["tarih"] > min(ilk):
                     raise Red("KASA_ACILIS_SONRA", f"ilk Kasa hareketi {min(ilk)}")
-            k.tarih = o["degisiklik"]["tarih"]
-        k.v.update({a: b for a, b in o.get("degisiklik", {}).items() if a != "tarih"})
+        if k.tur not in ("kasa_acilis", "devir_kasa"):   # S12 A + EK-2 §4 (8) (README bakım 3 T12): düzeltme de açılıştan önceye Kasa hareketi yazamaz
+            self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+        self._duzelt(k, dg)
         d.degisti()
+
+    @staticmethod
+    def _duzelt(k, dg):
+        if "tarih" in dg:
+            k.tarih = dg["tarih"]
+        k.v.update({a: copy.deepcopy(b) for a, b in dg.items() if a != "tarih"})
+        return k.id
 
     def _o_iptal(self, o, d):                        # F-15, D-03 (POS İptal Et)
         k = self._hedef(o, d)

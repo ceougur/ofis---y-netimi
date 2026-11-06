@@ -181,7 +181,7 @@ class Uretici:
         else:
             e = self.id("E")
             o["evrak"] = e
-            self.evrak[e] = {"durum": "portfoy", "yon": "alinan", "tutar": tut, "tur": yol}
+            self.evrak[e] = {"durum": "portfoy", "yon": "alinan", "tutar": tut, "tur": yol, "tarih": t}
         oid = self.id("P")
         self.ekle("tahsilat", t, id=oid, **o)
         if yol == "pos":
@@ -385,6 +385,16 @@ class Uretici:
             self.ekle("degersiz_yaz", t3, cari=c, kayit=kayit)
         self.cari[c] -= tut - tut // 3
 
+    def s11_karsiliksiz(self, K, t):
+        """Kâhin bakımı 3 (S11 A, README T6): K'den önce bir tahsilatla alınmış, portföyde / tahsilde duran evrak K'den sonra karşılıksız döner.
+        Devirsiz eş (L = K) S11 ile, devirli yeni yıl M1c ile aynı sonucu vermeli (gec_ocak / gec_son, değişmez m2). Rastgele sayı tüketmez."""
+        for e, v in sorted(self.evrak.items()):
+            if v["yon"] == "alinan" and v["durum"] in ("portfoy", "tahsilde") and v.get("tarih", "9999") <= K:
+                self.ekle("evrak_karsiliksiz", t, evrak=e)
+                v["durum"] = "karsiliksiz"
+                return e
+        return None
+
     def gunler(self, bas, son):
         g = datetime.date.fromisoformat(bas)
         bit = datetime.date.fromisoformat(son)
@@ -408,6 +418,7 @@ def uret(tohum, yil=2026, yogunluk=3):
     u.supheli_akisi(f"{yil}-07-01", f"{yil}-08-15", f"{yil}-11-20")
     u.gunler(f"{yil}-07-01", K)
     u.gunler(f"{yil + 1}-01-01", f"{yil + 1}-01-20")           # K sonrası, devirden önce girilen Ocak kayıtları
+    u.s11_karsiliksiz(K, f"{yil + 1}-01-20")                    # kâhin bakımı 3: kilitli dönemin evrakı kilitten sonra karşılıksız (S11)
     rap = [
         {"tur": "rapor", "ad": "gt_canli", "rapor": "gelir_tablosu", "bas": f"{yil}-01-01", "son": K},
         {"tur": "rapor", "ad": "bil_canli_K", "rapor": "bilanco", "tarih": K},
