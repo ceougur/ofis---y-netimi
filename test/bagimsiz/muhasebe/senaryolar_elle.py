@@ -3640,13 +3640,16 @@ S("s108-s85-normal-cari-tutar-tarih", ["S85", "S56", "S81", "K10-3", "T-13", "K3
     o("tahsilat", "2026-01-18", id="PKT", cari="C3", yol="havale", banka="B1", tutar=250, taksit_karti="TK3"), # kart (12.01) SB'den sonra → 120; C3: 120 −50
     MZ("mz0", "2026-01-01", "2026-01-31"),
     o("duzenle", kaynak="PN", degisiklik={"tutar": 101}),                              # 101 > 100 (PN hariç 10.01'de 120|C2): bir kuruş üstü → red
+    MZ("mza", "2026-01-01", "2026-01-31"),
     o("duzenle", kaynak="PN", degisiklik={"tutar": 99, "aciklama": "Düzeltme"}),       # bir kuruş altı (açıklama birlikte) → kabul (120|C2 1)
     o("duzenle", kaynak="PN", degisiklik={"tutar": 100}),                              # eşit → kabul (120|C2 0)
     o("duzenle", kaynak="PK", degisiklik={"tutar": 400}),                              # Normal Cari değil: S85 dışı → kabul (K3: 128 500)
     o("duzenle", kaynak="PC1", degisiklik={"tutar": 500}),                             # şüpheli kaydı olmayan cari → kabul (120|C1 0)
     MZ("mz1", "2026-01-01", "2026-01-31"),
     o("duzenle", kaynak="PT", degisiklik={"tarih": "2026-01-10"}),                     # geri: 10.01'de 120|C3 (PT hariç) 200 < 300 → red
+    MZ("mzb", "2026-01-01", "2026-01-12"),                                             # PT 16.01'de kaldı
     o("duzenle", kaynak="PT", degisiklik={"tarih": "2026-01-19"}),                     # ileri: 19.01'de 120|C3 (PT hariç) 500 − 250 = 250 < 300 → red
+    MZ("mzc", "2026-01-01", "2026-01-17"),                                             # PT 16.01'de kaldı
     MZ("mz2", "2026-01-01", "2026-01-31"),
     o("duzenle", kaynak="PT", degisiklik={"tarih": "2026-01-13"}),                     # 13.01'de 500 → kabul
     o("duzenle", kaynak="PT", degisiklik={"tarih": "2026-01-19", "tutar": 250}),       # yeni günde 250 = 250 → kabul (sınır yeni günde, K10-3)
@@ -3658,6 +3661,10 @@ S("s108-s85-normal-cari-tutar-tarih", ["S85", "S56", "S81", "K10-3", "T-13", "K3
     "mz0/satirlar/120|C2/bakiye": 50, "mz0/satirlar/128|C2/bakiye": 600, "mz0/satirlar/120|C3/bakiye": -50, "mz0/satirlar/128|C3/bakiye": 800,
     "mz0/satirlar/120|C1/bakiye": 400, "mz0/satirlar/102.B1/bakiye": 1000,
     "redler": ["SUPHELI_NORMAL_ASIM"] * 3,
+    # ilk redden sonra C2 değişmedi (PN 50)
+    "mza/satirlar/120|C2/bakiye": 50, "mza/satirlar/102.B1/bakiye": 1000,
+    # tarih redlerinden sonra PT 16.01'de: 12.01'de 120|C3 = 1000 − 800 + 300 = 500, 102.B1 = 500 + 100 + 400 = 1000; 17.01'de 120|C3 = 500 − 300 = 200, 102.B1 1300
+    "mzb/satirlar/120|C3/bakiye": 500, "mzb/satirlar/102.B1/bakiye": 1000, "mzc/satirlar/120|C3/bakiye": 200, "mzc/satirlar/102.B1/bakiye": 1300,
     # SONRA (C2 / C1): PN 100 → 120|C2 0; PK 400 → 128|C2 500; PC1 500 → 120|C1 0; 102.B1 = 500 + 100 + 400 + 300 + 250 = 1550
     "mz1/satirlar/120|C2/bakiye": 0, "mz1/satirlar/128|C2/bakiye": 500, "mz1/satirlar/120|C1/bakiye": 0, "mz1/satirlar/102.B1/bakiye": 1550,
     # iki tarih reddinden sonra C3 değişmedi
