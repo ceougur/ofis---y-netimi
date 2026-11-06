@@ -2074,7 +2074,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // coverState → paymentStates → accountSettleInput (carinin bütün defteri + çek olayları tam tarama) ve refundsFor (iade başına iki sorgu) yapılıyordu.
   // DAVRANIŞ AYNEN: aday listesi (aynı SQL, aynı sıra), karar kuralı, kesilen tutar, kilit denetimi, yazım ve iz değişmez. Değişen yalnız okuma:
   //   - geri ödenen iade toplamı bütün adaylar için tek sorguda (repairRefunds: refundOf / refundsFor ile aynı satırlar, aynı sıra, aynı yuvarlama);
-  //   - fatura durumu toplu kapamadan (allPaymentStates; "toplu yol = cari başına yol" değişmezi, test/kapama-tek-gecis-245) — yalnız ELEMEK için:
+  //   - fatura durumu toplu kapamanın kuralıyla, yalnız adayların carileri ve parça parça (repairScreen; "toplu yol = cari başına yol" değişmezi, test/kapama-tek-gecis-245) — yalnız ELEMEK için:
   //     onarım kararı çıkan her aday yazmadan önce cari başına yoldan (coverState, eski kodun okuması) yeniden okunur ve karar onunla yeniden verilir
   //     (yazılan tutar eski yolla birebir); bu açılışta onarım yazılan kartın carisinin ve kartı taşıyan faturaların carisinin sonraki adayları da
   //     cari başına yoldan okunur (toplu sonuç o cariler için bayat). Toplu durum yalnız iadesi geri ödenmiş aday varken bir kez hesaplanır.
@@ -2096,6 +2096,29 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     for (const [originalId, sum] of out) out.set(originalId, roundMoney(sum));
     return out;
   };
+  // Eleme durumu (yalnız verilen faturalar): toplu kapamanın girdisi ve kuralı (settleTables + batchSettleInput + settle; allSettled ile aynı), ama yalnız
+  // bu faturaların carileri ve cariler PARÇA PARÇA (REPAIR_CHUNK) — 1.000.000 satırda allPaymentStates bütün carilerin defterini birden belleğe alıp yığını
+  // aşıyordu (açılış çökerdi). Kart haritası ve kapama tabloları bir kez; sonuç önbelleğe yazılmaz. Dönüş: fatura kimliği → durum.
+  const REPAIR_CHUNK = 400;
+  function repairScreen(invoiceIds, { chunk: size = REPAIR_CHUNK } = {}) {
+    const out = new Map();
+    if (!invoiceIds.length || !accounts()?.allLedgers) return out;
+    const wanted = new Set(invoiceIds);
+    const accountIds = [...new Set(store.all("SELECT account_id AS accountId FROM invoices WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify(invoiceIds)).map(row => row.accountId))];
+    const day = today();
+    const tables = settleTables();
+    const planMap = plans()?.ledgerPlansByAccount ? plans().ledgerPlansByAccount() : new Map();
+    const step = Math.max(1, Math.trunc(Number(size)) || REPAIR_CHUNK);
+    for (let at = 0; at < accountIds.length; at += step) {
+      const chunk = accountIds.slice(at, at + step);
+      const ledgers = accounts().allLedgers({ ids: chunk, plans: planMap }).lines;
+      for (const accountId of chunk) {
+        if (!tables.invoicesOf.has(accountId)) continue;
+        for (const [id, state] of settle(batchSettleInput(accountId, ledgers.get(accountId) || [], tables, day))) if (wanted.has(id)) out.set(id, state);
+      }
+    }
+    return out;
+  }
   function repairOwnCards({ log = null } = {}) {
     const p = plans();
     if (!p?.shrinkPlan || !p.leftOf) return { fixed: [], locked: [] };
@@ -2126,7 +2149,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (!exact) {
         if (!batch) {
           try {
-            batch = allPaymentStates();
+            batch = repairScreen(rows.filter(item => (refundsOf.get(item.id) || 0) > 0.005).map(item => item.id));
           } catch {
             batch = new Map(); // toplu okuma düşerse her aday eski yoldan (cari başına; o yol carinin defter hatasını yutar)
           }
@@ -5126,5 +5149,5 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     doc.paymentDraft = {};
     return writeDraft(user, doc);
   }
-  return { openItems, dueItems, fingerprint, countForAccount, list, listQuery, detail, settings, paymentStates, entryStates, allEntryStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, issueBankFee, issueBankFeeReturn, createCommissionDraft };
+  return { openItems, dueItems, fingerprint, countForAccount, list, listQuery, detail, settings, paymentStates, entryStates, allEntryStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, repairScreen, issueBankFee, issueBankFeeReturn, createCommissionDraft };
 }
