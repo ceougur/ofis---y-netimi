@@ -3146,3 +3146,35 @@ Kullanıcı kararı 31.10.2026 13:40 UTC ("tamam, teslimden sonra kısalt"). Aş
   yollarla silindi (önce node_modules bağı `rm <tam yol>/node_modules`, sonra `git worktree remove` + `git branch -d`). Playwright yolu ve imza anahtarı DURUM 22'deki gibi (aşağıdaki 2.5.0 PLANLAMA maddesinde).
   ESKİ OTURUM: dal claude/compassionate-galileo-f9kghg (PR #40, Meta / Tech Provider; CLAUDE.md'ye yazmaz) — PR #40 master'a birleşince master bu dala birleştirilir, DURUM 18/19 satırları korunur.
   W-1(b) (kendiliğinden yenileme) Meta App Review'da business_management izni gelince.
+
+### DURUM 24 (CLAUDE.md Açık iş; 06.11.2026 07:11 UTC'de DURUM 25 yerine geçti; AYNEN)
+- SIKIŞTIRMA ÖNCESİ DURUM 24 (06.11.2026 04:49 UTC, `date -u`; kullanıcı: "sıkıştırma hazırlığı yap"). DURUM 23'ün YERİNE GEÇER (DURUM 23 → GECMIS-KARARLAR "Arşiv 06.11.2026" AYNEN).
+  KAYNAK: docs/2.5.0-IS-LISTESI.md (SAAT KURALI; A kapsam, B 2.5.1, C sorular, D kararlar + GERİLEME KORUMASI G1–G7, E kayıt — 06.11 02:39 … 04:49 satırları) + docs/erp/C3-DONDURMA-TASARIM.md (§12, §16; tur 1 §17,
+  tur 2 §18 ekleyecek) + docs/erp/C2-FIS-DEFTERI-TASARIM.md (§10, §11, §11a) + kural kitabı / EK-1 / EK-2 / EK-2B + MUHASEBE-CEKIRDEGI-PLANI + DEVIR-PLANI (G). Sıkıştırmadan sonra kararlar bu belgelerden okunur.
+  KULLANICI (bu bölüm): 03:35 "hepsi A" (S7-a, S7-b, S11, S12, S13 — tam metin D); ~03:40 "anayasamıza ve derslerimize göre süreci devam ettir" (süren yetki: süreç kurallarla yürür, sorular öneriyle).
+  BİRLEŞEN / KAPANAN (06.11): Ç3 dondurma + 1 M bellek (lean-rows) 2ba5ac0b — G2 komşu 2218/2218, dar kontrol YÜKSEK 0 / ORTA 3 → Ç3 tur 1 + tur 2; BİRLEŞİK TUR 2 form iyimser kilidi 20966641 —
+  487/487, e2e 74/74, dar kontrol YÜKSEK/ORTA YOK (DÜŞÜK-1/2 → 2.5.1; YAN-A Kasa açılış + YAN-B taksit düzelt sessiz ezme → BİRLEŞİK TUR 3); SÜRÜCÜ BAKIMI 2 47feb767 — GERİLEME YOK 132/132
+  (P5 S4 KDV mahsubu + ATANMAMIŞ-ALT-90 → Ç7b); WK GÜNCELLEMESİ 12 (S7-a/b) ve KÂHİN BAKIMI 3 (S11, S12, K3, K6, s65) — bağımsızlık denetimleri temiz; Ç2 TUR 1 f4763430 (K6 alt defter 400, K5 şirket/zaman,
+  tetikleyici doğrusal, [object Object], postAll beforeLock) — 40/40 iki TZ, eski 12/31, komşu 1450/1450; BAŞ MİMAR KARARLARI (D/E'de, kullanıcıya gösterildi): 153 K6 dışında; 409'da para formu güncel değer
+  yüklemez (cari/personel deseninden bilerek sapma); T12 Kasa düzeltmesiyle açılış öncesine taşıma red. CI: #1018 + #1019 YEŞİL 7/7 → B3 KAPANDI (Windows ×2); Ç3 Windows 1. yeşil. OKUNACAK (ders 21):
+  #1020 (350cfe71), #1021 (47feb767), #1022 (3360687f) ve sonraki kod gönderimleri (1e68ad0 / 40473f17 zinciri; tek tek list_workflow_runs + get_workflow_run_usage, UBUNTU 5 + WINDOWS 2).
+  ÇALIŞAN AJANLAR (4; bitince: rapor → ana oturum yeni testleri KENDİSİ koşar (iki TZ, eski kod kırmızısı ayrı kopyada, G2 komşu taraması, G3) → birleştir → AYRI gönderim (G1) → yalnız o farka DAR KONTROL
+  (xhigh, yeni ajan) → YÜKSEK/ORTA + süzgeçten geçemeyen DÜŞÜK yeni ajanla; kodu görmeyende önce bağımsızlık denetimi):
+  (1) Ç3 TUR 1 (a247c14721558ab77; xhigh; taban 10ed14cf; YALNIZ ledger-snapshots.mjs: ORTA-1 önbellek anahtarı, ORTA-2 eski sürüm sıfırlama onarımı (GAP_RULE = 2.4.9, S13 A), ORTA-3 bekleyen koşunun kuralı
+      + §5 kural sürümü kuralı, DÜŞÜK-3 çift türetme (1 M ölçüm, olcum.lock), K4 iletisi; görev metni not defterinde c3-tur1-istem-10ed14cf.txt).
+  (2) Ç3 TUR 2 (ae037f9ed9ae9cefe; xhigh; taban 40473f17; routes/ledger.mjs PUT period-lock sırası doğrula → beforeLock → iptal → kilit + kanca; PUT erken yanıt + istemci ilerleme (plan §8 1 M ≤ 2 dk,
+      İLERLEME), önce 1 M'de yeniden üretim; ledger-snapshots.mjs'e dokunmaz). Ç3 tur 1 + tur 2 birleşince BİRLEŞİK Ç3 TUR 1-2 DAR KONTROL.
+  (3) BİRLEŞİK TUR 3 (a0712b8dfbfc9c5d9; high; taban 3360687f; YAN-A, YAN-B, taksit / stok kartı PUT sürümü (önce yeniden üret), hof-stock.js:450, e2e PUT sayımı (DÜŞÜK-3); ledger dosyalarına dokunmaz).
+  (4) Ç2 TUR 1 DAR KONTROL BİTTİ 04:58: YÜKSEK 0; B1 (süzgeçle ORTA: K5 saat + tek yönlü çift kuralı) + B2 (test) → Ç2 TUR 2 (xhigh, yeni ajan, ledger-vouchers.mjs) KOD AJANI YERİ AÇILINCA; B3 → 2.5.1.
+  (5) KÂHİN BAKIMI 4 (acf8e287df213d69e; kodu görmeyen, xhigh; taban e6e5610f; S14, S15, S18–S21) ve (6) WK GÜNCELLEMESİ 13 (adcc281ecb00414de; kodu görmeyen, xhigh; S16, S17 + karar (5)) —
+      bitince BAĞIMSIZLIK DENETİMİ (readlink tasks/<id>.output → scratchpad/denetim-wk250/arac-kaydi.py) → birleştir → yeniden koş (iki TZ, mutasyon).
+  YANITLANDI 06.11 04:50 (kullanıcı "benden beklediğin cevapların hepsine A yap"; hepsi A, tam metin D): S14 (R4 faturaya bağlı çek şüpheli caride hangi hesap), S15 (R5 kartlı faturanın İptal Et'i), S16 (S7-c Sonucu Belirsiz +
+  şüpheli + Yine de Gönder), S17 (S7 × (5) tutar sınırı), S18 (S11 avans evrak), S19 (kilit ilerletme), S20 (S12 × geri yükleme), S21 (POS valörü resmî tatil). → KÂHİN BAKIMI 4 (S14, S15, S18–S21) + WK 13 (S16, S17), Ç5 / Ç7 atamaları D'de.
+  BEKLEYEN: bekleyen kanıt not defterinde bekleyen-kanit/2026-11-06/2026-11-06/ (c2t1-birlesim-komsu-utc) → sonraki kod birleşimiyle docs/kanit'e. AH (repairOwnCards 100 bin 101,7 sn; veri c3-olcum-veri) kod ajanı
+  yeri açılınca. WK bakımı (karar (5) "bize alacaklı kişiye hatırlatma gitmez" WK'de yok) Ç5 öncesi. Kilit iletisi (S11 sunumu) Ç5'te baş mimar.
+  SIRADAKİ: Ç3 tur 1/2 + dar kontrol → Ç5 (+B1, P1, KG-15/16, S7/S7-a/b, S8, S11, S12, kararlar (1)(2)(3)(5); S14/S16/S17/S18/S19/S20 yanıtları) ‖ Ç7a → Ç7b (+(4)(6), KG-23, P5, ALT-90, S15, S21) → Ç6 → MA →
+  D2–D6 (D4: (7), K6 kısıtı §11a, Ç3 §11 kısıtları) → WK sürücüsü / W-3 / WE / WY / G1 / BS-1, 5, 6 → aday → paket.
+  ORTAM: 30 dk rapor CronCreate da3eb3f2 ("7,37 * * * *"); ortam alarmı trig_01RE5MRmDjVDFH2SZEuo24ok (3 saatte bir :18; 03:18 "Ortam sağlam"); disk 17 GB, bellek 14 GB (04:49). Playwright
+  PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194; imza anahtarı DURUM 22'deki yol (2.5.0 PLANLAMA maddesi). Ölçüm kilidi scratchpad/olcum.lock (ders 15).
+  YÖNTEM NOTLARI: değişkenli silme `rm "${K:?}/${f:?}"` (güvenlik denetimi düz `$K/$f`'yi engeller); `&` ile başlatılan zincire ayrı bekleyici (run_in_background `until [ -f BITTI ]`); ajan ağacı silme:
+  node_modules bağı → worktree unlock → remove → branch -d (önce git status ve HEAD'in atası mı); python heredoc'ta f-string yerine yer tutucu (süslü parantez).
