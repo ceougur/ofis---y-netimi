@@ -118,15 +118,32 @@ function deepSame(a, b) {
   return true;
 }
 export const sameEntries = (a, b) => a.length === b.length && a.every((entry, index) => deepSame(entry, b[index]));
-/** Maddelerin parmak izi (FNV-1a, 32 bit; kimlik, tarih, işlem, açıklama, sıra, satırlar). */
+/** Maddelerin parmak izi (FNV-1a, 32 bit; kimlik, tarih, işlem, açıklama, sıra, satırlar: hesap, alt hesap, cari, borç, alacak). Ara metin kurulmaz (1 M maddede ayırma yok). */
 export function printOf(entries) {
   let hash = 0x811c9dc5;
-  const mix = text => {
-    for (let index = 0; index < text.length; index += 1) hash = Math.imul(hash ^ text.charCodeAt(index), 0x01000193) >>> 0;
+  const text = value => {
+    const s = value === undefined || value === null ? "" : typeof value === "string" ? value : String(value);
+    for (let index = 0; index < s.length; index += 1) hash = Math.imul(hash ^ s.charCodeAt(index), 0x01000193) >>> 0;
+    hash = Math.imul(hash ^ 0x1f, 0x01000193) >>> 0;
+  };
+  const num = value => {
+    const n = Number(value) || 0;
+    hash = Math.imul(hash ^ (n | 0), 0x01000193) >>> 0;
+    hash = Math.imul(hash ^ (Math.floor(n / 4294967296) | 0), 0x01000193) >>> 0;
   };
   for (const entry of entries) {
-    mix(`${entry.id}|${entry.date}|${entry.source || ""}|${entry.text || ""}|${entry.seq ?? ""}|`);
-    for (const line of entry.lines) mix(`${line.account}/${line.sub || ""}/${line.party || ""}/${line.debit}/${line.credit};`);
+    text(entry.id);
+    text(entry.date);
+    text(entry.source);
+    text(entry.text);
+    num(entry.seq ?? -1);
+    for (const line of entry.lines) {
+      text(line.account);
+      text(line.sub);
+      text(line.party);
+      num(line.debit);
+      num(line.credit);
+    }
   }
   return `${entries.length}:${hash.toString(16)}`;
 }
